@@ -329,13 +329,18 @@
       <div class="card" id="architecture-blueprints-gallery">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
           <div>
-            <span class="badge badge-blue">Google Cloud Architecture Center • 7 Certified Blueprints</span>
-            <h3 style="margin-top:6px;">Workstream 1–5 Enterprise Architecture Blueprints (1800&times;970 Widescreen • Draw.io XML, Vector SVG &amp; 2x Retina PNG)</h3>
+            <span class="badge badge-blue">Google Cloud Architecture Center • PromptCanvas Vision Draw.io Certified (7/7)</span>
+            <h3 style="margin-top:6px;">Workstream 1–5 Enterprise Architecture Blueprints (1200&times;1410 Hub-and-Spoke • Draw.io Vision, Vector SVG &amp; 2x Retina PNG)</h3>
           </div>
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <a id="bp-link-png" href="diagrams/ws1-multi-tenant-taxonomy-overview.png" target="_blank" class="sim-btn primary" style="text-decoration:none;">&#128444; Open 2x Retina PNG</a>
-            <a id="bp-link-svg" href="diagrams/ws1-multi-tenant-taxonomy-overview.svg" target="_blank" class="sim-btn" style="text-decoration:none;">&#128208; Open Vector SVG</a>
-            <a id="bp-link-xml" href="diagrams/ws1-multi-tenant-taxonomy-overview.drawio.xml" target="_blank" class="sim-btn" style="text-decoration:none;">&#128196; Download .drawio.xml</a>
+            <button id="btn-mode-drawio" class="sim-btn primary" onclick="setBlueprintRenderMode('drawio')">&#128269; PromptCanvas Draw.io Vision Render</button>
+            <button id="btn-mode-svg" class="sim-btn" onclick="setBlueprintRenderMode('png')">&#127912; Cloud Architecture Center SVG/PNG</button>
+            <a id="bp-link-drawio-png" href="diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png" target="_blank" class="sim-btn" style="text-decoration:none;">&#128444; Open .drawio.png</a>
+            <a id="bp-link-png" href="diagrams/ws1-multi-tenant-taxonomy-overview.png" target="_blank" class="sim-btn" style="text-decoration:none;">&#128444; Open 2x PNG</a>
+            <a id="bp-link-svg" href="diagrams/ws1-multi-tenant-taxonomy-overview.svg" target="_blank" class="sim-btn" style="text-decoration:none;">&#128208; Open SVG</a>
+            <a id="bp-link-drawio" href="diagrams/ws1-multi-tenant-taxonomy-overview.drawio" download class="sim-btn" style="text-decoration:none;">&#128190; .drawio</a>
+            <a id="bp-link-xml" href="diagrams/ws1-multi-tenant-taxonomy-overview.drawio.xml" target="_blank" class="sim-btn" style="text-decoration:none;">&#128196; .drawio.xml</a>
+            <a id="bp-link-vision-json" href="diagrams/vision_metadata/ws1-multi-tenant-taxonomy-overview.vision.json" target="_blank" class="sim-btn" style="text-decoration:none;">&#129504; Vision JSON</a>
           </div>
         </div>
         <div class="sim-controls" style="margin-bottom:12px;">
@@ -347,9 +352,9 @@
           <button class="sim-btn" onclick="selectBlueprint('ws4-pattern-c-hybrid-psc-and-migration', 'WS 4.1: Pattern C Dynamic Hybrid Hub-and-Spoke, PSC & Live Migration')">6. WS 4.1 Pattern C (Hybrid PSC)</button>
           <button class="sim-btn" onclick="selectBlueprint('ws5-decision-tree-and-agentic-triad', 'WS 5.1/5.2: Executive Topology Decision Tree & The Agentic Triad')">7. WS 5.1/5.2 Decision Tree &amp; Triad</button>
         </div>
-        <div id="bp-caption" style="font-size:13px; color:#93bbfd; font-weight:600; margin-bottom:8px;">Active Blueprint: WS 1.1: GEAP Multi-Tenant Agentic AI Taxonomy (Pattern A, B &amp; C)</div>
+        <div id="bp-caption" style="font-size:13px; color:#93bbfd; font-weight:600; margin-bottom:8px;">Active Blueprint: WS 1.1: GEAP Multi-Tenant Agentic AI Taxonomy (Pattern A, B &amp; C) • [PromptCanvas Vision Draw.io Engine]</div>
         <div style="background:#ffffff; border-radius:10px; padding:8px; border:1px solid var(--border); overflow-x:auto;">
-          <img id="bp-preview-img" src="diagrams/ws1-multi-tenant-taxonomy-overview.png" alt="GEAP Multi-Tenant Architecture Blueprint" style="width:100%; height:auto; display:block; border-radius:6px;" />
+          <img id="bp-preview-img" src="diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png" alt="GEAP Multi-Tenant Architecture Blueprint" style="width:100%; max-width:980px; margin:0 auto; height:auto; display:block; border-radius:6px;" />
         </div>
       </div>
     </section>
@@ -660,13 +665,38 @@
 
   <script>
     let currentRawMarkdown = '';
+    let activeBlueprintSlug = 'ws1-multi-tenant-taxonomy-overview';
+    let activeBlueprintTitle = 'WS 1.1: GEAP Multi-Tenant Agentic AI Taxonomy (Pattern A, B & C)';
+    let activeBlueprintRenderMode = 'drawio';
+
+    function updateBlueprintView() {
+      const suffix = activeBlueprintRenderMode === 'drawio' ? '.drawio.png' : '.png';
+      const modeTag = activeBlueprintRenderMode === 'drawio' ? 'PromptCanvas Vision Draw.io Engine' : 'Cloud Architecture Center 2x Retina PNG';
+      document.getElementById('bp-preview-img').src = `diagrams/${activeBlueprintSlug}${suffix}`;
+      document.getElementById('bp-caption').textContent = `Active Blueprint: ${activeBlueprintTitle} • [${modeTag}]`;
+      document.getElementById('bp-link-drawio-png').href = `diagrams/${activeBlueprintSlug}.drawio.png`;
+      document.getElementById('bp-link-png').href = `diagrams/${activeBlueprintSlug}.png`;
+      document.getElementById('bp-link-svg').href = `diagrams/${activeBlueprintSlug}.svg`;
+      document.getElementById('bp-link-drawio').href = `diagrams/${activeBlueprintSlug}.drawio`;
+      document.getElementById('bp-link-xml').href = `diagrams/${activeBlueprintSlug}.drawio.xml`;
+      document.getElementById('bp-link-vision-json').href = `diagrams/vision_metadata/${activeBlueprintSlug}.vision.json`;
+      const btnDrawio = document.getElementById('btn-mode-drawio');
+      const btnSvg = document.getElementById('btn-mode-svg');
+      if (btnDrawio && btnSvg) {
+        btnDrawio.className = activeBlueprintRenderMode === 'drawio' ? 'sim-btn primary' : 'sim-btn';
+        btnSvg.className = activeBlueprintRenderMode === 'png' ? 'sim-btn primary' : 'sim-btn';
+      }
+    }
+
+    function setBlueprintRenderMode(mode) {
+      activeBlueprintRenderMode = mode;
+      updateBlueprintView();
+    }
 
     function selectBlueprint(slug, title) {
-      document.getElementById('bp-preview-img').src = `diagrams/${slug}.png`;
-      document.getElementById('bp-caption').textContent = `Active Blueprint: ${title}`;
-      document.getElementById('bp-link-png').href = `diagrams/${slug}.png`;
-      document.getElementById('bp-link-svg').href = `diagrams/${slug}.svg`;
-      document.getElementById('bp-link-xml').href = `diagrams/${slug}.drawio.xml`;
+      activeBlueprintSlug = slug;
+      activeBlueprintTitle = title;
+      updateBlueprintView();
     }
 
     function switchTab(name, btn) {

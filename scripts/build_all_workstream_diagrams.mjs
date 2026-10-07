@@ -811,8 +811,19 @@ function compileOfficialArchCenterSvg(bp) {
 </svg>`;
 }
 
+const USER_SILHOUETTE_DATA_URI =
+  'data:image/svg+xml;base64,' +
+  Buffer.from(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="44" height="36" viewBox="0 0 44 36">' +
+      '<circle cx="22" cy="11" r="8.5" fill="#000000"/>' +
+      '<path d="M 6 34 C 6 24 38 24 38 34 Z" fill="#000000"/>' +
+      '</svg>'
+  ).toString('base64');
+
 /**
- * Compiles editable Draw.io XML (.drawio.xml) matching the exact Google Cloud Architecture Center Hub-and-Spoke layout
+ * Compiles 1:1 editable Draw.io XML (.drawio & .drawio.xml) matching the exact
+ * Google Cloud Architecture Center Hub-and-Spoke layout with embedded base64 icons,
+ * official Google Cloud wordmark, step badges, and deterministic waypoint edges.
  */
 function compileOfficialDrawioXml(bp) {
   const rc = bp.routingCards;
@@ -821,100 +832,319 @@ function compileOfficialDrawioXml(bp) {
   const sc = bp.rightCards;
 
   const cells = [];
-  let idCounter = 2;
-  const nextId = (prefix = 'c') => `${prefix}_${idCounter++}`;
+  const SVG_GUARD = '<svg width="0" height="0" style="display:none;"></svg>';
 
-  const addBox = (x, y, w, h, value, style) => {
-    const id = nextId('box');
+  const addVertex = (id, x, y, w, h, rawHtmlValue, style) => {
     cells.push(
-      `      <mxCell id="${id}" value="${escXml(value)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
+      `        <mxCell id="${id}" value="${escXml(rawHtmlValue)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
     return id;
   };
 
-  // Outer Google Cloud Frame (#1a73e8)
-  addBox(20, 218, 1160, 1172, 'Google Cloud', 'rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#1a73e8;strokeColor=#202124;fontColor=#ffffff;fontStyle=1;fontSize=18;verticalAlign=top;align=left;spacingLeft=18;spacingTop=10;');
-  // Shared hubs & VPC wrappers
-  addBox(36, 268, 1128, 1104, bp.outerWrapperLabel, 'rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#ffffff;strokeColor=#202124;fontColor=#202124;fontStyle=1;fontSize=13;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;');
-  addBox(52, 304, 1096, 1050, bp.innerWrapperLabel, 'rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#ffffff;strokeColor=#202124;fontColor=#202124;fontStyle=1;fontSize=13;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;');
-
-  // Top User Box
-  const userBox = addBox(500, 52, 180, 86, `<b>${bp.topUserTitle}</b><br/><font style="font-size:11px">${bp.topUserSub}</font>`, 'rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=2;');
-
-  // 4 Semantic Zones (#aecbfa, #ceead6, #feefc3, #fad2cf)
-  addBox(68, 338, 664, 330, `<b>${bp.routingHubTitle}</b><br/><font style="font-size:12px">${bp.routingHubSub}</font>`, 'rounded=1;whiteSpace=wrap;html=1;fillColor=#aecbfa;strokeColor=#202124;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;');
-  addBox(798, 346, 328, 320, `<b>${bp.govHubTitle} ${bp.govHubTitle2}</b>`, 'rounded=1;whiteSpace=wrap;html=1;fillColor=#ceead6;strokeColor=#202124;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;');
-
-  addBox(70, 772, 516, 560, bp.leftBoundaryLabel, 'rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;fontStyle=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;');
-  addBox(86, 808, 484, 508, `<b>${bp.leftZoneTitle}</b><br/><font style="font-size:12px">${bp.leftZoneSub}</font>`, 'rounded=1;whiteSpace=wrap;html=1;fillColor=#feefc3;strokeColor=#202124;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;');
-
-  addBox(614, 772, 516, 560, bp.rightBoundaryLabel, 'rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;fontStyle=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;');
-  addBox(630, 808, 484, 508, `<b>${bp.rightZoneTitle}</b><br/><font style="font-size:12px">${bp.rightZoneSub}</font>`, 'rounded=1;whiteSpace=wrap;html=1;fillColor=#fad2cf;strokeColor=#202124;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;');
-
-  // Component Cards (18 cards + 8 step badges + 16 zone/wrapper containers = 42 total elements)
-  const cardStyle = 'rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=2;align=left;spacingLeft=12;';
-  const cTopLeft = addBox(88, 398, 204, 66, `<b>${rc.topLeft.title}</b><br/>${rc.topLeft.sub}`, cardStyle);
-  const cMidLeft = addBox(88, 482, 204, 66, `<b>${rc.midLeft.title}</b><br/>${rc.midLeft.sub}`, cardStyle);
-  const cBotLeft = addBox(112, 580, 180, 66, `<b>${rc.botLeft.title}</b><br/>${rc.botLeft.sub}`, cardStyle);
-  const cAlb = addBox(452, 432, 262, 76, `<b>${rc.topRight.title} ${rc.topRight.title2 || ''}</b><br/>${rc.topRight.sub}`, cardStyle);
-  const cCloudRun = addBox(476, 580, 224, 66, `<b>${rc.botRight.title}</b><br/>${rc.botRight.sub}`, cardStyle);
-
-  const cGovTop = addBox(824, 406, 276, 72, `<b>${gc.top.title} ${gc.top.title2 || ''}</b><br/>${gc.top.sub}`, cardStyle);
-  const cGovMid = addBox(838, 492, 248, 68, `<b>${gc.mid.title}</b><br/>${gc.mid.sub}`, cardStyle);
-  const cGovBot = addBox(828, 574, 268, 68, `<b>${gc.bot.title}</b><br/>${gc.bot.sub}`, cardStyle);
-
-  const cLeftMA = addBox(102, 874, 202, 72, `<b>${lc.modelArmor.title}</b><br/>${lc.modelArmor.sub}`, cardStyle);
-  const cLeftLLM = addBox(102, 1110, 202, 72, `<b>${lc.llm.title}</b><br/>${lc.llm.sub}`, cardStyle);
-  const cLeftRun = addBox(334, 924, 220, 74, `<b>${lc.runtime.title}</b><br/>${lc.runtime.sub}`, cardStyle);
-  const cLeftMcp = addBox(344, 1068, 202, 74, `<b>${lc.mcp.title}</b><br/>${lc.mcp.sub}`, cardStyle);
-  const cLeftDb = addBox(332, 1218, 224, 74, `<b>${lc.datastore.title}</b><br/>${lc.datastore.sub}`, cardStyle);
-
-  const cRightMA = addBox(646, 874, 202, 72, `<b>${sc.modelArmor.title}</b><br/>${sc.modelArmor.sub}`, cardStyle);
-  const cRightLLM = addBox(646, 976, 202, 72, `<b>${sc.llm.title}</b><br/>${sc.llm.sub}`, cardStyle);
-  const cRightRun = addBox(878, 924, 220, 74, `<b>${sc.runtime.title}</b><br/>${sc.runtime.sub}`, cardStyle);
-  const cRightMcp = addBox(888, 1068, 202, 74, `<b>${sc.mcp.title}</b><br/>${sc.mcp.sub}`, cardStyle);
-  const cRightDb = addBox(876, 1218, 224, 74, `<b>${sc.datastore.title}</b><br/>${sc.datastore.sub}`, cardStyle);
-
-  // Numbered Step Badges (#174ea6)
-  const badgeStyle = 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#174ea6;strokeColor=#174ea6;fontColor=#ffffff;fontStyle=1;fontSize=15;';
-  addBox(546, 160, 40, 40, '1', badgeStyle);
-  addBox(592, 160, 40, 40, '7', badgeStyle);
-  addBox(546, 523, 40, 40, '2', badgeStyle);
-  addBox(592, 523, 40, 40, '7', badgeStyle);
-  addBox(384, 680, 40, 40, '3', badgeStyle);
-  addBox(596, 680, 40, 40, '7', badgeStyle);
-  addBox(104, 956, 40, 40, '4', badgeStyle);
-  addBox(104, 1004, 40, 40, '6', badgeStyle);
-  addBox(104, 1194, 40, 40, '5', badgeStyle);
-
-  // Edges
-  const addEdge = (src, tgt, label, dashed = false) => {
-    const id = nextId('edge');
-    const style = `edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#202124;strokeWidth=2;${dashed ? 'dashed=1;' : ''}`;
+  // Pure coordinate-bound edge helper (omits vertex source/target IDs so mxGraph never overrides coordinates with diagonal center-to-center lines)
+  const addPointEdge = (id, srcPt, tgtPt, waypoints = [], opts = {}) => {
+    const {
+      dashed = false,
+      startArrow = false,
+      endArrow = true,
+    } = opts;
+    const styleParts = [
+      'edgeStyle=none',
+      'rounded=0',
+      'html=1',
+      'strokeColor=#202124',
+      'strokeWidth=2',
+      startArrow ? 'startArrow=open;startFill=0;startSize=7' : 'startArrow=none',
+      endArrow ? 'endArrow=open;endFill=0;endSize=7' : 'endArrow=none',
+    ];
+    if (dashed) styleParts.push('dashed=1;dashPattern=3 3');
+    const ptsXml =
+      waypoints.length > 0
+        ? `<Array as="points">${waypoints.map((p) => `<mxPoint x="${p[0]}" y="${p[1]}"/>`).join('')}</Array>`
+        : '';
     cells.push(
-      `      <mxCell id="${id}" value="${escXml(label)}" style="${style}" edge="1" parent="1" source="${src}" target="${tgt}"><mxGeometry relative="1" as="geometry"/></mxCell>`
+      `        <mxCell id="${id}" value="" style="${styleParts.join(';')};" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="${srcPt[0]}" y="${srcPt[1]}" as="sourcePoint"/><mxPoint x="${tgtPt[0]}" y="${tgtPt[1]}" as="targetPoint"/>${ptsXml}</mxGeometry></mxCell>`
     );
   };
 
-  addEdge(userBox, cAlb, bp.step1LeftLabel);
-  addEdge(cAlb, cTopLeft, rc.edgeTopLeft.join(' '));
-  addEdge(cAlb, cMidLeft, rc.edgeMidLeft.join(' '));
-  addEdge(cAlb, cCloudRun, rc.step2Left);
-  addEdge(cBotLeft, cCloudRun, rc.edgeBotLeft.join(' '));
-  addEdge(cCloudRun, cLeftRun, bp.midStep3Label.join(' '));
-  addEdge(cCloudRun, cRightRun, bp.midStep7Label.join(' '));
-  addEdge(cLeftRun, cGovBot, bp.midGovLabel.join(' '), true);
-  addEdge(cLeftRun, cLeftMA, lc.step4Label);
-  addEdge(cLeftRun, cLeftLLM, lc.step5Label.join(' '));
-  addEdge(cLeftMcp, cLeftRun, lc.ragLabel.join(' '));
-  addEdge(cLeftDb, cLeftMcp, lc.toolLabel.join(' '));
-  addEdge(cRightRun, cRightMA, 'Sanitize');
-  addEdge(cRightRun, cRightLLM, 'Inference');
-  addEdge(cRightMcp, cRightRun, sc.ragLabel.join(' '));
-  addEdge(cRightDb, cRightMcp, sc.toolLabel.join(' '));
+  // 1. Top Blueprint Title Banner
+  addVertex(
+    'hdr_title_box',
+    20,
+    6,
+    1160,
+    40,
+    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.35;"><b style="font-size:12.5px;color:#174ea6;">[${bp.badge}] ${bp.title}</b><br/><span style="font-size:11px;color:#5f6368;">${bp.subtitle}</span></div>`,
+    'text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=0;spacingTop=0;'
+  );
+
+  // 2. Top External User / Tenant Box (with User Silhouette Icon)
+  addVertex(
+    'actor_top_user',
+    465,
+    52,
+    250,
+    86,
+    `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-family:'Google Sans',Roboto,Arial,sans-serif;text-align:center;"><img src="${USER_SILHOUETTE_DATA_URI}" width="36" height="28"/><b style="font-size:13px;color:#202124;">${bp.topUserTitle}</b><span style="font-size:10.5px;color:#3c4043;">${bp.topUserSub}</span></div>`,
+    'rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=2;align=center;verticalAlign=middle;'
+  );
+
+  // 3. Outer Google Cloud Frame (#1a73e8) + Official White Wordmark
+  addVertex(
+    'gcp_outer_frame',
+    20,
+    218,
+    1160,
+    1172,
+    '',
+    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#1a73e8;strokeColor=#202124;strokeWidth=1.2;'
+  );
+  addVertex(
+    'gcp_wordmark',
+    36,
+    228,
+    150,
+    30,
+    `<img src="${OFFICIAL_ASSETS.gcp_wordmark_white}" width="138" height="25"/>`,
+    'text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;'
+  );
+
+  const fitHtmlLabel = (text, maxW, fontSizePx = 12.5) => {
+    const estW = text.length * (fontSizePx * 0.58);
+    const scaleX = estW > maxW ? (maxW / estW).toFixed(3) : '1';
+    const scaleCss =
+      estW > maxW
+        ? `display:inline-block;transform:scaleX(${scaleX});transform-origin:left center;`
+        : '';
+    return `${SVG_GUARD}<b style="font-family:'Google Sans',Roboto,Arial,sans-serif;font-size:${fontSizePx}px;color:#202124;white-space:nowrap;${scaleCss}">${text}</b>`;
+  };
+
+  // 4. Nested White Boundary 1 (Shared hubs) & Boundary 2 (VPC)
+  addVertex(
+    'wrapper_shared_hubs',
+    36,
+    268,
+    1128,
+    1104,
+    fitHtmlLabel(bp.outerWrapperLabel, 495, 12.5),
+    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=14;spacingTop=6;'
+  );
+  addVertex(
+    'wrapper_vpc',
+    52,
+    304,
+    1096,
+    1050,
+    fitHtmlLabel(bp.innerWrapperLabel, 480, 12.5),
+    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=14;spacingTop=6;'
+  );
+
+  // 5. Four Semantic Hub & Spoke Zones (#aecbfa, #ceead6, #feefc3, #fad2cf)
+  addVertex(
+    'zone_routing_hub',
+    68,
+    338,
+    664,
+    330,
+    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;"><b style="font-size:14.5px;color:#202124;">${bp.routingHubTitle}</b><br/><span style="font-size:12.5px;color:#202124;">${bp.routingHubSub}</span></div>`,
+    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#aecbfa;strokeColor=#202124;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;'
+  );
+  addVertex(
+    'zone_gov_hub',
+    798,
+    346,
+    328,
+    320,
+    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;"><b style="font-size:14.5px;color:#202124;">${bp.govHubTitle}<br/>${bp.govHubTitle2}</b></div>`,
+    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ceead6;strokeColor=#202124;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;'
+  );
+
+  addVertex(
+    'wrapper_left_pab',
+    70,
+    772,
+    516,
+    560,
+    fitHtmlLabel(bp.leftBoundaryLabel, 344, 12),
+    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;'
+  );
+  addVertex(
+    'zone_left_tenant',
+    86,
+    808,
+    484,
+    508,
+    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;"><b style="font-size:14.5px;color:#202124;">${bp.leftZoneTitle}</b><br/><span style="font-size:12.5px;color:#202124;">${bp.leftZoneSub}</span></div>`,
+    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#feefc3;strokeColor=#202124;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;'
+  );
+
+  addVertex(
+    'wrapper_right_pab',
+    614,
+    772,
+    516,
+    560,
+    fitHtmlLabel(bp.rightBoundaryLabel, 344, 12),
+    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;'
+  );
+  addVertex(
+    'zone_right_tenant',
+    630,
+    808,
+    484,
+    508,
+    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;"><b style="font-size:14.5px;color:#202124;">${bp.rightZoneTitle}</b><br/><span style="font-size:12.5px;color:#202124;">${bp.rightZoneSub}</span></div>`,
+    'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#fad2cf;strokeColor=#202124;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;'
+  );
+
+  // 6. Emit Deterministic Orthogonal Edges BEFORE Cards & Step Badges (so Badges & Cards sit cleanly on top)
+  // Top User <-> ALB (Step 1 & Step 7)
+  addPointEdge('e_user_to_alb', [566, 138], [566, 430], [], { endArrow: true });
+  addPointEdge('e_alb_to_user', [612, 432], [612, 140], [], { endArrow: true });
+
+  // Cloud Armor & Model Armor <-> ALB Bracket
+  addPointEdge('e_alb_to_top_left', [450, 470], [294, 431], [[424, 470], [424, 431]], { startArrow: true, endArrow: true });
+  addPointEdge('e_alb_to_mid_left', [424, 470], [294, 515], [[424, 515]], { startArrow: false, endArrow: true });
+
+  // Bot Left (IAM/IAP) <-> Cloud Run
+  addPointEdge('e_iap_to_cloudrun', [294, 613], [474, 613], [], { startArrow: true, endArrow: true });
+
+  // ALB <-> Cloud Run (Step 2 & Step 7)
+  addPointEdge('e_alb_to_crun', [566, 508], [566, 578], [], { endArrow: true });
+  addPointEdge('e_crun_to_alb', [612, 580], [612, 510], [], { endArrow: true });
+
+  // Central Trunk: Cloud Run <-> Left & Right Tenant Agent Runtimes
+  addPointEdge('e_trunk_up_crun', [586, 744], [586, 648], [], { endArrow: true });
+  addPointEdge('e_trunk_spokes', [444, 922], [988, 922], [[444, 744], [988, 744]], { startArrow: true, endArrow: true });
+
+  // Dashed Governance & Observability Trunk
+  addPointEdge('e_gov_dashed_main', [328, 770], [962, 668], [[328, 730], [962, 730]], { dashed: true, startArrow: true, endArrow: true });
+  addPointEdge('e_gov_dashed_right', [872, 730], [872, 770], [], { dashed: true, startArrow: false, endArrow: true });
+
+  // Left Tenant Internal Arrows
+  addPointEdge('e_left_ma_run', [304, 910], [332, 946], [[319, 910], [319, 946]], { startArrow: true, endArrow: true });
+  addPointEdge('e_left_llm_run', [304, 1146], [332, 972], [[319, 1146], [319, 972]], { startArrow: true, endArrow: true });
+  // Split vertical segments around Secure RAG & Agent-tool labels (zero line-through-text)
+  addPointEdge('e_left_mcp_run_bot', [444, 1068], [444, 1054], [], { endArrow: false });
+  addPointEdge('e_left_mcp_run_top', [444, 1014], [444, 1000], [], { endArrow: true });
+  addPointEdge('e_left_db_mcp_bot', [444, 1218], [444, 1204], [], { endArrow: false });
+  addPointEdge('e_left_db_mcp_top', [444, 1158], [444, 1144], [], { endArrow: true });
+
+  // Right Tenant Internal Arrows
+  addPointEdge('e_right_ma_run', [848, 910], [876, 946], [[863, 910], [863, 946]], { startArrow: true, endArrow: true });
+  addPointEdge('e_right_llm_run', [848, 1012], [876, 972], [[863, 1012], [863, 972]], { startArrow: true, endArrow: true });
+  addPointEdge('e_right_mcp_run_bot', [988, 1068], [988, 1054], [], { endArrow: false });
+  addPointEdge('e_right_mcp_run_top', [988, 1014], [988, 1000], [], { endArrow: true });
+  addPointEdge('e_right_db_mcp_bot', [988, 1218], [988, 1204], [], { endArrow: false });
+  addPointEdge('e_right_db_mcp_top', [988, 1158], [988, 1144], [], { endArrow: true });
+
+  // 7. Helper to add Official Architecture Center Card with Embedded Base64 Icon
+  const addArchCard = (id, x, y, w, h, cardObj) => {
+    const iconUri = OFFICIAL_ASSETS[cardObj.icon] || OFFICIAL_ASSETS.gemini_agent_platform;
+    const titleHtml = cardObj.title2
+      ? `<b style="font-size:12.5px;color:#202124;">${cardObj.title}<br/>${cardObj.title2}</b>`
+      : `<b style="font-size:12.5px;color:#202124;">${cardObj.title}</b>`;
+    const subHtml = cardObj.sub
+      ? `<br/><span style="font-size:10.5px;color:#3c4043;">${cardObj.sub}</span>`
+      : '';
+    const htmlVal = `<table style="width:100%;height:100%;border-collapse:collapse;font-family:'Google Sans',Roboto,Arial,sans-serif;"><tr><td style="width:44px;text-align:center;vertical-align:middle;padding-left:4px;"><img src="${iconUri}" width="34" height="34"/></td><td style="text-align:left;vertical-align:middle;padding-left:6px;line-height:1.2;">${titleHtml}${subHtml}</td></tr></table>`;
+    return addVertex(
+      id,
+      x,
+      y,
+      w,
+      h,
+      htmlVal,
+      'rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=2;align=left;verticalAlign=middle;spacingLeft=2;spacingRight=4;'
+    );
+  };
+
+  // Routing Hub 5 Cards
+  addArchCard('card_rc_topleft', 88, 398, 204, 66, rc.topLeft);
+  addArchCard('card_rc_midleft', 88, 482, 204, 66, rc.midLeft);
+  addArchCard('card_rc_botleft', 96, 580, 196, 66, rc.botLeft);
+  addArchCard('card_rc_alb', 452, 432, 262, 76, rc.topRight);
+  addArchCard('card_rc_cloudrun', 476, 580, 224, 66, rc.botRight);
+
+  // Governance Hub 3 Cards
+  addArchCard('card_gc_top', 824, 406, 276, 72, gc.top);
+  addArchCard('card_gc_mid', 830, 492, 264, 68, gc.mid);
+  addArchCard('card_gc_bot', 828, 574, 268, 68, gc.bot);
+
+  // Left Tenant Spoke 5 Cards
+  addArchCard('card_lc_ma', 102, 874, 202, 72, lc.modelArmor);
+  addArchCard('card_lc_llm', 102, 1110, 202, 72, lc.llm);
+  addArchCard('card_lc_run', 334, 924, 220, 74, lc.runtime);
+  addArchCard('card_lc_mcp', 338, 1068, 214, 74, lc.mcp);
+  addArchCard('card_lc_db', 332, 1218, 224, 74, lc.datastore);
+
+  // Right Tenant Spoke 5 Cards
+  addArchCard('card_sc_ma', 646, 874, 202, 72, sc.modelArmor);
+  addArchCard('card_sc_llm', 646, 976, 202, 72, sc.llm);
+  addArchCard('card_sc_run', 878, 924, 220, 74, sc.runtime);
+  addArchCard('card_sc_mcp', 882, 1068, 214, 74, sc.mcp);
+  addArchCard('card_sc_db', 876, 1218, 224, 74, sc.datastore);
+
+  // 8. Royal-Blue Numbered Step Badges (#174ea6) & Open-Channel Callout Labels (Rendered on top of edges)
+  const badgeStyle =
+    'ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#174ea6;strokeColor=#174ea6;fontColor=#ffffff;fontStyle=1;fontSize=15;align=center;verticalAlign=middle;';
+  const addStepBadge = (id, cx, cy, num) =>
+    addVertex(id, cx - 20, cy - 20, 40, 40, `${SVG_GUARD}<b>${num}</b>`, badgeStyle);
+
+  const addCalloutText = (id, x, y, w, h, lines, align = 'left') => {
+    const html = `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;font-size:12.5px;color:#202124;line-height:1.25;">${lines.join('<br/>')}</div>`;
+    return addVertex(
+      id,
+      x,
+      y,
+      w,
+      h,
+      html,
+      `text;html=1;strokeColor=none;fillColor=none;align=${align};verticalAlign=middle;`
+    );
+  };
+
+  // Top Step 1 & Step 7
+  addStepBadge('step_1_top', 566, 180, '1');
+  addCalloutText('lbl_step1_top', 450, 166, 90, 28, [bp.step1LeftLabel], 'right');
+  addStepBadge('step_7_top', 612, 180, '7');
+  addCalloutText('lbl_step7_top', 636, 166, 100, 28, [bp.step7RightLabel], 'left');
+
+  // Routing Hub Bracket Callouts
+  addCalloutText('lbl_rc_top', 300, 392, 118, 36, rc.edgeTopLeft, 'center');
+  addCalloutText('lbl_rc_mid', 300, 520, 118, 36, rc.edgeMidLeft, 'center');
+  addCalloutText('lbl_rc_bot', 306, 574, 156, 36, rc.edgeBotLeft, 'center');
+
+  // Mid Routing Hub Step 2 & Step 7
+  addStepBadge('step_2_mid', 566, 543, '2');
+  addCalloutText('lbl_step2_mid', 450, 529, 90, 28, [rc.step2Left], 'right');
+  addStepBadge('step_7_mid', 612, 543, '7');
+  addCalloutText('lbl_step7_mid', 636, 529, 100, 28, [rc.step7Mid], 'left');
+
+  // Central Trunk Step 3, Step 7 & Governance Telemetry Callouts
+  addStepBadge('step_3_trunk', 404, 700, '3');
+  addCalloutText('lbl_step3_trunk', 428, 680, 152, 40, bp.midStep3Label, 'left');
+  addStepBadge('step_7_trunk', 616, 700, '7');
+  addCalloutText('lbl_step7_trunk', 640, 680, 168, 40, bp.midStep7Label, 'left');
+  addCalloutText('lbl_gov_trunk', 968, 672, 175, 54, bp.midGovLabel, 'left');
+
+  // Left Spoke Step 4, Step 6, Step 5 & RAG/Tool Labels
+  addStepBadge('step_4_left', 124, 976, '4');
+  addCalloutText('lbl_step4_left', 148, 962, 165, 28, [lc.step4Label], 'left');
+  addStepBadge('step_6_left', 124, 1024, '6');
+  addCalloutText('lbl_step6_left', 148, 1010, 165, 28, [lc.step6Label], 'left');
+  addStepBadge('step_5_left', 124, 1214, '5');
+  addCalloutText('lbl_step5_left', 148, 1194, 165, 40, lc.step5Label, 'left');
+
+  addCalloutText('lbl_left_rag', 354, 1014, 180, 38, lc.ragLabel, 'center');
+  addCalloutText('lbl_left_tool', 354, 1160, 180, 38, lc.toolLabel, 'center');
+
+  // Right Spoke RAG/Tool Labels
+  addCalloutText('lbl_right_rag', 898, 1014, 180, 38, sc.ragLabel, 'center');
+  addCalloutText('lbl_right_tool', 898, 1160, 180, 38, sc.toolLabel, 'center');
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<mxfile host="Electron" modified="2026-10-07T08:00:00.000Z" agent="GoogleCloudArchitectureCenterEngine/3.0" version="24.7.5" type="device">
+<mxfile host="embed.diagrams.net" modified="2026-10-07T14:05:00.000Z" agent="PromptCanvas-Vision-Decompiler-v4.0" version="24.7.5" type="device">
   <diagram id="${bp.id}" name="${escXml(bp.title)}">
     <mxGraphModel dx="1200" dy="1410" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1410" background="#FFFFFF" math="0" shadow="0">
       <root>
@@ -964,16 +1194,20 @@ async function main() {
       const xmlStr = compileOfficialDrawioXml(bp);
       const svgStr = compileOfficialArchCenterSvg(bp);
 
+      const wsDrawioPath = path.join(wsDir, `${bp.id}.drawio`);
       const wsXmlPath = path.join(wsDir, `${bp.id}.drawio.xml`);
       const wsSvgPath = path.join(wsDir, `${bp.id}.svg`);
       const wsPngPath = path.join(wsDir, `${bp.id}.png`);
 
+      const centralDrawioPath = path.join(CENTRAL_DIAGRAMS_DIR, `${bp.id}.drawio`);
       const centralXmlPath = path.join(CENTRAL_DIAGRAMS_DIR, `${bp.id}.drawio.xml`);
       const centralSvgPath = path.join(CENTRAL_DIAGRAMS_DIR, `${bp.id}.svg`);
       const centralPngPath = path.join(CENTRAL_DIAGRAMS_DIR, `${bp.id}.png`);
 
+      fs.writeFileSync(wsDrawioPath, xmlStr, 'utf8');
       fs.writeFileSync(wsXmlPath, xmlStr, 'utf8');
       fs.writeFileSync(wsSvgPath, svgStr, 'utf8');
+      fs.writeFileSync(centralDrawioPath, xmlStr, 'utf8');
       fs.writeFileSync(centralXmlPath, xmlStr, 'utf8');
       fs.writeFileSync(centralSvgPath, svgStr, 'utf8');
 

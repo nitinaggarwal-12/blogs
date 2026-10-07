@@ -16,7 +16,17 @@
     "collision_count": 0,
     "png_bytes": 550264,
     "svg_bytes": 296069,
-    "certified": true
+    "certified": true,
+    "drawio_file": "workstream-1-reference-architecture/diagrams/ws1-multi-tenant-taxonomy-overview.drawio",
+    "drawio_png": "workstream-1-reference-architecture/diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png",
+    "central_drawio_file": "diagrams/ws1-multi-tenant-taxonomy-overview.drawio",
+    "central_drawio_png": "diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png",
+    "vision_metadata": "diagrams/vision_metadata/ws1-multi-tenant-taxonomy-overview.vision.json",
+    "drawio_bytes": 313741,
+    "drawio_png_bytes": 536326,
+    "vision_node_count": 56,
+    "vision_edge_count": 23,
+    "vision_object_count": 54
   },
   {
     "id": "ws1-cloud-arch-center-5hop-baseline",
@@ -35,7 +45,17 @@
     "collision_count": 0,
     "png_bytes": 482463,
     "svg_bytes": 295744,
-    "certified": true
+    "certified": true,
+    "drawio_file": "workstream-1-reference-architecture/diagrams/ws1-cloud-arch-center-5hop-baseline.drawio",
+    "drawio_png": "workstream-1-reference-architecture/diagrams/ws1-cloud-arch-center-5hop-baseline.drawio.png",
+    "central_drawio_file": "diagrams/ws1-cloud-arch-center-5hop-baseline.drawio",
+    "central_drawio_png": "diagrams/ws1-cloud-arch-center-5hop-baseline.drawio.png",
+    "vision_metadata": "diagrams/vision_metadata/ws1-cloud-arch-center-5hop-baseline.vision.json",
+    "drawio_bytes": 313188,
+    "drawio_png_bytes": 466561,
+    "vision_node_count": 56,
+    "vision_edge_count": 23,
+    "vision_object_count": 54
   },
   {
     "id": "ws2-pattern-a-pooled-5hop-architecture",
@@ -54,7 +74,17 @@
     "collision_count": 0,
     "png_bytes": 561440,
     "svg_bytes": 287985,
-    "certified": true
+    "certified": true,
+    "drawio_file": "workstream-2-pattern-a-pooled/diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio",
+    "drawio_png": "workstream-2-pattern-a-pooled/diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio.png",
+    "central_drawio_file": "diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio",
+    "central_drawio_png": "diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio.png",
+    "vision_metadata": "diagrams/vision_metadata/ws2-pattern-a-pooled-5hop-architecture.vision.json",
+    "drawio_bytes": 305295,
+    "drawio_png_bytes": 549071,
+    "vision_node_count": 56,
+    "vision_edge_count": 23,
+    "vision_object_count": 54
   },
   {
     "id": "ws2-pattern-a-breach-defense-sequence",
@@ -73,7 +103,17 @@
     "collision_count": 0,
     "png_bytes": 574065,
     "svg_bytes": 296673,
-    "certified": true
+    "certified": true,
+    "drawio_file": "workstream-2-pattern-a-pooled/diagrams/ws2-pattern-a-breach-defense-sequence.drawio",
+    "drawio_png": "workstream-2-pattern-a-pooled/diagrams/ws2-pattern-a-breach-defense-sequence.drawio.png",
+    "central_drawio_file": "diagrams/ws2-pattern-a-breach-defense-sequence.drawio",
+    "central_drawio_png": "diagrams/ws2-pattern-a-breach-defense-sequence.drawio.png",
+    "vision_metadata": "diagrams/vision_metadata/ws2-pattern-a-breach-defense-sequence.vision.json",
+    "drawio_bytes": 313832,
+    "drawio_png_bytes": 559437,
+    "vision_node_count": 56,
+    "vision_edge_count": 23,
+    "vision_object_count": 54
   },
   {
     "id": "ws3-pattern-b-sovereign-silos-architecture",
@@ -92,7 +132,17 @@
     "collision_count": 0,
     "png_bytes": 552048,
     "svg_bytes": 296246,
-    "certified": true
+    "certified": true,
+    "drawio_file": "workstream-3-pattern-b-siloed/diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio",
+    "drawio_png": "workstream-3-pattern-b-siloed/diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio.png",
+    "central_drawio_file": "diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio",
+    "central_drawio_png": "diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio.png",
+    "vision_metadata": "diagrams/vision_metadata/ws3-pattern-b-sovereign-silos-architecture.vision.json",
+    "drawio_bytes": 313822,
+    "drawio_png_bytes": 533740,
+    "vision_node_count": 56,
+    "vision_edge_count": 23,
+    "vision_object_count": 54
   },
   {
     "id": "ws4-pattern-c-hybrid-psc-and-migration",
@@ -111,7 +161,17 @@
     "collision_count": 0,
     "png_bytes": 582266,
     "svg_bytes": 309841,
-    "certified": true
+    "certified": true,
+    "drawio_file": "workstream-4-pattern-c-hybrid/diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio",
+    "drawio_png": "workstream-4-pattern-c-hybrid/diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio.png",
+    "central_drawio_file": "diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio",
+    "central_drawio_png": "diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio.png",
+    "vision_metadata": "diagrams/vision_metadata/ws4-pattern-c-hybrid-psc-and-migration.vision.json",
+    "drawio_bytes": 327159,
+    "drawio_png_bytes": 555630,
+    "vision_node_count": 56,
+    "vision_edge_count": 23,
+    "vision_object_count": 54
   },
   {
     "id": "ws5-decision-tree-and-agentic-triad",
@@ -130,6 +190,16 @@
     "collision_count": 0,
     "png_bytes": 585820,
     "svg_bytes": 296520,
-    "certified": true
+    "certified": true,
+    "drawio_file": "workstream-5-wrap-up-and-backlog/diagrams/ws5-decision-tree-and-agentic-triad.drawio",
+    "drawio_png": "workstream-5-wrap-up-and-backlog/diagrams/ws5-decision-tree-and-agentic-triad.drawio.png",
+    "central_drawio_file": "diagrams/ws5-decision-tree-and-agentic-triad.drawio",
+    "central_drawio_png": "diagrams/ws5-decision-tree-and-agentic-triad.drawio.png",
+    "vision_metadata": "diagrams/vision_metadata/ws5-decision-tree-and-agentic-triad.vision.json",
+    "drawio_bytes": 314004,
+    "drawio_png_bytes": 568615,
+    "vision_node_count": 56,
+    "vision_edge_count": 23,
+    "vision_object_count": 54
   }
 ]

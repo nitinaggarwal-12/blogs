@@ -388,9 +388,26 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             if isinstance(manifest_items, list) and len(manifest_items) == 7:
                 all_exist = True
                 for item in manifest_items:
-                    if item.get("certified") is not True or item.get("card_count") != 42:
+                    if (
+                        item.get("certified") is not True
+                        or item.get("card_count") != 42
+                        or item.get("vision_node_count", 0) < 50
+                        or item.get("vision_object_count", 0) < 50
+                    ):
                         all_exist = False
-                    for key in ("drawio_xml", "svg_path", "png_path", "central_drawio", "central_svg", "central_png"):
+                    for key in (
+                        "drawio_xml",
+                        "drawio_file",
+                        "drawio_png",
+                        "svg_path",
+                        "png_path",
+                        "central_drawio",
+                        "central_drawio_file",
+                        "central_drawio_png",
+                        "central_svg",
+                        "central_png",
+                        "vision_metadata",
+                    ):
                         rel_f = item.get(key, "")
                         if not rel_f or not (ROOT_DIR / rel_f).is_file():
                             all_exist = False
@@ -405,7 +422,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             and diagrams_ok
         )
         index_detail = (
-            f"index.html verified ({len(html):,} bytes), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI artifact/publish buttons resolve on disk (0 broken), {certified_diagram_count}/7 Architecture Center blueprints CERTIFIED (.drawio.xml/.svg/.png, 0 collisions), and 4/4 flagship blogs carry PUBLISH_READY frontmatter."
+            f"index.html verified ({len(html):,} bytes), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI artifact/publish buttons resolve on disk (0 broken), {certified_diagram_count}/7 Architecture Center & PromptCanvas Vision Draw.io blueprints CERTIFIED (.drawio/.drawio.xml/.drawio.png/.svg/.png/.vision.json, 0 collisions), and 4/4 flagship blogs carry PUBLISH_READY frontmatter."
             if index_ok
             else f"missing_markers={missing_markers}, missing_ui_paths={missing_ui_paths}, unready_blogs={unready_blogs}, diagrams_ok={diagrams_ok}"
         )
