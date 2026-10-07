@@ -1,0 +1,67 @@
+# =============================================================================
+# Workstream 3.3: Air-Gapped Gemma 3 (27B IT) on Private GKE inside VPC-SC
+# Deployed in `cymbal-finvault-silo-prod` for Zero-External-Egress Inference
+# =============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finvault-airgapped-gemma3-27b
+  namespace: finvault-sovereign-agents
+  labels:
+    app: gemma3-inference-server
+    tenant: finvault
+    isolation_pattern: pattern-b-siloed
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gemma3-inference-server
+  template:
+    metadata:
+      labels:
+        app: gemma3-inference-server
+        tenant: finvault
+    spec:
+      serviceAccountName: finvault-gemma3-workload-sa
+      nodeSelector:
+        cloud.google.com/gke-accelerator: nvidia-l4
+      containers:
+        - name: vllm-gemma3-27b
+          image: us-central1-docker.pkg.dev/cymbal-finvault-silo-prod/sovereign-models/vllm-gemma-3-27b-it:v1.0
+          args:
+            - "--model=/models/gemma-3-27b-it"
+            - "--tensor-parallel-size=2"
+            - "--max-model-len=32768"
+            - "--disable-log-requests"
+          ports:
+            - containerPort: 8000
+              name: http-inference
+          resources:
+            limits:
+              nvidia.com/gpu: "2"
+              memory: "64Gi"
+              cpu: "16"
+          volumeMounts:
+            - name: cmek-model-weights
+              mountPath: /models
+              readOnly: true
+      volumes:
+        - name: cmek-model-weights
+          persistentVolumeClaim:
+            claimName: finvault-cmek-model-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gemma3-internal-svc
+  namespace: finvault-sovereign-agents
+  annotations:
+    networking.gke.io/load-balancer-type: "Internal"
+spec:
+  type: LoadBalancer
+  selector:
+    app: gemma3-inference-server
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP

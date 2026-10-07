@@ -1,0 +1,5 @@
+hub_project_id              = "cymbal-hybrid-hub-prod"
+enterprise_spoke_project_id = "cymbal-finvault-silo-prod"
+enterprise_tenant_id        = "finvault"
+spoke_ilb_forwarding_rule_uri = "projects/cymbal-finvault-silo-prod/regions/us-central1/forwardingRules/finvault-spoke-ilb"
+region                      = "us-central1"

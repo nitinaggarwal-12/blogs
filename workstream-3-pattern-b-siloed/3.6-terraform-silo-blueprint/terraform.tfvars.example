@@ -1,0 +1,5 @@
+tenant_id                  = "finvault"
+tenant_silo_project_id     = "cymbal-finvault-silo-prod"
+tenant_silo_project_number = "102938475610"
+access_context_policy_id   = "998877665544"
+region                     = "us-central1"
