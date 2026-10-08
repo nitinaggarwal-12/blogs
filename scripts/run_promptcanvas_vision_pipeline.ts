@@ -276,7 +276,7 @@ async function runVisionPipeline() {
     }
 
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf8');
-    console.log('\n🎉 ALL 7/7 DIAGRAMS DECOMPILED & RENDERED VIA PROMPTCANVAS VISION MODULE!');
+    console.log(`\n🎉 ALL ${manifest.length}/${manifest.length} DIAGRAMS DECOMPILED & RENDERED VIA PROMPTCANVAS VISION MODULE!`);
   } finally {
     await browser.close();
     server.close();

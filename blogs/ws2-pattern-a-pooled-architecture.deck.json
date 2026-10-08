@@ -84,6 +84,32 @@
         "'Hop 3 & Hop 5 Storage Gates (Vectors 7 & 9)': L4 memory, GCS skills, READ_ONLY_IMMUTABLE_PREFIX cache, AlloyDB RLS SET LOCAL.",
         "Dashed governance line: 'Real-time security violation spans' — every denial is a queryable audit record."
       ]
+    },
+    {
+      "id": "ws2-demo-env-and-3p-auth-sandbox-topology",
+      "figure": "Figure 3",
+      "title": "Pattern A Demo Environment & 3P Auth Sandbox: Pooled Project, Federated IdPs, OAuth 2LO/3LO Apps, Redis & Firestore Tenant Config",
+      "talkingPoints": [
+        "One shared project (cymbal-pooled-saas-prod, us-central1) with 12 enabled APIs hosts both demo tenants; isolation is logical, not per-project.",
+        "Routing hub is the Hop 1 front door: Cloud Armor cymbal-pooled-edge-waf (rule 1000 SQLi/XSS deny-403) plus the Edge PEP that strips forged X-Tenant-ID headers.",
+        "Left spoke wires FinVault Bank: a Google OAuth 2.0 Client ID on finvault.com, Workspace 3LO scopes (drive, calendar, gmail) and Jira read/write:jira-work.",
+        "Right spoke wires RetailStream Corp with zero Google footprint: Entra app Cymbal-RetailStream-Agent-Client, Graph Sites.Read.All, ServiceNow useraccount.",
+        "Governance hub holds the shared setup: Agent Identity (Auth Manager) scope registry, Cloud KMS for CMEK and BigQuery for OpenTelemetry audit.",
+        "Firestore seeds tier, thinking budget (8000 vs 4000), Redis rpm (600 vs 120) and allowed_agents per tenant; the 2.5 breach suite verifies the whole sandbox."
+      ]
+    },
+    {
+      "id": "ws2-terraform-starter-resource-graph",
+      "figure": "Figure 4",
+      "title": "Pattern A 1-Click Terraform Starter: Provider → Cloud Armor WAF → Cloud Run v2 GEAP Gateway → Redis / KMS CMEK → BigQuery OTel Resource Graph",
+      "talkingPoints": [
+        "A single root module (main.tf + variables.tf) on Terraform >= 1.5.0 with hashicorp/google >= 5.30.0 deploys the pooled Pattern A core in one apply.",
+        "Routing hub is Hop 1: google_compute_security_policy.cymbal_pooled_waf with a deny(403) SQLi/XSS rule at priority 1000 and a default SRC_IPS_V1 allow.",
+        "Left spoke is the runtime graph: google_cloud_run_v2_service.cymbal_pooled_gateway, Gen2 gVisor, internal-LB ingress and env vars referencing other resources.",
+        "Right spoke is the data graph: google_redis_instance.tenant_token_bulkhead (REDIS_7_0, STANDARD_HA, 5 GB); AlloyDB RLS and Firestore are provisioned in 2.2.",
+        "Governance hub covers keys and audit: cymbal-pooled-tenant-kr key ring, finvault-agent-memory-cmek (90-day rotation), BigQuery dataset cymbal_multi_tenant_otel.",
+        "Two outputs close the loop — pooled_gateway_uri and redis_bulkhead_host — so downstream workstreams can bind to the deployed resources without hardcoding."
+      ]
     }
   ],
   "takeaways": [

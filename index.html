@@ -329,8 +329,8 @@
       <div class="card" id="architecture-blueprints-gallery">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
           <div>
-            <span class="badge badge-blue">Google Cloud Architecture Center • PromptCanvas Vision Draw.io Certified (7/7)</span>
-            <h3 style="margin-top:6px;">Workstream 1–5 Enterprise Architecture Blueprints (1200&times;1410 Hub-and-Spoke • Draw.io Vision, Vector SVG &amp; 2x Retina PNG)</h3>
+            <span class="badge badge-blue">Google Cloud Architecture Center • PromptCanvas Vision Draw.io Certified (14/14)</span>
+            <h3 style="margin-top:6px;">Workstream 1–5 Enterprise Architecture &amp; Deliverable Blueprints — 7 Architecture + 7 Setup / Terraform / Upgrade-Suite (1200&times;1410 Hub-and-Spoke • Draw.io Vision, Vector SVG &amp; 2x Retina PNG)</h3>
           </div>
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button id="btn-mode-drawio" class="sim-btn primary" onclick="setBlueprintRenderMode('drawio')">&#128269; PromptCanvas Draw.io Vision Render</button>
@@ -351,6 +351,13 @@
           <button class="sim-btn" onclick="selectBlueprint('ws3-pattern-b-sovereign-silos-architecture', 'WS 3.1: Pattern B Zero-Trust Sovereign Silos (VPC-SC, PAB, CMEK & Gemma 3)')">5. WS 3.1 Pattern B (Sovereign Silos)</button>
           <button class="sim-btn" onclick="selectBlueprint('ws4-pattern-c-hybrid-psc-and-migration', 'WS 4.1: Pattern C Dynamic Hybrid Hub-and-Spoke, PSC & Live Migration')">6. WS 4.1 Pattern C (Hybrid PSC)</button>
           <button class="sim-btn" onclick="selectBlueprint('ws5-decision-tree-and-agentic-triad', 'WS 5.1/5.2: Executive Topology Decision Tree & The Agentic Triad')">7. WS 5.1/5.2 Decision Tree &amp; Triad</button>
+          <button class="sim-btn" onclick="selectBlueprint('ws2-demo-env-and-3p-auth-sandbox-topology', 'WS 2.2: Pattern A Demo Environment &amp; 3P Auth Sandbox: Pooled Project, Federated IdPs, OAuth 2LO/3LO Apps, Redis &amp; Firestore Tenant Config')">8. WS 2.2 Demo Env & 3P Auth Sandbox</button>
+          <button class="sim-btn" onclick="selectBlueprint('ws2-terraform-starter-resource-graph', 'WS 2.6: Pattern A 1-Click Terraform Starter: Provider → Cloud Armor WAF → Cloud Run v2 GEAP Gateway → Redis / KMS CMEK → BigQuery OTel Resource Graph')">9. WS 2.6 Terraform Starter Graph</button>
+          <button class="sim-btn" onclick="selectBlueprint('ws3-multi-project-silo-and-cmek-setup-topology', 'WS 3.2: Pattern B Provisioning Topology: Org → Per-Tenant Silo Projects, VPC-SC Perimeters, IAM PAB &amp; Cloud KMS CMEK Keys')">10. WS 3.2 Multi-Project Silo & CMEK Setup</button>
+          <button class="sim-btn" onclick="selectBlueprint('ws3-terraform-silo-blueprint-resource-graph', 'WS 3.6: Terraform Blueprint Resource Graph: Provider → Cloud KMS CMEK → VPC-SC Perimeter → Sovereign VPC → Private Air-Gapped GKE (Gemma 3)')">11. WS 3.6 Terraform Silo Graph</button>
+          <button class="sim-btn" onclick="selectBlueprint('ws4-hub-and-spoke-demo-env-setup-topology', 'WS 4.2: Pattern C Demo Environment: Central Ingress Hub, Shared Pool &amp; PSC Service Attachment Spokes')">12. WS 4.2 Hub-and-Spoke Env Setup</button>
+          <button class="sim-btn" onclick="selectBlueprint('ws4-zero-downtime-tier-upgrade-sequence', 'WS 4.5: Zero-Downtime Tier Upgrade Test Sequence: SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY (4/4 PASS)')">13. WS 4.5 Zero-Downtime Upgrade Sequence</button>
+          <button class="sim-btn" onclick="selectBlueprint('ws4-terraform-hybrid-psc-blueprint-resource-graph', 'WS 4.6: Terraform Hybrid PSC Blueprint Resource Graph: Hub VPC → Consumer PSC Endpoint → Producer ServiceAttachment in Enterprise Spoke')">14. WS 4.6 Terraform Hybrid PSC Graph</button>
         </div>
         <div id="bp-caption" style="font-size:13px; color:#93bbfd; font-weight:600; margin-bottom:8px;">Active Blueprint: WS 1.1: GEAP Multi-Tenant Agentic AI Taxonomy (Pattern A, B &amp; C) • [PromptCanvas Vision Draw.io Engine]</div>
         <div style="background:#ffffff; border-radius:10px; padding:8px; border:1px solid var(--border); overflow-x:auto;">
@@ -361,12 +368,12 @@
       <div class="card" id="workstream-blogs-and-editable-slides">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
           <div>
-            <span class="badge badge-blue">PromptCanvas Vision Module • 100% Native Editable PowerPoint / Google Slides (6 Decks • 122 Slides • 7 Diagrams)</span>
+            <span class="badge badge-blue">PromptCanvas Vision Module • 100% Native Editable PowerPoint / Google Slides (6 Decks • 151 Slides • 14 Diagrams)</span>
             <h3 style="margin-top:6px;">Workstream 1–5 Explanatory Blogs &amp; Editable Architecture Slide Decks (`.md` + `.pptx`)</h3>
             <p style="font-size:13px; color:#93bbfd; margin:4px 0 0;">Each deck: Title &rarr; Executive TL;DR &rarr; Section narrative &rarr; per diagram [1:1 Master image &bull; Decomposed native editable shapes, icons &amp; connectors with talking-points sidebar &amp; speaker notes &bull; Component spec table] &rarr; Key Takeaways &rarr; Asset index.</p>
           </div>
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <a href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx" download class="sim-btn primary" style="text-decoration:none;">&#127916; Download Combined Deck (39 slides, all 7 diagrams)</a>
+            <a href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx" download class="sim-btn primary" style="text-decoration:none;">&#127916; Download Combined Deck (60 slides, all 14 diagrams)</a>
             <a href="slides/slides_manifest.json" target="_blank" class="sim-btn" style="text-decoration:none;">&#128203; slides_manifest.json</a>
           </div>
         </div>
@@ -376,11 +383,11 @@
           </thead>
           <tbody>
             <tr><td><strong>WS 1</strong></td><td><a href="blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md" target="_blank">Reference Architecture: Taxonomy &amp; 5-Hop Baseline</a></td><td><a href="slides/ws1-reference-architecture-editable-slides.pptx" download>ws1-reference-architecture-editable-slides.pptx</a></td><td>WS 1.1 Taxonomy &bull; WS 1.3 5-Hop Baseline</td><td>16 &bull; 112 &bull; 46</td></tr>
-            <tr><td><strong>WS 2</strong></td><td><a href="blogs/ws2-pattern-a-pooled-architecture.md" target="_blank">Pattern A: High-Density Pooled Architecture</a></td><td><a href="slides/ws2-pattern-a-pooled-editable-slides.pptx" download>ws2-pattern-a-pooled-editable-slides.pptx</a></td><td>WS 2.1 Pooled 5-Hop &bull; WS 2.5 Breach Defense</td><td>15 &bull; 112 &bull; 46</td></tr>
-            <tr><td><strong>WS 3</strong></td><td><a href="blogs/ws3-pattern-b-sovereign-silos.md" target="_blank">Pattern B: Zero-Trust Sovereign Silos</a></td><td><a href="slides/ws3-pattern-b-siloed-editable-slides.pptx" download>ws3-pattern-b-siloed-editable-slides.pptx</a></td><td>WS 3.1 Sovereign Silos</td><td>13 &bull; 56 &bull; 23</td></tr>
-            <tr><td><strong>WS 4</strong></td><td><a href="blogs/ws4-pattern-c-hybrid-dynamic-tiering.md" target="_blank">Pattern C: Hybrid Hub-and-Spoke &amp; Dynamic Tiering</a></td><td><a href="slides/ws4-pattern-c-hybrid-editable-slides.pptx" download>ws4-pattern-c-hybrid-editable-slides.pptx</a></td><td>WS 4.1 Hybrid PSC &amp; Migration</td><td>13 &bull; 56 &bull; 23</td></tr>
+            <tr><td><strong>WS 2</strong></td><td><a href="blogs/ws2-pattern-a-pooled-architecture.md" target="_blank">Pattern A: High-Density Pooled Architecture</a></td><td><a href="slides/ws2-pattern-a-pooled-editable-slides.pptx" download>ws2-pattern-a-pooled-editable-slides.pptx</a></td><td>WS 2.1 &bull; 2.2 &bull; 2.5 &bull; 2.6</td><td>21 &bull; 224 &bull; 92</td></tr>
+            <tr><td><strong>WS 3</strong></td><td><a href="blogs/ws3-pattern-b-sovereign-silos.md" target="_blank">Pattern B: Zero-Trust Sovereign Silos</a></td><td><a href="slides/ws3-pattern-b-siloed-editable-slides.pptx" download>ws3-pattern-b-siloed-editable-slides.pptx</a></td><td>WS 3.1 &bull; 3.2 &bull; 3.6</td><td>19 &bull; 168 &bull; 69</td></tr>
+            <tr><td><strong>WS 4</strong></td><td><a href="blogs/ws4-pattern-c-hybrid-dynamic-tiering.md" target="_blank">Pattern C: Hybrid Hub-and-Spoke &amp; Dynamic Tiering</a></td><td><a href="slides/ws4-pattern-c-hybrid-editable-slides.pptx" download>ws4-pattern-c-hybrid-editable-slides.pptx</a></td><td>WS 4.1 &bull; 4.2 &bull; 4.5 &bull; 4.6</td><td>22 &bull; 224 &bull; 92</td></tr>
             <tr><td><strong>WS 5</strong></td><td><a href="blogs/ws5-decision-guide-and-agentic-triad.md" target="_blank">Decision Guide &amp; The Agentic Triad</a></td><td><a href="slides/ws5-wrap-up-editable-slides.pptx" download>ws5-wrap-up-editable-slides.pptx</a></td><td>WS 5.1/5.2 Decision Tree &amp; Triad</td><td>13 &bull; 56 &bull; 23</td></tr>
-            <tr><td><strong>ALL</strong></td><td>All five blogs above</td><td><a href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx" download>geap-multi-tenancy-all-workstreams-editable-slides.pptx</a></td><td>All 7 blueprints</td><td>39 &bull; 392 &bull; 161</td></tr>
+            <tr><td><strong>ALL</strong></td><td>All five blogs above</td><td><a href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx" download>geap-multi-tenancy-all-workstreams-editable-slides.pptx</a></td><td>All 14 blueprints</td><td>60 &bull; 784 &bull; 322</td></tr>
           </tbody>
         </table>
       </div>
@@ -683,7 +690,7 @@
             <tr><td><code>F-09</code></td><td>Zero Global State Mutation Across Test Suites</td><td>Isolated <code>self.tenant_profiles</code> per runtime instance so Pattern C live tier upgrades never mutate global state.</td><td><span class="badge badge-green">PASS</span></td></tr>
             <tr><td><code>F-10</code></td><td>Complete Terraform Starter &amp; Blueprint Documentation</td><td>Verified <code>main.tf</code>, <code>variables.tf</code>, <code>README.md</code>, and <code>terraform.tfvars.example</code> across Workstreams <code>2.6</code>, <code>3.6</code>, and <code>4.6</code>.</td><td><span class="badge badge-green">PASS</span></td></tr>
             <tr><td><code>F-11</code></td><td>Sanitized Repository Hygiene &amp; <code>.gitignore</code></td><td>Added <code>.gitignore</code> and verified 0 <code>__pycache__/*.pyc</code> artifacts.</td><td><span class="badge badge-green">PASS</span></td></tr>
-            <tr><td><code>F-12</code></td><td>Interactive HTML5 Architecture, Publish Studio, 7-Blueprint Gallery &amp; Simulator Portal</td><td>Verified self-contained interactive portal at <code>index.html</code> with 100% valid artifact, diagram &amp; publication paths.</td><td><span class="badge badge-green">PASS</span></td></tr>
+            <tr><td><code>F-12</code></td><td>Interactive HTML5 Architecture, Publish Studio, 14-Blueprint Gallery &amp; Simulator Portal</td><td>Verified self-contained interactive portal at <code>index.html</code> with 100% valid artifact, diagram &amp; publication paths.</td><td><span class="badge badge-green">PASS</span></td></tr>
           </tbody>
         </table>
       </div>

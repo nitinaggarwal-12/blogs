@@ -385,7 +385,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
         if manifest_path.exists():
             import json as _json
             manifest_items = _json.loads(manifest_path.read_text(encoding="utf-8"))
-            if isinstance(manifest_items, list) and len(manifest_items) == 7:
+            if isinstance(manifest_items, list) and len(manifest_items) == 14:
                 all_exist = True
                 for item in manifest_items:
                     if (
@@ -458,7 +458,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             and slides_ok
         )
         index_detail = (
-            f"index.html verified ({len(html):,} bytes), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI artifact/publish buttons resolve on disk (0 broken), {certified_diagram_count}/7 Architecture Center & PromptCanvas Vision Draw.io blueprints CERTIFIED (.drawio/.drawio.xml/.drawio.png/.svg/.png/.vision.json, 0 collisions), {deck_count}/6 PromptCanvas Vision editable .pptx slide decks + {ws_blog_count}/5 per-workstream explanatory blogs verified (PUBLISH_READY, deck cross-links resolve), and 4/4 flagship blogs carry PUBLISH_READY frontmatter."
+            f"index.html verified ({len(html):,} bytes), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI artifact/publish buttons resolve on disk (0 broken), {certified_diagram_count}/14 Architecture Center & PromptCanvas Vision Draw.io blueprints CERTIFIED (.drawio/.drawio.xml/.drawio.png/.svg/.png/.vision.json, 0 collisions), {deck_count}/6 PromptCanvas Vision editable .pptx slide decks + {ws_blog_count}/5 per-workstream explanatory blogs verified (PUBLISH_READY, deck cross-links resolve), and 4/4 flagship blogs carry PUBLISH_READY frontmatter."
             if index_ok
             else f"missing_markers={missing_markers}, missing_ui_paths={missing_ui_paths}, unready_blogs={unready_blogs}, diagrams_ok={diagrams_ok}, slides_ok={slides_ok}"
         )

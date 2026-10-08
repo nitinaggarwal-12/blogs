@@ -1,0 +1,72 @@
+/**
+ * Workstream 4.6 — Terraform Hybrid PSC Blueprint: Resource Graph (Pattern C)
+ * Grounded in: workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/{main.tf,variables.tf,README.md,terraform.tfvars.example}
+ * NOTE: main.tf declares ONLY network/PSC resources (2 providers, 2 VPCs, 2 subnets, 1 service attachment,
+ *       1 address, 1 forwarding rule). Firestore route table, IAM and logging are NOT Terraform resources in
+ *       this module; they are referenced here only as downstream consumers (4.3 router / 4.4 playbook).
+ * Rendered by scripts/build_all_workstream_diagrams.mjs hub-and-spoke template.
+ */
+export default {
+  id: 'ws4-terraform-hybrid-psc-blueprint-resource-graph',
+  badge: 'WORKSTREAM 4.6 • TERRAFORM HYBRID PSC RESOURCE GRAPH',
+  title: 'Terraform Hybrid PSC Blueprint Resource Graph: Hub VPC → Consumer PSC Endpoint → Producer ServiceAttachment in Enterprise Spoke',
+  subtitle: 'main.tf (google >= 5.30.0, terraform >= 1.5.0) • Dual Provider Aliases google.hub / google.spoke • Outputs psc_service_attachment_uri & hub_psc_consumer_ip',
+  workstreamDir: 'workstream-4-pattern-c-hybrid/diagrams',
+  topUserTitle: 'Terraform Operator',
+  topUserSub: 'init -> plan -> apply (README)',
+  step1LeftLabel: 'terraform apply',
+  step7RightLabel: 'Outputs',
+  outerWrapperLabel: 'Terraform Root Module: 4.6-terraform-hybrid-psc-blueprint (terraform.tfvars: hub_project_id, enterprise_spoke_project_id, region)',
+  innerWrapperLabel: 'Dependency Graph: Providers → Networks → Subnets → ServiceAttachment → Address → ForwardingRule → Outputs',
+  routingHubTitle: 'Providers, Variables & Hub Network',
+  routingHubSub: 'provider "google" alias hub/spoke • var.region = us-central1',
+  routingCards: {
+    topLeft: { icon: 'iap_iam_shield', title: 'provider google.hub', sub: 'project = var.hub_project_id' },
+    midLeft: { icon: 'iap_iam_shield', title: 'provider google.spoke', sub: 'var.enterprise_spoke_project' },
+    botLeft: { icon: 'cloud_logging', title: 'variables.tf (5 vars)', sub: 'tenant_id default finvault' },
+    topRight: { icon: 'load_balancer_cloud_armor', title: 'google_compute_', title2: 'network.cymbal_hub_vpc', sub: 'cymbal-hybrid-hub-vpc' },
+    botRight: { icon: 'cloud_run', title: 'cymbal_hub_subnet', sub: '10.10.0.0/20 • PGA enabled' },
+    edgeTopLeft: ['Hub project', 'credentials'],
+    edgeMidLeft: ['Spoke project', 'credentials'],
+    edgeBotLeft: ['Inputs from', 'tfvars'],
+    step2Left: 'terraform apply',
+    step7Mid: 'Outputs',
+  },
+  govHubTitle: 'Consumer PSC Endpoint',
+  govHubTitle2: 'in Central Hub (google.hub)',
+  govCards: {
+    top: { icon: 'iap_iam_shield', title: 'google_compute_', title2: 'address', sub: 'hub_psc_consumer_ip 10.10.0.50' },
+    mid: { icon: 'load_balancer_cloud_armor', title: 'google_compute_', title2: 'forwarding_rule', sub: 'hub_psc_consumer_endpoint' },
+    bot: { icon: 'cloud_logging', title: 'output', title2: 'hub_psc_consumer_ip', sub: 'Hub IP routing to spoke' },
+  },
+  midStep3Label: ['Reserve INTERNAL', 'address in subnet'],
+  midStep7Label: ['target = service', 'attachment.id'],
+  midGovLabel: ['psc-consumer-', '${tenant_id}'],
+  leftBoundaryLabel: 'Hub Side Consumers of the Blueprint (Not Declared in main.tf): 4.3 Router, Firestore Route Table, Registry',
+  leftZoneTitle: 'Downstream Hub Consumers',
+  leftZoneSub: 'cymbal-hybrid-hub-prod (tfvars hub_project_id)',
+  leftCards: {
+    modelArmor: { icon: 'iap_iam_shield', title: 'Firestore Route Table', sub: 'psc_service_attachment URI' },
+    llm: { icon: 'cloud_run', title: 'Cloud Run Router', sub: 'Targets 10.10.0.50 endpoint' },
+    runtime: { icon: 'mcp_servers', title: 'Cross-Project Registry', sub: 'Spoke Agent Card Discovery' },
+    mcp: { icon: 'security_command_center', title: 'VPC-SC Ingress Rule', sub: 'Central Router SA (4.4)' },
+    datastore: { icon: 'cloud_logging', title: 'BigQuery OTel Logs', sub: 'Verify PSC_SPOKE route (4.4)' },
+    step4Label: 'Consume output',
+    step6Label: 'Route via PSC',
+    step5Label: ['Resolve', 'psc:// target'],
+    ragLabel: ['Reads output', 'attachment URI'],
+    toolLabel: ['Not managed', 'by this module'],
+  },
+  rightBoundaryLabel: 'Producer Side in Enterprise Spoke (google.spoke): cymbal-finvault-silo-prod • enterprise_tenant_id = finvault',
+  rightZoneTitle: 'Spoke Network & ServiceAttachment',
+  rightZoneSub: '${var.enterprise_tenant_id}-agent-spoke-psc',
+  rightCards: {
+    modelArmor: { icon: 'load_balancer_cloud_armor', title: 'enterprise_spoke_vpc', sub: 'finvault-spoke-vpc' },
+    llm: { icon: 'load_balancer_cloud_armor', title: 'enterprise_spoke_', title2: 'psc_nat', sub: '10.40.240.0/24 PSC purpose' },
+    runtime: { icon: 'mcp_servers', title: 'google_compute_', title2: 'service_attachment', sub: 'ACCEPT_MANUAL • limit 20' },
+    mcp: { icon: 'cloud_run', title: 'target_service', sub: 'var.spoke_ilb_forwarding_rule' },
+    datastore: { icon: 'cloud_logging', title: 'output psc_service_', title2: 'attachment_uri', sub: 'enterprise_spoke_psc_attach' },
+    ragLabel: ['consumer_accept', 'hub_project_id'],
+    toolLabel: ['finvault-spoke-ilb', 'forwarding rule'],
+  },
+};

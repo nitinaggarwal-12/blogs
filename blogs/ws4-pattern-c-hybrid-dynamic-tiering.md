@@ -8,7 +8,7 @@ target_audience: "Principal Architects, Platform Product Managers, and FinOps Le
 reading_time: "13 min read"
 tags: ["Pattern C", "Hybrid Architecture", "Private Service Connect", "Hub-and-Spoke", "Zero-Downtime Migration", "GEAP", "ADK 2.0", "CMEK", "AlloyDB RLS", "FinOps", "Multi-Tenancy"]
 canonical_architecture: "https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system"
-diagrams: ["ws4-pattern-c-hybrid-psc-and-migration"]
+diagrams: ["ws4-pattern-c-hybrid-psc-and-migration", "ws4-hub-and-spoke-demo-env-setup-topology", "ws4-zero-downtime-tier-upgrade-sequence", "ws4-terraform-hybrid-psc-blueprint-resource-graph"]
 editable_slides: "slides/ws4-pattern-c-hybrid-editable-slides.pptx"
 status: "PUBLISH_READY"
 ---
@@ -193,10 +193,95 @@ If you are starting from zero, run the Pattern A suite first, then the Pattern B
 
 ---
 
-## 10. Assets & Editable Diagrams
+## 10. Figure 2 — Pattern C Demo Environment: Central Ingress Hub, Shared Pool & PSC Service Attachment Spokes
+
+![Pattern C Demo Environment: Central Ingress Hub, Shared Pool & PSC Service Attachment Spokes](../diagrams/ws4-hub-and-spoke-demo-env-setup-topology.drawio.png)
+
+*Figure 2 — Provisioning topology for the Workstream 4.2 demo environment. Editable [draw.io](../diagrams/ws4-hub-and-spoke-demo-env-setup-topology.drawio) • [SVG](../diagrams/ws4-hub-and-spoke-demo-env-setup-topology.svg) • [vision metadata](../diagrams/vision_metadata/ws4-hub-and-spoke-demo-env-setup-topology.vision.json).*
+
+This figure shows what actually gets created when you stand up the Pattern C demo: one consumer-side hub project, one shared pooled compute plane, and a producer-side tenant spoke published through a Private Service Connect (PSC) `ServiceAttachment`. Unlike VPC peering, PSC is NAT-based, so the hub and every spoke can reuse overlapping subnets and the spoke can never initiate a connection back into the hub VPC.
+
+### Reading the figure
+
+- **Top — Platform Operator (FDE).** The operator provisions the environment with `gcloud` (4.2) and the Terraform module (4.6); step **1** enters the hub, step **7** is the local verification run.
+- **Routing hub — Central Ingress Hub (consumer side), `cymbal-hybrid-hub-prod`.**
+  - Global ALB + Cloud Armor + IAP is Hop 1 and exposes the single SaaS URL.
+  - The Firestore routing table (`tenant_routing_table[tenant_id]`) and the cross-project GEAP registry resolve each tenant to a tier and a target.
+  - The PSC consumer forwarding rule `psc-consumer-finvault` is the hub-side half of the bridge; the Cloud Run tenant-aware router sends Enterprise traffic through it.
+- **Governance hub — Hub VPC addressing & PSC endpoint reservation (step 3).**
+  - `psc-endpoint-finvault-ip` reserves `10.10.0.50` inside `cymbal-hub-subnet`.
+  - The forwarding rule binds that address to `projects/<spoke>/regions/us-central1/serviceAttachments/finvault-agent-spoke-psc`.
+  - `run_tier_migration_suite.py` is the verification gate referenced in section 4 of the setup doc.
+- **Left spoke — Shared Pooled Runtime (Standard tier, steps 4–6).** `pool://cymbal-shared-pooled-runtime-v2` hosts the pooled GEAP runtime with the 4,000 thinking cap, shared `ContextCacheConfig`, pooled MCP hub and shared AlloyDB with `tenant_id` row-level security. This is RetailStream's initial route.
+- **Right spoke — Dedicated Tenant Spoke (producer side), `cymbal-finvault-silo-prod`.** The `finvault-psc-nat-subnet` (`10.40.240.0/24`, `--purpose=PRIVATE_SERVICE_CONNECT`) and the spoke internal load balancer forwarding rule are published as `finvault-agent-spoke-psc` with `ACCEPT_MANUAL` and a consumer accept list of the hub project only (`cymbal-hybrid-hub-prod=10`). Behind it sit the dedicated GEAP runtime (Agent Alpha, 8,000 budget), local MCP connectors and the CMEK AlloyDB.
+- **Step 7 — Verify.** The suite confirms Standard → pool and Enterprise → `psc://` routing plus the live tier upgrade before any demo traffic flows.
+
+### Why it matters
+
+Getting the demo environment right is mostly about getting the *direction* of the PSC bridge right: the producer attachment lives in the tenant spoke, the consumer endpoint lives in the hub, and only the hub project is allowlisted. Every later deliverable in Workstream 4 — the router, the migration engine and the Terraform blueprint — assumes this exact topology, which is why the setup runbook in [4.2 Hub-and-Spoke Demo Env Setup](../workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md) is the first thing an FDE runs before the [4.1 case study](../workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md) architecture can be demonstrated end-to-end.
+
+## 11. Figure 3 — Zero-Downtime Tier Upgrade Test Sequence: SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY (4/4 PASS)
+
+![Zero-Downtime Tier Upgrade Test Sequence: SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY (4/4 PASS)](../diagrams/ws4-zero-downtime-tier-upgrade-sequence.drawio.png)
+
+*Figure 3 — The Workstream 4.5 live migration test sequence. Editable [draw.io](../diagrams/ws4-zero-downtime-tier-upgrade-sequence.drawio) • [SVG](../diagrams/ws4-zero-downtime-tier-upgrade-sequence.svg) • [vision metadata](../diagrams/vision_metadata/ws4-zero-downtime-tier-upgrade-sequence.vision.json).*
+
+This figure maps the automated test suite onto the hub-and-spoke template: the routing hub is the test harness and the router under test, the governance hub is the 3-phase migration state machine, the left spoke is the pooled *before* state and the right spoke is the PSC *after* state. Every label is an assertion or a field the suite actually checks.
+
+### Reading the figure
+
+- **Top — Test Harness Operator.** `python3 run_tier_migration_suite.py` (step **1**) drives `PatternCHybridRouterAndMigrator`; step **7** is the `ALL 4 ... TESTS PASSED` banner.
+- **Routing hub — Test runner & router under test.**
+  - **TEST 1A (pre-upgrade):** `retailstream` requests 8,000 thinking tokens but is routed to `PATTERN_C_HYBRID_POOL` and clamped to `4000`.
+  - **TEST 1B (enterprise):** `finvault` routes to `PATTERN_C_HYBRID_PSC_SPOKE`, `target_endpoint` starts with `psc://`, budget `8000`.
+  - **TEST 2 (migration):** `execute_zero_downtime_tier_upgrade()` returns exactly 3 phases, `replication_lag_ms == 0`, `dropped_sessions == 0`.
+  - Hop 1 OBO + DPoP authenticates both JWTs (Google OIDC for FinVault, Entra for RetailStream); the router reads `routing_table[tenant_id]`.
+- **Governance hub — 3-phase silent migration state machine (step 3).**
+  - `PHASE_1_SHADOW_SYNC` streams the tenant's RLS rows via `query_alloydb_with_rls()`, records `replication_lag_ms: 0` and `psc_health_check: PSC_CONNECTION_ACCEPTED`.
+  - `PHASE_2_ATOMIC_CUTOVER` rewrites the instance-scoped profile and routing table to tier `ENTERPRISE`, budget `8000`, `redis_rpm_limit 600`, new CMEK key and `psc://10.10.0.51/...` endpoint.
+  - `PHASE_3_DRAIN_AND_VERIFY` records `dropped_sessions: 0` and `status: MIGRATION_COMPLETE`.
+- **Left spoke — Pooled source (before, steps 4–6).** `pool://cymbal-shared-pooled-runtime-v2`, `STEADY_STATE_POOL`, the shared incident-diagnostic agent and shared AlloyDB RLS. In-flight turns finish here while rows are replicated out.
+- **Right spoke — PSC target (after).** `cymbal-retailstream-spoke-prod`, `UPGRADED_ZERO_DOWNTIME_SPOKE`, endpoint `psc://10.10.0.51/projects/.../serviceAttachments/retailstream-agent-spoke-psc`, CMEK key `rs-kr/rs-agent-cmek`.
+- **Step 7 — TEST 3 on the same session.** Using the identical `session_id` (`sess-rs-live-upgrade-01`), the suite asserts tier `ENTERPRISE`, PSC topology, `thinking_budget_clamped is False` and `rs-agent-cmek` in `cmek_key_uri`.
+
+### Why it matters
+
+A zero-downtime promise is only credible if it is tested on a live session, not on a fresh one. The suite in [4.5 Zero-Downtime Tier Upgrade Suite](../workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py) deliberately reuses the pre-upgrade session ID after the cutover, and it does so against an instance-scoped routing table so the migration never mutates global tenant state. That is the evidence an FDE can show a Standard-tier customer before signing an Enterprise expansion — the same 3-phase protocol described in [4.1](../workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md) and implemented in [4.3](../workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py).
+
+## 12. Figure 4 — Terraform Hybrid PSC Blueprint Resource Graph: Hub VPC → Consumer PSC Endpoint → Producer ServiceAttachment in Enterprise Spoke
+
+![Terraform Hybrid PSC Blueprint Resource Graph: Hub VPC → Consumer PSC Endpoint → Producer ServiceAttachment in Enterprise Spoke](../diagrams/ws4-terraform-hybrid-psc-blueprint-resource-graph.drawio.png)
+
+*Figure 4 — Resource graph of the Workstream 4.6 Terraform module. Editable [draw.io](../diagrams/ws4-terraform-hybrid-psc-blueprint-resource-graph.drawio) • [SVG](../diagrams/ws4-terraform-hybrid-psc-blueprint-resource-graph.svg) • [vision metadata](../diagrams/vision_metadata/ws4-terraform-hybrid-psc-blueprint-resource-graph.vision.json).*
+
+This figure lays out every block in `main.tf` in dependency order. The module is intentionally small: two provider aliases, two VPCs, two subnets, one producer `ServiceAttachment`, one reserved address and one consumer forwarding rule, plus two outputs. Anything the hub *does* with those outputs (the Firestore route table, the router, the registry) is shown on the left as a downstream consumer, not as a Terraform resource.
+
+### Reading the figure
+
+- **Top — Terraform Operator.** `cp terraform.tfvars.example terraform.tfvars` then `terraform init → plan → apply` (README). Step **1** is `apply`; step **7** is the outputs.
+- **Routing hub — Providers, variables & hub network.**
+  - `terraform { required_version = ">= 1.5.0" }` with `hashicorp/google >= 5.30.0`.
+  - `provider "google"` alias `hub` (`var.hub_project_id`) and alias `spoke` (`var.enterprise_spoke_project_id`); `variables.tf` declares five inputs with `enterprise_tenant_id` defaulting to `finvault` and `region` to `us-central1`.
+  - `google_compute_network.cymbal_hub_vpc` (`cymbal-hybrid-hub-vpc`) and `google_compute_subnetwork.cymbal_hub_subnet` (`10.10.0.0/20`, `private_ip_google_access = true`).
+- **Governance hub — Consumer PSC endpoint in the hub (step 3).**
+  - `google_compute_address.hub_psc_consumer_ip` reserves `INTERNAL` address `10.10.0.50` in the hub subnet as `psc-endpoint-${tenant}-ip`.
+  - `google_compute_forwarding_rule.hub_psc_consumer_endpoint` (`psc-consumer-${tenant}`) sets `target = google_compute_service_attachment.enterprise_spoke_psc_attachment.id`.
+  - `output "hub_psc_consumer_ip"` surfaces the address for the router.
+- **Right spoke — Spoke network & ServiceAttachment (provider `google.spoke`).** `enterprise_spoke_vpc` (`${tenant}-spoke-vpc`), `enterprise_spoke_psc_nat` (`10.40.240.0/24`, `purpose = PRIVATE_SERVICE_CONNECT`), and `enterprise_spoke_psc_attachment` (`${tenant}-agent-spoke-psc`, `ACCEPT_MANUAL`, `consumer_accept_lists` = hub project with `connection_limit 20`, `target_service = var.spoke_ilb_forwarding_rule_uri`). `output "psc_service_attachment_uri"` returns its ID.
+- **Left spoke — Downstream hub consumers (steps 4–6, not in `main.tf`).** The 4.3 router's Firestore route table stores the attachment URI, the Cloud Run router targets the `10.10.0.50` endpoint, the cross-project registry discovers spoke agent cards, and the 4.4 playbook adds the VPC-SC ingress rule and BigQuery OTel verification.
+- **Step 7 — Outputs.** `psc_service_attachment_uri` and `hub_psc_consumer_ip` are the module's only contract with the rest of the platform.
+
+### Why it matters
+
+Pattern C scales to hundreds of enterprise spokes only if adding one is a parameter change, not a network design exercise. Because the blueprint in [4.6 Terraform Hybrid PSC Blueprint](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf) keys every spoke-side name on `enterprise_tenant_id` and allowlists only the hub project, the [4.4 runbook](../workstream-4-pattern-c-hybrid/4.4-product-collaboration-psc-and-registry.md) can call it as step 1 of every live tier upgrade. The figure also makes the module's boundary honest: CMEK keys, VPC-SC perimeters, Firestore and IAM are described in the surrounding docs but are not provisioned by this `main.tf`.
+
+## 13. Assets & Editable Diagrams
 
 | Asset | Path |
 | :--- | :--- |
+| **Figure 2 (WS 4.2) — Draw.io render / editable** | [`ws4-hub-and-spoke-demo-env-setup-topology.drawio.png`](../diagrams/ws4-hub-and-spoke-demo-env-setup-topology.drawio.png) • [`.drawio`](../diagrams/ws4-hub-and-spoke-demo-env-setup-topology.drawio) • [`SVG`](../diagrams/ws4-hub-and-spoke-demo-env-setup-topology.svg) • [`vision.json`](../diagrams/vision_metadata/ws4-hub-and-spoke-demo-env-setup-topology.vision.json) |
+| **Figure 3 (WS 4.5) — Draw.io render / editable** | [`ws4-zero-downtime-tier-upgrade-sequence.drawio.png`](../diagrams/ws4-zero-downtime-tier-upgrade-sequence.drawio.png) • [`.drawio`](../diagrams/ws4-zero-downtime-tier-upgrade-sequence.drawio) • [`SVG`](../diagrams/ws4-zero-downtime-tier-upgrade-sequence.svg) • [`vision.json`](../diagrams/vision_metadata/ws4-zero-downtime-tier-upgrade-sequence.vision.json) |
+| **Figure 4 (WS 4.6) — Draw.io render / editable** | [`ws4-terraform-hybrid-psc-blueprint-resource-graph.drawio.png`](../diagrams/ws4-terraform-hybrid-psc-blueprint-resource-graph.drawio.png) • [`.drawio`](../diagrams/ws4-terraform-hybrid-psc-blueprint-resource-graph.drawio) • [`SVG`](../diagrams/ws4-terraform-hybrid-psc-blueprint-resource-graph.svg) • [`vision.json`](../diagrams/vision_metadata/ws4-terraform-hybrid-psc-blueprint-resource-graph.vision.json) |
 | Figure 1 — Draw.io render | [`ws4-pattern-c-hybrid-psc-and-migration.drawio.png`](../diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio.png) |
 | Figure 1 — Editable Draw.io | [`.drawio`](../diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio) • [`.drawio.xml`](../diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio.xml) |
 | Figure 1 — Editable Slides | [`slides/ws4-pattern-c-hybrid-editable-slides.pptx`](../slides/ws4-pattern-c-hybrid-editable-slides.pptx) |

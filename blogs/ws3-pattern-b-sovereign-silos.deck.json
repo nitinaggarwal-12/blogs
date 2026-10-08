@@ -79,6 +79,32 @@
         "Left spoke: Perimeter Alpha / cymbal-finvault-silo-prod with Gemma 3 (27B) GKE air-gapped inference and Private GKE Zero Egress.",
         "Right spoke: Perimeter Beta / cymbal-retailstream-silo-prod with Gemini 2.5 Pro PT and Local Silo MCP Entra SharePoint & SNOW."
       ]
+    },
+    {
+      "id": "ws3-multi-project-silo-and-cmek-setup-topology",
+      "figure": "Figure 2",
+      "title": "Pattern B Provisioning Topology: Org → Per-Tenant Silo Projects, VPC-SC Perimeters, IAM PAB & Cloud KMS CMEK Keys",
+      "talkingPoints": [
+        "One org, two dedicated tenant projects — cymbal-finvault-silo-prod and cymbal-retailstream-silo-prod — created under ORG_ID and linked to one billing account.",
+        "Bootstrap enables seven silo APIs per project: aiplatform, discoveryengine, modelarmor, container, cloudkms, alloydb and accesscontextmanager.",
+        "Per-tenant Cloud KMS: key ring finvault-kr in us-central1 with crypto key agent-memory-cmek, purpose encryption, 90-day (7776000s) rotation.",
+        "The Vertex AI service agent (service-<PROJECT_NUMBER>@gcp-sa-aiplatform) receives roles/cloudkms.cryptoKeyEncrypterDecrypter on the tenant key only.",
+        "Org-level IAM Principal Access Boundary finvault-sovereign-pab restricts FinVault principals strictly to the FinVault silo project resource.",
+        "Step 7 closes the loop: run_silo_security_tests.py replays perimeter exfiltration and CMEK revocation checks before the silo is declared live."
+      ]
+    },
+    {
+      "id": "ws3-terraform-silo-blueprint-resource-graph",
+      "figure": "Figure 3",
+      "title": "Terraform Blueprint Resource Graph: Provider → Cloud KMS CMEK → VPC-SC Perimeter → Sovereign VPC → Private Air-Gapped GKE (Gemma 3)",
+      "talkingPoints": [
+        "A single root module (Terraform >= 1.5.0, hashicorp/google >= 5.30.0) provisions one sovereign silo per tenant from five variables in terraform.tfvars.",
+        "google_kms_key_ring.tenant_silo_keyring (${tenant_id}-sovereign-kr) and google_kms_crypto_key.tenant_agent_cmek (agent-memory-cmek, 90-day rotation) come first.",
+        "google_access_context_manager_service_perimeter.tenant_sovereign_perimeter binds projects/${tenant_silo_project_number} and restricts eight APIs.",
+        "Restricted services: aiplatform, discoveryengine, modelarmor, alloydb, bigquery, storage, cloudkms and container — no path out of the perimeter.",
+        "google_compute_network.tenant_silo_vpc and tenant_silo_subnet (10.40.0.0/20, Private Google Access) host the private GKE Autopilot cluster.",
+        "google_container_cluster.airgapped_gemma3_cluster uses private nodes/endpoint and database_encryption.key_name = the CMEK key, surfaced via two outputs."
+      ]
     }
   ],
   "takeaways": [

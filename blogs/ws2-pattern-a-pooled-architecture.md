@@ -8,7 +8,7 @@ target_audience: "Principal Architects, AI Platform Engineers, FinOps Leads, and
 reading_time: "13 min read"
 tags: ["Gemini Enterprise Agent Platform", "ADK 2.0", "Multi-Tenancy", "Pooled Architecture", "Vertex AI Model Armor", "AlloyDB RLS", "ContextCacheConfig", "FinOps", "Zero Trust"]
 canonical_architecture: "https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system"
-diagrams: ["ws2-pattern-a-pooled-5hop-architecture", "ws2-pattern-a-breach-defense-sequence"]
+diagrams: ["ws2-pattern-a-pooled-5hop-architecture", "ws2-pattern-a-breach-defense-sequence", "ws2-demo-env-and-3p-auth-sandbox-topology", "ws2-terraform-starter-resource-graph"]
 editable_slides: "slides/ws2-pattern-a-pooled-editable-slides.pptx"
 status: "PUBLISH_READY"
 ---
@@ -199,10 +199,74 @@ Pattern A is the right default for Standard tiers and high-volume workloads. Gra
 
 ---
 
-## 10. Assets & Editable Diagrams
+## 10. Figure 3 — Pattern A Demo Environment & 3P Auth Sandbox: Pooled Project, Federated IdPs, OAuth 2LO/3LO Apps, Redis & Firestore Tenant Config
+
+![Pattern A Demo Environment & 3P Auth Sandbox: Pooled Project, Federated IdPs, OAuth 2LO/3LO Apps, Redis & Firestore Tenant Config](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.drawio.png)
+
+*Figure 3 — Provisioning topology for the shared `cymbal-pooled-saas-prod` demo environment and the FinVault / RetailStream 3P auth sandboxes. Artifacts: [Editable Draw.io](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.drawio) • [Vector SVG](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.svg) • [Vision metadata](../diagrams/vision_metadata/ws2-demo-env-and-3p-auth-sandbox-topology.vision.json)*
+
+### Reading the figure
+
+The diagram keeps the Architecture Center hub-and-spoke layout, but reads as a **setup topology** rather than a request path: the hubs are what you provision once for the shared environment, and the spokes are what you wire per tenant.
+
+- **Top — Cymbal Platform Operator.** The actor is the operator running `gcloud` bootstrap commands and the two IdP admin consoles (Google Cloud Credentials, Microsoft Entra Admin Center).
+- **Outer perimeter.** One shared project, `cymbal-pooled-saas-prod` in `us-central1`, with the 12 required services enabled (`aiplatform`, `discoveryengine`, `modelarmor`, `dlp`, `run`, `compute`, `iap`, `alloydb`, `redis`, `firestore`, `cloudkms`, `bigquery`).
+- **Routing hub — Shared env ingress & bootstrap.** The Hop 1 front door: Cloud Armor policy `cymbal-pooled-edge-waf` (rule `1000` denies SQLi/XSS with `deny-403`), the Global External Application Load Balancer at `edge.cymbal-saas.example.com`, and the Cloud Run Edge PEP / Envoy Service Extension that strips client-supplied `X-Tenant-ID`, `X-Cymbal-Tenant` and `X-Cymbal-Tier` before minting the RFC 8693 OBO + DPoP token. The `IDP_ISSUER_MAP` card is where each tenant's OIDC issuer is registered.
+- **Governance hub — Secrets, IdP issuer map & observability.** GCP Agent Identity (Auth Manager) as the registry of delegated 3LO scopes, Cloud KMS for CMEK material, and BigQuery as the OpenTelemetry audit sink.
+- **Left spoke — FinVault Bank (Tenant Alpha, ENTERPRISE).** Google Workspace OIDC via an OAuth 2.0 Client ID on `finvault.com`; 3LO scopes `drive.readonly`, `calendar.events`, `gmail.send`; Jira `read:jira-work` / `write:jira-work`; the Firestore tenant doc (`thinking_token_budget: 8000`, `redis_rpm_limit: 600`) and the private `agent://finvault/private-agent-alpha-regulatory` entry allowed to run `claude-3-7-sonnet@20250219`.
+- **Right spoke — RetailStream Corp (Tenant Beta, STANDARD, zero Google footprint).** Entra app registration `Cymbal-RetailStream-Agent-Client` (single tenant `retailstream.onmicrosoft.com`, redirect `/oauth2/callback/entra`), Microsoft Graph `Sites.Read.All` for SharePoint runbooks, ServiceNow ITOM REST `useraccount`, the Firestore tenant doc (`4000` budget, `120` rpm) and the shared Memorystore instance `cymbal-tenant-bulkhead-redis` (Redis 7.0, 5 GB).
+
+Numbered steps follow the setup order in the source deliverable:
+
+1. **Bootstrap** — set `PROJECT_ID` / `REGION` and select the project.
+2. **Enable APIs** — enable the 12 Google Cloud & GEAP services.
+3. **Register IdPs** — configure Google OIDC (FinVault) and Entra ID discovery URL (RetailStream) in the Edge PEP and Auth Manager.
+4. **Create client ID / app registration** — one OAuth client per tenant.
+5. **Register 3LO scopes** — Workspace + Jira on the left, Graph + ServiceNow on the right.
+6. **Seed tenant config** — Redis bulkhead instance plus the Firestore `finvault` / `retailstream` documents.
+7. **Verify** — run `2.5-breach-simulation-suite/run_breach_simulations.py` locally with no external cloud credentials.
+
+### Why it matters
+
+Pattern A only works if two competing tenants can share one runtime while trusting completely different identity stacks. This figure makes the sandbox wiring explicit: a single edge that refuses to trust tenant headers, a single scope registry, and per-tenant IdP, OAuth and Firestore configuration that differ in tier, budget and allowed agents. Every label is lifted from the step-by-step guide in [2.2 — Setup Demo Environment & 3P Auth Sandbox](../workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md), so the diagram doubles as a checklist for standing up the demo.
+
+## 11. Figure 4 — Pattern A 1-Click Terraform Starter: Provider → Cloud Armor WAF → Cloud Run v2 GEAP Gateway → Redis / KMS CMEK → BigQuery OTel Resource Graph
+
+![Pattern A 1-Click Terraform Starter: Provider → Cloud Armor WAF → Cloud Run v2 GEAP Gateway → Redis / KMS CMEK → BigQuery OTel Resource Graph](../diagrams/ws2-terraform-starter-resource-graph.drawio.png)
+
+*Figure 4 — Resource dependency graph of the Workstream 2.6 Terraform root module (`main.tf` + `variables.tf`). Artifacts: [Editable Draw.io](../diagrams/ws2-terraform-starter-resource-graph.drawio) • [Vector SVG](../diagrams/ws2-terraform-starter-resource-graph.svg) • [Vision metadata](../diagrams/vision_metadata/ws2-terraform-starter-resource-graph.vision.json)*
+
+### Reading the figure
+
+Here the hub-and-spoke template is used as a **Terraform resource graph**: the hubs are the provider and the cross-cutting security/observability resources, and the two spokes are the runtime graph and the data graph that `terraform apply` builds in parallel.
+
+- **Top — Platform Operator (IaC).** The quickstart is literally `cp terraform.tfvars.example terraform.tfvars && terraform init && terraform plan && terraform apply`. The tfvars pin `project_id = "cymbal-pooled-saas-prod"`, `region = "us-central1"` and the gateway image `cymbal-agent-gateway:v2.0`.
+- **Outer perimeter.** The root module declares `required_version >= 1.5.0` and `provider "google"` (`hashicorp/google >= 5.30.0`) parameterised by `var.project_id` / `var.region`.
+- **Routing hub — Provider, project & ingress.** Hop 1 is `google_compute_security_policy.cymbal_pooled_waf` (`cymbal-pooled-edge-waf`): rule priority `1000` `deny(403)` on `evaluatePreconfiguredWaf('sqli-v33-stable') || evaluatePreconfiguredWaf('xss-v33-stable')`, and a default `allow` at priority `2147483647` for `SRC_IPS_V1` traffic bound for IAP and the Hop 1 PEP. The Cloud Run card on the right shows the service's `INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER` setting, which is why the WAF sits in front.
+- **Governance hub — IAM, CMEK keys & observability.** `google_kms_key_ring.cymbal_tenant_keyring` (`cymbal-pooled-tenant-kr`), `google_kms_crypto_key.finvault_memory_cmek` (`finvault-agent-memory-cmek`, `rotation_period = 7776000s` ≈ 90 days) and `google_bigquery_dataset.cymbal_otel_audit` (`cymbal_multi_tenant_otel`, the Hop 5 OTel trace / token / RLS audit ledger).
+- **Left spoke — Runtime & services graph.** `google_cloud_run_v2_service.cymbal_pooled_gateway` (`cymbal-pooled-agent-gateway`) with `EXECUTION_ENVIRONMENT_GEN2` (gVisor), the `var.gateway_container_image` container and three env vars: `CYMBAL_TOPOLOGY_MODE=PATTERN_A_POOLED`, `CONTEXT_CACHE_ID=cache://cymbal-operator/shared-diagnostic-system-prefix-v2`, and `REDIS_BULKHEAD_HOST` — an implicit dependency edge on the Redis instance.
+- **Right spoke — Data graph.** `google_redis_instance.tenant_token_bulkhead` (`cymbal-tenant-bulkhead-redis`, `STANDARD_HA`, `memory_size_gb = 5`, `REDIS_7_0`) labelled `architecture_pattern = pattern-a-pooled` and `governance_hop = hop-3-finops-bulkhead`. AlloyDB with Row-Level Security and Firestore tenant config are shown as data-tier neighbours provisioned by the 2.2 setup guide rather than by this starter.
+
+Numbered steps follow the apply order implied by the graph:
+
+1. **tfvars** — operator supplies `project_id`, `region`, `gateway_container_image`.
+2. **Provider** — `hashicorp/google` is initialised against the project.
+3. **Apply Hop 3 runtime & data resources** — Terraform fans out to independent resources.
+4. **Build template** — Cloud Run v2 template with Gen2 execution environment.
+5. **Inject env variables** — topology mode, context cache ID, Redis host.
+6. **Export URI** — the service URI becomes an output.
+7. **Outputs** — `pooled_gateway_uri` and `redis_bulkhead_host` are emitted for downstream workstreams.
+
+### Why it matters
+
+The starter is intentionally small — five resource blocks plus a key ring — but it encodes the Pattern A control points that must exist before any tenant traffic arrives: an edge WAF that fronts an internal-only Cloud Run gateway, a Redis bulkhead that the gateway discovers through Terraform references rather than hardcoding, a CMEK key reserved for the enterprise tenant's agent memory, and a BigQuery ledger for proportional FinOps chargeback. Seeing the graph makes the implicit dependencies (gateway → Redis host, key → key ring) visible and clarifies what the 2.2 setup guide still provisions by hand. Source: [2.6 — 1-Click Terraform Starter](../workstream-2-pattern-a-pooled/2.6-terraform-starter/README.md) (`main.tf`, `variables.tf`, `terraform.tfvars.example`).
+
+## 12. Assets & Editable Diagrams
 
 | Asset | Path |
 | :--- | :--- |
+| **Figure 3 (WS 2.2) — Draw.io render / editable** | [`ws2-demo-env-and-3p-auth-sandbox-topology.drawio.png`](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.drawio.png) • [`.drawio`](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.drawio) • [`SVG`](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.svg) • [`vision.json`](../diagrams/vision_metadata/ws2-demo-env-and-3p-auth-sandbox-topology.vision.json) |
+| **Figure 4 (WS 2.6) — Draw.io render / editable** | [`ws2-terraform-starter-resource-graph.drawio.png`](../diagrams/ws2-terraform-starter-resource-graph.drawio.png) • [`.drawio`](../diagrams/ws2-terraform-starter-resource-graph.drawio) • [`SVG`](../diagrams/ws2-terraform-starter-resource-graph.svg) • [`vision.json`](../diagrams/vision_metadata/ws2-terraform-starter-resource-graph.vision.json) |
 | Figure 1 — Draw.io render | [`ws2-pattern-a-pooled-5hop-architecture.drawio.png`](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio.png) |
 | Figure 1 — Editable Draw.io / XML | [`.drawio`](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio) • [`.drawio.xml`](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio.xml) |
 | Figure 1 — Cloud Architecture Center SVG / PNG | [`.svg`](../diagrams/ws2-pattern-a-pooled-5hop-architecture.svg) • [`.png`](../diagrams/ws2-pattern-a-pooled-5hop-architecture.png) |

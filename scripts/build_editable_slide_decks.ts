@@ -114,7 +114,7 @@ export const DECKS: DeckSpec[] = [
     fileName: 'ws2-pattern-a-pooled-editable-slides.pptx',
     blogFile: 'blogs/ws2-pattern-a-pooled-architecture.md',
     deckJsonFile: 'blogs/ws2-pattern-a-pooled-architecture.deck.json',
-    diagramIds: ['ws2-pattern-a-pooled-5hop-architecture', 'ws2-pattern-a-breach-defense-sequence'],
+    diagramIds: ['ws2-pattern-a-pooled-5hop-architecture', 'ws2-pattern-a-breach-defense-sequence', 'ws2-demo-env-and-3p-auth-sandbox-topology', 'ws2-terraform-starter-resource-graph'],
     sourceDocs: [
       'workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md',
       'workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py',
@@ -127,7 +127,7 @@ export const DECKS: DeckSpec[] = [
     fileName: 'ws3-pattern-b-siloed-editable-slides.pptx',
     blogFile: 'blogs/ws3-pattern-b-sovereign-silos.md',
     deckJsonFile: 'blogs/ws3-pattern-b-sovereign-silos.deck.json',
-    diagramIds: ['ws3-pattern-b-sovereign-silos-architecture'],
+    diagramIds: ['ws3-pattern-b-sovereign-silos-architecture', 'ws3-multi-project-silo-and-cmek-setup-topology', 'ws3-terraform-silo-blueprint-resource-graph'],
     sourceDocs: [
       'workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md',
       'workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py',
@@ -140,7 +140,7 @@ export const DECKS: DeckSpec[] = [
     fileName: 'ws4-pattern-c-hybrid-editable-slides.pptx',
     blogFile: 'blogs/ws4-pattern-c-hybrid-dynamic-tiering.md',
     deckJsonFile: 'blogs/ws4-pattern-c-hybrid-dynamic-tiering.deck.json',
-    diagramIds: ['ws4-pattern-c-hybrid-psc-and-migration'],
+    diagramIds: ['ws4-pattern-c-hybrid-psc-and-migration', 'ws4-hub-and-spoke-demo-env-setup-topology', 'ws4-zero-downtime-tier-upgrade-sequence', 'ws4-terraform-hybrid-psc-blueprint-resource-graph'],
     sourceDocs: [
       'workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md',
       'workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite',

@@ -81,6 +81,45 @@
         "Left spoke: Shared Pooled Runtime with Gemini 2.5 Pro 4,000 Thinking Cap + Cache and Shared AlloyDB RLS that Streams State to PSC Spoke.",
         "Right spoke: Dedicated Enterprise PSC Spokes, Unidirectional PSC Bridge, CMEK Spoke AlloyDB; dashed Live promotion: Pool -> PSC Spoke."
       ]
+    },
+    {
+      "id": "ws4-hub-and-spoke-demo-env-setup-topology",
+      "figure": "Figure 2",
+      "title": "Pattern C Demo Environment: Central Ingress Hub, Shared Pool & PSC Service Attachment Spokes",
+      "talkingPoints": [
+        "One hub project (cymbal-hybrid-hub-prod, cymbal-hub-vpc / cymbal-hub-subnet) fronts both tiers behind a single Global ALB + Cloud Armor + IAP URL.",
+        "The Firestore routing table and cross-project GEAP registry decide per tenant: Standard → pool://cymbal-shared-pooled-runtime-v2, Enterprise → psc://.",
+        "Producer side lives in the tenant spoke: a 10.40.240.0/24 PSC NAT subnet plus finvault-agent-spoke-psc (ACCEPT_MANUAL, accept-list hub project = 10).",
+        "Consumer side lives in the hub: reserve psc-endpoint-finvault-ip (10.10.0.50) and bind psc-consumer-finvault to the spoke's ServiceAttachment URI.",
+        "PSC is NAT-based, so every spoke may reuse 10.40.0.0/20 with no CIDR overlap, and exposure is unidirectional — spokes cannot reach back into the hub VPC.",
+        "Step 7 closes the loop: run_tier_migration_suite.py verifies hybrid routing and the live tier upgrade locally before any customer traffic hits the demo."
+      ]
+    },
+    {
+      "id": "ws4-zero-downtime-tier-upgrade-sequence",
+      "figure": "Figure 3",
+      "title": "Zero-Downtime Tier Upgrade Test Sequence: SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY (4/4 PASS)",
+      "talkingPoints": [
+        "run_tier_migration_suite.py drives PatternCHybridRouterAndMigrator through 4 assertions-backed tests; nothing mutates the global TENANT_PROFILES.",
+        "TEST 1A/1B fix the baseline: retailstream → PATTERN_C_HYBRID_POOL clamped to 4,000 tokens; finvault → PATTERN_C_HYBRID_PSC_SPOKE over psc:// with 8,000.",
+        "TEST 2 runs the 3-phase engine: SHADOW_SYNC (replication_lag_ms == 0, PSC_CONNECTION_ACCEPTED) → ATOMIC_CUTOVER → DRAIN_AND_VERIFY (dropped_sessions == 0).",
+        "The cutover flips routing_table['retailstream'] to tier ENTERPRISE, budget 8,000, target psc://10.10.0.51/... and state UPGRADED_ZERO_DOWNTIME_SPOKE.",
+        "TEST 3 reuses the same session_id (sess-rs-live-upgrade-01) and asserts PSC routing, thinking_budget_clamped is False, and rs-agent-cmek in cmek_key_uri.",
+        "Left spoke = the pooled source rows stream from; right spoke = cymbal-retailstream-spoke-prod, the CMEK target that status MIGRATION_COMPLETE confirms."
+      ]
+    },
+    {
+      "id": "ws4-terraform-hybrid-psc-blueprint-resource-graph",
+      "figure": "Figure 4",
+      "title": "Terraform Hybrid PSC Blueprint Resource Graph: Hub VPC → Consumer PSC Endpoint → Producer ServiceAttachment in Enterprise Spoke",
+      "talkingPoints": [
+        "main.tf pins terraform >= 1.5.0 and hashicorp/google >= 5.30.0, then declares two provider aliases — google.hub and google.spoke — fed by five variables.",
+        "Hub side: google_compute_network.cymbal_hub_vpc (cymbal-hybrid-hub-vpc) and cymbal_hub_subnet at 10.10.0.0/20 with private Google access enabled.",
+        "Spoke side: enterprise_spoke_vpc, a 10.40.240.0/24 PRIVATE_SERVICE_CONNECT NAT subnet, and ${tenant}-agent-spoke-psc with ACCEPT_MANUAL and connection_limit 20.",
+        "The consumer bridge is two resources: google_compute_address.hub_psc_consumer_ip (10.10.0.50) and google_compute_forwarding_rule.hub_psc_consumer_endpoint.",
+        "Two outputs — psc_service_attachment_uri and hub_psc_consumer_ip — feed the 4.3 router's Firestore route table; those hub consumers are not resources here.",
+        "tfvars example targets cymbal-hybrid-hub-prod ↔ cymbal-finvault-silo-prod with finvault-spoke-ilb as target_service; README quickstart is init → plan → apply."
+      ]
     }
   ],
   "takeaways": [

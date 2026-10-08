@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-08T12:11:29.661Z",
+  "generatedAt": "2026-10-08T13:26:08.366Z",
   "engine": "PromptCanvas Vision Decompiler • appendEditableDrawioSlides (src/lib/export/editablePptxCompiler.ts) • pptxgenjs LAYOUT_WIDE 16:9",
   "decks": [
     {
@@ -20,40 +20,47 @@
       "key": "WS2",
       "file": "slides/ws2-pattern-a-pooled-editable-slides.pptx",
       "blog": "blogs/ws2-pattern-a-pooled-architecture.md",
-      "slides": 15,
+      "slides": 21,
       "diagrams": [
         "ws2-pattern-a-pooled-5hop-architecture",
-        "ws2-pattern-a-breach-defense-sequence"
+        "ws2-pattern-a-breach-defense-sequence",
+        "ws2-demo-env-and-3p-auth-sandbox-topology",
+        "ws2-terraform-starter-resource-graph"
       ],
-      "shapes": 112,
-      "connectors": 46,
-      "bytes": 2141360,
+      "shapes": 224,
+      "connectors": 92,
+      "bytes": 4205455,
       "narrative": "blog deck.json"
     },
     {
       "key": "WS3",
       "file": "slides/ws3-pattern-b-siloed-editable-slides.pptx",
       "blog": "blogs/ws3-pattern-b-sovereign-silos.md",
-      "slides": 13,
+      "slides": 19,
       "diagrams": [
-        "ws3-pattern-b-sovereign-silos-architecture"
+        "ws3-pattern-b-sovereign-silos-architecture",
+        "ws3-multi-project-silo-and-cmek-setup-topology",
+        "ws3-terraform-silo-blueprint-resource-graph"
       ],
-      "shapes": 56,
-      "connectors": 23,
-      "bytes": 1137769,
+      "shapes": 168,
+      "connectors": 69,
+      "bytes": 3122109,
       "narrative": "blog deck.json"
     },
     {
       "key": "WS4",
       "file": "slides/ws4-pattern-c-hybrid-editable-slides.pptx",
       "blog": "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md",
-      "slides": 13,
+      "slides": 22,
       "diagrams": [
-        "ws4-pattern-c-hybrid-psc-and-migration"
+        "ws4-pattern-c-hybrid-psc-and-migration",
+        "ws4-hub-and-spoke-demo-env-setup-topology",
+        "ws4-zero-downtime-tier-upgrade-sequence",
+        "ws4-terraform-hybrid-psc-blueprint-resource-graph"
       ],
-      "shapes": 56,
-      "connectors": 23,
-      "bytes": 1172002,
+      "shapes": 224,
+      "connectors": 92,
+      "bytes": 4314390,
       "narrative": "blog deck.json"
     },
     {
@@ -72,17 +79,24 @@
     {
       "key": "ALL",
       "file": "slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx",
-      "slides": 39,
+      "slides": 60,
       "diagrams": [
         "ws1-multi-tenant-taxonomy-overview",
         "ws1-cloud-arch-center-5hop-baseline",
         "ws2-pattern-a-pooled-5hop-architecture",
         "ws2-pattern-a-breach-defense-sequence",
+        "ws2-demo-env-and-3p-auth-sandbox-topology",
+        "ws2-terraform-starter-resource-graph",
         "ws3-pattern-b-sovereign-silos-architecture",
+        "ws3-multi-project-silo-and-cmek-setup-topology",
+        "ws3-terraform-silo-blueprint-resource-graph",
         "ws4-pattern-c-hybrid-psc-and-migration",
+        "ws4-hub-and-spoke-demo-env-setup-topology",
+        "ws4-zero-downtime-tier-upgrade-sequence",
+        "ws4-terraform-hybrid-psc-blueprint-resource-graph",
         "ws5-decision-tree-and-agentic-triad"
       ],
-      "bytes": 7127068
+      "bytes": 14317891
     }
   ]
 }

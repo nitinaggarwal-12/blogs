@@ -8,7 +8,7 @@ target_audience: "Principal Architects, CISOs, and Compliance Leads in FinTech, 
 reading_time: "14 min read"
 tags: ["Sovereign Cloud", "VPC Service Controls", "Principal Access Boundary", "Cloud KMS CMEK", "Gemma 3", "GKE", "GEAP", "ADK 2.0", "Zero Trust", "Multi-Tenancy"]
 canonical_architecture: "https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system"
-diagrams: ["ws3-pattern-b-sovereign-silos-architecture"]
+diagrams: ["ws3-pattern-b-sovereign-silos-architecture", "ws3-multi-project-silo-and-cmek-setup-topology", "ws3-terraform-silo-blueprint-resource-graph"]
 editable_slides: "slides/ws3-pattern-b-siloed-editable-slides.pptx"
 status: "PUBLISH_READY"
 ---
@@ -189,10 +189,58 @@ If you are evaluating which pattern fits a given customer today, start with the 
 
 ---
 
-## 10. Assets & Editable Diagrams
+## 10. Figure 2 — Pattern B Provisioning Topology: Org → Per-Tenant Silo Projects, VPC-SC Perimeters, IAM PAB & Cloud KMS CMEK Keys
+
+![Pattern B Provisioning Topology: Org → Per-Tenant Silo Projects, VPC-SC Perimeters, IAM PAB & Cloud KMS CMEK Keys](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio.png)
+
+*Figure 2. Workstream 3.2 provisioning topology for the two sovereign silos. Editable source: [`.drawio`](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio) · [`.svg`](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.svg) · [vision metadata](../diagrams/vision_metadata/ws3-multi-project-silo-and-cmek-setup-topology.vision.json).*
+
+### Reading the figure
+
+Unlike the runtime request-flow diagrams, this figure reads as a **provisioning sequence**: the operator at the top drives `gcloud`, the hub builds the projects, the governance hub attaches org-level policy, and the two spokes are the finished tenant silos.
+
+- **Top — Platform / FDE operator.** Everything starts from exported shell state: `ORG_ID`, `BILLING_ACCOUNT`, `REGION=us-central1`, `FINVAULT_PROJECT=cymbal-finvault-silo-prod` and `RETAILSTREAM_PROJECT=cymbal-retailstream-silo-prod`.
+- **Step 1 → Shared hub project bootstrap.** The routing-hub cards are the bootstrap loop from §1 of the source: `gcloud projects create … --organization`, `gcloud beta billing projects link`, and `gcloud services enable` for the seven silo APIs (`aiplatform`, `discoveryengine`, `modelarmor`, `container`, `cloudkms`, `alloydb`, `accesscontextmanager`).
+- **Step 2 → Projects ready.** Both project IDs exist, are billed, and have their APIs on — the precondition for every later step.
+- **Step 3 → Provision per-tenant silo project.** The hub fans out identically to the FinVault (left) and RetailStream (right) spokes; the layout is deliberately symmetrical because the procedure is the same per tenant.
+- **Governance hub — org-level PAB, Access Context Manager & KMS IAM.** The `finvault-sovereign-pab` Principal Access Boundary policy (§3) is created at `--organization` / `--location=global` with a single `ALLOW` rule scoped to `//cloudresourcemanager.googleapis.com/projects/${FINVAULT_PROJECT}`; the VPC-SC perimeter policy lives in Access Context Manager; and the KMS IAM binding grants `roles/cloudkms.cryptoKeyEncrypterDecrypter` to the tenant's Vertex AI service agent.
+- **Steps 4–6 (left spoke, FinVault silo).** Step 4 creates the key ring `finvault-kr` in `us-central1`; Step 5 creates the crypto key `agent-memory-cmek` (`--purpose=encryption`, `--rotation-period=7776000s`, i.e. 90 days); Step 6 binds that key to `service-${PROJECT_NUMBER}@gcp-sa-aiplatform.iam.gserviceaccount.com` so GEAP / Vertex AI can encrypt agent memory with the tenant key.
+- **Right spoke (RetailStream silo).** The same five cards repeat for `cymbal-retailstream-silo-prod`: its own VPC-SC perimeter, private GKE for Gemma 3, a dedicated key ring and `agent-memory-cmek`, and CMEK-backed AlloyDB / GEAP data. Nothing is shared with FinVault except the org and billing account.
+- **Step 7 → Silo tests PASS.** The closing arrow is §4 of the source: `python3 workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py` replays perimeter-exfiltration and CMEK-revocation checks before a silo is declared live.
+
+### Why it matters
+
+Pattern B's security story only holds if the *provisioning* is as isolated as the runtime. This figure makes the topology auditable at a glance: one project, one perimeter, one key ring and one PAB policy per tenant, with the only cross-tenant objects being the org and the billing link. Because the tenant owns `agent-memory-cmek`, disabling that key is the customer's kill-switch — the HTTP 423 behaviour exercised later in Workstream 3.5. The exact commands behind every card are in [3.2 — Setup Multi-Project Silo Demo & Cloud KMS CMEK Keys](../workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md), and the Terraform equivalent is shown in the next figure.
+
+## 11. Figure 3 — Terraform Blueprint Resource Graph: Provider → Cloud KMS CMEK → VPC-SC Perimeter → Sovereign VPC → Private Air-Gapped GKE (Gemma 3)
+
+![Terraform Blueprint Resource Graph: Provider → Cloud KMS CMEK → VPC-SC Perimeter → Sovereign VPC → Private Air-Gapped GKE (Gemma 3)](../diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio.png)
+
+*Figure 3. Workstream 3.6 Terraform resource graph for one sovereign tenant silo. Editable source: [`.drawio`](../diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio) · [`.svg`](../diagrams/ws3-terraform-silo-blueprint-resource-graph.svg) · [vision metadata](../diagrams/vision_metadata/ws3-terraform-silo-blueprint-resource-graph.vision.json).*
+
+### Reading the figure
+
+This figure maps the hub-and-spoke template onto the **Terraform dependency graph** in `main.tf`. Every card title is a real resource, variable or argument name, so you can read it side-by-side with the code.
+
+- **Top — Terraform operator.** The README quickstart: `cp terraform.tfvars.example terraform.tfvars`, then `terraform init → plan → apply` with Terraform `>= 1.5.0`.
+- **Step 1 → Provider & input variables (routing hub).** `provider "google"` (`hashicorp/google >= 5.30.0`) is pinned to `project = var.tenant_silo_project_id` and `region = var.region`. The five inputs from `variables.tf` / `terraform.tfvars.example` are: `tenant_id` (default `finvault`), `tenant_silo_project_id` (`cymbal-finvault-silo-prod`), `tenant_silo_project_number` (`102938475610`), `access_context_policy_id` (`998877665544`) and `region` (`us-central1`).
+- **Step 2 → Vars resolved.** `tenant_id` becomes the name prefix for every resource; the project number is what the VPC-SC perimeter binds; the ACM policy ID is the perimeter's parent.
+- **Governance hub — `google_kms_key_ring` & `google_kms_crypto_key`.** `tenant_silo_keyring` is named `${var.tenant_id}-sovereign-kr`; `tenant_agent_cmek` is `agent-memory-cmek` with `purpose = "ENCRYPT_DECRYPT"` and `rotation_period = "7776000s"` (90 days). Terraform builds these first because the GKE cluster depends on the key ID.
+- **Step 3 → Build dependency graph.** The plan orders KMS → perimeter → network → cluster; the hub arrows to both spokes represent that fan-out.
+- **Steps 4–6 (left spoke, VPC-SC perimeter).** `google_access_context_manager_service_perimeter.tenant_sovereign_perimeter` is created under `accessPolicies/${var.access_context_policy_id}` as `perimeter_${var.tenant_id}_sovereign`. Step 4 binds `status.resources = ["projects/${var.tenant_silo_project_number}"]`; Steps 5–6 populate `restricted_services` with eight APIs — `aiplatform`, `discoveryengine`, `modelarmor`, `alloydb`, `bigquery`, `storage`, `cloudkms` and `container` — which the five left cards group by workload.
+- **Right spoke — sovereign VPC & private GKE.** `google_compute_network.tenant_silo_vpc` (`auto_create_subnetworks = false`) and `google_compute_subnetwork.tenant_silo_subnet` (`10.40.0.0/20`, `private_ip_google_access = true`) host `google_container_cluster.airgapped_gemma3_cluster` (`${tenant_id}-airgapped-gemma3-gke`): Autopilot, `enable_private_nodes` and `enable_private_endpoint` set, control-plane CIDR `172.16.0.0/28`, and `database_encryption { state = "ENCRYPTED", key_name = google_kms_crypto_key.tenant_agent_cmek.id }` for local Gemma 3 (27B IT) serving.
+- **Step 7 → Outputs emitted.** `cmek_crypto_key_id` and `vpc_sc_perimeter_name` are the two outputs — exactly the handles the 3.5 revocation tests and the central hub need.
+
+### Why it matters
+
+The 3.2 walkthrough proves the silo can be built by hand; this blueprint proves it can be built **repeatably per tenant** from five variables, with the CMEK key wired into the cluster's own encryption so the tenant's kill-switch reaches GKE state as well as agent memory. Reading the graph also surfaces an honest gap: `main.tf` does not yet declare the AlloyDB instance, BigQuery dataset, IAM PAB policy or service-account bindings that the manual 3.2 procedure performs — those remain follow-up resources for the module. Source: [3.6 — Terraform Silo Blueprint](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/README.md) (`main.tf`, `variables.tf`, `terraform.tfvars.example`).
+
+## 12. Assets & Editable Diagrams
 
 | Asset | Path |
 | :--- | :--- |
+| **Figure 2 (WS 3.2) — Draw.io render / editable** | [`ws3-multi-project-silo-and-cmek-setup-topology.drawio.png`](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio.png) • [`.drawio`](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio) • [`SVG`](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.svg) • [`vision.json`](../diagrams/vision_metadata/ws3-multi-project-silo-and-cmek-setup-topology.vision.json) |
+| **Figure 3 (WS 3.6) — Draw.io render / editable** | [`ws3-terraform-silo-blueprint-resource-graph.drawio.png`](../diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio.png) • [`.drawio`](../diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio) • [`SVG`](../diagrams/ws3-terraform-silo-blueprint-resource-graph.svg) • [`vision.json`](../diagrams/vision_metadata/ws3-terraform-silo-blueprint-resource-graph.vision.json) |
 | **Figure 1 — Draw.io render (PNG)** | [`ws3-pattern-b-sovereign-silos-architecture.drawio.png`](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio.png) |
 | **Figure 1 — Editable Draw.io** | [`.drawio`](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio) • [`.drawio.xml`](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio.xml) |
 | **Figure 1 — Cloud Architecture Center exports** | [`SVG`](../diagrams/ws3-pattern-b-sovereign-silos-architecture.svg) • [`PNG`](../diagrams/ws3-pattern-b-sovereign-silos-architecture.png) |

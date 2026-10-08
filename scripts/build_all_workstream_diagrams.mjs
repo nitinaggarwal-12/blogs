@@ -28,6 +28,8 @@ const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..');
 const CENTRAL_DIAGRAMS_DIR = path.join(ROOT_DIR, 'diagrams');
 
+import { loadExtendedBlueprints } from './workstream_blueprints_extended.mjs';
+
 const requireFromPromptCanvas = createRequire('/Users/nitinagga/Documents/PromptCanvas/package.json');
 const puppeteer = requireFromPromptCanvas('puppeteer-core');
 
@@ -1158,6 +1160,9 @@ ${cells.join('\n')}
 }
 
 async function main() {
+  // Core 7 architecture blueprints + extended blueprints for the setup / Terraform / upgrade-suite deliverables
+  const EXTENDED = await loadExtendedBlueprints();
+  const ALL_BLUEPRINTS = [...WORKSTREAM_BLUEPRINTS, ...EXTENDED];
   fs.mkdirSync(CENTRAL_DIAGRAMS_DIR, { recursive: true });
   const tempRef = path.join(CENTRAL_DIAGRAMS_DIR, 'official_gcp_reference.png');
   if (fs.existsSync(tempRef)) fs.unlinkSync(tempRef);
@@ -1184,12 +1189,12 @@ async function main() {
   const manifest = [];
 
   try {
-    for (let i = 0; i < WORKSTREAM_BLUEPRINTS.length; i++) {
-      const bp = WORKSTREAM_BLUEPRINTS[i];
+    for (let i = 0; i < ALL_BLUEPRINTS.length; i++) {
+      const bp = ALL_BLUEPRINTS[i];
       const wsDir = path.join(ROOT_DIR, bp.workstreamDir);
       fs.mkdirSync(wsDir, { recursive: true });
 
-      console.log(`[${i + 1}/${WORKSTREAM_BLUEPRINTS.length}] Building official Architecture Center diagram: ${bp.id} ...`);
+      console.log(`[${i + 1}/${ALL_BLUEPRINTS.length}] Building official Architecture Center diagram: ${bp.id} ...`);
 
       const xmlStr = compileOfficialDrawioXml(bp);
       const svgStr = compileOfficialArchCenterSvg(bp);
@@ -1265,7 +1270,7 @@ ${svgStr}
       'utf8'
     );
 
-    console.log('\n🎉 ALL 7/7 WORKSTREAM DIAGRAMS REBUILT IN OFFICIAL GOOGLE CLOUD ARCHITECTURE CENTER FORMAT!');
+    console.log(`\n🎉 ALL ${manifest.length}/${ALL_BLUEPRINTS.length} WORKSTREAM DIAGRAMS REBUILT IN OFFICIAL GOOGLE CLOUD ARCHITECTURE CENTER FORMAT!`);
   } finally {
     await browser.close();
     server.close();
