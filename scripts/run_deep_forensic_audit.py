@@ -415,16 +415,52 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                     diagrams_ok = True
                     certified_diagram_count = len(manifest_items)
 
+        # Editable slide decks (PromptCanvas Vision Module) + per-workstream explanatory blogs
+        slides_manifest_path = ROOT_DIR / "slides/slides_manifest.json"
+        slides_ok = False
+        deck_count = 0
+        ws_blog_count = 0
+        if slides_manifest_path.exists():
+            import json as _json
+            slides_manifest = _json.loads(slides_manifest_path.read_text(encoding="utf-8"))
+            decks = slides_manifest.get("decks", []) if isinstance(slides_manifest, dict) else []
+            known_diagram_ids = {Path(item.get("drawio_file", "")).name.replace(".drawio", "") for item in manifest_items} if manifest_path.exists() else set()
+            decks_valid = len(decks) == 6
+            ws_blogs_seen = set()
+            for deck in decks:
+                deck_file = ROOT_DIR / deck.get("file", "")
+                if not deck_file.is_file() or deck_file.stat().st_size < 500_000 or deck.get("slides", 0) < 13:
+                    decks_valid = False
+                if not deck.get("diagrams") or any(d not in known_diagram_ids for d in deck.get("diagrams", [])):
+                    decks_valid = False
+                blog_rel = deck.get("blog")
+                if blog_rel:
+                    blog_file = ROOT_DIR / blog_rel
+                    blog_text = blog_file.read_text(encoding="utf-8") if blog_file.is_file() else ""
+                    fm_end = blog_text.find("\n---", 3) if blog_text.startswith("---") else -1
+                    frontmatter = blog_text[:fm_end] if fm_end > 0 else ""
+                    if 'status: "PUBLISH_READY"' not in frontmatter:
+                        decks_valid = False
+                    else:
+                        ws_blogs_seen.add(blog_rel)
+                    if f"../{deck.get('file', '')}" not in blog_text:
+                        decks_valid = False
+            if decks_valid and len(ws_blogs_seen) == 5:
+                slides_ok = True
+                deck_count = len(decks)
+                ws_blog_count = len(ws_blogs_seen)
+
         index_ok = (
             len(missing_markers) == 0
             and len(missing_ui_paths) == 0
             and len(unready_blogs) == 0
             and diagrams_ok
+            and slides_ok
         )
         index_detail = (
-            f"index.html verified ({len(html):,} bytes), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI artifact/publish buttons resolve on disk (0 broken), {certified_diagram_count}/7 Architecture Center & PromptCanvas Vision Draw.io blueprints CERTIFIED (.drawio/.drawio.xml/.drawio.png/.svg/.png/.vision.json, 0 collisions), and 4/4 flagship blogs carry PUBLISH_READY frontmatter."
+            f"index.html verified ({len(html):,} bytes), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI artifact/publish buttons resolve on disk (0 broken), {certified_diagram_count}/7 Architecture Center & PromptCanvas Vision Draw.io blueprints CERTIFIED (.drawio/.drawio.xml/.drawio.png/.svg/.png/.vision.json, 0 collisions), {deck_count}/6 PromptCanvas Vision editable .pptx slide decks + {ws_blog_count}/5 per-workstream explanatory blogs verified (PUBLISH_READY, deck cross-links resolve), and 4/4 flagship blogs carry PUBLISH_READY frontmatter."
             if index_ok
-            else f"missing_markers={missing_markers}, missing_ui_paths={missing_ui_paths}, unready_blogs={unready_blogs}, diagrams_ok={diagrams_ok}"
+            else f"missing_markers={missing_markers}, missing_ui_paths={missing_ui_paths}, unready_blogs={unready_blogs}, diagrams_ok={diagrams_ok}, slides_ok={slides_ok}"
         )
     results.append({
         "id": "F-12",

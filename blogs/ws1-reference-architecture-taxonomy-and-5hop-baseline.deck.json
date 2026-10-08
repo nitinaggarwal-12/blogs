@@ -1,0 +1,108 @@
+{
+  "workstream": "WS1",
+  "deckTitle": "Multi-Tenant Agentic AI on Google Cloud: Taxonomy & 5-Hop Baseline (Workstream 1)",
+  "deckSubtitle": "Pooled, Sovereign Silo & Dynamic Hybrid topologies extending the Cloud Architecture Center hub-and-spoke reference for B2B ISV SaaS",
+  "tldr": [
+    "Official Architecture Center reference models one spoke project per business unit; 90%+ of B2B SaaS ISVs cannot afford that per Standard-tier tenant.",
+    "Agents add four new failure modes: dynamic MCP discovery, confused-deputy credentials, context-cache bleed, and noisy-neighbor runaway reasoning loops.",
+    "Workstream 1 defines Pattern A (Pooled), Pattern B (Sovereign Silos), and Pattern C (Dynamic Hybrid) on an 80% reusable core + 20% topology delta.",
+    "A single 5-Hop Cryptographic Context Chain (hop1..hop5 Python modules) enforces identical governance across all three patterns.",
+    "Deliverables: Doc PR for the Architecture Center (1.3), product review pack (1.2), and an EAP/product-gap ledger with 3 P0 workarounds (1.4)."
+  ],
+  "sections": [
+    {
+      "heading": "Why classic SaaS tenancy breaks for agents",
+      "bullets": [
+        "Static routes and WHERE-clause tenancy cannot govern multi-turn reasoning, dynamic MCP tool calls, or shared prompt caches.",
+        "Failure mode 1: mid-turn MCP discovery can expose another tenant's private connectors or custom agents.",
+        "Failure mode 2: ambient service-account IAM turns prompt injection into cross-tenant bucket and API reads.",
+        "Failure mode 3: shared prompt caches and session memory leak context without cryptographic prefix separation.",
+        "Failure mode 4: unbounded thinking_budget or recursive tool retries exhaust shared model TPM quotas for every tenant."
+      ]
+    },
+    {
+      "heading": "Anchor case study: Cymbal, FinVault, RetailStream",
+      "bullets": [
+        "Cymbal SaaS (ISV) runs a Shared Incident Diagnostic Agent on Gemini 2.5 Pro with ContextCacheConfig for up to 90% COGS savings.",
+        "FinVault Bank (Enterprise): Google OIDC, 8,000 thinking tokens, private Agent Alpha on Claude Sonnet, CMEK memory finvault:user:session.",
+        "RetailStream Corp (Standard): zero Google footprint, Microsoft Entra ID, 4,000 token cap, Redis bulkhead, inline 3LO consent for ServiceNow.",
+        "Symmetric invisibility: RetailStream gets 403 on Agent Alpha; RetailStream's ServiceNow MCP connector never appears to FinVault."
+      ]
+    },
+    {
+      "heading": "Three-pattern taxonomy (A / B / C)",
+      "bullets": [
+        "Pattern A Pooled: shared gVisor runtime + temp:tenant_id, shared VPC behind Cloud Armor + IAP, AlloyDB RLS, lowest unit COGS.",
+        "Pattern B Sovereign Silos: dedicated project, VPC-SC perimeter, IAM PAB, Cloud KMS CMEK kill-switch, optional air-gapped Gemma 3 on GKE.",
+        "Pattern C Dynamic Hybrid: unified control plane, tenant-aware router, PSC spokes for Enterprise, zero-downtime live tier upgrades.",
+        "Isolation is a per-tenant tier decision, not a per-platform decision; the same 80% core code runs in every pattern.",
+        "Milestones: Pattern A Week 4 (WS2), Pattern B Week 7 (WS3), Pattern C Week 10 (WS4)."
+      ]
+    },
+    {
+      "heading": "The 5-Hop Cryptographic Context Chain",
+      "bullets": [
+        "Hop 1 hop1_edge_identity_pep.py: Cloud Armor/IAP strip forged X-Tenant-ID; RFC 8693 OBO bound to RFC 9449 DPoP jkt thumbprint.",
+        "Hop 2 hop2_registry_pdp_callbacks.py: Registry PDP + ARD catalog filtering; ADK before_agent_callback tool pruning; 403 on private agents.",
+        "Hop 3 hop3_compute_finops_bulkhead.py: gVisor temp:tenant_id, Firestore/Memorystore config, 5-Level Memory Bank, Redis bulkheads.",
+        "Hop 4 hop4_model_armor_guardrails.py: Model Armor ingress screen, tenant Semantic NLCs (OCC/FDIC vs PCI), egress SDP PII redaction.",
+        "Hop 5 hop5_data_rls_and_otel.py: SET LOCAL app.current_tenant AlloyDB RLS, 2LO/3LO Auth Manager broker, BigQuery OTel chargeback."
+      ]
+    },
+    {
+      "heading": "Doc PR: extending the Architecture Center",
+      "bullets": [
+        "Keeps the official routing hub, central governance & security hub, tenant spokes, VPC-SC org perimeter, and PAB boundaries intact.",
+        "Rewrites the intro for two audiences: B2B SaaS/ISVs protecting COGS and large decentralized enterprises governing regulated units.",
+        "Adds a 'Choose a multi-tenant agentic topology' decision table covering Pattern A, B, and C controls.",
+        "Inserts a new 'Enforcing the 5-Hop Cryptographic Context Chain' section with the four failure modes and the Cymbal case study."
+      ]
+    },
+    {
+      "heading": "Product gaps & EAP asks (1.2 / 1.4)",
+      "bullets": [
+        "GAP-P0-01 GEAP Registry filters by IAM project principal, not tenant_id; workaround: gateway PEP + before_agent_callback, 403 Forbidden.",
+        "GAP-P0-02 Memory Bank lacks per-tenant namespace CMEK; workaround: Cloud KMS envelope encryption or Pattern C PSC Memory Spoke.",
+        "GAP-P0-03 Auth Manager needs custom DPoP jkt verification for external Entra ID tenants before 3LO brokering.",
+        "P1/P2: unified Model Garden cache API, stateless ADK OAuth checkpoint, VPC-SC MCP egress bridge, 423 Locked CMEK SLA, PSC registry, migrator.",
+        "CISO sign-offs: immutability of temp: state, Entra ID federation with no shadow account, CMEK revocation propagation within 60 seconds."
+      ]
+    }
+  ],
+  "diagrams": [
+    {
+      "id": "ws1-multi-tenant-taxonomy-overview",
+      "figure": "Figure 1",
+      "title": "GEAP Multi-Tenant Agentic AI Taxonomy: Pooled (A), Sovereign Silos (B) & Hybrid (C)",
+      "talkingPoints": [
+        "Actor 'Competing B2B Tenants FinVault (OIDC) & RetailStream (Entra)' enters at badge 1 Request and exits at badge 7 Response.",
+        "Wrappers: 'Shared Control Plane & Multi-Tenant Governance Perimeter (80% Reusable Core + 20% Topology Delta)' around the VPC.",
+        "'Routing hub (Hop 1 & Hop 2 PEP/PDP)': Cloud Armor & IAP strip X-Tenant-ID, Model Armor screen, OBO + DPoP, ALB, Cloud Run Router.",
+        "'Central governance and FinOps observability hub': SCC, Central IAM & PAB Agent Identity (2LO/3LO), Cloud Logging & BQ Zero-PII OTel.",
+        "Badge 3 'Route by tenant tier (Pool, Silo or PSC)' decides topology; badge 7 'Sanitized response with SDP redaction' scrubs returns.",
+        "Left 'Tenant Pool (Shared Runtime)' vs right 'Dedicated Sovereign Tenant Project' with 'CMEK Datastore AlloyDB, BQ & KMS 423 Lock'."
+      ]
+    },
+    {
+      "id": "ws1-cloud-arch-center-5hop-baseline",
+      "figure": "Figure 2",
+      "title": "Cloud Architecture Center: Multi-Tenant Agentic AI with 5-Hop Cryptographic Governance",
+      "talkingPoints": [
+        "Actor 'User OIDC / Entra JWT' with badges 1 Request and 7 Response mirrors the published hub-and-spoke article exactly.",
+        "Outer wrapper 'Shared hubs (VPC Service Controls Organization Perimeter)' and inner 'VPC' are unchanged from the official reference.",
+        "'Routing hub (Hop 1 & Hop 2)': Cloud Armor Strips Forged X-Tenant-ID, Model Armor Edge Prompt Injection Gate, IAP RFC 8693 OBO + DPoP.",
+        "'Central governance and security hub': Security Command Center, Central IAM Auth Manager (2LO / 3LO), Cloud Logging BigQuery OTel Sink.",
+        "Dashed 'Security and observability' line fans to both spokes; badge 3 'Route request to tenant', badge 7 'Sanitized response from tenant'.",
+        "'PAB • Hop 3–5 Isolation Boundary' wraps Tenant A (FinVault, 8k Budget, Bank SDP & OCC NLC) and Tenant B (RetailStream, 4k Cap, PCI)."
+      ]
+    }
+  ],
+  "takeaways": [
+    "Agentic multi-tenancy needs controls at edge, registry, runtime, guardrail, and data layers; a tenant_id column is not isolation.",
+    "Choose topology per tenant tier: Pattern A for Standard, Pattern B for regulator-mandated perimeters, Pattern C when you serve both.",
+    "The 5-Hop chain is topology-agnostic code; the trust boundary changes, the governance modules do not.",
+    "Prompt prefix caching is safe in a pool only when ContextCacheConfig is read-only on shared system instructions.",
+    "Three P0 product gaps already have engineered workarounds; EAP allowlists target Q4 2026 for native support."
+  ],
+  "callToAction": "Review the 1.3 Doc PR, enable the 1.4 allowlist checklist in your sandbox, then proceed to Workstream 2 (Pattern A Pooled, Milestone 1)."
+}

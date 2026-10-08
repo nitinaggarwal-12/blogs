@@ -1,0 +1,94 @@
+{
+  "workstream": "WS4",
+  "deckTitle": "Pattern C — Dynamic Hybrid: One Control Plane, Pooled & Sovereign Tiers, Live Upgrades",
+  "deckSubtitle": "Tenant-aware hub routing Standard to a shared pool and Enterprise over Private Service Connect to CMEK spokes, with 0-dropped-turn upgrades",
+  "tldr": [
+    "Tiered SaaS needs Pattern A economics for Standard and Pattern B sovereignty for Enterprise — Pattern C serves both behind one SaaS URL.",
+    "Unified Hybrid Control Hub (cymbal-hybrid-hub-prod): Cloud Armor/IAP, Cloud Run Router, Firestore Route Table, Cross-Project ARD Federated GEAP Registry.",
+    "RetailStream (Standard) runs in the Shared Pooled Runtime at a 4,000 thinking cap; FinVault (Enterprise) is reached over PSC at psc://10.10.0.50.",
+    "3-Phase engine (SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY) promotes RetailStream to its own CMEK PSC spoke on the same live session.",
+    "4.5 suite verifies 4/4 PASS: 0 ms replication lag, 0 dropped sessions, 8,000 budget unclamped, rs-agent-cmek bound, zero global state bleed."
+  ],
+  "sections": [
+    {
+      "heading": "Why Tiered SaaS Needs Both Pooled and Sovereign",
+      "bullets": [
+        "RetailStream Corp: Microsoft Entra ID, shared Diagnostic Agent only, 4,000 thinking cap, shared AlloyDB RLS, SharePoint/ServiceNow via inline 3LO.",
+        "FinVault Bank: Google Workspace OIDC, private Agent Alpha (Claude Sonnet), 8,000 budget, CMEK AlloyDB in a VPC-SC spoke, Workspace/Jira via 3LO.",
+        "Neither pure pattern fits both rows; two disconnected stacks double the control plane and turn tier upgrades into maintenance windows.",
+        "4.4 triage: if you sell Standard on shared infra plus Enterprise with dedicated data spokes and custom agents, deploy Pattern C."
+      ]
+    },
+    {
+      "heading": "Hybrid Hub-and-Spoke Control Plane",
+      "bullets": [
+        "Single project cymbal-hybrid-hub-prod owns the public URL, External Application Load Balancer, Cloud Armor and IAP for both tiers.",
+        "Cloud Run Router resolves the Hop 1 verified tenant_id against the Firestore Route Table: PATTERN_C_HYBRID_POOL or PATTERN_C_HYBRID_PSC_SPOKE.",
+        "Standard route pool://cymbal-shared-pooled-runtime-v2; Enterprise route psc://10.10.0.50/.../finvault-agent-spoke-psc.",
+        "PSC producer ServiceAttachment uses ACCEPT_MANUAL with a hub-only accept list; spokes reuse 10.40.0.0/20 and cannot reach back into the hub.",
+        "Cross-Project ARD Federated GEAP Registry surfaces Agent Alpha to FinVault while returning 403 Forbidden to RetailStream."
+      ]
+    },
+    {
+      "heading": "The 5-Hop Chain in Pattern C",
+      "bullets": [
+        "Hop 1 strips forged X-Tenant-ID headers, verifies IdP JWT, mints RFC 8693 OBO + DPoP context — the only input to routing.",
+        "Hop 2 federates spoke agent cards into the hub PDP and prunes tools via ADK 2.0 before_agent_callback.",
+        "Hop 3 enforces 4,000 vs 8,000 budgets and Redis bulkheads from an instance-scoped tenant_profiles dict — never global TENANT_PROFILES.",
+        "Hop 4 runs Shared Model Armor Multi-Tenant Prompt & SDP in the pool and Spoke Model Armor Dedicated Spoke DLP & NLC in each spoke.",
+        "Hop 5 binds SET LOCAL app.current_tenant for AlloyDB RLS, brokers 2LO/3LO tokens, and emits OTel audit traces to BigQuery."
+      ]
+    },
+    {
+      "heading": "Zero-Downtime Live Tier Upgrade (Standard → Enterprise)",
+      "bullets": [
+        "TEST 1A/1B: RetailStream clamped to 4,000 in the pool; FinVault gets 8,000 over PSC on sess-fv-hybrid-01.",
+        "SHADOW_SYNC: Terraform provisions cymbal-retailstream-spoke-prod, CMEK key and PSC attachment; RLS rows replicate to 0 ms lag.",
+        "ATOMIC_CUTOVER: one replace() profile write flips tier, 8,000 budget, redis_rpm_limit 600, CMEK and route to psc://10.10.0.51.",
+        "DRAIN_AND_VERIFY: in-flight pooled turns finish; dropped_sessions == 0; status MIGRATION_COMPLETE.",
+        "TEST 3: same sess-rs-live-upgrade-01 and DPoP key now ENTERPRISE, unclamped 8,000, rs-agent-cmek bound."
+      ]
+    },
+    {
+      "heading": "Product Collaboration, Terraform Blueprint & Codelab",
+      "bullets": [
+        "4.4 aligned Cross-Project Registry, PSC Spoke Bridge and Live Tier Migration with product engineering plus a GA Field Enablement Playbook.",
+        "4.6 main.tf: hub VPC/subnet 10.10.0.0/20, spoke PSC NAT subnet 10.40.240.0/24, service attachment, 10.10.0.50 consumer endpoint.",
+        "90-minute L400 Master Codelab: router, PSC wiring, SHADOW_SYNC + ATOMIC_CUTOVER, DRAIN_AND_VERIFY session continuity.",
+        "go/demos slug geap-multi-tenant-pattern-c-hybrid with a 5-minute video script ending on ALL 4 PATTERN C TESTS PASSED."
+      ]
+    },
+    {
+      "heading": "FinOps & SLA Outcomes",
+      "bullets": [
+        "Pooled tier keeps up to 90% COGS savings from shared ContextCacheConfig; enterprise spokes get dedicated quotas with zero noisy neighbours.",
+        "Budgets, rate limits and CMEK live in one instance-scoped profile and flip atomically — no half-migrated state.",
+        "Unidirectional PSC limits blast radius: the hub initiates, the spoke never connects back.",
+        "Standard → Enterprise becomes a same-day product action with no URL change and no re-authentication."
+      ]
+    }
+  ],
+  "diagrams": [
+    {
+      "id": "ws4-pattern-c-hybrid-psc-and-migration",
+      "figure": "Figure 1",
+      "title": "Pattern C: Dynamic Hybrid Hub-and-Spoke, Private Service Connect & Live Tier Migration",
+      "talkingPoints": [
+        "Start at the actor: Standard & Enterprise Single Unified SaaS URL — one hostname for both tiers, step 1 Request in, step 7 Response out.",
+        "Routing hub: Cloud Armor & IAP + OBO/DPoP, Cross-Project ARD Federated GEAP Registry, Firestore Route Table, ALB, Cloud Run Router.",
+        "Governance hub: 3-Phase Zero-Downtime Tier Migration Engine — SHADOW_SYNC (0ms Lag Copy), ATOMIC_CUTOVER, DRAIN_AND_VERIFY (4/4 PASS).",
+        "Trunk badge 3 'Route Standard to Pool or Enterprise via PSC' fans out; badge 7 'Seamless response (0 dropped sessions)' returns.",
+        "Left spoke: Shared Pooled Runtime with Gemini 2.5 Pro 4,000 Thinking Cap + Cache and Shared AlloyDB RLS that Streams State to PSC Spoke.",
+        "Right spoke: Dedicated Enterprise PSC Spokes, Unidirectional PSC Bridge, CMEK Spoke AlloyDB; dashed Live promotion: Pool -> PSC Spoke."
+      ]
+    }
+  ],
+  "takeaways": [
+    "Pattern C routes isolation instead of duplicating it: one control plane, one URL, two execution tiers.",
+    "Routing is keyed only on the Hop 1 cryptographic tenant_id — a client header can never claim Enterprise tier.",
+    "Instance-scoped profile mutation makes the live upgrade safe: zero global state bleed across tenants or test runs.",
+    "Private Service Connect removes CIDR overlap and VPC-peering limits while keeping spokes unidirectional and VPC-SC compatible.",
+    "The migration is measurable: 0 ms lag, 0 dropped sessions, same session id, 4/4 suite gates passing."
+  ],
+  "callToAction": "Apply the 4.6 Terraform PSC blueprint, run the 4.5 zero-downtime upgrade suite, then continue to Workstream 5 for the decision guide and capstone."
+}

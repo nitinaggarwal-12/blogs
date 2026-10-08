@@ -1,0 +1,92 @@
+{
+  "workstream": "WS3",
+  "deckTitle": "Pattern B — Sovereign Silos: One Project, One Perimeter, One Key per Tenant",
+  "deckSubtitle": "Reusing the 80% 5-Hop Cymbal core inside dedicated VPC-SC / PAB / CMEK tenant projects with air-gapped Gemma 3 on GKE",
+  "tldr": [
+    "Regulated tenants (OCC/FDIC, DORA, HIPAA, public sector) often prohibit shared compute, shared databases, and platform-owned keys.",
+    "Pattern B keeps core-cymbal-agent unchanged and adds a 20% delta: mTLS SPIFFE pinning, IAM PAB, VPC-SC perimeter, CMEK kill-switch, Gemma 3 on GKE.",
+    "Each tenant gets a dedicated project: cymbal-finvault-silo-prod and cymbal-retailstream-silo-prod, each with its own agent-memory-cmek key.",
+    "Revoking the tenant CMEK halts every agent turn at Hop 3 with HTTP 423 KMS_KEY_DISABLED; all 6 sovereign security tests pass.",
+    "Trade-off: zero noisy neighbours and simple per-project quotas versus a higher per-tenant infrastructure floor and multi-project operations."
+  ],
+  "sections": [
+    {
+      "heading": "Why Pooled Isolation Is Not Enough",
+      "bullets": [
+        "Auditors ask whether any other customer could ever touch your compute, storage, or key — not just whether data is logically separated.",
+        "Four drivers: zero physical blast radius, customer-revocable encryption key, hard identity boundary, no multi-tenant model endpoints.",
+        "FinVault Bank (Google OIDC, Workspace + Jira) and RetailStream Corp (Entra ID, SharePoint + ServiceNow) each receive a sovereign silo.",
+        "Pattern A remains the right answer for Standard SaaS tiers thanks to ContextCacheConfig prefix caching (up to 90% COGS savings)."
+      ]
+    },
+    {
+      "heading": "The Sovereign Silo Model",
+      "bullets": [
+        "PatternBSiloedService wraps CymbalMultiTenantRuntime and checks mTLS SPIFFE, PAB, and VPC-SC egress before the 5-Hop pipeline runs.",
+        "VPC-SC restricts aiplatform, discoveryengine, modelarmor, alloydb, storage, and bigquery APIs so valid credentials cannot exfiltrate.",
+        "Dedicated CMEK AlloyDB, 5-Level Memory Bank, BigQuery audit, GKE disks, and runtime all depend on one tenant key: agent-memory-cmek.",
+        "FinVault runs air-gapped gemma-3-27b-it-vllm on private GKE; RetailStream runs Gemini 2.5 Pro with dedicated Provisioned Throughput."
+      ]
+    },
+    {
+      "heading": "5-Hop Chain Inside a Silo",
+      "bullets": [
+        "Hop 1 strips forged X-Tenant-ID headers, verifies IdP JWT, performs RFC 8693 OBO + DPoP, and mints PATTERN_B_SILOED context.",
+        "Hop 2 registry PDP and before_agent_callback pruning become defence-in-depth behind PAB and VPC-SC.",
+        "Hop 3 resolves silo_cmek_key_uri; a disabled key returns DENY 423 KMS_KEY_DISABLED before any Memory Bank or model call.",
+        "Hop 4 Model Armor and Hop 5 AlloyDB RLS + BigQuery OTel run unchanged, inside dedicated CMEK-encrypted resources."
+      ]
+    },
+    {
+      "heading": "Verification: 6 Sovereign Security Tests",
+      "bullets": [
+        "TEST 1: spoofed SPIFFE cert at FinVault ingress → 401 MTLS_CERTIFICATE_MISMATCH.",
+        "TEST 2: FinVault principal targets RetailStream project → 403 PAB_BOUNDARY_VIOLATION.",
+        "TEST 3: export to external-attacker-exfil-proj → 403 VPC_SERVICE_CONTROLS_PERMISSION_DENIED.",
+        "TEST 4A/4B/5: CMEK revoke → 423; restore → 200 with AirGapped-GKE-Gemma3-27B response prefix.",
+        "TEST 6: RetailStream silo CMEK revoke/restore parity verified; suite reports 100% VERIFIED."
+      ]
+    },
+    {
+      "heading": "Provisioning, Sign-Off & Blueprint",
+      "bullets": [
+        "3.2 runbook: create projects, enable 7 APIs, create finvault-kr/agent-memory-cmek (90-day rotation), bind finvault-sovereign-pab at org level.",
+        "3.4 sign-off: VPC-SC, PAB, CMEK kill-switch, and mTLS + air-gapped Gemma 3 all SIGNED OFF by GCP Security and GEAP Product Engineering.",
+        "3.6 Terraform blueprint provisions CMEK key, perimeter_<tenant>_sovereign, sovereign VPC, and <tenant>-airgapped-gemma3-gke per apply.",
+        "3.8 codelab (90 min, 5 modules) and 3.9 go/demos video script reuse the same verification gates."
+      ]
+    },
+    {
+      "heading": "Trade-Offs & What Comes Next",
+      "bullets": [
+        "Pattern B is a different economic contract: dedicated quotas and zero noisy neighbours at a higher per-tenant floor.",
+        "The GKE GPU floor dominates cost when air-gapped inference is mandated — offer it as an explicit option, not a default.",
+        "Rehearse CMEK restoration with each customer SOC; revocation is immediate and total.",
+        "Workstream 4 (Pattern C) blends pooled and sovereign tiers via Private Service Connect spokes and zero-downtime tier migration."
+      ]
+    }
+  ],
+  "diagrams": [
+    {
+      "id": "ws3-pattern-b-sovereign-silos-architecture",
+      "figure": "Figure 1",
+      "title": "Pattern B: Zero-Trust Sovereign Silos (VPC-SC, IAM PAB, CMEK & Air-Gapped Gemma 3 on GKE)",
+      "talkingPoints": [
+        "Follow badges 1→7: mTLS Request enters from the SPIFFE clients; Silo Response or HTTP 423 Locked returns on the same trunk.",
+        "Routing hub: Cloud Armor SPIFFE pinning, Model Armor edge filter, IAM PAB Verifier, External ALB, Sovereign Hub Router.",
+        "Governance hub: Security Command Center, Cloud KMS / EKM Key, and the Silo Security Suite 6/6 Sovereign Tests PASS card.",
+        "Dashed line 'CMEK state & VPC-SC audit monitoring' feeds both silos — the signal Hop 3 uses to refuse work instantly.",
+        "Left spoke: Perimeter Alpha / cymbal-finvault-silo-prod with Gemma 3 (27B) GKE air-gapped inference and Private GKE Zero Egress.",
+        "Right spoke: Perimeter Beta / cymbal-retailstream-silo-prod with Gemini 2.5 Pro PT and Local Silo MCP Entra SharePoint & SNOW."
+      ]
+    }
+  ],
+  "takeaways": [
+    "Choose Pattern B only when a contract demands a dedicated blast radius, a customer-revocable key, or no multi-tenant model endpoints.",
+    "Keep the governance code identical across patterns; pay for infrastructure, not for a second engineering team.",
+    "PAB answers 'which projects may this principal ever reach?' — it blocks lateral movement even when another project's IAM is wrong.",
+    "Make the tenant CMEK the single dependency for runtime, memory, data, and audit so one key disable is a complete kill-switch.",
+    "Prove every control with the 6-test suite before onboarding, and keep the results visible on the architecture diagram."
+  ],
+  "callToAction": "Run run_silo_security_tests.py, apply the 3.6 Terraform silo blueprint for one tenant, and book the 90-minute Pattern B codelab with your security team."
+}

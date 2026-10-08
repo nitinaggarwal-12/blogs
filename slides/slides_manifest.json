@@ -1,0 +1,88 @@
+{
+  "generatedAt": "2026-10-08T12:11:29.661Z",
+  "engine": "PromptCanvas Vision Decompiler • appendEditableDrawioSlides (src/lib/export/editablePptxCompiler.ts) • pptxgenjs LAYOUT_WIDE 16:9",
+  "decks": [
+    {
+      "key": "WS1",
+      "file": "slides/ws1-reference-architecture-editable-slides.pptx",
+      "blog": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
+      "slides": 16,
+      "diagrams": [
+        "ws1-multi-tenant-taxonomy-overview",
+        "ws1-cloud-arch-center-5hop-baseline"
+      ],
+      "shapes": 112,
+      "connectors": 46,
+      "bytes": 2054933,
+      "narrative": "blog deck.json"
+    },
+    {
+      "key": "WS2",
+      "file": "slides/ws2-pattern-a-pooled-editable-slides.pptx",
+      "blog": "blogs/ws2-pattern-a-pooled-architecture.md",
+      "slides": 15,
+      "diagrams": [
+        "ws2-pattern-a-pooled-5hop-architecture",
+        "ws2-pattern-a-breach-defense-sequence"
+      ],
+      "shapes": 112,
+      "connectors": 46,
+      "bytes": 2141360,
+      "narrative": "blog deck.json"
+    },
+    {
+      "key": "WS3",
+      "file": "slides/ws3-pattern-b-siloed-editable-slides.pptx",
+      "blog": "blogs/ws3-pattern-b-sovereign-silos.md",
+      "slides": 13,
+      "diagrams": [
+        "ws3-pattern-b-sovereign-silos-architecture"
+      ],
+      "shapes": 56,
+      "connectors": 23,
+      "bytes": 1137769,
+      "narrative": "blog deck.json"
+    },
+    {
+      "key": "WS4",
+      "file": "slides/ws4-pattern-c-hybrid-editable-slides.pptx",
+      "blog": "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md",
+      "slides": 13,
+      "diagrams": [
+        "ws4-pattern-c-hybrid-psc-and-migration"
+      ],
+      "shapes": 56,
+      "connectors": 23,
+      "bytes": 1172002,
+      "narrative": "blog deck.json"
+    },
+    {
+      "key": "WS5",
+      "file": "slides/ws5-wrap-up-editable-slides.pptx",
+      "blog": "blogs/ws5-decision-guide-and-agentic-triad.md",
+      "slides": 13,
+      "diagrams": [
+        "ws5-decision-tree-and-agentic-triad"
+      ],
+      "shapes": 56,
+      "connectors": 23,
+      "bytes": 1174169,
+      "narrative": "blog deck.json"
+    },
+    {
+      "key": "ALL",
+      "file": "slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx",
+      "slides": 39,
+      "diagrams": [
+        "ws1-multi-tenant-taxonomy-overview",
+        "ws1-cloud-arch-center-5hop-baseline",
+        "ws2-pattern-a-pooled-5hop-architecture",
+        "ws2-pattern-a-breach-defense-sequence",
+        "ws3-pattern-b-sovereign-silos-architecture",
+        "ws4-pattern-c-hybrid-psc-and-migration",
+        "ws5-decision-tree-and-agentic-triad"
+      ],
+      "bytes": 7127068
+    }
+  ]
+}

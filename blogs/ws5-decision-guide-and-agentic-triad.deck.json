@@ -1,0 +1,93 @@
+{
+  "workstream": "WS5",
+  "deckTitle": "Pooled, Siloed, or Hybrid? Executive Decision Guide & the Multi-Tenant Agentic Triad",
+  "deckSubtitle": "Workstream 5 wrap-up: topology decision tree, Pattern A/B/C comparison, the Agentic Triad, 5-Hop invariant, and the EAP backlog",
+  "tldr": [
+    "Two questions decide topology: all tenants need physical isolation (VPC-SC / Gemma 3)? -> Pattern B; else tiered packaging? No -> A, Yes -> C.",
+    "80% of the code is identical: core-cymbal-agent/ implements the 5-Hop Cryptographic Context Chain once; A, B and C are 20% perimeter deltas.",
+    "The Multi-Tenant Agentic Triad balances Zero-Trust Security (Hops 1-5), FinOps & COGS Engineering, and Privacy-Preserving Tenant Observability.",
+    "Unit cost ladder: Pattern A $ (85-90% shared prefix savings), Pattern C $$ (blended SaaS margin), Pattern B $$$ (dedicated baseline per tenant).",
+    "Nine open product gaps (3 P0, 4 P1, 2 P2) each ship with a repo workaround and a named EAP allowlist targeting Q4 2026 - Q1 2027."
+  ],
+  "sections": [
+    {
+      "heading": "Series Recap & the Cymbal Anchor",
+      "bullets": [
+        "Cymbal SaaS Platform publishes a Shared Incident Diagnostic Agent on Gemini 2.5 Pro with ContextCacheConfig shared prefix caching.",
+        "FinVault Bank (Enterprise): Google Workspace + Jira, 8,000 thinking tokens, private Agent Alpha on Claude Sonnet, CMEK memory.",
+        "RetailStream Corp (Standard): Microsoft Entra ID + ServiceNow, 4,000-token cap, Redis bulkhead, 403 on any call to Agent Alpha.",
+        "1W Design / 2W Build / 1W Launch rhythm: Milestone 1 Week 4 (Pooled), Milestone 2 Week 7 (Silos), Milestone 3 Week 10 (Hybrid)."
+      ]
+    },
+    {
+      "heading": "Executive Decision Tree",
+      "bullets": [
+        "Q1 (compliance): Do ALL tenants mandate project isolation, VPC-SC perimeters, or air-gapped Gemma 3 on GKE? Yes -> Pattern B Sovereign Silos.",
+        "Q2 (packaging): Do you sell Standard/SMB plus a regulated Enterprise tier? No -> Pattern A Pooled; Yes -> Pattern C Dynamic Hybrid.",
+        "Pattern A's upgrade path is additive: adding dedicated spokes means moving to Pattern C, not rewriting the 5-Hop code.",
+        "Only Pattern C ships the 3-phase zero-downtime live tier migration (SHADOW_SYNC -> ATOMIC_CUTOVER -> DRAIN)."
+      ]
+    },
+    {
+      "heading": "Side-by-Side Comparison Matrix",
+      "bullets": [
+        "Isolation: shared pool + 5-Hop chain (A) vs dedicated project + VPC-SC + PAB + CMEK (B) vs hub routing across both tiers (C).",
+        "Compute: shared gVisor runtime + temp:tenant_id (A); dedicated runtime or Gemma 3 27B on private GKE (B); pool 4k + PSC spokes 8k (C).",
+        "Data: shared AlloyDB RLS + envelope CMEK (A); dedicated CMEK AlloyDB/BigQuery with HTTP 423 kill-switch (B); RLS pool + PSC CMEK spokes (C).",
+        "Fit: uniform high-volume SaaS (A); healthcare, FinTech, regulated enterprises (B); tiered SaaS from SMB to Fortune 500 (C).",
+        "CMEK kill-switch granularity and live upgrade path are the two rows that most often change a decision late in procurement."
+      ]
+    },
+    {
+      "heading": "The Multi-Tenant Agentic Triad",
+      "bullets": [
+        "Pillar 1 Zero-Trust Cryptographic Security: eliminate cross-tenant tool, memory and data bleed across Hops 1-5; no implicit internal trust.",
+        "Pillar 2 FinOps & COGS: 90% discount on the 32k shared prefix, 4k vs 8k thinking clamps, Redis 120/600 RPM bulkheads with HTTP 429 shed.",
+        "Pillar 3 Privacy-Preserving Observability: zero-PII BigQuery OTel spans (obo_token_hash, dpop_jkt) feeding three chargeback models.",
+        "5.2 model (950 Standard + 50 Enterprise tenants): -90% prefix COGS, -68% thinking spend, 99.99% Enterprise SLA, -74% TCO vs all-silo."
+      ]
+    },
+    {
+      "heading": "5-Hop Chain: The Invariant Across A, B and C",
+      "bullets": [
+        "Hop 1 Edge PEP: strip forged X-Tenant-ID, verify Google OIDC / Entra ID JWT, RFC 8693 OBO bound to RFC 9449 DPoP jkt.",
+        "Hop 2 Registry PDP: tenant-label filtering, ARD catalog pruning, 403 on cross-tenant calls, ADK before_agent_callback tool pruning.",
+        "Hop 3 Compute & FinOps: gVisor temp:tenant_id, L1-L5 Memory Bank, thinking budgets, Redis bulkheads, CMEK state check, ContextCacheConfig.",
+        "Hop 4 Model Armor: ingress injection screen, tenant Semantic NLCs, egress SDP redaction (bank/IBAN/SWIFT vs payment PAN).",
+        "Hop 5 Data & OTel: SET LOCAL app.current_tenant AlloyDB RLS, 2LO/3LO broker via CymbalMCPHub, BigQuery OpenTelemetry audit sink."
+      ]
+    },
+    {
+      "heading": "Consolidated EAP Backlog & Retrospective",
+      "bullets": [
+        "P0 (Q4 2026): Registry tenant-label PDP, per-namespace Memory Bank CMEK, Auth Manager DPoP for external Entra ID tenants.",
+        "P1: unified Model Garden cache API, stateless ADK OAuth checkpoint, VPC-SC MCP egress bridge, instant CMEK kill-switch SLA.",
+        "P2 (Q1 2027): cross-project federated GEAP Registry over PSC and the live tenant tier migrator.",
+        "Lessons: build Pooled first, treat the gap ledger as a deliverable, and publish every diagram once as .drawio/.png/.svg/.vision.json."
+      ]
+    }
+  ],
+  "diagrams": [
+    {
+      "id": "ws5-decision-tree-and-agentic-triad",
+      "figure": "Figure 1",
+      "title": "Workstream 5 Capstone: Executive Topology Decision Guide & The Multi-Tenant Agentic Triad",
+      "talkingPoints": [
+        "Actor 'Enterprise & SMB Users 10,000+ Multi-Tier Tenants' enters at badge 1 Request and receives badge 7 Response.",
+        "Routing hub = Triad Pillar 1: Hop 1 Edge PEP, Hop 4 Model Armor, Hop 2 Registry PDP, External ALB, Architecture Selector (Pattern A/B/C).",
+        "Governance hub = Triad Pillar 3: Security Command Center, 3 Chargeback Models, BigQuery OTel Sink; dashed line carries zero-PII telemetry.",
+        "Badge 3 'Dispatch to optimal cost/security tier' is where the selector commits; badge 7 'Verified zero-bleed agent completion' closes it.",
+        "Left spoke Pattern A Pooled Unit Economics: Redis Rate Bulkhead, Thinking Budget Cap, ContextCacheConfig 90% Discount, AlloyDB RLS & L1-L5.",
+        "Right spoke Pattern B Silos & Pattern C PSC Spokes: VPC-SC & IAM PAB, Gemma 3 & Claude 3.7, PSC Spoke Runtime, Silo MCP, CMEK Lock."
+      ]
+    }
+  ],
+  "takeaways": [
+    "Answer the compliance question before the packaging question; most topology debates are really about which question is being asked.",
+    "Whatever pattern you pick, the same five hops run; only the blast radius of each hop changes.",
+    "Pooled density, sovereign isolation and hybrid routing are points on one cost/security curve ($ / $$$ / $$), not three products.",
+    "The Triad is a balance: security-only raises TCO, cost-only invites noisy neighbors and cache bleed, observability without redaction leaks PII.",
+    "Adopt the Milestone 1 sign-off gate as your acceptance criteria: header strip, deterministic 403s, tiered clamps and 429s, PII redaction plus RLS."
+  ],
+  "callToAction": "Run the decision tree with legal and product together, clone core-cymbal-agent/, run the three test suites, and request the P0 EAP allowlists."
+}

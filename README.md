@@ -33,6 +33,21 @@ As B2B Independent Software Vendors (ISVs) and enterprise platform teams embed a
 | **WS 4.1** | **Pattern C: Dynamic Hybrid Hub-and-Spoke, PSC Bridge & Live Tier Migration** | [`Draw.io PNG`](diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio.png) | [`.drawio`](diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio) • [`.xml`](diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio.xml) | [`JSON`](diagrams/vision_metadata/ws4-pattern-c-hybrid-psc-and-migration.vision.json) | [`PNG`](diagrams/ws4-pattern-c-hybrid-psc-and-migration.png) • [`SVG`](diagrams/ws4-pattern-c-hybrid-psc-and-migration.svg) |
 | **WS 5.1** | **Executive Topology Decision Tree & The Multi-Tenant Agentic Triad** | [`Draw.io PNG`](diagrams/ws5-decision-tree-and-agentic-triad.drawio.png) | [`.drawio`](diagrams/ws5-decision-tree-and-agentic-triad.drawio) • [`.xml`](diagrams/ws5-decision-tree-and-agentic-triad.drawio.xml) | [`JSON`](diagrams/vision_metadata/ws5-decision-tree-and-agentic-triad.vision.json) | [`PNG`](diagrams/ws5-decision-tree-and-agentic-triad.png) • [`SVG`](diagrams/ws5-decision-tree-and-agentic-triad.svg) |
 
+### Per-Workstream Explanatory Blogs & 100% Editable Slide Decks (PromptCanvas Vision Module → `.pptx`)
+
+Every diagram is embedded in PowerPoint / Google Slides as **native editable shapes, icons and connectors** (not a picture) via the PromptCanvas Vision Decompiler (`appendEditableDrawioSlides`). Each deck follows: Title → Executive TL;DR → Section narrative → per diagram [1:1 Master image • Decomposed editable slide with talking-points sidebar & speaker notes • Component spec table] → Key Takeaways → Asset index. Rebuild with `scripts/build_editable_slide_decks.ts`; preview with `python3 -B scripts/render_pptx_preview.py slides/<deck>.pptx`.
+
+| Workstream | Explanatory Blog | Editable Slide Deck (`.pptx`) | Diagrams Embedded | Slides • Shapes • Connectors |
+| :--- | :--- | :--- | :--- | :--- |
+| **WS 1** | [Reference Architecture: Taxonomy & 5-Hop Baseline](blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md) | [`ws1-reference-architecture-editable-slides.pptx`](slides/ws1-reference-architecture-editable-slides.pptx) | WS 1.1 • WS 1.3 | 16 • 112 • 46 |
+| **WS 2** | [Pattern A: High-Density Pooled Architecture](blogs/ws2-pattern-a-pooled-architecture.md) | [`ws2-pattern-a-pooled-editable-slides.pptx`](slides/ws2-pattern-a-pooled-editable-slides.pptx) | WS 2.1 • WS 2.5 | 15 • 112 • 46 |
+| **WS 3** | [Pattern B: Zero-Trust Sovereign Silos](blogs/ws3-pattern-b-sovereign-silos.md) | [`ws3-pattern-b-siloed-editable-slides.pptx`](slides/ws3-pattern-b-siloed-editable-slides.pptx) | WS 3.1 | 13 • 56 • 23 |
+| **WS 4** | [Pattern C: Hybrid Hub-and-Spoke & Dynamic Tiering](blogs/ws4-pattern-c-hybrid-dynamic-tiering.md) | [`ws4-pattern-c-hybrid-editable-slides.pptx`](slides/ws4-pattern-c-hybrid-editable-slides.pptx) | WS 4.1 | 13 • 56 • 23 |
+| **WS 5** | [Decision Guide & The Agentic Triad](blogs/ws5-decision-guide-and-agentic-triad.md) | [`ws5-wrap-up-editable-slides.pptx`](slides/ws5-wrap-up-editable-slides.pptx) | WS 5.1 / 5.2 | 13 • 56 • 23 |
+| **ALL** | All five blogs | [`geap-multi-tenancy-all-workstreams-editable-slides.pptx`](slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx) | All 7 blueprints | 39 • 392 • 161 |
+
+Manifest: [`slides/slides_manifest.json`](slides/slides_manifest.json).
+
 ---
 
 ## 2. Anchor Case Study: The "Cymbal" B2B SaaS Scenario
