@@ -46,6 +46,10 @@ The **WS x.y** label is the *source deliverable* each diagram was drawn from (e.
 
 The interactive portal (`python3 -B server.py` → <http://127.0.0.1:8095/>) has a header theme picker with **Midnight** (default), **Light**, **Google Cloud**, **Slate**, **Solarized Dark**, **High Contrast** and **Auto (follow OS)**. Every colour in `index.html` is a CSS custom property under `:root` / `[data-theme=…]`, the choice persists in `localStorage` (`geap-portal-theme`) and is applied before first paint, and `window.setPortalTheme('<name>')` switches it programmatically.
 
+### 🔗 Portal Routing
+
+Any repository Markdown file can be opened directly in the portal reader — `http://127.0.0.1:8095/<path>.md` redirects to `/?doc=<path>` (append `?raw=1` for the raw file), links between documents stay inside the reader, and every other asset (`.pptx`, `.drawio`, `.svg`, `.png`, `.tf`, `.py`, `.json`, …) is served as a static download from the same origin.
+
 ### 📚 End-to-End Guide — Every Workstream, Every Diagram
 
 [`docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md`](docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md) is the single linear read of the whole program: program foundations (5-Hop chain, anchor case study, visual language), then for each Workstream 1–5 the objective, a map of **every** numbered deliverable, the end-to-end flow, and for each of the **14 blueprints** a metadata table, the question it answers, a zone-by-zone walkthrough of every card and label, the steps 1–7 narrative, grounding in the source deliverable, design trade-offs, honest caveats and edit/reuse notes — plus a consolidated product-gap backlog and appendices. Regenerate with `python3 -B scripts/build_end_to_end_guide.py`.
@@ -92,55 +96,55 @@ All workstreams share a unified anchor case study: **Cymbal SaaS Platform**, a B
 ## 3. Repository & Workstream Deliverable Map
 
 ### Reusable Core Engine (`80% Shared Code`)
-* [`core-cymbal-agent/`](file:///Users/nitinagga/documents/fde-blogs/core-cymbal-agent/)
-  * [`models.py`](file:///Users/nitinagga/documents/fde-blogs/core-cymbal-agent/models.py) — Cryptographic context, tenant tiers, and governance receipt data structures.
-  * [`governance/hop1_edge_identity_pep.py`](file:///Users/nitinagga/documents/fde-blogs/core-cymbal-agent/governance/hop1_edge_identity_pep.py) — Cloud Armor/IAP header sanitization (`X-Tenant-ID` stripping), RFC 8693 OBO + DPoP, and Auth Manager binding.
-  * [`governance/hop2_registry_pdp_callbacks.py`](file:///Users/nitinagga/documents/fde-blogs/core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py) — GEAP Agent Registry PDP filtering & ADK `before_agent_callback` tool pruning.
-  * [`governance/hop3_compute_finops_bulkhead.py`](file:///Users/nitinagga/documents/fde-blogs/core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py) — gVisor `temp:tenant_id` binding, 5-Level Memory Bank, `ContextCacheConfig`, and Redis Token Bulkheads.
-  * [`governance/hop4_model_armor_guardrails.py`](file:///Users/nitinagga/documents/fde-blogs/core-cymbal-agent/governance/hop4_model_armor_guardrails.py) — Vertex AI Model Armor ingress prompt screen, Semantic NLCs, and egress SDP PII redaction.
-  * [`governance/hop5_data_rls_and_otel.py`](file:///Users/nitinagga/documents/fde-blogs/core-cymbal-agent/governance/hop5_data_rls_and_otel.py) — 2LO/3LO token broker, AlloyDB Row-Level Security (RLS), and BigQuery OpenTelemetry audit sink.
-  * [`agents/shared_diagnostic_agent.py`](file:///Users/nitinagga/documents/fde-blogs/core-cymbal-agent/agents/shared_diagnostic_agent.py) & [`agents/finvault_agent_alpha.py`](file:///Users/nitinagga/documents/fde-blogs/core-cymbal-agent/agents/finvault_agent_alpha.py) — Shared Gemini Pro diagnostic agent and FinVault private Claude Sonnet regulatory agent.
-  * [`mcp_servers/cymbal_mcp_hub.py`](file:///Users/nitinagga/documents/fde-blogs/core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py) — 2LO Telemetry MCP, 3LO Google Workspace/Jira MCP, and 3LO Microsoft Entra ID SharePoint/ServiceNow MCP.
+* [`core-cymbal-agent/`](core-cymbal-agent)
+  * [`models.py`](core-cymbal-agent/models.py) — Cryptographic context, tenant tiers, and governance receipt data structures.
+  * [`governance/hop1_edge_identity_pep.py`](core-cymbal-agent/governance/hop1_edge_identity_pep.py) — Cloud Armor/IAP header sanitization (`X-Tenant-ID` stripping), RFC 8693 OBO + DPoP, and Auth Manager binding.
+  * [`governance/hop2_registry_pdp_callbacks.py`](core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py) — GEAP Agent Registry PDP filtering & ADK `before_agent_callback` tool pruning.
+  * [`governance/hop3_compute_finops_bulkhead.py`](core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py) — gVisor `temp:tenant_id` binding, 5-Level Memory Bank, `ContextCacheConfig`, and Redis Token Bulkheads.
+  * [`governance/hop4_model_armor_guardrails.py`](core-cymbal-agent/governance/hop4_model_armor_guardrails.py) — Vertex AI Model Armor ingress prompt screen, Semantic NLCs, and egress SDP PII redaction.
+  * [`governance/hop5_data_rls_and_otel.py`](core-cymbal-agent/governance/hop5_data_rls_and_otel.py) — 2LO/3LO token broker, AlloyDB Row-Level Security (RLS), and BigQuery OpenTelemetry audit sink.
+  * [`agents/shared_diagnostic_agent.py`](core-cymbal-agent/agents/shared_diagnostic_agent.py) & [`agents/finvault_agent_alpha.py`](core-cymbal-agent/agents/finvault_agent_alpha.py) — Shared Gemini Pro diagnostic agent and FinVault private Claude Sonnet regulatory agent.
+  * [`mcp_servers/cymbal_mcp_hub.py`](core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py) — 2LO Telemetry MCP, 3LO Google Workspace/Jira MCP, and 3LO Microsoft Entra ID SharePoint/ServiceNow MCP.
 
 ### Workstream 1: Prepare Reference Architectures & Update GCP Documentation
-* [`workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md)
-* [`workstream-1-reference-architecture/1.2-product-team-review-pack.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-1-reference-architecture/1.2-product-team-review-pack.md)
-* [`workstream-1-reference-architecture/1.3-cloud-architecture-center-doc-update-pr.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-1-reference-architecture/1.3-cloud-architecture-center-doc-update-pr.md)
-* [`workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md)
+* [`workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md`](workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md)
+* [`workstream-1-reference-architecture/1.2-product-team-review-pack.md`](workstream-1-reference-architecture/1.2-product-team-review-pack.md)
+* [`workstream-1-reference-architecture/1.3-cloud-architecture-center-doc-update-pr.md`](workstream-1-reference-architecture/1.3-cloud-architecture-center-doc-update-pr.md)
+* [`workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md`](workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md)
 
 ### Workstream 2: Case Study — Pooled Architecture (Pattern A) [Weeks 1–4 Priority]
-* [`workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md)
-* [`workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md)
-* [`workstream-2-pattern-a-pooled/2.3-solution-implementation/`](file:///Users/nitinagga/documents/fde-blogs/workstream-2-pattern-a-pooled/2.3-solution-implementation/)
-* [`workstream-2-pattern-a-pooled/2.4-product-gaps-prioritization.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-2-pattern-a-pooled/2.4-product-gaps-prioritization.md)
-* [`workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py`](file:///Users/nitinagga/documents/fde-blogs/workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py)
-* [`workstream-2-pattern-a-pooled/2.6-terraform-starter/`](file:///Users/nitinagga/documents/fde-blogs/workstream-2-pattern-a-pooled/2.6-terraform-starter/)
-* [`workstream-2-pattern-a-pooled/2.7-blog-pooled-architecture-governance.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-2-pattern-a-pooled/2.7-blog-pooled-architecture-governance.md)
-* [`workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck/`](file:///Users/nitinagga/documents/fde-blogs/workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck/)
-* [`workstream-2-pattern-a-pooled/2.9-go-demos-and-video-script.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-2-pattern-a-pooled/2.9-go-demos-and-video-script.md)
+* [`workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md`](workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md)
+* [`workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md`](workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md)
+* [`workstream-2-pattern-a-pooled/2.3-solution-implementation/`](workstream-2-pattern-a-pooled/2.3-solution-implementation)
+* [`workstream-2-pattern-a-pooled/2.4-product-gaps-prioritization.md`](workstream-2-pattern-a-pooled/2.4-product-gaps-prioritization.md)
+* [`workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py`](workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py)
+* [`workstream-2-pattern-a-pooled/2.6-terraform-starter/`](workstream-2-pattern-a-pooled/2.6-terraform-starter)
+* [`workstream-2-pattern-a-pooled/2.7-blog-pooled-architecture-governance.md`](workstream-2-pattern-a-pooled/2.7-blog-pooled-architecture-governance.md)
+* [`workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck/`](workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck)
+* [`workstream-2-pattern-a-pooled/2.9-go-demos-and-video-script.md`](workstream-2-pattern-a-pooled/2.9-go-demos-and-video-script.md)
 
 ### Workstream 3: Case Study — Siloed Architecture (Pattern B) [Weeks 4–7]
-* [`workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md)
-* [`workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md)
-* [`workstream-3-pattern-b-siloed/3.3-solution-implementation/`](file:///Users/nitinagga/documents/fde-blogs/workstream-3-pattern-b-siloed/3.3-solution-implementation/)
-* [`workstream-3-pattern-b-siloed/3.4-product-collaboration-vpc-sc-signoff.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-3-pattern-b-siloed/3.4-product-collaboration-vpc-sc-signoff.md)
-* [`workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py`](file:///Users/nitinagga/documents/fde-blogs/workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py)
-* [`workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/`](file:///Users/nitinagga/documents/fde-blogs/workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/)
-* [`workstream-3-pattern-b-siloed/3.7-blog-sovereign-silos.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-3-pattern-b-siloed/3.7-blog-sovereign-silos.md)
-* [`workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/`](file:///Users/nitinagga/documents/fde-blogs/workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/)
-* [`workstream-3-pattern-b-siloed/3.9-go-demos-and-video-script.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-3-pattern-b-siloed/3.9-go-demos-and-video-script.md)
+* [`workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md`](workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md)
+* [`workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md`](workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md)
+* [`workstream-3-pattern-b-siloed/3.3-solution-implementation/`](workstream-3-pattern-b-siloed/3.3-solution-implementation)
+* [`workstream-3-pattern-b-siloed/3.4-product-collaboration-vpc-sc-signoff.md`](workstream-3-pattern-b-siloed/3.4-product-collaboration-vpc-sc-signoff.md)
+* [`workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py`](workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py)
+* [`workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/`](workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint)
+* [`workstream-3-pattern-b-siloed/3.7-blog-sovereign-silos.md`](workstream-3-pattern-b-siloed/3.7-blog-sovereign-silos.md)
+* [`workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/`](workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck)
+* [`workstream-3-pattern-b-siloed/3.9-go-demos-and-video-script.md`](workstream-3-pattern-b-siloed/3.9-go-demos-and-video-script.md)
 
 ### Workstream 4: Case Study — Hybrid Architecture (Pattern C) [Weeks 7–10]
-* [`workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md)
-* [`workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md)
-* [`workstream-4-pattern-c-hybrid/4.3-solution-implementation/`](file:///Users/nitinagga/documents/fde-blogs/workstream-4-pattern-c-hybrid/4.3-solution-implementation/)
-* [`workstream-4-pattern-c-hybrid/4.4-product-collaboration-psc-and-registry.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-4-pattern-c-hybrid/4.4-product-collaboration-psc-and-registry.md)
-* [`workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py`](file:///Users/nitinagga/documents/fde-blogs/workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py)
-* [`workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/`](file:///Users/nitinagga/documents/fde-blogs/workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/)
-* [`workstream-4-pattern-c-hybrid/4.7-blog-dynamic-tiering-and-migration.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-4-pattern-c-hybrid/4.7-blog-dynamic-tiering-and-migration.md)
-* [`workstream-4-pattern-c-hybrid/4.8-codelab-and-workshop-deck/`](file:///Users/nitinagga/documents/fde-blogs/workstream-4-pattern-c-hybrid/4.8-codelab-and-workshop-deck/)
-* [`workstream-4-pattern-c-hybrid/4.9-go-demos-and-video-script.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-4-pattern-c-hybrid/4.9-go-demos-and-video-script.md)
+* [`workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md`](workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md)
+* [`workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md`](workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md)
+* [`workstream-4-pattern-c-hybrid/4.3-solution-implementation/`](workstream-4-pattern-c-hybrid/4.3-solution-implementation)
+* [`workstream-4-pattern-c-hybrid/4.4-product-collaboration-psc-and-registry.md`](workstream-4-pattern-c-hybrid/4.4-product-collaboration-psc-and-registry.md)
+* [`workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py`](workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py)
+* [`workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/`](workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint)
+* [`workstream-4-pattern-c-hybrid/4.7-blog-dynamic-tiering-and-migration.md`](workstream-4-pattern-c-hybrid/4.7-blog-dynamic-tiering-and-migration.md)
+* [`workstream-4-pattern-c-hybrid/4.8-codelab-and-workshop-deck/`](workstream-4-pattern-c-hybrid/4.8-codelab-and-workshop-deck)
+* [`workstream-4-pattern-c-hybrid/4.9-go-demos-and-video-script.md`](workstream-4-pattern-c-hybrid/4.9-go-demos-and-video-script.md)
 
 ### Workstream 5: Wrap-Up & Capstone Backlog
-* [`workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md)
-* [`workstream-5-wrap-up-and-backlog/5.2-blog-multi-tenant-agentic-triad.md`](file:///Users/nitinagga/documents/fde-blogs/workstream-5-wrap-up-and-backlog/5.2-blog-multi-tenant-agentic-triad.md)
+* [`workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md`](workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md)
+* [`workstream-5-wrap-up-and-backlog/5.2-blog-multi-tenant-agentic-triad.md`](workstream-5-wrap-up-and-backlog/5.2-blog-multi-tenant-agentic-triad.md)

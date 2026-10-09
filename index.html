@@ -845,7 +845,7 @@
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
       document.getElementById('tab-' + name).classList.add('active');
       if (btn) btn.classList.add('active');
-      if (name === 'publish' && !currentRawMarkdown) {
+      if (name === 'publish' && !currentRawMarkdown && publishLoadSeq === 0) {
         loadPublishDoc('workstream-2-pattern-a-pooled/2.7-blog-pooled-architecture-governance.md');
       }
     }
@@ -924,6 +924,11 @@
           })
           .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => {
             const resolved = resolveRelativeAssetUrl(href, docRelPath);
+            // Markdown deliverables open inside this reader (deep-linkable via ?doc=); everything else opens/downloads directly
+            if (/^[^?#]*\.md(#.*)?$/i.test(resolved) && !/^[a-z][a-z0-9+.-]*:/i.test(resolved)) {
+              const clean = normalizeRepoPath(resolved.split('#')[0]);
+              return `<a href="/?doc=${encodeURIComponent(clean)}" onclick="event.preventDefault(); openDocInReader('${clean.replace(/'/g, "\\'")}');" style="color:var(--link);">${label}</a>`;
+            }
             return `<a href="${resolved}" target="_blank" style="color:var(--link);">${label}</a>`;
           });
       }
@@ -963,7 +968,36 @@
       return frontmatterHtml + html;
     }
 
+    function openDocInReader(relPath) {
+      relPath = normalizeRepoPath(relPath);
+      const btn = Array.from(document.querySelectorAll('.tab-btn')).find((b) => (b.getAttribute('onclick') || '').includes("'publish'"));
+      switchTab('publish', btn);
+      loadPublishDoc(relPath);
+      try { history.replaceState(null, '', `/?doc=${encodeURIComponent(relPath)}`); } catch (_) {}
+      const reader = document.getElementById('pub-reader-box');
+      if (reader) reader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    window.openDocInReader = openDocInReader;
+
+    // Deep link: /?doc=<repo-relative .md path> opens that document in the Publish Studio reader on load
+    document.addEventListener('DOMContentLoaded', function () {
+      const doc = new URLSearchParams(window.location.search).get('doc');
+      if (doc && /\.md$/i.test(doc)) openDocInReader(normalizeRepoPath(doc));
+    });
+
+    let publishLoadSeq = 0;
+    function normalizeRepoPath(p) {
+      const out = [];
+      for (const seg of String(p).replace(/^\.?\//, '').split('/')) {
+        if (!seg || seg === '.') continue;
+        if (seg === '..') { out.pop(); continue; }
+        out.push(seg);
+      }
+      return out.join('/');
+    }
     async function loadPublishDoc(relPath) {
+      relPath = normalizeRepoPath(relPath);
+      const seq = ++publishLoadSeq;
       const pathEl = document.getElementById('pub-doc-path');
       const box = document.getElementById('pub-reader-box');
       pathEl.textContent = relPath;
@@ -971,6 +1005,7 @@
       try {
         const resp = await fetch(`/api/artifact?path=${encodeURIComponent(relPath)}`);
         const data = await resp.json();
+        if (seq !== publishLoadSeq) return; // a newer document request superseded this one
         if (data.error) {
           box.textContent = `Error: ${data.error}`;
           return;

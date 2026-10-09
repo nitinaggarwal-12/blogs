@@ -6,6 +6,8 @@ Exposes:
 - GET  /                        -> Serves interactive HTML5 portal (index.html)
 - GET  /api/health              -> Live status, tenant profiles, and deliverable catalog count
 - GET  /api/artifact?path=...   -> Returns raw content of any deliverable file inside the repo
+- GET  /<path>.md               -> 302 to /?doc=<path> (opens in the Publish Studio reader); ?raw=1 serves the file
+- GET  /<path>.(png|svg|drawio|xml|json|pptx|py|tf|yaml|…) -> static asset / download
 - POST /api/simulate/scenario   -> Runs preset scenarios (sim1..sim6) or full suites (suite_a/b/c)
                                    against the real Python 5-Hop runtime classes
 - POST /api/runtime/invoke      -> Interactive Custom 5-Hop Sandbox (custom JWT, forged headers,
@@ -475,25 +477,57 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             )
             return
 
-        # Serve static architecture diagram assets (.png, .svg, .drawio.xml, .json)
+        # Any Markdown deliverable requested directly (e.g. /blogs/ws1-….md) opens inside the
+        # portal's Publish Studio reader; append ?raw=1 to download the raw file instead.
         clean_rel = path.lstrip("/")
-        if clean_rel and any(clean_rel.endswith(ext) for ext in (".png", ".svg", ".xml", ".json")):
+        qs_all = parse_qs(parsed.query)
+        if clean_rel.endswith(".md") and "raw" not in qs_all:
+            target = (ROOT_DIR / clean_rel).resolve()
+            if str(target).startswith(str(ROOT_DIR)) and target.is_file():
+                from urllib.parse import quote
+                self.send_response(302)
+                self.send_header("Location", f"/?doc={quote(clean_rel)}")
+                self.send_header("Cache-Control", "no-store")
+                self.end_headers()
+                return
+
+        # Serve every other repo file as a static asset (diagrams, editable decks, IaC, code, docs)
+        STATIC_MIME = {
+            ".png": "image/png",
+            ".svg": "image/svg+xml; charset=utf-8",
+            ".xml": "application/xml; charset=utf-8",
+            ".drawio": "application/xml; charset=utf-8",
+            ".json": "application/json; charset=utf-8",
+            ".md": "text/markdown; charset=utf-8",
+            ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            ".py": "text/plain; charset=utf-8",
+            ".tf": "text/plain; charset=utf-8",
+            ".tfvars": "text/plain; charset=utf-8",
+            ".example": "text/plain; charset=utf-8",
+            ".yaml": "text/plain; charset=utf-8",
+            ".yml": "text/plain; charset=utf-8",
+            ".txt": "text/plain; charset=utf-8",
+            ".mjs": "text/plain; charset=utf-8",
+            ".ts": "text/plain; charset=utf-8",
+            ".css": "text/css; charset=utf-8",
+            ".js": "application/javascript; charset=utf-8",
+        }
+        if clean_rel:
             static_file = (ROOT_DIR / clean_rel).resolve()
-            if str(static_file).startswith(str(ROOT_DIR)) and static_file.is_file():
-                mime = "application/octet-stream"
-                if clean_rel.endswith(".png"):
-                    mime = "image/png"
-                elif clean_rel.endswith(".svg"):
-                    mime = "image/svg+xml; charset=utf-8"
-                elif clean_rel.endswith(".xml"):
-                    mime = "application/xml; charset=utf-8"
-                elif clean_rel.endswith(".json"):
-                    mime = "application/json; charset=utf-8"
+            suffix = static_file.suffix.lower()
+            if (
+                str(static_file).startswith(str(ROOT_DIR))
+                and static_file.is_file()
+                and suffix in STATIC_MIME
+                and not any(part.startswith(".") for part in static_file.relative_to(ROOT_DIR).parts)
+            ):
                 data = static_file.read_bytes()
                 self.send_response(200)
-                self.send_header("Content-Type", mime)
+                self.send_header("Content-Type", STATIC_MIME[suffix])
                 self.send_header("Content-Length", str(len(data)))
                 self.send_header("Cache-Control", "no-store")
+                if suffix == ".pptx" or suffix == ".drawio":
+                    self.send_header("Content-Disposition", f'attachment; filename="{static_file.name}"')
                 self.end_headers()
                 self.wfile.write(data)
                 return

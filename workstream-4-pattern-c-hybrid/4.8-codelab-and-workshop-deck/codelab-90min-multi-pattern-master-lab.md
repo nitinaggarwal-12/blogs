@@ -14,7 +14,7 @@ In this capstone 90-minute master codelab, you will operate Cymbal's **Pattern C
 | Module | Time | Focus Area | Verification Gate |
 | :--- | :--- | :--- | :--- |
 | **Module 1** | `00:00–00:20` | Configure the Tenant-Aware Intelligent Ingress Router | Verify `STANDARD` $\rightarrow$ Pool (`4k` cap) & `ENTERPRISE` $\rightarrow$ PSC Spoke (`8k` cap) |
-| **Module 2** | `00:20–00:45` | Wire Producer PSC Service Attachments & Consumer Endpoints | Inspect [`main.tf`](file:///Users/nitinagga/documents/fde-blogs/workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf) NAT subnets & forwarding rules |
+| **Module 2** | `00:20–00:45` | Wire Producer PSC Service Attachments & Consumer Endpoints | Inspect [`main.tf`](../4.6-terraform-hybrid-psc-blueprint/main.tf) NAT subnets & forwarding rules |
 | **Module 3** | `00:45–01:10` | Execute Phase 1 (`SHADOW_SYNC`) & Phase 2 (`ATOMIC_CUTOVER`) Live Tier Upgrade | Verify `replication_lag_ms == 0` & atomic Firestore route flip |
 | **Module 4** | `01:10–01:30` | Verify Post-Upgrade Session Continuity (`DRAIN_AND_VERIFY`) | Confirm `sess-rs-live-upgrade-01` continues on PSC Spoke with `8,000` thinking budget & CMEK |
 
@@ -22,8 +22,8 @@ In this capstone 90-minute master codelab, you will operate Cymbal's **Pattern C
 
 ## Hands-On Execution Steps
 
-1. Inspect [`pattern_c_hybrid_router_and_migrator.py`](file:///Users/nitinagga/documents/fde-blogs/workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py) to see how `route_and_invoke()` resolves the caller's verified identity at Hop 1 and selects either `PATTERN_C_HYBRID_POOL` or `PATTERN_C_HYBRID_PSC_SPOKE`.
-2. Review [`execute_zero_downtime_tier_upgrade()`](file:///Users/nitinagga/documents/fde-blogs/workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py) to trace the 3-phase migration state machine (`PHASE_1_SHADOW_SYNC`, `PHASE_2_ATOMIC_CUTOVER`, `PHASE_3_DRAIN_AND_VERIFY`).
+1. Inspect [`pattern_c_hybrid_router_and_migrator.py`](../4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py) to see how `route_and_invoke()` resolves the caller's verified identity at Hop 1 and selects either `PATTERN_C_HYBRID_POOL` or `PATTERN_C_HYBRID_PSC_SPOKE`.
+2. Review [`execute_zero_downtime_tier_upgrade()`](../4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py) to trace the 3-phase migration state machine (`PHASE_1_SHADOW_SYNC`, `PHASE_2_ATOMIC_CUTOVER`, `PHASE_3_DRAIN_AND_VERIFY`).
 3. Run the automated verification suite and confirm all 4 Hybrid & Live Tier Upgrade assertions pass:
 
 ```bash
