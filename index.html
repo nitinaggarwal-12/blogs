@@ -17,7 +17,69 @@
       --green: #18c964;
       --amber: #f5a524;
       --red: #f31260;
+      /* extended tokens (themeable) */
+      --header-grad-a: #0f172a;
+      --header-grad-b: #172554;
+      --input-bg: #090d1a;
+      --pre-bg: #070a14;
+      --pre-text: #a7f3d0;
+      --reader-bg: #0d1428;
+      --heading: #ffffff;
+      --link: #93bbfd;
+      --accent-2: #c4b5fd;
+      --ok-text: #86efac;
+      --warn-text: #fcd34d;
+      --err-text: #fda4af;
+      --quote-text: #dbeafe;
+      --code-bg: rgba(255,255,255,0.08);
+      --th-text: #ffffff;
+      --diagram-frame: #ffffff;
+      --hover-tint: rgba(79,140,255,0.18);
+      --on-primary: #ffffff;
     }
+    /* ---------- Themes (select via <html data-theme="…">) ---------- */
+    [data-theme="light"] {
+      --bg: #f6f8fc; --panel: #ffffff; --panel-alt: #eef2f9; --border: #d5dcea;
+      --text: #0f172a; --muted: #475569; --blue: #1a73e8; --purple: #7c3aed; --green: #188038; --amber: #b06000; --red: #c5221f;
+      --header-grad-a: #ffffff; --header-grad-b: #e8f0fe; --input-bg: #ffffff; --pre-bg: #0f172a; --pre-text: #a7f3d0;
+      --reader-bg: #ffffff; --heading: #0f172a; --link: #1a73e8; --accent-2: #6d28d9; --ok-text: #188038; --warn-text: #9a6700; --err-text: #c5221f;
+      --quote-text: #1e3a8a; --code-bg: rgba(15,23,42,0.07); --th-text: #0f172a; --hover-tint: rgba(26,115,232,0.10);
+    }
+    [data-theme="google-cloud"] {
+      --bg: #ffffff; --panel: #f8f9fa; --panel-alt: #e8f0fe; --border: #dadce0;
+      --text: #202124; --muted: #5f6368; --blue: #1a73e8; --purple: #a142f4; --green: #34a853; --amber: #f9ab00; --red: #ea4335;
+      --header-grad-a: #1a73e8; --header-grad-b: #174ea6; --input-bg: #ffffff; --pre-bg: #202124; --pre-text: #e8eaed;
+      --reader-bg: #ffffff; --heading: #202124; --link: #1a73e8; --accent-2: #a142f4; --ok-text: #188038; --warn-text: #e37400; --err-text: #c5221f;
+      --quote-text: #174ea6; --code-bg: rgba(26,115,232,0.08); --th-text: #202124; --hover-tint: rgba(26,115,232,0.10);
+    }
+    [data-theme="google-cloud"] header, [data-theme="google-cloud"] header .muted { color: #ffffff; }
+    [data-theme="google-cloud"] header .badge { background: rgba(255,255,255,0.18); color: #ffffff; border-color: rgba(255,255,255,0.55); }
+    [data-theme="google-cloud"] header .theme-picker select { background: #ffffff; color: #202124; border-color: rgba(255,255,255,0.7); }
+    [data-theme="slate"] {
+      --bg: #1e1e1e; --panel: #252526; --panel-alt: #2d2d30; --border: #3e3e42;
+      --text: #d4d4d4; --muted: #9d9d9d; --blue: #569cd6; --purple: #c586c0; --green: #4ec9b0; --amber: #dcdcaa; --red: #f44747;
+      --header-grad-a: #252526; --header-grad-b: #1e1e1e; --input-bg: #1a1a1a; --pre-bg: #141414; --pre-text: #ce9178;
+      --reader-bg: #1f1f1f; --heading: #ffffff; --link: #9cdcfe; --accent-2: #c586c0; --ok-text: #4ec9b0; --warn-text: #dcdcaa; --err-text: #f48771;
+      --quote-text: #d4d4d4; --code-bg: rgba(255,255,255,0.08); --th-text: #ffffff; --hover-tint: rgba(86,156,214,0.18);
+    }
+    [data-theme="solarized"] {
+      --bg: #002b36; --panel: #073642; --panel-alt: #0a3d4a; --border: #16505c;
+      --text: #eee8d5; --muted: #93a1a1; --blue: #268bd2; --purple: #6c71c4; --green: #859900; --amber: #b58900; --red: #dc322f;
+      --header-grad-a: #002b36; --header-grad-b: #073642; --input-bg: #00212b; --pre-bg: #00212b; --pre-text: #2aa198;
+      --reader-bg: #03313d; --heading: #fdf6e3; --link: #2aa198; --accent-2: #6c71c4; --ok-text: #859900; --warn-text: #b58900; --err-text: #dc322f;
+      --quote-text: #eee8d5; --code-bg: rgba(238,232,213,0.08); --th-text: #fdf6e3; --hover-tint: rgba(38,139,210,0.2);
+    }
+    [data-theme="high-contrast"] {
+      --bg: #000000; --panel: #000000; --panel-alt: #111111; --border: #ffffff;
+      --text: #ffffff; --muted: #e0e0e0; --blue: #00a2ff; --purple: #ff7eff; --green: #00ff6a; --amber: #ffd600; --red: #ff4d4d;
+      --header-grad-a: #000000; --header-grad-b: #000000; --input-bg: #000000; --pre-bg: #000000; --pre-text: #00ff6a;
+      --reader-bg: #000000; --heading: #ffffff; --link: #7fd1ff; --accent-2: #ff7eff; --ok-text: #00ff6a; --warn-text: #ffd600; --err-text: #ff4d4d;
+      --quote-text: #ffffff; --code-bg: #222222; --th-text: #ffffff; --hover-tint: rgba(0,162,255,0.3); --on-primary: #000000;
+    }
+    [data-theme="high-contrast"] .card, [data-theme="high-contrast"] .sim-btn, [data-theme="high-contrast"] .tab-btn { border-width: 2px; }
+    html { transition: background-color .2s ease, color .2s ease; }
+    .theme-picker { display:flex; align-items:center; gap:6px; }
+    .theme-picker select { width:auto; padding:6px 28px 6px 10px; font-weight:600; cursor:pointer; }
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -29,7 +91,7 @@
     header {
       padding: 20px 32px;
       border-bottom: 1px solid var(--border);
-      background: linear-gradient(135deg, #0f172a 0%, #172554 100%);
+      background: linear-gradient(135deg, var(--header-grad-a) 0%, var(--header-grad-b) 100%);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -45,11 +107,11 @@
       letter-spacing: 0.04em;
       text-transform: uppercase;
     }
-    .badge-blue { background: rgba(79,140,255,0.2); color: #93bbfd; border: 1px solid rgba(79,140,255,0.4); }
-    .badge-purple { background: rgba(155,107,255,0.2); color: #c4b5fd; border: 1px solid rgba(155,107,255,0.4); }
-    .badge-green { background: rgba(24,201,100,0.2); color: #86efac; border: 1px solid rgba(24,201,100,0.4); }
-    .badge-amber { background: rgba(245,165,36,0.2); color: #fcd34d; border: 1px solid rgba(245,165,36,0.4); }
-    .badge-red { background: rgba(243,18,96,0.2); color: #fda4af; border: 1px solid rgba(243,18,96,0.4); }
+    .badge-blue { background: rgba(79,140,255,0.2); color: var(--link); border: 1px solid rgba(79,140,255,0.4); }
+    .badge-purple { background: rgba(155,107,255,0.2); color: var(--accent-2); border: 1px solid rgba(155,107,255,0.4); }
+    .badge-green { background: rgba(24,201,100,0.2); color: var(--ok-text); border: 1px solid rgba(24,201,100,0.4); }
+    .badge-amber { background: rgba(245,165,36,0.2); color: var(--warn-text); border: 1px solid rgba(245,165,36,0.4); }
+    .badge-red { background: rgba(243,18,96,0.2); color: var(--err-text); border: 1px solid rgba(243,18,96,0.4); }
     .container { max-width: 1420px; margin: 0 auto; padding: 24px 32px; }
     .tabs {
       display: flex;
@@ -71,7 +133,7 @@
     }
     .tab-btn.active {
       background: var(--blue);
-      color: #fff;
+      color: var(--on-primary);
       border-color: var(--blue);
     }
     .grid-3 {
@@ -107,7 +169,7 @@
       text-align: left;
       vertical-align: top;
     }
-    th { background: var(--panel-alt); color: #fff; }
+    th { background: var(--panel-alt); color: var(--th-text); }
     .sim-controls {
       display: flex;
       gap: 8px;
@@ -125,8 +187,8 @@
       font-size: 13px;
       transition: all 0.15s ease;
     }
-    .sim-btn:hover { border-color: var(--blue); background: rgba(79,140,255,0.18); }
-    .sim-btn.primary { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .sim-btn:hover { border-color: var(--blue); background: var(--hover-tint); }
+    .sim-btn.primary { background: var(--blue); color: var(--on-primary); border-color: var(--blue); }
     .file-pill {
       display: inline-block;
       margin: 3px 4px 3px 0;
@@ -134,12 +196,12 @@
       background: var(--panel-alt);
       border: 1px solid var(--border);
       border-radius: 6px;
-      color: #93bbfd;
+      color: var(--link);
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 12px;
       cursor: pointer;
     }
-    .file-pill:hover { border-color: var(--blue); background: rgba(79,140,255,0.2); }
+    .file-pill:hover { border-color: var(--blue); background: var(--hover-tint); }
     .form-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -155,7 +217,7 @@
     }
     select, input[type="number"], input[type="text"], textarea {
       width: 100%;
-      background: #090d1a;
+      background: var(--input-bg);
       color: var(--text);
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -176,56 +238,83 @@
       font-size: 12px;
       font-weight: 600;
     }
-    .hop-pill.allow { border-color: rgba(24,201,100,0.6); color: #86efac; }
-    .hop-pill.deny { border-color: rgba(243,18,96,0.7); color: #fda4af; }
+    .hop-pill.allow { border-color: rgba(24,201,100,0.6); color: var(--ok-text); }
+    .hop-pill.deny { border-color: rgba(243,18,96,0.7); color: var(--err-text); }
     pre {
-      background: #070a14;
+      background: var(--pre-bg);
       border: 1px solid var(--border);
       padding: 16px;
       border-radius: 8px;
       overflow-x: auto;
       font-size: 12.5px;
-      color: #a7f3d0;
+      color: var(--pre-text);
       max-height: 540px;
     }
     /* Rich Article Reader styling for Tab 5 Publish Studio */
     .article-reader {
-      background: #0d1428;
+      background: var(--reader-bg);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 28px 36px;
       max-height: 760px;
       overflow-y: auto;
     }
-    .article-reader h1 { font-size: 26px; color: #fff; margin-top: 0; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-    .article-reader h2 { font-size: 20px; color: #93bbfd; margin-top: 28px; }
-    .article-reader h3 { font-size: 16px; color: #c4b5fd; margin-top: 20px; }
+    .article-reader h1 { font-size: 26px; color: var(--heading); margin-top: 0; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+    .article-reader h2 { font-size: 20px; color: var(--link); margin-top: 28px; }
+    .article-reader h3 { font-size: 16px; color: var(--accent-2); margin-top: 20px; }
     .article-reader blockquote {
       margin: 16px 0;
       padding: 14px 18px;
       background: rgba(79,140,255,0.1);
       border-left: 4px solid var(--blue);
       border-radius: 6px;
-      color: #dbeafe;
+      color: var(--quote-text);
     }
     .article-reader code {
-      background: rgba(255,255,255,0.08);
+      background: var(--code-bg);
       padding: 2px 6px;
       border-radius: 4px;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 12.5px;
-      color: #fcd34d;
+      color: var(--warn-text);
     }
     .article-reader pre code {
       background: transparent;
       padding: 0;
-      color: #a7f3d0;
+      color: var(--pre-text);
     }
     .tab-pane { display: none; }
     .tab-pane.active { display: block; }
   </style>
 </head>
 <body>
+  <script>
+    // Apply the persisted theme before first paint to avoid a flash of the default theme.
+    (function () {
+      var THEMES = ['midnight','light','google-cloud','slate','solarized','high-contrast','auto'];
+      function resolve(t) { return t === 'auto' ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'midnight') : t; }
+      var saved = 'midnight';
+      try { saved = localStorage.getItem('geap-portal-theme') || 'midnight'; } catch (_) {}
+      if (THEMES.indexOf(saved) < 0) saved = 'midnight';
+      document.documentElement.setAttribute('data-theme', resolve(saved));
+      document.documentElement.setAttribute('data-theme-choice', saved);
+      window.setPortalTheme = function (t) {
+        if (THEMES.indexOf(t) < 0) t = 'midnight';
+        try { localStorage.setItem('geap-portal-theme', t); } catch (_) {}
+        document.documentElement.setAttribute('data-theme', resolve(t));
+        document.documentElement.setAttribute('data-theme-choice', t);
+        var sel = document.getElementById('theme-select'); if (sel && sel.value !== t) sel.value = t;
+      };
+      if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function () {
+          if (document.documentElement.getAttribute('data-theme-choice') === 'auto') window.setPortalTheme('auto');
+        });
+      }
+      document.addEventListener('DOMContentLoaded', function () {
+        var sel = document.getElementById('theme-select'); if (sel) sel.value = saved;
+      });
+    })();
+  </script>
   <header>
     <div>
       <span class="badge badge-blue">Gemini Enterprise Agent Platform (GEAP) &amp; ADK 2.0</span>
@@ -236,6 +325,18 @@
       <span id="api-status-badge" class="badge badge-green">● Live Python API Connected</span>
       <span class="badge badge-green">Forensic Audit: 12/12 PASS</span>
       <span class="badge badge-purple">Simulations: 20/20 PASS</span>
+      <label class="theme-picker" title="Switch portal theme (persists in this browser)">
+        <span style="font-size:14px;">&#127912;</span>
+        <select id="theme-select" onchange="setPortalTheme(this.value)" aria-label="Theme">
+          <option value="midnight">Midnight (default)</option>
+          <option value="light">Light</option>
+          <option value="google-cloud">Google Cloud</option>
+          <option value="slate">Slate (VS Code dark)</option>
+          <option value="solarized">Solarized Dark</option>
+          <option value="high-contrast">High Contrast</option>
+          <option value="auto">Auto (follow OS)</option>
+        </select>
+      </label>
     </div>
   </header>
 
@@ -359,8 +460,8 @@
           <button class="sim-btn" onclick="selectBlueprint('ws4-zero-downtime-tier-upgrade-sequence', 'WS 4.5: Zero-Downtime Tier Upgrade Test Sequence: SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY (4/4 PASS)')">13. WS 4.5 Zero-Downtime Upgrade Sequence</button>
           <button class="sim-btn" onclick="selectBlueprint('ws4-terraform-hybrid-psc-blueprint-resource-graph', 'WS 4.6: Terraform Hybrid PSC Blueprint Resource Graph: Hub VPC → Consumer PSC Endpoint → Producer ServiceAttachment in Enterprise Spoke')">14. WS 4.6 Terraform Hybrid PSC Graph</button>
         </div>
-        <div id="bp-caption" style="font-size:13px; color:#93bbfd; font-weight:600; margin-bottom:8px;">Active Blueprint: WS 1.1: GEAP Multi-Tenant Agentic AI Taxonomy (Pattern A, B &amp; C) • [PromptCanvas Vision Draw.io Engine]</div>
-        <div style="background:#ffffff; border-radius:10px; padding:8px; border:1px solid var(--border); overflow-x:auto;">
+        <div id="bp-caption" style="font-size:13px; color:var(--link); font-weight:600; margin-bottom:8px;">Active Blueprint: WS 1.1: GEAP Multi-Tenant Agentic AI Taxonomy (Pattern A, B &amp; C) • [PromptCanvas Vision Draw.io Engine]</div>
+        <div style="background:var(--diagram-frame); border-radius:10px; padding:8px; border:1px solid var(--border); overflow-x:auto;">
           <img id="bp-preview-img" src="diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png" alt="GEAP Multi-Tenant Architecture Blueprint" style="width:100%; max-width:980px; margin:0 auto; height:auto; display:block; border-radius:6px;" />
         </div>
       </div>
@@ -370,7 +471,7 @@
           <div>
             <span class="badge badge-blue">PromptCanvas Vision Module • 100% Native Editable PowerPoint / Google Slides (6 Decks • 151 Slides • 14 Diagrams)</span>
             <h3 style="margin-top:6px;">Workstream 1–5 Explanatory Blogs &amp; Editable Architecture Slide Decks (`.md` + `.pptx`)</h3>
-            <p style="font-size:13px; color:#93bbfd; margin:4px 0 0;">Each deck: Title &rarr; Executive TL;DR &rarr; Section narrative &rarr; per diagram [1:1 Master image &bull; Decomposed native editable shapes, icons &amp; connectors with talking-points sidebar &amp; speaker notes &bull; Component spec table] &rarr; Key Takeaways &rarr; Asset index.</p>
+            <p style="font-size:13px; color:var(--link); margin:4px 0 0;">Each deck: Title &rarr; Executive TL;DR &rarr; Section narrative &rarr; per diagram [1:1 Master image &bull; Decomposed native editable shapes, icons &amp; connectors with talking-points sidebar &amp; speaker notes &bull; Component spec table] &rarr; Key Takeaways &rarr; Asset index.</p>
           </div>
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <a href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx" download class="sim-btn primary" style="text-decoration:none;">&#127916; Download Combined Deck (60 slides, all 14 diagrams)</a>
@@ -400,7 +501,7 @@
         <p class="muted">Select any deliverable category below to read the formatted publication, copy clean Markdown for Google Cloud Blog / Medium / Dev.to / LinkedIn, or print to PDF:</p>
 
         <div style="margin-bottom: 10px;">
-          <strong style="font-size:13px; color:#93bbfd;">Flagship 4-Part Blog Series &amp; Architecture Center Guides:</strong>
+          <strong style="font-size:13px; color:var(--link);">Flagship 4-Part Blog Series &amp; Architecture Center Guides:</strong>
           <div class="sim-controls" style="margin-top:6px;">
             <button class="sim-btn primary" onclick="loadPublishDoc('workstream-2-pattern-a-pooled/2.7-blog-pooled-architecture-governance.md')">Part 1 Blog (2.7): Pooled Architecture &amp; 5-Hop Governance</button>
             <button class="sim-btn primary" onclick="loadPublishDoc('workstream-3-pattern-b-siloed/3.7-blog-sovereign-silos.md')">Part 2 Blog (3.7): Zero-Trust Sovereign Silos &amp; CMEK</button>
@@ -418,7 +519,7 @@
         </div>
 
         <div style="margin-bottom: 10px;">
-          <strong style="font-size:13px; color:#c4b5fd;">90-Minute Hands-On Codelabs, 12-Slide Workshop Decks &amp; 5-Minute Video Scripts:</strong>
+          <strong style="font-size:13px; color:var(--accent-2);">90-Minute Hands-On Codelabs, 12-Slide Workshop Decks &amp; 5-Minute Video Scripts:</strong>
           <div class="sim-controls" style="margin-top:6px;">
             <button class="sim-btn" onclick="loadPublishDoc('workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck/codelab-90min-breach-sim.md')">Codelab 2.8: Pooled Breach Sim (90m)</button>
             <button class="sim-btn" onclick="loadPublishDoc('workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/codelab-90min-regulated-airgapped.md')">Codelab 3.8: Sovereign Air-Gapped Silo (90m)</button>
@@ -674,7 +775,7 @@
           </div>
           <button class="sim-btn primary" onclick="runLiveForensicAudit()">&#9889; Re-Run Live 12-Point Forensic Audit Now</button>
         </div>
-        <div id="forensic-run-banner" style="margin-top:12px; font-size:13px; color:#86efac;"></div>
+        <div id="forensic-run-banner" style="margin-top:12px; font-size:13px; color:var(--ok-text);"></div>
         <table>
           <thead>
             <tr>
@@ -790,7 +891,7 @@
       const codeBlocks = [];
       body = body.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, (_, lang, code) => {
         const token = `@@CODEBLOCK_${codeBlocks.length}@@`;
-        codeBlocks.push(`<pre><div style="font-size:11px; color:#93bbfd; margin-bottom:6px; text-transform:uppercase;">${escapeHtml(lang || 'code')}</div><code>${escapeHtml(code.trim())}</code></pre>`);
+        codeBlocks.push(`<pre><div style="font-size:11px; color:var(--link); margin-bottom:6px; text-transform:uppercase;">${escapeHtml(lang || 'code')}</div><code>${escapeHtml(code.trim())}</code></pre>`);
         return token;
       });
 
@@ -819,11 +920,11 @@
           .replace(/\*([^*]+)\*/g, '<em>$1</em>')
           .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, alt, src) => {
             const resolved = resolveRelativeAssetUrl(src, docRelPath);
-            return `<div style="margin:14px 0; background:#ffffff; padding:8px; border-radius:10px; border:1px solid var(--border);"><img src="${resolved}" alt="${alt}" style="width:100%; height:auto; display:block; border-radius:6px;" /></div>`;
+            return `<div style="margin:14px 0; background:var(--diagram-frame); padding:8px; border-radius:10px; border:1px solid var(--border);"><img src="${resolved}" alt="${alt}" style="width:100%; height:auto; display:block; border-radius:6px;" /></div>`;
           })
           .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => {
             const resolved = resolveRelativeAssetUrl(href, docRelPath);
-            return `<a href="${resolved}" target="_blank" style="color:#60a5fa;">${label}</a>`;
+            return `<a href="${resolved}" target="_blank" style="color:var(--link);">${label}</a>`;
           });
       }
 
@@ -847,7 +948,7 @@
         } else if (line.startsWith('### ')) {
           html += `<h3>${formatInline(line.slice(4))}</h3>`;
         } else if (line.startsWith('#### ')) {
-          html += `<h4 style="color:#cbd5e1; margin:14px 0 6px 0;">${formatInline(line.slice(5))}</h4>`;
+          html += `<h4 style="color:var(--muted); margin:14px 0 6px 0;">${formatInline(line.slice(5))}</h4>`;
         } else if (line.startsWith('> ')) {
           html += `<blockquote>${formatInline(line.slice(2))}</blockquote>`;
         } else if (line.startsWith('- ') || line.startsWith('* ')) {
