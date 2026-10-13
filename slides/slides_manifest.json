@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-08T13:26:08.366Z",
-  "engine": "PromptCanvas Vision Decompiler • appendEditableDrawioSlides (src/lib/export/editablePptxCompiler.ts) • pptxgenjs LAYOUT_WIDE 16:9",
+  "generatedAt": "2026-10-13T05:06:10.924Z",
+  "engine": "PromptCanvas Vision Decompiler • Google Cloud Next 26 Branded Bento Canvas • pptxgenjs LAYOUT_WIDE 16:9",
   "decks": [
     {
       "key": "WS1",
@@ -13,7 +13,7 @@
       ],
       "shapes": 112,
       "connectors": 46,
-      "bytes": 2054933,
+      "bytes": 2999846,
       "narrative": "blog deck.json"
     },
     {
@@ -29,7 +29,7 @@
       ],
       "shapes": 224,
       "connectors": 92,
-      "bytes": 4205455,
+      "bytes": 5232505,
       "narrative": "blog deck.json"
     },
     {
@@ -44,7 +44,7 @@
       ],
       "shapes": 168,
       "connectors": 69,
-      "bytes": 3122109,
+      "bytes": 4104253,
       "narrative": "blog deck.json"
     },
     {
@@ -60,7 +60,7 @@
       ],
       "shapes": 224,
       "connectors": 92,
-      "bytes": 4314390,
+      "bytes": 5381908,
       "narrative": "blog deck.json"
     },
     {
@@ -73,7 +73,7 @@
       ],
       "shapes": 56,
       "connectors": 23,
-      "bytes": 1174169,
+      "bytes": 2086353,
       "narrative": "blog deck.json"
     },
     {
@@ -96,7 +96,7 @@
         "ws4-terraform-hybrid-psc-blueprint-resource-graph",
         "ws5-decision-tree-and-agentic-triad"
       ],
-      "bytes": 14317891
+      "bytes": 16037698
     }
   ]
 }

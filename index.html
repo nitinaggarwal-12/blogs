@@ -285,6 +285,380 @@
     }
     .tab-pane { display: none; }
     .tab-pane.active { display: block; }
+    /* ---------- Guided Workstream 1–5 Hub ---------- */
+    .ws-hub-card {
+      background: linear-gradient(180deg, var(--panel) 0%, var(--panel-alt) 100%);
+      border: 2px solid var(--blue);
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+    }
+    .ws-stepper {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+      gap: 10px;
+      margin: 14px 0 18px 0;
+    }
+    .ws-step-btn {
+      text-align: left;
+      background: var(--panel);
+      color: var(--text);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .ws-step-btn:hover {
+      border-color: var(--blue);
+      transform: translateY(-1px);
+    }
+    .ws-step-btn.active {
+      background: var(--blue);
+      color: var(--on-primary);
+      border-color: var(--blue);
+      box-shadow: 0 4px 14px rgba(79,140,255,0.35);
+    }
+    .ws-step-btn .ws-kicker {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      opacity: 0.85;
+      display: block;
+      margin-bottom: 3px;
+    }
+    .ws-step-btn .ws-name {
+      font-size: 14px;
+      font-weight: 700;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .ws-step-btn .ws-meta {
+      font-size: 11.5px;
+      opacity: 0.82;
+      display: block;
+    }
+    .ws-split-grid {
+      display: grid;
+      grid-template-columns: 1.12fr 0.88fr;
+      gap: 18px;
+      margin-top: 14px;
+    }
+    @media (max-width: 1080px) {
+      .ws-split-grid { grid-template-columns: 1fr; }
+    }
+    .ws-pane {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .slide-stage {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px;
+      position: relative;
+      text-align: center;
+    }
+    .slide-stage img {
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+      display: block;
+      margin: 0 auto;
+      background: #ffffff;
+    }
+    .slide-pill-strip {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      max-height: 88px;
+      overflow-y: auto;
+      padding-bottom: 4px;
+    }
+    .slide-pill {
+      background: var(--panel-alt);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 9px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .slide-pill.active {
+      background: var(--blue);
+      color: var(--on-primary);
+      border-color: var(--blue);
+    }
+    .slide-pill.editable-highlight {
+      border-color: var(--green);
+      color: var(--ok-text);
+    }
+    .slide-pill.editable-highlight.active {
+      background: var(--green);
+      color: #052e16;
+      border-color: var(--green);
+    }
+    .toc-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding: 10px 12px;
+      background: var(--panel-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+    /* ---------- PromptCanvas Cloud Viewer & Open with Google Slides Split-Pill ---------- */
+    .pc-cloud-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(245, 158, 11, 0.16);
+      color: #fbbf24;
+      border: 1.5px solid rgba(245, 158, 11, 0.55);
+      padding: 7px 13px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .pc-cloud-btn:hover {
+      background: rgba(245, 158, 11, 0.28);
+      border-color: #f59e0b;
+      transform: translateY(-1px);
+    }
+    [data-theme="light"] .pc-cloud-btn,
+    [data-theme="google-cloud"] .pc-cloud-btn {
+      background: #fef3c7;
+      color: #b45309;
+      border-color: #f59e0b;
+    }
+    .pc-split-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: stretch;
+      border-radius: 999px;
+      border: 1.5px solid rgba(251, 188, 4, 0.65);
+      background: #202124;
+      color: #e8eaed;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.28);
+    }
+    .pc-split-main {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 13px;
+      background: transparent;
+      color: #e8eaed;
+      border: none;
+      border-radius: 999px 0 0 999px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s ease;
+    }
+    .pc-split-main:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    .pc-split-caret {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      background: transparent;
+      color: #e8eaed;
+      border: none;
+      border-left: 1px solid #444746;
+      border-radius: 0 999px 999px 0;
+      cursor: pointer;
+      font-size: 11px;
+      transition: background 0.15s ease;
+    }
+    .pc-split-caret:hover {
+      background: rgba(255,255,255,0.12);
+    }
+    .pc-gslides-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      background: #fbbc04;
+      color: #202124;
+      font-weight: 900;
+      font-size: 10px;
+      flex-shrink: 0;
+    }
+    .pc-gdocs-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      background: #4285f4;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 10px;
+      flex-shrink: 0;
+    }
+    .pc-gpdf-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      background: #ea4335;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 9px;
+      flex-shrink: 0;
+    }
+    .pc-dropdown-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      width: 280px;
+      background: #28292a;
+      border: 1px solid #444746;
+      border-radius: 10px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.65);
+      padding: 6px 0;
+      z-index: 9999;
+      text-align: left;
+    }
+    .pc-dropdown-menu.open {
+      display: block;
+    }
+    .pc-dropdown-section {
+      padding: 5px 14px 3px 14px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #9aa0a6;
+    }
+    .pc-dropdown-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      background: transparent;
+      border: none;
+      color: #e8eaed;
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: left;
+      text-decoration: none;
+    }
+    .pc-dropdown-item:hover {
+      background: rgba(255, 255, 255, 0.09);
+    }
+    .pc-dropdown-divider {
+      height: 1px;
+      background: #444746;
+      margin: 5px 0;
+    }
+    /* ---------- Same-Screen Gmail Attachment Opener Cloud Viewer Modal ---------- */
+    .pc-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: rgba(7, 10, 18, 0.92);
+      backdrop-filter: blur(8px);
+      flex-direction: column;
+      color: #e8eaed;
+      font-family: -apple-system, BlinkMacSystemFont, "Google Sans", Roboto, sans-serif;
+    }
+    .pc-modal-overlay.open {
+      display: flex;
+    }
+    .pc-modal-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 18px;
+      background: #131314;
+      border-bottom: 1px solid #2d2e30;
+      flex-wrap: wrap;
+    }
+    .pc-modal-subbar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 8px 16px;
+      background: #1b1b1f;
+      border-bottom: 1px solid #2d2e30;
+      flex-wrap: wrap;
+    }
+    .pc-pill-toolbar {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #28292a;
+      border: 1px solid #444746;
+      border-radius: 999px;
+      padding: 4px 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+      flex-wrap: wrap;
+    }
+    .pc-toolbar-btn {
+      background: transparent;
+      color: #e8eaed;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .pc-toolbar-btn:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    .pc-toolbar-btn.active {
+      background: #fbbc04;
+      color: #202124;
+    }
+    .pc-modal-stage {
+      flex: 1;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 18px 24px;
+      position: relative;
+    }
+    .pc-modal-filmstrip {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 10px 18px;
+      background: #131314;
+      border-top: 1px solid #2d2e30;
+      align-items: center;
+    }
   </style>
 </head>
 <body>
@@ -342,15 +716,222 @@
 
   <div class="container">
     <nav class="tabs" aria-label="Workstream Navigation">
-      <button class="tab-btn active" onclick="switchTab('patterns', this)">1. Three Core Patterns &amp; Cymbal Case Study</button>
+      <button class="tab-btn active" onclick="switchTab('patterns', this)">1. &#129517; Workstream 1–5 Guided Hub (Blogs + Editable Slides + Diagrams)</button>
       <button class="tab-btn" onclick="switchTab('publish', this)">2. &#128240; Publish-Ready Blogs, Codelabs &amp; Decks Studio</button>
-      <button class="tab-btn" onclick="switchTab('simulator', this)">3. Live 5-Hop Runtime &amp; Breach Simulator</button>
-      <button class="tab-btn" onclick="switchTab('workstreams', this)">4. Workstreams 1–5 Deliverable Viewer</button>
-      <button class="tab-btn" onclick="switchTab('forensic', this)">5. Live 12-Point Deep Forensic Audit</button>
+      <button class="tab-btn" onclick="switchTab('simulator', this)">3. &#9889; Live 5-Hop Runtime &amp; Breach Simulator</button>
+      <button class="tab-btn" onclick="switchTab('workstreams', this)">4. &#128193; Workstreams 1–5 Deliverable Viewer</button>
+      <button class="tab-btn" onclick="switchTab('forensic', this)">5. &#9989; Live 12-Point Deep Forensic Audit</button>
     </nav>
 
-    <!-- TAB 1: THREE CORE PATTERNS & CYMBAL SCENARIO -->
+    <!-- TAB 1: WORKSTREAM 1-5 GUIDED HUB & THREE CORE PATTERNS -->
     <section id="tab-patterns" class="tab-pane active">
+      <div class="ws-hub-card" id="guided-workstream-hub">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+          <div>
+            <span class="badge badge-green">START HERE • STEP-BY-STEP WORKSTREAM EXPLORER</span>
+            <h2 style="margin:6px 0 4px 0; font-size:21px;">Pick a Workstream (WS 1 &rarr; WS 5) to View Its Blog, Interactive Editable Slides &amp; Architecture Diagrams Together</h2>
+            <p class="muted" style="margin:0;">Every workstream below pairs an explanatory blog (<code>blogs/ws*.md</code>) with a <strong>100% native editable PowerPoint &amp; Google Slides deck (<code>slides/*.pptx</code>)</strong> where every diagram is decomposed into clickable shapes, icons, talking points &amp; tables.</p>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <button type="button" class="pc-cloud-btn" onclick="openCloudViewerModal('ALL', 1, 'slides')" title="Open Same-Screen PromptCanvas Cloud Viewer for the 60-Slide Master Deck">&#128065;&#65039; Cloud Viewer (60 Slides)</button>
+            <div class="pc-split-wrap" id="master-open-gslides-split">
+              <button type="button" class="pc-split-main" onclick="openInGoogleWorkspace('ALL', 'slides', 1)">
+                <span class="pc-gslides-icon">S</span>
+                <span>Open Master Deck in Google Slides</span>
+              </button>
+              <button type="button" class="pc-split-caret" onclick="togglePcDropdown(event, 'master-gslides-menu')" aria-label="More Google Workspace options">&#9660;</button>
+              <div id="master-gslides-menu" class="pc-dropdown-menu">
+                <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace('ALL', 'slides', 1)">
+                  <span>&#8599;</span> <span>Open in new tab (Google Slides)</span>
+                </button>
+                <div class="pc-dropdown-divider"></div>
+                <div class="pc-dropdown-section">Google Workspace Apps</div>
+                <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace('ALL', 'slides', 1)">
+                  <span class="pc-gslides-icon">S</span> <span>Google Slides (60 Editable Slides)</span>
+                </button>
+                <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace('ALL', 'docs', 1)">
+                  <span class="pc-gdocs-icon">D</span> <span>Google Docs (Master 14-Diagram Guide)</span>
+                </button>
+                <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace('ALL', 'pdf', 1)">
+                  <span class="pc-gpdf-icon">PDF</span> <span>PDF Document (Vector Slide Handout)</span>
+                </button>
+                <div class="pc-dropdown-divider"></div>
+                <button type="button" class="pc-dropdown-item" onclick="openCloudViewerModal('ALL', 1, 'embed')">
+                  <span>&#127760;</span> <span>Live Embedded Google Slides Viewer</span>
+                </button>
+                <a class="pc-dropdown-item" href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx?v=20261013-v5" download>
+                  <span>&#11015;</span> <span>Download All-in-One .pptx (60 Slides)</span>
+                </a>
+              </div>
+            </div>
+            <a href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx?v=20261013-v5" download class="sim-btn" style="text-decoration:none;">&#11015; Download .pptx (60 Slides)</a>
+          </div>
+        </div>
+
+        <div class="ws-stepper" role="tablist" aria-label="Select Workstream 1 to 5">
+          <button class="ws-step-btn active" id="ws-btn-WS1" onclick="selectGuidedWorkstream('WS1')">
+            <span class="ws-kicker">Workstream 1 • Foundation</span>
+            <span class="ws-name">1. Reference Architecture &amp; 5-Hop</span>
+            <span class="ws-meta">16 Slides • 2 Diagrams • 112 Editable Shapes</span>
+          </button>
+          <button class="ws-step-btn" id="ws-btn-WS2" onclick="selectGuidedWorkstream('WS2')">
+            <span class="ws-kicker">Workstream 2 • Pattern A</span>
+            <span class="ws-name">2. Pooled SaaS &amp; 90% Cache Save</span>
+            <span class="ws-meta">21 Slides • 4 Diagrams • 224 Editable Shapes</span>
+          </button>
+          <button class="ws-step-btn" id="ws-btn-WS3" onclick="selectGuidedWorkstream('WS3')">
+            <span class="ws-kicker">Workstream 3 • Pattern B</span>
+            <span class="ws-name">3. Zero-Trust Sovereign Silos</span>
+            <span class="ws-meta">19 Slides • 3 Diagrams • 168 Editable Shapes</span>
+          </button>
+          <button class="ws-step-btn" id="ws-btn-WS4" onclick="selectGuidedWorkstream('WS4')">
+            <span class="ws-kicker">Workstream 4 • Pattern C</span>
+            <span class="ws-name">4. Dynamic Hybrid &amp; Live Upgrade</span>
+            <span class="ws-meta">22 Slides • 4 Diagrams • 224 Editable Shapes</span>
+          </button>
+          <button class="ws-step-btn" id="ws-btn-WS5" onclick="selectGuidedWorkstream('WS5')">
+            <span class="ws-kicker">Workstream 5 • Capstone</span>
+            <span class="ws-name">5. Decision Guide &amp; Agentic Triad</span>
+            <span class="ws-meta">13 Slides • 1 Diagram • 56 Editable Shapes</span>
+          </button>
+        </div>
+
+        <!-- Active Workstream Summary Bar -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:12px 16px; background:var(--panel); border:1px solid var(--border); border-radius:10px;">
+          <div>
+            <span id="hub-ws-badge" class="badge badge-blue">WS1 • 16 Editable Slides</span>
+            <strong id="hub-ws-title" style="font-size:16px; margin-left:8px;">Multi-Tenant Agentic AI on Google Cloud: Taxonomy &amp; 5-Hop Baseline</strong>
+            <div id="hub-ws-sub" class="muted" style="font-size:13px; margin-top:3px;">Pooled, Sovereign Silo &amp; Dynamic Hybrid topologies extending the Cloud Architecture Center hub-and-spoke reference for B2B ISV SaaS</div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <button type="button" id="hub-cloud-viewer-btn" class="pc-cloud-btn" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'slides')" title="Open Same-Screen PromptCanvas Cloud Viewer (Interactive Studio + Live Google Slides Embed)">
+              &#128065;&#65039; Cloud Viewer
+            </button>
+            <div class="pc-split-wrap" id="hub-open-gslides-split">
+              <button type="button" class="pc-split-main" id="hub-open-gslides-main" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1)">
+                <span class="pc-gslides-icon">S</span>
+                <span id="hub-open-gslides-label">Open with Google Slides</span>
+              </button>
+              <button type="button" class="pc-split-caret" onclick="togglePcDropdown(event, 'hub-gslides-menu')" aria-label="Choose Google Workspace app">&#9660;</button>
+              <div id="hub-gslides-menu" class="pc-dropdown-menu">
+                <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1)">
+                  <span>&#8599;</span> <span>Open in new tab (Google Slides)</span>
+                </button>
+                <div class="pc-dropdown-divider"></div>
+                <div class="pc-dropdown-section">Google apps</div>
+                <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1)">
+                  <span class="pc-gslides-icon">S</span> <span>Google Slides (100% Editable Deck)</span>
+                </button>
+                <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'docs', 1, activeHubDocPath)">
+                  <span class="pc-gdocs-icon">D</span> <span>Google Docs (Editable Blog + Figures)</span>
+                </button>
+                <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'pdf', 1)">
+                  <span class="pc-gpdf-icon">PDF</span> <span>PDF Document (Vector Slide Export)</span>
+                </button>
+                <div class="pc-dropdown-divider"></div>
+                <div class="pc-dropdown-section">Same-Screen Cloud Viewer</div>
+                <button type="button" class="pc-dropdown-item" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'slides')">
+                  <span>&#10024;</span> <span>Interactive Slide Studio (Fast Canvas)</span>
+                </button>
+                <button type="button" class="pc-dropdown-item" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'embed')">
+                  <span>&#127760;</span> <span>Embedded Live Google Slides Viewer</span>
+                </button>
+                <button type="button" class="pc-dropdown-item" onclick="openCloudViewerModal(activeHubWsKey, 1, 'docs')">
+                  <span>&#128196;</span> <span>Embedded Live Google Docs Viewer</span>
+                </button>
+                <div class="pc-dropdown-divider"></div>
+                <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1, '', true)">
+                  <span>&#128260;</span> <span>Force Re-Sync .pptx &rarr; Google Slides</span>
+                </button>
+              </div>
+            </div>
+            <button type="button" class="sim-btn" onclick="openInGoogleWorkspace(activeHubWsKey, 'docs', 1, activeHubDocPath)" title="Open this Workstream's Blog as a native editable Google Doc">
+              <span class="pc-gdocs-icon" style="margin-right:4px;">D</span> Open Blog in Google Docs &#8599;
+            </button>
+            <a id="hub-pptx-download" href="slides/ws1-reference-architecture-editable-slides.pptx?v=20261013-v5" download class="sim-btn" style="text-decoration:none;">&#11015; Download .pptx (WS1)</a>
+            <button id="hub-sim-btn" class="sim-btn" onclick="jumpToWorkstreamSim('sim1')">&#9889; Run Live 5-Hop Simulation</button>
+          </div>
+        </div>
+
+        <!-- 2-Pane Split: Left = Interactive Slide Deck Previewer | Right = Diagrams & Export Mapping -->
+        <div class="ws-split-grid">
+          <!-- LEFT PANE: Interactive Editable Slide Deck Viewer -->
+          <div class="ws-pane">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+              <div>
+                <span class="badge badge-green">1. EDITABLE SLIDE DECK PREVIEWER (.PPTX &amp; GOOGLE SLIDES)</span>
+                <h3 id="hub-slide-heading" style="margin:4px 0 0 0; font-size:16px;">Slide 1 of 16 — Title Slide</h3>
+              </div>
+              <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                <button type="button" class="pc-cloud-btn" style="padding:5px 10px; font-size:11.5px;" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'slides')" title="Open full-screen Cloud Viewer at this slide">&#128065;&#65039; Cloud Viewer</button>
+                <button type="button" class="sim-btn" style="padding:5px 10px; font-size:11.5px; border-color:#fbbc04;" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1)" title="Open this deck directly in Google Slides"><span class="pc-gslides-icon" style="margin-right:4px;">S</span> Edit in Slides &#8599;</button>
+                <button class="sim-btn" style="padding:5px 10px; font-size:12px;" onclick="stepHubSlide(-1)">&#9664; Prev</button>
+                <span id="hub-slide-counter" class="badge badge-blue" style="font-size:12px;">1 / 16</span>
+                <button class="sim-btn primary" style="padding:5px 10px; font-size:12px;" onclick="stepHubSlide(1)">Next &#9654;</button>
+              </div>
+            </div>
+
+            <div class="slide-stage" style="cursor:zoom-in;" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'slides')" title="Click slide to launch PromptCanvas Same-Screen Cloud Viewer">
+              <img id="hub-slide-img" src="slides/previews/ws1-reference-architecture-editable-slides/slide_01.png?v=20261013-v5" alt="Editable Slide Preview" />
+            </div>
+
+            <div id="hub-slide-explain" style="margin-top:8px; font-size:12.5px; color:var(--ok-text); font-weight:600;">
+              &#128161; Green-bordered slide pills below are the 100% Decomposed Native Editable Diagram + Blog Talking-Points slides (every box, icon &amp; arrow is editable in PowerPoint / Google Slides).
+            </div>
+
+            <div id="hub-slide-pills" class="slide-pill-strip" aria-label="Slide Selector"></div>
+          </div>
+
+          <!-- RIGHT PANE: Architecture Diagrams & Blog-to-Slide Export Guide for This Workstream -->
+          <div class="ws-pane">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+              <div>
+                <span class="badge badge-purple">2. ARCHITECTURE DIAGRAMS IN THIS WORKSTREAM</span>
+                <h3 id="hub-diag-heading" style="margin:4px 0 0 0; font-size:16px;">Select a Figure to Inspect or Download</h3>
+              </div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <a id="hub-diag-drawio" href="diagrams/ws1-multi-tenant-taxonomy-overview.drawio" download class="sim-btn" style="text-decoration:none; padding:5px 10px; font-size:12px;">&#128190; .drawio</a>
+                <a id="hub-diag-svg" href="diagrams/ws1-multi-tenant-taxonomy-overview.svg" target="_blank" class="sim-btn" style="text-decoration:none; padding:5px 10px; font-size:12px;">&#128208; .svg</a>
+                <a id="hub-diag-png" href="diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png" target="_blank" class="sim-btn" style="text-decoration:none; padding:5px 10px; font-size:12px;">&#128444; High-Res PNG</a>
+              </div>
+            </div>
+
+            <div id="hub-diag-buttons" class="sim-controls" style="margin-bottom:10px;"></div>
+
+            <div style="background:#ffffff; border-radius:8px; padding:6px; border:1px solid var(--border); max-height:360px; overflow-y:auto; text-align:center;">
+              <img id="hub-diag-img" src="diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png" alt="Workstream Diagram" style="width:100%; height:auto; display:block; border-radius:4px;" />
+            </div>
+
+            <div style="margin-top:12px; padding:10px 12px; background:var(--panel-alt); border:1px solid var(--border); border-radius:8px; font-size:12.5px;">
+              <strong style="color:var(--link);">How This Blog &amp; Its Diagrams Export to Editable Slides:</strong>
+              <ul style="margin:6px 0 0 18px; padding:0; color:var(--text);">
+                <li><strong>Blog Text &amp; Bullets</strong> (<code>blogs/<span id="hub-deck-json-label">ws1-reference-architecture-taxonomy-and-5hop-baseline.deck.json</span></code>) &rarr; Executive TL;DR, Section Narrative &amp; Key Takeaway slides.</li>
+                <li><strong>Each Embedded Diagram</strong> (<code>diagrams/*.drawio</code>) &rarr; 3 consecutive slides: <em>(1) 1:1 Master Image</em>, <em>(2) 100% Decomposed Editable Shapes + Talking-Points Sidebar</em>, and <em>(3) Component Spec Table</em>.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTTOM PANE OF HUB: Synchronized Blog Reader with Document Mode Switcher & Section TOC -->
+        <div class="ws-pane" id="hub-blog-section" style="margin-top:18px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
+            <div>
+              <span class="badge badge-blue">3. SYNCHRONIZED BLOG &amp; CODELAB READER FOR THIS WORKSTREAM</span>
+              <h3 id="hub-reader-title" style="margin:4px 0 0 0; font-size:17px;">Reading: blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md</h3>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+              <div id="hub-doc-switcher" style="display:flex; gap:6px; flex-wrap:wrap;"></div>
+              <button type="button" class="pc-cloud-btn" style="padding:5px 11px; font-size:12px;" onclick="openCloudViewerModal(activeHubWsKey, 1, 'docs')">&#128065;&#65039; Cloud Viewer (Docs)</button>
+              <button type="button" class="sim-btn" style="border-color:#4285f4;" onclick="openInGoogleWorkspace(activeHubWsKey, 'docs', 1, activeHubDocPath)"><span class="pc-gdocs-icon" style="margin-right:5px;">D</span> Open with Google Docs &#8599;</button>
+              <button class="sim-btn" onclick="copyHubBlogMarkdown()">&#128203; Copy Markdown</button>
+              <button class="sim-btn" onclick="window.print()">&#128424; Print / Save PDF</button>
+            </div>
+          </div>
+          <div id="hub-blog-toc" class="toc-bar"></div>
+          <div id="hub-blog-reader" class="article-reader" style="max-height:620px;">Loading workstream blog...</div>
+        </div>
+      </div>
+
       <div class="grid-3">
         <div class="card">
           <span class="badge badge-blue">Pattern A • Milestone 1 (W4)</span>
@@ -469,26 +1050,107 @@
       <div class="card" id="workstream-blogs-and-editable-slides">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
           <div>
-            <span class="badge badge-blue">PromptCanvas Vision Module • 100% Native Editable PowerPoint / Google Slides (6 Decks • 151 Slides • 14 Diagrams)</span>
-            <h3 style="margin-top:6px;">Workstream 1–5 Explanatory Blogs &amp; Editable Architecture Slide Decks (`.md` + `.pptx`)</h3>
+            <span class="badge badge-blue">PromptCanvas Vision Module • 100% Native Editable PowerPoint &amp; Google Slides (6 Decks • 151 Slides • 14 Diagrams)</span>
+            <h3 style="margin-top:6px;">Workstream 1–5 Explanatory Blogs, Cloud Viewer &amp; Editable Google Slides / PowerPoint Decks (`.md` + `.pptx`)</h3>
             <p style="font-size:13px; color:var(--link); margin:4px 0 0;">Each deck: Title &rarr; Executive TL;DR &rarr; Section narrative &rarr; per diagram [1:1 Master image &bull; Decomposed native editable shapes, icons &amp; connectors with talking-points sidebar &amp; speaker notes &bull; Component spec table] &rarr; Key Takeaways &rarr; Asset index.</p>
           </div>
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <a href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx" download class="sim-btn primary" style="text-decoration:none;">&#127916; Download Combined Deck (60 slides, all 14 diagrams)</a>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <button type="button" class="pc-cloud-btn" onclick="openCloudViewerModal('ALL', 1, 'slides')">&#128065;&#65039; Cloud Viewer (All 60 Slides)</button>
+            <button type="button" class="sim-btn" style="border-color:#fbbc04;" onclick="openInGoogleWorkspace('ALL', 'slides', 1)"><span class="pc-gslides-icon" style="margin-right:5px;">S</span> Open Combined Deck in Google Slides &#8599;</button>
+            <a href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx?v=20261013-v5" download class="sim-btn primary" style="text-decoration:none;">&#127916; Download Combined .pptx (60 slides)</a>
+            <a href="slides/cloud_viewer_manifest.json" target="_blank" class="sim-btn" style="text-decoration:none;">&#9729;&#65039; cloud_viewer_manifest.json</a>
             <a href="slides/slides_manifest.json" target="_blank" class="sim-btn" style="text-decoration:none;">&#128203; slides_manifest.json</a>
           </div>
         </div>
         <table>
           <thead>
-            <tr><th>Workstream</th><th>Explanatory Blog (`blogs/*.md`)</th><th>Editable Slide Deck (`.pptx`)</th><th>Diagrams Embedded</th><th>Slides &bull; Shapes &bull; Connectors</th></tr>
+            <tr><th>Workstream</th><th>Explanatory Blog (`blogs/*.md`)</th><th>PromptCanvas Cloud Viewer &amp; Google Workspace</th><th>Editable Slide Deck (`.pptx`)</th><th>Slides &bull; Shapes &bull; Connectors</th></tr>
           </thead>
           <tbody>
-            <tr><td><strong>WS 1</strong></td><td><a href="blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md" target="_blank">Reference Architecture: Taxonomy &amp; 5-Hop Baseline</a></td><td><a href="slides/ws1-reference-architecture-editable-slides.pptx" download>ws1-reference-architecture-editable-slides.pptx</a></td><td>WS 1.1 Taxonomy &bull; WS 1.3 5-Hop Baseline</td><td>16 &bull; 112 &bull; 46</td></tr>
-            <tr><td><strong>WS 2</strong></td><td><a href="blogs/ws2-pattern-a-pooled-architecture.md" target="_blank">Pattern A: High-Density Pooled Architecture</a></td><td><a href="slides/ws2-pattern-a-pooled-editable-slides.pptx" download>ws2-pattern-a-pooled-editable-slides.pptx</a></td><td>WS 2.1 &bull; 2.2 &bull; 2.5 &bull; 2.6</td><td>21 &bull; 224 &bull; 92</td></tr>
-            <tr><td><strong>WS 3</strong></td><td><a href="blogs/ws3-pattern-b-sovereign-silos.md" target="_blank">Pattern B: Zero-Trust Sovereign Silos</a></td><td><a href="slides/ws3-pattern-b-siloed-editable-slides.pptx" download>ws3-pattern-b-siloed-editable-slides.pptx</a></td><td>WS 3.1 &bull; 3.2 &bull; 3.6</td><td>19 &bull; 168 &bull; 69</td></tr>
-            <tr><td><strong>WS 4</strong></td><td><a href="blogs/ws4-pattern-c-hybrid-dynamic-tiering.md" target="_blank">Pattern C: Hybrid Hub-and-Spoke &amp; Dynamic Tiering</a></td><td><a href="slides/ws4-pattern-c-hybrid-editable-slides.pptx" download>ws4-pattern-c-hybrid-editable-slides.pptx</a></td><td>WS 4.1 &bull; 4.2 &bull; 4.5 &bull; 4.6</td><td>22 &bull; 224 &bull; 92</td></tr>
-            <tr><td><strong>WS 5</strong></td><td><a href="blogs/ws5-decision-guide-and-agentic-triad.md" target="_blank">Decision Guide &amp; The Agentic Triad</a></td><td><a href="slides/ws5-wrap-up-editable-slides.pptx" download>ws5-wrap-up-editable-slides.pptx</a></td><td>WS 5.1/5.2 Decision Tree &amp; Triad</td><td>13 &bull; 56 &bull; 23</td></tr>
-            <tr><td><strong>ALL</strong></td><td>All five blogs above</td><td><a href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx" download>geap-multi-tenancy-all-workstreams-editable-slides.pptx</a></td><td>All 14 blueprints</td><td>60 &bull; 784 &bull; 322</td></tr>
+            <tr>
+              <td><strong>WS 1</strong></td>
+              <td><a href="blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md" target="_blank">Reference Architecture: Taxonomy &amp; 5-Hop Baseline</a></td>
+              <td>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                  <button type="button" class="pc-cloud-btn" style="padding:4px 9px; font-size:11.5px;" onclick="openCloudViewerModal('WS1', 1, 'slides')">&#128065;&#65039; Cloud Viewer</button>
+                  <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:#fbbc04;" onclick="openInGoogleWorkspace('WS1', 'slides', 1)"><span class="pc-gslides-icon" style="margin-right:4px;">S</span> Google Slides &#8599;</button>
+                  <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:#4285f4;" onclick="openInGoogleWorkspace('WS1', 'docs', 1)"><span class="pc-gdocs-icon" style="margin-right:4px;">D</span> Google Docs &#8599;</button>
+                  <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:#ea4335;" onclick="openInGoogleWorkspace('WS1', 'pdf', 1)"><span class="pc-gpdf-icon" style="margin-right:4px;">PDF</span> PDF &#8599;</button>
+                </div>
+              </td>
+              <td><a href="slides/ws1-reference-architecture-editable-slides.pptx?v=20261013-v5" download>ws1-reference-architecture-editable-slides.pptx</a></td>
+              <td>16 &bull; 112 &bull; 46</td>
+            </tr>
+            <tr>
+              <td><strong>WS 2</strong></td>
+              <td><a href="blogs/ws2-pattern-a-pooled-architecture.md" target="_blank">Pattern A: High-Density Pooled Architecture</a></td>
+              <td>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                  <button type="button" class="pc-cloud-btn" style="padding:4px 9px; font-size:11.5px;" onclick="openCloudViewerModal('WS2', 1, 'slides')">&#128065;&#65039; Cloud Viewer</button>
+                  <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:#fbbc04;" onclick="openInGoogleWorkspace('WS2', 'slides', 1)"><span class="pc-gslides-icon" style="margin-right:4px;">S</span> Google Slides &#8599;</button>
+                  <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:#4285f4;" onclick="openInGoogleWorkspace('WS2', 'docs', 1)"><span class="pc-gdocs-icon" style="margin-right:4px;">D</span> Google Docs &#8599;</button>
+                  <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:#ea4335;" onclick="openInGoogleWorkspace('WS2', 'pdf', 1)"><span class="pc-gpdf-icon" style="margin-right:4px;">PDF</span> PDF &#8599;</button>
+                </div>
+              </td>
+              <td><a href="slides/ws2-pattern-a-pooled-editable-slides.pptx?v=20261013-v5" download>ws2-pattern-a-pooled-editable-slides.pptx</a></td>
+              <td>21 &bull; 224 &bull; 92</td>
+            </tr>
+            <tr>
+              <td><strong>WS 3</strong></td>
+              <td><a href="blogs/ws3-pattern-b-sovereign-silos.md" target="_blank">Pattern B: Zero-Trust Sovereign Silos</a></td>
+              <td>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                  <button type="button" class="pc-cloud-btn" style="padding:4px 9px; font-size:11.5px;" onclick="openCloudViewerModal('WS3', 1, 'slides')">&#128065;&#65039; Cloud Viewer</button>
+                  <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:#fbbc04;" onclick="openInGoogleWorkspace('WS3', 'slides', 1)"><span class="pc-gslides-icon" style="margin-right:4px;">S</span> Google Slides &#8599;</button>
+                  <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:#4285f4;" onclick="openInGoogleWorkspace('WS3', 'docs', 1)"><span class="pc-gdocs-icon" style="margin-right:4px;">D</span> Google Docs &#8599;</button>
+                  <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:#ea4335;" onclick="openInGoogleWorkspace('WS3', 'pdf', 1)"><span class="pc-gpdf-icon" style="margin-right:4px;">PDF</span> PDF &#8599;</button>
+                </div>
+              </td>
+              <td><a href="slides/ws3-pattern-b-siloed-editable-slides.pptx?v=20261013-v5" download>ws3-pattern-b-siloed-editable-slides.pptx</a></td>
+              <td>19 &bull; 168 &bull; 69</td>
+            </tr>
+            <tr>
+              <td><strong>WS 4</strong></td>
+              <td><a href="blogs/ws4-pattern-c-hybrid-dynamic-tiering.md" target="_blank">Pattern C: Hybrid Hub-and-Spoke &amp; Dynamic Tiering</a></td>
+              <td>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                  <button type="button" class="pc-cloud-btn" style="padding:4px 9px; font-size:11.5px;" onclick="openCloudViewerModal('WS4', 1, 'slides')">&#128065;&#65039; Cloud Viewer</button>
+                  <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:#fbbc04;" onclick="openInGoogleWorkspace('WS4', 'slides', 1)"><span class="pc-gslides-icon" style="margin-right:4px;">S</span> Google Slides &#8599;</button>
+                  <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:#4285f4;" onclick="openInGoogleWorkspace('WS4', 'docs', 1)"><span class="pc-gdocs-icon" style="margin-right:4px;">D</span> Google Docs &#8599;</button>
+                  <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:#ea4335;" onclick="openInGoogleWorkspace('WS4', 'pdf', 1)"><span class="pc-gpdf-icon" style="margin-right:4px;">PDF</span> PDF &#8599;</button>
+                </div>
+              </td>
+              <td><a href="slides/ws4-pattern-c-hybrid-editable-slides.pptx?v=20261013-v5" download>ws4-pattern-c-hybrid-editable-slides.pptx</a></td>
+              <td>22 &bull; 224 &bull; 92</td>
+            </tr>
+            <tr>
+              <td><strong>WS 5</strong></td>
+              <td><a href="blogs/ws5-decision-guide-and-agentic-triad.md" target="_blank">Decision Guide &amp; The Agentic Triad</a></td>
+              <td>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                  <button type="button" class="pc-cloud-btn" style="padding:4px 9px; font-size:11.5px;" onclick="openCloudViewerModal('WS5', 1, 'slides')">&#128065;&#65039; Cloud Viewer</button>
+                  <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:#fbbc04;" onclick="openInGoogleWorkspace('WS5', 'slides', 1)"><span class="pc-gslides-icon" style="margin-right:4px;">S</span> Google Slides &#8599;</button>
+                  <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:#4285f4;" onclick="openInGoogleWorkspace('WS5', 'docs', 1)"><span class="pc-gdocs-icon" style="margin-right:4px;">D</span> Google Docs &#8599;</button>
+                  <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:#ea4335;" onclick="openInGoogleWorkspace('WS5', 'pdf', 1)"><span class="pc-gpdf-icon" style="margin-right:4px;">PDF</span> PDF &#8599;</button>
+                </div>
+              </td>
+              <td><a href="slides/ws5-wrap-up-editable-slides.pptx?v=20261013-v5" download>ws5-wrap-up-editable-slides.pptx</a></td>
+              <td>13 &bull; 56 &bull; 23</td>
+            </tr>
+            <tr>
+              <td><strong>ALL</strong></td>
+              <td>All five blogs above</td>
+              <td>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                  <button type="button" class="pc-cloud-btn" style="padding:4px 9px; font-size:11.5px;" onclick="openCloudViewerModal('ALL', 1, 'slides')">&#128065;&#65039; Cloud Viewer</button>
+                  <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:#fbbc04;" onclick="openInGoogleWorkspace('ALL', 'slides', 1)"><span class="pc-gslides-icon" style="margin-right:4px;">S</span> Google Slides &#8599;</button>
+                  <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:#4285f4;" onclick="openInGoogleWorkspace('ALL', 'docs', 1)"><span class="pc-gdocs-icon" style="margin-right:4px;">D</span> Google Docs &#8599;</button>
+                  <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:#ea4335;" onclick="openInGoogleWorkspace('ALL', 'pdf', 1)"><span class="pc-gpdf-icon" style="margin-right:4px;">PDF</span> PDF &#8599;</button>
+                </div>
+              </td>
+              <td><a href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx?v=20261013-v5" download>geap-multi-tenancy-all-workstreams-editable-slides.pptx</a></td>
+              <td>60 &bull; 784 &bull; 322</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -498,7 +1160,7 @@
     <section id="tab-publish" class="tab-pane">
       <div class="card">
         <h3>&#128240; Publication-Ready Blogs, Reference Guides, 90-Min Codelabs, Workshop Decks &amp; Video Scripts</h3>
-        <p class="muted">Select any deliverable category below to read the formatted publication, copy clean Markdown for Google Cloud Blog / Medium / Dev.to / LinkedIn, or print to PDF:</p>
+        <p class="muted">Select any deliverable category below to read the formatted publication, open in Google Docs / Google Slides / Cloud Viewer, copy clean Markdown, or print to PDF:</p>
 
         <div style="margin-bottom: 10px;">
           <strong style="font-size:13px; color:var(--link);">Flagship 4-Part Blog Series &amp; Architecture Center Guides:</strong>
@@ -538,7 +1200,10 @@
             <span id="pub-doc-badge" class="badge badge-green">PUBLISH_READY</span>
             <span id="pub-doc-path" class="muted" style="margin-left:8px;">workstream-2-pattern-a-pooled/2.7-blog-pooled-architecture-governance.md</span>
           </div>
-          <div style="display:flex; gap:8px;">
+          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <button type="button" class="pc-cloud-btn" onclick="openPublishDocInCloudViewer()">&#128065;&#65039; Cloud Viewer</button>
+            <button type="button" class="sim-btn" style="border-color:#4285f4;" onclick="openPublishDocInGoogleDocs()"><span class="pc-gdocs-icon" style="margin-right:5px;">D</span> Open with Google Docs &#8599;</button>
+            <button type="button" class="sim-btn" style="border-color:#fbbc04;" onclick="openPublishDocWorkstreamSlides()"><span class="pc-gslides-icon" style="margin-right:5px;">S</span> Open Workstream Slides &#8599;</button>
             <button class="sim-btn" onclick="copyCurrentPublishMarkdown()">&#128203; Copy Raw Markdown</button>
             <button class="sim-btn" onclick="window.print()">&#128424; Print / Save as PDF</button>
           </div>
@@ -947,11 +1612,17 @@
           const idx = Number(line.replace('@@CODEBLOCK_', '').replace('@@', ''));
           html += codeBlocks[idx] || '';
         } else if (line.startsWith('# ')) {
-          html += `<h1>${formatInline(line.slice(2))}</h1>`;
+          const hText = line.slice(2);
+          const slug = 'h-' + hText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+          html += `<h1 id="${slug}">${formatInline(hText)}</h1>`;
         } else if (line.startsWith('## ')) {
-          html += `<h2>${formatInline(line.slice(3))}</h2>`;
+          const hText = line.slice(3);
+          const slug = 'h-' + hText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+          html += `<h2 id="${slug}">${formatInline(hText)}</h2>`;
         } else if (line.startsWith('### ')) {
-          html += `<h3>${formatInline(line.slice(4))}</h3>`;
+          const hText = line.slice(4);
+          const slug = 'h-' + hText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+          html += `<h3 id="${slug}">${formatInline(hText)}</h3>`;
         } else if (line.startsWith('#### ')) {
           html += `<h4 style="color:var(--muted); margin:14px 0 6px 0;">${formatInline(line.slice(5))}</h4>`;
         } else if (line.startsWith('> ')) {
@@ -1142,6 +1813,814 @@
       }
     }
 
+    // -------------------------------------------------------------------------
+    // Guided Workstream 1–5 Hub Controller
+    // -------------------------------------------------------------------------
+    const GUIDED_WORKSTREAMS = {
+      WS1: {
+        key: 'WS1',
+        badge: 'WS1 • 16 Editable Slides • 112 Shapes • 46 Connectors',
+        title: 'Workstream 1: Reference Architecture, Taxonomy & 5-Hop Baseline',
+        subtitle: 'Pooled (Pattern A), Sovereign Silos (Pattern B) & Dynamic Hybrid (Pattern C) extending the Cloud Architecture Center reference',
+        deckStem: 'ws1-reference-architecture-editable-slides',
+        deckJson: 'ws1-reference-architecture-taxonomy-and-5hop-baseline.deck.json',
+        pptxPath: 'slides/ws1-reference-architecture-editable-slides.pptx',
+        simScenario: 'sim1',
+        simLabel: '⚡ Run Hop 1 & 4 Spoof/Redaction Sim',
+        docs: [
+          { label: '📘 Explanatory Blog (WS1)', path: 'blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md' },
+          { label: '📄 Cloud Arch Center Doc PR (1.3)', path: 'workstream-1-reference-architecture/1.3-cloud-architecture-center-doc-update-pr.md' },
+          { label: '📋 Product Gap & EAP Tracker (1.4)', path: 'workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md' }
+        ],
+        diagrams: [
+          { id: 'ws1-multi-tenant-taxonomy-overview', label: 'Fig 1: Multi-Tenant Taxonomy (A, B & C)', decomposedSlide: 10 },
+          { id: 'ws1-cloud-arch-center-5hop-baseline', label: 'Fig 2: Cloud Arch Center 5-Hop Baseline', decomposedSlide: 13 }
+        ],
+        slides: [
+          { num: 1, label: '1. Title', desc: 'Title Slide — Exported from deckTitle & deckSubtitle in blogs/ws1-*.deck.json' },
+          { num: 2, label: '2. TL;DR', desc: 'Executive TL;DR — Formatted bullet points from tldr[] in blogs/ws1-*.deck.json' },
+          { num: 3, label: '3. Why SaaS Breaks', desc: 'Section 1 Narrative — Why classic SaaS tenancy breaks for agents' },
+          { num: 4, label: '4. Cymbal Case Study', desc: 'Section 2 Narrative — Anchor case study: Cymbal, FinVault & RetailStream' },
+          { num: 5, label: '5. A/B/C Taxonomy', desc: 'Section 3 Narrative — Three-pattern taxonomy (Pattern A, B & C)' },
+          { num: 6, label: '6. 5-Hop Chain', desc: 'Section 4 Narrative — The 5-Hop Cryptographic Context Chain (hop1..hop5)' },
+          { num: 7, label: '7. Arch Center PR', desc: 'Section 5 Narrative — Doc PR extending the Cloud Architecture Center' },
+          { num: 8, label: '8. Product Gaps', desc: 'Section 6 Narrative — Product gaps & EAP asks (1.2 / 1.4)' },
+          { num: 9, label: '9. Fig 1 Master', desc: 'Figure 1 Master Reference — 1:1 High-Res Draw.io render' },
+          { num: 10, label: '10. ★ Fig 1 Editable', editable: true, desc: '★ Figure 1 Decomposed Editable Slide — 56 Native Shapes + 23 Connectors (Left) & Blog Talking Points (Right)' },
+          { num: 11, label: '11. Fig 1 Spec Table', desc: 'Figure 1 Component Table — Native editable PowerPoint specification table' },
+          { num: 12, label: '12. Fig 2 Master', desc: 'Figure 2 Master Reference — 1:1 High-Res Draw.io render' },
+          { num: 13, label: '13. ★ Fig 2 Editable', editable: true, desc: '★ Figure 2 Decomposed Editable Slide — 56 Native Shapes + 23 Connectors (Left) & Blog Talking Points (Right)' },
+          { num: 14, label: '14. Fig 2 Spec Table', desc: 'Figure 2 Component Table — Native editable PowerPoint specification table' },
+          { num: 15, label: '15. Takeaways', desc: 'Key Takeaways & Call to Action — Exported from takeaways[] & callToAction' },
+          { num: 16, label: '16. Asset Index', desc: 'Assets & Source Documents — Native editable table of diagrams & markdown files' }
+        ]
+      },
+      WS2: {
+        key: 'WS2',
+        badge: 'WS2 • 21 Editable Slides • 224 Shapes • 92 Connectors',
+        title: 'Workstream 2: Pattern A — High-Density Pooled Architecture & 90% Cache Savings',
+        subtitle: 'One shared runtime serving competing tenants (FinVault & RetailStream) with 10/10 breach vectors blocked',
+        deckStem: 'ws2-pattern-a-pooled-editable-slides',
+        deckJson: 'ws2-pattern-a-pooled-architecture.deck.json',
+        pptxPath: 'slides/ws2-pattern-a-pooled-editable-slides.pptx',
+        simScenario: 'suite_a',
+        simLabel: '⚡ Run Pattern A 10-Point Breach Suite',
+        docs: [
+          { label: '📘 Explanatory Blog (WS2)', path: 'blogs/ws2-pattern-a-pooled-architecture.md' },
+          { label: '📰 Flagship Blog Part 1 (2.7)', path: 'workstream-2-pattern-a-pooled/2.7-blog-pooled-architecture-governance.md' },
+          { label: '🎓 90-Min Breach Sim Codelab (2.8)', path: 'workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck/codelab-90min-breach-sim.md' },
+          { label: '🎬 Workshop Deck Outline (2.8)', path: 'workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck/workshop-deck-pattern-a.md' }
+        ],
+        diagrams: [
+          { id: 'ws2-pattern-a-pooled-5hop-architecture', label: 'Fig 1: Pattern A Pooled 5-Hop', decomposedSlide: 9 },
+          { id: 'ws2-pattern-a-breach-defense-sequence', label: 'Fig 2: 10-Point Breach Matrix', decomposedSlide: 12 },
+          { id: 'ws2-demo-env-and-3p-auth-sandbox-topology', label: 'Fig 3: 3P Auth Sandbox Topology', decomposedSlide: 15 },
+          { id: 'ws2-terraform-starter-resource-graph', label: 'Fig 4: Terraform Resource Graph', decomposedSlide: 18 }
+        ],
+        slides: [
+          { num: 1, label: '1. Title', desc: 'Title Slide — Pattern A Pooled Architecture' },
+          { num: 2, label: '2. TL;DR', desc: 'Executive TL;DR — Pooled economics & 90% ContextCacheConfig savings' },
+          { num: 3, label: '3. Economics Paradox', desc: 'Section 1 — The Pooled Economics Paradox' },
+          { num: 4, label: '4. Cymbal Case Study', desc: 'Section 2 — Cymbal Anchor Case Study (FinVault vs RetailStream)' },
+          { num: 5, label: '5. 5-Hop in Pattern A', desc: 'Section 3 — The 5-Hop Cryptographic Chain in Pattern A' },
+          { num: 6, label: '6. 10-Point Breach Suite', desc: 'Section 4 — 10-Point Breach Simulation Suite (Vectors 1–10)' },
+          { num: 7, label: '7. FinOps & Terraform', desc: 'Section 5 — FinOps, Terraform Starter, Codelab & Product Gaps' },
+          { num: 8, label: '8. Fig 1 Master', desc: 'Figure 1 Master Reference — Pattern A Pooled 5-Hop Architecture' },
+          { num: 9, label: '9. ★ Fig 1 Editable', editable: true, desc: '★ Figure 1 Decomposed Editable Slide — 56 Native Shapes + 23 Connectors & Talking Points' },
+          { num: 10, label: '10. Fig 1 Spec Table', desc: 'Figure 1 Component Specification Table' },
+          { num: 11, label: '11. Fig 2 Master', desc: 'Figure 2 Master Reference — 10-Point Breach Defense Matrix' },
+          { num: 12, label: '12. ★ Fig 2 Editable', editable: true, desc: '★ Figure 2 Decomposed Editable Slide — 56 Native Shapes + 23 Connectors & Talking Points' },
+          { num: 13, label: '13. Fig 2 Spec Table', desc: 'Figure 2 Component Specification Table' },
+          { num: 14, label: '14. Fig 3 Master', desc: 'Figure 3 Master Reference — Demo Env & 3P Auth Sandbox Topology' },
+          { num: 15, label: '15. ★ Fig 3 Editable', editable: true, desc: '★ Figure 3 Decomposed Editable Slide — 56 Native Shapes + 23 Connectors & Talking Points' },
+          { num: 16, label: '16. Fig 3 Spec Table', desc: 'Figure 3 Component Specification Table' },
+          { num: 17, label: '17. Fig 4 Master', desc: 'Figure 4 Master Reference — 1-Click Terraform Starter Resource Graph' },
+          { num: 18, label: '18. ★ Fig 4 Editable', editable: true, desc: '★ Figure 4 Decomposed Editable Slide — 56 Native Shapes + 23 Connectors & Talking Points' },
+          { num: 19, label: '19. Fig 4 Spec Table', desc: 'Figure 4 Component Specification Table' },
+          { num: 20, label: '20. Takeaways', desc: 'Key Takeaways & Call to Action' },
+          { num: 21, label: '21. Asset Index', desc: 'Assets, Editable Diagrams & Source Documents Table' }
+        ]
+      },
+      WS3: {
+        key: 'WS3',
+        badge: 'WS3 • 19 Editable Slides • 168 Shapes • 69 Connectors',
+        title: 'Workstream 3: Pattern B — Zero-Trust Sovereign Silos & Air-Gapped Gemma 3',
+        subtitle: 'Dedicated project, VPC-SC perimeter, IAM PAB & Cloud KMS CMEK 423 kill-switch per tenant',
+        deckStem: 'ws3-pattern-b-siloed-editable-slides',
+        deckJson: 'ws3-pattern-b-sovereign-silos.deck.json',
+        pptxPath: 'slides/ws3-pattern-b-siloed-editable-slides.pptx',
+        simScenario: 'suite_b',
+        simLabel: '⚡ Run Pattern B 6-Test Sovereign Suite',
+        docs: [
+          { label: '📘 Explanatory Blog (WS3)', path: 'blogs/ws3-pattern-b-sovereign-silos.md' },
+          { label: '📰 Flagship Blog Part 2 (3.7)', path: 'workstream-3-pattern-b-siloed/3.7-blog-sovereign-silos.md' },
+          { label: '🎓 90-Min Regulated Silo Codelab (3.8)', path: 'workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/codelab-90min-regulated-airgapped.md' },
+          { label: '🎬 Workshop Deck Outline (3.8)', path: 'workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/workshop-deck-pattern-b.md' }
+        ],
+        diagrams: [
+          { id: 'ws3-pattern-b-sovereign-silos-architecture', label: 'Fig 1: Sovereign Silos & Gemma 3', decomposedSlide: 10 },
+          { id: 'ws3-multi-project-silo-and-cmek-setup-topology', label: 'Fig 2: Multi-Project & CMEK Setup', decomposedSlide: 13 },
+          { id: 'ws3-terraform-silo-blueprint-resource-graph', label: 'Fig 3: Terraform Silo Resource Graph', decomposedSlide: 16 }
+        ],
+        slides: [
+          { num: 1, label: '1. Title', desc: 'Title Slide — Pattern B Sovereign Silos' },
+          { num: 2, label: '2. TL;DR', desc: 'Executive TL;DR — Dedicated project, perimeter & CMEK key per tenant' },
+          { num: 3, label: '3. Why Pooled Isn’t Enough', desc: 'Section 1 — Regulated compliance drivers (OCC/FDIC, DORA, HIPAA)' },
+          { num: 4, label: '4. Sovereign Silo Model', desc: 'Section 2 — VPC-SC, IAM PAB, CMEK & Air-Gapped Gemma 3 on GKE' },
+          { num: 5, label: '5. 5-Hop Inside a Silo', desc: 'Section 3 — Reusing the 80% 5-Hop Cymbal core inside a sovereign silo' },
+          { num: 6, label: '6. 6 Sovereign Tests', desc: 'Section 4 — Verification: 6 Sovereign Security & CMEK Revocation Tests' },
+          { num: 7, label: '7. Provisioning & Sign-Off', desc: 'Section 5 — Multi-project runbook, VPC-SC sign-off & Terraform blueprint' },
+          { num: 8, label: '8. Trade-Offs', desc: 'Section 6 — Economic trade-offs & graduation to Pattern C' },
+          { num: 9, label: '9. Fig 1 Master', desc: 'Figure 1 Master Reference — Pattern B Sovereign Silos Architecture' },
+          { num: 10, label: '10. ★ Fig 1 Editable', editable: true, desc: '★ Figure 1 Decomposed Editable Slide — 56 Native Shapes + 23 Connectors & Talking Points' },
+          { num: 11, label: '11. Fig 1 Spec Table', desc: 'Figure 1 Component Specification Table' },
+          { num: 12, label: '12. Fig 2 Master', desc: 'Figure 2 Master Reference — Multi-Project Silo & CMEK Setup Topology' },
+          { num: 13, label: '13. ★ Fig 2 Editable', editable: true, desc: '★ Figure 2 Decomposed Editable Slide — 56 Native Shapes + 23 Connectors & Talking Points' },
+          { num: 14, label: '14. Fig 2 Spec Table', desc: 'Figure 2 Component Specification Table' },
+          { num: 15, label: '15. Fig 3 Master', desc: 'Figure 3 Master Reference — Terraform Silo Blueprint Resource Graph' },
+          { num: 16, label: '16. ★ Fig 3 Editable', editable: true, desc: '★ Figure 3 Decomposed Editable Slide — 56 Native Shapes + 23 Connectors & Talking Points' },
+          { num: 17, label: '17. Fig 3 Spec Table', desc: 'Figure 3 Component Specification Table' },
+          { num: 18, label: '18. Takeaways', desc: 'Key Takeaways & Call to Action' },
+          { num: 19, label: '19. Asset Index', desc: 'Assets, Editable Diagrams & Source Documents Table' }
+        ]
+      },
+      WS4: {
+        key: 'WS4',
+        badge: 'WS4 • 22 Editable Slides • 224 Shapes • 92 Connectors',
+        title: 'Workstream 4: Pattern C — Dynamic Hybrid Hub-and-Spoke & Zero-Downtime Tier Upgrade',
+        subtitle: 'One control plane routing Standard to shared pool and Enterprise over PSC to CMEK spokes',
+        deckStem: 'ws4-pattern-c-hybrid-editable-slides',
+        deckJson: 'ws4-pattern-c-hybrid-dynamic-tiering.deck.json',
+        pptxPath: 'slides/ws4-pattern-c-hybrid-editable-slides.pptx',
+        simScenario: 'suite_c',
+        simLabel: '⚡ Run Pattern C Zero-Downtime Upgrade Suite',
+        docs: [
+          { label: '📘 Explanatory Blog (WS4)', path: 'blogs/ws4-pattern-c-hybrid-dynamic-tiering.md' },
+          { label: '📰 Flagship Blog Part 3 (4.7)', path: 'workstream-4-pattern-c-hybrid/4.7-blog-dynamic-tiering-and-migration.md' },
+          { label: '🎓 90-Min Hybrid Master Lab (4.8)', path: 'workstream-4-pattern-c-hybrid/4.8-codelab-and-workshop-deck/codelab-90min-multi-pattern-master-lab.md' },
+          { label: '🎬 Workshop Deck Outline (4.8)', path: 'workstream-4-pattern-c-hybrid/4.8-codelab-and-workshop-deck/workshop-deck-pattern-c.md' }
+        ],
+        diagrams: [
+          { id: 'ws4-pattern-c-hybrid-psc-and-migration', label: 'Fig 1: Hybrid PSC & Live Migration', decomposedSlide: 10 },
+          { id: 'ws4-hub-and-spoke-demo-env-setup-topology', label: 'Fig 2: Hub-and-Spoke PSC Setup', decomposedSlide: 13 },
+          { id: 'ws4-zero-downtime-tier-upgrade-sequence', label: 'Fig 3: Zero-Downtime Upgrade Sequence', decomposedSlide: 16 },
+          { id: 'ws4-terraform-hybrid-psc-blueprint-resource-graph', label: 'Fig 4: Terraform Hybrid PSC Graph', decomposedSlide: 19 }
+        ],
+        slides: [
+          { num: 1, label: '1. Title', desc: 'Title Slide — Pattern C Dynamic Hybrid & Live Tier Upgrades' },
+          { num: 2, label: '2. TL;DR', desc: 'Executive TL;DR — Unified control plane, PSC spokes & 3-phase migration' },
+          { num: 3, label: '3. Why Hybrid', desc: 'Section 1 — Why tiered SaaS needs both Pooled and Sovereign' },
+          { num: 4, label: '4. Hub & Spoke Control', desc: 'Section 2 — Hybrid Hub-and-Spoke Control Plane & PSC ServiceAttachment' },
+          { num: 5, label: '5. 5-Hop in Pattern C', desc: 'Section 3 — The 5-Hop Chain in Pattern C (instance-scoped profiles)' },
+          { num: 6, label: '6. Live Tier Upgrade', desc: 'Section 4 — SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY (0 dropped turns)' },
+          { num: 7, label: '7. Terraform & Codelab', desc: 'Section 5 — Product collaboration, Terraform PSC blueprint & Master Lab' },
+          { num: 8, label: '8. FinOps & SLA', desc: 'Section 6 — FinOps & SLA Outcomes' },
+          { num: 9, label: '9. Fig 1 Master', desc: 'Figure 1 Master Reference — Pattern C Hybrid Hub-and-Spoke & PSC' },
+          { num: 10, label: '10. ★ Fig 1 Editable', editable: true, desc: '★ Figure 1 Decomposed Editable Slide — 56 Native Shapes + 23 Connectors & Talking Points' },
+          { num: 11, label: '11. Fig 1 Spec Table', desc: 'Figure 1 Component Specification Table' },
+          { num: 12, label: '12. Fig 2 Master', desc: 'Figure 2 Master Reference — Hub-and-Spoke Demo Env & PSC Topology' },
+          { num: 13, label: '13. ★ Fig 2 Editable', editable: true, desc: '★ Figure 2 Decomposed Editable Slide — 56 Native Shapes + 23 Connectors & Talking Points' },
+          { num: 14, label: '14. Fig 2 Spec Table', desc: 'Figure 2 Component Specification Table' },
+          { num: 15, label: '15. Fig 3 Master', desc: 'Figure 3 Master Reference — Zero-Downtime Tier Upgrade Sequence' },
+          { num: 16, label: '16. ★ Fig 3 Editable', editable: true, desc: '★ Figure 3 Decomposed Editable Slide — 56 Native Shapes + 23 Connectors & Talking Points' },
+          { num: 17, label: '17. Fig 3 Spec Table', desc: 'Figure 3 Component Specification Table' },
+          { num: 18, label: '18. Fig 4 Master', desc: 'Figure 4 Master Reference — Terraform Hybrid PSC Resource Graph' },
+          { num: 19, label: '19. ★ Fig 4 Editable', editable: true, desc: '★ Figure 4 Decomposed Editable Slide — 56 Native Shapes + 23 Connectors & Talking Points' },
+          { num: 20, label: '20. Fig 4 Spec Table', desc: 'Figure 4 Component Specification Table' },
+          { num: 21, label: '21. Takeaways', desc: 'Key Takeaways & Call to Action' },
+          { num: 22, label: '22. Asset Index', desc: 'Assets, Editable Diagrams & Source Documents Table' }
+        ]
+      },
+      WS5: {
+        key: 'WS5',
+        badge: 'WS5 • 13 Editable Slides • 56 Shapes • 23 Connectors',
+        title: 'Workstream 5: Executive Decision Guide & The Multi-Tenant Agentic Triad',
+        subtitle: '2-question topology decision tree, Pattern A/B/C comparison matrix, Agentic Triad & consolidated EAP backlog',
+        deckStem: 'ws5-wrap-up-editable-slides',
+        deckJson: 'ws5-decision-guide-and-agentic-triad.deck.json',
+        pptxPath: 'slides/ws5-wrap-up-editable-slides.pptx',
+        simScenario: 'sim6',
+        simLabel: '⚡ Run Live Tier Upgrade Sim',
+        docs: [
+          { label: '📘 Explanatory Blog (WS5)', path: 'blogs/ws5-decision-guide-and-agentic-triad.md' },
+          { label: '📰 Flagship Capstone Blog (5.2)', path: 'workstream-5-wrap-up-and-backlog/5.2-blog-multi-tenant-agentic-triad.md' },
+          { label: '🧭 Executive Decision Guide (5.1)', path: 'workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md' },
+          { label: '📚 Complete End-to-End Guide', path: 'docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md' }
+        ],
+        diagrams: [
+          { id: 'ws5-decision-tree-and-agentic-triad', label: 'Fig 1: Decision Tree & Agentic Triad', decomposedSlide: 10 }
+        ],
+        slides: [
+          { num: 1, label: '1. Title', desc: 'Title Slide — Executive Decision Guide & Multi-Tenant Agentic Triad' },
+          { num: 2, label: '2. TL;DR', desc: 'Executive TL;DR — 2-question topology selector & 80% reusable core' },
+          { num: 3, label: '3. Series Recap', desc: 'Section 1 — Series Recap & the Cymbal Anchor' },
+          { num: 4, label: '4. Decision Tree', desc: 'Section 2 — Executive Decision Tree (Compliance vs Packaging)' },
+          { num: 5, label: '5. Comparison Matrix', desc: 'Section 3 — Side-by-Side Pattern A / B / C Comparison Matrix' },
+          { num: 6, label: '6. Agentic Triad', desc: 'Section 4 — Zero-Trust Security, FinOps & Privacy-Preserving Observability' },
+          { num: 7, label: '7. 5-Hop Invariant', desc: 'Section 5 — 5-Hop Chain: The Invariant Across A, B & C' },
+          { num: 8, label: '8. EAP Backlog', desc: 'Section 6 — Consolidated EAP Backlog & Retrospective' },
+          { num: 9, label: '9. Fig 1 Master', desc: 'Figure 1 Master Reference — Decision Tree & Agentic Triad' },
+          { num: 10, label: '10. ★ Fig 1 Editable', editable: true, desc: '★ Figure 1 Decomposed Editable Slide — 56 Native Shapes + 23 Connectors & Talking Points' },
+          { num: 11, label: '11. Fig 1 Spec Table', desc: 'Figure 1 Component Specification Table' },
+          { num: 12, label: '12. Takeaways', desc: 'Key Takeaways & Call to Action' },
+          { num: 13, label: '13. Asset Index', desc: 'Assets, Editable Diagrams & Source Documents Table' }
+        ]
+      },
+      ALL: {
+        key: 'ALL',
+        badge: 'ALL • 60 Editable Slides • 784 Shapes • 322 Connectors',
+        title: 'All-in-One Master Deck: Workstreams 1–5 Complete Architecture & 14 Editable Diagrams',
+        subtitle: 'Combined 60-slide master presentation covering WS1 Reference, WS2 Pattern A, WS3 Pattern B, WS4 Pattern C & WS5 Executive Triad',
+        deckStem: 'geap-multi-tenancy-all-workstreams-editable-slides',
+        deckJson: 'ws1..ws5-combined.deck.json',
+        pptxPath: 'slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx',
+        simScenario: 'suite_a',
+        simLabel: '⚡ Run Full Breach Simulation Suite',
+        docs: [
+          { label: '📚 End-to-End Master Guide', path: 'docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md' }
+        ],
+        diagrams: [
+          { id: 'ws1-multi-tenant-taxonomy-overview', label: 'WS1 Fig 1: Multi-Tenant Taxonomy', decomposedSlide: 10 }
+        ],
+        slides: Array.from({ length: 60 }, (_, idx) => {
+          const n = idx + 1;
+          const editableSlides = [10, 13, 25, 28, 31, 34, 46, 49, 52, 56];
+          const isEd = editableSlides.includes(n);
+          return {
+            num: n,
+            label: isEd ? `${n}. ★ Editable Diagram` : `${n}. Slide ${n}`,
+            editable: isEd,
+            desc: isEd
+              ? `★ Slide ${n} of 60 — 100% Decomposed Native Editable Diagram Slide (56 Editable Shapes + 23 Connectors + Talking Points)`
+              : `Slide ${n} of 60 — All-in-One Master Deck (Workstreams 1–5)`
+          };
+        })
+      }
+    };
+
+    const PPTX_CACHE_VER = '20261013-v5';
+    let activeHubWsKey = 'WS1';
+    let activeHubSlideIdx = 0;
+    let activeHubDiagIdx = 0;
+    let activeHubDocPath = '';
+    let activeHubRawMd = '';
+
+    function pad2(n) {
+      return n < 10 ? '0' + n : String(n);
+    }
+
+    function renderHubSlideView() {
+      const ws = GUIDED_WORKSTREAMS[activeHubWsKey];
+      const slideObj = ws.slides[activeHubSlideIdx] || ws.slides[0];
+      const total = ws.slides.length;
+      document.getElementById('hub-slide-heading').textContent = `Slide ${slideObj.num} of ${total} — ${slideObj.label.replace(/^\d+\.\s*/, '')}`;
+      document.getElementById('hub-slide-counter').textContent = `${slideObj.num} / ${total}`;
+      document.getElementById('hub-slide-img').src = `slides/previews/${ws.deckStem}/slide_${pad2(slideObj.num)}.png?v=${PPTX_CACHE_VER}`;
+      document.getElementById('hub-slide-explain').textContent = `💡 ${slideObj.desc}`;
+
+      const pillContainer = document.getElementById('hub-slide-pills');
+      pillContainer.innerHTML = ws.slides.map((s, idx) => {
+        const cls = [
+          'slide-pill',
+          s.editable ? 'editable-highlight' : '',
+          idx === activeHubSlideIdx ? 'active' : ''
+        ].filter(Boolean).join(' ');
+        return `<button class="${cls}" onclick="selectHubSlide(${idx})">${escapeHtml(s.label)}</button>`;
+      }).join('');
+    }
+
+    function selectHubSlide(idx) {
+      const ws = GUIDED_WORKSTREAMS[activeHubWsKey];
+      if (idx < 0) idx = ws.slides.length - 1;
+      if (idx >= ws.slides.length) idx = 0;
+      activeHubSlideIdx = idx;
+      renderHubSlideView();
+    }
+
+    function stepHubSlide(delta) {
+      selectHubSlide(activeHubSlideIdx + delta);
+    }
+
+    function selectHubDiagram(idx) {
+      const ws = GUIDED_WORKSTREAMS[activeHubWsKey];
+      activeHubDiagIdx = idx;
+      const d = ws.diagrams[idx] || ws.diagrams[0];
+      document.getElementById('hub-diag-heading').textContent = d.label;
+      document.getElementById('hub-diag-img').src = `diagrams/${d.id}.drawio.png`;
+      document.getElementById('hub-diag-drawio').href = `diagrams/${d.id}.drawio`;
+      document.getElementById('hub-diag-svg').href = `diagrams/${d.id}.svg`;
+      document.getElementById('hub-diag-png').href = `diagrams/${d.id}.drawio.png`;
+
+      const btns = document.getElementById('hub-diag-buttons');
+      btns.innerHTML = ws.diagrams.map((item, i) => {
+        const activeCls = i === idx ? 'sim-btn primary' : 'sim-btn';
+        return `<button class="${activeCls}" style="padding:6px 10px; font-size:12px;" onclick="selectHubDiagram(${i})">${escapeHtml(item.label)}</button>`;
+      }).join('') + `<button class="sim-btn" style="padding:6px 10px; font-size:12px; border-color:var(--green); color:var(--ok-text);" onclick="selectHubSlide(${d.decomposedSlide - 1})">&#127916; Show Editable Slide #${d.decomposedSlide} for This Diagram</button>`;
+    }
+
+    async function loadHubBlogDoc(relPath) {
+      activeHubDocPath = relPath;
+      const ws = GUIDED_WORKSTREAMS[activeHubWsKey];
+      document.getElementById('hub-reader-title').textContent = `Reading: ${relPath}`;
+      const switcher = document.getElementById('hub-doc-switcher');
+      switcher.innerHTML = ws.docs.map(d => {
+        const cls = d.path === relPath ? 'sim-btn primary' : 'sim-btn';
+        return `<button class="${cls}" style="padding:6px 10px; font-size:12px;" onclick="loadHubBlogDoc('${d.path}')">${escapeHtml(d.label)}</button>`;
+      }).join('');
+
+      const readerEl = document.getElementById('hub-blog-reader');
+      const tocEl = document.getElementById('hub-blog-toc');
+      readerEl.innerHTML = 'Loading workstream publication...';
+      try {
+        const resp = await fetch(`/api/artifact?path=${encodeURIComponent(relPath)}`);
+        const data = await resp.json();
+        if (data.error) {
+          readerEl.textContent = `Error: ${data.error}`;
+          return;
+        }
+        activeHubRawMd = data.content;
+        readerEl.innerHTML = renderMarkdownToHtml(data.content, relPath);
+
+        // Build clickable section TOC from h2 elements inside #hub-blog-reader
+        const h2s = Array.from(readerEl.querySelectorAll('h2'));
+        if (h2s.length > 0) {
+          tocEl.style.display = 'flex';
+          tocEl.innerHTML = `<strong style="font-size:12px; color:var(--link); margin-right:4px;">Jump to Section:</strong>` +
+            h2s.map((h, i) => {
+              const hid = 'hub-sec-' + i;
+              h.id = hid;
+              const shortText = h.textContent.length > 38 ? h.textContent.slice(0, 36) + '…' : h.textContent;
+              return `<span class="file-pill" onclick="document.getElementById('${hid}').scrollIntoView({behavior:'smooth', block:'start'})">${escapeHtml(shortText)}</span>`;
+            }).join('');
+        } else {
+          tocEl.style.display = 'none';
+        }
+      } catch (err) {
+        readerEl.textContent = `Unable to load blog (${err.message}).`;
+      }
+    }
+
+    async function copyHubBlogMarkdown() {
+      if (!activeHubRawMd) return;
+      try {
+        await navigator.clipboard.writeText(activeHubRawMd);
+        const titleEl = document.getElementById('hub-reader-title');
+        const prev = titleEl.textContent;
+        titleEl.textContent = '✓ Copied Raw Markdown to Clipboard!';
+        setTimeout(() => { titleEl.textContent = prev; }, 1800);
+      } catch (_) {}
+    }
+
+    function jumpToWorkstreamSim(scenarioId) {
+      const btn = Array.from(document.querySelectorAll('.tab-btn')).find((b) => (b.getAttribute('onclick') || '').includes("'simulator'"));
+      switchTab('simulator', btn);
+      runLiveScenario(scenarioId);
+      const simOut = document.getElementById('sim-output');
+      if (simOut) simOut.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function selectGuidedWorkstream(wsKey) {
+      if (!GUIDED_WORKSTREAMS[wsKey] || wsKey === 'ALL') return;
+      activeHubWsKey = wsKey;
+      const ws = GUIDED_WORKSTREAMS[wsKey];
+
+      document.querySelectorAll('.ws-step-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById('ws-btn-' + wsKey);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      document.getElementById('hub-ws-badge').textContent = ws.badge;
+      document.getElementById('hub-ws-title').textContent = ws.title;
+      document.getElementById('hub-ws-sub').textContent = ws.subtitle;
+      const dl = document.getElementById('hub-pptx-download');
+      dl.href = `${ws.pptxPath}?v=${PPTX_CACHE_VER}`;
+      dl.innerHTML = `&#11015; Download .pptx (${ws.key})`;
+      const gslidesLabel = document.getElementById('hub-open-gslides-label');
+      if (gslidesLabel) gslidesLabel.textContent = `Open with Google Slides (${ws.key})`;
+      document.getElementById('hub-deck-json-label').textContent = ws.deckJson;
+      const simBtn = document.getElementById('hub-sim-btn');
+      simBtn.textContent = ws.simLabel;
+      simBtn.setAttribute('onclick', `jumpToWorkstreamSim('${ws.simScenario}')`);
+
+      // Always start at Slide 1 (Title Slide, index 0) when opening or switching a workstream
+      activeHubSlideIdx = 0;
+      renderHubSlideView();
+      selectHubDiagram(0);
+      loadHubBlogDoc(ws.docs[0].path);
+    }
+
+    // -------------------------------------------------------------------------
+    // PromptCanvas-Style Cloud Viewer Modal & Google Workspace Direct-Open Bridge
+    // -------------------------------------------------------------------------
+    let cloudViewerManifest = {
+      accountEmail: 'nitinagga@google.com',
+      slides: {
+        WS1: {
+          googleSlidesId: '1pQ_Hwxm704_Zhay_RR113gBv1IWmYS7JPH8C6FAtk1I',
+          googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1pQ_Hwxm704_Zhay_RR113gBv1IWmYS7JPH8C6FAtk1I/edit?authuser=nitinagga%40google.com',
+          googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1pQ_Hwxm704_Zhay_RR113gBv1IWmYS7JPH8C6FAtk1I/preview',
+          googleSlidesEmbedUrl: 'https://docs.google.com/presentation/d/1pQ_Hwxm704_Zhay_RR113gBv1IWmYS7JPH8C6FAtk1I/embed?start=false&loop=false&delayms=5000',
+          googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1pQ_Hwxm704_Zhay_RR113gBv1IWmYS7JPH8C6FAtk1I/export/pdf'
+        },
+        WS2: {
+          googleSlidesId: '1PoDICHbjiO2MJzNY8gNgWoAmu_kciAbUPSBq2rg9s-8',
+          googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1PoDICHbjiO2MJzNY8gNgWoAmu_kciAbUPSBq2rg9s-8/edit?authuser=nitinagga%40google.com',
+          googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1PoDICHbjiO2MJzNY8gNgWoAmu_kciAbUPSBq2rg9s-8/preview',
+          googleSlidesEmbedUrl: 'https://docs.google.com/presentation/d/1PoDICHbjiO2MJzNY8gNgWoAmu_kciAbUPSBq2rg9s-8/embed?start=false&loop=false&delayms=5000',
+          googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1PoDICHbjiO2MJzNY8gNgWoAmu_kciAbUPSBq2rg9s-8/export/pdf'
+        },
+        WS3: {
+          googleSlidesId: '1ir6PAaR-WiDC5eBguNwyNHvyAjOfomFoDJSfl9kv328',
+          googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1ir6PAaR-WiDC5eBguNwyNHvyAjOfomFoDJSfl9kv328/edit?authuser=nitinagga%40google.com',
+          googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1ir6PAaR-WiDC5eBguNwyNHvyAjOfomFoDJSfl9kv328/preview',
+          googleSlidesEmbedUrl: 'https://docs.google.com/presentation/d/1ir6PAaR-WiDC5eBguNwyNHvyAjOfomFoDJSfl9kv328/embed?start=false&loop=false&delayms=5000',
+          googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1ir6PAaR-WiDC5eBguNwyNHvyAjOfomFoDJSfl9kv328/export/pdf'
+        },
+        WS4: {
+          googleSlidesId: '1SZEbXeCpFXGhnt3t0xEihAqzVURY2ItsLk2y2mfuKpc',
+          googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1SZEbXeCpFXGhnt3t0xEihAqzVURY2ItsLk2y2mfuKpc/edit?authuser=nitinagga%40google.com',
+          googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1SZEbXeCpFXGhnt3t0xEihAqzVURY2ItsLk2y2mfuKpc/preview',
+          googleSlidesEmbedUrl: 'https://docs.google.com/presentation/d/1SZEbXeCpFXGhnt3t0xEihAqzVURY2ItsLk2y2mfuKpc/embed?start=false&loop=false&delayms=5000',
+          googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1SZEbXeCpFXGhnt3t0xEihAqzVURY2ItsLk2y2mfuKpc/export/pdf'
+        },
+        WS5: {
+          googleSlidesId: '1g61mXsIOrNITdCzXpaq6wKZ5sUayHcaQN-JHA1vBLzA',
+          googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1g61mXsIOrNITdCzXpaq6wKZ5sUayHcaQN-JHA1vBLzA/edit?authuser=nitinagga%40google.com',
+          googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1g61mXsIOrNITdCzXpaq6wKZ5sUayHcaQN-JHA1vBLzA/preview',
+          googleSlidesEmbedUrl: 'https://docs.google.com/presentation/d/1g61mXsIOrNITdCzXpaq6wKZ5sUayHcaQN-JHA1vBLzA/embed?start=false&loop=false&delayms=5000',
+          googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1g61mXsIOrNITdCzXpaq6wKZ5sUayHcaQN-JHA1vBLzA/export/pdf'
+        },
+        ALL: {
+          googleSlidesId: '1zOhsBbJoSMqd4weCr8QRXhZbmbSmykjgGEe_Spqq_qs',
+          googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1zOhsBbJoSMqd4weCr8QRXhZbmbSmykjgGEe_Spqq_qs/edit?authuser=nitinagga%40google.com',
+          googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1zOhsBbJoSMqd4weCr8QRXhZbmbSmykjgGEe_Spqq_qs/preview',
+          googleSlidesEmbedUrl: 'https://docs.google.com/presentation/d/1zOhsBbJoSMqd4weCr8QRXhZbmbSmykjgGEe_Spqq_qs/embed?start=false&loop=false&delayms=5000',
+          googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1zOhsBbJoSMqd4weCr8QRXhZbmbSmykjgGEe_Spqq_qs/export/pdf'
+        }
+      },
+      docs: {
+        WS1: {
+          googleDocsId: '1dX-aziY0-uceuh14g4Q_2XkJhVMrOXDbZFesY9N5aAM',
+          googleDocsEditUrl: 'https://docs.google.com/document/d/1dX-aziY0-uceuh14g4Q_2XkJhVMrOXDbZFesY9N5aAM/edit?authuser=nitinagga%40google.com',
+          googleDocsPreviewUrl: 'https://docs.google.com/document/d/1dX-aziY0-uceuh14g4Q_2XkJhVMrOXDbZFesY9N5aAM/preview',
+          googleDocsPdfUrl: 'https://docs.google.com/document/d/1dX-aziY0-uceuh14g4Q_2XkJhVMrOXDbZFesY9N5aAM/export?format=pdf'
+        },
+        WS2: {
+          googleDocsId: '1zPghg5XB3B09bqNKVBxJGXQFrRBcOe6C1BV9p5oahgo',
+          googleDocsEditUrl: 'https://docs.google.com/document/d/1zPghg5XB3B09bqNKVBxJGXQFrRBcOe6C1BV9p5oahgo/edit?authuser=nitinagga%40google.com',
+          googleDocsPreviewUrl: 'https://docs.google.com/document/d/1zPghg5XB3B09bqNKVBxJGXQFrRBcOe6C1BV9p5oahgo/preview',
+          googleDocsPdfUrl: 'https://docs.google.com/document/d/1zPghg5XB3B09bqNKVBxJGXQFrRBcOe6C1BV9p5oahgo/export?format=pdf'
+        },
+        WS3: {
+          googleDocsId: '1-20-MmeG3yeu7yvpAvXrgvGKT2Acggcv73jp8wAosPE',
+          googleDocsEditUrl: 'https://docs.google.com/document/d/1-20-MmeG3yeu7yvpAvXrgvGKT2Acggcv73jp8wAosPE/edit?authuser=nitinagga%40google.com',
+          googleDocsPreviewUrl: 'https://docs.google.com/document/d/1-20-MmeG3yeu7yvpAvXrgvGKT2Acggcv73jp8wAosPE/preview',
+          googleDocsPdfUrl: 'https://docs.google.com/document/d/1-20-MmeG3yeu7yvpAvXrgvGKT2Acggcv73jp8wAosPE/export?format=pdf'
+        },
+        WS4: {
+          googleDocsId: '1kQeJM9gimaN-jpxiNHEK6FvMmFwpwmCyazlVyHcqtOM',
+          googleDocsEditUrl: 'https://docs.google.com/document/d/1kQeJM9gimaN-jpxiNHEK6FvMmFwpwmCyazlVyHcqtOM/edit?authuser=nitinagga%40google.com',
+          googleDocsPreviewUrl: 'https://docs.google.com/document/d/1kQeJM9gimaN-jpxiNHEK6FvMmFwpwmCyazlVyHcqtOM/preview',
+          googleDocsPdfUrl: 'https://docs.google.com/document/d/1kQeJM9gimaN-jpxiNHEK6FvMmFwpwmCyazlVyHcqtOM/export?format=pdf'
+        },
+        WS5: {
+          googleDocsId: '1akS2yXPHvuhnhH_prjJ6uFk3P67U4e2YzaFZSnQ5thg',
+          googleDocsEditUrl: 'https://docs.google.com/document/d/1akS2yXPHvuhnhH_prjJ6uFk3P67U4e2YzaFZSnQ5thg/edit?authuser=nitinagga%40google.com',
+          googleDocsPreviewUrl: 'https://docs.google.com/document/d/1akS2yXPHvuhnhH_prjJ6uFk3P67U4e2YzaFZSnQ5thg/preview',
+          googleDocsPdfUrl: 'https://docs.google.com/document/d/1akS2yXPHvuhnhH_prjJ6uFk3P67U4e2YzaFZSnQ5thg/export?format=pdf'
+        },
+        ALL: {
+          googleDocsId: '1MHSrKBrphRwgpyi-j5pqnrjiO-Ul5n12674-HAl3oDw',
+          googleDocsEditUrl: 'https://docs.google.com/document/d/1MHSrKBrphRwgpyi-j5pqnrjiO-Ul5n12674-HAl3oDw/edit?authuser=nitinagga%40google.com',
+          googleDocsPreviewUrl: 'https://docs.google.com/document/d/1MHSrKBrphRwgpyi-j5pqnrjiO-Ul5n12674-HAl3oDw/preview',
+          googleDocsPdfUrl: 'https://docs.google.com/document/d/1MHSrKBrphRwgpyi-j5pqnrjiO-Ul5n12674-HAl3oDw/export?format=pdf'
+        }
+      }
+    };
+
+    async function loadCloudViewerManifest() {
+      try {
+        const r = await fetch('/api/google-workspace/manifest');
+        if (r.ok) {
+          const data = await r.json();
+          if (data && data.slides) cloudViewerManifest = data;
+        }
+      } catch (_) {}
+    }
+
+    function closeAllPcDropdowns() {
+      document.querySelectorAll('.pc-dropdown-menu.open').forEach(el => el.classList.remove('open'));
+    }
+
+    function togglePcDropdown(ev, menuId) {
+      if (ev) ev.stopPropagation();
+      const menu = document.getElementById(menuId);
+      if (!menu) return;
+      const wasOpen = menu.classList.contains('open');
+      closeAllPcDropdowns();
+      if (!wasOpen) menu.classList.add('open');
+    }
+
+    document.addEventListener('click', function () {
+      closeAllPcDropdowns();
+    });
+
+    async function openInGoogleWorkspace(wsKey, mode, slideNum, customDocPath, forceSync) {
+      closeAllPcDropdowns();
+      const key = wsKey || activeHubWsKey || 'WS1';
+      const targetMode = (mode || 'slides').toLowerCase();
+      const sEntry = (cloudViewerManifest.slides || {})[key];
+      const dEntry = (cloudViewerManifest.docs || {})[key];
+
+      // Fast-path synchronous open when pre-warmed manifest entry exists & not forcing re-sync
+      if (!forceSync && !customDocPath) {
+        if (targetMode === 'slides' && sEntry && sEntry.googleSlidesEditUrl) {
+          window.open(sEntry.googleSlidesEditUrl, '_blank', 'noopener,noreferrer');
+          return;
+        }
+        if (targetMode === 'docs' && dEntry && dEntry.googleDocsEditUrl) {
+          window.open(dEntry.googleDocsEditUrl, '_blank', 'noopener,noreferrer');
+          return;
+        }
+        if (targetMode === 'pdf') {
+          window.open(`/api/google-workspace/pdf?key=${encodeURIComponent(key)}&mode=slides`, '_blank', 'noopener,noreferrer');
+          return;
+        }
+      }
+
+      // Live conversion / re-sync via POST /api/google-workspace/open
+      const popup = window.open('about:blank', '_blank');
+      if (popup && popup.document) {
+        popup.document.write(
+          '<!DOCTYPE html><html><body style="background:#131314;color:#e8eaed;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">' +
+          '<div style="text-align:center;padding:28px;border:1px solid #444746;border-radius:14px;background:#202124;">' +
+          '<div style="font-size:18px;font-weight:700;color:#fbbc04;margin-bottom:8px;">☁️ Syncing to Google Workspace (' + targetMode.toUpperCase() + ')...</div>' +
+          '<div style="font-size:13px;color:#9aa0a6;">Converting &amp; opening in Google Drive (nitinagga@google.com)...</div>' +
+          '</div></body></html>'
+        );
+      }
+      try {
+        const resp = await fetch('/api/google-workspace/open', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            key: key,
+            mode: targetMode,
+            docPath: customDocPath || '',
+            force: Boolean(forceSync)
+          })
+        });
+        const data = await resp.json();
+        await loadCloudViewerManifest();
+        if (data && data.url) {
+          if (popup) popup.location.href = data.url;
+          else window.open(data.url, '_blank', 'noopener,noreferrer');
+        } else if (popup) {
+          popup.close();
+        }
+      } catch (err) {
+        if (popup) popup.close();
+        alert('Google Workspace sync failed: ' + err.message);
+      }
+    }
+
+    function inferWorkstreamFromDocPath(docPath) {
+      const p = String(docPath || '');
+      if (p.includes('ws1') || p.includes('workstream-1')) return 'WS1';
+      if (p.includes('ws2') || p.includes('workstream-2')) return 'WS2';
+      if (p.includes('ws3') || p.includes('workstream-3')) return 'WS3';
+      if (p.includes('ws4') || p.includes('workstream-4')) return 'WS4';
+      if (p.includes('ws5') || p.includes('workstream-5')) return 'WS5';
+      if (p.includes('END-TO-END')) return 'ALL';
+      return activeHubWsKey || 'WS1';
+    }
+
+    function openPublishDocInCloudViewer() {
+      const docPath = document.getElementById('pub-doc-path').textContent.trim();
+      const wsKey = inferWorkstreamFromDocPath(docPath);
+      openCloudViewerModal(wsKey, 1, 'docs', docPath);
+    }
+
+    function openPublishDocInGoogleDocs() {
+      const docPath = document.getElementById('pub-doc-path').textContent.trim();
+      const wsKey = inferWorkstreamFromDocPath(docPath);
+      openInGoogleWorkspace(wsKey, 'docs', 1, docPath);
+    }
+
+    function openPublishDocWorkstreamSlides() {
+      const docPath = document.getElementById('pub-doc-path').textContent.trim();
+      const wsKey = inferWorkstreamFromDocPath(docPath);
+      openInGoogleWorkspace(wsKey, 'slides', 1);
+    }
+
+    // Cloud Viewer Modal State
+    let cvWsKey = 'WS1';
+    let cvSlideNum = 1;
+    let cvMode = 'slides'; // 'slides' | 'embed' | 'docs'
+    let cvZoom = 100;
+    let cvCustomDocPath = '';
+
+    function openCloudViewerModal(wsKey, slideNum, mode, customDocPath) {
+      closeAllPcDropdowns();
+      cvWsKey = GUIDED_WORKSTREAMS[wsKey] ? wsKey : (activeHubWsKey || 'WS1');
+      const ws = GUIDED_WORKSTREAMS[cvWsKey];
+      cvSlideNum = Math.max(1, Math.min(ws.slides.length, Number(slideNum) || 1));
+      cvMode = mode || 'slides';
+      cvCustomDocPath = customDocPath || '';
+      cvZoom = 100;
+      const modal = document.getElementById('pc-cloud-viewer-modal');
+      if (modal) {
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        renderCloudViewerModal();
+      }
+    }
+
+    function closeCloudViewerModal() {
+      const modal = document.getElementById('pc-cloud-viewer-modal');
+      if (modal) {
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    }
+
+    function selectCloudViewerWorkstream(wsKey) {
+      if (!GUIDED_WORKSTREAMS[wsKey]) return;
+      cvWsKey = wsKey;
+      cvSlideNum = 1;
+      renderCloudViewerModal();
+    }
+
+    function setCloudViewerMode(mode) {
+      cvMode = mode;
+      renderCloudViewerModal();
+    }
+
+    function selectCloudViewerSlide(num) {
+      const ws = GUIDED_WORKSTREAMS[cvWsKey];
+      if (num < 1) num = ws.slides.length;
+      if (num > ws.slides.length) num = 1;
+      cvSlideNum = num;
+      renderCloudViewerModal();
+    }
+
+    function stepCloudViewerSlide(delta) {
+      selectCloudViewerSlide(cvSlideNum + delta);
+    }
+
+    function setCloudViewerZoom(delta) {
+      cvZoom = Math.max(50, Math.min(180, cvZoom + delta));
+      renderCloudViewerModal();
+    }
+
+    function jumpToNextEditableSlideInCloudViewer() {
+      const ws = GUIDED_WORKSTREAMS[cvWsKey];
+      const edSlides = ws.slides.filter(s => s.editable).map(s => s.num);
+      if (!edSlides.length) return;
+      const next = edSlides.find(n => n > cvSlideNum) || edSlides[0];
+      cvMode = 'slides';
+      selectCloudViewerSlide(next);
+    }
+
+    function renderCloudViewerModal() {
+      const ws = GUIDED_WORKSTREAMS[cvWsKey] || GUIDED_WORKSTREAMS.WS1;
+      const total = ws.slides.length;
+      const slideObj = ws.slides[cvSlideNum - 1] || ws.slides[0];
+      const sEntry = (cloudViewerManifest.slides || {})[cvWsKey] || {};
+      const dEntry = (cloudViewerManifest.docs || {})[cvWsKey] || {};
+
+      // Topbar filename & links
+      const fnEl = document.getElementById('cv-filename');
+      if (fnEl) {
+        fnEl.textContent = cvMode === 'docs'
+          ? (cvCustomDocPath || (ws.docs && ws.docs[0] ? ws.docs[0].path : `${cvWsKey}.md`)).split('/').pop()
+          : ws.pptxPath.split('/').pop();
+      }
+      const dlLink = document.getElementById('cv-download-pptx');
+      if (dlLink) dlLink.href = `${ws.pptxPath}?v=${PPTX_CACHE_VER}`;
+
+      // Mode buttons
+      ['slides', 'embed', 'docs'].forEach(m => {
+        const b = document.getElementById('cv-mode-' + m);
+        if (b) b.className = cvMode === m ? 'pc-toolbar-btn active' : 'pc-toolbar-btn';
+      });
+
+      // Workstream switcher pills in subbar
+      const wsStrip = document.getElementById('cv-ws-strip');
+      if (wsStrip) {
+        wsStrip.innerHTML = ['WS1', 'WS2', 'WS3', 'WS4', 'WS5', 'ALL'].map(k => {
+          const cls = k === cvWsKey ? 'pc-toolbar-btn active' : 'pc-toolbar-btn';
+          return `<button type="button" class="${cls}" onclick="selectCloudViewerWorkstream('${k}')">${k === 'ALL' ? 'ALL (60)' : k}</button>`;
+        }).join('');
+      }
+
+      // Page indicator & zoom
+      const pageEl = document.getElementById('cv-page-indicator');
+      if (pageEl) pageEl.textContent = `Slide ${cvSlideNum} / ${total}`;
+      const zoomEl = document.getElementById('cv-zoom-label');
+      if (zoomEl) zoomEl.textContent = `${cvZoom}%`;
+
+      // Stage content
+      const stage = document.getElementById('cv-stage');
+      const filmstrip = document.getElementById('cv-filmstrip');
+      if (!stage || !filmstrip) return;
+
+      if (cvMode === 'embed') {
+        const embedUrl = sEntry.googleSlidesEmbedUrl || sEntry.googleSlidesPreviewUrl || '';
+        stage.innerHTML = `
+          <div style="width:100%; max-width:1220px; display:flex; flex-direction:column; gap:10px; height:100%;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:8px 14px; background:#202124; border:1px solid #444746; border-radius:10px; font-size:12.5px;">
+              <div>
+                <span class="badge badge-green" style="margin-right:6px;">LIVE GOOGLE SLIDES CLOUD EMBED</span>
+                <strong>${escapeHtml(ws.title)}</strong>
+                <span style="color:#9aa0a6; margin-left:8px;">(Google Drive ID: <code>${escapeHtml(sEntry.googleSlidesId || 'synced')}</code>)</span>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <button type="button" class="pc-toolbar-btn active" onclick="openInGoogleWorkspace('${cvWsKey}', 'slides', ${cvSlideNum})">&#8599; Open Full Google Slides Editor</button>
+                <button type="button" class="pc-toolbar-btn" onclick="setCloudViewerMode('slides')">&#10024; Switch to Fast Interactive Slide Studio</button>
+              </div>
+            </div>
+            <iframe src="${embedUrl}" style="width:100%; flex:1; min-height:560px; border:1px solid #444746; border-radius:12px; background:#ffffff;" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" title="Live Google Slides Embed"></iframe>
+          </div>
+        `;
+        filmstrip.style.display = 'none';
+        return;
+      }
+
+      if (cvMode === 'docs') {
+        const previewUrl = dEntry.googleDocsPreviewUrl || dEntry.googleDocsEditUrl || '';
+        stage.innerHTML = `
+          <div style="width:100%; max-width:1120px; display:flex; flex-direction:column; gap:10px; height:100%;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:8px 14px; background:#202124; border:1px solid #444746; border-radius:10px; font-size:12.5px;">
+              <div>
+                <span class="badge badge-blue" style="margin-right:6px;">LIVE GOOGLE DOCS CLOUD PREVIEW</span>
+                <strong>${escapeHtml(ws.title)} — Editable Specification</strong>
+                <span style="color:#9aa0a6; margin-left:8px;">(Google Docs ID: <code>${escapeHtml(dEntry.googleDocsId || 'synced')}</code>)</span>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <button type="button" class="pc-toolbar-btn active" style="background:#4285f4; color:#fff;" onclick="openInGoogleWorkspace('${cvWsKey}', 'docs', 1, '${escapeHtml(cvCustomDocPath)}')">&#8599; Open Full Google Docs Editor</button>
+                <button type="button" class="pc-toolbar-btn" onclick="setCloudViewerMode('slides')">&#10024; Switch to Editable Slides Studio</button>
+              </div>
+            </div>
+            <iframe src="${previewUrl}" style="width:100%; flex:1; min-height:580px; border:1px solid #444746; border-radius:12px; background:#ffffff;" title="Live Google Docs Preview"></iframe>
+          </div>
+        `;
+        filmstrip.style.display = 'none';
+        return;
+      }
+
+      // Default: 'slides' (Interactive Slides Studio with high-res slide canvas + decomposed diagram badge + filmstrip)
+      filmstrip.style.display = 'flex';
+      const maxWidthPx = Math.round((1060 * cvZoom) / 100);
+      const imgUrl = `slides/previews/${ws.deckStem}/slide_${pad2(slideObj.num)}.png?v=${PPTX_CACHE_VER}`;
+      const badgeHtml = slideObj.editable
+        ? `<span class="badge badge-green" style="margin-right:8px;">★ 100% DECOMPOSED NATIVE EDITABLE DIAGRAM SLIDE (56 SHAPES • 23 CONNECTORS)</span>`
+        : `<span class="badge badge-blue" style="margin-right:8px;">GOOGLE CLOUD BRANDED SLIDE (${slideObj.num} / ${total})</span>`;
+
+      stage.innerHTML = `
+        <div style="width:100%; max-width:${maxWidthPx}px; display:flex; flex-direction:column; gap:10px; align-items:center;">
+          <div style="width:100%; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:8px 14px; background:#202124; border:1px solid #444746; border-radius:10px; font-size:12.5px;">
+            <div>
+              ${badgeHtml}
+              <strong>${escapeHtml(slideObj.desc)}</strong>
+            </div>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <button type="button" class="pc-toolbar-btn active" onclick="openInGoogleWorkspace('${cvWsKey}', 'slides', ${slideObj.num})">
+                <span class="pc-gslides-icon">S</span> Edit Slide #${slideObj.num} in Google Slides &#8599;
+              </button>
+              <button type="button" class="pc-toolbar-btn" style="border:1px solid #444746;" onclick="setCloudViewerMode('embed')">
+                &#127760; Live Google Slides Embed
+              </button>
+            </div>
+          </div>
+          <div style="width:100%; background:#ffffff; border-radius:10px; padding:6px; box-shadow:0 20px 50px rgba(0,0,0,0.65); border:2px solid ${slideObj.editable ? '#18c964' : '#444746'};">
+            <img src="${imgUrl}" alt="Slide ${slideObj.num}" style="width:100%; height:auto; display:block; border-radius:6px;" />
+          </div>
+        </div>
+      `;
+
+      filmstrip.innerHTML = ws.slides.map(s => {
+        const cls = [
+          'slide-pill',
+          s.editable ? 'editable-highlight' : '',
+          s.num === cvSlideNum ? 'active' : ''
+        ].filter(Boolean).join(' ');
+        return `<button type="button" class="${cls}" style="flex-shrink:0;" onclick="selectCloudViewerSlide(${s.num})">${escapeHtml(s.label)}</button>`;
+      }).join('');
+    }
+
+    document.addEventListener('keydown', function (ev) {
+      const modal = document.getElementById('pc-cloud-viewer-modal');
+      if (!modal || !modal.classList.contains('open')) return;
+      if (ev.key === 'Escape') closeCloudViewerModal();
+      else if (ev.key === 'ArrowRight' && cvMode === 'slides') stepCloudViewerSlide(1);
+      else if (ev.key === 'ArrowLeft' && cvMode === 'slides') stepCloudViewerSlide(-1);
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      loadCloudViewerManifest();
+      selectGuidedWorkstream('WS1');
+    });
+
     // Check API health on load
     (async function checkHealth() {
       const badge = document.getElementById('api-status-badge');
@@ -1158,5 +2637,96 @@
       }
     })();
   </script>
+
+  <!-- SAME-SCREEN GMAIL ATTACHMENT OPENER CLOUD VIEWER MODAL (PROMPTCANVAS STYLE) -->
+  <div id="pc-cloud-viewer-modal" class="pc-modal-overlay" role="dialog" aria-modal="true" aria-label="PromptCanvas Cloud Viewer">
+    <!-- Top Gmail Attachment Opener Header Bar (#131314) -->
+    <div class="pc-modal-topbar">
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <button type="button" onclick="closeCloudViewerModal()" style="background:transparent; border:none; color:#e8eaed; font-size:18px; cursor:pointer; padding:4px 8px; border-radius:6px;" title="Close Cloud Viewer (Esc)">&#10005;</button>
+        <span style="display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:5px; background:#fbbc04; color:#202124; font-weight:900; font-size:13px;">P</span>
+        <div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <strong id="cv-filename" style="font-size:14px; color:#ffffff;">ws1-reference-architecture-editable-slides.pptx</strong>
+            <span class="badge badge-green" style="font-size:10px; padding:2px 7px;">Google Slides &amp; Docs Synced ✓</span>
+          </div>
+          <div style="font-size:11.5px; color:#9aa0a6; display:flex; gap:12px; margin-top:2px;">
+            <span style="cursor:pointer;" onclick="openInGoogleWorkspace(cvWsKey, 'slides', cvSlideNum)">File</span>
+            <span style="cursor:pointer;" onclick="setCloudViewerMode(cvMode === 'slides' ? 'embed' : 'slides')">View</span>
+            <span style="cursor:pointer;" onclick="jumpToNextEditableSlideInCloudViewer()">Tools (★ Jump to Editable Diagram)</span>
+            <span style="cursor:pointer;" onclick="openInGoogleWorkspace(cvWsKey, 'pdf', cvSlideNum)">Export PDF</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center View Mode Switcher -->
+      <div class="pc-pill-toolbar">
+        <button type="button" id="cv-mode-slides" class="pc-toolbar-btn active" onclick="setCloudViewerMode('slides')">&#10024; Interactive Slides Studio</button>
+        <button type="button" id="cv-mode-embed" class="pc-toolbar-btn" onclick="setCloudViewerMode('embed')">&#127760; Live Google Slides Embed</button>
+        <button type="button" id="cv-mode-docs" class="pc-toolbar-btn" onclick="setCloudViewerMode('docs')">&#128196; Live Google Docs Spec</button>
+      </div>
+
+      <!-- Right Split-Pill: [ Open with Google Slides | ▼ ] -->
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div class="pc-split-wrap" id="cv-open-gslides-split">
+          <button type="button" class="pc-split-main" onclick="openInGoogleWorkspace(cvWsKey, cvMode === 'docs' ? 'docs' : 'slides', cvSlideNum, cvCustomDocPath)">
+            <span class="pc-gslides-icon">S</span>
+            <span>Open with Google Slides</span>
+          </button>
+          <button type="button" class="pc-split-caret" onclick="togglePcDropdown(event, 'cv-gslides-menu')" aria-label="Open with menu">&#9660;</button>
+          <div id="cv-gslides-menu" class="pc-dropdown-menu">
+            <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(cvWsKey, 'slides', cvSlideNum)">
+              <span>&#8599;</span> <span>Open in new tab</span>
+            </button>
+            <div class="pc-dropdown-divider"></div>
+            <div class="pc-dropdown-section">Google apps</div>
+            <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(cvWsKey, 'slides', cvSlideNum)">
+              <span class="pc-gslides-icon">S</span> <span>Google Slides (Native Editable Deck)</span>
+            </button>
+            <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(cvWsKey, 'docs', 1, cvCustomDocPath)">
+              <span class="pc-gdocs-icon">D</span> <span>Google Docs (Native Editable Spec)</span>
+            </button>
+            <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(cvWsKey, 'pdf', 1)">
+              <span class="pc-gpdf-icon">PDF</span> <span>PDF Document (Vector Handout)</span>
+            </button>
+            <div class="pc-dropdown-divider"></div>
+            <div class="pc-dropdown-section">Local &amp; Sync</div>
+            <a id="cv-download-pptx" class="pc-dropdown-item" href="slides/ws1-reference-architecture-editable-slides.pptx?v=20261013-v5" download>
+              <span>&#11015;</span> <span>Download Editable .pptx</span>
+            </a>
+            <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(cvWsKey, 'slides', cvSlideNum, '', true)">
+              <span>&#128260;</span> <span>Force Re-Sync .pptx &rarr; Google Drive</span>
+            </button>
+          </div>
+        </div>
+        <button type="button" class="pc-toolbar-btn" style="background:#28292a; border:1px solid #444746;" onclick="closeCloudViewerModal()">&#10005; Close</button>
+      </div>
+    </div>
+
+    <!-- Second Row Floating Pill Toolbar (#28292A) -->
+    <div class="pc-modal-subbar">
+      <div id="cv-ws-strip" class="pc-pill-toolbar"></div>
+      <div class="pc-pill-toolbar">
+        <button type="button" class="pc-toolbar-btn" onclick="stepCloudViewerSlide(-1)">&#9664; Prev</button>
+        <span id="cv-page-indicator" style="font-size:12.5px; font-weight:700; padding:0 8px; color:#fbbc04;">Slide 1 / 16</span>
+        <button type="button" class="pc-toolbar-btn" onclick="stepCloudViewerSlide(1)">Next &#9654;</button>
+        <span style="color:#444746;">|</span>
+        <button type="button" class="pc-toolbar-btn" style="color:#86efac;" onclick="jumpToNextEditableSlideInCloudViewer()">&#9733; Next Editable Diagram</button>
+        <span style="color:#444746;">|</span>
+        <button type="button" class="pc-toolbar-btn" onclick="openInGoogleWorkspace(cvWsKey, 'slides', cvSlideNum)" title="Open in Google Slides">&#8599; Google Slides</button>
+        <button type="button" class="pc-toolbar-btn" onclick="openInGoogleWorkspace(cvWsKey, 'pdf', cvSlideNum)" title="Export / Print PDF">&#128424; PDF</button>
+        <span style="color:#444746;">|</span>
+        <button type="button" class="pc-toolbar-btn" onclick="setCloudViewerZoom(-15)">&minus;</button>
+        <span id="cv-zoom-label" style="font-size:12px; min-width:42px; text-align:center;">100%</span>
+        <button type="button" class="pc-toolbar-btn" onclick="setCloudViewerZoom(15)">&#43;</button>
+      </div>
+    </div>
+
+    <!-- Center Stage -->
+    <div id="cv-stage" class="pc-modal-stage"></div>
+
+    <!-- Bottom Slide Filmstrip -->
+    <div id="cv-filmstrip" class="pc-modal-filmstrip"></div>
+  </div>
 </body>
 </html>

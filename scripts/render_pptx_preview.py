@@ -55,13 +55,18 @@ def solid_fill(el):
     return f"#{clr.get('val')}" if clr is not None else None
 
 
-def line_props(sppr):
+def line_props(sppr, is_line=False):
     ln = sppr.find("a:ln", NS) if sppr is not None else None
     if ln is None:
         return None
     if ln.find("a:noFill", NS) is not None:
         return None
-    color = solid_fill(ln) or "#000000"
+    color = solid_fill(ln)
+    if color is None:
+        if is_line:
+            color = "#1e293b"
+        else:
+            return None
     w = emu_px(ln.get("w", "9525"))
     dash = ln.find("a:prstDash", NS)
     dashed = dash is not None and dash.get("val") not in (None, "solid")
@@ -78,41 +83,66 @@ def line_props(sppr):
 
 def runs_to_html(txbody):
     if txbody is None:
-        return ""
+        return [], None
     paras = []
     body_pr = txbody.find("a:bodyPr", NS)
     for p in txbody.findall("a:p", NS):
         ppr = p.find("a:pPr", NS)
         align = ppr.get("algn") if ppr is not None else None
         bullet = ppr is not None and ppr.find("a:buChar", NS) is not None
-        parts = []
-        for r in p.findall("a:r", NS):
-            rpr = r.find("a:rPr", NS)
-            t = r.find("a:t", NS)
-            txt = html.escape(t.text or "") if t is not None else ""
-            size = rpr.get("sz") if rpr is not None else None
-            bold = rpr is not None and rpr.get("b") == "1"
-            italic = rpr is not None and rpr.get("i") == "1"
-            color = solid_fill(rpr) if rpr is not None else None
-            style = []
-            if size:
-                style.append(f"font-size:{int(size)/100*1.333:.1f}px")
-            if bold:
-                style.append("font-weight:700")
-            if italic:
-                style.append("font-style:italic")
-            if color:
-                style.append(f"color:{color}")
-            parts.append(f'<span style="{";".join(style)}">{txt}</span>')
-        if p.find("a:br", NS) is not None and not parts:
-            parts.append("<br/>")
-        css = []
+        spc_aft = 0.0
+        if ppr is not None:
+            sa = ppr.find("a:spcAft/a:spcPts", NS)
+            if sa is not None and sa.get("val"):
+                spc_aft = int(sa.get("val")) / 100.0 * 1.333
+
+        lines_in_p = [[]]
+        line_sizes = [[]]
+        for child in p:
+            if child.tag == q("a:r"):
+                rpr = child.find("a:rPr", NS)
+                t = child.find("a:t", NS)
+                txt = html.escape(t.text or "") if t is not None else ""
+                size = rpr.get("sz") if rpr is not None else None
+                bold = rpr is not None and rpr.get("b") == "1"
+                italic = rpr is not None and rpr.get("i") == "1"
+                color = solid_fill(rpr) if rpr is not None else None
+                style = []
+                if size:
+                    px_sz = int(size) / 100.0 * 1.333
+                    style.append(f"font-size:{px_sz:.1f}px")
+                    line_sizes[-1].append(px_sz)
+                if bold:
+                    style.append("font-weight:700")
+                if italic:
+                    style.append("font-style:italic")
+                if color:
+                    style.append(f"color:{color}")
+                lines_in_p[-1].append(f'<span style="{";".join(style)}">{txt}</span>')
+            elif child.tag == q("a:br"):
+                lines_in_p.append([])
+                line_sizes.append([])
+
+        base_css = []
         if align == "ctr":
-            css.append("text-align:center")
+            base_css.append("text-align:center")
         elif align == "r":
-            css.append("text-align:right")
-        prefix = "&#9632;&nbsp;" if bullet else ""
-        paras.append(f'<div style="{";".join(css)}">{prefix}{"".join(parts)}</div>')
+            base_css.append("text-align:right")
+        if spc_aft > 0:
+            base_css.append(f"margin-bottom:{spc_aft:.1f}px")
+        elif bullet:
+            base_css.append("margin-bottom:6px")
+
+        for idx_l, sub_line in enumerate(lines_in_p):
+            if not sub_line and len(lines_in_p) > 1:
+                continue
+            css = list(base_css)
+            sz_list = line_sizes[idx_l] if idx_l < len(line_sizes) else []
+            max_px = max(sz_list) if sz_list else 12.0
+            css.append(f"font-size:{max_px:.1f}px")
+            css.append("line-height:1.22")
+            prefix = '<span style="color:#1A73E8;font-size:0.85em;margin-right:6px">&#9632;</span>' if bullet else ""
+            paras.append(f'<div style="{";".join(css)}">{prefix}{"".join(sub_line)}</div>')
     anchor = body_pr.get("anchor") if body_pr is not None else None
     return paras, anchor
 
@@ -142,10 +172,11 @@ def render_slide(zf, slide_path, rels, out_html):
             flip_v = xfrm.get("flipV") == "1"
             geom = sppr.find("a:prstGeom", NS)
             prst = geom.get("prst") if geom is not None else "rect"
+            is_line_shape = prst in ("line", "straightConnector1")
             fill = solid_fill(sppr)
-            ln = line_props(sppr)
+            ln = line_props(sppr, is_line=is_line_shape)
             txbody = el.find("p:txBody", NS)
-            if prst in ("line", "straightConnector1"):
+            if is_line_shape:
                 x1, y1, x2, y2 = x, y, x + w, y + h
                 if flip_h:
                     x1, x2 = x2, x1
@@ -164,7 +195,10 @@ def render_slide(zf, slide_path, rels, out_html):
             if ln:
                 style.append(f'border:{ln["w"]:.2f}px {"dashed" if ln["dashed"] else "solid"} {ln["color"]}')
             if prst == "roundRect":
-                style.append("border-radius:6px")
+                radius_px = 8 if min(w, h) > 28 else 5
+                style.append(f"border-radius:{radius_px}px")
+                if fill and ln and w > 90 and h > 40:
+                    style.append("box-shadow:0 2px 6px rgba(15,23,42,0.06)")
             elif prst == "ellipse":
                 style.append("border-radius:50%")
             inner = ""
@@ -180,7 +214,7 @@ def render_slide(zf, slide_path, rels, out_html):
                 just = {"ctr": "center", "b": "flex-end"}.get(anchor, "flex-start")
                 inner = (
                     f'<div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:{just};'
-                    f'padding:{pad};overflow:hidden;line-height:1.2">{"".join(paras)}</div>'
+                    f'padding:{pad};overflow:hidden;line-height:1.28">{"".join(paras)}</div>'
                 )
             items.append(f'<div class="sp" style="{";".join(style)}">{inner}</div>')
         elif tag == q("p:pic"):
@@ -232,8 +266,8 @@ def render_slide(zf, slide_path, rels, out_html):
         if i.startswith("<line"):
             ordered.append(
                 '<svg class="ln" width="1280" height="720" style="position:absolute;left:0;top:0;pointer-events:none;overflow:visible">'
-                '<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="context-stroke" stroke-width="1.2"/></marker>'
-                '<marker id="arrowrev" markerWidth="8" markerHeight="8" refX="1" refY="4" orient="auto"><path d="M8,0 L0,4 L8,8" fill="none" stroke="context-stroke" stroke-width="1.2"/></marker></defs>'
+                '<defs><marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="6.5" markerHeight="6.5" refX="5.8" refY="3.25" orient="auto"><path d="M0,0.4 L6,3.25 L0,6.1" fill="none" stroke="context-stroke" stroke-width="1.35"/></marker>'
+                '<marker id="arrowrev" markerUnits="userSpaceOnUse" markerWidth="6.5" markerHeight="6.5" refX="0.7" refY="3.25" orient="auto"><path d="M6,0.4 L0,3.25 L6,6.1" fill="none" stroke="context-stroke" stroke-width="1.35"/></marker></defs>'
                 + i
                 + "</svg>"
             )

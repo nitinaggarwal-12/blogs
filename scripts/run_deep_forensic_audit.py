@@ -46,7 +46,11 @@ def load_module_from_path(module_name: str, file_path: Path):
 
 
 def check_f01_links_and_modular_files() -> Dict[str, object]:
-    md_files = sorted(ROOT_DIR.rglob("*.md"))
+    md_files = sorted(
+        p
+        for p in ROOT_DIR.rglob("*.md")
+        if p.is_file() and not any(part.startswith(".") for part in p.relative_to(ROOT_DIR).parts)
+    )
     broken_links: List[str] = []
     total_links_checked = 0
 

@@ -23,13 +23,16 @@ import {
 } from '../../PromptCanvas/src/lib/vectorIcons/visionIconEnricher';
 import { validateDrawioXml } from '../../PromptCanvas/src/lib/validate/validator';
 
-const requireFromPromptCanvas = createRequire('/Users/nitinagga/Documents/PromptCanvas/package.json');
+const promptCanvasRoot = fs.existsSync(path.resolve(__dirname, '../../PromptCanvas/package.json'))
+  ? path.resolve(__dirname, '../../PromptCanvas')
+  : '/Users/nitinagga/Documents/PromptCanvas';
+const requireFromPromptCanvas = createRequire(path.join(promptCanvasRoot, 'package.json'));
 const puppeteer = requireFromPromptCanvas('puppeteer-core');
 
 const FDE_BLOGS_ROOT = path.resolve(__dirname, '..');
 const CENTRAL_DIAGRAMS_DIR = path.join(FDE_BLOGS_ROOT, 'diagrams');
 const VISION_META_DIR = path.join(CENTRAL_DIAGRAMS_DIR, 'vision_metadata');
-const VIEWER_JS_PATH = '/Users/nitinagga/Documents/PromptCanvas/public/viewer-static.min.js';
+const VIEWER_JS_PATH = path.join(promptCanvasRoot, 'public/viewer-static.min.js');
 const ARTIFACTS_DIR = '/Users/nitinagga/.gemini/jetski/brain/50ee3ff7-25f3-49cb-b977-ab949eb07952';
 
 interface ManifestItem {
@@ -67,8 +70,10 @@ async function runVisionPipeline() {
 
   // Copy viewer-static.min.js into fde-blogs/diagrams/ so the interactive portal can render Draw.io live
   const localViewerJsPath = path.join(CENTRAL_DIAGRAMS_DIR, 'viewer-static.min.js');
-  fs.copyFileSync(VIEWER_JS_PATH, localViewerJsPath);
-  const viewerJsCode = fs.readFileSync(VIEWER_JS_PATH, 'utf8');
+  if (fs.existsSync(VIEWER_JS_PATH)) {
+    fs.copyFileSync(VIEWER_JS_PATH, localViewerJsPath);
+  }
+  const viewerJsCode = fs.readFileSync(fs.existsSync(VIEWER_JS_PATH) ? VIEWER_JS_PATH : localViewerJsPath, 'utf8');
 
   const manifestPath = path.join(CENTRAL_DIAGRAMS_DIR, 'diagrams_manifest.json');
   const manifest: ManifestItem[] = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
@@ -83,10 +88,20 @@ async function runVisionPipeline() {
   const addr = server.address() as { port: number };
   const port = addr.port;
 
+  const chromeCandidates = [
+    process.env.CHROME_BIN,
+    '/usr/bin/google-chrome',
+    '/usr/bin/google-chrome-stable',
+    '/usr/bin/chromium',
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+  ].filter(Boolean) as string[];
+  const executablePath =
+    chromeCandidates.find((p) => fs.existsSync(p)) || chromeCandidates[chromeCandidates.length - 1];
+
   const userDataDir = `/tmp/chrome_headless_promptcanvas_vision_${Date.now()}`;
   const browser = await puppeteer.launch({
     headless: 'new',
-    executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    executablePath,
     userDataDir,
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
   });

@@ -76,6 +76,10 @@ forensic_mod = load_module_from_path(
     "run_deep_forensic_audit",
     ROOT_DIR / "scripts/run_deep_forensic_audit.py",
 )
+bridge_mod = load_module_from_path(
+    "sync_google_workspace_bridge",
+    ROOT_DIR / "scripts/sync_google_workspace_bridge.py",
+)
 
 JWT_CLAIMS_BY_TENANT = {
     "finvault": {
@@ -457,6 +461,49 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             )
             return
 
+        if path == "/api/google-workspace/manifest":
+            self._send_json(200, bridge_mod.load_cloud_manifest())
+            return
+
+        if path == "/api/google-workspace/oauth-config":
+            self._send_json(
+                200,
+                {
+                    "configured": True,
+                    "clientId": bridge_mod.DEFAULT_OAUTH_CLIENT_ID,
+                    "iapEmail": bridge_mod.DEFAULT_USER_EMAIL,
+                },
+            )
+            return
+
+        if path == "/api/google-workspace/pdf":
+            qs = parse_qs(parsed.query)
+            key = (qs.get("key") or ["WS1"])[0].strip()
+            mode = (qs.get("mode") or ["slides"])[0].strip().lower()
+            file_id = (qs.get("fileId") or [""])[0].strip()
+            manifest = bridge_mod.load_cloud_manifest()
+            if not file_id:
+                if mode == "docs":
+                    file_id = manifest.get("docs", {}).get(key, {}).get("googleDocsId", "")
+                else:
+                    file_id = manifest.get("slides", {}).get(key, {}).get("googleSlidesId", "")
+            if not file_id:
+                self._send_json(404, {"error": f"No Google Drive fileId found for key={key} mode={mode}"})
+                return
+            try:
+                pdf_bytes = bridge_mod.export_google_file_pdf_bytes(file_id)
+                self.send_response(200)
+                self.send_header("Content-Type", "application/pdf")
+                self.send_header("Content-Length", str(len(pdf_bytes)))
+                self.send_header("Content-Disposition", f'inline; filename="GEAP-{key}-{mode}.pdf"')
+                self.send_header("Cache-Control", "no-store")
+                self.end_headers()
+                self.wfile.write(pdf_bytes)
+                return
+            except Exception as exc:
+                self._send_json(500, {"error": str(exc)})
+                return
+
         if path == "/api/artifact":
             qs = parse_qs(parsed.query)
             rel_path = (qs.get("path") or [""])[0].strip()
@@ -545,6 +592,77 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             body = {}
 
         try:
+            if path == "/api/google-workspace/open":
+                key = str(body.get("key") or "WS1").strip()
+                mode = str(body.get("mode") or "slides").strip().lower()
+                force = bool(body.get("force", False))
+                token_override = str(body.get("accessToken") or "").strip() or None
+                spec_map = {k: (t, p, m) for k, t, p, m in bridge_mod.WORKSTREAM_DECK_SPECS}
+                default_title, default_pptx, default_md = spec_map.get(
+                    key, spec_map["WS1"]
+                )
+                title = str(body.get("title") or default_title).strip()
+
+                if mode == "docs":
+                    rel_md = str(body.get("docPath") or default_md).strip().lstrip("/")
+                    md_candidate = (ROOT_DIR / rel_md).resolve()
+                    if not str(md_candidate).startswith(str(ROOT_DIR)) or not md_candidate.is_file():
+                        md_candidate = (ROOT_DIR / default_md).resolve()
+                    cache_key = key if rel_md == default_md else f"DOC_{rel_md}"
+                    entry = bridge_mod.upload_md_to_google_docs(
+                        md_candidate,
+                        title=title,
+                        cache_key=cache_key,
+                        force=force,
+                        access_token_override=token_override,
+                    )
+                    self._send_json(
+                        200,
+                        {
+                            "ok": True,
+                            "mode": "docs",
+                            "key": cache_key,
+                            "url": entry["googleDocsEditUrl"],
+                            "editUrl": entry["googleDocsEditUrl"],
+                            "previewUrl": entry["googleDocsPreviewUrl"],
+                            "pdfUrl": f"/api/google-workspace/pdf?key={cache_key}&mode=docs",
+                            "directPdfUrl": entry["googleDocsPdfUrl"],
+                            "entry": entry,
+                        },
+                    )
+                    return
+
+                # Default: slides or pdf
+                rel_pptx = str(body.get("pptxPath") or default_pptx).strip().lstrip("/")
+                pptx_candidate = (ROOT_DIR / rel_pptx).resolve()
+                if not str(pptx_candidate).startswith(str(ROOT_DIR)) or not pptx_candidate.is_file():
+                    pptx_candidate = (ROOT_DIR / default_pptx).resolve()
+                entry = bridge_mod.upload_pptx_to_google_slides(
+                    pptx_candidate,
+                    title=title,
+                    cache_key=key,
+                    force=force,
+                    access_token_override=token_override,
+                )
+                pdf_route = f"/api/google-workspace/pdf?key={key}&mode=slides"
+                target_url = pdf_route if mode == "pdf" else entry["googleSlidesEditUrl"]
+                self._send_json(
+                    200,
+                    {
+                        "ok": True,
+                        "mode": mode,
+                        "key": key,
+                        "url": target_url,
+                        "editUrl": entry["googleSlidesEditUrl"],
+                        "previewUrl": entry["googleSlidesPreviewUrl"],
+                        "embedUrl": entry["googleSlidesEmbedUrl"],
+                        "pdfUrl": pdf_route,
+                        "directPdfUrl": entry["googleSlidesPdfUrl"],
+                        "entry": entry,
+                    },
+                )
+                return
+
             if path == "/api/simulate/scenario":
                 scenario_id = str(body.get("scenario_id", "sim1"))
                 data = execute_preset_scenario(scenario_id)

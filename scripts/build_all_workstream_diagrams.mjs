@@ -30,7 +30,10 @@ const CENTRAL_DIAGRAMS_DIR = path.join(ROOT_DIR, 'diagrams');
 
 import { loadExtendedBlueprints } from './workstream_blueprints_extended.mjs';
 
-const requireFromPromptCanvas = createRequire('/Users/nitinagga/Documents/PromptCanvas/package.json');
+const promptCanvasPkg = fs.existsSync(path.resolve(__dirname, '../../PromptCanvas/package.json'))
+  ? path.resolve(__dirname, '../../PromptCanvas/package.json')
+  : '/Users/nitinagga/Documents/PromptCanvas/package.json';
+const requireFromPromptCanvas = createRequire(promptCanvasPkg);
 const puppeteer = requireFromPromptCanvas('puppeteer-core');
 
 const OFFICIAL_ASSETS = JSON.parse(
@@ -1177,9 +1180,19 @@ async function main() {
   const port = server.address().port;
 
   const userDataDir = `/tmp/chrome_headless_arch_center_${Date.now()}`;
+  const chromeCandidates = [
+    process.env.CHROME_BIN,
+    '/usr/bin/google-chrome',
+    '/usr/bin/google-chrome-stable',
+    '/usr/bin/chromium',
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+  ].filter(Boolean);
+  const executablePath =
+    chromeCandidates.find((p) => fs.existsSync(p)) || chromeCandidates[chromeCandidates.length - 1];
+
   const browser = await puppeteer.launch({
     headless: 'new',
-    executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    executablePath,
     userDataDir,
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
   });
