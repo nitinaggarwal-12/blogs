@@ -2,28 +2,27 @@
  * Workstream 4.5 — Zero-Downtime Tier Upgrade Suite: 3-Phase Live Migration Test Sequence (Pattern C)
  * Grounded in: workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py
  *              + 4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py
- * Rendered by scripts/build_all_workstream_diagrams.mjs hub-and-spoke template.
  */
 export default {
   id: 'ws4-zero-downtime-tier-upgrade-sequence',
   badge: 'WORKSTREAM 4.5 • ZERO-DOWNTIME TIER UPGRADE SUITE',
   title: 'Zero-Downtime Tier Upgrade Test Sequence: SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY (4/4 PASS)',
-  subtitle: 'run_tier_migration_suite.py • Promotes retailstream Mid-Session from pool:// (4,000 cap) to psc://10.10.0.51 (8,000 budget + CMEK) with dropped_sessions == 0',
+  subtitle: 'run_tier_migration_suite.py • Live Verified in nitina-ggarwal-sandbox-647724 • Promotes retailstream Mid-Session to psc://10.10.0.51 with 0 Dropped Turns',
   workstreamDir: 'workstream-4-pattern-c-hybrid/diagrams',
   topUserTitle: 'Test Harness Operator',
   topUserSub: 'python3 run_tier_migration_suite.py',
   step1LeftLabel: 'Run suite',
   step7RightLabel: '4/4 PASS',
-  outerWrapperLabel: 'Workstream 4.5 Test Harness • PatternCHybridRouterAndMigrator (Instance-Scoped tenant_profiles, Zero Global Mutation)',
+  outerWrapperLabel: 'Workstream 4.5 Test Harness • PatternCHybridRouterAndMigrator (pattern_c_psc_endpoints_registry, Zero Global Mutation)',
   innerWrapperLabel: 'Same session_id (sess-rs-live-upgrade-01) Before & After Cutover • Continuous Synthetic Traffic',
   routingHubTitle: 'Test Runner & Router Under Test',
   routingHubSub: 'route_and_invoke() + execute_zero_downtime_tier_upgrade()',
   routingCards: {
     topLeft: { icon: 'iap_iam_shield', title: 'TEST 1A Pre-Upgrade', sub: 'RS -> HYBRID_POOL, cap 4000' },
-    midLeft: { icon: 'iap_iam_shield', title: 'TEST 1B Enterprise', sub: 'FV -> psc://, budget 8000' },
-    botLeft: { icon: 'cloud_run', title: 'TEST 2 Migration', sub: '3 phases, lag 0, dropped 0' },
-    topRight: { icon: 'load_balancer_cloud_armor', title: 'Hop 1 Auth', title2: 'OBO + DPoP', sub: 'OIDC (FV) & Entra (RS) JWTs' },
-    botRight: { icon: 'cloud_run', title: 'Hybrid Router', sub: 'routing_table[tenant_id]' },
+    midLeft: { icon: 'psc_bridge', title: 'TEST 1B Enterprise', sub: 'FV -> psc://10.10.0.50 (8000)' },
+    botLeft: { icon: 'dms_migration', title: 'TEST 2 Migration', sub: '3 phases, lag 0, dropped 0' },
+    topRight: { icon: 'load_balancer_cloud_armor', title: 'Hop 1 Auth', title2: 'OBO + DPoP', sub: 'KMS ECDSA P-256 Signed JWTs' },
+    botRight: { icon: 'cloud_run', title: 'Hybrid Router', sub: 'cymbal-multi-tenant-patterns' },
     edgeTopLeft: ['assert topology', 'HYBRID_POOL'],
     edgeMidLeft: ['assert endpoint', 'startswith psc://'],
     edgeBotLeft: ['assert phases', 'len == 3'],
@@ -33,9 +32,9 @@ export default {
   govHubTitle: '3-Phase Silent Migration',
   govHubTitle2: 'State Machine (TEST 2)',
   govCards: {
-    top: { icon: 'datastore_alloydb_bq', title: '1. SHADOW_SYNC', sub: 'replication_lag_ms == 0' },
-    mid: { icon: 'iap_iam_shield', title: '2. ATOMIC_CUTOVER', sub: 'tier ENTERPRISE, budget 8000' },
-    bot: { icon: 'cloud_logging', title: '3. DRAIN_AND_VERIFY', sub: 'MIGRATION_COMPLETE, 0 drops' },
+    top: { icon: 'dms_migration', title: '1. SHADOW_SYNC', sub: 'replication_lag_ms == 0' },
+    mid: { icon: 'firestore_db', title: '2. ATOMIC_CUTOVER', sub: 'tier ENTERPRISE, budget 8000' },
+    bot: { icon: 'psc_bridge', title: '3. DRAIN_AND_VERIFY', sub: 'MIGRATION_COMPLETE, 0 drops' },
   },
   midStep3Label: ['Pre-upgrade turn', 'then upgrade'],
   midStep7Label: ['TEST 3: same', 'session on PSC'],
@@ -48,7 +47,7 @@ export default {
     llm: { icon: 'gemini_agent_platform', title: 'Pooled Runtime', sub: 'Budget Clamped to 4,000' },
     runtime: { icon: 'gemini_agent_platform', title: 'shared-incident-', title2: 'diagnostic-v2', sub: 'agent://cymbal/... (RS)' },
     mcp: { icon: 'mcp_servers', title: 'Pooled MCP Hub', sub: 'Shared 2LO/3LO Tools' },
-    datastore: { icon: 'datastore_alloydb_bq', title: 'Shared AlloyDB RLS', sub: 'query_alloydb_with_rls()' },
+    datastore: { icon: 'datastore_alloydb_bq', title: 'AlloyDB & BQ RLS', sub: 'pattern_a_pooled_rls_entities' },
     step4Label: 'Pre-upgrade turn',
     step6Label: 'Rows replicated',
     step5Label: ['200 OK', 'clamped 4000'],
@@ -63,8 +62,8 @@ export default {
     llm: { icon: 'gemini_agent_platform', title: 'Spoke Runtime', sub: 'Budget 8,000, clamped False' },
     runtime: { icon: 'cloud_run', title: 'cymbal-retailstream-', title2: 'spoke-prod', sub: 'New Dedicated Spoke Project' },
     mcp: { icon: 'mcp_servers', title: 'Dedicated Spoke MCP', sub: 'Isolated Spoke Connectors' },
-    datastore: { icon: 'datastore_alloydb_bq', title: 'CMEK Spoke AlloyDB', sub: 'rs-kr / rs-agent-cmek' },
+    datastore: { icon: 'cloud_kms', title: 'CMEK Spoke Datastore', sub: 'retailstream-silo-cmek' },
     ragLabel: ['TEST 3 asserts', 'psc://10.10.0.51/'],
-    toolLabel: ['cmek_key_uri has', 'rs-agent-cmek'],
+    toolLabel: ['cmek_key_uri has', 'retailstream-cmek'],
   },
 };

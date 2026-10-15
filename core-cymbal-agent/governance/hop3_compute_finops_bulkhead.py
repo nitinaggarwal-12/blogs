@@ -13,6 +13,7 @@ Enforces Governance Pillar 3 (Model, Memory & FinOps):
    system instructions (yielding up to 90% COGS savings without cross-tenant bleed).
 """
 
+import os
 from typing import Dict, Optional, Tuple
 from ..models import (
     CryptographicContext,
@@ -22,10 +23,14 @@ from ..models import (
     TENANT_PROFILES,
     TenantProfile,
 )
+from ..gcp_live_bridge import (
+    kms_encrypt_decrypt_roundtrip,
+    kms_set_key_version_state,
+)
 
 
 class ComputeFinOpsBulkhead:
-    """Simulates GEAP Runtime + Firestore/Memorystore Config + 5-Level Memory Bank at Hop 3."""
+    """Enforces GEAP Runtime + Firestore/Memorystore Config + 5-Level Memory Bank + Live Cloud KMS CMEK at Hop 3."""
 
     def __init__(self, tenant_profiles: Optional[Dict[str, TenantProfile]] = None) -> None:
         self.tenant_profiles = tenant_profiles if tenant_profiles is not None else TENANT_PROFILES
@@ -34,12 +39,24 @@ class ComputeFinOpsBulkhead:
         self._memory_bank_store: Dict[str, Dict[str, str]] = {}
         self._disabled_cmek_keys: set[str] = set()
 
+    def _resolve_tenant_from_cmek_uri(self, cmek_uri: str) -> str:
+        if "retailstream" in cmek_uri or "rs-kr" in cmek_uri:
+            return "retailstream"
+        return "finvault"
+
     def disable_cmek_key(self, cmek_uri: str) -> None:
-        """Used in Workstream 3 (Pattern B) to simulate customer CMEK revocation kill-switch."""
+        """Disables the tenant CMEK key (both in-memory and live in Cloud KMS `cymbal-multi-tenant-kr` when CYMBAL_LIVE_GCP=1)."""
         self._disabled_cmek_keys.add(cmek_uri)
+        if os.environ.get("CYMBAL_LIVE_GCP") == "1":
+            tenant_id = self._resolve_tenant_from_cmek_uri(cmek_uri)
+            kms_set_key_version_state(tenant_id, enabled=False)
 
     def enable_cmek_key(self, cmek_uri: str) -> None:
+        """Restores the tenant CMEK key (both in-memory and live in Cloud KMS `cymbal-multi-tenant-kr` when CYMBAL_LIVE_GCP=1)."""
         self._disabled_cmek_keys.discard(cmek_uri)
+        if os.environ.get("CYMBAL_LIVE_GCP") == "1":
+            tenant_id = self._resolve_tenant_from_cmek_uri(cmek_uri)
+            kms_set_key_version_state(tenant_id, enabled=True)
 
     def load_dynamic_runtime_config(self, ctx: CryptographicContext) -> Dict[str, object]:
         """
@@ -112,6 +129,25 @@ class ComputeFinOpsBulkhead:
         )
 
         # 1. Verify CMEK status if tenant or topology mandates CMEK encryption
+        live_kms_receipt = None
+        if active_cmek and os.environ.get("CYMBAL_LIVE_GCP") == "1":
+            live_kms_receipt = kms_encrypt_decrypt_roundtrip(
+                ctx.tenant_id,
+                f"memory_bank:{ctx.memory_bank_namespace}:budget={requested_thinking_tokens}",
+            )
+            if not live_kms_receipt.get("live_kms_ok"):
+                return {}, HopAuditRecord(
+                    hop_number=3,
+                    hop_name="Hop 3 • Compute Plane, Memory Bank & FinOps Bulkhead",
+                    decision="DENY",
+                    status_code=423,
+                    detail=(
+                        f"KMS_KEY_DISABLED: Tenant '{ctx.tenant_id}' CMEK key '{active_cmek}' "
+                        f"rejected by live Cloud KMS (`cymbal-multi-tenant-kr`). Halting execution immediately."
+                    ),
+                    metadata={"cmek_key_uri": active_cmek, "live_kms_error": live_kms_receipt},
+                )
+
         if active_cmek and active_cmek in self._disabled_cmek_keys:
             return {}, HopAuditRecord(
                 hop_number=3,
@@ -158,7 +194,7 @@ class ComputeFinOpsBulkhead:
             value=str(effective_thinking_budget),
         )
 
-        runtime_config = {
+        runtime_config: Dict[str, object] = {
             "sandbox": "gvisor-isolated",
             "immutable_state_key": ctx.temp_tenant_id,
             "memory_namespace": ctx.memory_bank_namespace,
@@ -175,6 +211,8 @@ class ComputeFinOpsBulkhead:
                 "tenant_suffix_isolated": True,
             },
         }
+        if live_kms_receipt is not None:
+            runtime_config["live_cloud_kms_cmek"] = live_kms_receipt
 
         audit = HopAuditRecord(
             hop_number=3,

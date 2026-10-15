@@ -33,13 +33,14 @@ const FDE_BLOGS_ROOT = path.resolve(__dirname, '..');
 const CENTRAL_DIAGRAMS_DIR = path.join(FDE_BLOGS_ROOT, 'diagrams');
 const VISION_META_DIR = path.join(CENTRAL_DIAGRAMS_DIR, 'vision_metadata');
 const VIEWER_JS_PATH = path.join(promptCanvasRoot, 'public/viewer-static.min.js');
-const ARTIFACTS_DIR = '/Users/nitinagga/.gemini/jetski/brain/50ee3ff7-25f3-49cb-b977-ab949eb07952';
+const ARTIFACTS_DIR = '/Users/nitinagga/.gemini/jetski/brain/b4ce71b8-a483-45d8-9e81-df976103c1eb';
 
 interface ManifestItem {
   id: string;
   badge: string;
   title: string;
   subtitle: string;
+  archetype?: string;
   format: string;
   workstream_dir: string;
   drawio_xml: string;
@@ -68,12 +69,7 @@ interface ManifestItem {
 async function runVisionPipeline() {
   fs.mkdirSync(VISION_META_DIR, { recursive: true });
 
-  // Copy viewer-static.min.js into fde-blogs/diagrams/ so the interactive portal can render Draw.io live
-  const localViewerJsPath = path.join(CENTRAL_DIAGRAMS_DIR, 'viewer-static.min.js');
-  if (fs.existsSync(VIEWER_JS_PATH)) {
-    fs.copyFileSync(VIEWER_JS_PATH, localViewerJsPath);
-  }
-  const viewerJsCode = fs.readFileSync(fs.existsSync(VIEWER_JS_PATH) ? VIEWER_JS_PATH : localViewerJsPath, 'utf8');
+  const viewerJsCode = fs.readFileSync(VIEWER_JS_PATH, 'utf8');
 
   const manifestPath = path.join(CENTRAL_DIAGRAMS_DIR, 'diagrams_manifest.json');
   const manifest: ManifestItem[] = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
@@ -112,17 +108,13 @@ async function runVisionPipeline() {
   try {
     for (let i = 0; i < manifest.length; i++) {
       const item = manifest[i];
-      const wsDir = path.join(FDE_BLOGS_ROOT, item.workstream_dir);
-      const centralXmlPath = path.join(CENTRAL_DIAGRAMS_DIR, `${item.id}.drawio.xml`);
       const centralDrawioPath = path.join(CENTRAL_DIAGRAMS_DIR, `${item.id}.drawio`);
-      const wsXmlPath = path.join(wsDir, `${item.id}.drawio.xml`);
-      const wsDrawioPath = path.join(wsDir, `${item.id}.drawio`);
 
       console.log(
         `\n🔍 [${i + 1}/${manifest.length}] PromptCanvas Vision Module processing: ${item.id} ...`
       );
 
-      const rawXml = fs.readFileSync(centralXmlPath, 'utf8');
+      const rawXml = fs.readFileSync(centralDrawioPath, 'utf8');
 
       // Step 1: Run PromptCanvas XML AST Healer (validateAndHealDrawioXml)
       const healedResult = validateAndHealDrawioXml(rawXml, 'vision_decompiled');
@@ -139,11 +131,8 @@ async function runVisionPipeline() {
       const vertexCount = (iconEnrichedXml.match(/<mxCell[^>]+vertex="1"/gi) || []).length;
       const edgeCount = (iconEnrichedXml.match(/<mxCell[^>]+edge="1"/gi) || []).length;
 
-      // Save certified Draw.io XML to both .drawio and .drawio.xml in workstream & central folders
-      fs.writeFileSync(centralXmlPath, iconEnrichedXml, 'utf8');
+      // Save certified Draw.io XML to canonical .drawio file in central diagrams folder
       fs.writeFileSync(centralDrawioPath, iconEnrichedXml, 'utf8');
-      fs.writeFileSync(wsXmlPath, iconEnrichedXml, 'utf8');
-      fs.writeFileSync(wsDrawioPath, iconEnrichedXml, 'utf8');
 
       // Step 5: Render the Draw.io XML through Draw.io's actual mxGraph engine (viewer-static.min.js)
       const mxGraphConfig = {
@@ -215,14 +204,12 @@ async function runVisionPipeline() {
       });
 
       const centralDrawioPngPath = path.join(CENTRAL_DIAGRAMS_DIR, `${item.id}.drawio.png`);
-      const wsDrawioPngPath = path.join(wsDir, `${item.id}.drawio.png`);
       const canvasElem = await page.$('#drawio-canvas');
       if (canvasElem) {
         await canvasElem.screenshot({ path: centralDrawioPngPath });
       } else {
         await page.screenshot({ path: centralDrawioPngPath });
       }
-      fs.copyFileSync(centralDrawioPngPath, wsDrawioPngPath);
 
       if (fs.existsSync(ARTIFACTS_DIR)) {
         fs.copyFileSync(
@@ -242,17 +229,17 @@ async function runVisionPipeline() {
         title: item.title,
         subtitle: item.subtitle,
         badge: item.badge,
-        sourceImage: item.central_png,
+        sourceImage: `diagrams/${item.id}.drawio.png`,
         drawioFile: `diagrams/${item.id}.drawio`,
-        drawioXmlFile: `diagrams/${item.id}.drawio.xml`,
+        drawioXmlFile: `diagrams/${item.id}.drawio`,
         drawioRenderedPng: `diagrams/${item.id}.drawio.png`,
-        summary: `PromptCanvas Vision Decompiled 1:1 Draw.io Architecture for ${item.title} (${vertexCount} vertices, ${edgeCount} deterministic orthogonal edges, ${addressableObjects.length} addressable objects).`,
+        summary: `PromptCanvas Vision Decompiled 1:1 Editable Draw.io Architecture (Google Cloud Architecture Center Hub-and-Spoke) for ${item.title} (${vertexCount} vertices, ${edgeCount} deterministic orthogonal edges, ${addressableObjects.length} addressable objects).`,
         extractedZones: [
-          'Outer Google Cloud Frame (#1a73e8) & Shared Hubs Perimeter',
-          'Zone 1: Routing Hub (#aecbfa — Cloud Armor, Model Armor, IAM, ALB, Cloud Run)',
-          'Zone 2: Central Governance & Security Hub (#ceead6 — SCC, IAM PAB, Cloud Logging)',
-          'Zone 3: Left Tenant / Pool Spoke (#feefc3 — Model Armor, Gemini, Agent Runtime, MCP, Datastore)',
-          'Zone 4: Right Tenant / Sovereign Spoke (#fad2cf — Model Armor, Gemini, Agent Runtime, MCP, Datastore)',
+          'Outer Google Cloud Frame (#1a73e8)',
+          'Routing / Ingress Hub (#aecbfa)',
+          'Central Governance & Observability Hub (#ceead6)',
+          'Left Tenant / Pool Spoke (#feefc3)',
+          'Right Tenant / Sovereign Spoke (#fad2cf)',
         ],
         componentCount: vertexCount + edgeCount,
         vertexCount,
@@ -274,10 +261,17 @@ async function runVisionPipeline() {
       fs.writeFileSync(visionMetaPath, JSON.stringify(visionMetadata, null, 2), 'utf8');
 
       // Update manifest item
-      item.drawio_file = path.relative(FDE_BLOGS_ROOT, wsDrawioPath);
-      item.drawio_png = path.relative(FDE_BLOGS_ROOT, wsDrawioPngPath);
-      item.central_drawio_file = path.relative(FDE_BLOGS_ROOT, centralDrawioPath);
-      item.central_drawio_png = path.relative(FDE_BLOGS_ROOT, centralDrawioPngPath);
+      const relDrawio = path.relative(FDE_BLOGS_ROOT, centralDrawioPath);
+      const relPng = path.relative(FDE_BLOGS_ROOT, centralDrawioPngPath);
+      item.workstream_dir = 'diagrams';
+      item.drawio_xml = relDrawio;
+      item.drawio_file = relDrawio;
+      item.drawio_png = relPng;
+      item.png_path = relPng;
+      item.central_png = relPng;
+      item.central_drawio = relDrawio;
+      item.central_drawio_file = relDrawio;
+      item.central_drawio_png = relPng;
       item.vision_metadata = path.relative(FDE_BLOGS_ROOT, visionMetaPath);
       item.drawio_bytes = drawioBytes;
       item.drawio_png_bytes = drawioPngBytes;

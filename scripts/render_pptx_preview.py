@@ -86,6 +86,7 @@ def runs_to_html(txbody):
         return [], None
     paras = []
     body_pr = txbody.find("a:bodyPr", NS)
+    no_wrap = body_pr is not None and body_pr.get("wrap") == "none"
     for p in txbody.findall("a:p", NS):
         ppr = p.find("a:pPr", NS)
         align = ppr.get("algn") if ppr is not None else None
@@ -128,6 +129,8 @@ def runs_to_html(txbody):
             base_css.append("text-align:center")
         elif align == "r":
             base_css.append("text-align:right")
+        if no_wrap:
+            base_css.append("white-space:nowrap")
         if spc_aft > 0:
             base_css.append(f"margin-bottom:{spc_aft:.1f}px")
         elif bullet:
@@ -183,10 +186,12 @@ def render_slide(zf, slide_path, rels, out_html):
                 if flip_v:
                     y1, y2 = y2, y1
                 if ln:
+                    dash_attr = 'stroke-dasharray="4 3"' if ln["dashed"] else ""
+                    end_attr = 'marker-end="url(#arrow)"' if ln["tail"] else ""
+                    start_attr = 'marker-start="url(#arrowrev)"' if ln["head"] else ""
                     items.append(
                         f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" stroke="{ln["color"]}" '
-                        f'stroke-width="{ln["w"]:.2f}" {"stroke-dasharray=\"4 3\"" if ln["dashed"] else ""} '
-                        f'{"marker-end=\"url(#arrow)\"" if ln["tail"] else ""} {"marker-start=\"url(#arrowrev)\"" if ln["head"] else ""}/>'
+                        f'stroke-width="{ln["w"]:.2f}" {dash_attr} {end_attr} {start_attr}/>'
                     )
                 continue
             style = [f"left:{x:.1f}px", f"top:{y:.1f}px", f"width:{w:.1f}px", f"height:{h:.1f}px"]
@@ -291,6 +296,9 @@ def main():
     out_dir = pptx_path.parent / "previews" / pptx_path.stem
     out_dir.mkdir(parents=True, exist_ok=True)
     wanted = {int(s) for s in args.slides.split(",") if s.strip()} if args.slides else None
+    if wanted is None:
+        for old_png in out_dir.glob("slide_*.png"):
+            old_png.unlink(missing_ok=True)
 
     with zipfile.ZipFile(pptx_path) as zf:
         pres = ET.fromstring(zf.read("ppt/presentation.xml"))

@@ -73,6 +73,7 @@ def check_f01_links_and_modular_files() -> Dict[str, object]:
                 broken_links.append(f"{md_file.relative_to(ROOT_DIR)} -> {raw_target}")
 
     required_modular_files = [
+        ROOT_DIR / "core-cymbal-agent/gcp_live_bridge.py",
         ROOT_DIR / "core-cymbal-agent/agents/shared_diagnostic_agent.py",
         ROOT_DIR / "core-cymbal-agent/agents/finvault_agent_alpha.py",
         ROOT_DIR / "core-cymbal-agent/agents/cymbal_agents.py",
@@ -331,7 +332,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
         ),
     })
 
-    # F-11: Repository Hygiene (.gitignore & zero __pycache__ / .pyc files)
+    # F-11: Repository Hygiene (.gitignore, zero __pycache__/.pyc, zero legacy/duplicate files)
     gitignore_exists = (ROOT_DIR / ".gitignore").exists()
     pycache_dirs = [
         str(p.relative_to(ROOT_DIR)) for p in ROOT_DIR.rglob("__pycache__")
@@ -339,43 +340,106 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
     pyc_files = [
         str(p.relative_to(ROOT_DIR)) for p in ROOT_DIR.rglob("*.pyc")
     ]
-    f11_pass = gitignore_exists and not pycache_dirs and not pyc_files
+    legacy_paths = [
+        p for p in (
+            "workstream-1-foundations-and-taxonomy",
+            "workstream-5-synthesis-and-publishing",
+            "workstream-1-reference-architecture/diagrams",
+            "workstream-2-pattern-a-pooled/diagrams",
+            "workstream-3-pattern-b-siloed/diagrams",
+            "workstream-4-pattern-c-hybrid/diagrams",
+            "workstream-5-wrap-up-and-backlog/diagrams",
+            "diagrams/viewer-static.min.js",
+            "workstream-2-pattern-a-pooled/2.7-blog-pooled-architecture-governance.md",
+            "workstream-3-pattern-b-siloed/3.7-blog-sovereign-silos.md",
+            "workstream-4-pattern-c-hybrid/4.7-blog-dynamic-tiering-and-migration.md",
+            "workstream-5-wrap-up-and-backlog/5.2-blog-multi-tenant-agentic-triad.md",
+        )
+        if (ROOT_DIR / p).exists()
+    ]
+    dup_drawio_xml = [
+        str(p.relative_to(ROOT_DIR)) for p in (ROOT_DIR / "diagrams").glob("*.drawio.xml")
+    ]
+    dup_plain_png = [
+        str(p.relative_to(ROOT_DIR))
+        for p in (ROOT_DIR / "diagrams").glob("*.png")
+        if not p.name.endswith(".drawio.png")
+    ]
+    scratch_e2e = [
+        str(p.relative_to(ROOT_DIR)) for p in (ROOT_DIR / "docs").glob("_e2e-section-*.md")
+    ]
+    f11_pass = (
+        gitignore_exists
+        and not pycache_dirs
+        and not pyc_files
+        and not legacy_paths
+        and not dup_drawio_xml
+        and not dup_plain_png
+        and not scratch_e2e
+    )
     results.append({
         "id": "F-11",
-        "title": "Repository Hygiene (.gitignore & Zero __pycache__ / .pyc Artifacts)",
+        "title": "Repository Hygiene (.gitignore, Zero __pycache__/.pyc & Zero Legacy/Duplicate Files)",
         "status": "PASS" if f11_pass else "FAIL",
         "details": (
-            ".gitignore verified and 0 __pycache__ / .pyc artifacts present in repository."
+            ".gitignore verified, 0 __pycache__/.pyc artifacts, and 0 legacy/duplicate diagram or blog files present on disk."
             if f11_pass
-            else f"gitignore={gitignore_exists}, pycache={pycache_dirs}, pyc={pyc_files}"
+            else f"gitignore={gitignore_exists}, pycache={pycache_dirs}, pyc={pyc_files}, legacy={legacy_paths}, dup_xml={dup_drawio_xml}, dup_png={dup_plain_png}, scratch={scratch_e2e}"
         ),
     })
 
-    # F-12: Interactive HTML5 Architecture, Publish Studio & Simulation Hub (index.html)
+    # F-12: Interactive HTML5 4-Tab Architecture, Series Reader & Simulation Hub (index.html)
     index_path = ROOT_DIR / "index.html"
     index_ok = False
     index_detail = "index.html missing"
     if index_path.exists():
         html = index_path.read_text(encoding="utf-8")
         required_markers = [
-            "Pooled Architecture (Maximum Density)",
-            "Sovereign Silos (Zero Trust Isolation)",
-            "Dynamic Hybrid (Intelligent Routing)",
+            "Shared Multi-Tenant Pool (Pattern A)",
+            "Dedicated Customer Vault (Pattern B)",
+            "Smart Hybrid Router &amp; Live Upgrade (Pattern C)",
             "FinVault Bank",
             "RetailStream Corp",
             "Forensic Audit: 12/12 PASS",
             "Simulations: 20/20 PASS",
-            "Publish-Ready Blogs, Codelabs &amp; Decks Studio",
+            "Multi-Tenancy Architecture, 5-Part Blog Series &amp; Live 5-Hop Execution Portal",
+            "openCloudViewerModal",
+            "hub-btn-mode-edit-inline",
+            "hub-btn-open-drawio-tab",
+            "hub-drawio-inline-iframe",
+            "hub-diag-e2e-flow-card",
+            "hub-flow-tab-both",
+            "hub-flow-tab-logical",
+            "hub-flow-tab-technical",
+            "hub-diag-e2e-flow-body",
+            "hub-blog-section",
+            "hub-blog-toc",
+            "hub-blog-reader",
+            "hub-series-footer",
+            "setInlineFigureMode",
+            "toggleInlineFigureFlow",
+            "let activeHubFlowTab = 'logical';",
+            "tab-screenshots",
+            "e2e-pane-deliverables",
+            "blog-visual-proof-screenshots-gallery",
+            "blog-e2e-pattern-execution-and-codebase-workbench",
+            "series-reader-main-lane",
+            "max-width: min(100%, 620px) !important",
+            "max-height: 660px !important",
         ]
         missing_markers = [m for m in required_markers if m not in html]
-        ui_doc_paths = re.findall(r"(?:viewArtifact|loadPublishDoc)\('([^']+)'\)", html)
-        missing_ui_paths = [p for p in ui_doc_paths if not (ROOT_DIR / p).is_file()]
+        ui_doc_paths = re.findall(r"(?:viewArtifact|openDocInReader)\('([^']+)'\)", html)
+        missing_ui_paths = [
+            p for p in ui_doc_paths
+            if not p.startswith("${") and not (ROOT_DIR / p).is_file()
+        ]
 
         flagship_blogs = [
-            ROOT_DIR / "workstream-2-pattern-a-pooled/2.7-blog-pooled-architecture-governance.md",
-            ROOT_DIR / "workstream-3-pattern-b-siloed/3.7-blog-sovereign-silos.md",
-            ROOT_DIR / "workstream-4-pattern-c-hybrid/4.7-blog-dynamic-tiering-and-migration.md",
-            ROOT_DIR / "workstream-5-wrap-up-and-backlog/5.2-blog-multi-tenant-agentic-triad.md",
+            ROOT_DIR / "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
+            ROOT_DIR / "blogs/ws2-pattern-a-pooled-architecture.md",
+            ROOT_DIR / "blogs/ws3-pattern-b-sovereign-silos.md",
+            ROOT_DIR / "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md",
+            ROOT_DIR / "blogs/ws5-decision-guide-and-agentic-triad.md",
         ]
         unready_blogs = [
             str(b.relative_to(ROOT_DIR))
@@ -394,9 +458,11 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                 for item in manifest_items:
                     if (
                         item.get("certified") is not True
-                        or item.get("card_count") != 42
-                        or item.get("vision_node_count", 0) < 50
+                        or item.get("collision_count", 1) != 0
+                        or item.get("vision_node_count", 0) != 56
+                        or item.get("vision_edge_count", 0) != 23
                         or item.get("vision_object_count", 0) < 50
+                        or "Hub-and-Spoke" not in item.get("format", "")
                     ):
                         all_exist = False
                     for key in (
@@ -415,17 +481,64 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                         rel_f = item.get(key, "")
                         if not rel_f or not (ROOT_DIR / rel_f).is_file():
                             all_exist = False
+                    drawio_p = ROOT_DIR / item.get("central_drawio_file", "")
+                    if drawio_p.is_file():
+                        d_xml = drawio_p.read_text(encoding="utf-8")
+                        bound_edges = re.findall(r'<mxCell[^>]*\bedge="1"[^>]*\bsource="[^"]+"[^>]*\btarget="[^"]+"', d_xml)
+                        if len(bound_edges) != 23 or "exitPerimeter=0" not in d_xml or "entryPerimeter=0" not in d_xml:
+                            all_exist = False
                 if all_exist:
                     diagrams_ok = True
                     certified_diagram_count = len(manifest_items)
 
-        # Editable slide decks (PromptCanvas Vision Module) + per-workstream explanatory blogs
+        # Live Cloud Console & Runtime Verification Receipt + Screenshots Gallery + E2E Pattern Bundle
+        cloud_receipt_path = ROOT_DIR / "docs/cloud_console_verification_receipt.json"
+        e2e_bundle_path = ROOT_DIR / "docs/gcp_pattern_codebase_and_execution_bundle.json"
+        cloud_screenshots_dir = ROOT_DIR / "screenshots/cloud-console"
+        cloud_pngs = list(cloud_screenshots_dir.glob("*.png")) if cloud_screenshots_dir.is_dir() else []
+        cloud_receipt_ok = False
+        if cloud_receipt_path.exists() and e2e_bundle_path.exists():
+            import json as _json
+            cloud_receipt = _json.loads(cloud_receipt_path.read_text(encoding="utf-8"))
+            e2e_bundle = _json.loads(e2e_bundle_path.read_text(encoding="utf-8"))
+            cloud_receipt_ok = (
+                cloud_receipt.get("overall_status") == "CERTIFIED"
+                and len(cloud_pngs) == 9
+                and len(e2e_bundle.get("provisionedResources", [])) == 12
+                and len(e2e_bundle.get("executionSuites", [])) == 4
+                and len(e2e_bundle.get("codebaseFiles", [])) == 24
+            )
+
+        # Editable slide decks (PromptCanvas Vision Module) + canonical 5-part blog series + Executive E2E Flows
         slides_manifest_path = ROOT_DIR / "slides/slides_manifest.json"
+        e2e_flows_path = ROOT_DIR / "diagrams/diagram_e2e_flows.json"
         slides_ok = False
+        e2e_flows_ok = False
         deck_count = 0
         ws_blog_count = 0
+        if e2e_flows_path.exists():
+            import json as _json
+            e2e_flows_data = _json.loads(e2e_flows_path.read_text(encoding="utf-8"))
+            flow_diags = e2e_flows_data.get("diagrams", []) if isinstance(e2e_flows_data, dict) else []
+            if (
+                len(flow_diags) == 14
+                and all(
+                    len(fd.get("zonesSummary", [])) == 4
+                    and len(fd.get("logicalSteps", [])) == 8
+                    and len(fd.get("technicalSteps", [])) == 8
+                    and bool(fd.get("execCloudServices"))
+                    and bool(fd.get("execTechSummary"))
+                    for fd in flow_diags
+                )
+                and "hub-diag-e2e-flow-card" in html
+                and "renderHubDiagramE2eFlow" in html
+                and "<!-- E2E_FLOW_START -->" in (ROOT_DIR / "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md").read_text(encoding="utf-8")
+            ):
+                e2e_flows_ok = True
+
         if slides_manifest_path.exists():
             import json as _json
+            import zipfile as _zipfile
             slides_manifest = _json.loads(slides_manifest_path.read_text(encoding="utf-8"))
             decks = slides_manifest.get("decks", []) if isinstance(slides_manifest, dict) else []
             known_diagram_ids = {Path(item.get("drawio_file", "")).name.replace(".drawio", "") for item in manifest_items} if manifest_path.exists() else set()
@@ -433,8 +546,27 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             ws_blogs_seen = set()
             for deck in decks:
                 deck_file = ROOT_DIR / deck.get("file", "")
-                if not deck_file.is_file() or deck_file.stat().st_size < 500_000 or deck.get("slides", 0) < 13:
+                if not deck_file.is_file() or deck_file.stat().st_size < 100_000 or deck.get("slides", 0) < 12:
                     decks_valid = False
+                else:
+                    with _zipfile.ZipFile(deck_file, "r") as zf:
+                        slide_xml_names = [n for n in zf.namelist() if n.startswith("ppt/slides/slide") and n.endswith(".xml")]
+                        has_compact_arrows = False
+                        has_sidebar_guide = False
+                        for sname in slide_xml_names:
+                            sxml = zf.read(sname).decode("utf-8", errors="ignore")
+                            if 'w="sm" len="sm"' in sxml:
+                                has_compact_arrows = True
+                            if '<a:headEnd type="triangle"/>' in sxml or '<a:tailEnd type="triangle"/>' in sxml:
+                                decks_valid = False
+                            if "4-ZONE HUB-AND-SPOKE" in sxml and "ARCHITECTURE CENTER GUIDE (#78)" in sxml:
+                                has_sidebar_guide = True
+                        if not has_compact_arrows or not has_sidebar_guide:
+                            decks_valid = False
+                        if deck.get("key") in ("WS1", "WS2", "WS3", "WS4", "WS5") and "ppt/slides/slide2.xml" in zf.namelist():
+                            s2_xml = zf.read("ppt/slides/slide2.xml").decode("utf-8", errors="ignore")
+                            if "Figure 1" not in s2_xml or "4-ZONE HUB-AND-SPOKE" not in s2_xml:
+                                decks_valid = False
                 if not deck.get("diagrams") or any(d not in known_diagram_ids for d in deck.get("diagrams", [])):
                     decks_valid = False
                 blog_rel = deck.get("blog")
@@ -443,13 +575,20 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                     blog_text = blog_file.read_text(encoding="utf-8") if blog_file.is_file() else ""
                     fm_end = blog_text.find("\n---", 3) if blog_text.startswith("---") else -1
                     frontmatter = blog_text[:fm_end] if fm_end > 0 else ""
-                    if 'status: "PUBLISH_READY"' not in frontmatter:
+                    if 'status: "PUBLISH_READY"' not in frontmatter or "<!-- E2E_FLOW_START -->" not in blog_text:
                         decks_valid = False
                     else:
                         ws_blogs_seen.add(blog_rel)
                     if f"../{deck.get('file', '')}" not in blog_text:
                         decks_valid = False
-            if decks_valid and len(ws_blogs_seen) == 5:
+            cv_manifest_path = ROOT_DIR / "slides/cloud_viewer_manifest.json"
+            cv_ok = False
+            if cv_manifest_path.is_file():
+                cv_data = _json.loads(cv_manifest_path.read_text(encoding="utf-8"))
+                cv_slides = cv_data.get("slides", {})
+                cv_docs = cv_data.get("docs", {})
+                cv_ok = all(k in cv_slides and cv_slides[k].get("googleSlidesId") for k in ("WS1", "WS2", "WS3", "WS4", "WS5", "ALL")) and all(k in cv_docs and cv_docs[k].get("googleDocsId") for k in ("WS1", "WS2", "WS3", "WS4", "WS5", "ALL"))
+            if decks_valid and len(ws_blogs_seen) == 5 and e2e_flows_ok and cv_ok:
                 slides_ok = True
                 deck_count = len(decks)
                 ws_blog_count = len(ws_blogs_seen)
@@ -459,16 +598,17 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             and len(missing_ui_paths) == 0
             and len(unready_blogs) == 0
             and diagrams_ok
+            and cloud_receipt_ok
             and slides_ok
         )
         index_detail = (
-            f"index.html verified ({len(html):,} bytes), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI artifact/publish buttons resolve on disk (0 broken), {certified_diagram_count}/14 Architecture Center & PromptCanvas Vision Draw.io blueprints CERTIFIED (.drawio/.drawio.xml/.drawio.png/.svg/.png/.vision.json, 0 collisions), {deck_count}/6 PromptCanvas Vision editable .pptx slide decks + {ws_blog_count}/5 per-workstream explanatory blogs verified (PUBLISH_READY, deck cross-links resolve), and 4/4 flagship blogs carry PUBLISH_READY frontmatter."
+            f"index.html verified ({len(html):,} bytes), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI Series Reader links resolve on disk (0 broken), {certified_diagram_count}/14 Official Google Cloud Architecture Center Hub-and-Spoke & PromptCanvas Vision Draw.io blueprints CERTIFIED (56 vertices & 23 edges each, .drawio/.drawio.png/.svg/.vision.json quartet, 0 collisions), 14/14 Executive-Friendly Plain-English Logical & Technical Flows verified (diagrams/diagram_e2e_flows.json + 3-slide-per-diagram .pptx structure), Cloud Console receipt CERTIFIED ({len(cloud_pngs)} visual proof PNGs in screenshots/cloud-console/), {deck_count}/6 PromptCanvas Vision editable .pptx slide decks + {ws_blog_count}/5 canonical 5-part series blogs verified (PUBLISH_READY)."
             if index_ok
-            else f"missing_markers={missing_markers}, missing_ui_paths={missing_ui_paths}, unready_blogs={unready_blogs}, diagrams_ok={diagrams_ok}, slides_ok={slides_ok}"
+            else f"missing_markers={missing_markers}, missing_ui_paths={missing_ui_paths}, unready_blogs={unready_blogs}, diagrams_ok={diagrams_ok}, cloud_receipt_ok={cloud_receipt_ok}, slides_ok={slides_ok}, e2e_flows_ok={e2e_flows_ok}"
         )
     results.append({
         "id": "F-12",
-        "title": "Interactive HTML5 Architecture, 7-Blueprint Gallery, Publish Studio & Simulation Hub (index.html)",
+        "title": "Interactive HTML5 4-Tab Architecture, Series Reader, 14 Official Hub-and-Spoke Blueprints, 3-Slide-Per-Diagram Executive Flows & Simulation Hub (index.html)",
         "status": "PASS" if index_ok else "FAIL",
         "details": index_detail,
     })

@@ -1,220 +1,201 @@
 ---
-title: "Pooled, Siloed, or Hybrid? The Executive Decision Guide for Multi-Tenant Agentic AI on Google Cloud"
-subtitle: "Workstream 5 wrap-up: a one-page topology decision tree, the side-by-side Pattern A/B/C comparison, the Multi-Tenant Agentic Triad, and the consolidated EAP backlog from a 10-week GEAP & ADK 2.0 program"
+title: "Multi-tenant agentic AI system: Executive decision guide and the Multi-Tenant Agentic Triad"
+subtitle: "Choose between Pooled (Pattern A), Sovereign Silos (Pattern B), and Dynamic Hybrid (Pattern C) topologies on Google Cloud using a 2-question decision tree, side-by-side comparison matrix, and 10-week adoption roadmap"
 series: "Multi-Tenant Agentic AI on Google Cloud — Workstream 5 of 5"
 workstream: "Workstream 5 • Wrap-Up: Pattern Comparison, Decision Guide & Capstone Backlog (5.1 + 5.2)"
 authors: "Google Cloud Forward Deployed Engineering (FDE) & AI Platform Architecture Team"
-target_audience: "CTOs, Principal Architects, and Platform Product Managers choosing a multi-tenant topology for GEAP & ADK 2.0 agents"
+target_audience: "CTOs, Principal Architects, CISOs, and Platform Product Managers designing multi-tenant AI platforms on Google Cloud"
 reading_time: "14 min read"
-tags: ["Multi-Tenancy", "GEAP", "ADK 2.0", "Decision Guide", "Zero Trust", "FinOps", "OpenTelemetry", "VPC-SC", "Private Service Connect", "AlloyDB RLS"]
+tags: ["Multi-Tenancy","Vertex AI Agent Engine","ADK 2.0","Decision Guide","Zero Trust","FinOps","OpenTelemetry","VPC-SC","Private Service Connect","AlloyDB RLS"]
 canonical_architecture: "https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system"
 diagrams: ["ws5-decision-tree-and-agentic-triad"]
 editable_slides: "slides/ws5-wrap-up-editable-slides.pptx"
 status: "PUBLISH_READY"
 ---
 
-# Pooled, Siloed, or Hybrid? The Executive Decision Guide for Multi-Tenant Agentic AI on Google Cloud
+# Multi-tenant agentic AI system: Executive decision guide and the Multi-Tenant Agentic Triad
 
-> **Executive TL;DR**
-> - **Two questions decide your topology.** (1) Do *all* tenants mandate physical project isolation, VPC Service Controls perimeters, or air-gapped Gemma 3 on GKE? If yes → **Pattern B: Sovereign Silos**. (2) If not, do you sell tiered SaaS packaging (Standard/SMB plus a regulated Enterprise tier)? If no → **Pattern A: Pooled**; if yes → **Pattern C: Dynamic Hybrid**.
-> - **The code is 80% identical across all three.** The reusable [`core-cymbal-agent/`](../core-cymbal-agent/) engine implements the 5-Hop Cryptographic Context Chain once; Patterns A, B, and C are 20% topology deltas (shared RLS pool vs. per-tenant VPC-SC/PAB/CMEK projects vs. a hub routing to both over Private Service Connect).
-> - **Whichever pattern you choose, you must balance the Multi-Tenant Agentic Triad**: Zero-Trust Cryptographic Security (Hops 1–5), FinOps & COGS Engineering (`ContextCacheConfig` 90% prefix savings, 4k/8k thinking-budget clamps, Redis bulkheads), and Privacy-Preserving Tenant Observability (zero-PII BigQuery OpenTelemetry spans with automated chargeback).
-> - **Unit cost ladder from [5.1](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md)**: Pattern A `$` (85–90% shared prefix savings), Pattern C `$$` (optimal blended SaaS margin), Pattern B `$$$` (dedicated baseline per tenant).
-> - **Nine product gaps remain open** (3× P0, 4× P1, 2× P2) with engineered workarounds in the repo and named EAP allowlists targeting Q4 2026 – Q1 2027.
+This document provides an executive decision framework to help you select, combine, and operate the right multi-tenant isolation topology for agentic AI systems on Google Cloud. It synthesizes the architectural patterns, security verification suites, and FinOps benchmarks from across this 5-part series—[Part 1 (Reference Taxonomy & 5-Hop Baseline)](ws1-reference-architecture-taxonomy-and-5hop-baseline.md), [Part 2 (Pattern A Pooled)](ws2-pattern-a-pooled-architecture.md), [Part 3 (Pattern B Sovereign Silos)](ws3-pattern-b-sovereign-silos.md), and [Part 4 (Pattern C Dynamic Hybrid)](ws4-pattern-c-hybrid-dynamic-tiering.md)—into a two-question decision tree and the **Multi-Tenant Agentic Triad**.
 
----
+This document is intended for CTOs, principal cloud architects, CISOs, and AI product leaders evaluating [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview) and [Agent Development Kit (ADK)](https://google.github.io/adk-docs/) for multi-customer B2B SaaS or internal enterprise platform deployments.
 
-## 1. Series Recap: One Anchor Scenario, Three Topologies, Ten Weeks
+> **Key point:** Two gating questions determine your topology: (1) *Do 100% of your customers legally mandate dedicated Google Cloud projects, VPC Service Controls perimeters, or air-gapped open-weight models?* If yes, deploy **Pattern B (Sovereign Silos)**. (2) *If not, do you sell multiple pricing tiers (a shared Standard tier plus a dedicated Enterprise tier)?* If no, deploy **Pattern A (Pooled)**; if yes, deploy **Pattern C (Dynamic Hybrid)**.
 
-Across Workstreams 1–4 we followed a single anchor case study so that every architectural decision could be compared like-for-like. **Cymbal SaaS Platform**, a B2B IT-observability and incident-management ISV, publishes a **Shared Incident Diagnostic Agent** on Gemini 2.5 Pro with shared Prompt Prefix Caching (`ContextCacheConfig`) and serves two very different customers:
+## Architecture
 
-| Tenant | Tier | Identity & Tool Stack | Entitlements & Constraints |
+The following diagram shows the executive topology decision tree and the **Multi-Tenant Agentic Triad** (Zero-Trust Security, Predictable FinOps Economics, and Privacy-Preserving Observability) governing all three patterns:
+
+![Figure 1 — Executive decision tree, Pattern A/B/C selector, and the Multi-Tenant Agentic Triad](../diagrams/ws5-decision-tree-and-agentic-triad.drawio.png)
+
+*Figure 1. Official Google Cloud Architecture Center hub-and-spoke synthesis showing the 2-Question Executive Topology Selector (Zone 1), the Multi-Tenant Agentic Triad & 80% Reusable 5-Hop Core (Zone 2), Pattern A Pooled & Pattern C Standard Pool Execution (Zone 3), and Pattern B Sovereign Silos & Pattern C Enterprise PSC Spokes (Zone 4). Editable assets: [Draw.io source](../diagrams/ws5-decision-tree-and-agentic-triad.drawio) | [Google Slides (.pptx)](../slides/ws5-wrap-up-editable-slides.pptx) | [Architecture Center SVG](../diagrams/ws5-decision-tree-and-agentic-triad.svg) | [Vision AST](../diagrams/vision_metadata/ws5-decision-tree-and-agentic-triad.vision.json).*
+
+Figure 1 brings together the decision tree and the three operational pillars of the **Multi-Tenant Agentic Triad** ([5.1 Pattern Comparison & Decision Guide](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md)):
+
+- **Executive 2-Question Topology Selector and Ingress Gate (Zone 1 — Blue container `#aecbfa`):** Evaluates regulatory mandate (Question 1) and SaaS tier packaging (Question 2) alongside Hop 1 OIDC/DPoP authentication to route tenants to Pattern A, Pattern B, or Pattern C.
+- **The Multi-Tenant Agentic Triad & 80% Reusable Core Hub (Zone 2 — Green container `#ceead6`):** Unifies the three non-negotiable platform pillars—(1) Zero-Trust Security (`Hops 1, 2 & 4`), (2) Predictable FinOps (`Hop 3 ContextCacheConfig` + Valkey bulkheads), and (3) Privacy-Preserving Observability (`Hop 5` redacted OTel -> BigQuery).
+- **High-Density Pooled Execution Path (Pattern A & Pattern C Standard) (Zone 3 — Left amber container `#feefc3`):** Delivers `$42/mo` baseline unit economics with 90% shared prompt cache savings, `4,000` thinking-token caps, inline Model Armor + DLP, and shared AlloyDB `FORCE ROW LEVEL SECURITY`.
+- **Sovereign Silo & Enterprise PSC Spoke Path (Pattern B & Pattern C Enterprise) (Zone 4 — Right coral container `#fad2cf`):** Delivers physical project isolation (`$1,850/mo` spoke floor), VPC-SC perimeters, IAM PAB, Cloud KMS CMEK `HTTP 423` kill-switches, air-gapped Gemma 3 on GKE, and 0-downtime PSC tier upgrades.
+
+The numbered callouts in Figure 1 trace both the architectural selection flow and the invariant 5-Hop runtime execution:
+
+1. **Evaluate Question 1 (Regulatory mandate) and Question 2 (Tiered packaging):** Determine whether a tenant belongs in a shared pool (`Pattern A`), a dedicated sovereign project (`Pattern B`), or a dynamically routed hybrid topology (`Pattern C`).
+2. **Hop 1 — Authenticate caller and bind cryptographic context:** Strip client headers in Cloud Armor and exchange the upstream Google OIDC or Microsoft Entra ID JWT for an RFC 9449 DPoP-bound `CryptographicContext`.
+3. **Hop 2 — Enforce catalog ACLs and deterministic tool pruning:** Filter agents and MCP connectors in Discovery Engine and run ADK `before_agent_callback` pruning (`403 Forbidden` on unauthorized private agents).
+4. **Hop 4 (Pre-inference) — Apply inline Model Armor and Cloud DLP guardrails:** Scan prompts and tool inputs for prompt injection (`400 Bad Request`) and mask sensitive PII before model invocation.
+5. **Hop 3 — Enforce FinOps bulkheads, `ContextCacheConfig`, and CMEK state:** Enforce Valkey RPM limits (`429`), clamp `thinking_budget` (`4k` vs `8k`), verify KMS CMEK status (`423`), and invoke Gemini 2.5 Pro, Claude 3.7 Sonnet, or Gemma 3.
+6. **Hop 4 (Post-inference) — Verify 3LO DPoP binding and NLC compliance:** Validate sender-constrained 3LO tokens in Auth Manager (`401`) and block regulatory policy violations (`422`).
+7. **Hop 5 — Persist to RLS / CMEK data plane and emit BigQuery FinOps span:** Write state to AlloyDB (`RLS` or dedicated `CMEK`) and stream PII-redacted token telemetry to BigQuery for per-tenant P&L tracking.
+
+## Products used
+
+This architecture uses the following Google Cloud products and open-source frameworks:
+
+### Agentic AI and foundation models
+
+- [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview): A managed runtime environment that deploys, scales, and isolates multi-agent workloads inside gVisor sandboxes with managed session and memory state.
+- [Agent Development Kit (ADK)](https://google.github.io/adk-docs/): An open-source framework for building and orchestrating multi-agent hierarchies with deterministic lifecycle callbacks (`before_agent_callback`, `before_tool_callback`, `before_model_callback`).
+- [Gemini 2.5 Pro on Vertex AI](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models): Google's flagship multimodal reasoning model supporting shared prompt prefix caching (`ContextCacheConfig`) and configurable `thinking_budget` controls.
+- [Vertex AI Model Garden](https://cloud.google.com/model-garden): An enterprise model repository providing governed access to partner models (such as Anthropic Claude 3.7 Sonnet for tenant-private agents) and open-weight models (such as Gemma 3 27B).
+- [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs): A managed Kubernetes service used in Sovereign Silo deployments (Pattern B) to run air-gapped open-weight models on private GPU node pools with zero public internet egress.
+
+### Ingress, identity, and AI safety guardrails
+
+- [Cloud Load Balancing](https://cloud.google.com/load-balancing/docs): A global anycast External Application Load Balancer that terminates TLS 1.3 and mutual TLS (mTLS) connections at the Google network edge.
+- [Google Cloud Armor](https://cloud.google.com/armor/docs): A web application firewall (WAF) and DDoS mitigation service that strips unverified client-supplied tenant headers (`X-Tenant-ID`) at ingress.
+- [Identity-Aware Proxy (IAP)](https://cloud.google.com/iap/docs) and [Workload Identity Federation](https://cloud.google.com/iam/docs/workload-identity-federation): Zero-trust authentication services that validate upstream OIDC and SAML JWTs and broker RFC 8693 On-Behalf-Of (OBO) token exchange bound to RFC 9449 DPoP sender-constrained proofs.
+- [Model Armor](https://cloud.google.com/security-command-center/docs/model-armor-overview): An inline AI safety service that inspects prompts, model completions, and Model Context Protocol (MCP) tool payloads for prompt injection, jailbreaks, and policy violations.
+- [Sensitive Data Protection (Cloud DLP)](https://cloud.google.com/sensitive-data-protection/docs): A data inspection and de-identification service that masks regulated PII, PCI, and PHI tokens inline before prompts reach foundation models or logs.
+
+### Data, storage, networking, and governance
+
+- [AlloyDB for PostgreSQL](https://cloud.google.com/alloydb/docs): A high-performance PostgreSQL-compatible database that enforces transactional `FORCE ROW LEVEL SECURITY (RLS)` policies keyed by `app.current_tenant_id`.
+- [Memorystore for Valkey](https://cloud.google.com/memorystore/docs/valkey/overview) and [Firestore](https://cloud.google.com/firestore/docs): Low-latency in-memory and document stores used for per-tenant token-bucket rate limiting, 5-level session memory caching, and dynamic tenant routing tables.
+- [VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs) and [Private Service Connect](https://cloud.google.com/vpc/docs/private-service-connect): Network security boundaries that prevent cross-project data exfiltration and establish unidirectional NAT-based private peering between a central routing hub and isolated enterprise spokes.
+- [Cloud Key Management Service (Cloud KMS)](https://cloud.google.com/kms/docs): A cryptographic key management service supporting customer-managed encryption keys (CMEK) and instant `HTTP 423 Locked` tenant kill-switches.
+- [Security Command Center](https://cloud.google.com/security-command-center/docs), [Cloud Logging](https://cloud.google.com/logging/docs), and [BigQuery](https://cloud.google.com/bigquery/docs): Centralized posture monitoring, PII-redacted OpenTelemetry audit logging, and per-tenant token FinOps chargeback analytics.
+
+## Use cases
+
+Use the following decision rules ([5.1 Pattern Comparison & Decision Guide](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md)) to map your business model to the appropriate architecture:
+
+- **Choose Pattern A (Pooled Architecture)** when you operate a uniform, high-volume B2B SaaS product where fast self-service onboarding, 90% shared prompt cache savings, and lowest unit COGS (`$42/mo` baseline) are primary goals, and customers accept cryptographic/logical isolation within a shared project.
+- **Choose Pattern B (Sovereign Silos)** when 100% of your customers are regulated financial, healthcare, or public-sector entities whose contracts prohibit shared compute pools or shared databases and mandate per-customer VPC Service Controls perimeters, customer-managed KMS kill-switches, or air-gapped Gemma 3 on GKE.
+- **Choose Pattern C (Dynamic Hybrid)** when you sell multi-tiered SaaS packaging (such as a Standard tier alongside a regulated Enterprise tier) and need a single control plane that can promote live customers from the shared pool into dedicated Private Service Connect spokes with zero downtime.
+
+## Design alternatives
+
+### End-to-end comparison of Pattern A, Pattern B, and Pattern C
+
+The following executive matrix summarizes all 20 verified runtime simulations and architectural trade-offs across the three patterns:
+
+| Architectural dimension | Pattern A: Pooled ([WS2](ws2-pattern-a-pooled-architecture.md)) | Pattern B: Sovereign Silos ([WS3](ws3-pattern-b-sovereign-silos.md)) | Pattern C: Dynamic Hybrid ([WS4](ws4-pattern-c-hybrid-dynamic-tiering.md)) |
 | :--- | :--- | :--- | :--- |
-| **FinVault Bank** | Enterprise | Google Workspace OIDC, Jira; 3LO to Drive, Calendar, Gmail | `8,000` thinking-token budget; private **Regulatory Escalation Agent (`Agent Alpha`)** on Claude Sonnet via Vertex AI Model Garden; CMEK-encrypted memory (`finvault:user:session`) |
-| **RetailStream Corp** | Standard | Microsoft Entra ID, 100% Microsoft 365 + ServiceNow (zero Google footprint) | `4,000` thinking-token cap; Redis rate-limit bulkhead; inline 3LO OAuth consent to SharePoint & ServiceNow mid-session; `403 Forbidden` on any call to `Agent Alpha` |
+| **GCP project topology** | 1 shared project (`cymbal-pooled-saas-prod`) | 1 dedicated project per tenant (`cymbal-{tenant}-silo-prod`) | 1 hub project + shared pool + N dedicated PSC spoke projects |
+| **80% reusable agent core** | `core-cymbal-agent/` (5-Hop Chain) | Unchanged `core-cymbal-agent/` + Sovereign Shell | Unchanged `core-cymbal-agent/` + Hybrid Router & Migrator |
+| **Network isolation** | Shared VPC + Cloud Armor + IAP | Per-project **VPC-SC perimeter** + **mTLS SPIFFE** | Hub VPC + unidirectional **Private Service Connect (PSC)** NAT |
+| **Database & memory isolation** | Shared AlloyDB **`FORCE ROW LEVEL SECURITY`** + composite memory keys | Dedicated **CMEK AlloyDB** & Memory Bank per project | Shared RLS for Standard + dedicated CMEK AlloyDB via PSC for Enterprise |
+| **Encryption kill-switch** | Logical key check in Hop 3 | Project-wide **Cloud KMS CMEK** (`HTTP 423 Locked`) | Per-spoke **Cloud KMS CMEK** (`HTTP 423 Locked`) for Enterprise tier |
+| **Model & caching strategy** | Shared Gemini 2.5 Pro + **90% `ContextCacheConfig` savings** | Dedicated Vertex AI PT or **air-gapped Gemma 3 (27B) on GKE** | Pooled caching for Standard + dedicated PT / Claude Sonnet for Enterprise |
+| **Live tier upgrade path** | Requires migration to Pattern C | Static sovereign project | **Built-in 3-phase live migration** (`0` dropped turns) |
+| **Baseline monthly cost floor** | **`$42 / mo`** per tenant (`$`) | **`$1,850 / mo`** per silo (`$$$`) | **`$680 / mo`** blended across tiers (`$$`) |
+| **Automated verification suite** | `10/10` red-team breach tests PASS | `6/6` sovereign security tests PASS | `4/4` hybrid & live migration tests PASS |
 
-The program ran on a **`1W Design • 2W Build • 1W Launch`** rhythm across ten weeks, shipping three milestones:
+### The 5-Hop Cryptographic Context Chain invariant
 
-- **Milestone 1 (Week 4) — Pattern A: Pooled Architecture** ([2.1](../workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md)): one shared GCP project, gVisor runtime with immutable `temp:tenant_id`, AlloyDB Row-Level Security, and the 90% shared-prefix cache.
-- **Milestone 2 (Week 7) — Pattern B: Sovereign Silos** ([3.1](../workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md)): one dedicated project per corporate tenant inside its own VPC-SC perimeter, IAM Principal Access Boundary, project-wide Cloud KMS CMEK kill-switch, and optional air-gapped Gemma 3 (27B) on private GKE.
-- **Milestone 3 (Week 10) — Pattern C: Dynamic Hybrid** ([4.1](../workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md)): a unified control/ingress hub routing Standard tenants to the shared pool and Enterprise tenants to dedicated PSC spokes, with a 3-phase zero-downtime live tier migration.
+Regardless of which topology you select, the same five governance modules in [`core-cymbal-agent/governance/`](../core-cymbal-agent/governance/) execute on every turn:
 
-This final post consolidates everything into the artifact executives actually asked for: a decision tree, a comparison matrix, and the backlog that turns workarounds into GA features. The in-depth FinOps and observability treatment lives in the flagship capstone, [5.2 — The Multi-Tenant Agentic Triad](../workstream-5-wrap-up-and-backlog/5.2-blog-multi-tenant-agentic-triad.md).
+| Hop | Governance module | Security, FinOps, or observability invariant |
+| :--- | :--- | :--- |
+| **Hop 1** | [`hop1_edge_identity_pep.py`](../core-cymbal-agent/governance/hop1_edge_identity_pep.py) | Strips `X-Tenant-ID`; validates OIDC/Entra JWT; mints RFC 8693 OBO token bound to RFC 9449 DPoP `jkt` |
+| **Hop 2** | [`hop2_registry_pdp_callbacks.py`](../core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py) | Enforces Discovery Engine Catalog ACLs (`403` on private `Agent Alpha`) + ADK `before_agent_callback` tool pruning |
+| **Hop 3** | [`hop3_compute_finops_bulkhead.py`](../core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py) | Binds `temp:tenant_id`; enforces Valkey RPM (`429`), token clamp (`4k/8k`), `ContextCacheConfig`, and CMEK (`423`) |
+| **Hop 4** | [`hop4_model_armor_guardrails.py`](../core-cymbal-agent/governance/hop4_model_armor_guardrails.py) | Runs bi-directional Model Armor (`400`/`422`) + Cloud DLP redaction + DPoP-bound 3LO MCP verification (`401`) |
+| **Hop 5** | [`hop5_data_rls_and_otel.py`](../core-cymbal-agent/governance/hop5_data_rls_and_otel.py) | Enforces transactional AlloyDB `FORCE ROW LEVEL SECURITY` and exports PII-scrubbed OTel FinOps spans to BigQuery |
 
----
+## Design considerations
 
-## 2. The Executive Decision Tree
+This section summarizes the **Multi-Tenant Agentic Triad** and maps it to the [Google Cloud Well-Architected Framework](https://cloud.google.com/architecture/framework).
 
-The decision guide in [5.1](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md) deliberately reduces the choice to two gating questions. The first is a compliance question that only your regulated customers can answer; the second is a packaging question that only your product and pricing teams can answer.
+### Security, privacy, and compliance (Pillar 1 of the Agentic Triad)
 
-**Question 1 — Do *all* tenants mandate physical project isolation, VPC-SC perimeters, or air-gapped Gemma 3 on GKE?**
-If your entire customer base is regulated (OCC/FDIC/DORA banks, HIPAA providers, sovereign public sector) and contracts prohibit shared compute pools or shared database clusters, the answer is yes and the topology is **Pattern B**. There is no pooled tier to optimize, so the extra unit cost of a dedicated baseline per tenant is simply the cost of doing business.
+- **Defense-in-depth across all 5 hops:** Never rely on a single perimeter control. Combine Hop 1 DPoP token binding, Hop 2 deterministic callback pruning, Hop 3 memory namespacing and CMEK verification, Hop 4 inline Model Armor and DLP scanning, and Hop 5 database Row-Level Security.
+- **Track Early Access Program (EAP) product roadmap transitions:** As documented in [5.1 Pattern Comparison & Decision Guide](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md), keep the `core-cymbal-agent/` compensating controls active until native sub-project `tenant_id` ACLs in Discovery Engine and native per-tenant `ContextCacheConfig` IAM bindings reach General Availability (GA).
 
-**Question 2 — Do you offer tiered SaaS packaging (Standard/SMB plus a regulated Enterprise tier)?**
-If the answer is no — you sell one uniform, high-volume SaaS product — **Pattern A** gives you the lowest unit COGS and instant self-service onboarding, with logical and cryptographic isolation enforced by the 5-Hop chain. If the answer is yes — you have mixed tiers and an expansion motion where Standard customers upgrade to Enterprise — **Pattern C** lets you keep pooled economics for the many while giving the few a sovereign PSC spoke, without forcing a re-platform when a customer upgrades.
+### Reliability
 
-```mermaid
-flowchart TD
-    Start["Designing a Multi-Tenant Agentic AI System on GEAP & ADK 2.0"] --> Q1{"Q1: Do ALL tenants mandate physical project isolation,<br/>VPC-SC perimeters, or air-gapped Gemma 3 on GKE?"}
-    Q1 -->|Yes — 100% Regulated / Sovereign| PatB["Pattern B: Sovereign Silos<br/>Dedicated Project + VPC-SC + PAB + CMEK + GKE Gemma 3<br/>Unit cost: $$$ • Milestone 2 • Week 7"]
-    Q1 -->|No — Serving B2B SaaS Tiers| Q2{"Q2: Do you offer tiered SaaS packaging<br/>(Standard/SMB + Regulated Enterprise tiers)?"}
-    Q2 -->|No — Uniform High-Volume SaaS| PatA["Pattern A: Pooled Architecture<br/>Shared Runtime + 5-Hop Chain + ContextCacheConfig + AlloyDB RLS<br/>Unit cost: $ • Milestone 1 • Week 4"]
-    Q2 -->|Yes — Mixed Tiers & Expansion Motion| PatC["Pattern C: Dynamic Hybrid<br/>Unified Router + Shared Pool + PSC Enterprise Spokes + Live Migration<br/>Unit cost: $$ • Milestone 3 • Week 10"]
-    PatA -.->|Enterprise tier added later| PatC
-```
+- **Prevent cascading failures across tenants:** Isolate Standard-tier tenants with Memorystore for Valkey RPM/TPM bulkheads and isolate Enterprise-tier tenants in dedicated PSC spokes with dedicated Vertex AI Provisioned Throughput quotas.
 
-> **Note for architects**: Pattern A's upgrade path is explicitly "migrate to Pattern C to add dedicated spokes" ([5.1](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md), *Live Tier Upgrade Path* row). Because the hub, the pool, and the 5-Hop code are shared, that migration is an additive topology change — not a rewrite.
+### Cost optimization (Pillar 2 of the Agentic Triad)
 
----
+- **Match infrastructure cost to customer ARR:** Start with **Pattern A** in Weeks 1–4 to capture **90% shared prompt cache savings** and `$42/mo` baseline economics. Introduce **Pattern B** or **Pattern C PSC spokes** in Weeks 5–10 only for Enterprise contracts that justify dedicated infrastructure.
 
-## 3. Side-by-Side Comparison Matrix
+### Operational excellence (Pillar 3 of the Agentic Triad)
 
-The following matrix condenses the full twelve-row table in [5.1](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md) to the six dimensions executives weigh most.
+- **Privacy-preserving FinOps observability:** Emit a `TenantTelemetrySpan` at **Hop 5** on every turn so product and finance teams have real-time visibility into per-tenant token consumption, cache hit ratios, and guardrail blocks in BigQuery—with zero raw PII stored in logs.
 
-| Dimension | Pattern A: Pooled (`Maximum Density`) | Pattern B: Sovereign Silos (`Zero Trust Isolation`) | Pattern C: Dynamic Hybrid (`Intelligent Routing`) |
-| :--- | :--- | :--- | :--- |
-| **Isolation model** | Shared runtime & compute pools with logical + cryptographic isolation (5-Hop Context Chain); single shared GCP project | Dedicated GCP project, VPC-SC perimeter, IAM PAB policy & CMEK per corporate tenant + central routing/security hub | Unified control plane & tenant-aware gateway routing across mixed Pooled & Sovereign tiers (hub + pool project + N spoke projects) |
-| **Compute & runtime** | Shared GEAP Agent Runtime (gVisor sandbox) + immutable `temp:tenant_id`; shared `ContextCacheConfig` | Dedicated per-tenant GEAP Runtime / Provisioned Throughput **or** air-gapped Gemma 3 (27B) on private GKE | Shared pool for Standard (`4k` cap) + **Private Service Connect** spokes for Enterprise (`8k` cap + CMEK) |
-| **Data & memory plane** | Shared AlloyDB with PostgreSQL RLS (`SET LOCAL app.current_tenant`) + tenant-prefixed 5-Level Memory Bank; envelope CMEK per namespace | Dedicated CMEK AlloyDB / BigQuery per project inside VPC-SC; full project-level Cloud KMS / EKM kill-switch (`HTTP 423 KMS_KEY_DISABLED`) | Shared RLS AlloyDB for Standard + PSC bridge to dedicated CMEK data spokes for Enterprise |
-| **FinOps & COGS profile** | **`$`** — lowest unit cost; 85–90% shared prefix savings | **`$$$`** — dedicated project quotas & Provisioned Throughput; zero noisy neighbors | **`$$`** — pooled efficiency for SMB/Standard + dedicated SLA & zero-downtime live tier upgrades |
-| **Ideal workload fit** | Standard B2B SaaS tiers & high-volume tasks | Healthcare, FinTech & regulated enterprises | Tiered SaaS models serving SMB to Fortune 500 |
-| **Delivery milestone** | **Milestone 1 • Week 4** ([WS2](../workstream-2-pattern-a-pooled/)) | **Milestone 2 • Week 7** ([WS3](../workstream-3-pattern-b-siloed/)) | **Milestone 3 • Week 10** ([WS4](../workstream-4-pattern-c-hybrid/)) |
+### Performance optimization
 
-Two rows from the full matrix deserve a direct call-out because they most often change a decision late in procurement:
+- **Phased 10-week adoption roadmap:**
+  - **Weeks 1–4 (Milestone 1):** Deploy `core-cymbal-agent/` and Pattern A Pooled Architecture ([Workstream 2](ws2-pattern-a-pooled-architecture.md)).
+  - **Weeks 5–7 (Milestone 2):** Stamp out Pattern B Sovereign Silos via Terraform for regulated anchor customers ([Workstream 3](ws3-pattern-b-sovereign-silos.md)).
+  - **Weeks 8–10 (Milestone 3):** Enable the Pattern C Hybrid Router and 3-phase zero-downtime live tier migrator ([Workstream 4](ws4-pattern-c-hybrid-dynamic-tiering.md)).
 
-- **CMEK kill-switch granularity.** Pattern A can only offer envelope CMEK per memory namespace (`finvault:user:session`); Pattern B offers a full project-level kill-switch; Pattern C offers envelope CMEK in the pool and full project CMEK in Enterprise spokes. If a tenant's legal team requires "revoke the key and everything goes dark", that tenant needs a Pattern B silo or a Pattern C spoke.
-- **Live tier upgrade path.** Only Pattern C ships the 3-phase zero-downtime migration (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN`). Pattern B silos are statically provisioned; Pattern A requires moving to Pattern C.
+## What's next
 
----
-
-## 4. The Multi-Tenant Agentic Triad
-
-Whatever topology you select, [5.2](../workstream-5-wrap-up-and-backlog/5.2-blog-multi-tenant-agentic-triad.md) argues that scaling multi-tenant autonomous agents in production means balancing three competing forces at once. We call this the **Multi-Tenant Agentic Triad**:
-
-1. **Zero-Trust Cryptographic Security** — eliminating cross-tenant tool, memory, and data bleed across Hops 1–5. Legacy multi-tenant web apps verify a bearer token once at the load balancer and trust internal services implicitly; in an agent system where the model plans tool calls and retrieves vector memories dynamically, implicit internal trust is one prompt injection away from a cross-tenant breach.
-2. **FinOps & COGS Engineering** — protecting SaaS gross margins with three Hop 3 controls: `ContextCacheConfig` (`READ_ONLY_IMMUTABLE_PREFIX`) caching the 32,000-token shared operator prefix at a 90% discount, tiered `thinking_budget` clamps (`4,000` Standard vs. `8,000` Enterprise), and Memorystore for Redis sliding-window bulkheads (`120 RPM` Standard / `600 RPM` Enterprise, `HTTP 429` shed on a runaway tenant).
-3. **Privacy-Preserving Tenant Observability** — attributing every token, tool invocation, and guardrail decision in BigQuery OpenTelemetry (`cymbal_multi_tenant_otel.agent_turn_spans`) without writing raw customer PII into central logs, using cryptographic hashes (`obo_token_hash`, `dpop_jkt`), SDP redaction counts, and token metrics to drive three chargeback models (even split, proportional consumption, tiered SLA surcharge).
-
-The triad is a *balance*, not a checklist: tightening security alone (Pattern B everywhere) raises TCO; optimizing cost alone (one giant pool with no bulkheads) exposes you to noisy neighbors and cache bleed; and observability without egress redaction turns your audit sink into the breach. The quantitative model in 5.2 (1,000 tenants: 950 Standard + 50 Enterprise, 50,000 turns/day) reports -90% prefix token COGS, -68% output thinking-token spend, `99.99%` Enterprise SLA preservation, and -74% total infrastructure TCO for the Pattern C blend versus 1,000 dedicated projects.
+- Review the complete 5-part Multi-Tenant Agentic AI Architecture series:
+  - [Part 1 (Workstream 1): Reference Architecture Taxonomy & 5-Hop Baseline](ws1-reference-architecture-taxonomy-and-5hop-baseline.md)
+  - [Part 2 (Workstream 2): Pattern A — High-Density Pooled Architecture](ws2-pattern-a-pooled-architecture.md)
+  - [Part 3 (Workstream 3): Pattern B — Sovereign Silos for Regulated Agentic AI](ws3-pattern-b-sovereign-silos.md)
+  - [Part 4 (Workstream 4): Pattern C — Dynamic Hybrid Hub-and-Spoke & Zero-Downtime Tier Upgrades](ws4-pattern-c-hybrid-dynamic-tiering.md)
+- Explore the Workstream 5 capstone deliverables and complete program guide:
+  - [5.1 Executive Pattern Comparison & Topology Decision Guide](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md)
+  - [1.4 Consolidated EAP & Product Gap Tracker](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md)
+  - [Complete End-to-End Workstream & 14-Diagram Master Guide](../docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md)
+- Download or open the editable slide decks:
+  - [Workstream 5 Editable Google Slides Deck (`ws5-wrap-up-editable-slides.pptx`)](../slides/ws5-wrap-up-editable-slides.pptx)
+  - [All-in-One 60-Slide Master Presentation (`geap-multi-tenancy-all-workstreams-editable-slides.pptx`)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)
 
 ---
 
-## 5. Figure 1 — Executive Topology Decision Guide & The Multi-Tenant Agentic Triad
+<!-- E2E_FLOW_START -->
+## Step-by-Step End-to-End Agentic & Technical Flows (WS5 Architecture Diagrams)
 
-![Figure 1 — Workstream 5 Capstone: Executive Topology Decision Guide & The Multi-Tenant Agentic Triad](../diagrams/ws5-decision-tree-and-agentic-triad.drawio.png)
+Every architecture diagram in **WS5** is accompanied by a **3-slide sequence** in the editable presentation deck: **(1) 100% Native Editable Architecture Diagram (56 Shapes + 23 Connectors + Component Sidebar)** → **(2) Step-by-Step Agentic Flow (Steps ①–⑦)** → **(3) Component Architecture & Well-Architected Specification Table**.
 
-*Figure 1 — Unifying Zero-Trust Security, FinOps Unit Economics (90% Prefix Cache), and Zero-PII OpenTelemetry across all three patterns: a shared Routing Hub and Central Governance Hub above a Pattern A pooled spoke (left) and a Pattern B / Pattern C sovereign spoke (right). Editable: [Draw.io](../diagrams/ws5-decision-tree-and-agentic-triad.drawio) • [Slides (.pptx)](../slides/ws5-wrap-up-editable-slides.pptx) • [Cloud Architecture Center SVG](../diagrams/ws5-decision-tree-and-agentic-triad.svg) • [Vision AST](../diagrams/vision_metadata/ws5-decision-tree-and-agentic-triad.vision.json)*
+### Diagram 7: Workstream 5 Capstone: Executive Topology Decision Guide & The Multi-Tenant Agentic Triad (`ws5-decision-tree-and-agentic-triad`)
+* **Workstream & Focus**: Workstream 5 • Executive Topology Decision Guide & The Multi-Tenant Agentic Triad (WS 5.1–5.2) (`WORKSTREAM 5 • AGENTIC TRIAD`)
+* **Question Answered**: *How do Chief Architects, CISOs, and CFOs select between Pattern A, Pattern B, and Pattern C—and how does the Multi-Tenant Agentic Triad balance Cryptographic Tenant Governance, Predictable FinOps COGS, and Zero-PII Observability across 1,000+ tenants?*
+* **Architectural & Business Outcome (2-Question Topology Selector + 74% Total Cloud COGS Reduction Across 1,000 Tenants)**: Across a 1,000-tenant B2B SaaS portfolio (950 Standard + 50 Enterprise), Pattern C guided by the Agentic Triad reduces shared prompt token costs by 90%, cuts total monthly infrastructure COGS by 74% ($820k → $214k/mo), and maintains 99.99% SLA with 0 cross-tenant leaks.
 
-### Reading Figure 1
+#### 4-Zone Hub-and-Spoke Architecture Summary
+* **Blue Zone — 1. Triad Pillar 1: 5-Hop Governance & Selector**: Enforces Hops 1, 2 & 4 (OBO/DPoP, Catalog PDP, Model Armor) and applies the 2-Question Decision Tree to dispatch to Pattern A, B, or C.
+* **Green Zone — 2. Triad Pillar 3: Zero-PII FinOps & SCC Audit**: Streams SDP-redacted OpenTelemetry spans into BigQuery to power Even Split, Proportional Chargeback, and Tiered FinOps models.
+* **Yellow Zone — 3. Triad Pillar 2: Pattern A Pooled Unit Economics**: Combines 90% shared `ContextCacheConfig` discounts, Memorystore Valkey RPM bulkheads, 4,000-token caps, and AlloyDB RLS ($42/mo unit cost).
+* **Red Zone — 4. Regulated Scale: Pattern B Silos & Pattern C PSC**: Delivers dedicated VPC-SC + IAM PAB + Cloud KMS CMEK kill-switches (`HTTP 423`), air-gapped Gemma 3, and zero-downtime PSC tier upgrades.
 
-Figure 1 is laid out in the Cloud Architecture Center hub-and-spoke style; the labels below are the exact addressable objects in the vision AST, so you can find each one in the Draw.io source.
+#### Part A — Agentic Flow: Step-by-Step Architectural Walkthrough (Steps ①–⑦)
+1. **Step ① — 2-Question Executive Topology Decision Tree** (*10,000+ Tenants → Blue Zone*): Architects evaluate two questions: Q1: Do all customers legally require dedicated GCP projects, VPC-SC, or air-gapped models? (Yes → Pattern B). Q2: Do you offer both a shared Standard tier and a regulated Enterprise tier? (Single tier → Pattern A; Multi-tier → Pattern C). **(2-Question Selector → Pattern A ($), Pattern C ($$), or Pattern B ($$$))**
+1. **Step ② — Enforcing Hops 1 & 2 Across All Topologies** (*Blue Zone (Triad Pillar 1 — Identity & Catalog)*): Regardless of topology, every request passes Hop 1 (Cloud Armor header stripping + IAP OIDC/Entra + RFC 8693 OBO/DPoP) and Hop 2 (Discovery Engine Agent Catalog PDP + ADK `before_agent_callback` pruning). **(Triad Pillar 1 • Hops 1 & 2 Cryptographic Identity & Catalog PDP)**
+1. **Step ③ — Commitment to Cost-Optimal or Sovereign Spoke** (*Blue Zone → Yellow or Red Spoke*): The Architecture Selector routes Standard commercial tenants (950 of 1,000 tenants) to the Pooled Spoke (Yellow Zone) and regulated Enterprise tenants (50 of 1,000 tenants) to Sovereign/PSC Spokes (Red Zone). **(950 Standard Tenants (Pooled) + 50 Enterprise Tenants (PSC/Silo))**
+1. **Step ④ — 4 FinOps Levers Cut Pooled Token COGS by 84.7%** (*Yellow Zone (Triad Pillar 2 — Pooled FinOps)*): In the Pooled Spoke, Triad Pillar 2 combines (1) 90% shared `ContextCacheConfig` prefix caching, (2) Memorystore for Valkey RPM bulkheads, (3) 4,000-token thinking budget caps, and (4) compact MCP tool output pruning. **(Triad Pillar 2 • 90% Context Cache + Valkey Bulkhead + Token Cap)**
+1. **Step ⑤ — Enforcing VPC-SC, CMEK Kill-Switch & Live Promotion** (*Red Zone (Sovereign & PSC Guarantees)*): In the Regulated Spoke, Enterprise tenants receive dedicated VPC-SC perimeters, IAM PAB policies, sub-60s Cloud KMS CMEK kill-switches (`HTTP 423`), air-gapped Gemma 3 / Claude 3.7 Sonnet, and zero-downtime PSC tier upgrades. **(VPC-SC • IAM PAB • CMEK Kill-Switch (`423`) • Live PSC Upgrade)**
+1. **Step ⑥ — Model Armor Guardrails & Engine-Level Data Isolation** (*Yellow & Red Zones (Hops 4 & 5 Data Plane)*): Hop 4 screens prompts and redacts egress PII/PCI via Model Armor & SDP, while Hop 5 enforces AlloyDB/BigQuery Row-Level Security (`SET LOCAL app.current_tenant`) or dedicated CMEK vault encryption. **(Hops 4 & 5 • Model Armor, Cloud SDP & AlloyDB/BigQuery RLS)**
+1. **Step ⑦ — Zero-PII OpenTelemetry & 3 FinOps Chargeback Models** (*All Zones → Green Zone (Triad Pillar 3)*): Triad Pillar 3 streams zero-PII OpenTelemetry spans (`tenant_id`, `tier`, `thinking_tokens`, `cache_hit`) into BigQuery—supporting Even Split, Proportional Token Chargeback, and Fixed Tier pricing with 20/20 tests passing. **(Triad Pillar 3 • BigQuery OTel Sink & 74% Portfolio COGS Savings)**
+1. **Outcome — 2-Question Topology Selector + 74% Total Cloud COGS Reduction Across 1,000 Tenants** (*Architectural & Business Outcome*): Across a 1,000-tenant B2B SaaS portfolio (950 Standard + 50 Enterprise), Pattern C guided by the Agentic Triad reduces shared prompt token costs by 90%, cuts total monthly infrastructure COGS by 74% ($820k → $214k/mo), and maintains 99.99% SLA with 0 cross-tenant leaks. **(WORKSTREAM 5 • AGENTIC TRIAD)**
 
-**Outer frame and header.** The title band reads **`[WORKSTREAM 5.1 & 5.2 • CAPSTONE BLUEPRINT] Workstream 5 Capstone: Executive Topology Decision Guide & The Multi-Tenant Agentic Triad`**. Above the Google Cloud frame sits the actor **`Enterprise & SMB Users 10,000+ Multi-Tier Tenants`**, with step badge **`1`** (**`Request`**) entering and badge **`7`** (**`Response`**) returning to the user.
+#### Part B — Component Architecture & Technical Flow Specification
+* **Google Cloud Services Used**: Vertex AI Agent Engine • Google ADK 2.0 • Gemini 2.5 Pro & Gemma 3 • Cloud Armor & IAP • Model Armor & SDP • Memorystore for Valkey • AlloyDB RLS & Cloud KMS CMEK • BigQuery OTel
+* **Architecture Summary**: Synthesizes the 2-Question Executive Topology Decision Tree (Pattern A vs. B vs. C) and the 3-Pillar Multi-Tenant Agentic Triad: (1) 5-Hop Cryptographic Governance, (2) Predictable FinOps Unit Economics (-84.7% COGS), and (3) Zero-PII OpenTelemetry Chargeback.
 
-**Two nested wrappers.** The outer wrapper is **`The Multi-Tenant Agentic Triad: Security (Hops 1–5) • FinOps COGS (-84.7%) • Zero-PII Observability`** — the -84.7% figure is the net input-token saving from [2.1 §4](../workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md) once the 2,000-token tenant suffix is added back to the 90% cached 32,000-token prefix. Inside it, **`Unified GEAP & ADK 2.0 Reference Architecture (12/12 Forensic Audit • 20/20 Simulations PASS)`** frames the shared hubs and both spokes.
+| Step & Stage | Google Cloud Service (Zone) | Architectural Mechanism & Protocol | Security & Isolation Control | Verified Production Outcome |
+| :--- | :--- | :--- | :--- | :--- |
+| **Step ①** • 2-Question Selector | Executive Topology Decision Matrix (Blue Zone) | Evaluates regulatory blast-radius mandates (Q1 → Pattern B) and multi-tiered SaaS packaging (Q2 → Pattern A vs. Pattern C) on an 80% shared codebase. | workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md | Eliminates architectural forks; isolation is a per-tenant configuration |
+| **Step ②** • Pillar 1: Zero-Trust Chain | 5-Hop Cryptographic Context Chain (Blue & Yellow Zones) | Enforces KMS-signed `CryptographicContext` across Edge PEP (Hop 1), Catalog PDP (Hop 2), gVisor Sandbox (Hop 3), Model Armor (Hop 4), and Data RLS (Hop 5). | core-cymbal-agent/governance/hop1..hop5 | 10/10 Pattern A breach tests + 6/6 Pattern B silo tests pass |
+| **Step ③** • Pillar 2: FinOps Levers | Vertex AI ContextCacheConfig & Memorystore (Yellow Zone) | Caches the 32k-token shared system prompt once at a 90% discount while enforcing per-tier thinking budgets (`4k` vs `8k`) and Valkey RPM bulkheads. | Shared Read-Only Prefix Cache + Tiered Token Caps | 84.7% per-turn token COGS reduction; 74% total 1,000-tenant cloud savings |
+| **Step ④** • Sovereign Silo Controls | VPC-SC, IAM PAB & Cloud KMS CMEK (Red Zone) | Wraps regulated Enterprise projects in VPC Service Controls and IAM Principal Access Boundaries with live Cloud KMS CMEK kill-switch verification (`HTTP 423`). | workstream-3-pattern-b-siloed (Milestone 2) | Satisfies OCC/FDIC, HIPAA, and public-sector physical isolation audits |
+| **Step ⑤** • Hybrid PSC & Live Upgrade | Private Service Connect & 3-Phase Migrator (Green & Red Zones) | Bridges the central hub to dedicated spokes over unidirectional PSC (`10.10.0.50`) and promotes live tenants (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`). | workstream-4-pattern-c-hybrid (Milestone 3 • 4/4 PASS) | Zero-downtime Standard → Enterprise promotion with 0 dropped sessions |
+| **Step ⑥** • Multi-Model Agility | Gemini 2.5 Pro, Claude 3.7 Sonnet & Gemma 3 (Yellow & Red Zones) | Runs shared Gemini 2.5 Pro in the pool while enabling Vertex AI Model Garden hot-swapping (Claude 3.7 Sonnet) and air-gapped Gemma 3 (27B) on private GKE. | FinVaultPrivateAgentAlpha & Private GKE Blueprint | Matches model capability and residency to each tenant’s contract tier |
+| **Step ⑦** • Pillar 3: Zero-PII OTel | Sensitive Data Protection & BigQuery OTel (Green Zone) | Redacts all PII/PHI/PCI via Cloud SDP prior to log export and streams tenant-tagged token consumption into BigQuery (`cymbal_agentic_finops_otel`). | 3 Chargeback Models (Even Split, Proportional, Tiered) | Verified live in BigQuery: $0.0042 (A), $0.0079 (C), $0.0118 (B) per turn |
+| **Cost & Audit** • 10-Week Program Roadmap | 12/12 Forensic Gates & Product EAP Backlog (Green Zone) | Delivers Pattern A in Week 4, Pattern B in Week 7, and Pattern C in Week 10 alongside the 9-item Google Cloud Product EAP Tracker (`GAP-P0-01`..`GAP-P2-02`). | scripts/run_deep_forensic_audit.py (12/12 PASS • 20/20 SIMS) | Complete, production-certified reference architecture across WS1–WS5 |
 
-**Routing hub (upper left, Triad Pillar 1).** The zone titled **`Triad Pillar 1: Zero-Trust Cryptographic Security`** holds three hop cards stacked on the left — **`Hop 1: Edge PEP Header Strip + OBO + DPoP`** (edge label **`Verify OBO & DPoP`**), **`Hop 4: Model Armor`** (**`Screen & redact PII`**), and **`Hop 2: Registry PDP`** (**`Prune ARD & MCP tools`**) — with the **`External Application Load Balancer`** and the **`Architecture Selector Routes Pattern A, B or C`** card to their right. Step badge **`2`** (**`Request`**) and a second **`7`** (**`Response`**) mark the request leaving the ALB toward the guardrails and the screened response returning.
-
-**Central governance hub (upper right, Triad Pillar 3).** The zone labelled **`Triad Pillar 3: Privacy-`** (Preserving Observability) contains **`Security Command Center`**, **`3 Chargeback Models`**, and the **`BigQuery OTel Sink`**. A dashed governance line labelled **`Real-time COGS & security telemetry`** drops from this hub into the spokes — it is dashed because it carries only zero-PII span metadata, never request payloads.
-
-**The trunk.** Below the routing hub, badge **`3`** (**`Dispatch to optimal cost/security tier`**) is where the Architecture Selector commits to a pattern; badge **`7`** beside it reads **`Verified zero-bleed agent completion`**, the point at which a response has cleared Hop 4 egress redaction on its way back up.
-
-**Left spoke — Pattern A (Triad Pillar 2, High Density).** The wrapper **`Triad Pillar 2 (High Density): Pattern A Pooled FinOps & COGS Engine`** encloses **`Pattern A: Pooled Unit Economics`**. Follow the badges: **`4`** **`Check quota`** at the **`Redis Rate Bulkhead 120 RPM Std / 600 RPM Ent`**; **`Thinking Budget Cap Clamps 4k Std vs 8k Ent`**; **`6`** **`Log COGS`**; **`5`** **`90% Cached inference`** at **`ContextCacheConfig 90% Discount on 32k Prefix`** (annotated **`Zero Cache Bleed`**); **`2LO & 3LO Auth Mgr Scoped Per-Tenant Vault`**; and **`AlloyDB RLS & L1–L5 Shared Storage Density`** (annotated **`Storage-Engine RLS Policy`**).
-
-**Right spoke — Patterns B & C (Triad Pillar 2, Regulated Scale).** The wrapper **`Triad Pillar 2 (Regulated Scale): Pattern B Silos ($$$) & Pattern C Hybrid ($$)`** encloses **`Pattern B Silos & Pattern C PSC Spokes`**: **`VPC-SC & IAM PAB Hard Perimeter Isolation`**, **`Gemma 3 & Claude 3.7`** (air-gapped and Model Garden model choices), **`PSC Spoke Runtime 3-Phase Live Tier Upgrade`** (annotated **`Private PSC NAT Bridge`**), **`Dedicated Silo MCP Zero Cross-Project Egress`**, and **`Cloud KMS CMEK Lock`** (annotated **`Customer-Revocable CMEK Keys`**).
-
-Read left-to-right, the two spokes are the same five hops with different blast radii — which is precisely the point of the next section.
-
----
-
-## 6. The 5-Hop Cryptographic Context Chain: The Invariant Across All Three Patterns
-
-The 80% reusable core is the 5-Hop chain in [`core-cymbal-agent/governance/`](../core-cymbal-agent/governance/). Every pattern runs the same five modules; only the perimeter each hop is deployed into changes. Each hop below links to its reference implementation and names its Pattern A / B / C delta from the 5.1 matrix.
-
-### Hop 1 — Edge Identity & Token Exchange PEP
-[`hop1_edge_identity_pep.py`](../core-cymbal-agent/governance/hop1_edge_identity_pep.py) strips any client-supplied or forged `X-Tenant-ID` / `X-Cymbal-Tier` header, verifies the upstream IdP JWT (Google Workspace OIDC for FinVault, Microsoft Entra ID for RetailStream), and performs an RFC 8693 On-Behalf-Of exchange bound to an RFC 9449 DPoP thumbprint (`jkt`). **Delta**: Pattern B adds mTLS SPIFFE pinning and IAM PAB; Pattern C adds the tenant-aware Firestore router and cross-project PAB.
-
-### Hop 2 — Registry PDP, ARD Catalog & ADK Tool Pruning
-[`hop2_registry_pdp_callbacks.py`](../core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py) filters the GEAP Agent Registry by cryptographic tenant labels, filters ARD catalog entries so tenants cannot enumerate each other's private agents or MCP connectors, returns `403 Forbidden` on unauthorized direct invocation, and runs ADK 2.0 `before_agent_callback` deterministic tool pruning mid-turn. **Delta**: Pattern B uses a dedicated per-project registry and local MCP servers; Pattern C uses a cross-project federated registry.
-
-### Hop 3 — Compute Plane, 5-Level Memory Bank & FinOps Bulkheads
-[`hop3_compute_finops_bulkhead.py`](../core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py) binds immutable `temp:tenant_id` inside the gVisor sandbox, loads per-tenant prompts, thinking budgets, and GCS Skills via Firestore + Memorystore, enforces `8,000` vs. `4,000` thinking budgets and Redis RPM bulkheads, keys the `L1_TURN_EPHEMERAL`..`L5_PLATFORM_SHARED_SKILLS` memory bank by `{tenant}:{user}:{session}`, verifies Cloud KMS CMEK key state, and attaches shared `ContextCacheConfig`. **Delta**: Pattern B swaps in a dedicated runtime or air-gapped Gemma 3 with project CMEK; Pattern C routes Enterprise tenants over PSC to a dedicated spoke.
-
-### Hop 4 — Vertex AI Model Armor & Semantic NLCs
-[`hop4_model_armor_guardrails.py`](../core-cymbal-agent/governance/hop4_model_armor_guardrails.py) screens ingress prompts for injection, jailbreaks, context-cache extraction, and SQL RLS bypass payloads; enforces tenant-specific Semantic Natural Language Constraints; and scrubs egress with tenant-tailored SDP detectors (bank account / IBAN / SWIFT for FinVault, payment card PAN for RetailStream). **Delta**: Pattern B deploys Model Armor per project; Pattern C screens at the hub and enforces spoke-specific SDP/NLC.
-
-### Hop 5 — AlloyDB RLS, 2LO/3LO Tool Auth & BigQuery OTel
-[`hop5_data_rls_and_otel.py`](../core-cymbal-agent/governance/hop5_data_rls_and_otel.py) binds `SET LOCAL app.current_tenant = '<tenant_id>'` on every AlloyDB transaction, brokers 2LO implicit passthrough for the Cymbal Telemetry API and 3LO tokens (Google OIDC; Entra ID with inline OAuth consent challenge) via `CymbalMCPHub`, and emits structured OTel FinOps and security traces to BigQuery. **Delta**: Pattern B uses dedicated CMEK AlloyDB and BigQuery inside VPC-SC; Pattern C bridges from the shared RLS database to dedicated VPC-SC spokes over PSC.
-
----
-
-## 7. Consolidated Product-Gap & EAP Backlog
-
-The program's second deliverable to Google product teams is the gap ledger in [1.4](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md), refined through the Milestone 1 prioritization in [2.4](../workstream-2-pattern-a-pooled/2.4-product-gaps-prioritization.md). Every gap has a working workaround in the reference repo today and a named EAP allowlist that would retire it.
-
-| Gap ID | Priority | Pattern | Component | Gap (failure mode) | Engineered workaround in repo | EAP / allowlist | Target |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `GAP-P0-01` (`GEAP-POOL-01`) | **P0** | A | GEAP Agent Registry (PDP) | Registry list/get filters by IAM project principal, not sub-project `tenant_id` claim | Tenant label check in Gateway PEP + ADK `before_agent_callback` pruning (`403`) | `geap-registry-tenant-label-pdp-eap` | Q4 2026 |
-| `GAP-P0-02` (`GEAP-POOL-03`) | **P0** | A | GEAP 5-Level Memory Bank | Project-level CMEK only; no per-`tenant_id` namespace key binding | Envelope encryption per namespace via Cloud KMS in Hop 3, or route to Pattern C PSC memory spoke | `geap-memory-bank-per-tenant-cmek-eap` | Q4 2026 |
-| `GAP-P0-03` (`GEAP-POOL-02`) | **P0** | A | GCP Agent Identity (Auth Manager) | OBO + DPoP from external Entra ID tenants needs custom verification before brokering | DPoP `jkt` verification and header strip at Hop 1 before Auth Manager 3LO broker | `gcp-agent-identity-dpop-entra-eap` | Q4 2026 |
-| `GAP-P1-01` (`GEAP-POOL-04`) | P1 | A | Vertex AI `ContextCacheConfig` + Model Garden | Partner models (Claude 3.7 Sonnet) use provider-specific cache headers | Cache abstraction split between Gemini `ContextCacheConfig` and Anthropic ephemeral cache control | `vertex-model-garden-unified-cache-api` | Q1 2027 |
-| `GAP-P1-02` | P1 | A | ADK 2.0 Inline 3LO OAuth | Pausing/resuming the reasoning loop across stateless Cloud Run needs externalized state | Checkpoint persisted in Firestore/Redis keyed by `retailstream:user:session` | `adk-stateless-oauth-checkpoint-v2` | Q4 2026 |
-| `GAP-P1-03` | P1 | B | VPC-SC + GEAP Remote MCP | 3P SaaS MCP egress from a strict perimeter needs explicit PSC egress proxy | Envoy/Cloud NAT egress bridge with FQDN allowlisting ([3.6](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/)) | `vpc-sc-geap-mcp-egress-bridge` | Q4 2026 |
-| `GAP-P1-04` | P1 | B | Cloud KMS CMEK revocation latency | Cached credentials can serve in-memory state up to 5 min after revocation | Sub-second KMS key-state probe in Hop 3 (`423 Locked` on `KMS_KEY_DISABLED`) | `geap-cmek-instant-killswitch-sla` | Q1 2027 |
-| `GAP-P2-01` | P2 | C | Cross-project GEAP Registry over PSC | Hub cannot natively discover a spoke's dedicated agent card | Firestore-backed cross-project registry sync + `psc_service_attachment` routing table ([4.3](../workstream-4-pattern-c-hybrid/4.3-solution-implementation/)) | `geap-cross-project-federated-registry` | Q1 2027 |
-| `GAP-P2-02` | P2 | C | Zero-downtime tier upgrade | Pool → spoke promotion mid-day risks dropped sessions and lost memory | 3-phase Silent Tenant Migration State Machine (shadow replication → atomic Firestore cutover → drain) | `geap-live-tenant-tier-migrator` | Q1 2027 |
-
-The Milestone 1 sign-off gate in 2.4 is worth adopting as your own acceptance criteria: 100% forged-header strip at Hop 1; deterministic `403` on cross-tenant agent and MCP calls; `4,000`-token clamp and `429` above `120 RPM` for Standard without touching the Enterprise `8,000`-token / `600 RPM` lane; and tenant-aware PII redaction plus RLS that survives simulated SQL filter tampering.
-
----
-
-## 8. Ten-Week Program Retrospective
-
-| Weeks | Phase | Workstream | Milestone & outputs |
-| :--- | :--- | :--- | :--- |
-| 1–4 | 1W Design • 2W Build • 1W Launch | WS1 reference architecture + WS2 Pattern A | **Milestone 1 (Week 4)**: taxonomy & 5-Hop baseline diagrams, Pooled case study, 3P auth sandbox, breach-simulation suite, Terraform starter, Pattern A blog, codelab, gap prioritization (2.4) |
-| 4–7 | 1W Design • 2W Build • 1W Launch | WS3 Pattern B | **Milestone 2 (Week 7)**: multi-project silo & CMEK setup, VPC-SC sign-off, exfiltration & CMEK-revocation tests, silo Terraform blueprint, Sovereign Silos blog and codelab |
-| 7–10 | 1W Design • 2W Build • 1W Launch | WS4 Pattern C + WS5 wrap-up | **Milestone 3 (Week 10)**: hub-and-spoke PSC demo environment, zero-downtime tier-upgrade suite, hybrid PSC Terraform blueprint, Dynamic Tiering blog, decision guide (5.1) and Triad capstone (5.2) |
-
-Three lessons generalize beyond Cymbal:
-
-1. **Build the pooled pattern first, even if you will never ship it alone.** Pattern A forces the 5-Hop chain to be correct under the hardest condition — shared everything. Patterns B and C then become perimeter deltas rather than new security models, which is what made the 80/20 reuse real.
-2. **Treat the gap ledger as a first-class deliverable.** The nine entries in Section 7 each have an engineered workaround, a product owner, and an EAP name; that turned product-team collaboration (2.4, 3.4, 4.4) into concrete sign-off gates instead of open-ended feedback.
-3. **Diagram once, publish everywhere.** Each of the seven blueprints exists as `.drawio`, `.drawio.png`, Cloud Architecture Center `.svg`, and a `.vision.json` AST with addressable labels — so the same figure appears consistently in blogs, codelab decks, and the documentation PR ([1.3](../workstream-1-reference-architecture/1.3-cloud-architecture-center-doc-update-pr.md)).
-
----
-
-## 9. Call to Action
-
-- **Run the decision tree with your compliance and pricing leads in the same room.** Question 1 belongs to legal and security; Question 2 belongs to product. Most disagreements about topology are really disagreements about which question is being answered.
-- **Start from the reusable core.** Clone [`core-cymbal-agent/`](../core-cymbal-agent/), run the Pattern A breach simulations ([2.5](../workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py)), the Pattern B silo security tests ([3.5](../workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py)), and the Pattern C tier-migration suite ([4.5](../workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py)) before you write a line of pattern-specific code.
-- **Deploy with the matching Terraform blueprint**: [2.6](../workstream-2-pattern-a-pooled/2.6-terraform-starter/) (Pooled), [3.6](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/) (Silos), or [4.6](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/) (Hybrid PSC), after enabling the APIs in the [1.4 allowlist checklist](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md).
-- **Ask your Google account team for the EAP allowlists in Section 7** that match your chosen pattern — the P0 items are the ones that convert repository workarounds into platform-native guarantees.
-- **Go deeper on the Triad** in the flagship capstone, [5.2 — The Multi-Tenant Agentic Triad: Mastering Cost, Observability, and Zero-Trust Security at Scale](../workstream-5-wrap-up-and-backlog/5.2-blog-multi-tenant-agentic-triad.md), including the full BigQuery chargeback SQL.
-
----
-
-## 10. Assets & Editable Diagrams
-
-All seven program blueprints and all five workstream decks, plus the combined deck. Anchor reference: [Multi-tenant agentic AI system — Google Cloud Architecture Center](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system).
-
-| # | Workstream | Blueprint | Draw.io PNG | Editable `.drawio` | Cloud Architecture Center SVG |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| 1 | WS 1.1 | GEAP Multi-Tenant Agentic AI Taxonomy: Pattern A, B & C Overview | [PNG](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png) | [.drawio](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio) | [SVG](../diagrams/ws1-multi-tenant-taxonomy-overview.svg) |
-| 2 | WS 1.3 | Cloud Architecture Center 5-Hop Cryptographic Context Chain Baseline | [PNG](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio.png) | [.drawio](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio) | [SVG](../diagrams/ws1-cloud-arch-center-5hop-baseline.svg) |
-| 3 | WS 2.1 | Pattern A: High-Density Pooled Multi-Tenant Architecture & 90% COGS Cache | [PNG](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio.png) | [.drawio](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio) | [SVG](../diagrams/ws2-pattern-a-pooled-5hop-architecture.svg) |
-| 4 | WS 2.5 | Pattern A: 10-Point Cross-Tenant Breach Defense & Guardrail Matrix | [PNG](../diagrams/ws2-pattern-a-breach-defense-sequence.drawio.png) | [.drawio](../diagrams/ws2-pattern-a-breach-defense-sequence.drawio) | [SVG](../diagrams/ws2-pattern-a-breach-defense-sequence.svg) |
-| 5 | WS 3.1 | Pattern B: Zero-Trust Sovereign Silos (VPC-SC, PAB, CMEK & Air-Gapped Gemma 3) | [PNG](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio.png) | [.drawio](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio) | [SVG](../diagrams/ws3-pattern-b-sovereign-silos-architecture.svg) |
-| 6 | WS 4.1 | Pattern C: Dynamic Hybrid Hub-and-Spoke, PSC Bridge & Live Tier Migration | [PNG](../diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio.png) | [.drawio](../diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio) | [SVG](../diagrams/ws4-pattern-c-hybrid-psc-and-migration.svg) |
-| 7 | WS 5.1 | Executive Topology Decision Tree & The Multi-Tenant Agentic Triad | [PNG](../diagrams/ws5-decision-tree-and-agentic-triad.drawio.png) | [.drawio](../diagrams/ws5-decision-tree-and-agentic-triad.drawio) | [SVG](../diagrams/ws5-decision-tree-and-agentic-triad.svg) |
-
-**Editable slide decks (.pptx)**
-
-- Workstream 1 — Reference Architecture: [ws1-reference-architecture-editable-slides.pptx](../slides/ws1-reference-architecture-editable-slides.pptx)
-- Workstream 2 — Pattern A Pooled: [ws2-pattern-a-pooled-editable-slides.pptx](../slides/ws2-pattern-a-pooled-editable-slides.pptx)
-- Workstream 3 — Pattern B Siloed: [ws3-pattern-b-siloed-editable-slides.pptx](../slides/ws3-pattern-b-siloed-editable-slides.pptx)
-- Workstream 4 — Pattern C Hybrid: [ws4-pattern-c-hybrid-editable-slides.pptx](../slides/ws4-pattern-c-hybrid-editable-slides.pptx)
-- Workstream 5 — Wrap-Up & Decision Guide: [ws5-wrap-up-editable-slides.pptx](../slides/ws5-wrap-up-editable-slides.pptx)
-- **Combined program deck (all workstreams)**: [geap-multi-tenancy-all-workstreams-editable-slides.pptx](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)
-
-**Source documents for this post**: [5.1 Pattern Comparison & Decision Guide](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md) • [5.2 The Multi-Tenant Agentic Triad](../workstream-5-wrap-up-and-backlog/5.2-blog-multi-tenant-agentic-triad.md) • [1.4 EAP & Product Gap Tracker](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md) • [2.4 Product Gaps Prioritization](../workstream-2-pattern-a-pooled/2.4-product-gaps-prioritization.md) • [Program README](../README.md)
+<!-- E2E_FLOW_END -->

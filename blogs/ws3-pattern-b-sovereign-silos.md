@@ -1,261 +1,316 @@
 ---
-title: "Sovereign Silos for Regulated Agentic AI: One Project, One Perimeter, One Key per Tenant"
-subtitle: "How Pattern B wraps the reusable 5-Hop Cymbal agent core in VPC Service Controls, IAM Principal Access Boundaries, a Cloud KMS CMEK kill-switch, and air-gapped Gemma 3 on GKE"
+title: "Multi-tenant agentic AI system: Pattern B sovereign silos for regulated workloads"
+subtitle: "Isolate regulated banking, healthcare, and public-sector tenants inside dedicated Google Cloud projects with VPC Service Controls, IAM Principal Access Boundaries, Cloud KMS CMEK kill-switches, and air-gapped Gemma 3 on GKE"
 series: "Multi-Tenant Agentic AI on Google Cloud — Workstream 3 of 5"
 workstream: "Workstream 3 • Milestone 2 (Weeks 4–7) • Pattern B — Sovereign Silos"
 authors: "Google Cloud Forward Deployed Engineering (FDE) & AI Platform Architecture Team"
-target_audience: "Principal Architects, CISOs, and Compliance Leads in FinTech, Healthcare, and other regulated industries"
+target_audience: "Cloud Architects, CISOs, and Compliance Leads in FinTech, Healthcare, and Public Sector"
 reading_time: "14 min read"
-tags: ["Sovereign Cloud", "VPC Service Controls", "Principal Access Boundary", "Cloud KMS CMEK", "Gemma 3", "GKE", "GEAP", "ADK 2.0", "Zero Trust", "Multi-Tenancy"]
+tags: ["Sovereign Cloud","VPC Service Controls","Principal Access Boundary","Cloud KMS CMEK","Gemma 3","GKE","Vertex AI Agent Engine","ADK 2.0","Zero Trust","Multi-Tenancy"]
 canonical_architecture: "https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system"
-diagrams: ["ws3-pattern-b-sovereign-silos-architecture", "ws3-multi-project-silo-and-cmek-setup-topology", "ws3-terraform-silo-blueprint-resource-graph"]
+diagrams: ["ws3-pattern-b-sovereign-silos-architecture","ws3-multi-project-silo-and-cmek-setup-topology","ws3-terraform-silo-blueprint-resource-graph"]
 editable_slides: "slides/ws3-pattern-b-siloed-editable-slides.pptx"
 status: "PUBLISH_READY"
 ---
 
-# Sovereign Silos for Regulated Agentic AI: One Project, One Perimeter, One Key per Tenant
+# Multi-tenant agentic AI system: Pattern B sovereign silos for regulated workloads
 
-> **Executive TL;DR**
-> - **The mandate**: Pooled multi-tenancy (Pattern A) satisfies most B2B SaaS tiers, but OCC/FDIC/DORA-regulated banks, HIPAA healthcare providers, and public-sector buyers frequently prohibit shared compute pools and shared database clusters outright. They want a dedicated blast radius, a hard network perimeter, and an encryption key *they* can revoke.
-> - **The pattern**: **Pattern B (Sovereign Silos)** keeps the **80% reusable 5-Hop core** (`core-cymbal-agent/`) unchanged and adds a **20% sovereign infrastructure delta** per tenant project — `cymbal-finvault-silo-prod` and `cymbal-retailstream-silo-prod` — consisting of mTLS SPIFFE pinning, an organization **IAM Principal Access Boundary (PAB)**, a **VPC Service Controls (VPC-SC)** perimeter, a **Cloud KMS CMEK** kill-switch that returns `HTTP 423 KMS_KEY_DISABLED`, and optional air-gapped **Gemma 3 (27B IT)** on private GKE.
-> - **The evidence**: All **6 automated Sovereign Silo security tests** in [`run_silo_security_tests.py`](../workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py) pass — `401`, `403`, `403`, `423`, `200` (air-gapped), and RetailStream parity — and the four control domains carry a formal VPC-SC sign-off from GCP Security and GEAP Product Engineering.
-> - **The trade**: Zero noisy neighbours and simple per-project quota accounting in exchange for a higher per-tenant infrastructure floor and multi-project lifecycle management. Workstream 4 shows how to blend both worlds.
+This document describes **Pattern B (Sovereign Silos)** for deploying a multi-tenant agentic AI system on Google Cloud when regulatory mandates (such as OCC/FDIC banking rules, EU DORA, HIPAA, or FedRAMP) prohibit shared compute pools and shared databases. Pattern B wraps the unchanged **80% reusable 5-Hop Cymbal agent core** ([`core-cymbal-agent/`](../core-cymbal-agent/)) inside a dedicated Google Cloud project per corporate tenant (`cymbal-finvault-silo-prod` and `cymbal-retailstream-silo-prod`), protected by a dedicated [VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs) perimeter, an organization-level [IAM Principal Access Boundary (PAB)](https://cloud.google.com/iam/docs/principal-access-boundary-policies), a customer-controlled [Cloud KMS](https://cloud.google.com/kms/docs) encryption key (`HTTP 423 Locked` kill-switch), and optional air-gapped **Gemma 3 (27B)** inference on private [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs).
 
----
+This document is part 3 of a 5-part series extending the official Google Cloud [Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) reference architecture (following [Part 1: Taxonomy & 5-Hop Baseline](ws1-reference-architecture-taxonomy-and-5hop-baseline.md) and [Part 2: Pattern A Pooled Architecture](ws2-pattern-a-pooled-architecture.md)).
 
-## 1. When Pooled Isolation Is Not Enough: The Regulatory Drivers
+> **Key point:** Pattern B reuses the exact same 5-Hop agent governance code as Pattern A while adding a physical project and cryptographic boundary around each tenant. If a customer revokes or disables their Cloud KMS key version, every in-flight and queued agent turn, memory bank read, and AlloyDB query halts immediately with **`HTTP 423 Locked`**.
 
-In Workstream 2 we showed how Pattern A serves competing tenants from one shared GEAP Agent Runtime using the **5-Hop Cryptographic Context Chain** — logical isolation (RLS, tenant-prefixed memory, `before_agent_callback` tool pruning) backed by envelope CMEK for Enterprise namespaces. For most SaaS workloads, that is the right economic answer: shared `ContextCacheConfig` prefix caching alone yields up to **90% COGS savings**.
+## Architecture
 
-But the Cymbal anchor case study includes two tenants whose auditors ask a different question — not *"is my data logically separated?"* but *"can you prove that no other customer's workload could ever touch my compute, my storage, or my key?"* As documented in [3.1 Case Study & Solution Architecture](../workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md), those mandates fall into four buckets:
+The following diagram shows the Pattern B sovereign silo architecture, where each corporate tenant operates inside an isolated Google Cloud project and VPC Service Controls perimeter:
 
-| Regulatory Driver | Typical Source | What It Rules Out | Pattern B Answer |
+![Figure 1 — Pattern B: Sovereign silos with VPC Service Controls, IAM PAB, Cloud KMS CMEK, and air-gapped Gemma 3 on GKE](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio.png)
+
+*Figure 1. Official Google Cloud Architecture Center hub-and-spoke topology showing the Sovereign mTLS & PAB Ingress Hub, Organization VPC-SC & Cloud KMS Governance Hub, Sovereign Silo Project A (`cymbal-finvault-silo-prod` with air-gapped Gemma 3 27B on GKE), and Sovereign Silo Project B (`cymbal-retailstream-silo-prod`). Editable assets: [Draw.io source](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio) | [Google Slides (.pptx)](../slides/ws3-pattern-b-siloed-editable-slides.pptx) | [Architecture Center SVG](../diagrams/ws3-pattern-b-sovereign-silos-architecture.svg) | [Vision AST](../diagrams/vision_metadata/ws3-pattern-b-sovereign-silos-architecture.vision.json).*
+
+Figure 1 organizes the Pattern B sovereign deployment into four security zones:
+
+- **Sovereign mTLS and PAB Ingress Hub (Zone 1 — Blue container `#aecbfa`):** Verifies client mutual TLS (mTLS) SPIFFE certificates (`spiffe://finvault.com/ns/sre/sa/agent-client`) and evaluates the organization-level IAM Principal Access Boundary (`PAB`) before routing traffic into the tenant's dedicated project (`Hop 1`).
+- **Organization VPC-SC, Cloud KMS CMEK, and SCC Governance Hub (Zone 2 — Green container `#ceead6`):** Enforces per-project VPC Service Controls perimeters (`perimeter_finvault_sovereign`), verifies live Cloud KMS / Cloud EKM key state (`agent-memory-cmek`), monitors compliance in Security Command Center, and exports per-silo audit logs (`Hops 2 & 5`).
+- **Sovereign Silo Project A — FinVault Bank (`cymbal-finvault-silo-prod`) (Zone 3 — Left amber container `#feefc3`):** Dedicated Google Cloud project hosting FinVault's isolated Vertex AI Agent Engine runtime, private `Agent Alpha` (`Claude 3.7 Sonnet`), air-gapped **Gemma 3 (27B IT)** on private GKE GPU nodes (zero public internet egress), and CMEK-encrypted AlloyDB and Memory Bank.
+- **Sovereign Silo Project B — RetailStream Corp (`cymbal-retailstream-silo-prod`) (Zone 4 — Right coral container `#fad2cf`):** Physically separate Google Cloud project inside `perimeter_retailstream_sovereign` with its own IAM PAB policy, dedicated Provisioned Throughput Gemini 2.5 Pro endpoint, dedicated CMEK AlloyDB cluster, and isolated Microsoft Entra ID 3LO MCP servers.
+
+The numbered callouts in Figure 1 trace a sovereign agent turn and verify physical and cryptographic isolation:
+
+1. **Mutual TLS (mTLS) and OIDC request:** The tenant client connects with a pinned mTLS SPIFFE client certificate and an upstream OIDC JWT.
+2. **Sovereign pre-check 1 & 2 — mTLS SPIFFE and IAM PAB verification:** `PatternBSiloedService` verifies that the client certificate and IAM principal are bound exclusively to the target silo project (`cymbal-finvault-silo-prod`); cross-project principals are rejected (`HTTP 403`).
+3. **Hop 2 — Silo-local Agent Catalog and tool pruning:** The silo's dedicated Discovery Engine catalog exposes only the tenant's approved agents and local MCP connectors.
+4. **Sovereign pre-check 3 & Hop 4 — VPC-SC perimeter and Model Armor scan:** VPC Service Controls blocks any egress attempt to external projects (`VPC_SC_PERIMETER_VIOLATION_403`), while Model Armor and Cloud DLP inspect the prompt inline.
+5. **Hop 3 — Live Cloud KMS CMEK check and air-gapped Gemma 3 / Vertex AI inference:** The runtime verifies that `agent-memory-cmek` is `ENABLED` (halting immediately with `HTTP 423 Locked` if disabled) and executes inference on air-gapped Gemma 3 (27B) on private GKE or dedicated Vertex AI endpoints.
+6. **Hop 4 (Post-inference) — Output DLP and silo-local 3LO MCP execution:** Tool calls execute against silo-local MCP servers using DPoP-bound 3LO tokens and pass post-inference NLC compliance checks.
+7. **Hop 5 — Dedicated CMEK AlloyDB persistence and silo BigQuery audit:** State is written to the silo's dedicated CMEK-encrypted AlloyDB cluster and BigQuery audit dataset.
+
+### Multi-project silo and Cloud KMS CMEK setup topology (Figure 2)
+
+![Figure 2 — Pattern B: 4-stage multi-project provisioning, VPC-SC perimeter, and CMEK kill-switch topology](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio.png)
+
+*Figure 2. Step-by-step multi-project setup topology (`workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md`) showing Organization Access Context Manager, IAM PAB binding, Cloud KMS CMEK key rings, and private GKE Gemma 3 node pools. Editable assets: [Draw.io source](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio) | [Google Slides (.pptx)](../slides/ws3-pattern-b-siloed-editable-slides.pptx) | [Architecture Center SVG](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.svg) | [Vision AST](../diagrams/vision_metadata/ws3-multi-project-silo-and-cmek-setup-topology.vision.json).*
+
+Figure 2 details the four provisioning stages documented in [3.2 Multi-Project Silo & CMEK Setup](../workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md):
+
+- **Stage 1 — Identity, mTLS Certificate Authority, and IAM PAB (Zone 1 — Blue container `#aecbfa`):** Configures Certificate Authority Service for SPIFFE mTLS certificates and binds the IAM Principal Access Boundary policy to the tenant folder/project.
+- **Stage 2 — Access Context Manager, VPC-SC, and Cloud KMS CMEK (Zone 2 — Green container `#ceead6`):** Creates the dry-run and enforced VPC-SC service perimeters covering `aiplatform.googleapis.com`, `alloydb.googleapis.com`, and `storage.googleapis.com`, and provisions customer-managed KMS keys.
+- **Stage 3 — Air-Gapped GKE Gemma 3 (27B) and Silo Agent Runtime (Zone 3 — Left amber container `#feefc3`):** Deploys a private GKE cluster (`enable_private_nodes = true`, `enable_private_endpoint = true`) serving `gemma-3-27b-it-vllm` from a local Artifact Registry mirror alongside Vertex AI Agent Engine.
+- **Stage 4 — CMEK Data Plane and Automated Kill-Switch Verification (Zone 4 — Right coral container `#fad2cf`):** Binds `agent-memory-cmek` to AlloyDB, Memorystore, Vertex AI Memory Bank, and BigQuery, and validates instant `HTTP 423` revocation.
+
+The seven numbered steps in Figure 2 trace the provisioning and cryptographic revocation workflow:
+
+1. **Create isolated tenant GCP project:** Provision `cymbal-{tenant}-silo-prod` under a dedicated Organization folder with billing and quota isolation.
+2. **Attach IAM Principal Access Boundary (PAB):** Bind `{tenant}-sovereign-pab` so tenant credentials can never authenticate to resources outside the silo project.
+3. **Provision Cloud KMS / Cloud EKM key ring:** Create `agent-memory-cmek` and grant the Vertex AI, AlloyDB, and Storage service agents `roles/cloudkms.cryptoKeyEncrypterDecrypter`.
+4. **Enforce VPC Service Controls perimeter:** Lock restricted Google Cloud APIs inside `perimeter_{tenant}_sovereign` and block unauthorized egress.
+5. **Deploy private GKE Gemma 3 (27B) and Agent Engine runtime:** Launch vLLM serving Gemma 3 on private A100/H100 GKE nodes with Private Google Access and zero internet egress.
+6. **Verify 5-Hop turn execution inside the silo:** Execute end-to-end agent turns using the unchanged `core-cymbal-agent/` governance modules.
+7. **Trigger CMEK kill-switch (`HTTP 423 Locked`):** Disable the KMS cryptoKeyVersion and confirm that all runtime, memory, and database operations halt immediately with `423 Locked`.
+
+### Parameterized Terraform silo blueprint resource graph (Figure 3)
+
+![Figure 3 — Pattern B: Parameterized Terraform sovereign silo module resource graph](../diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio.png)
+
+*Figure 3. Declarative Terraform resource dependency graph (`workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/`) for stamping out repeatable sovereign tenant silos. Editable assets: [Draw.io source](../diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio) | [Google Slides (.pptx)](../slides/ws3-pattern-b-siloed-editable-slides.pptx) | [Architecture Center SVG](../diagrams/ws3-terraform-silo-blueprint-resource-graph.svg) | [Vision AST](../diagrams/vision_metadata/ws3-terraform-silo-blueprint-resource-graph.vision.json).*
+
+Figure 3 maps the Terraform resources in [`3.6-terraform-silo-blueprint/main.tf`](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf):
+
+- **Project Factory and mTLS Ingress Resources (Zone 1 — Blue container `#aecbfa`):** Provisions `google_project`, private VPC subnets, and mTLS load balancer certificates.
+- **VPC-SC Perimeter, IAM PAB, and KMS Resources (Zone 2 — Green container `#ceead6`):** Provisions `google_access_context_manager_service_perimeter`, `google_iam_principal_access_boundary_policy`, and `google_kms_crypto_key`.
+- **Private GKE Gemma 3 and Vertex AI Runtime Resources (Zone 3 — Left amber container `#feefc3`):** Provisions `google_container_cluster` (private GPU pool), Artifact Registry weights mirror, and Vertex AI Agent Engine runtime.
+- **CMEK AlloyDB, Memorystore, and BigQuery Resources (Zone 4 — Right coral container `#fad2cf`):** Provisions `google_alloydb_cluster` and `google_bigquery_dataset` encrypted with `encryption_config { kms_key_name = ... }`.
+
+The seven numbered steps in Figure 3 trace the automated Terraform stamp-out pipeline:
+
+1. **Input `tenant_id` and compliance variables:** Pass `tenant_id = "finvault"`, `region = "us-central1"`, and `enable_airgapped_gemma3 = true` to the Terraform module.
+2. **Create project and attach IAM PAB policy:** Terraform provisions the isolated project and binds the organization PAB policy.
+3. **Create Cloud KMS CMEK key and IAM grants:** Provisions the customer-managed encryption key before any stateful service is created.
+4. **Configure Access Context Manager VPC-SC perimeter:** Places the project inside a dedicated service perimeter with restricted Google APIs.
+5. **Provision private GKE GPU cluster and Agent Engine:** Deploys the air-gapped Gemma 3 inference pool and ADK runtime.
+6. **Provision CMEK-encrypted AlloyDB and Memory Bank:** Creates the relational and vector stores bound to the tenant's KMS key.
+7. **Run 6-test sovereign verification suite:** Executes `run_silo_security_tests.py` to certify perimeter, PAB, and CMEK kill-switch enforcement before sign-off.
+
+## Products used
+
+This architecture uses the following Google Cloud products and open-source frameworks:
+
+### Agentic AI and foundation models
+
+- [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview): A managed runtime environment that deploys, scales, and isolates multi-agent workloads inside gVisor sandboxes with managed session and memory state.
+- [Agent Development Kit (ADK)](https://google.github.io/adk-docs/): An open-source framework for building and orchestrating multi-agent hierarchies with deterministic lifecycle callbacks (`before_agent_callback`, `before_tool_callback`, `before_model_callback`).
+- [Gemini 2.5 Pro on Vertex AI](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models): Google's flagship multimodal reasoning model supporting shared prompt prefix caching (`ContextCacheConfig`) and configurable `thinking_budget` controls.
+- [Vertex AI Model Garden](https://cloud.google.com/model-garden): An enterprise model repository providing governed access to partner models (such as Anthropic Claude 3.7 Sonnet for tenant-private agents) and open-weight models (such as Gemma 3 27B).
+- [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs): A managed Kubernetes service used in Sovereign Silo deployments (Pattern B) to run air-gapped open-weight models on private GPU node pools with zero public internet egress.
+
+### Ingress, identity, and AI safety guardrails
+
+- [Cloud Load Balancing](https://cloud.google.com/load-balancing/docs): A global anycast External Application Load Balancer that terminates TLS 1.3 and mutual TLS (mTLS) connections at the Google network edge.
+- [Google Cloud Armor](https://cloud.google.com/armor/docs): A web application firewall (WAF) and DDoS mitigation service that strips unverified client-supplied tenant headers (`X-Tenant-ID`) at ingress.
+- [Identity-Aware Proxy (IAP)](https://cloud.google.com/iap/docs) and [Workload Identity Federation](https://cloud.google.com/iam/docs/workload-identity-federation): Zero-trust authentication services that validate upstream OIDC and SAML JWTs and broker RFC 8693 On-Behalf-Of (OBO) token exchange bound to RFC 9449 DPoP sender-constrained proofs.
+- [Model Armor](https://cloud.google.com/security-command-center/docs/model-armor-overview): An inline AI safety service that inspects prompts, model completions, and Model Context Protocol (MCP) tool payloads for prompt injection, jailbreaks, and policy violations.
+- [Sensitive Data Protection (Cloud DLP)](https://cloud.google.com/sensitive-data-protection/docs): A data inspection and de-identification service that masks regulated PII, PCI, and PHI tokens inline before prompts reach foundation models or logs.
+
+### Data, storage, networking, and governance
+
+- [AlloyDB for PostgreSQL](https://cloud.google.com/alloydb/docs): A high-performance PostgreSQL-compatible database that enforces transactional `FORCE ROW LEVEL SECURITY (RLS)` policies keyed by `app.current_tenant_id`.
+- [Memorystore for Valkey](https://cloud.google.com/memorystore/docs/valkey/overview) and [Firestore](https://cloud.google.com/firestore/docs): Low-latency in-memory and document stores used for per-tenant token-bucket rate limiting, 5-level session memory caching, and dynamic tenant routing tables.
+- [VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs) and [Private Service Connect](https://cloud.google.com/vpc/docs/private-service-connect): Network security boundaries that prevent cross-project data exfiltration and establish unidirectional NAT-based private peering between a central routing hub and isolated enterprise spokes.
+- [Cloud Key Management Service (Cloud KMS)](https://cloud.google.com/kms/docs): A cryptographic key management service supporting customer-managed encryption keys (CMEK) and instant `HTTP 423 Locked` tenant kill-switches.
+- [Security Command Center](https://cloud.google.com/security-command-center/docs), [Cloud Logging](https://cloud.google.com/logging/docs), and [BigQuery](https://cloud.google.com/bigquery/docs): Centralized posture monitoring, PII-redacted OpenTelemetry audit logging, and per-tenant token FinOps chargeback analytics.
+
+## Use cases
+
+Pattern B is designed for regulated enterprise customers whose legal, compliance, or risk teams prohibit shared multi-tenant infrastructure ([3.1 Case Study & Solution Architecture](../workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md)):
+
+- **Regulated banking and capital markets (OCC/FDIC, EU DORA, PCI DSS Level 1):** Financial institutions such as **FinVault Bank** that require dedicated compute quotas, zero physical blast radius, and a customer-held Cloud KMS / Cloud EKM encryption kill-switch over all agent memory and audit logs.
+- **Sovereign healthcare and life sciences (HIPAA, GxP):** Healthcare providers processing Protected Health Information (PHI) that mandate dedicated VPC Service Controls perimeters and dedicated CMEK-encrypted AlloyDB clusters.
+- **Air-gapped defense, intelligence, and core ledger environments:** Workloads that prohibit sending prompts to shared multi-tenant model endpoints and require self-hosted open-weight models (**Gemma 3 27B IT**) running on private GKE GPU nodes with zero internet egress.
+
+## Design alternatives
+
+### Managed Vertex AI endpoints vs air-gapped Gemma 3 (27B) on private GKE inside a silo
+
+Within a Pattern B sovereign silo, architects can choose between managed Vertex AI foundation models and self-hosted open-weight models on GKE:
+
+| Criterion | Vertex AI Gemini 2.5 Pro / Claude Sonnet (with VPC-SC + CMEK) | Air-Gapped Gemma 3 (27B IT) on Private GKE GPU Nodes |
+| :--- | :--- | :--- |
+| **Network boundary** | Accessed via Private Google Access inside the tenant's VPC-SC perimeter | Runs 100% inside the tenant's private GKE subnet (`0.0.0.0/0` egress blocked) |
+| **Model weights & residency** | Google-managed regional endpoints with Provisioned Throughput (PT) | Weights mirrored in tenant's CMEK-encrypted Artifact Registry |
+| **Reasoning & context window** | Highest multimodal reasoning capacity + 1M–2M context window | High-throughput open-weight reasoning for air-gapped core-ledger runbooks |
+| **Operational overhead** | Fully serverless managed endpoint | Tenant GKE GPU node pool lifecycle managed via Terraform |
+
+### 6-point sovereign silo verification matrix
+
+Every Pattern B silo is certified against six automated security tests ([`run_silo_security_tests.py`](../workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py)):
+
+| Test ID | Sovereign security assertion | Enforcing layer | Verified runtime result |
 | :--- | :--- | :--- | :--- |
-| **Zero physical blast radius & dedicated quotas** | OCC/FDIC, DORA, PCI Level-1 | Shared runtime, shared AlloyDB cluster, shared API quotas | Dedicated GCP project per tenant inside its own VPC-SC perimeter |
-| **Customer-controlled cryptographic kill-switch** | Data-residency and right-to-erasure clauses | Platform-owned encryption keys | Tenant-owned Cloud KMS (or Cloud EKM) key; revocation halts everything with `HTTP 423` |
-| **Hard identity boundary** | Insider-threat and credential-replay controls | Cross-project IAM drift | Organization-level IAM Principal Access Boundary pinned to one project |
-| **No calls to multi-tenant model endpoints** | Core-banking / wire-settlement log policies | Shared regional Gemini endpoints | Air-gapped Gemma 3 (27B IT) on private GKE, zero public egress |
+| **Silo Test 1** | Authorized FinVault turn inside `cymbal-finvault-silo-prod` | All 5 Hops + Sovereign Shell | **`HTTP 200 ALLOW`** on air-gapped `gemma-3-27b-it-vllm` |
+| **Silo Test 2** | Cross-silo identity replay (RetailStream principal targeting FinVault project) | **IAM Principal Access Boundary (PAB)** | Blocked with **`HTTP 403 PAB_VIOLATION`** |
+| **Silo Test 3** | Spoofed mTLS SPIFFE certificate (`spiffe://retailstream.com/...`) | **mTLS Ingress Pinning** | Blocked with **`HTTP 403 MTLS_SPIFFE_MISMATCH`** |
+| **Silo Test 4** | Tool attempting data exfiltration to `external-attacker-proj` | **VPC Service Controls (VPC-SC)** | Blocked with **`HTTP 403 VPC_SC_PERIMETER_VIOLATION`** |
+| **Silo Test 5** | Customer revokes/disables Cloud KMS key (`cmek_state = REVOKED`) | **Cloud KMS CMEK Kill-Switch (Hop 3)** | Halts immediately with **`HTTP 423 Locked`** |
+| **Silo Test 6** | Air-gapped GKE Gemma 3 inference with public internet disabled | **Private GKE + Artifact Registry** | Completes locally with `public_egress = False` |
 
-For **FinVault Bank** (Enterprise tier, Google Workspace + Jira, Google OIDC) and **RetailStream Corp** (Standard tier, Microsoft 365 + ServiceNow, Microsoft Entra ID), Cymbal therefore provisions a *sovereign silo* each — without forking the agent codebase.
+## Design considerations
 
----
+This section provides guidance for operating Pattern B according to the [Google Cloud Well-Architected Framework](https://cloud.google.com/architecture/framework).
 
-## 2. The Sovereign Silo Model
+### Security, privacy, and compliance
 
-Pattern B is best understood as a thin infrastructure shell around an unchanged core. The [`PatternBSiloedService`](../workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py) wraps `CymbalMultiTenantRuntime` and evaluates three sovereign checks *before* the core 5-Hop pipeline runs, while Hop 3 picks up the fourth (CMEK state) from the tenant profile's `silo_cmek_key_uri`.
+- **Protect APIs with VPC Service Controls, not just firewall rules:** Include `aiplatform.googleapis.com`, `discoveryengine.googleapis.com`, `modelarmor.googleapis.com`, `dlp.googleapis.com`, `alloydb.googleapis.com`, `storage.googleapis.com`, and `bigquery.googleapis.com` in the restricted service list of `perimeter_{tenant}_sovereign` ([3.4 VPC-SC & Security Sign-Off](../workstream-3-pattern-b-siloed/3.4-product-collaboration-vpc-sc-signoff.md)).
+- **Bind IAM Principal Access Boundaries (PAB) at the organization root:** Pin each tenant's Workforce Identity Pool principals exclusively to `//cloudresourcemanager.googleapis.com/projects/cymbal-{tenant}-silo-prod` so compromised credentials cannot access any other project.
+- **Wire Cloud KMS CMEK as a unified kill-switch:** Encrypt the Vertex AI Memory Bank, AlloyDB cluster, GKE persistent disks, and BigQuery datasets with the same tenant KMS key so revoking one key version halts all data access within seconds.
 
-| Building Block | FinVault Bank (Tenant A) | RetailStream Corp (Tenant B) |
-| :--- | :--- | :--- |
-| **Dedicated project** | `cymbal-finvault-silo-prod` | `cymbal-retailstream-silo-prod` |
-| **VPC-SC perimeter** | `perimeter_finvault_sovereign` | `perimeter_retailstream_sovereign` |
-| **mTLS SPIFFE ID pinned at ingress** | `spiffe://finvault.com/ns/sre/sa/agent-client` | `spiffe://retailstream.com/ns/itom/sa/agent-client` |
-| **IAM PAB policy** | `finvault-sovereign-pab` → `//cloudresourcemanager.googleapis.com/projects/cymbal-finvault-silo-prod` | Equivalent PAB scoped to `cymbal-retailstream-silo-prod` |
-| **CMEK key (kill-switch)** | `projects/cymbal-finvault-silo-prod/locations/us-central1/keyRings/finvault-kr/cryptoKeys/agent-memory-cmek` | `projects/cymbal-retailstream-silo-prod/locations/us-central1/keyRings/retailstream-kr/cryptoKeys/agent-memory-cmek` |
-| **Data & memory plane** | Dedicated CMEK AlloyDB + 5-Level Memory Bank + BigQuery audit | Dedicated CMEK AlloyDB + 5-Level Memory Bank + BigQuery audit |
-| **Runtime & model** | Dedicated GEAP Runtime + Agent Alpha; air-gapped `gemma-3-27b-it-vllm` on private GKE | Dedicated GEAP Runtime running Gemini 2.5 Pro with Provisioned Throughput |
-| **Tool plane** | Local silo MCP: Google Workspace / Jira (3LO Google OIDC) | Local silo MCP: SharePoint / ServiceNow (3LO Microsoft Entra ID) |
+### Reliability
 
-Two design decisions matter here. First, the **perimeter protects the APIs, not just the network**: `aiplatform.googleapis.com`, `discoveryengine.googleapis.com`, `modelarmor.googleapis.com`, `alloydb.googleapis.com`, `storage.googleapis.com`, and `bigquery.googleapis.com` are all restricted services, so even a compromised MCP tool with valid credentials cannot write to a project outside the perimeter. Second, the **key is the kill-switch**: because the GEAP Memory Bank, AlloyDB, GKE persistent disks, and BigQuery tables all depend on the tenant's `agent-memory-cmek`, disabling one key version is sufficient to stop every in-flight and queued agent turn.
+- **Dedicated Provisioned Throughput (PT) or dedicated GPU nodes:** Because each silo has its own Google Cloud project, API quotas and model throughput are physically isolated—eliminating cross-tenant noisy-neighbor risk.
 
----
+### Cost optimization
 
-## 3. Figure 1 — Pattern B Architecture Walkthrough
+- **Understand the baseline cost floor (`$1,850/month` per silo):** Dedicated AlloyDB instances, Memorystore clusters, and private GKE GPU nodes carry a non-trivial idle cost floor. Reserve full Pattern B silos for Enterprise contracts that price in dedicated infrastructure, or use [Pattern C (Dynamic Hybrid)](ws4-pattern-c-hybrid-dynamic-tiering.md) to share a control plane while isolating only Enterprise data/runtime spokes.
 
-![Figure 1 — Pattern B: Zero-Trust Sovereign Silos (VPC-SC, IAM PAB, CMEK Kill-Switch & Air-Gapped Gemma 3 on GKE)](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio.png)
+### Operational excellence
 
-*Figure 1 — Multi-project sovereign topology: a central mTLS routing and governance hub fronting two dedicated tenant silos, each wrapped in its own PAB + VPC-SC perimeter with a CMEK kill-switch. Editable: [Draw.io](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio) • [Slides (.pptx)](../slides/ws3-pattern-b-siloed-editable-slides.pptx) • [Cloud Architecture Center SVG](../diagrams/ws3-pattern-b-sovereign-silos-architecture.svg) • [Vision AST](../diagrams/vision_metadata/ws3-pattern-b-sovereign-silos-architecture.vision.json)*
+- **Automate silo stamp-out with Terraform:** Never configure VPC-SC perimeters or CMEK bindings manually in the console. Use the parameterized [3.6 Terraform Silo Blueprint](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf) so every tenant silo is identical and auditable.
 
-### Reading Figure 1
+### Performance optimization
 
-Read the diagram top-down, following the numbered step badges **1 → 7**.
+- **Localize vLLM model weights in Artifact Registry:** Store Gemma 3 container images and model weights in a regional Artifact Registry repository inside the silo perimeter so GKE GPU nodes pull weights over Private Google Access at line rate.
 
-1. **Outer Google Cloud frame and actors.** Above the frame sit the **mTLS SPIFFE Clients FinVault & RetailStream**. Badge **1 — mTLS Request** enters the platform; badge **7 — Silo Response** returns alongside it. Everything below lives inside the **Multi-Project Sovereign Topology (80% Core 5-Hop Pipeline + 20% Sovereign VPC-SC / PAB / CMEK Delta)** wrapper, which in turn contains the **Central mTLS Routing & Governance Hub VPC**.
-2. **Routing hub (left, blue).** The **Central mTLS & SPIFFE Routing Hub** holds three stacked edge cards — **Cloud Armor & mTLS X.509 SPIFFE Cert Pinning** (*Verify client SPIFFE SAN*), **Model Armor Edge Prompt & DDoS Filter** (*Sanitize prompt*), and **IAM PAB Verifier** (*Enforce org PAB policy*) — feeding the **External Application Load Balancer** and the **Sovereign Hub Router Routes to Dedicated Silo** card. Badge **2 — mTLS Valid** marks a successful handshake; the paired badge **7 — 200 / 423** shows the two legitimate outcomes a silo can return.
-3. **Central governance hub (right, green).** The **Cloud KMS CMEK & Sovereign Security Hub** stacks **Security Command Center**, the **Cloud KMS / EKM Key**, and the **Silo Security Suite 6/6 Sovereign Tests PASS** card. A dashed governance line labelled **CMEK state & VPC-SC audit monitoring** drops from this hub into both silos — this is the control-plane signal that lets Hop 3 refuse work the instant a key is disabled.
-4. **Trunk.** Badge **3 — Route to isolated VPC-SC tenant project** carries the request from the hub router down into the correct silo; the return trunk carries badge **7 — Sovereign response (or HTTP 423 Locked)**.
-5. **Left spoke (yellow) — FinVault.** The **PAB + VPC-SC Perimeter Alpha • Project: cymbal-finvault-silo-prod** wrapper encloses **Tenant A Silo (FinVault Bank)**. Inside, **Model Armor** runs badge **4 — Sanitize request** and badge **6 — Sanitize response**; the **Agent Runtime** is annotated **Private GKE Zero Egress**; **Local Silo MCP** carries **CMEK Kill-Switch HTTP 423 Ready**; **Gemma 3 (27B) GKE** performs badge **5 — Air-gapped inference**; and the **CMEK Datastore Dedicated AlloyDB & Memory** card anchors the data plane.
-6. **Right spoke (red) — RetailStream.** The **PAB + VPC-SC Perimeter Beta • Project: cymbal-retailstream-silo-prod** wrapper encloses **Tenant B Silo (RetailStream)**. The same five-card layout appears, with two deliberate differences: the model card reads **Gemini 2.5 Pro PT** (dedicated Provisioned Throughput rather than air-gapped GKE) and the tool card reads **Local Silo MCP Entra SharePoint & SNOW**. The runtime is annotated **VPC-SC Bound Secure RAG**, and the datastore is again **CMEK Datastore Dedicated AlloyDB & Memory** with its own **CMEK Kill-Switch HTTP 423 Ready** label.
+## What's next
 
-The visual takeaway for a CISO: the two spokes are structurally identical (same core code, same card layout), while the wrappers around them are the only thing that differs per tenant — and nothing in one wrapper can be addressed from the other.
-
----
-
-## 4. The 5-Hop Chain as Applied in Pattern B
-
-The 5-Hop pipeline in `core-cymbal-agent/governance/` runs unchanged inside each silo; Pattern B only changes *where* it runs and *which* key and identity it is bound to.
-
-### Hop 1 — Edge Identity & Token Exchange PEP
-
-[`hop1_edge_identity_pep.py`](../core-cymbal-agent/governance/hop1_edge_identity_pep.py) still strips forged `X-Tenant-ID` / `X-Cymbal-Tier` headers, verifies the upstream IdP JWT (Google Workspace OIDC for FinVault, Microsoft Entra ID for RetailStream), and performs an RFC 8693 On-Behalf-Of exchange bound to a DPoP (RFC 9449) `jkt` thumbprint. In Pattern B this runs *after* mTLS SPIFFE pinning at the silo ingress and mints the context with `IsolationTopology.PATTERN_B_SILOED`, so every downstream hop knows it is in sovereign mode.
-
-### Hop 2 — Registry PDP & ADK `before_agent_callback` Tool Pruning
-
-[`hop2_registry_pdp_callbacks.py`](../core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py) filters the GEAP Agent Registry and ARD catalog by cryptographic tenant label and blocks direct cross-tenant invocations with `403 Forbidden`. Inside a silo this becomes defence-in-depth: even if the PDP allowed RetailStream to see FinVault's private Agent Alpha, the IAM PAB and VPC-SC perimeter would still make the call physically unreachable.
-
-### Hop 3 — Compute Plane, 5-Level Memory Bank & the CMEK Kill-Switch
-
-[`hop3_compute_finops_bulkhead.py`](../core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py) binds the immutable `temp:tenant_id` inside the gVisor sandbox, loads per-tenant prompts and thinking budgets (8,000 tokens for FinVault, 4,000 for RetailStream), and keys the 5-Level Memory Bank by `{tenant}:{user}:{session}`. The Pattern B delta is a single resolution step: when the topology is `PATTERN_B_SILOED`, the effective key is the profile's `silo_cmek_key_uri`. If that key is in the disabled set, `enforce_compute_and_finops` returns a `DENY` with `status_code=423` and the detail `KMS_KEY_DISABLED` *before* any Memory Bank read, write, or model invocation.
-
-### Hop 4 — Vertex AI Model Armor & Semantic NLCs
-
-[`hop4_model_armor_guardrails.py`](../core-cymbal-agent/governance/hop4_model_armor_guardrails.py) screens ingress prompts for injection, jailbreaks, cache-extraction, and RLS-bypass payloads; enforces tenant NLCs (for example, blocking attempts to suppress FinVault's OCC/FDIC escalation); and redacts egress with tenant-specific Sensitive Data Protection detectors (IBAN/SWIFT for FinVault, PAN for RetailStream). In Figure 1 this is the per-silo **Model Armor** card running steps **4** and **6**, and `modelarmor.googleapis.com` is itself a VPC-SC restricted service.
-
-### Hop 5 — AlloyDB RLS, 2LO/3LO Tool Auth & BigQuery OTel Audit
-
-[`hop5_data_rls_and_otel.py`](../core-cymbal-agent/governance/hop5_data_rls_and_otel.py) sets `SET LOCAL app.current_tenant` on every AlloyDB transaction, brokers 2LO telemetry and 3LO Workspace/Jira or Entra ID SharePoint/ServiceNow tokens through `CymbalMCPHub`, and emits OpenTelemetry audit traces to BigQuery. In Pattern B the AlloyDB cluster and BigQuery dataset are dedicated and CMEK-encrypted, so RLS becomes belt-and-braces rather than the primary isolation control — and the OTel traces land inside the tenant's own perimeter.
+- Continue through the 5-part Multi-Tenant Agentic AI Architecture series:
+  - [Part 1 (Workstream 1): Reference Architecture Taxonomy & 5-Hop Baseline](ws1-reference-architecture-taxonomy-and-5hop-baseline.md)
+  - [Part 2 (Workstream 2): Pattern A — High-Density Pooled Architecture](ws2-pattern-a-pooled-architecture.md)
+  - [Part 4 (Workstream 4): Pattern C — Dynamic Hybrid Hub-and-Spoke & Zero-Downtime Tier Upgrades](ws4-pattern-c-hybrid-dynamic-tiering.md)
+  - [Part 5 (Workstream 5): Executive Decision Guide & The Multi-Tenant Agentic Triad](ws5-decision-guide-and-agentic-triad.md)
+- Review the Workstream 3 engineering artifacts and regulated codelab:
+  - [3.1 Pattern B Case Study & Sovereign Silo Architecture](../workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md)
+  - [3.2 Multi-Project Silo, VPC-SC & CMEK Setup Guide](../workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md)
+  - [3.3 Pattern B Sovereign Silo Runtime Implementation (`pattern_b_siloed_service.py`)](../workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py)
+  - [3.4 VPC Service Controls & CISO Security Sign-Off Checklist](../workstream-3-pattern-b-siloed/3.4-product-collaboration-vpc-sc-signoff.md)
+  - [3.5 6-Point Sovereign Security Verification Suite (`run_silo_security_tests.py`)](../workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py)
+  - [3.6 Parameterized Terraform Silo Blueprint (`main.tf`)](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf)
+  - [3.8 90-Minute Codelab: Regulated Sovereign Silos & CMEK Kill-Switch](../workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/codelab-90min-regulated-airgapped.md)
+- Download or open the editable slides:
+  - [Workstream 3 Editable Google Slides Deck (`ws3-pattern-b-siloed-editable-slides.pptx`)](../slides/ws3-pattern-b-siloed-editable-slides.pptx)
 
 ---
 
-## 5. The Exfiltration & CMEK Revocation Test Suite (3.5)
+<!-- E2E_FLOW_START -->
+## Step-by-Step End-to-End Agentic & Technical Flows (WS3 Architecture Diagrams)
 
-Every sovereign claim above is exercised by [`run_silo_security_tests.py`](../workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py), which drives `PatternBSiloedService` through both tenants:
+Every architecture diagram in **WS3** is accompanied by a **3-slide sequence** in the editable presentation deck: **(1) 100% Native Editable Architecture Diagram (56 Shapes + 23 Connectors + Component Sidebar)** → **(2) Step-by-Step Agentic Flow (Steps ①–⑦)** → **(3) Component Architecture & Well-Architected Specification Table**.
 
-```bash
-PYTHONDONTWRITEBYTECODE=1 python3 -B workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py
-```
+### Diagram 5: Pattern B: Zero-Trust Sovereign Silos (VPC-SC, IAM PAB, CMEK Kill-Switch & Air-Gapped Gemma 3 on GKE) (`ws3-pattern-b-sovereign-silos-architecture`)
+* **Workstream & Focus**: Workstream 3 • Pattern B: Zero-Trust Sovereign Silos Architecture (WS 3.1) (`PATTERN B • SOVEREIGN SILOS`)
+* **Question Answered**: *How do we satisfy strict banking (OCC/FDIC), healthcare (HIPAA), and public-sector regulators that prohibit shared compute, shared storage, or provider-owned keys—while reusing 80% of our core ADK 2.0 agent codebase?*
+* **Architectural & Business Outcome (Dedicated Single-Tenant GCP Project + Sub-60s Customer CMEK Kill-Switch (`HTTP 423`))**: Each regulated enterprise (FinVault Bank and RetailStream/MedCore) operates inside a physically isolated GCP project with its own VPC-SC perimeter and Cloud KMS key—where disabling the customer key halts all AI memory, DB reads, and inference with `HTTP 423 Locked`.
 
-| Test | Sovereign Control | Scenario | Expected Result | Status |
+#### 4-Zone Hub-and-Spoke Architecture Summary
+* **Blue Zone — 1. mTLS Ingress & IAM Principal Access Boundary**: Verifies client mTLS X.509 certificates at Hop 1, enforces IAM Principal Access Boundaries (PAB), and routes to the tenant’s dedicated silo project.
+* **Green Zone — 2. VPC-SC Perimeter & CMEK Kill-Switch Monitor**: Enforces VPC Service Controls across 8 Google Cloud APIs, checks real-time Cloud KMS CMEK state at Hop 3, and logs Access Transparency events.
+* **Yellow Zone — 3. FinVault Sovereign Silo Project (CMEK ENABLED)**: Dedicated project running air-gapped Gemma 3 (27B) on private GKE + Claude 3.7 Sonnet and CMEK-encrypted AlloyDB/BigQuery vault (`2 rows` returned).
+* **Red Zone — 4. RetailStream / MedCore Silo (CMEK Kill-Switch)**: Demonstrates dual-silo parity and instant customer CMEK revocation: disabling the cryptoKeyVersion immediately locks the silo with `HTTP 423 Locked`.
+
+#### Part A — Agentic Flow: Step-by-Step Architectural Walkthrough (Steps ①–⑦)
+1. **Step ① — Mutual TLS (mTLS) Certificate & OIDC Handshake** (*Enterprise Caller → Blue Zone*): Regulated enterprise callers connect over mutual TLS. Hop 1 verifies both the pinned client X.509 certificate fingerprint and the corporate OIDC token (`HTTP 401` on certificate mismatch). **(mTLS X.509 Client Certificate • Hop 1 Edge PEP)**
+1. **Step ② — IAM Principal Access Boundary (PAB) Enforcement** (*Blue Zone (IAM PAB Gate)*): Google Cloud IAM evaluates the tenant’s Principal Access Boundary policy (`pab-finvault-silo-only`), mathematically preventing the principal from accessing any resource outside `cymbal-finvault-silo-prod` (`HTTP 403`). **(IAM Principal Access Boundary (PAB) • Zero Cross-Project Access)**
+1. **Step ③ — Real-Time Cloud KMS CMEK State Verification** (*Green Zone (CMEK Heartbeat)*): At Hop 3, the runtime queries Cloud KMS (`finvault-silo-cmek` vs `medcore-revoked-cmek`) to verify that the customer’s encryption key is `ENABLED`. If the customer revoked their key, execution halts immediately with `HTTP 423 Locked`. **(Cloud KMS CMEK Heartbeat • Instant Kill-Switch (`HTTP 423`))**
+1. **Step ④ — VPC Service Controls Perimeter & Silo Model Armor** (*Yellow / Red Zone (VPC-SC Fence)*): The request enters the tenant’s dedicated VPC Service Controls (VPC-SC) perimeter—which blocks all unauthorized egress to external GCP projects—and passes through dedicated OCC/HIPAA Model Armor filters. **(VPC Service Controls (VPC-SC) • Dedicated Model Armor)**
+1. **Step ⑤ — Air-Gapped Gemma 3 on GKE or Provisioned Gemini** (*Yellow Zone (Dedicated Inference)*): FinVault runs inference inside its perimeter using either air-gapped Gemma 3 (27B) on private GKE (`--internal-ip`, CMEK boot disks) or dedicated Provisioned Throughput Gemini 2.5 Pro / Claude 3.7 Sonnet. **(Air-Gapped Gemma 3 27B on Private GKE • Provisioned Throughput)**
+1. **Step ⑥ — CMEK Vault Decryption vs. Kill-Switch Lockout** (*Yellow (Open) vs Red (423 Locked)*): FinVault’s enabled CMEK decrypts `pattern_b_silo_finvault_cmek_vault` (returning 2 rows). In contrast, MedCore’s disabled CMEK key (`DESTROY_SCHEDULED` / `DISABLED`) blocks all storage and memory access with `HTTP 423 Locked`. **(CMEK BigQuery/AlloyDB Vault • Verified 6/6 Silo Security Suite)**
+1. **Step ⑦ — In-Perimeter Response & Access Transparency Log** (*Silo Projects → Caller & Auditor*): Egress SDP scrubs the final payload inside the tenant project, returns the response over mTLS, and writes immutable Cloud KMS key-usage and VPC-SC audit logs for the customer’s SOC. **(Cloud Audit Logs • Access Transparency • SOC Attestation)**
+1. **Outcome — Dedicated Single-Tenant GCP Project + Sub-60s Customer CMEK Kill-Switch (`HTTP 423`)** (*Architectural & Business Outcome*): Each regulated enterprise (FinVault Bank and RetailStream/MedCore) operates inside a physically isolated GCP project with its own VPC-SC perimeter and Cloud KMS key—where disabling the customer key halts all AI memory, DB reads, and inference with `HTTP 423 Locked`. **(PATTERN B • SOVEREIGN SILOS)**
+
+#### Part B — Component Architecture & Technical Flow Specification
+* **Google Cloud Services Used**: mTLS Ingress • IAM Principal Access Boundary (PAB) • VPC Service Controls (VPC-SC) • Cloud KMS CMEK • Vertex AI / Air-Gapped Gemma 3 on GKE • Dedicated AlloyDB & BigQuery
+* **Architecture Summary**: Deploys the same 5-Hop governance engine inside a dedicated single-tenant Google Cloud project wrapped in a VPC Service Controls perimeter, IAM Principal Access Boundary, and customer-revocable Cloud KMS CMEK key.
+
+| Step & Stage | Google Cloud Service (Zone) | Architectural Mechanism & Protocol | Security & Isolation Control | Verified Production Outcome |
 | :--- | :--- | :--- | :--- | :--- |
-| **TEST 1** | mTLS SPIFFE pinning | RetailStream SPIFFE ID presented to `cymbal-finvault-silo-prod` | `401 MTLS_CERTIFICATE_MISMATCH` | `PASS` |
-| **TEST 2** | IAM Principal Access Boundary | FinVault principal targets `cymbal-retailstream-silo-prod` | `403 PAB_BOUNDARY_VIOLATION` | `PASS` |
-| **TEST 3** | VPC-SC perimeter | Agent attempts to export wire-settlement logs to `external-attacker-exfil-proj` | `403 VPC_SERVICE_CONTROLS_PERMISSION_DENIED` from `perimeter_finvault_sovereign` | `PASS` |
-| **TEST 4A** | Cloud KMS CMEK kill-switch | `revoke_tenant_cmek("finvault")`, then query the Memory Bank | `423 Locked`, reason contains `KMS_KEY_DISABLED` | `PASS` |
-| **TEST 4B & 5** | CMEK restore + air-gapped Gemma 3 | `restore_tenant_cmek("finvault")`, run with `use_airgapped_gemma3_on_gke=True` | `200 ALLOW`; response prefixed `[AirGapped-GKE-Gemma3-27B • Perimeter=perimeter_finvault_sovereign]` | `PASS` |
-| **TEST 6** | RetailStream silo parity | Revoke and restore `retailstream-kr/agent-memory-cmek` on the shared diagnostic agent | `423` halt, then `200` with `runtime_config.cmek_key_uri` matching the restored key | `PASS` |
+| **Step ①** • Test 1: mTLS & OIDC Gate | External ALB mTLS & Hop 1 PEP (Blue Zone) | Validates the client’s X.509 mTLS certificate SHA-256 fingerprint against the tenant’s pinned certificate registry before minting the silo context. | verify_mtls_and_pab() • Client Cert Fingerprint Pinning | Verified Test 1: Spoofed or missing mTLS certs rejected with HTTP 401 |
+| **Step ②** • Test 2: IAM PAB Isolation | Google Cloud IAM Principal Access Boundary (Blue Zone) | Binds an IAM v3 Principal Access Boundary policy restricting the workload identity principal strictly to resources inside `projects/cymbal-{tenant}-silo-prod`. | IAM PAB Policy (`pab-{tenant}-silo-only`) | Verified Test 2: Cross-project credential use blocked with HTTP 403 |
+| **Step ③** • Test 3: VPC-SC Perimeter | Access Context Manager VPC-SC (Green Zone) | Wraps `aiplatform`, `alloydb`, `bigquery`, `storage`, `run`, `cloudkms`, `dlp`, and `logging` APIs inside a hard per-tenant VPC Service Controls perimeter. | google_access_context_manager_service_perimeter | Verified Test 3: Cross-project data exfiltration blocked by VPC-SC (403) |
+| **Step ④** • Tests 4 & 5: CMEK Kill-Switch | Cloud KMS CryptoKey (`finvault-silo-cmek` / `medcore-revoked-cmek`) (Green Zone) | Performs a live Cloud KMS key-state check at Hop 3; disabling the key version immediately halts Memory Bank, AlloyDB, and Vertex AI with `HTTP 423 Locked`. | verify_cmek_key_active() • Cloud KMS Live Key Check | Verified Tests 4 & 5: Revocation triggers HTTP 423; re-enable restores 200 OK |
+| **Step ⑤** • Air-Gapped GKE Inference | Private GKE (Gemma 3 27B) & Dedicated Vertex AI (Yellow Zone) | Executes open-weight Gemma 3 (27B) on private-node GKE (`enable_private_nodes = true`, no internet egress) with CMEK-encrypted node boot disks and L4/A100 GPUs. | Private Air-Gapped GKE Cluster & Dedicated PT Endpoints | Zero shared model weights or noisy-neighbor latency variance |
+| **Step ⑥** • Test 6: Dual-Silo Parity | CMEK BigQuery & AlloyDB Vaults (Yellow & Red Zones) | Encrypts all customer tables (`pattern_b_silo_finvault_cmek_vault`) and agent memory under the tenant’s Cloud KMS key across both FinVault and RetailStream silos. | run_silo_security_tests.py (6/6 PASS — F-08 Certified) | Verified F-08: Both FinVault and RetailStream silos & kill-switches proven |
+| **Step ⑦** • In-Silo Egress Redaction | Dedicated Model Armor & Cloud SDP (Yellow Zone) | Runs dedicated Model Armor and Sensitive Data Protection templates inside the tenant project so unredacted prompts never cross project boundaries. | In-Project Model Armor & SDP Inspection | 100% data residency within the customer’s dedicated GCP project |
+| **Cost & Audit** • Silo Billing & KMS Audit | Cloud Billing, Cloud Audit Logs & BigQuery (Green Zone) | Exports project-level Cloud Billing records and immutable KMS `Decrypt` audit logs directly to the tenant’s compliance sink ($1,850/mo baseline tier). | Per-Project Billing Attribution & KMS Audit Trail | Complete physical, cryptographic, and financial isolation for auditors |
 
-The suite ends with `ALL 6 PATTERN B (SOVEREIGN SILOS) SECURITY TESTS PASSED (100% VERIFIED)` — the same result shown on the **Silo Security Suite 6/6 Sovereign Tests PASS** card in Figure 1. Note that the order is deliberate: the three perimeter tests fail *fast* at ingress, while the CMEK tests prove that revocation also stops a request that has already passed mTLS, PAB, and VPC-SC checks.
+### Diagram 10: Pattern B Provisioning Topology: Org → Per-Tenant Silo Projects, VPC-SC Perimeters, IAM PAB & Cloud KMS CMEK Keys (`ws3-multi-project-silo-and-cmek-setup-topology`)
+* **Workstream & Focus**: Workstream 3 • Pattern B: Automated Multi-Project Silo & CMEK Provisioning Pipeline (WS 3.2) (`PATTERN B • SILO FACTORY PIPELINE`)
+* **Question Answered**: *How do we automate the 4-stage onboarding of regulated Pattern B customers—provisioning a dedicated GCP project, Cloud KMS CMEK key ring, IAM Principal Access Boundary, and VPC Service Controls perimeter—without manual toil?*
+* **Architectural & Business Outcome (Automated 4-Stage Silo Onboarding Factory with Built-In Kill-Switch Certification)**: When a regulated enterprise signs a Pattern B contract, the Silo Factory automatically creates their dedicated GCP project, provisions their 90-day rotating CMEK key, locks the VPC-SC perimeter, and runs the 6-point kill-switch drill.
 
----
+#### 4-Zone Hub-and-Spoke Architecture Summary
+* **Blue Zone — 1. Stage 1: Project Creation & API Enablement**: Creates `cymbal-{tenant}-silo-prod` under the enterprise folder and enables Vertex AI, AlloyDB, BigQuery, Cloud KMS, and VPC-SC APIs.
+* **Green Zone — 2. Stage 2: Cloud KMS Key Ring & CMEK Binding**: Provisions the tenant’s dedicated Cloud KMS key ring and 90-day rotating cryptoKey, granting `cryptoKeyEncrypterDecrypter` strictly to silo service agents.
+* **Yellow Zone — 3. Stage 3: IAM PAB & VPC-SC Perimeter Lock**: Attaches the IAM Principal Access Boundary policy and wraps the project inside an enforced VPC Service Controls service perimeter.
+* **Red Zone — 4. Stage 4: 6-Point Compliance & Kill-Switch Gate**: Executes `run_silo_security_tests.py` (Tests 1–6) to verify mTLS, PAB, VPC-SC exfiltration blocking, and sub-60s CMEK revocation (`HTTP 423`).
 
-## 6. Standing Up the Silos: Multi-Project & CMEK Setup (3.2) and VPC-SC Sign-Off (3.4)
+#### Part A — Agentic Flow: Step-by-Step Architectural Walkthrough (Steps ①–⑦)
+1. **Step ① — Dedicated GCP Project & Service Account Creation** (*Platform Admin → Blue Zone (Stage 1)*): Stage 1 invokes Cloud Resource Manager to create a dedicated single-tenant GCP project (`cymbal-finvault-silo-prod`), links the enterprise billing account, and creates isolated workload identity service accounts. **(Stage 1 • Cloud Resource Manager & Isolated IAM)**
+1. **Step ② — Enabling Core AI, Data & Security APIs** (*Blue Zone (Stage 1 APIs)*): The pipeline enables the required Google Cloud APIs (`aiplatform`, `alloydb`, `bigquery`, `cloudkms`, `accesscontextmanager`, `modelarmor`, `dlp`, `container`) inside the newly created tenant project. **(Stage 1 • Automated Google Cloud Service Enablement)**
+1. **Step ③ — Provisioning 90-Day Rotating Cloud KMS CMEK** (*Green Zone (Stage 2 CMEK)*): Stage 2 creates the tenant’s dedicated key ring and `agent-memory-cmek` cryptoKey with automatic 90-day rotation, binding IAM so only that tenant’s Vertex AI, AlloyDB, and BigQuery service agents can decrypt. **(Stage 2 • Cloud KMS (`finvault-silo-cmek`, 90d rotation))**
+1. **Step ④ — Binding IAM Principal Access Boundary (PAB)** (*Yellow Zone (Stage 3 PAB)*): Stage 3 creates and binds an Organization IAM Principal Access Boundary policy that restricts all credentials issued in the silo strictly to resources owned by `cymbal-finvault-silo-prod`. **(Stage 3a • IAM Principal Access Boundary Policy)**
+1. **Step ⑤ — Enforcing the VPC Service Controls Perimeter** (*Yellow Zone (Stage 3 VPC-SC)*): Stage 3 wraps the project in a VPC Service Controls perimeter (`restrictedServices`: Vertex AI, BigQuery, AlloyDB, GCS, KMS) with context-aware ingress rules requiring mTLS and verified corporate IPs. **(Stage 3b • Access Context Manager VPC-SC Perimeter)**
+1. **Step ⑥ — Deploying CMEK-Encrypted Data & AI Workloads** (*Red Zone (Stage 4 Workloads)*): The pipeline provisions the CMEK-encrypted BigQuery/AlloyDB vault (`pattern_b_silo_finvault_cmek_vault`) and deploys the private GKE / Vertex AI Agent Engine runtime bound to the customer’s key. **(Stage 4a • CMEK-Bound BigQuery, AlloyDB & Private GKE)**
+1. **Step ⑦ — Executing the 6-Point Kill-Switch Certification** (*Red Zone → CISO Attestation*): Finally, Stage 4 runs `run_silo_security_tests.py`—testing mTLS rejection (`401`), PAB isolation (`403`), VPC-SC exfiltration block (`403`), and live CMEK disable/re-enable (`423` → `200`) before issuing the CISO readiness receipt. **(Stage 4b • 6/6 Sovereign Security Certification Gate)**
+1. **Outcome — Automated 4-Stage Silo Onboarding Factory with Built-In Kill-Switch Certification** (*Architectural & Business Outcome*): When a regulated enterprise signs a Pattern B contract, the Silo Factory automatically creates their dedicated GCP project, provisions their 90-day rotating CMEK key, locks the VPC-SC perimeter, and runs the 6-point kill-switch drill. **(PATTERN B • SILO FACTORY PIPELINE)**
 
-[3.2 Multi-Project Silo & CMEK Setup](../workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md) is the runbook for the 20% delta. Its sequence is short enough to hold in your head:
+#### Part B — Component Architecture & Technical Flow Specification
+* **Google Cloud Services Used**: Cloud Resource Manager • Cloud KMS (90-Day Rotation) • IAM Principal Access Boundary • Access Context Manager (VPC-SC) • Vertex AI • BigQuery CMEK
+* **Architecture Summary**: Automates tenant silo onboarding across 4 deterministic stages: (1) Project & API Activation, (2) Cloud KMS CMEK Provisioning, (3) IAM PAB & VPC-SC Perimeter Binding, and (4) 6-Test Live Compliance Certification.
 
-1. **Create the two projects** under the organization, link billing, and enable `aiplatform`, `discoveryengine`, `modelarmor`, `container`, `cloudkms`, `alloydb`, and `accesscontextmanager` APIs in each.
-2. **Create a per-tenant key ring and key** — `finvault-kr/agent-memory-cmek` in `us-central1` with a `7776000s` (90-day) rotation period — and grant the Vertex AI service agent `roles/cloudkms.cryptoKeyEncrypterDecrypter` on it.
-3. **Bind the IAM Principal Access Boundary** — `finvault-sovereign-pab` at the organization level, with a single `ALLOW` rule whose only resource is `//cloudresourcemanager.googleapis.com/projects/cymbal-finvault-silo-prod`.
-4. **Run the 3.5 suite** to confirm the controls behave before any customer traffic arrives.
+| Step & Stage | Google Cloud Service (Zone) | Architectural Mechanism & Protocol | Security & Isolation Control | Verified Production Outcome |
+| :--- | :--- | :--- | :--- | :--- |
+| **Step ①** • Stage 1a: Project Factory | Cloud Resource Manager API (Blue Zone) | Creates a dedicated GCP project per regulated tenant (`cymbal-{tenant}-silo-prod`) under the isolated Sovereign Silos organizational folder. | gcloud projects create & Dedicated Billing Link | 100% physical project, quota, and IAM blast-radius separation |
+| **Step ②** • Stage 1b: Service Agents | Service Usage & IAM Service Identities (Blue Zone) | Enables the 8 core Google Cloud APIs and materializes per-project Google-managed service agents (`service-{project_number}@...`) for CMEK binding. | Automated Service Identity Provisioning | Zero shared service accounts across regulated customer silos |
+| **Step ③** • Stage 2: KMS CMEK Setup | Cloud KMS (`cymbal-multi-tenant-kr`) (Green Zone) | Creates `finvault-silo-cmek` (ENABLED) and `medcore-revoked-cmek` (DISABLED) with 90-day rotation and binds `roles/cloudkms.cryptoKeyEncrypterDecrypter`. | workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md | Customer retains cryptographic custody and instant revocation control |
+| **Step ④** • Stage 3a: IAM PAB Binding | IAM v3 Principal Access Boundary (Yellow Zone) | Creates an eligible-resources PAB rule scoping the tenant’s Workload Identity Pool strictly to their dedicated silo project number. | gcloud iam principal-access-boundary-policies | Mathematically neutralizes stolen-credential lateral movement |
+| **Step ⑤** • Stage 3b: VPC-SC Perimeter | Access Context Manager (`ServicePerimeter`) (Yellow Zone) | Locks down restricted Google Cloud APIs inside the tenant perimeter and blocks `gsutil cp` or `bq cp` to any external project. | VPC-SC Perimeter Policy & Ingress/Egress Rules | Prevents data exfiltration even by an insider with project access |
+| **Step ⑥** • Stage 4a: CMEK Data Vault | BigQuery CMEK (`pattern_b_silo_finvault_cmek_vault`) (Red Zone) | Provisions the tenant’s dedicated BigQuery and AlloyDB tables with `kms_key_name` pinned to the tenant’s Cloud KMS key. | CMEK-Bound BigQuery & AlloyDB Storage Engine | Every byte at rest is encrypted under the tenant’s specific KMS key |
+| **Step ⑦** • Stage 4b: 6-Test Gate | Sovereign Security Test Suite (Red & Blue Zones) | Runs all 6 automated sovereign compliance assertions (mTLS, PAB, VPC-SC, FinVault CMEK kill-switch, recovery, and RetailStream silo parity). | run_silo_security_tests.py (6/6 PASS) | Hands enterprise CISOs a verifiable, timestamped compliance receipt |
+| **Cost & Audit** • Access Transparency Log | Cloud Audit Logs & BigQuery FinOps (Green Zone) | Streams all KMS key-state transitions (`ENABLED` ↔ `DISABLED`) and VPC-SC audit events into the tenant’s dedicated compliance ledger. | Immutable Silo Audit & FinOps Ledger | Full OCC, FDIC, HIPAA, and GDPR audit readiness from day one |
 
-The organization PAB is the control most architects have not used yet. Resource IAM answers *"who may read this bucket?"*; a PAB answers *"which projects may this principal ever reach?"* Binding it to each tenant's Workload Identity Pool and Agent Runtime service account means a misconfigured IAM policy in the *other* tenant's project cannot be exploited — the denial happens at the IAM evaluation plane, before resource policy is consulted.
+### Diagram 11: Terraform Blueprint Resource Graph: Provider → Cloud KMS CMEK → VPC-SC Perimeter → Sovereign VPC → Private Air-Gapped GKE (Gemma 3) (`ws3-terraform-silo-blueprint-resource-graph`)
+* **Workstream & Focus**: Workstream 3 • Pattern B: 1-Click Terraform Sovereign Silo Blueprint Graph (WS 3.6) (`PATTERN B • TERRAFORM SILO DAG`)
+* **Question Answered**: *How do we codify the entire Pattern B Sovereign Silo—Cloud KMS CMEK, VPC Service Controls perimeter, isolated VPC, and private air-gapped GKE cluster running Gemma 3—into a single reusable Terraform module?*
+* **Architectural & Business Outcome (Auditor-Certified Terraform DAG for Air-Gapped Sovereign Silos)**: Parameterized by just five input variables (`tenant_id`, `tenant_project_id`, `org_id`, `access_policy_id`, `region`), one `terraform apply` builds a complete CMEK-encrypted, VPC-SC-fenced sovereign silo with private GKE compute.
 
-[3.4 Product Collaboration — VPC-SC Sign-Off](../workstream-3-pattern-b-siloed/3.4-product-collaboration-vpc-sc-signoff.md) records the Milestone 2 output: a four-row verification matrix, each row **SIGNED OFF** by GCP Security and GEAP Product Engineering.
+#### 4-Zone Hub-and-Spoke Architecture Summary
+* **Blue Zone — 1. Tier 1 DAG: Provider & Cloud KMS CMEK**: Configures the Google provider for `tenant_project_id` and creates `google_kms_key_ring` + 90-day rotating `google_kms_crypto_key`.
+* **Green Zone — 2. Tier 2 DAG: VPC Service Controls Perimeter**: Provisions `google_access_context_manager_service_perimeter`, fencing 8 core Google Cloud APIs inside the tenant project.
+* **Yellow Zone — 3. Tier 3 DAG: Sovereign VPC & Private Subnet**: Creates `google_compute_network` and `10.20.0.0/20` subnet with `private_ip_google_access = true` and zero public internet routes.
+* **Red Zone — 4. Tier 4 DAG: Air-Gapped Private GKE (Gemma 3)**: Deploys `google_container_cluster` (`enable_private_nodes = true`, `enable_private_endpoint = true`) with boot disks encrypted by the tenant CMEK.
 
-| Control Domain | Threat Vector | Verification Mechanism |
-| :--- | :--- | :--- |
-| VPC-SC service perimeter | Compromised tool exfiltrating to an external bucket or BigQuery project | `perimeter_finvault_sovereign` returns `VPC_SERVICE_CONTROLS_PERMISSION_DENIED` (`403`) |
-| IAM Principal Access Boundary | Stolen or replayed FinVault credential used against `cymbal-retailstream-silo-prod` | `finvault-sovereign-pab` restricts eligibility to the FinVault project |
-| Cloud KMS CMEK kill-switch | Customer demands immediate cryptographic revocation of agent memory and RAG stores | Disabling `finvault-kr/agent-memory-cmek` halts Hop 3 Memory Bank and Hop 5 AlloyDB with `423 KMS_KEY_DISABLED` |
-| mTLS pinning & air-gapped Gemma 3 | MITM spoofing; prohibition on multi-tenant model APIs for wire-settlement logs | Envoy/ALB verifies `spiffe://finvault.com/ns/sre/sa/agent-client`; sensitive prompts route to internal GKE `gemma-3-27b-it-vllm` |
+#### Part A — Agentic Flow: Step-by-Step Architectural Walkthrough (Steps ①–⑦)
+1. **Step ① — Parameterizing the 5-Variable Silo Module** (*Terraform CLI → Blue Zone*): Engineers populate `tenant_id`, `tenant_project_id`, `org_id`, `access_policy_id`, and `region` in `terraform.tfvars` to instantiate an auditor-certified Pattern B silo. **(3.6-terraform-silo-blueprint/variables.tf & tfvars)**
+1. **Step ② — Provisioning the Tenant Cloud KMS Key Ring & CMEK** (*Blue Zone (Cryptographic Root)*): Terraform first creates `google_kms_key_ring.silo_keyring` and `google_kms_crypto_key.agent_cmek` (`rotation_period = "7776000s"`), establishing the customer’s cryptographic root of trust before any storage or compute is created. **(google_kms_key_ring & google_kms_crypto_key (CMEK Root))**
+1. **Step ③ — Locking the VPC Service Controls Perimeter** (*Green Zone (Data Perimeter)*): Next, Terraform provisions `google_access_context_manager_service_perimeter.silo_perimeter`, locking `aiplatform`, `alloydb`, `bigquery`, `storage`, `run`, `cloudkms`, `dlp`, and `logging` inside the tenant project. **(google_access_context_manager_service_perimeter (VPC-SC))**
+1. **Step ④ — Building the Zero-Internet Sovereign VPC** (*Yellow Zone (Isolated Network)*): Terraform creates `google_compute_network.silo_vpc` (`auto_create_subnetworks = false`) and `google_compute_subnetwork.silo_subnet` (`10.20.0.0/20`) with Private Google Access enabled so traffic never traverses the public internet. **(google_compute_network & subnetwork (`10.20.0.0/20`))**
+1. **Step ⑤ — Deploying Private GKE Cluster with CMEK Disks** (*Red Zone (Air-Gapped Compute)*): With the KMS key and VPC ready, Terraform provisions `google_container_cluster.gemma3_airgapped_cluster` with private nodes, private master endpoint (`172.16.0.0/28`), Workload Identity, and CMEK-encrypted PD-SSD boot disks. **(google_container_cluster (Air-Gapped Gemma 3 27B))**
+1. **Step ⑥ — Binding CMEK to BigQuery & AlloyDB Storage** (*Red Zone (CMEK Data Vault)*): Every tenant dataset and table (`pattern_b_silo_finvault_cmek_vault`) is provisioned with `default_encryption_configuration` bound to `google_kms_crypto_key.agent_cmek.id`. **(CMEK-Encrypted BigQuery & AlloyDB Vaults)**
+1. **Step ⑦ — Verifying Zero Drift & Kill-Switch Readiness** (*All Zones → Compliance Gate*): Terraform outputs the CMEK key URI and VPC-SC perimeter name, and runs the 6-test sovereign security suite to prove that disabling the CMEK key halts the entire silo with `HTTP 423 Locked`. **(Terraform Outputs • 6/6 Sovereign Kill-Switch Verification)**
+1. **Outcome — Auditor-Certified Terraform DAG for Air-Gapped Sovereign Silos** (*Architectural & Business Outcome*): Parameterized by just five input variables (`tenant_id`, `tenant_project_id`, `org_id`, `access_policy_id`, `region`), one `terraform apply` builds a complete CMEK-encrypted, VPC-SC-fenced sovereign silo with private GKE compute. **(PATTERN B • TERRAFORM SILO DAG)**
 
----
+#### Part B — Component Architecture & Technical Flow Specification
+* **Google Cloud Services Used**: Terraform Google Provider • Cloud KMS CMEK • Access Context Manager (VPC-SC) • Sovereign VPC (`Private Google Access`) • Private GKE (`Gemma 3 27B`)
+* **Architecture Summary**: Codifies the Pattern B sovereign enclave as a 5-variable Terraform module that provisions the Cloud KMS CMEK key, VPC-SC service perimeter, isolated VPC, and air-gapped private GKE cluster in strict dependency order.
 
-## 7. Terraform Silo Blueprint and the 90-Minute Codelab
+| Step & Stage | Google Cloud Service (Zone) | Architectural Mechanism & Protocol | Security & Isolation Control | Verified Production Outcome |
+| :--- | :--- | :--- | :--- | :--- |
+| **Step ①** • Tier 0: Module Inputs | Terraform Silo Blueprint (`variables.tf`) (Blue Zone) | Accepts 5 strongly-typed variables (`tenant_id`, `tenant_project_id`, `org_id`, `access_policy_id`, `region`) to stamp out identical sovereign enclaves. | workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/variables.tf | 100% deterministic, repeatable sovereign project deployments |
+| **Step ②** • Tier 1: Cloud KMS CMEK | Cloud KMS (`google_kms_crypto_key.agent_cmek`) (Blue Zone) | Provisions the tenant’s dedicated encryption key with a 90-day rotation schedule (`7776000s`) and outputs `cmek_key_uri` for downstream resources. | main.tf • google_kms_crypto_key.agent_cmek | Establishes the customer-controlled cryptographic kill-switch first |
+| **Step ③** • Tier 2: VPC-SC Perimeter | Access Context Manager (`silo_perimeter`) (Green Zone) | Enforces a hard project boundary around 8 restricted Google Cloud APIs so data cannot be exfiltrated to external buckets or datasets. | main.tf • google_access_context_manager_service_perimeter | Blocks cross-project API data movement at the organization policy layer |
+| **Step ④** • Tier 3: Sovereign VPC | Cloud VPC (`silo_vpc` / `10.20.0.0/20`) (Yellow Zone) | Creates a custom-mode VPC network and regional subnet with `private_ip_google_access = true` so all Google API traffic stays on Google’s internal backbone. | main.tf • google_compute_network & google_compute_subnetwork | Zero public IP exposure for internal agent and model traffic |
+| **Step ⑤** • Tier 4: Air-Gapped GKE | Google Kubernetes Engine (`gemma3_airgapped_cluster`) (Red Zone) | Provisions a private GKE cluster (`enable_private_nodes = true`, `enable_private_endpoint = true`) with `boot_disk_kms_key` bound to the tenant’s CMEK. | main.tf • google_container_cluster.gemma3_airgapped_cluster | Hosts air-gapped Gemma 3 (27B) on CMEK-encrypted GPU node pools |
+| **Step ⑥** • Tier 5: CMEK Data Binding | BigQuery & AlloyDB CMEK Vaults (Red Zone) | Attaches the tenant’s KMS key URI to BigQuery datasets (`pattern_b_silo_finvault_cmek_vault`), AlloyDB clusters, and Vertex AI Memory Bank. | Mandatory CMEK Storage Encryption Binding | Disabling the KMS key immediately renders all silo storage unreadable (423) |
+| **Step ⑦** • Post-Apply Silo Audit | 6-Test Sovereign Security Suite (Blue & Green Zones) | Executes `run_silo_security_tests.py` to validate mTLS, PAB, VPC-SC, and live CMEK revocation/restoration across FinVault and RetailStream. | run_silo_security_tests.py (6/6 PASS) | Zero configuration drift; verified ready for regulated workloads |
+| **Cost & Audit** • Regulatory Evidence Pack | Terraform State & Cloud Audit Logs (Green Zone) | Provides immutable Infrastructure-as-Code lineage and Cloud Audit Logs proving to OCC, HIPAA, and SOC2 auditors that every control is enforced. | workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/README.md | Accelerates enterprise security sign-off from months to days |
 
-The [3.6 Terraform Silo Blueprint](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/README.md) packages the whole topology as a repeatable tenant factory. One `terraform apply` per tenant provisions:
-
-- A dedicated **Cloud KMS CMEK** key ring and crypto key (`agent-memory-cmek`) with customer kill-switch support (`google_kms_crypto_key.tenant_agent_cmek`).
-- A **VPC-SC service perimeter** (`perimeter_<tenant>_sovereign`) locking down Vertex AI, GEAP Discovery Engine, Model Armor, AlloyDB, BigQuery, Cloud Storage, and GKE (`google_access_context_manager_service_perimeter.tenant_sovereign_perimeter`).
-- An isolated sovereign VPC and a **private air-gapped GKE Autopilot cluster** (`<tenant>-airgapped-gemma3-gke`) with CMEK-encrypted etcd and disks and zero public node IPs (`google_container_cluster.airgapped_gemma3_cluster`).
-
-The air-gapped model itself ships as [`gke_gemma3_airgapped_manifest.yaml`](../workstream-3-pattern-b-siloed/3.3-solution-implementation/gke_gemma3_airgapped_manifest.yaml): a two-replica `vLLM` Deployment of `gemma-3-27b-it` in the `finvault-sovereign-agents` namespace, pinned to `nvidia-l4` nodes with `--tensor-parallel-size=2` and a 32,768-token context, loading weights read-only from the CMEK-backed `finvault-cmek-model-pvc`, and exposed only through an **Internal** load balancer (`gemma3-internal-svc`, port 8000). Nothing in that manifest can reach the public internet.
-
-For hands-on enablement, the [90-Minute Codelab: Regulated Air-Gapped Sovereign Silos](../workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/codelab-90min-regulated-airgapped.md) walks five modules — project and CMEK provisioning, mTLS + PAB, VPC-SC exfiltration denial, live CMEK revocation, and air-gapped Gemma 3 — each closed by one of the verification gates above. The companion [10-slide workshop deck](../workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/workshop-deck-pattern-b.md) and the [`go/demos` five-minute video script](../workstream-3-pattern-b-siloed/3.9-go-demos-and-video-script.md) (slug `geap-multi-tenant-pattern-b-siloed`) reuse the same run-of-show.
-
----
-
-## 8. Cost & Operational Trade-Offs vs. Pattern A
-
-Pattern B is not "Pattern A but safer." It is a different economic contract, and architects should present it to the business as such.
-
-| Dimension | Pattern A — Pooled | Pattern B — Sovereign Silos |
-| :--- | :--- | :--- |
-| **Isolation** | Logical + cryptographic within a shared runtime (5-Hop chain, RLS, tenant-prefixed memory) | Physical: dedicated project, VPC-SC perimeter, PAB, and CMEK per tenant |
-| **Compute & model** | Shared GEAP Runtime; shared Gemini 2.5 Pro with `ContextCacheConfig` | Dedicated GEAP Runtime; Provisioned Throughput or air-gapped Gemma 3 on GKE GPU node pools |
-| **Unit economics** | Lowest unit cost; prefix caching yields up to 90% COGS savings | Higher baseline infrastructure floor per tenant; no cross-tenant cache amortisation |
-| **Noisy neighbours & quotas** | Mitigated by Redis RPM/token bulkheads | Eliminated by construction; simplest per-project quota accounting |
-| **Encryption control** | Envelope CMEK on Enterprise namespaces | Project-wide CMEK on runtime, Memory Bank, AlloyDB, GKE disks, and BigQuery; instant revocation |
-| **Operational load** | One control plane, one deployment | Multi-project lifecycle: project factory, per-tenant perimeters, key rotation, and GKE fleet operations |
-| **Best fit** | Standard B2B SaaS tiers and high-volume tasks | Healthcare, FinTech, and sovereign public-sector workloads with contractual isolation mandates |
-
-Three practical notes from the field. First, the **80/20 split is what keeps Pattern B affordable**: because the governance code is identical, you pay for infrastructure, not for a second engineering team. Second, the **GKE GPU floor dominates per-tenant cost** when air-gapped inference is mandated; offer it as an explicit option (as RetailStream's Provisioned Throughput path shows) rather than a default. Third, **the CMEK kill-switch is also an availability risk** — document with each customer's SOC that revocation is immediate and total, and rehearse restoration (TEST 4B) as part of onboarding.
-
----
-
-## 9. Next Steps → Workstream 4: Dynamic Hybrid (Pattern C)
-
-Most tiered SaaS businesses do not want to choose. SMB and Standard tenants belong in the pooled tier; a handful of Enterprise accounts need sovereign data and tool spokes. Workstream 4 introduces **Pattern C (Dynamic Hybrid)**: a unified control plane and tenant-aware gateway that routes Standard tenants to the shared pool and Enterprise tenants to dedicated CMEK data spokes over **Private Service Connect (PSC)**, with **zero-downtime live tier migration** between them. See the Milestone 3 case study at [`4.1-case-study-and-solution-architecture.md`](../workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md) and the companion blog [`4.7-blog-dynamic-tiering-and-migration.md`](../workstream-4-pattern-c-hybrid/4.7-blog-dynamic-tiering-and-migration.md).
-
-If you are evaluating which pattern fits a given customer today, start with the three questions from Section 1 — *dedicated blast radius? customer-revocable key? no multi-tenant model endpoints?* — and reach for Pattern B only when at least one answer is a contractual "yes."
-
----
-
-## 10. Figure 2 — Pattern B Provisioning Topology: Org → Per-Tenant Silo Projects, VPC-SC Perimeters, IAM PAB & Cloud KMS CMEK Keys
-
-![Pattern B Provisioning Topology: Org → Per-Tenant Silo Projects, VPC-SC Perimeters, IAM PAB & Cloud KMS CMEK Keys](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio.png)
-
-*Figure 2. Workstream 3.2 provisioning topology for the two sovereign silos. Editable source: [`.drawio`](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio) · [`.svg`](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.svg) · [vision metadata](../diagrams/vision_metadata/ws3-multi-project-silo-and-cmek-setup-topology.vision.json).*
-
-### Reading the figure
-
-Unlike the runtime request-flow diagrams, this figure reads as a **provisioning sequence**: the operator at the top drives `gcloud`, the hub builds the projects, the governance hub attaches org-level policy, and the two spokes are the finished tenant silos.
-
-- **Top — Platform / FDE operator.** Everything starts from exported shell state: `ORG_ID`, `BILLING_ACCOUNT`, `REGION=us-central1`, `FINVAULT_PROJECT=cymbal-finvault-silo-prod` and `RETAILSTREAM_PROJECT=cymbal-retailstream-silo-prod`.
-- **Step 1 → Shared hub project bootstrap.** The routing-hub cards are the bootstrap loop from §1 of the source: `gcloud projects create … --organization`, `gcloud beta billing projects link`, and `gcloud services enable` for the seven silo APIs (`aiplatform`, `discoveryengine`, `modelarmor`, `container`, `cloudkms`, `alloydb`, `accesscontextmanager`).
-- **Step 2 → Projects ready.** Both project IDs exist, are billed, and have their APIs on — the precondition for every later step.
-- **Step 3 → Provision per-tenant silo project.** The hub fans out identically to the FinVault (left) and RetailStream (right) spokes; the layout is deliberately symmetrical because the procedure is the same per tenant.
-- **Governance hub — org-level PAB, Access Context Manager & KMS IAM.** The `finvault-sovereign-pab` Principal Access Boundary policy (§3) is created at `--organization` / `--location=global` with a single `ALLOW` rule scoped to `//cloudresourcemanager.googleapis.com/projects/${FINVAULT_PROJECT}`; the VPC-SC perimeter policy lives in Access Context Manager; and the KMS IAM binding grants `roles/cloudkms.cryptoKeyEncrypterDecrypter` to the tenant's Vertex AI service agent.
-- **Steps 4–6 (left spoke, FinVault silo).** Step 4 creates the key ring `finvault-kr` in `us-central1`; Step 5 creates the crypto key `agent-memory-cmek` (`--purpose=encryption`, `--rotation-period=7776000s`, i.e. 90 days); Step 6 binds that key to `service-${PROJECT_NUMBER}@gcp-sa-aiplatform.iam.gserviceaccount.com` so GEAP / Vertex AI can encrypt agent memory with the tenant key.
-- **Right spoke (RetailStream silo).** The same five cards repeat for `cymbal-retailstream-silo-prod`: its own VPC-SC perimeter, private GKE for Gemma 3, a dedicated key ring and `agent-memory-cmek`, and CMEK-backed AlloyDB / GEAP data. Nothing is shared with FinVault except the org and billing account.
-- **Step 7 → Silo tests PASS.** The closing arrow is §4 of the source: `python3 workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py` replays perimeter-exfiltration and CMEK-revocation checks before a silo is declared live.
-
-### Why it matters
-
-Pattern B's security story only holds if the *provisioning* is as isolated as the runtime. This figure makes the topology auditable at a glance: one project, one perimeter, one key ring and one PAB policy per tenant, with the only cross-tenant objects being the org and the billing link. Because the tenant owns `agent-memory-cmek`, disabling that key is the customer's kill-switch — the HTTP 423 behaviour exercised later in Workstream 3.5. The exact commands behind every card are in [3.2 — Setup Multi-Project Silo Demo & Cloud KMS CMEK Keys](../workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md), and the Terraform equivalent is shown in the next figure.
-
-## 11. Figure 3 — Terraform Blueprint Resource Graph: Provider → Cloud KMS CMEK → VPC-SC Perimeter → Sovereign VPC → Private Air-Gapped GKE (Gemma 3)
-
-![Terraform Blueprint Resource Graph: Provider → Cloud KMS CMEK → VPC-SC Perimeter → Sovereign VPC → Private Air-Gapped GKE (Gemma 3)](../diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio.png)
-
-*Figure 3. Workstream 3.6 Terraform resource graph for one sovereign tenant silo. Editable source: [`.drawio`](../diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio) · [`.svg`](../diagrams/ws3-terraform-silo-blueprint-resource-graph.svg) · [vision metadata](../diagrams/vision_metadata/ws3-terraform-silo-blueprint-resource-graph.vision.json).*
-
-### Reading the figure
-
-This figure maps the hub-and-spoke template onto the **Terraform dependency graph** in `main.tf`. Every card title is a real resource, variable or argument name, so you can read it side-by-side with the code.
-
-- **Top — Terraform operator.** The README quickstart: `cp terraform.tfvars.example terraform.tfvars`, then `terraform init → plan → apply` with Terraform `>= 1.5.0`.
-- **Step 1 → Provider & input variables (routing hub).** `provider "google"` (`hashicorp/google >= 5.30.0`) is pinned to `project = var.tenant_silo_project_id` and `region = var.region`. The five inputs from `variables.tf` / `terraform.tfvars.example` are: `tenant_id` (default `finvault`), `tenant_silo_project_id` (`cymbal-finvault-silo-prod`), `tenant_silo_project_number` (`102938475610`), `access_context_policy_id` (`998877665544`) and `region` (`us-central1`).
-- **Step 2 → Vars resolved.** `tenant_id` becomes the name prefix for every resource; the project number is what the VPC-SC perimeter binds; the ACM policy ID is the perimeter's parent.
-- **Governance hub — `google_kms_key_ring` & `google_kms_crypto_key`.** `tenant_silo_keyring` is named `${var.tenant_id}-sovereign-kr`; `tenant_agent_cmek` is `agent-memory-cmek` with `purpose = "ENCRYPT_DECRYPT"` and `rotation_period = "7776000s"` (90 days). Terraform builds these first because the GKE cluster depends on the key ID.
-- **Step 3 → Build dependency graph.** The plan orders KMS → perimeter → network → cluster; the hub arrows to both spokes represent that fan-out.
-- **Steps 4–6 (left spoke, VPC-SC perimeter).** `google_access_context_manager_service_perimeter.tenant_sovereign_perimeter` is created under `accessPolicies/${var.access_context_policy_id}` as `perimeter_${var.tenant_id}_sovereign`. Step 4 binds `status.resources = ["projects/${var.tenant_silo_project_number}"]`; Steps 5–6 populate `restricted_services` with eight APIs — `aiplatform`, `discoveryengine`, `modelarmor`, `alloydb`, `bigquery`, `storage`, `cloudkms` and `container` — which the five left cards group by workload.
-- **Right spoke — sovereign VPC & private GKE.** `google_compute_network.tenant_silo_vpc` (`auto_create_subnetworks = false`) and `google_compute_subnetwork.tenant_silo_subnet` (`10.40.0.0/20`, `private_ip_google_access = true`) host `google_container_cluster.airgapped_gemma3_cluster` (`${tenant_id}-airgapped-gemma3-gke`): Autopilot, `enable_private_nodes` and `enable_private_endpoint` set, control-plane CIDR `172.16.0.0/28`, and `database_encryption { state = "ENCRYPTED", key_name = google_kms_crypto_key.tenant_agent_cmek.id }` for local Gemma 3 (27B IT) serving.
-- **Step 7 → Outputs emitted.** `cmek_crypto_key_id` and `vpc_sc_perimeter_name` are the two outputs — exactly the handles the 3.5 revocation tests and the central hub need.
-
-### Why it matters
-
-The 3.2 walkthrough proves the silo can be built by hand; this blueprint proves it can be built **repeatably per tenant** from five variables, with the CMEK key wired into the cluster's own encryption so the tenant's kill-switch reaches GKE state as well as agent memory. Reading the graph also surfaces an honest gap: `main.tf` does not yet declare the AlloyDB instance, BigQuery dataset, IAM PAB policy or service-account bindings that the manual 3.2 procedure performs — those remain follow-up resources for the module. Source: [3.6 — Terraform Silo Blueprint](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/README.md) (`main.tf`, `variables.tf`, `terraform.tfvars.example`).
-
-## 12. Assets & Editable Diagrams
-
-| Asset | Path |
-| :--- | :--- |
-| **Figure 2 (WS 3.2) — Draw.io render / editable** | [`ws3-multi-project-silo-and-cmek-setup-topology.drawio.png`](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio.png) • [`.drawio`](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio) • [`SVG`](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.svg) • [`vision.json`](../diagrams/vision_metadata/ws3-multi-project-silo-and-cmek-setup-topology.vision.json) |
-| **Figure 3 (WS 3.6) — Draw.io render / editable** | [`ws3-terraform-silo-blueprint-resource-graph.drawio.png`](../diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio.png) • [`.drawio`](../diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio) • [`SVG`](../diagrams/ws3-terraform-silo-blueprint-resource-graph.svg) • [`vision.json`](../diagrams/vision_metadata/ws3-terraform-silo-blueprint-resource-graph.vision.json) |
-| **Figure 1 — Draw.io render (PNG)** | [`ws3-pattern-b-sovereign-silos-architecture.drawio.png`](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio.png) |
-| **Figure 1 — Editable Draw.io** | [`.drawio`](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio) • [`.drawio.xml`](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio.xml) |
-| **Figure 1 — Cloud Architecture Center exports** | [`SVG`](../diagrams/ws3-pattern-b-sovereign-silos-architecture.svg) • [`PNG`](../diagrams/ws3-pattern-b-sovereign-silos-architecture.png) |
-| **Figure 1 — Vision AST (labels & coordinates)** | [`ws3-pattern-b-sovereign-silos-architecture.vision.json`](../diagrams/vision_metadata/ws3-pattern-b-sovereign-silos-architecture.vision.json) |
-| **Editable slide deck** | [`ws3-pattern-b-siloed-editable-slides.pptx`](../slides/ws3-pattern-b-siloed-editable-slides.pptx) |
-| **Flagship deep-dive blog (3.7)** | [`3.7-blog-sovereign-silos.md`](../workstream-3-pattern-b-siloed/3.7-blog-sovereign-silos.md) |
-| **Case study & architecture (3.1)** | [`3.1-case-study-and-solution-architecture.md`](../workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md) |
-| **Multi-project & CMEK runbook (3.2)** | [`3.2-multi-project-silo-and-cmek-setup.md`](../workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md) |
-| **Reference implementation (3.3)** | [`pattern_b_siloed_service.py`](../workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py) • [`gke_gemma3_airgapped_manifest.yaml`](../workstream-3-pattern-b-siloed/3.3-solution-implementation/gke_gemma3_airgapped_manifest.yaml) |
-| **VPC-SC sign-off matrix (3.4)** | [`3.4-product-collaboration-vpc-sc-signoff.md`](../workstream-3-pattern-b-siloed/3.4-product-collaboration-vpc-sc-signoff.md) |
-| **Security test suite (3.5)** | [`run_silo_security_tests.py`](../workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py) |
-| **Terraform silo blueprint (3.6)** | [`3.6-terraform-silo-blueprint/README.md`](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/README.md) |
-| **Codelab & workshop deck (3.8)** | [`codelab-90min-regulated-airgapped.md`](../workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/codelab-90min-regulated-airgapped.md) • [`workshop-deck-pattern-b.md`](../workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/workshop-deck-pattern-b.md) |
-| **`go/demos` package & video script (3.9)** | [`3.9-go-demos-and-video-script.md`](../workstream-3-pattern-b-siloed/3.9-go-demos-and-video-script.md) |
-| **Reusable 5-Hop core** | [`core-cymbal-agent/governance/`](../core-cymbal-agent/governance/) |
-| **Program overview** | [`README.md`](../README.md) • [Cloud Architecture Center: Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) |
-
-*Workstream 3 of 5 — Multi-Tenant Agentic AI on Google Cloud. Previous: Workstream 2, Pattern A (Pooled). Next: Workstream 4, Pattern C (Dynamic Hybrid).*
+<!-- E2E_FLOW_END -->

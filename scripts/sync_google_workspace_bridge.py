@@ -103,29 +103,37 @@ def file_sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def upload_pptx_to_google_slides(
-    pptx_path: Path,
+PREFERRED_WORKSTREAM_SLIDES_IDS: Dict[str, str] = {
+    "WS1": "12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ",
+    "WS2": "1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE",
+    "WS3": "1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM",
+    "WS4": "1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s",
+    "WS5": "1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU",
+    "ALL": "111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc",
+}
+
+SECONDARY_WORKSTREAM_SLIDES_IDS: Dict[str, list[str]] = {
+    "ALL": ["1FyHevA50i5TeseuH33caW31Xr5Wsjjt87xmWvi__rHw"],
+}
+
+
+def count_pptx_slides(pptx_path: Path) -> int:
+    import zipfile
+
+    with zipfile.ZipFile(pptx_path, "r") as zf:
+        return sum(
+            1
+            for name in zf.namelist()
+            if name.startswith("ppt/slides/slide") and name.endswith(".xml")
+        )
+
+
+def _upload_or_patch_pptx_bytes(
+    pptx_bytes: bytes,
     title: str,
-    cache_key: str,
-    force: bool = False,
-    access_token_override: Optional[str] = None,
+    tok: str,
+    preferred_id: Optional[str] = None,
 ) -> Dict[str, Any]:
-    manifest = load_cloud_manifest()
-    sha = file_sha256(pptx_path)
-    existing = manifest.get("slides", {}).get(cache_key)
-    if (
-        not force
-        and existing
-        and existing.get("sha256") == sha
-        and existing.get("googleSlidesId")
-    ):
-        return existing
-
-    tok = access_token_override or get_drive_access_token()
-    if not tok:
-        raise RuntimeError("No Google Drive OAuth token available to convert .pptx to Google Slides.")
-
-    pptx_bytes = pptx_path.read_bytes()
     boundary = "----GEAPCloudBridgeBoundary" + uuid.uuid4().hex
     meta_bytes = json.dumps(
         {
@@ -144,6 +152,23 @@ def upload_pptx_to_google_slides(
         + f"\r\n--{boundary}--\r\n".encode("utf-8")
     )
 
+    if preferred_id:
+        try:
+            patch_req = urllib.request.Request(
+                f"https://www.googleapis.com/upload/drive/v3/files/{urllib.parse.quote(preferred_id)}?uploadType=multipart&supportsAllDrives=true&fields=id,name,webViewLink",
+                data=body,
+                headers={
+                    "Authorization": f"Bearer {tok}",
+                    "x-goog-user-project": QUOTA_PROJECT,
+                    "Content-Type": f"multipart/related; boundary={boundary}",
+                },
+                method="PATCH",
+            )
+            with urllib.request.urlopen(patch_req, timeout=90) as resp:
+                return json.loads(resp.read().decode("utf-8"))
+        except Exception as exc:
+            print(f"[CloudBridge] In-place PATCH on {preferred_id} fell back to POST: {exc}")
+
     req = urllib.request.Request(
         "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id,name,webViewLink",
         data=body,
@@ -154,8 +179,45 @@ def upload_pptx_to_google_slides(
         },
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=60) as resp:
-        res = json.loads(resp.read().decode("utf-8"))
+    with urllib.request.urlopen(req, timeout=90) as resp:
+        return json.loads(resp.read().decode("utf-8"))
+
+
+def upload_pptx_to_google_slides(
+    pptx_path: Path,
+    title: str,
+    cache_key: str,
+    force: bool = False,
+    access_token_override: Optional[str] = None,
+) -> Dict[str, Any]:
+    manifest = load_cloud_manifest()
+    sha = file_sha256(pptx_path)
+    slide_count = count_pptx_slides(pptx_path)
+    existing = manifest.get("slides", {}).get(cache_key)
+    preferred_id = PREFERRED_WORKSTREAM_SLIDES_IDS.get(cache_key) or (
+        existing.get("googleSlidesId") if existing else None
+    )
+    if (
+        not force
+        and existing
+        and existing.get("sha256") == sha
+        and existing.get("googleSlidesId") == preferred_id
+    ):
+        return existing
+
+    tok = access_token_override or get_drive_access_token()
+    if not tok:
+        raise RuntimeError("No Google Drive OAuth token available to convert .pptx to Google Slides.")
+
+    pptx_bytes = pptx_path.read_bytes()
+    res = _upload_or_patch_pptx_bytes(pptx_bytes, title, tok, preferred_id=preferred_id)
+
+    for sec_id in SECONDARY_WORKSTREAM_SLIDES_IDS.get(cache_key, []):
+        if sec_id != res["id"]:
+            try:
+                _upload_or_patch_pptx_bytes(pptx_bytes, title, tok, preferred_id=sec_id)
+            except Exception:
+                pass
 
     fid = res["id"]
     entry = {
@@ -164,6 +226,7 @@ def upload_pptx_to_google_slides(
         "pptxPath": str(pptx_path.relative_to(ROOT_DIR)),
         "sha256": sha,
         "sizeBytes": len(pptx_bytes),
+        "slideCount": slide_count,
         "googleSlidesId": fid,
         "googleSlidesEditUrl": f"https://docs.google.com/presentation/d/{fid}/edit?authuser={urllib.parse.quote(DEFAULT_USER_EMAIL)}",
         "googleSlidesPreviewUrl": f"https://docs.google.com/presentation/d/{fid}/preview",
@@ -407,17 +470,29 @@ def upload_md_to_google_docs(
     return entry
 
 
-def export_google_file_pdf_bytes(file_id: str) -> bytes:
+def export_google_file_pdf_bytes(file_id: str, mode: str = "slides") -> bytes:
     tok = get_drive_access_token()
-    if not tok:
-        raise RuntimeError("No Google Drive OAuth token available to export PDF.")
-    req = urllib.request.Request(
-        f"https://www.googleapis.com/drive/v3/files/{urllib.parse.quote(file_id)}/export?mimeType=application/pdf",
-        headers={
-            "Authorization": f"Bearer {tok}",
-            "x-goog-user-project": QUOTA_PROJECT,
-        },
+    if tok:
+        try:
+            req = urllib.request.Request(
+                f"https://www.googleapis.com/drive/v3/files/{urllib.parse.quote(file_id)}/export?mimeType=application/pdf",
+                headers={
+                    "Authorization": f"Bearer {tok}",
+                    "x-goog-user-project": QUOTA_PROJECT,
+                },
+            )
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                return resp.read()
+        except Exception:
+            pass
+    # Fallback for Cloud Run / public-link shared presentations & documents
+    fid = urllib.parse.quote(file_id)
+    pub_url = (
+        f"https://docs.google.com/document/d/{fid}/export?format=pdf"
+        if mode == "docs"
+        else f"https://docs.google.com/presentation/d/{fid}/export/pdf"
     )
+    req = urllib.request.Request(pub_url, headers={"User-Agent": "Mozilla/5.0 (GE-Blogs-CloudRun/1.0)"})
     with urllib.request.urlopen(req, timeout=60) as resp:
         return resp.read()
 
@@ -432,21 +507,30 @@ WORKSTREAM_DECK_SPECS = [
 ]
 
 
-def sync_all_workstreams() -> Dict[str, Any]:
-    print("☁️  Syncing all 6 Editable .pptx Slide Decks & Workstream Blogs to Google Slides & Google Docs...")
+def sync_all_workstreams(force_slides: bool = False) -> Dict[str, Any]:
+    print("☁️  Syncing all 6 Editable .pptx Slide Decks (WS1–WS5 & ALL) to Google Slides...")
+    manifest = load_cloud_manifest()
     for key, title, pptx_rel, md_rel in WORKSTREAM_DECK_SPECS:
         pptx_file = ROOT_DIR / pptx_rel
         if pptx_file.is_file():
-            s_entry = upload_pptx_to_google_slides(pptx_file, title, key)
-            print(f"   ✅ [Google Slides] {key}: {s_entry['googleSlidesEditUrl']}")
-        md_file = ROOT_DIR / md_rel
-        if md_file.is_file():
-            d_entry = upload_md_to_google_docs(md_file, title, key)
-            print(f"   ✅ [Google Docs]   {key}: {d_entry['googleDocsEditUrl']}")
+            s_entry = upload_pptx_to_google_slides(pptx_file, title, key, force=force_slides)
+            print(
+                f"   ✅ [Google Slides] {key} ({s_entry.get('slideCount', '?')} slides, {s_entry.get('sizeBytes', 0):,} B): {s_entry['googleSlidesEditUrl']}"
+            )
+        existing_doc = manifest.get("docs", {}).get(key)
+        if existing_doc and existing_doc.get("googleDocsEditUrl"):
+            print(f"   ✓ [Google Docs]   {key} (cached native Doc): {existing_doc['googleDocsEditUrl']}")
+        else:
+            md_file = ROOT_DIR / md_rel
+            if md_file.is_file():
+                d_entry = upload_md_to_google_docs(md_file, title, key)
+                print(f"   ✅ [Google Docs]   {key}: {d_entry['googleDocsEditUrl']}")
     manifest = load_cloud_manifest()
     print(f"🎉 Cloud Viewer Manifest written to {MANIFEST_FILE.relative_to(ROOT_DIR)}")
     return manifest
 
 
 if __name__ == "__main__":
-    sync_all_workstreams()
+    import sys
+
+    sync_all_workstreams(force_slides="--force" in sys.argv)

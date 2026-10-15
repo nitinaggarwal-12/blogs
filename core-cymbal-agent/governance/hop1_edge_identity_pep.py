@@ -10,6 +10,7 @@ Enforces Governance Pillar 2 (Identity & Tool Auth) at the network edge:
 """
 
 import hashlib
+import os
 from typing import Dict, Optional, Tuple
 from ..models import (
     CryptographicContext,
@@ -18,6 +19,7 @@ from ..models import (
     TENANT_PROFILES,
     TenantProfile,
 )
+from ..gcp_live_bridge import kms_asymmetric_sign_digest
 
 
 FORGED_HEADER_DENYLIST = {
@@ -34,7 +36,7 @@ IDP_ISSUER_MAP = {
 
 
 class EdgeIdentityPEP:
-    """Simulates Cloud Armor + Identity-Aware Proxy (IAP) + RFC 8693 OBO at Hop 1."""
+    """Enforces Cloud Armor + Identity-Aware Proxy (IAP) + RFC 8693 OBO at Hop 1."""
 
     def __init__(self, tenant_profiles: Optional[Dict[str, TenantProfile]] = None) -> None:
         self.tenant_profiles = tenant_profiles if tenant_profiles is not None else TENANT_PROFILES
@@ -68,6 +70,10 @@ class EdgeIdentityPEP:
         obo_material = f"urn:ietf:params:oauth:grant-type:token-exchange|{resolved_tenant_id}|{sub}|{dpop_proof_jkt}"
         obo_hash = hashlib.sha256(obo_material.encode("utf-8")).hexdigest()[:24]
 
+        live_kms_sig = None
+        if os.environ.get("CYMBAL_LIVE_GCP") == "1":
+            live_kms_sig = kms_asymmetric_sign_digest(obo_material)
+
         ctx = CryptographicContext(
             tenant_id=resolved_tenant_id,
             user_principal=sub,
@@ -80,6 +86,15 @@ class EdgeIdentityPEP:
             active_topology=topology,
         )
 
+        meta: Dict[str, object] = {
+            "stripped_forged_headers": stripped,
+            "obo_token_hash": obo_hash,
+            "dpop_jkt": dpop_proof_jkt,
+            "idp": profile.idp.value,
+        }
+        if live_kms_sig is not None:
+            meta["live_kms_asymmetric_sign"] = live_kms_sig
+
         audit = HopAuditRecord(
             hop_number=1,
             hop_name="Hop 1 • Edge Identity PEP (Cloud Armor / IAP + RFC 8693 OBO + DPoP)",
@@ -89,11 +104,6 @@ class EdgeIdentityPEP:
                 f"Authenticated {sub} -> tenant='{resolved_tenant_id}' ({profile.tier.value}). "
                 f"Stripped {len(stripped)} forged header(s)."
             ),
-            metadata={
-                "stripped_forged_headers": stripped,
-                "obo_token_hash": obo_hash,
-                "dpop_jkt": dpop_proof_jkt,
-                "idp": profile.idp.value,
-            },
+            metadata=meta,
         )
         return ctx, audit

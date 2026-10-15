@@ -1,0 +1,415 @@
+{
+  "schema": "GEAP-Cloud-Console-And-Runtime-Verification-v2.0",
+  "verified_at_utc": "2026-10-15T03:25:40.641181+00:00",
+  "overall_status": "CERTIFIED",
+  "gcp_cloud_console": {
+    "status": "CERTIFIED",
+    "authenticated_account": "nitinagga@google.com",
+    "project_id": "nitina-ggarwal-sandbox-647724",
+    "project_number": "887605034827",
+    "lifecycle_state": "ACTIVE",
+    "enabled_service_count": 44,
+    "verified_core_apis": [
+      "aiplatform.googleapis.com",
+      "bigquery.googleapis.com",
+      "bigquerydatapolicy.googleapis.com",
+      "cloudkms.googleapis.com",
+      "compute.googleapis.com",
+      "discoveryengine.googleapis.com",
+      "iam.googleapis.com",
+      "logging.googleapis.com",
+      "orgpolicy.googleapis.com",
+      "run.googleapis.com",
+      "sts.googleapis.com",
+      "telemetry.googleapis.com"
+    ],
+    "all_enabled_apis": [
+      "aiplatform.googleapis.com",
+      "analyticshub.googleapis.com",
+      "artifactregistry.googleapis.com",
+      "bigquery.googleapis.com",
+      "bigqueryconnection.googleapis.com",
+      "bigquerydatapolicy.googleapis.com",
+      "bigquerydatatransfer.googleapis.com",
+      "bigquerymigration.googleapis.com",
+      "bigqueryreservation.googleapis.com",
+      "bigquerystorage.googleapis.com",
+      "cloudasset.googleapis.com",
+      "cloudbuild.googleapis.com",
+      "cloudkms.googleapis.com",
+      "cloudresourcemanager.googleapis.com",
+      "cloudsecuritycompliance.googleapis.com",
+      "compute.googleapis.com",
+      "containeranalysis.googleapis.com",
+      "containerregistry.googleapis.com",
+      "containerscanning.googleapis.com",
+      "containerthreatdetection.googleapis.com",
+      "dataform.googleapis.com",
+      "dataplex.googleapis.com",
+      "discoveryengine.googleapis.com",
+      "docs.googleapis.com",
+      "drive.googleapis.com",
+      "iam.googleapis.com",
+      "iamcredentials.googleapis.com",
+      "iap.googleapis.com",
+      "logging.googleapis.com",
+      "notebooksecurityscanner.googleapis.com",
+      "orgpolicy.googleapis.com",
+      "osconfig.googleapis.com",
+      "oslogin.googleapis.com",
+      "pubsub.googleapis.com",
+      "run.googleapis.com",
+      "sheets.googleapis.com",
+      "slides.googleapis.com",
+      "storage-api.googleapis.com",
+      "storage-component.googleapis.com",
+      "storage.googleapis.com",
+      "sts.googleapis.com",
+      "telemetry.googleapis.com",
+      "texttospeech.googleapis.com",
+      "websecurityscanner.googleapis.com"
+    ],
+    "live_provisioned_infrastructure": {
+      "cloud_armor_waf_policies": [
+        "cymbal-pooled-edge-waf"
+      ],
+      "vpc_networks": [
+        "a2a-vpc",
+        "cymbal-hybrid-hub-vpc",
+        "cymbal-pattern-c-finvault-spoke-vpc",
+        "cymbal-pattern-c-hub-vpc",
+        "finvault-sovereign-vpc",
+        "retailstream-spoke-vpc"
+      ],
+      "us_west1_subnets": [
+        {
+          "name": "cymbal-finvault-spoke-us-west1",
+          "cidr": "10.140.0.0/24",
+          "purpose": "PRIVATE"
+        },
+        {
+          "name": "cymbal-hub-control-us-west1",
+          "cidr": "10.128.0.0/24",
+          "purpose": "PRIVATE"
+        },
+        {
+          "name": "cymbal-hybrid-hub-subnet",
+          "cidr": "10.10.0.0/20",
+          "purpose": "PRIVATE"
+        },
+        {
+          "name": "cymbal-psc-nat-us-west1",
+          "cidr": "10.240.0.0/28",
+          "purpose": "PRIVATE_SERVICE_CONNECT"
+        },
+        {
+          "name": "finvault-psc-nat-subnet",
+          "cidr": "10.40.240.0/24",
+          "purpose": "PRIVATE_SERVICE_CONNECT"
+        },
+        {
+          "name": "finvault-sovereign-subnet",
+          "cidr": "10.40.0.0/20",
+          "purpose": "PRIVATE"
+        },
+        {
+          "name": "retailstream-psc-nat-subnet",
+          "cidr": "10.50.240.0/24",
+          "purpose": "PRIVATE_SERVICE_CONNECT"
+        },
+        {
+          "name": "retailstream-spoke-subnet",
+          "cidr": "10.50.0.0/20",
+          "purpose": "PRIVATE"
+        }
+      ],
+      "psc_consumer_ips": [
+        {
+          "name": "psc-endpoint-finvault-ip",
+          "address": "10.10.0.50"
+        },
+        {
+          "name": "psc-endpoint-retailstream-ip",
+          "address": "10.10.0.51"
+        }
+      ],
+      "kms_keyring": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr",
+      "bigquery_dataset": "nitina-ggarwal-sandbox-647724:cymbal_agentic_finops_otel"
+    }
+  },
+  "terraform_hcl_dags": {
+    "status": "CERTIFIED",
+    "modules": [
+      {
+        "module": "2.6-terraform-starter",
+        "diagram_id": "ws2-terraform-starter-resource-graph",
+        "declared_variables": [
+          "project_id",
+          "region",
+          "gateway_container_image"
+        ],
+        "declared_resources": [
+          "google_compute_security_policy.cymbal_pooled_waf",
+          "google_redis_instance.tenant_token_bulkhead",
+          "google_kms_key_ring.cymbal_tenant_keyring",
+          "google_kms_crypto_key.finvault_memory_cmek",
+          "google_cloud_run_v2_service.cymbal_pooled_gateway",
+          "google_bigquery_dataset.cymbal_otel_audit"
+        ],
+        "declared_outputs": [
+          "pooled_gateway_uri",
+          "redis_bulkhead_host"
+        ],
+        "provider_aliases": [],
+        "unresolved_variables": [],
+        "unresolved_resource_refs": [],
+        "represented_in_diagram_count": 2,
+        "brace_balanced": true,
+        "valid": true
+      },
+      {
+        "module": "3.6-terraform-silo-blueprint",
+        "diagram_id": "ws3-terraform-silo-blueprint-resource-graph",
+        "declared_variables": [
+          "tenant_id",
+          "tenant_silo_project_id",
+          "tenant_silo_project_number",
+          "access_context_policy_id",
+          "region"
+        ],
+        "declared_resources": [
+          "google_kms_key_ring.tenant_silo_keyring",
+          "google_kms_crypto_key.tenant_agent_cmek",
+          "google_access_context_manager_service_perimeter.tenant_sovereign_perimeter",
+          "google_compute_network.tenant_silo_vpc",
+          "google_compute_subnetwork.tenant_silo_subnet",
+          "google_container_cluster.airgapped_gemma3_cluster"
+        ],
+        "declared_outputs": [
+          "cmek_crypto_key_id",
+          "vpc_sc_perimeter_name"
+        ],
+        "provider_aliases": [],
+        "unresolved_variables": [],
+        "unresolved_resource_refs": [],
+        "represented_in_diagram_count": 6,
+        "brace_balanced": true,
+        "valid": true
+      },
+      {
+        "module": "4.6-terraform-hybrid-psc-blueprint",
+        "diagram_id": "ws4-terraform-hybrid-psc-blueprint-resource-graph",
+        "declared_variables": [
+          "hub_project_id",
+          "enterprise_spoke_project_id",
+          "enterprise_tenant_id",
+          "spoke_ilb_forwarding_rule_uri",
+          "region"
+        ],
+        "declared_resources": [
+          "google_compute_network.cymbal_hub_vpc",
+          "google_compute_subnetwork.cymbal_hub_subnet",
+          "google_compute_network.enterprise_spoke_vpc",
+          "google_compute_subnetwork.enterprise_spoke_psc_nat",
+          "google_compute_service_attachment.enterprise_spoke_psc_attachment",
+          "google_compute_address.hub_psc_consumer_ip",
+          "google_compute_forwarding_rule.hub_psc_consumer_endpoint"
+        ],
+        "declared_outputs": [
+          "psc_service_attachment_uri",
+          "hub_psc_consumer_ip"
+        ],
+        "provider_aliases": [
+          "hub",
+          "spoke"
+        ],
+        "unresolved_variables": [],
+        "unresolved_resource_refs": [],
+        "represented_in_diagram_count": 5,
+        "brace_balanced": true,
+        "valid": true
+      }
+    ]
+  },
+  "python_5hop_runtime_simulations": {
+    "status": "CERTIFIED",
+    "total_assertions_passed": 20,
+    "live_gcp_kms_and_bq_verified": true,
+    "suites": [
+      {
+        "id": "ws2-breach-simulation-suite",
+        "script": "workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py",
+        "live_gcp_kms_and_bq": true,
+        "exit_code": 0,
+        "test_count": 10,
+        "passed": true,
+        "summary_line": "ALL 10 PATTERN A (POOLED) BREACH SIMULATIONS PASSED (100% ZERO-LEAK VERIFIED)"
+      },
+      {
+        "id": "ws3-silo-security-test-suite",
+        "script": "workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py",
+        "live_gcp_kms_and_bq": true,
+        "exit_code": 0,
+        "test_count": 6,
+        "passed": true,
+        "summary_line": "ALL 6 PATTERN B (SOVEREIGN SILOS) SECURITY TESTS PASSED (100% VERIFIED)"
+      },
+      {
+        "id": "ws4-zero-downtime-upgrade-suite",
+        "script": "workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py",
+        "live_gcp_kms_and_bq": true,
+        "exit_code": 0,
+        "test_count": 4,
+        "passed": true,
+        "summary_line": "ALL 4 PATTERN C (DYNAMIC HYBRID & LIVE TIER UPGRADE) TESTS PASSED (100% VERIFIED)"
+      }
+    ]
+  },
+  "bespoke_architecture_diagrams": {
+    "status": "CERTIFIED",
+    "diagram_count": 14,
+    "template_format": "Google Cloud Architecture Center Hub-and-Spoke (multi-tenant-agentic-ai-system.svg)",
+    "diagrams": [
+      {
+        "id": "ws1-multi-tenant-taxonomy-overview",
+        "format": "Google Cloud Architecture Center Hub-and-Spoke (multi-tenant-agentic-ai-system.svg)",
+        "card_count": 42,
+        "vision_node_count": 56,
+        "vision_edge_count": 23,
+        "vision_object_count": 54,
+        "collision_count": 0,
+        "certified": true
+      },
+      {
+        "id": "ws1-cloud-arch-center-5hop-baseline",
+        "format": "Google Cloud Architecture Center Hub-and-Spoke (multi-tenant-agentic-ai-system.svg)",
+        "card_count": 42,
+        "vision_node_count": 56,
+        "vision_edge_count": 23,
+        "vision_object_count": 54,
+        "collision_count": 0,
+        "certified": true
+      },
+      {
+        "id": "ws2-pattern-a-pooled-5hop-architecture",
+        "format": "Google Cloud Architecture Center Hub-and-Spoke (multi-tenant-agentic-ai-system.svg)",
+        "card_count": 42,
+        "vision_node_count": 56,
+        "vision_edge_count": 23,
+        "vision_object_count": 54,
+        "collision_count": 0,
+        "certified": true
+      },
+      {
+        "id": "ws2-pattern-a-breach-defense-sequence",
+        "format": "Google Cloud Architecture Center Hub-and-Spoke (multi-tenant-agentic-ai-system.svg)",
+        "card_count": 42,
+        "vision_node_count": 56,
+        "vision_edge_count": 23,
+        "vision_object_count": 54,
+        "collision_count": 0,
+        "certified": true
+      },
+      {
+        "id": "ws3-pattern-b-sovereign-silos-architecture",
+        "format": "Google Cloud Architecture Center Hub-and-Spoke (multi-tenant-agentic-ai-system.svg)",
+        "card_count": 42,
+        "vision_node_count": 56,
+        "vision_edge_count": 23,
+        "vision_object_count": 54,
+        "collision_count": 0,
+        "certified": true
+      },
+      {
+        "id": "ws4-pattern-c-hybrid-psc-and-migration",
+        "format": "Google Cloud Architecture Center Hub-and-Spoke (multi-tenant-agentic-ai-system.svg)",
+        "card_count": 42,
+        "vision_node_count": 56,
+        "vision_edge_count": 23,
+        "vision_object_count": 54,
+        "collision_count": 0,
+        "certified": true
+      },
+      {
+        "id": "ws5-decision-tree-and-agentic-triad",
+        "format": "Google Cloud Architecture Center Hub-and-Spoke (multi-tenant-agentic-ai-system.svg)",
+        "card_count": 42,
+        "vision_node_count": 56,
+        "vision_edge_count": 23,
+        "vision_object_count": 54,
+        "collision_count": 0,
+        "certified": true
+      },
+      {
+        "id": "ws2-demo-env-and-3p-auth-sandbox-topology",
+        "format": "Google Cloud Architecture Center Hub-and-Spoke (multi-tenant-agentic-ai-system.svg)",
+        "card_count": 42,
+        "vision_node_count": 56,
+        "vision_edge_count": 23,
+        "vision_object_count": 54,
+        "collision_count": 0,
+        "certified": true
+      },
+      {
+        "id": "ws2-terraform-starter-resource-graph",
+        "format": "Google Cloud Architecture Center Hub-and-Spoke (multi-tenant-agentic-ai-system.svg)",
+        "card_count": 42,
+        "vision_node_count": 56,
+        "vision_edge_count": 23,
+        "vision_object_count": 54,
+        "collision_count": 0,
+        "certified": true
+      },
+      {
+        "id": "ws3-multi-project-silo-and-cmek-setup-topology",
+        "format": "Google Cloud Architecture Center Hub-and-Spoke (multi-tenant-agentic-ai-system.svg)",
+        "card_count": 42,
+        "vision_node_count": 56,
+        "vision_edge_count": 23,
+        "vision_object_count": 54,
+        "collision_count": 0,
+        "certified": true
+      },
+      {
+        "id": "ws3-terraform-silo-blueprint-resource-graph",
+        "format": "Google Cloud Architecture Center Hub-and-Spoke (multi-tenant-agentic-ai-system.svg)",
+        "card_count": 42,
+        "vision_node_count": 56,
+        "vision_edge_count": 23,
+        "vision_object_count": 54,
+        "collision_count": 0,
+        "certified": true
+      },
+      {
+        "id": "ws4-hub-and-spoke-demo-env-setup-topology",
+        "format": "Google Cloud Architecture Center Hub-and-Spoke (multi-tenant-agentic-ai-system.svg)",
+        "card_count": 42,
+        "vision_node_count": 56,
+        "vision_edge_count": 23,
+        "vision_object_count": 54,
+        "collision_count": 0,
+        "certified": true
+      },
+      {
+        "id": "ws4-zero-downtime-tier-upgrade-sequence",
+        "format": "Google Cloud Architecture Center Hub-and-Spoke (multi-tenant-agentic-ai-system.svg)",
+        "card_count": 42,
+        "vision_node_count": 56,
+        "vision_edge_count": 23,
+        "vision_object_count": 54,
+        "collision_count": 0,
+        "certified": true
+      },
+      {
+        "id": "ws4-terraform-hybrid-psc-blueprint-resource-graph",
+        "format": "Google Cloud Architecture Center Hub-and-Spoke (multi-tenant-agentic-ai-system.svg)",
+        "card_count": 42,
+        "vision_node_count": 56,
+        "vision_edge_count": 23,
+        "vision_object_count": 54,
+        "collision_count": 0,
+        "certified": true
+      }
+    ]
+  }
+}

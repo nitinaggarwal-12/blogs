@@ -461,6 +461,14 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             )
             return
 
+        if path == "/api/cloud-verification":
+            receipt_file = ROOT_DIR / "docs/cloud_console_verification_receipt.json"
+            if receipt_file.is_file():
+                self._send_json(200, json.loads(receipt_file.read_text(encoding="utf-8")))
+            else:
+                self._send_json(404, {"error": "cloud_console_verification_receipt.json not found"})
+            return
+
         if path == "/api/google-workspace/manifest":
             self._send_json(200, bridge_mod.load_cloud_manifest())
             return
@@ -491,7 +499,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 self._send_json(404, {"error": f"No Google Drive fileId found for key={key} mode={mode}"})
                 return
             try:
-                pdf_bytes = bridge_mod.export_google_file_pdf_bytes(file_id)
+                pdf_bytes = bridge_mod.export_google_file_pdf_bytes(file_id, mode=mode)
                 self.send_response(200)
                 self.send_header("Content-Type", "application/pdf")
                 self.send_header("Content-Length", str(len(pdf_bytes)))
@@ -503,6 +511,571 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             except Exception as exc:
                 self._send_json(500, {"error": str(exc)})
                 return
+
+        if path == "/drawio-editor":
+            qs = parse_qs(parsed.query)
+            diag_id = (qs.get("id") or ["ws1-multi-tenant-taxonomy-overview"])[0].strip()
+            is_inline = (qs.get("inline") or ["0"])[0].strip() == "1"
+            safe_id = "".join(ch for ch in diag_id if ch.isalnum() or ch in ("-", "_")) or "ws1-multi-tenant-taxonomy-overview"
+            initial_zoom = "0.56" if is_inline else "0.88"
+            inspector_w = "260px" if is_inline else "320px"
+            select_html = "" if is_inline else f"""
+      <select id="studio-diag-select" class="studio-select" onchange="switchStudioDiagram(this.value)">
+        <option value="ws1-multi-tenant-taxonomy-overview">1. WS 1.1: Multi-Tenant Taxonomy (Pattern A, B &amp; C)</option>
+        <option value="ws1-cloud-arch-center-5hop-baseline">2. WS 1.3: 5-Hop Cryptographic Context Chain</option>
+        <option value="ws2-pattern-a-pooled-5hop-architecture">3. WS 2.1: Pattern A Pooled Shared Runtime Architecture</option>
+        <option value="ws2-pattern-a-breach-defense-sequence">4. WS 2.5: Pattern A 10-Point Breach Defense Matrix</option>
+        <option value="ws2-demo-env-and-3p-auth-sandbox-topology">5. WS 2.2: Pattern A 3P Auth &amp; Sandbox Topology</option>
+        <option value="ws2-terraform-starter-resource-graph">6. WS 2.6: Pattern A Terraform Resource DAG</option>
+        <option value="ws3-pattern-b-sovereign-silos-architecture">7. WS 3.1: Pattern B Sovereign Silos &amp; Gemma 3</option>
+        <option value="ws3-multi-project-silo-and-cmek-setup-topology">8. WS 3.2: Pattern B 4-Stage Silo &amp; CMEK Pipeline</option>
+        <option value="ws3-terraform-silo-blueprint-resource-graph">9. WS 3.6: Pattern B Terraform Silo DAG</option>
+        <option value="ws4-pattern-c-hybrid-psc-and-migration">10. WS 4.1: Pattern C Hybrid Hub, Pool &amp; PSC Spokes</option>
+        <option value="ws4-hub-and-spoke-demo-env-setup-topology">11. WS 4.2: Pattern C Cross-Project PSC Network</option>
+        <option value="ws4-zero-downtime-tier-upgrade-sequence">12. WS 4.5: Pattern C Zero-Downtime Upgrade Sequence</option>
+        <option value="ws4-terraform-hybrid-psc-blueprint-resource-graph">13. WS 4.6: Pattern C Dual-Provider Terraform PSC DAG</option>
+        <option value="ws5-decision-tree-and-agentic-triad">14. WS 5.1/5.2: Executive Decision Tree &amp; Agentic Triad</option>
+      </select>"""
+            back_btn_html = '<button type="button" class="studio-btn" onclick="if(window.parent && window.parent.setHubDiagramRenderMode) window.parent.setHubDiagramRenderMode(\'drawio\')">&#10005; Exit Inline</button>' if is_inline else '<a class="studio-btn" href="/">&#8592; Back to Portal</a>'
+            html_doc = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Draw.io Interactive Architecture Studio — {safe_id}</title>
+  <style>
+    * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+    body {{ font-family: 'Google Sans', Roboto, -apple-system, BlinkMacSystemFont, sans-serif; background: #0f172a; color: #f8fafc; height: 100vh; width: 100vw; overflow: hidden; display: flex; flex-direction: column; }}
+    .studio-bar {{ min-height: 44px; background: #0f172a; border-bottom: 1px solid #334155; display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }}
+    .studio-left {{ display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }}
+    .studio-badge {{ background: #1d4ed8; color: #ffffff; font-size: 10.5px; font-weight: 700; padding: 4px 8px; border-radius: 5px; white-space: nowrap; letter-spacing: 0.03em; }}
+    .studio-select {{ background: #1e293b; color: #f8fafc; border: 1px solid #475569; border-radius: 6px; padding: 5px 9px; font-size: 12px; font-weight: 600; min-width: 260px; }}
+    .studio-right {{ display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }}
+    .studio-status {{ font-size: 11px; color: #93c5fd; margin-right: 4px; font-weight: 600; }}
+    .studio-btn {{ background: #1e293b; color: #e2e8f0; border: 1px solid #475569; border-radius: 6px; padding: 4px 9px; font-size: 11px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }}
+    .studio-btn:hover {{ background: #334155; }}
+    .studio-btn.active {{ background: #2563eb; border-color: #3b82f6; color: #ffffff; }}
+    .studio-btn.primary {{ background: #16a34a; border-color: #15803d; color: #ffffff; }}
+    .studio-btn.primary:hover {{ background: #15803d; }}
+    .studio-workspace {{ flex: 1; display: flex; overflow: hidden; background: #f1f5f9; position: relative; }}
+    .canvas-scroll {{ flex: 1; overflow: auto; padding: 14px; display: block; background: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 16px 16px; background-color: #f8fafc; }}
+    .drawio-stage {{ position: relative; width: 1200px; height: 1410px; margin: 0 auto; background: #ffffff; box-shadow: 0 10px 30px rgba(15,23,42,0.12); border: 1px solid #cbd5e1; border-radius: 6px; user-select: none; zoom: {initial_zoom}; }}
+    .mx-vertex {{ position: absolute; cursor: grab; transition: box-shadow 0.1s ease; }}
+    .mx-vertex:hover {{ outline: 1.5px dashed #3b82f6; }}
+    .mx-vertex.selected {{ outline: 2.5px solid #2563eb !important; box-shadow: 0 0 0 4px rgba(37,99,235,0.2); z-index: 50 !important; }}
+    .mx-handle {{ position: absolute; width: 8px; height: 8px; background: #ffffff; border: 2px solid #2563eb; border-radius: 50%; display: none; pointer-events: none; }}
+    .mx-vertex.selected .mx-handle {{ display: block; }}
+    .mx-handle.tl {{ top: -5px; left: -5px; }}
+    .mx-handle.tr {{ top: -5px; right: -5px; }}
+    .mx-handle.bl {{ bottom: -5px; left: -5px; }}
+    .mx-handle.br {{ bottom: -5px; right: -5px; }}
+    .inspector-sidebar {{ width: {inspector_w}; background: #0f172a; border-left: 1px solid #334155; color: #f8fafc; display: flex; flex-direction: column; overflow-y: auto; padding: 12px; gap: 10px; flex-shrink: 0; }}
+    .insp-card {{ background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 10px 12px; }}
+    .insp-title {{ font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; margin-bottom: 8px; }}
+    .insp-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }}
+    .insp-field label {{ display: block; font-size: 10.5px; color: #94a3b8; margin-bottom: 2px; }}
+    .insp-field input, .insp-field textarea {{ width: 100%; background: #0f172a; color: #f8fafc; border: 1px solid #475569; border-radius: 4px; padding: 5px 7px; font-size: 11.5px; font-family: monospace; }}
+    .edge-pill {{ background: #0f172a; border: 1px solid #334155; border-radius: 5px; padding: 6px 8px; font-size: 11px; margin-bottom: 5px; line-height: 1.35; }}
+    .edge-pill code {{ color: #38bdf8; font-weight: 700; }}
+    #drawio-studio-iframe {{ flex: 1; width: 100%; height: 100%; border: 0; background: #ffffff; display: none; }}
+  </style>
+</head>
+<body>
+  <div class="studio-bar">
+    <div class="studio-left">
+      <span class="studio-badge">#78 • 56 SHAPES • 23 EDGES</span>{select_html}
+      <button type="button" id="btn-mode-native" class="studio-btn active" onclick="setStudioEngine('native')">&#9889; Interactive mxGraph Canvas</button>
+      <button type="button" id="btn-mode-cloud" class="studio-btn" onclick="setStudioEngine('cloud')">&#127760; diagrams.net Cloud UI</button>
+      <button type="button" class="studio-btn" onclick="adjustCanvasZoom(-0.1)" title="Zoom Out">&#8722;</button>
+      <button type="button" class="studio-btn" onclick="adjustCanvasZoom(0.1)" title="Zoom In">&#43;</button>
+    </div>
+    <div class="studio-right">
+      <span id="studio-status" class="studio-status">&#128994; 56 Shapes &amp; 23 Connectors Ready</span>
+      <button type="button" class="studio-btn primary" onclick="saveCurrentStudioXml()">&#128190; Save .drawio</button>
+      <a id="studio-download-link" class="studio-btn" href="/diagrams/{safe_id}.drawio" download>&#11015; .drawio</a>
+      {back_btn_html}
+    </div>
+  </div>
+
+  <div class="studio-workspace" id="native-studio-workspace">
+    <div class="canvas-scroll">
+      <div class="drawio-stage" id="drawio-stage">
+        <div id="drawio-bg-layer" style="position:absolute;inset:0;"></div>
+        <svg id="drawio-edge-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1410" width="1200" height="1410" style="position:absolute;inset:0;pointer-events:none;z-index:20;">
+          <defs>
+            <marker id="mx-arrow-open" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 1 1.5 L 8 5 L 1 8.5" fill="none" stroke="#202124" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </marker>
+            <marker id="mx-arrow-active" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 1 1.5 L 8 5 L 1 8.5" fill="none" stroke="#f97316" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </marker>
+          </defs>
+          <g id="drawio-edges-group"></g>
+        </svg>
+        <div id="drawio-fg-layer" style="position:absolute;inset:0;z-index:30;pointer-events:none;"></div>
+      </div>
+    </div>
+    <div class="inspector-sidebar">
+      <div class="insp-card">
+        <div class="insp-title">Draw.io mxGraphModel Summary</div>
+        <div style="font-size:12px;line-height:1.5;color:#e2e8f0;">
+          <div>&#8226; Vertices: <strong id="insp-total-vertices" style="color:#38bdf8;">56</strong> editable <code>&lt;mxCell vertex="1"&gt;</code></div>
+          <div>&#8226; Connectors: <strong id="insp-total-edges" style="color:#4ade80;">23</strong> vertex-bound <code>&lt;mxCell edge="1"&gt;</code></div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:4px;">Click or drag any shape on the canvas to reposition it and rubber-band its attached Draw.io connectors in real time.</div>
+        </div>
+      </div>
+      <div class="insp-card" id="insp-selected-card">
+        <div class="insp-title">Selected &lt;mxCell&gt; Vertex Inspector</div>
+        <div style="margin-bottom:8px;font-size:11.5px;">ID: <code id="insp-cell-id" style="color:#facc15;font-weight:700;">card_rc_alb</code></div>
+        <div class="insp-grid" style="margin-bottom:8px;">
+          <div class="insp-field"><label>X (px)</label><input type="number" id="insp-x" onchange="applyInspectorGeometry()" /></div>
+          <div class="insp-field"><label>Y (px)</label><input type="number" id="insp-y" onchange="applyInspectorGeometry()" /></div>
+          <div class="insp-field"><label>Width (px)</label><input type="number" id="insp-w" onchange="applyInspectorGeometry()" /></div>
+          <div class="insp-field"><label>Height (px)</label><input type="number" id="insp-h" onchange="applyInspectorGeometry()" /></div>
+          <div class="insp-field"><label>Fill Color</label><input type="text" id="insp-fill" onchange="applyInspectorStyle()" /></div>
+          <div class="insp-field"><label>Stroke Color</label><input type="text" id="insp-stroke" onchange="applyInspectorStyle()" /></div>
+        </div>
+        <div class="insp-field">
+          <label>Cell Label / HTML Value</label>
+          <textarea id="insp-value" rows="3" onchange="applyInspectorValue()"></textarea>
+        </div>
+      </div>
+      <div class="insp-card" style="flex:1;overflow-y:auto;">
+        <div class="insp-title">Bound &lt;mxCell edge="1"&gt; Ports (<span id="insp-edge-count">0</span>)</div>
+        <div id="insp-edges-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <iframe id="drawio-studio-iframe" src="about:blank" title="Full-Screen Draw.io Cloud Editor"></iframe>
+
+  <script>
+    let currentDiagramId = {json.dumps(safe_id)};
+    let xmlDoc = null;
+    let latestXml = '';
+    let verticesMap = new Map();
+    let edgesList = [];
+    let selectedCellId = 'card_rc_alb';
+    let dragState = null;
+    let iframeReady = false;
+    let activeEngine = 'native';
+    let currentZoom = parseFloat({json.dumps(initial_zoom)});
+
+    function adjustCanvasZoom(delta) {{
+      currentZoom = Math.max(0.35, Math.min(1.5, Math.round((currentZoom + delta) * 100) / 100));
+      const stg = document.getElementById('drawio-stage');
+      if (stg) stg.style.zoom = String(currentZoom);
+    }}
+
+    const selectEl = document.getElementById('studio-diag-select');
+    if (selectEl) selectEl.value = currentDiagramId;
+
+    function parseStyleStr(styleStr) {{
+      const map = {{}};
+      (styleStr || '').split(';').forEach(part => {{
+        const idx = part.indexOf('=');
+        if (idx > 0) {{
+          map[part.slice(0, idx).trim()] = part.slice(idx + 1).trim();
+        }} else if (part.trim()) {{
+          map[part.trim()] = '1';
+        }}
+      }});
+      return map;
+    }}
+
+    function serializeStyleMap(map, origStyle) {{
+      const parts = (origStyle || '').split(';').filter(Boolean);
+      const updated = new Set();
+      const out = parts.map(p => {{
+        const idx = p.indexOf('=');
+        if (idx > 0) {{
+          const k = p.slice(0, idx).trim();
+          if (k in map) {{
+            updated.add(k);
+            return k + '=' + map[k];
+          }}
+        }}
+        return p;
+      }});
+      Object.keys(map).forEach(k => {{
+        if (!updated.has(k) && map[k] !== undefined) out.push(k + '=' + map[k]);
+      }});
+      return out.join(';') + ';';
+    }}
+
+    function setStudioEngine(engine) {{
+      activeEngine = engine;
+      document.getElementById('btn-mode-native').className = engine === 'native' ? 'studio-btn active' : 'studio-btn';
+      document.getElementById('btn-mode-cloud').className = engine === 'cloud' ? 'studio-btn active' : 'studio-btn';
+      document.getElementById('native-studio-workspace').style.display = engine === 'native' ? 'flex' : 'none';
+      const frame = document.getElementById('drawio-studio-iframe');
+      frame.style.display = engine === 'cloud' ? 'block' : 'none';
+      if (engine === 'cloud') {{
+        if (!frame.src || frame.src === 'about:blank') {{
+          frame.src = 'https://embed.diagrams.net/?embed=1&ui=kennedy&spin=1&proto=json&configure=1&saveAndExit=0&noSaveBtn=0';
+        }} else if (iframeReady && latestXml) {{
+          frame.contentWindow.postMessage(JSON.stringify({{ action: 'load', xml: latestXml, autosave: 1 }}), '*');
+        }}
+      }}
+    }}
+
+    async function fetchAndLoadDiagram(diagId) {{
+      const statusEl = document.getElementById('studio-status');
+      const dlEl = document.getElementById('studio-download-link');
+      if (dlEl) dlEl.href = '/diagrams/' + diagId + '.drawio';
+      if (statusEl) statusEl.textContent = '⏳ Loading ' + diagId + '.drawio...';
+      try {{
+        const res = await fetch('/api/artifact?path=diagrams/' + encodeURIComponent(diagId) + '.drawio');
+        const data = await res.json();
+        if (data && data.content) {{
+          latestXml = data.content;
+          renderInteractiveMxGraph(latestXml);
+          if (statusEl) statusEl.textContent = '🟢 Ready — ' + verticesMap.size + ' Shapes & ' + edgesList.length + ' Vertex-Bound Connectors (' + diagId + '.drawio)';
+          const frame = document.getElementById('drawio-studio-iframe');
+          if (frame && frame.contentWindow && iframeReady) {{
+            frame.contentWindow.postMessage(JSON.stringify({{ action: 'load', xml: latestXml, autosave: 1 }}), '*');
+          }}
+        }}
+      }} catch (err) {{
+        if (statusEl) statusEl.textContent = '⚠️ Failed to load XML: ' + err.message;
+      }}
+    }}
+
+    function renderInteractiveMxGraph(xmlStr) {{
+      const parser = new DOMParser();
+      xmlDoc = parser.parseFromString(xmlStr, 'text/xml');
+      verticesMap.clear();
+      edgesList = [];
+
+      const bgLayer = document.getElementById('drawio-bg-layer');
+      const fgLayer = document.getElementById('drawio-fg-layer');
+      bgLayer.innerHTML = '';
+      fgLayer.innerHTML = '';
+
+      const cells = Array.from(xmlDoc.querySelectorAll('mxCell'));
+      cells.forEach(cell => {{
+        const id = cell.getAttribute('id');
+        if (id === '0' || id === '1') return;
+        const isVertex = cell.getAttribute('vertex') === '1';
+        const isEdge = cell.getAttribute('edge') === '1';
+        const styleStr = cell.getAttribute('style') || '';
+        const styleMap = parseStyleStr(styleStr);
+        const geom = cell.querySelector('mxGeometry');
+
+        if (isVertex && geom) {{
+          const x = parseFloat(geom.getAttribute('x') || '0');
+          const y = parseFloat(geom.getAttribute('y') || '0');
+          const w = parseFloat(geom.getAttribute('width') || '100');
+          const h = parseFloat(geom.getAttribute('height') || '40');
+          const val = cell.getAttribute('value') || '';
+          const vObj = {{ id, cell, geom, x, y, w, h, val, styleStr, styleMap, origX: x, origY: y }};
+          verticesMap.set(id, vObj);
+
+          const isBgZone = id.startsWith('gcp_') || id.startsWith('wrapper_') || id.startsWith('zone_') || id === 'hdr_title_box';
+          const el = document.createElement('div');
+          el.className = 'mx-vertex' + (id === selectedCellId ? ' selected' : '');
+          el.dataset.cellId = id;
+          el.style.left = x + 'px';
+          el.style.top = y + 'px';
+          el.style.width = w + 'px';
+          el.style.height = h + 'px';
+          el.style.pointerEvents = 'auto';
+
+          const fill = styleMap.fillColor && styleMap.fillColor !== 'none' ? styleMap.fillColor : 'transparent';
+          const stroke = styleMap.strokeColor && styleMap.strokeColor !== 'none' ? styleMap.strokeColor : 'transparent';
+          const sw = parseFloat(styleMap.strokeWidth || '1');
+          el.style.backgroundColor = fill;
+          if (stroke !== 'transparent') {{
+            el.style.border = sw + 'px solid ' + stroke;
+          }}
+          if (styleMap.ellipse === '1') {{
+            el.style.borderRadius = '50%';
+          }} else if (styleMap.rounded === '1') {{
+            el.style.borderRadius = (w > 400 ? 12 : 6) + 'px';
+          }}
+
+          if (styleMap.verticalAlign === 'top') {{
+            el.style.display = 'flex';
+            el.style.flexDirection = 'column';
+            el.style.justifyContent = 'flex-start';
+            el.style.alignItems = 'flex-start';
+            el.style.paddingLeft = (styleMap.spacingLeft || 12) + 'px';
+            el.style.paddingTop = (styleMap.spacingTop || 6) + 'px';
+          }} else {{
+            el.style.display = 'flex';
+            el.style.alignItems = 'center';
+            el.style.justifyContent = styleMap.align === 'left' ? 'flex-start' : 'center';
+          }}
+
+          el.innerHTML = val + '<span class="mx-handle tl"></span><span class="mx-handle tr"></span><span class="mx-handle bl"></span><span class="mx-handle br"></span>';
+          el.addEventListener('mousedown', (e) => onVertexMouseDown(e, id));
+          vObj.el = el;
+
+          if (isBgZone) {{
+            bgLayer.appendChild(el);
+          }} else {{
+            fgLayer.appendChild(el);
+          }}
+        }} else if (isEdge && geom) {{
+          const source = cell.getAttribute('source') || '';
+          const target = cell.getAttribute('target') || '';
+          const srcPtEl = geom.querySelector('mxPoint[as="sourcePoint"]');
+          const tgtPtEl = geom.querySelector('mxPoint[as="targetPoint"]');
+          const ptsArr = Array.from(geom.querySelectorAll('Array[as="points"] > mxPoint')).map(p => ({{
+            el: p,
+            x: parseFloat(p.getAttribute('x') || '0'),
+            y: parseFloat(p.getAttribute('y') || '0')
+          }}));
+          edgesList.push({{
+            id, cell, geom, source, target, styleStr, styleMap,
+            srcPtEl, tgtPtEl,
+            x1: srcPtEl ? parseFloat(srcPtEl.getAttribute('x') || '0') : 0,
+            y1: srcPtEl ? parseFloat(srcPtEl.getAttribute('y') || '0') : 0,
+            x2: tgtPtEl ? parseFloat(tgtPtEl.getAttribute('x') || '0') : 0,
+            y2: tgtPtEl ? parseFloat(tgtPtEl.getAttribute('y') || '0') : 0,
+            points: ptsArr
+          }});
+        }}
+      }});
+
+      document.getElementById('insp-total-vertices').textContent = String(verticesMap.size);
+      document.getElementById('insp-total-edges').textContent = String(edgesList.length);
+      if (!verticesMap.has(selectedCellId)) {{
+        selectedCellId = verticesMap.has('card_rc_alb') ? 'card_rc_alb' : Array.from(verticesMap.keys())[0];
+      }}
+      redrawEdgesAndInspector();
+    }}
+
+    function getEdgePoints(eObj) {{
+      let p1 = {{ x: eObj.x1, y: eObj.y1 }};
+      let p2 = {{ x: eObj.x2, y: eObj.y2 }};
+      const srcV = verticesMap.get(eObj.source);
+      const tgtV = verticesMap.get(eObj.target);
+      if (srcV && (srcV.x !== srcV.origX || srcV.y !== srcV.origY)) {{
+        const ex = parseFloat(eObj.styleMap.exitX ?? '0.5');
+        const ey = parseFloat(eObj.styleMap.exitY ?? '0.5');
+        p1 = {{ x: Math.round(srcV.x + ex * srcV.w), y: Math.round(srcV.y + ey * srcV.h) }};
+      }}
+      if (tgtV && (tgtV.x !== tgtV.origX || tgtV.y !== tgtV.origY)) {{
+        const nx = parseFloat(eObj.styleMap.entryX ?? '0.5');
+        const ny = parseFloat(eObj.styleMap.entryY ?? '0.5');
+        p2 = {{ x: Math.round(tgtV.x + nx * tgtV.w), y: Math.round(tgtV.y + ny * tgtV.h) }};
+      }}
+      return [p1, ...eObj.points.map(pt => ({{ x: pt.x, y: pt.y }})), p2];
+    }}
+
+    function redrawEdgesAndInspector() {{
+      const g = document.getElementById('drawio-edges-group');
+      g.innerHTML = '';
+      const boundEdges = [];
+
+      edgesList.forEach(eObj => {{
+        const isAttached = eObj.source === selectedCellId || eObj.target === selectedCellId;
+        if (isAttached) boundEdges.push(eObj);
+        const pts = getEdgePoints(eObj);
+        const d = pts.map((p, i) => (i === 0 ? 'M ' : 'L ') + p.x + ' ' + p.y).join(' ');
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', d);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', isAttached ? '#f97316' : (eObj.styleMap.strokeColor || '#202124'));
+        path.setAttribute('stroke-width', isAttached ? '2.8' : (eObj.styleMap.strokeWidth || '2'));
+        if (eObj.styleMap.dashed === '1') {{
+          path.setAttribute('stroke-dasharray', '5,5');
+        }}
+        const markerId = isAttached ? 'url(#mx-arrow-active)' : 'url(#mx-arrow-open)';
+        if (eObj.styleMap.endArrow && eObj.styleMap.endArrow !== 'none') {{
+          path.setAttribute('marker-end', markerId);
+        }}
+        if (eObj.styleMap.startArrow && eObj.styleMap.startArrow !== 'none') {{
+          path.setAttribute('marker-start', markerId);
+        }}
+        g.appendChild(path);
+      }});
+
+      const selV = verticesMap.get(selectedCellId);
+      if (selV) {{
+        document.getElementById('insp-cell-id').textContent = selV.id;
+        document.getElementById('insp-x').value = Math.round(selV.x);
+        document.getElementById('insp-y').value = Math.round(selV.y);
+        document.getElementById('insp-w').value = Math.round(selV.w);
+        document.getElementById('insp-h').value = Math.round(selV.h);
+        document.getElementById('insp-fill').value = selV.styleMap.fillColor || '#ffffff';
+        document.getElementById('insp-stroke').value = selV.styleMap.strokeColor || '#202124';
+        document.getElementById('insp-value').value = selV.val.replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim();
+      }}
+      document.getElementById('insp-edge-count').textContent = String(boundEdges.length);
+      const listEl = document.getElementById('insp-edges-list');
+      listEl.innerHTML = boundEdges.map(e => {{
+        const ex = e.styleMap.exitX ?? '0.5';
+        const ey = e.styleMap.exitY ?? '0.5';
+        const nx = e.styleMap.entryX ?? '0.5';
+        const ny = e.styleMap.entryY ?? '0.5';
+        return '<div class="edge-pill"><div><code>' + e.id + '</code></div><div><code>' + e.source + '</code> (' + ex + ',' + ey + ') &#8594; <code>' + e.target + '</code> (' + nx + ',' + ny + ')</div></div>';
+      }}).join('') || '<div style="font-size:11px;color:#64748b;">Select a component card to inspect its vertex-bound connectors.</div>';
+    }}
+
+    function onVertexMouseDown(e, id) {{
+      e.stopPropagation();
+      selectedCellId = id;
+      verticesMap.forEach((v, k) => {{
+        if (v.el) v.el.classList.toggle('selected', k === id);
+      }});
+      redrawEdgesAndInspector();
+      const v = verticesMap.get(id);
+      if (!v) return;
+      dragState = {{
+        id,
+        startX: e.clientX,
+        startY: e.clientY,
+        origX: v.x,
+        origY: v.y
+      }};
+    }}
+
+    window.addEventListener('mousemove', (e) => {{
+      if (!dragState) return;
+      const v = verticesMap.get(dragState.id);
+      if (!v) return;
+      const dx = Math.round((e.clientX - dragState.startX) / 2) * 2;
+      const dy = Math.round((e.clientY - dragState.startY) / 2) * 2;
+      v.x = dragState.origX + dx;
+      v.y = dragState.origY + dy;
+      v.el.style.left = v.x + 'px';
+      v.el.style.top = v.y + 'px';
+      v.geom.setAttribute('x', String(v.x));
+      v.geom.setAttribute('y', String(v.y));
+      redrawEdgesAndInspector();
+      syncXmlDocToString();
+    }});
+
+    window.addEventListener('mouseup', () => {{
+      if (dragState) {{
+        const statusEl = document.getElementById('studio-status');
+        if (statusEl) statusEl.textContent = '✏️ Moved ' + dragState.id + ' — click Save to .drawio to persist';
+        dragState = null;
+      }}
+    }});
+
+    function syncXmlDocToString() {{
+      if (!xmlDoc) return;
+      const serializer = new XMLSerializer();
+      latestXml = serializer.serializeToString(xmlDoc);
+    }}
+
+    function applyInspectorGeometry() {{
+      const v = verticesMap.get(selectedCellId);
+      if (!v) return;
+      v.x = parseFloat(document.getElementById('insp-x').value || '0');
+      v.y = parseFloat(document.getElementById('insp-y').value || '0');
+      v.w = parseFloat(document.getElementById('insp-w').value || '100');
+      v.h = parseFloat(document.getElementById('insp-h').value || '40');
+      v.el.style.left = v.x + 'px';
+      v.el.style.top = v.y + 'px';
+      v.el.style.width = v.w + 'px';
+      v.el.style.height = v.h + 'px';
+      v.geom.setAttribute('x', String(v.x));
+      v.geom.setAttribute('y', String(v.y));
+      v.geom.setAttribute('width', String(v.w));
+      v.geom.setAttribute('height', String(v.h));
+      redrawEdgesAndInspector();
+      syncXmlDocToString();
+    }}
+
+    function applyInspectorStyle() {{
+      const v = verticesMap.get(selectedCellId);
+      if (!v) return;
+      v.styleMap.fillColor = document.getElementById('insp-fill').value.trim();
+      v.styleMap.strokeColor = document.getElementById('insp-stroke').value.trim();
+      v.el.style.backgroundColor = v.styleMap.fillColor;
+      v.el.style.borderColor = v.styleMap.strokeColor;
+      v.styleStr = serializeStyleMap(v.styleMap, v.styleStr);
+      v.cell.setAttribute('style', v.styleStr);
+      syncXmlDocToString();
+    }}
+
+    function applyInspectorValue() {{
+      const v = verticesMap.get(selectedCellId);
+      if (!v) return;
+      const newText = document.getElementById('insp-value').value.trim();
+      if (!newText) return;
+      v.val = '<div style="font-family:\\'Google Sans\\',Roboto,sans-serif;font-size:12.5px;font-weight:700;color:#202124;padding:6px;">' + newText + '</div>';
+      v.el.innerHTML = v.val + '<span class="mx-handle tl"></span><span class="mx-handle tr"></span><span class="mx-handle bl"></span><span class="mx-handle br"></span>';
+      v.cell.setAttribute('value', v.val);
+      syncXmlDocToString();
+    }}
+
+    function switchStudioDiagram(newId) {{
+      currentDiagramId = newId;
+      const url = new URL(window.location.href);
+      url.searchParams.set('id', newId);
+      window.history.replaceState({{}}, '', url.toString());
+      document.title = 'Draw.io Interactive Architecture Studio — ' + newId;
+      fetchAndLoadDiagram(newId);
+    }}
+
+    async function saveXmlToServer(xmlContent) {{
+      const statusEl = document.getElementById('studio-status');
+      if (!xmlContent) return;
+      if (statusEl) statusEl.textContent = '💾 Saving to diagrams/' + currentDiagramId + '.drawio...';
+      try {{
+        const res = await fetch('/api/save-drawio', {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }},
+          body: JSON.stringify({{ id: currentDiagramId, xml: xmlContent }})
+        }});
+        const out = await res.json();
+        if (out && out.ok) {{
+          if (statusEl) statusEl.textContent = '✅ Saved to ' + out.path + ' (' + Math.round(out.bytes / 1024) + ' KB)';
+        }} else {{
+          if (statusEl) statusEl.textContent = '⚠️ Save error: ' + (out.error || 'Unknown');
+        }}
+      }} catch (err) {{
+        if (statusEl) statusEl.textContent = '⚠️ Save failed: ' + err.message;
+      }}
+    }}
+
+    function saveCurrentStudioXml() {{
+      if (latestXml) {{
+        saveXmlToServer(latestXml);
+      }}
+    }}
+
+    window.addEventListener('message', (evt) => {{
+      if (!evt.data || typeof evt.data !== 'string') return;
+      let msg;
+      try {{ msg = JSON.parse(evt.data); }} catch {{ return; }}
+      const frame = document.getElementById('drawio-studio-iframe');
+      if (msg.event === 'configure' && frame && frame.contentWindow) {{
+        frame.contentWindow.postMessage(JSON.stringify({{
+          action: 'configure',
+          config: {{ defaultFonts: ['Google Sans', 'Roboto', 'Inter', 'Arial'] }}
+        }}), '*');
+      }} else if (msg.event === 'init') {{
+        iframeReady = true;
+        if (latestXml && frame && frame.contentWindow) {{
+          frame.contentWindow.postMessage(JSON.stringify({{ action: 'load', xml: latestXml, autosave: 1 }}), '*');
+        }}
+      }} else if (msg.event === 'autosave' && msg.xml) {{
+        latestXml = msg.xml;
+        renderInteractiveMxGraph(latestXml);
+      }} else if (msg.event === 'save' && msg.xml) {{
+        latestXml = msg.xml;
+        saveXmlToServer(msg.xml);
+      }}
+    }});
+
+    fetchAndLoadDiagram(currentDiagramId);
+  </script>
+</body>
+</html>"""
+            data = html_doc.encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(data)))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(data)
+            return
 
         if path == "/api/artifact":
             qs = parse_qs(parsed.query)
@@ -592,6 +1165,29 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             body = {}
 
         try:
+            if path == "/api/save-drawio":
+                diag_id = str(body.get("id") or "").strip()
+                xml_content = str(body.get("xml") or "").strip()
+                safe_id = "".join(ch for ch in diag_id if ch.isalnum() or ch in ("-", "_"))
+                if not safe_id or not xml_content or ("<mxfile" not in xml_content and "<mxGraphModel" not in xml_content):
+                    self._send_json(400, {"ok": False, "error": "Invalid diagram id or Draw.io XML payload"})
+                    return
+                target_drawio = (ROOT_DIR / "diagrams" / f"{safe_id}.drawio").resolve()
+                if not str(target_drawio).startswith(str(ROOT_DIR)):
+                    self._send_json(403, {"ok": False, "error": "Forbidden path"})
+                    return
+                target_drawio.write_text(xml_content, encoding="utf-8")
+                self._send_json(
+                    200,
+                    {
+                        "ok": True,
+                        "id": safe_id,
+                        "path": f"diagrams/{safe_id}.drawio",
+                        "bytes": len(xml_content.encode("utf-8")),
+                    },
+                )
+                return
+
             if path == "/api/google-workspace/open":
                 key = str(body.get("key") or "WS1").strip()
                 mode = str(body.get("mode") or "slides").strip().lower()
@@ -697,11 +1293,12 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
 
 def run_server(port: int = 8095) -> None:
-    server = ThreadingHTTPServer(("127.0.0.1", port), PortalRequestHandler)
+    host = os.environ.get("HOST", "0.0.0.0")
+    server = ThreadingHTTPServer((host, port), PortalRequestHandler)
     print(f"================================================================================")
-    print(f"GEAP Multi-Tenant Agentic AI Portal & Live 5-Hop API listening on:")
-    print(f"  -> http://localhost:{port}")
-    print(f"  -> Health & Catalog API : http://localhost:{port}/api/health")
+    print(f"Multi-Tenant Agentic AI Portal & Live 5-Hop API listening on:")
+    print(f"  -> http://{host}:{port}")
+    print(f"  -> Health & Catalog API : http://{host}:{port}/api/health")
     print(f"================================================================================")
     sys.stdout.flush()
     server.serve_forever()
