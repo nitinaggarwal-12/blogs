@@ -2728,6 +2728,8 @@ Milestone 1 sign-off gate (2.4 §2), recommended by the blog as generic acceptan
 
 ---
 
+---
+
 ## Appendix A — Diagram index (all 14 Official Architecture Center blueprints, every file)
 
 | # | Deliverable | Title | Files | Editable deck |
