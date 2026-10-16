@@ -1,0 +1,20 @@
+{
+  "service": "ge-blogs",
+  "runtimeProject": "ramp-portal-dev",
+  "runtimeProjectNumber": "248990048888",
+  "region": "us-west1",
+  "buildProject": "nitina-ggarwal-sandbox-647724",
+  "buildId": "2bfed860-498a-4587-bdf8-90e345783372",
+  "image": "us-central1-docker.pkg.dev/nitina-ggarwal-sandbox-647724/cloud-run-source-deploy/ge-blogs:v20261016-1025",
+  "imageDigest": "sha256:5ee00cd5c3c8ca8e9a0d9bdd524de835cf98d36d2580abbb909fafcd14f6c5bc",
+  "beyondCorpUrl": "https://ge-blogs-248990048888.cr.gclb.goog",
+  "runAppUrl": "https://ge-blogs-mi7l4h536a-uw.a.run.app",
+  "gitCommit": "2ef7532",
+  "latestCreatedRevisionName": "ge-blogs-00008-k84",
+  "latestReadyRevisionName": "ge-blogs-00008-k84",
+  "readyConditionStatus": "True",
+  "trafficPercent": 100,
+  "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
+  "startupProbeTimestamp": "2026-10-16T14:26:29.560136Z",
+  "verifiedAt": "2026-10-16T14:32:00Z"
+}
