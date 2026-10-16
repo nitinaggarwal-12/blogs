@@ -1089,7 +1089,7 @@
     .doc-section-card h2:first-child,
     .doc-section-card h3:first-child {
       margin-top: 0 !important;
-      padding-right: 250px;
+      padding-right: 220px;
     }
     .card-hover-toolbar {
       position: absolute;
@@ -1098,11 +1098,11 @@
       z-index: 40;
       display: inline-flex;
       align-items: center;
-      gap: 3px;
+      gap: 2px;
       background: rgba(255, 255, 255, 0.98);
       border: 1px solid #cbd5e1;
-      border-radius: 9px;
-      padding: 3px 5px;
+      border-radius: 8px;
+      padding: 2px 4px;
       box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
       opacity: 0;
       pointer-events: none;
@@ -1145,17 +1145,43 @@
       background: transparent;
       border: 1px solid transparent;
       border-radius: 6px;
-      padding: 4px 7px;
-      font-size: 11.5px;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      font-size: 13.5px;
       font-weight: 700;
       color: #334155;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 3px;
-      line-height: 1.1;
+      justify-content: center;
+      gap: 2px;
+      line-height: 1;
       white-space: nowrap;
+      position: relative;
       transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+    }
+    .card-action-icon-btn.comment-btn.has-comments {
+      width: auto;
+      min-width: 28px;
+      padding: 0 5px;
+    }
+    .card-toolbar-comment-badge {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      min-width: 15px;
+      height: 15px;
+      padding: 0 4px;
+      border-radius: 999px;
+      background: #f59e0b;
+      color: #ffffff;
+      font-size: 9.5px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .card-action-icon-btn.comment-btn.has-comments .card-toolbar-comment-badge {
+      display: inline-flex;
     }
     [data-theme="midnight"] .card-action-icon-btn,
     [data-theme="slate"] .card-action-icon-btn,
@@ -1167,17 +1193,21 @@
       border-color: #bfdbfe;
       color: #1d4ed8;
     }
+    .card-action-icon-btn[data-action="save"]:hover,
     .card-action-icon-btn[data-card-action="save"]:hover,
+    [data-editing="true"] > .card-hover-toolbar .card-action-icon-btn[data-action="save"],
     [data-editing="true"] > .card-hover-toolbar .card-action-icon-btn[data-card-action="save"] {
       background: #dcfce7;
       border-color: #86efac;
       color: #15803d;
     }
+    .card-action-icon-btn[data-action="delete"]:hover,
     .card-action-icon-btn[data-card-action="delete"]:hover {
       background: #fee2e2;
       border-color: #fca5a5;
       color: #b91c1c;
     }
+    .card-action-icon-btn[data-action="comment"].has-comments,
     .card-action-icon-btn[data-card-action="comment"].has-comments {
       background: #fef3c7;
       border-color: #fcd34d;
@@ -1226,31 +1256,10 @@
       color: #475569;
     }
 
-    /* Google Docs / Google Slides Section Comment Badge & Inline Thread Panel */
-    .section-comment-margin-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: #fffbeb;
-      border: 1px solid #fcd34d;
-      color: #92400e;
-      font-size: 11.5px;
-      font-weight: 700;
-      padding: 3px 9px;
-      border-radius: 999px;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(180, 83, 9, 0.08);
-      margin-left: 8px;
-      vertical-align: middle;
-    }
-    .section-comment-margin-pill:hover {
-      background: #fef3c7;
-      border-color: #f59e0b;
-    }
+    /* Google Docs / Google Slides Comments Drawer Thread Cards (No Separate Inline Comment Box) */
+    .section-comment-margin-pill,
     .gdocs-section-comments-tray {
-      margin-top: 14px;
-      padding-top: 12px;
-      border-top: 1px dashed var(--border);
+      display: none !important;
     }
     .gdocs-thread-card {
       background: #ffffff;
@@ -1424,39 +1433,39 @@
           <button class="ws-step-btn active" id="ws-btn-WS1" onclick="selectGuidedWorkstream('WS1')">
             <span class="ws-kicker">Part 1 of 5 • WS 1 Foundation</span>
             <span class="ws-name">1. Reference Architecture &amp; 5-Hop</span>
-            <span class="ws-meta">2 Blueprints • 23 Slides • Part 1 Blog</span>
+            <span class="ws-meta">2 Blueprints • 14 Slides • Part 1 Blog</span>
           </button>
           <button class="ws-step-btn" id="ws-btn-WS2" onclick="selectGuidedWorkstream('WS2')">
             <span class="ws-kicker">Part 2 of 5 • WS 2 Pattern A</span>
             <span class="ws-name">2. Shared Multi-Tenant Pool</span>
-            <span class="ws-meta">4 Blueprints • 28 Slides • Part 2 Blog</span>
+            <span class="ws-meta">4 Blueprints • 14 Slides • Part 2 Blog</span>
           </button>
           <button class="ws-step-btn" id="ws-btn-WS3" onclick="selectGuidedWorkstream('WS3')">
             <span class="ws-kicker">Part 3 of 5 • WS 3 Pattern B</span>
             <span class="ws-name">3. Dedicated Customer Vault</span>
-            <span class="ws-meta">3 Blueprints • 25 Slides • Part 3 Blog</span>
+            <span class="ws-meta">3 Blueprints • 14 Slides • Part 3 Blog</span>
           </button>
           <button class="ws-step-btn" id="ws-btn-WS4" onclick="selectGuidedWorkstream('WS4')">
             <span class="ws-kicker">Part 4 of 5 • WS 4 Pattern C</span>
             <span class="ws-name">4. Smart Hybrid Router &amp; PSC</span>
-            <span class="ws-meta">4 Blueprints • 28 Slides • Part 4 Blog</span>
+            <span class="ws-meta">4 Blueprints • 14 Slides • Part 4 Blog</span>
           </button>
           <button class="ws-step-btn" id="ws-btn-WS5" onclick="selectGuidedWorkstream('WS5')">
             <span class="ws-kicker">Part 5 of 5 • WS 5 Capstone</span>
             <span class="ws-name">5. Decision Guide &amp; Triad</span>
-            <span class="ws-meta">1 Blueprint • 20 Slides • Part 5 Blog</span>
+            <span class="ws-meta">1 Blueprint • 14 Slides • Part 5 Blog</span>
           </button>
           <button class="ws-step-btn" id="ws-btn-ALL" onclick="selectGuidedWorkstream('ALL')">
             <span class="ws-kicker">All-in-One • Master Synthesis</span>
-            <span class="ws-name">6. Master 68-Slide Deck &amp; Guide</span>
-            <span class="ws-meta">All 14 Blueprints • 68 Slides • E2E Guide</span>
+            <span class="ws-name">6. Master 26-Slide Deck &amp; Guide</span>
+            <span class="ws-meta">All 14 Blueprints • 26 Slides • E2E Guide</span>
           </button>
         </div>
 
         <!-- Single 1-Line Document Switcher & Header-Only Google Workspace Controls (Rule 47 & Rule 25) -->
         <div id="hub-ws-summary-bar" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:var(--panel); border:1px solid var(--border); border-radius:10px; margin-bottom:10px;">
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <span id="hub-ws-badge" class="badge badge-blue" style="display:none;">WS1 • Part 1 of 5 • 23 Editable Slides</span>
+            <span id="hub-ws-badge" class="badge badge-blue" style="display:none;">WS1 • Part 1 of 5 • 14 Editable Slides</span>
             <strong id="hub-ws-title" style="display:none;">Workstream 1: Reference Architecture, Taxonomy &amp; 5-Hop Baseline</strong>
             <div id="hub-ws-sub" class="muted" style="display:none;">Pooled (Pattern A), Sovereign Silos (Pattern B) &amp; Dynamic Hybrid (Pattern C) extending the Cloud Architecture Center reference</div>
             <div id="hub-doc-switcher" style="display:flex; gap:6px; flex-wrap:wrap; margin:0;"></div>
@@ -1468,16 +1477,16 @@
             <div class="pc-split-wrap" id="hub-open-gslides-split">
               <button type="button" class="pc-split-main" id="hub-open-gslides-main" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1)">
                 <span class="pc-gslides-icon">S</span>
-                <span id="hub-open-gslides-label">Open with Google Slides (WS1 &bull; 23 Slides) &#8599;</span>
+                <span id="hub-open-gslides-label">Open with Google Slides (WS1 &bull; 14 Slides) &#8599;</span>
               </button>
               <button type="button" class="pc-split-caret" onclick="togglePcDropdown(event, 'hub-gslides-menu')" aria-label="Choose Google Workspace app">&#9660;</button>
               <div id="hub-gslides-menu" class="pc-dropdown-menu">
                 <div class="pc-dropdown-section">Google Workspace Direct Open</div>
                 <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1)">
-                  <span class="pc-gslides-icon">S</span> <span>Google Slides (Active Workstream Full UI Deck)</span>
+                  <span class="pc-gslides-icon">S</span> <span>Google Slides (Active Workstream 14-Slide Deck)</span>
                 </button>
                 <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace('ALL', 'slides', 1)">
-                  <span class="pc-gslides-icon">S</span> <span>Google Slides (Master 68-Slide Deck)</span>
+                  <span class="pc-gslides-icon">S</span> <span>Google Slides (Master 26-Slide Deck)</span>
                 </button>
                 <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'docs', 1, activeHubDocPath)">
                   <span class="pc-gdocs-icon">D</span> <span>Google Docs (Editable Blog + Figures)</span>
@@ -1497,11 +1506,11 @@
                   <span>&#128196;</span> <span>Embedded Live Google Docs Viewer</span>
                 </button>
                 <div class="pc-dropdown-divider"></div>
-                <a id="hub-pptx-download" class="pc-dropdown-item" href="slides/ws1-reference-architecture-editable-slides.pptx?v=20261015-v14" download>
-                  <span>&#11015;</span> <span>Download Editable .pptx (WS1 &bull; 23 Slides)</span>
+                <a id="hub-pptx-download" class="pc-dropdown-item" href="slides/ws1-reference-architecture-editable-slides.pptx?v=20261015-v15" download>
+                  <span>&#11015;</span> <span>Download Editable .pptx (WS1 &bull; 14 Slides)</span>
                 </a>
-                <a class="pc-dropdown-item" href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx?v=20261015-v14" download>
-                  <span>&#11015;</span> <span>Download Master .pptx (68 Slides)</span>
+                <a class="pc-dropdown-item" href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx?v=20261015-v15" download>
+                  <span>&#11015;</span> <span>Download Master .pptx (26 Slides)</span>
                 </a>
                 <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1, '', true)">
                   <span>&#128260;</span> <span>Force Re-Sync .pptx &rarr; Google Slides</span>
@@ -2727,7 +2736,7 @@
     const GUIDED_WORKSTREAMS = {
       WS1: {
         key: 'WS1',
-        badge: 'WS1 • Part 1 of 5 • 23 Slides',
+        badge: 'WS1 • Part 1 of 5 • 14 Slides',
         title: 'Workstream 1: Reference Architecture, Taxonomy & 5-Hop Baseline',
         subtitle: 'Pooled (Pattern A), Sovereign Silos (Pattern B) & Dynamic Hybrid (Pattern C) extending the Cloud Architecture Center reference',
         deckStem: 'ws1-reference-architecture-editable-slides',
@@ -2741,38 +2750,29 @@
           { label: '📋 Product Gap & EAP Tracker (1.4)', path: 'workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md' }
         ],
         diagrams: [
-          { id: 'ws1-multi-tenant-taxonomy-overview', label: 'Fig 1: Multi-Tenant Taxonomy (A, B & C)', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 2, logicalSlide: 3, technicalSlide: 4 },
-          { id: 'ws1-cloud-arch-center-5hop-baseline', label: 'Fig 2: Cloud Arch Center 5-Hop Baseline', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 5, logicalSlide: 6, technicalSlide: 7 }
+          { id: 'ws1-multi-tenant-taxonomy-overview', label: 'Fig 1: Multi-Tenant Taxonomy (A, B & C)', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 2, logicalSlide: 5, technicalSlide: 7 },
+          { id: 'ws1-cloud-arch-center-5hop-baseline', label: 'Fig 2: Cloud Arch Center 5-Hop Baseline', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 5, logicalSlide: 6, technicalSlide: 8 }
         ],
         slides: [
-          { num: 1, label: '1. Title & Key Point', desc: 'Title Slide — Google Cloud Architecture Center Doc Overview & Key Point' },
-          { num: 2, label: '2. ★ Fig 1 Editable', editable: true, desc: '★ Figure 1 Full-Width Editable Diagram — 56 Native Shapes + 23 Connectors (100% Editable)' },
-          { num: 3, label: '3. Fig 1 Logical Flow', desc: 'Figure 1 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
-          { num: 4, label: '4. Fig 1 Technical Flow', desc: 'Figure 1 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 5, label: '5. ★ Fig 2 Editable', editable: true, desc: '★ Figure 2 Full-Width Editable Diagram — 56 Native Shapes + 23 Connectors (100% Editable)' },
-          { num: 6, label: '6. Fig 2 Logical Flow', desc: 'Figure 2 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
-          { num: 7, label: '7. Fig 2 Technical Flow', desc: 'Figure 2 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 8, label: '8. ★ 3-Zone Topology', editable: true, desc: '★ Archetype 1 (architecture-zone-topology) — 3-Zone Enterprise Boundary & Sovereign VPC' },
-          { num: 9, label: '9. ★ Payload Triptych', editable: true, desc: '★ Archetype 2 (payload-transformation-triptych) — Contaminated vs. Clean Wire Payload' },
-          { num: 10, label: '10. ★ 5-Actor UML Swimlane', editable: true, desc: '★ Archetype 3 (uml-sequence-swimlane) — 5-Actor Lifeline & Scale-to-0 Dormant Approval' },
-          { num: 11, label: '11. ★ Async State Flow', editable: true, desc: '★ Archetype 4 (async-state-flow-pipeline) — Long Task (>5m) HTTP 202 & Webhook Loopback' },
-          { num: 12, label: '12. ★ Phased Roadmap', editable: true, desc: '★ Archetype 5 (phased-roadmap-timeline) — 3-Phase Connected Enterprise Technology Roadmap' },
-          { num: 13, label: '13. ★ Operating Model', editable: true, desc: '★ Archetype 6 (strategic-operating-model-pillars) — 3-Pillar Strategic Operating Model' },
-          { num: 14, label: '14. ★ Live GCP Screenshots', editable: true, desc: '★ Grounded Google Cloud Console Screenshots + 4 Editable Verification Callout Cards' },
-          { num: 15, label: '15. Quad-Metrics KPIs', desc: 'Executive Impact & Production Verification Metrics (3 Patterns, 5 Hops, 84.7%, 20/20 PASS)' },
-          { num: 16, label: '16. Products Used', desc: 'Products used — Google Cloud Agentic AI, Security & Data Stack' },
-          { num: 17, label: '17. Use Cases', desc: 'Use cases — Cymbal SaaS Serving Competing Enterprise Tenants' },
-          { num: 18, label: '18. Design Alternatives', desc: 'Design alternatives — Comparing Patterns A, B & C' },
-          { num: 19, label: '19. EAP Product Gaps', desc: 'Design alternatives — EAP Product Gaps & Compensating Controls (GAP-01..05)' },
-          { num: 20, label: '20. 5-Hop Pipeline', desc: 'Design considerations — 5-Hop Cryptographic Verification Pipeline' },
-          { num: 21, label: '21. Hub & Spoke (#78)', desc: 'Design considerations — Well-Architected Hub-and-Spoke Governance (#78)' },
-          { num: 22, label: '22. What’s Next', desc: 'What’s next — Key Takeaways & Sequenced Engineering Action Plan' },
-          { num: 23, label: '23. Source Lineage', desc: 'Assets & Source Documents — Native editable table of diagrams & markdown files' }
+          { num: 1, label: '1. Act I: Title & Thesis', desc: 'Act I (Slide 1/14) — Google Cloud Architecture Center Doc Overview & Key Point' },
+          { num: 2, label: '2. ★ Fig 1 Master Blueprint', editable: true, desc: '★ Act I (Slide 2/14) — Figure 1 Master Hub-and-Spoke Blueprint (#78, 56 Native Shapes + 23 Connectors)' },
+          { num: 3, label: '3. ★ Headline KPIs', editable: true, desc: '★ Act I (Slide 3/14) — Executive Impact & Verification Metrics (3 Patterns, 5 Hops, 84.7%, 20/20 PASS)' },
+          { num: 4, label: '4. Cloud Stack & Use Cases', desc: 'Act I (Slide 4/14) — Google Cloud Products Used & Cymbal Competing Tenant Scenarios' },
+          { num: 5, label: '5. ★ Act II: 3-Zone Boundary', editable: true, desc: '★ Act II (Slide 5/14, architecture-zone-topology) — 3-Zone Trust Boundary Across Patterns A, B & C' },
+          { num: 6, label: '6. ★ Wire Payload Guard', editable: true, desc: '★ Act II (Slide 6/14, payload-transformation-triptych) — Hop 1 JWT Binding & Hop 4 Model Armor Sanitization' },
+          { num: 7, label: '7. ★ 5-Hop Sequence', editable: true, desc: '★ Act II (Slide 7/14, uml-sequence-swimlane) — 5-Actor Cryptographic Turn Lifeline (Hops 1–5)' },
+          { num: 8, label: '8. ★ Continuous Audit Loop', editable: true, desc: '★ Act II (Slide 8/14, async-state-flow-pipeline) — 4-Node Closed-Loop Breach Simulation & Verification' },
+          { num: 9, label: '9. Act III: Patterns A/B/C Matrix', desc: 'Act III (Slide 9/14) — Design Alternatives: Comparing Patterns A, B & C' },
+          { num: 10, label: '10. EAP Gaps & Controls', desc: 'Act III (Slide 10/14) — EAP Product Gaps (GAP-01..05) & Compensating Controls' },
+          { num: 11, label: '11. ★ Live GCP Console Proof', editable: true, desc: '★ Act III (Slide 11/14, live-screenshot-callout) — Grounded Cloud Console Screenshots & 4 Verification Callouts' },
+          { num: 12, label: '12. ★ 3-Phase Adoption Roadmap', editable: true, desc: '★ Act III (Slide 12/14, phased-roadmap-timeline) — 3-Phase Connected Multi-Tenant Adoption Roadmap' },
+          { num: 13, label: '13. ★ 3-Pillar Operating Model', editable: true, desc: '★ Act III (Slide 13/14, strategic-operating-model-pillars) — Security, FinOps & Observability Governance' },
+          { num: 14, label: '14. Next Steps & Lineage', desc: 'Act III (Slide 14/14) — Sequenced Engineering Action Plan & Verified Source Lineage' }
         ]
       },
       WS2: {
         key: 'WS2',
-        badge: 'WS2 • Part 2 of 5 • 28 Slides',
+        badge: 'WS2 • Part 2 of 5 • 14 Slides',
         title: 'Workstream 2: Pattern A — High-Density Pooled Architecture & 90% Cache Savings',
         subtitle: 'One shared runtime serving competing tenants (FinVault & RetailStream) with 10/10 breach vectors blocked',
         deckStem: 'ws2-pattern-a-pooled-editable-slides',
@@ -2786,45 +2786,31 @@
           { label: '🎬 Workshop Deck Outline (2.8)', path: 'workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck/workshop-deck-pattern-a.md' }
         ],
         diagrams: [
-          { id: 'ws2-pattern-a-pooled-5hop-architecture', label: 'Fig 1: Pattern A Pooled 5-Hop', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 2, logicalSlide: 3, technicalSlide: 4 },
-          { id: 'ws2-pattern-a-breach-defense-sequence', label: 'Fig 2: 10-Point Breach Matrix', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 5, logicalSlide: 6, technicalSlide: 7 },
-          { id: 'ws2-demo-env-and-3p-auth-sandbox-topology', label: 'Fig 3: 3P Auth Sandbox Topology', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 8, logicalSlide: 9, technicalSlide: 10 },
-          { id: 'ws2-terraform-starter-resource-graph', label: 'Fig 4: Terraform Resource Graph', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 11, logicalSlide: 12, technicalSlide: 13 }
+          { id: 'ws2-pattern-a-pooled-5hop-architecture', label: 'Fig 1: Pattern A Pooled 5-Hop', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 2, logicalSlide: 5, technicalSlide: 7 },
+          { id: 'ws2-pattern-a-breach-defense-sequence', label: 'Fig 2: 10-Point Breach Matrix', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 9, logicalSlide: 6, technicalSlide: 7 },
+          { id: 'ws2-demo-env-and-3p-auth-sandbox-topology', label: 'Fig 3: 3P Auth Sandbox Topology', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 8, logicalSlide: 8, technicalSlide: 10 },
+          { id: 'ws2-terraform-starter-resource-graph', label: 'Fig 4: Terraform Resource Graph', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 10, logicalSlide: 12, technicalSlide: 14 }
         ],
         slides: [
-          { num: 1, label: '1. Title & Key Point', desc: 'Title Slide — Pattern A Pooled Architecture Overview & Key Point' },
-          { num: 2, label: '2. ★ Fig 1 Editable', editable: true, desc: '★ Figure 1 Full-Width Editable Diagram — Pattern A Pooled 5-Hop Architecture' },
-          { num: 3, label: '3. Fig 1 Logical Flow', desc: 'Figure 1 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
-          { num: 4, label: '4. Fig 1 Technical Flow', desc: 'Figure 1 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 5, label: '5. ★ Fig 2 Editable', editable: true, desc: '★ Figure 2 Full-Width Editable Diagram — 10-Point Breach Defense Matrix' },
-          { num: 6, label: '6. Fig 2 Logical Flow', desc: 'Figure 2 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
-          { num: 7, label: '7. Fig 2 Technical Flow', desc: 'Figure 2 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 8, label: '8. ★ Fig 3 Editable', editable: true, desc: '★ Figure 3 Full-Width Editable Diagram — Demo Env & 3P Auth Sandbox Topology' },
-          { num: 9, label: '9. Fig 3 Logical Flow', desc: 'Figure 3 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
-          { num: 10, label: '10. Fig 3 Technical Flow', desc: 'Figure 3 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 11, label: '11. ★ Fig 4 Editable', editable: true, desc: '★ Figure 4 Full-Width Editable Diagram — 1-Click Terraform Starter Resource Graph' },
-          { num: 12, label: '12. Fig 4 Logical Flow', desc: 'Figure 4 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
-          { num: 13, label: '13. Fig 4 Technical Flow', desc: 'Figure 4 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 14, label: '14. ★ 3-Zone Topology', editable: true, desc: '★ Archetype 1 (architecture-zone-topology) — 3-Zone Enterprise Boundary & Sovereign VPC' },
-          { num: 15, label: '15. ★ Payload Triptych', editable: true, desc: '★ Archetype 2 (payload-transformation-triptych) — Contaminated vs. Clean Wire Payload' },
-          { num: 16, label: '16. ★ 5-Actor UML Swimlane', editable: true, desc: '★ Archetype 3 (uml-sequence-swimlane) — 5-Actor Lifeline & Scale-to-0 Dormant Approval' },
-          { num: 17, label: '17. ★ Async State Flow', editable: true, desc: '★ Archetype 4 (async-state-flow-pipeline) — Long Task (>5m) HTTP 202 & Webhook Loopback' },
-          { num: 18, label: '18. ★ Phased Roadmap', editable: true, desc: '★ Archetype 5 (phased-roadmap-timeline) — 3-Phase Connected Enterprise Technology Roadmap' },
-          { num: 19, label: '19. ★ Operating Model', editable: true, desc: '★ Archetype 6 (strategic-operating-model-pillars) — 3-Pillar Strategic Operating Model' },
-          { num: 20, label: '20. ★ Live GCP Screenshots', editable: true, desc: '★ Grounded Google Cloud Console Screenshots + 4 Editable Verification Callout Cards' },
-          { num: 21, label: '21. Quad-Metrics KPIs', desc: 'Executive Impact & Production Verification Metrics ($42/mo, 90%, 10/10, 0 Rows)' },
-          { num: 22, label: '22. Products Used', desc: 'Products used — Shared Cloud Run v2, Vertex AI, Valkey & AlloyDB RLS' },
-          { num: 23, label: '23. Use Cases', desc: 'Use cases — FinVault Bank & RetailStream Corp Co-Hosted Safely' },
-          { num: 24, label: '24. FinOps & Terraform', desc: 'Design alternatives — FinOps, Terraform Starter, Codelab & Promotion Path' },
-          { num: 25, label: '25. 5-Hop in Pattern A', desc: 'Design considerations — The 5-Hop Cryptographic Chain in Pattern A' },
-          { num: 26, label: '26. 10-Point Breach Suite', desc: 'Design considerations — 10-Point Breach Simulation Suite (Vectors 1–10)' },
-          { num: 27, label: '27. What’s Next', desc: 'What’s next — Key Takeaways & Action Plan' },
-          { num: 28, label: '28. Source Lineage', desc: 'Assets, Editable Diagrams & Source Documents Table' }
+          { num: 1, label: '1. Act I: Title & Thesis', desc: 'Act I (Slide 1/14) — Pattern A Pooled Architecture Overview & Key Point' },
+          { num: 2, label: '2. ★ Fig 1 Pooled Blueprint', editable: true, desc: '★ Act I (Slide 2/14) — Figure 1 Pattern A Pooled 5-Hop Architecture (#78, 56 Shapes + 23 Connectors)' },
+          { num: 3, label: '3. ★ Headline KPIs', editable: true, desc: '★ Act I (Slide 3/14) — Pooled FinOps & Isolation Metrics ($42/mo, 90% Cache Savings, 10/10 Blocked)' },
+          { num: 4, label: '4. Pooled Stack & Use Cases', desc: 'Act I (Slide 4/14) — Shared Cloud Run v2, Valkey, AlloyDB RLS & FinVault/RetailStream Co-Hosting' },
+          { num: 5, label: '5. ★ Act II: 3-Zone Pooled VPC', editable: true, desc: '★ Act II (Slide 5/14, architecture-zone-topology) — FinVault & RetailStream Ingress -> Pooled Guard -> RLS Data Plane' },
+          { num: 6, label: '6. ★ Spoofed Payload Defense', editable: true, desc: '★ Act II (Slide 6/14, payload-transformation-triptych) — Blocking Spoofed Body tenant_id & Indirect RAG Poisoning' },
+          { num: 7, label: '7. ★ Pooled Turn Sequence', editable: true, desc: '★ Act II (Slide 7/14, uml-sequence-swimlane) — 5-Actor Lifeline Across Auth Guard, Valkey & AlloyDB RLS' },
+          { num: 8, label: '8. ★ 3P OAuth Consent Loop', editable: true, desc: '★ Act II (Slide 8/14, async-state-flow-pipeline) — Hop 3 Tenant-Scoped 3P OAuth Consent & Secret Manager Vault' },
+          { num: 9, label: '9. Act III: 10-Point Breach Suite', desc: 'Act III (Slide 9/14) — 10-Point Adversarial Breach Simulation Matrix (Vectors 1–10)' },
+          { num: 10, label: '10. FinOps & Terraform', desc: 'Act III (Slide 10/14) — 90% Implicit Context Cache Economics, 1-Click Terraform & Promotion Path' },
+          { num: 11, label: '11. ★ Live Pooled GCP Proof', editable: true, desc: '★ Act III (Slide 11/14, live-screenshot-callout) — Live Cloud Run Auth Guard & AlloyDB RLS Console Proof' },
+          { num: 12, label: '12. ★ 3-Phase Pooled Rollout', editable: true, desc: '★ Act III (Slide 12/14, phased-roadmap-timeline) — 3-Phase Pooled SaaS Deployment & Tier Graduation' },
+          { num: 13, label: '13. ★ 3-Pillar Pooled Ops Model', editable: true, desc: '★ Act III (Slide 13/14, strategic-operating-model-pillars) — Logical Isolation, Cache FinOps & Token Governance' },
+          { num: 14, label: '14. Next Steps & Lineage', desc: 'Act III (Slide 14/14) — Pattern A Engineering Action Plan & Verified Source Lineage' }
         ]
       },
       WS3: {
         key: 'WS3',
-        badge: 'WS3 • Part 3 of 5 • 25 Slides',
+        badge: 'WS3 • Part 3 of 5 • 14 Slides',
         title: 'Workstream 3: Pattern B — Zero-Trust Sovereign Silos & Air-Gapped Gemma 3',
         subtitle: 'Dedicated project, VPC-SC perimeter, IAM PAB & Cloud KMS CMEK 423 kill-switch per tenant',
         deckStem: 'ws3-pattern-b-siloed-editable-slides',
@@ -2838,41 +2824,30 @@
           { label: '🎬 Workshop Deck Outline (3.8)', path: 'workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/workshop-deck-pattern-b.md' }
         ],
         diagrams: [
-          { id: 'ws3-pattern-b-sovereign-silos-architecture', label: 'Fig 1: Sovereign Silos & Gemma 3', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 2, logicalSlide: 3, technicalSlide: 4 },
-          { id: 'ws3-multi-project-silo-and-cmek-setup-topology', label: 'Fig 2: Multi-Project & CMEK Setup', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 5, logicalSlide: 6, technicalSlide: 7 },
-          { id: 'ws3-terraform-silo-blueprint-resource-graph', label: 'Fig 3: Terraform Silo Resource Graph', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 8, logicalSlide: 9, technicalSlide: 10 }
+          { id: 'ws3-pattern-b-sovereign-silos-architecture', label: 'Fig 1: Sovereign Silos & Gemma 3', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 2, logicalSlide: 5, technicalSlide: 7 },
+          { id: 'ws3-multi-project-silo-and-cmek-setup-topology', label: 'Fig 2: Multi-Project & CMEK Setup', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 6, logicalSlide: 8, technicalSlide: 9 },
+          { id: 'ws3-terraform-silo-blueprint-resource-graph', label: 'Fig 3: Terraform Silo Resource Graph', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 10, logicalSlide: 12, technicalSlide: 14 }
         ],
         slides: [
-          { num: 1, label: '1. Title & Key Point', desc: 'Title Slide — Pattern B Sovereign Silos Overview & Key Point' },
-          { num: 2, label: '2. ★ Fig 1 Editable', editable: true, desc: '★ Figure 1 Full-Width Editable Diagram — Pattern B Sovereign Silos Architecture' },
-          { num: 3, label: '3. Fig 1 Logical Flow', desc: 'Figure 1 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
-          { num: 4, label: '4. Fig 1 Technical Flow', desc: 'Figure 1 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 5, label: '5. ★ Fig 2 Editable', editable: true, desc: '★ Figure 2 Full-Width Editable Diagram — Multi-Project Silo & CMEK Setup Topology' },
-          { num: 6, label: '6. Fig 2 Logical Flow', desc: 'Figure 2 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
-          { num: 7, label: '7. Fig 2 Technical Flow', desc: 'Figure 2 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 8, label: '8. ★ Fig 3 Editable', editable: true, desc: '★ Figure 3 Full-Width Editable Diagram — Terraform Silo Blueprint Resource Graph' },
-          { num: 9, label: '9. Fig 3 Logical Flow', desc: 'Figure 3 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
-          { num: 10, label: '10. Fig 3 Technical Flow', desc: 'Figure 3 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 11, label: '11. ★ 3-Zone Topology', editable: true, desc: '★ Archetype 1 (architecture-zone-topology) — 3-Zone Enterprise Boundary & Sovereign VPC' },
-          { num: 12, label: '12. ★ Payload Triptych', editable: true, desc: '★ Archetype 2 (payload-transformation-triptych) — Contaminated vs. Clean Wire Payload' },
-          { num: 13, label: '13. ★ 5-Actor UML Swimlane', editable: true, desc: '★ Archetype 3 (uml-sequence-swimlane) — 5-Actor Lifeline & Scale-to-0 Dormant Approval' },
-          { num: 14, label: '14. ★ Async State Flow', editable: true, desc: '★ Archetype 4 (async-state-flow-pipeline) — Long Task (>5m) HTTP 202 & Webhook Loopback' },
-          { num: 15, label: '15. ★ Phased Roadmap', editable: true, desc: '★ Archetype 5 (phased-roadmap-timeline) — 3-Phase Connected Enterprise Technology Roadmap' },
-          { num: 16, label: '16. ★ Operating Model', editable: true, desc: '★ Archetype 6 (strategic-operating-model-pillars) — 3-Pillar Strategic Operating Model' },
-          { num: 17, label: '17. ★ Live GCP Screenshots', editable: true, desc: '★ Grounded Google Cloud Console Screenshots + 4 Editable Verification Callout Cards' },
-          { num: 18, label: '18. Quad-Metrics KPIs', desc: 'Executive Impact & Production Verification Metrics ($1,850/mo, <60s, 6/6, HTTP 423)' },
-          { num: 19, label: '19. Products Used', desc: 'Products used — VPC-SC, IAM PAB, CMEK & Air-Gapped Gemma 3 on GKE' },
-          { num: 20, label: '20. Use Cases', desc: 'Use cases — Regulated compliance drivers (OCC/FDIC, DORA, HIPAA)' },
-          { num: 21, label: '21. Provisioning & FinOps', desc: 'Design alternatives — Multi-project runbook, Terraform blueprint & graduation to Pattern C' },
-          { num: 22, label: '22. 5-Hop in Silo', desc: 'Design considerations — Reusing the 80% 5-Hop Cymbal core inside a sovereign silo' },
-          { num: 23, label: '23. 6 Sovereign Tests', desc: 'Design considerations — Verification: 6 Sovereign Security & CMEK Revocation Tests' },
-          { num: 24, label: '24. What’s Next', desc: 'What’s next — Key Takeaways & Action Plan' },
-          { num: 25, label: '25. Source Lineage', desc: 'Assets, Editable Diagrams & Source Documents Table' }
+          { num: 1, label: '1. Act I: Title & Thesis', desc: 'Act I (Slide 1/14) — Pattern B Sovereign Silos Overview & Key Point' },
+          { num: 2, label: '2. ★ Fig 1 Sovereign Blueprint', editable: true, desc: '★ Act I (Slide 2/14) — Figure 1 Pattern B Sovereign Silos & Gemma 3 (#78, 56 Shapes + 23 Connectors)' },
+          { num: 3, label: '3. ★ Headline KPIs', editable: true, desc: '★ Act I (Slide 3/14) — Sovereign Compliance Metrics ($1,850/mo, <60s CMEK Kill-Switch, 6/6 Tests, HTTP 423)' },
+          { num: 4, label: '4. Sovereign Stack & Drivers', desc: 'Act I (Slide 4/14) — VPC-SC, IAM PAB, CMEK, Air-Gapped Gemma 3 & OCC/DORA/HIPAA Drivers' },
+          { num: 5, label: '5. ★ Act II: 3-Zone VPC-SC Silo', editable: true, desc: '★ Act II (Slide 5/14, architecture-zone-topology) — Regulated Ingress -> Dedicated Silo Project -> Air-Gapped Data & GPU' },
+          { num: 6, label: '6. ★ Exfiltration & CMEK Gate', editable: true, desc: '★ Act II (Slide 6/14, payload-transformation-triptych) — Blocking Cross-Project Token Replay & Disabled CMEK Access' },
+          { num: 7, label: '7. ★ Sovereign Turn & Kill-Switch', editable: true, desc: '★ Act II (Slide 7/14, uml-sequence-swimlane) — 5-Actor Lifeline & <60s Customer CMEK Revocation (HTTP 423)' },
+          { num: 8, label: '8. ★ CMEK Revocation State Loop', editable: true, desc: '★ Act II (Slide 8/14, async-state-flow-pipeline) — KMS Destroy/Disable -> Cache Purge -> HTTP 423 -> Re-Enable Recovery' },
+          { num: 9, label: '9. Act III: 6 Sovereign Tests', desc: 'Act III (Slide 9/14) — 6 Sovereign Security, VPC-SC Dry-Run & CMEK Revocation Verification Tests' },
+          { num: 10, label: '10. Factory & GPU FinOps', desc: 'Act III (Slide 10/14) — Multi-Project Terraform Factory, Time-Slicing L4 GPUs & Pattern C Graduation' },
+          { num: 11, label: '11. ★ Live Sovereign GCP Proof', editable: true, desc: '★ Act III (Slide 11/14, live-screenshot-callout) — Live KMS CMEK Keyring, VPC-SC & Audit Log Console Proof' },
+          { num: 12, label: '12. ★ 3-Phase Silo Rollout', editable: true, desc: '★ Act III (Slide 12/14, phased-roadmap-timeline) — 3-Phase Regulated Tenant Onboarding & Air-Gapped GPU Rollout' },
+          { num: 13, label: '13. ★ 3-Pillar Sovereign Ops', editable: true, desc: '★ Act III (Slide 13/14, strategic-operating-model-pillars) — Cryptographic Sovereignty, Silo FinOps & Audit Provenance' },
+          { num: 14, label: '14. Next Steps & Lineage', desc: 'Act III (Slide 14/14) — Pattern B Engineering Action Plan & Verified Source Lineage' }
         ]
       },
       WS4: {
         key: 'WS4',
-        badge: 'WS4 • Part 4 of 5 • 28 Slides',
+        badge: 'WS4 • Part 4 of 5 • 14 Slides',
         title: 'Workstream 4: Pattern C — Dynamic Hybrid Hub-and-Spoke & Zero-Downtime Tier Upgrade',
         subtitle: 'One control plane routing Standard to shared pool and Enterprise over PSC to CMEK spokes',
         deckStem: 'ws4-pattern-c-hybrid-editable-slides',
@@ -2886,45 +2861,31 @@
           { label: '🎬 Workshop Deck Outline (4.8)', path: 'workstream-4-pattern-c-hybrid/4.8-codelab-and-workshop-deck/workshop-deck-pattern-c.md' }
         ],
         diagrams: [
-          { id: 'ws4-pattern-c-hybrid-psc-and-migration', label: 'Fig 1: Hybrid PSC & Live Migration', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 2, logicalSlide: 3, technicalSlide: 4 },
-          { id: 'ws4-hub-and-spoke-demo-env-setup-topology', label: 'Fig 2: Hub-and-Spoke PSC Setup', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 5, logicalSlide: 6, technicalSlide: 7 },
-          { id: 'ws4-zero-downtime-tier-upgrade-sequence', label: 'Fig 3: Zero-Downtime Upgrade Sequence', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 8, logicalSlide: 9, technicalSlide: 10 },
-          { id: 'ws4-terraform-hybrid-psc-blueprint-resource-graph', label: 'Fig 4: Terraform Hybrid PSC Graph', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 11, logicalSlide: 12, technicalSlide: 13 }
+          { id: 'ws4-pattern-c-hybrid-psc-and-migration', label: 'Fig 1: Hybrid PSC & Live Migration', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 2, logicalSlide: 5, technicalSlide: 7 },
+          { id: 'ws4-hub-and-spoke-demo-env-setup-topology', label: 'Fig 2: Hub-and-Spoke PSC Setup', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 5, logicalSlide: 6, technicalSlide: 9 },
+          { id: 'ws4-zero-downtime-tier-upgrade-sequence', label: 'Fig 3: Zero-Downtime Upgrade Sequence', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 7, logicalSlide: 8, technicalSlide: 10 },
+          { id: 'ws4-terraform-hybrid-psc-blueprint-resource-graph', label: 'Fig 4: Terraform Hybrid PSC Graph', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 10, logicalSlide: 12, technicalSlide: 14 }
         ],
         slides: [
-          { num: 1, label: '1. Title & Key Point', desc: 'Title Slide — Pattern C Dynamic Hybrid & Live Tier Upgrades' },
-          { num: 2, label: '2. ★ Fig 1 Editable', editable: true, desc: '★ Figure 1 Full-Width Editable Diagram — Pattern C Hybrid Hub-and-Spoke & PSC' },
-          { num: 3, label: '3. Fig 1 Logical Flow', desc: 'Figure 1 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
-          { num: 4, label: '4. Fig 1 Technical Flow', desc: 'Figure 1 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 5, label: '5. ★ Fig 2 Editable', editable: true, desc: '★ Figure 2 Full-Width Editable Diagram — Hub-and-Spoke Demo Env & PSC Topology' },
-          { num: 6, label: '6. Fig 2 Logical Flow', desc: 'Figure 2 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
-          { num: 7, label: '7. Fig 2 Technical Flow', desc: 'Figure 2 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 8, label: '8. ★ Fig 3 Editable', editable: true, desc: '★ Figure 3 Full-Width Editable Diagram — Zero-Downtime Tier Upgrade Sequence' },
-          { num: 9, label: '9. Fig 3 Logical Flow', desc: 'Figure 3 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
-          { num: 10, label: '10. Fig 3 Technical Flow', desc: 'Figure 3 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 11, label: '11. ★ Fig 4 Editable', editable: true, desc: '★ Figure 4 Full-Width Editable Diagram — Terraform Hybrid PSC Resource Graph' },
-          { num: 12, label: '12. Fig 4 Logical Flow', desc: 'Figure 4 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
-          { num: 13, label: '13. Fig 4 Technical Flow', desc: 'Figure 4 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 14, label: '14. ★ 3-Zone Topology', editable: true, desc: '★ Archetype 1 (architecture-zone-topology) — 3-Zone Enterprise Boundary & Sovereign VPC' },
-          { num: 15, label: '15. ★ Payload Triptych', editable: true, desc: '★ Archetype 2 (payload-transformation-triptych) — Contaminated vs. Clean Wire Payload' },
-          { num: 16, label: '16. ★ 5-Actor UML Swimlane', editable: true, desc: '★ Archetype 3 (uml-sequence-swimlane) — 5-Actor Lifeline & Scale-to-0 Dormant Approval' },
-          { num: 17, label: '17. ★ Async State Flow', editable: true, desc: '★ Archetype 4 (async-state-flow-pipeline) — Long Task (>5m) HTTP 202 & Webhook Loopback' },
-          { num: 18, label: '18. ★ Phased Roadmap', editable: true, desc: '★ Archetype 5 (phased-roadmap-timeline) — 3-Phase Connected Enterprise Technology Roadmap' },
-          { num: 19, label: '19. ★ Operating Model', editable: true, desc: '★ Archetype 6 (strategic-operating-model-pillars) — 3-Pillar Strategic Operating Model' },
-          { num: 20, label: '20. ★ Live GCP Screenshots', editable: true, desc: '★ Grounded Google Cloud Console Screenshots + 4 Editable Verification Callout Cards' },
-          { num: 21, label: '21. Quad-Metrics KPIs', desc: 'Executive Impact & Production Verification Metrics (74%, 0ms, 4/4, 3 Phases)' },
-          { num: 22, label: '22. Products Used (PSC)', desc: 'Products used — Hybrid Hub-and-Spoke Control Plane & PSC ServiceAttachment' },
-          { num: 23, label: '23. Use Cases', desc: 'Use cases — Why tiered SaaS needs both Pooled and Sovereign' },
-          { num: 24, label: '24. FinOps & Terraform', desc: 'Design alternatives — FinOps outcomes, Terraform PSC blueprint & Master Lab' },
-          { num: 25, label: '25. 5-Hop in Pattern C', desc: 'Design considerations — The 5-Hop Chain in Pattern C (instance-scoped profiles)' },
-          { num: 26, label: '26. Live Tier Upgrade', desc: 'Design considerations — SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY (0 dropped turns)' },
-          { num: 27, label: '27. What’s Next', desc: 'What’s next — Key Takeaways & Action Plan' },
-          { num: 28, label: '28. Source Lineage', desc: 'Assets, Editable Diagrams & Source Documents Table' }
+          { num: 1, label: '1. Act I: Title & Thesis', desc: 'Act I (Slide 1/14) — Pattern C Dynamic Hybrid & Zero-Downtime Tier Upgrades' },
+          { num: 2, label: '2. ★ Fig 1 Hybrid Blueprint', editable: true, desc: '★ Act I (Slide 2/14) — Figure 1 Pattern C Hybrid Hub-and-Spoke & PSC (#78, 56 Shapes + 23 Connectors)' },
+          { num: 3, label: '3. ★ Headline KPIs', editable: true, desc: '★ Act I (Slide 3/14) — Blended Margin & Live Migration Metrics (74% Gross Margin, 0ms Downtime, 4/4 Tests)' },
+          { num: 4, label: '4. Hybrid PSC Stack & Use Cases', desc: 'Act I (Slide 4/14) — Routing Hub, PSC ServiceAttachment & Tiered PLG-to-Enterprise SaaS' },
+          { num: 5, label: '5. ★ Act II: 3-Zone Hub & Spokes', editable: true, desc: '★ Act II (Slide 5/14, architecture-zone-topology) — Shared Control Plane Hub -> Pooled Spoke vs. Sovereign PSC Spoke' },
+          { num: 6, label: '6. ★ Tier-Aware Routing Envelope', editable: true, desc: '★ Act II (Slide 6/14, payload-transformation-triptych) — Preventing Misrouted Enterprise Traffic & Stale Pointers' },
+          { num: 7, label: '7. ★ Live Tier Upgrade Sequence', editable: true, desc: '★ Act II (Slide 7/14, uml-sequence-swimlane) — 5-Actor Lifeline Across SHADOW_SYNC, ATOMIC_CUTOVER & DRAIN' },
+          { num: 8, label: '8. ★ 3-Phase Migration State Loop', editable: true, desc: '★ Act II (Slide 8/14, async-state-flow-pipeline) — Zero-Downtime Pooled-to-Sovereign Live Migration State Machine' },
+          { num: 9, label: '9. Act III: 4 Hybrid & PSC Tests', desc: 'Act III (Slide 9/14) — 4 Dynamic Routing, Cross-Spoke Isolation & Zero-Downtime Cutover Tests' },
+          { num: 10, label: '10. Blended FinOps & Terraform', desc: 'Act III (Slide 10/14) — 74% Blended Gross Margin Model & Hub-and-Spoke PSC Terraform Blueprint' },
+          { num: 11, label: '11. ★ Live Hybrid GCP Proof', editable: true, desc: '★ Act III (Slide 11/14, live-screenshot-callout) — Live Routing Registry, PSC Endpoint & Cutover Console Proof' },
+          { num: 12, label: '12. ★ 3-Phase Hybrid Rollout', editable: true, desc: '★ Act III (Slide 12/14, phased-roadmap-timeline) — 3-Phase Hub Control Plane, PSC Spoke & Live Upgrade Rollout' },
+          { num: 13, label: '13. ★ 3-Pillar Hybrid Ops Model', editable: true, desc: '★ Act III (Slide 13/14, strategic-operating-model-pillars) — Dynamic Tier Governance, Blended FinOps & Unified Telemetry' },
+          { num: 14, label: '14. Next Steps & Lineage', desc: 'Act III (Slide 14/14) — Pattern C Engineering Action Plan & Verified Source Lineage' }
         ]
       },
       WS5: {
         key: 'WS5',
-        badge: 'WS5 • Part 5 of 5 • 20 Slides',
+        badge: 'WS5 • Part 5 of 5 • 14 Slides',
         title: 'Workstream 5: Executive Decision Guide & The Multi-Tenant Agentic Triad',
         subtitle: '2-question topology decision tree, Pattern A/B/C comparison matrix, Agentic Triad & consolidated EAP backlog',
         deckStem: 'ws5-wrap-up-editable-slides',
@@ -2938,36 +2899,30 @@
           { label: '📚 Complete End-to-End Guide', path: 'docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md' }
         ],
         diagrams: [
-          { id: 'ws5-decision-tree-and-agentic-triad', label: 'Fig 1: Decision Tree & Agentic Triad', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 2, logicalSlide: 3, technicalSlide: 4 }
+          { id: 'ws5-decision-tree-and-agentic-triad', label: 'Fig 1: Decision Tree & Agentic Triad', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 2, logicalSlide: 5, technicalSlide: 7 }
         ],
         slides: [
-          { num: 1, label: '1. Title & Key Point', desc: 'Title Slide — Executive Decision Guide & Multi-Tenant Agentic Triad' },
-          { num: 2, label: '2. ★ Fig 1 Editable', editable: true, desc: '★ Figure 1 Full-Width Editable Diagram — Decision Tree & Agentic Triad' },
-          { num: 3, label: '3. Fig 1 Logical Flow', desc: 'Figure 1 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
-          { num: 4, label: '4. Fig 1 Technical Flow', desc: 'Figure 1 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 5, label: '5. ★ 3-Zone Topology', editable: true, desc: '★ Archetype 1 (architecture-zone-topology) — 3-Zone Enterprise Boundary & Sovereign VPC' },
-          { num: 6, label: '6. ★ Payload Triptych', editable: true, desc: '★ Archetype 2 (payload-transformation-triptych) — Contaminated vs. Clean Wire Payload' },
-          { num: 7, label: '7. ★ 5-Actor UML Swimlane', editable: true, desc: '★ Archetype 3 (uml-sequence-swimlane) — 5-Actor Lifeline & Scale-to-0 Dormant Approval' },
-          { num: 8, label: '8. ★ Async State Flow', editable: true, desc: '★ Archetype 4 (async-state-flow-pipeline) — Long Task (>5m) HTTP 202 & Webhook Loopback' },
-          { num: 9, label: '9. ★ Phased Roadmap', editable: true, desc: '★ Archetype 5 (phased-roadmap-timeline) — 3-Phase Connected Enterprise Technology Roadmap' },
-          { num: 10, label: '10. ★ Operating Model', editable: true, desc: '★ Archetype 6 (strategic-operating-model-pillars) — 3-Pillar Strategic Operating Model' },
-          { num: 11, label: '11. ★ Live GCP Screenshots', editable: true, desc: '★ Grounded Google Cloud Console Screenshots + 4 Editable Verification Callout Cards' },
-          { num: 12, label: '12. Quad-Metrics KPIs', desc: 'Executive Impact & Production Verification Metrics (80%, 2-Q, 10-Wk, 14/14)' },
-          { num: 13, label: '13. Products Used', desc: 'Products used — Google Cloud Agentic AI, Security & Data Stack' },
-          { num: 14, label: '14. Use Cases', desc: 'Use cases — 2-question topology selector & 80% reusable core' },
-          { num: 15, label: '15. Decision Tree', desc: 'Design alternatives — Executive Decision Tree (Compliance vs Packaging)' },
-          { num: 16, label: '16. Comparison Matrix', desc: 'Design alternatives — Side-by-Side Pattern A / B / C Comparison Matrix' },
-          { num: 17, label: '17. Agentic Triad', desc: 'Design considerations — Zero-Trust Security, FinOps & Privacy-Preserving Observability' },
-          { num: 18, label: '18. 5-Hop Invariant', desc: 'Design considerations — 5-Hop Invariant Across All Three Patterns' },
-          { num: 19, label: '19. What’s Next', desc: 'What’s next — 10-Week Production Rollout Roadmap & Key Takeaways' },
-          { num: 20, label: '20. Source Lineage', desc: 'Assets, Editable Diagrams & Source Documents Table' }
+          { num: 1, label: '1. Act I: Title & Thesis', desc: 'Act I (Slide 1/14) — Executive Decision Guide & Multi-Tenant Agentic Triad Overview' },
+          { num: 2, label: '2. ★ Fig 1 Decision Blueprint', editable: true, desc: '★ Act I (Slide 2/14) — Figure 1 Decision Tree & Agentic Triad (#78, 56 Shapes + 23 Connectors)' },
+          { num: 3, label: '3. ★ Headline KPIs', editable: true, desc: '★ Act I (Slide 3/14) — Executive Decision Metrics (80% Reusable Core, 2-Question Selector, 10-Wk Rollout)' },
+          { num: 4, label: '4. Unified Stack & Selector', desc: 'Act I (Slide 4/14) — Complete Multi-Tenant Google Cloud Stack & 2-Question Topology Selector' },
+          { num: 5, label: '5. ★ Act II: 3-Pattern Architecture', editable: true, desc: '★ Act II (Slide 5/14, architecture-zone-topology) — Shared 80% 5-Hop Core Across Patterns A, B & C' },
+          { num: 6, label: '6. ★ Architecture Decision Gate', editable: true, desc: '★ Act II (Slide 6/14, payload-transformation-triptych) — Replacing Ad-Hoc Sprawl with the 2-Question Selector' },
+          { num: 7, label: '7. ★ Tenant Graduation Lifeline', editable: true, desc: '★ Act II (Slide 7/14, uml-sequence-swimlane) — 5-Actor Lifecycle From Free Trial (A) to Regulated Silo (C/B)' },
+          { num: 8, label: '8. ★ Closed-Loop Triad Governance', editable: true, desc: '★ Act II (Slide 8/14, async-state-flow-pipeline) — Continuous Security, FinOps & Redacted Observability Loop' },
+          { num: 9, label: '9. Act III: A/B/C Trade-Off Matrix', desc: 'Act III (Slide 9/14) — Side-by-Side Executive Comparison Matrix (Cost, Latency, Blast Radius, Ops)' },
+          { num: 10, label: '10. Agentic Triad & 5-Hop Invariant', desc: 'Act III (Slide 10/14) — Zero-Trust Security, FinOps & Privacy-Preserving Observability Invariants' },
+          { num: 11, label: '11. ★ Live 20/20 GCP Proof', editable: true, desc: '★ Act III (Slide 11/14, live-screenshot-callout) — Full-Series 20/20 Live Cloud Console Verification Proof' },
+          { num: 12, label: '12. ★ 10-Week Rollout Timeline', editable: true, desc: '★ Act III (Slide 12/14, phased-roadmap-timeline) — 3-Phase, 10-Week Production Rollout Roadmap (Weeks 1–10)' },
+          { num: 13, label: '13. ★ 3-Pillar Agentic Triad', editable: true, desc: '★ Act III (Slide 13/14, strategic-operating-model-pillars) — Zero-Trust Security, FinOps & Redacted Observability' },
+          { num: 14, label: '14. Next Steps & Lineage', desc: 'Act III (Slide 14/14) — Executive Takeaways, Action Plan & Series Source Lineage' }
         ]
       },
       ALL: {
         key: 'ALL',
-        badge: 'ALL • 68-Slide Master Deck',
+        badge: 'ALL • 26-Slide Master Deck',
         title: 'All-in-One Master Deck & End-to-End Guide: Workstreams 1–5 Complete Architecture & 14 Editable Diagrams',
-        subtitle: 'Combined 68-slide master presentation & End-to-End Guide covering WS1 Reference, WS2 Pattern A, WS3 Pattern B, WS4 Pattern C & WS5 Executive Triad',
+        subtitle: 'Cohesive 26-slide master presentation & End-to-End Guide covering WS1 Reference, WS2 Pattern A, WS3 Pattern B, WS4 Pattern C & WS5 Executive Triad',
         deckStem: 'geap-multi-tenancy-all-workstreams-editable-slides',
         deckJson: 'ws1..ws5-combined.deck.json',
         pptxPath: 'slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx',
@@ -2983,34 +2938,28 @@
         ],
         diagrams: [
           { id: 'ws1-multi-tenant-taxonomy-overview', label: 'WS1 Fig 1: Multi-Tenant Taxonomy', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 4, logicalSlide: 5, technicalSlide: 6 },
-          { id: 'ws1-cloud-arch-center-5hop-baseline', label: 'WS1 Fig 2: 5-Hop Baseline', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 7, logicalSlide: 8, technicalSlide: 9 },
-          { id: 'ws2-pattern-a-pooled-5hop-architecture', label: 'WS2 Fig 1: Pattern A Pooled 5-Hop', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 13, logicalSlide: 14, technicalSlide: 15 },
-          { id: 'ws2-pattern-a-breach-defense-sequence', label: 'WS2 Fig 2: 10-Point Breach Matrix', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 16, logicalSlide: 17, technicalSlide: 18 },
-          { id: 'ws3-pattern-b-sovereign-silos-architecture', label: 'WS3 Fig 1: Sovereign Silos & Gemma 3', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 28, logicalSlide: 29, technicalSlide: 30 },
-          { id: 'ws4-pattern-c-hybrid-psc-and-migration', label: 'WS4 Fig 1: Hybrid PSC & Live Migration', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 40, logicalSlide: 41, technicalSlide: 42 },
-          { id: 'ws5-decision-tree-and-agentic-triad', label: 'WS5 Fig 1: Decision Tree & Agentic Triad', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 55, logicalSlide: 56, technicalSlide: 57 }
+          { id: 'ws2-pattern-a-pooled-5hop-architecture', label: 'WS2 Fig 1: Pattern A Pooled 5-Hop', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 8, logicalSlide: 9, technicalSlide: 10 },
+          { id: 'ws3-pattern-b-sovereign-silos-architecture', label: 'WS3 Fig 1: Sovereign Silos & Gemma 3', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 12, logicalSlide: 13, technicalSlide: 14 },
+          { id: 'ws4-pattern-c-hybrid-psc-and-migration', label: 'WS4 Fig 1: Hybrid PSC & Live Migration', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 16, logicalSlide: 17, technicalSlide: 18 },
+          { id: 'ws5-decision-tree-and-agentic-triad', label: 'WS5 Fig 1: Decision Tree & Agentic Triad', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 20, logicalSlide: 21, technicalSlide: 23 }
         ],
-        slides: Array.from({ length: 68 }, (_, idx) => {
+        slides: Array.from({ length: 26 }, (_, idx) => {
           const n = idx + 1;
-          const editableSlides = [4, 7, 13, 16, 19, 22, 28, 31, 34, 40, 43, 46, 49, 55, 60, 61, 62, 63, 64, 65, 66];
-          const logicalSlides = [5, 8, 14, 17, 20, 23, 29, 32, 35, 41, 44, 47, 50, 56];
-          const technicalSlides = [6, 9, 15, 18, 21, 24, 30, 33, 36, 42, 45, 48, 51, 57];
+          const editableSlides = [2, 4, 5, 8, 9, 12, 13, 16, 17, 20, 21, 22, 23, 24];
           const isEd = editableSlides.includes(n);
-          const isLog = logicalSlides.includes(n);
-          const isTech = technicalSlides.includes(n);
           return {
             num: n,
-            label: isEd ? `${n}. ★ Editable Visual` : (isLog ? `${n}. Logical Flow` : (isTech ? `${n}. Technical Flow` : `${n}. Slide ${n}`)),
+            label: isEd ? `${n}. ★ Editable Visual` : `${n}. Slide ${n}`,
             editable: isEd,
             desc: isEd
-              ? `★ Slide ${n} of 68 — 100% Full-Width Native Editable Diagram / Architectural Visual Archetype`
-              : (isLog ? `Slide ${n} of 68 — Step-by-Step Plain-English Logical Flow (Steps ①–⑦)` : (isTech ? `Slide ${n} of 68 — Executive-Friendly Technical Flow (Google Cloud Services & Safeguards)` : `Slide ${n} of 68 — All-in-One Master Deck (Workstreams 1–5)`))
+              ? `★ Slide ${n} of 26 — 100% Full-Width Native Editable Diagram / Architectural Visual Archetype`
+              : `Slide ${n} of 26 — Cohesive Master Program Deck (Workstreams 1–5)`
           };
         })
       }
     };
 
-    const PPTX_CACHE_VER = '20261015-v14';
+    const PPTX_CACHE_VER = '20261015-v15';
     let activeHubWsKey = 'WS1';
     let activeHubSlideIdx = 0;
     let activeHubDiagIdx = 0;
@@ -4099,26 +4048,26 @@
       const safeId = escapeHtml(cardId).replace(/'/g, "\\'");
       const safeTitle = escapeHtml(cardTitle).replace(/'/g, "\\'");
       return `
-        <button type="button" class="card-action-icon-btn" data-action="edit" onclick="event.stopPropagation(); handleCardHoverAction('${safeId}', 'EDIT')" title="${isDiagramCard ? 'Edit Diagram Online in Draw.io' : 'Edit Card Content Inline'}">
-          <span>&#9999;&#65039;</span><span>Edit</span>
+        <button type="button" class="card-action-icon-btn" data-action="edit" aria-label="Edit" onclick="event.stopPropagation(); handleCardHoverAction('${safeId}', 'EDIT')" title="${isDiagramCard ? 'Edit Diagram Online in Draw.io' : 'Edit Card Content Inline'}">
+          <span>&#9999;&#65039;</span>
         </button>
-        <button type="button" class="card-action-icon-btn" data-action="save" onclick="event.stopPropagation(); handleCardHoverAction('${safeId}', 'SAVE')" title="Save Card / Diagram &amp; Record in Change Log">
-          <span>&#128190;</span><span>Save</span>
+        <button type="button" class="card-action-icon-btn" data-action="save" aria-label="Save" onclick="event.stopPropagation(); handleCardHoverAction('${safeId}', 'SAVE')" title="Save Card / Diagram &amp; Record in Change Log">
+          <span>&#128190;</span>
         </button>
-        <button type="button" class="card-action-icon-btn" data-action="add" onclick="event.stopPropagation(); handleCardHoverAction('${safeId}', 'ADD')" title="Add New Section / Card Below">
-          <span>&#10133;</span><span>Add</span>
+        <button type="button" class="card-action-icon-btn" data-action="add" aria-label="Add" onclick="event.stopPropagation(); handleCardHoverAction('${safeId}', 'ADD')" title="Add New Section / Card Below">
+          <span>&#10133;</span>
         </button>
-        <button type="button" class="card-action-icon-btn" data-action="delete" onclick="event.stopPropagation(); handleCardHoverAction('${safeId}', 'DELETE')" title="Delete Card (Restorable from Change Log)">
-          <span>&#128465;&#65039;</span><span>Delete</span>
+        <button type="button" class="card-action-icon-btn" data-action="delete" aria-label="Delete" onclick="event.stopPropagation(); handleCardHoverAction('${safeId}', 'DELETE')" title="Delete Card (Restorable from Change Log)">
+          <span>&#128465;&#65039;</span>
         </button>
-        <button type="button" class="card-action-icon-btn" data-action="hide" onclick="event.stopPropagation(); handleCardHoverAction('${safeId}', 'HIDE')" title="Hide / Collapse Card">
-          <span>&#128584;</span><span>Hide</span>
+        <button type="button" class="card-action-icon-btn" data-action="hide" aria-label="Hide" onclick="event.stopPropagation(); handleCardHoverAction('${safeId}', 'HIDE')" title="Hide / Collapse Card">
+          <span>&#128584;</span>
         </button>
-        <button type="button" class="card-action-icon-btn" data-action="clone" onclick="event.stopPropagation(); handleCardHoverAction('${safeId}', 'CLONE')" title="Clone / Duplicate Card Below">
-          <span>&#128203;</span><span>Clone</span>
+        <button type="button" class="card-action-icon-btn" data-action="clone" aria-label="Clone" onclick="event.stopPropagation(); handleCardHoverAction('${safeId}', 'CLONE')" title="Clone / Duplicate Card Below">
+          <span>&#128203;</span>
         </button>
-        <button type="button" class="card-action-icon-btn comment-btn" data-action="comment" onclick="event.stopPropagation(); openSectionComments('${safeId}', '${safeTitle}')" title="Open Google Docs / Slides Multi-User Comments for This Section">
-          <span>&#128172;</span><span class="card-toolbar-comment-label">Comment</span>
+        <button type="button" class="card-action-icon-btn comment-btn" data-action="comment" aria-label="Comments" onclick="event.stopPropagation(); openSectionComments('${safeId}', '${safeTitle}')" title="Open Google Docs / Slides Multi-User Comments Drawer for This Section">
+          <span>&#128172;</span><span class="card-toolbar-comment-badge"></span>
         </button>
       `;
     }
@@ -4147,28 +4096,11 @@
           cardEl.insertBefore(toolbar, cardEl.firstChild);
         }
 
-        // Add Google Docs / Slides margin comment badge & collapsible inline comment tray on blog section cards and diagram cards
-        if (cardEl.classList.contains('doc-section-card') || cardEl.classList.contains('gcp-figure-card') || cardId === 'hub-diag-section') {
-          let marginPill = cardEl.querySelector(':scope > .section-comment-margin-pill');
-          if (!marginPill) {
-            marginPill = document.createElement('button');
-            marginPill.type = 'button';
-            marginPill.className = 'section-comment-margin-pill';
-            marginPill.setAttribute('data-comment-pill-for', cardId);
-            const safeId = escapeHtml(cardId).replace(/'/g, "\\'");
-            const safeTitle = escapeHtml(cardTitle).replace(/'/g, "\\'");
-            marginPill.setAttribute('onclick', `event.stopPropagation(); toggleInlineSectionCommentsTray('${safeId}', '${safeTitle}')`);
-            marginPill.innerHTML = `<span>&#128172;</span><span class="pill-cmt-count">0</span>`;
-            cardEl.insertBefore(marginPill, toolbar.nextSibling);
-          }
-          let tray = cardEl.querySelector(':scope > .gdocs-section-comments-tray');
-          if (!tray) {
-            tray = document.createElement('div');
-            tray.className = 'gdocs-section-comments-tray';
-            tray.id = `inline-comments-tray-${cardId}`;
-            cardEl.appendChild(tray);
-          }
-        }
+        // Remove any legacy inline comment box or margin pill inside cards (unified in #gdocs-comments-drawer)
+        const oldPill = cardEl.querySelector(':scope > .section-comment-margin-pill');
+        if (oldPill) oldPill.remove();
+        const oldTray = cardEl.querySelector(':scope > .gdocs-section-comments-tray');
+        if (oldTray) oldTray.remove();
       });
     }
 
@@ -4549,31 +4481,13 @@
         }
       }
 
-      // Open inline section tray AND right-side Google Docs comments drawer
-      const tray = document.getElementById(`inline-comments-tray-${cardId}`);
-      if (tray) tray.classList.add('open');
       openCommentsDrawer();
       const txt = document.getElementById('drawer-new-comment-text');
       if (txt) txt.focus();
     }
 
     function toggleInlineSectionCommentsTray(cardId, cardTitle) {
-      const tray = document.getElementById(`inline-comments-tray-${cardId}`);
-      if (!tray) {
-        openSectionComments(cardId, cardTitle);
-        return;
-      }
-      const wasOpen = tray.classList.contains('open');
-      if (wasOpen) {
-        tray.classList.remove('open');
-      } else {
-        tray.classList.add('open');
-        const targetIdInput = document.getElementById('drawer-target-card-id');
-        if (targetIdInput) targetIdInput.value = cardId;
-        const targetTitleEl = document.getElementById('drawer-target-card-title');
-        if (targetTitleEl) targetTitleEl.textContent = cardTitle || cardId;
-      }
-      renderCommentsDrawerAndInlineBadges();
+      openSectionComments(cardId, cardTitle);
     }
 
     function buildThreadCardHtml(thread, isInline) {
@@ -4581,8 +4495,10 @@
       const isResolved = thread.status === 'resolved';
       const safeThreadId = escapeHtml(thread.threadId).replace(/'/g, "\\'");
       const replyInputId = `${isInline ? 'inline' : 'drawer'}-reply-input-${thread.threadId}`;
+      const activeTargetIdEl = document.getElementById('drawer-target-card-id');
+      const isTargetSection = activeTargetIdEl && activeTargetIdEl.value && thread.cardId === activeTargetIdEl.value;
       return `
-        <div class="gdocs-thread-card ${isResolved ? 'resolved' : ''}" data-thread-id="${escapeHtml(thread.threadId)}">
+        <div class="gdocs-thread-card ${isResolved ? 'resolved' : ''}" data-thread-id="${escapeHtml(thread.threadId)}" style="${isTargetSection ? 'border-color:#93c5fd; box-shadow:0 0 0 2px rgba(26,115,232,0.16);' : ''}">
           <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:6px; padding-bottom:6px; border-bottom:1px solid #f1f5f9;">
             <div style="font-size:11px; font-weight:700; color:#1a73e8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
               &#128204; ${escapeHtml(thread.sectionTitle || thread.cardId)}
@@ -4630,69 +4546,51 @@
       // Update global comment counters
       const drwBadge = document.getElementById('drawer-comments-count-badge');
       if (drwBadge) drwBadge.textContent = `${openThreads.length} Open (${portalCommentThreads.length} Total)`;
+      const navCnt = document.getElementById('nav-comments-count');
+      if (navCnt) navCnt.textContent = String(portalCommentThreads.length);
       const chgBtnCnt = document.getElementById('chg-btn-comments-count');
       if (chgBtnCnt) chgBtnCnt.textContent = String(portalCommentThreads.length);
       const kpiComments = document.getElementById('chg-kpi-comments');
       if (kpiComments) kpiComments.textContent = `${portalCommentThreads.length} Threads (${totalCommentCount} Comments)`;
 
-      // Render Right-Side Google Docs / Slides Comments Drawer
+      // Render Right-Side Google Docs / Slides Comments Drawer (prioritize active target card's threads at top)
       const listEl = document.getElementById('gdocs-drawer-threads-list');
       if (listEl) {
+        const activeTargetIdEl = document.getElementById('drawer-target-card-id');
+        const activeCardId = activeTargetIdEl ? activeTargetIdEl.value : '';
         const filtered = portalCommentThreads.filter(t => {
           if (statusFilter === 'open') return t.status !== 'resolved';
           if (statusFilter === 'resolved') return t.status === 'resolved';
           return true;
+        }).slice().sort((a, b) => {
+          const aMatch = a.cardId === activeCardId ? 1 : 0;
+          const bMatch = b.cardId === activeCardId ? 1 : 0;
+          return bMatch - aMatch;
         });
         if (!filtered.length) {
-          listEl.innerHTML = `<div class="muted" style="text-align:center; padding:24px 12px; font-size:12.5px;">No comment threads match the selected filter. Click <code>&#128172; Comment</code> on any section card to start a discussion.</div>`;
+          listEl.innerHTML = `<div class="muted" style="text-align:center; padding:24px 12px; font-size:12.5px;">No comment threads match the selected filter. Click the <code>&#128172;</code> icon on any card to start a discussion.</div>`;
         } else {
           listEl.innerHTML = filtered.map(t => buildThreadCardHtml(t, false)).join('');
         }
       }
 
-      // Update per-card margin comment pills, hover toolbar comment labels, and inline comment trays
+      // Update per-card hover toolbar comment icon badge (no separate inline comment box)
       const allCards = Array.from(document.querySelectorAll('[data-card-id]'));
       allCards.forEach(cardEl => {
         const cid = cardEl.getAttribute('data-card-id');
-        const cTitle = inferCardTitle(cardEl);
         const cardThreads = portalCommentThreads.filter(t => t.cardId === cid);
         const cardCommentCount = cardThreads.reduce((acc, t) => acc + (Array.isArray(t.comments) ? t.comments.length : 0), 0);
 
-        const pill = cardEl.querySelector(':scope > .section-comment-margin-pill');
-        if (pill) {
-          pill.classList.toggle('has-comments', cardCommentCount > 0);
-          pill.innerHTML = cardCommentCount > 0
-            ? `<span>&#128172;</span><span>${cardCommentCount} ${cardCommentCount === 1 ? 'Comment' : 'Comments'}</span>`
-            : `<span>&#128172;</span><span>+ Comment</span>`;
-        }
-
-        const toolbarCommentLbl = cardEl.querySelector(':scope > .card-hover-toolbar .card-toolbar-comment-label');
-        if (toolbarCommentLbl) {
-          toolbarCommentLbl.textContent = cardCommentCount > 0 ? `Comment (${cardCommentCount})` : 'Comment';
-        }
-
-        const tray = document.getElementById(`inline-comments-tray-${cid}`);
-        if (tray) {
-          const safeCid = escapeHtml(cid).replace(/'/g, "\\'");
-          const safeTitle = escapeHtml(cTitle).replace(/'/g, "\\'");
-          const inlineComposerId = `inline-new-cmt-${cid}`;
-          tray.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
-              <div style="display:flex; align-items:center; gap:8px;">
-                <span class="badge badge-amber">&#128172; SECTION COMMENTS (${cardThreads.length} THREADS &bull; ${cardCommentCount} COMMENTS)</span>
-                <span class="muted" style="font-size:11.5px;">Commenting as <strong>${escapeHtml(portalActiveActor.name)}</strong> (${escapeHtml(portalActiveActor.role)})</span>
-              </div>
-              <div style="display:flex; gap:6px;">
-                <button type="button" class="sim-btn" style="padding:3px 8px; font-size:11px;" onclick="openSectionComments('${safeCid}', '${safeTitle}')">&#8599; Open Full Comments Stream</button>
-                <button type="button" class="sim-btn" style="padding:3px 8px; font-size:11px;" onclick="document.getElementById('inline-comments-tray-${safeCid}').classList.remove('open')">&#10005; Hide</button>
-              </div>
-            </div>
-            ${cardThreads.length ? cardThreads.map(t => buildThreadCardHtml(t, true)).join('') : '<div class="muted" style="font-size:12px; margin-bottom:8px;">No comments on this section yet. Start a multi-user thread below:</div>'}
-            <div style="display:flex; gap:8px; margin-top:8px;">
-              <input type="text" id="${inlineComposerId}" placeholder="Add a Google Docs / Slides style comment on '${escapeHtml(cTitle)}' as ${escapeHtml(portalActiveActor.name)}..." aria-label="Add section comment" style="flex:1; padding:6px 10px; font-size:12px; border:1px solid #cbd5e1; border-radius:7px; background:#ffffff;" onkeydown="if(event.key==='Enter'){event.preventDefault(); submitInlineSectionComment('${safeCid}', '${safeTitle}', '${inlineComposerId}');}" />
-              <button type="button" class="sim-btn primary" style="padding:5px 12px; font-size:12px;" onclick="submitInlineSectionComment('${safeCid}', '${safeTitle}', '${inlineComposerId}')">&#128172; Comment</button>
-            </div>
-          `;
+        const cmtBtn = cardEl.querySelector(':scope > .card-hover-toolbar .comment-btn');
+        if (cmtBtn) {
+          cmtBtn.classList.toggle('has-comments', cardCommentCount > 0);
+          cmtBtn.title = cardCommentCount > 0
+            ? `Comments (${cardCommentCount}) — Click to view or add comments in drawer`
+            : 'Open Google Docs / Slides Multi-User Comments Drawer for This Section';
+          const badge = cmtBtn.querySelector('.card-toolbar-comment-badge');
+          if (badge) {
+            badge.textContent = cardCommentCount > 0 ? String(cardCommentCount) : '';
+          }
         }
       });
     }

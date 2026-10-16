@@ -1,85 +1,85 @@
 {
-  "generatedAt": "2026-10-16T00:16:57.503Z",
-  "engine": "PromptCanvas Vision Decompiler • Google Cloud Architecture Center Light-Theme Multi-Layout Canvas • pptxgenjs LAYOUT_WIDE 16:9",
+  "generatedAt": "2026-10-16T01:06:14.709Z",
+  "engine": "PromptCanvas Vision Decompiler • Google Cloud Architecture Center 3-Act Cohesive Story Arc • pptxgenjs LAYOUT_WIDE 16:9",
   "decks": [
     {
       "key": "WS1",
       "file": "slides/ws1-reference-architecture-editable-slides.pptx",
       "blog": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
-      "slides": 23,
+      "slides": 14,
       "diagrams": [
         "ws1-multi-tenant-taxonomy-overview",
         "ws1-cloud-arch-center-5hop-baseline"
       ],
-      "shapes": 254,
-      "connectors": 87,
-      "bytes": 2695129,
-      "narrative": "blog deck.json"
+      "shapes": 198,
+      "connectors": 64,
+      "bytes": 1781309,
+      "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
       "key": "WS2",
       "file": "slides/ws2-pattern-a-pooled-editable-slides.pptx",
       "blog": "blogs/ws2-pattern-a-pooled-architecture.md",
-      "slides": 28,
+      "slides": 14,
       "diagrams": [
         "ws2-pattern-a-pooled-5hop-architecture",
         "ws2-pattern-a-breach-defense-sequence",
         "ws2-demo-env-and-3p-auth-sandbox-topology",
         "ws2-terraform-starter-resource-graph"
       ],
-      "shapes": 366,
-      "connectors": 133,
-      "bytes": 3667181,
-      "narrative": "blog deck.json"
+      "shapes": 198,
+      "connectors": 64,
+      "bytes": 1879126,
+      "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
       "key": "WS3",
       "file": "slides/ws3-pattern-b-siloed-editable-slides.pptx",
       "blog": "blogs/ws3-pattern-b-sovereign-silos.md",
-      "slides": 25,
+      "slides": 14,
       "diagrams": [
         "ws3-pattern-b-sovereign-silos-architecture",
         "ws3-multi-project-silo-and-cmek-setup-topology",
         "ws3-terraform-silo-blueprint-resource-graph"
       ],
-      "shapes": 310,
-      "connectors": 110,
-      "bytes": 2945663,
-      "narrative": "blog deck.json"
+      "shapes": 198,
+      "connectors": 64,
+      "bytes": 1698324,
+      "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
       "key": "WS4",
       "file": "slides/ws4-pattern-c-hybrid-editable-slides.pptx",
       "blog": "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md",
-      "slides": 28,
+      "slides": 14,
       "diagrams": [
         "ws4-pattern-c-hybrid-psc-and-migration",
         "ws4-hub-and-spoke-demo-env-setup-topology",
         "ws4-zero-downtime-tier-upgrade-sequence",
         "ws4-terraform-hybrid-psc-blueprint-resource-graph"
       ],
-      "shapes": 366,
-      "connectors": 133,
-      "bytes": 3489456,
-      "narrative": "blog deck.json"
+      "shapes": 198,
+      "connectors": 64,
+      "bytes": 1743476,
+      "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
       "key": "WS5",
       "file": "slides/ws5-wrap-up-editable-slides.pptx",
       "blog": "blogs/ws5-decision-guide-and-agentic-triad.md",
-      "slides": 20,
+      "slides": 14,
       "diagrams": [
         "ws5-decision-tree-and-agentic-triad"
       ],
       "shapes": 198,
       "connectors": 64,
-      "bytes": 1928184,
-      "narrative": "blog deck.json"
+      "bytes": 1542543,
+      "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
       "key": "ALL",
       "file": "slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx",
-      "slides": 68,
+      "slides": 26,
       "diagrams": [
         "ws1-multi-tenant-taxonomy-overview",
         "ws1-cloud-arch-center-5hop-baseline",
@@ -96,7 +96,7 @@
         "ws4-terraform-hybrid-psc-blueprint-resource-graph",
         "ws5-decision-tree-and-agentic-triad"
       ],
-      "bytes": 8585436
+      "bytes": 3262322
     }
   ]
 }

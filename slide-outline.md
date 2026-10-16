@@ -1,52 +1,51 @@
-# Google Slides Semantic & Visual Archetype Outline (`slide-outline.md`)
+# Google Cloud Multi-Tenant Agentic AI — Cohesive 3-Act Executive Slide Deck Outline (`v3.0`)
 
-> **Plugin**: `google-slides-design` (`v1.0.0`) • **Skill**: `slide-design`
-> **Brand Governance (`rules/AGENTS.md`)**:
-> - **Sequential Quad-Color Order**: `1. Blue (#4285F4)` → `2. Red (#EA4335)` → `3. Yellow (#FBBC04)` → `4. Green (#34A853)`
-> - **6 Canonical Architectural Visual Archetypes + Grounded Screenshot Callouts**: `architecture-zone-topology`, `payload-transformation-triptych`, `uml-sequence-swimlane`, `async-state-flow-pipeline`, `phased-roadmap-timeline`, `strategic-operating-model-pillars`, and `live-screenshot-callout`
-> - **Typography**: Slide Titles & Display Numbers in `Google Sans` / `Google Sans Display` (`#3C4043`); Body Copy & Captions in `Roboto` / `Google Sans Text` (`#5F6368`); Wire Payloads in `Roboto Mono`
-> - **Containers**: Neutral light gray cards (`#F8F9FA`) with subtle borders (`#DADCE0`) and `8px` border-radius (`0` saturated gradient cards, `0` purple drop-shadows)
-> - **Confidentiality Footer**: Every slide footer includes `"Proprietary + Confidential"`
-> - **Aspect Ratio**: Widescreen `16:9` (`13.333" × 7.5"`)
-
----
-
-## 1. Workstream 1 Deck (`slides/ws1-reference-architecture-editable-slides.pptx` — 23 Native Editable Slides)
-- **Audience**: Enterprise Chief Architects, CISOs, VP of SaaS Engineering, Google Cloud Customer Engineers
-- **Presentation Arc**: Establish the multi-tenant agentic isolation taxonomy (`Pattern A Pooled`, `Pattern B Sovereign Silos`, `Pattern C Dynamic Hybrid`), walk through the 5-hop cryptographic context pipeline, render all 6 native editable architectural visual archetypes (`3-Zone Boundary Topology`, `Payload Transformation Triptych`, `5-Actor UML Sequence Swimlane`, `Async State Flow Pipeline`, `3-Phase Connected Horizon Roadmap`, `3-Pillar Strategic Operating Model`) + `Grounded Live Cloud Console Screenshot Callout` + `Quad-Metrics Scorecard`, compare architectural trade-offs, and define sequenced adoption next steps.
-
-| Slide # | Semantic / Visual Layout | Slide Title | Key Narrative & Visual Placement |
-| :--- | :--- | :--- | :--- |
-| **Slide 1** | `title-cover` | **Multi-Tenant Agentic AI on Google Cloud: Reference Taxonomy & 5-Hop Governance (Workstream 1)** | Widescreen cover with Google Quad-Color ribbon, `Google Sans Display` (`#3C4043`) title, `Roboto` (`#5F6368`) subtitle, author/date metadata, `#F8F9FA` Key Point summary container (`#DADCE0` border), and 4-zone topology preview. Footer: `Proprietary + Confidential`. |
-| **Slide 2** | `comparison-grid` | **Figure 1 — Vertex AI Agent Engine Multi-Tenant Taxonomy: Pooled (A), Sovereign Silos (B) & Hybrid (C)** | Left: 100% native editable vector topology (`56` shapes + `23` connectors). Right: `#F8F9FA` 4-Zone Architecture Center Guide (`#78`) in strict Quad-Color order (`Blue #4285F4`, `Red #EA4335`, `Yellow #FBBC04`, `Green #34A853`). |
-| **Slide 3** | `three-pillar` | **Figure 1 — Step-by-Step Logical Flow (Steps ①–⑦ + Outcome)** | Top 4-Zone ribbon + structured `#F8F9FA` sequential cards (`#DADCE0` borders) cycling strictly `Blue → Red → Yellow → Green`. |
-| **Slide 4** | `comparison-grid` | **Figure 1 — Step-by-Step Technical Flow & Well-Architected Pillars** | Protocol & code verification table + bottom `three-pillar` Well-Architected alignment cards (`#F8F9FA` containers, `Blue → Red → Yellow` accents). |
-| **Slide 5** | `comparison-grid` | **Figure 2 — 5-Hop Defense-in-Depth Cryptographic Request & Context Pipeline** | Left: 100% native editable vector topology (`56` shapes + `23` connectors). Right: `#F8F9FA` 4-Zone Architecture Center Guide (`#78`). |
-| **Slide 6** | `three-pillar` | **Figure 2 — Step-by-Step Logical Flow (Steps ①–⑦ + Outcome)** | Structured `#F8F9FA` walkthrough cards with `Google Sans` (`#3C4043`) titles and `Roboto` (`#5F6368`) body text. |
-| **Slide 7** | `comparison-grid` | **Figure 2 — Step-by-Step Technical Flow & Well-Architected Pillars** | Hop-by-hop protocol/code table + bottom `three-pillar` Well-Architected cards (`#F8F9FA`). |
-| **Slide 8** | `architecture-zone-topology` | **3-Zone Enterprise Boundary & Gateway Architecture: Reference Taxonomy & 5-Hop Pipeline** | 3-Zone left-to-right security boundary diagram: **Zone 1: Client / AI Boundary** (`#4285F4` badge, `Client AI / Gemini Enterprise` + `User Browser` cards) → **Zone 2: Cloud Run Gateway (`#E8EEF5`)** (`1. Schema Sanitizer`, `2. Async Normalizer`, `3. HMAC Cryptographic Engine`) → **Zone 3: Sovereign Enterprise VPC (`#0B2545`)** (`Vertex AI ADK Reasoning` `#EA4335`, `MCP / A2A Tool Router` `#FBBC04`, `AlloyDB RLS + Cloud KMS CMEK` `#34A853`) + bottom-left `100% ZERO-CODE BACKEND POLICY` badge. |
-| **Slide 9** | `payload-transformation-triptych` | **Wire-Level Payload Normalization & Cryptographic Context Sanitization (WS1)** | 3-column transformation triptych: **1. Incoming Contaminated Request** (`#D93025` red border + `Roboto Mono` JSON with `#D93025` red & `#F9AB00` amber highlight pills) → **2. Cloud Run Normalization Engine** (`#1B5E7B` deep teal container with 3 inner stages: `STRIP` `#D93025`, `INJECT` `#F9AB00`, `VALIDATE` `#1E8E3E`) → **3. Clean Sovereign Compliant Payload** (`#1E8E3E` green border + clean JSON with `#1E8E3E` green highlight pill). |
-| **Slide 10** | `uml-sequence-swimlane` | **5-Actor Cryptographic Identity & Dormant Approval Sequence (1–6)** | 5-actor lifeline swimlane (`User Browser`, `Gemini Enterprise`, `Cloud Run Gateway`, `Identity / OAuth`, `Sovereign Data Plane`) with numbered arrows `1..6`, `-32042 Elicitation Required`, shaded `Scale to 0 (Dormant)` human review window + `[ Click 👆 ]` badge, `GET /oauth/callback (Validate HMAC)`, and `200 OK (Authorized Context Data)`. |
-| **Slide 11** | `async-state-flow-pipeline` | **Asynchronous Processing Flow for Long Tasks (>5 min) & Webhook Push** | 4-node horizontal flow (`1. Client AI`, `2. Cloud Run Gateway`, `3. Sovereign Backend`, `4. Async Worker Pool`) with numbered transitions `1..5`, immediate `2. HTTP 202 Accepted / State: WORKING (Zero Timeout Risk)` return arrow, and bottom U-shaped `5. HTTPS Webhook Push (State: COMPLETED + Artifact)` return path. |
-| **Slide 12** | `phased-roadmap-timeline` | **Phased Enterprise Rollout & Architectural Evolution Roadmap (Phases 1–3)** | 3-phase connected horizon cards with solid `#0F2942`, `#0D7A75`, and `#54728C` top header banners (`PHASE 1: IMMEDIATE · 5-Hop Gateway`, `PHASE 2: NEAR-TERM · Sovereign Silos & Hybrid`, `PHASE 3: LONG-TERM · Autonomous Fleet`), midline `● ●` circular connectors, and `CORE FOCUS` / `STRATEGIC BENEFIT` blocks. |
-| **Slide 13** | `strategic-operating-model-pillars` | **3-Pillar Strategic Operating Model: Security, Partnership & Engineering** | 3 high-impact executive pillar cards (`#F8F9FA` containers, `#DADCE0` borders, top & bottom 6pt accent bars in `#0F2942`, `#0D7A75`, `#1B5E7B`, vector `Shield`, `Handshake`, and `</>` icons, and 3 grounded bullets per pillar). |
-| **Slide 14** | `live-screenshot-callout` | **Live Google Cloud Verification Proof — Workstream 1 Telemetry & Console Capture** | Left: Framed authentic Google Cloud Console verification screenshot (`gcp_console_01_live_overview.png`) inside a browser window frame (`● ● ●` traffic lights + URL bar). Right: 4 native editable `#F8F9FA` verification callout cards in strict Quad-Color order (`Blue → Red → Yellow → Green`). |
-| **Slide 15** | `quad-metrics` | **Executive Impact & Production Verification Metrics** | 4 prominent KPI tiles (`#F8F9FA` containers, `#DADCE0` borders, `48pt Google Sans Display #3C4043` numbers, `1-line Roboto #5F6368` captions, sequential `Blue → Red → Yellow → Green` bars): `3` Isolation Patterns, `5` Cryptographic Hops, `84.7%` Net Token Savings, `20/20` Verified Gates. |
-| **Slide 16** | `three-pillar` | **Products used — Google Cloud Agentic AI, Security & Data Stack** | Structured `#F8F9FA` container cards (`#DADCE0` border, `8px` radius) with `Blue → Red → Yellow → Green` top accents detailing Vertex AI Agent Engine, Google Cloud Armor, IAP, Model Armor, AlloyDB RLS, and Cloud KMS CMEK. |
-| **Slide 17** | `three-pillar` | **Use cases — Cymbal SaaS Serving Competing Enterprise Tenants** | Structured `#F8F9FA` container cards comparing Cymbal Control Plane, FinVault Bank (Regulated Tenant A), RetailStream Corp (Commercial Tenant B), and Cryptographic Mutual Invisibility. |
-| **Slide 18** | `comparison-grid` | **Design alternatives — Comparison of Multi-Tenant Isolation Patterns (A, B & C)** | Clean multi-column comparison grid across 7 architectural dimensions + bottom `#F8F9FA` decision summary strip (`Blue → Red → Yellow`). |
-| **Slide 19** | `comparison-grid` | **Design alternatives — Compensating Controls for EAP Product Gaps (GAP-01..05)** | Comparative matrix mapping preview limitations (`GAP-01`..`GAP-05`) to production compensating controls in `core-cymbal-agent/` and verification gates. |
-| **Slide 20** | `three-pillar` | **Design considerations — Google Cloud Well-Architected Framework** | 5-hop horizontal pipeline / structured `#F8F9FA` cards across Hop 1 (`Blue #4285F4`), Hop 2 (`Red #EA4335`), Hop 3 (`Yellow #FBBC04`), Hop 4 (`Green #34A853`), and Hop 5 (`Blue #4285F4`). |
-| **Slide 21** | `next-steps` | **What's next — Series Navigation & Sequenced Engineering Action Items** | Sequenced action items (`01`..`05`) in `#F8F9FA` cards with explicit engineering owners, target SLAs, and deliverable paths. |
-| **Slide 22** | `comparison-grid` | **Architecture Blueprint Summary & Reference Lineage** | Executive reference index table + `three-pillar` `#F8F9FA` summary cards (`Blue → Red → Yellow`). |
-| **Slide 23** | `comparison-grid` | **Live Verification Evidence & Production Codebase Reference** | Complete verification summary table across `ramp-portal-dev` (`#248990048888`), `nitinagga-ge-2` (`#638420508320`), and `nitina-ggarwal-sandbox-647724` (`#887605034827`). |
+> **Generated by**: `google-slides-design` (`skills/slide-design/SKILL.md` & `rules/AGENTS.md`)
+> **Narrative Architecture**: Cohesive 3-Act, 14-Slide Executive Story Arc per Workstream (`WS1`–`WS5`) + 24-Slide Master Program Deck (`ALL`)
+> **Brand & Visual Invariants**:
+> - Sequential Google Quad-Color Order: `1. Blue (#4285F4)` → `2. Red (#EA4335)` → `3. Yellow (#FBBC04)` → `4. Green (#34A853)` + Executive Architecture Palette (`#0F2942` Navy, `#0D7A75` / `#1B5E7B` Teal, `#54728C` Slate, `#CA8A04` Amber, `#0F766E` Deep Green)
+> - Typography: `Google Sans` / `Google Sans Display` (`#3C4043`) + `Roboto` (`#5F6368`) + `Courier New` (`9pt–11pt`)
+> - Containers: `#F8F9FA` / `#FFFFFF` with `#DADCE0` border and `8px` border-radius
+> - Confidentiality & Aspect Ratio: `"Proprietary + Confidential"` on every slide footer; Widescreen `16:9`
 
 ---
 
-## 2. Workstreams 2–5 & Master Combined Deck (`WS2`–`WS5` & `ALL`)
-Every workstream deck (`WS2`–`WS5` & `ALL`) includes all 6 Canonical Architectural Visual Archetypes (`architecture-zone-topology`, `payload-transformation-triptych`, `uml-sequence-swimlane`, `async-state-flow-pipeline`, `phased-roadmap-timeline`, `strategic-operating-model-pillars`), the `live-screenshot-callout` grounded console proof slide, and the `quad-metrics` scorecard:
-- **Workstream 2 (`slides/ws2-pattern-a-pooled-editable-slides.pptx` — 28 slides)**: `title-cover` → 4 × 3-slide diagram sets (`Figures 1–4`) → 6 Architectural Visual Archetypes + `live-screenshot-callout` (`gcp_console_02_cloud_run.png`) + `quad-metrics` (`$42/mo`, `90%`, `10/10`, `0 Rows`) → `Products used` → `Use cases` → `Design alternatives` → `Design considerations` → `What's next` → `Blueprint Summary`.
-- **Workstream 3 (`slides/ws3-pattern-b-siloed-editable-slides.pptx` — 25 slides)**: `title-cover` → 3 × 3-slide diagram sets (`Figures 1–3`) → 6 Architectural Visual Archetypes + `live-screenshot-callout` (`gcp_console_04_kms_cmek.png`) + `quad-metrics` (`$1,850/mo`, `<60s`, `6/6`, `HTTP 423`) → `Products used` → `Use cases` → `Design alternatives` → `Design considerations` → `What's next` → `Blueprint Summary`.
-- **Workstream 4 (`slides/ws4-pattern-c-hybrid-editable-slides.pptx` — 28 slides)**: `title-cover` → 4 × 3-slide diagram sets (`Figures 1–4`) → 6 Architectural Visual Archetypes + `live-screenshot-callout` (`gcp_console_03_alloydb_rls.png`) + `quad-metrics` (`74%`, `0ms`, `4/4`, `3 Phases`) → `Products used` → `Use cases` → `Design alternatives` → `Design considerations` → `What's next` → `Blueprint Summary`.
-- **Workstream 5 (`slides/ws5-wrap-up-editable-slides.pptx` — 20 slides)**: `title-cover` → 1 × 3-slide diagram set (`Figure 1`) → 6 Architectural Visual Archetypes + `live-screenshot-callout` (`gcp_console_06_vertex_agent_engine.png`) + `quad-metrics` (`80%`, `2-Q`, `10-Wk`, `100%`) → `Products used` → `Use cases` → `Design alternatives` → `Design considerations` → `What's next` → `Blueprint Summary`.
-- **Master Combined Deck (`slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx` — 68 slides)**: Uses `section-divider` (`#202124` dark charcoal background with `#FFFFFF` text) between Workstreams 1–5 alongside `title-cover`, all 6 Architectural Visual Archetypes, `live-screenshot-callout`, `quad-metrics`, `three-pillar`, `comparison-grid`, and `next-steps`.
+## Cohesive 3-Act, 14-Slide Narrative Structure (Applied to Every Workstream `WS1`–`WS5`)
+
+### Act I — Executive Context, Master Architecture & Quantitative Outcomes (Slides 1–4)
+| Slide | Layout / Visual Skill | Narrative Role & Transition |
+| :--- | :--- | :--- |
+| **Slide 1** | `title-cover` | **Executive Cover & Architectural Thesis** — Establishes the workstream's core question, 3 architectural thesis pillars, and 4-Zone Hub-and-Spoke summary. |
+| **Slide 2** | `decomposed-drawio-diagram` | **Authoritative Architecture Center Blueprint (`Figure 1`)** — 100% native editable `#78` Hub-and-Spoke Draw.io diagram (`56` shapes + `23` connectors) + `4-ZONE HUB-AND-SPOKE` Guide Sidebar. |
+| **Slide 3** | `quad-metrics` | **Executive Impact & Verification Scorecard** — 4 bold `48pt` KPI tiles in strict Google Quad-Color order quantifying cost, security, latency, and verification gates. |
+| **Slide 4** | `three-pillar` | **Google Cloud Stack & Competing Tenant Use Cases** — Maps the Google Cloud products used and competing tenant workloads (`FinVault Bank` vs. `RetailStream Corp`). |
+
+### Act II — Deep-Dive Runtime Mechanics: Boundaries, Payloads, Sequences & State Loops (Slides 5–8)
+| Slide | Layout / Visual Skill | Narrative Role & Transition |
+| :--- | :--- | :--- |
+| **Slide 5** | `architecture-zone-topology` | **3-Zone Physical & Logical Boundary Topology (`Zone 1 → Zone 2 → Zone 3`)** — Separates Tenant Ingress (Zone 1), 5-Hop ADK 2.0 Control Plane (Zone 2), and Tenant Data Plane (Zone 3). |
+| **Slide 6** | `payload-transformation-triptych` | **3-Stage Wire Payload & Context Transformation (`Before → Engine → After`)** — Contrasts untrusted/contaminated requests (`#D93025`) with the 3-stage guardrail engine (`#1B5E7B`) and clean tenant-scoped output (`#1E8E3E`). |
+| **Slide 7** | `uml-sequence-swimlane` | **5-Actor Chronological UML Sequence Lifeline (`Steps 1–6`)** — Traces the exact end-to-end execution or security kill-switch/migration sequence across all 5 actors. |
+| **Slide 8** | `async-state-flow-pipeline` | **4-Node State & Closed-Loop Governance Pipeline (`Steps 1–5`)** — Shows continuous quota/cache/KMS/PSC state transitions and the bottom closed-loop feedback path. |
+
+### Act III — Trade-Off Matrices, Live Cloud Proof, Rollout Roadmap & Governance (Slides 9–14)
+| Slide | Layout / Visual Skill | Narrative Role & Transition |
+| :--- | :--- | :--- |
+| **Slide 9** | `comparison-grid` | **Architectural Trade-Off & Security Verification Matrix** — Side-by-side comparison / red-team breach / CMEK kill-switch / live migration verification table + 3-pillar takeaway bar. |
+| **Slide 10** | `comparison-grid` / `three-pillar` | **Compensating Controls, Terraform Blueprint & FinOps Deep Dive** — Covers EAP gap controls (`GAP-01..05`), Terraform modules (`2.6`, `3.6`, `4.6`), and 90% prefix cache economics. |
+| **Slide 11** | `live-screenshot-callout` | **Grounded Google Cloud Console & Live Runtime Proof** — 2 authentic workstream-specific Google Cloud Console screenshots + 4 editable verification callout cards (`PROOF 01..04`). |
+| **Slide 12** | `phased-roadmap-timeline` | **3-Phase Connected Implementation & Rollout Timeline** — 3 horizon phase cards (`Phase 1` Navy `#0F2942` → `Phase 2` Teal `#0D7A75` → `Phase 3` Slate `#54728C`) with `● ●` connectors. |
+| **Slide 13** | `strategic-operating-model-pillars` | **3-Pillar Strategic Operating Model & SLA Governance** — 3 tall operating model cards with top/bottom accent bars, vector icon badges, and 3 grounded SLA bullets per pillar. |
+| **Slide 14** | `next-steps` | **What's Next — Sequenced Engineering Action Plan & Owners** — Actionable engineering deliverables, assigned platform owners, and production verification gates. |
+
+---
+
+## Workstream-Specific Customization Matrix (`WS1`–`WS5`)
+
+| Workstream | Slide 5 (`architecture-zone-topology`) | Slide 6 (`payload-transformation-triptych`) | Slide 7 (`uml-sequence-swimlane`) | Slide 8 (`async-state-flow-pipeline`) | Slide 12 (`phased-roadmap-timeline`) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **WS1: Reference Taxonomy & 5-Hop Core** | Tenant OIDC/Entra Ingress → 5-Hop ADK 2.0 Control Plane → Patterns A, B & C Data Planes | Spoofed `X-Tenant-Id` Request → Hop 1 IAM STS OBO + DPoP → Sealed `TenantContext` | 5-Hop Request Lifecycle (`Caller → STS → ARD/Memory → Model Armor → AlloyDB/MCP`) | 5-Hop Context Propagation & Zero-PII BigQuery OTel Feedback Loop | Wks 1–2: 5-Hop Core → Wks 3–4: GAP-01..05 Controls → Wks 5–6: 20/20 Audit Pass |
+| **WS2: Pattern A Pooled Architecture** | Pooled SaaS Tenants → Shared Cloud Run v2 + Valkey + 90% Cache → Shared AlloyDB RLS & MCP | Adversarial Red-Team Payload → Hop 2 ARD + Hop 4 Model Armor/SDP + Hop 5 RLS → Sanitized Scoped Query | Pattern A Red-Team Defense & 3LO OAuth Tool Execution (`10/10 Attacks Blocked`) | Valkey Token-Bucket (`120/600 RPM`) & 90% Shared Prefix Cache FinOps Loop | Wks 1–2: Terraform `2.6` Pool → Wks 3–4: 90% Cache & Valkey → Wks 5–6: 10/10 Breach Gate |
+| **WS3: Pattern B Sovereign Silos** | Regulated Enterprise Caller → VPC-SC & IAM PAB Perimeter → Dedicated Silo VPC (Gemma 3 & CMEK) | Cross-Perimeter & Disabled CMEK Request → VPC-SC + PAB + KMS Liveness Gate → `HTTP 403 / 423 Locked` | Pattern B `<60s` Cloud KMS CMEK Revocation Kill-Switch (`Disable Key → L1 Purge → 423 Locked`) | VPC-SC Restricted VIP Air-Gapped Inference & Continuous `<60s` KMS Liveness Loop | Day 1: Dedicated Project & PAB → Days 2–3: VPC-SC & CMEK → Days 4–5: Private GKE & `<60s` Gate |
+| **WS4: Pattern C Dynamic Hybrid & PSC** | Unified Multi-Tenant Hub Ingress → Firestore Tier Router & `/28` PSC NAT → Sovereign Spoke VPC | Pre-Upgrade Standard Pooled State → 3-Phase Dual-Write & CMEK Re-Key → Enterprise PSC Spoke State | Zero-Downtime Live Tier Upgrade (`SHADOW_SYNC → CMEK Re-Key → 0ms Firestore Flip → Drain`) | Hub-and-Spoke Unidirectional PSC Traversal & Zero-Downtime Cutover Sync Loop | Phase 1: `SHADOW_SYNC` Backfill → Phase 2: `ATOMIC_CUTOVER` (`0ms`) → Phase 3: `DRAIN_AND_VERIFY` |
+| **WS5: Decision Guide & Agentic Triad** | 2-Question Topology Selector → 80% Reusable 5-Hop ADK Triad → 20% Terraform (`2.6 / 3.6 / 4.6`) | Uncached 32k Prompt & Raw Log → Prefix Cache + SHA-256 Hasher → 84.7% Saved Zero-PII OTel Span | Multi-Tenant Agentic Triad (`Shared Agent → Private Agent Alpha → 2LO/3LO MCP → BigQuery OTel`) | 2-Question Topology Selector & Live Pattern A → Pattern C Tier Promotion Loop | Wks 1–3: Pattern A MVP → Wks 4–6: Model Armor & OTel → Wks 7–10: Pattern B Silos & Pattern C PSC |

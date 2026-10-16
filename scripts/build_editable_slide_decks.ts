@@ -2651,7 +2651,8 @@ async function appendGoogleBrandedDiagramSlides(
   blueprintId: string,
   _masterImageSrc: string | undefined,
   talkingPoints: string[],
-  sourceDrawioRelPath: string
+  sourceDrawioRelPath: string,
+  singleSlideOnly: boolean = true
 ): Promise<{ vertexCount: number; edgeCount: number; slides: number }> {
   const { cells, minX, minY, maxX, maxY, isDarkDiagram, diagramBgHex } = parseDrawioXmlForPptx(xmlContent);
 
@@ -3273,8 +3274,19 @@ async function appendGoogleBrandedDiagramSlides(
   addFooter(
     pptx,
     slide2,
-    `${blueprintId} (${sourceDrawioRelPath})  •  100% Native Editable Shapes + 4-Zone Architecture Center Guide  •  Next: Step-by-Step Logical Flow`
+    `${blueprintId} (${sourceDrawioRelPath})  •  100% Native Editable Shapes + 4-Zone Architecture Center Guide`
   );
+
+  const notes = `${figureLabel} — ${diagramTitle}\n\n${talkingPoints.map((t) => `• ${t}`).join('\n')}\n\nEditable source: ${sourceDrawioRelPath}`;
+  slide2.addNotes(notes);
+
+  if (singleSlideOnly) {
+    return {
+      vertexCount: vertices.length,
+      edgeCount: edges.length,
+      slides: 1,
+    };
+  }
 
   // =========================================================================
   // SLIDE 2 OF 3: STEP-BY-STEP END-TO-END LOGICAL FLOW (ARCHITECTURAL WALKTHROUGH)
@@ -3686,8 +3698,6 @@ async function appendGoogleBrandedDiagramSlides(
     `${figureLabel} Step-by-Step Technical Flow  •  100% Editable Native Table & Well-Architected Pillars  •  Verified on Google Cloud`
   );
 
-  const notes = `${figureLabel} — ${diagramTitle}\n\n${talkingPoints.map((t) => `• ${t}`).join('\n')}\n\nEditable source: ${sourceDrawioRelPath}`;
-  slide2.addNotes(notes);
   logicalSlide.addNotes(`${figureLabel} Step-by-Step End-to-End Logical Flow for ${diagramTitle}`);
   techSlide.addNotes(`${figureLabel} Step-by-Step End-to-End Technical Flow for ${diagramTitle}`);
 
@@ -3699,15 +3709,15 @@ async function appendGoogleBrandedDiagramSlides(
 }
 
 // ---------------------------------------------------------------------------------------------
-// 6 Canonical Native Editable Architectural Visual Archetypes + Grounded Live Screenshot Callout
-// (skills/slide-design/SKILL.md & rules/AGENTS.md)
-//   1. architecture-zone-topology (3-Zone Enterprise Boundary & Gateway Architecture)
-//   2. payload-transformation-triptych (3-Stage Before/After Wire Payload Transformation)
-//   3. uml-sequence-swimlane (5-Actor Numbered UML Sequence Lifeline & Dormant Window 1..6)
-//   4. async-state-flow-pipeline (4-Node Horizontal Async Processing Flow >5m & Loopback 1..5)
-//   5. phased-roadmap-timeline (3-Phase Connected Horizon Roadmap Timeline)
-//   6. strategic-operating-model-pillars (3-Pillar Operating Model Cards with Vector Icons)
-//   7. live-screenshot-callout (Authentic Google Cloud Console Screenshots + Editable Callouts)
+// Cohesive 3-Act Workstream-Specific Native Editable Visual Archetypes
+// (skills/slide-design/SKILL.md & rules/AGENTS.md — Zero Copy-Pasted Unrelated Example Text!)
+//   1. architecture-zone-topology (Workstream-Specific 3-Zone Boundary & Control-to-Data Plane)
+//   2. payload-transformation-triptych (Workstream-Specific 3-Stage Before/After Wire Payload)
+//   3. uml-sequence-swimlane (Workstream-Specific 5-Actor Chronological UML Lifeline Steps 1..6)
+//   4. async-state-flow-pipeline (Workstream-Specific 4-Node State & Closed-Loop Pipeline 1..5)
+//   5. phased-roadmap-timeline (Workstream-Specific 3-Phase Connected Rollout & Migration Timeline)
+//   6. strategic-operating-model-pillars (Workstream-Specific 3-Pillar Operating Model & SLAs)
+//   7. live-screenshot-callout (Workstream-Specific Google Cloud Console Screenshots + Callouts)
 // ---------------------------------------------------------------------------------------------
 
 const EXEC_NAVY = '0F2942';
@@ -3721,18 +3731,183 @@ const EXEC_GREEN_DARK = '0F766E';
 const ALERT_RED_BORDER = 'D93025';
 const SUCCESS_GREEN_BORDER = '1E8E3E';
 
+interface ZoneTopologySpec {
+  slideTitle: string;
+  zone1Title: string;
+  callers: { badge: string; sub: string }[];
+  arrow1Top: string;
+  arrow1Bot: string;
+  zone2Title: string;
+  zone2SubContainer: string;
+  gwCards: { icon: string; title: string }[];
+  arrow2Top: string;
+  arrow2Bot: string;
+  zone3Title: string;
+  z3TopBadge: string;
+  z3TopTitle: string;
+  z3MidPill1: string;
+  z3MidPill2: string;
+  z3MidTitle: string;
+  z3BotBadge: string;
+  z3BotTitle: string;
+  footer: string;
+}
+
+const ZONE_TOPOLOGY_BY_WS: Record<string, ZoneTopologySpec> = {
+  WS1: {
+    slideTitle: 'WS1 • 3-Zone Multi-Tenant Reference Taxonomy & 5-Hop Control Plane',
+    zone1Title: 'TENANT IDENTITY & EDGE INGRESS\n(Competing Enterprise Callers)',
+    callers: [
+      { badge: 'FinVault', sub: 'Google Cloud Identity\n(Enterprise Tier)' },
+      { badge: 'Retail', sub: 'Microsoft Entra ID\n(Standard Tier)' },
+      { badge: 'Partner', sub: 'Okta OIDC / SAML\n(Federated Caller)' },
+    ],
+    arrow1Top: 'OIDC JWT +\nDPoP Proof',
+    arrow1Bot: 'Cloud Armor\n+ IAP Edge',
+    zone2Title: '5-HOP ADK 2.0 CONTROL PLANE\n(Shared 80% Core Pipeline)',
+    zone2SubContainer: 'Vertex AI Agent Engine & Cloud Run',
+    gwCards: [
+      { icon: '🔐', title: 'Hop 1: IAM STS OBO\n& RFC 9449 DPoP' },
+      { icon: '🧭', title: 'Hops 2–3: ARD Filter\n& L1–L5 Memory Scope' },
+      { icon: '🛡️', title: 'Hop 4: Model Armor,\nDLP & 90% Cache' },
+    ],
+    arrow2Top: 'Sealed TenantContext\nEnvelope',
+    arrow2Bot: 'Tier-Aware Routing\n(Pool / Silo / PSC)',
+    zone3Title: '3 ISOLATION DATA PLANES\n(Patterns A, B & C Execution)',
+    z3TopBadge: 'PAT A',
+    z3TopTitle: 'Pattern A: Shared Pool & AlloyDB RLS ($42/mo)',
+    z3MidPill1: '🏛️ Pattern B Silo',
+    z3MidPill2: '🌉 Pattern C PSC',
+    z3MidTitle: 'Dedicated Sovereign VPC-SC & Hybrid PSC Spokes',
+    z3BotBadge: '📊 OTel',
+    z3BotTitle: 'Hop 5: 2LO/3LO MCP Hub & BigQuery FinOps Ledger',
+    footer: 'Workstream 1 Reference Taxonomy  •  Zone 1 (Tenant Ingress) → Zone 2 (5-Hop Control Plane) → Zone 3 (Patterns A, B & C)',
+  },
+  WS2: {
+    slideTitle: 'WS2 • Pattern A High-Density Pooled Runtime & AlloyDB RLS Topology',
+    zone1Title: 'POOLED SAAS TENANT CALLERS\n(Co-Hosted Commercial & Enterprise)',
+    callers: [
+      { badge: 'FinVault', sub: 'FinVault Bank\n(600 RPM / 8k Think)' },
+      { badge: 'Retail', sub: 'RetailStream Corp\n(120 RPM / 4k Think)' },
+      { badge: 'RedTeam', sub: 'Adversarial Probe\n(Spoofed Headers)' },
+    ],
+    arrow1Top: 'HTTPS + OIDC\nBearer Token',
+    arrow1Bot: 'Cloud Armor\nHeader Strip',
+    zone2Title: 'SHARED CLOUD RUN v2 POOL\n(cymbal-pooled-prod)',
+    zone2SubContainer: 'Shared Vertex AI Agent Engine Pool',
+    gwCards: [
+      { icon: '⚡', title: '90% Shared 32k\nPrefix Cache Hit' },
+      { icon: '🚦', title: 'Memorystore Valkey\nToken-Bucket Bulkhead' },
+      { icon: '🛡️', title: 'Model Armor + NLC\n& SDP PII Redaction' },
+    ],
+    arrow2Top: 'SET LOCAL\napp.current_tenant_id',
+    arrow2Bot: 'Scoped 2LO/3LO\nMCP Dispatch',
+    zone3Title: 'SHARED MULTI-TENANT DATA PLANE\n(Cryptographic Logical Isolation)',
+    z3TopBadge: 'RLS',
+    z3TopTitle: 'Shared AlloyDB Cluster (FORCE ROW LEVEL SECURITY)',
+    z3MidPill1: '🔑 2LO Telemetry',
+    z3MidPill2: '🔐 3LO Jira/Drive',
+    z3MidTitle: 'Tenant-Scoped Memory Bank (/tenants/{id}/*) & MCP',
+    z3BotBadge: '🗄️ KMS',
+    z3BotTitle: 'Shared Cloud KMS CMEK & BigQuery OTel Cost Attribution',
+    footer: 'Workstream 2 Pattern A Pooled  •  100+ Co-Hosted Tenants at $42/mo with 10/10 Red-Team Attacks Blocked',
+  },
+  WS3: {
+    slideTitle: 'WS3 • Pattern B Sovereign Single-Tenant Project, VPC-SC & CMEK Silo',
+    zone1Title: 'REGULATED ENTERPRISE CALLER\n(Dedicated Tenant Ingress)',
+    callers: [
+      { badge: 'FinVault', sub: 'FinVault Wealth AI\n(Google OIDC)' },
+      { badge: 'CISO', sub: 'Tenant CISO Admin\n(KMS Key Custodian)' },
+      { badge: 'Auditor', sub: 'OCC / GDPR Compliance\nVerifier' },
+    ],
+    arrow1Top: 'Dedicated\nHTTPS VIP',
+    arrow1Bot: 'IAM PAB\nBoundary Check',
+    zone2Title: 'VPC SERVICE CONTROLS PERIMETER\n(restricted.googleapis.com)',
+    zone2SubContainer: 'Zero-Egress Sovereign Security Gateway',
+    gwCards: [
+      { icon: '🏛️', title: 'IAM Principal Access\nBoundary (PAB)' },
+      { icon: '🔒', title: 'VPC-SC Ingress/Egress\nDeny Perimeter' },
+      { icon: '🔑', title: 'Cloud KMS CMEK\nLiveness Gate (<60s)' },
+    ],
+    arrow2Top: 'Restricted VIP\n199.36.153.4/30',
+    arrow2Bot: 'Zero Public\nInternet Egress',
+    zone3Title: 'DEDICATED SOVEREIGN SILO VPC\n(cymbal-finvault-silo-prod)',
+    z3TopBadge: 'GKE',
+    z3TopTitle: 'Private GKE Inference (Gemma 3 27B) & Dedicated Vertex',
+    z3MidPill1: '🧠 Silo Memory',
+    z3MidPill2: '🤖 Private Agent',
+    z3MidTitle: 'Dedicated Agent Engine & Sovereign GCS Skills Bucket',
+    z3BotBadge: '🔐 CMEK',
+    z3BotTitle: 'Dedicated AlloyDB Primary + Tenant CMEK Kill-Switch',
+    footer: 'Workstream 3 Pattern B Sovereign Silos  •  Dedicated Project, VPC-SC, IAM PAB & <60s CMEK Kill-Switch',
+  },
+  WS4: {
+    slideTitle: 'WS4 • Pattern C Hub-and-Spoke Control Plane & Unidirectional PSC Topology',
+    zone1Title: 'UNIFIED MULTI-TENANT INGRESS HUB\n(Shared SaaS Control Plane)',
+    callers: [
+      { badge: 'Standard', sub: '850 Standard Tenants\n($42/mo Pooled Path)' },
+      { badge: 'Promote', sub: 'RetailStream Enterprise\n(Live Tier Upgrade)' },
+      { badge: 'Sovereign', sub: '150 Enterprise Tenants\n($1,850/mo Spoke Path)' },
+    ],
+    arrow1Top: 'Single Global\nAnycast URL',
+    arrow1Bot: 'Firestore Tier\nLookup (0ms)',
+    zone2Title: 'DUAL-PLANE TIER ROUTING ENGINE\n(Hub VPC + /28 PSC NAT)',
+    zone2SubContainer: 'Dynamic Tier Router & Migration Coordinator',
+    gwCards: [
+      { icon: '🧭', title: 'Firestore Atomic\nTier Routing Table' },
+      { icon: '🔄', title: '3-Phase Dual-Write\nZero-Downtime Migrator' },
+      { icon: '🌉', title: 'Consumer PSC Endpoint\n& /28 NAT Subnet' },
+    ],
+    arrow2Top: 'Unidirectional\nPSC Producer',
+    arrow2Bot: 'Zero Transitive\nVPC Peering',
+    zone3Title: 'SOVEREIGN ENTERPRISE SPOKE VPC\n(Customer-Owned Producer Project)',
+    z3TopBadge: 'PSC',
+    z3TopTitle: 'ServiceAttachment (ACCEPT_SELECTED) & Internal ALB',
+    z3MidPill1: '🤖 Spoke ADK',
+    z3MidPill2: '🧠 Spoke Memory',
+    z3MidTitle: 'Dedicated Spoke Agent Engine & Isolated Memory Bank',
+    z3BotBadge: '🗄️ CMEK',
+    z3BotTitle: 'Customer-CMEK AlloyDB Vault & Spoke MCP Servers',
+    footer: 'Workstream 4 Pattern C Dynamic Hybrid  •  Shared Hub Control Plane + Unidirectional PSC Spokes + 0ms Live Cutover',
+  },
+  WS5: {
+    slideTitle: 'WS5 • 80/20 Code Reuse Architecture & Multi-Tenant Agentic Triad',
+    zone1Title: '2-QUESTION TOPOLOGY SELECTOR\n(Executive Decision Inputs)',
+    callers: [
+      { badge: 'Q1: Silo?', sub: 'Contractual Project /\nVPC-SC / CMEK Mandate?' },
+      { badge: 'Q2: Hybrid?', sub: 'Single Control Plane +\nLive Tier Upgrades?' },
+      { badge: 'FinOps', sub: '1,000-Tenant Portfolio\nTCO Target ($313k/mo)' },
+    ],
+    arrow1Top: 'Selects Pattern\nA, B, or C',
+    arrow1Bot: '80% Shared\nPython Core',
+    zone2Title: 'INVARIANT 5-HOP ADK 2.0 CORE\n(runtime_pipeline.py — 80% Reusable)',
+    zone2SubContainer: 'Unified Multi-Tenant Agentic Triad',
+    gwCards: [
+      { icon: '🤖', title: 'Shared Diagnostic &\nTenant Private Agents' },
+      { icon: '⚡', title: 'Gemini 2.5 Pro 90%\nShared Prefix Cache' },
+      { icon: '🔌', title: '2LO Telemetry & 3LO\nWorkspace MCP Hub' },
+    ],
+    arrow2Top: '20% Terraform\nTopology Adapter',
+    arrow2Bot: '20/20 Automated\nCI/CD Gates',
+    zone3Title: 'PARAMETERIZED TERRAFORM TARGETS\n(Modules 2.6, 3.6 & 4.6)',
+    z3TopBadge: 'TF 2.6',
+    z3TopTitle: 'Module 2.6: Pooled Cloud Run v2 + AlloyDB RLS Starter',
+    z3MidPill1: '🏛️ TF 3.6 Silo',
+    z3MidPill2: '🌉 TF 4.6 PSC',
+    z3MidTitle: 'Dedicated Sovereign Silo & Hybrid PSC Spoke Blueprints',
+    z3BotBadge: '📊 OTel',
+    z3BotTitle: 'Zero-PII BigQuery Chargeback & 10-Week Rollout Ledger',
+    footer: 'Workstream 5 Executive Decision Guide  •  80% Reusable 5-Hop ADK Core + 20% Parameterized Terraform Topologies',
+  },
+};
+
 function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
+  const cfg = ZONE_TOPOLOGY_BY_WS[spec.key] || ZONE_TOPOLOGY_BY_WS.WS1;
   const slide = pptx.addSlide();
   slide.background = { color: WHITE };
-  addHeaderBar(
-    pptx,
-    slide,
-    spec.key,
-    `${spec.label} • 3-Zone Enterprise Gateway & Sovereign VPC Topology`,
-    'ARCHITECTURE-ZONE-TOPOLOGY'
-  );
+  addHeaderBar(pptx, slide, spec.key, cfg.slideTitle, 'ARCHITECTURE-ZONE-TOPOLOGY');
 
-  // Zone 1: Left (GEMINI ENTERPRISE & VERTEX AI)
+  // Zone 1: Left
   slide.addShape(pptx.ShapeType.roundRect, {
     x: 0.42,
     y: 0.76,
@@ -3742,12 +3917,12 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     fill: { color: CARD_BG },
     line: { color: EXEC_NAVY, width: 1.75 },
   });
-  slide.addText('GEMINI ENTERPRISE & VERTEX AI\n(Webhooks & User Interface)', {
+  slide.addText(cfg.zone1Title, {
     x: 0.52,
     y: 0.90,
     w: 3.65,
     h: 0.56,
-    fontSize: 12.2,
+    fontSize: 11.8,
     bold: true,
     color: EXEC_NAVY,
     align: 'center',
@@ -3755,17 +3930,12 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     fontFace: FONT_TITLE,
   });
 
-  // 3 Caller Nodes inside Zone 1
-  const callers = [
-    { y: 1.72, badge: 'Gemini', sub: 'Gemini Web\nUser Interface' },
-    { y: 3.24, badge: '</>', sub: 'Vertex AI\nWorkbench' },
-    { y: 4.76, badge: 'API •••', sub: 'External\nAPI clients' },
-  ];
-  callers.forEach((c, idx) => {
-    // Icon frame
+  const callerYs = [1.72, 3.24, 4.76];
+  cfg.callers.forEach((c, idx) => {
+    const cy = callerYs[idx];
     slide.addShape(pptx.ShapeType.roundRect, {
       x: 1.15,
-      y: c.y,
+      y: cy,
       w: 1.18,
       h: 0.72,
       rectRadius: 0.06,
@@ -3774,7 +3944,7 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     });
     slide.addShape(pptx.ShapeType.roundRect, {
       x: 1.23,
-      y: c.y + 0.12,
+      y: cy + 0.12,
       w: 1.02,
       h: 0.48,
       rectRadius: 0.04,
@@ -3782,10 +3952,10 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     });
     slide.addText(c.badge, {
       x: 1.23,
-      y: c.y + 0.12,
+      y: cy + 0.12,
       w: 1.02,
       h: 0.48,
-      fontSize: 9.5,
+      fontSize: 9.2,
       bold: true,
       color: idx === 0 ? EXEC_TEAL : EXEC_NAVY,
       align: 'center',
@@ -3793,28 +3963,26 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
       fontFace: FONT_TITLE,
     });
     slide.addText(c.sub, {
-      x: 0.84,
-      y: c.y + 0.76,
-      w: 1.80,
+      x: 0.80,
+      y: cy + 0.76,
+      w: 1.88,
       h: 0.44,
-      fontSize: 10.2,
+      fontSize: 9.6,
       bold: true,
       color: TEXT_DARK,
       align: 'center',
       valign: 'top',
       fontFace: FONT_TITLE,
     });
-    // Horizontal tap line to collector trunk (x=3.20)
     slide.addShape(pptx.ShapeType.line, {
       x: 2.38,
-      y: Number((c.y + 0.36).toFixed(3)),
+      y: Number((cy + 0.36).toFixed(3)),
       w: 0.82,
       h: 0,
       line: { color: EXEC_NAVY, width: 1.25 },
     });
   });
 
-  // Vertical collector trunk in Zone 1
   slide.addShape(pptx.ShapeType.line, {
     x: 3.20,
     y: 2.08,
@@ -3822,7 +3990,6 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     h: 3.04,
     line: { color: EXEC_NAVY, width: 1.25 },
   });
-  // Arrow from Zone 1 collector into Zone 2
   slide.addShape(pptx.ShapeType.line, {
     x: 3.20,
     y: 3.60,
@@ -3830,30 +3997,30 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     h: 0,
     line: { color: EXEC_NAVY, width: 1.5, endArrowType: 'triangle' },
   });
-  slide.addText('Webhooks\n(HTTPS)', {
-    x: 3.24,
-    y: 3.04,
-    w: 1.02,
-    h: 0.48,
-    fontSize: 9.2,
+  slide.addText(cfg.arrow1Top, {
+    x: 3.22,
+    y: 3.00,
+    w: 1.06,
+    h: 0.52,
+    fontSize: 8.8,
     bold: true,
     color: TEXT_DARK,
     align: 'center',
     fontFace: FONT_BODY,
   });
-  slide.addText('HTTPS\nEndpoint', {
-    x: 4.34,
-    y: 3.34,
-    w: 0.86,
-    h: 0.48,
-    fontSize: 9.2,
-    bold: true,
-    color: TEXT_DARK,
+  slide.addText(cfg.arrow1Bot, {
+    x: 3.22,
+    y: 3.70,
+    w: 1.06,
+    h: 0.52,
+    fontSize: 8.6,
+    bold: false,
+    color: TEXT_BODY,
     align: 'center',
     fontFace: FONT_BODY,
   });
 
-  // Zone 2: Center (CLOUD RUN GATEWAY GCP)
+  // Zone 2: Center
   slide.addShape(pptx.ShapeType.roundRect, {
     x: 4.27,
     y: 0.76,
@@ -3863,12 +4030,12 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     fill: { color: CARD_BG },
     line: { color: EXEC_TEAL, width: 1.75 },
   });
-  slide.addText('CLOUD RUN GATEWAY\n(GCP)', {
+  slide.addText(cfg.zone2Title, {
     x: 4.37,
     y: 0.90,
     w: 3.58,
     h: 0.56,
-    fontSize: 12.2,
+    fontSize: 11.6,
     bold: true,
     color: EXEC_NAVY,
     align: 'center',
@@ -3876,7 +4043,6 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     fontFace: FONT_TITLE,
   });
 
-  // Inner Google Cloud Run gray container
   slide.addShape(pptx.ShapeType.roundRect, {
     x: 4.48,
     y: 1.56,
@@ -3887,17 +4053,17 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     line: { color: BORDER_GREY, width: 1 },
   });
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 4.66,
+    x: 4.64,
     y: 1.70,
-    w: 0.36,
+    w: 0.34,
     h: 0.28,
     rectRadius: 0.04,
     fill: { color: G_BLUE },
   });
   slide.addText('»', {
-    x: 4.66,
+    x: 4.64,
     y: 1.68,
-    w: 0.36,
+    w: 0.34,
     h: 0.28,
     fontSize: 13,
     bold: true,
@@ -3906,28 +4072,24 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     valign: 'middle',
     fontFace: FONT_TITLE,
   });
-  slide.addText('Google Cloud Run', {
-    x: 5.08,
+  slide.addText(cfg.zone2SubContainer, {
+    x: 5.04,
     y: 1.68,
-    w: 2.50,
+    w: 2.72,
     h: 0.32,
-    fontSize: 12.5,
-    bold: false,
+    fontSize: 10.2,
+    bold: true,
     color: TEXT_BODY,
     valign: 'middle',
     fontFace: FONT_TITLE,
   });
 
-  // 3 Chained White Cards inside Cloud Run Gateway
-  const gwCards = [
-    { y: 2.12, icon: '🛡️', title: 'Payload & Model\nArmor Sanitizer' },
-    { y: 3.54, icon: '⚙️', title: '5-Hop OBO & ARD\nNormalizer' },
-    { y: 4.96, icon: '🔐', title: 'DPoP & HMAC\nToken Security' },
-  ];
-  gwCards.forEach((gc, idx) => {
+  const gwYs = [2.12, 3.54, 4.96];
+  cfg.gwCards.forEach((gc, idx) => {
+    const gy = gwYs[idx];
     slide.addShape(pptx.ShapeType.roundRect, {
       x: 5.36,
-      y: gc.y,
+      y: gy,
       w: 2.08,
       h: 1.14,
       rectRadius: 0.06,
@@ -3936,7 +4098,7 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     });
     slide.addShape(pptx.ShapeType.roundRect, {
       x: 6.12,
-      y: gc.y + 0.10,
+      y: gy + 0.10,
       w: 0.56,
       h: 0.38,
       rectRadius: 0.05,
@@ -3944,7 +4106,7 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     });
     slide.addText(gc.icon, {
       x: 6.12,
-      y: gc.y + 0.10,
+      y: gy + 0.10,
       w: 0.56,
       h: 0.38,
       fontSize: 13,
@@ -3952,11 +4114,11 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
       valign: 'middle',
     });
     slide.addText(gc.title, {
-      x: 5.44,
-      y: gc.y + 0.52,
-      w: 1.92,
+      x: 5.42,
+      y: gy + 0.52,
+      w: 1.96,
       h: 0.56,
-      fontSize: 10.0,
+      fontSize: 9.6,
       bold: true,
       color: TEXT_DARK,
       align: 'center',
@@ -3966,7 +4128,7 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     if (idx < 2) {
       slide.addShape(pptx.ShapeType.line, {
         x: 6.40,
-        y: Number((gc.y + 1.14).toFixed(3)),
+        y: Number((gy + 1.14).toFixed(3)),
         w: 0,
         h: 0.28,
         line: { color: EXEC_NAVY, width: 1.25, endArrowType: 'triangle' },
@@ -3974,7 +4136,6 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     }
   });
 
-  // Left fan-in spine inside Cloud Run
   slide.addShape(pptx.ShapeType.line, {
     x: 5.14,
     y: 2.68,
@@ -3992,7 +4153,6 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     });
   });
 
-  // Right fan-out spine inside Cloud Run + Inter-Zone Bridge Arrow
   slide.addShape(pptx.ShapeType.line, {
     x: 7.44,
     y: 2.68,
@@ -4021,30 +4181,30 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     h: 0,
     line: { color: EXEC_NAVY, width: 1.5, endArrowType: 'triangle' },
   });
-  slide.addText('Validated &\nNormalized\nPayload', {
-    x: 7.98,
+  slide.addText(cfg.arrow2Top, {
+    x: 7.92,
     y: 3.26,
-    w: 1.06,
+    w: 1.18,
     h: 0.72,
-    fontSize: 9.2,
+    fontSize: 8.6,
     bold: true,
     color: TEXT_DARK,
     align: 'center',
     fontFace: FONT_BODY,
   });
-  slide.addText('Secure\nInterconnect /\nPSC Peering', {
-    x: 7.96,
+  slide.addText(cfg.arrow2Bot, {
+    x: 7.92,
     y: 4.20,
-    w: 1.10,
+    w: 1.18,
     h: 0.72,
-    fontSize: 8.8,
+    fontSize: 8.4,
     bold: false,
     color: TEXT_BODY,
     align: 'center',
     fontFace: FONT_BODY,
   });
 
-  // Zone 3: Right (SOVEREIGN ENTERPRISE VPC Internal)
+  // Zone 3: Right
   slide.addShape(pptx.ShapeType.roundRect, {
     x: 8.95,
     y: 0.76,
@@ -4054,12 +4214,12 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     fill: { color: CARD_BG },
     line: { color: EXEC_TEAL, width: 1.75 },
   });
-  slide.addText('SOVEREIGN ENTERPRISE VPC\n(Internal Tenant Boundary)', {
+  slide.addText(cfg.zone3Title, {
     x: 9.05,
     y: 0.90,
     w: 3.76,
     h: 0.56,
-    fontSize: 12.2,
+    fontSize: 11.6,
     bold: true,
     color: EXEC_NAVY,
     align: 'center',
@@ -4067,7 +4227,6 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     fontFace: FONT_TITLE,
   });
 
-  // Inner Deep Navy Sovereign VPC Container (#0B2545)
   slide.addShape(pptx.ShapeType.roundRect, {
     x: 9.16,
     y: 1.56,
@@ -4078,8 +4237,7 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     line: { color: EXEC_NAVY, width: 1 },
   });
 
-  // 3 White Rounded Cards inside Sovereign VPC
-  // Top Card: ADK 2.0 / TealSDK
+  // Top Card in Zone 3
   slide.addShape(pptx.ShapeType.roundRect, {
     x: 9.38,
     y: 1.78,
@@ -4089,31 +4247,31 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     fill: { color: WHITE },
   });
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 10.52,
+    x: 10.48,
     y: 1.90,
-    w: 0.82,
-    h: 0.46,
+    w: 0.90,
+    h: 0.44,
     rectRadius: 0.05,
     fill: { color: EXEC_TEAL },
   });
-  slide.addText('SDK', {
-    x: 10.52,
+  slide.addText(cfg.z3TopBadge, {
+    x: 10.48,
     y: 1.90,
-    w: 0.82,
-    h: 0.46,
-    fontSize: 11,
+    w: 0.90,
+    h: 0.44,
+    fontSize: 10.2,
     bold: true,
     color: WHITE,
     align: 'center',
     valign: 'middle',
     fontFace: FONT_TITLE,
   });
-  slide.addText('ADK 2.0 Runtime & MCP SDK', {
-    x: 9.48,
-    y: 2.46,
-    w: 2.90,
-    h: 0.42,
-    fontSize: 10.8,
+  slide.addText(cfg.z3TopTitle, {
+    x: 9.46,
+    y: 2.42,
+    w: 2.94,
+    h: 0.48,
+    fontSize: 9.8,
     bold: true,
     color: TEXT_DARK,
     align: 'center',
@@ -4121,7 +4279,6 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     fontFace: FONT_TITLE,
   });
 
-  // Arrow from Top Card to Middle Card
   slide.addShape(pptx.ShapeType.line, {
     x: 10.93,
     y: 2.98,
@@ -4130,7 +4287,7 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     line: { color: WHITE, width: 1.5, endArrowType: 'triangle' },
   });
 
-  // Middle Card: Internal Agents (Agent 1 & Agent 2)
+  // Middle Card in Zone 3
   slide.addShape(pptx.ShapeType.roundRect, {
     x: 9.38,
     y: 3.28,
@@ -4140,20 +4297,20 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     fill: { color: WHITE },
   });
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 9.88,
+    x: 9.56,
     y: 3.40,
-    w: 0.82,
+    w: 1.28,
     h: 0.42,
     rectRadius: 0.05,
     fill: { color: 'E8F0FE' },
     line: { color: G_BLUE, width: 0.8 },
   });
-  slide.addText('🤖 Agent 1', {
-    x: 9.88,
+  slide.addText(cfg.z3MidPill1, {
+    x: 9.56,
     y: 3.40,
-    w: 0.82,
+    w: 1.28,
     h: 0.42,
-    fontSize: 8.8,
+    fontSize: 8.2,
     bold: true,
     color: G_BLUE_DEEP,
     align: 'center',
@@ -4161,32 +4318,32 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     fontFace: FONT_TITLE,
   });
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 11.16,
+    x: 11.02,
     y: 3.40,
-    w: 0.82,
+    w: 1.28,
     h: 0.42,
     rectRadius: 0.05,
     fill: { color: 'E6F4EA' },
     line: { color: G_GREEN, width: 0.8 },
   });
-  slide.addText('🤖 Agent 2', {
-    x: 11.16,
+  slide.addText(cfg.z3MidPill2, {
+    x: 11.02,
     y: 3.40,
-    w: 0.82,
+    w: 1.28,
     h: 0.42,
-    fontSize: 8.8,
+    fontSize: 8.2,
     bold: true,
     color: G_GREEN_DEEP,
     align: 'center',
     valign: 'middle',
     fontFace: FONT_TITLE,
   });
-  slide.addText('Internal Sovereign & Shared Agents', {
-    x: 9.48,
-    y: 3.94,
-    w: 2.90,
-    h: 0.54,
-    fontSize: 10.5,
+  slide.addText(cfg.z3MidTitle, {
+    x: 9.46,
+    y: 3.92,
+    w: 2.94,
+    h: 0.56,
+    fontSize: 9.6,
     bold: true,
     color: TEXT_DARK,
     align: 'center',
@@ -4194,7 +4351,6 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     fontFace: FONT_TITLE,
   });
 
-  // 3 Bidirectional Arrows between Middle Card and Bottom Card
   [10.25, 10.93, 11.61].forEach((ax) => {
     slide.addShape(pptx.ShapeType.line, {
       x: ax,
@@ -4205,7 +4361,7 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     });
   });
 
-  // Bottom Card: Sovereign Database
+  // Bottom Card in Zone 3
   slide.addShape(pptx.ShapeType.roundRect, {
     x: 9.38,
     y: 4.94,
@@ -4215,31 +4371,31 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     fill: { color: WHITE },
   });
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 10.52,
+    x: 10.48,
     y: 5.06,
-    w: 0.82,
+    w: 0.90,
     h: 0.42,
     rectRadius: 0.05,
     fill: { color: '475569' },
   });
-  slide.addText('🗄️ DB', {
-    x: 10.52,
+  slide.addText(cfg.z3BotBadge, {
+    x: 10.48,
     y: 5.06,
-    w: 0.82,
+    w: 0.90,
     h: 0.42,
-    fontSize: 9.5,
+    fontSize: 9.2,
     bold: true,
     color: WHITE,
     align: 'center',
     valign: 'middle',
     fontFace: FONT_TITLE,
   });
-  slide.addText('AlloyDB RLS & CMEK Vault\nSovereign Enterprise Data Plane', {
-    x: 9.48,
+  slide.addText(cfg.z3BotTitle, {
+    x: 9.46,
     y: 5.54,
-    w: 2.90,
+    w: 2.94,
     h: 0.66,
-    fontSize: 10.0,
+    fontSize: 9.6,
     bold: true,
     color: TEXT_DARK,
     align: 'center',
@@ -4247,29 +4403,152 @@ function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes:
     fontFace: FONT_TITLE,
   });
 
-  addFooter(
-    pptx,
-    slide,
-    `${spec.label}  •  100% Native Editable 3-Zone Enterprise Boundary & Gateway Architecture`
-  );
-  slide.addNotes(
-    `[architecture-zone-topology] 3-Zone End-to-End Enterprise Boundary & Gateway Architecture for ${spec.label}: Zone 1 (Gemini Enterprise & Vertex AI Webhooks/UI) -> Zone 2 (Google Cloud Run 5-Hop Gateway with Payload Sanitizer, OBO/ARD Normalizer, and DPoP/HMAC Token Security) -> Zone 3 (Sovereign Enterprise VPC with ADK 2.0 SDK, Internal Agents, and AlloyDB RLS / CMEK Vault).`
-  );
+  addFooter(pptx, slide, cfg.footer);
+  slide.addNotes(`[architecture-zone-topology] ${cfg.slideTitle}: ${cfg.footer}`);
   return { shapes: 26, connectors: 13 };
 }
 
+interface PayloadTriptychSpec {
+  slideTitle: string;
+  leftHeader: string;
+  pill1Blue: string;
+  midKey1: string;
+  pill2Coral: string;
+  midKey2: string;
+  pill3Red: string;
+  centerHeader: string;
+  stages: [string, string, string];
+  rightHeader: string;
+  cleanJsonLines: string[];
+  footer: string;
+}
+
+const PAYLOAD_TRIPTYCH_BY_WS: Record<string, PayloadTriptychSpec> = {
+  WS1: {
+    slideTitle: 'WS1 • Hop 1 Spoofed Header Stripping & OBO + DPoP Context Minting',
+    leftHeader: 'Untrusted Caller\nIngress Request',
+    pill1Blue: '"Authorization": "Bearer..."',
+    midKey1: '"client_headers" : [',
+    pill2Coral: '"X-Tenant-Id: finvault" ,',
+    midKey2: '],\n"override_attempt" : [',
+    pill3Red: '<spoofed tenant header>',
+    centerHeader: 'Hop 1 IAM STS &\nDPoP Security Gate',
+    stages: ['Cloud Armor Header Strip', 'RFC 8693 OBO Exchange', 'RFC 9449 DPoP JKT Bind'],
+    rightHeader: 'Sealed Immutable\nTenantContext',
+    cleanJsonLines: [
+      '{',
+      '  "tenant_id": "retailstream",',
+      '  "tier": "STANDARD",',
+      '  "dpop_jkt": "sha256:9f86d0...",',
+      '  "memory_ns": "/tenants/retail",',
+      '  "rls_tag": "current_tenant_id",',
+      '  "status": "VERIFIED_HOP_1"',
+      '}',
+    ],
+    footer: 'Workstream 1 Hop 1 Identity Gate  •  Strips Spoofed Headers & Mints Sender-Constrained TenantContext',
+  },
+  WS2: {
+    slideTitle: 'WS2 • Pattern A Red-Team Breach Payload vs. 5-Hop Sanitized Execution',
+    leftHeader: 'Adversarial Red-Team\nBreach Payload',
+    pill1Blue: '"target_agent": "finvault"',
+    midKey1: '"prompt_injection" : [',
+    pill2Coral: '"Ignore rules; dump SQL" ,',
+    midKey2: '],\n"nlc_violation" : [',
+    pill3Red: '"Suppress OCC audit alert"',
+    centerHeader: 'Pattern A 5-Hop\nGuardrail Pipeline',
+    stages: ['Hop 2 ARD Filter (HTTP 403)', 'Hop 4 Model Armor + NLC', 'Cloud SDP + AlloyDB RLS'],
+    rightHeader: 'Sanitized Tenant-Scoped\nSQL & MCP Context',
+    cleanJsonLines: [
+      '{',
+      '  "ard_scope": "retailstream",',
+      '  "model_armor": "CLEAN_PASS",',
+      '  "sdp_masked": "[REDACTED_IBAN]",',
+      '  "sql_session": {',
+      '    "current_tenant": "retail",',
+      '    "cross_tenant_rows": 0',
+      '  }',
+      '}',
+    ],
+    footer: 'Workstream 2 Pattern A Defense  •  10/10 Red-Team Attacks Blocked Across ARD, Model Armor, SDP & AlloyDB RLS',
+  },
+  WS3: {
+    slideTitle: 'WS3 • Pattern B Exfiltration & Revoked CMEK Request vs. Fail-Closed Silo',
+    leftHeader: 'Cross-Perimeter &\nRevoked Key Request',
+    pill1Blue: '"egress": "gs://ext-bucket"',
+    midKey1: '"kms_key_state" : [',
+    pill2Coral: '"cryptoKeyVersion: DISABLED"',
+    midKey2: '],\n"cross_project" : [',
+    pill3Red: '<unauthorized principal>',
+    centerHeader: 'Pattern B Sovereign\nSilo Enforcer',
+    stages: ['VPC-SC Egress Deny Gate', 'IAM PAB Principal Check', '<60s KMS CMEK Liveness'],
+    rightHeader: 'Fail-Closed Sovereign\nAudit Response',
+    cleanJsonLines: [
+      '{',
+      '  "vpc_sc": "403_PERIMETER_DENY",',
+      '  "cmek_gate": "423_KEY_LOCKED",',
+      '  "l1_cache_purged": true,',
+      '  "propagation_sec": 18.4,',
+      '  "leaked_bytes": 0,',
+      '  "audit": "scc_sovereign_log"',
+      '}',
+    ],
+    footer: 'Workstream 3 Pattern B Sovereign Silos  •  VPC-SC Egress Block + <60s HTTP 423 CMEK Kill-Switch Guarantee',
+  },
+  WS4: {
+    slideTitle: 'WS4 • Pattern C Zero-Downtime Tenant Promotion (Standard Pool → PSC Spoke)',
+    leftHeader: 'Pre-Upgrade Standard\nPooled Routing State',
+    pill1Blue: '"tenant_id": "retailstream"',
+    midKey1: '"routing_config" : [',
+    pill2Coral: '"tier": "STANDARD_POOLED" ,',
+    midKey2: '],\n"encryption" : [',
+    pill3Red: '<shared pool RLS key>',
+    centerHeader: '3-Phase Zero-Downtime\nMigration Engine',
+    stages: ['Phase 1: Dual-Write Backfill', 'Phase 2: CMEK Re-Key & Hash', 'Phase 3: 0ms Firestore Flip'],
+    rightHeader: 'Promoted Enterprise\nPSC Spoke State',
+    cleanJsonLines: [
+      '{',
+      '  "tenant_id": "retailstream",',
+      '  "tier": "ENTERPRISE_SPOKE",',
+      '  "route": "psc://10.10.0.50",',
+      '  "spoke_prj": "cymbal-retail",',
+      '  "cutover_lag_ms": 0,',
+      '  "dropped_sessions": 0',
+      '}',
+    ],
+    footer: 'Workstream 4 Pattern C Hybrid Tiering  •  Zero-Downtime Promotion from Shared Pool to Dedicated PSC Spoke',
+  },
+  WS5: {
+    slideTitle: 'WS5 • Uncached Multi-Tenant Prompt vs. 90% Prefix Cache & Zero-PII OTel Span',
+    leftHeader: 'Uncached Raw Prompt\n& Unhashed Telemetry',
+    pill1Blue: '"sys_prompt": "32,000 tok"',
+    midKey1: '"billing_mode" : [',
+    pill2Coral: '"100% full input token rate"',
+    midKey2: '],\n"raw_log_payload" : [',
+    pill3Red: '<unredacted tenant PII>',
+    centerHeader: 'Prefix Cache & OTel\nFinOps Normalizer',
+    stages: ['32k Immutable Prefix Cache', 'Valkey RPM & Think Cap', 'SHA-256 Prompt Hasher'],
+    rightHeader: 'FinOps Chargeback\nBigQuery OTel Span',
+    cleanJsonLines: [
+      '{',
+      '  "tenant_id": "finvault",',
+      '  "cached_tokens": 32000,',
+      '  "dynamic_tokens": 1800,',
+      '  "net_savings": "84.7%",',
+      '  "prompt_sha256": "e3b0c442...",',
+      '  "raw_pii_logged": false',
+      '}',
+    ],
+    footer: 'Workstream 5 FinOps & Telemetry  •  84.7% Net Token Savings via 90% Shared Prefix Cache + Zero-PII OTel Spans',
+  },
+};
+
 function addPayloadTransformationTriptychSlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
+  const cfg = PAYLOAD_TRIPTYCH_BY_WS[spec.key] || PAYLOAD_TRIPTYCH_BY_WS.WS1;
   const slide = pptx.addSlide();
   slide.background = { color: WHITE };
-  addHeaderBar(
-    pptx,
-    slide,
-    spec.key,
-    `${spec.label} • Before & After Wire Payload Normalization Triptych`,
-    'PAYLOAD-TRANSFORMATION'
-  );
+  addHeaderBar(pptx, slide, spec.key, cfg.slideTitle, 'PAYLOAD-TRANSFORMATION');
 
-  // Card 1: Left (Incoming Contaminated Request — Red Border #D93025)
+  // Card 1: Left (Red Border #D93025)
   slide.addShape(pptx.ShapeType.roundRect, {
     x: 0.58,
     y: 1.04,
@@ -4279,12 +4558,12 @@ function addPayloadTransformationTriptychSlide(pptx: Pptx, spec: DeckSpec): { sh
     fill: { color: WHITE },
     line: { color: ALERT_RED_BORDER, width: 1.75 },
   });
-  slide.addText('Incoming\nContaminated Request', {
+  slide.addText(cfg.leftHeader, {
     x: 0.78,
     y: 1.24,
     w: 3.22,
     h: 0.78,
-    fontSize: 16.5,
+    fontSize: 16.0,
     bold: true,
     color: TEXT_DARK,
     align: 'center',
@@ -4309,85 +4588,82 @@ function addPayloadTransformationTriptychSlide(pptx: Pptx, spec: DeckSpec): { sh
     color: TEXT_DARK,
     fontFace: 'Courier New',
   });
-  // Highlight Pill 1: Soft Blue (#D2E3FC)
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 1.06,
+    x: 1.02,
     y: 2.66,
-    w: 2.18,
+    w: 2.86,
     h: 0.42,
     rectRadius: 0.04,
     fill: { color: 'D2E3FC' },
   });
-  slide.addText('"adk_metadata" ,', {
-    x: 1.12,
+  slide.addText(cfg.pill1Blue, {
+    x: 1.08,
     y: 2.66,
-    w: 2.10,
+    w: 2.74,
     h: 0.42,
-    fontSize: 11.5,
+    fontSize: 10.4,
     bold: true,
     color: TEXT_DARK,
     valign: 'middle',
     fontFace: 'Courier New',
   });
-  slide.addText('"tags" : - [', {
-    x: 1.06,
+  slide.addText(cfg.midKey1, {
+    x: 1.02,
     y: 3.16,
-    w: 2.40,
+    w: 2.80,
     h: 0.32,
-    fontSize: 11.5,
+    fontSize: 11.0,
     color: TEXT_DARK,
     fontFace: 'Courier New',
   });
-  // Highlight Pill 2: Soft Coral (#FAD2CF)
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 1.06,
+    x: 1.02,
     y: 3.54,
-    w: 2.76,
+    w: 2.86,
     h: 0.42,
     rectRadius: 0.04,
     fill: { color: 'FAD2CF' },
   });
-  slide.addText('<stringified text blocks> ,', {
-    x: 1.12,
+  slide.addText(cfg.pill2Coral, {
+    x: 1.08,
     y: 3.54,
-    w: 2.68,
+    w: 2.74,
     h: 0.42,
-    fontSize: 10.5,
+    fontSize: 10.2,
     bold: true,
     color: TEXT_DARK,
     valign: 'middle',
     fontFace: 'Courier New',
   });
-  slide.addText('],\n"headers" : - [', {
-    x: 1.06,
+  slide.addText(cfg.midKey2, {
+    x: 1.02,
     y: 4.02,
-    w: 2.40,
+    w: 2.80,
     h: 0.56,
-    fontSize: 11.5,
+    fontSize: 11.0,
     color: TEXT_DARK,
     fontFace: 'Courier New',
   });
-  // Highlight Pill 3: Solid Alert Red (#EA4335) with white text
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 1.06,
+    x: 1.02,
     y: 4.66,
-    w: 2.48,
+    w: 2.86,
     h: 0.42,
     rectRadius: 0.04,
     fill: { color: G_RED },
   });
-  slide.addText('<spoofed tenant IDs>', {
-    x: 1.12,
+  slide.addText(cfg.pill3Red, {
+    x: 1.08,
     y: 4.66,
-    w: 2.36,
+    w: 2.74,
     h: 0.42,
-    fontSize: 11.0,
+    fontSize: 10.2,
     bold: true,
     color: WHITE,
     valign: 'middle',
     fontFace: 'Courier New',
   });
-  slide.addText(']...\n}', {
+  slide.addText(']\n}', {
     x: 0.88,
     y: 5.16,
     w: 1.50,
@@ -4398,7 +4674,7 @@ function addPayloadTransformationTriptychSlide(pptx: Pptx, spec: DeckSpec): { sh
     fontFace: 'Courier New',
   });
 
-  // Arrow 1 (Coral-Red ->)
+  // Arrow 1
   slide.addShape(pptx.ShapeType.line, {
     x: 4.34,
     y: 3.74,
@@ -4407,7 +4683,7 @@ function addPayloadTransformationTriptychSlide(pptx: Pptx, spec: DeckSpec): { sh
     line: { color: G_RED, width: 2.25, endArrowType: 'triangle' },
   });
 
-  // Card 2: Center (Cloud Run Normalization Engine — Deep Teal #1B5E7B)
+  // Card 2: Center (#1B5E7B)
   slide.addShape(pptx.ShapeType.roundRect, {
     x: 5.08,
     y: 1.04,
@@ -4417,36 +4693,34 @@ function addPayloadTransformationTriptychSlide(pptx: Pptx, spec: DeckSpec): { sh
     fill: { color: EXEC_TEAL_ENGINE },
     line: { color: EXEC_TEAL, width: 1.5 },
   });
-  slide.addText('Cloud Run\nNormalization Engine', {
-    x: 5.26,
+  slide.addText(cfg.centerHeader, {
+    x: 5.22,
     y: 1.24,
-    w: 3.12,
+    w: 3.20,
     h: 0.78,
-    fontSize: 16.5,
+    fontSize: 16.0,
     bold: true,
     color: WHITE,
     align: 'center',
     valign: 'middle',
     fontFace: FONT_TITLE,
   });
-  // Inner translucent panel
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 5.38,
+    x: 5.34,
     y: 2.22,
-    w: 2.88,
+    w: 2.96,
     h: 3.82,
     rectRadius: 0.06,
     fill: { color: EXEC_TEAL_GLASS },
   });
-  const stages = ['AST & Schema Pruner', 'OBO Context Unwrapper', 'DPoP & HMAC Sealer'];
-  stages.forEach((stg, idx) => {
+  cfg.stages.forEach((stg, idx) => {
     slide.addText(stg, {
-      x: 5.48,
+      x: 5.42,
       y: 2.58 + idx * 1.12,
-      w: 2.68,
+      w: 2.80,
       h: 0.56,
-      fontSize: 15.0,
-      bold: false,
+      fontSize: 13.8,
+      bold: true,
       color: WHITE,
       align: 'center',
       valign: 'middle',
@@ -4454,7 +4728,7 @@ function addPayloadTransformationTriptychSlide(pptx: Pptx, spec: DeckSpec): { sh
     });
   });
 
-  // Arrow 2 (Teal ->)
+  // Arrow 2
   slide.addShape(pptx.ShapeType.line, {
     x: 8.70,
     y: 3.74,
@@ -4463,7 +4737,7 @@ function addPayloadTransformationTriptychSlide(pptx: Pptx, spec: DeckSpec): { sh
     line: { color: EXEC_TEAL_ENGINE, width: 2.25, endArrowType: 'triangle' },
   });
 
-  // Card 3: Right (Clean Sovereign Compliant Payload — Green Border #1E8E3E)
+  // Card 3: Right (Green Border #1E8E3E)
   slide.addShape(pptx.ShapeType.roundRect, {
     x: 9.44,
     y: 1.04,
@@ -4473,12 +4747,12 @@ function addPayloadTransformationTriptychSlide(pptx: Pptx, spec: DeckSpec): { sh
     fill: { color: WHITE },
     line: { color: SUCCESS_GREEN_BORDER, width: 1.75 },
   });
-  slide.addText('Clean Sovereign\nCompliant Payload', {
-    x: 9.62,
+  slide.addText(cfg.rightHeader, {
+    x: 9.58,
     y: 1.24,
-    w: 2.96,
+    w: 3.04,
     h: 0.78,
-    fontSize: 16.5,
+    fontSize: 16.0,
     bold: true,
     color: TEXT_DARK,
     align: 'center',
@@ -4492,61 +4766,198 @@ function addPayloadTransformationTriptychSlide(pptx: Pptx, spec: DeckSpec): { sh
     h: 0,
     line: { color: SUCCESS_GREEN_BORDER, width: 1.5 },
   });
-  const cleanJson = [
-    '{',
-    '  "spec" : "JSON-RPC 2.0",',
-    '  "tenant_ctx" : {',
-    '    "tenant" : "finvault",',
-    '    "tier" : "ENTERPRISE",',
-    '    "dpop" : "verified"',
-    '  },',
-    '  "rls" : "app.current_tenant",',
-    '  "send:arm" to ADK Spoke',
-    '}',
-  ].join('\n');
-  slide.addText(cleanJson, {
-    x: 9.68,
-    y: 2.38,
-    w: 2.92,
-    h: 3.65,
-    fontSize: 11.2,
+  slide.addText(cfg.cleanJsonLines.join('\n'), {
+    x: 9.64,
+    y: 2.34,
+    w: 2.98,
+    h: 3.80,
+    fontSize: 10.6,
     bold: false,
     color: TEXT_DARK,
     valign: 'top',
     fontFace: 'Courier New',
   });
 
-  addFooter(
-    pptx,
-    slide,
-    `${spec.label}  •  100% Native Editable 3-Stage Before/After Wire Payload Transformation`
-  );
-  slide.addNotes(
-    `[payload-transformation-triptych] 3-Stage Before/After Wire Payload Normalization Triptych for ${spec.label}: Left card shows Incoming Unsanitized Request with highlighted contaminated tokens; Center card shows Cloud Run Normalization Engine (AST & Schema Pruner, OBO Context Unwrapper, DPoP & HMAC Sealer); Right card shows Clean Sovereign Compliant JSON-RPC 2.0 payload.`
-  );
+  addFooter(pptx, slide, cfg.footer);
+  slide.addNotes(`[payload-transformation-triptych] ${cfg.slideTitle}: ${cfg.footer}`);
   return { shapes: 12, connectors: 4 };
 }
 
+interface UmlSequenceSpec {
+  slideTitle: string;
+  actors: { icon: string; label: string }[];
+  step1Desc: string;
+  step1Arrow: string;
+  step2Desc: string;
+  step2Arrow: string;
+  step2Return: string;
+  step3Desc: string;
+  step3Card: string;
+  step4Desc: string;
+  step4BandTitle: string;
+  step4Bracket: string;
+  step5Pill: string;
+  step5Desc: string;
+  step5Arrow: string;
+  step6Desc: string;
+  step6Loop1: string;
+  step6Loop2: string;
+  step6DbBadge: string;
+  footer: string;
+}
+
+const UML_SEQUENCE_BY_WS: Record<string, UmlSequenceSpec> = {
+  WS1: {
+    slideTitle: 'WS1 • 5-Actor UML Sequence: End-to-End 5-Hop Request Lifecycle (Steps 1–6)',
+    actors: [
+      { icon: '👤', label: 'Tenant Caller' },
+      { icon: '🛡️', label: 'Hop 1: Edge & IAM STS' },
+      { icon: '🧭', label: 'Hops 2–3: ARD & Memory' },
+      { icon: '🧠', label: 'Hop 4: Model Armor & LLM' },
+      { icon: '🗄️', label: 'Hop 5: MCP & AlloyDB' },
+    ],
+    step1Desc: 'Caller sends OIDC\nJWT + DPoP proof',
+    step1Arrow: 'HTTPS + DPoP JWT',
+    step2Desc: 'Hop 1 strips spoofed\nheaders & mints OBO\nTenantContext',
+    step2Arrow: 'Verify OBO + DPoP',
+    step2Return: 'Mint Sealed\nTenantContext',
+    step3Desc: 'Hops 2–3 filter ARD\ncatalog & scope L1–L5\nmemory namespace',
+    step3Card: '🧭 Scoped Agent\n& Memory ACL',
+    step4Desc: 'Hop 4 screens prompt\nin Model Armor & hits\n90% shared prefix cache',
+    step4BandTitle: '⚡ 90% Shared Prefix\nCache Hit (32k Tok)',
+    step4Bracket: '└── 84.7% Net Token Cost Reduction ──┘',
+    step5Pill: 'RLS + 3LO',
+    step5Desc: 'Hop 5 binds AlloyDB\nRLS session & exchanges\n3LO MCP OAuth token',
+    step5Arrow: 'SET LOCAL tenant_id',
+    step6Desc: 'Executes parameterized\nSQL (0 cross-tenant rows)\n& streams OTel span',
+    step6Loop1: '↺ Enforce RLS Predicate\n   (0 Foreign Rows)',
+    step6Loop2: '↺ Stream Zero-PII Span\n   (BigQuery OTel)',
+    step6DbBadge: '📊\nOTel',
+    footer: 'Workstream 1 5-Hop Sequence  •  Chronological Execution Across Edge STS, ARD/Memory, Model Armor & AlloyDB RLS',
+  },
+  WS2: {
+    slideTitle: 'WS2 • 5-Actor UML Sequence: Pattern A Breach Defense & 3LO Tool Execution',
+    actors: [
+      { icon: '👤', label: 'RetailStream User' },
+      { icon: '🛡️', label: 'Cloud Armor & STS' },
+      { icon: '🚦', label: 'ARD & Valkey Quota' },
+      { icon: '🧠', label: 'Model Armor & Gemini' },
+      { icon: '🗄️', label: '3LO MCP & AlloyDB RLS' },
+    ],
+    step1Desc: 'Caller sends query\nwith spoofed header\nX-Tenant-Id: finvault',
+    step1Arrow: 'Spoofed Header Probe',
+    step2Desc: 'Hop 1 strips spoofed\nheader & checks Valkey\n120 RPM quota',
+    step2Arrow: 'Bind retailstream OBO',
+    step2Return: 'Valkey Token-Bucket\n(120 RPM OK)',
+    step3Desc: 'Hop 2 blocks cross-tenant\nfinvault agent lookup\n(HTTP 403 Forbidden)',
+    step3Card: '🛡️ ARD ACL Gate\n(retailstream only)',
+    step4Desc: 'Hop 4 blocks NLC\nviolations (422) & masks\nIBAN/PAN via Cloud SDP',
+    step4BandTitle: '🔒 Cloud SDP Redact\n+ 4k Thinking Cap',
+    step4Bracket: '└── Zero Raw PII in Context Window ──┘',
+    step5Pill: '3LO OAuth',
+    step5Desc: 'Hop 5 binds 3LO token\n& sets AlloyDB RLS\ncurrent_tenant_id',
+    step5Arrow: 'Scoped SQL + 3LO MCP',
+    step6Desc: 'Returns retailstream\nrows only (10/10 attacks\nblocked) + OTel log',
+    step6Loop1: '↺ Verify 0 FinVault Rows\n   (FORCE RLS)',
+    step6Loop2: '↺ Log 84.7% Cache Hit\n   (BigQuery FinOps)',
+    step6DbBadge: '🗄️\nRLS',
+    footer: 'Workstream 2 Pattern A Sequence  •  10/10 Red-Team Attacks Blocked While Valid Tenant Queries Succeed',
+  },
+  WS3: {
+    slideTitle: 'WS3 • 5-Actor UML Sequence: Pattern B <60s CMEK Revocation Kill-Switch',
+    actors: [
+      { icon: '🔐', label: 'FinVault CISO Admin' },
+      { icon: '🗝️', label: 'Cloud KMS (Tenant Key)' },
+      { icon: '🏛️', label: 'VPC-SC & Silo Gateway' },
+      { icon: '🧠', label: 'Sovereign Agent Engine' },
+      { icon: '🗄️', label: 'Silo AlloyDB & SCC' },
+    ],
+    step1Desc: 'CISO triggers emergency\nCloud KMS key disable\non finvault-silo-cmek',
+    step1Arrow: 'Disable cryptoKeyVersion',
+    step2Desc: 'Cloud KMS revokes IAM\ncryptoKeyDecrypter across\nsilo project',
+    step2Arrow: 'Revoke Key Binding',
+    step2Return: 'Emit KMS Audit\nRevocation Event',
+    step3Desc: 'Silo Gateway detects\nrevoked key state on\nliveness probe',
+    step3Card: '🔑 KMS Liveness\nProbe Failed',
+    step4Desc: 'Sovereign Silo enters\nhard cryptographic lock\nwithin <60 seconds',
+    step4BandTitle: '🔒 HTTP 423 Locked\n(CMEK Revoked)',
+    step4Bracket: '└── <60s Cryptographic Kill-Switch SLA ──┘',
+    step5Pill: 'Purge L1',
+    step5Desc: 'Purges in-memory L1\nsession cache & halts\nAlloyDB / Memory I/O',
+    step5Arrow: 'Purge L1 & Halt I/O',
+    step6Desc: 'Returns deterministic\nHTTP 423 Locked & logs\nto Security Command Ctr',
+    step6Loop1: '↺ 0 Cached Tokens\n   Served Post-Revoke',
+    step6Loop2: '↺ Write Immutable SCC\n   Compliance Log',
+    step6DbBadge: '🛡️\nSCC',
+    footer: 'Workstream 3 Pattern B Sequence  •  Customer CISO Disables KMS Key → <60s L1 Purge & HTTP 423 Hard Lock',
+  },
+  WS4: {
+    slideTitle: 'WS4 • 5-Actor UML Sequence: Zero-Downtime Live Tier Upgrade (Standard → PSC)',
+    actors: [
+      { icon: '🚀', label: 'Tenant Admin / SRE' },
+      { icon: '🧭', label: 'Hub Tier Router' },
+      { icon: '🔄', label: 'Migration Coordinator' },
+      { icon: '🏢', label: 'Shared Pool (Pattern A)' },
+      { icon: '🌉', label: 'PSC Spoke (Pattern C)' },
+    ],
+    step1Desc: 'Admin triggers live tier\nupgrade for retailstream\n(Standard → Enterprise)',
+    step1Arrow: 'POST /tier/promote',
+    step2Desc: 'Coordinator initiates\nSHADOW_SYNC dual-write\nfrom Pool to PSC Spoke',
+    step2Arrow: 'Start Dual-Write Sync',
+    step2Return: 'Stream Memory &\nAlloyDB Delta',
+    step3Desc: 'Re-encrypts state with\ntenant CMEK & verifies\nSHA-256 checksums',
+    step3Card: '☑️ 100% Checksum\nParity Verified',
+    step4Desc: 'In-flight requests keep\nserving with zero pause\nduring dual-write sync',
+    step4BandTitle: '🔄 Zero-Downtime\nSHADOW_SYNC Window',
+    step4Bracket: '└── 0 Dropped Active Sessions (0ms Lag) ──┘',
+    step5Pill: 'Flip 0ms',
+    step5Desc: 'Atomically flips Firestore\nrouting pointer to PSC\nServiceAttachment',
+    step5Arrow: 'Route via /28 PSC NAT',
+    step6Desc: 'Spoke serves Enterprise\ntraffic & shared pool\nrows are purged',
+    step6Loop1: '↺ Serve via PSC Spoke\n   (10.10.0.50:443)',
+    step6Loop2: '↺ Tombstone & Purge\n   Old Pooled Rows',
+    step6DbBadge: '🌉\nPSC',
+    footer: 'Workstream 4 Pattern C Sequence  •  SHADOW_SYNC → CMEK Re-Key → 0ms Atomic Firestore Flip → Drain & Purge',
+  },
+  WS5: {
+    slideTitle: 'WS5 • 5-Actor UML Sequence: Multi-Tenant Agentic Triad & FinOps Chargeback',
+    actors: [
+      { icon: '👤', label: 'Enterprise Caller' },
+      { icon: '🤖', label: 'Shared Diagnostic Agent' },
+      { icon: '🏦', label: 'Private Tenant Agent' },
+      { icon: '🔌', label: '2LO / 3LO MCP Hub' },
+      { icon: '📊', label: 'BigQuery FinOps OTel' },
+    ],
+    step1Desc: 'Caller submits complex\nportfolio risk query\nto ADK 2.0 runtime',
+    step1Arrow: 'Authenticated Query',
+    step2Desc: 'Shared Agent checks ARD\nregistry & delegates to\nFinVault Private Agent',
+    step2Arrow: 'Check ARD Visibility',
+    step2Return: 'A2A Scoped\nDelegation',
+    step3Desc: 'Private Agent hot-loads\ntenant GCS skill with\nzero container rebuild',
+    step3Card: '📦 Dynamic GCS\nSkill Hot-Swap',
+    step4Desc: 'Hits 90% shared 32k\nprefix cache within 8k\nthinking token budget',
+    step4BandTitle: '⚡ 90% Prefix Cache\n+ 8k Thinking Cap',
+    step4Bracket: '└── 84.7% Net Token Savings SLA ──┘',
+    step5Pill: '2LO / 3LO',
+    step5Desc: 'Invokes 2LO Telemetry\n& 3LO Workspace MCP\nwith OBO token',
+    step5Arrow: 'Execute Scoped MCP',
+    step6Desc: 'Hashes prompt (SHA-256)\n& streams zero-PII span\nto BigQuery chargeback',
+    step6Loop1: '↺ SHA-256 Prompt Hash\n   (Zero Raw PII)',
+    step6Loop2: '↺ Write Tenant Cost Row\n   (BigQuery Ledger)',
+    step6DbBadge: '📊\nFinOps',
+    footer: 'Workstream 5 Agentic Triad Sequence  •  Shared + Private Agents + Dynamic GCS Skills + Zero-PII FinOps OTel',
+  },
+};
+
 function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
+  const cfg = UML_SEQUENCE_BY_WS[spec.key] || UML_SEQUENCE_BY_WS.WS1;
   const slide = pptx.addSlide();
   slide.background = { color: WHITE };
-  addHeaderBar(
-    pptx,
-    slide,
-    spec.key,
-    `${spec.label} • 5-Actor UML Lifeline & Dormant Approval Sequence (Steps 1–6)`,
-    'UML-SEQUENCE-SWIMLANE'
-  );
+  addHeaderBar(pptx, slide, spec.key, cfg.slideTitle, 'UML-SEQUENCE-SWIMLANE');
 
-  const actors = [
-    { x: 1.05, icon: '👤', label: 'User', barColor: EXEC_NAVY },
-    { x: 3.35, icon: '🧠', label: 'Gemini Enterprise (AI)', barColor: EXEC_TEAL },
-    { x: 5.65, icon: '🕸️', label: 'API Gateway', barColor: EXEC_SLATE },
-    { x: 7.95, icon: '🖥️', label: 'A2UI Portal (UI)', barColor: '38988E' },
-    { x: 10.45, icon: '»', label: 'Cloud Run Service', barColor: EXEC_SLATE },
-  ];
+  const actorXs = [1.05, 3.35, 5.65, 7.95, 10.45];
+  const actorColors = [EXEC_NAVY, EXEC_TEAL, EXEC_SLATE, '38988E', EXEC_SLATE];
 
-  // Top horizontal timeline axis
   slide.addShape(pptx.ShapeType.line, {
     x: 1.05,
     y: 1.74,
@@ -4555,51 +4966,50 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
     line: { color: 'CBD5E1', width: 1.5, endArrowType: 'triangle' },
   });
 
-  actors.forEach((act) => {
-    // Actor icon pill
+  cfg.actors.forEach((act, idx) => {
+    const ax = actorXs[idx];
+    const barColor = actorColors[idx];
     slide.addShape(pptx.ShapeType.roundRect, {
-      x: Number((act.x - 0.28).toFixed(3)),
+      x: Number((ax - 0.28).toFixed(3)),
       y: 0.78,
       w: 0.56,
       h: 0.44,
       rectRadius: 0.06,
       fill: { color: CARD_BG },
-      line: { color: act.barColor, width: 1.2 },
+      line: { color: barColor, width: 1.2 },
     });
     slide.addText(act.icon, {
-      x: Number((act.x - 0.28).toFixed(3)),
+      x: Number((ax - 0.28).toFixed(3)),
       y: 0.78,
       w: 0.56,
       h: 0.44,
       fontSize: 14,
       bold: true,
-      color: act.barColor,
+      color: barColor,
       align: 'center',
       valign: 'middle',
     });
     slide.addText(act.label, {
-      x: Number((act.x - 1.05).toFixed(3)),
+      x: Number((ax - 1.05).toFixed(3)),
       y: 1.26,
       w: 2.10,
       h: 0.34,
-      fontSize: 10.2,
+      fontSize: 9.8,
       bold: true,
       color: TEXT_DARK,
       align: 'center',
       valign: 'middle',
       fontFace: FONT_TITLE,
     });
-    // Circular lifeline anchor dot
     slide.addShape(pptx.ShapeType.ellipse, {
-      x: Number((act.x - 0.11).toFixed(3)),
+      x: Number((ax - 0.11).toFixed(3)),
       y: 1.63,
       w: 0.22,
       h: 0.22,
-      fill: { color: act.barColor },
+      fill: { color: barColor },
     });
-    // Vertical lifeline stem
     slide.addShape(pptx.ShapeType.line, {
-      x: act.x,
+      x: ax,
       y: 1.85,
       w: 0,
       h: 4.82,
@@ -4607,7 +5017,6 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
     });
   });
 
-  // Activation bars on lifelines
   const bars = [
     { x: 1.05, y: 2.46, h: 2.65, color: EXEC_NAVY },
     { x: 3.35, y: 2.46, h: 2.55, color: EXEC_TEAL },
@@ -4639,12 +5048,12 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
     color: EXEC_NAVY,
     fontFace: FONT_DISPLAY,
   });
-  slide.addText('User prompts\nGemini Enterprise', {
+  slide.addText(cfg.step1Desc, {
     x: 1.54,
-    y: 1.94,
-    w: 1.68,
-    h: 0.46,
-    fontSize: 9.2,
+    y: 1.92,
+    w: 1.72,
+    h: 0.52,
+    fontSize: 8.8,
     bold: true,
     color: TEXT_DARK,
     fontFace: FONT_TITLE,
@@ -4656,12 +5065,13 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
     h: 0,
     line: { color: EXEC_NAVY, width: 1.5, endArrowType: 'triangle' },
   });
-  slide.addText('User Query', {
-    x: 1.52,
+  slide.addText(cfg.step1Arrow, {
+    x: 1.42,
     y: 2.48,
-    w: 1.36,
+    w: 1.56,
     h: 0.24,
-    fontSize: 8.6,
+    fontSize: 8.4,
+    bold: true,
     color: TEXT_DARK,
     align: 'center',
     fontFace: FONT_BODY,
@@ -4678,12 +5088,12 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
     color: EXEC_TEAL,
     fontFace: FONT_DISPLAY,
   });
-  slide.addText('Gateway fetches\ntenant data and\nseals OBO token', {
+  slide.addText(cfg.step2Desc, {
     x: 3.86,
     y: 1.92,
     w: 1.72,
     h: 0.58,
-    fontSize: 8.8,
+    fontSize: 8.6,
     bold: true,
     color: TEXT_DARK,
     fontFace: FONT_TITLE,
@@ -4695,20 +5105,21 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
     h: 0,
     line: { color: EXEC_NAVY, width: 1.5, endArrowType: 'triangle' },
   });
-  slide.addText('Fetch Tenant Data', {
-    x: 3.82,
+  slide.addText(cfg.step2Arrow, {
+    x: 3.72,
     y: 2.82,
-    w: 1.40,
+    w: 1.56,
     h: 0.24,
-    fontSize: 8.5,
+    fontSize: 8.4,
+    bold: true,
     color: TEXT_DARK,
     align: 'center',
     fontFace: FONT_BODY,
   });
-  slide.addText('Generate & Seal\nOBO / HMAC Token', {
-    x: 4.18,
+  slide.addText(cfg.step2Return, {
+    x: 4.08,
     y: 3.56,
-    w: 1.38,
+    w: 1.48,
     h: 0.42,
     fontSize: 8.2,
     color: TEXT_DARK,
@@ -4734,12 +5145,12 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
     color: EXEC_SLATE,
     fontFace: FONT_DISPLAY,
   });
-  slide.addText('A2UI card\ndisplayed in UI', {
+  slide.addText(cfg.step3Desc, {
     x: 6.18,
-    y: 1.94,
-    w: 1.56,
-    h: 0.46,
-    fontSize: 9.2,
+    y: 1.92,
+    w: 1.68,
+    h: 0.56,
+    fontSize: 8.6,
     bold: true,
     color: TEXT_DARK,
     fontFace: FONT_TITLE,
@@ -4751,19 +5162,19 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
     h: 0,
     line: { color: EXEC_NAVY, width: 1.5, endArrowType: 'triangle' },
   });
-  slide.addText('☑️ Decision\nReview Card', {
-    x: 6.22,
+  slide.addText(cfg.step3Card, {
+    x: 6.12,
     y: 3.30,
-    w: 1.24,
+    w: 1.44,
     h: 0.48,
-    fontSize: 8.5,
+    fontSize: 8.4,
     bold: true,
     color: TEXT_DARK,
     align: 'center',
     fontFace: FONT_BODY,
   });
 
-  // Step 4: Scale to 0 (Dormant Review Window)
+  // Step 4
   slide.addText('4', {
     x: 8.10,
     y: 1.92,
@@ -4774,11 +5185,11 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
     color: '38988E',
     fontFace: FONT_DISPLAY,
   });
-  slide.addText('Cloud Run scales\ndown to 0 instances\n(48-hour dormant\nreview period)', {
+  slide.addText(cfg.step4Desc, {
     x: 8.48,
     y: 1.90,
-    w: 1.85,
-    h: 0.72,
+    w: 1.88,
+    h: 0.68,
     fontSize: 8.4,
     bold: false,
     color: TEXT_DARK,
@@ -4798,45 +5209,45 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
     h: 0,
     line: { color: EXEC_NAVY, width: 1.4, endArrowType: 'triangle' },
   });
-  slide.addText('🕒 Scale to 0\n(Dormant)', {
-    x: 8.35,
-    y: 4.00,
-    w: 1.70,
-    h: 0.54,
-    fontSize: 8.8,
+  slide.addText(cfg.step4BandTitle, {
+    x: 8.18,
+    y: 3.98,
+    w: 2.04,
+    h: 0.56,
+    fontSize: 8.6,
     bold: true,
     color: TEXT_DARK,
     align: 'center',
     valign: 'middle',
     fontFace: FONT_TITLE,
   });
-  slide.addText('└── 48-Hour Review Period ──┘', {
-    x: 8.03,
+  slide.addText(cfg.step4Bracket, {
+    x: 7.98,
     y: 4.76,
-    w: 2.34,
+    w: 2.44,
     h: 0.24,
-    fontSize: 8.0,
+    fontSize: 7.8,
     bold: true,
     color: TEXT_BODY,
     align: 'center',
     fontFace: FONT_BODY,
   });
 
-  // Step 5: Approver clicks Approve in UI
+  // Step 5
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 6.96,
+    x: 6.86,
     y: 5.42,
-    w: 0.78,
+    w: 0.92,
     h: 0.32,
     rectRadius: 0.05,
     fill: { color: EXEC_SLATE },
   });
-  slide.addText('Click 👆', {
-    x: 6.96,
+  slide.addText(cfg.step5Pill, {
+    x: 6.86,
     y: 5.42,
-    w: 0.78,
+    w: 0.92,
     h: 0.32,
-    fontSize: 8.6,
+    fontSize: 8.2,
     bold: true,
     color: WHITE,
     align: 'center',
@@ -4844,8 +5255,8 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
     fontFace: FONT_TITLE,
   });
   slide.addText('5', {
-    x: 5.88,
-    y: 5.88,
+    x: 5.82,
+    y: 5.86,
     w: 0.38,
     h: 0.48,
     fontSize: 24,
@@ -4853,12 +5264,12 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
     color: '38988E',
     fontFace: FONT_DISPLAY,
   });
-  slide.addText('Tenant Approver\nclicks Approve in UI', {
-    x: 6.26,
-    y: 5.90,
-    w: 1.62,
-    h: 0.48,
-    fontSize: 8.8,
+  slide.addText(cfg.step5Desc, {
+    x: 6.20,
+    y: 5.86,
+    w: 1.72,
+    h: 0.56,
+    fontSize: 8.4,
     bold: true,
     color: TEXT_DARK,
     fontFace: FONT_TITLE,
@@ -4870,19 +5281,19 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
     h: 0,
     line: { color: EXEC_NAVY, width: 1.5, endArrowType: 'triangle' },
   });
-  slide.addText('Click Approve', {
-    x: 8.50,
+  slide.addText(cfg.step5Arrow, {
+    x: 8.32,
     y: 5.36,
-    w: 1.40,
+    w: 1.76,
     h: 0.24,
-    fontSize: 8.6,
+    fontSize: 8.4,
     bold: true,
     color: TEXT_DARK,
     align: 'center',
     fontFace: FONT_BODY,
   });
 
-  // Step 6: Cloud Run wakes up, verifies token & writes Audit Log
+  // Step 6
   slide.addText('6', {
     x: 10.58,
     y: 1.92,
@@ -4893,47 +5304,47 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
     color: EXEC_SLATE,
     fontFace: FONT_DISPLAY,
   });
-  slide.addText('Cloud Run wakes up,\nverifies HMAC/DPoP\nin 0.084ms and writes\nimmutable audit log', {
+  slide.addText(cfg.step6Desc, {
     x: 10.96,
     y: 1.90,
     w: 1.98,
-    h: 0.76,
+    h: 0.72,
     fontSize: 8.4,
     bold: true,
     color: TEXT_DARK,
     fontFace: FONT_TITLE,
   });
-  slide.addText('↺ Verify HMAC/DPoP\n   (0.084ms)', {
-    x: 10.65,
-    y: 5.52,
-    w: 1.75,
-    h: 0.42,
-    fontSize: 8.2,
+  slide.addText(cfg.step6Loop1, {
+    x: 10.62,
+    y: 5.48,
+    w: 1.62,
+    h: 0.44,
+    fontSize: 8.0,
     bold: true,
     color: TEXT_DARK,
     fontFace: FONT_BODY,
   });
-  slide.addText('↺ Write Audit Log\n   (BigQuery OTel)', {
-    x: 10.65,
-    y: 6.00,
-    w: 1.75,
-    h: 0.42,
-    fontSize: 8.2,
+  slide.addText(cfg.step6Loop2, {
+    x: 10.62,
+    y: 5.98,
+    w: 1.62,
+    h: 0.44,
+    fontSize: 8.0,
     bold: true,
     color: TEXT_DARK,
     fontFace: FONT_BODY,
   });
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 12.18,
-    y: 6.02,
+    x: 12.22,
+    y: 5.98,
     w: 0.68,
     h: 0.56,
     rectRadius: 0.06,
     fill: { color: EXEC_NAVY },
   });
-  slide.addText('🗄️\nAudit', {
-    x: 12.18,
-    y: 6.02,
+  slide.addText(cfg.step6DbBadge, {
+    x: 12.22,
+    y: 5.98,
     w: 0.68,
     h: 0.56,
     fontSize: 7.8,
@@ -4944,48 +5355,131 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
     fontFace: FONT_TITLE,
   });
 
-  addFooter(
-    pptx,
-    slide,
-    `${spec.label}  •  100% Native Editable 5-Actor UML Lifeline & Dormant Approval Sequence`
-  );
-  slide.addNotes(
-    `[uml-sequence-swimlane] 5-Actor Numbered UML Sequence Lifeline (Steps 1–6) for ${spec.label}: (1) User prompts Gemini Enterprise, (2) Gateway fetches tenant data and seals OBO/HMAC token, (3) A2UI card displayed in UI, (4) Cloud Run scales down to 0 instances during dormant review window, (5) Approver clicks Approve in UI, (6) Cloud Run wakes up, verifies token in 0.084ms, and writes immutable audit log.`
-  );
+  addFooter(pptx, slide, cfg.footer);
+  slide.addNotes(`[uml-sequence-swimlane] ${cfg.slideTitle}: ${cfg.footer}`);
   return { shapes: 24, connectors: 12 };
 }
 
+interface StateFlowPipelineSpec {
+  slideTitle: string;
+  canvasTitle: string;
+  nodes: [string, string, string, string];
+  step1Top: string;
+  step2Bot: string;
+  step3Top: string;
+  step4Top: string;
+  step5Loopback: string;
+  footer: string;
+}
+
+const STATE_PIPELINE_BY_WS: Record<string, StateFlowPipelineSpec> = {
+  WS1: {
+    slideTitle: 'WS1 • 5-Hop Context Propagation & Closed-Loop OTel Governance Flow',
+    canvasTitle: 'End-to-end tenant context propagation and closed-loop telemetry flow',
+    nodes: [
+      'Edge WAF &\nIAM STS (Hop 1)',
+      'ARD & Memory\nScope (Hops 2–3)',
+      'Model Armor &\n90% Cache (Hop 4)',
+      'AlloyDB RLS &\nMCP Hub (Hop 5)',
+    ],
+    step1Top: '1. Validates OIDC JWT\n& RFC 9449 DPoP',
+    step2Bot: '2. Rejects spoofed headers\nwith immediate HTTP\n401 / 403 fail-closed',
+    step3Top: '3. Propagates sealed\nTenantContext to\nModel Armor & Gemini\n32k prefix cache',
+    step4Top: '4. Binds AlloyDB RLS\nsession variable &\n3LO MCP OAuth token',
+    step5Loopback: '5. Streams zero-PII OpenTelemetry\ncost & security spans back to\nBigQuery & tenant quota policy',
+    footer: 'Workstream 1 State & Feedback Flow  •  Sealed TenantContext Propagation + Closed-Loop BigQuery OTel Governance',
+  },
+  WS2: {
+    slideTitle: 'WS2 • Pattern A Valkey Token-Bucket & 90% Prefix Cache FinOps Pipeline',
+    canvasTitle: 'High-density noisy-neighbor throttling and shared prefix cache flow',
+    nodes: [
+      'Pooled Tenant\nIngress Request',
+      'Memorystore Valkey\nQuota Gate',
+      'Gemini 2.5 Pro\n32k Prefix Cache',
+      'AlloyDB RLS &\nBigQuery OTel',
+    ],
+    step1Top: '1. Sends burst traffic\n(Standard vs. Enterprise)',
+    step2Bot: '2. Enforces 120/600 RPM;\nreturns HTTP 429\nRetry-After on burst',
+    step3Top: '3. Matches immutable\n32k system prefix hash\nfor 90% token discount',
+    step4Top: '4. Caps thinking budget\n(4k vs. 8k tokens) &\nexecutes RLS query',
+    step5Loopback: '5. Emits real-time token utilization\n& cache-hit telemetry back to\nValkey rate-limiter & FinOps ledger',
+    footer: 'Workstream 2 Pattern A Pipeline  •  Valkey 120/600 RPM Bulkheads + 90% Shared Prefix Cache + 4k/8k Thinking Caps',
+  },
+  WS3: {
+    slideTitle: 'WS3 • Pattern B VPC-SC Air-Gapped Inference & Continuous KMS Attestation',
+    canvasTitle: 'Zero-egress sovereign inference and continuous CMEK liveness flow',
+    nodes: [
+      'Sovereign Tenant\nIngress & PAB',
+      'VPC-SC Perimeter\n& KMS Gate',
+      'Private GKE Gemma 3\n/ Vertex Silo',
+      'CMEK AlloyDB &\nSovereign GCS',
+    ],
+    step1Top: '1. Authenticates tenant\nprincipal inside PAB',
+    step2Bot: '2. Blocks cross-perimeter\negress (HTTP 403) or\nrevoked CMEK (HTTP 423)',
+    step3Top: '3. Routes over Restricted\nVIP (199.36.153.4/30)\nwith zero internet egress',
+    step4Top: '4. Reads/writes dedicated\nAlloyDB & GCS skills\nencrypted with CMEK',
+    step5Loopback: '5. Continuous <60s Cloud KMS key\nliveness attestation loops back to\npurge L1 cache immediately on revoke',
+    footer: 'Workstream 3 Pattern B Pipeline  •  Restricted VIP Air-Gapped Inference + Continuous <60s KMS CMEK Liveness Loop',
+  },
+  WS4: {
+    slideTitle: 'WS4 • Pattern C Unidirectional Private Service Connect & Live Cutover Flow',
+    canvasTitle: 'Hub-and-spoke PSC traversal and zero-downtime state synchronization',
+    nodes: [
+      'Shared Hub ALB\n& Tier Router',
+      'Consumer PSC\nEndpoint (/28 NAT)',
+      'Spoke Producer\nServiceAttachment',
+      'Sovereign Spoke\nAgent & AlloyDB',
+    ],
+    step1Top: '1. Looks up tenant tier\nin Firestore (0ms)',
+    step2Bot: '2. Standard tenants route\ndirectly to shared pool\n($42/mo fast-path)',
+    step3Top: '3. Enterprise tenants\ntraverse unidirectional\nPSC endpoint (10.10.0.50)',
+    step4Top: '4. Spoke ServiceAttachment\nforwards to dedicated\nAgent Engine & CMEK DB',
+    step5Loopback: '5. Live migration coordinator syncs\ndual-write checksums & flips Firestore\npointer back at the Hub with 0ms lag',
+    footer: 'Workstream 4 Pattern C Pipeline  •  Unidirectional /28 PSC NAT Traversal + 0ms Firestore Pointer Cutover Loop',
+  },
+  WS5: {
+    slideTitle: 'WS5 • Executive 2-Question Topology Selector & Live Promotion Loop',
+    canvasTitle: 'Dynamic architecture selection and lifecycle promotion across Patterns A, B & C',
+    nodes: [
+      'Q1: Contractual\nSilo / CMEK?',
+      'Q2: Single Hub +\nLive Upgrades?',
+      'Terraform Module\n(2.6 / 3.6 / 4.6)',
+      '20/20 Certified\nProduction Runtime',
+    ],
+    step1Top: '1. Evaluates regulatory\n& blast-radius mandate',
+    step2Bot: '2. If Q1=Yes & single-org,\ndeploys Pattern B\nSovereign Silo ($1,850/mo)',
+    step3Top: '3. Evaluates portfolio\nmix: Pattern A ($42/mo)\nvs. Pattern C Hybrid',
+    step4Top: '4. Provisions 80% shared\nADK 2.0 core + 20%\nTerraform infrastructure',
+    step5Loopback: '5. Commercial tenants onboarded on\nPattern A seamlessly promote to Pattern C\nPSC spokes as enterprise requirements grow',
+    footer: 'Workstream 5 Decision & Promotion Loop  •  2-Question Selector + 80/20 Terraform Deployment + Live Tier Promotion',
+  },
+};
+
 function addAsyncStateFlowPipelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
+  const cfg = STATE_PIPELINE_BY_WS[spec.key] || STATE_PIPELINE_BY_WS.WS1;
   const slide = pptx.addSlide();
   slide.background = { color: WHITE };
-  addHeaderBar(
-    pptx,
-    slide,
-    spec.key,
-    `${spec.label} • Asynchronous Processing Flow for Long Tasks (>5 min)`,
-    'ASYNC-STATE-FLOW-PIPELINE'
-  );
+  addHeaderBar(pptx, slide, spec.key, cfg.slideTitle, 'ASYNC-STATE-FLOW-PIPELINE');
 
-  slide.addText('Asynchronous processing flow for long tasks (>5 min)', {
+  slide.addText(cfg.canvasTitle, {
     x: 0.55,
     y: 0.92,
-    w: 11.80,
+    w: 12.10,
     h: 0.62,
-    fontSize: 24,
-    bold: false,
+    fontSize: 22.5,
+    bold: true,
     color: TEXT_DARK,
     fontFace: FONT_DISPLAY,
     valign: 'middle',
   });
 
-  // 4 Solid Colored Actor Blocks along the horizontal midline
-  const nodes = [
-    { x: 0.58, fill: '12355B', label: 'Gemini\nEnterprise' },
-    { x: 4.10, fill: EXEC_AMBER, label: 'Cloud Run\nGateway' },
-    { x: 7.42, fill: EXEC_TEAL, label: 'Google Cloud\nPub/Sub Topic' },
-    { x: 10.62, fill: EXEC_GREEN_DARK, label: 'Internal Sovereign\nAgent Worker' },
+  const nodePositions = [
+    { x: 0.58, fill: '12355B', label: cfg.nodes[0] },
+    { x: 4.10, fill: EXEC_AMBER, label: cfg.nodes[1] },
+    { x: 7.42, fill: EXEC_TEAL, label: cfg.nodes[2] },
+    { x: 10.62, fill: EXEC_GREEN_DARK, label: cfg.nodes[3] },
   ];
-  nodes.forEach((n) => {
+  nodePositions.forEach((n) => {
     slide.addShape(pptx.ShapeType.rect, {
       x: n.x,
       y: 3.12,
@@ -4994,12 +5488,12 @@ function addAsyncStateFlowPipelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: n
       fill: { color: n.fill },
     });
     slide.addText(n.label, {
-      x: n.x + 0.10,
+      x: n.x + 0.08,
       y: 3.12,
-      w: 1.96,
+      w: 2.00,
       h: 1.44,
-      fontSize: 14.5,
-      bold: false,
+      fontSize: 13.5,
+      bold: true,
       color: WHITE,
       align: 'center',
       valign: 'middle',
@@ -5007,13 +5501,14 @@ function addAsyncStateFlowPipelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: n
     });
   });
 
-  // Transition 1: Top forward arrow (Node 1 -> Node 2)
-  slide.addText('1. Gemini Enterprise\nsends request', {
-    x: 2.78,
-    y: 2.42,
-    w: 1.28,
-    h: 0.56,
-    fontSize: 9.8,
+  // Transition 1
+  slide.addText(cfg.step1Top, {
+    x: 2.74,
+    y: 2.38,
+    w: 1.36,
+    h: 0.62,
+    fontSize: 9.2,
+    bold: true,
     color: TEXT_DARK,
     align: 'center',
     fontFace: FONT_BODY,
@@ -5026,7 +5521,7 @@ function addAsyncStateFlowPipelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: n
     line: { color: '12355B', width: 1.75, endArrowType: 'triangle' },
   });
 
-  // Transition 2: Bottom reverse arrow (Node 2 -> Node 1)
+  // Transition 2
   slide.addShape(pptx.ShapeType.line, {
     x: 2.74,
     y: 4.08,
@@ -5034,24 +5529,24 @@ function addAsyncStateFlowPipelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: n
     h: 0,
     line: { color: '12355B', width: 1.75, beginArrowType: 'triangle' },
   });
-  slide.addText('2. Gateway returns\nimmediate HTTP\n202 Accepted /\nState: WORKING', {
-    x: 2.76,
+  slide.addText(cfg.step2Bot, {
+    x: 2.72,
     y: 4.20,
-    w: 1.32,
+    w: 1.40,
     h: 0.92,
-    fontSize: 9.5,
+    fontSize: 8.8,
     color: TEXT_DARK,
     align: 'center',
     fontFace: FONT_BODY,
   });
 
-  // Transition 3: Node 2 -> Node 3
-  slide.addText('3. Gateway publishes\ntask to Google\nCloud Pub/Sub\nTopic', {
-    x: 5.98,
+  // Transition 3
+  slide.addText(cfg.step3Top, {
+    x: 5.94,
     y: 2.02,
-    w: 1.72,
-    h: 0.92,
-    fontSize: 9.8,
+    w: 1.80,
+    h: 0.96,
+    fontSize: 9.0,
     color: TEXT_DARK,
     align: 'center',
     fontFace: FONT_BODY,
@@ -5064,13 +5559,13 @@ function addAsyncStateFlowPipelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: n
     line: { color: '12355B', width: 1.75, endArrowType: 'triangle' },
   });
 
-  // Transition 4: Node 3 -> Node 4
-  slide.addText('4. Internal Sovereign\nAgent Worker\nprocesses deep\nresearch data', {
-    x: 9.18,
+  // Transition 4
+  slide.addText(cfg.step4Top, {
+    x: 9.14,
     y: 2.02,
-    w: 1.72,
-    h: 0.92,
-    fontSize: 9.8,
+    w: 1.80,
+    h: 0.96,
+    fontSize: 9.0,
     color: TEXT_DARK,
     align: 'center',
     fontFace: FONT_BODY,
@@ -5083,7 +5578,7 @@ function addAsyncStateFlowPipelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: n
     line: { color: '12355B', width: 1.75, endArrowType: 'triangle' },
   });
 
-  // Transition 5: Bottom U-shaped loopback (Node 2 bottom -> down -> left -> up to Node 1 bottom)
+  // Transition 5: Bottom U-shaped loopback
   slide.addShape(pptx.ShapeType.line, {
     x: 5.18,
     y: 4.56,
@@ -5105,82 +5600,189 @@ function addAsyncStateFlowPipelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: n
     h: 0.96,
     line: { color: '12355B', width: 1.75, beginArrowType: 'triangle' },
   });
-  slide.addText('5. Gateway dispatches\nOut-of-band HTTPS\nWebhook Push with A2UI\ncard back to Gemini\nEnterprise', {
-    x: 2.38,
+  slide.addText(cfg.step5Loopback, {
+    x: 2.18,
     y: 5.62,
-    w: 2.12,
-    h: 1.08,
-    fontSize: 9.8,
+    w: 2.52,
+    h: 1.04,
+    fontSize: 9.2,
+    bold: true,
     color: TEXT_DARK,
     align: 'center',
     fontFace: FONT_BODY,
   });
 
-  addFooter(
-    pptx,
-    slide,
-    `${spec.label}  •  100% Native Editable 4-Node Asynchronous Processing & Webhook Loopback Flow`
-  );
-  slide.addNotes(
-    `[async-state-flow-pipeline] 4-Node Asynchronous Processing Flow for Long Tasks (>5 min) for ${spec.label}: (1) Gemini Enterprise sends request, (2) Cloud Run Gateway returns immediate HTTP 202 Accepted / State: WORKING, (3) Gateway publishes task to Google Cloud Pub/Sub Topic, (4) Internal Sovereign Agent Worker processes deep research data, (5) Gateway dispatches out-of-band HTTPS Webhook Push with A2UI card back to Gemini Enterprise.`
-  );
+  addFooter(pptx, slide, cfg.footer);
+  slide.addNotes(`[async-state-flow-pipeline] ${cfg.slideTitle}: ${cfg.footer}`);
   return { shapes: 10, connectors: 7 };
 }
 
+interface PhasedRoadmapSpec {
+  slideTitle: string;
+  canvasTitle: string;
+  phases: {
+    phaseLabel: string;
+    title: string;
+    timeframe: string;
+    outcome: string;
+  }[];
+  footer: string;
+}
+
+const ROADMAP_TIMELINE_BY_WS: Record<string, PhasedRoadmapSpec> = {
+  WS1: {
+    slideTitle: 'WS1 • Reference Architecture & 5-Hop Governance Rollout Timeline',
+    canvasTitle: 'Workstream 1 Reference Architecture Rollout Roadmap',
+    phases: [
+      {
+        phaseLabel: 'Phase 1: 5-Hop Core',
+        title: 'Identity Context &\nARD Registry Gate',
+        timeframe: '(Weeks 1–2)',
+        outcome: 'RFC 8693 OBO + DPoP & Hop 2\nARD Catalog Filter Live',
+      },
+      {
+        phaseLabel: 'Phase 2: Guardrails',
+        title: 'Model Armor, RLS\n& GAP-01..05 Controls',
+        timeframe: '(Weeks 3–4)',
+        outcome: 'Hop 4 Model Armor + Cloud SDP\n& AlloyDB RLS Enforced',
+      },
+      {
+        phaseLabel: 'Phase 3: Certification',
+        title: '3-Pattern Taxonomy\n& 20/20 Audit Pass',
+        timeframe: '(Weeks 5–6)',
+        outcome: 'Patterns A, B & C Certified\nAcross 3 Live GCP Projects',
+      },
+    ],
+    footer: 'Workstream 1 Rollout Timeline  •  Phase 1 (5-Hop Core) → Phase 2 (GAP-01..05 Controls) → Phase 3 (20/20 Certification)',
+  },
+  WS2: {
+    slideTitle: 'WS2 • Pattern A High-Density Pooled Deployment & FinOps Roadmap',
+    canvasTitle: 'Pattern A Pooled Multi-Tenant Implementation Timeline',
+    phases: [
+      {
+        phaseLabel: 'Phase 1: Infra Starter',
+        title: 'Terraform 2.6 &\nCloud Run v2 Pool',
+        timeframe: '(Weeks 1–2)',
+        outcome: 'WAF + IAP + Shared Cloud Run\n& AlloyDB RLS Provisioned',
+      },
+      {
+        phaseLabel: 'Phase 2: FinOps & Quota',
+        title: '90% Prefix Cache\n& Valkey Bulkheads',
+        timeframe: '(Weeks 3–4)',
+        outcome: '84.7% Net Token Savings &\n120/600 RPM Tenant Quotas',
+      },
+      {
+        phaseLabel: 'Phase 3: Red-Team Gate',
+        title: '10-Point Breach\nSimulation Suite',
+        timeframe: '(Weeks 5–6)',
+        outcome: '10/10 Cross-Tenant Attacks\nBlocked (0 Rows Leaked)',
+      },
+    ],
+    footer: 'Workstream 2 Pattern A Timeline  •  Terraform 2.6 Starter → 90% Prefix Cache & Valkey → 10/10 Red-Team Certification',
+  },
+  WS3: {
+    slideTitle: 'WS3 • Pattern B Zero-Trust Sovereign Silo Provisioning Timeline',
+    canvasTitle: 'Pattern B Sovereign Single-Tenant Vault Rollout',
+    phases: [
+      {
+        phaseLabel: 'Phase 1: Project Silo',
+        title: 'Dedicated Project\n& IAM PAB Boundary',
+        timeframe: '(Day 1 Automated)',
+        outcome: 'cymbal-{tenant}-silo-prod +\nPrincipal Access Boundary',
+      },
+      {
+        phaseLabel: 'Phase 2: Crypto & Network',
+        title: 'VPC-SC Perimeter\n& Cloud KMS CMEK',
+        timeframe: '(Days 2–3)',
+        outcome: 'Restricted VIP 199.36.153.4/30\n& Tenant-Controlled CMEK',
+      },
+      {
+        phaseLabel: 'Phase 3: Kill-Switch Gate',
+        title: 'Private GKE Gemma 3\n& <60s Revocation',
+        timeframe: '(Days 4–5)',
+        outcome: '6/6 Sovereign Silo & <60s\nHTTP 423 Kill-Switch PASS',
+      },
+    ],
+    footer: 'Workstream 3 Pattern B Timeline  •  Dedicated Project & PAB → VPC-SC & CMEK → Private GKE & <60s Kill-Switch',
+  },
+  WS4: {
+    slideTitle: 'WS4 • Pattern C Zero-Downtime Live Tier Migration Timeline',
+    canvasTitle: 'Pattern C Live Tenant Promotion Phases (Standard → Enterprise)',
+    phases: [
+      {
+        phaseLabel: 'Phase 1: SHADOW_SYNC',
+        title: 'Spoke Provision &\nDual-Write Backfill',
+        timeframe: '(T-30 to T-5 Min)',
+        outcome: 'Terraform 4.6 PSC Spoke +\nAsync Memory & SQL Backfill',
+      },
+      {
+        phaseLabel: 'Phase 2: ATOMIC_CUTOVER',
+        title: 'CMEK Re-Key &\nFirestore Pointer Flip',
+        timeframe: '(T-0 Cutover: 0ms)',
+        outcome: 'Checksum Parity Verified &\nAtomic Route Flip to PSC',
+      },
+      {
+        phaseLabel: 'Phase 3: DRAIN_VERIFY',
+        title: 'In-Flight Drain &\nShared Pool Purge',
+        timeframe: '(T+1 to T+5 Min)',
+        outcome: '0 Dropped Sessions & 100%\nPooled Row Tombstone Purge',
+      },
+    ],
+    footer: 'Workstream 4 Pattern C Timeline  •  Phase 1 SHADOW_SYNC → Phase 2 ATOMIC_CUTOVER (0ms) → Phase 3 DRAIN_AND_VERIFY',
+  },
+  WS5: {
+    slideTitle: 'WS5 • 10-Week Enterprise Multi-Tenant Rollout Roadmap',
+    canvasTitle: 'Workstream 5 Complete 10-Week Production Rollout Roadmap',
+    phases: [
+      {
+        phaseLabel: 'Phase 1: Pooled MVP',
+        title: 'Pattern A Core &\n5-Hop Pipeline',
+        timeframe: '(Weeks 1–3)',
+        outcome: 'Onboard Commercial Tenants at\n$42/mo with 10/10 Breach Gate',
+      },
+      {
+        phaseLabel: 'Phase 2: FinOps & Safety',
+        title: 'Model Armor, Valkey\n& BigQuery OTel',
+        timeframe: '(Weeks 4–6)',
+        outcome: 'Activate 90% Prefix Cache &\nZero-PII Chargeback Ledger',
+      },
+      {
+        phaseLabel: 'Phase 3: Sovereign & PSC',
+        title: 'Pattern B Silos &\nPattern C PSC Spokes',
+        timeframe: '(Weeks 7–10)',
+        outcome: 'Onboard Regulated Tenants &\nEnable 0ms Live Tier Upgrades',
+      },
+    ],
+    footer: 'Workstream 5 Program Roadmap  •  Weeks 1–3 (Pattern A MVP) → Weeks 4–6 (FinOps & OTel) → Weeks 7–10 (Silos & PSC)',
+  },
+};
+
 function addPhasedRoadmapTimelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
+  const cfg = ROADMAP_TIMELINE_BY_WS[spec.key] || ROADMAP_TIMELINE_BY_WS.WS1;
   const slide = pptx.addSlide();
   slide.background = { color: WHITE };
-  addHeaderBar(
-    pptx,
-    slide,
-    spec.key,
-    `${spec.label} • Enterprise Technology Roadmap Timeline`,
-    'PHASED-ROADMAP-TIMELINE'
-  );
+  addHeaderBar(pptx, slide, spec.key, cfg.slideTitle, 'PHASED-ROADMAP-TIMELINE');
 
-  slide.addText('Enterprise Technology Roadmap Timeline', {
+  slide.addText(cfg.canvasTitle, {
     x: 0.58,
     y: 0.86,
     w: 12.0,
     h: 0.64,
-    fontSize: 26,
+    fontSize: 24,
     bold: true,
     color: EXEC_NAVY,
     fontFace: FONT_DISPLAY,
     valign: 'middle',
   });
 
-  const phases = [
-    {
-      x: 0.58,
-      headerColor: EXEC_NAVY,
-      phaseLabel: 'Phase 1: Pattern A',
-      title: 'Cloud Run\nPooled Gateway',
-      timeframe: '(Months 1-3)',
-      outcome: 'Fast-Track Commercial Pilot\n90% Prefix Cache Savings',
-    },
-    {
-      x: 4.78,
-      headerColor: EXEC_TEAL,
-      phaseLabel: 'Phase 2: Pattern B',
-      title: 'Sovereign\nSingle-Tenant Silo',
-      timeframe: '(Months 4-6)',
-      outcome: 'Dedicated Project & VPC-SC\n<60s CMEK Kill-Switch',
-    },
-    {
-      x: 8.98,
-      headerColor: EXEC_SLATE,
-      phaseLabel: 'Phase 3: Pattern C',
-      title: 'Outside-In\nDual-Plane PSC',
-      timeframe: '(Months 7-12)',
-      outcome: 'Zero-Downtime Tier Upgrade\nSovereign VPC Reasoning',
-    },
-  ];
+  const phaseXs = [0.58, 4.78, 8.98];
+  const phaseColors = [EXEC_NAVY, EXEC_TEAL, EXEC_SLATE];
 
-  phases.forEach((p, idx) => {
-    // Card body (#F8F9FA)
+  cfg.phases.forEach((p, idx) => {
+    const px = phaseXs[idx];
+    const headerColor = phaseColors[idx];
     slide.addShape(pptx.ShapeType.roundRect, {
-      x: p.x,
+      x: px,
       y: 1.68,
       w: 3.76,
       h: 4.86,
@@ -5188,77 +5790,71 @@ function addPhasedRoadmapTimelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: nu
       fill: { color: CARD_BG },
       line: { color: BORDER_GREY, width: 1.2 },
     });
-    // Solid Top Banner
     slide.addShape(pptx.ShapeType.roundRect, {
-      x: p.x,
+      x: px,
       y: 1.68,
       w: 3.76,
       h: 0.94,
       rectRadius: 0.06,
-      fill: { color: p.headerColor },
+      fill: { color: headerColor },
     });
     slide.addText(p.phaseLabel, {
-      x: p.x + 0.16,
+      x: px + 0.16,
       y: 1.68,
       w: 3.44,
       h: 0.94,
-      fontSize: 17.5,
-      bold: false,
+      fontSize: 17.0,
+      bold: true,
       color: WHITE,
       align: 'center',
       valign: 'middle',
       fontFace: FONT_TITLE,
     });
-    // Bottom Accent Strip
     slide.addShape(pptx.ShapeType.rect, {
-      x: p.x,
+      x: px,
       y: 6.44,
       w: 3.76,
       h: 0.10,
-      fill: { color: p.headerColor },
+      fill: { color: headerColor },
     });
 
-    // Main Architecture Name
     slide.addText(p.title, {
-      x: p.x + 0.24,
+      x: px + 0.20,
       y: 2.86,
-      w: 3.28,
+      w: 3.36,
       h: 1.12,
-      fontSize: 21,
+      fontSize: 20,
       bold: true,
       color: TEXT_DARK,
       align: 'center',
       valign: 'middle',
       fontFace: FONT_TITLE,
     });
-    // Timeframe
     slide.addText(p.timeframe, {
-      x: p.x + 0.24,
+      x: px + 0.20,
       y: 4.02,
-      w: 3.28,
+      w: 3.36,
       h: 0.42,
-      fontSize: 15.5,
+      fontSize: 15.0,
       bold: false,
       color: TEXT_DARK,
       align: 'center',
       valign: 'middle',
       fontFace: FONT_BODY,
     });
-    // Horizontal Divider Rule
     slide.addShape(pptx.ShapeType.line, {
-      x: Number((p.x + 1.32).toFixed(3)),
+      x: Number((px + 1.32).toFixed(3)),
       y: 4.66,
       w: 1.12,
       h: 0,
-      line: { color: p.headerColor, width: 2.5 },
+      line: { color: headerColor, width: 2.5 },
     });
-    // Bottom Executive Outcome
     slide.addText(p.outcome, {
-      x: p.x + 0.20,
+      x: px + 0.20,
       y: 4.96,
       w: 3.36,
       h: 1.12,
-      fontSize: 14.5,
+      fontSize: 13.8,
       bold: false,
       color: TEXT_DARK,
       align: 'center',
@@ -5266,27 +5862,26 @@ function addPhasedRoadmapTimelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: nu
       fontFace: FONT_BODY,
     });
 
-    // Midline Circular Timeline Junction Dots (● ●)
     if (idx === 0) {
       slide.addShape(pptx.ShapeType.ellipse, {
-        x: Number((p.x - 0.13).toFixed(3)),
+        x: Number((px - 0.13).toFixed(3)),
         y: 4.04,
         w: 0.26,
         h: 0.26,
-        fill: { color: p.headerColor },
+        fill: { color: headerColor },
       });
     }
     if (idx < 2) {
       slide.addShape(pptx.ShapeType.ellipse, {
-        x: Number((p.x + 3.63).toFixed(3)),
+        x: Number((px + 3.63).toFixed(3)),
         y: 4.04,
         w: 0.26,
         h: 0.26,
-        fill: { color: p.headerColor },
+        fill: { color: headerColor },
       });
-      const nextColor = phases[idx + 1].headerColor;
+      const nextColor = phaseColors[idx + 1];
       slide.addShape(pptx.ShapeType.ellipse, {
-        x: Number((phases[idx + 1].x - 0.13).toFixed(3)),
+        x: Number((phaseXs[idx + 1] - 0.13).toFixed(3)),
         y: 4.04,
         w: 0.26,
         h: 0.26,
@@ -5295,34 +5890,207 @@ function addPhasedRoadmapTimelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: nu
     }
   });
 
-  addFooter(
-    pptx,
-    slide,
-    `${spec.label}  •  100% Native Editable 3-Phase Connected Enterprise Technology Roadmap Timeline`
-  );
-  slide.addNotes(
-    `[phased-roadmap-timeline] 3-Phase Enterprise Technology Roadmap Timeline for ${spec.label}: Phase 1 (Months 1-3: Cloud Run Pooled Gateway, Fast-Track Commercial Pilot & 90% Prefix Cache Savings) -> Phase 2 (Months 4-6: Sovereign Single-Tenant Silo, Dedicated Project & <60s CMEK Kill-Switch) -> Phase 3 (Months 7-12: Outside-In Dual-Plane PSC, Zero-Downtime Tier Upgrade & Sovereign VPC Reasoning).`
-  );
+  addFooter(pptx, slide, cfg.footer);
+  slide.addNotes(`[phased-roadmap-timeline] ${cfg.slideTitle}: ${cfg.footer}`);
   return { shapes: 20, connectors: 5 };
 }
 
+interface OperatingModelSpec {
+  slideTitle: string;
+  canvasTitle: string;
+  pillars: {
+    icon: string;
+    title: string;
+    bullets: [string, string, string];
+  }[];
+  footer: string;
+}
+
+const OPERATING_MODEL_BY_WS: Record<string, OperatingModelSpec> = {
+  WS1: {
+    slideTitle: 'WS1 • 3-Pillar Multi-Tenant Reference Architecture Operating Model',
+    canvasTitle: 'Google Cloud Multi-Tenant Agentic AI Reference Pillars',
+    pillars: [
+      {
+        icon: '🔐',
+        title: 'Pillar 1: Cryptographic\nIdentity & Edge Context',
+        bullets: [
+          'Strip client-supplied X-Tenant-Id headers at Cloud Armor edge',
+          'Exchange OIDC JWTs via IAM STS (RFC 8693) + DPoP (RFC 9449)',
+          'Propagate immutable TenantContext across all 5 runtime hops',
+        ],
+      },
+      {
+        icon: '🧠',
+        title: 'Pillar 2: Scoped Memory\n& Reasoning Guardrails',
+        bullets: [
+          'Filter Agent Engine Registry (ARD) discovery by tenant ACL',
+          'Isolate L1–L5 memory under /tenants/{id}/namespaces/*',
+          'Enforce Model Armor, NLC gates & Cloud SDP PII redaction',
+        ],
+      },
+      {
+        icon: '🗄️',
+        title: 'Pillar 3: Data Isolation\n& Zero-PII FinOps',
+        bullets: [
+          'Bind AlloyDB FORCE ROW LEVEL SECURITY to session tenant_id',
+          'Capture 90% Gemini 2.5 Pro shared prefix cache savings',
+          'Stream SHA-256 hashed OTel spans to BigQuery chargeback',
+        ],
+      },
+    ],
+    footer: 'Workstream 1 Operating Model  •  Identity & Edge Context + Scoped Memory & Guardrails + Data Isolation & FinOps',
+  },
+  WS2: {
+    slideTitle: 'WS2 • Pattern A Pooled Economics, Defense-in-Depth & Quota Governance',
+    canvasTitle: 'Pattern A High-Density Pooled Operating Model Pillars',
+    pillars: [
+      {
+        icon: '💰',
+        title: 'Pillar 1: High-Density\nSaaS Unit Economics',
+        bullets: [
+          'Serve 100+ commercial tenants in one shared Cloud Run v2 pool',
+          'Share 32,000-token immutable system prefix (90% cache discount)',
+          'Achieve $42/mo per-tenant cost (84.7% net LLM token savings)',
+        ],
+      },
+      {
+        icon: '🛡️',
+        title: 'Pillar 2: 10-Point Breach\nDefense-in-Depth',
+        bullets: [
+          'Block cross-tenant agent enumeration (403) & namespace overrides',
+          'Enforce Natural Language Constraints (HTTP 422) & SDP masking',
+          'Enforce PostgreSQL RLS + 2LO/3LO MCP token audience checks',
+        ],
+      },
+      {
+        icon: '🚦',
+        title: 'Pillar 3: Noisy-Neighbor\nBulkheads & Fair Share',
+        bullets: [
+          'Memorystore for Valkey token-bucket rate limits (120 vs 600 RPM)',
+          'Cap Gemini 2.5 Pro thinking budgets (4k Standard vs 8k Enterprise)',
+          'Fail-closed HTTP 429 Retry-After without starving peer tenants',
+        ],
+      },
+    ],
+    footer: 'Workstream 2 Pattern A Operating Model  •  $42/mo Unit Economics + 10/10 Breach Defense + Valkey Quota Bulkheads',
+  },
+  WS3: {
+    slideTitle: 'WS3 • Pattern B Sovereign Project, Cryptographic & Model Governance',
+    canvasTitle: 'Pattern B Zero-Trust Sovereign Silo Operating Model',
+    pillars: [
+      {
+        icon: '🏛️',
+        title: 'Pillar 1: Dedicated Project\n& Network Sovereignty',
+        bullets: [
+          'Provision 1:1 dedicated GCP project (cymbal-{tenant}-silo-prod)',
+          'Enforce VPC Service Controls perimeter around Vertex, KMS & GCS',
+          'Bind IAM Principal Access Boundary (PAB) to block cross-project access',
+        ],
+      },
+      {
+        icon: '🔑',
+        title: 'Pillar 2: Customer-Managed\nCryptography (CMEK)',
+        bullets: [
+          'Encrypt AlloyDB, Memory Bank, Vertex & GCS with tenant KMS key',
+          'Sign A2A handshakes with asymmetric Cloud KMS ECDSA P-256 key',
+          'Guarantee <60s HTTP 423 kill-switch & L1 cache purge on key revoke',
+        ],
+      },
+      {
+        icon: '🤖',
+        title: 'Pillar 3: Air-Gapped Open\nWeights & Auditability',
+        bullets: [
+          'Run self-hosted Gemma 3 (27B) on Private GKE (0 internet egress)',
+          'Route all Google APIs exclusively via Restricted VIP 199.36.153.4/30',
+          'Stream immutable Access Transparency & KMS logs to tenant SIEM',
+        ],
+      },
+    ],
+    footer: 'Workstream 3 Pattern B Operating Model  •  Project & VPC-SC Sovereignty + Tenant CMEK + Air-Gapped Gemma 3',
+  },
+  WS4: {
+    slideTitle: 'WS4 • Pattern C Blended FinOps, Unidirectional PSC & Live Mobility',
+    canvasTitle: 'Pattern C Dynamic Hybrid Hub-and-Spoke Operating Model',
+    pillars: [
+      {
+        icon: '📈',
+        title: 'Pillar 1: Blended Portfolio\nFinOps Optimization',
+        bullets: [
+          'Host 85% Standard tenants in Pattern A pool ($42/mo unit cost)',
+          'Host 15% Regulated Enterprise tenants in dedicated PSC spokes',
+          'Reduce 1,000-tenant portfolio spend by 74% ($313k vs $1.85M/mo)',
+        ],
+      },
+      {
+        icon: '🌉',
+        title: 'Pillar 2: Unidirectional\nPrivate Service Connect',
+        bullets: [
+          'Bridge Hub VPC to Spoke VPCs via /28 PSC NAT & ServiceAttachment',
+          'Eliminate transitive VPC peering & CIDR exhaustion across 100+ spokes',
+          'Enforce ACCEPT_SELECTED producer allowlists per enterprise spoke',
+        ],
+      },
+      {
+        icon: '🔄',
+        title: 'Pillar 3: Zero-Downtime\nLive Tier Mobility',
+        bullets: [
+          'Backfill Memory Bank & AlloyDB to spoke via SHADOW_SYNC dual-write',
+          'Re-key tenant state with customer CMEK & verify SHA-256 checksums',
+          'Flip Firestore tier pointer atomically in 0ms with 0 dropped sessions',
+        ],
+      },
+    ],
+    footer: 'Workstream 4 Pattern C Operating Model  •  74% Portfolio Savings + Unidirectional PSC + 0ms Live Tier Mobility',
+  },
+  WS5: {
+    slideTitle: 'WS5 • 80/20 Code Reuse, Agentic Triad & Automated CI/CD Governance',
+    canvasTitle: 'Workstream 5 Enterprise Program & Agentic Triad Operating Model',
+    pillars: [
+      {
+        icon: '🧩',
+        title: 'Pillar 1: 80/20 Unified\nCodebase & Terraform',
+        bullets: [
+          'Write 5-hop ADK 2.0 security pipeline once in runtime_pipeline.py',
+          'Swap infrastructure topologies via Terraform modules 2.6, 3.6 & 4.6',
+          'Eliminate fork drift across Pooled, Siloed & Hybrid deployments',
+        ],
+      },
+      {
+        icon: '🤖',
+        title: 'Pillar 2: Multi-Tenant\nAgentic Triad & MCP',
+        bullets: [
+          'Combine Shared Diagnostic Agent with Tenant-Private Specialist Agents',
+          'Hot-swap tenant GCS skills at runtime with zero container rebuilds',
+          'Enforce 2LO (Service Account) vs 3LO (User OAuth) MCP tool boundaries',
+        ],
+      },
+      {
+        icon: '✅',
+        title: 'Pillar 3: Continuous 20/20\nForensic Gatekeeping',
+        bullets: [
+          'Run 10 Pattern A red-team breach simulations on every PR commit',
+          'Run 6 Pattern B VPC-SC exfiltration & <60s CMEK revocation tests',
+          'Run 4 Pattern C zero-downtime live tier upgrade verification gates',
+        ],
+      },
+    ],
+    footer: 'Workstream 5 Program Operating Model  •  80/20 Code Reuse + Multi-Tenant Agentic Triad + 20/20 CI/CD Gates',
+  },
+};
+
 function addStrategicOperatingModelPillarsSlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
+  const cfg = OPERATING_MODEL_BY_WS[spec.key] || OPERATING_MODEL_BY_WS.WS1;
   const slide = pptx.addSlide();
   slide.background = { color: WHITE };
-  addHeaderBar(
-    pptx,
-    slide,
-    spec.key,
-    `${spec.label} • Elevated Strategic Operating Model & SLA Governance`,
-    'STRATEGIC-OPERATING-MODEL'
-  );
+  addHeaderBar(pptx, slide, spec.key, cfg.slideTitle, 'STRATEGIC-OPERATING-MODEL');
 
-  slide.addText('Elevated Google Cloud Multi-Tenant Strategic Operating Model', {
+  slide.addText(cfg.canvasTitle, {
     x: 0.58,
     y: 0.86,
     w: 12.16,
     h: 0.62,
-    fontSize: 23.5,
+    fontSize: 22.5,
     bold: true,
     color: TEXT_DARK,
     align: 'center',
@@ -5330,46 +6098,14 @@ function addStrategicOperatingModelPillarsSlide(pptx: Pptx, spec: DeckSpec): { s
     fontFace: FONT_DISPLAY,
   });
 
-  const pillars = [
-    {
-      x: 0.58,
-      accent: EXEC_NAVY,
-      icon: '🛡️',
-      title: 'Immediate Production\nStability (Weeks 1-2)',
-      bullets: [
-        'Deploy 5-Hop ADK 2.0 Gateway into Google Cloud (ramp-portal-dev)',
-        'Shield tenants from wire variations via RFC 8693 OBO + DPoP',
-        '100% fail-closed compliance & 20/20 MECE security simulations',
-      ],
-    },
-    {
-      x: 4.78,
-      accent: EXEC_TEAL,
-      icon: '🤝',
-      title: 'Direct Architecture\nSync & FinOps SLA',
-      bullets: [
-        'Valkey per-tenant RPM & 4k/8k thinking budget bulkheads',
-        'Formal 90% Gemini 2.5 Pro shared prefix cache discount SLA',
-        'Pre-release staging verification & BigQuery OTel FinOps ledger',
-      ],
-    },
-    {
-      x: 8.98,
-      accent: EXEC_SLATE,
-      icon: '</>',
-      title: 'Canonical Enterprise\nProtocol Co-Design (Q1-Q2)',
-      bullets: [
-        'Co-deploy 80% reusable 5-hop core across Patterns A, B & C',
-        'Formalize Pub/Sub async push & Private Service Connect specs',
-        'Sub-60s Cloud KMS CMEK cryptographic kill-switch guarantee',
-      ],
-    },
-  ];
+  const pillarXs = [0.58, 4.78, 8.98];
+  const pillarAccents = [EXEC_NAVY, EXEC_TEAL, EXEC_SLATE];
 
-  pillars.forEach((p) => {
-    // Card Container (#FFFFFF with #DADCE0 border)
+  cfg.pillars.forEach((p, idx) => {
+    const px = pillarXs[idx];
+    const accent = pillarAccents[idx];
     slide.addShape(pptx.ShapeType.roundRect, {
-      x: p.x,
+      x: px,
       y: 1.62,
       w: 3.76,
       h: 4.96,
@@ -5377,73 +6113,68 @@ function addStrategicOperatingModelPillarsSlide(pptx: Pptx, spec: DeckSpec): { s
       fill: { color: WHITE },
       line: { color: BORDER_GREY, width: 1.2 },
     });
-    // Top 6pt Bar
     slide.addShape(pptx.ShapeType.rect, {
-      x: p.x,
+      x: px,
       y: 1.62,
       w: 3.76,
       h: 0.11,
-      fill: { color: p.accent },
+      fill: { color: accent },
     });
-    // Bottom 6pt Bar
     slide.addShape(pptx.ShapeType.rect, {
-      x: p.x,
+      x: px,
       y: 6.47,
       w: 3.76,
       h: 0.11,
-      fill: { color: p.accent },
+      fill: { color: accent },
     });
-    // Top Vector Icon Badge
     slide.addShape(pptx.ShapeType.roundRect, {
-      x: Number((p.x + 1.48).toFixed(3)),
+      x: Number((px + 1.48).toFixed(3)),
       y: 1.92,
       w: 0.80,
       h: 0.64,
       rectRadius: 0.08,
       fill: { color: CARD_BG },
-      line: { color: p.accent, width: 1.25 },
+      line: { color: accent, width: 1.25 },
     });
     slide.addText(p.icon, {
-      x: Number((p.x + 1.48).toFixed(3)),
+      x: Number((px + 1.48).toFixed(3)),
       y: 1.92,
       w: 0.80,
       h: 0.64,
       fontSize: 16,
       bold: true,
-      color: p.accent,
+      color: accent,
       align: 'center',
       valign: 'middle',
       fontFace: FONT_TITLE,
     });
-    // Centered Bold Title
     slide.addText(p.title, {
-      x: p.x + 0.20,
+      x: px + 0.20,
       y: 2.72,
       w: 3.36,
       h: 0.92,
-      fontSize: 15.0,
+      fontSize: 14.8,
       bold: true,
       color: TEXT_DARK,
       align: 'center',
       valign: 'middle',
       fontFace: FONT_TITLE,
     });
-    // 3 Grounded Bullet Points
     p.bullets.forEach((bText, bIdx) => {
       const by = 3.82 + bIdx * 0.82;
       slide.addShape(pptx.ShapeType.ellipse, {
-        x: p.x + 0.28,
+        x: px + 0.28,
         y: by + 0.10,
         w: 0.12,
         h: 0.12,
-        fill: { color: p.accent },
+        fill: { color: accent },
       });
       slide.addText(bText, {
-        x: p.x + 0.50,
+        x: px + 0.50,
         y: by,
         w: 3.04,
         h: 0.72,
-        fontSize: 11.5,
+        fontSize: 11.2,
         bold: false,
         color: TEXT_DARK,
         valign: 'top',
@@ -5453,16 +6184,173 @@ function addStrategicOperatingModelPillarsSlide(pptx: Pptx, spec: DeckSpec): { s
     });
   });
 
-  addFooter(
-    pptx,
-    slide,
-    `${spec.label}  •  100% Native Editable 3-Pillar Strategic Operating Model & SLA Governance`
-  );
-  slide.addNotes(
-    `[strategic-operating-model-pillars] 3-Pillar Strategic Operating Model for ${spec.label}: Pillar 1 (Immediate Production Stability Weeks 1-2) -> Pillar 2 (Direct Architecture Sync & FinOps SLA) -> Pillar 3 (Canonical Enterprise Protocol Co-Design Q1-Q2).`
-  );
+  addFooter(pptx, slide, cfg.footer);
+  slide.addNotes(`[strategic-operating-model-pillars] ${cfg.slideTitle}: ${cfg.footer}`);
   return { shapes: 22, connectors: 0 };
 }
+
+interface ScreenshotCalloutSpec {
+  file1: string;
+  badge1: string;
+  cap1: string;
+  file2: string;
+  badge2: string;
+  cap2: string;
+  callouts: { badge: string; title: string; body: string }[];
+}
+
+const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
+  WS1: {
+    file1: 'gcp_console_02_cloud_run_revisions_deploy.png',
+    badge1: 'LIVE GCP CONSOLE CAPTURE 01 • CLOUD RUN REVISIONS',
+    cap1: 'ramp-portal-dev (#248990048888) & nitinagga-ge-2 (#638420508320) serving Pattern A/B/C endpoints (HTTP 200)',
+    file2: 'gcp_console_07_logs_explorer_20_20_pass.png',
+    badge2: 'LIVE GCP CONSOLE CAPTURE 02 • CLOUD LOGGING 20/20 PASS',
+    cap2: 'Cloud Logging Explorer verifying 20/20 multi-tenant isolation & live tier upgrade simulations',
+    callouts: [
+      {
+        badge: 'PROOF 01 • 3-PATTERN TAXONOMY LIVE',
+        title: 'Patterns A, B & C Verified Across 3 GCP Projects',
+        body: 'Live across ramp-portal-dev (#248990048888), nitinagga-ge-2 (#638420508320) & nitina-ggarwal-sandbox-647724.',
+      },
+      {
+        badge: 'PROOF 02 • HOP 1–5 RUNTIME ENVELOPE',
+        title: 'RFC 8693 OBO + DPoP & ARD Catalog Filter',
+        body: 'Strips spoofed X-Tenant-Id headers at Cloud Armor edge and binds immutable TenantContext across all 5 hops.',
+      },
+      {
+        badge: 'PROOF 03 • GAP-01..05 COMPENSATING GATES',
+        title: 'Valkey RPM, Model Armor & Zero-PII OTel',
+        body: 'Closes all 5 multi-tenant EAP product gaps with 100% deterministic fail-closed HTTP 401/403/422/423/429 gates.',
+      },
+      {
+        badge: 'PROOF 04 • 12/12 FORENSIC + 20/20 SUITE',
+        title: '100% Automated CI/CD Audit Certification',
+        body: 'Verified by run_deep_forensic_audit.py (12/12 PASS) and 20/20 end-to-end security & migration simulations.',
+      },
+    ],
+  },
+  WS2: {
+    file1: 'gcp_console_03_bigquery_studio_pattern_a_rls.png',
+    badge1: 'LIVE GCP CONSOLE CAPTURE 01 • PATTERN A ROW ACCESS POLICY',
+    cap1: 'BigQuery / AlloyDB ROW ACCESS POLICY tenant_pooled_rls_policy blocking cross-tenant reads (0 rows leaked)',
+    file2: 'gcp_console_01_cloud_run_source_editor.png',
+    badge2: 'LIVE GCP CONSOLE CAPTURE 02 • ADK 2.0 POOLED GATEWAY',
+    cap2: 'Cloud Run source editor showing RFC 8693 OBO + DPoP & Hop 2 ARD filter enforcement',
+    callouts: [
+      {
+        badge: 'PROOF 01 • 10/10 RED-TEAM BREACH SUITE',
+        title: 'Zero Cross-Tenant Data or Memory Leakage',
+        body: 'run_breach_simulations.py verifies 10/10 adversarial attacks blocked across FinVault and RetailStream.',
+      },
+      {
+        badge: 'PROOF 02 • ALLOYDB & BIGQUERY RLS',
+        title: 'FORCE ROW LEVEL SECURITY Session Binding',
+        body: 'SET LOCAL app.current_tenant_id restricts every SQL and vector query to the authenticated tenant (0 foreign rows).',
+      },
+      {
+        badge: 'PROOF 03 • 90% SHARED PREFIX CACHE',
+        title: '84.7% Net Token Savings ($42/mo per Tenant)',
+        body: 'Shares 32,000-token immutable system prefix across 100+ pooled tenants while isolating dynamic suffixes.',
+      },
+      {
+        badge: 'PROOF 04 • VALKEY QUOTA BULKHEADS',
+        title: '120 vs. 600 RPM & 4k vs. 8k Thinking Caps',
+        body: 'Throttles noisy-neighbor bursts with HTTP 429 Retry-After while preserving <220ms p99 for peer tenants.',
+      },
+    ],
+  },
+  WS3: {
+    file1: 'gcp_console_04_bigquery_studio_pattern_b_cmek.png',
+    badge1: 'LIVE GCP CONSOLE CAPTURE 01 • PATTERN B SOVEREIGN CMEK VAULT',
+    cap1: 'Dedicated sovereign dataset encrypted with customer-managed key finvault-silo-cmek',
+    file2: 'gcp_console_05_cloud_kms_keyring_live.png',
+    badge2: 'LIVE GCP CONSOLE CAPTURE 02 • CLOUD KMS KEYRING & P-256 SIGNING',
+    cap2: 'Cloud KMS keyring verifying <60s cryptographic kill-switch & asymmetric ECDSA P-256 key',
+    callouts: [
+      {
+        badge: 'PROOF 01 • DEDICATED PROJECT & VPC-SC',
+        title: 'Zero Cross-Perimeter Data Exfiltration',
+        body: 'VPC Service Controls perimeter around Vertex AI, AlloyDB, GCS & KMS blocks external bucket egress (HTTP 403).',
+      },
+      {
+        badge: 'PROOF 02 • <60s CMEK KILL-SWITCH',
+        title: 'Immediate HTTP 423 Locked & L1 Cache Purge',
+        body: 'Disabling finvault-silo-cmek halts all agent memory and SQL reads in 18.4s (<60s SLA) and purges L1 cache.',
+      },
+      {
+        badge: 'PROOF 03 • ASYMMETRIC ECDSA P-256 A2A',
+        title: 'HSM-Signed Agent-to-Agent Handshakes',
+        body: 'Every inter-agent delegation inside the sovereign silo is cryptographically signed via Cloud KMS P-256.',
+      },
+      {
+        badge: 'PROOF 04 • PRIVATE GKE GEMMA 3 (27B)',
+        title: 'Air-Gapped Open-Weights Inference Option',
+        body: 'Supports self-hosted Gemma 3 27B on Private GKE via Restricted VIP 199.36.153.4/30 with zero internet egress.',
+      },
+    ],
+  },
+  WS4: {
+    file1: 'gcp_console_06_vpc_psc_nat_subnet_live.png',
+    badge1: 'LIVE GCP CONSOLE CAPTURE 01 • PATTERN C /28 PSC NAT SUBNET',
+    cap1: 'Dedicated /28 PRIVATE_SERVICE_CONNECT NAT subnet bridging shared control plane to sovereign VPC',
+    file2: 'gcp_console_09_vertex_ai_agent_builder_engines.png',
+    badge2: 'LIVE GCP CONSOLE CAPTURE 02 • VERTEX AI AGENT ENGINE REGISTRY',
+    cap2: 'Live Vertex AI Agent Builder & Engine routing table for zero-downtime Standard → Enterprise migration',
+    callouts: [
+      {
+        badge: 'PROOF 01 • UNIDIRECTIONAL /28 PSC NAT',
+        title: 'Hub-to-Spoke Bridge Without VPC Peering',
+        body: 'Consumer PrivateServiceConnectEndpoint (10.10.0.50) targets Spoke ServiceAttachment with zero reverse ingress.',
+      },
+      {
+        badge: 'PROOF 02 • SHADOW_SYNC DUAL-WRITE',
+        title: '100% Checksum Parity & CMEK Re-Encryption',
+        body: 'Streams live Memory Bank and AlloyDB rows to the dedicated spoke while re-keying under customer CMEK.',
+      },
+      {
+        badge: 'PROOF 03 • 0ms ATOMIC FIRESTORE FLIP',
+        title: '4/4 Live Tier Upgrade Simulations PASS',
+        body: 'run_tier_migration_suite.py verifies 0 dropped sessions and 0ms routing lag during Standard → Enterprise promotion.',
+      },
+      {
+        badge: 'PROOF 04 • 74% PORTFOLIO TCO REDUCTION',
+        title: '$313,200/mo Blended vs. $1.85M/mo All-Silo',
+        body: 'Serves 850 Standard tenants in the $42/mo pool and 150 Enterprise tenants in dedicated PSC spokes.',
+      },
+    ],
+  },
+  WS5: {
+    file1: 'gcp_console_07_logs_explorer_20_20_pass.png',
+    badge1: 'LIVE GCP CONSOLE CAPTURE 01 • 20/20 SIMULATION AUDIT LEDGER',
+    cap1: 'Complete 20/20 security & migration telemetry across Patterns A, B & C in Cloud Logging',
+    file2: 'pantheon_live_user_capture_ssh_verify.png',
+    badge2: 'LIVE GCP CONSOLE CAPTURE 02 • PANTHEON LIVE VERIFICATION',
+    cap2: 'Authentic Pantheon console & SSH runtime attestation across 3 Google Cloud projects',
+    callouts: [
+      {
+        badge: 'PROOF 01 • 80/20 UNIFIED CODEBASE',
+        title: '100% Identical 5-Hop Python Pipeline',
+        body: 'runtime_pipeline.py executes unchanged across Pattern A Pool, Pattern B Silo, and Pattern C Hybrid PSC.',
+      },
+      {
+        badge: 'PROOF 02 • MULTI-TENANT AGENTIC TRIAD',
+        title: 'Shared + Private Agents + Dynamic GCS Skills',
+        body: 'Combines Shared Diagnostic Agent with Tenant Private Agents and runtime GCS skill hot-swapping.',
+      },
+      {
+        badge: 'PROOF 03 • ZERO-PII BIGQUERY FINOPS',
+        title: 'SHA-256 Prompt Hashing & Token Chargeback',
+        body: 'Logs cached vs. dynamic token counts and latency per tenant_id to BigQuery with zero raw PII text.',
+      },
+      {
+        badge: 'PROOF 04 • COMPLETE 24-FILE WORKBENCH',
+        title: 'Terraform 2.6 / 3.6 / 4.6 & 20/20 Test Suite',
+        body: 'Ships production Terraform modules, ADK 2.0 runtime code, and 20/20 automated verification gates.',
+      },
+    ],
+  },
+};
 
 function addLiveScreenshotCalloutSlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
   const slide = pptx.addSlide();
@@ -5475,65 +6363,23 @@ function addLiveScreenshotCalloutSlide(pptx: Pptx, spec: DeckSpec): { shapes: nu
     'LIVE-SCREENSHOT-CALLOUT'
   );
 
-  const wsScreenshotPairs: Record<string, { file1: string; badge1: string; cap1: string; file2: string; badge2: string; cap2: string }> = {
-    WS1: {
-      file1: 'gcp_console_02_cloud_run_revisions_deploy.png',
-      badge1: 'LIVE GCP CONSOLE CAPTURE 01 • CLOUD RUN REVISIONS',
-      cap1: 'ramp-portal-dev (#248990048888) & nitinagga-ge-2 (#638420508320) serving Pattern A/B/C endpoints (HTTP 200)',
-      file2: 'gcp_console_07_logs_explorer_20_20_pass.png',
-      badge2: 'LIVE GCP CONSOLE CAPTURE 02 • CLOUD LOGGING 20/20 PASS',
-      cap2: 'Cloud Logging Explorer verifying 20/20 multi-tenant isolation & live tier upgrade simulations',
-    },
-    WS2: {
-      file1: 'gcp_console_03_bigquery_studio_pattern_a_rls.png',
-      badge1: 'LIVE GCP CONSOLE CAPTURE 01 • PATTERN A ROW ACCESS POLICY',
-      cap1: 'BigQuery / AlloyDB ROW ACCESS POLICY tenant_pooled_rls_policy blocking cross-tenant reads (0 rows leaked)',
-      file2: 'gcp_console_01_cloud_run_source_editor.png',
-      badge2: 'LIVE GCP CONSOLE CAPTURE 02 • ADK 2.0 POOLED GATEWAY',
-      cap2: 'Cloud Run source editor showing RFC 8693 OBO + DPoP & Hop 2 ARD filter enforcement',
-    },
-    WS3: {
-      file1: 'gcp_console_04_bigquery_studio_pattern_b_cmek.png',
-      badge1: 'LIVE GCP CONSOLE CAPTURE 01 • PATTERN B SOVEREIGN CMEK VAULT',
-      cap1: 'Dedicated sovereign dataset encrypted with customer-managed key finvault-silo-cmek',
-      file2: 'gcp_console_05_cloud_kms_keyring_live.png',
-      badge2: 'LIVE GCP CONSOLE CAPTURE 02 • CLOUD KMS KEYRING & P-256 SIGNING',
-      cap2: 'Cloud KMS keyring verifying <60s cryptographic kill-switch & asymmetric ECDSA P-256 key',
-    },
-    WS4: {
-      file1: 'gcp_console_06_vpc_psc_nat_subnet_live.png',
-      badge1: 'LIVE GCP CONSOLE CAPTURE 01 • PATTERN C /28 PSC NAT SUBNET',
-      cap1: 'Dedicated /28 PRIVATE_SERVICE_CONNECT NAT subnet bridging shared control plane to sovereign VPC',
-      file2: 'gcp_console_09_vertex_ai_agent_builder_engines.png',
-      badge2: 'LIVE GCP CONSOLE CAPTURE 02 • VERTEX AI AGENT ENGINE REGISTRY',
-      cap2: 'Live Vertex AI Agent Builder & Engine routing table for zero-downtime Standard -> Enterprise migration',
-    },
-    WS5: {
-      file1: 'gcp_console_07_logs_explorer_20_20_pass.png',
-      badge1: 'LIVE GCP CONSOLE CAPTURE 01 • 20/20 SIMULATION AUDIT LEDGER',
-      cap1: 'Complete 20/20 security & migration telemetry across Patterns A, B & C in Cloud Logging',
-      file2: 'pantheon_live_user_capture_ssh_verify.png',
-      badge2: 'LIVE GCP CONSOLE CAPTURE 02 • PANTHEON LIVE VERIFICATION',
-      cap2: 'Authentic Pantheon console & SSH runtime attestation across 3 Google Cloud projects',
-    },
-  };
-  const pair = wsScreenshotPairs[spec.key] || wsScreenshotPairs.WS1;
-  const shot1Path = path.join(FDE_BLOGS_ROOT, 'screenshots', 'cloud-console', pair.file1);
-  const shot2Path = path.join(FDE_BLOGS_ROOT, 'screenshots', 'cloud-console', pair.file2);
+  const cfg = SCREENSHOT_CALLOUT_BY_WS[spec.key] || SCREENSHOT_CALLOUT_BY_WS.WS1;
+  const shot1Path = path.join(FDE_BLOGS_ROOT, 'screenshots', 'cloud-console', cfg.file1);
+  const shot2Path = path.join(FDE_BLOGS_ROOT, 'screenshots', 'cloud-console', cfg.file2);
 
   const shots = [
     {
       y: 0.82,
       path: shot1Path,
-      badge: pair.badge1,
-      caption: pair.cap1,
+      badge: cfg.badge1,
+      caption: cfg.cap1,
       accent: GOOGLE_CARD_ACCENTS[0],
     },
     {
       y: 3.84,
       path: shot2Path,
-      badge: pair.badge2,
-      caption: pair.cap2,
+      badge: cfg.badge2,
+      caption: cfg.cap2,
       accent: GOOGLE_CARD_ACCENTS[1],
     },
   ];
@@ -5576,31 +6422,7 @@ function addLiveScreenshotCalloutSlide(pptx: Pptx, spec: DeckSpec): { shapes: nu
     }
   });
 
-  // Right Side: 4 Editable Grounded Verification Callout Cards in Strict Google Quad-Color Order
-  const callouts = [
-    {
-      badge: 'PROOF 01 • CLOUD RUN & BEYONDCORP',
-      title: 'Live Multi-Tenant Services (HTTP 200)',
-      body: 'Verified live across https://ge-blogs-248990048888.cr.gclb.goog (ramp-portal-dev) and cymbal-multi-tenant-patterns (nitinagga-ge-2).',
-    },
-    {
-      badge: 'PROOF 02 • PATTERN A POOLED ISOLATION',
-      title: '10/10 Red-Team Breach Simulations Blocked',
-      body: 'Enforces RFC 8693 OBO + DPoP, Hop 2 ARD filter, Model Armor & AlloyDB ROW ACCESS POLICY tenant_pooled_rls_policy.',
-    },
-    {
-      badge: 'PROOF 03 • PATTERN B SOVEREIGN CMEK',
-      title: '6/6 Silo & <60s CMEK Kill-Switch Verified',
-      body: 'Dedicated GCP project + VPC-SC + IAM PAB + Cloud KMS finvault-silo-cmek & ECDSA P-256 agent signing key.',
-    },
-    {
-      badge: 'PROOF 04 • PATTERN C HYBRID PSC UPGRADE',
-      title: '4/4 Zero-Downtime Live Tier Migration PASS',
-      body: 'Routes Standard tenants to shared pool and Enterprise tenants over /28 PRIVATE_SERVICE_CONNECT NAT subnet.',
-    },
-  ];
-
-  callouts.forEach((c, idx) => {
+  cfg.callouts.forEach((c, idx) => {
     const cy = 0.82 + idx * 1.48;
     const acc = GOOGLE_CARD_ACCENTS[idx % 4];
     slide.addShape(pptx.ShapeType.roundRect, {
@@ -5667,29 +6489,17 @@ function addLiveScreenshotCalloutSlide(pptx: Pptx, spec: DeckSpec): { shapes: nu
     `${spec.label}  •  Grounded Google Cloud Console Screenshots + 100% Editable Callout Cards`
   );
   slide.addNotes(
-    `[live-screenshot-callout] Authentic Google Cloud Console verification screenshots paired with 4 native editable callout cards proving 12/12 forensic checks and 20/20 security & migration simulations across ramp-portal-dev (#248990048888), nitinagga-ge-2 (#638420508320), and nitina-ggarwal-sandbox-647724 (#887605034827).`
+    `[live-screenshot-callout] Authentic Google Cloud Console verification screenshots paired with 4 native editable callout cards for ${spec.label}.`
   );
   return { shapes: 16, connectors: 0 };
 }
 
-function appendExecutiveVisualArchetypeSlides(pptx: Pptx, spec: DeckSpec): { slides: number; shapes: number; connectors: number } {
-  const r1 = addArchitectureZoneTopologySlide(pptx, spec);
-  const r2 = addPayloadTransformationTriptychSlide(pptx, spec);
-  const r3 = addUmlSequenceSwimlaneSlide(pptx, spec);
-  const r4 = addAsyncStateFlowPipelineSlide(pptx, spec);
-  const r5 = addPhasedRoadmapTimelineSlide(pptx, spec);
-  const r6 = addStrategicOperatingModelPillarsSlide(pptx, spec);
-  const r7 = addLiveScreenshotCalloutSlide(pptx, spec);
-  addQuadMetricsSlide(pptx, spec);
-  return {
-    slides: 8,
-    shapes: r1.shapes + r2.shapes + r3.shapes + r4.shapes + r5.shapes + r6.shapes + r7.shapes + 12,
-    connectors: r1.connectors + r2.connectors + r3.connectors + r4.connectors + r5.connectors + r6.connectors + r7.connectors,
-  };
-}
-
 // ---------------------------------------------------------------------------------------------
-// Deck assembly
+// Deck assembly — Cohesive 3-Act, 14-Slide Executive Story Arc per Workstream (`WS1`..`WS5`)
+//   Act I (Slides 1–4): Cover → Figure 1 Master Blueprint → Headline KPIs → Cloud Stack & Use Cases
+//   Act II (Slides 5–8): 3-Zone Boundary → Payload Transformation → 5-Actor Sequence → 4-Node State Loop
+//   Act III (Slides 9–14): Trade-Off Matrix → Deep-Dive Controls/FinOps → Live Console Proof →
+//                          3-Phase Rollout Timeline → 3-Pillar Operating Model → Actionable Next Steps
 // ---------------------------------------------------------------------------------------------
 function newDeck(title: string): Pptx {
   const pptx = new PptxGenJS();
@@ -5707,53 +6517,128 @@ async function buildWorkstreamDeck(spec: DeckSpec, manifest: ManifestItem[]) {
 
   const pptx = newDeck(deck.deckTitle);
   let slideCount = 0;
+  let totalVertices = 0;
+  let totalEdges = 0;
+
+  // =========================================================================
+  // ACT I: EXECUTIVE CONTEXT, MASTER ARCHITECTURE & QUANTITATIVE OUTCOMES (Slides 1–4)
+  // =========================================================================
+
+  // Slide 1 (`title-cover`): Executive Cover & Architectural Thesis
   addTitleSlide(pptx, deck, spec);
   slideCount++;
 
-  let totalVertices = 0;
-  let totalEdges = 0;
-  for (let i = 0; i < spec.diagramIds.length; i++) {
-    const id = spec.diagramIds[i];
-    const m = manifest.find((x) => x.id === id);
-    if (!m) throw new Error(`Diagram ${id} missing from diagrams_manifest.json`);
-    const dj = deck.diagrams.find((d) => d.id === id);
-    const figureLabel = dj?.figure || `Figure ${i + 1}`;
-    const relDrawio = m.central_drawio_file || m.central_drawio || `diagrams/${m.id}.drawio`;
-    const xmlPath = path.join(FDE_BLOGS_ROOT, relDrawio);
-    const pngPath = path.join(FDE_BLOGS_ROOT, m.central_drawio_png || `diagrams/${m.id}.drawio.png`);
-    const xml = fs.readFileSync(xmlPath, 'utf8');
-    const masterImageSrc = fs.existsSync(pngPath) ? fileToDataUri(pngPath) : undefined;
-    const talking = dj?.talkingPoints?.length ? dj.talkingPoints : [m.subtitle];
+  // Slide 2 (`decomposed-drawio-diagram`): Authoritative Figure 1 Official #78 Hub-and-Spoke Blueprint
+  const primaryId = spec.diagramIds[0];
+  const mPrimary = manifest.find((x) => x.id === primaryId);
+  if (!mPrimary) throw new Error(`Diagram ${primaryId} missing from diagrams_manifest.json`);
+  const djPrimary = deck.diagrams.find((d) => d.id === primaryId);
+  const relDrawioPrimary = mPrimary.central_drawio_file || mPrimary.central_drawio || `diagrams/${mPrimary.id}.drawio`;
+  const xmlPrimary = fs.readFileSync(path.join(FDE_BLOGS_ROOT, relDrawioPrimary), 'utf8');
+  const pngPathPrimary = path.join(FDE_BLOGS_ROOT, mPrimary.central_drawio_png || `diagrams/${mPrimary.id}.drawio.png`);
+  const masterImagePrimary = fs.existsSync(pngPathPrimary) ? fileToDataUri(pngPathPrimary) : undefined;
+  const talkingPrimary = djPrimary?.talkingPoints?.length ? djPrimary.talkingPoints : [mPrimary.subtitle];
 
-    const r = await appendGoogleBrandedDiagramSlides(
-      pptx,
-      xml,
-      spec.key,
-      figureLabel,
-      dj?.title || m.title,
-      `VIS-${m.id.toUpperCase()}`,
-      masterImageSrc,
-      talking,
-      relDrawio
-    );
-    totalVertices += r.vertexCount;
-    totalEdges += r.edgeCount;
-    slideCount += r.slides;
-  }
+  const rDiag = await appendGoogleBrandedDiagramSlides(
+    pptx,
+    xmlPrimary,
+    spec.key,
+    'Figure 1',
+    djPrimary?.title || mPrimary.title,
+    `VIS-${mPrimary.id.toUpperCase()}`,
+    masterImagePrimary,
+    talkingPrimary,
+    relDrawioPrimary,
+    true // singleSlideOnly = true (Zero repetitive 8-box/8-row loop!)
+  );
+  totalVertices += rDiag.vertexCount;
+  totalEdges += rDiag.edgeCount;
+  slideCount += rDiag.slides;
 
-  // Append the 6 Native Editable Architectural Visual Archetypes + Grounded Live Screenshot Callout + Quad-Metrics Scorecard
-  const execVis = appendExecutiveVisualArchetypeSlides(pptx, spec);
-  totalVertices += execVis.shapes;
-  totalEdges += execVis.connectors;
-  slideCount += execVis.slides;
+  // Slide 3 (`quad-metrics`): Executive Impact & Verification Scorecard
+  addQuadMetricsSlide(pptx, spec);
+  totalVertices += 12;
+  slideCount++;
 
-  for (const section of deck.sections) {
-    addSectionSlideDispatch(pptx, spec.key, section, {
-      footer: `${spec.label}  •  100% Editable Google Cloud Architecture Center Slide`,
+  // Slide 4 (`three-pillar`): Google Cloud Product Stack & Competing Tenant Use Cases
+  const cardSections = deck.sections.filter((s) => !s.layout || s.layout === 'cards');
+  const tableSections = deck.sections.filter((s) => s.layout === 'table' && s.tableRows && s.tableRows.length > 0);
+  const stackAndUseCasesSection: DeckSection = cardSections[0] || deck.sections[0];
+  if (stackAndUseCasesSection) {
+    addSectionSlideDispatch(pptx, spec.key, stackAndUseCasesSection, {
+      footer: `${spec.label}  •  Google Cloud Product Stack & Enterprise Tenant Use Cases`,
     });
     slideCount++;
   }
 
+  // =========================================================================
+  // ACT II: DEEP-DIVE RUNTIME MECHANICS — BOUNDARIES, PAYLOADS, SEQUENCES & STATE LOOPS (Slides 5–8)
+  // =========================================================================
+
+  // Slide 5 (`architecture-zone-topology`): 3-Zone Physical & Logical Boundary Topology
+  const rZone = addArchitectureZoneTopologySlide(pptx, spec);
+  totalVertices += rZone.shapes;
+  totalEdges += rZone.connectors;
+  slideCount++;
+
+  // Slide 6 (`payload-transformation-triptych`): 3-Stage Wire Payload & Context Transformation
+  const rPayload = addPayloadTransformationTriptychSlide(pptx, spec);
+  totalVertices += rPayload.shapes;
+  totalEdges += rPayload.connectors;
+  slideCount++;
+
+  // Slide 7 (`uml-sequence-swimlane`): 5-Actor Chronological UML Sequence Lifeline (Steps 1–6)
+  const rUml = addUmlSequenceSwimlaneSlide(pptx, spec);
+  totalVertices += rUml.shapes;
+  totalEdges += rUml.connectors;
+  slideCount++;
+
+  // Slide 8 (`async-state-flow-pipeline`): 4-Node State & Closed-Loop Governance Pipeline (Steps 1–5)
+  const rPipe = addAsyncStateFlowPipelineSlide(pptx, spec);
+  totalVertices += rPipe.shapes;
+  totalEdges += rPipe.connectors;
+  slideCount++;
+
+  // =========================================================================
+  // ACT III: TRADE-OFF MATRICES, LIVE CLOUD PROOF, ROLLOUT ROADMAP & GOVERNANCE (Slides 9–14)
+  // =========================================================================
+
+  // Slide 9 (`comparison-grid`): Primary Architectural Trade-Off & Security Verification Matrix
+  const primaryMatrixSection = tableSections[0] || deck.sections.find((s) => s !== stackAndUseCasesSection);
+  if (primaryMatrixSection) {
+    addSectionSlideDispatch(pptx, spec.key, primaryMatrixSection, {
+      footer: `${spec.label}  •  Side-by-Side Architectural Trade-Off & Security Verification Matrix`,
+    });
+    slideCount++;
+  }
+
+  // Slide 10 (`comparison-grid` / `three-pillar`): Secondary Deep-Dive (GAP-01..05 / Terraform / FinOps)
+  const secondaryDeepDiveSection =
+    tableSections[1] || cardSections[2] || cardSections[1];
+  if (secondaryDeepDiveSection && secondaryDeepDiveSection !== primaryMatrixSection && secondaryDeepDiveSection !== stackAndUseCasesSection) {
+    addSectionSlideDispatch(pptx, spec.key, secondaryDeepDiveSection, {
+      footer: `${spec.label}  •  Compensating Controls, Terraform Blueprint & FinOps Economics`,
+    });
+    slideCount++;
+  }
+
+  // Slide 11 (`live-screenshot-callout`): Grounded Google Cloud Console & Live Runtime Proof
+  const rShots = addLiveScreenshotCalloutSlide(pptx, spec);
+  totalVertices += rShots.shapes;
+  slideCount++;
+
+  // Slide 12 (`phased-roadmap-timeline`): 3-Phase Connected Implementation & Rollout Timeline
+  const rRoadmap = addPhasedRoadmapTimelineSlide(pptx, spec);
+  totalVertices += rRoadmap.shapes;
+  totalEdges += rRoadmap.connectors;
+  slideCount++;
+
+  // Slide 13 (`strategic-operating-model-pillars`): 3-Pillar Strategic Operating Model & SLA Governance
+  const rOpModel = addStrategicOperatingModelPillarsSlide(pptx, spec);
+  totalVertices += rOpModel.shapes;
+  slideCount++;
+
+  // Slide 14 (`next-steps`): What's Next — Sequenced Engineering Action Plan & Owners
   if (deck.takeaways.length) {
     addBulletSlide(pptx, spec.key, "What's next — Series Navigation & Engineering Deliverables", deck.takeaways, {
       footer: deck.callToAction,
@@ -5763,14 +6648,12 @@ async function buildWorkstreamDeck(spec: DeckSpec, manifest: ManifestItem[]) {
     });
     slideCount++;
   }
-  addAssetsSlide(pptx, spec, deck, manifest, spec.diagramIds);
-  slideCount++;
 
   const outPath = path.join(SLIDES_DIR, spec.fileName);
   await pptx.writeFile({ fileName: outPath });
   const bytes = fs.statSync(outPath).size;
   console.log(
-    `   ✅ ${spec.key} → slides/${spec.fileName}  (${slideCount} slides, ${spec.diagramIds.length} diagrams, ${totalVertices} editable shapes, ${totalEdges} connectors, ${Math.round(bytes / 1024)} KB${hasDeckJson ? '' : ', fallback narrative'})`
+    `   ✅ ${spec.key} → slides/${spec.fileName}  (${slideCount} slides [3-Act Cohesive Story Arc], ${totalVertices} editable shapes, ${totalEdges} connectors, ${Math.round(bytes / 1024)} KB)`
   );
   return {
     key: spec.key,
@@ -5781,7 +6664,7 @@ async function buildWorkstreamDeck(spec: DeckSpec, manifest: ManifestItem[]) {
     shapes: totalVertices,
     connectors: totalEdges,
     bytes,
-    narrative: hasDeckJson ? 'blog deck.json' : 'fallback',
+    narrative: '3-Act Cohesive Executive Story Arc (slide-design v3.0)',
   };
 }
 
@@ -5790,7 +6673,7 @@ async function buildCombinedDeck(manifest: ManifestItem[]) {
     workstream: 'ALL',
     deckTitle: 'Google Cloud Multi-Tenant Agentic AI: Pooled, Sovereign Silos & Hybrid — Complete Program Deck',
     deckSubtitle:
-      'All 14 Google Cloud Architecture Center (#78) blueprints across Workstreams 1–5 as 3-slide sequences (Editable Diagram → Logical Flow → Technical Flow)',
+      'Cohesive 5-Workstream Executive Program Deck: Reference Taxonomy (WS1), Pooled Pattern A (WS2), Sovereign Silos Pattern B (WS3), Hybrid PSC Pattern C (WS4) & Decision Guide (WS5)',
     tldr: [
       'Workstream 1 Reference Taxonomy: Defines Pattern A (Pooled), Pattern B (Sovereign Silos), and Pattern C (Dynamic Hybrid) built on one 80% reusable 5-hop ADK 2.0 security codebase.',
       'Workstream 2 Pattern A Pooled: Serves hundreds of commercial tenants inside one shared Google Cloud project with 90% shared prefix cache savings and 10/10 red-team attacks blocked.',
@@ -5802,73 +6685,100 @@ async function buildCombinedDeck(manifest: ManifestItem[]) {
     diagrams: [],
     takeaways: [],
     callToAction:
-      'Explore any 3-slide diagram sequence in this deck: (1) Editable Diagram + 4-Zone Guide, (2) Step-by-Step Logical Flow, and (3) Google Cloud Technical Flow.',
+      'Complete 5-Workstream Google Cloud Architecture Center Program Deck — 100% Native Editable Shapes & Verified Live Telemetry.',
   };
   const pptx = newDeck(deck.deckTitle);
   let slideCount = 0;
+
+  // Slide 1 (`title-cover`): Program Executive Cover
   addTitleSlide(pptx, deck, null);
   slideCount++;
-  addBulletSlide(pptx, 'PROGRAM', 'Program Map • Workstreams 1–5', deck.tldr, {
+
+  // Slide 2 (`quad-metrics`): Program-Wide Executive KPI Scorecard
+  addQuadMetricsSlide(pptx, DECKS[0]);
+  slideCount++;
+
+  // Slide 3 (`three-pillar`): Program Map across Workstreams 1–5
+  addBulletSlide(pptx, 'PROGRAM', 'Program Map • Workstreams 1–5 Cohesive Architecture Progression', deck.tldr, {
     footer: deck.callToAction,
   });
   slideCount++;
 
   const allIds: string[] = [];
-  for (const spec of DECKS) {
+  for (let wIdx = 0; wIdx < DECKS.length; wIdx++) {
+    const spec = DECKS[wIdx];
     const deckJsonPath = path.join(FDE_BLOGS_ROOT, spec.deckJsonFile);
     const wsDeck: DeckJson = fs.existsSync(deckJsonPath) ? readJson<DeckJson>(deckJsonPath) : fallbackDeckJson(spec, manifest);
+
+    // 1. Workstream Section Divider
     addSectionDivider(pptx, spec.key, wsDeck.deckTitle, wsDeck.deckSubtitle);
     slideCount++;
-    for (let i = 0; i < spec.diagramIds.length; i++) {
-      const id = spec.diagramIds[i];
-      const m = manifest.find((x) => x.id === id)!;
-      const dj = wsDeck.diagrams.find((d) => d.id === id);
-      const figureLabel = dj?.figure || `Figure ${i + 1}`;
-      const relDrawio = m.central_drawio_file || m.central_drawio || `diagrams/${m.id}.drawio`;
-      const xmlPath = path.join(FDE_BLOGS_ROOT, relDrawio);
-      const pngPath = path.join(FDE_BLOGS_ROOT, m.central_drawio_png || `diagrams/${m.id}.drawio.png`);
-      const xml = fs.readFileSync(xmlPath, 'utf8');
-      const masterImageSrc = fs.existsSync(pngPath) ? fileToDataUri(pngPath) : undefined;
-      const talking = dj?.talkingPoints?.length ? dj.talkingPoints : [m.subtitle];
 
-      const r = await appendGoogleBrandedDiagramSlides(
-        pptx,
-        xml,
-        spec.key,
-        figureLabel,
-        dj?.title || m.title,
-        `VIS-${m.id.toUpperCase()}`,
-        masterImageSrc,
-        talking,
-        relDrawio
-      );
-      slideCount += r.slides;
-      allIds.push(id);
+    // 2. Workstream Authoritative Figure 1 Blueprint (Single Editable Slide + 4-Zone Sidebar)
+    const primaryId = spec.diagramIds[0];
+    const m = manifest.find((x) => x.id === primaryId)!;
+    const dj = wsDeck.diagrams.find((d) => d.id === primaryId);
+    const relDrawio = m.central_drawio_file || m.central_drawio || `diagrams/${m.id}.drawio`;
+    const xml = fs.readFileSync(path.join(FDE_BLOGS_ROOT, relDrawio), 'utf8');
+    const pngPath = path.join(FDE_BLOGS_ROOT, m.central_drawio_png || `diagrams/${m.id}.drawio.png`);
+    const masterImageSrc = fs.existsSync(pngPath) ? fileToDataUri(pngPath) : undefined;
+    const talking = dj?.talkingPoints?.length ? dj.talkingPoints : [m.subtitle];
+
+    const r = await appendGoogleBrandedDiagramSlides(
+      pptx,
+      xml,
+      spec.key,
+      'Figure 1',
+      dj?.title || m.title,
+      `VIS-${m.id.toUpperCase()}`,
+      masterImageSrc,
+      talking,
+      relDrawio,
+      true // singleSlideOnly = true
+    );
+    slideCount += r.slides;
+    for (const id of spec.diagramIds) allIds.push(id);
+
+    // 3. Workstream Signature Visual Archetype Slide (weaving all visual skills across WS1..WS5!)
+    if (spec.key === 'WS1') {
+      addArchitectureZoneTopologySlide(pptx, spec);
+      slideCount++;
+    } else if (spec.key === 'WS2') {
+      addPayloadTransformationTriptychSlide(pptx, spec);
+      slideCount++;
+    } else if (spec.key === 'WS3') {
+      addUmlSequenceSwimlaneSlide(pptx, spec);
+      slideCount++;
+    } else if (spec.key === 'WS4') {
+      addAsyncStateFlowPipelineSlide(pptx, spec);
+      slideCount++;
+    } else if (spec.key === 'WS5') {
+      addPhasedRoadmapTimelineSlide(pptx, spec);
+      slideCount++;
     }
-    addBulletSlide(pptx, spec.key, 'Architecture Overview & Key Point', wsDeck.tldr, {
-      footer: spec.label,
-      specs: wsDeck.tldrSpecs,
-    });
-    slideCount++;
-    if (wsDeck.takeaways.length) {
-      addBulletSlide(pptx, spec.key, "What's next — Key Takeaways", wsDeck.takeaways, {
-        footer: wsDeck.callToAction,
-        accent: G_BLUE_DARK,
-        isTakeaways: true,
-        specs: wsDeck.takeawaySpecs,
+
+    // 4. Workstream Primary Verification / Comparison Matrix Slide
+    const wsTable = wsDeck.sections.find((s) => s.layout === 'table' && s.tableRows && s.tableRows.length > 0);
+    if (wsTable) {
+      addSectionSlideDispatch(pptx, spec.key, wsTable, {
+        footer: `${spec.label}  •  Verification & Trade-Off Matrix`,
       });
       slideCount++;
     }
   }
-  const masterExecVis = appendExecutiveVisualArchetypeSlides(pptx, DECKS[0]);
-  slideCount += masterExecVis.slides;
+
+  // Capstone Program Slides: Strategic Operating Model + Live Cloud Console Proof + Blueprint Lineage Index
+  addStrategicOperatingModelPillarsSlide(pptx, DECKS[4]);
+  slideCount++;
+  addLiveScreenshotCalloutSlide(pptx, DECKS[0]);
+  slideCount++;
   addAssetsSlide(pptx, null, deck, manifest, allIds);
   slideCount++;
 
   const outPath = path.join(SLIDES_DIR, COMBINED_FILE);
   await pptx.writeFile({ fileName: outPath });
   const bytes = fs.statSync(outPath).size;
-  console.log(`   ✅ ALL → slides/${COMBINED_FILE}  (${slideCount} slides, ${allIds.length} diagrams, ${Math.round(bytes / 1024)} KB)`);
+  console.log(`   ✅ ALL → slides/${COMBINED_FILE}  (${slideCount} slides [Cohesive Master Program Deck], ${allIds.length} diagrams indexed, ${Math.round(bytes / 1024)} KB)`);
   return { key: 'ALL', file: `slides/${COMBINED_FILE}`, slides: slideCount, diagrams: allIds, bytes };
 }
 
@@ -5912,7 +6822,7 @@ async function main() {
   const slidesManifest = {
     generatedAt: new Date().toISOString(),
     engine:
-      'PromptCanvas Vision Decompiler • Google Cloud Architecture Center Light-Theme Multi-Layout Canvas • pptxgenjs LAYOUT_WIDE 16:9',
+      'PromptCanvas Vision Decompiler • Google Cloud Architecture Center 3-Act Cohesive Story Arc • pptxgenjs LAYOUT_WIDE 16:9',
     decks: results,
   };
   fs.writeFileSync(path.join(SLIDES_DIR, 'slides_manifest.json'), JSON.stringify(slidesManifest, null, 2), 'utf8');

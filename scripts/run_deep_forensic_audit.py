@@ -575,11 +575,29 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                             "QUAD-METRICS",
                             "Proprietary + Confidential",
                         )
-                        if not has_compact_arrows or not has_sidebar_guide or any(m not in joined_xml for m in required_visual_archetypes):
+                        banned_copy_pasted_terms = (
+                            "A2UI Portal",
+                            "48-hour dormant review period",
+                            "Asynchronous processing flow for long tasks (>5 min)",
+                            "Google Cloud Pub/Sub Topic",
+                        )
+                        if (
+                            not has_compact_arrows
+                            or not has_sidebar_guide
+                            or any(m not in joined_xml for m in required_visual_archetypes)
+                            or any(b in joined_xml for b in banned_copy_pasted_terms)
+                        ):
                             decks_valid = False
-                        if deck.get("key") in ("WS1", "WS2", "WS3", "WS4", "WS5") and "ppt/slides/slide2.xml" in zf.namelist():
-                            s2_xml = zf.read("ppt/slides/slide2.xml").decode("utf-8", errors="ignore")
-                            if "Figure 1" not in s2_xml or "4-ZONE HUB-AND-SPOKE" not in s2_xml:
+                        ws_key = deck.get("key")
+                        if ws_key in ("WS1", "WS2", "WS3", "WS4", "WS5"):
+                            if len(slide_xml_names) != 14 or deck.get("slides") != 14:
+                                decks_valid = False
+                            if "ppt/slides/slide2.xml" in zf.namelist():
+                                s2_xml = zf.read("ppt/slides/slide2.xml").decode("utf-8", errors="ignore")
+                                if "Figure 1" not in s2_xml or "4-ZONE HUB-AND-SPOKE" not in s2_xml:
+                                    decks_valid = False
+                        elif ws_key == "ALL":
+                            if len(slide_xml_names) != 26 or deck.get("slides") != 26:
                                 decks_valid = False
                 if not deck.get("diagrams") or any(d not in known_diagram_ids for d in deck.get("diagrams", [])):
                     decks_valid = False
@@ -602,7 +620,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                 cv_slides = cv_data.get("slides", {})
                 cv_docs = cv_data.get("docs", {})
                 cv_ok = all(k in cv_slides and cv_slides[k].get("googleSlidesId") for k in ("WS1", "WS2", "WS3", "WS4", "WS5", "ALL")) and all(k in cv_docs and cv_docs[k].get("googleDocsId") for k in ("WS1", "WS2", "WS3", "WS4", "WS5", "ALL"))
-            if decks_valid and len(ws_blogs_seen) == 5 and e2e_flows_ok and cv_ok:
+            if decks_valid and len(ws_blogs_seen) == 5 and e2e_flows_ok and cv_ok and "card-action-icon-btn" in html:
                 slides_ok = True
                 deck_count = len(decks)
                 ws_blog_count = len(ws_blogs_seen)
@@ -616,7 +634,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             and slides_ok
         )
         index_detail = (
-            f"index.html verified ({len(html):,} bytes), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI Series Reader links resolve on disk (0 broken), {certified_diagram_count}/14 Official Google Cloud Architecture Center Hub-and-Spoke & PromptCanvas Vision Draw.io blueprints CERTIFIED (56 vertices & 23 edges each, .drawio/.drawio.png/.svg/.vision.json quartet, 0 collisions), 14/14 Executive-Friendly Plain-English Logical & Technical Flows verified (diagrams/diagram_e2e_flows.json + 3-slide-per-diagram .pptx structure), Cloud Console receipt CERTIFIED ({len(cloud_pngs)} visual proof PNGs in screenshots/cloud-console/), {deck_count}/6 PromptCanvas Vision editable .pptx slide decks + {ws_blog_count}/5 canonical 5-part series blogs verified (PUBLISH_READY)."
+            f"index.html verified ({len(html):,} bytes), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI Series Reader links resolve on disk (0 broken), {certified_diagram_count}/14 Official Google Cloud Architecture Center Hub-and-Spoke & PromptCanvas Vision Draw.io blueprints CERTIFIED (56 vertices & 23 edges each, .drawio/.drawio.png/.svg/.vision.json quartet, 0 collisions), 14/14 Executive-Friendly Plain-English Logical & Technical Flows verified (diagrams/diagram_e2e_flows.json + 3-Act 14-Slide Cohesive Workstream Decks), Cloud Console receipt CERTIFIED ({len(cloud_pngs)} visual proof PNGs in screenshots/cloud-console/), {deck_count}/6 PromptCanvas Vision editable .pptx slide decks + {ws_blog_count}/5 canonical 5-part series blogs verified (PUBLISH_READY)."
             if index_ok
             else f"missing_markers={missing_markers}, missing_ui_paths={missing_ui_paths}, unready_blogs={unready_blogs}, diagrams_ok={diagrams_ok}, cloud_receipt_ok={cloud_receipt_ok}, slides_ok={slides_ok}, e2e_flows_ok={e2e_flows_ok}"
         )
