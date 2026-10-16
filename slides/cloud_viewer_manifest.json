@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-16T01:13:50.558Z",
+  "updatedAt": "2026-10-16T01:20:58.044Z",
   "accountEmail": "nitinagga@google.com",
   "oauthClientId": "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com",
   "slides": {
@@ -215,15 +215,15 @@
     "PLUGIN-GSLIDES-WS1": {
       "key": "PLUGIN-GSLIDES-WS1",
       "title": "WS1 — Multi-Tenant Agentic AI Systems on Google Cloud (Google Slides Design Plugin v2.0)",
-      "sha256": "0c577918377a718dd53b912d215261fdf4ddd120fa1c75ea5a24d0d0a5d429ce",
-      "sizeBytes": 791491,
+      "sha256": "03f71544a90557f0866f5ea1428329bcc17a8f7d7a0548879ef06d20edf5825d",
+      "sizeBytes": 791503,
       "googleSlidesId": "18ntSD7plHarlsERB93n8vLUL2ctaoKuNXMoRptK7lmw",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/18ntSD7plHarlsERB93n8vLUL2ctaoKuNXMoRptK7lmw/edit?authuser=nitinagga%40google.com",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/18ntSD7plHarlsERB93n8vLUL2ctaoKuNXMoRptK7lmw/preview",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/18ntSD7plHarlsERB93n8vLUL2ctaoKuNXMoRptK7lmw/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/18ntSD7plHarlsERB93n8vLUL2ctaoKuNXMoRptK7lmw/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/18ntSD7plHarlsERB93n8vLUL2ctaoKuNXMoRptK7lmw/edit?usp=drivesdk&resourcekey=0-0VeSbaoXoknqW4wDD0IGSQ",
-      "syncedAt": "2026-10-16T01:13:50.557Z"
+      "syncedAt": "2026-10-16T01:20:58.043Z"
     }
   },
   "docs": {

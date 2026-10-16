@@ -922,7 +922,7 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
   slide.addText(
     [
       {
-        text: 'Author: Nitin Aggarwal (Principal AI Architect, Google Cloud)  •  Date: October 2026  •  ',
+        text: 'Authors: Principal AI Architect • Cloud Solutions Architecture • Google Cloud  •  Date: October 2026  •  ',
         options: { fontSize: 8.0, color: TEXT_BODY, fontFace: FONT_BODY },
       },
       {
