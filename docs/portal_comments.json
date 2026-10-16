@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "1.0",
+  "updatedAt": "2026-10-15T19:15:00-04:00",
+  "threads": [
+    {
+      "threadId": "CMT-THREAD-001",
+      "cardId": "doc-sec-blogs-ws1-reference-architecture-taxonomy-and-5hop-baseline-md-0",
+      "cardTitle": "Multi-tenant agentic AI reference architecture: Isolation taxonomy and 5-hop security baseline",
+      "workstream": "WS1",
+      "docPath": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
+      "quotedText": "Key point: Multi-tenancy in agentic AI is not a single binary choice.",
+      "status": "open",
+      "createdAt": "2026-10-15T18:35:10-04:00",
+      "createdAtEst": "Oct 15, 2026, 6:35 PM EST",
+      "createdBy": "Sarah Chen",
+      "createdByEmail": "sarahchen@google.com",
+      "createdByRole": "Staff Security Architect",
+      "avatarColor": "#0d9488",
+      "comments": [
+        {
+          "commentId": "CMT-001-A",
+          "authorName": "Sarah Chen",
+          "authorEmail": "sarahchen@google.com",
+          "authorRole": "Staff Security Architect",
+          "avatarColor": "#0d9488",
+          "text": "Love how the TL;DR and Key Point frame Pattern A, B, and C around tenant regulatory posture rather than a one-size-fits-all runtime. Confirmed this matches Slide 1 of the WS1 Google Slides deck 1:1.",
+          "createdAt": "2026-10-15T18:35:10-04:00",
+          "createdAtEst": "Oct 15, 2026, 6:35 PM EST"
+        },
+        {
+          "commentId": "CMT-001-B",
+          "authorName": "Nitin Aggarwal",
+          "authorEmail": "nitinagga@google.com",
+          "authorRole": "Principal Cloud Architect",
+          "avatarColor": "#1a73e8",
+          "text": "Thanks @Sarah Chen! We also linked the live 5-Hop Python simulator directly so reviewers can test FinVault Bank vs. RetailStream Corp right from this section.",
+          "createdAt": "2026-10-15T18:40:22-04:00",
+          "createdAtEst": "Oct 15, 2026, 6:40 PM EST"
+        }
+      ]
+    },
+    {
+      "threadId": "CMT-THREAD-002",
+      "cardId": "inline-fig-card-ws1-multi-tenant-taxonomy-overview",
+      "cardTitle": "Figure 1. Multi-Tenant Agentic AI Isolation Taxonomy (Pattern A, Pattern B, Pattern C)",
+      "workstream": "WS1",
+      "docPath": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
+      "quotedText": "Figure 1. Multi-Tenant Agentic AI Isolation Taxonomy",
+      "status": "open",
+      "createdAt": "2026-10-15T18:48:00-04:00",
+      "createdAtEst": "Oct 15, 2026, 6:48 PM EST",
+      "createdBy": "Marcus Vance",
+      "createdByEmail": "mvance@cymbal.io",
+      "createdByRole": "VP Platform Engineering",
+      "avatarColor": "#7c3aed",
+      "comments": [
+        {
+          "commentId": "CMT-002-A",
+          "authorName": "Marcus Vance",
+          "authorEmail": "mvance@cymbal.io",
+          "authorRole": "VP Platform Engineering",
+          "avatarColor": "#7c3aed",
+          "text": "Verified all 56 shapes and 23 connectors in the inline Draw.io editor. The 52px intra-spoke routing channel completely eliminates connector overlap on the left and right spokes.",
+          "createdAt": "2026-10-15T18:48:00-04:00",
+          "createdAtEst": "Oct 15, 2026, 6:48 PM EST"
+        }
+      ]
+    }
+  ]
+}

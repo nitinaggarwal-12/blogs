@@ -553,15 +553,29 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                         slide_xml_names = [n for n in zf.namelist() if n.startswith("ppt/slides/slide") and n.endswith(".xml")]
                         has_compact_arrows = False
                         has_sidebar_guide = False
+                        all_slides_concat = []
                         for sname in slide_xml_names:
                             sxml = zf.read(sname).decode("utf-8", errors="ignore")
+                            all_slides_concat.append(sxml)
                             if 'w="sm" len="sm"' in sxml:
                                 has_compact_arrows = True
                             if '<a:headEnd type="triangle"/>' in sxml or '<a:tailEnd type="triangle"/>' in sxml:
                                 decks_valid = False
                             if "4-ZONE HUB-AND-SPOKE" in sxml and "ARCHITECTURE CENTER GUIDE (#78)" in sxml:
                                 has_sidebar_guide = True
-                        if not has_compact_arrows or not has_sidebar_guide:
+                        joined_xml = "\n".join(all_slides_concat)
+                        required_visual_archetypes = (
+                            "ARCHITECTURE-ZONE-TOPOLOGY",
+                            "PAYLOAD-TRANSFORMATION",
+                            "UML-SEQUENCE-SWIMLANE",
+                            "ASYNC-STATE-FLOW-PIPELINE",
+                            "PHASED-ROADMAP-TIMELINE",
+                            "STRATEGIC-OPERATING-MODEL",
+                            "LIVE-SCREENSHOT-CALLOUT",
+                            "QUAD-METRICS",
+                            "Proprietary + Confidential",
+                        )
+                        if not has_compact_arrows or not has_sidebar_guide or any(m not in joined_xml for m in required_visual_archetypes):
                             decks_valid = False
                         if deck.get("key") in ("WS1", "WS2", "WS3", "WS4", "WS5") and "ppt/slides/slide2.xml" in zf.namelist():
                             s2_xml = zf.read("ppt/slides/slide2.xml").decode("utf-8", errors="ignore")

@@ -48,6 +48,67 @@ function svgToDataUri(svgStr) {
 }
 
 const EXTRA_GCP_ICONS = {
+  cloud_armor: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+      <path d="M20 6.5 L31 11.2 V19.5 C31 26.8 26.2 32.2 20 34.2 C13.8 32.2 9 26.8 9 19.5 V11.2 Z" fill="#aecbfa" opacity="0.45"/>
+      <path d="M20 6.5 L31 11.2 V19.5 C31 26.8 26.2 32.2 20 34.2 C13.8 32.2 9 26.8 9 19.5 V11.2 Z" fill="none" stroke="#1a73e8" stroke-width="2.4" stroke-linejoin="round"/>
+      <line x1="12.5" y1="22.5" x2="18.5" y2="16.5" stroke="#174ea6" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="14.5" y1="26.5" x2="22.5" y2="18.5" stroke="#174ea6" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="18.2" y1="28.8" x2="24.5" y2="22.5" stroke="#174ea6" stroke-width="2.2" stroke-linecap="round"/>
+      <circle cx="18.5" cy="16.5" r="2.1" fill="#ea4335"/>
+      <circle cx="22.5" cy="18.5" r="2.1" fill="#34a853"/>
+      <circle cx="24.5" cy="22.5" r="2.1" fill="#1a73e8"/>
+    </svg>
+  `),
+  gke: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+      <polygon points="20,6.5 31.5,13.2 31.5,26.8 20,33.5 8.5,26.8 8.5,13.2" fill="none" stroke="#1a73e8" stroke-width="2.3" stroke-linejoin="round"/>
+      <circle cx="20" cy="20" r="5.2" fill="none" stroke="#174ea6" stroke-width="2.2"/>
+      <circle cx="20" cy="20" r="2" fill="#34a853"/>
+      <line x1="20" y1="9" x2="20" y2="14.8" stroke="#ea4335" stroke-width="2.1" stroke-linecap="round"/>
+      <line x1="29.2" y1="14.6" x2="24.5" y2="17.4" stroke="#4285f4" stroke-width="2.1" stroke-linecap="round"/>
+      <line x1="29.2" y1="25.4" x2="24.5" y2="22.6" stroke="#4285f4" stroke-width="2.1" stroke-linecap="round"/>
+      <line x1="20" y1="31" x2="20" y2="25.2" stroke="#34a853" stroke-width="2.1" stroke-linecap="round"/>
+      <line x1="10.8" y1="25.4" x2="15.5" y2="22.6" stroke="#fbbc04" stroke-width="2.1" stroke-linecap="round"/>
+      <line x1="10.8" y1="14.6" x2="15.5" y2="17.4" stroke="#ea4335" stroke-width="2.1" stroke-linecap="round"/>
+    </svg>
+  `),
+  vpc_network: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e6f4ea" stroke="#137333" stroke-width="2"/>
+      <rect x="8" y="9" width="10" height="8" rx="2" fill="#34a853"/>
+      <rect x="22" y="9" width="10" height="8" rx="2" fill="#1a73e8"/>
+      <rect x="15" y="23" width="10" height="8" rx="2" fill="#137333"/>
+      <path d="M13 17 V20 H27 V17 M20 20 V23" fill="none" stroke="#174ea6" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  `),
+  cloud_storage: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#fef7e0" stroke="#ea8600" stroke-width="2"/>
+      <rect x="8" y="9" width="24" height="9" rx="2.5" fill="#fbbc04" stroke="#b06000" stroke-width="1.6"/>
+      <circle cx="27" cy="13.5" r="1.8" fill="#ea4335"/>
+      <rect x="8" y="22" width="24" height="9" rx="2.5" fill="#4285f4" stroke="#174ea6" stroke-width="1.6"/>
+      <circle cx="27" cy="26.5" r="1.8" fill="#ffffff"/>
+    </svg>
+  `),
+  cloud_sdp_dlp: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e6f4ea" stroke="#0d9488" stroke-width="2"/>
+      <path d="M20 7.5 L30 11.8 V19.5 C30 26.2 25.6 31 20 33 C14.4 31 10 26.2 10 19.5 V11.8 Z" fill="#ccfbf1" stroke="#0f766e" stroke-width="2"/>
+      <circle cx="19" cy="19" r="4.5" fill="none" stroke="#0f766e" stroke-width="2.2"/>
+      <line x1="22.3" y1="22.3" x2="26" y2="26" stroke="#0f766e" stroke-width="2.4" stroke-linecap="round"/>
+    </svg>
+  `),
+  terraform_iac: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#f3e8fd" stroke="#7c3aed" stroke-width="2"/>
+      <polygon points="10,9 19,14 19,24 10,19" fill="#7c3aed"/>
+      <polygon points="21,14 30,9 30,19 21,24" fill="#9334e6"/>
+      <polygon points="10,21 19,26 19,34 10,29" fill="#5b21b6"/>
+    </svg>
+  `),
   cloud_kms: svgToDataUri(`
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
       <rect x="2" y="2" width="36" height="36" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
@@ -114,9 +175,41 @@ const EXTRA_GCP_ICONS = {
   `),
 };
 
-function resolveArchIconUri(iconKey, title = '', sub = '') {
+function resolveArchIconUri(iconKey, title = '', _sub = '') {
   if (EXTRA_GCP_ICONS[iconKey]) return EXTRA_GCP_ICONS[iconKey];
   const titleLower = String(title || '').toLowerCase();
+  if (
+    !titleLower.includes('model armor') &&
+    !titleLower.includes('load balancer') &&
+    (titleLower.includes('cloud armor') ||
+      titleLower.includes('waf') ||
+      titleLower.includes('header strip') ||
+      titleLower.includes('header sanitizer') ||
+      titleLower.includes('security policy') ||
+      titleLower.includes('rule 1000') ||
+      titleLower.includes('edge pep'))
+  ) {
+    return EXTRA_GCP_ICONS.cloud_armor;
+  }
+  if (titleLower.includes('gke') || titleLower.includes('kubernetes')) {
+    return EXTRA_GCP_ICONS.gke;
+  }
+  if (
+    !titleLower.includes('vpc-sc') &&
+    !titleLower.includes('perimeter') &&
+    (titleLower.includes('vpc') || titleLower.includes('subnet') || titleLower.includes('compute_network'))
+  ) {
+    return EXTRA_GCP_ICONS.vpc_network;
+  }
+  if (titleLower.includes('gcs') || titleLower.includes('cloud storage') || titleLower.includes('storage & container')) {
+    return EXTRA_GCP_ICONS.cloud_storage;
+  }
+  if (!titleLower.includes('model armor') && (titleLower.includes('sdp') || titleLower.includes('dlp'))) {
+    return EXTRA_GCP_ICONS.cloud_sdp_dlp;
+  }
+  if (titleLower.includes('provider') || titleLower.includes('variables.tf') || titleLower.includes('region & env')) {
+    return EXTRA_GCP_ICONS.terraform_iac;
+  }
   if (titleLower.includes('kms') || titleLower.includes('cmek') || titleLower.includes('ekm') || titleLower.includes('hsm') || titleLower.includes('keyring')) {
     return EXTRA_GCP_ICONS.cloud_kms;
   }
@@ -171,7 +264,7 @@ const WORKSTREAM_BLUEPRINTS = [
     routingHubTitle: 'Routing hub (Hop 1 & Hop 2 PEP/PDP)',
     routingHubSub: 'Central ingress, OBO+DPoP KMS Sign & Discovery Engine Catalog filter',
     routingCards: {
-      topLeft: { icon: 'load_balancer_cloud_armor', title: 'Cloud Armor & IAP', sub: 'Strip Forged X-Tenant-ID' },
+      topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF & DDoS • Strips X-Tenant-ID' },
       midLeft: { icon: 'model_armor', title: 'Model Armor', sub: 'Ingress Prompt Screen' },
       botLeft: { icon: 'iap_iam_shield', title: 'RFC 8693 OBO + DPoP', sub: 'KMS ECDSA P-256 Sign' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Cloud Load Balancing' },
@@ -239,7 +332,7 @@ const WORKSTREAM_BLUEPRINTS = [
     routingHubTitle: 'Routing hub (Hop 1 & Hop 2)',
     routingHubSub: 'Central ingress & cryptographic token exchange',
     routingCards: {
-      topLeft: { icon: 'load_balancer_cloud_armor', title: 'Cloud Armor', sub: 'Strips Forged X-Tenant-ID' },
+      topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF & DDoS • Strips X-Tenant-ID' },
       midLeft: { icon: 'model_armor', title: 'Model Armor', sub: 'Edge Prompt Injection Gate' },
       botLeft: { icon: 'iap_iam_shield', title: 'IAP', sub: 'OBO + DPoP + KMS ECDSA Sign' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Cloud Load Balancing' },
@@ -307,7 +400,7 @@ const WORKSTREAM_BLUEPRINTS = [
     routingHubTitle: 'Hop 1 & Hop 2: Edge PEP & Agent Catalog PDP',
     routingHubSub: 'Header stripping, OBO+DPoP KMS Sign & Discovery Engine Catalog pruning',
     routingCards: {
-      topLeft: { icon: 'load_balancer_cloud_armor', title: 'Cloud Armor WAF', sub: 'Strips Forged X-Tenant-ID' },
+      topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF & DDoS • Strips X-Tenant-ID' },
       midLeft: { icon: 'discovery_engine', title: 'Discovery Engine PDP', sub: 'Catalog Filter (403 Alpha)' },
       botLeft: { icon: 'iap_iam_shield', title: 'IAP + OBO Broker', sub: 'OBO + DPoP + adk-agent-signing-key' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Cloud Load Balancing' },
@@ -375,10 +468,10 @@ const WORKSTREAM_BLUEPRINTS = [
     routingHubTitle: 'Hop 1 & Hop 2 Gates (Vectors 1, 2, 3 & 10)',
     routingHubSub: 'Neutralizes header spoofing, Agent Alpha & MCP leaks',
     routingCards: {
-      topLeft: { icon: 'load_balancer_cloud_armor', title: 'Vector 1: Header Strip', sub: 'Drops Forged X-Tenant-ID' },
+      topLeft: { icon: 'cloud_armor', title: 'Vector 1: Header Strip', sub: 'Drops Forged X-Tenant-ID' },
       midLeft: { icon: 'discovery_engine', title: 'Vector 2: Agent 403', sub: 'Blocks Retail -> Agent Alpha' },
       botLeft: { icon: 'iap_iam_shield', title: 'Vector 3: Tool Prune', sub: 'Prunes FinVault Jira MCP' },
-      topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Cloud Armor Edge PEP' },
+      topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Google Cloud Armor Edge PEP' },
       botRight: { icon: 'cloud_run', title: 'Hop 2 Catalog PDP', sub: 'Discovery Catalog + ADK Callback' },
       edgeTopLeft: ['Strip spoofed', 'header'],
       edgeMidLeft: ['Return HTTP', '403 Forbidden'],
@@ -403,7 +496,7 @@ const WORKSTREAM_BLUEPRINTS = [
       modelArmor: { icon: 'model_armor', title: 'Vector 4: HTTP 400', sub: 'Blocks SQLi & Cache Dump' },
       llm: { icon: 'model_armor', title: 'Vector 5: HTTP 422', sub: 'Blocks FINRA Escalation Bypass' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Executes Only Clean Turns' },
-      mcp: { icon: 'iap_iam_shield', title: 'Vector 8: SDP Mask', sub: 'Redacts IBAN, SWIFT & PAN' },
+      mcp: { icon: 'cloud_sdp_dlp', title: 'Vector 8: SDP Mask', sub: 'Redacts IBAN, SWIFT & PAN' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'Zero Raw PII Egress', sub: '[REDACTED-FINVAULT-*]' },
       step4Label: 'Screen prompt',
       step6Label: 'Redact PII',
@@ -416,7 +509,7 @@ const WORKSTREAM_BLUEPRINTS = [
     rightZoneSub: 'Cryptographic Namespace & Storage-Engine Isolation',
     rightCards: {
       modelArmor: { icon: 'gemini_agent_platform', title: 'Vector 7A: L4 Memory', sub: 'PermissionError on Cross-Read' },
-      llm: { icon: 'cloud_logging', title: 'Vector 7B: GCS Skills', sub: 'Blocks gs://cymbal-skills-fv' },
+      llm: { icon: 'cloud_storage', title: 'Vector 7B: GCS Skills', sub: 'Blocks gs://cymbal-skills-fv' },
       runtime: { icon: 'valkey_cache', title: 'Vector 9: Prefix Cache', sub: 'READ_ONLY_IMMUTABLE_PREFIX' },
       mcp: { icon: 'iap_iam_shield', title: 'Auth Manager Vault', sub: 'Tenant-Scoped OAuth Tokens' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'Vector 7C: AlloyDB/BQ RLS', sub: 'tenant_pooled_rls_policy (0 Bleed)' },
@@ -443,7 +536,7 @@ const WORKSTREAM_BLUEPRINTS = [
     routingHubTitle: 'Central mTLS & SPIFFE Routing Hub',
     routingHubSub: 'Client certificate pinning (HTTP 401 on SAN mismatch)',
     routingCards: {
-      topLeft: { icon: 'load_balancer_cloud_armor', title: 'Cloud Armor & mTLS', sub: 'X.509 SPIFFE Cert Pinning' },
+      topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF & mTLS • SPIFFE Cert Pinning' },
       midLeft: { icon: 'model_armor', title: 'Model Armor', sub: 'Edge Prompt & DDoS Filter' },
       botLeft: { icon: 'iap_iam_shield', title: 'IAM PAB Verifier', sub: 'HTTP 403 Cross-Project Block' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'SNI Silo Routing' },
@@ -469,7 +562,7 @@ const WORKSTREAM_BLUEPRINTS = [
     leftZoneSub: 'Dedicated Silo • CMEK: finvault-silo-cmek',
     leftCards: {
       modelArmor: { icon: 'vpc_sc', title: 'VPC-SC & Model Armor', sub: 'Dedicated FinVault Perimeter' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemma 3 (27B) GKE', sub: 'Air-Gapped vLLM + Claude 3.7' },
+      llm: { icon: 'gke', title: 'Gemma 3 (27B) GKE', sub: 'Air-Gapped vLLM + Claude 3.7' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Dedicated Silo + Agent Alpha' },
       mcp: { icon: 'mcp_servers', title: 'Local Silo MCP', sub: 'Workspace & Jira (0 Egress)' },
       datastore: { icon: 'cloud_kms', title: 'CMEK Silo Datastore', sub: 'pattern_b_silo_finvault_cmek_vault' },
@@ -511,7 +604,7 @@ const WORKSTREAM_BLUEPRINTS = [
     routingHubTitle: 'Unified Control Plane & Intelligent Router Hub',
     routingHubSub: 'Firestore live routing table + pattern_c_psc_endpoints_registry',
     routingCards: {
-      topLeft: { icon: 'load_balancer_cloud_armor', title: 'Cloud Armor & IAP', sub: 'Single SaaS URL + OBO/DPoP' },
+      topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF & IAP • Single SaaS URL' },
       midLeft: { icon: 'discovery_engine', title: 'Cross-Project Catalog', sub: 'Federated Agent Catalog' },
       botLeft: { icon: 'firestore_db', title: 'Firestore Route Table', sub: 'pattern_c_psc_endpoints_registry' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Cloud Load Balancing' },
@@ -579,7 +672,7 @@ const WORKSTREAM_BLUEPRINTS = [
     routingHubTitle: 'Triad Pillar 1: Zero-Trust Cryptographic Security',
     routingHubSub: '5-Hop Context Chain (OBO+DPoP+KMS P-256) across Ingress & Runtime',
     routingCards: {
-      topLeft: { icon: 'load_balancer_cloud_armor', title: 'Hop 1: Edge PEP', sub: 'Header Strip + KMS ECDSA P-256' },
+      topLeft: { icon: 'cloud_armor', title: 'Hop 1: Edge PEP', sub: 'Header Strip + KMS ECDSA P-256' },
       midLeft: { icon: 'model_armor', title: 'Hop 4: Model Armor', sub: 'Injection 400 + Policy 422 + SDP' },
       botLeft: { icon: 'discovery_engine', title: 'Hop 2: Catalog PDP', sub: 'Discovery Catalog + Tool Prune' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Global Anycast Ingress' },

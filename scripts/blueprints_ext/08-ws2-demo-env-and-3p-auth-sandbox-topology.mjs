@@ -22,10 +22,10 @@ export default {
   outerWrapperLabel: 'Shared Demo Project nitina-ggarwal-sandbox-647724 (cymbal-pooled-saas-prod) • 12 Enabled APIs (aiplatform, modelarmor, dlp, run, iap, alloydb, valkey, firestore, cloudkms, bigquery)',
   innerWrapperLabel: 'Shared Pooled Vertex AI Agent Engine Runtime (cymbal-multi-tenant-patterns-00003-wfh) • Hop 1 Edge PEP + Hop 5 3P Auth Sandbox',
   routingHubTitle: 'Shared env ingress & bootstrap hub',
-  routingHubSub: 'Project, APIs, Cloud Armor WAF, Global LB & Edge PEP',
+  routingHubSub: 'Project, APIs, Google Cloud Armor WAF, Global LB & Edge PEP',
   routingCards: {
-    topLeft: { icon: 'load_balancer_cloud_armor', title: 'Cloud Armor WAF', sub: 'cymbal-pooled-edge-waf' },
-    midLeft: { icon: 'iap_iam_shield', title: 'Header Sanitizer', sub: 'Strip X-Tenant-ID spoof' },
+    topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF • cymbal-pooled-edge-waf' },
+    midLeft: { icon: 'cloud_armor', title: 'Header Sanitizer', sub: 'Strip X-Tenant-ID spoof' },
     botLeft: { icon: 'iap_iam_shield', title: 'Hop 1 Edge PEP', sub: 'OBO + DPoP + adk-agent-signing-key' },
     topRight: { icon: 'load_balancer_cloud_armor', title: 'Global External', title2: 'App Load Balancer', sub: 'edge.cymbal-saas.example' },
     botRight: { icon: 'cloud_run', title: 'Cloud Run Edge PEP', sub: 'cymbal-multi-tenant-patterns' },

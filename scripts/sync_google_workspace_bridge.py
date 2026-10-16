@@ -503,7 +503,7 @@ WORKSTREAM_DECK_SPECS = [
     ("WS3", "WS3 — Pattern B: Zero-Trust Sovereign Silos", "slides/ws3-pattern-b-siloed-editable-slides.pptx", "blogs/ws3-pattern-b-sovereign-silos.md"),
     ("WS4", "WS4 — Pattern C: Dynamic Hybrid Hub-and-Spoke & Tier Upgrade", "slides/ws4-pattern-c-hybrid-editable-slides.pptx", "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md"),
     ("WS5", "WS5 — Executive Decision Guide & Multi-Tenant Agentic Triad", "slides/ws5-wrap-up-editable-slides.pptx", "blogs/ws5-decision-guide-and-agentic-triad.md"),
-    ("ALL", "ALL Workstreams 1–5 Master Deck (60 Slides • 14 Diagrams)", "slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx", "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md"),
+    ("ALL", "ALL Workstreams 1–5 Master Deck (68 Slides • 14 Diagrams)", "slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx", "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md"),
 ]
 
 

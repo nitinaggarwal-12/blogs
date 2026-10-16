@@ -17,7 +17,7 @@ export default {
   routingHubTitle: 'Central Ingress Hub (Consumer Side)',
   routingHubSub: 'Firestore live routing table + pattern_c_psc_endpoints_registry',
   routingCards: {
-    topLeft: { icon: 'load_balancer_cloud_armor', title: 'Global ALB + Armor', sub: 'IAP Hop 1 • Single SaaS URL' },
+    topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'Global ALB WAF • Single SaaS URL' },
     midLeft: { icon: 'firestore_db', title: 'Firestore Route Table', sub: 'pattern_c_psc_endpoints_registry' },
     botLeft: { icon: 'discovery_engine', title: 'Cross-Project Catalog', sub: 'Federated Agent Cards' },
     topRight: { icon: 'psc_bridge', title: 'PSC Consumer', title2: 'Forwarding Rule', sub: 'psc-consumer-finvault' },

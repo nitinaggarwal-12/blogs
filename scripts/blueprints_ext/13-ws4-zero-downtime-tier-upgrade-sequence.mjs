@@ -21,7 +21,7 @@ export default {
     topLeft: { icon: 'iap_iam_shield', title: 'TEST 1A Pre-Upgrade', sub: 'RS -> HYBRID_POOL, cap 4000' },
     midLeft: { icon: 'psc_bridge', title: 'TEST 1B Enterprise', sub: 'FV -> psc://10.10.0.50 (8000)' },
     botLeft: { icon: 'dms_migration', title: 'TEST 2 Migration', sub: '3 phases, lag 0, dropped 0' },
-    topRight: { icon: 'load_balancer_cloud_armor', title: 'Hop 1 Auth', title2: 'OBO + DPoP', sub: 'KMS ECDSA P-256 Signed JWTs' },
+    topRight: { icon: 'iap_iam_shield', title: 'Hop 1 Auth', title2: 'OBO + DPoP', sub: 'KMS ECDSA P-256 Signed JWTs' },
     botRight: { icon: 'cloud_run', title: 'Hybrid Router', sub: 'cymbal-multi-tenant-patterns' },
     edgeTopLeft: ['assert topology', 'HYBRID_POOL'],
     edgeMidLeft: ['assert endpoint', 'startswith psc://'],

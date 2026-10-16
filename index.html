@@ -1062,6 +1062,289 @@
         padding: 10px 8px;
       }
     }
+
+    /* =========================================================================
+       7-ICON CARD HOVER TOOLBAR (EDIT, SAVE, ADD, DELETE, HIDE, CLONE, COMMENT)
+       + GOOGLE DOCS / SLIDES MULTI-USER SECTION COMMENTS & CHANGE LOG PAGE
+       ========================================================================= */
+    .card,
+    .gcp-figure-card,
+    .doc-section-card {
+      position: relative;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+    .doc-section-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-bottom: 16px;
+    }
+    .doc-section-card:hover,
+    .gcp-figure-card:hover,
+    .card:hover {
+      border-color: rgba(26, 115, 232, 0.45);
+    }
+    .doc-section-card h1:first-child,
+    .doc-section-card h2:first-child,
+    .doc-section-card h3:first-child {
+      margin-top: 0 !important;
+      padding-right: 250px;
+    }
+    .card-hover-toolbar {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      z-index: 40;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: rgba(255, 255, 255, 0.98);
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      padding: 3px 5px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-2px);
+      transition: opacity 0.14s ease, transform 0.14s ease;
+    }
+    [data-theme="midnight"] .card-hover-toolbar,
+    [data-theme="slate"] .card-hover-toolbar,
+    [data-theme="high-contrast"] .card-hover-toolbar {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: #475569;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    }
+    .card:hover > .card-hover-toolbar,
+    .gcp-figure-card:hover > .card-hover-toolbar,
+    .doc-section-card:hover > .card-hover-toolbar,
+    [data-editing="true"] > .card-hover-toolbar,
+    [data-comments-open="true"] > .card-hover-toolbar,
+    .card-hover-toolbar:focus-within {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    @media (hover: none), (max-width: 900px) {
+      .card-hover-toolbar {
+        opacity: 1;
+        pointer-events: auto;
+        position: static;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+      }
+      .doc-section-card h1:first-child,
+      .doc-section-card h2:first-child,
+      .doc-section-card h3:first-child {
+        padding-right: 0;
+      }
+    }
+    .card-action-icon-btn {
+      appearance: none;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 4px 7px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      line-height: 1.1;
+      white-space: nowrap;
+      transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+    }
+    [data-theme="midnight"] .card-action-icon-btn,
+    [data-theme="slate"] .card-action-icon-btn,
+    [data-theme="high-contrast"] .card-action-icon-btn {
+      color: #e2e8f0;
+    }
+    .card-action-icon-btn:hover {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: #1d4ed8;
+    }
+    .card-action-icon-btn[data-card-action="save"]:hover,
+    [data-editing="true"] > .card-hover-toolbar .card-action-icon-btn[data-card-action="save"] {
+      background: #dcfce7;
+      border-color: #86efac;
+      color: #15803d;
+    }
+    .card-action-icon-btn[data-card-action="delete"]:hover {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #b91c1c;
+    }
+    .card-action-icon-btn[data-card-action="comment"].has-comments {
+      background: #fef3c7;
+      border-color: #fcd34d;
+      color: #b45309;
+    }
+    [data-editing="true"] {
+      border: 2px solid #1a73e8 !important;
+      box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.14) !important;
+    }
+    .card-editing-banner {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+      border-radius: 8px;
+      padding: 6px 11px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    [data-editing="true"] > .card-editing-banner {
+      display: flex;
+    }
+    .card-editable-body[contenteditable="true"] {
+      outline: 1.5px dashed #60a5fa;
+      outline-offset: 6px;
+      border-radius: 6px;
+      min-height: 36px;
+    }
+    .card-hidden-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 9px 14px;
+      margin-bottom: 12px;
+      background: #f8fafc;
+      border: 1px dashed #94a3b8;
+      border-radius: 9px;
+      font-size: 12.5px;
+      color: #475569;
+    }
+
+    /* Google Docs / Google Slides Section Comment Badge & Inline Thread Panel */
+    .section-comment-margin-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      color: #92400e;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(180, 83, 9, 0.08);
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .section-comment-margin-pill:hover {
+      background: #fef3c7;
+      border-color: #f59e0b;
+    }
+    .gdocs-section-comments-tray {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+    }
+    .gdocs-thread-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #f59e0b;
+      border-radius: 10px;
+      padding: 11px 13px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+    }
+    .gdocs-thread-card.resolved {
+      border-left-color: #16a34a;
+      opacity: 0.82;
+      background: #f8fafc;
+    }
+    .gdocs-quote-strip {
+      font-size: 11.5px;
+      color: #78350f;
+      background: #fef3c7;
+      border-left: 3px solid #f59e0b;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      font-style: italic;
+    }
+    .gdocs-comment-item {
+      padding: 6px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .gdocs-comment-item:last-child {
+      border-bottom: none;
+    }
+    .gdocs-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Non-Blocking Right-Side Docked Drawers (Rule 25F) */
+    .non-blocking-right-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 480px;
+      max-width: 94vw;
+      background: #ffffff;
+      color: #0f172a;
+      border-left: 1px solid #cbd5e1;
+      box-shadow: -10px 0 30px rgba(15, 23, 42, 0.16);
+      z-index: 950;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(102%);
+      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .non-blocking-right-drawer.open {
+      transform: translateX(0);
+    }
+
+    /* Non-Blocking Bottom-Right Toast Container (Rule 25J) */
+    #portal-toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1100;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 430px;
+      pointer-events: none;
+    }
+    .portal-toast {
+      pointer-events: auto;
+      background: #0f172a;
+      color: #f8fafc;
+      border: 1px solid #334155;
+      border-left: 4px solid #38bdf8;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12.5px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
   </style>
 </head>
 <body>
@@ -1103,8 +1386,17 @@
       <button class="tab-btn" id="tab-btn-simulator" onclick="switchTab('simulator', this)">2. &#9889; Live 5-Hop Simulator</button>
       <button class="tab-btn" id="tab-btn-screenshots" onclick="switchTab('screenshots', this)">3. &#9729;&#65039; GCP Console, Codebase &amp; Runbook</button>
       <button class="tab-btn" id="tab-btn-forensic" onclick="switchTab('forensic', this)">4. &#9989; 12-Point Forensic Audit</button>
+      <button class="tab-btn" id="tab-btn-changelog" onclick="switchTab('changelog', this)">5. &#128220; Change Log &amp; Audit (<span id="nav-changelog-count">3</span>)</button>
     </nav>
     <div style="display:flex; gap:6px; align-items:center; flex-wrap:nowrap;">
+      <button type="button" id="header-active-user-btn" class="sim-btn" style="padding:4px 9px; font-size:11.5px; display:inline-flex; align-items:center; gap:5px;" onclick="toggleCommentsDrawer()" title="Switch active user identity or open Google Docs / Slides Collaborative Comments Drawer">
+        <span id="header-user-avatar" class="gdocs-avatar" style="width:18px; height:18px; font-size:9.5px; background:#1a73e8;">NA</span>
+        <span id="header-user-name">Nitin Aggarwal</span>
+        <span class="badge badge-amber" style="padding:1px 6px; font-size:10px;">&#128172; <span id="nav-comments-count">2</span></span>
+      </button>
+      <a href="/changelog" target="_blank" rel="noopener" id="header-separate-changelog-link" class="sim-btn" style="padding:4px 9px; font-size:11.5px; text-decoration:none; border-color:var(--link); color:var(--link); font-weight:700;" title="Open Change Log of Who Did What on a separate standalone page (/changelog)">
+        &#128220; Change Log Page &#8599;
+      </a>
       <span id="api-status-badge" class="badge badge-green" style="cursor:pointer; white-space:nowrap;" onclick="switchTab('simulator', document.getElementById('tab-btn-simulator'))" title="Click to open Live 5-Hop Runtime &amp; Breach Simulator">● Live Python API • Simulations: 20/20 PASS</span>
       <span id="gcp-cloud-badge" class="badge badge-blue" style="cursor:pointer; white-space:nowrap;" onclick="switchTab('forensic', document.getElementById('tab-btn-forensic'))" title="Click to open 12-Point Deep Forensic Audit">☁️ 14/14 Blueprints • Forensic Audit: 12/12 PASS</span>
       <label class="theme-picker" title="Switch portal theme (persists in this browser)">
@@ -1132,39 +1424,39 @@
           <button class="ws-step-btn active" id="ws-btn-WS1" onclick="selectGuidedWorkstream('WS1')">
             <span class="ws-kicker">Part 1 of 5 • WS 1 Foundation</span>
             <span class="ws-name">1. Reference Architecture &amp; 5-Hop</span>
-            <span class="ws-meta">2 Blueprints • 16 Slides • Part 1 Blog</span>
+            <span class="ws-meta">2 Blueprints • 23 Slides • Part 1 Blog</span>
           </button>
           <button class="ws-step-btn" id="ws-btn-WS2" onclick="selectGuidedWorkstream('WS2')">
             <span class="ws-kicker">Part 2 of 5 • WS 2 Pattern A</span>
             <span class="ws-name">2. Shared Multi-Tenant Pool</span>
-            <span class="ws-meta">4 Blueprints • 21 Slides • Part 2 Blog</span>
+            <span class="ws-meta">4 Blueprints • 28 Slides • Part 2 Blog</span>
           </button>
           <button class="ws-step-btn" id="ws-btn-WS3" onclick="selectGuidedWorkstream('WS3')">
             <span class="ws-kicker">Part 3 of 5 • WS 3 Pattern B</span>
             <span class="ws-name">3. Dedicated Customer Vault</span>
-            <span class="ws-meta">3 Blueprints • 18 Slides • Part 3 Blog</span>
+            <span class="ws-meta">3 Blueprints • 25 Slides • Part 3 Blog</span>
           </button>
           <button class="ws-step-btn" id="ws-btn-WS4" onclick="selectGuidedWorkstream('WS4')">
             <span class="ws-kicker">Part 4 of 5 • WS 4 Pattern C</span>
             <span class="ws-name">4. Smart Hybrid Router &amp; PSC</span>
-            <span class="ws-meta">4 Blueprints • 21 Slides • Part 4 Blog</span>
+            <span class="ws-meta">4 Blueprints • 28 Slides • Part 4 Blog</span>
           </button>
           <button class="ws-step-btn" id="ws-btn-WS5" onclick="selectGuidedWorkstream('WS5')">
             <span class="ws-kicker">Part 5 of 5 • WS 5 Capstone</span>
             <span class="ws-name">5. Decision Guide &amp; Triad</span>
-            <span class="ws-meta">1 Blueprint • 12 Slides • Part 5 Blog</span>
+            <span class="ws-meta">1 Blueprint • 20 Slides • Part 5 Blog</span>
           </button>
           <button class="ws-step-btn" id="ws-btn-ALL" onclick="selectGuidedWorkstream('ALL')">
             <span class="ws-kicker">All-in-One • Master Synthesis</span>
-            <span class="ws-name">6. Master 60-Slide Deck &amp; Guide</span>
-            <span class="ws-meta">All 14 Blueprints • 60 Slides • E2E Guide</span>
+            <span class="ws-name">6. Master 68-Slide Deck &amp; Guide</span>
+            <span class="ws-meta">All 14 Blueprints • 68 Slides • E2E Guide</span>
           </button>
         </div>
 
         <!-- Single 1-Line Document Switcher & Header-Only Google Workspace Controls (Rule 47 & Rule 25) -->
         <div id="hub-ws-summary-bar" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:var(--panel); border:1px solid var(--border); border-radius:10px; margin-bottom:10px;">
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <span id="hub-ws-badge" class="badge badge-blue" style="display:none;">WS1 • Part 1 of 5 • 16 Editable Slides</span>
+            <span id="hub-ws-badge" class="badge badge-blue" style="display:none;">WS1 • Part 1 of 5 • 23 Editable Slides</span>
             <strong id="hub-ws-title" style="display:none;">Workstream 1: Reference Architecture, Taxonomy &amp; 5-Hop Baseline</strong>
             <div id="hub-ws-sub" class="muted" style="display:none;">Pooled (Pattern A), Sovereign Silos (Pattern B) &amp; Dynamic Hybrid (Pattern C) extending the Cloud Architecture Center reference</div>
             <div id="hub-doc-switcher" style="display:flex; gap:6px; flex-wrap:wrap; margin:0;"></div>
@@ -1176,7 +1468,7 @@
             <div class="pc-split-wrap" id="hub-open-gslides-split">
               <button type="button" class="pc-split-main" id="hub-open-gslides-main" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1)">
                 <span class="pc-gslides-icon">S</span>
-                <span id="hub-open-gslides-label">Open with Google Slides (WS1 &bull; 16 Slides) &#8599;</span>
+                <span id="hub-open-gslides-label">Open with Google Slides (WS1 &bull; 23 Slides) &#8599;</span>
               </button>
               <button type="button" class="pc-split-caret" onclick="togglePcDropdown(event, 'hub-gslides-menu')" aria-label="Choose Google Workspace app">&#9660;</button>
               <div id="hub-gslides-menu" class="pc-dropdown-menu">
@@ -1185,7 +1477,7 @@
                   <span class="pc-gslides-icon">S</span> <span>Google Slides (Active Workstream Full UI Deck)</span>
                 </button>
                 <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace('ALL', 'slides', 1)">
-                  <span class="pc-gslides-icon">S</span> <span>Google Slides (Master 60-Slide Deck)</span>
+                  <span class="pc-gslides-icon">S</span> <span>Google Slides (Master 68-Slide Deck)</span>
                 </button>
                 <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'docs', 1, activeHubDocPath)">
                   <span class="pc-gdocs-icon">D</span> <span>Google Docs (Editable Blog + Figures)</span>
@@ -1205,11 +1497,11 @@
                   <span>&#128196;</span> <span>Embedded Live Google Docs Viewer</span>
                 </button>
                 <div class="pc-dropdown-divider"></div>
-                <a id="hub-pptx-download" class="pc-dropdown-item" href="slides/ws1-reference-architecture-editable-slides.pptx?v=20261015-v12" download>
-                  <span>&#11015;</span> <span>Download Editable .pptx (WS1 &bull; 16 Slides)</span>
+                <a id="hub-pptx-download" class="pc-dropdown-item" href="slides/ws1-reference-architecture-editable-slides.pptx?v=20261015-v14" download>
+                  <span>&#11015;</span> <span>Download Editable .pptx (WS1 &bull; 23 Slides)</span>
                 </a>
-                <a class="pc-dropdown-item" href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx?v=20261015-v12" download>
-                  <span>&#11015;</span> <span>Download Master .pptx (60 Slides)</span>
+                <a class="pc-dropdown-item" href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx?v=20261015-v14" download>
+                  <span>&#11015;</span> <span>Download Master .pptx (68 Slides)</span>
                 </a>
                 <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1, '', true)">
                   <span>&#128260;</span> <span>Force Re-Sync .pptx &rarr; Google Slides</span>
@@ -1761,7 +2053,209 @@
         </div>
       </div>
     </section>
+
+    <!-- TAB 5 & SEPARATE STANDALONE PAGE (/changelog): PERSISTENT CHANGE LOG OF WHO DID WHAT + MULTI-USER COMMENTS AUDIT -->
+    <section id="tab-changelog" class="tab-pane" data-testid="portal-separate-changelog-page">
+      <div id="standalone-changelog-banner" style="display:none; margin-bottom:14px; padding:12px 16px; background:linear-gradient(90deg, #eff6ff 0%, #f0fdf4 100%); border:1px solid #bfdbfe; border-radius:12px; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <span class="badge badge-blue">STANDALONE CHANGE LOG &amp; COLLABORATIVE AUDIT PAGE (/changelog)</span>
+          <h2 style="margin:4px 0 2px 0; font-size:18px; color:#0f172a;">&#128220; Live Portal Change Log: Who Did What Across Content Cards, Draw.io Diagrams &amp; Multi-User Comments</h2>
+          <p class="muted" style="margin:0; font-size:12.5px;">Real-time persistent audit trail backed by <code>docs/portal_change_log.json</code> &amp; <code>docs/portal_comments.json</code> via <code>GET / POST /api/changelog</code> and <code>/api/comments</code>.</p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+          <a href="/" class="sim-btn primary" style="text-decoration:none;">&larr; Back to Main Architecture Portal (/)</a>
+          <button type="button" class="sim-btn" onclick="toggleCommentsDrawer()">&#128172; Open Google Docs / Slides Comments Drawer</button>
+        </div>
+      </div>
+
+      <!-- KPI Summary Strip -->
+      <div class="grid-4" style="margin-bottom:14px;" data-no-hover-toolbar="true">
+        <div class="card" style="margin-bottom:0; padding:12px 14px;" data-no-hover-toolbar="true">
+          <div class="muted" style="font-size:11px; font-weight:700; text-transform:uppercase;">Total Logged Actions</div>
+          <div id="chg-kpi-total" style="font-size:24px; font-weight:800; color:var(--link); margin-top:2px;">3</div>
+          <div class="muted" style="font-size:11.5px;">Persisted in <code>docs/portal_change_log.json</code></div>
+        </div>
+        <div class="card" style="margin-bottom:0; padding:12px 14px;" data-no-hover-toolbar="true">
+          <div class="muted" style="font-size:11px; font-weight:700; text-transform:uppercase;">Content &amp; Card Mutations</div>
+          <div id="chg-kpi-cards" style="font-size:24px; font-weight:800; color:#0d9488; margin-top:2px;">1</div>
+          <div class="muted" style="font-size:11.5px;">Edit &bull; Save &bull; Add &bull; Delete &bull; Hide &bull; Clone</div>
+        </div>
+        <div class="card" style="margin-bottom:0; padding:12px 14px;" data-no-hover-toolbar="true">
+          <div class="muted" style="font-size:11px; font-weight:700; text-transform:uppercase;">Draw.io Diagram Saves</div>
+          <div id="chg-kpi-diagrams" style="font-size:24px; font-weight:800; color:#7c3aed; margin-top:2px;">1</div>
+          <div class="muted" style="font-size:11.5px;">Online <code>.drawio</code> XML commits</div>
+        </div>
+        <div class="card" style="margin-bottom:0; padding:12px 14px;" data-no-hover-toolbar="true">
+          <div class="muted" style="font-size:11px; font-weight:700; text-transform:uppercase;">Multi-User Section Comments</div>
+          <div id="chg-kpi-comments" style="font-size:24px; font-weight:800; color:#d97706; margin-top:2px;">2 Threads (3 Comments)</div>
+          <div class="muted" style="font-size:11.5px;">Google Docs &amp; Slides style threads</div>
+        </div>
+      </div>
+
+      <!-- Main Change Log Filter & Ledger Card -->
+      <div class="card" data-no-hover-toolbar="true">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+          <div>
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:4px;">
+              <span class="badge badge-green">&#9679; LIVE PERSISTENT CHANGE LOG</span>
+              <span class="badge badge-blue">7-ICON CARD HOVER ACTIONS + MULTI-USER COMMENTS</span>
+              <span class="badge badge-purple" id="chg-active-actor-badge">Active Editor: Nitin Aggarwal (nitinagga@google.com)</span>
+            </div>
+            <h3 style="margin:4px 0;">&#128220; Change Log &amp; Collaborative Audit History (Who Did What &amp; When)</h3>
+            <p class="muted" style="margin:0; font-size:12.5px;">Every card action (<code>✏️ Edit</code>, <code>💾 Save</code>, <code>➕ Add</code>, <code>🗑️ Delete</code>, <code>🙈 Hide</code>, <code>📋 Clone</code>, <code>💬 Comment</code>) and inline Draw.io diagram edit is automatically saved with the user's name, email, role, timestamp, and before/after snapshot.</p>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <a href="/changelog" target="_blank" rel="noopener" class="sim-btn primary" style="text-decoration:none;">&#8599; Open Separate Change Log Page (/changelog)</a>
+            <button type="button" class="sim-btn" onclick="toggleCommentsDrawer()">&#128172; All Section Comments (<span id="chg-btn-comments-count">2</span>)</button>
+            <button type="button" class="sim-btn" onclick="unhideAllHiddenCards()" id="chg-unhide-all-btn" style="display:none;">&#128065;&#65039; Unhide All Cards</button>
+            <button type="button" class="sim-btn" onclick="exportChangeLogCsv()">&#11015; Export CSV</button>
+            <button type="button" class="sim-btn" onclick="exportChangeLogJson()">&#11015; Export JSON</button>
+            <button type="button" class="sim-btn" onclick="fetchAndRenderChangeLog()">&#128260; Refresh Log</button>
+          </div>
+        </div>
+
+        <!-- Active User / Editor Profile Switcher Bar (Supports Multiple Users like Google Docs / Slides) -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:10px 14px; background:var(--panel-alt); border:1px solid var(--border); border-radius:10px; margin-bottom:14px;">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <strong style="font-size:12.5px; color:var(--heading);">&#128100; Active Editor / Commenter Identity:</strong>
+            <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px;" onclick="setPortalActorPreset('Nitin Aggarwal', 'nitinagga@google.com', 'Principal Cloud Architect', '#1a73e8')">Nitin Aggarwal (Google)</button>
+            <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px;" onclick="setPortalActorPreset('Sarah Chen', 'sarahchen@google.com', 'Staff Security Architect', '#0d9488')">Sarah Chen (Security)</button>
+            <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px;" onclick="setPortalActorPreset('Marcus Vance', 'mvance@cymbal.io', 'VP Platform Engineering', '#7c3aed')">Marcus Vance (Cymbal)</button>
+            <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px;" onclick="setPortalActorPreset('Priya Patel', 'priyap@finvault.com', 'Chief Risk Officer', '#d97706')">Priya Patel (FinVault)</button>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+            <input type="text" id="actor-input-name" value="Nitin Aggarwal" placeholder="Your Name" aria-label="Active User Name" style="width:145px; padding:5px 8px; font-size:12px;" onchange="applyCustomActorInputs()" />
+            <input type="email" id="actor-input-email" value="nitinagga@google.com" placeholder="you@company.com" aria-label="Active User Email" style="width:175px; padding:5px 8px; font-size:12px;" onchange="applyCustomActorInputs()" />
+            <input type="text" id="actor-input-role" value="Principal Cloud Architect" placeholder="Role / Title" aria-label="Active User Role" style="width:165px; padding:5px 8px; font-size:12px;" onchange="applyCustomActorInputs()" />
+          </div>
+        </div>
+
+        <!-- Live Search & Multi-Filter Controls (Rule 25C & Rule 25K) -->
+        <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap:10px; align-items:center; margin-bottom:14px;">
+          <input type="text" id="chg-search-input" placeholder="Search change log by user name, email, card title, action, or summary..." aria-label="Search Change Log" oninput="renderChangeLogTable()" />
+          <select id="chg-filter-action" aria-label="Filter by Action" onchange="renderChangeLogTable()">
+            <option value="ALL">All Actions</option>
+            <option value="SAVE">💾 Save Content (SAVE)</option>
+            <option value="EDIT">✏️ Inline Edit (EDIT)</option>
+            <option value="ADD">➕ Add Card (ADD)</option>
+            <option value="DELETE">🗑️ Delete Card (DELETE)</option>
+            <option value="HIDE">🙈 Hide / Unhide (HIDE/UNHIDE)</option>
+            <option value="CLONE">📋 Clone Card (CLONE)</option>
+            <option value="DIAGRAM_SAVE">📐 Diagram Save (DIAGRAM_SAVE)</option>
+            <option value="COMMENT">💬 Section Comments (COMMENT_*)</option>
+            <option value="RESTORE">↩️ Restore / Revert (RESTORE)</option>
+          </select>
+          <select id="chg-filter-actor" aria-label="Filter by User" onchange="renderChangeLogTable()">
+            <option value="ALL">All Users / Contributors</option>
+          </select>
+          <select id="chg-filter-ws" aria-label="Filter by Workstream" onchange="renderChangeLogTable()">
+            <option value="ALL">All Workstreams</option>
+            <option value="WS1">WS1 (Reference Arch)</option>
+            <option value="WS2">WS2 (Pattern A Pooled)</option>
+            <option value="WS3">WS3 (Pattern B Siloed)</option>
+            <option value="WS4">WS4 (Pattern C Hybrid)</option>
+            <option value="WS5">WS5 (Decision Guide)</option>
+            <option value="ALL_DECK">ALL (Master Guide)</option>
+          </select>
+          <button type="button" class="sim-btn" onclick="resetChangeLogFilters()">&#8634; Reset Filters</button>
+        </div>
+
+        <!-- Empty State (Rule 25K) -->
+        <div id="chg-empty-state" style="display:none; text-align:center; padding:28px 16px; background:var(--panel-alt); border:1px dashed var(--border); border-radius:10px; margin-bottom:14px;">
+          <div style="font-size:15px; font-weight:700; color:var(--heading); margin-bottom:6px;">No matching Change Log entries found</div>
+          <div class="muted" style="font-size:12.5px; margin-bottom:12px;">Try clearing your search term or resetting the active action/user filters.</div>
+          <button type="button" class="sim-btn primary" onclick="resetChangeLogFilters()">&#8634; Reset All Filters</button>
+        </div>
+
+        <!-- Chronological Change Log Table -->
+        <div style="overflow-x:auto;">
+          <table id="changelog-ledger-table">
+            <thead>
+              <tr>
+                <th>Audit ID &amp; Timestamp (EST)</th>
+                <th>Who (User Name, Email &amp; Role)</th>
+                <th>Action</th>
+                <th>Target Card / Section / Diagram</th>
+                <th>Workstream &amp; Document</th>
+                <th>Change Summary &amp; Diff</th>
+                <th>Inspect / Restore</th>
+              </tr>
+            </thead>
+            <tbody id="changelog-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
   </div>
+
+  <!-- NON-BLOCKING RIGHT-SIDE DRAWER 1: GOOGLE DOCS & SLIDES MULTI-USER COMMENTS STREAM (Rule 25F) -->
+  <aside id="gdocs-comments-drawer" class="non-blocking-right-drawer" aria-label="Google Docs and Slides Multi-User Comments Drawer">
+    <div style="padding:14px 16px; background:#f8fafc; border-bottom:1px solid #cbd5e1; display:flex; justify-content:space-between; align-items:center; gap:8px;">
+      <div>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span class="badge badge-amber">&#128172; GOOGLE DOCS &amp; SLIDES COMMENTS</span>
+          <span class="badge badge-blue" id="drawer-comments-count-badge">2 Open</span>
+        </div>
+        <h3 style="margin:4px 0 0 0; font-size:15px; color:#0f172a;">Multi-User Section &amp; Diagram Comments</h3>
+      </div>
+      <div style="display:flex; gap:6px;">
+        <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px;" onclick="closeCommentsDrawer()" title="Collapse Drawer">&rarr; Collapse</button>
+      </div>
+    </div>
+
+    <!-- Multi-User Commenter Switcher inside Drawer -->
+    <div style="padding:10px 14px; background:#eff6ff; border-bottom:1px solid #bfdbfe; font-size:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <strong style="color:#1e40af;">Commenting as: <span id="drawer-active-user-label">Nitin Aggarwal (nitinagga@google.com)</span></strong>
+      </div>
+      <div style="display:flex; gap:4px; flex-wrap:wrap; margin-bottom:6px;">
+        <button type="button" class="sim-btn" style="padding:2px 7px; font-size:11px;" onclick="setPortalActorPreset('Nitin Aggarwal', 'nitinagga@google.com', 'Principal Cloud Architect', '#1a73e8')">Nitin A.</button>
+        <button type="button" class="sim-btn" style="padding:2px 7px; font-size:11px;" onclick="setPortalActorPreset('Sarah Chen', 'sarahchen@google.com', 'Staff Security Architect', '#0d9488')">Sarah C.</button>
+        <button type="button" class="sim-btn" style="padding:2px 7px; font-size:11px;" onclick="setPortalActorPreset('Marcus Vance', 'mvance@cymbal.io', 'VP Platform Engineering', '#7c3aed')">Marcus V.</button>
+        <button type="button" class="sim-btn" style="padding:2px 7px; font-size:11px;" onclick="setPortalActorPreset('Priya Patel', 'priyap@finvault.com', 'Chief Risk Officer', '#d97706')">Priya P.</button>
+      </div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px;">
+        <input type="text" id="drawer-actor-name" value="Nitin Aggarwal" placeholder="Your Name" aria-label="Commenter Name" style="padding:4px 7px; font-size:11.5px;" onchange="syncDrawerActorInputs()" />
+        <input type="email" id="drawer-actor-email" value="nitinagga@google.com" placeholder="Your Email" aria-label="Commenter Email" style="padding:4px 7px; font-size:11.5px;" onchange="syncDrawerActorInputs()" />
+      </div>
+    </div>
+
+    <!-- New Comment Composer (Anchored to Active Section/Card) -->
+    <div style="padding:12px 14px; background:#ffffff; border-bottom:1px solid #e2e8f0;">
+      <div style="font-size:11.5px; font-weight:700; color:#475569; margin-bottom:4px;">
+        Target Section / Card: <span id="drawer-target-card-title" style="color:#1a73e8;">Architecture Overview (WS1)</span>
+      </div>
+      <input type="hidden" id="drawer-target-card-id" value="doc-sec-blogs-ws1-reference-architecture-taxonomy-and-5hop-baseline-md-0" />
+      <div id="drawer-quoted-preview" class="gdocs-quote-strip" style="display:none;"></div>
+      <textarea id="drawer-new-comment-text" rows="2" placeholder="Add a comment or @mention a colleague on this section..." aria-label="New Section Comment" style="width:100%; padding:7px 9px; font-size:12.5px; margin-bottom:6px; border:1px solid #cbd5e1; border-radius:7px;"></textarea>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <select id="drawer-filter-status" aria-label="Filter Comments Status" style="width:auto; padding:4px 8px; font-size:11.5px;" onchange="renderCommentsDrawerAndInlineBadges()">
+          <option value="ALL">Show: All Threads</option>
+          <option value="open">Show: Open Only</option>
+          <option value="resolved">Show: Resolved Only</option>
+        </select>
+        <button type="button" class="sim-btn primary" style="padding:5px 12px; font-size:12px;" onclick="submitNewCommentFromDrawer()">&#128172; Post Comment</button>
+      </div>
+    </div>
+
+    <!-- Scrollable Comment Threads List -->
+    <div id="gdocs-drawer-threads-list" style="flex:1; overflow-y:auto; padding:12px 14px; background:#f8fafc;"></div>
+  </aside>
+
+  <!-- NON-BLOCKING RIGHT-SIDE DRAWER 2: CHANGE LOG BEFORE / AFTER DIFF & RESTORE INSPECTOR (Rule 25F) -->
+  <aside id="changelog-diff-drawer" class="non-blocking-right-drawer" aria-label="Change Log Diff and Restore Inspector">
+    <div style="padding:14px 16px; background:#f8fafc; border-bottom:1px solid #cbd5e1; display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <span class="badge badge-blue" id="diff-drawer-id">CHG-20261015-0001</span>
+        <h3 style="margin:4px 0 0 0; font-size:15px; color:#0f172a;" id="diff-drawer-title">Audit Entry Diff Inspector</h3>
+      </div>
+      <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px;" onclick="closeChangeLogDiffDrawer()">&rarr; Close</button>
+    </div>
+    <div id="diff-drawer-body" style="flex:1; overflow-y:auto; padding:14px 16px; font-size:12.5px; line-height:1.5;"></div>
+  </aside>
+
+  <!-- NON-BLOCKING TOAST CONTAINER (Rule 25J) -->
+  <div id="portal-toast-container" aria-live="polite"></div>
 
   <script>
     let currentRawMarkdown = '';
@@ -1775,6 +2269,9 @@
       else {
         const defaultBtn = document.getElementById('tab-btn-' + name);
         if (defaultBtn) defaultBtn.classList.add('active');
+      }
+      if (name === 'changelog' && typeof renderChangeLogTable === 'function') {
+        renderChangeLogTable();
       }
     }
 
@@ -1860,16 +2357,17 @@
               const diagMatch = resolved.match(/diagrams\/([a-zA-Z0-9_-]+)\.(?:drawio\.png|svg|png)/);
               const diagId = diagMatch ? diagMatch[1] : '';
               if (!diagId) {
-                return `<div class="gcp-figure-card"><img src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:auto; max-width:min(100%, 620px); max-height:660px; height:auto; display:block; margin:0 auto; border-radius:6px; cursor:zoom-in;" onclick="window.open('${resolved}', '_blank')" /><div class="gcp-figure-caption"><span><strong>${alt}</strong></span><a href="${resolved}" target="_blank" rel="noopener" style="color:#1a73e8; font-weight:600; text-decoration:none;">&#128269; Open High-Res PNG &#8599;</a></div></div>`;
+                const figSlug = resolved.replace(/[^a-zA-Z0-9_-]/g, '-');
+                return `<div class="gcp-figure-card" id="inline-fig-card-${figSlug}" data-card-id="inline-fig-card-${figSlug}" data-card-type="figure" data-card-title="${escapeHtml(alt)}" data-doc-path="${escapeHtml(docRelPath || '')}"><img src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:auto; max-width:min(100%, 620px); max-height:660px; height:auto; display:block; margin:0 auto; border-radius:6px; cursor:zoom-in;" onclick="window.open('${resolved}', '_blank')" /><div class="gcp-figure-caption"><span class="card-editable-body"><strong>${alt}</strong></span><a href="${resolved}" target="_blank" rel="noopener" style="color:#1a73e8; font-weight:600; text-decoration:none;">&#128269; Open High-Res PNG &#8599;</a></div></div>`;
               }
               const meta = findDiagramMetaById(diagId);
               const slideBtnHtml = meta
                 ? `<button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--green); color:var(--ok-text);" onclick="openCloudViewerModal('${meta.wsKey}', ${meta.decomposedSlide}, 'slides')">&#127916; Slide #${meta.decomposedSlide}</button>`
                 : '';
               return `
-                <div class="gcp-figure-card" id="inline-fig-card-${diagId}" style="padding:12px 14px;">
-                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border);">
-                    <strong style="font-size:13.5px; color:var(--heading);">${alt}</strong>
+                <div class="gcp-figure-card" id="inline-fig-card-${diagId}" data-card-id="inline-fig-card-${diagId}" data-diag-id="${diagId}" data-card-type="diagram" data-card-title="${escapeHtml(alt)}" data-doc-path="${escapeHtml(docRelPath || '')}" style="padding:12px 14px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border); padding-right:250px;">
+                    <strong class="card-editable-body" id="inline-fig-title-${diagId}" style="font-size:13.5px; color:var(--heading);">${alt}</strong>
                     <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
                       ${slideBtnHtml}
                       <button type="button" id="inline-fig-btn-flow-${diagId}" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--blue); color:var(--link); font-weight:700;" onclick="toggleInlineFigureFlow('${diagId}')">&#129517; Step-by-Step Flow (Slides 2 &amp; 3) &#9662;</button>
@@ -2052,7 +2550,23 @@
         </div>
       `;
 
-      return breadcrumbsHtml + parseMarkdownChunk(body);
+      const rawParsedHtml = parseMarkdownChunk(body);
+      const docSlug = String(docRelPath || 'ws1-doc').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase();
+      const rawSections = rawParsedHtml.split(/(?=<h2 id=")/);
+      const wrappedSectionsHtml = rawSections.map((secHtml, secIdx) => {
+        const headingMatch = secHtml.match(/<h[12][^>]*>([\s\S]*?)<\/h[12]>/i);
+        const plainTitle = headingMatch
+          ? headingMatch[1].replace(/<[^>]+>/g, '').trim()
+          : `Section ${secIdx + 1}`;
+        const secCardId = `doc-sec-${docSlug}-${secIdx}`;
+        return `
+          <div class="card doc-section-card" id="${secCardId}" data-card-id="${secCardId}" data-card-type="blog_section" data-card-title="${escapeHtml(plainTitle)}" data-doc-path="${escapeHtml(docRelPath || '')}">
+            <div class="card-editable-body">${secHtml}</div>
+          </div>
+        `;
+      }).join('');
+
+      return breadcrumbsHtml + wrappedSectionsHtml;
     }
 
     function openDocInReader(relPath) {
@@ -2213,7 +2727,7 @@
     const GUIDED_WORKSTREAMS = {
       WS1: {
         key: 'WS1',
-        badge: 'WS1 • Part 1 of 5 • 16 Slides',
+        badge: 'WS1 • Part 1 of 5 • 23 Slides',
         title: 'Workstream 1: Reference Architecture, Taxonomy & 5-Hop Baseline',
         subtitle: 'Pooled (Pattern A), Sovereign Silos (Pattern B) & Dynamic Hybrid (Pattern C) extending the Cloud Architecture Center reference',
         deckStem: 'ws1-reference-architecture-editable-slides',
@@ -2238,20 +2752,27 @@
           { num: 5, label: '5. ★ Fig 2 Editable', editable: true, desc: '★ Figure 2 Full-Width Editable Diagram — 56 Native Shapes + 23 Connectors (100% Editable)' },
           { num: 6, label: '6. Fig 2 Logical Flow', desc: 'Figure 2 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
           { num: 7, label: '7. Fig 2 Technical Flow', desc: 'Figure 2 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 8, label: '8. Arch Overview', desc: 'Architecture Overview & Key Point — Core 5-hop findings & SLA summary' },
-          { num: 9, label: '9. Products Used', desc: 'Products used — Google Cloud Agentic AI, Security & Data Stack' },
-          { num: 10, label: '10. Use Cases', desc: 'Use cases — Cymbal SaaS Serving Competing Enterprise Tenants' },
-          { num: 11, label: '11. Design Alternatives', desc: 'Design alternatives — Comparing Patterns A, B & C' },
-          { num: 12, label: '12. 5-Hop Pipeline', desc: 'Design considerations — 5-Hop Cryptographic Verification Pipeline' },
-          { num: 13, label: '13. Hub & Spoke (#78)', desc: 'Design considerations — Well-Architected Hub-and-Spoke Governance (#78)' },
-          { num: 14, label: '14. EAP Product Gaps', desc: 'Design alternatives — EAP Product Gaps & Compensating Controls' },
-          { num: 15, label: '15. What’s Next', desc: 'What’s next — Key Takeaways & Action Plan' },
-          { num: 16, label: '16. Source Lineage', desc: 'Assets & Source Documents — Native editable table of diagrams & markdown files' }
+          { num: 8, label: '8. ★ 3-Zone Topology', editable: true, desc: '★ Archetype 1 (architecture-zone-topology) — 3-Zone Enterprise Boundary & Sovereign VPC' },
+          { num: 9, label: '9. ★ Payload Triptych', editable: true, desc: '★ Archetype 2 (payload-transformation-triptych) — Contaminated vs. Clean Wire Payload' },
+          { num: 10, label: '10. ★ 5-Actor UML Swimlane', editable: true, desc: '★ Archetype 3 (uml-sequence-swimlane) — 5-Actor Lifeline & Scale-to-0 Dormant Approval' },
+          { num: 11, label: '11. ★ Async State Flow', editable: true, desc: '★ Archetype 4 (async-state-flow-pipeline) — Long Task (>5m) HTTP 202 & Webhook Loopback' },
+          { num: 12, label: '12. ★ Phased Roadmap', editable: true, desc: '★ Archetype 5 (phased-roadmap-timeline) — 3-Phase Connected Enterprise Technology Roadmap' },
+          { num: 13, label: '13. ★ Operating Model', editable: true, desc: '★ Archetype 6 (strategic-operating-model-pillars) — 3-Pillar Strategic Operating Model' },
+          { num: 14, label: '14. ★ Live GCP Screenshots', editable: true, desc: '★ Grounded Google Cloud Console Screenshots + 4 Editable Verification Callout Cards' },
+          { num: 15, label: '15. Quad-Metrics KPIs', desc: 'Executive Impact & Production Verification Metrics (3 Patterns, 5 Hops, 84.7%, 20/20 PASS)' },
+          { num: 16, label: '16. Products Used', desc: 'Products used — Google Cloud Agentic AI, Security & Data Stack' },
+          { num: 17, label: '17. Use Cases', desc: 'Use cases — Cymbal SaaS Serving Competing Enterprise Tenants' },
+          { num: 18, label: '18. Design Alternatives', desc: 'Design alternatives — Comparing Patterns A, B & C' },
+          { num: 19, label: '19. EAP Product Gaps', desc: 'Design alternatives — EAP Product Gaps & Compensating Controls (GAP-01..05)' },
+          { num: 20, label: '20. 5-Hop Pipeline', desc: 'Design considerations — 5-Hop Cryptographic Verification Pipeline' },
+          { num: 21, label: '21. Hub & Spoke (#78)', desc: 'Design considerations — Well-Architected Hub-and-Spoke Governance (#78)' },
+          { num: 22, label: '22. What’s Next', desc: 'What’s next — Key Takeaways & Sequenced Engineering Action Plan' },
+          { num: 23, label: '23. Source Lineage', desc: 'Assets & Source Documents — Native editable table of diagrams & markdown files' }
         ]
       },
       WS2: {
         key: 'WS2',
-        badge: 'WS2 • Part 2 of 5 • 21 Slides',
+        badge: 'WS2 • Part 2 of 5 • 28 Slides',
         title: 'Workstream 2: Pattern A — High-Density Pooled Architecture & 90% Cache Savings',
         subtitle: 'One shared runtime serving competing tenants (FinVault & RetailStream) with 10/10 breach vectors blocked',
         deckStem: 'ws2-pattern-a-pooled-editable-slides',
@@ -2284,19 +2805,26 @@
           { num: 11, label: '11. ★ Fig 4 Editable', editable: true, desc: '★ Figure 4 Full-Width Editable Diagram — 1-Click Terraform Starter Resource Graph' },
           { num: 12, label: '12. Fig 4 Logical Flow', desc: 'Figure 4 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
           { num: 13, label: '13. Fig 4 Technical Flow', desc: 'Figure 4 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 14, label: '14. Arch Overview', desc: 'Architecture Overview & Key Point — Pooled economics & 90% ContextCacheConfig savings' },
-          { num: 15, label: '15. Products Used', desc: 'Products used — Shared Cloud Run v2, Vertex AI, Valkey & AlloyDB RLS' },
-          { num: 16, label: '16. Use Cases', desc: 'Use cases — FinVault Bank & RetailStream Corp Co-Hosted Safely' },
-          { num: 17, label: '17. 5-Hop in Pattern A', desc: 'Design considerations — The 5-Hop Cryptographic Chain in Pattern A' },
-          { num: 18, label: '18. 10-Point Breach Suite', desc: 'Design considerations — 10-Point Breach Simulation Suite (Vectors 1–10)' },
-          { num: 19, label: '19. FinOps & Terraform', desc: 'Design alternatives — FinOps, Terraform Starter, Codelab & Promotion Path' },
-          { num: 20, label: '20. What’s Next', desc: 'What’s next — Key Takeaways & Action Plan' },
-          { num: 21, label: '21. Source Lineage', desc: 'Assets, Editable Diagrams & Source Documents Table' }
+          { num: 14, label: '14. ★ 3-Zone Topology', editable: true, desc: '★ Archetype 1 (architecture-zone-topology) — 3-Zone Enterprise Boundary & Sovereign VPC' },
+          { num: 15, label: '15. ★ Payload Triptych', editable: true, desc: '★ Archetype 2 (payload-transformation-triptych) — Contaminated vs. Clean Wire Payload' },
+          { num: 16, label: '16. ★ 5-Actor UML Swimlane', editable: true, desc: '★ Archetype 3 (uml-sequence-swimlane) — 5-Actor Lifeline & Scale-to-0 Dormant Approval' },
+          { num: 17, label: '17. ★ Async State Flow', editable: true, desc: '★ Archetype 4 (async-state-flow-pipeline) — Long Task (>5m) HTTP 202 & Webhook Loopback' },
+          { num: 18, label: '18. ★ Phased Roadmap', editable: true, desc: '★ Archetype 5 (phased-roadmap-timeline) — 3-Phase Connected Enterprise Technology Roadmap' },
+          { num: 19, label: '19. ★ Operating Model', editable: true, desc: '★ Archetype 6 (strategic-operating-model-pillars) — 3-Pillar Strategic Operating Model' },
+          { num: 20, label: '20. ★ Live GCP Screenshots', editable: true, desc: '★ Grounded Google Cloud Console Screenshots + 4 Editable Verification Callout Cards' },
+          { num: 21, label: '21. Quad-Metrics KPIs', desc: 'Executive Impact & Production Verification Metrics ($42/mo, 90%, 10/10, 0 Rows)' },
+          { num: 22, label: '22. Products Used', desc: 'Products used — Shared Cloud Run v2, Vertex AI, Valkey & AlloyDB RLS' },
+          { num: 23, label: '23. Use Cases', desc: 'Use cases — FinVault Bank & RetailStream Corp Co-Hosted Safely' },
+          { num: 24, label: '24. FinOps & Terraform', desc: 'Design alternatives — FinOps, Terraform Starter, Codelab & Promotion Path' },
+          { num: 25, label: '25. 5-Hop in Pattern A', desc: 'Design considerations — The 5-Hop Cryptographic Chain in Pattern A' },
+          { num: 26, label: '26. 10-Point Breach Suite', desc: 'Design considerations — 10-Point Breach Simulation Suite (Vectors 1–10)' },
+          { num: 27, label: '27. What’s Next', desc: 'What’s next — Key Takeaways & Action Plan' },
+          { num: 28, label: '28. Source Lineage', desc: 'Assets, Editable Diagrams & Source Documents Table' }
         ]
       },
       WS3: {
         key: 'WS3',
-        badge: 'WS3 • Part 3 of 5 • 18 Slides',
+        badge: 'WS3 • Part 3 of 5 • 25 Slides',
         title: 'Workstream 3: Pattern B — Zero-Trust Sovereign Silos & Air-Gapped Gemma 3',
         subtitle: 'Dedicated project, VPC-SC perimeter, IAM PAB & Cloud KMS CMEK 423 kill-switch per tenant',
         deckStem: 'ws3-pattern-b-siloed-editable-slides',
@@ -2325,19 +2853,26 @@
           { num: 8, label: '8. ★ Fig 3 Editable', editable: true, desc: '★ Figure 3 Full-Width Editable Diagram — Terraform Silo Blueprint Resource Graph' },
           { num: 9, label: '9. Fig 3 Logical Flow', desc: 'Figure 3 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
           { num: 10, label: '10. Fig 3 Technical Flow', desc: 'Figure 3 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 11, label: '11. Arch Overview', desc: 'Architecture Overview & Key Point — Dedicated project, perimeter & CMEK key per tenant' },
-          { num: 12, label: '12. Use Cases', desc: 'Use cases — Regulated compliance drivers (OCC/FDIC, DORA, HIPAA)' },
-          { num: 13, label: '13. Products Used', desc: 'Products used — VPC-SC, IAM PAB, CMEK & Air-Gapped Gemma 3 on GKE' },
-          { num: 14, label: '14. 5-Hop in Silo', desc: 'Design considerations — Reusing the 80% 5-Hop Cymbal core inside a sovereign silo' },
-          { num: 15, label: '15. 6 Sovereign Tests', desc: 'Design considerations — Verification: 6 Sovereign Security & CMEK Revocation Tests' },
-          { num: 16, label: '16. Provisioning & FinOps', desc: 'Design alternatives — Multi-project runbook, Terraform blueprint & graduation to Pattern C' },
-          { num: 17, label: '17. What’s Next', desc: 'What’s next — Key Takeaways & Action Plan' },
-          { num: 18, label: '18. Source Lineage', desc: 'Assets, Editable Diagrams & Source Documents Table' }
+          { num: 11, label: '11. ★ 3-Zone Topology', editable: true, desc: '★ Archetype 1 (architecture-zone-topology) — 3-Zone Enterprise Boundary & Sovereign VPC' },
+          { num: 12, label: '12. ★ Payload Triptych', editable: true, desc: '★ Archetype 2 (payload-transformation-triptych) — Contaminated vs. Clean Wire Payload' },
+          { num: 13, label: '13. ★ 5-Actor UML Swimlane', editable: true, desc: '★ Archetype 3 (uml-sequence-swimlane) — 5-Actor Lifeline & Scale-to-0 Dormant Approval' },
+          { num: 14, label: '14. ★ Async State Flow', editable: true, desc: '★ Archetype 4 (async-state-flow-pipeline) — Long Task (>5m) HTTP 202 & Webhook Loopback' },
+          { num: 15, label: '15. ★ Phased Roadmap', editable: true, desc: '★ Archetype 5 (phased-roadmap-timeline) — 3-Phase Connected Enterprise Technology Roadmap' },
+          { num: 16, label: '16. ★ Operating Model', editable: true, desc: '★ Archetype 6 (strategic-operating-model-pillars) — 3-Pillar Strategic Operating Model' },
+          { num: 17, label: '17. ★ Live GCP Screenshots', editable: true, desc: '★ Grounded Google Cloud Console Screenshots + 4 Editable Verification Callout Cards' },
+          { num: 18, label: '18. Quad-Metrics KPIs', desc: 'Executive Impact & Production Verification Metrics ($1,850/mo, <60s, 6/6, HTTP 423)' },
+          { num: 19, label: '19. Products Used', desc: 'Products used — VPC-SC, IAM PAB, CMEK & Air-Gapped Gemma 3 on GKE' },
+          { num: 20, label: '20. Use Cases', desc: 'Use cases — Regulated compliance drivers (OCC/FDIC, DORA, HIPAA)' },
+          { num: 21, label: '21. Provisioning & FinOps', desc: 'Design alternatives — Multi-project runbook, Terraform blueprint & graduation to Pattern C' },
+          { num: 22, label: '22. 5-Hop in Silo', desc: 'Design considerations — Reusing the 80% 5-Hop Cymbal core inside a sovereign silo' },
+          { num: 23, label: '23. 6 Sovereign Tests', desc: 'Design considerations — Verification: 6 Sovereign Security & CMEK Revocation Tests' },
+          { num: 24, label: '24. What’s Next', desc: 'What’s next — Key Takeaways & Action Plan' },
+          { num: 25, label: '25. Source Lineage', desc: 'Assets, Editable Diagrams & Source Documents Table' }
         ]
       },
       WS4: {
         key: 'WS4',
-        badge: 'WS4 • Part 4 of 5 • 21 Slides',
+        badge: 'WS4 • Part 4 of 5 • 28 Slides',
         title: 'Workstream 4: Pattern C — Dynamic Hybrid Hub-and-Spoke & Zero-Downtime Tier Upgrade',
         subtitle: 'One control plane routing Standard to shared pool and Enterprise over PSC to CMEK spokes',
         deckStem: 'ws4-pattern-c-hybrid-editable-slides',
@@ -2370,19 +2905,26 @@
           { num: 11, label: '11. ★ Fig 4 Editable', editable: true, desc: '★ Figure 4 Full-Width Editable Diagram — Terraform Hybrid PSC Resource Graph' },
           { num: 12, label: '12. Fig 4 Logical Flow', desc: 'Figure 4 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
           { num: 13, label: '13. Fig 4 Technical Flow', desc: 'Figure 4 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 14, label: '14. Arch Overview', desc: 'Architecture Overview & Key Point — Unified control plane, PSC spokes & 3-phase migration' },
-          { num: 15, label: '15. Use Cases', desc: 'Use cases — Why tiered SaaS needs both Pooled and Sovereign' },
-          { num: 16, label: '16. Products Used (PSC)', desc: 'Products used — Hybrid Hub-and-Spoke Control Plane & PSC ServiceAttachment' },
-          { num: 17, label: '17. 5-Hop in Pattern C', desc: 'Design considerations — The 5-Hop Chain in Pattern C (instance-scoped profiles)' },
-          { num: 18, label: '18. Live Tier Upgrade', desc: 'Design considerations — SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY (0 dropped turns)' },
-          { num: 19, label: '19. FinOps & Terraform', desc: 'Design alternatives — FinOps outcomes, Terraform PSC blueprint & Master Lab' },
-          { num: 20, label: '20. What’s Next', desc: 'What’s next — Key Takeaways & Action Plan' },
-          { num: 21, label: '21. Source Lineage', desc: 'Assets, Editable Diagrams & Source Documents Table' }
+          { num: 14, label: '14. ★ 3-Zone Topology', editable: true, desc: '★ Archetype 1 (architecture-zone-topology) — 3-Zone Enterprise Boundary & Sovereign VPC' },
+          { num: 15, label: '15. ★ Payload Triptych', editable: true, desc: '★ Archetype 2 (payload-transformation-triptych) — Contaminated vs. Clean Wire Payload' },
+          { num: 16, label: '16. ★ 5-Actor UML Swimlane', editable: true, desc: '★ Archetype 3 (uml-sequence-swimlane) — 5-Actor Lifeline & Scale-to-0 Dormant Approval' },
+          { num: 17, label: '17. ★ Async State Flow', editable: true, desc: '★ Archetype 4 (async-state-flow-pipeline) — Long Task (>5m) HTTP 202 & Webhook Loopback' },
+          { num: 18, label: '18. ★ Phased Roadmap', editable: true, desc: '★ Archetype 5 (phased-roadmap-timeline) — 3-Phase Connected Enterprise Technology Roadmap' },
+          { num: 19, label: '19. ★ Operating Model', editable: true, desc: '★ Archetype 6 (strategic-operating-model-pillars) — 3-Pillar Strategic Operating Model' },
+          { num: 20, label: '20. ★ Live GCP Screenshots', editable: true, desc: '★ Grounded Google Cloud Console Screenshots + 4 Editable Verification Callout Cards' },
+          { num: 21, label: '21. Quad-Metrics KPIs', desc: 'Executive Impact & Production Verification Metrics (74%, 0ms, 4/4, 3 Phases)' },
+          { num: 22, label: '22. Products Used (PSC)', desc: 'Products used — Hybrid Hub-and-Spoke Control Plane & PSC ServiceAttachment' },
+          { num: 23, label: '23. Use Cases', desc: 'Use cases — Why tiered SaaS needs both Pooled and Sovereign' },
+          { num: 24, label: '24. FinOps & Terraform', desc: 'Design alternatives — FinOps outcomes, Terraform PSC blueprint & Master Lab' },
+          { num: 25, label: '25. 5-Hop in Pattern C', desc: 'Design considerations — The 5-Hop Chain in Pattern C (instance-scoped profiles)' },
+          { num: 26, label: '26. Live Tier Upgrade', desc: 'Design considerations — SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY (0 dropped turns)' },
+          { num: 27, label: '27. What’s Next', desc: 'What’s next — Key Takeaways & Action Plan' },
+          { num: 28, label: '28. Source Lineage', desc: 'Assets, Editable Diagrams & Source Documents Table' }
         ]
       },
       WS5: {
         key: 'WS5',
-        badge: 'WS5 • Part 5 of 5 • 12 Slides',
+        badge: 'WS5 • Part 5 of 5 • 20 Slides',
         title: 'Workstream 5: Executive Decision Guide & The Multi-Tenant Agentic Triad',
         subtitle: '2-question topology decision tree, Pattern A/B/C comparison matrix, Agentic Triad & consolidated EAP backlog',
         deckStem: 'ws5-wrap-up-editable-slides',
@@ -2403,21 +2945,29 @@
           { num: 2, label: '2. ★ Fig 1 Editable', editable: true, desc: '★ Figure 1 Full-Width Editable Diagram — Decision Tree & Agentic Triad' },
           { num: 3, label: '3. Fig 1 Logical Flow', desc: 'Figure 1 Step-by-Step Logical Flow (Plain English) — 4 Zones + Steps ①–⑦ + Business Outcome' },
           { num: 4, label: '4. Fig 1 Technical Flow', desc: 'Figure 1 Step-by-Step Technical Flow (Executive Guide) — Google Cloud Services, Safeguards & Results' },
-          { num: 5, label: '5. Arch Overview', desc: 'Architecture Overview & Key Point — 2-question topology selector & 80% reusable core' },
-          { num: 6, label: '6. Decision Tree', desc: 'Design alternatives — Executive Decision Tree (Compliance vs Packaging)' },
-          { num: 7, label: '7. Comparison Matrix', desc: 'Design alternatives — Side-by-Side Pattern A / B / C Comparison Matrix' },
-          { num: 8, label: '8. Agentic Triad', desc: 'Design considerations — Zero-Trust Security, FinOps & Privacy-Preserving Observability' },
-          { num: 9, label: '9. 5-Hop Invariant', desc: 'Design considerations — 5-Hop Invariant Across All Three Patterns' },
-          { num: 10, label: '10. 10-Week Roadmap', desc: 'What’s next — 10-Week Production Rollout Roadmap & EAP Backlog' },
-          { num: 11, label: '11. What’s Next', desc: 'What’s next — Key Takeaways & Action Plan' },
-          { num: 12, label: '12. Source Lineage', desc: 'Assets, Editable Diagrams & Source Documents Table' }
+          { num: 5, label: '5. ★ 3-Zone Topology', editable: true, desc: '★ Archetype 1 (architecture-zone-topology) — 3-Zone Enterprise Boundary & Sovereign VPC' },
+          { num: 6, label: '6. ★ Payload Triptych', editable: true, desc: '★ Archetype 2 (payload-transformation-triptych) — Contaminated vs. Clean Wire Payload' },
+          { num: 7, label: '7. ★ 5-Actor UML Swimlane', editable: true, desc: '★ Archetype 3 (uml-sequence-swimlane) — 5-Actor Lifeline & Scale-to-0 Dormant Approval' },
+          { num: 8, label: '8. ★ Async State Flow', editable: true, desc: '★ Archetype 4 (async-state-flow-pipeline) — Long Task (>5m) HTTP 202 & Webhook Loopback' },
+          { num: 9, label: '9. ★ Phased Roadmap', editable: true, desc: '★ Archetype 5 (phased-roadmap-timeline) — 3-Phase Connected Enterprise Technology Roadmap' },
+          { num: 10, label: '10. ★ Operating Model', editable: true, desc: '★ Archetype 6 (strategic-operating-model-pillars) — 3-Pillar Strategic Operating Model' },
+          { num: 11, label: '11. ★ Live GCP Screenshots', editable: true, desc: '★ Grounded Google Cloud Console Screenshots + 4 Editable Verification Callout Cards' },
+          { num: 12, label: '12. Quad-Metrics KPIs', desc: 'Executive Impact & Production Verification Metrics (80%, 2-Q, 10-Wk, 14/14)' },
+          { num: 13, label: '13. Products Used', desc: 'Products used — Google Cloud Agentic AI, Security & Data Stack' },
+          { num: 14, label: '14. Use Cases', desc: 'Use cases — 2-question topology selector & 80% reusable core' },
+          { num: 15, label: '15. Decision Tree', desc: 'Design alternatives — Executive Decision Tree (Compliance vs Packaging)' },
+          { num: 16, label: '16. Comparison Matrix', desc: 'Design alternatives — Side-by-Side Pattern A / B / C Comparison Matrix' },
+          { num: 17, label: '17. Agentic Triad', desc: 'Design considerations — Zero-Trust Security, FinOps & Privacy-Preserving Observability' },
+          { num: 18, label: '18. 5-Hop Invariant', desc: 'Design considerations — 5-Hop Invariant Across All Three Patterns' },
+          { num: 19, label: '19. What’s Next', desc: 'What’s next — 10-Week Production Rollout Roadmap & Key Takeaways' },
+          { num: 20, label: '20. Source Lineage', desc: 'Assets, Editable Diagrams & Source Documents Table' }
         ]
       },
       ALL: {
         key: 'ALL',
-        badge: 'ALL • 60-Slide Master Deck',
+        badge: 'ALL • 68-Slide Master Deck',
         title: 'All-in-One Master Deck & End-to-End Guide: Workstreams 1–5 Complete Architecture & 14 Editable Diagrams',
-        subtitle: 'Combined 60-slide master presentation & End-to-End Guide covering WS1 Reference, WS2 Pattern A, WS3 Pattern B, WS4 Pattern C & WS5 Executive Triad',
+        subtitle: 'Combined 68-slide master presentation & End-to-End Guide covering WS1 Reference, WS2 Pattern A, WS3 Pattern B, WS4 Pattern C & WS5 Executive Triad',
         deckStem: 'geap-multi-tenancy-all-workstreams-editable-slides',
         deckJson: 'ws1..ws5-combined.deck.json',
         pptxPath: 'slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx',
@@ -2440,27 +2990,27 @@
           { id: 'ws4-pattern-c-hybrid-psc-and-migration', label: 'WS4 Fig 1: Hybrid PSC & Live Migration', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 40, logicalSlide: 41, technicalSlide: 42 },
           { id: 'ws5-decision-tree-and-agentic-triad', label: 'WS5 Fig 1: Decision Tree & Agentic Triad', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 55, logicalSlide: 56, technicalSlide: 57 }
         ],
-        slides: Array.from({ length: 60 }, (_, idx) => {
+        slides: Array.from({ length: 68 }, (_, idx) => {
           const n = idx + 1;
-          const editableSlides = [4, 7, 13, 16, 19, 22, 28, 31, 34, 40, 43, 46, 49, 55];
-          const logicalSlides = editableSlides.map(s => s + 1);
-          const technicalSlides = editableSlides.map(s => s + 2);
+          const editableSlides = [4, 7, 13, 16, 19, 22, 28, 31, 34, 40, 43, 46, 49, 55, 60, 61, 62, 63, 64, 65, 66];
+          const logicalSlides = [5, 8, 14, 17, 20, 23, 29, 32, 35, 41, 44, 47, 50, 56];
+          const technicalSlides = [6, 9, 15, 18, 21, 24, 30, 33, 36, 42, 45, 48, 51, 57];
           const isEd = editableSlides.includes(n);
           const isLog = logicalSlides.includes(n);
           const isTech = technicalSlides.includes(n);
           return {
             num: n,
-            label: isEd ? `${n}. ★ Editable Diagram` : (isLog ? `${n}. Logical Flow` : (isTech ? `${n}. Technical Flow` : `${n}. Slide ${n}`)),
+            label: isEd ? `${n}. ★ Editable Visual` : (isLog ? `${n}. Logical Flow` : (isTech ? `${n}. Technical Flow` : `${n}. Slide ${n}`)),
             editable: isEd,
             desc: isEd
-              ? `★ Slide ${n} of 60 — 100% Full-Width Native Editable Diagram Slide (56 Shapes + 23 Connectors)`
-              : (isLog ? `Slide ${n} of 60 — Step-by-Step Plain-English Logical Flow (Steps ①–⑦)` : (isTech ? `Slide ${n} of 60 — Executive-Friendly Technical Flow (Google Cloud Services & Safeguards)` : `Slide ${n} of 60 — All-in-One Master Deck (Workstreams 1–5)`))
+              ? `★ Slide ${n} of 68 — 100% Full-Width Native Editable Diagram / Architectural Visual Archetype`
+              : (isLog ? `Slide ${n} of 68 — Step-by-Step Plain-English Logical Flow (Steps ①–⑦)` : (isTech ? `Slide ${n} of 68 — Executive-Friendly Technical Flow (Google Cloud Services & Safeguards)` : `Slide ${n} of 68 — All-in-One Master Deck (Workstreams 1–5)`))
           };
         })
       }
     };
 
-    const PPTX_CACHE_VER = '20261015-v13';
+    const PPTX_CACHE_VER = '20261015-v14';
     let activeHubWsKey = 'WS1';
     let activeHubSlideIdx = 0;
     let activeHubDiagIdx = 0;
@@ -2807,6 +3357,11 @@
               ${nextWs ? `<button type="button" class="sim-btn primary" onclick="selectGuidedWorkstream('${nextKey}'); document.getElementById('hub-blog-section').scrollIntoView({behavior:'smooth', block:'start'});">Next in Series: ${escapeHtml(nextKey)} (${escapeHtml(nextWs.docs[0].label)}) &rarr;</button>` : ''}
             </div>
           `;
+        }
+        if (typeof initAllPortalCardHoverToolbars === 'function') {
+          initAllPortalCardHoverToolbars();
+          applyPersistedCardOverrides();
+          renderCommentsDrawerAndInlineBadges();
         }
       } catch (err) {
         readerEl.textContent = `Unable to load blog (${err.message}).`;
@@ -3437,17 +3992,1159 @@
       if (btn) btn.textContent = '✓ 20 / 20 Live Assertions Verified PASS';
     }
 
+    // -------------------------------------------------------------------------
+    // 7-Icon Card Hover-Over Toolbar (Edit, Save, Add, Delete, Hide, Clone, Comment),
+    // Google Docs / Slides Style Multi-User Section Comments & Separate Change Log (/changelog)
+    // -------------------------------------------------------------------------
+    let portalActiveActor = {
+      name: 'Nitin Aggarwal',
+      email: 'nitinagga@google.com',
+      role: 'Principal Cloud Architect',
+      avatarColor: '#1a73e8'
+    };
+    let portalChangeLogEntries = [];
+    let portalCardOverrides = {};
+    let portalCommentThreads = [];
+    let cardBeforeSnapshotMap = {};
+
+    function computeInitials(nameStr) {
+      const parts = String(nameStr || 'User').trim().split(/\s+/).filter(Boolean);
+      if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      return String(nameStr || 'U').slice(0, 2).toUpperCase();
+    }
+
+    function showPortalToast(title, detail) {
+      const container = document.getElementById('portal-toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = 'portal-toast';
+      toast.innerHTML = `<div><strong>${escapeHtml(title)}</strong><div style="font-size:11.5px; color:#cbd5e1; margin-top:2px;">${escapeHtml(detail || '')}</div></div>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        try { toast.remove(); } catch (_) {}
+      }, 3600);
+    }
+
+    function setPortalActorPreset(name, email, role, color) {
+      portalActiveActor = {
+        name: name || 'Nitin Aggarwal',
+        email: email || 'nitinagga@google.com',
+        role: role || 'Principal Cloud Architect',
+        avatarColor: color || '#1a73e8'
+      };
+      try {
+        localStorage.setItem('ge_blogs_active_actor_v1', JSON.stringify(portalActiveActor));
+      } catch (_) {}
+      syncActorUiElements();
+      showPortalToast('Switched Active User Identity', `${portalActiveActor.name} (${portalActiveActor.email}) • ${portalActiveActor.role}`);
+    }
+
+    function applyCustomActorInputs() {
+      const n = document.getElementById('actor-input-name');
+      const e = document.getElementById('actor-input-email');
+      const r = document.getElementById('actor-input-role');
+      setPortalActorPreset(
+        n ? n.value.trim() : portalActiveActor.name,
+        e ? e.value.trim() : portalActiveActor.email,
+        r ? r.value.trim() : portalActiveActor.role,
+        portalActiveActor.avatarColor || '#1a73e8'
+      );
+    }
+
+    function syncDrawerActorInputs() {
+      const n = document.getElementById('drawer-actor-name');
+      const e = document.getElementById('drawer-actor-email');
+      setPortalActorPreset(
+        n ? n.value.trim() : portalActiveActor.name,
+        e ? e.value.trim() : portalActiveActor.email,
+        portalActiveActor.role,
+        portalActiveActor.avatarColor || '#1a73e8'
+      );
+    }
+
+    function syncActorUiElements() {
+      const hdrLabel = document.getElementById('header-active-user-label');
+      if (hdrLabel) hdrLabel.textContent = `${portalActiveActor.name} (${portalActiveActor.email.split('@')[0]})`;
+      const chgBadge = document.getElementById('chg-active-actor-badge');
+      if (chgBadge) chgBadge.textContent = `Active Editor: ${portalActiveActor.name} (${portalActiveActor.email})`;
+      const drwLabel = document.getElementById('drawer-active-user-label');
+      if (drwLabel) drwLabel.textContent = `${portalActiveActor.name} (${portalActiveActor.email})`;
+      const inName = document.getElementById('actor-input-name');
+      if (inName) inName.value = portalActiveActor.name;
+      const inEmail = document.getElementById('actor-input-email');
+      if (inEmail) inEmail.value = portalActiveActor.email;
+      const inRole = document.getElementById('actor-input-role');
+      if (inRole) inRole.value = portalActiveActor.role;
+      const drwName = document.getElementById('drawer-actor-name');
+      if (drwName) drwName.value = portalActiveActor.name;
+      const drwEmail = document.getElementById('drawer-actor-email');
+      if (drwEmail) drwEmail.value = portalActiveActor.email;
+    }
+
+    function inferCardTitle(cardEl) {
+      if (!cardEl) return 'Portal Card';
+      const attrTitle = cardEl.getAttribute('data-card-title');
+      if (attrTitle) return attrTitle;
+      const h = cardEl.querySelector('h1, h2, h3, h4, strong');
+      if (h && h.textContent.trim()) return h.textContent.trim().slice(0, 90);
+      return cardEl.id || 'Portal Card';
+    }
+
+    function getEditableTargetForCard(cardEl) {
+      if (!cardEl) return null;
+      return cardEl.querySelector('.card-editable-body') || cardEl;
+    }
+
+    function buildCardHoverToolbarHtml(cardId, cardTitle, isDiagramCard) {
+      const safeId = escapeHtml(cardId).replace(/'/g, "\\'");
+      const safeTitle = escapeHtml(cardTitle).replace(/'/g, "\\'");
+      return `
+        <button type="button" class="card-action-icon-btn" data-action="edit" onclick="event.stopPropagation(); handleCardHoverAction('${safeId}', 'EDIT')" title="${isDiagramCard ? 'Edit Diagram Online in Draw.io' : 'Edit Card Content Inline'}">
+          <span>&#9999;&#65039;</span><span>Edit</span>
+        </button>
+        <button type="button" class="card-action-icon-btn" data-action="save" onclick="event.stopPropagation(); handleCardHoverAction('${safeId}', 'SAVE')" title="Save Card / Diagram &amp; Record in Change Log">
+          <span>&#128190;</span><span>Save</span>
+        </button>
+        <button type="button" class="card-action-icon-btn" data-action="add" onclick="event.stopPropagation(); handleCardHoverAction('${safeId}', 'ADD')" title="Add New Section / Card Below">
+          <span>&#10133;</span><span>Add</span>
+        </button>
+        <button type="button" class="card-action-icon-btn" data-action="delete" onclick="event.stopPropagation(); handleCardHoverAction('${safeId}', 'DELETE')" title="Delete Card (Restorable from Change Log)">
+          <span>&#128465;&#65039;</span><span>Delete</span>
+        </button>
+        <button type="button" class="card-action-icon-btn" data-action="hide" onclick="event.stopPropagation(); handleCardHoverAction('${safeId}', 'HIDE')" title="Hide / Collapse Card">
+          <span>&#128584;</span><span>Hide</span>
+        </button>
+        <button type="button" class="card-action-icon-btn" data-action="clone" onclick="event.stopPropagation(); handleCardHoverAction('${safeId}', 'CLONE')" title="Clone / Duplicate Card Below">
+          <span>&#128203;</span><span>Clone</span>
+        </button>
+        <button type="button" class="card-action-icon-btn comment-btn" data-action="comment" onclick="event.stopPropagation(); openSectionComments('${safeId}', '${safeTitle}')" title="Open Google Docs / Slides Multi-User Comments for This Section">
+          <span>&#128172;</span><span class="card-toolbar-comment-label">Comment</span>
+        </button>
+      `;
+    }
+
+    function initAllPortalCardHoverToolbars() {
+      const allCards = Array.from(document.querySelectorAll('.card, .gcp-figure-card'));
+      allCards.forEach((cardEl, idx) => {
+        if (cardEl.getAttribute('data-no-hover-toolbar') === 'true') return;
+        if (cardEl.closest('[data-no-hover-toolbar="true"]')) return;
+        let cardId = cardEl.getAttribute('data-card-id') || cardEl.id;
+        if (!cardId) {
+          cardId = `portal-card-${idx + 1}`;
+          cardEl.id = cardId;
+        }
+        cardEl.setAttribute('data-card-id', cardId);
+        const cardTitle = inferCardTitle(cardEl);
+        cardEl.setAttribute('data-card-title', cardTitle);
+        const isDiagramCard = Boolean(cardEl.getAttribute('data-diag-id') || cardId === 'hub-diag-section');
+
+        let toolbar = cardEl.querySelector(':scope > .card-hover-toolbar');
+        if (!toolbar) {
+          toolbar = document.createElement('div');
+          toolbar.className = 'card-hover-toolbar';
+          toolbar.setAttribute('data-testid', `card-hover-toolbar-${cardId}`);
+          toolbar.innerHTML = buildCardHoverToolbarHtml(cardId, cardTitle, isDiagramCard);
+          cardEl.insertBefore(toolbar, cardEl.firstChild);
+        }
+
+        // Add Google Docs / Slides margin comment badge & collapsible inline comment tray on blog section cards and diagram cards
+        if (cardEl.classList.contains('doc-section-card') || cardEl.classList.contains('gcp-figure-card') || cardId === 'hub-diag-section') {
+          let marginPill = cardEl.querySelector(':scope > .section-comment-margin-pill');
+          if (!marginPill) {
+            marginPill = document.createElement('button');
+            marginPill.type = 'button';
+            marginPill.className = 'section-comment-margin-pill';
+            marginPill.setAttribute('data-comment-pill-for', cardId);
+            const safeId = escapeHtml(cardId).replace(/'/g, "\\'");
+            const safeTitle = escapeHtml(cardTitle).replace(/'/g, "\\'");
+            marginPill.setAttribute('onclick', `event.stopPropagation(); toggleInlineSectionCommentsTray('${safeId}', '${safeTitle}')`);
+            marginPill.innerHTML = `<span>&#128172;</span><span class="pill-cmt-count">0</span>`;
+            cardEl.insertBefore(marginPill, toolbar.nextSibling);
+          }
+          let tray = cardEl.querySelector(':scope > .gdocs-section-comments-tray');
+          if (!tray) {
+            tray = document.createElement('div');
+            tray.className = 'gdocs-section-comments-tray';
+            tray.id = `inline-comments-tray-${cardId}`;
+            cardEl.appendChild(tray);
+          }
+        }
+      });
+    }
+
+    async function recordPortalChangeLog(payload) {
+      const fullPayload = Object.assign({
+        userName: portalActiveActor.name,
+        userEmail: portalActiveActor.email,
+        userRole: portalActiveActor.role,
+        workstream: activeHubWsKey || 'WS1',
+        docPath: activeHubDocPath || 'blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md'
+      }, payload || {});
+
+      try {
+        const resp = await fetch('/api/changelog', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(fullPayload)
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (Array.isArray(data.entries)) portalChangeLogEntries = data.entries;
+          if (data.cardOverrides) portalCardOverrides = data.cardOverrides;
+          updateChangeLogCountBadges();
+          renderChangeLogTable();
+          return data.entry;
+        }
+      } catch (err) {
+        console.warn('Could not persist change log entry to backend:', err);
+      }
+      return null;
+    }
+
+    async function handleCardHoverAction(cardId, action) {
+      const cardEl = document.querySelector(`[data-card-id="${cardId}"]`) || document.getElementById(cardId);
+      if (!cardEl) return;
+      const cardTitle = inferCardTitle(cardEl);
+      const diagId = cardEl.getAttribute('data-diag-id') || (cardId === 'hub-diag-section' ? ((GUIDED_WORKSTREAMS[activeHubWsKey]?.diagrams?.[activeHubDiagIdx]?.id) || 'ws1-multi-tenant-taxonomy-overview') : '');
+      const editableBody = getEditableTargetForCard(cardEl);
+
+      if (action === 'EDIT') {
+        if (diagId) {
+          if (cardId === 'hub-diag-section') {
+            setHubDiagramRenderMode('edit-inline');
+          } else {
+            setInlineFigureMode(diagId, 'edit');
+          }
+          await recordPortalChangeLog({
+            action: 'EDIT',
+            targetType: 'diagram',
+            targetId: diagId,
+            targetTitle: cardTitle,
+            summary: `Opened inline Draw.io diagram editor for ${diagId}.drawio (${cardTitle}).`
+          });
+          showPortalToast('✏️ Inline Draw.io Editor Opened', `Editing ${diagId}.drawio — click 💾 Save when done.`);
+          return;
+        }
+
+        if (!editableBody) return;
+        cardBeforeSnapshotMap[cardId] = editableBody.innerText.trim().slice(0, 600);
+        cardEl.classList.add('card-is-editing');
+        editableBody.setAttribute('contenteditable', 'true');
+        editableBody.focus();
+
+        let banner = cardEl.querySelector(':scope > .inline-edit-status-banner');
+        if (!banner) {
+          banner = document.createElement('div');
+          banner.className = 'inline-edit-status-banner';
+          const safeId = escapeHtml(cardId).replace(/'/g, "\\'");
+          banner.innerHTML = `
+            <div>&#9999;&#65039; <strong>Inline Editing Mode Active</strong> (${escapeHtml(portalActiveActor.name)}) &mdash; Edit text, tables, or headings directly below:</div>
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="sim-btn primary" style="padding:4px 10px; font-size:11.5px;" onclick="handleCardHoverAction('${safeId}', 'SAVE')">&#128190; Save Changes</button>
+              <button type="button" class="sim-btn" style="padding:4px 10px; font-size:11.5px;" onclick="cancelCardInlineEdit('${safeId}')">&#10005; Cancel</button>
+            </div>
+          `;
+          cardEl.insertBefore(banner, editableBody);
+        }
+        showPortalToast('✏️ Editing Card Inline', `Now editing "${cardTitle}" as ${portalActiveActor.name}.`);
+        return;
+      }
+
+      if (action === 'SAVE') {
+        if (diagId) {
+          if (cardId === 'hub-diag-section') {
+            await saveInlineDrawioXml();
+          } else {
+            const iframeEl = document.getElementById('inline-fig-iframe-' + diagId);
+            if (iframeEl && iframeEl.contentWindow && typeof iframeEl.contentWindow.saveCurrentStudioXml === 'function') {
+              await iframeEl.contentWindow.saveCurrentStudioXml();
+            } else {
+              await recordPortalChangeLog({
+                action: 'DIAGRAM_SAVE',
+                targetType: 'diagram',
+                targetId: diagId,
+                targetTitle: cardTitle,
+                summary: `Saved diagram checkpoint for ${diagId}.drawio (${cardTitle}).`
+              });
+            }
+          }
+          await fetchAndRenderChangeLog();
+          showPortalToast('💾 Diagram Saved & Logged', `Recorded diagram save by ${portalActiveActor.name} in Change Log.`);
+          return;
+        }
+
+        if (!editableBody) return;
+        const beforeText = cardBeforeSnapshotMap[cardId] || editableBody.innerText.trim().slice(0, 600);
+        editableBody.removeAttribute('contenteditable');
+        cardEl.classList.remove('card-is-editing');
+        const banner = cardEl.querySelector(':scope > .inline-edit-status-banner');
+        if (banner) banner.remove();
+
+        const afterHtml = editableBody.innerHTML;
+        const afterText = editableBody.innerText.trim().slice(0, 600);
+        const newTitle = inferCardTitle(cardEl);
+        cardEl.setAttribute('data-card-title', newTitle);
+
+        await recordPortalChangeLog({
+          action: 'SAVE',
+          targetType: cardEl.getAttribute('data-card-type') || 'blog_section',
+          targetId: cardId,
+          targetTitle: newTitle,
+          summary: `Saved online content edit on "${newTitle}" (${afterText.length} chars).`,
+          beforeSnippet: beforeText,
+          afterSnippet: afterText,
+          htmlContent: afterHtml
+        });
+        showPortalToast('💾 Saved to Persistent Change Log', `Saved "${newTitle}" by ${portalActiveActor.name}.`);
+        return;
+      }
+
+      if (action === 'ADD') {
+        const newCardId = `${cardId}-added-${Date.now().toString().slice(-5)}`;
+        const newCard = document.createElement('div');
+        newCard.className = 'card doc-section-card';
+        newCard.id = newCardId;
+        newCard.setAttribute('data-card-id', newCardId);
+        newCard.setAttribute('data-card-type', 'custom_added_card');
+        newCard.setAttribute('data-card-title', `New Architecture Note (Added by ${portalActiveActor.name})`);
+        newCard.setAttribute('data-doc-path', activeHubDocPath || '');
+        newCard.innerHTML = `
+          <div class="card-editable-body">
+            <h2>New Architecture Note (Added by ${escapeHtml(portalActiveActor.name)})</h2>
+            <p>Added online below <strong>${escapeHtml(cardTitle)}</strong>. Click <code>&#9999;&#65039; Edit</code> or type directly to customize this section, then click <code>&#128190; Save</code>.</p>
+          </div>
+        `;
+        cardEl.parentNode.insertBefore(newCard, cardEl.nextSibling);
+        initAllPortalCardHoverToolbars();
+        renderCommentsDrawerAndInlineBadges();
+
+        await recordPortalChangeLog({
+          action: 'ADD',
+          targetType: 'custom_added_card',
+          targetId: newCardId,
+          targetTitle: `New Architecture Note (below ${cardTitle})`,
+          parentCardId: cardId,
+          summary: `Added new section card "${newCardId}" below "${cardTitle}".`,
+          beforeSnippet: '(New Card Created)',
+          afterSnippet: newCard.querySelector('.card-editable-body').innerText.trim(),
+          htmlContent: newCard.querySelector('.card-editable-body').innerHTML
+        });
+        handleCardHoverAction(newCardId, 'EDIT');
+        return;
+      }
+
+      if (action === 'CLONE') {
+        const cloneCardId = `${cardId}-clone-${Date.now().toString().slice(-5)}`;
+        const cloneEl = document.createElement('div');
+        cloneEl.className = cardEl.className.replace(/\bcard-is-editing\b/g, '').trim();
+        cloneEl.id = cloneCardId;
+        cloneEl.setAttribute('data-card-id', cloneCardId);
+        cloneEl.setAttribute('data-card-type', 'cloned_card');
+        const cloneTitle = `${cardTitle} (Cloned Copy)`;
+        cloneEl.setAttribute('data-card-title', cloneTitle);
+        cloneEl.setAttribute('data-doc-path', activeHubDocPath || '');
+        const srcHtml = editableBody ? editableBody.innerHTML : cardEl.innerHTML;
+        cloneEl.innerHTML = `<div class="card-editable-body">${srcHtml}</div>`;
+        const firstHeading = cloneEl.querySelector('h1, h2, h3, h4, strong');
+        if (firstHeading && !firstHeading.textContent.includes('(Cloned Copy)')) {
+          firstHeading.innerHTML = `${firstHeading.innerHTML} <span class="badge badge-blue" style="font-size:10.5px;">Cloned by ${escapeHtml(portalActiveActor.name)}</span>`;
+        }
+        cardEl.parentNode.insertBefore(cloneEl, cardEl.nextSibling);
+        initAllPortalCardHoverToolbars();
+        renderCommentsDrawerAndInlineBadges();
+
+        await recordPortalChangeLog({
+          action: 'CLONE',
+          targetType: 'cloned_card',
+          targetId: cloneCardId,
+          targetTitle: cloneTitle,
+          parentCardId: cardId,
+          summary: `Cloned card "${cardTitle}" into "${cloneCardId}".`,
+          beforeSnippet: editableBody ? editableBody.innerText.trim().slice(0, 400) : '',
+          afterSnippet: cloneEl.querySelector('.card-editable-body').innerText.trim().slice(0, 400),
+          htmlContent: cloneEl.querySelector('.card-editable-body').innerHTML
+        });
+        showPortalToast('📋 Card Cloned', `Created duplicate "${cloneTitle}" below original card.`);
+        return;
+      }
+
+      if (action === 'HIDE') {
+        const isCurrentlyHidden = cardEl.classList.contains('card-is-hidden');
+        if (isCurrentlyHidden) {
+          cardEl.classList.remove('card-is-hidden');
+          const unhidePill = cardEl.querySelector(':scope > .card-hidden-placeholder-bar');
+          if (unhidePill) unhidePill.remove();
+          await recordPortalChangeLog({
+            action: 'UNHIDE',
+            targetType: cardEl.getAttribute('data-card-type') || 'blog_section',
+            targetId: cardId,
+            targetTitle: cardTitle,
+            summary: `Unhid card "${cardTitle}".`
+          });
+          showPortalToast('👁️ Card Restored', `Unhid "${cardTitle}".`);
+        } else {
+          cardEl.classList.add('card-is-hidden');
+          let unhidePill = cardEl.querySelector(':scope > .card-hidden-placeholder-bar');
+          if (!unhidePill) {
+            unhidePill = document.createElement('div');
+            unhidePill.className = 'card-hidden-placeholder-bar';
+            const safeId = escapeHtml(cardId).replace(/'/g, "\\'");
+            unhidePill.innerHTML = `
+              <span>&#128584; Hidden Card: <strong>${escapeHtml(cardTitle)}</strong> (Hidden by ${escapeHtml(portalActiveActor.name)})</span>
+              <button type="button" class="sim-btn" style="padding:3px 9px; font-size:11px;" onclick="handleCardHoverAction('${safeId}', 'HIDE')">&#128065;&#65039; Unhide Card</button>
+            `;
+            cardEl.appendChild(unhidePill);
+          }
+          const unhideAllBtn = document.getElementById('chg-unhide-all-btn');
+          if (unhideAllBtn) unhideAllBtn.style.display = 'inline-flex';
+          await recordPortalChangeLog({
+            action: 'HIDE',
+            targetType: cardEl.getAttribute('data-card-type') || 'blog_section',
+            targetId: cardId,
+            targetTitle: cardTitle,
+            summary: `Collapsed/hid card "${cardTitle}" from active reader view.`
+          });
+          showPortalToast('🙈 Card Hidden', `Hid "${cardTitle}" — click Unhide at any time.`);
+        }
+        return;
+      }
+
+      if (action === 'DELETE') {
+        const beforeSnap = editableBody ? editableBody.innerText.trim().slice(0, 600) : cardTitle;
+        const savedHtml = editableBody ? editableBody.innerHTML : cardEl.innerHTML;
+        cardEl.classList.add('card-is-deleted');
+        await recordPortalChangeLog({
+          action: 'DELETE',
+          targetType: cardEl.getAttribute('data-card-type') || 'blog_section',
+          targetId: cardId,
+          targetTitle: cardTitle,
+          summary: `Deleted card "${cardTitle}" (soft-deleted; restorable in 1 click from Change Log).`,
+          beforeSnippet: beforeSnap,
+          afterSnippet: '(Deleted)',
+          htmlContent: savedHtml
+        });
+        showPortalToast('🗑️ Card Deleted', `"${cardTitle}" removed. You can restore it anytime from 📜 Change Log.`);
+      }
+    }
+
+    function cancelCardInlineEdit(cardId) {
+      const cardEl = document.querySelector(`[data-card-id="${cardId}"]`) || document.getElementById(cardId);
+      if (!cardEl) return;
+      const editableBody = getEditableTargetForCard(cardEl);
+      if (editableBody) editableBody.removeAttribute('contenteditable');
+      cardEl.classList.remove('card-is-editing');
+      const banner = cardEl.querySelector(':scope > .inline-edit-status-banner');
+      if (banner) banner.remove();
+    }
+
+    async function unhideAllHiddenCards() {
+      const hiddenCards = Array.from(document.querySelectorAll('.card-is-hidden'));
+      for (const el of hiddenCards) {
+        const cid = el.getAttribute('data-card-id') || el.id;
+        if (cid) await handleCardHoverAction(cid, 'HIDE');
+      }
+      const unhideAllBtn = document.getElementById('chg-unhide-all-btn');
+      if (unhideAllBtn) unhideAllBtn.style.display = 'none';
+    }
+
+    function applyPersistedCardOverrides() {
+      if (!portalCardOverrides || typeof portalCardOverrides !== 'object') return;
+      Object.entries(portalCardOverrides).forEach(([cardId, ov]) => {
+        if (!ov || typeof ov !== 'object') return;
+        let cardEl = document.querySelector(`[data-card-id="${cardId}"]`) || document.getElementById(cardId);
+        if (!cardEl && (ov.status === 'added' || ov.status === 'cloned') && ov.parentCardId) {
+          const parentEl = document.querySelector(`[data-card-id="${ov.parentCardId}"]`) || document.getElementById(ov.parentCardId);
+          if (parentEl && parentEl.parentNode) {
+            cardEl = document.createElement('div');
+            cardEl.className = 'card doc-section-card';
+            cardEl.id = cardId;
+            cardEl.setAttribute('data-card-id', cardId);
+            cardEl.setAttribute('data-card-type', ov.status === 'cloned' ? 'cloned_card' : 'custom_added_card');
+            cardEl.setAttribute('data-card-title', ov.targetTitle || cardId);
+            cardEl.innerHTML = `<div class="card-editable-body">${ov.htmlContent || ''}</div>`;
+            parentEl.parentNode.insertBefore(cardEl, parentEl.nextSibling);
+          }
+        }
+        if (!cardEl) return;
+        if (ov.status === 'deleted') {
+          cardEl.classList.add('card-is-deleted');
+        } else {
+          cardEl.classList.remove('card-is-deleted');
+        }
+        if (ov.status === 'hidden') {
+          cardEl.classList.add('card-is-hidden');
+        } else {
+          cardEl.classList.remove('card-is-hidden');
+        }
+        if (ov.htmlContent && ov.status !== 'deleted') {
+          const editableBody = getEditableTargetForCard(cardEl);
+          if (editableBody) editableBody.innerHTML = ov.htmlContent;
+        }
+      });
+      initAllPortalCardHoverToolbars();
+    }
+
+    // -------------------------------------------------------------------------
+    // Google Docs & Google Slides Style Multi-User Section Comments Controller
+    // -------------------------------------------------------------------------
+    async function fetchAndRenderComments() {
+      try {
+        const resp = await fetch('/api/comments');
+        if (resp.ok) {
+          const data = await resp.json();
+          if (Array.isArray(data.threads)) {
+            portalCommentThreads = data.threads;
+          }
+        }
+      } catch (err) {
+        console.warn('Could not load comments:', err);
+      }
+      renderCommentsDrawerAndInlineBadges();
+    }
+
+    function openCommentsDrawer() {
+      const drw = document.getElementById('gdocs-comments-drawer');
+      if (drw) drw.classList.add('open');
+      renderCommentsDrawerAndInlineBadges();
+    }
+
+    function closeCommentsDrawer() {
+      const drw = document.getElementById('gdocs-comments-drawer');
+      if (drw) drw.classList.remove('open');
+    }
+
+    function toggleCommentsDrawer() {
+      const drw = document.getElementById('gdocs-comments-drawer');
+      if (!drw) return;
+      if (drw.classList.contains('open')) closeCommentsDrawer();
+      else openCommentsDrawer();
+    }
+
+    function openSectionComments(cardId, cardTitle) {
+      const cardEl = document.querySelector(`[data-card-id="${cardId}"]`) || document.getElementById(cardId);
+      const cleanTitle = cardTitle || (cardEl ? inferCardTitle(cardEl) : cardId);
+      const targetIdInput = document.getElementById('drawer-target-card-id');
+      if (targetIdInput) targetIdInput.value = cardId;
+      const targetTitleEl = document.getElementById('drawer-target-card-title');
+      if (targetTitleEl) targetTitleEl.textContent = cleanTitle;
+
+      // Capture highlighted text selection (like Google Docs / Slides) if user selected text inside the section
+      let selectedText = '';
+      try {
+        const sel = window.getSelection();
+        if (sel && sel.toString().trim().length > 2) {
+          selectedText = sel.toString().trim().slice(0, 180);
+        }
+      } catch (_) {}
+      const quoteEl = document.getElementById('drawer-quoted-preview');
+      if (quoteEl) {
+        if (selectedText) {
+          quoteEl.style.display = 'block';
+          quoteEl.textContent = `"${selectedText}"`;
+          quoteEl.setAttribute('data-quoted-text', selectedText);
+        } else {
+          quoteEl.style.display = 'none';
+          quoteEl.textContent = '';
+          quoteEl.removeAttribute('data-quoted-text');
+        }
+      }
+
+      // Open inline section tray AND right-side Google Docs comments drawer
+      const tray = document.getElementById(`inline-comments-tray-${cardId}`);
+      if (tray) tray.classList.add('open');
+      openCommentsDrawer();
+      const txt = document.getElementById('drawer-new-comment-text');
+      if (txt) txt.focus();
+    }
+
+    function toggleInlineSectionCommentsTray(cardId, cardTitle) {
+      const tray = document.getElementById(`inline-comments-tray-${cardId}`);
+      if (!tray) {
+        openSectionComments(cardId, cardTitle);
+        return;
+      }
+      const wasOpen = tray.classList.contains('open');
+      if (wasOpen) {
+        tray.classList.remove('open');
+      } else {
+        tray.classList.add('open');
+        const targetIdInput = document.getElementById('drawer-target-card-id');
+        if (targetIdInput) targetIdInput.value = cardId;
+        const targetTitleEl = document.getElementById('drawer-target-card-title');
+        if (targetTitleEl) targetTitleEl.textContent = cardTitle || cardId;
+      }
+      renderCommentsDrawerAndInlineBadges();
+    }
+
+    function buildThreadCardHtml(thread, isInline) {
+      const comments = Array.isArray(thread.comments) ? thread.comments : [];
+      const isResolved = thread.status === 'resolved';
+      const safeThreadId = escapeHtml(thread.threadId).replace(/'/g, "\\'");
+      const replyInputId = `${isInline ? 'inline' : 'drawer'}-reply-input-${thread.threadId}`;
+      return `
+        <div class="gdocs-thread-card ${isResolved ? 'resolved' : ''}" data-thread-id="${escapeHtml(thread.threadId)}">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:6px; padding-bottom:6px; border-bottom:1px solid #f1f5f9;">
+            <div style="font-size:11px; font-weight:700; color:#1a73e8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+              &#128204; ${escapeHtml(thread.sectionTitle || thread.cardId)}
+            </div>
+            <div style="display:flex; gap:5px; align-items:center; flex-shrink:0;">
+              <span class="badge ${isResolved ? 'badge-green' : 'badge-amber'}" style="font-size:10px; padding:1px 6px;">${isResolved ? '✓ Resolved' : '● Open'}</span>
+              <button type="button" class="sim-btn" style="padding:2px 7px; font-size:10.5px;" onclick="toggleThreadResolution('${safeThreadId}', '${isResolved ? 'reopen' : 'resolve'}')" title="${isResolved ? 'Reopen Comment Thread' : 'Mark Thread as Resolved'}">
+                ${isResolved ? '&#8634; Reopen' : '&#10003; Resolve'}
+              </button>
+              <button type="button" class="sim-btn" style="padding:2px 6px; font-size:10.5px; color:#dc2626;" onclick="deleteCommentThread('${safeThreadId}')" title="Delete Thread">&#128465;</button>
+            </div>
+          </div>
+          ${thread.quotedText ? `<div class="gdocs-quote-strip">"${escapeHtml(thread.quotedText)}"</div>` : ''}
+          <div>
+            ${comments.map(c => `
+              <div class="gdocs-comment-item">
+                <div class="gdocs-comment-header">
+                  <div class="gdocs-user-chip">
+                    <span class="gdocs-avatar" style="background:${escapeHtml(c.avatarColor || '#1a73e8')};">${escapeHtml(c.userInitials || computeInitials(c.userName))}</span>
+                    <div>
+                      <div class="gdocs-user-name">${escapeHtml(c.userName)}</div>
+                      <div class="gdocs-user-role">${escapeHtml(c.userRole || c.userEmail || '')}</div>
+                    </div>
+                  </div>
+                  <div class="gdocs-comment-time">${escapeHtml(c.timestampEst || '')}</div>
+                </div>
+                <div class="gdocs-comment-body">${escapeHtml(c.text)}</div>
+              </div>
+            `).join('')}
+          </div>
+          <div style="display:flex; gap:6px; margin-top:8px; padding-top:8px; border-top:1px solid #f1f5f9;">
+            <input type="text" id="${replyInputId}" placeholder="Reply as ${escapeHtml(portalActiveActor.name)}..." aria-label="Reply to comment thread" style="flex:1; padding:5px 8px; font-size:11.5px; border:1px solid #cbd5e1; border-radius:6px;" onkeydown="if(event.key==='Enter'){event.preventDefault(); submitThreadReply('${safeThreadId}', '${replyInputId}');}" />
+            <button type="button" class="sim-btn primary" style="padding:4px 10px; font-size:11px;" onclick="submitThreadReply('${safeThreadId}', '${replyInputId}')">Reply</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCommentsDrawerAndInlineBadges() {
+      const statusFilterEl = document.getElementById('drawer-filter-status');
+      const statusFilter = statusFilterEl ? statusFilterEl.value : 'ALL';
+      const openThreads = portalCommentThreads.filter(t => t.status !== 'resolved');
+      const totalCommentCount = portalCommentThreads.reduce((acc, t) => acc + (Array.isArray(t.comments) ? t.comments.length : 0), 0);
+
+      // Update global comment counters
+      const drwBadge = document.getElementById('drawer-comments-count-badge');
+      if (drwBadge) drwBadge.textContent = `${openThreads.length} Open (${portalCommentThreads.length} Total)`;
+      const chgBtnCnt = document.getElementById('chg-btn-comments-count');
+      if (chgBtnCnt) chgBtnCnt.textContent = String(portalCommentThreads.length);
+      const kpiComments = document.getElementById('chg-kpi-comments');
+      if (kpiComments) kpiComments.textContent = `${portalCommentThreads.length} Threads (${totalCommentCount} Comments)`;
+
+      // Render Right-Side Google Docs / Slides Comments Drawer
+      const listEl = document.getElementById('gdocs-drawer-threads-list');
+      if (listEl) {
+        const filtered = portalCommentThreads.filter(t => {
+          if (statusFilter === 'open') return t.status !== 'resolved';
+          if (statusFilter === 'resolved') return t.status === 'resolved';
+          return true;
+        });
+        if (!filtered.length) {
+          listEl.innerHTML = `<div class="muted" style="text-align:center; padding:24px 12px; font-size:12.5px;">No comment threads match the selected filter. Click <code>&#128172; Comment</code> on any section card to start a discussion.</div>`;
+        } else {
+          listEl.innerHTML = filtered.map(t => buildThreadCardHtml(t, false)).join('');
+        }
+      }
+
+      // Update per-card margin comment pills, hover toolbar comment labels, and inline comment trays
+      const allCards = Array.from(document.querySelectorAll('[data-card-id]'));
+      allCards.forEach(cardEl => {
+        const cid = cardEl.getAttribute('data-card-id');
+        const cTitle = inferCardTitle(cardEl);
+        const cardThreads = portalCommentThreads.filter(t => t.cardId === cid);
+        const cardCommentCount = cardThreads.reduce((acc, t) => acc + (Array.isArray(t.comments) ? t.comments.length : 0), 0);
+
+        const pill = cardEl.querySelector(':scope > .section-comment-margin-pill');
+        if (pill) {
+          pill.classList.toggle('has-comments', cardCommentCount > 0);
+          pill.innerHTML = cardCommentCount > 0
+            ? `<span>&#128172;</span><span>${cardCommentCount} ${cardCommentCount === 1 ? 'Comment' : 'Comments'}</span>`
+            : `<span>&#128172;</span><span>+ Comment</span>`;
+        }
+
+        const toolbarCommentLbl = cardEl.querySelector(':scope > .card-hover-toolbar .card-toolbar-comment-label');
+        if (toolbarCommentLbl) {
+          toolbarCommentLbl.textContent = cardCommentCount > 0 ? `Comment (${cardCommentCount})` : 'Comment';
+        }
+
+        const tray = document.getElementById(`inline-comments-tray-${cid}`);
+        if (tray) {
+          const safeCid = escapeHtml(cid).replace(/'/g, "\\'");
+          const safeTitle = escapeHtml(cTitle).replace(/'/g, "\\'");
+          const inlineComposerId = `inline-new-cmt-${cid}`;
+          tray.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="badge badge-amber">&#128172; SECTION COMMENTS (${cardThreads.length} THREADS &bull; ${cardCommentCount} COMMENTS)</span>
+                <span class="muted" style="font-size:11.5px;">Commenting as <strong>${escapeHtml(portalActiveActor.name)}</strong> (${escapeHtml(portalActiveActor.role)})</span>
+              </div>
+              <div style="display:flex; gap:6px;">
+                <button type="button" class="sim-btn" style="padding:3px 8px; font-size:11px;" onclick="openSectionComments('${safeCid}', '${safeTitle}')">&#8599; Open Full Comments Stream</button>
+                <button type="button" class="sim-btn" style="padding:3px 8px; font-size:11px;" onclick="document.getElementById('inline-comments-tray-${safeCid}').classList.remove('open')">&#10005; Hide</button>
+              </div>
+            </div>
+            ${cardThreads.length ? cardThreads.map(t => buildThreadCardHtml(t, true)).join('') : '<div class="muted" style="font-size:12px; margin-bottom:8px;">No comments on this section yet. Start a multi-user thread below:</div>'}
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <input type="text" id="${inlineComposerId}" placeholder="Add a Google Docs / Slides style comment on '${escapeHtml(cTitle)}' as ${escapeHtml(portalActiveActor.name)}..." aria-label="Add section comment" style="flex:1; padding:6px 10px; font-size:12px; border:1px solid #cbd5e1; border-radius:7px; background:#ffffff;" onkeydown="if(event.key==='Enter'){event.preventDefault(); submitInlineSectionComment('${safeCid}', '${safeTitle}', '${inlineComposerId}');}" />
+              <button type="button" class="sim-btn primary" style="padding:5px 12px; font-size:12px;" onclick="submitInlineSectionComment('${safeCid}', '${safeTitle}', '${inlineComposerId}')">&#128172; Comment</button>
+            </div>
+          `;
+        }
+      });
+    }
+
+    async function submitNewCommentFromDrawer() {
+      const txtEl = document.getElementById('drawer-new-comment-text');
+      const text = txtEl ? txtEl.value.trim() : '';
+      if (!text) return;
+      const targetIdEl = document.getElementById('drawer-target-card-id');
+      const targetTitleEl = document.getElementById('drawer-target-card-title');
+      const quoteEl = document.getElementById('drawer-quoted-preview');
+      const cardId = (targetIdEl && targetIdEl.value) ? targetIdEl.value : 'hub-diag-section';
+      const sectionTitle = (targetTitleEl && targetTitleEl.textContent) ? targetTitleEl.textContent : 'Architecture Section';
+      const quotedText = (quoteEl && quoteEl.getAttribute('data-quoted-text')) || '';
+
+      try {
+        const resp = await fetch('/api/comments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            op: 'add_thread',
+            cardId,
+            sectionTitle,
+            workstream: activeHubWsKey || 'WS1',
+            docPath: activeHubDocPath || 'blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md',
+            quotedText,
+            text,
+            userName: portalActiveActor.name,
+            userEmail: portalActiveActor.email,
+            userRole: portalActiveActor.role,
+            userInitials: computeInitials(portalActiveActor.name),
+            avatarColor: portalActiveActor.avatarColor || '#1a73e8'
+          })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (Array.isArray(data.threads)) portalCommentThreads = data.threads;
+          if (txtEl) txtEl.value = '';
+          if (quoteEl) {
+            quoteEl.style.display = 'none';
+            quoteEl.removeAttribute('data-quoted-text');
+          }
+          renderCommentsDrawerAndInlineBadges();
+          await fetchAndRenderChangeLog();
+          showPortalToast('💬 Comment Saved', `Posted comment by ${portalActiveActor.name} on "${sectionTitle}".`);
+        }
+      } catch (err) {
+        console.warn('Error posting comment:', err);
+      }
+    }
+
+    async function submitInlineSectionComment(cardId, sectionTitle, inputId) {
+      const inputEl = document.getElementById(inputId);
+      const text = inputEl ? inputEl.value.trim() : '';
+      if (!text) return;
+      try {
+        const resp = await fetch('/api/comments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            op: 'add_thread',
+            cardId,
+            sectionTitle,
+            workstream: activeHubWsKey || 'WS1',
+            docPath: activeHubDocPath || 'blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md',
+            text,
+            userName: portalActiveActor.name,
+            userEmail: portalActiveActor.email,
+            userRole: portalActiveActor.role,
+            userInitials: computeInitials(portalActiveActor.name),
+            avatarColor: portalActiveActor.avatarColor || '#1a73e8'
+          })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (Array.isArray(data.threads)) portalCommentThreads = data.threads;
+          if (inputEl) inputEl.value = '';
+          renderCommentsDrawerAndInlineBadges();
+          await fetchAndRenderChangeLog();
+          showPortalToast('💬 Section Comment Added', `Saved under ${portalActiveActor.name} & logged in Change Log.`);
+        }
+      } catch (err) {
+        console.warn('Error posting inline comment:', err);
+      }
+    }
+
+    async function submitThreadReply(threadId, inputId) {
+      const inputEl = document.getElementById(inputId);
+      const text = inputEl ? inputEl.value.trim() : '';
+      if (!text) return;
+      try {
+        const resp = await fetch('/api/comments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            op: 'reply',
+            threadId,
+            text,
+            userName: portalActiveActor.name,
+            userEmail: portalActiveActor.email,
+            userRole: portalActiveActor.role,
+            userInitials: computeInitials(portalActiveActor.name),
+            avatarColor: portalActiveActor.avatarColor || '#1a73e8'
+          })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (Array.isArray(data.threads)) portalCommentThreads = data.threads;
+          renderCommentsDrawerAndInlineBadges();
+          await fetchAndRenderChangeLog();
+          showPortalToast('💬 Reply Added', `Replied as ${portalActiveActor.name}.`);
+        }
+      } catch (err) {
+        console.warn('Error replying to thread:', err);
+      }
+    }
+
+    async function toggleThreadResolution(threadId, op) {
+      try {
+        const resp = await fetch('/api/comments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            op: op === 'reopen' ? 'reopen' : 'resolve',
+            threadId,
+            userName: portalActiveActor.name,
+            userEmail: portalActiveActor.email,
+            userRole: portalActiveActor.role
+          })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (Array.isArray(data.threads)) portalCommentThreads = data.threads;
+          renderCommentsDrawerAndInlineBadges();
+          await fetchAndRenderChangeLog();
+          showPortalToast(op === 'reopen' ? '↺ Thread Reopened' : '✓ Thread Resolved', `Updated by ${portalActiveActor.name}.`);
+        }
+      } catch (err) {
+        console.warn('Error toggling thread resolution:', err);
+      }
+    }
+
+    async function deleteCommentThread(threadId) {
+      try {
+        const resp = await fetch('/api/comments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            op: 'delete_thread',
+            threadId,
+            userName: portalActiveActor.name,
+            userEmail: portalActiveActor.email,
+            userRole: portalActiveActor.role
+          })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (Array.isArray(data.threads)) portalCommentThreads = data.threads;
+          renderCommentsDrawerAndInlineBadges();
+          await fetchAndRenderChangeLog();
+          showPortalToast('🗑️ Comment Thread Removed', `Deleted thread ${threadId}.`);
+        }
+      } catch (err) {
+        console.warn('Error deleting thread:', err);
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // Separate Change Log Page (/changelog & Tab 5) Controller
+    // -------------------------------------------------------------------------
+    function updateChangeLogCountBadges() {
+      const total = portalChangeLogEntries.length;
+      const tabCnt = document.getElementById('tab-changelog-count-badge');
+      if (tabCnt) tabCnt.textContent = String(total);
+      const hdrCnt = document.getElementById('header-changelog-count');
+      if (hdrCnt) hdrCnt.textContent = String(total);
+      const kpiTotal = document.getElementById('chg-kpi-total');
+      if (kpiTotal) kpiTotal.textContent = String(total);
+
+      const cardMutCount = portalChangeLogEntries.filter(e => ['SAVE', 'EDIT', 'ADD', 'DELETE', 'HIDE', 'UNHIDE', 'CLONE', 'RESTORE'].includes(e.action)).length;
+      const kpiCards = document.getElementById('chg-kpi-cards');
+      if (kpiCards) kpiCards.textContent = String(cardMutCount);
+
+      const diagSaveCount = portalChangeLogEntries.filter(e => e.action === 'DIAGRAM_SAVE' || e.targetType === 'diagram').length;
+      const kpiDiag = document.getElementById('chg-kpi-diagrams');
+      if (kpiDiag) kpiDiag.textContent = String(diagSaveCount);
+
+      // Populate dynamic user filter options
+      const actorSel = document.getElementById('chg-filter-actor');
+      if (actorSel) {
+        const curVal = actorSel.value || 'ALL';
+        const actors = Array.from(new Set(portalChangeLogEntries.map(e => e.userName).filter(Boolean)));
+        actorSel.innerHTML = `<option value="ALL">All Users / Contributors (${actors.length})</option>` +
+          actors.map(a => `<option value="${escapeHtml(a)}">${escapeHtml(a)}</option>`).join('');
+        if (actors.includes(curVal)) actorSel.value = curVal;
+      }
+    }
+
+    async function fetchAndRenderChangeLog() {
+      try {
+        const resp = await fetch('/api/changelog');
+        if (resp.ok) {
+          const data = await resp.json();
+          if (Array.isArray(data.entries)) portalChangeLogEntries = data.entries;
+          if (data.cardOverrides) portalCardOverrides = data.cardOverrides;
+          updateChangeLogCountBadges();
+          applyPersistedCardOverrides();
+          renderChangeLogTable();
+        }
+      } catch (err) {
+        console.warn('Could not load change log:', err);
+      }
+    }
+
+    function getActionBadgeHtml(action) {
+      const a = String(action || 'SAVE').toUpperCase();
+      if (a === 'SAVE' || a === 'DIAGRAM_SAVE') return `<span class="badge badge-green">&#128190; ${escapeHtml(a)}</span>`;
+      if (a === 'ADD' || a === 'CLONE') return `<span class="badge badge-blue">&#10133; ${escapeHtml(a)}</span>`;
+      if (a === 'DELETE') return `<span class="badge badge-red">&#128465; ${escapeHtml(a)}</span>`;
+      if (a === 'HIDE' || a === 'UNHIDE') return `<span class="badge badge-purple">&#128584; ${escapeHtml(a)}</span>`;
+      if (a.startsWith('COMMENT')) return `<span class="badge badge-amber">&#128172; ${escapeHtml(a)}</span>`;
+      return `<span class="badge badge-cyan">&#9999;&#65039; ${escapeHtml(a)}</span>`;
+    }
+
+    function renderChangeLogTable() {
+      const tbody = document.getElementById('changelog-table-body');
+      const emptyEl = document.getElementById('chg-empty-state');
+      if (!tbody) return;
+
+      const q = (document.getElementById('chg-search-input')?.value || '').trim().toLowerCase();
+      const actionFilter = document.getElementById('chg-filter-action')?.value || 'ALL';
+      const actorFilter = document.getElementById('chg-filter-actor')?.value || 'ALL';
+      const wsFilter = document.getElementById('chg-filter-ws')?.value || 'ALL';
+
+      const filtered = portalChangeLogEntries.filter(e => {
+        if (actionFilter !== 'ALL') {
+          if (actionFilter === 'HIDE' && !['HIDE', 'UNHIDE'].includes(e.action)) return false;
+          else if (actionFilter === 'COMMENT' && !String(e.action || '').startsWith('COMMENT')) return false;
+          else if (!['HIDE', 'COMMENT'].includes(actionFilter) && e.action !== actionFilter) return false;
+        }
+        if (actorFilter !== 'ALL' && e.userName !== actorFilter) return false;
+        if (wsFilter !== 'ALL') {
+          const checkWs = wsFilter === 'ALL_DECK' ? 'ALL' : wsFilter;
+          if (e.workstream !== checkWs) return false;
+        }
+        if (q) {
+          const hay = [
+            e.id, e.userName, e.userEmail, e.userRole, e.action,
+            e.targetId, e.targetTitle, e.workstream, e.docPath,
+            e.summary, e.beforeSnippet, e.afterSnippet
+          ].join(' ').toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      if (emptyEl) emptyEl.style.display = filtered.length === 0 ? 'block' : 'none';
+
+      tbody.innerHTML = filtered.map(e => {
+        const safeEntryId = escapeHtml(e.id).replace(/'/g, "\\'");
+        const safeCardId = escapeHtml(e.targetId || '').replace(/'/g, "\\'");
+        const canRestore = Boolean(e.targetId && ['DELETE', 'HIDE', 'SAVE', 'ADD', 'CLONE'].includes(e.action));
+        return `
+          <tr>
+            <td style="white-space:nowrap;">
+              <code>${escapeHtml(e.id)}</code>
+              <div class="muted" style="font-size:11px; margin-top:2px;">${escapeHtml(e.timestampEst || '')}</div>
+            </td>
+            <td>
+              <div style="display:flex; align-items:center; gap:7px;">
+                <span class="gdocs-avatar" style="background:#1a73e8; width:22px; height:22px; font-size:10px;">${escapeHtml(computeInitials(e.userName))}</span>
+                <div>
+                  <strong style="font-size:12.5px; color:var(--heading);">${escapeHtml(e.userName)}</strong>
+                  <div class="muted" style="font-size:11px;">${escapeHtml(e.userEmail)} &bull; ${escapeHtml(e.userRole || 'Contributor')}</div>
+                </div>
+              </div>
+            </td>
+            <td>${getActionBadgeHtml(e.action)}</td>
+            <td>
+              <strong style="font-size:12.5px;">${escapeHtml(e.targetTitle || e.targetId)}</strong>
+              <div class="muted" style="font-size:11px;"><code>${escapeHtml(e.targetId)}</code> (${escapeHtml(e.targetType || 'card')})</div>
+            </td>
+            <td>
+              <span class="badge badge-blue">${escapeHtml(e.workstream || 'WS1')}</span>
+              <div class="muted" style="font-size:11px; margin-top:2px; word-break:break-all;">${escapeHtml(e.docPath || '')}</div>
+            </td>
+            <td style="font-size:12px; max-width:340px;">
+              <div>${escapeHtml(e.summary || '')}</div>
+              ${(e.beforeSnippet || e.afterSnippet) ? `
+                <div style="margin-top:4px; font-size:11px; color:var(--muted); background:var(--panel-alt); padding:4px 7px; border-radius:6px; border:1px solid var(--border);">
+                  ${e.beforeSnippet ? `<div><strong style="color:#dc2626;">Before:</strong> ${escapeHtml(String(e.beforeSnippet).slice(0, 90))}</div>` : ''}
+                  ${e.afterSnippet ? `<div><strong style="color:#16a34a;">After:</strong> ${escapeHtml(String(e.afterSnippet).slice(0, 90))}</div>` : ''}
+                </div>
+              ` : ''}
+            </td>
+            <td style="white-space:nowrap;">
+              <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                <button type="button" class="sim-btn" style="padding:4px 8px; font-size:11px;" onclick="openChangeLogDiffDrawer('${safeEntryId}')">&#128269; Inspect Diff</button>
+                ${canRestore ? `<button type="button" class="sim-btn" style="padding:4px 8px; font-size:11px; border-color:var(--green); color:var(--ok-text);" onclick="restoreCardFromChangeLog('${safeCardId}')">&#8617;&#65039; Restore</button>` : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function resetChangeLogFilters() {
+      const s = document.getElementById('chg-search-input');
+      if (s) s.value = '';
+      const a = document.getElementById('chg-filter-action');
+      if (a) a.value = 'ALL';
+      const u = document.getElementById('chg-filter-actor');
+      if (u) u.value = 'ALL';
+      const w = document.getElementById('chg-filter-ws');
+      if (w) w.value = 'ALL';
+      renderChangeLogTable();
+    }
+
+    function openChangeLogDiffDrawer(entryId) {
+      const entry = portalChangeLogEntries.find(e => e.id === entryId);
+      if (!entry) return;
+      const drw = document.getElementById('changelog-diff-drawer');
+      const idEl = document.getElementById('diff-drawer-id');
+      const titleEl = document.getElementById('diff-drawer-title');
+      const bodyEl = document.getElementById('diff-drawer-body');
+      if (!drw || !bodyEl) return;
+      if (idEl) idEl.textContent = `${entry.id} • ${entry.action}`;
+      if (titleEl) titleEl.textContent = entry.targetTitle || entry.targetId;
+      const safeCardId = escapeHtml(entry.targetId || '').replace(/'/g, "\\'");
+      bodyEl.innerHTML = `
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px; margin-bottom:12px;">
+          <div><strong>Who:</strong> ${escapeHtml(entry.userName)} (<code>${escapeHtml(entry.userEmail)}</code> &bull; ${escapeHtml(entry.userRole)})</div>
+          <div style="margin-top:4px;"><strong>When:</strong> ${escapeHtml(entry.timestampEst)} (${escapeHtml(entry.timestampIso)})</div>
+          <div style="margin-top:4px;"><strong>Target:</strong> <code>${escapeHtml(entry.targetId)}</code> (${escapeHtml(entry.targetType)})</div>
+          <div style="margin-top:4px;"><strong>Workstream / Doc:</strong> ${escapeHtml(entry.workstream)} &bull; <code>${escapeHtml(entry.docPath)}</code></div>
+          <div style="margin-top:6px;"><strong>Summary:</strong> ${escapeHtml(entry.summary)}</div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <div style="font-weight:700; color:#dc2626; margin-bottom:4px;">&minus; Before Snapshot:</div>
+          <pre style="margin:0; padding:10px; background:#fef2f2; color:#991b1b; border:1px solid #fecaca; border-radius:8px; white-space:pre-wrap;">${escapeHtml(entry.beforeSnippet || '(None / Initial State)')}</pre>
+        </div>
+        <div style="margin-bottom:14px;">
+          <div style="font-weight:700; color:#16a34a; margin-bottom:4px;">&#43; After Snapshot:</div>
+          <pre style="margin:0; padding:10px; background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; border-radius:8px; white-space:pre-wrap;">${escapeHtml(entry.afterSnippet || '(No text delta)')}</pre>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="sim-btn primary" onclick="restoreCardFromChangeLog('${safeCardId}'); closeChangeLogDiffDrawer();">&#8617;&#65039; Restore / Revert Target Card to Original State</button>
+          <button type="button" class="sim-btn" onclick="closeChangeLogDiffDrawer()">Close</button>
+        </div>
+      `;
+      drw.classList.add('open');
+    }
+
+    function closeChangeLogDiffDrawer() {
+      const drw = document.getElementById('changelog-diff-drawer');
+      if (drw) drw.classList.remove('open');
+    }
+
+    async function restoreCardFromChangeLog(cardId) {
+      if (!cardId) return;
+      try {
+        const resp = await fetch('/api/changelog/restore', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            targetId: cardId,
+            userName: portalActiveActor.name,
+            userEmail: portalActiveActor.email,
+            userRole: portalActiveActor.role
+          })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (Array.isArray(data.entries)) portalChangeLogEntries = data.entries;
+          if (data.cardOverrides) portalCardOverrides = data.cardOverrides;
+          const el = document.querySelector(`[data-card-id="${cardId}"]`) || document.getElementById(cardId);
+          if (el) {
+            el.classList.remove('card-is-deleted', 'card-is-hidden');
+            const unhidePill = el.querySelector(':scope > .card-hidden-placeholder-bar');
+            if (unhidePill) unhidePill.remove();
+          }
+          if (activeHubDocPath) await loadHubBlogDoc(activeHubDocPath);
+          updateChangeLogCountBadges();
+          renderChangeLogTable();
+          showPortalToast('↩️ Card Restored', `Restored "${cardId}" and recorded audit entry.`);
+        }
+      } catch (err) {
+        console.warn('Error restoring card:', err);
+      }
+    }
+
+    function exportChangeLogCsv() {
+      const headers = ['Audit_ID', 'Timestamp_EST', 'User_Name', 'User_Email', 'User_Role', 'Action', 'Target_Type', 'Target_ID', 'Target_Title', 'Workstream', 'Doc_Path', 'Summary'];
+      const rows = portalChangeLogEntries.map(e => [
+        e.id, e.timestampEst, e.userName, e.userEmail, e.userRole, e.action,
+        e.targetType, e.targetId, e.targetTitle, e.workstream, e.docPath, e.summary
+      ].map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(','));
+      const csv = [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'portal_change_log_audit.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportChangeLogJson() {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        entries: portalChangeLogEntries,
+        cardOverrides: portalCardOverrides,
+        commentThreads: portalCommentThreads
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'portal_change_log_and_comments.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
+      try {
+        const savedActor = localStorage.getItem('ge_blogs_active_actor_v1');
+        if (savedActor) {
+          const parsed = JSON.parse(savedActor);
+          if (parsed && parsed.name) portalActiveActor = parsed;
+        }
+      } catch (_) {}
+      syncActorUiElements();
+
       loadCloudViewerManifest();
       loadE2EPatternBundle();
       loadDiagramE2eFlows();
       selectGuidedWorkstream('WS1');
+      initAllPortalCardHoverToolbars();
+      fetchAndRenderChangeLog();
+      fetchAndRenderComments();
+
       try {
         const params = new URLSearchParams(window.location.search);
         const tabParam = params.get('tab');
         const wbParam = params.get('wb');
         const docParam = params.get('doc');
-        if (tabParam && document.getElementById('tab-' + tabParam)) {
+        const isStandaloneChangelog = Boolean(window.__STANDALONE_CHANGELOG_PAGE || window.location.pathname.replace(/\/+$/, '') === '/changelog');
+        if (isStandaloneChangelog) {
+          const banner = document.getElementById('standalone-changelog-banner');
+          if (banner) banner.style.display = 'flex';
+          switchTab('changelog', document.getElementById('tab-btn-changelog'));
+        } else if (tabParam && document.getElementById('tab-' + tabParam)) {
           const btn = document.getElementById('tab-btn-' + tabParam);
           switchTab(tabParam, btn);
         }

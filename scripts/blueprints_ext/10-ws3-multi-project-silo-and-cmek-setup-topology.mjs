@@ -25,7 +25,7 @@ export default {
     topLeft: { icon: 'iap_iam_shield', title: 'gcloud projects create', sub: '--organization=ORG_ID' },
     midLeft: { icon: 'cloud_logging', title: 'Billing Link', sub: 'BILLING_ACCOUNT per silo' },
     botLeft: { icon: 'cloud_run', title: 'Enable 7 Silo APIs', sub: 'aiplatform…accesscontext' },
-    topRight: { icon: 'load_balancer_cloud_armor', title: 'Region & Env', title2: 'Variables', sub: 'REGION=us-west1' },
+    topRight: { icon: 'terraform_iac', title: 'Region & Env', title2: 'Variables', sub: 'REGION=us-west1' },
     botRight: { icon: 'security_command_center', title: 'Silo Security Tests', sub: 'run_silo_security_tests.py' },
     edgeTopLeft: ['Create silo', 'projects'],
     edgeMidLeft: ['Link billing', 'account'],
@@ -48,7 +48,7 @@ export default {
   leftZoneSub: 'KeyRing cymbal-multi-tenant-kr • finvault-silo-cmek',
   leftCards: {
     modelArmor: { icon: 'vpc_sc', title: 'VPC-SC Perimeter', sub: 'Restricts 7 silo APIs' },
-    llm: { icon: 'gemini_agent_platform', title: 'Private GKE Gemma 3', sub: 'container.googleapis.com' },
+    llm: { icon: 'gke', title: 'Private GKE Gemma 3', sub: 'container.googleapis.com' },
     runtime: { icon: 'cloud_kms', title: 'KMS Ring finvault-kr', sub: 'cymbal-multi-tenant-kr' },
     mcp: { icon: 'cloud_kms', title: 'finvault-silo-cmek', sub: 'rotation 7776000s (90d)' },
     datastore: { icon: 'datastore_alloydb_bq', title: 'CMEK Silo Vault', sub: 'pattern_b_silo_finvault_cmek_vault' },
@@ -63,7 +63,7 @@ export default {
   rightZoneSub: 'retailstream-silo-cmek & medcore-revoked-cmek (HTTP 423)',
   rightCards: {
     modelArmor: { icon: 'vpc_sc', title: 'VPC-SC Perimeter', sub: 'Restricts 7 silo APIs' },
-    llm: { icon: 'gemini_agent_platform', title: 'Private GKE Gemma 3', sub: 'container.googleapis.com' },
+    llm: { icon: 'gke', title: 'Private GKE Gemma 3', sub: 'container.googleapis.com' },
     runtime: { icon: 'cloud_kms', title: 'retailstream-silo-cmek', sub: 'Active KMS CryptoKey' },
     mcp: { icon: 'cloud_kms', title: 'medcore-revoked-cmek', sub: 'DISABLED -> HTTP 423 Lock' },
     datastore: { icon: 'datastore_alloydb_bq', title: 'CMEK AlloyDB & Agent', sub: 'Instant Kill-Switch Verified' },

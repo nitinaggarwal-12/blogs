@@ -409,6 +409,119 @@ def execute_custom_sandbox_turn(payload: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+CHANGELOG_FILE = ROOT_DIR / "docs/portal_change_log.json"
+COMMENTS_FILE = ROOT_DIR / "docs/portal_comments.json"
+
+
+def _now_iso_and_est() -> tuple[str, str]:
+    now_epoch = time.time()
+    # Format UTC / EST (-04:00 EDT / -05:00 EST)
+    tm_local = time.localtime(now_epoch)
+    iso_str = time.strftime("%Y-%m-%dT%H:%M:%S-04:00", tm_local)
+    est_str = time.strftime("%Y-%m-%d %H:%M:%S EST", tm_local)
+    return iso_str, est_str
+
+
+def load_portal_changelog() -> Dict[str, Any]:
+    if CHANGELOG_FILE.is_file():
+        try:
+            data = json.loads(CHANGELOG_FILE.read_text(encoding="utf-8"))
+            if isinstance(data, dict):
+                data.setdefault("schemaVersion", "1.0")
+                data.setdefault("entries", [])
+                data.setdefault("cardOverrides", {})
+                return data
+        except Exception:
+            pass
+    iso_str, _ = _now_iso_and_est()
+    return {
+        "schemaVersion": "1.0",
+        "updatedAt": iso_str,
+        "entries": [],
+        "cardOverrides": {},
+    }
+
+
+def save_portal_changelog(data: Dict[str, Any]) -> Dict[str, Any]:
+    iso_str, _ = _now_iso_and_est()
+    data["updatedAt"] = iso_str
+    CHANGELOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+    CHANGELOG_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    return data
+
+
+def append_changelog_entry(
+    *,
+    actor_name: str,
+    actor_email: str,
+    actor_role: str = "Principal Cloud Architect",
+    action: str,
+    target_type: str = "blog_section",
+    card_id: str,
+    card_title: str,
+    workstream: str = "WS1",
+    doc_path: str = "",
+    summary: str = "",
+    before_text: str = "",
+    after_text: str = "",
+    restorable: bool = True,
+    card_override: Dict[str, Any] | None = None,
+) -> Dict[str, Any]:
+    store = load_portal_changelog()
+    iso_str, est_str = _now_iso_and_est()
+    seq = len(store.get("entries", [])) + 1
+    day_compact = iso_str[:10].replace("-", "")
+    entry = {
+        "id": f"CHG-{day_compact}-{seq:04d}",
+        "timestamp": iso_str,
+        "timestampEst": est_str,
+        "actorName": actor_name or "Nitin Aggarwal",
+        "actorEmail": actor_email or "nitinagga@google.com",
+        "actorRole": actor_role or "Principal Cloud Architect",
+        "action": action.upper(),
+        "targetType": target_type,
+        "cardId": card_id,
+        "cardTitle": card_title or card_id,
+        "workstream": workstream or "WS1",
+        "docPath": doc_path,
+        "summary": summary or f"{action.upper()} on {card_title or card_id}",
+        "beforeText": (before_text or "")[:4000],
+        "afterText": (after_text or "")[:4000],
+        "restorable": bool(restorable),
+    }
+    store.setdefault("entries", []).insert(0, entry)
+    if card_override and isinstance(card_override, dict) and card_id:
+        store.setdefault("cardOverrides", {})[card_id] = card_override
+    save_portal_changelog(store)
+    return entry
+
+
+def load_portal_comments() -> Dict[str, Any]:
+    if COMMENTS_FILE.is_file():
+        try:
+            data = json.loads(COMMENTS_FILE.read_text(encoding="utf-8"))
+            if isinstance(data, dict):
+                data.setdefault("schemaVersion", "1.0")
+                data.setdefault("threads", [])
+                return data
+        except Exception:
+            pass
+    iso_str, _ = _now_iso_and_est()
+    return {
+        "schemaVersion": "1.0",
+        "updatedAt": iso_str,
+        "threads": [],
+    }
+
+
+def save_portal_comments(data: Dict[str, Any]) -> Dict[str, Any]:
+    iso_str, _ = _now_iso_and_est()
+    data["updatedAt"] = iso_str
+    COMMENTS_FILE.parent.mkdir(parents=True, exist_ok=True)
+    COMMENTS_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    return data
+
+
 class PortalRequestHandler(BaseHTTPRequestHandler):
     def _send_json(self, status_code: int, payload: Dict[str, Any]) -> None:
         raw = json.dumps(payload, indent=2).encode("utf-8")
@@ -427,6 +540,21 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(html_bytes)
 
+    def _detect_iap_actor(self, body: Dict[str, Any] | None = None) -> tuple[str, str, str]:
+        body = body or {}
+        iap_hdr = self.headers.get("X-Goog-Authenticated-User-Email", "")
+        iap_email = iap_hdr.split(":")[-1].strip() if iap_hdr else ""
+        email = str(body.get("actorEmail") or body.get("authorEmail") or iap_email or "nitinagga@google.com").strip()
+        name = str(body.get("actorName") or body.get("authorName") or "").strip()
+        if not name:
+            if email.startswith("nitinagga"):
+                name = "Nitin Aggarwal"
+            else:
+                local_part = email.split("@")[0].replace(".", " ").replace("_", " ").title()
+                name = local_part or "Nitin Aggarwal"
+        role = str(body.get("actorRole") or body.get("authorRole") or "Principal Cloud Architect").strip()
+        return name, email, role
+
     def log_message(self, format: str, *args: Any) -> None:
         # Clean concise single-line access log
         sys.stdout.write(f"[GEAP-Portal] {self.address_string()} - {format % args}\n")
@@ -438,6 +566,57 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         if path in ("/", "/index.html"):
             index_file = ROOT_DIR / "index.html"
             self._send_html(200, index_file.read_bytes())
+            return
+
+        if path in ("/changelog", "/changelog.html"):
+            index_file = ROOT_DIR / "index.html"
+            html_text = index_file.read_text(encoding="utf-8")
+            inject_script = "<script>window.__STANDALONE_CHANGELOG_PAGE = true;</script></head>"
+            html_text = html_text.replace("</head>", inject_script, 1)
+            self._send_html(200, html_text.encode("utf-8"))
+            return
+
+        if path == "/api/changelog":
+            store = load_portal_changelog()
+            actor_name, actor_email, actor_role = self._detect_iap_actor()
+            entries = store.get("entries", [])
+            self._send_json(
+                200,
+                {
+                    "ok": True,
+                    "schemaVersion": store.get("schemaVersion", "1.0"),
+                    "updatedAt": store.get("updatedAt", ""),
+                    "totalEntries": len(entries),
+                    "activeActor": {
+                        "actorName": actor_name,
+                        "actorEmail": actor_email,
+                        "actorRole": actor_role,
+                    },
+                    "entries": entries,
+                    "cardOverrides": store.get("cardOverrides", {}),
+                },
+            )
+            return
+
+        if path == "/api/comments":
+            store = load_portal_comments()
+            threads = store.get("threads", [])
+            open_count = sum(1 for t in threads if t.get("status") != "resolved")
+            resolved_count = sum(1 for t in threads if t.get("status") == "resolved")
+            total_comments = sum(len(t.get("comments", [])) for t in threads)
+            self._send_json(
+                200,
+                {
+                    "ok": True,
+                    "schemaVersion": store.get("schemaVersion", "1.0"),
+                    "updatedAt": store.get("updatedAt", ""),
+                    "totalThreads": len(threads),
+                    "openCount": open_count,
+                    "resolvedCount": resolved_count,
+                    "totalComments": total_comments,
+                    "threads": threads,
+                },
+            )
             return
 
         if path == "/api/health":
@@ -1176,16 +1355,302 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 if not str(target_drawio).startswith(str(ROOT_DIR)):
                     self._send_json(403, {"ok": False, "error": "Forbidden path"})
                     return
+                prev_bytes = target_drawio.stat().st_size if target_drawio.is_file() else 0
                 target_drawio.write_text(xml_content, encoding="utf-8")
+                new_bytes = len(xml_content.encode("utf-8"))
+                actor_name, actor_email, actor_role = self._detect_iap_actor(body)
+                ws_prefix = safe_id.split("-")[0].upper() if safe_id.startswith("ws") else "WS1"
+                entry = append_changelog_entry(
+                    actor_name=actor_name,
+                    actor_email=actor_email,
+                    actor_role=actor_role,
+                    action="DIAGRAM_SAVE",
+                    target_type="diagram_card",
+                    card_id=f"inline-fig-card-{safe_id}",
+                    card_title=f"Architecture Diagram: {safe_id}.drawio",
+                    workstream=ws_prefix,
+                    doc_path=f"diagrams/{safe_id}.drawio",
+                    summary=f"Saved interactive Draw.io XML for diagrams/{safe_id}.drawio ({new_bytes:,} bytes).",
+                    before_text=f"diagrams/{safe_id}.drawio ({prev_bytes:,} bytes)",
+                    after_text=f"diagrams/{safe_id}.drawio ({new_bytes:,} bytes)",
+                    restorable=False,
+                )
                 self._send_json(
                     200,
                     {
                         "ok": True,
                         "id": safe_id,
                         "path": f"diagrams/{safe_id}.drawio",
-                        "bytes": len(xml_content.encode("utf-8")),
+                        "bytes": new_bytes,
+                        "changelogEntry": entry,
                     },
                 )
+                return
+
+            if path == "/api/changelog":
+                actor_name, actor_email, actor_role = self._detect_iap_actor(body)
+                action = str(body.get("action") or "SAVE").strip().upper()
+                target_type = str(body.get("targetType") or "blog_section").strip()
+                card_id = str(body.get("cardId") or "card-custom").strip()
+                card_title = str(body.get("cardTitle") or card_id).strip()
+                workstream = str(body.get("workstream") or "WS1").strip()
+                doc_path = str(body.get("docPath") or "").strip()
+                summary = str(body.get("summary") or f"{action} on {card_title}").strip()
+                before_text = str(body.get("beforeText") or "")
+                after_text = str(body.get("afterText") or "")
+                restorable = bool(body.get("restorable", True))
+                card_override = body.get("cardOverride") if isinstance(body.get("cardOverride"), dict) else None
+                entry = append_changelog_entry(
+                    actor_name=actor_name,
+                    actor_email=actor_email,
+                    actor_role=actor_role,
+                    action=action,
+                    target_type=target_type,
+                    card_id=card_id,
+                    card_title=card_title,
+                    workstream=workstream,
+                    doc_path=doc_path,
+                    summary=summary,
+                    before_text=before_text,
+                    after_text=after_text,
+                    restorable=restorable,
+                    card_override=card_override,
+                )
+                store = load_portal_changelog()
+                self._send_json(
+                    200,
+                    {
+                        "ok": True,
+                        "entry": entry,
+                        "totalEntries": len(store.get("entries", [])),
+                        "cardOverrides": store.get("cardOverrides", {}),
+                    },
+                )
+                return
+
+            if path == "/api/changelog/restore":
+                actor_name, actor_email, actor_role = self._detect_iap_actor(body)
+                card_id = str(body.get("cardId") or "").strip()
+                entry_id = str(body.get("entryId") or "").strip()
+                store = load_portal_changelog()
+                overrides = store.get("cardOverrides", {})
+                target_entry = next((e for e in store.get("entries", []) if e.get("id") == entry_id), None)
+                card_title = str(body.get("cardTitle") or (target_entry.get("cardTitle") if target_entry else card_id))
+                workstream = str(body.get("workstream") or (target_entry.get("workstream") if target_entry else "WS1"))
+                doc_path = str(body.get("docPath") or (target_entry.get("docPath") if target_entry else ""))
+                if card_id in overrides:
+                    overrides.pop(card_id, None)
+                    save_portal_changelog(store)
+                restore_entry = append_changelog_entry(
+                    actor_name=actor_name,
+                    actor_email=actor_email,
+                    actor_role=actor_role,
+                    action="RESTORE",
+                    target_type="blog_section",
+                    card_id=card_id or "card-restored",
+                    card_title=card_title,
+                    workstream=workstream,
+                    doc_path=doc_path,
+                    summary=f"Restored '{card_title}' to baseline state (reverted {entry_id or card_id}).",
+                    before_text=target_entry.get("afterText", "") if target_entry else "",
+                    after_text=target_entry.get("beforeText", "") if target_entry else "Restored baseline content",
+                    restorable=False,
+                )
+                updated_store = load_portal_changelog()
+                self._send_json(
+                    200,
+                    {
+                        "ok": True,
+                        "restoredCardId": card_id,
+                        "entry": restore_entry,
+                        "totalEntries": len(updated_store.get("entries", [])),
+                        "cardOverrides": updated_store.get("cardOverrides", {}),
+                    },
+                )
+                return
+
+            if path == "/api/comments":
+                op = str(body.get("op") or "add_thread").strip().lower()
+                actor_name, actor_email, actor_role = self._detect_iap_actor(body)
+                avatar_color = str(body.get("avatarColor") or "#1a73e8").strip()
+                iso_str, est_str = _now_iso_and_est()
+                c_store = load_portal_comments()
+                threads = c_store.setdefault("threads", [])
+
+                if op == "add_thread":
+                    card_id = str(body.get("cardId") or "card-general").strip()
+                    card_title = str(body.get("cardTitle") or card_id).strip()
+                    workstream = str(body.get("workstream") or "WS1").strip()
+                    doc_path = str(body.get("docPath") or "").strip()
+                    quoted_text = str(body.get("quotedText") or "").strip()
+                    text = str(body.get("text") or "").strip()
+                    if not text:
+                        self._send_json(400, {"ok": False, "error": "Comment text is required"})
+                        return
+                    t_seq = len(threads) + 1
+                    thread_id = f"CMT-THREAD-{t_seq:03d}-{int(time.time() * 1000) % 10000}"
+                    new_comment = {
+                        "commentId": f"CMT-{t_seq:03d}-A",
+                        "authorName": actor_name,
+                        "authorEmail": actor_email,
+                        "authorRole": actor_role,
+                        "avatarColor": avatar_color,
+                        "text": text,
+                        "createdAt": iso_str,
+                        "createdAtEst": est_str,
+                    }
+                    new_thread = {
+                        "threadId": thread_id,
+                        "cardId": card_id,
+                        "cardTitle": card_title,
+                        "workstream": workstream,
+                        "docPath": doc_path,
+                        "quotedText": quoted_text,
+                        "status": "open",
+                        "createdAt": iso_str,
+                        "createdAtEst": est_str,
+                        "createdBy": actor_name,
+                        "createdByEmail": actor_email,
+                        "createdByRole": actor_role,
+                        "avatarColor": avatar_color,
+                        "comments": [new_comment],
+                    }
+                    threads.insert(0, new_thread)
+                    save_portal_comments(c_store)
+                    chg_entry = append_changelog_entry(
+                        actor_name=actor_name,
+                        actor_email=actor_email,
+                        actor_role=actor_role,
+                        action="COMMENT_ADD",
+                        target_type="comment_thread",
+                        card_id=card_id,
+                        card_title=card_title,
+                        workstream=workstream,
+                        doc_path=doc_path,
+                        summary=f"{actor_name} commented on '{card_title}': \"{text[:140]}\"",
+                        before_text=quoted_text,
+                        after_text=text,
+                        restorable=False,
+                    )
+                    self._send_json(
+                        200,
+                        {
+                            "ok": True,
+                            "thread": new_thread,
+                            "threads": threads,
+                            "changelogEntry": chg_entry,
+                        },
+                    )
+                    return
+
+                if op == "reply":
+                    thread_id = str(body.get("threadId") or "").strip()
+                    text = str(body.get("text") or "").strip()
+                    target_t = next((t for t in threads if t.get("threadId") == thread_id), None)
+                    if not target_t or not text:
+                        self._send_json(400, {"ok": False, "error": "Invalid threadId or empty reply text"})
+                        return
+                    c_list = target_t.setdefault("comments", [])
+                    reply_obj = {
+                        "commentId": f"{thread_id}-R{len(c_list) + 1}",
+                        "authorName": actor_name,
+                        "authorEmail": actor_email,
+                        "authorRole": actor_role,
+                        "avatarColor": avatar_color,
+                        "text": text,
+                        "createdAt": iso_str,
+                        "createdAtEst": est_str,
+                    }
+                    c_list.append(reply_obj)
+                    save_portal_comments(c_store)
+                    chg_entry = append_changelog_entry(
+                        actor_name=actor_name,
+                        actor_email=actor_email,
+                        actor_role=actor_role,
+                        action="COMMENT_REPLY",
+                        target_type="comment_thread",
+                        card_id=target_t.get("cardId", ""),
+                        card_title=target_t.get("cardTitle", ""),
+                        workstream=target_t.get("workstream", "WS1"),
+                        doc_path=target_t.get("docPath", ""),
+                        summary=f"{actor_name} replied in '{target_t.get('cardTitle', '')}': \"{text[:140]}\"",
+                        before_text=target_t["comments"][0].get("text", "") if target_t.get("comments") else "",
+                        after_text=text,
+                        restorable=False,
+                    )
+                    self._send_json(
+                        200,
+                        {
+                            "ok": True,
+                            "thread": target_t,
+                            "threads": threads,
+                            "changelogEntry": chg_entry,
+                        },
+                    )
+                    return
+
+                if op in ("resolve", "reopen"):
+                    thread_id = str(body.get("threadId") or "").strip()
+                    target_t = next((t for t in threads if t.get("threadId") == thread_id), None)
+                    if not target_t:
+                        self._send_json(404, {"ok": False, "error": "Comment thread not found"})
+                        return
+                    new_status = "resolved" if op == "resolve" else "open"
+                    target_t["status"] = new_status
+                    target_t["resolvedBy"] = actor_name if new_status == "resolved" else ""
+                    target_t["resolvedAtEst"] = est_str if new_status == "resolved" else ""
+                    save_portal_comments(c_store)
+                    chg_entry = append_changelog_entry(
+                        actor_name=actor_name,
+                        actor_email=actor_email,
+                        actor_role=actor_role,
+                        action="COMMENT_RESOLVE" if new_status == "resolved" else "COMMENT_REOPEN",
+                        target_type="comment_thread",
+                        card_id=target_t.get("cardId", ""),
+                        card_title=target_t.get("cardTitle", ""),
+                        workstream=target_t.get("workstream", "WS1"),
+                        doc_path=target_t.get("docPath", ""),
+                        summary=f"{actor_name} marked comment thread on '{target_t.get('cardTitle', '')}' as {new_status.upper()}.",
+                        before_text=f"status={'open' if new_status == 'resolved' else 'resolved'}",
+                        after_text=f"status={new_status}",
+                        restorable=False,
+                    )
+                    self._send_json(
+                        200,
+                        {
+                            "ok": True,
+                            "thread": target_t,
+                            "threads": threads,
+                            "changelogEntry": chg_entry,
+                        },
+                    )
+                    return
+
+                if op == "delete_thread":
+                    thread_id = str(body.get("threadId") or "").strip()
+                    target_t = next((t for t in threads if t.get("threadId") == thread_id), None)
+                    if target_t:
+                        c_store["threads"] = [t for t in threads if t.get("threadId") != thread_id]
+                        save_portal_comments(c_store)
+                        append_changelog_entry(
+                            actor_name=actor_name,
+                            actor_email=actor_email,
+                            actor_role=actor_role,
+                            action="COMMENT_DELETE",
+                            target_type="comment_thread",
+                            card_id=target_t.get("cardId", ""),
+                            card_title=target_t.get("cardTitle", ""),
+                            workstream=target_t.get("workstream", "WS1"),
+                            doc_path=target_t.get("docPath", ""),
+                            summary=f"{actor_name} deleted comment thread ({thread_id}) on '{target_t.get('cardTitle', '')}'.",
+                            before_text=target_t["comments"][0].get("text", "") if target_t.get("comments") else "",
+                            after_text="(Deleted)",
+                            restorable=False,
+                        )
+                    self._send_json(200, {"ok": True, "threads": c_store.get("threads", [])})
+                    return
+
+                self._send_json(400, {"ok": False, "error": f"Unsupported comments op: {op}"})
                 return
 
             if path == "/api/google-workspace/open":

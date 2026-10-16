@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0",
+  "updatedAt": "2026-10-15T19:15:00-04:00",
+  "entries": [
+    {
+      "id": "CHG-20261015-0001",
+      "timestamp": "2026-10-15T18:30:12-04:00",
+      "timestampEst": "2026-10-15 18:30:12 EST",
+      "actorName": "Nitin Aggarwal",
+      "actorEmail": "nitinagga@google.com",
+      "actorRole": "Principal Cloud Architect",
+      "action": "DIAGRAM_SAVE",
+      "targetType": "diagram_card",
+      "cardId": "inline-fig-card-ws1-multi-tenant-taxonomy-overview",
+      "cardTitle": "Figure 1. Multi-Tenant Agentic AI Isolation Taxonomy (Pattern A, Pattern B, Pattern C)",
+      "workstream": "WS1",
+      "docPath": "diagrams/ws1-multi-tenant-taxonomy-overview.drawio",
+      "summary": "Saved Official GCP Architecture Center #78 Hub-and-Spoke Draw.io topology (56 editable shapes, 23 vertex-bound edges) and synchronized Slide 2 in WS1 deck.",
+      "beforeText": "Figure 1 baseline topology (v11)",
+      "afterText": "Figure 1 certified #78 Hub-and-Spoke topology with 52px intra-spoke connector channels (v12)",
+      "restorable": true
+    },
+    {
+      "id": "CHG-20261015-0002",
+      "timestamp": "2026-10-15T18:42:05-04:00",
+      "timestampEst": "2026-10-15 18:42:05 EST",
+      "actorName": "Sarah Chen",
+      "actorEmail": "sarahchen@google.com",
+      "actorRole": "Staff Security Architect",
+      "action": "COMMENT_ADD",
+      "targetType": "blog_section",
+      "cardId": "doc-sec-blogs-ws1-reference-architecture-taxonomy-and-5hop-baseline-md-1",
+      "cardTitle": "Architecture",
+      "workstream": "WS1",
+      "docPath": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
+      "summary": "Added review comment on 'Architecture' section verifying Hop 1 RFC 9449 DPoP thumbprint binding and Hop 5 AlloyDB Row-Level Security (RLS).",
+      "beforeText": "",
+      "afterText": "Verified that Hop 1 strips unauthenticated X-Tenant-ID headers at Cloud Armor / Envoy before minting the ECDSA P-256 TenantContext.",
+      "restorable": false
+    },
+    {
+      "id": "CHG-20261015-0003",
+      "timestamp": "2026-10-15T18:55:40-04:00",
+      "timestampEst": "2026-10-15 18:55:40 EST",
+      "actorName": "Nitin Aggarwal",
+      "actorEmail": "nitinagga@google.com",
+      "actorRole": "Principal Cloud Architect",
+      "action": "SAVE",
+      "targetType": "blog_section",
+      "cardId": "doc-sec-blogs-ws1-reference-architecture-taxonomy-and-5hop-baseline-md-4",
+      "cardTitle": "Design alternatives",
+      "workstream": "WS1",
+      "docPath": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
+      "summary": "Updated 'Design alternatives' 7-dimension comparison matrix and synchronized 1:1 with WS1 Google Slides (Slide 10).",
+      "beforeText": "Design alternatives matrix (3 summary rows)",
+      "afterText": "Design alternatives matrix (7-dimension architectural trade-off table + 5 GAP-01..GAP-05 engineering roadmap rows)",
+      "restorable": true
+    }
+  ],
+  "cardOverrides": {}
+}
