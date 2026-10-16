@@ -424,6 +424,11 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             "blog-visual-proof-screenshots-gallery",
             "blog-e2e-pattern-execution-and-codebase-workbench",
             "series-reader-main-lane",
+            "header-governance-select",
+            "hub-doc-select",
+            "sim-scenario-preset-select",
+            "e2e-workbench-view-select",
+            "extractHopTrailFromResponse",
             "max-width: min(100%, 620px) !important",
             "max-height: 660px !important",
         ]
