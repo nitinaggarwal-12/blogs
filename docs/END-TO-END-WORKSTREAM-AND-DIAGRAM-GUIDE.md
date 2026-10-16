@@ -249,7 +249,7 @@ The anchor case study used throughout is **Cymbal SaaS Platform** (ISV publishin
 | Network perimeter | Single shared VPC behind Cloud Armor + IAP | Per-tenant VPC-SC perimeter + mTLS ingress | Hub-and-spoke VPC with PSC service attachments |
 | Identity & access | RFC 8693 OBO + DPoP; Auth Manager 2LO/3LO | IAM PAB + per-project Workload Identity Pools | Unified IdP broker + cross-project PAB + PSC identity propagation |
 | Data & memory | Shared AlloyDB RLS + `{tenant}:{user}:{session}` Memory Bank | Dedicated AlloyDB/BigQuery + Cloud KMS CMEK | Shared RLS DB (Standard) + CMEK spokes via PSC (Enterprise) |
-| Model & FinOps | Shared `ContextCacheConfig` (up to 90% COGS savings) + Redis bulkheads | Dedicated Provisioned Throughput per project | Pooled caching (Standard) + PT / Model Garden Claude (Enterprise) |
+| Model & FinOps | Shared `ContextCacheConfig` (up to 90% COGS savings) + Redis bulkheads | Dedicated Provisioned Throughput per project | Pooled caching (Standard) + Dedicated Gemini 2.5 Pro PT (Enterprise) |
 | Target segment / milestone | Standard B2B SaaS (RetailStream) • WS2, Week 4 | Regulated FinTech/Healthcare (FinVault) • WS3, Week 7 | SMB-to-Fortune-500 tiers with live upgrades • WS4, Week 10 |
 
 #### 5-Hop chain reference (code the diagrams point at)
@@ -810,8 +810,8 @@ only on the left spoke; the right spoke has none.)
   icon and `Redis Rate Bulkhead` with the `iap_iam_shield` icon. Titles, not icons, are authoritative.
 - Step badges 4/5/6 appear only in the FinVault spoke; the RetailStream spoke shows the same flow
   implicitly.
-- The diagram shows `Gemini & Gemini 2.5 Pro` on the FinVault card; in the source only `Agent Alpha`
-  runs Claude, the shared agent runs Gemini 2.5 Pro for both tenants.
+- The diagram shows `Gemini & Gemini 2.5 Pro` on the FinVault card; `Agent Alpha` runs on dedicated
+  Gemini 2.5 Pro PT while the shared agent runs pooled Gemini 2.5 Flash/Pro across both tenants.
 - "Envelope CMEK" for the FinVault namespace is an engineered hook (2.4 `GEAP-POOL-03`), not a
   GA product feature; the Terraform starter creates the key but no binding to a memory namespace.
 
@@ -880,7 +880,7 @@ Edge labels: `Rule 1000 SQLi` / `XSS deny-403`; `Drop forged` / `tenant headers`
 Workspace OIDC + Jira 3LO)`; zone `FinVault Sandbox Wiring` / `finvault.com OAuth 2.0 Client ID •
 8,000 thinking budget`. Cards: `Google OIDC Client` — `OAuth 2.0 Client ID`; `Workspace 3LO Scopes` —
 `drive, calendar, gmail`; `Jira MCP Sandbox` — `read/write:jira-work`; `Firestore Tenant Doc` —
-`tier ENTERPRISE • rpm 600`; `Private Agent Alpha` — `claude-3-7-sonnet allowed`. Badges **4**
+`tier ENTERPRISE • rpm 600`; `Private Agent Alpha` — `gemini-2.5-pro PT allowed`. Badges **4**
 `Create client ID`, **6** `Seed tenant config`, **5** `Register 3LO` / `scopes`. RAG label
 `Workspace +` / `Jira tools`; tool label `allowed_agents` / `shared + alpha`.
 
