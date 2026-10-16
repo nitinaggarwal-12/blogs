@@ -53,7 +53,7 @@ export default {
     llm: { icon: 'mcp_servers', title: 'Workspace 3LO Scopes', sub: 'drive, calendar, gmail' },
     runtime: { icon: 'mcp_servers', title: 'Jira MCP Sandbox', sub: 'read/write:jira-work' },
     mcp: { icon: 'firestore_db', title: 'Firestore Tenant Doc', sub: 'tier ENTERPRISE • rpm 600' },
-    datastore: { icon: 'gemini_agent_platform', title: 'Private Agent Alpha', sub: 'claude-3-7-sonnet allowed' },
+    datastore: { icon: 'gemini_agent_platform', title: 'Private Agent Alpha', sub: 'gemini-2.5-pro (8k Budget)' },
     step4Label: 'Create client ID',
     step6Label: 'Seed tenant config',
     step5Label: ['Register 3LO', 'scopes'],

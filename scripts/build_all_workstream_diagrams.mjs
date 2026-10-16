@@ -173,21 +173,106 @@ const EXTRA_GCP_ICONS = {
       <path d="M21 20 H32 M28 16 L32 20 L28 24" fill="none" stroke="#1a73e8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   `),
+  alloydb: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e8f0fe" stroke="#1967d2" stroke-width="2"/>
+      <ellipse cx="20" cy="12" rx="10" ry="4" fill="#1967d2"/>
+      <path d="M10 12 V20 C10 22.2 14.5 24 20 24 C25.5 24 30 22.2 30 20 V12" fill="#4285f4"/>
+      <path d="M10 20 V28 C10 30.2 14.5 32 20 32 C25.5 32 30 30.2 30 28 V20" fill="#34a853"/>
+    </svg>
+  `),
+  cloud_logging: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+      <rect x="8" y="10" width="24" height="4.5" rx="1.5" fill="#1a73e8"/>
+      <rect x="8" y="17.5" width="18" height="4.5" rx="1.5" fill="#34a853"/>
+      <rect x="8" y="25" width="24" height="4.5" rx="1.5" fill="#1967d2"/>
+      <circle cx="30" cy="19.8" r="2.8" fill="#fbbc04"/>
+    </svg>
+  `),
+  billing_finops: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e6f4ea" stroke="#137333" stroke-width="2"/>
+      <circle cx="20" cy="20" r="11" fill="#34a853"/>
+      <path d="M20 12 V28 M16 15.5 C16 13.8 17.8 13 20 13 C22.2 13 24 13.8 24 15.5 C24 17.5 16 17.8 16 20.5 C16 22.5 17.8 23.5 20 23.5 C22.2 23.5 24 22.5 24 20.5" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+  `),
+  verification_suite: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e6f4ea" stroke="#137333" stroke-width="2"/>
+      <path d="M20 7 L9 12 V20 C9 27.2 13.7 33.4 20 35 C26.3 33.4 31 27.2 31 20 V12 Z" fill="#34a853"/>
+      <path d="M15 20.5 L18.5 24 L25.5 16.5" fill="none" stroke="#ffffff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  `),
+  terraform_output: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#f3e8fd" stroke="#7b1fa2" stroke-width="2"/>
+      <rect x="8" y="9" width="24" height="22" rx="3" fill="#623ce4"/>
+      <path d="M13 16 L18 20 L13 24 M20 24 H27" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  `),
+  oauth_identity: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e8f0fe" stroke="#1967d2" stroke-width="2"/>
+      <rect x="7" y="10" width="26" height="20" rx="3" fill="#1967d2"/>
+      <circle cx="15" cy="17.5" r="3.2" fill="#ffffff"/>
+      <path d="M10.5 25.5 C10.5 22.8 12.8 21.5 15 21.5 C17.2 21.5 19.5 22.8 19.5 25.5" fill="#ffffff"/>
+      <rect x="22" y="15" width="8" height="2.4" rx="1" fill="#fbbc04"/>
+      <rect x="22" y="20" width="6" height="2.4" rx="1" fill="#aecbfa"/>
+    </svg>
+  `),
+  context_cache: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#fef7e0" stroke="#ea8600" stroke-width="2"/>
+      <path d="M22 7 L11 21 H19 L17 33 L29 19 H21 Z" fill="#fbbc04" stroke="#ea8600" stroke-width="1.2" stroke-linejoin="round"/>
+    </svg>
+  `),
 };
 
 function resolveArchIconUri(iconKey, title = '', _sub = '') {
-  if (EXTRA_GCP_ICONS[iconKey]) return EXTRA_GCP_ICONS[iconKey];
   const titleLower = String(title || '').toLowerCase();
+  if (titleLower.includes('cloud run')) {
+    return OFFICIAL_ASSETS.cloud_run;
+  }
+  if (
+    titleLower.includes('model armor') ||
+    titleLower.includes('modelarmor') ||
+    titleLower.includes('header sanitizer') ||
+    titleLower.includes('vector 4:') ||
+    titleLower.includes('vector 5:')
+  ) {
+    return OFFICIAL_ASSETS.model_armor;
+  }
+  if (titleLower.includes('contextcache') || titleLower.includes('prefix cache')) {
+    return EXTRA_GCP_ICONS.context_cache;
+  }
+  if (titleLower.includes('output:') || titleLower.includes('outputs') || titleLower.includes('tfstate')) {
+    return EXTRA_GCP_ICONS.terraform_output;
+  }
+  if (titleLower.includes('chargeback') || titleLower.includes('finops') || titleLower.includes('billing')) {
+    return EXTRA_GCP_ICONS.billing_finops;
+  }
+  if (titleLower.includes('cloud logging') || titleLower.includes('log sink')) {
+    return EXTRA_GCP_ICONS.cloud_logging;
+  }
+  if (titleLower.includes('suite') || titleLower.includes('verify') || titleLower.includes('readiness') || titleLower.includes('invariant')) {
+    return EXTRA_GCP_ICONS.verification_suite;
+  }
+  if (titleLower.includes('alloydb') || titleLower.includes('postgresql') || titleLower.includes('rls')) {
+    return EXTRA_GCP_ICONS.alloydb;
+  }
+  if (titleLower.includes('oidc') || titleLower.includes('entra') || titleLower.includes('workforce') || titleLower.includes('3lo') || titleLower.includes('vector 10:')) {
+    return EXTRA_GCP_ICONS.oauth_identity;
+  }
+  if (EXTRA_GCP_ICONS[iconKey]) return EXTRA_GCP_ICONS[iconKey];
   if (
     !titleLower.includes('model armor') &&
     !titleLower.includes('load balancer') &&
     (titleLower.includes('cloud armor') ||
       titleLower.includes('waf') ||
       titleLower.includes('header strip') ||
-      titleLower.includes('header sanitizer') ||
       titleLower.includes('security policy') ||
-      titleLower.includes('rule 1000') ||
-      titleLower.includes('edge pep'))
+      titleLower.includes('rule 1000'))
   ) {
     return EXTRA_GCP_ICONS.cloud_armor;
   }
@@ -225,7 +310,7 @@ function resolveArchIconUri(iconKey, title = '', _sub = '') {
   if (titleLower.includes('firestore') || titleLower.includes('route table')) {
     return EXTRA_GCP_ICONS.firestore_db;
   }
-  if (titleLower.includes('bigquery') || titleLower.includes('bq') || titleLower.includes('otel') || titleLower.includes('chargeback')) {
+  if (titleLower.includes('bigquery') || titleLower.includes('bq') || titleLower.includes('otel')) {
     return EXTRA_GCP_ICONS.bigquery_analytics;
   }
   if (titleLower.includes('registry') || titleLower.includes('discovery engine') || titleLower.includes('catalog') || titleLower.includes('agent card')) {
@@ -305,7 +390,7 @@ const WORKSTREAM_BLUEPRINTS = [
     rightZoneSub: 'VPC-SC + IAM PAB + finvault-silo-cmek + PSC',
     rightCards: {
       modelArmor: { icon: 'vpc_sc', title: 'VPC-SC & Model Armor', sub: 'Sovereign Silo Guardrails' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini / Gemma 3', sub: 'Claude 3.7 or Private GKE' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini / Gemma 3', sub: 'Dedicated PT or Private GKE' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Dedicated Silo + Agent Alpha' },
       mcp: { icon: 'mcp_servers', title: 'MCP servers', sub: 'Local Silo 3LO Connectors' },
       datastore: { icon: 'cloud_kms', title: 'CMEK Datastore', sub: 'finvault-silo-cmek & 423 Lock' },
@@ -358,7 +443,7 @@ const WORKSTREAM_BLUEPRINTS = [
     leftZoneSub: 'Tenant project • Enterprise Tier (Google OIDC)',
     leftCards: {
       modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Hop 4: Bank SDP & FINRA Filter' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini & Claude', sub: 'Agent Engine (8k Budget)' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: 'Agent Engine (8k Budget)' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Hop 3: Shared + Agent Alpha' },
       mcp: { icon: 'mcp_servers', title: 'MCP servers', sub: 'Hop 5: Workspace & Jira 3LO' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'Datastore', sub: 'BQ RLS, AlloyDB & CMEK' },
@@ -426,7 +511,7 @@ const WORKSTREAM_BLUEPRINTS = [
     leftZoneSub: 'Namespace: finvault:user:session (finvault-silo-cmek)',
     leftCards: {
       modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Masks IBAN/SWIFT + FINRA Policy' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini & Claude 3.7', sub: '8,000 Thinking-Token Budget' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: '8,000 Thinking-Token Budget' },
       runtime: { icon: 'gemini_agent_platform', title: 'Pooled gVisor Pod', sub: 'Shared + Private Agent Alpha' },
       mcp: { icon: 'mcp_servers', title: '3LO Workspace/Jira', sub: 'Drive, Calendar, Gmail, Jira' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'AlloyDB & BQ RLS', sub: "tenant_id='finvault' (2 rows)" },
@@ -562,7 +647,7 @@ const WORKSTREAM_BLUEPRINTS = [
     leftZoneSub: 'Dedicated Silo • CMEK: finvault-silo-cmek',
     leftCards: {
       modelArmor: { icon: 'vpc_sc', title: 'VPC-SC & Model Armor', sub: 'Dedicated FinVault Perimeter' },
-      llm: { icon: 'gke', title: 'Gemma 3 (27B) GKE', sub: 'Air-Gapped vLLM + Claude 3.7' },
+      llm: { icon: 'gke', title: 'Gemma 3 (27B) GKE', sub: 'Air-Gapped vLLM + Dedicated PT' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Dedicated Silo + Agent Alpha' },
       mcp: { icon: 'mcp_servers', title: 'Local Silo MCP', sub: 'Workspace & Jira (0 Egress)' },
       datastore: { icon: 'cloud_kms', title: 'CMEK Silo Datastore', sub: 'pattern_b_silo_finvault_cmek_vault' },
@@ -645,7 +730,7 @@ const WORKSTREAM_BLUEPRINTS = [
     rightZoneSub: 'cymbal-psc-nat-us-west1 (/28) -> psc://10.10.0.50 & .51',
     rightCards: {
       modelArmor: { icon: 'psc_bridge', title: 'PSC ServiceAttachment', sub: 'Unidirectional Spoke Ingress' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini & Claude 3.7', sub: 'Upgraded 8,000 Thinking Cap' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro PT', sub: 'Upgraded 8,000 Thinking Cap' },
       runtime: { icon: 'gemini_agent_platform', title: 'Spoke Agent Engine', sub: 'PSC ServiceAttachment Target' },
       mcp: { icon: 'mcp_servers', title: 'Dedicated Spoke MCP', sub: 'Isolated Inside VPC-SC Spoke' },
       datastore: { icon: 'cloud_kms', title: 'CMEK Spoke Datastore', sub: 'finvault-silo-cmek & KMS Lock' },
@@ -713,7 +798,7 @@ const WORKSTREAM_BLUEPRINTS = [
     rightZoneSub: 'Zero Blast Radius + Zero-Downtime Tier Promotion',
     rightCards: {
       modelArmor: { icon: 'vpc_sc', title: 'VPC-SC & IAM PAB', sub: 'Hard Perimeter Isolation' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemma 3 & Claude 3.7', sub: 'Air-Gapped GKE & Dedicated PT' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemma 3 & Gemini 2.5 PT', sub: 'Air-Gapped GKE & Dedicated PT' },
       runtime: { icon: 'psc_bridge', title: 'PSC Spoke Runtime', sub: 'cymbal-psc-nat-us-west1 (/28)' },
       mcp: { icon: 'mcp_servers', title: 'Dedicated Silo MCP', sub: 'Zero Cross-Project Egress' },
       datastore: { icon: 'cloud_kms', title: 'Cloud KMS CMEK Lock', sub: 'cymbal-multi-tenant-kr (423)' },
@@ -728,7 +813,18 @@ const ALL_BLUEPRINTS = [...WORKSTREAM_BLUEPRINTS, ...EXTENDED_BLUEPRINTS];
 
 function fitAttr(str, maxPx, charPx) {
   const s = String(str ?? '');
-  if (s.length * charPx > maxPx) {
+  let estW = 0;
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (/[A-Z0-9_@]/.test(ch)) {
+      estW += charPx * 1.22;
+    } else if (/[il1.,:;'|! ]/.test(ch)) {
+      estW += charPx * 0.62;
+    } else {
+      estW += charPx;
+    }
+  }
+  if (estW > maxPx) {
     return ` textLength="${maxPx}" lengthAdjust="spacingAndGlyphs"`;
   }
   return '';
@@ -740,14 +836,20 @@ function renderArchCardSvg({ x, y, w, h, iconKey, title, title2, sub }) {
   const iconX = x + 10;
   const iconY = y + Math.round((h - iconSize) / 2);
   const textX = iconX + iconSize + 10;
-  const maxTextW = w - (textX - x) - 10;
+  const maxTextW = w - (textX - x) - 14;
+  const t1Len = String(title || '').length;
+  const subLen = String(sub || '').length;
+  const titleFontSize = t1Len > 22 ? '12.2' : '13.5';
+  const titleCharPx = t1Len > 22 ? 6.9 : 7.6;
+  const subFontSize = subLen > 26 ? '10.3' : '11.5';
+  const subCharPx = subLen > 26 ? 5.6 : 6.2;
 
   let textSvg = '';
   if (title2 && sub) {
     textSvg = `
-      <text x="${textX}" y="${y + 23}" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124"${fitAttr(title, maxTextW, 7.6)}>${escXml(title)}</text>
-      <text x="${textX}" y="${y + 41}" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124"${fitAttr(title2, maxTextW, 7.6)}>${escXml(title2)}</text>
-      <text x="${textX}" y="${y + 59}" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#3c4043"${fitAttr(sub, maxTextW, 6.2)}>${escXml(sub)}</text>
+      <text x="${textX}" y="${y + 23}" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="${titleFontSize}" font-weight="700" fill="#202124"${fitAttr(title, maxTextW, titleCharPx)}>${escXml(title)}</text>
+      <text x="${textX}" y="${y + 41}" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="${titleFontSize}" font-weight="700" fill="#202124"${fitAttr(title2, maxTextW, titleCharPx)}>${escXml(title2)}</text>
+      <text x="${textX}" y="${y + 59}" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="${subFontSize}" font-weight="400" fill="#3c4043"${fitAttr(sub, maxTextW, subCharPx)}>${escXml(sub)}</text>
     `;
   } else if (title2) {
     textSvg = `
@@ -756,8 +858,8 @@ function renderArchCardSvg({ x, y, w, h, iconKey, title, title2, sub }) {
     `;
   } else if (sub) {
     textSvg = `
-      <text x="${textX}" y="${y + Math.round(h / 2) - 4}" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124"${fitAttr(title, maxTextW, 7.6)}>${escXml(title)}</text>
-      <text x="${textX}" y="${y + Math.round(h / 2) + 15}" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#3c4043"${fitAttr(sub, maxTextW, 6.2)}>${escXml(sub)}</text>
+      <text x="${textX}" y="${y + Math.round(h / 2) - 4}" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="${titleFontSize}" font-weight="700" fill="#202124"${fitAttr(title, maxTextW, titleCharPx)}>${escXml(title)}</text>
+      <text x="${textX}" y="${y + Math.round(h / 2) + 15}" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="${subFontSize}" font-weight="400" fill="#3c4043"${fitAttr(sub, maxTextW, subCharPx)}>${escXml(sub)}</text>
     `;
   } else {
     textSvg = `
@@ -802,8 +904,8 @@ function compileOfficialArchCenterSvg(bp) {
 
   <rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>
 
-  <text x="20" y="22" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#174ea6">[${escXml(bp.badge)}] ${escXml(bp.title)}</text>
-  <text x="20" y="40" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6368">${escXml(bp.subtitle)}</text>
+  <text x="20" y="22" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#174ea6"${fitAttr(`[${bp.badge}] ${bp.title}`, 1150, 7.5)}>[${escXml(bp.badge)}] ${escXml(bp.title)}</text>
+  <text x="20" y="40" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6368"${fitAttr(bp.subtitle, 1150, 6.4)}>${escXml(bp.subtitle)}</text>
 
   <!-- TOP EXTERNAL USER / TENANT BOX -->
   <g>
@@ -820,16 +922,12 @@ function compileOfficialArchCenterSvg(bp) {
 
   <!-- NESTED WHITE BOUNDARY 1 -->
   <rect x="36" y="268" width="1128" height="1104" rx="14" ry="14" fill="#ffffff" stroke="#202124" stroke-width="1.2"/>
-  <text x="52" y="291" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124"${fitAttr(bp.outerWrapperLabel, 495, 7.5)}>${escXml(bp.outerWrapperLabel)}</text>
 
   <!-- NESTED WHITE BOUNDARY 2 -->
   <rect x="52" y="304" width="1096" height="1050" rx="14" ry="14" fill="#ffffff" stroke="#202124" stroke-width="1.2"/>
-  <text x="68" y="327" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124"${fitAttr(bp.innerWrapperLabel, 480, 7.5)}>${escXml(bp.innerWrapperLabel)}</text>
 
   <!-- ZONE 1: ROUTING HUB (Pastel Blue #aecbfa) -->
   <rect x="68" y="338" width="664" height="330" rx="6" ry="6" fill="#aecbfa" stroke="#202124" stroke-width="1"/>
-  <text x="84" y="363" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124">${escXml(bp.routingHubTitle)}</text>
-  <text x="84" y="381" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124">${escXml(bp.routingHubSub)}</text>
 
   ${renderArchCardSvg({ x: 88, y: 398, w: 204, h: 66, iconKey: rc.topLeft.icon, title: rc.topLeft.title, sub: rc.topLeft.sub })}
   ${renderArchCardSvg({ x: 88, y: 482, w: 204, h: 66, iconKey: rc.midLeft.icon, title: rc.midLeft.title, sub: rc.midLeft.sub })}
@@ -874,11 +972,8 @@ function compileOfficialArchCenterSvg(bp) {
 
   <!-- ZONE 3: LEFT TENANT / POOL PROJECT (Warm Yellow #feefc3) -->
   <rect x="70" y="772" width="516" height="560" rx="8" ry="8" fill="#ffffff" stroke="#202124" stroke-width="1.2"/>
-  <text x="86" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124"${fitAttr(bp.leftBoundaryLabel, 344, 7.2)}>${escXml(bp.leftBoundaryLabel)}</text>
 
   <rect x="86" y="808" width="484" height="508" rx="6" ry="6" fill="#feefc3" stroke="#202124" stroke-width="1"/>
-  <text x="104" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124">${escXml(bp.leftZoneTitle)}</text>
-  <text x="104" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124">${escXml(bp.leftZoneSub)}</text>
 
   ${renderArchCardSvg({ x: 96, y: 874, w: 194, h: 72, iconKey: lc.modelArmor.icon, title: lc.modelArmor.title, sub: lc.modelArmor.sub })}
   ${renderArchCardSvg({ x: 96, y: 1110, w: 194, h: 72, iconKey: lc.llm.icon, title: lc.llm.title, sub: lc.llm.sub })}
@@ -900,23 +995,20 @@ function compileOfficialArchCenterSvg(bp) {
   <path d="M 290 910 L 312 910 L 312 944 L 340 944" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
   <path d="M 290 1146 L 320 1146 L 320 976 L 340 976" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
 
-  <line x1="449" y1="1068" x2="449" y2="1054" stroke="#202124" stroke-width="2"/>
+  <line x1="449" y1="1054" x2="449" y2="1066" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
   <line x1="449" y1="1014" x2="449" y2="1000" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
   <text x="449" y="1029" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.ragLabel[0])}</text>
   <text x="449" y="1046" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.ragLabel[1])}</text>
 
-  <line x1="449" y1="1218" x2="449" y2="1204" stroke="#202124" stroke-width="2"/>
+  <line x1="449" y1="1204" x2="449" y2="1216" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
   <line x1="449" y1="1158" x2="449" y2="1144" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
   <text x="449" y="1176" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.toolLabel[0])}</text>
   <text x="449" y="1193" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(lc.toolLabel[1])}</text>
 
   <!-- ZONE 4: RIGHT TENANT / SPOKE PROJECT (Coral #fad2cf) -->
   <rect x="614" y="772" width="516" height="560" rx="8" ry="8" fill="#ffffff" stroke="#202124" stroke-width="1.2"/>
-  <text x="630" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124"${fitAttr(bp.rightBoundaryLabel, 344, 7.2)}>${escXml(bp.rightBoundaryLabel)}</text>
 
   <rect x="630" y="808" width="484" height="508" rx="6" ry="6" fill="#fad2cf" stroke="#202124" stroke-width="1"/>
-  <text x="648" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124">${escXml(bp.rightZoneTitle)}</text>
-  <text x="648" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124">${escXml(bp.rightZoneSub)}</text>
 
   ${renderArchCardSvg({ x: 640, y: 874, w: 194, h: 72, iconKey: sc.modelArmor.icon, title: sc.modelArmor.title, sub: sc.modelArmor.sub })}
   ${renderArchCardSvg({ x: 640, y: 976, w: 194, h: 72, iconKey: sc.llm.icon, title: sc.llm.title, title2: sc.llm.title2, sub: sc.llm.sub })}
@@ -927,12 +1019,12 @@ function compileOfficialArchCenterSvg(bp) {
   <path d="M 834 910 L 856 910 L 856 944 L 884 944" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
   <path d="M 834 1012 L 864 1012 L 864 976 L 884 976" fill="none" stroke="#202124" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
 
-  <line x1="993" y1="1068" x2="993" y2="1054" stroke="#202124" stroke-width="2"/>
+  <line x1="993" y1="1054" x2="993" y2="1066" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
   <line x1="993" y1="1014" x2="993" y2="1000" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
   <text x="993" y="1029" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(sc.ragLabel[0])}</text>
   <text x="993" y="1046" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(sc.ragLabel[1])}</text>
 
-  <line x1="993" y1="1218" x2="993" y2="1204" stroke="#202124" stroke-width="2"/>
+  <line x1="993" y1="1204" x2="993" y2="1216" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
   <line x1="993" y1="1158" x2="993" y2="1144" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
   <text x="993" y="1176" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(sc.toolLabel[0])}</text>
   <text x="993" y="1193" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(sc.toolLabel[1])}</text>
@@ -943,6 +1035,18 @@ function compileOfficialArchCenterSvg(bp) {
 
   <path d="M 328 770 L 328 730 L 962 730 L 962 668" fill="none" stroke="#202124" stroke-width="2" stroke-dasharray="6,6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
   <path d="M 872 730 L 872 770" fill="none" stroke="#202124" stroke-width="2" stroke-dasharray="6,6" marker-end="url(#arrow)"/>
+
+  <!-- FOREGROUND WRAPPER & ZONE HEADERS WITH BACKGROUND HALOS (preventing vertical connector strike-through) -->
+  <text x="52" y="291" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round"${fitAttr(bp.outerWrapperLabel, 1090, 7.6)}>${escXml(bp.outerWrapperLabel)}</text>
+  <text x="68" y="327" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round"${fitAttr(bp.innerWrapperLabel, 1060, 7.6)}>${escXml(bp.innerWrapperLabel)}</text>
+  <text x="84" y="363" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#aecbfa" stroke-width="8" stroke-linejoin="round">${escXml(bp.routingHubTitle)}</text>
+  <text x="84" y="381" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#aecbfa" stroke-width="8" stroke-linejoin="round">${escXml(bp.routingHubSub)}</text>
+  <text x="86" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round"${fitAttr(bp.leftBoundaryLabel, 488, 7.3)}>${escXml(bp.leftBoundaryLabel)}</text>
+  <text x="104" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#feefc3" stroke-width="8" stroke-linejoin="round">${escXml(bp.leftZoneTitle)}</text>
+  <text x="104" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#feefc3" stroke-width="8" stroke-linejoin="round"${fitAttr(bp.leftZoneSub, 456, 7.0)}>${escXml(bp.leftZoneSub)}</text>
+  <text x="630" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round"${fitAttr(bp.rightBoundaryLabel, 488, 7.3)}>${escXml(bp.rightBoundaryLabel)}</text>
+  <text x="648" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#fad2cf" stroke-width="8" stroke-linejoin="round">${escXml(bp.rightZoneTitle)}</text>
+  <text x="648" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#fad2cf" stroke-width="8" stroke-linejoin="round"${fitAttr(bp.rightZoneSub, 456, 7.0)}>${escXml(bp.rightZoneSub)}</text>
 
   ${renderStepCircleSvg(404, 700, '3')}
   <text x="432" y="695" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">${escXml(bp.midStep3Label[0])}</text>
@@ -1071,7 +1175,7 @@ function compileOfficialDrawioXml(bp) {
       estW > maxW
         ? `display:inline-block;transform:scaleX(${scaleX});transform-origin:left center;`
         : '';
-    return `${SVG_GUARD}<b style="font-family:'Google Sans',Roboto,Arial,sans-serif;font-size:${fontSizePx}px;color:#202124;white-space:nowrap;${scaleCss}">${text}</b>`;
+    return `${SVG_GUARD}<b style="font-family:'Google Sans',Roboto,Arial,sans-serif;font-size:${fontSizePx}px;color:#202124;white-space:nowrap;background-color:#ffffff;padding:0 3px;${scaleCss}">${text}</b>`;
   };
 
   // 4. Nested White Boundary 1 (Shared hubs) & Boundary 2 (VPC)
@@ -1081,7 +1185,7 @@ function compileOfficialDrawioXml(bp) {
     268,
     1128,
     1104,
-    fitHtmlLabel(bp.outerWrapperLabel, 495, 12.5),
+    fitHtmlLabel(bp.outerWrapperLabel, 1090, 12.5),
     'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=14;spacingTop=6;',
     true
   );
@@ -1091,7 +1195,7 @@ function compileOfficialDrawioXml(bp) {
     304,
     1096,
     1050,
-    fitHtmlLabel(bp.innerWrapperLabel, 480, 12.5),
+    fitHtmlLabel(bp.innerWrapperLabel, 1060, 12.5),
     'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=14;spacingTop=6;',
     true
   );
@@ -1103,7 +1207,7 @@ function compileOfficialDrawioXml(bp) {
     338,
     664,
     330,
-    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;"><b style="font-size:14.5px;color:#202124;">${bp.routingHubTitle}</b><br/><span style="font-size:12.5px;color:#202124;">${bp.routingHubSub}</span></div>`,
+    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;"><b style="font-size:14.5px;color:#202124;background-color:#aecbfa;padding:0 2px;">${bp.routingHubTitle}</b><br/><span style="font-size:12.5px;color:#202124;background-color:#aecbfa;padding:0 2px;">${bp.routingHubSub}</span></div>`,
     'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#aecbfa;strokeColor=#202124;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;',
     true
   );
@@ -1124,7 +1228,7 @@ function compileOfficialDrawioXml(bp) {
     772,
     516,
     560,
-    fitHtmlLabel(bp.leftBoundaryLabel, 344, 12),
+    fitHtmlLabel(bp.leftBoundaryLabel, 488, 12),
     'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;',
     true
   );
@@ -1134,7 +1238,7 @@ function compileOfficialDrawioXml(bp) {
     808,
     484,
     508,
-    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;"><b style="font-size:14.5px;color:#202124;">${bp.leftZoneTitle}</b><br/><span style="font-size:12.5px;color:#202124;">${bp.leftZoneSub}</span></div>`,
+    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;"><b style="font-size:14.5px;color:#202124;background-color:#feefc3;padding:0 2px;">${bp.leftZoneTitle}</b><br/><span style="font-size:12.5px;color:#202124;background-color:#feefc3;padding:0 2px;">${bp.leftZoneSub}</span></div>`,
     'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#feefc3;strokeColor=#202124;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;',
     true
   );
@@ -1145,7 +1249,7 @@ function compileOfficialDrawioXml(bp) {
     772,
     516,
     560,
-    fitHtmlLabel(bp.rightBoundaryLabel, 344, 12),
+    fitHtmlLabel(bp.rightBoundaryLabel, 488, 12),
     'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;',
     true
   );
@@ -1155,7 +1259,7 @@ function compileOfficialDrawioXml(bp) {
     808,
     484,
     508,
-    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;"><b style="font-size:14.5px;color:#202124;">${bp.rightZoneTitle}</b><br/><span style="font-size:12.5px;color:#202124;">${bp.rightZoneSub}</span></div>`,
+    `${SVG_GUARD}<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;line-height:1.25;"><b style="font-size:14.5px;color:#202124;background-color:#fad2cf;padding:0 2px;">${bp.rightZoneTitle}</b><br/><span style="font-size:12.5px;color:#202124;background-color:#fad2cf;padding:0 2px;">${bp.rightZoneSub}</span></div>`,
     'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#fad2cf;strokeColor=#202124;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;',
     true
   );
@@ -1163,13 +1267,15 @@ function compileOfficialDrawioXml(bp) {
   // 6. Helper to add Official Architecture Center Card with Resolved Distinct Service Icon
   const addArchCard = (id, x, y, w, h, cardObj) => {
     const iconUri = resolveArchIconUri(cardObj.icon, cardObj.title, cardObj.sub);
+    const titleFs = String(cardObj.title || '').length > 22 ? '11.2px' : '12.2px';
+    const subFs = String(cardObj.sub || '').length > 26 ? '9.6px' : '10.3px';
     const titleHtml = cardObj.title2
-      ? `<b style="font-size:12.5px;color:#202124;">${cardObj.title}<br/>${cardObj.title2}</b>`
-      : `<b style="font-size:12.5px;color:#202124;">${cardObj.title}</b>`;
+      ? `<b style="font-size:${titleFs};color:#202124;word-break:break-word;">${cardObj.title}<br/>${cardObj.title2}</b>`
+      : `<b style="font-size:${titleFs};color:#202124;word-break:break-word;">${cardObj.title}</b>`;
     const subHtml = cardObj.sub
-      ? `<br/><span style="font-size:10.5px;color:#3c4043;">${cardObj.sub}</span>`
+      ? `<br/><span style="font-size:${subFs};color:#3c4043;word-break:break-word;">${cardObj.sub}</span>`
       : '';
-    const htmlVal = `<table style="width:100%;height:100%;border-collapse:collapse;font-family:'Google Sans',Roboto,Arial,sans-serif;"><tr><td style="width:44px;text-align:center;vertical-align:middle;padding-left:4px;"><img src="${iconUri}" width="34" height="34"/></td><td style="text-align:left;vertical-align:middle;padding-left:6px;line-height:1.2;">${titleHtml}${subHtml}</td></tr></table>`;
+    const htmlVal = `<table style="width:100%;height:100%;border-collapse:collapse;font-family:'Google Sans',Roboto,Arial,sans-serif;table-layout:fixed;"><tr><td style="width:42px;text-align:center;vertical-align:middle;padding-left:4px;"><img src="${iconUri}" width="32" height="32"/></td><td style="text-align:left;vertical-align:middle;padding-left:5px;padding-right:4px;line-height:1.18;overflow-wrap:anywhere;">${titleHtml}${subHtml}</td></tr></table>`;
     return addVertex(
       id,
       x,
@@ -1264,7 +1370,7 @@ function compileOfficialDrawioXml(bp) {
   addPointEdge('e_alb_to_user', [612, 432], [612, 140], [], { endArrow: true, source: 'card_rc_alb', target: 'actor_top_user' });
 
   addPointEdge('e_alb_to_top_left', [452, 470], [292, 431], [[418, 470], [418, 431]], { startArrow: true, endArrow: true, source: 'card_rc_alb', target: 'card_rc_topleft' });
-  addPointEdge('e_alb_to_mid_left', [452, 470], [292, 515], [[418, 470], [418, 515]], { startArrow: false, endArrow: true, source: 'card_rc_alb', target: 'card_rc_midleft' });
+  addPointEdge('e_alb_to_mid_left', [452, 470], [292, 515], [[418, 470], [418, 515]], { startArrow: true, endArrow: true, source: 'card_rc_alb', target: 'card_rc_midleft' });
 
   addPointEdge('e_iap_to_cloudrun', [292, 613], [476, 613], [], { startArrow: true, endArrow: true, source: 'card_rc_botleft', target: 'card_rc_cloudrun' });
 
@@ -1279,17 +1385,17 @@ function compileOfficialDrawioXml(bp) {
 
   addPointEdge('e_left_ma_run', [290, 910], [342, 944], [[312, 910], [312, 944]], { startArrow: true, endArrow: true, source: 'card_lc_ma', target: 'card_lc_run' });
   addPointEdge('e_left_llm_run', [290, 1146], [342, 976], [[320, 1146], [320, 976]], { startArrow: true, endArrow: true, source: 'card_lc_llm', target: 'card_lc_run' });
-  // Split vertical segments around Secure RAG & Agent-tool labels (zero line-through-text)
-  addPointEdge('e_left_mcp_run_bot', [449, 1068], [449, 1054], [], { endArrow: false, source: 'card_lc_mcp', target: 'lbl_left_rag' });
+  // Split vertical segments around Secure RAG & Agent-tool labels (zero line-through-text, bidirectional top & bottom arrowheads)
+  addPointEdge('e_left_mcp_run_bot', [449, 1068], [449, 1054], [], { startArrow: true, endArrow: false, source: 'card_lc_mcp', target: 'lbl_left_rag' });
   addPointEdge('e_left_mcp_run_top', [449, 1014], [449, 1000], [], { endArrow: true, source: 'lbl_left_rag', target: 'card_lc_run' });
-  addPointEdge('e_left_db_mcp_bot', [449, 1218], [449, 1204], [], { endArrow: false, source: 'card_lc_db', target: 'lbl_left_tool' });
+  addPointEdge('e_left_db_mcp_bot', [449, 1218], [449, 1204], [], { startArrow: true, endArrow: false, source: 'card_lc_db', target: 'lbl_left_tool' });
   addPointEdge('e_left_db_mcp_top', [449, 1158], [449, 1144], [], { endArrow: true, source: 'lbl_left_tool', target: 'card_lc_mcp' });
 
   addPointEdge('e_right_ma_run', [834, 910], [886, 944], [[856, 910], [856, 944]], { startArrow: true, endArrow: true, source: 'card_sc_ma', target: 'card_sc_run' });
   addPointEdge('e_right_llm_run', [834, 1012], [886, 976], [[864, 1012], [864, 976]], { startArrow: true, endArrow: true, source: 'card_sc_llm', target: 'card_sc_run' });
-  addPointEdge('e_right_mcp_run_bot', [993, 1068], [993, 1054], [], { endArrow: false, source: 'card_sc_mcp', target: 'lbl_right_rag' });
+  addPointEdge('e_right_mcp_run_bot', [993, 1068], [993, 1054], [], { startArrow: true, endArrow: false, source: 'card_sc_mcp', target: 'lbl_right_rag' });
   addPointEdge('e_right_mcp_run_top', [993, 1014], [993, 1000], [], { endArrow: true, source: 'lbl_right_rag', target: 'card_sc_run' });
-  addPointEdge('e_right_db_mcp_bot', [993, 1218], [993, 1204], [], { endArrow: false, source: 'card_sc_db', target: 'lbl_right_tool' });
+  addPointEdge('e_right_db_mcp_bot', [993, 1218], [993, 1204], [], { startArrow: true, endArrow: false, source: 'card_sc_db', target: 'lbl_right_tool' });
   addPointEdge('e_right_db_mcp_top', [993, 1158], [993, 1144], [], { endArrow: true, source: 'lbl_right_tool', target: 'card_sc_mcp' });
 
   const cells = [...bgCells, ...edgeCells, ...fgCells];

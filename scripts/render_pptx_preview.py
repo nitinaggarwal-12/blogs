@@ -92,10 +92,14 @@ def runs_to_html(txbody):
         align = ppr.get("algn") if ppr is not None else None
         bullet = ppr is not None and ppr.find("a:buChar", NS) is not None
         spc_aft = 0.0
+        ln_spc = 1.18
         if ppr is not None:
             sa = ppr.find("a:spcAft/a:spcPts", NS)
             if sa is not None and sa.get("val"):
                 spc_aft = int(sa.get("val")) / 100.0 * 1.333
+            ls = ppr.find("a:lnSpc/a:spcPct", NS)
+            if ls is not None and ls.get("val"):
+                ln_spc = max(0.88, min(1.4, int(ls.get("val")) / 100000.0 * 1.12))
 
         lines_in_p = [[]]
         line_sizes = [[]]
@@ -143,7 +147,7 @@ def runs_to_html(txbody):
             sz_list = line_sizes[idx_l] if idx_l < len(line_sizes) else []
             max_px = max(sz_list) if sz_list else 12.0
             css.append(f"font-size:{max_px:.1f}px")
-            css.append("line-height:1.22")
+            css.append(f"line-height:{ln_spc:.2f}")
             prefix = '<span style="color:#1A73E8;font-size:0.85em;margin-right:6px">&#9632;</span>' if bullet else ""
             paras.append(f'<div style="{";".join(css)}">{prefix}{"".join(sub_line)}</div>')
     anchor = body_pr.get("anchor") if body_pr is not None else None

@@ -487,10 +487,29 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                         if not rel_f or not (ROOT_DIR / rel_f).is_file():
                             all_exist = False
                     drawio_p = ROOT_DIR / item.get("central_drawio_file", "")
-                    if drawio_p.is_file():
+                    svg_p = ROOT_DIR / item.get("central_svg", "")
+                    if drawio_p.is_file() and svg_p.is_file():
                         d_xml = drawio_p.read_text(encoding="utf-8")
+                        s_xml = svg_p.read_text(encoding="utf-8")
                         bound_edges = re.findall(r'<mxCell[^>]*\bedge="1"[^>]*\bsource="[^"]+"[^>]*\btarget="[^"]+"', d_xml)
-                        if len(bound_edges) != 23 or "exitPerimeter=0" not in d_xml or "entryPerimeter=0" not in d_xml:
+                        icon_uris = set(re.findall(r'xlink:href="(data:image/[^"]+)"', s_xml))
+                        if (
+                            len(bound_edges) != 23
+                            or "exitPerimeter=0" not in d_xml
+                            or "entryPerimeter=0" not in d_xml
+                            or "claude" in d_xml.lower()
+                            or "claude" in s_xml.lower()
+                            or 'id="e_alb_to_mid_left" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#202124;strokeWidth=2;startArrow=open;' not in d_xml
+                            or 'textLength="495"' in s_xml
+                            or 'textLength="480"' in s_xml
+                            or 'textLength="344"' in s_xml
+                            or 'paint-order="stroke fill"' not in s_xml
+                            or 'x1="449" y1="1054" x2="449" y2="1066"' not in s_xml
+                            or 'x1="449" y1="1204" x2="449" y2="1216"' not in s_xml
+                            or 'x1="993" y1="1054" x2="993" y2="1066"' not in s_xml
+                            or 'x1="993" y1="1204" x2="993" y2="1216"' not in s_xml
+                            or len(icon_uris) < 10
+                        ):
                             all_exist = False
                 if all_exist:
                     diagrams_ok = True
@@ -586,11 +605,16 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                             "Asynchronous processing flow for long tasks (>5 min)",
                             "Google Cloud Pub/Sub Topic",
                         )
+                        banned_emojis = (
+                            "🔐", "🧠", "🗄️", "🏦", "🛒", "🤝", "🛡️", "⏱", "↻",
+                            "🚀", "📊", "⚙️", "📈", "💰", "🔄", "⚡", "🏗️",
+                        )
                         if (
                             not has_compact_arrows
                             or not has_sidebar_guide
                             or any(m not in joined_xml for m in required_visual_archetypes)
                             or any(b in joined_xml for b in banned_copy_pasted_terms)
+                            or any(e in joined_xml for e in banned_emojis)
                         ):
                             decks_valid = False
                         ws_key = deck.get("key")
@@ -600,6 +624,10 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                             if "ppt/slides/slide2.xml" in zf.namelist():
                                 s2_xml = zf.read("ppt/slides/slide2.xml").decode("utf-8", errors="ignore")
                                 if "Figure 1" not in s2_xml or "4-ZONE HUB-AND-SPOKE" not in s2_xml:
+                                    decks_valid = False
+                            if "ppt/slides/slide11.xml" in zf.namelist():
+                                s11_xml = zf.read("ppt/slides/slide11.xml").decode("utf-8", errors="ignore")
+                                if "Aspect Ratio: Native 16:9" not in s11_xml or 'cx="3639312" cy="2048256"' not in s11_xml:
                                     decks_valid = False
                         elif ws_key == "ALL":
                             if len(slide_xml_names) != 26 or deck.get("slides") != 26:
@@ -618,13 +646,32 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                         ws_blogs_seen.add(blog_rel)
                     if f"../{deck.get('file', '')}" not in blog_text:
                         decks_valid = False
+            doc_guide_ids = (
+                "doc-mt-01", "doc-mt-02", "doc-mt-03", "doc-mt-04", "doc-mt-05",
+                "doc-mt-06", "doc-ref-07", "doc-ref-08", "doc-ref-09",
+            )
+            for dg_id in doc_guide_ids:
+                dg_pptx = ROOT_DIR / f"slides/{dg_id}-editable-slides.pptx"
+                dg_prev_dir = ROOT_DIR / f"slides/previews/{dg_id}-editable-slides"
+                if not dg_pptx.is_file() or not dg_prev_dir.is_dir():
+                    decks_valid = False
+                else:
+                    if len(list(dg_prev_dir.glob("slide_0[1-6].png"))) != 6:
+                        decks_valid = False
+                    with _zipfile.ZipFile(dg_pptx, "r") as dzf:
+                        d_slides = [n for n in dzf.namelist() if n.startswith("ppt/slides/slide") and n.endswith(".xml")]
+                        if len(d_slides) != 6:
+                            decks_valid = False
+                        d_joined = "\n".join(dzf.read(n).decode("utf-8", errors="ignore") for n in d_slides)
+                        if "Figure 1. Figure 1" in d_joined or "Model Armor &amp; Model Armor" in d_joined:
+                            decks_valid = False
             cv_manifest_path = ROOT_DIR / "slides/cloud_viewer_manifest.json"
             cv_ok = False
             if cv_manifest_path.is_file():
                 cv_data = _json.loads(cv_manifest_path.read_text(encoding="utf-8"))
                 cv_slides = cv_data.get("slides", {})
                 cv_docs = cv_data.get("docs", {})
-                cv_ok = all(k in cv_slides and cv_slides[k].get("googleSlidesId") for k in ("WS1", "WS2", "WS3", "WS4", "WS5", "ALL")) and all(k in cv_docs and cv_docs[k].get("googleDocsId") for k in ("WS1", "WS2", "WS3", "WS4", "WS5", "ALL"))
+                cv_ok = all(k in cv_slides and cv_slides[k].get("googleSlidesId") for k in ("WS1", "WS2", "WS3", "WS4", "WS5", "ALL", "DOC-MT-01", "DOC-MT-02", "DOC-MT-03", "DOC-MT-04", "DOC-MT-05", "DOC-MT-06", "DOC-REF-07", "DOC-REF-08", "DOC-REF-09")) and all(k in cv_docs and cv_docs[k].get("googleDocsId") for k in ("WS1", "WS2", "WS3", "WS4", "WS5", "ALL"))
             if decks_valid and len(ws_blogs_seen) == 5 and e2e_flows_ok and cv_ok and "card-action-icon-btn" in html:
                 slides_ok = True
                 deck_count = len(decks)
@@ -639,7 +686,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             and slides_ok
         )
         index_detail = (
-            f"index.html verified ({len(html):,} bytes), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI Series Reader links resolve on disk (0 broken), {certified_diagram_count}/14 Official Google Cloud Architecture Center Hub-and-Spoke & PromptCanvas Vision Draw.io blueprints CERTIFIED (56 vertices & 23 edges each, .drawio/.drawio.png/.svg/.vision.json quartet, 0 collisions), 14/14 Executive-Friendly Plain-English Logical & Technical Flows verified (diagrams/diagram_e2e_flows.json + 3-Act 14-Slide Cohesive Workstream Decks), Cloud Console receipt CERTIFIED ({len(cloud_pngs)} visual proof PNGs in screenshots/cloud-console/), {deck_count}/6 PromptCanvas Vision editable .pptx slide decks + {ws_blog_count}/5 canonical 5-part series blogs verified (PUBLISH_READY)."
+            f"index.html verified ({len(html):,} bytes), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI Series Reader links resolve on disk (0 broken), {certified_diagram_count}/14 Official Google Cloud Architecture Center Hub-and-Spoke & PromptCanvas Vision Draw.io blueprints CERTIFIED (56 vertices & 23 edges each, .drawio/.drawio.png/.svg/.vision.json quartet, 0 collisions), 14/14 Executive-Friendly Plain-English Logical & Technical Flows verified (diagrams/diagram_e2e_flows.json + 3-Act 14-Slide Cohesive Workstream Decks), Cloud Console receipt CERTIFIED ({len(cloud_pngs)} visual proof PNGs in screenshots/cloud-console/), {deck_count}/6 Workstream/Master + 9/9 DevSite Guide editable .pptx slide decks (150 total slides, 0 emojis, 16:9 screenshots, 15/15 Google Slides synced) + {ws_blog_count}/5 canonical 5-part series blogs verified (PUBLISH_READY)."
             if index_ok
             else f"missing_markers={missing_markers}, missing_ui_paths={missing_ui_paths}, unready_blogs={unready_blogs}, diagrams_ok={diagrams_ok}, cloud_receipt_ok={cloud_receipt_ok}, slides_ok={slides_ok}, e2e_flows_ok={e2e_flows_ok}"
         )

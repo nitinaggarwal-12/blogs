@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-16T01:06:14.709Z",
+  "generatedAt": "2026-10-16T04:33:37.152Z",
   "engine": "PromptCanvas Vision Decompiler • Google Cloud Architecture Center 3-Act Cohesive Story Arc • pptxgenjs LAYOUT_WIDE 16:9",
   "decks": [
     {
@@ -11,9 +11,9 @@
         "ws1-multi-tenant-taxonomy-overview",
         "ws1-cloud-arch-center-5hop-baseline"
       ],
-      "shapes": 198,
-      "connectors": 64,
-      "bytes": 1781309,
+      "shapes": 218,
+      "connectors": 62,
+      "bytes": 1812021,
       "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
@@ -27,9 +27,9 @@
         "ws2-demo-env-and-3p-auth-sandbox-topology",
         "ws2-terraform-starter-resource-graph"
       ],
-      "shapes": 198,
-      "connectors": 64,
-      "bytes": 1879126,
+      "shapes": 218,
+      "connectors": 62,
+      "bytes": 1906245,
       "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
@@ -42,9 +42,9 @@
         "ws3-multi-project-silo-and-cmek-setup-topology",
         "ws3-terraform-silo-blueprint-resource-graph"
       ],
-      "shapes": 198,
-      "connectors": 64,
-      "bytes": 1698324,
+      "shapes": 218,
+      "connectors": 62,
+      "bytes": 1726329,
       "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
@@ -58,9 +58,9 @@
         "ws4-zero-downtime-tier-upgrade-sequence",
         "ws4-terraform-hybrid-psc-blueprint-resource-graph"
       ],
-      "shapes": 198,
-      "connectors": 64,
-      "bytes": 1743476,
+      "shapes": 218,
+      "connectors": 62,
+      "bytes": 1771309,
       "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
@@ -71,9 +71,9 @@
       "diagrams": [
         "ws5-decision-tree-and-agentic-triad"
       ],
-      "shapes": 198,
-      "connectors": 64,
-      "bytes": 1542543,
+      "shapes": 218,
+      "connectors": 62,
+      "bytes": 1573263,
       "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
@@ -96,7 +96,7 @@
         "ws4-terraform-hybrid-psc-blueprint-resource-graph",
         "ws5-decision-tree-and-agentic-triad"
       ],
-      "bytes": 3262322
+      "bytes": 3303765
     }
   ]
 }

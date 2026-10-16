@@ -3134,7 +3134,7 @@
       return null;
     }
 
-    function setInlineFigureMode(diagId, mode) {
+    function setInlineFigureMode(diagId, mode, forceExit) {
       const imgWrap = document.getElementById('inline-fig-img-wrap-' + diagId);
       const editWrap = document.getElementById('inline-fig-edit-wrap-' + diagId);
       const imgEl = document.getElementById('inline-fig-img-' + diagId);
@@ -3143,9 +3143,24 @@
       const btnSvg = document.getElementById('inline-fig-btn-svg-' + diagId);
       const btnEdit = document.getElementById('inline-fig-btn-edit-' + diagId);
 
+      if (!forceExit && mode === 'edit' && editWrap && editWrap.style.display === 'block') {
+        mode = 'png';
+      }
+
       if (btnPng) btnPng.className = mode === 'png' ? 'sim-btn primary' : 'sim-btn';
       if (btnSvg) btnSvg.className = mode === 'svg' ? 'sim-btn primary' : 'sim-btn';
-      if (btnEdit) btnEdit.className = mode === 'edit' ? 'sim-btn primary' : 'sim-btn';
+      if (btnEdit) {
+        btnEdit.className = mode === 'edit' ? 'sim-btn primary' : 'sim-btn';
+        if (mode === 'edit') {
+          btnEdit.style.color = '#ffffff';
+          btnEdit.style.borderColor = '#1d4ed8';
+          btnEdit.innerHTML = '&#10005; Exit Inline Edit';
+        } else {
+          btnEdit.style.color = 'var(--warn-text)';
+          btnEdit.style.borderColor = 'var(--warn-border)';
+          btnEdit.innerHTML = '&#9999;&#65039; Edit in Draw.io';
+        }
+      }
 
       if (mode === 'edit') {
         if (imgWrap) imgWrap.style.display = 'none';
@@ -3159,10 +3174,34 @@
         if (editWrap) editWrap.style.display = 'none';
         if (imgEl) {
           const suffix = mode === 'svg' ? '.svg' : '.drawio.png';
-          imgEl.src = `diagrams/${diagId}${suffix}?v=${PPTX_CACHE_VER}`;
+          imgEl.src = `diagrams/${diagId}${suffix}?v=${PPTX_CACHE_VER}&t=${Date.now()}`;
         }
       }
     }
+
+    window.exitInlineDrawioEditor = function(diagId) {
+      if (diagId) {
+        const inlineWrap = document.getElementById('inline-fig-edit-wrap-' + diagId);
+        if (inlineWrap && inlineWrap.style.display !== 'none') {
+          setInlineFigureMode(diagId, 'png', true);
+        }
+      }
+      document.querySelectorAll('[id^="inline-fig-edit-wrap-"]').forEach(wrap => {
+        if (wrap.style.display !== 'none') {
+          const id = wrap.id.replace('inline-fig-edit-wrap-', '');
+          setInlineFigureMode(id, 'png', true);
+        }
+      });
+      if (activeHubDiagramRenderMode === 'edit-inline') {
+        setHubDiagramRenderMode('drawio', true);
+      }
+    };
+
+    window.addEventListener('message', (evt) => {
+      if (evt && evt.data && evt.data.type === 'EXIT_INLINE_DRAWIO') {
+        window.exitInlineDrawioEditor(evt.data.diagId);
+      }
+    });
 
     function toggleInlineFigureFlow(diagId) {
       const wrap = document.getElementById('inline-fig-flow-wrap-' + diagId);
@@ -3345,14 +3384,28 @@
       }
     }
 
-    function setHubDiagramRenderMode(mode) {
+    function setHubDiagramRenderMode(mode, forceExit) {
+      if (!forceExit && mode === 'edit-inline' && activeHubDiagramRenderMode === 'edit-inline') {
+        mode = 'drawio';
+      }
       activeHubDiagramRenderMode = (mode === 'png' || mode === 'edit-inline') ? mode : 'drawio';
       const btnDrawio = document.getElementById('hub-btn-mode-drawio');
       const btnPng = document.getElementById('hub-btn-mode-png');
       const btnEditInline = document.getElementById('hub-btn-mode-edit-inline');
       if (btnDrawio) btnDrawio.className = activeHubDiagramRenderMode === 'drawio' ? 'sim-btn primary' : 'sim-btn';
       if (btnPng) btnPng.className = activeHubDiagramRenderMode === 'png' ? 'sim-btn primary' : 'sim-btn';
-      if (btnEditInline) btnEditInline.className = activeHubDiagramRenderMode === 'edit-inline' ? 'sim-btn primary' : 'sim-btn';
+      if (btnEditInline) {
+        btnEditInline.className = activeHubDiagramRenderMode === 'edit-inline' ? 'sim-btn primary' : 'sim-btn';
+        if (activeHubDiagramRenderMode === 'edit-inline') {
+          btnEditInline.style.color = '#ffffff';
+          btnEditInline.style.borderColor = '#1d4ed8';
+          btnEditInline.innerHTML = '&#10005; Exit Inline Edit';
+        } else {
+          btnEditInline.style.color = 'var(--warn-text)';
+          btnEditInline.style.borderColor = 'var(--warn-border)';
+          btnEditInline.innerHTML = '&#9999;&#65039; Edit in Draw.io (Inline)';
+        }
+      }
       const imgWrap = document.getElementById('hub-diag-img-wrap');
       const inlineWrap = document.getElementById('hub-drawio-inline-wrap');
       if (imgWrap) imgWrap.style.display = activeHubDiagramRenderMode === 'edit-inline' ? 'none' : 'block';
@@ -3369,7 +3422,7 @@
 
       const suffix = activeHubDiagramRenderMode === 'png' ? '.svg' : '.drawio.png';
       const imgEl = document.getElementById('hub-diag-img');
-      if (imgEl) imgEl.src = `diagrams/${d.id}${suffix}?v=${PPTX_CACHE_VER}`;
+      if (imgEl) imgEl.src = `diagrams/${d.id}${suffix}?v=${PPTX_CACHE_VER}&t=${Date.now()}`;
 
       if (activeHubDiagramRenderMode === 'edit-inline') {
         loadDiagramIntoInlineDrawio(d.id);
@@ -3536,7 +3589,7 @@
       accountEmail: 'nitinagga@google.com',
       slides: {
         WS1: {
-          slideCount: 16,
+          slideCount: 14,
           googleSlidesId: '12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ',
           googleSlidesEditUrl: 'https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit?authuser=nitinagga%40google.com',
           googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/preview',
@@ -3544,7 +3597,7 @@
           googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/export/pdf'
         },
         WS2: {
-          slideCount: 21,
+          slideCount: 14,
           googleSlidesId: '1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE',
           googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit?authuser=nitinagga%40google.com',
           googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/preview',
@@ -3552,7 +3605,7 @@
           googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/export/pdf'
         },
         WS3: {
-          slideCount: 18,
+          slideCount: 14,
           googleSlidesId: '1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM',
           googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit?authuser=nitinagga%40google.com',
           googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/preview',
@@ -3560,7 +3613,7 @@
           googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/export/pdf'
         },
         WS4: {
-          slideCount: 21,
+          slideCount: 14,
           googleSlidesId: '1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s',
           googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit?authuser=nitinagga%40google.com',
           googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/preview',
@@ -3568,7 +3621,7 @@
           googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/export/pdf'
         },
         WS5: {
-          slideCount: 12,
+          slideCount: 14,
           googleSlidesId: '1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU',
           googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit?authuser=nitinagga%40google.com',
           googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/preview',
@@ -3576,7 +3629,7 @@
           googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/export/pdf'
         },
         ALL: {
-          slideCount: 60,
+          slideCount: 26,
           googleSlidesId: '111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc',
           googleSlidesEditUrl: 'https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/edit?authuser=nitinagga%40google.com',
           googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/preview',
@@ -3831,7 +3884,7 @@
       if (wsStrip) {
         wsStrip.innerHTML = ['WS1', 'WS2', 'WS3', 'WS4', 'WS5', 'ALL'].map(k => {
           const cls = k === cvWsKey ? 'pc-toolbar-btn active' : 'pc-toolbar-btn';
-          return `<button type="button" class="${cls}" onclick="selectCloudViewerWorkstream('${k}')">${k === 'ALL' ? 'ALL (60)' : k}</button>`;
+          return `<button type="button" class="${cls}" onclick="selectCloudViewerWorkstream('${k}')">${k === 'ALL' ? 'ALL (26)' : k}</button>`;
         }).join('');
       }
 

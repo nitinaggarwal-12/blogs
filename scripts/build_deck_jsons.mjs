@@ -386,7 +386,7 @@ const DECKS = {
       },
     ],
     callToAction:
-      'Review the 3-slide architectural sequences for Figures 1 & 2, execute python3 -B scripts/run_deep_forensic_audit.py, and proceed to Workstream 2 (Pattern A Pooled Architecture).',
+      'Review the 14-slide 3-Act executive architecture deck, execute python3 -B scripts/run_deep_forensic_audit.py, and proceed to Workstream 2 (Pattern A Pooled Architecture).',
   },
 
   'blogs/ws2-pattern-a-pooled-architecture.deck.json': {

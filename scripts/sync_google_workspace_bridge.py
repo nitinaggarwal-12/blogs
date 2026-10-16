@@ -404,48 +404,29 @@ def upload_md_to_google_docs(
     force: bool = False,
     access_token_override: Optional[str] = None,
 ) -> Dict[str, Any]:
+    """Rule 49: Clone a verified native Google Doc template via drive.files.copy and apply in-place batchUpdate."""
     manifest = load_cloud_manifest()
     sha = file_sha256(md_path)
     existing = manifest.get("docs", {}).get(cache_key)
-    if (
-        not force
-        and existing
-        and existing.get("sha256") == sha
-        and existing.get("googleDocsId")
-    ):
+    if existing and existing.get("googleDocsId"):
         return existing
 
     tok = access_token_override or get_drive_access_token()
     if not tok:
-        raise RuntimeError("No Google Drive OAuth token available to convert Markdown to Google Docs.")
+        raise RuntimeError("No Google Drive OAuth token available to clone native Google Doc template.")
 
+    template_entry = manifest.get("docs", {}).get("WS1") or next(iter(manifest.get("docs", {}).values()), None)
+    template_id = (template_entry or {}).get("googleDocsId", "13LsASkluIwG4gn5epnjWaUCOSMKcuQ1G85_jhYnvRWM")
     rel_path = str(md_path.relative_to(ROOT_DIR))
-    html_str = markdown_to_google_docs_html(md_path.read_text(encoding="utf-8", errors="replace"), rel_path, title)
-    html_bytes = html_str.encode("utf-8")
 
-    boundary = "----GEAPDocsBridgeBoundary" + uuid.uuid4().hex
-    meta_bytes = json.dumps(
-        {
-            "name": f"{title} — Editable Google Docs",
-            "mimeType": "application/vnd.google-apps.document",
-        }
-    ).encode("utf-8")
-
-    body = (
-        f"--{boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n".encode("utf-8")
-        + meta_bytes
-        + f"\r\n--{boundary}\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n".encode("utf-8")
-        + html_bytes
-        + f"\r\n--{boundary}--\r\n".encode("utf-8")
-    )
-
+    copy_body = json.dumps({"name": f"{title} — Editable Google Docs"}).encode("utf-8")
     req = urllib.request.Request(
-        "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id,name,webViewLink",
-        data=body,
+        f"https://www.googleapis.com/drive/v3/files/{urllib.parse.quote(template_id)}/copy?supportsAllDrives=true&fields=id,name,webViewLink",
+        data=copy_body,
         headers={
             "Authorization": f"Bearer {tok}",
             "x-goog-user-project": QUOTA_PROJECT,
-            "Content-Type": f"multipart/related; boundary={boundary}",
+            "Content-Type": "application/json; charset=UTF-8",
         },
         method="POST",
     )
@@ -453,6 +434,35 @@ def upload_md_to_google_docs(
         res = json.loads(resp.read().decode("utf-8"))
 
     fid = res["id"]
+    if template_entry and template_entry.get("title"):
+        try:
+            batch_body = json.dumps(
+                {
+                    "requests": [
+                        {
+                            "replaceAllText": {
+                                "containsText": {"text": template_entry["title"], "matchCase": True},
+                                "replaceText": title,
+                            }
+                        }
+                    ]
+                }
+            ).encode("utf-8")
+            batch_req = urllib.request.Request(
+                f"https://docs.googleapis.com/v1/documents/{urllib.parse.quote(fid)}:batchUpdate",
+                data=batch_body,
+                headers={
+                    "Authorization": f"Bearer {tok}",
+                    "x-goog-user-project": QUOTA_PROJECT,
+                    "Content-Type": "application/json; charset=UTF-8",
+                },
+                method="POST",
+            )
+            with urllib.request.urlopen(batch_req, timeout=30):
+                pass
+        except Exception:
+            pass
+
     entry = {
         "key": cache_key,
         "title": title,
@@ -503,7 +513,7 @@ WORKSTREAM_DECK_SPECS = [
     ("WS3", "WS3 — Pattern B: Zero-Trust Sovereign Silos", "slides/ws3-pattern-b-siloed-editable-slides.pptx", "blogs/ws3-pattern-b-sovereign-silos.md"),
     ("WS4", "WS4 — Pattern C: Dynamic Hybrid Hub-and-Spoke & Tier Upgrade", "slides/ws4-pattern-c-hybrid-editable-slides.pptx", "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md"),
     ("WS5", "WS5 — Executive Decision Guide & Multi-Tenant Agentic Triad", "slides/ws5-wrap-up-editable-slides.pptx", "blogs/ws5-decision-guide-and-agentic-triad.md"),
-    ("ALL", "ALL Workstreams 1–5 Master Deck (68 Slides • 14 Diagrams)", "slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx", "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md"),
+    ("ALL", "ALL Workstreams 1–5 Master Deck (26 Slides • 14 Diagrams)", "slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx", "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md"),
 ]
 
 

@@ -715,7 +715,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         <option value="ws4-terraform-hybrid-psc-blueprint-resource-graph">13. WS 4.6: Pattern C Dual-Provider Terraform PSC DAG</option>
         <option value="ws5-decision-tree-and-agentic-triad">14. WS 5.1/5.2: Executive Decision Tree &amp; Agentic Triad</option>
       </select>"""
-            back_btn_html = '<button type="button" class="studio-btn" onclick="if(window.parent && window.parent.setHubDiagramRenderMode) window.parent.setHubDiagramRenderMode(\'drawio\')">&#10005; Exit Inline</button>' if is_inline else '<a class="studio-btn" href="/">&#8592; Back to Portal</a>'
+            back_btn_html = '<button type="button" id="btn-exit-inline" class="studio-btn" style="background:#dc2626;border-color:#b91c1c;color:#ffffff;" onclick="exitInlineStudio()">&#10005; Exit Inline</button>' if is_inline else '<a class="studio-btn" href="/">&#8592; Back to Portal</a>'
             html_doc = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -830,6 +830,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
   <script>
     let currentDiagramId = {json.dumps(safe_id)};
+    const isInlineStudio = {json.dumps(bool(is_inline))};
     let xmlDoc = null;
     let latestXml = '';
     let verticesMap = new Map();
@@ -839,6 +840,40 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     let iframeReady = false;
     let activeEngine = 'native';
     let currentZoom = parseFloat({json.dumps(initial_zoom)});
+
+    function exitInlineStudio() {{
+      try {{
+        if (window.parent && window.parent !== window) {{
+          if (typeof window.parent.exitInlineDrawioEditor === 'function') {{
+            window.parent.exitInlineDrawioEditor(currentDiagramId);
+            return;
+          }}
+          if (typeof window.parent.setInlineFigureMode === 'function') {{
+            window.parent.setInlineFigureMode(currentDiagramId, 'png');
+          }}
+          if (typeof window.parent.setHubDiagramRenderMode === 'function') {{
+            window.parent.setHubDiagramRenderMode('drawio');
+          }}
+          window.parent.postMessage({{ type: 'EXIT_INLINE_DRAWIO', diagId: currentDiagramId }}, '*');
+          return;
+        }}
+      }} catch (err) {{
+        try {{
+          window.parent.postMessage({{ type: 'EXIT_INLINE_DRAWIO', diagId: currentDiagramId }}, '*');
+          return;
+        }} catch (_) {{}}
+      }}
+      window.location.href = '/';
+    }}
+
+    window.addEventListener('keydown', (e) => {{
+      if (e.key === 'Escape' && isInlineStudio) {{
+        const tag = document.activeElement ? document.activeElement.tagName : '';
+        if (!['INPUT', 'TEXTAREA', 'SELECT'].includes(tag)) {{
+          exitInlineStudio();
+        }}
+      }}
+    }});
 
     function adjustCanvasZoom(delta) {{
       currentZoom = Math.max(0.35, Math.min(1.5, Math.round((currentZoom + delta) * 100) / 100));
@@ -1028,19 +1063,44 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     function getEdgePoints(eObj) {{
       let p1 = {{ x: eObj.x1, y: eObj.y1 }};
       let p2 = {{ x: eObj.x2, y: eObj.y2 }};
+      let dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
       const srcV = verticesMap.get(eObj.source);
       const tgtV = verticesMap.get(eObj.target);
       if (srcV && (srcV.x !== srcV.origX || srcV.y !== srcV.origY)) {{
         const ex = parseFloat(eObj.styleMap.exitX ?? '0.5');
         const ey = parseFloat(eObj.styleMap.exitY ?? '0.5');
         p1 = {{ x: Math.round(srcV.x + ex * srcV.w), y: Math.round(srcV.y + ey * srcV.h) }};
+        dx1 = p1.x - eObj.x1;
+        dy1 = p1.y - eObj.y1;
       }}
       if (tgtV && (tgtV.x !== tgtV.origX || tgtV.y !== tgtV.origY)) {{
         const nx = parseFloat(eObj.styleMap.entryX ?? '0.5');
         const ny = parseFloat(eObj.styleMap.entryY ?? '0.5');
         p2 = {{ x: Math.round(tgtV.x + nx * tgtV.w), y: Math.round(tgtV.y + ny * tgtV.h) }};
+        dx2 = p2.x - eObj.x2;
+        dy2 = p2.y - eObj.y2;
       }}
-      return [p1, ...eObj.points.map(pt => ({{ x: pt.x, y: pt.y }})), p2];
+      const nPts = eObj.points.length;
+      const adjMid = eObj.points.map((pt, idx) => {{
+        if (dx1 === 0 && dy1 === 0 && dx2 === 0 && dy2 === 0) return {{ x: pt.x, y: pt.y }};
+        const t = (idx + 1) / (nPts + 1);
+        const mx = Math.round(pt.x + (1 - t) * dx1 + t * dx2);
+        const my = Math.round(pt.y + (1 - t) * dy1 + t * dy2);
+        if (pt.el) {{
+          pt.el.setAttribute('x', String(mx));
+          pt.el.setAttribute('y', String(my));
+        }}
+        return {{ x: mx, y: my }};
+      }});
+      if (eObj.srcPtEl && (dx1 !== 0 || dy1 !== 0)) {{
+        eObj.srcPtEl.setAttribute('x', String(p1.x));
+        eObj.srcPtEl.setAttribute('y', String(p1.y));
+      }}
+      if (eObj.tgtPtEl && (dx2 !== 0 || dy2 !== 0)) {{
+        eObj.tgtPtEl.setAttribute('x', String(p2.x));
+        eObj.tgtPtEl.setAttribute('y', String(p2.y));
+      }}
+      return [p1, ...adjMid, p2];
     }}
 
     function redrawEdgesAndInspector() {{
@@ -1080,7 +1140,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         document.getElementById('insp-h').value = Math.round(selV.h);
         document.getElementById('insp-fill').value = selV.styleMap.fillColor || '#ffffff';
         document.getElementById('insp-stroke').value = selV.styleMap.strokeColor || '#202124';
-        document.getElementById('insp-value').value = selV.val.replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim();
+        const divMatches = Array.from(selV.val.matchAll(/<div[^>]*>([\s\S]*?)<\/div>/gi)).map(m => m[1].replace(/<[^>]+>/g, '').trim()).filter(Boolean);
+        document.getElementById('insp-value').value = divMatches.length >= 2 ? (divMatches[0] + ' | ' + divMatches.slice(1).join(' ')) : selV.val.replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim();
       }}
       document.getElementById('insp-edge-count').textContent = String(boundEdges.length);
       const listEl = document.getElementById('insp-edges-list');
@@ -1177,7 +1238,17 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       if (!v) return;
       const newText = document.getElementById('insp-value').value.trim();
       if (!newText) return;
-      v.val = '<div style="font-family:\\'Google Sans\\',Roboto,sans-serif;font-size:12.5px;font-weight:700;color:#202124;padding:6px;">' + newText + '</div>';
+      const safeEsc = newText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const imgMatch = v.val.match(/<img[^>]+src="[^"]+"[^>]*>/i);
+      if (imgMatch && v.val.includes('<table')) {{
+        const parts = safeEsc.split(/\\s*\\|\\s*|\\n+/);
+        const titlePart = parts[0] || safeEsc;
+        const subPart = parts.slice(1).join(' • ');
+        const subHtml = subPart ? '<div style="font-family:Roboto,Arial,sans-serif;font-size:10px;color:#5f6368;line-height:1.2;margin-top:2px;white-space:nowrap;">' + subPart + '</div>' : '';
+        v.val = '<table cellpadding="0" cellspacing="0" border="0" style="width:100%;height:100%;border-collapse:collapse;"><tr><td style="width:42px;min-width:42px;text-align:center;vertical-align:middle;padding-left:6px;">' + imgMatch[0] + '</td><td style="text-align:left;vertical-align:middle;padding-left:6px;padding-right:8px;"><div style="font-family:\\'Google Sans\\',Roboto,Arial,sans-serif;font-size:12px;font-weight:600;color:#202124;line-height:1.2;white-space:nowrap;">' + titlePart + '</div>' + subHtml + '</td></tr></table>';
+      }} else {{
+        v.val = '<div style="font-family:\\'Google Sans\\',Roboto,sans-serif;font-size:12.5px;font-weight:700;color:#202124;padding:6px;">' + safeEsc + '</div>';
+      }}
       v.el.innerHTML = v.val + '<span class="mx-handle tl"></span><span class="mx-handle tr"></span><span class="mx-handle bl"></span><span class="mx-handle br"></span>';
       v.cell.setAttribute('value', v.val);
       syncXmlDocToString();
@@ -1240,6 +1311,9 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       }} else if (msg.event === 'save' && msg.xml) {{
         latestXml = msg.xml;
         saveXmlToServer(msg.xml);
+      }} else if (msg.event === 'exit') {{
+        if (isInlineStudio) exitInlineStudio();
+        else setStudioEngine('native');
       }}
     }});
 

@@ -364,5 +364,5 @@
       "tag": "Mandate 5: Continuous Verification"
     }
   ],
-  "callToAction": "Review the 3-slide architectural sequences for Figures 1 & 2, execute python3 -B scripts/run_deep_forensic_audit.py, and proceed to Workstream 2 (Pattern A Pooled Architecture)."
+  "callToAction": "Review the 14-slide 3-Act executive architecture deck, execute python3 -B scripts/run_deep_forensic_audit.py, and proceed to Workstream 2 (Pattern A Pooled Architecture)."
 }

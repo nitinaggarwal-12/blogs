@@ -57,7 +57,7 @@ export default {
   rightZoneTitle: 'Dedicated Tenant Spoke (Producer)',
   rightZoneSub: 'cymbal-psc-nat-us-west1 (10.240.0.0/28) • ACCEPT_MANUAL',
   rightCards: {
-    modelArmor: { icon: 'psc_bridge', title: 'PSC NAT Subnet', sub: '10.240.0.0/28 (PRIVATE_SERVICE_CONNECT)' },
+    modelArmor: { icon: 'psc_bridge', title: 'PSC NAT Subnet', sub: '10.240.0.0/28 (PSC_NAT)' },
     llm: { icon: 'load_balancer_cloud_armor', title: 'Spoke ILB Fwd Rule', sub: 'finvault-spoke-ilb-fwd-rule' },
     runtime: { icon: 'gemini_agent_platform', title: 'Spoke Agent Engine', sub: 'Agent Alpha • 8,000 Budget' },
     mcp: { icon: 'mcp_servers', title: 'Local Spoke MCP', sub: 'Google / Jira Connectors' },
