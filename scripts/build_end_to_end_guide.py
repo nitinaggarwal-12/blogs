@@ -107,7 +107,7 @@ The numbered badges **1 → 7** on every diagram are the request lifecycle throu
 
 ### 0.4 The anchor case study
 
-**Cymbal SaaS Platform** (the ISV) publishes a *Shared Incident Diagnostic Agent* to two deliberately adversarial tenants: **FinVault Bank** (regulated, Google OIDC identity, Workspace & Jira tools, private *Agent Alpha* on Claude 3.7 Sonnet, 8,000-token thinking budget, OCC/FDIC natural-language constraints) and **RetailStream Corp** (standard tier, Microsoft Entra ID identity, SharePoint & ServiceNow tools, 4,000-token cap, PCI PAN redaction). Every diagram's left and right spokes are these two tenants — or, in the environment / Terraform diagrams, the resources that serve them.
+**Cymbal SaaS Platform** (the ISV) publishes a *Shared Incident Diagnostic Agent* to two deliberately adversarial tenants: **FinVault Bank** (regulated, Google OIDC identity, Workspace & Jira tools, private *Agent Alpha* on Gemini 2.5 Pro (Dedicated PT), 8,000-token thinking budget, OCC/FDIC natural-language constraints) and **RetailStream Corp** (standard tier, Microsoft Entra ID identity, SharePoint & ServiceNow tools, 4,000-token cap, PCI PAN redaction). Every diagram's left and right spokes are these two tenants — or, in the environment / Terraform diagrams, the resources that serve them.
 
 ### 0.5 From deliverable to diagram — what the `WS x.y` labels mean
 

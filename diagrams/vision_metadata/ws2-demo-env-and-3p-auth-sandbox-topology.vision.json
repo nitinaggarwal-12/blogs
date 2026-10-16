@@ -305,9 +305,9 @@
     },
     {
       "id": "card_lc_db",
-      "urlSlug": "OBJ-23-PRIVATE-AGENT-ALPHA-CLAU",
-      "label": "Private Agent Alpha claude-3-7-sonnet allowed",
-      "plainTitle": "Private Agent Alpha claude-3-7-sonnet allowed",
+      "urlSlug": "OBJ-23-PRIVATE-AGENT-ALPHA-GEMI",
+      "label": "Private Agent Alpha gemini-2.5-pro (8k Budget)",
+      "plainTitle": "Private Agent Alpha gemini-2.5-pro (8k Budget)",
       "zone": "Governance & Footer",
       "x": 342,
       "y": 1218,

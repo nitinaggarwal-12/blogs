@@ -166,7 +166,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
     alpha = finvault_alpha_mod.FinVaultPrivateAgentAlpha()
     prov = alpha.provision_via_agents_cli(
         caller_ctx=finvault_ctx,
-        model_id="claude-3-7-sonnet@20250219",
+        model_id="gemini-2.5-pro-dedicated",
     )
     swapped_model = alpha.hot_swap_model(
         caller_ctx=finvault_ctx,
@@ -493,12 +493,20 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                         s_xml = svg_p.read_text(encoding="utf-8")
                         bound_edges = re.findall(r'<mxCell[^>]*\bedge="1"[^>]*\bsource="[^"]+"[^>]*\btarget="[^"]+"', d_xml)
                         icon_uris = set(re.findall(r'xlink:href="(data:image/[^"]+)"', s_xml))
+                        card_vals = [
+                            re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " | ", m)).strip()
+                            for m in re.findall(r'<mxCell id="card_[^"]+" value="([^"]+)"', d_xml)
+                        ]
+                        vision_p = ROOT_DIR / item.get("vision_metadata", "")
+                        v_txt = vision_p.read_text(encoding="utf-8").lower() if vision_p.is_file() else ""
                         if (
                             len(bound_edges) != 23
+                            or len(card_vals) != 18
+                            or len(set(card_vals)) != 18
                             or "exitPerimeter=0" not in d_xml
                             or "entryPerimeter=0" not in d_xml
-                            or "claude" in d_xml.lower()
-                            or "claude" in s_xml.lower()
+                            or any(b in d_xml.lower() or b in s_xml.lower() or b in v_txt for b in ("claude", "okta", "snowflake"))
+                            or any(pat in d_xml for pat in ("cymbal-skills-&lt;", "Zero-PII &amp;&lt;", "psc-ep-&lt;", "RetailStream /&lt;"))
                             or 'id="e_alb_to_mid_left" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#202124;strokeWidth=2;startArrow=open;' not in d_xml
                             or 'textLength="495"' in s_xml
                             or 'textLength="480"' in s_xml

@@ -47,8 +47,8 @@ export default {
   leftZoneTitle: 'FinVault Silo Setup',
   leftZoneSub: 'KeyRing cymbal-multi-tenant-kr • finvault-silo-cmek',
   leftCards: {
-    modelArmor: { icon: 'vpc_sc', title: 'VPC-SC Perimeter', sub: 'Restricts 7 silo APIs' },
-    llm: { icon: 'gke', title: 'Private GKE Gemma 3', sub: 'container.googleapis.com' },
+    modelArmor: { icon: 'vpc_sc', title: 'FinVault VPC-SC', sub: 'Restricts 7 FinVault APIs' },
+    llm: { icon: 'gke', title: 'FinVault Private GKE', sub: 'Gemma 3 27B (Zero Egress)' },
     runtime: { icon: 'cloud_kms', title: 'KMS Ring finvault-kr', sub: 'cymbal-multi-tenant-kr' },
     mcp: { icon: 'cloud_kms', title: 'finvault-silo-cmek', sub: 'rotation 7776000s (90d)' },
     datastore: { icon: 'datastore_alloydb_bq', title: 'CMEK Silo Vault', sub: 'pattern_b_silo_finvault_cmek_vault' },
@@ -62,8 +62,8 @@ export default {
   rightZoneTitle: 'RetailStream & MedCore Silo Setup',
   rightZoneSub: 'retailstream-silo-cmek & medcore-revoked-cmek (HTTP 423)',
   rightCards: {
-    modelArmor: { icon: 'vpc_sc', title: 'VPC-SC Perimeter', sub: 'Restricts 7 silo APIs' },
-    llm: { icon: 'gke', title: 'Private GKE Gemma 3', sub: 'container.googleapis.com' },
+    modelArmor: { icon: 'vpc_sc', title: 'RetailStream VPC-SC', sub: 'Restricts 7 Retail APIs' },
+    llm: { icon: 'gke', title: 'RetailStream Silo GKE', sub: 'Gemma 3 27B & Dedicated PT' },
     runtime: { icon: 'cloud_kms', title: 'retailstream-silo-cmek', sub: 'Active KMS CryptoKey' },
     mcp: { icon: 'cloud_kms', title: 'medcore-revoked-cmek', sub: 'DISABLED -> HTTP 423 Lock' },
     datastore: { icon: 'datastore_alloydb_bq', title: 'CMEK AlloyDB & Agent', sub: 'Instant Kill-Switch Verified' },

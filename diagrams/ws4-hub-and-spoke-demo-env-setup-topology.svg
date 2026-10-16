@@ -141,8 +141,8 @@
       <rect x="824" y="406" width="276" height="72" rx="6" ry="6" fill="#ffffff" stroke="#202124" stroke-width="2"/>
       <image x="834" y="426" width="32" height="32" preserveAspectRatio="xMidYMid meet" xlink:href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%222%22%20y%3D%222%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22%23e6f4ea%22%20stroke%3D%22%23137333%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2211%22%20cy%3D%2220%22%20r%3D%224.5%22%20fill%3D%22%231a73e8%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2229%22%20cy%3D%2220%22%20r%3D%224.5%22%20fill%3D%22%23137333%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M16%2020%20H24%20M21%2016%20L25%2020%20L21%2024%22%20fill%3D%22none%22%20stroke%3D%22%23137333%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"/>
       
-      <text x="876" y="429" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">psc-endpoint-</text>
-      <text x="876" y="447" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">finvault-ip</text>
+      <text x="876" y="429" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">PSC Consumer IP</text>
+      <text x="876" y="447" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">psc-ep-finvault</text>
       <text x="876" y="465" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="10.3" font-weight="400" fill="#3c4043">10.10.0.50 • cymbal-hub-subnet</text>
     
     </g>
@@ -324,8 +324,8 @@
 
   <line x1="993" y1="1054" x2="993" y2="1066" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
   <line x1="993" y1="1014" x2="993" y2="1000" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="993" y="1029" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">Consumer accept</text>
-  <text x="993" y="1046" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">hub project=10</text>
+  <text x="993" y="1029" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">Accept hub project</text>
+  <text x="993" y="1046" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">(conn_limit = 10)</text>
 
   <line x1="993" y1="1204" x2="993" y2="1216" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
   <line x1="993" y1="1158" x2="993" y2="1144" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>

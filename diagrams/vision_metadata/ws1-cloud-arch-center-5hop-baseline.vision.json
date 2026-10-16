@@ -269,9 +269,9 @@
     },
     {
       "id": "card_lc_llm",
-      "urlSlug": "OBJ-20-GEMINI-CLAUDE-AGENT-ENGI",
-      "label": "Gemini & Claude Agent Engine (8k Budget)",
-      "plainTitle": "Gemini & Claude Agent Engine (8k Budget)",
+      "urlSlug": "OBJ-20-GEMINI-2-5-PRO-AGENT-ENG",
+      "label": "Gemini 2.5 Pro Agent Engine (8k Budget)",
+      "plainTitle": "Gemini 2.5 Pro Agent Engine (8k Budget)",
       "zone": "Governance & Footer",
       "x": 96,
       "y": 1110,

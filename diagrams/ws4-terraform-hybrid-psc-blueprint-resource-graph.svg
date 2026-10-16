@@ -68,9 +68,9 @@
       <rect x="452" y="432" width="262" height="76" rx="6" ry="6" fill="#ffffff" stroke="#202124" stroke-width="2"/>
       <image x="462" y="454" width="32" height="32" preserveAspectRatio="xMidYMid meet" xlink:href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%222%22%20y%3D%222%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22%23e6f4ea%22%20stroke%3D%22%23137333%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%229%22%20width%3D%2210%22%20height%3D%228%22%20rx%3D%222%22%20fill%3D%22%2334a853%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2222%22%20y%3D%229%22%20width%3D%2210%22%20height%3D%228%22%20rx%3D%222%22%20fill%3D%22%231a73e8%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2215%22%20y%3D%2223%22%20width%3D%2210%22%20height%3D%228%22%20rx%3D%222%22%20fill%3D%22%23137333%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M13%2017%20V20%20H27%20V17%20M20%2020%20V23%22%20fill%3D%22none%22%20stroke%3D%22%23174ea6%22%20stroke-width%3D%222.3%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"/>
       
-      <text x="504" y="455" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">google_compute_</text>
-      <text x="504" y="473" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">network.cymbal_hub_vpc</text>
-      <text x="504" y="491" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#3c4043">cymbal-pattern-c-hub-vpc</text>
+      <text x="504" y="455" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">Hub VPC Network</text>
+      <text x="504" y="473" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">cymbal_hub_vpc</text>
+      <text x="504" y="491" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#3c4043">google_compute_network</text>
     
     </g>
   
@@ -141,9 +141,9 @@
       <rect x="824" y="406" width="276" height="72" rx="6" ry="6" fill="#ffffff" stroke="#202124" stroke-width="2"/>
       <image x="834" y="426" width="32" height="32" preserveAspectRatio="xMidYMid meet" xlink:href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%222%22%20y%3D%222%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22%23e6f4ea%22%20stroke%3D%22%23137333%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2211%22%20cy%3D%2220%22%20r%3D%224.5%22%20fill%3D%22%231a73e8%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2229%22%20cy%3D%2220%22%20r%3D%224.5%22%20fill%3D%22%23137333%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M16%2020%20H24%20M21%2016%20L25%2020%20L21%2024%22%20fill%3D%22none%22%20stroke%3D%22%23137333%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"/>
       
-      <text x="876" y="429" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">google_compute_</text>
-      <text x="876" y="447" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">address</text>
-      <text x="876" y="465" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="10.3" font-weight="400" fill="#3c4043">hub_psc_consumer_ip 10.10.0.50</text>
+      <text x="876" y="429" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">Internal PSC IP</text>
+      <text x="876" y="447" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">hub_psc_consumer_ip</text>
+      <text x="876" y="465" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="10.3" font-weight="400" fill="#3c4043">google_compute_address (10.10.0.50)</text>
     
     </g>
   
@@ -152,7 +152,7 @@
       <rect x="830" y="492" width="264" height="68" rx="6" ry="6" fill="#ffffff" stroke="#202124" stroke-width="2"/>
       <image x="840" y="510" width="32" height="32" preserveAspectRatio="xMidYMid meet" xlink:href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%222%22%20y%3D%222%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22%23e6f4ea%22%20stroke%3D%22%23137333%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2211%22%20cy%3D%2220%22%20r%3D%224.5%22%20fill%3D%22%231a73e8%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2229%22%20cy%3D%2220%22%20r%3D%224.5%22%20fill%3D%22%23137333%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M16%2020%20H24%20M21%2016%20L25%2020%20L21%2024%22%20fill%3D%22none%22%20stroke%3D%22%23137333%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"/>
       
-      <text x="882" y="522" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">google_compute_</text>
+      <text x="882" y="522" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">PSC Forwarding</text>
       <text x="882" y="541" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#3c4043">hub_psc_consumer_endpoint</text>
     
     </g>
@@ -162,7 +162,7 @@
       <rect x="828" y="574" width="268" height="68" rx="6" ry="6" fill="#ffffff" stroke="#202124" stroke-width="2"/>
       <image x="838" y="592" width="32" height="32" preserveAspectRatio="xMidYMid meet" xlink:href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%222%22%20y%3D%222%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22%23e8f0fe%22%20stroke%3D%22%231a73e8%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2210%22%20width%3D%2224%22%20height%3D%224.5%22%20rx%3D%221.5%22%20fill%3D%22%231a73e8%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2217.5%22%20width%3D%2218%22%20height%3D%224.5%22%20rx%3D%221.5%22%20fill%3D%22%2334a853%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2225%22%20width%3D%2224%22%20height%3D%224.5%22%20rx%3D%221.5%22%20fill%3D%22%231967d2%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2230%22%20cy%3D%2219.8%22%20r%3D%222.8%22%20fill%3D%22%23fbbc04%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"/>
       
-      <text x="880" y="604" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">output</text>
+      <text x="880" y="604" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">Terraform Output</text>
       <text x="880" y="623" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#3c4043">Hub IP routing to spoke</text>
     
     </g>
@@ -260,8 +260,8 @@
 
   <line x1="449" y1="1204" x2="449" y2="1216" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
   <line x1="449" y1="1158" x2="449" y2="1144" stroke="#202124" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="449" y="1176" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">Not managed</text>
-  <text x="449" y="1193" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">by this module</text>
+  <text x="449" y="1176" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">Audit Spans to</text>
+  <text x="449" y="1193" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">BigQuery OTel</text>
 
   <!-- ZONE 4: RIGHT TENANT / SPOKE PROJECT (Coral #fad2cf) -->
   <rect x="614" y="772" width="516" height="560" rx="8" ry="8" fill="#ffffff" stroke="#202124" stroke-width="1.2"/>
@@ -283,9 +283,9 @@
       <rect x="640" y="976" width="194" height="72" rx="6" ry="6" fill="#ffffff" stroke="#202124" stroke-width="2"/>
       <image x="650" y="996" width="32" height="32" preserveAspectRatio="xMidYMid meet" xlink:href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%222%22%20y%3D%222%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22%23e6f4ea%22%20stroke%3D%22%23137333%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2211%22%20cy%3D%2220%22%20r%3D%224.5%22%20fill%3D%22%231a73e8%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2229%22%20cy%3D%2220%22%20r%3D%224.5%22%20fill%3D%22%23137333%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M16%2020%20H24%20M21%2016%20L25%2020%20L21%2024%22%20fill%3D%22none%22%20stroke%3D%22%23137333%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"/>
       
-      <text x="692" y="999" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" textLength="128" lengthAdjust="spacingAndGlyphs">enterprise_spoke_</text>
-      <text x="692" y="1017" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">psc_nat</text>
-      <text x="692" y="1035" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="10.3" font-weight="400" fill="#3c4043" textLength="128" lengthAdjust="spacingAndGlyphs">cymbal-psc-nat-us-west1 (/28)</text>
+      <text x="692" y="999" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">PSC NAT Subnet</text>
+      <text x="692" y="1017" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" textLength="128" lengthAdjust="spacingAndGlyphs">cymbal-psc-nat (/28)</text>
+      <text x="692" y="1035" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="10.3" font-weight="400" fill="#3c4043" textLength="128" lengthAdjust="spacingAndGlyphs">PURPOSE = PRIVATE_SERVICE_CONNECT</text>
     
     </g>
   
@@ -294,8 +294,8 @@
       <rect x="886" y="924" width="214" height="74" rx="6" ry="6" fill="#ffffff" stroke="#202124" stroke-width="2"/>
       <image x="896" y="945" width="32" height="32" preserveAspectRatio="xMidYMid meet" xlink:href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%222%22%20y%3D%222%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22%23e6f4ea%22%20stroke%3D%22%23137333%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2211%22%20cy%3D%2220%22%20r%3D%224.5%22%20fill%3D%22%231a73e8%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2229%22%20cy%3D%2220%22%20r%3D%224.5%22%20fill%3D%22%23137333%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M16%2020%20H24%20M21%2016%20L25%2020%20L21%2024%22%20fill%3D%22none%22%20stroke%3D%22%23137333%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"/>
       
-      <text x="938" y="947" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">google_compute_</text>
-      <text x="938" y="965" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">service_attachment</text>
+      <text x="938" y="947" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">PSC Service</text>
+      <text x="938" y="965" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">Attachment</text>
       <text x="938" y="983" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#3c4043" textLength="148" lengthAdjust="spacingAndGlyphs">ACCEPT_MANUAL • limit 20</text>
     
     </g>
@@ -315,8 +315,8 @@
       <rect x="886" y="1218" width="214" height="74" rx="6" ry="6" fill="#ffffff" stroke="#202124" stroke-width="2"/>
       <image x="896" y="1239" width="32" height="32" preserveAspectRatio="xMidYMid meet" xlink:href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%222%22%20y%3D%222%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22%23e8f0fe%22%20stroke%3D%22%231a73e8%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2210%22%20width%3D%2224%22%20height%3D%224.5%22%20rx%3D%221.5%22%20fill%3D%22%231a73e8%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2217.5%22%20width%3D%2218%22%20height%3D%224.5%22%20rx%3D%221.5%22%20fill%3D%22%2334a853%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2225%22%20width%3D%2224%22%20height%3D%224.5%22%20rx%3D%221.5%22%20fill%3D%22%231967d2%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2230%22%20cy%3D%2219.8%22%20r%3D%222.8%22%20fill%3D%22%23fbbc04%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"/>
       
-      <text x="938" y="1241" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">output psc_service_</text>
-      <text x="938" y="1259" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">attachment_uri</text>
+      <text x="938" y="1241" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">Terraform Output</text>
+      <text x="938" y="1259" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">psc_attachment_uri</text>
       <text x="938" y="1277" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="10.3" font-weight="400" fill="#3c4043" textLength="148" lengthAdjust="spacingAndGlyphs">enterprise_spoke_psc_attach</text>
     
     </g>
@@ -372,7 +372,7 @@
   <text x="644" y="695" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">target = service</text>
   <text x="644" y="713" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" fill="#202124">attachment.id</text>
 
-  <text x="974" y="688" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" fill="#202124">psc-consumer-</text>
-  <text x="974" y="705" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" fill="#202124">${tenant_id}</text>
+  <text x="974" y="688" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" fill="#202124">PSC Consumer Rule</text>
+  <text x="974" y="705" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" fill="#202124">for ${tenant_id}</text>
   <text x="974" y="722" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" fill="#202124"></text>
 </svg>

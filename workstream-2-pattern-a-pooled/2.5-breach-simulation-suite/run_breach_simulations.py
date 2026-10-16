@@ -7,7 +7,7 @@ Tests all 4 Legacy Multi-Tenancy Failure Modes & 5-Hop Cryptographic Governance 
 2. SIM 2A/B/C/D (Hop 2 Registry PDP, ARD Catalog & Model Garden Hot-Swap):
    - RetailStream direct call to FinVault `Agent Alpha` blocked (403).
    - ARD catalog filter hides `Agent Alpha` & FinVault GCS Skills from RetailStream.
-   - FinVault `Agent Alpha` runs Claude 3.7 Sonnet & supports hot-swapping Model Garden models,
+   - FinVault `Agent Alpha` runs Gemini 2.5 Pro (Dedicated PT) & supports hot-swapping Model Garden models,
      while RetailStream is blocked from hot-swapping `Agent Alpha`.
    - FinVault blocked (403) from invoking RetailStream's ServiceNow MCP.
 3. SIM 3A/B/C/D (Hop 3 5-Level Memory Bank, Hop 4 Model Armor & Semantic NLCs, Hop 5 AlloyDB RLS):
@@ -111,20 +111,20 @@ def run_all_breach_simulations() -> None:
     )
     ctx_fv = res2b["context"]
     assert res2b["status_code"] == 200
-    assert "claude-3-7-sonnet@20250219" in res2b["response"]
+    assert "gemini-2.5-pro-dedicated" in res2b["response"]
     assert "[REDACTED-FINVAULT-BANK-ACCOUNT]" in res2b["response"]
     assert "[REDACTED-FINVAULT-SWIFT]" in res2b["response"]
 
     # Verify FinVault hot-swappable Model Garden config & block RetailStream from hot-swapping
-    svc.runtime.agent_alpha.hot_swap_model(ctx_fv, "claude-3-5-sonnet-v2@20241022")
-    assert svc.runtime.agent_alpha.active_model == "claude-3-5-sonnet-v2@20241022"
-    svc.runtime.agent_alpha.hot_swap_model(ctx_fv, "claude-3-7-sonnet@20250219")
+    svc.runtime.agent_alpha.hot_swap_model(ctx_fv, "gemini-2.5-flash")
+    assert svc.runtime.agent_alpha.active_model == "gemini-2.5-flash"
+    svc.runtime.agent_alpha.hot_swap_model(ctx_fv, "gemini-2.5-pro-dedicated")
     try:
         svc.runtime.agent_alpha.hot_swap_model(ctx1, "gemini-2.5-pro")
         raise AssertionError("RetailStream should not be allowed to hot-swap Agent Alpha!")
     except PermissionError:
         pass
-    print("[PASS] SIM 2B (Hop 2 & Hop 4): FinVault 'Agent Alpha' (Claude Sonnet + Hot-Swap + 3LO Workspace) verified.")
+    print("[PASS] SIM 2B (Hop 2 & Hop 4): FinVault 'Agent Alpha' (Gemini 2.5 Pro Dedicated PT + Hot-Swap + 3LO Workspace) verified.")
 
     # FinVault attempting to discover/use RetailStream's ServiceNow MCP connector -> 403
     res2c = svc.invoke_pooled_agent(

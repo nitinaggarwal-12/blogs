@@ -302,7 +302,7 @@
         "Zone 1 (Triad Pillar 1 — Zero-Trust Ingress & Decision Selector): Evaluates Hop 1 Identity, Hop 4 Model Armor, Hop 2 Catalog, and the 2-Question Topology Selector.",
         "Zone 2 (Triad Pillar 3 — FinOps & Security Governance): Security Command Center, 3 Chargeback SQL Models, and BigQuery OTel Sink govern compliance and billing.",
         "Zone 3 (Triad Pillar 2 — Pattern A Pooled Unit Economics): Enforces Memorystore Valkey RPM bulkheads, 4,000 thinking token caps, 90% prefix cache discount, and AlloyDB RLS.",
-        "Zone 4 (Pattern B Silos & Pattern C PSC Spokes): Enforces VPC-SC & IAM PAB perimeters, air-gapped Gemma 3 / Claude 3.7 hosting, PSC spoke routing, and CMEK kill-switches."
+        "Zone 4 (Pattern B Silos & Pattern C PSC Spokes): Enforces VPC-SC & IAM PAB perimeters, air-gapped Gemma 3 / Gemini 2.5 Pro hosting, PSC spoke routing, and CMEK kill-switches."
       ]
     }
   ],

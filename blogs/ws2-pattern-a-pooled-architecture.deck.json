@@ -85,7 +85,7 @@
           "tag": "Dynamic Context Hydration"
         },
         {
-          "stack": "Google Workspace OIDC • Agent Alpha (Claude 3.7 / Gemini 2.5) • 3LO Drive/Gmail/Jira",
+          "stack": "Google Workspace OIDC • Agent Alpha (Gemini 2.5 Pro / Gemini 2.5) • 3LO Drive/Gmail/Jira",
           "sla": "8,000 Thinking Tokens • 600 RPM Valkey Bucket • OCC NLC + IBAN/SWIFT Masking",
           "tag": "FinVault Pooled Slice"
         },

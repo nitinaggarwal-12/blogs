@@ -75,7 +75,7 @@ TENANT_PROFILES: Dict[str, TenantProfile] = {
             "mcp://finvault/jira-enterprise-3lo",
         ],
         primary_model="gemini-2.5-pro",
-        custom_agent_model="claude-3-7-sonnet@20250219",
+        custom_agent_model="gemini-2.5-pro-dedicated",
         cmek_key_uri="projects/cymbal-finvault-silo-prod/locations/us-central1/keyRings/finvault-kr/cryptoKeys/agent-memory-cmek",
         silo_cmek_key_uri="projects/cymbal-finvault-silo-prod/locations/us-central1/keyRings/finvault-kr/cryptoKeys/agent-memory-cmek",
         system_prompt_template="FinVault Regulated Banking SRE Diagnostic Policy (OCC/FDIC Tier-1).",

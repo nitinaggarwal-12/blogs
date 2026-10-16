@@ -329,9 +329,9 @@
     },
     {
       "id": "card_sc_llm",
-      "urlSlug": "OBJ-25-GEMINI-CLAUDE-3-7",
-      "label": "Gemini & Claude 3.7",
-      "plainTitle": "Gemini & Claude 3.7",
+      "urlSlug": "OBJ-25-GEMINI-2-5-PRO-PT",
+      "label": "Gemini 2.5 Pro PT",
+      "plainTitle": "Gemini 2.5 Pro PT",
       "zone": "Governance & Footer",
       "x": 640,
       "y": 976,

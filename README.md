@@ -93,7 +93,7 @@ All workstreams share a unified anchor case study: **Cymbal SaaS Platform**, a B
 2. **Tenant Alpha (Enterprise Tier) — FinVault Bank**:
    * Regulated digital bank running on **Google Workspace & Jira**.
    * Entitled to an extended **8,000 thinking-token budget** on the Shared Diagnostic Agent.
-   * Provisions a private self-service **Regulatory Escalation Agent (`Agent Alpha`)** via REST API / `agents-cli`, running **Claude Sonnet on Vertex AI Model Garden** with hot-swappable model configuration.
+   * Provisions a private self-service **Regulatory Escalation Agent (`Agent Alpha`)** via REST API / `agents-cli`, running **Gemini 2.5 Pro (Dedicated PT) on Vertex AI Model Garden** with hot-swappable model configuration.
    * Uses **3LO Google OIDC** for Google Drive, Calendar post-mortems, and Gmail incident briefs, plus **CMEK-encrypted memory (`finvault:user:session`)**.
 3. **Tenant Beta (Standard Tier) — RetailStream Corp**:
    * Global e-commerce retailer on **100% Microsoft 365 & ServiceNow** (Zero Google Footprint).
@@ -114,7 +114,7 @@ All workstreams share a unified anchor case study: **Cymbal SaaS Platform**, a B
   * [`governance/hop3_compute_finops_bulkhead.py`](core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py) — gVisor `temp:tenant_id` binding, 5-Level Memory Bank with live Cloud KMS CMEK `:encrypt`/`:decrypt` envelope verification (`423 KMS_KEY_DISABLED` on revoked key), `ContextCacheConfig`, and Redis Token Bulkheads.
   * [`governance/hop4_model_armor_guardrails.py`](core-cymbal-agent/governance/hop4_model_armor_guardrails.py) — Vertex AI Model Armor ingress prompt screen, Semantic NLCs, and egress SDP PII redaction.
   * [`governance/hop5_data_rls_and_otel.py`](core-cymbal-agent/governance/hop5_data_rls_and_otel.py) — 2LO/3LO token broker, AlloyDB Row-Level Security (RLS), and live BigQuery `cymbal_agentic_finops_otel.tenant_telemetry_spans` streaming sink.
-  * [`agents/shared_diagnostic_agent.py`](core-cymbal-agent/agents/shared_diagnostic_agent.py) & [`agents/finvault_agent_alpha.py`](core-cymbal-agent/agents/finvault_agent_alpha.py) — Shared Gemini Pro diagnostic agent and FinVault private Claude Sonnet regulatory agent.
+  * [`agents/shared_diagnostic_agent.py`](core-cymbal-agent/agents/shared_diagnostic_agent.py) & [`agents/finvault_agent_alpha.py`](core-cymbal-agent/agents/finvault_agent_alpha.py) — Shared Gemini Pro diagnostic agent and FinVault private Gemini 2.5 Pro (Dedicated PT) regulatory agent.
   * [`mcp_servers/cymbal_mcp_hub.py`](core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py) — 2LO Telemetry MCP, 3LO Google Workspace/Jira MCP, and 3LO Microsoft Entra ID SharePoint/ServiceNow MCP.
 
 ### Workstream 1: Prepare Reference Architectures & Update GCP Documentation

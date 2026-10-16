@@ -4,7 +4,7 @@ subtitle: "Workstreams 1–5, 14 Google Cloud Architecture Center blueprints, 5 
 series: "Multi-Tenant Agentic AI on Google Cloud"
 canonical_architecture: "https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system"
 generated_by: "scripts/build_end_to_end_guide.py"
-generated_on: "2026-10-15"
+generated_on: "2026-10-16"
 status: "PUBLISH_READY"
 ---
 
@@ -87,6 +87,21 @@ Every diagram section follows the same template so you can compare them side by 
 - [Appendix B — Editable slide decks and blogs](#appendix-b--editable-slide-decks-and-blogs)
 - [Appendix C — Glossary](#appendix-c--glossary)
 - [Appendix D — Verification status & Cloud Console Receipt](#appendix-d--verification-status--cloud-console-receipt)
+- [Appendix E — Complete Agentic & Technical Flows for All 14 Architecture Diagrams (WS1–WS5)](#appendix-e--complete-agentic--technical-flows-for-all-14-architecture-diagrams-ws1ws5)
+  - [Diagram 1: Multi-Tenant Agentic AI Taxonomy: Pooled (Pattern A), Sovereign Silos (Pattern B) & Hybrid (Pattern C) (`ws1-multi-tenant-taxonomy-overview`)](#diagram-1-multi-tenant-agentic-ai-taxonomy-pooled-pattern-a-sovereign-silos-pattern-b--hybrid-pattern-c-ws1-multi-tenant-taxonomy-overview)
+  - [Diagram 2: Cloud Architecture Center: Multi-Tenant Agentic AI System with 5-Hop Cryptographic Governance (`ws1-cloud-arch-center-5hop-baseline`)](#diagram-2-cloud-architecture-center-multi-tenant-agentic-ai-system-with-5-hop-cryptographic-governance-ws1-cloud-arch-center-5hop-baseline)
+  - [Diagram 3: Pattern A: High-Density Pooled Multi-Tenant Architecture & Shared Runtime Governance (`ws2-pattern-a-pooled-5hop-architecture`)](#diagram-3-pattern-a-high-density-pooled-multi-tenant-architecture--shared-runtime-governance-ws2-pattern-a-pooled-5hop-architecture)
+  - [Diagram 4: Pattern A: 10-Point Cross-Tenant Breach Simulation & Cryptographic Defense Matrix (`ws2-pattern-a-breach-defense-sequence`)](#diagram-4-pattern-a-10-point-cross-tenant-breach-simulation--cryptographic-defense-matrix-ws2-pattern-a-breach-defense-sequence)
+  - [Diagram 5: Pattern B: Zero-Trust Sovereign Silos (VPC-SC, IAM PAB, CMEK Kill-Switch & Air-Gapped Gemma 3 on GKE) (`ws3-pattern-b-sovereign-silos-architecture`)](#diagram-5-pattern-b-zero-trust-sovereign-silos-vpc-sc-iam-pab-cmek-kill-switch--air-gapped-gemma-3-on-gke-ws3-pattern-b-sovereign-silos-architecture)
+  - [Diagram 6: Pattern C: Dynamic Hybrid Hub-and-Spoke, Private Service Connect (PSC) & Live Tier Migration (`ws4-pattern-c-hybrid-psc-and-migration`)](#diagram-6-pattern-c-dynamic-hybrid-hub-and-spoke-private-service-connect-psc--live-tier-migration-ws4-pattern-c-hybrid-psc-and-migration)
+  - [Diagram 7: Workstream 5 Capstone: Executive Topology Decision Guide & The Multi-Tenant Agentic Triad (`ws5-decision-tree-and-agentic-triad`)](#diagram-7-workstream-5-capstone-executive-topology-decision-guide--the-multi-tenant-agentic-triad-ws5-decision-tree-and-agentic-triad)
+  - [Diagram 8: Pattern A Demo Environment & 3P Auth Sandbox: Pooled Project, Federated IdPs, OAuth 2LO/3LO Apps, Valkey & Firestore Tenant Config (`ws2-demo-env-and-3p-auth-sandbox-topology`)](#diagram-8-pattern-a-demo-environment--3p-auth-sandbox-pooled-project-federated-idps-oauth-2lo3lo-apps-valkey--firestore-tenant-config-ws2-demo-env-and-3p-auth-sandbox-topology)
+  - [Diagram 9: Pattern A 1-Click Terraform Starter: Provider → Google Cloud Armor → Cloud Run v2 Agent Gateway → Valkey / KMS CMEK → BigQuery OTel Resource Graph (`ws2-terraform-starter-resource-graph`)](#diagram-9-pattern-a-1-click-terraform-starter-provider--google-cloud-armor--cloud-run-v2-agent-gateway--valkey--kms-cmek--bigquery-otel-resource-graph-ws2-terraform-starter-resource-graph)
+  - [Diagram 10: Pattern B Provisioning Topology: Org → Per-Tenant Silo Projects, VPC-SC Perimeters, IAM PAB & Cloud KMS CMEK Keys (`ws3-multi-project-silo-and-cmek-setup-topology`)](#diagram-10-pattern-b-provisioning-topology-org--per-tenant-silo-projects-vpc-sc-perimeters-iam-pab--cloud-kms-cmek-keys-ws3-multi-project-silo-and-cmek-setup-topology)
+  - [Diagram 11: Terraform Blueprint Resource Graph: Provider → Cloud KMS CMEK → VPC-SC Perimeter → Sovereign VPC → Private Air-Gapped GKE (Gemma 3) (`ws3-terraform-silo-blueprint-resource-graph`)](#diagram-11-terraform-blueprint-resource-graph-provider--cloud-kms-cmek--vpc-sc-perimeter--sovereign-vpc--private-air-gapped-gke-gemma-3-ws3-terraform-silo-blueprint-resource-graph)
+  - [Diagram 12: Pattern C Demo Environment: Central Ingress Hub, Shared Pool & PSC Service Attachment Spokes (`ws4-hub-and-spoke-demo-env-setup-topology`)](#diagram-12-pattern-c-demo-environment-central-ingress-hub-shared-pool--psc-service-attachment-spokes-ws4-hub-and-spoke-demo-env-setup-topology)
+  - [Diagram 13: Zero-Downtime Tier Upgrade Test Sequence: SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY (4/4 PASS) (`ws4-zero-downtime-tier-upgrade-sequence`)](#diagram-13-zero-downtime-tier-upgrade-test-sequence-shadow_sync--atomic_cutover--drain_and_verify-44-pass-ws4-zero-downtime-tier-upgrade-sequence)
+  - [Diagram 14: Terraform Hybrid PSC Blueprint Resource Graph: Hub VPC → Consumer PSC Endpoint → Producer ServiceAttachment in Enterprise Spoke (`ws4-terraform-hybrid-psc-blueprint-resource-graph`)](#diagram-14-terraform-hybrid-psc-blueprint-resource-graph-hub-vpc--consumer-psc-endpoint--producer-serviceattachment-in-enterprise-spoke-ws4-terraform-hybrid-psc-blueprint-resource-graph)
 
 ---
 
@@ -123,7 +138,7 @@ The numbered badges **1 → 7** on every diagram are the request lifecycle throu
 
 ### 0.4 The anchor case study
 
-**Cymbal SaaS Platform** (the ISV) publishes a *Shared Incident Diagnostic Agent* to two deliberately adversarial tenants: **FinVault Bank** (regulated, Google OIDC identity, Workspace & Jira tools, private *Agent Alpha* on Claude 3.7 Sonnet, 8,000-token thinking budget, OCC/FDIC natural-language constraints) and **RetailStream Corp** (standard tier, Microsoft Entra ID identity, SharePoint & ServiceNow tools, 4,000-token cap, PCI PAN redaction). Every diagram's left and right spokes are these two tenants — or, in the environment / Terraform diagrams, the resources that serve them.
+**Cymbal SaaS Platform** (the ISV) publishes a *Shared Incident Diagnostic Agent* to two deliberately adversarial tenants: **FinVault Bank** (regulated, Google OIDC identity, Workspace & Jira tools, private *Agent Alpha* on Gemini 2.5 Pro (Dedicated PT), 8,000-token thinking budget, OCC/FDIC natural-language constraints) and **RetailStream Corp** (standard tier, Microsoft Entra ID identity, SharePoint & ServiceNow tools, 4,000-token cap, PCI PAN redaction). Every diagram's left and right spokes are these two tenants — or, in the environment / Terraform diagrams, the resources that serve them.
 
 ### 0.5 From deliverable to diagram — what the `WS x.y` labels mean
 
@@ -166,7 +181,7 @@ All **14 blueprints** across Workstreams 1–5 are compiled using the canonical 
 1. **Official Google Cloud Architecture Center blueprint specifications** — [`scripts/build_all_workstream_diagrams.mjs`](../scripts/build_all_workstream_diagrams.mjs) and [`scripts/blueprints_ext/`](../scripts/blueprints_ext/) define the grounded cards, labels, and resolved Google Cloud service icons for all 14 diagrams in the canonical Hub-and-Spoke template (`56` vertices, `23` edges, `0` collisions).
 2. **SVG & 2× PNG compilation** — [`scripts/build_all_workstream_diagrams.mjs`](../scripts/build_all_workstream_diagrams.mjs) compiles each specification to an official Google Cloud Architecture Center `.svg`, `.drawio.xml`, and 2× `.png` via headless Chrome and writes [`diagrams/diagrams_manifest.json`](../diagrams/diagrams_manifest.json).
 3. **PromptCanvas Vision AST & Draw.io certification** — [`scripts/run_promptcanvas_vision_pipeline.ts`](../scripts/run_promptcanvas_vision_pipeline.ts) validates every diagram's geometry, renders `.drawio` / `.drawio.xml` / `.drawio.png` via official Draw.io `mxGraph`, and writes the addressable `.vision.json` AST under [`diagrams/vision_metadata/`](../diagrams/vision_metadata/).
-4. **Editable slides** — [`scripts/build_editable_slide_decks.ts`](../scripts/build_editable_slide_decks.ts) builds the six native editable PowerPoint / Google Slides decks in [`slides/`](../slides/) (784 editable shapes across the five workstream decks) and [`scripts/render_pptx_preview.py`](../scripts/render_pptx_preview.py) renders PNG slide previews.
+4. **Editable slides** — [`scripts/build_editable_slide_decks.ts`](../scripts/build_editable_slide_decks.ts) builds the six native editable PowerPoint / Google Slides decks in [`slides/`](../slides/) (1090 editable shapes across the five workstream decks) and [`scripts/render_pptx_preview.py`](../scripts/render_pptx_preview.py) renders PNG slide previews.
 5. **Live Cloud Console & Runtime Verification** — [`scripts/verify_cloud_console_and_runtime.py`](../scripts/verify_cloud_console_and_runtime.py) verifies the live GCP project (`nitina-ggarwal-sandbox-647724`), enabled Agentic Cloud APIs (`aiplatform`, `discoveryengine`, `cloudkms`, `compute`, `container`, `run`, `alloydb`, `bigquery`, `firestore`, `redis`, `accesscontextmanager`, `iam`), 1:1 Terraform HCL resource parity (`2.6`, `3.6`, `4.6`), and all `20/20` Python runtime simulation assertions (`docs/cloud_console_verification_receipt.json`).
 
 ```bash
@@ -194,7 +209,7 @@ What it produced:
 
 Who consumes it: Workstreams 2–4 (one pattern each, Milestones 1–3 at Weeks 4, 7, 10) take the taxonomy, hop modules and gap IDs as fixed inputs; Workstream 5 builds its decision guide on the same three patterns; the Cloud Architecture Center enablement team receives 1.3 as a reviewable PR; GEAP, ADK 2.0, Auth Manager, Model Armor and VPC-SC/PAB product teams receive 1.2 and 1.4.
 
-The anchor case study used throughout is **Cymbal SaaS Platform** (ISV publishing a Shared Incident Diagnostic Agent on Gemini 2.5 Pro with `ContextCacheConfig` prefix caching), **FinVault Bank** (Tenant Alpha, Enterprise tier, Google Workspace/Jira, Google OIDC, 8,000 thinking-token budget, private `Agent Alpha` on Claude Sonnet via Vertex AI Model Garden, CMEK memory `finvault:user:session`) and **RetailStream Corp** (Tenant Beta, Standard tier, zero Google footprint, Microsoft Entra ID, SharePoint/ServiceNow, 4,000 thinking-token cap behind a Redis bulkhead). The hard requirement is symmetric invisibility: RetailStream receives `403 Forbidden` on any direct call to `Agent Alpha`, and RetailStream's ServiceNow MCP connector never appears in FinVault's catalog.
+The anchor case study used throughout is **Cymbal SaaS Platform** (ISV publishing a Shared Incident Diagnostic Agent on Gemini 2.5 Pro with `ContextCacheConfig` prefix caching), **FinVault Bank** (Tenant Alpha, Enterprise tier, Google Workspace/Jira, Google OIDC, 8,000 thinking-token budget, private `Agent Alpha` on Gemini 2.5 Pro (Dedicated PT) via Vertex AI Model Garden, CMEK memory `finvault:user:session`) and **RetailStream Corp** (Tenant Beta, Standard tier, zero Google footprint, Microsoft Entra ID, SharePoint/ServiceNow, 4,000 thinking-token cap behind a Redis bulkhead). The hard requirement is symmetric invisibility: RetailStream receives `403 Forbidden` on any direct call to `Agent Alpha`, and RetailStream's ServiceNow MCP connector never appears in FinVault's catalog.
 
 ### Deliverables map
 
@@ -215,7 +230,7 @@ The anchor case study used throughout is **Cymbal SaaS Platform** (ISV publishin
 
 * Three **P0** gaps, all Pattern A / WS2, all targeting Q4 2026: `GAP-P0-01` GEAP Agent Registry filters by IAM project principal rather than `tenant_id` claim (workaround: Cloud Run gateway PEP + `before_agent_callback` pruning, `403 Forbidden`; EAP `geap-registry-tenant-label-pdp-eap`); `GAP-P0-02` Memory Bank has project-level CMEK only, no per-`tenant_id` namespace key (workaround: envelope encryption via Cloud KMS in `hop3_compute_finops_bulkhead.py`, or route to a Pattern C PSC memory spoke; EAP `geap-memory-bank-per-tenant-cmek-eap`); `GAP-P0-03` OBO + DPoP from external Entra ID needs custom verification before Auth Manager (workaround: `jkt` thumbprint check + header stripping in `hop1_edge_identity_pep.py`; EAP `gcp-agent-identity-dpop-entra-eap`).
 * Four **P1** gaps: `GAP-P1-01` unified cache API across Gemini `ContextCacheConfig` and Anthropic prompt-cache headers (Q1 2027); `GAP-P1-02` stateless ADK OAuth checkpointing in Firestore/Redis for inline 3LO consent (Q4 2026); `GAP-P1-03` VPC-SC egress bridge (Envoy/Cloud NAT, FQDN allowlist) for remote MCP (Q4 2026); `GAP-P1-04` CMEK revocation latency — up to 5 minutes in long-lived pods, workaround sub-second KMS probe returning HTTP `423 Locked` (Q1 2027).
-* Two **P2** gaps (WS4, Q1 2027): `GAP-P2-01` cross-project federated registry over PSC; `GAP-P2-02` zero-downtime `Standard -> Enterprise` tier migrator (Shadow State Replication → Atomic Firestore Route Cutover → In-Flight Session Drain). Plus the API enablement list (`aiplatform`, `discoveryengine`, `modelarmor`, `dlp`, `compute`, `run`, `alloydb`, `redis`, `cloudkms`, `accesscontextmanager`, `iam`, `bigquery`, `telemetry`) and a Claude 3.7 Sonnet Model Garden access check for `us-central1` / `us-east5`.
+* Two **P2** gaps (WS4, Q1 2027): `GAP-P2-01` cross-project federated registry over PSC; `GAP-P2-02` zero-downtime `Standard -> Enterprise` tier migrator (Shadow State Replication → Atomic Firestore Route Cutover → In-Flight Session Drain). Plus the API enablement list (`aiplatform`, `discoveryengine`, `modelarmor`, `dlp`, `compute`, `run`, `alloydb`, `redis`, `cloudkms`, `accesscontextmanager`, `iam`, `bigquery`, `telemetry`) and a Gemini 2.5 Pro (Dedicated PT) Model Garden access check for `us-central1` / `us-east5`.
 
 ### End-to-end flow of the workstream
 
@@ -341,7 +356,7 @@ A dashed bidirectional line labelled **"Security, OTel & FinOps chargeback telem
 
 * Boundary label: **Pattern B (Sovereign Silos) & Pattern C (Hybrid PSC Spokes)**
 * Zone title / sub: **Dedicated Sovereign Tenant Project** / *VPC-SC + IAM PAB + CMEK Kill-Switch + PSC*
-* Cards: `model_armor` **Model Armor** / *Sovereign Silo Guardrails*; `gemini_agent_platform` **Gemini / Gemma 3** / *Claude 3.7 or Private GKE*; `gemini_agent_platform` **Agent Runtime** / *Dedicated Silo + Agent Alpha*; `mcp_servers` **MCP servers** / *Local Silo 3LO Connectors*; `datastore_alloydb_bq` **CMEK Datastore** / *AlloyDB, BQ & KMS 423 Lock*
+* Cards: `model_armor` **Model Armor** / *Sovereign Silo Guardrails*; `gemini_agent_platform` **Gemini / Gemma 3** / *Gemini 2.5 Pro or Private GKE*; `gemini_agent_platform` **Agent Runtime** / *Dedicated Silo + Agent Alpha*; `mcp_servers` **MCP servers** / *Local Silo 3LO Connectors*; `datastore_alloydb_bq` **CMEK Datastore** / *AlloyDB, BQ & KMS 423 Lock*
 * RAG label: **"Air-Gapped Silo RAG"**; tool label: **"CMEK-Encrypted State & Tools"**
 * Note: the blueprint defines step 4/5/6 badges only for the left spoke; the right spoke has none (the renderer draws callouts 4, 6, 5 at left-zone coordinates only). The right spoke's LLM card also sits directly under Model Armor rather than at the bottom-left as on the left spoke.
 
@@ -356,13 +371,13 @@ A dashed bidirectional line labelled **"Security, OTel & FinOps chargeback telem
 2. **Step 2 — Request (Hop 1 → Hop 2).** The ALB applies Cloud Armor header/WAF policies (forged `X-Tenant-ID` stripped), Model Armor screens the prompt, and the RFC 8693 OBO exchange mints a DPoP sender-constrained JWT. The sanitized request is handed to Cloud Run, which acts as Topology Router and ARD PDP (Hop 2): the catalog is filtered by tenant label and a direct call to another tenant's private agent returns `403 Forbidden` (per 1.1/1.3).
 3. **Step 3 — Route by tenant tier.** Cloud Run routes to the pool, a silo or a PSC spoke depending on tier.
 4. **Step 4 — Sanitize request (Hop 4 ingress).** Inside the chosen spoke, Model Armor applies tenant NLCs (OCC/FDIC rules for FinVault, PCI rules for RetailStream per 1.1).
-5. **Step 5 — Generates response (Hop 3).** The Agent Runtime (gVisor sandbox, immutable `temp:tenant_id`) invokes Gemini 2.5 Pro with shared prefix caching (pool) or Gemini / Gemma 3 / Claude 3.7 (sovereign). MCP servers are reached over scoped 2LO/3LO connectors; AlloyDB is queried with `SET LOCAL current_tenant` so RLS applies (Hop 5). On the sovereign side the datastore is CMEK-encrypted and a revoked key surfaces as a KMS `423` lock.
+5. **Step 5 — Generates response (Hop 3).** The Agent Runtime (gVisor sandbox, immutable `temp:tenant_id`) invokes Gemini 2.5 Pro with shared prefix caching (pool) or Gemini / Gemma 3 / Gemini 2.5 Pro (sovereign). MCP servers are reached over scoped 2LO/3LO connectors; AlloyDB is queried with `SET LOCAL current_tenant` so RLS applies (Hop 5). On the sovereign side the datastore is CMEK-encrypted and a revoked key surfaces as a KMS `423` lock.
 6. **Step 6 — Sanitize response (Hop 4 egress).** Model Armor + SDP redact tenant-specific PII before the response leaves the spoke.
 7. **Step 7 — Response.** The sanitized response travels back through Cloud Run and the ALB to the tenant. OTel/FinOps telemetry from both spokes flows to the governance hub along the dashed line throughout.
 
 #### Grounding in the source
 
-* 1.1 taxonomy row *Compute & Runtime*: Pattern A = "Shared GEAP Agent Runtime (gVisor sandbox) + immutable `temp:tenant_id`" → left card subtitle *gVisor + temp:tenant_id*; Pattern B = "air-gapped Gemma 3 on GKE" → right LLM card *Gemini / Gemma 3 — Claude 3.7 or Private GKE*.
+* 1.1 taxonomy row *Compute & Runtime*: Pattern A = "Shared GEAP Agent Runtime (gVisor sandbox) + immutable `temp:tenant_id`" → left card subtitle *gVisor + temp:tenant_id*; Pattern B = "air-gapped Gemma 3 on GKE" → right LLM card *Gemini / Gemma 3 — Gemini 2.5 Pro or Private GKE*.
 * 1.1 *Model & FinOps COGS*: "Shared Prompt Prefix Caching (`ContextCacheConfig`) (up to 90% COGS savings)" → *90% Prefix Cache Savings*.
 * 1.1 Pattern A Mermaid: "Memorystore for Redis Rate Bulkhead & Thinking Cap (8k vs 4k)" → zone subtitle *FinVault (8k Cap) & RetailStream (4k Cap)*.
 * 1.1 Hop 5: "SET LOCAL app.current_tenant -> RLS Enforcement" → tool label *SET LOCAL current_tenant* and card *Shared AlloyDB — Row-Level Security (RLS)*.
@@ -380,7 +395,7 @@ A dashed bidirectional line labelled **"Security, OTel & FinOps chargeback telem
 
 * The right spoke depicts a **target state**: native per-tenant CMEK in Memory Bank (`GAP-P0-02`), sub-second CMEK revocation (`GAP-P1-04`), VPC-SC egress for remote MCP (`GAP-P1-03`) and cross-project registry over PSC (`GAP-P2-01`) are all tracked EAP items with engineered workarounds, not GA product behaviour.
 * "RFC 8693 OBO + DPoP" from external Entra ID tenants requires custom verification before Auth Manager (`GAP-P0-03`); the card implies a single service.
-* *Claude 3.7* on the right LLM card depends on Vertex AI Model Garden partner-model access being enabled (1.4 checklist) and on a unified cache API that does not yet exist (`GAP-P1-01`).
+* *Gemini 2.5 Pro* on the right LLM card depends on Vertex AI Model Garden partner-model access being enabled (1.4 checklist) and on a unified cache API that does not yet exist (`GAP-P1-01`).
 * Step badges 4/5/6 are drawn only in the left spoke; the right spoke has no numbered callouts, so the reader must infer the same ordering.
 * The sources do not state measured latency, throughput or cost figures for this topology beyond the "up to 90%" caching claim; the diagram asserts none.
 
@@ -447,7 +462,7 @@ Dashed line to both spokes labelled **"Security and observability monitoring"** 
 
 * Boundary label: **PAB • Hop 3–5 Isolation Boundary (Tenant Alpha)**
 * Zone title / sub: **Tenant A (FinVault Bank)** / *Tenant project • Enterprise Tier (Google OIDC)*
-* Cards: `model_armor` **Model Armor** / *Hop 4: Bank SDP & OCC NLC*; `gemini_agent_platform` **Gemini & Claude** / *Agent Platform (8k Budget)*; `gemini_agent_platform` **Agent Runtime** / *Hop 3: Shared + Agent Alpha*; `mcp_servers` **MCP servers** / *Hop 5: Workspace & Jira 3LO*; `datastore_alloydb_bq` **Datastore** / *BigQuery, AlloyDB RLS, CMEK*
+* Cards: `model_armor` **Model Armor** / *Hop 4: Bank SDP & OCC NLC*; `gemini_agent_platform` **Gemini 2.5 Pro & Flash** / *Agent Platform (8k Budget)*; `gemini_agent_platform` **Agent Runtime** / *Hop 3: Shared + Agent Alpha*; `mcp_servers` **MCP servers** / *Hop 5: Workspace & Jira 3LO*; `datastore_alloydb_bq` **Datastore** / *BigQuery, AlloyDB RLS, CMEK*
 * Step labels: **4 "Sanitize request"**, **6 "Sanitize response"**, **5 "Generates response"**
 * RAG label: **"Secure RAG"**; tool label: **"Agent-tool interaction"** (the official diagram's wording)
 
@@ -469,7 +484,7 @@ Dashed line to both spokes labelled **"Security and observability monitoring"** 
 2. **Step 2 — Request (Hop 1).** Cloud Armor strips any client-supplied `X-Tenant-ID`; Model Armor acts as the edge prompt-injection gate; IAP validates the JWT and performs the RFC 8693 OBO exchange bound to an RFC 9449 DPoP thumbprint (1.3 §3, Hop 1). Cloud Run (frontend portal) then performs **Hop 2**: GEAP Registry acts as PDP, filtering the catalog by verified tenant labels; direct calls to another tenant's private agent return `403 Forbidden`, and ADK 2.0 `before_agent_callback` prunes unauthorised MCP tool descriptors before reasoning.
 3. **Step 3 — Route request to tenant.** The hub forwards the request into the matching PAB-bounded tenant project (Tenant A or Tenant B); the official architecture's dedicated-project-per-tenant model is preserved.
 4. **Step 4 — Sanitize request (Hop 4 ingress).** Tenant-specific Model Armor template: OCC NLC + bank SDP for FinVault; PCI NLC + PAN SDP for RetailStream.
-5. **Step 5 — Generates response (Hop 3).** Agent Runtime in a gVisor sandbox with immutable `temp:tenant_id`; Memorystore clamps `thinking_budget` (8,000 Enterprise vs 4,000 Standard) and RPM; the shared operator agent uses read-only `ContextCacheConfig` prefix caching; FinVault additionally runs `Agent Alpha` (Gemini & Claude card). MCP servers (Hop 5) are reached with 2LO/3LO tokens brokered by Auth Manager — Workspace & Jira for FinVault, SharePoint & ServiceNow (with inline consent when a token is missing) for RetailStream. Datastore access binds `SET LOCAL app.current_tenant` for AlloyDB RLS.
+5. **Step 5 — Generates response (Hop 3).** Agent Runtime in a gVisor sandbox with immutable `temp:tenant_id`; Memorystore clamps `thinking_budget` (8,000 Enterprise vs 4,000 Standard) and RPM; the shared operator agent uses read-only `ContextCacheConfig` prefix caching; FinVault additionally runs `Agent Alpha` (Gemini 2.5 Pro & Flash card). MCP servers (Hop 5) are reached with 2LO/3LO tokens brokered by Auth Manager — Workspace & Jira for FinVault, SharePoint & ServiceNow (with inline consent when a token is missing) for RetailStream. Datastore access binds `SET LOCAL app.current_tenant` for AlloyDB RLS.
 6. **Step 6 — Sanitize response (Hop 4 egress).** Model Armor + SDP mask bank-account/SWIFT numbers (FinVault) or payment-card numbers (RetailStream).
 7. **Step 7 — Response.** The sanitized response returns via Cloud Run and the ALB. Every hop emits OTel spans tagged `tenant_id`, `tier`, `thinking_tokens`, `cache_hit` into BigQuery (Cloud Logging card), and SCC provides continuous threat detection — the dashed "Security and observability monitoring" line.
 
@@ -493,7 +508,7 @@ Dashed line to both spokes labelled **"Security and observability monitoring"** 
 
 * This is a **proposed** PR figure; 1.3 does not record that the PR has been merged or reviewed by the Architecture Center team, and the sources give no PR URL or status.
 * The datastore subtitle *BigQuery, AlloyDB RLS, CMEK* on Tenant A presumes per-tenant CMEK on memory/state; in a shared GEAP project that is `GAP-P0-02` (EAP, Q4 2026). In a true per-tenant project (as drawn) project-level CMEK suffices, so the caveat applies only if this figure is read as Pattern A.
-* *Gemini & Claude* for FinVault depends on Model Garden partner access and on `GAP-P1-01` for cache parity.
+* *Gemini 2.5 Pro & Flash* for FinVault depends on Model Garden partner access and on `GAP-P1-01` for cache parity.
 * Inline 3LO consent for RetailStream mid-turn across stateless Cloud Run instances relies on the `GAP-P1-02` checkpoint workaround.
 * Right-spoke step badges are absent (same as Diagram 1). The sources do not state SLOs for the hub's routing step or the per-hop latency budget.
 
@@ -545,7 +560,7 @@ The governing mechanism is the **5-Hop Cryptographic Context Chain** introduced 
   (`READ_ONLY_IMMUTABLE_PREFIX`), i.e. **~84.7 %** net input-token COGS reduction per turn.
 - Tiered FinOps isolation: FinVault `8,000` thinking tokens / `600 RPM`; RetailStream clamped to
   `4,000` / `120 RPM` with `429` above the lane.
-- A private tenant-built agent (**`Agent Alpha`**, Claude 3.7 Sonnet on Vertex AI Model Garden)
+- A private tenant-built agent (**`Agent Alpha`**, Gemini 2.5 Pro (Dedicated PT) on Vertex AI Model Garden)
   running in the same control plane yet returning `403 Forbidden` to the other tenant.
 - Shipped as **Milestone 1 (Week 4)** with a Terraform starter, a 90-minute codelab, a 12-slide
   workshop deck, a `go/demos` entry and a flagship blog.
@@ -604,7 +619,7 @@ Companion assets outside the workstream folder:
 - `GEAP-POOL-03` (P0, 5-Level Memory Bank): per-tenant CMEK on a pooled memory namespace →
   tenant-scoped CMEK URI verification hooks at Hop 3; GA ask: `memory_namespace_cmek_config`.
   `GEAP-POOL-04` (P1, `ContextCacheConfig` & Model Garden): unified read-only prefix cache across
-  Gemini 2.5 Pro and Claude 3.7 Sonnet.
+  Gemini 2.5 Pro and Gemini 2.5 Pro (Dedicated PT).
 - Four sign-off criteria: 100 % forged-header stripping; deterministic `403` on cross-tenant agent
   and MCP calls; `4,000` clamp + `429` above `120 RPM` with no impact on the `8,000` / `600 RPM`
   lane; tenant-aware PII redaction plus RLS that survives SQL filter tampering.
@@ -618,7 +633,7 @@ Companion assets outside the workstream folder:
   10-row verification table → LinkedIn/X promotion kit → hand-off to Part 2 (3.7).
 - Note: its SQL excerpt names the policy `tenant_isolation_policy`, whereas the shipped file in 2.3
   names it `tenant_isolation_rls_policy`; and its SIM 2B row says "hot-swapped to `gemini-2.5-pro`",
-  whereas the code hot-swaps FinVault to `claude-3-5-sonnet-v2@20241022` and *blocks* RetailStream's
+  whereas the code hot-swaps FinVault to `gemini-2.5-flash` and *blocks* RetailStream's
   attempt to swap to `gemini-2.5-pro`.
 
 **2.8 — Codelab & workshop deck**
@@ -735,7 +750,7 @@ runtimes; badge **7** `SDP-redacted` / `tenant response` on the way back.
 
 **Left spoke (yellow).** Boundary `Logical & Cryptographic Slice A • FinVault Bank (Enterprise
 Tier)`; zone `FinVault Logical Partition` / `Namespace: finvault:user:session (Envelope CMEK)`.
-Cards: `Model Armor` — `Masks IBAN/SWIFT + OCC NLC`; `Gemini & Claude 3.7` — `8,000 Thinking-Token
+Cards: `Model Armor` — `Masks IBAN/SWIFT + OCC NLC`; `Gemini & Gemini 2.5 Pro` — `8,000 Thinking-Token
 Budget`; `Pooled gVisor Pod` — `Shared + Private Agent Alpha`; `3LO Workspace/Jira` — `Drive,
 Calendar, Gmail, Jira`; `Shared AlloyDB RLS` — `app.current_tenant='finvault'`. Step badges
 **4** `Sanitize request`, **6** `Sanitize response`, **5** `Generates` / `response`. RAG label
@@ -773,7 +788,7 @@ only on the left spoke; the right spoke has none.)
 - FinOps math: 32,000-token operator prefix + 2,000-token tenant delta; 90 % prefix discount →
   ~84.7 % net input savings (2.1 §4).
 - `Agent Alpha` URI `agent://finvault/private-agent-alpha-regulatory`, model
-  `claude-3-7-sonnet@20250219`, `403 Forbidden` for RetailStream (2.1 §3, 2.2 seed, 2.5 SIM 2A).
+  `gemini-2.5-pro-dedicated`, `403 Forbidden` for RetailStream (2.1 §3, 2.2 seed, 2.5 SIM 2A).
 - Memory namespaces `finvault:user:session` (+ CMEK) and `retailstream:user:session` (2.1 §3).
 - SDP detectors: FinVault bank account / IBAN / SWIFT; RetailStream payment-card PAN (2.1 §3).
 
@@ -795,7 +810,7 @@ only on the left spoke; the right spoke has none.)
   icon and `Redis Rate Bulkhead` with the `iap_iam_shield` icon. Titles, not icons, are authoritative.
 - Step badges 4/5/6 appear only in the FinVault spoke; the RetailStream spoke shows the same flow
   implicitly.
-- The diagram shows `Gemini & Claude 3.7` on the FinVault card; in the source only `Agent Alpha`
+- The diagram shows `Gemini & Gemini 2.5 Pro` on the FinVault card; in the source only `Agent Alpha`
   runs Claude, the shared agent runs Gemini 2.5 Pro for both tenants.
 - "Envelope CMEK" for the FinVault namespace is an engineered hook (2.4 `GEAP-POOL-03`), not a
   GA product feature; the Terraform starter creates the key but no binding to a memory namespace.
@@ -905,7 +920,7 @@ Microsoft Entra ID, Zero Google Footprint)`; zone `RetailStream Sandbox Wiring` 
   the code denylist in `hop1_edge_identity_pep.py` adds `x-override-org`).
 - Redis: `cymbal-tenant-bulkhead-redis`, `--size=5`, `redis_7_0`, `us-central1` (2.2 §4).
 - Firestore seed: `finvault` → `ENTERPRISE`, `8000`, `600`, two allowed agents,
-  `claude-3-7-sonnet@20250219`; `retailstream` → `STANDARD`, `4000`, `120`, one allowed agent,
+  `gemini-2.5-pro-dedicated`; `retailstream` → `STANDARD`, `4000`, `120`, one allowed agent,
   `custom_agent_model: null` (2.2 §4).
 - Entra registration `Cymbal-RetailStream-Agent-Client`, `retailstream.onmicrosoft.com`,
   Graph `Sites.Read.All`, ServiceNow ITOM REST `useraccount` (2.2 §2.2).
@@ -1023,9 +1038,9 @@ AlloyDB RLS` — `0 Cross-Tenant Rows Returned`. RAG label `Isolated` / `Prefix 
    `L2_SESSION_SHORT_TERM` → `PermissionError`. SIM 3D: `attempted_db_tenant_filter="finvault"` →
    `200` with `rls_rows_returned == 0`.
 6. **Redact PII** — SIM 1 response contains `[REDACTED-RETAILSTREAM-PAYMENT-PAN]` and not
-   `INC-FV-9001`; SIM 2B response contains `claude-3-7-sonnet@20250219`,
+   `INC-FV-9001`; SIM 2B response contains `gemini-2.5-pro-dedicated`,
    `[REDACTED-FINVAULT-BANK-ACCOUNT]` and `[REDACTED-FINVAULT-SWIFT]`; FinVault hot-swaps to
-   `claude-3-5-sonnet-v2@20241022` and back, RetailStream's swap to `gemini-2.5-pro` →
+   `gemini-2.5-flash` and back, RetailStream's swap to `gemini-2.5-pro` →
    `PermissionError`.
 7. **Blocked / Safe** — the run ends with `ALL 10 PATTERN A (POOLED) BREACH SIMULATIONS PASSED
    (100% ZERO-LEAK VERIFIED)`.
@@ -1439,7 +1454,7 @@ A dashed governance line labelled `CMEK state & VPC-SC / audit monitoring` drops
 - Zone title / sub: `Tenant A Silo (FinVault Bank)` / `Dedicated Project • CMEK: finvault-kr/agent-memory`.
 - Cards (icon → title / subtitle):
   - `model_armor → Model Armor` / `Dedicated FinVault Template`
-  - `gemini_agent_platform → Gemma 3 (27B) GKE` / `Air-Gapped vLLM + Claude 3.7`
+  - `gemini_agent_platform → Gemma 3 (27B) GKE` / `Air-Gapped vLLM + Gemini 2.5 Pro`
   - `gemini_agent_platform → Agent Runtime` / `Dedicated Silo + Agent Alpha`
   - `mcp_servers → Local Silo MCP` / `Workspace & Jira (0 Egress)`
   - `datastore_alloydb_bq → CMEK Datastore` / `Dedicated AlloyDB & Memory`
@@ -1470,7 +1485,7 @@ A dashed governance line labelled `CMEK state & VPC-SC / audit monitoring` drops
 
 - Project IDs `cymbal-finvault-silo-prod` and `cymbal-retailstream-silo-prod` and the Perimeter Alpha / Beta framing come directly from 3.1 §1–2 and the Mermaid subgraph titles.
 - `finvault-kr/agent-memory-cmek` and `retailstream-kr/agent-memory-cmek` are the exact `silo_cmek_key_uri` values in `core-cymbal-agent/models.py` (lines 80 and 117); the diagram abbreviates the right spoke to `retailstream-kr/memory` for width.
-- `Gemma 3 (27B) GKE / Air-Gapped vLLM + Claude 3.7` matches 3.1 (`Gemma 3 (27B IT)`, vLLM, L4/H100) and 3.7's `Agent Alpha (Claude 3.7 Sonnet)`; README §2 describes Agent Alpha as *Claude Sonnet on Vertex AI Model Garden*.
+- `Gemma 3 (27B) GKE / Air-Gapped vLLM + Gemini 2.5 Pro` matches 3.1 (`Gemma 3 (27B IT)`, vLLM, L4/H100) and 3.7's `Agent Alpha (Gemini 2.5 Pro (Dedicated PT))`; README §2 describes Agent Alpha as *Gemini 2.5 Pro (Dedicated PT) on Vertex AI Model Garden*.
 - `Gemini 2.5 Pro PT / Dedicated Provisioned Quota` reflects 3.1 §3 ("Dedicated Provisioned Throughput OR Air-Gapped Gemma 3") and the deck.json statement that RetailStream runs Gemini 2.5 Pro with dedicated Provisioned Throughput.
 - `Silo Security Suite / 6/6 Sovereign Tests PASS` mirrors the 3.5 banner `ALL 6 PATTERN B (SOVEREIGN SILOS) SECURITY TESTS PASSED (100% VERIFIED)`.
 - `Local Silo MCP / Workspace & Jira` vs. `Entra SharePoint & SNOW` reflect the README §2 tenant personas and `core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py`.
@@ -1484,7 +1499,7 @@ A dashed governance line labelled `CMEK state & VPC-SC / audit monitoring` drops
 
 #### Caveats / known gaps
 
-- The diagram shows `Claude 3.7` on FinVault's model card; README §2 says *Claude Sonnet* without a version. Treat the version as the blog's wording, not a verified SKU.
+- The diagram shows `Gemini 2.5 Pro` on FinVault's model card; README §2 says *Gemini 2.5 Pro (Dedicated PT)* without a version. Treat the version as the blog's wording, not a verified SKU.
 - Step badges 4/5/6 are drawn only on the left spoke; the right spoke has no numbered badges. This is a renderer template limitation, not a statement that RetailStream skips Hops 4/5.
 - `vision.json` reports `validationReport.valid: false` with 34 errors (and `isCertified: true`). The source does not explain the error classes; treat this as a decompiler self-report rather than a diagram defect.
 - The hub-side `Model Armor` card and the per-silo `Model Armor` cards both appear; the source does not say whether these are two template instances or one service referenced twice.
@@ -1773,7 +1788,7 @@ Using the Cymbal anchor case study from [`README.md`](../README.md) §2:
 | Tenant | Tier | Pattern C placement | Budget | Identity / tools |
 | :--- | :--- | :--- | :--- | :--- |
 | **RetailStream Corp** | Standard → *upgraded to* Enterprise | Starts on `pool://cymbal-shared-pooled-runtime-v2`; promoted live to `psc://10.10.0.51/...` | `4,000` thinking cap → `8,000` | Microsoft Entra ID; SharePoint / ServiceNow via inline 3LO |
-| **FinVault Bank** | Enterprise | `psc://10.10.0.50/projects/cymbal-finvault-silo-prod/serviceAttachments/finvault-agent-spoke-psc` | `8,000` | Google Workspace OIDC; private `Agent Alpha` (Claude Sonnet); Workspace / Jira 3LO |
+| **FinVault Bank** | Enterprise | `psc://10.10.0.50/projects/cymbal-finvault-silo-prod/serviceAttachments/finvault-agent-spoke-psc` | `8,000` | Google Workspace OIDC; private `Agent Alpha` (Gemini 2.5 Pro (Dedicated PT)); Workspace / Jira 3LO |
 
 **Outcome (as verified by the deliverables).**
 
@@ -1912,7 +1927,7 @@ Governance callout: `Live promotion: Pool -> PSC Spoke` — this is the dashed l
 **Right spoke.**
 - Boundary: `Enterprise Tier: Private Service Connect (PSC) Spokes (FinVault + Upgraded RetailStream)`
 - Zone title / sub: `Dedicated Enterprise PSC Spokes` / `psc://10.10.0.50 (FinVault) & psc://10.10.0.51 (Retail)`
-- Cards: `Spoke Model Armor` (`Dedicated Spoke DLP & NLC`); `Gemini & Claude 3.7` (`Upgraded 8,000 Thinking Cap`); `Spoke Runtime` (`PSC ServiceAttachment Target`); `Dedicated Spoke MCP` (`Isolated Inside VPC-SC Spoke`); `CMEK Spoke AlloyDB` (`Replicated State + CMEK Lock`)
+- Cards: `Spoke Model Armor` (`Dedicated Spoke DLP & NLC`); `Gemini & Gemini 2.5 Pro` (`Upgraded 8,000 Thinking Cap`); `Spoke Runtime` (`PSC ServiceAttachment Target`); `Dedicated Spoke MCP` (`Isolated Inside VPC-SC Spoke`); `CMEK Spoke AlloyDB` (`Replicated State + CMEK Lock`)
 - RAG / tool labels: `Unidirectional PSC Bridge`; `CMEK-Encrypted Spoke Storage`
 
 **Steps 1–7 narrative.** (1) A user of either tier sends a request to the single SaaS URL. (2) Cloud Armor + IAP apply security policies and the request reaches the Cloud Run Router through the External ALB, carrying the Hop 1 OBO/DPoP context. The router resolves the agent through the Cross-Project ARD and performs an atomic Firestore route lookup. (3) The trunk fans out: Standard → pool, Enterprise → PSC. (4) In the pool, Shared Model Armor sanitises the request; (5) Gemini 2.5 Pro performs pooled inference under the 4,000 cap with shared cache, pulling Shared Pool RAG via the Pooled MCP Hub and RLS-scoped rows from Shared AlloyDB; (6) Shared Model Armor sanitises the response. For Enterprise traffic the same 4–6 flow happens inside the dedicated spoke over the unidirectional PSC bridge (no badges are drawn there). Independently, the governance hub runs SHADOW_SYNC (streaming RLS rows and L4 memory from the left datastore to the right), ATOMIC_CUTOVER (flipping the Firestore route to PSC) and DRAIN_AND_VERIFY. (7) The response returns through the trunk, router and ALB — "Seamless response (0 dropped sessions)".
@@ -1936,7 +1951,7 @@ Governance callout: `Live promotion: Pool -> PSC Spoke` — this is the dashed l
 #### Caveats / known gaps
 
 - `pool://cymbal-shared-pooled-v2` (left zone subtitle) vs `pool://cymbal-shared-pooled-runtime-v2` (4.3 code, Diagrams 11/12) — label abbreviation, not a different endpoint.
-- `Gemini & Claude 3.7` on the right `llm` card; README §2 and 4.1 say `Agent Alpha` runs **Claude Sonnet** on Vertex AI Model Garden — no WS4 source pins a `3.7` version.
+- `Gemini & Gemini 2.5 Pro` on the right `llm` card; README §2 and 4.1 say `Agent Alpha` runs **Gemini 2.5 Pro (Dedicated PT)** on Vertex AI Model Garden — no WS4 source pins a `3.7` version.
 - `Firestore Route Table` and `ATOMIC_CUTOVER` cards use the `iap_iam_shield` icon; the template has no Firestore icon.
 - `vision.json` `extractedZones` text is template-generic (mentions SCC / IAM PAB in Zone 2 although the governance hub here is the migration engine), and its `validationReport` reads `valid: false, errorCount: 34` while `isCertified: true`. The guide reports this as-is.
 - No DNS, no Cloud KMS resources, and no VPC-SC perimeter are drawn; 4.1 mentions CMEK/VPC-SC in prose only.
@@ -2541,7 +2556,7 @@ A dashed governance line labelled **`Real-time COGS & security telemetry`** (`lb
 | `modelArmor` | `model_armor` | `VPC-SC & IAM PAB` | `Hard Perimeter Isolation` |
 | `runtime` | `gemini_agent_platform` | `PSC Spoke Runtime` | `3-Phase Live Tier Upgrade` |
 | `mcp` | `mcp_servers` | `Dedicated Silo MCP` | `Zero Cross-Project Egress` |
-| `llm` | `gemini_agent_platform` | `Gemma 3 & Claude 3.7` | `Air-Gapped GKE & Dedicated PT` |
+| `llm` | `gemini_agent_platform` | `Gemma 3 & Gemini 2.5 Pro` | `Air-Gapped GKE & Dedicated PT` |
 | `datastore` | `datastore_alloydb_bq` | `Cloud KMS CMEK Lock` | `Instant HTTP 423 Kill-Switch` |
 
 - Step labels: the blueprint config defines **no** `step4Label` / `step5Label` / `step6Label` for `rightCards`, and the renderer only emits `lbl_step4_left` / `lbl_step6_left` / `lbl_step5_left`; the vision AST confirms there are no right-spoke step badges. The right spoke is annotated only by its RAG/tool labels.
@@ -2552,7 +2567,7 @@ A dashed governance line labelled **`Real-time COGS & security telemetry`** (`lb
 2. **`2` Request** — the ALB hands the request to the Pillar 1 stack: `Hop 1: Edge PEP` strips forged headers and verifies OBO & DPoP; `Hop 4: Model Armor` screens the prompt (`400` injection, `422` NLC); `Hop 2: Registry PDP` prunes the ARD catalog and MCP tools.
 3. **`3` Dispatch to optimal cost/security tier** — the `Architecture Selector` (Cloud Run) routes the verified tenant context to Pattern A (left) or Pattern B/C (right).
 4. **`4` Check quota** (left spoke) — the `Redis Rate Bulkhead` enforces `120 RPM` Std / `600 RPM` Ent; the `Thinking Budget Cap` clamps `4k` vs `8k`.
-5. **`5` 90% Cached inference** — `ContextCacheConfig` serves the `32k` prefix at a 90% discount with `Zero Cache Bleed`; tool calls go through the `2LO & 3LO Auth Mgr` and data through `AlloyDB RLS & L1–L5` under the `Storage-Engine RLS Policy`. (On the right spoke the equivalent path runs inside the `VPC-SC & IAM PAB` perimeter over the `Private PSC NAT Bridge` to `Gemma 3 & Claude 3.7`, `Dedicated Silo MCP`, and the `Cloud KMS CMEK Lock`.)
+5. **`5` 90% Cached inference** — `ContextCacheConfig` serves the `32k` prefix at a 90% discount with `Zero Cache Bleed`; tool calls go through the `2LO & 3LO Auth Mgr` and data through `AlloyDB RLS & L1–L5` under the `Storage-Engine RLS Policy`. (On the right spoke the equivalent path runs inside the `VPC-SC & IAM PAB` perimeter over the `Private PSC NAT Bridge` to `Gemma 3 & Gemini 2.5 Pro`, `Dedicated Silo MCP`, and the `Cloud KMS CMEK Lock`.)
 6. **`6` Log COGS** — token, cache-hit and guardrail metrics are emitted as zero-PII spans up the dashed `Real-time COGS & security telemetry` line into the `BigQuery OTel Sink`, `3 Chargeback Models`, and `Security Command Center`.
 7. **`7` Verified zero-bleed agent completion → Response** — the completion passes back up the trunk, through Hop 4 egress SDP redaction in the hub (`Response` badge), and out to the user (`Response` badge at the actor).
 
@@ -2578,7 +2593,7 @@ A dashed governance line labelled **`Real-time COGS & security telemetry`** (`lb
 - The vision AST reports `validationReport.valid: false` with `errorCount: 34` (and `warningCount: 0`) even though `isCertified: true` and the healer log says the master blueprint was "passed through without geometric mutation". The sources do not enumerate those 34 errors.
 - The governance-hub zone label is stored as the truncated string `Triad Pillar 3: Privacy-`; the second line (`Preserving OTel & Chargeback`) is a separate text run, so text search on the full phrase in the AST will not match.
 - Step badges `4`, `5`, `6` exist only on the Pattern A spoke; the right spoke has no numbered steps, so the Steps 1–7 narrative for Patterns B/C is inferred from the left spoke's positions.
-- `Gemma 3 & Claude 3.7` places an air-gapped open model and a Model Garden partner model on one card; the subtitle `Air-Gapped GKE & Dedicated PT` is the only cue that these are two different deployment modes.
+- `Gemma 3 & Gemini 2.5 Pro` places an air-gapped open model and a Model Garden partner model on one card; the subtitle `Air-Gapped GKE & Dedicated PT` is the only cue that these are two different deployment modes.
 - The diagram does not show the Firestore tenant router or the 3-phase migration states individually (those are in Diagram 10 and Diagram 12 of Workstream 4).
 - 5.1 and 5.2 link the figure via `diagrams/...png` relative to the workstream folder (the `workstream-5-wrap-up-and-backlog/diagrams/` copies), whereas the blog, README and this guide reference the canonical `diagrams/` copies; both sets exist on disk.
 
@@ -2620,7 +2635,7 @@ All 54 addressable objects in [`vision.json`](../diagrams/vision_metadata/ws5-de
 | 22 | `card_lc_mcp` | `2LO & 3LO Auth Mgr Scoped Per-Tenant Vault` | Governance & Footer | 338, 1068 |
 | 23 | `card_lc_db` | `AlloyDB RLS & L1–L5 Shared Storage Density` | Governance & Footer | 332, 1218 |
 | 24 | `card_sc_ma` | `VPC-SC & IAM PAB Hard Perimeter Isolation` | Agentic Capabilities Platform | 646, 874 |
-| 25 | `card_sc_llm` | `Gemma 3 & Claude 3.7` | Governance & Footer | 646, 976 |
+| 25 | `card_sc_llm` | `Gemma 3 & Gemini 2.5 Pro` | Governance & Footer | 646, 976 |
 | 26 | `card_sc_run` | `PSC Spoke Runtime 3-Phase Live Tier Upgrade` | Governance & Footer | 878, 924 |
 | 27 | `card_sc_mcp` | `Dedicated Silo MCP Zero Cross-Project Egress` | Governance & Footer | 882, 1068 |
 | 28 | `card_sc_db` | `Cloud KMS CMEK Lock` | Governance & Footer | 876, 1218 |
@@ -2657,7 +2672,7 @@ Merged from [1.4](../workstream-1-reference-architecture/1.4-eap-and-product-gap
 | `GAP-P0-01` (alias `GEAP-POOL-01`) — GEAP Agent Registry (PDP) filters by IAM project principal, not sub-project `tenant_id` claim | A (WS2) | **P0** (2.4 rank #1) | Open — `geap-registry-tenant-label-pdp-eap`; GA ask: native `X-GEAP-Verified-Tenant` evaluation in `ListAgents` / `GetAgent` | Q4 2026 | Tenant label check in Cloud Run Gateway PEP + ADK `before_agent_callback` pruning (`hop2_registry_pdp_callbacks.py`), `403 Forbidden` | 1.4, 2.4 |
 | `GAP-P0-02` (alias `GEAP-POOL-03`) — GEAP 5-Level Memory Bank: project-level CMEK only, no per-`tenant_id` namespace key binding | A (WS2) | **P0** (2.4 rank #3) | Open — `geap-memory-bank-per-tenant-cmek-eap`; GA ask: `memory_namespace_cmek_config` | Q4 2026 | Envelope encryption per namespace via Cloud KMS `Encrypt`/`Decrypt` in `hop3_compute_finops_bulkhead.py`, or route CMEK-mandated tenants to a Pattern C PSC memory spoke | 1.4, 2.4 |
 | `GAP-P0-03` (alias `GEAP-POOL-02`) — GCP Agent Identity (Auth Manager): OBO + DPoP from external Entra ID tenants needs custom verification | A (WS2) | **P0** (2.4 rank #2) | Open — `gcp-agent-identity-dpop-entra-eap`; GA ask: native Entra ID v2.0 DPoP exchange & stateless ADK OAuth checkpoints | Q4 2026 | DPoP `jkt` verification + header strip in `hop1_edge_identity_pep.py` before the Auth Manager 3LO broker; `CHALLENGE_3LO_OAUTH` flow in `hop5_data_rls_and_otel.py` | 1.4, 2.4 |
-| `GAP-P1-01` (alias `GEAP-POOL-04`) — Vertex AI `ContextCacheConfig` + Model Garden: partner models (Claude 3.7 Sonnet) use provider-specific cache headers (`anthropic-beta: prompt-caching`) | A (WS2) | P1 (2.4 rank #4) | Open — `vertex-model-garden-unified-cache-api`; GA ask: unified `ContextCacheConfig` abstraction across Gemini and Model Garden | Q1 2027 | Cache abstraction split: Gemini `ContextCacheConfig` (`READ_ONLY_IMMUTABLE_PREFIX`) in `SharedIncidentDiagnosticAgent` vs. Anthropic ephemeral cache control in `FinVaultPrivateAgentAlpha` | 1.4, 2.4 |
+| `GAP-P1-01` (alias `GEAP-POOL-04`) — Vertex AI `ContextCacheConfig` + Model Garden: partner models (Gemini 2.5 Pro (Dedicated PT)) use provider-specific cache headers (`anthropic-beta: prompt-caching`) | A (WS2) | P1 (2.4 rank #4) | Open — `vertex-model-garden-unified-cache-api`; GA ask: unified `ContextCacheConfig` abstraction across Gemini and Model Garden | Q1 2027 | Cache abstraction split: Gemini `ContextCacheConfig` (`READ_ONLY_IMMUTABLE_PREFIX`) in `SharedIncidentDiagnosticAgent` vs. Anthropic ephemeral cache control in `FinVaultPrivateAgentAlpha` | 1.4, 2.4 |
 | `GAP-P1-02` — ADK 2.0 inline 3LO OAuth: pausing/resuming the reasoning loop across stateless Cloud Run needs externalized state | A (WS2) | P1 | Open — `adk-stateless-oauth-checkpoint-v2` | Q4 2026 | Checkpoint persisted in Firestore/Redis keyed `retailstream:user:session`, resumed on OAuth callback (`hop5_data_rls_and_otel.py`) | 1.4 |
 | `GAP-P1-03` — VPC-SC + GEAP Remote MCP: 3P SaaS MCP egress from a strict perimeter needs explicit PSC egress proxy | B (WS3) | P1 | Open — `vpc-sc-geap-mcp-egress-bridge`; related 3.4 control *VPC-SC Service Perimeter* `SIGNED OFF` | Q4 2026 | Envoy/Cloud NAT egress proxy in a perimeter bridge project with FQDN allowlisting ([3.6](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/)) | 1.4, 3.4 |
 | `GAP-P1-04` — Cloud KMS CMEK revocation propagation latency: cached credentials can serve in-memory state up to 5 min | B (WS3) | P1 | Open — `geap-cmek-instant-killswitch-sla`; related 3.4 control *CMEK Cryptographic Kill-Switch* `SIGNED OFF` | Q1 2027 | Sub-second KMS key-state probe in `hop3_compute_finops_bulkhead.py` (`KMS_KEY_DISABLED` → HTTP `423 Locked`) | 1.4, 3.4 |
@@ -2674,7 +2689,7 @@ Items from 3.4 and 4.4 that are *not* gaps but sign-off / alignment records, lis
 | mTLS SPIFFE pinning (`spiffe://finvault.com/ns/sre/sa/agent-client`) + air-gapped `gemma-3-27b-it-vllm` on GKE | B | `SIGNED OFF` | 3.4 |
 | PSC spoke bridge (producer `google_compute_service_attachment` + consumer `google_compute_forwarding_rule`) eliminates VPC-peering CIDR exhaustion | C | Aligned (no status field in source) | 4.4 |
 
-Before deploying any pattern, the 1.4 allowlist checklist enables `aiplatform`, `discoveryengine`, `modelarmor`, `dlp`, `compute`, `run`, `alloydb`, `redis`, `cloudkms`, `accesscontextmanager`, `iam`, `bigquery` and `telemetry` APIs and verifies Claude 3.7 Sonnet access in Model Garden (`us-central1` / `us-east5`).
+Before deploying any pattern, the 1.4 allowlist checklist enables `aiplatform`, `discoveryengine`, `modelarmor`, `dlp`, `compute`, `run`, `alloydb`, `redis`, `cloudkms`, `accesscontextmanager`, `iam`, `bigquery` and `telemetry` APIs and verifies Gemini 2.5 Pro (Dedicated PT) access in Model Garden (`us-central1` / `us-east5`).
 
 ### Ten-week retrospective (blog §8)
 
@@ -2694,7 +2709,7 @@ Milestone 1 sign-off gate (2.4 §2), recommended by the blog as generic acceptan
 
 ### Program summary
 
-1. **One anchor scenario, three topologies.** Cymbal SaaS Platform's Shared Incident Diagnostic Agent (Gemini 2.5 Pro + `ContextCacheConfig`) served FinVault Bank (Enterprise, Google Workspace/Jira, `8,000` thinking tokens, private `Agent Alpha` on Claude Sonnet, CMEK) and RetailStream Corp (Standard, Entra ID + SharePoint/ServiceNow, `4,000` cap, Redis bulkhead, `403` on `Agent Alpha`) across all of WS1–5.
+1. **One anchor scenario, three topologies.** Cymbal SaaS Platform's Shared Incident Diagnostic Agent (Gemini 2.5 Pro + `ContextCacheConfig`) served FinVault Bank (Enterprise, Google Workspace/Jira, `8,000` thinking tokens, private `Agent Alpha` on Gemini 2.5 Pro (Dedicated PT), CMEK) and RetailStream Corp (Standard, Entra ID + SharePoint/ServiceNow, `4,000` cap, Redis bulkhead, `403` on `Agent Alpha`) across all of WS1–5.
 2. **80/20 reuse proven.** [`core-cymbal-agent/`](../core-cymbal-agent/) implements the 5-Hop Cryptographic Context Chain once (`hop1`..`hop5` governance modules); Patterns A, B and C are perimeter deltas — shared RLS pool vs. per-tenant VPC-SC/PAB/CMEK projects vs. a hub routing to both over PSC.
 3. **WS1** delivered the taxonomy and 5-Hop baseline (Diagrams 1–2), the product review pack, the Architecture Center doc-update PR, and the nine-entry gap ledger (1.4) that fed every later milestone.
 4. **WS2 / Milestone 1 (Week 4) — Pattern A:** pooled architecture with gVisor `temp:tenant_id`, AlloyDB RLS and the 90% prefix cache (`~84.7%` net input-token saving); **10/10** breach-simulation gates PASS; Terraform starter; four P0/P1 gaps ranked (2.4) with a four-point sign-off gate.
@@ -2711,6 +2726,8 @@ Milestone 1 sign-off gate (2.4 §2), recommended by the blog as generic acceptan
 
 ---
 
+---
+
 ## Appendix A — Diagram index (all 14 Official Architecture Center blueprints, every file)
 
 | # | Deliverable | Title | Files | Editable deck |
@@ -2720,7 +2737,7 @@ Milestone 1 sign-off gate (2.4 §2), recommended by the blog as generic acceptan
 | **3** | WS2 2.1 | Pattern A: High-Density Pooled Multi-Tenant Architecture & Shared Runtime Governance | [`.drawio`](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio) • [`.drawio.png`](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio.png) • [`SVG`](../diagrams/ws2-pattern-a-pooled-5hop-architecture.svg) • [`vision.json`](../diagrams/vision_metadata/ws2-pattern-a-pooled-5hop-architecture.vision.json) | [`ws2-pattern-a-pooled-editable-slides.pptx`](../slides/ws2-pattern-a-pooled-editable-slides.pptx) |
 | **4** | WS2 2.2 | Pattern A Demo Environment & 3P Auth Sandbox: Pooled Project, Federated IdPs, OAuth 2LO/3LO Apps, Valkey & Firestore Tenant Config | [`.drawio`](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.drawio) • [`.drawio.png`](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.drawio.png) • [`SVG`](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.svg) • [`vision.json`](../diagrams/vision_metadata/ws2-demo-env-and-3p-auth-sandbox-topology.vision.json) | [`ws2-pattern-a-pooled-editable-slides.pptx`](../slides/ws2-pattern-a-pooled-editable-slides.pptx) |
 | **5** | WS2 2.5 | Pattern A: 10-Point Cross-Tenant Breach Simulation & Cryptographic Defense Matrix | [`.drawio`](../diagrams/ws2-pattern-a-breach-defense-sequence.drawio) • [`.drawio.png`](../diagrams/ws2-pattern-a-breach-defense-sequence.drawio.png) • [`SVG`](../diagrams/ws2-pattern-a-breach-defense-sequence.svg) • [`vision.json`](../diagrams/vision_metadata/ws2-pattern-a-breach-defense-sequence.vision.json) | [`ws2-pattern-a-pooled-editable-slides.pptx`](../slides/ws2-pattern-a-pooled-editable-slides.pptx) |
-| **6** | WS2 2.6 | Pattern A 1-Click Terraform Starter: Provider → Cloud Armor WAF → Cloud Run v2 Agent Gateway → Valkey / KMS CMEK → BigQuery OTel Resource Graph | [`.drawio`](../diagrams/ws2-terraform-starter-resource-graph.drawio) • [`.drawio.png`](../diagrams/ws2-terraform-starter-resource-graph.drawio.png) • [`SVG`](../diagrams/ws2-terraform-starter-resource-graph.svg) • [`vision.json`](../diagrams/vision_metadata/ws2-terraform-starter-resource-graph.vision.json) | [`ws2-pattern-a-pooled-editable-slides.pptx`](../slides/ws2-pattern-a-pooled-editable-slides.pptx) |
+| **6** | WS2 2.6 | Pattern A 1-Click Terraform Starter: Provider → Google Cloud Armor → Cloud Run v2 Agent Gateway → Valkey / KMS CMEK → BigQuery OTel Resource Graph | [`.drawio`](../diagrams/ws2-terraform-starter-resource-graph.drawio) • [`.drawio.png`](../diagrams/ws2-terraform-starter-resource-graph.drawio.png) • [`SVG`](../diagrams/ws2-terraform-starter-resource-graph.svg) • [`vision.json`](../diagrams/vision_metadata/ws2-terraform-starter-resource-graph.vision.json) | [`ws2-pattern-a-pooled-editable-slides.pptx`](../slides/ws2-pattern-a-pooled-editable-slides.pptx) |
 | **7** | WS3 3.1 | Pattern B: Zero-Trust Sovereign Silos (VPC-SC, IAM PAB, CMEK Kill-Switch & Air-Gapped Gemma 3 on GKE) | [`.drawio`](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio) • [`.drawio.png`](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio.png) • [`SVG`](../diagrams/ws3-pattern-b-sovereign-silos-architecture.svg) • [`vision.json`](../diagrams/vision_metadata/ws3-pattern-b-sovereign-silos-architecture.vision.json) | [`ws3-pattern-b-siloed-editable-slides.pptx`](../slides/ws3-pattern-b-siloed-editable-slides.pptx) |
 | **8** | WS3 3.2 | Pattern B Provisioning Topology: Org → Per-Tenant Silo Projects, VPC-SC Perimeters, IAM PAB & Cloud KMS CMEK Keys | [`.drawio`](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio) • [`.drawio.png`](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio.png) • [`SVG`](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.svg) • [`vision.json`](../diagrams/vision_metadata/ws3-multi-project-silo-and-cmek-setup-topology.vision.json) | [`ws3-pattern-b-siloed-editable-slides.pptx`](../slides/ws3-pattern-b-siloed-editable-slides.pptx) |
 | **9** | WS3 3.6 | Terraform Blueprint Resource Graph: Provider → Cloud KMS CMEK → VPC-SC Perimeter → Sovereign VPC → Private Air-Gapped GKE (Gemma 3) | [`.drawio`](../diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio) • [`.drawio.png`](../diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio.png) • [`SVG`](../diagrams/ws3-terraform-silo-blueprint-resource-graph.svg) • [`vision.json`](../diagrams/vision_metadata/ws3-terraform-silo-blueprint-resource-graph.vision.json) | [`ws3-pattern-b-siloed-editable-slides.pptx`](../slides/ws3-pattern-b-siloed-editable-slides.pptx) |
@@ -2734,14 +2751,14 @@ Milestone 1 sign-off gate (2.4 §2), recommended by the blog as generic acceptan
 
 | Deck | File | Slides | Diagrams | Editable shapes | Connectors | Companion blog |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **WS1** | [`ws1-reference-architecture-editable-slides.pptx`](../slides/ws1-reference-architecture-editable-slides.pptx) | 16 | 2 | 112 | 46 | [ws1-reference-architecture-taxonomy-and-5hop-baseline.md](../blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md) |
-| **WS2** | [`ws2-pattern-a-pooled-editable-slides.pptx`](../slides/ws2-pattern-a-pooled-editable-slides.pptx) | 21 | 4 | 224 | 92 | [ws2-pattern-a-pooled-architecture.md](../blogs/ws2-pattern-a-pooled-architecture.md) |
-| **WS3** | [`ws3-pattern-b-siloed-editable-slides.pptx`](../slides/ws3-pattern-b-siloed-editable-slides.pptx) | 19 | 3 | 168 | 69 | [ws3-pattern-b-sovereign-silos.md](../blogs/ws3-pattern-b-sovereign-silos.md) |
-| **WS4** | [`ws4-pattern-c-hybrid-editable-slides.pptx`](../slides/ws4-pattern-c-hybrid-editable-slides.pptx) | 22 | 4 | 224 | 92 | [ws4-pattern-c-hybrid-dynamic-tiering.md](../blogs/ws4-pattern-c-hybrid-dynamic-tiering.md) |
-| **WS5** | [`ws5-wrap-up-editable-slides.pptx`](../slides/ws5-wrap-up-editable-slides.pptx) | 13 | 1 | 56 | 23 | [ws5-decision-guide-and-agentic-triad.md](../blogs/ws5-decision-guide-and-agentic-triad.md) |
-| **ALL** | [`geap-multi-tenancy-all-workstreams-editable-slides.pptx`](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx) | 60 | 14 | — | — | all five |
+| **WS1** | [`ws1-reference-architecture-editable-slides.pptx`](../slides/ws1-reference-architecture-editable-slides.pptx) | 14 | 2 | 218 | 62 | [ws1-reference-architecture-taxonomy-and-5hop-baseline.md](../blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md) |
+| **WS2** | [`ws2-pattern-a-pooled-editable-slides.pptx`](../slides/ws2-pattern-a-pooled-editable-slides.pptx) | 14 | 4 | 218 | 62 | [ws2-pattern-a-pooled-architecture.md](../blogs/ws2-pattern-a-pooled-architecture.md) |
+| **WS3** | [`ws3-pattern-b-siloed-editable-slides.pptx`](../slides/ws3-pattern-b-siloed-editable-slides.pptx) | 14 | 3 | 218 | 62 | [ws3-pattern-b-sovereign-silos.md](../blogs/ws3-pattern-b-sovereign-silos.md) |
+| **WS4** | [`ws4-pattern-c-hybrid-editable-slides.pptx`](../slides/ws4-pattern-c-hybrid-editable-slides.pptx) | 14 | 4 | 218 | 62 | [ws4-pattern-c-hybrid-dynamic-tiering.md](../blogs/ws4-pattern-c-hybrid-dynamic-tiering.md) |
+| **WS5** | [`ws5-wrap-up-editable-slides.pptx`](../slides/ws5-wrap-up-editable-slides.pptx) | 14 | 1 | 218 | 62 | [ws5-decision-guide-and-agentic-triad.md](../blogs/ws5-decision-guide-and-agentic-triad.md) |
+| **ALL** | [`geap-multi-tenancy-all-workstreams-editable-slides.pptx`](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx) | 26 | 14 | — | — | all five |
 
-Deck structure is identical everywhere: *Title → Executive TL;DR → section narrative → per diagram [100% native editable full-width diagram slide (56 shapes + 23 connectors) • step-by-step plain-English logical flow slide • executive-friendly Google Cloud technical flow slide] → Key takeaways → Asset index*. Preview any deck without PowerPoint via `python3 -B scripts/render_pptx_preview.py`.
+Deck structure is identical everywhere: *Title → Executive TL;DR → section narrative → per diagram [1:1 master image • decomposed editable slide with talking-points sidebar & speaker notes • component specification table] → Key takeaways → Asset index*. Preview any deck without PowerPoint via `python3 -B scripts/render_pptx_preview.py`.
 
 ## Appendix C — Glossary
 
@@ -2767,6 +2784,7 @@ Deck structure is identical everywhere: *Title → Executive TL;DR → section n
 Generated from [`diagrams/diagrams_manifest.json`](../diagrams/diagrams_manifest.json), [`slides/slides_manifest.json`](../slides/slides_manifest.json), and [`docs/cloud_console_verification_receipt.json`](cloud_console_verification_receipt.json): **14/14 Official Google Cloud Architecture Center Hub-and-Spoke blueprints certified** (`56` vertices, `23` edges, `0` collisions), **6 editable `.pptx` decks**, **live GCP Project `nitina-ggarwal-sandbox-647724` (`12/12` APIs enabled, `3/3` Terraform modules 1:1 verified, `20/20` Python simulations PASS)**, and the forensic audit gate `F-12` enforcing their presence and cross-links. Run `python3 -B scripts/run_deep_forensic_audit.py` and `python3 -B scripts/verify_cloud_console_and_runtime.py` to re-verify.
 
 *End of guide.*
+
 
 ---
 
@@ -2927,7 +2945,7 @@ Every diagram across Workstreams 1–5 and Patterns A, B, and C follows a **3-sl
 #### 4-Zone Hub-and-Spoke Architecture Summary
 * **Blue Zone — 1. mTLS Ingress & IAM Principal Access Boundary**: Verifies client mTLS X.509 certificates at Hop 1, enforces IAM Principal Access Boundaries (PAB), and routes to the tenant’s dedicated silo project.
 * **Green Zone — 2. VPC-SC Perimeter & CMEK Kill-Switch Monitor**: Enforces VPC Service Controls across 8 Google Cloud APIs, checks real-time Cloud KMS CMEK state at Hop 3, and logs Access Transparency events.
-* **Yellow Zone — 3. FinVault Sovereign Silo Project (CMEK ENABLED)**: Dedicated project running air-gapped Gemma 3 (27B) on private GKE + Claude 3.7 Sonnet and CMEK-encrypted AlloyDB/BigQuery vault (`2 rows` returned).
+* **Yellow Zone — 3. FinVault Sovereign Silo Project (CMEK ENABLED)**: Dedicated project running air-gapped Gemma 3 (27B) on private GKE + Gemini 2.5 Pro (Dedicated PT) and CMEK-encrypted AlloyDB/BigQuery vault (`2 rows` returned).
 * **Red Zone — 4. RetailStream / MedCore Silo (CMEK Kill-Switch)**: Demonstrates dual-silo parity and instant customer CMEK revocation: disabling the cryptoKeyVersion immediately locks the silo with `HTTP 423 Locked`.
 
 #### Part A — Agentic Flow: Step-by-Step Architectural Walkthrough (Steps ①–⑦)
@@ -2935,7 +2953,7 @@ Every diagram across Workstreams 1–5 and Patterns A, B, and C follows a **3-sl
 1. **Step ② — IAM Principal Access Boundary (PAB) Enforcement** (*Blue Zone (IAM PAB Gate)*): Google Cloud IAM evaluates the tenant’s Principal Access Boundary policy (`pab-finvault-silo-only`), mathematically preventing the principal from accessing any resource outside `cymbal-finvault-silo-prod` (`HTTP 403`). **(IAM Principal Access Boundary (PAB) • Zero Cross-Project Access)**
 1. **Step ③ — Real-Time Cloud KMS CMEK State Verification** (*Green Zone (CMEK Heartbeat)*): At Hop 3, the runtime queries Cloud KMS (`finvault-silo-cmek` vs `medcore-revoked-cmek`) to verify that the customer’s encryption key is `ENABLED`. If the customer revoked their key, execution halts immediately with `HTTP 423 Locked`. **(Cloud KMS CMEK Heartbeat • Instant Kill-Switch (`HTTP 423`))**
 1. **Step ④ — VPC Service Controls Perimeter & Silo Model Armor** (*Yellow / Red Zone (VPC-SC Fence)*): The request enters the tenant’s dedicated VPC Service Controls (VPC-SC) perimeter—which blocks all unauthorized egress to external GCP projects—and passes through dedicated OCC/HIPAA Model Armor filters. **(VPC Service Controls (VPC-SC) • Dedicated Model Armor)**
-1. **Step ⑤ — Air-Gapped Gemma 3 on GKE or Provisioned Gemini** (*Yellow Zone (Dedicated Inference)*): FinVault runs inference inside its perimeter using either air-gapped Gemma 3 (27B) on private GKE (`--internal-ip`, CMEK boot disks) or dedicated Provisioned Throughput Gemini 2.5 Pro / Claude 3.7 Sonnet. **(Air-Gapped Gemma 3 27B on Private GKE • Provisioned Throughput)**
+1. **Step ⑤ — Air-Gapped Gemma 3 on GKE or Provisioned Gemini** (*Yellow Zone (Dedicated Inference)*): FinVault runs inference inside its perimeter using either air-gapped Gemma 3 (27B) on private GKE (`--internal-ip`, CMEK boot disks) or dedicated Provisioned Throughput Gemini 2.5 Pro / Gemini 2.5 Pro (Dedicated PT). **(Air-Gapped Gemma 3 27B on Private GKE • Provisioned Throughput)**
 1. **Step ⑥ — CMEK Vault Decryption vs. Kill-Switch Lockout** (*Yellow (Open) vs Red (423 Locked)*): FinVault’s enabled CMEK decrypts `pattern_b_silo_finvault_cmek_vault` (returning 2 rows). In contrast, MedCore’s disabled CMEK key (`DESTROY_SCHEDULED` / `DISABLED`) blocks all storage and memory access with `HTTP 423 Locked`. **(CMEK BigQuery/AlloyDB Vault • Verified 6/6 Silo Security Suite)**
 1. **Step ⑦ — In-Perimeter Response & Access Transparency Log** (*Silo Projects → Caller & Auditor*): Egress SDP scrubs the final payload inside the tenant project, returns the response over mTLS, and writes immutable Cloud KMS key-usage and VPC-SC audit logs for the customer’s SOC. **(Cloud Audit Logs • Access Transparency • SOC Attestation)**
 1. **Outcome — Dedicated Single-Tenant GCP Project + Sub-60s Customer CMEK Kill-Switch (`HTTP 423`)** (*Architectural & Business Outcome*): Each regulated enterprise (FinVault Bank and RetailStream/MedCore) operates inside a physically isolated GCP project with its own VPC-SC perimeter and Cloud KMS key—where disabling the customer key halts all AI memory, DB reads, and inference with `HTTP 423 Locked`. **(PATTERN B • SOVEREIGN SILOS)**
@@ -3007,7 +3025,7 @@ Every diagram across Workstreams 1–5 and Patterns A, B, and C follows a **3-sl
 1. **Step ② — Enforcing Hops 1 & 2 Across All Topologies** (*Blue Zone (Triad Pillar 1 — Identity & Catalog)*): Regardless of topology, every request passes Hop 1 (Cloud Armor header stripping + IAP OIDC/Entra + RFC 8693 OBO/DPoP) and Hop 2 (Discovery Engine Agent Catalog PDP + ADK `before_agent_callback` pruning). **(Triad Pillar 1 • Hops 1 & 2 Cryptographic Identity & Catalog PDP)**
 1. **Step ③ — Commitment to Cost-Optimal or Sovereign Spoke** (*Blue Zone → Yellow or Red Spoke*): The Architecture Selector routes Standard commercial tenants (950 of 1,000 tenants) to the Pooled Spoke (Yellow Zone) and regulated Enterprise tenants (50 of 1,000 tenants) to Sovereign/PSC Spokes (Red Zone). **(950 Standard Tenants (Pooled) + 50 Enterprise Tenants (PSC/Silo))**
 1. **Step ④ — 4 FinOps Levers Cut Pooled Token COGS by 84.7%** (*Yellow Zone (Triad Pillar 2 — Pooled FinOps)*): In the Pooled Spoke, Triad Pillar 2 combines (1) 90% shared `ContextCacheConfig` prefix caching, (2) Memorystore for Valkey RPM bulkheads, (3) 4,000-token thinking budget caps, and (4) compact MCP tool output pruning. **(Triad Pillar 2 • 90% Context Cache + Valkey Bulkhead + Token Cap)**
-1. **Step ⑤ — Enforcing VPC-SC, CMEK Kill-Switch & Live Promotion** (*Red Zone (Sovereign & PSC Guarantees)*): In the Regulated Spoke, Enterprise tenants receive dedicated VPC-SC perimeters, IAM PAB policies, sub-60s Cloud KMS CMEK kill-switches (`HTTP 423`), air-gapped Gemma 3 / Claude 3.7 Sonnet, and zero-downtime PSC tier upgrades. **(VPC-SC • IAM PAB • CMEK Kill-Switch (`423`) • Live PSC Upgrade)**
+1. **Step ⑤ — Enforcing VPC-SC, CMEK Kill-Switch & Live Promotion** (*Red Zone (Sovereign & PSC Guarantees)*): In the Regulated Spoke, Enterprise tenants receive dedicated VPC-SC perimeters, IAM PAB policies, sub-60s Cloud KMS CMEK kill-switches (`HTTP 423`), air-gapped Gemma 3 / Gemini 2.5 Pro (Dedicated PT), and zero-downtime PSC tier upgrades. **(VPC-SC • IAM PAB • CMEK Kill-Switch (`423`) • Live PSC Upgrade)**
 1. **Step ⑥ — Model Armor Guardrails & Engine-Level Data Isolation** (*Yellow & Red Zones (Hops 4 & 5 Data Plane)*): Hop 4 screens prompts and redacts egress PII/PCI via Model Armor & SDP, while Hop 5 enforces AlloyDB/BigQuery Row-Level Security (`SET LOCAL app.current_tenant`) or dedicated CMEK vault encryption. **(Hops 4 & 5 • Model Armor, Cloud SDP & AlloyDB/BigQuery RLS)**
 1. **Step ⑦ — Zero-PII OpenTelemetry & 3 FinOps Chargeback Models** (*All Zones → Green Zone (Triad Pillar 3)*): Triad Pillar 3 streams zero-PII OpenTelemetry spans (`tenant_id`, `tier`, `thinking_tokens`, `cache_hit`) into BigQuery—supporting Even Split, Proportional Token Chargeback, and Fixed Tier pricing with 20/20 tests passing. **(Triad Pillar 3 • BigQuery OTel Sink & 74% Portfolio COGS Savings)**
 1. **Outcome — 2-Question Topology Selector + 74% Total Cloud COGS Reduction Across 1,000 Tenants** (*Architectural & Business Outcome*): Across a 1,000-tenant B2B SaaS portfolio (950 Standard + 50 Enterprise), Pattern C guided by the Agentic Triad reduces shared prompt token costs by 90%, cuts total monthly infrastructure COGS by 74% ($820k → $214k/mo), and maintains 99.99% SLA with 0 cross-tenant leaks. **(WORKSTREAM 5 • AGENTIC TRIAD)**
@@ -3023,7 +3041,7 @@ Every diagram across Workstreams 1–5 and Patterns A, B, and C follows a **3-sl
 | **Step ③** • Pillar 2: FinOps Levers | Vertex AI ContextCacheConfig & Memorystore (Yellow Zone) | Caches the 32k-token shared system prompt once at a 90% discount while enforcing per-tier thinking budgets (`4k` vs `8k`) and Valkey RPM bulkheads. | Shared Read-Only Prefix Cache + Tiered Token Caps | 84.7% per-turn token COGS reduction; 74% total 1,000-tenant cloud savings |
 | **Step ④** • Sovereign Silo Controls | VPC-SC, IAM PAB & Cloud KMS CMEK (Red Zone) | Wraps regulated Enterprise projects in VPC Service Controls and IAM Principal Access Boundaries with live Cloud KMS CMEK kill-switch verification (`HTTP 423`). | workstream-3-pattern-b-siloed (Milestone 2) | Satisfies OCC/FDIC, HIPAA, and public-sector physical isolation audits |
 | **Step ⑤** • Hybrid PSC & Live Upgrade | Private Service Connect & 3-Phase Migrator (Green & Red Zones) | Bridges the central hub to dedicated spokes over unidirectional PSC (`10.10.0.50`) and promotes live tenants (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`). | workstream-4-pattern-c-hybrid (Milestone 3 • 4/4 PASS) | Zero-downtime Standard → Enterprise promotion with 0 dropped sessions |
-| **Step ⑥** • Multi-Model Agility | Gemini 2.5 Pro, Claude 3.7 Sonnet & Gemma 3 (Yellow & Red Zones) | Runs shared Gemini 2.5 Pro in the pool while enabling Vertex AI Model Garden hot-swapping (Claude 3.7 Sonnet) and air-gapped Gemma 3 (27B) on private GKE. | FinVaultPrivateAgentAlpha & Private GKE Blueprint | Matches model capability and residency to each tenant’s contract tier |
+| **Step ⑥** • Multi-Model Agility | Gemini 2.5 Pro, Gemini 2.5 Pro (Dedicated PT) & Gemma 3 (Yellow & Red Zones) | Runs shared Gemini 2.5 Pro in the pool while enabling Vertex AI Model Garden hot-swapping (Gemini 2.5 Pro (Dedicated PT)) and air-gapped Gemma 3 (27B) on private GKE. | FinVaultPrivateAgentAlpha & Private GKE Blueprint | Matches model capability and residency to each tenant’s contract tier |
 | **Step ⑦** • Pillar 3: Zero-PII OTel | Sensitive Data Protection & BigQuery OTel (Green Zone) | Redacts all PII/PHI/PCI via Cloud SDP prior to log export and streams tenant-tagged token consumption into BigQuery (`cymbal_agentic_finops_otel`). | 3 Chargeback Models (Even Split, Proportional, Tiered) | Verified live in BigQuery: $0.0042 (A), $0.0079 (C), $0.0118 (B) per turn |
 | **Cost & Audit** • 10-Week Program Roadmap | 12/12 Forensic Gates & Product EAP Backlog (Green Zone) | Delivers Pattern A in Week 4, Pattern B in Week 7, and Pattern C in Week 10 alongside the 9-item Google Cloud Product EAP Tracker (`GAP-P0-01`..`GAP-P2-02`). | scripts/run_deep_forensic_audit.py (12/12 PASS • 20/20 SIMS) | Complete, production-certified reference architecture across WS1–WS5 |
 
@@ -3043,7 +3061,7 @@ Every diagram across Workstreams 1–5 and Patterns A, B, and C follows a **3-sl
 1. **Step ② — Dynamic Tenant Profile & GCS Skill Hydration** (*Blue & Green Zones (Config Lookup)*): Hop 1 mints the KMS-signed `CryptographicContext`. Hop 3 loads the tenant’s dynamic system prompt, thinking budget (`8,000` vs `4,000`), and `gs://cymbal-skills-{tenant}/` URIs from Firestore. **(Firestore Tenant Profile • GCS Skills Bucket Isolation)**
 1. **Step ③ — Tenant-Scoped 2LO & 3LO Token Resolution** (*Green Zone (Secret & Token Broker)*): `CymbalMCPHub` resolves 2LO implicit session tokens for internal Cymbal Telemetry and retrieves tenant-partitioned 3LO OAuth tokens from Secret Manager (`secret://projects/.../tenant-{id}-3p-oauth`). **(CymbalMCPHub • Secret Manager IAM Condition Binding)**
 1. **Step ④ — Inline 3LO OAuth Consent & Parameter Check** (*Yellow / Red Zone (Consent Gate)*): If a RetailStream user invokes ServiceNow without an active 3LO grant, the agent pauses the turn and emits an inline OAuth consent challenge (`HTTP 401`) while Model Armor screens tool parameters. **(ADK Inline 3LO OAuth Challenge • Model Armor)**
-1. **Step ⑤ — FinVault Workspace, Jira & Private Agent Alpha** (*Yellow Zone (FinVault 3LO Execution)*): For FinVault, the runtime invokes `google_workspace_jira_3lo_mcp.py` (fetching Drive runbooks and Jira tickets) and permits model hot-swapping on private `Agent Alpha` (`Claude 3.7 Sonnet` ↔ `Gemini 2.5 Pro`). **(FinVault 3LO MCP • Private Agent Alpha Model Hot-Swap)**
+1. **Step ⑤ — FinVault Workspace, Jira & Private Agent Alpha** (*Yellow Zone (FinVault 3LO Execution)*): For FinVault, the runtime invokes `google_workspace_jira_3lo_mcp.py` (fetching Drive runbooks and Jira tickets) and permits model hot-swapping on private `Agent Alpha` (`Gemini 2.5 Pro (Dedicated PT)` ↔ `Gemini 2.5 Pro`). **(FinVault 3LO MCP • Private Agent Alpha Model Hot-Swap)**
 1. **Step ⑥ — RetailStream SharePoint & ServiceNow Execution** (*Red Zone (RetailStream 3LO Execution)*): Once the RetailStream user completes Entra ID 3LO consent, `microsoft_servicenow_3lo_mcp.py` queries SharePoint runbooks and creates ServiceNow incident tickets under the user’s delegated identity. **(RetailStream Entra ID 3LO MCP • ServiceNow ITOM)**
 1. **Step ⑦ — Ephemeral Token Wipe & Zero-Secret Audit Log** (*Workspaces → Caller & BigQuery*): Upon tool completion, in-memory 3LO access tokens are immediately scrubbed from the sandbox, Egress SDP masks sensitive fields, and BigQuery logs the connector invocation with zero raw secrets. **(In-Memory Token Scrubbing • Cloud Logging & BigQuery)**
 1. **Outcome — Zero-Shadow-Account Federation & Scoped 2LO/3LO MCP Tool Execution** (*Architectural & Business Outcome*): FinVault users authenticate via Google Workspace OIDC to invoke Drive/Jira 3LO MCP tools, while RetailStream users authenticate via Microsoft Entra ID (with zero Google shadow accounts) to invoke SharePoint/ServiceNow 3LO MCP tools. **(PATTERN A • 2LO/3LO AUTH SANDBOX)**
@@ -3059,11 +3077,11 @@ Every diagram across Workstreams 1–5 and Patterns A, B, and C follows a **3-sl
 | **Step ③** • 2LO Implicit Passthrough | Cymbal Core Telemetry 2LO MCP (Yellow & Red Zones) | Propagates the KMS-signed `CryptographicContext` directly to internal first-party MCP servers (`mcp://cymbal/core-telemetry-2lo`) without prompting the user. | core-cymbal-agent/mcp_servers/cymbal_telemetry_2lo_mcp.py | Zero-latency internal telemetry lookups scoped strictly to `ctx.tenant_id` |
 | **Step ④** • FinVault 3LO Google/Jira | Google Workspace & Jira 3LO MCP (Yellow Zone) | Exchanges FinVault’s 3LO Google OIDC token to invoke `google_drive_runbook`, `google_calendar_bridge`, and `jira_escalation_issue` under user delegation. | core-cymbal-agent/mcp_servers/google_workspace_jira_3lo_mcp.py | Verified F-04: 3LO Google OIDC tools execute with zero ambient service-account elevation |
 | **Step ⑤** • RetailStream 3LO Entra/SNOW | Microsoft SharePoint & ServiceNow 3LO MCP (Red Zone) | Verifies RetailStream’s Entra ID 3LO token (or triggers an inline consent challenge on missing token) before querying SharePoint and ServiceNow ITOM. | core-cymbal-agent/mcp_servers/microsoft_servicenow_3lo_mcp.py | Verified F-04 & Test 10: Missing 3LO token pauses turn; valid token executes cleanly |
-| **Step ⑥** • Private Agent Alpha CLI | Vertex AI Agent Engine & Model Garden (Yellow Zone) | Allows FinVault to provision `FinVaultPrivateAgentAlpha` via `gcloud alpha agents` CLI and hot-swap between `claude-3-7-sonnet@20250219` and `gemini-2.5-pro`. | core-cymbal-agent/agents/finvault_agent_alpha.py | Verified F-03: FinVault hot-swap succeeds; RetailStream attempt raises PermissionError |
+| **Step ⑥** • Private Agent Alpha CLI | Vertex AI Agent Engine & Model Garden (Yellow Zone) | Allows FinVault to provision `FinVaultPrivateAgentAlpha` via `gcloud alpha agents` CLI and hot-swap between `gemini-2.5-pro-dedicated` and `gemini-2.5-pro`. | core-cymbal-agent/agents/finvault_agent_alpha.py | Verified F-03: FinVault hot-swap succeeds; RetailStream attempt raises PermissionError |
 | **Step ⑦** • Secret & Sandbox Scrub | Secret Manager & Cloud Run Sandbox (Green & Blue Zones) | Enforces IAM Conditions on Secret Manager (`resource.name.startsWith(...)`) and overwrites in-memory OAuth tokens immediately after MCP dispatch. | Per-Tenant Secret Manager ACL & Ephemeral Scrub | Zero 3P OAuth credentials persist in memory or logs post-turn |
 | **Cost & Audit** • Connector Lineage Log | Cloud Audit Logs & BigQuery OTel (Green Zone) | Records every 2LO and 3LO MCP tool invocation, auth mode (`2LO_IMPLICIT` vs `3LO_OIDC` / `3LO_ENTRA`), and token cost in BigQuery. | CymbalMCPHub Audit Telemetry | 100% non-repudiation for third-party SaaS connector actions |
 
-### Diagram 9: Pattern A 1-Click Terraform Starter: Provider → Cloud Armor WAF → Cloud Run v2 Agent Gateway → Valkey / KMS CMEK → BigQuery OTel Resource Graph (`ws2-terraform-starter-resource-graph`)
+### Diagram 9: Pattern A 1-Click Terraform Starter: Provider → Google Cloud Armor → Cloud Run v2 Agent Gateway → Valkey / KMS CMEK → BigQuery OTel Resource Graph (`ws2-terraform-starter-resource-graph`)
 * **Workstream & Focus**: Workstream 2 • Pattern A: 1-Click Terraform Starter Resource Graph (WS 2.6) (`PATTERN A • TERRAFORM IaC GRAPH`)
 * **Question Answered**: *How do platform engineering teams declaratively provision the entire Pattern A pooled multi-tenant stack—WAF, KMS signing keys, Valkey bulkheads, Cloud Run Gen2 runtime, and RLS-locked databases—with zero manual console drift?*
 * **Architectural & Business Outcome (Declarative 1-Click Terraform DAG Provisions Pattern A in Under 4 Minutes)**: A single `terraform apply` provisions the Google provider, Cloud Armor WAF policy, Cloud KMS 90-day rotating key ring, Memorystore for Valkey bulkhead, Cloud Run v2 gateway, and BigQuery OTel sink in strict dependency order.

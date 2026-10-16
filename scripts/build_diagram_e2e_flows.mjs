@@ -886,7 +886,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Yellow Zone (FinVault 3LO Execution)',
         title: 'FinVault Workspace, Jira & Private Agent Alpha',
         logicalNarrative:
-          'For FinVault, the runtime invokes `google_workspace_jira_3lo_mcp.py` (fetching Drive runbooks and Jira tickets) and permits model hot-swapping on private `Agent Alpha` (`Claude 3.7 Sonnet` ↔ `Gemini 2.5 Pro`).',
+          'For FinVault, the runtime invokes `google_workspace_jira_3lo_mcp.py` (fetching Drive runbooks and Jira tickets) and permits model hot-swapping on private `Agent Alpha` (`Gemini 2.5 Pro (Dedicated PT)` ↔ `Gemini 2.5 Pro`).',
         components: 'FinVault 3LO MCP • Private Agent Alpha Model Hot-Swap',
       },
       {
@@ -959,7 +959,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'Private Agent Alpha CLI',
         route: 'Vertex AI Agent Engine & Model Garden (Yellow Zone)',
         protocolAndMechanism:
-          'Allows FinVault to provision `FinVaultPrivateAgentAlpha` via `gcloud alpha agents` CLI and hot-swap between `claude-3-7-sonnet@20250219` and `gemini-2.5-pro`.',
+          'Allows FinVault to provision `FinVaultPrivateAgentAlpha` via `gcloud alpha agents` CLI and hot-swap between `gemini-2.5-pro-dedicated` and `gemini-2.5-pro`.',
         codeAndResource: 'core-cymbal-agent/agents/finvault_agent_alpha.py',
         verifiedOutcome: 'Verified F-03: FinVault hot-swap succeeds; RetailStream attempt raises PermissionError',
       },
@@ -1209,7 +1209,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         colorHex: '#feefc3',
         borderHex: '#b06000',
         name: '3. FinVault Sovereign Silo Project (CMEK ENABLED)',
-        role: 'Dedicated project running air-gapped Gemma 3 (27B) on private GKE + Claude 3.7 Sonnet and CMEK-encrypted AlloyDB/BigQuery vault (`2 rows` returned).',
+        role: 'Dedicated project running air-gapped Gemma 3 (27B) on private GKE + Gemini 2.5 Pro (Dedicated PT) and CMEK-encrypted AlloyDB/BigQuery vault (`2 rows` returned).',
       },
       {
         zoneId: 'Red Zone',
@@ -1262,7 +1262,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Yellow Zone (Dedicated Inference)',
         title: 'Air-Gapped Gemma 3 on GKE or Provisioned Gemini',
         logicalNarrative:
-          'FinVault runs inference inside its perimeter using either air-gapped Gemma 3 (27B) on private GKE (`--internal-ip`, CMEK boot disks) or dedicated Provisioned Throughput Gemini 2.5 Pro / Claude 3.7 Sonnet.',
+          'FinVault runs inference inside its perimeter using either air-gapped Gemma 3 (27B) on private GKE (`--internal-ip`, CMEK boot disks) or dedicated Provisioned Throughput Gemini 2.5 Pro / Gemini 2.5 Pro (Dedicated PT).',
         components: 'Air-Gapped Gemma 3 27B on Private GKE • Provisioned Throughput',
       },
       {
@@ -2578,7 +2578,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Red Zone (Sovereign & PSC Guarantees)',
         title: 'Enforcing VPC-SC, CMEK Kill-Switch & Live Promotion',
         logicalNarrative:
-          'In the Regulated Spoke, Enterprise tenants receive dedicated VPC-SC perimeters, IAM PAB policies, sub-60s Cloud KMS CMEK kill-switches (`HTTP 423`), air-gapped Gemma 3 / Claude 3.7 Sonnet, and zero-downtime PSC tier upgrades.',
+          'In the Regulated Spoke, Enterprise tenants receive dedicated VPC-SC perimeters, IAM PAB policies, sub-60s Cloud KMS CMEK kill-switches (`HTTP 423`), air-gapped Gemma 3 / Gemini 2.5 Pro (Dedicated PT), and zero-downtime PSC tier upgrades.',
         components: 'VPC-SC • IAM PAB • CMEK Kill-Switch (`423`) • Live PSC Upgrade',
       },
       {
@@ -2649,9 +2649,9 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       {
         step: 'Step ⑥',
         hopName: 'Multi-Model Agility',
-        route: 'Gemini 2.5 Pro, Claude 3.7 Sonnet & Gemma 3 (Yellow & Red Zones)',
+        route: 'Gemini 2.5 Pro, Gemini 2.5 Pro (Dedicated PT) & Gemma 3 (Yellow & Red Zones)',
         protocolAndMechanism:
-          'Runs shared Gemini 2.5 Pro in the pool while enabling Vertex AI Model Garden hot-swapping (Claude 3.7 Sonnet) and air-gapped Gemma 3 (27B) on private GKE.',
+          'Runs shared Gemini 2.5 Pro in the pool while enabling Vertex AI Model Garden hot-swapping (Gemini 2.5 Pro (Dedicated PT)) and air-gapped Gemma 3 (27B) on private GKE.',
         codeAndResource: 'FinVaultPrivateAgentAlpha & Private GKE Blueprint',
         verifiedOutcome: 'Matches model capability and residency to each tenant’s contract tier',
       },

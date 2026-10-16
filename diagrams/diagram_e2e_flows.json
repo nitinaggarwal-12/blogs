@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-15T12:13:43.201Z",
+  "generatedAt": "2026-10-16T14:57:22.893Z",
   "totalDiagrams": 14,
   "templateStandard": "Official Google Cloud Architecture Center Hub-and-Spoke Layout Template (#78) • 56 Vertices • 23 Edges",
   "slideSequenceStandard": "3 Slides Per Diagram: (1) 100% Native Editable Diagram + Component Reference Sidebar -> (2) Step-by-Step Agentic Flow (Steps ①–⑦) -> (3) Component Architecture & Well-Architected Specification Table",
@@ -820,9 +820,9 @@
           "colorHex": "#feefc3",
           "borderHex": "#b06000",
           "name": "3. FinVault Sovereign Silo Project (CMEK ENABLED)",
-          "role": "Dedicated project running air-gapped Gemma 3 (27B) on private GKE + Claude 3.7 Sonnet and CMEK-encrypted AlloyDB/BigQuery vault (`2 rows` returned).",
+          "role": "Dedicated project running air-gapped Gemma 3 (27B) on private GKE + Gemini 2.5 Pro (Dedicated PT) and CMEK-encrypted AlloyDB/BigQuery vault (`2 rows` returned).",
           "nodes": [
-            "Dedicated project running air-gapped Gemma 3 (27B) on private GKE + Claude 3.7 Sonnet and CMEK-encrypted AlloyDB/BigQuery vault (`2 rows` returned)."
+            "Dedicated project running air-gapped Gemma 3 (27B) on private GKE + Gemini 2.5 Pro (Dedicated PT) and CMEK-encrypted AlloyDB/BigQuery vault (`2 rows` returned)."
           ]
         },
         {
@@ -874,7 +874,7 @@
           "badgeNum": "05",
           "zone": "Yellow Zone (Dedicated Inference)",
           "title": "Air-Gapped Gemma 3 on GKE or Provisioned Gemini",
-          "logicalNarrative": "FinVault runs inference inside its perimeter using either air-gapped Gemma 3 (27B) on private GKE (`--internal-ip`, CMEK boot disks) or dedicated Provisioned Throughput Gemini 2.5 Pro / Claude 3.7 Sonnet.",
+          "logicalNarrative": "FinVault runs inference inside its perimeter using either air-gapped Gemma 3 (27B) on private GKE (`--internal-ip`, CMEK boot disks) or dedicated Provisioned Throughput Gemini 2.5 Pro / Gemini 2.5 Pro (Dedicated PT).",
           "components": "Air-Gapped Gemma 3 27B on Private GKE • Provisioned Throughput"
         },
         {
@@ -1260,7 +1260,7 @@
           "badgeNum": "05",
           "zone": "Red Zone (Sovereign & PSC Guarantees)",
           "title": "Enforcing VPC-SC, CMEK Kill-Switch & Live Promotion",
-          "logicalNarrative": "In the Regulated Spoke, Enterprise tenants receive dedicated VPC-SC perimeters, IAM PAB policies, sub-60s Cloud KMS CMEK kill-switches (`HTTP 423`), air-gapped Gemma 3 / Claude 3.7 Sonnet, and zero-downtime PSC tier upgrades.",
+          "logicalNarrative": "In the Regulated Spoke, Enterprise tenants receive dedicated VPC-SC perimeters, IAM PAB policies, sub-60s Cloud KMS CMEK kill-switches (`HTTP 423`), air-gapped Gemma 3 / Gemini 2.5 Pro (Dedicated PT), and zero-downtime PSC tier upgrades.",
           "components": "VPC-SC • IAM PAB • CMEK Kill-Switch (`423`) • Live PSC Upgrade"
         },
         {
@@ -1332,8 +1332,8 @@
         {
           "step": "Step ⑥",
           "hopName": "Multi-Model Agility",
-          "route": "Gemini 2.5 Pro, Claude 3.7 Sonnet & Gemma 3 (Yellow & Red Zones)",
-          "protocolAndMechanism": "Runs shared Gemini 2.5 Pro in the pool while enabling Vertex AI Model Garden hot-swapping (Claude 3.7 Sonnet) and air-gapped Gemma 3 (27B) on private GKE.",
+          "route": "Gemini 2.5 Pro, Gemini 2.5 Pro (Dedicated PT) & Gemma 3 (Yellow & Red Zones)",
+          "protocolAndMechanism": "Runs shared Gemini 2.5 Pro in the pool while enabling Vertex AI Model Garden hot-swapping (Gemini 2.5 Pro (Dedicated PT)) and air-gapped Gemma 3 (27B) on private GKE.",
           "codeAndResource": "FinVaultPrivateAgentAlpha & Private GKE Blueprint",
           "verifiedOutcome": "Matches model capability and residency to each tenant’s contract tier"
         },
@@ -1453,7 +1453,7 @@
           "badgeNum": "05",
           "zone": "Yellow Zone (FinVault 3LO Execution)",
           "title": "FinVault Workspace, Jira & Private Agent Alpha",
-          "logicalNarrative": "For FinVault, the runtime invokes `google_workspace_jira_3lo_mcp.py` (fetching Drive runbooks and Jira tickets) and permits model hot-swapping on private `Agent Alpha` (`Claude 3.7 Sonnet` ↔ `Gemini 2.5 Pro`).",
+          "logicalNarrative": "For FinVault, the runtime invokes `google_workspace_jira_3lo_mcp.py` (fetching Drive runbooks and Jira tickets) and permits model hot-swapping on private `Agent Alpha` (`Gemini 2.5 Pro (Dedicated PT)` ↔ `Gemini 2.5 Pro`).",
           "components": "FinVault 3LO MCP • Private Agent Alpha Model Hot-Swap"
         },
         {
@@ -1526,7 +1526,7 @@
           "step": "Step ⑥",
           "hopName": "Private Agent Alpha CLI",
           "route": "Vertex AI Agent Engine & Model Garden (Yellow Zone)",
-          "protocolAndMechanism": "Allows FinVault to provision `FinVaultPrivateAgentAlpha` via `gcloud alpha agents` CLI and hot-swap between `claude-3-7-sonnet@20250219` and `gemini-2.5-pro`.",
+          "protocolAndMechanism": "Allows FinVault to provision `FinVaultPrivateAgentAlpha` via `gcloud alpha agents` CLI and hot-swap between `gemini-2.5-pro-dedicated` and `gemini-2.5-pro`.",
           "codeAndResource": "core-cymbal-agent/agents/finvault_agent_alpha.py",
           "verifiedOutcome": "Verified F-03: FinVault hot-swap succeeds; RetailStream attempt raises PermissionError"
         },
@@ -1555,7 +1555,7 @@
       "workstreamLabel": "Workstream 2 • Pattern A: 1-Click Terraform Starter Resource Graph (WS 2.6)",
       "badge": "WORKSTREAM 2.6 • TERRAFORM STARTER RESOURCE GRAPH",
       "patternBadge": "PATTERN A • TERRAFORM IaC GRAPH",
-      "title": "Pattern A 1-Click Terraform Starter: Provider → Cloud Armor WAF → Cloud Run v2 Agent Gateway → Valkey / KMS CMEK → BigQuery OTel Resource Graph",
+      "title": "Pattern A 1-Click Terraform Starter: Provider → Google Cloud Armor → Cloud Run v2 Agent Gateway → Valkey / KMS CMEK → BigQuery OTel Resource Graph",
       "subtitle": "hashicorp/google >= 5.30.0 on Terraform >= 1.5.0 • Verified in nitina-ggarwal-sandbox-647724 (cymbal-pooled-saas-prod) • Hop 1, Hop 3 & Hop 5 Resources",
       "questionAnswered": "How do platform engineering teams declaratively provision the entire Pattern A pooled multi-tenant stack—WAF, KMS signing keys, Valkey bulkheads, Cloud Run Gen2 runtime, and RLS-locked databases—with zero manual console drift?",
       "gcpProject": "nitina-ggarwal-sandbox-647724 (#887605034827)",

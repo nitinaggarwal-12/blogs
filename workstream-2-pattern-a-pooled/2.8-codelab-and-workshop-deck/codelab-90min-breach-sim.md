@@ -24,7 +24,7 @@ In this 90-minute hands-on codelab, you act as both the **Red Team Attacker** an
 ## Module 1: Bootstrap the Cymbal Pooled Environment (15 Mins)
 
 1. Inspect the shared tenant profiles in [`core-cymbal-agent/models.py`](../../core-cymbal-agent/models.py):
-   * **FinVault Bank (`finvault`)**: `ENTERPRISE` tier, `8,000` thinking tokens, access to `SharedIncidentDiagnosticAgent` + private `Agent Alpha` (Claude 3.7 Sonnet), Google Workspace & Jira 3LO MCP connectors.
+   * **FinVault Bank (`finvault`)**: `ENTERPRISE` tier, `8,000` thinking tokens, access to `SharedIncidentDiagnosticAgent` + private `Agent Alpha` (Gemini 2.5 Pro (Dedicated PT)), Google Workspace & Jira 3LO MCP connectors.
    * **RetailStream Corp (`retailstream`)**: `STANDARD` tier, `4,000` thinking tokens, access to `SharedIncidentDiagnosticAgent` only, Microsoft Entra ID SharePoint & ServiceNow 3LO MCP connectors.
 2. Apply the AlloyDB Row-Level Security schema in [`pooled_gateway_and_rls.sql`](../2.3-solution-implementation/pooled_gateway_and_rls.sql).
 

@@ -31,7 +31,7 @@ export default {
   govHubTitle: 'Hub VPC Addressing &',
   govHubTitle2: 'PSC Endpoint Reservation',
   govCards: {
-    top: { icon: 'psc_bridge', title: 'psc-endpoint-', title2: 'finvault-ip', sub: '10.10.0.50 • cymbal-hub-subnet' },
+    top: { icon: 'psc_bridge', title: 'PSC Consumer IP', title2: 'psc-ep-finvault', sub: '10.10.0.50 • cymbal-hub-subnet' },
     mid: { icon: 'psc_bridge', title: 'Target Service', title2: 'Attachment URI', sub: 'projects/../serviceAttachments' },
     bot: { icon: 'bigquery_analytics', title: 'Tier Upgrade Suite', sub: 'run_tier_migration_suite.py' },
   },
@@ -62,7 +62,7 @@ export default {
     runtime: { icon: 'gemini_agent_platform', title: 'Spoke Agent Engine', sub: 'Agent Alpha • 8,000 Budget' },
     mcp: { icon: 'mcp_servers', title: 'Local Spoke MCP', sub: 'Google / Jira Connectors' },
     datastore: { icon: 'cloud_kms', title: 'CMEK Spoke Datastore', sub: 'finvault-silo-cmek & BQ Vault' },
-    ragLabel: ['Consumer accept', 'hub project=10'],
+    ragLabel: ['Accept hub project', '(conn_limit = 10)'],
     toolLabel: ['Unidirectional', 'producer exposure'],
   },
 };

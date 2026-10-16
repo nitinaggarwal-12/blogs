@@ -118,14 +118,14 @@ const DECKS = {
         heading: 'Products used — Google Cloud Agentic AI, Security & Data Stack',
         layout: 'cards',
         bullets: [
-          'Agentic AI & Foundation Models: Vertex AI Agent Engine (ADK 2.0 runtime, Agent Registry & L1–L5 Memory Bank), Gemini 2.5 Pro with ContextCacheConfig (90% shared prefix discount), Vertex AI Model Garden (Claude 3.7 Sonnet), and Gemma 3 (27B) on private GKE.',
+          'Agentic AI & Foundation Models: Vertex AI Agent Engine (ADK 2.0 runtime, Agent Registry & L1–L5 Memory Bank), Gemini 2.5 Pro with ContextCacheConfig (90% shared prefix discount), Vertex AI Model Garden (Gemini 2.5 Pro (Dedicated PT)), and Gemma 3 (27B) on private GKE.',
           'Ingress, Identity & AI Safety Guardrails: Global External Application Load Balancer, Google Cloud Armor L7 WAF, Identity-Aware Proxy (IAP) & IAM Security Token Service (RFC 8693 OBO + RFC 9449 DPoP), Vertex AI Model Armor, and Cloud Sensitive Data Protection (DLP).',
           'Data, Storage, Networking & Governance: AlloyDB for PostgreSQL (FORCE ROW LEVEL SECURITY), Memorystore for Valkey (per-tenant RPM bulkheads) & Firestore, VPC Service Controls (VPC-SC) & Private Service Connect (PSC), Cloud KMS CMEK (HTTP 423 kill-switch), and BigQuery OTel.',
           'Shared 80% Reusable Application Core: All three isolation patterns execute the exact same Python ADK 2.0 5-hop security pipeline (`core-cymbal-agent/runtime_pipeline.py`), parameterizing only the surrounding 20% Google Cloud project and network boundary.',
         ],
         specs: [
           {
-            stack: 'Vertex AI Agent Engine (ADK 2.0) • Gemini 2.5 Pro (ContextCacheConfig) • Claude 3.7 • Gemma 3 27B',
+            stack: 'Vertex AI Agent Engine (ADK 2.0) • Gemini 2.5 Pro (ContextCacheConfig) • Gemini 2.5 Pro • Gemma 3 27B',
             sla: '90% Shared System Prefix Cache Discount + Flexible Managed or Air-Gapped Model Hosting',
             tag: '1. Agentic AI & Models',
           },
@@ -151,7 +151,7 @@ const DECKS = {
         layout: 'cards',
         bullets: [
           'Cymbal Multi-Tenant Agentic Platform (Control Plane): Operates a shared Incident Diagnostic Agent on Gemini 2.5 Pro, caching a 32,000-token immutable SRE runbook prefix once to reduce input token costs by 90%.',
-          'FinVault Bank (Regulated Enterprise Tenant): Authenticates via Google Workspace OIDC, provisions a private Claude 3.7 Sonnet regulatory agent (Agent Alpha), receives an 8,000-token thinking budget, and mandates CMEK.',
+          'FinVault Bank (Regulated Enterprise Tenant): Authenticates via Google Workspace OIDC, provisions a private Gemini 2.5 Pro (Dedicated PT) regulatory agent (Agent Alpha), receives an 8,000-token thinking budget, and mandates CMEK.',
           'RetailStream Corp (Standard Commercial Tenant): Authenticates via Microsoft Entra ID OIDC, runs on the pooled Diagnostic Agent with a 4,000-token thinking cap, and invokes ServiceNow ITOM via 3LO employee consent.',
           'Cryptographic Mutual Invisibility: RetailStream callers receive immediate HTTP 403 Forbidden if probing FinVault’s private Agent Alpha, while FinVault is completely isolated from RetailStream’s Entra ID / ServiceNow connectors.',
         ],
@@ -335,7 +335,7 @@ const DECKS = {
           'Zone 2 (Central Governance Hub): Security Command Center, Cloud KMS CMEK, and BigQuery OTel centralize threat detection, key lifecycle, and zero-PII chargeback.',
           'Step 3 Tier Dispatch: The 80% reusable ADK control plane routes requests dynamically to Pattern A (Yellow Spoke) or Pattern B/C (Red Spoke).',
           'Zone 3 (Pattern A Pooled Spoke): Enforces Model Armor screening (4/6), Gemini 2.5 Pro 90% prefix caching (5), Valkey RPM bulkheads, and AlloyDB RLS.',
-          'Zone 4 (Pattern B Silos & Pattern C PSC Spoke): Enforces VPC-SC perimeters, IAM PAB, air-gapped Gemma 3 / Claude 3.7 endpoints, and tenant CMEK kill-switches.',
+          'Zone 4 (Pattern B Silos & Pattern C PSC Spoke): Enforces VPC-SC perimeters, IAM PAB, air-gapped Gemma 3 / Gemini 2.5 Pro endpoints, and tenant CMEK kill-switches.',
         ],
       },
       {
@@ -477,7 +477,7 @@ const DECKS = {
             tag: 'Dynamic Context Hydration',
           },
           {
-            stack: 'Google Workspace OIDC • Agent Alpha (Claude 3.7 / Gemini 2.5) • 3LO Drive/Gmail/Jira',
+            stack: 'Google Workspace OIDC • Agent Alpha (Gemini 2.5 Pro / Gemini 2.5) • 3LO Drive/Gmail/Jira',
             sla: '8,000 Thinking Tokens • 600 RPM Valkey Bucket • OCC NLC + IBAN/SWIFT Masking',
             tag: 'FinVault Pooled Slice',
           },
@@ -1588,7 +1588,7 @@ const DECKS = {
           'Zone 1 (Triad Pillar 1 — Zero-Trust Ingress & Decision Selector): Evaluates Hop 1 Identity, Hop 4 Model Armor, Hop 2 Catalog, and the 2-Question Topology Selector.',
           'Zone 2 (Triad Pillar 3 — FinOps & Security Governance): Security Command Center, 3 Chargeback SQL Models, and BigQuery OTel Sink govern compliance and billing.',
           'Zone 3 (Triad Pillar 2 — Pattern A Pooled Unit Economics): Enforces Memorystore Valkey RPM bulkheads, 4,000 thinking token caps, 90% prefix cache discount, and AlloyDB RLS.',
-          'Zone 4 (Pattern B Silos & Pattern C PSC Spokes): Enforces VPC-SC & IAM PAB perimeters, air-gapped Gemma 3 / Claude 3.7 hosting, PSC spoke routing, and CMEK kill-switches.',
+          'Zone 4 (Pattern B Silos & Pattern C PSC Spokes): Enforces VPC-SC & IAM PAB perimeters, air-gapped Gemma 3 / Gemini 2.5 Pro hosting, PSC spoke routing, and CMEK kill-switches.',
         ],
       },
     ],

@@ -329,9 +329,9 @@
     },
     {
       "id": "card_sc_llm",
-      "urlSlug": "OBJ-25-GEMINI-GEMMA-3-CLAUDE-3",
-      "label": "Gemini / Gemma 3 Claude 3.7 or Private GKE",
-      "plainTitle": "Gemini / Gemma 3 Claude 3.7 or Private GKE",
+      "urlSlug": "OBJ-25-GEMINI-GEMMA-3",
+      "label": "Gemini / Gemma 3",
+      "plainTitle": "Gemini / Gemma 3",
       "zone": "Governance & Footer",
       "x": 640,
       "y": 976,

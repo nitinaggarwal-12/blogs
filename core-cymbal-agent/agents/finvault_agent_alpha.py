@@ -3,7 +3,7 @@ FinVault Bank Private 'Agent Alpha' (`agent://finvault/private-agent-alpha-regul
 
 Built by FinVault Bank (Enterprise Tier) via REST API / `agents-cli`:
 - Self-service Regulatory Escalation Agent provisioned via REST API / `agents-cli`.
-- Multi-Model Agnosticism: Runs Claude Sonnet (`claude-3-7-sonnet@20250219`) on
+- Multi-Model Agnosticism: Runs Gemini 2.5 Pro (Dedicated PT) (`gemini-2.5-pro-dedicated`) on
   Vertex AI Model Garden with hot-swappable model configuration.
 - 100% isolated to `finvault`; returns 403 Forbidden to `retailstream`.
 """
@@ -13,8 +13,8 @@ from ..models import CryptographicContext, TENANT_PROFILES, TenantProfile
 
 
 ALLOWED_MODEL_GARDEN_MODELS = {
-    "claude-3-7-sonnet@20250219",
-    "claude-3-5-sonnet-v2@20241022",
+    "gemini-2.5-pro-dedicated",
+    "gemini-2.5-flash",
     "gemini-2.5-pro",
     "gemma-3-27b-it",
 }
@@ -25,7 +25,7 @@ class FinVaultPrivateAgentAlpha:
 
     def __init__(self, tenant_profiles: Optional[Dict[str, TenantProfile]] = None) -> None:
         self.tenant_profiles = tenant_profiles if tenant_profiles is not None else TENANT_PROFILES
-        self.active_model: str = "claude-3-7-sonnet@20250219"
+        self.active_model: str = "gemini-2.5-pro-dedicated"
         self.provisioned_manifest: Dict[str, object] = {
             "agent_uri": self.AGENT_URI,
             "owner_tenant": "finvault",
@@ -34,7 +34,7 @@ class FinVaultPrivateAgentAlpha:
         }
 
     def provision_via_agents_cli(
-        self, caller_ctx: CryptographicContext, model_id: str = "claude-3-7-sonnet@20250219"
+        self, caller_ctx: CryptographicContext, model_id: str = "gemini-2.5-pro-dedicated"
     ) -> Dict[str, object]:
         """Simulates self-service provisioning via `agents-cli deploy --agent=finvault-agent-alpha`."""
         if caller_ctx.tenant_id != "finvault":
