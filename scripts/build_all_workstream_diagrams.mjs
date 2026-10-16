@@ -227,6 +227,25 @@ const EXTRA_GCP_ICONS = {
       <path d="M22 7 L11 21 H19 L17 33 L29 19 H21 Z" fill="#fbbc04" stroke="#ea8600" stroke-width="1.2" stroke-linejoin="round"/>
     </svg>
   `),
+  vertex_agent_engine: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+      <polygon points="20,6.5 31,13 31,27 20,33.5 9,27 9,13" fill="#d2e3fc" stroke="#1967d2" stroke-width="2" stroke-linejoin="round"/>
+      <circle cx="20" cy="20" r="4.2" fill="#1a73e8"/>
+      <line x1="20" y1="6.5" x2="20" y2="15.8" stroke="#1967d2" stroke-width="2"/>
+      <line x1="31" y1="27" x2="23.6" y2="22.1" stroke="#34a853" stroke-width="2"/>
+      <line x1="9" y1="27" x2="16.4" y2="22.1" stroke="#ea4335" stroke-width="2"/>
+    </svg>
+  `),
+  iap_shield: svgToDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="8" fill="#e6f4ea" stroke="#137333" stroke-width="2"/>
+      <path d="M20 7 L31 11.5 V19.5 C31 26.8 26.2 31.8 20 33.8 C13.8 31.8 9 26.8 9 19.5 V11.5 Z" fill="#34a853" opacity="0.22"/>
+      <path d="M20 7 L31 11.5 V19.5 C31 26.8 26.2 31.8 20 33.8 C13.8 31.8 9 26.8 9 19.5 V11.5 Z" fill="none" stroke="#137333" stroke-width="2.2"/>
+      <rect x="15" y="18" width="10" height="8" rx="1.8" fill="#137333"/>
+      <path d="M17 18 V15 A3 3 0 0 1 23 15 V18" fill="none" stroke="#137333" stroke-width="2"/>
+    </svg>
+  `),
 };
 
 function resolveArchIconUri(iconKey, title = '', _sub = '') {
@@ -242,6 +261,12 @@ function resolveArchIconUri(iconKey, title = '', _sub = '') {
     titleLower.includes('vector 5:')
   ) {
     return OFFICIAL_ASSETS.model_armor;
+  }
+  if (titleLower.includes('agent engine') || titleLower.includes('gvisor') || titleLower.includes('spoke runtime')) {
+    return EXTRA_GCP_ICONS.vertex_agent_engine;
+  }
+  if (titleLower === 'iap' || titleLower.startsWith('iap ') || titleLower.includes('obo + dpop') || titleLower.includes('vector 3:')) {
+    return EXTRA_GCP_ICONS.iap_shield;
   }
   if (titleLower.includes('contextcache') || titleLower.includes('prefix cache')) {
     return EXTRA_GCP_ICONS.context_cache;
@@ -446,7 +471,7 @@ const WORKSTREAM_BLUEPRINTS = [
       llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: 'Agent Engine (8k Budget)' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Hop 3: Shared + Agent Alpha' },
       mcp: { icon: 'mcp_servers', title: 'MCP servers', sub: 'Hop 5: Workspace & Jira 3LO' },
-      datastore: { icon: 'datastore_alloydb_bq', title: 'Datastore', sub: 'BQ RLS, AlloyDB & CMEK' },
+      datastore: { icon: 'alloydb', title: 'Datastore', sub: 'BQ RLS, AlloyDB & CMEK' },
       step4Label: 'Sanitize request',
       step6Label: 'Sanitize response',
       step5Label: ['Generates', 'response'],
