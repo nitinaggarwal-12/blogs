@@ -1,6 +1,6 @@
 ---
 trigger: always_on
-description: Executive Information Architecture (IA), Zero Visual Redundancy & First-Principles Value Pruning Gate (Rule 25)
+description: Executive Information Architecture (IA), Zero Visual Redundancy & First-Principles Value Pruning Gate (Rule 25 & Rule 26)
 ---
 
 # Executive Information Architecture (IA), Zero Visual Redundancy & First-Principles Value Pruning Gate (`Rule 25`)

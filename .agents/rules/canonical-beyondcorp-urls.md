@@ -11,19 +11,19 @@ description: Canonical Verified Working google.com BeyondCorp (*.cr.gclb.goog) U
 
 | Service | Verified Working `google.com` BeyondCorp URL | Baseline / Active Revision |
 | :--- | :--- | :--- |
-| `ge-demos` | [https://ge-demos-248990048888.cr.gclb.goog](https://ge-demos-248990048888.cr.gclb.goog/) | `ge-demos-00071-r65` (`ge-demos-00003-w5f`) |
+| `ge-demos` | [https://ge-demos-248990048888.cr.gclb.goog](https://ge-demos-248990048888.cr.gclb.goog/) | `ge-demos-00074-ctb` (`ge-demos-00003-w5f`) |
 | `askaioce` | [https://askaioce-248990048888.cr.gclb.goog](https://askaioce-248990048888.cr.gclb.goog/) | `askaioce-00002-79g` |
-| `gantrypulse` | [https://gantrypulse-248990048888.cr.gclb.goog](https://gantrypulse-248990048888.cr.gclb.goog/) | `gantrypulse-00057-xwt` (`gantrypulse-00001-mww`) |
+| `gantrypulse` | [https://gantrypulse-248990048888.cr.gclb.goog](https://gantrypulse-248990048888.cr.gclb.goog/) | `gantrypulse-00066-xqr` (`gantrypulse-00001-mww`) |
 | `merck-a2a-shield` | [https://merck-a2a-shield-248990048888.cr.gclb.goog](https://merck-a2a-shield-248990048888.cr.gclb.goog/) | `merck-a2a-shield-00004-pfs` |
 | `a2a-gateway` | [https://a2a-gateway-248990048888.cr.gclb.goog](https://a2a-gateway-248990048888.cr.gclb.goog/) | `a2a-gateway-00008-g7f` |
 | `pharma-dossier-harmonizer` | [https://pharma-dossier-harmonizer-248990048888.cr.gclb.goog](https://pharma-dossier-harmonizer-248990048888.cr.gclb.goog/) | `pharma-dossier-harmonizer-00001-vhk` |
 | `pharma-real-world-evidence` | [https://pharma-real-world-evidence-248990048888.cr.gclb.goog](https://pharma-real-world-evidence-248990048888.cr.gclb.goog/) | `pharma-real-world-evidence-00001-bvn` |
 | `dashboard` | [https://dashboard-248990048888.cr.gclb.goog](https://dashboard-248990048888.cr.gclb.goog/) | `dashboard-00002-hjr` |
-| `promptcanvas` | [https://promptcanvas-248990048888.cr.gclb.goog](https://promptcanvas-248990048888.cr.gclb.goog/) | `promptcanvas-00042-kg6` (`promptcanvas-00002-d44`)) |
+| `promptcanvas` | [https://promptcanvas-248990048888.cr.gclb.goog](https://promptcanvas-248990048888.cr.gclb.goog/) | `promptcanvas-00046-2h7` (`promptcanvas-00002-d44`) |
 | `scorex` | [https://scorex-248990048888.cr.gclb.goog](https://scorex-248990048888.cr.gclb.goog/) | `scorex-00026-vd4` (`scorex-00002-2v7`) |
 | `zyvoriq` | [https://zyvoriq-248990048888.cr.gclb.goog](https://zyvoriq-248990048888.cr.gclb.goog/) | `zyvoriq-00002-ss6` (`zyvoriq-00001-252`) |
-| `a2a-ge-orchestrator` | [https://a2a-ge-orchestrator-248990048888.cr.gclb.goog](https://a2a-ge-orchestrator-248990048888.cr.gclb.goog/) | `a2a-ge-orchestrator-00005-88c` |
-| `a2a-remote-peer` | [https://a2a-remote-peer-248990048888.cr.gclb.goog](https://a2a-remote-peer-248990048888.cr.gclb.goog/) | `a2a-remote-peer-00006-nfx` |
+| `a2a-ge-orchestrator` | [https://a2a-ge-orchestrator-248990048888.cr.gclb.goog](https://a2a-ge-orchestrator-248990048888.cr.gclb.goog/) | `a2a-ge-orchestrator-00008-vgv` |
+| `a2a-remote-peer` | [https://a2a-remote-peer-248990048888.cr.gclb.goog](https://a2a-remote-peer-248990048888.cr.gclb.goog/) | `a2a-remote-peer-00010-4t2` |
 | `ge-blogs` | [https://ge-blogs-248990048888.cr.gclb.goog](https://ge-blogs-248990048888.cr.gclb.goog/) | `ge-blogs-00009-vmt` (`ge-blogs-00003-lmh`) |
 
 ## Mandatory Synchronous 2-Project Cloud Run Deployment & Post-Deploy Readiness Verification Gate (`Rule 56`)

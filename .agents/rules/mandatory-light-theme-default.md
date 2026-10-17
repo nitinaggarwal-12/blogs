@@ -1,3 +1,8 @@
+---
+trigger: model_decision
+description: Use when building, styling, or refactoring web UIs, dashboards, or components to enforce Rule 54 / Law 15 Universal Executive Light Theme default.
+---
+
 # Mandatory Universal Light Theme Default & Zero Unrequested Dark Mode Invariant (`Rule 54` / `Law 15`)
 
 Whenever building, designing, refactoring, or styling **any** new or existing application, SaaS platform, clinical workspace, dashboard, portal, or component across any workspace:

@@ -1,5 +1,6 @@
 ---
-trigger: always_on
+trigger: model_decision
+description: Use when synthesizing closed-loop agentic harnesses, digital-twin simulations, or aerospace/robotics topologies in PromptCanvas.
 ---
 
 # Closed-Loop Semantic Shape Topology, Speculative-Premise Grounding & Cross-Model Provenance Rule

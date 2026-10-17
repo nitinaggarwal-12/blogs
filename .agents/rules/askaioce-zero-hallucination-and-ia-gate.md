@@ -1,9 +1,9 @@
 ---
-trigger: always_on
-description: AskAIOCE Permanent Zero-Hallucination, Workflow Truthfulness, Logical UI/IA, Link Provenance, Customer Isolation & 3-Way Cell Reconciliation Gate (L50-01..L50-50)
+trigger: model_decision
+description: Use when modifying, auditing, or deploying AskAIOCE (/Users/nitinagga/Documents/AskAIOCE) to enforce L50-01..L50-60 zero-hallucination, customer isolation, and 3-way cell reconciliation.
 ---
 
-# AskAIOCE Permanent Zero-Hallucination, Workflow Truthfulness, Logical UI/IA, Link Provenance, Customer Isolation & 3-Way Cell Reconciliation Quality Gate Rule (`L50-01`..`L50-50`)
+# AskAIOCE Permanent Zero-Hallucination, Workflow Truthfulness, Logical UI/IA, Link Provenance, Customer Isolation & 3-Way Cell Reconciliation Quality Gate Rule (`L50-01`..`L50-60`)
 
 Whenever modifying, generating, auditing, or deploying any component of **AskAIOCE** (`/Users/nitinagga/Documents/AskAIOCE`):
 
