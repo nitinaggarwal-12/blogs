@@ -1807,13 +1807,12 @@ function addComparisonTableSlide(
     if (stripTop + stripH <= SLIDE_H - 0.82) {
       const derivedRowPillars = rawRows.slice(0, 4).map((r, rIdx) => {
         const rawKey = stripMarkdownFormatting((r[0] || `Dimension ${rIdx + 1}`).replace(/\n+/g, ' • '));
-        const shortKey = rawKey.length > 36 ? `${rawKey.slice(0, 34).trim()}…` : rawKey;
         const col1 = stripMarkdownFormatting((r[1] || '').replace(/\n+/g, ' '));
         const colLast = stripMarkdownFormatting((r[r.length - 1] || '').replace(/\n+/g, ' '));
-        const combined = colLast && colLast !== col1 ? `${colLast} (${col1.slice(0, 56)})` : col1 || colLast;
+        const cleanBody = colLast && colLast.length >= 18 ? colLast : col1 || colLast;
         return {
-          title: `${rIdx + 1}. ${shortKey}`,
-          body: combined.length > 135 ? `${combined.slice(0, 132).trim()}…` : combined,
+          title: `${rIdx + 1}. ${rawKey}`,
+          body: cleanBody,
         };
       });
       const summaryCards =
@@ -1827,6 +1826,7 @@ function addComparisonTableSlide(
       summaryCards.slice(0, numCards).forEach((card, idx) => {
         const cx = Number((0.45 + idx * (cardW + gapX)).toFixed(3));
         const accent = GOOGLE_CARD_ACCENTS[idx % 4];
+        const cleanCardTitle = stripMarkdownFormatting(card.title);
         slide.addShape(pptx.ShapeType.roundRect, {
           x: cx,
           y: stripTop,
@@ -1843,17 +1843,18 @@ function addComparisonTableSlide(
           h: 0.055,
           fill: { color: accent.bar },
         });
-        slide.addText(stripMarkdownFormatting(card.title), {
+        slide.addText(cleanCardTitle, {
           x: Number((cx + 0.12).toFixed(3)),
           y: Number((stripTop + 0.08).toFixed(3)),
           w: Number((cardW - 0.24).toFixed(3)),
           h: 0.28,
-          fontSize: 8.2,
+          fontSize: cleanCardTitle.length > 36 ? 7.6 : 8.2,
           bold: true,
           color: TEXT_DARK,
           fontFace: FONT_TITLE,
           valign: 'middle',
           wrap: true,
+          fit: 'shrink',
         });
         slide.addText(stripMarkdownFormatting(card.body), {
           x: Number((cx + 0.12).toFixed(3)),
@@ -3116,8 +3117,13 @@ async function appendGoogleBrandedDiagramSlides(
         });
       } else {
         const isFloatingLabel = !hasFill && !hasStroke;
-        const lblTitlePt = isFloatingLabel ? 5.0 : bh < 0.42 ? 5.3 : 5.6;
-        const lblSubPt = isFloatingLabel ? 4.4 : bh < 0.42 ? 4.5 : 4.8;
+        const isEdgeCalloutPill =
+          isFloatingLabel &&
+          !node.id.startsWith('leg_') &&
+          !iconSource &&
+          (node.id.startsWith('lbl_') || style.text === '1' || node.absY < 1020);
+        const lblTitlePt = isFloatingLabel ? 4.8 : bh < 0.42 ? 5.3 : 5.6;
+        const lblSubPt = isFloatingLabel ? 4.2 : bh < 0.42 ? 4.5 : 4.8;
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const runs: any[] = [
@@ -3141,33 +3147,111 @@ async function appendGoogleBrandedDiagramSlides(
             },
           });
         }
-        const effBoxH = isFloatingLabel && subtitle ? Math.max(bh, 0.24) : bh;
-        const effBoxY = isFloatingLabel && subtitle ? Number((by - (effBoxH - bh) / 2).toFixed(3)) : by;
-        slide2.addText(runs, {
-          x: Number((bx + textOffsetLeft).toFixed(3)),
-          y: Number((effBoxY + textOffsetTop).toFixed(3)),
-          w: Number(Math.max(0.22, bw - textOffsetLeft - (textOffsetLeft > 0 ? 0.03 : 0)).toFixed(3)),
-          h: Number(Math.max(0.12, effBoxH - textOffsetTop).toFixed(3)),
-          align: textOffsetLeft > 0
-            ? 'left'
-            : style.align === 'left'
+
+        if (isEdgeCalloutPill) {
+          const maxLineLen = Math.max(title.length, subtitle.length);
+          const pillW = Number(Math.min(Math.max(bw, 0.56), Math.max(0.56, maxLineLen * 0.043 + 0.14)).toFixed(3));
+          const pillH = Number((subtitle ? Math.max(bh, 0.23) : Math.max(Math.min(bh, 0.18), 0.16)).toFixed(3));
+          const centerX = bx + bw / 2;
+          const centerY = by + bh / 2;
+          const basePillX = centerX - pillW / 2;
+          const basePillY = centerY - pillH / 2;
+
+          const candidateOffsets: [number, number][] = [
+            [0, 0],
+            [0, -0.08],
+            [0, 0.08],
+            [-0.14, 0],
+            [0.14, 0],
+            [-0.12, -0.07],
+            [0.12, 0.07],
+          ];
+          const boxesOverlap = (
+            a: { x: number; y: number; w: number; h: number },
+            b: { x: number; y: number; w: number; h: number },
+            pad = 0.01
+          ) =>
+            a.x - pad < b.x + b.w &&
+            a.x + a.w + pad > b.x &&
+            a.y - pad < b.y + b.h &&
+            a.y + a.h + pad > b.y;
+
+          let bestX = basePillX;
+          let bestY = basePillY;
+          let bestHits = Number.POSITIVE_INFINITY;
+          for (const [dx, dy] of candidateOffsets) {
+            const testBox = { x: basePillX + dx, y: basePillY + dy, w: pillW, h: pillH };
+            let hits = 0;
+            for (const cb of placedCardBoxes) {
+              if (boxesOverlap(testBox, cb)) hits++;
+            }
+            if (hits < bestHits) {
+              bestHits = hits;
+              bestX = testBox.x;
+              bestY = testBox.y;
+              if (hits === 0) break;
+            }
+          }
+          const finalPillX = Number(bestX.toFixed(3));
+          const finalPillY = Number(bestY.toFixed(3));
+          placedCardBoxes.push({ x: finalPillX, y: finalPillY, w: pillW, h: pillH });
+
+          slide2.addShape(pptx.ShapeType.roundRect, {
+            x: finalPillX,
+            y: finalPillY,
+            w: pillW,
+            h: pillH,
+            rectRadius: 0.05,
+            fill: { color: isDarkDiagram ? '1E293B' : 'FFFFFF' },
+            line: { color: isDarkDiagram ? '475569' : 'DADCE0', width: 0.45 },
+          });
+          slide2.addText(runs, {
+            x: Number((finalPillX + 0.02).toFixed(3)),
+            y: Number((finalPillY + 0.01).toFixed(3)),
+            w: Number(Math.max(0.22, pillW - 0.04).toFixed(3)),
+            h: Number(Math.max(0.12, pillH - 0.02).toFixed(3)),
+            align: 'center',
+            valign: 'middle',
+            margin: 0,
+            fit: 'shrink',
+            lineSpacingMultiple: 0.86,
+            fontFace: 'Arial',
+            wrap: true,
+          });
+        } else {
+          const effBoxH = isFloatingLabel && subtitle ? Math.max(bh, 0.24) : bh;
+          const effBoxY = isFloatingLabel && subtitle ? Number((by - (effBoxH - bh) / 2).toFixed(3)) : by;
+          slide2.addText(runs, {
+            x: Number((bx + textOffsetLeft).toFixed(3)),
+            y: Number((effBoxY + textOffsetTop).toFixed(3)),
+            w: Number(Math.max(0.22, bw - textOffsetLeft - (textOffsetLeft > 0 ? 0.03 : 0)).toFixed(3)),
+            h: Number(Math.max(0.12, effBoxH - textOffsetTop).toFixed(3)),
+            align: textOffsetLeft > 0
               ? 'left'
-              : style.align === 'right'
-                ? 'right'
-                : 'center',
-          valign: 'middle',
-          margin: 0,
-          fit: 'shrink',
-          lineSpacingMultiple: 0.88,
-          fontFace: 'Arial',
-          wrap: true,
-        });
+              : style.align === 'left'
+                ? 'left'
+                : style.align === 'right'
+                  ? 'right'
+                  : 'center',
+            valign: 'middle',
+            margin: 0,
+            fit: 'shrink',
+            lineSpacingMultiple: 0.88,
+            fontFace: 'Arial',
+            wrap: true,
+          });
+        }
       }
+    }
+    if (!isContainer && (hasFill || hasStroke)) {
+      placedCardBoxes.push({ x: bx, y: by, w: bw, h: bh });
     }
   };
 
+  const placedCardBoxes: { x: number; y: number; w: number; h: number }[] = [];
   const backgroundVertices: ParsedMxCell[] = [];
   const foregroundVertices: ParsedMxCell[] = [];
+  const floatingCalloutVertices: ParsedMxCell[] = [];
   for (const node of vertices) {
     if ((node.id === 'bg' || node.id.includes('bg')) && node.width >= 700 && node.height >= 400) continue;
     const rawFill = node.style.fillColor;
@@ -3181,8 +3265,15 @@ async function appendGoogleBrandedDiagramSlides(
     const normHtml = normalizeDrawioHtmlForSlides(node.value);
     const { title, subtitle } = cleanHtmlToPlainText(normHtml);
     const isWordmarkOnly = !title && !subtitle;
+    const isCallout =
+      !isCont &&
+      !isWordmarkOnly &&
+      !node.id.startsWith('leg_') &&
+      (node.id.startsWith('lbl_') || node.style.text === '1');
     if (isCont || isWordmarkOnly) {
       backgroundVertices.push(node);
+    } else if (isCallout) {
+      floatingCalloutVertices.push(node);
     } else {
       foregroundVertices.push(node);
     }
@@ -3276,6 +3367,9 @@ async function appendGoogleBrandedDiagramSlides(
   }
 
   for (const node of foregroundVertices) {
+    await renderVertexNode(node);
+  }
+  for (const node of floatingCalloutVertices) {
     await renderVertexNode(node);
   }
 
@@ -4457,7 +4551,7 @@ const PAYLOAD_TRIPTYCH_BY_WS: Record<string, PayloadTriptychSpec> = {
   WS1: {
     slideTitle: 'WS1 • Hop 1 Spoofed Header Stripping & OBO + DPoP Context Minting',
     leftHeader: 'Untrusted Caller\nIngress Request',
-    pill1Blue: '"Authorization": "Bearer..."',
+    pill1Blue: '"Authorization": "Bearer <jwt>"',
     midKey1: '"client_headers" : [',
     pill2Coral: '"X-Tenant-Id: finvault" ,',
     midKey2: '],\n"override_attempt" : [',
@@ -4469,7 +4563,7 @@ const PAYLOAD_TRIPTYCH_BY_WS: Record<string, PayloadTriptychSpec> = {
       '{',
       '  "tenant_id": "retailstream",',
       '  "tier": "STANDARD",',
-      '  "dpop_jkt": "sha256:9f86d0...",',
+      '  "dpop_jkt": "sha256:9f86d081",',
       '  "memory_ns": "/tenants/retail",',
       '  "rls_tag": "current_tenant_id",',
       '  "status": "VERIFIED_HOP_1"',
@@ -4564,7 +4658,7 @@ const PAYLOAD_TRIPTYCH_BY_WS: Record<string, PayloadTriptychSpec> = {
       '  "cached_tokens": 32000,',
       '  "dynamic_tokens": 1800,',
       '  "net_savings": "84.7%",',
-      '  "prompt_sha256": "e3b0c442...",',
+      '  "prompt_sha256": "e3b0c44298fc",',
       '  "raw_pii_logged": false',
       '}',
     ],
@@ -5192,10 +5286,10 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
   });
   slide.addText(cfg.step1Desc, {
     x: 1.56,
-    y: 1.82,
+    y: 1.78,
     w: 1.68,
-    h: 0.44,
-    fontSize: 8.2,
+    h: 0.42,
+    fontSize: 8.0,
     bold: true,
     color: TEXT_DARK,
     fontFace: FONT_TITLE,
@@ -5211,25 +5305,25 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
     x: 1.38,
     y: 2.24,
     w: 1.64,
-    h: 0.20,
-    fontSize: 8.0,
+    h: 0.18,
+    fontSize: 7.8,
     bold: true,
     color: EXEC_NAVY,
     align: 'center',
     fontFace: FONT_BODY,
   });
 
-  // Step 2 (y = 2.52..3.22): Actor 2 -> Actor 3
+  // Step 2 (y = 2.50..3.20): Actor 2 -> Actor 3
   slide.addShape(pptx.ShapeType.ellipse, {
     x: 3.48,
-    y: 2.52,
+    y: 2.48,
     w: 0.32,
     h: 0.32,
     fill: { color: EXEC_TEAL },
   });
   slide.addText('2', {
     x: 3.48,
-    y: 2.52,
+    y: 2.48,
     w: 0.32,
     h: 0.32,
     fontSize: 11,
@@ -5241,44 +5335,45 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
   });
   slide.addText(cfg.step2Desc, {
     x: 3.86,
-    y: 2.48,
+    y: 2.44,
     w: 1.68,
-    h: 0.48,
-    fontSize: 8.0,
+    h: 0.44,
+    fontSize: 7.8,
     bold: true,
     color: TEXT_DARK,
     fontFace: FONT_TITLE,
   });
   slide.addShape(pptx.ShapeType.line, {
     x: 3.43,
-    y: 3.16,
+    y: 3.18,
     w: 2.14,
     h: 0,
     line: { color: EXEC_TEAL, width: 1.5, endArrowType: 'triangle' },
   });
-  slide.addText(`${cfg.step2Arrow} → ${cfg.step2Return.replace(/\n/g, ' ')}`, {
-    x: 3.50,
-    y: 2.94,
-    w: 2.00,
-    h: 0.20,
-    fontSize: 7.6,
+  slide.addText(`${cfg.step2Arrow} → ${cfg.step2Return.replace(/\s*\n\s*/g, ' ')}`, {
+    x: 3.46,
+    y: 2.95,
+    w: 2.08,
+    h: 0.19,
+    fontSize: 7.0,
     bold: true,
     color: EXEC_TEAL,
     align: 'center',
     fontFace: FONT_BODY,
+    fit: 'shrink',
   });
 
   // Step 3 (y = 3.22..3.92): Actor 3 -> Actor 4
   slide.addShape(pptx.ShapeType.ellipse, {
     x: 5.78,
-    y: 3.22,
+    y: 3.20,
     w: 0.32,
     h: 0.32,
     fill: { color: EXEC_SLATE },
   });
   slide.addText('3', {
     x: 5.78,
-    y: 3.22,
+    y: 3.20,
     w: 0.32,
     h: 0.32,
     fontSize: 11,
@@ -5290,10 +5385,10 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
   });
   slide.addText(cfg.step3Desc, {
     x: 6.16,
-    y: 3.18,
+    y: 3.16,
     w: 1.68,
-    h: 0.48,
-    fontSize: 8.0,
+    h: 0.44,
+    fontSize: 7.8,
     bold: true,
     color: TEXT_DARK,
     fontFace: FONT_TITLE,
@@ -5305,16 +5400,17 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
     h: 0,
     line: { color: EXEC_SLATE, width: 1.5, endArrowType: 'triangle' },
   });
-  slide.addText(cfg.step3Card.replace(/\n/g, ' • '), {
-    x: 5.80,
-    y: 3.66,
-    w: 2.00,
-    h: 0.20,
-    fontSize: 7.6,
+  slide.addText(cfg.step3Card.replace(/\s*\n\s*/g, ' '), {
+    x: 5.76,
+    y: 3.65,
+    w: 2.08,
+    h: 0.19,
+    fontSize: 7.2,
     bold: true,
     color: EXEC_SLATE,
     align: 'center',
     fontFace: FONT_BODY,
+    fit: 'shrink',
   });
 
   // Step 4 (y = 3.92..4.82): Actor 4 Guardrail & Prefix Cache SLA Band
@@ -5639,8 +5735,8 @@ function addAsyncStateFlowPipelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: n
   });
 
   const nodePositions = [
-    { x: 0.58, fill: '12355B', label: cfg.nodes[0] },
-    { x: 4.10, fill: EXEC_AMBER, label: cfg.nodes[1] },
+    { x: 0.54, fill: '12355B', label: cfg.nodes[0] },
+    { x: 4.20, fill: EXEC_AMBER, label: cfg.nodes[1] },
     { x: 7.42, fill: EXEC_TEAL, label: cfg.nodes[2] },
     { x: 10.62, fill: EXEC_GREEN_DARK, label: cfg.nodes[3] },
   ];
@@ -5648,7 +5744,7 @@ function addAsyncStateFlowPipelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: n
     slide.addShape(pptx.ShapeType.roundRect, {
       x: n.x,
       y: 3.12,
-      w: 2.16,
+      w: 2.14,
       h: 1.44,
       rectRadius: 0.06,
       fill: { color: n.fill },
@@ -5656,7 +5752,7 @@ function addAsyncStateFlowPipelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: n
     slide.addText(n.label, {
       x: n.x + 0.08,
       y: 3.12,
-      w: 2.00,
+      w: 1.98,
       h: 1.44,
       fontSize: 13.0,
       bold: true,
@@ -5669,20 +5765,20 @@ function addAsyncStateFlowPipelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: n
 
   // Transition 1 (Top Callout Card between Node 1 & Node 2)
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 2.70,
+    x: 2.75,
     y: 1.72,
-    w: 1.44,
+    w: 1.38,
     h: 1.12,
     rectRadius: 0.06,
     fill: { color: CARD_BG },
     line: { color: BORDER_GREY, width: 1.0 },
   });
   slide.addText(cfg.step1Top, {
-    x: 2.74,
+    x: 2.79,
     y: 1.78,
-    w: 1.36,
+    w: 1.30,
     h: 1.00,
-    fontSize: 8.8,
+    fontSize: 8.6,
     bold: true,
     color: TEXT_DARK,
     align: 'center',
@@ -5690,36 +5786,36 @@ function addAsyncStateFlowPipelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: n
     fontFace: FONT_BODY,
   });
   slide.addShape(pptx.ShapeType.line, {
-    x: 2.74,
+    x: 2.68,
     y: 3.48,
-    w: 1.36,
+    w: 1.52,
     h: 0,
     line: { color: '12355B', width: 1.75, endArrowType: 'triangle' },
   });
 
   // Transition 2 (Bottom Callout Card between Node 1 & Node 2)
   slide.addShape(pptx.ShapeType.line, {
-    x: 2.74,
+    x: 2.68,
     y: 4.08,
-    w: 1.36,
+    w: 1.52,
     h: 0,
     line: { color: ALERT_RED_BORDER, width: 1.75, beginArrowType: 'triangle' },
   });
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 2.66,
+    x: 2.75,
     y: 4.24,
-    w: 1.52,
+    w: 1.38,
     h: 0.94,
     rectRadius: 0.06,
     fill: { color: 'FCE8E6' },
     line: { color: ALERT_RED_BORDER, width: 0.9 },
   });
   slide.addText(cfg.step2Bot, {
-    x: 2.72,
+    x: 2.79,
     y: 4.28,
-    w: 1.40,
+    w: 1.30,
     h: 0.86,
-    fontSize: 8.2,
+    fontSize: 8.0,
     bold: true,
     color: G_RED_DEEP,
     align: 'center',
@@ -7094,6 +7190,32 @@ async function main() {
   results.push(await buildCombinedDeck(manifest));
 
   postProcessPptxArrowheadsForGoogleSlides();
+
+  const docMtAliasMap: Record<string, string[]> = {
+    'ws1-reference-architecture-editable-slides.pptx': [
+      'doc-mt-01-editable-slides.pptx',
+      'ws1-google-slides-design-plugin-editable-slides.pptx',
+    ],
+    'ws2-pattern-a-pooled-editable-slides.pptx': ['doc-mt-02-editable-slides.pptx'],
+    'ws3-pattern-b-siloed-editable-slides.pptx': ['doc-mt-03-editable-slides.pptx'],
+    'ws4-pattern-c-hybrid-editable-slides.pptx': ['doc-mt-04-editable-slides.pptx'],
+    'ws5-wrap-up-editable-slides.pptx': ['doc-mt-05-editable-slides.pptx', 'doc-mt-06-editable-slides.pptx'],
+    'geap-multi-tenancy-all-workstreams-editable-slides.pptx': [],
+  };
+  const promptCanvasSlidesDir = path.resolve(FDE_BLOGS_ROOT, '../PromptCanvas/public/slides');
+  for (const [srcFile, aliases] of Object.entries(docMtAliasMap)) {
+    const srcAbs = path.join(SLIDES_DIR, srcFile);
+    if (!fs.existsSync(srcAbs)) continue;
+    for (const alias of aliases) {
+      fs.copyFileSync(srcAbs, path.join(SLIDES_DIR, alias));
+    }
+    if (fs.existsSync(promptCanvasSlidesDir)) {
+      fs.copyFileSync(srcAbs, path.join(promptCanvasSlidesDir, srcFile));
+      for (const alias of aliases) {
+        fs.copyFileSync(srcAbs, path.join(promptCanvasSlidesDir, alias));
+      }
+    }
+  }
 
   const slidesManifest = {
     generatedAt: new Date().toISOString(),

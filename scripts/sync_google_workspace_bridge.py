@@ -94,7 +94,15 @@ def load_cloud_manifest() -> Dict[str, Any]:
 def save_cloud_manifest(data: Dict[str, Any]) -> None:
     SLIDES_DIR.mkdir(parents=True, exist_ok=True)
     data["updatedAt"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    MANIFEST_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    serialized = json.dumps(data, indent=2)
+    MANIFEST_FILE.write_text(serialized, encoding="utf-8")
+    for mirror_rel in (
+        "../PromptCanvas/public/slides/cloud_viewer_manifest.json",
+        "../PromptCanvas/src/data/cloud_viewer_manifest.json",
+    ):
+        mirror_path = (ROOT_DIR / mirror_rel).resolve()
+        if mirror_path.parent.is_dir():
+            mirror_path.write_text(serialized, encoding="utf-8")
 
 
 def file_sha256(path: Path) -> str:
@@ -113,7 +121,43 @@ PREFERRED_WORKSTREAM_SLIDES_IDS: Dict[str, str] = {
 }
 
 SECONDARY_WORKSTREAM_SLIDES_IDS: Dict[str, list[str]] = {
+    "WS1": [
+        "1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw",
+        "1zbmx5k6_i4yy2NuMO9d4g8r73_ZOOGuyI1J_DI2nLkA",
+    ],
+    "WS2": ["1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc"],
+    "WS3": ["1ZkfRhStnXBer8E1xT50hxclg4S3NMhGJDFd2EBlEX38"],
+    "WS4": ["1nxRiawJOzhfjlBTmC21SSrrh9CzSUKEj843ZsOF5s1E"],
+    "WS5": [
+        "1Lcsf1gQRyt8eNgaeLGvq8kuALFrecx82S8dHpBFldwc",
+        "18ntSD7plHarlsERB93n8vLUL2ctaoKuNXMoRptK7lmw",
+    ],
     "ALL": ["1FyHevA50i5TeseuH33caW31Xr5Wsjjt87xmWvi__rHw"],
+}
+
+WORKSTREAM_ALIAS_SLIDES_KEYS: Dict[str, list[tuple[str, str]]] = {
+    "WS1": [
+        ("BP-78", "slides/ws1-reference-architecture-editable-slides.pptx"),
+        ("DOC-MT-01", "slides/doc-mt-01-editable-slides.pptx"),
+        ("PLUGIN-GSLIDES-WS1", "slides/ws1-google-slides-design-plugin-editable-slides.pptx"),
+    ],
+    "WS2": [
+        ("BP-78-A", "slides/ws2-pattern-a-pooled-editable-slides.pptx"),
+        ("DOC-MT-02", "slides/doc-mt-02-editable-slides.pptx"),
+    ],
+    "WS3": [
+        ("BP-78-B", "slides/ws3-pattern-b-siloed-editable-slides.pptx"),
+        ("DOC-MT-03", "slides/doc-mt-03-editable-slides.pptx"),
+    ],
+    "WS4": [
+        ("BP-78-C", "slides/ws4-pattern-c-hybrid-editable-slides.pptx"),
+        ("DOC-MT-04", "slides/doc-mt-04-editable-slides.pptx"),
+    ],
+    "WS5": [
+        ("BP-78-E", "slides/ws5-wrap-up-editable-slides.pptx"),
+        ("DOC-MT-05", "slides/doc-mt-05-editable-slides.pptx"),
+        ("DOC-MT-06", "slides/doc-mt-06-editable-slides.pptx"),
+    ],
 }
 
 
@@ -215,11 +259,13 @@ def upload_pptx_to_google_slides(
     for sec_id in SECONDARY_WORKSTREAM_SLIDES_IDS.get(cache_key, []):
         if sec_id != res["id"]:
             try:
-                _upload_or_patch_pptx_bytes(pptx_bytes, title, tok, preferred_id=sec_id)
-            except Exception:
-                pass
+                sec_res = _upload_or_patch_pptx_bytes(pptx_bytes, title, tok, preferred_id=sec_id)
+                print(f"   ✓ [Patched Secondary ID] {cache_key} -> {sec_res.get('id', sec_id)} ({slide_count} slides)")
+            except Exception as exc:
+                print(f"   ⚠️ [Secondary Patch Warning] {cache_key} ({sec_id}): {exc}")
 
     fid = res["id"]
+    now_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     entry = {
         "key": cache_key,
         "title": title,
@@ -233,9 +279,17 @@ def upload_pptx_to_google_slides(
         "googleSlidesEmbedUrl": f"https://docs.google.com/presentation/d/{fid}/embed?start=false&loop=false&delayms=5000",
         "googleSlidesPdfUrl": f"https://docs.google.com/presentation/d/{fid}/export/pdf",
         "webViewLink": res.get("webViewLink", f"https://docs.google.com/presentation/d/{fid}/edit"),
-        "syncedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "syncedAt": now_iso,
     }
     manifest.setdefault("slides", {})[cache_key] = entry
+    for alias_key, alias_pptx_rel in WORKSTREAM_ALIAS_SLIDES_KEYS.get(cache_key, []):
+        prev_alias = manifest.get("slides", {}).get(alias_key, {})
+        manifest["slides"][alias_key] = {
+            **entry,
+            "key": alias_key,
+            "title": prev_alias.get("title") or title,
+            "pptxPath": alias_pptx_rel,
+        }
     save_cloud_manifest(manifest)
     return entry
 

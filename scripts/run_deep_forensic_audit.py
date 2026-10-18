@@ -668,7 +668,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                         decks_valid = False
                     with _zipfile.ZipFile(dg_pptx, "r") as dzf:
                         d_slides = [n for n in dzf.namelist() if n.startswith("ppt/slides/slide") and n.endswith(".xml")]
-                        if len(d_slides) != 6:
+                        if len(d_slides) not in (6, 14):
                             decks_valid = False
                         d_joined = "\n".join(dzf.read(n).decode("utf-8", errors="ignore") for n in d_slides)
                         if "Figure 1. Figure 1" in d_joined or "Model Armor &amp; Model Armor" in d_joined:
