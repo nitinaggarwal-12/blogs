@@ -525,10 +525,10 @@ function parseBulletIntoCard(raw: string, index: number, explicitSpec?: CardTech
 
   const colonIdx = clean.indexOf(':');
   const semiIdx = clean.indexOf(';');
-  if (colonIdx > 2 && colonIdx <= 68) {
+  if (colonIdx > 2 && colonIdx <= 105) {
     title = clean.slice(0, colonIdx).trim();
     body = clean.slice(colonIdx + 1).trim();
-  } else if (semiIdx > 8 && semiIdx <= 68) {
+  } else if (semiIdx > 8 && semiIdx <= 90) {
     title = clean.slice(0, semiIdx).trim();
     body = clean.slice(semiIdx + 1).trim();
   } else {
@@ -537,6 +537,7 @@ function parseBulletIntoCard(raw: string, index: number, explicitSpec?: CardTech
     body = clean;
   }
 
+  title = title.replace(/^\d+[\.\)]\s*/, '').trim();
   if (title.length > 1) title = title[0].toUpperCase() + title.slice(1);
   if (body.length > 1) body = body[0].toUpperCase() + body.slice(1);
 
@@ -942,7 +943,7 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
     }
   );
 
-  // Right Column: Official 4-Zone Hub-and-Spoke Reference Architecture Card (#78) in strict Quad-Color order
+  // Right Column: 3-Act Executive Briefing & Deliverable Architecture Map in strict Quad-Color order
   slide.addShape(pptx.ShapeType.roundRect, {
     x: 8.10,
     y: 0.38,
@@ -952,7 +953,7 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
     fill: { color: CARD_BG },
     line: { color: BORDER_GREY, width: 1 },
   });
-  slide.addText('OFFICIAL 4-ZONE HUB-AND-SPOKE TOPOLOGY (#78)', {
+  slide.addText('3-ACT EXECUTIVE BRIEFING & DELIVERABLE MAP', {
     x: 8.30,
     y: 0.54,
     w: 4.38,
@@ -966,42 +967,42 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
   });
 
   // Strict Quad-Color Order: 1. Blue (#4285F4) -> 2. Red (#EA4335) -> 3. Yellow (#FBBC04) -> 4. Green (#34A853)
-  const titleZones = [
+  const titleActs = [
     {
-      badge: '01 • ROUTING HUB',
-      title: 'Edge WAF, OBO/DPoP & Tier Router',
-      sub: 'Google Cloud Armor, IAP, IAM STS & Agent Engine Registry verify OIDC identity, strip spoofed headers & filter tools.',
+      badge: 'ACT I • SLIDES 1–4',
+      title: 'Master Blueprint (#78) & SLO Scorecard',
+      sub: 'Decomposes Figure 1 into 56 editable vector shapes + 23 connectors, quantified unit economics ($42 vs. $1,850/mo) & GCP stack.',
       bar: G_BLUE,
       tint: G_BLUE_TINT,
       text: G_BLUE_DEEP,
     },
     {
-      badge: '02 • RIGHT SPOKE',
-      title: '2LO/3LO MCP, AlloyDB RLS & PSC Vaults',
-      sub: 'Enforces PostgreSQL Row-Level Security, 3LO step-up consent, VPC-SC perimeters & <60s CMEK kill-switches.',
+      badge: 'ACT II • SLIDES 5–8',
+      title: '3-Zone Boundaries, UML & Fail-Closed Loops',
+      sub: 'Walks through 3-zone physical/logical boundaries, Hop 1 OBO+DPoP wire transformation, 5-Actor UML sequence & HTTP 401–429 circuit breakers.',
       bar: G_RED,
       tint: G_RED_TINT,
       text: G_RED_DEEP,
     },
     {
-      badge: '03 • LEFT SPOKE',
-      title: 'Model Armor, ADK & 90% Prefix Cache',
-      sub: 'Screens prompts (4/6), executes Gemini 2.5 Pro with 90% cache (5), clamps RPM in Valkey & isolates L1–L5 memory.',
+      badge: 'ACT III • SLIDES 9–12',
+      title: 'Pattern A/B/C Matrix, GAP-01..05 & Live Proof',
+      sub: 'Compares Pooled, Siloed & Hybrid PSC trade-offs, closes 5 EAP product gaps, embeds 16:9 Cloud Console captures & 6-week rollout.',
       bar: G_YELLOW,
       tint: G_YELLOW_TINT,
       text: G_YELLOW_TEXT,
     },
     {
-      badge: '04 • GOVERNANCE HUB',
-      title: 'Security, CMEK & FinOps Telemetry',
-      sub: 'Security Command Center, Cloud KMS CMEK & BigQuery OTel govern encryption liveness and zero-PII chargeback.',
+      badge: 'GOVERNANCE • SLIDES 13–14',
+      title: 'Day-2 RACI Operating Model & Series Map',
+      sub: 'Assigns Security, SRE & FinOps ownership SLAs and maps runnable deliverables across Workstreams 1–5 (24 files + 20/20 gates).',
       bar: G_GREEN,
       tint: G_GREEN_TINT,
       text: G_GREEN_DEEP,
     },
   ];
 
-  titleZones.forEach((tz, zIdx) => {
+  titleActs.forEach((tz, zIdx) => {
     const zy = Number((0.98 + zIdx * 1.30).toFixed(3));
     slide.addShape(pptx.ShapeType.roundRect, {
       x: 8.28,
@@ -1022,7 +1023,7 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
     slide.addShape(pptx.ShapeType.roundRect, {
       x: 8.46,
       y: Number((zy + 0.12).toFixed(3)),
-      w: 1.48,
+      w: 1.62,
       h: 0.24,
       rectRadius: 0.06,
       fill: { color: tz.tint },
@@ -1030,9 +1031,9 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
     slide.addText(tz.badge, {
       x: 8.46,
       y: Number((zy + 0.12).toFixed(3)),
-      w: 1.48,
+      w: 1.62,
       h: 0.24,
-      fontSize: 6.8,
+      fontSize: 6.6,
       bold: true,
       color: tz.text,
       align: 'center',
@@ -1040,11 +1041,11 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
       fontFace: FONT_TITLE,
     });
     slide.addText(tz.title, {
-      x: 10.02,
+      x: 10.14,
       y: Number((zy + 0.10).toFixed(3)),
-      w: 2.56,
+      w: 2.46,
       h: 0.28,
-      fontSize: 8.8,
+      fontSize: 8.5,
       bold: true,
       color: TEXT_DARK,
       valign: 'middle',
@@ -1055,7 +1056,7 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
       y: Number((zy + 0.44).toFixed(3)),
       w: 4.10,
       h: 0.64,
-      fontSize: 7.9,
+      fontSize: 7.8,
       color: TEXT_BODY,
       valign: 'top',
       fontFace: FONT_BODY,
@@ -1072,12 +1073,12 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
     fill: { color: WHITE },
     line: { color: BORDER_GREY, width: 0.85 },
   });
-  slide.addText('3-Act Executive Arc (14 Slides): Act I Architecture → Act II Runtime → Act III Proof & Rollout', {
+  slide.addText('Verified Across 3 GCP Projects (#248990048888 • #638420508320 • #887605034827) • 12/12 Forensic PASS', {
     x: 8.34,
     y: 6.32,
     w: 4.30,
     h: 0.42,
-    fontSize: 7.4,
+    fontSize: 7.2,
     bold: true,
     color: TEXT_DARK,
     align: 'center',
@@ -1098,29 +1099,30 @@ function addQuadMetricsSlide(pptx: Pptx, spec: DeckSpec | null) {
   const slide = pptx.addSlide();
   slide.background = { color: WHITE };
   const kicker = spec ? spec.key : 'PROGRAM';
-  const heading = 'Executive Impact & Production Verification Metrics';
+  const headerBreadcrumb = 'ACT I • EXECUTIVE SCORECARD & PRODUCTION SLO BASELINE';
+  const canvasHeading = 'Quantified Unit Economics, 90% Prefix Cache Savings & 20/20 Security Verification';
 
-  addHeaderBar(pptx, slide, kicker, heading, 'QUAD-METRICS • KPI SCORECARD');
+  addHeaderBar(pptx, slide, kicker, headerBreadcrumb, 'QUAD-METRICS • KPI SCORECARD');
 
-  slide.addText(heading, {
+  slide.addText(canvasHeading, {
     x: 0.45,
     y: HEADER_H + 0.18,
     w: SLIDE_W - 0.9,
     h: 0.42,
-    fontSize: 20.0,
+    fontSize: 19.5,
     bold: true,
     color: TEXT_DARK,
     fontFace: FONT_TITLE,
     valign: 'middle',
   });
   slide.addText(
-    'Quantified unit economics, shared Gemini 2.5 Pro prefix caching efficiency, and automated security gate verification across Google Cloud.',
+    'Empirical production metrics certified across Pattern A ($42/mo pool), Pattern B ($1,850/mo sovereign silo), and Pattern C (hybrid PSC spokes).',
     {
       x: 0.45,
       y: HEADER_H + 0.62,
       w: SLIDE_W - 0.9,
       h: 0.28,
-      fontSize: 10.5,
+      fontSize: 10.2,
       color: TEXT_BODY,
       fontFace: FONT_BODY,
       valign: 'middle',
@@ -1423,10 +1425,19 @@ function addBulletSlide(
       ? 'THREE-PILLAR • OVERVIEW'
       : 'THREE-PILLAR • ARCHITECTURE';
 
-  addHeaderBar(pptx, slide, kicker, heading, semanticBadge);
+  const headerBreadcrumb = isTakeaways
+    ? 'ACT III • 5-WORKSTREAM SERIES CONTINUITY & ENGINEERING DELIVERABLES'
+    : isTldr
+      ? 'ACT I • 5-WORKSTREAM PROGRAM ARCHITECTURE PROGRESSION'
+      : 'ACT I • GOOGLE CLOUD REFERENCE PRODUCT STACK & BILL OF MATERIALS';
 
-  // Clean Executive Slide Title + 1-Line Subtitle (Zero duplicate banner card clutter!)
-  slide.addText(stripMarkdownFormatting(heading), {
+  addHeaderBar(pptx, slide, kicker, headerBreadcrumb, semanticBadge);
+
+  // Clean Executive Slide Title + 1-Line Subtitle (Zero duplicate header/canvas title!)
+  const cleanCanvasHeading = stripMarkdownFormatting(heading)
+    .replace(/^(?:Products used|Use cases|Design alternatives|Design considerations|What's next|Deployment)\s*[—–-]\s*/i, '')
+    .trim();
+  slide.addText(cleanCanvasHeading, {
     x: 0.45,
     y: HEADER_H + 0.16,
     w: SLIDE_W - 0.9,
@@ -1438,8 +1449,8 @@ function addBulletSlide(
     valign: 'middle',
   });
   const subTitleText = isTakeaways
-    ? 'Sequenced engineering action items, assigned platform owners, and production verification gates.'
-    : 'Structured Google Cloud reference components, runtime isolation boundaries, and target SLAs.';
+    ? 'Sequenced engineering action items, runnable codebase file paths, assigned platform owners, and CI/CD release gates.'
+    : 'Structured Google Cloud reference SKUs, runtime isolation boundaries, and production SLAs.';
   slide.addText(subTitleText, {
     x: 0.45,
     y: HEADER_H + 0.56,
@@ -1701,6 +1712,131 @@ function addBulletSlide(
 // Semantic Layout 4 (`comparison-grid`): Clean Comparative Matrix + Bottom Three-Pillar Strip
 // ---------------------------------------------------------------------------------------------
 
+function buildComparisonTableSynthesisCards(
+  kicker: string,
+  section: DeckSection
+): { title: string; body: string }[] {
+  const hLower = section.heading.toLowerCase();
+  if (hLower.includes('gap-01') || hLower.includes('eap product gap') || hLower.includes('compensating')) {
+    return [
+      {
+        title: '1. Identity & Catalog Gates (GAP-01 / GAP-04)',
+        body: 'Filters Agent Engine Registry discovery by signed JWT tenant_id (HTTP 403) and normalizes Entra ID OIDC into DPoP tokens with -32042 3LO step-up.',
+      },
+      {
+        title: '2. Cryptographic Memory CMEK (GAP-02)',
+        body: 'Envelope-encrypts pooled L1–L5 Memory Bank chapters per tenant and enforces <60s HTTP 423 Locked revocation + L1 purge in sovereign silos.',
+      },
+      {
+        title: '3. Noisy-Neighbor Bulkheads (GAP-03)',
+        body: 'Enforces atomic per-tenant RPM token buckets (120 vs. 600 RPM) in Memorystore for Valkey (HTTP 429 Retry-After) plus 4k/8k thinking caps.',
+      },
+      {
+        title: '4. Zero-PII FinOps Ledger (GAP-05)',
+        body: 'Emits SHA-256 prompt hashes and per-tenant cached/thinking/output token spans via OpenTelemetry to BigQuery chargeback views (F-08 PASS).',
+      },
+    ];
+  }
+  if (hLower.includes('patterns (a, b') || hLower.includes('isolation patterns') || kicker === 'WS1') {
+    return [
+      {
+        title: '1. When to Choose Pattern A ($42/mo)',
+        body: 'High-density commercial B2B SaaS tiers requiring 90% shared 32k prefix cache savings and transactional AlloyDB FORCE ROW LEVEL SECURITY.',
+      },
+      {
+        title: '2. When to Choose Pattern B ($1,850/mo)',
+        body: 'Regulated banking, healthcare & public-sector tenants mandating a 1:1 GCP project, VPC Service Controls, IAM PAB & <60s CMEK kill-switch.',
+      },
+      {
+        title: '3. When to Choose Pattern C (74% Savings)',
+        body: 'Multi-tier SaaS portfolios co-hosting 85–95% Standard tenants in the pool and 5–15% Enterprise tenants in PSC spokes with 0ms live upgrades.',
+      },
+      {
+        title: '4. 80/20 Unified Codebase Invariant',
+        body: 'All three patterns execute the identical Python ADK 2.0 5-hop pipeline (runtime_pipeline.py), parameterizing only 20% Terraform modules (2.6/3.6/4.6).',
+      },
+    ];
+  }
+  if (kicker === 'WS2') {
+    return [
+      {
+        title: '1. Edge & Catalog Defense (Tests 1–2)',
+        body: 'Cloud Armor strips spoofed X-Tenant-Id headers (HTTP 401) while Hop 2 ARD blocks cross-tenant private Agent Alpha discovery (HTTP 403).',
+      },
+      {
+        title: '2. Memory & Prompt Guardrails (Tests 3–5, 8)',
+        body: 'Isolates /tenants/{id}/* Memory Bank namespaces, blocks prompt injection (400) & NLC breaches (422), and masks IBAN/PAN via Cloud SDP.',
+      },
+      {
+        title: '3. Fair-Share Rate & Budget Caps (Tests 6–7)',
+        body: 'Memorystore for Valkey throttles 500-RPM floods at 120 RPM (HTTP 429) while clamping Standard thinking budgets to 4,000 tokens.',
+      },
+      {
+        title: '4. Data RLS & 3LO Step-Up (Tests 9–10)',
+        body: 'AlloyDB FORCE RLS returns 0 cross-tenant rows and 3LO Broker enforces -32042 OAuth step-up consent before invoking ServiceNow/Workspace.',
+      },
+    ];
+  }
+  if (kicker === 'WS3') {
+    return [
+      {
+        title: '1. VPC-SC Perimeter & PAB (Tests 1–3)',
+        body: 'Blocks cross-perimeter bucket exfiltration, unapproved internet egress, and cross-project principal impersonation (HTTP 403).',
+      },
+      {
+        title: '2. <60s CMEK Kill-Switch (Tests 4A–4B)',
+        body: 'Disabling finvault-silo-cmek halts AlloyDB and Memory Bank reads within 18.4s (<60s SLA) with deterministic HTTP 423 Locked.',
+      },
+      {
+        title: '3. L1 In-Memory Cache Purge (Test 5)',
+        body: 'KMS revocation immediately invalidates active L1 session caches so zero cached tokens are served post-revocation.',
+      },
+      {
+        title: '4. Asymmetric P-256 A2A Signing (Test 6)',
+        body: 'Signs every intra-silo agent-to-agent delegation using Cloud KMS asymmetric ECDSA P-256 keys with immutable SCC audit logs.',
+      },
+    ];
+  }
+  if (kicker === 'WS4') {
+    return [
+      {
+        title: '1. Phase 1: SHADOW_SYNC Backfill',
+        body: 'Provisions dedicated PSC spoke via Terraform 4.6 and dual-writes live Memory Bank and AlloyDB state without pausing active turns.',
+      },
+      {
+        title: '2. Phase 2: CMEK Re-Key & Checksum',
+        body: 'Re-encrypts tenant records under customer-managed Cloud KMS CMEK and verifies 100% SHA-256 row & vector checksum parity.',
+      },
+      {
+        title: '3. Phase 3: 0ms Atomic Firestore Flip',
+        body: 'Flips the Hub tier-routing pointer atomically to the spoke Private Service Connect endpoint (10.10.0.50) with 0 dropped sessions.',
+      },
+      {
+        title: '4. Phase 4: Shared Pool Tombstone Purge',
+        body: 'Drains in-flight pooled connections and executes cryptographic tombstone deletion of legacy rows in the shared Pattern A database.',
+      },
+    ];
+  }
+  return [
+    {
+      title: '1. Q1: Regulatory Blast-Radius Gate',
+      body: 'If customer contracts mandate dedicated GCP projects, VPC-SC, or <60s CMEK kill-switches, route to Pattern B or Pattern C Spoke.',
+    },
+    {
+      title: '2. Q2: Portfolio Mobility & Upsell Gate',
+      body: 'If operating a multi-tier SaaS platform with self-service Standard-to-Enterprise upgrades, deploy Pattern C Dynamic Hybrid PSC.',
+    },
+    {
+      title: '3. 74% Blended Portfolio TCO Savings',
+      body: 'Serving 850–950 Standard tenants in Pattern A ($42/mo) and 50–150 Enterprise spokes saves $1.53M/mo vs. an all-silo footprint.',
+    },
+    {
+      title: '4. Continuous 12/12 + 20/20 CI/CD Gate',
+      body: 'Every pull request executes 12 forensic checks and 20 live security/migration assertions before promoting revisions to Cloud Run.',
+    },
+  ];
+}
+
 function addComparisonTableSlide(
   pptx: Pptx,
   kicker: string,
@@ -1709,10 +1845,20 @@ function addComparisonTableSlide(
 ) {
   const slide = pptx.addSlide();
   slide.background = { color: WHITE };
-  addHeaderBar(pptx, slide, kicker, section.heading, 'COMPARISON-GRID • MATRIX');
+  const isGapTable =
+    section.heading.toLowerCase().includes('gap-01') ||
+    section.heading.toLowerCase().includes('eap product gap') ||
+    section.heading.toLowerCase().includes('compensating');
+  const headerBreadcrumb = isGapTable
+    ? 'ACT III • EAP PRODUCT GAP REGISTER (GAP-01..05) & COMPENSATING CONTROLS'
+    : 'ACT III • ARCHITECTURAL TRADE-OFF & ISOLATION SELECTION MATRIX';
+  addHeaderBar(pptx, slide, kicker, headerBreadcrumb, 'COMPARISON-GRID • MATRIX');
 
-  // Clean Executive Slide Title + Subtitle
-  slide.addText(stripMarkdownFormatting(section.heading), {
+  // Clean Executive Slide Title + Subtitle (Zero duplicate header/canvas title!)
+  const cleanTableHeadline = stripMarkdownFormatting(section.heading)
+    .replace(/^(?:Products used|Use cases|Design alternatives|Design considerations|What's next|Deployment)\s*[—–-]\s*/i, '')
+    .trim();
+  slide.addText(cleanTableHeadline, {
     x: 0.45,
     y: HEADER_H + 0.14,
     w: SLIDE_W - 0.9,
@@ -1723,16 +1869,21 @@ function addComparisonTableSlide(
     fontFace: FONT_TITLE,
     valign: 'middle',
   });
-  slide.addText('Side-by-side Google Cloud Well-Architected trade-off analysis, compensating controls, and target SLAs.', {
-    x: 0.45,
-    y: HEADER_H + 0.52,
-    w: SLIDE_W - 0.9,
-    h: 0.24,
-    fontSize: 9.8,
-    color: TEXT_BODY,
-    fontFace: FONT_BODY,
-    valign: 'middle',
-  });
+  slide.addText(
+    isGapTable
+      ? 'Production compensating controls in core-cymbal-agent/ closing all 5 multi-tenant EAP limitations with fail-closed gates.'
+      : 'Side-by-side Google Cloud Well-Architected trade-off analysis, isolation boundaries, and unit economics.',
+    {
+      x: 0.45,
+      y: HEADER_H + 0.52,
+      w: SLIDE_W - 0.9,
+      h: 0.24,
+      fontSize: 9.8,
+      color: TEXT_BODY,
+      fontFace: FONT_BODY,
+      valign: 'middle',
+    }
+  );
 
   // Build Comparison Table (with 100% of raw markdown backticks stripped!)
   const headers = (section.tableHeaders || ['Dimension', 'Option A', 'Option B', 'Option C']).map((h) =>
@@ -1797,7 +1948,7 @@ function addComparisonTableSlide(
     fontFace: FONT_BODY,
   });
 
-  // Render bottom 4-pillar summary strip (#F8F9FA containers with strict Quad-Color bars: Blue -> Red -> Yellow -> Green) when space permits (<= 7 rows)
+  // Render bottom 4-pillar synthesis strip (#F8F9FA containers with strict Quad-Color bars: Blue -> Red -> Yellow -> Green, ZERO verbatim table cell copy-pasting!)
   if (rawRows.length <= 7) {
     const rowUnitH = rawRows.length >= 7 ? 0.49 : rawRows.length >= 5 ? 0.54 : 0.62;
     const estTableH = 0.36 + rawRows.length * rowUnitH;
@@ -1805,20 +1956,11 @@ function addComparisonTableSlide(
     const stripH = Number(Math.max(0.92, SLIDE_H - stripTop - 0.86).toFixed(3));
 
     if (stripTop + stripH <= SLIDE_H - 0.82) {
-      const derivedRowPillars = rawRows.slice(0, 4).map((r, rIdx) => {
-        const rawKey = stripMarkdownFormatting((r[0] || `Dimension ${rIdx + 1}`).replace(/\n+/g, ' • '));
-        const col1 = stripMarkdownFormatting((r[1] || '').replace(/\n+/g, ' '));
-        const colLast = stripMarkdownFormatting((r[r.length - 1] || '').replace(/\n+/g, ' '));
-        const cleanBody = colLast && colLast.length >= 18 ? colLast : col1 || colLast;
-        return {
-          title: `${rIdx + 1}. ${rawKey}`,
-          body: cleanBody,
-        };
-      });
+      const synthesisPillars = buildComparisonTableSynthesisCards(kicker, section);
       const summaryCards =
         section.bullets && section.bullets.length >= 4
           ? section.bullets.slice(0, 4).map((b, i) => parseBulletIntoCard(b, i, section.specs?.[i]))
-          : derivedRowPillars;
+          : synthesisPillars;
       const numCards = Math.min(4, summaryCards.length);
       const gapX = 0.18;
       const cardW = Number(((SLIDE_W - 0.9 - gapX * (numCards - 1)) / numCards).toFixed(3));
@@ -1890,7 +2032,7 @@ function addPipelineSlide(
 ) {
   const slide = pptx.addSlide();
   slide.background = { color: WHITE };
-  addHeaderBar(pptx, slide, kicker, section.heading, 'THREE-PILLAR • 5-HOP PIPELINE');
+  addHeaderBar(pptx, slide, kicker, 'ACT II • 5-HOP CRYPTOGRAPHIC DEFENSE-IN-DEPTH PIPELINE', 'THREE-PILLAR • 5-HOP PIPELINE');
 
   slide.addText(stripMarkdownFormatting(section.heading), {
     x: 0.45,
@@ -2479,19 +2621,35 @@ function renderArchitectureCenterDiagramSidebar(
   });
 
   const zones = flowEntry?.zonesSummary || [
-    { zoneId: 'Zone 1', colorHex: '#aecbfa', borderHex: '#4285F4', name: 'Routing Hub', role: 'Edge WAF, IAP OIDC & Tier Router', nodes: [] },
-    { zoneId: 'Zone 2', colorHex: '#fad2cf', borderHex: '#EA4335', name: 'Right Spoke', role: 'MCP Servers, AlloyDB RLS & PSC Spokes', nodes: [] },
-    { zoneId: 'Zone 3', colorHex: '#feefc3', borderHex: '#FBBC04', name: 'Left Spoke', role: 'Model Armor, ADK & 90% Prefix Cache', nodes: [] },
-    { zoneId: 'Zone 4', colorHex: '#ceead6', borderHex: '#34A853', name: 'Governance Hub', role: 'SCC, Cloud KMS CMEK & BigQuery OTel', nodes: [] },
+    { zoneId: 'BLUE ZONE', colorHex: '#aecbfa', borderHex: '#4285F4', name: '1. Routing Hub', role: 'Edge WAF, IAP OIDC & Tier Router', nodes: [] },
+    { zoneId: 'GREEN ZONE', colorHex: '#ceead6', borderHex: '#34A853', name: '2. Central Governance Hub', role: 'SCC, Cloud KMS CMEK & BigQuery OTel', nodes: [] },
+    { zoneId: 'YELLOW ZONE', colorHex: '#feefc3', borderHex: '#FBBC04', name: '3. Pattern A Pooled Spoke', role: 'Model Armor, ADK & 90% Prefix Cache', nodes: [] },
+    { zoneId: 'RED ZONE', colorHex: '#fad2cf', borderHex: '#EA4335', name: '4. Pattern B/C Sovereign Spokes', role: 'MCP Servers, AlloyDB RLS & PSC Spokes', nodes: [] },
   ];
+
+  const resolveSemanticZoneAccent = (zn: DiagramZoneSummary, fallbackIdx: number): BrandAccent => {
+    const zUpper = `${zn.zoneId} ${zn.colorHex} ${zn.borderHex}`.toUpperCase();
+    if (zUpper.includes('GREEN') || zUpper.includes('CEEAD6') || zUpper.includes('137333') || zUpper.includes('34A853')) {
+      return { bar: G_GREEN, tint: G_GREEN_TINT, text: G_GREEN_DEEP, border: BORDER_GREY };
+    }
+    if (zUpper.includes('YELLOW') || zUpper.includes('FEEFC3') || zUpper.includes('B06000') || zUpper.includes('FBBC04')) {
+      return { bar: G_YELLOW, tint: G_YELLOW_TINT, text: G_YELLOW_TEXT, border: BORDER_GREY };
+    }
+    if (zUpper.includes('RED') || zUpper.includes('FAD2CF') || zUpper.includes('C5221F') || zUpper.includes('EA4335')) {
+      return { bar: G_RED, tint: G_RED_TINT, text: G_RED_DEEP, border: BORDER_GREY };
+    }
+    if (zUpper.includes('BLUE') || zUpper.includes('AECBFA') || zUpper.includes('174EA6') || zUpper.includes('4285F4')) {
+      return { bar: G_BLUE, tint: G_BLUE_TINT, text: G_BLUE_DEEP, border: BORDER_GREY };
+    }
+    return GOOGLE_CARD_ACCENTS[fallbackIdx % 4];
+  };
 
   const zoneStartY = sideY + 1.22;
   const zoneCardH = 0.56;
   const zoneGap = 0.06;
   zones.slice(0, 4).forEach((zn, zIdx) => {
     const zy = Number((zoneStartY + zIdx * (zoneCardH + zoneGap)).toFixed(3));
-    // Strict Quad-Color sequence: 1. Blue (#4285F4) -> 2. Red (#EA4335) -> 3. Yellow (#FBBC04) -> 4. Green (#34A853)
-    const accent = GOOGLE_CARD_ACCENTS[zIdx % 4];
+    const accent = resolveSemanticZoneAccent(zn, zIdx);
     slide.addShape(pptx.ShapeType.roundRect, {
       x: Number((sideX + 0.12).toFixed(3)),
       y: zy,
@@ -2627,14 +2785,17 @@ function renderArchitectureCenterDiagramSidebar(
     fill: { color: WHITE },
     line: { color: BORDER_GREY, width: 0.85 },
   });
+  const cleanGcpLabel = (flowEntry?.gcpProject?.split(' ')[0] || 'ramp-portal-dev')
+    .replace(/nitinagga-ge-2/gi, 'cymbal-pooled-prod (#638420508320)')
+    .replace(/nitina-ggarwal-sandbox-647724/gi, 'cymbal-build-sandbox (#887605034827)');
   slide.addText(
-    `✅ ${vertexCount} Editable Shapes • ${edgeCount} Connectors • GCP: ${flowEntry?.gcpProject?.split(' ')[0] || 'ramp-portal-dev'}`,
+    `VERIFIED • ${vertexCount} Editable Shapes • ${edgeCount} Connectors • GCP: ${cleanGcpLabel}`,
     {
       x: Number((sideX + 0.18).toFixed(3)),
       y: Number(bottomPillY.toFixed(3)),
       w: Number((sideW - 0.36).toFixed(3)),
       h: 0.36,
-      fontSize: 7.1,
+      fontSize: 7.0,
       bold: true,
       color: G_GREEN_DEEP,
       align: 'center',
@@ -2663,7 +2824,10 @@ async function appendGoogleBrandedDiagramSlides(
   sourceDrawioRelPath: string,
   singleSlideOnly: boolean = true
 ): Promise<{ vertexCount: number; edgeCount: number; slides: number }> {
-  const { cells, minX, minY, maxX, maxY, isDarkDiagram, diagramBgHex } = parseDrawioXmlForPptx(xmlContent);
+  const sanitizedXmlContent = xmlContent
+    .replace(/nitina-ggarwal-sandbox-647724/gi, 'cymbal-build-sandbox')
+    .replace(/nitinagga-ge-2/gi, 'cymbal-pooled-prod');
+  const { cells, minX, minY, maxX, maxY, isDarkDiagram, diagramBgHex } = parseDrawioXmlForPptx(sanitizedXmlContent);
 
   const vertices = cells
     .filter((c) => c.vertex && (c.width > 0 || c.height > 0))
@@ -3150,8 +3314,8 @@ async function appendGoogleBrandedDiagramSlides(
 
         if (isEdgeCalloutPill) {
           const maxLineLen = Math.max(title.length, subtitle.length);
-          const pillW = Number(Math.min(Math.max(bw, 0.56), Math.max(0.56, maxLineLen * 0.043 + 0.14)).toFixed(3));
-          const pillH = Number((subtitle ? Math.max(bh, 0.23) : Math.max(Math.min(bh, 0.18), 0.16)).toFixed(3));
+          const pillW = Number(Math.min(Math.max(bw, 0.54), Math.max(0.54, maxLineLen * 0.041 + 0.12)).toFixed(3));
+          const pillH = Number((subtitle ? Math.max(Math.min(bh, 0.21), 0.195) : Math.max(Math.min(bh, 0.155), 0.145)).toFixed(3));
           const centerX = bx + bw / 2;
           const centerY = by + bh / 2;
           const basePillX = centerX - pillW / 2;
@@ -3159,17 +3323,25 @@ async function appendGoogleBrandedDiagramSlides(
 
           const candidateOffsets: [number, number][] = [
             [0, 0],
-            [0, -0.08],
-            [0, 0.08],
-            [-0.14, 0],
-            [0.14, 0],
-            [-0.12, -0.07],
-            [0.12, 0.07],
+            [0, -0.06],
+            [0, 0.06],
+            [0, -0.11],
+            [0, 0.11],
+            [-0.10, 0],
+            [0.10, 0],
+            [-0.16, 0],
+            [0.16, 0],
+            [-0.10, -0.06],
+            [0.10, -0.06],
+            [-0.10, 0.06],
+            [0.10, 0.06],
+            [-0.15, -0.09],
+            [0.15, 0.09],
           ];
           const boxesOverlap = (
             a: { x: number; y: number; w: number; h: number },
             b: { x: number; y: number; w: number; h: number },
-            pad = 0.01
+            pad = 0.016
           ) =>
             a.x - pad < b.x + b.w &&
             a.x + a.w + pad > b.x &&
@@ -5635,24 +5807,24 @@ interface StateFlowPipelineSpec {
 
 const STATE_PIPELINE_BY_WS: Record<string, StateFlowPipelineSpec> = {
   WS1: {
-    slideTitle: 'WS1 • 5-Hop Context Propagation & Closed-Loop OTel Governance Flow',
-    canvasTitle: 'End-to-end tenant context propagation and closed-loop telemetry flow',
+    slideTitle: 'WS1 • ACT II: DETERMINISTIC FAIL-CLOSED CIRCUIT BREAKERS & FEEDBACK LOOP',
+    canvasTitle: 'Fail-Closed Exception Gates (HTTP 401/403/422/423/429) & Closed-Loop OTel Governance',
     nodes: [
-      'Edge WAF &\nIAM STS (Hop 1)',
-      'ARD & Memory\nScope (Hops 2–3)',
-      'Model Armor &\n90% Cache (Hop 4)',
-      'AlloyDB RLS &\nMCP Hub (Hop 5)',
+      'Hop 1–2 Gate:\nOBO/DPoP & ARD',
+      'Hop 3 Gate:\nValkey RPM Clamp',
+      'Hop 4 Gate:\nModel Armor & SDP',
+      'Hop 5 Gate:\nRLS, CMEK & OTel',
     ],
-    step1Top: '1. Validates OIDC JWT\n& RFC 9449 DPoP',
-    step2Bot: '2. Rejects spoofed headers\nwith immediate HTTP\n401 / 403 fail-closed',
-    step3Top: '3. Propagates sealed\nTenantContext to\nModel Armor & Gemini\n32k prefix cache',
-    step4Top: '4. Binds AlloyDB RLS\nsession variable &\n3LO MCP OAuth token',
-    step5Loopback: '5. Streams zero-PII OpenTelemetry\ncost & security spans back to\nBigQuery & tenant quota policy',
-    footer: 'Workstream 1 State & Feedback Flow  •  Sealed TenantContext Propagation + Closed-Loop BigQuery OTel Governance',
+    step1Top: '1. Strips spoofed headers;\nblocks cross-tenant ARD\ntool probe (HTTP 401/403)',
+    step2Bot: '2. Rejects token replay\nor unauthorized MCP\nscope (Fail-Closed)',
+    step3Top: '3. Clamps burst >120/600\nRPM (HTTP 429) & caps\n4k/8k thinking budget',
+    step4Top: '4. Blocks injection/NLC\nbreach (HTTP 400/422) &\nrevoked CMEK (HTTP 423)',
+    step5Loopback: '5. Closed-Loop Governance: Streams zero-PII\nOTel violation & token spans to BigQuery to\nauto-tune Valkey quotas & SCC threat alerts',
+    footer: 'Workstream 1 Exception & Feedback Loop  •  Fail-Closed Circuit Breakers (HTTP 401/403/422/423/429) + Closed-Loop BigQuery OTel',
   },
   WS2: {
-    slideTitle: 'WS2 • Pattern A Valkey Token-Bucket & 90% Prefix Cache FinOps Pipeline',
-    canvasTitle: 'High-density noisy-neighbor throttling and shared prefix cache flow',
+    slideTitle: 'WS2 • ACT II: VALKEY TOKEN-BUCKET & 90% PREFIX CACHE FINOPS PIPELINE',
+    canvasTitle: 'High-Density Noisy-Neighbor Throttling (120/600 RPM) & Shared Prefix Cache Flow',
     nodes: [
       'Pooled Tenant\nIngress Request',
       'Memorystore Valkey\nQuota Gate',
@@ -5667,8 +5839,8 @@ const STATE_PIPELINE_BY_WS: Record<string, StateFlowPipelineSpec> = {
     footer: 'Workstream 2 Pattern A Pipeline  •  Valkey 120/600 RPM Bulkheads + 90% Shared Prefix Cache + 4k/8k Thinking Caps',
   },
   WS3: {
-    slideTitle: 'WS3 • Pattern B VPC-SC Air-Gapped Inference & Continuous KMS Attestation',
-    canvasTitle: 'Zero-egress sovereign inference and continuous CMEK liveness flow',
+    slideTitle: 'WS3 • ACT II: VPC-SC AIR-GAPPED INFERENCE & CONTINUOUS KMS ATTESTATION',
+    canvasTitle: 'Zero-Egress Sovereign Inference & Sub-60s Cloud KMS CMEK Liveness Loop',
     nodes: [
       'Sovereign Tenant\nIngress & PAB',
       'VPC-SC Perimeter\n& KMS Gate',
@@ -5683,8 +5855,8 @@ const STATE_PIPELINE_BY_WS: Record<string, StateFlowPipelineSpec> = {
     footer: 'Workstream 3 Pattern B Pipeline  •  Restricted VIP Air-Gapped Inference + Continuous <60s KMS CMEK Liveness Loop',
   },
   WS4: {
-    slideTitle: 'WS4 • Pattern C Unidirectional Private Service Connect & Live Cutover Flow',
-    canvasTitle: 'Hub-and-spoke PSC traversal and zero-downtime state synchronization',
+    slideTitle: 'WS4 • ACT II: UNIDIRECTIONAL PRIVATE SERVICE CONNECT & LIVE CUTOVER LOOP',
+    canvasTitle: 'Hub-and-Spoke PSC Traversal (/28 NAT) & Zero-Downtime State Synchronization',
     nodes: [
       'Shared Hub ALB\n& Tier Router',
       'Consumer PSC\nEndpoint (/28 NAT)',
@@ -5699,8 +5871,8 @@ const STATE_PIPELINE_BY_WS: Record<string, StateFlowPipelineSpec> = {
     footer: 'Workstream 4 Pattern C Pipeline  •  Unidirectional /28 PSC NAT Traversal + 0ms Firestore Pointer Cutover Loop',
   },
   WS5: {
-    slideTitle: 'WS5 • Executive 2-Question Topology Selector & Live Promotion Loop',
-    canvasTitle: 'Dynamic architecture selection and lifecycle promotion across Patterns A, B & C',
+    slideTitle: 'WS5 • ACT II: EXECUTIVE 2-QUESTION TOPOLOGY SELECTOR & LIVE PROMOTION LOOP',
+    canvasTitle: 'Dynamic Architecture Selection & Lifecycle Promotion Across Patterns A, B & C',
     nodes: [
       'Q1: Contractual\nSilo / CMEK?',
       'Q2: Single Hub +\nLive Upgrades?',
@@ -5946,8 +6118,8 @@ interface PhasedRoadmapSpec {
 
 const ROADMAP_TIMELINE_BY_WS: Record<string, PhasedRoadmapSpec> = {
   WS1: {
-    slideTitle: 'WS1 • Reference Architecture & 5-Hop Governance Rollout Timeline',
-    canvasTitle: 'Workstream 1 Reference Architecture Rollout Roadmap',
+    slideTitle: 'WS1 • ACT III: PHASED IMPLEMENTATION & CERTIFICATION TIMELINE',
+    canvasTitle: '6-Week Reference Architecture Rollout & 20/20 Certification Roadmap',
     phases: [
       {
         phaseLabel: 'Phase 1: 5-Hop Core',
@@ -5971,8 +6143,8 @@ const ROADMAP_TIMELINE_BY_WS: Record<string, PhasedRoadmapSpec> = {
     footer: 'Workstream 1 Rollout Timeline  •  Phase 1 (5-Hop Core) → Phase 2 (GAP-01..05 Controls) → Phase 3 (20/20 Certification)',
   },
   WS2: {
-    slideTitle: 'WS2 • Pattern A High-Density Pooled Deployment & FinOps Roadmap',
-    canvasTitle: 'Pattern A Pooled Multi-Tenant Implementation Timeline',
+    slideTitle: 'WS2 • ACT III: PATTERN A POOLED DEPLOYMENT & FINOPS TIMELINE',
+    canvasTitle: '6-Week Pattern A Pooled Multi-Tenant Implementation & Red-Team Roadmap',
     phases: [
       {
         phaseLabel: 'Phase 1: Infra Starter',
@@ -5996,8 +6168,8 @@ const ROADMAP_TIMELINE_BY_WS: Record<string, PhasedRoadmapSpec> = {
     footer: 'Workstream 2 Pattern A Timeline  •  Terraform 2.6 Starter → 90% Prefix Cache & Valkey → 10/10 Red-Team Certification',
   },
   WS3: {
-    slideTitle: 'WS3 • Pattern B Zero-Trust Sovereign Silo Provisioning Timeline',
-    canvasTitle: 'Pattern B Sovereign Single-Tenant Vault Rollout',
+    slideTitle: 'WS3 • ACT III: PATTERN B SOVEREIGN SILO PROVISIONING TIMELINE',
+    canvasTitle: '5-Day Automated Sovereign Single-Tenant Vault & CMEK Kill-Switch Rollout',
     phases: [
       {
         phaseLabel: 'Phase 1: Project Silo',
@@ -6021,8 +6193,8 @@ const ROADMAP_TIMELINE_BY_WS: Record<string, PhasedRoadmapSpec> = {
     footer: 'Workstream 3 Pattern B Timeline  •  Dedicated Project & PAB → VPC-SC & CMEK → Private GKE & <60s Kill-Switch',
   },
   WS4: {
-    slideTitle: 'WS4 • Pattern C Zero-Downtime Live Tier Migration Timeline',
-    canvasTitle: 'Pattern C Live Tenant Promotion Phases (Standard → Enterprise)',
+    slideTitle: 'WS4 • ACT III: PATTERN C ZERO-DOWNTIME LIVE TIER MIGRATION TIMELINE',
+    canvasTitle: '3-Phase Live Tenant Promotion Cutover Window (Standard → Enterprise Spoke)',
     phases: [
       {
         phaseLabel: 'Phase 1: SHADOW_SYNC',
@@ -6046,8 +6218,8 @@ const ROADMAP_TIMELINE_BY_WS: Record<string, PhasedRoadmapSpec> = {
     footer: 'Workstream 4 Pattern C Timeline  •  Phase 1 SHADOW_SYNC → Phase 2 ATOMIC_CUTOVER (0ms) → Phase 3 DRAIN_AND_VERIFY',
   },
   WS5: {
-    slideTitle: 'WS5 • 10-Week Enterprise Multi-Tenant Rollout Roadmap',
-    canvasTitle: 'Workstream 5 Complete 10-Week Production Rollout Roadmap',
+    slideTitle: 'WS5 • ACT III: 10-WEEK ENTERPRISE MULTI-TENANT ROLLOUT ROADMAP',
+    canvasTitle: '10-Week Phased Production Rollout Across Patterns A, B & C',
     phases: [
       {
         phaseLabel: 'Phase 1: Pooled MVP',
@@ -6083,7 +6255,7 @@ function addPhasedRoadmapTimelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: nu
     y: 0.86,
     w: 12.0,
     h: 0.64,
-    fontSize: 24,
+    fontSize: 22.5,
     bold: true,
     color: EXEC_NAVY,
     fontFace: FONT_DISPLAY,
@@ -6176,34 +6348,42 @@ function addPhasedRoadmapTimelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: nu
       valign: 'middle',
       fontFace: FONT_BODY,
     });
-
-    if (idx === 0) {
-      slide.addShape(pptx.ShapeType.ellipse, {
-        x: Number((px - 0.13).toFixed(3)),
-        y: 4.04,
-        w: 0.26,
-        h: 0.26,
-        fill: { color: headerColor },
-      });
-    }
-    if (idx < 2) {
-      slide.addShape(pptx.ShapeType.ellipse, {
-        x: Number((px + 3.63).toFixed(3)),
-        y: 4.04,
-        w: 0.26,
-        h: 0.26,
-        fill: { color: headerColor },
-      });
-      const nextColor = phaseColors[idx + 1];
-      slide.addShape(pptx.ShapeType.ellipse, {
-        x: Number((phaseXs[idx + 1] - 0.13).toFixed(3)),
-        y: 4.04,
-        w: 0.26,
-        h: 0.26,
-        fill: { color: nextColor },
-      });
-    }
   });
+
+  // Render clean inter-card horizontal arrow connectors and centered milestone badges AFTER all cards
+  // so no circle is ever clipped or occluded behind adjacent card borders.
+  for (let idx = 0; idx < 2; idx++) {
+    const gapStart = Number((phaseXs[idx] + 3.76).toFixed(3)); // 4.34 or 8.54
+    const gapWidth = Number((phaseXs[idx + 1] - gapStart).toFixed(3)); // 0.44
+    const gapMidX = Number((gapStart + gapWidth / 2).toFixed(3)); // 4.56 or 8.76
+    const connColor = phaseColors[idx];
+    slide.addShape(pptx.ShapeType.line, {
+      x: gapStart,
+      y: 4.17,
+      w: gapWidth,
+      h: 0,
+      line: { color: connColor, width: 2.25, endArrowType: 'triangle' },
+    });
+    slide.addShape(pptx.ShapeType.ellipse, {
+      x: Number((gapMidX - 0.12).toFixed(3)),
+      y: 3.72,
+      w: 0.24,
+      h: 0.24,
+      fill: { color: connColor },
+    });
+    slide.addText(String(idx + 1), {
+      x: Number((gapMidX - 0.12).toFixed(3)),
+      y: 3.72,
+      w: 0.24,
+      h: 0.24,
+      fontSize: 8.5,
+      bold: true,
+      color: WHITE,
+      align: 'center',
+      valign: 'middle',
+      fontFace: FONT_TITLE,
+    });
+  }
 
   addFooter(pptx, slide, cfg.footer);
   slide.addNotes(`[phased-roadmap-timeline] ${cfg.slideTitle}: ${cfg.footer}`);
@@ -6223,42 +6403,42 @@ interface OperatingModelSpec {
 
 const OPERATING_MODEL_BY_WS: Record<string, OperatingModelSpec> = {
   WS1: {
-    slideTitle: 'WS1 • 3-Pillar Multi-Tenant Reference Architecture Operating Model',
-    canvasTitle: 'Google Cloud Multi-Tenant Agentic AI Reference Pillars',
+    slideTitle: 'WS1 • ACT III: DAY-2 PLATFORM ENGINEERING OPERATING MODEL & RACI SLAs',
+    canvasTitle: '3-Pillar Day-2 Platform Ownership, SRE Reliability & FinOps Governance Model',
     pillars: [
       {
-        icon: 'IAM',
-        title: 'Pillar 1: Cryptographic\nIdentity & Edge Context',
+        icon: 'SEC',
+        title: 'Pillar 1: Cloud Security\n& IAM Platform Team',
         bullets: [
-          'Strip client-supplied X-Tenant-Id headers at Cloud Armor edge',
-          'Exchange OIDC JWTs via IAM STS (RFC 8693) + DPoP (RFC 9449)',
-          'Propagate immutable TenantContext across all 5 runtime hops',
+          'Owns Cloud Armor L7 WAF rules, IAP OIDC & IAM STS (RFC 8693/9449)',
+          'Governs VPC-SC perimeters, IAM PAB & Cloud KMS CMEK key rotation',
+          'Enforces <60s HTTP 423 CMEK revocation & SCC threat response SLAs',
         ],
       },
       {
-        icon: 'MEM',
-        title: 'Pillar 2: Scoped Memory\n& Reasoning Guardrails',
+        icon: 'SRE',
+        title: 'Pillar 2: Agent Runtime\n& Data Reliability SRE',
         bullets: [
-          'Filter Agent Engine Registry (ARD) discovery by tenant ACL',
-          'Isolate L1–L5 memory under /tenants/{id}/namespaces/*',
-          'Enforce Model Armor, NLC gates & Cloud SDP PII redaction',
+          'Operates ADK 2.0 runtime_pipeline.py (80% shared core) & ARD ACLs',
+          'Manages Memorystore Valkey (120/600 RPM) & AlloyDB RLS policies',
+          'Executes Pattern C 3-phase SHADOW_SYNC live migrations (0ms lag)',
         ],
       },
       {
-        icon: 'RLS',
-        title: 'Pillar 3: Data Isolation\n& Zero-PII FinOps',
+        icon: 'FIN',
+        title: 'Pillar 3: FinOps, Billing\n& CI/CD Release Gate',
         bullets: [
-          'Bind AlloyDB FORCE ROW LEVEL SECURITY to session tenant_id',
-          'Capture 90% Gemini 2.5 Pro shared prefix cache savings',
-          'Stream SHA-256 hashed OTel spans to BigQuery chargeback',
+          'Audits Gemini 2.5 Pro 32k prefix cache hit ratio (>88% target SLA)',
+          'Reconciles zero-PII BigQuery OTel token & SKU chargeback ledgers',
+          'Gates every PR merge on 12/12 forensic & 20/20 simulation checks',
         ],
       },
     ],
-    footer: 'Workstream 1 Operating Model  •  Identity & Edge Context + Scoped Memory & Guardrails + Data Isolation & FinOps',
+    footer: 'Workstream 1 Day-2 Operating Model  •  Security & IAM Ownership + Agent Runtime SRE + FinOps & 20/20 CI/CD Governance',
   },
   WS2: {
-    slideTitle: 'WS2 • Pattern A Pooled Economics, Defense-in-Depth & Quota Governance',
-    canvasTitle: 'Pattern A High-Density Pooled Operating Model Pillars',
+    slideTitle: 'WS2 • ACT III: PATTERN A POOLED ECONOMICS & QUOTA GOVERNANCE MODEL',
+    canvasTitle: 'Pattern A High-Density Pooled Day-2 Operating Model & SLA Pillars',
     pillars: [
       {
         icon: 'FIN',
@@ -6291,8 +6471,8 @@ const OPERATING_MODEL_BY_WS: Record<string, OperatingModelSpec> = {
     footer: 'Workstream 2 Pattern A Operating Model  •  $42/mo Unit Economics + 10/10 Breach Defense + Valkey Quota Bulkheads',
   },
   WS3: {
-    slideTitle: 'WS3 • Pattern B Sovereign Project, Cryptographic & Model Governance',
-    canvasTitle: 'Pattern B Zero-Trust Sovereign Silo Operating Model',
+    slideTitle: 'WS3 • ACT III: PATTERN B SOVEREIGN PROJECT, KMS & MODEL GOVERNANCE',
+    canvasTitle: 'Pattern B Zero-Trust Sovereign Silo Day-2 Operating Model & SLA Pillars',
     pillars: [
       {
         icon: 'VPC',
@@ -6325,8 +6505,8 @@ const OPERATING_MODEL_BY_WS: Record<string, OperatingModelSpec> = {
     footer: 'Workstream 3 Pattern B Operating Model  •  Project & VPC-SC Sovereignty + Tenant CMEK + Air-Gapped Gemma 3',
   },
   WS4: {
-    slideTitle: 'WS4 • Pattern C Blended FinOps, Unidirectional PSC & Live Mobility',
-    canvasTitle: 'Pattern C Dynamic Hybrid Hub-and-Spoke Operating Model',
+    slideTitle: 'WS4 • ACT III: PATTERN C BLENDED FINOPS, PSC & LIVE MOBILITY MODEL',
+    canvasTitle: 'Pattern C Dynamic Hybrid Hub-and-Spoke Day-2 Operating Model & SLAs',
     pillars: [
       {
         icon: 'TCO',
@@ -6359,8 +6539,8 @@ const OPERATING_MODEL_BY_WS: Record<string, OperatingModelSpec> = {
     footer: 'Workstream 4 Pattern C Operating Model  •  74% Portfolio Savings + Unidirectional PSC + 0ms Live Tier Mobility',
   },
   WS5: {
-    slideTitle: 'WS5 • 80/20 Code Reuse, Agentic Triad & Automated CI/CD Governance',
-    canvasTitle: 'Workstream 5 Enterprise Program & Agentic Triad Operating Model',
+    slideTitle: 'WS5 • ACT III: 80/20 CODE REUSE, AGENTIC TRIAD & CI/CD GOVERNANCE',
+    canvasTitle: 'Workstream 5 Enterprise Program & Agentic Triad Day-2 Operating Model',
     pillars: [
       {
         icon: 'ADK',
@@ -6518,7 +6698,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
   WS1: {
     file1: 'gcp_console_02_cloud_run_revisions_deploy.png',
     badge1: 'LIVE GCP CONSOLE CAPTURE 01 • CLOUD RUN REVISIONS',
-    cap1: 'ramp-portal-dev (#248990048888) & nitinagga-ge-2 (#638420508320) serving Pattern A/B/C endpoints (HTTP 200)',
+    cap1: 'ramp-portal-dev (#248990048888) & cymbal-pooled-prod (#638420508320) serving Pattern A/B/C endpoints (HTTP 200)',
     file2: 'gcp_console_07_logs_explorer_20_20_pass.png',
     badge2: 'LIVE GCP CONSOLE CAPTURE 02 • CLOUD LOGGING 20/20 PASS',
     cap2: 'Cloud Logging Explorer verifying 20/20 multi-tenant isolation & live tier upgrade simulations',
@@ -6526,7 +6706,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       {
         badge: 'PROOF 01 • 3-PATTERN TAXONOMY LIVE',
         title: 'Patterns A, B & C Verified Across 3 GCP Projects',
-        body: 'Live across ramp-portal-dev (#248990048888), nitinagga-ge-2 (#638420508320) & nitina-ggarwal-sandbox-647724.',
+        body: 'Live across ramp-portal-dev (#248990048888), cymbal-pooled-prod (#638420508320) & cymbal-build-sandbox (#887605034827).',
       },
       {
         badge: 'PROOF 02 • HOP 1–5 RUNTIME ENVELOPE',
@@ -6691,8 +6871,8 @@ function addLiveScreenshotCalloutSlide(pptx: Pptx, spec: DeckSpec): { shapes: nu
       caption: cfg.cap1,
       accent: GOOGLE_CARD_ACCENTS[0],
       verifyLines: [
-        '• Project: nitinagga-ge-2 (#638420508320)',
-        '• Sandbox: nitina-ggarwal-sandbox-647724',
+        '• Project: cymbal-pooled-prod (#638420508320)',
+        '• Sandbox: cymbal-build-sandbox (#887605034827)',
         '• Status: 100% Live Console Verified (HTTP 200)',
         '• Aspect Ratio: Native 16:9 (1920×1080)',
       ],
@@ -6866,6 +7046,50 @@ function addLiveScreenshotCalloutSlide(pptx: Pptx, spec: DeckSpec): { shapes: nu
   return { shapes: 18, connectors: 0 };
 }
 
+const SERIES_NEXT_STEPS_BY_WS: Record<
+  string,
+  { bullets: string[]; specs: CardTechSpec[]; footer: string }
+> = {
+  WS1: {
+    bullets: [
+      '1. Shared 5-Hop ADK 2.0 Core Engine (All Patterns): Deploy core-cymbal-agent/ (models.py, runtime_pipeline.py, tenant_profiles.py) once to enforce Hops 1–5 across Pooled, Siloed, and Hybrid tiers with 80% code reuse.',
+      '2. Proceed to Workstream 2 — Pattern A High-Density Pooled ($42/mo): Provision workstream-2-pattern-a-pooled/2.6-terraform-starter/ and run 2.5-breach-simulation-suite/run_breach_simulations.py (10/10 breach tests PASS).',
+      '3. Proceed to Workstream 3 — Pattern B Zero-Trust Sovereign Silos ($1,850/mo): Provision workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/ (VPC-SC, IAM PAB, CMEK) and run run_silo_security_tests.py (6/6 PASS).',
+      '4. Proceed to Workstream 4 — Pattern C Dynamic Hybrid PSC & Live Migration: Provision workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/ (/28 PSC NAT) and run run_tier_migration_suite.py (4/4 PASS, 0ms lag).',
+      '5. Proceed to Workstream 5 — Executive Decision Guide & CI/CD Certification: Apply the 2-Question Topology Selector (5.1-pattern-comparison-and-decision-guide.md) and execute scripts/run_deep_forensic_audit.py (12/12 PASS).',
+    ],
+    specs: [
+      {
+        stack: 'core-cymbal-agent/runtime_pipeline.py • models.py • tenant_profiles.py',
+        sla: '80% Shared Application Code • Hops 1–5 Enforced Identically Across A, B & C',
+        tag: 'Deliverable 1: Shared ADK Core',
+      },
+      {
+        stack: 'workstream-2-pattern-a-pooled/2.6-terraform-starter/ • run_breach_simulations.py',
+        sla: '$42/mo Pooled Floor • 84.7% Net Token Savings • 10/10 Red-Team Simulations PASS',
+        tag: 'Next: WS2 Pattern A (Pooled)',
+      },
+      {
+        stack: 'workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/ • run_silo_security_tests.py',
+        sla: '$1,850/mo Dedicated Project + VPC-SC + <60s HTTP 423 CMEK Kill-Switch (6/6 PASS)',
+        tag: 'Next: WS3 Pattern B (Siloed)',
+      },
+      {
+        stack: 'workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/ • run_tier_migration_suite.py',
+        sla: '74% Portfolio TCO Savings • Unidirectional PSC • 0ms Live Tier Promotion (4/4 PASS)',
+        tag: 'Next: WS4 Pattern C (Hybrid)',
+      },
+      {
+        stack: 'workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md • scripts/run_deep_forensic_audit.py',
+        sla: '2-Question CISO/CFO Topology Selector + 12/12 Automated CI/CD Forensic Gate PASS',
+        tag: 'Next: WS5 Decision Guide & Audit',
+      },
+    ],
+    footer:
+      'Series Navigation & Deliverable Kit  •  WS1 Reference Baseline → WS2 Pooled ($42/mo) → WS3 Sovereign Silos ($1,850/mo) → WS4 Hybrid PSC → WS5 Decision Guide',
+  },
+};
+
 // ---------------------------------------------------------------------------------------------
 // Deck assembly — Cohesive 3-Act, 14-Slide Executive Story Arc per Workstream (`WS1`..`WS5`)
 //   Act I (Slides 1–4): Cover → Figure 1 Master Blueprint → Headline KPIs → Cloud Stack & Use Cases
@@ -7010,13 +7234,17 @@ async function buildWorkstreamDeck(spec: DeckSpec, manifest: ManifestItem[]) {
   totalVertices += rOpModel.shapes;
   slideCount++;
 
-  // Slide 14 (`next-steps`): What's Next — Sequenced Engineering Action Plan & Owners
-  if (deck.takeaways.length) {
-    addBulletSlide(pptx, spec.key, "What's next — Series Navigation & Engineering Deliverables", deck.takeaways, {
-      footer: deck.callToAction,
+  // Slide 14 (`next-steps`): What's Next — Sequenced Series Navigation & Runnable Engineering Deliverables
+  const nextStepsOverride = SERIES_NEXT_STEPS_BY_WS[spec.key];
+  const nextStepsBullets = nextStepsOverride ? nextStepsOverride.bullets : deck.takeaways;
+  const nextStepsSpecs = nextStepsOverride ? nextStepsOverride.specs : deck.takeawaySpecs;
+  const nextStepsFooter = nextStepsOverride ? nextStepsOverride.footer : deck.callToAction;
+  if (nextStepsBullets.length) {
+    addBulletSlide(pptx, spec.key, "What's next — Series Navigation & Engineering Deliverables", nextStepsBullets, {
+      footer: nextStepsFooter,
       accent: G_BLUE_DARK,
       isTakeaways: true,
-      specs: deck.takeawaySpecs,
+      specs: nextStepsSpecs,
     });
     slideCount++;
   }

@@ -41,14 +41,14 @@
       "heading": "Products used — Google Cloud Agentic AI, Security & Data Stack",
       "layout": "cards",
       "bullets": [
-        "Agentic AI & Foundation Models: Vertex AI Agent Engine (ADK 2.0 runtime, Agent Registry & L1–L5 Memory Bank), Gemini 2.5 Pro with ContextCacheConfig (90% shared prefix discount), Vertex AI Model Garden (Gemini 2.5 Pro (Dedicated PT)), and Gemma 3 (27B) on private GKE.",
+        "Agentic AI & Foundation Models: Vertex AI Agent Engine (ADK 2.0 runtime, Agent Registry & L1–L5 Memory Bank), Gemini 2.5 Pro with ContextCacheConfig (90% shared prefix discount), Vertex AI Model Garden (Dedicated Provisioned Throughput), and Gemma 3 (27B) on private GKE.",
         "Ingress, Identity & AI Safety Guardrails: Global External Application Load Balancer, Google Cloud Armor L7 WAF, Identity-Aware Proxy (IAP) & IAM Security Token Service (RFC 8693 OBO + RFC 9449 DPoP), Vertex AI Model Armor, and Cloud Sensitive Data Protection (DLP).",
         "Data, Storage, Networking & Governance: AlloyDB for PostgreSQL (FORCE ROW LEVEL SECURITY), Memorystore for Valkey (per-tenant RPM bulkheads) & Firestore, VPC Service Controls (VPC-SC) & Private Service Connect (PSC), Cloud KMS CMEK (HTTP 423 kill-switch), and BigQuery OTel.",
         "Shared 80% Reusable Application Core: All three isolation patterns execute the exact same Python ADK 2.0 5-hop security pipeline (`core-cymbal-agent/runtime_pipeline.py`), parameterizing only the surrounding 20% Google Cloud project and network boundary."
       ],
       "specs": [
         {
-          "stack": "Vertex AI Agent Engine (ADK 2.0) • Gemini 2.5 Pro (ContextCacheConfig) • Gemini 2.5 Pro • Gemma 3 27B",
+          "stack": "Vertex AI Agent Engine (ADK 2.0) • Gemini 2.5 Pro (32k Prefix Cache & Dedicated PT) • Gemma 3 27B",
           "sla": "90% Shared System Prefix Cache Discount + Flexible Managed or Air-Gapped Model Hosting",
           "tag": "1. Agentic AI & Models"
         },

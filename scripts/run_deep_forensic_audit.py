@@ -613,9 +613,13 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                             "Asynchronous processing flow for long tasks (>5 min)",
                             "Google Cloud Pub/Sub Topic",
                         )
+                        banned_copy_pasted_terms = banned_copy_pasted_terms + (
+                            "nitinagga-ge-2",
+                            "nitina-ggarwal-sandbox-647724",
+                        )
                         banned_emojis = (
                             "🔐", "🧠", "🗄️", "🏦", "🛒", "🤝", "🛡️", "⏱", "↻",
-                            "🚀", "📊", "⚙️", "📈", "💰", "🔄", "⚡", "🏗️",
+                            "🚀", "📊", "⚙️", "📈", "💰", "🔄", "⚡", "🏗️", "✅",
                         )
                         if (
                             not has_compact_arrows
@@ -629,6 +633,10 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                         if ws_key in ("WS1", "WS2", "WS3", "WS4", "WS5"):
                             if len(slide_xml_names) != 14 or deck.get("slides") != 14:
                                 decks_valid = False
+                            if "ppt/slides/slide1.xml" in zf.namelist():
+                                s1_xml = zf.read("ppt/slides/slide1.xml").decode("utf-8", errors="ignore")
+                                if "3-ACT EXECUTIVE BRIEFING" not in s1_xml:
+                                    decks_valid = False
                             if "ppt/slides/slide2.xml" in zf.namelist():
                                 s2_xml = zf.read("ppt/slides/slide2.xml").decode("utf-8", errors="ignore")
                                 if "Figure 1" not in s2_xml or "4-ZONE HUB-AND-SPOKE" not in s2_xml:

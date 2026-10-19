@@ -159,3 +159,11 @@ All workstreams share a unified anchor case study: **Cymbal SaaS Platform**, a B
 ### Workstream 5: Wrap-Up & Capstone Backlog
 * [`workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md`](workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md)
 * [`workstream-5-wrap-up-and-backlog/5.2-blog-multi-tenant-agentic-triad.md`](blogs/ws5-decision-guide-and-agentic-triad.md)
+
+### 14-Slide Executive Story Arc Decks & 12-Point Forensic Audit (`scripts/build_editable_slide_decks.ts` & `scripts/run_deep_forensic_audit.py`)
+* **Slide 1 vs. Slide 2 Separation**: Slide 1 right column renders the **`3-ACT EXECUTIVE BRIEFING & DELIVERABLE MAP`** (`ACT I • SLIDES 1–4`, `ACT II • SLIDES 5–8`, `ACT III • SLIDES 9–12`, `GOVERNANCE • SLIDES 13–14`) in Quad-Color order (`Blue -> Red -> Yellow -> Green`), eliminating consecutive 4-zone duplication with Slide 2.
+* **Semantic Zone Color Matching (`resolveSemanticZoneAccent`)**: Slide 2 sidebar cards strictly match their named zone color (`BLUE ZONE` `#4285F4`, `GREEN ZONE` `#34A853`, `YELLOW ZONE` `#FBBC04`, `RED ZONE` `#EA4335`).
+* **Distinct Header Bar Breadcrumb vs. Canvas Headline (`Rule 25`)**: Top header bar displays the Act & Section Breadcrumb while the main canvas headline displays a distinct executive takeaway title.
+* **Non-Redundant Comparison Table Synthesis (`buildComparisonTableSynthesisCards`)**: Slide 9 synthesizes the 4 Pattern A/B/C Selection Rules and Slide 10 synthesizes all 5 EAP Product Gaps (`GAP-01..05`).
+* **3-Way Narrative Differentiation (Slides 7, 8 & 13) & 5-Workstream Series Roadmap (Slide 14)**: Slide 7 covers the happy-path 5-actor sequence, Slide 8 covers deterministic fail-closed exception circuit breakers (`HTTP 401/403/422/423/429`), Slide 13 covers the 3-pillar Day-2 RACI operating model (`SEC`, `SRE`, `FIN`), and Slide 14 maps the 5-workstream series progression (`WS1` $\rightarrow$ `WS5`) with role-neutral GCP project aliases (`cymbal-pooled-prod`, `cymbal-build-sandbox`).
+
