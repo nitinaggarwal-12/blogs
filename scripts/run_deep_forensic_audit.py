@@ -639,7 +639,11 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                                     decks_valid = False
                             if "ppt/slides/slide2.xml" in zf.namelist():
                                 s2_xml = zf.read("ppt/slides/slide2.xml").decode("utf-8", errors="ignore")
-                                if "Figure 1" not in s2_xml or "4-ZONE HUB-AND-SPOKE" not in s2_xml:
+                                if "QUAD-METRICS" not in s2_xml:
+                                    decks_valid = False
+                            if "ppt/slides/slide5.xml" in zf.namelist():
+                                s5_xml = zf.read("ppt/slides/slide5.xml").decode("utf-8", errors="ignore")
+                                if "Figure 1" not in s5_xml or "4-ZONE HUB-AND-SPOKE" not in s5_xml:
                                     decks_valid = False
                             if "ppt/slides/slide11.xml" in zf.namelist():
                                 s11_xml = zf.read("ppt/slides/slide11.xml").decode("utf-8", errors="ignore")

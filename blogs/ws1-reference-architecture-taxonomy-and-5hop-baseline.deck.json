@@ -70,34 +70,34 @@
       ]
     },
     {
-      "heading": "Use cases — Cymbal SaaS Serving Competing Enterprise Tenants",
+      "heading": "Use cases — Competing Enterprise Tenants (FinVault vs. RetailStream) & Google Cloud Stack",
       "layout": "cards",
       "bullets": [
-        "Cymbal Multi-Tenant Agentic Platform (Control Plane): Operates a shared Incident Diagnostic Agent on Gemini 2.5 Pro, caching a 32,000-token immutable SRE runbook prefix once to reduce input token costs by 90%.",
-        "FinVault Bank (Regulated Enterprise Tenant): Authenticates via Google Workspace OIDC, provisions a private Gemini 2.5 Pro (Dedicated PT) regulatory agent (Agent Alpha), receives an 8,000-token thinking budget, and mandates CMEK.",
-        "RetailStream Corp (Standard Commercial Tenant): Authenticates via Microsoft Entra ID OIDC, runs on the pooled Diagnostic Agent with a 4,000-token thinking cap, and invokes ServiceNow ITOM via 3LO employee consent.",
-        "Cryptographic Mutual Invisibility: RetailStream callers receive immediate HTTP 403 Forbidden if probing FinVault’s private Agent Alpha, while FinVault is completely isolated from RetailStream’s Entra ID / ServiceNow connectors."
+        "Cymbal Multi-Tenant Platform (Control Plane): Operates a shared Incident Diagnostic Agent on Vertex AI Agent Engine (ADK 2.0, Registry & L1–L5 Memory Bank) and Gemini 2.5 Pro, caching a 32,000-token SRE runbook prefix once (90% discount -> 84.7% net token savings).",
+        "FinVault Bank (Regulated Enterprise Tenant): Authenticates via Google Workspace OIDC, provisions a private Gemini 2.5 Pro (Dedicated PT) / Gemma 3 27B regulatory agent (Agent Alpha), receives a 600 RPM / 8,000-token thinking budget, and mandates VPC-SC & Cloud KMS CMEK.",
+        "RetailStream Corp (Standard Commercial Tenant): Authenticates via Microsoft Entra ID OIDC, runs on the pooled Cloud Run v2 & AlloyDB RLS Diagnostic Agent ($42/mo floor) with a 120 RPM / 4,000-token thinking cap, and invokes ServiceNow ITOM via 3LO step-up consent.",
+        "Cryptographic Mutual Invisibility & 80% Shared Stack: Cloud Armor WAF, IAP OBO/DPoP, Memorystore Valkey, Model Armor, Cloud DLP, AlloyDB RLS, and BigQuery OTel run one 80% reusable ADK codebase—blocking cross-tenant probes (HTTP 403) with 0 cross-tenant rows."
       ],
       "specs": [
         {
-          "stack": "Project: ramp-portal-dev • Cloud Run Service: cymbal-multi-tenant-patterns",
+          "stack": "Vertex AI Agent Engine (ADK 2.0, Registry, L1–L5 Memory) • Gemini 2.5 Pro (32k Prefix Cache)",
           "sla": "Immutable 32k System Prefix Cache • 84.7% Net Per-Turn Token Cost Reduction",
-          "tag": "Platform Provider: Cymbal SaaS"
+          "tag": "1. Platform Control Plane: Cymbal SaaS"
         },
         {
-          "stack": "IdP: Google Workspace OIDC • Connectors: Google Drive/Gmail/Jira 3LO • Key: finvault-silo-cmek",
-          "sla": "Tier: ENTERPRISE • 600 RPM • 8,000 Thinking Budget • OCC/IBAN/SWIFT DLP Masking",
-          "tag": "Tenant A: FinVault Bank"
+          "stack": "Google Workspace OIDC • Dedicated PT / Gemma 3 27B • VPC-SC • Cloud KMS CMEK (finvault-silo-cmek)",
+          "sla": "Tier: ENTERPRISE ($1,850/mo Silo) • 600 RPM • 8,000 Thinking Budget • OCC/IBAN DLP Masking",
+          "tag": "2. Regulated Tenant A: FinVault Bank"
         },
         {
-          "stack": "IdP: Microsoft Entra ID OIDC • Connectors: SharePoint & ServiceNow 3LO • Pooled RLS",
-          "sla": "Tier: STANDARD • 120 RPM • 4,000 Thinking Budget • PCI-DSS PAN/SSN DLP Masking",
-          "tag": "Tenant B: RetailStream Corp"
+          "stack": "Microsoft Entra ID OIDC • Cloud Run v2 • Memorystore Valkey • SharePoint & ServiceNow 3LO",
+          "sla": "Tier: STANDARD ($42/mo Pool) • 120 RPM • 4,000 Thinking Budget • PCI-DSS PAN/SSN DLP Masking",
+          "tag": "3. Commercial Tenant B: RetailStream"
         },
         {
-          "stack": "Hop 2 ARD Filter + Hop 3 Memory Namespace + Hop 5 AlloyDB Row-Level Security",
-          "sla": "Verified by 20 Automated Red-Team Breach, Silo Kill-Switch & Live Migration Tests",
-          "tag": "Zero Cross-Tenant Leakage"
+          "stack": "Cloud Armor • IAP STS (RFC 8693/9449) • Model Armor • Cloud DLP • AlloyDB RLS • BigQuery OTel",
+          "sla": "80% Identical Python ADK 2.0 Codebase • Verified by 20/20 Automated Security & Migration Tests",
+          "tag": "4. Unified 5-Hop Google Cloud Stack"
         }
       ]
     },

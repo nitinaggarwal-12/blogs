@@ -970,32 +970,32 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
   const titleActs = [
     {
       badge: 'ACT I • SLIDES 1–4',
-      title: 'Master Blueprint (#78) & SLO Scorecard',
-      sub: 'Decomposes Figure 1 into 56 editable vector shapes + 23 connectors, quantified unit economics ($42 vs. $1,850/mo) & GCP stack.',
+      title: 'ROI Scorecard, Use Cases & Pattern Options',
+      sub: 'Establishes quantified unit economics ($42 vs. $1,850/mo, 84.7% token savings), competing tenant profiles (FinVault vs. RetailStream) & Pattern A/B/C matrix.',
       bar: G_BLUE,
       tint: G_BLUE_TINT,
       text: G_BLUE_DEEP,
     },
     {
       badge: 'ACT II • SLIDES 5–8',
-      title: '3-Zone Boundaries, UML & Fail-Closed Loops',
-      sub: 'Walks through 3-zone physical/logical boundaries, Hop 1 OBO+DPoP wire transformation, 5-Actor UML sequence & HTTP 401–429 circuit breakers.',
+      title: 'Master #78 Blueprint, Zones & Request Flow',
+      sub: 'Unveils the 56-shape Google Cloud Architecture Center (#78) diagram, decomposes 3 trust zones, transforms OBO/DPoP wire payloads & traces 5-actor UML.',
       bar: G_RED,
       tint: G_RED_TINT,
       text: G_RED_DEEP,
     },
     {
-      badge: 'ACT III • SLIDES 9–12',
-      title: 'Pattern A/B/C Matrix, GAP-01..05 & Live Proof',
-      sub: 'Compares Pooled, Siloed & Hybrid PSC trade-offs, closes 5 EAP product gaps, embeds 16:9 Cloud Console captures & 6-week rollout.',
+      badge: 'ACT III • SLIDES 9–11',
+      title: 'Circuit Breakers, EAP Gaps & Live GCP Proof',
+      sub: 'Proves fail-closed HTTP 401–429 exception circuit breakers, closes GAP-01..05 EAP limitations in core-cymbal-agent/, and embeds 16:9 Cloud Console proof.',
       bar: G_YELLOW,
       tint: G_YELLOW_TINT,
       text: G_YELLOW_TEXT,
     },
     {
-      badge: 'GOVERNANCE • SLIDES 13–14',
-      title: 'Day-2 RACI Operating Model & Series Map',
-      sub: 'Assigns Security, SRE & FinOps ownership SLAs and maps runnable deliverables across Workstreams 1–5 (24 files + 20/20 gates).',
+      badge: 'GOVERNANCE • SLIDES 12–14',
+      title: 'Rollout Roadmap, Day-2 RACI & Series Map',
+      sub: 'Charts the 3-phase rollout timeline (Weeks 1–10), assigns Security/SRE/FinOps Day-2 RACI SLAs, and maps runnable deliverables across Workstreams 1–5.',
       bar: G_GREEN,
       tint: G_GREEN_TINT,
       text: G_GREEN_DEEP,
@@ -1418,18 +1418,27 @@ function addBulletSlide(
   slide.background = { color: WHITE };
   const isTakeaways = Boolean(opts.isTakeaways) || heading.toLowerCase().includes('takeaway') || heading.toLowerCase().includes("what's next");
   const isTldr = heading.toLowerCase().includes('tl;dr') || heading.toLowerCase().includes('program map');
+  const isUseCases =
+    heading.toLowerCase().includes('use cases') ||
+    heading.toLowerCase().includes('competing enterprise tenants') ||
+    heading.toLowerCase().includes('decision tree') ||
+    heading.toLowerCase().includes('co-hosted');
 
   const semanticBadge = isTakeaways
     ? 'NEXT-STEPS • ACTION PLAN'
     : isTldr
       ? 'THREE-PILLAR • OVERVIEW'
-      : 'THREE-PILLAR • ARCHITECTURE';
+      : isUseCases
+        ? 'THREE-PILLAR • USE CASES'
+        : 'THREE-PILLAR • ARCHITECTURE';
 
   const headerBreadcrumb = isTakeaways
     ? 'ACT III • 5-WORKSTREAM SERIES CONTINUITY & ENGINEERING DELIVERABLES'
     : isTldr
       ? 'ACT I • 5-WORKSTREAM PROGRAM ARCHITECTURE PROGRESSION'
-      : 'ACT I • GOOGLE CLOUD REFERENCE PRODUCT STACK & BILL OF MATERIALS';
+      : isUseCases
+        ? 'ACT I • CUSTOMER USE CASES, TENANT PROFILES & GOOGLE CLOUD STACK'
+        : 'ACT I • GOOGLE CLOUD REFERENCE PRODUCT STACK & BILL OF MATERIALS';
 
   addHeaderBar(pptx, slide, kicker, headerBreadcrumb, semanticBadge);
 
@@ -1450,7 +1459,9 @@ function addBulletSlide(
   });
   const subTitleText = isTakeaways
     ? 'Sequenced engineering action items, runnable codebase file paths, assigned platform owners, and CI/CD release gates.'
-    : 'Structured Google Cloud reference SKUs, runtime isolation boundaries, and production SLAs.';
+    : isUseCases
+      ? 'Concrete multi-tenant SaaS workload profiles, regulatory vs. commercial isolation requirements, and Google Cloud stack mapping.'
+      : 'Structured Google Cloud reference SKUs, runtime isolation boundaries, and production SLAs.';
   slide.addText(subTitleText, {
     x: 0.45,
     y: HEADER_H + 0.56,
@@ -1845,13 +1856,20 @@ function addComparisonTableSlide(
 ) {
   const slide = pptx.addSlide();
   slide.background = { color: WHITE };
+  const hLower = section.heading.toLowerCase();
   const isGapTable =
-    section.heading.toLowerCase().includes('gap-01') ||
-    section.heading.toLowerCase().includes('eap product gap') ||
-    section.heading.toLowerCase().includes('compensating');
+    hLower.includes('gap-01') ||
+    hLower.includes('eap product gap') ||
+    hLower.includes('compensating');
+  const isPatternOptionTable =
+    hLower.includes('comparison') ||
+    hLower.includes('isolation patterns') ||
+    hLower.includes('topology comparison');
   const headerBreadcrumb = isGapTable
     ? 'ACT III • EAP PRODUCT GAP REGISTER (GAP-01..05) & COMPENSATING CONTROLS'
-    : 'ACT III • ARCHITECTURAL TRADE-OFF & ISOLATION SELECTION MATRIX';
+    : isPatternOptionTable
+      ? 'ACT I • ARCHITECTURAL OPTIONS & PATTERN A / B / C DECISION MATRIX'
+      : 'ACT III • AUTOMATED SECURITY & MIGRATION VERIFICATION MATRIX';
   addHeaderBar(pptx, slide, kicker, headerBreadcrumb, 'COMPARISON-GRID • MATRIX');
 
   // Clean Executive Slide Title + Subtitle (Zero duplicate header/canvas title!)
@@ -1872,7 +1890,9 @@ function addComparisonTableSlide(
   slide.addText(
     isGapTable
       ? 'Production compensating controls in core-cymbal-agent/ closing all 5 multi-tenant EAP limitations with fail-closed gates.'
-      : 'Side-by-side Google Cloud Well-Architected trade-off analysis, isolation boundaries, and unit economics.',
+      : isPatternOptionTable
+        ? 'Side-by-side Google Cloud Well-Architected trade-off analysis, isolation boundaries, and unit economics.'
+        : 'Automated adversarial breach, sovereign silo kill-switch, and zero-downtime live tier migration verification gates.',
     {
       x: 0.45,
       y: HEADER_H + 0.52,
@@ -5807,7 +5827,7 @@ interface StateFlowPipelineSpec {
 
 const STATE_PIPELINE_BY_WS: Record<string, StateFlowPipelineSpec> = {
   WS1: {
-    slideTitle: 'WS1 • ACT II: DETERMINISTIC FAIL-CLOSED CIRCUIT BREAKERS & FEEDBACK LOOP',
+    slideTitle: 'WS1 • ACT III: DETERMINISTIC FAIL-CLOSED CIRCUIT BREAKERS & FEEDBACK LOOP',
     canvasTitle: 'Fail-Closed Exception Gates (HTTP 401/403/422/423/429) & Closed-Loop OTel Governance',
     nodes: [
       'Hop 1–2 Gate:\nOBO/DPoP & ARD',
@@ -5823,7 +5843,7 @@ const STATE_PIPELINE_BY_WS: Record<string, StateFlowPipelineSpec> = {
     footer: 'Workstream 1 Exception & Feedback Loop  •  Fail-Closed Circuit Breakers (HTTP 401/403/422/423/429) + Closed-Loop BigQuery OTel',
   },
   WS2: {
-    slideTitle: 'WS2 • ACT II: VALKEY TOKEN-BUCKET & 90% PREFIX CACHE FINOPS PIPELINE',
+    slideTitle: 'WS2 • ACT III: VALKEY TOKEN-BUCKET & 90% PREFIX CACHE FINOPS PIPELINE',
     canvasTitle: 'High-Density Noisy-Neighbor Throttling (120/600 RPM) & Shared Prefix Cache Flow',
     nodes: [
       'Pooled Tenant\nIngress Request',
@@ -5839,7 +5859,7 @@ const STATE_PIPELINE_BY_WS: Record<string, StateFlowPipelineSpec> = {
     footer: 'Workstream 2 Pattern A Pipeline  •  Valkey 120/600 RPM Bulkheads + 90% Shared Prefix Cache + 4k/8k Thinking Caps',
   },
   WS3: {
-    slideTitle: 'WS3 • ACT II: VPC-SC AIR-GAPPED INFERENCE & CONTINUOUS KMS ATTESTATION',
+    slideTitle: 'WS3 • ACT III: VPC-SC AIR-GAPPED INFERENCE & CONTINUOUS KMS ATTESTATION',
     canvasTitle: 'Zero-Egress Sovereign Inference & Sub-60s Cloud KMS CMEK Liveness Loop',
     nodes: [
       'Sovereign Tenant\nIngress & PAB',
@@ -5855,7 +5875,7 @@ const STATE_PIPELINE_BY_WS: Record<string, StateFlowPipelineSpec> = {
     footer: 'Workstream 3 Pattern B Pipeline  •  Restricted VIP Air-Gapped Inference + Continuous <60s KMS CMEK Liveness Loop',
   },
   WS4: {
-    slideTitle: 'WS4 • ACT II: UNIDIRECTIONAL PRIVATE SERVICE CONNECT & LIVE CUTOVER LOOP',
+    slideTitle: 'WS4 • ACT III: UNIDIRECTIONAL PRIVATE SERVICE CONNECT & LIVE CUTOVER LOOP',
     canvasTitle: 'Hub-and-Spoke PSC Traversal (/28 NAT) & Zero-Downtime State Synchronization',
     nodes: [
       'Shared Hub ALB\n& Tier Router',
@@ -5871,7 +5891,7 @@ const STATE_PIPELINE_BY_WS: Record<string, StateFlowPipelineSpec> = {
     footer: 'Workstream 4 Pattern C Pipeline  •  Unidirectional /28 PSC NAT Traversal + 0ms Firestore Pointer Cutover Loop',
   },
   WS5: {
-    slideTitle: 'WS5 • ACT II: EXECUTIVE 2-QUESTION TOPOLOGY SELECTOR & LIVE PROMOTION LOOP',
+    slideTitle: 'WS5 • ACT III: EXECUTIVE 2-QUESTION TOPOLOGY SELECTOR & LIVE PROMOTION LOOP',
     canvasTitle: 'Dynamic Architecture Selection & Lifecycle Promotion Across Patterns A, B & C',
     nodes: [
       'Q1: Contractual\nSilo / CMEK?',
@@ -7116,15 +7136,55 @@ async function buildWorkstreamDeck(spec: DeckSpec, manifest: ManifestItem[]) {
   let totalVertices = 0;
   let totalEdges = 0;
 
+  const cardSections = deck.sections.filter((s) => !s.layout || s.layout === 'cards');
+  const tableSections = deck.sections.filter((s) => s.layout === 'table' && s.tableRows && s.tableRows.length > 0);
+  const useCasesSection =
+    deck.sections.find((s) => (!s.layout || s.layout === 'cards') && /use cases|competing enterprise tenants|decision tree/i.test(s.heading)) ||
+    cardSections[1] ||
+    cardSections[0] ||
+    deck.sections[0];
+  const patternComparisonTable =
+    tableSections.find((s) => /comparison|isolation patterns|topology comparison/i.test(s.heading));
+  const productsUsedSection =
+    deck.sections.find((s) => (!s.layout || s.layout === 'cards') && /products used/i.test(s.heading)) ||
+    cardSections.find((s) => s !== useCasesSection) ||
+    cardSections[0];
+
   // =========================================================================
-  // ACT I: EXECUTIVE CONTEXT, MASTER ARCHITECTURE & QUANTITATIVE OUTCOMES (Slides 1–4)
+  // ACT I: EXECUTIVE CONTEXT, CUSTOMER USE CASES & ARCHITECTURAL OPTIONS (Slides 1–4)
   // =========================================================================
 
-  // Slide 1 (`title-cover`): Executive Cover & Architectural Thesis
+  // Slide 1 (`title-cover`): Executive Cover, Architectural Thesis & 3-Act Briefing Map
   addTitleSlide(pptx, deck, spec);
   slideCount++;
 
-  // Slide 2 (`decomposed-drawio-diagram`): Authoritative Figure 1 Official #78 Hub-and-Spoke Blueprint
+  // Slide 2 (`quad-metrics`): Executive Impact & Verification Scorecard (Why Carry On Listening)
+  addQuadMetricsSlide(pptx, spec);
+  totalVertices += 12;
+  slideCount++;
+
+  // Slide 3 (`three-pillar`): Customer Use Cases, Competing Tenant Profiles (FinVault vs. RetailStream) & Google Cloud Stack
+  if (useCasesSection) {
+    addSectionSlideDispatch(pptx, spec.key, useCasesSection, {
+      footer: `${spec.label}  •  Customer Use Cases, Competing Tenant Profiles & Google Cloud Stack`,
+    });
+    slideCount++;
+  }
+
+  // Slide 4 (`comparison-grid` / `three-pillar`): Architectural Options & Pattern A/B/C Decision Matrix (or Pattern Foundation Stack)
+  const act1Slide4Section = patternComparisonTable || productsUsedSection;
+  if (act1Slide4Section && act1Slide4Section !== useCasesSection) {
+    addSectionSlideDispatch(pptx, spec.key, act1Slide4Section, {
+      footer: `${spec.label}  •  Side-by-Side Architectural Options, Selection Rules & Google Cloud Stack`,
+    });
+    slideCount++;
+  }
+
+  // =========================================================================
+  // ACT II: REFERENCE ARCHITECTURE BLUEPRINT, TRUST BOUNDARIES & HAPPY-PATH EXECUTION (Slides 5–8)
+  // =========================================================================
+
+  // Slide 5 (`decomposed-drawio-diagram`): Authoritative Figure 1 Official #78 Hub-and-Spoke Blueprint
   const primaryId = spec.diagramIds[0];
   const mPrimary = manifest.find((x) => x.id === primaryId);
   if (!mPrimary) throw new Error(`Diagram ${primaryId} missing from diagrams_manifest.json`);
@@ -7151,85 +7211,57 @@ async function buildWorkstreamDeck(spec: DeckSpec, manifest: ManifestItem[]) {
   totalEdges += rDiag.edgeCount;
   slideCount += rDiag.slides;
 
-  // Slide 3 (`quad-metrics`): Executive Impact & Verification Scorecard
-  addQuadMetricsSlide(pptx, spec);
-  totalVertices += 12;
-  slideCount++;
-
-  // Slide 4 (`three-pillar`): Google Cloud Product Stack & Competing Tenant Use Cases
-  const cardSections = deck.sections.filter((s) => !s.layout || s.layout === 'cards');
-  const tableSections = deck.sections.filter((s) => s.layout === 'table' && s.tableRows && s.tableRows.length > 0);
-  const stackAndUseCasesSection: DeckSection = cardSections[0] || deck.sections[0];
-  if (stackAndUseCasesSection) {
-    addSectionSlideDispatch(pptx, spec.key, stackAndUseCasesSection, {
-      footer: `${spec.label}  •  Google Cloud Product Stack & Enterprise Tenant Use Cases`,
-    });
-    slideCount++;
-  }
-
-  // =========================================================================
-  // ACT II: DEEP-DIVE RUNTIME MECHANICS — BOUNDARIES, PAYLOADS, SEQUENCES & STATE LOOPS (Slides 5–8)
-  // =========================================================================
-
-  // Slide 5 (`architecture-zone-topology`): 3-Zone Physical & Logical Boundary Topology
+  // Slide 6 (`architecture-zone-topology`): 3-Zone Physical & Logical Boundary Decomposition
   const rZone = addArchitectureZoneTopologySlide(pptx, spec);
   totalVertices += rZone.shapes;
   totalEdges += rZone.connectors;
   slideCount++;
 
-  // Slide 6 (`payload-transformation-triptych`): 3-Stage Wire Payload & Context Transformation
+  // Slide 7 (`payload-transformation-triptych`): 3-Stage Wire Payload & Cryptographic Context Transformation
   const rPayload = addPayloadTransformationTriptychSlide(pptx, spec);
   totalVertices += rPayload.shapes;
   totalEdges += rPayload.connectors;
   slideCount++;
 
-  // Slide 7 (`uml-sequence-swimlane`): 5-Actor Chronological UML Sequence Lifeline (Steps 1–6)
+  // Slide 8 (`uml-sequence-swimlane`): 5-Actor Chronological Request Lifeline (Happy-Path Steps 1–6)
   const rUml = addUmlSequenceSwimlaneSlide(pptx, spec);
   totalVertices += rUml.shapes;
   totalEdges += rUml.connectors;
   slideCount++;
 
-  // Slide 8 (`async-state-flow-pipeline`): 4-Node State & Closed-Loop Governance Pipeline (Steps 1–5)
+  // =========================================================================
+  // ACT III: FAIL-CLOSED DEFENSE, COMPENSATING CONTROLS, LIVE CLOUD PROOF & ROLLOUT GOVERNANCE (Slides 9–14)
+  // =========================================================================
+
+  // Slide 9 (`async-state-flow-pipeline`): Deterministic Fail-Closed Exception Circuit Breakers (HTTP 401/403/422/423/429) & OTel Self-Healing
   const rPipe = addAsyncStateFlowPipelineSlide(pptx, spec);
   totalVertices += rPipe.shapes;
   totalEdges += rPipe.connectors;
   slideCount++;
 
-  // =========================================================================
-  // ACT III: TRADE-OFF MATRICES, LIVE CLOUD PROOF, ROLLOUT ROADMAP & GOVERNANCE (Slides 9–14)
-  // =========================================================================
-
-  // Slide 9 (`comparison-grid`): Primary Architectural Trade-Off & Security Verification Matrix
-  const primaryMatrixSection = tableSections[0] || deck.sections.find((s) => s !== stackAndUseCasesSection);
-  if (primaryMatrixSection) {
-    addSectionSlideDispatch(pptx, spec.key, primaryMatrixSection, {
-      footer: `${spec.label}  •  Side-by-Side Architectural Trade-Off & Security Verification Matrix`,
+  // Slide 10 (`comparison-grid` / `three-pillar`): EAP Product Gaps (GAP-01..05) & Automated Red-Team / Silo / Migration Verification Matrix
+  const act3Slide10Section =
+    tableSections.find((s) => s !== act1Slide4Section) ||
+    cardSections.find((s) => s !== useCasesSection && s !== act1Slide4Section);
+  if (act3Slide10Section) {
+    addSectionSlideDispatch(pptx, spec.key, act3Slide10Section, {
+      footer: `${spec.label}  •  Compensating Controls, Automated Security Verification & FinOps Economics`,
     });
     slideCount++;
   }
 
-  // Slide 10 (`comparison-grid` / `three-pillar`): Secondary Deep-Dive (GAP-01..05 / Terraform / FinOps)
-  const secondaryDeepDiveSection =
-    tableSections[1] || cardSections[2] || cardSections[1];
-  if (secondaryDeepDiveSection && secondaryDeepDiveSection !== primaryMatrixSection && secondaryDeepDiveSection !== stackAndUseCasesSection) {
-    addSectionSlideDispatch(pptx, spec.key, secondaryDeepDiveSection, {
-      footer: `${spec.label}  •  Compensating Controls, Terraform Blueprint & FinOps Economics`,
-    });
-    slideCount++;
-  }
-
-  // Slide 11 (`live-screenshot-callout`): Grounded Google Cloud Console & Live Runtime Proof
+  // Slide 11 (`live-screenshot-callout`): Grounded Google Cloud Console & Live Runtime Proof (20/20 PASS)
   const rShots = addLiveScreenshotCalloutSlide(pptx, spec);
   totalVertices += rShots.shapes;
   slideCount++;
 
-  // Slide 12 (`phased-roadmap-timeline`): 3-Phase Connected Implementation & Rollout Timeline
+  // Slide 12 (`phased-roadmap-timeline`): 3-Phase Connected Implementation & Rollout Timeline (Weeks 1–10)
   const rRoadmap = addPhasedRoadmapTimelineSlide(pptx, spec);
   totalVertices += rRoadmap.shapes;
   totalEdges += rRoadmap.connectors;
   slideCount++;
 
-  // Slide 13 (`strategic-operating-model-pillars`): 3-Pillar Strategic Operating Model & SLA Governance
+  // Slide 13 (`strategic-operating-model-pillars`): 3-Pillar Day-2 Platform Operating Model & RACI Team Ownership SLAs
   const rOpModel = addStrategicOperatingModelPillarsSlide(pptx, spec);
   totalVertices += rOpModel.shapes;
   slideCount++;
