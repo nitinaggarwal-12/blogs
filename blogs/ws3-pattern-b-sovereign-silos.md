@@ -2,7 +2,7 @@
 title: "Multi-tenant agentic AI system: Pattern B sovereign silos for regulated workloads"
 subtitle: "Isolate regulated banking, healthcare, and public-sector tenants inside dedicated Google Cloud projects with VPC Service Controls, IAM Principal Access Boundaries, Cloud KMS CMEK kill-switches, and air-gapped Gemma 3 on GKE"
 series: "Multi-Tenant Agentic AI on Google Cloud — Workstream 3 of 5"
-workstream: "Workstream 3 • Milestone 2 (Weeks 4–7) • Pattern B — Sovereign Silos"
+workstream: "Workstream 3 • Pattern B — Sovereign Silos for Regulated Workloads"
 authors: "Google Cloud Forward Deployed Engineering (FDE) & AI Platform Architecture Team"
 target_audience: "Cloud Architects, CISOs, and Compliance Leads in FinTech, Healthcare, and Public Sector"
 reading_time: "14 min read"
@@ -20,6 +20,40 @@ This document describes **Pattern B (Sovereign Silos)** for deploying a multi-te
 This document is part 3 of a 5-part series extending the official Google Cloud [Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) reference architecture (following [Part 1: Taxonomy & 5-Hop Baseline](ws1-reference-architecture-taxonomy-and-5hop-baseline.md) and [Part 2: Pattern A Pooled Architecture](ws2-pattern-a-pooled-architecture.md)).
 
 > **Key point:** Pattern B reuses the exact same 5-Hop agent governance code as Pattern A while adding a physical project and cryptographic boundary around each tenant. If a customer revokes or disables their Cloud KMS key version, every in-flight and queued agent turn, memory bank read, and AlloyDB query halts immediately with **`HTTP 423 Locked`**.
+
+## Use cases
+
+Pattern B is designed for regulated enterprise customers whose legal, compliance, or risk teams prohibit shared multi-tenant infrastructure ([3.1 Case Study & Solution Architecture](../workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md)):
+
+- **Regulated banking and capital markets (OCC/FDIC, EU DORA, PCI DSS Level 1):** Financial institutions such as **FinVault Bank** that require dedicated compute quotas, zero physical blast radius, and a customer-held Cloud KMS / Cloud EKM encryption kill-switch over all agent memory and audit logs.
+- **Sovereign healthcare and life sciences (HIPAA, GxP):** Healthcare providers processing Protected Health Information (PHI) that mandate dedicated VPC Service Controls perimeters and dedicated CMEK-encrypted AlloyDB clusters.
+- **Air-gapped defense, intelligence, and core ledger environments:** Workloads that prohibit sending prompts to shared multi-tenant model endpoints and require self-hosted open-weight models (**Gemma 3 27B IT**) running on private GKE GPU nodes with zero internet egress.
+
+## Design alternatives
+
+### Managed Vertex AI endpoints vs air-gapped Gemma 3 (27B) on private GKE inside a silo
+
+Within a Pattern B sovereign silo, architects can choose between managed Vertex AI foundation models and self-hosted open-weight models on GKE:
+
+| Criterion | Vertex AI Gemini 2.5 Pro / Gemini 2.5 Pro (Dedicated PT) (with VPC-SC + CMEK) | Air-Gapped Gemma 3 (27B IT) on Private GKE GPU Nodes |
+| :--- | :--- | :--- |
+| **Network boundary** | Accessed via Private Google Access inside the tenant's VPC-SC perimeter | Runs 100% inside the tenant's private GKE subnet (`0.0.0.0/0` egress blocked) |
+| **Model weights & residency** | Google-managed regional endpoints with Provisioned Throughput (PT) | Weights mirrored in tenant's CMEK-encrypted Artifact Registry |
+| **Reasoning & context window** | Highest multimodal reasoning capacity + 1M–2M context window | High-throughput open-weight reasoning for air-gapped core-ledger runbooks |
+| **Operational overhead** | Fully serverless managed endpoint | Tenant GKE GPU node pool lifecycle managed via Terraform |
+
+### 6-point sovereign silo verification matrix
+
+Every Pattern B silo is certified against six automated security tests ([`run_silo_security_tests.py`](../workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py)):
+
+| Test ID | Sovereign security assertion | Enforcing layer | Verified runtime result |
+| :--- | :--- | :--- | :--- |
+| **Silo Test 1** | Authorized FinVault turn inside `cymbal-finvault-silo-prod` | All 5 Hops + Sovereign Shell | **`HTTP 200 ALLOW`** on air-gapped `gemma-3-27b-it-vllm` |
+| **Silo Test 2** | Cross-silo identity replay (RetailStream principal targeting FinVault project) | **IAM Principal Access Boundary (PAB)** | Blocked with **`HTTP 403 PAB_VIOLATION`** |
+| **Silo Test 3** | Spoofed mTLS SPIFFE certificate (`spiffe://retailstream.com/...`) | **mTLS Ingress Pinning** | Blocked with **`HTTP 403 MTLS_SPIFFE_MISMATCH`** |
+| **Silo Test 4** | Tool attempting data exfiltration to `external-attacker-proj` | **VPC Service Controls (VPC-SC)** | Blocked with **`HTTP 403 VPC_SC_PERIMETER_VIOLATION`** |
+| **Silo Test 5** | Customer revokes/disables Cloud KMS key (`cmek_state = REVOKED`) | **Cloud KMS CMEK Kill-Switch (Hop 3)** | Halts immediately with **`HTTP 423 Locked`** |
+| **Silo Test 6** | Air-gapped GKE Gemma 3 inference with public internet disabled | **Private GKE + Artifact Registry** | Completes locally with `public_egress = False` |
 
 ## Architecture
 
@@ -120,40 +154,6 @@ This architecture uses the following Google Cloud products and open-source frame
 - [Cloud Key Management Service (Cloud KMS)](https://cloud.google.com/kms/docs): A cryptographic key management service supporting customer-managed encryption keys (CMEK) and instant `HTTP 423 Locked` tenant kill-switches.
 - [Security Command Center](https://cloud.google.com/security-command-center/docs), [Cloud Logging](https://cloud.google.com/logging/docs), and [BigQuery](https://cloud.google.com/bigquery/docs): Centralized posture monitoring, PII-redacted OpenTelemetry audit logging, and per-tenant token FinOps chargeback analytics.
 
-## Use cases
-
-Pattern B is designed for regulated enterprise customers whose legal, compliance, or risk teams prohibit shared multi-tenant infrastructure ([3.1 Case Study & Solution Architecture](../workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md)):
-
-- **Regulated banking and capital markets (OCC/FDIC, EU DORA, PCI DSS Level 1):** Financial institutions such as **FinVault Bank** that require dedicated compute quotas, zero physical blast radius, and a customer-held Cloud KMS / Cloud EKM encryption kill-switch over all agent memory and audit logs.
-- **Sovereign healthcare and life sciences (HIPAA, GxP):** Healthcare providers processing Protected Health Information (PHI) that mandate dedicated VPC Service Controls perimeters and dedicated CMEK-encrypted AlloyDB clusters.
-- **Air-gapped defense, intelligence, and core ledger environments:** Workloads that prohibit sending prompts to shared multi-tenant model endpoints and require self-hosted open-weight models (**Gemma 3 27B IT**) running on private GKE GPU nodes with zero internet egress.
-
-## Design alternatives
-
-### Managed Vertex AI endpoints vs air-gapped Gemma 3 (27B) on private GKE inside a silo
-
-Within a Pattern B sovereign silo, architects can choose between managed Vertex AI foundation models and self-hosted open-weight models on GKE:
-
-| Criterion | Vertex AI Gemini 2.5 Pro / Gemini 2.5 Pro (Dedicated PT) (with VPC-SC + CMEK) | Air-Gapped Gemma 3 (27B IT) on Private GKE GPU Nodes |
-| :--- | :--- | :--- |
-| **Network boundary** | Accessed via Private Google Access inside the tenant's VPC-SC perimeter | Runs 100% inside the tenant's private GKE subnet (`0.0.0.0/0` egress blocked) |
-| **Model weights & residency** | Google-managed regional endpoints with Provisioned Throughput (PT) | Weights mirrored in tenant's CMEK-encrypted Artifact Registry |
-| **Reasoning & context window** | Highest multimodal reasoning capacity + 1M–2M context window | High-throughput open-weight reasoning for air-gapped core-ledger runbooks |
-| **Operational overhead** | Fully serverless managed endpoint | Tenant GKE GPU node pool lifecycle managed via Terraform |
-
-### 6-point sovereign silo verification matrix
-
-Every Pattern B silo is certified against six automated security tests ([`run_silo_security_tests.py`](../workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py)):
-
-| Test ID | Sovereign security assertion | Enforcing layer | Verified runtime result |
-| :--- | :--- | :--- | :--- |
-| **Silo Test 1** | Authorized FinVault turn inside `cymbal-finvault-silo-prod` | All 5 Hops + Sovereign Shell | **`HTTP 200 ALLOW`** on air-gapped `gemma-3-27b-it-vllm` |
-| **Silo Test 2** | Cross-silo identity replay (RetailStream principal targeting FinVault project) | **IAM Principal Access Boundary (PAB)** | Blocked with **`HTTP 403 PAB_VIOLATION`** |
-| **Silo Test 3** | Spoofed mTLS SPIFFE certificate (`spiffe://retailstream.com/...`) | **mTLS Ingress Pinning** | Blocked with **`HTTP 403 MTLS_SPIFFE_MISMATCH`** |
-| **Silo Test 4** | Tool attempting data exfiltration to `external-attacker-proj` | **VPC Service Controls (VPC-SC)** | Blocked with **`HTTP 403 VPC_SC_PERIMETER_VIOLATION`** |
-| **Silo Test 5** | Customer revokes/disables Cloud KMS key (`cmek_state = REVOKED`) | **Cloud KMS CMEK Kill-Switch (Hop 3)** | Halts immediately with **`HTTP 423 Locked`** |
-| **Silo Test 6** | Air-gapped GKE Gemma 3 inference with public internet disabled | **Private GKE + Artifact Registry** | Completes locally with `public_egress = False` |
-
 ## Design considerations
 
 This section provides guidance for operating Pattern B according to the [Google Cloud Well-Architected Framework](https://cloud.google.com/architecture/framework).
@@ -203,7 +203,7 @@ This section provides guidance for operating Pattern B according to the [Google 
 <!-- E2E_FLOW_START -->
 ## Step-by-Step End-to-End Agentic & Technical Flows (WS3 Architecture Diagrams)
 
-Every architecture diagram in **WS3** is accompanied by a **3-slide sequence** in the editable presentation deck: **(1) 100% Native Editable Architecture Diagram (56 Shapes + 23 Connectors + Component Sidebar)** → **(2) Step-by-Step Agentic Flow (Steps ①–⑦)** → **(3) Component Architecture & Well-Architected Specification Table**.
+Every architecture blueprint in **WS3** follows a **strict Top-Down Architectural Zoom** inside the 14-slide Customer-Centric 3-Act presentation deck: **(1) Slide 5 (`L1` Conceptual 3-Zone Trust Boundary Overview)** → **(2) Slide 6 (`L2` Authoritative `Figure 1` Official `#78` Physical Blueprint: 56 Editable Shapes + 23 Connectors + 4-Zone Reference Sidebar)** → **(3) Slide 7 (`L3` 5-Actor Chronological Request Sequence)** → **(4) Slide 8 (`L4` 3-Stage Wire-Level JSON & Cryptographic Context Transformation)**.
 
 ### Diagram 5: Pattern B: Zero-Trust Sovereign Silos (VPC-SC, IAM PAB, CMEK Kill-Switch & Air-Gapped Gemma 3 on GKE) (`ws3-pattern-b-sovereign-silos-architecture`)
 * **Workstream & Focus**: Workstream 3 • Pattern B: Zero-Trust Sovereign Silos Architecture (WS 3.1) (`PATTERN B • SOVEREIGN SILOS`)

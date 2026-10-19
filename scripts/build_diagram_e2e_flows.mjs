@@ -2790,7 +2790,7 @@ function main() {
         totalDiagrams: flows.length,
         templateStandard: 'Official Google Cloud Architecture Center Hub-and-Spoke Layout Template (#78) • 56 Vertices • 23 Edges',
         slideSequenceStandard:
-          '3 Slides Per Diagram: (1) 100% Native Editable Diagram + Component Reference Sidebar -> (2) Step-by-Step Agentic Flow (Steps ①–⑦) -> (3) Component Architecture & Well-Architected Specification Table',
+          'Customer-Centric 3-Act Top-Down 14-Slide Architecture Deck: Act I (Slides 1–4 Hook, Scorecard, Use Cases & Options Matrix) -> Act II (Slide 5 L1 Logical Zones -> Slide 6 L2 Authoritative #78 Physical Blueprint -> Slide 7 L3 5-Actor Sequence -> Slide 8 L4 Wire Payload Transformation) -> Act III (Slides 9–14 Circuit Breakers, Verification Matrix, Live GCP Proof, 3-Stage Technical Solution Lifecycle, 3-Pillar Well-Architected Guarantees & Series Map)',
         diagrams: flows,
       },
       null,
@@ -2812,7 +2812,7 @@ function main() {
     const mdSection = [
       `## Step-by-Step End-to-End Agentic & Technical Flows (${wsKey} Architecture Diagrams)`,
       '',
-      `Every architecture diagram in **${wsKey}** is accompanied by a **3-slide sequence** in the editable presentation deck: **(1) 100% Native Editable Architecture Diagram (56 Shapes + 23 Connectors + Component Sidebar)** → **(2) Step-by-Step Agentic Flow (Steps ①–⑦)** → **(3) Component Architecture & Well-Architected Specification Table**.`,
+      `Every architecture blueprint in **${wsKey}** follows a **strict Top-Down Architectural Zoom** inside the 14-slide Customer-Centric 3-Act presentation deck: **(1) Slide 5 (\`L1\` Conceptual 3-Zone Trust Boundary Overview)** → **(2) Slide 6 (\`L2\` Authoritative \`Figure 1\` Official \`#78\` Physical Blueprint: 56 Editable Shapes + 23 Connectors + 4-Zone Reference Sidebar)** → **(3) Slide 7 (\`L3\` 5-Actor Chronological Request Sequence)** → **(4) Slide 8 (\`L4\` 3-Stage Wire-Level JSON & Cryptographic Context Transformation)**.`,
       '',
       ...wsFlows.map((f) => renderDiagramFlowMarkdown(f)),
     ].join('\n');
@@ -2825,13 +2825,13 @@ function main() {
     let gText = fs.readFileSync(masterGuidePath, 'utf8');
     gText = gText.replace(
       'per diagram [1:1 master image • decomposed editable slide with talking-points sidebar & speaker notes • component specification table]',
-      'per diagram [100% native editable diagram slide (56 shapes + 23 connectors + component sidebar) • step-by-step agentic flow slide • component architecture & Well-Architected specification table]'
+      'per workstream [14-slide 3-Act Top-Down deck: Slide 5 L1 Logical Zones • Slide 6 L2 Authoritative #78 Physical Blueprint (56 shapes + 23 connectors + 4-zone sidebar) • Slide 7 L3 5-Actor Sequence • Slide 8 L4 Wire Payload Transformation]'
     );
     fs.writeFileSync(masterGuidePath, gText, 'utf8');
     const allSection = [
       '## Appendix E — Complete Agentic & Technical Flows for All 14 Architecture Diagrams (WS1–WS5)',
       '',
-      'Every diagram across Workstreams 1–5 and Patterns A, B, and C follows a **3-slide sequence** in the editable presentations: **(1) Native Editable Diagram + Component Reference Sidebar** → **(2) Step-by-Step Agentic Flow** → **(3) Component Architecture & Well-Architected Specification Table**.',
+      'Every workstream across Workstreams 1–5 and Patterns A, B, and C follows a **Customer-Centric 3-Act Top-Down 14-Slide Architecture progression** in the editable presentations: **Act I (Slides 1–4 Business Hook, Scorecard, Customer Use Cases & Options Comparison Matrix)** → **Act II (Slide 5 L1 Logical Zones → Slide 6 L2 Native Editable `#78` Physical Blueprint → Slide 7 L3 5-Actor Sequence → Slide 8 L4 Wire Payload Transformation)** → **Act III (Slides 9–14 Circuit Breakers, Verification Matrix, Live GCP Proof, 3-Stage Technical Solution Lifecycle, 3-Pillar Well-Architected Guarantees & Series Map)**.',
       '',
       ...flows.map((f) => renderDiagramFlowMarkdown(f)),
     ].join('\n');

@@ -641,6 +641,10 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                                 s2_xml = zf.read("ppt/slides/slide2.xml").decode("utf-8", errors="ignore")
                                 if "QUAD-METRICS" not in s2_xml:
                                     decks_valid = False
+                            if "ppt/slides/slide4.xml" in zf.namelist():
+                                s4_xml = zf.read("ppt/slides/slide4.xml").decode("utf-8", errors="ignore")
+                                if "COMPARISON-GRID" not in s4_xml or "ARCHITECTURAL OPTIONS" not in s4_xml:
+                                    decks_valid = False
                             if "ppt/slides/slide5.xml" in zf.namelist():
                                 s5_xml = zf.read("ppt/slides/slide5.xml").decode("utf-8", errors="ignore")
                                 if "ARCHITECTURE-ZONE-TOPOLOGY" not in s5_xml:
@@ -656,6 +660,10 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                             if "ppt/slides/slide8.xml" in zf.namelist():
                                 s8_xml = zf.read("ppt/slides/slide8.xml").decode("utf-8", errors="ignore")
                                 if "PAYLOAD-TRANSFORMATION" not in s8_xml:
+                                    decks_valid = False
+                            if "ppt/slides/slide10.xml" in zf.namelist():
+                                s10_xml = zf.read("ppt/slides/slide10.xml").decode("utf-8", errors="ignore")
+                                if "COMPARISON-GRID" not in s10_xml:
                                     decks_valid = False
                             if "ppt/slides/slide11.xml" in zf.namelist():
                                 s11_xml = zf.read("ppt/slides/slide11.xml").decode("utf-8", errors="ignore")

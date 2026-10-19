@@ -4,7 +4,7 @@ subtitle: "Workstreams 1–5, 14 Google Cloud Architecture Center blueprints, 5 
 series: "Multi-Tenant Agentic AI on Google Cloud"
 canonical_architecture: "https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system"
 generated_by: "scripts/build_end_to_end_guide.py"
-generated_on: "2026-10-16"
+generated_on: "2026-10-19"
 status: "PUBLISH_READY"
 ---
 
@@ -2730,6 +2730,8 @@ Milestone 1 sign-off gate (2.4 §2), recommended by the blog as generic acceptan
 
 ---
 
+---
+
 ## Appendix A — Diagram index (all 14 Official Architecture Center blueprints, every file)
 
 | # | Deliverable | Title | Files | Editable deck |
@@ -2760,7 +2762,7 @@ Milestone 1 sign-off gate (2.4 §2), recommended by the blog as generic acceptan
 | **WS5** | [`ws5-wrap-up-editable-slides.pptx`](../slides/ws5-wrap-up-editable-slides.pptx) | 14 | 1 | 218 | 62 | [ws5-decision-guide-and-agentic-triad.md](../blogs/ws5-decision-guide-and-agentic-triad.md) |
 | **ALL** | [`geap-multi-tenancy-all-workstreams-editable-slides.pptx`](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx) | 26 | 14 | — | — | all five |
 
-Deck structure is identical everywhere: *Title → Executive TL;DR → section narrative → per diagram [1:1 master image • decomposed editable slide with talking-points sidebar & speaker notes • component specification table] → Key takeaways → Asset index*. Preview any deck without PowerPoint via `python3 -B scripts/render_pptx_preview.py`.
+Deck structure is identical everywhere: *Title → Executive TL;DR → section narrative → per workstream [14-slide 3-Act Top-Down deck: Slide 5 L1 Logical Zones • Slide 6 L2 Authoritative #78 Physical Blueprint (56 shapes + 23 connectors + 4-zone sidebar) • Slide 7 L3 5-Actor Sequence • Slide 8 L4 Wire Payload Transformation] → Key takeaways → Asset index*. Preview any deck without PowerPoint via `python3 -B scripts/render_pptx_preview.py`.
 
 ## Appendix C — Glossary
 
@@ -2793,7 +2795,7 @@ Generated from [`diagrams/diagrams_manifest.json`](../diagrams/diagrams_manifest
 <!-- E2E_FLOW_START -->
 ## Appendix E — Complete Agentic & Technical Flows for All 14 Architecture Diagrams (WS1–WS5)
 
-Every diagram across Workstreams 1–5 and Patterns A, B, and C follows a **3-slide sequence** in the editable presentations: **(1) Native Editable Diagram + Component Reference Sidebar** → **(2) Step-by-Step Agentic Flow** → **(3) Component Architecture & Well-Architected Specification Table**.
+Every workstream across Workstreams 1–5 and Patterns A, B, and C follows a **Customer-Centric 3-Act Top-Down 14-Slide Architecture progression** in the editable presentations: **Act I (Slides 1–4 Business Hook, Scorecard, Customer Use Cases & Options Comparison Matrix)** → **Act II (Slide 5 L1 Logical Zones → Slide 6 L2 Native Editable `#78` Physical Blueprint → Slide 7 L3 5-Actor Sequence → Slide 8 L4 Wire Payload Transformation)** → **Act III (Slides 9–14 Circuit Breakers, Verification Matrix, Live GCP Proof, 3-Stage Technical Solution Lifecycle, 3-Pillar Well-Architected Guarantees & Series Map)**.
 
 ### Diagram 1: Multi-Tenant Agentic AI Taxonomy: Pooled (Pattern A), Sovereign Silos (Pattern B) & Hybrid (Pattern C) (`ws1-multi-tenant-taxonomy-overview`)
 * **Workstream & Focus**: Workstream 1 • Multi-Tenant Reference Architecture Taxonomy (WS 1.1) (`PATTERNS A, B & C TAXONOMY`)

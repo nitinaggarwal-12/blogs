@@ -724,15 +724,15 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
   <title>Draw.io Interactive Architecture Studio — {safe_id}</title>
   <style>
     * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-    body {{ font-family: 'Google Sans', Roboto, -apple-system, BlinkMacSystemFont, sans-serif; background: #0f172a; color: #f8fafc; height: 100vh; width: 100vw; overflow: hidden; display: flex; flex-direction: column; }}
-    .studio-bar {{ min-height: 44px; background: #0f172a; border-bottom: 1px solid #334155; display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }}
+    body {{ font-family: 'Google Sans', Roboto, -apple-system, BlinkMacSystemFont, sans-serif; background: #f8fafc; color: #0f172a; height: 100vh; width: 100vw; overflow: hidden; display: flex; flex-direction: column; }}
+    .studio-bar {{ min-height: 44px; background: #ffffff; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }}
     .studio-left {{ display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }}
     .studio-badge {{ background: #1d4ed8; color: #ffffff; font-size: 10.5px; font-weight: 700; padding: 4px 8px; border-radius: 5px; white-space: nowrap; letter-spacing: 0.03em; }}
-    .studio-select {{ background: #1e293b; color: #f8fafc; border: 1px solid #475569; border-radius: 6px; padding: 5px 9px; font-size: 12px; font-weight: 600; min-width: 260px; }}
+    .studio-select {{ background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 6px; padding: 5px 9px; font-size: 12px; font-weight: 600; min-width: 260px; }}
     .studio-right {{ display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }}
-    .studio-status {{ font-size: 11px; color: #93c5fd; margin-right: 4px; font-weight: 600; }}
-    .studio-btn {{ background: #1e293b; color: #e2e8f0; border: 1px solid #475569; border-radius: 6px; padding: 4px 9px; font-size: 11px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }}
-    .studio-btn:hover {{ background: #334155; }}
+    .studio-status {{ font-size: 11px; color: #1d4ed8; margin-right: 4px; font-weight: 600; }}
+    .studio-btn {{ background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 6px; padding: 4px 9px; font-size: 11px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }}
+    .studio-btn:hover {{ background: #f1f5f9; }}
     .studio-btn.active {{ background: #2563eb; border-color: #3b82f6; color: #ffffff; }}
     .studio-btn.primary {{ background: #16a34a; border-color: #15803d; color: #ffffff; }}
     .studio-btn.primary:hover {{ background: #15803d; }}
@@ -748,14 +748,14 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     .mx-handle.tr {{ top: -5px; right: -5px; }}
     .mx-handle.bl {{ bottom: -5px; left: -5px; }}
     .mx-handle.br {{ bottom: -5px; right: -5px; }}
-    .inspector-sidebar {{ width: {inspector_w}; background: #0f172a; border-left: 1px solid #334155; color: #f8fafc; display: flex; flex-direction: column; overflow-y: auto; padding: 12px; gap: 10px; flex-shrink: 0; }}
-    .insp-card {{ background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 10px 12px; }}
-    .insp-title {{ font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; margin-bottom: 8px; }}
+    .inspector-sidebar {{ width: {inspector_w}; background: #ffffff; border-left: 1px solid #e2e8f0; color: #0f172a; display: flex; flex-direction: column; overflow-y: auto; padding: 12px; gap: 10px; flex-shrink: 0; }}
+    .insp-card {{ background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; }}
+    .insp-title {{ font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; margin-bottom: 8px; }}
     .insp-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }}
-    .insp-field label {{ display: block; font-size: 10.5px; color: #94a3b8; margin-bottom: 2px; }}
-    .insp-field input, .insp-field textarea {{ width: 100%; background: #0f172a; color: #f8fafc; border: 1px solid #475569; border-radius: 4px; padding: 5px 7px; font-size: 11.5px; font-family: monospace; }}
-    .edge-pill {{ background: #0f172a; border: 1px solid #334155; border-radius: 5px; padding: 6px 8px; font-size: 11px; margin-bottom: 5px; line-height: 1.35; }}
-    .edge-pill code {{ color: #38bdf8; font-weight: 700; }}
+    .insp-field label {{ display: block; font-size: 10.5px; color: #475569; margin-bottom: 2px; }}
+    .insp-field input, .insp-field textarea {{ width: 100%; background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 4px; padding: 5px 7px; font-size: 11.5px; font-family: monospace; }}
+    .edge-pill {{ background: #ffffff; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px; font-size: 11px; margin-bottom: 5px; line-height: 1.35; color: #0f172a; }}
+    .edge-pill code {{ color: #1d4ed8; font-weight: 700; }}
     #drawio-studio-iframe {{ flex: 1; width: 100%; height: 100%; border: 0; background: #ffffff; display: none; }}
   </style>
 </head>
@@ -797,15 +797,15 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     <div class="inspector-sidebar">
       <div class="insp-card">
         <div class="insp-title">Draw.io mxGraphModel Summary</div>
-        <div style="font-size:12px;line-height:1.5;color:#e2e8f0;">
-          <div>&#8226; Vertices: <strong id="insp-total-vertices" style="color:#38bdf8;">56</strong> editable <code>&lt;mxCell vertex="1"&gt;</code></div>
-          <div>&#8226; Connectors: <strong id="insp-total-edges" style="color:#4ade80;">23</strong> vertex-bound <code>&lt;mxCell edge="1"&gt;</code></div>
-          <div style="font-size:11px;color:#94a3b8;margin-top:4px;">Click or drag any shape on the canvas to reposition it and rubber-band its attached Draw.io connectors in real time.</div>
+        <div style="font-size:12px;line-height:1.5;color:#334155;">
+          <div>&#8226; Vertices: <strong id="insp-total-vertices" style="color:#1d4ed8;">56</strong> editable <code>&lt;mxCell vertex="1"&gt;</code></div>
+          <div>&#8226; Connectors: <strong id="insp-total-edges" style="color:#15803d;">23</strong> vertex-bound <code>&lt;mxCell edge="1"&gt;</code></div>
+          <div style="font-size:11px;color:#475569;margin-top:4px;">Click or drag any shape on the canvas to reposition it and rubber-band its attached Draw.io connectors in real time.</div>
         </div>
       </div>
       <div class="insp-card" id="insp-selected-card">
         <div class="insp-title">Selected &lt;mxCell&gt; Vertex Inspector</div>
-        <div style="margin-bottom:8px;font-size:11.5px;">ID: <code id="insp-cell-id" style="color:#facc15;font-weight:700;">card_rc_alb</code></div>
+        <div style="margin-bottom:8px;font-size:11.5px;">ID: <code id="insp-cell-id" style="color:#b45309;font-weight:700;">card_rc_alb</code></div>
         <div class="insp-grid" style="margin-bottom:8px;">
           <div class="insp-field"><label>X (px)</label><input type="number" id="insp-x" onchange="applyInspectorGeometry()" /></div>
           <div class="insp-field"><label>Y (px)</label><input type="number" id="insp-y" onchange="applyInspectorGeometry()" /></div>

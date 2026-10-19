@@ -267,6 +267,12 @@ function buildBlogMarkdown(spec) {
   }
   parts.push(`> ${spec.keyPointNote}`);
   parts.push('');
+  // Act I — Outside-In Customer Use Cases & Strategic Design Alternatives / Comparison Matrix
+  parts.push(spec.useCasesMd);
+  parts.push('');
+  parts.push(spec.alternativesMd);
+  parts.push('');
+  // Act II — Top-Down Architecture (4-Zone Logical Overview -> Figure 1 #78 Physical Blueprint -> 7-Step Chronological Callout Flow)
   parts.push('## Architecture');
   parts.push('');
   parts.push(spec.archIntro);
@@ -291,10 +297,7 @@ function buildBlogMarkdown(spec) {
 
   parts.push(COMMON_PRODUCTS_MD);
   parts.push('');
-  parts.push(spec.useCasesMd);
-  parts.push('');
-  parts.push(spec.alternativesMd);
-  parts.push('');
+  // Act III — Well-Architected Framework Solution Guarantees, Lifecycle & Next Steps
   parts.push(spec.considerationsMd);
   parts.push('');
   parts.push(spec.whatsNextMd);

@@ -70,68 +70,92 @@
       ]
     },
     {
-      "heading": "Use cases — Multi-Tier SaaS Serving Both Pooled Standard & Sovereign Enterprise",
+      "heading": "Use cases — Multi-Tier SaaS Serving Standard Pool & Enterprise Spokes on One Google Cloud Stack",
       "layout": "cards",
       "bullets": [
-        "Standard Commercial Tier Profile (RetailStream Baseline): Authenticates via Microsoft Entra ID, runs in the shared Pattern A pool with a 4,000-token thinking cap, and shares an AlloyDB RLS cluster ($42/mo).",
-        "Regulated Enterprise Tier Profile (FinVault Spoke): Authenticates via Google Workspace, invokes private Agent Alpha with an 8,000-token budget, and mandates a dedicated CMEK-encrypted spoke project ($1,850/mo).",
-        "Why Maintaining Two Separate Products Fails: Operating disconnected Pooled and Siloed platforms doubles CI/CD maintenance, fragments the URL/API surface, and forces offline downtime when customers upgrade tiers.",
-        "The Pattern C Solution (Route Isolation, Not Product Duplication): Centralizes identity, WAF, and routing in a shared Hub while dynamically dispatching execution to the shared pool or dedicated PSC spokes."
+        "Unified SaaS Front Door (`cymbal-hybrid-hub-prod`): Standard and Enterprise customers connect to one public ALB hostname (`agents.cymbal.cloud`), where Cloud Armor, IAP, and the Cloud Run Hybrid Router resolve tier routes in Firestore.",
+        "Standard Commercial Tier Profile (RetailStream Baseline -> Live Promotion): Starts in the shared Pattern A pool ($42/mo, 4,000-token cap, 120 RPM, AlloyDB RLS) and upgrades live mid-conversation into a dedicated Enterprise PSC spoke (`0` dropped turns).",
+        "Regulated Enterprise Spoke Profile (FinVault Spoke `10.10.0.50`): Traverses a unidirectional Private Service Connect endpoint into a dedicated VPC-SC & Cloud KMS CMEK spoke project ($1,850/mo, 8,000-token budget, 600 RPM, private Agent Alpha).",
+        "Unified Hybrid Google Cloud Stack (`4.6` Dual-Provider Terraform): Combines Cloud Armor, IAP OBO/DPoP, Federated Agent Registry, Firestore Route Table, PSC `ServiceAttachment` (`/24` NAT), Datastream CDC, AlloyDB, and BigQuery OTel."
       ],
       "specs": [
         {
-          "stack": "Route: pool://cymbal-shared-pooled-runtime-v2 • AlloyDB RLS • 90% Prefix Cache",
-          "sla": "Tier: STANDARD • 120 RPM • 4,000 Thinking Tokens • $42/mo Unit Cost",
-          "tag": "Standard Pooled Tier"
+          "stack": "Global ALB • Cloud Armor • IAP STS • Cloud Run Hybrid Router • Firestore Route Table",
+          "sla": "Single SaaS Codebase & URL • Sub-2ms Cryptographic Tier Lookup (pool:// vs. psc://)",
+          "tag": "1. Unified Hybrid Control Plane"
         },
         {
-          "stack": "Route: psc://finvault-agent-spoke-psc • Dedicated VPC-SC & CMEK Vault",
-          "sla": "Tier: ENTERPRISE • 600 RPM • 8,000 Thinking Tokens • $1,850/mo Dedicated SLA",
-          "tag": "Enterprise Sovereign Spoke"
+          "stack": "Route: pool://shared-runtime -> Live 3-Phase Promotion -> psc://10.10.0.51 (RetailStream)",
+          "sla": "Starts at $42/mo (4k Cap / 120 RPM) • Upgrades Live to Enterprise Spoke with 0 Dropped Chats",
+          "tag": "2. Land-and-Expand Tenant (RetailStream)"
         },
         {
-          "stack": "Single 80% Reusable ADK 2.0 Codebase • Unified Public Domain & OAuth Redirects",
-          "sla": "Eliminates Dual-Product Engineering Overhead & Customer Re-Onboarding Friction",
-          "tag": "Zero Product Fragmentation"
+          "stack": "Route: psc://10.10.0.50 -> finvault-agent-spoke-psc (ACCEPT_MANUAL) • VPC-SC & CMEK",
+          "sla": "Tier: ENTERPRISE ($1,850/mo) • 600 RPM • 8,000 Thinking Budget • Reuses 10.40.0.0/20 CIDR",
+          "tag": "3. Sovereign Spoke Tenant (FinVault)"
         },
         {
-          "stack": "Firestore Per-Tenant Routing Metadata (`isolation_pattern`, `target_endpoint`)",
-          "sla": "Turns Standard -> Enterprise Upsells into an Instant Software-Defined Flip",
-          "tag": "Frictionless Revenue Expansion"
+          "stack": "Private Service Connect (PSC) • Datastream CDC • AlloyDB RLS/CMEK • 4.6 Terraform Blueprint",
+          "sla": "74% Lower Portfolio Cloud TCO (950 Pool + 50 Spokes) • 4/4 Live Migration Tests PASS",
+          "tag": "4. Unified Pattern C Hybrid Stack"
         }
       ]
     },
     {
-      "heading": "Design alternatives — Terraform Hybrid PSC Blueprint & Portfolio FinOps",
-      "layout": "cards",
-      "bullets": [
-        "Dual-Provider Terraform Blueprint (`4.6-terraform-hybrid-psc-blueprint`): Uses `google.hub` and `google.spoke` provider aliases to wire the Hub VPC, Spoke `/24` PSC NAT subnet, Producer ServiceAttachment, and Consumer Endpoint.",
-        "Instance-Scoped Profile Mutation (`Forensic Check F-09`): Deep-copies tenant profiles per runtime instance so live tier upgrades never mutate global module state or bleed across concurrent test suites.",
-        "90-Minute Hands-On Hybrid Codelab (`4.4-hands-on-codelab.md`): Walks architects through building the Firestore tier router, establishing the unidirectional PSC bridge, and executing a live mid-session tier upgrade.",
-        "Blended Portfolio Economics (74% Total Cloud Savings): Combines 90% shared caching margins on 950 Standard tenants with dedicated sovereign SLAs on 50 Enterprise tenants behind one unified SaaS brand."
+      "heading": "Design alternatives — Cross-Project Connectivity & Live Tier Migration Comparison (Pattern C vs. Legacy)",
+      "layout": "table",
+      "tableHeaders": [
+        "Hybrid Connectivity Dimension",
+        "Dual Disconnected Products (Pool + Silo Fork)",
+        "Legacy VPC Network Peering Hub-and-Spoke",
+        "Pattern C: Private Service Connect (PSC) + Live Migrator"
       ],
-      "specs": [
-        {
-          "stack": "workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf",
-          "sla": "Outputs `spoke_psc_service_attachment_uri` & `hub_psc_consumer_ip` (10.10.0.50)",
-          "tag": "Terraform PSC Automation"
-        },
-        {
-          "stack": "core-cymbal-agent/runtime_pipeline.py • copy.deepcopy(TENANT_PROFILES)",
-          "sla": "Forensic Check F-09 PASS: Zero Global State Bleed During Live Tier Upgrades",
-          "tag": "Thread-Safe State Isolation"
-        },
-        {
-          "stack": "workstream-4-pattern-c-hybrid/4.4-hands-on-codelab.md & 4.5 Migration Suite",
-          "sla": "Verifies All 4 Live Migration Gates (`SHADOW_SYNC` -> `DRAIN_AND_VERIFY`)",
-          "tag": "Hands-On Codelab & Demo"
-        },
-        {
-          "stack": "950 Standard Pooled Tenants ($42/mo) + 50 Enterprise PSC Spokes ($1,850/mo)",
-          "sla": "74% Lower Total Cloud Spend vs. All-Siloed • 99.99% Enterprise Uptime SLA",
-          "tag": "Portfolio FinOps Impact"
-        }
-      ]
+      "tableColW": [
+        2.25,
+        3.25,
+        3.45,
+        3.583
+      ],
+      "tableRows": [
+        [
+          "SaaS front door & API surface",
+          "Two separate URLs & codebases (`app.cymbal.cloud` vs. `{tenant}.cymbal.cloud`)",
+          "Single Hub ALB, but flat Layer-3 routed network across tenant projects",
+          "Single SaaS URL (`agents.cymbal.cloud`) + Hop 1 Firestore cryptographic tier router"
+        ],
+        [
+          "Cross-project network topology",
+          "Public internet egress or manual per-customer IPsec VPN tunnels",
+          "Bidirectional VPC Peering (hard `25-peer` quota limit per Hub VPC)",
+          "Unidirectional PSC Consumer (`10.10.0.50`) -> Spoke `ServiceAttachment` (`1,000+` spokes)"
+        ],
+        [
+          "IP address & CIDR management",
+          "Manual non-overlapping CIDR spreadsheet per enterprise customer",
+          "Every spoke requires globally unique RFC 1918 subnets (CIDR exhaustion)",
+          "Zero CIDR overlap: `/24` PSC NAT allows all spokes to reuse identical `10.40.0.0/20`"
+        ],
+        [
+          "Lateral movement blast radius",
+          "Compromised shared control plane can reach external endpoints",
+          "Bidirectional L3 routes allow spoke-to-hub packet initiation if spoke is breached",
+          "Strictly unidirectional Hub -> Spoke NAT (`ACCEPT_MANUAL`, hub project allowlist)"
+        ],
+        [
+          "Standard -> Enterprise upgrade",
+          "Offline DB dump/restore window; new URL, new API keys & OAuth 3LO re-consent",
+          "Manual DB migration + DNS cutover; active user chat sessions dropped",
+          "3-phase live migrator (`SHADOW_SYNC` -> `ATOMIC_CUTOVER` -> `0` dropped sessions)"
+        ],
+        [
+          "1,000-tenant portfolio FinOps",
+          "2x engineering maintenance overhead + high customer churn on upgrade friction",
+          "Hard scaling ceiling at 25 Enterprise tenants per Hub VPC network",
+          "`74%` lower TCO (`$132.4k/mo` vs. `$1.85M/mo` all-silo) + `4/4` migration tests PASS"
+        ]
+      ],
+      "bullets": [],
+      "specs": []
     },
     {
       "heading": "Design considerations — 5-Hop Pipeline Across Hybrid Pooled & PSC Paths",
@@ -232,28 +256,8 @@
           "Test 4 PASS: `dropped_sessions == 0`, 8,000 thinking budget active, CMEK encryption verified"
         ]
       ],
-      "bullets": [
-        "Phase 1 (`SHADOW_SYNC`): Provisions the target Enterprise spoke project, Cloud KMS key, and PSC attachment while streaming AlloyDB RLS rows and L1–L5 Memory Bank state to 0ms replication lag.",
-        "Phase 2 (`ATOMIC_CUTOVER`): Executes a single atomic Firestore transaction flipping the tenant’s route from `pool://` to `psc://`, unlocking the 8,000-token budget and CMEK binding simultaneously.",
-        "Phase 3 (`DRAIN_AND_VERIFY`): Drains any in-flight pooled turn without interruption and routes the very next message in the same active `session_id` into the dedicated PSC spoke (`0` dropped sessions)."
-      ],
-      "specs": [
-        {
-          "stack": "Terraform Spoke Provisioner + Continuous CDC Replication (AlloyDB + Memory Bank)",
-          "sla": "Converges to replication_lag_ms == 0 While Tenant Continues Chatting in Pool",
-          "tag": "Phase 1: Shadow Sync"
-        },
-        {
-          "stack": "Firestore Transactional Update (`pattern_c_hybrid_router_and_migrator.py`)",
-          "sla": "Flips Route, Quota (120->600 RPM), Budget (4k->8k) & CMEK Atomically",
-          "tag": "Phase 2: Atomic Cutover"
-        },
-        {
-          "stack": "Graceful Cloud Run Connection Drain + Session ID Continuity (`sess-live-upgrade-99`)",
-          "sla": "4/4 Migration Suite Assertions PASS • Zero Re-Authentication Required",
-          "tag": "Phase 3: Drain & Verify"
-        }
-      ]
+      "bullets": [],
+      "specs": []
     }
   ],
   "diagrams": [

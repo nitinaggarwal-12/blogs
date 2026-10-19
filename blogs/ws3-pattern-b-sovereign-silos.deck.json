@@ -70,68 +70,92 @@
       ]
     },
     {
-      "heading": "Use cases — Regulated Banking, Healthcare & Sovereign Cloud Workloads",
+      "heading": "Use cases — Regulated Banking, Healthcare & Defense on Sovereign Google Cloud Stack",
       "layout": "cards",
       "bullets": [
-        "The Regulated CISO Threat Model: Tier-1 banks and healthcare systems must prove that even an application-layer software bug cannot expose their memory or database rows to another tenant.",
-        "Four Non-Negotiable Sovereign Requirements: Zero physical blast radius, cryptographically enforced network non-exfiltration (VPC-SC), customer-controlled KMS kill-switches, and optional air-gapped open-weight models.",
-        "Dual Sovereign Vault Verification: Pattern B provisions physically separate Google Cloud projects (`cymbal-finvault-silo-prod` and `cymbal-retailstream-silo-prod`) with zero shared databases or encryption keys.",
-        "Preserve Pattern A for Commercial Tiers: Keep standard commercial customers on Pattern A ($42/mo) for 90% shared caching efficiency, and reserve Pattern B ($1,850/mo) for regulated enterprise contracts."
+        "The Regulated CISO Threat Model (Zero Physical Blast Radius): Tier-1 banks (OCC/FFIEC, EU DORA) and healthcare systems (HIPAA) mandate physically separate GCP projects (`cymbal-{tenant}-silo-prod`) with zero shared compute or databases.",
+        "FinVault Bank Sovereign Vault (`cymbal-finvault-silo-prod`): Runs air-gapped Gemma 3 (27B IT) on private GKE GPU nodes (`172.16.0.2/28`, 0 public IPs) alongside private Agent Alpha (Gemini 2.5 Pro Dedicated PT) and CMEK AlloyDB.",
+        "RetailStream Sovereign Vault (`cymbal-retailstream-silo-prod`): Demonstrates dual-silo parity with its own VPC Service Controls perimeter, IAM Principal Access Boundary (PAB), Entra ID 3LO connectors, and independent Cloud KMS CMEK key ring.",
+        "3-Wall Hardware Perimeter & <60s CMEK Kill-Switch Stack: BeyondCorp mTLS, IAM PAB, VPC-SC, Cloud KMS CMEK (`HTTP 423 Locked`), Model Armor, Cloud DLP, AlloyDB, and BigQuery wrap the unchanged 80% reusable ADK 2.0 core."
       ],
       "specs": [
         {
-          "stack": "Physical Project Isolation • Dedicated VPC • Dedicated AlloyDB & Memory Bank",
-          "sla": "Reduces Cross-Tenant Blast Radius to Absolute Zero at the Hypervisor/Project Layer",
-          "tag": "Zero Physical Blast Radius"
+          "stack": "Dedicated Per-Tenant GCP Project • Dedicated VPC (10.30.0.0/20) • Dedicated AlloyDB & Memory Bank",
+          "sla": "Reduces Cross-Tenant Blast Radius to Absolute Zero at the GCP Project & Hypervisor Layer",
+          "tag": "1. Regulated CISO Sovereignty Mandate"
         },
         {
-          "stack": "VPC Service Controls (VPC-SC) • IAM PAB • Cloud KMS CMEK • Air-Gapped GKE",
-          "sla": "Hardware & Control-Plane Enforcement Independent of Application Code",
-          "tag": "4 Sovereign Mandates"
+          "stack": "cymbal-finvault-silo-prod • Air-Gapped GKE Gemma 3 (27B) • Gemini 2.5 Pro PT • finvault-silo-cmek",
+          "sla": "Tier: SOVEREIGN ($1,850/mo) • Zero Public Egress • <60s HTTP 423 CMEK Revocation + L1 Purge",
+          "tag": "2. FinVault Bank Sovereign Vault"
         },
         {
-          "stack": "cymbal-finvault-silo-prod (FinVault) • cymbal-retailstream-silo-prod (RetailStream)",
-          "sla": "Independent KMS Key Rings, Independent VPC-SC Perimeters & Independent Audit Logs",
-          "tag": "Dual-Tenant Silo Parity"
+          "stack": "cymbal-retailstream-silo-prod • Independent VPC-SC Perimeter • Independent IAM PAB & KMS Key Ring",
+          "sla": "Verified Dual-Tenant Silo & CMEK Kill-Switch Parity (Forensic Gate F-08 & Silo Test 6 PASS)",
+          "tag": "3. RetailStream Sovereign Vault"
         },
         {
-          "stack": "Tiered SaaS Portfolio: Pattern A ($42/mo) + Pattern B ($1,850/mo)",
-          "sla": "Aligns Dedicated Infrastructure Spend Directly with Enterprise Contract ACV",
-          "tag": "Portfolio Unit Economics"
+          "stack": "BeyondCorp mTLS • IAM PAB • VPC-SC • Cloud KMS CMEK • Model Armor • Cloud DLP • 3.6 Terraform",
+          "sla": "80% Shared ADK 2.0 Code + 20% Declarative Sovereign Shell • 6/6 Sovereign Security Tests PASS",
+          "tag": "4. Unified Pattern B Sovereign Stack"
         }
       ]
     },
     {
-      "heading": "Design alternatives — 4-Stage Vault Provisioning, Terraform Blueprint & Economics",
-      "layout": "cards",
-      "bullets": [
-        "4-Stage Automated Silo Provisioner: Programmatically creates the dedicated tenant GCP project, enables 8 core APIs, provisions the 90-day rotating Cloud KMS key, and binds VPC-SC + IAM PAB.",
-        "1-Click Terraform Silo Blueprint (`3.6-terraform-silo-blueprint`): Deploys the complete sovereign stack—KMS key ring, VPC-SC service perimeter, isolated VPC (`10.30.0.0/20`), and private air-gapped GKE cluster.",
-        "Predictable Enterprise Unit Economics ($1,850/mo Floor): Dedicated AlloyDB, VPC-SC, and private GKE nodes establish a clear cost floor designed for $50k–$500k+/year regulated enterprise contracts.",
-        "Blending Pattern A and Pattern B into Pattern C: Workstream 4 demonstrates how to front both high-margin Pattern A pools and dedicated Pattern B silos behind one unified SaaS domain."
+      "heading": "Design alternatives — Sovereign Silo Architecture & Model Hosting Comparison (Pattern B Options)",
+      "layout": "table",
+      "tableHeaders": [
+        "Sovereign Dimension",
+        "Pattern A: Logical Pool ($42/mo Baseline)",
+        "Pattern B1: VPC-SC + Vertex AI Dedicated PT",
+        "Pattern B2: VPC-SC + Air-Gapped GKE Gemma 3"
       ],
-      "specs": [
-        {
-          "stack": "Stage 1: Project/APIs -> Stage 2: Cloud KMS CMEK -> Stage 3: VPC-SC/PAB -> Stage 4: Audit",
-          "sla": "Zero-Touch Onboarding Pipeline with Automated 6-Test Compliance Sign-Off",
-          "tag": "4-Stage Silo Onboarding"
-        },
-        {
-          "stack": "workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint (main.tf, variables.tf)",
-          "sla": "Provisions KMS CMEK, Access Context Manager VPC-SC & Private GKE Gemma 3",
-          "tag": "Terraform Silo Blueprint"
-        },
-        {
-          "stack": "Dedicated AlloyDB + Private GKE GPU Pool (Optional Add-On) + Dedicated Quota",
-          "sla": "$1,850/mo Baseline Infrastructure Cost • Zero Noisy-Neighbor Contention",
-          "tag": "Sovereign Tier FinOps"
-        },
-        {
-          "stack": "Next Workstream: Pattern C Dynamic Hybrid Router & Private Service Connect",
-          "sla": "Connects Central SaaS Hub to Sovereign Spokes via Unidirectional PSC Tunnels",
-          "tag": "Bridge to Workstream 4"
-        }
-      ]
+      "tableColW": [
+        2.25,
+        3.25,
+        3.5,
+        3.533
+      ],
+      "tableRows": [
+        [
+          "Cloud project & blast radius",
+          "Single shared GCP project (`ramp-portal-dev`); logical software isolation",
+          "Dedicated GCP project (`cymbal-{tenant}-silo-prod`); zero shared compute or DB",
+          "Dedicated GCP project + air-gapped VPC (`10.30.0.0/20`, `0.0.0.0/0` egress blocked)"
+        ],
+        [
+          "Identity & perimeter walls",
+          "Cloud Armor WAF + IAP OIDC + RFC 8693 OBO & RFC 9449 DPoP tokens",
+          "BeyondCorp mTLS cert pinning + IAM PAB + VPC Service Controls (`Restricted VIP`)",
+          "BeyondCorp mTLS + IAM PAB + VPC-SC + private GKE control plane (`172.16.0.2/28`)"
+        ],
+        [
+          "Foundation model hosting",
+          "Shared Gemini 2.5 Pro pay-as-you-go with 90% `ContextCacheConfig` prefix cache",
+          "Dedicated Gemini 2.5 Pro Provisioned Throughput inside tenant VPC-SC perimeter",
+          "Self-hosted open-weight Gemma 3 (27B IT) on private GKE L4/A100 GPU node pool"
+        ],
+        [
+          "CMEK encryption & kill-switch",
+          "Envelope KMS encryption per Memory Bank namespace (`mem://{tenant_id}/L1..L5`)",
+          "Ubiquitous tenant Cloud KMS CMEK across Vertex AI, AlloyDB, GCS & BigQuery",
+          "Ubiquitous Cloud KMS CMEK + GKE boot/etcd disks (`<60s` `HTTP 423 Locked` + L1 purge)"
+        ],
+        [
+          "Provisioning & Terraform IaC",
+          "Instant Firestore tenant profile insert (`<50ms` commercial self-service)",
+          "4-stage automated silo factory (`3.6-terraform-silo-blueprint`, `<12 min` stamp-out)",
+          "4-stage silo factory + private GKE GPU cluster & local Artifact Registry mirror"
+        ],
+        [
+          "Unit economics & target workload",
+          "`$42 / tenant / month` • High-volume commercial B2B SaaS (`10/10` PASS)",
+          "`$1,850 / tenant / month` • OCC/FFIEC banking, HIPAA healthcare & EU DORA (`6/6` PASS)",
+          "`$2,450 / tenant / month` • Sovereign defense, core ledger & strict open-weight mandates"
+        ]
+      ],
+      "bullets": [],
+      "specs": []
     },
     {
       "heading": "Design considerations — 5-Hop Cryptographic Pipeline Inside a Sovereign Silo",

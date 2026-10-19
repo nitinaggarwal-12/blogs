@@ -2,7 +2,7 @@
 title: "Multi-tenant agentic AI system: Pattern A high-density pooled architecture"
 subtitle: "Deploy competing B2B SaaS tenants inside a single shared Google Cloud project with 5-Hop cryptographic isolation, 10/10 red-team breach defenses, and 90% shared prompt cache savings"
 series: "Multi-Tenant Agentic AI on Google Cloud — Workstream 2 of 5"
-workstream: "Workstream 2 • Milestone 1 (Weeks 1–4) • Pattern A — Pooled Architecture"
+workstream: "Workstream 2 • Pattern A — High-Density Pooled Architecture"
 authors: "Google Cloud Forward Deployed Engineering (FDE) & AI Platform Architecture Team"
 target_audience: "Cloud Architects, AI Platform Engineers, FinOps Leads, and CISOs at B2B SaaS organizations"
 reading_time: "13 min read"
@@ -20,6 +20,43 @@ This document describes **Pattern A (High-Density Pooled Architecture)** for bui
 This document is part 2 of a 5-part series extending the official Google Cloud [Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) reference architecture (introduced in [Part 1: Reference architecture taxonomy and 5-Hop baseline](ws1-reference-architecture-taxonomy-and-5hop-baseline.md)). It is intended for cloud architects, AI platform engineers, and FinOps practitioners who need maximum tenant density and lowest unit cost (`$42/month` baseline per tenant).
 
 > **Key point:** Pattern A achieves **90% input token savings** on shared system instructions (`84.7%` total turn COGS reduction) while blocking **10 out of 10 automated cross-tenant breach vectors**—including HTTP header spoofing, private `Agent Alpha` enumeration, prompt injection, noisy-neighbor token exhaustion, and cross-tenant database queries.
+
+## Use cases
+
+Pattern A is designed for high-density B2B SaaS environments where unit economics and rapid self-service onboarding are primary business drivers ([2.1 Case Study & Solution Architecture](../workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md)):
+
+- **High-volume Standard SaaS tiers ($500–$2,000/month ARR):** Serve thousands of Standard-tier organizations (such as **RetailStream Corp**) from a single Google Cloud project without incurring per-tenant project, VPC, or database cluster overhead.
+- **Enterprise tenants with private custom agents inside a shared platform:** Allow Enterprise customers (such as **FinVault Bank**) to register private custom agents (`Agent Alpha` on **Gemini 2.5 Pro (Dedicated PT)**) and CMEK-encrypted session memory inside the shared control plane while guaranteeing that competing tenants receive `HTTP 403 Forbidden` on any enumeration or invocation attempt.
+- **Multi-IdP SaaS platforms serving Google and Microsoft customers:** Support customers authenticating via **Google Workspace OIDC** alongside customers using **Microsoft Entra ID** with mid-session 3LO OAuth consent to SharePoint, ServiceNow, Jira, and Google Drive.
+
+## Design alternatives
+
+### Shared prompt prefix caching (`ContextCacheConfig`) vs uncached per-turn prompts
+
+A key economic advantage of Pattern A is sharing an immutable system prompt cache across all pooled tenants ([2.4 Product Gaps & FinOps Prioritization](../workstream-2-pattern-a-pooled/2.4-product-gaps-prioritization.md)). The following table shows the verified token cost comparison on **Gemini 2.5 Pro** for a turn with `4,500` shared system-prompt tokens, `300` tenant suffix tokens, and `800` output tokens:
+
+| Cost component | Uncached per-turn prompt | Pattern A with `ContextCacheConfig` | Mechanism in `hop3_compute_finops_bulkhead.py` |
+| :--- | :--- | :--- | :--- |
+| **Shared system prefix (`4,500` tokens)** | `$0.005625` (`$1.25 / 1M`) | **`$0.000563`** (`$0.125 / 1M` — **90% savings**) | Cached under immutable `cymbal-shared-incident-system-prompt-v2` |
+| **Tenant dynamic suffix (`300` tokens)** | `$0.000375` | `$0.000375` (never cached across tenants) | Appended per turn after `verify_context_cache_safety()` check |
+| **Total input cost (`4,800` tokens)** | `$0.006000` | **`$0.000938`** (**84.4% input savings**) | Prevents cross-tenant cache poisoning while sharing base COGS |
+
+### 10-point red-team breach verification matrix
+
+Before deploying Pattern A to production, every deployment is validated against the 10-point red-team simulation suite ([`run_breach_simulations.py`](../workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py)):
+
+| Vector | Simulated attack scenario | Enforcing hop & module | Verified runtime result |
+| :--- | :--- | :--- | :--- |
+| **V1** | RetailStream injects `X-Tenant-ID: finvault` HTTP header | **Hop 1** (`hop1_edge_identity_pep.py`) | Header stripped; `tenant_id` pinned to `retailstream` |
+| **V2** | RetailStream directly invokes `agent://finvault/private-agent-alpha-regulatory` | **Hop 2** (`hop2_registry_pdp_callbacks.py`) | Blocked with **`HTTP 403 Forbidden`** |
+| **V3** | Prompt attempts to invoke FinVault's `jira-enterprise-3lo` MCP tool | **Hop 2** (`before_agent_callback`) | Tool pruned deterministically before model reasoning |
+| **V4** | RetailStream requests `16,000` thinking tokens (tier cap is `4,000`) | **Hop 3** (`hop3_compute_finops_bulkhead.py`) | Clamped to **`4,000` tokens** (`clamped_tokens = 12,000`) |
+| **V5** | Runaway loop sends `250 RPM` (RetailStream tier limit is `120 RPM`) | **Hop 3** (Memorystore for Valkey) | Blocked with **`HTTP 429 Too Many Requests`** |
+| **V6** | Attempt to inject tenant suffix into shared `ContextCacheConfig` key | **Hop 3** (`verify_context_cache_safety`) | Rejected; cache key pinned to immutable shared prefix |
+| **V7** | Cross-tenant read against Vertex AI Memory Bank | **Hop 3** (`{tenant}:{user}:{session}` key) | Zero cross-tenant records returned |
+| **V8** | SQL/prompt injection & NLC policy violation in user prompt | **Hop 4** (`hop4_model_armor_guardrails.py`) | Blocked with **`HTTP 400`** (injection) / **`HTTP 422`** (NLC) |
+| **V9** | Replay of FinVault 3LO OAuth token from a RetailStream worker | **Hop 4** (Auth Manager + DPoP `jkt`) | Blocked with **`HTTP 401 Unauthorized`** |
+| **V10** | Raw SSN / account PII in prompt andAlloyDB query without tenant filter | **Hops 4 & 5** (Cloud DLP + AlloyDB RLS) | Masked as `[REDACTED_PII]`; RLS returns `1` row (own tenant only) |
 
 ## Architecture
 
@@ -143,43 +180,6 @@ This architecture uses the following Google Cloud products and open-source frame
 - [Cloud Key Management Service (Cloud KMS)](https://cloud.google.com/kms/docs): A cryptographic key management service supporting customer-managed encryption keys (CMEK) and instant `HTTP 423 Locked` tenant kill-switches.
 - [Security Command Center](https://cloud.google.com/security-command-center/docs), [Cloud Logging](https://cloud.google.com/logging/docs), and [BigQuery](https://cloud.google.com/bigquery/docs): Centralized posture monitoring, PII-redacted OpenTelemetry audit logging, and per-tenant token FinOps chargeback analytics.
 
-## Use cases
-
-Pattern A is designed for high-density B2B SaaS environments where unit economics and rapid self-service onboarding are primary business drivers ([2.1 Case Study & Solution Architecture](../workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md)):
-
-- **High-volume Standard SaaS tiers ($500–$2,000/month ARR):** Serve thousands of Standard-tier organizations (such as **RetailStream Corp**) from a single Google Cloud project without incurring per-tenant project, VPC, or database cluster overhead.
-- **Enterprise tenants with private custom agents inside a shared platform:** Allow Enterprise customers (such as **FinVault Bank**) to register private custom agents (`Agent Alpha` on **Gemini 2.5 Pro (Dedicated PT)**) and CMEK-encrypted session memory inside the shared control plane while guaranteeing that competing tenants receive `HTTP 403 Forbidden` on any enumeration or invocation attempt.
-- **Multi-IdP SaaS platforms serving Google and Microsoft customers:** Support customers authenticating via **Google Workspace OIDC** alongside customers using **Microsoft Entra ID** with mid-session 3LO OAuth consent to SharePoint, ServiceNow, Jira, and Google Drive.
-
-## Design alternatives
-
-### Shared prompt prefix caching (`ContextCacheConfig`) vs uncached per-turn prompts
-
-A key economic advantage of Pattern A is sharing an immutable system prompt cache across all pooled tenants ([2.4 Product Gaps & FinOps Prioritization](../workstream-2-pattern-a-pooled/2.4-product-gaps-prioritization.md)). The following table shows the verified token cost comparison on **Gemini 2.5 Pro** for a turn with `4,500` shared system-prompt tokens, `300` tenant suffix tokens, and `800` output tokens:
-
-| Cost component | Uncached per-turn prompt | Pattern A with `ContextCacheConfig` | Mechanism in `hop3_compute_finops_bulkhead.py` |
-| :--- | :--- | :--- | :--- |
-| **Shared system prefix (`4,500` tokens)** | `$0.005625` (`$1.25 / 1M`) | **`$0.000563`** (`$0.125 / 1M` — **90% savings**) | Cached under immutable `cymbal-shared-incident-system-prompt-v2` |
-| **Tenant dynamic suffix (`300` tokens)** | `$0.000375` | `$0.000375` (never cached across tenants) | Appended per turn after `verify_context_cache_safety()` check |
-| **Total input cost (`4,800` tokens)** | `$0.006000` | **`$0.000938`** (**84.4% input savings**) | Prevents cross-tenant cache poisoning while sharing base COGS |
-
-### 10-point red-team breach verification matrix
-
-Before deploying Pattern A to production, every deployment is validated against the 10-point red-team simulation suite ([`run_breach_simulations.py`](../workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py)):
-
-| Vector | Simulated attack scenario | Enforcing hop & module | Verified runtime result |
-| :--- | :--- | :--- | :--- |
-| **V1** | RetailStream injects `X-Tenant-ID: finvault` HTTP header | **Hop 1** (`hop1_edge_identity_pep.py`) | Header stripped; `tenant_id` pinned to `retailstream` |
-| **V2** | RetailStream directly invokes `agent://finvault/private-agent-alpha-regulatory` | **Hop 2** (`hop2_registry_pdp_callbacks.py`) | Blocked with **`HTTP 403 Forbidden`** |
-| **V3** | Prompt attempts to invoke FinVault's `jira-enterprise-3lo` MCP tool | **Hop 2** (`before_agent_callback`) | Tool pruned deterministically before model reasoning |
-| **V4** | RetailStream requests `16,000` thinking tokens (tier cap is `4,000`) | **Hop 3** (`hop3_compute_finops_bulkhead.py`) | Clamped to **`4,000` tokens** (`clamped_tokens = 12,000`) |
-| **V5** | Runaway loop sends `250 RPM` (RetailStream tier limit is `120 RPM`) | **Hop 3** (Memorystore for Valkey) | Blocked with **`HTTP 429 Too Many Requests`** |
-| **V6** | Attempt to inject tenant suffix into shared `ContextCacheConfig` key | **Hop 3** (`verify_context_cache_safety`) | Rejected; cache key pinned to immutable shared prefix |
-| **V7** | Cross-tenant read against Vertex AI Memory Bank | **Hop 3** (`{tenant}:{user}:{session}` key) | Zero cross-tenant records returned |
-| **V8** | SQL/prompt injection & NLC policy violation in user prompt | **Hop 4** (`hop4_model_armor_guardrails.py`) | Blocked with **`HTTP 400`** (injection) / **`HTTP 422`** (NLC) |
-| **V9** | Replay of FinVault 3LO OAuth token from a RetailStream worker | **Hop 4** (Auth Manager + DPoP `jkt`) | Blocked with **`HTTP 401 Unauthorized`** |
-| **V10** | Raw SSN / account PII in prompt andAlloyDB query without tenant filter | **Hops 4 & 5** (Cloud DLP + AlloyDB RLS) | Masked as `[REDACTED_PII]`; RLS returns `1` row (own tenant only) |
-
 ## Design considerations
 
 This section provides guidance for operating Pattern A according to the [Google Cloud Well-Architected Framework](https://cloud.google.com/architecture/framework).
@@ -229,7 +229,7 @@ This section provides guidance for operating Pattern A according to the [Google 
 <!-- E2E_FLOW_START -->
 ## Step-by-Step End-to-End Agentic & Technical Flows (WS2 Architecture Diagrams)
 
-Every architecture diagram in **WS2** is accompanied by a **3-slide sequence** in the editable presentation deck: **(1) 100% Native Editable Architecture Diagram (56 Shapes + 23 Connectors + Component Sidebar)** → **(2) Step-by-Step Agentic Flow (Steps ①–⑦)** → **(3) Component Architecture & Well-Architected Specification Table**.
+Every architecture blueprint in **WS2** follows a **strict Top-Down Architectural Zoom** inside the 14-slide Customer-Centric 3-Act presentation deck: **(1) Slide 5 (`L1` Conceptual 3-Zone Trust Boundary Overview)** → **(2) Slide 6 (`L2` Authoritative `Figure 1` Official `#78` Physical Blueprint: 56 Editable Shapes + 23 Connectors + 4-Zone Reference Sidebar)** → **(3) Slide 7 (`L3` 5-Actor Chronological Request Sequence)** → **(4) Slide 8 (`L4` 3-Stage Wire-Level JSON & Cryptographic Context Transformation)**.
 
 ### Diagram 3: Pattern A: High-Density Pooled Multi-Tenant Architecture & Shared Runtime Governance (`ws2-pattern-a-pooled-5hop-architecture`)
 * **Workstream & Focus**: Workstream 2 • Pattern A: High-Density Pooled Multi-Tenant Architecture (WS 2.1) (`PATTERN A • POOLED RUNTIME`)

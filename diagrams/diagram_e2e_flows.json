@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-10-16T14:57:22.893Z",
+  "generatedAt": "2026-10-19T07:27:37.335Z",
   "totalDiagrams": 14,
   "templateStandard": "Official Google Cloud Architecture Center Hub-and-Spoke Layout Template (#78) • 56 Vertices • 23 Edges",
-  "slideSequenceStandard": "3 Slides Per Diagram: (1) 100% Native Editable Diagram + Component Reference Sidebar -> (2) Step-by-Step Agentic Flow (Steps ①–⑦) -> (3) Component Architecture & Well-Architected Specification Table",
+  "slideSequenceStandard": "Customer-Centric 3-Act Top-Down 14-Slide Architecture Deck: Act I (Slides 1–4 Hook, Scorecard, Use Cases & Options Matrix) -> Act II (Slide 5 L1 Logical Zones -> Slide 6 L2 Authoritative #78 Physical Blueprint -> Slide 7 L3 5-Actor Sequence -> Slide 8 L4 Wire Payload Transformation) -> Act III (Slides 9–14 Circuit Breakers, Verification Matrix, Live GCP Proof, 3-Stage Technical Solution Lifecycle, 3-Pillar Well-Architected Guarantees & Series Map)",
   "diagrams": [
     {
       "index": 1,

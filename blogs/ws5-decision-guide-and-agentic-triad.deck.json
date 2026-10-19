@@ -1,13 +1,13 @@
 {
   "workstream": "WS5",
   "deckTitle": "Pooled, Siloed, or Hybrid? Executive Decision Guide & Multi-Tenant Agentic Triad (Workstream 5)",
-  "deckSubtitle": "Workstream 5 capstone: 2-question topology decision tree, side-by-side Well-Architected comparison matrix, 1,000-tenant FinOps TCO model, and 10-week production rollout roadmap",
+  "deckSubtitle": "Workstream 5 capstone: 2-question topology decision tree, side-by-side Well-Architected comparison matrix, 1,000-tenant FinOps TCO model, and 3-stage elastic tenant tier lifecycle",
   "tldr": [
     "Two Architectural Questions Select Your Pattern: First evaluate whether 100% of tenants legally require dedicated cloud projects (Pattern B); second evaluate whether you sell one uniform tier (Pattern A) or multiple tiers (Pattern C).",
     "One 80% Reusable 5-Hop Codebase: Engineering writes the 5-hop ADK 2.0 security and governance pipeline once; Patterns A, B, and C merely parameterize the surrounding Google Cloud isolation boundary.",
     "The Multi-Tenant Agentic Triad: Sustainable enterprise AI platforms balance three interdependent pillars—Zero-Trust Cryptographic Security, Predictable Unit Economics, and Zero-PII FinOps Chargeback.",
     "Proven 1,000-Tenant Portfolio Economics: Across 950 Standard and 50 Enterprise tenants, Pattern C reduces Gemini 2.5 Pro input token spend by 84.7%, lowers total cloud TCO by 74% vs. all-siloed, and maintains a 99.99% SLA.",
-    "Phased 10-Week Production Rollout: Launch Pattern A Pooled in Weeks 1–4, add Pattern B Sovereign Silos in Weeks 5–7, and enable Pattern C Dynamic Hybrid PSC routing and live migration in Weeks 8–10."
+    "Elastic 3-Stage Tenant Tier Lifecycle: Onboard commercial tenants in <50ms into Pattern A ($42/mo), promote expanding enterprises live into Pattern C PSC spokes (0ms lag, 0 dropped turns), and enforce <60s HTTP 423 CMEK kill-switches in Pattern B silos."
   ],
   "tldrSpecs": [
     {
@@ -31,91 +31,41 @@
       "tag": "1,000-Tenant FinOps Model"
     },
     {
-      "stack": "Weeks 1–4: Pattern A • Weeks 5–7: Pattern B • Weeks 8–10: Pattern C + Live Migrator",
-      "sla": "12/12 Forensic Gates & 20/20 Automated Simulations Verified at Every Milestone",
-      "tag": "10-Week Execution Roadmap"
+      "stack": "Stage 1: Pooled ($42/mo) -> Stage 2: Live PSC Promotion (0ms Lag) -> Stage 3: CMEK Silo",
+      "sla": "12/12 Forensic Gates & 20/20 Automated Simulations Verified Across All 3 Tiers",
+      "tag": "3-Stage Tenant Lifecycle"
     }
   ],
   "sections": [
     {
-      "heading": "Products used — Unified 5-Hop Module Mapping Across Patterns A, B & C",
-      "layout": "table",
-      "tableHeaders": [
-        "5-Hop Runtime Module (80% Shared)",
-        "Pattern A: High-Density Pooled (WS2)",
-        "Pattern B: Sovereign Silos (WS3)",
-        "Pattern C: Dynamic Hybrid PSC (WS4)"
-      ],
-      "tableColW": [
-        2.4,
-        3.3,
-        3.4,
-        3.433
-      ],
-      "tableRows": [
-        [
-          "Hop 1: Edge & Identity\n`Hop1EdgeAndIdentity`",
-          "Cloud Armor WAF + IAP OIDC + IAM STS RFC 8693 OBO & RFC 9449 DPoP",
-          "BeyondCorp mTLS cert pinning + IAM Principal Access Boundary (PAB) per silo",
-          "Hub ALB OIDC/DPoP verification + Firestore authoritative route lookup"
-        ],
-        [
-          "Hop 2: Registry Discovery\n`Hop2AgentRegistryDiscovery`",
-          "Shared Agent Engine Registry filtered by `tenant_id` visibility predicate",
-          "Silo-local Agent Registry wrapped inside per-tenant VPC-SC perimeter",
-          "Federated Hub-and-Spoke Agent Registry across Pool & PSC Spokes"
-        ],
-        [
-          "Hop 3: Runtime & Memory\n`Hop3RuntimeAndMemory`",
-          "Shared Cloud Run v2 + Valkey RPM (`120`/`600`) + L1–L5 Memory namespaces",
-          "Live Cloud KMS CMEK heartbeat (`HTTP 423`) + private GKE Gemma 3 (27B)",
-          "Tiered dispatch: `pool://` (`4k` cap) vs. unidirectional `psc://10.10.0.50` (`8k` cap)"
-        ],
-        [
-          "Hop 4: Safety & DLP\n`Hop4ModelArmorAndDlp`",
-          "Shared Model Armor floor + tenant semantic NLCs + Cloud DLP PII masking",
-          "In-perimeter silo Model Armor & regulatory NLC templates (OCC/HIPAA)",
-          "Shared pool safety floor for Standard; dedicated spoke DLP/NLCs for Enterprise"
-        ],
-        [
-          "Hop 5: Data & FinOps\n`Hop5DataAndFinOps`",
-          "Shared AlloyDB `FORCE ROW LEVEL SECURITY` + BigQuery OTel token ledger",
-          "Dedicated CMEK-encrypted AlloyDB + silo-local BigQuery audit dataset",
-          "Pooled RLS + CMEK spoke vault + 3-phase zero-downtime CDC live migrator"
-        ]
-      ],
-      "bullets": [],
-      "specs": []
-    },
-    {
-      "heading": "Use cases — 2-Question Topology Decision Tree (Patterns A, B & C)",
+      "heading": "Use cases — 2-Question Topology Selector, Competing Tenant Profiles & Unified Google Cloud Stack",
       "layout": "cards",
       "bullets": [
-        "Decision Gate 1 — Universal Regulatory Sovereignty Mandate: Do 100% of your customers legally require dedicated GCP projects, VPC Service Controls, and customer-revocable CMEK kill-switches? If YES, standardize on Pattern B.",
-        "Decision Gate 2 — Single-Tier vs. Multi-Tier SaaS Packaging: If not all customers require physical silos, do you sell a single commercial tier or both Standard and Enterprise tiers? Choose Pattern A for one tier, or Pattern C for both.",
-        "Non-Destructive Architectural Evolution: Launching on Pattern A in Week 4 never creates technical debt—you evolve into Pattern C in Week 10 by attaching Private Service Connect spokes without rewriting your agent.",
-        "Built-In Mid-Contract Upsell Engine: Only Pattern C embeds the 3-phase zero-downtime migration state machine that promotes a live Standard tenant into a dedicated Enterprise spoke without dropping active sessions."
+        "Decision Gate 1 (Universal Regulatory Sovereignty Mandate): Do 100% of your customers legally require dedicated GCP projects, VPC Service Controls, IAM PAB, and customer-revocable CMEK kill-switches? If YES, standardize on Pattern B ($1,850/mo).",
+        "Decision Gate 2 (Single-Tier vs. Multi-Tier SaaS Packaging): If not all customers require physical silos, choose Pattern A ($42/mo shared pool, 90% prefix cache) for one uniform commercial tier, or Pattern C (74% TCO savings) for multi-tier portfolios.",
+        "Competing Tenant Profiles (FinVault Bank vs. RetailStream Corp): Co-host RetailStream in the $42/mo Standard pool (Entra ID, 4k cap, 120 RPM) and isolate FinVault in an $1,850/mo Enterprise spoke/silo (Workspace, 8k cap, 600 RPM, Agent Alpha, CMEK).",
+        "One 80% Reusable 5-Hop Google Cloud Stack: Cloud Armor, IAP OBO/DPoP, Agent Engine Registry, Memorystore Valkey, Gemini 2.5 Pro / Gemma 3, Model Armor, Cloud DLP, AlloyDB RLS/CMEK, and BigQuery OTel power all three patterns without code forks."
       ],
       "specs": [
         {
-          "stack": "Mandate: OCC / HIPAA / FedRAMP High / Sovereign Cloud Across 100% of Tenants",
-          "sla": "Select Pattern B (Zero-Trust Sovereign Silos) • $1,850/mo Baseline Floor",
-          "tag": "Gate 1: Yes -> Pattern B"
+          "stack": "Mandate: OCC / HIPAA / FedRAMP High / EU DORA Across 100% of Customer Contracts",
+          "sla": "Gate 1: YES -> Select Pattern B (Sovereign Silos • $1,850/mo • VPC-SC + PAB + CMEK)",
+          "tag": "1. Decision Gate 1: Sovereignty"
         },
         {
-          "stack": "Uniform Commercial B2B SaaS -> Pattern A • Multi-Tier Enterprise SaaS -> Pattern C",
-          "sla": "Select Pattern A ($42/mo Pool) or Pattern C (Blended Pool + PSC Spokes)",
-          "tag": "Gate 2: Pattern A vs. Pattern C"
+          "stack": "Uniform Commercial B2B SaaS -> Pattern A • Multi-Tier Standard + Enterprise -> Pattern C",
+          "sla": "Gate 2: Select Pattern A ($42/mo Pool) or Pattern C (Pool + PSC Spokes + 0ms Live Upgrade)",
+          "tag": "2. Decision Gate 2: Packaging"
         },
         {
-          "stack": "Shared 5-Hop Runtime Interface (`core-cymbal-agent/runtime_pipeline.py`)",
-          "sla": "Add PSC ServiceAttachment Spokes Declaratively via Terraform (`4.6`)",
-          "tag": "Zero-Rewrite Evolution"
+          "stack": "FinVault Bank ($1,850/mo Enterprise Spoke/Silo) vs. RetailStream ($42/mo Standard Pool)",
+          "sla": "Zero Cross-Tenant Bleed + Live Mid-Conversation Promotion from Pool to PSC Spoke",
+          "tag": "3. Competing Enterprise Tenants"
         },
         {
-          "stack": "SHADOW_SYNC (0ms Lag) -> ATOMIC_CUTOVER (Firestore) -> DRAIN_AND_VERIFY",
-          "sla": "Turns Enterprise Tier Upgrades into a Same-Day Automated Product Capability",
-          "tag": "Live Tier Promotion"
+          "stack": "Cloud Armor • IAP • Agent Engine • Gemini 2.5 Pro • Valkey • Model Armor • AlloyDB • BigQuery",
+          "sla": "80% Identical Python ADK 2.0 Codebase • 12/12 Forensic Gates & 20/20 Simulations PASS",
+          "tag": "4. Unified 5-Hop Google Cloud Stack"
         }
       ]
     },
@@ -164,6 +114,56 @@
           "`10/10 PASS` (`run_breach_simulations.py` — header spoof, ARD, NLC, DLP, RLS)",
           "`6/6 PASS` (`run_silo_security_tests.py` — mTLS, PAB, VPC-SC, HTTP 423 CMEK)",
           "`4/4 PASS` (`run_tier_migration_suite.py` — 0ms CDC lag, 0 dropped sessions)"
+        ]
+      ],
+      "bullets": [],
+      "specs": []
+    },
+    {
+      "heading": "Design considerations — Unified 5-Hop Module Mapping & 20/20 Verification Matrix Across Patterns A, B & C",
+      "layout": "table",
+      "tableHeaders": [
+        "5-Hop Runtime Module (80% Shared)",
+        "Pattern A: High-Density Pooled (WS2)",
+        "Pattern B: Sovereign Silos (WS3)",
+        "Pattern C: Dynamic Hybrid PSC (WS4)"
+      ],
+      "tableColW": [
+        2.4,
+        3.3,
+        3.4,
+        3.433
+      ],
+      "tableRows": [
+        [
+          "Hop 1: Edge & Identity\n`Hop1EdgeAndIdentity`",
+          "Cloud Armor WAF strips `X-Tenant-Id` + IAP OIDC + RFC 8693 OBO & RFC 9449 DPoP (`Test 1 PASS`)",
+          "BeyondCorp mTLS cert pinning (`HTTP 401`) + IAM Principal Access Boundary (`Tests 1–2 PASS`)",
+          "Hub ALB OIDC/DPoP verification + Firestore authoritative route lookup (`Hybrid Test 1 PASS`)"
+        ],
+        [
+          "Hop 2: Registry Discovery\n`Hop2AgentRegistryDiscovery`",
+          "Shared Agent Engine Registry filtered by `tenant_id` visibility predicate (`Tests 2–3 PASS`)",
+          "Silo-local Agent Registry wrapped inside per-tenant VPC-SC perimeter (`Test 3 PASS`)",
+          "Federated Hub-and-Spoke Agent Registry across Pool & PSC Spokes (`Hybrid Test 2 PASS`)"
+        ],
+        [
+          "Hop 3: Runtime & Memory\n`Hop3RuntimeAndMemory`",
+          "Cloud Run v2 + Valkey RPM (`120`/`600`, `429`) + L1–L5 Memory namespaces (`Tests 6–7 PASS`)",
+          "Live Cloud KMS CMEK heartbeat (`<60s HTTP 423`) + private GKE Gemma 3 27B (`Tests 4A–5 PASS`)",
+          "Tiered dispatch: `pool://` (`4k` cap) vs. unidirectional `psc://10.10.0.50` (`8k` cap, `Test 3 PASS`)"
+        ],
+        [
+          "Hop 4: Safety & DLP\n`Hop4ModelArmorAndDlp`",
+          "Model Armor (`400` injection / `422` NLC) + Cloud DLP PII masking + `-32042` 3LO (`Tests 4,5,8,10 PASS`)",
+          "In-perimeter silo Model Armor & regulatory NLC templates (OCC/HIPAA) (`Silo Gate PASS`)",
+          "Shared pool safety floor for Standard; dedicated spoke DLP/NLCs for Enterprise (`Spoke Gate PASS`)"
+        ],
+        [
+          "Hop 5: Data & FinOps\n`Hop5DataAndFinOps`",
+          "Shared AlloyDB `FORCE ROW LEVEL SECURITY` (`0` leaked rows) + BigQuery OTel (`Test 9 & F-08 PASS`)",
+          "Dedicated CMEK AlloyDB + Dual-Silo RetailStream/FinVault parity (`Test 6 & F-08 PASS`)",
+          "3-phase zero-downtime CDC live migrator (`0ms` lag, `0` dropped turns, `Hybrid Test 4 & F-09 PASS`)"
         ]
       ],
       "bullets": [],
@@ -260,29 +260,29 @@
       ]
     },
     {
-      "heading": "What’s next — 10-Week Production Rollout Roadmap & EAP Backlog",
+      "heading": "What’s next — 3-Stage Technical Solution Lifecycle & GA Feature Drop-In Continuity",
       "layout": "cards",
       "bullets": [
-        "Weeks 1–4 (Milestone 1 — Pattern A Pooled Launch): Deploy `core-cymbal-agent/`, enable Gemini 2.5 Pro 90% prefix caching, configure AlloyDB RLS, and pass all 10 red-team breach simulations.",
-        "Weeks 5–7 (Milestone 2 — Pattern B Sovereign Silos): Automate the 4-stage silo onboarding pipeline (`3.6-terraform-silo-blueprint`), bind VPC-SC + IAM PAB + CMEK kill-switches, and pass all 6 silo tests.",
-        "Weeks 8–10 (Milestone 3 — Pattern C Hybrid & Live Migrator): Deploy the Central Hub Router, attach Enterprise spokes via Private Service Connect (`4.6`), and certify the 3-phase zero-downtime upgrade suite.",
-        "Q4 2026 – Q1 2027 Product Roadmap Alignment: Tracks native Agent Engine Registry tenant labels (`GAP-01`), per-tenant Memory Bank CMEK (`GAP-02`), and managed cross-project PSC catalogs (`GAP-04`)."
+        "Stage 1 (Commercial Self-Service Onboarding — Pattern A Pool): Provision Standard tenants in <50ms via Firestore metadata into the $42/mo shared pool with 90% prefix caching, AlloyDB RLS, and 10/10 breach defenses.",
+        "Stage 2 (Zero-Downtime Enterprise Tier Promotion — Pattern C PSC Spoke): Upgrade expanding tenants live via the 3-phase state machine (`SHADOW_SYNC` -> `ATOMIC_CUTOVER` -> `DRAIN_AND_VERIFY`) over Private Service Connect (`0` dropped sessions).",
+        "Stage 3 (Regulated Sovereign Vault & <60s Kill-Switch — Pattern B Silo): Stamp out dedicated per-tenant GCP projects (`3.6-terraform-silo-blueprint`) with VPC-SC, IAM PAB, air-gapped Gemma 3 27B, and `<60s` `HTTP 423` CMEK revocation.",
+        "Seamless EAP-to-GA Drop-In Continuity (`GAP-01..05`): All 5 compensating controls in `core-cymbal-agent/` protect production workloads today and swap cleanly as native Agent Registry tenant ACLs and per-tenant Memory CMEK reach GA."
       ],
       "specs": [
         {
           "stack": "Deliverables: WS1 Taxonomy + WS2 Pooled Runtime + 2.6 Terraform Starter",
-          "sla": "Gate: 10/10 Breach Simulations PASS & 84.7% Prefix Cache Savings Verified",
-          "tag": "Weeks 1–4: Pattern A Go-Live"
-        },
-        {
-          "stack": "Deliverables: WS3 Sovereign Silo Engine + 3.6 Terraform Silo Blueprint",
-          "sla": "Gate: 6/6 Sovereign Perimeter & Sub-60s HTTP 423 CMEK Kill-Switch Tests PASS",
-          "tag": "Weeks 5–7: Pattern B Go-Live"
+          "sla": "Gate: 10/10 Breach Simulations PASS & 84.7% Prefix Cache Savings Verified ($42/mo Floor)",
+          "tag": "Stage 1: Pattern A Pooled Tier"
         },
         {
           "stack": "Deliverables: WS4 Hybrid PSC Router + 3-Phase Migrator + 4.6 Terraform PSC",
-          "sla": "Gate: 4/4 Zero-Downtime Tier Promotion Tests PASS (0ms Lag, 0 Dropped Chats)",
-          "tag": "Weeks 8–10: Pattern C Go-Live"
+          "sla": "Gate: 4/4 Zero-Downtime Tier Promotion Tests PASS (0ms Lag, 0 Dropped Chats, 74% TCO Savings)",
+          "tag": "Stage 2: Pattern C Hybrid PSC Tier"
+        },
+        {
+          "stack": "Deliverables: WS3 Sovereign Silo Engine + 3.6 Terraform Silo Blueprint",
+          "sla": "Gate: 6/6 Sovereign Perimeter & Sub-60s HTTP 423 CMEK Kill-Switch Tests PASS ($1,850/mo Floor)",
+          "tag": "Stage 3: Pattern B Sovereign Tier"
         },
         {
           "stack": "workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md",
@@ -340,5 +340,5 @@
       "tag": "Takeaway 5: Continuous Governance"
     }
   ],
-  "callToAction": "Walk through the 2-question topology decision tree with your architecture and security review boards, execute the 20-assertion verification suite, and initiate your 10-week production rollout."
+  "callToAction": "Walk through the 2-question topology decision tree with your architecture and security review boards, execute the 20-assertion verification suite, and deploy the 3-stage elastic multi-tenant architecture."
 }

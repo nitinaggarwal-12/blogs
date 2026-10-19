@@ -6,7 +6,7 @@ export const WS4_WS5_SPECS = [
       title: 'Multi-tenant agentic AI system: Pattern C dynamic hybrid routing and zero-downtime tier upgrades',
       subtitle: 'Route Standard tenants to a shared pool and Enterprise tenants over Private Service Connect to isolated CMEK spokes from one unified control plane—with live 0-dropped-turn tier migration',
       series: 'Multi-Tenant Agentic AI on Google Cloud — Workstream 4 of 5',
-      workstream: 'Workstream 4 • Milestone 3 (Weeks 7–10) • Pattern C — Dynamic Hybrid Architecture',
+      workstream: 'Workstream 4 • Pattern C — Dynamic Hybrid Hub-and-Spoke Architecture',
       authors: 'Google Cloud Forward Deployed Engineering (FDE) & AI Platform Architecture Team',
       target_audience: 'Cloud Architects, Platform Product Managers, and FinOps Leads operating tiered B2B SaaS on Google Cloud',
       reading_time: '13 min read',
@@ -198,7 +198,7 @@ This section provides guidance for operating Pattern C according to the [Google 
     pptxFile: 'ws5-wrap-up-editable-slides.pptx',
     frontmatter: {
       title: 'Multi-tenant agentic AI system: Executive decision guide and the Multi-Tenant Agentic Triad',
-      subtitle: 'Choose between Pooled (Pattern A), Sovereign Silos (Pattern B), and Dynamic Hybrid (Pattern C) topologies on Google Cloud using a 2-question decision tree, side-by-side comparison matrix, and 10-week adoption roadmap',
+      subtitle: 'Choose between Pooled (Pattern A), Sovereign Silos (Pattern B), and Dynamic Hybrid (Pattern C) topologies on Google Cloud using a 2-question decision tree, side-by-side comparison matrix, and 3-stage technical solution lifecycle',
       series: 'Multi-Tenant Agentic AI on Google Cloud — Workstream 5 of 5',
       workstream: 'Workstream 5 • Wrap-Up: Pattern Comparison, Decision Guide & Capstone Backlog (5.1 + 5.2)',
       authors: 'Google Cloud Forward Deployed Engineering (FDE) & AI Platform Architecture Team',
@@ -293,7 +293,7 @@ This section summarizes the **Multi-Tenant Agentic Triad** and maps it to the [G
 
 ### Cost optimization (Pillar 2 of the Agentic Triad)
 
-- **Match infrastructure cost to customer ARR:** Start with **Pattern A** in Weeks 1–4 to capture **90% shared prompt cache savings** and \`$42/mo\` baseline economics. Introduce **Pattern B** or **Pattern C PSC spokes** in Weeks 5–10 only for Enterprise contracts that justify dedicated infrastructure.
+- **Match infrastructure cost to customer ARR:** Start with **Pattern A** in Stage 1 to capture **90% shared prompt cache savings** and \`$42/mo\` baseline economics. Introduce **Pattern B** or **Pattern C PSC spokes** in Stages 2–3 only for Enterprise contracts that justify dedicated infrastructure.
 
 ### Operational excellence (Pillar 3 of the Agentic Triad)
 
@@ -301,10 +301,10 @@ This section summarizes the **Multi-Tenant Agentic Triad** and maps it to the [G
 
 ### Performance optimization
 
-- **Phased 10-week adoption roadmap:**
-  - **Weeks 1–4 (Milestone 1):** Deploy ` + '`core-cymbal-agent/`' + ` and Pattern A Pooled Architecture ([Workstream 2](ws2-pattern-a-pooled-architecture.md)).
-  - **Weeks 5–7 (Milestone 2):** Stamp out Pattern B Sovereign Silos via Terraform for regulated anchor customers ([Workstream 3](ws3-pattern-b-sovereign-silos.md)).
-  - **Weeks 8–10 (Milestone 3):** Enable the Pattern C Hybrid Router and 3-phase zero-downtime live tier migrator ([Workstream 4](ws4-pattern-c-hybrid-dynamic-tiering.md)).`,
+- **3-stage technical solution lifecycle & progressive tier evolution:**
+  - **Stage 1 (Pattern A Pooled Foundation):** Deploy ` + '`core-cymbal-agent/`' + ` and Pattern A Pooled Architecture ([Workstream 2](ws2-pattern-a-pooled-architecture.md)).
+  - **Stage 2 (Pattern B Sovereign Silo Stamp-Out):** Stamp out Pattern B Sovereign Silos via Terraform for regulated anchor customers ([Workstream 3](ws3-pattern-b-sovereign-silos.md)).
+  - **Stage 3 (Pattern C Dynamic Hybrid & Zero-Downtime Promotion):** Enable the Pattern C Hybrid Router and 3-phase zero-downtime live tier migrator ([Workstream 4](ws4-pattern-c-hybrid-dynamic-tiering.md)).`,
     whatsNextMd: `## What's next
 
 - Review the complete 5-part Multi-Tenant Agentic AI Architecture series:
@@ -318,6 +318,6 @@ This section summarizes the **Multi-Tenant Agentic Triad** and maps it to the [G
   - [Complete End-to-End Workstream & 14-Diagram Master Guide](../docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md)
 - Download or open the editable slide decks:
   - [Workstream 5 Editable Google Slides Deck (\`ws5-wrap-up-editable-slides.pptx\`)](../slides/ws5-wrap-up-editable-slides.pptx)
-  - [All-in-One 60-Slide Master Presentation (\`geap-multi-tenancy-all-workstreams-editable-slides.pptx\`)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)`
+  - [All-in-One 26-Slide Master Presentation (\`geap-multi-tenancy-all-workstreams-editable-slides.pptx\`)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)`
   }
 ];

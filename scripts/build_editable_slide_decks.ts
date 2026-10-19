@@ -1728,7 +1728,11 @@ function buildComparisonTableSynthesisCards(
   section: DeckSection
 ): { title: string; body: string }[] {
   const hLower = section.heading.toLowerCase();
-  if (hLower.includes('gap-01') || hLower.includes('eap product gap') || hLower.includes('compensating')) {
+  const isGapTable =
+    hLower.includes('gap-01') ||
+    hLower.includes('eap product gap') ||
+    hLower.includes('compensating');
+  if (isGapTable) {
     return [
       {
         title: '1. Identity & Catalog Gates (GAP-01 / GAP-04)',
@@ -1748,7 +1752,69 @@ function buildComparisonTableSynthesisCards(
       },
     ];
   }
-  if (hLower.includes('patterns (a, b') || hLower.includes('isolation patterns') || kicker === 'WS1') {
+
+  const isDesignAlternativesSlide4 = hLower.includes('design alternatives');
+  if (isDesignAlternativesSlide4) {
+    if (kicker === 'WS2') {
+      return [
+        {
+          title: '1. Why Naive Shared SaaS Fails Audits',
+          body: 'Ambient IAM service accounts, client-trusted X-Tenant-Id headers, and unpartitioned vector/SQL stores fail every red-team isolation test.',
+        },
+        {
+          title: '2. Why Pattern A Wins on Unit Economics',
+          body: 'Delivers a $42/mo baseline per tenant and 90% shared 32k prefix cache savings (84.7% turn COGS reduction) inside one GCP project.',
+        },
+        {
+          title: '3. Cryptographic Equivalence in a Pool',
+          body: 'Enforces RFC 8693 + DPoP (Hop 1), Catalog PDP (Hop 2), Valkey bulkheads (Hop 3), Model Armor + SDP (Hop 4), and AlloyDB FORCE RLS (Hop 5).',
+        },
+        {
+          title: '4. Clear Graduation Trigger to Pattern B / C',
+          body: 'Promote a tenant out of the shared pool only when contracts mandate a dedicated GCP project, VPC-SC perimeter, or air-gapped Gemma 3 GPUs.',
+        },
+      ];
+    }
+    if (kicker === 'WS3') {
+      return [
+        {
+          title: '1. Why Logical Pool Is Insufficient Here',
+          body: 'OCC/FDIC banking, HIPAA, EU DORA, and defense contracts legally mandate physical project boundaries and customer-held KMS kill-switches.',
+        },
+        {
+          title: '2. Option B1: Vertex AI PT + VPC-SC + CMEK',
+          body: 'Zero GPU operational overhead with Gemini 2.5 Pro Provisioned Throughput locked inside the tenant VPC-SC perimeter and Cloud KMS key ring.',
+        },
+        {
+          title: '3. Option B2: Air-Gapped Gemma 3 (27B) on GKE',
+          body: 'Executes 100% inside private GKE GPU subnets (0.0.0.0/0 egress blocked) with model weights mirrored in CMEK-encrypted Artifact Registry.',
+        },
+        {
+          title: '4. Unchanged 80% Reusable 5-Hop Core',
+          body: 'Both Pattern B options run the identical core-cymbal-agent/ Python governance pipeline wrapped by the Terraform 3.6 Sovereign Shell.',
+        },
+      ];
+    }
+    if (kicker === 'WS4') {
+      return [
+        {
+          title: '1. Why Legacy VPC Peering Hits a Wall',
+          body: 'Traditional VPC peering caps at 25 spokes per hub, requires globally non-overlapping CIDRs, and opens bi-directional L3 blast radius.',
+        },
+        {
+          title: '2. Why Private Service Connect (PSC) Scales',
+          body: 'Unidirectional NAT (ServiceAttachment) scales to 100s of enterprise spokes while letting every spoke reuse the identical 10.40.0.0/20 CIDR.',
+        },
+        {
+          title: '3. Zero-Downtime Promotion vs. Cold Cutover',
+          body: 'Replaces 4–8 hr maintenance blackouts with SHADOW_SYNC -> ATOMIC_CUTOVER -> DRAIN_AND_VERIFY (<10ms Firestore pointer flip, 0 dropped turns).',
+        },
+        {
+          title: '4. 74% Blended Portfolio TCO Advantage',
+          body: 'Co-hosts 85–95% Standard tenants in the $42/mo pool and 5–15% Enterprise tenants in $1,850/mo PSC spokes behind one unified SaaS hostname.',
+        },
+      ];
+    }
     return [
       {
         title: '1. When to Choose Pattern A ($42/mo)',
@@ -1768,6 +1834,7 @@ function buildComparisonTableSynthesisCards(
       },
     ];
   }
+
   if (kicker === 'WS2') {
     return [
       {
@@ -1830,20 +1897,20 @@ function buildComparisonTableSynthesisCards(
   }
   return [
     {
-      title: '1. Q1: Regulatory Blast-Radius Gate',
-      body: 'If customer contracts mandate dedicated GCP projects, VPC-SC, or <60s CMEK kill-switches, route to Pattern B or Pattern C Spoke.',
+      title: '1. Hop 1–2: Identity & Catalog Verification',
+      body: 'Certified across all 20 simulations: Cloud Armor strips forged headers, IAP mints DPoP OBO tokens, and Discovery Engine enforces 403 ACLs.',
     },
     {
-      title: '2. Q2: Portfolio Mobility & Upsell Gate',
-      body: 'If operating a multi-tier SaaS platform with self-service Standard-to-Enterprise upgrades, deploy Pattern C Dynamic Hybrid PSC.',
+      title: '2. Hop 3: Compute, Cache & CMEK Verification',
+      body: 'Valkey enforces 120/600 RPM bulkheads (429), clamps 4k/8k thinking budgets, isolates 90% prefix caches, and halts revoked CMEK keys in <60s (423).',
     },
     {
-      title: '3. 74% Blended Portfolio TCO Savings',
-      body: 'Serving 850–950 Standard tenants in Pattern A ($42/mo) and 50–150 Enterprise spokes saves $1.53M/mo vs. an all-silo footprint.',
+      title: '3. Hop 4–5: Guardrails, RLS & FinOps Proof',
+      body: 'Model Armor + SDP block prompt injection (400), NLC violations (422) & PII leaks while AlloyDB FORCE RLS and BigQuery OTel certify 0 bleed.',
     },
     {
       title: '4. Continuous 12/12 + 20/20 CI/CD Gate',
-      body: 'Every pull request executes 12 forensic checks and 20 live security/migration assertions before promoting revisions to Cloud Run.',
+      body: 'Every pull request executes 12 forensic checks and 20 live security/migration assertions (10 Pattern A + 6 Pattern B + 4 Pattern C) in CI/CD.',
     },
   ];
 }
@@ -1862,9 +1929,11 @@ function addComparisonTableSlide(
     hLower.includes('eap product gap') ||
     hLower.includes('compensating');
   const isPatternOptionTable =
-    hLower.includes('comparison') ||
-    hLower.includes('isolation patterns') ||
-    hLower.includes('topology comparison');
+    !isGapTable &&
+    (hLower.includes('design alternatives') ||
+      hLower.includes('comparison') ||
+      hLower.includes('isolation patterns') ||
+      hLower.includes('topology comparison'));
   const headerBreadcrumb = isGapTable
     ? 'ACT III • EAP PRODUCT GAP REGISTER (GAP-01..05) & COMPENSATING CONTROLS'
     : isPatternOptionTable
@@ -7144,7 +7213,11 @@ async function buildWorkstreamDeck(spec: DeckSpec, manifest: ManifestItem[]) {
     cardSections[0] ||
     deck.sections[0];
   const patternComparisonTable =
-    tableSections.find((s) => /comparison|isolation patterns|topology comparison/i.test(s.heading));
+    tableSections.find(
+      (s) =>
+        !/gap-01|eap product gap|compensating/i.test(s.heading) &&
+        /design alternatives|comparison|isolation patterns|topology comparison|\bvs\./i.test(s.heading)
+    ) || tableSections[0];
   const productsUsedSection =
     deck.sections.find((s) => (!s.layout || s.layout === 'cards') && /products used/i.test(s.heading)) ||
     cardSections.find((s) => s !== useCasesSection) ||
@@ -7346,7 +7419,25 @@ async function buildCombinedDeck(manifest: ManifestItem[]) {
     addSectionDivider(pptx, spec.key, wsDeck.deckTitle, wsDeck.deckSubtitle);
     slideCount++;
 
-    // 2. Workstream Authoritative Figure 1 Blueprint (Single Editable Slide + 4-Zone Sidebar)
+    // 2. Workstream Signature Logical / Architecture Visual Archetype Slide (Top-Down L1/Process Overview before L2 56-Shape Blueprint)
+    if (spec.key === 'WS1') {
+      addArchitectureZoneTopologySlide(pptx, spec);
+      slideCount++;
+    } else if (spec.key === 'WS2') {
+      addPayloadTransformationTriptychSlide(pptx, spec);
+      slideCount++;
+    } else if (spec.key === 'WS3') {
+      addUmlSequenceSwimlaneSlide(pptx, spec);
+      slideCount++;
+    } else if (spec.key === 'WS4') {
+      addAsyncStateFlowPipelineSlide(pptx, spec);
+      slideCount++;
+    } else if (spec.key === 'WS5') {
+      addPhasedRoadmapTimelineSlide(pptx, spec);
+      slideCount++;
+    }
+
+    // 3. Workstream Authoritative Figure 1 Physical Blueprint (L2 56 Editable Shapes + 23 Connectors + 4-Zone Sidebar)
     const primaryId = spec.diagramIds[0];
     const m = manifest.find((x) => x.id === primaryId)!;
     const dj = wsDeck.diagrams.find((d) => d.id === primaryId);
@@ -7370,24 +7461,6 @@ async function buildCombinedDeck(manifest: ManifestItem[]) {
     );
     slideCount += r.slides;
     for (const id of spec.diagramIds) allIds.push(id);
-
-    // 3. Workstream Signature Visual Archetype Slide (weaving all visual skills across WS1..WS5!)
-    if (spec.key === 'WS1') {
-      addArchitectureZoneTopologySlide(pptx, spec);
-      slideCount++;
-    } else if (spec.key === 'WS2') {
-      addPayloadTransformationTriptychSlide(pptx, spec);
-      slideCount++;
-    } else if (spec.key === 'WS3') {
-      addUmlSequenceSwimlaneSlide(pptx, spec);
-      slideCount++;
-    } else if (spec.key === 'WS4') {
-      addAsyncStateFlowPipelineSlide(pptx, spec);
-      slideCount++;
-    } else if (spec.key === 'WS5') {
-      addPhasedRoadmapTimelineSlide(pptx, spec);
-      slideCount++;
-    }
 
     // 4. Workstream Primary Verification / Comparison Matrix Slide
     const wsTable = wsDeck.sections.find((s) => s.layout === 'table' && s.tableRows && s.tableRows.length > 0);
