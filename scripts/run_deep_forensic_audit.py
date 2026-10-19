@@ -643,7 +643,19 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                                     decks_valid = False
                             if "ppt/slides/slide5.xml" in zf.namelist():
                                 s5_xml = zf.read("ppt/slides/slide5.xml").decode("utf-8", errors="ignore")
-                                if "Figure 1" not in s5_xml or "4-ZONE HUB-AND-SPOKE" not in s5_xml:
+                                if "ARCHITECTURE-ZONE-TOPOLOGY" not in s5_xml:
+                                    decks_valid = False
+                            if "ppt/slides/slide6.xml" in zf.namelist():
+                                s6_xml = zf.read("ppt/slides/slide6.xml").decode("utf-8", errors="ignore")
+                                if "Figure 1" not in s6_xml or "4-ZONE HUB-AND-SPOKE" not in s6_xml:
+                                    decks_valid = False
+                            if "ppt/slides/slide7.xml" in zf.namelist():
+                                s7_xml = zf.read("ppt/slides/slide7.xml").decode("utf-8", errors="ignore")
+                                if "UML-SEQUENCE-SWIMLANE" not in s7_xml:
+                                    decks_valid = False
+                            if "ppt/slides/slide8.xml" in zf.namelist():
+                                s8_xml = zf.read("ppt/slides/slide8.xml").decode("utf-8", errors="ignore")
+                                if "PAYLOAD-TRANSFORMATION" not in s8_xml:
                                     decks_valid = False
                             if "ppt/slides/slide11.xml" in zf.namelist():
                                 s11_xml = zf.read("ppt/slides/slide11.xml").decode("utf-8", errors="ignore")

@@ -978,8 +978,8 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
     },
     {
       badge: 'ACT II • SLIDES 5–8',
-      title: 'Master #78 Blueprint, Zones & Request Flow',
-      sub: 'Unveils the 56-shape Google Cloud Architecture Center (#78) diagram, decomposes 3 trust zones, transforms OBO/DPoP wire payloads & traces 5-actor UML.',
+      title: 'Logical Zones -> #78 Blueprint -> Flow -> Wire',
+      sub: 'Progresses top-down from 3-Zone Logical Architecture (Slide 5) to Detailed 56-Shape #78 Blueprint (Slide 6), 5-Actor Process (Slide 7) & OBO/DPoP Wire Payload (Slide 8).',
       bar: G_RED,
       tint: G_RED_TINT,
       text: G_RED_DEEP,
@@ -7181,10 +7181,16 @@ async function buildWorkstreamDeck(spec: DeckSpec, manifest: ManifestItem[]) {
   }
 
   // =========================================================================
-  // ACT II: REFERENCE ARCHITECTURE BLUEPRINT, TRUST BOUNDARIES & HAPPY-PATH EXECUTION (Slides 5–8)
+  // ACT II: TOP-DOWN ARCHITECTURAL ZOOM — L1 LOGICAL -> L2 PHYSICAL BLUEPRINT -> L3 PROCESS -> L4 WIRE PACKET (Slides 5–8)
   // =========================================================================
 
-  // Slide 5 (`decomposed-drawio-diagram`): Authoritative Figure 1 Official #78 Hub-and-Spoke Blueprint
+  // Slide 5 (`architecture-zone-topology`): L1 Conceptual / Logical 3-Zone Trust Boundary Overview
+  const rZone = addArchitectureZoneTopologySlide(pptx, spec);
+  totalVertices += rZone.shapes;
+  totalEdges += rZone.connectors;
+  slideCount++;
+
+  // Slide 6 (`decomposed-drawio-diagram`): L2 Detailed Physical Architecture — Authoritative Figure 1 Official #78 Hub-and-Spoke Blueprint (56 Shapes + 23 Connectors)
   const primaryId = spec.diagramIds[0];
   const mPrimary = manifest.find((x) => x.id === primaryId);
   if (!mPrimary) throw new Error(`Diagram ${primaryId} missing from diagrams_manifest.json`);
@@ -7211,22 +7217,16 @@ async function buildWorkstreamDeck(spec: DeckSpec, manifest: ManifestItem[]) {
   totalEdges += rDiag.edgeCount;
   slideCount += rDiag.slides;
 
-  // Slide 6 (`architecture-zone-topology`): 3-Zone Physical & Logical Boundary Decomposition
-  const rZone = addArchitectureZoneTopologySlide(pptx, spec);
-  totalVertices += rZone.shapes;
-  totalEdges += rZone.connectors;
-  slideCount++;
-
-  // Slide 7 (`payload-transformation-triptych`): 3-Stage Wire Payload & Cryptographic Context Transformation
-  const rPayload = addPayloadTransformationTriptychSlide(pptx, spec);
-  totalVertices += rPayload.shapes;
-  totalEdges += rPayload.connectors;
-  slideCount++;
-
-  // Slide 8 (`uml-sequence-swimlane`): 5-Actor Chronological Request Lifeline (Happy-Path Steps 1–6)
+  // Slide 7 (`uml-sequence-swimlane`): L3 End-to-End Chronological Process — 5-Actor Request Lifeline (Happy-Path Steps 1–6)
   const rUml = addUmlSequenceSwimlaneSlide(pptx, spec);
   totalVertices += rUml.shapes;
   totalEdges += rUml.connectors;
+  slideCount++;
+
+  // Slide 8 (`payload-transformation-triptych`): L4 Wire-Level Packet Inspection — 3-Stage Payload & Cryptographic Context Transformation
+  const rPayload = addPayloadTransformationTriptychSlide(pptx, spec);
+  totalVertices += rPayload.shapes;
+  totalEdges += rPayload.connectors;
   slideCount++;
 
   // =========================================================================
