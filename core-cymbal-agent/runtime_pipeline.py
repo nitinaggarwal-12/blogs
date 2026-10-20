@@ -53,13 +53,31 @@ class CymbalMultiTenantRuntime:
         hops: List[HopAuditRecord] = []
 
         # Hop 1: Edge Identity PEP (Cloud Armor / IAP + RFC 8693 OBO + DPoP)
-        ctx, h1_audit = self.hop1.authenticate_and_mint_context(
-            raw_headers=raw_headers,
-            jwt_claims=jwt_claims,
-            dpop_proof_jkt=dpop_proof_jkt,
-            session_id=session_id,
-            topology=topology,
-        )
+        try:
+            ctx, h1_audit = self.hop1.authenticate_and_mint_context(
+                raw_headers=raw_headers,
+                jwt_claims=jwt_claims,
+                dpop_proof_jkt=dpop_proof_jkt,
+                session_id=session_id,
+                topology=topology,
+            )
+        except PermissionError as exc:
+            h1_err = HopAuditRecord(
+                hop_number=1,
+                hop_name="Hop 1 • Edge Identity PEP (Cloud Armor / IAP + OBO + DPoP)",
+                decision="DENY",
+                status_code=401,
+                detail=str(exc),
+            )
+            hops.append(h1_err)
+            return {
+                "status_code": 401,
+                "decision": "DENY",
+                "violation_type": "HOP1_AUTHENTICATION_FAILED",
+                "reason": str(exc),
+                "context": None,
+                "hops": hops,
+            }
         hops.append(h1_audit)
 
         # Hop 2: GEAP Registry PDP, ARD Catalog Filter & ADK `before_agent_callback` Tool Pruning

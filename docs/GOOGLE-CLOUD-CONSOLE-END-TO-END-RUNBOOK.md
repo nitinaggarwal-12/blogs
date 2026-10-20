@@ -51,8 +51,8 @@ pwd && ls -la
 
 ### Stage 2 — Cloud Run Revisions & Deployment: Active Revision & 100% Traffic Verification
 
-1. Click the **`Revisions`** tab in Google Cloud Console to verify the active deployed Cloud Run revision and inspect `core-cymbal-agent/runtime_pipeline.py` and all 24 files directly in Google Cloud Console.
-2. In the bottom `root@localhost:/app#` terminal, list all 24 Python & Terraform files:
+1. Click the **`Revisions`** tab in Google Cloud Console to verify the active deployed Cloud Run revision and inspect `core-cymbal-agent/runtime_pipeline.py` and all 27 files directly in Google Cloud Console.
+2. In the bottom `root@localhost:/app#` terminal, list all 27 Python & Terraform files:
 
 ```bash
 find core-cymbal-agent workstream-2-pattern-a-pooled workstream-3-pattern-b-siloed workstream-4-pattern-c-hybrid \
@@ -96,16 +96,13 @@ PYTHONPATH=. python3 workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrad
 ### Stage 6 — Validation: Core 5-Hop Pipeline (`9/9 PASS`) + VPC PSC NAT Subnet (`10.240.0.0/28`), Cloud KMS ECDSA P-256 & BigQuery Audit Stream (`200 OK`)
 
 ```bash
-PYTHONPATH=. python3 -m unittest core-cymbal-agent/tests/test_five_hop_pipeline.py -v && \
-CYMBAL_LIVE_GCP=1 PYTHONPATH=. python3 -c "
-from core_cymbal_agent.gcp_live_bridge import (
-    kms_asymmetric_sign_digest,
-    kms_encrypt_decrypt_roundtrip,
-    bigquery_stream_audit_row,
-)
-sig = kms_asymmetric_sign_digest('cymbal-hop1-dpop-proof-finvault')
-enc = kms_encrypt_decrypt_roundtrip('finvault', 'L4-episodic-memory-vector-payload')
-bq  = bigquery_stream_audit_row('finvault', 'PATTERN_B_SILOED', 'ALLOW', 200, 'Live Cloud Run SSH Verification')
+PYTHONPATH=. python3 -B -m unittest core-cymbal-agent/tests/test_five_hop_pipeline.py -v && \
+CYMBAL_LIVE_GCP=1 PYTHONPATH=. python3 -B -c "
+import importlib
+bridge = importlib.import_module('core-cymbal-agent.gcp_live_bridge')
+sig = bridge.kms_asymmetric_sign_digest('cymbal-hop1-dpop-proof-finvault')
+enc = bridge.kms_encrypt_decrypt_roundtrip('finvault', 'L4-episodic-memory-vector-payload')
+bq  = bridge.bigquery_stream_audit_row('finvault', 'PATTERN_B_SILOED', 'ALLOW', 200, 'Live Cloud Run SSH Verification')
 print('1. KMS ECDSA P-256 Sign :', sig)
 print('2. KMS CMEK Roundtrip   :', enc)
 print('3. BigQuery Audit Row   :', bq)

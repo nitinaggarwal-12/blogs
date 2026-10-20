@@ -52,7 +52,7 @@ resource "google_compute_network" "enterprise_spoke_vpc" {
 resource "google_compute_subnetwork" "enterprise_spoke_psc_nat" {
   provider      = google.spoke
   name          = "${var.enterprise_tenant_id}-psc-nat-subnet"
-  ip_cidr_range = "10.40.240.0/24"
+  ip_cidr_range = "10.240.0.0/28"
   region        = var.region
   network       = google_compute_network.enterprise_spoke_vpc.id
   purpose       = "PRIVATE_SERVICE_CONNECT"
@@ -92,4 +92,13 @@ resource "google_compute_forwarding_rule" "hub_psc_consumer_endpoint" {
   ip_address            = google_compute_address.hub_psc_consumer_ip.id
   load_balancing_scheme = ""
   target                = google_compute_service_attachment.enterprise_spoke_psc_attachment.id
+}
+
+# 4. Firestore Dynamic Tenant Routing Table Entry (Zero-Downtime Pool -> PSC Spoke Promotion)
+resource "google_firestore_document" "tenant_routing_rule" {
+  provider    = google.hub
+  project     = var.hub_project_id
+  collection  = "cymbal_tenant_routing_table"
+  document_id = var.enterprise_tenant_id
+  fields      = "{\"tier\":{\"stringValue\":\"ENTERPRISE\"},\"topology\":{\"stringValue\":\"PATTERN_C_HYBRID_PSC_SPOKE\"},\"psc_consumer_ip\":{\"stringValue\":\"${google_compute_address.hub_psc_consumer_ip.address}\"},\"service_attachment\":{\"stringValue\":\"${google_compute_service_attachment.enterprise_spoke_psc_attachment.id}\"}}"
 }

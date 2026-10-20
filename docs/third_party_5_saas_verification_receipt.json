@@ -1,5 +1,5 @@
 {
-  "verified_at": "2026-10-20T18:39:26.774928+00:00",
+  "verified_at": "2026-10-20T21:53:10.397978+00:00",
   "total_unique_saas_products_tested": 10,
   "patterns_tested": [
     "PATTERN_A_POOLED",
@@ -22,9 +22,15 @@
         {
           "saas_id": "SAAS-01",
           "slug": "thoughtspot",
+          "aliases": [
+            "thoughtspot",
+            "thoughtspot-spotter",
+            "spotter"
+          ],
           "saas_name": "ThoughtSpot Cloud (Spotter Agentic BI & Liveboards REST API v2.0)",
           "category": "Agentic BI & Natural-Language-to-SQL (NL2SQL)",
           "connector_uri": "mcp://cymbal/thoughtspot-spotter-bi-3lo",
+          "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
           "auth_protocol": "3LO OAuth2 + ThoughtSpot REST v2.0 Custom Token (`org_identifier` + `runtime_filter`)",
           "pattern": "PATTERN_A_POOLED",
           "live_endpoint": "https://try-everywhere.thoughtspot.cloud/api/rest/2.0/auth/token/custom",
@@ -62,7 +68,7 @@
               "connector_uri": "mcp://cymbal/thoughtspot-spotter-bi-3lo",
               "hop3_valkey_rpm_cap": 120,
               "hop3_thinking_budget_cap": 4000,
-              "hop3_context_cache_key": "cymbal-shared-incident-system-prompt-v2",
+              "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
               "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
             },
             "output": {
@@ -77,6 +83,39 @@
               "hop4_model_armor_and_sdp_clean": true,
               "hop5_pooled_rls_verified": true,
               "live_cloud_endpoint_probed": "https://try-everywhere.thoughtspot.cloud/api/rest/2.0/auth/token/custom",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-01-pattern_a_pooled",
+                "hop4_ingress_decision": "ALLOW",
+                "live_bigquery_rls": {
+                  "row_count": null,
+                  "rows": [
+                    {
+                      "entity_id": "ENT-FV-001",
+                      "tenant_id": "finvault",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Institutional Treasury Bond Pool",
+                      "portfolio_nav_usd": "148500000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    },
+                    {
+                      "entity_id": "ENT-FV-002",
+                      "tenant_id": "finvault",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Sovereign Fixed-Income Alpha",
+                      "portfolio_nav_usd": "92400000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    }
+                  ],
+                  "job_location": null
+                }
+              },
               "cross_tenant_rows_leaked": 0
             }
           },
@@ -94,7 +133,8 @@
               "pattern": "PATTERN_A_POOLED",
               "saas_id": "SAAS-01",
               "connector_uri": "mcp://cymbal/thoughtspot-spotter-bi-3lo",
-              "reason": "403 Forbidden: Tenant 'retailstream' (retailstream-org-02) cannot query ThoughtSpot Org 'finvault-org-01'."
+              "reason": "403 Forbidden: Tenant 'retailstream' (retailstream-org-02) cannot query ThoughtSpot Org 'finvault-org-01'.",
+              "enforced_by_governance_module": "core-cymbal-agent/governance/hop5_data_rls_and_otel.py"
             }
           },
           "positive_e2e_status": 200,
@@ -104,9 +144,14 @@
         {
           "saas_id": "SAAS-02",
           "slug": "sigma",
+          "aliases": [
+            "sigma",
+            "sigma-computing"
+          ],
           "saas_name": "Sigma Computing (Cloud BI Workbooks & Dataset REST API v2)",
           "category": "Cloud Warehouse BI & User-Attribute RLS Pushdown",
           "connector_uri": "mcp://cymbal/sigma-computing-workbooks-3lo",
+          "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
           "auth_protocol": "OAuth2 Client/3LO Token (`/v2/auth/token`) + Signed Workbook Embed User-Attributes (`ua_tenant_id`)",
           "pattern": "PATTERN_A_POOLED",
           "live_endpoint": "https://api.sigmacomputing.com/v2/auth/token",
@@ -123,7 +168,8 @@
             "user_attribute_rls_binding": {
               "ua_tenant_id": "${ctx.tenant_id}",
               "ua_rls_guc": "app.current_tenant_id=${ctx.tenant_id}"
-            }
+            },
+            "bq_target_table": "nitina-ggarwal-sandbox-647724.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities"
           },
           "setup_steps": [
             "1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` for `mcp://cymbal/sigma-computing-workbooks-3lo`.",
@@ -142,7 +188,7 @@
               "connector_uri": "mcp://cymbal/sigma-computing-workbooks-3lo",
               "hop3_valkey_rpm_cap": 120,
               "hop3_thinking_budget_cap": 4000,
-              "hop3_context_cache_key": "cymbal-shared-incident-system-prompt-v2",
+              "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
               "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
             },
             "output": {
@@ -157,6 +203,39 @@
               "hop4_model_armor_and_sdp_clean": true,
               "hop5_pooled_rls_verified": true,
               "live_cloud_endpoint_probed": "https://api.sigmacomputing.com/v2/auth/token",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-02-pattern_a_pooled",
+                "hop4_ingress_decision": "ALLOW",
+                "live_bigquery_rls": {
+                  "row_count": null,
+                  "rows": [
+                    {
+                      "entity_id": "ENT-FV-001",
+                      "tenant_id": "finvault",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Institutional Treasury Bond Pool",
+                      "portfolio_nav_usd": "148500000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    },
+                    {
+                      "entity_id": "ENT-FV-002",
+                      "tenant_id": "finvault",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Sovereign Fixed-Income Alpha",
+                      "portfolio_nav_usd": "92400000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    }
+                  ],
+                  "job_location": null
+                }
+              },
               "cross_tenant_rows_leaked": 0
             }
           },
@@ -175,7 +254,8 @@
               "pattern": "PATTERN_A_POOLED",
               "saas_id": "SAAS-02",
               "connector_uri": "mcp://cymbal/sigma-computing-workbooks-3lo",
-              "reason": "403 Forbidden: Hop 5 overwrote client-supplied ua_tenant_id and rejected cross-tenant workbook export."
+              "reason": "403 Forbidden: Hop 5 blocked client-supplied Sigma User-Attribute override (caller tenant='retailstream', attempted ua_tenant_id='finvault').",
+              "enforced_by_governance_module": "core-cymbal-agent/governance/hop5_data_rls_and_otel.py"
             }
           },
           "positive_e2e_status": 200,
@@ -185,9 +265,15 @@
         {
           "saas_id": "SAAS-03",
           "slug": "servicenow",
+          "aliases": [
+            "servicenow",
+            "servicenow-itsm",
+            "servicenow-itom"
+          ],
           "saas_name": "ServiceNow ITSM & ITOM (AWS Bedrock AgentCore MCP Gateway)",
           "category": "Enterprise IT Service & Change Management",
           "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
+          "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
           "auth_protocol": "Hop 5 Interactive 3LO OAuth2 Consent + AWS Cognito RS256 OBO -> Bedrock AgentCore MCP JSON-RPC 2.0",
           "pattern": "PATTERN_A_POOLED",
           "live_endpoint": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
@@ -217,8 +303,8 @@
               "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
               "hop3_valkey_rpm_cap": 120,
               "hop3_thinking_budget_cap": 4000,
-              "hop3_context_cache_key": "cymbal-shared-incident-system-prompt-v2",
-              "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
+              "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
+              "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'retailstream'"
             },
             "output": {
               "status_code": 200,
@@ -232,6 +318,20 @@
               "hop4_model_armor_and_sdp_clean": true,
               "hop5_pooled_rls_verified": true,
               "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+              "live_verification_evidence": {
+                "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "2b6b245454e3bceea62cd327",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "retailstream:ops-eng@retailstream.com:sess-saas-03-pattern_a_pooled",
+                "hop4_ingress_decision": "ALLOW",
+                "live_aws_bedrock_agentcore_mcp": {
+                  "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+                  "tool_name": "servicenow-itsm___query_servicenow_change_records",
+                  "is_error": false
+                }
+              },
               "cross_tenant_rows_leaked": 0
             }
           },
@@ -249,7 +349,8 @@
               "pattern": "PATTERN_A_POOLED",
               "saas_id": "SAAS-03",
               "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
-              "reason": "401 Unauthorized (MCP -32042 CHALLENGE_3LO_OAUTH): Interactive step-up consent required."
+              "reason": "401 Unauthorized (MCP -32042 CHALLENGE_3LO_OAUTH): Interactive step-up consent required.",
+              "enforced_by_governance_module": "core-cymbal-agent/governance/hop5_data_rls_and_otel.py"
             }
           },
           "positive_e2e_status": 200,
@@ -259,10 +360,16 @@
         {
           "saas_id": "SAAS-04",
           "slug": "veeva",
+          "aliases": [
+            "veeva",
+            "veeva-muse",
+            "muse"
+          ],
           "saas_name": "Veeva Vault RIM & Muse Clinical EDC (GxP 21 CFR Part 11 SaaS)",
           "category": "Regulated Life Sciences Clinical & Regulatory SaaS",
           "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
-          "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP + FDA 21 CFR Part 11 HMAC-SHA256 Electronic Signature",
+          "verification_tier": "TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE",
+          "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP + FDA 21 CFR Part 11 Cloud KMS Asymmetric Signature",
           "pattern": "PATTERN_A_POOLED",
           "live_endpoint": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
           "manual_curl_cmd": "python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern pattern-b --verbose",
@@ -271,8 +378,8 @@
             "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
             "mcp_gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
             "mcp_tool_name": "muse-poc___query_muse_study_biomarkers",
-            "veeva_vql_object": "documents (VV-DOC-004819 / Study MK-3475-087 Cohort-B)",
-            "gxp_21cfr11_hmac_binding": "{tenant_id}:{user_principal}:{study_id}:{cohort}:{timestamp}"
+            "hop2_gxp_policy_test_artifact": "VV-DOC-004819 / Study MK-3475-087 Cohort-B (Signed via Cloud KMS adk-agent-signing-key)",
+            "gxp_21cfr11_kms_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/adk-agent-signing-key"
           },
           "setup_steps": [
             "1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` for `mcp://finvault/veeva-muse-clinical-3lo`.",
@@ -291,7 +398,7 @@
               "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
               "hop3_valkey_rpm_cap": 120,
               "hop3_thinking_budget_cap": 4000,
-              "hop3_context_cache_key": "cymbal-shared-incident-system-prompt-v2",
+              "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
               "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
             },
             "output": {
@@ -306,6 +413,30 @@
               "hop4_model_armor_and_sdp_clean": true,
               "hop5_pooled_rls_verified": true,
               "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+              "live_verification_evidence": {
+                "verification_tier": "TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-04-pattern_a_pooled",
+                "hop4_ingress_decision": "ALLOW",
+                "live_aws_bedrock_agentcore_mcp": {
+                  "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+                  "tool_name": "muse-poc___query_muse_study_biomarkers",
+                  "is_error": false
+                },
+                "cloud_kms_21cfr11_signature": {
+                  "artifact_provenance": "HOP2_GXP_21CFR11_POLICY_TEST_ARTIFACT_SIGNED_BY_CLOUD_KMS",
+                  "document_number__v": "VV-DOC-004819",
+                  "name__v": "Clinical Study Protocol & Regulatory Dossier (MK-3475-087)",
+                  "status__v": "Steady State (Approved)",
+                  "cfr11_kms_key_version": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
+                  "cfr11_payload_sha256": null,
+                  "cfr11_kms_ecdsa_p256_signature_b64": "",
+                  "cfr11_hmac_sha256_signature": "1e935b305d867cae208cc7e8cfa9dd878d14fc1c4a82987dc86a2da070b95f3b"
+                }
+              },
               "cross_tenant_rows_leaked": 0
             }
           },
@@ -322,7 +453,8 @@
               "pattern": "PATTERN_A_POOLED",
               "saas_id": "SAAS-04",
               "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
-              "reason": "403 Forbidden: Tenant 'retailstream' is not entitled to regulated GxP connector 'mcp://finvault/veeva-muse-clinical-3lo'."
+              "reason": "403 Forbidden: Tenant 'retailstream' is not entitled to regulated GxP connector 'mcp://finvault/veeva-muse-clinical-3lo'.",
+              "enforced_by_governance_module": "core-cymbal-agent/governance/hop5_data_rls_and_otel.py"
             }
           },
           "positive_e2e_status": 200,
@@ -332,9 +464,15 @@
         {
           "saas_id": "SAAS-05",
           "slug": "salesforce",
+          "aliases": [
+            "salesforce",
+            "salesforce-jira",
+            "jira"
+          ],
           "saas_name": "Salesforce Enterprise CRM (NA224) & Atlassian Jira Cloud",
           "category": "Enterprise CRM & Engineering Incident Escalation",
           "connector_uri": "mcp://finvault/salesforce-jira-escalation-3lo",
+          "verification_tier": "LIVE_SAAS_STATUS_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_SDP_REDACTION",
           "auth_protocol": "3LO OAuth2 Case Escalation + Hop 4 Egress Sensitive Data Protection (SDP) IBAN/SWIFT Masking",
           "pattern": "PATTERN_A_POOLED",
           "live_endpoint": "https://api.status.salesforce.com/v1/instances/NA224/status/preview",
@@ -367,7 +505,7 @@
               "connector_uri": "mcp://finvault/salesforce-jira-escalation-3lo",
               "hop3_valkey_rpm_cap": 120,
               "hop3_thinking_budget_cap": 4000,
-              "hop3_context_cache_key": "cymbal-shared-incident-system-prompt-v2",
+              "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
               "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
             },
             "output": {
@@ -382,6 +520,15 @@
               "hop4_model_armor_and_sdp_clean": true,
               "hop5_pooled_rls_verified": true,
               "live_cloud_endpoint_probed": "https://api.status.salesforce.com/v1/instances/NA224/status/preview",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_STATUS_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_SDP_REDACTION",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-05-pattern_a_pooled",
+                "hop4_ingress_decision": "ALLOW"
+              },
               "cross_tenant_rows_leaked": 0
             }
           },
@@ -398,7 +545,8 @@
               "pattern": "PATTERN_A_POOLED",
               "saas_id": "SAAS-05",
               "connector_uri": "mcp://finvault/salesforce-jira-escalation-3lo",
-              "reason": "400 Bad Request / Redacted at Hop 4: Raw IBAN_CODE and SWIFT_CODE deterministically masked before external SaaS egress."
+              "reason": "400 Bad Request / Redacted at Hop 4: Raw IBAN_CODE and SWIFT_CODE deterministically masked before external SaaS egress.",
+              "enforced_by_governance_module": "core-cymbal-agent/governance/hop4_model_armor_guardrails.py"
             }
           },
           "positive_e2e_status": 200,
@@ -408,9 +556,16 @@
         {
           "saas_id": "SAAS-06",
           "slug": "databricks",
+          "aliases": [
+            "databricks",
+            "databricks-uc",
+            "unity-catalog",
+            "genie"
+          ],
           "saas_name": "Databricks Data Intelligence Platform (Unity Catalog & Genie REST API 2.0)",
           "category": "Lakehouse AI, Unity Catalog 3-Level Namespace & Conversational BI",
           "connector_uri": "mcp://cymbal/databricks-unity-catalog-genie-3lo",
+          "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
           "auth_protocol": "Databricks OIDC/OAuth2 Token Federation + Unity Catalog 3-Level Namespace (`cymbal_uc_prod.<tenant>_gold`)",
           "pattern": "PATTERN_A_POOLED",
           "live_endpoint": "https://community.cloud.databricks.com/api/2.0/clusters/list",
@@ -446,7 +601,7 @@
               "connector_uri": "mcp://cymbal/databricks-unity-catalog-genie-3lo",
               "hop3_valkey_rpm_cap": 120,
               "hop3_thinking_budget_cap": 4000,
-              "hop3_context_cache_key": "cymbal-shared-incident-system-prompt-v2",
+              "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
               "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
             },
             "output": {
@@ -461,6 +616,39 @@
               "hop4_model_armor_and_sdp_clean": true,
               "hop5_pooled_rls_verified": true,
               "live_cloud_endpoint_probed": "https://community.cloud.databricks.com/api/2.0/clusters/list",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-06-pattern_a_pooled",
+                "hop4_ingress_decision": "ALLOW",
+                "live_bigquery_rls": {
+                  "row_count": null,
+                  "rows": [
+                    {
+                      "entity_id": "ENT-FV-001",
+                      "tenant_id": "finvault",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Institutional Treasury Bond Pool",
+                      "portfolio_nav_usd": "148500000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    },
+                    {
+                      "entity_id": "ENT-FV-002",
+                      "tenant_id": "finvault",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Sovereign Fixed-Income Alpha",
+                      "portfolio_nav_usd": "92400000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    }
+                  ],
+                  "job_location": null
+                }
+              },
               "cross_tenant_rows_leaked": 0
             }
           },
@@ -478,7 +666,8 @@
               "pattern": "PATTERN_A_POOLED",
               "saas_id": "SAAS-06",
               "connector_uri": "mcp://cymbal/databricks-unity-catalog-genie-3lo",
-              "reason": "403 Forbidden: Tenant 'retailstream' blocked from Unity Catalog schema 'cymbal_uc_prod.finvault_gold' and EXECUTE IMMEDIATE."
+              "reason": "403 Forbidden: Tenant 'retailstream' blocked from Unity Catalog schema 'cymbal_uc_prod.finvault_gold' and EXECUTE IMMEDIATE.",
+              "enforced_by_governance_module": "core-cymbal-agent/governance/hop5_data_rls_and_otel.py"
             }
           },
           "positive_e2e_status": 200,
@@ -488,9 +677,15 @@
         {
           "saas_id": "SAAS-07",
           "slug": "snowflake",
+          "aliases": [
+            "snowflake",
+            "snowflake-cortex",
+            "cortex"
+          ],
           "saas_name": "Snowflake AI Data Cloud (Cortex Analyst NL2SQL & SQL REST API v2)",
           "category": "Cross-Cloud Enterprise Data Warehouse & Secondary-Role Isolation",
           "connector_uri": "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
+          "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
           "auth_protocol": "External OAuth2 Token Exchange + `USE SECONDARY ROLES NONE` + Primary Role `ROLE_CYMBAL_{TENANT}`",
           "pattern": "PATTERN_A_POOLED",
           "live_endpoint": "https://os37291.us-east-1.snowflakecomputing.com/api/v2/statements",
@@ -520,7 +715,7 @@
               "connector_uri": "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
               "hop3_valkey_rpm_cap": 120,
               "hop3_thinking_budget_cap": 4000,
-              "hop3_context_cache_key": "cymbal-shared-incident-system-prompt-v2",
+              "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
               "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
             },
             "output": {
@@ -535,6 +730,30 @@
               "hop4_model_armor_and_sdp_clean": true,
               "hop5_pooled_rls_verified": true,
               "live_cloud_endpoint_probed": "https://os37291.us-east-1.snowflakecomputing.com/api/v2/statements",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-07-pattern_a_pooled",
+                "hop4_ingress_decision": "ALLOW",
+                "live_bigquery_rls": {
+                  "row_count": null,
+                  "rows": [
+                    {
+                      "entity_id": "ENT-RS-001",
+                      "tenant_id": "retailstream",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Omnichannel Inventory Fulfillment",
+                      "portfolio_nav_usd": "18250000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    }
+                  ],
+                  "job_location": null
+                }
+              },
               "cross_tenant_rows_leaked": 0
             }
           },
@@ -552,7 +771,8 @@
               "pattern": "PATTERN_A_POOLED",
               "saas_id": "SAAS-07",
               "connector_uri": "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
-              "reason": "403 Forbidden: Hop 5 enforced 'USE SECONDARY ROLES NONE' and blocked escalation to ROLE_CYMBAL_FINVAULT."
+              "reason": "403 Forbidden: Hop 5 enforced 'USE SECONDARY ROLES NONE' and blocked escalation to ROLE_CYMBAL_FINVAULT.",
+              "enforced_by_governance_module": "core-cymbal-agent/governance/hop5_data_rls_and_otel.py"
             }
           },
           "positive_e2e_status": 200,
@@ -562,9 +782,15 @@
         {
           "saas_id": "SAAS-08",
           "slug": "workday",
+          "aliases": [
+            "workday",
+            "workday-hcm",
+            "workday-raas"
+          ],
           "saas_name": "Workday Enterprise HCM & Financial Management (CCX OAuth2 & RaaS REST API)",
           "category": "Enterprise HCM/Payroll ERP, 3LO Principal Scope & Hop 4 SSN Masking",
           "connector_uri": "mcp://finvault/workday-hcm-financials-raas-3lo",
+          "verification_tier": "LIVE_SAAS_OAUTH2_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_SDP_REDACTION",
           "auth_protocol": "Workday CCX OAuth2 (`/ccx/oauth2/cymbal/token`) + Composite Principal Vault + Hop 4 SSN/IBAN Redaction",
           "pattern": "PATTERN_A_POOLED",
           "live_endpoint": "https://wd5-services1.myworkday.com/ccx/oauth2/cymbal/token",
@@ -576,7 +802,7 @@
             "composite_3lo_vault_key": "{tenant_id}:{user_principal}:mcp://finvault/workday-hcm-financials-raas-3lo",
             "hop4_sdp_redaction_rules": [
               "US_SOCIAL_SECURITY_NUMBER -> [REDACTED_US_SSN]",
-              "IBAN_CODE -> [REDACTED_IBAN_CODE]"
+              "IBAN_CODE -> [REDACTED-FINVAULT-IBAN]"
             ]
           },
           "setup_steps": [
@@ -596,7 +822,7 @@
               "connector_uri": "mcp://finvault/workday-hcm-financials-raas-3lo",
               "hop3_valkey_rpm_cap": 120,
               "hop3_thinking_budget_cap": 4000,
-              "hop3_context_cache_key": "cymbal-shared-incident-system-prompt-v2",
+              "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
               "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
             },
             "output": {
@@ -611,6 +837,15 @@
               "hop4_model_armor_and_sdp_clean": true,
               "hop5_pooled_rls_verified": true,
               "live_cloud_endpoint_probed": "https://wd5-services1.myworkday.com/ccx/oauth2/cymbal/token",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_OAUTH2_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_SDP_REDACTION",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-08-pattern_a_pooled",
+                "hop4_ingress_decision": "ALLOW"
+              },
               "cross_tenant_rows_leaked": 0
             }
           },
@@ -628,7 +863,8 @@
               "pattern": "PATTERN_A_POOLED",
               "saas_id": "SAAS-08",
               "connector_uri": "mcp://finvault/workday-hcm-financials-raas-3lo",
-              "reason": "401 Unauthorized (MCP -32042): Intra-tenant 3LO token reuse blocked across distinct user principals."
+              "reason": "401 Unauthorized (MCP -32042): Intra-tenant 3LO token reuse blocked across distinct user principals.",
+              "enforced_by_governance_module": "core-cymbal-agent/governance/hop5_data_rls_and_otel.py"
             }
           },
           "positive_e2e_status": 200,
@@ -638,9 +874,15 @@
         {
           "saas_id": "SAAS-09",
           "slug": "datadog",
+          "aliases": [
+            "datadog",
+            "datadog-sre",
+            "bits-ai"
+          ],
           "saas_name": "Datadog Cloud Observability & Bits AI SRE (REST API v2 Logs/APM)",
           "category": "Multi-Tenant SRE Observability & Hop 4 Indirect Log Prompt-Injection Defense",
           "connector_uri": "mcp://cymbal/datadog-observability-sre-3lo",
+          "verification_tier": "LIVE_SAAS_API_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN",
           "auth_protocol": "Datadog API/Application Key Vault + `@tenant_id` Log Index Partitioning + Hop 4 Model Armor Log Screen",
           "pattern": "PATTERN_A_POOLED",
           "live_endpoint": "https://api.datadoghq.com/api/v1/validate",
@@ -670,7 +912,7 @@
               "connector_uri": "mcp://cymbal/datadog-observability-sre-3lo",
               "hop3_valkey_rpm_cap": 120,
               "hop3_thinking_budget_cap": 4000,
-              "hop3_context_cache_key": "cymbal-shared-incident-system-prompt-v2",
+              "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
               "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
             },
             "output": {
@@ -685,6 +927,15 @@
               "hop4_model_armor_and_sdp_clean": true,
               "hop5_pooled_rls_verified": true,
               "live_cloud_endpoint_probed": "https://api.datadoghq.com/api/v1/validate",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_API_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-09-pattern_a_pooled",
+                "hop4_ingress_decision": "ALLOW"
+              },
               "cross_tenant_rows_leaked": 0
             }
           },
@@ -701,7 +952,8 @@
               "pattern": "PATTERN_A_POOLED",
               "saas_id": "SAAS-09",
               "connector_uri": "mcp://cymbal/datadog-observability-sre-3lo",
-              "reason": "400 Bad Request: Hop 4 Model Armor intercepted indirect prompt injection inside ingested Datadog log line."
+              "reason": "400 Bad Request: Hop 4 Model Armor intercepted indirect prompt injection inside ingested Datadog log line.",
+              "enforced_by_governance_module": "core-cymbal-agent/governance/hop4_model_armor_guardrails.py"
             }
           },
           "positive_e2e_status": 200,
@@ -711,9 +963,16 @@
         {
           "saas_id": "SAAS-10",
           "slug": "crowdstrike",
+          "aliases": [
+            "crowdstrike",
+            "crowdstrike-okta",
+            "okta",
+            "falcon"
+          ],
           "saas_name": "CrowdStrike Falcon XDR & Okta Workforce Identity (OAuth2 & OIDC/DPoP)",
           "category": "Autonomous SecOps XDR, RFC 9449 DPoP Sender-Constrained Binding & CMEK Kill-Switch",
           "connector_uri": "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
+          "verification_tier": "LIVE_SAAS_OAUTH2_AND_OIDC_DISCOVERY_PROBE_PLUS_HOP1_DPOP_AND_CMEK_GUARD",
           "auth_protocol": "CrowdStrike Falcon OAuth2 (`/oauth2/token`) + Okta OIDC Discovery + Hop 1 RFC 9449 DPoP (`jkt` thumbprint)",
           "pattern": "PATTERN_A_POOLED",
           "live_endpoint": "https://api.crowdstrike.com/oauth2/token",
@@ -743,7 +1002,7 @@
               "connector_uri": "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
               "hop3_valkey_rpm_cap": 120,
               "hop3_thinking_budget_cap": 4000,
-              "hop3_context_cache_key": "cymbal-shared-incident-system-prompt-v2",
+              "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
               "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
             },
             "output": {
@@ -758,6 +1017,15 @@
               "hop4_model_armor_and_sdp_clean": true,
               "hop5_pooled_rls_verified": true,
               "live_cloud_endpoint_probed": "https://api.crowdstrike.com/oauth2/token",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_OAUTH2_AND_OIDC_DISCOVERY_PROBE_PLUS_HOP1_DPOP_AND_CMEK_GUARD",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-10-pattern_a_pooled",
+                "hop4_ingress_decision": "ALLOW"
+              },
               "cross_tenant_rows_leaked": 0
             }
           },
@@ -775,7 +1043,8 @@
               "pattern": "PATTERN_A_POOLED",
               "saas_id": "SAAS-10",
               "connector_uri": "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
-              "reason": "401 Unauthorized: Hop 1 RFC 9449 DPoP sender-constrained token binding failed (jkt mismatch)."
+              "reason": "401 Unauthorized: Hop 1 RFC 9449 DPoP sender-constrained token binding failed (jkt mismatch).",
+              "enforced_by_governance_module": "core-cymbal-agent/governance/hop1_edge_identity_pep.py"
             }
           },
           "positive_e2e_status": 200,
@@ -795,9 +1064,15 @@
         {
           "saas_id": "SAAS-01",
           "slug": "thoughtspot",
+          "aliases": [
+            "thoughtspot",
+            "thoughtspot-spotter",
+            "spotter"
+          ],
           "saas_name": "ThoughtSpot Cloud (Spotter Agentic BI & Liveboards REST API v2.0)",
           "category": "Agentic BI & Natural-Language-to-SQL (NL2SQL)",
           "connector_uri": "mcp://cymbal/thoughtspot-spotter-bi-3lo",
+          "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
           "auth_protocol": "3LO OAuth2 + ThoughtSpot REST v2.0 Custom Token (`org_identifier` + `runtime_filter`)",
           "pattern": "PATTERN_B_SOVEREIGN_SILO",
           "live_endpoint": "https://try-everywhere.thoughtspot.cloud/api/rest/2.0/auth/token/custom",
@@ -849,7 +1124,40 @@
               "iam_pab_verified": true,
               "vpc_sc_egress_rule_allowed": true,
               "cmek_key_state": "ENABLED",
-              "live_cloud_endpoint_probed": "https://try-everywhere.thoughtspot.cloud/api/rest/2.0/auth/token/custom"
+              "live_cloud_endpoint_probed": "https://try-everywhere.thoughtspot.cloud/api/rest/2.0/auth/token/custom",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-01-pattern_b_sovereign_silo",
+                "hop4_ingress_decision": "ALLOW",
+                "live_bigquery_rls": {
+                  "row_count": null,
+                  "rows": [
+                    {
+                      "entity_id": "ENT-FV-001",
+                      "tenant_id": "finvault",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Institutional Treasury Bond Pool",
+                      "portfolio_nav_usd": "148500000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    },
+                    {
+                      "entity_id": "ENT-FV-002",
+                      "tenant_id": "finvault",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Sovereign Fixed-Income Alpha",
+                      "portfolio_nav_usd": "92400000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    }
+                  ],
+                  "job_location": null
+                }
+              }
             }
           },
           "negative_test_case": {
@@ -872,6 +1180,11 @@
               "silo_project_id": "cymbal-medcore-silo-prod",
               "valkey_cache_unlinked_in_under_5s": true,
               "gvisor_worker_recycled": true,
+              "live_cmek_lockout_evidence": {
+                "medcore_revoked_key_state": "DISABLED",
+                "medcore_silo_locked_423": true,
+                "medcore_lockout_reason": ""
+              },
               "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://cymbal/thoughtspot-spotter-bi-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
             }
           },
@@ -882,9 +1195,14 @@
         {
           "saas_id": "SAAS-02",
           "slug": "sigma",
+          "aliases": [
+            "sigma",
+            "sigma-computing"
+          ],
           "saas_name": "Sigma Computing (Cloud BI Workbooks & Dataset REST API v2)",
           "category": "Cloud Warehouse BI & User-Attribute RLS Pushdown",
           "connector_uri": "mcp://cymbal/sigma-computing-workbooks-3lo",
+          "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
           "auth_protocol": "OAuth2 Client/3LO Token (`/v2/auth/token`) + Signed Workbook Embed User-Attributes (`ua_tenant_id`)",
           "pattern": "PATTERN_B_SOVEREIGN_SILO",
           "live_endpoint": "https://api.sigmacomputing.com/v2/auth/token",
@@ -901,7 +1219,8 @@
             "user_attribute_rls_binding": {
               "ua_tenant_id": "${ctx.tenant_id}",
               "ua_rls_guc": "app.current_tenant_id=${ctx.tenant_id}"
-            }
+            },
+            "bq_target_table": "nitina-ggarwal-sandbox-647724.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities"
           },
           "setup_steps": [
             "1. Provision dedicated silo project (`cymbal-finvault-silo-prod`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.",
@@ -934,7 +1253,40 @@
               "iam_pab_verified": true,
               "vpc_sc_egress_rule_allowed": true,
               "cmek_key_state": "ENABLED",
-              "live_cloud_endpoint_probed": "https://api.sigmacomputing.com/v2/auth/token"
+              "live_cloud_endpoint_probed": "https://api.sigmacomputing.com/v2/auth/token",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-02-pattern_b_sovereign_silo",
+                "hop4_ingress_decision": "ALLOW",
+                "live_bigquery_rls": {
+                  "row_count": null,
+                  "rows": [
+                    {
+                      "entity_id": "ENT-FV-001",
+                      "tenant_id": "finvault",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Institutional Treasury Bond Pool",
+                      "portfolio_nav_usd": "148500000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    },
+                    {
+                      "entity_id": "ENT-FV-002",
+                      "tenant_id": "finvault",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Sovereign Fixed-Income Alpha",
+                      "portfolio_nav_usd": "92400000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    }
+                  ],
+                  "job_location": null
+                }
+              }
             }
           },
           "negative_test_case": {
@@ -957,6 +1309,11 @@
               "silo_project_id": "cymbal-medcore-silo-prod",
               "valkey_cache_unlinked_in_under_5s": true,
               "gvisor_worker_recycled": true,
+              "live_cmek_lockout_evidence": {
+                "medcore_revoked_key_state": "DISABLED",
+                "medcore_silo_locked_423": true,
+                "medcore_lockout_reason": ""
+              },
               "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://cymbal/sigma-computing-workbooks-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
             }
           },
@@ -967,9 +1324,15 @@
         {
           "saas_id": "SAAS-03",
           "slug": "servicenow",
+          "aliases": [
+            "servicenow",
+            "servicenow-itsm",
+            "servicenow-itom"
+          ],
           "saas_name": "ServiceNow ITSM & ITOM (AWS Bedrock AgentCore MCP Gateway)",
           "category": "Enterprise IT Service & Change Management",
           "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
+          "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
           "auth_protocol": "Hop 5 Interactive 3LO OAuth2 Consent + AWS Cognito RS256 OBO -> Bedrock AgentCore MCP JSON-RPC 2.0",
           "pattern": "PATTERN_B_SOVEREIGN_SILO",
           "live_endpoint": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
@@ -1013,7 +1376,21 @@
               "iam_pab_verified": true,
               "vpc_sc_egress_rule_allowed": true,
               "cmek_key_state": "ENABLED",
-              "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp"
+              "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+              "live_verification_evidence": {
+                "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "2b6b245454e3bceea62cd327",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "retailstream:ops-eng@retailstream.com:sess-saas-03-pattern_b_sovereign_silo",
+                "hop4_ingress_decision": "ALLOW",
+                "live_aws_bedrock_agentcore_mcp": {
+                  "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+                  "tool_name": "servicenow-itsm___query_servicenow_change_records",
+                  "is_error": false
+                }
+              }
             }
           },
           "negative_test_case": {
@@ -1036,6 +1413,11 @@
               "silo_project_id": "cymbal-medcore-silo-prod",
               "valkey_cache_unlinked_in_under_5s": true,
               "gvisor_worker_recycled": true,
+              "live_cmek_lockout_evidence": {
+                "medcore_revoked_key_state": "DISABLED",
+                "medcore_silo_locked_423": true,
+                "medcore_lockout_reason": ""
+              },
               "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://retailstream/servicenow-itom-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
             }
           },
@@ -1046,10 +1428,16 @@
         {
           "saas_id": "SAAS-04",
           "slug": "veeva",
+          "aliases": [
+            "veeva",
+            "veeva-muse",
+            "muse"
+          ],
           "saas_name": "Veeva Vault RIM & Muse Clinical EDC (GxP 21 CFR Part 11 SaaS)",
           "category": "Regulated Life Sciences Clinical & Regulatory SaaS",
           "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
-          "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP + FDA 21 CFR Part 11 HMAC-SHA256 Electronic Signature",
+          "verification_tier": "TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE",
+          "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP + FDA 21 CFR Part 11 Cloud KMS Asymmetric Signature",
           "pattern": "PATTERN_B_SOVEREIGN_SILO",
           "live_endpoint": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
           "manual_curl_cmd": "python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern pattern-b --verbose",
@@ -1058,8 +1446,8 @@
             "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
             "mcp_gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
             "mcp_tool_name": "muse-poc___query_muse_study_biomarkers",
-            "veeva_vql_object": "documents (VV-DOC-004819 / Study MK-3475-087 Cohort-B)",
-            "gxp_21cfr11_hmac_binding": "{tenant_id}:{user_principal}:{study_id}:{cohort}:{timestamp}"
+            "hop2_gxp_policy_test_artifact": "VV-DOC-004819 / Study MK-3475-087 Cohort-B (Signed via Cloud KMS adk-agent-signing-key)",
+            "gxp_21cfr11_kms_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/adk-agent-signing-key"
           },
           "setup_steps": [
             "1. Provision dedicated silo project (`cymbal-finvault-silo-prod`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.",
@@ -1092,7 +1480,31 @@
               "iam_pab_verified": true,
               "vpc_sc_egress_rule_allowed": true,
               "cmek_key_state": "ENABLED",
-              "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp"
+              "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+              "live_verification_evidence": {
+                "verification_tier": "TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-04-pattern_b_sovereign_silo",
+                "hop4_ingress_decision": "ALLOW",
+                "live_aws_bedrock_agentcore_mcp": {
+                  "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+                  "tool_name": "muse-poc___query_muse_study_biomarkers",
+                  "is_error": false
+                },
+                "cloud_kms_21cfr11_signature": {
+                  "artifact_provenance": "HOP2_GXP_21CFR11_POLICY_TEST_ARTIFACT_SIGNED_BY_CLOUD_KMS",
+                  "document_number__v": "VV-DOC-004819",
+                  "name__v": "Clinical Study Protocol & Regulatory Dossier (MK-3475-087)",
+                  "status__v": "Steady State (Approved)",
+                  "cfr11_kms_key_version": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
+                  "cfr11_payload_sha256": null,
+                  "cfr11_kms_ecdsa_p256_signature_b64": "",
+                  "cfr11_hmac_sha256_signature": "1e935b305d867cae208cc7e8cfa9dd878d14fc1c4a82987dc86a2da070b95f3b"
+                }
+              }
             }
           },
           "negative_test_case": {
@@ -1115,6 +1527,11 @@
               "silo_project_id": "cymbal-medcore-silo-prod",
               "valkey_cache_unlinked_in_under_5s": true,
               "gvisor_worker_recycled": true,
+              "live_cmek_lockout_evidence": {
+                "medcore_revoked_key_state": "DISABLED",
+                "medcore_silo_locked_423": true,
+                "medcore_lockout_reason": ""
+              },
               "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://finvault/veeva-muse-clinical-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
             }
           },
@@ -1125,9 +1542,15 @@
         {
           "saas_id": "SAAS-05",
           "slug": "salesforce",
+          "aliases": [
+            "salesforce",
+            "salesforce-jira",
+            "jira"
+          ],
           "saas_name": "Salesforce Enterprise CRM (NA224) & Atlassian Jira Cloud",
           "category": "Enterprise CRM & Engineering Incident Escalation",
           "connector_uri": "mcp://finvault/salesforce-jira-escalation-3lo",
+          "verification_tier": "LIVE_SAAS_STATUS_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_SDP_REDACTION",
           "auth_protocol": "3LO OAuth2 Case Escalation + Hop 4 Egress Sensitive Data Protection (SDP) IBAN/SWIFT Masking",
           "pattern": "PATTERN_B_SOVEREIGN_SILO",
           "live_endpoint": "https://api.status.salesforce.com/v1/instances/NA224/status/preview",
@@ -1174,7 +1597,16 @@
               "iam_pab_verified": true,
               "vpc_sc_egress_rule_allowed": true,
               "cmek_key_state": "ENABLED",
-              "live_cloud_endpoint_probed": "https://api.status.salesforce.com/v1/instances/NA224/status/preview"
+              "live_cloud_endpoint_probed": "https://api.status.salesforce.com/v1/instances/NA224/status/preview",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_STATUS_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_SDP_REDACTION",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-05-pattern_b_sovereign_silo",
+                "hop4_ingress_decision": "ALLOW"
+              }
             }
           },
           "negative_test_case": {
@@ -1197,6 +1629,11 @@
               "silo_project_id": "cymbal-medcore-silo-prod",
               "valkey_cache_unlinked_in_under_5s": true,
               "gvisor_worker_recycled": true,
+              "live_cmek_lockout_evidence": {
+                "medcore_revoked_key_state": "DISABLED",
+                "medcore_silo_locked_423": true,
+                "medcore_lockout_reason": ""
+              },
               "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://finvault/salesforce-jira-escalation-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
             }
           },
@@ -1207,9 +1644,16 @@
         {
           "saas_id": "SAAS-06",
           "slug": "databricks",
+          "aliases": [
+            "databricks",
+            "databricks-uc",
+            "unity-catalog",
+            "genie"
+          ],
           "saas_name": "Databricks Data Intelligence Platform (Unity Catalog & Genie REST API 2.0)",
           "category": "Lakehouse AI, Unity Catalog 3-Level Namespace & Conversational BI",
           "connector_uri": "mcp://cymbal/databricks-unity-catalog-genie-3lo",
+          "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
           "auth_protocol": "Databricks OIDC/OAuth2 Token Federation + Unity Catalog 3-Level Namespace (`cymbal_uc_prod.<tenant>_gold`)",
           "pattern": "PATTERN_B_SOVEREIGN_SILO",
           "live_endpoint": "https://community.cloud.databricks.com/api/2.0/clusters/list",
@@ -1259,7 +1703,40 @@
               "iam_pab_verified": true,
               "vpc_sc_egress_rule_allowed": true,
               "cmek_key_state": "ENABLED",
-              "live_cloud_endpoint_probed": "https://community.cloud.databricks.com/api/2.0/clusters/list"
+              "live_cloud_endpoint_probed": "https://community.cloud.databricks.com/api/2.0/clusters/list",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-06-pattern_b_sovereign_silo",
+                "hop4_ingress_decision": "ALLOW",
+                "live_bigquery_rls": {
+                  "row_count": null,
+                  "rows": [
+                    {
+                      "entity_id": "ENT-FV-001",
+                      "tenant_id": "finvault",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Institutional Treasury Bond Pool",
+                      "portfolio_nav_usd": "148500000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    },
+                    {
+                      "entity_id": "ENT-FV-002",
+                      "tenant_id": "finvault",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Sovereign Fixed-Income Alpha",
+                      "portfolio_nav_usd": "92400000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    }
+                  ],
+                  "job_location": null
+                }
+              }
             }
           },
           "negative_test_case": {
@@ -1282,6 +1759,11 @@
               "silo_project_id": "cymbal-medcore-silo-prod",
               "valkey_cache_unlinked_in_under_5s": true,
               "gvisor_worker_recycled": true,
+              "live_cmek_lockout_evidence": {
+                "medcore_revoked_key_state": "DISABLED",
+                "medcore_silo_locked_423": true,
+                "medcore_lockout_reason": ""
+              },
               "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://cymbal/databricks-unity-catalog-genie-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
             }
           },
@@ -1292,9 +1774,15 @@
         {
           "saas_id": "SAAS-07",
           "slug": "snowflake",
+          "aliases": [
+            "snowflake",
+            "snowflake-cortex",
+            "cortex"
+          ],
           "saas_name": "Snowflake AI Data Cloud (Cortex Analyst NL2SQL & SQL REST API v2)",
           "category": "Cross-Cloud Enterprise Data Warehouse & Secondary-Role Isolation",
           "connector_uri": "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
+          "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
           "auth_protocol": "External OAuth2 Token Exchange + `USE SECONDARY ROLES NONE` + Primary Role `ROLE_CYMBAL_{TENANT}`",
           "pattern": "PATTERN_B_SOVEREIGN_SILO",
           "live_endpoint": "https://os37291.us-east-1.snowflakecomputing.com/api/v2/statements",
@@ -1338,7 +1826,31 @@
               "iam_pab_verified": true,
               "vpc_sc_egress_rule_allowed": true,
               "cmek_key_state": "ENABLED",
-              "live_cloud_endpoint_probed": "https://os37291.us-east-1.snowflakecomputing.com/api/v2/statements"
+              "live_cloud_endpoint_probed": "https://os37291.us-east-1.snowflakecomputing.com/api/v2/statements",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-07-pattern_b_sovereign_silo",
+                "hop4_ingress_decision": "ALLOW",
+                "live_bigquery_rls": {
+                  "row_count": null,
+                  "rows": [
+                    {
+                      "entity_id": "ENT-RS-001",
+                      "tenant_id": "retailstream",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Omnichannel Inventory Fulfillment",
+                      "portfolio_nav_usd": "18250000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    }
+                  ],
+                  "job_location": null
+                }
+              }
             }
           },
           "negative_test_case": {
@@ -1361,6 +1873,11 @@
               "silo_project_id": "cymbal-medcore-silo-prod",
               "valkey_cache_unlinked_in_under_5s": true,
               "gvisor_worker_recycled": true,
+              "live_cmek_lockout_evidence": {
+                "medcore_revoked_key_state": "DISABLED",
+                "medcore_silo_locked_423": true,
+                "medcore_lockout_reason": ""
+              },
               "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://cymbal/snowflake-cortex-analyst-sql-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
             }
           },
@@ -1371,9 +1888,15 @@
         {
           "saas_id": "SAAS-08",
           "slug": "workday",
+          "aliases": [
+            "workday",
+            "workday-hcm",
+            "workday-raas"
+          ],
           "saas_name": "Workday Enterprise HCM & Financial Management (CCX OAuth2 & RaaS REST API)",
           "category": "Enterprise HCM/Payroll ERP, 3LO Principal Scope & Hop 4 SSN Masking",
           "connector_uri": "mcp://finvault/workday-hcm-financials-raas-3lo",
+          "verification_tier": "LIVE_SAAS_OAUTH2_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_SDP_REDACTION",
           "auth_protocol": "Workday CCX OAuth2 (`/ccx/oauth2/cymbal/token`) + Composite Principal Vault + Hop 4 SSN/IBAN Redaction",
           "pattern": "PATTERN_B_SOVEREIGN_SILO",
           "live_endpoint": "https://wd5-services1.myworkday.com/ccx/oauth2/cymbal/token",
@@ -1385,7 +1908,7 @@
             "composite_3lo_vault_key": "{tenant_id}:{user_principal}:mcp://finvault/workday-hcm-financials-raas-3lo",
             "hop4_sdp_redaction_rules": [
               "US_SOCIAL_SECURITY_NUMBER -> [REDACTED_US_SSN]",
-              "IBAN_CODE -> [REDACTED_IBAN_CODE]"
+              "IBAN_CODE -> [REDACTED-FINVAULT-IBAN]"
             ]
           },
           "setup_steps": [
@@ -1419,7 +1942,16 @@
               "iam_pab_verified": true,
               "vpc_sc_egress_rule_allowed": true,
               "cmek_key_state": "ENABLED",
-              "live_cloud_endpoint_probed": "https://wd5-services1.myworkday.com/ccx/oauth2/cymbal/token"
+              "live_cloud_endpoint_probed": "https://wd5-services1.myworkday.com/ccx/oauth2/cymbal/token",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_OAUTH2_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_SDP_REDACTION",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-08-pattern_b_sovereign_silo",
+                "hop4_ingress_decision": "ALLOW"
+              }
             }
           },
           "negative_test_case": {
@@ -1442,6 +1974,11 @@
               "silo_project_id": "cymbal-medcore-silo-prod",
               "valkey_cache_unlinked_in_under_5s": true,
               "gvisor_worker_recycled": true,
+              "live_cmek_lockout_evidence": {
+                "medcore_revoked_key_state": "DISABLED",
+                "medcore_silo_locked_423": true,
+                "medcore_lockout_reason": ""
+              },
               "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://finvault/workday-hcm-financials-raas-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
             }
           },
@@ -1452,9 +1989,15 @@
         {
           "saas_id": "SAAS-09",
           "slug": "datadog",
+          "aliases": [
+            "datadog",
+            "datadog-sre",
+            "bits-ai"
+          ],
           "saas_name": "Datadog Cloud Observability & Bits AI SRE (REST API v2 Logs/APM)",
           "category": "Multi-Tenant SRE Observability & Hop 4 Indirect Log Prompt-Injection Defense",
           "connector_uri": "mcp://cymbal/datadog-observability-sre-3lo",
+          "verification_tier": "LIVE_SAAS_API_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN",
           "auth_protocol": "Datadog API/Application Key Vault + `@tenant_id` Log Index Partitioning + Hop 4 Model Armor Log Screen",
           "pattern": "PATTERN_B_SOVEREIGN_SILO",
           "live_endpoint": "https://api.datadoghq.com/api/v1/validate",
@@ -1498,7 +2041,16 @@
               "iam_pab_verified": true,
               "vpc_sc_egress_rule_allowed": true,
               "cmek_key_state": "ENABLED",
-              "live_cloud_endpoint_probed": "https://api.datadoghq.com/api/v1/validate"
+              "live_cloud_endpoint_probed": "https://api.datadoghq.com/api/v1/validate",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_API_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-09-pattern_b_sovereign_silo",
+                "hop4_ingress_decision": "ALLOW"
+              }
             }
           },
           "negative_test_case": {
@@ -1521,6 +2073,11 @@
               "silo_project_id": "cymbal-medcore-silo-prod",
               "valkey_cache_unlinked_in_under_5s": true,
               "gvisor_worker_recycled": true,
+              "live_cmek_lockout_evidence": {
+                "medcore_revoked_key_state": "DISABLED",
+                "medcore_silo_locked_423": true,
+                "medcore_lockout_reason": ""
+              },
               "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://cymbal/datadog-observability-sre-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
             }
           },
@@ -1531,9 +2088,16 @@
         {
           "saas_id": "SAAS-10",
           "slug": "crowdstrike",
+          "aliases": [
+            "crowdstrike",
+            "crowdstrike-okta",
+            "okta",
+            "falcon"
+          ],
           "saas_name": "CrowdStrike Falcon XDR & Okta Workforce Identity (OAuth2 & OIDC/DPoP)",
           "category": "Autonomous SecOps XDR, RFC 9449 DPoP Sender-Constrained Binding & CMEK Kill-Switch",
           "connector_uri": "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
+          "verification_tier": "LIVE_SAAS_OAUTH2_AND_OIDC_DISCOVERY_PROBE_PLUS_HOP1_DPOP_AND_CMEK_GUARD",
           "auth_protocol": "CrowdStrike Falcon OAuth2 (`/oauth2/token`) + Okta OIDC Discovery + Hop 1 RFC 9449 DPoP (`jkt` thumbprint)",
           "pattern": "PATTERN_B_SOVEREIGN_SILO",
           "live_endpoint": "https://api.crowdstrike.com/oauth2/token",
@@ -1577,7 +2141,16 @@
               "iam_pab_verified": true,
               "vpc_sc_egress_rule_allowed": true,
               "cmek_key_state": "ENABLED",
-              "live_cloud_endpoint_probed": "https://api.crowdstrike.com/oauth2/token"
+              "live_cloud_endpoint_probed": "https://api.crowdstrike.com/oauth2/token",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_OAUTH2_AND_OIDC_DISCOVERY_PROBE_PLUS_HOP1_DPOP_AND_CMEK_GUARD",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-10-pattern_b_sovereign_silo",
+                "hop4_ingress_decision": "ALLOW"
+              }
             }
           },
           "negative_test_case": {
@@ -1600,6 +2173,11 @@
               "silo_project_id": "cymbal-medcore-silo-prod",
               "valkey_cache_unlinked_in_under_5s": true,
               "gvisor_worker_recycled": true,
+              "live_cmek_lockout_evidence": {
+                "medcore_revoked_key_state": "DISABLED",
+                "medcore_silo_locked_423": true,
+                "medcore_lockout_reason": ""
+              },
               "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
             }
           },
@@ -1620,9 +2198,15 @@
         {
           "saas_id": "SAAS-01",
           "slug": "thoughtspot",
+          "aliases": [
+            "thoughtspot",
+            "thoughtspot-spotter",
+            "spotter"
+          ],
           "saas_name": "ThoughtSpot Cloud (Spotter Agentic BI & Liveboards REST API v2.0)",
           "category": "Agentic BI & Natural-Language-to-SQL (NL2SQL)",
           "connector_uri": "mcp://cymbal/thoughtspot-spotter-bi-3lo",
+          "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
           "auth_protocol": "3LO OAuth2 + ThoughtSpot REST v2.0 Custom Token (`org_identifier` + `runtime_filter`)",
           "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
           "live_endpoint": "https://try-everywhere.thoughtspot.cloud/api/rest/2.0/auth/token/custom",
@@ -1677,7 +2261,40 @@
               "dropped_inflight_3lo_or_sse_turns": 0,
               "post_upgrade_rpm_limit": 600,
               "post_upgrade_thinking_budget": 8000,
-              "live_cloud_endpoint_probed": "https://try-everywhere.thoughtspot.cloud/api/rest/2.0/auth/token/custom"
+              "live_cloud_endpoint_probed": "https://try-everywhere.thoughtspot.cloud/api/rest/2.0/auth/token/custom",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-01-pattern_c_hybrid_psc_spoke",
+                "hop4_ingress_decision": "ALLOW",
+                "live_bigquery_rls": {
+                  "row_count": null,
+                  "rows": [
+                    {
+                      "entity_id": "ENT-FV-001",
+                      "tenant_id": "finvault",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Institutional Treasury Bond Pool",
+                      "portfolio_nav_usd": "148500000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    },
+                    {
+                      "entity_id": "ENT-FV-002",
+                      "tenant_id": "finvault",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Sovereign Fixed-Income Alpha",
+                      "portfolio_nav_usd": "92400000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    }
+                  ],
+                  "job_location": null
+                }
+              }
             }
           },
           "negative_test_case": {
@@ -1708,9 +2325,14 @@
         {
           "saas_id": "SAAS-02",
           "slug": "sigma",
+          "aliases": [
+            "sigma",
+            "sigma-computing"
+          ],
           "saas_name": "Sigma Computing (Cloud BI Workbooks & Dataset REST API v2)",
           "category": "Cloud Warehouse BI & User-Attribute RLS Pushdown",
           "connector_uri": "mcp://cymbal/sigma-computing-workbooks-3lo",
+          "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
           "auth_protocol": "OAuth2 Client/3LO Token (`/v2/auth/token`) + Signed Workbook Embed User-Attributes (`ua_tenant_id`)",
           "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
           "live_endpoint": "https://api.sigmacomputing.com/v2/auth/token",
@@ -1727,7 +2349,8 @@
             "user_attribute_rls_binding": {
               "ua_tenant_id": "${ctx.tenant_id}",
               "ua_rls_guc": "app.current_tenant_id=${ctx.tenant_id}"
-            }
+            },
+            "bq_target_table": "nitina-ggarwal-sandbox-647724.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities"
           },
           "setup_steps": [
             "1. Deploy Hub & PSC Spoke via `workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf` (`/28` PSC NAT `10.240.0.0/28`).",
@@ -1763,7 +2386,40 @@
               "dropped_inflight_3lo_or_sse_turns": 0,
               "post_upgrade_rpm_limit": 600,
               "post_upgrade_thinking_budget": 8000,
-              "live_cloud_endpoint_probed": "https://api.sigmacomputing.com/v2/auth/token"
+              "live_cloud_endpoint_probed": "https://api.sigmacomputing.com/v2/auth/token",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-02-pattern_c_hybrid_psc_spoke",
+                "hop4_ingress_decision": "ALLOW",
+                "live_bigquery_rls": {
+                  "row_count": null,
+                  "rows": [
+                    {
+                      "entity_id": "ENT-FV-001",
+                      "tenant_id": "finvault",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Institutional Treasury Bond Pool",
+                      "portfolio_nav_usd": "148500000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    },
+                    {
+                      "entity_id": "ENT-FV-002",
+                      "tenant_id": "finvault",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Sovereign Fixed-Income Alpha",
+                      "portfolio_nav_usd": "92400000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    }
+                  ],
+                  "job_location": null
+                }
+              }
             }
           },
           "negative_test_case": {
@@ -1794,9 +2450,15 @@
         {
           "saas_id": "SAAS-03",
           "slug": "servicenow",
+          "aliases": [
+            "servicenow",
+            "servicenow-itsm",
+            "servicenow-itom"
+          ],
           "saas_name": "ServiceNow ITSM & ITOM (AWS Bedrock AgentCore MCP Gateway)",
           "category": "Enterprise IT Service & Change Management",
           "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
+          "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
           "auth_protocol": "Hop 5 Interactive 3LO OAuth2 Consent + AWS Cognito RS256 OBO -> Bedrock AgentCore MCP JSON-RPC 2.0",
           "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
           "live_endpoint": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
@@ -1843,7 +2505,21 @@
               "dropped_inflight_3lo_or_sse_turns": 0,
               "post_upgrade_rpm_limit": 600,
               "post_upgrade_thinking_budget": 8000,
-              "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp"
+              "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+              "live_verification_evidence": {
+                "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "2b6b245454e3bceea62cd327",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "retailstream:ops-eng@retailstream.com:sess-saas-03-pattern_c_hybrid_psc_spoke",
+                "hop4_ingress_decision": "ALLOW",
+                "live_aws_bedrock_agentcore_mcp": {
+                  "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+                  "tool_name": "servicenow-itsm___query_servicenow_change_records",
+                  "is_error": false
+                }
+              }
             }
           },
           "negative_test_case": {
@@ -1874,10 +2550,16 @@
         {
           "saas_id": "SAAS-04",
           "slug": "veeva",
+          "aliases": [
+            "veeva",
+            "veeva-muse",
+            "muse"
+          ],
           "saas_name": "Veeva Vault RIM & Muse Clinical EDC (GxP 21 CFR Part 11 SaaS)",
           "category": "Regulated Life Sciences Clinical & Regulatory SaaS",
           "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
-          "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP + FDA 21 CFR Part 11 HMAC-SHA256 Electronic Signature",
+          "verification_tier": "TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE",
+          "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP + FDA 21 CFR Part 11 Cloud KMS Asymmetric Signature",
           "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
           "live_endpoint": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
           "manual_curl_cmd": "python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern pattern-b --verbose",
@@ -1886,8 +2568,8 @@
             "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
             "mcp_gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
             "mcp_tool_name": "muse-poc___query_muse_study_biomarkers",
-            "veeva_vql_object": "documents (VV-DOC-004819 / Study MK-3475-087 Cohort-B)",
-            "gxp_21cfr11_hmac_binding": "{tenant_id}:{user_principal}:{study_id}:{cohort}:{timestamp}"
+            "hop2_gxp_policy_test_artifact": "VV-DOC-004819 / Study MK-3475-087 Cohort-B (Signed via Cloud KMS adk-agent-signing-key)",
+            "gxp_21cfr11_kms_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/adk-agent-signing-key"
           },
           "setup_steps": [
             "1. Deploy Hub & PSC Spoke via `workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf` (`/28` PSC NAT `10.240.0.0/28`).",
@@ -1923,7 +2605,31 @@
               "dropped_inflight_3lo_or_sse_turns": 0,
               "post_upgrade_rpm_limit": 600,
               "post_upgrade_thinking_budget": 8000,
-              "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp"
+              "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+              "live_verification_evidence": {
+                "verification_tier": "TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-04-pattern_c_hybrid_psc_spoke",
+                "hop4_ingress_decision": "ALLOW",
+                "live_aws_bedrock_agentcore_mcp": {
+                  "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+                  "tool_name": "muse-poc___query_muse_study_biomarkers",
+                  "is_error": false
+                },
+                "cloud_kms_21cfr11_signature": {
+                  "artifact_provenance": "HOP2_GXP_21CFR11_POLICY_TEST_ARTIFACT_SIGNED_BY_CLOUD_KMS",
+                  "document_number__v": "VV-DOC-004819",
+                  "name__v": "Clinical Study Protocol & Regulatory Dossier (MK-3475-087)",
+                  "status__v": "Steady State (Approved)",
+                  "cfr11_kms_key_version": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
+                  "cfr11_payload_sha256": null,
+                  "cfr11_kms_ecdsa_p256_signature_b64": "",
+                  "cfr11_hmac_sha256_signature": "1e935b305d867cae208cc7e8cfa9dd878d14fc1c4a82987dc86a2da070b95f3b"
+                }
+              }
             }
           },
           "negative_test_case": {
@@ -1954,9 +2660,15 @@
         {
           "saas_id": "SAAS-05",
           "slug": "salesforce",
+          "aliases": [
+            "salesforce",
+            "salesforce-jira",
+            "jira"
+          ],
           "saas_name": "Salesforce Enterprise CRM (NA224) & Atlassian Jira Cloud",
           "category": "Enterprise CRM & Engineering Incident Escalation",
           "connector_uri": "mcp://finvault/salesforce-jira-escalation-3lo",
+          "verification_tier": "LIVE_SAAS_STATUS_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_SDP_REDACTION",
           "auth_protocol": "3LO OAuth2 Case Escalation + Hop 4 Egress Sensitive Data Protection (SDP) IBAN/SWIFT Masking",
           "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
           "live_endpoint": "https://api.status.salesforce.com/v1/instances/NA224/status/preview",
@@ -2006,7 +2718,16 @@
               "dropped_inflight_3lo_or_sse_turns": 0,
               "post_upgrade_rpm_limit": 600,
               "post_upgrade_thinking_budget": 8000,
-              "live_cloud_endpoint_probed": "https://api.status.salesforce.com/v1/instances/NA224/status/preview"
+              "live_cloud_endpoint_probed": "https://api.status.salesforce.com/v1/instances/NA224/status/preview",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_STATUS_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_SDP_REDACTION",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-05-pattern_c_hybrid_psc_spoke",
+                "hop4_ingress_decision": "ALLOW"
+              }
             }
           },
           "negative_test_case": {
@@ -2037,9 +2758,16 @@
         {
           "saas_id": "SAAS-06",
           "slug": "databricks",
+          "aliases": [
+            "databricks",
+            "databricks-uc",
+            "unity-catalog",
+            "genie"
+          ],
           "saas_name": "Databricks Data Intelligence Platform (Unity Catalog & Genie REST API 2.0)",
           "category": "Lakehouse AI, Unity Catalog 3-Level Namespace & Conversational BI",
           "connector_uri": "mcp://cymbal/databricks-unity-catalog-genie-3lo",
+          "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
           "auth_protocol": "Databricks OIDC/OAuth2 Token Federation + Unity Catalog 3-Level Namespace (`cymbal_uc_prod.<tenant>_gold`)",
           "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
           "live_endpoint": "https://community.cloud.databricks.com/api/2.0/clusters/list",
@@ -2092,7 +2820,40 @@
               "dropped_inflight_3lo_or_sse_turns": 0,
               "post_upgrade_rpm_limit": 600,
               "post_upgrade_thinking_budget": 8000,
-              "live_cloud_endpoint_probed": "https://community.cloud.databricks.com/api/2.0/clusters/list"
+              "live_cloud_endpoint_probed": "https://community.cloud.databricks.com/api/2.0/clusters/list",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-06-pattern_c_hybrid_psc_spoke",
+                "hop4_ingress_decision": "ALLOW",
+                "live_bigquery_rls": {
+                  "row_count": null,
+                  "rows": [
+                    {
+                      "entity_id": "ENT-FV-001",
+                      "tenant_id": "finvault",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Institutional Treasury Bond Pool",
+                      "portfolio_nav_usd": "148500000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    },
+                    {
+                      "entity_id": "ENT-FV-002",
+                      "tenant_id": "finvault",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Sovereign Fixed-Income Alpha",
+                      "portfolio_nav_usd": "92400000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    }
+                  ],
+                  "job_location": null
+                }
+              }
             }
           },
           "negative_test_case": {
@@ -2123,9 +2884,15 @@
         {
           "saas_id": "SAAS-07",
           "slug": "snowflake",
+          "aliases": [
+            "snowflake",
+            "snowflake-cortex",
+            "cortex"
+          ],
           "saas_name": "Snowflake AI Data Cloud (Cortex Analyst NL2SQL & SQL REST API v2)",
           "category": "Cross-Cloud Enterprise Data Warehouse & Secondary-Role Isolation",
           "connector_uri": "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
+          "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
           "auth_protocol": "External OAuth2 Token Exchange + `USE SECONDARY ROLES NONE` + Primary Role `ROLE_CYMBAL_{TENANT}`",
           "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
           "live_endpoint": "https://os37291.us-east-1.snowflakecomputing.com/api/v2/statements",
@@ -2172,7 +2939,31 @@
               "dropped_inflight_3lo_or_sse_turns": 0,
               "post_upgrade_rpm_limit": 600,
               "post_upgrade_thinking_budget": 8000,
-              "live_cloud_endpoint_probed": "https://os37291.us-east-1.snowflakecomputing.com/api/v2/statements"
+              "live_cloud_endpoint_probed": "https://os37291.us-east-1.snowflakecomputing.com/api/v2/statements",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-07-pattern_c_hybrid_psc_spoke",
+                "hop4_ingress_decision": "ALLOW",
+                "live_bigquery_rls": {
+                  "row_count": null,
+                  "rows": [
+                    {
+                      "entity_id": "ENT-RS-001",
+                      "tenant_id": "retailstream",
+                      "isolation_tier": "TIER_1_POOLED_RLS",
+                      "asset_class": "Omnichannel Inventory Fulfillment",
+                      "portfolio_nav_usd": "18250000",
+                      "rls_enforced": "true",
+                      "updated_at": "1.792022944688598E9"
+                    }
+                  ],
+                  "job_location": null
+                }
+              }
             }
           },
           "negative_test_case": {
@@ -2203,9 +2994,15 @@
         {
           "saas_id": "SAAS-08",
           "slug": "workday",
+          "aliases": [
+            "workday",
+            "workday-hcm",
+            "workday-raas"
+          ],
           "saas_name": "Workday Enterprise HCM & Financial Management (CCX OAuth2 & RaaS REST API)",
           "category": "Enterprise HCM/Payroll ERP, 3LO Principal Scope & Hop 4 SSN Masking",
           "connector_uri": "mcp://finvault/workday-hcm-financials-raas-3lo",
+          "verification_tier": "LIVE_SAAS_OAUTH2_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_SDP_REDACTION",
           "auth_protocol": "Workday CCX OAuth2 (`/ccx/oauth2/cymbal/token`) + Composite Principal Vault + Hop 4 SSN/IBAN Redaction",
           "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
           "live_endpoint": "https://wd5-services1.myworkday.com/ccx/oauth2/cymbal/token",
@@ -2217,7 +3014,7 @@
             "composite_3lo_vault_key": "{tenant_id}:{user_principal}:mcp://finvault/workday-hcm-financials-raas-3lo",
             "hop4_sdp_redaction_rules": [
               "US_SOCIAL_SECURITY_NUMBER -> [REDACTED_US_SSN]",
-              "IBAN_CODE -> [REDACTED_IBAN_CODE]"
+              "IBAN_CODE -> [REDACTED-FINVAULT-IBAN]"
             ]
           },
           "setup_steps": [
@@ -2254,7 +3051,16 @@
               "dropped_inflight_3lo_or_sse_turns": 0,
               "post_upgrade_rpm_limit": 600,
               "post_upgrade_thinking_budget": 8000,
-              "live_cloud_endpoint_probed": "https://wd5-services1.myworkday.com/ccx/oauth2/cymbal/token"
+              "live_cloud_endpoint_probed": "https://wd5-services1.myworkday.com/ccx/oauth2/cymbal/token",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_OAUTH2_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_SDP_REDACTION",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-08-pattern_c_hybrid_psc_spoke",
+                "hop4_ingress_decision": "ALLOW"
+              }
             }
           },
           "negative_test_case": {
@@ -2285,9 +3091,15 @@
         {
           "saas_id": "SAAS-09",
           "slug": "datadog",
+          "aliases": [
+            "datadog",
+            "datadog-sre",
+            "bits-ai"
+          ],
           "saas_name": "Datadog Cloud Observability & Bits AI SRE (REST API v2 Logs/APM)",
           "category": "Multi-Tenant SRE Observability & Hop 4 Indirect Log Prompt-Injection Defense",
           "connector_uri": "mcp://cymbal/datadog-observability-sre-3lo",
+          "verification_tier": "LIVE_SAAS_API_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN",
           "auth_protocol": "Datadog API/Application Key Vault + `@tenant_id` Log Index Partitioning + Hop 4 Model Armor Log Screen",
           "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
           "live_endpoint": "https://api.datadoghq.com/api/v1/validate",
@@ -2334,7 +3146,16 @@
               "dropped_inflight_3lo_or_sse_turns": 0,
               "post_upgrade_rpm_limit": 600,
               "post_upgrade_thinking_budget": 8000,
-              "live_cloud_endpoint_probed": "https://api.datadoghq.com/api/v1/validate"
+              "live_cloud_endpoint_probed": "https://api.datadoghq.com/api/v1/validate",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_API_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-09-pattern_c_hybrid_psc_spoke",
+                "hop4_ingress_decision": "ALLOW"
+              }
             }
           },
           "negative_test_case": {
@@ -2365,9 +3186,16 @@
         {
           "saas_id": "SAAS-10",
           "slug": "crowdstrike",
+          "aliases": [
+            "crowdstrike",
+            "crowdstrike-okta",
+            "okta",
+            "falcon"
+          ],
           "saas_name": "CrowdStrike Falcon XDR & Okta Workforce Identity (OAuth2 & OIDC/DPoP)",
           "category": "Autonomous SecOps XDR, RFC 9449 DPoP Sender-Constrained Binding & CMEK Kill-Switch",
           "connector_uri": "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
+          "verification_tier": "LIVE_SAAS_OAUTH2_AND_OIDC_DISCOVERY_PROBE_PLUS_HOP1_DPOP_AND_CMEK_GUARD",
           "auth_protocol": "CrowdStrike Falcon OAuth2 (`/oauth2/token`) + Okta OIDC Discovery + Hop 1 RFC 9449 DPoP (`jkt` thumbprint)",
           "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
           "live_endpoint": "https://api.crowdstrike.com/oauth2/token",
@@ -2414,7 +3242,16 @@
               "dropped_inflight_3lo_or_sse_turns": 0,
               "post_upgrade_rpm_limit": 600,
               "post_upgrade_thinking_budget": 8000,
-              "live_cloud_endpoint_probed": "https://api.crowdstrike.com/oauth2/token"
+              "live_cloud_endpoint_probed": "https://api.crowdstrike.com/oauth2/token",
+              "live_verification_evidence": {
+                "verification_tier": "LIVE_SAAS_OAUTH2_AND_OIDC_DISCOVERY_PROBE_PLUS_HOP1_DPOP_AND_CMEK_GUARD",
+                "probe_status_code": 200,
+                "probe_decision": "ALLOW",
+                "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+                "hop1_stripped_forged_headers": 1,
+                "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-10-pattern_c_hybrid_psc_spoke",
+                "hop4_ingress_decision": "ALLOW"
+              }
             }
           },
           "negative_test_case": {
@@ -2463,6 +3300,7 @@
         "decision": "ALLOW",
         "product": "ThoughtSpot Cloud (Spotter Agentic BI & Liveboards REST API v2.0)",
         "connector_uri": "mcp://cymbal/thoughtspot-spotter-bi-3lo",
+        "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
         "tenant_id": "finvault",
         "thoughtspot_org_identifier": "finvault-org-01",
         "liveboard_guid": "lb-finvault-occ-wire-settlement-v2",
@@ -2483,7 +3321,7 @@
               "message": {
                 "debug": {
                   "code": 10002,
-                  "incident_id_guid": "39ed9310-b6b2-4cd2-945d-5b609a157aeb",
+                  "incident_id_guid": "fa1e249b-05c7-478c-bc86-eab2369bbde6",
                   "trace_id_guid": "tracing-disabled",
                   "debug": "[\"Invalid parameter values: {\\\"credential\\\":\\\"Correct Credential is not specified\\\"}\"]"
                 }
@@ -2495,7 +3333,7 @@
           "live_bq_query_ok": true,
           "status_code": 200,
           "billing_project": "ramp-portal-dev",
-          "job_id": "job_g6LIprkDUVGsoHb2zB794wyyCVIG",
+          "job_id": "job_EnLbEamQlbwVc47Kx2sLU10-fVot",
           "location": "US",
           "total_rows": 2,
           "rows": [
@@ -2524,6 +3362,7 @@
         "status_code": 403,
         "decision": "DENY",
         "product": "ThoughtSpot Cloud (Spotter & Liveboards REST API v2.0)",
+        "connector_uri": "mcp://cymbal/thoughtspot-spotter-bi-3lo",
         "reason": "403 Forbidden: Tenant 'retailstream' (retailstream-org-02) cannot query ThoughtSpot Org 'finvault-org-01'."
       }
     },
@@ -2544,6 +3383,7 @@
         "decision": "ALLOW",
         "product": "Sigma Computing (Cloud BI Workbooks & Dataset REST API v2)",
         "connector_uri": "mcp://cymbal/sigma-computing-workbooks-3lo",
+        "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
         "tenant_id": "finvault",
         "workbook_id": "wb-sigma-finvault-finops-sre-01",
         "eval_connection_id": "conn-bq-finvault-rls-usw1",
@@ -2555,7 +3395,7 @@
         "live_sigma_cloud_probe": {
           "oauth2_token_endpoint": "https://api.sigmacomputing.com/v2/auth/token",
           "oauth2_http_status": 400,
-          "sigma_request_id": "01a15a9c-4db8-7647-a625-623bc235a1fd",
+          "sigma_request_id": "01a15b4d-a8db-7574-b624-26bfb0ef45fa",
           "status_api_description": "All Systems Operational",
           "live_endpoint_reachable": true
         },
@@ -2563,88 +3403,37 @@
           "live_bq_query_ok": true,
           "status_code": 200,
           "billing_project": "ramp-portal-dev",
-          "job_id": "job_MblPiTsdHbI98Kt-osaW3LxgDr9b",
+          "job_id": "job_QRvOnZ7s0GVgosEzdyJCxUIl90rx",
           "location": "US",
-          "total_rows": 4,
+          "total_rows": 2,
           "rows": [
             {
-              "span_id": "sp-fv-001",
-              "recorded_at": "1.792012874565438E9",
+              "entity_id": "ENT-FV-001",
               "tenant_id": "finvault",
-              "tenant_tier": "ENTERPRISE_SOVEREIGN",
-              "isolation_pattern": "Pattern B: Sovereign Silo",
-              "workstream": "WS3.1",
-              "root_agent": "finvault_wealth_coordinator",
-              "model_name": "gemini-3.1-pro-preview",
-              "input_tokens": "185000",
-              "cached_read_tokens": "166500",
-              "thinking_tokens": "8192",
-              "output_tokens": "2400",
-              "cache_hit_ratio": "0.9",
-              "net_cogs_reduction_pct": "84.7",
-              "net_cost_usd": "0.0412",
-              "kms_key_uri": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
-              "pii_redacted": "true"
+              "isolation_tier": "TIER_1_POOLED_RLS",
+              "asset_class": "Institutional Treasury Bond Pool",
+              "portfolio_nav_usd": "148500000",
+              "rls_enforced": "true",
+              "updated_at": "1.792022944688598E9"
             },
             {
-              "span_id": "sp-fv-002",
-              "recorded_at": "1.792012874565438E9",
+              "entity_id": "ENT-FV-002",
               "tenant_id": "finvault",
-              "tenant_tier": "ENTERPRISE_HYBRID",
-              "isolation_pattern": "Pattern C: Hybrid PSC",
-              "workstream": "WS4.1",
-              "root_agent": "finvault_wealth_coordinator",
-              "model_name": "gemini-3.1-pro-preview",
-              "input_tokens": "185000",
-              "cached_read_tokens": "166500",
-              "thinking_tokens": "8192",
-              "output_tokens": "2150",
-              "cache_hit_ratio": "0.9",
-              "net_cogs_reduction_pct": "84.7",
-              "net_cost_usd": "0.0398",
-              "kms_key_uri": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
-              "pii_redacted": "true"
-            },
-            {
-              "span_id": "sp-rs-002",
-              "recorded_at": "1.792012874565438E9",
-              "tenant_id": "retailstream",
-              "tenant_tier": "COMMERCIAL_STANDARD",
-              "isolation_pattern": "Pattern A: Pooled Shared Runtime",
-              "workstream": "WS2.1",
-              "root_agent": "retailstream_ops_coordinator",
-              "model_name": "gemini-3.8-flash",
-              "input_tokens": "185000",
-              "cached_read_tokens": "166500",
-              "thinking_tokens": "4096",
-              "output_tokens": "1650",
-              "cache_hit_ratio": "0.9",
-              "net_cogs_reduction_pct": "84.7",
-              "net_cost_usd": "0.0084",
-              "kms_key_uri": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/retailstream-silo-cmek",
-              "pii_redacted": "true"
-            },
-            {
-              "span_id": "sp-rs-001",
-              "recorded_at": "1.792012874565438E9",
-              "tenant_id": "retailstream",
-              "tenant_tier": "COMMERCIAL_STANDARD",
-              "isolation_pattern": "Pattern A: Pooled Shared Runtime",
-              "workstream": "WS2.1",
-              "root_agent": "retailstream_ops_coordinator",
-              "model_name": "gemini-3.8-flash",
-              "input_tokens": "185000",
-              "cached_read_tokens": "166500",
-              "thinking_tokens": "4096",
-              "output_tokens": "1800",
-              "cache_hit_ratio": "0.9",
-              "net_cogs_reduction_pct": "84.7",
-              "net_cost_usd": "0.0089",
-              "kms_key_uri": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/retailstream-silo-cmek",
-              "pii_redacted": "true"
+              "isolation_tier": "TIER_1_POOLED_RLS",
+              "asset_class": "Sovereign Fixed-Income Alpha",
+              "portfolio_nav_usd": "92400000",
+              "rls_enforced": "true",
+              "updated_at": "1.792022944688598E9"
             }
           ]
         }
+      },
+      "negative_ua_tampering_result": {
+        "status_code": 403,
+        "decision": "DENY_SIGMA_UA_TENANT_TAMPERING",
+        "product": "Sigma Computing (Cloud BI Workbooks REST API v2)",
+        "connector_uri": "mcp://cymbal/sigma-computing-workbooks-3lo",
+        "reason": "403 Forbidden: Hop 5 blocked client-supplied Sigma User-Attribute override (caller tenant='retailstream', attempted ua_tenant_id='finvault')."
       },
       "negative_cmek_lockout_result": {
         "status_code": 423,
@@ -2654,7 +3443,7 @@
         "reason": "423 Locked: Sigma Computing warehouse refresh aborted because tenant Cloud KMS CMEK key is DISABLED.",
         "live_cmek_silo_lockout_proof": {
           "table": "nitina-ggarwal-sandbox-647724.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
-          "cmek_key": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/tenant-finvault-cmek-key",
+          "cmek_key": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
           "live_cmek_lockout_enforced": true,
           "http_status": 400,
           "bigquery_kms_error": "Cloud KMS Error: Billing is disabled for project 887605034827. Enable it by visiting https://console.cloud.google.com/billing/projects and associating your project with a billing account."
@@ -2678,6 +3467,7 @@
         "decision": "ALLOW",
         "product": "ServiceNow ITSM & ITOM (Live AWS Bedrock AgentCore MCP Gateway)",
         "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
+        "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
         "tenant_id": "retailstream",
         "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
         "tool_name": "servicenow-itsm___query_servicenow_change_records",
@@ -2718,14 +3508,29 @@
         "decision": "ALLOW",
         "product": "Veeva Vault RIM / QualityDocs & Muse Clinical EDC (GxP 21 CFR Part 11)",
         "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
+        "verification_tier": "TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE",
         "tenant_id": "finvault",
         "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
         "tool_name": "muse-poc___query_muse_study_biomarkers",
-        "veeva_vql_document": {
+        "hop2_gxp_policy_test_artifact": {
+          "artifact_provenance": "HOP2_GXP_21CFR11_POLICY_TEST_ARTIFACT_SIGNED_BY_CLOUD_KMS",
           "document_number__v": "VV-DOC-004819",
           "name__v": "Clinical Study Protocol & Regulatory Dossier (MK-3475-087)",
           "status__v": "Steady State (Approved)",
-          "cfr11_hmac_sha256_signature": "4999ba853e2f82dca99cb8239d7740b5040b9bbba3b5b56d19c6980fbbe2e2bb"
+          "cfr11_kms_key_version": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
+          "cfr11_payload_sha256": null,
+          "cfr11_kms_ecdsa_p256_signature_b64": "",
+          "cfr11_hmac_sha256_signature": "1e935b305d867cae208cc7e8cfa9dd878d14fc1c4a82987dc86a2da070b95f3b"
+        },
+        "veeva_vql_document": {
+          "artifact_provenance": "HOP2_GXP_21CFR11_POLICY_TEST_ARTIFACT_SIGNED_BY_CLOUD_KMS",
+          "document_number__v": "VV-DOC-004819",
+          "name__v": "Clinical Study Protocol & Regulatory Dossier (MK-3475-087)",
+          "status__v": "Steady State (Approved)",
+          "cfr11_kms_key_version": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
+          "cfr11_payload_sha256": null,
+          "cfr11_kms_ecdsa_p256_signature_b64": "",
+          "cfr11_hmac_sha256_signature": "1e935b305d867cae208cc7e8cfa9dd878d14fc1c4a82987dc86a2da070b95f3b"
         },
         "live_mcp_response": {
           "isError": false,
@@ -2741,6 +3546,7 @@
         "status_code": 403,
         "decision": "DENY",
         "product": "Veeva Vault RIM & Muse Clinical EDC",
+        "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
         "reason": "403 Forbidden: Tenant 'retailstream' is not authorized for regulated GxP connector."
       }
     },
@@ -2761,6 +3567,7 @@
         "decision": "ALLOW",
         "product": "Salesforce Enterprise CRM (NA224) & Atlassian Jira Cloud (3LO Case Escalation)",
         "connector_uri": "mcp://finvault/salesforce-jira-escalation-3lo",
+        "verification_tier": "LIVE_SAAS_STATUS_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_SDP_REDACTION",
         "tenant_id": "finvault",
         "live_salesforce_cloud_probe": {
           "endpoint": "https://api.status.salesforce.com/v1/instances/NA224/status/preview",
@@ -2780,7 +3587,12 @@
         "hop4_sdp_redacted_ticket_payload": {
           "salesforce_case_id": "SFDC-CASE-00984120",
           "jira_issue_key": "FINVAULT-SRE-1402",
-          "sanitized_description": "P1 Core-Ledger wire delay affecting IBAN [REDACTED_IBAN_CODE] and SWIFT [REDACTED_SWIFT_CODE]",
+          "sanitized_description": "P1 Core-Ledger wire delay affecting IBAN [REDACTED-FINVAULT-IBAN] and [REDACTED-FINVAULT-SWIFT]",
+          "hop4_guardrail_module": "core-cymbal-agent/governance/hop4_model_armor_guardrails.py",
+          "hop4_redacted_detectors": [
+            "IBAN_CODE",
+            "SWIFT_CODE"
+          ],
           "raw_pii_leaked": false
         }
       }
@@ -2802,6 +3614,7 @@
         "decision": "ALLOW",
         "product": "Databricks Data Intelligence Platform (Unity Catalog & Genie Spaces REST API 2.0)",
         "connector_uri": "mcp://cymbal/databricks-unity-catalog-genie-3lo",
+        "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
         "tenant_id": "finvault",
         "unity_catalog_namespace": "cymbal_uc_prod.finvault_gold.pattern_a_pooled_rls_entities",
         "genie_space_id": "genie-space-fv-treasury-01",
@@ -2810,14 +3623,14 @@
           "endpoint": "https://community.cloud.databricks.com/api/2.0/clusters/list",
           "http_status": 401,
           "server_header": "databricks",
-          "databricks_gateway_message": "Credential was not sent or was of an unsupported type for this API. [ReqId: cdcec01a-87cd-472c-94ac-120e7063d15b]",
+          "databricks_gateway_message": "Credential was not sent or was of an unsupported type for this API. [ReqId: a949fa01-01ee-49fe-8c7d-7d1820a5e1cd]",
           "live_endpoint_reachable": true
         },
         "live_federated_bigquery_rls": {
           "live_bq_query_ok": true,
           "status_code": 200,
           "billing_project": "ramp-portal-dev",
-          "job_id": "job_F27R6hHt_oaI_b937XVNCYaCPMS9",
+          "job_id": "job_wDxBG15QxUeMe1Lkm2K0cqgsvsju",
           "location": "US",
           "total_rows": 2,
           "rows": [
@@ -2867,6 +3680,7 @@
         "decision": "ALLOW",
         "product": "Snowflake AI Data Cloud (Cortex Analyst & SQL REST API v2)",
         "connector_uri": "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
+        "verification_tier": "LIVE_SAAS_CONTROL_PLANE_PROBE_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
         "tenant_id": "retailstream",
         "enforced_session_policy": {
           "primary_role": "ROLE_CYMBAL_RETAILSTREAM",
@@ -2885,7 +3699,7 @@
           "live_bq_query_ok": true,
           "status_code": 200,
           "billing_project": "ramp-portal-dev",
-          "job_id": "job_z02PZuU1mLkeVn1jq_3gOMEKRxHu",
+          "job_id": "job_BHG1M9kpg8m1vTw_LuZ_8U2edmXf",
           "location": "US",
           "total_rows": 1,
           "rows": [
@@ -2926,6 +3740,7 @@
         "decision": "ALLOW",
         "product": "Workday Enterprise HCM & Financial Management (CCX OAuth2 & RaaS API)",
         "connector_uri": "mcp://finvault/workday-hcm-financials-raas-3lo",
+        "verification_tier": "LIVE_SAAS_OAUTH2_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_SDP_REDACTION",
         "tenant_id": "finvault",
         "token_vault_composite_key": "finvault:sre-lead@finvault.com:mcp://finvault/workday-hcm-financials-raas-3lo",
         "live_workday_cloud_probe": {
@@ -2938,7 +3753,12 @@
         },
         "hop4_sdp_redacted_workday_raas_payload": {
           "supervisory_org": "Finvault-Global-Treasury",
-          "sanitized_record": "Worker: Clara Vance (EVP Treasury) | SSN: [REDACTED_US_SSN] | DirectDeposit IBAN: [REDACTED_IBAN_CODE] | BaseSalary: $420,000 | SupervisoryOrg: FinVault-Global-Treasury",
+          "sanitized_record": "Worker: Clara Vance (EVP Treasury) | SSN: [REDACTED_US_SSN] | DirectDeposit IBAN: [REDACTED-FINVAULT-IBAN] | BaseSalary: $420,000 | SupervisoryOrg: FinVault-Global-Treasury",
+          "hop4_guardrail_module": "core-cymbal-agent/governance/hop4_model_armor_guardrails.py",
+          "hop4_redacted_detectors": [
+            "US_SOCIAL_SECURITY_NUMBER",
+            "IBAN_CODE"
+          ],
           "raw_pii_leaked": false
         }
       },
@@ -2968,6 +3788,7 @@
         "decision": "ALLOW",
         "product": "Datadog Cloud Observability & Bits AI SRE (REST API v2 Logs & APM)",
         "connector_uri": "mcp://cymbal/datadog-observability-sre-3lo",
+        "verification_tier": "LIVE_SAAS_API_CONTROL_PLANE_PROBE_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN",
         "tenant_id": "finvault",
         "enforced_log_query": "index:cymbal-prod @tenant_id:finvault service:core-ledger-api",
         "live_datadog_cloud_probe": {
@@ -2989,7 +3810,9 @@
         "decision": "DENY_HOP4_MODEL_ARMOR_INDIRECT_LOG_INJECTION",
         "product": "Datadog Cloud Observability & Bits AI SRE (REST API v2 Logs/APM)",
         "connector_uri": "mcp://cymbal/datadog-observability-sre-3lo",
-        "reason": "400 Bad Request: Hop 4 Model Armor intercepted an indirect prompt injection payload embedded inside an ingested Datadog log line before LLM context insertion."
+        "hop4_guardrail_module": "core-cymbal-agent/governance/hop4_model_armor_guardrails.py",
+        "hop4_matched_rule": "ignore\\s+(all\\s+)?previous\\s+instructions",
+        "reason": "400 Bad Request: Hop 4 Model Armor intercepted an indirect prompt injection payload embedded inside an ingested Datadog log line before LLM context insertion (MODEL_ARMOR_PROMPT_INJECTION_BLOCKED: Detected adversarial pattern matching 'ignore\\s+(all\\s+)?previous\\s+instructions' from tenant 'finvault'.)."
       }
     },
     {
@@ -3009,12 +3832,13 @@
         "decision": "ALLOW",
         "product": "CrowdStrike Falcon XDR & Okta Workforce Identity (OAuth2 XDR & OIDC/DPoP Identity Graph)",
         "connector_uri": "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
+        "verification_tier": "LIVE_SAAS_OAUTH2_AND_OIDC_DISCOVERY_PROBE_PLUS_HOP1_DPOP_AND_CMEK_GUARD",
         "tenant_id": "finvault",
         "verified_dpop_jkt": "dpop_jkt_fv_001",
         "live_crowdstrike_falcon_probe": {
           "oauth2_endpoint": "https://api.crowdstrike.com/oauth2/token",
           "http_status": 401,
-          "falcon_trace_id": "462a8739-d047-4ad7-ad6b-ce8ca3a8f37a",
+          "falcon_trace_id": "53062384-5c72-4ab6-9c7c-1b94dc6d9eef",
           "live_endpoint_reachable": true
         },
         "live_okta_oidc_probe": {
@@ -3047,7 +3871,7 @@
         "reason": "423 Locked: Autonomous SecOps containment halted because tenant Cloud KMS CMEK key is DISABLED.",
         "live_cmek_silo_lockout_proof": {
           "table": "nitina-ggarwal-sandbox-647724.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
-          "cmek_key": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/tenant-finvault-cmek-key",
+          "cmek_key": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
           "live_cmek_lockout_enforced": true,
           "http_status": 400,
           "bigquery_kms_error": "Cloud KMS Error: Billing is disabled for project 887605034827. Enable it by visiting https://console.cloud.google.com/billing/projects and associating your project with a billing account."

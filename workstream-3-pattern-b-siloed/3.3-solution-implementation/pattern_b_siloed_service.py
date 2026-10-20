@@ -72,14 +72,26 @@ class PatternBSiloedService:
         user_prompt: str,
         attempted_egress_project: Optional[str] = None,
         use_airgapped_gemma3_on_gke: bool = False,
+        requested_thinking_tokens: int = 6000,
+        simulated_current_rpm: int = 10,
+        requested_mcp_connector: str = "mcp://cymbal/core-telemetry-2lo",
     ) -> Dict[str, object]:
-        ctx, _ = self.runtime.hop1.authenticate_and_mint_context(
-            raw_headers=raw_headers,
-            jwt_claims=jwt_claims,
-            dpop_proof_jkt=dpop_proof_jkt,
-            session_id=session_id,
-            topology=core_models.IsolationTopology.PATTERN_B_SILOED,
-        )
+        try:
+            ctx, _ = self.runtime.hop1.authenticate_and_mint_context(
+                raw_headers=raw_headers,
+                jwt_claims=jwt_claims,
+                dpop_proof_jkt=dpop_proof_jkt,
+                session_id=session_id,
+                topology=core_models.IsolationTopology.PATTERN_B_SILOED,
+            )
+        except PermissionError as exc:
+            return {
+                "status_code": 401,
+                "decision": "DENY",
+                "violation_type": "HOP1_AUTHENTICATION_FAILED",
+                "reason": str(exc),
+                "hops": [],
+            }
         silo_cfg = SILO_PERIMETER_MAP[ctx.tenant_id]
 
         # Enforce mTLS Client Certificate Pinning
@@ -125,6 +137,9 @@ class PatternBSiloedService:
             session_id=session_id,
             requested_agent_uri=requested_agent_uri,
             user_prompt=user_prompt,
+            requested_thinking_tokens=requested_thinking_tokens,
+            simulated_current_rpm=simulated_current_rpm,
+            requested_mcp_connector=requested_mcp_connector,
             topology=core_models.IsolationTopology.PATTERN_B_SILOED,
         )
 

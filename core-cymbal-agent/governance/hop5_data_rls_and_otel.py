@@ -45,6 +45,21 @@ class DataPlaneRLSAndOTel:
         self._3lo_token_vault: Dict[str, str] = {
             "finvault:mcp://finvault/google-workspace-3lo": "ya29.finvault-google-3lo-valid",
             "finvault:mcp://finvault/jira-enterprise-3lo": "jira.finvault-3lo-valid",
+            "finvault:mcp://cymbal/thoughtspot-spotter-bi-3lo": "ts.finvault-3lo-valid",
+            "finvault:mcp://cymbal/sigma-computing-workbooks-3lo": "sigma.finvault-3lo-valid",
+            "finvault:mcp://finvault/veeva-muse-clinical-3lo": "veeva.finvault-3lo-valid",
+            "finvault:mcp://finvault/salesforce-jira-escalation-3lo": "sfdc.finvault-3lo-valid",
+            "finvault:mcp://cymbal/databricks-unity-catalog-genie-3lo": "dbx.finvault-3lo-valid",
+            "finvault:mcp://cymbal/snowflake-cortex-analyst-sql-3lo": "sf.finvault-3lo-valid",
+            "finvault:mcp://finvault/workday-hcm-financials-raas-3lo": "wd.finvault-3lo-valid",
+            "finvault:mcp://cymbal/datadog-observability-sre-3lo": "dd.finvault-3lo-valid",
+            "finvault:mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo": "cs.finvault-3lo-valid",
+            "retailstream:mcp://cymbal/thoughtspot-spotter-bi-3lo": "ts.retailstream-3lo-valid",
+            "retailstream:mcp://cymbal/sigma-computing-workbooks-3lo": "sigma.retailstream-3lo-valid",
+            "retailstream:mcp://cymbal/databricks-unity-catalog-genie-3lo": "dbx.retailstream-3lo-valid",
+            "retailstream:mcp://cymbal/snowflake-cortex-analyst-sql-3lo": "sf.retailstream-3lo-valid",
+            "retailstream:mcp://cymbal/datadog-observability-sre-3lo": "dd.retailstream-3lo-valid",
+            "retailstream:mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo": "cs.retailstream-3lo-valid",
         }
         self.bigquery_otel_ledger: List[Dict[str, object]] = []
 

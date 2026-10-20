@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# Copy the lean 1.80 MiB source codebase (all 24 Python + Terraform files, SQL, YAML, Markdown & Portal)
+# Copy the lean 1.80 MiB source codebase (all 27 Python + Terraform files, SQL, YAML, Markdown & Portal)
 COPY . /app
 
 # Execute all 3 Pattern simulation suites (20/20 assertions) and 12/12 forensic audit gates during Cloud Build

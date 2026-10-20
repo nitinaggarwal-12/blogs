@@ -44,12 +44,30 @@ class ComputeFinOpsBulkhead:
             return "retailstream"
         return "finvault"
 
-    def disable_cmek_key(self, cmek_uri: str) -> None:
-        """Disables the tenant CMEK key (both in-memory and live in Cloud KMS `cymbal-multi-tenant-kr` when CYMBAL_LIVE_GCP=1)."""
+    def _is_tenant_cmek_disabled(self, tenant_id: str) -> Optional[str]:
+        profile = self.tenant_profiles.get(tenant_id)
+        if not profile:
+            return None
+        for candidate in (profile.cmek_key_uri, profile.silo_cmek_key_uri):
+            if candidate and candidate in self._disabled_cmek_keys:
+                return candidate
+        return None
+
+    def disable_cmek_key(self, cmek_uri: str) -> int:
+        """
+        Disables the tenant CMEK key (both in-memory and live in Cloud KMS `cymbal-multi-tenant-kr` when CYMBAL_LIVE_GCP=1)
+        and immediately purges all in-flight L1-L4 Memory Bank entries for that tenant (<5s SLA).
+        """
         self._disabled_cmek_keys.add(cmek_uri)
+        tenant_id = self._resolve_tenant_from_cmek_uri(cmek_uri)
+        purged_partitions = [
+            k for k in list(self._memory_bank_store.keys()) if k.startswith(f"{tenant_id}:")
+        ]
+        for k in purged_partitions:
+            self._memory_bank_store.pop(k, None)
         if os.environ.get("CYMBAL_LIVE_GCP") == "1":
-            tenant_id = self._resolve_tenant_from_cmek_uri(cmek_uri)
             kms_set_key_version_state(tenant_id, enabled=False)
+        return len(purged_partitions)
 
     def enable_cmek_key(self, cmek_uri: str) -> None:
         """Restores the tenant CMEK key (both in-memory and live in Cloud KMS `cymbal-multi-tenant-kr` when CYMBAL_LIVE_GCP=1)."""
@@ -86,6 +104,11 @@ class ComputeFinOpsBulkhead:
         value: str,
     ) -> str:
         """Writes an entry to one of the 5 Memory Bank levels under the tenant's isolated namespace."""
+        disabled_cmek = self._is_tenant_cmek_disabled(ctx.tenant_id)
+        if disabled_cmek:
+            raise PermissionError(
+                f"HTTP_423_LOCKED: KMS_KEY_DISABLED for tenant '{ctx.tenant_id}' ('{disabled_cmek}'). Memory Bank write rejected."
+            )
         if level == MemoryBankLevel.L5_PLATFORM_SHARED_SKILLS:
             raise PermissionError("L5_PLATFORM_SHARED_SKILLS is immutable read-only for tenants.")
         partition_key = f"{ctx.memory_bank_namespace}:{level.value}"
@@ -103,12 +126,18 @@ class ComputeFinOpsBulkhead:
     ) -> str:
         """
         Reads from the 5-Level Memory Bank.
-        Strictly blocks cross-tenant reads if `target_namespace` does not start with `{caller_ctx.tenant_id}:`.
+        Strictly blocks cross-tenant reads if `target_namespace` does not start with `{caller_ctx.tenant_id}:`
+        and rejects reads if the caller's Cloud KMS CMEK key is disabled.
         """
         if not target_namespace.startswith(f"{caller_ctx.tenant_id}:"):
             raise PermissionError(
                 f"Hop 3 5-Level Memory Bank Access Denied: Tenant '{caller_ctx.tenant_id}' "
                 f"cannot read memory namespace '{target_namespace}'."
+            )
+        disabled_cmek = self._is_tenant_cmek_disabled(caller_ctx.tenant_id)
+        if disabled_cmek:
+            raise PermissionError(
+                f"HTTP_423_LOCKED: KMS_KEY_DISABLED for tenant '{caller_ctx.tenant_id}' ('{disabled_cmek}'). Memory Bank purged."
             )
         partition_key = f"{target_namespace}:{level.value}"
         return self._memory_bank_store.get(partition_key, {}).get(key, "")

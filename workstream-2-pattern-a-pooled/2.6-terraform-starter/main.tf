@@ -100,7 +100,7 @@ resource "google_cloud_run_v2_service" "cymbal_pooled_gateway" {
 
 # 5. BigQuery Dataset for Hop 5 OpenTelemetry Audit & Proportional FinOps Chargeback
 resource "google_bigquery_dataset" "cymbal_otel_audit" {
-  dataset_id  = "cymbal_multi_tenant_otel"
+  dataset_id  = "cymbal_agentic_finops_otel"
   location    = var.region
   description = "Hop 5 OpenTelemetry trace, token consumption, and RLS audit ledger"
 }

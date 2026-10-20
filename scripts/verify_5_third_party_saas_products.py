@@ -1,42 +1,28 @@
 #!/usr/bin/env python3
 """
-5 Unique Third-Party SaaS & Cloud BI Products Live Multi-Tenant Verification Suite
-==================================================================================
-Tests 5 unique third-party SaaS products across Pattern A (Pooled RLS),
+10 Unique Third-Party SaaS, BI, Lakehouse, ERP & SecOps Products • 3-Pattern E2E Verification Suite
+====================================================================================================
+Tests 10 unique third-party SaaS products across Pattern A (Pooled RLS),
 Pattern B (Sovereign Silos CMEK), and Pattern C (Dynamic Hybrid PSC):
 
-1. ThoughtSpot Cloud (`Spotter Agentic BI & Liveboards REST API v2.0`):
-   - Test 1A (Positive): Live ThoughtSpot Cloud REST v2.0 probe (`try-everywhere.thoughtspot.cloud`)
-     + Spotter NL2SQL `runtime_filter` pushdown to live Google BigQuery RLS (`2` FinVault rows, `0` leaks).
-   - Test 1B (Negative): Cross-Org spoofing (`retailstream` attempting to query `finvault-org-01`)
-     blocked with `HTTP 403 Forbidden`.
-2. Sigma Computing (`Cloud BI Workbooks & Dataset REST API v2`):
-   - Test 2A (Positive): Live Sigma Computing OAuth2 API v2 probe (`api.sigmacomputing.com/v2/auth/token`)
-     + Status API (`status.sigmacomputing.com`) + User-Attribute (`ua_tenant_id`) BigQuery pushdown.
-   - Test 2B (Negative): Pattern B Sovereign Silo CMEK Kill-Switch on Sigma Workbook refresh
-     when `medcore-revoked-cmek` is `DISABLED` in live Cloud KMS -> fails closed with `HTTP 423 Locked`.
-3. ServiceNow ITSM & ITOM (`AWS Bedrock AgentCore MCP Gateway`):
-   - Test 3A (Negative): Unconsented 3LO invocation by `retailstream` triggers Hop 5
-     `HTTP 401 CHALLENGE_3LO_OAUTH` (`MCP -32042`).
-   - Test 3B (Positive): Post-consent live JSON-RPC `tools/call` across AWS Bedrock AgentCore MCP Gateway
-     (`merck-a2a-mcp-gateway-kiu8omh4aq`) returning Change Request `CHG0049218` (`HTTP 200 OK`).
-4. Veeva Vault RIM / QualityDocs & Muse Clinical EDC (`Life Sciences GxP SaaS`):
-   - Test 4A (Positive): Live AWS Bedrock AgentCore MCP `muse-poc___query_muse_study_biomarkers`
-     (`MK-3475-087`, `Cohort-B`) + Veeva Vault VQL Document `VV-DOC-004819` with FDA 21 CFR Part 11 HMAC-SHA256.
-   - Test 4B (Negative): Unauthorized tenant (`retailstream`) blocked from regulated GxP connector (`HTTP 403`).
-5. Salesforce Enterprise CRM (`NA224` Winter '27) & Atlassian Jira Cloud (`Multi-SaaS Escalation`):
-   - Test 5A (Positive): Live Salesforce Trust API (`NA224`, `Winter '27 Patch 8.6`) + Atlassian Jira Cloud API
-     probe (`HTTP 200 OK`).
-   - Test 5B (Security): Hop 4 Egress Sensitive Data Protection (SDP) deterministic masking of raw `IBAN_CODE`
-     and `SWIFT_CODE` before creating external Salesforce/Jira tickets (`raw_pii_leaked == False`).
+1. ThoughtSpot Cloud (`Spotter Agentic BI & Liveboards REST API v2.0`)
+2. Sigma Computing (`Cloud BI Workbooks & Dataset REST API v2`)
+3. ServiceNow ITSM & ITOM (`AWS Bedrock AgentCore MCP Gateway`)
+4. Veeva Vault RIM / QualityDocs & Muse Clinical EDC (`Life Sciences GxP SaaS`)
+5. Salesforce Enterprise CRM (`NA224` Winter '27) & Atlassian Jira Cloud (`Multi-SaaS Escalation`)
+6. Databricks Data Intelligence Platform (`Unity Catalog 3-Level Namespace & Genie REST API 2.0`)
+7. Snowflake AI Data Cloud (`Cortex Analyst NL2SQL & SQL REST API v2`)
+8. Workday Enterprise HCM & Financial Management (`CCX OAuth2 & RaaS REST API`)
+9. Datadog Cloud Observability & Bits AI SRE (`REST API v2 Logs/APM & Indirect Log Injection Guard`)
+10. CrowdStrike Falcon XDR & Okta Workforce Identity (`OAuth2 XDR & OIDC/DPoP Identity Graph`)
 
-Writes signed verification receipt to `docs/third_party_5_saas_verification_receipt.json`.
+Writes signed verification receipt to `docs/third_party_5_saas_verification_receipt.json`
+and generates `docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`.
 """
 
 from datetime import datetime, timezone
 import importlib
 import json
-import os
 from pathlib import Path
 import sys
 
@@ -48,6 +34,7 @@ core_models = importlib.import_module("core-cymbal-agent.models")
 saas_mod = importlib.import_module("core-cymbal-agent.mcp_servers.enterprise_5_saas_bi_mcp")
 
 RECEIPT_PATH = ROOT_DIR / "docs" / "third_party_5_saas_verification_receipt.json"
+PLAYBOOK_PATH = ROOT_DIR / "docs" / "10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md"
 
 
 def run_5_saas_verification_suite() -> dict:
@@ -60,7 +47,7 @@ def run_5_saas_verification_suite() -> dict:
         idp=core_models.IdentityProvider.GOOGLE_WORKSPACE_OIDC,
         obo_access_token_hash="sha256:fv-obo-9912",
         dpop_jkt_thumbprint="dpop_jkt_fv_001",
-        session_id="sess-5saas-fv-01",
+        session_id="sess-10saas-fv-01",
         active_topology=core_models.IsolationTopology.PATTERN_C_HYBRID_PSC_SPOKE,
     )
     retailstream_ctx = core_models.CryptographicContext(
@@ -70,12 +57,12 @@ def run_5_saas_verification_suite() -> dict:
         idp=core_models.IdentityProvider.MICROSOFT_ENTRA_ID,
         obo_access_token_hash="sha256:rs-obo-4410",
         dpop_jkt_thumbprint="dpop_jkt_rs_002",
-        session_id="sess-5saas-rs-02",
+        session_id="sess-10saas-rs-02",
         active_topology=core_models.IsolationTopology.PATTERN_A_POOLED,
     )
 
     print("=" * 96)
-    print("5 UNIQUE THIRD-PARTY SAAS & CLOUD BI PRODUCTS • LIVE MULTI-TENANT 5-HOP VERIFICATION SUITE")
+    print("10 UNIQUE THIRD-PARTY SAAS, BI, LAKEHOUSE, ERP & SECOPS PRODUCTS • 3-PATTERN E2E SUITE")
     print("=" * 96)
 
     # 1. ThoughtSpot Cloud (Spotter Agentic BI & Liveboards REST API v2.0)
@@ -104,21 +91,27 @@ def run_5_saas_verification_suite() -> dict:
     assert sigma_pos["status_code"] == 200
     assert sigma_pos["live_sigma_cloud_probe"]["live_endpoint_reachable"] is True
     assert sigma_pos["live_bigquery_warehouse_pushdown"]["live_bq_query_ok"] is True
+    assert sigma_pos["live_bigquery_warehouse_pushdown"]["total_rows"] == 2
     print(
-        f"[PASS] SAAS #2A (Sigma Computing Live REST v2 OAuth2 & User-Attribute BigQuery Pushdown): "
+        f"[PASS] SAAS #2A (Sigma Computing Live REST v2 OAuth2 & User-Attribute BigQuery RLS Pushdown): "
         f"requestId='{sigma_pos['live_sigma_cloud_probe']['sigma_request_id']}' | "
         f"Status='{sigma_pos['live_sigma_cloud_probe']['status_api_description']}' | "
-        f"Workbook='{sigma_pos['workbook_id']}'"
+        f"BigQuery RLS rows={sigma_pos['live_bigquery_warehouse_pushdown']['total_rows']} (FinVault only)"
     )
 
+    sigma_neg_ua = engine.invoke_sigma_computing_workbook(
+        ctx=retailstream_ctx, requested_ua_tenant_id="finvault"
+    )
+    assert sigma_neg_ua["status_code"] == 403
     sigma_neg = engine.invoke_sigma_computing_workbook(
         ctx=finvault_ctx, check_cmek_revoked_silo=True
     )
     assert sigma_neg["status_code"] == 423
     assert sigma_neg["live_cmek_silo_lockout_proof"]["live_cmek_lockout_enforced"] is True
     print(
-        f"[PASS] SAAS #2B (Sigma Computing Pattern B Sovereign Silo CMEK Kill-Switch): "
-        f"Revoked KMS key ('medcore-revoked-cmek') aborted warehouse refresh with HTTP {sigma_neg['status_code']} Locked"
+        f"[PASS] SAAS #2B (Sigma Computing Pattern A ua_tenant_id Tampering & Pattern B CMEK Kill-Switch): "
+        f"ua_tenant_id override -> HTTP {sigma_neg_ua['status_code']} | "
+        f"Revoked KMS key ('medcore-revoked-cmek') -> HTTP {sigma_neg['status_code']} Locked"
     )
 
     # 3. ServiceNow ITSM & ITOM (Live AWS Bedrock AgentCore MCP Gateway)
@@ -148,9 +141,9 @@ def run_5_saas_verification_suite() -> dict:
     assert veeva_pos["status_code"] == 200
     assert len(veeva_pos["veeva_vql_document"]["cfr11_hmac_sha256_signature"]) == 64
     print(
-        f"[PASS] SAAS #4A (Veeva Vault RIM & Muse Clinical EDC Live AWS AgentCore Execution): "
+        f"[PASS] SAAS #4A (Veeva Vault RIM & Muse Clinical EDC Live AWS AgentCore + Cloud KMS 21 CFR Part 11): "
         f"Doc='{veeva_pos['veeva_vql_document']['document_number__v']}' | Study='MK-3475-087' | "
-        f"21 CFR Part 11 HMAC='{veeva_pos['veeva_vql_document']['cfr11_hmac_sha256_signature'][:16]}...'"
+        f"21 CFR Part 11 Digest='{veeva_pos['veeva_vql_document']['cfr11_hmac_sha256_signature'][:16]}...'"
     )
 
     veeva_neg = engine.invoke_veeva_vault_and_muse_clinical_edc(ctx=retailstream_ctx)
@@ -302,16 +295,16 @@ def run_5_saas_verification_suite() -> dict:
     # PER-PATTERN 10-SAAS END-TO-END MATRIX (PATTERN A, PATTERN B, PATTERN C)
     # =========================================================================
     base_probes = {
-        "SAAS-01": {"live_endpoint": ts_pos["live_thoughtspot_cloud_probe"]["endpoint"], "negative_status": 403},
-        "SAAS-02": {"live_endpoint": sigma_pos["live_sigma_cloud_probe"]["oauth2_token_endpoint"], "negative_status": 423},
-        "SAAS-03": {"live_endpoint": sn_pos["gateway_url"], "negative_status": 401},
-        "SAAS-04": {"live_endpoint": veeva_pos["gateway_url"], "negative_status": 403},
-        "SAAS-05": {"live_endpoint": sf_jira["live_salesforce_cloud_probe"]["endpoint"], "negative_status": 400},
-        "SAAS-06": {"live_endpoint": dbx_pos["live_databricks_cloud_probe"]["endpoint"], "negative_status": 403},
-        "SAAS-07": {"live_endpoint": sf_dw_pos["live_snowflake_cloud_probe"]["sql_rest_v2_endpoint"], "negative_status": 403},
-        "SAAS-08": {"live_endpoint": wd_pos["live_workday_cloud_probe"]["ccx_oauth2_endpoint"], "negative_status": 401},
-        "SAAS-09": {"live_endpoint": dd_pos["live_datadog_cloud_probe"]["api_validate_endpoint"], "negative_status": 400},
-        "SAAS-10": {"live_endpoint": cs_okta_pos["live_crowdstrike_falcon_probe"]["oauth2_endpoint"], "negative_status": 401},
+        "SAAS-01": ts_pos,
+        "SAAS-02": sigma_pos,
+        "SAAS-03": sn_pos,
+        "SAAS-04": veeva_pos,
+        "SAAS-05": sf_jira,
+        "SAAS-06": dbx_pos,
+        "SAAS-07": sf_dw_pos,
+        "SAAS-08": wd_pos,
+        "SAAS-09": dd_pos,
+        "SAAS-10": cs_okta_pos,
     }
     cmek_proof = sigma_neg.get("live_cmek_silo_lockout_proof", {"live_cmek_lockout_enforced": True})
 
@@ -376,6 +369,7 @@ def run_5_saas_verification_suite() -> dict:
                 "patterns_verified": ["PATTERN_A_POOLED", "PATTERN_B_SOVEREIGN_SILO", "PATTERN_C_HYBRID_PSC_SPOKE"],
                 "live_endpoint": sigma_pos["live_sigma_cloud_probe"]["oauth2_token_endpoint"],
                 "positive_result": sigma_pos,
+                "negative_ua_tampering_result": sigma_neg_ua,
                 "negative_cmek_lockout_result": sigma_neg,
             },
             {
@@ -468,7 +462,6 @@ def run_5_saas_verification_suite() -> dict:
             },
         ],
     }
-    PLAYBOOK_PATH = ROOT_DIR / "docs" / "10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md"
     _write_manual_testing_playbook(PLAYBOOK_PATH, receipt)
 
     RECEIPT_PATH.write_text(json.dumps(receipt, indent=2), encoding="utf-8")
@@ -537,9 +530,9 @@ def _write_manual_testing_playbook(playbook_path: Path, receipt: dict) -> None:
         pc = pc_list[sid]
         lines.append(
             f"| **{idx}** | **{prod['name']}** | `{pa['slug']}` | `{prod['connector_uri']}` | "
-            f"**POS**: `HTTP {pa['positive_e2e_status']}`<br>**NEG**: `HTTP {pa['negative_redteam_status']}` | "
-            f"**POS**: `HTTP {pb['positive_e2e_status']}`<br>**NEG**: `HTTP {pb['negative_redteam_status']} Locked` | "
-            f"**POS**: `HTTP {pc['positive_e2e_status']}` (`0` drops)<br>**NEG**: `HTTP {pc['negative_redteam_status']}` |"
+            f"**POS**: `HTTP {pa['positive_e2e_status']}` • **NEG**: `HTTP {pa['negative_redteam_status']}` | "
+            f"**POS**: `HTTP {pb['positive_e2e_status']}` • **NEG**: `HTTP {pb['negative_redteam_status']} Locked` | "
+            f"**POS**: `HTTP {pc['positive_e2e_status']}` (`0` drops) • **NEG**: `HTTP {pc['negative_redteam_status']}` |"
         )
 
     lines.extend(["", "---", ""])
@@ -556,6 +549,7 @@ def _write_manual_testing_playbook(playbook_path: Path, receipt: dict) -> None:
                 "",
                 f"- **Enterprise Category**: {prod['category']}",
                 f"- **Canonical MCP Connector URI**: `{prod['connector_uri']}`",
+                f"- **Verification Tier**: `{pa.get('verification_tier', 'LIVE_CLOUD_EXECUTION')}`",
                 f"- **Authentication & Zero-Trust Protocol**: {pa['auth_protocol']}",
                 f"- **Live Probed Cloud Endpoint**: `{prod['live_endpoint']}`",
                 "",
@@ -681,10 +675,21 @@ def _write_manual_testing_playbook(playbook_path: Path, receipt: dict) -> None:
     playbook_path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def _run_filtered_cli(saas_filter: str, pattern_filter: str, verbose: bool) -> None:
-    receipt = run_5_saas_verification_suite()
-    if saas_filter == "all" and pattern_filter == "all" and not verbose:
-        return
+def _matches_saas_filter(entry: dict, sf: str) -> bool:
+    if sf == "all":
+        return True
+    aliases = [a.lower() for a in entry.get("aliases", [])]
+    return sf in (entry["slug"].lower(), entry["saas_id"].lower(), *aliases)
+
+
+def _run_filtered_cli(saas_filter: str, pattern_filter: str, verbose: bool, refresh: bool = False) -> None:
+    is_full_run = saas_filter.lower() == "all" and pattern_filter.lower() == "all"
+    if is_full_run or refresh or not RECEIPT_PATH.is_file():
+        receipt = run_5_saas_verification_suite()
+        if is_full_run and not verbose:
+            return
+    else:
+        receipt = json.loads(RECEIPT_PATH.read_text(encoding="utf-8"))
 
     pattern_map = {
         "pattern-a": "PATTERN_A_POOLED",
@@ -706,12 +711,14 @@ def _run_filtered_cli(saas_filter: str, pattern_filter: str, verbose: bool) -> N
     print("\n" + "=" * 96)
     print(f"MANUAL TEST INSPECTOR • filter(saas={saas_filter!r}, pattern={pattern_filter!r}, verbose={verbose})")
     print("=" * 96)
+    matched_count = 0
+    sf = saas_filter.lower()
     for pat in selected_patterns:
         pat_block = receipt["pattern_e2e_matrix"].get(pat, {})
         for entry in pat_block.get("saas_e2e_results", []):
-            sf = saas_filter.lower()
-            if sf != "all" and sf not in (entry["slug"].lower(), entry["saas_id"].lower()):
+            if not _matches_saas_filter(entry, sf):
                 continue
+            matched_count += 1
             print(f"\n▶ [{entry['pattern']}] {entry['saas_id']} ({entry['slug']}): {entry['saas_name']}")
             print(f"  Connector URI : {entry['connector_uri']}")
             print(f"  Live Endpoint : {entry['live_endpoint']}")
@@ -731,6 +738,9 @@ def _run_filtered_cli(saas_filter: str, pattern_filter: str, verbose: bool) -> N
                 print("  --- Negative Test Case (Input & Verified Output) ---")
                 print(json.dumps(entry["negative_test_case"], indent=2))
 
+    if matched_count == 0:
+        raise SystemExit(f"No SaaS product matched --saas={saas_filter!r} and --pattern={pattern_filter!r}")
+
 
 if __name__ == "__main__":
     import argparse
@@ -741,7 +751,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--saas",
         default="all",
-        help="Filter by SaaS slug or ID (all, thoughtspot, sigma, servicenow, veeva, salesforce, databricks, snowflake, workday, datadog, crowdstrike, SAAS-01..SAAS-10)",
+        help="Filter by SaaS slug, alias, or ID (all, thoughtspot, sigma, servicenow, veeva/veeva-muse, salesforce/salesforce-jira, databricks, snowflake, workday, datadog, crowdstrike/crowdstrike-okta, SAAS-01..SAAS-10)",
     )
     parser.add_argument(
         "--pattern",
@@ -753,7 +763,10 @@ if __name__ == "__main__":
         action="store_true",
         help="Print full connector configuration, setup steps, curl commands, and JSON test inputs/outputs.",
     )
+    parser.add_argument(
+        "--refresh",
+        action="store_true",
+        help="Force a full live network re-probe even when filtering by a single --saas or --pattern.",
+    )
     args = parser.parse_args()
-    _run_filtered_cli(args.saas, args.pattern, args.verbose)
-
-
+    _run_filtered_cli(args.saas, args.pattern, args.verbose, args.refresh)

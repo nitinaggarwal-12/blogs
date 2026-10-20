@@ -307,163 +307,6 @@ def upload_pptx_to_google_slides(
     return entry
 
 
-def markdown_to_google_docs_html(md_text: str, md_rel_path: str, title: str) -> str:
-    """Convert repo Markdown into self-contained styled HTML (with inline base64 PNG diagrams) for Google Docs import."""
-    doc_dir = (ROOT_DIR / md_rel_path).parent
-
-    # Strip YAML frontmatter if present
-    body_md = re.sub(r"^---\r?\n[\s\S]*?\r?\n---\r?\n", "", md_text)
-
-    # Extract fenced code blocks
-    code_blocks = []
-
-    def _stash_code(m: re.Match) -> str:
-        lang = (m.group(1) or "code").strip()
-        code = html.escape(m.group(2).strip())
-        idx = len(code_blocks)
-        code_blocks.append(
-            f'<table style="width:100%;border-collapse:collapse;margin:12px 0;background:#f8f9fa;border:1px solid #dadce0;">'
-            f'<tr><td style="padding:4px 10px;background:#e8f0fe;color:#174ea6;font-family:Roboto,Arial,sans-serif;font-size:9pt;font-weight:bold;">{html.escape(lang.upper())}</td></tr>'
-            f'<tr><td style="padding:10px 12px;font-family:\'Courier New\',monospace;font-size:9pt;color:#202124;white-space:pre-wrap;">{code}</td></tr>'
-            f"</table>"
-        )
-        return f"@@CODEBLOCK_{idx}@@"
-
-    body_md = re.sub(r"```([^\n]*)\n([\s\S]*?)```", _stash_code, body_md)
-
-    def _resolve_img_data_uri(raw_src: str) -> Optional[str]:
-        clean = raw_src.split("?")[0].split("#")[0].strip()
-        cand = (doc_dir / clean).resolve()
-        if not cand.is_file():
-            cand = (ROOT_DIR / clean.lstrip("/")).resolve()
-        # Prefer .drawio.png or .png over .svg for Google Docs native import
-        if cand.suffix.lower() == ".svg":
-            drawio_png = cand.with_suffix(".drawio.png")
-            plain_png = cand.with_suffix(".png")
-            if drawio_png.is_file():
-                cand = drawio_png
-            elif plain_png.is_file():
-                cand = plain_png
-        if cand.is_file() and cand.suffix.lower() == ".png":
-            b64 = base64.b64encode(cand.read_bytes()).decode("ascii")
-            return f"data:image/png;base64,{b64}"
-        return None
-
-    def _format_inline(text: str) -> str:
-        # Handle inline markdown images ![alt](src)
-        def _img_repl(im: re.Match) -> str:
-            alt_txt = html.escape(im.group(1) or "Architecture Diagram")
-            src_txt = im.group(2) or ""
-            data_uri = _resolve_img_data_uri(src_txt)
-            if data_uri:
-                return (
-                    f'<div style="margin:14px 0;text-align:center;">'
-                    f'<img src="{data_uri}" alt="{alt_txt}" style="max-width:620px;width:100%;height:auto;border:1px solid #dadce0;" />'
-                    f'<div style="font-size:9pt;color:#5f6368;margin-top:4px;"><i>{alt_txt}</i></div>'
-                    f"</div>"
-                )
-            return f"<b>[{alt_txt}]</b>"
-
-        text = re.sub(r"!\[([^\]]*)\]\(([^)]+)\)", _img_repl, text)
-        # Links
-        text = re.sub(
-            r"\[([^\]]+)\]\(([^)]+)\)",
-            lambda m: f'<a href="{html.escape(m.group(2))}" style="color:#1a73e8;text-decoration:underline;">{html.escape(m.group(1))}</a>',
-            text,
-        )
-        # Inline code
-        text = re.sub(
-            r"`([^`]+)`",
-            lambda m: f'<span style="font-family:\'Courier New\',monospace;background:#f1f3f4;color:#c5221f;padding:1px 4px;font-size:9.5pt;">{html.escape(m.group(1))}</span>',
-            text,
-        )
-        # Bold
-        text = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", text)
-        return text
-
-    lines = body_md.split("\n")
-    out_parts = [
-        "<!DOCTYPE html><html><head><meta charset='UTF-8' />",
-        f"<title>{html.escape(title)}</title></head>",
-        "<body style=\"font-family:'Google Sans',Roboto,Arial,sans-serif;color:#202124;line-height:1.55;font-size:11pt;max-width:760px;margin:0 auto;\">",
-        f'<div style="border-top:5px solid #1a73e8;padding:10px 14px;background:#e8f0fe;margin-bottom:18px;">'
-        f'<div style="font-size:9pt;font-weight:bold;color:#174ea6;text-transform:uppercase;">Google Cloud Enterprise Agent Platform (GEAP) • Editable Specification</div>'
-        f'<div style="font-size:9pt;color:#5f6368;">Source Deliverable: <code>{html.escape(md_rel_path)}</code></div>'
-        f"</div>",
-    ]
-
-    in_table = False
-    table_rows = []
-
-    def _flush_table() -> None:
-        nonlocal in_table, table_rows
-        if not in_table or not table_rows:
-            in_table = False
-            table_rows = []
-            return
-        t_html = '<table style="width:100%;border-collapse:collapse;margin:14px 0;font-size:9.5pt;">'
-        for r_idx, row in enumerate(table_rows):
-            if r_idx == 1 and all(re.match(r"^[:\-]+$", c) for c in row):
-                continue
-            t_html += "<tr>"
-            for cell in row:
-                if r_idx == 0:
-                    t_html += f'<th style="border:1px solid #dadce0;background:#174ea6;color:#ffffff;padding:7px 9px;text-align:left;font-weight:bold;">{_format_inline(cell)}</th>'
-                else:
-                    bg = "#ffffff" if r_idx % 2 == 1 else "#f8f9fa"
-                    t_html += f'<td style="border:1px solid #dadce0;background:{bg};color:#202124;padding:6px 9px;vertical-align:top;">{_format_inline(cell)}</td>'
-            t_html += "</tr>"
-        t_html += "</table>"
-        out_parts.append(t_html)
-        in_table = False
-        table_rows = []
-
-    for raw_line in lines:
-        line = raw_line.rstrip("\r")
-        if line.strip().startswith("|") and line.strip().endswith("|"):
-            in_table = True
-            cells = [c.strip() for c in line.strip()[1:-1].split("|")]
-            table_rows.append(cells)
-            continue
-        else:
-            _flush_table()
-
-        if line.startswith("@@CODEBLOCK_"):
-            idx = int(line.replace("@@CODEBLOCK_", "").replace("@@", ""))
-            if 0 <= idx < len(code_blocks):
-                out_parts.append(code_blocks[idx])
-        elif line.startswith("# "):
-            out_parts.append(
-                f'<h1 style="font-size:20pt;color:#174ea6;border-bottom:2px solid #1a73e8;padding-bottom:6px;margin-top:18px;">{_format_inline(line[2:])}</h1>'
-            )
-        elif line.startswith("## "):
-            out_parts.append(
-                f'<h2 style="font-size:15pt;color:#1a73e8;margin-top:18px;margin-bottom:6px;">{_format_inline(line[3:])}</h2>'
-            )
-        elif line.startswith("### "):
-            out_parts.append(
-                f'<h3 style="font-size:12.5pt;color:#202124;margin-top:14px;margin-bottom:4px;">{_format_inline(line[4:])}</h3>'
-            )
-        elif line.startswith("#### "):
-            out_parts.append(
-                f'<h4 style="font-size:11pt;color:#5f6368;margin-top:10px;margin-bottom:4px;">{_format_inline(line[5:])}</h4>'
-            )
-        elif line.startswith("> "):
-            out_parts.append(
-                f'<div style="margin:10px 0;padding:10px 14px;background:#e8f0fe;border-left:4px solid #1a73e8;color:#174ea6;">{_format_inline(line[2:])}</div>'
-            )
-        elif line.startswith("- ") or line.startswith("* "):
-            out_parts.append(f'<li style="margin-left:18px;margin-bottom:4px;">{_format_inline(line[2:])}</li>')
-        elif line.strip() == "---":
-            out_parts.append('<hr style="border:0;border-top:1px solid #dadce0;margin:16px 0;" />')
-        elif line.strip():
-            out_parts.append(f'<p style="margin:6px 0;">{_format_inline(line)}</p>')
-
-    _flush_table()
-    out_parts.append("</body></html>")
-    return "\n".join(out_parts)
-
-
 def upload_md_to_google_docs(
     md_path: Path,
     title: str,
@@ -471,15 +314,21 @@ def upload_md_to_google_docs(
     force: bool = False,
     access_token_override: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Rule 49: Clone a verified native Google Doc template via drive.files.copy and apply in-place batchUpdate."""
+    """Rule 49: Clone a verified native Google Doc template via drive.files.copy and apply in-place batchUpdate (never Drive HTML import)."""
     manifest = load_cloud_manifest()
     sha = file_sha256(md_path)
     existing = manifest.get("docs", {}).get(cache_key)
-    if existing and existing.get("googleDocsId"):
+    if existing and existing.get("googleDocsId") and not force:
+        if existing.get("sha256") != sha or existing.get("title") != title:
+            existing["sha256"] = sha
+            existing["title"] = title
+            save_cloud_manifest(manifest)
         return existing
 
     tok = access_token_override or get_drive_access_token()
     if not tok:
+        if existing and existing.get("googleDocsId"):
+            return existing
         raise RuntimeError("No Google Drive OAuth token available to clone native Google Doc template.")
 
     template_entry = manifest.get("docs", {}).get("WS1") or next(iter(manifest.get("docs", {}).values()), None)

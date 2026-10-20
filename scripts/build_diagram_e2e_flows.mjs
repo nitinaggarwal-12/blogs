@@ -436,7 +436,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     outcomeTitle: 'High-Density SaaS Unit Economics (120 RPM Pool) with Cryptographic 5-Hop Isolation',
     outcomeBody:
       'Competing tenants (FinVault Bank and RetailStream Corp) share the same serverless runtime pool and database tables to achieve an 84.7% token COGS reduction, while cryptographic context binding guarantees zero cross-tenant visibility.',
-    outcomeTech: 'Verified live on Google Cloud: tenant queries return strictly their 2 authorized rows in BigQuery RLS with 0 foreign rows leaked',
+    outcomeTech: 'Verified live on Google Cloud: tenant queries return strictly their authorized rows in BigQuery RLS (2 FinVault rows ENT-FV-001..002 or 1 RetailStream row ENT-RS-001) with 0 foreign rows leaked',
     plainZones: [
       {
         zoneId: 'Blue Zone',
@@ -519,7 +519,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Yellow & Red Zones (Data & Tools)',
         title: 'Row-Level Security Query & 2LO/3LO Tool Call',
         logicalNarrative:
-          'The agent queries the shared AlloyDB/BigQuery table where mandatory Row-Level Security (`SET LOCAL app.current_tenant_id`) returns only the caller’s rows (2 FinVault or RetailStream rows matching the authenticated caller; 0 rival tenant rows).',
+          'The agent queries the shared AlloyDB/BigQuery table where mandatory Row-Level Security (`SET LOCAL app.current_tenant_id`) returns only the caller’s rows (2 FinVault rows ENT-FV-001..002 or 1 RetailStream row ENT-RS-001 matching the authenticated caller; 0 rival tenant rows).',
         components: 'AlloyDB RLS • BigQuery Row Access Policy • MCP Hub',
       },
       {
@@ -585,7 +585,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         protocolAndMechanism:
           'Executes `SET LOCAL app.current_tenant_id = :verified_tenant` on AlloyDB and evaluates BigQuery `ROW ACCESS POLICY` so queries only scan authorized tenant partitions.',
         codeAndResource: 'Mandatory Engine-Level Row Access Policies',
-        verifiedOutcome: 'Proven live: 2 authorized tenant rows returned; 0 cross-tenant rows leaked',
+        verifiedOutcome: 'Proven live: 2 FinVault rows or 1 RetailStream row returned; 0 cross-tenant rows leaked',
       },
       {
         step: 'Step ⑦',
@@ -2843,7 +2843,7 @@ function main() {
     const mdSection = [
       `## Step-by-Step End-to-End Agentic & Technical Flows (${wsKey} Architecture Diagrams)`,
       '',
-      `> **Reader Reference Guide (Standalone Guide & Companion Architecture Deck):** The step-by-step walkthroughs below document every Official Google Cloud Architecture Center (\`#78\`) diagram in **${wsKey}**. Each diagram is self-contained in this guide (\`Figure 1\` above plus the supporting topology blueprints in \`diagrams/\`), and also corresponds 1:1 to **Act II (Slides 4–7)** of the companion 12-slide editable presentation deck (\`presentations/${wsKey.toLowerCase()}-*.pptx\`, viewable in **Tab 2: Editable Architecture Decks** of the interactive portal): **(1) Slide 4 (\`L1\` Conceptual 3-Zone Trust Boundary Overview)** → **(2) Slide 5 (\`L2\` Authoritative \`Figure 1\` Official \`#78\` Physical Blueprint + 4-Zone Reference Sidebar)** → **(3) Slide 6 (\`L3\` 5-Actor Chronological Request Sequence)** → **(4) Slide 7 (\`L4\` 3-Stage Wire-Level JSON & Cryptographic Context Transformation)**.`,
+      `> **Reader Reference Guide (Standalone Guide & Companion Architecture Deck):** The step-by-step walkthroughs below document every Official Google Cloud Architecture Center (\`#78\`) diagram in **${wsKey}**. Each diagram is self-contained in this guide (\`Figure 1\` above plus the supporting topology blueprints in \`diagrams/\`), and also corresponds 1:1 to **Act II (Slides 4–7)** of the companion 12-slide editable presentation deck (\`slides/${wsKey.toLowerCase()}-*-editable-slides.pptx\`, viewable in **Tab 2: Editable Architecture Decks** of the interactive portal): **(1) Slide 4 (\`L1\` Conceptual 3-Zone Trust Boundary Overview)** → **(2) Slide 5 (\`L2\` Authoritative \`Figure 1\` Official \`#78\` Physical Blueprint + 4-Zone Reference Sidebar)** → **(3) Slide 6 (\`L3\` 5-Actor Chronological Request Sequence)** → **(4) Slide 7 (\`L4\` 3-Stage Wire-Level JSON & Cryptographic Context Transformation)**.`,
       '',
       ...wsFlows.map((f) => renderDiagramFlowMarkdown(f)),
     ].join('\n');

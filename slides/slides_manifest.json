@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-10-20T14:59:19.666Z",
-  "engine": "PromptCanvas Vision Decompiler • Google Cloud Architecture Center 3-Act Cohesive Story Arc • pptxgenjs LAYOUT_WIDE 16:9",
+  "engine": "PromptCanvas Vision Decompiler \u2022 Google Cloud Architecture Center 3-Act Cohesive Story Arc \u2022 pptxgenjs LAYOUT_WIDE 16:9",
   "decks": [
     {
       "key": "WS1",
@@ -13,8 +13,9 @@
       ],
       "shapes": 190,
       "connectors": 58,
-      "bytes": 1737979,
-      "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
+      "bytes": 1742821,
+      "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)",
+      "sha256": "29c672dec914b35d5a1fcd7a2131e7b9eacfc2a39a9417435014c277737dee02"
     },
     {
       "key": "WS2",
@@ -29,8 +30,9 @@
       ],
       "shapes": 194,
       "connectors": 55,
-      "bytes": 1851102,
-      "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
+      "bytes": 1855626,
+      "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)",
+      "sha256": "beb24d955bd012df25cd140f166530bef0e17f36886a8b7ba601f53951464923"
     },
     {
       "key": "WS3",
@@ -44,8 +46,9 @@
       ],
       "shapes": 190,
       "connectors": 58,
-      "bytes": 1704462,
-      "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
+      "bytes": 1709025,
+      "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)",
+      "sha256": "f00a0e241a23d7770a216df645a77b67a6e10aa570417ef19009762b3b66267a"
     },
     {
       "key": "WS4",
@@ -60,8 +63,9 @@
       ],
       "shapes": 190,
       "connectors": 58,
-      "bytes": 1745808,
-      "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
+      "bytes": 1750549,
+      "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)",
+      "sha256": "bef2779670288848dc7004b447dfa28c4bc71e29ec4840035ac4feaf81594677"
     },
     {
       "key": "WS5",
@@ -73,8 +77,9 @@
       ],
       "shapes": 180,
       "connectors": 54,
-      "bytes": 1433507,
-      "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
+      "bytes": 1437414,
+      "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)",
+      "sha256": "6f63862d29a374e80ff74ea1abcce3263dd17a02b98ae59cc4d08e50e78bcf4f"
     },
     {
       "key": "ALL",
@@ -96,7 +101,11 @@
         "ws4-terraform-hybrid-psc-blueprint-resource-graph",
         "ws5-decision-tree-and-agentic-triad"
       ],
-      "bytes": 3222560
+      "bytes": 3231773,
+      "sha256": "5ec230abd5bc2c2af40e4eb13082a2df6ef3416e078f6e2bdb76bf26923e6463",
+      "shapes": 742,
+      "connectors": 312,
+      "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     }
   ]
 }

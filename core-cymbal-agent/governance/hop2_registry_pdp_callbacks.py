@@ -34,6 +34,15 @@ GLOBAL_MCP_CATALOG = [
     "mcp://finvault/jira-enterprise-3lo",
     "mcp://retailstream/sharepoint-runbooks-3lo",
     "mcp://retailstream/servicenow-itom-3lo",
+    "mcp://cymbal/thoughtspot-spotter-bi-3lo",
+    "mcp://cymbal/sigma-computing-workbooks-3lo",
+    "mcp://finvault/veeva-muse-clinical-3lo",
+    "mcp://finvault/salesforce-jira-escalation-3lo",
+    "mcp://cymbal/databricks-unity-catalog-genie-3lo",
+    "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
+    "mcp://finvault/workday-hcm-financials-raas-3lo",
+    "mcp://cymbal/datadog-observability-sre-3lo",
+    "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
 ]
 
 

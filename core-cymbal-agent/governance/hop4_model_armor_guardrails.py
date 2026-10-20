@@ -19,16 +19,19 @@ from ..models import CryptographicContext, HopAuditRecord, TENANT_PROFILES, Tena
 
 PROMPT_INJECTION_PATTERNS = [
     r"ignore\s+(all\s+)?previous\s+instructions",
+    r"system\s+override",
     r"dump\s+context\s*cache",
+    r"exfiltrate\s+(all\s+)?(finvault|kms|secret|token)",
     r"select\s+\*\s+from\s+incidents\s+where\s+tenant_id",
     r"set\s+local\s+app\.current_tenant",
-    r"switch\s+tenant\s+to",
+    r"switch\s+tenant(_id)?\s+to",
 ]
 
 PII_REGEX_DETECTORS = {
+    "US_SOCIAL_SECURITY_NUMBER": (r"\b\d{3}-\d{2}-\d{4}\b", "[REDACTED_US_SSN]"),
     "US_BANK_ACCOUNT_NUMBER": (r"\bACCT-\d{8,12}\b", "[REDACTED-FINVAULT-BANK-ACCOUNT]"),
     "IBAN_CODE": (r"\b[A-Z]{2}\d{2}[A-Z0-9]{11,30}\b", "[REDACTED-FINVAULT-IBAN]"),
-    "SWIFT_CODE": (r"\bSWIFT-[A-Z]{6}[A-Z0-9]{2,5}\b", "[REDACTED-FINVAULT-SWIFT]"),
+    "SWIFT_CODE": (r"\b(?:SWIFT[-:\s]+)?[A-Z]{4}US[A-Z0-9]{2,5}\b", "[REDACTED-FINVAULT-SWIFT]"),
     "CREDIT_CARD_NUMBER": (r"\b(?:\d{4}[-\s]?){3}\d{4}\b", "[REDACTED-RETAILSTREAM-PAYMENT-PAN]"),
     "EMAIL_ADDRESS": (r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b", "[REDACTED-EMAIL]"),
 }

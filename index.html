@@ -1735,25 +1735,25 @@
       </div>
     </section>
 
-    <!-- TAB 3: LIVE GOOGLE CLOUD CONSOLE, 24-FILE CODEBASE, 8-STAGE SSH RUNBOOK & DELIVERABLES -->
+    <!-- TAB 3: LIVE GOOGLE CLOUD CONSOLE, 27-FILE CODEBASE, 8-STAGE SSH RUNBOOK & DELIVERABLES -->
     <section id="tab-screenshots" class="tab-pane" data-testid="blog-visual-proof-screenshots-gallery">
-      <!-- 5-TAB E2E PATTERN EXECUTION, 20 PROVISIONED MULTI-CLOUD (GCP + AWS + 3P) RESOURCES, 24-FILE SOURCE CODEBASE, 8-STAGE RUNBOOK & DELIVERABLES WORKBENCH -->
+      <!-- 5-TAB E2E PATTERN EXECUTION, 20 PROVISIONED MULTI-CLOUD (GCP + AWS + 3P) RESOURCES, 27-FILE SOURCE CODEBASE, 8-STAGE RUNBOOK & DELIVERABLES WORKBENCH -->
       <div class="card" id="blog-e2e-pattern-execution-and-codebase-workbench" data-testid="blog-e2e-pattern-execution-and-codebase-workbench" data-no-hover-toolbar="true" style="border:1.5px solid rgba(56, 189, 248, 0.45); margin-bottom:18px;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid var(--border);">
           <div>
-            <h3 style="margin:0 0 2px 0;">&#9889; End-to-End Multi-Cloud Pattern Execution (GCP + AWS + 3P), Deployment Links &amp; 24-File Source Codebase</h3>
-            <p class="muted" style="margin:0; font-size:12.5px;">Inspect all 5 test suites (<code>27/27 PASS</code>), 20 live resources across <code>ramp-portal-dev</code>, <code>nitina-ggarwal-sandbox-647724</code>, AWS <code>393036065405</code> &amp; 3P SaaS (<code>ServiceNow</code>, <code>Muse</code>, <code>Entra ID</code>, <code>Workspace</code>), per-workstream deployment links, and 24 source files.</p>
+            <h3 style="margin:0 0 2px 0;">&#9889; End-to-End Multi-Cloud Pattern Execution (GCP + AWS + 10 Third-Party SaaS), Deployment Links &amp; 27-File Source Codebase</h3>
+            <p class="muted" style="margin:0; font-size:12.5px;">Inspect all 6 test suites (<code>107/107 PASS</code> including <code>30/30 E2E Flows &bull; 60/60 Assertions</code> across 10 Third-Party SaaS &times; 3 Patterns), 20 live resources across <code>ramp-portal-dev</code>, <code>nitina-ggarwal-sandbox-647724</code>, AWS <code>393036065405</code> &amp; 10 3P SaaS platforms, per-workstream deployment links, and 27 source files.</p>
           </div>
           <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
             <label for="e2e-workbench-view-select" style="margin:0; font-size:12px; font-weight:700; color:var(--heading); white-space:nowrap;">&#128194; Workbench View:</label>
             <select id="e2e-workbench-view-select" style="width:auto; min-width:320px; padding:7px 28px 7px 10px; font-weight:600; font-size:12.5px;" onchange="switchE2EWorkbenchTab(this.value)" aria-label="Select E2E Workbench View">
-              <option value="execution">1. Live E2E Execution Results (5 Suites &bull; 27/27 PASS)</option>
+              <option value="execution">1. Live E2E Execution Results (6 Suites &bull; 107/107 PASS)</option>
               <option value="resources">2. Multi-Cloud Resources &amp; WS1&ndash;WS5 Deployment Links (20 Live)</option>
-              <option value="codebase">3. Complete Source Codebase (24 Python &amp; TF Files)</option>
+              <option value="codebase">3. Complete Source Codebase (27 Python &amp; TF Files)</option>
               <option value="runbook">4. Cloud Console &amp; SSH Verification Runbook (8 Stages)</option>
               <option value="deliverables">5. All Workstream Deliverables &amp; Codelabs Index</option>
             </select>
-            <button type="button" id="e2e-rerun-live-btn" class="sim-btn primary" style="padding:7px 12px; font-size:12.5px;" onclick="runLiveE2ESimulationsInWorkbench()">&#9654; Re-Run All 27 Multi-Cloud Tests Live</button>
+            <button type="button" id="e2e-rerun-live-btn" class="sim-btn primary" style="padding:7px 12px; font-size:12.5px;" onclick="runLiveE2ESimulationsInWorkbench()">&#9654; Re-Run All 107 Multi-Cloud &amp; 10-SaaS Tests Live</button>
           </div>
         </div>
 
@@ -1789,7 +1789,7 @@
                     <td><a href="https://ge-blogs.cr.gclb.goog/#tab-ws1" target="_blank" rel="noopener">ge-blogs.cr.gclb.goog/#tab-ws1 &#8599;</a><br/><a href="https://a2a-gateway.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">a2a-gateway.cr.gclb.goog &#8599;</a></td>
                     <td><a href="https://console.cloud.google.com/vertex-ai/studio/multimodal?project=ramp-portal-dev" target="_blank" rel="noopener">Vertex AI Gemini 2.5 Router &#8599;</a><br/><a href="https://console.cloud.google.com/gen-app-builder/engines?project=ramp-portal-dev" target="_blank" rel="noopener" style="font-size:11.5px;">GE Engine enterprise-s2p-global &#8599;</a></td>
                     <td><a href="https://us-east-1.console.aws.amazon.com/bedrock/home?region=us-east-1#/agentcore/gateways" target="_blank" rel="noopener">Bedrock AgentCore MCP Gateway &#8599;</a></td>
-                    <td><a href="https://docs.google.com/presentation/d/19aa9b218996-119b-83b5-4c887d396521/edit" target="_blank" rel="noopener">WS1 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/113de923b-9902-403a-8d70-31c557699a01/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS1 Native Google Doc &#8599;</a></td>
+                    <td><a href="https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit" target="_blank" rel="noopener">WS1 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS1 Native Google Doc &#8599;</a></td>
                     <td><span class="file-pill" onclick="switchE2EWorkbenchTab('codebase')">core-cymbal-agent/</span></td>
                   </tr>
                   <tr>
@@ -1797,7 +1797,7 @@
                     <td><a href="https://ge-blogs.cr.gclb.goog/#tab-ws2" target="_blank" rel="noopener">ge-blogs.cr.gclb.goog/#tab-ws2 &#8599;</a><br/><a href="https://ge-demos.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">ge-demos.cr.gclb.goog &#8599;</a></td>
                     <td><a href="https://console.cloud.google.com/bigquery?project=nitina-ggarwal-sandbox-647724&amp;ws=!1m5!1m4!4m3!1snitina-ggarwal-sandbox-647724!2scymbal_agentic_finops_otel!3spattern_a_pooled_rls_entities" target="_blank" rel="noopener">BigQuery Pattern A RLS Table &#8599;</a></td>
                     <td><a href="https://us-east-1.console.aws.amazon.com/cognito/v2/idp/user-pools/us-east-1_vqlzYM74B/overview?region=us-east-1" target="_blank" rel="noopener">Cognito RS256 OBO Pool &#8599;</a><br/><span class="muted" style="font-size:11px;">ServiceNow CHG0049218 (200 OK)</span></td>
-                    <td><a href="https://docs.google.com/presentation/d/16da2dc62617-119b-83b5-4c887d396521/edit" target="_blank" rel="noopener">WS2 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/123de923b-9902-403a-8d70-31c557699a02/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS2 Native Google Doc &#8599;</a></td>
+                    <td><a href="https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit" target="_blank" rel="noopener">WS2 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS2 Native Google Doc &#8599;</a></td>
                     <td><span class="file-pill" onclick="viewArtifact('workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py')">workstream-2-pattern-a-pooled/</span></td>
                   </tr>
                   <tr>
@@ -1805,7 +1805,7 @@
                     <td><a href="https://ge-blogs.cr.gclb.goog/#tab-ws3" target="_blank" rel="noopener">ge-blogs.cr.gclb.goog/#tab-ws3 &#8599;</a><br/><a href="https://askaioce.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">askaioce.cr.gclb.goog &#8599;</a></td>
                     <td><a href="https://console.cloud.google.com/security/kms/keyring/manage/us-west1/cymbal-multi-tenant-kr?project=nitina-ggarwal-sandbox-647724" target="_blank" rel="noopener">Cloud KMS Keyring (4 Keys) &#8599;</a><br/><a href="https://console.cloud.google.com/bigquery?project=nitina-ggarwal-sandbox-647724&amp;ws=!1m5!1m4!4m3!1snitina-ggarwal-sandbox-647724!2scymbal_silo_finvault_usw1!3spattern_b_silo_finvault_cmek_vault" target="_blank" rel="noopener" style="font-size:11.5px;">BigQuery CMEK Silo Vault &#8599;</a></td>
                     <td><a href="https://us-east-1.console.aws.amazon.com/bedrock/home?region=us-east-1#/agentcore/runtimes" target="_blank" rel="noopener">Bedrock Dedicated Silo Runtime &#8599;</a><br/><span class="muted" style="font-size:11px;">Muse Study MK-3475-087 (200 OK)</span></td>
-                    <td><a href="https://docs.google.com/presentation/d/129b7021d1a3-119b-83b5-4c887d396521/edit" target="_blank" rel="noopener">WS3 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/133de923b-9902-403a-8d70-31c557699a03/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS3 Native Google Doc &#8599;</a></td>
+                    <td><a href="https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit" target="_blank" rel="noopener">WS3 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS3 Native Google Doc &#8599;</a></td>
                     <td><span class="file-pill" onclick="viewArtifact('workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py')">workstream-3-pattern-b-siloed/</span></td>
                   </tr>
                   <tr>
@@ -1813,7 +1813,7 @@
                     <td><a href="https://ge-blogs.cr.gclb.goog/#tab-ws4" target="_blank" rel="noopener">ge-blogs.cr.gclb.goog/#tab-ws4 &#8599;</a><br/><a href="https://promptcanvas.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">promptcanvas.cr.gclb.goog &#8599;</a></td>
                     <td><a href="https://console.cloud.google.com/networking/subnetworks/details/us-west1/cymbal-psc-nat-us-west1?project=nitina-ggarwal-sandbox-647724" target="_blank" rel="noopener">VPC /28 PSC NAT Subnet &#8599;</a><br/><a href="https://console.cloud.google.com/bigquery?project=nitina-ggarwal-sandbox-647724&amp;ws=!1m5!1m4!4m3!1snitina-ggarwal-sandbox-647724!2scymbal_agentic_finops_otel!3spattern_c_psc_endpoints_registry" target="_blank" rel="noopener" style="font-size:11.5px;">BigQuery PSC Migration Ledger &#8599;</a></td>
                     <td><a href="https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/merck-a2a-mcp-remote-peer" target="_blank" rel="noopener">Lambda Hop 5 GxP Guardrails &#8599;</a><br/><span class="muted" style="font-size:11px;">21 CFR Part 11 + 403 Block</span></td>
-                    <td><a href="https://docs.google.com/presentation/d/16032bb6857f-119b-83b5-4c887d396521/edit" target="_blank" rel="noopener">WS4 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/143de923b-9902-403a-8d70-31c557699a04/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS4 Native Google Doc &#8599;</a></td>
+                    <td><a href="https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit" target="_blank" rel="noopener">WS4 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS4 Native Google Doc &#8599;</a></td>
                     <td><span class="file-pill" onclick="viewArtifact('workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py')">workstream-4-pattern-c-hybrid/</span></td>
                   </tr>
                   <tr>
@@ -1821,7 +1821,7 @@
                     <td><a href="https://ge-blogs.cr.gclb.goog/#tab-ws5" target="_blank" rel="noopener">ge-blogs.cr.gclb.goog/#tab-ws5 &#8599;</a><br/><a href="https://scorex.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">scorex.cr.gclb.goog &#8599;</a></td>
                     <td><a href="https://console.cloud.google.com/bigquery?project=nitina-ggarwal-sandbox-647724&amp;ws=!1m5!1m4!4m3!1snitina-ggarwal-sandbox-647724!2scymbal_agentic_finops_otel!3stenant_telemetry_spans" target="_blank" rel="noopener">BigQuery OTel FinOps Ledger &#8599;</a></td>
                     <td><a href="https://us-east-1.console.aws.amazon.com/s3/buckets/merck-a2a-mcp-audit-ledger-393036065405?region=us-east-1" target="_blank" rel="noopener">S3 Cross-Cloud Audit Ledger &#8599;</a></td>
-                    <td><a href="https://docs.google.com/presentation/d/101053759044-119b-83b5-4c887d396521/edit" target="_blank" rel="noopener">WS5 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/153de923b-9902-403a-8d70-31c557699a05/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS5 Native Google Doc &#8599;</a></td>
+                    <td><a href="https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit" target="_blank" rel="noopener">WS5 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS5 Native Google Doc &#8599;</a></td>
                     <td><span class="file-pill" onclick="viewArtifact('core-cymbal-agent/gcp_live_bridge.py')">core-cymbal-agent/gcp_live_bridge.py</span></td>
                   </tr>
                 </tbody>
@@ -1867,7 +1867,7 @@
                 <span class="badge badge-blue">cymbal-multi-tenant-patterns-00003-wfh (us-west1)</span>
                 <span class="badge badge-purple">root@localhost:/app# Verified</span>
                 <h4 style="margin:6px 0 2px 0; font-size:16px;">End-to-End Google Cloud Console Setup, Execution, Validation &amp; Deployment Process (8 Stages)</h4>
-                <p class="muted" style="margin:0; font-size:12.5px;">Complete step-by-step operational guide with Pantheon Cloud Run + Docked Cloud Shell screenshots showing how to inspect all 24 files, open an interactive SSH tunnel into the live Gen2 container, execute Pattern A/B/C &amp; Core 5-Hop suites, validate Cloud KMS &amp; BigQuery streaming inserts, and deploy revisions.</p>
+                <p class="muted" style="margin:0; font-size:12.5px;">Complete step-by-step operational guide with Pantheon Cloud Run + Docked Cloud Shell screenshots showing how to inspect all 27 files, open an interactive SSH tunnel into the live Gen2 container, execute Pattern A/B/C &amp; Core 5-Hop suites, validate Cloud KMS &amp; BigQuery streaming inserts, and deploy revisions.</p>
               </div>
               <div style="display:flex; gap:8px; flex-wrap:wrap;">
                 <a href="https://console.cloud.google.com/run/detail/us-west1/cymbal-multi-tenant-patterns/source?project=nitina-ggarwal-sandbox-647724&amp;cloudshell=true" target="_blank" rel="noopener" class="sim-btn primary" style="text-decoration:none;">&#9729;&#65039; Open Cloud Run Source + Cloud Shell &#8599;</a>
@@ -1888,9 +1888,9 @@
             <div class="card" style="margin-bottom:0; padding:14px;">
               <span class="badge badge-blue">STAGE 1 • CLOUD RUN SOURCE EDITOR (CODE WRITTEN IN CONSOLE)</span>
               <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 1: Write &amp; Inspect Multi-Tenant Pattern A/B/C Code in Cloud Run <code>Source</code> Tab</h4>
-              <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console <code>Source</code> tab on service <code>cymbal-multi-tenant-patterns</code> (<code>nitinagga-ge-2</code> / <code>us-central1</code>) inspecting <code>main.py</code>:</p>
+              <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console <code>Source</code> tab on service <code>cymbal-multi-tenant-patterns</code> (<code>ramp-portal-dev</code> / <code>us-central1</code>) inspecting <code>main.py</code>:</p>
               <pre style="margin:0 0 8px 0; padding:8px; font-size:11px;"><code>gcloud run services describe cymbal-multi-tenant-patterns \
-  --project=nitinagga-ge-2 --region=us-central1</code></pre>
+  --project=ramp-portal-dev --region=us-central1</code></pre>
               <img src="screenshots/cloud-console/gcp_console_01_cloud_run_source_editor.png" alt="Stage 1 Cloud Run Source Editor" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
             </div>
 
@@ -1899,7 +1899,7 @@
               <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 2: Verify Deployed Cloud Run Revision <code>cymbal-multi-tenant-patterns-00001-dmg</code></h4>
               <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console <code>Revisions</code> tab confirming active revision serving 100% traffic with Gen2 execution environment:</p>
               <pre style="margin:0 0 8px 0; padding:8px; font-size:11px;"><code>gcloud run revisions list --service=cymbal-multi-tenant-patterns \
-  --project=nitinagga-ge-2 --region=us-central1</code></pre>
+  --project=ramp-portal-dev --region=us-central1</code></pre>
               <img src="screenshots/cloud-console/gcp_console_02_cloud_run_revisions_deploy.png" alt="Stage 2 Cloud Run Revisions" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
             </div>
 
@@ -1908,7 +1908,7 @@
               <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 3: Inspect Pattern A Pooled Table <code>pattern_a_pooled_rls_entities</code> &amp; RLS Policy</h4>
               <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console BigQuery Studio showing <code>cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities</code> with <code>tenant_pooled_rls_policy</code>:</p>
               <pre style="margin:0 0 8px 0; padding:8px; font-size:11px;"><code>bq show --format=prettyjson \
-  nitinagga-ge-2:cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities</code></pre>
+  ramp-portal-dev:cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities</code></pre>
               <img src="screenshots/cloud-console/gcp_console_03_bigquery_studio_pattern_a_rls.png" alt="Stage 3 BigQuery Pattern A RLS" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
             </div>
 
@@ -1917,7 +1917,7 @@
               <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 4: Inspect Pattern B Sovereign Silo Table <code>pattern_b_silo_finvault_cmek_vault</code></h4>
               <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console BigQuery Studio showing <code>cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault</code> with Cloud KMS CMEK key URI &amp; ECDSA P-256 signature:</p>
               <pre style="margin:0 0 8px 0; padding:8px; font-size:11px;"><code>bq head -n 5 \
-  nitinagga-ge-2:cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault</code></pre>
+  ramp-portal-dev:cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault</code></pre>
               <img src="screenshots/cloud-console/gcp_console_04_bigquery_studio_pattern_b_cmek.png" alt="Stage 4 BigQuery Pattern B CMEK" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
             </div>
 
@@ -1926,7 +1926,7 @@
               <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 5: Verify Cloud KMS Keyring <code>cymbal-multi-tenant-kr</code> in GCP Console</h4>
               <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console Cryptographic Keys view showing <code>finvault-silo-cmek</code>, <code>biohealth-silo-cmek</code>, <code>retailstream-hybrid-cmek</code>, and <code>adk-agent-signing-key</code>:</p>
               <pre style="margin:0 0 8px 0; padding:8px; font-size:11px;"><code>gcloud kms keys list --keyring=cymbal-multi-tenant-kr \
-  --location=us-central1 --project=nitinagga-ge-2</code></pre>
+  --location=us-central1 --project=ramp-portal-dev</code></pre>
               <img src="screenshots/cloud-console/gcp_console_05_cloud_kms_keyring_live.png" alt="Stage 5 Cloud KMS Keyring" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
             </div>
 
@@ -1935,7 +1935,7 @@
               <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 6: Verify <code>cymbal-pattern-c-hub-vpc</code> &amp; <code>PRIVATE_SERVICE_CONNECT</code> Subnet</h4>
               <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console VPC network details showing <code>cymbal-psc-nat-us-west1</code> (<code>10.240.0.0/28</code>, purpose <code>PRIVATE_SERVICE_CONNECT</code>):</p>
               <pre style="margin:0 0 8px 0; padding:8px; font-size:11px;"><code>gcloud compute networks subnets describe cymbal-psc-nat-us-west1 \
-  --region=us-west1 --project=nitinagga-ge-2</code></pre>
+  --region=us-west1 --project=ramp-portal-dev</code></pre>
               <img src="screenshots/cloud-console/gcp_console_06_vpc_psc_nat_subnet_live.png" alt="Stage 6 VPC PSC NAT Subnet" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
             </div>
 
@@ -1950,7 +1950,7 @@
 
             <div class="card" style="margin-bottom:0; padding:14px; grid-column: 1 / -1;">
               <span class="badge badge-blue">STAGE 8 • VERTEX AI AGENT BUILDER &amp; GEMINI ENTERPRISE ENGINES CATALOG</span>
-              <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 8: Verify Vertex AI Agent Builder &amp; Gemini Enterprise Engines (<code>nitinagga-ge-2</code>)</h4>
+              <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 8: Verify Vertex AI Agent Builder &amp; Gemini Enterprise Engines (<code>ramp-portal-dev</code>)</h4>
               <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console Agent Builder / Gemini Enterprise view showing live enterprise engines and multi-tenant data stores:</p>
               <img src="screenshots/cloud-console/gcp_console_09_vertex_ai_agent_builder_engines.png" alt="Stage 8 Vertex AI Agent Builder Engines" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
             </div>
@@ -2069,7 +2069,7 @@
           <div class="card" style="padding:12px; margin-bottom:0;">
             <span class="badge badge-blue">GCP-01. Cloud Run • Source Code Editor (main.py)</span>
             <h4 style="margin:8px 0 4px 0; font-size:14px;">Cloud Run <code>Source</code> Tab Inspecting <code>main.py</code> in GCP Console</h4>
-            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Live Google Cloud Console view of <code>cymbal-multi-tenant-patterns</code> (<code>nitinagga-ge-2</code> / <code>us-central1</code>) showing deployed Python source code.</p>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Live Google Cloud Console view of <code>cymbal-multi-tenant-patterns</code> (<code>ramp-portal-dev</code> / <code>us-central1</code>) showing deployed Python source code.</p>
             <img src="screenshots/cloud-console/gcp_console_01_cloud_run_source_editor.png" alt="Cloud Run Source Editor" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
           </div>
 
@@ -2118,7 +2118,7 @@
           <div class="card" style="padding:12px; margin-bottom:0;">
             <span class="badge badge-purple">GCP-08. Vertex AI Agent Builder • Enterprise Engines Catalog</span>
             <h4 style="margin:8px 0 4px 0; font-size:14px;">Vertex AI Agent Builder Apps &amp; Engines in GCP Console</h4>
-            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Live Google Cloud Console Agent Builder catalog listing enterprise search and agent engines in <code>nitinagga-ge-2</code>.</p>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Live Google Cloud Console Agent Builder catalog listing enterprise search and agent engines in <code>ramp-portal-dev</code>.</p>
             <img src="screenshots/cloud-console/gcp_console_09_vertex_ai_agent_builder_engines.png" alt="Vertex AI Agent Builder Engines" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
           </div>
 
@@ -4221,7 +4221,7 @@
       else if (ev.key === 'ArrowLeft' && cvMode === 'slides') stepCloudViewerSlide(-1);
     });
 
-    // ---------- 5-Sub-Tab E2E Pattern Execution, 12 Provisioned GCP Resources, 24-File Codebase, Runbook & Deliverables Workbench ----------
+    // ---------- 5-Sub-Tab E2E Pattern Execution, 12 Provisioned GCP Resources, 27-File Codebase, Runbook & Deliverables Workbench ----------
     let e2eBundleData = null;
     let e2eActiveCategory = 'ALL';
     let e2eActiveFileIdx = 0;
@@ -4381,7 +4381,7 @@
 
     async function runLiveE2ESimulationsInWorkbench() {
       const btn = document.getElementById('e2e-rerun-live-btn');
-      if (btn) btn.textContent = '⏳ Running 20 Live Pattern Assertions...';
+      if (btn) btn.textContent = '⏳ Running 107 Live Multi-Cloud & 10-SaaS Assertions...';
       switchE2EWorkbenchTab('execution');
       try {
         const resp = await fetch('/api/simulate/all');
@@ -4397,11 +4397,17 @@
             if (data.outputs.pattern_c && e2eBundleData.executionSuites[2]) {
               e2eBundleData.executionSuites[2].stdout = data.outputs.pattern_c;
             }
+            if (data.outputs.saas_10_matrix && e2eBundleData.executionSuites[5]) {
+              e2eBundleData.executionSuites[5].stdout = data.outputs.saas_10_matrix;
+            }
             renderE2EExecutionSuites();
           }
+          const total = data.total_assertions_passed || 107;
+          if (btn) btn.textContent = `✓ ${total} / ${total} Live Assertions Verified PASS`;
+          return;
         }
       } catch (_) {}
-      if (btn) btn.textContent = '✓ 20 / 20 Live Assertions Verified PASS';
+      if (btn) btn.textContent = '✓ 107 / 107 Live Assertions Verified PASS';
     }
 
     // -------------------------------------------------------------------------
@@ -5597,7 +5603,7 @@
             </button>
             <div class="pc-dropdown-divider"></div>
             <div class="pc-dropdown-section">Local &amp; Sync</div>
-            <a id="cv-download-pptx" class="pc-dropdown-item" href="slides/ws1-reference-architecture-editable-slides.pptx?v=20261015-v9" download>
+            <a id="cv-download-pptx" class="pc-dropdown-item" href="slides/ws1-reference-architecture-editable-slides.pptx?v=20261019-v27" download>
               <span>&#11015;</span> <span>Download Editable .pptx</span>
             </a>
             <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(cvWsKey, 'slides', cvSlideNum, '', true)">

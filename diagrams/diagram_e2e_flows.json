@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-20T18:41:03.078Z",
+  "generatedAt": "2026-10-20T21:18:07.296Z",
   "totalDiagrams": 14,
   "templateStandard": "Official Google Cloud Architecture Center Template (#78) • Rule 53G 3-Layout Engine: hub-2-spoke (56v/23e), pooled-shared-plane (60v/20e), decision-tree-3-outcome (46v/19e)",
   "slideSequenceStandard": "Customer-Centric 3-Act Top-Down 12-Slide Architecture Deck: Act I (Slides 1–3 Cover & Briefing Map, Customer Use Cases & Architectural Options Matrix) -> Act II (Slide 4 L1 Logical Zones -> Slide 5 L2 Authoritative Figure 1 #78 Physical Blueprint -> Slide 6 L3 5-Actor Sequence -> Slide 7 L4 Wire Payload Transformation) -> Act III (Slides 8–12 Circuit Breakers, EAP Compensating Controls, Live GCP Proof, 3-Pillar Well-Architected Guarantees & Series Progression)",
@@ -407,7 +407,7 @@
       "execTechSummary": "Consolidates multi-tenant compute onto one auto-scaling Cloud Run / Vertex AI Agent Engine pool and one shared AlloyDB/BigQuery schema, enforcing isolation via KMS-signed tokens, Memorystore rate bulkheads, and Row-Level Security.",
       "outcomeTitle": "High-Density SaaS Unit Economics (120 RPM Pool) with Cryptographic 5-Hop Isolation",
       "outcomeBody": "Competing tenants (FinVault Bank and RetailStream Corp) share the same serverless runtime pool and database tables to achieve an 84.7% token COGS reduction, while cryptographic context binding guarantees zero cross-tenant visibility.",
-      "outcomeTech": "Verified live on Google Cloud: tenant queries return strictly their 2 authorized rows in BigQuery RLS with 0 foreign rows leaked",
+      "outcomeTech": "Verified live on Google Cloud: tenant queries return strictly their authorized rows in BigQuery RLS (2 FinVault rows ENT-FV-001..002 or 1 RetailStream row ENT-RS-001) with 0 foreign rows leaked",
       "zonesSummary": [
         {
           "zoneId": "Blue Zone",
@@ -496,7 +496,7 @@
           "badgeNum": "06",
           "zone": "Yellow & Red Zones (Data & Tools)",
           "title": "Row-Level Security Query & 2LO/3LO Tool Call",
-          "logicalNarrative": "The agent queries the shared AlloyDB/BigQuery table where mandatory Row-Level Security (`SET LOCAL app.current_tenant_id`) returns only the caller’s rows (2 FinVault or RetailStream rows matching the authenticated caller; 0 rival tenant rows).",
+          "logicalNarrative": "The agent queries the shared AlloyDB/BigQuery table where mandatory Row-Level Security (`SET LOCAL app.current_tenant_id`) returns only the caller’s rows (2 FinVault rows ENT-FV-001..002 or 1 RetailStream row ENT-RS-001 matching the authenticated caller; 0 rival tenant rows).",
           "components": "AlloyDB RLS • BigQuery Row Access Policy • MCP Hub"
         },
         {
@@ -563,7 +563,7 @@
           "route": "AlloyDB & BigQuery RLS (`pattern_a_pooled_rls_entities`) (Red Zone)",
           "protocolAndMechanism": "Executes `SET LOCAL app.current_tenant_id = :verified_tenant` on AlloyDB and evaluates BigQuery `ROW ACCESS POLICY` so queries only scan authorized tenant partitions.",
           "codeAndResource": "Mandatory Engine-Level Row Access Policies",
-          "verifiedOutcome": "Proven live: 2 authorized tenant rows returned; 0 cross-tenant rows leaked"
+          "verifiedOutcome": "Proven live: 2 FinVault rows or 1 RetailStream row returned; 0 cross-tenant rows leaked"
         },
         {
           "step": "Step ⑦",
