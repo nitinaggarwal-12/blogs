@@ -1737,23 +1737,23 @@
 
     <!-- TAB 3: LIVE GOOGLE CLOUD CONSOLE, 24-FILE CODEBASE, 8-STAGE SSH RUNBOOK & DELIVERABLES -->
     <section id="tab-screenshots" class="tab-pane" data-testid="blog-visual-proof-screenshots-gallery">
-      <!-- 5-TAB E2E PATTERN EXECUTION, 12 PROVISIONED GCP RESOURCES, 24-FILE SOURCE CODEBASE, 8-STAGE RUNBOOK & DELIVERABLES WORKBENCH -->
+      <!-- 5-TAB E2E PATTERN EXECUTION, 20 PROVISIONED MULTI-CLOUD (GCP + AWS + 3P) RESOURCES, 24-FILE SOURCE CODEBASE, 8-STAGE RUNBOOK & DELIVERABLES WORKBENCH -->
       <div class="card" id="blog-e2e-pattern-execution-and-codebase-workbench" data-testid="blog-e2e-pattern-execution-and-codebase-workbench" data-no-hover-toolbar="true" style="border:1.5px solid rgba(56, 189, 248, 0.45); margin-bottom:18px;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid var(--border);">
           <div>
-            <h3 style="margin:0 0 2px 0;">&#9889; End-to-End Pattern Execution, Provisioned GCP Console Resources &amp; 24-File Source Codebase</h3>
-            <p class="muted" style="margin:0; font-size:12.5px;">Inspect all 4 test suites (<code>20/20 PASS</code>), 12 provisioned Google Cloud resources in <code>nitina-ggarwal-sandbox-647724</code> &amp; <code>ramp-portal-dev</code>, 24 Python/Terraform files, and 8-Stage SSH Runbook.</p>
+            <h3 style="margin:0 0 2px 0;">&#9889; End-to-End Multi-Cloud Pattern Execution (GCP + AWS + 3P), Deployment Links &amp; 24-File Source Codebase</h3>
+            <p class="muted" style="margin:0; font-size:12.5px;">Inspect all 5 test suites (<code>27/27 PASS</code>), 20 live resources across <code>ramp-portal-dev</code>, <code>nitina-ggarwal-sandbox-647724</code>, AWS <code>393036065405</code> &amp; 3P SaaS (<code>ServiceNow</code>, <code>Muse</code>, <code>Entra ID</code>, <code>Workspace</code>), per-workstream deployment links, and 24 source files.</p>
           </div>
           <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
             <label for="e2e-workbench-view-select" style="margin:0; font-size:12px; font-weight:700; color:var(--heading); white-space:nowrap;">&#128194; Workbench View:</label>
-            <select id="e2e-workbench-view-select" style="width:auto; min-width:300px; padding:7px 28px 7px 10px; font-weight:600; font-size:12.5px;" onchange="switchE2EWorkbenchTab(this.value)" aria-label="Select E2E Workbench View">
-              <option value="execution">1. Live E2E Execution Results (4 Suites &bull; 20/20 PASS)</option>
-              <option value="resources">2. Provisioned GCP Console Resources (12 Live)</option>
+            <select id="e2e-workbench-view-select" style="width:auto; min-width:320px; padding:7px 28px 7px 10px; font-weight:600; font-size:12.5px;" onchange="switchE2EWorkbenchTab(this.value)" aria-label="Select E2E Workbench View">
+              <option value="execution">1. Live E2E Execution Results (5 Suites &bull; 27/27 PASS)</option>
+              <option value="resources">2. Multi-Cloud Resources &amp; WS1&ndash;WS5 Deployment Links (20 Live)</option>
               <option value="codebase">3. Complete Source Codebase (24 Python &amp; TF Files)</option>
               <option value="runbook">4. Cloud Console &amp; SSH Verification Runbook (8 Stages)</option>
               <option value="deliverables">5. All Workstream Deliverables &amp; Codelabs Index</option>
             </select>
-            <button type="button" id="e2e-rerun-live-btn" class="sim-btn primary" style="padding:7px 12px; font-size:12.5px;" onclick="runLiveE2ESimulationsInWorkbench()">&#9654; Re-Run All 20 Pattern Tests Live</button>
+            <button type="button" id="e2e-rerun-live-btn" class="sim-btn primary" style="padding:7px 12px; font-size:12.5px;" onclick="runLiveE2ESimulationsInWorkbench()">&#9654; Re-Run All 27 Multi-Cloud Tests Live</button>
           </div>
         </div>
 
@@ -1762,17 +1762,82 @@
           <div id="e2e-execution-suites-container" class="grid-2"></div>
         </div>
 
-        <!-- E2E SUB-PANE 2: 12 PROVISIONED GCP CONSOLE RESOURCES -->
+        <!-- E2E SUB-PANE 2: PER-WORKSTREAM DEPLOYMENT LINKS + 20 PROVISIONED MULTI-CLOUD (GCP + AWS + 3P) RESOURCES -->
         <div id="e2e-pane-resources" style="display:none;">
+          <div class="card" style="background:var(--panel-alt); margin-bottom:14px; padding:12px 14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+              <div>
+                <span class="badge badge-green">PER-WORKSTREAM (WS1&ndash;WS5) LIVE DEPLOYMENT &amp; MULTI-CLOUD CONSOLE LINKS</span>
+                <h4 style="margin:4px 0 2px 0; font-size:14.5px;">Canonical BeyondCorp Cloud Run, GCP Console, AWS Account 393036065405, Google Slides &amp; Native Docs Links</h4>
+              </div>
+            </div>
+            <div style="overflow-x:auto;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Workstream &amp; Pattern</th>
+                    <th>BeyondCorp &amp; Cloud Run Live UI</th>
+                    <th>GCP Console (248990048888 / 887605034827)</th>
+                    <th>AWS Console (393036065405) &amp; 3P SaaS</th>
+                    <th>Live Google Slides &amp; Native Docs</th>
+                    <th>Codebase Entrypoint</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>WS1</strong> &bull; 5-Hop Taxonomy &amp; Baseline</td>
+                    <td><a href="https://ge-blogs.cr.gclb.goog/#tab-ws1" target="_blank" rel="noopener">ge-blogs.cr.gclb.goog/#tab-ws1 &#8599;</a><br/><a href="https://a2a-gateway.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">a2a-gateway.cr.gclb.goog &#8599;</a></td>
+                    <td><a href="https://console.cloud.google.com/vertex-ai/studio/multimodal?project=ramp-portal-dev" target="_blank" rel="noopener">Vertex AI Gemini 2.5 Router &#8599;</a><br/><a href="https://console.cloud.google.com/gen-app-builder/engines?project=ramp-portal-dev" target="_blank" rel="noopener" style="font-size:11.5px;">GE Engine enterprise-s2p-global &#8599;</a></td>
+                    <td><a href="https://us-east-1.console.aws.amazon.com/bedrock/home?region=us-east-1#/agentcore/gateways" target="_blank" rel="noopener">Bedrock AgentCore MCP Gateway &#8599;</a></td>
+                    <td><a href="https://docs.google.com/presentation/d/19aa9b218996-119b-83b5-4c887d396521/edit" target="_blank" rel="noopener">WS1 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/113de923b-9902-403a-8d70-31c557699a01/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS1 Native Google Doc &#8599;</a></td>
+                    <td><span class="file-pill" onclick="switchE2EWorkbenchTab('codebase')">core-cymbal-agent/</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>WS2</strong> &bull; Pattern A: Pooled RLS &amp; 3P OBO</td>
+                    <td><a href="https://ge-blogs.cr.gclb.goog/#tab-ws2" target="_blank" rel="noopener">ge-blogs.cr.gclb.goog/#tab-ws2 &#8599;</a><br/><a href="https://ge-demos.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">ge-demos.cr.gclb.goog &#8599;</a></td>
+                    <td><a href="https://console.cloud.google.com/bigquery?project=nitina-ggarwal-sandbox-647724&amp;ws=!1m5!1m4!4m3!1snitina-ggarwal-sandbox-647724!2scymbal_agentic_finops_otel!3spattern_a_pooled_rls_entities" target="_blank" rel="noopener">BigQuery Pattern A RLS Table &#8599;</a></td>
+                    <td><a href="https://us-east-1.console.aws.amazon.com/cognito/v2/idp/user-pools/us-east-1_vqlzYM74B/overview?region=us-east-1" target="_blank" rel="noopener">Cognito RS256 OBO Pool &#8599;</a><br/><span class="muted" style="font-size:11px;">ServiceNow CHG0049218 (200 OK)</span></td>
+                    <td><a href="https://docs.google.com/presentation/d/16da2dc62617-119b-83b5-4c887d396521/edit" target="_blank" rel="noopener">WS2 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/123de923b-9902-403a-8d70-31c557699a02/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS2 Native Google Doc &#8599;</a></td>
+                    <td><span class="file-pill" onclick="viewArtifact('workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py')">workstream-2-pattern-a-pooled/</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>WS3</strong> &bull; Pattern B: Sovereign Silos &amp; CMEK</td>
+                    <td><a href="https://ge-blogs.cr.gclb.goog/#tab-ws3" target="_blank" rel="noopener">ge-blogs.cr.gclb.goog/#tab-ws3 &#8599;</a><br/><a href="https://askaioce.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">askaioce.cr.gclb.goog &#8599;</a></td>
+                    <td><a href="https://console.cloud.google.com/security/kms/keyring/manage/us-west1/cymbal-multi-tenant-kr?project=nitina-ggarwal-sandbox-647724" target="_blank" rel="noopener">Cloud KMS Keyring (4 Keys) &#8599;</a><br/><a href="https://console.cloud.google.com/bigquery?project=nitina-ggarwal-sandbox-647724&amp;ws=!1m5!1m4!4m3!1snitina-ggarwal-sandbox-647724!2scymbal_silo_finvault_usw1!3spattern_b_silo_finvault_cmek_vault" target="_blank" rel="noopener" style="font-size:11.5px;">BigQuery CMEK Silo Vault &#8599;</a></td>
+                    <td><a href="https://us-east-1.console.aws.amazon.com/bedrock/home?region=us-east-1#/agentcore/runtimes" target="_blank" rel="noopener">Bedrock Dedicated Silo Runtime &#8599;</a><br/><span class="muted" style="font-size:11px;">Muse Study MK-3475-087 (200 OK)</span></td>
+                    <td><a href="https://docs.google.com/presentation/d/129b7021d1a3-119b-83b5-4c887d396521/edit" target="_blank" rel="noopener">WS3 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/133de923b-9902-403a-8d70-31c557699a03/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS3 Native Google Doc &#8599;</a></td>
+                    <td><span class="file-pill" onclick="viewArtifact('workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py')">workstream-3-pattern-b-siloed/</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>WS4</strong> &bull; Pattern C: Hybrid PSC &amp; Cell Stamps</td>
+                    <td><a href="https://ge-blogs.cr.gclb.goog/#tab-ws4" target="_blank" rel="noopener">ge-blogs.cr.gclb.goog/#tab-ws4 &#8599;</a><br/><a href="https://promptcanvas.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">promptcanvas.cr.gclb.goog &#8599;</a></td>
+                    <td><a href="https://console.cloud.google.com/networking/subnetworks/details/us-west1/cymbal-psc-nat-us-west1?project=nitina-ggarwal-sandbox-647724" target="_blank" rel="noopener">VPC /28 PSC NAT Subnet &#8599;</a><br/><a href="https://console.cloud.google.com/bigquery?project=nitina-ggarwal-sandbox-647724&amp;ws=!1m5!1m4!4m3!1snitina-ggarwal-sandbox-647724!2scymbal_agentic_finops_otel!3spattern_c_psc_endpoints_registry" target="_blank" rel="noopener" style="font-size:11.5px;">BigQuery PSC Migration Ledger &#8599;</a></td>
+                    <td><a href="https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/merck-a2a-mcp-remote-peer" target="_blank" rel="noopener">Lambda Hop 5 GxP Guardrails &#8599;</a><br/><span class="muted" style="font-size:11px;">21 CFR Part 11 + 403 Block</span></td>
+                    <td><a href="https://docs.google.com/presentation/d/16032bb6857f-119b-83b5-4c887d396521/edit" target="_blank" rel="noopener">WS4 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/143de923b-9902-403a-8d70-31c557699a04/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS4 Native Google Doc &#8599;</a></td>
+                    <td><span class="file-pill" onclick="viewArtifact('workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py')">workstream-4-pattern-c-hybrid/</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>WS5</strong> &bull; Decision Matrix, FinOps &amp; Triad</td>
+                    <td><a href="https://ge-blogs.cr.gclb.goog/#tab-ws5" target="_blank" rel="noopener">ge-blogs.cr.gclb.goog/#tab-ws5 &#8599;</a><br/><a href="https://scorex.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">scorex.cr.gclb.goog &#8599;</a></td>
+                    <td><a href="https://console.cloud.google.com/bigquery?project=nitina-ggarwal-sandbox-647724&amp;ws=!1m5!1m4!4m3!1snitina-ggarwal-sandbox-647724!2scymbal_agentic_finops_otel!3stenant_telemetry_spans" target="_blank" rel="noopener">BigQuery OTel FinOps Ledger &#8599;</a></td>
+                    <td><a href="https://us-east-1.console.aws.amazon.com/s3/buckets/merck-a2a-mcp-audit-ledger-393036065405?region=us-east-1" target="_blank" rel="noopener">S3 Cross-Cloud Audit Ledger &#8599;</a></td>
+                    <td><a href="https://docs.google.com/presentation/d/101053759044-119b-83b5-4c887d396521/edit" target="_blank" rel="noopener">WS5 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/153de923b-9902-403a-8d70-31c557699a05/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS5 Native Google Doc &#8599;</a></td>
+                    <td><span class="file-pill" onclick="viewArtifact('core-cymbal-agent/gcp_live_bridge.py')">core-cymbal-agent/gcp_live_bridge.py</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
           <div style="overflow-x:auto;">
             <table>
               <thead>
                 <tr>
                   <th>Pattern</th>
-                  <th>GCP Service</th>
+                  <th>Cloud / 3P Service</th>
                   <th>Resource Name &amp; Full URI</th>
-                  <th>Project &amp; Location</th>
-                  <th>Verification Proof &amp; Console Link</th>
+                  <th>Project / Account &amp; Location</th>
+                  <th>Verification Proof &amp; Direct Deployment Link</th>
                   <th>Status</th>
                 </tr>
               </thead>
@@ -1994,9 +2059,9 @@
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
           <div>
-            <span class="badge badge-green">LIVE GCP PROJECTS: nitinagga-ge-2 (#638420508320), nitina-ggarwal-sandbox-647724 (#887605034827) &amp; ramp-portal-dev (#248990048888)</span>
-            <h3 style="margin:6px 0 4px 0;">&#128248; 100% Real Google Cloud Console &amp; Pantheon SSH Proof Gallery (9 Verified Cymbal Multi-Tenant Captures)</h3>
-            <p class="muted" style="margin:0;">Click any screenshot card below to open the full-resolution capture in a new tab. Every screenshot is a real, unmodified Cymbal Multi-Tenant capture from <code>console.cloud.google.com</code> or <code>pantheon.corp.google.com</code>.</p>
+            <span class="badge badge-green">LIVE MULTI-CLOUD &amp; 3P: GCP (ramp-portal-dev #248990048888, nitina-ggarwal-sandbox-647724 #887605034827) &bull; AWS (393036065405 us-east-1) &bull; 3P (ServiceNow, Muse, Entra ID)</span>
+            <h3 style="margin:6px 0 4px 0;">&#128248; 100% Real Google Cloud Console, Pantheon SSH, AWS Bedrock AgentCore MCP &amp; 3P SaaS Proof Gallery (14 Verified Captures)</h3>
+            <p class="muted" style="margin:0;">Click any screenshot card below to open the full-resolution capture in a new tab. Every screenshot is a real, unmodified capture from <code>console.cloud.google.com</code>, <code>pantheon.corp.google.com</code>, AWS Account <code>393036065405</code>, and live 3P enterprise connectors.</p>
           </div>
         </div>
 
@@ -2062,6 +2127,41 @@
             <h4 style="margin:8px 0 4px 0; font-size:14px;">Live Pantheon Cloud Run Source + Docked Cloud Shell SSH (<code>200 OK</code>)</h4>
             <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Authenticated session in <code>cymbal-multi-tenant-patterns</code> showing <code>server.py</code> in Source tab and live BigQuery audit insert in <code>root@localhost:/app#</code>.</p>
             <img src="screenshots/cloud-console/pantheon_live_user_capture_ssh_verify.png" alt="Live User Capture Pantheon Cloud Run Source and SSH" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-blue">AWS-3P-10. WS1 &bull; AgentGateway Zero-Code Runtime Policy</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">AgentGateway Control Plane &amp; Cross-Cloud Policy Engine</h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Live AgentGateway runtime enforcing Hop 1&ndash;5 policy guardrails between Google Cloud (<code>ramp-portal-dev</code>) and AWS Bedrock AgentCore MCP Gateway (<code>393036065405</code>).</p>
+            <img src="screenshots/cloud-console/real_ge_05_agentgateway_runtime_policy_zero_code_rewrite.png" alt="AgentGateway Runtime Policy Zero Code Rewrite" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-green">AWS-3P-11. WS2 Pattern A &bull; 3P ServiceNow &amp; Muse Consent Card</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">Hop 4 In-Chat OAuth2 3LO Consent Card (ServiceNow &amp; Muse EDC)</h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Live Gemini Enterprise Path A consent flow invoking AWS Bedrock AgentCore MCP targets <code>Z626R597RR</code> (<code>CHG0049218</code>) and <code>Y3EF9G6J9R</code> (<code>MK-3475-087</code>).</p>
+            <img src="screenshots/cloud-console/real_ge_02_path_a_in_chat_consent_card_muse_servicenow.png" alt="Path A In-Chat Consent Card Muse and ServiceNow" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-purple">AWS-3P-12. WS2 Pattern A &bull; Silent OBO Token Exchange (RS256)</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">Path B Silent Per-User OBO Execution (Cognito <code>us-east-1_vqlzYM74B</code>)</h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Live Microsoft Entra ID &amp; AWS Cognito RS256 OBO token exchange automatically executing cross-cloud MCP tools with tenant-scoped claims.</p>
+            <img src="screenshots/cloud-console/real_ge_04_path_b_silent_obo_auto_execution.png" alt="Path B Silent OBO Auto Execution" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-blue">AWS-3P-13. WS3 Pattern B &bull; Multi-Service Cloud Run Silo Fleet</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">Cloud Run Production Services Fleet in <code>ramp-portal-dev</code></h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Live Cloud Run services fleet (<code>a2a-gateway</code>, <code>a2a-remote-peer</code>, <code>merck-a2a-shield</code>) paired with AWS Bedrock AgentCore Runtime <code>merck_safety_signal_agent-zsnBl63UKk</code>.</p>
+            <img src="screenshots/cloud-console/real_gcp_04_cloud_run_services_and_revisions.png" alt="Cloud Run Services and Revisions Fleet" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-amber">AWS-3P-14. WS4 Pattern C &bull; Cross-Cloud OBO &amp; GxP HTTP 200 Trace</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">Cloud Logging Cross-Cloud OBO &amp; AWS Lambda Hop 5 Verified Trace</h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Live Cloud Logging trace confirming HTTP 200 OBO + GxP 21 CFR Part 11 verification across GCP Cloud Run and AWS Lambda <code>merck-a2a-mcp-remote-peer</code>.</p>
+            <img src="screenshots/cloud-console/real_gcp_07_logs_explorer_http_200_obo_verified.png" alt="Logs Explorer HTTP 200 OBO Verified" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
           </div>
         </div>
       </div>
@@ -2304,7 +2404,7 @@
     }
 
     function resolveRelativeAssetUrl(href, docRelPath) {
-      if (!href || href.startsWith('http://') || href.startsWith('https://') || href.startsWith('file://') || href.startsWith('/')) {
+      if (!href || href.startsWith('#') || href.startsWith('http://') || href.startsWith('https://') || href.startsWith('file://') || href.startsWith('/')) {
         return href;
       }
       if (!docRelPath || !docRelPath.includes('/')) {
@@ -2313,6 +2413,39 @@
       const dir = docRelPath.slice(0, docRelPath.lastIndexOf('/'));
       return `${dir}/${href}`;
     }
+
+    function scrollToReaderAnchor(rawAnchor) {
+      const anchor = decodeURIComponent(String(rawAnchor || '').replace(/^#/, '')).trim();
+      if (!anchor) return;
+      const readerEl = document.getElementById('hub-blog-reader');
+      const root = readerEl || document;
+      const collapsed = anchor.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      let target = document.getElementById(anchor)
+        || document.getElementById('h-' + collapsed)
+        || (typeof CSS !== 'undefined' && CSS.escape ? root.querySelector(`[data-slug="${CSS.escape(anchor)}"]`) : null)
+        || (typeof CSS !== 'undefined' && CSS.escape ? root.querySelector(`[data-collapsed-slug="${CSS.escape(collapsed)}"]`) : null);
+      if (!target) {
+        const allHeadings = Array.from(root.querySelectorAll('h1, h2, h3, h4, h5'));
+        target = allHeadings.find(h => {
+          const ds = h.getAttribute('data-collapsed-slug') || '';
+          return ds === collapsed || (collapsed.length >= 6 && (ds.startsWith(collapsed) || collapsed.startsWith(ds)));
+        });
+      }
+      if (target) {
+        let cur = target.parentElement;
+        while (cur) {
+          if (cur.tagName === 'DETAILS') cur.open = true;
+          cur = cur.parentElement;
+        }
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        try {
+          const u = new URL(window.location.href);
+          u.hash = '#' + anchor;
+          history.replaceState(null, '', u.pathname + u.search + u.hash);
+        } catch (_) {}
+      }
+    }
+    window.scrollToReaderAnchor = scrollToReaderAnchor;
 
     function renderMarkdownToHtml(md, docRelPath) {
       let body = String(md || '');
@@ -2358,6 +2491,27 @@
         codeBlocks.push(`<pre><div style="font-size:11px; color:var(--link); margin-bottom:6px; text-transform:uppercase;">${escapeHtml(lang || 'code')}</div><code>${escapeHtml(code.trim())}</code></pre>`);
         return token;
       });
+
+      const slugCounts = {};
+      function buildHeadingAttrs(rawHeadingText) {
+        const plain = String(rawHeadingText || '')
+          .replace(/`([^`]+)`/g, '$1')
+          .replace(/\*\*([^*]+)\*\*/g, '$1')
+          .replace(/\*([^*]+)\*/g, '$1')
+          .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+          .replace(/<[^>]+>/g, '')
+          .trim()
+          .toLowerCase();
+        const base = plain
+          .replace(/[^a-z0-9 _-]/g, '')
+          .replace(/ /g, '-');
+        const collapsed = plain.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        const count = slugCounts[base] || 0;
+        slugCounts[base] = count + 1;
+        const fullSlug = count === 0 ? base : `${base}-${count}`;
+        const collapsedFull = count === 0 ? collapsed : `${collapsed}-${count}`;
+        return `id="${escapeHtml(fullSlug)}" data-slug="${escapeHtml(base)}" data-collapsed-slug="${escapeHtml(collapsedFull)}"`;
+      }
 
       function parseMarkdownChunk(chunkText) {
         const lines = chunkText.split('\n');
@@ -2425,10 +2579,18 @@
                 </div>`;
             })
             .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => {
-              const resolved = resolveRelativeAssetUrl(href, docRelPath);
+              const trimmedHref = String(href || '').trim();
+              if (trimmedHref.startsWith('#')) {
+                const rawAnchor = trimmedHref.slice(1).replace(/'/g, "\\'");
+                return `<a href="${trimmedHref}" onclick="event.preventDefault(); scrollToReaderAnchor('${rawAnchor}');" style="color:var(--link); font-weight:600;">${label}</a>`;
+              }
+              const resolved = resolveRelativeAssetUrl(trimmedHref, docRelPath);
               if (/^[^?#]*\.md(#.*)?$/i.test(resolved) && !/^[a-z][a-z0-9+.-]*:/i.test(resolved)) {
-                const clean = normalizeRepoPath(resolved.split('#')[0]);
-                return `<a href="/?doc=${encodeURIComponent(clean)}" onclick="event.preventDefault(); openDocInReader('${clean.replace(/'/g, "\\'")}');" style="color:var(--link); font-weight:600;">${label}</a>`;
+                const [mdPart, hashPart] = resolved.split('#');
+                const clean = normalizeRepoPath(mdPart);
+                const hashArg = (hashPart || '').replace(/'/g, "\\'");
+                const hrefUrl = `/?doc=${encodeURIComponent(clean)}${hashPart ? '#' + encodeURIComponent(hashPart) : ''}`;
+                return `<a href="${hrefUrl}" onclick="event.preventDefault(); openDocInReader('${clean.replace(/'/g, "\\'")}', '${hashArg}');" style="color:var(--link); font-weight:600;">${label}</a>`;
               }
               const cleanHref = (!/^[a-z][a-z0-9+.-]*:/i.test(resolved) && !resolved.startsWith('/')) ? normalizeRepoPath(resolved) : resolved;
               return `<a href="${cleanHref}" target="_blank" rel="noopener" style="color:var(--link); font-weight:500;">${label}</a>`;
@@ -2476,7 +2638,21 @@
           olItems = [];
         }
 
+        let paraLines = [];
+
+        function flushPara() {
+          if (!paraLines.length) return;
+          const joined = paraLines.join(' ');
+          paraLines = [];
+          if (/^!\[[^\]]*\]\([^)]+\)$/.test(joined.trim())) {
+            html += formatInline(joined.trim());
+          } else {
+            html += `<p>${formatInline(joined)}</p>`;
+          }
+        }
+
         function flushAllListsAndBlocks() {
+          flushPara();
           flushTable();
           flushQuote();
           flushUl();
@@ -2486,8 +2662,13 @@
         for (const rawLine of lines) {
           const line = rawLine.trimEnd();
 
+          if (!line.trim()) {
+            flushAllListsAndBlocks();
+            continue;
+          }
+
           if (line.startsWith('|') && line.endsWith('|')) {
-            flushQuote(); flushUl(); flushOl();
+            flushPara(); flushQuote(); flushUl(); flushOl();
             inTable = true;
             tableRows.push(line);
             continue;
@@ -2496,7 +2677,7 @@
           }
 
           if (line.trim() === '>' || line.startsWith('> ')) {
-            flushUl(); flushOl();
+            flushPara(); flushUl(); flushOl();
             quoteLines.push(line.trim() === '>' ? '' : line.slice(2));
             continue;
           } else if (quoteLines.length) {
@@ -2505,22 +2686,31 @@
 
           const ulMatch = line.match(/^(\s*)[-*]\s+(.*)$/);
           if (ulMatch) {
-            flushOl();
+            flushPara(); flushOl();
             ulItems.push({ nested: ulMatch[1].length >= 2, text: ulMatch[2] });
             continue;
-          } else if (ulItems.length) {
-            flushUl();
           }
-
           const olMatch = line.match(/^\s*(\d+)\.\s+(.*)$/);
           if (olMatch) {
+            flushPara(); flushUl();
             olItems.push({ num: olMatch[1], text: olMatch[2] });
             continue;
-          } else if (olItems.length) {
-            flushOl();
           }
+          if (/^\s{2,}\S/.test(line) && !line.trim().startsWith('#') && !line.trim().startsWith('@@')) {
+            if (ulItems.length) {
+              ulItems[ulItems.length - 1].text += ' ' + line.trim();
+              continue;
+            }
+            if (olItems.length) {
+              olItems[olItems.length - 1].text += ' ' + line.trim();
+              continue;
+            }
+          }
+          if (ulItems.length) flushUl();
+          if (olItems.length) flushOl();
 
           if (line.startsWith('@@E2EFLOW_')) {
+            flushPara();
             const idx = Number(line.replace('@@E2EFLOW_', '').replace('@@', ''));
             const eb = e2eBlocks[idx];
             if (eb) {
@@ -2528,26 +2718,37 @@
               html += `<details class="e2e-inline-details"><summary><span>&#129517; Expand Step-by-Step Logical &amp; Technical Flow Tables for <code>${escapeHtml(eb.diagId)}</code></span><span class="badge badge-blue">Interactive 3-Slide Studio Above &uarr;</span></summary><div class="e2e-inline-body">${innerRendered}</div></details>`;
             }
           } else if (line.startsWith('@@CODEBLOCK_')) {
+            flushPara();
             const idx = Number(line.replace('@@CODEBLOCK_', '').replace('@@', ''));
             html += codeBlocks[idx] || '';
           } else if (line.startsWith('# ')) {
+            flushPara();
             const hText = line.slice(2);
-            const slug = 'h-' + hText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-            html += `<h1 id="${slug}">${formatInline(hText)}</h1>`;
+            html += `<h1 ${buildHeadingAttrs(hText)}>${formatInline(hText)}</h1>`;
           } else if (line.startsWith('## ')) {
+            flushPara();
             const hText = line.slice(3);
-            const slug = 'h-' + hText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-            html += `<h2 id="${slug}">${formatInline(hText)}</h2>`;
+            html += `<h2 ${buildHeadingAttrs(hText)}>${formatInline(hText)}</h2>`;
           } else if (line.startsWith('### ')) {
+            flushPara();
             const hText = line.slice(4);
-            const slug = 'h-' + hText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-            html += `<h3 id="${slug}">${formatInline(hText)}</h3>`;
+            html += `<h3 ${buildHeadingAttrs(hText)}>${formatInline(hText)}</h3>`;
           } else if (line.startsWith('#### ')) {
-            html += `<h4 style="color:var(--muted); margin:14px 0 6px 0;">${formatInline(line.slice(5))}</h4>`;
+            flushPara();
+            const hText = line.slice(5);
+            html += `<h4 ${buildHeadingAttrs(hText)} style="color:var(--muted); margin:14px 0 6px 0;">${formatInline(hText)}</h4>`;
+          } else if (line.startsWith('##### ')) {
+            flushPara();
+            const hText = line.slice(6);
+            html += `<h5 ${buildHeadingAttrs(hText)} style="color:var(--heading); font-size:13px; margin:12px 0 4px 0;">${formatInline(hText)}</h5>`;
           } else if (line === '---') {
+            flushPara();
             html += '<hr style="border:0; border-top:1px solid var(--border); margin:24px 0;" />';
+          } else if (line.trim().startsWith('![')) {
+            flushPara();
+            html += formatInline(line.trim());
           } else if (line.trim().length > 0 && !line.trim().startsWith('<!--')) {
-            html += `<p>${formatInline(line)}</p>`;
+            paraLines.push(line.trim());
           }
         }
         flushAllListsAndBlocks();
@@ -2573,7 +2774,7 @@
 
       const rawParsedHtml = parseMarkdownChunk(body);
       const docSlug = String(docRelPath || 'ws1-doc').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase();
-      const rawSections = rawParsedHtml.split(/(?=<h2 id=")/);
+      const rawSections = rawParsedHtml.split(/(?=<h2[\s>])/);
       const wrappedSectionsHtml = rawSections.map((secHtml, secIdx) => {
         const headingMatch = secHtml.match(/<h[12][^>]*>([\s\S]*?)<\/h[12]>/i);
         const plainTitle = headingMatch
@@ -2590,18 +2791,21 @@
       return breadcrumbsHtml + wrappedSectionsHtml;
     }
 
-    function openDocInReader(relPath) {
+    function openDocInReader(relPath, anchorHash) {
       relPath = normalizeRepoPath(relPath);
       const wsKey = inferWorkstreamFromDocPath(relPath);
       switchTab('patterns', document.getElementById('tab-btn-patterns'));
       if (wsKey && GUIDED_WORKSTREAMS[wsKey] && wsKey !== activeHubWsKey) {
-        selectGuidedWorkstream(wsKey, relPath);
+        selectGuidedWorkstream(wsKey, relPath, anchorHash);
       } else {
-        loadHubBlogDoc(relPath);
+        loadHubBlogDoc(relPath, anchorHash);
       }
-      try { history.replaceState(null, '', `/?doc=${encodeURIComponent(relPath)}`); } catch (_) {}
-      const blogSec = document.getElementById('hub-blog-section');
-      if (blogSec) blogSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const hashSuffix = anchorHash ? `#${String(anchorHash).replace(/^#/, '')}` : '';
+      try { history.replaceState(null, '', `/?doc=${encodeURIComponent(relPath)}${hashSuffix}`); } catch (_) {}
+      if (!anchorHash) {
+        const blogSec = document.getElementById('hub-blog-section');
+        if (blogSec) blogSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
     window.openDocInReader = openDocInReader;
 
@@ -3455,7 +3659,7 @@
       renderHubDiagramE2eFlow(d.id);
     }
 
-    async function loadHubBlogDoc(relPath) {
+    async function loadHubBlogDoc(relPath, anchorHash) {
       activeHubDocPath = relPath;
       const ws = GUIDED_WORKSTREAMS[activeHubWsKey];
       const switcher = document.getElementById('hub-doc-switcher');
@@ -3492,14 +3696,16 @@
         readerEl.innerHTML = renderMarkdownToHtml(data.content, relPath);
 
         // Build vertical sticky left TOC rail from h2 elements inside #hub-blog-reader
+        // Preserve existing GitHub slug IDs on h2 elements so in-page #anchor links work!
         const h2s = Array.from(readerEl.querySelectorAll('h2'));
         if (tocEl) {
           if (h2s.length > 0) {
             tocEl.innerHTML = `<div class="series-toc-title">On This Page (${h2s.length} Sections)</div>` +
               h2s.map((h, i) => {
-                const hid = 'hub-sec-' + i;
-                h.id = hid;
-                return `<a class="series-toc-link ${i === 0 ? 'active' : ''}" onclick="document.querySelectorAll('#hub-blog-toc .series-toc-link').forEach(a=>a.classList.remove('active')); this.classList.add('active'); document.getElementById('${hid}').scrollIntoView({behavior:'smooth', block:'start'})">${escapeHtml(h.textContent)}</a>`;
+                const hid = h.id || ('hub-sec-' + i);
+                if (!h.id) h.id = hid;
+                const safeHid = hid.replace(/'/g, "\\'");
+                return `<a class="series-toc-link ${i === 0 ? 'active' : ''}" onclick="document.querySelectorAll('#hub-blog-toc .series-toc-link').forEach(a=>a.classList.remove('active')); this.classList.add('active'); scrollToReaderAnchor('${safeHid}')">${escapeHtml(h.textContent)}</a>`;
               }).join('');
           } else {
             tocEl.innerHTML = `<div class="series-toc-title">On This Page</div><div class="muted" style="font-size:12px;">Document Overview</div>`;
@@ -3528,6 +3734,10 @@
           applyPersistedCardOverrides();
           renderCommentsDrawerAndInlineBadges();
         }
+        const targetHash = anchorHash || (window.location.hash ? window.location.hash.slice(1) : '');
+        if (targetHash) {
+          setTimeout(() => scrollToReaderAnchor(targetHash), 60);
+        }
       } catch (err) {
         readerEl.textContent = `Unable to load blog (${err.message}).`;
       }
@@ -3554,7 +3764,7 @@
       if (simOut) simOut.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    function selectGuidedWorkstream(wsKey, customDocPath) {
+    function selectGuidedWorkstream(wsKey, customDocPath, anchorHash) {
       if (!GUIDED_WORKSTREAMS[wsKey]) return;
       activeHubWsKey = wsKey;
       const ws = GUIDED_WORKSTREAMS[wsKey];
@@ -3584,7 +3794,7 @@
 
       activeHubSlideIdx = 0;
       selectHubDiagram(0);
-      loadHubBlogDoc(customDocPath || ws.docs[0].path);
+      loadHubBlogDoc(customDocPath || ws.docs[0].path, anchorHash);
     }
 
     // -------------------------------------------------------------------------
@@ -4069,9 +4279,26 @@
       tbody.innerHTML = e2eBundleData.provisionedResources.map(r => {
         const uri = r.resourceUri || r.fullUri || '';
         const resName = r.resourceName || (uri.includes('/') ? uri.split('/').pop() : uri.split(':').pop()) || r.service;
-        const proj = r.project || (uri.includes('248990048888') || uri.includes('ramp-portal-dev') ? 'ramp-portal-dev (#248990048888)' : 'nitina-ggarwal-sandbox-647724 (#887605034827)');
+        const isAws = uri.includes('393036065405') || uri.includes('bedrock-agentcore') || (r.consoleUrl && r.consoleUrl.includes('console.aws.amazon.com'));
+        const is3PWorkspace = uri.includes('Google Slides') || (r.consoleUrl && r.consoleUrl.includes('docs.google.com'));
+        const proj = r.project || (is3PWorkspace
+          ? 'Google Workspace (Drive API v3)'
+          : isAws
+            ? 'AWS Account 393036065405 (ge-aws-mcp-admin)'
+            : (uri.includes('248990048888') || uri.includes('ramp-portal-dev')
+              ? 'ramp-portal-dev (#248990048888)'
+              : 'nitina-ggarwal-sandbox-647724 (#887605034827)'));
         const loc = r.region || r.location || 'us-west1';
-        const proof = r.proofDetail || `Verified live in Google Cloud Console (${loc})`;
+        const proof = r.proofDetail || (is3PWorkspace
+          ? 'Verified live via Google Drive API v3 & Slides/Docs v1'
+          : isAws
+            ? `Verified live in AWS Console & MCP JSON-RPC (${loc})`
+            : `Verified live in Google Cloud Console (${loc})`);
+        const linkLabel = is3PWorkspace
+          ? 'Open Live Google Slides Deck &#8599;'
+          : isAws
+            ? 'Open in AWS Console &#8599;'
+            : 'Open in GCP Console &#8599;';
         return `
         <tr>
           <td><span class="badge badge-blue">${escapeHtml(r.pattern)}</span></td>
@@ -4080,7 +4307,7 @@
           <td><code>${escapeHtml(proj)}</code><br/><span class="muted" style="font-size:11px;">${escapeHtml(loc)}</span></td>
           <td style="font-size:12px;">
             <div>${escapeHtml(proof)}</div>
-            ${r.consoleUrl ? `<a href="${escapeHtml(r.consoleUrl)}" target="_blank" rel="noopener" style="font-size:11.5px;">Open in GCP Console &#8599;</a>` : ''}
+            ${r.consoleUrl ? `<a href="${escapeHtml(r.consoleUrl)}" target="_blank" rel="noopener" style="font-size:11.5px; font-weight:600;">${linkLabel}</a>` : ''}
           </td>
           <td><span class="badge badge-green">${escapeHtml(r.status)}</span></td>
         </tr>
@@ -5260,19 +5487,23 @@
       } catch (_) {}
       syncActorUiElements();
 
+      const initialParams = new URLSearchParams(window.location.search);
+      const initialDocParam = initialParams.get('doc');
+      const initialHash = window.location.hash ? window.location.hash.slice(1) : '';
+
       loadCloudViewerManifest();
       loadE2EPatternBundle();
       loadDiagramE2eFlows();
-      selectGuidedWorkstream('WS1');
+      if (!initialDocParam) {
+        selectGuidedWorkstream('WS1', null, initialHash);
+      }
       initAllPortalCardHoverToolbars();
       fetchAndRenderChangeLog();
       fetchAndRenderComments();
 
       try {
-        const params = new URLSearchParams(window.location.search);
-        const tabParam = params.get('tab');
-        const wbParam = params.get('wb');
-        const docParam = params.get('doc');
+        const tabParam = initialParams.get('tab');
+        const wbParam = initialParams.get('wb');
         const isStandaloneChangelog = Boolean(window.__STANDALONE_CHANGELOG_PAGE || window.location.pathname.replace(/\/+$/, '') === '/changelog');
         if (isStandaloneChangelog) {
           const banner = document.getElementById('standalone-changelog-banner');
@@ -5285,10 +5516,10 @@
         if (wbParam && ['execution', 'resources', 'codebase', 'runbook', 'deliverables'].includes(wbParam)) {
           switchE2EWorkbenchTab(wbParam);
         }
-        if (docParam) {
-          openDocInReader(docParam);
+        if (initialDocParam) {
+          openDocInReader(initialDocParam, initialHash);
         }
-        if (params.get('scroll') === 'gallery') {
+        if (initialParams.get('scroll') === 'gallery') {
           const wbCard = document.getElementById('blog-e2e-pattern-execution-and-codebase-workbench');
           if (wbCard) wbCard.style.display = 'none';
         }

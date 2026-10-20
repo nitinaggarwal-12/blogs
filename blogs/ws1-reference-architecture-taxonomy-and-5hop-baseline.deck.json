@@ -3,7 +3,7 @@
   "deckTitle": "Multi-Tenant Agentic AI on Google Cloud: Reference Taxonomy & 5-Hop Governance (Workstream 1)",
   "deckSubtitle": "Official Google Cloud Architecture Center hub-and-spoke reference architecture comparing Pooled (Pattern A), Sovereign Silos (Pattern B), and Dynamic Hybrid (Pattern C) isolation models",
   "tldr": [
-    "The Multi-Tenant Agentic Challenge: Provisioning dedicated cloud projects for Standard Tiernth commercial tenants erodes SaaS gross margins, whereas naive shared runtimes expose cross-tenant tool, memory, and quota surfaces.",
+    "The Multi-Tenant Agentic Challenge: Provisioning dedicated cloud projects for Standard Tier commercial tenants erodes SaaS gross margins, whereas naive shared runtimes expose cross-tenant tool, memory, and quota surfaces.",
     "Four Agentic Threat Vectors: Unlike deterministic CRUD applications, autonomous ADK agents dynamically discover MCP tools, persist episodic Memory Bank state, share prompt caches, and consume variable reasoning tokens.",
     "Three Production Isolation Topologies: Pattern A (High-Density Pooled), Pattern B (Zero-Trust Sovereign Silos), and Pattern C (Dynamic Hybrid PSC Spokes) reuse 80% of the same Python ADK 2.0 application codebase.",
     "Five-Hop Cryptographic Defense-in-Depth: Every agent turn enforces verified tenant context across Edge OBO/DPoP (Hop 1), Registry Discovery (Hop 2), Memory & Quotas (Hop 3), Model Armor/SDP (Hop 4), and AlloyDB RLS (Hop 5).",
@@ -12,7 +12,7 @@
   "tldrSpecs": [
     {
       "stack": "Google Cloud Architecture Center (#78) • Cloud Run v2 • Vertex AI Agent Engine",
-      "sla": "Target Economics: 120 RPM Pool Pooled (Pattern A) to 600 RPM Silo Sovereign Silo (Pattern B)",
+      "sla": "Target Economics: 120 RPM Pooled (Pattern A) to 600 RPM Sovereign Silo (Pattern B)",
       "tag": "Well-Architected: Cost vs. Isolation"
     },
     {
@@ -86,12 +86,12 @@
         },
         {
           "stack": "Google Workspace OIDC • Dedicated PT / Gemma 3 27B • VPC-SC • Cloud KMS CMEK (finvault-silo-cmek)",
-          "sla": "Tier: ENTERPRISE (600 RPM Silo Silo) • 600 RPM • 8,000 Thinking Budget • OCC/IBAN DLP Masking",
+          "sla": "Tier: ENTERPRISE (600 RPM Silo) • 600 RPM • 8,000 Thinking Budget • OCC/IBAN DLP Masking",
           "tag": "2. Regulated Tenant A: FinVault Bank"
         },
         {
           "stack": "Microsoft Entra ID OIDC • Cloud Run v2 • Memorystore Valkey • SharePoint & ServiceNow 3LO",
-          "sla": "Tier: STANDARD (120 RPM Pool Pool) • 120 RPM • 4,000 Thinking Budget • PCI-DSS PAN/SSN DLP Masking",
+          "sla": "Tier: STANDARD (120 RPM Pool) • 120 RPM • 4,000 Thinking Budget • PCI-DSS PAN/SSN DLP Masking",
           "tag": "3. Commercial Tenant B: RetailStream"
         },
         {
@@ -293,7 +293,7 @@
         },
         {
           "stack": "Gemini 2.5 Pro ContextCacheConfig (32k Prefix) • BigQuery OTel Chargeback Ledger",
-          "sla": "120 RPM Pool Pooled Floor • 84.7% Per-Turn Token Savings • 74% Portfolio TCO Reduction (1,000 Tenants)",
+          "sla": "120 RPM Pooled Floor • 84.7% Per-Turn Token Savings • 74% Portfolio TCO Reduction (1,000 Tenants)",
           "tag": "Pillar 3: Cost Optimization"
         },
         {
@@ -364,7 +364,7 @@
       "tag": "Mandate 5: Continuous Verification"
     }
   ],
-  "callToAction": "Review the 14-slide 3-Act executive architecture deck, execute python3 -B scripts/run_deep_forensic_audit.py, and proceed to Workstream 2 (Pattern A Pooled Architecture).",
+  "callToAction": "Review the 12-slide 3-Act executive architecture deck, execute python3 -B scripts/run_deep_forensic_audit.py, and proceed to Workstream 2 (Pattern A Pooled Architecture).",
   "slideSpeakerNotes": [
     {
       "slide": 1,

@@ -27,7 +27,7 @@ Pattern C is the recommended production architecture for multi-tiered B2B SaaS p
 
 - **Tiered SaaS product packaging (Standard vs Enterprise):** Offer a low-cost self-service Standard tier on shared pooled infrastructure alongside a premium Enterprise tier with dedicated Google Cloud projects and customer-managed encryption keys—without maintaining two separate codebases or URLs.
 - **Land-and-expand customer lifecycle with live upgrades:** Onboard new logos into the shared pool in seconds (**RetailStream Corp** at `120 RPM Pool` floor) and promote them live into a dedicated PSC spoke (`600 RPM Silo` spoke floor) when they sign an Enterprise expansion contract, with **zero downtime and zero lost chat history**.
-- **Cross-project private agent federation:** Allow Enterprise customers (**FinVault Bank**) to run private custom agents (`Agent Alpha` on Gemini 2.5 Pro (Dedicated PT)) inside their isolated spoke while surfacing those agents seamlessly through the unified SaaS UI.
+- **Cross-project private agent federation:** Allow Enterprise customers (**FinVault Bank**) to run private custom agents (`Agent Alpha` on Dedicated Provisioned Throughput `gemini-2.5-pro-dedicated`) inside their isolated spoke while surfacing those agents seamlessly through the unified SaaS UI.
 
 ## Design alternatives
 
@@ -38,7 +38,7 @@ A critical architectural decision in Pattern C is how the central routing hub co
 | Networking dimension | Traditional VPC Network Peering | Private Service Connect (PSC) (`ServiceAttachment`) |
 | :--- | :--- | :--- |
 | **Scale & quota limits** | Caps out at 25 peered VPC networks per hub VPC | Scales to **hundreds of Enterprise tenant spokes** per hub VPC |
-| **IP address management** | Requires globally non-overlapping CIDR blocks across all tenants | **NAT-based:** every spoke can reuse the exact same `10.40.0.0/20` CIDR |
+| **IP address management** | Requires globally non-overlapping CIDR blocks across all tenants | **NAT-based (`/28` `10.240.0.0/28`):** every spoke can reuse the exact same `10.40.0.0/20` CIDR |
 | **Directionality & blast radius** | Bi-directional L3 routing between peered subnets | **Strictly unidirectional** (Hub consumer -> Spoke producer only) |
 | **Authorization model** | Network-level peering handshake | Explicit `ACCEPT_MANUAL` project allowlist + VPC-SC ingress policy |
 
@@ -66,7 +66,7 @@ Figure 1 organizes the hybrid platform across four functional zones:
 - **Unified Hybrid Routing and Identity Hub (`cymbal-hybrid-hub-prod`) (Zone 1 — Blue container `#aecbfa`):** Terminates all Standard and Enterprise traffic at one External Application Load Balancer, strips forged headers in Cloud Armor, verifies OIDC/Entra JWTs in IAP (`Hop 1`), and queries the Firestore Route Table in the Cloud Run Hybrid Router to dispatch turns to `pool://` or `psc://`.
 - **Federated Agent Catalog, KMS, and Live Migration Hub (Zone 2 — Green container `#ceead6`):** Synchronizes private spoke agent descriptors (`Agent Alpha`) into the hub's Discovery Engine Catalog PDP (`Hop 2`), orchestrates the 3-phase Zero-Downtime Tier Migration Engine (`pattern_c_hybrid_router_and_migrator.py`), and aggregates cross-tier BigQuery FinOps telemetry (`Hop 5`).
 - **Shared Pooled Runtime Spoke (Standard Tier — `pool://`) (Zone 3 — Left amber container `#feefc3`):** Serves Standard-tier tenants (`RetailStream Corp` prior to upgrade) inside the shared Vertex AI Agent Engine runtime (`4,000` token cap, `120 RPM`) with 90% shared `ContextCacheConfig` savings and shared AlloyDB RLS.
-- **Dedicated Enterprise PSC Spoke (`psc://10.10.0.50/...`) (Zone 4 — Right coral container `#fad2cf`):** Serves Enterprise tenants (`FinVault Bank` and upgraded `RetailStream Corp`) across unidirectional Private Service Connect (`ServiceAttachment`) inside a dedicated VPC-SC perimeter with `8,000` thinking-token budgets, dedicated CMEK AlloyDB, and private `Agent Alpha` (`Gemini 2.5 Pro (Dedicated PT)`).
+- **Dedicated Enterprise PSC Spoke (`psc://10.10.0.50/...`) (Zone 4 — Right coral container `#fad2cf`):** Serves Enterprise tenants (`FinVault Bank` and upgraded `RetailStream Corp`) across unidirectional Private Service Connect (`ServiceAttachment`) inside a dedicated VPC-SC perimeter with `8,000` thinking-token budgets, dedicated CMEK AlloyDB, and private `Agent Alpha` (`gemini-2.5-pro-dedicated` on Dedicated Provisioned Throughput).
 
 The numbered callouts in Figure 1 trace dynamic tier routing and cross-project PSC execution:
 
@@ -75,8 +75,8 @@ The numbered callouts in Figure 1 trace dynamic tier routing and cross-project P
 3. **Hop 2 — Federated Agent Catalog PDP and tool pruning:** The hub catalog resolves both shared pool agents and federated PSC spoke agents, blocking cross-tenant calls (`HTTP 403`) and pruning unauthorized MCP tools.
 4. **Hop 4 (Pre-inference) — Model Armor and Cloud DLP inspection:** Prompts and tool arguments pass through inline injection and PII guardrails before traversing either the pool or the PSC forwarding rule.
 5. **Hop 3 — Dynamic dispatch to Shared Pool (`pool://`) or PSC Spoke (`psc://`):** Standard tenants execute in the shared pool (`4,000` token cap); Enterprise tenants traverse the consumer PSC endpoint (`10.10.0.50`) into their dedicated spoke producer attachment (`8,000` token budget + CMEK verification).
-6. **Hop 4 (Post-inference) — Output DLP and tier-scoped 3LO MCP execution:** Responses and 3LO MCP calls are validated against the caller's DPoP proof and NLC compliance rules.
-7. **Hop 5 — Tier-isolated persistence and unified BigQuery FinOps chargeback:** Data persists in shared AlloyDB RLS (Standard) or dedicated CMEK AlloyDB (Enterprise), while redacted OTel spans stream to the hub BigQuery ledger.
+6. **Hop 4 (Post-inference) — Output DLP and tier-scoped 3LO MCP execution:** Responses and 3LO MCP calls are validated against the caller's DPoP proof and semantic Natural Language Policy Compliance (`NLC`) rules.
+7. **Hop 5 — Tier-isolated persistence and unified BigQuery FinOps chargeback:** Data persists in shared AlloyDB RLS (`SET LOCAL app.current_tenant_id` for Standard) or dedicated CMEK AlloyDB (Enterprise), while redacted OTel spans stream to the hub BigQuery ledger (`cymbal_agentic_finops_otel.tenant_telemetry_spans`).
 
 ### Cross-project Private Service Connect (PSC) network topology (Figure 2)
 
@@ -89,14 +89,14 @@ Figure 2 illustrates the network architecture detailed in [4.2 Hub-and-Spoke Dem
 - **Hub VPC and Cloud Run Direct VPC Egress (`10.10.0.0/20`) (Zone 1 — Blue container `#aecbfa`):** Hosts the Cloud Run Hybrid Router with Direct VPC Egress to internal consumer PSC forwarding rules (`10.10.0.50`, `10.10.0.51`).
 - **PSC Producer-Consumer Handshake and VPC-SC Ingress Bridge (Zone 2 — Green container `#ceead6`):** Enforces `ACCEPT_MANUAL` consumer accept lists on each spoke `ServiceAttachment` and binds VPC-SC ingress rules exclusively to the hub router service account.
 - **FinVault Enterprise PSC Spoke (`10.40.0.0/20`) (Zone 3 — Left amber container `#feefc3`):** Dedicated spoke project publishing `finvault-agent-spoke-psc` in front of an Internal Application Load Balancer, Agent Engine runtime, and CMEK AlloyDB.
-- **RetailStream Promoted Enterprise PSC Spoke (`10.40.0.0/20` reused) (Zone 4 — Right coral container `#fad2cf`):** Demonstrates non-overlapping CIDR reuse: because PSC uses source NAT, every enterprise spoke can reuse `10.40.0.0/20` without IP exhaustion.
+- **RetailStream Promoted Enterprise PSC Spoke (`10.40.0.0/20` reused) (Zone 4 — Right coral container `#fad2cf`):** Demonstrates non-overlapping CIDR reuse: because PSC uses source NAT (`/28` subnet `10.240.0.0/28`), every enterprise spoke can reuse `10.40.0.0/20` without IP exhaustion.
 
 The seven numbered steps in Figure 2 trace packet flow across the Private Service Connect boundary:
 
 1. **Ingress at hub External Application Load Balancer:** Traffic enters `cymbal-hybrid-hub-prod` over TLS 1.3 and passes Cloud Armor and IAP (`Hop 1`).
 2. **Cloud Run Router resolves PSC target URI:** Firestore returns `psc://10.10.0.50/projects/cymbal-finvault-silo-prod/serviceAttachments/finvault-agent-spoke-psc`.
 3. **Direct VPC Egress to consumer PSC forwarding rule:** The router sends the signed `CryptographicContext` to internal IP `10.10.0.50` inside the hub VPC.
-4. **Unidirectional PSC NAT traversal into producer spoke:** Google Andromeda translates packet headers across the producer `ServiceAttachment` (`cymbal-psc-nat-us-west1`); the spoke cannot initiate reverse connections into the hub.
+4. **Unidirectional PSC NAT traversal into producer spoke:** Google Andromeda translates packet headers across the producer `ServiceAttachment` (`cymbal-psc-nat-us-west1`, `10.240.0.0/28`); the spoke cannot initiate reverse connections into the hub.
 5. **Spoke Internal ALB and Agent Engine execution:** The spoke Internal ALB forwards the request to the isolated Vertex AI Agent Engine runtime (`Hop 3` & `Hop 4`).
 6. **Spoke-local CMEK AlloyDB and 3LO MCP access:** The agent queries dedicated CMEK AlloyDB and spoke-local MCP connectors inside the spoke VPC-SC perimeter (`Hop 5`).
 7. **Synchronous response and hub OTel aggregation:** The response returns over the PSC connection and emits a redacted FinOps span to the hub.
@@ -135,45 +135,39 @@ Figure 4 maps the dual-provider Terraform blueprint ([`4.6-terraform-hybrid-psc-
 - **Hub Provider (`google.hub`) Edge and Router Resources (Zone 1 — Blue container `#aecbfa`):** Provisions `google_cloud_run_v2_service.hybrid_router`, Direct VPC Egress subnets, and Firestore routing collections in `cymbal-hybrid-hub-prod`.
 - **Cross-Project PSC Handshake and Federated Registry (Zone 2 — Green container `#ceead6`):** Links `google_compute_forwarding_rule.psc_consumer` in the hub to `google_compute_service_attachment.psc_producer` in each spoke with `ACCEPT_MANUAL` project allowlists.
 - **Shared Pool Resources in Hub Project (Zone 3 — Left amber container `#feefc3`):** Provisions the pooled Vertex AI Agent Engine runtime, Memorystore for Valkey, and shared AlloyDB RLS cluster.
-- **Spoke Provider (`google.spoke`) Sovereign Resources (Zone 4 — Right coral container `#fad2cf`):** Provisions isolated spoke VPCs, `cymbal-psc-nat-us-west1` NAT subnets, Internal ALBs, spoke Agent Engine runtimes, and CMEK AlloyDB clusters.
+- **Spoke Provider (`google.spoke`) Sovereign Resources (Zone 4 — Right coral container `#fad2cf`):** Provisions isolated spoke VPCs, `cymbal-psc-nat-us-west1` (`/28` `10.240.0.0/28`) NAT subnets, Internal ALBs, spoke Agent Engine runtimes, and CMEK AlloyDB clusters.
 
 The seven numbered steps in Figure 4 trace the multi-project Terraform deployment:
 
 1. **Initialize `google.hub` and `google.spoke` Terraform providers:** Configure provider aliases targeting `cymbal-hybrid-hub-prod` and `cymbal-{tenant}-spoke-prod`.
-2. **Provision hub VPC, Cloud Armor, IAP, andShared Pool:** Deploy the shared Pattern A pool components inside the hub project.
-3. **Provision spoke VPC, PSC NAT subnet, and Internal ALB:** Create the isolated spoke network and `/24` `PRIVATE_SERVICE_CONNECT` NAT subnet.
+2. **Provision hub VPC, Cloud Armor, IAP, and Shared Pool:** Deploy the shared Pattern A pool components inside the hub project.
+3. **Provision spoke VPC, PSC NAT subnet, and Internal ALB:** Create the isolated spoke network and `/28` `PRIVATE_SERVICE_CONNECT` NAT subnet (`10.240.0.0/28`).
 4. **Publish spoke `google_compute_service_attachment`:** Expose the spoke Internal ALB via a PSC producer attachment with `consumer_accept_lists` restricted to the hub project.
 5. **Create hub `google_compute_forwarding_rule` PSC endpoint:** Bind a static internal IP (`10.10.0.50`) in the hub VPC to the spoke's `ServiceAttachment` URI.
 6. **Deploy Cloud Run Hybrid Router and Firestore route table:** Configure the router with Direct VPC Egress and seed tenant routing rules.
-7. **Run 4-point hybrid and live-migration test suite:** Execute `test_pattern_c_hybrid_and_migration.py` to validate routing, catalog isolation, and zero-downtime promotion.
+7. **Run 4-point hybrid and live-migration test suite:** Execute `run_tier_migration_suite.py` to validate routing, catalog isolation, and zero-downtime promotion.
 
 ## Products used
 
-This architecture uses the following Google Cloud products and open-source frameworks:
+Pattern C (Dynamic Hybrid Hub-and-Spoke Architecture) uses the following Google Cloud products across the central routing hub (`cymbal-hybrid-hub-prod`) and dedicated Enterprise PSC spoke projects:
 
-### Agentic AI and foundation models
+### Dynamic routing, cross-project PSC networking, and live migration
 
-- [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview): A managed runtime environment that deploys, scales, and isolates multi-agent workloads inside gVisor sandboxes with managed session and memory state.
-- [Agent Development Kit (ADK)](https://google.github.io/adk-docs/): An open-source framework for building and orchestrating multi-agent hierarchies with deterministic lifecycle callbacks (`before_agent_callback`, `before_tool_callback`, `before_model_callback`).
-- [Gemini 2.5 Pro on Vertex AI](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models): Google's flagship multimodal reasoning model supporting shared prompt prefix caching (`ContextCacheConfig`) and configurable `thinking_budget` controls.
-- [Vertex AI Model Garden](https://cloud.google.com/model-garden): An enterprise model repository providing governed access to partner models (such as Gemini 2.5 Pro (Dedicated PT) for tenant-private agents) and open-weight models (such as Gemma 3 27B).
-- [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs): A managed Kubernetes service used in Sovereign Silo deployments (Pattern B) to run air-gapped open-weight models on private GPU node pools with zero public internet egress.
+- [Cloud Run](https://cloud.google.com/run/docs) with Direct VPC Egress: Hosts the stateless Tenant-Aware Hybrid Router (`pattern_c_hybrid_router_and_migrator.py`) that dispatches turns either to the local shared pool (`pool://`) or to consumer Private Service Connect endpoints (`psc://10.10.0.50`).
+- [Private Service Connect (PSC)](https://cloud.google.com/vpc/docs/private-service-connect): Establishes unidirectional, NAT-translated (`/28` subnet `10.240.0.0/28`) private connectivity from hub consumer forwarding rules to producer `ServiceAttachment` resources in isolated Enterprise spoke projects—allowing every spoke to reuse identical VPC CIDRs (`10.40.0.0/20`).
+- [Firestore](https://cloud.google.com/firestore/docs) and [Database Migration Service (DMS)](https://cloud.google.com/database-migration/docs): Store the sub-10ms atomic tenant routing table (`tenant_routing_table`) and stream continuous Change Data Capture (CDC) from the shared AlloyDB RLS pool into dedicated CMEK AlloyDB spokes during `SHADOW_SYNC`.
 
-### Ingress, identity, and AI safety guardrails
+### Federated agent catalog, runtime tiers, and foundation models
 
-- [Cloud Load Balancing](https://cloud.google.com/load-balancing/docs): A global anycast External Application Load Balancer that terminates TLS 1.3 and mutual TLS (mTLS) connections at the Google network edge.
-- [Google Cloud Armor](https://cloud.google.com/armor/docs): A web application firewall (WAF) and DDoS mitigation service that strips unverified client-supplied tenant headers (`X-Tenant-ID`) at ingress.
-- [Identity-Aware Proxy (IAP)](https://cloud.google.com/iap/docs) and [Workload Identity Federation](https://cloud.google.com/iam/docs/workload-identity-federation): Zero-trust authentication services that validate upstream OIDC and SAML JWTs and broker RFC 8693 On-Behalf-Of (OBO) token exchange bound to RFC 9449 DPoP sender-constrained proofs.
-- [Model Armor](https://cloud.google.com/security-command-center/docs/model-armor-overview): An inline AI safety service that inspects prompts, model completions, and Model Context Protocol (MCP) tool payloads for prompt injection, jailbreaks, and policy violations.
-- [Sensitive Data Protection (Cloud DLP)](https://cloud.google.com/sensitive-data-protection/docs): A data inspection and de-identification service that masks regulated PII, PCI, and PHI tokens inline before prompts reach foundation models or logs.
+- [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview) and [Agent Development Kit (ADK)](https://google.github.io/adk-docs/): Power both the shared Standard-tier runtime pool in the hub project and the isolated Enterprise-tier runtimes in each PSC spoke project.
+- [Discovery Engine Agent Catalog](https://cloud.google.com/generative-ai-app-builder/docs): Federates spoke-private agent descriptors (`agent://finvault/private-agent-alpha-regulatory`) into the central Hop 2 Policy Decision Point while enforcing `HTTP 403 Forbidden` against unauthorized callers.
+- [Gemini 2.5 Pro on Vertex AI](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models): Combines shared `ContextCacheConfig` (90% prefix discount) for Standard-tier pooled tenants with Dedicated Provisioned Throughput (`gemini-2.5-pro-dedicated`) in Enterprise spokes.
 
-### Data, storage, networking, and governance
+### Perimeter security, CMEK data spokes, and unified FinOps telemetry
 
-- [AlloyDB for PostgreSQL](https://cloud.google.com/alloydb/docs): A high-performance PostgreSQL-compatible database that enforces transactional `FORCE ROW LEVEL SECURITY (RLS)` policies keyed by `app.current_tenant_id`.
-- [Memorystore for Valkey](https://cloud.google.com/memorystore/docs/valkey/overview) and [Firestore](https://cloud.google.com/firestore/docs): Low-latency in-memory and document stores used for per-tenant token-bucket rate limiting, 5-level session memory caching, and dynamic tenant routing tables.
-- [VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs) and [Private Service Connect](https://cloud.google.com/vpc/docs/private-service-connect): Network security boundaries that prevent cross-project data exfiltration and establish unidirectional NAT-based private peering between a central routing hub and isolated enterprise spokes.
-- [Cloud Key Management Service (Cloud KMS)](https://cloud.google.com/kms/docs): A cryptographic key management service supporting customer-managed encryption keys (CMEK) and instant `HTTP 423 Locked` tenant kill-switches.
-- [Security Command Center](https://cloud.google.com/security-command-center/docs), [Cloud Logging](https://cloud.google.com/logging/docs), and [BigQuery](https://cloud.google.com/bigquery/docs): Centralized posture monitoring, PII-redacted OpenTelemetry audit logging, and per-tenant token FinOps chargeback analytics.
+- [Cloud Load Balancing](https://cloud.google.com/load-balancing/docs), [Google Cloud Armor](https://cloud.google.com/armor/docs), and [Identity-Aware Proxy (IAP)](https://cloud.google.com/iap/docs): Provide a single unified SaaS ingress URL and Hop 1 DPoP-bound token exchange across all customer tiers.
+- [VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs), [Cloud KMS](https://cloud.google.com/kms/docs), and [AlloyDB for PostgreSQL](https://cloud.google.com/alloydb/docs): Combine shared `FORCE ROW LEVEL SECURITY` in the hub with per-spoke VPC-SC perimeters and customer-managed KMS encryption keys (`HTTP 423` kill-switch) in Enterprise spokes.
+- [Model Armor](https://cloud.google.com/security-command-center/docs/model-armor-overview), [Sensitive Data Protection](https://cloud.google.com/sensitive-data-protection/docs), and [BigQuery](https://cloud.google.com/bigquery/docs): Enforce bi-directional Hop 4 prompt/output guardrails and aggregate cross-tier OpenTelemetry FinOps spans in `cymbal_agentic_finops_otel.tenant_telemetry_spans`.
 
 ## Design considerations
 
@@ -188,14 +182,31 @@ This section provides guidance for operating Pattern C according to the [Google 
 ### Reliability
 
 - **Zero-downtime cutover via atomic Firestore transactions:** Perform all data synchronization (AlloyDB DMS CDC and Memory Bank dual-writes) during `SHADOW_SYNC` before flipping the single Firestore routing document in `ATOMIC_CUTOVER`.
+- **Deterministic migration abort, rollback, and in-flight SSE/3LO session drain:**
+  - *If `SHADOW_SYNC` parity verification fails* (for example, if DMS CDC lag exceeds threshold, row checksums mismatch, or the target spoke's Cloud KMS CMEK key returns `HTTP 423`), the migration controller aborts before `ATOMIC_CUTOVER`. Because the Firestore route document still points to `pool://`, the customer experiences zero disruption while dual-write buffers are discarded.
+  - *If a user is mid-stream on a Server-Sent Events (SSE) turn or mid-redirect in an inline 3LO OAuth consent flow during `ATOMIC_CUTOVER`*, the active turn carries an immutable `route_epoch` lease pinned to the worker that initiated it. Phase 3 (`DRAIN_AND_VERIFY`) holds a 30-second drain window on the shared pool and synchronizes final OAuth token grants into the spoke vault before cryptographically purging the tenant's legacy rows from the shared AlloyDB table.
 
 ### Cost optimization
 
-- **Blend pooled and sovereign unit economics (`Blended Hybrid Tier` blended floor):** Keep 80–90% of high-volume Standard customers in the shared pool (`120 RPM Pool` floor with 90% `ContextCacheConfig` savings) while provisioning dedicated PSC spokes (`600 RPM Silo`) only for high-ACV Enterprise contracts ([4.4 Product Collaboration: PSC & Registry](../workstream-4-pattern-c-hybrid/4.4-product-collaboration-psc-and-registry.md)).
+- **Blend pooled and sovereign unit economics (`Blended Hybrid Tier` floor):** Keep 80–90% of high-volume Standard customers in the shared pool (`120 RPM Pool` floor with 90% `ContextCacheConfig` savings) while provisioning dedicated PSC spokes (`600 RPM Silo`) only for high-ACV Enterprise contracts ([4.4 Product Collaboration: PSC & Registry](../workstream-4-pattern-c-hybrid/4.4-product-collaboration-psc-and-registry.md)).
 
 ### Operational excellence
 
 - **Use dual-provider Terraform modules:** Manage the hub and spoke lifecycle in a single declarative graph using `google.hub` and `google.spoke` provider aliases ([4.6 Terraform Hybrid PSC Blueprint](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf)).
+- **End-to-end Pattern C (Dynamic Hybrid PSC & Zero-Downtime Tier Migration) verification across 10 third-party SaaS products (`10/10 Flows • 20/20 Test Cases PASS`):** Every third-party SaaS, BI, Lakehouse, ERP, Observability, and SecOps connector in [`enterprise_5_saas_bi_mcp.py`](../core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py) is verified across **Pattern C's 3-phase live tier migration** (`Phase 0 Pooled Standard` -> `Phase 1-2 Dual-Write Shadow Sync` -> `Phase 3 Atomic PSC Cutover 10.10.0.50:443` with `0` dropped turns and `3/3` memory parity). Full manual setup, configuration JSON, `curl` commands, and Input/Output payloads are in [`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md):
+
+| SaaS ID & Product | Pattern C Dynamic Hybrid PSC & Migration Routing | Positive E2E Input & Verified Output (`TC-C-POS`) | Red-Team Breach Input & Verified Block (`TC-C-NEG`) | Manual CLI Verification Command |
+| :--- | :--- | :--- | :--- | :--- |
+| **`SAAS-01` ThoughtSpot Cloud** (*Spotter Agentic BI v2.0*) | `mcp://cymbal/thoughtspot-spotter-bi-3lo` • `HYBRID_PSC_SPOKE` (`10.10.0.50:443`) post-cutover | **In:** `tenant="finvault"` (promoted to PSC spoke), `org="finvault-org-01"` • **Out:** `HTTP 200` • `route=DEDICATED_PSC_SPOKE`, `dropped_turns=0`, `row_count=2` | **In:** Pooled `retailstream` spoofing Enterprise PSC `finvault-org-01` • **Out:** **`HTTP 403`** `CROSS_TENANT_THOUGHTSPOT_ORG_SPOOF_BLOCKED` | `python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pattern pattern-c --verbose` |
+| **`SAAS-02` Sigma Computing** (*Workbooks & Dataset API v2*) | `mcp://cymbal/sigma-computing-workbooks-3lo` • Pooled Standard route + Spoke CMEK check | **In:** `tenant="retailstream"` (`POOLED_SHARED_HUB`), `workbook="wb-cymbal-finops-3lo"` • **Out:** `HTTP 200` • `route=POOLED_SHARED_HUB`, `row_count=2` (`RS-ORD-101..102`) | **In:** Enterprise PSC spoke with revoked KMS CMEK key • **Out:** **`HTTP 423 Locked`** `KMS_CMEK_KEY_REVOKED_KILL_SWITCH` | `python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern pattern-c --verbose` |
+| **`SAAS-03` ServiceNow ITSM** (*Live AWS Bedrock AgentCore MCP*) | `mcp://retailstream/servicenow-itom-3lo` • Hybrid Router + Hop 5 3LO Vault (`3lo_token_sn_rs_valid`) | **In:** `tenant="retailstream"`, `change="CHG0049218"`, `3lo=True` • **Out:** `HTTP 200` • Live AWS AgentCore `CHG0049218` + `0` dropped turns | **In:** Unconsented 3LO during hybrid turn (`seed_3lo=False`) • **Out:** **`HTTP 401`** `CHALLENGE_3LO_OAUTH` (`MCP -32042`) | `python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pattern pattern-c --verbose` |
+| **`SAAS-04` Veeva Vault & Muse EDC** (*Regulated Life Sciences GxP*) | `mcp://finvault/veeva-muse-clinical-3lo` • Promoted Enterprise PSC Spoke (`10.10.0.50:443`) + 21 CFR Part 11 | **In:** `tenant="finvault"` (PSC Spoke), `study="MK-3475-087"` • **Out:** `HTTP 200` • `route=DEDICATED_PSC_SPOKE`, `memory_parity=3/3` | **In:** Pooled `retailstream` attempting Enterprise spoke clinical MCP • **Out:** **`HTTP 403`** `TENANT_CONNECTOR_ACL_DENIED` | `python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva-muse --pattern pattern-c --verbose` |
+| **`SAAS-05` Salesforce & Jira Cloud** (*Multi-SaaS Case Escalation*) | `mcp://finvault/salesforce-jira-escalation-3lo` • Enterprise PSC Spoke + Hop 4 Egress SDP masking | **In:** `tenant="finvault"` (PSC Spoke), `instance="NA224"`, raw IBAN/SWIFT • **Out:** `HTTP 200` • Live `NA224` + `[REDACTED_IBAN_CODE]` via PSC spoke | **In:** Verify zero raw IBAN/SWIFT leakage across Pool->Spoke cutover • **Out:** **`PASS`** (`raw_pii_leaked=False`, `dropped_turns=0`) | `python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce-jira --pattern pattern-c --verbose` |
+| **`SAAS-06` Databricks Platform** (*Unity Catalog & Genie API 2.0*) | `mcp://cymbal/databricks-unity-catalog-genie-3lo` • Enterprise PSC Spoke -> `cymbal_uc_prod.finvault_gold` | **In:** `tenant="finvault"` (PSC Spoke), `schema="finvault_gold"` • **Out:** `HTTP 200` • `Server: databricks`, `route=DEDICATED_PSC_SPOKE`, `row_count=2` | **In:** Pooled `retailstream` querying `finvault_gold` via `EXECUTE IMMEDIATE` • **Out:** **`HTTP 403`** `UNITY_CATALOG_CROSS_TENANT_SCHEMA_OR_DYNAMIC_SQL_BLOCKED` | `python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pattern pattern-c --verbose` |
+| **`SAAS-07` Snowflake AI Data Cloud** (*Cortex Analyst & SQL API v2*) | `mcp://cymbal/snowflake-cortex-analyst-sql-3lo` • Pooled Hub route + `USE SECONDARY ROLES NONE` | **In:** `tenant="retailstream"` (`POOLED_SHARED_HUB`), `role="ROLE_CYMBAL_RETAILSTREAM"` • **Out:** `HTTP 200` • `Server: SF-LB-T1`, `row_count=2` RetailStream rows | **In:** `USE SECONDARY ROLES ALL` cross-tier escalation to Enterprise role • **Out:** **`HTTP 403`** `SNOWFLAKE_SECONDARY_ROLES_OR_CROSS_ROLE_ESCALATION_BLOCKED` | `python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --pattern pattern-c --verbose` |
+| **`SAAS-08` Workday HCM & Financials** (*CCX OAuth2 & RaaS API*) | `mcp://finvault/workday-hcm-financials-raas-3lo` • Enterprise PSC Spoke + Principal 3LO + SSN/IBAN SDP | **In:** `tenant="finvault"` (PSC Spoke), `user="alice@finvault.com"` • **Out:** `HTTP 200` • `route=DEDICATED_PSC_SPOKE`, `[REDACTED_US_SSN]` | **In:** `user="bob@finvault.com"` reusing Alice's 3LO token on PSC spoke • **Out:** **`HTTP 401`** `WORKDAY_INTRA_TENANT_PRINCIPAL_3LO_MISMATCH` (`MCP -32042`) | `python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --pattern pattern-c --verbose` |
+| **`SAAS-09` Datadog & Bits AI SRE** (*Logs API v2 & Log Injection Guard*) | `mcp://cymbal/datadog-observability-sre-3lo` • Enterprise PSC Spoke + Hop 4 Model Armor log scan | **In:** `tenant="finvault"` (PSC Spoke), `query="@tenant_id:finvault"` • **Out:** `HTTP 200` • Live Datadog US1 API + `route=DEDICATED_PSC_SPOKE` | **In:** Poisoned stack trace `IGNORE ALL PREVIOUS INSTRUCTIONS...` • **Out:** **`HTTP 400`** `MODEL_ARMOR_LOG_PROMPT_INJECTION_BLOCKED` | `python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --pattern pattern-c --verbose` |
+| **`SAAS-10` CrowdStrike Falcon & Okta** (*OAuth2 XDR & OIDC/DPoP Graph*) | `mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo` • Enterprise PSC Spoke + RFC 9449 DPoP + Spoke CMEK | **In:** `tenant="finvault"` (PSC Spoke), `dpop="dpop_jkt_fv_001"` • **Out:** `HTTP 200` • Live Falcon `trace_id` + `route=DEDICATED_PSC_SPOKE` | **In:** Stolen bearer token replay (`401`) & spoke CMEK kill-switch (`423`) • **Out:** **`HTTP 401`** & **`HTTP 423 Locked`** verified on PSC spoke | `python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike-okta --pattern pattern-c --verbose` |
 
 ### Performance optimization
 
@@ -216,6 +227,7 @@ This section provides guidance for operating Pattern C according to the [Google 
   - [4.5 4-Point Hybrid Routing & Zero-Downtime Migration Tests (`run_tier_migration_suite.py`)](../workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py)
   - [4.6 Dual-Provider Terraform Hybrid PSC Blueprint (`main.tf`)](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf)
   - [4.8 90-Minute Master Codelab: Multi-Pattern Routing & Live Tier Upgrades](../workstream-4-pattern-c-hybrid/4.8-codelab-and-workshop-deck/codelab-90min-multi-pattern-master-lab.md)
+  - [10 Third-Party SaaS × 3-Pattern Manual Testing Playbook (`10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md)
 - Download or open the editable slides:
   - [Workstream 4 Editable Google Slides Deck (`ws4-pattern-c-hybrid-editable-slides.pptx`)](../slides/ws4-pattern-c-hybrid-editable-slides.pptx)
 
@@ -224,14 +236,14 @@ This section provides guidance for operating Pattern C according to the [Google 
 <!-- E2E_FLOW_START -->
 ## Step-by-Step End-to-End Agentic & Technical Flows (WS4 Architecture Diagrams)
 
-Every architecture blueprint in **WS4** follows a **strict Top-Down Architectural Zoom** inside the 14-slide Customer-Centric 3-Act presentation deck: **(1) Slide 5 (`L1` Conceptual 3-Zone Trust Boundary Overview)** → **(2) Slide 6 (`L2` Authoritative `Figure 1` Official `#78` Physical Blueprint: 56 Editable Shapes + 23 Connectors + 4-Zone Reference Sidebar)** → **(3) Slide 7 (`L3` 5-Actor Chronological Request Sequence)** → **(4) Slide 8 (`L4` 3-Stage Wire-Level JSON & Cryptographic Context Transformation)**.
+> **Reader Reference Guide (Standalone Guide & Companion Architecture Deck):** The step-by-step walkthroughs below document every Official Google Cloud Architecture Center (`#78`) diagram in **WS4**. Each diagram is self-contained in this guide (`Figure 1` above plus the supporting topology blueprints in `diagrams/`), and also corresponds 1:1 to **Act II (Slides 4–7)** of the companion 12-slide editable presentation deck (`presentations/ws4-*.pptx`, viewable in **Tab 2: Editable Architecture Decks** of the interactive portal): **(1) Slide 4 (`L1` Conceptual 3-Zone Trust Boundary Overview)** → **(2) Slide 5 (`L2` Authoritative `Figure 1` Official `#78` Physical Blueprint + 4-Zone Reference Sidebar)** → **(3) Slide 6 (`L3` 5-Actor Chronological Request Sequence)** → **(4) Slide 7 (`L4` 3-Stage Wire-Level JSON & Cryptographic Context Transformation)**.
 
-### Diagram 6: Pattern C: Dynamic Hybrid Hub-and-Spoke, Private Service Connect (PSC) & Live Tier Migration (`ws4-pattern-c-hybrid-psc-and-migration`)
+### Diagram 10: Pattern C: Dynamic Hybrid Hub-and-Spoke, Private Service Connect (PSC) & Live Tier Migration (`ws4-pattern-c-hybrid-psc-and-migration`)
 * **Workstream & Focus**: Workstream 4 • Pattern C: Dynamic Hybrid Hub-and-Spoke, PSC & Live Tier Migration (WS 4.1) (`PATTERN C • HYBRID PSC & MIGRATION`)
 * **Question Answered**: *How do we serve both high-density Standard tenants (Pooled) and regulated Enterprise tenants (Dedicated Spokes) behind a single unified SaaS URL—and upgrade a live tenant from Pooled to a Dedicated Spoke with zero dropped sessions?*
 * **Architectural & Business Outcome (Single Unified SaaS URL Routing Across Pooled & PSC Spokes + Zero-Downtime Tier Upgrades)**: Standard tenants (RetailStream baseline) run in the cost-optimal shared pool while Enterprise tenants (FinVault) route over Private Service Connect to dedicated spokes—and growing tenants promote live (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`) with 0 dropped sessions.
 
-#### 4-Zone Hub-and-Spoke Architecture Summary
+#### 4-Zone Hub-and-Spoke Architecture Summary (Rule 53G `hub-2-spoke`)
 * **Blue Zone — 1. Unified Ingress Hub & Tier-Aware Router**: Fronts all customers behind one SaaS URL, verifies identity at Hop 1, queries the Firestore route table, and filters the cross-project Agent Catalog.
 * **Green Zone — 2. 3-Phase Zero-Downtime Migration Engine**: Orchestrates live Standard → Enterprise promotions across `SHADOW_SYNC` (0ms lag), `ATOMIC_CUTOVER`, and `DRAIN_AND_VERIFY` (0 dropped sessions).
 * **Yellow Zone — 3. Left Spoke: Shared Pooled Runtime (Standard)**: Executes Standard-tier workloads (`pool://`, 4,000 thinking cap, 90% shared cache, AlloyDB RLS) and streams state during live tier upgrades.
@@ -245,7 +257,8 @@ Every architecture blueprint in **WS4** follows a **strict Top-Down Architectura
 1. **Step ⑤ — 3-Phase Zero-Downtime Tier Promotion Engine** (*Green, Yellow & Red Zones (Live Upgrade)*): When RetailStream upgrades from Standard to Enterprise mid-conversation, the Migration Engine runs (1) `SHADOW_SYNC` (streaming memory & RLS rows to the new CMEK spoke to 0ms lag), (2) `ATOMIC_CUTOVER` in Firestore, and (3) `DRAIN_AND_VERIFY`. **(SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY)**
 1. **Step ⑥ — Seamless Next-Turn Execution in Dedicated PSC Spoke** (*Red Zone (Promoted Enterprise Spoke)*): In-flight pooled turns finish draining gracefully, while the very next message in RetailStream’s active `session_id` routes over Private Service Connect to `cymbal-retailstream-silo-prod` with 8,000 tokens and dedicated CMEK encryption. **(Zero Dropped Sessions • Dedicated CMEK Spoke Execution)**
 1. **Step ⑦ — Unified Response Delivery & Blended FinOps Telemetry** (*Spokes → Caller & Green Zone FinOps*): The caller receives a seamless response without re-authenticating or changing URLs, while BigQuery OTel records the transition from Pooled (`routing_plane=POOLED`) to Hybrid PSC (`routing_plane=PSC_SPOKE`) chargeback. **(Seamless Session Continuity • BigQuery Blended FinOps)**
-1. **Outcome — Single Unified SaaS URL Routing Across Pooled & PSC Spokes + Zero-Downtime Tier Upgrades** (*Architectural & Business Outcome*): Standard tenants (RetailStream baseline) run in the cost-optimal shared pool while Enterprise tenants (FinVault) route over Private Service Connect to dedicated spokes—and growing tenants promote live (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`) with 0 dropped sessions. **(PATTERN C • HYBRID PSC & MIGRATION)**
+
+> **Verified Architectural & Business Outcome (Single Unified SaaS URL Routing Across Pooled & PSC Spokes + Zero-Downtime Tier Upgrades):** Standard tenants (RetailStream baseline) run in the cost-optimal shared pool while Enterprise tenants (FinVault) route over Private Service Connect to dedicated spokes—and growing tenants promote live (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`) with 0 dropped sessions. **(PATTERN C • HYBRID PSC & MIGRATION)**
 
 #### Part B — Component Architecture & Technical Flow Specification
 * **Google Cloud Services Used**: External ALB • Cloud Armor & IAP • Cloud Run Hybrid Router • Firestore Route Table • Private Service Connect (PSC) • Vertex AI Agent Engine • AlloyDB RLS & CMEK Spokes
@@ -260,14 +273,14 @@ Every architecture blueprint in **WS4** follows a **strict Top-Down Architectura
 | **Step ⑤** • Phase 1: SHADOW_SYNC | Live Tier Migrator (`execute_zero_downtime_tier_upgrade`) (Green Zone) | Provisions the target Enterprise spoke project, CMEK key, and PSC attachment while streaming the tenant’s L4 Memory Bank and RLS rows to `0ms` replication lag. | Phase 1 SHADOW_SYNC • Background State Replication | 100% of active session history replicated without pausing user traffic |
 | **Step ⑥** • Phase 2: ATOMIC_CUTOVER | Firestore Atomic Pointer Flip (Blue & Green Zones) | Atomically updates the tenant’s instance-scoped profile (`tier: STANDARD → ENTERPRISE`, `thinking_budget: 4000 → 8000`, `target: pool:// → psc://`). | Phase 2 ATOMIC_CUTOVER • Instance-Scoped Profile Mutation | Verified F-09: Sub-50ms cutover with zero global state bleed across instances |
 | **Step ⑦** • Phase 3: DRAIN_AND_VERIFY | Promoted PSC Spoke (`cymbal-retailstream-silo-prod`) (Red Zone) | Drains in-flight pooled requests cleanly while routing the next turn of the active `session_id` to the new CMEK-encrypted PSC spoke. | Phase 3 DRAIN_AND_VERIFY • run_tier_migration_suite.py (4/4 PASS) | Verified 4/4 tests: 0 dropped sessions, 8,000 budget unlocked, CMEK active |
-| **Cost & Audit** • Blended Tier Chargeback | BigQuery OTel (`pattern_c_hybrid_psc_Spoke_telemetry`) (Green Zone) | Streams real-time telemetry tagged with `routing_plane` (`POOLED` vs `PSC_SPOKE`) and `migration_phase` into BigQuery for tiered invoicing. | BigQuery Hybrid FinOps & Migration Audit Sink | Verified live in BigQuery: POOLED → PSC_SPOKE hybrid telemetry recorded |
+| **Cost & Audit** • Blended Tier Chargeback | BigQuery OTel (`cymbal_agentic_finops_otel.tenant_telemetry_spans`) (Green Zone) | Streams real-time telemetry tagged with `routing_plane` (`POOLED` vs `PSC_SPOKE`) and `migration_phase` into BigQuery for tiered invoicing. | BigQuery Hybrid FinOps & Migration Audit Sink | Verified live in BigQuery: POOLED → PSC_SPOKE hybrid telemetry recorded |
 
-### Diagram 12: Pattern C Demo Environment: Central Ingress Hub, Shared Pool & PSC Service Attachment Spokes (`ws4-hub-and-spoke-demo-env-setup-topology`)
+### Diagram 11: Pattern C Demo Environment: Central Ingress Hub, Shared Pool & PSC Service Attachment Spokes (`ws4-hub-and-spoke-demo-env-setup-topology`)
 * **Workstream & Focus**: Workstream 4 • Pattern C: Hub-and-Spoke Demo Environment & PSC ServiceAttachment Topology (WS 4.2) (`PATTERN C • PSC HUB & SPOKE`)
 * **Question Answered**: *How do we wire a central multi-tenant Hub VPC to dozens of isolated Enterprise Spoke VPCs using Google Cloud Private Service Connect (PSC) Service Attachments so spokes can reuse overlapping CIDRs (`10.40.0.0/20`) and never initiate reverse traffic into the hub?*
 * **Architectural & Business Outcome (Unidirectional Private Service Connect Bridging with Zero CIDR Overlap)**: Every Enterprise spoke can use the exact same internal IP CIDR (`10.40.0.0/20`) without VPC peering limits or IP collisions, and because PSC is NAT-based and unidirectional, a spoke can never initiate a reverse connection back into the central hub.
 
-#### 4-Zone Hub-and-Spoke Architecture Summary
+#### 4-Zone Hub-and-Spoke Architecture Summary (Rule 53G `hub-2-spoke`)
 * **Blue Zone — 1. Central Hub Project (`cymbal-hybrid-hub-prod`)**: Hosts the Global ALB + Cloud Armor + IAP ingress, the Cloud Run Hybrid Router, and the Hub VPC (`10.10.0.0/20`).
 * **Green Zone — 2. Consumer PSC Endpoint & Accept-List Control**: Reserves internal Hub IP `10.10.0.50` (`psc-consumer-finvault`) and enforces explicit `ACCEPT_MANUAL` consumer project allow-lists.
 * **Yellow Zone — 3. Shared Pool & `/28` PSC NAT Translation**: Runs the Standard-tier shared pool and translates hub-to-spoke packets across the dedicated `PRIVATE_SERVICE_CONNECT` NAT subnet.
@@ -281,7 +294,8 @@ Every architecture blueprint in **WS4** follows a **strict Top-Down Architectura
 1. **Step ⑤ — Source NAT Translation Across `/28` PSC Subnet** (*Yellow Zone (PSC NAT Subnet)*): Google Cloud Private Service Connect translates the packet’s source IP using the dedicated `PRIVATE_SERVICE_CONNECT` NAT subnet (`cymbal-psc-nat-us-west1`), allowing every spoke to reuse `10.40.0.0/20` with zero IP collisions. **(cymbal-psc-nat-us-west1 (`10.240.0.0/28` / `10.40.240.0/24`))**
 1. **Step ⑥ — Executing in Spoke ILB, Agent Runtime & CMEK DB** (*Red Zone (Unidirectional Spoke)*): The translated packet reaches the spoke’s Internal Application Load Balancer, invoking the dedicated Vertex AI Agent Engine runtime and CMEK AlloyDB. Because PSC is unidirectional, the spoke cannot initiate connections back to the hub. **(Unidirectional Producer Spoke • Internal ALB & CMEK AlloyDB)**
 1. **Step ⑦ — Private Backbone Return & Verification Check** (*Red → Blue & Green Zones*): The response returns over the established PSC session to the hub router, passes final egress SDP checks, and completes the 4-test hybrid routing and live upgrade verification suite. **(Zero-Public-IP PSC Return • 4/4 Hybrid Verification Suite)**
-1. **Outcome — Unidirectional Private Service Connect Bridging with Zero CIDR Overlap** (*Architectural & Business Outcome*): Every Enterprise spoke can use the exact same internal IP CIDR (`10.40.0.0/20`) without VPC peering limits or IP collisions, and because PSC is NAT-based and unidirectional, a spoke can never initiate a reverse connection back into the central hub. **(PATTERN C • PSC HUB & SPOKE)**
+
+> **Verified Architectural & Business Outcome (Unidirectional Private Service Connect Bridging with Zero CIDR Overlap):** Every Enterprise spoke can use the exact same internal IP CIDR (`10.40.0.0/20`) without VPC peering limits or IP collisions, and because PSC is NAT-based and unidirectional, a spoke can never initiate a reverse connection back into the central hub. **(PATTERN C • PSC HUB & SPOKE)**
 
 #### Part B — Component Architecture & Technical Flow Specification
 * **Google Cloud Services Used**: Hub VPC (`cymbal-pattern-c-hub-vpc`) • Consumer PSC Forwarding Rule (`10.10.0.50`) • PSC `/28` NAT Subnet (`cymbal-psc-nat-us-west1`) • Producer `ServiceAttachment` • Internal ALB
@@ -298,12 +312,12 @@ Every architecture blueprint in **WS4** follows a **strict Top-Down Architectura
 | **Step ⑦** • In-Spoke CMEK Execution | Spoke Agent Runtime & CMEK AlloyDB (Red Zone) | Executes the agent inside the spoke’s VPC-SC perimeter with 8,000 thinking tokens and CMEK-encrypted AlloyDB/Memory Bank. | Dedicated Spoke Runtime & KMS CMEK Binding | Combines SaaS control-plane simplicity with Pattern B data sovereignty |
 | **Cost & Audit** • PSC Connection Telemetry | Cloud Monitoring & BigQuery OTel (Green Zone) | Monitors `pscConnectionStatus = ACCEPTED`, active NAT port utilization, and per-spoke token economics in BigQuery. | PSC Health & Hybrid FinOps Dashboard | Sub-2ms PSC forwarding overhead with full audit visibility |
 
-### Diagram 13: Zero-Downtime Tier Upgrade Test Sequence: SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY (4/4 PASS) (`ws4-zero-downtime-tier-upgrade-sequence`)
+### Diagram 12: Zero-Downtime Tier Upgrade Test Sequence: SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY (4/4 PASS) (`ws4-zero-downtime-tier-upgrade-sequence`)
 * **Workstream & Focus**: Workstream 4 • Pattern C: Zero-Downtime Live Tier Upgrade Sequence (WS 4.5) (`PATTERN C • ZERO-DOWNTIME UPGRADE`)
 * **Question Answered**: *How do we promote a live customer (RetailStream Corp) from the Standard Pooled tier (`Pattern A`) into a dedicated Enterprise PSC Spoke (`Pattern B/C`) mid-conversation with 0ms replication lag, 0 dropped sessions, and zero global state bleed?*
 * **Architectural & Business Outcome (3-Phase Live Tier Promotion (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`) with 0 Dropped Sessions)**: RetailStream begins in the shared pool (`4,000` budget) during an active chat session, replicates state to its new CMEK spoke at `0ms` lag, flips its Firestore route atomically, and continues the exact same `session_id` in the dedicated PSC spoke (`8,000` budget).
 
-#### 4-Zone Hub-and-Spoke Architecture Summary
+#### 4-Zone Hub-and-Spoke Architecture Summary (Rule 53G `hub-2-spoke`)
 * **Blue Zone — 1. Test 1 Baseline: Hybrid Router & Firestore**: Verifies pre-upgrade baseline: RetailStream routes to `POOLED_SHARED_RUNTIME` (`4,000` cap) while FinVault routes to `DEDICATED_PSC_SPOKE` (`8,000` cap).
 * **Green Zone — 2. Tests 2 & 3: 3-Phase Live Migration Engine**: Executes `Phase 1: SHADOW_SYNC` (`0ms` lag, PSC `ACCEPTED`), `Phase 2: ATOMIC_CUTOVER` in Firestore, and `Phase 3: DRAIN_AND_VERIFY` (`0` dropped sessions).
 * **Yellow Zone — 3. Source Plane: Shared Pooled Runtime**: Serves RetailStream’s initial chat turn (`sess-live-upgrade-99`), streams L4 Memory Bank and AlloyDB RLS rows to the spoke, and drains in-flight turns.
@@ -317,7 +331,8 @@ Every architecture blueprint in **WS4** follows a **strict Top-Down Architectura
 1. **Step ⑤ — Graceful In-Flight Session Drain (0 Dropped)** (*Yellow & Green Zones (Phase 3 Drain)*): In Phase 3 (`DRAIN_AND_VERIFY`), any turn already mid-inference in the shared pool finishes normally before the pooled worker slot closes, guaranteeing `dropped_sessions == 0`. **(Phase 3 (`DRAIN_AND_VERIFY`) • `dropped_sessions = 0`)**
 1. **Step ⑥ — Seamless Next Turn in Dedicated PSC Spoke** (*Red Zone (Test 4 Post-Cutover)*): In Test 4, the very next message on the exact same live session (`sess-live-upgrade-99`) routes automatically over `DEDICATED_PSC_SPOKE` to `cymbal-retailstream-silo-prod` with `6,000` unclamped thinking tokens and active CMEK. **(Test 4 PASS • Same `session_id` Served by New PSC Spoke)**
 1. **Step ⑦ — Instance-Scoped Isolation & Zero Global State Bleed** (*All Zones → Forensic Gate (F-09)*): Forensic check `F-09` verifies that mutating RetailStream’s tier inside `engine.runtime.tenant_profiles` never mutates the global `TENANT_PROFILES` dictionary, ensuring 100% deterministic multi-instance test isolation. **(Forensic Check F-09 PASS • Zero Global State Bleed)**
-1. **Outcome — 3-Phase Live Tier Promotion (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`) with 0 Dropped Sessions** (*Architectural & Business Outcome*): RetailStream begins in the shared pool (`4,000` budget) during an active chat session, replicates state to its new CMEK spoke at `0ms` lag, flips its Firestore route atomically, and continues the exact same `session_id` in the dedicated PSC spoke (`8,000` budget). **(PATTERN C • ZERO-DOWNTIME UPGRADE)**
+
+> **Verified Architectural & Business Outcome (3-Phase Live Tier Promotion (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`) with 0 Dropped Sessions):** RetailStream begins in the shared pool (`4,000` budget) during an active chat session, replicates state to its new CMEK spoke at `0ms` lag, flips its Firestore route atomically, and continues the exact same `session_id` in the dedicated PSC spoke (`8,000` budget). **(PATTERN C • ZERO-DOWNTIME UPGRADE)**
 
 #### Part B — Component Architecture & Technical Flow Specification
 * **Google Cloud Services Used**: Cloud Run Hybrid Router • Firestore Atomic Routing Table • Private Service Connect (PSC) • Cloud KMS CMEK • Vertex AI Memory Bank & AlloyDB Replication
@@ -334,12 +349,12 @@ Every architecture blueprint in **WS4** follows a **strict Top-Down Architectura
 | **Step ⑦** • CMEK & RPM Promotion | Cloud KMS & Memorystore Bulkhead (Green & Red Zones) | Upgrades RetailStream’s rate bulkhead from `120` RPM to `600` RPM and binds `retailstream-kr/cryptoKeys/agent-memory-cmek` on every subsequent turn. | Promoted Enterprise Profile Enforcement | Full Enterprise SLA and customer key custody active immediately |
 | **Cost & Audit** • Migration Lineage Receipt | BigQuery OTel & Cloud Audit Logs (Green Zone) | Logs the 3-phase migration receipt (`SHADOW_SYNC`, `ATOMIC_CUTOVER`, `DRAIN_AND_VERIFY`) and transitions FinOps chargeback to the Enterprise tier. | 4/4 Tier Migration Verification Receipt | Turns Standard → Enterprise upsells into a 1-click zero-downtime feature |
 
-### Diagram 14: Terraform Hybrid PSC Blueprint Resource Graph: Hub VPC → Consumer PSC Endpoint → Producer ServiceAttachment in Enterprise Spoke (`ws4-terraform-hybrid-psc-blueprint-resource-graph`)
+### Diagram 13: Terraform Hybrid PSC Blueprint Resource Graph: Hub VPC → Consumer PSC Endpoint → Producer ServiceAttachment in Enterprise Spoke (`ws4-terraform-hybrid-psc-blueprint-resource-graph`)
 * **Workstream & Focus**: Workstream 4 • Pattern C: Dual-Provider Terraform Hybrid PSC Blueprint Graph (WS 4.6) (`PATTERN C • TERRAFORM PSC DAG`)
 * **Question Answered**: *How do we codify both sides of the Pattern C Hybrid Hub-and-Spoke network—the central `google.hub` consumer VPC/endpoint and the isolated `google.spoke` producer VPC, `/24` PSC NAT subnet, and `ServiceAttachment`—in a single Terraform blueprint?*
 * **Architectural & Business Outcome (Dual-Provider Terraform Blueprint Wires Hub-to-Spoke PSC in 5 Minutes)**: A single declarative Terraform module provisions both the Producer Spoke (`ServiceAttachment` + PSC NAT subnet) and the Consumer Hub (`10.10.0.50` forwarding rule), outputting the exact URIs needed by the Firestore tenant routing table.
 
-#### 4-Zone Hub-and-Spoke Architecture Summary
+#### 4-Zone Hub-and-Spoke Architecture Summary (Rule 53G `hub-2-spoke`)
 * **Blue Zone — 1. Provider `google.hub`: Central Hub VPC**: Provisions `google_compute_network.hub_vpc` (`cymbal-hybrid-hub-vpc`) and `google_compute_subnetwork.hub_subnet` (`10.10.0.0/20`).
 * **Green Zone — 2. Consumer Bridge & Firestore Outputs**: Reserves internal IP `10.10.0.50`, binds `google_compute_forwarding_rule.psc_consumer_endpoint`, and exports `spoke_service_attachment_uri`.
 * **Yellow Zone — 3. Provider `google.spoke`: Spoke VPC & PSC NAT**: Provisions `google_compute_network.spoke_vpc` (`10.40.0.0/20`) and `google_compute_subnetwork.spoke_psc_nat_subnet` (`purpose = PRIVATE_SERVICE_CONNECT`).
@@ -353,7 +368,8 @@ Every architecture blueprint in **WS4** follows a **strict Top-Down Architectura
 1. **Step ⑤ — Publishing the Producer `ServiceAttachment` (`ACCEPT_MANUAL`)** (*Red Zone (Producer Attachment)*): Terraform creates `google_compute_service_attachment.spoke_psc_producer`, binding the spoke’s Internal Load Balancer, attaching the PSC NAT subnet, and allow-listing `var.hub_project_id` (`connection_limit = 10`). **(google_compute_service_attachment (`ACCEPT_MANUAL`))**
 1. **Step ⑥ — Binding the Hub Consumer Endpoint (`10.10.0.50`)** (*Green Zone (Consumer Forwarding Rule)*): Once the producer `ServiceAttachment` exists, `provider = google.hub` reserves internal IP `10.10.0.50` (`psc_endpoint_ip`) and creates `google_compute_forwarding_rule.psc_consumer_endpoint` pointing directly to `spoke_psc_producer.id`. **(google_compute_forwarding_rule (`10.10.0.50` → Spoke URI))**
 1. **Step ⑦ — Exporting PSC URI & Hub IP to Firestore Route Table** (*Green → Blue Zone (Firestore Sync)*): Terraform emits `spoke_service_attachment_uri` and `hub_psc_endpoint_ip` (`10.10.0.50`), which register directly in the central Firestore tenant routing table for zero-downtime cutover. **(Terraform Outputs → Firestore `tenant_routing_table`)**
-1. **Outcome — Dual-Provider Terraform Blueprint Wires Hub-to-Spoke PSC in 5 Minutes** (*Architectural & Business Outcome*): A single declarative Terraform module provisions both the Producer Spoke (`ServiceAttachment` + PSC NAT subnet) and the Consumer Hub (`10.10.0.50` forwarding rule), outputting the exact URIs needed by the Firestore tenant routing table. **(PATTERN C • TERRAFORM PSC DAG)**
+
+> **Verified Architectural & Business Outcome (Dual-Provider Terraform Blueprint Wires Hub-to-Spoke PSC in 5 Minutes):** A single declarative Terraform module provisions both the Producer Spoke (`ServiceAttachment` + PSC NAT subnet) and the Consumer Hub (`10.10.0.50` forwarding rule), outputting the exact URIs needed by the Firestore tenant routing table. **(PATTERN C • TERRAFORM PSC DAG)**
 
 #### Part B — Component Architecture & Technical Flow Specification
 * **Google Cloud Services Used**: Terraform Dual Provider (`google.hub` & `google.spoke`) • Hub VPC (`10.10.0.0/20`) • Spoke VPC (`10.40.0.0/20`) • PSC NAT Subnet (`10.40.240.0/24`) • `ServiceAttachment` • Consumer `ForwardingRule` (`10.10.0.50`)

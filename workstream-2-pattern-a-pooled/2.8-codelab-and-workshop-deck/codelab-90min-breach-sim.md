@@ -68,7 +68,7 @@ As RetailStream, invoke `agent://finvault/private-agent-alpha-regulatory`.
 
 ## Module 5: Run the Full Verification Suite (15 Mins)
 
-Execute the automated test runner and verify all 8 checks pass:
+Execute the automated test runner and verify all 10 checks pass:
 
 ```bash
 python3 workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py

@@ -1352,8 +1352,22 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
         # Any Markdown deliverable requested directly (e.g. /blogs/ws1-….md) opens inside the
         # portal's Publish Studio reader; append ?raw=1 to download the raw file instead.
-        clean_rel = path.lstrip("/")
+        clean_rel = path.strip("/")
         qs_all = parse_qs(parsed.query)
+        if clean_rel == "docs":
+            from urllib.parse import quote
+            self.send_response(302)
+            self.send_header("Location", f"/?doc={quote('docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md')}")
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            return
+        if clean_rel == "blogs":
+            from urllib.parse import quote
+            self.send_response(302)
+            self.send_header("Location", f"/?doc={quote('blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md')}")
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            return
         if clean_rel.endswith(".md") and "raw" not in qs_all:
             target = (ROOT_DIR / clean_rel).resolve()
             if str(target).startswith(str(ROOT_DIR)) and target.is_file():
@@ -1373,7 +1387,10 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             ".json": "application/json; charset=utf-8",
             ".md": "text/markdown; charset=utf-8",
             ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            ".pdf": "application/pdf",
             ".py": "text/plain; charset=utf-8",
+            ".sql": "text/plain; charset=utf-8",
+            ".sh": "text/plain; charset=utf-8",
             ".tf": "text/plain; charset=utf-8",
             ".tfvars": "text/plain; charset=utf-8",
             ".example": "text/plain; charset=utf-8",
@@ -1384,6 +1401,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             ".ts": "text/plain; charset=utf-8",
             ".css": "text/css; charset=utf-8",
             ".js": "application/javascript; charset=utf-8",
+            ".html": "text/html; charset=utf-8",
         }
         if clean_rel:
             static_file = (ROOT_DIR / clean_rel).resolve()
@@ -1391,16 +1409,117 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             if (
                 str(static_file).startswith(str(ROOT_DIR))
                 and static_file.is_file()
-                and suffix in STATIC_MIME
+                and (suffix in STATIC_MIME or static_file.name == "Dockerfile")
                 and not any(part.startswith(".") for part in static_file.relative_to(ROOT_DIR).parts)
             ):
                 data = static_file.read_bytes()
+                mime = STATIC_MIME.get(suffix, "text/plain; charset=utf-8")
                 self.send_response(200)
-                self.send_header("Content-Type", STATIC_MIME[suffix])
+                self.send_header("Content-Type", mime)
                 self.send_header("Content-Length", str(len(data)))
                 self.send_header("Cache-Control", "no-store")
                 if suffix == ".pptx" or suffix == ".drawio":
                     self.send_header("Content-Disposition", f'attachment; filename="{static_file.name}"')
+                self.end_headers()
+                self.wfile.write(data)
+                return
+
+            if (
+                str(static_file).startswith(str(ROOT_DIR))
+                and static_file.is_dir()
+                and not any(part.startswith(".") for part in static_file.relative_to(ROOT_DIR).parts)
+            ):
+                import html as _html
+                from urllib.parse import quote
+                rel_dir = str(static_file.relative_to(ROOT_DIR))
+                children = sorted(
+                    [c for c in static_file.iterdir() if not c.name.startswith(".") and c.name != "__pycache__"],
+                    key=lambda p: (not p.is_dir(), p.name.lower()),
+                )
+                rows_html = []
+                code_cards_html = []
+                CODE_PREVIEW_EXTS = {".py", ".tf", ".tfvars", ".example", ".sql", ".yaml", ".yml", ".md"}
+                for child in children:
+                    c_rel = str(child.relative_to(ROOT_DIR))
+                    if child.is_dir():
+                        rows_html.append(
+                            f'<tr><td>📁 <a href="/{_html.escape(c_rel)}" style="color:#1a73e8;font-weight:600;text-decoration:none;">{_html.escape(child.name)}/</a></td>'
+                            f'<td><span class="badge">Directory</span></td><td>—</td>'
+                            f'<td><a href="/{_html.escape(c_rel)}" class="btn">Open Folder &rarr;</a></td></tr>'
+                        )
+                    else:
+                        c_ext = child.suffix.lower()
+                        c_size = f"{child.stat().st_size:,} B"
+                        if c_ext == ".md":
+                            open_url = f"/?doc={quote(c_rel)}"
+                            action_label = "Open in Portal Reader &rarr;"
+                        elif c_ext == ".drawio":
+                            diag_id = child.stem
+                            open_url = f"/drawio-editor?id={quote(diag_id)}"
+                            action_label = "Open in Draw.io Studio &rarr;"
+                        else:
+                            open_url = f"/{_html.escape(c_rel)}"
+                            action_label = "Open / Download &rarr;"
+                        rows_html.append(
+                            f'<tr><td>📄 <a href="{open_url}" style="color:#1a73e8;font-weight:600;text-decoration:none;">{_html.escape(child.name)}</a></td>'
+                            f'<td><span class="badge">{_html.escape(c_ext or "file")}</span></td><td>{c_size}</td>'
+                            f'<td><a href="{open_url}" class="btn">{action_label}</a></td></tr>'
+                        )
+                        if c_ext in CODE_PREVIEW_EXTS and child.stat().st_size <= 120000:
+                            raw_txt = child.read_text(encoding="utf-8", errors="replace")
+                            code_cards_html.append(
+                                f'<div class="code-card" id="file-{_html.escape(child.name)}">'
+                                f'<div class="code-card-hdr"><strong>{_html.escape(c_rel)}</strong>'
+                                f'<a href="{open_url}" class="btn">{action_label}</a></div>'
+                                f'<pre><code>{_html.escape(raw_txt)}</code></pre></div>'
+                            )
+                dir_page = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{_html.escape(rel_dir)} — Multi-Tenant Agentic AI Artifact Explorer</title>
+  <style>
+    body {{ font-family: 'Google Sans', Roboto, -apple-system, BlinkMacSystemFont, sans-serif; background: #f8fafc; color: #202124; margin: 0; padding: 24px; }}
+    .wrap {{ max-width: 1180px; margin: 0 auto; }}
+    .hdr {{ display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; background: #fff; border: 1px solid #dadce0; border-radius: 10px; padding: 16px 20px; margin-bottom: 18px; }}
+    h1 {{ font-size: 18px; margin: 0; color: #1a73e8; }}
+    .sub {{ font-size: 13px; color: #5f6368; margin-top: 4px; }}
+    table {{ width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #dadce0; border-radius: 10px; overflow: hidden; margin-bottom: 20px; }}
+    th, td {{ text-align: left; padding: 10px 14px; border-bottom: 1px solid #e8eaed; font-size: 13px; }}
+    th {{ background: #f1f3f4; font-weight: 700; color: #3c4043; }}
+    .badge {{ background: #e8f0fe; color: #174ea6; padding: 2px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 600; }}
+    .btn {{ display: inline-block; background: #fff; color: #1a73e8; border: 1px solid #dadce0; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; }}
+    .btn.primary {{ background: #1a73e8; color: #fff; border-color: #1a73e8; }}
+    .code-card {{ background: #fff; border: 1px solid #dadce0; border-radius: 10px; margin-bottom: 16px; overflow: hidden; }}
+    .code-card-hdr {{ display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background: #f1f3f4; border-bottom: 1px solid #dadce0; font-size: 13px; }}
+    pre {{ margin: 0; padding: 14px 16px; overflow-x: auto; font-family: 'Roboto Mono', monospace; font-size: 12px; line-height: 1.5; background: #ffffff; color: #202124; max-height: 460px; }}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hdr">
+      <div>
+        <h1>📁 /{_html.escape(rel_dir)}</h1>
+        <div class="sub">Google Cloud Architecture Center • Multi-Tenant Agentic AI Artifact &amp; Source Explorer ({len(children)} items)</div>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <a href="/" class="btn primary">&larr; Back to Main Architecture Portal (/)</a>
+      </div>
+    </div>
+    <table>
+      <thead><tr><th>Name</th><th>Type</th><th>Size</th><th>Action</th></tr></thead>
+      <tbody>{''.join(rows_html)}</tbody>
+    </table>
+    {''.join(code_cards_html)}
+  </div>
+</body>
+</html>"""
+                data = dir_page.encode("utf-8")
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.send_header("Content-Length", str(len(data)))
+                self.send_header("Cache-Control", "no-store")
                 self.end_headers()
                 self.wfile.write(data)
                 return

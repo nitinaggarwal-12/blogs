@@ -81,7 +81,7 @@ const DECKS = {
     deckSubtitle:
       'Official Google Cloud Architecture Center hub-and-spoke reference architecture comparing Pooled (Pattern A), Sovereign Silos (Pattern B), and Dynamic Hybrid (Pattern C) isolation models',
     tldr: [
-      'The Multi-Tenant Agentic Challenge: Provisioning dedicated cloud projects for Standard Tiernth commercial tenants erodes SaaS gross margins, whereas naive shared runtimes expose cross-tenant tool, memory, and quota surfaces.',
+      'The Multi-Tenant Agentic Challenge: Provisioning dedicated cloud projects for Standard Tier commercial tenants erodes SaaS gross margins, whereas naive shared runtimes expose cross-tenant tool, memory, and quota surfaces.',
       'Four Agentic Threat Vectors: Unlike deterministic CRUD applications, autonomous ADK agents dynamically discover MCP tools, persist episodic Memory Bank state, share prompt caches, and consume variable reasoning tokens.',
       'Three Production Isolation Topologies: Pattern A (High-Density Pooled), Pattern B (Zero-Trust Sovereign Silos), and Pattern C (Dynamic Hybrid PSC Spokes) reuse 80% of the same Python ADK 2.0 application codebase.',
       'Five-Hop Cryptographic Defense-in-Depth: Every agent turn enforces verified tenant context across Edge OBO/DPoP (Hop 1), Registry Discovery (Hop 2), Memory & Quotas (Hop 3), Model Armor/SDP (Hop 4), and AlloyDB RLS (Hop 5).',
@@ -90,7 +90,7 @@ const DECKS = {
     tldrSpecs: [
       {
         stack: 'Google Cloud Architecture Center (#78) • Cloud Run v2 • Vertex AI Agent Engine',
-        sla: 'Target Economics: 120 RPM Pool Pooled (Pattern A) to 600 RPM Silo Sovereign Silo (Pattern B)',
+        sla: 'Target Economics: 120 RPM Pooled (Pattern A) to 600 RPM Sovereign Silo (Pattern B)',
         tag: 'Well-Architected: Cost vs. Isolation',
       },
       {
@@ -164,12 +164,12 @@ const DECKS = {
           },
           {
             stack: 'Google Workspace OIDC • Dedicated PT / Gemma 3 27B • VPC-SC • Cloud KMS CMEK (finvault-silo-cmek)',
-            sla: 'Tier: ENTERPRISE (600 RPM Silo Silo) • 600 RPM • 8,000 Thinking Budget • OCC/IBAN DLP Masking',
+            sla: 'Tier: ENTERPRISE (600 RPM Silo) • 600 RPM • 8,000 Thinking Budget • OCC/IBAN DLP Masking',
             tag: '2. Regulated Tenant A: FinVault Bank',
           },
           {
             stack: 'Microsoft Entra ID OIDC • Cloud Run v2 • Memorystore Valkey • SharePoint & ServiceNow 3LO',
-            sla: 'Tier: STANDARD (120 RPM Pool Pool) • 120 RPM • 4,000 Thinking Budget • PCI-DSS PAN/SSN DLP Masking',
+            sla: 'Tier: STANDARD (120 RPM Pool) • 120 RPM • 4,000 Thinking Budget • PCI-DSS PAN/SSN DLP Masking',
             tag: '3. Commercial Tenant B: RetailStream',
           },
           {
@@ -315,7 +315,7 @@ const DECKS = {
           },
           {
             stack: 'Gemini 2.5 Pro ContextCacheConfig (32k Prefix) • BigQuery OTel Chargeback Ledger',
-            sla: '120 RPM Pool Pooled Floor • 84.7% Per-Turn Token Savings • 74% Portfolio TCO Reduction (1,000 Tenants)',
+            sla: '120 RPM Pooled Floor • 84.7% Per-Turn Token Savings • 74% Portfolio TCO Reduction (1,000 Tenants)',
             tag: 'Pillar 3: Cost Optimization',
           },
           {
@@ -387,7 +387,7 @@ const DECKS = {
       },
     ],
     callToAction:
-      'Review the 14-slide 3-Act executive architecture deck, execute python3 -B scripts/run_deep_forensic_audit.py, and proceed to Workstream 2 (Pattern A Pooled Architecture).',
+      'Review the 12-slide 3-Act executive architecture deck, execute python3 -B scripts/run_deep_forensic_audit.py, and proceed to Workstream 2 (Pattern A Pooled Architecture).',
   },
 
   'blogs/ws2-pattern-a-pooled-architecture.deck.json': {
@@ -609,11 +609,11 @@ const DECKS = {
         figure: 'Figure 1',
         title: 'Pattern A: High-Density Pooled Multi-Tenant Architecture & 5-Hop Runtime Governance',
         talkingPoints: [
-          'Competing tenants FinVault Bank and RetailStream Corp enter the shared GCP project (ramp-portal-dev) through a single External Application Load Balancer.',
-          'Zone 1 (Hops 1 & 2): Cloud Armor strips spoofed headers, IAP + STS mints DPoP-bound OBO tokens, and Agent Engine Registry filters visible tools.',
-          'Zone 2 (FinOps & Governance): Gemini 2.5 Pro ContextCacheConfig delivers a 90% shared prefix discount while Memorystore Valkey enforces per-tenant RPM.',
-          'Zone 3 (FinVault Enterprise Slice): Runs with an 8,000-token thinking budget, OCC NLC rules, IBAN/SWIFT DLP redaction, and Google Workspace/Jira 3LO.',
-          'Zone 4 (RetailStream Standard Slice): Runs with a 4,000-token thinking cap, PCI-DSS PAN redaction, Entra ID/ServiceNow 3LO, and AlloyDB RLS.',
+          'Competing tenants FinVault Bank (Enterprise) and RetailStream Corp (Standard) enter the single shared GCP project (`cymbal-pooled-saas-prod`) through one External Application Load Balancer.',
+          'Zone 1 (Hop 1 Shared Edge PEP): Cloud Armor strips spoofed `X-Tenant-Id` headers and IAP + STS mints RFC 9449 DPoP-bound `CryptographicContext` tokens.',
+          'Zone 2 (Hop 2 Central Governance & FinOps): Discovery Engine Agent Catalog filters visible tools, manages the 90% shared `ContextCacheConfig` prefix, and logs BigQuery OTel spans.',
+          'Zone 3 Sub-Plane A (Hops 3 & 4 Shared Pooled Runtime): Executes all tenants on one shared Agent Engine pool with Memorystore Valkey RPM bulkheads (`120`/`600` RPM), `4k`/`8k` budget caps, and inline Model Armor + Cloud DLP.',
+          'Zone 3 Sub-Plane B (Hop 5 Shared Data Plane): Co-hosts all tenants in one shared AlloyDB (`FORCE ROW LEVEL SECURITY`), 5-level `{tenant_id}:*` Memory Bank, and BigQuery RLS tier with 3LO DPoP binding.',
         ],
       },
       {
@@ -1434,7 +1434,7 @@ const DECKS = {
           },
           {
             stack: 'Uniform Commercial B2B SaaS -> Pattern A • Multi-Tier Standard + Enterprise -> Pattern C',
-            sla: 'Gate 2: Select Pattern A (120 RPM Pool Pool) or Pattern C (Pool + PSC Spokes + 0ms Live Upgrade)',
+            sla: 'Gate 2: Select Pattern A (120 RPM Pool) or Pattern C (Pool + PSC Spokes + 0ms Live Upgrade)',
             tag: '2. Decision Gate 2: Packaging',
           },
           {
@@ -1622,11 +1622,11 @@ const DECKS = {
         figure: 'Figure 1',
         title: 'Workstream 5 Capstone: Executive Topology Decision Guide & The Multi-Tenant Agentic Triad',
         talkingPoints: [
-          '10,000+ multi-tier tenants enter at Step 1 through a unified front door and receive a zero-bleed, SLA-verified response at Step 7.',
-          'Zone 1 (Triad Pillar 1 — Zero-Trust Ingress & Decision Selector): Evaluates Hop 1 Identity, Hop 4 Model Armor, Hop 2 Catalog, and the 2-Question Topology Selector.',
-          'Zone 2 (Triad Pillar 3 — FinOps & Security Governance): Security Command Center, 3 Chargeback SQL Models, and BigQuery OTel Sink govern compliance and billing.',
-          'Zone 3 (Triad Pillar 2 — Pattern A Pooled Unit Economics): Enforces Memorystore Valkey RPM bulkheads, 4,000 thinking token caps, 90% prefix cache discount, and AlloyDB RLS.',
-          'Zone 4 (Pattern B Silos & Pattern C PSC Spokes): Enforces VPC-SC & IAM PAB perimeters, air-gapped Gemma 3 / Gemini 2.5 Pro hosting, PSC spoke routing, and CMEK kill-switches.',
+          'Zone 1 (1. The 2-Question Executive Topology Selector): Evaluates `Decision inputs` (`Step 1`), `Q1 · Compliance gate` (`100% mandate VPC-SC or air-gap?` at `Step 2`), and `Q2 · Tier gate` (`Multi-tier Standard + Enterprise?` at `Step 3`).',
+          'Zone 2 (2. The Agentic Triad — 80% Reusable Core): Unifies `Pillar 1 • Zero-Trust 5-Hop`, `Pillar 2 • Predictable FinOps`, and `Pillar 3 • Zero-PII OTel Chargeback` (`Step 7`) above the `AGENTIC TRIAD CORE` banner.',
+          'Pattern B Outcome Column (`Q1 = YES` -> `Step 4` • Coral `#fad2cf`): Provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`).',
+          'Pattern A Outcome Column (`Q2 = NO` -> `Step 5` • Amber `#feefc3`): Provisions `Shared Agent Engine Pool` (`120 RPM • 4k cap • 90% cache`) and `Shared AlloyDB & BigQuery RLS` (`FORCE RLS • 10/10 breach tests`).',
+          'Pattern C Outcome Column (`Q2 = YES` -> `Step 6` • Slate `#e8eaed`): Provisions `Hybrid Router & PSC Hub` (`Pool + PSC 10.10.0.50`) and `3-Phase Live Tier Migrator` (`0-downtime upgrade • 4/4 tests`).',
         ],
       },
     ],
@@ -1650,7 +1650,7 @@ const DECKS = {
       },
       {
         stack: 'Private Service Connect (PSC) + 3-Phase Live Tier Migration Engine',
-        sla: 'Zero-Downtime Tenant Promotion from 120 RPM Pool Pool to 600 RPM Silo Dedicated Spoke',
+        sla: 'Zero-Downtime Tenant Promotion from 120 RPM Pool to 600 RPM Silo Dedicated Spoke',
         tag: 'Takeaway 3: Elastic Tier Mobility',
       },
       {

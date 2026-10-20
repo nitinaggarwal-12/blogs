@@ -57,6 +57,8 @@ class DataPlaneRLSAndOTel:
         ctx: CryptographicContext,
         attempted_tenant_filter: Optional[str] = None,
     ) -> Tuple[List[Dict[str, str]], HopAuditRecord]:
+        from ..gcp_live_bridge import bq_execute_live_query
+
         rls_bound_tenant = ctx.tenant_id
         visible_rows = [
             row for row in ALLOYDB_INCIDENTS_TABLE if row["tenant_id"] == rls_bound_tenant
@@ -65,6 +67,23 @@ class DataPlaneRLSAndOTel:
             visible_rows = [
                 row for row in visible_rows if row["tenant_id"] == attempted_tenant_filter
             ]
+
+        meta: Dict[str, object] = {
+            "rls_session_tenant": rls_bound_tenant,
+            "attempted_filter": attempted_tenant_filter or rls_bound_tenant,
+            "rows_returned": len(visible_rows),
+        }
+        if os.environ.get("CYMBAL_LIVE_GCP") == "1":
+            bq_tenant = "tenant-finvault-inc" if rls_bound_tenant == "finvault" else "tenant-retailspark-co"
+            bq_sql = (
+                "SELECT * "
+                "FROM `nitina-ggarwal-sandbox-647724.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities` "
+                f"WHERE tenant_id = '{bq_tenant}'"
+            )
+            if attempted_tenant_filter and attempted_tenant_filter != rls_bound_tenant:
+                bq_att = "tenant-finvault-inc" if attempted_tenant_filter == "finvault" else "tenant-retailspark-co"
+                bq_sql += f" AND tenant_id = '{bq_att}'"
+            meta["live_bigquery_rls_query"] = bq_execute_live_query(bq_sql)
 
         audit = HopAuditRecord(
             hop_number=5,
@@ -75,11 +94,7 @@ class DataPlaneRLSAndOTel:
                 f"Executed `SET LOCAL app.current_tenant = '{rls_bound_tenant}'`. "
                 f"Returned {len(visible_rows)} row(s) matching RLS policy."
             ),
-            metadata={
-                "rls_session_tenant": rls_bound_tenant,
-                "attempted_filter": attempted_tenant_filter or rls_bound_tenant,
-                "rows_returned": len(visible_rows),
-            },
+            metadata=meta,
         )
         return visible_rows, audit
 

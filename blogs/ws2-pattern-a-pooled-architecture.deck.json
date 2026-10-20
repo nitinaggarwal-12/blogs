@@ -272,11 +272,11 @@
       "figure": "Figure 1",
       "title": "Pattern A: High-Density Pooled Multi-Tenant Architecture & 5-Hop Runtime Governance",
       "talkingPoints": [
-        "Competing tenants FinVault Bank and RetailStream Corp enter the shared GCP project (ramp-portal-dev) through a single External Application Load Balancer.",
-        "Zone 1 (Hops 1 & 2): Cloud Armor strips spoofed headers, IAP + STS mints DPoP-bound OBO tokens, and Agent Engine Registry filters visible tools.",
-        "Zone 2 (FinOps & Governance): Gemini 2.5 Pro ContextCacheConfig delivers a 90% shared prefix discount while Memorystore Valkey enforces per-tenant RPM.",
-        "Zone 3 (FinVault Enterprise Slice): Runs with an 8,000-token thinking budget, OCC NLC rules, IBAN/SWIFT DLP redaction, and Google Workspace/Jira 3LO.",
-        "Zone 4 (RetailStream Standard Slice): Runs with a 4,000-token thinking cap, PCI-DSS PAN redaction, Entra ID/ServiceNow 3LO, and AlloyDB RLS."
+        "Competing tenants FinVault Bank (Enterprise) and RetailStream Corp (Standard) enter the single shared GCP project (`cymbal-pooled-saas-prod`) through one External Application Load Balancer.",
+        "Zone 1 (Hop 1 Shared Edge PEP): Cloud Armor strips spoofed `X-Tenant-Id` headers and IAP + STS mints RFC 9449 DPoP-bound `CryptographicContext` tokens.",
+        "Zone 2 (Hop 2 Central Governance & FinOps): Discovery Engine Agent Catalog filters visible tools, manages the 90% shared `ContextCacheConfig` prefix, and logs BigQuery OTel spans.",
+        "Zone 3 Sub-Plane A (Hops 3 & 4 Shared Pooled Runtime): Executes all tenants on one shared Agent Engine pool with Memorystore Valkey RPM bulkheads (`120`/`600` RPM), `4k`/`8k` budget caps, and inline Model Armor + Cloud DLP.",
+        "Zone 3 Sub-Plane B (Hop 5 Shared Data Plane): Co-hosts all tenants in one shared AlloyDB (`FORCE ROW LEVEL SECURITY`), 5-level `{tenant_id}:*` Memory Bank, and BigQuery RLS tier with 3LO DPoP binding."
       ]
     },
     {

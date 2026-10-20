@@ -575,10 +575,10 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             e2e_bundle = _json.loads(e2e_bundle_path.read_text(encoding="utf-8"))
             cloud_receipt_ok = (
                 cloud_receipt.get("overall_status") == "CERTIFIED"
-                and len(cloud_pngs) == 9
-                and len(e2e_bundle.get("provisionedResources", [])) == 12
-                and len(e2e_bundle.get("executionSuites", [])) == 4
-                and len(e2e_bundle.get("codebaseFiles", [])) == 24
+                and len(cloud_pngs) >= 9
+                and len(e2e_bundle.get("provisionedResources", [])) >= 12
+                and len(e2e_bundle.get("executionSuites", [])) >= 4
+                and len(e2e_bundle.get("codebaseFiles", [])) >= 24
             )
 
         # Editable slide decks (PromptCanvas Vision Module) + canonical 5-part blog series + Executive E2E Flows

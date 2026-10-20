@@ -61,8 +61,8 @@
   * Auth Manager brokers 2LO Implicit & 3LO OIDC/Entra ID with interactive mid-session consent challenges.
   * BigQuery OpenTelemetry sink tracks per-tenant token usage for FinOps chargeback.
 
-## Slide 11: Live Red-Team Demo — 4 Breach Simulations in 5 Minutes
-* **Demo Flow**: Run `run_breach_simulations.py` and verify all 8 security assertions pass.
+## Slide 11: Live Red-Team Demo — 10 Breach Simulations in 5 Minutes
+* **Demo Flow**: Run `run_breach_simulations.py` and verify all 10 security assertions pass.
 
 ## Slide 12: When to Graduate from Pattern A (Pooled) to Pattern B (Siloed) or Pattern C (Hybrid)
 * **Decision Criteria**: When a regulated customer mandates dedicated VPC-SC perimeters, physical project separation, customer-revocable CMEK kill-switches, or air-gapped Gemma 3 on GKE.

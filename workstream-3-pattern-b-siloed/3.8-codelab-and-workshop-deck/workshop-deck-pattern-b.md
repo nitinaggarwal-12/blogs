@@ -33,7 +33,7 @@
 * **Architecture**: Private GKE Autopilot cluster with NVIDIA L4 GPUs serving `gemma-3-27b-it` via `vLLM` over an internal load balancer—zero external internet egress.
 
 ## Slide 8: Live Demo — Exfiltration Block & CMEK Revocation in Real Time
-* **Walkthrough**: Execute `run_silo_security_tests.py` and verify all 5 Sovereign Silo gates pass.
+* **Walkthrough**: Execute `run_silo_security_tests.py` and verify all 6 Sovereign Silo gates pass.
 
 ## Slide 9: Operational Trade-Offs of Pattern B
 * **Pros**: Zero blast radius, zero noisy neighbors, simplest per-project quota accounting, full regulatory compliance.

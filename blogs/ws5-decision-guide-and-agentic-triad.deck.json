@@ -54,7 +54,7 @@
         },
         {
           "stack": "Uniform Commercial B2B SaaS -> Pattern A • Multi-Tier Standard + Enterprise -> Pattern C",
-          "sla": "Gate 2: Select Pattern A (120 RPM Pool Pool) or Pattern C (Pool + PSC Spokes + 0ms Live Upgrade)",
+          "sla": "Gate 2: Select Pattern A (120 RPM Pool) or Pattern C (Pool + PSC Spokes + 0ms Live Upgrade)",
           "tag": "2. Decision Gate 2: Packaging"
         },
         {
@@ -298,11 +298,11 @@
       "figure": "Figure 1",
       "title": "Workstream 5 Capstone: Executive Topology Decision Guide & The Multi-Tenant Agentic Triad",
       "talkingPoints": [
-        "10,000+ multi-tier tenants enter at Step 1 through a unified front door and receive a zero-bleed, SLA-verified response at Step 7.",
-        "Zone 1 (Triad Pillar 1 — Zero-Trust Ingress & Decision Selector): Evaluates Hop 1 Identity, Hop 4 Model Armor, Hop 2 Catalog, and the 2-Question Topology Selector.",
-        "Zone 2 (Triad Pillar 3 — FinOps & Security Governance): Security Command Center, 3 Chargeback SQL Models, and BigQuery OTel Sink govern compliance and billing.",
-        "Zone 3 (Triad Pillar 2 — Pattern A Pooled Unit Economics): Enforces Memorystore Valkey RPM bulkheads, 4,000 thinking token caps, 90% prefix cache discount, and AlloyDB RLS.",
-        "Zone 4 (Pattern B Silos & Pattern C PSC Spokes): Enforces VPC-SC & IAM PAB perimeters, air-gapped Gemma 3 / Gemini 2.5 Pro hosting, PSC spoke routing, and CMEK kill-switches."
+        "Zone 1 (1. The 2-Question Executive Topology Selector): Evaluates `Decision inputs` (`Step 1`), `Q1 · Compliance gate` (`100% mandate VPC-SC or air-gap?` at `Step 2`), and `Q2 · Tier gate` (`Multi-tier Standard + Enterprise?` at `Step 3`).",
+        "Zone 2 (2. The Agentic Triad — 80% Reusable Core): Unifies `Pillar 1 • Zero-Trust 5-Hop`, `Pillar 2 • Predictable FinOps`, and `Pillar 3 • Zero-PII OTel Chargeback` (`Step 7`) above the `AGENTIC TRIAD CORE` banner.",
+        "Pattern B Outcome Column (`Q1 = YES` -> `Step 4` • Coral `#fad2cf`): Provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`).",
+        "Pattern A Outcome Column (`Q2 = NO` -> `Step 5` • Amber `#feefc3`): Provisions `Shared Agent Engine Pool` (`120 RPM • 4k cap • 90% cache`) and `Shared AlloyDB & BigQuery RLS` (`FORCE RLS • 10/10 breach tests`).",
+        "Pattern C Outcome Column (`Q2 = YES` -> `Step 6` • Slate `#e8eaed`): Provisions `Hybrid Router & PSC Hub` (`Pool + PSC 10.10.0.50`) and `3-Phase Live Tier Migrator` (`0-downtime upgrade • 4/4 tests`)."
       ]
     }
   ],
@@ -326,7 +326,7 @@
     },
     {
       "stack": "Private Service Connect (PSC) + 3-Phase Live Tier Migration Engine",
-      "sla": "Zero-Downtime Tenant Promotion from 120 RPM Pool Pool to 600 RPM Silo Dedicated Spoke",
+      "sla": "Zero-Downtime Tenant Promotion from 120 RPM Pool to 600 RPM Silo Dedicated Spoke",
       "tag": "Takeaway 3: Elastic Tier Mobility"
     },
     {

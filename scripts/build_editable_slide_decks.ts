@@ -1404,7 +1404,7 @@ function addQuadMetricsSlide(pptx: Pptx, spec: DeckSpec | null) {
       {
         num: '14/14',
         caption: 'Certified Architecture Center (#78) Blueprints',
-        detail: 'Every topology ships with 56 native editable Draw.io shapes, 23 vertex-bound connectors, and 14-slide 3-Act executive walkthroughs.',
+        detail: 'Every topology ships with Rule 53G native editable Draw.io shapes, vertex-bound connectors, and 12-slide 3-Act executive walkthroughs.',
         pill: '100% Editable Vector Assets',
       },
     ],

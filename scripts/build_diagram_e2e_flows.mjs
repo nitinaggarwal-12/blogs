@@ -59,7 +59,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       'Unifies a shared Routing Hub and Central Governance Hub (80% reusable control plane) to route requests into Pattern A (Pooled Runtime + RLS), Pattern B (Per-Tenant Project + VPC-SC + CMEK), or Pattern C (Hybrid PSC Spokes).',
     outcomeTitle: 'Unified Hub-and-Spoke Control Plane Across Three Tenant Isolation Tiers',
     outcomeBody:
-      'Platform teams maintain a single ADK 2.0 and Vertex AI Agent Engine codebase while delivering 120 RPM Pool Pooled (Pattern A), Blended Hybrid Tier Hybrid PSC (Pattern C), and 600 RPM Silo Sovereign Silo (Pattern B) isolation tiers with zero cross-tenant data bleed.',
+      'Platform teams maintain a single ADK 2.0 and Vertex AI Agent Engine codebase while delivering 120 RPM Pooled (Pattern A), Blended Hybrid PSC (Pattern C), and 600 RPM Sovereign Silo (Pattern B) isolation tiers with zero cross-tenant data bleed.',
     outcomeTech: 'All 3 isolation topologies (Pattern A, B & C) verified live on Google Cloud with 20/20 security and migration assertions passing',
     plainZones: [
       {
@@ -207,7 +207,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'Multi-Tier Data Perimeter',
         route: 'AlloyDB RLS, BigQuery CMEK & PSC (Red Zone)',
         protocolAndMechanism:
-          'Enforces `SET LOCAL app.current_tenant` Row-Level Security in Pattern A, per-project VPC-SC + Cloud HSM CMEK in Pattern B, and unidirectional PSC endpoints in Pattern C.',
+          'Enforces `SET LOCAL app.current_tenant_id` Row-Level Security in Pattern A, per-project VPC-SC + Cloud HSM CMEK in Pattern B, and unidirectional PSC endpoints in Pattern C.',
         codeAndResource: 'RLS Policy, CMEK Vault & PSC ServiceAttachment',
         verifiedOutcome: 'Tenants can only retrieve records authorized for their verified identity',
       },
@@ -331,7 +331,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Yellow & Red Zones (Hop 5 Data Plane)',
         title: 'Transactional Row-Level Security & 2LO/3LO MCP',
         logicalNarrative:
-          'Hop 5 executes `SET LOCAL app.current_tenant` on AlloyDB/BigQuery so Row-Level Security restricts rows at the storage engine, and brokers 2LO/3LO OAuth tokens for Jira, Workspace, or ServiceNow MCP calls.',
+          'Hop 5 executes `SET LOCAL app.current_tenant_id` on AlloyDB/BigQuery so Row-Level Security restricts rows at the storage engine, and brokers 2LO/3LO OAuth tokens for Jira, Workspace, or ServiceNow MCP calls.',
         components: 'Hop 5 (`hop5_data_rls_and_otel.py`) • AlloyDB RLS & MCP Hub',
       },
       {
@@ -395,7 +395,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'Hop 5: RLS & 2LO/3LO MCP',
         route: 'AlloyDB RLS, BigQuery & CymbalMCPHub (Red Zone)',
         protocolAndMechanism:
-          'Binds `SET LOCAL app.current_tenant` on database connections and dispatches 2LO (Cymbal Telemetry) and 3LO (Workspace/Jira & Entra/ServiceNow) MCP tools.',
+          'Binds `SET LOCAL app.current_tenant_id` on database connections and dispatches 2LO (Cymbal Telemetry) and 3LO (Workspace/Jira & Entra/ServiceNow) MCP tools.',
         codeAndResource: 'core-cymbal-agent/governance/hop5_data_rls_and_otel.py',
         verifiedOutcome: 'SQL RLS-bypass attempts return 0 foreign rows; unconsented 3LO returns 401',
       },
@@ -442,29 +442,29 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zoneId: 'Blue Zone',
         colorHex: '#aecbfa',
         borderHex: '#174ea6',
-        name: '1. Shared Ingress & Federated Identity PEP',
-        role: 'Terminates multi-tenant traffic at External ALB + Cloud Armor, authenticates Google/Entra OIDC via IAP, and mints KMS-signed tokens.',
+        name: '1. Shared Edge PEP & Identity (Hop 1)',
+        role: 'Terminates multi-tenant traffic at External ALB + Cloud Armor, authenticates Google/Entra OIDC via IAP, and mints RFC 9449 DPoP-bound KMS-signed tokens.',
       },
       {
         zoneId: 'Green Zone',
         colorHex: '#ceead6',
         borderHex: '#137333',
-        name: '2. Shared FinOps Cache, Quotas & Audit',
-        role: 'Manages Memorystore for Valkey per-tenant RPM bulkheads, 90% shared `ContextCacheConfig` prefixes, and BigQuery OTel chargeback.',
+        name: '2. Central Governance, Catalog & FinOps (Hop 2)',
+        role: 'Filters Discovery Engine Agent Catalog ACLs, manages shared `ContextCacheConfig` prefixes, and streams PII-redacted OTel spans to BigQuery FinOps.',
       },
       {
-        zoneId: 'Yellow Zone',
+        zoneId: 'Yellow Zone (Sub-Plane A)',
         colorHex: '#feefc3',
         borderHex: '#b06000',
-        name: '3. Pooled Agent Runtime & Model Armor',
-        role: 'Executes shared ADK 2.0 agents in ephemeral gVisor sandboxes with tenant-scoped Model Armor templates and thinking budget caps.',
+        name: '3A. Shared Pooled Agent Engine, Valkey Bulkheads & Model Armor (Hops 3 & 4)',
+        role: 'Executes shared ADK 2.0 agents in one unified pooled runtime with Memorystore Valkey RPM bulkheads (`120`/`600` RPM), `ContextCacheConfig` (90% savings), and inline Model Armor.',
       },
       {
-        zoneId: 'Red Zone',
+        zoneId: 'Coral Sub-Plane B',
         colorHex: '#fad2cf',
         borderHex: '#c5221f',
-        name: '4. Shared AlloyDB & BigQuery with RLS',
-        role: 'Enforces mandatory PostgreSQL and BigQuery Row-Level Security policies (`tenant_id = SESSION_TENANT`) and scoped 2LO/3LO MCP tools.',
+        name: '3B. Shared AlloyDB (FORCE RLS), Memory Bank & BigQuery RLS (Hop 5)',
+        role: 'Co-hosts all tenants in one shared database and memory tier inside `cymbal-pooled-saas-prod`, enforcing `SET LOCAL app.current_tenant_id`, 5-level `{tenant_id}:*` namespaces, and 3LO DPoP binding.',
       },
     ],
     plainSteps: [
@@ -519,7 +519,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Yellow & Red Zones (Data & Tools)',
         title: 'Row-Level Security Query & 2LO/3LO Tool Call',
         logicalNarrative:
-          'The agent queries the shared AlloyDB/BigQuery table where mandatory Row-Level Security (`SET LOCAL app.current_tenant`) returns only the caller’s rows (2 Acme/FinVault rows; 0 rival rows).',
+          'The agent queries the shared AlloyDB/BigQuery table where mandatory Row-Level Security (`SET LOCAL app.current_tenant_id`) returns only the caller’s rows (2 FinVault or RetailStream rows matching the authenticated caller; 0 rival tenant rows).',
         components: 'AlloyDB RLS • BigQuery Row Access Policy • MCP Hub',
       },
       {
@@ -583,7 +583,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'Database Row-Level Security',
         route: 'AlloyDB & BigQuery RLS (`pattern_a_pooled_rls_entities`) (Red Zone)',
         protocolAndMechanism:
-          'Executes `SET LOCAL app.current_tenant = :verified_tenant` on AlloyDB and evaluates BigQuery `ROW ACCESS POLICY` so queries only scan authorized tenant partitions.',
+          'Executes `SET LOCAL app.current_tenant_id = :verified_tenant` on AlloyDB and evaluates BigQuery `ROW ACCESS POLICY` so queries only scan authorized tenant partitions.',
         codeAndResource: 'Mandatory Engine-Level Row Access Policies',
         verifiedOutcome: 'Proven live: 2 authorized tenant rows returned; 0 cross-tenant rows leaked',
       },
@@ -707,7 +707,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Red Zone Data & Auth (Vectors 9 & 10)',
         title: 'Neutralizing SQL RLS Bypass & Unconsented 3LO',
         logicalNarrative:
-          'Vector 9 injects `SET LOCAL app.current_tenant = finvault; SELECT * WHERE 1=1` (AlloyDB RLS still returns 0 FinVault rows), while Vector 10 calls ServiceNow without a 3LO token and receives an inline OAuth challenge (`401`).',
+          'Vector 9 injects `SET LOCAL app.current_tenant_id = finvault; SELECT * WHERE 1=1` (AlloyDB RLS still returns 0 FinVault rows), while Vector 10 calls ServiceNow without a 3LO token and receives an inline OAuth challenge (`401`).',
         components: 'Vectors 9 & 10 Blocked • Hop 5 RLS & 3LO Auth Manager',
       },
       {
@@ -886,7 +886,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Yellow Zone (FinVault 3LO Execution)',
         title: 'FinVault Workspace, Jira & Private Agent Alpha',
         logicalNarrative:
-          'For FinVault, the runtime invokes `google_workspace_jira_3lo_mcp.py` (fetching Drive runbooks and Jira tickets) and permits model hot-swapping on private `Agent Alpha` (`Gemini 2.5 Pro (Dedicated PT)` ↔ `Gemini 2.5 Pro`).',
+          'For FinVault, the runtime invokes `google_workspace_jira_3lo_mcp.py` (fetching Drive runbooks and Jira tickets) and permits model hot-swapping on private `Agent Alpha` (`gemini-2.5-pro-dedicated` Provisioned Throughput ↔ shared Pay-As-You-Go `gemini-2.5-pro`).',
         components: 'FinVault 3LO MCP • Private Agent Alpha Model Hot-Swap',
       },
       {
@@ -1262,7 +1262,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Yellow Zone (Dedicated Inference)',
         title: 'Air-Gapped Gemma 3 on GKE or Provisioned Gemini',
         logicalNarrative:
-          'FinVault runs inference inside its perimeter using either air-gapped Gemma 3 (27B) on private GKE (`--internal-ip`, CMEK boot disks) or dedicated Provisioned Throughput Gemini 2.5 Pro / Gemini 2.5 Pro (Dedicated PT).',
+          'FinVault runs inference inside its perimeter using either air-gapped Gemma 3 (27B) on private GKE (`--internal-ip`, CMEK boot disks) or dedicated Provisioned Throughput Gemini 2.5 Pro (`gemini-2.5-pro-dedicated`).',
         components: 'Air-Gapped Gemma 3 27B on Private GKE • Provisioned Throughput',
       },
       {
@@ -1915,7 +1915,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       {
         step: 'Cost & Audit',
         hopName: 'Blended Tier Chargeback',
-        route: 'BigQuery OTel (`pattern_c_hybrid_psc_Spoke_telemetry`) (Green Zone)',
+        route: 'BigQuery OTel (`cymbal_agentic_finops_otel.tenant_telemetry_spans`) (Green Zone)',
         protocolAndMechanism:
           'Streams real-time telemetry tagged with `routing_plane` (`POOLED` vs `PSC_SPOKE`) and `migration_phase` into BigQuery for tiered invoicing.',
         codeAndResource: 'BigQuery Hybrid FinOps & Migration Audit Sink',
@@ -2495,7 +2495,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     questionAnswered:
       'How do Chief Architects, CISOs, and CFOs select between Pattern A, Pattern B, and Pattern C—and how does the Multi-Tenant Agentic Triad balance Cryptographic Tenant Governance, Predictable FinOps COGS, and Zero-PII Observability across 1,000+ tenants?',
     gcpProject: 'ramp-portal-dev (#248990048888) & nitina-ggarwal-sandbox-647724 (#887605034827)',
-    runtimeTarget: 'enterprise-s2p-global • cymbal_agentic_finops_otel.pattern_c_hybrid_psc_Spoke_telemetry',
+    runtimeTarget: 'enterprise-s2p-global • cymbal_agentic_finops_otel.tenant_telemetry_spans',
     codeModules: 'workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md • blogs/ws5-decision-guide-and-agentic-triad.md',
     execCloudServices:
       'Vertex AI Agent Engine • Google ADK 2.0 • Gemini 2.5 Pro & Gemma 3 • Cloud Armor & IAP • Model Armor & SDP • Memorystore for Valkey • AlloyDB RLS & Cloud KMS CMEK • BigQuery OTel',
@@ -2507,97 +2507,97 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     outcomeTech: 'Verified live across all 12 forensic checks (F-01..F-12) and 20/20 simulation assertions (10 Pattern A + 6 Pattern B + 4 Pattern C)',
     plainZones: [
       {
-        zoneId: 'Blue Zone',
+        zoneId: 'Blue Zone (Top-Left)',
         colorHex: '#aecbfa',
         borderHex: '#174ea6',
-        name: '1. Triad Pillar 1: 5-Hop Governance & Selector',
-        role: 'Enforces Hops 1, 2 & 4 (OBO/DPoP, Catalog PDP, Model Armor) and applies the 2-Question Decision Tree to dispatch to Pattern A, B, or C.',
+        name: '1. The 2-Question Executive Topology Selector',
+        role: 'Evaluates `Decision inputs` (`Tenant tier, compliance & pricing model`), `Q1 · Compliance gate` (`100% mandate VPC-SC or air-gap?`), and `Q2 · Tier gate` (`Multi-tier Standard + Enterprise?`).',
       },
       {
-        zoneId: 'Green Zone',
+        zoneId: 'Green Zone (Top-Right)',
         colorHex: '#ceead6',
         borderHex: '#137333',
-        name: '2. Triad Pillar 3: Zero-PII FinOps & SCC Audit',
-        role: 'Streams SDP-redacted OpenTelemetry spans into BigQuery to power Even Split, Proportional Chargeback, and Tiered FinOps models.',
+        name: '2. The Agentic Triad (80% reusable core)',
+        role: 'Unifies `Pillar 1 • Zero-Trust 5-Hop`, `Pillar 2 • Predictable FinOps`, and `Pillar 3 • Zero-PII OTel Chargeback` above the `AGENTIC TRIAD CORE` banner (`Shared across Pattern A, B & C`).',
       },
       {
-        zoneId: 'Yellow Zone',
-        colorHex: '#feefc3',
-        borderHex: '#b06000',
-        name: '3. Triad Pillar 2: Pattern A Pooled Unit Economics',
-        role: 'Combines 90% shared `ContextCacheConfig` discounts, Memorystore Valkey RPM bulkheads, 4,000-token caps, and AlloyDB RLS (120 RPM Pool unit cost).',
-      },
-      {
-        zoneId: 'Red Zone',
+        zoneId: 'Coral Outcome Column (Left)',
         colorHex: '#fad2cf',
         borderHex: '#c5221f',
-        name: '4. Regulated Scale: Pattern B Silos & Pattern C PSC',
-        role: 'Delivers dedicated VPC-SC + IAM PAB + Cloud KMS CMEK kill-switches (`HTTP 423`), air-gapped Gemma 3, and zero-downtime PSC tier upgrades.',
+        name: 'Pattern B — Sovereign Silos • $$$ • Terraform module 3.6',
+        role: 'Triggered by `Q1 = YES (100% regulated)`: provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`).',
+      },
+      {
+        zoneId: 'Amber & Slate Outcome Columns (Center & Right)',
+        colorHex: '#feefc3',
+        borderHex: '#b06000',
+        name: 'Pattern A — Pooled ($) & Pattern C — Hybrid PSC ($$)',
+        role: '`Q2 = NO (Single tier)` routes to `Pattern A — Pooled` (`Shared Agent Engine Pool` + `Shared AlloyDB & BigQuery RLS`); `Q2 = YES (Multi-tier)` routes to `Pattern C — Hybrid PSC` (`Hybrid Router & PSC Hub` + `3-Phase Live Tier Migrator`).',
       },
     ],
     plainSteps: [
       {
         step: 'Step ①',
         badgeNum: '01',
-        zone: '10,000+ Tenants → Blue Zone',
-        title: '2-Question Executive Topology Decision Tree',
+        zone: 'Blue Zone (Decision Inputs)',
+        title: 'Ingest Decision Inputs (Tenant Tier, Compliance & Pricing Model)',
         logicalNarrative:
-          'Architects evaluate two questions: Q1: Do all customers legally require dedicated GCP projects, VPC-SC, or air-gapped models? (Yes → Pattern B). Q2: Do you offer both a shared Standard tier and a regulated Enterprise tier? (Single tier → Pattern A; Multi-tier → Pattern C).',
-        components: '2-Question Selector → Pattern A (Pooled), Pattern C (Hybrid), or Pattern B (Sovereign)',
+          'Architects evaluate the SaaS product’s regulatory surface area, customer contract mandates, and pricing tier structure inside `1. The 2-Question Executive Topology Selector`.',
+        components: 'Decision inputs • Tenant tier, compliance & pricing model',
       },
       {
         step: 'Step ②',
         badgeNum: '02',
-        zone: 'Blue Zone (Triad Pillar 1 — Identity & Catalog)',
-        title: 'Enforcing Hops 1 & 2 Across All Topologies',
+        zone: 'Blue Zone (Question 1 Gate)',
+        title: 'Q1 · Compliance Gate (100% Mandate VPC-SC or Air-Gap?)',
         logicalNarrative:
-          'Regardless of topology, every request passes Hop 1 (Cloud Armor header stripping + IAP OIDC/Entra + RFC 8693 OBO/DPoP) and Hop 2 (Discovery Engine Agent Catalog PDP + ADK `before_agent_callback` pruning).',
-        components: 'Triad Pillar 1 • Hops 1 & 2 Cryptographic Identity & Catalog PDP',
+          'Question 1 evaluates whether 100% of customers legally mandate dedicated Google Cloud projects, VPC Service Controls perimeters, or air-gapped open-weight models. If `Q1 = YES (100% regulated)`, route to Pattern B (`Step ④`); if `Q1 = NO`, proceed to `Q2 · Tier gate` (`Step ③`).',
+        components: 'Q1 · Compliance gate → Q1 = YES (Pattern B) or Q1 = NO (Q2 Gate)',
       },
       {
         step: 'Step ③',
         badgeNum: '03',
-        zone: 'Blue Zone → Yellow or Red Spoke',
-        title: 'Commitment to Cost-Optimal or Sovereign Spoke',
+        zone: 'Blue Zone (Question 2 Gate)',
+        title: 'Q2 · Tier Gate (Multi-Tier Standard + Enterprise?)',
         logicalNarrative:
-          'The Architecture Selector routes Standard commercial tenants (950 of 1,000 tenants) to the Pooled Spoke (Yellow Zone) and regulated Enterprise tenants (50 of 1,000 tenants) to Sovereign/PSC Spokes (Red Zone).',
-        components: '950 Standard Tenants (Pooled) + 50 Enterprise Tenants (PSC/Silo)',
+          'Question 2 evaluates whether the SaaS business sells a single uniform commercial tier (`Q2 = NO (Single tier)` → Pattern A `Step ⑤`) or multiple tiers combining a shared Standard tier with a dedicated Enterprise tier (`Q2 = YES (Multi-tier)` → Pattern C `Step ⑥`).',
+        components: 'Q2 · Tier gate → Q2 = NO (Pattern A) or Q2 = YES (Pattern C)',
       },
       {
         step: 'Step ④',
         badgeNum: '04',
-        zone: 'Yellow Zone (Triad Pillar 2 — Pooled FinOps)',
-        title: '4 FinOps Levers Cut Pooled Token COGS by 84.7%',
+        zone: 'Coral Outcome Column (Pattern B)',
+        title: 'Pattern B — Sovereign Silos ($$$ • Terraform Module 3.6)',
         logicalNarrative:
-          'In the Pooled Spoke, Triad Pillar 2 combines (1) 90% shared `ContextCacheConfig` prefix caching, (2) Memorystore for Valkey RPM bulkheads, (3) 4,000-token thinking budget caps, and (4) compact MCP tool output pruning.',
-        components: 'Triad Pillar 2 • 90% Context Cache + Valkey Bulkhead + Token Cap',
+          'Triggered by `Q1 = YES`: provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`).',
+        components: 'Per-Tenant Project & VPC-SC • Dedicated Agent & Gemma 3',
       },
       {
         step: 'Step ⑤',
         badgeNum: '05',
-        zone: 'Red Zone (Sovereign & PSC Guarantees)',
-        title: 'Enforcing VPC-SC, CMEK Kill-Switch & Live Promotion',
+        zone: 'Amber Outcome Column (Pattern A)',
+        title: 'Pattern A — Pooled ($ • Terraform Module 2.6)',
         logicalNarrative:
-          'In the Regulated Spoke, Enterprise tenants receive dedicated VPC-SC perimeters, IAM PAB policies, sub-60s Cloud KMS CMEK kill-switches (`HTTP 423`), air-gapped Gemma 3 / Gemini 2.5 Pro (Dedicated PT), and zero-downtime PSC tier upgrades.',
-        components: 'VPC-SC • IAM PAB • CMEK Kill-Switch (`423`) • Live PSC Upgrade',
+          'Triggered by `Q2 = NO`: provisions `Shared Agent Engine Pool` (`120 RPM • 4k cap • 90% cache`) and `Shared AlloyDB & BigQuery RLS` (`FORCE RLS • 10/10 breach tests`).',
+        components: 'Shared Agent Engine Pool • Shared AlloyDB & BigQuery RLS',
       },
       {
         step: 'Step ⑥',
         badgeNum: '06',
-        zone: 'Yellow & Red Zones (Hops 4 & 5 Data Plane)',
-        title: 'Model Armor Guardrails & Engine-Level Data Isolation',
+        zone: 'Slate Outcome Column (Pattern C)',
+        title: 'Pattern C — Hybrid PSC ($$ • Terraform Module 4.6)',
         logicalNarrative:
-          'Hop 4 screens prompts and redacts egress PII/PCI via Model Armor & SDP, while Hop 5 enforces AlloyDB/BigQuery Row-Level Security (`SET LOCAL app.current_tenant`) or dedicated CMEK vault encryption.',
-        components: 'Hops 4 & 5 • Model Armor, Cloud SDP & AlloyDB/BigQuery RLS',
+          'Triggered by `Q2 = YES`: provisions `Hybrid Router & PSC Hub` (`Pool + PSC 10.10.0.50`) and `3-Phase Live Tier Migrator` (`0-downtime upgrade • 4/4 tests`).',
+        components: 'Hybrid Router & PSC Hub • 3-Phase Live Tier Migrator',
       },
       {
         step: 'Step ⑦',
         badgeNum: '07',
-        zone: 'All Zones → Green Zone (Triad Pillar 3)',
-        title: 'Zero-PII OpenTelemetry & 3 FinOps Chargeback Models',
+        zone: 'Green Zone (Agentic Triad Core → All 3 Patterns)',
+        title: 'Enforce the 80% Reusable Agentic Triad Core Across Pattern A, B & C',
         logicalNarrative:
-          'Triad Pillar 3 streams zero-PII OpenTelemetry spans (`tenant_id`, `tier`, `thinking_tokens`, `cache_hit`) into BigQuery—supporting Even Split, Proportional Token Chargeback, and Fixed Tier pricing with 20/20 tests passing.',
-        components: 'Triad Pillar 3 • BigQuery OTel Sink & 74% Portfolio COGS Savings',
+          'Applies `Pillar 1 • Zero-Trust 5-Hop` (`OBO/DPoP + Model Armor`), `Pillar 2 • Predictable FinOps` (`90% cache + Valkey cap`), and `Pillar 3 • Zero-PII OTel Chargeback` (`SDP -> BigQuery FinOps`) uniformly across all three pattern outcome columns (`74% portfolio COGS savings`).',
+        components: 'Pillar 1 + Pillar 2 + Pillar 3 • AGENTIC TRIAD CORE',
       },
     ],
     execTechSteps: [
@@ -2613,7 +2613,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       {
         step: 'Step ②',
         hopName: 'Pillar 1: Zero-Trust Chain',
-        route: '5-Hop Cryptographic Context Chain (Blue & Yellow Zones)',
+        route: '5-Hop Cryptographic Context Chain (Green Zone Triad Core)',
         protocolAndMechanism:
           'Enforces KMS-signed `CryptographicContext` across Edge PEP (Hop 1), Catalog PDP (Hop 2), gVisor Sandbox (Hop 3), Model Armor (Hop 4), and Data RLS (Hop 5).',
         codeAndResource: 'core-cymbal-agent/governance/hop1..hop5',
@@ -2622,7 +2622,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       {
         step: 'Step ③',
         hopName: 'Pillar 2: FinOps Levers',
-        route: 'Vertex AI ContextCacheConfig & Memorystore (Yellow Zone)',
+        route: 'Vertex AI ContextCacheConfig & Memorystore (Green Zone Triad Core)',
         protocolAndMechanism:
           'Caches the 32k-token shared system prompt once at a 90% discount while enforcing per-tier thinking budgets (`4k` vs `8k`) and Valkey RPM bulkheads.',
         codeAndResource: 'Shared Read-Only Prefix Cache + Tiered Token Caps',
@@ -2630,35 +2630,35 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       },
       {
         step: 'Step ④',
-        hopName: 'Sovereign Silo Controls',
-        route: 'VPC-SC, IAM PAB & Cloud KMS CMEK (Red Zone)',
+        hopName: 'Pattern B Sovereign Silos',
+        route: 'Per-Tenant Project & VPC-SC + Dedicated Agent & Gemma 3 (Coral Column)',
         protocolAndMechanism:
           'Wraps regulated Enterprise projects in VPC Service Controls and IAM Principal Access Boundaries with live Cloud KMS CMEK kill-switch verification (`HTTP 423`).',
-        codeAndResource: 'workstream-3-pattern-b-siloed (Milestone 2)',
+        codeAndResource: 'workstream-3-pattern-b-siloed (Terraform module 3.6 • 6/6 PASS)',
         verifiedOutcome: 'Satisfies OCC/FDIC, HIPAA, and public-sector physical isolation audits',
       },
       {
         step: 'Step ⑤',
-        hopName: 'Hybrid PSC & Live Upgrade',
-        route: 'Private Service Connect & 3-Phase Migrator (Green & Red Zones)',
+        hopName: 'Pattern A Pooled Runtime',
+        route: 'Shared Agent Engine Pool + Shared AlloyDB & BigQuery RLS (Amber Column)',
         protocolAndMechanism:
-          'Bridges the central hub to dedicated spokes over unidirectional PSC (`10.10.0.50`) and promotes live tenants (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`).',
-        codeAndResource: 'workstream-4-pattern-c-hybrid (Milestone 3 • 4/4 PASS)',
-        verifiedOutcome: 'Zero-downtime Standard → Enterprise promotion with 0 dropped sessions',
+          'Co-hosts commercial tenants on a single shared Agent Engine pool (`120 RPM • 4k cap • 90% cache`) and shared AlloyDB/BigQuery tables with `FORCE ROW LEVEL SECURITY`.',
+        codeAndResource: 'workstream-2-pattern-a-pooled (Terraform module 2.6 • 10/10 PASS)',
+        verifiedOutcome: 'High-density SaaS economics with 0 cross-tenant rows or sessions leaked',
       },
       {
         step: 'Step ⑥',
-        hopName: 'Multi-Model Agility',
-        route: 'Gemini 2.5 Pro, Gemini 2.5 Pro (Dedicated PT) & Gemma 3 (Yellow & Red Zones)',
+        hopName: 'Pattern C Hybrid PSC',
+        route: 'Hybrid Router & PSC Hub + 3-Phase Live Tier Migrator (Slate Column)',
         protocolAndMechanism:
-          'Runs shared Gemini 2.5 Pro in the pool while enabling Vertex AI Model Garden hot-swapping (Gemini 2.5 Pro (Dedicated PT)) and air-gapped Gemma 3 (27B) on private GKE.',
-        codeAndResource: 'FinVaultPrivateAgentAlpha & Private GKE Blueprint',
-        verifiedOutcome: 'Matches model capability and residency to each tenant’s contract tier',
+          'Bridges the central hub to dedicated spokes over unidirectional PSC (`10.10.0.50`) and promotes live tenants (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`).',
+        codeAndResource: 'workstream-4-pattern-c-hybrid (Terraform module 4.6 • 4/4 PASS)',
+        verifiedOutcome: 'Zero-downtime Standard → Enterprise promotion with 0 dropped sessions',
       },
       {
         step: 'Step ⑦',
         hopName: 'Pillar 3: Zero-PII OTel',
-        route: 'Sensitive Data Protection & BigQuery OTel (Green Zone)',
+        route: 'Sensitive Data Protection & BigQuery OTel (Green Zone Triad Core)',
         protocolAndMechanism:
           'Redacts all PII/PHI/PCI via Cloud SDP prior to log export and streams tenant-tagged token consumption into BigQuery (`cymbal_agentic_finops_otel`).',
         codeAndResource: '3 Chargeback Models (Even Split, Proportional, Tiered)',
@@ -2667,7 +2667,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       {
         step: 'Cost & Audit',
         hopName: '10-Week Program Roadmap',
-        route: '12/12 Forensic Gates & Product EAP Backlog (Green Zone)',
+        route: '12/12 Forensic Gates & Product EAP Backlog (All Workstreams)',
         protocolAndMechanism:
           'Delivers Pattern A in Week 4, Pattern B in Week 7, and Pattern C in Week 10 alongside the 9-item Google Cloud Product EAP Tracker (`GAP-P0-01`..`GAP-P2-02`).',
         codeAndResource: 'scripts/run_deep_forensic_audit.py (12/12 PASS • 20/20 SIMS)',
@@ -2740,14 +2740,25 @@ function renderDiagramFlowMarkdown(flow) {
   lines.push(`* **Question Answered**: *${flow.questionAnswered}*`);
   lines.push(`* **Architectural & Business Outcome (${flow.outcomeTitle})**: ${flow.outcomeBody}`);
   lines.push('');
-  lines.push('#### 4-Zone Hub-and-Spoke Architecture Summary');
+  const zoneHeading =
+    flow.id === 'ws2-pattern-a-pooled-5hop-architecture'
+      ? '#### 4-Zone Single Shared Pooled Plane Architecture Summary (Rule 53G `pooled-shared-plane`)'
+      : flow.id === 'ws5-decision-tree-and-agentic-triad'
+        ? '#### 5-Zone 2-Question Decision Tree & 3-Outcome Architecture Summary (Rule 53G `decision-tree-3-outcome`)'
+        : '#### 4-Zone Hub-and-Spoke Architecture Summary (Rule 53G `hub-2-spoke`)';
+  lines.push(zoneHeading);
   for (const z of flow.zonesSummary) {
     lines.push(`* **${z.zoneId} — ${z.name}**: ${z.role}`);
   }
   lines.push('');
   lines.push('#### Part A — Agentic Flow: Step-by-Step Architectural Walkthrough (Steps ①–⑦)');
   for (const ls of flow.logicalSteps) {
-    lines.push(`1. **${ls.step} — ${ls.title}** (*${ls.zone}*): ${ls.logicalNarrative} **(${ls.components})**`);
+    if (ls.step === 'Outcome') {
+      lines.push('');
+      lines.push(`> **Verified Architectural & Business Outcome (${ls.title}):** ${ls.logicalNarrative} **(${ls.components})**`);
+    } else {
+      lines.push(`1. **${ls.step} — ${ls.title}** (*${ls.zone}*): ${ls.logicalNarrative} **(${ls.components})**`);
+    }
   }
   lines.push('');
   lines.push('#### Part B — Component Architecture & Technical Flow Specification');
@@ -2780,7 +2791,26 @@ function upsertMarkdownSection(filePath, sectionMarkdown) {
 }
 
 function main() {
-  const flows = ALL_BLUEPRINTS.map((bp, idx) => buildDiagramFlowEntry(bp, idx));
+  const canonicalOrder = [
+    'ws1-multi-tenant-taxonomy-overview',
+    'ws1-cloud-arch-center-5hop-baseline',
+    'ws2-pattern-a-pooled-5hop-architecture',
+    'ws2-demo-env-and-3p-auth-sandbox-topology',
+    'ws2-pattern-a-breach-defense-sequence',
+    'ws2-terraform-starter-resource-graph',
+    'ws3-pattern-b-sovereign-silos-architecture',
+    'ws3-multi-project-silo-and-cmek-setup-topology',
+    'ws3-terraform-silo-blueprint-resource-graph',
+    'ws4-pattern-c-hybrid-psc-and-migration',
+    'ws4-hub-and-spoke-demo-env-setup-topology',
+    'ws4-zero-downtime-tier-upgrade-sequence',
+    'ws4-terraform-hybrid-psc-blueprint-resource-graph',
+    'ws5-decision-tree-and-agentic-triad',
+  ];
+  const orderedBlueprints = [...ALL_BLUEPRINTS].sort(
+    (a, b) => canonicalOrder.indexOf(a.id) - canonicalOrder.indexOf(b.id)
+  );
+  const flows = orderedBlueprints.map((bp, idx) => buildDiagramFlowEntry(bp, idx));
   const outPath = path.join(ROOT_DIR, 'diagrams', 'diagram_e2e_flows.json');
   fs.writeFileSync(
     outPath,
@@ -2788,9 +2818,10 @@ function main() {
       {
         generatedAt: new Date().toISOString(),
         totalDiagrams: flows.length,
-        templateStandard: 'Official Google Cloud Architecture Center Hub-and-Spoke Layout Template (#78) • 56 Vertices • 23 Edges',
+        templateStandard:
+          'Official Google Cloud Architecture Center Template (#78) • Rule 53G 3-Layout Engine: hub-2-spoke (56v/23e), pooled-shared-plane (60v/20e), decision-tree-3-outcome (46v/19e)',
         slideSequenceStandard:
-          'Customer-Centric 3-Act Top-Down 14-Slide Architecture Deck: Act I (Slides 1–4 Hook, Scorecard, Use Cases & Options Matrix) -> Act II (Slide 5 L1 Logical Zones -> Slide 6 L2 Authoritative #78 Physical Blueprint -> Slide 7 L3 5-Actor Sequence -> Slide 8 L4 Wire Payload Transformation) -> Act III (Slides 9–14 Circuit Breakers, Verification Matrix, Live GCP Proof, 3-Stage Technical Solution Lifecycle, 3-Pillar Well-Architected Guarantees & Series Map)',
+          'Customer-Centric 3-Act Top-Down 12-Slide Architecture Deck: Act I (Slides 1–3 Cover & Briefing Map, Customer Use Cases & Architectural Options Matrix) -> Act II (Slide 4 L1 Logical Zones -> Slide 5 L2 Authoritative Figure 1 #78 Physical Blueprint -> Slide 6 L3 5-Actor Sequence -> Slide 7 L4 Wire Payload Transformation) -> Act III (Slides 8–12 Circuit Breakers, EAP Compensating Controls, Live GCP Proof, 3-Pillar Well-Architected Guarantees & Series Progression)',
         diagrams: flows,
       },
       null,
@@ -2812,7 +2843,7 @@ function main() {
     const mdSection = [
       `## Step-by-Step End-to-End Agentic & Technical Flows (${wsKey} Architecture Diagrams)`,
       '',
-      `Every architecture blueprint in **${wsKey}** follows a **strict Top-Down Architectural Zoom** inside the 14-slide Customer-Centric 3-Act presentation deck: **(1) Slide 5 (\`L1\` Conceptual 3-Zone Trust Boundary Overview)** → **(2) Slide 6 (\`L2\` Authoritative \`Figure 1\` Official \`#78\` Physical Blueprint: 56 Editable Shapes + 23 Connectors + 4-Zone Reference Sidebar)** → **(3) Slide 7 (\`L3\` 5-Actor Chronological Request Sequence)** → **(4) Slide 8 (\`L4\` 3-Stage Wire-Level JSON & Cryptographic Context Transformation)**.`,
+      `> **Reader Reference Guide (Standalone Guide & Companion Architecture Deck):** The step-by-step walkthroughs below document every Official Google Cloud Architecture Center (\`#78\`) diagram in **${wsKey}**. Each diagram is self-contained in this guide (\`Figure 1\` above plus the supporting topology blueprints in \`diagrams/\`), and also corresponds 1:1 to **Act II (Slides 4–7)** of the companion 12-slide editable presentation deck (\`presentations/${wsKey.toLowerCase()}-*.pptx\`, viewable in **Tab 2: Editable Architecture Decks** of the interactive portal): **(1) Slide 4 (\`L1\` Conceptual 3-Zone Trust Boundary Overview)** → **(2) Slide 5 (\`L2\` Authoritative \`Figure 1\` Official \`#78\` Physical Blueprint + 4-Zone Reference Sidebar)** → **(3) Slide 6 (\`L3\` 5-Actor Chronological Request Sequence)** → **(4) Slide 7 (\`L4\` 3-Stage Wire-Level JSON & Cryptographic Context Transformation)**.`,
       '',
       ...wsFlows.map((f) => renderDiagramFlowMarkdown(f)),
     ].join('\n');
@@ -2822,16 +2853,10 @@ function main() {
   // Sync into docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md
   const masterGuidePath = path.join(ROOT_DIR, 'docs', 'END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md');
   if (fs.existsSync(masterGuidePath)) {
-    let gText = fs.readFileSync(masterGuidePath, 'utf8');
-    gText = gText.replace(
-      'per diagram [1:1 master image • decomposed editable slide with talking-points sidebar & speaker notes • component specification table]',
-      'per workstream [14-slide 3-Act Top-Down deck: Slide 5 L1 Logical Zones • Slide 6 L2 Authoritative #78 Physical Blueprint (56 shapes + 23 connectors + 4-zone sidebar) • Slide 7 L3 5-Actor Sequence • Slide 8 L4 Wire Payload Transformation]'
-    );
-    fs.writeFileSync(masterGuidePath, gText, 'utf8');
     const allSection = [
       '## Appendix E — Complete Agentic & Technical Flows for All 14 Architecture Diagrams (WS1–WS5)',
       '',
-      'Every workstream across Workstreams 1–5 and Patterns A, B, and C follows a **Customer-Centric 3-Act Top-Down 14-Slide Architecture progression** in the editable presentations: **Act I (Slides 1–4 Business Hook, Scorecard, Customer Use Cases & Options Comparison Matrix)** → **Act II (Slide 5 L1 Logical Zones → Slide 6 L2 Native Editable `#78` Physical Blueprint → Slide 7 L3 5-Actor Sequence → Slide 8 L4 Wire Payload Transformation)** → **Act III (Slides 9–14 Circuit Breakers, Verification Matrix, Live GCP Proof, 3-Stage Technical Solution Lifecycle, 3-Pillar Well-Architected Guarantees & Series Map)**.',
+      'Every workstream across Workstreams 1–5 and Patterns A, B, and C follows a **Customer-Centric 3-Act Top-Down 12-Slide Architecture progression** in the editable presentations: **Act I (Slides 1–3 Cover & Briefing Map, Customer Use Cases & Architectural Options Comparison Matrix)** → **Act II (Slide 4 L1 Logical Zones → Slide 5 L2 Native Editable `Figure 1` `#78` Physical Blueprint → Slide 6 L3 5-Actor Sequence → Slide 7 L4 Wire Payload Transformation)** → **Act III (Slides 8–12 Circuit Breakers, EAP Compensating Controls, Live GCP Proof, 3-Pillar Well-Architected Guarantees & Series Progression)**.',
       '',
       ...flows.map((f) => renderDiagramFlowMarkdown(f)),
     ].join('\n');

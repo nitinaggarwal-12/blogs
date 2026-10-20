@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-10-20T13:01:15.598Z",
+  "generatedAt": "2026-10-20T18:41:03.078Z",
   "totalDiagrams": 14,
-  "templateStandard": "Official Google Cloud Architecture Center Hub-and-Spoke Layout Template (#78) • 56 Vertices • 23 Edges",
-  "slideSequenceStandard": "Customer-Centric 3-Act Top-Down 14-Slide Architecture Deck: Act I (Slides 1–4 Hook, Scorecard, Use Cases & Options Matrix) -> Act II (Slide 5 L1 Logical Zones -> Slide 6 L2 Authoritative #78 Physical Blueprint -> Slide 7 L3 5-Actor Sequence -> Slide 8 L4 Wire Payload Transformation) -> Act III (Slides 9–14 Circuit Breakers, Verification Matrix, Live GCP Proof, 3-Stage Technical Solution Lifecycle, 3-Pillar Well-Architected Guarantees & Series Map)",
+  "templateStandard": "Official Google Cloud Architecture Center Template (#78) • Rule 53G 3-Layout Engine: hub-2-spoke (56v/23e), pooled-shared-plane (60v/20e), decision-tree-3-outcome (46v/19e)",
+  "slideSequenceStandard": "Customer-Centric 3-Act Top-Down 12-Slide Architecture Deck: Act I (Slides 1–3 Cover & Briefing Map, Customer Use Cases & Architectural Options Matrix) -> Act II (Slide 4 L1 Logical Zones -> Slide 5 L2 Authoritative Figure 1 #78 Physical Blueprint -> Slide 6 L3 5-Actor Sequence -> Slide 7 L4 Wire Payload Transformation) -> Act III (Slides 8–12 Circuit Breakers, EAP Compensating Controls, Live GCP Proof, 3-Pillar Well-Architected Guarantees & Series Progression)",
   "diagrams": [
     {
       "index": 1,
@@ -20,7 +20,7 @@
       "execCloudServices": "External Application Load Balancer • Cloud Armor • Identity-Aware Proxy (IAP) • Cloud Run • Vertex AI Agent Engine (ADK 2.0) • Model Armor • AlloyDB & BigQuery",
       "execTechSummary": "Unifies a shared Routing Hub and Central Governance Hub (80% reusable control plane) to route requests into Pattern A (Pooled Runtime + RLS), Pattern B (Per-Tenant Project + VPC-SC + CMEK), or Pattern C (Hybrid PSC Spokes).",
       "outcomeTitle": "Unified Hub-and-Spoke Control Plane Across Three Tenant Isolation Tiers",
-      "outcomeBody": "Platform teams maintain a single ADK 2.0 and Vertex AI Agent Engine codebase while delivering 120 RPM Pool Pooled (Pattern A), Blended Hybrid Tier Hybrid PSC (Pattern C), and 600 RPM Silo Sovereign Silo (Pattern B) isolation tiers with zero cross-tenant data bleed.",
+      "outcomeBody": "Platform teams maintain a single ADK 2.0 and Vertex AI Agent Engine codebase while delivering 120 RPM Pooled (Pattern A), Blended Hybrid PSC (Pattern C), and 600 RPM Sovereign Silo (Pattern B) isolation tiers with zero cross-tenant data bleed.",
       "outcomeTech": "All 3 isolation topologies (Pattern A, B & C) verified live on Google Cloud with 20/20 security and migration assertions passing",
       "zonesSummary": [
         {
@@ -126,7 +126,7 @@
           "badgeNum": "08",
           "zone": "Architectural & Business Outcome",
           "title": "Unified Hub-and-Spoke Control Plane Across Three Tenant Isolation Tiers",
-          "logicalNarrative": "Platform teams maintain a single ADK 2.0 and Vertex AI Agent Engine codebase while delivering 120 RPM Pool Pooled (Pattern A), Blended Hybrid Tier Hybrid PSC (Pattern C), and 600 RPM Silo Sovereign Silo (Pattern B) isolation tiers with zero cross-tenant data bleed.",
+          "logicalNarrative": "Platform teams maintain a single ADK 2.0 and Vertex AI Agent Engine codebase while delivering 120 RPM Pooled (Pattern A), Blended Hybrid PSC (Pattern C), and 600 RPM Sovereign Silo (Pattern B) isolation tiers with zero cross-tenant data bleed.",
           "components": "PATTERNS A, B & C TAXONOMY"
         }
       ],
@@ -175,7 +175,7 @@
           "step": "Step ⑥",
           "hopName": "Multi-Tier Data Perimeter",
           "route": "AlloyDB RLS, BigQuery CMEK & PSC (Red Zone)",
-          "protocolAndMechanism": "Enforces `SET LOCAL app.current_tenant` Row-Level Security in Pattern A, per-project VPC-SC + Cloud HSM CMEK in Pattern B, and unidirectional PSC endpoints in Pattern C.",
+          "protocolAndMechanism": "Enforces `SET LOCAL app.current_tenant_id` Row-Level Security in Pattern A, per-project VPC-SC + Cloud HSM CMEK in Pattern B, and unidirectional PSC endpoints in Pattern C.",
           "codeAndResource": "RLS Policy, CMEK Vault & PSC ServiceAttachment",
           "verifiedOutcome": "Tenants can only retrieve records authorized for their verified identity"
         },
@@ -303,7 +303,7 @@
           "badgeNum": "06",
           "zone": "Yellow & Red Zones (Hop 5 Data Plane)",
           "title": "Transactional Row-Level Security & 2LO/3LO MCP",
-          "logicalNarrative": "Hop 5 executes `SET LOCAL app.current_tenant` on AlloyDB/BigQuery so Row-Level Security restricts rows at the storage engine, and brokers 2LO/3LO OAuth tokens for Jira, Workspace, or ServiceNow MCP calls.",
+          "logicalNarrative": "Hop 5 executes `SET LOCAL app.current_tenant_id` on AlloyDB/BigQuery so Row-Level Security restricts rows at the storage engine, and brokers 2LO/3LO OAuth tokens for Jira, Workspace, or ServiceNow MCP calls.",
           "components": "Hop 5 (`hop5_data_rls_and_otel.py`) • AlloyDB RLS & MCP Hub"
         },
         {
@@ -368,7 +368,7 @@
           "step": "Step ⑥",
           "hopName": "Hop 5: RLS & 2LO/3LO MCP",
           "route": "AlloyDB RLS, BigQuery & CymbalMCPHub (Red Zone)",
-          "protocolAndMechanism": "Binds `SET LOCAL app.current_tenant` on database connections and dispatches 2LO (Cymbal Telemetry) and 3LO (Workspace/Jira & Entra/ServiceNow) MCP tools.",
+          "protocolAndMechanism": "Binds `SET LOCAL app.current_tenant_id` on database connections and dispatches 2LO (Cymbal Telemetry) and 3LO (Workspace/Jira & Entra/ServiceNow) MCP tools.",
           "codeAndResource": "core-cymbal-agent/governance/hop5_data_rls_and_otel.py",
           "verifiedOutcome": "SQL RLS-bypass attempts return 0 foreign rows; unconsented 3LO returns 401"
         },
@@ -413,40 +413,40 @@
           "zoneId": "Blue Zone",
           "colorHex": "#aecbfa",
           "borderHex": "#174ea6",
-          "name": "1. Shared Ingress & Federated Identity PEP",
-          "role": "Terminates multi-tenant traffic at External ALB + Cloud Armor, authenticates Google/Entra OIDC via IAP, and mints KMS-signed tokens.",
+          "name": "1. Shared Edge PEP & Identity (Hop 1)",
+          "role": "Terminates multi-tenant traffic at External ALB + Cloud Armor, authenticates Google/Entra OIDC via IAP, and mints RFC 9449 DPoP-bound KMS-signed tokens.",
           "nodes": [
-            "Terminates multi-tenant traffic at External ALB + Cloud Armor, authenticates Google/Entra OIDC via IAP, and mints KMS-signed tokens."
+            "Terminates multi-tenant traffic at External ALB + Cloud Armor, authenticates Google/Entra OIDC via IAP, and mints RFC 9449 DPoP-bound KMS-signed tokens."
           ]
         },
         {
           "zoneId": "Green Zone",
           "colorHex": "#ceead6",
           "borderHex": "#137333",
-          "name": "2. Shared FinOps Cache, Quotas & Audit",
-          "role": "Manages Memorystore for Valkey per-tenant RPM bulkheads, 90% shared `ContextCacheConfig` prefixes, and BigQuery OTel chargeback.",
+          "name": "2. Central Governance, Catalog & FinOps (Hop 2)",
+          "role": "Filters Discovery Engine Agent Catalog ACLs, manages shared `ContextCacheConfig` prefixes, and streams PII-redacted OTel spans to BigQuery FinOps.",
           "nodes": [
-            "Manages Memorystore for Valkey per-tenant RPM bulkheads, 90% shared `ContextCacheConfig` prefixes, and BigQuery OTel chargeback."
+            "Filters Discovery Engine Agent Catalog ACLs, manages shared `ContextCacheConfig` prefixes, and streams PII-redacted OTel spans to BigQuery FinOps."
           ]
         },
         {
-          "zoneId": "Yellow Zone",
+          "zoneId": "Yellow Zone (Sub-Plane A)",
           "colorHex": "#feefc3",
           "borderHex": "#b06000",
-          "name": "3. Pooled Agent Runtime & Model Armor",
-          "role": "Executes shared ADK 2.0 agents in ephemeral gVisor sandboxes with tenant-scoped Model Armor templates and thinking budget caps.",
+          "name": "3A. Shared Pooled Agent Engine, Valkey Bulkheads & Model Armor (Hops 3 & 4)",
+          "role": "Executes shared ADK 2.0 agents in one unified pooled runtime with Memorystore Valkey RPM bulkheads (`120`/`600` RPM), `ContextCacheConfig` (90% savings), and inline Model Armor.",
           "nodes": [
-            "Executes shared ADK 2.0 agents in ephemeral gVisor sandboxes with tenant-scoped Model Armor templates and thinking budget caps."
+            "Executes shared ADK 2.0 agents in one unified pooled runtime with Memorystore Valkey RPM bulkheads (`120`/`600` RPM), `ContextCacheConfig` (90% savings), and inline Model Armor."
           ]
         },
         {
-          "zoneId": "Red Zone",
+          "zoneId": "Coral Sub-Plane B",
           "colorHex": "#fad2cf",
           "borderHex": "#c5221f",
-          "name": "4. Shared AlloyDB & BigQuery with RLS",
-          "role": "Enforces mandatory PostgreSQL and BigQuery Row-Level Security policies (`tenant_id = SESSION_TENANT`) and scoped 2LO/3LO MCP tools.",
+          "name": "3B. Shared AlloyDB (FORCE RLS), Memory Bank & BigQuery RLS (Hop 5)",
+          "role": "Co-hosts all tenants in one shared database and memory tier inside `cymbal-pooled-saas-prod`, enforcing `SET LOCAL app.current_tenant_id`, 5-level `{tenant_id}:*` namespaces, and 3LO DPoP binding.",
           "nodes": [
-            "Enforces mandatory PostgreSQL and BigQuery Row-Level Security policies (`tenant_id = SESSION_TENANT`) and scoped 2LO/3LO MCP tools."
+            "Co-hosts all tenants in one shared database and memory tier inside `cymbal-pooled-saas-prod`, enforcing `SET LOCAL app.current_tenant_id`, 5-level `{tenant_id}:*` namespaces, and 3LO DPoP binding."
           ]
         }
       ],
@@ -496,7 +496,7 @@
           "badgeNum": "06",
           "zone": "Yellow & Red Zones (Data & Tools)",
           "title": "Row-Level Security Query & 2LO/3LO Tool Call",
-          "logicalNarrative": "The agent queries the shared AlloyDB/BigQuery table where mandatory Row-Level Security (`SET LOCAL app.current_tenant`) returns only the caller’s rows (2 Acme/FinVault rows; 0 rival rows).",
+          "logicalNarrative": "The agent queries the shared AlloyDB/BigQuery table where mandatory Row-Level Security (`SET LOCAL app.current_tenant_id`) returns only the caller’s rows (2 FinVault or RetailStream rows matching the authenticated caller; 0 rival tenant rows).",
           "components": "AlloyDB RLS • BigQuery Row Access Policy • MCP Hub"
         },
         {
@@ -561,7 +561,7 @@
           "step": "Step ⑥",
           "hopName": "Database Row-Level Security",
           "route": "AlloyDB & BigQuery RLS (`pattern_a_pooled_rls_entities`) (Red Zone)",
-          "protocolAndMechanism": "Executes `SET LOCAL app.current_tenant = :verified_tenant` on AlloyDB and evaluates BigQuery `ROW ACCESS POLICY` so queries only scan authorized tenant partitions.",
+          "protocolAndMechanism": "Executes `SET LOCAL app.current_tenant_id = :verified_tenant` on AlloyDB and evaluates BigQuery `ROW ACCESS POLICY` so queries only scan authorized tenant partitions.",
           "codeAndResource": "Mandatory Engine-Level Row Access Policies",
           "verifiedOutcome": "Proven live: 2 authorized tenant rows returned; 0 cross-tenant rows leaked"
         },
@@ -585,6 +585,199 @@
     },
     {
       "index": 4,
+      "id": "ws2-demo-env-and-3p-auth-sandbox-topology",
+      "workstream": "WS2",
+      "workstreamLabel": "Workstream 2 • Pattern A: Multi-IdP Federation & 2LO/3LO MCP Auth Sandbox (WS 2.2)",
+      "badge": "WORKSTREAM 2.2 • DEMO ENV & 3P AUTH SANDBOX",
+      "patternBadge": "PATTERN A • 2LO/3LO AUTH SANDBOX",
+      "title": "Pattern A Demo Environment & 3P Auth Sandbox: Pooled Project, Federated IdPs, OAuth 2LO/3LO Apps, Valkey & Firestore Tenant Config",
+      "subtitle": "Live Verified in nitina-ggarwal-sandbox-647724 (us-west1) • Seeding FinVault Bank (Google OIDC + Jira) & RetailStream Corp (Entra ID + SharePoint/ServiceNow)",
+      "questionAnswered": "How does a single pooled Google Cloud project federate heterogeneous corporate identity providers (Google Workspace OIDC and Microsoft Entra ID) and broker tenant-scoped 2LO and 3LO OAuth tokens to external MCP tools without confused-deputy risks?",
+      "gcpProject": "ramp-portal-dev (#248990048888) & nitina-ggarwal-sandbox-647724 (#887605034827)",
+      "runtimeTarget": "enterprise-s2p-global • Secret Manager tenant-{id}-3p-oauth",
+      "codeModules": "workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md • core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py",
+      "execCloudServices": "Identity-Aware Proxy • Workforce Identity Federation • Secret Manager • Cloud KMS • Vertex AI Agent Engine • Memorystore for Valkey • Firestore",
+      "execTechSummary": "Federates Google Workspace OIDC (FinVault) and Microsoft Entra ID v2.0 (RetailStream) into one pooled runtime, brokering 2LO implicit session passthrough for internal APIs and 3LO user-consented OAuth tokens for Jira, Workspace, and ServiceNow MCP servers.",
+      "outcomeTitle": "Zero-Shadow-Account Federation & Scoped 2LO/3LO MCP Tool Execution",
+      "outcomeBody": "FinVault users authenticate via Google Workspace OIDC to invoke Drive/Jira 3LO MCP tools, while RetailStream users authenticate via Microsoft Entra ID (with zero Google shadow accounts) to invoke SharePoint/ServiceNow 3LO MCP tools.",
+      "outcomeTech": "Verified live: 2LO Cymbal Telemetry, 3LO Google Workspace/Jira, and 3LO Entra ID/ServiceNow MCP flows pass with 0 cross-tenant token access",
+      "zonesSummary": [
+        {
+          "zoneId": "Blue Zone",
+          "colorHex": "#aecbfa",
+          "borderHex": "#174ea6",
+          "name": "1. Multi-IdP Federation & OBO/DPoP Ingress",
+          "role": "Validates Google Workspace OIDC and Microsoft Entra ID v2.0 tokens at the edge and binds RFC 9449 DPoP sender constraints.",
+          "nodes": [
+            "Validates Google Workspace OIDC and Microsoft Entra ID v2.0 tokens at the edge and binds RFC 9449 DPoP sender constraints."
+          ]
+        },
+        {
+          "zoneId": "Green Zone",
+          "colorHex": "#ceead6",
+          "borderHex": "#137333",
+          "name": "2. Firestore Tenant Config & Secret Manager",
+          "role": "Stores per-tenant prompts, thinking budgets, and rate limits in Firestore/Memorystore and isolates 3P OAuth secrets by tenant prefix.",
+          "nodes": [
+            "Stores per-tenant prompts, thinking budgets, and rate limits in Firestore/Memorystore and isolates 3P OAuth secrets by tenant prefix."
+          ]
+        },
+        {
+          "zoneId": "Yellow Zone",
+          "colorHex": "#feefc3",
+          "borderHex": "#b06000",
+          "name": "3. FinVault 3LO Slice (Google OIDC + Jira)",
+          "role": "Brokers 3LO Google OIDC tokens for Google Workspace (Drive, Calendar, Gmail) and Jira Cloud MCP servers plus 2LO Cymbal Telemetry.",
+          "nodes": [
+            "Brokers 3LO Google OIDC tokens for Google Workspace (Drive, Calendar, Gmail) and Jira Cloud MCP servers plus 2LO Cymbal Telemetry."
+          ]
+        },
+        {
+          "zoneId": "Red Zone",
+          "colorHex": "#fad2cf",
+          "borderHex": "#c5221f",
+          "name": "4. RetailStream 3LO Slice (Entra ID + ServiceNow)",
+          "role": "Federates Microsoft Entra ID v2.0 tokens with inline OAuth consent challenges for SharePoint Online and ServiceNow ITOM MCP servers.",
+          "nodes": [
+            "Federates Microsoft Entra ID v2.0 tokens with inline OAuth consent challenges for SharePoint Online and ServiceNow ITOM MCP servers."
+          ]
+        }
+      ],
+      "logicalSteps": [
+        {
+          "step": "Step ①",
+          "badgeNum": "01",
+          "zone": "Federated Caller → Blue Zone",
+          "title": "Multi-IdP Sign-In (Google OIDC or Entra ID)",
+          "logicalNarrative": "FinVault employees sign in with Google Workspace OIDC, while RetailStream employees sign in with Microsoft Entra ID v2.0 (requiring zero Google Workspace shadow accounts).",
+          "components": "Google Workspace OIDC • Microsoft Entra ID v2.0"
+        },
+        {
+          "step": "Step ②",
+          "badgeNum": "02",
+          "zone": "Blue & Green Zones (Config Lookup)",
+          "title": "Dynamic Tenant Profile & GCS Skill Hydration",
+          "logicalNarrative": "Hop 1 mints the KMS-signed `CryptographicContext`. Hop 3 loads the tenant’s dynamic system prompt, thinking budget (`8,000` vs `4,000`), and `gs://cymbal-skills-{tenant}/` URIs from Firestore.",
+          "components": "Firestore Tenant Profile • GCS Skills Bucket Isolation"
+        },
+        {
+          "step": "Step ③",
+          "badgeNum": "03",
+          "zone": "Green Zone (Secret & Token Broker)",
+          "title": "Tenant-Scoped 2LO & 3LO Token Resolution",
+          "logicalNarrative": "`CymbalMCPHub` resolves 2LO implicit session tokens for internal Cymbal Telemetry and retrieves tenant-partitioned 3LO OAuth tokens from Secret Manager (`secret://projects/.../tenant-{id}-3p-oauth`).",
+          "components": "CymbalMCPHub • Secret Manager IAM Condition Binding"
+        },
+        {
+          "step": "Step ④",
+          "badgeNum": "04",
+          "zone": "Yellow / Red Zone (Consent Gate)",
+          "title": "Inline 3LO OAuth Consent & Parameter Check",
+          "logicalNarrative": "If a RetailStream user invokes ServiceNow without an active 3LO grant, the agent pauses the turn and emits an inline OAuth consent challenge (`HTTP 401`) while Model Armor screens tool parameters.",
+          "components": "ADK Inline 3LO OAuth Challenge • Model Armor"
+        },
+        {
+          "step": "Step ⑤",
+          "badgeNum": "05",
+          "zone": "Yellow Zone (FinVault 3LO Execution)",
+          "title": "FinVault Workspace, Jira & Private Agent Alpha",
+          "logicalNarrative": "For FinVault, the runtime invokes `google_workspace_jira_3lo_mcp.py` (fetching Drive runbooks and Jira tickets) and permits model hot-swapping on private `Agent Alpha` (`gemini-2.5-pro-dedicated` Provisioned Throughput ↔ shared Pay-As-You-Go `gemini-2.5-pro`).",
+          "components": "FinVault 3LO MCP • Private Agent Alpha Model Hot-Swap"
+        },
+        {
+          "step": "Step ⑥",
+          "badgeNum": "06",
+          "zone": "Red Zone (RetailStream 3LO Execution)",
+          "title": "RetailStream SharePoint & ServiceNow Execution",
+          "logicalNarrative": "Once the RetailStream user completes Entra ID 3LO consent, `microsoft_servicenow_3lo_mcp.py` queries SharePoint runbooks and creates ServiceNow incident tickets under the user’s delegated identity.",
+          "components": "RetailStream Entra ID 3LO MCP • ServiceNow ITOM"
+        },
+        {
+          "step": "Step ⑦",
+          "badgeNum": "07",
+          "zone": "Workspaces → Caller & BigQuery",
+          "title": "Ephemeral Token Wipe & Zero-Secret Audit Log",
+          "logicalNarrative": "Upon tool completion, in-memory 3LO access tokens are immediately scrubbed from the sandbox, Egress SDP masks sensitive fields, and BigQuery logs the connector invocation with zero raw secrets.",
+          "components": "In-Memory Token Scrubbing • Cloud Logging & BigQuery"
+        },
+        {
+          "step": "Outcome",
+          "badgeNum": "08",
+          "zone": "Architectural & Business Outcome",
+          "title": "Zero-Shadow-Account Federation & Scoped 2LO/3LO MCP Tool Execution",
+          "logicalNarrative": "FinVault users authenticate via Google Workspace OIDC to invoke Drive/Jira 3LO MCP tools, while RetailStream users authenticate via Microsoft Entra ID (with zero Google shadow accounts) to invoke SharePoint/ServiceNow 3LO MCP tools.",
+          "components": "PATTERN A • 2LO/3LO AUTH SANDBOX"
+        }
+      ],
+      "technicalSteps": [
+        {
+          "step": "Step ①",
+          "hopName": "Multi-IdP JWT Validation",
+          "route": "IAP & Workforce Identity Federation (Blue Zone)",
+          "protocolAndMechanism": "Validates upstream JWTs against `accounts.google.com/finvault.com` and `login.microsoftonline.com/retailstream-tenant-guid/v2.0` with DPoP proof verification.",
+          "codeAndResource": "ISSUER_TO_TENANT_MAP in hop1_edge_identity_pep.py",
+          "verifiedOutcome": "Supports 100% Microsoft Entra ID tenants with zero Google shadow accounts"
+        },
+        {
+          "step": "Step ②",
+          "hopName": "Dynamic Runtime Config",
+          "route": "Firestore & Cloud Storage Skills (Green Zone)",
+          "protocolAndMechanism": "Hydrates per-tenant `system_prompt_template`, `thinking_budget`, and `gs://cymbal-skills-{tenant}/` URIs at runtime without redeploying container images.",
+          "codeAndResource": "load_dynamic_runtime_config() in hop3_compute_finops_bulkhead.py",
+          "verifiedOutcome": "Verified F-02: FinVault prompt template and 2 GCS Skill URIs loaded dynamically"
+        },
+        {
+          "step": "Step ③",
+          "hopName": "2LO Implicit Passthrough",
+          "route": "Cymbal Core Telemetry 2LO MCP (Yellow & Red Zones)",
+          "protocolAndMechanism": "Propagates the KMS-signed `CryptographicContext` directly to internal first-party MCP servers (`mcp://cymbal/core-telemetry-2lo`) without prompting the user.",
+          "codeAndResource": "core-cymbal-agent/mcp_servers/cymbal_telemetry_2lo_mcp.py",
+          "verifiedOutcome": "Zero-latency internal telemetry lookups scoped strictly to `ctx.tenant_id`"
+        },
+        {
+          "step": "Step ④",
+          "hopName": "FinVault 3LO Google/Jira",
+          "route": "Google Workspace & Jira 3LO MCP (Yellow Zone)",
+          "protocolAndMechanism": "Exchanges FinVault’s 3LO Google OIDC token to invoke `google_drive_runbook`, `google_calendar_bridge`, and `jira_escalation_issue` under user delegation.",
+          "codeAndResource": "core-cymbal-agent/mcp_servers/google_workspace_jira_3lo_mcp.py",
+          "verifiedOutcome": "Verified F-04: 3LO Google OIDC tools execute with zero ambient service-account elevation"
+        },
+        {
+          "step": "Step ⑤",
+          "hopName": "RetailStream 3LO Entra/SNOW",
+          "route": "Microsoft SharePoint & ServiceNow 3LO MCP (Red Zone)",
+          "protocolAndMechanism": "Verifies RetailStream’s Entra ID 3LO token (or triggers an inline consent challenge on missing token) before querying SharePoint and ServiceNow ITOM.",
+          "codeAndResource": "core-cymbal-agent/mcp_servers/microsoft_servicenow_3lo_mcp.py",
+          "verifiedOutcome": "Verified F-04 & Test 10: Missing 3LO token pauses turn; valid token executes cleanly"
+        },
+        {
+          "step": "Step ⑥",
+          "hopName": "Private Agent Alpha CLI",
+          "route": "Vertex AI Agent Engine & Model Garden (Yellow Zone)",
+          "protocolAndMechanism": "Allows FinVault to provision `FinVaultPrivateAgentAlpha` via `gcloud alpha agents` CLI and hot-swap between `gemini-2.5-pro-dedicated` and `gemini-2.5-pro`.",
+          "codeAndResource": "core-cymbal-agent/agents/finvault_agent_alpha.py",
+          "verifiedOutcome": "Verified F-03: FinVault hot-swap succeeds; RetailStream attempt raises PermissionError"
+        },
+        {
+          "step": "Step ⑦",
+          "hopName": "Secret & Sandbox Scrub",
+          "route": "Secret Manager & Cloud Run Sandbox (Green & Blue Zones)",
+          "protocolAndMechanism": "Enforces IAM Conditions on Secret Manager (`resource.name.startsWith(...)`) and overwrites in-memory OAuth tokens immediately after MCP dispatch.",
+          "codeAndResource": "Per-Tenant Secret Manager ACL & Ephemeral Scrub",
+          "verifiedOutcome": "Zero 3P OAuth credentials persist in memory or logs post-turn"
+        },
+        {
+          "step": "Cost & Audit",
+          "hopName": "Connector Lineage Log",
+          "route": "Cloud Audit Logs & BigQuery OTel (Green Zone)",
+          "protocolAndMechanism": "Records every 2LO and 3LO MCP tool invocation, auth mode (`2LO_IMPLICIT` vs `3LO_OIDC` / `3LO_ENTRA`), and token cost in BigQuery.",
+          "codeAndResource": "CymbalMCPHub Audit Telemetry",
+          "verifiedOutcome": "100% non-repudiation for third-party SaaS connector actions"
+        }
+      ]
+    },
+    {
+      "index": 5,
       "id": "ws2-pattern-a-breach-defense-sequence",
       "workstream": "WS2",
       "workstreamLabel": "Workstream 2 • Pattern A: 10-Point Cross-Tenant Breach Simulation & Defense Matrix (WS 2.5)",
@@ -689,7 +882,7 @@
           "badgeNum": "06",
           "zone": "Red Zone Data & Auth (Vectors 9 & 10)",
           "title": "Neutralizing SQL RLS Bypass & Unconsented 3LO",
-          "logicalNarrative": "Vector 9 injects `SET LOCAL app.current_tenant = finvault; SELECT * WHERE 1=1` (AlloyDB RLS still returns 0 FinVault rows), while Vector 10 calls ServiceNow without a 3LO token and receives an inline OAuth challenge (`401`).",
+          "logicalNarrative": "Vector 9 injects `SET LOCAL app.current_tenant_id = finvault; SELECT * WHERE 1=1` (AlloyDB RLS still returns 0 FinVault rows), while Vector 10 calls ServiceNow without a 3LO token and receives an inline OAuth challenge (`401`).",
           "components": "Vectors 9 & 10 Blocked • Hop 5 RLS & 3LO Auth Manager"
         },
         {
@@ -777,779 +970,7 @@
       ]
     },
     {
-      "index": 5,
-      "id": "ws3-pattern-b-sovereign-silos-architecture",
-      "workstream": "WS3",
-      "workstreamLabel": "Workstream 3 • Pattern B: Zero-Trust Sovereign Silos Architecture (WS 3.1)",
-      "badge": "WORKSTREAM 3.1 • PATTERN B BLUEPRINT",
-      "patternBadge": "PATTERN B • SOVEREIGN SILOS",
-      "title": "Pattern B: Zero-Trust Sovereign Silos (VPC-SC, IAM PAB, CMEK Kill-Switch & Air-Gapped Gemma 3 on GKE)",
-      "subtitle": "Milestone 2 (Weeks 4–7) • Verified KMS KeyRing cymbal-multi-tenant-kr & BQ Vault cymbal_silo_finvault_usw1 (HTTP 423 Lock)",
-      "questionAnswered": "How do we satisfy strict banking (OCC/FDIC), healthcare (HIPAA), and public-sector regulators that prohibit shared compute, shared storage, or provider-owned keys—while reusing 80% of our core ADK 2.0 agent codebase?",
-      "gcpProject": "nitina-ggarwal-sandbox-647724 (#887605034827)",
-      "runtimeTarget": "KMS cymbal-multi-tenant-kr/{finvault-silo-cmek,medcore-revoked-cmek}",
-      "codeModules": "workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md • runtime/main.py (/v1/patterns/b/execute)",
-      "execCloudServices": "mTLS Ingress • IAM Principal Access Boundary (PAB) • VPC Service Controls (VPC-SC) • Cloud KMS CMEK • Vertex AI / Air-Gapped Gemma 3 on GKE • Dedicated AlloyDB & BigQuery",
-      "execTechSummary": "Deploys the same 5-Hop governance engine inside a dedicated single-tenant Google Cloud project wrapped in a VPC Service Controls perimeter, IAM Principal Access Boundary, and customer-revocable Cloud KMS CMEK key.",
-      "outcomeTitle": "Dedicated Single-Tenant GCP Project + Sub-60s Customer CMEK Kill-Switch (`HTTP 423`)",
-      "outcomeBody": "Each regulated enterprise (FinVault Bank and RetailStream/MedCore) operates inside a physically isolated GCP project with its own VPC-SC perimeter and Cloud KMS key—where disabling the customer key halts all AI memory, DB reads, and inference with `HTTP 423 Locked`.",
-      "outcomeTech": "Verified live on Google Cloud (6/6 tests): active FinVault CMEK succeeds (2 rows) while revoked CMEK immediately halts with HTTP 423 Locked",
-      "zonesSummary": [
-        {
-          "zoneId": "Blue Zone",
-          "colorHex": "#aecbfa",
-          "borderHex": "#174ea6",
-          "name": "1. mTLS Ingress & IAM Principal Access Boundary",
-          "role": "Verifies client mTLS X.509 certificates at Hop 1, enforces IAM Principal Access Boundaries (PAB), and routes to the tenant’s dedicated silo project.",
-          "nodes": [
-            "Verifies client mTLS X.509 certificates at Hop 1, enforces IAM Principal Access Boundaries (PAB), and routes to the tenant’s dedicated silo project."
-          ]
-        },
-        {
-          "zoneId": "Green Zone",
-          "colorHex": "#ceead6",
-          "borderHex": "#137333",
-          "name": "2. VPC-SC Perimeter & CMEK Kill-Switch Monitor",
-          "role": "Enforces VPC Service Controls across 8 Google Cloud APIs, checks real-time Cloud KMS CMEK state at Hop 3, and logs Access Transparency events.",
-          "nodes": [
-            "Enforces VPC Service Controls across 8 Google Cloud APIs, checks real-time Cloud KMS CMEK state at Hop 3, and logs Access Transparency events."
-          ]
-        },
-        {
-          "zoneId": "Yellow Zone",
-          "colorHex": "#feefc3",
-          "borderHex": "#b06000",
-          "name": "3. FinVault Sovereign Silo Project (CMEK ENABLED)",
-          "role": "Dedicated project running air-gapped Gemma 3 (27B) on private GKE + Gemini 2.5 Pro (Dedicated PT) and CMEK-encrypted AlloyDB/BigQuery vault (`2 rows` returned).",
-          "nodes": [
-            "Dedicated project running air-gapped Gemma 3 (27B) on private GKE + Gemini 2.5 Pro (Dedicated PT) and CMEK-encrypted AlloyDB/BigQuery vault (`2 rows` returned)."
-          ]
-        },
-        {
-          "zoneId": "Red Zone",
-          "colorHex": "#fad2cf",
-          "borderHex": "#c5221f",
-          "name": "4. RetailStream / MedCore Silo (CMEK Kill-Switch)",
-          "role": "Demonstrates dual-silo parity and instant customer CMEK revocation: disabling the cryptoKeyVersion immediately locks the silo with `HTTP 423 Locked`.",
-          "nodes": [
-            "Demonstrates dual-silo parity and instant customer CMEK revocation: disabling the cryptoKeyVersion immediately locks the silo with `HTTP 423 Locked`."
-          ]
-        }
-      ],
-      "logicalSteps": [
-        {
-          "step": "Step ①",
-          "badgeNum": "01",
-          "zone": "Enterprise Caller → Blue Zone",
-          "title": "Mutual TLS (mTLS) Certificate & OIDC Handshake",
-          "logicalNarrative": "Regulated enterprise callers connect over mutual TLS. Hop 1 verifies both the pinned client X.509 certificate fingerprint and the corporate OIDC token (`HTTP 401` on certificate mismatch).",
-          "components": "mTLS X.509 Client Certificate • Hop 1 Edge PEP"
-        },
-        {
-          "step": "Step ②",
-          "badgeNum": "02",
-          "zone": "Blue Zone (IAM PAB Gate)",
-          "title": "IAM Principal Access Boundary (PAB) Enforcement",
-          "logicalNarrative": "Google Cloud IAM evaluates the tenant’s Principal Access Boundary policy (`pab-finvault-silo-only`), mathematically preventing the principal from accessing any resource outside `cymbal-finvault-silo-prod` (`HTTP 403`).",
-          "components": "IAM Principal Access Boundary (PAB) • Zero Cross-Project Access"
-        },
-        {
-          "step": "Step ③",
-          "badgeNum": "03",
-          "zone": "Green Zone (CMEK Heartbeat)",
-          "title": "Real-Time Cloud KMS CMEK State Verification",
-          "logicalNarrative": "At Hop 3, the runtime queries Cloud KMS (`finvault-silo-cmek` vs `medcore-revoked-cmek`) to verify that the customer’s encryption key is `ENABLED`. If the customer revoked their key, execution halts immediately with `HTTP 423 Locked`.",
-          "components": "Cloud KMS CMEK Heartbeat • Instant Kill-Switch (`HTTP 423`)"
-        },
-        {
-          "step": "Step ④",
-          "badgeNum": "04",
-          "zone": "Yellow / Red Zone (VPC-SC Fence)",
-          "title": "VPC Service Controls Perimeter & Silo Model Armor",
-          "logicalNarrative": "The request enters the tenant’s dedicated VPC Service Controls (VPC-SC) perimeter—which blocks all unauthorized egress to external GCP projects—and passes through dedicated OCC/HIPAA Model Armor filters.",
-          "components": "VPC Service Controls (VPC-SC) • Dedicated Model Armor"
-        },
-        {
-          "step": "Step ⑤",
-          "badgeNum": "05",
-          "zone": "Yellow Zone (Dedicated Inference)",
-          "title": "Air-Gapped Gemma 3 on GKE or Provisioned Gemini",
-          "logicalNarrative": "FinVault runs inference inside its perimeter using either air-gapped Gemma 3 (27B) on private GKE (`--internal-ip`, CMEK boot disks) or dedicated Provisioned Throughput Gemini 2.5 Pro / Gemini 2.5 Pro (Dedicated PT).",
-          "components": "Air-Gapped Gemma 3 27B on Private GKE • Provisioned Throughput"
-        },
-        {
-          "step": "Step ⑥",
-          "badgeNum": "06",
-          "zone": "Yellow (Open) vs Red (423 Locked)",
-          "title": "CMEK Vault Decryption vs. Kill-Switch Lockout",
-          "logicalNarrative": "FinVault’s enabled CMEK decrypts `pattern_b_silo_finvault_cmek_vault` (returning 2 rows). In contrast, MedCore’s disabled CMEK key (`DESTROY_SCHEDULED` / `DISABLED`) blocks all storage and memory access with `HTTP 423 Locked`.",
-          "components": "CMEK BigQuery/AlloyDB Vault • Verified 6/6 Silo Security Suite"
-        },
-        {
-          "step": "Step ⑦",
-          "badgeNum": "07",
-          "zone": "Silo Projects → Caller & Auditor",
-          "title": "In-Perimeter Response & Access Transparency Log",
-          "logicalNarrative": "Egress SDP scrubs the final payload inside the tenant project, returns the response over mTLS, and writes immutable Cloud KMS key-usage and VPC-SC audit logs for the customer’s SOC.",
-          "components": "Cloud Audit Logs • Access Transparency • SOC Attestation"
-        },
-        {
-          "step": "Outcome",
-          "badgeNum": "08",
-          "zone": "Architectural & Business Outcome",
-          "title": "Dedicated Single-Tenant GCP Project + Sub-60s Customer CMEK Kill-Switch (`HTTP 423`)",
-          "logicalNarrative": "Each regulated enterprise (FinVault Bank and RetailStream/MedCore) operates inside a physically isolated GCP project with its own VPC-SC perimeter and Cloud KMS key—where disabling the customer key halts all AI memory, DB reads, and inference with `HTTP 423 Locked`.",
-          "components": "PATTERN B • SOVEREIGN SILOS"
-        }
-      ],
-      "technicalSteps": [
-        {
-          "step": "Step ①",
-          "hopName": "Test 1: mTLS & OIDC Gate",
-          "route": "External ALB mTLS & Hop 1 PEP (Blue Zone)",
-          "protocolAndMechanism": "Validates the client’s X.509 mTLS certificate SHA-256 fingerprint against the tenant’s pinned certificate registry before minting the silo context.",
-          "codeAndResource": "verify_mtls_and_pab() • Client Cert Fingerprint Pinning",
-          "verifiedOutcome": "Verified Test 1: Spoofed or missing mTLS certs rejected with HTTP 401"
-        },
-        {
-          "step": "Step ②",
-          "hopName": "Test 2: IAM PAB Isolation",
-          "route": "Google Cloud IAM Principal Access Boundary (Blue Zone)",
-          "protocolAndMechanism": "Binds an IAM v3 Principal Access Boundary policy restricting the workload identity principal strictly to resources inside `projects/cymbal-{tenant}-silo-prod`.",
-          "codeAndResource": "IAM PAB Policy (`pab-{tenant}-silo-only`)",
-          "verifiedOutcome": "Verified Test 2: Cross-project credential use blocked with HTTP 403"
-        },
-        {
-          "step": "Step ③",
-          "hopName": "Test 3: VPC-SC Perimeter",
-          "route": "Access Context Manager VPC-SC (Green Zone)",
-          "protocolAndMechanism": "Wraps `aiplatform`, `alloydb`, `bigquery`, `storage`, `run`, `cloudkms`, `dlp`, and `logging` APIs inside a hard per-tenant VPC Service Controls perimeter.",
-          "codeAndResource": "google_access_context_manager_service_perimeter",
-          "verifiedOutcome": "Verified Test 3: Cross-project data exfiltration blocked by VPC-SC (403)"
-        },
-        {
-          "step": "Step ④",
-          "hopName": "Tests 4 & 5: CMEK Kill-Switch",
-          "route": "Cloud KMS CryptoKey (`finvault-silo-cmek` / `medcore-revoked-cmek`) (Green Zone)",
-          "protocolAndMechanism": "Performs a live Cloud KMS key-state check at Hop 3; disabling the key version immediately halts Memory Bank, AlloyDB, and Vertex AI with `HTTP 423 Locked`.",
-          "codeAndResource": "verify_cmek_key_active() • Cloud KMS Live Key Check",
-          "verifiedOutcome": "Verified Tests 4 & 5: Revocation triggers HTTP 423; re-enable restores 200 OK"
-        },
-        {
-          "step": "Step ⑤",
-          "hopName": "Air-Gapped GKE Inference",
-          "route": "Private GKE (Gemma 3 27B) & Dedicated Vertex AI (Yellow Zone)",
-          "protocolAndMechanism": "Executes open-weight Gemma 3 (27B) on private-node GKE (`enable_private_nodes = true`, no internet egress) with CMEK-encrypted node boot disks and L4/A100 GPUs.",
-          "codeAndResource": "Private Air-Gapped GKE Cluster & Dedicated PT Endpoints",
-          "verifiedOutcome": "Zero shared model weights or noisy-neighbor latency variance"
-        },
-        {
-          "step": "Step ⑥",
-          "hopName": "Test 6: Dual-Silo Parity",
-          "route": "CMEK BigQuery & AlloyDB Vaults (Yellow & Red Zones)",
-          "protocolAndMechanism": "Encrypts all customer tables (`pattern_b_silo_finvault_cmek_vault`) and agent memory under the tenant’s Cloud KMS key across both FinVault and RetailStream silos.",
-          "codeAndResource": "run_silo_security_tests.py (6/6 PASS — F-08 Certified)",
-          "verifiedOutcome": "Verified F-08: Both FinVault and RetailStream silos & kill-switches proven"
-        },
-        {
-          "step": "Step ⑦",
-          "hopName": "In-Silo Egress Redaction",
-          "route": "Dedicated Model Armor & Cloud SDP (Yellow Zone)",
-          "protocolAndMechanism": "Runs dedicated Model Armor and Sensitive Data Protection templates inside the tenant project so unredacted prompts never cross project boundaries.",
-          "codeAndResource": "In-Project Model Armor & SDP Inspection",
-          "verifiedOutcome": "100% data residency within the customer’s dedicated GCP project"
-        },
-        {
-          "step": "Cost & Audit",
-          "hopName": "Silo Billing & KMS Audit",
-          "route": "Cloud Billing, Cloud Audit Logs & BigQuery (Green Zone)",
-          "protocolAndMechanism": "Exports project-level Cloud Billing records and immutable KMS `Decrypt` audit logs directly to the tenant’s compliance sink (600 RPM Silo baseline tier).",
-          "codeAndResource": "Per-Project Billing Attribution & KMS Audit Trail",
-          "verifiedOutcome": "Complete physical, cryptographic, and financial isolation for auditors"
-        }
-      ]
-    },
-    {
       "index": 6,
-      "id": "ws4-pattern-c-hybrid-psc-and-migration",
-      "workstream": "WS4",
-      "workstreamLabel": "Workstream 4 • Pattern C: Dynamic Hybrid Hub-and-Spoke, PSC & Live Tier Migration (WS 4.1)",
-      "badge": "WORKSTREAM 4.1 • PATTERN C BLUEPRINT",
-      "patternBadge": "PATTERN C • HYBRID PSC & MIGRATION",
-      "title": "Pattern C: Dynamic Hybrid Hub-and-Spoke, Private Service Connect (PSC) & Live Tier Migration",
-      "subtitle": "Milestone 3 (Weeks 7–10) • Verified Hub VPC cymbal-pattern-c-hub-vpc, /28 PSC NAT 10.240.0.0/28 & Spoke VPC (0 Dropped Turns)",
-      "questionAnswered": "How do we serve both high-density Standard tenants (Pooled) and regulated Enterprise tenants (Dedicated Spokes) behind a single unified SaaS URL—and upgrade a live tenant from Pooled to a Dedicated Spoke with zero dropped sessions?",
-      "gcpProject": "nitina-ggarwal-sandbox-647724 (#887605034827)",
-      "runtimeTarget": "VPC cymbal-pattern-c-hub-vpc • Subnet cymbal-psc-nat-us-west1 (10.240.0.0/28)",
-      "codeModules": "workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md • workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py",
-      "execCloudServices": "External ALB • Cloud Armor & IAP • Cloud Run Hybrid Router • Firestore Route Table • Private Service Connect (PSC) • Vertex AI Agent Engine • AlloyDB RLS & CMEK Spokes",
-      "execTechSummary": "Combines a single multi-tenant ingress hub with a Firestore tier routing table that dispatches Standard tenants to the shared pool (`pool://`) and Enterprise tenants across unidirectional Private Service Connect (PSC) bridges (`psc://`), plus a 3-phase zero-downtime live tier migrator.",
-      "outcomeTitle": "Single Unified SaaS URL Routing Across Pooled & PSC Spokes + Zero-Downtime Tier Upgrades",
-      "outcomeBody": "Standard tenants (RetailStream baseline) run in the cost-optimal shared pool while Enterprise tenants (FinVault) route over Private Service Connect to dedicated spokes—and growing tenants promote live (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`) with 0 dropped sessions.",
-      "outcomeTech": "Verified live on Google Cloud (4/4 migration tests + F-09): 0ms lag shadow sync, atomic pointer flip, and 0 dropped active sessions",
-      "zonesSummary": [
-        {
-          "zoneId": "Blue Zone",
-          "colorHex": "#aecbfa",
-          "borderHex": "#174ea6",
-          "name": "1. Unified Ingress Hub & Tier-Aware Router",
-          "role": "Fronts all customers behind one SaaS URL, verifies identity at Hop 1, queries the Firestore route table, and filters the cross-project Agent Catalog.",
-          "nodes": [
-            "Fronts all customers behind one SaaS URL, verifies identity at Hop 1, queries the Firestore route table, and filters the cross-project Agent Catalog."
-          ]
-        },
-        {
-          "zoneId": "Green Zone",
-          "colorHex": "#ceead6",
-          "borderHex": "#137333",
-          "name": "2. 3-Phase Zero-Downtime Migration Engine",
-          "role": "Orchestrates live Standard → Enterprise promotions across `SHADOW_SYNC` (0ms lag), `ATOMIC_CUTOVER`, and `DRAIN_AND_VERIFY` (0 dropped sessions).",
-          "nodes": [
-            "Orchestrates live Standard → Enterprise promotions across `SHADOW_SYNC` (0ms lag), `ATOMIC_CUTOVER`, and `DRAIN_AND_VERIFY` (0 dropped sessions)."
-          ]
-        },
-        {
-          "zoneId": "Yellow Zone",
-          "colorHex": "#feefc3",
-          "borderHex": "#b06000",
-          "name": "3. Left Spoke: Shared Pooled Runtime (Standard)",
-          "role": "Executes Standard-tier workloads (`pool://`, 4,000 thinking cap, 90% shared cache, AlloyDB RLS) and streams state during live tier upgrades.",
-          "nodes": [
-            "Executes Standard-tier workloads (`pool://`, 4,000 thinking cap, 90% shared cache, AlloyDB RLS) and streams state during live tier upgrades."
-          ]
-        },
-        {
-          "zoneId": "Red Zone",
-          "colorHex": "#fad2cf",
-          "borderHex": "#c5221f",
-          "name": "4. Right Spoke: Dedicated Enterprise PSC Spokes",
-          "role": "Connects via unidirectional Private Service Connect (`psc://`, `/28` NAT subnet) to dedicated CMEK-encrypted Enterprise spokes (8,000 thinking budget).",
-          "nodes": [
-            "Connects via unidirectional Private Service Connect (`psc://`, `/28` NAT subnet) to dedicated CMEK-encrypted Enterprise spokes (8,000 thinking budget)."
-          ]
-        }
-      ],
-      "logicalSteps": [
-        {
-          "step": "Step ①",
-          "badgeNum": "01",
-          "zone": "Standard & Enterprise Users → Blue Zone",
-          "title": "Single Unified SaaS URL & Identity Verification",
-          "logicalNarrative": "Both Standard (RetailStream) and Enterprise (FinVault) users connect to the same `agent.cymbal.cloud` URL. Hop 1 Cloud Armor and IAP verify OIDC/Entra tokens and mint a KMS-signed `CryptographicContext`.",
-          "components": "Unified SaaS Ingress • Cloud Armor & IAP OBO/DPoP"
-        },
-        {
-          "step": "Step ②",
-          "badgeNum": "02",
-          "zone": "Blue Zone (Catalog & Route Lookup)",
-          "title": "Firestore Tier Lookup & Cross-Project Catalog PDP",
-          "logicalNarrative": "The Cloud Run Hybrid Router looks up the tenant’s active routing record in Firestore (`pool://` vs `psc://`) and filters the federated Vertex AI Agent Engine Registry so private spoke agents are only visible to their owner.",
-          "components": "Firestore Routing Table • Cross-Project Agent Catalog PDP"
-        },
-        {
-          "step": "Step ③",
-          "badgeNum": "03",
-          "zone": "Blue Zone → Left or Right Spoke",
-          "title": "Dynamic Dispatch: Shared Pool vs. Unidirectional PSC",
-          "logicalNarrative": "Standard tenants route directly to the Left Spoke (`pool://cymbal-shared-pooled-runtime-v2`), while Enterprise tenants traverse a Private Service Connect consumer endpoint (`psc://finvault-agent-spoke-psc`) into the Right Spoke.",
-          "components": "Dynamic Tier Router • Private Service Connect (PSC)"
-        },
-        {
-          "step": "Step ④",
-          "badgeNum": "04",
-          "zone": "Yellow & Red Zones (Tiered Guardrails)",
-          "title": "Tier-Scoped Model Armor & Thinking Budget Enforcement",
-          "logicalNarrative": "In the Pooled Spoke, shared Model Armor enforces Standard policies and clamps reasoning to 4,000 tokens. In the Enterprise PSC Spoke, dedicated Model Armor templates run with an 8,000-token budget.",
-          "components": "Tiered Model Armor Templates • 4,000 vs. 8,000 Token Budget"
-        },
-        {
-          "step": "Step ⑤",
-          "badgeNum": "05",
-          "zone": "Green, Yellow & Red Zones (Live Upgrade)",
-          "title": "3-Phase Zero-Downtime Tier Promotion Engine",
-          "logicalNarrative": "When RetailStream upgrades from Standard to Enterprise mid-conversation, the Migration Engine runs (1) `SHADOW_SYNC` (streaming memory & RLS rows to the new CMEK spoke to 0ms lag), (2) `ATOMIC_CUTOVER` in Firestore, and (3) `DRAIN_AND_VERIFY`.",
-          "components": "SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY"
-        },
-        {
-          "step": "Step ⑥",
-          "badgeNum": "06",
-          "zone": "Red Zone (Promoted Enterprise Spoke)",
-          "title": "Seamless Next-Turn Execution in Dedicated PSC Spoke",
-          "logicalNarrative": "In-flight pooled turns finish draining gracefully, while the very next message in RetailStream’s active `session_id` routes over Private Service Connect to `cymbal-retailstream-silo-prod` with 8,000 tokens and dedicated CMEK encryption.",
-          "components": "Zero Dropped Sessions • Dedicated CMEK Spoke Execution"
-        },
-        {
-          "step": "Step ⑦",
-          "badgeNum": "07",
-          "zone": "Spokes → Caller & Green Zone FinOps",
-          "title": "Unified Response Delivery & Blended FinOps Telemetry",
-          "logicalNarrative": "The caller receives a seamless response without re-authenticating or changing URLs, while BigQuery OTel records the transition from Pooled (`routing_plane=POOLED`) to Hybrid PSC (`routing_plane=PSC_SPOKE`) chargeback.",
-          "components": "Seamless Session Continuity • BigQuery Blended FinOps"
-        },
-        {
-          "step": "Outcome",
-          "badgeNum": "08",
-          "zone": "Architectural & Business Outcome",
-          "title": "Single Unified SaaS URL Routing Across Pooled & PSC Spokes + Zero-Downtime Tier Upgrades",
-          "logicalNarrative": "Standard tenants (RetailStream baseline) run in the cost-optimal shared pool while Enterprise tenants (FinVault) route over Private Service Connect to dedicated spokes—and growing tenants promote live (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`) with 0 dropped sessions.",
-          "components": "PATTERN C • HYBRID PSC & MIGRATION"
-        }
-      ],
-      "technicalSteps": [
-        {
-          "step": "Step ①",
-          "hopName": "Unified Ingress & PEP",
-          "route": "External ALB, Cloud Armor & IAP (Blue Zone)",
-          "protocolAndMechanism": "Terminates all customer tiers at one Anycast IP and mints a KMS-signed `CryptographicContext` derived from the verified OIDC/Entra issuer.",
-          "codeAndResource": "hop1_edge_identity_pep.py • Unified SaaS Hostname",
-          "verifiedOutcome": "Customers never change URLs or OAuth redirect URIs when upgrading tiers"
-        },
-        {
-          "step": "Step ②",
-          "hopName": "Federated Catalog & Route",
-          "route": "Firestore Route Table & Cross-Project Registry (Blue Zone)",
-          "protocolAndMechanism": "Resolves the tenant’s live target URI (`pool://` vs `psc://`) and filters cross-project `agent://` descriptors by tenant ownership.",
-          "codeAndResource": "route_tenant_request() in pattern_c_hybrid_router_and_migrator.py",
-          "verifiedOutcome": "Deterministic sub-millisecond tier routing and catalog isolation"
-        },
-        {
-          "step": "Step ③",
-          "hopName": "Standard Pool Dispatch",
-          "route": "Shared Cloud Run Gen2 & AlloyDB RLS (Yellow Zone)",
-          "protocolAndMechanism": "Routes Standard-tier tenants to the shared pooled runtime with 90% shared `ContextCacheConfig` caching, 120 RPM quota, and 4,000 thinking token cap.",
-          "codeAndResource": "pool://cymbal-shared-pooled-runtime-v2",
-          "verifiedOutcome": "Preserves 85–90% COGS savings for high-volume commercial tenants"
-        },
-        {
-          "step": "Step ④",
-          "hopName": "Enterprise PSC Dispatch",
-          "route": "Hub VPC (`cymbal-pattern-c-hub-vpc`) & PSC NAT (Red Zone)",
-          "protocolAndMechanism": "Routes Enterprise tenants via Direct VPC Egress and `cymbal-psc-nat-us-west1` (`10.240.0.0/28`) to the spoke’s `ServiceAttachment` without public IPs.",
-          "codeAndResource": "psc://projects/.../serviceAttachments/{tenant}-agent-spoke-psc",
-          "verifiedOutcome": "Unidirectional hub-to-spoke connectivity with zero CIDR overlap"
-        },
-        {
-          "step": "Step ⑤",
-          "hopName": "Phase 1: SHADOW_SYNC",
-          "route": "Live Tier Migrator (`execute_zero_downtime_tier_upgrade`) (Green Zone)",
-          "protocolAndMechanism": "Provisions the target Enterprise spoke project, CMEK key, and PSC attachment while streaming the tenant’s L4 Memory Bank and RLS rows to `0ms` replication lag.",
-          "codeAndResource": "Phase 1 SHADOW_SYNC • Background State Replication",
-          "verifiedOutcome": "100% of active session history replicated without pausing user traffic"
-        },
-        {
-          "step": "Step ⑥",
-          "hopName": "Phase 2: ATOMIC_CUTOVER",
-          "route": "Firestore Atomic Pointer Flip (Blue & Green Zones)",
-          "protocolAndMechanism": "Atomically updates the tenant’s instance-scoped profile (`tier: STANDARD → ENTERPRISE`, `thinking_budget: 4000 → 8000`, `target: pool:// → psc://`).",
-          "codeAndResource": "Phase 2 ATOMIC_CUTOVER • Instance-Scoped Profile Mutation",
-          "verifiedOutcome": "Verified F-09: Sub-50ms cutover with zero global state bleed across instances"
-        },
-        {
-          "step": "Step ⑦",
-          "hopName": "Phase 3: DRAIN_AND_VERIFY",
-          "route": "Promoted PSC Spoke (`cymbal-retailstream-silo-prod`) (Red Zone)",
-          "protocolAndMechanism": "Drains in-flight pooled requests cleanly while routing the next turn of the active `session_id` to the new CMEK-encrypted PSC spoke.",
-          "codeAndResource": "Phase 3 DRAIN_AND_VERIFY • run_tier_migration_suite.py (4/4 PASS)",
-          "verifiedOutcome": "Verified 4/4 tests: 0 dropped sessions, 8,000 budget unlocked, CMEK active"
-        },
-        {
-          "step": "Cost & Audit",
-          "hopName": "Blended Tier Chargeback",
-          "route": "BigQuery OTel (`pattern_c_hybrid_psc_Spoke_telemetry`) (Green Zone)",
-          "protocolAndMechanism": "Streams real-time telemetry tagged with `routing_plane` (`POOLED` vs `PSC_SPOKE`) and `migration_phase` into BigQuery for tiered invoicing.",
-          "codeAndResource": "BigQuery Hybrid FinOps & Migration Audit Sink",
-          "verifiedOutcome": "Verified live in BigQuery: POOLED → PSC_SPOKE hybrid telemetry recorded"
-        }
-      ]
-    },
-    {
-      "index": 7,
-      "id": "ws5-decision-tree-and-agentic-triad",
-      "workstream": "WS5",
-      "workstreamLabel": "Workstream 5 • Executive Topology Decision Guide & The Multi-Tenant Agentic Triad (WS 5.1–5.2)",
-      "badge": "WORKSTREAM 5.1 & 5.2 • CAPSTONE BLUEPRINT",
-      "patternBadge": "WORKSTREAM 5 • AGENTIC TRIAD",
-      "title": "Workstream 5 Capstone: Executive Topology Decision Guide & The Multi-Tenant Agentic Triad",
-      "subtitle": "Verified 20/20 Suites PASS Across nitina-ggarwal-sandbox-647724 & ramp-portal-dev (Security • FinOps -84.7% • Zero-PII OTel)",
-      "questionAnswered": "How do Chief Architects, CISOs, and CFOs select between Pattern A, Pattern B, and Pattern C—and how does the Multi-Tenant Agentic Triad balance Cryptographic Tenant Governance, Predictable FinOps COGS, and Zero-PII Observability across 1,000+ tenants?",
-      "gcpProject": "ramp-portal-dev (#248990048888) & nitina-ggarwal-sandbox-647724 (#887605034827)",
-      "runtimeTarget": "enterprise-s2p-global • cymbal_agentic_finops_otel.pattern_c_hybrid_psc_Spoke_telemetry",
-      "codeModules": "workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md • blogs/ws5-decision-guide-and-agentic-triad.md",
-      "execCloudServices": "Vertex AI Agent Engine • Google ADK 2.0 • Gemini 2.5 Pro & Gemma 3 • Cloud Armor & IAP • Model Armor & SDP • Memorystore for Valkey • AlloyDB RLS & Cloud KMS CMEK • BigQuery OTel",
-      "execTechSummary": "Synthesizes the 2-Question Executive Topology Decision Tree (Pattern A vs. B vs. C) and the 3-Pillar Multi-Tenant Agentic Triad: (1) 5-Hop Cryptographic Governance, (2) Predictable FinOps Unit Economics (-84.7% COGS), and (3) Zero-PII OpenTelemetry Chargeback.",
-      "outcomeTitle": "2-Question Topology Selector + 74% Total Cloud COGS Reduction Across 1,000 Tenants",
-      "outcomeBody": "Across a 1,000-tenant B2B SaaS portfolio (950 Standard + 50 Enterprise), Pattern C guided by the Agentic Triad reduces shared prompt token costs by 90%, cuts total monthly infrastructure COGS by 74% (via 90% shared ContextCacheConfig), and maintains 99.99% SLA with 0 cross-tenant leaks.",
-      "outcomeTech": "Verified live across all 12 forensic checks (F-01..F-12) and 20/20 simulation assertions (10 Pattern A + 6 Pattern B + 4 Pattern C)",
-      "zonesSummary": [
-        {
-          "zoneId": "Blue Zone",
-          "colorHex": "#aecbfa",
-          "borderHex": "#174ea6",
-          "name": "1. Triad Pillar 1: 5-Hop Governance & Selector",
-          "role": "Enforces Hops 1, 2 & 4 (OBO/DPoP, Catalog PDP, Model Armor) and applies the 2-Question Decision Tree to dispatch to Pattern A, B, or C.",
-          "nodes": [
-            "Enforces Hops 1, 2 & 4 (OBO/DPoP, Catalog PDP, Model Armor) and applies the 2-Question Decision Tree to dispatch to Pattern A, B, or C."
-          ]
-        },
-        {
-          "zoneId": "Green Zone",
-          "colorHex": "#ceead6",
-          "borderHex": "#137333",
-          "name": "2. Triad Pillar 3: Zero-PII FinOps & SCC Audit",
-          "role": "Streams SDP-redacted OpenTelemetry spans into BigQuery to power Even Split, Proportional Chargeback, and Tiered FinOps models.",
-          "nodes": [
-            "Streams SDP-redacted OpenTelemetry spans into BigQuery to power Even Split, Proportional Chargeback, and Tiered FinOps models."
-          ]
-        },
-        {
-          "zoneId": "Yellow Zone",
-          "colorHex": "#feefc3",
-          "borderHex": "#b06000",
-          "name": "3. Triad Pillar 2: Pattern A Pooled Unit Economics",
-          "role": "Combines 90% shared `ContextCacheConfig` discounts, Memorystore Valkey RPM bulkheads, 4,000-token caps, and AlloyDB RLS (120 RPM Pool unit cost).",
-          "nodes": [
-            "Combines 90% shared `ContextCacheConfig` discounts, Memorystore Valkey RPM bulkheads, 4,000-token caps, and AlloyDB RLS (120 RPM Pool unit cost)."
-          ]
-        },
-        {
-          "zoneId": "Red Zone",
-          "colorHex": "#fad2cf",
-          "borderHex": "#c5221f",
-          "name": "4. Regulated Scale: Pattern B Silos & Pattern C PSC",
-          "role": "Delivers dedicated VPC-SC + IAM PAB + Cloud KMS CMEK kill-switches (`HTTP 423`), air-gapped Gemma 3, and zero-downtime PSC tier upgrades.",
-          "nodes": [
-            "Delivers dedicated VPC-SC + IAM PAB + Cloud KMS CMEK kill-switches (`HTTP 423`), air-gapped Gemma 3, and zero-downtime PSC tier upgrades."
-          ]
-        }
-      ],
-      "logicalSteps": [
-        {
-          "step": "Step ①",
-          "badgeNum": "01",
-          "zone": "10,000+ Tenants → Blue Zone",
-          "title": "2-Question Executive Topology Decision Tree",
-          "logicalNarrative": "Architects evaluate two questions: Q1: Do all customers legally require dedicated GCP projects, VPC-SC, or air-gapped models? (Yes → Pattern B). Q2: Do you offer both a shared Standard tier and a regulated Enterprise tier? (Single tier → Pattern A; Multi-tier → Pattern C).",
-          "components": "2-Question Selector → Pattern A (Pooled), Pattern C (Hybrid), or Pattern B (Sovereign)"
-        },
-        {
-          "step": "Step ②",
-          "badgeNum": "02",
-          "zone": "Blue Zone (Triad Pillar 1 — Identity & Catalog)",
-          "title": "Enforcing Hops 1 & 2 Across All Topologies",
-          "logicalNarrative": "Regardless of topology, every request passes Hop 1 (Cloud Armor header stripping + IAP OIDC/Entra + RFC 8693 OBO/DPoP) and Hop 2 (Discovery Engine Agent Catalog PDP + ADK `before_agent_callback` pruning).",
-          "components": "Triad Pillar 1 • Hops 1 & 2 Cryptographic Identity & Catalog PDP"
-        },
-        {
-          "step": "Step ③",
-          "badgeNum": "03",
-          "zone": "Blue Zone → Yellow or Red Spoke",
-          "title": "Commitment to Cost-Optimal or Sovereign Spoke",
-          "logicalNarrative": "The Architecture Selector routes Standard commercial tenants (950 of 1,000 tenants) to the Pooled Spoke (Yellow Zone) and regulated Enterprise tenants (50 of 1,000 tenants) to Sovereign/PSC Spokes (Red Zone).",
-          "components": "950 Standard Tenants (Pooled) + 50 Enterprise Tenants (PSC/Silo)"
-        },
-        {
-          "step": "Step ④",
-          "badgeNum": "04",
-          "zone": "Yellow Zone (Triad Pillar 2 — Pooled FinOps)",
-          "title": "4 FinOps Levers Cut Pooled Token COGS by 84.7%",
-          "logicalNarrative": "In the Pooled Spoke, Triad Pillar 2 combines (1) 90% shared `ContextCacheConfig` prefix caching, (2) Memorystore for Valkey RPM bulkheads, (3) 4,000-token thinking budget caps, and (4) compact MCP tool output pruning.",
-          "components": "Triad Pillar 2 • 90% Context Cache + Valkey Bulkhead + Token Cap"
-        },
-        {
-          "step": "Step ⑤",
-          "badgeNum": "05",
-          "zone": "Red Zone (Sovereign & PSC Guarantees)",
-          "title": "Enforcing VPC-SC, CMEK Kill-Switch & Live Promotion",
-          "logicalNarrative": "In the Regulated Spoke, Enterprise tenants receive dedicated VPC-SC perimeters, IAM PAB policies, sub-60s Cloud KMS CMEK kill-switches (`HTTP 423`), air-gapped Gemma 3 / Gemini 2.5 Pro (Dedicated PT), and zero-downtime PSC tier upgrades.",
-          "components": "VPC-SC • IAM PAB • CMEK Kill-Switch (`423`) • Live PSC Upgrade"
-        },
-        {
-          "step": "Step ⑥",
-          "badgeNum": "06",
-          "zone": "Yellow & Red Zones (Hops 4 & 5 Data Plane)",
-          "title": "Model Armor Guardrails & Engine-Level Data Isolation",
-          "logicalNarrative": "Hop 4 screens prompts and redacts egress PII/PCI via Model Armor & SDP, while Hop 5 enforces AlloyDB/BigQuery Row-Level Security (`SET LOCAL app.current_tenant`) or dedicated CMEK vault encryption.",
-          "components": "Hops 4 & 5 • Model Armor, Cloud SDP & AlloyDB/BigQuery RLS"
-        },
-        {
-          "step": "Step ⑦",
-          "badgeNum": "07",
-          "zone": "All Zones → Green Zone (Triad Pillar 3)",
-          "title": "Zero-PII OpenTelemetry & 3 FinOps Chargeback Models",
-          "logicalNarrative": "Triad Pillar 3 streams zero-PII OpenTelemetry spans (`tenant_id`, `tier`, `thinking_tokens`, `cache_hit`) into BigQuery—supporting Even Split, Proportional Token Chargeback, and Fixed Tier pricing with 20/20 tests passing.",
-          "components": "Triad Pillar 3 • BigQuery OTel Sink & 74% Portfolio COGS Savings"
-        },
-        {
-          "step": "Outcome",
-          "badgeNum": "08",
-          "zone": "Architectural & Business Outcome",
-          "title": "2-Question Topology Selector + 74% Total Cloud COGS Reduction Across 1,000 Tenants",
-          "logicalNarrative": "Across a 1,000-tenant B2B SaaS portfolio (950 Standard + 50 Enterprise), Pattern C guided by the Agentic Triad reduces shared prompt token costs by 90%, cuts total monthly infrastructure COGS by 74% (via 90% shared ContextCacheConfig), and maintains 99.99% SLA with 0 cross-tenant leaks.",
-          "components": "WORKSTREAM 5 • AGENTIC TRIAD"
-        }
-      ],
-      "technicalSteps": [
-        {
-          "step": "Step ①",
-          "hopName": "2-Question Selector",
-          "route": "Executive Topology Decision Matrix (Blue Zone)",
-          "protocolAndMechanism": "Evaluates regulatory blast-radius mandates (Q1 → Pattern B) and multi-tiered SaaS packaging (Q2 → Pattern A vs. Pattern C) on an 80% shared codebase.",
-          "codeAndResource": "workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md",
-          "verifiedOutcome": "Eliminates architectural forks; isolation is a per-tenant configuration"
-        },
-        {
-          "step": "Step ②",
-          "hopName": "Pillar 1: Zero-Trust Chain",
-          "route": "5-Hop Cryptographic Context Chain (Blue & Yellow Zones)",
-          "protocolAndMechanism": "Enforces KMS-signed `CryptographicContext` across Edge PEP (Hop 1), Catalog PDP (Hop 2), gVisor Sandbox (Hop 3), Model Armor (Hop 4), and Data RLS (Hop 5).",
-          "codeAndResource": "core-cymbal-agent/governance/hop1..hop5",
-          "verifiedOutcome": "10/10 Pattern A breach tests + 6/6 Pattern B silo tests pass"
-        },
-        {
-          "step": "Step ③",
-          "hopName": "Pillar 2: FinOps Levers",
-          "route": "Vertex AI ContextCacheConfig & Memorystore (Yellow Zone)",
-          "protocolAndMechanism": "Caches the 32k-token shared system prompt once at a 90% discount while enforcing per-tier thinking budgets (`4k` vs `8k`) and Valkey RPM bulkheads.",
-          "codeAndResource": "Shared Read-Only Prefix Cache + Tiered Token Caps",
-          "verifiedOutcome": "84.7% per-turn token COGS reduction; 74% total 1,000-tenant cloud savings"
-        },
-        {
-          "step": "Step ④",
-          "hopName": "Sovereign Silo Controls",
-          "route": "VPC-SC, IAM PAB & Cloud KMS CMEK (Red Zone)",
-          "protocolAndMechanism": "Wraps regulated Enterprise projects in VPC Service Controls and IAM Principal Access Boundaries with live Cloud KMS CMEK kill-switch verification (`HTTP 423`).",
-          "codeAndResource": "workstream-3-pattern-b-siloed (Milestone 2)",
-          "verifiedOutcome": "Satisfies OCC/FDIC, HIPAA, and public-sector physical isolation audits"
-        },
-        {
-          "step": "Step ⑤",
-          "hopName": "Hybrid PSC & Live Upgrade",
-          "route": "Private Service Connect & 3-Phase Migrator (Green & Red Zones)",
-          "protocolAndMechanism": "Bridges the central hub to dedicated spokes over unidirectional PSC (`10.10.0.50`) and promotes live tenants (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`).",
-          "codeAndResource": "workstream-4-pattern-c-hybrid (Milestone 3 • 4/4 PASS)",
-          "verifiedOutcome": "Zero-downtime Standard → Enterprise promotion with 0 dropped sessions"
-        },
-        {
-          "step": "Step ⑥",
-          "hopName": "Multi-Model Agility",
-          "route": "Gemini 2.5 Pro, Gemini 2.5 Pro (Dedicated PT) & Gemma 3 (Yellow & Red Zones)",
-          "protocolAndMechanism": "Runs shared Gemini 2.5 Pro in the pool while enabling Vertex AI Model Garden hot-swapping (Gemini 2.5 Pro (Dedicated PT)) and air-gapped Gemma 3 (27B) on private GKE.",
-          "codeAndResource": "FinVaultPrivateAgentAlpha & Private GKE Blueprint",
-          "verifiedOutcome": "Matches model capability and residency to each tenant’s contract tier"
-        },
-        {
-          "step": "Step ⑦",
-          "hopName": "Pillar 3: Zero-PII OTel",
-          "route": "Sensitive Data Protection & BigQuery OTel (Green Zone)",
-          "protocolAndMechanism": "Redacts all PII/PHI/PCI via Cloud SDP prior to log export and streams tenant-tagged token consumption into BigQuery (`cymbal_agentic_finops_otel`).",
-          "codeAndResource": "3 Chargeback Models (Even Split, Proportional, Tiered)",
-          "verifiedOutcome": "Verified live in BigQuery: Pattern A, Pattern C, and Pattern B spans"
-        },
-        {
-          "step": "Cost & Audit",
-          "hopName": "10-Week Program Roadmap",
-          "route": "12/12 Forensic Gates & Product EAP Backlog (Green Zone)",
-          "protocolAndMechanism": "Delivers Pattern A in Week 4, Pattern B in Week 7, and Pattern C in Week 10 alongside the 9-item Google Cloud Product EAP Tracker (`GAP-P0-01`..`GAP-P2-02`).",
-          "codeAndResource": "scripts/run_deep_forensic_audit.py (12/12 PASS • 20/20 SIMS)",
-          "verifiedOutcome": "Complete, production-certified reference architecture across WS1–WS5"
-        }
-      ]
-    },
-    {
-      "index": 8,
-      "id": "ws2-demo-env-and-3p-auth-sandbox-topology",
-      "workstream": "WS2",
-      "workstreamLabel": "Workstream 2 • Pattern A: Multi-IdP Federation & 2LO/3LO MCP Auth Sandbox (WS 2.2)",
-      "badge": "WORKSTREAM 2.2 • DEMO ENV & 3P AUTH SANDBOX",
-      "patternBadge": "PATTERN A • 2LO/3LO AUTH SANDBOX",
-      "title": "Pattern A Demo Environment & 3P Auth Sandbox: Pooled Project, Federated IdPs, OAuth 2LO/3LO Apps, Valkey & Firestore Tenant Config",
-      "subtitle": "Live Verified in nitina-ggarwal-sandbox-647724 (us-west1) • Seeding FinVault Bank (Google OIDC + Jira) & RetailStream Corp (Entra ID + SharePoint/ServiceNow)",
-      "questionAnswered": "How does a single pooled Google Cloud project federate heterogeneous corporate identity providers (Google Workspace OIDC and Microsoft Entra ID) and broker tenant-scoped 2LO and 3LO OAuth tokens to external MCP tools without confused-deputy risks?",
-      "gcpProject": "ramp-portal-dev (#248990048888) & nitina-ggarwal-sandbox-647724 (#887605034827)",
-      "runtimeTarget": "enterprise-s2p-global • Secret Manager tenant-{id}-3p-oauth",
-      "codeModules": "workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md • core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py",
-      "execCloudServices": "Identity-Aware Proxy • Workforce Identity Federation • Secret Manager • Cloud KMS • Vertex AI Agent Engine • Memorystore for Valkey • Firestore",
-      "execTechSummary": "Federates Google Workspace OIDC (FinVault) and Microsoft Entra ID v2.0 (RetailStream) into one pooled runtime, brokering 2LO implicit session passthrough for internal APIs and 3LO user-consented OAuth tokens for Jira, Workspace, and ServiceNow MCP servers.",
-      "outcomeTitle": "Zero-Shadow-Account Federation & Scoped 2LO/3LO MCP Tool Execution",
-      "outcomeBody": "FinVault users authenticate via Google Workspace OIDC to invoke Drive/Jira 3LO MCP tools, while RetailStream users authenticate via Microsoft Entra ID (with zero Google shadow accounts) to invoke SharePoint/ServiceNow 3LO MCP tools.",
-      "outcomeTech": "Verified live: 2LO Cymbal Telemetry, 3LO Google Workspace/Jira, and 3LO Entra ID/ServiceNow MCP flows pass with 0 cross-tenant token access",
-      "zonesSummary": [
-        {
-          "zoneId": "Blue Zone",
-          "colorHex": "#aecbfa",
-          "borderHex": "#174ea6",
-          "name": "1. Multi-IdP Federation & OBO/DPoP Ingress",
-          "role": "Validates Google Workspace OIDC and Microsoft Entra ID v2.0 tokens at the edge and binds RFC 9449 DPoP sender constraints.",
-          "nodes": [
-            "Validates Google Workspace OIDC and Microsoft Entra ID v2.0 tokens at the edge and binds RFC 9449 DPoP sender constraints."
-          ]
-        },
-        {
-          "zoneId": "Green Zone",
-          "colorHex": "#ceead6",
-          "borderHex": "#137333",
-          "name": "2. Firestore Tenant Config & Secret Manager",
-          "role": "Stores per-tenant prompts, thinking budgets, and rate limits in Firestore/Memorystore and isolates 3P OAuth secrets by tenant prefix.",
-          "nodes": [
-            "Stores per-tenant prompts, thinking budgets, and rate limits in Firestore/Memorystore and isolates 3P OAuth secrets by tenant prefix."
-          ]
-        },
-        {
-          "zoneId": "Yellow Zone",
-          "colorHex": "#feefc3",
-          "borderHex": "#b06000",
-          "name": "3. FinVault 3LO Slice (Google OIDC + Jira)",
-          "role": "Brokers 3LO Google OIDC tokens for Google Workspace (Drive, Calendar, Gmail) and Jira Cloud MCP servers plus 2LO Cymbal Telemetry.",
-          "nodes": [
-            "Brokers 3LO Google OIDC tokens for Google Workspace (Drive, Calendar, Gmail) and Jira Cloud MCP servers plus 2LO Cymbal Telemetry."
-          ]
-        },
-        {
-          "zoneId": "Red Zone",
-          "colorHex": "#fad2cf",
-          "borderHex": "#c5221f",
-          "name": "4. RetailStream 3LO Slice (Entra ID + ServiceNow)",
-          "role": "Federates Microsoft Entra ID v2.0 tokens with inline OAuth consent challenges for SharePoint Online and ServiceNow ITOM MCP servers.",
-          "nodes": [
-            "Federates Microsoft Entra ID v2.0 tokens with inline OAuth consent challenges for SharePoint Online and ServiceNow ITOM MCP servers."
-          ]
-        }
-      ],
-      "logicalSteps": [
-        {
-          "step": "Step ①",
-          "badgeNum": "01",
-          "zone": "Federated Caller → Blue Zone",
-          "title": "Multi-IdP Sign-In (Google OIDC or Entra ID)",
-          "logicalNarrative": "FinVault employees sign in with Google Workspace OIDC, while RetailStream employees sign in with Microsoft Entra ID v2.0 (requiring zero Google Workspace shadow accounts).",
-          "components": "Google Workspace OIDC • Microsoft Entra ID v2.0"
-        },
-        {
-          "step": "Step ②",
-          "badgeNum": "02",
-          "zone": "Blue & Green Zones (Config Lookup)",
-          "title": "Dynamic Tenant Profile & GCS Skill Hydration",
-          "logicalNarrative": "Hop 1 mints the KMS-signed `CryptographicContext`. Hop 3 loads the tenant’s dynamic system prompt, thinking budget (`8,000` vs `4,000`), and `gs://cymbal-skills-{tenant}/` URIs from Firestore.",
-          "components": "Firestore Tenant Profile • GCS Skills Bucket Isolation"
-        },
-        {
-          "step": "Step ③",
-          "badgeNum": "03",
-          "zone": "Green Zone (Secret & Token Broker)",
-          "title": "Tenant-Scoped 2LO & 3LO Token Resolution",
-          "logicalNarrative": "`CymbalMCPHub` resolves 2LO implicit session tokens for internal Cymbal Telemetry and retrieves tenant-partitioned 3LO OAuth tokens from Secret Manager (`secret://projects/.../tenant-{id}-3p-oauth`).",
-          "components": "CymbalMCPHub • Secret Manager IAM Condition Binding"
-        },
-        {
-          "step": "Step ④",
-          "badgeNum": "04",
-          "zone": "Yellow / Red Zone (Consent Gate)",
-          "title": "Inline 3LO OAuth Consent & Parameter Check",
-          "logicalNarrative": "If a RetailStream user invokes ServiceNow without an active 3LO grant, the agent pauses the turn and emits an inline OAuth consent challenge (`HTTP 401`) while Model Armor screens tool parameters.",
-          "components": "ADK Inline 3LO OAuth Challenge • Model Armor"
-        },
-        {
-          "step": "Step ⑤",
-          "badgeNum": "05",
-          "zone": "Yellow Zone (FinVault 3LO Execution)",
-          "title": "FinVault Workspace, Jira & Private Agent Alpha",
-          "logicalNarrative": "For FinVault, the runtime invokes `google_workspace_jira_3lo_mcp.py` (fetching Drive runbooks and Jira tickets) and permits model hot-swapping on private `Agent Alpha` (`Gemini 2.5 Pro (Dedicated PT)` ↔ `Gemini 2.5 Pro`).",
-          "components": "FinVault 3LO MCP • Private Agent Alpha Model Hot-Swap"
-        },
-        {
-          "step": "Step ⑥",
-          "badgeNum": "06",
-          "zone": "Red Zone (RetailStream 3LO Execution)",
-          "title": "RetailStream SharePoint & ServiceNow Execution",
-          "logicalNarrative": "Once the RetailStream user completes Entra ID 3LO consent, `microsoft_servicenow_3lo_mcp.py` queries SharePoint runbooks and creates ServiceNow incident tickets under the user’s delegated identity.",
-          "components": "RetailStream Entra ID 3LO MCP • ServiceNow ITOM"
-        },
-        {
-          "step": "Step ⑦",
-          "badgeNum": "07",
-          "zone": "Workspaces → Caller & BigQuery",
-          "title": "Ephemeral Token Wipe & Zero-Secret Audit Log",
-          "logicalNarrative": "Upon tool completion, in-memory 3LO access tokens are immediately scrubbed from the sandbox, Egress SDP masks sensitive fields, and BigQuery logs the connector invocation with zero raw secrets.",
-          "components": "In-Memory Token Scrubbing • Cloud Logging & BigQuery"
-        },
-        {
-          "step": "Outcome",
-          "badgeNum": "08",
-          "zone": "Architectural & Business Outcome",
-          "title": "Zero-Shadow-Account Federation & Scoped 2LO/3LO MCP Tool Execution",
-          "logicalNarrative": "FinVault users authenticate via Google Workspace OIDC to invoke Drive/Jira 3LO MCP tools, while RetailStream users authenticate via Microsoft Entra ID (with zero Google shadow accounts) to invoke SharePoint/ServiceNow 3LO MCP tools.",
-          "components": "PATTERN A • 2LO/3LO AUTH SANDBOX"
-        }
-      ],
-      "technicalSteps": [
-        {
-          "step": "Step ①",
-          "hopName": "Multi-IdP JWT Validation",
-          "route": "IAP & Workforce Identity Federation (Blue Zone)",
-          "protocolAndMechanism": "Validates upstream JWTs against `accounts.google.com/finvault.com` and `login.microsoftonline.com/retailstream-tenant-guid/v2.0` with DPoP proof verification.",
-          "codeAndResource": "ISSUER_TO_TENANT_MAP in hop1_edge_identity_pep.py",
-          "verifiedOutcome": "Supports 100% Microsoft Entra ID tenants with zero Google shadow accounts"
-        },
-        {
-          "step": "Step ②",
-          "hopName": "Dynamic Runtime Config",
-          "route": "Firestore & Cloud Storage Skills (Green Zone)",
-          "protocolAndMechanism": "Hydrates per-tenant `system_prompt_template`, `thinking_budget`, and `gs://cymbal-skills-{tenant}/` URIs at runtime without redeploying container images.",
-          "codeAndResource": "load_dynamic_runtime_config() in hop3_compute_finops_bulkhead.py",
-          "verifiedOutcome": "Verified F-02: FinVault prompt template and 2 GCS Skill URIs loaded dynamically"
-        },
-        {
-          "step": "Step ③",
-          "hopName": "2LO Implicit Passthrough",
-          "route": "Cymbal Core Telemetry 2LO MCP (Yellow & Red Zones)",
-          "protocolAndMechanism": "Propagates the KMS-signed `CryptographicContext` directly to internal first-party MCP servers (`mcp://cymbal/core-telemetry-2lo`) without prompting the user.",
-          "codeAndResource": "core-cymbal-agent/mcp_servers/cymbal_telemetry_2lo_mcp.py",
-          "verifiedOutcome": "Zero-latency internal telemetry lookups scoped strictly to `ctx.tenant_id`"
-        },
-        {
-          "step": "Step ④",
-          "hopName": "FinVault 3LO Google/Jira",
-          "route": "Google Workspace & Jira 3LO MCP (Yellow Zone)",
-          "protocolAndMechanism": "Exchanges FinVault’s 3LO Google OIDC token to invoke `google_drive_runbook`, `google_calendar_bridge`, and `jira_escalation_issue` under user delegation.",
-          "codeAndResource": "core-cymbal-agent/mcp_servers/google_workspace_jira_3lo_mcp.py",
-          "verifiedOutcome": "Verified F-04: 3LO Google OIDC tools execute with zero ambient service-account elevation"
-        },
-        {
-          "step": "Step ⑤",
-          "hopName": "RetailStream 3LO Entra/SNOW",
-          "route": "Microsoft SharePoint & ServiceNow 3LO MCP (Red Zone)",
-          "protocolAndMechanism": "Verifies RetailStream’s Entra ID 3LO token (or triggers an inline consent challenge on missing token) before querying SharePoint and ServiceNow ITOM.",
-          "codeAndResource": "core-cymbal-agent/mcp_servers/microsoft_servicenow_3lo_mcp.py",
-          "verifiedOutcome": "Verified F-04 & Test 10: Missing 3LO token pauses turn; valid token executes cleanly"
-        },
-        {
-          "step": "Step ⑥",
-          "hopName": "Private Agent Alpha CLI",
-          "route": "Vertex AI Agent Engine & Model Garden (Yellow Zone)",
-          "protocolAndMechanism": "Allows FinVault to provision `FinVaultPrivateAgentAlpha` via `gcloud alpha agents` CLI and hot-swap between `gemini-2.5-pro-dedicated` and `gemini-2.5-pro`.",
-          "codeAndResource": "core-cymbal-agent/agents/finvault_agent_alpha.py",
-          "verifiedOutcome": "Verified F-03: FinVault hot-swap succeeds; RetailStream attempt raises PermissionError"
-        },
-        {
-          "step": "Step ⑦",
-          "hopName": "Secret & Sandbox Scrub",
-          "route": "Secret Manager & Cloud Run Sandbox (Green & Blue Zones)",
-          "protocolAndMechanism": "Enforces IAM Conditions on Secret Manager (`resource.name.startsWith(...)`) and overwrites in-memory OAuth tokens immediately after MCP dispatch.",
-          "codeAndResource": "Per-Tenant Secret Manager ACL & Ephemeral Scrub",
-          "verifiedOutcome": "Zero 3P OAuth credentials persist in memory or logs post-turn"
-        },
-        {
-          "step": "Cost & Audit",
-          "hopName": "Connector Lineage Log",
-          "route": "Cloud Audit Logs & BigQuery OTel (Green Zone)",
-          "protocolAndMechanism": "Records every 2LO and 3LO MCP tool invocation, auth mode (`2LO_IMPLICIT` vs `3LO_OIDC` / `3LO_ENTRA`), and token cost in BigQuery.",
-          "codeAndResource": "CymbalMCPHub Audit Telemetry",
-          "verifiedOutcome": "100% non-repudiation for third-party SaaS connector actions"
-        }
-      ]
-    },
-    {
-      "index": 9,
       "id": "ws2-terraform-starter-resource-graph",
       "workstream": "WS2",
       "workstreamLabel": "Workstream 2 • Pattern A: 1-Click Terraform Starter Resource Graph (WS 2.6)",
@@ -1742,7 +1163,200 @@
       ]
     },
     {
-      "index": 10,
+      "index": 7,
+      "id": "ws3-pattern-b-sovereign-silos-architecture",
+      "workstream": "WS3",
+      "workstreamLabel": "Workstream 3 • Pattern B: Zero-Trust Sovereign Silos Architecture (WS 3.1)",
+      "badge": "WORKSTREAM 3.1 • PATTERN B BLUEPRINT",
+      "patternBadge": "PATTERN B • SOVEREIGN SILOS",
+      "title": "Pattern B: Zero-Trust Sovereign Silos (VPC-SC, IAM PAB, CMEK Kill-Switch & Air-Gapped Gemma 3 on GKE)",
+      "subtitle": "Milestone 2 (Weeks 4–7) • Verified KMS KeyRing cymbal-multi-tenant-kr & BQ Vault cymbal_silo_finvault_usw1 (HTTP 423 Lock)",
+      "questionAnswered": "How do we satisfy strict banking (OCC/FDIC), healthcare (HIPAA), and public-sector regulators that prohibit shared compute, shared storage, or provider-owned keys—while reusing 80% of our core ADK 2.0 agent codebase?",
+      "gcpProject": "nitina-ggarwal-sandbox-647724 (#887605034827)",
+      "runtimeTarget": "KMS cymbal-multi-tenant-kr/{finvault-silo-cmek,medcore-revoked-cmek}",
+      "codeModules": "workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md • runtime/main.py (/v1/patterns/b/execute)",
+      "execCloudServices": "mTLS Ingress • IAM Principal Access Boundary (PAB) • VPC Service Controls (VPC-SC) • Cloud KMS CMEK • Vertex AI / Air-Gapped Gemma 3 on GKE • Dedicated AlloyDB & BigQuery",
+      "execTechSummary": "Deploys the same 5-Hop governance engine inside a dedicated single-tenant Google Cloud project wrapped in a VPC Service Controls perimeter, IAM Principal Access Boundary, and customer-revocable Cloud KMS CMEK key.",
+      "outcomeTitle": "Dedicated Single-Tenant GCP Project + Sub-60s Customer CMEK Kill-Switch (`HTTP 423`)",
+      "outcomeBody": "Each regulated enterprise (FinVault Bank and RetailStream/MedCore) operates inside a physically isolated GCP project with its own VPC-SC perimeter and Cloud KMS key—where disabling the customer key halts all AI memory, DB reads, and inference with `HTTP 423 Locked`.",
+      "outcomeTech": "Verified live on Google Cloud (6/6 tests): active FinVault CMEK succeeds (2 rows) while revoked CMEK immediately halts with HTTP 423 Locked",
+      "zonesSummary": [
+        {
+          "zoneId": "Blue Zone",
+          "colorHex": "#aecbfa",
+          "borderHex": "#174ea6",
+          "name": "1. mTLS Ingress & IAM Principal Access Boundary",
+          "role": "Verifies client mTLS X.509 certificates at Hop 1, enforces IAM Principal Access Boundaries (PAB), and routes to the tenant’s dedicated silo project.",
+          "nodes": [
+            "Verifies client mTLS X.509 certificates at Hop 1, enforces IAM Principal Access Boundaries (PAB), and routes to the tenant’s dedicated silo project."
+          ]
+        },
+        {
+          "zoneId": "Green Zone",
+          "colorHex": "#ceead6",
+          "borderHex": "#137333",
+          "name": "2. VPC-SC Perimeter & CMEK Kill-Switch Monitor",
+          "role": "Enforces VPC Service Controls across 8 Google Cloud APIs, checks real-time Cloud KMS CMEK state at Hop 3, and logs Access Transparency events.",
+          "nodes": [
+            "Enforces VPC Service Controls across 8 Google Cloud APIs, checks real-time Cloud KMS CMEK state at Hop 3, and logs Access Transparency events."
+          ]
+        },
+        {
+          "zoneId": "Yellow Zone",
+          "colorHex": "#feefc3",
+          "borderHex": "#b06000",
+          "name": "3. FinVault Sovereign Silo Project (CMEK ENABLED)",
+          "role": "Dedicated project running air-gapped Gemma 3 (27B) on private GKE + Gemini 2.5 Pro (Dedicated PT) and CMEK-encrypted AlloyDB/BigQuery vault (`2 rows` returned).",
+          "nodes": [
+            "Dedicated project running air-gapped Gemma 3 (27B) on private GKE + Gemini 2.5 Pro (Dedicated PT) and CMEK-encrypted AlloyDB/BigQuery vault (`2 rows` returned)."
+          ]
+        },
+        {
+          "zoneId": "Red Zone",
+          "colorHex": "#fad2cf",
+          "borderHex": "#c5221f",
+          "name": "4. RetailStream / MedCore Silo (CMEK Kill-Switch)",
+          "role": "Demonstrates dual-silo parity and instant customer CMEK revocation: disabling the cryptoKeyVersion immediately locks the silo with `HTTP 423 Locked`.",
+          "nodes": [
+            "Demonstrates dual-silo parity and instant customer CMEK revocation: disabling the cryptoKeyVersion immediately locks the silo with `HTTP 423 Locked`."
+          ]
+        }
+      ],
+      "logicalSteps": [
+        {
+          "step": "Step ①",
+          "badgeNum": "01",
+          "zone": "Enterprise Caller → Blue Zone",
+          "title": "Mutual TLS (mTLS) Certificate & OIDC Handshake",
+          "logicalNarrative": "Regulated enterprise callers connect over mutual TLS. Hop 1 verifies both the pinned client X.509 certificate fingerprint and the corporate OIDC token (`HTTP 401` on certificate mismatch).",
+          "components": "mTLS X.509 Client Certificate • Hop 1 Edge PEP"
+        },
+        {
+          "step": "Step ②",
+          "badgeNum": "02",
+          "zone": "Blue Zone (IAM PAB Gate)",
+          "title": "IAM Principal Access Boundary (PAB) Enforcement",
+          "logicalNarrative": "Google Cloud IAM evaluates the tenant’s Principal Access Boundary policy (`pab-finvault-silo-only`), mathematically preventing the principal from accessing any resource outside `cymbal-finvault-silo-prod` (`HTTP 403`).",
+          "components": "IAM Principal Access Boundary (PAB) • Zero Cross-Project Access"
+        },
+        {
+          "step": "Step ③",
+          "badgeNum": "03",
+          "zone": "Green Zone (CMEK Heartbeat)",
+          "title": "Real-Time Cloud KMS CMEK State Verification",
+          "logicalNarrative": "At Hop 3, the runtime queries Cloud KMS (`finvault-silo-cmek` vs `medcore-revoked-cmek`) to verify that the customer’s encryption key is `ENABLED`. If the customer revoked their key, execution halts immediately with `HTTP 423 Locked`.",
+          "components": "Cloud KMS CMEK Heartbeat • Instant Kill-Switch (`HTTP 423`)"
+        },
+        {
+          "step": "Step ④",
+          "badgeNum": "04",
+          "zone": "Yellow / Red Zone (VPC-SC Fence)",
+          "title": "VPC Service Controls Perimeter & Silo Model Armor",
+          "logicalNarrative": "The request enters the tenant’s dedicated VPC Service Controls (VPC-SC) perimeter—which blocks all unauthorized egress to external GCP projects—and passes through dedicated OCC/HIPAA Model Armor filters.",
+          "components": "VPC Service Controls (VPC-SC) • Dedicated Model Armor"
+        },
+        {
+          "step": "Step ⑤",
+          "badgeNum": "05",
+          "zone": "Yellow Zone (Dedicated Inference)",
+          "title": "Air-Gapped Gemma 3 on GKE or Provisioned Gemini",
+          "logicalNarrative": "FinVault runs inference inside its perimeter using either air-gapped Gemma 3 (27B) on private GKE (`--internal-ip`, CMEK boot disks) or dedicated Provisioned Throughput Gemini 2.5 Pro (`gemini-2.5-pro-dedicated`).",
+          "components": "Air-Gapped Gemma 3 27B on Private GKE • Provisioned Throughput"
+        },
+        {
+          "step": "Step ⑥",
+          "badgeNum": "06",
+          "zone": "Yellow (Open) vs Red (423 Locked)",
+          "title": "CMEK Vault Decryption vs. Kill-Switch Lockout",
+          "logicalNarrative": "FinVault’s enabled CMEK decrypts `pattern_b_silo_finvault_cmek_vault` (returning 2 rows). In contrast, MedCore’s disabled CMEK key (`DESTROY_SCHEDULED` / `DISABLED`) blocks all storage and memory access with `HTTP 423 Locked`.",
+          "components": "CMEK BigQuery/AlloyDB Vault • Verified 6/6 Silo Security Suite"
+        },
+        {
+          "step": "Step ⑦",
+          "badgeNum": "07",
+          "zone": "Silo Projects → Caller & Auditor",
+          "title": "In-Perimeter Response & Access Transparency Log",
+          "logicalNarrative": "Egress SDP scrubs the final payload inside the tenant project, returns the response over mTLS, and writes immutable Cloud KMS key-usage and VPC-SC audit logs for the customer’s SOC.",
+          "components": "Cloud Audit Logs • Access Transparency • SOC Attestation"
+        },
+        {
+          "step": "Outcome",
+          "badgeNum": "08",
+          "zone": "Architectural & Business Outcome",
+          "title": "Dedicated Single-Tenant GCP Project + Sub-60s Customer CMEK Kill-Switch (`HTTP 423`)",
+          "logicalNarrative": "Each regulated enterprise (FinVault Bank and RetailStream/MedCore) operates inside a physically isolated GCP project with its own VPC-SC perimeter and Cloud KMS key—where disabling the customer key halts all AI memory, DB reads, and inference with `HTTP 423 Locked`.",
+          "components": "PATTERN B • SOVEREIGN SILOS"
+        }
+      ],
+      "technicalSteps": [
+        {
+          "step": "Step ①",
+          "hopName": "Test 1: mTLS & OIDC Gate",
+          "route": "External ALB mTLS & Hop 1 PEP (Blue Zone)",
+          "protocolAndMechanism": "Validates the client’s X.509 mTLS certificate SHA-256 fingerprint against the tenant’s pinned certificate registry before minting the silo context.",
+          "codeAndResource": "verify_mtls_and_pab() • Client Cert Fingerprint Pinning",
+          "verifiedOutcome": "Verified Test 1: Spoofed or missing mTLS certs rejected with HTTP 401"
+        },
+        {
+          "step": "Step ②",
+          "hopName": "Test 2: IAM PAB Isolation",
+          "route": "Google Cloud IAM Principal Access Boundary (Blue Zone)",
+          "protocolAndMechanism": "Binds an IAM v3 Principal Access Boundary policy restricting the workload identity principal strictly to resources inside `projects/cymbal-{tenant}-silo-prod`.",
+          "codeAndResource": "IAM PAB Policy (`pab-{tenant}-silo-only`)",
+          "verifiedOutcome": "Verified Test 2: Cross-project credential use blocked with HTTP 403"
+        },
+        {
+          "step": "Step ③",
+          "hopName": "Test 3: VPC-SC Perimeter",
+          "route": "Access Context Manager VPC-SC (Green Zone)",
+          "protocolAndMechanism": "Wraps `aiplatform`, `alloydb`, `bigquery`, `storage`, `run`, `cloudkms`, `dlp`, and `logging` APIs inside a hard per-tenant VPC Service Controls perimeter.",
+          "codeAndResource": "google_access_context_manager_service_perimeter",
+          "verifiedOutcome": "Verified Test 3: Cross-project data exfiltration blocked by VPC-SC (403)"
+        },
+        {
+          "step": "Step ④",
+          "hopName": "Tests 4 & 5: CMEK Kill-Switch",
+          "route": "Cloud KMS CryptoKey (`finvault-silo-cmek` / `medcore-revoked-cmek`) (Green Zone)",
+          "protocolAndMechanism": "Performs a live Cloud KMS key-state check at Hop 3; disabling the key version immediately halts Memory Bank, AlloyDB, and Vertex AI with `HTTP 423 Locked`.",
+          "codeAndResource": "verify_cmek_key_active() • Cloud KMS Live Key Check",
+          "verifiedOutcome": "Verified Tests 4 & 5: Revocation triggers HTTP 423; re-enable restores 200 OK"
+        },
+        {
+          "step": "Step ⑤",
+          "hopName": "Air-Gapped GKE Inference",
+          "route": "Private GKE (Gemma 3 27B) & Dedicated Vertex AI (Yellow Zone)",
+          "protocolAndMechanism": "Executes open-weight Gemma 3 (27B) on private-node GKE (`enable_private_nodes = true`, no internet egress) with CMEK-encrypted node boot disks and L4/A100 GPUs.",
+          "codeAndResource": "Private Air-Gapped GKE Cluster & Dedicated PT Endpoints",
+          "verifiedOutcome": "Zero shared model weights or noisy-neighbor latency variance"
+        },
+        {
+          "step": "Step ⑥",
+          "hopName": "Test 6: Dual-Silo Parity",
+          "route": "CMEK BigQuery & AlloyDB Vaults (Yellow & Red Zones)",
+          "protocolAndMechanism": "Encrypts all customer tables (`pattern_b_silo_finvault_cmek_vault`) and agent memory under the tenant’s Cloud KMS key across both FinVault and RetailStream silos.",
+          "codeAndResource": "run_silo_security_tests.py (6/6 PASS — F-08 Certified)",
+          "verifiedOutcome": "Verified F-08: Both FinVault and RetailStream silos & kill-switches proven"
+        },
+        {
+          "step": "Step ⑦",
+          "hopName": "In-Silo Egress Redaction",
+          "route": "Dedicated Model Armor & Cloud SDP (Yellow Zone)",
+          "protocolAndMechanism": "Runs dedicated Model Armor and Sensitive Data Protection templates inside the tenant project so unredacted prompts never cross project boundaries.",
+          "codeAndResource": "In-Project Model Armor & SDP Inspection",
+          "verifiedOutcome": "100% data residency within the customer’s dedicated GCP project"
+        },
+        {
+          "step": "Cost & Audit",
+          "hopName": "Silo Billing & KMS Audit",
+          "route": "Cloud Billing, Cloud Audit Logs & BigQuery (Green Zone)",
+          "protocolAndMechanism": "Exports project-level Cloud Billing records and immutable KMS `Decrypt` audit logs directly to the tenant’s compliance sink (600 RPM Silo baseline tier).",
+          "codeAndResource": "Per-Project Billing Attribution & KMS Audit Trail",
+          "verifiedOutcome": "Complete physical, cryptographic, and financial isolation for auditors"
+        }
+      ]
+    },
+    {
+      "index": 8,
       "id": "ws3-multi-project-silo-and-cmek-setup-topology",
       "workstream": "WS3",
       "workstreamLabel": "Workstream 3 • Pattern B: Automated Multi-Project Silo & CMEK Provisioning Pipeline (WS 3.2)",
@@ -1935,7 +1549,7 @@
       ]
     },
     {
-      "index": 11,
+      "index": 9,
       "id": "ws3-terraform-silo-blueprint-resource-graph",
       "workstream": "WS3",
       "workstreamLabel": "Workstream 3 • Pattern B: 1-Click Terraform Sovereign Silo Blueprint Graph (WS 3.6)",
@@ -2128,7 +1742,200 @@
       ]
     },
     {
-      "index": 12,
+      "index": 10,
+      "id": "ws4-pattern-c-hybrid-psc-and-migration",
+      "workstream": "WS4",
+      "workstreamLabel": "Workstream 4 • Pattern C: Dynamic Hybrid Hub-and-Spoke, PSC & Live Tier Migration (WS 4.1)",
+      "badge": "WORKSTREAM 4.1 • PATTERN C BLUEPRINT",
+      "patternBadge": "PATTERN C • HYBRID PSC & MIGRATION",
+      "title": "Pattern C: Dynamic Hybrid Hub-and-Spoke, Private Service Connect (PSC) & Live Tier Migration",
+      "subtitle": "Milestone 3 (Weeks 7–10) • Verified Hub VPC cymbal-pattern-c-hub-vpc, /28 PSC NAT 10.240.0.0/28 & Spoke VPC (0 Dropped Turns)",
+      "questionAnswered": "How do we serve both high-density Standard tenants (Pooled) and regulated Enterprise tenants (Dedicated Spokes) behind a single unified SaaS URL—and upgrade a live tenant from Pooled to a Dedicated Spoke with zero dropped sessions?",
+      "gcpProject": "nitina-ggarwal-sandbox-647724 (#887605034827)",
+      "runtimeTarget": "VPC cymbal-pattern-c-hub-vpc • Subnet cymbal-psc-nat-us-west1 (10.240.0.0/28)",
+      "codeModules": "workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md • workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py",
+      "execCloudServices": "External ALB • Cloud Armor & IAP • Cloud Run Hybrid Router • Firestore Route Table • Private Service Connect (PSC) • Vertex AI Agent Engine • AlloyDB RLS & CMEK Spokes",
+      "execTechSummary": "Combines a single multi-tenant ingress hub with a Firestore tier routing table that dispatches Standard tenants to the shared pool (`pool://`) and Enterprise tenants across unidirectional Private Service Connect (PSC) bridges (`psc://`), plus a 3-phase zero-downtime live tier migrator.",
+      "outcomeTitle": "Single Unified SaaS URL Routing Across Pooled & PSC Spokes + Zero-Downtime Tier Upgrades",
+      "outcomeBody": "Standard tenants (RetailStream baseline) run in the cost-optimal shared pool while Enterprise tenants (FinVault) route over Private Service Connect to dedicated spokes—and growing tenants promote live (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`) with 0 dropped sessions.",
+      "outcomeTech": "Verified live on Google Cloud (4/4 migration tests + F-09): 0ms lag shadow sync, atomic pointer flip, and 0 dropped active sessions",
+      "zonesSummary": [
+        {
+          "zoneId": "Blue Zone",
+          "colorHex": "#aecbfa",
+          "borderHex": "#174ea6",
+          "name": "1. Unified Ingress Hub & Tier-Aware Router",
+          "role": "Fronts all customers behind one SaaS URL, verifies identity at Hop 1, queries the Firestore route table, and filters the cross-project Agent Catalog.",
+          "nodes": [
+            "Fronts all customers behind one SaaS URL, verifies identity at Hop 1, queries the Firestore route table, and filters the cross-project Agent Catalog."
+          ]
+        },
+        {
+          "zoneId": "Green Zone",
+          "colorHex": "#ceead6",
+          "borderHex": "#137333",
+          "name": "2. 3-Phase Zero-Downtime Migration Engine",
+          "role": "Orchestrates live Standard → Enterprise promotions across `SHADOW_SYNC` (0ms lag), `ATOMIC_CUTOVER`, and `DRAIN_AND_VERIFY` (0 dropped sessions).",
+          "nodes": [
+            "Orchestrates live Standard → Enterprise promotions across `SHADOW_SYNC` (0ms lag), `ATOMIC_CUTOVER`, and `DRAIN_AND_VERIFY` (0 dropped sessions)."
+          ]
+        },
+        {
+          "zoneId": "Yellow Zone",
+          "colorHex": "#feefc3",
+          "borderHex": "#b06000",
+          "name": "3. Left Spoke: Shared Pooled Runtime (Standard)",
+          "role": "Executes Standard-tier workloads (`pool://`, 4,000 thinking cap, 90% shared cache, AlloyDB RLS) and streams state during live tier upgrades.",
+          "nodes": [
+            "Executes Standard-tier workloads (`pool://`, 4,000 thinking cap, 90% shared cache, AlloyDB RLS) and streams state during live tier upgrades."
+          ]
+        },
+        {
+          "zoneId": "Red Zone",
+          "colorHex": "#fad2cf",
+          "borderHex": "#c5221f",
+          "name": "4. Right Spoke: Dedicated Enterprise PSC Spokes",
+          "role": "Connects via unidirectional Private Service Connect (`psc://`, `/28` NAT subnet) to dedicated CMEK-encrypted Enterprise spokes (8,000 thinking budget).",
+          "nodes": [
+            "Connects via unidirectional Private Service Connect (`psc://`, `/28` NAT subnet) to dedicated CMEK-encrypted Enterprise spokes (8,000 thinking budget)."
+          ]
+        }
+      ],
+      "logicalSteps": [
+        {
+          "step": "Step ①",
+          "badgeNum": "01",
+          "zone": "Standard & Enterprise Users → Blue Zone",
+          "title": "Single Unified SaaS URL & Identity Verification",
+          "logicalNarrative": "Both Standard (RetailStream) and Enterprise (FinVault) users connect to the same `agent.cymbal.cloud` URL. Hop 1 Cloud Armor and IAP verify OIDC/Entra tokens and mint a KMS-signed `CryptographicContext`.",
+          "components": "Unified SaaS Ingress • Cloud Armor & IAP OBO/DPoP"
+        },
+        {
+          "step": "Step ②",
+          "badgeNum": "02",
+          "zone": "Blue Zone (Catalog & Route Lookup)",
+          "title": "Firestore Tier Lookup & Cross-Project Catalog PDP",
+          "logicalNarrative": "The Cloud Run Hybrid Router looks up the tenant’s active routing record in Firestore (`pool://` vs `psc://`) and filters the federated Vertex AI Agent Engine Registry so private spoke agents are only visible to their owner.",
+          "components": "Firestore Routing Table • Cross-Project Agent Catalog PDP"
+        },
+        {
+          "step": "Step ③",
+          "badgeNum": "03",
+          "zone": "Blue Zone → Left or Right Spoke",
+          "title": "Dynamic Dispatch: Shared Pool vs. Unidirectional PSC",
+          "logicalNarrative": "Standard tenants route directly to the Left Spoke (`pool://cymbal-shared-pooled-runtime-v2`), while Enterprise tenants traverse a Private Service Connect consumer endpoint (`psc://finvault-agent-spoke-psc`) into the Right Spoke.",
+          "components": "Dynamic Tier Router • Private Service Connect (PSC)"
+        },
+        {
+          "step": "Step ④",
+          "badgeNum": "04",
+          "zone": "Yellow & Red Zones (Tiered Guardrails)",
+          "title": "Tier-Scoped Model Armor & Thinking Budget Enforcement",
+          "logicalNarrative": "In the Pooled Spoke, shared Model Armor enforces Standard policies and clamps reasoning to 4,000 tokens. In the Enterprise PSC Spoke, dedicated Model Armor templates run with an 8,000-token budget.",
+          "components": "Tiered Model Armor Templates • 4,000 vs. 8,000 Token Budget"
+        },
+        {
+          "step": "Step ⑤",
+          "badgeNum": "05",
+          "zone": "Green, Yellow & Red Zones (Live Upgrade)",
+          "title": "3-Phase Zero-Downtime Tier Promotion Engine",
+          "logicalNarrative": "When RetailStream upgrades from Standard to Enterprise mid-conversation, the Migration Engine runs (1) `SHADOW_SYNC` (streaming memory & RLS rows to the new CMEK spoke to 0ms lag), (2) `ATOMIC_CUTOVER` in Firestore, and (3) `DRAIN_AND_VERIFY`.",
+          "components": "SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY"
+        },
+        {
+          "step": "Step ⑥",
+          "badgeNum": "06",
+          "zone": "Red Zone (Promoted Enterprise Spoke)",
+          "title": "Seamless Next-Turn Execution in Dedicated PSC Spoke",
+          "logicalNarrative": "In-flight pooled turns finish draining gracefully, while the very next message in RetailStream’s active `session_id` routes over Private Service Connect to `cymbal-retailstream-silo-prod` with 8,000 tokens and dedicated CMEK encryption.",
+          "components": "Zero Dropped Sessions • Dedicated CMEK Spoke Execution"
+        },
+        {
+          "step": "Step ⑦",
+          "badgeNum": "07",
+          "zone": "Spokes → Caller & Green Zone FinOps",
+          "title": "Unified Response Delivery & Blended FinOps Telemetry",
+          "logicalNarrative": "The caller receives a seamless response without re-authenticating or changing URLs, while BigQuery OTel records the transition from Pooled (`routing_plane=POOLED`) to Hybrid PSC (`routing_plane=PSC_SPOKE`) chargeback.",
+          "components": "Seamless Session Continuity • BigQuery Blended FinOps"
+        },
+        {
+          "step": "Outcome",
+          "badgeNum": "08",
+          "zone": "Architectural & Business Outcome",
+          "title": "Single Unified SaaS URL Routing Across Pooled & PSC Spokes + Zero-Downtime Tier Upgrades",
+          "logicalNarrative": "Standard tenants (RetailStream baseline) run in the cost-optimal shared pool while Enterprise tenants (FinVault) route over Private Service Connect to dedicated spokes—and growing tenants promote live (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`) with 0 dropped sessions.",
+          "components": "PATTERN C • HYBRID PSC & MIGRATION"
+        }
+      ],
+      "technicalSteps": [
+        {
+          "step": "Step ①",
+          "hopName": "Unified Ingress & PEP",
+          "route": "External ALB, Cloud Armor & IAP (Blue Zone)",
+          "protocolAndMechanism": "Terminates all customer tiers at one Anycast IP and mints a KMS-signed `CryptographicContext` derived from the verified OIDC/Entra issuer.",
+          "codeAndResource": "hop1_edge_identity_pep.py • Unified SaaS Hostname",
+          "verifiedOutcome": "Customers never change URLs or OAuth redirect URIs when upgrading tiers"
+        },
+        {
+          "step": "Step ②",
+          "hopName": "Federated Catalog & Route",
+          "route": "Firestore Route Table & Cross-Project Registry (Blue Zone)",
+          "protocolAndMechanism": "Resolves the tenant’s live target URI (`pool://` vs `psc://`) and filters cross-project `agent://` descriptors by tenant ownership.",
+          "codeAndResource": "route_tenant_request() in pattern_c_hybrid_router_and_migrator.py",
+          "verifiedOutcome": "Deterministic sub-millisecond tier routing and catalog isolation"
+        },
+        {
+          "step": "Step ③",
+          "hopName": "Standard Pool Dispatch",
+          "route": "Shared Cloud Run Gen2 & AlloyDB RLS (Yellow Zone)",
+          "protocolAndMechanism": "Routes Standard-tier tenants to the shared pooled runtime with 90% shared `ContextCacheConfig` caching, 120 RPM quota, and 4,000 thinking token cap.",
+          "codeAndResource": "pool://cymbal-shared-pooled-runtime-v2",
+          "verifiedOutcome": "Preserves 85–90% COGS savings for high-volume commercial tenants"
+        },
+        {
+          "step": "Step ④",
+          "hopName": "Enterprise PSC Dispatch",
+          "route": "Hub VPC (`cymbal-pattern-c-hub-vpc`) & PSC NAT (Red Zone)",
+          "protocolAndMechanism": "Routes Enterprise tenants via Direct VPC Egress and `cymbal-psc-nat-us-west1` (`10.240.0.0/28`) to the spoke’s `ServiceAttachment` without public IPs.",
+          "codeAndResource": "psc://projects/.../serviceAttachments/{tenant}-agent-spoke-psc",
+          "verifiedOutcome": "Unidirectional hub-to-spoke connectivity with zero CIDR overlap"
+        },
+        {
+          "step": "Step ⑤",
+          "hopName": "Phase 1: SHADOW_SYNC",
+          "route": "Live Tier Migrator (`execute_zero_downtime_tier_upgrade`) (Green Zone)",
+          "protocolAndMechanism": "Provisions the target Enterprise spoke project, CMEK key, and PSC attachment while streaming the tenant’s L4 Memory Bank and RLS rows to `0ms` replication lag.",
+          "codeAndResource": "Phase 1 SHADOW_SYNC • Background State Replication",
+          "verifiedOutcome": "100% of active session history replicated without pausing user traffic"
+        },
+        {
+          "step": "Step ⑥",
+          "hopName": "Phase 2: ATOMIC_CUTOVER",
+          "route": "Firestore Atomic Pointer Flip (Blue & Green Zones)",
+          "protocolAndMechanism": "Atomically updates the tenant’s instance-scoped profile (`tier: STANDARD → ENTERPRISE`, `thinking_budget: 4000 → 8000`, `target: pool:// → psc://`).",
+          "codeAndResource": "Phase 2 ATOMIC_CUTOVER • Instance-Scoped Profile Mutation",
+          "verifiedOutcome": "Verified F-09: Sub-50ms cutover with zero global state bleed across instances"
+        },
+        {
+          "step": "Step ⑦",
+          "hopName": "Phase 3: DRAIN_AND_VERIFY",
+          "route": "Promoted PSC Spoke (`cymbal-retailstream-silo-prod`) (Red Zone)",
+          "protocolAndMechanism": "Drains in-flight pooled requests cleanly while routing the next turn of the active `session_id` to the new CMEK-encrypted PSC spoke.",
+          "codeAndResource": "Phase 3 DRAIN_AND_VERIFY • run_tier_migration_suite.py (4/4 PASS)",
+          "verifiedOutcome": "Verified 4/4 tests: 0 dropped sessions, 8,000 budget unlocked, CMEK active"
+        },
+        {
+          "step": "Cost & Audit",
+          "hopName": "Blended Tier Chargeback",
+          "route": "BigQuery OTel (`cymbal_agentic_finops_otel.tenant_telemetry_spans`) (Green Zone)",
+          "protocolAndMechanism": "Streams real-time telemetry tagged with `routing_plane` (`POOLED` vs `PSC_SPOKE`) and `migration_phase` into BigQuery for tiered invoicing.",
+          "codeAndResource": "BigQuery Hybrid FinOps & Migration Audit Sink",
+          "verifiedOutcome": "Verified live in BigQuery: POOLED → PSC_SPOKE hybrid telemetry recorded"
+        }
+      ]
+    },
+    {
+      "index": 11,
       "id": "ws4-hub-and-spoke-demo-env-setup-topology",
       "workstream": "WS4",
       "workstreamLabel": "Workstream 4 • Pattern C: Hub-and-Spoke Demo Environment & PSC ServiceAttachment Topology (WS 4.2)",
@@ -2321,7 +2128,7 @@
       ]
     },
     {
-      "index": 13,
+      "index": 12,
       "id": "ws4-zero-downtime-tier-upgrade-sequence",
       "workstream": "WS4",
       "workstreamLabel": "Workstream 4 • Pattern C: Zero-Downtime Live Tier Upgrade Sequence (WS 4.5)",
@@ -2514,7 +2321,7 @@
       ]
     },
     {
-      "index": 14,
+      "index": 13,
       "id": "ws4-terraform-hybrid-psc-blueprint-resource-graph",
       "workstream": "WS4",
       "workstreamLabel": "Workstream 4 • Pattern C: Dual-Provider Terraform Hybrid PSC Blueprint Graph (WS 4.6)",
@@ -2703,6 +2510,199 @@
           "protocolAndMechanism": "Verifies that `main.tf`, `variables.tf`, `README.md`, and `terraform.tfvars.example` are complete and match live GCP resource state.",
           "codeAndResource": "Forensic Check F-10 PASS",
           "verifiedOutcome": "100% turnkey Infrastructure-as-Code across all 3 architecture patterns"
+        }
+      ]
+    },
+    {
+      "index": 14,
+      "id": "ws5-decision-tree-and-agentic-triad",
+      "workstream": "WS5",
+      "workstreamLabel": "Workstream 5 • Executive Topology Decision Guide & The Multi-Tenant Agentic Triad (WS 5.1–5.2)",
+      "badge": "WORKSTREAM 5.1 & 5.2 • CAPSTONE BLUEPRINT",
+      "patternBadge": "WORKSTREAM 5 • AGENTIC TRIAD",
+      "title": "Workstream 5 Capstone: Executive Topology Decision Guide & The Multi-Tenant Agentic Triad",
+      "subtitle": "Verified 20/20 Suites PASS Across nitina-ggarwal-sandbox-647724 & ramp-portal-dev (Security • FinOps -84.7% • Zero-PII OTel)",
+      "questionAnswered": "How do Chief Architects, CISOs, and CFOs select between Pattern A, Pattern B, and Pattern C—and how does the Multi-Tenant Agentic Triad balance Cryptographic Tenant Governance, Predictable FinOps COGS, and Zero-PII Observability across 1,000+ tenants?",
+      "gcpProject": "ramp-portal-dev (#248990048888) & nitina-ggarwal-sandbox-647724 (#887605034827)",
+      "runtimeTarget": "enterprise-s2p-global • cymbal_agentic_finops_otel.tenant_telemetry_spans",
+      "codeModules": "workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md • blogs/ws5-decision-guide-and-agentic-triad.md",
+      "execCloudServices": "Vertex AI Agent Engine • Google ADK 2.0 • Gemini 2.5 Pro & Gemma 3 • Cloud Armor & IAP • Model Armor & SDP • Memorystore for Valkey • AlloyDB RLS & Cloud KMS CMEK • BigQuery OTel",
+      "execTechSummary": "Synthesizes the 2-Question Executive Topology Decision Tree (Pattern A vs. B vs. C) and the 3-Pillar Multi-Tenant Agentic Triad: (1) 5-Hop Cryptographic Governance, (2) Predictable FinOps Unit Economics (-84.7% COGS), and (3) Zero-PII OpenTelemetry Chargeback.",
+      "outcomeTitle": "2-Question Topology Selector + 74% Total Cloud COGS Reduction Across 1,000 Tenants",
+      "outcomeBody": "Across a 1,000-tenant B2B SaaS portfolio (950 Standard + 50 Enterprise), Pattern C guided by the Agentic Triad reduces shared prompt token costs by 90%, cuts total monthly infrastructure COGS by 74% (via 90% shared ContextCacheConfig), and maintains 99.99% SLA with 0 cross-tenant leaks.",
+      "outcomeTech": "Verified live across all 12 forensic checks (F-01..F-12) and 20/20 simulation assertions (10 Pattern A + 6 Pattern B + 4 Pattern C)",
+      "zonesSummary": [
+        {
+          "zoneId": "Blue Zone (Top-Left)",
+          "colorHex": "#aecbfa",
+          "borderHex": "#174ea6",
+          "name": "1. The 2-Question Executive Topology Selector",
+          "role": "Evaluates `Decision inputs` (`Tenant tier, compliance & pricing model`), `Q1 · Compliance gate` (`100% mandate VPC-SC or air-gap?`), and `Q2 · Tier gate` (`Multi-tier Standard + Enterprise?`).",
+          "nodes": [
+            "Evaluates `Decision inputs` (`Tenant tier, compliance & pricing model`), `Q1 · Compliance gate` (`100% mandate VPC-SC or air-gap?`), and `Q2 · Tier gate` (`Multi-tier Standard + Enterprise?`)."
+          ]
+        },
+        {
+          "zoneId": "Green Zone (Top-Right)",
+          "colorHex": "#ceead6",
+          "borderHex": "#137333",
+          "name": "2. The Agentic Triad (80% reusable core)",
+          "role": "Unifies `Pillar 1 • Zero-Trust 5-Hop`, `Pillar 2 • Predictable FinOps`, and `Pillar 3 • Zero-PII OTel Chargeback` above the `AGENTIC TRIAD CORE` banner (`Shared across Pattern A, B & C`).",
+          "nodes": [
+            "Unifies `Pillar 1 • Zero-Trust 5-Hop`, `Pillar 2 • Predictable FinOps`, and `Pillar 3 • Zero-PII OTel Chargeback` above the `AGENTIC TRIAD CORE` banner (`Shared across Pattern A, B & C`)."
+          ]
+        },
+        {
+          "zoneId": "Coral Outcome Column (Left)",
+          "colorHex": "#fad2cf",
+          "borderHex": "#c5221f",
+          "name": "Pattern B — Sovereign Silos • $$$ • Terraform module 3.6",
+          "role": "Triggered by `Q1 = YES (100% regulated)`: provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`).",
+          "nodes": [
+            "Triggered by `Q1 = YES (100% regulated)`: provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`)."
+          ]
+        },
+        {
+          "zoneId": "Amber & Slate Outcome Columns (Center & Right)",
+          "colorHex": "#feefc3",
+          "borderHex": "#b06000",
+          "name": "Pattern A — Pooled ($) & Pattern C — Hybrid PSC ($$)",
+          "role": "`Q2 = NO (Single tier)` routes to `Pattern A — Pooled` (`Shared Agent Engine Pool` + `Shared AlloyDB & BigQuery RLS`); `Q2 = YES (Multi-tier)` routes to `Pattern C — Hybrid PSC` (`Hybrid Router & PSC Hub` + `3-Phase Live Tier Migrator`).",
+          "nodes": [
+            "`Q2 = NO (Single tier)` routes to `Pattern A — Pooled` (`Shared Agent Engine Pool` + `Shared AlloyDB & BigQuery RLS`); `Q2 = YES (Multi-tier)` routes to `Pattern C — Hybrid PSC` (`Hybrid Router & PSC Hub` + `3-Phase Live Tier Migrator`)."
+          ]
+        }
+      ],
+      "logicalSteps": [
+        {
+          "step": "Step ①",
+          "badgeNum": "01",
+          "zone": "Blue Zone (Decision Inputs)",
+          "title": "Ingest Decision Inputs (Tenant Tier, Compliance & Pricing Model)",
+          "logicalNarrative": "Architects evaluate the SaaS product’s regulatory surface area, customer contract mandates, and pricing tier structure inside `1. The 2-Question Executive Topology Selector`.",
+          "components": "Decision inputs • Tenant tier, compliance & pricing model"
+        },
+        {
+          "step": "Step ②",
+          "badgeNum": "02",
+          "zone": "Blue Zone (Question 1 Gate)",
+          "title": "Q1 · Compliance Gate (100% Mandate VPC-SC or Air-Gap?)",
+          "logicalNarrative": "Question 1 evaluates whether 100% of customers legally mandate dedicated Google Cloud projects, VPC Service Controls perimeters, or air-gapped open-weight models. If `Q1 = YES (100% regulated)`, route to Pattern B (`Step ④`); if `Q1 = NO`, proceed to `Q2 · Tier gate` (`Step ③`).",
+          "components": "Q1 · Compliance gate → Q1 = YES (Pattern B) or Q1 = NO (Q2 Gate)"
+        },
+        {
+          "step": "Step ③",
+          "badgeNum": "03",
+          "zone": "Blue Zone (Question 2 Gate)",
+          "title": "Q2 · Tier Gate (Multi-Tier Standard + Enterprise?)",
+          "logicalNarrative": "Question 2 evaluates whether the SaaS business sells a single uniform commercial tier (`Q2 = NO (Single tier)` → Pattern A `Step ⑤`) or multiple tiers combining a shared Standard tier with a dedicated Enterprise tier (`Q2 = YES (Multi-tier)` → Pattern C `Step ⑥`).",
+          "components": "Q2 · Tier gate → Q2 = NO (Pattern A) or Q2 = YES (Pattern C)"
+        },
+        {
+          "step": "Step ④",
+          "badgeNum": "04",
+          "zone": "Coral Outcome Column (Pattern B)",
+          "title": "Pattern B — Sovereign Silos ($$$ • Terraform Module 3.6)",
+          "logicalNarrative": "Triggered by `Q1 = YES`: provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`).",
+          "components": "Per-Tenant Project & VPC-SC • Dedicated Agent & Gemma 3"
+        },
+        {
+          "step": "Step ⑤",
+          "badgeNum": "05",
+          "zone": "Amber Outcome Column (Pattern A)",
+          "title": "Pattern A — Pooled ($ • Terraform Module 2.6)",
+          "logicalNarrative": "Triggered by `Q2 = NO`: provisions `Shared Agent Engine Pool` (`120 RPM • 4k cap • 90% cache`) and `Shared AlloyDB & BigQuery RLS` (`FORCE RLS • 10/10 breach tests`).",
+          "components": "Shared Agent Engine Pool • Shared AlloyDB & BigQuery RLS"
+        },
+        {
+          "step": "Step ⑥",
+          "badgeNum": "06",
+          "zone": "Slate Outcome Column (Pattern C)",
+          "title": "Pattern C — Hybrid PSC ($$ • Terraform Module 4.6)",
+          "logicalNarrative": "Triggered by `Q2 = YES`: provisions `Hybrid Router & PSC Hub` (`Pool + PSC 10.10.0.50`) and `3-Phase Live Tier Migrator` (`0-downtime upgrade • 4/4 tests`).",
+          "components": "Hybrid Router & PSC Hub • 3-Phase Live Tier Migrator"
+        },
+        {
+          "step": "Step ⑦",
+          "badgeNum": "07",
+          "zone": "Green Zone (Agentic Triad Core → All 3 Patterns)",
+          "title": "Enforce the 80% Reusable Agentic Triad Core Across Pattern A, B & C",
+          "logicalNarrative": "Applies `Pillar 1 • Zero-Trust 5-Hop` (`OBO/DPoP + Model Armor`), `Pillar 2 • Predictable FinOps` (`90% cache + Valkey cap`), and `Pillar 3 • Zero-PII OTel Chargeback` (`SDP -> BigQuery FinOps`) uniformly across all three pattern outcome columns (`74% portfolio COGS savings`).",
+          "components": "Pillar 1 + Pillar 2 + Pillar 3 • AGENTIC TRIAD CORE"
+        },
+        {
+          "step": "Outcome",
+          "badgeNum": "08",
+          "zone": "Architectural & Business Outcome",
+          "title": "2-Question Topology Selector + 74% Total Cloud COGS Reduction Across 1,000 Tenants",
+          "logicalNarrative": "Across a 1,000-tenant B2B SaaS portfolio (950 Standard + 50 Enterprise), Pattern C guided by the Agentic Triad reduces shared prompt token costs by 90%, cuts total monthly infrastructure COGS by 74% (via 90% shared ContextCacheConfig), and maintains 99.99% SLA with 0 cross-tenant leaks.",
+          "components": "WORKSTREAM 5 • AGENTIC TRIAD"
+        }
+      ],
+      "technicalSteps": [
+        {
+          "step": "Step ①",
+          "hopName": "2-Question Selector",
+          "route": "Executive Topology Decision Matrix (Blue Zone)",
+          "protocolAndMechanism": "Evaluates regulatory blast-radius mandates (Q1 → Pattern B) and multi-tiered SaaS packaging (Q2 → Pattern A vs. Pattern C) on an 80% shared codebase.",
+          "codeAndResource": "workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md",
+          "verifiedOutcome": "Eliminates architectural forks; isolation is a per-tenant configuration"
+        },
+        {
+          "step": "Step ②",
+          "hopName": "Pillar 1: Zero-Trust Chain",
+          "route": "5-Hop Cryptographic Context Chain (Green Zone Triad Core)",
+          "protocolAndMechanism": "Enforces KMS-signed `CryptographicContext` across Edge PEP (Hop 1), Catalog PDP (Hop 2), gVisor Sandbox (Hop 3), Model Armor (Hop 4), and Data RLS (Hop 5).",
+          "codeAndResource": "core-cymbal-agent/governance/hop1..hop5",
+          "verifiedOutcome": "10/10 Pattern A breach tests + 6/6 Pattern B silo tests pass"
+        },
+        {
+          "step": "Step ③",
+          "hopName": "Pillar 2: FinOps Levers",
+          "route": "Vertex AI ContextCacheConfig & Memorystore (Green Zone Triad Core)",
+          "protocolAndMechanism": "Caches the 32k-token shared system prompt once at a 90% discount while enforcing per-tier thinking budgets (`4k` vs `8k`) and Valkey RPM bulkheads.",
+          "codeAndResource": "Shared Read-Only Prefix Cache + Tiered Token Caps",
+          "verifiedOutcome": "84.7% per-turn token COGS reduction; 74% total 1,000-tenant cloud savings"
+        },
+        {
+          "step": "Step ④",
+          "hopName": "Pattern B Sovereign Silos",
+          "route": "Per-Tenant Project & VPC-SC + Dedicated Agent & Gemma 3 (Coral Column)",
+          "protocolAndMechanism": "Wraps regulated Enterprise projects in VPC Service Controls and IAM Principal Access Boundaries with live Cloud KMS CMEK kill-switch verification (`HTTP 423`).",
+          "codeAndResource": "workstream-3-pattern-b-siloed (Terraform module 3.6 • 6/6 PASS)",
+          "verifiedOutcome": "Satisfies OCC/FDIC, HIPAA, and public-sector physical isolation audits"
+        },
+        {
+          "step": "Step ⑤",
+          "hopName": "Pattern A Pooled Runtime",
+          "route": "Shared Agent Engine Pool + Shared AlloyDB & BigQuery RLS (Amber Column)",
+          "protocolAndMechanism": "Co-hosts commercial tenants on a single shared Agent Engine pool (`120 RPM • 4k cap • 90% cache`) and shared AlloyDB/BigQuery tables with `FORCE ROW LEVEL SECURITY`.",
+          "codeAndResource": "workstream-2-pattern-a-pooled (Terraform module 2.6 • 10/10 PASS)",
+          "verifiedOutcome": "High-density SaaS economics with 0 cross-tenant rows or sessions leaked"
+        },
+        {
+          "step": "Step ⑥",
+          "hopName": "Pattern C Hybrid PSC",
+          "route": "Hybrid Router & PSC Hub + 3-Phase Live Tier Migrator (Slate Column)",
+          "protocolAndMechanism": "Bridges the central hub to dedicated spokes over unidirectional PSC (`10.10.0.50`) and promotes live tenants (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`).",
+          "codeAndResource": "workstream-4-pattern-c-hybrid (Terraform module 4.6 • 4/4 PASS)",
+          "verifiedOutcome": "Zero-downtime Standard → Enterprise promotion with 0 dropped sessions"
+        },
+        {
+          "step": "Step ⑦",
+          "hopName": "Pillar 3: Zero-PII OTel",
+          "route": "Sensitive Data Protection & BigQuery OTel (Green Zone Triad Core)",
+          "protocolAndMechanism": "Redacts all PII/PHI/PCI via Cloud SDP prior to log export and streams tenant-tagged token consumption into BigQuery (`cymbal_agentic_finops_otel`).",
+          "codeAndResource": "3 Chargeback Models (Even Split, Proportional, Tiered)",
+          "verifiedOutcome": "Verified live in BigQuery: Pattern A, Pattern C, and Pattern B spans"
+        },
+        {
+          "step": "Cost & Audit",
+          "hopName": "10-Week Program Roadmap",
+          "route": "12/12 Forensic Gates & Product EAP Backlog (All Workstreams)",
+          "protocolAndMechanism": "Delivers Pattern A in Week 4, Pattern B in Week 7, and Pattern C in Week 10 alongside the 9-item Google Cloud Product EAP Tracker (`GAP-P0-01`..`GAP-P2-02`).",
+          "codeAndResource": "scripts/run_deep_forensic_audit.py (12/12 PASS • 20/20 SIMS)",
+          "verifiedOutcome": "Complete, production-certified reference architecture across WS1–WS5"
         }
       ]
     }

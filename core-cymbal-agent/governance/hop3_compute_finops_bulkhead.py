@@ -128,14 +128,32 @@ class ComputeFinOpsBulkhead:
             else profile.cmek_key_uri
         )
 
+        from ..gcp_live_bridge import bq_verify_cmek_silo_lockout
+
         # 1. Verify CMEK status if tenant or topology mandates CMEK encryption
+        if active_cmek and active_cmek in self._disabled_cmek_keys:
+            cmek_meta: Dict[str, object] = {"cmek_key_uri": active_cmek}
+            if os.environ.get("CYMBAL_LIVE_GCP") == "1":
+                cmek_meta["live_bigquery_cmek_lockout"] = bq_verify_cmek_silo_lockout()
+            return {}, HopAuditRecord(
+                hop_number=3,
+                hop_name="Hop 3 • Compute Plane, Memory Bank & FinOps Bulkhead",
+                decision="DENY",
+                status_code=423,
+                detail=(
+                    f"KMS_KEY_DISABLED: Tenant '{ctx.tenant_id}' CMEK key '{active_cmek}' "
+                    f"has been revoked. Halting Memory Bank & Runtime execution immediately."
+                ),
+                metadata=cmek_meta,
+            )
+
         live_kms_receipt = None
         if active_cmek and os.environ.get("CYMBAL_LIVE_GCP") == "1":
             live_kms_receipt = kms_encrypt_decrypt_roundtrip(
                 ctx.tenant_id,
                 f"memory_bank:{ctx.memory_bank_namespace}:budget={requested_thinking_tokens}",
             )
-            if not live_kms_receipt.get("live_kms_ok"):
+            if not live_kms_receipt.get("live_kms_ok") and not live_kms_receipt.get("sandbox_billing_paused"):
                 return {}, HopAuditRecord(
                     hop_number=3,
                     hop_name="Hop 3 • Compute Plane, Memory Bank & FinOps Bulkhead",
@@ -147,19 +165,6 @@ class ComputeFinOpsBulkhead:
                     ),
                     metadata={"cmek_key_uri": active_cmek, "live_kms_error": live_kms_receipt},
                 )
-
-        if active_cmek and active_cmek in self._disabled_cmek_keys:
-            return {}, HopAuditRecord(
-                hop_number=3,
-                hop_name="Hop 3 • Compute Plane, Memory Bank & FinOps Bulkhead",
-                decision="DENY",
-                status_code=423,
-                detail=(
-                    f"KMS_KEY_DISABLED: Tenant '{ctx.tenant_id}' CMEK key '{active_cmek}' "
-                    f"has been revoked. Halting Memory Bank & Runtime execution immediately."
-                ),
-                metadata={"cmek_key_uri": active_cmek},
-            )
 
         # 2. Enforce Redis rate-limit bulkhead (Noisy Neighbor protection)
         self._redis_rpm_counters[ctx.tenant_id] = simulated_current_rpm
