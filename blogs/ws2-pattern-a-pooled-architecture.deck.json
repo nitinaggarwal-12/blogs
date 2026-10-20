@@ -3,7 +3,7 @@
   "deckTitle": "Pattern A — High-Density Pooled Multi-Tenant Architecture on Google Cloud (Workstream 2)",
   "deckSubtitle": "Serving hundreds of commercial B2B SaaS tenants on a single shared Cloud Run v2, Vertex AI Agent Engine, and AlloyDB RLS footprint with 84.7% lower inference cost and 10/10 red-team attacks blocked",
   "tldr": [
-    "Solving the Commercial SaaS Margin Equation: Pattern A hosts hundreds of $500–$2,000/month commercial tenants inside one shared Google Cloud project (`ramp-portal-dev`) at a $42/month infrastructure floor.",
+    "Solving the Commercial SaaS Margin Equation: Pattern A hosts hundreds of Standard Tier–Enterprise Tier commercial tenants inside one shared Google Cloud project (`ramp-portal-dev`) at a 120 RPM Pooled infrastructure floor.",
     "Cryptographic Logical Isolation (Zero Physical Sprawl): Instead of spinning up separate VPCs per tenant, Pattern A enforces non-bypassable tenant boundaries across all 5 runtime hops in software.",
     "10/10 Adversarial Red-Team Attacks Neutralized: Competing tenants FinVault Bank and RetailStream Corp share the exact same Cloud Run v2 workers and AlloyDB cluster with zero cross-tenant data or tool bleed.",
     "84.7% Net Inference Cost Reduction: A 32,000-token immutable platform runbook is cached once in Gemini 2.5 Pro ContextCacheConfig at a 90% discount, cutting billable input tokens from 34,000 to 5,200 per turn.",
@@ -12,7 +12,7 @@
   "tldrSpecs": [
     {
       "stack": "Single GCP Project (ramp-portal-dev) • Cloud Run v2 (cymbal-multi-tenant-patterns)",
-      "sla": "$42/mo Unit Cost per Tenant • Preserves 85%+ SaaS Gross Margin on Standard Tiers",
+      "sla": "120 RPM Pool Unit Cost per Tenant • Preserves 85%+ SaaS Gross Margin on Standard Tiers",
       "tag": "High-Density SaaS Unit Economics"
     },
     {
@@ -44,7 +44,7 @@
         "Agentic AI & Shared Prefix Caching: Vertex AI Agent Engine (ADK 2.0 runtime, Agent Registry & L1–L5 Memory Bank) and Gemini 2.5 Pro with ContextCacheConfig caching a 32,000-token immutable system prefix at a 90% discount (84.7% net token savings).",
         "Ingress, Identity & Bidirectional AI Safety: Global External Application Load Balancer, Google Cloud Armor L7 WAF (stripping spoofed X-Tenant-Id headers), IAP + IAM STS (RFC 8693 OBO + RFC 9449 DPoP), Vertex AI Model Armor, and Cloud Sensitive Data Protection.",
         "Rate Bulkheads, Relational RLS & FinOps Telemetry: Memorystore for Valkey (120 vs. 600 RPM token buckets), Firestore tenant profile registry, AlloyDB for PostgreSQL (`FORCE ROW LEVEL SECURITY`), Cloud KMS CMEK, and BigQuery zero-PII OTel chargeback.",
-        "High-Density Unit Economics ($42/Tenant/Month): Co-hosts hundreds of commercial B2B SaaS tenants inside one shared Google Cloud project (`ramp-portal-dev`) while guaranteeing 10/10 red-team breach isolation."
+        "High-Density Unit Economics (120 RPM Shared Pool): Co-hosts hundreds of commercial B2B SaaS tenants inside one shared Google Cloud project (`ramp-portal-dev`) while guaranteeing 10/10 red-team breach isolation."
       ],
       "specs": [
         {
@@ -64,7 +64,7 @@
         },
         {
           "stack": "workstream-2-pattern-a-pooled/2.6-terraform-starter (main.tf, variables.tf) + 2.4 Codelab",
-          "sla": "$42/mo Baseline Unit Cost per Tenant • 10/10 Red-Team Breach Simulations Verified",
+          "sla": "120 RPM Pool Baseline Unit Cost per Tenant • 10/10 Red-Team Breach Simulations Verified",
           "tag": "4. Turnkey Pattern A Kit"
         }
       ]
@@ -75,7 +75,7 @@
       "bullets": [
         "Dynamic Per-Turn Runtime Hydration: A single pooled Diagnostic Agent on Cloud Run v2 & Vertex AI Agent Engine dynamically loads each caller’s Firestore profile, GCS Skills (`gs://cymbal-skills-{tenant}/`), and 32k Gemini 2.5 Pro ContextCacheConfig prefix.",
         "FinVault Bank (Enterprise Slice in Pool): Authenticates via Google Workspace OIDC, unlocks an 8,000-token thinking budget and 600 RPM Valkey quota, and accesses private Agent Alpha (Gemini 2.5 Pro Dedicated PT) plus Workspace/Jira 3LO.",
-        "RetailStream Corp (Standard Slice in Pool): Authenticates via Microsoft Entra ID OIDC, runs within a 4,000-token thinking cap and 120 RPM Valkey quota ($42/mo floor), and invokes SharePoint/ServiceNow 3LO with `-32042` step-up consent.",
+        "RetailStream Corp (Standard Slice in Pool): Authenticates via Microsoft Entra ID OIDC, runs within a 4,000-token thinking cap and 120 RPM Valkey quota (120 RPM Pool floor), and invokes SharePoint/ServiceNow 3LO with `-32042` step-up consent.",
         "Cryptographic Catalog, Memory & AlloyDB RLS Firewall: Cloud Armor, IAP OBO/DPoP, Hop 2 ARD Filter (HTTP 403), Hop 3 L1–L5 Memory Bank namespaces, Hop 4 Model Armor/DLP, and Hop 5 AlloyDB FORCE RLS guarantee 100% mutual invisibility."
       ],
       "specs": [
@@ -91,7 +91,7 @@
         },
         {
           "stack": "Microsoft Entra ID OIDC • Shared Diagnostic Agent • 3LO SharePoint & ServiceNow ITOM",
-          "sla": "4,000 Thinking Tokens • 120 RPM Valkey Bucket • PCI-DSS PAN/SSN Masking • $42/mo Floor",
+          "sla": "4,000 Thinking Tokens • 120 RPM Valkey Bucket • PCI-DSS PAN/SSN Masking • 120 RPM Pool Floor",
           "tag": "3. RetailStream Pooled Standard Slice"
         },
         {
@@ -137,7 +137,7 @@
         ],
         [
           "Prompt caching & FinOps COGS",
-          "34k prompt billed in full every turn (`$0.0425/turn`) or unsafe cross-tenant cache bleed",
+          "34k prompt billed in full every turn (`32k Uncached/turn`) or unsafe cross-tenant cache bleed",
           "32k immutable prefix in Gemini 2.5 Pro `ContextCacheConfig` (`90%` discount -> `84.7%` savings)",
           "Per-silo prefix cache or dedicated air-gapped GKE Gemma 3 (27B) node pool"
         ],
@@ -150,8 +150,8 @@
         [
           "Unit economics & target tier",
           "High breach risk • Fails enterprise CISO security & compliance review",
-          "`$42 / tenant / month` • High-volume commercial B2B SaaS (`10/10` breach tests PASS)",
-          "`$1,850 / tenant / month` • Regulated Banking, Healthcare & Public Sector (`6/6` PASS)"
+          "`120 RPM Pool / tenant / month` • High-volume commercial B2B SaaS (`10/10` breach tests PASS)",
+          "`600 RPM Silo / tenant / month` • Regulated Banking, Healthcare & Public Sector (`6/6` PASS)"
         ]
       ],
       "bullets": [],
@@ -326,7 +326,7 @@
   "takeawaySpecs": [
     {
       "stack": "Single Shared GCP Project • 5-Hop Cryptographic Pipeline • AlloyDB RLS",
-      "sla": "$42/mo Baseline Unit Cost per Tenant with 100% Logical Isolation",
+      "sla": "120 RPM Pool Baseline Unit Cost per Tenant with 100% Logical Isolation",
       "tag": "Takeaway 1: High-Density Zero Trust"
     },
     {
@@ -350,5 +350,115 @@
       "tag": "Takeaway 5: Seamless Tier Evolution"
     }
   ],
-  "callToAction": "Execute the 10-point red-team breach suite (`run_breach_simulations.py`), apply the Pattern A Terraform starter (`2.6-terraform-starter`), and continue to Workstream 3 (Pattern B Sovereign Silos)."
+  "callToAction": "Execute the 10-point red-team breach suite (`run_breach_simulations.py`), apply the Pattern A Terraform starter (`2.6-terraform-starter`), and continue to Workstream 3 (Pattern B Sovereign Silos).",
+  "slideSpeakerNotes": [
+    {
+      "slide": 1,
+      "totalSlides": 12,
+      "title": "Act I — Executive Title Cover & 3-Act Briefing Map",
+      "whyHere": "Welcome everyone. Whether you are looking at this platform from an executive business perspective, a product strategy lens, or hands-on cloud architecture, we have structured this twelve-slide briefing into three clear acts so you always know where we are in the story.",
+      "whatIsHappening": "In this session on Workstream 2, we are diving into Pattern A—our High-Density Shared Pool architecture—to show how a SaaS provider can host hundreds of commercial customers on a single shared Google Cloud stack while keeping every customer’s data, tools, and performance strictly isolated.",
+      "whatComesNext": "With that three-act roadmap in mind, let's turn to Slide 2 to meet the actual customer profiles whose business and regulatory requirements drive every design decision in this architecture.",
+      "fullText": "Welcome everyone. Whether you are looking at this platform from an executive business perspective, a product strategy lens, or hands-on cloud architecture, we have structured this twelve-slide briefing into three clear acts so you always know where we are in the story.\n\nIn this session on Workstream 2, we are diving into Pattern A—our High-Density Shared Pool architecture—to show how a SaaS provider can host hundreds of commercial customers on a single shared Google Cloud stack while keeping every customer’s data, tools, and performance strictly isolated.\n\nWith that three-act roadmap in mind, let's turn to Slide 2 to meet the actual customer profiles whose business and regulatory requirements drive every design decision in this architecture."
+    },
+    {
+      "slide": 2,
+      "totalSlides": 12,
+      "title": "Act I — Customer Use Cases, Competing Tenant Profiles & Cloud Stack",
+      "whyHere": "Following our opening roadmap on Slide 1, we always start with the customer first—because an architecture only creates business value when it solves real customer constraints.",
+      "whatIsHappening": "Look at the business challenge on this slide: FinVault Bank and RetailStream Corp are both using our shared Incident Diagnostic Agent at the exact same time. From a financial perspective, running one shared agent runtime and sharing a single thirty-two-thousand-token system prompt cache reduces our inference cost of goods sold by up to ninety percent. At the same time, FinVault uses Google Workspace and Jira with an eight-thousand thinking-token budget, while RetailStream uses Microsoft Entra and ServiceNow with a four-thousand token cap—and neither company can ever discover or query the other’s private tools or incident history.",
+      "whatComesNext": "Now that we see what our customers require on Slide 2, the natural question for both business and technical leaders is: what are our architectural options to deliver this, and how do we choose the right one? Let's look at Slide 3.",
+      "fullText": "Following our opening roadmap on Slide 1, we always start with the customer first—because an architecture only creates business value when it solves real customer constraints.\n\nLook at the business challenge on this slide: FinVault Bank and RetailStream Corp are both using our shared Incident Diagnostic Agent at the exact same time. From a financial perspective, running one shared agent runtime and sharing a single thirty-two-thousand-token system prompt cache reduces our inference cost of goods sold by up to ninety percent. At the same time, FinVault uses Google Workspace and Jira with an eight-thousand thinking-token budget, while RetailStream uses Microsoft Entra and ServiceNow with a four-thousand token cap—and neither company can ever discover or query the other’s private tools or incident history.\n\nNow that we see what our customers require on Slide 2, the natural question for both business and technical leaders is: what are our architectural options to deliver this, and how do we choose the right one? Let's look at Slide 3."
+    },
+    {
+      "slide": 3,
+      "totalSlides": 12,
+      "title": "Act I — Architectural Options & Decision Matrix",
+      "whyHere": "Building directly on the customer requirements we just reviewed on Slide 2, this slide closes Act I by evaluating our architectural choices before we dive into the technical blueprints.",
+      "whatIsHappening": "Here we compare a properly governed Five-Hop Shared Pool against two common mistakes: naive single-database multi-tenancy on one extreme, and spinning up separate cloud projects for every small commercial customer on the other. As the table and the four decision rules at the bottom highlight, Pattern A gives us the unit economics and zero-friction onboarding of a shared SaaS platform while enforcing hardware-grade logical boundaries at every layer of the stack.",
+      "whatComesNext": "With our strategic direction clear at the end of Act I, let's move into Act II on Slide 4—starting with a clean, 30,000-foot view of our three security zones before we zoom into the detailed fifty-six-component Google Cloud blueprint.",
+      "fullText": "Building directly on the customer requirements we just reviewed on Slide 2, this slide closes Act I by evaluating our architectural choices before we dive into the technical blueprints.\n\nHere we compare a properly governed Five-Hop Shared Pool against two common mistakes: naive single-database multi-tenancy on one extreme, and spinning up separate cloud projects for every small commercial customer on the other. As the table and the four decision rules at the bottom highlight, Pattern A gives us the unit economics and zero-friction onboarding of a shared SaaS platform while enforcing hardware-grade logical boundaries at every layer of the stack.\n\nWith our strategic direction clear at the end of Act I, let's move into Act II on Slide 4—starting with a clean, 30,000-foot view of our three security zones before we zoom into the detailed fifty-six-component Google Cloud blueprint."
+    },
+    {
+      "slide": 4,
+      "totalSlides": 12,
+      "title": "Act II (Level 1 Zoom) — 3-Zone Logical Security & Trust Boundary",
+      "whyHere": "Now that we have chosen our architectural approach on Slide 3, Slide 4 opens Act II at Level 1 of our top-down zoom—giving everyone a simple three-zone mental map before we look at the full physical schematic.",
+      "whatIsHappening": "To keep the shared pool simple to reason about, this diagram divides the architecture into three logical trust zones from left to right. Zone 1 on the left handles federated login across Google OIDC and Microsoft Entra ID. Zone 2 in the center runs our Five-Hop Pooled Guardrail Engine, which scopes agent catalogs, enforces per-tenant rate limits in Memorystore Valkey, and applies shared prompt caching. Zone 3 on the right enforces Row-Level Security inside AlloyDB and BigQuery so the database engine itself refuses to return rows belonging to another company.",
+      "whatComesNext": "Now that we have these three logical zones in mind, let's zoom one level deeper on Slide 5 to see the exact Google Cloud services that live inside each zone.",
+      "fullText": "Now that we have chosen our architectural approach on Slide 3, Slide 4 opens Act II at Level 1 of our top-down zoom—giving everyone a simple three-zone mental map before we look at the full physical schematic.\n\nTo keep the shared pool simple to reason about, this diagram divides the architecture into three logical trust zones from left to right. Zone 1 on the left handles federated login across Google OIDC and Microsoft Entra ID. Zone 2 in the center runs our Five-Hop Pooled Guardrail Engine, which scopes agent catalogs, enforces per-tenant rate limits in Memorystore Valkey, and applies shared prompt caching. Zone 3 on the right enforces Row-Level Security inside AlloyDB and BigQuery so the database engine itself refuses to return rows belonging to another company.\n\nNow that we have these three logical zones in mind, let's zoom one level deeper on Slide 5 to see the exact Google Cloud services that live inside each zone."
+    },
+    {
+      "slide": 5,
+      "totalSlides": 12,
+      "title": "Act II (Level 2 Zoom) — Figure 1 Official Google Cloud Physical Blueprint",
+      "whyHere": "Because we just established the three high-level trust zones on Slide 4, this full fifty-six-component Google Cloud blueprint on Slide 5 becomes intuitive to read for both business and technical stakeholders.",
+      "whatIsHappening": "Zooming into the physical Google Cloud services inside those three zones, Figure 1 maps out the complete Pattern A blueprint. In the blue Routing Hub at the top, Cloud Armor and Identity-Aware Proxy route federated traffic into our shared Cloud Run gateway. In the green Governance Hub in the center, our five-hop pipeline binds the verified tenant ID, checks Valkey token buckets, and reuses the Vertex AI shared prefix cache. At the bottom, the yellow Shared Pool Spoke executes tool calls against tenant-scoped MCP connectors and queries AlloyDB under strict Row-Level Security policies.",
+      "whatComesNext": "While this physical blueprint shows where every service lives, it is a static map. Next, let's turn to Slide 6 to watch how a live customer request actually travels across these components step by step over time.",
+      "fullText": "Because we just established the three high-level trust zones on Slide 4, this full fifty-six-component Google Cloud blueprint on Slide 5 becomes intuitive to read for both business and technical stakeholders.\n\nZooming into the physical Google Cloud services inside those three zones, Figure 1 maps out the complete Pattern A blueprint. In the blue Routing Hub at the top, Cloud Armor and Identity-Aware Proxy route federated traffic into our shared Cloud Run gateway. In the green Governance Hub in the center, our five-hop pipeline binds the verified tenant ID, checks Valkey token buckets, and reuses the Vertex AI shared prefix cache. At the bottom, the yellow Shared Pool Spoke executes tool calls against tenant-scoped MCP connectors and queries AlloyDB under strict Row-Level Security policies.\n\nWhile this physical blueprint shows where every service lives, it is a static map. Next, let's turn to Slide 6 to watch how a live customer request actually travels across these components step by step over time."
+    },
+    {
+      "slide": 6,
+      "totalSlides": 12,
+      "title": "Act II (Level 3 Zoom) — 5-Actor Chronological Request Lifeline",
+      "whyHere": "Taking the physical components we just saw on Slide 5, this slide brings the architecture to life by tracing a single customer turn in chronological order.",
+      "whatIsHappening": "Tracing a single pooled request chronologically from left to right, watch how fast and disciplined the handoffs are across our five system actors. When a user sends a prompt, Hop 1 exchanges their login token for a DPoP-bound tenant context; Hop 2 filters the agent registry so private agents belonging to other customers remain invisible; Hop 3 checks the customer’s Valkey rate bucket and attaches their private memory namespace; Hop 4 screens the prompt through Model Armor while reusing the shared system prefix cache; and Hop 5 opens an AlloyDB transaction locked to that specific tenant ID.",
+      "whatComesNext": "Having watched the request move from hop to hop on Slide 6, a technical architect or security officer will naturally ask: what actually changes inside the data packet on the wire so a caller can never fake their company ID? Let's zoom all the way in on Slide 7.",
+      "fullText": "Taking the physical components we just saw on Slide 5, this slide brings the architecture to life by tracing a single customer turn in chronological order.\n\nTracing a single pooled request chronologically from left to right, watch how fast and disciplined the handoffs are across our five system actors. When a user sends a prompt, Hop 1 exchanges their login token for a DPoP-bound tenant context; Hop 2 filters the agent registry so private agents belonging to other customers remain invisible; Hop 3 checks the customer’s Valkey rate bucket and attaches their private memory namespace; Hop 4 screens the prompt through Model Armor while reusing the shared system prefix cache; and Hop 5 opens an AlloyDB transaction locked to that specific tenant ID.\n\nHaving watched the request move from hop to hop on Slide 6, a technical architect or security officer will naturally ask: what actually changes inside the data packet on the wire so a caller can never fake their company ID? Let's zoom all the way in on Slide 7."
+    },
+    {
+      "slide": 7,
+      "totalSlides": 12,
+      "title": "Act II (Level 4 Zoom) — Wire-Level Payload & Cryptographic Context Transformation",
+      "whyHere": "This slide completes our four-level architectural zoom in Act II—taking us from the step-by-step timeline on Slide 6 right inside the JSON message envelope traveling across the wire.",
+      "whatIsHappening": "Here is what happens on the wire when a malicious or compromised client tries to break out of their lane in the shared pool. On the left, a caller logged in as RetailStream injects an HTTP header claiming to be FinVault. In the center, our Hop 1 gate strips that spoofed header and cryptographically binds the session to RetailStream’s verified identity. On the right, AlloyDB sets the session variable to RetailStream before running any query—so even if a developer forgot a WHERE clause in SQL, the database kernel returns zero rows from FinVault.",
+      "whatComesNext": "On Slides 4 through 7, we saw how the platform handles a normal request. As we enter Act III on Slide 8, let's answer the question every executive, risk officer, and SRE cares about most: what happens when things go wrong?",
+      "fullText": "This slide completes our four-level architectural zoom in Act II—taking us from the step-by-step timeline on Slide 6 right inside the JSON message envelope traveling across the wire.\n\nHere is what happens on the wire when a malicious or compromised client tries to break out of their lane in the shared pool. On the left, a caller logged in as RetailStream injects an HTTP header claiming to be FinVault. In the center, our Hop 1 gate strips that spoofed header and cryptographically binds the session to RetailStream’s verified identity. On the right, AlloyDB sets the session variable to RetailStream before running any query—so even if a developer forgot a WHERE clause in SQL, the database kernel returns zero rows from FinVault.\n\nOn Slides 4 through 7, we saw how the platform handles a normal request. As we enter Act III on Slide 8, let's answer the question every executive, risk officer, and SRE cares about most: what happens when things go wrong?"
+    },
+    {
+      "slide": 8,
+      "totalSlides": 12,
+      "title": "Act III — Deterministic Fail-Closed Circuit Breakers & Recovery Loop",
+      "whyHere": "On the previous slide, we saw how a normal customer request is verified and sealed at the wire level. As we move into Act III, the natural question from any executive, risk officer, or architect is: what happens during an emergency—whether that is a sudden traffic spike from a noisy neighbor, a policy violation, or a customer revoking their encryption key?",
+      "whatIsHappening": "Beyond blocking spoofing, a shared pool must protect customer experience when traffic spikes or when an agent needs third-party permissions. This flow shows our automatic pooled circuit breakers in action. If one tenant launches a burst of requests that exceeds their quota, our Valkey bulkhead immediately returns a polite HTTP 429 retry timer to that tenant alone while every other customer on the shared cluster continues with sub-second response times. And when a user asks the agent to touch a protected ServiceNow or Jira tool for the first time, the pipeline pauses cleanly to trigger inline user consent rather than failing or over-permissioning a shared service account.",
+      "whatComesNext": "Now that we have seen how these automatic circuit breakers protect availability and tenant isolation in real time, let's turn to Slide 9 to see the complete scorecard of attack vectors and edge cases we tested against them.",
+      "fullText": "On the previous slide, we saw how a normal customer request is verified and sealed at the wire level. As we move into Act III, the natural question from any executive, risk officer, or architect is: what happens during an emergency—whether that is a sudden traffic spike from a noisy neighbor, a policy violation, or a customer revoking their encryption key?\n\nBeyond blocking spoofing, a shared pool must protect customer experience when traffic spikes or when an agent needs third-party permissions. This flow shows our automatic pooled circuit breakers in action. If one tenant launches a burst of requests that exceeds their quota, our Valkey bulkhead immediately returns a polite HTTP 429 retry timer to that tenant alone while every other customer on the shared cluster continues with sub-second response times. And when a user asks the agent to touch a protected ServiceNow or Jira tool for the first time, the pipeline pauses cleanly to trigger inline user consent rather than failing or over-permissioning a shared service account.\n\nNow that we have seen how these automatic circuit breakers protect availability and tenant isolation in real time, let's turn to Slide 9 to see the complete scorecard of attack vectors and edge cases we tested against them."
+    },
+    {
+      "slide": 9,
+      "totalSlides": 12,
+      "title": "Act III — Adversarial Breach Matrix & Compensating Controls",
+      "whyHere": "Building directly on the circuit-breaker mechanics we just walked through on Slide 8, this slide gives leadership and engineering our complete verification ledger.",
+      "whatIsHappening": "To give both executive risk officers and security architects complete confidence in a shared environment, we ran ten adversarial red-team attack scenarios against Pattern A—shown across this matrix. From header spoofing and prompt-cache poisoning to cross-tenant memory reads, vector similarity bleed, and noisy-neighbor floods, every single attack vector is paired with its specific five-hop control and verified as 100% blocked by our automated test suite.",
+      "whatComesNext": "A verification matrix on Slide 9 is a strong commitment, but customers and auditors want to see live evidence from a real cloud environment. Let's look at Slide 10 to inspect the actual receipts from our Google Cloud Console.",
+      "fullText": "Building directly on the circuit-breaker mechanics we just walked through on Slide 8, this slide gives leadership and engineering our complete verification ledger.\n\nTo give both executive risk officers and security architects complete confidence in a shared environment, we ran ten adversarial red-team attack scenarios against Pattern A—shown across this matrix. From header spoofing and prompt-cache poisoning to cross-tenant memory reads, vector similarity bleed, and noisy-neighbor floods, every single attack vector is paired with its specific five-hop control and verified as 100% blocked by our automated test suite.\n\nA verification matrix on Slide 9 is a strong commitment, but customers and auditors want to see live evidence from a real cloud environment. Let's look at Slide 10 to inspect the actual receipts from our Google Cloud Console."
+    },
+    {
+      "slide": 10,
+      "totalSlides": 12,
+      "title": "Act III — Live Google Cloud Console & Runtime Verification Proof",
+      "whyHere": "Following the test matrix on Slide 9, this slide turns those architectural claims into concrete visual proof captured from our running Google Cloud projects.",
+      "whatIsHappening": "Here are the live Google Cloud Console receipts backing up that ten-out-of-ten scorecard. On the left, you can see our deployed pooled Cloud Run service and Cloud Logging traces showing live AlloyDB Row-Level Security enforcement and Valkey rate-limit clamping; on the right, the verification cards confirm ninety percent shared prompt cache efficiency with zero cross-tenant data bleed.",
+      "whatComesNext": "With the architecture explained in Act II and proven live in Google Cloud here in Act III, let's turn to Slide 11 to distill everything we have covered into three executive takeaways.",
+      "fullText": "Following the test matrix on Slide 9, this slide turns those architectural claims into concrete visual proof captured from our running Google Cloud projects.\n\nHere are the live Google Cloud Console receipts backing up that ten-out-of-ten scorecard. On the left, you can see our deployed pooled Cloud Run service and Cloud Logging traces showing live AlloyDB Row-Level Security enforcement and Valkey rate-limit clamping; on the right, the verification cards confirm ninety percent shared prompt cache efficiency with zero cross-tenant data bleed.\n\nWith the architecture explained in Act II and proven live in Google Cloud here in Act III, let's turn to Slide 11 to distill everything we have covered into three executive takeaways."
+    },
+    {
+      "slide": 11,
+      "totalSlides": 12,
+      "title": "Act III — 3-Pillar Well-Architected Solution Summary",
+      "whyHere": "After reviewing the deep technical and console proof on Slides 8 through 10, we step back here on Slide 11 to connect our design directly back to the business outcomes we started with in Act I.",
+      "whatIsHappening": "Bringing Pattern A together for business and technical leaders, this shared-pool design delivers three core outcomes. Under Security, five layers of defense—ending at database kernel Row-Level Security—prevent cross-tenant leaks. Under Reliability, per-tenant Valkey bulkheads guarantee that a noisy neighbor never impacts another customer’s SLA. And under Financial Efficiency, shared prompt prefix caching and pooled compute maximize SaaS gross margins for our commercial customer base.",
+      "whatComesNext": "With those three business and architectural guarantees clear, let's move to our final slide—Slide 12—to look at the concrete engineering deliverables and what comes next.",
+      "fullText": "After reviewing the deep technical and console proof on Slides 8 through 10, we step back here on Slide 11 to connect our design directly back to the business outcomes we started with in Act I.\n\nBringing Pattern A together for business and technical leaders, this shared-pool design delivers three core outcomes. Under Security, five layers of defense—ending at database kernel Row-Level Security—prevent cross-tenant leaks. Under Reliability, per-tenant Valkey bulkheads guarantee that a noisy neighbor never impacts another customer’s SLA. And under Financial Efficiency, shared prompt prefix caching and pooled compute maximize SaaS gross margins for our commercial customer base.\n\nWith those three business and architectural guarantees clear, let's move to our final slide—Slide 12—to look at the concrete engineering deliverables and what comes next."
+    },
+    {
+      "slide": 12,
+      "totalSlides": 12,
+      "title": "Act III — What's Next: Series Roadmap & Engineering Deliverables",
+      "whyHere": "Rounding out the three-pillar executive summary from Slide 11, our final slide gives your business and engineering teams an immediate, practical path forward.",
+      "whatIsHappening": "You can deploy this entire Pattern A shared pool today using our six-resource Terraform starter and run all ten breach simulations in under a minute. While Pattern A is ideal for commercial SaaS tiers, what happens when a regulated bank or government agency legally requires their own dedicated cloud project and customer-held encryption kill-switch? That brings us directly to Workstream 3 and Pattern B.",
+      "whatComesNext": "That completes our twelve-slide walkthrough—I would love to open the floor for your questions, or we can jump straight into the live simulation workbench.",
+      "fullText": "Rounding out the three-pillar executive summary from Slide 11, our final slide gives your business and engineering teams an immediate, practical path forward.\n\nYou can deploy this entire Pattern A shared pool today using our six-resource Terraform starter and run all ten breach simulations in under a minute. While Pattern A is ideal for commercial SaaS tiers, what happens when a regulated bank or government agency legally requires their own dedicated cloud project and customer-held encryption kill-switch? That brings us directly to Workstream 3 and Pattern B.\n\nThat completes our twelve-slide walkthrough—I would love to open the floor for your questions, or we can jump straight into the live simulation workbench."
+    }
+  ]
 }

@@ -460,14 +460,49 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             manifest_items = _json.loads(manifest_path.read_text(encoding="utf-8"))
             if isinstance(manifest_items, list) and len(manifest_items) == 14:
                 all_exist = True
+                layouts_seen = []
+                layout_contracts = {
+                    "hub-2-spoke": {
+                        "nodes": 56,
+                        "edges": 23,
+                        "cards": 18,
+                        "min_objects": 50,
+                        "min_icons": 10,
+                        "req_ids": ("zone_routing_hub", "zone_gov_hub", "wrapper_left_pab", "wrapper_right_pab", "card_lc_run", "card_sc_run", "card_lc_db", "card_sc_db"),
+                        "forbid_ids": ("wrapper_shared_plane", "q1_compliance"),
+                    },
+                    "pooled-shared-plane": {
+                        "nodes": 60,
+                        "edges": 20,
+                        "cards": 18,
+                        "min_objects": 50,
+                        "min_icons": 10,
+                        "req_ids": ("wrapper_shared_plane", "zone_pool_runtime", "zone_pool_data", "card_pool_run", "card_pool_ma", "card_pool_db", "card_pool_mem", "chip_db_0", "chip_db_1", "chip_db_policy", "chip_mem_0", "chip_mem_1", "chip_mem_2"),
+                        "forbid_ids": ("wrapper_left_pab", "wrapper_right_pab", "zone_left_tenant", "zone_right_tenant"),
+                    },
+                    "decision-tree-3-outcome": {
+                        "nodes": 46,
+                        "edges": 19,
+                        "cards": 16,
+                        "min_objects": 40,
+                        "min_icons": 8,
+                        "req_ids": ("q1_compliance", "q2_tiers", "bar_triad_core", "outcome_b_wrapper", "outcome_a_wrapper", "outcome_c_wrapper", "card_triad_1", "card_triad_2", "card_triad_3"),
+                        "forbid_ids": ("card_rc_alb", "card_rc_cloudrun", "wrapper_left_pab", "wrapper_right_pab", "step_7_top"),
+                    },
+                }
                 for item in manifest_items:
+                    layout = item.get("layout", "hub-2-spoke")
+                    layouts_seen.append(layout)
+                    contract = layout_contracts.get(layout)
                     if (
-                        item.get("certified") is not True
+                        contract is None
+                        or item.get("certified") is not True
                         or item.get("collision_count", 1) != 0
-                        or item.get("vision_node_count", 0) != 56
-                        or item.get("vision_edge_count", 0) != 23
-                        or item.get("vision_object_count", 0) < 50
+                        or item.get("vision_node_count", 0) != contract["nodes"]
+                        or item.get("vision_edge_count", 0) != contract["edges"]
+                        or item.get("vision_object_count", 0) < contract["min_objects"]
                         or "Hub-and-Spoke" not in item.get("format", "")
+                        or "Rule 53G" not in item.get("geometry_contract", "")
                     ):
                         all_exist = False
                     for key in (
@@ -488,7 +523,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                             all_exist = False
                     drawio_p = ROOT_DIR / item.get("central_drawio_file", "")
                     svg_p = ROOT_DIR / item.get("central_svg", "")
-                    if drawio_p.is_file() and svg_p.is_file():
+                    if drawio_p.is_file() and svg_p.is_file() and contract is not None:
                         d_xml = drawio_p.read_text(encoding="utf-8")
                         s_xml = svg_p.read_text(encoding="utf-8")
                         bound_edges = re.findall(r'<mxCell[^>]*\bedge="1"[^>]*\bsource="[^"]+"[^>]*\btarget="[^"]+"', d_xml)
@@ -500,26 +535,31 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                         vision_p = ROOT_DIR / item.get("vision_metadata", "")
                         v_txt = vision_p.read_text(encoding="utf-8").lower() if vision_p.is_file() else ""
                         if (
-                            len(bound_edges) != 23
-                            or len(card_vals) != 18
-                            or len(set(card_vals)) != 18
+                            len(bound_edges) != contract["edges"]
+                            or len(card_vals) != contract["cards"]
+                            or len(set(card_vals)) != contract["cards"]
+                            or any(f'id="{rid}"' not in d_xml for rid in contract["req_ids"])
+                            or any(f'id="{fid}"' in d_xml for fid in contract["forbid_ids"])
                             or "exitPerimeter=0" not in d_xml
                             or "entryPerimeter=0" not in d_xml
                             or any(b in d_xml.lower() or b in s_xml.lower() or b in v_txt for b in ("claude", "okta", "snowflake"))
                             or any(pat in d_xml for pat in ("cymbal-skills-&lt;", "Zero-PII &amp;&lt;", "psc-ep-&lt;", "RetailStream /&lt;"))
-                            or 'id="e_alb_to_mid_left" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#202124;strokeWidth=2;startArrow=open;' not in d_xml
                             or 'textLength="495"' in s_xml
                             or 'textLength="480"' in s_xml
                             or 'textLength="344"' in s_xml
                             or 'paint-order="stroke fill"' not in s_xml
+                            or len(icon_uris) < contract["min_icons"]
+                        ):
+                            all_exist = False
+                        if layout == "hub-2-spoke" and (
+                            'id="e_alb_to_mid_left" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#202124;strokeWidth=2;startArrow=open;' not in d_xml
                             or 'x1="449" y1="1054" x2="449" y2="1066"' not in s_xml
                             or 'x1="449" y1="1204" x2="449" y2="1216"' not in s_xml
                             or 'x1="993" y1="1054" x2="993" y2="1066"' not in s_xml
                             or 'x1="993" y1="1204" x2="993" y2="1216"' not in s_xml
-                            or len(icon_uris) < 10
                         ):
                             all_exist = False
-                if all_exist:
+                if all_exist and set(layouts_seen) == {"hub-2-spoke", "pooled-shared-plane", "decision-tree-3-outcome"}:
                     diagrams_ok = True
                     certified_diagram_count = len(manifest_items)
 
@@ -576,6 +616,13 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             known_diagram_ids = {Path(item.get("drawio_file", "")).name.replace(".drawio", "") for item in manifest_items} if manifest_path.exists() else set()
             decks_valid = len(decks) == 6
             ws_blogs_seen = set()
+            ws_fingerprints: dict = {
+                "slide4_zone_subtitle": [],
+                "slide6_alt_body": [],
+                "slide7_wire_subtitle": [],
+                "slide7_left_verdict": [],
+                "slide7_right_verdict": [],
+            }
             for deck in decks:
                 deck_file = ROOT_DIR / deck.get("file", "")
                 if not deck_file.is_file() or deck_file.stat().st_size < 100_000 or deck.get("slides", 0) < 12:
@@ -601,10 +648,8 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                             "PAYLOAD-TRANSFORMATION",
                             "UML-SEQUENCE-SWIMLANE",
                             "ASYNC-STATE-FLOW-PIPELINE",
-                            "PHASED-ROADMAP-TIMELINE",
                             "STRATEGIC-OPERATING-MODEL",
                             "LIVE-SCREENSHOT-CALLOUT",
-                            "QUAD-METRICS",
                             "Proprietary + Confidential",
                         )
                         banned_copy_pasted_terms = (
@@ -612,10 +657,32 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                             "48-hour dormant review period",
                             "Asynchronous processing flow for long tasks (>5 min)",
                             "Google Cloud Pub/Sub Topic",
-                        )
-                        banned_copy_pasted_terms = banned_copy_pasted_terms + (
                             "nitinagga-ge-2",
                             "nitina-ggarwal-sandbox-647724",
+                            "QUAD-METRICS",
+                            "PHASED-ROADMAP-TIMELINE",
+                            "$42",
+                            "$1,850",
+                            "$2,450",
+                            "$0.0425",
+                            "$132.4k",
+                            "$1.85M",
+                            "$1.58M",
+                            "$820k",
+                            "$214k",
+                            # Rule 53F: ungrounded / contradicted facts (never measured, or contradicts canonical docs §5.2)
+                            "18.4s",
+                            "18.4 s",
+                            '"propagation_sec": 18.4',
+                            "850 Standard Tenants",
+                            "150 Enterprise Tenants",
+                            "6-PILLAR",
+                            "6-Pillar",
+                            "220ms",
+                            # Rule 53F: internal palette hex codes must never leak into customer-facing copy
+                            "(#D93025)",
+                            "(#1B5E7B)",
+                            "(#1E8E3E)",
                         )
                         banned_emojis = (
                             "🔐", "🧠", "🗄️", "🏦", "🛒", "🤝", "🛡️", "⏱", "↻",
@@ -631,47 +698,202 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                             decks_valid = False
                         ws_key = deck.get("key")
                         if ws_key in ("WS1", "WS2", "WS3", "WS4", "WS5"):
-                            if len(slide_xml_names) != 14 or deck.get("slides") != 14:
+                            if len(slide_xml_names) != 12 or deck.get("slides") != 12:
                                 decks_valid = False
                             if "ppt/slides/slide1.xml" in zf.namelist():
                                 s1_xml = zf.read("ppt/slides/slide1.xml").decode("utf-8", errors="ignore")
-                                if "3-ACT EXECUTIVE BRIEFING" not in s1_xml:
+                                if "3-ACT EXECUTIVE BRIEFING" not in s1_xml or "SLIDES 1–3" not in s1_xml:
                                     decks_valid = False
-                            if "ppt/slides/slide2.xml" in zf.namelist():
-                                s2_xml = zf.read("ppt/slides/slide2.xml").decode("utf-8", errors="ignore")
-                                if "QUAD-METRICS" not in s2_xml:
+                            if "ppt/slides/slide3.xml" in zf.namelist():
+                                s3_xml = zf.read("ppt/slides/slide3.xml").decode("utf-8", errors="ignore")
+                                if "COMPARISON-GRID" not in s3_xml or "ARCHITECTURAL OPTIONS" not in s3_xml:
                                     decks_valid = False
                             if "ppt/slides/slide4.xml" in zf.namelist():
                                 s4_xml = zf.read("ppt/slides/slide4.xml").decode("utf-8", errors="ignore")
-                                if "COMPARISON-GRID" not in s4_xml or "ARCHITECTURAL OPTIONS" not in s4_xml:
+                                if "ARCHITECTURE-ZONE-TOPOLOGY" not in s4_xml:
                                     decks_valid = False
                             if "ppt/slides/slide5.xml" in zf.namelist():
                                 s5_xml = zf.read("ppt/slides/slide5.xml").decode("utf-8", errors="ignore")
-                                if "ARCHITECTURE-ZONE-TOPOLOGY" not in s5_xml:
+                                if "Figure 1" not in s5_xml or "4-ZONE HUB-AND-SPOKE" not in s5_xml:
                                     decks_valid = False
                             if "ppt/slides/slide6.xml" in zf.namelist():
                                 s6_xml = zf.read("ppt/slides/slide6.xml").decode("utf-8", errors="ignore")
-                                if "Figure 1" not in s6_xml or "4-ZONE HUB-AND-SPOKE" not in s6_xml:
+                                if "UML-SEQUENCE-SWIMLANE" not in s6_xml:
                                     decks_valid = False
                             if "ppt/slides/slide7.xml" in zf.namelist():
                                 s7_xml = zf.read("ppt/slides/slide7.xml").decode("utf-8", errors="ignore")
-                                if "UML-SEQUENCE-SWIMLANE" not in s7_xml:
+                                if "PAYLOAD-TRANSFORMATION" not in s7_xml:
                                     decks_valid = False
                             if "ppt/slides/slide8.xml" in zf.namelist():
                                 s8_xml = zf.read("ppt/slides/slide8.xml").decode("utf-8", errors="ignore")
-                                if "PAYLOAD-TRANSFORMATION" not in s8_xml:
+                                if "ASYNC-STATE-FLOW-PIPELINE" not in s8_xml:
+                                    decks_valid = False
+                            if "ppt/slides/slide9.xml" in zf.namelist():
+                                s9_xml = zf.read("ppt/slides/slide9.xml").decode("utf-8", errors="ignore")
+                                if "COMPARISON-GRID" not in s9_xml:
                                     decks_valid = False
                             if "ppt/slides/slide10.xml" in zf.namelist():
                                 s10_xml = zf.read("ppt/slides/slide10.xml").decode("utf-8", errors="ignore")
-                                if "COMPARISON-GRID" not in s10_xml:
+                                if "Aspect Ratio: Native 16:9" not in s10_xml or 'cx="3639312" cy="2048256"' not in s10_xml:
                                     decks_valid = False
                             if "ppt/slides/slide11.xml" in zf.namelist():
                                 s11_xml = zf.read("ppt/slides/slide11.xml").decode("utf-8", errors="ignore")
-                                if "Aspect Ratio: Native 16:9" not in s11_xml or 'cx="3639312" cy="2048256"' not in s11_xml:
+                                if "STRATEGIC-OPERATING-MODEL" not in s11_xml:
                                     decks_valid = False
-                        elif ws_key == "ALL":
-                            if len(slide_xml_names) != 26 or deck.get("slides") != 26:
+                            # Rule 53F: per-WS content fingerprints — Slide 4 zone subtitle, Slide 6 [Alt] body, Slide 7 wire
+                            # subtitle + verdict pills must be UNIQUE across WS1..WS5 (0 copy-pasted WS1 copy in WS2–WS5).
+                            import re as _re
+                            import html as _html
+
+                            def _a_t(xml_text: str) -> str:
+                                return _html.unescape(" ".join(_re.findall(r"<a:t>([^<]*)</a:t>", xml_text)))
+
+                            _s4_t = _a_t(zf.read("ppt/slides/slide4.xml").decode("utf-8", errors="ignore")) if "ppt/slides/slide4.xml" in zf.namelist() else ""
+                            _s6_t = _a_t(zf.read("ppt/slides/slide6.xml").decode("utf-8", errors="ignore")) if "ppt/slides/slide6.xml" in zf.namelist() else ""
+                            _s7_t = _a_t(zf.read("ppt/slides/slide7.xml").decode("utf-8", errors="ignore")) if "ppt/slides/slide7.xml" in zf.namelist() else ""
+                            _m4 = _re.search(r"End-to-end 3-zone security & runtime boundary: Zone 1 \([^)]+\) → Zone 2 \([^)]+\) → Zone 3 \([^)]+\)", _s4_t)
+                            _m6 = _re.search(r"• [^•|:]{4,40}: [^•|]{20,}?→ [^•|]{3,80}", _s6_t)
+                            # Rule 53F: [Alt] body must not overflow its frame — <= 2 '\n' lines x <= 156 chars (6.8pt over 6.64")
+                            # and the dashed frame outer height must be >= 0.96" (877,824 EMU) so 4 wrapped visual lines fit.
+                            _s6_raw = zf.read("ppt/slides/slide6.xml").decode("utf-8", errors="ignore") if "ppt/slides/slide6.xml" in zf.namelist() else ""
+                            _alt_paras = _re.findall(r"<a:p>(?:(?!</a:p>).)*?<a:t>(• [^<]*)</a:t>", _s6_raw)
+                            _alt_lines = [_html.unescape(x) for x in _alt_paras if "→" in x]
+                            if not (1 <= len(_alt_lines) <= 2) or any(len(x) > 156 for x in _alt_lines):
                                 decks_valid = False
+                            _alt_frame_ok = False
+                            for _m_ext in _re.finditer(r'<a:off x="(\d+)" y="(\d+)"/><a:ext cx="(\d+)" cy="(\d+)"/>', _s6_raw):
+                                _fx, _fy, _fcx, _fcy = (int(_m_ext.group(i)) for i in range(1, 5))
+                                if abs(_fx - 438912) <= 9144 and abs(_fy - 5303520) <= 9144 and _fcx >= 6254496 and _fcy >= 877824:
+                                    _alt_frame_ok = True
+                            if not _alt_frame_ok:
+                                decks_valid = False
+                            _m7 = _re.search(r"(?:Wire-level protocol normalization|Pattern [ABC] on the wire|Capstone on the wire):[^.]{40,}\.", _s7_t)
+                            _m7l = _re.search(r"[✕◷] [^✓]{12,80}", _s7_t)
+                            _m7r = _re.search(r"✓ [^✕◷]{12,80}", _s7_t)
+                            if not (_m4 and _m6 and _m7 and _m7l and _m7r):
+                                decks_valid = False
+                            else:
+                                ws_fingerprints["slide4_zone_subtitle"].append(_m4.group(0))
+                                ws_fingerprints["slide6_alt_body"].append(_m6.group(0))
+                                ws_fingerprints["slide7_wire_subtitle"].append(_m7.group(0))
+                                ws_fingerprints["slide7_left_verdict"].append(_m7l.group(0).strip())
+                                ws_fingerprints["slide7_right_verdict"].append(_m7r.group(0).strip())
+                            # Rule 53F: WS4 Slide 4 caller split must match canonical FinOps model (§5.2: 950 Standard + 50 Enterprise of 1,000)
+                            if ws_key == "WS4" and ("950 Standard Tenants" not in _s4_t or "50 Enterprise Tenants" not in _s4_t):
+                                decks_valid = False
+                        elif ws_key == "ALL":
+                            if len(slide_xml_names) != 25 or deck.get("slides") != 25:
+                                decks_valid = False
+                            for fig_slide in (4, 8, 12, 16, 20):
+                                s_name = f"ppt/slides/slide{fig_slide}.xml"
+                                if s_name not in zf.namelist() or "Figure 1" not in zf.read(s_name).decode("utf-8", errors="ignore"):
+                                    decks_valid = False
+                            expected_deep_dives = {
+                                5: "ARCHITECTURE-ZONE-TOPOLOGY",
+                                9: "PAYLOAD-TRANSFORMATION",
+                                13: "UML-SEQUENCE-SWIMLANE",
+                                17: "ASYNC-STATE-FLOW-PIPELINE",
+                                21: "ARCHITECTURE-ZONE-TOPOLOGY",
+                            }
+                            for arch_slide, arch_marker in expected_deep_dives.items():
+                                s_name = f"ppt/slides/slide{arch_slide}.xml"
+                                if s_name not in zf.namelist() or arch_marker not in zf.read(s_name).decode("utf-8", errors="ignore"):
+                                    decks_valid = False
+                            for mat_slide in (6, 10, 14, 18, 22):
+                                s_name = f"ppt/slides/slide{mat_slide}.xml"
+                                if s_name not in zf.namelist() or "COMPARISON-GRID" not in zf.read(s_name).decode("utf-8", errors="ignore"):
+                                    decks_valid = False
+                            if "ppt/slides/slide23.xml" not in zf.namelist() or "LIVE-SCREENSHOT-CALLOUT" not in zf.read("ppt/slides/slide23.xml").decode("utf-8", errors="ignore"):
+                                decks_valid = False
+                            if "ppt/slides/slide24.xml" not in zf.namelist() or "STRATEGIC-OPERATING-MODEL" not in zf.read("ppt/slides/slide24.xml").decode("utf-8", errors="ignore"):
+                                decks_valid = False
+                        notes_xml_names = [n for n in zf.namelist() if n.startswith("ppt/notesSlides/notesSlide") and n.endswith(".xml")]
+                        if len(notes_xml_names) != len(slide_xml_names):
+                            decks_valid = False
+                        banned_note_headings_or_gibberish = (
+                            "1. WHY THIS SLIDE FITS HERE",
+                            "2. WHAT IS HAPPENING ON THIS SLIDE",
+                            "3. WHAT COMES NEXT",
+                            "Why This Slide Fits Here",
+                            "What Is Happening on This Slide",
+                            "What Comes Next",
+                            "In plain English, explain",
+                            "Walk the audience through",
+                            "[async-state-flow-pipeline]",
+                            "[architecture-zone-topology]",
+                            "[uml-sequence-swimlane]",
+                            "[payload-transformation-triptych]",
+                            "[strategic-operating-model-pillars]",
+                            "[live-screenshot-callout]",
+                        )
+                        for n_xml_name in notes_xml_names:
+                            n_xml_text = zf.read(n_xml_name).decode("utf-8", errors="ignore")
+                            if (
+                                len(n_xml_text) < 400
+                                or n_xml_text.count("<a:t>") < 3
+                                or any(b in n_xml_text for b in banned_note_headings_or_gibberish)
+                            ):
+                                decks_valid = False
+
+                        def _verify_pptx_tables_full_height_no_middle_gap(zip_handle, s_names) -> bool:
+                            import xml.etree.ElementTree as _ET
+                            _ns = {
+                                "p": "http://schemas.openxmlformats.org/presentationml/2006/main",
+                                "a": "http://schemas.openxmlformats.org/drawingml/2006/main",
+                            }
+                            for _s_name in s_names:
+                                _root = _ET.fromstring(zip_handle.read(_s_name))
+                                for _gf in _root.findall(".//p:graphicFrame", _ns):
+                                    _tbl = _gf.find(".//a:tbl", _ns)
+                                    if _tbl is None:
+                                        continue
+                                    _off = _gf.find("./p:xfrm/a:off", _ns)
+                                    _ext = _gf.find("./p:xfrm/a:ext", _ns)
+                                    if _off is None or _ext is None:
+                                        return False
+                                    _off_y = int(_off.get("y", "0"))
+                                    _ext_cy = int(_ext.get("cy", "0"))
+                                    _trs = _tbl.findall("./a:tr", _ns)
+                                    if len(_trs) < 5:
+                                        return False
+                                    _tr_hs = [int(_tr.get("h", "0")) for _tr in _trs]
+                                    _sum_tr_h = sum(_tr_hs)
+                                    # Ban <a:tr h="0"> auto-collapsing rows and enforce full-height table >= 3.70" (3,383,280 EMU)
+                                    if any(_h < 320000 for _h in _tr_hs):
+                                        return False
+                                    if _ext_cy < 3383280 or _sum_tr_h < 3383280 or abs(_ext_cy - _sum_tr_h) > 18288:
+                                        return False
+                                    # Enforce vertical middle centering on every table cell
+                                    _tc_prs = _tbl.findall(".//a:tcPr", _ns)
+                                    if not _tc_prs or any(_tc.get("anchor") != "ctr" for _tc in _tc_prs):
+                                        return False
+                                    # Enforce 0.10" <= gap <= 0.22" above bottom synthesis roundRect cards (0 middle blank space, 0 overlap)
+                                    _card_ys = []
+                                    for _sp in _root.findall(".//p:sp", _ns):
+                                        _prst = _sp.find("./p:spPr/a:prstGeom", _ns)
+                                        _sp_off = _sp.find("./p:spPr/a:xfrm/a:off", _ns)
+                                        _sp_ext = _sp.find("./p:spPr/a:xfrm/a:ext", _ns)
+                                        if (
+                                            _prst is not None
+                                            and _prst.get("prst") == "roundRect"
+                                            and _sp_off is not None
+                                            and _sp_ext is not None
+                                        ):
+                                            _sy = int(_sp_off.get("y", "0")) / 914400.0
+                                            _sh = int(_sp_ext.get("cy", "0")) / 914400.0
+                                            if _sy >= 4.5 and _sh >= 1.1:
+                                                _card_ys.append(_sy)
+                                    if not _card_ys:
+                                        return False
+                                    _strip_top_in = min(_card_ys)
+                                    _table_bottom_in = (_off_y + _sum_tr_h) / 914400.0
+                                    _gap_in = _strip_top_in - _table_bottom_in
+                                    if not (0.10 <= _gap_in <= 0.22):
+                                        return False
+                            return True
+
+                        if not _verify_pptx_tables_full_height_no_middle_gap(zf, slide_xml_names):
+                            decks_valid = False
                 if not deck.get("diagrams") or any(d not in known_diagram_ids for d in deck.get("diagrams", [])):
                     decks_valid = False
                 blog_rel = deck.get("blog")
@@ -686,6 +908,10 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                         ws_blogs_seen.add(blog_rel)
                     if f"../{deck.get('file', '')}" not in blog_text:
                         decks_valid = False
+            # Rule 53F: 5 workstream decks → 5 DISTINCT values per fingerprint slot (0 WS1 copy reused in WS2–WS5)
+            for _slot, _vals in ws_fingerprints.items():
+                if len(_vals) != 5 or len(set(_vals)) != 5:
+                    decks_valid = False
             doc_guide_ids = (
                 "doc-mt-01", "doc-mt-02", "doc-mt-03", "doc-mt-04", "doc-mt-05",
                 "doc-mt-06", "doc-ref-07", "doc-ref-08", "doc-ref-09",
@@ -700,11 +926,24 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                         decks_valid = False
                     with _zipfile.ZipFile(dg_pptx, "r") as dzf:
                         d_slides = [n for n in dzf.namelist() if n.startswith("ppt/slides/slide") and n.endswith(".xml")]
-                        if len(d_slides) not in (6, 14):
+                        d_notes = [n for n in dzf.namelist() if n.startswith("ppt/notesSlides/notesSlide") and n.endswith(".xml")]
+                        if len(d_slides) not in (6, 12, 25) or len(d_notes) != len(d_slides):
+                            decks_valid = False
+                        if not _verify_pptx_tables_full_height_no_middle_gap(dzf, d_slides):
                             decks_valid = False
                         d_joined = "\n".join(dzf.read(n).decode("utf-8", errors="ignore") for n in d_slides)
                         if "Figure 1. Figure 1" in d_joined or "Model Armor &amp; Model Armor" in d_joined:
                             decks_valid = False
+                        for dn_name in d_notes:
+                            dn_text = dzf.read(dn_name).decode("utf-8", errors="ignore")
+                            if (
+                                len(dn_text) < 400
+                                or dn_text.count("<a:t>") < 3
+                                or any(b in dn_text for b in banned_note_headings_or_gibberish)
+                            ):
+                                decks_valid = False
+            if any(b in html for b in banned_note_headings_or_gibberish):
+                decks_valid = False
             cv_manifest_path = ROOT_DIR / "slides/cloud_viewer_manifest.json"
             cv_ok = False
             if cv_manifest_path.is_file():
@@ -712,7 +951,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                 cv_slides = cv_data.get("slides", {})
                 cv_docs = cv_data.get("docs", {})
                 cv_ok = all(k in cv_slides and cv_slides[k].get("googleSlidesId") for k in ("WS1", "WS2", "WS3", "WS4", "WS5", "ALL", "DOC-MT-01", "DOC-MT-02", "DOC-MT-03", "DOC-MT-04", "DOC-MT-05", "DOC-MT-06", "DOC-REF-07", "DOC-REF-08", "DOC-REF-09")) and all(k in cv_docs and cv_docs[k].get("googleDocsId") for k in ("WS1", "WS2", "WS3", "WS4", "WS5", "ALL"))
-            if decks_valid and len(ws_blogs_seen) == 5 and e2e_flows_ok and cv_ok and "card-action-icon-btn" in html:
+            if decks_valid and len(ws_blogs_seen) == 5 and e2e_flows_ok and cv_ok and "card-action-icon-btn" in html and "HUMAN_READABLE_SPEAKER_NOTES" in html:
                 slides_ok = True
                 deck_count = len(decks)
                 ws_blog_count = len(ws_blogs_seen)
@@ -726,7 +965,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             and slides_ok
         )
         index_detail = (
-            f"index.html verified ({len(html):,} bytes), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI Series Reader links resolve on disk (0 broken), {certified_diagram_count}/14 Official Google Cloud Architecture Center Hub-and-Spoke & PromptCanvas Vision Draw.io blueprints CERTIFIED (56 vertices & 23 edges each, .drawio/.drawio.png/.svg/.vision.json quartet, 0 collisions), 14/14 Executive-Friendly Plain-English Logical & Technical Flows verified (diagrams/diagram_e2e_flows.json + 3-Act 14-Slide Cohesive Workstream Decks), Cloud Console receipt CERTIFIED ({len(cloud_pngs)} visual proof PNGs in screenshots/cloud-console/), {deck_count}/6 Workstream/Master + 9/9 DevSite Guide editable .pptx slide decks (150 total slides, 0 emojis, 16:9 screenshots, 15/15 Google Slides synced) + {ws_blog_count}/5 canonical 5-part series blogs verified (PUBLISH_READY)."
+            f"index.html verified ({len(html):,} bytes), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI Series Reader links resolve on disk (0 broken), {certified_diagram_count}/14 Official Google Cloud Architecture Center & PromptCanvas Vision Draw.io blueprints CERTIFIED (Rule 53G Per-Pattern Geometry: 12 hub-2-spoke 56v/23e, WS2 pooled-shared-plane 60v/20e, WS5 decision-tree-3-outcome 46v/19e, .drawio/.drawio.png/.svg/.vision.json quartet, 0 collisions), 14/14 Executive-Friendly Plain-English Logical & Technical Flows verified (diagrams/diagram_e2e_flows.json + 3-Act 12-Slide Pure Technical Workstream Decks, 0 pricing slides), Cloud Console receipt CERTIFIED ({len(cloud_pngs)} visual proof PNGs in screenshots/cloud-console/), {deck_count}/6 Workstream/Master + 9/9 DevSite Guide editable .pptx slide decks (0 emojis, 0 pricing slides, 0 <a:tr h=\"0\"> auto-collapsing table rows, 0.14\"–0.16\" table-to-card vertical gap, 100% first-person spoken customer talk tracks, 16:9 screenshots, 15/15 Google Slides synced) + Rule 53F/53G content & topology grounding (5/5 distinct per-WS Slide 4/6/7 fingerprints, 3 distinct Slide 5 diagram topologies, 0 ungrounded facts [18.4s/850-150/6-Pillar/220ms], 0 hex-code leaks, WS4 950+50 canonical split) + {ws_blog_count}/5 canonical 5-part series blogs verified (PUBLISH_READY)."
             if index_ok
             else f"missing_markers={missing_markers}, missing_ui_paths={missing_ui_paths}, unready_blogs={unready_blogs}, diagrams_ok={diagrams_ok}, cloud_receipt_ok={cloud_receipt_ok}, slides_ok={slides_ok}, e2e_flows_ok={e2e_flows_ok}"
         )

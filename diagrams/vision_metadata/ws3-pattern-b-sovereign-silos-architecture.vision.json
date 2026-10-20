@@ -35,7 +35,7 @@
   "drawioViewerMetrics": {
     "rendered": true,
     "images": 20,
-    "paths": 100,
+    "paths": 110,
     "texts": 188
   },
   "addressableObjects": [
@@ -138,8 +138,8 @@
     {
       "id": "wrapper_right_pab",
       "urlSlug": "OBJ-09-PAB-VPC-SC-PERIMETER-BET",
-      "label": "PAB + VPC-SC Perimeter Beta • Project: cymbal-retailstream-silo-prod & medcore-revoked-cmek",
-      "plainTitle": "PAB + VPC-SC Perimeter Beta • Project: cymbal-retailstream-silo-prod & medcore-revoked-cmek",
+      "label": "PAB + VPC-SC Perimeter Beta • Project: cymbal-retailstream-silo-prod (one project per tenant — N tenants = N silos)",
+      "plainTitle": "PAB + VPC-SC Perimeter Beta • Project: cymbal-retailstream-silo-prod (one project per tenant — N tenants = N silos)",
       "zone": "Agentic Capabilities Platform",
       "x": 614,
       "y": 772,
@@ -150,8 +150,8 @@
     {
       "id": "zone_right_tenant",
       "urlSlug": "OBJ-10-TENANT-B-SILO-RETAILSTRE",
-      "label": "Tenant B Silo (RetailStream & MedCore)",
-      "plainTitle": "Tenant B Silo (RetailStream & MedCore)",
+      "label": "Tenant B Silo (RetailStream Corp)",
+      "plainTitle": "Tenant B Silo (RetailStream Corp)",
       "zone": "Agentic Capabilities Platform",
       "x": 630,
       "y": 808,
@@ -245,9 +245,9 @@
     },
     {
       "id": "card_gc_bot",
-      "urlSlug": "OBJ-18-SILO-SECURITY-SUITE-6-6",
-      "label": "Silo Security Suite 6/6 Sovereign Tests PASS",
-      "plainTitle": "Silo Security Suite 6/6 Sovereign Tests PASS",
+      "urlSlug": "OBJ-18-CLOUD-LOGGING-BQ",
+      "label": "Cloud Logging & BQ",
+      "plainTitle": "Cloud Logging & BQ",
       "zone": "Agentic Capabilities Platform",
       "x": 828,
       "y": 574,

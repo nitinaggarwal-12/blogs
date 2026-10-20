@@ -30,6 +30,16 @@ import bp11 from './blueprints_ext/11-ws3-terraform-silo-blueprint-resource-grap
 import bp12 from './blueprints_ext/12-ws4-hub-and-spoke-demo-env-setup-topology.mjs';
 import bp13 from './blueprints_ext/13-ws4-zero-downtime-tier-upgrade-sequence.mjs';
 import bp14 from './blueprints_ext/14-ws4-terraform-hybrid-psc-blueprint-resource-graph.mjs';
+import {
+  LAYOUT_HUB_2_SPOKE,
+  LAYOUT_POOLED_SHARED_PLANE,
+  LAYOUT_DECISION_TREE_3_OUTCOME,
+  compilePooledSharedPlaneSvg,
+  compilePooledSharedPlaneDrawio,
+  compileDecisionTreeSvg,
+  compileDecisionTreeDrawio,
+  layoutGeometryContract,
+} from './arch_center_layouts.mjs';
 
 const require = createRequire('/Users/nitinagga/Documents/PromptCanvas/package.json');
 const puppeteer = require('puppeteer-core');
@@ -410,7 +420,7 @@ const WORKSTREAM_BLUEPRINTS = [
       ragLabel: ['Scoped', 'MCP & RAG'],
       toolLabel: ['SET LOCAL', 'current_tenant'],
     },
-    rightBoundaryLabel: 'Pattern B (Sovereign Silos) & Pattern C (Hybrid PSC Spokes)',
+    rightBoundaryLabel: 'Dedicated Spoke archetype — Pattern B silo project OR Pattern C PSC spoke (see WS3 / WS4 for each)',
     rightZoneTitle: 'Dedicated Sovereign Tenant Silo',
     rightZoneSub: 'VPC-SC + IAM PAB + finvault-silo-cmek + PSC',
     rightCards: {
@@ -528,35 +538,57 @@ const WORKSTREAM_BLUEPRINTS = [
       mid: { icon: 'valkey_cache', title: 'Memorystore Valkey', sub: '4k Standard vs 8k Enterprise' },
       bot: { icon: 'bigquery_analytics', title: 'BigQuery OTel Sink', sub: 'tenant_telemetry_spans' },
     },
-    midStep3Label: ['Bind immutable', 'temp:tenant_id'],
-    midStep7Label: ['SDP-redacted', 'tenant response'],
-    midGovLabel: ['84.7% Net Input', 'COGS Savings & OTel'],
-    leftBoundaryLabel: 'Logical & Cryptographic Slice A • FinVault Bank (Enterprise Tier)',
-    leftZoneTitle: 'FinVault Logical Partition',
-    leftZoneSub: 'Namespace: finvault:user:session (finvault-silo-cmek)',
-    leftCards: {
-      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Masks IBAN/SWIFT + FINRA Policy' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: '8,000 Thinking-Token Budget' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Pooled gVisor Pod', sub: 'Shared + Private Agent Alpha' },
-      mcp: { icon: 'mcp_servers', title: '3LO Workspace/Jira', sub: 'Drive, Calendar, Gmail, Jira' },
-      datastore: { icon: 'datastore_alloydb_bq', title: 'AlloyDB & BQ RLS', sub: "tenant_id='finvault' (2 rows)" },
-      step4Label: 'Sanitize request',
-      step6Label: 'Sanitize response',
-      step5Label: ['Generates', 'response'],
-      ragLabel: ['GCS Skills:', 'cymbal-skills-fv'],
-      toolLabel: ['RLS Policy:', 'finvault Rows'],
+    // ---- Rule 53G: Pattern A is ONE shared plane, never two per-tenant stacks ----
+    layout: LAYOUT_POOLED_SHARED_PLANE,
+    sharedPlaneLabel: 'ONE Shared Data Plane • ONE Agent Engine Pool • ONE AlloyDB Schema — tenants are rows & namespaces, never projects (0 per-tenant infrastructure)',
+    runtimeZoneTitle: '3. Pooled Agent Runtime (shared by all tenants)',
+    runtimeZoneSub: 'Ephemeral gVisor sandboxes • per-tenant Model Armor • 90% prefix cache',
+    dataZoneTitle: '4. Shared Data & Tool Plane (RLS-partitioned)',
+    dataZoneSub: 'Mandatory Row-Level Security • scoped 2LO/3LO MCP • egress SDP masking',
+    runtimeCards: {
+      modelArmor: { icon: 'model_armor', title: 'Model Armor (shared)', sub: 'Per-tenant templates: FINRA / PCI' },
+      runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'ONE gVisor pool • temp:tenant_id' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: 'Shared 32k prefix • 4k / 8k caps' },
+      valkey: { icon: 'valkey_cache', title: 'Memorystore Valkey', sub: 'RPM bulkheads 120 Std / 600 Ent' },
+      memory: {
+        icon: 'gemini_agent_platform',
+        title: '5-Level Memory Bank (ONE bank)',
+        sub: 'Namespaced per tenant — same service, disjoint keys',
+        chips: [
+          { text: 'finvault:{user}:{session}', fill: '#e8f0fe', stroke: '#174ea6', fontColor: '#174ea6' },
+          { text: 'retailstream:{user}:{session}', fill: '#fce8e6', stroke: '#c5221f', fontColor: '#c5221f' },
+          { text: 'L1 shared prefix (read-only)', fill: '#e6f4ea', stroke: '#137333', fontColor: '#137333' },
+        ],
+        footnote: 'Cross-namespace read → PermissionError (Hop 3 ACL) • 0 cross-tenant cached tokens',
+        footnote2: 'Private Agent Alpha visible to FinVault only (RetailStream → HTTP 403 at Hop 2)',
+      },
     },
-    rightBoundaryLabel: 'Logical & Cryptographic Slice B • RetailStream Corp (Standard Tier)',
-    rightZoneTitle: 'RetailStream Logical Partition',
-    rightZoneSub: 'Namespace: retailstream:user:session (120 RPM Cap)',
-    rightCards: {
-      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Masks Card PAN + PCI Policy' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: 'Clamped to 4,000 Tokens' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Pooled gVisor Pod', sub: 'Shared Agent Only (403 Alpha)' },
-      mcp: { icon: 'mcp_servers', title: '3LO Entra & SNOW', sub: 'Inline OAuth Consent Gate' },
-      datastore: { icon: 'datastore_alloydb_bq', title: 'AlloyDB & BQ RLS', sub: "tenant_id='retailstream' (2 rows)" },
-      ragLabel: ['GCS Skills:', 'cymbal-skills-rs'],
-      toolLabel: ['RLS Policy:', 'retail Rows'],
+    dataCards: {
+      db: {
+        icon: 'datastore_alloydb_bq',
+        title: 'AlloyDB (ONE schema) + BigQuery (ONE dataset)',
+        sub: 'pattern_a_pooled_rls_entities • FORCE ROW LEVEL SECURITY',
+        chips: [
+          { text: "tenant_id = 'finvault' • 2 rows", fill: '#e8f0fe', stroke: '#174ea6', fontColor: '#174ea6' },
+          { text: "tenant_id = 'retailstream' • 2 rows", fill: '#fce8e6', stroke: '#c5221f', fontColor: '#c5221f' },
+        ],
+        policy: "POLICY tenant_isolation USING (tenant_id = current_setting('app.current_tenant'))",
+        footnote: '⑥ SET LOCAL app.current_tenant → each tenant reads only its 2 rows • 0 cross-tenant rows',
+      },
+      bq: { icon: 'bigquery_analytics', title: 'BigQuery ROW ACCESS POLICY', sub: 'SESSION_USER tenant filter' },
+      mcp: { icon: 'mcp_servers', title: 'MCP Hub (shared)', sub: '2LO service + per-tenant 3LO consent' },
+      sdp: { icon: 'cloud_sdp_dlp', title: 'Cloud SDP Egress', sub: 'IBAN / SWIFT / PAN masking' },
+      kms: { icon: 'cloud_kms', title: 'Cloud KMS', sub: 'adk-agent-signing-key • per-tenant claims' },
+    },
+    stepLabels: {
+      s3: ['Allocate gVisor sandbox', '+ Valkey quota check'],
+      s4: ['Screen prompt with', "tenant's Armor template"],
+      s5: ['90% cached prefix +', 'namespaced memory'],
+      s6: ['SET LOCAL app.current_tenant', '→ RLS-filtered rows'],
+      s7: ['SDP-redacted response', '+ per-turn OTel span'],
+      gov: ['Cache hits • RPM • per-tenant span cost → BigQuery'],
+      mem: ['namespace'],
+      mcp: ['3LO consent'],
     },
   },
 
@@ -662,7 +694,7 @@ const WORKSTREAM_BLUEPRINTS = [
     govCards: {
       top: { icon: 'security_command_center', title: 'Security Command', title2: 'Center', sub: 'VPC-SC & PAB Violation Feed' },
       mid: { icon: 'cloud_kms', title: 'Cloud KMS KeyRing', sub: 'cymbal-multi-tenant-kr (423 Lock)' },
-      bot: { icon: 'bigquery_analytics', title: 'Silo Security Suite', sub: '6/6 Sovereign Tests PASS' },
+      bot: { icon: 'bigquery_analytics', title: 'Cloud Logging & BQ', sub: 'Per-silo audit sink (CMEK state, VPC-SC denials)' },
     },
     midStep3Label: ['Route to isolated', 'VPC-SC tenant project'],
     midStep7Label: ['Sovereign response', '(or HTTP 423 Locked)'],
@@ -682,15 +714,15 @@ const WORKSTREAM_BLUEPRINTS = [
       ragLabel: ['Private GKE', 'Zero Egress'],
       toolLabel: ['finvault-silo-cmek', 'HTTP 423 Ready'],
     },
-    rightBoundaryLabel: 'PAB + VPC-SC Perimeter Beta • Project: cymbal-retailstream-silo-prod & medcore-revoked-cmek',
-    rightZoneTitle: 'Tenant B Silo (RetailStream & MedCore)',
-    rightZoneSub: 'Dedicated Silo • CMEK: retailstream-silo-cmek / medcore',
+    rightBoundaryLabel: 'PAB + VPC-SC Perimeter Beta • Project: cymbal-retailstream-silo-prod (one project per tenant — N tenants = N silos)',
+    rightZoneTitle: 'Tenant B Silo (RetailStream Corp)',
+    rightZoneSub: 'Dedicated Silo • CMEK: retailstream-silo-cmek',
     rightCards: {
       modelArmor: { icon: 'vpc_sc', title: 'VPC-SC & Model Armor', sub: 'Dedicated Retail PCI Perimeter' },
       llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro PT', sub: 'Dedicated Provisioned Quota' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Dedicated RetailStream Silo' },
       mcp: { icon: 'mcp_servers', title: 'Local Silo MCP', sub: 'Entra SharePoint & SNOW' },
-      datastore: { icon: 'cloud_kms', title: 'CMEK Silo Datastore', sub: 'medcore-revoked-cmek -> 423' },
+      datastore: { icon: 'cloud_kms', title: 'CMEK Silo Datastore', sub: 'Key DISABLED → HTTP 423 (medcore test)' },
       ragLabel: ['VPC-SC Bound', 'Secure RAG'],
       toolLabel: ['CMEK Kill-Switch', 'HTTP 423 Verified'],
     },
@@ -725,12 +757,12 @@ const WORKSTREAM_BLUEPRINTS = [
       step2Left: 'Request',
       step7Mid: 'Response',
     },
-    govHubTitle: '3-Phase Zero-Downtime',
-    govHubTitle2: 'Tier Migration Engine',
+    govHubTitle: 'Tier Routing & Live',
+    govHubTitle2: 'Migration Control Plane',
     govCards: {
-      top: { icon: 'dms_migration', title: '1. SHADOW_SYNC', title2: '(0ms Lag DMS CDC)', sub: 'Streams RLS & L4 Memory' },
-      mid: { icon: 'firestore_db', title: '2. ATOMIC_CUTOVER', sub: 'Flips Route to psc://10.10.0.51' },
-      bot: { icon: 'psc_bridge', title: '3. DRAIN_AND_VERIFY', sub: '0 Dropped Turns (4/4 PASS)' },
+      top: { icon: 'firestore_db', title: 'Firestore Route Table', title2: '(atomic tier pointer)', sub: 'tenant → pool | psc://10.10.0.5x' },
+      mid: { icon: 'dms_migration', title: 'Migration Coordinator', sub: 'SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY' },
+      bot: { icon: 'bigquery_analytics', title: 'BigQuery OTel Sink', sub: 'tenant_promotion_migrations • routing_plane' },
     },
     midStep3Label: ['Route Standard to Pool', 'or Enterprise via PSC'],
     midStep7Label: ['Seamless response', '(0 dropped sessions)'],
@@ -754,9 +786,9 @@ const WORKSTREAM_BLUEPRINTS = [
     rightZoneTitle: 'Dedicated Enterprise PSC Spokes',
     rightZoneSub: 'cymbal-psc-nat-us-west1 (/28) -> psc://10.10.0.50 & .51',
     rightCards: {
-      modelArmor: { icon: 'psc_bridge', title: 'PSC ServiceAttachment', sub: 'Unidirectional Spoke Ingress' },
+      modelArmor: { icon: 'model_armor', title: 'Model Armor (spoke)', sub: 'Enterprise prompt screen + SDP' },
       llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro PT', sub: 'Upgraded 8,000 Thinking Cap' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Spoke Agent Engine', sub: 'PSC ServiceAttachment Target' },
+      runtime: { icon: 'psc_bridge', title: 'Spoke Agent Engine via PSC', sub: 'ServiceAttachment ← /28 consumer endpoint' },
       mcp: { icon: 'mcp_servers', title: 'Dedicated Spoke MCP', sub: 'Isolated Inside VPC-SC Spoke' },
       datastore: { icon: 'cloud_kms', title: 'CMEK Spoke Datastore', sub: 'finvault-silo-cmek & KMS Lock' },
       ragLabel: ['Unidirectional', 'PSC Bridge'],
@@ -773,63 +805,92 @@ const WORKSTREAM_BLUEPRINTS = [
     title: 'Workstream 5 Capstone: Executive Topology Decision Guide & The Multi-Tenant Agentic Triad',
     subtitle: 'Verified 20/20 Suites PASS Across nitina-ggarwal-sandbox-647724 & ramp-portal-dev (Security • FinOps -84.7% • Zero-PII OTel)',
     workstreamDir: 'workstream-5-synthesis-and-publishing/diagrams',
-    topUserTitle: 'Enterprise & SMB Users',
-    topUserSub: '10,000+ Multi-Tier Tenants',
-    step1LeftLabel: 'Request',
-    step7RightLabel: 'Response',
-    outerWrapperLabel: 'The Multi-Tenant Agentic Triad: Security (Hops 1–5) • FinOps COGS (-84.7%) • Zero-PII Observability',
-    innerWrapperLabel: 'Unified Vertex AI Agent Engine & Google ADK Reference Architecture (20/20 Live Simulations PASS)',
-    routingHubTitle: 'Triad Pillar 1: Zero-Trust Cryptographic Security',
-    routingHubSub: '5-Hop Context Chain (OBO+DPoP+KMS P-256) across Ingress & Runtime',
-    routingCards: {
-      topLeft: { icon: 'cloud_armor', title: 'Hop 1: Edge PEP', sub: 'Header Strip + KMS ECDSA P-256' },
-      midLeft: { icon: 'model_armor', title: 'Hop 4: Model Armor', sub: 'Injection 400 + Policy 422 + SDP' },
-      botLeft: { icon: 'discovery_engine', title: 'Hop 2: Catalog PDP', sub: 'Discovery Catalog + Tool Prune' },
-      topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Global Anycast Ingress' },
-      botRight: { icon: 'cloud_run', title: 'Architecture Selector', sub: 'cymbal-multi-tenant-patterns' },
-      edgeTopLeft: ['Verify OBO', '& KMS P-256'],
-      edgeMidLeft: ['Screen &', 'redact PII'],
-      edgeBotLeft: ['Prune Catalog', '& MCP tools'],
-      step2Left: 'Request',
-      step7Mid: 'Response',
+    // ---- Rule 53G: a decision guide is a decision tree, not a request/response hub ----
+    layout: LAYOUT_DECISION_TREE_3_OUTCOME,
+    topUserTitle: 'Chief Architect • CISO • CFO',
+    topUserSub: '1,000 tenants • 950 Standard + 50 Enterprise',
+    step1Label: 'Decision inputs',
+    outerWrapperLabel: 'Executive Topology Selector: 2 questions → 3 outcomes • 80% reusable Agentic Triad core + 20% topology delta (Terraform modules 2.6 • 3.6 • 4.6)',
+    selectorTitle: '1. The 2-Question Executive Topology Selector',
+    selectorSub: 'Answer in order — Q1 settles compliance, Q2 settles tier mix',
+    inputs: {
+      icon: 'verification_suite',
+      title: 'Decision inputs',
+      sub: 'Regulator mandates • data residency • customer-managed keys • tier mix • unit-cost targets',
     },
-    govHubTitle: 'Triad Pillar 3: Zero-PII',
-    govHubTitle2: 'OTel & FinOps Chargeback',
-    govCards: {
-      top: { icon: 'security_command_center', title: 'Security Command', title2: 'Center', sub: 'security_breach_audit_log' },
-      mid: { icon: 'bigquery_analytics', title: '3 Chargeback Models', sub: 'Even, Proportional & Tiered' },
-      bot: { icon: 'bigquery_analytics', title: 'BigQuery OTel Sink', sub: 'tenant_telemetry_spans' },
+    q1: {
+      title: 'Compliance gate',
+      body: ['Do all customers legally require dedicated', 'GCP projects, VPC-SC, or air-gapped models?'],
     },
-    midStep3Label: ['Dispatch to optimal', 'cost/security tier'],
-    midStep7Label: ['Verified zero-bleed', 'agent completion'],
-    midGovLabel: ['Real-time COGS &', 'security telemetry'],
-    leftBoundaryLabel: 'Triad Pillar 2 (High Density): Pattern A Pooled FinOps & COGS Engine',
-    leftZoneTitle: 'Pattern A: Pooled Unit Economics',
-    leftZoneSub: 'Lowest COGS ($) • 84.7% Net Input Token Savings',
-    leftCards: {
-      modelArmor: { icon: 'valkey_cache', title: 'Valkey Rate Bulkhead', sub: '120 RPM Std / 600 RPM Ent' },
-      llm: { icon: 'gemini_agent_platform', title: 'ContextCacheConfig', sub: '90% Discount on 32k Prefix' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Thinking Budget Cap', sub: 'Clamps 4k Std vs 8k Ent' },
-      mcp: { icon: 'iap_iam_shield', title: '2LO & 3LO Auth Mgr', sub: 'Scoped Per-Tenant Vault' },
-      datastore: { icon: 'datastore_alloydb_bq', title: 'AlloyDB & BQ RLS', sub: 'pattern_a_pooled_rls_entities' },
-      step4Label: 'Check quota',
-      step6Label: 'Log COGS',
-      step5Label: ['90% Cached', 'inference'],
-      ragLabel: ['Zero Cache', 'Bleed'],
-      toolLabel: ['Storage-Engine', 'RLS Policy'],
+    q2: {
+      title: 'Tier gate',
+      body: ['Do you sell both a shared Standard tier', 'and a regulated Enterprise tier?'],
     },
-    rightBoundaryLabel: 'Triad Pillar 2 (Regulated Scale): Pattern B Silos ($$$) & Pattern C Hybrid ($$)',
-    rightZoneTitle: 'Pattern B Silos & Pattern C PSC Spokes',
-    rightZoneSub: 'Zero Blast Radius + Zero-Downtime Tier Promotion',
-    rightCards: {
-      modelArmor: { icon: 'vpc_sc', title: 'VPC-SC & IAM PAB', sub: 'Hard Perimeter Isolation' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemma 3 & Gemini 2.5 PT', sub: 'Air-Gapped GKE & Dedicated PT' },
-      runtime: { icon: 'psc_bridge', title: 'PSC Spoke Runtime', sub: 'cymbal-psc-nat-us-west1 (/28)' },
-      mcp: { icon: 'mcp_servers', title: 'Dedicated Silo MCP', sub: 'Zero Cross-Project Egress' },
-      datastore: { icon: 'cloud_kms', title: 'Cloud KMS CMEK Lock', sub: 'cymbal-multi-tenant-kr (423)' },
-      ragLabel: ['Private PSC', 'NAT Bridge'],
-      toolLabel: ['Customer-Revocable', 'CMEK Keys'],
+    q1No: 'NO',
+    q1Yes: ['YES → Pattern B', 'every tenant sovereign'],
+    q2Single: ['Single shared tier →', 'Pattern A (pooled)'],
+    q2Multi: ['Standard + Enterprise', '→ Pattern C (hybrid)'],
+    triadApplies: ['80% reusable core', 'inherited by all 3'],
+    triadTitle: '2. The Agentic Triad',
+    triadTitle2: '(80% reusable core)',
+    triadCards: [
+      { icon: 'iap_iam_shield', title: 'Pillar 1 • Zero-Trust 5-Hop', sub: 'Hops 1, 2 & 4: OBO/DPoP • Catalog PDP • Model Armor' },
+      { icon: 'context_cache', title: 'Pillar 2 • Predictable FinOps', sub: 'Hop 3: ContextCache 90% • Valkey • thinking caps' },
+      { icon: 'bigquery_analytics', title: 'Pillar 3 • Zero-PII OTel Chargeback', sub: 'tenant_telemetry_spans • Even / Proportional / Tiered' },
+    ],
+    coreBar: {
+      title: 'AGENTIC TRIAD CORE — identical Hops 1–5, FinOps controls & zero-PII telemetry in every outcome (only the 20% topology delta below changes)',
     },
+    outcomes: [
+      {
+        key: 'B',
+        step: '4',
+        fill: '#fad2cf',
+        accent: '#c5221f',
+        label: 'Pattern B — Sovereign Silos • $$$ • Terraform module 3.6',
+        zoneTitle: 'One dedicated project per tenant',
+        zoneSub: 'Zero blast radius • customer holds the key',
+        cards: [
+          { icon: 'vpc_sc', title: 'VPC-SC Perimeter + IAM PAB', sub: 'Dedicated project • 0 cross-perimeter egress' },
+          { icon: 'cloud_kms', title: 'Customer CMEK Kill-Switch', sub: 'Key DISABLED → HTTP 423 in <60s' },
+          { icon: 'gke', title: 'Private GKE Gemma 3 27B / Dedicated PT', sub: 'Air-gapped inference, no shared cache' },
+          { icon: 'mcp_servers', title: 'Local Silo MCP + AlloyDB CMEK', sub: 'Tools & state never leave the perimeter' },
+        ],
+        verdict: ['Choose when regulators mandate isolation', '6/6 sovereign tests PASS • highest unit cost'],
+      },
+      {
+        key: 'A',
+        step: '5',
+        fill: '#feefc3',
+        accent: '#b06000',
+        label: 'Pattern A — Pooled • $ • Terraform module 2.6',
+        zoneTitle: 'One shared plane for all tenants',
+        zoneSub: 'Lowest COGS • logical isolation only',
+        cards: [
+          { icon: 'gemini_agent_platform', title: 'Shared Agent Engine gVisor Pool', sub: 'temp:tenant_id bound per request' },
+          { icon: 'datastore_alloydb_bq', title: 'Shared AlloyDB + BigQuery FORCE RLS', sub: 'tenant_id rows • 0 cross-tenant rows' },
+          { icon: 'context_cache', title: 'Namespaced Memory + 90% ContextCache', sub: '32k shared prefix • -84.7% input tokens' },
+          { icon: 'valkey_cache', title: 'Valkey Bulkheads + Thinking Caps', sub: '120 / 600 RPM • 4k / 8k tokens' },
+        ],
+        verdict: ['Choose when one commercial tier is enough', '10/10 breach vectors blocked • lowest unit cost'],
+      },
+      {
+        key: 'C',
+        step: '6',
+        fill: '#e8d9f7',
+        accent: '#6a1b9a',
+        label: 'Pattern C — Hybrid PSC • $$ • Terraform module 4.6',
+        zoneTitle: 'Shared pool + private spokes',
+        zoneSub: 'Standard pooled, Enterprise over PSC',
+        cards: [
+          { icon: 'firestore_db', title: 'Hub Tier Router + Firestore Route Table', sub: 'Atomic tier pointer per tenant' },
+          { icon: 'gemini_agent_platform', title: 'Standard → Shared Pool (Pattern A plane)', sub: '950 tenants • 120 RPM pooled path' },
+          { icon: 'psc_bridge', title: 'Enterprise → PSC Spoke', sub: 'Consumer /28 endpoint → ServiceAttachment' },
+          { icon: 'dms_migration', title: 'Zero-Downtime Promotion', sub: 'SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY' },
+        ],
+        verdict: ['Choose when tiers must coexist and promote live', '4/4 migration tests PASS • 74% TCO vs all-dedicated'],
+      },
+    ],
   },
 ];
 
@@ -1473,12 +1534,39 @@ async function main() {
   const manifest = [];
 
   try {
+    const PRIMS = {
+      escXml,
+      resolveArchIconUri,
+      OFFICIAL_ASSETS,
+      USER_SILHOUETTE_DATA_URI,
+      renderArchCardSvg,
+      renderStepCircleSvg,
+      fitAttr,
+    };
+    const compileByLayout = (bp) => {
+      const layout = bp.layout || LAYOUT_HUB_2_SPOKE;
+      if (layout === LAYOUT_POOLED_SHARED_PLANE) {
+        return { layout, xmlStr: compilePooledSharedPlaneDrawio(bp, PRIMS), svgStr: compilePooledSharedPlaneSvg(bp, PRIMS) };
+      }
+      if (layout === LAYOUT_DECISION_TREE_3_OUTCOME) {
+        return { layout, xmlStr: compileDecisionTreeDrawio(bp, PRIMS), svgStr: compileDecisionTreeSvg(bp, PRIMS) };
+      }
+      return { layout: LAYOUT_HUB_2_SPOKE, xmlStr: compileOfficialDrawioXml(bp), svgStr: compileOfficialArchCenterSvg(bp) };
+    };
+    const countGeometry = (xmlStr) => {
+      const vertices = (xmlStr.match(/<mxCell[^>]*\bvertex="1"/g) || []).length;
+      const edges = (xmlStr.match(/<mxCell[^>]*\bedge="1"/g) || []).length;
+      const cards = (xmlStr.match(/<mxCell id="card_[^"]*"/g) || []).length;
+      return { vertices, edges, cards };
+    };
+
     for (let i = 0; i < ALL_BLUEPRINTS.length; i++) {
       const bp = ALL_BLUEPRINTS[i];
       console.log(`[${i + 1}/${ALL_BLUEPRINTS.length}] Building official Architecture Center diagram: ${bp.id} ...`);
 
-      const xmlStr = compileOfficialDrawioXml(bp);
-      const svgStr = compileOfficialArchCenterSvg(bp);
+      const { layout, xmlStr, svgStr } = compileByLayout(bp);
+      const geom = countGeometry(xmlStr);
+      const contract = layoutGeometryContract(layout);
 
       const centralDrawioPath = path.join(CENTRAL_DIAGRAMS_DIR, `${bp.id}.drawio`);
       const centralSvgPath = path.join(CENTRAL_DIAGRAMS_DIR, `${bp.id}.svg`);
@@ -1511,7 +1599,7 @@ ${svgStr}
       const drawioStat = fs.statSync(centralDrawioPath);
 
       console.log(
-        `   ✅ CERTIFIED (Official Cloud Architecture Center Format): PNG ${Math.round(pngStat.size / 1024)} KB | SVG ${Math.round(svgStat.size / 1024)} KB`
+        `   ✅ CERTIFIED (Official Cloud Architecture Center Format • layout=${layout} • ${geom.vertices} vertices / ${geom.edges} edges): PNG ${Math.round(pngStat.size / 1024)} KB | SVG ${Math.round(svgStat.size / 1024)} KB`
       );
 
       manifest.push({
@@ -1520,6 +1608,8 @@ ${svgStr}
         title: bp.title,
         subtitle: bp.subtitle,
         format: 'Google Cloud Architecture Center Hub-and-Spoke (multi-tenant-agentic-ai-system.svg)',
+        layout,
+        geometry_contract: contract.rule,
         workstream_dir: 'diagrams',
         drawio_xml: path.relative(ROOT_DIR, centralDrawioPath),
         drawio_file: path.relative(ROOT_DIR, centralDrawioPath),
@@ -1532,15 +1622,15 @@ ${svgStr}
         central_drawio_file: path.relative(ROOT_DIR, centralDrawioPath),
         central_drawio_png: path.relative(ROOT_DIR, centralPngPath),
         vision_metadata: `diagrams/vision_metadata/${bp.id}.vision.json`,
-        card_count: 42,
+        card_count: geom.cards,
         collision_count: 0,
         png_bytes: pngStat.size,
         svg_bytes: svgStat.size,
         drawio_bytes: drawioStat.size,
         drawio_png_bytes: pngStat.size,
-        vision_node_count: 56,
-        vision_edge_count: 23,
-        vision_object_count: 54,
+        vision_node_count: geom.vertices,
+        vision_edge_count: geom.edges,
+        vision_object_count: geom.vertices - 2,
         certified: true,
       });
     }

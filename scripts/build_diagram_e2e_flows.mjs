@@ -59,7 +59,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       'Unifies a shared Routing Hub and Central Governance Hub (80% reusable control plane) to route requests into Pattern A (Pooled Runtime + RLS), Pattern B (Per-Tenant Project + VPC-SC + CMEK), or Pattern C (Hybrid PSC Spokes).',
     outcomeTitle: 'Unified Hub-and-Spoke Control Plane Across Three Tenant Isolation Tiers',
     outcomeBody:
-      'Platform teams maintain a single ADK 2.0 and Vertex AI Agent Engine codebase while delivering $42/mo Pooled (Pattern A), $680/mo Hybrid PSC (Pattern C), and $1,850/mo Sovereign Silo (Pattern B) isolation tiers with zero cross-tenant data bleed.',
+      'Platform teams maintain a single ADK 2.0 and Vertex AI Agent Engine codebase while delivering 120 RPM Pool Pooled (Pattern A), Blended Hybrid Tier Hybrid PSC (Pattern C), and 600 RPM Silo Sovereign Silo (Pattern B) isolation tiers with zero cross-tenant data bleed.',
     outcomeTech: 'All 3 isolation topologies (Pattern A, B & C) verified live on Google Cloud with 20/20 security and migration assertions passing',
     plainZones: [
       {
@@ -425,7 +425,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     workstreamLabel: 'Workstream 2 • Pattern A: High-Density Pooled Multi-Tenant Architecture (WS 2.1)',
     patternBadge: 'PATTERN A • POOLED RUNTIME',
     questionAnswered:
-      'How do we host thousands of Standard and commercial SaaS tenants inside a single shared Google Cloud project at a $42/month unit cost footprint while guaranteeing cryptographic and row-level isolation?',
+      'How do we host thousands of Standard and commercial SaaS tenants inside a single shared Google Cloud project at a 120 RPM Pooled unit cost footprint while guaranteeing cryptographic and row-level isolation?',
     gcpProject: 'nitina-ggarwal-sandbox-647724 (#887605034827)',
     runtimeTarget: 'cymbal-multi-tenant-patterns-00003-wfh • BigQuery pattern_a_pooled_rls_entities',
     codeModules: 'workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md • runtime/main.py (/v1/patterns/a/execute)',
@@ -433,7 +433,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       'External ALB • Cloud Armor • Identity-Aware Proxy • Cloud Run Gen2 • Memorystore for Valkey • Vertex AI Model Armor • Gemini 2.5 Pro • AlloyDB & BigQuery RLS',
     execTechSummary:
       'Consolidates multi-tenant compute onto one auto-scaling Cloud Run / Vertex AI Agent Engine pool and one shared AlloyDB/BigQuery schema, enforcing isolation via KMS-signed tokens, Memorystore rate bulkheads, and Row-Level Security.',
-    outcomeTitle: 'High-Density SaaS Unit Economics ($42/mo) with Cryptographic 5-Hop Isolation',
+    outcomeTitle: 'High-Density SaaS Unit Economics (120 RPM Pool) with Cryptographic 5-Hop Isolation',
     outcomeBody:
       'Competing tenants (FinVault Bank and RetailStream Corp) share the same serverless runtime pool and database tables to achieve an 84.7% token COGS reduction, while cryptographic context binding guarantees zero cross-tenant visibility.',
     outcomeTech: 'Verified live on Google Cloud: tenant queries return strictly their 2 authorized rows in BigQuery RLS with 0 foreign rows leaked',
@@ -528,7 +528,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Red → Blue & Green Zones',
         title: 'Egress PII Redaction & Fractional-Cent Chargeback',
         logicalNarrative:
-          'Sensitive Data Protection masks tenant-specific PII/PCI fields on egress, tears down the ephemeral sandbox context, and logs the $0.0042 turn cost to BigQuery FinOps.',
+          'Sensitive Data Protection masks tenant-specific PII/PCI fields on egress, tears down the ephemeral sandbox context, and logs the Pooled Span turn cost to BigQuery FinOps.',
         components: 'Cloud SDP Egress Masking • BigQuery OTel FinOps',
       },
     ],
@@ -558,7 +558,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         protocolAndMechanism:
           'Enforces per-tenant token-bucket rate limits in Memorystore for Valkey and clamps `thinking_budget` (`4,000` Standard vs `8,000` Enterprise) inside the gVisor container.',
         codeAndResource: 'Valkey Sliding-Window Rate Limiter & Budget Clamp',
-        verifiedOutcome: 'Eliminates noisy-neighbor TPM exhaustion at $42/mo unit cost',
+        verifiedOutcome: 'Eliminates noisy-neighbor TPM exhaustion at 120 RPM Pool unit cost',
       },
       {
         step: 'Step ④',
@@ -601,7 +601,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'Proportional FinOps Ledger',
         route: 'BigQuery OTel Sink (`cymbal_agentic_finops_otel`) (Green Zone)',
         protocolAndMechanism:
-          'Streams per-turn token metrics (`$0.0042/turn`), cache-hit ratios, and latency percentiles into BigQuery partitioned by `tenant_id`.',
+          'Streams per-turn token metrics (`routing_plane=POOLED`), cache-hit ratios, and latency percentiles into BigQuery partitioned by `tenant_id`.',
         codeAndResource: 'Automated Per-Tenant Margin & SLA Telemetry',
         verifiedOutcome: 'Full unit-cost visibility and 10/10 breach simulation certification',
       },
@@ -1353,7 +1353,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'Silo Billing & KMS Audit',
         route: 'Cloud Billing, Cloud Audit Logs & BigQuery (Green Zone)',
         protocolAndMechanism:
-          'Exports project-level Cloud Billing records and immutable KMS `Decrypt` audit logs directly to the tenant’s compliance sink ($1,850/mo baseline tier).',
+          'Exports project-level Cloud Billing records and immutable KMS `Decrypt` audit logs directly to the tenant’s compliance sink (600 RPM Silo baseline tier).',
         codeAndResource: 'Per-Project Billing Attribution & KMS Audit Trail',
         verifiedOutcome: 'Complete physical, cryptographic, and financial isolation for auditors',
       },
@@ -1844,7 +1844,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Spokes → Caller & Green Zone FinOps',
         title: 'Unified Response Delivery & Blended FinOps Telemetry',
         logicalNarrative:
-          'The caller receives a seamless response without re-authenticating or changing URLs, while BigQuery OTel records the transition from Pooled ($0.0042/turn) to Hybrid PSC ($0.0079/turn) chargeback.',
+          'The caller receives a seamless response without re-authenticating or changing URLs, while BigQuery OTel records the transition from Pooled (`routing_plane=POOLED`) to Hybrid PSC (`routing_plane=PSC_SPOKE`) chargeback.',
         components: 'Seamless Session Continuity • BigQuery Blended FinOps',
       },
     ],
@@ -1919,7 +1919,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         protocolAndMechanism:
           'Streams real-time telemetry tagged with `routing_plane` (`POOLED` vs `PSC_SPOKE`) and `migration_phase` into BigQuery for tiered invoicing.',
         codeAndResource: 'BigQuery Hybrid FinOps & Migration Audit Sink',
-        verifiedOutcome: 'Verified live in BigQuery: $0.0079/turn hybrid telemetry recorded',
+        verifiedOutcome: 'Verified live in BigQuery: POOLED → PSC_SPOKE hybrid telemetry recorded',
       },
     ],
   },
@@ -2503,7 +2503,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       'Synthesizes the 2-Question Executive Topology Decision Tree (Pattern A vs. B vs. C) and the 3-Pillar Multi-Tenant Agentic Triad: (1) 5-Hop Cryptographic Governance, (2) Predictable FinOps Unit Economics (-84.7% COGS), and (3) Zero-PII OpenTelemetry Chargeback.',
     outcomeTitle: '2-Question Topology Selector + 74% Total Cloud COGS Reduction Across 1,000 Tenants',
     outcomeBody:
-      'Across a 1,000-tenant B2B SaaS portfolio (950 Standard + 50 Enterprise), Pattern C guided by the Agentic Triad reduces shared prompt token costs by 90%, cuts total monthly infrastructure COGS by 74% ($820k → $214k/mo), and maintains 99.99% SLA with 0 cross-tenant leaks.',
+      'Across a 1,000-tenant B2B SaaS portfolio (950 Standard + 50 Enterprise), Pattern C guided by the Agentic Triad reduces shared prompt token costs by 90%, cuts total monthly infrastructure COGS by 74% (via 90% shared ContextCacheConfig), and maintains 99.99% SLA with 0 cross-tenant leaks.',
     outcomeTech: 'Verified live across all 12 forensic checks (F-01..F-12) and 20/20 simulation assertions (10 Pattern A + 6 Pattern B + 4 Pattern C)',
     plainZones: [
       {
@@ -2525,7 +2525,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         colorHex: '#feefc3',
         borderHex: '#b06000',
         name: '3. Triad Pillar 2: Pattern A Pooled Unit Economics',
-        role: 'Combines 90% shared `ContextCacheConfig` discounts, Memorystore Valkey RPM bulkheads, 4,000-token caps, and AlloyDB RLS ($42/mo unit cost).',
+        role: 'Combines 90% shared `ContextCacheConfig` discounts, Memorystore Valkey RPM bulkheads, 4,000-token caps, and AlloyDB RLS (120 RPM Pool unit cost).',
       },
       {
         zoneId: 'Red Zone',
@@ -2543,7 +2543,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         title: '2-Question Executive Topology Decision Tree',
         logicalNarrative:
           'Architects evaluate two questions: Q1: Do all customers legally require dedicated GCP projects, VPC-SC, or air-gapped models? (Yes → Pattern B). Q2: Do you offer both a shared Standard tier and a regulated Enterprise tier? (Single tier → Pattern A; Multi-tier → Pattern C).',
-        components: '2-Question Selector → Pattern A ($), Pattern C ($$), or Pattern B ($$$)',
+        components: '2-Question Selector → Pattern A (Pooled), Pattern C (Hybrid), or Pattern B (Sovereign)',
       },
       {
         step: 'Step ②',
@@ -2662,7 +2662,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         protocolAndMechanism:
           'Redacts all PII/PHI/PCI via Cloud SDP prior to log export and streams tenant-tagged token consumption into BigQuery (`cymbal_agentic_finops_otel`).',
         codeAndResource: '3 Chargeback Models (Even Split, Proportional, Tiered)',
-        verifiedOutcome: 'Verified live in BigQuery: $0.0042 (A), $0.0079 (C), $0.0118 (B) per turn',
+        verifiedOutcome: 'Verified live in BigQuery: Pattern A, Pattern C, and Pattern B spans',
       },
       {
         step: 'Cost & Audit',

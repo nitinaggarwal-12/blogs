@@ -17,7 +17,6 @@ import base64
 import hashlib
 import html
 import json
-import os
 import re
 import time
 import urllib.parse
@@ -118,6 +117,9 @@ PREFERRED_WORKSTREAM_SLIDES_IDS: Dict[str, str] = {
     "WS4": "1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s",
     "WS5": "1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU",
     "ALL": "111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc",
+    "DOC-REF-07": "1gHV5hVNCB8phgq_JYQiNfoOGYOt7VFW5MuZOzKd4jLU",
+    "DOC-REF-08": "1fHwVkECJFr1HQvkYHYuMOraerpxO-0C6guF8PFHLlTw",
+    "DOC-REF-09": "10TpWnWIho8kXmN4866HXz34CI3lKxmh-NWSAd6QYiMM",
 }
 
 SECONDARY_WORKSTREAM_SLIDES_IDS: Dict[str, list[str]] = {
@@ -156,6 +158,8 @@ WORKSTREAM_ALIAS_SLIDES_KEYS: Dict[str, list[tuple[str, str]]] = {
     "WS5": [
         ("BP-78-E", "slides/ws5-wrap-up-editable-slides.pptx"),
         ("DOC-MT-05", "slides/doc-mt-05-editable-slides.pptx"),
+    ],
+    "ALL": [
         ("DOC-MT-06", "slides/doc-mt-06-editable-slides.pptx"),
     ],
 }
@@ -247,6 +251,15 @@ def upload_pptx_to_google_slides(
         and existing.get("sha256") == sha
         and existing.get("googleSlidesId") == preferred_id
     ):
+        for alias_key, alias_pptx_rel in WORKSTREAM_ALIAS_SLIDES_KEYS.get(cache_key, []):
+            prev_alias = manifest.get("slides", {}).get(alias_key, {})
+            manifest["slides"][alias_key] = {
+                **existing,
+                "key": alias_key,
+                "title": prev_alias.get("title") or title,
+                "pptxPath": alias_pptx_rel,
+            }
+        save_cloud_manifest(manifest)
         return existing
 
     tok = access_token_override or get_drive_access_token()
@@ -567,12 +580,15 @@ WORKSTREAM_DECK_SPECS = [
     ("WS3", "WS3 — Pattern B: Zero-Trust Sovereign Silos", "slides/ws3-pattern-b-siloed-editable-slides.pptx", "blogs/ws3-pattern-b-sovereign-silos.md"),
     ("WS4", "WS4 — Pattern C: Dynamic Hybrid Hub-and-Spoke & Tier Upgrade", "slides/ws4-pattern-c-hybrid-editable-slides.pptx", "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md"),
     ("WS5", "WS5 — Executive Decision Guide & Multi-Tenant Agentic Triad", "slides/ws5-wrap-up-editable-slides.pptx", "blogs/ws5-decision-guide-and-agentic-triad.md"),
-    ("ALL", "ALL Workstreams 1–5 Master Deck (26 Slides • 14 Diagrams)", "slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx", "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md"),
+    ("ALL", "ALL Workstreams 1–5 Master Deck (25 Slides • 14 Diagrams)", "slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx", "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md"),
+    ("DOC-REF-07", "Ref Arch 1: Enterprise Multimodal GraphRAG with Spanner Graph & Vertex AI", "slides/doc-ref-07-editable-slides.pptx", ""),
+    ("DOC-REF-08", "Ref Arch 2: Zero-Trust Enterprise Agent Mesh with Model Armor & VPC-SC", "slides/doc-ref-08-editable-slides.pptx", ""),
+    ("DOC-REF-09", "Ref Arch 3: Scalable MCP Tool Server & A2A Ecosystem on Cloud Run", "slides/doc-ref-09-editable-slides.pptx", ""),
 ]
 
 
 def sync_all_workstreams(force_slides: bool = False) -> Dict[str, Any]:
-    print("☁️  Syncing all 6 Editable .pptx Slide Decks (WS1–WS5 & ALL) to Google Slides...")
+    print("☁️  Syncing all Editable .pptx Slide Decks (WS1–WS5, ALL & DOC-REF-07..09) to Google Slides...")
     manifest = load_cloud_manifest()
     for key, title, pptx_rel, md_rel in WORKSTREAM_DECK_SPECS:
         pptx_file = ROOT_DIR / pptx_rel
@@ -581,6 +597,8 @@ def sync_all_workstreams(force_slides: bool = False) -> Dict[str, Any]:
             print(
                 f"   ✅ [Google Slides] {key} ({s_entry.get('slideCount', '?')} slides, {s_entry.get('sizeBytes', 0):,} B): {s_entry['googleSlidesEditUrl']}"
             )
+        if not md_rel:
+            continue
         existing_doc = manifest.get("docs", {}).get(key)
         if existing_doc and existing_doc.get("googleDocsEditUrl"):
             print(f"   ✓ [Google Docs]   {key} (cached native Doc): {existing_doc['googleDocsEditUrl']}")
@@ -598,3 +616,4 @@ if __name__ == "__main__":
     import sys
 
     sync_all_workstreams(force_slides="--force" in sys.argv)
+

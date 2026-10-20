@@ -3,7 +3,7 @@
   "deckTitle": "Pattern C — Dynamic Hybrid Hub-and-Spoke, PSC & Zero-Downtime Tier Migration (Workstream 4)",
   "deckSubtitle": "Unifying high-margin Pooled Standard tenants and sovereign Enterprise spokes behind one SaaS URL using Private Service Connect (PSC) and a 3-phase zero-downtime live tier upgrade engine",
   "tldr": [
-    "One Unified SaaS Front Door for Every Tier: Pattern C fronts both Standard pooled tenants ($42/mo) and regulated Enterprise sovereign spokes ($1,850/mo) behind a single Global Application Load Balancer URL.",
+    "One Unified SaaS Front Door for Every Tier: Pattern C fronts both Standard pooled tenants (120 RPM Pool) and regulated Enterprise sovereign spokes (600 RPM Silo) behind a single Global Application Load Balancer URL.",
     "Cryptographic Tier Lookup & Dispatch: Cloud Armor, IAP, and the Cloud Run Hybrid Router inspect the verified OBO/DPoP identity token, query the Firestore routing table, and dispatch traffic per tenant tier.",
     "Unidirectional Private Service Connect (PSC) Bridges: Enterprise requests traverse NAT-based PSC endpoints (`10.10.0.50`) into dedicated spoke projects (`ServiceAttachment`) with zero VPC peering or IP overlap.",
     "3-Phase Zero-Downtime Live Tier Migration (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`): Promotes a live Standard tenant into a dedicated Enterprise PSC spoke mid-conversation without dropping a single turn.",
@@ -74,8 +74,8 @@
       "layout": "cards",
       "bullets": [
         "Unified SaaS Front Door (`cymbal-hybrid-hub-prod`): Standard and Enterprise customers connect to one public ALB hostname (`agents.cymbal.cloud`), where Cloud Armor, IAP, and the Cloud Run Hybrid Router resolve tier routes in Firestore.",
-        "Standard Commercial Tier Profile (RetailStream Baseline -> Live Promotion): Starts in the shared Pattern A pool ($42/mo, 4,000-token cap, 120 RPM, AlloyDB RLS) and upgrades live mid-conversation into a dedicated Enterprise PSC spoke (`0` dropped turns).",
-        "Regulated Enterprise Spoke Profile (FinVault Spoke `10.10.0.50`): Traverses a unidirectional Private Service Connect endpoint into a dedicated VPC-SC & Cloud KMS CMEK spoke project ($1,850/mo, 8,000-token budget, 600 RPM, private Agent Alpha).",
+        "Standard Commercial Tier Profile (RetailStream Baseline -> Live Promotion): Starts in the shared Pattern A pool (120 RPM Pool, 4,000-token cap, 120 RPM, AlloyDB RLS) and upgrades live mid-conversation into a dedicated Enterprise PSC spoke (`0` dropped turns).",
+        "Regulated Enterprise Spoke Profile (FinVault Spoke `10.10.0.50`): Traverses a unidirectional Private Service Connect endpoint into a dedicated VPC-SC & Cloud KMS CMEK spoke project (600 RPM Silo, 8,000-token budget, 600 RPM, private Agent Alpha).",
         "Unified Hybrid Google Cloud Stack (`4.6` Dual-Provider Terraform): Combines Cloud Armor, IAP OBO/DPoP, Federated Agent Registry, Firestore Route Table, PSC `ServiceAttachment` (`/24` NAT), Datastream CDC, AlloyDB, and BigQuery OTel."
       ],
       "specs": [
@@ -86,12 +86,12 @@
         },
         {
           "stack": "Route: pool://shared-runtime -> Live 3-Phase Promotion -> psc://10.10.0.51 (RetailStream)",
-          "sla": "Starts at $42/mo (4k Cap / 120 RPM) • Upgrades Live to Enterprise Spoke with 0 Dropped Chats",
+          "sla": "Starts at 120 RPM Pool (4k Cap / 120 RPM) • Upgrades Live to Enterprise Spoke with 0 Dropped Chats",
           "tag": "2. Land-and-Expand Tenant (RetailStream)"
         },
         {
           "stack": "Route: psc://10.10.0.50 -> finvault-agent-spoke-psc (ACCEPT_MANUAL) • VPC-SC & CMEK",
-          "sla": "Tier: ENTERPRISE ($1,850/mo) • 600 RPM • 8,000 Thinking Budget • Reuses 10.40.0.0/20 CIDR",
+          "sla": "Tier: ENTERPRISE (600 RPM Silo) • 600 RPM • 8,000 Thinking Budget • Reuses 10.40.0.0/20 CIDR",
           "tag": "3. Sovereign Spoke Tenant (FinVault)"
         },
         {
@@ -151,7 +151,7 @@
           "1,000-tenant portfolio FinOps",
           "2x engineering maintenance overhead + high customer churn on upgrade friction",
           "Hard scaling ceiling at 25 Enterprise tenants per Hub VPC network",
-          "`74%` lower TCO (`$132.4k/mo` vs. `$1.85M/mo` all-silo) + `4/4` migration tests PASS"
+          "`74%` lower TCO (`950 Pooled + 50 Spokes` vs. `1,000 All-Siloed` all-silo) + `4/4` migration tests PASS"
         ]
       ],
       "bullets": [],
@@ -320,7 +320,7 @@
   "takeawaySpecs": [
     {
       "stack": "Unified Hub ALB + Firestore Tier Router + Pooled & PSC Spoke Runtimes",
-      "sla": "Single SaaS Codebase & URL Serving Both $42/mo Standard & $1,850/mo Enterprise Tiers",
+      "sla": "Single SaaS Codebase & URL Serving Both 120 RPM Pool Standard & 600 RPM Silo Enterprise Tiers",
       "tag": "Takeaway 1: Unified Hybrid Control Plane"
     },
     {
@@ -344,5 +344,115 @@
       "tag": "Takeaway 5: Production State Hygiene"
     }
   ],
-  "callToAction": "Run the 4-test zero-downtime migration suite (`run_tier_migration_suite.py`), deploy the Terraform PSC blueprint (`4.6`), and continue to Workstream 5 (Executive Decision Guide & Agentic Triad)."
+  "callToAction": "Run the 4-test zero-downtime migration suite (`run_tier_migration_suite.py`), deploy the Terraform PSC blueprint (`4.6`), and continue to Workstream 5 (Executive Decision Guide & Agentic Triad).",
+  "slideSpeakerNotes": [
+    {
+      "slide": 1,
+      "totalSlides": 12,
+      "title": "Act I — Executive Title Cover & 3-Act Briefing Map",
+      "whyHere": "Welcome everyone. Whether you are looking at this platform from an executive business perspective, a product strategy lens, or hands-on cloud architecture, we have structured this twelve-slide briefing into three clear acts so you always know where we are in the story.",
+      "whatIsHappening": "In this session on Workstream 4, we explore Pattern C—our Dynamic Hybrid Hub-and-Spoke architecture—which combines the cost-efficiency of Pattern A’s shared pool with the regulatory isolation of Pattern B’s sovereign silos behind one unified SaaS front door, complete with zero-downtime live tier upgrades.",
+      "whatComesNext": "With that three-act roadmap in mind, let's turn to Slide 2 to meet the actual customer profiles whose business and regulatory requirements drive every design decision in this architecture.",
+      "fullText": "Welcome everyone. Whether you are looking at this platform from an executive business perspective, a product strategy lens, or hands-on cloud architecture, we have structured this twelve-slide briefing into three clear acts so you always know where we are in the story.\n\nIn this session on Workstream 4, we explore Pattern C—our Dynamic Hybrid Hub-and-Spoke architecture—which combines the cost-efficiency of Pattern A’s shared pool with the regulatory isolation of Pattern B’s sovereign silos behind one unified SaaS front door, complete with zero-downtime live tier upgrades.\n\nWith that three-act roadmap in mind, let's turn to Slide 2 to meet the actual customer profiles whose business and regulatory requirements drive every design decision in this architecture."
+    },
+    {
+      "slide": 2,
+      "totalSlides": 12,
+      "title": "Act I — Customer Use Cases, Competing Tenant Profiles & Cloud Stack",
+      "whyHere": "Following our opening roadmap on Slide 1, we always start with the customer first—because an architecture only creates business value when it solves real customer constraints.",
+      "whatIsHappening": "Think about the customer lifecycle every successful SaaS business experiences, shown here on this slide. A company like RetailStream signs up on Monday as a standard commercial customer in our Shared Pool because they want instant onboarding and low cost. Six months later, they expand their contract to an enterprise regulated tier and need their own dedicated sovereign spoke. Business leaders cannot ask that customer to change their URL, re-authenticate their users, or accept a weekend maintenance outage—and technical leaders need a way to route both pooled and siloed tenants seamlessly from a single control plane.",
+      "whatComesNext": "Now that we see what our customers require on Slide 2, the natural question for both business and technical leaders is: what are our architectural options to deliver this, and how do we choose the right one? Let's look at Slide 3.",
+      "fullText": "Following our opening roadmap on Slide 1, we always start with the customer first—because an architecture only creates business value when it solves real customer constraints.\n\nThink about the customer lifecycle every successful SaaS business experiences, shown here on this slide. A company like RetailStream signs up on Monday as a standard commercial customer in our Shared Pool because they want instant onboarding and low cost. Six months later, they expand their contract to an enterprise regulated tier and need their own dedicated sovereign spoke. Business leaders cannot ask that customer to change their URL, re-authenticate their users, or accept a weekend maintenance outage—and technical leaders need a way to route both pooled and siloed tenants seamlessly from a single control plane.\n\nNow that we see what our customers require on Slide 2, the natural question for both business and technical leaders is: what are our architectural options to deliver this, and how do we choose the right one? Let's look at Slide 3."
+    },
+    {
+      "slide": 3,
+      "totalSlides": 12,
+      "title": "Act I — Architectural Options & Decision Matrix",
+      "whyHere": "Building directly on the customer requirements we just reviewed on Slide 2, this slide closes Act I by evaluating our architectural choices before we dive into the technical blueprints.",
+      "whatIsHappening": "To connect a central SaaS routing hub to dozens of dedicated customer spokes without network headaches, this matrix compares Private Service Connect against legacy VPC peering, VPNs, and manual export-import migrations. As the table and our four selection rules at the bottom illustrate, Private Service Connect gives us a one-way, private network bridge that uses a tiny `/28` NAT subnet, eliminates IP address overlap across customers, and prevents any spoke from ever initiating a connection back into our central hub.",
+      "whatComesNext": "With our strategic direction clear at the end of Act I, let's move into Act II on Slide 4—starting with a clean, 30,000-foot view of our three security zones before we zoom into the detailed fifty-six-component Google Cloud blueprint.",
+      "fullText": "Building directly on the customer requirements we just reviewed on Slide 2, this slide closes Act I by evaluating our architectural choices before we dive into the technical blueprints.\n\nTo connect a central SaaS routing hub to dozens of dedicated customer spokes without network headaches, this matrix compares Private Service Connect against legacy VPC peering, VPNs, and manual export-import migrations. As the table and our four selection rules at the bottom illustrate, Private Service Connect gives us a one-way, private network bridge that uses a tiny `/28` NAT subnet, eliminates IP address overlap across customers, and prevents any spoke from ever initiating a connection back into our central hub.\n\nWith our strategic direction clear at the end of Act I, let's move into Act II on Slide 4—starting with a clean, 30,000-foot view of our three security zones before we zoom into the detailed fifty-six-component Google Cloud blueprint."
+    },
+    {
+      "slide": 4,
+      "totalSlides": 12,
+      "title": "Act II (Level 1 Zoom) — 3-Zone Logical Security & Trust Boundary",
+      "whyHere": "Now that we have chosen our architectural approach on Slide 3, Slide 4 opens Act II at Level 1 of our top-down zoom—giving everyone a simple three-zone mental map before we look at the full physical schematic.",
+      "whatIsHappening": "Looking at the three logical zones from left to right, you can see how Pattern C unifies the platform. Zone 1 on the left is our single SaaS Front Door and Tier-Aware Routing Hub, where every customer logs in through the exact same URL. Zone 2 in the center is our one-way Private Service Connect network bridge and Live Tier Migration Engine. Zone 3 on the right holds both destinations side-by-side: the shared Pattern A pool for standard tenants and dedicated Pattern B sovereign spokes for enterprise tenants.",
+      "whatComesNext": "Now that we have these three logical zones in mind, let's zoom one level deeper on Slide 5 to see the exact Google Cloud services that live inside each zone.",
+      "fullText": "Now that we have chosen our architectural approach on Slide 3, Slide 4 opens Act II at Level 1 of our top-down zoom—giving everyone a simple three-zone mental map before we look at the full physical schematic.\n\nLooking at the three logical zones from left to right, you can see how Pattern C unifies the platform. Zone 1 on the left is our single SaaS Front Door and Tier-Aware Routing Hub, where every customer logs in through the exact same URL. Zone 2 in the center is our one-way Private Service Connect network bridge and Live Tier Migration Engine. Zone 3 on the right holds both destinations side-by-side: the shared Pattern A pool for standard tenants and dedicated Pattern B sovereign spokes for enterprise tenants.\n\nNow that we have these three logical zones in mind, let's zoom one level deeper on Slide 5 to see the exact Google Cloud services that live inside each zone."
+    },
+    {
+      "slide": 5,
+      "totalSlides": 12,
+      "title": "Act II (Level 2 Zoom) — Figure 1 Official Google Cloud Physical Blueprint",
+      "whyHere": "Because we just established the three high-level trust zones on Slide 4, this full fifty-six-component Google Cloud blueprint on Slide 5 becomes intuitive to read for both business and technical stakeholders.",
+      "whatIsHappening": "Zooming into Figure 1, here is the full Google Cloud physical blueprint for Pattern C. When a request enters the blue Routing Hub at the top and passes through the green Five-Hop Governance Hub in the center, our router checks the tenant’s live tier pointer. Standard tenants are dispatched locally to the yellow Shared Pool Spoke on the bottom left, while Enterprise tenants—or newly upgraded tenants—are routed across a Private Service Connect service attachment directly into their red Dedicated Sovereign Spoke on the bottom right.",
+      "whatComesNext": "While this physical blueprint shows where every service lives, it is a static map. Next, let's turn to Slide 6 to watch how a live customer request actually travels across these components step by step over time.",
+      "fullText": "Because we just established the three high-level trust zones on Slide 4, this full fifty-six-component Google Cloud blueprint on Slide 5 becomes intuitive to read for both business and technical stakeholders.\n\nZooming into Figure 1, here is the full Google Cloud physical blueprint for Pattern C. When a request enters the blue Routing Hub at the top and passes through the green Five-Hop Governance Hub in the center, our router checks the tenant’s live tier pointer. Standard tenants are dispatched locally to the yellow Shared Pool Spoke on the bottom left, while Enterprise tenants—or newly upgraded tenants—are routed across a Private Service Connect service attachment directly into their red Dedicated Sovereign Spoke on the bottom right.\n\nWhile this physical blueprint shows where every service lives, it is a static map. Next, let's turn to Slide 6 to watch how a live customer request actually travels across these components step by step over time."
+    },
+    {
+      "slide": 6,
+      "totalSlides": 12,
+      "title": "Act II (Level 3 Zoom) — 5-Actor Chronological Request Lifeline",
+      "whyHere": "Taking the physical components we just saw on Slide 5, this slide brings the architecture to life by tracing a single customer turn in chronological order.",
+      "whatIsHappening": "How do we move a live customer from the yellow Shared Pool to a red Sovereign Spoke while their employees are actively chatting with the AI agent? This chronological timeline shows our four-stage zero-downtime upgrade choreography across five actors. First, during Shadow Sync, we copy their historical AlloyDB rows and memory namespaces into the new spoke in the background while live traffic keeps running in the pool. Second, our verifier checks 100% row-count and cryptographic hash parity. Third, we execute an Atomic Cutover that flips their routing pointer in zero milliseconds between turns. Fourth, we drain in-flight requests and retire the old pooled rows.",
+      "whatComesNext": "Having watched the request move from hop to hop on Slide 6, a technical architect or security officer will naturally ask: what actually changes inside the data packet on the wire so a caller can never fake their company ID? Let's zoom all the way in on Slide 7.",
+      "fullText": "Taking the physical components we just saw on Slide 5, this slide brings the architecture to life by tracing a single customer turn in chronological order.\n\nHow do we move a live customer from the yellow Shared Pool to a red Sovereign Spoke while their employees are actively chatting with the AI agent? This chronological timeline shows our four-stage zero-downtime upgrade choreography across five actors. First, during Shadow Sync, we copy their historical AlloyDB rows and memory namespaces into the new spoke in the background while live traffic keeps running in the pool. Second, our verifier checks 100% row-count and cryptographic hash parity. Third, we execute an Atomic Cutover that flips their routing pointer in zero milliseconds between turns. Fourth, we drain in-flight requests and retire the old pooled rows.\n\nHaving watched the request move from hop to hop on Slide 6, a technical architect or security officer will naturally ask: what actually changes inside the data packet on the wire so a caller can never fake their company ID? Let's zoom all the way in on Slide 7."
+    },
+    {
+      "slide": 7,
+      "totalSlides": 12,
+      "title": "Act II (Level 4 Zoom) — Wire-Level Payload & Cryptographic Context Transformation",
+      "whyHere": "This slide completes our four-level architectural zoom in Act II—taking us from the step-by-step timeline on Slide 6 right inside the JSON message envelope traveling across the wire.",
+      "whatIsHappening": "Here you can see that zero-millisecond atomic cutover happening inside the actual routing packet on the wire. On the left, Turn N of a customer’s conversation arrives while they are still on the Standard tier, routing to the shared pool. In the center, the background parity check completes and atomically updates the tenant’s routing metadata to Enterprise. On the right, Turn N+1 of the very same conversation arrives two seconds later and transparently routes across the Private Service Connect endpoint into their new CMEK-encrypted sovereign spoke—without dropping a single word of context.",
+      "whatComesNext": "On Slides 4 through 7, we saw how the platform handles a normal request. As we enter Act III on Slide 8, let's answer the question every executive, risk officer, and SRE cares about most: what happens when things go wrong?",
+      "fullText": "This slide completes our four-level architectural zoom in Act II—taking us from the step-by-step timeline on Slide 6 right inside the JSON message envelope traveling across the wire.\n\nHere you can see that zero-millisecond atomic cutover happening inside the actual routing packet on the wire. On the left, Turn N of a customer’s conversation arrives while they are still on the Standard tier, routing to the shared pool. In the center, the background parity check completes and atomically updates the tenant’s routing metadata to Enterprise. On the right, Turn N+1 of the very same conversation arrives two seconds later and transparently routes across the Private Service Connect endpoint into their new CMEK-encrypted sovereign spoke—without dropping a single word of context.\n\nOn Slides 4 through 7, we saw how the platform handles a normal request. As we enter Act III on Slide 8, let's answer the question every executive, risk officer, and SRE cares about most: what happens when things go wrong?"
+    },
+    {
+      "slide": 8,
+      "totalSlides": 12,
+      "title": "Act III — Deterministic Fail-Closed Circuit Breakers & Recovery Loop",
+      "whyHere": "On the previous slide, we saw how a normal customer request is verified and sealed at the wire level. As we move into Act III, the natural question from any executive, risk officer, or architect is: what happens during an emergency—whether that is a sudden traffic spike from a noisy neighbor, a policy violation, or a customer revoking their encryption key?",
+      "whatIsHappening": "Because enterprise data migrations must never put customer availability at risk, this diagram shows the automatic safety circuit breakers governing the upgrade state machine. If the background Shadow Sync detects even a single mismatched record hash, if the target spoke’s Cloud KMS key is unhealthy, or if Private Service Connect latency exceeds our threshold before cutover, the circuit breaker automatically aborts the promotion and keeps the customer running safely in the shared pool with zero downtime and zero data loss.",
+      "whatComesNext": "Now that we have seen how these automatic circuit breakers protect availability and tenant isolation in real time, let's turn to Slide 9 to see the complete scorecard of attack vectors and edge cases we tested against them.",
+      "fullText": "On the previous slide, we saw how a normal customer request is verified and sealed at the wire level. As we move into Act III, the natural question from any executive, risk officer, or architect is: what happens during an emergency—whether that is a sudden traffic spike from a noisy neighbor, a policy violation, or a customer revoking their encryption key?\n\nBecause enterprise data migrations must never put customer availability at risk, this diagram shows the automatic safety circuit breakers governing the upgrade state machine. If the background Shadow Sync detects even a single mismatched record hash, if the target spoke’s Cloud KMS key is unhealthy, or if Private Service Connect latency exceeds our threshold before cutover, the circuit breaker automatically aborts the promotion and keeps the customer running safely in the shared pool with zero downtime and zero data loss.\n\nNow that we have seen how these automatic circuit breakers protect availability and tenant isolation in real time, let's turn to Slide 9 to see the complete scorecard of attack vectors and edge cases we tested against them."
+    },
+    {
+      "slide": 9,
+      "totalSlides": 12,
+      "title": "Act III — Adversarial Breach Matrix & Compensating Controls",
+      "whyHere": "Building directly on the circuit-breaker mechanics we just walked through on Slide 8, this slide gives leadership and engineering our complete verification ledger.",
+      "whatIsHappening": "This four-point verification matrix summarizes our automated tests for Pattern C—proving that Private Service Connect blocks reverse spoke-to-hub network probing, that `/28` NAT subnets prevent IP exhaustion across tenants, that atomic pointer cutover drops zero active sessions, and that upgrading one tenant never mutates or disturbs any other tenant’s profile.",
+      "whatComesNext": "A verification matrix on Slide 9 is a strong commitment, but customers and auditors want to see live evidence from a real cloud environment. Let's look at Slide 10 to inspect the actual receipts from our Google Cloud Console.",
+      "fullText": "Building directly on the circuit-breaker mechanics we just walked through on Slide 8, this slide gives leadership and engineering our complete verification ledger.\n\nThis four-point verification matrix summarizes our automated tests for Pattern C—proving that Private Service Connect blocks reverse spoke-to-hub network probing, that `/28` NAT subnets prevent IP exhaustion across tenants, that atomic pointer cutover drops zero active sessions, and that upgrading one tenant never mutates or disturbs any other tenant’s profile.\n\nA verification matrix on Slide 9 is a strong commitment, but customers and auditors want to see live evidence from a real cloud environment. Let's look at Slide 10 to inspect the actual receipts from our Google Cloud Console."
+    },
+    {
+      "slide": 10,
+      "totalSlides": 12,
+      "title": "Act III — Live Google Cloud Console & Runtime Verification Proof",
+      "whyHere": "Following the test matrix on Slide 9, this slide turns those architectural claims into concrete visual proof captured from our running Google Cloud projects.",
+      "whatIsHappening": "Here are the live Google Cloud Console receipts from our hybrid environment. On the left, you can see our provisioned Private Service Connect NAT subnet and Vertex AI Agent Engine endpoints; on the right, the runtime telemetry cards verify a live promotion of RetailStream from the Standard pool into an Enterprise sovereign spoke with 100% memory parity and zero dropped requests.",
+      "whatComesNext": "With the architecture explained in Act II and proven live in Google Cloud here in Act III, let's turn to Slide 11 to distill everything we have covered into three executive takeaways.",
+      "fullText": "Following the test matrix on Slide 9, this slide turns those architectural claims into concrete visual proof captured from our running Google Cloud projects.\n\nHere are the live Google Cloud Console receipts from our hybrid environment. On the left, you can see our provisioned Private Service Connect NAT subnet and Vertex AI Agent Engine endpoints; on the right, the runtime telemetry cards verify a live promotion of RetailStream from the Standard pool into an Enterprise sovereign spoke with 100% memory parity and zero dropped requests.\n\nWith the architecture explained in Act II and proven live in Google Cloud here in Act III, let's turn to Slide 11 to distill everything we have covered into three executive takeaways."
+    },
+    {
+      "slide": 11,
+      "totalSlides": 12,
+      "title": "Act III — 3-Pillar Well-Architected Solution Summary",
+      "whyHere": "After reviewing the deep technical and console proof on Slides 8 through 10, we step back here on Slide 11 to connect our design directly back to the business outcomes we started with in Act I.",
+      "whatIsHappening": "Summarizing Pattern C for our executive, business, and engineering leaders, this hybrid architecture delivers three powerful advantages. Under Security, one-way Private Service Connect tunnels guarantee that a compromised spoke can never traverse backward into the central hub. Under Reliability, our shadow-sync state machine with instant rollback makes customer tier upgrades completely risk-free. And under Business Agility, customers can start small in the shared pool and expand into a dedicated enterprise vault whenever their business is ready.",
+      "whatComesNext": "With those three business and architectural guarantees clear, let's move to our final slide—Slide 12—to look at the concrete engineering deliverables and what comes next.",
+      "fullText": "After reviewing the deep technical and console proof on Slides 8 through 10, we step back here on Slide 11 to connect our design directly back to the business outcomes we started with in Act I.\n\nSummarizing Pattern C for our executive, business, and engineering leaders, this hybrid architecture delivers three powerful advantages. Under Security, one-way Private Service Connect tunnels guarantee that a compromised spoke can never traverse backward into the central hub. Under Reliability, our shadow-sync state machine with instant rollback makes customer tier upgrades completely risk-free. And under Business Agility, customers can start small in the shared pool and expand into a dedicated enterprise vault whenever their business is ready.\n\nWith those three business and architectural guarantees clear, let's move to our final slide—Slide 12—to look at the concrete engineering deliverables and what comes next."
+    },
+    {
+      "slide": 12,
+      "totalSlides": 12,
+      "title": "Act III — What's Next: Series Roadmap & Engineering Deliverables",
+      "whyHere": "Rounding out the three-pillar executive summary from Slide 11, our final slide gives your business and engineering teams an immediate, practical path forward.",
+      "whatIsHappening": "Everything needed to deploy this dual-project Hub-and-Spoke topology is included in our Pattern C Terraform blueprint and four-test simulation suite. Now that we have seen Pattern A (Shared Pool), Pattern B (Sovereign Silos), and Pattern C (Hybrid Bridge) in action, our final session—Workstream 5—brings the entire series together into an executive decision guide and shows how we maintain eighty percent shared application code across all three patterns.",
+      "whatComesNext": "That completes our twelve-slide walkthrough—I would love to open the floor for your questions, or we can jump straight into the live simulation workbench.",
+      "fullText": "Rounding out the three-pillar executive summary from Slide 11, our final slide gives your business and engineering teams an immediate, practical path forward.\n\nEverything needed to deploy this dual-project Hub-and-Spoke topology is included in our Pattern C Terraform blueprint and four-test simulation suite. Now that we have seen Pattern A (Shared Pool), Pattern B (Sovereign Silos), and Pattern C (Hybrid Bridge) in action, our final session—Workstream 5—brings the entire series together into an executive decision guide and shows how we maintain eighty percent shared application code across all three patterns.\n\nThat completes our twelve-slide walkthrough—I would love to open the floor for your questions, or we can jump straight into the live simulation workbench."
+    }
+  ]
 }

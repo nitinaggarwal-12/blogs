@@ -19,7 +19,6 @@ import argparse
 import base64
 import html
 import os
-import re
 import shutil
 import subprocess
 import tempfile
@@ -251,20 +250,38 @@ def render_slide(zf, slide_path, rels, out_html):
             ext = xfrm.find("a:ext", NS)
             x, y = emu_px(off.get("x")), emu_px(off.get("y"))
             w = emu_px(ext.get("cx"))
+            h = emu_px(ext.get("cy", "0"))
             tbl = el.find(".//a:tbl", NS)
             if tbl is None:
                 continue
+            colgroup_cols = []
+            tbl_grid = tbl.find("a:tblGrid", NS)
+            if tbl_grid is not None:
+                for gc in tbl_grid.findall("a:gridCol", NS):
+                    cw = emu_px(gc.get("w", "0"))
+                    if cw > 0:
+                        colgroup_cols.append(f'<col style="width:{cw:.1f}px"/>')
+            colgroup_html = f"<colgroup>{''.join(colgroup_cols)}</colgroup>" if colgroup_cols else ""
             rows_html = []
             for tr in tbl.findall("a:tr", NS):
+                tr_h_px = emu_px(tr.get("h", "0"))
+                tr_style = f' style="height:{tr_h_px:.1f}px"' if tr_h_px > 0 else ""
                 cells = []
                 for tc in tr.findall("a:tc", NS):
                     paras, _ = runs_to_html(tc.find("a:txBody", NS))
                     tcpr = tc.find("a:tcPr", NS)
                     bgc = solid_fill(tcpr) or "#ffffff"
-                    cells.append(f'<td style="background:{bgc};border:0.5px solid #cbd5e1;padding:3px 5px;vertical-align:top">{"".join(paras)}</td>')
-                rows_html.append(f"<tr>{''.join(cells)}</tr>")
+                    anchor = tcpr.get("anchor") if tcpr is not None else None
+                    valign = {"ctr": "middle", "b": "bottom"}.get(anchor, "middle")
+                    pad_t = emu_px(tcpr.get("marT", "45720")) if tcpr is not None else 4.8
+                    pad_l = emu_px(tcpr.get("marL", "91440")) if tcpr is not None else 9.6
+                    cells.append(
+                        f'<td style="background:{bgc};border:0.5px solid #cbd5e1;padding:{max(2.0, min(5.0, pad_t)):.1f}px {max(5.0, pad_l):.1f}px;vertical-align:{valign};box-sizing:border-box">{"".join(paras)}</td>'
+                    )
+                rows_html.append(f"<tr{tr_style}>{''.join(cells)}</tr>")
+            tbl_h_style = f";height:{h:.1f}px" if h > 0 else ""
             items.append(
-                f'<table class="tbl" style="left:{x:.1f}px;top:{y:.1f}px;width:{w:.1f}px;border-collapse:collapse">{"".join(rows_html)}</table>'
+                f'<table class="tbl" style="left:{x:.1f}px;top:{y:.1f}px;width:{w:.1f}px{tbl_h_style};table-layout:fixed;border-collapse:collapse">{colgroup_html}{"".join(rows_html)}</table>'
             )
     svg_lines = [i for i in items if i.startswith("<line")]
     html_items = [i for i in items if not i.startswith("<line")]

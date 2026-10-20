@@ -86,7 +86,7 @@
         },
         {
           "stack": "cymbal-finvault-silo-prod • Air-Gapped GKE Gemma 3 (27B) • Gemini 2.5 Pro PT • finvault-silo-cmek",
-          "sla": "Tier: SOVEREIGN ($1,850/mo) • Zero Public Egress • <60s HTTP 423 CMEK Revocation + L1 Purge",
+          "sla": "Tier: SOVEREIGN (600 RPM Silo) • Zero Public Egress • <60s HTTP 423 CMEK Revocation + L1 Purge",
           "tag": "2. FinVault Bank Sovereign Vault"
         },
         {
@@ -106,7 +106,7 @@
       "layout": "table",
       "tableHeaders": [
         "Sovereign Dimension",
-        "Pattern A: Logical Pool ($42/mo Baseline)",
+        "Pattern A: Logical Pool (120 RPM Pool Baseline)",
         "Pattern B1: VPC-SC + Vertex AI Dedicated PT",
         "Pattern B2: VPC-SC + Air-Gapped GKE Gemma 3"
       ],
@@ -149,9 +149,9 @@
         ],
         [
           "Unit economics & target workload",
-          "`$42 / tenant / month` • High-volume commercial B2B SaaS (`10/10` PASS)",
-          "`$1,850 / tenant / month` • OCC/FFIEC banking, HIPAA healthcare & EU DORA (`6/6` PASS)",
-          "`$2,450 / tenant / month` • Sovereign defense, core ledger & strict open-weight mandates"
+          "`120 RPM Pool / tenant / month` • High-volume commercial B2B SaaS (`10/10` PASS)",
+          "`600 RPM Silo / tenant / month` • OCC/FFIEC banking, HIPAA healthcare & EU DORA (`6/6` PASS)",
+          "`Air-Gapped GPU / tenant / month` • Sovereign defense, core ledger & strict open-weight mandates"
         ]
       ],
       "bullets": [],
@@ -338,5 +338,115 @@
       "tag": "Takeaway 5: Day-1 CISO Receipt"
     }
   ],
-  "callToAction": "Execute the 6-test sovereign silo suite (`run_silo_security_tests.py`), review the Terraform silo blueprint (`3.6-terraform-silo-blueprint`), and continue to Workstream 4 (Pattern C Dynamic Hybrid)."
+  "callToAction": "Execute the 6-test sovereign silo suite (`run_silo_security_tests.py`), review the Terraform silo blueprint (`3.6-terraform-silo-blueprint`), and continue to Workstream 4 (Pattern C Dynamic Hybrid).",
+  "slideSpeakerNotes": [
+    {
+      "slide": 1,
+      "totalSlides": 12,
+      "title": "Act I — Executive Title Cover & 3-Act Briefing Map",
+      "whyHere": "Welcome everyone. Whether you are looking at this platform from an executive business perspective, a product strategy lens, or hands-on cloud architecture, we have structured this twelve-slide briefing into three clear acts so you always know where we are in the story.",
+      "whatIsHappening": "In this session on Workstream 3, we move to Pattern B—our Zero-Trust Sovereign Silo architecture—designed for regulated banking, healthcare, and public-sector customers whose compliance mandates forbid sharing compute, storage, or encryption keys with any other organization.",
+      "whatComesNext": "With that three-act roadmap in mind, let's turn to Slide 2 to meet the actual customer profiles whose business and regulatory requirements drive every design decision in this architecture.",
+      "fullText": "Welcome everyone. Whether you are looking at this platform from an executive business perspective, a product strategy lens, or hands-on cloud architecture, we have structured this twelve-slide briefing into three clear acts so you always know where we are in the story.\n\nIn this session on Workstream 3, we move to Pattern B—our Zero-Trust Sovereign Silo architecture—designed for regulated banking, healthcare, and public-sector customers whose compliance mandates forbid sharing compute, storage, or encryption keys with any other organization.\n\nWith that three-act roadmap in mind, let's turn to Slide 2 to meet the actual customer profiles whose business and regulatory requirements drive every design decision in this architecture."
+    },
+    {
+      "slide": 2,
+      "totalSlides": 12,
+      "title": "Act I — Customer Use Cases, Competing Tenant Profiles & Cloud Stack",
+      "whyHere": "Following our opening roadmap on Slide 1, we always start with the customer first—because an architecture only creates business value when it solves real customer constraints.",
+      "whatIsHappening": "Here we see why regulated enterprise buyers like FinVault Bank’s Chief Information Security Officer require a sovereign deployment tier. From a business and regulatory standpoint, they need provable zero blast radius, a dedicated audit trail, and an encryption kill-switch they control directly so they can revoke our platform’s access to their data at any moment. From a technical standpoint, they also want the flexibility to run either dedicated Vertex AI Gemini endpoints or self-hosted, open-weights Gemma 3 models on private Kubernetes nodes with zero public internet egress.",
+      "whatComesNext": "Now that we see what our customers require on Slide 2, the natural question for both business and technical leaders is: what are our architectural options to deliver this, and how do we choose the right one? Let's look at Slide 3.",
+      "fullText": "Following our opening roadmap on Slide 1, we always start with the customer first—because an architecture only creates business value when it solves real customer constraints.\n\nHere we see why regulated enterprise buyers like FinVault Bank’s Chief Information Security Officer require a sovereign deployment tier. From a business and regulatory standpoint, they need provable zero blast radius, a dedicated audit trail, and an encryption kill-switch they control directly so they can revoke our platform’s access to their data at any moment. From a technical standpoint, they also want the flexibility to run either dedicated Vertex AI Gemini endpoints or self-hosted, open-weights Gemma 3 models on private Kubernetes nodes with zero public internet egress.\n\nNow that we see what our customers require on Slide 2, the natural question for both business and technical leaders is: what are our architectural options to deliver this, and how do we choose the right one? Let's look at Slide 3."
+    },
+    {
+      "slide": 3,
+      "totalSlides": 12,
+      "title": "Act I — Architectural Options & Decision Matrix",
+      "whyHere": "Building directly on the customer requirements we just reviewed on Slide 2, this slide closes Act I by evaluating our architectural choices before we dive into the technical blueprints.",
+      "whatIsHappening": "This comparison matrix evaluates our sovereign hosting options inside Pattern B—contrasting dedicated managed Vertex AI endpoints against air-gapped Gemma 3 clusters on Google Kubernetes Engine, alongside our VPC Service Controls perimeter and Cloud KMS key management choices. The four selection rules at the bottom give sales engineering and architecture teams a clear guide for matching each customer’s regulatory regime to the right sovereign blueprint.",
+      "whatComesNext": "With our strategic direction clear at the end of Act I, let's move into Act II on Slide 4—starting with a clean, 30,000-foot view of our three security zones before we zoom into the detailed fifty-six-component Google Cloud blueprint.",
+      "fullText": "Building directly on the customer requirements we just reviewed on Slide 2, this slide closes Act I by evaluating our architectural choices before we dive into the technical blueprints.\n\nThis comparison matrix evaluates our sovereign hosting options inside Pattern B—contrasting dedicated managed Vertex AI endpoints against air-gapped Gemma 3 clusters on Google Kubernetes Engine, alongside our VPC Service Controls perimeter and Cloud KMS key management choices. The four selection rules at the bottom give sales engineering and architecture teams a clear guide for matching each customer’s regulatory regime to the right sovereign blueprint.\n\nWith our strategic direction clear at the end of Act I, let's move into Act II on Slide 4—starting with a clean, 30,000-foot view of our three security zones before we zoom into the detailed fifty-six-component Google Cloud blueprint."
+    },
+    {
+      "slide": 4,
+      "totalSlides": 12,
+      "title": "Act II (Level 1 Zoom) — 3-Zone Logical Security & Trust Boundary",
+      "whyHere": "Now that we have chosen our architectural approach on Slide 3, Slide 4 opens Act II at Level 1 of our top-down zoom—giving everyone a simple three-zone mental map before we look at the full physical schematic.",
+      "whatIsHappening": "Look at the three concentric security rings on this slide, moving from left to right. Zone 1 at the outer edge verifies hardware-bound client certificates and Principal Access Boundary rules before a request can even approach the project. Zone 2 in the middle is a dedicated, single-tenant Google Cloud project surrounded by a VPC Service Controls digital moat that blocks unauthorized data movement. Zone 3 on the right is the encrypted data and GPU inference vault, where every byte in memory and on disk is locked by the customer’s own Cloud KMS key.",
+      "whatComesNext": "Now that we have these three logical zones in mind, let's zoom one level deeper on Slide 5 to see the exact Google Cloud services that live inside each zone.",
+      "fullText": "Now that we have chosen our architectural approach on Slide 3, Slide 4 opens Act II at Level 1 of our top-down zoom—giving everyone a simple three-zone mental map before we look at the full physical schematic.\n\nLook at the three concentric security rings on this slide, moving from left to right. Zone 1 at the outer edge verifies hardware-bound client certificates and Principal Access Boundary rules before a request can even approach the project. Zone 2 in the middle is a dedicated, single-tenant Google Cloud project surrounded by a VPC Service Controls digital moat that blocks unauthorized data movement. Zone 3 on the right is the encrypted data and GPU inference vault, where every byte in memory and on disk is locked by the customer’s own Cloud KMS key.\n\nNow that we have these three logical zones in mind, let's zoom one level deeper on Slide 5 to see the exact Google Cloud services that live inside each zone."
+    },
+    {
+      "slide": 5,
+      "totalSlides": 12,
+      "title": "Act II (Level 2 Zoom) — Figure 1 Official Google Cloud Physical Blueprint",
+      "whyHere": "Because we just established the three high-level trust zones on Slide 4, this full fifty-six-component Google Cloud blueprint on Slide 5 becomes intuitive to read for both business and technical stakeholders.",
+      "whatIsHappening": "Zooming into the physical Google Cloud blueprint in Figure 1, we see how those three rings are built in production. Requests pass through the blue Routing Hub with mutual TLS device verification, enter the green Governance Hub where Principal Access Boundaries and live Cloud KMS key-health checks are enforced, and execute inside the red Sovereign Silo Spoke at the bottom—housing dedicated AlloyDB and BigQuery instances alongside an air-gapped GKE Gemma 3 GPU pool inside a locked VPC Service Controls perimeter.",
+      "whatComesNext": "While this physical blueprint shows where every service lives, it is a static map. Next, let's turn to Slide 6 to watch how a live customer request actually travels across these components step by step over time.",
+      "fullText": "Because we just established the three high-level trust zones on Slide 4, this full fifty-six-component Google Cloud blueprint on Slide 5 becomes intuitive to read for both business and technical stakeholders.\n\nZooming into the physical Google Cloud blueprint in Figure 1, we see how those three rings are built in production. Requests pass through the blue Routing Hub with mutual TLS device verification, enter the green Governance Hub where Principal Access Boundaries and live Cloud KMS key-health checks are enforced, and execute inside the red Sovereign Silo Spoke at the bottom—housing dedicated AlloyDB and BigQuery instances alongside an air-gapped GKE Gemma 3 GPU pool inside a locked VPC Service Controls perimeter.\n\nWhile this physical blueprint shows where every service lives, it is a static map. Next, let's turn to Slide 6 to watch how a live customer request actually travels across these components step by step over time."
+    },
+    {
+      "slide": 6,
+      "totalSlides": 12,
+      "title": "Act II (Level 3 Zoom) — 5-Actor Chronological Request Lifeline",
+      "whyHere": "Taking the physical components we just saw on Slide 5, this slide brings the architecture to life by tracing a single customer turn in chronological order.",
+      "whatIsHappening": "This timeline walks through the single most important compliance test for any regulated customer: what happens chronologically across our five system actors the moment a customer security officer revokes or disables their Cloud KMS encryption key. Watch Steps 1 through 6: within seconds of the customer flipping their key switch, our background health probe detects the revocation, immediately flushes the customer’s active L1 memory cache in Valkey, terminates in-flight agent reasoning, and returns a deterministic HTTP 423 Locked status on every subsequent call.",
+      "whatComesNext": "Having watched the request move from hop to hop on Slide 6, a technical architect or security officer will naturally ask: what actually changes inside the data packet on the wire so a caller can never fake their company ID? Let's zoom all the way in on Slide 7.",
+      "fullText": "Taking the physical components we just saw on Slide 5, this slide brings the architecture to life by tracing a single customer turn in chronological order.\n\nThis timeline walks through the single most important compliance test for any regulated customer: what happens chronologically across our five system actors the moment a customer security officer revokes or disables their Cloud KMS encryption key. Watch Steps 1 through 6: within seconds of the customer flipping their key switch, our background health probe detects the revocation, immediately flushes the customer’s active L1 memory cache in Valkey, terminates in-flight agent reasoning, and returns a deterministic HTTP 423 Locked status on every subsequent call.\n\nHaving watched the request move from hop to hop on Slide 6, a technical architect or security officer will naturally ask: what actually changes inside the data packet on the wire so a caller can never fake their company ID? Let's zoom all the way in on Slide 7."
+    },
+    {
+      "slide": 7,
+      "totalSlides": 12,
+      "title": "Act II (Level 4 Zoom) — Wire-Level Payload & Cryptographic Context Transformation",
+      "whyHere": "This slide completes our four-level architectural zoom in Act II—taking us from the step-by-step timeline on Slide 6 right inside the JSON message envelope traveling across the wire.",
+      "whatIsHappening": "Looking inside the data packet on the wire during a sovereign transaction, you can see how hardware identity and encryption enforcement travel together. On the left, the incoming request must present a valid client certificate fingerprint matching its token. In the center, our gateway performs a live cryptographic ping against the customer’s Cloud KMS key before allowing any memory or database read. On the right, if that key has been revoked by the customer, the payload is rejected with an audited lock receipt and zero plaintext remains in cache.",
+      "whatComesNext": "On Slides 4 through 7, we saw how the platform handles a normal request. As we enter Act III on Slide 8, let's answer the question every executive, risk officer, and SRE cares about most: what happens when things go wrong?",
+      "fullText": "This slide completes our four-level architectural zoom in Act II—taking us from the step-by-step timeline on Slide 6 right inside the JSON message envelope traveling across the wire.\n\nLooking inside the data packet on the wire during a sovereign transaction, you can see how hardware identity and encryption enforcement travel together. On the left, the incoming request must present a valid client certificate fingerprint matching its token. In the center, our gateway performs a live cryptographic ping against the customer’s Cloud KMS key before allowing any memory or database read. On the right, if that key has been revoked by the customer, the payload is rejected with an audited lock receipt and zero plaintext remains in cache.\n\nOn Slides 4 through 7, we saw how the platform handles a normal request. As we enter Act III on Slide 8, let's answer the question every executive, risk officer, and SRE cares about most: what happens when things go wrong?"
+    },
+    {
+      "slide": 8,
+      "totalSlides": 12,
+      "title": "Act III — Deterministic Fail-Closed Circuit Breakers & Recovery Loop",
+      "whyHere": "On the previous slide, we saw how a normal customer request is verified and sealed at the wire level. As we move into Act III, the natural question from any executive, risk officer, or architect is: what happens during an emergency—whether that is a sudden traffic spike from a noisy neighbor, a policy violation, or a customer revoking their encryption key?",
+      "whatIsHappening": "Here is the complete closed-loop circuit breaker and Day-2 recovery flow for Pattern B. When a customer triggers their Cloud KMS kill-switch—or when VPC Service Controls detects an anomalous egress attempt—the circuit breaker trips closed in under sixty seconds, purging volatile Valkey caches and locking AlloyDB and BigQuery reads. Just as importantly for operations teams, look at the green recovery path at the bottom: once the customer’s security team re-enables their KMS key, our SRE health probe verifies key availability and lazily re-hydrates the cache from encrypted storage with zero manual intervention.",
+      "whatComesNext": "Now that we have seen how these automatic circuit breakers protect availability and tenant isolation in real time, let's turn to Slide 9 to see the complete scorecard of attack vectors and edge cases we tested against them.",
+      "fullText": "On the previous slide, we saw how a normal customer request is verified and sealed at the wire level. As we move into Act III, the natural question from any executive, risk officer, or architect is: what happens during an emergency—whether that is a sudden traffic spike from a noisy neighbor, a policy violation, or a customer revoking their encryption key?\n\nHere is the complete closed-loop circuit breaker and Day-2 recovery flow for Pattern B. When a customer triggers their Cloud KMS kill-switch—or when VPC Service Controls detects an anomalous egress attempt—the circuit breaker trips closed in under sixty seconds, purging volatile Valkey caches and locking AlloyDB and BigQuery reads. Just as importantly for operations teams, look at the green recovery path at the bottom: once the customer’s security team re-enables their KMS key, our SRE health probe verifies key availability and lazily re-hydrates the cache from encrypted storage with zero manual intervention.\n\nNow that we have seen how these automatic circuit breakers protect availability and tenant isolation in real time, let's turn to Slide 9 to see the complete scorecard of attack vectors and edge cases we tested against them."
+    },
+    {
+      "slide": 9,
+      "totalSlides": 12,
+      "title": "Act III — Adversarial Breach Matrix & Compensating Controls",
+      "whyHere": "Building directly on the circuit-breaker mechanics we just walked through on Slide 8, this slide gives leadership and engineering our complete verification ledger.",
+      "whatIsHappening": "This six-point verification matrix summarizes every sovereign security and isolation test we run against Pattern B. Each row pairs a high-severity regulatory threat—such as cross-project credential replay, VPC Service Controls data exfiltration, or post-revocation cache lingering—with its exact perimeter control and passing automated test result.",
+      "whatComesNext": "A verification matrix on Slide 9 is a strong commitment, but customers and auditors want to see live evidence from a real cloud environment. Let's look at Slide 10 to inspect the actual receipts from our Google Cloud Console.",
+      "fullText": "Building directly on the circuit-breaker mechanics we just walked through on Slide 8, this slide gives leadership and engineering our complete verification ledger.\n\nThis six-point verification matrix summarizes every sovereign security and isolation test we run against Pattern B. Each row pairs a high-severity regulatory threat—such as cross-project credential replay, VPC Service Controls data exfiltration, or post-revocation cache lingering—with its exact perimeter control and passing automated test result.\n\nA verification matrix on Slide 9 is a strong commitment, but customers and auditors want to see live evidence from a real cloud environment. Let's look at Slide 10 to inspect the actual receipts from our Google Cloud Console."
+    },
+    {
+      "slide": 10,
+      "totalSlides": 12,
+      "title": "Act III — Live Google Cloud Console & Runtime Verification Proof",
+      "whyHere": "Following the test matrix on Slide 9, this slide turns those architectural claims into concrete visual proof captured from our running Google Cloud projects.",
+      "whatIsHappening": "Here is the live Google Cloud Console proof from our sovereign sandbox environment. On the left, you can see the active Cloud KMS customer-managed keyring, CryptoKeyVersion state toggles, and Cloud Logging receipts; on the right, the telemetry cards confirm that all six sovereign perimeter and sub-sixty-second kill-switch tests pass with 100% compliance.",
+      "whatComesNext": "With the architecture explained in Act II and proven live in Google Cloud here in Act III, let's turn to Slide 11 to distill everything we have covered into three executive takeaways.",
+      "fullText": "Following the test matrix on Slide 9, this slide turns those architectural claims into concrete visual proof captured from our running Google Cloud projects.\n\nHere is the live Google Cloud Console proof from our sovereign sandbox environment. On the left, you can see the active Cloud KMS customer-managed keyring, CryptoKeyVersion state toggles, and Cloud Logging receipts; on the right, the telemetry cards confirm that all six sovereign perimeter and sub-sixty-second kill-switch tests pass with 100% compliance.\n\nWith the architecture explained in Act II and proven live in Google Cloud here in Act III, let's turn to Slide 11 to distill everything we have covered into three executive takeaways."
+    },
+    {
+      "slide": 11,
+      "totalSlides": 12,
+      "title": "Act III — 3-Pillar Well-Architected Solution Summary",
+      "whyHere": "After reviewing the deep technical and console proof on Slides 8 through 10, we step back here on Slide 11 to connect our design directly back to the business outcomes we started with in Act I.",
+      "whatIsHappening": "For our executive, business, and technical stakeholders, Pattern B delivers three uncompromising guarantees. Under Security, VPC Service Controls, Principal Access Boundaries, and customer-held KMS kill-switches provide mathematically provable sovereignty. Under Reliability, dedicated per-project quotas and optional private Gemma 3 GPU nodes eliminate external dependency risk. And under Operational Efficiency, our modular Terraform blueprint provisions an entire compliant customer silo repeatably through infrastructure as code.",
+      "whatComesNext": "With those three business and architectural guarantees clear, let's move to our final slide—Slide 12—to look at the concrete engineering deliverables and what comes next.",
+      "fullText": "After reviewing the deep technical and console proof on Slides 8 through 10, we step back here on Slide 11 to connect our design directly back to the business outcomes we started with in Act I.\n\nFor our executive, business, and technical stakeholders, Pattern B delivers three uncompromising guarantees. Under Security, VPC Service Controls, Principal Access Boundaries, and customer-held KMS kill-switches provide mathematically provable sovereignty. Under Reliability, dedicated per-project quotas and optional private Gemma 3 GPU nodes eliminate external dependency risk. And under Operational Efficiency, our modular Terraform blueprint provisions an entire compliant customer silo repeatably through infrastructure as code.\n\nWith those three business and architectural guarantees clear, let's move to our final slide—Slide 12—to look at the concrete engineering deliverables and what comes next."
+    },
+    {
+      "slide": 12,
+      "totalSlides": 12,
+      "title": "Act III — What's Next: Series Roadmap & Engineering Deliverables",
+      "whyHere": "Rounding out the three-pillar executive summary from Slide 11, our final slide gives your business and engineering teams an immediate, practical path forward.",
+      "whatIsHappening": "With Pattern A serving our commercial pool in Workstream 2 and Pattern B serving our regulated silos here in Workstream 3, a critical business question emerges: how do we operate both tiers behind a single product front door, and how do we upgrade a fast-growing customer from the Shared Pool into a Sovereign Silo without taking them offline? That is exactly what we solve next in Workstream 4 with Pattern C.",
+      "whatComesNext": "That completes our twelve-slide walkthrough—I would love to open the floor for your questions, or we can jump straight into the live simulation workbench.",
+      "fullText": "Rounding out the three-pillar executive summary from Slide 11, our final slide gives your business and engineering teams an immediate, practical path forward.\n\nWith Pattern A serving our commercial pool in Workstream 2 and Pattern B serving our regulated silos here in Workstream 3, a critical business question emerges: how do we operate both tiers behind a single product front door, and how do we upgrade a fast-growing customer from the Shared Pool into a Sovereign Silo without taking them offline? That is exactly what we solve next in Workstream 4 with Pattern C.\n\nThat completes our twelve-slide walkthrough—I would love to open the floor for your questions, or we can jump straight into the live simulation workbench."
+    }
+  ]
 }

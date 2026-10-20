@@ -170,7 +170,7 @@ This section provides guidance for operating Pattern B according to the [Google 
 
 ### Cost optimization
 
-- **Understand the baseline cost floor (`$1,850/month` per silo):** Dedicated AlloyDB instances, Memorystore clusters, and private GKE GPU nodes carry a non-trivial idle cost floor. Reserve full Pattern B silos for Enterprise contracts that price in dedicated infrastructure, or use [Pattern C (Dynamic Hybrid)](ws4-pattern-c-hybrid-dynamic-tiering.md) to share a control plane while isolating only Enterprise data/runtime spokes.
+- **Understand the baseline cost floor (`600 RPM Silonth` per silo):** Dedicated AlloyDB instances, Memorystore clusters, and private GKE GPU nodes carry a non-trivial idle cost floor. Reserve full Pattern B silos for Enterprise contracts that price in dedicated infrastructure, or use [Pattern C (Dynamic Hybrid)](ws4-pattern-c-hybrid-dynamic-tiering.md) to share a control plane while isolating only Enterprise data/runtime spokes.
 
 ### Operational excellence
 
@@ -239,7 +239,7 @@ Every architecture blueprint in **WS3** follows a **strict Top-Down Architectura
 | **Step ⑤** • Air-Gapped GKE Inference | Private GKE (Gemma 3 27B) & Dedicated Vertex AI (Yellow Zone) | Executes open-weight Gemma 3 (27B) on private-node GKE (`enable_private_nodes = true`, no internet egress) with CMEK-encrypted node boot disks and L4/A100 GPUs. | Private Air-Gapped GKE Cluster & Dedicated PT Endpoints | Zero shared model weights or noisy-neighbor latency variance |
 | **Step ⑥** • Test 6: Dual-Silo Parity | CMEK BigQuery & AlloyDB Vaults (Yellow & Red Zones) | Encrypts all customer tables (`pattern_b_silo_finvault_cmek_vault`) and agent memory under the tenant’s Cloud KMS key across both FinVault and RetailStream silos. | run_silo_security_tests.py (6/6 PASS — F-08 Certified) | Verified F-08: Both FinVault and RetailStream silos & kill-switches proven |
 | **Step ⑦** • In-Silo Egress Redaction | Dedicated Model Armor & Cloud SDP (Yellow Zone) | Runs dedicated Model Armor and Sensitive Data Protection templates inside the tenant project so unredacted prompts never cross project boundaries. | In-Project Model Armor & SDP Inspection | 100% data residency within the customer’s dedicated GCP project |
-| **Cost & Audit** • Silo Billing & KMS Audit | Cloud Billing, Cloud Audit Logs & BigQuery (Green Zone) | Exports project-level Cloud Billing records and immutable KMS `Decrypt` audit logs directly to the tenant’s compliance sink ($1,850/mo baseline tier). | Per-Project Billing Attribution & KMS Audit Trail | Complete physical, cryptographic, and financial isolation for auditors |
+| **Cost & Audit** • Silo Billing & KMS Audit | Cloud Billing, Cloud Audit Logs & BigQuery (Green Zone) | Exports project-level Cloud Billing records and immutable KMS `Decrypt` audit logs directly to the tenant’s compliance sink (600 RPM Silo baseline tier). | Per-Project Billing Attribution & KMS Audit Trail | Complete physical, cryptographic, and financial isolation for auditors |
 
 ### Diagram 10: Pattern B Provisioning Topology: Org → Per-Tenant Silo Projects, VPC-SC Perimeters, IAM PAB & Cloud KMS CMEK Keys (`ws3-multi-project-silo-and-cmek-setup-topology`)
 * **Workstream & Focus**: Workstream 3 • Pattern B: Automated Multi-Project Silo & CMEK Provisioning Pipeline (WS 3.2) (`PATTERN B • SILO FACTORY PIPELINE`)

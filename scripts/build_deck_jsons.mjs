@@ -15,6 +15,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getDeckSlideNotesList } from './human_readable_speaker_notes.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -80,7 +81,7 @@ const DECKS = {
     deckSubtitle:
       'Official Google Cloud Architecture Center hub-and-spoke reference architecture comparing Pooled (Pattern A), Sovereign Silos (Pattern B), and Dynamic Hybrid (Pattern C) isolation models',
     tldr: [
-      'The Multi-Tenant Agentic Challenge: Provisioning dedicated cloud projects for $500/month commercial tenants erodes SaaS gross margins, whereas naive shared runtimes expose cross-tenant tool, memory, and quota surfaces.',
+      'The Multi-Tenant Agentic Challenge: Provisioning dedicated cloud projects for Standard Tiernth commercial tenants erodes SaaS gross margins, whereas naive shared runtimes expose cross-tenant tool, memory, and quota surfaces.',
       'Four Agentic Threat Vectors: Unlike deterministic CRUD applications, autonomous ADK agents dynamically discover MCP tools, persist episodic Memory Bank state, share prompt caches, and consume variable reasoning tokens.',
       'Three Production Isolation Topologies: Pattern A (High-Density Pooled), Pattern B (Zero-Trust Sovereign Silos), and Pattern C (Dynamic Hybrid PSC Spokes) reuse 80% of the same Python ADK 2.0 application codebase.',
       'Five-Hop Cryptographic Defense-in-Depth: Every agent turn enforces verified tenant context across Edge OBO/DPoP (Hop 1), Registry Discovery (Hop 2), Memory & Quotas (Hop 3), Model Armor/SDP (Hop 4), and AlloyDB RLS (Hop 5).',
@@ -89,7 +90,7 @@ const DECKS = {
     tldrSpecs: [
       {
         stack: 'Google Cloud Architecture Center (#78) • Cloud Run v2 • Vertex AI Agent Engine',
-        sla: 'Target Economics: $42/mo Pooled (Pattern A) to $1,850/mo Sovereign Silo (Pattern B)',
+        sla: 'Target Economics: 120 RPM Pool Pooled (Pattern A) to 600 RPM Silo Sovereign Silo (Pattern B)',
         tag: 'Well-Architected: Cost vs. Isolation',
       },
       {
@@ -152,7 +153,7 @@ const DECKS = {
         bullets: [
           'Cymbal Multi-Tenant Platform (Control Plane): Operates a shared Incident Diagnostic Agent on Vertex AI Agent Engine (ADK 2.0, Registry & L1–L5 Memory Bank) and Gemini 2.5 Pro, caching a 32,000-token SRE runbook prefix once (90% discount -> 84.7% net token savings).',
           'FinVault Bank (Regulated Enterprise Tenant): Authenticates via Google Workspace OIDC, provisions a private Gemini 2.5 Pro (Dedicated PT) / Gemma 3 27B regulatory agent (Agent Alpha), receives a 600 RPM / 8,000-token thinking budget, and mandates VPC-SC & Cloud KMS CMEK.',
-          'RetailStream Corp (Standard Commercial Tenant): Authenticates via Microsoft Entra ID OIDC, runs on the pooled Cloud Run v2 & AlloyDB RLS Diagnostic Agent ($42/mo floor) with a 120 RPM / 4,000-token thinking cap, and invokes ServiceNow ITOM via 3LO step-up consent.',
+          'RetailStream Corp (Standard Commercial Tenant): Authenticates via Microsoft Entra ID OIDC, runs on the pooled Cloud Run v2 & AlloyDB RLS Diagnostic Agent (120 RPM Pool floor) with a 120 RPM / 4,000-token thinking cap, and invokes ServiceNow ITOM via 3LO step-up consent.',
           'Cryptographic Mutual Invisibility & 80% Shared Stack: Cloud Armor WAF, IAP OBO/DPoP, Memorystore Valkey, Model Armor, Cloud DLP, AlloyDB RLS, and BigQuery OTel run one 80% reusable ADK codebase—blocking cross-tenant probes (HTTP 403) with 0 cross-tenant rows.',
         ],
         specs: [
@@ -163,12 +164,12 @@ const DECKS = {
           },
           {
             stack: 'Google Workspace OIDC • Dedicated PT / Gemma 3 27B • VPC-SC • Cloud KMS CMEK (finvault-silo-cmek)',
-            sla: 'Tier: ENTERPRISE ($1,850/mo Silo) • 600 RPM • 8,000 Thinking Budget • OCC/IBAN DLP Masking',
+            sla: 'Tier: ENTERPRISE (600 RPM Silo Silo) • 600 RPM • 8,000 Thinking Budget • OCC/IBAN DLP Masking',
             tag: '2. Regulated Tenant A: FinVault Bank',
           },
           {
             stack: 'Microsoft Entra ID OIDC • Cloud Run v2 • Memorystore Valkey • SharePoint & ServiceNow 3LO',
-            sla: 'Tier: STANDARD ($42/mo Pool) • 120 RPM • 4,000 Thinking Budget • PCI-DSS PAN/SSN DLP Masking',
+            sla: 'Tier: STANDARD (120 RPM Pool Pool) • 120 RPM • 4,000 Thinking Budget • PCI-DSS PAN/SSN DLP Masking',
             tag: '3. Commercial Tenant B: RetailStream',
           },
           {
@@ -227,9 +228,9 @@ const DECKS = {
           ],
           [
             'Baseline unit cost & target tier',
-            '`$42 / tenant / month` • High-volume commercial B2B SaaS (`10/10` breach tests PASS)',
-            '`$1,850 / tenant / month` • Regulated Banking, Healthcare & Public Sector (`6/6` PASS)',
-            '`$42` (Std) / `$1,850` (Ent) • Multi-tier SaaS with live tier upsell (`4/4` PASS)',
+            '`120 RPM Pool / tenant / month` • High-volume commercial B2B SaaS (`10/10` breach tests PASS)',
+            '`600 RPM Silo / tenant / month` • Regulated Banking, Healthcare & Public Sector (`6/6` PASS)',
+            '`120 RPM Pool` (Std) / `600 RPM Silo` (Ent) • Multi-tier SaaS with live tier upsell (`4/4` PASS)',
           ],
         ],
         bullets: [],
@@ -314,7 +315,7 @@ const DECKS = {
           },
           {
             stack: 'Gemini 2.5 Pro ContextCacheConfig (32k Prefix) • BigQuery OTel Chargeback Ledger',
-            sla: '$42/mo Pooled Floor • 84.7% Per-Turn Token Savings • 74% Portfolio TCO Reduction (1,000 Tenants)',
+            sla: '120 RPM Pool Pooled Floor • 84.7% Per-Turn Token Savings • 74% Portfolio TCO Reduction (1,000 Tenants)',
             tag: 'Pillar 3: Cost Optimization',
           },
           {
@@ -353,7 +354,7 @@ const DECKS = {
     ],
     takeaways: [
       'Enforce Cryptographic Context Across All 5 Hops: Database row filters alone cannot secure agentic AI; tenant identity must govern ingress, tool discovery, memory namespaces, safety guardrails, and SQL RLS.',
-      'Align Isolation Topology to Regulatory & Margin Requirements: Deploy Pattern A ($42/mo) for commercial scale, Pattern B ($1,850/mo) for regulated sovereignty, and Pattern C for multi-tier SaaS portfolios.',
+      'Align Isolation Topology to Regulatory & Margin Requirements: Deploy Pattern A (120 RPM Pool) for commercial scale, Pattern B (600 RPM Silo) for regulated sovereignty, and Pattern C for multi-tier SaaS portfolios.',
       'Maintain a Single 80% Reusable Agent Codebase: Parameterize isolation boundaries via declarative Firestore profiles and Terraform modules rather than forking separate application codebases.',
       'Capture 90% Prefix Cache Savings Without Cross-Tenant Risk: Bind Gemini 2.5 Pro ContextCacheConfig strictly to immutable platform instructions while isolating tenant episodic state in L1–L5 Memory Bank.',
       'Validate Every Release Against Automated Red-Team Gates: Execute the 20-assertion verification suite (10 Pattern A breach tests, 6 Pattern B silo tests, 4 Pattern C migration tests) in CI/CD.',
@@ -365,7 +366,7 @@ const DECKS = {
         tag: 'Mandate 1: 5-Hop Defense-in-Depth',
       },
       {
-        stack: 'Pattern A ($42/mo) • Pattern B ($1,850/mo) • Pattern C (Hybrid PSC Router)',
+        stack: 'Pattern A (120 RPM Pool) • Pattern B (600 RPM Silo) • Pattern C (Hybrid PSC Router)',
         sla: 'Matches Infrastructure Unit Cost Directly to Customer Contract ACV & Compliance',
         tag: 'Mandate 2: Tiered Isolation Economics',
       },
@@ -395,7 +396,7 @@ const DECKS = {
     deckSubtitle:
       'Serving hundreds of commercial B2B SaaS tenants on a single shared Cloud Run v2, Vertex AI Agent Engine, and AlloyDB RLS footprint with 84.7% lower inference cost and 10/10 red-team attacks blocked',
     tldr: [
-      'Solving the Commercial SaaS Margin Equation: Pattern A hosts hundreds of $500–$2,000/month commercial tenants inside one shared Google Cloud project (`ramp-portal-dev`) at a $42/month infrastructure floor.',
+      'Solving the Commercial SaaS Margin Equation: Pattern A hosts hundreds of Standard Tier–Enterprise Tier commercial tenants inside one shared Google Cloud project (`ramp-portal-dev`) at a 120 RPM Pooled infrastructure floor.',
       'Cryptographic Logical Isolation (Zero Physical Sprawl): Instead of spinning up separate VPCs per tenant, Pattern A enforces non-bypassable tenant boundaries across all 5 runtime hops in software.',
       '10/10 Adversarial Red-Team Attacks Neutralized: Competing tenants FinVault Bank and RetailStream Corp share the exact same Cloud Run v2 workers and AlloyDB cluster with zero cross-tenant data or tool bleed.',
       '84.7% Net Inference Cost Reduction: A 32,000-token immutable platform runbook is cached once in Gemini 2.5 Pro ContextCacheConfig at a 90% discount, cutting billable input tokens from 34,000 to 5,200 per turn.',
@@ -404,7 +405,7 @@ const DECKS = {
     tldrSpecs: [
       {
         stack: 'Single GCP Project (ramp-portal-dev) • Cloud Run v2 (cymbal-multi-tenant-patterns)',
-        sla: '$42/mo Unit Cost per Tenant • Preserves 85%+ SaaS Gross Margin on Standard Tiers',
+        sla: '120 RPM Pool Unit Cost per Tenant • Preserves 85%+ SaaS Gross Margin on Standard Tiers',
         tag: 'High-Density SaaS Unit Economics',
       },
       {
@@ -436,7 +437,7 @@ const DECKS = {
           'Agentic AI & Shared Prefix Caching: Vertex AI Agent Engine (ADK 2.0 runtime, Agent Registry & L1–L5 Memory Bank) and Gemini 2.5 Pro with ContextCacheConfig caching a 32,000-token immutable system prefix at a 90% discount (84.7% net token savings).',
           'Ingress, Identity & Bidirectional AI Safety: Global External Application Load Balancer, Google Cloud Armor L7 WAF (stripping spoofed X-Tenant-Id headers), IAP + IAM STS (RFC 8693 OBO + RFC 9449 DPoP), Vertex AI Model Armor, and Cloud Sensitive Data Protection.',
           'Rate Bulkheads, Relational RLS & FinOps Telemetry: Memorystore for Valkey (120 vs. 600 RPM token buckets), Firestore tenant profile registry, AlloyDB for PostgreSQL (`FORCE ROW LEVEL SECURITY`), Cloud KMS CMEK, and BigQuery zero-PII OTel chargeback.',
-          'High-Density Unit Economics ($42/Tenant/Month): Co-hosts hundreds of commercial B2B SaaS tenants inside one shared Google Cloud project (`ramp-portal-dev`) while guaranteeing 10/10 red-team breach isolation.',
+          'High-Density Unit Economics (120 RPM Shared Pool): Co-hosts hundreds of commercial B2B SaaS tenants inside one shared Google Cloud project (`ramp-portal-dev`) while guaranteeing 10/10 red-team breach isolation.',
         ],
         specs: [
           {
@@ -456,7 +457,7 @@ const DECKS = {
           },
           {
             stack: 'workstream-2-pattern-a-pooled/2.6-terraform-starter (main.tf, variables.tf) + 2.4 Codelab',
-            sla: '$42/mo Baseline Unit Cost per Tenant • 10/10 Red-Team Breach Simulations Verified',
+            sla: '120 RPM Pool Baseline Unit Cost per Tenant • 10/10 Red-Team Breach Simulations Verified',
             tag: '4. Turnkey Pattern A Kit',
           },
         ],
@@ -467,7 +468,7 @@ const DECKS = {
         bullets: [
           'Dynamic Per-Turn Runtime Hydration: A single pooled Diagnostic Agent on Cloud Run v2 & Vertex AI Agent Engine dynamically loads each caller’s Firestore profile, GCS Skills (`gs://cymbal-skills-{tenant}/`), and 32k Gemini 2.5 Pro ContextCacheConfig prefix.',
           'FinVault Bank (Enterprise Slice in Pool): Authenticates via Google Workspace OIDC, unlocks an 8,000-token thinking budget and 600 RPM Valkey quota, and accesses private Agent Alpha (Gemini 2.5 Pro Dedicated PT) plus Workspace/Jira 3LO.',
-          'RetailStream Corp (Standard Slice in Pool): Authenticates via Microsoft Entra ID OIDC, runs within a 4,000-token thinking cap and 120 RPM Valkey quota ($42/mo floor), and invokes SharePoint/ServiceNow 3LO with `-32042` step-up consent.',
+          'RetailStream Corp (Standard Slice in Pool): Authenticates via Microsoft Entra ID OIDC, runs within a 4,000-token thinking cap and 120 RPM Valkey quota (120 RPM Pool floor), and invokes SharePoint/ServiceNow 3LO with `-32042` step-up consent.',
           'Cryptographic Catalog, Memory & AlloyDB RLS Firewall: Cloud Armor, IAP OBO/DPoP, Hop 2 ARD Filter (HTTP 403), Hop 3 L1–L5 Memory Bank namespaces, Hop 4 Model Armor/DLP, and Hop 5 AlloyDB FORCE RLS guarantee 100% mutual invisibility.',
         ],
         specs: [
@@ -483,7 +484,7 @@ const DECKS = {
           },
           {
             stack: 'Microsoft Entra ID OIDC • Shared Diagnostic Agent • 3LO SharePoint & ServiceNow ITOM',
-            sla: '4,000 Thinking Tokens • 120 RPM Valkey Bucket • PCI-DSS PAN/SSN Masking • $42/mo Floor',
+            sla: '4,000 Thinking Tokens • 120 RPM Valkey Bucket • PCI-DSS PAN/SSN Masking • 120 RPM Pool Floor',
             tag: '3. RetailStream Pooled Standard Slice',
           },
           {
@@ -524,7 +525,7 @@ const DECKS = {
           ],
           [
             'Prompt caching & FinOps COGS',
-            '34k prompt billed in full every turn (`$0.0425/turn`) or unsafe cross-tenant cache bleed',
+            '34k prompt billed in full every turn (`32k Uncached/turn`) or unsafe cross-tenant cache bleed',
             '32k immutable prefix in Gemini 2.5 Pro `ContextCacheConfig` (`90%` discount -> `84.7%` savings)',
             'Per-silo prefix cache or dedicated air-gapped GKE Gemma 3 (27B) node pool',
           ],
@@ -537,8 +538,8 @@ const DECKS = {
           [
             'Unit economics & target tier',
             'High breach risk • Fails enterprise CISO security & compliance review',
-            '`$42 / tenant / month` • High-volume commercial B2B SaaS (`10/10` breach tests PASS)',
-            '`$1,850 / tenant / month` • Regulated Banking, Healthcare & Public Sector (`6/6` PASS)',
+            '`120 RPM Pool / tenant / month` • High-volume commercial B2B SaaS (`10/10` breach tests PASS)',
+            '`600 RPM Silo / tenant / month` • Regulated Banking, Healthcare & Public Sector (`6/6` PASS)',
           ],
         ],
         bullets: [],
@@ -662,7 +663,7 @@ const DECKS = {
     takeawaySpecs: [
       {
         stack: 'Single Shared GCP Project • 5-Hop Cryptographic Pipeline • AlloyDB RLS',
-        sla: '$42/mo Baseline Unit Cost per Tenant with 100% Logical Isolation',
+        sla: '120 RPM Pool Baseline Unit Cost per Tenant with 100% Logical Isolation',
         tag: 'Takeaway 1: High-Density Zero Trust',
       },
       {
@@ -779,7 +780,7 @@ const DECKS = {
           },
           {
             stack: 'cymbal-finvault-silo-prod • Air-Gapped GKE Gemma 3 (27B) • Gemini 2.5 Pro PT • finvault-silo-cmek',
-            sla: 'Tier: SOVEREIGN ($1,850/mo) • Zero Public Egress • <60s HTTP 423 CMEK Revocation + L1 Purge',
+            sla: 'Tier: SOVEREIGN (600 RPM Silo) • Zero Public Egress • <60s HTTP 423 CMEK Revocation + L1 Purge',
             tag: '2. FinVault Bank Sovereign Vault',
           },
           {
@@ -799,7 +800,7 @@ const DECKS = {
         layout: 'table',
         tableHeaders: [
           'Sovereign Dimension',
-          'Pattern A: Logical Pool ($42/mo Baseline)',
+          'Pattern A: Logical Pool (120 RPM Pool Baseline)',
           'Pattern B1: VPC-SC + Vertex AI Dedicated PT',
           'Pattern B2: VPC-SC + Air-Gapped GKE Gemma 3',
         ],
@@ -837,9 +838,9 @@ const DECKS = {
           ],
           [
             'Unit economics & target workload',
-            '`$42 / tenant / month` • High-volume commercial B2B SaaS (`10/10` PASS)',
-            '`$1,850 / tenant / month` • OCC/FFIEC banking, HIPAA healthcare & EU DORA (`6/6` PASS)',
-            '`$2,450 / tenant / month` • Sovereign defense, core ledger & strict open-weight mandates',
+            '`120 RPM Pool / tenant / month` • High-volume commercial B2B SaaS (`10/10` PASS)',
+            '`600 RPM Silo / tenant / month` • OCC/FFIEC banking, HIPAA healthcare & EU DORA (`6/6` PASS)',
+            '`Air-Gapped GPU / tenant / month` • Sovereign defense, core ledger & strict open-weight mandates',
           ],
         ],
         bullets: [],
@@ -1036,7 +1037,7 @@ const DECKS = {
     deckSubtitle:
       'Unifying high-margin Pooled Standard tenants and sovereign Enterprise spokes behind one SaaS URL using Private Service Connect (PSC) and a 3-phase zero-downtime live tier upgrade engine',
     tldr: [
-      'One Unified SaaS Front Door for Every Tier: Pattern C fronts both Standard pooled tenants ($42/mo) and regulated Enterprise sovereign spokes ($1,850/mo) behind a single Global Application Load Balancer URL.',
+      'One Unified SaaS Front Door for Every Tier: Pattern C fronts both Standard pooled tenants (120 RPM Pool) and regulated Enterprise sovereign spokes (600 RPM Silo) behind a single Global Application Load Balancer URL.',
       'Cryptographic Tier Lookup & Dispatch: Cloud Armor, IAP, and the Cloud Run Hybrid Router inspect the verified OBO/DPoP identity token, query the Firestore routing table, and dispatch traffic per tenant tier.',
       'Unidirectional Private Service Connect (PSC) Bridges: Enterprise requests traverse NAT-based PSC endpoints (`10.10.0.50`) into dedicated spoke projects (`ServiceAttachment`) with zero VPC peering or IP overlap.',
       '3-Phase Zero-Downtime Live Tier Migration (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`): Promotes a live Standard tenant into a dedicated Enterprise PSC spoke mid-conversation without dropping a single turn.',
@@ -1107,8 +1108,8 @@ const DECKS = {
         layout: 'cards',
         bullets: [
           'Unified SaaS Front Door (`cymbal-hybrid-hub-prod`): Standard and Enterprise customers connect to one public ALB hostname (`agents.cymbal.cloud`), where Cloud Armor, IAP, and the Cloud Run Hybrid Router resolve tier routes in Firestore.',
-          'Standard Commercial Tier Profile (RetailStream Baseline -> Live Promotion): Starts in the shared Pattern A pool ($42/mo, 4,000-token cap, 120 RPM, AlloyDB RLS) and upgrades live mid-conversation into a dedicated Enterprise PSC spoke (`0` dropped turns).',
-          'Regulated Enterprise Spoke Profile (FinVault Spoke `10.10.0.50`): Traverses a unidirectional Private Service Connect endpoint into a dedicated VPC-SC & Cloud KMS CMEK spoke project ($1,850/mo, 8,000-token budget, 600 RPM, private Agent Alpha).',
+          'Standard Commercial Tier Profile (RetailStream Baseline -> Live Promotion): Starts in the shared Pattern A pool (120 RPM Pool, 4,000-token cap, 120 RPM, AlloyDB RLS) and upgrades live mid-conversation into a dedicated Enterprise PSC spoke (`0` dropped turns).',
+          'Regulated Enterprise Spoke Profile (FinVault Spoke `10.10.0.50`): Traverses a unidirectional Private Service Connect endpoint into a dedicated VPC-SC & Cloud KMS CMEK spoke project (600 RPM Silo, 8,000-token budget, 600 RPM, private Agent Alpha).',
           'Unified Hybrid Google Cloud Stack (`4.6` Dual-Provider Terraform): Combines Cloud Armor, IAP OBO/DPoP, Federated Agent Registry, Firestore Route Table, PSC `ServiceAttachment` (`/24` NAT), Datastream CDC, AlloyDB, and BigQuery OTel.',
         ],
         specs: [
@@ -1119,12 +1120,12 @@ const DECKS = {
           },
           {
             stack: 'Route: pool://shared-runtime -> Live 3-Phase Promotion -> psc://10.10.0.51 (RetailStream)',
-            sla: 'Starts at $42/mo (4k Cap / 120 RPM) • Upgrades Live to Enterprise Spoke with 0 Dropped Chats',
+            sla: 'Starts at 120 RPM Pool (4k Cap / 120 RPM) • Upgrades Live to Enterprise Spoke with 0 Dropped Chats',
             tag: '2. Land-and-Expand Tenant (RetailStream)',
           },
           {
             stack: 'Route: psc://10.10.0.50 -> finvault-agent-spoke-psc (ACCEPT_MANUAL) • VPC-SC & CMEK',
-            sla: 'Tier: ENTERPRISE ($1,850/mo) • 600 RPM • 8,000 Thinking Budget • Reuses 10.40.0.0/20 CIDR',
+            sla: 'Tier: ENTERPRISE (600 RPM Silo) • 600 RPM • 8,000 Thinking Budget • Reuses 10.40.0.0/20 CIDR',
             tag: '3. Sovereign Spoke Tenant (FinVault)',
           },
           {
@@ -1179,7 +1180,7 @@ const DECKS = {
             '1,000-tenant portfolio FinOps',
             '2x engineering maintenance overhead + high customer churn on upgrade friction',
             'Hard scaling ceiling at 25 Enterprise tenants per Hub VPC network',
-            '`74%` lower TCO (`$132.4k/mo` vs. `$1.85M/mo` all-silo) + `4/4` migration tests PASS',
+            '`74%` lower TCO (`950 Pooled + 50 Spokes` vs. `1,000 All-Siloed` all-silo) + `4/4` migration tests PASS',
           ],
         ],
         bullets: [],
@@ -1348,7 +1349,7 @@ const DECKS = {
     takeawaySpecs: [
       {
         stack: 'Unified Hub ALB + Firestore Tier Router + Pooled & PSC Spoke Runtimes',
-        sla: 'Single SaaS Codebase & URL Serving Both $42/mo Standard & $1,850/mo Enterprise Tiers',
+        sla: 'Single SaaS Codebase & URL Serving Both 120 RPM Pool Standard & 600 RPM Silo Enterprise Tiers',
         tag: 'Takeaway 1: Unified Hybrid Control Plane',
       },
       {
@@ -1386,7 +1387,7 @@ const DECKS = {
       'One 80% Reusable 5-Hop Codebase: Engineering writes the 5-hop ADK 2.0 security and governance pipeline once; Patterns A, B, and C merely parameterize the surrounding Google Cloud isolation boundary.',
       'The Multi-Tenant Agentic Triad: Sustainable enterprise AI platforms balance three interdependent pillars—Zero-Trust Cryptographic Security, Predictable Unit Economics, and Zero-PII FinOps Chargeback.',
       'Proven 1,000-Tenant Portfolio Economics: Across 950 Standard and 50 Enterprise tenants, Pattern C reduces Gemini 2.5 Pro input token spend by 84.7%, lowers total cloud TCO by 74% vs. all-siloed, and maintains a 99.99% SLA.',
-      'Elastic 3-Stage Tenant Tier Lifecycle: Onboard commercial tenants in <50ms into Pattern A ($42/mo), promote expanding enterprises live into Pattern C PSC spokes (0ms lag, 0 dropped turns), and enforce <60s HTTP 423 CMEK kill-switches in Pattern B silos.',
+      'Elastic 3-Stage Tenant Tier Lifecycle: Onboard commercial tenants in <50ms into Pattern A (120 RPM Pool), promote expanding enterprises live into Pattern C PSC spokes (0ms lag, 0 dropped turns), and enforce <60s HTTP 423 CMEK kill-switches in Pattern B silos.',
     ],
     tldrSpecs: [
       {
@@ -1405,12 +1406,12 @@ const DECKS = {
         tag: 'Multi-Tenant Agentic Triad',
       },
       {
-        stack: '950 Standard Pooled ($42/mo) + 50 Enterprise PSC Spokes ($1,850/mo)',
+        stack: '950 Standard Pooled (120 RPM Pool) + 50 Enterprise PSC Spokes (600 RPM Silo)',
         sla: '74% Lower Total Cloud Spend vs. 1,000 Silos • 84.7% Net Token Cost Reduction',
         tag: '1,000-Tenant FinOps Model',
       },
       {
-        stack: 'Stage 1: Pooled ($42/mo) -> Stage 2: Live PSC Promotion (0ms Lag) -> Stage 3: CMEK Silo',
+        stack: 'Stage 1: Pooled (120 RPM Pool) -> Stage 2: Live PSC Promotion (0ms Lag) -> Stage 3: CMEK Silo',
         sla: '12/12 Forensic Gates & 20/20 Automated Simulations Verified Across All 3 Tiers',
         tag: '3-Stage Tenant Lifecycle',
       },
@@ -1420,24 +1421,24 @@ const DECKS = {
         heading: 'Use cases — 2-Question Topology Selector, Competing Tenant Profiles & Unified Google Cloud Stack',
         layout: 'cards',
         bullets: [
-          'Decision Gate 1 (Universal Regulatory Sovereignty Mandate): Do 100% of your customers legally require dedicated GCP projects, VPC Service Controls, IAM PAB, and customer-revocable CMEK kill-switches? If YES, standardize on Pattern B ($1,850/mo).',
-          'Decision Gate 2 (Single-Tier vs. Multi-Tier SaaS Packaging): If not all customers require physical silos, choose Pattern A ($42/mo shared pool, 90% prefix cache) for one uniform commercial tier, or Pattern C (74% TCO savings) for multi-tier portfolios.',
-          'Competing Tenant Profiles (FinVault Bank vs. RetailStream Corp): Co-host RetailStream in the $42/mo Standard pool (Entra ID, 4k cap, 120 RPM) and isolate FinVault in an $1,850/mo Enterprise spoke/silo (Workspace, 8k cap, 600 RPM, Agent Alpha, CMEK).',
+          'Decision Gate 1 (Universal Regulatory Sovereignty Mandate): Do 100% of your customers legally require dedicated GCP projects, VPC Service Controls, IAM PAB, and customer-revocable CMEK kill-switches? If YES, standardize on Pattern B (600 RPM Silo).',
+          'Decision Gate 2 (Single-Tier vs. Multi-Tier SaaS Packaging): If not all customers require physical silos, choose Pattern A (120 RPM Pool shared pool, 90% prefix cache) for one uniform commercial tier, or Pattern C (74% TCO savings) for multi-tier portfolios.',
+          'Competing Tenant Profiles (FinVault Bank vs. RetailStream Corp): Co-host RetailStream in the 120 RPM Pool Standard pool (Entra ID, 4k cap, 120 RPM) and isolate FinVault in an 600 RPM Silo Enterprise spoke/silo (Workspace, 8k cap, 600 RPM, Agent Alpha, CMEK).',
           'One 80% Reusable 5-Hop Google Cloud Stack: Cloud Armor, IAP OBO/DPoP, Agent Engine Registry, Memorystore Valkey, Gemini 2.5 Pro / Gemma 3, Model Armor, Cloud DLP, AlloyDB RLS/CMEK, and BigQuery OTel power all three patterns without code forks.',
         ],
         specs: [
           {
             stack: 'Mandate: OCC / HIPAA / FedRAMP High / EU DORA Across 100% of Customer Contracts',
-            sla: 'Gate 1: YES -> Select Pattern B (Sovereign Silos • $1,850/mo • VPC-SC + PAB + CMEK)',
+            sla: 'Gate 1: YES -> Select Pattern B (Sovereign Silos • 600 RPM Silo • VPC-SC + PAB + CMEK)',
             tag: '1. Decision Gate 1: Sovereignty',
           },
           {
             stack: 'Uniform Commercial B2B SaaS -> Pattern A • Multi-Tier Standard + Enterprise -> Pattern C',
-            sla: 'Gate 2: Select Pattern A ($42/mo Pool) or Pattern C (Pool + PSC Spokes + 0ms Live Upgrade)',
+            sla: 'Gate 2: Select Pattern A (120 RPM Pool Pool) or Pattern C (Pool + PSC Spokes + 0ms Live Upgrade)',
             tag: '2. Decision Gate 2: Packaging',
           },
           {
-            stack: 'FinVault Bank ($1,850/mo Enterprise Spoke/Silo) vs. RetailStream ($42/mo Standard Pool)',
+            stack: 'FinVault Bank (600 RPM Silo Enterprise Spoke/Silo) vs. RetailStream (120 RPM Pool Standard Pool)',
             sla: 'Zero Cross-Tenant Bleed + Live Mid-Conversation Promotion from Pool to PSC Spoke',
             tag: '3. Competing Enterprise Tenants',
           },
@@ -1479,9 +1480,9 @@ const DECKS = {
           ],
           [
             '1,000-Tenant Portfolio Monthly TCO',
-            '`$42,000 / mo` (1,000 Pooled tenants @ `$42/mo`; `84.7%` net token cost reduction)',
-            '`$1,850,000 / mo` (1,000 Dedicated Silo projects @ `$1,850/mo` sovereign floor)',
-            '`$132,400 / mo` (950 Pooled + 50 PSC Spokes -> `74%` lower TCO vs. all-siloed)',
+            '`950 Pooled / mo` (1,000 Pooled tenants @ `120 RPM / 4k Budget`; `84.7%` net token cost reduction)',
+            '`1,000 Siloed / mo` (1,000 Dedicated Silo projects @ `600 RPM / 8k Budget` sovereign floor)',
+            '`950 Pool + 50 Spoke / mo` (950 Pooled + 50 PSC Spokes -> `74%` lower TCO vs. all-siloed)',
           ],
           [
             'Automated Verification Gate',
@@ -1545,7 +1546,7 @@ const DECKS = {
           'Triad Pillar 1 — Zero-Trust Cryptographic Tenant Security: Enforces non-bypassable identity, tool discovery, memory namespace, prompt safety, and SQL RLS boundaries so tenant assets never commingle.',
           'Triad Pillar 2 — Predictable Unit Economics & Quota Bulkheads: Combines 90% Gemini 2.5 Pro shared prefix caching discounts with Memorystore for Valkey RPM rate limiters and per-tier thinking token caps.',
           'Triad Pillar 3 — Privacy-Safe FinOps Chargeback Telemetry: Streams zero-PII OpenTelemetry spans (`tenant_id`, `cached_tokens`, `thinking_tokens`, `silo_cmek_verify_ms`) into BigQuery for 3-model billing.',
-          '1,000-Tenant Portfolio Financial Proof: Across 950 Standard and 50 Enterprise tenants, the Agentic Triad saves $1.58M/year in cloud infrastructure and reduces per-turn LLM token costs by 84.7%.',
+          '1,000-Tenant Portfolio Financial Proof: Across 950 Standard and 50 Enterprise tenants, the Agentic Triad saves 90% Cache Hit in cloud infrastructure and reduces per-turn LLM token costs by 84.7%.',
         ],
         specs: [
           {
@@ -1564,7 +1565,7 @@ const DECKS = {
             tag: 'Pillar 3: Zero-PII FinOps',
           },
           {
-            stack: '950 Pooled ($39.9k/mo) + 50 Spokes ($92.5k/mo) = $132.4k/mo vs. $1.85M/mo All-Silo',
+            stack: '950 Pooled (950 Pooled Tenants) + 50 Spokes (50 PSC Spoke Tenants) = 950 Pooled + 50 Dedicated PSC Spokes All-Silo',
             sla: 'Delivers 82%+ Blended SaaS Gross Margin with Full Regulatory Compliance',
             tag: 'Portfolio Financial Impact',
           },
@@ -1586,7 +1587,7 @@ const DECKS = {
         heading: 'What’s next — 3-Stage Technical Solution Lifecycle & GA Feature Drop-In Continuity',
         layout: 'cards',
         bullets: [
-          'Stage 1 (Commercial Self-Service Onboarding — Pattern A Pool): Provision Standard tenants in <50ms via Firestore metadata into the $42/mo shared pool with 90% prefix caching, AlloyDB RLS, and 10/10 breach defenses.',
+          'Stage 1 (Commercial Self-Service Onboarding — Pattern A Pool): Provision Standard tenants in <50ms via Firestore metadata into the 120 RPM Pool shared pool with 90% prefix caching, AlloyDB RLS, and 10/10 breach defenses.',
           'Stage 2 (Zero-Downtime Enterprise Tier Promotion — Pattern C PSC Spoke): Upgrade expanding tenants live via the 3-phase state machine (`SHADOW_SYNC` -> `ATOMIC_CUTOVER` -> `DRAIN_AND_VERIFY`) over Private Service Connect (`0` dropped sessions).',
           'Stage 3 (Regulated Sovereign Vault & <60s Kill-Switch — Pattern B Silo): Stamp out dedicated per-tenant GCP projects (`3.6-terraform-silo-blueprint`) with VPC-SC, IAM PAB, air-gapped Gemma 3 27B, and `<60s` `HTTP 423` CMEK revocation.',
           'Seamless EAP-to-GA Drop-In Continuity (`GAP-01..05`): All 5 compensating controls in `core-cymbal-agent/` protect production workloads today and swap cleanly as native Agent Registry tenant ACLs and per-tenant Memory CMEK reach GA.',
@@ -1594,7 +1595,7 @@ const DECKS = {
         specs: [
           {
             stack: 'Deliverables: WS1 Taxonomy + WS2 Pooled Runtime + 2.6 Terraform Starter',
-            sla: 'Gate: 10/10 Breach Simulations PASS & 84.7% Prefix Cache Savings Verified ($42/mo Floor)',
+            sla: 'Gate: 10/10 Breach Simulations PASS & 84.7% Prefix Cache Savings Verified (120 RPM Pool Floor)',
             tag: 'Stage 1: Pattern A Pooled Tier',
           },
           {
@@ -1604,7 +1605,7 @@ const DECKS = {
           },
           {
             stack: 'Deliverables: WS3 Sovereign Silo Engine + 3.6 Terraform Silo Blueprint',
-            sla: 'Gate: 6/6 Sovereign Perimeter & Sub-60s HTTP 423 CMEK Kill-Switch Tests PASS ($1,850/mo Floor)',
+            sla: 'Gate: 6/6 Sovereign Perimeter & Sub-60s HTTP 423 CMEK Kill-Switch Tests PASS (600 RPM Silo Floor)',
             tag: 'Stage 3: Pattern B Sovereign Tier',
           },
           {
@@ -1649,7 +1650,7 @@ const DECKS = {
       },
       {
         stack: 'Private Service Connect (PSC) + 3-Phase Live Tier Migration Engine',
-        sla: 'Zero-Downtime Tenant Promotion from $42/mo Pool to $1,850/mo Dedicated Spoke',
+        sla: 'Zero-Downtime Tenant Promotion from 120 RPM Pool Pool to 600 RPM Silo Dedicated Spoke',
         tag: 'Takeaway 3: Elastic Tier Mobility',
       },
       {
@@ -1670,6 +1671,10 @@ const DECKS = {
 
 for (const [relPath, content] of Object.entries(DECKS)) {
   const absPath = path.join(ROOT, relPath);
-  fs.writeFileSync(absPath, JSON.stringify(content, null, 2) + '\n', 'utf8');
-  console.log(`✅ Wrote ${relPath}`);
+  const enriched = {
+    ...content,
+    slideSpeakerNotes: getDeckSlideNotesList(content.workstream),
+  };
+  fs.writeFileSync(absPath, JSON.stringify(enriched, null, 2) + '\n', 'utf8');
+  console.log(`✅ Wrote ${relPath} (${enriched.slideSpeakerNotes.length} human-readable speaker notes)`);
 }

@@ -18,7 +18,7 @@ export const WS2_WS3_SPECS = [
     },
     leadParagraphs: [
       `This document describes **Pattern A (High-Density Pooled Architecture)** for building and operating a multi-tenant agentic AI system on Google Cloud. In Pattern A, thousands of corporate B2B SaaS customers share a single Google Cloud project (\`cymbal-pooled-saas-prod\`), a shared [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview) runtime, a shared [Gemini 2.5 Pro](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models) prompt prefix cache (\`ContextCacheConfig\`), and a shared [AlloyDB for PostgreSQL](https://cloud.google.com/alloydb/docs) cluster while maintaining strict cryptographic tenant isolation.`,
-      `This document is part 2 of a 5-part series extending the official Google Cloud [Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) reference architecture (introduced in [Part 1: Reference architecture taxonomy and 5-Hop baseline](ws1-reference-architecture-taxonomy-and-5hop-baseline.md)). It is intended for cloud architects, AI platform engineers, and FinOps practitioners who need maximum tenant density and lowest unit cost (\`$42/month\` baseline per tenant).`
+      `This document is part 2 of a 5-part series extending the official Google Cloud [Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) reference architecture (introduced in [Part 1: Reference architecture taxonomy and 5-Hop baseline](ws1-reference-architecture-taxonomy-and-5hop-baseline.md)). It is intended for cloud architects, AI platform engineers, and FinOps practitioners who need maximum tenant density and lowest unit cost (\`120 RPM Pooled\` baseline per tenant).`
     ],
     keyPointNote: `**Key point:** Pattern A achieves **90% input token savings** on shared system instructions (\`84.7%\` total turn COGS reduction) while blocking **10 out of 10 automated cross-tenant breach vectors**—including HTTP header spoofing, private \`Agent Alpha\` enumeration, prompt injection, noisy-neighbor token exhaustion, and cross-tenant database queries.`,
     archIntro: `The following diagram shows the Pattern A high-density pooled architecture deployed inside a single shared Google Cloud project (\`cymbal-pooled-saas-prod\`):`,
@@ -124,7 +124,7 @@ export const WS2_WS3_SPECS = [
 
 Pattern A is designed for high-density B2B SaaS environments where unit economics and rapid self-service onboarding are primary business drivers ([2.1 Case Study & Solution Architecture](../workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md)):
 
-- **High-volume Standard SaaS tiers ($500–$2,000/month ARR):** Serve thousands of Standard-tier organizations (such as **RetailStream Corp**) from a single Google Cloud project without incurring per-tenant project, VPC, or database cluster overhead.
+- **High-volume Standard SaaS tiers (Standard Tier–Enterprise Tier ARR):** Serve thousands of Standard-tier organizations (such as **RetailStream Corp**) from a single Google Cloud project without incurring per-tenant project, VPC, or database cluster overhead.
 - **Enterprise tenants with private custom agents inside a shared platform:** Allow Enterprise customers (such as **FinVault Bank**) to register private custom agents (\`Agent Alpha\` on **Gemini 2.5 Pro (Dedicated PT)**) and CMEK-encrypted session memory inside the shared control plane while guaranteeing that competing tenants receive \`HTTP 403 Forbidden\` on any enumeration or invocation attempt.
 - **Multi-IdP SaaS platforms serving Google and Microsoft customers:** Support customers authenticating via **Google Workspace OIDC** alongside customers using **Microsoft Entra ID** with mid-session 3LO OAuth consent to SharePoint, ServiceNow, Jira, and Google Drive.`,
     alternativesMd: `## Design alternatives
@@ -135,9 +135,9 @@ A key economic advantage of Pattern A is sharing an immutable system prompt cach
 
 | Cost component | Uncached per-turn prompt | Pattern A with \`ContextCacheConfig\` | Mechanism in \`hop3_compute_finops_bulkhead.py\` |
 | :--- | :--- | :--- | :--- |
-| **Shared system prefix (\`4,500\` tokens)** | \`$0.005625\` (\`$1.25 / 1M\`) | **\`$0.000563\`** (\`$0.125 / 1M\` — **90% savings**) | Cached under immutable \`cymbal-shared-incident-system-prompt-v2\` |
-| **Tenant dynamic suffix (\`300\` tokens)** | \`$0.000375\` | \`$0.000375\` (never cached across tenants) | Appended per turn after \`verify_context_cache_safety()\` check |
-| **Total input cost (\`4,800\` tokens)** | \`$0.006000\` | **\`$0.000938\`** (**84.4% input savings**) | Prevents cross-tenant cache poisoning while sharing base COGS |
+| **Shared system prefix (\`4,500\` tokens)** | \`100% Uncached\` (\`Standard Rate / 1M\`) | **\`10% Cached Prefix\`** (\`90% Cached Rate / 1M\` — **90% savings**) | Cached under immutable \`cymbal-shared-incident-system-prompt-v2\` |
+| **Tenant dynamic suffix (\`300\` tokens)** | \`Dynamic Turn\` | \`Dynamic Turn\` (never cached across tenants) | Appended per turn after \`verify_context_cache_safety()\` check |
+| **Total input cost (\`4,800\` tokens)** | \`Uncached Turn\` | **\`Cached Turn (84.4% Reduction)\`** (**84.4% input savings**) | Prevents cross-tenant cache poisoning while sharing base COGS |
 
 ### 10-point red-team breach verification matrix
 
@@ -343,7 +343,7 @@ This section provides guidance for operating Pattern B according to the [Google 
 
 ### Cost optimization
 
-- **Understand the baseline cost floor (\`$1,850/month\` per silo):** Dedicated AlloyDB instances, Memorystore clusters, and private GKE GPU nodes carry a non-trivial idle cost floor. Reserve full Pattern B silos for Enterprise contracts that price in dedicated infrastructure, or use [Pattern C (Dynamic Hybrid)](ws4-pattern-c-hybrid-dynamic-tiering.md) to share a control plane while isolating only Enterprise data/runtime spokes.
+- **Understand the baseline cost floor (\`600 RPM Silonth\` per silo):** Dedicated AlloyDB instances, Memorystore clusters, and private GKE GPU nodes carry a non-trivial idle cost floor. Reserve full Pattern B silos for Enterprise contracts that price in dedicated infrastructure, or use [Pattern C (Dynamic Hybrid)](ws4-pattern-c-hybrid-dynamic-tiering.md) to share a control plane while isolating only Enterprise data/runtime spokes.
 
 ### Operational excellence
 

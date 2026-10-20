@@ -35,7 +35,7 @@
   "drawioViewerMetrics": {
     "rendered": true,
     "images": 20,
-    "paths": 100,
+    "paths": 110,
     "texts": 188
   },
   "addressableObjects": [
@@ -137,9 +137,9 @@
     },
     {
       "id": "wrapper_right_pab",
-      "urlSlug": "OBJ-09-PATTERN-B-SOVEREIGN-SILO",
-      "label": "Pattern B (Sovereign Silos) & Pattern C (Hybrid PSC Spokes)",
-      "plainTitle": "Pattern B (Sovereign Silos) & Pattern C (Hybrid PSC Spokes)",
+      "urlSlug": "OBJ-09-DEDICATED-SPOKE-ARCHETYP",
+      "label": "Dedicated Spoke archetype — Pattern B silo project OR Pattern C PSC spoke (see WS3 / WS4 for each)",
+      "plainTitle": "Dedicated Spoke archetype — Pattern B silo project OR Pattern C PSC spoke (see WS3 / WS4 for each)",
       "zone": "Agentic Capabilities Platform",
       "x": 614,
       "y": 772,

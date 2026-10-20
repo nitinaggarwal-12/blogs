@@ -169,7 +169,7 @@ The following table compares the architectural characteristics, security boundar
 | **Identity & access** | **RFC 8693 OBO + DPoP** + **Auth Manager** 2LO/3LO | **IAM Principal Access Boundary (PAB)** + per-project Workload Identity Pools | Unified IdP broker + cross-project PAB + PSC identity propagation |
 | **Data & memory plane** | Shared AlloyDB with **\`FORCE ROW LEVEL SECURITY\`** + \`{tenant}:{user}:{session}\` Memory Bank | Dedicated AlloyDB & BigQuery per project + **Cloud KMS CMEK** (\`423\` kill-switch) | Shared RLS DB for Standard + dedicated CMEK data spokes via PSC for Enterprise |
 | **Model & FinOps COGS** | Shared **\`ContextCacheConfig\`** (up to 90% input token savings) + Valkey bulkheads | Dedicated Provisioned Throughput (PT) endpoints per project; zero noisy neighbors | Pooled caching for Standard + dedicated PT / Model Garden (Gemini 2.5 Pro (Dedicated PT)) for Enterprise |
-| **Baseline unit cost** | \`$\` (\`$42/mo\` floor per tenant) | \`$$$\` (\`$1,850/mo\` floor per tenant project) | \`$$\` (\`$680/mo\` blended floor across tiers) |
+| **Baseline unit cost** | \`$\` (\`120 RPM Pool\` floor per tenant) | \`$$$\` (\`600 RPM Silo\` floor per tenant project) | \`$$\` (\`Blended Hybrid Tier\` blended floor across tiers) |
 | **Target workload** | High-volume Standard B2B SaaS tiers ([Workstream 2](ws2-pattern-a-pooled-architecture.md)) | Regulated FinTech, Healthcare, Public Sector ([Workstream 3](ws3-pattern-b-sovereign-silos.md)) | Multi-tiered SaaS with live tier upgrades ([Workstream 4](ws4-pattern-c-hybrid-dynamic-tiering.md)) |
 
 ### Compensating controls for Early Access Program (EAP) product gaps

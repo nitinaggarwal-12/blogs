@@ -160,10 +160,10 @@
   
     <g>
       <rect x="828" y="574" width="268" height="68" rx="6" ry="6" fill="#ffffff" stroke="#202124" stroke-width="2"/>
-      <image x="838" y="592" width="32" height="32" preserveAspectRatio="xMidYMid meet" xlink:href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%222%22%20y%3D%222%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22%23e6f4ea%22%20stroke%3D%22%23137333%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M20%207%20L9%2012%20V20%20C9%2027.2%2013.7%2033.4%2020%2035%20C26.3%2033.4%2031%2027.2%2031%2020%20V12%20Z%22%20fill%3D%22%2334a853%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M15%2020.5%20L18.5%2024%20L25.5%2016.5%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%222.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"/>
+      <image x="838" y="592" width="32" height="32" preserveAspectRatio="xMidYMid meet" xlink:href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%222%22%20y%3D%222%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22%23e8f0fe%22%20stroke%3D%22%231a73e8%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2210%22%20width%3D%2224%22%20height%3D%224.5%22%20rx%3D%221.5%22%20fill%3D%22%231a73e8%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2217.5%22%20width%3D%2218%22%20height%3D%224.5%22%20rx%3D%221.5%22%20fill%3D%22%2334a853%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2225%22%20width%3D%2224%22%20height%3D%224.5%22%20rx%3D%221.5%22%20fill%3D%22%231967d2%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2230%22%20cy%3D%2219.8%22%20r%3D%222.8%22%20fill%3D%22%23fbbc04%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"/>
       
-      <text x="880" y="604" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">Silo Security Suite</text>
-      <text x="880" y="623" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#3c4043">6/6 Sovereign Tests PASS</text>
+      <text x="880" y="604" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">Cloud Logging &amp; BQ</text>
+      <text x="880" y="623" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="10.3" font-weight="400" fill="#3c4043" textLength="202" lengthAdjust="spacingAndGlyphs">Per-silo audit sink (CMEK state, VPC-SC denials)</text>
     
     </g>
   
@@ -314,7 +314,7 @@
       <image x="896" y="1239" width="32" height="32" preserveAspectRatio="xMidYMid meet" xlink:href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%222%22%20y%3D%222%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22%23e8f0fe%22%20stroke%3D%22%231a73e8%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2215%22%20cy%3D%2220%22%20r%3D%226%22%20fill%3D%22none%22%20stroke%3D%22%23174ea6%22%20stroke-width%3D%222.6%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2215%22%20cy%3D%2220%22%20r%3D%222%22%20fill%3D%22%23174ea6%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M21%2020%20H32%20M28%2020%20V25%20M32%2020%20V26%22%20stroke%3D%22%23ea4335%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"/>
       
       <text x="938" y="1251" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">CMEK Silo Datastore</text>
-      <text x="938" y="1270" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="10.3" font-weight="400" fill="#3c4043" textLength="148" lengthAdjust="spacingAndGlyphs">medcore-revoked-cmek -&gt; 423</text>
+      <text x="938" y="1270" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="10.3" font-weight="400" fill="#3c4043" textLength="148" lengthAdjust="spacingAndGlyphs">Key DISABLED → HTTP 423 (medcore test)</text>
     
     </g>
   
@@ -347,9 +347,9 @@
   <text x="86" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" textLength="488" lengthAdjust="spacingAndGlyphs">PAB + VPC-SC Perimeter Alpha • Project: cymbal-finvault-silo-prod (cymbal_silo_finvault_usw1)</text>
   <text x="104" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#feefc3" stroke-width="8" stroke-linejoin="round">Tenant A Silo (FinVault Bank)</text>
   <text x="104" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#feefc3" stroke-width="8" stroke-linejoin="round">Dedicated Silo • CMEK: finvault-silo-cmek</text>
-  <text x="630" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" textLength="488" lengthAdjust="spacingAndGlyphs">PAB + VPC-SC Perimeter Beta • Project: cymbal-retailstream-silo-prod &amp; medcore-revoked-cmek</text>
-  <text x="648" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#fad2cf" stroke-width="8" stroke-linejoin="round">Tenant B Silo (RetailStream &amp; MedCore)</text>
-  <text x="648" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#fad2cf" stroke-width="8" stroke-linejoin="round">Dedicated Silo • CMEK: retailstream-silo-cmek / medcore</text>
+  <text x="630" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" textLength="488" lengthAdjust="spacingAndGlyphs">PAB + VPC-SC Perimeter Beta • Project: cymbal-retailstream-silo-prod (one project per tenant — N tenants = N silos)</text>
+  <text x="648" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#fad2cf" stroke-width="8" stroke-linejoin="round">Tenant B Silo (RetailStream Corp)</text>
+  <text x="648" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#fad2cf" stroke-width="8" stroke-linejoin="round">Dedicated Silo • CMEK: retailstream-silo-cmek</text>
 
   
     <g>

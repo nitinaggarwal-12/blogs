@@ -25,7 +25,7 @@ This document is intended for CTOs, principal cloud architects, CISOs, and AI pr
 
 Use the following decision rules ([5.1 Pattern Comparison & Decision Guide](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md)) to map your business model to the appropriate architecture:
 
-- **Choose Pattern A (Pooled Architecture)** when you operate a uniform, high-volume B2B SaaS product where fast self-service onboarding, 90% shared prompt cache savings, and lowest unit COGS (`$42/mo` baseline) are primary goals, and customers accept cryptographic/logical isolation within a shared project.
+- **Choose Pattern A (Pooled Architecture)** when you operate a uniform, high-volume B2B SaaS product where fast self-service onboarding, 90% shared prompt cache savings, and lowest unit COGS (`120 RPM Pool` baseline) are primary goals, and customers accept cryptographic/logical isolation within a shared project.
 - **Choose Pattern B (Sovereign Silos)** when 100% of your customers are regulated financial, healthcare, or public-sector entities whose contracts prohibit shared compute pools or shared databases and mandate per-customer VPC Service Controls perimeters, customer-managed KMS kill-switches, or air-gapped Gemma 3 on GKE.
 - **Choose Pattern C (Dynamic Hybrid)** when you sell multi-tiered SaaS packaging (such as a Standard tier alongside a regulated Enterprise tier) and need a single control plane that can promote live customers from the shared pool into dedicated Private Service Connect spokes with zero downtime.
 
@@ -44,7 +44,7 @@ The following executive matrix summarizes all 20 verified runtime simulations an
 | **Encryption kill-switch** | Logical key check in Hop 3 | Project-wide **Cloud KMS CMEK** (`HTTP 423 Locked`) | Per-spoke **Cloud KMS CMEK** (`HTTP 423 Locked`) for Enterprise tier |
 | **Model & caching strategy** | Shared Gemini 2.5 Pro + **90% `ContextCacheConfig` savings** | Dedicated Vertex AI PT or **air-gapped Gemma 3 (27B) on GKE** | Pooled caching for Standard + dedicated PT / Gemini 2.5 Pro (Dedicated PT) for Enterprise |
 | **Live tier upgrade path** | Requires migration to Pattern C | Static sovereign project | **Built-in 3-phase live migration** (`0` dropped turns) |
-| **Baseline monthly cost floor** | **`$42 / mo`** per tenant (`$`) | **`$1,850 / mo`** per silo (`$$$`) | **`$680 / mo`** blended across tiers (`$$`) |
+| **Baseline monthly cost floor** | **`120 RPM Pool / mo`** per tenant (`$`) | **`600 RPM Silo / mo`** per silo (`$$$`) | **`Hybrid PSC / mo`** blended across tiers (`$$`) |
 | **Automated verification suite** | `10/10` red-team breach tests PASS | `6/6` sovereign security tests PASS | `4/4` hybrid & live migration tests PASS |
 
 ### The 5-Hop Cryptographic Context Chain invariant
@@ -71,8 +71,8 @@ Figure 1 brings together the decision tree and the three operational pillars of 
 
 - **Executive 2-Question Topology Selector and Ingress Gate (Zone 1 — Blue container `#aecbfa`):** Evaluates regulatory mandate (Question 1) and SaaS tier packaging (Question 2) alongside Hop 1 OIDC/DPoP authentication to route tenants to Pattern A, Pattern B, or Pattern C.
 - **The Multi-Tenant Agentic Triad & 80% Reusable Core Hub (Zone 2 — Green container `#ceead6`):** Unifies the three non-negotiable platform pillars—(1) Zero-Trust Security (`Hops 1, 2 & 4`), (2) Predictable FinOps (`Hop 3 ContextCacheConfig` + Valkey bulkheads), and (3) Privacy-Preserving Observability (`Hop 5` redacted OTel -> BigQuery).
-- **High-Density Pooled Execution Path (Pattern A & Pattern C Standard) (Zone 3 — Left amber container `#feefc3`):** Delivers `$42/mo` baseline unit economics with 90% shared prompt cache savings, `4,000` thinking-token caps, inline Model Armor + DLP, and shared AlloyDB `FORCE ROW LEVEL SECURITY`.
-- **Sovereign Silo & Enterprise PSC Spoke Path (Pattern B & Pattern C Enterprise) (Zone 4 — Right coral container `#fad2cf`):** Delivers physical project isolation (`$1,850/mo` spoke floor), VPC-SC perimeters, IAM PAB, Cloud KMS CMEK `HTTP 423` kill-switches, air-gapped Gemma 3 on GKE, and 0-downtime PSC tier upgrades.
+- **High-Density Pooled Execution Path (Pattern A & Pattern C Standard) (Zone 3 — Left amber container `#feefc3`):** Delivers `120 RPM / 4k Budget` baseline unit economics with 90% shared prompt cache savings, `4,000` thinking-token caps, inline Model Armor + DLP, and shared AlloyDB `FORCE ROW LEVEL SECURITY`.
+- **Sovereign Silo & Enterprise PSC Spoke Path (Pattern B & Pattern C Enterprise) (Zone 4 — Right coral container `#fad2cf`):** Delivers physical project isolation (`600 RPM / 8k Budget` spoke floor), VPC-SC perimeters, IAM PAB, Cloud KMS CMEK `HTTP 423` kill-switches, air-gapped Gemma 3 on GKE, and 0-downtime PSC tier upgrades.
 
 The numbered callouts in Figure 1 trace both the architectural selection flow and the invariant 5-Hop runtime execution:
 
@@ -127,7 +127,7 @@ This section summarizes the **Multi-Tenant Agentic Triad** and maps it to the [G
 
 ### Cost optimization (Pillar 2 of the Agentic Triad)
 
-- **Match infrastructure cost to customer ARR:** Start with **Pattern A** in Stage 1 to capture **90% shared prompt cache savings** and `$42/mo` baseline economics. Introduce **Pattern B** or **Pattern C PSC spokes** in Stages 2–3 only for Enterprise contracts that justify dedicated infrastructure.
+- **Match infrastructure cost to customer ARR:** Start with **Pattern A** in Stage 1 to capture **90% shared prompt cache savings** and `120 RPM Pool` baseline economics. Introduce **Pattern B** or **Pattern C PSC spokes** in Stages 2–3 only for Enterprise contracts that justify dedicated infrastructure.
 
 ### Operational excellence (Pillar 3 of the Agentic Triad)
 
@@ -153,7 +153,7 @@ This section summarizes the **Multi-Tenant Agentic Triad** and maps it to the [G
   - [Complete End-to-End Workstream & 14-Diagram Master Guide](../docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md)
 - Download or open the editable slide decks:
   - [Workstream 5 Editable Google Slides Deck (`ws5-wrap-up-editable-slides.pptx`)](../slides/ws5-wrap-up-editable-slides.pptx)
-  - [All-in-One 26-Slide Master Presentation (`geap-multi-tenancy-all-workstreams-editable-slides.pptx`)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)
+  - [All-in-One 25-Slide Master Presentation (`geap-multi-tenancy-all-workstreams-editable-slides.pptx`)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)
 
 ---
 
@@ -165,23 +165,23 @@ Every architecture blueprint in **WS5** follows a **strict Top-Down Architectura
 ### Diagram 7: Workstream 5 Capstone: Executive Topology Decision Guide & The Multi-Tenant Agentic Triad (`ws5-decision-tree-and-agentic-triad`)
 * **Workstream & Focus**: Workstream 5 • Executive Topology Decision Guide & The Multi-Tenant Agentic Triad (WS 5.1–5.2) (`WORKSTREAM 5 • AGENTIC TRIAD`)
 * **Question Answered**: *How do Chief Architects, CISOs, and CFOs select between Pattern A, Pattern B, and Pattern C—and how does the Multi-Tenant Agentic Triad balance Cryptographic Tenant Governance, Predictable FinOps COGS, and Zero-PII Observability across 1,000+ tenants?*
-* **Architectural & Business Outcome (2-Question Topology Selector + 74% Total Cloud COGS Reduction Across 1,000 Tenants)**: Across a 1,000-tenant B2B SaaS portfolio (950 Standard + 50 Enterprise), Pattern C guided by the Agentic Triad reduces shared prompt token costs by 90%, cuts total monthly infrastructure COGS by 74% ($820k → $214k/mo), and maintains 99.99% SLA with 0 cross-tenant leaks.
+* **Architectural & Business Outcome (2-Question Topology Selector + 74% Total Cloud COGS Reduction Across 1,000 Tenants)**: Across a 1,000-tenant B2B SaaS portfolio (950 Standard + 50 Enterprise), Pattern C guided by the Agentic Triad reduces shared prompt token costs by 90%, cuts total monthly infrastructure COGS by 74% (via 90% shared ContextCacheConfig), and maintains 99.99% SLA with 0 cross-tenant leaks.
 
 #### 4-Zone Hub-and-Spoke Architecture Summary
 * **Blue Zone — 1. Triad Pillar 1: 5-Hop Governance & Selector**: Enforces Hops 1, 2 & 4 (OBO/DPoP, Catalog PDP, Model Armor) and applies the 2-Question Decision Tree to dispatch to Pattern A, B, or C.
 * **Green Zone — 2. Triad Pillar 3: Zero-PII FinOps & SCC Audit**: Streams SDP-redacted OpenTelemetry spans into BigQuery to power Even Split, Proportional Chargeback, and Tiered FinOps models.
-* **Yellow Zone — 3. Triad Pillar 2: Pattern A Pooled Unit Economics**: Combines 90% shared `ContextCacheConfig` discounts, Memorystore Valkey RPM bulkheads, 4,000-token caps, and AlloyDB RLS ($42/mo unit cost).
+* **Yellow Zone — 3. Triad Pillar 2: Pattern A Pooled Unit Economics**: Combines 90% shared `ContextCacheConfig` discounts, Memorystore Valkey RPM bulkheads, 4,000-token caps, and AlloyDB RLS (120 RPM Pool unit cost).
 * **Red Zone — 4. Regulated Scale: Pattern B Silos & Pattern C PSC**: Delivers dedicated VPC-SC + IAM PAB + Cloud KMS CMEK kill-switches (`HTTP 423`), air-gapped Gemma 3, and zero-downtime PSC tier upgrades.
 
 #### Part A — Agentic Flow: Step-by-Step Architectural Walkthrough (Steps ①–⑦)
-1. **Step ① — 2-Question Executive Topology Decision Tree** (*10,000+ Tenants → Blue Zone*): Architects evaluate two questions: Q1: Do all customers legally require dedicated GCP projects, VPC-SC, or air-gapped models? (Yes → Pattern B). Q2: Do you offer both a shared Standard tier and a regulated Enterprise tier? (Single tier → Pattern A; Multi-tier → Pattern C). **(2-Question Selector → Pattern A ($), Pattern C ($$), or Pattern B ($$$))**
+1. **Step ① — 2-Question Executive Topology Decision Tree** (*10,000+ Tenants → Blue Zone*): Architects evaluate two questions: Q1: Do all customers legally require dedicated GCP projects, VPC-SC, or air-gapped models? (Yes → Pattern B). Q2: Do you offer both a shared Standard tier and a regulated Enterprise tier? (Single tier → Pattern A; Multi-tier → Pattern C). **(2-Question Selector → Pattern A (Pooled), Pattern C (Hybrid), or Pattern B (Sovereign))**
 1. **Step ② — Enforcing Hops 1 & 2 Across All Topologies** (*Blue Zone (Triad Pillar 1 — Identity & Catalog)*): Regardless of topology, every request passes Hop 1 (Cloud Armor header stripping + IAP OIDC/Entra + RFC 8693 OBO/DPoP) and Hop 2 (Discovery Engine Agent Catalog PDP + ADK `before_agent_callback` pruning). **(Triad Pillar 1 • Hops 1 & 2 Cryptographic Identity & Catalog PDP)**
 1. **Step ③ — Commitment to Cost-Optimal or Sovereign Spoke** (*Blue Zone → Yellow or Red Spoke*): The Architecture Selector routes Standard commercial tenants (950 of 1,000 tenants) to the Pooled Spoke (Yellow Zone) and regulated Enterprise tenants (50 of 1,000 tenants) to Sovereign/PSC Spokes (Red Zone). **(950 Standard Tenants (Pooled) + 50 Enterprise Tenants (PSC/Silo))**
 1. **Step ④ — 4 FinOps Levers Cut Pooled Token COGS by 84.7%** (*Yellow Zone (Triad Pillar 2 — Pooled FinOps)*): In the Pooled Spoke, Triad Pillar 2 combines (1) 90% shared `ContextCacheConfig` prefix caching, (2) Memorystore for Valkey RPM bulkheads, (3) 4,000-token thinking budget caps, and (4) compact MCP tool output pruning. **(Triad Pillar 2 • 90% Context Cache + Valkey Bulkhead + Token Cap)**
 1. **Step ⑤ — Enforcing VPC-SC, CMEK Kill-Switch & Live Promotion** (*Red Zone (Sovereign & PSC Guarantees)*): In the Regulated Spoke, Enterprise tenants receive dedicated VPC-SC perimeters, IAM PAB policies, sub-60s Cloud KMS CMEK kill-switches (`HTTP 423`), air-gapped Gemma 3 / Gemini 2.5 Pro (Dedicated PT), and zero-downtime PSC tier upgrades. **(VPC-SC • IAM PAB • CMEK Kill-Switch (`423`) • Live PSC Upgrade)**
 1. **Step ⑥ — Model Armor Guardrails & Engine-Level Data Isolation** (*Yellow & Red Zones (Hops 4 & 5 Data Plane)*): Hop 4 screens prompts and redacts egress PII/PCI via Model Armor & SDP, while Hop 5 enforces AlloyDB/BigQuery Row-Level Security (`SET LOCAL app.current_tenant`) or dedicated CMEK vault encryption. **(Hops 4 & 5 • Model Armor, Cloud SDP & AlloyDB/BigQuery RLS)**
 1. **Step ⑦ — Zero-PII OpenTelemetry & 3 FinOps Chargeback Models** (*All Zones → Green Zone (Triad Pillar 3)*): Triad Pillar 3 streams zero-PII OpenTelemetry spans (`tenant_id`, `tier`, `thinking_tokens`, `cache_hit`) into BigQuery—supporting Even Split, Proportional Token Chargeback, and Fixed Tier pricing with 20/20 tests passing. **(Triad Pillar 3 • BigQuery OTel Sink & 74% Portfolio COGS Savings)**
-1. **Outcome — 2-Question Topology Selector + 74% Total Cloud COGS Reduction Across 1,000 Tenants** (*Architectural & Business Outcome*): Across a 1,000-tenant B2B SaaS portfolio (950 Standard + 50 Enterprise), Pattern C guided by the Agentic Triad reduces shared prompt token costs by 90%, cuts total monthly infrastructure COGS by 74% ($820k → $214k/mo), and maintains 99.99% SLA with 0 cross-tenant leaks. **(WORKSTREAM 5 • AGENTIC TRIAD)**
+1. **Outcome — 2-Question Topology Selector + 74% Total Cloud COGS Reduction Across 1,000 Tenants** (*Architectural & Business Outcome*): Across a 1,000-tenant B2B SaaS portfolio (950 Standard + 50 Enterprise), Pattern C guided by the Agentic Triad reduces shared prompt token costs by 90%, cuts total monthly infrastructure COGS by 74% (via 90% shared ContextCacheConfig), and maintains 99.99% SLA with 0 cross-tenant leaks. **(WORKSTREAM 5 • AGENTIC TRIAD)**
 
 #### Part B — Component Architecture & Technical Flow Specification
 * **Google Cloud Services Used**: Vertex AI Agent Engine • Google ADK 2.0 • Gemini 2.5 Pro & Gemma 3 • Cloud Armor & IAP • Model Armor & SDP • Memorystore for Valkey • AlloyDB RLS & Cloud KMS CMEK • BigQuery OTel
@@ -195,7 +195,7 @@ Every architecture blueprint in **WS5** follows a **strict Top-Down Architectura
 | **Step ④** • Sovereign Silo Controls | VPC-SC, IAM PAB & Cloud KMS CMEK (Red Zone) | Wraps regulated Enterprise projects in VPC Service Controls and IAM Principal Access Boundaries with live Cloud KMS CMEK kill-switch verification (`HTTP 423`). | workstream-3-pattern-b-siloed (Milestone 2) | Satisfies OCC/FDIC, HIPAA, and public-sector physical isolation audits |
 | **Step ⑤** • Hybrid PSC & Live Upgrade | Private Service Connect & 3-Phase Migrator (Green & Red Zones) | Bridges the central hub to dedicated spokes over unidirectional PSC (`10.10.0.50`) and promotes live tenants (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`). | workstream-4-pattern-c-hybrid (Milestone 3 • 4/4 PASS) | Zero-downtime Standard → Enterprise promotion with 0 dropped sessions |
 | **Step ⑥** • Multi-Model Agility | Gemini 2.5 Pro, Gemini 2.5 Pro (Dedicated PT) & Gemma 3 (Yellow & Red Zones) | Runs shared Gemini 2.5 Pro in the pool while enabling Vertex AI Model Garden hot-swapping (Gemini 2.5 Pro (Dedicated PT)) and air-gapped Gemma 3 (27B) on private GKE. | FinVaultPrivateAgentAlpha & Private GKE Blueprint | Matches model capability and residency to each tenant’s contract tier |
-| **Step ⑦** • Pillar 3: Zero-PII OTel | Sensitive Data Protection & BigQuery OTel (Green Zone) | Redacts all PII/PHI/PCI via Cloud SDP prior to log export and streams tenant-tagged token consumption into BigQuery (`cymbal_agentic_finops_otel`). | 3 Chargeback Models (Even Split, Proportional, Tiered) | Verified live in BigQuery: $0.0042 (A), $0.0079 (C), $0.0118 (B) per turn |
+| **Step ⑦** • Pillar 3: Zero-PII OTel | Sensitive Data Protection & BigQuery OTel (Green Zone) | Redacts all PII/PHI/PCI via Cloud SDP prior to log export and streams tenant-tagged token consumption into BigQuery (`cymbal_agentic_finops_otel`). | 3 Chargeback Models (Even Split, Proportional, Tiered) | Verified live in BigQuery: Pattern A, Pattern C, and Pattern B spans |
 | **Cost & Audit** • 10-Week Program Roadmap | 12/12 Forensic Gates & Product EAP Backlog (Green Zone) | Delivers Pattern A in Week 4, Pattern B in Week 7, and Pattern C in Week 10 alongside the 9-item Google Cloud Product EAP Tracker (`GAP-P0-01`..`GAP-P2-02`). | scripts/run_deep_forensic_audit.py (12/12 PASS • 20/20 SIMS) | Complete, production-certified reference architecture across WS1–WS5 |
 
 <!-- E2E_FLOW_END -->

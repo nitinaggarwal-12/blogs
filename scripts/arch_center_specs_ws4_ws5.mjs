@@ -125,7 +125,7 @@ export const WS4_WS5_SPECS = [
 Pattern C is the recommended production architecture for multi-tiered B2B SaaS platforms ([4.1 Case Study & Solution Architecture](../workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md)):
 
 - **Tiered SaaS product packaging (Standard vs Enterprise):** Offer a low-cost self-service Standard tier on shared pooled infrastructure alongside a premium Enterprise tier with dedicated Google Cloud projects and customer-managed encryption keys—without maintaining two separate codebases or URLs.
-- **Land-and-expand customer lifecycle with live upgrades:** Onboard new logos into the shared pool in seconds (**RetailStream Corp** at \`$42/mo\` floor) and promote them live into a dedicated PSC spoke (\`$1,850/mo\` spoke floor) when they sign an Enterprise expansion contract, with **zero downtime and zero lost chat history**.
+- **Land-and-expand customer lifecycle with live upgrades:** Onboard new logos into the shared pool in seconds (**RetailStream Corp** at \`120 RPM Pool\` floor) and promote them live into a dedicated PSC spoke (\`600 RPM Silo\` spoke floor) when they sign an Enterprise expansion contract, with **zero downtime and zero lost chat history**.
 - **Cross-project private agent federation:** Allow Enterprise customers (**FinVault Bank**) to run private custom agents (\`Agent Alpha\` on Gemini 2.5 Pro (Dedicated PT)) inside their isolated spoke while surfacing those agents seamlessly through the unified SaaS UI.`,
     alternativesMd: `## Design alternatives
 
@@ -166,7 +166,7 @@ This section provides guidance for operating Pattern C according to the [Google 
 
 ### Cost optimization
 
-- **Blend pooled and sovereign unit economics (\`$680/month\` blended floor):** Keep 80–90% of high-volume Standard customers in the shared pool (\`$42/mo\` floor with 90% \`ContextCacheConfig\` savings) while provisioning dedicated PSC spokes (\`$1,850/mo\`) only for high-ACV Enterprise contracts ([4.4 Product Collaboration: PSC & Registry](../workstream-4-pattern-c-hybrid/4.4-product-collaboration-psc-and-registry.md)).
+- **Blend pooled and sovereign unit economics (\`Blended Hybrid Tier\` blended floor):** Keep 80–90% of high-volume Standard customers in the shared pool (\`120 RPM Pool\` floor with 90% \`ContextCacheConfig\` savings) while provisioning dedicated PSC spokes (\`600 RPM Silo\`) only for high-ACV Enterprise contracts ([4.4 Product Collaboration: PSC & Registry](../workstream-4-pattern-c-hybrid/4.4-product-collaboration-psc-and-registry.md)).
 
 ### Operational excellence
 
@@ -227,8 +227,8 @@ This section provides guidance for operating Pattern C according to the [Google 
         zones: [
           { name: 'Executive 2-Question Topology Selector and Ingress Gate', colorLabel: 'Zone 1 — Blue container `#aecbfa`', desc: 'Evaluates regulatory mandate (Question 1) and SaaS tier packaging (Question 2) alongside Hop 1 OIDC/DPoP authentication to route tenants to Pattern A, Pattern B, or Pattern C.' },
           { name: 'The Multi-Tenant Agentic Triad & 80% Reusable Core Hub', colorLabel: 'Zone 2 — Green container `#ceead6`', desc: 'Unifies the three non-negotiable platform pillars—(1) Zero-Trust Security (`Hops 1, 2 & 4`), (2) Predictable FinOps (`Hop 3 ContextCacheConfig` + Valkey bulkheads), and (3) Privacy-Preserving Observability (`Hop 5` redacted OTel -> BigQuery).' },
-          { name: 'High-Density Pooled Execution Path (Pattern A & Pattern C Standard)', colorLabel: 'Zone 3 — Left amber container `#feefc3`', desc: 'Delivers `$42/mo` baseline unit economics with 90% shared prompt cache savings, `4,000` thinking-token caps, inline Model Armor + DLP, and shared AlloyDB `FORCE ROW LEVEL SECURITY`.' },
-          { name: 'Sovereign Silo & Enterprise PSC Spoke Path (Pattern B & Pattern C Enterprise)', colorLabel: 'Zone 4 — Right coral container `#fad2cf`', desc: 'Delivers physical project isolation (`$1,850/mo` spoke floor), VPC-SC perimeters, IAM PAB, Cloud KMS CMEK `HTTP 423` kill-switches, air-gapped Gemma 3 on GKE, and 0-downtime PSC tier upgrades.' }
+          { name: 'High-Density Pooled Execution Path (Pattern A & Pattern C Standard)', colorLabel: 'Zone 3 — Left amber container `#feefc3`', desc: 'Delivers `120 RPM / 4k Budget` baseline unit economics with 90% shared prompt cache savings, `4,000` thinking-token caps, inline Model Armor + DLP, and shared AlloyDB `FORCE ROW LEVEL SECURITY`.' },
+          { name: 'Sovereign Silo & Enterprise PSC Spoke Path (Pattern B & Pattern C Enterprise)', colorLabel: 'Zone 4 — Right coral container `#fad2cf`', desc: 'Delivers physical project isolation (`600 RPM / 8k Budget` spoke floor), VPC-SC perimeters, IAM PAB, Cloud KMS CMEK `HTTP 423` kill-switches, air-gapped Gemma 3 on GKE, and 0-downtime PSC tier upgrades.' }
         ],
         stepsIntro: `The numbered callouts in Figure 1 trace both the architectural selection flow and the invariant 5-Hop runtime execution:`,
         steps: [
@@ -246,7 +246,7 @@ This section provides guidance for operating Pattern C according to the [Google 
 
 Use the following decision rules ([5.1 Pattern Comparison & Decision Guide](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md)) to map your business model to the appropriate architecture:
 
-- **Choose Pattern A (Pooled Architecture)** when you operate a uniform, high-volume B2B SaaS product where fast self-service onboarding, 90% shared prompt cache savings, and lowest unit COGS (\`$42/mo\` baseline) are primary goals, and customers accept cryptographic/logical isolation within a shared project.
+- **Choose Pattern A (Pooled Architecture)** when you operate a uniform, high-volume B2B SaaS product where fast self-service onboarding, 90% shared prompt cache savings, and lowest unit COGS (\`120 RPM Pool\` baseline) are primary goals, and customers accept cryptographic/logical isolation within a shared project.
 - **Choose Pattern B (Sovereign Silos)** when 100% of your customers are regulated financial, healthcare, or public-sector entities whose contracts prohibit shared compute pools or shared databases and mandate per-customer VPC Service Controls perimeters, customer-managed KMS kill-switches, or air-gapped Gemma 3 on GKE.
 - **Choose Pattern C (Dynamic Hybrid)** when you sell multi-tiered SaaS packaging (such as a Standard tier alongside a regulated Enterprise tier) and need a single control plane that can promote live customers from the shared pool into dedicated Private Service Connect spokes with zero downtime.`,
     alternativesMd: `## Design alternatives
@@ -264,7 +264,7 @@ The following executive matrix summarizes all 20 verified runtime simulations an
 | **Encryption kill-switch** | Logical key check in Hop 3 | Project-wide **Cloud KMS CMEK** (\`HTTP 423 Locked\`) | Per-spoke **Cloud KMS CMEK** (\`HTTP 423 Locked\`) for Enterprise tier |
 | **Model & caching strategy** | Shared Gemini 2.5 Pro + **90% \`ContextCacheConfig\` savings** | Dedicated Vertex AI PT or **air-gapped Gemma 3 (27B) on GKE** | Pooled caching for Standard + dedicated PT / Gemini 2.5 Pro (Dedicated PT) for Enterprise |
 | **Live tier upgrade path** | Requires migration to Pattern C | Static sovereign project | **Built-in 3-phase live migration** (\`0\` dropped turns) |
-| **Baseline monthly cost floor** | **\`$42 / mo\`** per tenant (\`$\`) | **\`$1,850 / mo\`** per silo (\`$$$\`) | **\`$680 / mo\`** blended across tiers (\`$$\`) |
+| **Baseline monthly cost floor** | **\`120 RPM Pool / mo\`** per tenant (\`$\`) | **\`600 RPM Silo / mo\`** per silo (\`$$$\`) | **\`Hybrid PSC / mo\`** blended across tiers (\`$$\`) |
 | **Automated verification suite** | \`10/10\` red-team breach tests PASS | \`6/6\` sovereign security tests PASS | \`4/4\` hybrid & live migration tests PASS |
 
 ### The 5-Hop Cryptographic Context Chain invariant
@@ -293,7 +293,7 @@ This section summarizes the **Multi-Tenant Agentic Triad** and maps it to the [G
 
 ### Cost optimization (Pillar 2 of the Agentic Triad)
 
-- **Match infrastructure cost to customer ARR:** Start with **Pattern A** in Stage 1 to capture **90% shared prompt cache savings** and \`$42/mo\` baseline economics. Introduce **Pattern B** or **Pattern C PSC spokes** in Stages 2–3 only for Enterprise contracts that justify dedicated infrastructure.
+- **Match infrastructure cost to customer ARR:** Start with **Pattern A** in Stage 1 to capture **90% shared prompt cache savings** and \`120 RPM Pool\` baseline economics. Introduce **Pattern B** or **Pattern C PSC spokes** in Stages 2–3 only for Enterprise contracts that justify dedicated infrastructure.
 
 ### Operational excellence (Pillar 3 of the Agentic Triad)
 
@@ -318,6 +318,6 @@ This section summarizes the **Multi-Tenant Agentic Triad** and maps it to the [G
   - [Complete End-to-End Workstream & 14-Diagram Master Guide](../docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md)
 - Download or open the editable slide decks:
   - [Workstream 5 Editable Google Slides Deck (\`ws5-wrap-up-editable-slides.pptx\`)](../slides/ws5-wrap-up-editable-slides.pptx)
-  - [All-in-One 26-Slide Master Presentation (\`geap-multi-tenancy-all-workstreams-editable-slides.pptx\`)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)`
+  - [All-in-One 25-Slide Master Presentation (\`geap-multi-tenancy-all-workstreams-editable-slides.pptx\`)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)`
   }
 ];
