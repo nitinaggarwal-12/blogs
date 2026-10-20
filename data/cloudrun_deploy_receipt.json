@@ -4,17 +4,14 @@
   "runtimeProjectNumber": "248990048888",
   "region": "us-west1",
   "buildProject": "nitina-ggarwal-sandbox-647724",
-  "buildId": "21920253-efc2-4756-89b9-41f98d2b4093",
   "image": "us-central1-docker.pkg.dev/nitina-ggarwal-sandbox-647724/cloud-run-source-deploy/ge-blogs:v20261019-1320",
-  "imageDigest": "sha256:c22a80543473b945925ee31ff4f463d8d9a608a2cdbebfb2cc2933de1dabe8d2",
   "beyondCorpUrl": "https://ge-blogs-248990048888.cr.gclb.goog",
   "runAppUrl": "https://ge-blogs-mi7l4h536a-uw.a.run.app",
-  "gitCommit": "9007a7f",
+  "gitCommit": "9acf14c",
   "latestCreatedRevisionName": "ge-blogs-00011-xg2",
   "latestReadyRevisionName": "ge-blogs-00011-xg2",
   "readyConditionStatus": "True",
   "trafficPercent": 100,
-  "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
-  "startupProbeTimestamp": "2026-10-16T16:23:30.525687Z",
-  "verifiedAt": "2026-10-19T13:22:29Z"
+  "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080 (revision ge-blogs-00011-xg2).",
+  "verifiedAt": "2026-10-20T19:18:04Z"
 }
