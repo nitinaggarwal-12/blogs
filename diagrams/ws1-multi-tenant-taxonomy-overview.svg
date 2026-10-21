@@ -9,7 +9,7 @@
   <rect x="0" y="0" width="1200" height="1410" fill="#ffffff"/>
 
   <text x="20" y="22" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#174ea6">[WORKSTREAM 1.1 BLUEPRINT] Multi-Tenant Agentic AI Taxonomy: Pooled (Pattern A), Sovereign Silos (Pattern B) &amp; Hybrid (Pattern C)</text>
-  <text x="20" y="40" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6368">Verified on GCP (nitina-ggarwal-sandbox-647724 &amp; ramp-portal-dev) • Cloud Run cymbal-multi-tenant-patterns-00003-wfh</text>
+  <text x="20" y="40" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6368">Verified on GCP (cymbal-build-sandbox &amp; ramp-portal-dev) • Cloud Run cymbal-multi-tenant-patterns-00003-wfh</text>
 
   <!-- TOP EXTERNAL USER / TENANT BOX -->
   <g>
@@ -340,7 +340,7 @@
   <path d="M 872 730 L 872 770" fill="none" stroke="#202124" stroke-width="2" stroke-dasharray="6,6" marker-end="url(#arrow)"/>
 
   <!-- FOREGROUND WRAPPER & ZONE HEADERS WITH BACKGROUND HALOS (preventing vertical connector strike-through) -->
-  <text x="52" y="291" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round">Shared Control Plane (ramp-portal-dev / nitina-ggarwal-sandbox-647724 • 80% Core + 20% Topology Delta)</text>
+  <text x="52" y="291" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round">Shared Control Plane (ramp-portal-dev / cymbal-build-sandbox • 80% Core + 20% Topology Delta)</text>
   <text x="68" y="327" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round">VPC &amp; 5-Hop Cryptographic Context Chain (KMS ECDSA P-256 Signed)</text>
   <text x="84" y="363" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#aecbfa" stroke-width="8" stroke-linejoin="round">Routing hub (Hop 1 &amp; Hop 2 PEP/PDP)</text>
   <text x="84" y="381" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#aecbfa" stroke-width="8" stroke-linejoin="round">Central ingress, OBO+DPoP KMS Sign &amp; Discovery Engine Catalog filter</text>

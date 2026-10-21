@@ -9,7 +9,7 @@
   <rect x="0" y="0" width="1200" height="1410" fill="#ffffff"/>
 
   <text x="20" y="22" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#174ea6" textLength="1150" lengthAdjust="spacingAndGlyphs">[WORKSTREAM 2.6 • TERRAFORM STARTER RESOURCE GRAPH] Pattern A 1-Click Terraform Starter: Provider → Google Cloud Armor → Cloud Run v2 Agent Gateway → Valkey / KMS CMEK → BigQuery OTel Resource Graph</text>
-  <text x="20" y="40" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6368">hashicorp/google &gt;= 5.30.0 on Terraform &gt;= 1.5.0 • Verified in nitina-ggarwal-sandbox-647724 (cymbal-pooled-saas-prod) • Hop 1, Hop 3 &amp; Hop 5 Resources</text>
+  <text x="20" y="40" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6368">hashicorp/google &gt;= 5.30.0 on Terraform &gt;= 1.5.0 • Verified in cymbal-build-sandbox (cymbal-pooled-saas-prod) • Hop 1, Hop 3 &amp; Hop 5 Resources</text>
 
   <!-- TOP EXTERNAL USER / TENANT BOX -->
   <g>
@@ -339,7 +339,7 @@
   <path d="M 872 730 L 872 770" fill="none" stroke="#202124" stroke-width="2" stroke-dasharray="6,6" marker-end="url(#arrow)"/>
 
   <!-- FOREGROUND WRAPPER & ZONE HEADERS WITH BACKGROUND HALOS (preventing vertical connector strike-through) -->
-  <text x="52" y="291" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round">Terraform Root Module (main.tf + variables.tf) • provider &quot;google&quot; { project = var.project_id (nitina-ggarwal-sandbox-647724) }</text>
+  <text x="52" y="291" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round">Terraform Root Module (main.tf + variables.tf) • provider &quot;google&quot; { project = var.project_id (cymbal-build-sandbox) }</text>
   <text x="68" y="327" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round">Resource Dependency Graph • Hop 1 Edge → Hop 3 Runtime &amp; Bulkhead → Hop 5 Audit (cymbal_agentic_finops_otel)</text>
   <text x="84" y="363" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#aecbfa" stroke-width="8" stroke-linejoin="round">Provider, project &amp; ingress hub</text>
   <text x="84" y="381" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#aecbfa" stroke-width="8" stroke-linejoin="round">required_providers + Hop 1 Google Cloud Armor WAF front door</text>

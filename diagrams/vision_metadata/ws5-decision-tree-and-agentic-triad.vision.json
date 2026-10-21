@@ -2,7 +2,7 @@
   "id": "VIS-WS5-DECISION-TREE-AND-AGENTIC-TRIAD",
   "blueprintId": "ws5-decision-tree-and-agentic-triad",
   "title": "Workstream 5 Capstone: Executive Topology Decision Guide & The Multi-Tenant Agentic Triad",
-  "subtitle": "Verified 20/20 Suites PASS Across nitina-ggarwal-sandbox-647724 & ramp-portal-dev (Security • FinOps -84.7% • Zero-PII OTel)",
+  "subtitle": "Verified 20/20 Suites PASS Across cymbal-build-sandbox & ramp-portal-dev (Security • FinOps -84.7% • Zero-PII OTel)",
   "badge": "WORKSTREAM 5.1 & 5.2 • CAPSTONE BLUEPRINT",
   "sourceImage": "diagrams/ws5-decision-tree-and-agentic-triad.drawio.png",
   "drawioFile": "diagrams/ws5-decision-tree-and-agentic-triad.drawio",
@@ -23,7 +23,7 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (/Users/nitinagga/documents/PromptCanvas/src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
   "healerLog": [
     "Protected master/canonical blueprint passed through without geometric mutation."
   ],

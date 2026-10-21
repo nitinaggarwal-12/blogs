@@ -78,13 +78,13 @@ const BLOG_SPECS = [
     pptxFile: 'ws1-reference-architecture-editable-slides.pptx',
     frontmatter: {
       title: 'Multi-tenant agentic AI system: Reference architecture taxonomy and 5-Hop governance baseline',
-      subtitle: 'Build and deploy Pooled (Pattern A), Sovereign Silo (Pattern B), and Dynamic Hybrid (Pattern C) multi-tenant agentic AI systems on Google Cloud using Vertex AI Agent Engine and ADK 2.0',
+      subtitle: 'Build and deploy Pooled (Pattern A), Sovereign Silo (Pattern B), and Dynamic Hybrid (Pattern C) multi-tenant agentic AI systems on Google Cloud using Vertex AI Agent Engine and ADK',
       series: 'Multi-Tenant Agentic AI on Google Cloud — Workstream 1 of 5',
       workstream: 'Workstream 1 — Prepare Reference Architectures & Update GCP Documentation',
       authors: 'Google Cloud Forward Deployed Engineering (FDE) & AI Platform Architecture Team',
       target_audience: 'Cloud Architects, AI Platform Engineers, CISOs, and B2B SaaS Platform Leads',
       reading_time: '14 min read',
-      tags: ['Gemini Enterprise Agent Platform', 'ADK 2.0', 'Multi-Tenancy', 'Reference Architecture', 'VPC Service Controls', 'Principal Access Boundary', 'Vertex AI Model Armor', 'AlloyDB RLS', 'FinOps', 'Cloud Architecture Center'],
+      tags: ['Gemini Enterprise Agent Platform', 'ADK', 'Multi-Tenancy', 'Reference Architecture', 'VPC Service Controls', 'Principal Access Boundary', 'Vertex AI Model Armor', 'AlloyDB RLS', 'FinOps', 'Cloud Architecture Center'],
       canonical_architecture: 'https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system',
       diagrams: ['ws1-multi-tenant-taxonomy-overview', 'ws1-cloud-arch-center-5hop-baseline'],
       editable_slides: 'slides/ws1-reference-architecture-editable-slides.pptx',
@@ -213,7 +213,7 @@ This section provides guidance to help you tune this reference architecture acco
 
 - **Minimize guardrail latency (\`~42 ms\` total p95 control-plane overhead):** Colocate Memorystore for Valkey, AlloyDB, and Vertex AI Agent Engine in the same region (\`us-central1\` or \`us-west1\`) and execute Hop 2 catalog lookups and Hop 3 quota checks in sub-millisecond in-memory caches. The table below shows the verified p95 latency budget across all five governance hops compared to foundation model reasoning time (\`1,500–3,300 ms\`):
 
-| Governance hop | Enforcement operation on the critical path | Verified p95 latency | Optimization mechanism |
+| Governance hop | Enforcement operation on the critical path | Target p95 latency budget (colocated us-central1) | Optimization mechanism |
 | :--- | :--- | :--- | :--- |
 | **Hop 1 (Edge PEP)** | Cloud Armor header strip + IAP JWT validation + KMS-cached DPoP bind | **\`~8 ms\`** | Regional JWKS cache + sub-millisecond Ed25519/ECDSA signature verify |
 | **Hop 2 (Catalog PDP)** | Discovery Engine entitlement filter + ADK \`before_agent_callback\` pruning | **\`~4 ms\`** | In-process tenant ACL cache invalidated via Firestore watch stream |

@@ -7,7 +7,7 @@
 
 ## 1. Quick-Start Manual CLI Commands (Run Any Product or Pattern Yourself)
 
-Run these commands directly from `/Users/nitinagga/Documents/blogs`:
+Run these commands directly from `./`:
 
 ```bash
 # 1. Run ALL 10 Third-Party SaaS Products across ALL 3 Patterns (30 E2E Flows / 60 Test Cases)
@@ -65,12 +65,12 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
      --user-pool-id us-east-1_vqlzYM74B \
      --client-id 49f0365186c43e7b6r7hc982vn \
      --auth-flow ADMIN_USER_PASSWORD_AUTH \
-     --auth-parameters USERNAME=dr.jane.doe@merck.com,PASSWORD='MerckA2A#2026!Secure' \
+     --auth-parameters USERNAME=sre-lead@finvault.com,PASSWORD='FinVault#2026!Secure' \
      --query 'AuthenticationResult.AccessToken' --output text)
    ```
-3. **List All 10 Registered Third-Party SaaS MCP Targets on Bedrock AgentCore Gateway (`merck-a2a-mcp-gateway-kiu8omh4aq`)**:
+3. **List All 10 Registered Third-Party SaaS MCP Targets on Bedrock AgentCore Gateway (`cymbal-a2a-mcp-gateway-kiu8omh4aq`)**:
    ```bash
-   curl -sS -X POST https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp \
+   curl -sS -X POST https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp \
      -H "Authorization: Bearer $COGNITO_TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"jsonrpc":"2.0","id":"list-10","method":"tools/list","params":{}}' | jq .
@@ -119,7 +119,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 ```json
 {
   "connector_uri": "mcp://cymbal/thoughtspot-spotter-bi-3lo",
-  "mcp_gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "KD6Z3SV8PX",
   "mcp_tool_name": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
   "thoughtspot_host": "https://try-everywhere.thoughtspot.cloud",
@@ -186,7 +186,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -220,7 +220,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "KD6Z3SV8PX",
       "tool_name": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
       "http_status": 200,
@@ -299,7 +299,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -333,7 +333,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "KD6Z3SV8PX",
       "tool_name": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
       "http_status": 200,
@@ -424,7 +424,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -458,7 +458,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "KD6Z3SV8PX",
       "tool_name": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
       "http_status": 200,
@@ -521,7 +521,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
 ```json
 {
   "connector_uri": "mcp://cymbal/sigma-computing-workbooks-3lo",
-  "mcp_gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "OZ0KTE8Z8M",
   "mcp_tool_name": "sigma-computing___eval_sigma_workbook_rls",
   "sigma_oauth_url": "https://api.sigmacomputing.com/v2/auth/token",
@@ -587,7 +587,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -621,7 +621,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "OZ0KTE8Z8M",
       "tool_name": "sigma-computing___eval_sigma_workbook_rls",
       "http_status": 200,
@@ -701,7 +701,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -735,7 +735,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "OZ0KTE8Z8M",
       "tool_name": "sigma-computing___eval_sigma_workbook_rls",
       "http_status": 200,
@@ -826,7 +826,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -860,7 +860,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "OZ0KTE8Z8M",
       "tool_name": "sigma-computing___eval_sigma_workbook_rls",
       "http_status": 200,
@@ -906,7 +906,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
 - **Canonical MCP Connector URI**: `mcp://retailstream/servicenow-itom-3lo`
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION`
 - **Authentication & Zero-Trust Protocol**: Hop 5 Interactive 3LO OAuth2 Consent + AWS Cognito RS256 OBO -> Bedrock AgentCore MCP (`servicenow-itsm`, target `PLOLWRMI0I`)
-- **Live Probed Cloud Endpoint**: `https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp`
+- **Live Probed Cloud Endpoint**: `https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp`
 - **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `redmine:5.1-alpine (Redmine ITSM Change & Incident Console)`
 - **Direct Live Third-Party Software Web UI URL**: [http://13.220.94.209:3003/projects/finvault-itsm/issues](http://13.220.94.209:3003/projects/finvault-itsm/issues)
 - **Interactive Login Credentials for Manual Testing**: Login `sre-lead@finvault.com` / Password `FinVault#2026!` (`API Key: fv_redmine_api_key_2026_finvault`; Cross-tenant `ops-eng@retailstream.com` gets HTTP 403)
@@ -923,7 +923,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
 ```json
 {
   "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
-  "mcp_gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "PLOLWRMI0I",
   "mcp_tool_name": "servicenow-itsm___query_servicenow_change_records",
   "cognito_user_pool": "us-east-1_vqlzYM74B",
@@ -980,7 +980,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
     "probe_status_code": 200,
@@ -990,7 +990,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
     "hop3_memory_namespace": "retailstream:ops-eng@retailstream.com:sess-saas-03-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "PLOLWRMI0I",
       "tool_name": "servicenow-itsm___query_servicenow_change_records",
       "http_status": 200,
@@ -1068,7 +1068,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
     "probe_status_code": 200,
@@ -1078,7 +1078,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
     "hop3_memory_namespace": "retailstream:ops-eng@retailstream.com:sess-saas-03-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "PLOLWRMI0I",
       "tool_name": "servicenow-itsm___query_servicenow_change_records",
       "http_status": 200,
@@ -1168,7 +1168,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
     "probe_status_code": 200,
@@ -1178,7 +1178,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
     "hop3_memory_namespace": "retailstream:ops-eng@retailstream.com:sess-saas-03-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "PLOLWRMI0I",
       "tool_name": "servicenow-itsm___query_servicenow_change_records",
       "http_status": 200,
@@ -1223,7 +1223,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
 - **Canonical MCP Connector URI**: `mcp://finvault/veeva-muse-clinical-3lo`
 - **Verification Tier**: `TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE`
 - **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`muse-poc`, target `1KZWKOFTWQ`) + FDA 21 CFR Part 11 Cloud KMS Signature
-- **Live Probed Cloud Endpoint**: `https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp`
+- **Live Probed Cloud Endpoint**: `https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp`
 - **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `nocodb/nocodb:0.255.2 (NocoDB Clinical EDC & GxP 21 CFR Part 11 Vault)`
 - **Direct Live Third-Party Software Web UI URL**: [http://13.220.94.209:3004/#/nc/base](http://13.220.94.209:3004/#/nc/base)
 - **Interactive Login Credentials for Manual Testing**: Email `sre-lead@finvault.com` / Password `FinVault#2026!` (Base: `Veeva Vault RIM & Muse Clinical EDC — Study FV-GXP-2026-04`)
@@ -1240,7 +1240,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
 ```json
 {
   "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
-  "mcp_gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "1KZWKOFTWQ",
   "mcp_tool_name": "muse-poc___query_muse_study_biomarkers",
   "hop2_gxp_policy_test_artifact": "VV-DOC-004819 / Study FV-GXP-2026-04 Cohort-B (Signed via Cloud KMS adk-agent-signing-key)",
@@ -1297,7 +1297,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE",
     "probe_status_code": 200,
@@ -1307,7 +1307,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-04-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "1KZWKOFTWQ",
       "tool_name": "muse-poc___query_muse_study_biomarkers",
       "http_status": 200,
@@ -1394,7 +1394,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE",
     "probe_status_code": 200,
@@ -1404,7 +1404,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-04-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "1KZWKOFTWQ",
       "tool_name": "muse-poc___query_muse_study_biomarkers",
       "http_status": 200,
@@ -1504,7 +1504,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE",
     "probe_status_code": 200,
@@ -1514,7 +1514,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-04-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "1KZWKOFTWQ",
       "tool_name": "muse-poc___query_muse_study_biomarkers",
       "http_status": 200,
@@ -1586,7 +1586,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
 ```json
 {
   "connector_uri": "mcp://finvault/salesforce-jira-escalation-3lo",
-  "mcp_gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "W7BF0JRWEA",
   "mcp_tool_name": "salesforce-jira___create_redacted_sfdc_jira_escalation",
   "salesforce_instance_api": "https://api.status.salesforce.com/v1/instances/NA224/status/preview",
@@ -1648,7 +1648,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
     "probe_status_code": 200,
@@ -1658,7 +1658,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-05-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "W7BF0JRWEA",
       "tool_name": "salesforce-jira___create_redacted_sfdc_jira_escalation",
       "http_status": 200,
@@ -1736,7 +1736,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
     "probe_status_code": 200,
@@ -1746,7 +1746,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-05-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "W7BF0JRWEA",
       "tool_name": "salesforce-jira___create_redacted_sfdc_jira_escalation",
       "http_status": 200,
@@ -1837,7 +1837,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
     "probe_status_code": 200,
@@ -1847,7 +1847,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-05-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "W7BF0JRWEA",
       "tool_name": "salesforce-jira___create_redacted_sfdc_jira_escalation",
       "http_status": 200,
@@ -1910,7 +1910,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
 ```json
 {
   "connector_uri": "mcp://cymbal/databricks-unity-catalog-genie-3lo",
-  "mcp_gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "Z1RHXLBK6F",
   "mcp_tool_name": "databricks-unity___execute_uc_genie_federated_sql",
   "databricks_workspace_api": "https://community.cloud.databricks.com/api/2.0/clusters/list",
@@ -1975,7 +1975,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -2009,7 +2009,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "Z1RHXLBK6F",
       "tool_name": "databricks-unity___execute_uc_genie_federated_sql",
       "http_status": 200,
@@ -2088,7 +2088,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -2122,7 +2122,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "Z1RHXLBK6F",
       "tool_name": "databricks-unity___execute_uc_genie_federated_sql",
       "http_status": 200,
@@ -2213,7 +2213,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -2247,7 +2247,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "Z1RHXLBK6F",
       "tool_name": "databricks-unity___execute_uc_genie_federated_sql",
       "http_status": 200,
@@ -2310,7 +2310,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
 ```json
 {
   "connector_uri": "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
-  "mcp_gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "7PB1EK3NJO",
   "mcp_tool_name": "snowflake-cortex___execute_cortex_analyst_sql",
   "snowflake_sql_rest_v2_url": "https://os37291.us-east-1.snowflakecomputing.com/api/v2/statements",
@@ -2369,7 +2369,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -2394,7 +2394,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "7PB1EK3NJO",
       "tool_name": "snowflake-cortex___execute_cortex_analyst_sql",
       "http_status": 200,
@@ -2473,7 +2473,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -2498,7 +2498,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "7PB1EK3NJO",
       "tool_name": "snowflake-cortex___execute_cortex_analyst_sql",
       "http_status": 200,
@@ -2589,7 +2589,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -2614,7 +2614,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "7PB1EK3NJO",
       "tool_name": "snowflake-cortex___execute_cortex_analyst_sql",
       "http_status": 200,
@@ -2677,7 +2677,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
 ```json
 {
   "connector_uri": "mcp://finvault/workday-hcm-financials-raas-3lo",
-  "mcp_gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "CXH8BK86IF",
   "mcp_tool_name": "workday-raas___fetch_compensation_raas_report",
   "workday_ccx_oauth2_url": "https://wd5-services1.myworkday.com/ccx/oauth2/cymbal/token",
@@ -2738,7 +2738,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
     "probe_status_code": 200,
@@ -2748,7 +2748,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-08-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "CXH8BK86IF",
       "tool_name": "workday-raas___fetch_compensation_raas_report",
       "http_status": 200,
@@ -2827,7 +2827,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
     "probe_status_code": 200,
@@ -2837,7 +2837,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-08-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "CXH8BK86IF",
       "tool_name": "workday-raas___fetch_compensation_raas_report",
       "http_status": 200,
@@ -2928,7 +2928,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
     "probe_status_code": 200,
@@ -2938,7 +2938,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-08-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "CXH8BK86IF",
       "tool_name": "workday-raas___fetch_compensation_raas_report",
       "http_status": 200,
@@ -3001,7 +3001,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
 ```json
 {
   "connector_uri": "mcp://cymbal/datadog-observability-sre-3lo",
-  "mcp_gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "A2X7LPMPA7",
   "mcp_tool_name": "datadog-sre___query_tenant_apm_logs",
   "datadog_api_validate_url": "https://api.datadoghq.com/api/v1/validate",
@@ -3060,7 +3060,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN",
     "probe_status_code": 200,
@@ -3070,7 +3070,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-09-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "A2X7LPMPA7",
       "tool_name": "datadog-sre___query_tenant_apm_logs",
       "http_status": 200,
@@ -3148,7 +3148,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN",
     "probe_status_code": 200,
@@ -3158,7 +3158,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-09-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "A2X7LPMPA7",
       "tool_name": "datadog-sre___query_tenant_apm_logs",
       "http_status": 200,
@@ -3249,7 +3249,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN",
     "probe_status_code": 200,
@@ -3259,7 +3259,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-09-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "A2X7LPMPA7",
       "tool_name": "datadog-sre___query_tenant_apm_logs",
       "http_status": 200,
@@ -3322,7 +3322,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
 ```json
 {
   "connector_uri": "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
-  "mcp_gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "TXGJHVFBWP",
   "mcp_tool_name": "crowdstrike-okta___contain_xdr_host_with_dpop",
   "crowdstrike_oauth2_url": "https://api.crowdstrike.com/oauth2/token",
@@ -3381,7 +3381,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_HOP1_DPOP_AND_CMEK_GUARD",
     "probe_status_code": 200,
@@ -3391,7 +3391,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-10-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "TXGJHVFBWP",
       "tool_name": "crowdstrike-okta___contain_xdr_host_with_dpop",
       "http_status": 200,
@@ -3470,7 +3470,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_HOP1_DPOP_AND_CMEK_GUARD",
     "probe_status_code": 200,
@@ -3480,7 +3480,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-10-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "TXGJHVFBWP",
       "tool_name": "crowdstrike-okta___contain_xdr_host_with_dpop",
       "http_status": 200,
@@ -3571,7 +3571,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_HOP1_DPOP_AND_CMEK_GUARD",
     "probe_status_code": 200,
@@ -3581,7 +3581,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-10-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "TXGJHVFBWP",
       "tool_name": "crowdstrike-okta___contain_xdr_host_with_dpop",
       "http_status": 200,

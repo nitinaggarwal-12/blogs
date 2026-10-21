@@ -2,7 +2,7 @@
   "serviceName": "ge-blogs",
   "beyondCorpUrl": "https://ge-blogs-248990048888.cr.gclb.goog",
   "directCloudRunUrl": "https://ge-blogs-mi7l4h536a-uw.a.run.app",
-  "buildProject": "nitina-ggarwal-sandbox-647724",
+  "buildProject": "cymbal-build-sandbox",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
   "latestReadyRevisionName": "ge-blogs-00018-tzg",

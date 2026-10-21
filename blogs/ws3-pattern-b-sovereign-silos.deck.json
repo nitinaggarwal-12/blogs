@@ -4,7 +4,7 @@
   "deckSubtitle": "How regulated financial, healthcare, and public-sector enterprises achieve physical Google Cloud project isolation, air-gapped Gemma 3 hosting, and a sub-60-second CMEK kill-switch while reusing 80% of the platform codebase",
   "tldr": [
     "Meeting Strict Regulatory Sovereignty Mandates: Banking (OCC/FFIEC), healthcare (HIPAA), and sovereign cloud auditors frequently mandate zero shared compute, zero shared storage, and customer-revocable encryption keys.",
-    "80% Reusable ADK Codebase, 20% Dedicated Cloud Perimeter: Pattern B deploys the exact same 5-hop Python ADK 2.0 runtime inside a dedicated per-tenant Google Cloud project (`cymbal-finvault-silo-prod`).",
+    "80% Reusable ADK Codebase, 20% Dedicated Cloud Perimeter: Pattern B deploys the exact same 5-hop Python ADK runtime inside a dedicated per-tenant Google Cloud project (`cymbal-finvault-silo-prod`).",
     "Three Hardware-Enforced Perimeter Walls: Every tenant vault is locked by mTLS + IAM Principal Access Boundaries (PAB), a VPC Service Controls (VPC-SC) perimeter, and dedicated Cloud KMS Customer-Managed Encryption Keys (CMEK).",
     "Sub-60-Second Customer CMEK Kill-Switch (`HTTP 423 Locked`): If a tenant Security Operations Center revokes or disables its Cloud KMS key, all Agent Engine memory, AlloyDB reads, and GKE inference halt immediately with HTTP 423.",
     "Verified 6/6 Sovereign Compliance Suite & Terraform Blueprint: Ships with automated dual-silo security tests (`FinVault` + `RetailStream`), a 4-stage onboarding provisioner, and a 1-click Terraform silo blueprint (`3.6`)."
@@ -76,7 +76,7 @@
         "The Regulated CISO Threat Model (Zero Physical Blast Radius): Tier-1 banks (OCC/FFIEC, EU DORA) and healthcare systems (HIPAA) mandate physically separate GCP projects (`cymbal-{tenant}-silo-prod`) with zero shared compute or databases.",
         "FinVault Bank Sovereign Vault (`cymbal-finvault-silo-prod`): Runs air-gapped Gemma 3 (27B IT) on private GKE GPU nodes (`172.16.0.2/28`, 0 public IPs) alongside private Agent Alpha (Gemini 2.5 Pro Dedicated PT) and CMEK AlloyDB.",
         "RetailStream Sovereign Vault (`cymbal-retailstream-silo-prod`): Demonstrates dual-silo parity with its own VPC Service Controls perimeter, IAM Principal Access Boundary (PAB), Entra ID 3LO connectors, and independent Cloud KMS CMEK key ring.",
-        "3-Wall Hardware Perimeter & <60s CMEK Kill-Switch Stack: BeyondCorp mTLS, IAM PAB, VPC-SC, Cloud KMS CMEK (`HTTP 423 Locked`), Model Armor, Cloud DLP, AlloyDB, and BigQuery wrap the unchanged 80% reusable ADK 2.0 core."
+        "3-Wall Hardware Perimeter & <60s CMEK Kill-Switch Stack: BeyondCorp mTLS, IAM PAB, VPC-SC, Cloud KMS CMEK (`HTTP 423 Locked`), Model Armor, Cloud DLP, AlloyDB, and BigQuery wrap the unchanged 80% reusable ADK core."
       ],
       "specs": [
         {
@@ -96,7 +96,7 @@
         },
         {
           "stack": "BeyondCorp mTLS • IAM PAB • VPC-SC • Cloud KMS CMEK • Model Armor • Cloud DLP • 3.6 Terraform",
-          "sla": "80% Shared ADK 2.0 Code + 20% Declarative Sovereign Shell • 6/6 Sovereign Security Tests PASS",
+          "sla": "80% Shared ADK Code + 20% Declarative Sovereign Shell • 6/6 Sovereign Security Tests PASS",
           "tag": "4. Unified Pattern B Sovereign Stack"
         }
       ]
@@ -318,7 +318,7 @@
       "tag": "Takeaway 1: Physical Sovereignty"
     },
     {
-      "stack": "core-cymbal-agent/ (Shared Python ADK 2.0) + 3.6-terraform-silo-blueprint",
+      "stack": "core-cymbal-agent/ (Shared Python ADK) + 3.6-terraform-silo-blueprint",
       "sla": "80% Code Reuse Across Pooled & Siloed Tiers • Zero Per-Tenant Code Forks",
       "tag": "Takeaway 2: Operational Scale"
     },

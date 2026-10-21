@@ -12,7 +12,7 @@ export default {
   topUserSub: 'init -> plan -> apply (README)',
   step1LeftLabel: 'terraform apply',
   step7RightLabel: 'Outputs',
-  outerWrapperLabel: 'Terraform Root Module: 4.6-terraform-hybrid-psc-blueprint (nitina-ggarwal-sandbox-647724 • hub_project_id, enterprise_spoke_project_id)',
+  outerWrapperLabel: 'Terraform Root Module: 4.6-terraform-hybrid-psc-blueprint (cymbal-build-sandbox • hub_project_id, enterprise_spoke_project_id)',
   innerWrapperLabel: 'Dependency Graph: Providers → Networks → Subnets → ServiceAttachment → Address → ForwardingRule → Outputs',
   routingHubTitle: 'Providers, Variables & Hub Network',
   routingHubSub: 'provider "google" alias hub/spoke • var.region = us-west1',

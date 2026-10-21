@@ -140,7 +140,11 @@ async function run() {
           nonPreText.includes("MK-3475-087") ||
           nonPreText.includes("nitinagga-ge-2") ||
           nonPreText.includes("nitina-ggarwal-sandbox-647724") ||
-          nonPreText.includes("nitinagga-argolis-aws"),
+          nonPreText.includes("nitinagga-argolis-aws") ||
+          nonPreText.includes("merck-a2a-mcp-") ||
+          nonPreText.includes("ADK 2.0") ||
+          nonPreText.includes("Q4 2026") ||
+          nonPreText.includes("Q1 2027"),
         missingEc2Ports,
         hasFormatJson: html.includes("?format=json"),
         proofGridCount: proofGrids.length,

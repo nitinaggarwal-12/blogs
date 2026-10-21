@@ -2,7 +2,7 @@
   "id": "VIS-WS4-HUB-AND-SPOKE-DEMO-ENV-SETUP-TOPOLOGY",
   "blueprintId": "ws4-hub-and-spoke-demo-env-setup-topology",
   "title": "Pattern C Demo Environment: Central Ingress Hub, Shared Pool & PSC Service Attachment Spokes",
-  "subtitle": "Live Verified in nitina-ggarwal-sandbox-647724 • cymbal-pattern-c-hub-vpc (10.128.0.0/24), /28 PSC NAT 10.240.0.0/28 & cymbal-pattern-c-finvault-spoke-vpc",
+  "subtitle": "Live Verified in cymbal-build-sandbox • cymbal-pattern-c-hub-vpc (10.128.0.0/24), /28 PSC NAT 10.240.0.0/28 & cymbal-pattern-c-finvault-spoke-vpc",
   "badge": "WORKSTREAM 4.2 • HUB-AND-SPOKE DEMO ENV SETUP",
   "sourceImage": "diagrams/ws4-hub-and-spoke-demo-env-setup-topology.drawio.png",
   "drawioFile": "diagrams/ws4-hub-and-spoke-demo-env-setup-topology.drawio",
@@ -23,7 +23,7 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (/Users/nitinagga/documents/PromptCanvas/src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
   "healerLog": [
     "Protected master/canonical blueprint passed through without geometric mutation."
   ],
@@ -66,8 +66,8 @@
     {
       "id": "wrapper_shared_hubs",
       "urlSlug": "OBJ-03-CYMBAL-UNIFIED-CONTROL-P",
-      "label": "Cymbal Unified Control Plane & Ingress Hub (nitina-ggarwal-sandbox-647724 • cymbal-pattern-c-hub-vpc)",
-      "plainTitle": "Cymbal Unified Control Plane & Ingress Hub (nitina-ggarwal-sandbox-647724 • cymbal-pattern-c-hub-vpc)",
+      "label": "Cymbal Unified Control Plane & Ingress Hub (cymbal-build-sandbox • cymbal-pattern-c-hub-vpc)",
+      "plainTitle": "Cymbal Unified Control Plane & Ingress Hub (cymbal-build-sandbox • cymbal-pattern-c-hub-vpc)",
       "zone": "Apps & Solutions Tier",
       "x": 36,
       "y": 268,

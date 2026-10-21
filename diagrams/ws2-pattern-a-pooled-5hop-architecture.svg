@@ -7,7 +7,7 @@
   </defs>
   <rect x="0" y="0" width="1200" height="1410" fill="#ffffff"/>
   <text x="20" y="22" text-anchor="start" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#174ea6">[WORKSTREAM 2.1 • PATTERN A BLUEPRINT] Pattern A: High-Density Pooled Multi-Tenant Architecture &amp; Shared Runtime Governance</text>
-  <text x="20" y="40" text-anchor="start" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6368">Milestone 1 (Weeks 1–4) • Live Verified in nitina-ggarwal-sandbox-647724 (cymbal-pooled-saas-prod) • 90% Cache Savings</text>
+  <text x="20" y="40" text-anchor="start" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6368">Milestone 1 (Weeks 1–4) • Live Verified in cymbal-build-sandbox (cymbal-pooled-saas-prod) • 90% Cache Savings</text>
   <g>
     <rect x="465" y="52" width="250" height="86" rx="8" ry="8" fill="#ffffff" stroke="#202124" stroke-width="2"/>
     <circle cx="590" cy="76" r="9.5" fill="#000000"/>
@@ -148,7 +148,7 @@
     
     </g>
   
-  <text x="52" y="291" text-anchor="start" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round">Shared GCP Project: nitina-ggarwal-sandbox-647724 / cymbal-pooled-saas-prod (Maximum Density Pooled SaaS)</text>
+  <text x="52" y="291" text-anchor="start" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round">Shared GCP Project: cymbal-build-sandbox / cymbal-pooled-saas-prod (Maximum Density Pooled SaaS)</text>
   <text x="68" y="327" text-anchor="start" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round">Shared VPC • 5-Hop Cryptographic Context Chain (cymbal-multi-tenant-patterns-00003-wfh)</text>
   <text x="84" y="363" text-anchor="start" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#aecbfa" stroke-width="8" stroke-linejoin="round">Hop 1 &amp; Hop 2: Edge PEP &amp; Agent Catalog PDP</text>
   <text x="84" y="381" text-anchor="start" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#aecbfa" stroke-width="8" stroke-linejoin="round">Header stripping, OBO+DPoP KMS Sign &amp; Discovery Engine Catalog pruning</text>

@@ -7,7 +7,7 @@ Enforces Governance Pillar 1 (Catalog & Agent Visibility):
    enumerate private agents or MCP connectors belonging to other tenants.
 3. Blocks unauthorized direct agent invocations with `403 Forbidden`
    (e.g., RetailStream attempting to invoke FinVault's private 'Agent Alpha').
-4. Executes ADK 2.0 `before_agent_callback` deterministic tool pruning so an
+4. Executes ADK `before_agent_callback` deterministic tool pruning so an
    agent cannot discover or invoke another tenant's MCP connectors mid-turn.
 """
 

@@ -2,7 +2,7 @@
 """
 Renders and captures 10 high-resolution (1440x920) headless Chrome screenshots of all 10
 live Enterprise Third-Party SaaS MCP Targets deployed on AWS Bedrock AgentCore MCP Gateway
-(`merck-a2a-mcp-gateway-kiu8omh4aq`, AWS Account `393036065405`, `us-east-1`) + Google Cloud
+(`cymbal-a2a-mcp-gateway-kiu8omh4aq`, AWS Account `393036065405`, `us-east-1`) + Google Cloud
 BigQuery RLS/CMEK/PSC + Cloud KMS ECDSA P-256 signing.
 
 Writes screenshots to:
@@ -110,8 +110,8 @@ SCREENSHOT_SPECS = [
 def _build_html_for_saas(spec: dict, prod: dict, pat_a: dict, pat_b: dict, pat_c: dict, target_meta: dict) -> str:
     pos = prod["positive_result"]
     mcp_exec = pos.get("live_aws_agentcore_mcp_execution") or {
-        "gateway_id": "merck-a2a-mcp-gateway-kiu8omh4aq",
-        "gateway_url": pos.get("gateway_url", "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp"),
+        "gateway_id": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
+        "gateway_url": pos.get("gateway_url", "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp"),
         "tool_name": pos.get("tool_name", target_meta.get("tool_name", "")),
         "http_status": pos.get("status_code", 200),
         "is_error": False,
@@ -122,7 +122,7 @@ def _build_html_for_saas(spec: dict, prod: dict, pat_a: dict, pat_b: dict, pat_c
         payload.get("s3AuditLedgerUri")
         or payload.get("s3_audit_ledger_uri")
         or f"s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1/cymbal-10saas-ledger/{spec['target_name']}/finvault.json"
-    ).replace("nitinagga-argolis-aws-393036065405-us-east-1", "cymbal-multi-tenant-audit-ledger-393036065405-us-east-1")
+    ).replace("cymbal-aws-federation-393036065405-us-east-1", "cymbal-multi-tenant-audit-ledger-393036065405-us-east-1")
     target_id = target_meta.get("targetId", pat_a["configuration"].get("mcp_target_id", "READY"))
     tool_name = mcp_exec.get("tool_name") or target_meta.get("toolName", "")
 
@@ -131,7 +131,7 @@ def _build_html_for_saas(spec: dict, prod: dict, pat_a: dict, pat_b: dict, pat_c
         {
             "status_code": 200,
             "decision": "ALLOW",
-            "aws_bedrock_agentcore_gateway": "merck-a2a-mcp-gateway-kiu8omh4aq (393036065405 us-east-1)",
+            "aws_bedrock_agentcore_gateway": "cymbal-a2a-mcp-gateway-kiu8omh4aq (393036065405 us-east-1)",
             "mcp_target_id": target_id,
             "mcp_tool_name": tool_name,
             "cognito_user_pool": "us-east-1_vqlzYM74B (RS256 OAuth2)",
@@ -437,7 +437,7 @@ def _build_html_for_saas(spec: dict, prod: dict, pat_a: dict, pat_b: dict, pat_c
       <div class="kpi-grid">
         <div class="kpi">
           <div class="kpi-label">AWS AgentCore MCP Gateway</div>
-          <div class="kpi-val">merck-a2a-mcp-gateway-kiu8omh4aq</div>
+          <div class="kpi-val">cymbal-a2a-mcp-gateway-kiu8omh4aq</div>
         </div>
         <div class="kpi">
           <div class="kpi-label">Target ID &amp; JSON-RPC Tool</div>
@@ -445,7 +445,7 @@ def _build_html_for_saas(spec: dict, prod: dict, pat_a: dict, pat_b: dict, pat_c
         </div>
         <div class="kpi">
           <div class="kpi-label">Cognito OAuth2 &amp; Lambda Peer</div>
-          <div class="kpi-val">us-east-1_vqlzYM74B &bull; merck-a2a-mcp-remote-peer</div>
+          <div class="kpi-val">us-east-1_vqlzYM74B &bull; cymbal-a2a-mcp-remote-peer</div>
         </div>
         <div class="kpi">
           <div class="kpi-label">Live S3 Audit Ledger Object</div>

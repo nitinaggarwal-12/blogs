@@ -63,7 +63,7 @@ status: "PUBLISH_READY"
 # GEAP Multi-Tenancy Program — End-to-End Guide to Every Workstream and Every Diagram
 
 > **Anchor reference:** [Multi-tenant agentic AI system — Google Cloud Architecture Center](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system)
-> **Scope:** the complete 10-week program (`1W Design • 2W Build • 1W Launch`) that extends that reference architecture into three production topologies for B2B ISVs on **Gemini Enterprise Agent Platform (GEAP)** and **ADK 2.0** — Pattern A (Pooled), Pattern B (Sovereign Silos) and Pattern C (Dynamic Hybrid) — using the **Cymbal SaaS / FinVault Bank / RetailStream Corp** anchor case study and the **80 % reusable core + 20 % pattern delta** engineering rule.
+> **Scope:** the complete 10-week program (`1W Design • 2W Build • 1W Launch`) that extends that reference architecture into three production topologies for B2B ISVs on **Gemini Enterprise Agent Platform (GEAP)** and **ADK** — Pattern A (Pooled), Pattern B (Sovereign Silos) and Pattern C (Dynamic Hybrid) — using the **Cymbal SaaS / FinVault Bank / RetailStream Corp** anchor case study and the **80 % reusable core + 20 % pattern delta** engineering rule.
 > **What this document is:** one linear read that covers every numbered deliverable in every workstream folder and walks through all **14 architecture blueprints** card by card and step by step, with their grounding in the source material, the design decisions they encode, and their honest caveats.
 
 ## How to read this guide
@@ -144,7 +144,7 @@ All **14 blueprints** across Workstreams 1–5 are compiled using the **Official
 2. **SVG & 2× PNG compilation** — [`scripts/build_all_workstream_diagrams.mjs`](../scripts/build_all_workstream_diagrams.mjs) compiles each specification to an official Google Cloud Architecture Center `.svg`, `.drawio.xml`, and 2× `.png` via headless Chrome and writes [`diagrams/diagrams_manifest.json`](../diagrams/diagrams_manifest.json).
 3. **PromptCanvas Vision AST & Draw.io certification** — [`scripts/run_promptcanvas_vision_pipeline.ts`](../scripts/run_promptcanvas_vision_pipeline.ts) validates every diagram's geometry, renders `.drawio` / `.drawio.xml` / `.drawio.png` via official Draw.io `mxGraph`, and writes the addressable `.vision.json` AST under [`diagrams/vision_metadata/`](../diagrams/vision_metadata/).
 4. **Editable slides** — [`scripts/build_editable_slide_decks.ts`](../scripts/build_editable_slide_decks.ts) builds the native editable PowerPoint / Google Slides decks in [`slides/`](../slides/) (following the **12-Slide Customer-Centric 3-Act Top-Down Deck Standard** for WS1–WS5 with `{total_shapes}` editable shapes and `{total_conns}` connectors across the 60 workstream slides, plus the 25-slide Master Deck and three 6-slide Companion Reference Decks) and [`scripts/render_pptx_preview.py`](../scripts/render_pptx_preview.py) renders PNG slide previews.
-5. **Live Cloud Console & Runtime Verification** — [`scripts/verify_cloud_console_and_runtime.py`](../scripts/verify_cloud_console_and_runtime.py) verifies the live GCP project (`nitina-ggarwal-sandbox-647724`), enabled Agentic Cloud APIs (`aiplatform`, `discoveryengine`, `cloudkms`, `compute`, `container`, `run`, `alloydb`, `bigquery`, `firestore`, `redis`, `accesscontextmanager`, `iam`), 1:1 Terraform HCL resource parity (`2.6`, `3.6`, `4.6`), and all `20/20` Python runtime simulation assertions (`docs/cloud_console_verification_receipt.json`).
+5. **Live Cloud Console & Runtime Verification** — [`scripts/verify_cloud_console_and_runtime.py`](../scripts/verify_cloud_console_and_runtime.py) verifies the live GCP project (`cymbal-build-sandbox`), enabled Agentic Cloud APIs (`aiplatform`, `discoveryengine`, `cloudkms`, `compute`, `container`, `run`, `alloydb`, `bigquery`, `firestore`, `redis`, `accesscontextmanager`, `iam`), 1:1 Terraform HCL resource parity (`2.6`, `3.6`, `4.6`), and all `20/20` Python runtime simulation assertions (`docs/cloud_console_verification_receipt.json`).
 
 ```bash
 node scripts/build_all_workstream_diagrams.mjs
@@ -391,7 +391,7 @@ Each workstream deck (`WS1`–`WS5`) follows the **12-Slide Customer-Centric 3-A
 | Term | Meaning in this program |
 | :--- | :--- |
 | **Vertex AI Agent Engine & Discovery Engine** | Managed Google Cloud agent runtime, Discovery Engine Agent Catalog (ARD), and Agent Identity (Auth Manager) |
-| **ADK 2.0** | Agent Development Kit; `before_agent_callback` is the hook used for tenant-scoped tool pruning (Hop 2) |
+| **ADK** | Agent Development Kit; `before_agent_callback` is the hook used for tenant-scoped tool pruning (Hop 2) |
 | **5-Hop chain** | The reusable governance pipeline in `core-cymbal-agent/governance/` (see §0.3) |
 | **OBO / DPoP** | RFC 8693 On-Behalf-Of token exchange and Demonstration of Proof-of-Possession — sender-constrained JWTs at Hop 1 |
 | **2LO / 3LO** | Two-legged (service) vs three-legged (delegated user) OAuth for MCP tool servers |
@@ -407,7 +407,7 @@ Each workstream deck (`WS1`–`WS5`) follows the **12-Slide Customer-Centric 3-A
 
 ## Appendix D — Verification status & Cloud Console Receipt
 
-Generated from [`diagrams/diagrams_manifest.json`](../diagrams/diagrams_manifest.json), [`slides/slides_manifest.json`](../slides/slides_manifest.json), and [`docs/cloud_console_verification_receipt.json`](cloud_console_verification_receipt.json): **{len(MANIFEST)}/14 Official Google Cloud Architecture Center Rule 53G blueprints certified** (`hub-2-spoke` 56v/23e, `pooled-shared-plane` 60v/20e, `decision-tree-3-outcome` 46v/19e — `0` collisions, `0` validation errors), **{len(SLIDES['decks'])} editable `.pptx` decks**, **live GCP Project `nitina-ggarwal-sandbox-647724` (`12/12` APIs enabled, `3/3` Terraform modules 1:1 verified, `20/20` Python simulations PASS)**, and the forensic audit gate `F-12` enforcing their presence and cross-links. Run `python3 -B scripts/run_deep_forensic_audit.py` and `python3 -B scripts/verify_cloud_console_and_runtime.py` to re-verify.
+Generated from [`diagrams/diagrams_manifest.json`](../diagrams/diagrams_manifest.json), [`slides/slides_manifest.json`](../slides/slides_manifest.json), and [`docs/cloud_console_verification_receipt.json`](cloud_console_verification_receipt.json): **{len(MANIFEST)}/14 Official Google Cloud Architecture Center Rule 53G blueprints certified** (`hub-2-spoke` 56v/23e, `pooled-shared-plane` 60v/20e, `decision-tree-3-outcome` 46v/19e — `0` collisions, `0` validation errors), **{len(SLIDES['decks'])} editable `.pptx` decks**, **live GCP Project `cymbal-build-sandbox` (`12/12` APIs enabled, `3/3` Terraform modules 1:1 verified, `20/20` Python simulations PASS)**, and the forensic audit gate `F-12` enforcing their presence and cross-links. Run `python3 -B scripts/run_deep_forensic_audit.py` and `python3 -B scripts/verify_cloud_console_and_runtime.py` to re-verify.
 
 *End of guide.*
 """
@@ -445,8 +445,8 @@ def sanitize_section_text(text: str) -> str:
 
     replacements = [
         (
-            "Anthropic prompt-cache headers (Q1 2027)",
-            "Gemini 2.5 Pro (Dedicated PT) endpoint-scoped prefix cache descriptors (Q1 2027)",
+            "Anthropic prompt-cache headers (Feature-Flagged Native Hook)",
+            "Gemini 2.5 Pro (Dedicated PT) endpoint-scoped prefix cache descriptors (Feature-Flagged Native Hook)",
         ),
         (
             "partner models (Gemini 2.5 Pro (Dedicated PT)) use provider-specific cache headers (`anthropic-beta: prompt-caching`)",

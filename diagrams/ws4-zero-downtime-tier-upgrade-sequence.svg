@@ -9,7 +9,7 @@
   <rect x="0" y="0" width="1200" height="1410" fill="#ffffff"/>
 
   <text x="20" y="22" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#174ea6" textLength="1150" lengthAdjust="spacingAndGlyphs">[WORKSTREAM 4.5 • ZERO-DOWNTIME TIER UPGRADE SUITE] Zero-Downtime Tier Upgrade Test Sequence: SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY (4/4 PASS)</text>
-  <text x="20" y="40" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6368">run_tier_migration_suite.py • Live Verified in nitina-ggarwal-sandbox-647724 • Promotes retailstream Mid-Session to psc://10.10.0.51 with 0 Dropped Turns</text>
+  <text x="20" y="40" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6368">run_tier_migration_suite.py • Live Verified in cymbal-build-sandbox • Promotes retailstream Mid-Session to psc://10.10.0.51 with 0 Dropped Turns</text>
 
   <!-- TOP EXTERNAL USER / TENANT BOX -->
   <g>

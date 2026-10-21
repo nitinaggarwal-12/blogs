@@ -5,19 +5,19 @@
  * Provisioning view: org/billing bootstrap → shared hub project steps →
  * org-level PAB / KMS / SCC governance → dedicated tenant silo projects
  * (cymbal-finvault-silo-prod, cymbal-retailstream-silo-prod) verified live
- * in nitina-ggarwal-sandbox-647724 with cymbal-multi-tenant-kr and cymbal_silo_finvault_usw1.
+ * in cymbal-build-sandbox with cymbal-multi-tenant-kr and cymbal_silo_finvault_usw1.
  */
 export default {
   id: 'ws3-multi-project-silo-and-cmek-setup-topology',
   badge: 'WORKSTREAM 3.2 • MULTI-PROJECT SILO & CMEK SETUP',
   title: 'Pattern B Provisioning Topology: Org → Per-Tenant Silo Projects, VPC-SC Perimeters, IAM PAB & Cloud KMS CMEK Keys',
-  subtitle: 'Live Verified in nitina-ggarwal-sandbox-647724 (us-west1) • cymbal-multi-tenant-kr/{finvault-silo-cmek,medcore-revoked-cmek} & cymbal_silo_finvault_usw1',
+  subtitle: 'Live Verified in cymbal-build-sandbox (us-west1) • cymbal-multi-tenant-kr/{finvault-silo-cmek,medcore-revoked-cmek} & cymbal_silo_finvault_usw1',
   workstreamDir: 'workstream-3-pattern-b-siloed/diagrams',
   topUserTitle: 'Platform / FDE Operator',
   topUserSub: 'gcloud + ORG_ID + BILLING_ACCOUNT',
   step1LeftLabel: 'gcloud bootstrap',
   step7RightLabel: '6/6 Silo PASS',
-  outerWrapperLabel: 'Multi-Project Sovereign Silo Topology (nitina-ggarwal-sandbox-647724 • One Perimeter, Key Ring & PAB Policy per Tenant)',
+  outerWrapperLabel: 'Multi-Project Sovereign Silo Topology (cymbal-build-sandbox • One Perimeter, Key Ring & PAB Policy per Tenant)',
   innerWrapperLabel: 'Shared Hub Project Bootstrap & Org-Level Governance (cymbal-multi-tenant-patterns-00003-wfh)',
   routingHubTitle: 'Shared Hub Project Bootstrap',
   routingHubSub: 'projects create → billing link → services enable',

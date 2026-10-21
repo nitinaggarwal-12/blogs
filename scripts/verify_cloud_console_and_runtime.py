@@ -3,7 +3,7 @@
 Real Google Cloud Console, Terraform HCL DAG & 5-Hop Python Runtime Verification Suite
 ======================================================================================
 Executes live verification against:
-1. Active GCP Project & Cloud Console APIs (`nitina-ggarwal-sandbox-647724` via `gcloud`).
+1. Active GCP Project & Cloud Console APIs (`cymbal-build-sandbox` via `gcloud`).
 2. Terraform HCL Variable -> Resource -> Output DAGs (`2.6`, `3.6`, `4.6`) & 1:1 Diagram Parity.
 3. Live 5-Hop Python Agent Runtime (`core-cymbal-agent/runtime_pipeline.py`) & All 20 Security/Migration Simulations (`2.5`, `3.5`, `4.5`).
 4. Bespoke Diagram Topology & Zero-Collision Audit across all 14 Workstream Blueprints.
@@ -42,7 +42,7 @@ def verify_gcp_cloud_console() -> dict:
     _, account, _ = run_cmd(["gcloud", "config", "get-value", "account"])
     _, project_id, _ = run_cmd(["gcloud", "config", "get-value", "project"])
     if not project_id:
-        project_id = "nitina-ggarwal-sandbox-647724"
+        project_id = "cymbal-build-sandbox"
 
     rc_proj, proj_json_str, _ = run_cmd(
         ["gcloud", "projects", "describe", project_id, "--format=json"]

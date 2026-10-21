@@ -2,7 +2,7 @@
   "id": "VIS-WS3-TERRAFORM-SILO-BLUEPRINT-RESOURCE-GRAPH",
   "blueprintId": "ws3-terraform-silo-blueprint-resource-graph",
   "title": "Terraform Blueprint Resource Graph: Provider → Cloud KMS CMEK → VPC-SC Perimeter → Sovereign VPC → Private Air-Gapped GKE (Gemma 3)",
-  "subtitle": "main.tf / variables.tf / terraform.tfvars.example • Live Verified KMS KeyRing cymbal-multi-tenant-kr & CMEK Vault in nitina-ggarwal-sandbox-647724",
+  "subtitle": "main.tf / variables.tf / terraform.tfvars.example • Live Verified KMS KeyRing cymbal-multi-tenant-kr & CMEK Vault in cymbal-build-sandbox",
   "badge": "WORKSTREAM 3.6 • TERRAFORM SILO BLUEPRINT RESOURCE GRAPH",
   "sourceImage": "diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio.png",
   "drawioFile": "diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio",
@@ -23,7 +23,7 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (/Users/nitinagga/documents/PromptCanvas/src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
   "healerLog": [
     "Protected master/canonical blueprint passed through without geometric mutation."
   ],
@@ -66,8 +66,8 @@
     {
       "id": "wrapper_shared_hubs",
       "urlSlug": "OBJ-03-TERRAFORM-ROOT-MODULE-PA",
-      "label": "Terraform Root Module • Pattern B Sovereign Silo (nitina-ggarwal-sandbox-647724 • tenant_id, tenant_silo_project_id, access_context_policy_id)",
-      "plainTitle": "Terraform Root Module • Pattern B Sovereign Silo (nitina-ggarwal-sandbox-647724 • tenant_id, tenant_silo_project_id, access_context_policy_id)",
+      "label": "Terraform Root Module • Pattern B Sovereign Silo (cymbal-build-sandbox • tenant_id, tenant_silo_project_id, access_context_policy_id)",
+      "plainTitle": "Terraform Root Module • Pattern B Sovereign Silo (cymbal-build-sandbox • tenant_id, tenant_silo_project_id, access_context_policy_id)",
       "zone": "Apps & Solutions Tier",
       "x": 36,
       "y": 268,

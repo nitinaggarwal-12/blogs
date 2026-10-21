@@ -7,7 +7,7 @@
   </defs>
   <rect x="0" y="0" width="1200" height="1410" fill="#ffffff"/>
   <text x="20" y="22" text-anchor="start" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#174ea6">[WORKSTREAM 5.1 &amp; 5.2 • CAPSTONE BLUEPRINT] Workstream 5 Capstone: Executive Topology Decision Guide &amp; The Multi-Tenant Agentic Triad</text>
-  <text x="20" y="40" text-anchor="start" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6368">Verified 20/20 Suites PASS Across nitina-ggarwal-sandbox-647724 &amp; ramp-portal-dev (Security • FinOps -84.7% • Zero-PII OTel)</text>
+  <text x="20" y="40" text-anchor="start" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6368">Verified 20/20 Suites PASS Across cymbal-build-sandbox &amp; ramp-portal-dev (Security • FinOps -84.7% • Zero-PII OTel)</text>
   <g>
     <rect x="465" y="52" width="250" height="86" rx="8" ry="8" fill="#ffffff" stroke="#202124" stroke-width="2"/>
     <circle cx="590" cy="76" r="9.5" fill="#000000"/>

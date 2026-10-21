@@ -7,7 +7,7 @@
     "Cryptographic Logical Isolation (Zero Physical Sprawl): Instead of spinning up separate VPCs per tenant, Pattern A enforces non-bypassable tenant boundaries across all 5 runtime hops in software.",
     "10/10 Adversarial Red-Team Attacks Neutralized: Competing tenants FinVault Bank and RetailStream Corp share the exact same Cloud Run v2 workers and AlloyDB cluster with zero cross-tenant data or tool bleed.",
     "84.7% Net Inference Cost Reduction: A 32,000-token immutable platform runbook is cached once in Gemini 2.5 Pro ContextCacheConfig at a 90% discount, cutting billable input tokens from 34,000 to 5,200 per turn.",
-    "Turnkey Milestone 1 Production Kit: Includes the 80% reusable ADK 2.0 runtime pipeline, a 1-click Terraform starter (`2.6-terraform-starter`), a 90-minute hands-on codelab, and the 10-point breach simulation suite."
+    "Turnkey Milestone 1 Production Kit: Includes the 80% reusable ADK runtime pipeline, a 1-click Terraform starter (`2.6-terraform-starter`), a 90-minute hands-on codelab, and the 10-point breach simulation suite."
   ],
   "tldrSpecs": [
     {
@@ -41,14 +41,14 @@
       "heading": "Products used — Shared Cloud Run v2, Vertex AI, Valkey & AlloyDB RLS",
       "layout": "cards",
       "bullets": [
-        "Agentic AI & Shared Prefix Caching: Vertex AI Agent Engine (ADK 2.0 runtime, Agent Registry & L1–L5 Memory Bank) and Gemini 2.5 Pro with ContextCacheConfig caching a 32,000-token immutable system prefix at a 90% discount (84.7% net token savings).",
+        "Agentic AI & Shared Prefix Caching: Vertex AI Agent Engine (ADK runtime, Agent Registry & L1–L5 Memory Bank) and Gemini 2.5 Pro with ContextCacheConfig caching a 32,000-token immutable system prefix at a 90% discount (84.7% net token savings).",
         "Ingress, Identity & Bidirectional AI Safety: Global External Application Load Balancer, Google Cloud Armor L7 WAF (stripping spoofed X-Tenant-Id headers), IAP + IAM STS (RFC 8693 OBO + RFC 9449 DPoP), Vertex AI Model Armor, and Cloud Sensitive Data Protection.",
         "Rate Bulkheads, Relational RLS & FinOps Telemetry: Memorystore for Valkey (120 vs. 600 RPM token buckets), Firestore tenant profile registry, AlloyDB for PostgreSQL (`FORCE ROW LEVEL SECURITY`), Cloud KMS CMEK, and BigQuery zero-PII OTel chargeback.",
         "High-Density Unit Economics (120 RPM Shared Pool): Co-hosts hundreds of commercial B2B SaaS tenants inside one shared Google Cloud project (`cymbal-control-plane`) while guaranteeing 10/10 red-team breach isolation."
       ],
       "specs": [
         {
-          "stack": "Vertex AI Agent Engine (ADK 2.0) • Gemini 2.5 Pro ContextCacheConfig (32k Shared System Prefix)",
+          "stack": "Vertex AI Agent Engine (ADK) • Gemini 2.5 Pro ContextCacheConfig (32k Shared System Prefix)",
           "sla": "90% Cached Input Token Discount • Cuts Billable Input Tokens from 34,000 to 5,200/Turn (84.7% Savings)",
           "tag": "1. Agentic AI & Prefix Cache"
         },
@@ -182,7 +182,7 @@
         {
           "hop": "HOP 03",
           "stage": "Runtime & Memory",
-          "title": "Sandboxed ADK 2.0 Execution, L1–L5 Memory & Quota Bulkheads",
+          "title": "Sandboxed ADK Execution, L1–L5 Memory & Quota Bulkheads",
           "service": "Agent Engine • Memorystore Valkey",
           "mechanism": "Executes agent reasoning inside gVisor-isolated Cloud Run v2 / Agent Engine sandboxes, partitions L1–L5 Memory Bank namespaces, and enforces per-tenant RPM and thinking budgets.",
           "invariant": "Namespace: mem://{tenant_id}/L1..L5 • Cap: 4k (Std) / 8k (Ent)",
@@ -310,7 +310,7 @@
       "talkingPoints": [
         "Illustrates the declarative Terraform resource dependency graph (`2.6-terraform-starter/main.tf`) that provisions Pattern A from 5 input variables.",
         "Zone 1 (Edge Security): Provisions `google_compute_security_policy` (Cloud Armor WAF) to block SQLi/XSS and strip unverified tenant headers.",
-        "Zone 3 (Serverless Agent Compute): Deploys `google_cloud_run_v2_service` (ADK 2.0 gateway) bound to least-privilege IAM and KMS encryption.",
+        "Zone 3 (Serverless Agent Compute): Deploys `google_cloud_run_v2_service` (ADK gateway) bound to least-privilege IAM and KMS encryption.",
         "Zone 4 (Quota & Transactional State): Provisions `google_memorystore_instance` (Valkey HA) and AlloyDB with PostgreSQL Row-Level Security.",
         "Zone 2 (CMEK & FinOps Ledger): Creates `google_kms_crypto_key` (90-day rotation) and `google_bigquery_table` (time-partitioned OTel chargeback sink)."
       ]

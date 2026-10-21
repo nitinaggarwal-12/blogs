@@ -2,7 +2,7 @@
   "id": "VIS-WS4-ZERO-DOWNTIME-TIER-UPGRADE-SEQUENCE",
   "blueprintId": "ws4-zero-downtime-tier-upgrade-sequence",
   "title": "Zero-Downtime Tier Upgrade Test Sequence: SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY (4/4 PASS)",
-  "subtitle": "run_tier_migration_suite.py • Live Verified in nitina-ggarwal-sandbox-647724 • Promotes retailstream Mid-Session to psc://10.10.0.51 with 0 Dropped Turns",
+  "subtitle": "run_tier_migration_suite.py • Live Verified in cymbal-build-sandbox • Promotes retailstream Mid-Session to psc://10.10.0.51 with 0 Dropped Turns",
   "badge": "WORKSTREAM 4.5 • ZERO-DOWNTIME TIER UPGRADE SUITE",
   "sourceImage": "diagrams/ws4-zero-downtime-tier-upgrade-sequence.drawio.png",
   "drawioFile": "diagrams/ws4-zero-downtime-tier-upgrade-sequence.drawio",
@@ -23,7 +23,7 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (/Users/nitinagga/documents/PromptCanvas/src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
   "healerLog": [
     "Protected master/canonical blueprint passed through without geometric mutation."
   ],

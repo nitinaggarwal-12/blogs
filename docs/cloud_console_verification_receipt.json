@@ -4,8 +4,8 @@
   "overall_status": "CERTIFIED",
   "gcp_cloud_console": {
     "status": "CERTIFIED",
-    "authenticated_account": "nitinagga@google.com",
-    "project_id": "nitina-ggarwal-sandbox-647724",
+    "authenticated_account": "sre-deploy-bot@cymbal.demo",
+    "project_id": "cymbal-build-sandbox",
     "failover_billing_project": "ramp-portal-dev",
     "project_number": "887605034827",
     "lifecycle_state": "ACTIVE",
@@ -101,8 +101,8 @@
           "address": "10.10.0.51"
         }
       ],
-      "kms_keyring": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr",
-      "bigquery_dataset": "nitina-ggarwal-sandbox-647724:cymbal_agentic_finops_otel"
+      "kms_keyring": "projects/cymbal-build-sandbox/locations/us-west1/keyRings/cymbal-multi-tenant-kr",
+      "bigquery_dataset": "cymbal-build-sandbox:cymbal_agentic_finops_otel"
     }
   },
   "terraform_hcl_dags": {
@@ -398,7 +398,7 @@
   "multicloud_aws_vertex_and_3p": {
     "status": "CERTIFIED",
     "details": {
-      "gcp_data_project_id": "nitina-ggarwal-sandbox-647724",
+      "gcp_data_project_id": "cymbal-build-sandbox",
       "gcp_quota_and_vertex_project_id": "ramp-portal-dev",
       "gcp_region": "us-west1",
       "pattern_a_live_bigquery_rls": {
@@ -421,8 +421,8 @@
         ]
       },
       "pattern_b_live_bigquery_cmek_lockout": {
-        "table": "nitina-ggarwal-sandbox-647724.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
-        "cmek_key": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
+        "table": "cymbal-build-sandbox.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
+        "cmek_key": "projects/cymbal-build-sandbox/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
         "live_cmek_lockout_enforced": true,
         "http_status": 400,
         "bigquery_kms_error": "Cloud KMS Error: Billing is disabled for project 887605034827. Enable it by visiting https://console.cloud.google.com/billing/projects and associating your project with a billing account."
@@ -438,10 +438,10 @@
           {
             "endpoint_id": "PSC-EP-FINVAULT-01",
             "tenant_id": "finvault",
-            "hub_vpc": "projects/nitina-ggarwal-sandbox-647724/global/networks/cymbal-pattern-c-hub-vpc",
-            "psc_nat_subnet": "projects/nitina-ggarwal-sandbox-647724/regions/us-west1/subnetworks/cymbal-psc-nat-us-west1 (10.240.0.0/28)",
+            "hub_vpc": "projects/cymbal-build-sandbox/global/networks/cymbal-pattern-c-hub-vpc",
+            "psc_nat_subnet": "projects/cymbal-build-sandbox/regions/us-west1/subnetworks/cymbal-psc-nat-us-west1 (10.240.0.0/28)",
             "psc_endpoint_ip": "10.128.0.45",
-            "service_attachment_uri": "projects/nitina-ggarwal-sandbox-647724/regions/us-west1/serviceAttachments/psc-finvault-data-attachment",
+            "service_attachment_uri": "projects/cymbal-build-sandbox/regions/us-west1/serviceAttachments/psc-finvault-data-attachment",
             "migration_state": "DRAIN_AND_VERIFY_COMPLETED",
             "zero_vpc_peering": "true",
             "verified_at": "1.792023069924361E9"
@@ -449,10 +449,10 @@
           {
             "endpoint_id": "PSC-EP-MEDCORE-01",
             "tenant_id": "medcore",
-            "hub_vpc": "projects/nitina-ggarwal-sandbox-647724/global/networks/cymbal-pattern-c-hub-vpc",
-            "psc_nat_subnet": "projects/nitina-ggarwal-sandbox-647724/regions/us-west1/subnetworks/cymbal-psc-nat-us-west1 (10.240.0.0/28)",
+            "hub_vpc": "projects/cymbal-build-sandbox/global/networks/cymbal-pattern-c-hub-vpc",
+            "psc_nat_subnet": "projects/cymbal-build-sandbox/regions/us-west1/subnetworks/cymbal-psc-nat-us-west1 (10.240.0.0/28)",
             "psc_endpoint_ip": "10.128.0.46",
-            "service_attachment_uri": "projects/nitina-ggarwal-sandbox-647724/regions/us-west1/serviceAttachments/psc-medcore-data-attachment",
+            "service_attachment_uri": "projects/cymbal-build-sandbox/regions/us-west1/serviceAttachments/psc-medcore-data-attachment",
             "migration_state": "ACTIVE_HYBRID_SPOKE",
             "zero_vpc_peering": "true",
             "verified_at": "1.792023069924361E9"
@@ -529,7 +529,7 @@
         "sts_caller_identity": {
           "live_sts_ok": true,
           "status_code": 200,
-          "iam_arn": "arn:aws:iam::393036065405:user/nitinagga"
+          "iam_arn": "arn:aws:iam::393036065405:user/cymbal-sre-bot"
         },
         "cognito_rs256_oauth": {
           "live_cognito_ok": true,
@@ -539,8 +539,8 @@
         },
         "bedrock_agentcore_mcp_gateway": {
           "live_agentcore_gw_ok": true,
-          "gateway_id": "merck-a2a-mcp-gateway-kiu8omh4aq",
-          "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+          "gateway_id": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
+          "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
           "registered_tools_count": 10,
           "registered_tools": [
             "crowdstrike-okta___contain_xdr_host_with_dpop",
@@ -563,12 +563,12 @@
           "schema_sanitizer_compatible": true,
           "parallel_isolation_zero_collision": true,
           "anti_spoof_hmac_rejected_status": 403,
-          "s3_consent_audit_bucket": "s3://nitinagga-argolis-aws-393036065405-us-east-1/merck-mcp-consent/"
+          "s3_consent_audit_bucket": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-mcp-consent/"
         }
       },
       "google_workspace_slides_and_docs": {
         "live_workspace_ok": true,
-        "account_email": "nitinagga@google.com",
+        "account_email": "sre-deploy-bot@cymbal.demo",
         "verified_google_slides_count": 6,
         "verified_google_docs_count": 6,
         "slides": {

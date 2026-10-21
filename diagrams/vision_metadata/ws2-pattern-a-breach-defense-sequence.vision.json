@@ -2,7 +2,7 @@
   "id": "VIS-WS2-PATTERN-A-BREACH-DEFENSE-SEQUENCE",
   "blueprintId": "ws2-pattern-a-breach-defense-sequence",
   "title": "Pattern A: 10-Point Cross-Tenant Breach Simulation & Cryptographic Defense Matrix",
-  "subtitle": "Workstream 2.2 & 2.5 (run_breach_simulations.py) • 10/10 Adversarial Vectors Neutralized in nitina-ggarwal-sandbox-647724",
+  "subtitle": "Workstream 2.2 & 2.5 (run_breach_simulations.py) • 10/10 Adversarial Vectors Neutralized in cymbal-build-sandbox",
   "badge": "WORKSTREAM 2.5 • BREACH SUITE BLUEPRINT",
   "sourceImage": "diagrams/ws2-pattern-a-breach-defense-sequence.drawio.png",
   "drawioFile": "diagrams/ws2-pattern-a-breach-defense-sequence.drawio",
@@ -23,7 +23,7 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (/Users/nitinagga/documents/PromptCanvas/src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
   "healerLog": [
     "Protected master/canonical blueprint passed through without geometric mutation."
   ],

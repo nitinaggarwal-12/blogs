@@ -344,7 +344,7 @@ def build_pattern_validation_block(ws_key: str, rel_img_prefix: str = "../screen
     lines.extend([
         f"### Part II — Inter-Cloud Third-Party App Testing & Validation Matrix ({ws_key} • 10 Live AWS AgentCore MCP Targets + 10 Stateful Execution Twins on `13.220.94.209:3001..3010`)",
         "",
-        "- **Plane 1 — AWS Bedrock AgentCore MCP & Commercial SaaS Control Plane (`Side A`)**: Run `python3 -B scripts/deploy_10_saas_aws_agentcore_targets.py` and `python3 -B scripts/verify_5_third_party_saas_products.py` to mint a live Amazon Cognito RS256 OAuth2 token (`us-east-1_vqlzYM74B`) and execute `tools/call` across all 10 targets (`KD6Z3SV8PX`..`TXGJHVFBWP`) on `https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp`.",
+        "- **Plane 1 — AWS Bedrock AgentCore MCP & Commercial SaaS Control Plane (`Side A`)**: Run `python3 -B scripts/deploy_10_saas_aws_agentcore_targets.py` and `python3 -B scripts/verify_5_third_party_saas_products.py` to mint a live Amazon Cognito RS256 OAuth2 token (`us-east-1_vqlzYM74B`) and execute `tools/call` across all 10 targets (`KD6Z3SV8PX`..`TXGJHVFBWP`) on `https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp`.",
         "- **Plane 2 — Stateful Open-Source Data/RLS Execution Twins (`Side B` on `http://13.220.94.209:3001..3010`)**: Inspect each live containerized execution twin (`Metabase v0.50.26`, `Grafana Enterprise 11.2.0`, `Redmine 5.1`, `NocoDB 0.255.2`, `Gitea 1.22.3`, `Trino 440`, `ClickHouse 24.8`, `Directus 11.1.0`, `Datalust Seq 2024.3`, and `HashiCorp Vault 1.13.3`) and its live Amazon S3 Audit Ledger JSON (`?format=json`). *(Note: Public review sandboxes expose read-accessible ports `:3001..3010` and reviewer credentials for instant auditability; production deployments enforce HTTPS ALB/WAF TLS 1.3 termination, private VPC-only listener bindings, and 5-minute DPoP-bound OAuth2 tokens.)*",
         "",
         "| SaaS ID & Product (Vendor Control Plane) | AWS AgentCore Target ID & Pattern Config | Positive E2E Input & Verified Output (`200 ALLOW`) | Adversarial / Negative Input & Verified Block (`403 / 401 / 400 / 423`) | Live Execution Twin UI (`13.220.94.209:3001..3010`) & S3 Ledger JSON | Side-A (AgentCore MCP) & Side-B (Live Software UI) Screenshots |",
@@ -495,14 +495,14 @@ def clean_legacy_principal_links_everywhere() -> None:
             updated,
         )
         # Purge Merck clinical trial ID and personal S3 bucket names from Cymbal documentation prose
-        updated = updated.replace("MK-3475-087", "FV-GXP-2026-04")
+        updated = updated.replace("FV-GXP-2026-04", "FV-GXP-2026-04")
         updated = updated.replace(
-            "s3://nitinagga-argolis-aws-393036065405-us-east-1",
+            "s3://cymbal-aws-federation-393036065405-us-east-1",
             "s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1",
         )
         if p.suffix == ".md":
-            updated = re.sub(r"(?<!project=)(?<!1s)nitina-ggarwal-sandbox-647724", "cymbal-build-sandbox", updated)
-            updated = re.sub(r"(?<!project=)(?<!1s)nitinagga-ge-2", "cymbal-pooled-prod", updated)
+            updated = re.sub(r"(?<!project=)(?<!1s)cymbal-build-sandbox", "cymbal-build-sandbox", updated)
+            updated = re.sub(r"(?<!project=)(?<!1s)cymbal-control-plane", "cymbal-pooled-prod", updated)
             updated = updated.replace("`ramp-portal-dev`", "`cymbal-control-plane`")
         if p.name == "index.html":
             updated = updated.replace(

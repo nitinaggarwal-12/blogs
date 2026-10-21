@@ -29,7 +29,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 SLIDES_DIR = ROOT_DIR / "slides"
 MANIFEST_FILE = SLIDES_DIR / "cloud_viewer_manifest.json"
 
-QUOTA_PROJECT = "nitina-ggarwal-sandbox-647724"
+QUOTA_PROJECT = "cymbal-build-sandbox"
 DEFAULT_USER_EMAIL = "nitinagga@google.com"
 DEFAULT_OAUTH_CLIENT_ID = "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com"
 

@@ -30,7 +30,7 @@
         {
           "commentId": "CMT-001-B",
           "authorName": "Nitin Aggarwal",
-          "authorEmail": "nitinagga@google.com",
+          "authorEmail": "cloud-arch-review@cymbal.demo",
           "authorRole": "Principal Cloud Architect",
           "avatarColor": "#1a73e8",
           "text": "Thanks @Sarah Chen! We also linked the live 5-Hop Python simulator directly so reviewers can test FinVault Bank vs. RetailStream Corp right from this section.",

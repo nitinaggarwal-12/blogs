@@ -1,13 +1,13 @@
 # End-to-End Google Cloud Console, Cloud Run `Source` & Docked Cloud Shell SSH Process Runbook
 
 > **100% Cloud-Native Execution & Visual Proof (Zero Local Desktop Dependency & Zero Synthetic Blue Cards)**
-> This runbook documents the exact end-to-end Setup, Execution, Validation, and Deployment workflow inside **Google Cloud Console (`pantheon.corp.google.com` / `console.cloud.google.com`)** for the **Cymbal Multi-Tenant Agentic AI Platform (`cymbal-multi-tenant-patterns`)** in project **`cymbal-build-sandbox`** (`#887605034827`, region `us-west1`) and Control Plane project **`cymbal-control-plane`** (`#248990048888`). Every stage below is paired with a full-resolution **Pantheon Cloud Run (`Source` / `Revision History` / `Networking`) + Docked `CLOUD SHELL Terminal` (`root@localhost:/app#`)** screenshot.
+> This runbook documents the exact end-to-end Setup, Execution, Validation, and Deployment workflow inside **Google Cloud Console (`console.cloud.google.com`)** for the **Cymbal Multi-Tenant Agentic AI Platform (`cymbal-multi-tenant-patterns`)** in project **`cymbal-build-sandbox`** (`#887605034827`, region `us-west1`) and Control Plane project **`cymbal-control-plane`** (`#248990048888`). Every stage below is paired with a full-resolution **Google Cloud Console Cloud Run (`Source` / `Revision History` / `Networking`) + Docked `CLOUD SHELL Terminal` (`root@localhost:/app#`)** screenshot.
 
 ---
 
-## 1. Live User Capture — Pantheon Cloud Run `Source` Tab + Docked Cloud Shell SSH (`200 OK`)
+## 1. Live User Capture — Google Cloud Console Cloud Run `Source` Tab + Docked Cloud Shell SSH (`200 OK`)
 
-![Live User Capture — Pantheon Cloud Run Source Tab (server.py) + Docked Cloud Shell SSH Terminal (root@localhost:/app#) Executing Live BigQuery Audit Stream (200 OK)](../screenshots/cloud-console/pantheon_live_user_capture_ssh_verify.png)
+![Live User Capture — Google Cloud Console Cloud Run Source Tab (server.py) + Docked Cloud Shell SSH Terminal (root@localhost:/app#) Executing Live BigQuery Audit Stream (200 OK)](../screenshots/cloud-console/pantheon_live_user_capture_ssh_verify.png)
 
 ---
 
@@ -15,14 +15,14 @@
 
 | Dimension | Provisioned Google Cloud Value | Direct Google Cloud Console URL |
 | :--- | :--- | :--- |
-| **Data & Runtime Project** | `cymbal-build-sandbox` (`#887605034827`) | [Open Project Dashboard ↗](https://console.cloud.google.com/home/dashboard?project=nitina-ggarwal-sandbox-647724) |
+| **Data & Runtime Project** | `cymbal-build-sandbox` (`#887605034827`) | [Open Project Dashboard ↗](https://console.cloud.google.com/home/dashboard?project=cymbal-build-sandbox) |
 | **Control Plane Project** | `cymbal-control-plane` (`#248990048888`) | [Open Control Plane Dashboard ↗](https://console.cloud.google.com/home/dashboard?project=ramp-portal-dev) |
-| **Cloud Run Service** | `cymbal-multi-tenant-patterns` (`us-west1`, Gen2) | [Open Cloud Run Service ↗](https://console.cloud.google.com/run/detail/us-west1/cymbal-multi-tenant-patterns/revisions?project=nitina-ggarwal-sandbox-647724) |
-| **Active Revision** | `cymbal-multi-tenant-patterns-00003-wfh` (`100%` Traffic) | [Open Source Tab in Console ↗](https://console.cloud.google.com/run/detail/us-west1/cymbal-multi-tenant-patterns/source?project=nitina-ggarwal-sandbox-647724) |
-| **Cloud Storage Codebase** | `gs://cymbal-build-sandbox-cymbal-multi-tenant-artifacts/codebase/` | [Open GCS Bucket Browser ↗](https://console.cloud.google.com/storage/browser/cymbal-build-sandbox-cymbal-multi-tenant-artifacts/codebase?project=nitina-ggarwal-sandbox-647724) |
-| **BigQuery Datasets** | `cymbal_agentic_finops_otel` (`US`) & `cymbal_silo_finvault_usw1` (`us-west1`) | [Open BigQuery Studio ↗](https://console.cloud.google.com/bigquery?project=nitina-ggarwal-sandbox-647724) |
-| **Cloud KMS KeyRing** | `cymbal-multi-tenant-kr` (`4` CryptoKeys in `us-west1`) | [Open Cloud KMS Keys ↗](https://console.cloud.google.com/security/kms/keyrings/manage/us-west1/cymbal-multi-tenant-kr?project=nitina-ggarwal-sandbox-647724) |
-| **Hybrid PSC VPCs** | `cymbal-pattern-c-hub-vpc` + `cymbal-psc-nat-us-west1` (`/28`) + `cymbal-pattern-c-finvault-spoke-vpc` | [Open VPC Networks ↗](https://console.cloud.google.com/networking/networks/list?project=nitina-ggarwal-sandbox-647724) |
+| **Cloud Run Service** | `cymbal-multi-tenant-patterns` (`us-west1`, Gen2) | [Open Cloud Run Service ↗](https://console.cloud.google.com/run/detail/us-west1/cymbal-multi-tenant-patterns/revisions?project=cymbal-build-sandbox) |
+| **Active Revision** | `cymbal-multi-tenant-patterns-00003-wfh` (`100%` Traffic) | [Open Source Tab in Console ↗](https://console.cloud.google.com/run/detail/us-west1/cymbal-multi-tenant-patterns/source?project=cymbal-build-sandbox) |
+| **Cloud Storage Codebase** | `gs://cymbal-build-sandbox-cymbal-multi-tenant-artifacts/codebase/` | [Open GCS Bucket Browser ↗](https://console.cloud.google.com/storage/browser/cymbal-build-sandbox-cymbal-multi-tenant-artifacts/codebase?project=cymbal-build-sandbox) |
+| **BigQuery Datasets** | `cymbal_agentic_finops_otel` (`US`) & `cymbal_silo_finvault_usw1` (`us-west1`) | [Open BigQuery Studio ↗](https://console.cloud.google.com/bigquery?project=cymbal-build-sandbox) |
+| **Cloud KMS KeyRing** | `cymbal-multi-tenant-kr` (`4` CryptoKeys in `us-west1`) | [Open Cloud KMS Keys ↗](https://console.cloud.google.com/security/kms/keyrings/manage/us-west1/cymbal-multi-tenant-kr?project=cymbal-build-sandbox) |
+| **Hybrid PSC VPCs** | `cymbal-pattern-c-hub-vpc` + `cymbal-psc-nat-us-west1` (`/28`) + `cymbal-pattern-c-finvault-spoke-vpc` | [Open VPC Networks ↗](https://console.cloud.google.com/networking/networks/list?project=cymbal-build-sandbox) |
 
 ---
 
@@ -30,12 +30,12 @@
 
 ### Stage 1 — Setup & SSH Connect: Cloud Run `Revision History`, `>_ SSH Preview` & Tunnel into `root@localhost:/app#`
 
-1. Open [Cloud Run Service `cymbal-multi-tenant-patterns` (`Revision History`)](https://console.cloud.google.com/run/detail/us-west1/cymbal-multi-tenant-patterns/revisions?project=nitina-ggarwal-sandbox-647724&cloudshell=true).
+1. Open [Cloud Run Service `cymbal-multi-tenant-patterns` (`Revision History`)](https://console.cloud.google.com/run/detail/us-west1/cymbal-multi-tenant-patterns/revisions?project=cymbal-build-sandbox&cloudshell=true).
 2. Click **`>_ SSH`** on the active revision `cymbal-multi-tenant-patterns-00003-wfh` (or run the command below in the docked **Cloud Shell Terminal**):
 
 ```bash
 gcloud beta run services ssh cymbal-multi-tenant-patterns \
-  --project=nitina-ggarwal-sandbox-647724 \
+  --project=cymbal-build-sandbox \
   --region=us-west1
 ```
 
@@ -136,11 +136,11 @@ gcloud storage cp -r \
   workstream-3-pattern-b-siloed \
   workstream-4-pattern-c-hybrid \
   gs://cymbal-build-sandbox-cymbal-multi-tenant-artifacts/codebase/ \
-  --project=nitina-ggarwal-sandbox-647724
+  --project=cymbal-build-sandbox
 
 gcloud run deploy cymbal-multi-tenant-patterns \
   --source=. \
-  --project=nitina-ggarwal-sandbox-647724 \
+  --project=cymbal-build-sandbox \
   --region=us-west1 \
   --execution-environment=gen2 \
   --allow-unauthenticated \

@@ -54,12 +54,12 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     runtimeTarget: 'cymbal-multi-tenant-patterns-00003-wfh (Cloud Run us-central1)',
     codeModules: 'workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md • core-cymbal-agent/runtime_pipeline.py',
     execCloudServices:
-      'External Application Load Balancer • Cloud Armor • Identity-Aware Proxy (IAP) • Cloud Run • Vertex AI Agent Engine (ADK 2.0) • Model Armor • AlloyDB & BigQuery',
+      'External Application Load Balancer • Cloud Armor • Identity-Aware Proxy (IAP) • Cloud Run • Vertex AI Agent Engine (ADK) • Model Armor • AlloyDB & BigQuery',
     execTechSummary:
       'Unifies a shared Routing Hub and Central Governance Hub (80% reusable control plane) to route requests into Pattern A (Pooled Runtime + RLS), Pattern B (Per-Tenant Project + VPC-SC + CMEK), or Pattern C (Hybrid PSC Spokes).',
     outcomeTitle: 'Unified Hub-and-Spoke Control Plane Across Three Tenant Isolation Tiers',
     outcomeBody:
-      'Platform teams maintain a single ADK 2.0 and Vertex AI Agent Engine codebase while delivering 120 RPM Pooled (Pattern A), Blended Hybrid PSC (Pattern C), and 600 RPM Sovereign Silo (Pattern B) isolation tiers with zero cross-tenant data bleed.',
+      'Platform teams maintain a single ADK and Vertex AI Agent Engine codebase while delivering 120 RPM Pooled (Pattern A), Blended Hybrid PSC (Pattern C), and 600 RPM Sovereign Silo (Pattern B) isolation tiers with zero cross-tenant data bleed.',
     outcomeTech: 'All 3 isolation topologies (Pattern A, B & C) verified live on Google Cloud with 20/20 security and migration assertions passing',
     plainZones: [
       {
@@ -134,7 +134,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Yellow / Red Zone (Agent Runtime)',
         title: 'Scoped Agent Reasoning & Context Caching',
         logicalNarrative:
-          'Vertex AI Agent Engine (ADK 2.0) invokes Gemini 2.5 Pro or Gemma 3 using a shared read-only system prompt cache (90% input token discount) while partitioning session Memory Bank namespaces by tenant ID.',
+          'Vertex AI Agent Engine (ADK) invokes Gemini 2.5 Pro or Gemma 3 using a shared read-only system prompt cache (90% input token discount) while partitioning session Memory Bank namespaces by tenant ID.',
         components: 'Vertex AI Agent Engine • Gemini 2.5 Pro • ContextCacheConfig',
       },
       {
@@ -198,7 +198,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'Sandboxed Agent & Cache',
         route: 'Vertex AI Agent Engine & Gemini 2.5 Pro (Yellow & Red Zones)',
         protocolAndMechanism:
-          'Executes ADK 2.0 agents in gVisor sandboxes with shared `ContextCacheConfig` (90% prefix discount), Memorystore for Valkey RPM bulkheads, and `{tenant}:{user}:{session}` memory.',
+          'Executes ADK agents in gVisor sandboxes with shared `ContextCacheConfig` (90% prefix discount), Memorystore for Valkey RPM bulkheads, and `{tenant}:{user}:{session}` memory.',
         codeAndResource: '5-Level Memory Bank & Shared Context Cache',
         verifiedOutcome: '84.7% lower token COGS with zero cross-tenant memory contamination',
       },
@@ -457,7 +457,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         colorHex: '#feefc3',
         borderHex: '#b06000',
         name: '3A. Shared Pooled Agent Engine, Valkey Bulkheads & Model Armor (Hops 3 & 4)',
-        role: 'Executes shared ADK 2.0 agents in one unified pooled runtime with Memorystore Valkey RPM bulkheads (`120`/`600` RPM), `ContextCacheConfig` (90% savings), and inline Model Armor.',
+        role: 'Executes shared ADK agents in one unified pooled runtime with Memorystore Valkey RPM bulkheads (`120`/`600` RPM), `ContextCacheConfig` (90% savings), and inline Model Armor.',
       },
       {
         zoneId: 'Coral Sub-Plane B',
@@ -1177,7 +1177,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     workstreamLabel: 'Workstream 3 • Pattern B: Zero-Trust Sovereign Silos Architecture (WS 3.1)',
     patternBadge: 'PATTERN B • SOVEREIGN SILOS',
     questionAnswered:
-      'How do we satisfy strict banking (OCC/FDIC), healthcare (HIPAA), and public-sector regulators that prohibit shared compute, shared storage, or provider-owned keys—while reusing 80% of our core ADK 2.0 agent codebase?',
+      'How do we satisfy strict banking (OCC/FDIC), healthcare (HIPAA), and public-sector regulators that prohibit shared compute, shared storage, or provider-owned keys—while reusing 80% of our core ADK agent codebase?',
     gcpProject: 'cymbal-build-sandbox (#887605034827)',
     runtimeTarget: 'KMS cymbal-multi-tenant-kr/{finvault-silo-cmek,medcore-revoked-cmek}',
     codeModules: 'workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md • runtime/main.py (/v1/patterns/b/execute)',
@@ -2498,7 +2498,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     runtimeTarget: 'enterprise-s2p-global • cymbal_agentic_finops_otel.tenant_telemetry_spans',
     codeModules: 'workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md • blogs/ws5-decision-guide-and-agentic-triad.md',
     execCloudServices:
-      'Vertex AI Agent Engine • Google ADK 2.0 • Gemini 2.5 Pro & Gemma 3 • Cloud Armor & IAP • Model Armor & SDP • Memorystore for Valkey • AlloyDB RLS & Cloud KMS CMEK • BigQuery OTel',
+      'Vertex AI Agent Engine • Google ADK • Gemini 2.5 Pro & Gemma 3 • Cloud Armor & IAP • Model Armor & SDP • Memorystore for Valkey • AlloyDB RLS & Cloud KMS CMEK • BigQuery OTel',
     execTechSummary:
       'Synthesizes the 2-Question Executive Topology Decision Tree (Pattern A vs. B vs. C) and the 3-Pillar Multi-Tenant Agentic Triad: (1) 5-Hop Cryptographic Governance, (2) Predictable FinOps Unit Economics (-84.7% COGS), and (3) Zero-PII OpenTelemetry Chargeback.',
     outcomeTitle: '2-Question Topology Selector + 74% Total Cloud COGS Reduction Across 1,000 Tenants',

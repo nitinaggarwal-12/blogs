@@ -84,7 +84,7 @@ const SPEC_BOX_BG = 'FFFFFF'; // Clean inner specification pill surface
 const DIVIDER_CHARCOAL = '202124'; // Section divider dark charcoal (#202124)
 const WHITE = 'FFFFFF';
 
-const SERIES_LINE = 'Multi-Tenant Agentic AI on Google Cloud • Vertex AI Agent Engine, Gemini Enterprise & ADK 2.0';
+const SERIES_LINE = 'Multi-Tenant Agentic AI on Google Cloud • Vertex AI Agent Engine, Gemini Enterprise & ADK';
 
 interface BrandAccent {
   bar: string;
@@ -769,7 +769,7 @@ const TITLE_ACTS_BY_DECK: Record<string, TitleActSpec[]> = {
     {
       badge: 'PART 1 • SLIDES 1–4',
       title: 'Agenda, Personas & 12-Dim Pattern Matrix',
-      sub: 'Defines ADK 2.0, MCP & ARD upfront; sets the 5-Act agenda (Slide 2), contrasts FinVault (600 RPM: Dedicated PT vs. GKE Gemma 3) & RetailStream (120 RPM: 3LO vault, Slide 3), and compares Patterns A/B/C (Slide 4).',
+      sub: 'Defines ADK, MCP & ARD upfront; sets the 5-Act agenda (Slide 2), contrasts FinVault (600 RPM: Dedicated PT vs. GKE Gemma 3) & RetailStream (120 RPM: 3LO vault, Slide 3), and compares Patterns A/B/C (Slide 4).',
     },
     {
       badge: 'PART 2 • SLIDES 5–6 & 8',
@@ -867,7 +867,7 @@ const TITLE_ACTS_BY_DECK: Record<string, TitleActSpec[]> = {
     {
       badge: 'ACT III • SLIDES 8–10',
       title: '2-Question Selector, 20/20 Ledger & Console Proof',
-      sub: 'Covers the live selector and promotion loop across all three patterns (Slide 8), the unified 5-Hop module map with the 20/20 verification ledger (Slide 9) and the Logs Explorer + Pantheon SSH receipts (Slide 10).',
+      sub: 'Covers the live selector and promotion loop across all three patterns (Slide 8), the unified 5-Hop module map with the 20/20 verification ledger (Slide 9) and the Logs Explorer + Docked Cloud Shell SSH receipts (Slide 10).',
     },
     {
       badge: 'SOLUTION • SLIDES 11–12',
@@ -1282,7 +1282,7 @@ function addQuadMetricsSlide(pptx: Pptx, spec: DeckSpec | null) {
       {
         num: '3',
         caption: 'Production Multi-Tenant Isolation Topologies',
-        detail: 'Pattern A Pooled, Pattern B Sovereign Silos, and Pattern C Dynamic Hybrid PSC sharing one 80% reusable ADK 2.0 core.',
+        detail: 'Pattern A Pooled, Pattern B Sovereign Silos, and Pattern C Dynamic Hybrid PSC sharing one 80% reusable ADK core.',
         pill: 'Patterns A, B & C • Template #78',
       },
       {
@@ -1385,7 +1385,7 @@ function addQuadMetricsSlide(pptx: Pptx, spec: DeckSpec | null) {
     WS5: [
       {
         num: '80%',
-        caption: 'Reusable Python ADK 2.0 Application Codebase',
+        caption: 'Reusable Python ADK Application Codebase',
         detail: 'All three patterns execute the identical 5-hop security pipeline (core-cymbal-agent/), parameterizing only 20% Terraform boundaries.',
         pill: 'Single Codebase • 3 Topologies',
       },
@@ -1919,7 +1919,7 @@ function buildComparisonTableSynthesisCards(
       },
       {
         title: '3. Valkey Bulkheads & GA Sunset Hooks (GAP-03)',
-        body: 'Enforces 120/600 RPM Valkey token buckets (HTTP 429 Retry-After jitter) with feature-flagged GA sunset hooks (Q4 2026 / Q1 2027) in core-cymbal-agent/.',
+        body: 'Enforces 120/600 RPM Valkey token buckets (HTTP 429 Retry-After jitter) with feature-flagged GA sunset hooks (feature-flagged native adapter) in core-cymbal-agent/.',
       },
       {
         title: '4. Zero-PII BigQuery FinOps SQL (GAP-05)',
@@ -2005,7 +2005,7 @@ function buildComparisonTableSynthesisCards(
       },
       {
         title: '4. Pattern C Hybrid & 80/20 Codebase Reuse',
-        body: 'Co-hosts 950 Pool + 50 PSC Spokes (74% TCO savings, 0ms cutover) using 80% identical ADK 2.0 Python code (runtime_pipeline.py) across Terraform 2.6/3.6/4.6.',
+        body: 'Co-hosts 950 Pool + 50 PSC Spokes (74% TCO savings, 0ms cutover) using 80% identical ADK Python code (runtime_pipeline.py) across Terraform 2.6/3.6/4.6.',
       },
     ];
   }
@@ -2702,7 +2702,7 @@ function addAssetsSlide(pptx: Pptx, spec: DeckSpec | null, deck: DeckJson, manif
     },
     {
       title: '4. Grounded Live Cloud Console Proof',
-      body: 'Pairs 100% native editable vector shapes with authentic Google Cloud Console & Pantheon verification captures across 3 live GCP projects.',
+      body: 'Pairs 100% native editable vector shapes with authentic Google Cloud Console & Google Cloud Console verification captures across 3 live GCP projects.',
       tag: '9 Verified Cloud Console Captures • 24 Code Files',
       accent: GOOGLE_CARD_ACCENTS[3],
     },
@@ -3093,8 +3093,8 @@ function renderArchitectureCenterDiagramSidebar(
   });
   const cleanGcpLabel = (flowEntry?.gcpProject?.split(' ')[0] || 'cymbal-control-plane')
     .replace(/ramp-portal-dev/gi, 'cymbal-control-plane (#248990048888)')
-    .replace(/nitinagga-ge-2/gi, 'cymbal-pooled-prod (#638420508320)')
-    .replace(/nitina-ggarwal-sandbox-647724/gi, 'cymbal-build-sandbox (#887605034827)');
+    .replace(/cymbal-control-plane/gi, 'cymbal-pooled-prod (#638420508320)')
+    .replace(/cymbal-build-sandbox/gi, 'cymbal-build-sandbox (#887605034827)');
   slide.addText(
     `VERIFIED • ${vertexCount} Editable Shapes • ${edgeCount} Connectors • GCP: ${cleanGcpLabel}`,
     {
@@ -3133,8 +3133,8 @@ async function appendGoogleBrandedDiagramSlides(
 ): Promise<{ vertexCount: number; edgeCount: number; slides: number }> {
   const sanitizedXmlContent = xmlContent
     .replace(/ramp-portal-dev/gi, 'cymbal-control-plane')
-    .replace(/nitina-ggarwal-sandbox-647724/gi, 'cymbal-build-sandbox')
-    .replace(/nitinagga-ge-2/gi, 'cymbal-pooled-prod');
+    .replace(/cymbal-build-sandbox/gi, 'cymbal-build-sandbox')
+    .replace(/cymbal-control-plane/gi, 'cymbal-pooled-prod');
   const { cells, minX, minY, maxX, maxY, isDarkDiagram, diagramBgHex } = parseDrawioXmlForPptx(sanitizedXmlContent);
 
   const vertices = cells
@@ -4361,7 +4361,7 @@ const ZONE_TOPOLOGY_BY_WS: Record<string, ZoneTopologySpec> = {
     ],
     arrow1Top: 'OIDC JWT +\nDPoP Proof',
     arrow1Bot: 'Cloud Armor\n+ IAP Edge',
-    zone2Title: 'LAYER 2: 5-HOP ADK 2.0 CONTROL PLANE\n(Shared 80% Core • ~42ms p95)',
+    zone2Title: 'LAYER 2: 5-HOP ADK CONTROL PLANE\n(Shared 80% Core • ~42ms p95)',
     zone2SubContainer: 'Vertex AI Agent Engine & ~3ms Valkey JTI Deny-List',
     gwCards: [
       { icon: 'STS', title: 'Hop 1: IAM STS OBO,\nDPoP & JTI Deny-List' },
@@ -4477,7 +4477,7 @@ const ZONE_TOPOLOGY_BY_WS: Record<string, ZoneTopologySpec> = {
     ],
     arrow1Top: 'Selects Pattern\nA, B, or C',
     arrow1Bot: '80% Shared\nPython Core',
-    zone2Title: 'INVARIANT 5-HOP ADK 2.0 CORE\n(runtime_pipeline.py — 80% Reusable)',
+    zone2Title: 'INVARIANT 5-HOP ADK CORE\n(runtime_pipeline.py — 80% Reusable)',
     zone2SubContainer: 'Unified Multi-Tenant Agentic Triad',
     gwCards: [
       { icon: 'ADK', title: 'Shared Diagnostic &\nTenant Private Agents' },
@@ -5706,7 +5706,7 @@ const UML_SEQUENCE_BY_WS: Record<string, UmlSequenceSpec> = {
       { icon: 'MCP', label: '2LO / 3LO MCP Hub' },
       { icon: 'OTel', label: 'BigQuery FinOps OTel' },
     ],
-    step1Desc: 'Caller submits complex\nportfolio risk query\nto ADK 2.0 runtime',
+    step1Desc: 'Caller submits complex\nportfolio risk query\nto ADK runtime',
     step1Arrow: 'Authenticated Query',
     step2Desc: 'Shared Agent checks ARD\nregistry & delegates to\nFinVault Private Agent',
     step2Arrow: 'Check ARD Visibility',
@@ -6322,7 +6322,7 @@ const STATE_PIPELINE_BY_WS: Record<string, StateFlowPipelineSpec> = {
     step1Top: '1. Evaluates regulatory\n& blast-radius mandate',
     step2Bot: '2. If Q1=Yes & single-org,\ndeploys Pattern B\nSovereign Silo',
     step3Top: '3. Evaluates portfolio\nmix: Pattern A\nvs. Pattern C Hybrid',
-    step4Top: '4. Provisions 80% shared\nADK 2.0 core + 20%\nTerraform infrastructure',
+    step4Top: '4. Provisions 80% shared\nADK core + 20%\nTerraform infrastructure',
     step5Loopback: '5. Commercial tenants onboarded on\nPattern A seamlessly promote to Pattern C\nPSC spokes as enterprise requirements grow',
     footer: 'Workstream 5 Decision & Promotion Loop  •  2-Question Selector + 80/20 Terraform Deployment + Live Tier Promotion',
   },
@@ -6588,7 +6588,7 @@ const ROADMAP_TIMELINE_BY_WS: Record<string, PhasedRoadmapSpec> = {
     phases: [
       {
         phaseLabel: 'Stage 1: Prefix Warmup',
-        title: '32k Immutable System Cache\n(Terraform 2.6 + ADK 2.0)',
+        title: '32k Immutable System Cache\n(Terraform 2.6 + ADK)',
         timeframe: 'ContextCacheConfig • 90% Discount',
         outcome: 'Pins 32,000-Token Platform Runbook\nPrefix Once Across All Pooled Tenants',
       },
@@ -6663,7 +6663,7 @@ const ROADMAP_TIMELINE_BY_WS: Record<string, PhasedRoadmapSpec> = {
     phases: [
       {
         phaseLabel: 'Stage 1: 80/20 Core & IaC',
-        title: 'Single Python ADK 2.0 Engine\n& 3 Terraform Topologies',
+        title: 'Single Python ADK Engine\n& 3 Terraform Topologies',
         timeframe: 'core-cymbal-agent/ + Terraform 2.6/3.6/4.6',
         outcome: 'Reuses 80% Identical 5-Hop Application\nCode Across Pooled, Silo & Hybrid Tiers',
       },
@@ -6870,7 +6870,7 @@ const OPERATING_MODEL_BY_WS: Record<string, OperatingModelSpec> = {
         bullets: [
           'Cuts net token spend 84.7% via 90% shared 32k prefix cache + BigQuery OTel SQL',
           'Reduces 1,000-tenant portfolio TCO 74% (950 Pool + 50 PSC Spokes, 0 IaC drift)',
-          'Reuses one 80% Python ADK 2.0 codebase across Terraform 2.6, 3.6 & 4.6',
+          'Reuses one 80% Python ADK codebase across Terraform 2.6, 3.6 & 4.6',
         ],
       },
     ],
@@ -6986,7 +6986,7 @@ const OPERATING_MODEL_BY_WS: Record<string, OperatingModelSpec> = {
         icon: 'ADK',
         title: 'Pillar 1: 80/20 Unified\nCodebase & Terraform',
         bullets: [
-          'Write 5-hop ADK 2.0 security pipeline once in runtime_pipeline.py',
+          'Write 5-hop ADK security pipeline once in runtime_pipeline.py',
           'Swap infrastructure topologies via Terraform modules 2.6, 3.6 & 4.6',
           'Eliminate fork drift across Pooled, Siloed & Hybrid deployments',
         ],
@@ -7196,7 +7196,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
     badge1: 'LIVE GCP CONSOLE CAPTURE 01 • PATTERN A ROW ACCESS POLICY',
     cap1: 'BigQuery / AlloyDB ROW ACCESS POLICY tenant_pooled_rls_policy blocking cross-tenant reads (0 rows leaked)',
     file2: 'gcp_console_01_cloud_run_source_editor.png',
-    badge2: 'LIVE GCP CONSOLE CAPTURE 02 • ADK 2.0 POOLED GATEWAY & 10-SAAS MCP',
+    badge2: 'LIVE GCP CONSOLE CAPTURE 02 • ADK POOLED GATEWAY & 10-SAAS MCP',
     cap2: 'Cloud Run source editor showing RFC 8693 OBO + DPoP, Hop 2 ARD filter & 10-SaaS Pattern A RLS enforcement',
     callouts: [
       {
@@ -7313,7 +7313,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       '• Aspect Ratio: Native 16:9 (1920×1080)',
     ],
     verify2: [
-      '• Capture: Pantheon Cloud Run Source + Cloud Shell SSH',
+      '• Capture: Google Cloud Console Cloud Run Source + Cloud Shell SSH',
       '• Dual-Plane: 20/20 GCP + 30/30 10-SaaS MCP PASS',
       '• Forensic Gate: 12/12 PASS (run_deep_forensic_audit.py)',
       '• Aspect Ratio: Native 16:9 (1920×1080)',
@@ -7322,8 +7322,8 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
     badge1: 'LIVE GCP CONSOLE CAPTURE 01 • 20/20 GCP & 30/30 SAAS AUDIT LEDGER',
     cap1: 'Complete 20/20 Intra-Cloud GCP & 30/30 Inter-Cloud 10-SaaS telemetry across Patterns A, B & C',
     file2: 'pantheon_live_user_capture_ssh_verify.png',
-    badge2: 'LIVE GCP CONSOLE CAPTURE 02 • PANTHEON LIVE VERIFICATION',
-    cap2: 'Authentic Pantheon console & SSH runtime attestation across 3 Google Cloud projects & 10 SaaS targets',
+    badge2: 'LIVE GCP CONSOLE CAPTURE 02 • CLOUD SHELL SSH LIVE VERIFICATION',
+    cap2: 'Authentic Google Cloud Console & SSH runtime attestation across 3 Google Cloud projects & 10 SaaS targets',
     callouts: [
       {
         badge: 'PROOF 01 • 80/20 UNIFIED CODEBASE',
@@ -7343,7 +7343,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       {
         badge: 'PROOF 04 • 24-FILE WORKBENCH & 30/30 SAAS GATE',
         title: 'Terraform 2.6/3.6/4.6, 20/20 GCP & 30/30 SaaS Suite',
-        body: 'Ships Terraform modules, ADK 2.0 runtime code, 20/20 Intra-Cloud GCP suites, and 30/30 Inter-Cloud 10-SaaS AWS AgentCore MCP & :3001..3010 gates.',
+        body: 'Ships Terraform modules, ADK runtime code, 20/20 Intra-Cloud GCP suites, and 30/30 Inter-Cloud 10-SaaS AWS AgentCore MCP & :3001..3010 gates.',
       },
     ],
   },
@@ -7842,7 +7842,7 @@ async function buildCombinedDeck(manifest: ManifestItem[]) {
     deckSubtitle:
       'Cohesive 5-Workstream Executive Program Deck: Reference Taxonomy (WS1), Pooled Pattern A (WS2), Sovereign Silos Pattern B (WS3), Hybrid PSC Pattern C (WS4) & Decision Guide (WS5)',
     tldr: [
-      'Workstream 1 Reference Taxonomy: Defines Pattern A (Pooled), Pattern B (Sovereign Silos), and Pattern C (Dynamic Hybrid) built on one 80% reusable 5-hop ADK 2.0 security codebase.',
+      'Workstream 1 Reference Taxonomy: Defines Pattern A (Pooled), Pattern B (Sovereign Silos), and Pattern C (Dynamic Hybrid) built on one 80% reusable 5-hop ADK security codebase.',
       'Workstream 2 Pattern A Pooled: Serves hundreds of commercial tenants inside one shared Google Cloud project with 90% shared prefix cache savings and 10/10 red-team attacks blocked.',
       'Workstream 3 Pattern B Sovereign Silos: Gives regulated banking and healthcare enterprises a dedicated GCP project, VPC Service Controls perimeter, IAM PAB, and <60s CMEK kill-switch.',
       'Workstream 4 Pattern C Dynamic Hybrid: Routes Standard tenants to the shared pool and Enterprise tenants over Private Service Connect with zero-downtime live tier upgrades (4/4 PASS).',

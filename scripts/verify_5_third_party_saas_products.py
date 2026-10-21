@@ -140,14 +140,14 @@ def run_5_saas_verification_suite() -> dict:
 
     # 4. Veeva Vault RIM / QualityDocs & Muse Clinical EDC (GxP 21 CFR Part 11)
     veeva_pos = engine.invoke_veeva_vault_and_muse_clinical_edc(
-        ctx=finvault_ctx, study_id="MK-3475-087", cohort="Cohort-B"
+        ctx=finvault_ctx, study_id="FV-GXP-2026-04", cohort="Cohort-B"
     )
     assert veeva_pos["status_code"] == 200
     assert veeva_pos["live_mcp_response"]["isError"] is False
     assert len(veeva_pos["veeva_vql_document"]["cfr11_hmac_sha256_signature"]) == 64
     print(
         f"[PASS] SAAS #4A (Veeva Vault RIM & Muse Clinical EDC Live AWS AgentCore + Cloud KMS 21 CFR Part 11): "
-        f"Doc='{veeva_pos['veeva_vql_document']['document_number__v']}' | Study='MK-3475-087' | "
+        f"Doc='{veeva_pos['veeva_vql_document']['document_number__v']}' | Study='FV-GXP-2026-04' | "
         f"21 CFR Part 11 Digest='{veeva_pos['veeva_vql_document']['cfr11_hmac_sha256_signature'][:16]}...'"
     )
 
@@ -580,7 +580,7 @@ def _write_manual_testing_playbook(playbook_path: Path, receipt: dict) -> None:
             "saas_ui_04_veeva_vault_muse_edc_console.png",
             "http://13.220.94.209:3004/#/nc/base",
             "nocodb/nocodb:0.255.2 (NocoDB Clinical EDC & GxP 21 CFR Part 11 Vault)",
-            "Email `sre-lead@finvault.com` / Password `FinVault#2026!` (Base: `Veeva Vault RIM & Muse Clinical EDC — Study MK-3475-087`)",
+            "Email `sre-lead@finvault.com` / Password `FinVault#2026!` (Base: `Veeva Vault RIM & Muse Clinical EDC — Study FV-GXP-2026-04`)",
         ),
         "SAAS-05": (
             "salesforce-jira",
@@ -640,7 +640,7 @@ def _write_manual_testing_playbook(playbook_path: Path, receipt: dict) -> None:
             "## 2A. Step-by-Step Login & Outcome Validation Instructions (Both Sides: Agent Orchestrator & 10 Live Upstream Software Consoles on AWS EC2)",
             "",
             "### Side 1: Authenticate to AWS Bedrock AgentCore MCP Gateway & Google Cloud 5-Hop Runtime",
-            "1. **Verify AWS Account (`393036065405`, `us-east-1`) & GCP Projects (`ramp-portal-dev`, `nitina-ggarwal-sandbox-647724`)**:",
+            "1. **Verify AWS Account (`393036065405`, `us-east-1`) & GCP Projects (`ramp-portal-dev`, `cymbal-build-sandbox`)**:",
             "   ```bash",
             "   aws sts get-caller-identity --region us-east-1",
             "   gcloud config get-value account",
@@ -652,12 +652,12 @@ def _write_manual_testing_playbook(playbook_path: Path, receipt: dict) -> None:
             "     --user-pool-id us-east-1_vqlzYM74B \\",
             "     --client-id 49f0365186c43e7b6r7hc982vn \\",
             "     --auth-flow ADMIN_USER_PASSWORD_AUTH \\",
-            "     --auth-parameters USERNAME=dr.jane.doe@merck.com,PASSWORD='MerckA2A#2026!Secure' \\",
+            "     --auth-parameters USERNAME=sre-lead@finvault.com,PASSWORD='FinVault#2026!Secure' \\",
             "     --query 'AuthenticationResult.AccessToken' --output text)",
             "   ```",
-            "3. **List All 10 Registered Third-Party SaaS MCP Targets on Bedrock AgentCore Gateway (`merck-a2a-mcp-gateway-kiu8omh4aq`)**:",
+            "3. **List All 10 Registered Third-Party SaaS MCP Targets on Bedrock AgentCore Gateway (`cymbal-a2a-mcp-gateway-kiu8omh4aq`)**:",
             "   ```bash",
-            "   curl -sS -X POST https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp \\",
+            "   curl -sS -X POST https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp \\",
             "     -H \"Authorization: Bearer $COGNITO_TOKEN\" \\",
             "     -H \"Content-Type: application/json\" \\",
             "     -d '{\"jsonrpc\":\"2.0\",\"id\":\"list-10\",\"method\":\"tools/list\",\"params\":{}}' | jq .",

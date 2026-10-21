@@ -2,7 +2,7 @@
   "id": "VIS-WS2-TERRAFORM-STARTER-RESOURCE-GRAPH",
   "blueprintId": "ws2-terraform-starter-resource-graph",
   "title": "Pattern A 1-Click Terraform Starter: Provider → Google Cloud Armor → Cloud Run v2 Agent Gateway → Valkey / KMS CMEK → BigQuery OTel Resource Graph",
-  "subtitle": "hashicorp/google >= 5.30.0 on Terraform >= 1.5.0 • Verified in nitina-ggarwal-sandbox-647724 (cymbal-pooled-saas-prod) • Hop 1, Hop 3 & Hop 5 Resources",
+  "subtitle": "hashicorp/google >= 5.30.0 on Terraform >= 1.5.0 • Verified in cymbal-build-sandbox (cymbal-pooled-saas-prod) • Hop 1, Hop 3 & Hop 5 Resources",
   "badge": "WORKSTREAM 2.6 • TERRAFORM STARTER RESOURCE GRAPH",
   "sourceImage": "diagrams/ws2-terraform-starter-resource-graph.drawio.png",
   "drawioFile": "diagrams/ws2-terraform-starter-resource-graph.drawio",
@@ -23,7 +23,7 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (/Users/nitinagga/documents/PromptCanvas/src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
   "healerLog": [
     "Protected master/canonical blueprint passed through without geometric mutation."
   ],
@@ -66,8 +66,8 @@
     {
       "id": "wrapper_shared_hubs",
       "urlSlug": "OBJ-03-TERRAFORM-ROOT-MODULE-MA",
-      "label": "Terraform Root Module (main.tf + variables.tf) • provider \"google\" { project = var.project_id (nitina-ggarwal-sandbox-647724) }",
-      "plainTitle": "Terraform Root Module (main.tf + variables.tf) • provider \"google\" { project = var.project_id (nitina-ggarwal-sandbox-647724) }",
+      "label": "Terraform Root Module (main.tf + variables.tf) • provider \"google\" { project = var.project_id (cymbal-build-sandbox) }",
+      "plainTitle": "Terraform Root Module (main.tf + variables.tf) • provider \"google\" { project = var.project_id (cymbal-build-sandbox) }",
       "zone": "Apps & Solutions Tier",
       "x": 36,
       "y": 268,

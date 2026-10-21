@@ -2,7 +2,7 @@
   "id": "VIS-WS2-PATTERN-A-POOLED-5HOP-ARCHITECTURE",
   "blueprintId": "ws2-pattern-a-pooled-5hop-architecture",
   "title": "Pattern A: High-Density Pooled Multi-Tenant Architecture & Shared Runtime Governance",
-  "subtitle": "Milestone 1 (Weeks 1–4) • Live Verified in nitina-ggarwal-sandbox-647724 (cymbal-pooled-saas-prod) • 90% Cache Savings",
+  "subtitle": "Milestone 1 (Weeks 1–4) • Live Verified in cymbal-build-sandbox (cymbal-pooled-saas-prod) • 90% Cache Savings",
   "badge": "WORKSTREAM 2.1 • PATTERN A BLUEPRINT",
   "sourceImage": "diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio.png",
   "drawioFile": "diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio",
@@ -23,7 +23,7 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (/Users/nitinagga/documents/PromptCanvas/src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
   "healerLog": [
     "Protected master/canonical blueprint passed through without geometric mutation."
   ],
@@ -66,8 +66,8 @@
     {
       "id": "wrapper_shared_hubs",
       "urlSlug": "OBJ-03-SHARED-GCP-PROJECT-NITIN",
-      "label": "Shared GCP Project: nitina-ggarwal-sandbox-647724 / cymbal-pooled-saas-prod (Maximum Density Pooled SaaS)",
-      "plainTitle": "Shared GCP Project: nitina-ggarwal-sandbox-647724 / cymbal-pooled-saas-prod (Maximum Density Pooled SaaS)",
+      "label": "Shared GCP Project: cymbal-build-sandbox / cymbal-pooled-saas-prod (Maximum Density Pooled SaaS)",
+      "plainTitle": "Shared GCP Project: cymbal-build-sandbox / cymbal-pooled-saas-prod (Maximum Density Pooled SaaS)",
       "zone": "Apps & Solutions Tier",
       "x": 36,
       "y": 268,

@@ -2,7 +2,7 @@
   "id": "VIS-WS2-DEMO-ENV-AND-3P-AUTH-SANDBOX-TOPOLOGY",
   "blueprintId": "ws2-demo-env-and-3p-auth-sandbox-topology",
   "title": "Pattern A Demo Environment & 3P Auth Sandbox: Pooled Project, Federated IdPs, OAuth 2LO/3LO Apps, Valkey & Firestore Tenant Config",
-  "subtitle": "Live Verified in nitina-ggarwal-sandbox-647724 (us-west1) • Seeding FinVault Bank (Google OIDC + Jira) & RetailStream Corp (Entra ID + SharePoint/ServiceNow)",
+  "subtitle": "Live Verified in cymbal-build-sandbox (us-west1) • Seeding FinVault Bank (Google OIDC + Jira) & RetailStream Corp (Entra ID + SharePoint/ServiceNow)",
   "badge": "WORKSTREAM 2.2 • DEMO ENV & 3P AUTH SANDBOX",
   "sourceImage": "diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.drawio.png",
   "drawioFile": "diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.drawio",
@@ -23,7 +23,7 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (/Users/nitinagga/documents/PromptCanvas/src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
   "healerLog": [
     "Protected master/canonical blueprint passed through without geometric mutation."
   ],
@@ -66,8 +66,8 @@
     {
       "id": "wrapper_shared_hubs",
       "urlSlug": "OBJ-03-SHARED-DEMO-PROJECT-NITI",
-      "label": "Shared Demo Project nitina-ggarwal-sandbox-647724 (cymbal-pooled-saas-prod) • 12 Enabled APIs (aiplatform, modelarmor, dlp, run, iap, alloydb, valkey, firestore, cloudkms, bigquery)",
-      "plainTitle": "Shared Demo Project nitina-ggarwal-sandbox-647724 (cymbal-pooled-saas-prod) • 12 Enabled APIs (aiplatform, modelarmor, dlp, run, iap, alloydb, valkey, firestore, cloudkms, bigquery)",
+      "label": "Shared Demo Project cymbal-build-sandbox (cymbal-pooled-saas-prod) • 12 Enabled APIs (aiplatform, modelarmor, dlp, run, iap, alloydb, valkey, firestore, cloudkms, bigquery)",
+      "plainTitle": "Shared Demo Project cymbal-build-sandbox (cymbal-pooled-saas-prod) • 12 Enabled APIs (aiplatform, modelarmor, dlp, run, iap, alloydb, valkey, firestore, cloudkms, bigquery)",
       "zone": "Apps & Solutions Tier",
       "x": 36,
       "y": 268,

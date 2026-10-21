@@ -2,23 +2,23 @@
 Live Multi-Cloud (Google Cloud + AWS) & Third-Party API Bridge for `core-cymbal-agent`.
 =======================================================================================
 Provides real, authenticated REST/CLI calls across:
-1. Google Cloud (`ramp-portal-dev` #248990048888 + `nitina-ggarwal-sandbox-647724` #887605034827):
+1. Google Cloud (`ramp-portal-dev` #248990048888 + `cymbal-build-sandbox` #887605034827):
    - BigQuery SQL (`bigquery.googleapis.com/bigquery/v2/projects/ramp-portal-dev/queries`) querying live
-     multi-tenant tables in `nitina-ggarwal-sandbox-647724.cymbal_agentic_finops_otel` (`pattern_a_pooled_rls_entities`,
+     multi-tenant tables in `cymbal-build-sandbox.cymbal_agentic_finops_otel` (`pattern_a_pooled_rls_entities`,
      `pattern_c_psc_endpoints_registry`, `tenant_promotion_migrations`, `tenant_telemetry_spans`,
      `security_breach_audit_log`) and live CMEK lockout verification on
-     `nitina-ggarwal-sandbox-647724.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault`.
+     `cymbal-build-sandbox.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault`.
    - Vertex AI (`us-central1-aiplatform.googleapis.com` in `ramp-portal-dev`): live `gemini-2.5-pro`
      and `gemini-2.5-flash` execution and LLM-as-a-Judge evaluation across Patterns A, B, and C.
    - Cloud KMS (`cloudkms.googleapis.com` in `us-west1`, KeyRing `cymbal-multi-tenant-kr`).
 2. AWS (`Account 393036065405`, `us-east-1`):
    - Live AWS STS `GetCallerIdentity` (`arn:aws:iam::393036065405:user/nitinagga`).
    - Live Amazon Cognito RS256 OAuth2 token minting (`us-east-1_vqlzYM74B`).
-   - Live Amazon Bedrock AgentCore MCP Gateway (`merck-a2a-mcp-gateway-kiu8omh4aq`) `tools/list` & `tools/call`.
-   - Live AWS Lambda Remote A2A/MCP Peer (`merck-a2a-mcp-remote-peer`) verifying Hop 5 MCP `-32042` elicitation,
+   - Live Amazon Bedrock AgentCore MCP Gateway (`cymbal-a2a-mcp-gateway-kiu8omh4aq`) `tools/list` & `tools/call`.
+   - Live AWS Lambda Remote A2A/MCP Peer (`cymbal-a2a-mcp-remote-peer`) verifying Hop 5 MCP `-32042` elicitation,
      Schema Sanitizer, Parallel Tool Isolation, HMAC Anti-Spoofing (`403`), and S3 audit persistence.
 3. Third-Party Products:
-   - ServiceNow ITSM (`CHG0049218` / `INC0948211`) & Muse Clinical EDC (`MK-3475-087`) via AWS AgentCore MCP.
+   - ServiceNow ITSM (`CHG0049218` / `INC0948211`) & Muse Clinical EDC (`FV-GXP-2026-04`) via AWS AgentCore MCP.
    - Microsoft Entra ID OBO (`urn:ietf:params:oauth:grant-type:jwt-bearer`) token exchange flow.
    - Google Workspace (`Google Drive API v3`, `Google Slides`, `Google Docs`) live deck & doc verification.
 """
@@ -38,7 +38,7 @@ import urllib.parse
 import urllib.request
 from typing import Any, Dict, List, Optional, Tuple
 
-GCP_PROJECT_ID = os.environ.get("CYMBAL_GCP_PROJECT", "nitina-ggarwal-sandbox-647724")
+GCP_PROJECT_ID = os.environ.get("CYMBAL_GCP_PROJECT", "cymbal-build-sandbox")
 GCP_QUOTA_PROJECT_ID = os.environ.get("CYMBAL_GCP_QUOTA_PROJECT", "ramp-portal-dev")
 GCP_REGION = os.environ.get("CYMBAL_GCP_REGION", "us-west1")
 VERTEX_REGION = os.environ.get("CYMBAL_VERTEX_REGION", "us-central1")
@@ -52,7 +52,7 @@ LIVE_KMS_KEY_MAP = {
 }
 
 AWS_LAMBDA_PEER_URL = "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws"
-AWS_AGENTCORE_GW_URL = "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp"
+AWS_AGENTCORE_GW_URL = "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp"
 AWS_SHARED_JWT_SECRET = "merck-a2a-hs256-shared-secret-2026"
 
 _CACHED_TOKEN: Optional[str] = None
@@ -137,8 +137,8 @@ WITH pattern_a_pooled_rls_entities AS (
   SELECT "ENT-RS-001", "retailstream", "TIER_1_POOLED_RLS", "Omnichannel Inventory Fulfillment", 18250000, TRUE, 1792022944.688598
 ),
 pattern_c_psc_endpoints_registry AS (
-  SELECT "PSC-EP-FINVAULT-01" AS endpoint_id, "finvault" AS tenant_id, "10.128.0.45" AS psc_endpoint_ip, "projects/nitina-ggarwal-sandbox-647724/regions/us-west1/subnetworks/cymbal-psc-nat-us-west1 (10.240.0.0/28)" AS psc_nat_subnet, "DRAIN_AND_VERIFY_COMPLETED" AS migration_state, TRUE AS zero_vpc_peering UNION ALL
-  SELECT "PSC-EP-MEDCORE-01", "medcore", "10.128.0.46", "projects/nitina-ggarwal-sandbox-647724/regions/us-west1/subnetworks/cymbal-psc-nat-us-west1 (10.240.0.0/28)", "ACTIVE_HYBRID_SPOKE", TRUE
+  SELECT "PSC-EP-FINVAULT-01" AS endpoint_id, "finvault" AS tenant_id, "10.128.0.45" AS psc_endpoint_ip, "projects/cymbal-build-sandbox/regions/us-west1/subnetworks/cymbal-psc-nat-us-west1 (10.240.0.0/28)" AS psc_nat_subnet, "DRAIN_AND_VERIFY_COMPLETED" AS migration_state, TRUE AS zero_vpc_peering UNION ALL
+  SELECT "PSC-EP-MEDCORE-01", "medcore", "10.128.0.46", "projects/cymbal-build-sandbox/regions/us-west1/subnetworks/cymbal-psc-nat-us-west1 (10.240.0.0/28)", "ACTIVE_HYBRID_SPOKE", TRUE
 ),
 tenant_promotion_migrations AS (
   SELECT "MIG-RS-2026-001" AS migration_id, "retailstream" AS tenant_id, "PATTERN_C_HYBRID_POOL" AS from_tier, "PATTERN_C_HYBRID_PSC_SPOKE" AS to_tier, 0 AS dropped_sessions, 0 AS replication_lag_ms, "MIGRATION_COMPLETE" AS status
@@ -157,8 +157,8 @@ security_breach_audit_log AS (
 def bq_execute_live_query(sql: str, billing_project: str = GCP_QUOTA_PROJECT_ID) -> Dict[str, Any]:
     """
     Executes a live BigQuery Standard SQL query billed to `ramp-portal-dev` (#248990048888),
-    reading from tables in `nitina-ggarwal-sandbox-647724.cymbal_agentic_finops_otel` or
-    `nitina-ggarwal-sandbox-647724.cymbal_silo_finvault_usw1`. If sandbox consumer #887605034827
+    reading from tables in `cymbal-build-sandbox.cymbal_agentic_finops_otel` or
+    `cymbal-build-sandbox.cymbal_silo_finvault_usw1`. If sandbox consumer #887605034827
     is suspended by Google Cloud for a `cymbal_agentic_finops_otel` query, executes the live SQL
     job directly in `ramp-portal-dev` against the canonical CTE dataset.
     """
@@ -182,8 +182,8 @@ def bq_execute_live_query(sql: str, billing_project: str = GCP_QUOTA_PROJECT_ID)
             rewritten_sql = (
                 _SANDBOX_BQ_CTES
                 + "\n"
-                + sql.replace("`nitina-ggarwal-sandbox-647724.cymbal_agentic_finops_otel.", "`")
-                .replace("nitina-ggarwal-sandbox-647724.cymbal_agentic_finops_otel.", "")
+                + sql.replace("`cymbal-build-sandbox.cymbal_agentic_finops_otel.", "`")
+                .replace("cymbal-build-sandbox.cymbal_agentic_finops_otel.", "")
             )
             status, resp = _gcp_json_request(
                 "POST",
@@ -224,12 +224,12 @@ def bq_execute_live_query(sql: str, billing_project: str = GCP_QUOTA_PROJECT_ID)
 def bq_verify_cmek_silo_lockout() -> Dict[str, Any]:
     """
     Queries the CMEK-encrypted Pattern B Sovereign Silo table
-    `nitina-ggarwal-sandbox-647724.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault`
+    `cymbal-build-sandbox.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault`
     via `ramp-portal-dev` to prove live BigQuery CMEK lockout when the KMS key/project cannot decrypt.
     """
     sql = (
         "SELECT vault_record_id, tenant_id "
-        "FROM `nitina-ggarwal-sandbox-647724.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault` "
+        "FROM `cymbal-build-sandbox.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault` "
         "LIMIT 5"
     )
     res = bq_execute_live_query(sql)
@@ -238,7 +238,7 @@ def bq_verify_cmek_silo_lockout() -> Dict[str, Any]:
         "Cloud KMS Error" in err_msg or "kms" in err_msg.lower() or "suspended" in err_msg.lower()
     )
     return {
-        "table": "nitina-ggarwal-sandbox-647724.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
+        "table": "cymbal-build-sandbox.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
         "cmek_key": LIVE_KMS_KEY_MAP["finvault"],
         "live_cmek_lockout_enforced": cmek_locked,
         "http_status": res.get("status_code"),
@@ -343,7 +343,7 @@ def kms_set_key_version_state(tenant_id: str, enabled: bool) -> Dict[str, object
 
 def bq_stream_insert(table_name: str, row: Dict[str, object]) -> Dict[str, object]:
     """
-    Streams an audit/telemetry row into `nitina-ggarwal-sandbox-647724:cymbal_agentic_finops_otel`,
+    Streams an audit/telemetry row into `cymbal-build-sandbox:cymbal_agentic_finops_otel`,
     and verifies the live table via a BigQuery SQL query billed to `ramp-portal-dev`.
     """
     url = (
@@ -469,11 +469,11 @@ def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
     Executes live verification against AWS Account 393036065405 (`us-east-1`) and Third-Party MCP targets:
     1. Live AWS STS `GetCallerIdentity` via SigV4 (`arn:aws:iam::393036065405:user/nitinagga`).
     2. Live Amazon Cognito RS256 OAuth2 token minting (`us-east-1_vqlzYM74B`).
-    3. Live Amazon Bedrock AgentCore MCP Gateway (`merck-a2a-mcp-gateway-kiu8omh4aq`) `tools/list`
-       and `tools/call` for ServiceNow ITSM (`CHG0049218` / `INC0948211`) & Muse Clinical (`MK-3475-087`).
-    4. Live AWS Lambda Remote A2A/MCP Peer (`merck-a2a-mcp-remote-peer`) verifying Hop 5 MCP `-32042`
+    3. Live Amazon Bedrock AgentCore MCP Gateway (`cymbal-a2a-mcp-gateway-kiu8omh4aq`) `tools/list`
+       and `tools/call` for ServiceNow ITSM (`CHG0049218` / `INC0948211`) & Muse Clinical (`FV-GXP-2026-04`).
+    4. Live AWS Lambda Remote A2A/MCP Peer (`cymbal-a2a-mcp-remote-peer`) verifying Hop 5 MCP `-32042`
        elicitation, JSON Schema 2020-12 Sanitizer, Parallel Tool Isolation, HMAC Anti-Spoofing (`403`),
-       and Microsoft Entra ID OBO + Amazon S3 audit persistence (`s3://nitinagga-argolis-aws-393036065405-us-east-1`).
+       and Microsoft Entra ID OBO + Amazon S3 audit persistence (`s3://cymbal-aws-federation-393036065405-us-east-1`).
     """
     results: Dict[str, Any] = {
         "aws_account_id": "393036065405",
@@ -527,7 +527,7 @@ def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
     except Exception as exc:
         results["sts_caller_identity"] = {"live_sts_ok": False, "error": str(exc)}
 
-    # 2. Live Amazon Cognito RS256 OAuth2 Token + Amazon Bedrock AgentCore MCP Gateway (`merck-a2a-mcp-gateway-kiu8omh4aq`)
+    # 2. Live Amazon Cognito RS256 OAuth2 Token + Amazon Bedrock AgentCore MCP Gateway (`cymbal-a2a-mcp-gateway-kiu8omh4aq`)
     tfvars_path = Path("/Users/nitinagga/aws/aws.auto.tfvars.json")
     if tfvars_path.is_file():
         try:
@@ -574,7 +574,7 @@ def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
                         "method": "tools/call",
                         "params": {
                             "name": "servicenow-itsm___query_servicenow_change_records",
-                            "arguments": {"change_ticket": "CHG0049218", "study_id": "MK-3475-087"},
+                            "arguments": {"change_ticket": "CHG0049218", "study_id": "FV-GXP-2026-04"},
                         },
                     }
                 ).encode("utf-8"),
@@ -595,7 +595,7 @@ def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
                         "method": "tools/call",
                         "params": {
                             "name": "muse-poc___query_muse_study_biomarkers",
-                            "arguments": {"study_id": "MK-3475-087", "cohort": "Cohort-B"},
+                            "arguments": {"study_id": "FV-GXP-2026-04", "cohort": "Cohort-B"},
                         },
                     }
                 ).encode("utf-8"),
@@ -608,7 +608,7 @@ def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
 
             results["bedrock_agentcore_mcp_gateway"] = {
                 "live_agentcore_gw_ok": len(tool_names) >= 10 and sn_ok and muse_ok,
-                "gateway_id": "merck-a2a-mcp-gateway-kiu8omh4aq",
+                "gateway_id": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
                 "gateway_url": AWS_AGENTCORE_GW_URL,
                 "registered_tools_count": len(tool_names),
                 "registered_tools": tool_names,
@@ -618,7 +618,7 @@ def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
         except Exception as exc:
             results["bedrock_agentcore_mcp_gateway"] = {"live_agentcore_gw_ok": False, "error": str(exc)}
 
-    # 3. Live AWS Lambda Remote Peer (`merck-a2a-mcp-remote-peer`) Hop 5 MCP Guardrails
+    # 3. Live AWS Lambda Remote Peer (`cymbal-a2a-mcp-remote-peer`) Hop 5 MCP Guardrails
     try:
         hs_tok = _mint_aws_peer_hs256_jwt()
         l_headers = {"Authorization": f"Bearer {hs_tok}", "Content-Type": "application/json"}
@@ -652,7 +652,7 @@ def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
             "schema_sanitizer_compatible": bool(d_san.get("geminiParserCompatible")),
             "parallel_isolation_zero_collision": bool(d_par.get("zeroContextCollision")),
             "anti_spoof_hmac_rejected_status": spoof_status,
-            "s3_consent_audit_bucket": "s3://nitinagga-argolis-aws-393036065405-us-east-1/merck-mcp-consent/",
+            "s3_consent_audit_bucket": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-mcp-consent/",
         }
     except Exception as exc:
         results["aws_lambda_hop5_mcp_guardrails"] = {"live_lambda_ok": False, "error": str(exc)}
@@ -746,7 +746,7 @@ def run_live_gcp_bridge_self_test() -> Dict[str, object]:
     # 1. Pattern A: Live BigQuery RLS Query (`pattern_a_pooled_rls_entities`) billed to `ramp-portal-dev`
     pattern_a_bq_rls = bq_execute_live_query(
         "SELECT * "
-        "FROM `nitina-ggarwal-sandbox-647724.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities` "
+        "FROM `cymbal-build-sandbox.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities` "
         "WHERE tenant_id = 'tenant-finvault-inc' ORDER BY entity_id"
     )
     # 2. Pattern B: Live BigQuery CMEK Lockout Verification (`pattern_b_silo_finvault_cmek_vault`)
@@ -754,12 +754,12 @@ def run_live_gcp_bridge_self_test() -> Dict[str, object]:
     # 3. Pattern C: Live BigQuery PSC Endpoint Registry & Zero-Downtime Tier Promotion Ledger
     pattern_c_psc = bq_execute_live_query(
         "SELECT * "
-        "FROM `nitina-ggarwal-sandbox-647724.cymbal_agentic_finops_otel.pattern_c_psc_endpoints_registry` "
+        "FROM `cymbal-build-sandbox.cymbal_agentic_finops_otel.pattern_c_psc_endpoints_registry` "
         "ORDER BY endpoint_id"
     )
     pattern_c_migrations = bq_execute_live_query(
         "SELECT * "
-        "FROM `nitina-ggarwal-sandbox-647724.cymbal_agentic_finops_otel.tenant_promotion_migrations` "
+        "FROM `cymbal-build-sandbox.cymbal_agentic_finops_otel.tenant_promotion_migrations` "
         "ORDER BY migration_id"
     )
     # 4. Live Vertex AI Gemini 2.5 Pro & Gemini 2.5 Flash model execution in `ramp-portal-dev`

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Deploys all 10 Enterprise Third-Party SaaS MCP Targets to Live AWS Bedrock AgentCore MCP Gateway
-(`merck-a2a-mcp-gateway-kiu8omh4aq`, AWS Account `393036065405`, `us-east-1`) and updates the
-live AWS Lambda Function (`merck-a2a-mcp-remote-peer`) + S3 Audit Ledger (`s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/`).
+(`cymbal-a2a-mcp-gateway-kiu8omh4aq`, AWS Account `393036065405`, `us-east-1`) and updates the
+live AWS Lambda Function (`cymbal-a2a-mcp-remote-peer`) + S3 Audit Ledger (`s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/`).
 
 All 10 Registered Bedrock AgentCore MCP Gateway Targets:
   1. `thoughtspot-spotter`  -> `thoughtspot-spotter___query_thoughtspot_liveboard_rls`
@@ -34,11 +34,11 @@ import aws_mfa_helper as h  # type: ignore
 
 ACCOUNT_ID = "393036065405"
 REGION = "us-east-1"
-FUNCTION_NAME = "merck-a2a-mcp-remote-peer"
+FUNCTION_NAME = "cymbal-a2a-mcp-remote-peer"
 ROLE_ARN = f"arn:aws:iam::{ACCOUNT_ID}:role/a2a-agentcore-runtime-exec"
-GATEWAY_ID = "merck-a2a-mcp-gateway-kiu8omh4aq"
+GATEWAY_ID = "cymbal-a2a-mcp-gateway-kiu8omh4aq"
 GATEWAY_URL = f"https://{GATEWAY_ID}.gateway.bedrock-agentcore.{REGION}.amazonaws.com/mcp"
-S3_BUCKET = f"nitinagga-argolis-aws-{ACCOUNT_ID}-{REGION}"
+S3_BUCKET = f"cymbal-aws-federation-{ACCOUNT_ID}-{REGION}"
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 MANIFEST_OUT = ROOT_DIR / "docs" / "aws_agentcore_10_saas_targets_manifest.json"
@@ -120,13 +120,13 @@ CYMBAL_10_SAAS_RECORDS = {
             "account_locator": "os37291.us-east-1",
             "primary_role": "ROLE_CYMBAL_FINVAULT",
             "secondary_roles": "NONE",
-            "cortex_semantic_model": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/snowflake/finvault_semantic_model.yaml",
+            "cortex_semantic_model": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake/finvault_semantic_model.yaml",
         },
         "retailstream": {
             "account_locator": "os37291.us-east-1",
             "primary_role": "ROLE_CYMBAL_RETAILSTREAM",
             "secondary_roles": "NONE",
-            "cortex_semantic_model": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/snowflake/retailstream_semantic_model.yaml",
+            "cortex_semantic_model": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake/retailstream_semantic_model.yaml",
         },
     },
     "workday-raas": {
@@ -219,7 +219,7 @@ SAAS_UI_CATALOG = {
         "subtitle": "Hop 5 Composite 3LO OAuth2 Vault: retailstream:ops-eng@retailstream.com:mcp://retailstream/servicenow-itom-3lo",
         "columns": ["Record Number", "Record Type", "CI / Study Scope", "Approval & Implementation State", "Checksum / 3LO Audit"],
         "rows": [
-            ["CHG0049218", "Normal GxP Change", "MUSE-EDC-PROD (MK-3475-087)", "IMPLEMENTED • CAB-Approved-21CFR11", "sha256:9f84c2e1bc804d19a33f8e210a44b902"],
+            ["CHG0049218", "Normal GxP Change", "MUSE-EDC-PROD (FV-GXP-2026-04)", "IMPLEMENTED • CAB-Approved-21CFR11", "sha256:9f84c2e1bc804d19a33f8e210a44b902"],
             ["INC0948211", "P2 ITSM Incident", "AWS-AgentCore-MCP-Gateway", "RESOLVED • Replaced by Headless OBO Broker", "38.4ms p50 OBO Exchange Verified"],
             ["UNCONSENTED-CALL", "Step-Up 3LO Challenge", "Missing Vault Token", "PAUSED AT HOP 5 • MCP Error -32042", "HTTP 401 CHALLENGE_3LO_OAUTH"],
         ],
@@ -231,12 +231,12 @@ SAAS_UI_CATALOG = {
         "header_bg": "#2e1065",
         "target_id": "1KZWKOFTWQ",
         "tool_name": "muse-poc___query_muse_study_biomarkers",
-        "workspace_title": "Veeva Document VV-DOC-004819 v4.0 • Study MK-3475-087 (KEYNOTE-B15 Cohort-B)",
+        "workspace_title": "Veeva Document VV-DOC-004819 v4.0 • Study FV-GXP-2026-04 (KEYNOTE-B15 Cohort-B)",
         "subtitle": "FDA 21 CFR Part 11 Electronic Signature via Cloud KMS Asymmetric Key (adk-agent-signing-key ECDSA P-256)",
         "columns": ["Veeva / Muse Artifact", "Clinical Cohort", "Biomarker / Safety Endpoint", "Measured Value vs DSMB Limit", "21 CFR Part 11 KMS Signature"],
         "rows": [
-            ["VV-DOC-004819 / MK-3475-087", "Phase III Cohort-B", "Grade 3+ Hepatotoxicity (ALT/AST)", "11.5% (Within <15.0% DSMB Limit)", "ECDSA-P256 Verified (HTTP 200)"],
-            ["VV-DOC-004819 / MK-3475-087", "Phase III Cohort-B", "Confirmed Objective Response (ORR)", "64.2% (95% CI: 58.1–69.9, n=412)", "Non-Repudiable KMS Digest"],
+            ["VV-DOC-004819 / FV-GXP-2026-04", "Phase III Cohort-B", "Grade 3+ Hepatotoxicity (ALT/AST)", "11.5% (Within <15.0% DSMB Limit)", "ECDSA-P256 Verified (HTTP 200)"],
+            ["VV-DOC-004819 / FV-GXP-2026-04", "Phase III Cohort-B", "Confirmed Objective Response (ORR)", "64.2% (95% CI: 58.1–69.9, n=412)", "Non-Repudiable KMS Digest"],
             ["Cross-Tenant Probe", "Unauthorized: retailstream", "mcp://finvault/veeva-muse-clinical-3lo", "Access Denied at Hop 2 Catalog PDP", "HTTP 403 FORBIDDEN"],
         ],
     },
@@ -562,7 +562,7 @@ TARGET_SPECS = [
             "inputSchema": {
                 "type": "object",
                 "properties": {
-                    "study_id": {"type": "string", "description": "Clinical study ID (e.g. MK-3475-087)"},
+                    "study_id": {"type": "string", "description": "Clinical study ID (e.g. FV-GXP-2026-04)"},
                     "change_id": {"type": "string", "description": "ServiceNow change ticket ID (e.g. CHG0049218)"},
                     "principal": {"type": "string", "description": "User principal email"},
                 },
@@ -572,14 +572,14 @@ TARGET_SPECS = [
     },
     {
         "name": "muse-poc",
-        "description": "Merck Muse Clinical Trial & Biomarker MCP Server (KEYNOTE-B15 / MK-3475-087)",
+        "description": "Merck Muse Clinical Trial & Biomarker MCP Server (KEYNOTE-B15 / FV-GXP-2026-04)",
         "tool": {
             "name": "query_muse_study_biomarkers",
             "description": "Query Merck Muse clinical study biomarker ORR and hepatotoxicity metrics.",
             "inputSchema": {
                 "type": "object",
                 "properties": {
-                    "study_id": {"type": "string", "description": "Clinical trial study ID (e.g. MK-3475-087)"},
+                    "study_id": {"type": "string", "description": "Clinical trial study ID (e.g. FV-GXP-2026-04)"},
                     "cohort": {"type": "string", "description": "Study cohort (e.g. Cohort-B)"},
                     "principal": {"type": "string", "description": "User principal email"},
                 },
@@ -849,7 +849,7 @@ def main() -> int:
         tname = r["toolName"]
         args = {"tenant_id": "finvault", "principal": "sre-lead@finvault.com", "pattern": "PATTERN_A_POOLED"}
         if "servicenow" in tname or "muse" in tname:
-            args = {"study_id": "MK-3475-087", "cohort": "Cohort-B", "change_id": "CHG0049218", "principal": "sre-lead@finvault.com"}
+            args = {"study_id": "FV-GXP-2026-04", "cohort": "Cohort-B", "change_id": "CHG0049218", "principal": "sre-lead@finvault.com"}
         creq = urllib.request.Request(
             GATEWAY_URL,
             data=json.dumps({

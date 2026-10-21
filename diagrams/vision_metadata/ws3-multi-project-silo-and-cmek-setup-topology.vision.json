@@ -2,7 +2,7 @@
   "id": "VIS-WS3-MULTI-PROJECT-SILO-AND-CMEK-SETUP-TOPOLOGY",
   "blueprintId": "ws3-multi-project-silo-and-cmek-setup-topology",
   "title": "Pattern B Provisioning Topology: Org → Per-Tenant Silo Projects, VPC-SC Perimeters, IAM PAB & Cloud KMS CMEK Keys",
-  "subtitle": "Live Verified in nitina-ggarwal-sandbox-647724 (us-west1) • cymbal-multi-tenant-kr/{finvault-silo-cmek,medcore-revoked-cmek} & cymbal_silo_finvault_usw1",
+  "subtitle": "Live Verified in cymbal-build-sandbox (us-west1) • cymbal-multi-tenant-kr/{finvault-silo-cmek,medcore-revoked-cmek} & cymbal_silo_finvault_usw1",
   "badge": "WORKSTREAM 3.2 • MULTI-PROJECT SILO & CMEK SETUP",
   "sourceImage": "diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio.png",
   "drawioFile": "diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio",
@@ -23,7 +23,7 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (/Users/nitinagga/documents/PromptCanvas/src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
   "healerLog": [
     "Protected master/canonical blueprint passed through without geometric mutation."
   ],
@@ -66,8 +66,8 @@
     {
       "id": "wrapper_shared_hubs",
       "urlSlug": "OBJ-03-MULTI-PROJECT-SOVEREIGN",
-      "label": "Multi-Project Sovereign Silo Topology (nitina-ggarwal-sandbox-647724 • One Perimeter, Key Ring & PAB Policy per Tenant)",
-      "plainTitle": "Multi-Project Sovereign Silo Topology (nitina-ggarwal-sandbox-647724 • One Perimeter, Key Ring & PAB Policy per Tenant)",
+      "label": "Multi-Project Sovereign Silo Topology (cymbal-build-sandbox • One Perimeter, Key Ring & PAB Policy per Tenant)",
+      "plainTitle": "Multi-Project Sovereign Silo Topology (cymbal-build-sandbox • One Perimeter, Key Ring & PAB Policy per Tenant)",
       "zone": "Apps & Solutions Tier",
       "x": 36,
       "y": 268,

@@ -2,7 +2,7 @@
   "id": "VIS-WS1-MULTI-TENANT-TAXONOMY-OVERVIEW",
   "blueprintId": "ws1-multi-tenant-taxonomy-overview",
   "title": "Multi-Tenant Agentic AI Taxonomy: Pooled (Pattern A), Sovereign Silos (Pattern B) & Hybrid (Pattern C)",
-  "subtitle": "Verified on GCP (nitina-ggarwal-sandbox-647724 & ramp-portal-dev) • Cloud Run cymbal-multi-tenant-patterns-00003-wfh",
+  "subtitle": "Verified on GCP (cymbal-build-sandbox & ramp-portal-dev) • Cloud Run cymbal-multi-tenant-patterns-00003-wfh",
   "badge": "WORKSTREAM 1.1 BLUEPRINT",
   "sourceImage": "diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png",
   "drawioFile": "diagrams/ws1-multi-tenant-taxonomy-overview.drawio",
@@ -23,7 +23,7 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (/Users/nitinagga/documents/PromptCanvas/src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
   "healerLog": [
     "Protected master/canonical blueprint passed through without geometric mutation."
   ],
@@ -66,8 +66,8 @@
     {
       "id": "wrapper_shared_hubs",
       "urlSlug": "OBJ-03-SHARED-CONTROL-PLANE-RAM",
-      "label": "Shared Control Plane (ramp-portal-dev / nitina-ggarwal-sandbox-647724 • 80% Core + 20% Topology Delta)",
-      "plainTitle": "Shared Control Plane (ramp-portal-dev / nitina-ggarwal-sandbox-647724 • 80% Core + 20% Topology Delta)",
+      "label": "Shared Control Plane (ramp-portal-dev / cymbal-build-sandbox • 80% Core + 20% Topology Delta)",
+      "plainTitle": "Shared Control Plane (ramp-portal-dev / cymbal-build-sandbox • 80% Core + 20% Topology Delta)",
       "zone": "Apps & Solutions Tier",
       "x": 36,
       "y": 268,

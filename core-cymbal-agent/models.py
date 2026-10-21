@@ -1,5 +1,5 @@
 """
-Core data models for the Cymbal Multi-Tenant Agentic AI Platform (GEAP & ADK 2.0).
+Core data models for the Cymbal Multi-Tenant Agentic AI Platform (GEAP & ADK).
 Shared across Workstream 2 (Pooled), Workstream 3 (Siloed), and Workstream 4 (Hybrid).
 """
 

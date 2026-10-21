@@ -7,7 +7,7 @@ export default {
   id: 'ws4-zero-downtime-tier-upgrade-sequence',
   badge: 'WORKSTREAM 4.5 • ZERO-DOWNTIME TIER UPGRADE SUITE',
   title: 'Zero-Downtime Tier Upgrade Test Sequence: SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY (4/4 PASS)',
-  subtitle: 'run_tier_migration_suite.py • Live Verified in nitina-ggarwal-sandbox-647724 • Promotes retailstream Mid-Session to psc://10.10.0.51 with 0 Dropped Turns',
+  subtitle: 'run_tier_migration_suite.py • Live Verified in cymbal-build-sandbox • Promotes retailstream Mid-Session to psc://10.10.0.51 with 0 Dropped Turns',
   workstreamDir: 'workstream-4-pattern-c-hybrid/diagrams',
   topUserTitle: 'Test Harness Operator',
   topUserSub: 'python3 run_tier_migration_suite.py',

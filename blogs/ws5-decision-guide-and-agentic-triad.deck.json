@@ -4,7 +4,7 @@
   "deckSubtitle": "Workstream 5 capstone: 2-question topology decision tree, side-by-side Well-Architected comparison matrix, 1,000-tenant FinOps TCO model, and 3-stage elastic tenant tier lifecycle",
   "tldr": [
     "Two Architectural Questions Select Your Pattern: First evaluate whether 100% of tenants legally require dedicated cloud projects (Pattern B); second evaluate whether you sell one uniform tier (Pattern A) or multiple tiers (Pattern C).",
-    "One 80% Reusable 5-Hop Codebase: Engineering writes the 5-hop ADK 2.0 security and governance pipeline once; Patterns A, B, and C merely parameterize the surrounding Google Cloud isolation boundary.",
+    "One 80% Reusable 5-Hop Codebase: Engineering writes the 5-hop ADK security and governance pipeline once; Patterns A, B, and C merely parameterize the surrounding Google Cloud isolation boundary.",
     "The Multi-Tenant Agentic Triad: Sustainable enterprise AI platforms balance three interdependent pillars—Zero-Trust Cryptographic Security, Predictable Unit Economics, and Zero-PII FinOps Chargeback.",
     "Proven 1,000-Tenant Portfolio Economics: Across 950 Standard and 50 Enterprise tenants, Pattern C reduces Gemini 2.5 Pro input token spend by 84.7%, lowers total cloud TCO by 74% vs. all-siloed, and maintains a 99.99% SLA.",
     "Elastic 3-Stage Tenant Tier Lifecycle: Onboard commercial tenants in <50ms into Pattern A (120 RPM Pool), promote expanding enterprises live into Pattern C PSC spokes (0ms lag, 0 dropped turns), and enforce <60s HTTP 423 CMEK kill-switches in Pattern B silos."
@@ -16,7 +16,7 @@
       "tag": "2-Question Decision Tree"
     },
     {
-      "stack": "core-cymbal-agent/ (Python ADK 2.0) • 5-Hop Security Pipeline • Terraform (2.6, 3.6, 4.6)",
+      "stack": "core-cymbal-agent/ (Python ADK) • 5-Hop Security Pipeline • Terraform (2.6, 3.6, 4.6)",
       "sla": "80% Identical Application Code Across Pooled, Siloed & Hybrid Deployments",
       "tag": "Unified Engineering Leverage"
     },
@@ -64,7 +64,7 @@
         },
         {
           "stack": "Cloud Armor • IAP • Agent Engine • Gemini 2.5 Pro • Valkey • Model Armor • AlloyDB • BigQuery",
-          "sla": "80% Identical Python ADK 2.0 Codebase • 12/12 Forensic Gates & 20/20 Simulations PASS",
+          "sla": "80% Identical Python ADK Codebase • 12/12 Forensic Gates & 20/20 Simulations PASS",
           "tag": "4. Unified 5-Hop Google Cloud Stack"
         }
       ]
@@ -226,7 +226,7 @@
         {
           "hop": "HOP 03",
           "stage": "Runtime & Memory",
-          "title": "Sandboxed ADK 2.0 Execution, L1–L5 Memory & Quota Bulkheads",
+          "title": "Sandboxed ADK Execution, L1–L5 Memory & Quota Bulkheads",
           "service": "Agent Engine • Memorystore Valkey",
           "mechanism": "Executes agent reasoning inside gVisor-isolated Cloud Run v2 / Agent Engine sandboxes, partitions L1–L5 Memory Bank namespaces, and enforces per-tenant RPM and thinking budgets.",
           "invariant": "Namespace: mem://{tenant_id}/L1..L5 • Cap: 4k (Std) / 8k (Ent)",
@@ -308,7 +308,7 @@
   ],
   "takeaways": [
     "Resolve Regulatory Mandates Before Product Packaging: Always evaluate whether compliance requires physical per-tenant projects (Gate 1 -> Pattern B) before choosing between single-tier (Pattern A) and multi-tier (Pattern C).",
-    "Standardize on One 5-Hop Security Pipeline Across All Tiers: Keep 80% of your Python ADK 2.0 application code identical across Pooled, Siloed, and Hybrid environments.",
+    "Standardize on One 5-Hop Security Pipeline Across All Tiers: Keep 80% of your Python ADK application code identical across Pooled, Siloed, and Hybrid environments.",
     "Treat Pooled ($), Hybrid ($$), and Siloed ($$$) as One Continuous Platform: Use Firestore routing metadata and Private Service Connect to move tenants across tiers without changing URLs or rewriting agents.",
     "Balance All Three Pillars of the Agentic Triad: Combining 5-hop zero-trust security, 90% prefix caching + Valkey bulkheads, and zero-PII BigQuery OTel chargeback protects both CISO compliance and CFO margins.",
     "Gate Every Production Release on the 12-Point Forensic & 20-Test Simulation Suite: Run `python3 -B scripts/run_deep_forensic_audit.py` to certify code, diagrams, Terraform blueprints, and live GCP resources."
@@ -374,9 +374,9 @@
       "totalSlides": 12,
       "title": "Act II (Level 1 Zoom) — 3-Zone Logical Security & Trust Boundary",
       "whyHere": "Now that we have chosen our architectural approach on Slide 3, Slide 4 opens Act II at Level 1 of our top-down zoom—giving everyone a simple three-zone mental map before we look at the full physical schematic.",
-      "whatIsHappening": "How do we support three distinct infrastructure topologies without maintaining three separate software products? This diagram illustrates our 80/20 code-reuse architecture across three logical zones. Eighty percent of our platform—shown across Zone 1 and Zone 2, including the entire five-hop identity, registry, memory, guardrail, and ADK 2.0 agent reasoning engine—is 100% identical Python code. Only the bottom twenty percent infrastructure adapter in Zone 3 swaps between shared AlloyDB Row-Level Security, dedicated sovereign CMEK silos, or Private Service Connect endpoints via environment configuration.",
+      "whatIsHappening": "How do we support three distinct infrastructure topologies without maintaining three separate software products? This diagram illustrates our 80/20 code-reuse architecture across three logical zones. Eighty percent of our platform—shown across Zone 1 and Zone 2, including the entire five-hop identity, registry, memory, guardrail, and ADK agent reasoning engine—is 100% identical Python code. Only the bottom twenty percent infrastructure adapter in Zone 3 swaps between shared AlloyDB Row-Level Security, dedicated sovereign CMEK silos, or Private Service Connect endpoints via environment configuration.",
       "whatComesNext": "Now that we have these three logical zones in mind, let's zoom one level deeper on Slide 5 to see the exact Google Cloud services that live inside each zone.",
-      "fullText": "Now that we have chosen our architectural approach on Slide 3, Slide 4 opens Act II at Level 1 of our top-down zoom—giving everyone a simple three-zone mental map before we look at the full physical schematic.\n\nHow do we support three distinct infrastructure topologies without maintaining three separate software products? This diagram illustrates our 80/20 code-reuse architecture across three logical zones. Eighty percent of our platform—shown across Zone 1 and Zone 2, including the entire five-hop identity, registry, memory, guardrail, and ADK 2.0 agent reasoning engine—is 100% identical Python code. Only the bottom twenty percent infrastructure adapter in Zone 3 swaps between shared AlloyDB Row-Level Security, dedicated sovereign CMEK silos, or Private Service Connect endpoints via environment configuration.\n\nNow that we have these three logical zones in mind, let's zoom one level deeper on Slide 5 to see the exact Google Cloud services that live inside each zone."
+      "fullText": "Now that we have chosen our architectural approach on Slide 3, Slide 4 opens Act II at Level 1 of our top-down zoom—giving everyone a simple three-zone mental map before we look at the full physical schematic.\n\nHow do we support three distinct infrastructure topologies without maintaining three separate software products? This diagram illustrates our 80/20 code-reuse architecture across three logical zones. Eighty percent of our platform—shown across Zone 1 and Zone 2, including the entire five-hop identity, registry, memory, guardrail, and ADK agent reasoning engine—is 100% identical Python code. Only the bottom twenty percent infrastructure adapter in Zone 3 swaps between shared AlloyDB Row-Level Security, dedicated sovereign CMEK silos, or Private Service Connect endpoints via environment configuration.\n\nNow that we have these three logical zones in mind, let's zoom one level deeper on Slide 5 to see the exact Google Cloud services that live inside each zone."
     },
     {
       "slide": 5,

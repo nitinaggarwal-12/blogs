@@ -1,11 +1,11 @@
 {
   "workstream": "WS1",
   "deckTitle": "Multi-Tenant Agentic AI on Google Cloud: Reference Taxonomy & 5-Hop Governance (Workstream 1)",
-  "deckSubtitle": "Solving the SaaS AI Dilemma: Prevent tool-schema leaks and rogue-tenant quota starvation using Agent Development Kit (ADK 2.0), Model Context Protocol (MCP) & Agent Registry Discovery (ARD) across Pooled, Silo & Hybrid tiers",
+  "deckSubtitle": "Solving the SaaS AI Dilemma: Prevent tool-schema leaks and rogue-tenant quota starvation using Agent Development Kit (ADK), Model Context Protocol (MCP) & Agent Registry Discovery (ARD) across Pooled, Silo & Hybrid tiers",
   "tldr": [
     "Why It Matters (The SaaS AI Dilemma): Dedicated projects per Standard tenant erode SaaS gross margins, whereas naive shared agents leak cross-tenant data via tool schemas and let one rogue tenant starve shared LLM rate limits.",
-    "Core Definitions (ADK • MCP • ARD): Agent Development Kit (ADK 2.0) orchestrates reasoning & callbacks; Model Context Protocol (MCP) standardizes 2LO/3LO enterprise tools; Agent Registry & Discovery (ARD) enforces tenant catalog ACLs.",
-    "Three Topologies & 80/20 Code Reuse: Pattern A (Pooled RLS + 90% prefix cache), Pattern B (Sovereign Silo VPC-SC + CMEK), and Pattern C (Dynamic Hybrid PSC + 0ms tier upgrade) share 80% identical Python ADK 2.0 code.",
+    "Core Definitions (ADK • MCP • ARD): Agent Development Kit (ADK) orchestrates reasoning & callbacks; Model Context Protocol (MCP) standardizes 2LO/3LO enterprise tools; Agent Registry & Discovery (ARD) enforces tenant catalog ACLs.",
+    "Three Topologies & 80/20 Code Reuse: Pattern A (Pooled RLS + 90% prefix cache), Pattern B (Sovereign Silo VPC-SC + CMEK), and Pattern C (Dynamic Hybrid PSC + 0ms tier upgrade) share 80% identical Python ADK code.",
     "5-Hop Pipeline (~42ms p95 Overhead): Enforces KMS-signed STS JWTs (<0.15ms cached JWKS verify), ARD pruning, targeted Valkey SCAN+UNLINK L1 eviction, streaming Model Armor/DLP (~22ms), and AlloyDB FORCE RLS.",
     "Architecture Center & GitHub Kit: Ships 14 Official (#78) blueprints, 27 runnable files (core-cymbal-agent/ (24-File Workbench)), feature-flagged EAP compensating controls (GAP-01..05), and 12/12 forensic + 107/107 runtime assertions."
   ],
@@ -16,7 +16,7 @@
       "tag": "Why It Matters: The SaaS AI Dilemma"
     },
     {
-      "stack": "ADK 2.0 (Agent Development Kit) • MCP (Model Context Protocol) • ARD (Agent Registry Discovery)",
+      "stack": "ADK (Agent Development Kit) • MCP (Model Context Protocol) • ARD (Agent Registry Discovery)",
       "sla": "Deterministic Lifecycle Callbacks + Sender-Constrained 2LO/3LO Tools + Scoped Catalogs",
       "tag": "Core Definitions: ADK, MCP & ARD"
     },
@@ -41,14 +41,14 @@
       "heading": "Products used — Google Cloud Agentic AI, Security & Data Stack",
       "layout": "cards",
       "bullets": [
-        "Agentic AI & Foundation Models: Vertex AI Agent Engine (ADK 2.0 runtime, Agent Registry & L1–L5 Memory Bank), Gemini 2.5 Pro with ContextCacheConfig (90% shared prefix discount), Vertex AI Model Garden (Dedicated PT), and Gemma 3 (27B) on private GKE.",
+        "Agentic AI & Foundation Models: Vertex AI Agent Engine (ADK runtime, Agent Registry & L1–L5 Memory Bank), Gemini 2.5 Pro with ContextCacheConfig (90% shared prefix discount), Vertex AI Model Garden (Dedicated PT), and Gemma 3 (27B) on private GKE.",
         "Ingress, Identity & AI Safety Guardrails: Global External Application Load Balancer, Google Cloud Armor L7 WAF, Identity-Aware Proxy (IAP) & IAM Security Token Service (RFC 8693 OBO + RFC 9449 DPoP), Vertex AI Model Armor, and Cloud Sensitive Data Protection (DLP).",
         "Data, Storage, Networking & Governance: AlloyDB for PostgreSQL (FORCE ROW LEVEL SECURITY), Memorystore for Valkey (per-tenant RPM bulkheads & JTI deny-list) & Firestore, VPC Service Controls (VPC-SC) & Private Service Connect (PSC), Cloud KMS CMEK, and BigQuery OTel.",
-        "Shared 80% Reusable Application Core: All three isolation patterns execute the exact same Python ADK 2.0 5-hop security pipeline (`core-cymbal-agent/runtime_pipeline.py`), parameterizing only the surrounding 20% Google Cloud project and network boundary."
+        "Shared 80% Reusable Application Core: All three isolation patterns execute the exact same Python ADK 5-hop security pipeline (`core-cymbal-agent/runtime_pipeline.py`), parameterizing only the surrounding 20% Google Cloud project and network boundary."
       ],
       "specs": [
         {
-          "stack": "Vertex AI Agent Engine (ADK 2.0) • Gemini 2.5 Pro (ContextCacheConfig) • Dedicated PT • Gemma 3 27B",
+          "stack": "Vertex AI Agent Engine (ADK) • Gemini 2.5 Pro (ContextCacheConfig) • Dedicated PT • Gemma 3 27B",
           "sla": "90% Shared System Prefix Cache Discount + Managed SaaS PT vs. Air-Gapped GKE GPU Hosting",
           "tag": "1. Agentic AI & Models"
         },
@@ -73,14 +73,14 @@
       "heading": "Use cases — Competing Enterprise Tenants (FinVault vs. RetailStream) & Google Cloud Stack",
       "layout": "cards",
       "bullets": [
-        "Cymbal SaaS Control Plane (Shared 32k Prefix Cache): Operates a shared Incident Diagnostic Agent on Vertex AI Agent Engine (ADK 2.0, ARD Registry & L1–L5 Memory Bank), caching a 32,000-token SRE runbook prefix once (90% discount -> 84.7% net per-turn token cost reduction).",
+        "Cymbal SaaS Control Plane (Shared 32k Prefix Cache): Operates a shared Incident Diagnostic Agent on Vertex AI Agent Engine (ADK, ARD Registry & L1–L5 Memory Bank), caching a 32,000-token SRE runbook prefix once (90% discount -> 84.7% net per-turn token cost reduction).",
         "FinVault Bank (Dedicated PT vs. Private GKE Gemma 3): Regulated bank (600 RPM / 8k thinking, VPC-SC, CMEK) choosing between Vertex AI Dedicated Provisioned Throughput (managed SaaS Gemini 2.5 Pro, 0 K8s ops) or Self-Managed Gemma 3 27B on Private GKE (air-gapped GPU nodes, 0 internet egress).",
         "RetailStream Corp (3LO Token Vault & Anti-Confused-Deputy): Pooled tenant (120 RPM / 4k thinking, Entra ID) invoking ServiceNow ITOM via 3LO step-up consent; per-user OAuth tokens are isolated in {tenant}:{user} DPoP-bound vaults (dpop_jktVerified) so pooled agents never act as a Confused Deputy.",
-        "Cryptographic Mutual Invisibility & ~42ms 5-Hop Budget: Cloud Armor WAF, IAP OBO/DPoP, Valkey token buckets, streaming Model Armor/DLP (~22ms), and AlloyDB FORCE RLS run one 80% reusable ADK 2.0 codebase—blocking cross-tenant probes (HTTP 403) with 0 cross-tenant rows."
+        "Cryptographic Mutual Invisibility & ~42ms 5-Hop Budget: Cloud Armor WAF, IAP OBO/DPoP, Valkey token buckets, streaming Model Armor/DLP (~22ms), and AlloyDB FORCE RLS run one 80% reusable ADK codebase—blocking cross-tenant probes (HTTP 403) with 0 cross-tenant rows."
       ],
       "specs": [
         {
-          "stack": "Vertex AI Agent Engine (ADK 2.0, ARD, L1–L5 Memory) • Gemini 2.5 Pro (32k ContextCacheConfig)",
+          "stack": "Vertex AI Agent Engine (ADK, ARD, L1–L5 Memory) • Gemini 2.5 Pro (32k ContextCacheConfig)",
           "sla": "Immutable 32k System Prefix Cache • 84.7% Net Per-Turn Token Cost Reduction • ~42ms 5-Hop Overhead",
           "tag": "1. Platform Control Plane: Cymbal SaaS"
         },
@@ -96,7 +96,7 @@
         },
         {
           "stack": "Cloud Armor • IAP STS (RFC 8693/9449) • Model Armor • Cloud DLP • AlloyDB RLS • BigQuery OTel",
-          "sla": "80% Identical Python ADK 2.0 Codebase • Verified by 107/107 Automated Security & SaaS Assertions",
+          "sla": "80% Identical Python ADK Codebase • Verified by 107/107 Automated Security & SaaS Assertions",
           "tag": "4. Cryptographic Invisibility Across Stack"
         }
       ]
@@ -121,7 +121,7 @@
           "Part 1 • Slides 1–4\nIsolation Topologies",
           "The SaaS AI Architect's Dilemma: High-Density Pooled (A) vs. Sovereign Silos (B) vs. Dynamic Hybrid (C)",
           "How do we serve 950 commercial tenants and 50 regulated banks without margin erosion or 500-silo IaC sprawl?",
-          "12-Dimension Decision Matrix • 80/20 ADK 2.0 Code Reuse • {tenant}:{user} DPoP 3LO Vault"
+          "12-Dimension Decision Matrix • 80/20 ADK Code Reuse • {tenant}:{user} DPoP 3LO Vault"
         ],
         [
           "Part 2 • Slides 5, 6 & 8\n5-Hop Pipeline (L1/L2/L4)",
@@ -139,7 +139,7 @@
           "Part 4 • Slide 9\nMind the Gap (GAP-01..05)",
           "Compensating Controls for Vertex AI EAP: Custom Token Buckets, Envelope CMEK & Zero-PII BigQuery OTel FinOps",
           "How do we close current preview platform gaps today while guaranteeing clean retirement at native GCP GA?",
-          "Feature-Flagged GAP-01..05 Sunset Hooks (Q4 2026 / Q1 2027) • BigQuery OTel Chargeback SQL"
+          "Feature-Flagged GAP-01..05 Sunset Hooks (feature-flagged native adapter) • BigQuery OTel Chargeback SQL"
         ],
         [
           "Part 5 • Slides 10–11\nCI/CD Audit & SLAs",
@@ -233,31 +233,31 @@
           "GAP-01 (Hop 2)\nAgent Engine Registry",
           "Shared Agent Engine Registry lacks native per-tenant IAM condition predicates on `ListAgents` discovery calls.",
           "`Hop2RegistryPDP.authorize_agent_and_prune_tools` filters ARD by signed JWT `tenant_id` + ADK `before_agent_callback` pruning.",
-          "WS2 Test 2 PASS (`HTTP 403` on cross-tenant Agent Alpha probe) • Sunset at Native GA: Q4 2026"
+          "WS2 Test 2 PASS (`HTTP 403` on cross-tenant Agent Alpha probe) • Sunset at Native GA: Feature-Flagged Native Hook"
         ],
         [
           "GAP-02 (Hop 3)\nMemory Bank CMEK",
           "Pooled Vertex AI Memory Bank supports project-level CMEK rather than distinct per-tenant KMS keys in one shared pool.",
           "Envelope encryption + `<5s` tenant-prefixed Valkey `SCAN+UNLINK` (`cache:{tenant_id}:*`) on KMS disable (`<60s` `HTTP 423`) + `SET NX` single-flight re-hydration.",
-          "WS3 Tests 4A/4B/6 PASS (`HTTP 423 Locked` <60s, 0 peer cache evictions) • Sunset at GA: Q4 2026"
+          "WS3 Tests 4A/4B/6 PASS (`HTTP 423 Locked` <60s, 0 peer cache evictions) • Sunset at GA: Feature-Flagged Native Hook"
         ],
         [
           "GAP-03 (Hop 3)\nPer-Tenant Rate Quotas",
           "Vertex AI quota system enforces regional project-level RPM/TPM limits rather than native per-tenant sub-quotas.",
           "`Hop3ComputeFinOpsBulkhead` enforces atomic Lua token-bucket RPM limits in Valkey (`120` vs. `600` RPM, `HTTP 429 Retry-After`) + `4k/8k` thinking clamps.",
-          "WS2 Test 6 PASS (`HTTP 429` on 500-RPM flood; budget clamped to 4k) • Sunset at GA: Q4 2026"
+          "WS2 Test 6 PASS (`HTTP 429` on 500-RPM flood; budget clamped to 4k) • Sunset at GA: Feature-Flagged Native Hook"
         ],
         [
           "GAP-04 (Hop 1/4)\nMulti-IdP 3LO Broker",
           "External Microsoft Entra ID OIDC tokens require claims normalization and anti-confused-deputy isolation for 3LO MCP tools.",
           "Hop 1 normalizes Entra `tid`/`sub` into DPoP-bound `{tenant}:{user}` 3LO token vaults with `-32042` step-up consent & `dpop_jkt` verification.",
-          "WS2 Test 10 & 10-SaaS Matrix PASS (`HTTP 401` step-up -> `200 OK` ServiceNow) • Sunset at GA: Q4 2026"
+          "WS2 Test 10 & 10-SaaS Matrix PASS (`HTTP 401` step-up -> `200 OK` ServiceNow) • Sunset at GA: Feature-Flagged Native Hook"
         ],
         [
           "GAP-05 (Hop 5)\nZero-PII Token Billing",
           "Cloud Billing exports aggregate Vertex AI SKU charges by GCP project rather than individual logical SaaS `tenant_id`.",
           "`Hop5DataPlaneRLSAndOTel` streams SHA-256 zero-PII OTel spans to BigQuery (`SELECT tenant_id, SUM(cached_tokens*0.1 + thinking_tokens) GROUP BY tenant_id`).",
-          "Forensic Check F-08 PASS (BigQuery OTel chargeback SQL verified) • Sunset at GA: Q1 2027"
+          "Forensic Check F-08 PASS (BigQuery OTel chargeback SQL verified) • Sunset at GA: Feature-Flagged Native Hook"
         ]
       ],
       "bullets": [],
@@ -328,7 +328,7 @@
         "1. Security, Privacy & Compliance: Enforces zero-trust defense-in-depth across all 5 hops—combining <0.15ms cached-JWKS DPoP verification, per-user 3LO vaults against Confused Deputy attacks, AlloyDB RLS, and revocable Cloud KMS CMEK.",
         "2. Reliability & Anti-Stampede Resilience: Prevents noisy-neighbor outages via Valkey token-bucket bulkheads, targeted SCAN+UNLINK cache:{tenant_id}:* eviction (0 peer cache misses), and Valkey SET NX single-flight lazy re-hydration.",
         "3. Cost Optimization (FinOps): Shares a 32,000-token immutable system prefix in Gemini 2.5 Pro ContextCacheConfig (90% discount, 84.7% net token savings) and attributes COGS via BigQuery OTel SQL chargeback views.",
-        "4. Operational Excellence & 5. Performance (~42ms p95): Reuses 80% of the Python ADK 2.0 codebase across Terraform 2.6/3.6/4.6, bounds total 5-Hop control-plane overhead to ~42ms p95 (<2.5% TTFT), and gates CI/CD on 12/12 + 107/107 tests."
+        "4. Operational Excellence & 5. Performance (~42ms p95): Reuses 80% of the Python ADK codebase across Terraform 2.6/3.6/4.6, bounds total 5-Hop control-plane overhead to ~42ms p95 (<2.5% TTFT), and gates CI/CD on 12/12 + 107/107 tests."
       ],
       "specs": [
         {
@@ -421,9 +421,9 @@
       "totalSlides": 11,
       "title": "Part 1 (Slide 1) — Executive Cover & 5-Part Deep-Dive Map",
       "whyHere": "Welcome everyone. We have structured this streamlined eleven-slide reference architecture briefing into a cohesive five-part engineering series roadmap so you can trace the SaaS AI Dilemma from isolation topologies all the way to automated CI/CD forensic compliance.",
-      "whatIsHappening": "In this session, we are walking through our foundational reference architecture for running multi-tenant AI agents on Google Cloud. Right upfront, we define our three core building blocks—Google’s Agent Development Kit 2.0 (ADK), the Model Context Protocol (MCP) for external tool integrations, and Agent Registry and Discovery (ARD)—and show how we solve the SaaS AI Architect’s Dilemma: avoiding the margin erosion of spinning up dedicated cloud projects for every small customer while preventing tool-schema data leaks and noisy-neighbor rate starvation in a shared pool.",
+      "whatIsHappening": "In this session, we are walking through our foundational reference architecture for running multi-tenant AI agents on Google Cloud. Right upfront, we define our three core building blocks—Google’s Agent Development Kit (ADK) (ADK), the Model Context Protocol (MCP) for external tool integrations, and Agent Registry and Discovery (ARD)—and show how we solve the SaaS AI Architect’s Dilemma: avoiding the margin erosion of spinning up dedicated cloud projects for every small customer while preventing tool-schema data leaks and noisy-neighbor rate starvation in a shared pool.",
       "whatComesNext": "With our thesis defined on Slide 1, let's turn to Slide 2 for our Agenda and 5-Part Series Navigation table so you can see the exact macro-to-micro flow of the deck.",
-      "fullText": "Welcome everyone. We have structured this streamlined eleven-slide reference architecture briefing into a cohesive five-part engineering series roadmap so you can trace the SaaS AI Dilemma from isolation topologies all the way to automated CI/CD forensic compliance.\n\nIn this session, we are walking through our foundational reference architecture for running multi-tenant AI agents on Google Cloud. Right upfront, we define our three core building blocks—Google’s Agent Development Kit 2.0 (ADK), the Model Context Protocol (MCP) for external tool integrations, and Agent Registry and Discovery (ARD)—and show how we solve the SaaS AI Architect’s Dilemma: avoiding the margin erosion of spinning up dedicated cloud projects for every small customer while preventing tool-schema data leaks and noisy-neighbor rate starvation in a shared pool.\n\nWith our thesis defined on Slide 1, let's turn to Slide 2 for our Agenda and 5-Part Series Navigation table so you can see the exact macro-to-micro flow of the deck."
+      "fullText": "Welcome everyone. We have structured this streamlined eleven-slide reference architecture briefing into a cohesive five-part engineering series roadmap so you can trace the SaaS AI Dilemma from isolation topologies all the way to automated CI/CD forensic compliance.\n\nIn this session, we are walking through our foundational reference architecture for running multi-tenant AI agents on Google Cloud. Right upfront, we define our three core building blocks—Google’s Agent Development Kit (ADK) (ADK), the Model Context Protocol (MCP) for external tool integrations, and Agent Registry and Discovery (ARD)—and show how we solve the SaaS AI Architect’s Dilemma: avoiding the margin erosion of spinning up dedicated cloud projects for every small customer while preventing tool-schema data leaks and noisy-neighbor rate starvation in a shared pool.\n\nWith our thesis defined on Slide 1, let's turn to Slide 2 for our Agenda and 5-Part Series Navigation table so you can see the exact macro-to-micro flow of the deck."
     },
     {
       "slide": 2,
@@ -457,9 +457,9 @@
       "totalSlides": 11,
       "title": "Part 2 (Slide 5) — L1 Logical: Reference Taxonomy — 3 Logical Security Layers & Signed STS JWT",
       "whyHere": "Opening Part 2 on securing the agent loop, Slide 5 establishes the Level 1 Logical view—organizing our architecture into three logical security layers so it maps cleanly onto the four physical VPC-SC perimeters on Slide 6.",
-      "whatIsHappening": "Before we inspect individual cloud services, this Level 1 diagram organizes our entire architecture into three logical security layers from left to right—preventing any terminology clash with the four physical VPC-SC network perimeters on the next slide. Layer 1 on the left verifies federated identity and DPoP proofs at the Cloud Armor and IAP edge. Layer 2 in the center runs our Five-Hop ADK 2.0 Control Plane, where regional gRPC callouts keep Hop 4 inline Model Armor and Cloud DLP inspection to roughly twenty-two milliseconds and total five-hop control-plane overhead to about forty-two milliseconds at p95. And to prevent security drift during a five-minute STS JWT window, every hop checks a three-millisecond Valkey JTI and CMEK revocation deny-list before routing into Layer 3 on the right.",
+      "whatIsHappening": "Before we inspect individual cloud services, this Level 1 diagram organizes our entire architecture into three logical security layers from left to right—preventing any terminology clash with the four physical VPC-SC network perimeters on the next slide. Layer 1 on the left verifies federated identity and DPoP proofs at the Cloud Armor and IAP edge. Layer 2 in the center runs our Five-Hop ADK Control Plane, where regional gRPC callouts keep Hop 4 inline Model Armor and Cloud DLP inspection to roughly twenty-two milliseconds and total five-hop control-plane overhead to about forty-two milliseconds at p95. And to prevent security drift during a five-minute STS JWT window, every hop checks a three-millisecond Valkey JTI and CMEK revocation deny-list before routing into Layer 3 on the right.",
       "whatComesNext": "Now that we have the three logical security layers in mind, let's zoom directly into Level 2 Physical on Slide 6 to see how those layers map onto our fifty-six-shape Google Cloud blueprint across four physical VPC-SC network perimeters.",
-      "fullText": "Opening Part 2 on securing the agent loop, Slide 5 establishes the Level 1 Logical view—organizing our architecture into three logical security layers so it maps cleanly onto the four physical VPC-SC perimeters on Slide 6.\n\nBefore we inspect individual cloud services, this Level 1 diagram organizes our entire architecture into three logical security layers from left to right—preventing any terminology clash with the four physical VPC-SC network perimeters on the next slide. Layer 1 on the left verifies federated identity and DPoP proofs at the Cloud Armor and IAP edge. Layer 2 in the center runs our Five-Hop ADK 2.0 Control Plane, where regional gRPC callouts keep Hop 4 inline Model Armor and Cloud DLP inspection to roughly twenty-two milliseconds and total five-hop control-plane overhead to about forty-two milliseconds at p95. And to prevent security drift during a five-minute STS JWT window, every hop checks a three-millisecond Valkey JTI and CMEK revocation deny-list before routing into Layer 3 on the right.\n\nNow that we have the three logical security layers in mind, let's zoom directly into Level 2 Physical on Slide 6 to see how those layers map onto our fifty-six-shape Google Cloud blueprint across four physical VPC-SC network perimeters."
+      "fullText": "Opening Part 2 on securing the agent loop, Slide 5 establishes the Level 1 Logical view—organizing our architecture into three logical security layers so it maps cleanly onto the four physical VPC-SC perimeters on Slide 6.\n\nBefore we inspect individual cloud services, this Level 1 diagram organizes our entire architecture into three logical security layers from left to right—preventing any terminology clash with the four physical VPC-SC network perimeters on the next slide. Layer 1 on the left verifies federated identity and DPoP proofs at the Cloud Armor and IAP edge. Layer 2 in the center runs our Five-Hop ADK Control Plane, where regional gRPC callouts keep Hop 4 inline Model Armor and Cloud DLP inspection to roughly twenty-two milliseconds and total five-hop control-plane overhead to about forty-two milliseconds at p95. And to prevent security drift during a five-minute STS JWT window, every hop checks a three-millisecond Valkey JTI and CMEK revocation deny-list before routing into Layer 3 on the right.\n\nNow that we have the three logical security layers in mind, let's zoom directly into Level 2 Physical on Slide 6 to see how those layers map onto our fifty-six-shape Google Cloud blueprint across four physical VPC-SC network perimeters."
     },
     {
       "slide": 6,
@@ -492,10 +492,10 @@
       "slide": 9,
       "totalSlides": 11,
       "title": "Part 4 (Slide 9) — Mind the Gap: GAP-01..05 Compensating Controls & BigQuery OTel SQL",
-      "whyHere": "Part 4 on Slide 9 provides our transparent engineering ledger of five current platform gaps, our codebase compensating controls, and our Q4 2026 / Q1 2027 native GA sunset hooks.",
-      "whatIsHappening": "This register maps our five compensating production controls—GAP-01 through GAP-05—to the early-access platform boundaries engineering teams face today. Every custom Python, Valkey, or SQL control in core-cymbal-agent is wrapped in a feature-flagged GA sunset hook targeted for Q4 2026 through Q1 2027 so teams can switch cleanly to native GCP primitives as they reach general availability. And in row five, our OpenTelemetry FinOps exporter streams SHA-256 prompt hashes and token counters directly into BigQuery so finance teams can run exact SQL chargeback queries across cached and thinking tokens with zero raw PII.",
+      "whyHere": "Part 4 on Slide 9 provides our transparent engineering ledger of five current platform gaps, our codebase compensating controls, and our feature-flagged native adapter native GA sunset hooks.",
+      "whatIsHappening": "This register maps our five compensating production controls—GAP-01 through GAP-05—to the early-access platform boundaries engineering teams face today. Every custom Python, Valkey, or SQL control in core-cymbal-agent is wrapped in a feature-flagged GA sunset hook targeted for Feature-Flagged Native Hook through Feature-Flagged Native Hook so teams can switch cleanly to native GCP primitives as they reach general availability. And in row five, our OpenTelemetry FinOps exporter streams SHA-256 prompt hashes and token counters directly into BigQuery so finance teams can run exact SQL chargeback queries across cached and thinking tokens with zero raw PII.",
       "whatComesNext": "With our compensating controls documented on Slide 9, let's enter Part 5 on Slide 10 to inspect the live Google Cloud Console and Cloud Logging Explorer proof from our deployed projects.",
-      "fullText": "Part 4 on Slide 9 provides our transparent engineering ledger of five current platform gaps, our codebase compensating controls, and our Q4 2026 / Q1 2027 native GA sunset hooks.\n\nThis register maps our five compensating production controls—GAP-01 through GAP-05—to the early-access platform boundaries engineering teams face today. Every custom Python, Valkey, or SQL control in core-cymbal-agent is wrapped in a feature-flagged GA sunset hook targeted for Q4 2026 through Q1 2027 so teams can switch cleanly to native GCP primitives as they reach general availability. And in row five, our OpenTelemetry FinOps exporter streams SHA-256 prompt hashes and token counters directly into BigQuery so finance teams can run exact SQL chargeback queries across cached and thinking tokens with zero raw PII.\n\nWith our compensating controls documented on Slide 9, let's enter Part 5 on Slide 10 to inspect the live Google Cloud Console and Cloud Logging Explorer proof from our deployed projects."
+      "fullText": "Part 4 on Slide 9 provides our transparent engineering ledger of five current platform gaps, our codebase compensating controls, and our feature-flagged native adapter native GA sunset hooks.\n\nThis register maps our five compensating production controls—GAP-01 through GAP-05—to the early-access platform boundaries engineering teams face today. Every custom Python, Valkey, or SQL control in core-cymbal-agent is wrapped in a feature-flagged GA sunset hook targeted for Feature-Flagged Native Hook through Feature-Flagged Native Hook so teams can switch cleanly to native GCP primitives as they reach general availability. And in row five, our OpenTelemetry FinOps exporter streams SHA-256 prompt hashes and token counters directly into BigQuery so finance teams can run exact SQL chargeback queries across cached and thinking tokens with zero raw PII.\n\nWith our compensating controls documented on Slide 9, let's enter Part 5 on Slide 10 to inspect the live Google Cloud Console and Cloud Logging Explorer proof from our deployed projects."
     },
     {
       "slide": 10,

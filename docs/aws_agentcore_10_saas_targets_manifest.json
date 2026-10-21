@@ -1,11 +1,11 @@
 {
   "awsAccountId": "393036065405",
   "awsRegion": "us-east-1",
-  "gatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
-  "gatewayUrl": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "gatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
+  "gatewayUrl": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "cognitoUserPoolId": "us-east-1_vqlzYM74B",
-  "lambdaFunctionArn": "arn:aws:lambda:us-east-1:393036065405:function:merck-a2a-mcp-remote-peer",
-  "s3Bucket": "nitinagga-argolis-aws-393036065405-us-east-1",
+  "lambdaFunctionArn": "arn:aws:lambda:us-east-1:393036065405:function:cymbal-a2a-mcp-remote-peer",
+  "s3Bucket": "cymbal-aws-federation-393036065405-us-east-1",
   "verifiedAt": "2026-10-21T04:03:33Z",
   "totalTargetsRegistered": 10,
   "targets": [
@@ -20,7 +20,7 @@
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
         "awsRegion": "us-east-1",
-        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
         "agentCoreTargetId": "KD6Z3SV8PX",
         "toolName": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
         "tenantId": "finvault",
@@ -51,7 +51,7 @@
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
-        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/finvault.json"
+        "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/finvault.json"
       }
     },
     {
@@ -65,7 +65,7 @@
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
         "awsRegion": "us-east-1",
-        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
         "agentCoreTargetId": "OZ0KTE8Z8M",
         "toolName": "sigma-computing___eval_sigma_workbook_rls",
         "tenantId": "finvault",
@@ -96,7 +96,7 @@
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
-        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/finvault.json"
+        "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/finvault.json"
       }
     },
     {
@@ -109,17 +109,17 @@
       "response": {
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
-        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
         "agentCoreTargetId": "PLOLWRMI0I",
         "toolName": "servicenow-itsm___query_servicenow_change_records",
-        "studyId": "MK-3475-087",
+        "studyId": "FV-GXP-2026-04",
         "principal": "sre-lead@finvault.com",
         "hop2ConsentVerified": false,
         "records": {
           "connector": "servicenow-itsm (AWS AgentCore MCP Server)",
           "gatewayTargetName": "servicenow-itsm",
           "gatewayToolName": "servicenow-itsm___query_servicenow_change_records",
-          "resource_uri": "api://merck-servicenow-mcp/.default",
+          "resource_uri": "api://cymbal-servicenow-mcp/.default",
           "scopes": [
             "servicenow.incidents.read",
             "servicenow.changes.verify"
@@ -128,7 +128,7 @@
           "incident_ticket": "INC0948211",
           "priority": "P1 - GxP Clinical Hold / Protocol Amendment Gate",
           "state": "Approved \u2014 Scheduled Maintenance Window (Frozen during DSMB Cohort-B lock)",
-          "assigned_group": "Merck Clinical Data Governance & ITSM Ops",
+          "assigned_group": "Cymbal Clinical Data Governance & ITSM Ops",
           "cmdb_ci": "MUSE-EDC-PROD-US-EAST-1"
         },
         "liveUpstreamInstance": {
@@ -141,7 +141,7 @@
           "ec2_public_ip": "13.220.94.209",
           "live_http_status": 200
         },
-        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/finvault.json"
+        "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/finvault.json"
       }
     },
     {
@@ -154,18 +154,18 @@
       "response": {
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
-        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
         "agentCoreTargetId": "1KZWKOFTWQ",
         "toolName": "muse-poc___query_muse_study_biomarkers",
-        "studyId": "MK-3475-087",
+        "studyId": "FV-GXP-2026-04",
         "principal": "sre-lead@finvault.com",
         "hop2ConsentVerified": false,
         "records": {
-          "study": "KEYNOTE-B15 / MK-3475-087 (Cohort-B Biomarker Sub-Study)",
+          "study": "KEYNOTE-B15 / FV-GXP-2026-04 (Cohort-B Biomarker Sub-Study)",
           "connector": "muse-poc (AWS AgentCore MCP Server)",
           "gatewayTargetName": "muse-poc",
           "gatewayToolName": "muse-poc___query_muse_study_biomarkers",
-          "resource_uri": "api://merck-muse-poc-mcp/.default",
+          "resource_uri": "api://cymbal-muse-poc-mcp/.default",
           "scopes": [
             "muse.studies.read",
             "muse.biomarkers.query"
@@ -175,7 +175,7 @@
           "p_value": 0.0018,
           "alt_ast_grade3_pct": 11.5,
           "subjects_evaluated": 52,
-          "protocol_deviation_id": "DEV-MK3475-B12-09"
+          "protocol_deviation_id": "DEV-FVGXP-B12-09"
         },
         "liveUpstreamInstance": {
           "upstream_software": "NocoDB v0.255.2 Clinical EDC & GxP 21 CFR Part 11 Vault",
@@ -187,7 +187,7 @@
           "ec2_public_ip": "13.220.94.209",
           "live_http_status": 200
         },
-        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/finvault.json"
+        "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/finvault.json"
       }
     },
     {
@@ -201,7 +201,7 @@
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
         "awsRegion": "us-east-1",
-        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
         "agentCoreTargetId": "W7BF0JRWEA",
         "toolName": "salesforce-jira___create_redacted_sfdc_jira_escalation",
         "tenantId": "finvault",
@@ -228,7 +228,7 @@
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
-        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/finvault.json"
+        "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/finvault.json"
       }
     },
     {
@@ -242,7 +242,7 @@
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
         "awsRegion": "us-east-1",
-        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
         "agentCoreTargetId": "Z1RHXLBK6F",
         "toolName": "databricks-unity___execute_uc_genie_federated_sql",
         "tenantId": "finvault",
@@ -268,7 +268,7 @@
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
-        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/finvault.json"
+        "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/finvault.json"
       }
     },
     {
@@ -282,7 +282,7 @@
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
         "awsRegion": "us-east-1",
-        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
         "agentCoreTargetId": "7PB1EK3NJO",
         "toolName": "snowflake-cortex___execute_cortex_analyst_sql",
         "tenantId": "finvault",
@@ -303,12 +303,12 @@
           "account_locator": "os37291.us-east-1",
           "primary_role": "ROLE_CYMBAL_FINVAULT",
           "secondary_roles": "NONE",
-          "cortex_semantic_model": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/snowflake/finvault_semantic_model.yaml",
+          "cortex_semantic_model": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake/finvault_semantic_model.yaml",
           "executed_at_utc": "2026-10-21T04:03:32Z",
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
-        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/finvault.json"
+        "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/finvault.json"
       }
     },
     {
@@ -322,7 +322,7 @@
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
         "awsRegion": "us-east-1",
-        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
         "agentCoreTargetId": "CXH8BK86IF",
         "toolName": "workday-raas___fetch_compensation_raas_report",
         "tenantId": "finvault",
@@ -348,7 +348,7 @@
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
-        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/finvault.json"
+        "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/finvault.json"
       }
     },
     {
@@ -362,7 +362,7 @@
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
         "awsRegion": "us-east-1",
-        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
         "agentCoreTargetId": "A2X7LPMPA7",
         "toolName": "datadog-sre___query_tenant_apm_logs",
         "tenantId": "finvault",
@@ -388,7 +388,7 @@
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
-        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/finvault.json"
+        "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/finvault.json"
       }
     },
     {
@@ -402,7 +402,7 @@
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
         "awsRegion": "us-east-1",
-        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
         "agentCoreTargetId": "TXGJHVFBWP",
         "toolName": "crowdstrike-okta___contain_xdr_host_with_dpop",
         "tenantId": "finvault",
@@ -429,7 +429,7 @@
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
-        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/finvault.json"
+        "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/finvault.json"
       }
     }
   ]

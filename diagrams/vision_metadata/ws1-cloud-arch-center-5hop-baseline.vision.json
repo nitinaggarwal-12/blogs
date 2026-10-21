@@ -23,7 +23,7 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (/Users/nitinagga/documents/PromptCanvas/src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
   "healerLog": [
     "Protected master/canonical blueprint passed through without geometric mutation."
   ],
@@ -78,8 +78,8 @@
     {
       "id": "wrapper_vpc",
       "urlSlug": "OBJ-04-VPC-5-HOP-CRYPTOGRAPHIC",
-      "label": "VPC • 5-Hop Cryptographic Context Chain (nitina-ggarwal-sandbox-647724)",
-      "plainTitle": "VPC • 5-Hop Cryptographic Context Chain (nitina-ggarwal-sandbox-647724)",
+      "label": "VPC • 5-Hop Cryptographic Context Chain (cymbal-build-sandbox)",
+      "plainTitle": "VPC • 5-Hop Cryptographic Context Chain (cymbal-build-sandbox)",
       "zone": "Apps & Solutions Tier",
       "x": 52,
       "y": 304,

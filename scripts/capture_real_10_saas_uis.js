@@ -110,10 +110,10 @@ async function saveShot(page, filename) {
         if (btn) await btn.click();
         await sleep(4500);
       }
-      // Click on "Study MK-3475-087 Biomarkers (GxP 21 CFR Part 11)" to open the grid rows
+      // Click on "Study FV-GXP-2026-04 Biomarkers (GxP 21 CFR Part 11)" to open the grid rows
       await page.evaluate(() => {
         const els = Array.from(document.querySelectorAll('span, div, a, td'));
-        const target = els.find((el) => (el.innerText || '').trim() === 'Study MK-3475-087 Biomarkers (GxP 21 CFR Part 11)');
+        const target = els.find((el) => (el.innerText || '').trim() === 'Study FV-GXP-2026-04 Biomarkers (GxP 21 CFR Part 11)');
         if (target) target.click();
       });
       await sleep(3500);
