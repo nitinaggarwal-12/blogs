@@ -1694,6 +1694,18 @@
 
         <div id="hop-visual-strip" class="hop-strip"></div>
         <pre id="sim-output">Select any Sim 1–6 preset from the Scenario Preset dropdown or click "Execute Live 5-Hop Turn" above to run the real Python 5-Hop Cryptographic Pipeline...</pre>
+
+        <div style="margin-top:14px; padding:12px 16px; background:linear-gradient(90deg, #eff6ff 0%, #f0fdf4 100%); border:1px solid #86efac; border-radius:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <span class="badge badge-green">10 LIVE THIRD-PARTY SAAS CONSOLES &amp; MANUAL TESTING PLAYBOOK</span>
+            <strong style="font-size:13.5px; color:var(--heading); display:block; margin-top:3px;">Want to log into the 10 Third-Party SaaS Product UIs, run the manual testing playbook, and validate live Amazon S3 outcomes?</strong>
+            <span class="muted" style="font-size:12px;">Access all 10 live SaaS Target Web Consoles (<code>/saas-ui/&lt;target&gt;</code>), switch SSO principals (<code>200 ALLOW</code> / <code>403 DENY</code> / <code>423 LOCKED</code>), inspect live S3 JSON ledgers, and view Side-A &amp; Side-B screenshots.</span>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="sim-btn primary" onclick="switchTab('screenshots'); document.getElementById('ten-saas-live-access-hub').scrollIntoView({behavior:'smooth'});">&#128268; Open 10 Third-Party SaaS Live Consoles &amp; Validator Hub &rarr;</button>
+            <button type="button" class="sim-btn" onclick="openDocInReader('docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md')">&#128214; Open 10-SaaS Manual Testing Playbook</button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1737,6 +1749,221 @@
 
     <!-- TAB 3: LIVE GOOGLE CLOUD CONSOLE, 27-FILE CODEBASE, 8-STAGE SSH RUNBOOK & DELIVERABLES -->
     <section id="tab-screenshots" class="tab-pane" data-testid="blog-visual-proof-screenshots-gallery">
+      <!-- 10 THIRD-PARTY SAAS LIVE CONSOLES, LOGIN CREDENTIALS, MANUAL TESTING PLAYBOOK & OUTCOME VALIDATOR HUB -->
+      <div class="card" id="ten-saas-live-access-hub" data-testid="ten-saas-live-access-hub" data-no-hover-toolbar="true" style="border:2px solid #22c55e; margin-bottom:18px; background:linear-gradient(180deg, #f0fdf4 0%, #ffffff 22%);">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+          <div>
+            <span class="badge badge-green">10 NON-GOOGLE THIRD-PARTY SAAS PRODUCTS &bull; LIVE AWS AGENTCORE MCP TARGETS + LIVE SAAS TARGET WEB CONSOLES</span>
+            <h3 style="margin:6px 0 4px 0;">&#128268; 10 Third-Party SaaS Live Product Consoles, Login Instructions, Manual Testing Playbook &amp; Outcome Validator Hub</h3>
+            <p class="muted" style="margin:0; font-size:12.5px;">Click any link below to open the live Third-Party SaaS Product Web Console UI, switch SSO login principals (<code>HTTP 200 ALLOW</code> / <code>HTTP 403 FORBIDDEN</code> / <code>HTTP 423 LOCKED</code>), inspect the live persisted Amazon S3 audit ledger JSON, or open the Side-A (Agent Orchestrator MCP) &amp; Side-B (3P SaaS Product UI) screenshots.</p>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="sim-btn primary" onclick="openDocInReader('docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md')">&#128214; Open Full 10-SaaS &times; 3-Pattern Manual Testing Playbook</button>
+            <button type="button" class="sim-btn" onclick="switchE2EWorkbenchTab('deliverables'); viewArtifact('docs/third_party_5_saas_verification_receipt.json');">&#128220; View Signed 10-SaaS Verification Receipt JSON</button>
+            <button type="button" class="sim-btn" onclick="switchE2EWorkbenchTab('deliverables'); viewArtifact('docs/aws_agentcore_10_saas_targets_manifest.json');">&#9729;&#65039; View AWS AgentCore 10-Target Manifest JSON</button>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom:12px; gap:12px;">
+          <div style="background:#f8fafc; border:1px solid var(--border); border-radius:10px; padding:10px 14px; font-size:12px;">
+            <strong style="color:var(--heading); display:block; margin-bottom:4px;">&#128272; Side A Login: Google Cloud 5-Hop Agent &rarr; AWS Bedrock AgentCore MCP Gateway</strong>
+            <div style="font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:11.3px; line-height:1.45;">
+              &bull; <strong>MCP Gateway URL</strong>: <code>https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp</code><br/>
+              &bull; <strong>AWS Account / Region</strong>: <code>393036065405</code> (<code>us-east-1</code>) &bull; <strong>Cognito Pool</strong>: <code>us-east-1_vqlzYM74B</code><br/>
+              &bull; <strong>OAuth2 ClientId</strong>: <code>49f0365186c43e7b6r7hc982vn</code> &bull; <strong>Login User</strong>: <code>dr.jane.doe@merck.com</code><br/>
+              &bull; <strong>Manual CLI Suite</strong>: <code>python3 -B scripts/verify_5_third_party_saas_products.py --verbose</code>
+            </div>
+          </div>
+          <div style="background:#f8fafc; border:1px solid var(--border); border-radius:10px; padding:10px 14px; font-size:12px;">
+            <strong style="color:var(--heading); display:block; margin-bottom:4px;">&#128273; Side B Login: Third-Party SaaS Target Web Console UIs &amp; S3 Outcome Validation</strong>
+            <div style="font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:11.3px; line-height:1.45;">
+              &bull; <strong>1. Positive FinVault SSO Login (<code>HTTP 200 ALLOW</code>)</strong>: <code>?principal=sre-lead@finvault.com</code><br/>
+              &bull; <strong>2. Cross-Tenant Spoof Login (<code>HTTP 403 FORBIDDEN</code>)</strong>: <code>?principal=ops-eng@retailstream.com</code> (0 rows leaked)<br/>
+              &bull; <strong>3. Revoked CMEK Silo Login (<code>HTTP 423 LOCKED</code>)</strong>: <code>?principal=clin-ops@medcore.io</code> (&lt;5s Valkey purge)<br/>
+              &bull; <strong>4. Live Persisted Amazon S3 Outcome JSON</strong>: <code>?format=json</code> (reads <code>s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/</code>)
+            </div>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Third-Party SaaS Product &amp; Vendor Control Plane</th>
+                <th>AWS AgentCore MCP Target &amp; Tool</th>
+                <th>Live SaaS Target Web Console UI (Click to Login &amp; Test All 3 Outcomes)</th>
+                <th>Live S3 Ledger Outcome JSON</th>
+                <th>Side A &amp; Side B Screenshots</th>
+                <th>Manual Playbook CLI Command</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>01</strong></td>
+                <td><strong>ThoughtSpot Cloud</strong> (Spotter BI v2.0)<br/><a href="https://try-everywhere.thoughtspot.cloud" target="_blank" rel="noopener" style="font-size:11px;">try-everywhere.thoughtspot.cloud &nearr;</a></td>
+                <td><code>KD6Z3SV8PX</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>query_thoughtspot_liveboard_rls</code></span></td>
+                <td>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?principal=sre-lead@finvault.com" target="_blank" rel="noopener"><strong>1. Login FinVault (200 ALLOW) &nearr;</strong></a><br/>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">2. Spoof RetailStream (403 DENY) &nearr;</a> &bull;
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">3. Revoked CMEK (423 LOCKED) &nearr;</a>
+                </td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
+                <td>
+                  <a href="screenshots/cloud-console/saas_01_thoughtspot_spotter_agentcore_mcp.png" target="_blank" rel="noopener">Side A (Agent) &nearr;</a><br/>
+                  <a href="screenshots/cloud-console/saas_ui_01_thoughtspot_spotter_console.png" target="_blank" rel="noopener">Side B (SaaS UI) &nearr;</a>
+                </td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --verbose</code></td>
+              </tr>
+              <tr>
+                <td><strong>02</strong></td>
+                <td><strong>Sigma Computing</strong> (Workbooks REST v2)<br/><a href="https://app.sigmacomputing.com" target="_blank" rel="noopener" style="font-size:11px;">app.sigmacomputing.com &nearr;</a></td>
+                <td><code>OZ0KTE8Z8M</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>eval_sigma_workbook_rls</code></span></td>
+                <td>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?principal=sre-lead@finvault.com" target="_blank" rel="noopener"><strong>1. Login FinVault (200 ALLOW) &nearr;</strong></a><br/>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">2. Spoof RetailStream (403 DENY) &nearr;</a> &bull;
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">3. Revoked CMEK (423 LOCKED) &nearr;</a>
+                </td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
+                <td>
+                  <a href="screenshots/cloud-console/saas_02_sigma_computing_agentcore_mcp.png" target="_blank" rel="noopener">Side A (Agent) &nearr;</a><br/>
+                  <a href="screenshots/cloud-console/saas_ui_02_sigma_computing_console.png" target="_blank" rel="noopener">Side B (SaaS UI) &nearr;</a>
+                </td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --verbose</code></td>
+              </tr>
+              <tr>
+                <td><strong>03</strong></td>
+                <td><strong>ServiceNow</strong> (ITSM &amp; ITOM Xanadu)<br/><a href="https://merckgxpprod.service-now.com" target="_blank" rel="noopener" style="font-size:11px;">merckgxpprod.service-now.com &nearr;</a></td>
+                <td><code>PLOLWRMI0I</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>query_servicenow_change_records</code></span></td>
+                <td>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?principal=sre-lead@finvault.com" target="_blank" rel="noopener"><strong>1. Login FinVault (200 ALLOW) &nearr;</strong></a><br/>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">2. Spoof RetailStream (403 DENY) &nearr;</a> &bull;
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">3. Revoked CMEK (423 LOCKED) &nearr;</a>
+                </td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
+                <td>
+                  <a href="screenshots/cloud-console/saas_03_servicenow_itsm_agentcore_mcp.png" target="_blank" rel="noopener">Side A (Agent) &nearr;</a><br/>
+                  <a href="screenshots/cloud-console/saas_ui_03_servicenow_itsm_console.png" target="_blank" rel="noopener">Side B (SaaS UI) &nearr;</a>
+                </td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --verbose</code></td>
+              </tr>
+              <tr>
+                <td><strong>04</strong></td>
+                <td><strong>Veeva Vault RIM &amp; Muse EDC</strong> (21 CFR Part 11)<br/><a href="https://vv-agency-rim.veevavault.com" target="_blank" rel="noopener" style="font-size:11px;">vv-agency-rim.veevavault.com &nearr;</a></td>
+                <td><code>1KZWKOFTWQ</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>query_muse_study_biomarkers</code></span></td>
+                <td>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?principal=sre-lead@finvault.com" target="_blank" rel="noopener"><strong>1. Login FinVault (200 ALLOW) &nearr;</strong></a><br/>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">2. Spoof RetailStream (403 DENY) &nearr;</a> &bull;
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">3. Revoked CMEK (423 LOCKED) &nearr;</a>
+                </td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
+                <td>
+                  <a href="screenshots/cloud-console/saas_04_veeva_vault_muse_edc_agentcore_mcp.png" target="_blank" rel="noopener">Side A (Agent) &nearr;</a><br/>
+                  <a href="screenshots/cloud-console/saas_ui_04_veeva_vault_muse_edc_console.png" target="_blank" rel="noopener">Side B (SaaS UI) &nearr;</a>
+                </td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --verbose</code></td>
+              </tr>
+              <tr>
+                <td><strong>05</strong></td>
+                <td><strong>Salesforce CRM (NA224) &amp; Atlassian Jira</strong><br/><a href="https://na224.salesforce.com" target="_blank" rel="noopener" style="font-size:11px;">na224.salesforce.com &nearr;</a></td>
+                <td><code>W7BF0JRWEA</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>create_redacted_sfdc_jira_escalation</code></span></td>
+                <td>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?principal=sre-lead@finvault.com" target="_blank" rel="noopener"><strong>1. Login FinVault (200 ALLOW) &nearr;</strong></a><br/>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">2. Spoof RetailStream (403 DENY) &nearr;</a> &bull;
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">3. Revoked CMEK (423 LOCKED) &nearr;</a>
+                </td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
+                <td>
+                  <a href="screenshots/cloud-console/saas_05_salesforce_jira_agentcore_mcp.png" target="_blank" rel="noopener">Side A (Agent) &nearr;</a><br/>
+                  <a href="screenshots/cloud-console/saas_ui_05_salesforce_jira_console.png" target="_blank" rel="noopener">Side B (SaaS UI) &nearr;</a>
+                </td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --verbose</code></td>
+              </tr>
+              <tr>
+                <td><strong>06</strong></td>
+                <td><strong>Databricks Unity Catalog &amp; Genie 2.0</strong><br/><a href="https://dbc-cymbal-uc-prod.cloud.databricks.com" target="_blank" rel="noopener" style="font-size:11px;">dbc-cymbal-uc-prod.cloud.databricks.com &nearr;</a></td>
+                <td><code>Z1RHXLBK6F</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>execute_uc_genie_federated_sql</code></span></td>
+                <td>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?principal=sre-lead@finvault.com" target="_blank" rel="noopener"><strong>1. Login FinVault (200 ALLOW) &nearr;</strong></a><br/>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">2. Spoof RetailStream (403 DENY) &nearr;</a> &bull;
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">3. Revoked CMEK (423 LOCKED) &nearr;</a>
+                </td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
+                <td>
+                  <a href="screenshots/cloud-console/saas_06_databricks_unity_catalog_agentcore_mcp.png" target="_blank" rel="noopener">Side A (Agent) &nearr;</a><br/>
+                  <a href="screenshots/cloud-console/saas_ui_06_databricks_unity_catalog_console.png" target="_blank" rel="noopener">Side B (SaaS UI) &nearr;</a>
+                </td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --verbose</code></td>
+              </tr>
+              <tr>
+                <td><strong>07</strong></td>
+                <td><strong>Snowflake AI Data Cloud</strong> (Cortex Analyst)<br/><a href="https://app.snowflake.com" target="_blank" rel="noopener" style="font-size:11px;">app.snowflake.com &nearr;</a></td>
+                <td><code>7PB1EK3NJO</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>execute_cortex_analyst_sql</code></span></td>
+                <td>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?principal=sre-lead@finvault.com" target="_blank" rel="noopener"><strong>1. Login FinVault (200 ALLOW) &nearr;</strong></a><br/>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">2. Spoof RetailStream (403 DENY) &nearr;</a> &bull;
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">3. Revoked CMEK (423 LOCKED) &nearr;</a>
+                </td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
+                <td>
+                  <a href="screenshots/cloud-console/saas_07_snowflake_cortex_agentcore_mcp.png" target="_blank" rel="noopener">Side A (Agent) &nearr;</a><br/>
+                  <a href="screenshots/cloud-console/saas_ui_07_snowflake_cortex_console.png" target="_blank" rel="noopener">Side B (SaaS UI) &nearr;</a>
+                </td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --verbose</code></td>
+              </tr>
+              <tr>
+                <td><strong>08</strong></td>
+                <td><strong>Workday Enterprise HCM &amp; Financials RaaS</strong><br/><a href="https://wd5-services1.myworkday.com" target="_blank" rel="noopener" style="font-size:11px;">wd5-services1.myworkday.com &nearr;</a></td>
+                <td><code>CXH8BK86IF</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>fetch_compensation_raas_report</code></span></td>
+                <td>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?principal=sre-lead@finvault.com" target="_blank" rel="noopener"><strong>1. Login FinVault (200 ALLOW) &nearr;</strong></a><br/>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">2. Spoof RetailStream (403 DENY) &nearr;</a> &bull;
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">3. Revoked CMEK (423 LOCKED) &nearr;</a>
+                </td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
+                <td>
+                  <a href="screenshots/cloud-console/saas_08_workday_hcm_financials_agentcore_mcp.png" target="_blank" rel="noopener">Side A (Agent) &nearr;</a><br/>
+                  <a href="screenshots/cloud-console/saas_ui_08_workday_hcm_financials_console.png" target="_blank" rel="noopener">Side B (SaaS UI) &nearr;</a>
+                </td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --verbose</code></td>
+              </tr>
+              <tr>
+                <td><strong>09</strong></td>
+                <td><strong>Datadog Cloud Observability &amp; Bits AI SRE</strong><br/><a href="https://app.datadoghq.com" target="_blank" rel="noopener" style="font-size:11px;">app.datadoghq.com &nearr;</a></td>
+                <td><code>A2X7LPMPA7</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>query_tenant_apm_logs</code></span></td>
+                <td>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?principal=sre-lead@finvault.com" target="_blank" rel="noopener"><strong>1. Login FinVault (200 ALLOW) &nearr;</strong></a><br/>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">2. Spoof RetailStream (403 DENY) &nearr;</a> &bull;
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">3. Revoked CMEK (423 LOCKED) &nearr;</a>
+                </td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
+                <td>
+                  <a href="screenshots/cloud-console/saas_09_datadog_bits_ai_sre_agentcore_mcp.png" target="_blank" rel="noopener">Side A (Agent) &nearr;</a><br/>
+                  <a href="screenshots/cloud-console/saas_ui_09_datadog_bits_ai_sre_console.png" target="_blank" rel="noopener">Side B (SaaS UI) &nearr;</a>
+                </td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --verbose</code></td>
+              </tr>
+              <tr>
+                <td><strong>10</strong></td>
+                <td><strong>CrowdStrike Falcon XDR &amp; Okta OIDC/DPoP</strong><br/><a href="https://falcon.crowdstrike.com" target="_blank" rel="noopener" style="font-size:11px;">falcon.crowdstrike.com &nearr;</a></td>
+                <td><code>TXGJHVFBWP</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>contain_xdr_host_with_dpop</code></span></td>
+                <td>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?principal=sre-lead@finvault.com" target="_blank" rel="noopener"><strong>1. Login FinVault (200 ALLOW) &nearr;</strong></a><br/>
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">2. Spoof RetailStream (403 DENY) &nearr;</a> &bull;
+                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">3. Revoked CMEK (423 LOCKED) &nearr;</a>
+                </td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
+                <td>
+                  <a href="screenshots/cloud-console/saas_10_crowdstrike_okta_agentcore_mcp.png" target="_blank" rel="noopener">Side A (Agent) &nearr;</a><br/>
+                  <a href="screenshots/cloud-console/saas_ui_10_crowdstrike_okta_console.png" target="_blank" rel="noopener">Side B (SaaS UI) &nearr;</a>
+                </td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --verbose</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- 5-TAB E2E PATTERN EXECUTION, 20 PROVISIONED MULTI-CLOUD (GCP + AWS + 3P) RESOURCES, 27-FILE SOURCE CODEBASE, 8-STAGE RUNBOOK & DELIVERABLES WORKBENCH -->
       <div class="card" id="blog-e2e-pattern-execution-and-codebase-workbench" data-testid="blog-e2e-pattern-execution-and-codebase-workbench" data-no-hover-toolbar="true" style="border:1.5px solid rgba(56, 189, 248, 0.45); margin-bottom:18px;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid var(--border);">
@@ -2059,9 +2286,9 @@
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
           <div>
-            <span class="badge badge-green">LIVE MULTI-CLOUD &amp; 3P: GCP (ramp-portal-dev #248990048888, nitina-ggarwal-sandbox-647724 #887605034827) &bull; AWS (393036065405 us-east-1) &bull; 3P (ServiceNow, Muse, Entra ID)</span>
-            <h3 style="margin:6px 0 4px 0;">&#128248; 100% Real Google Cloud Console, Pantheon SSH, AWS Bedrock AgentCore MCP &amp; 3P SaaS Proof Gallery (14 Verified Captures)</h3>
-            <p class="muted" style="margin:0;">Click any screenshot card below to open the full-resolution capture in a new tab. Every screenshot is a real, unmodified capture from <code>console.cloud.google.com</code>, <code>pantheon.corp.google.com</code>, AWS Account <code>393036065405</code>, and live 3P enterprise connectors.</p>
+            <span class="badge badge-green">LIVE MULTI-CLOUD &amp; 10 3P SAAS BIDIRECTIONAL PROOF: GCP (ramp-portal-dev #248990048888, nitina-ggarwal-sandbox-647724 #887605034827) &bull; AWS (393036065405 us-east-1) &bull; 10 LIVE 3P SAAS TARGETS (BOTH SIDES)</span>
+            <h3 style="margin:6px 0 4px 0;">&#128248; 100% Real Google Cloud Console, Pantheon SSH, AWS Bedrock AgentCore MCP &amp; Bidirectional 10-SaaS Proof Gallery (34 Verified Captures: Side A Agent Orchestrator + Side B 3P SaaS Product UIs)</h3>
+            <p class="muted" style="margin:0;">Click any screenshot card below to open the full-resolution capture in a new tab, or click the live <code>/saas-ui/&lt;target&gt;</code> link on any Side-B card to inspect the live Third-Party SaaS Target Web Console backed by Amazon S3 (<code>s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/</code>).</p>
           </div>
         </div>
 
@@ -2139,7 +2366,7 @@
           <div class="card" style="padding:12px; margin-bottom:0;">
             <span class="badge badge-green">AWS-3P-11. WS2 Pattern A &bull; 3P ServiceNow &amp; Muse Consent Card</span>
             <h4 style="margin:8px 0 4px 0; font-size:14px;">Hop 4 In-Chat OAuth2 3LO Consent Card (ServiceNow &amp; Muse EDC)</h4>
-            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Live Gemini Enterprise Path A consent flow invoking AWS Bedrock AgentCore MCP targets <code>Z626R597RR</code> (<code>CHG0049218</code>) and <code>Y3EF9G6J9R</code> (<code>MK-3475-087</code>).</p>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Live Gemini Enterprise Path A consent flow invoking AWS Bedrock AgentCore MCP targets <code>PLOLWRMI0I</code> (<code>CHG0049218</code>) and <code>1KZWKOFTWQ</code> (<code>MK-3475-087</code>).</p>
             <img src="screenshots/cloud-console/real_ge_02_path_a_in_chat_consent_card_muse_servicenow.png" alt="Path A In-Chat Consent Card Muse and ServiceNow" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
           </div>
 
@@ -2162,6 +2389,147 @@
             <h4 style="margin:8px 0 4px 0; font-size:14px;">Cloud Logging Cross-Cloud OBO &amp; AWS Lambda Hop 5 Verified Trace</h4>
             <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Live Cloud Logging trace confirming HTTP 200 OBO + GxP 21 CFR Part 11 verification across GCP Cloud Run and AWS Lambda <code>merck-a2a-mcp-remote-peer</code>.</p>
             <img src="screenshots/cloud-console/real_gcp_07_logs_explorer_http_200_obo_verified.png" alt="Logs Explorer HTTP 200 OBO Verified" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <!-- 10 BIDIRECTIONAL ENTERPRISE THIRD-PARTY SAAS PRODUCTS (SIDE A: AGENT ORCHESTRATOR MCP + SIDE B: 3P SAAS PRODUCT UI) -->
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-blue">3P-SAAS-01A (Side A: Agent Orchestrator) &bull; ThoughtSpot Spotter</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">ThoughtSpot Spotter BI &mdash; AgentCore MCP Target <code>KD6Z3SV8PX</code></h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Google Cloud 5-Hop Agent invoking <code>thoughtspot-spotter___query_thoughtspot_liveboard_rls</code> with BigQuery RLS pushdown.</p>
+            <img src="screenshots/cloud-console/saas_01_thoughtspot_spotter_agentcore_mcp.png" alt="ThoughtSpot Spotter Side A Agent Orchestrator MCP" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-green">3P-SAAS-01B (Side B: ThoughtSpot Cloud UI) &bull; Liveboard v2.0</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">ThoughtSpot Cloud Liveboard Console (<a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter" target="_blank" rel="noopener">Live UI &nearr;</a>)</h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Target-side ThoughtSpot Liveboard UI reading live S3 ledger <code>cymbal-10saas-ledger/thoughtspot-spotter/finvault.json</code>.</p>
+            <img src="screenshots/cloud-console/saas_ui_01_thoughtspot_spotter_console.png" alt="ThoughtSpot Cloud Product Console UI Side B" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-blue">3P-SAAS-02A (Side A: Agent Orchestrator) &bull; Sigma Computing</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">Sigma Computing Workbooks &mdash; AgentCore MCP Target <code>OZ0KTE8Z8M</code></h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Google Cloud 5-Hop Agent invoking <code>sigma-computing___eval_sigma_workbook_rls</code> with signed <code>ua_tenant_id=finvault</code>.</p>
+            <img src="screenshots/cloud-console/saas_02_sigma_computing_agentcore_mcp.png" alt="Sigma Computing Side A Agent Orchestrator MCP" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-green">3P-SAAS-02B (Side B: Sigma Computing UI) &bull; Workbook Studio</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">Sigma Computing Workbook Console (<a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing" target="_blank" rel="noopener">Live UI &nearr;</a>)</h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Target-side Sigma Workbook UI reading live S3 ledger <code>cymbal-10saas-ledger/sigma-computing/finvault.json</code>.</p>
+            <img src="screenshots/cloud-console/saas_ui_02_sigma_computing_console.png" alt="Sigma Computing Product Console UI Side B" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-blue">3P-SAAS-03A (Side A: Agent Orchestrator) &bull; ServiceNow ITSM</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">ServiceNow ITSM &amp; ITOM &mdash; AgentCore MCP Target <code>PLOLWRMI0I</code></h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Google Cloud 5-Hop Agent invoking <code>servicenow-itsm___query_servicenow_change_records</code> with composite 3LO OAuth2 vaulting.</p>
+            <img src="screenshots/cloud-console/saas_03_servicenow_itsm_agentcore_mcp.png" alt="ServiceNow ITSM Side A Agent Orchestrator MCP" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-green">3P-SAAS-03B (Side B: ServiceNow UI) &bull; Xanadu Change Console</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">ServiceNow ITSM Change Console (<a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm" target="_blank" rel="noopener">Live UI &nearr;</a>)</h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Target-side ServiceNow Change Record <code>CHG0049218</code> UI reading live S3 ledger <code>cymbal-10saas-ledger/servicenow-itsm/finvault.json</code>.</p>
+            <img src="screenshots/cloud-console/saas_ui_03_servicenow_itsm_console.png" alt="ServiceNow ITSM Product Console UI Side B" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-blue">3P-SAAS-04A (Side A: Agent Orchestrator) &bull; Veeva Vault &amp; Muse</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">Veeva Vault RIM &amp; Muse EDC &mdash; AgentCore MCP Target <code>1KZWKOFTWQ</code></h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Google Cloud 5-Hop Agent invoking <code>muse-poc___query_muse_study_biomarkers</code> with Cloud KMS ECDSA P-256 21 CFR Part 11 signature.</p>
+            <img src="screenshots/cloud-console/saas_04_veeva_vault_muse_edc_agentcore_mcp.png" alt="Veeva Vault and Muse EDC Side A Agent Orchestrator MCP" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-green">3P-SAAS-04B (Side B: Veeva Vault &amp; Muse UI) &bull; GxP Clinical EDC</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">Veeva Vault RIM &amp; Muse EDC Console (<a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc" target="_blank" rel="noopener">Live UI &nearr;</a>)</h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Target-side Veeva Vault &amp; Muse Clinical Study <code>MK-3475-087</code> UI reading live S3 ledger <code>cymbal-10saas-ledger/muse-poc/finvault.json</code>.</p>
+            <img src="screenshots/cloud-console/saas_ui_04_veeva_vault_muse_edc_console.png" alt="Veeva Vault and Muse EDC Product Console UI Side B" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-blue">3P-SAAS-05A (Side A: Agent Orchestrator) &bull; Salesforce &amp; Jira</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">Salesforce CRM &amp; Atlassian Jira &mdash; AgentCore MCP Target <code>W7BF0JRWEA</code></h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Google Cloud 5-Hop Agent invoking <code>salesforce-jira___create_redacted_sfdc_jira_escalation</code> with Hop 4 Egress SDP IBAN/SWIFT masking.</p>
+            <img src="screenshots/cloud-console/saas_05_salesforce_jira_agentcore_mcp.png" alt="Salesforce and Jira Side A Agent Orchestrator MCP" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-green">3P-SAAS-05B (Side B: Salesforce &amp; Jira UI) &bull; NA224 Case Console</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">Salesforce NA224 &amp; Jira Cloud Console (<a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira" target="_blank" rel="noopener">Live UI &nearr;</a>)</h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Target-side Salesforce Case <code>SFDC-CASE-00984120</code> &amp; Jira <code>FINVAULT-SRE-1402</code> UI reading live S3 ledger.</p>
+            <img src="screenshots/cloud-console/saas_ui_05_salesforce_jira_console.png" alt="Salesforce and Jira Product Console UI Side B" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-blue">3P-SAAS-06A (Side A: Agent Orchestrator) &bull; Databricks Unity</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">Databricks Unity Catalog &amp; Genie &mdash; AgentCore MCP Target <code>Z1RHXLBK6F</code></h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Google Cloud 5-Hop Agent invoking <code>databricks-unity___execute_uc_genie_federated_sql</code> on <code>cymbal_uc_prod.finvault_gold</code>.</p>
+            <img src="screenshots/cloud-console/saas_06_databricks_unity_catalog_agentcore_mcp.png" alt="Databricks Unity Catalog Side A Agent Orchestrator MCP" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-green">3P-SAAS-06B (Side B: Databricks UI) &bull; Unity Catalog Explorer</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">Databricks Unity Catalog &amp; Genie Console (<a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity" target="_blank" rel="noopener">Live UI &nearr;</a>)</h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Target-side Databricks Unity Catalog 3-level namespace UI reading live S3 ledger <code>cymbal-10saas-ledger/databricks-unity/finvault.json</code>.</p>
+            <img src="screenshots/cloud-console/saas_ui_06_databricks_unity_catalog_console.png" alt="Databricks Unity Catalog Product Console UI Side B" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-blue">3P-SAAS-07A (Side A: Agent Orchestrator) &bull; Snowflake Cortex</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">Snowflake AI Data Cloud Cortex &mdash; AgentCore MCP Target <code>7PB1EK3NJO</code></h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Google Cloud 5-Hop Agent invoking <code>snowflake-cortex___execute_cortex_analyst_sql</code> with <code>USE SECONDARY ROLES NONE</code>.</p>
+            <img src="screenshots/cloud-console/saas_07_snowflake_cortex_agentcore_mcp.png" alt="Snowflake Cortex Side A Agent Orchestrator MCP" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-green">3P-SAAS-07B (Side B: Snowflake Snowsight UI) &bull; Cortex Analyst</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">Snowflake Snowsight Cortex Console (<a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex" target="_blank" rel="noopener">Live UI &nearr;</a>)</h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Target-side Snowflake Snowsight Cortex Analyst UI reading live S3 ledger <code>cymbal-10saas-ledger/snowflake-cortex/finvault.json</code>.</p>
+            <img src="screenshots/cloud-console/saas_ui_07_snowflake_cortex_console.png" alt="Snowflake Cortex Product Console UI Side B" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-blue">3P-SAAS-08A (Side A: Agent Orchestrator) &bull; Workday HCM RaaS</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">Workday HCM &amp; Financials RaaS &mdash; AgentCore MCP Target <code>CXH8BK86IF</code></h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Google Cloud 5-Hop Agent invoking <code>workday-raas___fetch_compensation_raas_report</code> with Hop 4 SSN/IBAN masking.</p>
+            <img src="screenshots/cloud-console/saas_08_workday_hcm_financials_agentcore_mcp.png" alt="Workday RaaS Side A Agent Orchestrator MCP" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-green">3P-SAAS-08B (Side B: Workday UI) &bull; RaaS Compensation Portal</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">Workday HCM &amp; Financials RaaS Console (<a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas" target="_blank" rel="noopener">Live UI &nearr;</a>)</h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Target-side Workday RaaS Security Group <code>ISSG_FINVAULT_EXEC_COMP</code> UI reading live S3 ledger.</p>
+            <img src="screenshots/cloud-console/saas_ui_08_workday_hcm_financials_console.png" alt="Workday RaaS Product Console UI Side B" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-blue">3P-SAAS-09A (Side A: Agent Orchestrator) &bull; Datadog Bits AI SRE</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">Datadog Observability &amp; Bits AI &mdash; AgentCore MCP Target <code>A2X7LPMPA7</code></h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Google Cloud 5-Hop Agent invoking <code>datadog-sre___query_tenant_apm_logs</code> with Hop 4 Model Armor indirect injection screening.</p>
+            <img src="screenshots/cloud-console/saas_09_datadog_bits_ai_sre_agentcore_mcp.png" alt="Datadog Bits AI Side A Agent Orchestrator MCP" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-green">3P-SAAS-09B (Side B: Datadog US1 UI) &bull; APM &amp; Log Explorer</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">Datadog Cloud Observability Console (<a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre" target="_blank" rel="noopener">Live UI &nearr;</a>)</h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Target-side Datadog Log Explorer (<code>index:cymbal-prod @tenant_id:finvault</code>) UI reading live S3 ledger.</p>
+            <img src="screenshots/cloud-console/saas_ui_09_datadog_bits_ai_sre_console.png" alt="Datadog Observability Product Console UI Side B" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-blue">3P-SAAS-10A (Side A: Agent Orchestrator) &bull; CrowdStrike &amp; Okta</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">CrowdStrike Falcon XDR &amp; Okta &mdash; AgentCore MCP Target <code>TXGJHVFBWP</code></h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Google Cloud 5-Hop Agent invoking <code>crowdstrike-okta___contain_xdr_host_with_dpop</code> with RFC 9449 DPoP <code>jkt</code> binding.</p>
+            <img src="screenshots/cloud-console/saas_10_crowdstrike_okta_agentcore_mcp.png" alt="CrowdStrike and Okta Side A Agent Orchestrator MCP" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
+          </div>
+
+          <div class="card" style="padding:12px; margin-bottom:0;">
+            <span class="badge badge-green">3P-SAAS-10B (Side B: CrowdStrike &amp; Okta UI) &bull; Falcon XDR Console</span>
+            <h4 style="margin:8px 0 4px 0; font-size:14px;">CrowdStrike Falcon XDR &amp; Okta Console (<a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta" target="_blank" rel="noopener">Live UI &nearr;</a>)</h4>
+            <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Target-side CrowdStrike Falcon XDR Host <code>aid-fv-prod-ledger-001</code> &amp; Okta OIDC/DPoP UI reading live S3 ledger.</p>
+            <img src="screenshots/cloud-console/saas_ui_10_crowdstrike_okta_console.png" alt="CrowdStrike and Okta Product Console UI Side B" style="width:100%; border-radius:8px; border:1px solid var(--border); cursor:zoom-in;" onclick="window.open(this.src, '_blank')" />
           </div>
         </div>
       </div>

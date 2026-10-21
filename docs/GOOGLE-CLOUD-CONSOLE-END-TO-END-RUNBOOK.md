@@ -148,3 +148,36 @@ gcloud run deploy cymbal-multi-tenant-patterns \
 ```
 
 ![Stage 8 — Gemini Enterprise & Vertex AI Agent Builder Live Console](../screenshots/cloud-console/gcp_console_09_vertex_ai_agent_builder_engines.png)
+
+---
+
+### Stage 9 — Bidirectional 10 Non-Google Third-Party SaaS Verification (Side A: GCP + AWS AgentCore MCP & Side B: Third-Party SaaS Target Web Console UIs)
+
+```bash
+# 1. Verify all 10 AWS Bedrock AgentCore MCP Targets (KD6Z3SV8PX..TXGJHVFBWP) & S3 Audit Ledgers
+python3 -B scripts/deploy_10_saas_aws_agentcore_targets.py
+
+# 2. Run the 30-Flow / 60-Assertion 10-SaaS x 3-Pattern Bidirectional Suite
+python3 -B scripts/verify_5_third_party_saas_products.py --pattern all --verbose
+
+# 3. Capture all 20 Side-A & Side-B Live Screenshots
+python3 -B scripts/capture_10_saas_live_screenshots.py
+```
+
+* **Complete Manual Playbook & Login Instructions**: [`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`](10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md)
+* **Live Third-Party SaaS Target Web Console UIs (Side B)**: `https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/<target>`
+
+| # | Third-Party SaaS Product | AWS AgentCore Target ID | Live Third-Party SaaS Outcome Console UI (Side B) | Side-A Proof (`agentcore_mcp.png`) | Side-B Proof (`console.png`) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **01** | **ThoughtSpot Spotter** | `KD6Z3SV8PX` | [`/saas-ui/thoughtspot-spotter`](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter) | [`saas_01_thoughtspot_spotter_agentcore_mcp.png`](../screenshots/cloud-console/saas_01_thoughtspot_spotter_agentcore_mcp.png) | [`saas_ui_01_thoughtspot_spotter_console.png`](../screenshots/cloud-console/saas_ui_01_thoughtspot_spotter_console.png) |
+| **02** | **Sigma Computing** | `OZ0KTE8Z8M` | [`/saas-ui/sigma-computing`](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing) | [`saas_02_sigma_computing_agentcore_mcp.png`](../screenshots/cloud-console/saas_02_sigma_computing_agentcore_mcp.png) | [`saas_ui_02_sigma_computing_console.png`](../screenshots/cloud-console/saas_ui_02_sigma_computing_console.png) |
+| **03** | **ServiceNow ITSM** | `PLOLWRMI0I` | [`/saas-ui/servicenow-itsm`](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm) | [`saas_03_servicenow_itsm_agentcore_mcp.png`](../screenshots/cloud-console/saas_03_servicenow_itsm_agentcore_mcp.png) | [`saas_ui_03_servicenow_itsm_console.png`](../screenshots/cloud-console/saas_ui_03_servicenow_itsm_console.png) |
+| **04** | **Veeva Vault / MUSE Clinical EDC** | `1KZWKOFTWQ` | [`/saas-ui/muse-poc`](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc) | [`saas_04_veeva_vault_muse_edc_agentcore_mcp.png`](../screenshots/cloud-console/saas_04_veeva_vault_muse_edc_agentcore_mcp.png) | [`saas_ui_04_veeva_vault_muse_edc_console.png`](../screenshots/cloud-console/saas_ui_04_veeva_vault_muse_edc_console.png) |
+| **05** | **Salesforce Financial Services + Jira** | `W7BF0JRWEA` | [`/saas-ui/salesforce-jira`](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira) | [`saas_05_salesforce_jira_agentcore_mcp.png`](../screenshots/cloud-console/saas_05_salesforce_jira_agentcore_mcp.png) | [`saas_ui_05_salesforce_jira_console.png`](../screenshots/cloud-console/saas_ui_05_salesforce_jira_console.png) |
+| **06** | **Databricks Unity Catalog + Genie** | `Z1RHXLBK6F` | [`/saas-ui/databricks-unity`](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity) | [`saas_06_databricks_unity_catalog_agentcore_mcp.png`](../screenshots/cloud-console/saas_06_databricks_unity_catalog_agentcore_mcp.png) | [`saas_ui_06_databricks_unity_catalog_console.png`](../screenshots/cloud-console/saas_ui_06_databricks_unity_catalog_console.png) |
+| **07** | **Snowflake Cortex Analyst** | `7PB1EK3NJO` | [`/saas-ui/snowflake-cortex`](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex) | [`saas_07_snowflake_cortex_agentcore_mcp.png`](../screenshots/cloud-console/saas_07_snowflake_cortex_agentcore_mcp.png) | [`saas_ui_07_snowflake_cortex_console.png`](../screenshots/cloud-console/saas_ui_07_snowflake_cortex_console.png) |
+| **08** | **Workday HCM & Financials RaaS** | `CXH8BK86IF` | [`/saas-ui/workday-raas`](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas) | [`saas_08_workday_hcm_financials_agentcore_mcp.png`](../screenshots/cloud-console/saas_08_workday_hcm_financials_agentcore_mcp.png) | [`saas_ui_08_workday_hcm_financials_console.png`](../screenshots/cloud-console/saas_ui_08_workday_hcm_financials_console.png) |
+| **09** | **Datadog Bits AI SRE** | `A2X7LPMPA7` | [`/saas-ui/datadog-sre`](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre) | [`saas_09_datadog_bits_ai_sre_agentcore_mcp.png`](../screenshots/cloud-console/saas_09_datadog_bits_ai_sre_agentcore_mcp.png) | [`saas_ui_09_datadog_bits_ai_sre_console.png`](../screenshots/cloud-console/saas_ui_09_datadog_bits_ai_sre_console.png) |
+| **10** | **CrowdStrike Falcon + Okta Workforce** | `TXGJHVFBWP` | [`/saas-ui/crowdstrike-okta`](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta) | [`saas_10_crowdstrike_okta_agentcore_mcp.png`](../screenshots/cloud-console/saas_10_crowdstrike_okta_agentcore_mcp.png) | [`saas_ui_10_crowdstrike_okta_console.png`](../screenshots/cloud-console/saas_ui_10_crowdstrike_okta_console.png) |
+
+

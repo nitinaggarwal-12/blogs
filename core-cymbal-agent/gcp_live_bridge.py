@@ -607,9 +607,10 @@ def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
                 muse_ok = mresp.status == 200 and not (mdata.get("result") or {}).get("isError", True)
 
             results["bedrock_agentcore_mcp_gateway"] = {
-                "live_agentcore_gw_ok": len(tool_names) >= 2 and sn_ok and muse_ok,
+                "live_agentcore_gw_ok": len(tool_names) >= 10 and sn_ok and muse_ok,
                 "gateway_id": "merck-a2a-mcp-gateway-kiu8omh4aq",
                 "gateway_url": AWS_AGENTCORE_GW_URL,
+                "registered_tools_count": len(tool_names),
                 "registered_tools": tool_names,
                 "servicenow_3p_call_ok": sn_ok,
                 "muse_clinical_3p_call_ok": muse_ok,

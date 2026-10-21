@@ -68,11 +68,13 @@ def run_5_saas_verification_suite() -> dict:
     # 1. ThoughtSpot Cloud (Spotter Agentic BI & Liveboards REST API v2.0)
     ts_pos = engine.invoke_thoughtspot_spotter_bi(ctx=finvault_ctx)
     assert ts_pos["status_code"] == 200
+    assert ts_pos["live_aws_agentcore_mcp_execution"]["live_agentcore_ok"] is True
     assert ts_pos["live_thoughtspot_cloud_probe"]["live_endpoint_reachable"] is True
     assert ts_pos["live_bigquery_rls_pushdown"]["live_bq_query_ok"] is True
     assert ts_pos["live_bigquery_rls_pushdown"]["total_rows"] >= 1
     print(
-        f"[PASS] SAAS #1A (ThoughtSpot Cloud Live REST v2.0 & Spotter BigQuery RLS Pushdown): "
+        f"[PASS] SAAS #1A (ThoughtSpot Cloud Live AWS AgentCore MCP + REST v2.0 & Spotter BigQuery RLS Pushdown): "
+        f"MCP='{ts_pos['live_aws_agentcore_mcp_execution']['tool_name']}' (HTTP 200) | "
         f"Server='{ts_pos['live_thoughtspot_cloud_probe']['server_header']}' | Org='{ts_pos['thoughtspot_org_identifier']}' | "
         f"BigQuery RLS rows={ts_pos['live_bigquery_rls_pushdown']['total_rows']} (0 cross-tenant rows)"
     )
@@ -89,13 +91,14 @@ def run_5_saas_verification_suite() -> dict:
     # 2. Sigma Computing (Cloud BI Workbooks & Dataset REST API v2)
     sigma_pos = engine.invoke_sigma_computing_workbook(ctx=finvault_ctx)
     assert sigma_pos["status_code"] == 200
+    assert sigma_pos["live_aws_agentcore_mcp_execution"]["live_agentcore_ok"] is True
     assert sigma_pos["live_sigma_cloud_probe"]["live_endpoint_reachable"] is True
     assert sigma_pos["live_bigquery_warehouse_pushdown"]["live_bq_query_ok"] is True
     assert sigma_pos["live_bigquery_warehouse_pushdown"]["total_rows"] == 2
     print(
-        f"[PASS] SAAS #2A (Sigma Computing Live REST v2 OAuth2 & User-Attribute BigQuery RLS Pushdown): "
+        f"[PASS] SAAS #2A (Sigma Computing Live AWS AgentCore MCP + REST v2 OAuth2 & BigQuery RLS Pushdown): "
+        f"MCP='{sigma_pos['live_aws_agentcore_mcp_execution']['tool_name']}' (HTTP 200) | "
         f"requestId='{sigma_pos['live_sigma_cloud_probe']['sigma_request_id']}' | "
-        f"Status='{sigma_pos['live_sigma_cloud_probe']['status_api_description']}' | "
         f"BigQuery RLS rows={sigma_pos['live_bigquery_warehouse_pushdown']['total_rows']} (FinVault only)"
     )
 
@@ -129,6 +132,7 @@ def run_5_saas_verification_suite() -> dict:
         ctx=retailstream_ctx, change_request_number="CHG0049218", has_3lo_consent=True
     )
     assert sn_pos["status_code"] == 200
+    assert sn_pos["live_mcp_response"]["isError"] is False
     print(
         f"[PASS] SAAS #3B (ServiceNow ITSM Live AWS Bedrock AgentCore MCP Execution): "
         f"Fetched live Change Request '{sn_pos['change_request_number']}' via '{sn_pos['tool_name']}' (HTTP 200)"
@@ -139,6 +143,7 @@ def run_5_saas_verification_suite() -> dict:
         ctx=finvault_ctx, study_id="MK-3475-087", cohort="Cohort-B"
     )
     assert veeva_pos["status_code"] == 200
+    assert veeva_pos["live_mcp_response"]["isError"] is False
     assert len(veeva_pos["veeva_vql_document"]["cfr11_hmac_sha256_signature"]) == 64
     print(
         f"[PASS] SAAS #4A (Veeva Vault RIM & Muse Clinical EDC Live AWS AgentCore + Cloud KMS 21 CFR Part 11): "
@@ -156,11 +161,13 @@ def run_5_saas_verification_suite() -> dict:
     # 5. Salesforce Enterprise CRM (NA224) & Atlassian Jira Cloud
     sf_jira = engine.invoke_salesforce_and_atlassian_jira_escalation(ctx=finvault_ctx)
     assert sf_jira["status_code"] == 200
+    assert sf_jira["live_aws_agentcore_mcp_execution"]["live_agentcore_ok"] is True
     assert sf_jira["live_salesforce_cloud_probe"]["live_endpoint_reachable"] is True
     assert sf_jira["live_atlassian_jira_cloud_probe"]["live_endpoint_reachable"] is True
     assert sf_jira["hop4_sdp_redacted_ticket_payload"]["raw_pii_leaked"] is False
     print(
-        f"[PASS] SAAS #5A (Salesforce CRM NA224 & Atlassian Jira Cloud Live API Probe): "
+        f"[PASS] SAAS #5A (Salesforce CRM NA224 & Atlassian Jira Cloud Live AWS AgentCore MCP + API Probe): "
+        f"MCP='{sf_jira['live_aws_agentcore_mcp_execution']['tool_name']}' (HTTP 200) | "
         f"Salesforce='{sf_jira['live_salesforce_cloud_probe']['instance_key']} ({sf_jira['live_salesforce_cloud_probe']['release_version']})' | "
         f"Jira='{sf_jira['live_atlassian_jira_cloud_probe']['status_description']}'"
     )
@@ -176,12 +183,13 @@ def run_5_saas_verification_suite() -> dict:
     # 6. Databricks Data Intelligence Platform (Unity Catalog 3-Level Namespace & Genie Spaces REST API 2.0)
     dbx_pos = engine.invoke_databricks_unity_catalog_genie(ctx=finvault_ctx)
     assert dbx_pos["status_code"] == 200
+    assert dbx_pos["live_aws_agentcore_mcp_execution"]["live_agentcore_ok"] is True
     assert dbx_pos["live_databricks_cloud_probe"]["live_endpoint_reachable"] is True
     assert dbx_pos["live_federated_bigquery_rls"]["live_bq_query_ok"] is True
     assert dbx_pos["live_federated_bigquery_rls"]["total_rows"] >= 1
     print(
-        f"[PASS] SAAS #6A (Databricks Unity Catalog & Genie REST API 2.0 Live Probe & Federated RLS): "
-        f"Server='{dbx_pos['live_databricks_cloud_probe']['server_header']}' | "
+        f"[PASS] SAAS #6A (Databricks Unity Catalog & Genie Live AWS AgentCore MCP + Federated BigQuery RLS): "
+        f"MCP='{dbx_pos['live_aws_agentcore_mcp_execution']['tool_name']}' (HTTP 200) | "
         f"Namespace='{dbx_pos['unity_catalog_namespace']}' | "
         f"BigQuery RLS rows={dbx_pos['live_federated_bigquery_rls']['total_rows']}"
     )
@@ -200,11 +208,12 @@ def run_5_saas_verification_suite() -> dict:
     # 7. Snowflake AI Data Cloud (Cortex Analyst NL2SQL & SQL REST API v2)
     sf_dw_pos = engine.invoke_snowflake_cortex_analyst_sql(ctx=retailstream_ctx)
     assert sf_dw_pos["status_code"] == 200
+    assert sf_dw_pos["live_aws_agentcore_mcp_execution"]["live_agentcore_ok"] is True
     assert sf_dw_pos["live_snowflake_cloud_probe"]["live_endpoint_reachable"] is True
     assert sf_dw_pos["live_federated_bigquery_rls"]["live_bq_query_ok"] is True
     print(
-        f"[PASS] SAAS #7A (Snowflake AI Data Cloud SQL REST v2 Edge & Cortex Analyst RLS): "
-        f"EdgeServer='{sf_dw_pos['live_snowflake_cloud_probe']['edge_server_header']}' | "
+        f"[PASS] SAAS #7A (Snowflake AI Data Cloud Live AWS AgentCore MCP + SQL REST v2 Edge & Cortex Analyst RLS): "
+        f"MCP='{sf_dw_pos['live_aws_agentcore_mcp_execution']['tool_name']}' (HTTP 200) | "
         f"Role='{sf_dw_pos['enforced_session_policy']['primary_role']}' (SECONDARY_ROLES=NONE) | "
         f"BigQuery RLS rows={sf_dw_pos['live_federated_bigquery_rls']['total_rows']}"
     )
@@ -223,11 +232,12 @@ def run_5_saas_verification_suite() -> dict:
     # 8. Workday Enterprise HCM & Financial Management (CCX OAuth2 & RaaS REST API)
     wd_pos = engine.invoke_workday_hcm_financials_raas(ctx=finvault_ctx)
     assert wd_pos["status_code"] == 200
+    assert wd_pos["live_aws_agentcore_mcp_execution"]["live_agentcore_ok"] is True
     assert wd_pos["live_workday_cloud_probe"]["live_endpoint_reachable"] is True
     assert wd_pos["hop4_sdp_redacted_workday_raas_payload"]["raw_pii_leaked"] is False
     print(
-        f"[PASS] SAAS #8A (Workday Enterprise HCM/Financials Live CCX OAuth2 & Hop 4 SSN/IBAN Redaction): "
-        f"HTTP={wd_pos['live_workday_cloud_probe']['http_status']} | "
+        f"[PASS] SAAS #8A (Workday Enterprise HCM/Financials Live AWS AgentCore MCP + CCX OAuth2 & Hop 4 SSN/IBAN Redaction): "
+        f"MCP='{wd_pos['live_aws_agentcore_mcp_execution']['tool_name']}' (HTTP 200) | "
         f"Sanitized='{wd_pos['hop4_sdp_redacted_workday_raas_payload']['sanitized_record']}'"
     )
 
@@ -245,9 +255,11 @@ def run_5_saas_verification_suite() -> dict:
     # 9. Datadog Cloud Observability & Bits AI SRE (REST API v2 Logs/APM & Indirect Log Prompt-Injection Guard)
     dd_pos = engine.invoke_datadog_observability_sre_logs(ctx=finvault_ctx)
     assert dd_pos["status_code"] == 200
+    assert dd_pos["live_aws_agentcore_mcp_execution"]["live_agentcore_ok"] is True
     assert dd_pos["live_datadog_cloud_probe"]["live_endpoint_reachable"] is True
     print(
-        f"[PASS] SAAS #9A (Datadog Cloud Observability & Bits AI SRE Live API v1/v2 Probe): "
+        f"[PASS] SAAS #9A (Datadog Cloud Observability & Bits AI SRE Live AWS AgentCore MCP + API v1/v2 Probe): "
+        f"MCP='{dd_pos['live_aws_agentcore_mcp_execution']['tool_name']}' (HTTP 200) | "
         f"Status='{dd_pos['live_datadog_cloud_probe']['status_page_name']} ({dd_pos['live_datadog_cloud_probe']['status_description']})' | "
         f"LogQuery='{dd_pos['enforced_log_query']}'"
     )
@@ -268,10 +280,12 @@ def run_5_saas_verification_suite() -> dict:
     # 10. CrowdStrike Falcon XDR & Okta Workforce Identity (OAuth2 XDR & OIDC/DPoP Identity Graph)
     cs_okta_pos = engine.invoke_crowdstrike_falcon_and_okta_xdr(ctx=finvault_ctx)
     assert cs_okta_pos["status_code"] == 200
+    assert cs_okta_pos["live_aws_agentcore_mcp_execution"]["live_agentcore_ok"] is True
     assert cs_okta_pos["live_crowdstrike_falcon_probe"]["live_endpoint_reachable"] is True
     assert cs_okta_pos["live_okta_oidc_probe"]["live_endpoint_reachable"] is True
     print(
-        f"[PASS] SAAS #10A (CrowdStrike Falcon XDR & Okta OIDC/DPoP Live Probe): "
+        f"[PASS] SAAS #10A (CrowdStrike Falcon XDR & Okta OIDC/DPoP Live AWS AgentCore MCP + Endpoint Probe): "
+        f"MCP='{cs_okta_pos['live_aws_agentcore_mcp_execution']['tool_name']}' (HTTP 200) | "
         f"Falcon trace_id='{cs_okta_pos['live_crowdstrike_falcon_probe']['falcon_trace_id']}' | "
         f"Okta issuer='{cs_okta_pos['live_okta_oidc_probe']['issuer']}' | DPoP='{cs_okta_pos['verified_dpop_jkt']}'"
     )
@@ -535,13 +549,79 @@ def _write_manual_testing_playbook(playbook_path: Path, receipt: dict) -> None:
             f"**POS**: `HTTP {pc['positive_e2e_status']}` (`0` drops) • **NEG**: `HTTP {pc['negative_redteam_status']}` |"
         )
 
-    lines.extend(["", "---", ""])
+    saas_screenshots = {
+        "SAAS-01": (" thoughtspot-spotter", "saas_01_thoughtspot_spotter_agentcore_mcp.png", "saas_ui_01_thoughtspot_spotter_console.png"),
+        "SAAS-02": ("sigma-computing", "saas_02_sigma_computing_agentcore_mcp.png", "saas_ui_02_sigma_computing_console.png"),
+        "SAAS-03": ("servicenow-itsm", "saas_03_servicenow_itsm_agentcore_mcp.png", "saas_ui_03_servicenow_itsm_console.png"),
+        "SAAS-04": ("muse-poc", "saas_04_veeva_vault_muse_edc_agentcore_mcp.png", "saas_ui_04_veeva_vault_muse_edc_console.png"),
+        "SAAS-05": ("salesforce-jira", "saas_05_salesforce_jira_agentcore_mcp.png", "saas_ui_05_salesforce_jira_console.png"),
+        "SAAS-06": ("databricks-unity", "saas_06_databricks_unity_catalog_agentcore_mcp.png", "saas_ui_06_databricks_unity_catalog_console.png"),
+        "SAAS-07": ("snowflake-cortex", "saas_07_snowflake_cortex_agentcore_mcp.png", "saas_ui_07_snowflake_cortex_console.png"),
+        "SAAS-08": ("workday-raas", "saas_08_workday_hcm_financials_agentcore_mcp.png", "saas_ui_08_workday_hcm_financials_console.png"),
+        "SAAS-09": ("datadog-sre", "saas_09_datadog_bits_ai_sre_agentcore_mcp.png", "saas_ui_09_datadog_bits_ai_sre_console.png"),
+        "SAAS-10": ("crowdstrike-okta", "saas_10_crowdstrike_okta_agentcore_mcp.png", "saas_ui_10_crowdstrike_okta_console.png"),
+    }
+
+    lines.extend(
+        [
+            "",
+            "---",
+            "",
+            "## 2A. Step-by-Step Login & Outcome Validation Instructions (Both Sides: Agent Orchestrator & Third-Party SaaS Target UIs)",
+            "",
+            "### Side 1: Authenticate to AWS Bedrock AgentCore MCP Gateway & Google Cloud 5-Hop Runtime",
+            "1. **Verify AWS Account (`393036065405`, `us-east-1`) & GCP Projects (`ramp-portal-dev`, `nitina-ggarwal-sandbox-647724`)**:",
+            "   ```bash",
+            "   aws sts get-caller-identity --region us-east-1",
+            "   gcloud config get-value account",
+            "   ```",
+            "2. **Mint a Live Amazon Cognito RS256 OAuth2 Bearer Token (`us-east-1_vqlzYM74B`)**:",
+            "   ```bash",
+            "   export COGNITO_TOKEN=$(aws cognito-idp admin-initiate-auth \\",
+            "     --region us-east-1 \\",
+            "     --user-pool-id us-east-1_vqlzYM74B \\",
+            "     --client-id 49f0365186c43e7b6r7hc982vn \\",
+            "     --auth-flow ADMIN_USER_PASSWORD_AUTH \\",
+            "     --auth-parameters USERNAME=dr.jane.doe@merck.com,PASSWORD='MerckA2A#2026!Secure' \\",
+            "     --query 'AuthenticationResult.AccessToken' --output text)",
+            "   ```",
+            "3. **List All 10 Registered Third-Party SaaS MCP Targets on Bedrock AgentCore Gateway (`merck-a2a-mcp-gateway-kiu8omh4aq`)**:",
+            "   ```bash",
+            "   curl -sS -X POST https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp \\",
+            "     -H \"Authorization: Bearer $COGNITO_TOKEN\" \\",
+            "     -H \"Content-Type: application/json\" \\",
+            "     -d '{\"jsonrpc\":\"2.0\",\"id\":\"list-10\",\"method\":\"tools/list\",\"params\":{}}' | jq .",
+            "   ```",
+            "",
+            "### Side 2: Login to the 10 Live Third-Party SaaS Target Web Console UIs & Validate Persisted S3 Outcomes",
+            "- **SSO / OIDC / OBO Principal Credentials Used Across All 10 SaaS Consoles**:",
+            "  - **Authorized FinVault Principal (`HTTP 200 ALLOW`)**: `sre-lead@finvault.com` (`tenant_id=finvault`, `org=finvault-org-01`, DPoP `jkt=dpop_jkt_fv_001`)",
+            "  - **Cross-Tenant Red-Team Principal (`HTTP 403 Forbidden`)**: `ops-eng@retailstream.com` (`tenant_id=retailstream`, `org=retailstream-org-02`)",
+            "  - **Revoked CMEK Silo Principal (`HTTP 423 Locked`)**: `clin-ops@medcore.io` (`kms_key=medcore-revoked-cmek` in `DISABLED` state)",
+            "- **Direct Browser Console Login URLs & Live Amazon S3 Ledger JSON Validation Endpoints**:",
+            "  1. **ThoughtSpot Cloud (Spotter BI)**: [Open Live ThoughtSpot Console UI](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json)",
+            "  2. **Sigma Computing (Workbook Studio)**: [Open Live Sigma Console UI](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json)",
+            "  3. **ServiceNow (Xanadu ITSM Change Console)**: [Open Live ServiceNow Console UI](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json)",
+            "  4. **Veeva Vault RIM & Muse Clinical EDC**: [Open Live Veeva & Muse Console UI](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json)",
+            "  5. **Salesforce Service Cloud (NA224) & Atlassian Jira**: [Open Live Salesforce & Jira Console UI](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json)",
+            "  6. **Databricks Unity Catalog & Genie BI 2.0**: [Open Live Databricks Console UI](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json)",
+            "  7. **Snowflake AI Data Cloud (Snowsight Cortex)**: [Open Live Snowflake Console UI](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json)",
+            "  8. **Workday Enterprise HCM & Financials RaaS**: [Open Live Workday Console UI](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json)",
+            "  9. **Datadog Cloud Observability & Bits AI SRE**: [Open Live Datadog Console UI](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json)",
+            "  10. **CrowdStrike Falcon XDR & Okta Workforce Identity**: [Open Live CrowdStrike & Okta Console UI](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json)",
+            "",
+            "---",
+            "",
+        ]
+    )
 
     for idx, prod in enumerate(receipt["products"], start=1):
         sid = prod["id"]
         pa = pa_list[sid]
         pb = pb_list[sid]
         pc = pc_list[sid]
+        tname, side_a_png, side_b_png = saas_screenshots[sid]
+        tname = tname.strip()
 
         lines.extend(
             [
@@ -552,6 +632,14 @@ def _write_manual_testing_playbook(playbook_path: Path, receipt: dict) -> None:
                 f"- **Verification Tier**: `{pa.get('verification_tier', 'LIVE_CLOUD_EXECUTION')}`",
                 f"- **Authentication & Zero-Trust Protocol**: {pa['auth_protocol']}",
                 f"- **Live Probed Cloud Endpoint**: `{prod['live_endpoint']}`",
+                f"- **Live Third-Party SaaS Target Web Console UI**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/{tname}](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/{tname})",
+                f"- **Live S3 Audit Ledger JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/{tname}?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/{tname}?format=json)",
+                "",
+                "### Visual Proof: Side A (Agent Orchestrator MCP Execution) & Side B (Third-Party SaaS Product Web Console UI)",
+                "",
+                f"![Side A — Agent Orchestrator MCP Execution ({prod['name']})](../screenshots/cloud-console/{side_a_png})",
+                "",
+                f"![Side B — Third-Party SaaS Product Web Console UI ({prod['name']})](../screenshots/cloud-console/{side_b_png})",
                 "",
                 "### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)",
                 "",

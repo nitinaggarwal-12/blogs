@@ -337,20 +337,20 @@
       "key": "WS1",
       "title": "WS1 \u2014 Reference Architecture, Taxonomy & 5-Hop Baseline",
       "mdPath": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
-      "sha256": "49fe6c17056f5dbf3f1b2a2a2d6ab22f820a5b96ef6d80d98edb9ea6bd2141aa",
+      "sha256": "cc51d8520725c1c0c8779548b9f924ef66c9535e1d1a94d2a48e33fcbf84284f",
       "googleDocsId": "1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os",
       "googleDocsEditUrl": "https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?authuser=nitinagga%40google.com",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/preview",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/export?format=pdf",
       "webViewLink": "https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?usp=drivesdk&resourcekey=0-PgO-X5icAK687_G-_WZFpQ",
       "syncedAt": "2026-10-15T12:05:58Z",
-      "sizeBytes": 59694
+      "sizeBytes": 76127
     },
     "WS2": {
       "key": "WS2",
       "title": "WS2 \u2014 Pattern A: High-Density Pooled Architecture",
       "mdPath": "blogs/ws2-pattern-a-pooled-architecture.md",
-      "sha256": "bdc38962a6baaa305bed5dc4af7c2aad79f8e3407058fe8b9df397ec00990e4f",
+      "sha256": "b483ed3501894d9d3de6c5b9af364334edb91c6228e22ac8d35197913b890d5b",
       "googleDocsId": "111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw",
       "googleDocsEditUrl": "https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/edit?authuser=nitinagga%40google.com",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/preview",
@@ -363,7 +363,7 @@
       "key": "WS3",
       "title": "WS3 \u2014 Pattern B: Zero-Trust Sovereign Silos",
       "mdPath": "blogs/ws3-pattern-b-sovereign-silos.md",
-      "sha256": "b2b803162cc9574e63a8f728316352e2024c991b41840c8d12e86e93938724c1",
+      "sha256": "ce2f17cf9b7489e84d81145a4cddcde12bc6fb8d33456cfede69c296440d8499",
       "googleDocsId": "1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY",
       "googleDocsEditUrl": "https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/edit?authuser=nitinagga%40google.com",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/preview",
@@ -376,7 +376,7 @@
       "key": "WS4",
       "title": "WS4 \u2014 Pattern C: Dynamic Hybrid Hub-and-Spoke & Tier Upgrade",
       "mdPath": "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md",
-      "sha256": "95fa3212ef6f844bd2f9c51fbbb1f7a5ce9694c627d55e2aad37a4872252c807",
+      "sha256": "2a87b3f0e8d21ddced24b0a33380159976fa4932fa9a710d1c181584adc1fbd8",
       "googleDocsId": "1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww",
       "googleDocsEditUrl": "https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/edit?authuser=nitinagga%40google.com",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/preview",
@@ -389,7 +389,7 @@
       "key": "WS5",
       "title": "WS5 \u2014 Executive Decision Guide & Multi-Tenant Agentic Triad",
       "mdPath": "blogs/ws5-decision-guide-and-agentic-triad.md",
-      "sha256": "77bf4a66af1d632d8bc5534940ed0f643591ff9083b080f62d8ae6a921928d3e",
+      "sha256": "582b87859de81c9e037d720b33f29c9eabbd0b57dc4bfdde720a6c59a09706a8",
       "googleDocsId": "10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0",
       "googleDocsEditUrl": "https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit?authuser=nitinagga%40google.com",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/preview",
@@ -409,7 +409,7 @@
       "googleDocsPdfUrl": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/export?format=pdf",
       "webViewLink": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/edit?usp=drivesdk&resourcekey=0-hSujxBUvoiHkoIFajcWeQg",
       "syncedAt": "2026-10-15T12:07:18Z",
-      "sizeBytes": 582815
+      "sizeBytes": 582816
     }
   }
 }

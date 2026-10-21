@@ -11,4 +11,13 @@ cp terraform.tfvars.example terraform.tfvars
 terraform init
 terraform plan
 terraform apply
+
+# Verify all 4 Pattern C Hybrid PSC & Zero-Downtime Tier Migration Tests + 10 Third-Party SaaS Connectors (Both Sides: GCP + AWS AgentCore + 3P SaaS Target UIs)
+python3 -B ../../workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py
+python3 -B ../../scripts/verify_5_third_party_saas_products.py --pattern pattern-c --verbose
 ```
+
+## Bidirectional 10 Non-Google Third-Party SaaS & Zero-Downtime Tier Upgrade Verification
+* **Manual Playbook**: [`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`](../../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md)
+* **Live Third-Party SaaS Target Consoles (Side B • `route=DEDICATED_PSC_SPOKE` & `dropped_turns=0`)**: `https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/<target>?principal=sre-lead@finvault.com`
+

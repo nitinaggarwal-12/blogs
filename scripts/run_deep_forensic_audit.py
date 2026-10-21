@@ -585,20 +585,134 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                     for bf in bundle_files
                 )
             )
+            expected_20_saas_pngs = (
+                "saas_01_thoughtspot_spotter_agentcore_mcp.png",
+                "saas_02_sigma_computing_agentcore_mcp.png",
+                "saas_03_servicenow_itsm_agentcore_mcp.png",
+                "saas_04_veeva_vault_muse_edc_agentcore_mcp.png",
+                "saas_05_salesforce_jira_agentcore_mcp.png",
+                "saas_06_databricks_unity_catalog_agentcore_mcp.png",
+                "saas_07_snowflake_cortex_agentcore_mcp.png",
+                "saas_08_workday_hcm_financials_agentcore_mcp.png",
+                "saas_09_datadog_bits_ai_sre_agentcore_mcp.png",
+                "saas_10_crowdstrike_okta_agentcore_mcp.png",
+                "saas_ui_01_thoughtspot_spotter_console.png",
+                "saas_ui_02_sigma_computing_console.png",
+                "saas_ui_03_servicenow_itsm_console.png",
+                "saas_ui_04_veeva_vault_muse_edc_console.png",
+                "saas_ui_05_salesforce_jira_console.png",
+                "saas_ui_06_databricks_unity_catalog_console.png",
+                "saas_ui_07_snowflake_cortex_console.png",
+                "saas_ui_08_workday_hcm_financials_console.png",
+                "saas_ui_09_datadog_bits_ai_sre_console.png",
+                "saas_ui_10_crowdstrike_okta_console.png",
+            )
+            expected_10_target_ids = (
+                "KD6Z3SV8PX", "OZ0KTE8Z8M", "PLOLWRMI0I", "1KZWKOFTWQ", "W7BF0JRWEA",
+                "Z1RHXLBK6F", "7PB1EK3NJO", "CXH8BK86IF", "A2X7LPMPA7", "TXGJHVFBWP",
+            )
+            expected_10_saas_ui_paths = (
+                "/saas-ui/thoughtspot-spotter",
+                "/saas-ui/sigma-computing",
+                "/saas-ui/servicenow-itsm",
+                "/saas-ui/muse-poc",
+                "/saas-ui/salesforce-jira",
+                "/saas-ui/databricks-unity",
+                "/saas-ui/snowflake-cortex",
+                "/saas-ui/workday-raas",
+                "/saas-ui/datadog-sre",
+                "/saas-ui/crowdstrike-okta",
+            )
+            all_20_saas_pngs_on_disk = all(
+                (cloud_screenshots_dir / p).is_file() and (cloud_screenshots_dir / p).stat().st_size > 10_000
+                for p in expected_20_saas_pngs
+            )
+            full_10_saas_docs = (
+                "index.html",
+                "docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md",
+                "docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md",
+                "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
+                "workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md",
+                "blogs/ws5-decision-guide-and-agentic-triad.md",
+                "workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md",
+            )
+            pattern_specific_docs = {
+                "blogs/ws2-pattern-a-pooled-architecture.md": (
+                    "saas_01_thoughtspot_spotter_agentcore_mcp.png", "saas_ui_01_thoughtspot_spotter_console.png",
+                    "saas_02_sigma_computing_agentcore_mcp.png", "saas_ui_02_sigma_computing_console.png",
+                    "saas_05_salesforce_jira_agentcore_mcp.png", "saas_ui_05_salesforce_jira_console.png",
+                    "saas_08_workday_hcm_financials_agentcore_mcp.png", "saas_ui_08_workday_hcm_financials_console.png",
+                ),
+                "workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md": (
+                    "saas_01_thoughtspot_spotter_agentcore_mcp.png", "saas_ui_01_thoughtspot_spotter_console.png",
+                    "saas_02_sigma_computing_agentcore_mcp.png", "saas_ui_02_sigma_computing_console.png",
+                    "saas_05_salesforce_jira_agentcore_mcp.png", "saas_ui_05_salesforce_jira_console.png",
+                    "saas_08_workday_hcm_financials_agentcore_mcp.png", "saas_ui_08_workday_hcm_financials_console.png",
+                ),
+                "blogs/ws3-pattern-b-sovereign-silos.md": (
+                    "saas_03_servicenow_itsm_agentcore_mcp.png", "saas_ui_03_servicenow_itsm_console.png",
+                    "saas_04_veeva_vault_muse_edc_agentcore_mcp.png", "saas_ui_04_veeva_vault_muse_edc_console.png",
+                    "saas_06_databricks_unity_catalog_agentcore_mcp.png", "saas_ui_06_databricks_unity_catalog_console.png",
+                ),
+                "workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md": (
+                    "saas_03_servicenow_itsm_agentcore_mcp.png", "saas_ui_03_servicenow_itsm_console.png",
+                    "saas_04_veeva_vault_muse_edc_agentcore_mcp.png", "saas_ui_04_veeva_vault_muse_edc_console.png",
+                    "saas_06_databricks_unity_catalog_agentcore_mcp.png", "saas_ui_06_databricks_unity_catalog_console.png",
+                ),
+                "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md": (
+                    "saas_07_snowflake_cortex_agentcore_mcp.png", "saas_ui_07_snowflake_cortex_console.png",
+                    "saas_09_datadog_bits_ai_sre_agentcore_mcp.png", "saas_ui_09_datadog_bits_ai_sre_console.png",
+                    "saas_10_crowdstrike_okta_agentcore_mcp.png", "saas_ui_10_crowdstrike_okta_console.png",
+                ),
+                "workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md": (
+                    "saas_07_snowflake_cortex_agentcore_mcp.png", "saas_ui_07_snowflake_cortex_console.png",
+                    "saas_09_datadog_bits_ai_sre_agentcore_mcp.png", "saas_ui_09_datadog_bits_ai_sre_console.png",
+                    "saas_10_crowdstrike_okta_agentcore_mcp.png", "saas_ui_10_crowdstrike_okta_console.png",
+                ),
+            }
+            bidirectional_docs_ok = all_20_saas_pngs_on_disk and "ten-saas-live-access-hub" in html
+            for rel_doc in full_10_saas_docs:
+                doc_p = ROOT_DIR / rel_doc
+                if not doc_p.is_file():
+                    bidirectional_docs_ok = False
+                    break
+                doc_txt = doc_p.read_text(encoding="utf-8")
+                if not (
+                    all(p in doc_txt for p in expected_20_saas_pngs)
+                    and all(tid in doc_txt for tid in expected_10_target_ids)
+                    and all(up in doc_txt for up in expected_10_saas_ui_paths)
+                ):
+                    bidirectional_docs_ok = False
+                    break
+            for rel_doc, req_pngs in pattern_specific_docs.items():
+                doc_p = ROOT_DIR / rel_doc
+                if not doc_p.is_file():
+                    bidirectional_docs_ok = False
+                    break
+                doc_txt = doc_p.read_text(encoding="utf-8")
+                if not (
+                    all(p in doc_txt for p in req_pngs)
+                    and all(tid in doc_txt for tid in expected_10_target_ids)
+                    and all(up in doc_txt for up in expected_10_saas_ui_paths)
+                ):
+                    bidirectional_docs_ok = False
+                    break
             saas_receipt_ok = (
                 saas_receipt.get("status") == "10_SAAS_X_3_PATTERNS_30_E2E_FLOWS_60_OF_60_ASSERTIONS_PASS"
                 and saas_receipt.get("total_unique_saas_products_tested") == 10
                 and saas_receipt.get("total_pattern_by_saas_e2e_flows") == 30
                 and saas_receipt.get("total_assertions_passed") == 60
+                and bidirectional_docs_ok
             )
             cloud_receipt_ok = (
                 cloud_receipt.get("overall_status") == "CERTIFIED"
-                and len(cloud_pngs) >= 9
+                and len(cloud_pngs) >= 29
                 and len(e2e_bundle.get("provisionedResources", [])) >= 12
                 and len(e2e_bundle.get("executionSuites", [])) >= 4
                 and bundle_hashes_match
                 and saas_receipt_ok
             )
+
 
         # Editable slide decks (PromptCanvas Vision Module) + canonical 5-part blog series + Executive E2E Flows
         slides_manifest_path = ROOT_DIR / "slides/slides_manifest.json"

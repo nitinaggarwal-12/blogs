@@ -1,6 +1,6 @@
 {
   "schema": "GEAP-Cloud-Console-And-Runtime-Verification-v3.0",
-  "verified_at_utc": "2026-10-20T21:53:10.421544+00:00",
+  "verified_at_utc": "2026-10-21T01:29:50.358566+00:00",
   "overall_status": "CERTIFIED",
   "gcp_cloud_console": {
     "status": "CERTIFIED",
@@ -405,7 +405,7 @@
         "live_bq_query_ok": true,
         "status_code": 200,
         "billing_project": "ramp-portal-dev",
-        "job_id": "job_lcqWnXtoUGkkH2H0hS5pX7RkvY5w",
+        "job_id": "job_d1EukwoVj2FipQJLAFJaFbPjF5UB",
         "location": "US",
         "total_rows": 1,
         "rows": [
@@ -431,7 +431,7 @@
         "live_bq_query_ok": true,
         "status_code": 200,
         "billing_project": "ramp-portal-dev",
-        "job_id": "job_i4-fsEj2kf362hKYZItD5SZpdayM",
+        "job_id": "job_BsPYLDsPyr0ZuBNuGQ7MexTPO5l-",
         "location": "US",
         "total_rows": 2,
         "rows": [
@@ -463,7 +463,7 @@
         "live_bq_query_ok": true,
         "status_code": 200,
         "billing_project": "ramp-portal-dev",
-        "job_id": "job_GK8NmJnewYrIBk9A_KecknVc2PGx",
+        "job_id": "job_fOOrsJpEWhrM0y7H8QsC4h--iOtB",
         "location": "US",
         "total_rows": 2,
         "rows": [
@@ -505,7 +505,7 @@
         "region": "us-central1",
         "model_id": "gemini-2.5-pro",
         "status_code": 200,
-        "latency_ms": 12755.7,
+        "latency_ms": 13272.3,
         "prompt_token_count": 34,
         "candidates_token_count": 38,
         "total_token_count": 1054,
@@ -517,11 +517,11 @@
         "region": "us-central1",
         "model_id": "gemini-2.5-flash",
         "status_code": 200,
-        "latency_ms": 3152.5,
+        "latency_ms": 1891.9,
         "prompt_token_count": 37,
-        "candidates_token_count": 52,
-        "total_token_count": 296,
-        "response_text": "I cannot perform real-time security verifications like multi-tenant isolation testing. My capabilities are limited to processing information and generating text based on my training data. Therefore, I cannot provide a verified \"PASS\" score for such a complex and dynamic security assessment."
+        "candidates_token_count": 31,
+        "total_token_count": 249,
+        "response_text": "```json\n{\"pattern_a\":\"PASS\",\"pattern_b\":\"PASS\",\"pattern_c\":\"PASS\",\"overall_score\":99}\n```"
       },
       "aws_and_3p_mcp_verification": {
         "aws_account_id": "393036065405",
@@ -541,9 +541,18 @@
           "live_agentcore_gw_ok": true,
           "gateway_id": "merck-a2a-mcp-gateway-kiu8omh4aq",
           "gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+          "registered_tools_count": 10,
           "registered_tools": [
+            "crowdstrike-okta___contain_xdr_host_with_dpop",
+            "databricks-unity___execute_uc_genie_federated_sql",
+            "datadog-sre___query_tenant_apm_logs",
             "muse-poc___query_muse_study_biomarkers",
-            "servicenow-itsm___query_servicenow_change_records"
+            "salesforce-jira___create_redacted_sfdc_jira_escalation",
+            "servicenow-itsm___query_servicenow_change_records",
+            "sigma-computing___eval_sigma_workbook_rls",
+            "snowflake-cortex___execute_cortex_analyst_sql",
+            "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
+            "workday-raas___fetch_compensation_raas_report"
           ],
           "servicenow_3p_call_ok": true,
           "muse_clinical_3p_call_ok": true

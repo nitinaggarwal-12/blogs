@@ -1,0 +1,336 @@
+{
+  "awsAccountId": "393036065405",
+  "awsRegion": "us-east-1",
+  "gatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+  "gatewayUrl": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "cognitoUserPoolId": "us-east-1_vqlzYM74B",
+  "lambdaFunctionArn": "arn:aws:lambda:us-east-1:393036065405:function:merck-a2a-mcp-remote-peer",
+  "s3Bucket": "nitinagga-argolis-aws-393036065405-us-east-1",
+  "verifiedAt": "2026-10-21T01:26:19Z",
+  "totalTargetsRegistered": 10,
+  "targets": [
+    {
+      "targetName": "thoughtspot-spotter",
+      "targetId": "KD6Z3SV8PX",
+      "toolName": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
+      "status": "READY",
+      "httpStatus": 200,
+      "isError": false,
+      "response": {
+        "status": "SUCCESS",
+        "awsAccountId": "393036065405",
+        "awsRegion": "us-east-1",
+        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreTargetId": "KD6Z3SV8PX",
+        "toolName": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
+        "tenantId": "finvault",
+        "principal": "sre-lead@finvault.com",
+        "pattern": "PATTERN_A_POOLED",
+        "hop2ConsentVerified": true,
+        "records": {
+          "org_identifier": "finvault-org-01",
+          "liveboard_guid": "lb-finvault-occ-wire-settlement-v2",
+          "spotter_worksheet_guid": "ws-finvault-core-ledger-rls",
+          "runtime_filter": {
+            "col1": "tenant_id",
+            "op1": "EQ",
+            "val1": "finvault"
+          },
+          "kpi_summary": "FinVault OCC Wire Settlement Portfolio: $527.0M across 2 RLS-verified entities (FV-TX-901, FV-TX-902)",
+          "executed_at_utc": "2026-10-21T01:26:12Z",
+          "pattern": "PATTERN_A_POOLED",
+          "sanitized_payload": ""
+        },
+        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/finvault.json"
+      }
+    },
+    {
+      "targetName": "sigma-computing",
+      "targetId": "OZ0KTE8Z8M",
+      "toolName": "sigma-computing___eval_sigma_workbook_rls",
+      "status": "READY",
+      "httpStatus": 200,
+      "isError": false,
+      "response": {
+        "status": "SUCCESS",
+        "awsAccountId": "393036065405",
+        "awsRegion": "us-east-1",
+        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreTargetId": "OZ0KTE8Z8M",
+        "toolName": "sigma-computing___eval_sigma_workbook_rls",
+        "tenantId": "finvault",
+        "principal": "sre-lead@finvault.com",
+        "pattern": "PATTERN_A_POOLED",
+        "hop2ConsentVerified": true,
+        "records": {
+          "workbook_id": "wb-sigma-finvault-finops-sre-01",
+          "eval_connection_id": "conn-bq-finvault-rls-usw1",
+          "ua_tenant_id": "finvault",
+          "ua_rls_guc": "app.current_tenant_id=finvault",
+          "computed_metrics": {
+            "total_portfolio_m": 527.0,
+            "row_count": 2,
+            "cross_tenant_rows": 0
+          },
+          "executed_at_utc": "2026-10-21T01:26:16Z",
+          "pattern": "PATTERN_A_POOLED",
+          "sanitized_payload": ""
+        },
+        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/finvault.json"
+      }
+    },
+    {
+      "targetName": "servicenow-itsm",
+      "targetId": "PLOLWRMI0I",
+      "toolName": "servicenow-itsm___query_servicenow_change_records",
+      "status": "READY",
+      "httpStatus": 200,
+      "isError": false,
+      "response": {
+        "status": "SUCCESS",
+        "awsAccountId": "393036065405",
+        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreTargetId": "PLOLWRMI0I",
+        "toolName": "servicenow-itsm___query_servicenow_change_records",
+        "studyId": "MK-3475-087",
+        "principal": "sre-lead@finvault.com",
+        "hop2ConsentVerified": false,
+        "records": {
+          "connector": "servicenow-itsm (AWS AgentCore MCP Server)",
+          "gatewayTargetName": "servicenow-itsm",
+          "gatewayToolName": "servicenow-itsm___query_servicenow_change_records",
+          "resource_uri": "api://merck-servicenow-mcp/.default",
+          "scopes": [
+            "servicenow.incidents.read",
+            "servicenow.changes.verify"
+          ],
+          "change_ticket": "CHG0049218",
+          "incident_ticket": "INC0948211",
+          "priority": "P1 - GxP Clinical Hold / Protocol Amendment Gate",
+          "state": "Approved \u2014 Scheduled Maintenance Window (Frozen during DSMB Cohort-B lock)",
+          "assigned_group": "Merck Clinical Data Governance & ITSM Ops",
+          "cmdb_ci": "MUSE-EDC-PROD-US-EAST-1"
+        },
+        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/finvault.json"
+      }
+    },
+    {
+      "targetName": "muse-poc",
+      "targetId": "1KZWKOFTWQ",
+      "toolName": "muse-poc___query_muse_study_biomarkers",
+      "status": "READY",
+      "httpStatus": 200,
+      "isError": false,
+      "response": {
+        "status": "SUCCESS",
+        "awsAccountId": "393036065405",
+        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreTargetId": "1KZWKOFTWQ",
+        "toolName": "muse-poc___query_muse_study_biomarkers",
+        "studyId": "MK-3475-087",
+        "principal": "sre-lead@finvault.com",
+        "hop2ConsentVerified": false,
+        "records": {
+          "study": "KEYNOTE-B15 / MK-3475-087 (Cohort-B Biomarker Sub-Study)",
+          "connector": "muse-poc (AWS AgentCore MCP Server)",
+          "gatewayTargetName": "muse-poc",
+          "gatewayToolName": "muse-poc___query_muse_study_biomarkers",
+          "resource_uri": "api://merck-muse-poc-mcp/.default",
+          "scopes": [
+            "muse.studies.read",
+            "muse.biomarkers.query"
+          ],
+          "cohort_b_orr_pct": 53.8,
+          "pdl1_high_orr_pct": 61.2,
+          "p_value": 0.0018,
+          "alt_ast_grade3_pct": 11.5,
+          "subjects_evaluated": 52,
+          "protocol_deviation_id": "DEV-MK3475-B12-09"
+        },
+        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/finvault.json"
+      }
+    },
+    {
+      "targetName": "salesforce-jira",
+      "targetId": "W7BF0JRWEA",
+      "toolName": "salesforce-jira___create_redacted_sfdc_jira_escalation",
+      "status": "READY",
+      "httpStatus": 200,
+      "isError": false,
+      "response": {
+        "status": "SUCCESS",
+        "awsAccountId": "393036065405",
+        "awsRegion": "us-east-1",
+        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreTargetId": "W7BF0JRWEA",
+        "toolName": "salesforce-jira___create_redacted_sfdc_jira_escalation",
+        "tenantId": "finvault",
+        "principal": "sre-lead@finvault.com",
+        "pattern": "PATTERN_A_POOLED",
+        "hop2ConsentVerified": true,
+        "records": {
+          "salesforce_instance": "NA224 (Winter '27 Patch 8.6)",
+          "salesforce_case_id": "SFDC-CASE-00984120",
+          "jira_cloud_project": "FINVAULT-SRE",
+          "jira_issue_key": "FINVAULT-SRE-1402",
+          "escalation_state": "CREATED_WITH_HOP4_SDP_PII_MASKING",
+          "executed_at_utc": "2026-10-21T01:26:17Z",
+          "pattern": "PATTERN_A_POOLED",
+          "sanitized_payload": ""
+        },
+        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/finvault.json"
+      }
+    },
+    {
+      "targetName": "databricks-unity",
+      "targetId": "Z1RHXLBK6F",
+      "toolName": "databricks-unity___execute_uc_genie_federated_sql",
+      "status": "READY",
+      "httpStatus": 200,
+      "isError": false,
+      "response": {
+        "status": "SUCCESS",
+        "awsAccountId": "393036065405",
+        "awsRegion": "us-east-1",
+        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreTargetId": "Z1RHXLBK6F",
+        "toolName": "databricks-unity___execute_uc_genie_federated_sql",
+        "tenantId": "finvault",
+        "principal": "sre-lead@finvault.com",
+        "pattern": "PATTERN_A_POOLED",
+        "hop2ConsentVerified": true,
+        "records": {
+          "unity_catalog_namespace": "cymbal_uc_prod.finvault_gold.pattern_a_pooled_rls_entities",
+          "genie_space_id": "genie-space-fv-treasury-01",
+          "sql_warehouse_id": "wh-databricks-serverless-fv-01",
+          "dynamic_sql_guard": "EXECUTE_IMMEDIATE_BLOCKED",
+          "executed_at_utc": "2026-10-21T01:26:17Z",
+          "pattern": "PATTERN_A_POOLED",
+          "sanitized_payload": ""
+        },
+        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/finvault.json"
+      }
+    },
+    {
+      "targetName": "snowflake-cortex",
+      "targetId": "7PB1EK3NJO",
+      "toolName": "snowflake-cortex___execute_cortex_analyst_sql",
+      "status": "READY",
+      "httpStatus": 200,
+      "isError": false,
+      "response": {
+        "status": "SUCCESS",
+        "awsAccountId": "393036065405",
+        "awsRegion": "us-east-1",
+        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreTargetId": "7PB1EK3NJO",
+        "toolName": "snowflake-cortex___execute_cortex_analyst_sql",
+        "tenantId": "finvault",
+        "principal": "sre-lead@finvault.com",
+        "pattern": "PATTERN_A_POOLED",
+        "hop2ConsentVerified": true,
+        "records": {
+          "account_locator": "os37291.us-east-1",
+          "primary_role": "ROLE_CYMBAL_FINVAULT",
+          "secondary_roles": "NONE",
+          "cortex_semantic_model": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/snowflake/finvault_semantic_model.yaml",
+          "executed_at_utc": "2026-10-21T01:26:18Z",
+          "pattern": "PATTERN_A_POOLED",
+          "sanitized_payload": ""
+        },
+        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/finvault.json"
+      }
+    },
+    {
+      "targetName": "workday-raas",
+      "targetId": "CXH8BK86IF",
+      "toolName": "workday-raas___fetch_compensation_raas_report",
+      "status": "READY",
+      "httpStatus": 200,
+      "isError": false,
+      "response": {
+        "status": "SUCCESS",
+        "awsAccountId": "393036065405",
+        "awsRegion": "us-east-1",
+        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreTargetId": "CXH8BK86IF",
+        "toolName": "workday-raas___fetch_compensation_raas_report",
+        "tenantId": "finvault",
+        "principal": "sre-lead@finvault.com",
+        "pattern": "PATTERN_A_POOLED",
+        "hop2ConsentVerified": true,
+        "records": {
+          "supervisory_org": "FinVault-Global-Treasury",
+          "raas_report_id": "WD-RAAS-FV-COMP-2026",
+          "composite_3lo_scope": "finvault:sre-lead@finvault.com:mcp://finvault/workday-hcm-financials-raas-3lo",
+          "sdp_masking_policy": "US_SOCIAL_SECURITY_NUMBER + IBAN_CODE REDACTED",
+          "executed_at_utc": "2026-10-21T01:26:18Z",
+          "pattern": "PATTERN_A_POOLED",
+          "sanitized_payload": ""
+        },
+        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/finvault.json"
+      }
+    },
+    {
+      "targetName": "datadog-sre",
+      "targetId": "A2X7LPMPA7",
+      "toolName": "datadog-sre___query_tenant_apm_logs",
+      "status": "READY",
+      "httpStatus": 200,
+      "isError": false,
+      "response": {
+        "status": "SUCCESS",
+        "awsAccountId": "393036065405",
+        "awsRegion": "us-east-1",
+        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreTargetId": "A2X7LPMPA7",
+        "toolName": "datadog-sre___query_tenant_apm_logs",
+        "tenantId": "finvault",
+        "principal": "sre-lead@finvault.com",
+        "pattern": "PATTERN_A_POOLED",
+        "hop2ConsentVerified": true,
+        "records": {
+          "datadog_site": "datadoghq.com (US1)",
+          "enforced_log_query": "index:cymbal-prod @tenant_id:finvault service:core-ledger-api",
+          "apm_p99_latency_ms": 14.2,
+          "bits_ai_sre_verdict": "HEALTHY_ZERO_INDIRECT_PROMPT_INJECTION",
+          "executed_at_utc": "2026-10-21T01:26:19Z",
+          "pattern": "PATTERN_A_POOLED",
+          "sanitized_payload": ""
+        },
+        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/finvault.json"
+      }
+    },
+    {
+      "targetName": "crowdstrike-okta",
+      "targetId": "TXGJHVFBWP",
+      "toolName": "crowdstrike-okta___contain_xdr_host_with_dpop",
+      "status": "READY",
+      "httpStatus": 200,
+      "isError": false,
+      "response": {
+        "status": "SUCCESS",
+        "awsAccountId": "393036065405",
+        "awsRegion": "us-east-1",
+        "agentCoreGatewayId": "merck-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreTargetId": "TXGJHVFBWP",
+        "toolName": "crowdstrike-okta___contain_xdr_host_with_dpop",
+        "tenantId": "finvault",
+        "principal": "sre-lead@finvault.com",
+        "pattern": "PATTERN_A_POOLED",
+        "hop2ConsentVerified": true,
+        "records": {
+          "falcon_cloud": "us-1.crowdstrike.com",
+          "okta_issuer": "https://okta.okta.com",
+          "host_aid": "aid-fv-prod-ledger-001",
+          "containment_action": "NETWORK_CONTAINMENT_READY_DPOP_VERIFIED",
+          "dpop_jkt_bound": "dpop_jkt_fv_001",
+          "executed_at_utc": "2026-10-21T01:26:19Z",
+          "pattern": "PATTERN_A_POOLED",
+          "sanitized_payload": ""
+        },
+        "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/finvault.json"
+      }
+    }
+  ]
+}
