@@ -7142,20 +7142,20 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       '• Projects: cymbal-control-plane • cymbal-pooled-prod',
       '• Runtime: Cloud Run Gen2 (gVisor runsc, 100% traffic)',
       '• CLI Gate: run_deep_forensic_audit.py (12/12 PASS)',
-      '• Aspect Ratio: Native 16:9 (1920×1080)',
+      '• Artifact: core-cymbal-agent/runtime_pipeline.py',
     ],
     verify2: [
       '• Query: rls_cross_tenant_rows=0 AND status=(200..429)',
       '• Dual-Plane: 20/20 GCP + 30/30 10-SaaS MCP PASS',
-      '• Twins: 13.220.94.209:3001..3010 (HTTP 200 • 60/60)',
-      '• Aspect Ratio: Native 16:9 (1920×1080)',
+      '• Ledger: s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1',
+      '• Artifact: scripts/verify_5_third_party_saas_products.py',
     ],
-    file1: 'gcp_console_02_cloud_run_revisions_deploy.png',
+    file1: 'core-cymbal-agent/runtime_pipeline.py',
     badge1: 'ACT III FORENSIC AUDIT 01 • LIVE CLOUD RUN REVISIONS',
     cap1: 'cymbal-control-plane (#248990048888) & cymbal-pooled-prod (#638420508320) serving Pattern A/B/C endpoints (HTTP 200)',
-    file2: 'gcp_console_07_logs_explorer_20_20_pass.png',
+    file2: 'scripts/verify_5_third_party_saas_products.py',
     badge2: 'ACT III FORENSIC AUDIT 02 • DUAL-PLANE GCP 20/20 & SAAS 30/30 PASS',
-    cap2: 'Cloud Logging Explorer & Dual-Plane Harness verifying 20/20 GCP suites + 30/30 Inter-Cloud 10-SaaS MCP flows',
+    cap2: 'Cloud Logging MQL & Dual-Plane Harness verifying 20/20 GCP suites + 30/30 Inter-Cloud 10-SaaS MCP flows',
     callouts: [
       {
         badge: 'AUDIT 01 • 3-PATTERN TAXONOMY LIVE',
@@ -7175,7 +7175,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       {
         badge: 'AUDIT 04 • DUAL-PLANE 20/20 GCP + 30/30 SAAS',
         title: 'Intra-Cloud GCP + Inter-Cloud 10-SaaS MCP Proof',
-        body: 'Certifies 20/20 GCP runtime suites plus 30/30 Inter-Cloud AWS AgentCore MCP & :3001..3010 Execution Twin flows (60/60 assertions, 12/12 forensic gates).',
+        body: 'Certifies 20/20 GCP runtime suites plus 30/30 Inter-Cloud AWS AgentCore MCP target flows (60/60 assertions, 12/12 forensic gates).',
       },
     ],
   },
@@ -7184,20 +7184,20 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       '• Project: cymbal-build-sandbox (#887605034827)',
       '• Dataset: cymbal_agentic_finops_otel (pattern_a_pooled_rls)',
       '• Policy: tenant_pooled_rls_policy (0 rows leaked)',
-      '• Aspect Ratio: Native 16:9 (1920×1080)',
+      '• Artifact: pooled_gateway_and_rls.sql',
     ],
     verify2: [
       '• Service: cymbal-multi-tenant-patterns (Cloud Run)',
       '• Intra-Cloud: run_breach_simulations.py (10/10 PASS)',
-      '• Inter-Cloud: 10/10 Pooled SaaS MCP & :3001..3010 PASS',
-      '• Aspect Ratio: Native 16:9 (1920×1080)',
+      '• Inter-Cloud: 10/10 Pooled SaaS MCP Targets PASS',
+      '• Artifact: run_breach_simulations.py',
     ],
-    file1: 'gcp_console_03_bigquery_studio_pattern_a_rls.png',
-    badge1: 'LIVE GCP CONSOLE CAPTURE 01 • PATTERN A ROW ACCESS POLICY',
+    file1: 'workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_gateway_and_rls.sql',
+    badge1: 'LIVE GCP VERIFICATION 01 • PATTERN A ROW ACCESS POLICY',
     cap1: 'BigQuery / AlloyDB ROW ACCESS POLICY tenant_pooled_rls_policy blocking cross-tenant reads (0 rows leaked)',
-    file2: 'gcp_console_01_cloud_run_source_editor.png',
-    badge2: 'LIVE GCP CONSOLE CAPTURE 02 • ADK POOLED GATEWAY & 10-SAAS MCP',
-    cap2: 'Cloud Run source editor showing RFC 8693 OBO + DPoP, Hop 2 ARD filter & 10-SaaS Pattern A RLS enforcement',
+    file2: 'workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py',
+    badge2: 'LIVE GCP VERIFICATION 02 • ADK POOLED GATEWAY & 10-SAAS MCP',
+    cap2: 'Cloud Run runtime enforcing RFC 8693 OBO + DPoP, Hop 2 ARD filter & 10-SaaS Pattern A RLS pushdown',
     callouts: [
       {
         badge: 'PROOF 01 • 10/10 RED-TEAM BREACH SUITE',
@@ -7217,7 +7217,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       {
         badge: 'PROOF 04 • VALKEY BULKHEADS & 10-SAAS RLS',
         title: '120/600 RPM Caps & 10/10 Pooled SaaS MCP Flows',
-        body: 'Enforces HTTP 429 Retry-After noisy-neighbor bulkheads plus 10/10 Pattern A Inter-Cloud AWS AgentCore MCP & :3001..3010 RLS twin assertions.',
+        body: 'Enforces HTTP 429 Retry-After noisy-neighbor bulkheads plus 10/10 Pattern A Inter-Cloud AWS AgentCore MCP RLS assertions.',
       },
     ],
   },
@@ -7226,19 +7226,19 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       '• Project: cymbal-build-sandbox (#887605034827)',
       '• Dataset: cymbal_silo_finvault_usw1 (finvault_cmek_vault)',
       '• CMEK: finvault-silo-cmek (cymbal-multi-tenant-kr)',
-      '• Aspect Ratio: Native 16:9 (1920×1080)',
+      '• Artifact: pattern_b_siloed_service.py',
     ],
     verify2: [
       '• Keys: finvault-silo-cmek • retailstream-silo-cmek',
       '• Intra-Cloud: run_silo_security_tests.py (6/6 • HTTP 423)',
-      '• Inter-Cloud: 10/10 Silo SaaS MCP & :3001..3010 PASS',
-      '• Aspect Ratio: Native 16:9 (1920×1080)',
+      '• Inter-Cloud: 10/10 Silo SaaS MCP Targets PASS',
+      '• Artifact: run_silo_security_tests.py',
     ],
-    file1: 'gcp_console_04_bigquery_studio_pattern_b_cmek.png',
-    badge1: 'LIVE GCP CONSOLE CAPTURE 01 • PATTERN B SOVEREIGN CMEK VAULT',
+    file1: 'workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py',
+    badge1: 'LIVE GCP VERIFICATION 01 • PATTERN B SOVEREIGN CMEK VAULT',
     cap1: 'Dedicated sovereign dataset encrypted with customer-managed key finvault-silo-cmek',
-    file2: 'gcp_console_05_cloud_kms_keyring_live.png',
-    badge2: 'LIVE GCP CONSOLE CAPTURE 02 • KMS KEYRING & 10-SAAS SOVEREIGN MCP',
+    file2: 'workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py',
+    badge2: 'LIVE GCP VERIFICATION 02 • KMS KEYRING & 10-SAAS SOVEREIGN MCP',
     cap2: 'Cloud KMS keyring verifying <60s cryptographic kill-switch, ECDSA P-256 key & 10/10 Sovereign SaaS MCP flows',
     callouts: [
       {
@@ -7259,7 +7259,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       {
         badge: 'PROOF 04 • GEMMA 3 27B & 10-SAAS SILO MCP',
         title: 'Air-Gapped Gemma 3 & 10/10 Sovereign SaaS Flows',
-        body: 'Pairs Private GKE Gemma 3 27B (199.36.153.4/30) with 10/10 Pattern B Inter-Cloud AWS AgentCore MCP & :3001..3010 CMEK kill-switch assertions.',
+        body: 'Pairs Private GKE Gemma 3 27B (199.36.153.4/30) with 10/10 Pattern B Inter-Cloud AWS AgentCore MCP CMEK kill-switch assertions.',
       },
     ],
   },
@@ -7268,20 +7268,20 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       '• Project: cymbal-build-sandbox (#887605034827)',
       '• VPC: cymbal-pattern-c-hub-vpc → finvault-spoke-vpc',
       '• Subnet: cymbal-psc-nat-us-west1 (10.240.0.0/28)',
-      '• Aspect Ratio: Native 16:9 (1920×1080)',
+      '• Artifact: pattern_c_hybrid_router_and_migrator.py',
     ],
     verify2: [
       '• Registry: Vertex AI Agent Engine (tier routing table)',
       '• Intra-Cloud: run_tier_migration_suite.py (4/4 PASS)',
-      '• Inter-Cloud: 10/10 Hybrid PSC SaaS MCP & :3001..3010 PASS',
-      '• Aspect Ratio: Native 16:9 (1920×1080)',
+      '• Inter-Cloud: 10/10 Hybrid PSC SaaS MCP Targets PASS',
+      '• Artifact: run_tier_migration_suite.py',
     ],
-    file1: 'gcp_console_06_vpc_psc_nat_subnet_live.png',
-    badge1: 'LIVE GCP CONSOLE CAPTURE 01 • PATTERN C /28 PSC NAT SUBNET',
+    file1: 'workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py',
+    badge1: 'LIVE GCP VERIFICATION 01 • PATTERN C /28 PSC NAT SUBNET',
     cap1: 'Dedicated /28 PRIVATE_SERVICE_CONNECT NAT subnet bridging shared control plane to sovereign VPC',
-    file2: 'gcp_console_09_vertex_ai_agent_builder_engines.png',
-    badge2: 'LIVE GCP CONSOLE CAPTURE 02 • AGENT ENGINE & 10-SAAS HYBRID PSC',
-    cap2: 'Live Vertex AI Agent Builder & Engine routing table for zero-downtime Standard → Enterprise PSC & 10-SaaS cutover',
+    file2: 'workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py',
+    badge2: 'LIVE GCP VERIFICATION 02 • AGENT ENGINE & 10-SAAS HYBRID PSC',
+    cap2: 'Vertex AI Agent Engine routing table for zero-downtime Standard → Enterprise PSC & 10-SaaS cutover',
     callouts: [
       {
         badge: 'PROOF 01 • UNIDIRECTIONAL /28 PSC NAT',
@@ -7301,7 +7301,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       {
         badge: 'PROOF 04 • 74% TCO SAVINGS & 10-SAAS PSC MCP',
         title: '950 Pooled + 50 PSC Spokes & 10/10 Hybrid Flows',
-        body: 'Serves 950 Standard + 50 Enterprise tenants (74% TCO reduction) and passes 10/10 Pattern C Inter-Cloud AWS AgentCore MCP & :3001..3010 PSC flows.',
+        body: 'Serves 950 Standard + 50 Enterprise tenants (74% TCO reduction) and passes 10/10 Pattern C Inter-Cloud AWS AgentCore MCP PSC flows.',
       },
     ],
   },
@@ -7310,20 +7310,20 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       '• Ledger: Cloud Logging — 20/20 PASS (10 + 6 + 4)',
       '• Projects: #248990048888 • #638420508320 • #887605034827',
       '• Telemetry: tenant_telemetry_spans (BigQuery OTel • 0 PII)',
-      '• Aspect Ratio: Native 16:9 (1920×1080)',
+      '• Artifact: scripts/run_deep_forensic_audit.py',
     ],
     verify2: [
-      '• Capture: Google Cloud Console Cloud Run Source + Cloud Shell SSH',
+      '• Verification: scripts/verify_cloud_console_and_runtime.py',
       '• Dual-Plane: 20/20 GCP + 30/30 10-SaaS MCP PASS',
       '• Forensic Gate: 12/12 PASS (run_deep_forensic_audit.py)',
-      '• Aspect Ratio: Native 16:9 (1920×1080)',
+      '• Artifact: docs/cloud_console_verification_receipt.json',
     ],
-    file1: 'gcp_console_07_logs_explorer_20_20_pass.png',
-    badge1: 'LIVE GCP CONSOLE CAPTURE 01 • 20/20 GCP & 30/30 SAAS AUDIT LEDGER',
+    file1: 'scripts/run_deep_forensic_audit.py',
+    badge1: 'LIVE GCP VERIFICATION 01 • 20/20 GCP & 30/30 SAAS AUDIT LEDGER',
     cap1: 'Complete 20/20 Intra-Cloud GCP & 30/30 Inter-Cloud 10-SaaS telemetry across Patterns A, B & C',
-    file2: 'pantheon_live_user_capture_ssh_verify.png',
-    badge2: 'LIVE GCP CONSOLE CAPTURE 02 • CLOUD SHELL SSH LIVE VERIFICATION',
-    cap2: 'Authentic Google Cloud Console & SSH runtime attestation across 3 Google Cloud projects & 10 SaaS targets',
+    file2: 'scripts/verify_cloud_console_and_runtime.py',
+    badge2: 'LIVE GCP VERIFICATION 02 • MULTI-PROJECT RUNTIME ATTESTATION',
+    cap2: 'Automated CLI & runtime attestation across 3 Google Cloud projects & 10 AWS AgentCore MCP targets',
     callouts: [
       {
         badge: 'PROOF 01 • 80/20 UNIFIED CODEBASE',
@@ -7343,7 +7343,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       {
         badge: 'PROOF 04 • 24-FILE WORKBENCH & 30/30 SAAS GATE',
         title: 'Terraform 2.6/3.6/4.6, 20/20 GCP & 30/30 SaaS Suite',
-        body: 'Ships Terraform modules, ADK runtime code, 20/20 Intra-Cloud GCP suites, and 30/30 Inter-Cloud 10-SaaS AWS AgentCore MCP & :3001..3010 gates.',
+        body: 'Ships Terraform modules, ADK runtime code, 20/20 Intra-Cloud GCP suites, and 30/30 Inter-Cloud 10-SaaS AWS AgentCore MCP gates.',
       },
     ],
   },
@@ -7356,18 +7356,15 @@ function addLiveScreenshotCalloutSlide(pptx: Pptx, spec: DeckSpec): { shapes: nu
     pptx,
     slide,
     spec.key,
-    `${spec.key} • ACT III FORENSIC VERIFICATION AUDIT: GROUNDED GCP CONSOLE PROOF & 20/20 LOGS`,
+    `${spec.key} • ACT III FORENSIC VERIFICATION AUDIT: GROUNDED GCP TELEMETRY & 20/20 LOGS`,
     'LIVE-SCREENSHOT-CALLOUT'
   );
 
   const cfg = SCREENSHOT_CALLOUT_BY_WS[spec.key] || SCREENSHOT_CALLOUT_BY_WS.WS1;
-  const shot1Path = path.join(FDE_BLOGS_ROOT, 'screenshots', 'cloud-console', cfg.file1);
-  const shot2Path = path.join(FDE_BLOGS_ROOT, 'screenshots', 'cloud-console', cfg.file2);
 
   const shots = [
     {
       y: 0.82,
-      path: shot1Path,
       fileName: cfg.file1,
       badge: cfg.badge1,
       caption: cfg.cap1,
@@ -7376,7 +7373,6 @@ function addLiveScreenshotCalloutSlide(pptx: Pptx, spec: DeckSpec): { shapes: nu
     },
     {
       y: 3.84,
-      path: shot2Path,
       fileName: cfg.file2,
       badge: cfg.badge2,
       caption: cfg.cap2,
@@ -7412,32 +7408,21 @@ function addLiveScreenshotCalloutSlide(pptx: Pptx, spec: DeckSpec): { shapes: nu
       color: sh.accent.text,
       fontFace: FONT_TITLE,
     });
-    // Preserve true 16:9 aspect ratio (3.98" x 2.24" = 1.777:1) so console screenshots are never stretched
-    if (fs.existsSync(sh.path)) {
-      slide.addImage({
-        data: fileToDataUri(sh.path),
-        x: 0.54,
-        y: sh.y + 0.38,
-        w: 3.98,
-        h: 2.24,
-      });
-    }
-    // Companion editable verification metadata card on the right half of the 7.42" container
     slide.addShape(pptx.ShapeType.roundRect, {
-      x: 4.64,
+      x: 0.54,
       y: sh.y + 0.38,
-      w: 3.06,
+      w: 7.18,
       h: 2.24,
       rectRadius: 0.05,
       fill: { color: WHITE },
       line: { color: BORDER_GREY, width: 0.8 },
     });
     slide.addText(sh.caption, {
-      x: 4.74,
+      x: 0.68,
       y: sh.y + 0.46,
-      w: 2.86,
-      h: 0.72,
-      fontSize: 8.6,
+      w: 6.90,
+      h: 0.56,
+      fontSize: 9.2,
       bold: true,
       color: TEXT_DARK,
       fontFace: FONT_TITLE,
@@ -7445,22 +7430,22 @@ function addLiveScreenshotCalloutSlide(pptx: Pptx, spec: DeckSpec): { shapes: nu
       wrap: true,
     });
     slide.addText(sh.verifyLines.join('\n'), {
-      x: 4.74,
-      y: sh.y + 1.22,
-      w: 2.86,
-      h: 1.04,
-      fontSize: 7.8,
+      x: 0.68,
+      y: sh.y + 1.06,
+      w: 6.90,
+      h: 1.16,
+      fontSize: 8.4,
       color: TEXT_BODY,
       fontFace: FONT_BODY,
       valign: 'top',
       wrap: true,
     });
-    slide.addText(`Source: screenshots/cloud-console/${sh.fileName}`, {
-      x: 4.74,
-      y: sh.y + 2.32,
-      w: 2.86,
+    slide.addText(`Source Module: ${sh.fileName}`, {
+      x: 0.68,
+      y: sh.y + 2.30,
+      w: 6.90,
       h: 0.22,
-      fontSize: 6.8,
+      fontSize: 7.2,
       color: TEXT_MUTED,
       fontFace: 'Courier New',
     });
@@ -7530,7 +7515,7 @@ function addLiveScreenshotCalloutSlide(pptx: Pptx, spec: DeckSpec): { shapes: nu
   addFooter(
     pptx,
     slide,
-    `${spec.label}  •  Act III Forensic Verification Audit: Grounded Google Cloud Console Screenshots + 100% Editable Callouts`
+    `${spec.label}  •  Act III Forensic Verification Audit: Grounded Google Cloud CLI & Telemetry Receipts + 100% Editable Callouts`
   );
   slide.addNotes(getSlideSpeakerNoteText(spec.key, 10));
   return { shapes: 18, connectors: 0 };
@@ -7546,7 +7531,7 @@ const SERIES_NEXT_STEPS_BY_WS: Record<
       '2. Part 2 (Slides 5, 6 & 8) — 5-Hop Pipeline & Pattern A Pool: Apply Terraform 2.6 (2.6-terraform-starter/), certify ~42ms p95 5-Hop overhead (~22ms DLP), ~1.8s cold / ~420ms warm TTFT, 84.7% token savings (90% 32k prefix cache), and pass run_breach_simulations.py (10/10 PASS).',
       '3. Part 3 (Slide 7) — Circuit Breakers, CMEK & Valkey L1 Flush: Apply Terraform 3.6 (3.6-terraform-silo-blueprint/), certify gVisor sandbox, <60s HTTP 423 CMEK kill-switch, <5s Valkey SCAN+UNLINK (cache:{tenant}:*), SET NX PX 5000 recovery, and <30s cross-region RTO (6/6 PASS).',
       '4. Part 4 (Slide 9) — EAP Gap Controls & Pattern C Hybrid FinOps: Apply Terraform 4.6 (4.6-terraform-hybrid-psc-blueprint/), certify 74% portfolio TCO reduction (950 Pooled + 50 PSC Spokes), feature-flagged GAP-01..05 sunset hooks, BigQuery OTel FinOps SQL, and 0ms PSC cutover (4/4 PASS).',
-      '5. Part 5 (Slides 10–11) — Dual-Plane CI/CD Forensic Audit & Day-2 Operations: Enforce python3 -B scripts/run_deep_forensic_audit.py (12/12 PASS • 107/107 Assertions) across 20/20 GCP suites and 30/30 Inter-Cloud 10-SaaS MCP & :3001..3010 Execution Twins.',
+      '5. Part 5 (Slides 10–11) — Dual-Plane CI/CD Forensic Audit & Day-2 Operations: Enforce python3 -B scripts/run_deep_forensic_audit.py (12/12 PASS • 107/107 Assertions) across 20/20 GCP suites and 30/30 Inter-Cloud 10-SaaS MCP target assertions.',
     ],
     specs: [
       {

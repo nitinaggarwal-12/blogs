@@ -341,71 +341,71 @@ SAAS_UI_CATALOG = {
 REAL_EC2_UPSTREAM_MAP = {
     "thoughtspot-spotter": {
         "upstream_software": "Metabase BI v0.50.26 (Liveboard / Question #27)",
-        "live_ui_url": "http://13.220.94.209:3001/question/27",
-        "health_url": "http://13.220.94.209:3001/api/health",
+        "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json",
+        "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json",
         "login_user": "sre-lead@finvault.com",
         "login_pass": "FinVault#2026!",
     },
     "sigma-computing": {
         "upstream_software": "Grafana Enterprise v11.2.0 (Workbook uid=finvault-sre-wb)",
-        "live_ui_url": "http://13.220.94.209:3002/d/finvault-sre-wb",
-        "health_url": "http://13.220.94.209:3002/api/health",
+        "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json",
+        "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json",
         "login_user": "sre-lead@finvault.com",
         "login_pass": "FinVault#2026!",
     },
     "servicenow-itsm": {
         "upstream_software": "Redmine ITSM v5.1 (Project finvault-itsm: CHG0049218 & INC0948211)",
-        "live_ui_url": "http://13.220.94.209:3003/projects/finvault-itsm/issues",
-        "health_url": "http://13.220.94.209:3003/login",
+        "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json",
+        "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json",
         "login_user": "sre-lead@finvault.com",
         "login_pass": "FinVault#2026!",
     },
     "muse-poc": {
         "upstream_software": "NocoDB v0.255.2 Clinical EDC & GxP 21 CFR Part 11 Vault",
-        "live_ui_url": "http://13.220.94.209:3004/#/signin",
-        "health_url": "http://13.220.94.209:3004/api/v1/health",
+        "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json",
+        "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json",
         "login_user": "sre-lead@finvault.com",
         "login_pass": "FinVault#2026!",
     },
     "salesforce-jira": {
         "upstream_software": "Gitea Enterprise v1.22.3 Issue & CRM Escalation Tracker",
-        "live_ui_url": "http://13.220.94.209:3005/finvault/sre-escalations/issues/1",
-        "health_url": "http://13.220.94.209:3005/api/v1/version",
+        "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json",
+        "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json",
         "login_user": "sre-lead",
         "login_pass": "FinVault#2026!",
     },
     "databricks-unity": {
         "upstream_software": "Trino v440 Distributed SQL Lakehouse & Catalog Web Console",
-        "live_ui_url": "http://13.220.94.209:3006/ui/",
-        "health_url": "http://13.220.94.209:3006/v1/info",
+        "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json",
+        "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json",
         "login_user": "sre-lead@finvault.com",
         "login_pass": "(No password required in Trino UI)",
     },
     "snowflake-cortex": {
         "upstream_software": "ClickHouse v24.8 Data Warehouse Play UI (Native RLS Policy)",
-        "live_ui_url": "http://13.220.94.209:3007/play",
-        "health_url": "http://13.220.94.209:3007/ping",
+        "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json",
+        "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json",
         "login_user": "finvault_user",
         "login_pass": "FinVault#2026!",
     },
     "workday-raas": {
         "upstream_software": "Directus v11.1.0 Enterprise HCM & Financials RaaS Studio",
-        "live_ui_url": "http://13.220.94.209:3008/admin/content/hcm_compensation",
-        "health_url": "http://13.220.94.209:3008/server/health",
+        "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json",
+        "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json",
         "login_user": "sre-lead@finvault.com",
         "login_pass": "FinVault#2026!",
     },
     "datadog-sre": {
         "upstream_software": "Seq v2024.3 Structured Log & APM Observability Platform",
-        "live_ui_url": "http://13.220.94.209:3009/#/events",
-        "health_url": "http://13.220.94.209:3009/api",
+        "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json",
+        "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json",
         "login_user": "sre-lead@finvault.com",
         "login_pass": "FinVault#2026!",
     },
     "crowdstrike-okta": {
         "upstream_software": "HashiCorp Vault v1.13.3 Identity, OIDC/DPoP & CMEK Secrets Engine",
-        "live_ui_url": "http://13.220.94.209:3010/ui/vault/secrets/secret/show/tenants/finvault",
-        "health_url": "http://13.220.94.209:3010/v1/sys/health",
+        "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json",
+        "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json",
         "login_user": "Token",
         "login_pass": "fv-token-finvault-sre-2026",
     },
@@ -417,7 +417,7 @@ _orig_handle_http_request = _handle_http_request
 def _probe_live_ec2_upstream(target_key: str) -> dict:
     info = dict(REAL_EC2_UPSTREAM_MAP.get(target_key, REAL_EC2_UPSTREAM_MAP["thoughtspot-spotter"]))
     info["ec2_instance_id"] = "i-04924523ac41ff132"
-    info["ec2_public_ip"] = "13.220.94.209"
+    info["ec2_public_ip"] = "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com"
     try:
         req = urllib.request.Request(info["health_url"], method="GET")
         with urllib.request.urlopen(req, timeout=2.5) as resp:

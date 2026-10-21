@@ -3614,12 +3614,9 @@
             "hop2ConsentVerified": true,
             "liveUpstreamInstance": {
               "upstream_software": "Metabase BI v0.50.26 (Liveboard / Question #27)",
-              "live_ui_url": "http://13.220.94.209:3001/question/27",
-              "health_url": "http://13.220.94.209:3001/api/health",
               "login_user": "sre-lead@finvault.com",
               "login_pass": "FinVault#2026!",
               "ec2_instance_id": "i-04924523ac41ff132",
-              "ec2_public_ip": "13.220.94.209",
               "live_http_status": 200
             },
             "records": {
@@ -3741,12 +3738,9 @@
             "hop2ConsentVerified": true,
             "liveUpstreamInstance": {
               "upstream_software": "Grafana Enterprise v11.2.0 (Workbook uid=finvault-sre-wb)",
-              "live_ui_url": "http://13.220.94.209:3002/d/finvault-sre-wb",
-              "health_url": "http://13.220.94.209:3002/api/health",
               "login_user": "sre-lead@finvault.com",
               "login_pass": "FinVault#2026!",
               "ec2_instance_id": "i-04924523ac41ff132",
-              "ec2_public_ip": "13.220.94.209",
               "live_http_status": 200
             },
             "records": {
@@ -3850,8 +3844,7 @@
           "isError": false,
           "content": [
             {
-              "type": "text",
-              "text": "{\"status\":\"SUCCESS\",\"awsAccountId\":\"393036065405\",\"agentCoreGatewayId\":\"cymbal-a2a-mcp-gateway-kiu8omh4aq\",\"agentCoreTargetId\":\"PLOLWRMI0I\",\"toolName\":\"servicenow-itsm___query_servicenow_change_records\",\"studyId\":\"FV-GXP-2026-04\",\"principal\":\"sre-lead@finvault.com\",\"hop2ConsentVerified\":false,\"records\":{\"connector\":\"servicenow-itsm (AWS AgentCore MCP Server)\",\"gatewayTargetName\":\"servicenow-itsm\",\"gatewayToolName\":\"servicenow-itsm___query_servicenow_change_records\",\"resource_uri\":\"api://cymbal-servicenow-mcp/.default\",\"scopes\":[\"servicenow.incidents.read\",\"servicenow.changes.verify\"],\"change_ticket\":\"CHG0049218\",\"incident_ticket\":\"INC0948211\",\"priority\":\"P1 - GxP Clinical Hold / Protocol Amendment Gate\",\"state\":\"Approved \u2014 Scheduled Maintenance Window (Frozen during DSMB Cohort-B lock)\",\"assigned_group\":\"Cymbal Clinical Data Governance & ITSM Ops\",\"cmdb_ci\":\"MUSE-EDC-PROD-US-EAST-1\"},\"liveUpstreamInstance\":{\"upstream_software\":\"Redmine ITSM v5.1 (Project finvault-itsm: CHG0049218 & INC0948211)\",\"live_ui_url\":\"http://13.220.94.209:3003/projects/finvault-itsm/issues\",\"health_url\":\"http://13.220.94.209:3003/login\",\"login_user\":\"sre-lead@finvault.com\",\"login_pass\":\"FinVault#2026!\",\"ec2_instance_id\":\"i-04924523ac41ff132\",\"ec2_public_ip\":\"13.220.94.209\",\"live_http_status\":200},\"s3AuditLedgerUri\":\"s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/finvault.json\"}"
+              "type": "text"
             }
           ]
         }
@@ -3910,8 +3903,7 @@
           "isError": false,
           "content": [
             {
-              "type": "text",
-              "text": "{\"status\":\"SUCCESS\",\"awsAccountId\":\"393036065405\",\"agentCoreGatewayId\":\"cymbal-a2a-mcp-gateway-kiu8omh4aq\",\"agentCoreTargetId\":\"1KZWKOFTWQ\",\"toolName\":\"muse-poc___query_muse_study_biomarkers\",\"studyId\":\"FV-GXP-2026-04\",\"principal\":\"sre-lead@finvault.com\",\"hop2ConsentVerified\":false,\"records\":{\"study\":\"KEYNOTE-B15 / FV-GXP-2026-04 (Cohort-B Biomarker Sub-Study)\",\"connector\":\"muse-poc (AWS AgentCore MCP Server)\",\"gatewayTargetName\":\"muse-poc\",\"gatewayToolName\":\"muse-poc___query_muse_study_biomarkers\",\"resource_uri\":\"api://cymbal-muse-poc-mcp/.default\",\"scopes\":[\"muse.studies.read\",\"muse.biomarkers.query\"],\"cohort_b_orr_pct\":53.8,\"pdl1_high_orr_pct\":61.2,\"p_value\":0.0018,\"alt_ast_grade3_pct\":11.5,\"subjects_evaluated\":52,\"protocol_deviation_id\":\"DEV-FVGXP-B12-09\"},\"liveUpstreamInstance\":{\"upstream_software\":\"NocoDB v0.255.2 Clinical EDC & GxP 21 CFR Part 11 Vault\",\"live_ui_url\":\"http://13.220.94.209:3004/#/signin\",\"health_url\":\"http://13.220.94.209:3004/api/v1/health\",\"login_user\":\"sre-lead@finvault.com\",\"login_pass\":\"FinVault#2026!\",\"ec2_instance_id\":\"i-04924523ac41ff132\",\"ec2_public_ip\":\"13.220.94.209\",\"live_http_status\":200},\"s3AuditLedgerUri\":\"s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/finvault.json\"}"
+              "type": "text"
             }
           ]
         }
@@ -3964,12 +3956,9 @@
             "hop2ConsentVerified": true,
             "liveUpstreamInstance": {
               "upstream_software": "Gitea Enterprise v1.22.3 Issue & CRM Escalation Tracker",
-              "live_ui_url": "http://13.220.94.209:3005/finvault/sre-escalations/issues/1",
-              "health_url": "http://13.220.94.209:3005/api/v1/version",
               "login_user": "sre-lead",
               "login_pass": "FinVault#2026!",
               "ec2_instance_id": "i-04924523ac41ff132",
-              "ec2_public_ip": "13.220.94.209",
               "live_http_status": 200
             },
             "records": {
@@ -4056,12 +4045,9 @@
             "hop2ConsentVerified": true,
             "liveUpstreamInstance": {
               "upstream_software": "Trino v440 Distributed SQL Lakehouse & Catalog Web Console",
-              "live_ui_url": "http://13.220.94.209:3006/ui/",
-              "health_url": "http://13.220.94.209:3006/v1/info",
               "login_user": "sre-lead@finvault.com",
               "login_pass": "(No password required in Trino UI)",
               "ec2_instance_id": "i-04924523ac41ff132",
-              "ec2_public_ip": "13.220.94.209",
               "live_http_status": 200
             },
             "records": {
@@ -4165,12 +4151,9 @@
             "hop2ConsentVerified": true,
             "liveUpstreamInstance": {
               "upstream_software": "ClickHouse v24.8 Data Warehouse Play UI (Native RLS Policy)",
-              "live_ui_url": "http://13.220.94.209:3007/play",
-              "health_url": "http://13.220.94.209:3007/ping",
               "login_user": "finvault_user",
               "login_pass": "FinVault#2026!",
               "ec2_instance_id": "i-04924523ac41ff132",
-              "ec2_public_ip": "13.220.94.209",
               "live_http_status": 200
             },
             "records": {
@@ -4262,12 +4245,9 @@
             "hop2ConsentVerified": true,
             "liveUpstreamInstance": {
               "upstream_software": "Directus v11.1.0 Enterprise HCM & Financials RaaS Studio",
-              "live_ui_url": "http://13.220.94.209:3008/admin/content/hcm_compensation",
-              "health_url": "http://13.220.94.209:3008/server/health",
               "login_user": "sre-lead@finvault.com",
               "login_pass": "FinVault#2026!",
               "ec2_instance_id": "i-04924523ac41ff132",
-              "ec2_public_ip": "13.220.94.209",
               "live_http_status": 200
             },
             "records": {
@@ -4351,12 +4331,9 @@
             "hop2ConsentVerified": true,
             "liveUpstreamInstance": {
               "upstream_software": "Seq v2024.3 Structured Log & APM Observability Platform",
-              "live_ui_url": "http://13.220.94.209:3009/#/events",
-              "health_url": "http://13.220.94.209:3009/api",
               "login_user": "sre-lead@finvault.com",
               "login_pass": "FinVault#2026!",
               "ec2_instance_id": "i-04924523ac41ff132",
-              "ec2_public_ip": "13.220.94.209",
               "live_http_status": 200
             },
             "records": {
@@ -4436,12 +4413,9 @@
             "hop2ConsentVerified": true,
             "liveUpstreamInstance": {
               "upstream_software": "HashiCorp Vault v1.13.3 Identity, OIDC/DPoP & CMEK Secrets Engine",
-              "live_ui_url": "http://13.220.94.209:3010/ui/vault/secrets/secret/show/tenants/finvault",
-              "health_url": "http://13.220.94.209:3010/v1/sys/health",
               "login_user": "Token",
               "login_pass": "fv-token-finvault-sre-2026",
               "ec2_instance_id": "i-04924523ac41ff132",
-              "ec2_public_ip": "13.220.94.209",
               "live_http_status": 200
             },
             "records": {

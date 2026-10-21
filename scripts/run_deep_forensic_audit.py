@@ -585,51 +585,25 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                     for bf in bundle_files
                 )
             )
-            expected_20_saas_pngs = (
-                "saas_01_thoughtspot_spotter_agentcore_mcp.png",
-                "saas_02_sigma_computing_agentcore_mcp.png",
-                "saas_03_servicenow_itsm_agentcore_mcp.png",
-                "saas_04_veeva_vault_muse_edc_agentcore_mcp.png",
-                "saas_05_salesforce_jira_agentcore_mcp.png",
-                "saas_06_databricks_unity_catalog_agentcore_mcp.png",
-                "saas_07_snowflake_cortex_agentcore_mcp.png",
-                "saas_08_workday_hcm_financials_agentcore_mcp.png",
-                "saas_09_datadog_bits_ai_sre_agentcore_mcp.png",
-                "saas_10_crowdstrike_okta_agentcore_mcp.png",
-                "saas_ui_01_thoughtspot_spotter_console.png",
-                "saas_ui_02_sigma_computing_console.png",
-                "saas_ui_03_servicenow_itsm_console.png",
-                "saas_ui_04_veeva_vault_muse_edc_console.png",
-                "saas_ui_05_salesforce_jira_console.png",
-                "saas_ui_06_databricks_unity_catalog_console.png",
-                "saas_ui_07_snowflake_cortex_console.png",
-                "saas_ui_08_workday_hcm_financials_console.png",
-                "saas_ui_09_datadog_bits_ai_sre_console.png",
-                "saas_ui_10_crowdstrike_okta_console.png",
-            )
             expected_10_target_ids = (
                 "KD6Z3SV8PX", "OZ0KTE8Z8M", "PLOLWRMI0I", "1KZWKOFTWQ", "W7BF0JRWEA",
                 "Z1RHXLBK6F", "7PB1EK3NJO", "CXH8BK86IF", "A2X7LPMPA7", "TXGJHVFBWP",
             )
             expected_10_saas_ui_paths = (
-                "/saas-ui/thoughtspot-spotter",
-                "/saas-ui/sigma-computing",
-                "/saas-ui/servicenow-itsm",
-                "/saas-ui/muse-poc",
-                "/saas-ui/salesforce-jira",
-                "/saas-ui/databricks-unity",
-                "/saas-ui/snowflake-cortex",
-                "/saas-ui/workday-raas",
-                "/saas-ui/datadog-sre",
-                "/saas-ui/crowdstrike-okta",
+                "/saas-ui/thoughtspot-spotter?format=json",
+                "/saas-ui/sigma-computing?format=json",
+                "/saas-ui/servicenow-itsm?format=json",
+                "/saas-ui/muse-poc?format=json",
+                "/saas-ui/salesforce-jira?format=json",
+                "/saas-ui/databricks-unity?format=json",
+                "/saas-ui/snowflake-cortex?format=json",
+                "/saas-ui/workday-raas?format=json",
+                "/saas-ui/datadog-sre?format=json",
+                "/saas-ui/crowdstrike-okta?format=json",
             )
-            all_20_saas_pngs_on_disk = all(
-                (cloud_screenshots_dir / p).is_file() and (cloud_screenshots_dir / p).stat().st_size > 10_000
-                for p in expected_20_saas_pngs
-            )
-            expected_10_ec2_ports = tuple(f"http://13.220.94.209:{p}" for p in range(3001, 3011))
             full_10_saas_docs = (
                 "index.html",
+                "README.md",
                 "docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md",
                 "docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md",
                 "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md",
@@ -647,14 +621,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                 "workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md",
                 "workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md",
             )
-            intra_cloud_req_map = {
-                "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md": ("pantheon_live_user_capture_ssh_verify.png", "gcp_console_01_cloud_run_source_editor.png", "gcp_console_02_cloud_run_revisions_deploy.png", "gcp_console_07_logs_explorer_20_20_pass.png", "gcp_console_09_vertex_ai_agent_builder_engines.png"),
-                "blogs/ws2-pattern-a-pooled-architecture.md": ("gcp_console_03_bigquery_studio_pattern_a_rls.png", "gcp_console_01_cloud_run_source_editor.png", "gcp_console_02_cloud_run_revisions_deploy.png", "gcp_console_07_logs_explorer_20_20_pass.png"),
-                "blogs/ws3-pattern-b-sovereign-silos.md": ("gcp_console_04_bigquery_studio_pattern_b_cmek.png", "gcp_console_05_cloud_kms_keyring_live.png", "gcp_console_07_logs_explorer_20_20_pass.png", "gcp_console_09_vertex_ai_agent_builder_engines.png"),
-                "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md": ("gcp_console_06_vpc_psc_nat_subnet_live.png", "gcp_console_03_bigquery_studio_pattern_a_rls.png", "gcp_console_04_bigquery_studio_pattern_b_cmek.png", "gcp_console_05_cloud_kms_keyring_live.png", "gcp_console_07_logs_explorer_20_20_pass.png"),
-                "blogs/ws5-decision-guide-and-agentic-triad.md": ("pantheon_live_user_capture_ssh_verify.png", "gcp_console_01_cloud_run_source_editor.png", "gcp_console_03_bigquery_studio_pattern_a_rls.png", "gcp_console_04_bigquery_studio_pattern_b_cmek.png", "gcp_console_05_cloud_kms_keyring_live.png", "gcp_console_06_vpc_psc_nat_subnet_live.png", "gcp_console_07_logs_explorer_20_20_pass.png"),
-            }
-            bidirectional_docs_ok = all_20_saas_pngs_on_disk and "ten-saas-live-access-hub" in html
+            bidirectional_docs_ok = len(cloud_pngs) == 0 and "ten-saas-live-access-hub" in html
             for rel_doc in full_10_saas_docs:
                 doc_p = ROOT_DIR / rel_doc
                 if not doc_p.is_file():
@@ -662,25 +629,14 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                     break
                 doc_txt = doc_p.read_text(encoding="utf-8")
                 if not (
-                    all(p in doc_txt for p in expected_20_saas_pngs)
-                    and all(tid in doc_txt for tid in expected_10_target_ids)
+                    all(tid in doc_txt for tid in expected_10_target_ids)
                     and all(up in doc_txt for up in expected_10_saas_ui_paths)
-                    and all(ep in doc_txt for ep in expected_10_ec2_ports)
+                    and "screenshots/cloud-console" not in doc_txt
+                    and "13.220.94.209" not in doc_txt
                     and "?principal=" not in doc_txt
                 ):
                     bidirectional_docs_ok = False
                     break
-                # If markdown blog or workstream guide, assert actual embedded `![` images for all 20 SaaS screenshots
-                if rel_doc.endswith(".md") and rel_doc != "docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md":
-                    for p in expected_20_saas_pngs:
-                        if f"../screenshots/cloud-console/{p})" not in doc_txt or "![Side" not in doc_txt and "![SAAS-" not in doc_txt:
-                            bidirectional_docs_ok = False
-                            break
-                if rel_doc in intra_cloud_req_map:
-                    for gcp_png in intra_cloud_req_map[rel_doc]:
-                        if f"../screenshots/cloud-console/{gcp_png})" not in doc_txt or "![Intra-Cloud" not in doc_txt:
-                            bidirectional_docs_ok = False
-                            break
             saas_receipt_ok = (
                 saas_receipt.get("status") == "10_SAAS_X_3_PATTERNS_30_E2E_FLOWS_60_OF_60_ASSERTIONS_PASS"
                 and saas_receipt.get("total_unique_saas_products_tested") == 10
@@ -690,7 +646,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             )
             cloud_receipt_ok = (
                 cloud_receipt.get("overall_status") == "CERTIFIED"
-                and len(cloud_pngs) >= 29
+                and len(cloud_pngs) == 0
                 and len(e2e_bundle.get("provisionedResources", [])) >= 12
                 and len(e2e_bundle.get("executionSuites", [])) >= 4
                 and bundle_hashes_match
@@ -882,7 +838,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                                     decks_valid = False
                             if _shot_xml_name in zf.namelist():
                                 s10_xml = zf.read(_shot_xml_name).decode("utf-8", errors="ignore")
-                                if "Aspect Ratio: Native 16:9" not in s10_xml or 'cx="3639312" cy="2048256"' not in s10_xml:
+                                if "LIVE-SCREENSHOT-CALLOUT" not in s10_xml or "Telemetry Receipt" not in s10_xml or "<p:pic>" in s10_xml:
                                     decks_valid = False
                             if _op_xml_name and _op_xml_name in zf.namelist():
                                 s11_xml = zf.read(_op_xml_name).decode("utf-8", errors="ignore")
@@ -1132,7 +1088,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             and slides_ok
         )
         index_detail = (
-            f"index.html verified ({len(html):,} bytes, 0 nitinagga-ge-2 leaks), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI Series Reader links resolve on disk (0 broken), {certified_diagram_count}/14 Official Google Cloud Architecture Center & PromptCanvas Vision Draw.io blueprints CERTIFIED (Rule 53G Per-Pattern Geometry: 12 hub-2-spoke 56v/23e, WS2 pooled-shared-plane 60v/20e, WS5 decision-tree-3-outcome 46v/19e, .drawio/.drawio.png/.svg/.vision.json quartet, 0 collisions), 14/14 Executive-Friendly Plain-English Logical & Technical Flows verified (diagrams/diagram_e2e_flows.json + 3-Act 12-Slide Pure Technical Workstream Decks, 0 pricing slides), Cloud Console receipt + 27-file SHA-256 bundle + 10-SaaS × 3-Pattern receipt (30/30 flows, 60/60 assertions) CERTIFIED ({len(cloud_pngs)} visual proof PNGs in screenshots/cloud-console/), {deck_count}/6 Workstream/Master + 9/9 DevSite Guide editable .pptx slide decks (0 emojis, 0 pricing slides, 0 <a:tr h=\"0\"> auto-collapsing table rows, 0.14\"–0.16\" table-to-card vertical gap, 100% first-person spoken customer talk tracks, 16:9 screenshots, 15/15 Google Slides + 6/6 Google Docs SHA-256 synced) + Rule 53F/53G content & topology grounding (5/5 distinct per-WS Slide 4/6/7 fingerprints, 3 distinct Slide 5 diagram topologies, 0 ungrounded facts [18.4s/850-150/6-Pillar/220ms], 0 hex-code leaks, WS4 950+50 canonical split) + {ws_blog_count}/5 canonical 5-part series blogs verified (PUBLISH_READY)."
+            f"index.html verified ({len(html):,} bytes, 0 nitinagga-ge-2 leaks), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI Series Reader links resolve on disk (0 broken), {certified_diagram_count}/14 Official Google Cloud Architecture Center & PromptCanvas Vision Draw.io blueprints CERTIFIED (Rule 53G Per-Pattern Geometry: 12 hub-2-spoke 56v/23e, WS2 pooled-shared-plane 60v/20e, WS5 decision-tree-3-outcome 46v/19e, .drawio/.drawio.png/.svg/.vision.json quartet, 0 collisions), 14/14 Executive-Friendly Plain-English Logical & Technical Flows verified (diagrams/diagram_e2e_flows.json + 3-Act 12-Slide Pure Technical Workstream Decks, 0 pricing slides), Cloud Console receipt + 27-file SHA-256 bundle + 10-SaaS × 3-Pattern receipt (30/30 flows, 60/60 assertions) CERTIFIED (0 fake/synthetic PNGs in screenshots/cloud-console/, 0 EC2 13.220.94.209 Execution Twin links), {deck_count}/6 Workstream/Master + 9/9 DevSite Guide editable .pptx slide decks (0 emojis, 0 pricing slides, 0 <a:tr h=\"0\"> auto-collapsing table rows, 0.14\"–0.16\" table-to-card vertical gap, 100% first-person spoken customer talk tracks, 100% native DrawingML CLI telemetry cards on Slide 10, 15/15 Google Slides + 6/6 Google Docs SHA-256 synced) + Rule 53F/53G content & topology grounding (5/5 distinct per-WS Slide 4/6/7 fingerprints, 3 distinct Slide 5 diagram topologies, 0 ungrounded facts [18.4s/850-150/6-Pillar/220ms], 0 hex-code leaks, WS4 950+50 canonical split) + {ws_blog_count}/5 canonical 5-part series blogs verified (PUBLISH_READY)."
             if index_ok
             else f"missing_markers={missing_markers}, missing_ui_paths={missing_ui_paths}, unready_blogs={unready_blogs}, diagrams_ok={diagrams_ok}, cloud_receipt_ok={cloud_receipt_ok}, slides_ok={slides_ok}, e2e_flows_ok={e2e_flows_ok}"
         )

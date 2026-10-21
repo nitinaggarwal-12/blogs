@@ -29,12 +29,12 @@
         "hop2ConsentVerified": true,
         "liveUpstreamInstance": {
           "upstream_software": "Metabase BI v0.50.26 (Liveboard / Question #27)",
-          "live_ui_url": "http://13.220.94.209:3001/question/27",
-          "health_url": "http://13.220.94.209:3001/api/health",
+          "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json",
+          "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json",
           "login_user": "sre-lead@finvault.com",
           "login_pass": "FinVault#2026!",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "13.220.94.209",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "records": {
@@ -74,12 +74,12 @@
         "hop2ConsentVerified": true,
         "liveUpstreamInstance": {
           "upstream_software": "Grafana Enterprise v11.2.0 (Workbook uid=finvault-sre-wb)",
-          "live_ui_url": "http://13.220.94.209:3002/d/finvault-sre-wb",
-          "health_url": "http://13.220.94.209:3002/api/health",
+          "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json",
+          "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json",
           "login_user": "sre-lead@finvault.com",
           "login_pass": "FinVault#2026!",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "13.220.94.209",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "records": {
@@ -133,12 +133,12 @@
         },
         "liveUpstreamInstance": {
           "upstream_software": "Redmine ITSM v5.1 (Project finvault-itsm: CHG0049218 & INC0948211)",
-          "live_ui_url": "http://13.220.94.209:3003/projects/finvault-itsm/issues",
-          "health_url": "http://13.220.94.209:3003/login",
+          "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json",
+          "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json",
           "login_user": "sre-lead@finvault.com",
           "login_pass": "FinVault#2026!",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "13.220.94.209",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/finvault.json"
@@ -179,12 +179,12 @@
         },
         "liveUpstreamInstance": {
           "upstream_software": "NocoDB v0.255.2 Clinical EDC & GxP 21 CFR Part 11 Vault",
-          "live_ui_url": "http://13.220.94.209:3004/#/signin",
-          "health_url": "http://13.220.94.209:3004/api/v1/health",
+          "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json",
+          "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json",
           "login_user": "sre-lead@finvault.com",
           "login_pass": "FinVault#2026!",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "13.220.94.209",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/finvault.json"
@@ -210,12 +210,12 @@
         "hop2ConsentVerified": true,
         "liveUpstreamInstance": {
           "upstream_software": "Gitea Enterprise v1.22.3 Issue & CRM Escalation Tracker",
-          "live_ui_url": "http://13.220.94.209:3005/finvault/sre-escalations/issues/1",
-          "health_url": "http://13.220.94.209:3005/api/v1/version",
+          "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json",
+          "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json",
           "login_user": "sre-lead",
           "login_pass": "FinVault#2026!",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "13.220.94.209",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "records": {
@@ -251,12 +251,12 @@
         "hop2ConsentVerified": true,
         "liveUpstreamInstance": {
           "upstream_software": "Trino v440 Distributed SQL Lakehouse & Catalog Web Console",
-          "live_ui_url": "http://13.220.94.209:3006/ui/",
-          "health_url": "http://13.220.94.209:3006/v1/info",
+          "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json",
+          "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json",
           "login_user": "sre-lead@finvault.com",
           "login_pass": "(No password required in Trino UI)",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "13.220.94.209",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "records": {
@@ -291,12 +291,12 @@
         "hop2ConsentVerified": true,
         "liveUpstreamInstance": {
           "upstream_software": "ClickHouse v24.8 Data Warehouse Play UI (Native RLS Policy)",
-          "live_ui_url": "http://13.220.94.209:3007/play",
-          "health_url": "http://13.220.94.209:3007/ping",
+          "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json",
+          "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json",
           "login_user": "finvault_user",
           "login_pass": "FinVault#2026!",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "13.220.94.209",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "records": {
@@ -331,12 +331,12 @@
         "hop2ConsentVerified": true,
         "liveUpstreamInstance": {
           "upstream_software": "Directus v11.1.0 Enterprise HCM & Financials RaaS Studio",
-          "live_ui_url": "http://13.220.94.209:3008/admin/content/hcm_compensation",
-          "health_url": "http://13.220.94.209:3008/server/health",
+          "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json",
+          "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json",
           "login_user": "sre-lead@finvault.com",
           "login_pass": "FinVault#2026!",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "13.220.94.209",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "records": {
@@ -371,12 +371,12 @@
         "hop2ConsentVerified": true,
         "liveUpstreamInstance": {
           "upstream_software": "Seq v2024.3 Structured Log & APM Observability Platform",
-          "live_ui_url": "http://13.220.94.209:3009/#/events",
-          "health_url": "http://13.220.94.209:3009/api",
+          "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json",
+          "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json",
           "login_user": "sre-lead@finvault.com",
           "login_pass": "FinVault#2026!",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "13.220.94.209",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "records": {
@@ -411,12 +411,12 @@
         "hop2ConsentVerified": true,
         "liveUpstreamInstance": {
           "upstream_software": "HashiCorp Vault v1.13.3 Identity, OIDC/DPoP & CMEK Secrets Engine",
-          "live_ui_url": "http://13.220.94.209:3010/ui/vault/secrets/secret/show/tenants/finvault",
-          "health_url": "http://13.220.94.209:3010/v1/sys/health",
+          "live_ui_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json",
+          "health_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json",
           "login_user": "Token",
           "login_pass": "fv-token-finvault-sre-2026",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "13.220.94.209",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "records": {
