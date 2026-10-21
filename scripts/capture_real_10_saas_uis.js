@@ -97,6 +97,7 @@ async function saveShot(page, filename) {
     // 4. Port 3004 — NocoDB Clinical EDC & GxP 21 CFR Part 11 Study Vault
     {
       const page = await browser.newPage();
+      await page.setViewport({ width: 1840, height: 920, deviceScaleFactor: 2 });
       await page.goto(`http://${HOST}:3004/#/signin`, { waitUntil: 'networkidle2', timeout: 30000 });
       await sleep(2000);
       const inputs = await page.$$('input');
@@ -116,6 +117,49 @@ async function saveShot(page, filename) {
         if (target) target.click();
       });
       await sleep(3500);
+      // Widen NocoDB left sidebar, top breadcrumb, and grid columns cleanly without overflow collisions
+      await page.addStyleTag({
+        content: `
+          tr.nc-grid-header th:nth-child(2), tbody tr td:nth-child(2) { min-width: 140px !important; max-width: 140px !important; width: 140px !important; }
+          tr.nc-grid-header th:nth-child(3), tbody tr td:nth-child(3) { min-width: 120px !important; max-width: 120px !important; width: 120px !important; }
+          tr.nc-grid-header th:nth-child(4), tbody tr td:nth-child(4) { min-width: 150px !important; max-width: 150px !important; width: 150px !important; }
+          tr.nc-grid-header th:nth-child(5), tbody tr td:nth-child(5) { min-width: 180px !important; max-width: 180px !important; width: 180px !important; }
+          tr.nc-grid-header th:nth-child(6), tbody tr td:nth-child(6) { min-width: 210px !important; max-width: 210px !important; width: 210px !important; }
+          tr.nc-grid-header th:nth-child(7), tbody tr td:nth-child(7) { min-width: 520px !important; max-width: 520px !important; width: 520px !important; }
+          .table-overlay { width: 1460px !important; }
+          .nc-tbl-title { overflow: visible !important; text-overflow: clip !important; }
+          .nc-tbl-title span { font-size: 9px !important; letter-spacing: -0.35px !important; }
+        `
+      });
+      await page.evaluate(() => {
+        // Expand top breadcrumb container so full table title displays without overlapping '/ Default View'
+        const activeTitle = document.querySelector('.nc-active-table-title');
+        if (activeTitle && activeTitle.parentElement) {
+          activeTitle.parentElement.style.maxWidth = 'none';
+          if (activeTitle.parentElement.parentElement && activeTitle.parentElement.parentElement.parentElement) {
+            activeTitle.parentElement.parentElement.parentElement.style.width = 'auto';
+          }
+        }
+        // Ensure sre-lead@finvault.com badge at bottom-left is completely unclipped
+        Array.from(document.querySelectorAll('span, div, p')).forEach((el) => {
+          if (el.children.length === 0 && (el.innerText || '').trim() === 'sre-lead@finvault.com') {
+            let cur = el;
+            for (let i = 0; i < 4 && cur; i++) {
+              cur.style.maxWidth = 'none';
+              cur.style.overflow = 'visible';
+              cur.style.textOverflow = 'clip';
+              cur = cur.parentElement;
+            }
+          }
+        });
+        // Remove literal '...' inside the seeded signature preview strings so full signature badge is crisp
+        document.querySelectorAll('tbody tr td:nth-child(7) span').forEach((sp) => {
+          if (sp.innerText && sp.innerText.includes('...')) {
+            sp.innerText = sp.innerText.replace('...', '');
+          }
+        });
+      });
+      await sleep(800);
       await saveShot(page, 'saas_ui_04_veeva_vault_muse_edc_console.png');
       await page.close();
     }
@@ -132,6 +176,12 @@ async function saveShot(page, filename) {
       ]);
       await page.goto(`http://${HOST}:3005/finvault/sre-escalations/issues/1`, { waitUntil: 'networkidle2', timeout: 30000 });
       await sleep(1500);
+      await page.evaluate(() => {
+        document.querySelectorAll('.ui.comment.form, .comment.form, .dropzone').forEach((el) => {
+          el.style.display = 'none';
+        });
+      });
+      await sleep(400);
       await saveShot(page, 'saas_ui_05_salesforce_jira_console.png');
       await page.close();
     }
@@ -165,13 +215,18 @@ async function saveShot(page, filename) {
       }
       await page.goto(`http://${HOST}:3006/ui/`, { waitUntil: 'networkidle2', timeout: 30000 });
       await sleep(2000);
-      // Enable the "Finished" filter button so finished federated SQL queries appear in QUERY DETAILS
+      // Enable the "Finished" filter button and show only the top 2 complete queries so 0 rows are bottom-cropped
       await page.evaluate(() => {
         const btns = Array.from(document.querySelectorAll('button, a, label'));
         const fin = btns.find((b) => (b.innerText || '').includes('Finished'));
         if (fin) fin.click();
       });
-      await sleep(2000);
+      await sleep(1500);
+      await page.evaluate(() => {
+        const qItems = Array.from(document.querySelectorAll('.query'));
+        qItems.slice(2).forEach((el) => { el.style.display = 'none'; });
+      });
+      await sleep(500);
       await saveShot(page, 'saas_ui_06_databricks_unity_catalog_console.png');
       await page.close();
     }
@@ -201,6 +256,7 @@ async function saveShot(page, filename) {
     // 8. Port 3008 — Directus Enterprise HCM & Financials Studio (hcm_compensation collection)
     {
       const page = await browser.newPage();
+      await page.setViewport({ width: 1680, height: 920, deviceScaleFactor: 2 });
       await page.goto(`http://${HOST}:3008/admin/login`, { waitUntil: 'networkidle2', timeout: 30000 });
       await sleep(2500);
       const emailIn = await page.$('input[type="email"], input[name="email"]');
@@ -214,6 +270,19 @@ async function saveShot(page, filename) {
       }
       await page.goto(`http://${HOST}:3008/admin/content/hcm_compensation`, { waitUntil: 'networkidle2', timeout: 30000 });
       await sleep(3000);
+      await page.addStyleTag({
+        content: `
+          aside.sidebar-detail, .sidebar-detail { display: none !important; }
+          .v-table tr {
+            grid-template-columns: 36px 180px 260px 140px 320px 1fr 0px !important;
+          }
+          .v-table th.cell:nth-child(2), .v-table td.cell:nth-child(2) { width: 180px !important; min-width: 180px !important; }
+          .v-table th.cell:nth-child(3), .v-table td.cell:nth-child(3) { width: 260px !important; min-width: 260px !important; }
+          .v-table th.cell:nth-child(4), .v-table td.cell:nth-child(4) { width: 140px !important; min-width: 140px !important; }
+          .v-table th.cell:nth-child(5), .v-table td.cell:nth-child(5) { width: 320px !important; min-width: 320px !important; }
+        `
+      });
+      await sleep(800);
       await saveShot(page, 'saas_ui_08_workday_hcm_financials_console.png');
       await page.close();
     }
@@ -242,7 +311,7 @@ async function saveShot(page, filename) {
       await page.click('#auth-submit');
       await sleep(4000);
       await page.evaluate(() => {
-        document.querySelectorAll('button.masked-value-toggle, .masked-value button').forEach((b) => b.click());
+        document.querySelectorAll('button.masked-input-toggle, button.masked-value-toggle, .masked-value button').forEach((b) => b.click());
         document.querySelectorAll('.flash-message button, button.delete').forEach((b) => b.click());
       });
       await sleep(1000);
