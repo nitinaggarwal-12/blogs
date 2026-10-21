@@ -622,10 +622,72 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         parsed = urlparse(self.path)
         path = parsed.path
+        qs = parse_qs(parsed.query)
 
-        if path in ("/", "/index.html"):
+        if path == "/universal_feedback_widget.js":
+            widget_file = ROOT_DIR / "universal_feedback_widget.js"
+            if widget_file.is_file():
+                raw_js = widget_file.read_bytes()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/javascript; charset=utf-8")
+                self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+                self.send_header("Content-Length", str(len(raw_js)))
+                self.end_headers()
+                self.wfile.write(raw_js)
+                return
+
+        if path == "/api/feedback/messages":
+            try:
+                _ufe = load_module_from_path(
+                    "unified_feedback_engine", ROOT_DIR / "scripts/unified_feedback_engine.py"
+                )
+                req_headers = {k: v for k, v in self.headers.items()}
+                client_ip = self.client_address[0] if self.client_address else ""
+                is_auth, resolved_email, auth_mode = _ufe.verify_admin_access(
+                    headers=req_headers, remote_addr=client_ip, query_params=qs
+                )
+                if not is_auth:
+                    self._send_json(
+                        403,
+                        {
+                            "ok": False,
+                            "authorized": False,
+                            "resolvedEmail": resolved_email,
+                            "authMode": auth_mode,
+                            "error": f"Admin access restricted to {_ufe.ADMIN_EMAIL}",
+                        },
+                    )
+                    return
+                local_fb = ROOT_DIR / ".local_backup/user_feedback.json"
+                payload = _ufe.list_feedback(
+                    default_app_id="ge-blogs",
+                    local_store_path=local_fb,
+                    scope=(qs.get("scope") or ["all"])[0],
+                    category_filter=(qs.get("category") or [""])[0],
+                    priority_filter=(qs.get("priority") or [""])[0],
+                    status_filter=(qs.get("status") or [""])[0],
+                    search_query=(qs.get("search") or qs.get("q") or [""])[0],
+                    force_sheet_refresh=(qs.get("force") or ["0"])[0] in ("1", "true"),
+                )
+                payload["authorized"] = True
+                payload["resolvedEmail"] = resolved_email
+                payload["authMode"] = auth_mode
+                self._send_json(200, payload)
+            except Exception as exc:
+                self._send_json(500, {"ok": False, "error": str(exc)})
+            return
+
+        if path in ("/", "/index.html", "/admin/feedback"):
             index_file = ROOT_DIR / "index.html"
-            self._send_html(200, index_file.read_bytes())
+            html_text = index_file.read_text(encoding="utf-8")
+            if "universal_feedback_widget.js" not in html_text:
+                widget_tag = (
+                    '<script src="/universal_feedback_widget.js" '
+                    'data-app-id="ge-blogs" '
+                    'data-app-name="Google Cloud Architecture Guides (ge-blogs)"></script></body>'
+                )
+                html_text = html_text.replace("</body>", widget_tag, 1)
+            self._send_html(200, html_text.encode("utf-8"))
             return
 
         if path in ("/changelog", "/changelog.html"):
@@ -1624,6 +1686,53 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             body = {}
 
         try:
+            if path == "/api/feedback/submit":
+                _ufe = load_module_from_path(
+                    "unified_feedback_engine", ROOT_DIR / "scripts/unified_feedback_engine.py"
+                )
+                req_headers = {k: v for k, v in self.headers.items()}
+                local_fb = ROOT_DIR / ".local_backup/user_feedback.json"
+                res = _ufe.submit_feedback(
+                    payload=body,
+                    default_app_id="ge-blogs",
+                    default_app_name="Google Cloud Architecture Guides (ge-blogs)",
+                    local_store_path=local_fb,
+                    headers=req_headers,
+                )
+                self._send_json(200, res)
+                return
+
+            if path in ("/api/feedback/status", "/api/feedback/update"):
+                _ufe = load_module_from_path(
+                    "unified_feedback_engine", ROOT_DIR / "scripts/unified_feedback_engine.py"
+                )
+                req_headers = {k: v for k, v in self.headers.items()}
+                client_ip = self.client_address[0] if self.client_address else ""
+                is_auth, resolved_email, auth_mode = _ufe.verify_admin_access(
+                    headers=req_headers, remote_addr=client_ip
+                )
+                if not is_auth:
+                    self._send_json(
+                        403,
+                        {
+                            "ok": False,
+                            "authorized": False,
+                            "resolvedEmail": resolved_email,
+                            "authMode": auth_mode,
+                            "error": f"Admin access restricted to {_ufe.ADMIN_EMAIL}",
+                        },
+                    )
+                    return
+                local_fb = ROOT_DIR / ".local_backup/user_feedback.json"
+                res = _ufe.update_feedback_status(
+                    feedback_id=str(body.get("id") or body.get("feedbackId") or ""),
+                    new_status=body.get("status"),
+                    delete=bool(body.get("delete", False)),
+                    local_store_path=local_fb,
+                )
+                self._send_json(200, res)
+                return
+
             if path == "/api/save-drawio":
                 diag_id = str(body.get("id") or "").strip()
                 xml_content = str(body.get("xml") or "").strip()

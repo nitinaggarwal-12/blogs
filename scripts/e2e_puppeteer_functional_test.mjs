@@ -178,8 +178,8 @@ async function run() {
     if (typeof window.openCloudViewerModal === "function") {
       window.openCloudViewerModal("WS2", 1, "slides");
       await new Promise((r) => setTimeout(r, 300));
-      const modal = document.getElementById("cloud-viewer-modal-backdrop");
-      cloudViewerOpened = Boolean(modal && modal.style.display === "flex");
+      const modal = document.getElementById("pc-cloud-viewer-modal");
+      cloudViewerOpened = Boolean(modal && modal.classList.contains("open"));
       if (typeof window.closeCloudViewerModal === "function") window.closeCloudViewerModal();
     }
 
