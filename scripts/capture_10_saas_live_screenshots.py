@@ -54,7 +54,7 @@ SCREENSHOT_SPECS = [
         "filename": "saas_04_veeva_vault_muse_edc_agentcore_mcp.png",
         "saas_ui_filename": "saas_ui_04_veeva_vault_muse_edc_console.png",
         "badge": "3P-SAAS-04 • VEEVA VAULT RIM & MUSE CLINICAL EDC",
-        "prompt": "Query Veeva Vault RIM document VV-DOC-004819 and Muse Clinical EDC study MK-3475-087 Cohort-B biomarkers with FDA 21 CFR Part 11 Cloud KMS ECDSA P-256 signature.",
+        "prompt": "Query Veeva Vault RIM document VV-DOC-004819 and Muse Clinical EDC study FV-GXP-2026-04 Cohort-B biomarkers with FDA 21 CFR Part 11 Cloud KMS ECDSA P-256 signature.",
     },
     {
         "saas_id": "SAAS-05",
@@ -121,8 +121,8 @@ def _build_html_for_saas(spec: dict, prod: dict, pat_a: dict, pat_b: dict, pat_c
     s3_uri = (
         payload.get("s3AuditLedgerUri")
         or payload.get("s3_audit_ledger_uri")
-        or f"s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/{spec['target_name']}/finvault.json"
-    )
+        or f"s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1/cymbal-10saas-ledger/{spec['target_name']}/finvault.json"
+    ).replace("nitinagga-argolis-aws-393036065405-us-east-1", "cymbal-multi-tenant-audit-ledger-393036065405-us-east-1")
     target_id = target_meta.get("targetId", pat_a["configuration"].get("mcp_target_id", "READY"))
     tool_name = mcp_exec.get("tool_name") or target_meta.get("toolName", "")
 
@@ -402,9 +402,9 @@ def _build_html_for_saas(spec: dict, prod: dict, pat_a: dict, pat_b: dict, pat_c
       <div class="nav-item {'active' if spec['saas_id']=='SAAS-10' else ''}">10. CrowdStrike Falcon &amp; Okta</div>
     </div>
     <div style="border-top:1px solid #e2e8f0; padding-top:10px; font-size:11.5px; color:#475569;">
-      <div style="font-weight:700; color:#0f172a;">nitinagga@google.com</div>
+      <div style="font-weight:700; color:#0f172a;">sre-lead@finvault.com</div>
       <div>AWS: 393036065405 (us-east-1)</div>
-      <div>GCP: ramp-portal-dev (us-west1)</div>
+      <div>GCP: cymbal-control-plane (us-west1)</div>
     </div>
   </aside>
 

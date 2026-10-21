@@ -66,15 +66,26 @@ async function run() {
     await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
     await new Promise((r) => setTimeout(r, 1000));
 
-    // Scroll through the document so all images load
+    // Scroll through the document and explicitly await all image loads
     await page.evaluate(async () => {
       const imgs = Array.from(document.querySelectorAll("#hub-blog-reader img"));
       for (const img of imgs) {
         img.scrollIntoView({ behavior: "instant", block: "center" });
       }
+      await Promise.all(
+        imgs.map((img) => {
+          if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+          return new Promise((res) => {
+            const done = () => res();
+            img.addEventListener("load", done, { once: true });
+            img.addEventListener("error", done, { once: true });
+            setTimeout(done, 5000);
+          });
+        })
+      );
       window.scrollTo(0, 0);
     });
-    await new Promise((r) => setTimeout(r, 800));
+    await new Promise((r) => setTimeout(r, 300));
 
     const audit = await page.evaluate((minIntra) => {
       const reader = document.getElementById("hub-blog-reader");
@@ -110,9 +121,11 @@ async function run() {
         }
       }
 
-      const nonPreText = Array.from(reader.querySelectorAll("p, td, th, li, h1, h2, h3, h4"))
+      const nonPreText = Array.from(reader.querySelectorAll("p, td, th, li, h1, h2, h3, h4, blockquote"))
         .map((el) => el.innerText || "")
         .join("\n");
+
+      const proofGrids = Array.from(reader.querySelectorAll(".gcp-proof-gallery-grid"));
 
       return {
         totalImgs: imgs.length,
@@ -123,25 +136,41 @@ async function run() {
         overflowingTables,
         hasBrLeak: nonPreText.includes("<br/>") || nonPreText.includes("<br>"),
         hasLegacyPrincipal: html.includes("?principal="),
+        hasDomainLeak:
+          nonPreText.includes("MK-3475-087") ||
+          nonPreText.includes("nitinagga-ge-2") ||
+          nonPreText.includes("nitina-ggarwal-sandbox-647724") ||
+          nonPreText.includes("nitinagga-argolis-aws"),
         missingEc2Ports,
         hasFormatJson: html.includes("?format=json"),
+        proofGridCount: proofGrids.length,
+        readerHeightPx: reader.scrollHeight,
       };
     }, item.minIntraImgs);
+
+    const maxAllowedHeight = item.doc.includes("END-TO-END-WORKSTREAM") ? 160000 : 24500;
 
     assert(
       !audit.error &&
         audit.brokenImgs.length === 0 &&
         audit.intraCount >= item.minIntraImgs &&
         audit.sideACount === 10 &&
-        audit.sideBCount === 10,
-      `${item.ws} (${item.doc}) Embedded Intra-Cloud & Inter-Cloud Images`,
-      `total=${audit.totalImgs}, intra=${audit.intraCount}, sideA=${audit.sideACount}/10, sideB=${audit.sideBCount}/10, broken=${audit.brokenImgs.length}`
+        audit.sideBCount === 10 &&
+        audit.proofGridCount >= 2,
+      `${item.ws} (${item.doc}) Embedded Intra-Cloud & Inter-Cloud 2-Up Grid Images`,
+      `total=${audit.totalImgs}, intra=${audit.intraCount}, sideA=${audit.sideACount}/10, sideB=${audit.sideBCount}/10, grids=${audit.proofGridCount}, height=${audit.readerHeightPx}px, broken=${audit.brokenImgs.length}${audit.brokenImgs.length ? " (" + audit.brokenImgs.join(",") + ")" : ""}`
     );
 
     assert(
-      audit.overflowingTables.length === 0 && !audit.hasBrLeak && !audit.hasLegacyPrincipal && audit.missingEc2Ports.length === 0 && audit.hasFormatJson,
-      `${item.ws} (${item.doc}) Table Containment, Zero Mock Links & 10 EC2 Ports`,
-      `overflowTables=${audit.overflowingTables.length}, brLeak=${audit.hasBrLeak}, legacyPrincipal=${audit.hasLegacyPrincipal}, missingPorts=${audit.missingEc2Ports.length}`
+      audit.overflowingTables.length === 0 &&
+        !audit.hasBrLeak &&
+        !audit.hasLegacyPrincipal &&
+        !audit.hasDomainLeak &&
+        audit.missingEc2Ports.length === 0 &&
+        audit.hasFormatJson &&
+        audit.readerHeightPx < maxAllowedHeight,
+      `${item.ws} (${item.doc}) Table Containment, Zero Leaks, Compact Scroll & 10 EC2 Ports`,
+      `overflowTables=${audit.overflowingTables.length}, brLeak=${audit.hasBrLeak}, domainLeak=${audit.hasDomainLeak}, height=${audit.readerHeightPx}px, missingPorts=${audit.missingEc2Ports.length}`
     );
   }
 

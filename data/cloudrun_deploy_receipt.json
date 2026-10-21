@@ -1,17 +1,15 @@
 {
-  "service": "ge-blogs",
-  "runtimeProject": "ramp-portal-dev",
-  "runtimeProjectNumber": "248990048888",
-  "region": "us-west1",
-  "buildProject": "ramp-portal-dev",
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261021-r6-10saas-f01dcfb",
+  "serviceName": "ge-blogs",
   "beyondCorpUrl": "https://ge-blogs-248990048888.cr.gclb.goog",
-  "runAppUrl": "https://ge-blogs-mi7l4h536a-uw.a.run.app",
-  "gitCommit": "f01dcfb",
-  "latestCreatedRevisionName": "ge-blogs-00016-lsc",
-  "latestReadyRevisionName": "ge-blogs-00016-lsc",
-  "readyConditionStatus": "True",
+  "directCloudRunUrl": "https://ge-blogs-mi7l4h536a-uw.a.run.app",
+  "buildProject": "nitina-ggarwal-sandbox-647724",
+  "runProject": "ramp-portal-dev",
+  "region": "us-west1",
+  "latestReadyRevisionName": "ge-blogs-00017-rcn",
+  "latestCreatedRevisionName": "ge-blogs-00017-rcn",
+  "readyStatus": "True",
   "trafficPercent": 100,
-  "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
-  "verifiedAt": "2026-10-21T04:22:37Z"
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261021-051542-rule58",
+  "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00017-rcn",
+  "verifiedAt": "2026-10-21T05:16:05Z"
 }

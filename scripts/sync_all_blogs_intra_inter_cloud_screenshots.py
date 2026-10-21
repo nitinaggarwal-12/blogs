@@ -103,7 +103,7 @@ SAAS_CATALOG = [
         "num": "04",
         "sid": "SAAS-04",
         "key": "muse-poc",
-        "name": "Veeva Vault RIM & Muse Clinical EDC (`MK-3475-087`)",
+        "name": "Veeva Vault RIM & Muse Clinical EDC (`FV-GXP-2026-04`)",
         "vendor_url": "https://login.veevavault.com",
         "vendor_label": "Vendor Portal (`veevavault.com`)",
         "target_id": "1KZWKOFTWQ",
@@ -115,13 +115,13 @@ SAAS_CATALOG = [
         "side_a_png": "saas_04_veeva_vault_muse_edc_agentcore_mcp.png",
         "side_b_png": "saas_ui_04_veeva_vault_muse_edc_console.png",
         "pa_cfg": "Shared Pool + Hop 2 Catalog ACL + Cloud KMS 21 CFR Part 11 sig",
-        "pa_pos": "**In:** `tenant=\"finvault\"`, `study=\"MK-3475-087\"`, `cohort=\"Cohort-B\"` • **Out:** `HTTP 200` • Live AWS AgentCore biomarkers + 21 CFR Part 11 sig",
+        "pa_pos": "**In:** `tenant=\"finvault\"`, `study=\"FV-GXP-2026-04\"`, `cohort=\"Cohort-B\"` • **Out:** `HTTP 200` • Live AWS AgentCore biomarkers + 21 CFR Part 11 sig",
         "pa_neg": "**In:** `tenant=\"retailstream\"` invoking restricted clinical MCP • **Out:** **`HTTP 403`** `TENANT_CONNECTOR_ACL_DENIED`",
         "pb_cfg": "GxP Silo + Cloud KMS asymmetric P-256 `21 CFR Part 11` signature",
-        "pb_pos": "**In:** `tenant=\"finvault\"`, `study=\"MK-3475-087\"`, `cohort=\"Cohort-B\"` • **Out:** `HTTP 200` • Live AgentCore + KMS ECDSA P-256 signature",
+        "pb_pos": "**In:** `tenant=\"finvault\"`, `study=\"FV-GXP-2026-04\"`, `cohort=\"Cohort-B\"` • **Out:** `HTTP 200` • Live AgentCore + KMS ECDSA P-256 signature",
         "pb_neg": "**In:** `tenant=\"medcore\"`, `kms=\"medcore-revoked-cmek\"` (`DISABLED`) • **Out:** **`HTTP 423`** `KMS_CMEK_KEY_REVOKED_KILL_SWITCH`",
         "pc_cfg": "GxP Clinical EDC promoted to Enterprise PSC Spoke",
-        "pc_pos": "**In:** `tenant=\"finvault\"`, `study=\"MK-3475-087\"` via PSC Spoke • **Out:** `HTTP 200` • 21 CFR Part 11 KMS sig + `0` dropped calls",
+        "pc_pos": "**In:** `tenant=\"finvault\"`, `study=\"FV-GXP-2026-04\"` via PSC Spoke • **Out:** `HTTP 200` • 21 CFR Part 11 KMS sig + `0` dropped calls",
         "pc_neg": "**In:** Standard `retailstream` spoofing FinVault PSC clinical spoke • **Out:** **`HTTP 403`** `HYBRID_ROUTER_SPOKE_IMPERSONATION_BLOCKED`",
     },
     {
@@ -278,11 +278,11 @@ SAAS_CATALOG = [
 
 INTRA_CLOUD_GALLERIES = {
     "WS1": [
-        ("pantheon_live_user_capture_ssh_verify.png", "Intra-Cloud WS1 Stage 0 — Live Google Cloud Console (`Cloud Run -> cymbal-multi-tenant-agent -> Source`) & Docked Cloud Shell SSH (`root@localhost:/app#`) verifying the 5-Hop baseline container in `nitina-ggarwal-sandbox-647724`"),
+        ("pantheon_live_user_capture_ssh_verify.png", "Intra-Cloud WS1 Stage 0 — Live Google Cloud Console (`Cloud Run -> cymbal-multi-tenant-agent -> Source`) & Docked Cloud Shell SSH (`root@localhost:/app#`) verifying the 5-Hop baseline container in `cymbal-build-sandbox` (`#887605034827`)"),
         ("gcp_console_01_cloud_run_source_editor.png", "Intra-Cloud WS1 Stage 1 — Live Google Cloud Console Cloud Run Source Editor inspecting `main.py` and the 5-Hop `CryptographicContext` middleware (`runtime_pipeline.py`)"),
         ("gcp_console_02_cloud_run_revisions_deploy.png", "Intra-Cloud WS1 Stage 2 — Live Google Cloud Console Cloud Run Revisions (`cymbal-multi-tenant-agent`, Gen2 `gVisor` execution environment serving 100% traffic in `us-west1`)"),
-        ("gcp_console_07_logs_explorer_20_20_pass.png", "Intra-Cloud WS1 Stage 3 — Live Google Cloud Logging Explorer (`20/20 PASS` structured audit logs across Hops 1–5 in `nitina-ggarwal-sandbox-647724`)"),
-        ("gcp_console_09_vertex_ai_agent_builder_engines.png", "Intra-Cloud WS1 Stage 4 — Live Gemini Enterprise & Vertex AI Agent Builder console (`nitinagga-ge-2` `#638420508320`) hosting the multi-tenant agent catalog"),
+        ("gcp_console_07_logs_explorer_20_20_pass.png", "Intra-Cloud WS1 Stage 3 — Live Google Cloud Logging Explorer (`20/20 PASS` structured audit logs across Hops 1–5 in `cymbal-build-sandbox` `#887605034827`)"),
+        ("gcp_console_09_vertex_ai_agent_builder_engines.png", "Intra-Cloud WS1 Stage 4 — Live Gemini Enterprise & Vertex AI Agent Builder console (`cymbal-pooled-prod` `#638420508320`) hosting the multi-tenant agent catalog"),
     ],
     "WS2": [
         ("gcp_console_03_bigquery_studio_pattern_a_rls.png", "Intra-Cloud Pattern A (Pooled) Stage 1 — Live BigQuery Studio (`cymbal_multi_tenant_finops.pattern_a_pooled_rls_entities`) proving `ROW ACCESS POLICY` returns strictly `2` FinVault rows (`ENT-FV-001`, `ENT-FV-002`) and `0` RetailStream rows inside the shared pool"),
@@ -312,17 +312,17 @@ INTRA_CLOUD_GALLERIES = {
         ("gcp_console_05_cloud_kms_keyring_live.png", "Intra-Cloud WS5 Capstone Stage 6 — Cloud KMS KeyRing (`cymbal-multi-tenant-kr`: `finvault-silo-cmek` `ENABLED` vs `medcore-revoked-cmek` `DISABLED`)"),
         ("gcp_console_06_vpc_psc_nat_subnet_live.png", "Intra-Cloud WS5 Capstone Stage 7 — Pattern C Hub VPC (`cymbal-pattern-c-hub-vpc`) & `/28` PSC NAT Subnet (`10.240.0.0/28`)"),
         ("gcp_console_07_logs_explorer_20_20_pass.png", "Intra-Cloud WS5 Capstone Stage 8 — Cloud Logging Explorer (`20/20 PASS` across Pattern A `10/10`, Pattern B `6/6`, and Pattern C `4/4`)"),
-        ("gcp_console_09_vertex_ai_agent_builder_engines.png", "Intra-Cloud WS5 Capstone Stage 9 — Gemini Enterprise & Vertex AI Agent Builder engines (`nitinagga-ge-2`)"),
+        ("gcp_console_09_vertex_ai_agent_builder_engines.png", "Intra-Cloud WS5 Capstone Stage 9 — Gemini Enterprise & Vertex AI Agent Builder engines (`cymbal-pooled-prod` `#638420508320`)"),
     ],
 }
 
 
 def build_pattern_validation_block(ws_key: str, rel_img_prefix: str = "../screenshots/cloud-console") -> str:
-    """Builds the complete Intra-Cloud + Inter-Cloud 10-SaaS table AND embedded screenshot gallery for a workstream."""
+    """Builds the complete Intra-Cloud + Inter-Cloud 10-SaaS table AND compact 2-up embedded screenshot gallery for a workstream."""
     pattern_titles = {
         "WS1": ("5-Hop Baseline & Reference Taxonomy", "All 3 Patterns (`A` • `B` • `C`)"),
         "WS2": ("Pattern A (High-Density Pooled 5-Hop)", "Pattern A (`120 RPM Pool` • `90% ContextCacheConfig` • `FORCE RLS`)"),
-        "WS3": ("Pattern B (Zero-Trust Sovereign Silos & CMEK Kill-Switch)", "Pattern B (`Dedicated VPC-SC` • `mTLS SPIFFE` • `HTTP 423 CMEK Kill-Switch`)"),
+        "WS3": ("Pattern B (Sovereign Silos & CMEK Kill-Switch)", "Pattern B (`Dedicated VPC-SC` • `mTLS SPIFFE` • `HTTP 423 CMEK Kill-Switch`)"),
         "WS4": ("Pattern C (Dynamic Hybrid Hub-and-Spoke & Zero-Downtime Tier Upgrade)", "Pattern C (`Shared Control Hub` • `/28 PSC NAT` • `0-Drop Live Cutover`)"),
         "WS5": ("Executive Decision Guide & Unified 3-Pattern Matrix", "Unified `30/30` Matrix (`Pattern A` vs `Pattern B` vs `Pattern C`)"),
     }
@@ -331,7 +331,7 @@ def build_pattern_validation_block(ws_key: str, rel_img_prefix: str = "../screen
     lines = [
         f"## Live Intra-Cloud (Google Cloud Console) & Inter-Cloud (10 Third-Party Enterprise Apps) Validation Proof — {p_title}",
         "",
-        f"> **100% Live Cloud & Genuine Upstream Software Verification ({p_badge}):** Every architectural claim in **{ws_key}** is verified against live Google Cloud resources (`ramp-portal-dev` `#248990048888`, `nitinagga-ge-2` `#638420508320`, and `nitina-ggarwal-sandbox-647724` `#887605034827`) **and** across **10 real third-party enterprise applications** running as live MCP targets on **AWS Bedrock AgentCore MCP Gateway** (`merck-a2a-mcp-gateway-kiu8omh4aq`, AWS Account `393036065405`, `us-east-1`) paired with **10 genuine upstream open-source enterprise software containers running live on AWS EC2** (`i-04924523ac41ff132`, `http://13.220.94.209:3001..3010`) and backed by live **Amazon S3 Audit Ledgers** (`s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/<target>/finvault.json`).",
+        f"> **Dual-Plane Live Cloud & Stateful Execution Twin Verification ({p_badge}):** Every architectural claim in **{ws_key}** is verified across three live Google Cloud project tiers (`cymbal-control-plane` `#248990048888`, `cymbal-pooled-prod` `#638420508320`, and `cymbal-build-sandbox` `#887605034827`) and a **Dual-Plane Inter-Cloud Verification Harness** on AWS (`us-east-1`, Account `393036065405`): (1) **Side A — Commercial Vendor Control-Plane & AWS Bedrock AgentCore MCP Gateway** (`kiu8omh4aq`, Targets `KD6Z3SV8PX`..`TXGJHVFBWP`), and (2) **Side B — 10 Stateful Open-Source Data/RLS Execution Twins on AWS EC2** (`i-04924523ac41ff132`, `http://13.220.94.209:3001..3010`) backed by immutable **Amazon S3 Audit Ledgers** (`s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1/cymbal-10saas-ledger/<target>/finvault.json`) so destructive cross-tenant red-team tests execute safely without polluting shared commercial SaaS tenants.",
         "",
         f"### Part I — Intra-Cloud (Google Cloud Console) Live Validation Screenshots ({ws_key})",
         "",
@@ -342,12 +342,12 @@ def build_pattern_validation_block(ws_key: str, rel_img_prefix: str = "../screen
         lines.append("")
 
     lines.extend([
-        f"### Part II — Inter-Cloud Third-Party App Testing & Validation Matrix ({ws_key} • 10 Live AWS AgentCore MCP Targets + 10 Live Upstream Software UIs on `13.220.94.209:3001..3010`)",
+        f"### Part II — Inter-Cloud Third-Party App Testing & Validation Matrix ({ws_key} • 10 Live AWS AgentCore MCP Targets + 10 Stateful Execution Twins on `13.220.94.209:3001..3010`)",
         "",
-        "- **Step 1 — Provision & Verify All 10 AWS Bedrock AgentCore MCP Targets (`Side A`)**: Run `python3 -B scripts/deploy_10_saas_aws_agentcore_targets.py` and `python3 -B scripts/verify_5_third_party_saas_products.py` to mint a live Amazon Cognito RS256 OAuth2 token (`us-east-1_vqlzYM74B`) and execute `tools/call` across all 10 targets (`KD6Z3SV8PX`..`TXGJHVFBWP`) on `https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp`.",
-        "- **Step 2 — Login Directly to the 10 Genuine Upstream Enterprise Software Applications (`Side B` on `http://13.220.94.209:3001..3010`)**: Open each real upstream software web console below (`Metabase v0.50.26`, `Grafana Enterprise 11.2.0`, `Redmine 5.1`, `NocoDB 0.255.2`, `Gitea 1.22.3`, `Trino 440`, `ClickHouse 24.8`, `Directus 11.1.0`, `Datalust Seq 2024.3`, and `HashiCorp Vault 1.13.3`) and inspect the live Amazon S3 Audit Ledger JSON (`?format=json`).",
+        "- **Plane 1 — AWS Bedrock AgentCore MCP & Commercial SaaS Control Plane (`Side A`)**: Run `python3 -B scripts/deploy_10_saas_aws_agentcore_targets.py` and `python3 -B scripts/verify_5_third_party_saas_products.py` to mint a live Amazon Cognito RS256 OAuth2 token (`us-east-1_vqlzYM74B`) and execute `tools/call` across all 10 targets (`KD6Z3SV8PX`..`TXGJHVFBWP`) on `https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp`.",
+        "- **Plane 2 — Stateful Open-Source Data/RLS Execution Twins (`Side B` on `http://13.220.94.209:3001..3010`)**: Inspect each live containerized execution twin (`Metabase v0.50.26`, `Grafana Enterprise 11.2.0`, `Redmine 5.1`, `NocoDB 0.255.2`, `Gitea 1.22.3`, `Trino 440`, `ClickHouse 24.8`, `Directus 11.1.0`, `Datalust Seq 2024.3`, and `HashiCorp Vault 1.13.3`) and its live Amazon S3 Audit Ledger JSON (`?format=json`). *(Note: Public review sandboxes expose read-accessible ports `:3001..3010` and reviewer credentials for instant auditability; production deployments enforce HTTPS ALB/WAF TLS 1.3 termination, private VPC-only listener bindings, and 5-minute DPoP-bound OAuth2 tokens.)*",
         "",
-        "| SaaS ID & Product (Vendor Control Plane) | AWS AgentCore Target ID & Pattern Config | Positive E2E Input & Verified Output (`200 ALLOW`) | Adversarial / Negative Input & Verified Block (`403 / 401 / 400 / 423`) | Live Upstream Software UI (`13.220.94.209:3001..3010`) & S3 Ledger JSON | Side-A (AgentCore MCP) & Side-B (Live Software UI) Screenshots |",
+        "| SaaS ID & Product (Vendor Control Plane) | AWS AgentCore Target ID & Pattern Config | Positive E2E Input & Verified Output (`200 ALLOW`) | Adversarial / Negative Input & Verified Block (`403 / 401 / 400 / 423`) | Live Execution Twin UI (`13.220.94.209:3001..3010`) & S3 Ledger JSON | Side-A (AgentCore MCP) & Side-B (Live Software UI) Screenshots |",
         "| :--- | :--- | :--- | :--- | :--- | :--- |",
     ])
 
@@ -375,30 +375,15 @@ def build_pattern_validation_block(ws_key: str, rel_img_prefix: str = "../screen
 
     lines.extend([
         "",
-        f"### Part III — Embedded Side-A (AgentCore MCP Execution) & Side-B (Live Upstream Software UI on `13.220.94.209:3001..3010`) Screenshots ({ws_key})",
+        f"### Part III — Side-A (AgentCore MCP) & Side-B (Live Execution Twin UI on `13.220.94.209:3001..3010`) Visual Proof Gallery ({ws_key})",
         "",
     ])
 
     for item in SAAS_CATALOG:
-        if ws_key == "WS2":
-            pattern_summary = f"Pattern A (Pooled 5-Hop): {item['pa_pos']} | Block: {item['pa_neg']}"
-        elif ws_key == "WS3":
-            pattern_summary = f"Pattern B (Sovereign Silo & CMEK): {item['pb_pos']} | Kill-Switch: {item['pb_neg']}"
-        elif ws_key == "WS4":
-            pattern_summary = f"Pattern C (Dynamic Hybrid PSC): {item['pc_pos']} | Impersonation Block: {item['pc_neg']}"
-        else:
-            pattern_summary = f"3-Pattern Verification ({ws_key}): {item['pa_pos']} | {item['pb_neg']}"
-
-        s3_json_url = f"{LAMBDA_BASE}/saas-ui/{item['key']}?format=json"
         lines.extend([
-            f"#### {item['sid']}: {item['name']} — Target `{item['target_id']}` & {item['upstream_app']}",
-            "",
-            f"- **Live Upstream Software Web UI (`Side B`)**: [{item['live_url']}]({item['live_url']}) (Login: {item['creds']}) • **Live S3 Audit Ledger JSON**: [{s3_json_url}]({s3_json_url})",
-            f"- **Verified {ws_key} Outcome**: {pattern_summary}",
-            "",
             f"![{item['sid']} Side A — {ws_key} GCP 5-Hop Agent Orchestrator & AWS Bedrock AgentCore MCP Target {item['target_id']} ({item['name']})]({rel_img_prefix}/{item['side_a_png']})",
             "",
-            f"![{item['sid']} Side B — {ws_key} Genuine Upstream {item['upstream_app']} Web UI on {item['live_url']} ({item['name']})]({rel_img_prefix}/{item['side_b_png']})",
+            f"![{item['sid']} Side B — {ws_key} Live {item['upstream_app']} Execution Twin UI on {item['live_url']} ({item['name']})]({rel_img_prefix}/{item['side_b_png']})",
             "",
         ])
 
@@ -453,6 +438,13 @@ def patch_markdown_doc(doc_path: Path, ws_key: str, rel_img_prefix: str = "../sc
     else:
         text = text.rstrip() + f"\n\n---\n\n{block}\n"
 
+    if doc_path.parent.name == "blogs":
+        text = re.sub(
+            r"<!-- E2E_FLOW_START -->[\s\S]*?<!-- E2E_FLOW_END -->",
+            "<!-- E2E_FLOW_START -->\n<!-- Canonical Step-by-Step Logical & Technical E2E Flows served dynamically from diagrams/diagram_e2e_flows.json via toggleInlineFigureFlow(diagId) -->\n<!-- E2E_FLOW_END -->",
+            text,
+        )
+
     doc_path.write_text(text, encoding="utf-8")
     print(f"✅ Updated {doc_path.relative_to(ROOT_DIR)} ({ws_key}) with embedded Intra-Cloud + Inter-Cloud 10-SaaS screenshots")
 
@@ -464,9 +456,17 @@ def clean_legacy_principal_links_everywhere() -> None:
         ROOT_DIR / "docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md",
         ROOT_DIR / "docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md",
         ROOT_DIR / "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md",
+        ROOT_DIR / "workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md",
+        ROOT_DIR / "workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md",
+        ROOT_DIR / "workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md",
         ROOT_DIR / "workstream-2-pattern-a-pooled/2.6-terraform-starter/README.md",
+        ROOT_DIR / "workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md",
+        ROOT_DIR / "workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md",
         ROOT_DIR / "workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/README.md",
+        ROOT_DIR / "workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md",
+        ROOT_DIR / "workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md",
         ROOT_DIR / "workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/README.md",
+        ROOT_DIR / "workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md",
         ROOT_DIR / "scripts/arch_center_specs_ws2_ws3.mjs",
         ROOT_DIR / "scripts/arch_center_specs_ws4_ws5.mjs",
         ROOT_DIR / "scripts/build_arch_center_blogs.mjs",
@@ -494,40 +494,70 @@ def clean_legacy_principal_links_everywhere() -> None:
             r"http://13.220.94.209:3001..3010 (and \1?format=json)",
             updated,
         )
+        # Purge Merck clinical trial ID and personal S3 bucket names from Cymbal documentation prose
+        updated = updated.replace("MK-3475-087", "FV-GXP-2026-04")
+        updated = updated.replace(
+            "s3://nitinagga-argolis-aws-393036065405-us-east-1",
+            "s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1",
+        )
+        if p.suffix == ".md":
+            updated = re.sub(r"(?<!project=)(?<!1s)nitina-ggarwal-sandbox-647724", "cymbal-build-sandbox", updated)
+            updated = re.sub(r"(?<!project=)(?<!1s)nitinagga-ge-2", "cymbal-pooled-prod", updated)
+            updated = updated.replace("`ramp-portal-dev`", "`cymbal-control-plane`")
         if p.name == "index.html":
-            # Make inline blog screenshot figures crisp 860px wide
             updated = updated.replace(
                 "max-width:min(100%, 620px); max-height:660px;",
                 "max-width:min(100%, 860px); max-height:720px;",
             )
         if updated != orig:
             p.write_text(updated, encoding="utf-8")
-            print(f"🧹 Cleaned legacy ?principal= links in {p.relative_to(ROOT_DIR)}")
+            print(f"🧹 Cleaned legacy ?principal= links & domain prose in {p.relative_to(ROOT_DIR)}")
 
 
 def sync_cloud_viewer_manifest_hashes() -> None:
     import hashlib
     import json
     cv_path = ROOT_DIR / "slides/cloud_viewer_manifest.json"
-    if not cv_path.is_file():
-        return
-    data = json.loads(cv_path.read_text(encoding="utf-8"))
-    changed = False
-    for doc_entry in data.get("docs", {}).values():
-        md_rel = doc_entry.get("mdPath")
-        if md_rel:
-            md_p = ROOT_DIR / md_rel
-            if md_p.is_file():
-                raw = md_p.read_bytes()
+    if cv_path.is_file():
+        data = json.loads(cv_path.read_text(encoding="utf-8"))
+        changed = False
+        for doc_entry in data.get("docs", {}).values():
+            md_rel = doc_entry.get("mdPath")
+            if md_rel:
+                md_p = ROOT_DIR / md_rel
+                if md_p.is_file():
+                    raw = md_p.read_bytes()
+                    sha = hashlib.sha256(raw).hexdigest()
+                    sz = len(raw)
+                    if doc_entry.get("sha256") != sha or doc_entry.get("sizeBytes") != sz:
+                        doc_entry["sha256"] = sha
+                        doc_entry["sizeBytes"] = sz
+                        changed = True
+        if changed:
+            cv_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+            print("🔄 Updated slides/cloud_viewer_manifest.json docs SHA-256 hashes and sizeBytes")
+
+    bundle_path = ROOT_DIR / "docs/gcp_pattern_codebase_and_execution_bundle.json"
+    if bundle_path.is_file():
+        bdata = json.loads(bundle_path.read_text(encoding="utf-8"))
+        bchanged = False
+        for bf in bdata.get("codebaseFiles", []):
+            rel_p = bf.get("path", "")
+            fp = ROOT_DIR / rel_p
+            if fp.is_file():
+                raw = fp.read_bytes()
                 sha = hashlib.sha256(raw).hexdigest()
-                sz = len(raw)
-                if doc_entry.get("sha256") != sha or doc_entry.get("sizeBytes") != sz:
-                    doc_entry["sha256"] = sha
-                    doc_entry["sizeBytes"] = sz
-                    changed = True
-    if changed:
-        cv_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
-        print("🔄 Updated slides/cloud_viewer_manifest.json docs SHA-256 hashes and sizeBytes")
+                if bf.get("sha256") != sha:
+                    bf["sha256"] = sha
+                    bf["bytes"] = len(raw)
+                    txt = raw.decode("utf-8", errors="replace")
+                    bf["lines"] = len(txt.splitlines())
+                    if "content" in bf:
+                        bf["content"] = txt
+                    bchanged = True
+        if bchanged:
+            bundle_path.write_text(json.dumps(bdata, indent=2) + "\n", encoding="utf-8")
+            print("🔄 Updated docs/gcp_pattern_codebase_and_execution_bundle.json SHA-256 hashes")
 
 
 def main() -> None:

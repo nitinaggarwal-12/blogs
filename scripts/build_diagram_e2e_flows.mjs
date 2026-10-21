@@ -50,7 +50,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERNS A, B & C TAXONOMY',
     questionAnswered:
       'How do B2B SaaS platforms and large enterprises serve thousands of tenants across Pooled (Pattern A), Sovereign Silo (Pattern B), and Dynamic Hybrid (Pattern C) isolation models using one 80% reusable agentic codebase?',
-    gcpProject: 'ramp-portal-dev (#248990048888) & nitina-ggarwal-sandbox-647724 (#887605034827)',
+    gcpProject: 'cymbal-control-plane (#248990048888) & cymbal-build-sandbox (#887605034827)',
     runtimeTarget: 'cymbal-multi-tenant-patterns-00003-wfh (Cloud Run us-central1)',
     codeModules: 'workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md • core-cymbal-agent/runtime_pipeline.py',
     execCloudServices:
@@ -238,7 +238,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: '5-HOP CRYPTOGRAPHIC BASELINE',
     questionAnswered:
       'How do we extend the official Google Cloud Architecture Center multi-tenant hub-and-spoke blueprint with a 5-Hop Cryptographic Context Chain that prevents confused-deputy tool calls, cache bleed, and noisy neighbors?',
-    gcpProject: 'nitina-ggarwal-sandbox-647724 (#887605034827)',
+    gcpProject: 'cymbal-build-sandbox (#887605034827)',
     runtimeTarget: 'cymbal-multi-tenant-patterns-00003-wfh • KMS adk-agent-signing-key',
     codeModules: 'hop1_edge_identity_pep.py → hop2_registry_pdp_callbacks.py → hop3_compute_finops_bulkhead.py → hop4_model_armor_guardrails.py → hop5_data_rls_and_otel.py',
     execCloudServices:
@@ -426,7 +426,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN A • POOLED RUNTIME',
     questionAnswered:
       'How do we host thousands of Standard and commercial SaaS tenants inside a single shared Google Cloud project at a 120 RPM Pooled unit cost footprint while guaranteeing cryptographic and row-level isolation?',
-    gcpProject: 'nitina-ggarwal-sandbox-647724 (#887605034827)',
+    gcpProject: 'cymbal-build-sandbox (#887605034827)',
     runtimeTarget: 'cymbal-multi-tenant-patterns-00003-wfh • BigQuery pattern_a_pooled_rls_entities',
     codeModules: 'workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md • runtime/main.py (/v1/patterns/a/execute)',
     execCloudServices:
@@ -614,7 +614,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN A • 10-VECTOR DEFENSE',
     questionAnswered:
       'How does the 5-Hop Cryptographic Context Chain deterministically block all 10 adversarial cross-tenant attack vectors—from forged headers and confused-deputy tool calls to SQL RLS bypasses and noisy-neighbor floods?',
-    gcpProject: 'nitina-ggarwal-sandbox-647724 (#887605034827)',
+    gcpProject: 'cymbal-build-sandbox (#887605034827)',
     runtimeTarget: 'cymbal-multi-tenant-patterns-00003-wfh (/v1/patterns/a/breach-suite)',
     codeModules: 'workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py',
     execCloudServices:
@@ -802,7 +802,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN A • 2LO/3LO AUTH SANDBOX',
     questionAnswered:
       'How does a single pooled Google Cloud project federate heterogeneous corporate identity providers (Google Workspace OIDC and Microsoft Entra ID) and broker tenant-scoped 2LO and 3LO OAuth tokens to external MCP tools without confused-deputy risks?',
-    gcpProject: 'ramp-portal-dev (#248990048888) & nitina-ggarwal-sandbox-647724 (#887605034827)',
+    gcpProject: 'cymbal-control-plane (#248990048888) & cymbal-build-sandbox (#887605034827)',
     runtimeTarget: 'enterprise-s2p-global • Secret Manager tenant-{id}-3p-oauth',
     codeModules: 'workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md • core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py',
     execCloudServices:
@@ -990,7 +990,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN A • TERRAFORM IaC GRAPH',
     questionAnswered:
       'How do platform engineering teams declaratively provision the entire Pattern A pooled multi-tenant stack—WAF, KMS signing keys, Valkey bulkheads, Cloud Run Gen2 runtime, and RLS-locked databases—with zero manual console drift?',
-    gcpProject: 'nitina-ggarwal-sandbox-647724 (#887605034827)',
+    gcpProject: 'cymbal-build-sandbox (#887605034827)',
     runtimeTarget: 'Cloud Run v2 + KMS + BigQuery RLS + Cloud Armor + Model Armor',
     codeModules: 'workstream-2-pattern-a-pooled/2.6-terraform-starter/{main.tf,variables.tf,README.md,terraform.tfvars.example}',
     execCloudServices:
@@ -1000,7 +1000,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     outcomeTitle: 'Declarative 1-Click Terraform DAG Provisions Pattern A in Under 4 Minutes',
     outcomeBody:
       'A single `terraform apply` provisions the Google provider, Cloud Armor WAF policy, Cloud KMS 90-day rotating key ring, Memorystore for Valkey bulkhead, Cloud Run v2 gateway, and BigQuery OTel sink in strict dependency order.',
-    outcomeTech: 'Verified F-10 & live GCP receipt: all Pattern A Terraform resources provisioned and certified in `nitina-ggarwal-sandbox-647724`',
+    outcomeTech: 'Verified F-10 & live GCP receipt: all Pattern A Terraform resources provisioned and certified in `cymbal-build-sandbox`',
     plainZones: [
       {
         zoneId: 'Blue Zone',
@@ -1178,7 +1178,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN B • SOVEREIGN SILOS',
     questionAnswered:
       'How do we satisfy strict banking (OCC/FDIC), healthcare (HIPAA), and public-sector regulators that prohibit shared compute, shared storage, or provider-owned keys—while reusing 80% of our core ADK 2.0 agent codebase?',
-    gcpProject: 'nitina-ggarwal-sandbox-647724 (#887605034827)',
+    gcpProject: 'cymbal-build-sandbox (#887605034827)',
     runtimeTarget: 'KMS cymbal-multi-tenant-kr/{finvault-silo-cmek,medcore-revoked-cmek}',
     codeModules: 'workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md • runtime/main.py (/v1/patterns/b/execute)',
     execCloudServices:
@@ -1366,7 +1366,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN B • SILO FACTORY PIPELINE',
     questionAnswered:
       'How do we automate the 4-stage onboarding of regulated Pattern B customers—provisioning a dedicated GCP project, Cloud KMS CMEK key ring, IAM Principal Access Boundary, and VPC Service Controls perimeter—without manual toil?',
-    gcpProject: 'nitina-ggarwal-sandbox-647724 (#887605034827)',
+    gcpProject: 'cymbal-build-sandbox (#887605034827)',
     runtimeTarget: 'cymbal-multi-tenant-kr • pattern_b_silo_finvault_cmek_vault',
     codeModules: 'workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md • workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py',
     execCloudServices:
@@ -1376,7 +1376,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     outcomeTitle: 'Automated 4-Stage Silo Onboarding Factory with Built-In Kill-Switch Certification',
     outcomeBody:
       'When a regulated enterprise signs a Pattern B contract, the Silo Factory automatically creates their dedicated GCP project, provisions their 90-day rotating CMEK key, locks the VPC-SC perimeter, and runs the 6-point kill-switch drill.',
-    outcomeTech: 'Verified live in `nitina-ggarwal-sandbox-647724`: FinVault active CMEK vault and MedCore revoked CMEK vault provisioned and tested',
+    outcomeTech: 'Verified live in `cymbal-build-sandbox`: FinVault active CMEK vault and MedCore revoked CMEK vault provisioned and tested',
     plainZones: [
       {
         zoneId: 'Blue Zone',
@@ -1554,7 +1554,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN B • TERRAFORM SILO DAG',
     questionAnswered:
       'How do we codify the entire Pattern B Sovereign Silo—Cloud KMS CMEK, VPC Service Controls perimeter, isolated VPC, and private air-gapped GKE cluster running Gemma 3—into a single reusable Terraform module?',
-    gcpProject: 'nitina-ggarwal-sandbox-647724 (#887605034827)',
+    gcpProject: 'cymbal-build-sandbox (#887605034827)',
     runtimeTarget: 'google_kms_crypto_key • google_access_context_manager_service_perimeter • google_container_cluster',
     codeModules: 'workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/{main.tf,variables.tf,README.md,terraform.tfvars.example}',
     execCloudServices:
@@ -1564,7 +1564,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     outcomeTitle: 'Auditor-Certified Terraform DAG for Air-Gapped Sovereign Silos',
     outcomeBody:
       'Parameterized by just five input variables (`tenant_id`, `tenant_project_id`, `org_id`, `access_policy_id`, `region`), one `terraform apply` builds a complete CMEK-encrypted, VPC-SC-fenced sovereign silo with private GKE compute.',
-    outcomeTech: 'Verified F-10 & live GCP receipt: Pattern B Terraform module and CMEK vaults certified in `nitina-ggarwal-sandbox-647724`',
+    outcomeTech: 'Verified F-10 & live GCP receipt: Pattern B Terraform module and CMEK vaults certified in `cymbal-build-sandbox`',
     plainZones: [
       {
         zoneId: 'Blue Zone',
@@ -1742,7 +1742,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN C • HYBRID PSC & MIGRATION',
     questionAnswered:
       'How do we serve both high-density Standard tenants (Pooled) and regulated Enterprise tenants (Dedicated Spokes) behind a single unified SaaS URL—and upgrade a live tenant from Pooled to a Dedicated Spoke with zero dropped sessions?',
-    gcpProject: 'nitina-ggarwal-sandbox-647724 (#887605034827)',
+    gcpProject: 'cymbal-build-sandbox (#887605034827)',
     runtimeTarget: 'VPC cymbal-pattern-c-hub-vpc • Subnet cymbal-psc-nat-us-west1 (10.240.0.0/28)',
     codeModules: 'workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md • workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py',
     execCloudServices:
@@ -1930,7 +1930,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN C • PSC HUB & SPOKE',
     questionAnswered:
       'How do we wire a central multi-tenant Hub VPC to dozens of isolated Enterprise Spoke VPCs using Google Cloud Private Service Connect (PSC) Service Attachments so spokes can reuse overlapping CIDRs (`10.40.0.0/20`) and never initiate reverse traffic into the hub?',
-    gcpProject: 'nitina-ggarwal-sandbox-647724 (#887605034827)',
+    gcpProject: 'cymbal-build-sandbox (#887605034827)',
     runtimeTarget: 'cymbal-pattern-c-hub-vpc • cymbal-psc-nat-us-west1 (PURPOSE=PRIVATE_SERVICE_CONNECT)',
     codeModules: 'workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md • workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py',
     execCloudServices:
@@ -1940,7 +1940,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     outcomeTitle: 'Unidirectional Private Service Connect Bridging with Zero CIDR Overlap',
     outcomeBody:
       'Every Enterprise spoke can use the exact same internal IP CIDR (`10.40.0.0/20`) without VPC peering limits or IP collisions, and because PSC is NAT-based and unidirectional, a spoke can never initiate a reverse connection back into the central hub.',
-    outcomeTech: 'Verified live in `nitina-ggarwal-sandbox-647724`: `cymbal-pattern-c-hub-vpc` and `cymbal-psc-nat-us-west1` (`10.240.0.0/28`) ACTIVE',
+    outcomeTech: 'Verified live in `cymbal-build-sandbox`: `cymbal-pattern-c-hub-vpc` and `cymbal-psc-nat-us-west1` (`10.240.0.0/28`) ACTIVE',
     plainZones: [
       {
         zoneId: 'Blue Zone',
@@ -2044,7 +2044,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         protocolAndMechanism:
           'Provisions the central Hub VPC and `10.10.0.0/20` subnet (`Private Google Access` enabled) hosting Direct VPC Egress from the Cloud Run Hybrid Router.',
         codeAndResource: 'workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md',
-        verifiedOutcome: 'Verified live in `nitina-ggarwal-sandbox-647724`: `cymbal-pattern-c-hub-vpc`',
+        verifiedOutcome: 'Verified live in `cymbal-build-sandbox`: `cymbal-pattern-c-hub-vpc`',
       },
       {
         step: 'Step ②',
@@ -2118,7 +2118,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN C • ZERO-DOWNTIME UPGRADE',
     questionAnswered:
       'How do we promote a live customer (RetailStream Corp) from the Standard Pooled tier (`Pattern A`) into a dedicated Enterprise PSC Spoke (`Pattern B/C`) mid-conversation with 0ms replication lag, 0 dropped sessions, and zero global state bleed?',
-    gcpProject: 'nitina-ggarwal-sandbox-647724 (#887605034827)',
+    gcpProject: 'cymbal-build-sandbox (#887605034827)',
     runtimeTarget: 'cymbal-multi-tenant-patterns-00003-wfh (/v1/patterns/c/migrate)',
     codeModules: 'workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py • pattern_c_hybrid_router_and_migrator.py',
     execCloudServices:
@@ -2306,7 +2306,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN C • TERRAFORM PSC DAG',
     questionAnswered:
       'How do we codify both sides of the Pattern C Hybrid Hub-and-Spoke network—the central `google.hub` consumer VPC/endpoint and the isolated `google.spoke` producer VPC, `/24` PSC NAT subnet, and `ServiceAttachment`—in a single Terraform blueprint?',
-    gcpProject: 'nitina-ggarwal-sandbox-647724 (#887605034827)',
+    gcpProject: 'cymbal-build-sandbox (#887605034827)',
     runtimeTarget: 'google_compute_service_attachment • google_compute_forwarding_rule • cymbal-psc-nat-us-west1',
     codeModules: 'workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/{main.tf,variables.tf,README.md,terraform.tfvars.example}',
     execCloudServices:
@@ -2429,7 +2429,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         protocolAndMechanism:
           'Provisions the central Hub VPC network and regional subnet with Private Google Access for the Cloud Run Hybrid Router.',
         codeAndResource: 'main.tf • google_compute_network.hub_vpc',
-        verifiedOutcome: 'Verified live in `nitina-ggarwal-sandbox-647724`: `cymbal-pattern-c-hub-vpc`',
+        verifiedOutcome: 'Verified live in `cymbal-build-sandbox`: `cymbal-pattern-c-hub-vpc`',
       },
       {
         step: 'Step ③',
@@ -2447,7 +2447,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         protocolAndMechanism:
           'Creates the dedicated `PRIVATE_SERVICE_CONNECT` NAT subnet required by Google Cloud to translate consumer packets into the spoke VPC.',
         codeAndResource: 'main.tf • google_compute_subnetwork.spoke_psc_nat_subnet',
-        verifiedOutcome: 'Verified live in `nitina-ggarwal-sandbox-647724`: `cymbal-psc-nat-us-west1`',
+        verifiedOutcome: 'Verified live in `cymbal-build-sandbox`: `cymbal-psc-nat-us-west1`',
       },
       {
         step: 'Step ⑤',
@@ -2494,7 +2494,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'WORKSTREAM 5 • AGENTIC TRIAD',
     questionAnswered:
       'How do Chief Architects, CISOs, and CFOs select between Pattern A, Pattern B, and Pattern C—and how does the Multi-Tenant Agentic Triad balance Cryptographic Tenant Governance, Predictable FinOps COGS, and Zero-PII Observability across 1,000+ tenants?',
-    gcpProject: 'ramp-portal-dev (#248990048888) & nitina-ggarwal-sandbox-647724 (#887605034827)',
+    gcpProject: 'cymbal-control-plane (#248990048888) & cymbal-build-sandbox (#887605034827)',
     runtimeTarget: 'enterprise-s2p-global • cymbal_agentic_finops_otel.tenant_telemetry_spans',
     codeModules: 'workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md • blogs/ws5-decision-guide-and-agentic-triad.md',
     execCloudServices:
@@ -2838,15 +2838,9 @@ function main() {
     WS4: 'blogs/ws4-pattern-c-hybrid-dynamic-tiering.md',
     WS5: 'blogs/ws5-decision-guide-and-agentic-triad.md',
   };
-  for (const [wsKey, relPath] of Object.entries(wsBlogMap)) {
-    const wsFlows = flows.filter((f) => f.workstream === wsKey);
-    const mdSection = [
-      `## Step-by-Step End-to-End Agentic & Technical Flows (${wsKey} Architecture Diagrams)`,
-      '',
-      `> **Reader Reference Guide (Standalone Guide & Companion Architecture Deck):** The step-by-step walkthroughs below document every Official Google Cloud Architecture Center (\`#78\`) diagram in **${wsKey}**. Each diagram is self-contained in this guide (\`Figure 1\` above plus the supporting topology blueprints in \`diagrams/\`), and also corresponds 1:1 to **Act II (Slides 4–7)** of the companion 12-slide editable presentation deck (\`slides/${wsKey.toLowerCase()}-*-editable-slides.pptx\`, viewable in **Tab 2: Editable Architecture Decks** of the interactive portal): **(1) Slide 4 (\`L1\` Conceptual 3-Zone Trust Boundary Overview)** → **(2) Slide 5 (\`L2\` Authoritative \`Figure 1\` Official \`#78\` Physical Blueprint + 4-Zone Reference Sidebar)** → **(3) Slide 6 (\`L3\` 5-Actor Chronological Request Sequence)** → **(4) Slide 7 (\`L4\` 3-Stage Wire-Level JSON & Cryptographic Context Transformation)**.`,
-      '',
-      ...wsFlows.map((f) => renderDiagramFlowMarkdown(f)),
-    ].join('\n');
+  for (const [, relPath] of Object.entries(wsBlogMap)) {
+    const mdSection =
+      '<!-- Canonical Step-by-Step Logical & Technical E2E Flows served dynamically from diagrams/diagram_e2e_flows.json via toggleInlineFigureFlow(diagId) -->';
     upsertMarkdownSection(path.join(ROOT_DIR, relPath), mdSection);
   }
 

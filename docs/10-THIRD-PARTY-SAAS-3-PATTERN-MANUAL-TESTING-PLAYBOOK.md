@@ -53,7 +53,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 ## 2A. Step-by-Step Login & Outcome Validation Instructions (Both Sides: Agent Orchestrator & 10 Live Upstream Software Consoles on AWS EC2)
 
 ### Side 1: Authenticate to AWS Bedrock AgentCore MCP Gateway & Google Cloud 5-Hop Runtime
-1. **Verify AWS Account (`393036065405`, `us-east-1`) & GCP Projects (`ramp-portal-dev`, `nitina-ggarwal-sandbox-647724`)**:
+1. **Verify AWS Account (`393036065405`, `us-east-1`) & GCP Projects (`cymbal-control-plane`, `cymbal-build-sandbox`)**:
    ```bash
    aws sts get-caller-identity --region us-east-1
    gcloud config get-value account
@@ -133,7 +133,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
     "op1": "EQ",
     "val1": "${ctx.tenant_id}"
   },
-  "bq_target_table": "nitina-ggarwal-sandbox-647724.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities"
+  "bq_target_table": "cymbal-build-sandbox.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities"
 }
 ```
 
@@ -534,7 +534,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
     "ua_tenant_id": "${ctx.tenant_id}",
     "ua_rls_guc": "app.current_tenant_id=${ctx.tenant_id}"
   },
-  "bq_target_table": "nitina-ggarwal-sandbox-647724.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities"
+  "bq_target_table": "cymbal-build-sandbox.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities"
 }
 ```
 
@@ -1226,7 +1226,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
 - **Live Probed Cloud Endpoint**: `https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp`
 - **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `nocodb/nocodb:0.255.2 (NocoDB Clinical EDC & GxP 21 CFR Part 11 Vault)`
 - **Direct Live Third-Party Software Web UI URL**: [http://13.220.94.209:3004/#/nc/base](http://13.220.94.209:3004/#/nc/base)
-- **Interactive Login Credentials for Manual Testing**: Email `sre-lead@finvault.com` / Password `FinVault#2026!` (Base: `Veeva Vault RIM & Muse Clinical EDC — Study MK-3475-087`)
+- **Interactive Login Credentials for Manual Testing**: Email `sre-lead@finvault.com` / Password `FinVault#2026!` (Base: `Veeva Vault RIM & Muse Clinical EDC — Study FV-GXP-2026-04`)
 - **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json)
 
 ### Visual Proof: Side A (Agent Orchestrator MCP Execution) & Side B (Live Upstream Third-Party Software Web UI on AWS EC2)
@@ -1243,7 +1243,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "mcp_gateway_url": "https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "1KZWKOFTWQ",
   "mcp_tool_name": "muse-poc___query_muse_study_biomarkers",
-  "hop2_gxp_policy_test_artifact": "VV-DOC-004819 / Study MK-3475-087 Cohort-B (Signed via Cloud KMS adk-agent-signing-key)",
+  "hop2_gxp_policy_test_artifact": "VV-DOC-004819 / Study FV-GXP-2026-04 Cohort-B (Signed via Cloud KMS adk-agent-signing-key)",
   "gxp_21cfr11_kms_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/adk-agent-signing-key"
 }
 ```
@@ -1316,9 +1316,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
     "cloud_kms_21cfr11_signature": {
       "artifact_provenance": "HOP2_GXP_21CFR11_POLICY_TEST_ARTIFACT_SIGNED_BY_CLOUD_KMS",
       "document_number__v": "VV-DOC-004819",
-      "name__v": "Clinical Study Protocol & Regulatory Dossier (MK-3475-087)",
+      "name__v": "Clinical Study Protocol & Regulatory Dossier (FV-GXP-2026-04)",
       "status__v": "Steady State (Approved)",
-      "cfr11_kms_key_version": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
+      "cfr11_kms_key_version": "projects/cymbal-build-sandbox/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
       "cfr11_payload_sha256": null,
       "cfr11_kms_ecdsa_p256_signature_b64": "",
       "cfr11_hmac_sha256_signature": "1e935b305d867cae208cc7e8cfa9dd878d14fc1c4a82987dc86a2da070b95f3b"
@@ -1413,9 +1413,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
     "cloud_kms_21cfr11_signature": {
       "artifact_provenance": "HOP2_GXP_21CFR11_POLICY_TEST_ARTIFACT_SIGNED_BY_CLOUD_KMS",
       "document_number__v": "VV-DOC-004819",
-      "name__v": "Clinical Study Protocol & Regulatory Dossier (MK-3475-087)",
+      "name__v": "Clinical Study Protocol & Regulatory Dossier (FV-GXP-2026-04)",
       "status__v": "Steady State (Approved)",
-      "cfr11_kms_key_version": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
+      "cfr11_kms_key_version": "projects/cymbal-build-sandbox/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
       "cfr11_payload_sha256": null,
       "cfr11_kms_ecdsa_p256_signature_b64": "",
       "cfr11_hmac_sha256_signature": "1e935b305d867cae208cc7e8cfa9dd878d14fc1c4a82987dc86a2da070b95f3b"
@@ -1523,9 +1523,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
     "cloud_kms_21cfr11_signature": {
       "artifact_provenance": "HOP2_GXP_21CFR11_POLICY_TEST_ARTIFACT_SIGNED_BY_CLOUD_KMS",
       "document_number__v": "VV-DOC-004819",
-      "name__v": "Clinical Study Protocol & Regulatory Dossier (MK-3475-087)",
+      "name__v": "Clinical Study Protocol & Regulatory Dossier (FV-GXP-2026-04)",
       "status__v": "Steady State (Approved)",
-      "cfr11_kms_key_version": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
+      "cfr11_kms_key_version": "projects/cymbal-build-sandbox/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
       "cfr11_payload_sha256": null,
       "cfr11_kms_ecdsa_p256_signature_b64": "",
       "cfr11_hmac_sha256_signature": "1e935b305d867cae208cc7e8cfa9dd878d14fc1c4a82987dc86a2da070b95f3b"

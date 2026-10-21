@@ -30,7 +30,7 @@ export const WORKSTREAM_THEMES = {
     slide9Spoken:
       'This register maps our five compensating production controls—GAP-01 through GAP-05—to the early-access platform boundaries engineering teams face today. Every custom Python, Valkey, or SQL control in core-cymbal-agent is wrapped in a feature-flagged GA sunset hook targeted for Q4 2026 through Q1 2027 so teams can switch cleanly to native GCP primitives as they reach general availability. And in row five, our OpenTelemetry FinOps exporter streams SHA-256 prompt hashes and token counters directly into BigQuery so finance teams can run exact SQL chargeback queries across cached and thinking tokens with zero raw PII.',
     slide10Spoken:
-      'To prove this architecture is running live in Google Cloud rather than just on slides, here are authentic captures from our deployed Cloud Run revisions and Cloud Logging Explorer. You can reproduce our audit trail directly by running the exact Cloud Logging filter shown in the metadata card—verifying zero cross-tenant RLS rows across HTTP 200, 403, 423, and 429 responses—or by running our automated deep forensic audit script from the command line, which passes all twelve forensic gates and all one hundred seven runtime assertions.',
+      'To prove this architecture is running live rather than just on slides, here are authentic captures from our deployed Cloud Run revisions, Cloud Logging Explorer, and our Dual-Plane verification harness. On the Intra-Cloud plane, our 20/20 Google Cloud runtime suites verify zero cross-tenant RLS rows across HTTP 200, 403, 423, and 429 responses; on the Inter-Cloud plane, our 30/30 AWS Bedrock AgentCore MCP and live EC2 execution twin harness across ports 3001 through 3010 passes all sixty assertions and all twelve automated forensic gates.',
     slide11Spoken:
       'Finally, our closing slide consolidates the Google Cloud Well-Architected SLA scorecard directly into our five runnable GitHub milestones and five-part blog series launch plan. Every milestone card pairs its exact repository file path with its production SLA target: under 150-microsecond cached-JWKS verification and ~3ms JTI deny-lists in Part 1; ~42ms p95 five-hop overhead, ~420ms warm TTFT, and 84.7 percent token savings in Part 2; <60s CMEK revocation, <5s Valkey SCAN+UNLINK eviction, SET NX PX 5000 recovery, and <30s cross-region failover RTO in Part 3; 74 percent portfolio TCO reduction and 0ms PSC cutover in Part 4; and 12/12 forensic plus 107/107 runtime assertions in Part 5.',
   },
@@ -55,7 +55,7 @@ export const WORKSTREAM_THEMES = {
     slide9Spoken:
       'To give both executive risk officers and security architects complete confidence in a shared environment, we ran ten adversarial red-team attack scenarios against Pattern A—shown across this matrix. From header spoofing and prompt-cache poisoning to cross-tenant memory reads, vector similarity bleed, and noisy-neighbor floods, every single attack vector is paired with its specific five-hop control and verified as 100% blocked by our automated test suite.',
     slide10Spoken:
-      'Here are the live Google Cloud Console receipts backing up that ten-out-of-ten scorecard. On the left, you can see our deployed pooled Cloud Run service and Cloud Logging traces showing live AlloyDB Row-Level Security enforcement and Valkey rate-limit clamping; on the right, the verification cards confirm ninety percent shared prompt cache efficiency with zero cross-tenant data bleed.',
+      'Here are the live Dual-Plane receipts backing up that ten-out-of-ten scorecard. On the left, you can see our deployed pooled Cloud Run service and BigQuery Row-Level Security policies in Google Cloud Console; on the right, the verification cards confirm ninety percent shared prompt cache efficiency, 10/10 Intra-Cloud breach simulations blocked, and 10/10 Inter-Cloud Pattern A SaaS MCP and live EC2 execution twin RLS assertions passed across ports 3001 through 3010.',
     slide11Spoken:
       'Bringing Pattern A together for business and technical leaders, this shared-pool design delivers three core outcomes. Under Security, five layers of defense—ending at database kernel Row-Level Security—prevent cross-tenant leaks. Under Reliability, per-tenant Valkey bulkheads guarantee that a noisy neighbor never impacts another customer’s SLA. And under Financial Efficiency, shared prompt prefix caching and pooled compute maximize SaaS gross margins for our commercial customer base.',
     slide12Spoken:
@@ -82,7 +82,7 @@ export const WORKSTREAM_THEMES = {
     slide9Spoken:
       'This six-point verification matrix summarizes every sovereign security and isolation test we run against Pattern B. Each row pairs a high-severity regulatory threat—such as cross-project credential replay, VPC Service Controls data exfiltration, or post-revocation cache lingering—with its exact perimeter control and passing automated test result.',
     slide10Spoken:
-      'Here is the live Google Cloud Console proof from our sovereign sandbox environment. On the left, you can see the active Cloud KMS customer-managed keyring, CryptoKeyVersion state toggles, and Cloud Logging receipts; on the right, the telemetry cards confirm that all six sovereign perimeter and sub-sixty-second kill-switch tests pass with 100% compliance.',
+      'Here is the live Dual-Plane verification proof from our sovereign sandbox environment. On the left, you can see the active Cloud KMS customer-managed keyring, CryptoKeyVersion state toggles, and sovereign BigQuery CMEK datasets; on the right, the telemetry cards confirm that all 6/6 Intra-Cloud sovereign perimeter tests and all 10/10 Inter-Cloud Pattern B SaaS MCP and live EC2 CMEK kill-switch assertions pass with 100% compliance.',
     slide11Spoken:
       'For our executive, business, and technical stakeholders, Pattern B delivers three uncompromising guarantees. Under Security, VPC Service Controls, Principal Access Boundaries, and customer-held KMS kill-switches provide mathematically provable sovereignty. Under Reliability, dedicated per-project quotas and optional private Gemma 3 GPU nodes eliminate external dependency risk. And under Operational Efficiency, our modular Terraform blueprint provisions an entire compliant customer silo repeatably through infrastructure as code.',
     slide12Spoken:
@@ -109,7 +109,7 @@ export const WORKSTREAM_THEMES = {
     slide9Spoken:
       'This four-point verification matrix summarizes our automated tests for Pattern C—proving that Private Service Connect blocks reverse spoke-to-hub network probing, that `/28` NAT subnets prevent IP exhaustion across tenants, that atomic pointer cutover drops zero active sessions, and that upgrading one tenant never mutates or disturbs any other tenant’s profile.',
     slide10Spoken:
-      'Here are the live Google Cloud Console receipts from our hybrid environment. On the left, you can see our provisioned Private Service Connect NAT subnet and Vertex AI Agent Engine endpoints; on the right, the runtime telemetry cards verify a live promotion of RetailStream from the Standard pool into an Enterprise sovereign spoke with 100% memory parity and zero dropped requests.',
+      'Here are the live Dual-Plane receipts from our hybrid environment. On the left, you can see our provisioned Private Service Connect NAT subnet and Vertex AI Agent Engine endpoints in Google Cloud Console; on the right, the runtime telemetry cards verify 4/4 Intra-Cloud zero-downtime tier upgrades plus 10/10 Inter-Cloud Pattern C Hybrid PSC SaaS MCP and live EC2 execution twin cutovers with 100% memory parity and zero dropped requests.',
     slide11Spoken:
       'Summarizing Pattern C for our executive, business, and engineering leaders, this hybrid architecture delivers three powerful advantages. Under Security, one-way Private Service Connect tunnels guarantee that a compromised spoke can never traverse backward into the central hub. Under Reliability, our shadow-sync state machine with instant rollback makes customer tier upgrades completely risk-free. And under Business Agility, customers can start small in the shared pool and expand into a dedicated enterprise vault whenever their business is ready.',
     slide12Spoken:
@@ -136,7 +136,7 @@ export const WORKSTREAM_THEMES = {
     slide9Spoken:
       'This master verification ledger consolidates all twenty automated simulation tests across the entire program—combining the ten Shared Pool breach tests from Workstream 2, the six Sovereign Silo and kill-switch tests from Workstream 3, and the four Hybrid Private Service Connect and live tier migration tests from Workstream 4 into one continuous integration gate.',
     slide10Spoken:
-      'Here are the capstone visual receipts from our live Google Cloud projects confirming that the entire 24-file codebase, all fourteen official architecture blueprints, all twelve forensic verification gates, and all twenty runtime breach and migration simulations pass at 100%.',
+      'Here are the capstone Dual-Plane receipts from our live Google Cloud and AWS environments confirming that the entire 24-file codebase, all fourteen official architecture blueprints, all 20/20 Intra-Cloud GCP runtime simulations, all 30/30 Inter-Cloud 10-SaaS AWS AgentCore MCP and live EC2 execution twin flows (60/60 assertions), and all 12/12 forensic gates pass at 100%.',
     slide11Spoken:
       'As we wrap up the series for our executive, business, and technical leaders, remember these three foundational takeaways. First, you never have to choose between SaaS gross margins and enterprise compliance—Patterns A, B, and C let you offer both from one platform. Second, the Agentic Triad lets every customer customize their AI agents and skills safely without forking your codebase. And third, our 80/20 architecture and automated twenty-test harness keep engineering velocity high and operational risk near zero.',
     slide12Spoken:
@@ -579,13 +579,13 @@ export function getMaster25SlideNotes() {
     makeSpokenNote({
       slideNum: 23,
       totalSlides: total,
-      slideTitle: 'Program Capstone — Live Google Cloud Console & 20/20 Runtime Verification Proof',
+      slideTitle: 'Program Capstone — Live Dual-Plane GCP (20/20) & Inter-Cloud 10-SaaS MCP (30/30) Verification Proof',
       whyHere:
-        `Having completed all five workstream chapters on Slide 22, we move to Slide 23 to show the live visual evidence captured directly from our Google Cloud projects—proving that every pattern we just reviewed is running and verified in production.`,
+        `Having completed all five workstream chapters on Slide 22, we move to Slide 23 to show the live Dual-Plane visual evidence captured directly from our Google Cloud and AWS environments—proving that every pattern we just reviewed is running and verified in production.`,
       whatIsHappening:
-        `On the left, you can see our active Cloud Run revisions, enabled Google Cloud security APIs, and Cloud Logging traces; on the right, the summary cards confirm that all twenty automated red-team breach, sovereign kill-switch, and zero-downtime tier migration tests pass with zero cross-tenant data leakage.`,
+        `On the left, you can see our active Cloud Run revisions, enabled Google Cloud security APIs, and Cloud Logging traces; on the right, the summary cards confirm that all 20/20 Intra-Cloud Google Cloud breach, sovereign kill-switch, and zero-downtime tier migration tests plus all 30/30 Inter-Cloud 10-SaaS AWS Bedrock AgentCore MCP and live EC2 execution twin flows (60/60 assertions across ports 3001 through 3010) pass with zero cross-tenant data leakage.`,
       whatComesNext:
-        `With live cloud verification confirmed here on Slide 23, let's turn to Slide 24 to synthesize the entire program into our three executive Well-Architected guarantees.`,
+        `With live Dual-Plane verification confirmed here on Slide 23, let's turn to Slide 24 to synthesize the entire program into our three executive Well-Architected guarantees.`,
     })
   );
 

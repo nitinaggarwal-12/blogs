@@ -192,7 +192,7 @@ const DECKS = {
         tableRows: [
           [
             'Control plane & project boundary',
-            'Single shared GCP project (`ramp-portal-dev`); logical separation in software',
+            'Single shared GCP project (`cymbal-control-plane`); logical separation in software',
             'Dedicated GCP project per tenant (`cymbal-{tenant}-silo-prod`) under org folder',
             'Central Ingress Hub project + Shared Pool + Dedicated Enterprise Spoke projects',
           ],
@@ -396,7 +396,7 @@ const DECKS = {
     deckSubtitle:
       'Serving hundreds of commercial B2B SaaS tenants on a single shared Cloud Run v2, Vertex AI Agent Engine, and AlloyDB RLS footprint with 84.7% lower inference cost and 10/10 red-team attacks blocked',
     tldr: [
-      'Solving the Commercial SaaS Margin Equation: Pattern A hosts hundreds of Standard Tier–Enterprise Tier commercial tenants inside one shared Google Cloud project (`ramp-portal-dev`) at a 120 RPM Pooled infrastructure floor.',
+      'Solving the Commercial SaaS Margin Equation: Pattern A hosts hundreds of Standard Tier–Enterprise Tier commercial tenants inside one shared Google Cloud project (`cymbal-control-plane`) at a 120 RPM Pooled infrastructure floor.',
       'Cryptographic Logical Isolation (Zero Physical Sprawl): Instead of spinning up separate VPCs per tenant, Pattern A enforces non-bypassable tenant boundaries across all 5 runtime hops in software.',
       '10/10 Adversarial Red-Team Attacks Neutralized: Competing tenants FinVault Bank and RetailStream Corp share the exact same Cloud Run v2 workers and AlloyDB cluster with zero cross-tenant data or tool bleed.',
       '84.7% Net Inference Cost Reduction: A 32,000-token immutable platform runbook is cached once in Gemini 2.5 Pro ContextCacheConfig at a 90% discount, cutting billable input tokens from 34,000 to 5,200 per turn.',
@@ -404,7 +404,7 @@ const DECKS = {
     ],
     tldrSpecs: [
       {
-        stack: 'Single GCP Project (ramp-portal-dev) • Cloud Run v2 (cymbal-multi-tenant-patterns)',
+        stack: 'Single GCP Project (cymbal-control-plane) • Cloud Run v2 (cymbal-multi-tenant-patterns)',
         sla: '120 RPM Pool Unit Cost per Tenant • Preserves 85%+ SaaS Gross Margin on Standard Tiers',
         tag: 'High-Density SaaS Unit Economics',
       },
@@ -437,7 +437,7 @@ const DECKS = {
           'Agentic AI & Shared Prefix Caching: Vertex AI Agent Engine (ADK 2.0 runtime, Agent Registry & L1–L5 Memory Bank) and Gemini 2.5 Pro with ContextCacheConfig caching a 32,000-token immutable system prefix at a 90% discount (84.7% net token savings).',
           'Ingress, Identity & Bidirectional AI Safety: Global External Application Load Balancer, Google Cloud Armor L7 WAF (stripping spoofed X-Tenant-Id headers), IAP + IAM STS (RFC 8693 OBO + RFC 9449 DPoP), Vertex AI Model Armor, and Cloud Sensitive Data Protection.',
           'Rate Bulkheads, Relational RLS & FinOps Telemetry: Memorystore for Valkey (120 vs. 600 RPM token buckets), Firestore tenant profile registry, AlloyDB for PostgreSQL (`FORCE ROW LEVEL SECURITY`), Cloud KMS CMEK, and BigQuery zero-PII OTel chargeback.',
-          'High-Density Unit Economics (120 RPM Shared Pool): Co-hosts hundreds of commercial B2B SaaS tenants inside one shared Google Cloud project (`ramp-portal-dev`) while guaranteeing 10/10 red-team breach isolation.',
+          'High-Density Unit Economics (120 RPM Shared Pool): Co-hosts hundreds of commercial B2B SaaS tenants inside one shared Google Cloud project (`cymbal-control-plane`) while guaranteeing 10/10 red-team breach isolation.',
         ],
         specs: [
           {
@@ -808,7 +808,7 @@ const DECKS = {
         tableRows: [
           [
             'Cloud project & blast radius',
-            'Single shared GCP project (`ramp-portal-dev`); logical software isolation',
+            'Single shared GCP project (`cymbal-control-plane`); logical software isolation',
             'Dedicated GCP project (`cymbal-{tenant}-silo-prod`); zero shared compute or DB',
             'Dedicated GCP project + air-gapped VPC (`10.30.0.0/20`, `0.0.0.0/0` egress blocked)',
           ],
