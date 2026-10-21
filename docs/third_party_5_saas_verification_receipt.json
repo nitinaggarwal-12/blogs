@@ -1,5 +1,5 @@
 {
-  "verified_at": "2026-10-21T01:29:50.341155+00:00",
+  "verified_at": "2026-10-21T01:51:40.723053+00:00",
   "total_unique_saas_products_tested": 10,
   "patterns_tested": [
     "PATTERN_A_POOLED",
@@ -3622,7 +3622,7 @@
                 "val1": "finvault"
               },
               "kpi_summary": "FinVault OCC Wire Settlement Portfolio: $527.0M across 2 RLS-verified entities (FV-TX-901, FV-TX-902)",
-              "executed_at_utc": "2026-10-21T01:29:35Z",
+              "executed_at_utc": "2026-10-21T01:51:26Z",
               "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
               "sanitized_payload": "Show P1 incident entities and portfolio value for my tenant"
             },
@@ -3639,7 +3639,7 @@
               "message": {
                 "debug": {
                   "code": 10002,
-                  "incident_id_guid": "66d3bf9e-4d8f-4d5d-a136-3ad66886b105",
+                  "incident_id_guid": "0e7e9198-704e-46ff-9a3e-cfdc55909898",
                   "trace_id_guid": "tracing-disabled",
                   "debug": "[\"Invalid parameter values: {\\\"credential\\\":\\\"Correct Credential is not specified\\\"}\"]"
                 }
@@ -3651,7 +3651,7 @@
           "live_bq_query_ok": true,
           "status_code": 200,
           "billing_project": "ramp-portal-dev",
-          "job_id": "job_XcZ5gH6D4TBIT86RqEf5eBfuSk5O",
+          "job_id": "job_b_-XVkPNyJBLZr1aiaLsxfOPi-5G",
           "location": "US",
           "total_rows": 2,
           "rows": [
@@ -3739,7 +3739,7 @@
                 "row_count": 2,
                 "cross_tenant_rows": 0
               },
-              "executed_at_utc": "2026-10-21T01:29:37Z",
+              "executed_at_utc": "2026-10-21T01:51:28Z",
               "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
               "sanitized_payload": ""
             },
@@ -3749,7 +3749,7 @@
         "live_sigma_cloud_probe": {
           "oauth2_token_endpoint": "https://api.sigmacomputing.com/v2/auth/token",
           "oauth2_http_status": 400,
-          "sigma_request_id": "01a15c13-faaf-73fd-9496-4f536ce3ca1e",
+          "sigma_request_id": "01a15c27-fcf5-714d-9992-b6901463d882",
           "status_api_description": "All Systems Operational",
           "live_endpoint_reachable": true
         },
@@ -3757,7 +3757,7 @@
           "live_bq_query_ok": true,
           "status_code": 200,
           "billing_project": "ramp-portal-dev",
-          "job_id": "job_qtBDIAek052jrKBffnDFefjJP5yP",
+          "job_id": "job_SwLGImlTGwqMe8SPdgE4njB5SvLs",
           "location": "US",
           "total_rows": 2,
           "rows": [
@@ -3948,7 +3948,7 @@
               "jira_cloud_project": "FINVAULT-SRE",
               "jira_issue_key": "FINVAULT-SRE-1402",
               "escalation_state": "CREATED_WITH_HOP4_SDP_PII_MASKING",
-              "executed_at_utc": "2026-10-21T01:29:41Z",
+              "executed_at_utc": "2026-10-21T01:51:32Z",
               "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
               "sanitized_payload": "P1 Core-Ledger wire delay affecting IBAN [REDACTED-FINVAULT-IBAN] and [REDACTED-FINVAULT-SWIFT]"
             },
@@ -4029,7 +4029,7 @@
               "genie_space_id": "genie-space-fv-treasury-01",
               "sql_warehouse_id": "wh-databricks-serverless-fv-01",
               "dynamic_sql_guard": "EXECUTE_IMMEDIATE_BLOCKED",
-              "executed_at_utc": "2026-10-21T01:29:44Z",
+              "executed_at_utc": "2026-10-21T01:51:34Z",
               "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
               "sanitized_payload": "SELECT entity_id, tenant_id, portfolio_M FROM pattern_a_pooled_rls_entities"
             },
@@ -4040,14 +4040,14 @@
           "endpoint": "https://community.cloud.databricks.com/api/2.0/clusters/list",
           "http_status": 401,
           "server_header": "databricks",
-          "databricks_gateway_message": "Credential was not sent or was of an unsupported type for this API. [ReqId: 2c0d60aa-c360-43fd-98cb-45f0a50d8491]",
+          "databricks_gateway_message": "Credential was not sent or was of an unsupported type for this API. [ReqId: 9fcf74b2-a29e-4d47-b087-e6f00704ac74]",
           "live_endpoint_reachable": true
         },
         "live_federated_bigquery_rls": {
           "live_bq_query_ok": true,
           "status_code": 200,
           "billing_project": "ramp-portal-dev",
-          "job_id": "job_0waiXuGW7dEKRofQX03GSyfWPeFX",
+          "job_id": "job_osi9YcU64ycULxUT0rYhtBTfTOSM",
           "location": "US",
           "total_rows": 2,
           "rows": [
@@ -4128,7 +4128,7 @@
               "primary_role": "ROLE_CYMBAL_RETAILSTREAM",
               "secondary_roles": "NONE",
               "cortex_semantic_model": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/snowflake/retailstream_semantic_model.yaml",
-              "executed_at_utc": "2026-10-21T01:29:46Z",
+              "executed_at_utc": "2026-10-21T01:51:37Z",
               "pattern": "PATTERN_A_POOLED",
               "sanitized_payload": "SELECT * FROM `nitina-ggarwal-sandbox-647724.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities` WHERE tenant_id = 'retailstream' ORDER BY entity_id"
             },
@@ -4147,7 +4147,7 @@
           "live_bq_query_ok": true,
           "status_code": 200,
           "billing_project": "ramp-portal-dev",
-          "job_id": "job_P68Y3IfXkun7QbaYi10rpX9dCF9m",
+          "job_id": "job_S1poXOlJv4ZCG-AlPskEiaE6SLyF",
           "location": "US",
           "total_rows": 1,
           "rows": [
@@ -4215,7 +4215,7 @@
               "raas_report_id": "WD-RAAS-FV-COMP-2026",
               "composite_3lo_scope": "finvault:sre-lead@finvault.com:mcp://finvault/workday-hcm-financials-raas-3lo",
               "sdp_masking_policy": "US_SOCIAL_SECURITY_NUMBER + IBAN_CODE REDACTED",
-              "executed_at_utc": "2026-10-21T01:29:47Z",
+              "executed_at_utc": "2026-10-21T01:51:38Z",
               "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
               "sanitized_payload": "Worker: Clara Vance (EVP Treasury) | SSN: [REDACTED_US_SSN] | DirectDeposit IBAN: [REDACTED-FINVAULT-IBAN] | BaseSalary: $420,000 | SupervisoryOrg: FinVault-Global-Treasury"
             },
@@ -4294,7 +4294,7 @@
               "enforced_log_query": "index:cymbal-prod @tenant_id:finvault service:core-ledger-api",
               "apm_p99_latency_ms": 14.2,
               "bits_ai_sre_verdict": "HEALTHY_ZERO_INDIRECT_PROMPT_INJECTION",
-              "executed_at_utc": "2026-10-21T01:29:48Z",
+              "executed_at_utc": "2026-10-21T01:51:38Z",
               "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
               "sanitized_payload": "index:cymbal-prod @tenant_id:finvault service:core-ledger-api"
             },
@@ -4370,7 +4370,7 @@
               "host_aid": "aid-fv-prod-ledger-001",
               "containment_action": "NETWORK_CONTAINMENT_READY_DPOP_VERIFIED",
               "dpop_jkt_bound": "dpop_jkt_fv_001",
-              "executed_at_utc": "2026-10-21T01:29:49Z",
+              "executed_at_utc": "2026-10-21T01:51:40Z",
               "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
               "sanitized_payload": ""
             },
@@ -4380,7 +4380,7 @@
         "live_crowdstrike_falcon_probe": {
           "oauth2_endpoint": "https://api.crowdstrike.com/oauth2/token",
           "http_status": 401,
-          "falcon_trace_id": "81730bd1-dc1b-432b-bb93-621046b6b3e7",
+          "falcon_trace_id": "305ad14f-c1d6-4f82-b363-25ba0b692505",
           "live_endpoint_reachable": true
         },
         "live_okta_oidc_probe": {
