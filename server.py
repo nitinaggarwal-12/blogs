@@ -680,13 +680,14 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         if path in ("/", "/index.html", "/admin/feedback"):
             index_file = ROOT_DIR / "index.html"
             html_text = index_file.read_text(encoding="utf-8")
-            if "universal_feedback_widget.js" not in html_text:
+            if "universal_feedback_widget.js" not in html_text and "</body>" in html_text:
+                head_part, sep, tail_part = html_text.rpartition("</body>")
                 widget_tag = (
                     '<script src="/universal_feedback_widget.js" '
                     'data-app-id="ge-blogs" '
                     'data-app-name="Google Cloud Architecture Guides (ge-blogs)"></script></body>'
                 )
-                html_text = html_text.replace("</body>", widget_tag, 1)
+                html_text = head_part + widget_tag + tail_part
             self._send_html(200, html_text.encode("utf-8"))
             return
 

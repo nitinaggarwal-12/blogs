@@ -7,6 +7,8 @@
   if (typeof window === 'undefined' || window.__UNIVERSAL_FEEDBACK_INITIALIZED__) return;
   window.__UNIVERSAL_FEEDBACK_INITIALIZED__ = true;
 
+  var INITIAL_PATHNAME = window.location.pathname || '';
+  var INITIAL_SEARCH = window.location.search || '';
   var scriptEl = document.currentScript || document.querySelector('script[src*="universal_feedback_widget"]');
   var cfg = window.UNIVERSAL_FEEDBACK_CONFIG || {};
   var APP_ID = (scriptEl && scriptEl.getAttribute('data-app-id')) || cfg.appId || 'workspace-app';
@@ -41,9 +43,9 @@
       '.ufw-btn-wrap { position: relative; display: inline-flex; align-items: center; font-family: -apple-system, BlinkMacSystemFont, "Google Sans", "Segoe UI", Roboto, sans-serif; }',
       '.ufw-email-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 32px; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 800; background: #eff6ff; color: #1e40af; border: 1px solid #93c5fd; cursor: pointer; white-space: nowrap; transition: background 0.15s ease; box-shadow: 0 1px 2px rgba(15,23,42,0.05); }',
       '.ufw-email-btn:hover { background: #dbeafe; }',
-      '.ufw-tooltip { position: absolute; right: 0; top: calc(100% + 6px); z-index: 99999; background: #0f172a; color: #ffffff; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; white-space: nowrap; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); border: 1px solid #334155; pointer-events: none; display: none; }',
+      '.ufw-tooltip { position: absolute; right: 0; top: calc(100% + 6px); z-index: 2147483645; background: #0f172a; color: #ffffff; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; white-space: nowrap; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); border: 1px solid #334155; pointer-events: none; display: none; }',
       '.ufw-btn-wrap:hover .ufw-tooltip, .ufw-btn-wrap:focus-within .ufw-tooltip { display: block; }',
-      '.ufw-backdrop { position: fixed; inset: 0; z-index: 99998; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, "Google Sans", "Segoe UI", Roboto, sans-serif; }',
+      '.ufw-backdrop { position: fixed; inset: 0; z-index: 2147483640; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, "Google Sans", "Segoe UI", Roboto, sans-serif; }',
       '.ufw-modal { width: 100%; max-width: 672px; background: #ffffff; color: #0f172a; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25); overflow: hidden; }',
       '.ufw-modal-hdr { padding: 16px 20px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; gap: 12px; }',
       '.ufw-modal-body { padding: 20px; max-height: 80vh; overflow-y: auto; }',
@@ -52,7 +54,7 @@
       '.ufw-label { display: block; font-size: 12px; font-weight: 800; color: #334155; margin-bottom: 4px; }',
       '.ufw-input, .ufw-select, .ufw-textarea { width: 100%; box-sizing: border-box; border-radius: 8px; border: 1px solid #cbd5e1; background: #ffffff; padding: 8px 12px; font-size: 12px; color: #0f172a; font-family: inherit; }',
       '.ufw-input:focus, .ufw-select:focus, .ufw-textarea:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37,99,235,0.15); }',
-      '.ufw-admin-overlay { position: fixed; inset: 0; z-index: 99990; background: #f8fafc; color: #0f172a; overflow-y: auto; padding: 20px 24px; font-family: -apple-system, BlinkMacSystemFont, "Google Sans", "Segoe UI", Roboto, sans-serif; box-sizing: border-box; }',
+      '.ufw-admin-overlay { position: fixed; inset: 0; z-index: 2147483635; background: #f8fafc; color: #0f172a; overflow-y: auto; padding: 20px 24px; font-family: -apple-system, BlinkMacSystemFont, "Google Sans", "Segoe UI", Roboto, sans-serif; box-sizing: border-box; }',
       '.ufw-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; box-shadow: 0 1px 2px rgba(15,23,42,0.04); }',
       '.ufw-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }',
       '@media (max-width: 900px) { .ufw-kpi-grid { grid-template-columns: repeat(2, 1fr); } }',
@@ -169,8 +171,10 @@
     };
 
     var form = document.getElementById('ufw-feedback-form');
-    form.onsubmit = function (e) {
-      e.preventDefault();
+    var isSubmitting = false;
+    function submitFeedbackForm(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      if (isSubmitting) return;
       var msgEl = document.getElementById('ufw-message');
       var message = (msgEl.value || '').trim();
       var errBanner = document.getElementById('ufw-error-banner');
@@ -179,6 +183,7 @@
         errBanner.textContent = '⚠️ Please enter a feedback message before submitting.';
         return;
       }
+      isSubmitting = true;
       var submitBtn = document.getElementById('ufw-submit-btn');
       submitBtn.disabled = true;
       submitBtn.textContent = 'Submitting...';
@@ -261,12 +266,15 @@
           }
         })
         .catch(function (err) {
+          isSubmitting = false;
           submitBtn.disabled = false;
           submitBtn.textContent = 'Submit Feedback';
           errBanner.style.display = 'block';
           errBanner.textContent = '⚠️ ' + (err.message || 'Failed to submit feedback');
         });
-    };
+    }
+    form.onsubmit = submitFeedbackForm;
+    document.getElementById('ufw-submit-btn').onclick = submitFeedbackForm;
   }
 
   var adminState = {
@@ -645,8 +653,13 @@
 
   function checkInitialAdminRoute() {
     var path = window.location.pathname.replace(/\/+$/, '');
-    var sp = new URLSearchParams(window.location.search);
-    if (path === '/admin/feedback' || sp.get('page') === 'admin-feedback') {
+    var initPath = INITIAL_PATHNAME.replace(/\/+$/, '');
+    var sp = new URLSearchParams(window.location.search || INITIAL_SEARCH);
+    if (
+      path === '/admin/feedback' ||
+      initPath === '/admin/feedback' ||
+      sp.get('page') === 'admin-feedback'
+    ) {
       openAdminInboxPage();
     }
   }
