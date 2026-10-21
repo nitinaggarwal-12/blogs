@@ -5,11 +5,11 @@
   "buildProject": "nitina-ggarwal-sandbox-647724",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "ge-blogs-00017-rcn",
-  "latestCreatedRevisionName": "ge-blogs-00017-rcn",
+  "latestReadyRevisionName": "ge-blogs-00018-tzg",
+  "latestCreatedRevisionName": "ge-blogs-00018-tzg",
   "readyStatus": "True",
   "trafficPercent": 100,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261021-051542-rule58",
-  "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00017-rcn",
-  "verifiedAt": "2026-10-21T05:16:05Z"
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261021-r8-all-blogs-decks-f1013d5",
+  "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00018-tzg",
+  "verifiedAt": "2026-10-21T15:34:52Z"
 }
