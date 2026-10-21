@@ -205,6 +205,58 @@ class TestFiveHopPipeline(unittest.TestCase):
         self.assertEqual(mig["phases"][2]["dropped_sessions"], 0)
         self.assertEqual(mig["active_route"]["tier"].value, "ENTERPRISE")
 
+    def test_10_ws1_deck_parity_jwks_single_flight_targeted_unlink_and_3lo_dpop(self) -> None:
+        fv_ctx, h1_audit = self.runtime.hop1.authenticate_and_mint_context(
+            raw_headers={},
+            jwt_claims={"iss": "https://accounts.google.com/finvault.com", "sub": "sre-lead@finvault.com"},
+            dpop_proof_jkt="dpop_fv_leader_10",
+            session_id="unit-sess-10",
+        )
+        # 1. Verify Hop 1 <0.15ms cached KMS JWKS + ~3ms Valkey JTI deny-list metadata
+        jwks_info = h1_audit.metadata["cached_jwks_and_valkey_jti"]
+        self.assertLess(jwks_info["jwks_verify_latency_ms"], 0.15)
+        self.assertEqual(jwks_info["valkey_jti_denylist_key"], "revoked_jti:finvault")
+
+        # 2. Verify Hop 3 SET NX PX 5000 single-flight cache stampede lock (leader vs follower)
+        leader_lock = self.runtime.hop3.acquire_single_flight_cache_lock("finvault", "prefix_v2", 5000)
+        follower_lock = self.runtime.hop3.acquire_single_flight_cache_lock("finvault", "prefix_v2", 5000)
+        self.assertTrue(leader_lock["acquired_leader"])
+        self.assertFalse(follower_lock["acquired_leader"])
+        self.assertEqual(follower_lock["follower_action"], "AWAIT_PUBSUB_WARM_CACHE")
+
+        # 3. Verify Hop 3 targeted SCAN + UNLINK evicts only FinVault's keys and preserves RetailStream's warm cache
+        unlink_res = self.runtime.hop3.unlink_tenant_valkey_cache("finvault")
+        self.assertFalse(unlink_res["global_flushall_executed"])
+        self.assertIn("cache:retailstream:prefix_v2", unlink_res["surviving_other_tenant_keys"])
+
+        # 4. Verify Hop 5 {tenant}:{user} DPoP-bound 3LO Confused-Deputy protection
+        self.runtime.hop5.grant_inline_3lo_consent(
+            tenant_id="finvault",
+            mcp_connector_uri="mcp://finvault/jira-enterprise-3lo",
+            token="jira.finvault-user-scoped-3lo",
+            user_principal="sre-lead@finvault.com",
+            dpop_jkt="dpop_fv_leader_10",
+        )
+        forged_dpop_ctx, _ = self.runtime.hop1.authenticate_and_mint_context(
+            raw_headers={},
+            jwt_claims={"iss": "https://accounts.google.com/finvault.com", "sub": "sre-lead@finvault.com"},
+            dpop_proof_jkt="dpop_attacker_wrong_jkt",
+            session_id="unit-sess-10b",
+        )
+        with self.assertRaises(PermissionError):
+            self.runtime.hop5.invoke_mcp_connector(forged_dpop_ctx, "mcp://finvault/jira-enterprise-3lo")
+
+        # 5. Verify Hop 5 BigQuery OTel 0.1x cached_prefix_tokens billable equivalent math
+        otel_span = self.runtime.hop5.record_bigquery_otel_span(
+            ctx=fv_ctx,
+            agent_uri="agent://finvault/private-agent-alpha-regulatory",
+            thinking_tokens_used=4000,
+            cache_hit=True,
+            hops=[h1_audit],
+        )
+        self.assertEqual(otel_span["cached_prefix_tokens"], 18000)
+        self.assertEqual(otel_span["billable_equivalent_tokens"], 1200 + 1800 + 4000 + 650)
+
 
 if __name__ == "__main__":
     unittest.main()

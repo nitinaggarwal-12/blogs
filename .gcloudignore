@@ -16,9 +16,7 @@ tests/
 *.mp4
 scripts/gcp_icons_bundle.mjs
 scripts/official_arch_center_assets.json
-slides/doc-*.pptx
 slides/ws1-google-slides-design-plugin-editable-slides.pptx
-slides/previews/doc-*/
 slides/previews/ws1-google-slides-design-plugin-editable-slides/
 AGENTS.md
 CLAUDE.md

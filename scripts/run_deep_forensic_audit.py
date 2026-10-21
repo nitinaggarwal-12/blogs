@@ -644,7 +644,8 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             }
             for deck in decks:
                 deck_file = ROOT_DIR / deck.get("file", "")
-                if not deck_file.is_file() or deck_file.stat().st_size < 100_000 or deck.get("slides", 0) < 12:
+                min_expected_slides = 11 if deck.get("key") == "WS1" else 12
+                if not deck_file.is_file() or deck_file.stat().st_size < 100_000 or deck.get("slides", 0) < min_expected_slides:
                     decks_valid = False
                 else:
                     with _zipfile.ZipFile(deck_file, "r") as zf:
@@ -662,14 +663,26 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                             if "4-ZONE HUB-AND-SPOKE" in sxml and "ARCHITECTURE CENTER GUIDE (#78)" in sxml:
                                 has_sidebar_guide = True
                         joined_xml = "\n".join(all_slides_concat)
+                        ws_key = deck.get("key")
                         required_visual_archetypes = (
-                            "ARCHITECTURE-ZONE-TOPOLOGY",
-                            "PAYLOAD-TRANSFORMATION",
-                            "UML-SEQUENCE-SWIMLANE",
-                            "ASYNC-STATE-FLOW-PIPELINE",
-                            "STRATEGIC-OPERATING-MODEL",
-                            "LIVE-SCREENSHOT-CALLOUT",
-                            "Proprietary + Confidential",
+                            (
+                                "ARCHITECTURE-ZONE-TOPOLOGY",
+                                "PAYLOAD-TRANSFORMATION",
+                                "UML-SEQUENCE-SWIMLANE",
+                                "COMPARISON-GRID",
+                                "LIVE-SCREENSHOT-CALLOUT",
+                                "Proprietary + Confidential",
+                            )
+                            if ws_key == "WS1"
+                            else (
+                                "ARCHITECTURE-ZONE-TOPOLOGY",
+                                "PAYLOAD-TRANSFORMATION",
+                                "UML-SEQUENCE-SWIMLANE",
+                                "ASYNC-STATE-FLOW-PIPELINE",
+                                "STRATEGIC-OPERATING-MODEL",
+                                "LIVE-SCREENSHOT-CALLOUT",
+                                "Proprietary + Confidential",
+                            )
                         )
                         banned_copy_pasted_terms = (
                             "A2UI Portal",
@@ -715,51 +728,65 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                             or any(e in joined_xml for e in banned_emojis)
                         ):
                             decks_valid = False
-                        ws_key = deck.get("key")
                         if ws_key in ("WS1", "WS2", "WS3", "WS4", "WS5"):
-                            if len(slide_xml_names) != 12 or deck.get("slides") != 12:
+                            expected_ws_slides = 11 if ws_key == "WS1" else 12
+                            if len(slide_xml_names) != expected_ws_slides or deck.get("slides") != expected_ws_slides:
                                 decks_valid = False
                             if "ppt/slides/slide1.xml" in zf.namelist():
                                 s1_xml = zf.read("ppt/slides/slide1.xml").decode("utf-8", errors="ignore")
-                                if "3-ACT EXECUTIVE BRIEFING" not in s1_xml or "SLIDES 1–3" not in s1_xml:
+                                if "3-ACT EXECUTIVE BRIEFING" not in s1_xml or ("SLIDES 1–3" not in s1_xml and "SLIDES 1–4" not in s1_xml):
                                     decks_valid = False
-                            if "ppt/slides/slide3.xml" in zf.namelist():
-                                s3_xml = zf.read("ppt/slides/slide3.xml").decode("utf-8", errors="ignore")
+                            if ws_key == "WS1" and "ppt/slides/slide2.xml" in zf.namelist():
+                                s2_toc_xml = zf.read("ppt/slides/slide2.xml").decode("utf-8", errors="ignore")
+                                if "COMPARISON-GRID" not in s2_toc_xml or "Agenda" not in s2_toc_xml:
+                                    decks_valid = False
+                            _opt_xml_name = "ppt/slides/slide4.xml" if ws_key == "WS1" else "ppt/slides/slide3.xml"
+                            if _opt_xml_name in zf.namelist():
+                                s3_xml = zf.read(_opt_xml_name).decode("utf-8", errors="ignore")
                                 if "COMPARISON-GRID" not in s3_xml or "ARCHITECTURAL OPTIONS" not in s3_xml:
                                     decks_valid = False
-                            if "ppt/slides/slide4.xml" in zf.namelist():
-                                s4_xml = zf.read("ppt/slides/slide4.xml").decode("utf-8", errors="ignore")
+                            _zone_xml_name = "ppt/slides/slide5.xml" if ws_key == "WS1" else "ppt/slides/slide4.xml"
+                            _fig1_xml_name = "ppt/slides/slide6.xml" if ws_key == "WS1" else "ppt/slides/slide5.xml"
+                            _uml_xml_name = "ppt/slides/slide7.xml" if ws_key == "WS1" else "ppt/slides/slide6.xml"
+                            _payload_xml_name = "ppt/slides/slide8.xml" if ws_key == "WS1" else "ppt/slides/slide7.xml"
+                            _pipe_xml_name = None if ws_key == "WS1" else "ppt/slides/slide8.xml"
+                            _op_xml_name = None if ws_key == "WS1" else "ppt/slides/slide11.xml"
+                            _grid_xml_name = "ppt/slides/slide9.xml"
+                            _shot_xml_name = "ppt/slides/slide10.xml"
+
+                            if _zone_xml_name in zf.namelist():
+                                s4_xml = zf.read(_zone_xml_name).decode("utf-8", errors="ignore")
                                 if "ARCHITECTURE-ZONE-TOPOLOGY" not in s4_xml:
                                     decks_valid = False
-                            if "ppt/slides/slide5.xml" in zf.namelist():
-                                s5_xml = zf.read("ppt/slides/slide5.xml").decode("utf-8", errors="ignore")
+                            if _fig1_xml_name in zf.namelist():
+                                s5_xml = zf.read(_fig1_xml_name).decode("utf-8", errors="ignore")
                                 if "Figure 1" not in s5_xml or "4-ZONE HUB-AND-SPOKE" not in s5_xml:
                                     decks_valid = False
-                            if "ppt/slides/slide6.xml" in zf.namelist():
-                                s6_xml = zf.read("ppt/slides/slide6.xml").decode("utf-8", errors="ignore")
+                            if _uml_xml_name in zf.namelist():
+                                s6_xml = zf.read(_uml_xml_name).decode("utf-8", errors="ignore")
                                 if "UML-SEQUENCE-SWIMLANE" not in s6_xml:
                                     decks_valid = False
-                            if "ppt/slides/slide7.xml" in zf.namelist():
-                                s7_xml = zf.read("ppt/slides/slide7.xml").decode("utf-8", errors="ignore")
+                            if _payload_xml_name in zf.namelist():
+                                s7_xml = zf.read(_payload_xml_name).decode("utf-8", errors="ignore")
                                 if "PAYLOAD-TRANSFORMATION" not in s7_xml:
                                     decks_valid = False
-                            if "ppt/slides/slide8.xml" in zf.namelist():
-                                s8_xml = zf.read("ppt/slides/slide8.xml").decode("utf-8", errors="ignore")
+                            if _pipe_xml_name and _pipe_xml_name in zf.namelist():
+                                s8_xml = zf.read(_pipe_xml_name).decode("utf-8", errors="ignore")
                                 if "ASYNC-STATE-FLOW-PIPELINE" not in s8_xml:
                                     decks_valid = False
-                            if "ppt/slides/slide9.xml" in zf.namelist():
-                                s9_xml = zf.read("ppt/slides/slide9.xml").decode("utf-8", errors="ignore")
+                            if _grid_xml_name in zf.namelist():
+                                s9_xml = zf.read(_grid_xml_name).decode("utf-8", errors="ignore")
                                 if "COMPARISON-GRID" not in s9_xml:
                                     decks_valid = False
-                            if "ppt/slides/slide10.xml" in zf.namelist():
-                                s10_xml = zf.read("ppt/slides/slide10.xml").decode("utf-8", errors="ignore")
+                            if _shot_xml_name in zf.namelist():
+                                s10_xml = zf.read(_shot_xml_name).decode("utf-8", errors="ignore")
                                 if "Aspect Ratio: Native 16:9" not in s10_xml or 'cx="3639312" cy="2048256"' not in s10_xml:
                                     decks_valid = False
-                            if "ppt/slides/slide11.xml" in zf.namelist():
-                                s11_xml = zf.read("ppt/slides/slide11.xml").decode("utf-8", errors="ignore")
+                            if _op_xml_name and _op_xml_name in zf.namelist():
+                                s11_xml = zf.read(_op_xml_name).decode("utf-8", errors="ignore")
                                 if "STRATEGIC-OPERATING-MODEL" not in s11_xml:
                                     decks_valid = False
-                            # Rule 53F: per-WS content fingerprints — Slide 4 zone subtitle, Slide 6 [Alt] body, Slide 7 wire
+                            # Rule 53F: per-WS content fingerprints — Zone subtitle, UML [Alt] body, Payload wire
                             # subtitle + verdict pills must be UNIQUE across WS1..WS5 (0 copy-pasted WS1 copy in WS2–WS5).
                             import re as _re
                             import html as _html
@@ -767,14 +794,14 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                             def _a_t(xml_text: str) -> str:
                                 return _html.unescape(" ".join(_re.findall(r"<a:t>([^<]*)</a:t>", xml_text)))
 
-                            _s4_t = _a_t(zf.read("ppt/slides/slide4.xml").decode("utf-8", errors="ignore")) if "ppt/slides/slide4.xml" in zf.namelist() else ""
-                            _s6_t = _a_t(zf.read("ppt/slides/slide6.xml").decode("utf-8", errors="ignore")) if "ppt/slides/slide6.xml" in zf.namelist() else ""
-                            _s7_t = _a_t(zf.read("ppt/slides/slide7.xml").decode("utf-8", errors="ignore")) if "ppt/slides/slide7.xml" in zf.namelist() else ""
-                            _m4 = _re.search(r"End-to-end 3-zone security & runtime boundary: Zone 1 \([^)]+\) → Zone 2 \([^)]+\) → Zone 3 \([^)]+\)", _s4_t)
+                            _s4_t = _a_t(zf.read(_zone_xml_name).decode("utf-8", errors="ignore")) if _zone_xml_name in zf.namelist() else ""
+                            _s6_t = _a_t(zf.read(_uml_xml_name).decode("utf-8", errors="ignore")) if _uml_xml_name in zf.namelist() else ""
+                            _s7_t = _a_t(zf.read(_payload_xml_name).decode("utf-8", errors="ignore")) if _payload_xml_name in zf.namelist() else ""
+                            _m4 = _re.search(r"End-to-end 3-(?:zone|layer)(?: logical)? security[^:]*: (?:Zone|Layer) 1 \([^)]+\) → (?:Zone|Layer) 2 \([^)]+\) → (?:Zone|Layer) 3 \([^)]+\)", _s4_t)
                             _m6 = _re.search(r"• [^•|:]{4,40}: [^•|]{20,}?→ [^•|]{3,80}", _s6_t)
                             # Rule 53F: [Alt] body must not overflow its frame — <= 2 '\n' lines x <= 156 chars (6.8pt over 6.64")
                             # and the dashed frame outer height must be >= 0.96" (877,824 EMU) so 4 wrapped visual lines fit.
-                            _s6_raw = zf.read("ppt/slides/slide6.xml").decode("utf-8", errors="ignore") if "ppt/slides/slide6.xml" in zf.namelist() else ""
+                            _s6_raw = zf.read(_uml_xml_name).decode("utf-8", errors="ignore") if _uml_xml_name in zf.namelist() else ""
                             _alt_paras = _re.findall(r"<a:p>(?:(?!</a:p>).)*?<a:t>(• [^<]*)</a:t>", _s6_raw)
                             _alt_lines = [_html.unescape(x) for x in _alt_paras if "→" in x]
                             if not (1 <= len(_alt_lines) <= 2) or any(len(x) > 156 for x in _alt_lines):
@@ -946,7 +973,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                     with _zipfile.ZipFile(dg_pptx, "r") as dzf:
                         d_slides = [n for n in dzf.namelist() if n.startswith("ppt/slides/slide") and n.endswith(".xml")]
                         d_notes = [n for n in dzf.namelist() if n.startswith("ppt/notesSlides/notesSlide") and n.endswith(".xml")]
-                        if len(d_slides) not in (6, 12, 25) or len(d_notes) != len(d_slides):
+                        if len(d_slides) not in (6, 11, 12, 25) or len(d_notes) != len(d_slides):
                             decks_valid = False
                         if not _verify_pptx_tables_full_height_no_middle_gap(dzf, d_slides):
                             decks_valid = False

@@ -12,29 +12,27 @@ export const WORKSTREAM_THEMES = {
   WS1: {
     name: 'Workstream 1 (Foundation & Reference Taxonomy)',
     slide1Spoken:
-      'In this session, we are walking through our foundational architecture for running multi-tenant AI agents on Google Cloud—showing how one platform can safely serve both high-volume commercial customers and strictly regulated enterprises without compromising margins or security.',
+      'In this session, we are walking through our foundational reference architecture for running multi-tenant AI agents on Google Cloud. Right upfront, we define our three core building blocks—Google’s Agent Development Kit 2.0 (ADK), the Model Context Protocol (MCP) for external tool integrations, and Agent Registry and Discovery (ARD)—and show how we solve the SaaS AI Architect’s Dilemma: avoiding the margin erosion of spinning up dedicated cloud projects for every small customer while preventing tool-schema data leaks and noisy-neighbor rate starvation in a shared pool.',
     slide2Spoken:
-      'Here you can see the core business tension every enterprise AI platform faces, illustrated through two very different customers on our Cymbal platform. On one side, FinVault Bank is a regulated financial institution that demands dedicated reasoning capacity, strict compliance guardrails, and customer-controlled encryption keys. On the other side, RetailStream Corp is a fast-moving enterprise retailer running on Microsoft Entra and ServiceNow that needs instant onboarding and predictable unit costs. For our business leaders, we want one unified product offering for both; for our technical and security leaders, we need an absolute guarantee that their data, tools, and performance will never cross company boundaries.',
+      'This Table of Contents maps our streamlined eleven-slide deck directly to the five-part engineering blog series and follows a strict macro-to-micro hierarchy. Part 1 covers the SaaS AI Architect’s Dilemma and isolation topologies across Slides 1 through 4. Part 2 establishes the five-hop cryptographic pipeline from L1 Logical Security Layers on Slide 5 to L2 Physical Network Perimeters on Slide 6 and L4 Wire Packet transformation on Slide 8. Part 3 on Slide 7 merges our L3 chronological UML sequence with fail-closed circuit breakers, sub-five-second Valkey L1 cache eviction, and single-flight recovery. Part 4 on Slide 9 documents our five EAP product gap controls, and Part 5 across Slides 10 and 11 pairs live Google Cloud Console proof with our merged Well-Architected SLA scorecard and runnable GitHub milestones.',
     slide3Spoken:
-      'To serve both ends of that customer spectrum, this matrix compares our three deployment topologies side-by-side: Pattern A, our High-Density Shared Pool; Pattern B, our Zero-Trust Sovereign Silos; and Pattern C, our Dynamic Hybrid Bridge. You do not need to memorize every cell—the key business takeaway is at the bottom in our four selection rules. When unit economics and rapid onboarding lead, we start in Pattern A; when a regulator mandates dedicated cloud projects and encryption kill-switches, we deploy Pattern B; and when a SaaS business serves both tiers and wants seamless customer upgrades, we unify them with Pattern C.',
+      'Here you can see that SaaS AI tension illustrated through two competing tenant personas on our Cymbal platform. On one side, FinVault Bank is a regulated financial institution at six hundred requests per minute that requires customer-controlled encryption keys and chooses between Managed Vertex AI Dedicated Provisioned Throughput for zero-ops Gemini 2.5 Pro capacity or self-managed, air-gapped Gemma 3 27B on Private GKE with zero internet egress. On the other side, RetailStream Corp runs on Microsoft Entra ID and ServiceNow at one hundred twenty requests per minute, where we isolate per-user Three-Legged OAuth tokens inside tenant-and-user DPoP-bound vaults to eliminate the Confused Deputy vulnerability across pooled workers.',
     slide4Spoken:
-      'Think of this high-level diagram like the floor plan of a secure airport terminal. Before we look at individual cloud services, everything in our platform is organized into three clear trust zones from left to right. Zone 1 on the left is our Front Door, where customer identity is verified and untrusted traffic is screened. Zone 2 in the center is our Five-Hop Security and Agent Control Plane, which stamps every request with a verified tenant passport and enforces per-customer quotas. Zone 3 on the right contains the isolated execution lanes where the AI models, tools, and databases actually run.',
+      'To serve both ends of that customer spectrum, this twelve-dimension matrix compares Pattern A, our High-Density Shared Pool; Pattern B, our Zero-Trust Sovereign Silos; and Pattern C, our Dynamic Hybrid Bridge. Notice the operational fleet-scale trade-off in the table: managing five hundred enterprise customers in Pattern B means maintaining five hundred separate VPC Service Controls perimeters, KMS keys, and AlloyDB instances—which is why Pattern C hosts nine hundred fifty standard tenants in the shared pool and reserves fifty Private Service Connect spokes for regulated contracts. Also note our kill-switch distinction: while Google Cloud KMS key state propagation can take up to sixty seconds across storage, Hop 3 runs a targeted Valkey SCAN and UNLINK of the tenant’s cache prefix in under five seconds to enforce our HTTP 423 lock SLA.',
     slide5Spoken:
-      'Zooming into those three zones, Figure 1 shows our complete Google Cloud physical blueprint. Notice how the four color-coded regions match the mental map we just established: incoming requests enter the blue Routing Hub at the top, pass through our green Five-Hop Governance Hub in the center—where identity, agent permissions, memory namespaces, and prompt safety are enforced—and then execute inside either the yellow Shared Pool Spoke on the left or the red Sovereign Silo Spoke on the right. For our architects, the right-hand sidebar summarizes how all fifty-six components connect end to end.',
+      'Before we inspect individual cloud services, this Level 1 diagram organizes our entire architecture into three logical security layers from left to right—preventing any terminology clash with the four physical VPC-SC network perimeters on the next slide. Layer 1 on the left verifies federated identity and DPoP proofs at the Cloud Armor and IAP edge. Layer 2 in the center runs our Five-Hop ADK 2.0 Control Plane, where regional gRPC callouts keep Hop 4 inline Model Armor and Cloud DLP inspection to roughly twenty-two milliseconds and total five-hop control-plane overhead to about forty-two milliseconds at p95. And to prevent security drift during a five-minute STS JWT window, every hop checks a three-millisecond Valkey JTI and CMEK revocation deny-list before routing into Layer 3 on the right.',
     slide6Spoken:
-      'Reading from left to right and top to bottom, this sequence traces what happens over time during a single live customer conversation. A user request arrives at the ingress gate, gets exchanged for a hardware-signed tenant token at Hop 1, checks which agents and tools that specific company is allowed to see at Hop 2, loads only that company’s scoped memory and rate-limit bucket at Hop 3, passes prompt safety and PII redaction at Hop 4, and finally queries row-isolated data at Hop 5. Notice the red return paths at the bottom: if any check fails at any hop, the request stops immediately before touching the model or database.',
+      'Zooming directly from those three logical security layers into the Level 2 physical topology, Figure 1 maps our fifty-six-shape Google Cloud blueprint across four physical VPC Service Controls network perimeters. Requests enter Blue Perimeter 1 (the Routing Hub) at the top, traverse Green Perimeter 2 (the Five-Hop Governance Hub) in the center, and execute inside either Yellow Perimeter 3 (the Pattern A Shared Pool Spoke) on the left or Red Perimeter 4 (the Pattern B Sovereign Silo and Pattern C PSC Spoke) on the right—with gVisor kernel sandboxing and composite tenant-user-session keys isolating every worker.',
     slide7Spoken:
-      'Here we open up the actual data envelope traveling across the wire during that sequence. Look at the left panel: an attacker or misconfigured client tries to sneak in a header claiming to be FinVault Bank. In the center panel, our front door completely strips out that untrusted claim and replaces it with a cryptographically signed token tied to the caller’s real login identity. By the time the request reaches the right panel, that verified tenant ID is locked directly into the memory cache prefix and the database session variable—making cross-tenant spoofing mathematically impossible.',
+      'Now that we have the L1 logical layers and L2 physical perimeters in place, this merged Level 3 process and operational resilience slide traces both the chronological happy path across five actors and every fail-closed circuit breaker in one unified view. Steps 1 through 6 trace a live customer turn in roughly forty-two milliseconds of control-plane overhead. And in the red fail-closed frame at the bottom, spoofed headers or ~3ms JTI revocations return HTTP 401 or 403, rate bursts over 120 or 600 RPM return HTTP 429 with Retry-After jitter, and a revoked Cloud KMS key triggers an HTTP 423 lock with a sub-five-second targeted Valkey SCAN and UNLINK of cache:{tenant}:*—followed by single-flight SET NX PX 5000 lazy re-hydration from AlloyDB RLS when the key is restored.',
     slide8Spoken:
-      'What you are looking at here is our fail-closed safety circuit. Unlike brittle systems that fail open or hang when a downstream service is overloaded, every gate in our five-hop pipeline acts as an automatic circuit breaker. At the front door, replayed tokens or unauthorized cross-tenant tool calls are rejected immediately. In the middle, our rate-limit bulkhead caps any single tenant that exceeds their requests-per-minute or thinking-token budget so one busy customer never slows down or drives up costs for anyone else. And at the data layer, if an enterprise customer flips their Cloud KMS encryption kill-switch, our system flushes their active memory cache within sixty seconds and locks data access—then automatically re-hydrates from AlloyDB as soon as their security team restores the key.',
+      'Zooming all the way down to Level 4, here we open up the wire packet traveling across those hops. On the left, an untrusted client attempts to inject a spoofed X-Tenant-Id header claiming to be FinVault Bank. In the center, Cloud Armor and our Hop 1 Security Token Service strip that header, verify the caller’s OIDC and DPoP proof, and mint a KMS ECDSA P-256 signed STS JWT. On the right, downstream microservices verify that asymmetric signature locally in under 0.15 milliseconds using an in-memory cached JWKS public key—achieving mathematical non-repudiation with zero per-hop KMS network calls.',
     slide9Spoken:
-      'This matrix maps each of those real-time safety switches to the five practical platform edge cases—GAP-01 through GAP-05—that engineering teams encounter when taking early-access AI platforms into production. For each gap on the left, the center column shows the exact Python, SQL, or Terraform safeguard we built in our core engine, and the right column confirms the automated test that verifies it on every deployment.',
+      'This register maps our five compensating production controls—GAP-01 through GAP-05—to the early-access platform boundaries engineering teams face today. Every custom Python, Valkey, or SQL control in core-cymbal-agent is wrapped in a feature-flagged GA sunset hook targeted for Q4 2026 through Q1 2027 so teams can switch cleanly to native GCP primitives as they reach general availability. And in row five, our OpenTelemetry FinOps exporter streams SHA-256 prompt hashes and token counters directly into BigQuery so finance teams can run exact SQL chargeback queries across cached and thinking tokens with zero raw PII.',
     slide10Spoken:
-      'To prove this architecture is running in the real world rather than just existing on slides, here are live captures and telemetry receipts directly from our Google Cloud environment. On the left, you can see our deployed Cloud Run revisions, enabled security APIs, and Cloud Logging audit trails; on the right, the summary cards confirm that all twenty automated isolation and failure-recovery simulations pass with zero cross-tenant data leakage.',
+      'To prove this architecture is running live in Google Cloud rather than just on slides, here are authentic captures from our deployed Cloud Run revisions and Cloud Logging Explorer. You can reproduce our audit trail directly by running the exact Cloud Logging filter shown in the metadata card—verifying zero cross-tenant RLS rows across HTTP 200, 403, 423, and 429 responses—or by running our automated deep forensic audit script from the command line, which passes all twelve forensic gates and all one hundred seven runtime assertions.',
     slide11Spoken:
-      'Stepping back to the big picture for our executive, product, and technical stakeholders, our foundational design delivers three measurable business guarantees aligned with the Google Cloud Well-Architected Framework. First, under Security, every request is protected by five independent cryptographic checkpoints. Second, under Reliability, per-tenant rate bulkheads and sub-sixty-second kill-switch recovery prevent noisy-neighbor outages. Third, under Cost Optimization, sharing a common system-prompt cache across pooled tenants cuts input token costs by up to ninety percent while reusing eighty percent of our core application code.',
-    slide12Spoken:
-      'Finally, here is our five-workstream rollout roadmap and the immediate engineering actions your team can take today. Every blueprint, Terraform module, and Python verification suite we walked through is ready to run in the repository. From this foundational overview in Workstream 1, our next session—Workstream 2—dives deep into Pattern A to show how we run hundreds of commercial customers inside a high-density shared pool.',
+      'Finally, our closing slide consolidates the Google Cloud Well-Architected SLA scorecard directly into our five runnable GitHub milestones and five-part blog series launch plan. Every milestone card pairs its exact repository file path with its production SLA target: under 150-microsecond cached-JWKS verification and ~3ms JTI deny-lists in Part 1; ~42ms p95 five-hop overhead, ~420ms warm TTFT, and 84.7 percent token savings in Part 2; <60s CMEK revocation, <5s Valkey SCAN+UNLINK eviction, SET NX PX 5000 recovery, and <30s cross-region failover RTO in Part 3; 74 percent portfolio TCO reduction and 0ms PSC cutover in Part 4; and 12/12 forensic plus 107/107 runtime assertions in Part 5.',
   },
   WS2: {
     name: 'Workstream 2 (Pattern A — High-Density Shared Pool)',
@@ -161,7 +159,122 @@ function makeSpokenNote({ slideNum, totalSlides, slideTitle, whyHere, whatIsHapp
 
 export function getWorkstream12SlideNotes(wsKey) {
   const t = WORKSTREAM_THEMES[wsKey] || WORKSTREAM_THEMES.WS1;
-  const total = 12;
+  const total = wsKey === 'WS1' ? 11 : 12;
+
+  if (wsKey === 'WS1') {
+    return [
+      makeSpokenNote({
+        slideNum: 1,
+        totalSlides: total,
+        slideTitle: 'Part 1 (Slide 1) — Executive Cover & 5-Part Deep-Dive Map',
+        whyHere:
+          `Welcome everyone. We have structured this streamlined eleven-slide reference architecture briefing into a cohesive five-part engineering series roadmap so you can trace the SaaS AI Dilemma from isolation topologies all the way to automated CI/CD forensic compliance.`,
+        whatIsHappening: t.slide1Spoken,
+        whatComesNext:
+          `With our thesis defined on Slide 1, let's turn to Slide 2 for our Agenda and 5-Part Series Navigation table so you can see the exact macro-to-micro flow of the deck.`,
+      }),
+      makeSpokenNote({
+        slideNum: 2,
+        totalSlides: total,
+        slideTitle: 'Part 1 (Slide 2) — Agenda & 5-Part Series Navigation (Table of Contents)',
+        whyHere:
+          `Following our executive cover on Slide 1, Slide 2 provides an explicit Table of Contents mapping all eleven slides across the five-part blog series and our L1-to-L4 architectural hierarchy.`,
+        whatIsHappening: t.slide2Spoken,
+        whatComesNext:
+          `Now that we have the full eleven-slide roadmap in front of us, let's turn to Slide 3 to meet the competing customer personas whose business and regulatory constraints drive this architecture.`,
+      }),
+      makeSpokenNote({
+        slideNum: 3,
+        totalSlides: total,
+        slideTitle: 'Part 1 (Slide 3) — Competing Enterprise Tenants & Workload Personas',
+        whyHere:
+          `Stepping into Part 1 from our Agenda on Slide 2, we start with the customer personas first—contrasting regulated banking workloads against high-density commercial SaaS workloads.`,
+        whatIsHappening: t.slide3Spoken,
+        whatComesNext:
+          `Now that we see what FinVault Bank and RetailStream Corp require on Slide 3, let's turn to Slide 4 to compare our three isolation topologies across twelve architectural and operational dimensions.`,
+      }),
+      makeSpokenNote({
+        slideNum: 4,
+        totalSlides: total,
+        slideTitle: 'Part 1 (Slide 4) — 12-Dimension Multi-Tenant Isolation Decision Matrix',
+        whyHere:
+          `Building directly on the customer personas from Slide 3, this matrix closes Part 1 by comparing Pooled (Pattern A), Sovereign Silos (Pattern B), and Dynamic Hybrid (Pattern C).`,
+        whatIsHappening: t.slide4Spoken,
+        whatComesNext:
+          `With our three isolation topologies defined in Part 1, let's enter Part 2 on Slide 5 at Level 1 Logical—examining our three logical security layers before zooming into the four physical VPC-SC network perimeters on Slide 6.`,
+      }),
+      makeSpokenNote({
+        slideNum: 5,
+        totalSlides: total,
+        slideTitle: 'Part 2 (Slide 5) — L1 Logical: Reference Taxonomy — 3 Logical Security Layers & Signed STS JWT',
+        whyHere:
+          `Opening Part 2 on securing the agent loop, Slide 5 establishes the Level 1 Logical view—organizing our architecture into three logical security layers so it maps cleanly onto the four physical VPC-SC perimeters on Slide 6.`,
+        whatIsHappening: t.slide5Spoken,
+        whatComesNext:
+          `Now that we have the three logical security layers in mind, let's zoom directly into Level 2 Physical on Slide 6 to see how those layers map onto our fifty-six-shape Google Cloud blueprint across four physical VPC-SC network perimeters.`,
+      }),
+      makeSpokenNote({
+        slideNum: 6,
+        totalSlides: total,
+        slideTitle: 'Part 2 (Slide 6) — L2 Physical: 4 Physical Network Perimeters (VPC-SC Boundaries) — Figure 1 Blueprint',
+        whyHere:
+          `Following our strict macro-to-micro L1-to-L2 progression from Slide 5, Slide 6 maps the three logical security layers onto concrete Google Cloud services across four color-coded physical VPC Service Controls perimeters.`,
+        whatIsHappening: t.slide6Spoken,
+        whatComesNext:
+          `With both the L1 logical layers and L2 physical perimeters established, let's step into Level 3 Process on Slide 7 to trace a live request chronologically across all five actors alongside our merged fail-closed circuit breakers and Valkey L1 cache recovery.`,
+      }),
+      makeSpokenNote({
+        slideNum: 7,
+        totalSlides: total,
+        slideTitle: 'Part 3 (Slide 7) — L3 Process: 5-Actor UML Sequence, Fail-Closed Circuit Breakers & Stampede Recovery',
+        whyHere:
+          `Moving from L2 Physical on Slide 6 to L3 Process on Slide 7, this unified diagram combines our chronological five-actor request sequence with our fail-closed circuit breakers, sub-five-second Valkey SCAN+UNLINK eviction, and SET NX PX 5000 single-flight recovery.`,
+        whatIsHappening: t.slide7Spoken,
+        whatComesNext:
+          `Having watched the request and its circuit breakers execute across Hops 1 through 5 on Slide 7, let's zoom all the way down to Level 4 Wire on Slide 8 to inspect the exact JSON packet and KMS-signed STS JWT on the wire.`,
+      }),
+      makeSpokenNote({
+        slideNum: 8,
+        totalSlides: total,
+        slideTitle: 'Part 2 (Slide 8) — L4 Wire: Spoofed Header Stripping & <0.15ms Cached-JWKS STS JWT',
+        whyHere:
+          `Completing our L1 → L2 → L3 → L4 macro-to-micro hierarchy, Slide 8 inspects the raw JSON payload on the wire before and after Hop 1 token exchange.`,
+        whatIsHappening: t.slide8Spoken,
+        whatComesNext:
+          `With the five-hop architecture proven from logical layers down to the wire packet, let's move into Part 4 on Slide 9 to inspect the five EAP product gaps we encountered and the feature-flagged compensating controls we built to close them.`,
+      }),
+      makeSpokenNote({
+        slideNum: 9,
+        totalSlides: total,
+        slideTitle: 'Part 4 (Slide 9) — Mind the Gap: GAP-01..05 Compensating Controls & BigQuery OTel SQL',
+        whyHere:
+          `Part 4 on Slide 9 provides our transparent engineering ledger of five current platform gaps, our codebase compensating controls, and our Q4 2026 / Q1 2027 native GA sunset hooks.`,
+        whatIsHappening: t.slide9Spoken,
+        whatComesNext:
+          `With our compensating controls documented on Slide 9, let's enter Part 5 on Slide 10 to inspect the live Google Cloud Console and Cloud Logging Explorer proof from our deployed projects.`,
+      }),
+      makeSpokenNote({
+        slideNum: 10,
+        totalSlides: total,
+        slideTitle: 'Part 5 (Slide 10) — Automating Compliance: Live GCP Console & Cloud Logging Audit Proof',
+        whyHere:
+          `Opening Part 5 on automated compliance, Slide 10 presents live evidence captured from our running Google Cloud projects along with the exact Cloud Logging Explorer queries used by SRE and CISO auditors.`,
+        whatIsHappening: t.slide10Spoken,
+        whatComesNext:
+          `With the live cloud verification complete, let's move to our final slide—Slide 11—where we merge our Google Cloud Well-Architected SLA scorecard directly into the five runnable engineering milestones and five-part blog series roadmap.`,
+      }),
+      makeSpokenNote({
+        slideNum: 11,
+        totalSlides: total,
+        slideTitle: 'Part 5 (Slide 11) — Well-Architected SLA Scorecard & 5-Part Engineering Roadmap',
+        whyHere:
+          `Rounding out Part 5, our final slide consolidates our Well-Architected SLA scorecard directly into the five executable GitHub milestones and five-part blog series roadmap.`,
+        whatIsHappening: t.slide11Spoken,
+        whatComesNext:
+          `That completes our streamlined eleven-slide walkthrough—I would love to open the floor for your questions, or we can jump straight into the live codebase and Terraform modules.`,
+      }),
+    ];
+  }
 
   return [
     makeSpokenNote({

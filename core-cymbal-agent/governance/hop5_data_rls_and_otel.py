@@ -62,10 +62,28 @@ class DataPlaneRLSAndOTel:
             "retailstream:mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo": "cs.retailstream-3lo-valid",
         }
         self.bigquery_otel_ledger: List[Dict[str, object]] = []
+        self._3lo_dpop_bindings: Dict[str, str] = {}
 
-    def grant_inline_3lo_consent(self, tenant_id: str, mcp_connector_uri: str, token: str) -> None:
-        """Simulates ADK interactive mid-session 3LO OAuth consent completion."""
-        self._3lo_token_vault[f"{tenant_id}:{mcp_connector_uri}"] = token
+    def grant_inline_3lo_consent(
+        self,
+        tenant_id: str,
+        mcp_connector_uri: str,
+        token: str,
+        user_principal: Optional[str] = None,
+        dpop_jkt: Optional[str] = None,
+    ) -> None:
+        """
+        Simulates ADK interactive mid-session 3LO OAuth consent completion.
+        Supports both `{tenant_id}:{user_principal}:{mcp_connector_uri}` DPoP-bound Confused-Deputy vaults
+        and tenant-level default keys (`{tenant_id}:{mcp_connector_uri}`).
+        """
+        if user_principal:
+            user_vault_key = f"{tenant_id}:{user_principal}:{mcp_connector_uri}"
+            self._3lo_token_vault[user_vault_key] = token
+            if dpop_jkt:
+                self._3lo_dpop_bindings[user_vault_key] = dpop_jkt
+        else:
+            self._3lo_token_vault[f"{tenant_id}:{mcp_connector_uri}"] = token
 
     def query_alloydb_with_rls(
         self,
@@ -85,6 +103,7 @@ class DataPlaneRLSAndOTel:
 
         meta: Dict[str, object] = {
             "rls_session_tenant": rls_bound_tenant,
+            "rls_session_guc": f"SET LOCAL app.current_tenant_id = '{rls_bound_tenant}'",
             "attempted_filter": attempted_tenant_filter or rls_bound_tenant,
             "rows_returned": len(visible_rows),
         }
@@ -132,13 +151,24 @@ class DataPlaneRLSAndOTel:
                 ),
             )
 
-        vault_key = f"{ctx.tenant_id}:{mcp_connector_uri}"
-        token = self._3lo_token_vault.get(vault_key)
+        user_vault_key = f"{ctx.tenant_id}:{ctx.user_principal}:{mcp_connector_uri}"
+        tenant_vault_key = f"{ctx.tenant_id}:{mcp_connector_uri}"
+        if user_vault_key in self._3lo_token_vault:
+            bound_jkt = self._3lo_dpop_bindings.get(user_vault_key)
+            if bound_jkt and bound_jkt != ctx.dpop_jkt_thumbprint:
+                raise PermissionError(
+                    f"Hop 5 Confused Deputy 3LO DPoP Mismatch: Vaulted token for '{user_vault_key}' "
+                    f"is bound to jkt='{bound_jkt}', not caller jkt='{ctx.dpop_jkt_thumbprint}'."
+                )
+            token = self._3lo_token_vault.get(user_vault_key)
+        else:
+            token = self._3lo_token_vault.get(tenant_vault_key)
         if not token:
             return (
                 {
                     "status": "OAUTH_CONSENT_REQUIRED",
                     "connector": mcp_connector_uri,
+                    "vault_scope_key": user_vault_key,
                     "consent_url": f"https://login.microsoftonline.com/{ctx.tenant_id}/oauth2/v2.0/authorize?scope={mcp_connector_uri}",
                 },
                 HopAuditRecord(
@@ -174,6 +204,15 @@ class DataPlaneRLSAndOTel:
         cache_hit: bool,
         hops: List[HopAuditRecord],
     ) -> Dict[str, object]:
+        cached_prefix_tokens = 18000 if cache_hit else 0
+        uncached_prompt_tokens = 1200
+        output_tokens = 650
+        billable_equivalent_tokens = (
+            uncached_prompt_tokens
+            + int(cached_prefix_tokens * 0.1)
+            + thinking_tokens_used
+            + output_tokens
+        )
         record: Dict[str, object] = {
             "tenant_id": ctx.tenant_id,
             "tier": ctx.tier.value,
@@ -181,6 +220,8 @@ class DataPlaneRLSAndOTel:
             "session_id": ctx.session_id,
             "agent_uri": agent_uri,
             "thinking_tokens_used": thinking_tokens_used,
+            "cached_prefix_tokens": cached_prefix_tokens,
+            "billable_equivalent_tokens": billable_equivalent_tokens,
             "prompt_prefix_cache_hit": cache_hit,
             "hop_count": len(hops),
             "all_hops_passed": all(h.decision == "ALLOW" for h in hops),
@@ -195,10 +236,10 @@ class DataPlaneRLSAndOTel:
                 "isolation_pattern": ctx.active_topology.value,
                 "agent_name": agent_uri,
                 "model_id": "gemini-2.5-pro-dedicated" if "alpha" in agent_uri else "gemini-2.5-pro",
-                "cached_input_tokens": 18000 if cache_hit else 0,
-                "uncached_input_tokens": 1200,
+                "cached_input_tokens": cached_prefix_tokens,
+                "uncached_input_tokens": uncached_prompt_tokens,
                 "thinking_tokens": thinking_tokens_used,
-                "output_tokens": 650,
+                "output_tokens": output_tokens,
                 "cogs_usd": 0.0082,
                 "cache_savings_pct": 84.7 if cache_hit else 0.0,
                 "rls_session_guc": f"app.current_tenant={ctx.tenant_id}",

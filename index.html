@@ -1437,7 +1437,7 @@
           <button class="ws-step-btn active" id="ws-btn-WS1" onclick="selectGuidedWorkstream('WS1')">
             <span class="ws-kicker">Part 1 of 5 • WS 1 Foundation</span>
             <span class="ws-name">1. Reference Architecture &amp; 5-Hop</span>
-            <span class="ws-meta">2 Blueprints • 12 Slides • Part 1 Blog</span>
+            <span class="ws-meta">2 Blueprints • 11 Slides • Part 1 Blog</span>
           </button>
           <button class="ws-step-btn" id="ws-btn-WS2" onclick="selectGuidedWorkstream('WS2')">
             <span class="ws-kicker">Part 2 of 5 • WS 2 Pattern A</span>
@@ -1469,7 +1469,7 @@
         <!-- Single 1-Line Document Switcher & Header-Only Google Workspace Controls (Rule 47 & Rule 25) -->
         <div id="hub-ws-summary-bar" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:7px 12px; background:var(--panel); border:1px solid var(--border); border-radius:10px; margin-bottom:10px;">
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <span id="hub-ws-badge" class="badge badge-blue" style="display:none;">WS1 • Part 1 of 5 • 12 Editable Slides</span>
+            <span id="hub-ws-badge" class="badge badge-blue" style="display:none;">WS1 • Part 1 of 5 • 11 Editable Slides</span>
             <strong id="hub-ws-title" style="display:none;">Workstream 1: Reference Architecture, Taxonomy &amp; 5-Hop Baseline</strong>
             <div id="hub-ws-sub" class="muted" style="display:none;">Pooled (Pattern A), Sovereign Silos (Pattern B) &amp; Dynamic Hybrid (Pattern C) extending the Cloud Architecture Center reference</div>
             <div id="hub-doc-switcher" style="display:flex; gap:6px; flex-wrap:wrap; margin:0;"></div>
@@ -1481,13 +1481,13 @@
             <div class="pc-split-wrap" id="hub-open-gslides-split">
               <button type="button" class="pc-split-main" id="hub-open-gslides-main" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1)">
                 <span class="pc-gslides-icon">S</span>
-                <span id="hub-open-gslides-label">Open with Google Slides (WS1 &bull; 12 Slides) &#8599;</span>
+                <span id="hub-open-gslides-label">Open with Google Slides (WS1 &bull; 11 Slides) &#8599;</span>
               </button>
               <button type="button" class="pc-split-caret" onclick="togglePcDropdown(event, 'hub-gslides-menu')" aria-label="Choose Google Workspace app">&#9660;</button>
               <div id="hub-gslides-menu" class="pc-dropdown-menu">
                 <div class="pc-dropdown-section">Google Workspace Direct Open</div>
                 <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1)">
-                  <span class="pc-gslides-icon">S</span> <span>Google Slides (Active Workstream 12-Slide Deck)</span>
+                  <span class="pc-gslides-icon">S</span> <span>Google Slides (Active Workstream Deck)</span>
                 </button>
                 <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace('ALL', 'slides', 1)">
                   <span class="pc-gslides-icon">S</span> <span>Google Slides (Master 25-Slide Deck)</span>
@@ -1518,7 +1518,7 @@
                   <span>&#128424;</span> <span>Print / Save Article as PDF</span>
                 </button>
                 <a id="hub-pptx-download" class="pc-dropdown-item" href="slides/ws1-reference-architecture-editable-slides.pptx?v=20261019-v27" download>
-                  <span>&#11015;</span> <span>Download Editable .pptx (WS1 &bull; 12 Slides)</span>
+                  <span>&#11015;</span> <span>Download Editable .pptx (WS1 &bull; 11 Slides)</span>
                 </a>
                 <a class="pc-dropdown-item" href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx?v=20261019-v27" download>
                   <span>&#11015;</span> <span>Download Master .pptx (25 Slides)</span>
@@ -2525,7 +2525,7 @@
         function formatInline(text) {
           return escapeHtml(text)
             .replace(/`([^`]+)`/g, '<code>$1</code>')
-            .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*\*([\s\S]+?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*([^*]+)\*/g, '<em>$1</em>')
             .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, alt, src) => {
               const resolved = normalizeRepoPath(resolveRelativeAssetUrl(src, docRelPath));
@@ -2767,7 +2767,7 @@
             <span>AI and ML</span>
           </div>
           <div style="font-size:12px;">
-            <span class="badge badge-green" style="text-transform:none;">Google Cloud Architecture Center${readingTimeStr ? ' &bull; ' + escapeHtml(readingTimeStr) + ' read' : ''}</span>
+            <span class="badge badge-green" style="text-transform:none;">Google Cloud Architecture Center${readingTimeStr ? ' &bull; ' + escapeHtml(readingTimeStr.replace(/\s+read$/i, '')) + ' read' : ''}</span>
           </div>
         </div>
       `;
@@ -3093,7 +3093,7 @@
     const GUIDED_WORKSTREAMS = {
       WS1: {
         key: 'WS1',
-        badge: 'WS1 • Part 1 of 5 • 12 Slides',
+        badge: 'WS1 • Part 1 of 5 • 11 Slides',
         title: 'Workstream 1: Reference Architecture, Taxonomy & 5-Hop Baseline',
         subtitle: 'Pooled (Pattern A), Sovereign Silos (Pattern B) & Dynamic Hybrid (Pattern C) extending the Cloud Architecture Center reference',
         deckStem: 'ws1-reference-architecture-editable-slides',
@@ -3107,22 +3107,21 @@
           { label: '📋 Product Gap & EAP Tracker (1.4)', path: 'workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md' }
         ],
         diagrams: [
-          { id: 'ws1-multi-tenant-taxonomy-overview', label: 'Fig 1: Multi-Tenant Taxonomy (A, B & C)', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 5, logicalSlide: 4, technicalSlide: 6 },
-          { id: 'ws1-cloud-arch-center-5hop-baseline', label: 'Fig 2: Cloud Arch Center 5-Hop Baseline', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 5, logicalSlide: 4, technicalSlide: 7 }
+          { id: 'ws1-multi-tenant-taxonomy-overview', label: 'Fig 1: Multi-Tenant Taxonomy (A, B & C)', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 6, logicalSlide: 5, technicalSlide: 7 },
+          { id: 'ws1-cloud-arch-center-5hop-baseline', label: 'Fig 2: Cloud Arch Center 5-Hop Baseline', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 6, logicalSlide: 5, technicalSlide: 8 }
         ],
         slides: [
-          { num: 1, label: '1. Act I: Title & 3-Act Map', desc: 'Act I (Slide 1/12) — Executive Cover & Customer-Centric 3-Act Briefing Map' },
-          { num: 2, label: '2. ★ Customer Use Cases & Stack', editable: true, desc: '★ Act I (Slide 2/12, three-pillar) — Competing Tenant Profiles (FinVault Bank vs. RetailStream Corp) & Google Cloud Stack' },
-          { num: 3, label: '3. ★ Pattern A/B/C Options Matrix', editable: true, desc: '★ Act I (Slide 3/12, comparison-grid) — Architectural Options & Pattern A / B / C Decision Matrix + 4 Selection Rules' },
-          { num: 4, label: '4. ★ Act II (L1): 3-Zone Logical', editable: true, desc: '★ Act II (Slide 4/12, architecture-zone-topology) — L1 Conceptual / Logical 3-Zone Trust Boundary Overview' },
-          { num: 5, label: '5. ★ Act II (L2): Fig 1 Blueprint', editable: true, desc: '★ Act II (Slide 5/12, decomposed-drawio-diagram) — L2 Detailed Physical Blueprint (#78, 56 Editable Shapes + 23 Connectors)' },
-          { num: 6, label: '6. ★ Act II (L3): 5-Actor Sequence', editable: true, desc: '★ Act II (Slide 6/12, uml-sequence-swimlane) — L3 End-to-End 5-Actor Chronological Request Lifeline (Steps 1–6)' },
-          { num: 7, label: '7. ★ Act II (L4): Wire Payload', editable: true, desc: '★ Act II (Slide 7/12, payload-transformation-triptych) — L4 Wire-Level 3-Stage OBO/DPoP JSON Payload Transformation' },
-          { num: 8, label: '8. ★ Act III: Circuit Breakers', editable: true, desc: '★ Act III (Slide 8/12, async-state-flow-pipeline) — Deterministic Fail-Closed Exception Circuit Breakers (HTTP 401/403/422/423/429)' },
-          { num: 9, label: '9. ★ EAP Gaps (GAP-01..05) Matrix', editable: true, desc: '★ Act III (Slide 9/12, comparison-grid) — Compensating Controls for EAP Product Gaps (GAP-01..05) & Verification Matrix' },
-          { num: 10, label: '10. ★ Live GCP Console Proof', editable: true, desc: '★ Act III (Slide 10/12, live-screenshot-callout) — Grounded 16:9 Google Cloud Console & Live Runtime Verification Proof' },
-          { num: 11, label: '11. ★ 3-Pillar Well-Architected', editable: true, desc: '★ Act III (Slide 11/12, strategic-operating-model-pillars) — 3-Pillar Google Cloud Well-Architected Solution Guarantees (Security, Reliability, Shared Prefix Efficiency)' },
-          { num: 12, label: '12. Next Steps & Series Map', desc: 'Act III (Slide 12/12, next-steps) — 5-Workstream Series Progression (WS1 -> WS5) & Runnable Engineering Deliverables' }
+          { num: 1, label: '1. Act I: Title & 3-Act Map', desc: 'Act I (Slide 1/11) — Executive Cover & Customer-Centric 3-Act Briefing Map' },
+          { num: 2, label: '2. ★ Agenda & 5-Part Series TOC', editable: true, desc: '★ Act I (Slide 2/11, comparison-grid) — Table of Contents: 5-Part Engineering Blog Series & Slide-to-Code Navigation Map' },
+          { num: 3, label: '3. ★ Customer Use Cases & Stack', editable: true, desc: '★ Act I (Slide 3/11, three-pillar) — Competing Tenant Profiles (FinVault Bank vs. RetailStream Corp) & Confused Deputy Threat' },
+          { num: 4, label: '4. ★ Pattern A/B/C Options Matrix', editable: true, desc: '★ Act I (Slide 4/11, comparison-grid) — Architectural Options & Pattern A / B / C 12-Dimension Decision Matrix + 4 Selection Rules' },
+          { num: 5, label: '5. ★ Act II (L1): 3 Logical Layers', editable: true, desc: '★ Act II (Slide 5/11, architecture-zone-topology) — L1 Logical Reference Taxonomy: 3 Logical Security Layers Mapping to 4 Physical VPC-SC Perimeters' },
+          { num: 6, label: '6. ★ Act II (L2): Fig 1 4 Perimeters', editable: true, desc: '★ Act II (Slide 6/11, decomposed-drawio-diagram) — L2 Physical Network Perimeters (VPC-SC Boundaries) & Figure 1 Blueprint (#78, 56 Shapes + 23 Edges)' },
+          { num: 7, label: '7. ★ Act II (L3): UML & Breakers', editable: true, desc: '★ Act II (Slide 7/11, uml-sequence-swimlane) — L3 Process: 5-Actor UML Sequence, Fail-Closed Circuit Breakers & SET NX Stampede Recovery' },
+          { num: 8, label: '8. ★ Act II (L4): Wire Payload', editable: true, desc: '★ Act II (Slide 8/11, payload-transformation-triptych) — L4 Wire-Level 3-Stage OBO/DPoP JSON Payload Transformation & <0.15ms Cached-JWKS' },
+          { num: 9, label: '9. ★ EAP Gaps (GAP-01..05) Matrix', editable: true, desc: '★ Act III (Slide 9/11, comparison-grid) — Compensating Controls for EAP Product Gaps (GAP-01..05), GA Sunset Hooks & OTel SQL' },
+          { num: 10, label: '10. ★ Live GCP Console Proof', editable: true, desc: '★ Act III (Slide 10/11, live-screenshot-callout) — Grounded 16:9 Google Cloud Console & 12/12 Forensic Verification Audit Proof' },
+          { num: 11, label: '11. ★ SLAs & 5-Part Roadmap', desc: 'Act III (Slide 11/11, next-steps) — Consolidated Well-Architected SLA Scorecard & 5-Part Runnable Engineering Roadmap' }
         ]
       },
       WS2: {
@@ -3804,7 +3803,7 @@
       accountEmail: 'nitinagga@google.com',
       slides: {
         WS1: {
-          slideCount: 12,
+          slideCount: 11,
           googleSlidesId: '12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ',
           googleSlidesEditUrl: 'https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit?authuser=nitinagga%40google.com',
           googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/preview',

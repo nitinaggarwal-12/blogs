@@ -448,14 +448,10 @@ def sync_all_workstreams(force_slides: bool = False) -> Dict[str, Any]:
             )
         if not md_rel:
             continue
-        existing_doc = manifest.get("docs", {}).get(key)
-        if existing_doc and existing_doc.get("googleDocsEditUrl"):
-            print(f"   ✓ [Google Docs]   {key} (cached native Doc): {existing_doc['googleDocsEditUrl']}")
-        else:
-            md_file = ROOT_DIR / md_rel
-            if md_file.is_file():
-                d_entry = upload_md_to_google_docs(md_file, title, key)
-                print(f"   ✅ [Google Docs]   {key}: {d_entry['googleDocsEditUrl']}")
+        md_file = ROOT_DIR / md_rel
+        if md_file.is_file():
+            d_entry = upload_md_to_google_docs(md_file, title, key)
+            print(f"   ✓ [Google Docs]   {key} (native Doc): {d_entry['googleDocsEditUrl']}")
     manifest = load_cloud_manifest()
     print(f"🎉 Cloud Viewer Manifest written to {MANIFEST_FILE.relative_to(ROOT_DIR)}")
     return manifest

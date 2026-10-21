@@ -178,7 +178,7 @@ All **14 blueprints** across Workstreams 1–5 are compiled using the **Official
 1. **Official Google Cloud Architecture Center blueprint specifications** — [`scripts/arch_center_layouts.mjs`](../scripts/arch_center_layouts.mjs), [`scripts/build_all_workstream_diagrams.mjs`](../scripts/build_all_workstream_diagrams.mjs), and [`scripts/blueprints_ext/`](../scripts/blueprints_ext/) define the grounded cards, labels, and resolved Google Cloud service icons for all 14 diagrams across the three Rule 53G layout engines (`0` collisions across all 14 diagrams).
 2. **SVG & 2× PNG compilation** — [`scripts/build_all_workstream_diagrams.mjs`](../scripts/build_all_workstream_diagrams.mjs) compiles each specification to an official Google Cloud Architecture Center `.svg`, `.drawio.xml`, and 2× `.png` via headless Chrome and writes [`diagrams/diagrams_manifest.json`](../diagrams/diagrams_manifest.json).
 3. **PromptCanvas Vision AST & Draw.io certification** — [`scripts/run_promptcanvas_vision_pipeline.ts`](../scripts/run_promptcanvas_vision_pipeline.ts) validates every diagram's geometry, renders `.drawio` / `.drawio.xml` / `.drawio.png` via official Draw.io `mxGraph`, and writes the addressable `.vision.json` AST under [`diagrams/vision_metadata/`](../diagrams/vision_metadata/).
-4. **Editable slides** — [`scripts/build_editable_slide_decks.ts`](../scripts/build_editable_slide_decks.ts) builds the native editable PowerPoint / Google Slides decks in [`slides/`](../slides/) (following the **12-Slide Customer-Centric 3-Act Top-Down Deck Standard** for WS1–WS5 with `944` editable shapes and `283` connectors across the 60 workstream slides, plus the 25-slide Master Deck and three 6-slide Companion Reference Decks) and [`scripts/render_pptx_preview.py`](../scripts/render_pptx_preview.py) renders PNG slide previews.
+4. **Editable slides** — [`scripts/build_editable_slide_decks.ts`](../scripts/build_editable_slide_decks.ts) builds the native editable PowerPoint / Google Slides decks in [`slides/`](../slides/) (following the **12-Slide Customer-Centric 3-Act Top-Down Deck Standard** for WS1–WS5 with `907` editable shapes and `276` connectors across the 60 workstream slides, plus the 25-slide Master Deck and three 6-slide Companion Reference Decks) and [`scripts/render_pptx_preview.py`](../scripts/render_pptx_preview.py) renders PNG slide previews.
 5. **Live Cloud Console & Runtime Verification** — [`scripts/verify_cloud_console_and_runtime.py`](../scripts/verify_cloud_console_and_runtime.py) verifies the live GCP project (`nitina-ggarwal-sandbox-647724`), enabled Agentic Cloud APIs (`aiplatform`, `discoveryengine`, `cloudkms`, `compute`, `container`, `run`, `alloydb`, `bigquery`, `firestore`, `redis`, `accesscontextmanager`, `iam`), 1:1 Terraform HCL resource parity (`2.6`, `3.6`, `4.6`), and all `20/20` Python runtime simulation assertions (`docs/cloud_console_verification_receipt.json`).
 
 ```bash
@@ -301,7 +301,7 @@ Rule of thumb: use Diagram 1 when explaining *which pattern to pick*; use Diagra
 | **Subtitle** | Verified on GCP (nitina-ggarwal-sandbox-647724 & ramp-portal-dev) • Cloud Run cymbal-multi-tenant-patterns-00003-wfh |
 | **Layout template (Rule 53G)** | `hub-2-spoke` — Rule 53G • Hub-and-spoke: shared routing + governance hubs and exactly 2 bounded spokes (Template #78 • 56 vertices / 23 edges) |
 | **Files** | [`.drawio`](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio) • [`.drawio.png`](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png) • [`SVG`](../diagrams/ws1-multi-tenant-taxonomy-overview.svg) • [`vision.json`](../diagrams/vision_metadata/ws1-multi-tenant-taxonomy-overview.vision.json) |
-| **Editable deck** | [`ws1-reference-architecture-editable-slides.pptx`](../slides/ws1-reference-architecture-editable-slides.pptx) (12 slides • 190 editable shapes • 58 connectors — 12-Slide 3-Act Deck Standard) |
+| **Editable deck** | [`ws1-reference-architecture-editable-slides.pptx`](../slides/ws1-reference-architecture-editable-slides.pptx) (11 slides • 153 editable shapes • 51 connectors — 12-Slide 3-Act Deck Standard) |
 | **Shape & Vision AST stats** | `56` editable shapes (vertices) • `23` connectors (edges) • `54` addressable vision objects • `isCertified: true`, `validationReport.valid: false`, `errorCount: 126` |
 
 ![Multi-Tenant Agentic AI Taxonomy: Pooled (Pattern A), Sovereign Silos (Pattern B) & Hybrid (Pattern C)](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png)
@@ -417,7 +417,7 @@ Every editable container, service card, isolation chip, and flow callout present
 | **Subtitle** | Official Hub-and-Spoke Reference Architecture (docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) |
 | **Layout template (Rule 53G)** | `hub-2-spoke` — Rule 53G • Hub-and-spoke: shared routing + governance hubs and exactly 2 bounded spokes (Template #78 • 56 vertices / 23 edges) |
 | **Files** | [`.drawio`](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio) • [`.drawio.png`](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio.png) • [`SVG`](../diagrams/ws1-cloud-arch-center-5hop-baseline.svg) • [`vision.json`](../diagrams/vision_metadata/ws1-cloud-arch-center-5hop-baseline.vision.json) |
-| **Editable deck** | [`ws1-reference-architecture-editable-slides.pptx`](../slides/ws1-reference-architecture-editable-slides.pptx) (12 slides • 190 editable shapes • 58 connectors — 12-Slide 3-Act Deck Standard) |
+| **Editable deck** | [`ws1-reference-architecture-editable-slides.pptx`](../slides/ws1-reference-architecture-editable-slides.pptx) (11 slides • 153 editable shapes • 51 connectors — 12-Slide 3-Act Deck Standard) |
 | **Shape & Vision AST stats** | `56` editable shapes (vertices) • `23` connectors (edges) • `54` addressable vision objects • `isCertified: true`, `validationReport.valid: false`, `errorCount: 126` |
 
 ![Cloud Architecture Center: Multi-Tenant Agentic AI System with 5-Hop Cryptographic Governance](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio.png)
@@ -2621,6 +2621,7 @@ Milestone 1 sign-off gate (2.4 §2), recommended by the blog as generic acceptan
 
 
 
+
 ---
 
 ## Appendix A — Diagram index (all 14 Official Architecture Center blueprints, every file)
@@ -2646,7 +2647,7 @@ Milestone 1 sign-off gate (2.4 §2), recommended by the blog as generic acceptan
 
 | Deck | File | Slides | Diagrams | Editable shapes | Connectors | Companion blog |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **WS1** | [`ws1-reference-architecture-editable-slides.pptx`](../slides/ws1-reference-architecture-editable-slides.pptx) | 12 | 2 | 190 | 58 | [ws1-reference-architecture-taxonomy-and-5hop-baseline.md](../blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md) |
+| **WS1** | [`ws1-reference-architecture-editable-slides.pptx`](../slides/ws1-reference-architecture-editable-slides.pptx) | 11 | 2 | 153 | 51 | [ws1-reference-architecture-taxonomy-and-5hop-baseline.md](../blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md) |
 | **WS2** | [`ws2-pattern-a-pooled-editable-slides.pptx`](../slides/ws2-pattern-a-pooled-editable-slides.pptx) | 12 | 4 | 194 | 55 | [ws2-pattern-a-pooled-architecture.md](../blogs/ws2-pattern-a-pooled-architecture.md) |
 | **WS3** | [`ws3-pattern-b-siloed-editable-slides.pptx`](../slides/ws3-pattern-b-siloed-editable-slides.pptx) | 12 | 3 | 190 | 58 | [ws3-pattern-b-sovereign-silos.md](../blogs/ws3-pattern-b-sovereign-silos.md) |
 | **WS4** | [`ws4-pattern-c-hybrid-editable-slides.pptx`](../slides/ws4-pattern-c-hybrid-editable-slides.pptx) | 12 | 4 | 190 | 58 | [ws4-pattern-c-hybrid-dynamic-tiering.md](../blogs/ws4-pattern-c-hybrid-dynamic-tiering.md) |

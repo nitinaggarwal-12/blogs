@@ -11,6 +11,7 @@ Enforces Governance Pillar 1 (Catalog & Agent Visibility):
    agent cannot discover or invoke another tenant's MCP connectors mid-turn.
 """
 
+import os
 from typing import Dict, List, Optional, Tuple
 from ..models import CryptographicContext, HopAuditRecord, TENANT_PROFILES, TenantProfile
 
@@ -73,8 +74,8 @@ class RegistryPDP:
         requested_agent_uri: str,
         requested_mcp_tools: List[str],
     ) -> Tuple[List[str], HopAuditRecord]:
-        profile = self.tenant_profiles[ctx.tenant_id]
         ard_catalog = self.filter_ard_catalog(ctx)
+        native_ard_acl_enabled = os.environ.get("CYMBAL_NATIVE_ARD_ACL_ENABLED", "false").lower() == "true"
 
         # 1. Verify agent visibility in GEAP Agent Registry PDP & ARD Catalog
         if requested_agent_uri not in ard_catalog["visible_agents"]:
@@ -90,11 +91,13 @@ class RegistryPDP:
                 metadata={
                     "requested_agent": requested_agent_uri,
                     "ard_filtered_catalog": ard_catalog,
+                    "ga_sunset_flag": "CYMBAL_NATIVE_ARD_ACL_ENABLED",
+                    "native_ard_acl_enabled": native_ard_acl_enabled,
                 },
             )
             return [], audit
 
-        # 2. ADK `before_agent_callback`: Prune any MCP tool not explicitly in the tenant's ARD catalog
+        # 2. ADK `before_agent_callback` (or Native Discovery Engine ARD ACL when CYMBAL_NATIVE_ARD_ACL_ENABLED=true)
         pruned_tools = [t for t in requested_mcp_tools if t in ard_catalog["visible_mcp_connectors"]]
         removed_tools = [t for t in requested_mcp_tools if t not in ard_catalog["visible_mcp_connectors"]]
 
@@ -113,6 +116,8 @@ class RegistryPDP:
                 "ard_filtered_catalog": ard_catalog,
                 "bound_mcp_tools": pruned_tools,
                 "pruned_unauthorized_tools": removed_tools,
+                "ga_sunset_flag": "CYMBAL_NATIVE_ARD_ACL_ENABLED",
+                "native_ard_acl_enabled": native_ard_acl_enabled,
             },
         )
         return pruned_tools, audit

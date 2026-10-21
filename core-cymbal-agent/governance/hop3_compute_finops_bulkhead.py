@@ -30,13 +30,19 @@ from ..gcp_live_bridge import (
 
 
 class ComputeFinOpsBulkhead:
-    """Enforces GEAP Runtime + Firestore/Memorystore Config + 5-Level Memory Bank + Live Cloud KMS CMEK at Hop 3."""
+    """Enforces GEAP Runtime + Firestore/Memorystore for Valkey Config + 5-Level Memory Bank + Live Cloud KMS CMEK at Hop 3."""
 
     def __init__(self, tenant_profiles: Optional[Dict[str, TenantProfile]] = None) -> None:
         self.tenant_profiles = tenant_profiles if tenant_profiles is not None else TENANT_PROFILES
         self._redis_rpm_counters: Dict[str, int] = {}
         # 5-Level Memory Bank storage keyed by `{tenant_id}:{level.value}:{namespace_key}`
         self._memory_bank_store: Dict[str, Dict[str, str]] = {}
+        # Memorystore for Valkey warm cache keys (`cache:{tenant_id}:{key}`) and single-flight locks (`lock:cache_rebuild:{tenant_id}:{key}`)
+        self._valkey_cache_store: Dict[str, str] = {
+            "cache:finvault:prefix_v2": "warm",
+            "cache:retailstream:prefix_v2": "warm",
+        }
+        self._valkey_single_flight_locks: Dict[str, int] = {}
         self._disabled_cmek_keys: set[str] = set()
 
     def _resolve_tenant_from_cmek_uri(self, cmek_uri: str) -> str:
@@ -53,10 +59,49 @@ class ComputeFinOpsBulkhead:
                 return candidate
         return None
 
+    def unlink_tenant_valkey_cache(self, tenant_id: str) -> Dict[str, object]:
+        """
+        Targeted Memorystore for Valkey `SCAN 0 MATCH cache:{tenant_id}:* COUNT 500 -> UNLINK`.
+        Evicts strictly the revoked tenant's cached keys in <5s without executing a global FLUSHALL.
+        """
+        prefix = f"cache:{tenant_id}:"
+        matched_keys = [k for k in list(self._valkey_cache_store.keys()) if k.startswith(prefix)]
+        for k in matched_keys:
+            self._valkey_cache_store.pop(k, None)
+        surviving_other_tenant_keys = [
+            k for k in self._valkey_cache_store.keys() if not k.startswith(prefix)
+        ]
+        return {
+            "command": f"SCAN 0 MATCH cache:{tenant_id}:* COUNT 500 -> UNLINK",
+            "unlinked_keys": matched_keys,
+            "surviving_other_tenant_keys": surviving_other_tenant_keys,
+            "global_flushall_executed": False,
+        }
+
+    def acquire_single_flight_cache_lock(
+        self, tenant_id: str, cache_key: str = "prefix_v2", ttl_ms: int = 5000
+    ) -> Dict[str, object]:
+        """
+        Memorystore for Valkey `SET lock:cache_rebuild:{tenant_id}:{cache_key} 1 NX PX 5000` single-flight lock.
+        Prevents thundering-herd cache stampedes against Vertex AI when a cold cache rebuilds.
+        """
+        lock_key = f"lock:cache_rebuild:{tenant_id}:{cache_key}"
+        acquired = lock_key not in self._valkey_single_flight_locks
+        if acquired:
+            self._valkey_single_flight_locks[lock_key] = ttl_ms
+            self._valkey_cache_store[f"cache:{tenant_id}:{cache_key}"] = "warm"
+        return {
+            "lock_key": lock_key,
+            "command": f"SET {lock_key} 1 NX PX {ttl_ms}",
+            "acquired_leader": acquired,
+            "follower_action": "REBUILD_CONTEXT_CACHE" if acquired else "AWAIT_PUBSUB_WARM_CACHE",
+            "ttl_ms": ttl_ms,
+        }
+
     def disable_cmek_key(self, cmek_uri: str) -> int:
         """
         Disables the tenant CMEK key (both in-memory and live in Cloud KMS `cymbal-multi-tenant-kr` when CYMBAL_LIVE_GCP=1)
-        and immediately purges all in-flight L1-L4 Memory Bank entries for that tenant (<5s SLA).
+        and immediately purges all in-flight L1-L4 Memory Bank entries and Valkey `cache:{tenant_id}:*` keys (<5s SLA).
         """
         self._disabled_cmek_keys.add(cmek_uri)
         tenant_id = self._resolve_tenant_from_cmek_uri(cmek_uri)
@@ -65,6 +110,7 @@ class ComputeFinOpsBulkhead:
         ]
         for k in purged_partitions:
             self._memory_bank_store.pop(k, None)
+        self.unlink_tenant_valkey_cache(tenant_id)
         if os.environ.get("CYMBAL_LIVE_GCP") == "1":
             kms_set_key_version_state(tenant_id, enabled=False)
         return len(purged_partitions)
@@ -72,8 +118,9 @@ class ComputeFinOpsBulkhead:
     def enable_cmek_key(self, cmek_uri: str) -> None:
         """Restores the tenant CMEK key (both in-memory and live in Cloud KMS `cymbal-multi-tenant-kr` when CYMBAL_LIVE_GCP=1)."""
         self._disabled_cmek_keys.discard(cmek_uri)
+        tenant_id = self._resolve_tenant_from_cmek_uri(cmek_uri)
+        self._valkey_cache_store[f"cache:{tenant_id}:prefix_v2"] = "warm"
         if os.environ.get("CYMBAL_LIVE_GCP") == "1":
-            tenant_id = self._resolve_tenant_from_cmek_uri(cmek_uri)
             kms_set_key_version_state(tenant_id, enabled=True)
 
     def load_dynamic_runtime_config(self, ctx: CryptographicContext) -> Dict[str, object]:
@@ -161,7 +208,10 @@ class ComputeFinOpsBulkhead:
 
         # 1. Verify CMEK status if tenant or topology mandates CMEK encryption
         if active_cmek and active_cmek in self._disabled_cmek_keys:
-            cmek_meta: Dict[str, object] = {"cmek_key_uri": active_cmek}
+            cmek_meta: Dict[str, object] = {
+                "cmek_key_uri": active_cmek,
+                "valkey_targeted_unlink": f"SCAN 0 MATCH cache:{ctx.tenant_id}:* COUNT 500 -> UNLINK",
+            }
             if os.environ.get("CYMBAL_LIVE_GCP") == "1":
                 cmek_meta["live_bigquery_cmek_lockout"] = bq_verify_cmek_silo_lockout()
             return {}, HopAuditRecord(
@@ -195,7 +245,7 @@ class ComputeFinOpsBulkhead:
                     metadata={"cmek_key_uri": active_cmek, "live_kms_error": live_kms_receipt},
                 )
 
-        # 2. Enforce Redis rate-limit bulkhead (Noisy Neighbor protection)
+        # 2. Enforce Memorystore for Valkey rate-limit bulkhead (Noisy Neighbor protection)
         self._redis_rpm_counters[ctx.tenant_id] = simulated_current_rpm
         if simulated_current_rpm > profile.redis_rpm_limit:
             return {}, HopAuditRecord(
@@ -210,6 +260,8 @@ class ComputeFinOpsBulkhead:
                 metadata={
                     "current_rpm": simulated_current_rpm,
                     "redis_rpm_limit": profile.redis_rpm_limit,
+                    "retry_after_seconds": 2,
+                    "retry_after_jitter_ms": 350,
                 },
             )
 
@@ -228,12 +280,18 @@ class ComputeFinOpsBulkhead:
             value=str(effective_thinking_budget),
         )
 
+        native_membank_cmek_enabled = (
+            os.environ.get("CYMBAL_NATIVE_MEMBANK_CMEK_ENABLED", "false").lower() == "true"
+        )
+
         runtime_config: Dict[str, object] = {
             "sandbox": "gvisor-isolated",
             "immutable_state_key": ctx.temp_tenant_id,
             "memory_namespace": ctx.memory_bank_namespace,
             "memory_levels_enabled": [lvl.value for lvl in MemoryBankLevel],
             "cmek_key_uri": active_cmek or "google-managed-encryption",
+            "ga_sunset_flag": "CYMBAL_NATIVE_MEMBANK_CMEK_ENABLED",
+            "native_membank_cmek_enabled": native_membank_cmek_enabled,
             "dynamic_firestore_config": dynamic_cfg,
             "effective_thinking_budget": effective_thinking_budget,
             "requested_thinking_tokens": requested_thinking_tokens,
@@ -243,6 +301,7 @@ class ComputeFinOpsBulkhead:
                 "mode": "READ_ONLY_IMMUTABLE_PREFIX",
                 "estimated_cogs_savings_pct": 90,
                 "tenant_suffix_isolated": True,
+                "single_flight_lock": f"SET lock:cache_rebuild:{ctx.tenant_id}:prefix_v2 1 NX PX 5000",
             },
         }
         if live_kms_receipt is not None:
