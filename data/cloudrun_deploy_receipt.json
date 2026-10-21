@@ -4,14 +4,14 @@
   "runtimeProjectNumber": "248990048888",
   "region": "us-west1",
   "buildProject": "ramp-portal-dev",
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261020-r3-415fd3f",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261020-r4-ws1-ed04c19",
   "beyondCorpUrl": "https://ge-blogs-248990048888.cr.gclb.goog",
   "runAppUrl": "https://ge-blogs-mi7l4h536a-uw.a.run.app",
-  "gitCommit": "415fd3f",
-  "latestCreatedRevisionName": "ge-blogs-00013-xpx",
-  "latestReadyRevisionName": "ge-blogs-00013-xpx",
+  "gitCommit": "ed04c19",
+  "latestCreatedRevisionName": "ge-blogs-00014-mzc",
+  "latestReadyRevisionName": "ge-blogs-00014-mzc",
   "readyConditionStatus": "True",
   "trafficPercent": 100,
   "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
-  "verifiedAt": "2026-10-20T21:56:23Z"
+  "verifiedAt": "2026-10-21T00:43:11Z"
 }
