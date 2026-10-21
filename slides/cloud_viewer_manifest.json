@@ -337,79 +337,79 @@
       "key": "WS1",
       "title": "WS1 \u2014 Reference Architecture, Taxonomy & 5-Hop Baseline",
       "mdPath": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
-      "sha256": "3efe38103720644480777ef71d23dceaff0790650101f37a2ee6db1cc54bf192",
+      "sha256": "32b8da72354ccb5204e56475df5ac5d448297699a7fc637e4f371d7cefd1b973",
       "googleDocsId": "1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os",
       "googleDocsEditUrl": "https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?authuser=nitinagga%40google.com",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/preview",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/export?format=pdf",
       "webViewLink": "https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?usp=drivesdk&resourcekey=0-PgO-X5icAK687_G-_WZFpQ",
       "syncedAt": "2026-10-15T12:05:58Z",
-      "sizeBytes": 76127
+      "sizeBytes": 92950
     },
     "WS2": {
       "key": "WS2",
       "title": "WS2 \u2014 Pattern A: High-Density Pooled Architecture",
       "mdPath": "blogs/ws2-pattern-a-pooled-architecture.md",
-      "sha256": "7060d3c35ddd0cce0fc31e2bba8556b60494d85e897c366d64dab95c400185ae",
+      "sha256": "db3c5cd8d580909b83832798f9ea9fc45a177511140ffacdb3a68dccd0fda4dd",
       "googleDocsId": "111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw",
       "googleDocsEditUrl": "https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/edit?authuser=nitinagga%40google.com",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/preview",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/export?format=pdf",
       "webViewLink": "https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/edit?usp=drivesdk&resourcekey=0-OyYSOmx22u8x4Q1kHunGyQ",
       "syncedAt": "2026-10-15T12:06:14Z",
-      "sizeBytes": 74394
+      "sizeBytes": 96305
     },
     "WS3": {
       "key": "WS3",
       "title": "WS3 \u2014 Pattern B: Zero-Trust Sovereign Silos",
       "mdPath": "blogs/ws3-pattern-b-sovereign-silos.md",
-      "sha256": "341fb8618bff8fcb4bd96e382d8ff21c98f9df4d2cf23dc3efaf5e25c14a67b9",
+      "sha256": "442a80c9095d838353651cbc2c54cdb733a4e391bd8e10012ebddea8cb99c71b",
       "googleDocsId": "1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY",
       "googleDocsEditUrl": "https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/edit?authuser=nitinagga%40google.com",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/preview",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/export?format=pdf",
       "webViewLink": "https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/edit?usp=drivesdk&resourcekey=0-KRCBVysg1k7J4IvKwJKuYQ",
       "syncedAt": "2026-10-15T12:06:26Z",
-      "sizeBytes": 59947
+      "sizeBytes": 81553
     },
     "WS4": {
       "key": "WS4",
       "title": "WS4 \u2014 Pattern C: Dynamic Hybrid Hub-and-Spoke & Tier Upgrade",
       "mdPath": "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md",
-      "sha256": "4f7bdbe890a020c97b0784a70ed166829366ebf2eb2b6fcfa4d38de7f727c5bc",
+      "sha256": "770199a069b95101c640c786110ad3f087cf6b5647e2bd618a17502b8903c58d",
       "googleDocsId": "1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww",
       "googleDocsEditUrl": "https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/edit?authuser=nitinagga%40google.com",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/preview",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/export?format=pdf",
       "webViewLink": "https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/edit?usp=drivesdk",
       "syncedAt": "2026-10-15T12:06:40Z",
-      "sizeBytes": 73936
+      "sizeBytes": 95930
     },
     "WS5": {
       "key": "WS5",
       "title": "WS5 \u2014 Executive Decision Guide & Multi-Tenant Agentic Triad",
       "mdPath": "blogs/ws5-decision-guide-and-agentic-triad.md",
-      "sha256": "06b5ee87dfcd42116dbc6ea705b43acbe6d63abc9d3da5dc13f86330f6c30510",
+      "sha256": "544b14f66fcd71284f8e706ff004935f2bb0fcfff1039466f76419a5a1596a06",
       "googleDocsId": "10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0",
       "googleDocsEditUrl": "https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit?authuser=nitinagga%40google.com",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/preview",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/export?format=pdf",
       "webViewLink": "https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit?usp=drivesdk",
       "syncedAt": "2026-10-15T12:06:52Z",
-      "sizeBytes": 40072
+      "sizeBytes": 65429
     },
     "ALL": {
       "key": "ALL",
       "title": "ALL Workstreams 1\u20135 Master Deck (25 Slides \u2022 14 Diagrams)",
       "mdPath": "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md",
-      "sha256": "89934ca5e7221457a6cd6c7c8c10f47999ead8f320479d1bf8a956e1b28d661b",
+      "sha256": "da1236f116de20edc4d605951d23208d60f851188b992e2f3b4c7c1902a925dc",
       "googleDocsId": "150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM",
       "googleDocsEditUrl": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/edit?authuser=nitinagga%40google.com",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/preview",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/export?format=pdf",
       "webViewLink": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/edit?usp=drivesdk&resourcekey=0-hSujxBUvoiHkoIFajcWeQg",
       "syncedAt": "2026-10-15T12:07:18Z",
-      "sizeBytes": 582816
+      "sizeBytes": 615004
     }
   }
 }

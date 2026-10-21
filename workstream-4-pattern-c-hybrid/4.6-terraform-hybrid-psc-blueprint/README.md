@@ -19,5 +19,5 @@ python3 -B ../../scripts/verify_5_third_party_saas_products.py --pattern pattern
 
 ## Bidirectional 10 Non-Google Third-Party SaaS & Zero-Downtime Tier Upgrade Verification
 * **Manual Playbook**: [`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`](../../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md)
-* **Live Third-Party SaaS Target Consoles (Side B • `route=DEDICATED_PSC_SPOKE` & `dropped_turns=0`)**: `https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/<target>?principal=sre-lead@finvault.com`
+* **Live Third-Party SaaS Target Consoles (Side B • `route=DEDICATED_PSC_SPOKE` & `dropped_turns=0`)**: `http://13.220.94.209:3001..3010 (and https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/<target>?format=json)`
 

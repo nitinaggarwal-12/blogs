@@ -6,7 +6,7 @@
   "cognitoUserPoolId": "us-east-1_vqlzYM74B",
   "lambdaFunctionArn": "arn:aws:lambda:us-east-1:393036065405:function:merck-a2a-mcp-remote-peer",
   "s3Bucket": "nitinagga-argolis-aws-393036065405-us-east-1",
-  "verifiedAt": "2026-10-21T03:07:52Z",
+  "verifiedAt": "2026-10-21T04:03:33Z",
   "totalTargetsRegistered": 10,
   "targets": [
     {
@@ -47,7 +47,7 @@
             "val1": "finvault"
           },
           "kpi_summary": "FinVault OCC Wire Settlement Portfolio: $527.0M across 2 RLS-verified entities (FV-TX-901, FV-TX-902)",
-          "executed_at_utc": "2026-10-21T03:07:46Z",
+          "executed_at_utc": "2026-10-21T04:03:27Z",
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
@@ -92,7 +92,7 @@
             "row_count": 2,
             "cross_tenant_rows": 0
           },
-          "executed_at_utc": "2026-10-21T03:07:49Z",
+          "executed_at_utc": "2026-10-21T04:03:31Z",
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
@@ -224,7 +224,7 @@
           "jira_cloud_project": "FINVAULT-SRE",
           "jira_issue_key": "FINVAULT-SRE-1402",
           "escalation_state": "CREATED_WITH_HOP4_SDP_PII_MASKING",
-          "executed_at_utc": "2026-10-21T03:07:50Z",
+          "executed_at_utc": "2026-10-21T04:03:32Z",
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
@@ -264,7 +264,7 @@
           "genie_space_id": "genie-space-fv-treasury-01",
           "sql_warehouse_id": "wh-databricks-serverless-fv-01",
           "dynamic_sql_guard": "EXECUTE_IMMEDIATE_BLOCKED",
-          "executed_at_utc": "2026-10-21T03:07:51Z",
+          "executed_at_utc": "2026-10-21T04:03:32Z",
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
@@ -304,7 +304,7 @@
           "primary_role": "ROLE_CYMBAL_FINVAULT",
           "secondary_roles": "NONE",
           "cortex_semantic_model": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/snowflake/finvault_semantic_model.yaml",
-          "executed_at_utc": "2026-10-21T03:07:51Z",
+          "executed_at_utc": "2026-10-21T04:03:32Z",
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
@@ -344,7 +344,7 @@
           "raas_report_id": "WD-RAAS-FV-COMP-2026",
           "composite_3lo_scope": "finvault:sre-lead@finvault.com:mcp://finvault/workday-hcm-financials-raas-3lo",
           "sdp_masking_policy": "US_SOCIAL_SECURITY_NUMBER + IBAN_CODE REDACTED",
-          "executed_at_utc": "2026-10-21T03:07:51Z",
+          "executed_at_utc": "2026-10-21T04:03:32Z",
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
@@ -384,7 +384,7 @@
           "enforced_log_query": "index:cymbal-prod @tenant_id:finvault service:core-ledger-api",
           "apm_p99_latency_ms": 14.2,
           "bits_ai_sre_verdict": "HEALTHY_ZERO_INDIRECT_PROMPT_INJECTION",
-          "executed_at_utc": "2026-10-21T03:07:52Z",
+          "executed_at_utc": "2026-10-21T04:03:33Z",
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
@@ -425,7 +425,7 @@
           "host_aid": "aid-fv-prod-ledger-001",
           "containment_action": "NETWORK_CONTAINMENT_READY_DPOP_VERIFIED",
           "dpop_jkt_bound": "dpop_jkt_fv_001",
-          "executed_at_utc": "2026-10-21T03:07:52Z",
+          "executed_at_utc": "2026-10-21T04:03:33Z",
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },

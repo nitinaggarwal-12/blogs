@@ -627,48 +627,32 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                 (cloud_screenshots_dir / p).is_file() and (cloud_screenshots_dir / p).stat().st_size > 10_000
                 for p in expected_20_saas_pngs
             )
+            expected_10_ec2_ports = tuple(f"http://13.220.94.209:{p}" for p in range(3001, 3011))
             full_10_saas_docs = (
                 "index.html",
                 "docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md",
                 "docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md",
+                "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md",
                 "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
-                "workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md",
+                "blogs/ws2-pattern-a-pooled-architecture.md",
+                "blogs/ws3-pattern-b-sovereign-silos.md",
+                "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md",
                 "blogs/ws5-decision-guide-and-agentic-triad.md",
+                "workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md",
+                "workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md",
+                "workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md",
+                "workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md",
+                "workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md",
+                "workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md",
+                "workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md",
                 "workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md",
             )
-            pattern_specific_docs = {
-                "blogs/ws2-pattern-a-pooled-architecture.md": (
-                    "saas_01_thoughtspot_spotter_agentcore_mcp.png", "saas_ui_01_thoughtspot_spotter_console.png",
-                    "saas_02_sigma_computing_agentcore_mcp.png", "saas_ui_02_sigma_computing_console.png",
-                    "saas_05_salesforce_jira_agentcore_mcp.png", "saas_ui_05_salesforce_jira_console.png",
-                    "saas_08_workday_hcm_financials_agentcore_mcp.png", "saas_ui_08_workday_hcm_financials_console.png",
-                ),
-                "workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md": (
-                    "saas_01_thoughtspot_spotter_agentcore_mcp.png", "saas_ui_01_thoughtspot_spotter_console.png",
-                    "saas_02_sigma_computing_agentcore_mcp.png", "saas_ui_02_sigma_computing_console.png",
-                    "saas_05_salesforce_jira_agentcore_mcp.png", "saas_ui_05_salesforce_jira_console.png",
-                    "saas_08_workday_hcm_financials_agentcore_mcp.png", "saas_ui_08_workday_hcm_financials_console.png",
-                ),
-                "blogs/ws3-pattern-b-sovereign-silos.md": (
-                    "saas_03_servicenow_itsm_agentcore_mcp.png", "saas_ui_03_servicenow_itsm_console.png",
-                    "saas_04_veeva_vault_muse_edc_agentcore_mcp.png", "saas_ui_04_veeva_vault_muse_edc_console.png",
-                    "saas_06_databricks_unity_catalog_agentcore_mcp.png", "saas_ui_06_databricks_unity_catalog_console.png",
-                ),
-                "workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md": (
-                    "saas_03_servicenow_itsm_agentcore_mcp.png", "saas_ui_03_servicenow_itsm_console.png",
-                    "saas_04_veeva_vault_muse_edc_agentcore_mcp.png", "saas_ui_04_veeva_vault_muse_edc_console.png",
-                    "saas_06_databricks_unity_catalog_agentcore_mcp.png", "saas_ui_06_databricks_unity_catalog_console.png",
-                ),
-                "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md": (
-                    "saas_07_snowflake_cortex_agentcore_mcp.png", "saas_ui_07_snowflake_cortex_console.png",
-                    "saas_09_datadog_bits_ai_sre_agentcore_mcp.png", "saas_ui_09_datadog_bits_ai_sre_console.png",
-                    "saas_10_crowdstrike_okta_agentcore_mcp.png", "saas_ui_10_crowdstrike_okta_console.png",
-                ),
-                "workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md": (
-                    "saas_07_snowflake_cortex_agentcore_mcp.png", "saas_ui_07_snowflake_cortex_console.png",
-                    "saas_09_datadog_bits_ai_sre_agentcore_mcp.png", "saas_ui_09_datadog_bits_ai_sre_console.png",
-                    "saas_10_crowdstrike_okta_agentcore_mcp.png", "saas_ui_10_crowdstrike_okta_console.png",
-                ),
+            intra_cloud_req_map = {
+                "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md": ("pantheon_live_user_capture_ssh_verify.png", "gcp_console_01_cloud_run_source_editor.png", "gcp_console_02_cloud_run_revisions_deploy.png", "gcp_console_07_logs_explorer_20_20_pass.png", "gcp_console_09_vertex_ai_agent_builder_engines.png"),
+                "blogs/ws2-pattern-a-pooled-architecture.md": ("gcp_console_03_bigquery_studio_pattern_a_rls.png", "gcp_console_01_cloud_run_source_editor.png", "gcp_console_02_cloud_run_revisions_deploy.png", "gcp_console_07_logs_explorer_20_20_pass.png"),
+                "blogs/ws3-pattern-b-sovereign-silos.md": ("gcp_console_04_bigquery_studio_pattern_b_cmek.png", "gcp_console_05_cloud_kms_keyring_live.png", "gcp_console_07_logs_explorer_20_20_pass.png", "gcp_console_09_vertex_ai_agent_builder_engines.png"),
+                "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md": ("gcp_console_06_vpc_psc_nat_subnet_live.png", "gcp_console_03_bigquery_studio_pattern_a_rls.png", "gcp_console_04_bigquery_studio_pattern_b_cmek.png", "gcp_console_05_cloud_kms_keyring_live.png", "gcp_console_07_logs_explorer_20_20_pass.png"),
+                "blogs/ws5-decision-guide-and-agentic-triad.md": ("pantheon_live_user_capture_ssh_verify.png", "gcp_console_01_cloud_run_source_editor.png", "gcp_console_03_bigquery_studio_pattern_a_rls.png", "gcp_console_04_bigquery_studio_pattern_b_cmek.png", "gcp_console_05_cloud_kms_keyring_live.png", "gcp_console_06_vpc_psc_nat_subnet_live.png", "gcp_console_07_logs_explorer_20_20_pass.png"),
             }
             bidirectional_docs_ok = all_20_saas_pngs_on_disk and "ten-saas-live-access-hub" in html
             for rel_doc in full_10_saas_docs:
@@ -681,22 +665,22 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                     all(p in doc_txt for p in expected_20_saas_pngs)
                     and all(tid in doc_txt for tid in expected_10_target_ids)
                     and all(up in doc_txt for up in expected_10_saas_ui_paths)
+                    and all(ep in doc_txt for ep in expected_10_ec2_ports)
+                    and "?principal=" not in doc_txt
                 ):
                     bidirectional_docs_ok = False
                     break
-            for rel_doc, req_pngs in pattern_specific_docs.items():
-                doc_p = ROOT_DIR / rel_doc
-                if not doc_p.is_file():
-                    bidirectional_docs_ok = False
-                    break
-                doc_txt = doc_p.read_text(encoding="utf-8")
-                if not (
-                    all(p in doc_txt for p in req_pngs)
-                    and all(tid in doc_txt for tid in expected_10_target_ids)
-                    and all(up in doc_txt for up in expected_10_saas_ui_paths)
-                ):
-                    bidirectional_docs_ok = False
-                    break
+                # If markdown blog or workstream guide, assert actual embedded `![` images for all 20 SaaS screenshots
+                if rel_doc.endswith(".md") and rel_doc != "docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md":
+                    for p in expected_20_saas_pngs:
+                        if f"../screenshots/cloud-console/{p})" not in doc_txt or "![Side" not in doc_txt and "![SAAS-" not in doc_txt:
+                            bidirectional_docs_ok = False
+                            break
+                if rel_doc in intra_cloud_req_map:
+                    for gcp_png in intra_cloud_req_map[rel_doc]:
+                        if f"../screenshots/cloud-console/{gcp_png})" not in doc_txt or "![Intra-Cloud" not in doc_txt:
+                            bidirectional_docs_ok = False
+                            break
             saas_receipt_ok = (
                 saas_receipt.get("status") == "10_SAAS_X_3_PATTERNS_30_E2E_FLOWS_60_OF_60_ASSERTIONS_PASS"
                 and saas_receipt.get("total_unique_saas_products_tested") == 10

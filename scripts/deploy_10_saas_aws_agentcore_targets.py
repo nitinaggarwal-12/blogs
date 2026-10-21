@@ -422,48 +422,30 @@ def _probe_live_ec2_upstream(target_key: str) -> dict:
         req = urllib.request.Request(info["health_url"], method="GET")
         with urllib.request.urlopen(req, timeout=2.5) as resp:
             info["live_http_status"] = resp.status
-    except Exception:
-        info["live_http_status"] = 200
+    except urllib.error.HTTPError as he:
+        info["live_http_status"] = he.code
+    except Exception as exc:
+        info["live_http_status"] = f"UNREACHABLE: {exc}"
     return info
 
 def _persist_cymbal_s3_ledger(target_key: str, tenant_id: str, payload: dict) -> str:
     s3_key = f"cymbal-10saas-ledger/{target_key}/{tenant_id}.json"
-    try:
-        s3 = get_s3()
-        s3.put_object(
-            Bucket=S3_BUCKET,
-            Key=s3_key,
-            Body=json.dumps(payload, indent=2).encode("utf-8"),
-            ContentType="application/json",
-        )
-        return f"s3://{S3_BUCKET}/{s3_key}"
-    except Exception as exc:
-        return f"s3://{S3_BUCKET}/{s3_key} (mem-cached: {exc})"
+    s3 = get_s3()
+    s3.put_object(
+        Bucket=S3_BUCKET,
+        Key=s3_key,
+        Body=json.dumps(payload, indent=2).encode("utf-8"),
+        ContentType="application/json",
+    )
+    return f"s3://{S3_BUCKET}/{s3_key}"
 
 def _read_cymbal_s3_ledger(target_key: str, tenant_id: str = "finvault") -> dict:
     s3_key = f"cymbal-10saas-ledger/{target_key}/{tenant_id}.json"
-    try:
-        s3 = get_s3()
-        obj = s3.get_object(Bucket=S3_BUCKET, Key=s3_key)
-        data = json.loads(obj["Body"].read().decode("utf-8"))
-        data["liveUpstreamInstance"] = _probe_live_ec2_upstream(target_key)
-        return data
-    except Exception:
-        return {
-            "status": "SUCCESS",
-            "awsAccountId": ACCOUNT_ID,
-            "awsRegion": REGION,
-            "agentCoreGatewayId": AGENTCORE_GATEWAY_ID,
-            "agentCoreTargetId": SAAS_UI_CATALOG.get(target_key, {}).get("target_id", target_key),
-            "toolName": SAAS_UI_CATALOG.get(target_key, {}).get("tool_name", target_key),
-            "tenantId": tenant_id,
-            "principal": "sre-lead@finvault.com",
-            "pattern": "PATTERN_A_POOLED",
-            "hop2ConsentVerified": True,
-            "s3AuditLedgerUri": f"s3://{S3_BUCKET}/{s3_key}",
-            "liveUpstreamInstance": _probe_live_ec2_upstream(target_key),
-            "records": CYMBAL_10_SAAS_RECORDS.get(target_key, {}).get(tenant_id, {}),
-        }
+    s3 = get_s3()
+    obj = s3.get_object(Bucket=S3_BUCKET, Key=s3_key)
+    data = json.loads(obj["Body"].read().decode("utf-8"))
+    data["liveUpstreamInstance"] = _probe_live_ec2_upstream(target_key)
+    return data
 
 def _handle_agentcore_gateway_target(event: dict, context) -> dict:
     custom_ctx = {}
@@ -510,264 +492,25 @@ def _handle_agentcore_gateway_target(event: dict, context) -> dict:
             orig_out["s3AuditLedgerUri"] = _persist_cymbal_s3_ledger(tk, tenant_id, orig_out)
     return orig_out
 
-def _render_live_saas_console_html(target_key: str, public_url: str, principal: str = "sre-lead@finvault.com") -> str:
-    meta = SAAS_UI_CATALOG.get(target_key, SAAS_UI_CATALOG["thoughtspot-spotter"])
-    ledger = _read_cymbal_s3_ledger(target_key, "finvault")
-    s3_uri = ledger.get("s3AuditLedgerUri") or f"s3://{S3_BUCKET}/cymbal-10saas-ledger/{target_key}/finvault.json"
-    if principal == "ops-eng@retailstream.com":
-        verdict_badge = "&#10060; CROSS-TENANT SPOOF BLOCKED (HTTP 403 FORBIDDEN • 0 FinVault Rows Leaked)"
-        verdict_style = "background:#fef2f2; color:#b91c1c; border:1px solid #fecaca;"
-        ledger_display = {
-            "status": "DENIED_CROSS_TENANT_RLS_AND_OBO_MISMATCH",
-            "httpStatus": 403,
-            "attemptedTargetTenant": "finvault",
-            "authenticatedCallerPrincipal": "ops-eng@retailstream.com (Microsoft Entra ID OIDC)",
-            "enforcedControl": meta["subtitle"],
-            "leakedFinVaultRecords": 0,
-            "protectedS3LedgerUri": s3_uri,
-        }
-    elif principal == "clin-ops@medcore.io":
-        verdict_badge = "&#128274; PATTERN B CMEK KILL-SWITCH ACTIVE (HTTP 423 LOCKED • <5s Valkey Purge)"
-        verdict_style = "background:#fffbeb; color:#b45309; border:1px solid #fde68a;"
-        ledger_display = {
-            "status": "LOCKED_CMEK_KEY_DISABLED",
-            "httpStatus": 423,
-            "authenticatedCallerPrincipal": "clin-ops@medcore.io (MedCore Sovereign Silo)",
-            "disabledKmsKey": "projects/nitina-ggarwal-sandbox-647724/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek",
-            "valkeyCachePurgeSla": "< 5 seconds (SCAN + UNLINK)",
-            "protectedS3LedgerUri": s3_uri,
-        }
-    else:
-        principal = "sre-lead@finvault.com"
-        verdict_badge = "&#10003; SSO Login Verified &amp; S3 Audit Ledger Synced (HTTP 200 ALLOW)"
-        verdict_style = "background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0;"
-        ledger_display = ledger
-    ledger_json = json.dumps(ledger_display, indent=2)
-
-    ths = "".join(f"<th>{_html.escape(c)}</th>" for c in meta["columns"])
-    trs = ""
-    for r in meta["rows"]:
-        tds = ""
-        for idx, cell in enumerate(r):
-            style = ""
-            if idx == len(r) - 1:
-                if "ALLOW" in cell or "Verified" in cell or "200" in cell or "ZERO-DOWNTIME" in cell:
-                    style = "color:#15803d; font-weight:700;"
-                elif "403" in cell or "401" in cell or "400" in cell or "423" in cell or "BLOCKED" in cell:
-                    style = "color:#b91c1c; font-weight:700;"
-            tds += f"<td style='{style}'>{_html.escape(cell)}</td>"
-        trs += f"<tr>{tds}</tr>"
-
-    nav_links = ""
-    for k, v in SAAS_UI_CATALOG.items():
-        active_cls = "active" if k == target_key else ""
-        short_label = v["brand"].split("•")[0].strip()
-        nav_links += f"<a class='nav-item {active_cls}' href='/saas-ui/{k}'>{_html.escape(short_label)}</a>"
-
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<title>{_html.escape(meta['brand'])} — Live Third-Party SaaS Target Console</title>
-<style>
-  * {{ box-sizing: border-box; }}
-  body {{
-    margin: 0; padding: 0; width: 1440px; height: 920px; overflow: hidden;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: #f1f5f9; color: #0f172a; display: flex; flex-direction: column;
-  }}
-  .vendor-topbar {{
-    background: {meta['header_bg']}; color: #ffffff; padding: 10px 22px;
-    display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 3px solid {meta['accent']};
-  }}
-  .vendor-title {{ font-size: 15.5px; font-weight: 800; letter-spacing: -0.01em; display: flex; align-items: center; gap: 10px; }}
-  .domain-badge {{
-    background: rgba(255,255,255,0.14); color: #e2e8f0; padding: 4px 10px;
-    border-radius: 6px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px;
-  }}
-  .login-bar {{
-    background: #ffffff; border-bottom: 1px solid #cbd5e1; padding: 7px 22px;
-    display: flex; justify-content: space-between; align-items: center; font-size: 11.5px;
-  }}
-  .login-btn {{
-    text-decoration: none; padding: 4px 10px; border-radius: 6px; font-weight: 700;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px;
-    border: 1px solid #cbd5e1; color: #1e293b; background: #f8fafc;
-  }}
-  .login-btn.active-allow {{ background: #dcfce7; color: #15803d; border-color: #86efac; }}
-  .login-btn.active-deny {{ background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }}
-  .login-btn.active-lock {{ background: #fef3c7; color: #b45309; border-color: #fcd34d; }}
-  .layout {{ display: flex; flex: 1; min-height: 0; }}
-  .sidebar {{
-    width: 245px; background: #ffffff; border-right: 1px solid #cbd5e1;
-    padding: 12px 12px; display: flex; flex-direction: column; justify-content: space-between;
-  }}
-  .nav-hdr {{ font-size: 10.5px; font-weight: 800; text-transform: uppercase; color: #64748b; margin: 4px 0 6px 6px; letter-spacing: 0.05em; }}
-  .nav-item {{
-    display: block; text-decoration: none; padding: 6px 10px; border-radius: 7px;
-    font-size: 11.8px; color: #334155; margin-bottom: 2px; font-weight: 500;
-  }}
-  .nav-item.active {{ background: #eff6ff; color: {meta['accent']}; font-weight: 800; border: 1px solid #bfdbfe; }}
-  .content {{ flex: 1; padding: 13px 20px; display: flex; flex-direction: column; gap: 10px; min-height: 0; }}
-  .workspace-card {{
-    background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px;
-    padding: 13px 18px; box-shadow: 0 2px 8px rgba(15,23,42,0.04);
-    display: flex; flex-direction: column; gap: 10px; flex: 1; min-height: 0;
-  }}
-  .ws-header {{ display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; }}
-  .meta-strip {{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }}
-  .meta-box {{ background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 7px 10px; }}
-  .meta-lbl {{ font-size: 10px; font-weight: 700; text-transform: uppercase; color: #64748b; }}
-  .meta-val {{ font-size: 11.5px; font-weight: 700; color: #0f172a; margin-top: 2px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; word-break: break-all; }}
-  table {{ width: 100%; border-collapse: collapse; font-size: 11.5px; }}
-  th {{ background: #f1f5f9; color: #1e293b; text-align: left; padding: 6px 10px; font-weight: 800; border-bottom: 2px solid #cbd5e1; }}
-  td {{ padding: 6px 10px; border-bottom: 1px solid #e2e8f0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }}
-  .bottom-split {{ display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 12px; flex: 1; min-height: 0; }}
-  .s3-box {{
-    background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 10px 13px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10.8px;
-    line-height: 1.34; overflow: hidden; display: flex; flex-direction: column;
-  }}
-  .s3-hdr {{ color: #38bdf8; font-weight: 700; font-size: 10.8px; border-bottom: 1px solid #1e293b; padding-bottom: 4px; margin-bottom: 5px; display: flex; justify-content: space-between; }}
-  pre {{ margin: 0; white-space: pre-wrap; word-break: break-word; }}
-  .Footer {{
-    background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 5px 12px;
-    font-size: 10.8px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: #334155;
-    display: flex; justify-content: space-between;
-  }}
-</style>
-</head>
-<body>
-  <header class="vendor-topbar">
-    <div class="vendor-title">
-      <span>&#9679;</span>
-      <span>{_html.escape(meta['brand'])}</span>
-      <span class="domain-badge">Vendor Control Plane: {_html.escape(meta['domain'])}</span>
-    </div>
-    <div style="display:flex; gap:10px; align-items:center;">
-      <span class="domain-badge" style="background:#15803d; color:#fff; font-weight:700;">&#10003; LIVE INBOUND AWS AGENTCORE MCP TARGET ({_html.escape(meta['target_id'])})</span>
-      <span class="domain-badge">AWS Account: 393036065405 (us-east-1)</span>
-    </div>
-  </header>
-  <div class="login-bar">
-    <div style="display:flex; align-items:center; gap:8px;">
-      <strong style="color:#0f172a;">&#128272; SSO / OBO Principal Validator:</strong>
-      <a class="login-btn {'active-allow' if principal=='sre-lead@finvault.com' else ''}" href="/saas-ui/{_html.escape(target_key)}?principal=sre-lead@finvault.com">1. Login: sre-lead@finvault.com (200)</a>
-      <a class="login-btn {'active-deny' if principal=='ops-eng@retailstream.com' else ''}" href="/saas-ui/{_html.escape(target_key)}?principal=ops-eng@retailstream.com">2. Spoof: ops-eng@retailstream.com (403)</a>
-      <a class="login-btn {'active-lock' if principal=='clin-ops@medcore.io' else ''}" href="/saas-ui/{_html.escape(target_key)}?principal=clin-ops@medcore.io">3. Revoked CMEK: clin-ops@medcore.io (423)</a>
-    </div>
-    <div style="display:flex; align-items:center; gap:8px;">
-      <a class="login-btn" style="background:#0f172a; color:#ffffff; border-color:#0f172a;" href="{_html.escape(REAL_EC2_UPSTREAM_MAP.get(target_key, REAL_EC2_UPSTREAM_MAP['thoughtspot-spotter'])['live_ui_url'])}" target="_blank">&#128640; Open Native Upstream Software UI ({_html.escape(REAL_EC2_UPSTREAM_MAP.get(target_key, REAL_EC2_UPSTREAM_MAP['thoughtspot-spotter'])['live_ui_url'])}) &nearr;</a>
-      <a class="login-btn" style="background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe;" href="/saas-ui/{_html.escape(target_key)}?format=json" target="_blank">Verify Raw S3 Ledger JSON &nearr;</a>
-    </div>
-  </div>
-  <div class="layout">
-    <aside class="sidebar">
-      <div>
-        <div class="nav-hdr">10 Live 3P SaaS Consoles</div>
-        {nav_links}
-      </div>
-      <div style="border-top:1px solid #e2e8f0; padding-top:8px; font-size:10.5px; color:#475569; font-family:ui-monospace, monospace;">
-        <div style="font-weight:700; color:#0f172a;">Live Target Host:</div>
-        <div style="word-break:break-all;">{_html.escape(public_url)}/saas-ui/{_html.escape(target_key)}</div>
-      </div>
-    </aside>
-    <main class="content">
-      <div class="workspace-card">
-        <div class="ws-header">
-          <div>
-            <div style="font-size:15px; font-weight:800; color:#0f172a;">{_html.escape(meta['workspace_title'])}</div>
-            <div style="font-size:11.8px; color:#475569; margin-top:2px;">{_html.escape(meta['subtitle'])}</div>
-          </div>
-          <span style="{verdict_style} padding:4px 10px; border-radius:999px; font-size:11.5px; font-weight:800;">
-            {verdict_badge}
-          </span>
-        </div>
-
-        <div class="meta-strip">
-          <div class="meta-box">
-            <div class="meta-lbl">Inbound MCP Gateway ID</div>
-            <div class="meta-val">merck-a2a-mcp-gateway-kiu8omh4aq</div>
-          </div>
-          <div class="meta-box">
-            <div class="meta-lbl">Target ID &amp; Tool Invoked</div>
-            <div class="meta-val">{_html.escape(meta['target_id'])} &bull; {_html.escape(meta['tool_name'])}</div>
-          </div>
-          <div class="meta-box">
-            <div class="meta-lbl">Active Logged-In SSO Principal</div>
-            <div class="meta-val">{_html.escape(principal)} (Cognito RS256)</div>
-          </div>
-          <div class="meta-box">
-            <div class="meta-lbl">Persisted S3 Ledger Object</div>
-            <div class="meta-val">{_html.escape(s3_uri)}</div>
-          </div>
-        </div>
-
-        <table>
-          <thead><tr>{ths}</tr></thead>
-          <tbody>{trs}</tbody>
-        </table>
-
-        <div class="bottom-split">
-          <div class="s3-box">
-            <div class="s3-hdr">
-              <span>LIVE S3 AUDIT LEDGER STATE ({_html.escape(s3_uri)})</span>
-              <span style="color:#4ade80;">READ LIVE FROM AMAZON S3</span>
-            </div>
-            <pre>{_html.escape(ledger_json)}</pre>
-          </div>
-          <div class="s3-box">
-            <div class="s3-hdr">
-              <span>HOW TO LOGIN &amp; VALIDATE OUTCOMES (BOTH SIDES)</span>
-              <span style="color:#38bdf8;">BIDIRECTIONAL PROOF</span>
-            </div>
-            <pre>1. Login &amp; Switch SSO Principal in This Third-Party SaaS UI:
-   - Click "1. Login: sre-lead@finvault.com" above -> HTTP 200 ALLOW
-   - Click "2. Spoof: ops-eng@retailstream.com"   -> HTTP 403 DENY (0 rows)
-   - Click "3. Revoked CMEK: clin-ops@medcore.io" -> HTTP 423 LOCKED
-
-2. Trigger Live Agent Execution (Outbound Side A -> Inbound Side B):
-   POST https://merck-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp
-   Tool: {_html.escape(meta['tool_name'])} (Target {_html.escape(meta['target_id'])})
-   Auth: Cognito RS256 OAuth2 (Pool us-east-1_vqlzYM74B)
-
-3. Validate Raw Persisted S3 Outcome JSON:
-   GET {_html.escape(public_url)}/saas-ui/{_html.escape(target_key)}?format=json</pre>
-          </div>
-        </div>
-
-        <div class="Footer">
-          <span>Live SaaS Target URL: {_html.escape(public_url)}/saas-ui/{_html.escape(target_key)}</span>
-          <span>JSON API: {_html.escape(public_url)}/saas-ui/{_html.escape(target_key)}?format=json</span>
-        </div>
-      </div>
-    </main>
-  </div>
-</body>
-</html>"""
-
 def _handle_http_request(event: dict) -> dict:
     path = event.get("rawPath") or event.get("path") or "/"
     qs = event.get("queryStringParameters") or {}
-    headers = {k.lower(): v for k, v in (event.get("headers") or {}).items()}
-    domain = (event.get("requestContext") or {}).get("domainName") or headers.get("host") or "t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws"
-    public_url = f"https://{domain}"
 
     if path.startswith("/saas-ui"):
         parts = [p for p in path.split("/") if p]
         target_key = parts[1] if len(parts) > 1 else "thoughtspot-spotter"
-        if target_key not in SAAS_UI_CATALOG:
+        if target_key not in REAL_EC2_UPSTREAM_MAP:
             target_key = "thoughtspot-spotter"
         if qs.get("format") == "json":
             return _json_resp(200, _read_cymbal_s3_ledger(target_key, qs.get("tenant", "finvault")))
-        principal = qs.get("principal", "sre-lead@finvault.com")
-        html_body = _render_live_saas_console_html(target_key, public_url, principal=principal)
-        status_code = 403 if principal == "ops-eng@retailstream.com" else (423 if principal == "clin-ops@medcore.io" else 200)
+        live_ui_url = REAL_EC2_UPSTREAM_MAP[target_key]["live_ui_url"]
         return {
-            "statusCode": status_code,
-            "headers": {"Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store"},
-            "body": html_body,
+            "statusCode": 302,
+            "headers": {
+                "Location": live_ui_url,
+                "Cache-Control": "no-store",
+            },
+            "body": "",
         }
     return _orig_handle_http_request(event)
 '''

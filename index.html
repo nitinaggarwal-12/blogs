@@ -191,6 +191,27 @@
       vertical-align: top;
     }
     th { background: var(--panel-alt); color: var(--th-text); }
+    .article-reader table {
+      table-layout: fixed;
+      width: 100%;
+      font-size: 12.8px;
+      line-height: 1.5;
+    }
+    .article-reader th,
+    .article-reader td {
+      padding: 8px 10px;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      max-width: 0;
+      overflow: hidden;
+    }
+    .article-reader td code,
+    .article-reader th code {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      white-space: normal;
+      font-size: 11.5px;
+    }
     .sim-controls {
       display: flex;
       gap: 8px;
@@ -1572,7 +1593,7 @@
                   </div>
 
                   <div id="hub-diag-img-wrap" style="background:#ffffff; border-radius:10px; padding:12px 14px; border:1.5px solid var(--border); text-align:center;">
-                    <img id="hub-diag-img" src="diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png" alt="Workstream Architecture Diagram" style="width:auto; max-width:min(100%, 620px); max-height:660px; height:auto; display:block; margin:0 auto; border-radius:6px; cursor:zoom-in;" onclick="window.open(this.src, '_blank')" title="Click to open full-resolution 2x diagram in new tab" />
+                    <img id="hub-diag-img" src="diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png" alt="Workstream Architecture Diagram" style="width:auto; max-width:min(100%, 860px); max-height:720px; height:auto; display:block; margin:0 auto; border-radius:6px; cursor:zoom-in;" onclick="window.open(this.src, '_blank')" title="Click to open full-resolution 2x diagram in new tab" />
                   </div>
                   <div id="hub-drawio-inline-wrap" style="display:none; background:#ffffff; border-radius:10px; overflow:hidden; border:2px solid #2563eb;">
                     <iframe id="hub-drawio-inline-iframe" src="about:blank" style="width:100%; height:860px; border:0; display:block;" title="Inline Draw.io Architecture Editor"></iframe>
@@ -1806,9 +1827,6 @@
                 <td>
                   <a href="http://13.220.94.209:3001/question/27" target="_blank" rel="noopener"><strong>&#128640; Open Native Metabase Liveboard UI (:3001) &nearr;</strong></a><br/>
                   <span style="font-size:11px; font-family:ui-monospace, monospace;">Login: <code>sre-lead@finvault.com</code> / <code>FinVault#2026!</code></span><br/>
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?principal=sre-lead@finvault.com" target="_blank" rel="noopener" style="font-size:11px;">200 ALLOW &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">403 DENY &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">423 LOCKED &nearr;</a>
                 </td>
                 <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
                 <td>
@@ -1824,9 +1842,6 @@
                 <td>
                   <a href="http://13.220.94.209:3002/d/finvault-sre-wb" target="_blank" rel="noopener"><strong>&#128640; Open Native Grafana Enterprise UI (:3002) &nearr;</strong></a><br/>
                   <span style="font-size:11px; font-family:ui-monospace, monospace;">Login: <code>sre-lead@finvault.com</code> / <code>FinVault#2026!</code></span><br/>
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?principal=sre-lead@finvault.com" target="_blank" rel="noopener" style="font-size:11px;">200 ALLOW &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">403 DENY &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">423 LOCKED &nearr;</a>
                 </td>
                 <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
                 <td>
@@ -1842,9 +1857,6 @@
                 <td>
                   <a href="http://13.220.94.209:3003/projects/finvault-itsm/issues" target="_blank" rel="noopener"><strong>&#128640; Open Native Redmine ITSM UI (:3003) &nearr;</strong></a><br/>
                   <span style="font-size:11px; font-family:ui-monospace, monospace;">Login: <code>sre-lead@finvault.com</code> / <code>FinVault#2026!</code></span><br/>
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?principal=sre-lead@finvault.com" target="_blank" rel="noopener" style="font-size:11px;">200 ALLOW &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">403 DENY &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">423 LOCKED &nearr;</a>
                 </td>
                 <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
                 <td>
@@ -1860,9 +1872,6 @@
                 <td>
                   <a href="http://13.220.94.209:3004/#/nc/base" target="_blank" rel="noopener"><strong>&#128640; Open Native NocoDB Clinical EDC UI (:3004) &nearr;</strong></a><br/>
                   <span style="font-size:11px; font-family:ui-monospace, monospace;">Login: <code>sre-lead@finvault.com</code> / <code>FinVault#2026!</code></span><br/>
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?principal=sre-lead@finvault.com" target="_blank" rel="noopener" style="font-size:11px;">200 ALLOW &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">403 DENY &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">423 LOCKED &nearr;</a>
                 </td>
                 <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
                 <td>
@@ -1878,9 +1887,6 @@
                 <td>
                   <a href="http://13.220.94.209:3005/finvault/sre-escalations/issues/1" target="_blank" rel="noopener"><strong>&#128640; Open Native Gitea Escalation UI (:3005) &nearr;</strong></a><br/>
                   <span style="font-size:11px; font-family:ui-monospace, monospace;">Login: <code>sre-lead</code> / <code>FinVault#2026!</code></span><br/>
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?principal=sre-lead@finvault.com" target="_blank" rel="noopener" style="font-size:11px;">200 ALLOW &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">403 DENY &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">423 LOCKED &nearr;</a>
                 </td>
                 <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
                 <td>
@@ -1896,9 +1902,6 @@
                 <td>
                   <a href="http://13.220.94.209:3006/ui/" target="_blank" rel="noopener"><strong>&#128640; Open Native Trino Lakehouse UI (:3006) &nearr;</strong></a><br/>
                   <span style="font-size:11px; font-family:ui-monospace, monospace;">Login: <code>sre-lead@finvault.com</code> (No password)</span><br/>
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?principal=sre-lead@finvault.com" target="_blank" rel="noopener" style="font-size:11px;">200 ALLOW &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">403 DENY &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">423 LOCKED &nearr;</a>
                 </td>
                 <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
                 <td>
@@ -1914,9 +1917,6 @@
                 <td>
                   <a href="http://13.220.94.209:3007/play" target="_blank" rel="noopener"><strong>&#128640; Open Native ClickHouse Play UI (:3007) &nearr;</strong></a><br/>
                   <span style="font-size:11px; font-family:ui-monospace, monospace;">Login: <code>finvault_user</code> / <code>FinVault#2026!</code></span><br/>
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?principal=sre-lead@finvault.com" target="_blank" rel="noopener" style="font-size:11px;">200 ALLOW &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">403 DENY &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">423 LOCKED &nearr;</a>
                 </td>
                 <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
                 <td>
@@ -1932,9 +1932,6 @@
                 <td>
                   <a href="http://13.220.94.209:3008/admin/content/hcm_compensation" target="_blank" rel="noopener"><strong>&#128640; Open Native Directus HCM Studio (:3008) &nearr;</strong></a><br/>
                   <span style="font-size:11px; font-family:ui-monospace, monospace;">Login: <code>sre-lead@finvault.com</code> / <code>FinVault#2026!</code></span><br/>
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?principal=sre-lead@finvault.com" target="_blank" rel="noopener" style="font-size:11px;">200 ALLOW &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">403 DENY &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">423 LOCKED &nearr;</a>
                 </td>
                 <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
                 <td>
@@ -1950,9 +1947,6 @@
                 <td>
                   <a href="http://13.220.94.209:3009/#/events" target="_blank" rel="noopener"><strong>&#128640; Open Native Seq APM Events UI (:3009) &nearr;</strong></a><br/>
                   <span style="font-size:11px; font-family:ui-monospace, monospace;">Login: <code>sre-lead@finvault.com</code> / <code>FinVault#2026!</code></span><br/>
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?principal=sre-lead@finvault.com" target="_blank" rel="noopener" style="font-size:11px;">200 ALLOW &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">403 DENY &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">423 LOCKED &nearr;</a>
                 </td>
                 <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
                 <td>
@@ -1968,9 +1962,6 @@
                 <td>
                   <a href="http://13.220.94.209:3010/ui/vault/secrets/secret/show/tenants/finvault" target="_blank" rel="noopener"><strong>&#128640; Open Native HashiCorp Vault UI (:3010) &nearr;</strong></a><br/>
                   <span style="font-size:11px; font-family:ui-monospace, monospace;">Token: <code>fv-token-finvault-sre-2026</code></span><br/>
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?principal=sre-lead@finvault.com" target="_blank" rel="noopener" style="font-size:11px;">200 ALLOW &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?principal=ops-eng@retailstream.com" target="_blank" rel="noopener" style="font-size:11px; color:#b91c1c;">403 DENY &nearr;</a> &bull;
-                  <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?principal=clin-ops@medcore.io" target="_blank" rel="noopener" style="font-size:11px; color:#b45309;">423 LOCKED &nearr;</a>
                 </td>
                 <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json" target="_blank" rel="noopener"><code>finvault.json</code> &nearr;</a></td>
                 <td>
@@ -2912,6 +2903,7 @@
 
         function formatInline(text) {
           return escapeHtml(text)
+            .replace(/&lt;br\s*\/?&gt;/gi, '<br/>')
             .replace(/`([^`]+)`/g, '<code>$1</code>')
             .replace(/\*\*([\s\S]+?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*([^*]+)\*/g, '<em>$1</em>')
@@ -2921,7 +2913,7 @@
               const diagId = diagMatch ? diagMatch[1] : '';
               if (!diagId) {
                 const figSlug = resolved.replace(/[^a-zA-Z0-9_-]/g, '-');
-                return `<div class="gcp-figure-card" id="inline-fig-card-${figSlug}" data-card-id="inline-fig-card-${figSlug}" data-card-type="figure" data-card-title="${escapeHtml(alt)}" data-doc-path="${escapeHtml(docRelPath || '')}"><img src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:auto; max-width:min(100%, 620px); max-height:660px; height:auto; display:block; margin:0 auto; border-radius:6px; cursor:zoom-in;" onclick="window.open('${resolved}', '_blank')" /><div class="gcp-figure-caption"><span class="card-editable-body"><strong>${alt}</strong></span><a href="${resolved}" target="_blank" rel="noopener" style="color:#1a73e8; font-weight:600; text-decoration:none;">&#128269; Open High-Res PNG &#8599;</a></div></div>`;
+                return `<div class="gcp-figure-card" id="inline-fig-card-${figSlug}" data-card-id="inline-fig-card-${figSlug}" data-card-type="figure" data-card-title="${escapeHtml(alt)}" data-doc-path="${escapeHtml(docRelPath || '')}"><img src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:auto; max-width:min(100%, 860px); max-height:720px; height:auto; display:block; margin:0 auto; border-radius:6px; cursor:zoom-in;" onclick="window.open('${resolved}', '_blank')" /><div class="gcp-figure-caption"><span class="card-editable-body"><strong>${alt}</strong></span><a href="${resolved}" target="_blank" rel="noopener" style="color:#1a73e8; font-weight:600; text-decoration:none;">&#128269; Open High-Res PNG &#8599;</a></div></div>`;
               }
               const meta = findDiagramMetaById(diagId);
               const slideBtnHtml = meta
@@ -2947,7 +2939,7 @@
                     </div>
                   </div>
                   <div id="inline-fig-img-wrap-${diagId}">
-                    <img id="inline-fig-img-${diagId}" src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:auto; max-width:min(100%, 620px); max-height:660px; height:auto; display:block; margin:0 auto; border-radius:6px; cursor:zoom-in;" onclick="window.open(this.src, '_blank')" title="Click to open full-resolution diagram in new tab" />
+                    <img id="inline-fig-img-${diagId}" src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:auto; max-width:min(100%, 860px); max-height:720px; height:auto; display:block; margin:0 auto; border-radius:6px; cursor:zoom-in;" onclick="window.open(this.src, '_blank')" title="Click to open full-resolution diagram in new tab" />
                   </div>
                   <div id="inline-fig-edit-wrap-${diagId}" style="display:none; border-radius:8px; overflow:hidden; border:2px solid #2563eb; margin-top:4px;">
                     <iframe id="inline-fig-iframe-${diagId}" src="about:blank" style="width:100%; height:780px; border:0; display:block;" title="Inline Draw.io Editor (${diagId})"></iframe>

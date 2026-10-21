@@ -324,5 +324,8 @@ for (const spec of ALL_SPECS) {
 
 console.log('🔄 Synchronizing <!-- E2E_FLOW_START --> blocks via build_diagram_e2e_flows.mjs...');
 execSync('node scripts/build_diagram_e2e_flows.mjs', { cwd: ROOT, stdio: 'inherit' });
+console.log('🖼️ Synchronizing Intra-Cloud (GCP) & Inter-Cloud (10-SaaS) embedded validation screenshots...');
+execSync('python3 -B scripts/sync_all_blogs_intra_inter_cloud_screenshots.py', { cwd: ROOT, stdio: 'inherit' });
 export { BLOG_SPECS, COMMON_PRODUCTS_MD, renderFigureBlock, renderZoneList, renderCalloutSteps };
+
 
