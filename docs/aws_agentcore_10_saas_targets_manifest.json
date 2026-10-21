@@ -6,7 +6,7 @@
   "cognitoUserPoolId": "us-east-1_vqlzYM74B",
   "lambdaFunctionArn": "arn:aws:lambda:us-east-1:393036065405:function:merck-a2a-mcp-remote-peer",
   "s3Bucket": "nitinagga-argolis-aws-393036065405-us-east-1",
-  "verifiedAt": "2026-10-21T01:26:19Z",
+  "verifiedAt": "2026-10-21T03:07:52Z",
   "totalTargetsRegistered": 10,
   "targets": [
     {
@@ -27,6 +27,16 @@
         "principal": "sre-lead@finvault.com",
         "pattern": "PATTERN_A_POOLED",
         "hop2ConsentVerified": true,
+        "liveUpstreamInstance": {
+          "upstream_software": "Metabase BI v0.50.26 (Liveboard / Question #27)",
+          "live_ui_url": "http://13.220.94.209:3001/question/27",
+          "health_url": "http://13.220.94.209:3001/api/health",
+          "login_user": "sre-lead@finvault.com",
+          "login_pass": "FinVault#2026!",
+          "ec2_instance_id": "i-04924523ac41ff132",
+          "ec2_public_ip": "13.220.94.209",
+          "live_http_status": 200
+        },
         "records": {
           "org_identifier": "finvault-org-01",
           "liveboard_guid": "lb-finvault-occ-wire-settlement-v2",
@@ -37,7 +47,7 @@
             "val1": "finvault"
           },
           "kpi_summary": "FinVault OCC Wire Settlement Portfolio: $527.0M across 2 RLS-verified entities (FV-TX-901, FV-TX-902)",
-          "executed_at_utc": "2026-10-21T01:26:12Z",
+          "executed_at_utc": "2026-10-21T03:07:46Z",
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
@@ -62,6 +72,16 @@
         "principal": "sre-lead@finvault.com",
         "pattern": "PATTERN_A_POOLED",
         "hop2ConsentVerified": true,
+        "liveUpstreamInstance": {
+          "upstream_software": "Grafana Enterprise v11.2.0 (Workbook uid=finvault-sre-wb)",
+          "live_ui_url": "http://13.220.94.209:3002/d/finvault-sre-wb",
+          "health_url": "http://13.220.94.209:3002/api/health",
+          "login_user": "sre-lead@finvault.com",
+          "login_pass": "FinVault#2026!",
+          "ec2_instance_id": "i-04924523ac41ff132",
+          "ec2_public_ip": "13.220.94.209",
+          "live_http_status": 200
+        },
         "records": {
           "workbook_id": "wb-sigma-finvault-finops-sre-01",
           "eval_connection_id": "conn-bq-finvault-rls-usw1",
@@ -72,7 +92,7 @@
             "row_count": 2,
             "cross_tenant_rows": 0
           },
-          "executed_at_utc": "2026-10-21T01:26:16Z",
+          "executed_at_utc": "2026-10-21T03:07:49Z",
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
@@ -111,6 +131,16 @@
           "assigned_group": "Merck Clinical Data Governance & ITSM Ops",
           "cmdb_ci": "MUSE-EDC-PROD-US-EAST-1"
         },
+        "liveUpstreamInstance": {
+          "upstream_software": "Redmine ITSM v5.1 (Project finvault-itsm: CHG0049218 & INC0948211)",
+          "live_ui_url": "http://13.220.94.209:3003/projects/finvault-itsm/issues",
+          "health_url": "http://13.220.94.209:3003/login",
+          "login_user": "sre-lead@finvault.com",
+          "login_pass": "FinVault#2026!",
+          "ec2_instance_id": "i-04924523ac41ff132",
+          "ec2_public_ip": "13.220.94.209",
+          "live_http_status": 200
+        },
         "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/finvault.json"
       }
     },
@@ -147,6 +177,16 @@
           "subjects_evaluated": 52,
           "protocol_deviation_id": "DEV-MK3475-B12-09"
         },
+        "liveUpstreamInstance": {
+          "upstream_software": "NocoDB v0.255.2 Clinical EDC & GxP 21 CFR Part 11 Vault",
+          "live_ui_url": "http://13.220.94.209:3004/#/signin",
+          "health_url": "http://13.220.94.209:3004/api/v1/health",
+          "login_user": "sre-lead@finvault.com",
+          "login_pass": "FinVault#2026!",
+          "ec2_instance_id": "i-04924523ac41ff132",
+          "ec2_public_ip": "13.220.94.209",
+          "live_http_status": 200
+        },
         "s3AuditLedgerUri": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/finvault.json"
       }
     },
@@ -168,13 +208,23 @@
         "principal": "sre-lead@finvault.com",
         "pattern": "PATTERN_A_POOLED",
         "hop2ConsentVerified": true,
+        "liveUpstreamInstance": {
+          "upstream_software": "Gitea Enterprise v1.22.3 Issue & CRM Escalation Tracker",
+          "live_ui_url": "http://13.220.94.209:3005/finvault/sre-escalations/issues/1",
+          "health_url": "http://13.220.94.209:3005/api/v1/version",
+          "login_user": "sre-lead",
+          "login_pass": "FinVault#2026!",
+          "ec2_instance_id": "i-04924523ac41ff132",
+          "ec2_public_ip": "13.220.94.209",
+          "live_http_status": 200
+        },
         "records": {
           "salesforce_instance": "NA224 (Winter '27 Patch 8.6)",
           "salesforce_case_id": "SFDC-CASE-00984120",
           "jira_cloud_project": "FINVAULT-SRE",
           "jira_issue_key": "FINVAULT-SRE-1402",
           "escalation_state": "CREATED_WITH_HOP4_SDP_PII_MASKING",
-          "executed_at_utc": "2026-10-21T01:26:17Z",
+          "executed_at_utc": "2026-10-21T03:07:50Z",
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
@@ -199,12 +249,22 @@
         "principal": "sre-lead@finvault.com",
         "pattern": "PATTERN_A_POOLED",
         "hop2ConsentVerified": true,
+        "liveUpstreamInstance": {
+          "upstream_software": "Trino v440 Distributed SQL Lakehouse & Catalog Web Console",
+          "live_ui_url": "http://13.220.94.209:3006/ui/",
+          "health_url": "http://13.220.94.209:3006/v1/info",
+          "login_user": "sre-lead@finvault.com",
+          "login_pass": "(No password required in Trino UI)",
+          "ec2_instance_id": "i-04924523ac41ff132",
+          "ec2_public_ip": "13.220.94.209",
+          "live_http_status": 200
+        },
         "records": {
           "unity_catalog_namespace": "cymbal_uc_prod.finvault_gold.pattern_a_pooled_rls_entities",
           "genie_space_id": "genie-space-fv-treasury-01",
           "sql_warehouse_id": "wh-databricks-serverless-fv-01",
           "dynamic_sql_guard": "EXECUTE_IMMEDIATE_BLOCKED",
-          "executed_at_utc": "2026-10-21T01:26:17Z",
+          "executed_at_utc": "2026-10-21T03:07:51Z",
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
@@ -229,12 +289,22 @@
         "principal": "sre-lead@finvault.com",
         "pattern": "PATTERN_A_POOLED",
         "hop2ConsentVerified": true,
+        "liveUpstreamInstance": {
+          "upstream_software": "ClickHouse v24.8 Data Warehouse Play UI (Native RLS Policy)",
+          "live_ui_url": "http://13.220.94.209:3007/play",
+          "health_url": "http://13.220.94.209:3007/ping",
+          "login_user": "finvault_user",
+          "login_pass": "FinVault#2026!",
+          "ec2_instance_id": "i-04924523ac41ff132",
+          "ec2_public_ip": "13.220.94.209",
+          "live_http_status": 200
+        },
         "records": {
           "account_locator": "os37291.us-east-1",
           "primary_role": "ROLE_CYMBAL_FINVAULT",
           "secondary_roles": "NONE",
           "cortex_semantic_model": "s3://nitinagga-argolis-aws-393036065405-us-east-1/cymbal-10saas-ledger/snowflake/finvault_semantic_model.yaml",
-          "executed_at_utc": "2026-10-21T01:26:18Z",
+          "executed_at_utc": "2026-10-21T03:07:51Z",
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
@@ -259,12 +329,22 @@
         "principal": "sre-lead@finvault.com",
         "pattern": "PATTERN_A_POOLED",
         "hop2ConsentVerified": true,
+        "liveUpstreamInstance": {
+          "upstream_software": "Directus v11.1.0 Enterprise HCM & Financials RaaS Studio",
+          "live_ui_url": "http://13.220.94.209:3008/admin/content/hcm_compensation",
+          "health_url": "http://13.220.94.209:3008/server/health",
+          "login_user": "sre-lead@finvault.com",
+          "login_pass": "FinVault#2026!",
+          "ec2_instance_id": "i-04924523ac41ff132",
+          "ec2_public_ip": "13.220.94.209",
+          "live_http_status": 200
+        },
         "records": {
           "supervisory_org": "FinVault-Global-Treasury",
           "raas_report_id": "WD-RAAS-FV-COMP-2026",
           "composite_3lo_scope": "finvault:sre-lead@finvault.com:mcp://finvault/workday-hcm-financials-raas-3lo",
           "sdp_masking_policy": "US_SOCIAL_SECURITY_NUMBER + IBAN_CODE REDACTED",
-          "executed_at_utc": "2026-10-21T01:26:18Z",
+          "executed_at_utc": "2026-10-21T03:07:51Z",
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
@@ -289,12 +369,22 @@
         "principal": "sre-lead@finvault.com",
         "pattern": "PATTERN_A_POOLED",
         "hop2ConsentVerified": true,
+        "liveUpstreamInstance": {
+          "upstream_software": "Seq v2024.3 Structured Log & APM Observability Platform",
+          "live_ui_url": "http://13.220.94.209:3009/#/events",
+          "health_url": "http://13.220.94.209:3009/api",
+          "login_user": "sre-lead@finvault.com",
+          "login_pass": "FinVault#2026!",
+          "ec2_instance_id": "i-04924523ac41ff132",
+          "ec2_public_ip": "13.220.94.209",
+          "live_http_status": 200
+        },
         "records": {
           "datadog_site": "datadoghq.com (US1)",
           "enforced_log_query": "index:cymbal-prod @tenant_id:finvault service:core-ledger-api",
           "apm_p99_latency_ms": 14.2,
           "bits_ai_sre_verdict": "HEALTHY_ZERO_INDIRECT_PROMPT_INJECTION",
-          "executed_at_utc": "2026-10-21T01:26:19Z",
+          "executed_at_utc": "2026-10-21T03:07:52Z",
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },
@@ -319,13 +409,23 @@
         "principal": "sre-lead@finvault.com",
         "pattern": "PATTERN_A_POOLED",
         "hop2ConsentVerified": true,
+        "liveUpstreamInstance": {
+          "upstream_software": "HashiCorp Vault v1.13.3 Identity, OIDC/DPoP & CMEK Secrets Engine",
+          "live_ui_url": "http://13.220.94.209:3010/ui/vault/secrets/secret/show/tenants/finvault",
+          "health_url": "http://13.220.94.209:3010/v1/sys/health",
+          "login_user": "Token",
+          "login_pass": "fv-token-finvault-sre-2026",
+          "ec2_instance_id": "i-04924523ac41ff132",
+          "ec2_public_ip": "13.220.94.209",
+          "live_http_status": 200
+        },
         "records": {
           "falcon_cloud": "us-1.crowdstrike.com",
           "okta_issuer": "https://okta.okta.com",
           "host_aid": "aid-fv-prod-ledger-001",
           "containment_action": "NETWORK_CONTAINMENT_READY_DPOP_VERIFIED",
           "dpop_jkt_bound": "dpop_jkt_fv_001",
-          "executed_at_utc": "2026-10-21T01:26:19Z",
+          "executed_at_utc": "2026-10-21T03:07:52Z",
           "pattern": "PATTERN_A_POOLED",
           "sanitized_payload": ""
         },

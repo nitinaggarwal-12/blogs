@@ -554,24 +554,14 @@ def main() -> None:
             )
             print(f"✅ [Side A - Agent Orchestrator MCP] Captured {out_png.relative_to(ROOT_DIR)} ({out_png.stat().st_size:,} bytes)")
 
-            saas_ui_url = f"{LIVE_LAMBDA_FUNCTION_URL}/saas-ui/{spec['target_name']}"
-            saas_ui_png = OUT_DIR / spec["saas_ui_filename"]
-            subprocess.run(
-                [
-                    CHROME_BIN,
-                    "--headless=new",
-                    "--disable-gpu",
-                    "--hide-scrollbars",
-                    "--window-size=1440,920",
-                    "--default-background-color=ffffffff",
-                    f"--screenshot={saas_ui_png}",
-                    saas_ui_url,
-                ],
-                check=True,
-                capture_output=True,
-            )
-            print(f"✅ [Side B - 3P SaaS Product UI]    Captured {saas_ui_png.relative_to(ROOT_DIR)} ({saas_ui_png.stat().st_size:,} bytes) <- {saas_ui_url}")
+        # Capture all 10 Side-B screenshots directly from the 10 real upstream software containers on EC2 (13.220.94.209:3001..3010)
+        real_ui_script = ROOT_DIR / "scripts" / "capture_real_10_saas_uis.js"
+        if real_ui_script.is_file():
+            env = dict(subprocess.os.environ)
+            env["NODE_PATH"] = "/Users/nitinagga/Documents/Demoes-GE/node_modules"
+            subprocess.run(["node", str(real_ui_script)], check=True, env=env)
 
 
 if __name__ == "__main__":
     main()
+

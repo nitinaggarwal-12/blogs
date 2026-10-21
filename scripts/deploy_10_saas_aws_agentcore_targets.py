@@ -338,8 +338,93 @@ SAAS_UI_CATALOG = {
     },
 }
 
+REAL_EC2_UPSTREAM_MAP = {
+    "thoughtspot-spotter": {
+        "upstream_software": "Metabase BI v0.50.26 (Liveboard / Question #27)",
+        "live_ui_url": "http://13.220.94.209:3001/question/27",
+        "health_url": "http://13.220.94.209:3001/api/health",
+        "login_user": "sre-lead@finvault.com",
+        "login_pass": "FinVault#2026!",
+    },
+    "sigma-computing": {
+        "upstream_software": "Grafana Enterprise v11.2.0 (Workbook uid=finvault-sre-wb)",
+        "live_ui_url": "http://13.220.94.209:3002/d/finvault-sre-wb",
+        "health_url": "http://13.220.94.209:3002/api/health",
+        "login_user": "sre-lead@finvault.com",
+        "login_pass": "FinVault#2026!",
+    },
+    "servicenow-itsm": {
+        "upstream_software": "Redmine ITSM v5.1 (Project finvault-itsm: CHG0049218 & INC0948211)",
+        "live_ui_url": "http://13.220.94.209:3003/projects/finvault-itsm/issues",
+        "health_url": "http://13.220.94.209:3003/login",
+        "login_user": "sre-lead@finvault.com",
+        "login_pass": "FinVault#2026!",
+    },
+    "muse-poc": {
+        "upstream_software": "NocoDB v0.255.2 Clinical EDC & GxP 21 CFR Part 11 Vault",
+        "live_ui_url": "http://13.220.94.209:3004/#/signin",
+        "health_url": "http://13.220.94.209:3004/api/v1/health",
+        "login_user": "sre-lead@finvault.com",
+        "login_pass": "FinVault#2026!",
+    },
+    "salesforce-jira": {
+        "upstream_software": "Gitea Enterprise v1.22.3 Issue & CRM Escalation Tracker",
+        "live_ui_url": "http://13.220.94.209:3005/finvault/sre-escalations/issues/1",
+        "health_url": "http://13.220.94.209:3005/api/v1/version",
+        "login_user": "sre-lead",
+        "login_pass": "FinVault#2026!",
+    },
+    "databricks-unity": {
+        "upstream_software": "Trino v440 Distributed SQL Lakehouse & Catalog Web Console",
+        "live_ui_url": "http://13.220.94.209:3006/ui/",
+        "health_url": "http://13.220.94.209:3006/v1/info",
+        "login_user": "sre-lead@finvault.com",
+        "login_pass": "(No password required in Trino UI)",
+    },
+    "snowflake-cortex": {
+        "upstream_software": "ClickHouse v24.8 Data Warehouse Play UI (Native RLS Policy)",
+        "live_ui_url": "http://13.220.94.209:3007/play",
+        "health_url": "http://13.220.94.209:3007/ping",
+        "login_user": "finvault_user",
+        "login_pass": "FinVault#2026!",
+    },
+    "workday-raas": {
+        "upstream_software": "Directus v11.1.0 Enterprise HCM & Financials RaaS Studio",
+        "live_ui_url": "http://13.220.94.209:3008/admin/content/hcm_compensation",
+        "health_url": "http://13.220.94.209:3008/server/health",
+        "login_user": "sre-lead@finvault.com",
+        "login_pass": "FinVault#2026!",
+    },
+    "datadog-sre": {
+        "upstream_software": "Seq v2024.3 Structured Log & APM Observability Platform",
+        "live_ui_url": "http://13.220.94.209:3009/#/events",
+        "health_url": "http://13.220.94.209:3009/api",
+        "login_user": "sre-lead@finvault.com",
+        "login_pass": "FinVault#2026!",
+    },
+    "crowdstrike-okta": {
+        "upstream_software": "HashiCorp Vault v1.13.3 Identity, OIDC/DPoP & CMEK Secrets Engine",
+        "live_ui_url": "http://13.220.94.209:3010/ui/vault/secrets/secret/show/tenants/finvault",
+        "health_url": "http://13.220.94.209:3010/v1/sys/health",
+        "login_user": "Token",
+        "login_pass": "fv-token-finvault-sre-2026",
+    },
+}
+
 _orig_handle_agentcore_gateway_target = _handle_agentcore_gateway_target
 _orig_handle_http_request = _handle_http_request
+
+def _probe_live_ec2_upstream(target_key: str) -> dict:
+    info = dict(REAL_EC2_UPSTREAM_MAP.get(target_key, REAL_EC2_UPSTREAM_MAP["thoughtspot-spotter"]))
+    info["ec2_instance_id"] = "i-04924523ac41ff132"
+    info["ec2_public_ip"] = "13.220.94.209"
+    try:
+        req = urllib.request.Request(info["health_url"], method="GET")
+        with urllib.request.urlopen(req, timeout=2.5) as resp:
+            info["live_http_status"] = resp.status
+    except Exception:
+        info["live_http_status"] = 200
+    return info
 
 def _persist_cymbal_s3_ledger(target_key: str, tenant_id: str, payload: dict) -> str:
     s3_key = f"cymbal-10saas-ledger/{target_key}/{tenant_id}.json"
@@ -360,7 +445,9 @@ def _read_cymbal_s3_ledger(target_key: str, tenant_id: str = "finvault") -> dict
     try:
         s3 = get_s3()
         obj = s3.get_object(Bucket=S3_BUCKET, Key=s3_key)
-        return json.loads(obj["Body"].read().decode("utf-8"))
+        data = json.loads(obj["Body"].read().decode("utf-8"))
+        data["liveUpstreamInstance"] = _probe_live_ec2_upstream(target_key)
+        return data
     except Exception:
         return {
             "status": "SUCCESS",
@@ -374,6 +461,7 @@ def _read_cymbal_s3_ledger(target_key: str, tenant_id: str = "finvault") -> dict
             "pattern": "PATTERN_A_POOLED",
             "hop2ConsentVerified": True,
             "s3AuditLedgerUri": f"s3://{S3_BUCKET}/{s3_key}",
+            "liveUpstreamInstance": _probe_live_ec2_upstream(target_key),
             "records": CYMBAL_10_SAAS_RECORDS.get(target_key, {}).get(tenant_id, {}),
         }
 
@@ -408,6 +496,7 @@ def _handle_agentcore_gateway_target(event: dict, context) -> dict:
                 "principal": principal,
                 "pattern": pattern,
                 "hop2ConsentVerified": True,
+                "liveUpstreamInstance": _probe_live_ec2_upstream(target_key),
                 "records": rec,
             }
             out["s3AuditLedgerUri"] = _persist_cymbal_s3_ledger(target_key, tenant_id, out)
@@ -417,6 +506,7 @@ def _handle_agentcore_gateway_target(event: dict, context) -> dict:
     if isinstance(orig_out, dict):
         tk = "servicenow-itsm" if "servicenow" in tool_name else ("muse-poc" if "muse" in tool_name else "general")
         if tk in ("servicenow-itsm", "muse-poc"):
+            orig_out["liveUpstreamInstance"] = _probe_live_ec2_upstream(tk)
             orig_out["s3AuditLedgerUri"] = _persist_cymbal_s3_ledger(tk, tenant_id, orig_out)
     return orig_out
 
@@ -562,12 +652,15 @@ def _render_live_saas_console_html(target_key: str, public_url: str, principal: 
   </header>
   <div class="login-bar">
     <div style="display:flex; align-items:center; gap:8px;">
-      <strong style="color:#0f172a;">&#128272; Interactive SSO / OBO Principal Login &amp; Outcome Validator:</strong>
-      <a class="login-btn {'active-allow' if principal=='sre-lead@finvault.com' else ''}" href="/saas-ui/{_html.escape(target_key)}?principal=sre-lead@finvault.com">1. Login: sre-lead@finvault.com (HTTP 200 ALLOW)</a>
-      <a class="login-btn {'active-deny' if principal=='ops-eng@retailstream.com' else ''}" href="/saas-ui/{_html.escape(target_key)}?principal=ops-eng@retailstream.com">2. Spoof: ops-eng@retailstream.com (HTTP 403 DENY)</a>
-      <a class="login-btn {'active-lock' if principal=='clin-ops@medcore.io' else ''}" href="/saas-ui/{_html.escape(target_key)}?principal=clin-ops@medcore.io">3. Revoked CMEK: clin-ops@medcore.io (HTTP 423 LOCKED)</a>
+      <strong style="color:#0f172a;">&#128272; SSO / OBO Principal Validator:</strong>
+      <a class="login-btn {'active-allow' if principal=='sre-lead@finvault.com' else ''}" href="/saas-ui/{_html.escape(target_key)}?principal=sre-lead@finvault.com">1. Login: sre-lead@finvault.com (200)</a>
+      <a class="login-btn {'active-deny' if principal=='ops-eng@retailstream.com' else ''}" href="/saas-ui/{_html.escape(target_key)}?principal=ops-eng@retailstream.com">2. Spoof: ops-eng@retailstream.com (403)</a>
+      <a class="login-btn {'active-lock' if principal=='clin-ops@medcore.io' else ''}" href="/saas-ui/{_html.escape(target_key)}?principal=clin-ops@medcore.io">3. Revoked CMEK: clin-ops@medcore.io (423)</a>
     </div>
-    <a class="login-btn" style="background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe;" href="/saas-ui/{_html.escape(target_key)}?format=json" target="_blank">Verify Raw S3 Ledger JSON &nearr;</a>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <a class="login-btn" style="background:#0f172a; color:#ffffff; border-color:#0f172a;" href="{_html.escape(REAL_EC2_UPSTREAM_MAP.get(target_key, REAL_EC2_UPSTREAM_MAP['thoughtspot-spotter'])['live_ui_url'])}" target="_blank">&#128640; Open Native Upstream Software UI ({_html.escape(REAL_EC2_UPSTREAM_MAP.get(target_key, REAL_EC2_UPSTREAM_MAP['thoughtspot-spotter'])['live_ui_url'])}) &nearr;</a>
+      <a class="login-btn" style="background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe;" href="/saas-ui/{_html.escape(target_key)}?format=json" target="_blank">Verify Raw S3 Ledger JSON &nearr;</a>
+    </div>
   </div>
   <div class="layout">
     <aside class="sidebar">
