@@ -1028,12 +1028,15 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                 if not dg_pptx.is_file() or not dg_prev_dir.is_dir():
                     decks_valid = False
                 else:
-                    if len(list(dg_prev_dir.glob("slide_0[1-6].png"))) != 6:
+                    if (
+                        len(list(dg_prev_dir.glob("slide_0[1-6].png"))) != 6
+                        or len(list(dg_prev_dir.glob("slide_*.png"))) != 6
+                    ):
                         decks_valid = False
                     with _zipfile.ZipFile(dg_pptx, "r") as dzf:
                         d_slides = [n for n in dzf.namelist() if n.startswith("ppt/slides/slide") and n.endswith(".xml")]
                         d_notes = [n for n in dzf.namelist() if n.startswith("ppt/notesSlides/notesSlide") and n.endswith(".xml")]
-                        if len(d_slides) not in (6, 11, 12, 25) or len(d_notes) != len(d_slides):
+                        if len(d_slides) != 6 or len(d_notes) != 6:
                             decks_valid = False
                         if not _verify_pptx_tables_full_height_no_middle_gap(dzf, d_slides):
                             decks_valid = False
@@ -1048,7 +1051,14 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                                 or any(b in dn_text for b in banned_note_headings_or_gibberish)
                             ):
                                 decks_valid = False
-            if any(b in html for b in banned_note_headings_or_gibberish) or "nitinagga-ge-2" in html:
+            if (
+                any(b in html for b in banned_note_headings_or_gibberish)
+                or "nitinagga-ge-2" in html
+                or "nitina-ggarwal-sandbox" in html
+                or "ADK 2.0" in html
+                or "24-file" in html.lower()
+                or "twenty-four-file" in html.lower()
+            ):
                 decks_valid = False
             cv_manifest_path = ROOT_DIR / "slides/cloud_viewer_manifest.json"
             cv_ok = False
@@ -1069,13 +1079,26 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                     for v in cv_docs.values()
                     if v.get("mdPath")
                 )
+                _required_15_slide_keys = (
+                    "WS1", "WS2", "WS3", "WS4", "WS5", "ALL",
+                    "DOC-MT-01", "DOC-MT-02", "DOC-MT-03", "DOC-MT-04", "DOC-MT-05", "DOC-MT-06",
+                    "DOC-REF-07", "DOC-REF-08", "DOC-REF-09",
+                )
+                _distinct_slide_ids = {
+                    cv_slides.get(k, {}).get("googleSlidesId")
+                    for k in _required_15_slide_keys
+                    if cv_slides.get(k, {}).get("googleSlidesId")
+                }
                 cv_ok = (
-                    all(k in cv_slides and cv_slides[k].get("googleSlidesId") for k in ("WS1", "WS2", "WS3", "WS4", "WS5", "ALL", "DOC-MT-01", "DOC-MT-02", "DOC-MT-03", "DOC-MT-04", "DOC-MT-05", "DOC-MT-06", "DOC-REF-07", "DOC-REF-08", "DOC-REF-09"))
+                    len(_distinct_slide_ids) == 15
                     and all(k in cv_docs and cv_docs[k].get("googleDocsId") for k in ("WS1", "WS2", "WS3", "WS4", "WS5", "ALL"))
                     and slides_hashes_ok
                     and docs_hashes_ok
                     and "26 Slides" not in cv_docs.get("ALL", {}).get("title", "")
                 )
+            deploy_receipt_path = ROOT_DIR / "data/cloudrun_deploy_receipt.json"
+            if deploy_receipt_path.is_file() and "nitina-ggarwal-sandbox" in deploy_receipt_path.read_text(encoding="utf-8"):
+                cloud_receipt_ok = False
             if decks_valid and len(ws_blogs_seen) == 5 and e2e_flows_ok and cv_ok and "card-action-icon-btn" in html and "HUMAN_READABLE_SPEAKER_NOTES" in html:
                 slides_ok = True
                 deck_count = len(decks)

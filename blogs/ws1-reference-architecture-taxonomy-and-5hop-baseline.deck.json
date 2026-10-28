@@ -7,7 +7,7 @@
     "Core Primitives (ADK • MCP • ARD): ADK (OS syscall scheduler), MCP (POSIX tool driver ABI) & ARD (chrooted VFS catalog) isolate every tenant turn across 5 cryptographic hops.",
     "Three Topologies & 80/20 Code Reuse: Pattern A (Pooled RLS + 90% prefix cache), Pattern B (Sovereign Silo VPC-SC + CMEK), and Pattern C (Dynamic Hybrid PSC + 0ms tier upgrade) share 80% identical Python ADK code.",
     "5-Hop Pipeline (~42ms p95 Overhead): Enforces KMS-signed STS JWTs (<0.15ms cached JWKS verify), ARD pruning, targeted Valkey SCAN+UNLINK L1 eviction, streaming Model Armor/DLP (~22ms), and AlloyDB FORCE RLS.",
-    "Architecture Center & GitHub Kit: Ships 14 Official (#78) blueprints, 27 runnable files (core-cymbal-agent/ (24-File Workbench)), feature-flagged EAP compensating controls (GAP-01..05), and 12/12 forensic + 107/107 runtime assertions."
+    "Architecture Center & GitHub Kit: Ships 14 Official (#78) blueprints, 27 runnable files (core-cymbal-agent/ (27-File Workbench)), feature-flagged EAP compensating controls (GAP-01..05), and 12/12 forensic + 107/107 runtime assertions."
   ],
   "tldrSpecs": [
     {
@@ -31,7 +31,7 @@
       "tag": "5-Hop Cryptographic Pipeline"
     },
     {
-      "stack": "core-cymbal-agent/ (24-File Workbench) • BigQuery OTel Chargeback • Cloud KMS CMEK",
+      "stack": "core-cymbal-agent/ (27-File Workbench) • BigQuery OTel Chargeback • Cloud KMS CMEK",
       "sla": "12/12 Forensic Checks PASS • 107/107 Automated Security, Migration & SaaS Assertions PASS",
       "tag": "Public GitHub & Audit Readiness"
     }
@@ -381,7 +381,7 @@
     }
   ],
   "takeaways": [
-    "1. Part 1 (Slides 1–4) — Isolation Topologies & 5-Hop Core: Clone core-cymbal-agent/ (24-File Workbench) and deploy core-cymbal-agent/ with <0.15ms cached-JWKS STS JWT verification, ~3ms Valkey JTI deny-list, and {tenant}:{user} 3LO token vaulting.",
+    "1. Part 1 (Slides 1–4) — Isolation Topologies & 5-Hop Core: Clone core-cymbal-agent/ (27-File Workbench) and deploy core-cymbal-agent/ with <0.15ms cached-JWKS STS JWT verification, ~3ms Valkey JTI deny-list, and {tenant}:{user} 3LO token vaulting.",
     "2. Part 2 (Slides 5, 6 & 8) — 5-Hop Pipeline & Pattern A Pool: Apply Terraform 2.6 (2.6-terraform-starter/), certify ~42ms p95 5-Hop overhead (~22ms DLP), ~1.8s cold / ~420ms warm TTFT, 84.7% token savings (90% 32k prefix cache), and pass run_breach_simulations.py (10/10 PASS).",
     "3. Part 3 (Slide 7) — Circuit Breakers, CMEK & Valkey L1 Flush: Apply Terraform 3.6 (3.6-terraform-silo-blueprint/), certify gVisor sandbox, <60s HTTP 423 CMEK kill-switch, <5s Valkey SCAN+UNLINK (cache:{tenant}:*), SET NX PX 5000 recovery, and <30s cross-region RTO (6/6 PASS).",
     "4. Part 4 (Slide 9) — EAP Gap Controls & Pattern C Hybrid FinOps: Apply Terraform 4.6 (4.6-terraform-hybrid-psc-blueprint/), certify 74% portfolio TCO reduction (950 Pooled + 50 PSC Spokes), feature-flagged GAP-01..05 sunset hooks, BigQuery OTel FinOps SQL, and 0ms PSC cutover (4/4 PASS).",
@@ -389,7 +389,7 @@
   ],
   "takeawaySpecs": [
     {
-      "stack": "core-cymbal-agent/ (24-File Workbench) • core-cymbal-agent/runtime_pipeline.py • models.py",
+      "stack": "core-cymbal-agent/ (27-File Workbench) • core-cymbal-agent/runtime_pipeline.py • models.py",
       "sla": "SLA: <0.15ms Cached JWKS • ~3ms Valkey JTI Deny-List • {tenant}:{user} 3LO Token Vault (Slides 1–4)",
       "tag": "Part 1: Topologies & Core (Slides 1–4)"
     },
@@ -414,7 +414,7 @@
       "tag": "Part 5: CI/CD Forensic Gate (Slides 10–11)"
     }
   ],
-  "callToAction": "Clone core-cymbal-agent/ (24-File Workbench), run python3 -B scripts/run_deep_forensic_audit.py (12/12 • 107/107 PASS), and launch the 5-Part Multi-Tenant Agentic AI Blog Series.",
+  "callToAction": "Clone core-cymbal-agent/ (27-File Workbench), run python3 -B scripts/run_deep_forensic_audit.py (12/12 • 107/107 PASS), and launch the 5-Part Multi-Tenant Agentic AI Blog Series.",
   "slideSpeakerNotes": [
     {
       "slide": 1,

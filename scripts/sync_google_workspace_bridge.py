@@ -117,6 +117,12 @@ PREFERRED_WORKSTREAM_SLIDES_IDS: Dict[str, str] = {
     "WS4": "1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s",
     "WS5": "1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU",
     "ALL": "111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc",
+    "DOC-MT-01": "1T2vGGXJe_HD-eq25Hrua2nvndkzIKDyL7DUwUDdtvaU",
+    "DOC-MT-02": "1CTQ2EtyaX6JMOok1ra5jW3GEFXPzWZ4L4paIfKpmKOs",
+    "DOC-MT-03": "15uqspZ_Sck5yaR5W4sDFPHQ_7GKsf6UQy94oCcKEb3M",
+    "DOC-MT-04": "1BBJYWllV606yVoGXfO8OyDCxTMt_oQpYUyszaibWeTY",
+    "DOC-MT-05": "1sFabWmeLM2EntoGkwaaidqytF05tX5HPGILhEYcn9sM",
+    "DOC-MT-06": "1Zr7Hj_tFGvfL1x_WNTvwmZ6mpZlcNyIIFhIZy6k41ys",
     "DOC-REF-07": "1gHV5hVNCB8phgq_JYQiNfoOGYOt7VFW5MuZOzKd4jLU",
     "DOC-REF-08": "1fHwVkECJFr1HQvkYHYuMOraerpxO-0C6guF8PFHLlTw",
     "DOC-REF-09": "10TpWnWIho8kXmN4866HXz34CI3lKxmh-NWSAd6QYiMM",
@@ -140,28 +146,29 @@ SECONDARY_WORKSTREAM_SLIDES_IDS: Dict[str, list[str]] = {
 WORKSTREAM_ALIAS_SLIDES_KEYS: Dict[str, list[tuple[str, str]]] = {
     "WS1": [
         ("BP-78", "slides/ws1-reference-architecture-editable-slides.pptx"),
-        ("DOC-MT-01", "slides/doc-mt-01-editable-slides.pptx"),
         ("PLUGIN-GSLIDES-WS1", "slides/ws1-google-slides-design-plugin-editable-slides.pptx"),
     ],
     "WS2": [
         ("BP-78-A", "slides/ws2-pattern-a-pooled-editable-slides.pptx"),
-        ("DOC-MT-02", "slides/doc-mt-02-editable-slides.pptx"),
     ],
     "WS3": [
         ("BP-78-B", "slides/ws3-pattern-b-siloed-editable-slides.pptx"),
-        ("DOC-MT-03", "slides/doc-mt-03-editable-slides.pptx"),
     ],
     "WS4": [
         ("BP-78-C", "slides/ws4-pattern-c-hybrid-editable-slides.pptx"),
-        ("DOC-MT-04", "slides/doc-mt-04-editable-slides.pptx"),
     ],
     "WS5": [
         ("BP-78-E", "slides/ws5-wrap-up-editable-slides.pptx"),
-        ("DOC-MT-05", "slides/doc-mt-05-editable-slides.pptx"),
     ],
-    "ALL": [
-        ("DOC-MT-06", "slides/doc-mt-06-editable-slides.pptx"),
-    ],
+}
+
+LEGACY_SHARED_WORKSTREAM_SLIDES_IDS = {
+    "12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ",
+    "1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE",
+    "1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM",
+    "1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s",
+    "1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU",
+    "111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc",
 }
 
 
@@ -205,10 +212,9 @@ def _upload_or_patch_pptx_bytes(
         try:
             headers = {
                 "Authorization": f"Bearer {tok}",
-                "x-goog-user-project": QUOTA_PROJECT,
+                "x-goog-user-project": live_qp,
                 "Content-Type": f"multipart/related; boundary={boundary}",
             }
-            headers["x-goog-user-project"] = live_qp
             patch_req = urllib.request.Request(
                 f"https://www.googleapis.com/upload/drive/v3/files/{urllib.parse.quote(preferred_id)}?uploadType=multipart&supportsAllDrives=true&fields=id,name,webViewLink",
                 data=body,
@@ -222,10 +228,9 @@ def _upload_or_patch_pptx_bytes(
 
     post_headers = {
         "Authorization": f"Bearer {tok}",
-        "x-goog-user-project": QUOTA_PROJECT,
+        "x-goog-user-project": live_qp,
         "Content-Type": f"multipart/related; boundary={boundary}",
     }
-    post_headers["x-goog-user-project"] = live_qp
     req = urllib.request.Request(
         "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id,name,webViewLink",
         data=body,
@@ -247,14 +252,17 @@ def upload_pptx_to_google_slides(
     sha = file_sha256(pptx_path)
     slide_count = count_pptx_slides(pptx_path)
     existing = manifest.get("slides", {}).get(cache_key)
-    preferred_id = PREFERRED_WORKSTREAM_SLIDES_IDS.get(cache_key) or (
-        existing.get("googleSlidesId") if existing else None
-    )
+    existing_id = existing.get("googleSlidesId") if existing else None
+    if cache_key.startswith("DOC-MT-") and existing_id in LEGACY_SHARED_WORKSTREAM_SLIDES_IDS:
+        existing_id = None
+    preferred_id = PREFERRED_WORKSTREAM_SLIDES_IDS.get(cache_key) or existing_id
     if (
         not force
         and existing
         and existing.get("sha256") == sha
+        and existing.get("slideCount") == slide_count
         and existing.get("googleSlidesId") == preferred_id
+        and preferred_id is not None
     ):
         for alias_key, alias_pptx_rel in WORKSTREAM_ALIAS_SLIDES_KEYS.get(cache_key, []):
             prev_alias = manifest.get("slides", {}).get(alias_key, {})
@@ -284,6 +292,11 @@ def upload_pptx_to_google_slides(
 
     fid = res["id"]
     now_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    preserved_webview = (
+        existing.get("webViewLink")
+        if existing and existing.get("googleSlidesId") == fid and existing.get("webViewLink")
+        else res.get("webViewLink", f"https://docs.google.com/presentation/d/{fid}/edit")
+    )
     entry = {
         "key": cache_key,
         "title": title,
@@ -296,7 +309,7 @@ def upload_pptx_to_google_slides(
         "googleSlidesPreviewUrl": f"https://docs.google.com/presentation/d/{fid}/preview",
         "googleSlidesEmbedUrl": f"https://docs.google.com/presentation/d/{fid}/embed?start=false&loop=false&delayms=5000",
         "googleSlidesPdfUrl": f"https://docs.google.com/presentation/d/{fid}/export/pdf",
-        "webViewLink": res.get("webViewLink", f"https://docs.google.com/presentation/d/{fid}/edit"),
+        "webViewLink": preserved_webview,
         "syncedAt": now_iso,
     }
     manifest.setdefault("slides", {})[cache_key] = entry
@@ -312,6 +325,189 @@ def upload_pptx_to_google_slides(
     return entry
 
 
+def _compile_markdown_for_native_docs_batch(raw_md: str, fallback_title: str) -> tuple[str, list[Dict[str, Any]]]:
+    """Convert Markdown to clean UTF-16-safe text + Google Docs API v1 paragraph/text style requests (0 HTML import)."""
+    # Strip internal E2E_FLOW HTML comment appendices (kept on disk, omitted in reader/Docs)
+    cleaned = re.sub(r"<!--\s*E2E_FLOW_START\s*-->[\s\S]*?<!--\s*E2E_FLOW_END\s*-->", "", raw_md)
+    cleaned = re.sub(r"<!--[\s\S]*?-->", "", cleaned)
+
+    lines_out: list[str] = []
+    heading_spans: list[tuple[int, int, str]] = []
+    code_spans: list[tuple[int, int]] = []
+    utf16_offset = 1  # Google Docs body content starts at UTF-16 index 1
+
+    def u16_len(s: str) -> int:
+        return len(s.encode("utf-16-le")) // 2
+
+    in_code = False
+    code_start_u16: Optional[int] = None
+    seen_title = False
+
+    for raw_line in cleaned.splitlines():
+        stripped = raw_line.strip()
+        if stripped.startswith("```"):
+            if not in_code:
+                in_code = True
+                code_start_u16 = utf16_offset
+            else:
+                in_code = False
+                if code_start_u16 is not None and utf16_offset > code_start_u16:
+                    code_spans.append((code_start_u16, utf16_offset))
+                code_start_u16 = None
+            continue
+
+        if in_code:
+            line_txt = raw_line + "\n"
+            lines_out.append(line_txt)
+            utf16_offset += u16_len(line_txt)
+            continue
+
+        # Strip markdown image syntax to clean figure reference line
+        img_m = re.match(r"^!\[([^\]]*)\]\(([^)]+)\)", stripped)
+        if img_m:
+            line_txt = f"[Architecture Figure: {img_m.group(1) or img_m.group(2)}]\n"
+            lines_out.append(line_txt)
+            utf16_offset += u16_len(line_txt)
+            continue
+
+        h_m = re.match(r"^(#{1,4})\s+(.*)$", raw_line)
+        if h_m:
+            hashes, h_body = h_m.group(1), h_m.group(2).strip()
+            h_body = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", h_body)
+            h_body = h_body.replace("**", "").replace("`", "")
+            style_name = "HEADING_3"
+            if len(hashes) == 1:
+                style_name = "TITLE" if not seen_title else "HEADING_1"
+                seen_title = True
+            elif len(hashes) == 2:
+                style_name = "HEADING_1"
+            elif len(hashes) == 3:
+                style_name = "HEADING_2"
+            line_txt = h_body + "\n"
+            start_u16 = utf16_offset
+            end_u16 = start_u16 + u16_len(line_txt)
+            heading_spans.append((start_u16, end_u16, style_name))
+            lines_out.append(line_txt)
+            utf16_offset = end_u16
+            continue
+
+        # Clean inline links & bold markers for crisp Google Docs prose
+        prose = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"\1", raw_line)
+        prose = prose.replace("**", "")
+        if re.match(r"^\s*[-*]\s+", prose):
+            prose = re.sub(r"^\s*[-*]\s+", "• ", prose)
+        line_txt = prose + "\n"
+        lines_out.append(line_txt)
+        utf16_offset += u16_len(line_txt)
+
+    if in_code and code_start_u16 is not None and utf16_offset > code_start_u16:
+        code_spans.append((code_start_u16, utf16_offset))
+
+    full_text = "".join(lines_out).strip() + "\n"
+    if not full_text.strip():
+        full_text = f"{fallback_title}\n"
+    max_u16 = 1 + u16_len(full_text)
+
+    style_requests: list[Dict[str, Any]] = []
+    # Reset default paragraph style across inserted range first so old heading bleed never persists
+    if max_u16 > 2:
+        style_requests.append(
+            {
+                "updateParagraphStyle": {
+                    "range": {"startIndex": 1, "endIndex": max_u16 - 1},
+                    "paragraphStyle": {"namedStyleType": "NORMAL_TEXT"},
+                    "fields": "namedStyleType",
+                }
+            }
+        )
+    for s_idx, e_idx, named_style in heading_spans[:220]:
+        if e_idx <= max_u16:
+            style_requests.append(
+                {
+                    "updateParagraphStyle": {
+                        "range": {"startIndex": s_idx, "endIndex": e_idx},
+                        "paragraphStyle": {"namedStyleType": named_style},
+                        "fields": "namedStyleType",
+                    }
+                }
+            )
+    for c_start, c_end in code_spans[:120]:
+        if c_end <= max_u16 and c_end > c_start:
+            style_requests.append(
+                {
+                    "updateTextStyle": {
+                        "range": {"startIndex": c_start, "endIndex": c_end},
+                        "textStyle": {
+                            "weightedFontFamily": {"fontFamily": "Roboto Mono"},
+                            "fontSize": {"magnitude": 9, "unit": "PT"},
+                        },
+                        "fields": "weightedFontFamily,fontSize",
+                    }
+                }
+            )
+    return full_text, style_requests
+
+
+def _sync_markdown_into_existing_google_doc(fid: str, md_path: Path, title: str, tok: str) -> None:
+    """Rule 49: Update native Google Doc body in-place via Docs API v1 documents.batchUpdate (0 Drive HTML import)."""
+    live_qp = "ramp-portal-dev" if QUOTA_PROJECT == "cymbal-build-sandbox" else QUOTA_PROJECT
+    headers = {
+        "Authorization": f"Bearer {tok}",
+        "x-goog-user-project": live_qp,
+        "Content-Type": "application/json; charset=UTF-8",
+    }
+    get_req = urllib.request.Request(
+        f"https://docs.googleapis.com/v1/documents/{urllib.parse.quote(fid)}",
+        headers={"Authorization": f"Bearer {tok}", "x-goog-user-project": live_qp},
+        method="GET",
+    )
+    with urllib.request.urlopen(get_req, timeout=45) as resp:
+        doc_json = json.loads(resp.read().decode("utf-8"))
+
+    content_elems = doc_json.get("body", {}).get("content", [])
+    end_idx = content_elems[-1].get("endIndex", 2) if content_elems else 2
+
+    raw_md = md_path.read_text(encoding="utf-8")
+    # Cap giant multi-workstream compendium at ~280k chars for crisp Google Docs rendering
+    if len(raw_md) > 280_000:
+        raw_md = (
+            raw_md[:280_000]
+            + "\n\n---\n[Full 596 KB End-to-End Compendium & 14 Blueprints available in docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md on ge-blogs-248990048888.cr.gclb.goog]\n"
+        )
+    full_text, style_requests = _compile_markdown_for_native_docs_batch(raw_md, title)
+
+    mutation_requests: list[Dict[str, Any]] = []
+    if end_idx > 2:
+        mutation_requests.append(
+            {"deleteContentRange": {"range": {"startIndex": 1, "endIndex": end_idx - 1}}}
+        )
+    mutation_requests.append({"insertText": {"location": {"index": 1}, "text": full_text}})
+    mutation_requests.extend(style_requests)
+
+    batch_body = json.dumps({"requests": mutation_requests}).encode("utf-8")
+    batch_req = urllib.request.Request(
+        f"https://docs.googleapis.com/v1/documents/{urllib.parse.quote(fid)}:batchUpdate",
+        data=batch_body,
+        headers=headers,
+        method="POST",
+    )
+    with urllib.request.urlopen(batch_req, timeout=90) as resp:
+        resp.read()
+
+    # Keep Drive file title aligned via metadata-only PATCH (no HTML upload)
+    try:
+        meta_patch = urllib.request.Request(
+            f"https://www.googleapis.com/drive/v3/files/{urllib.parse.quote(fid)}?supportsAllDrives=true&fields=id,name",
+            data=json.dumps({"name": f"{title} — Editable Google Docs"}).encode("utf-8"),
+            headers=headers,
+            method="PATCH",
+        )
+        with urllib.request.urlopen(meta_patch, timeout=30) as resp:
+            resp.read()
+    except Exception:
+        pass
+
+
 def upload_md_to_google_docs(
     md_path: Path,
     title: str,
@@ -321,79 +517,62 @@ def upload_md_to_google_docs(
 ) -> Dict[str, Any]:
     """Rule 49: Clone a verified native Google Doc template via drive.files.copy and apply in-place batchUpdate (never Drive HTML import)."""
     manifest = load_cloud_manifest()
-    sha = file_sha256(md_path)
+    md_bytes = md_path.read_bytes()
+    sha = hashlib.sha256(md_bytes).hexdigest()
     existing = manifest.get("docs", {}).get(cache_key)
-    if existing and existing.get("googleDocsId") and not force:
-        if existing.get("sha256") != sha or existing.get("title") != title:
-            existing["sha256"] = sha
-            existing["title"] = title
-            save_cloud_manifest(manifest)
+    if (
+        existing
+        and existing.get("googleDocsId")
+        and not force
+        and existing.get("sha256") == sha
+        and existing.get("title") == title
+    ):
         return existing
 
     tok = access_token_override or get_drive_access_token()
     if not tok:
         if existing and existing.get("googleDocsId"):
             return existing
-        raise RuntimeError("No Google Drive OAuth token available to clone native Google Doc template.")
+        raise RuntimeError("No Google Drive OAuth token available to sync native Google Doc.")
 
-    template_entry = manifest.get("docs", {}).get("WS1") or next(iter(manifest.get("docs", {}).values()), None)
-    template_id = (template_entry or {}).get("googleDocsId", "13LsASkluIwG4gn5epnjWaUCOSMKcuQ1G85_jhYnvRWM")
+    live_qp = "ramp-portal-dev" if QUOTA_PROJECT == "cymbal-build-sandbox" else QUOTA_PROJECT
     rel_path = str(md_path.relative_to(ROOT_DIR))
 
-    copy_body = json.dumps({"name": f"{title} — Editable Google Docs"}).encode("utf-8")
-    req = urllib.request.Request(
-        f"https://www.googleapis.com/drive/v3/files/{urllib.parse.quote(template_id)}/copy?supportsAllDrives=true&fields=id,name,webViewLink",
-        data=copy_body,
-        headers={
-            "Authorization": f"Bearer {tok}",
-            "x-goog-user-project": QUOTA_PROJECT,
-            "Content-Type": "application/json; charset=UTF-8",
-        },
-        method="POST",
-    )
-    with urllib.request.urlopen(req, timeout=60) as resp:
-        res = json.loads(resp.read().decode("utf-8"))
-
-    fid = res["id"]
-    if template_entry and template_entry.get("title"):
-        try:
-            batch_body = json.dumps(
-                {
-                    "requests": [
-                        {
-                            "replaceAllText": {
-                                "containsText": {"text": template_entry["title"], "matchCase": True},
-                                "replaceText": title,
-                            }
-                        }
-                    ]
-                }
-            ).encode("utf-8")
-            batch_req = urllib.request.Request(
-                f"https://docs.googleapis.com/v1/documents/{urllib.parse.quote(fid)}:batchUpdate",
-                data=batch_body,
-                headers={
-                    "Authorization": f"Bearer {tok}",
-                    "x-goog-user-project": QUOTA_PROJECT,
-                    "Content-Type": "application/json; charset=UTF-8",
-                },
-                method="POST",
-            )
-            with urllib.request.urlopen(batch_req, timeout=30):
-                pass
-        except Exception:
-            pass
+    if existing and existing.get("googleDocsId"):
+        fid = existing["googleDocsId"]
+        _sync_markdown_into_existing_google_doc(fid, md_path, title, tok)
+        webview = existing.get("webViewLink", f"https://docs.google.com/document/d/{fid}/edit")
+    else:
+        template_entry = manifest.get("docs", {}).get("WS1") or next(iter(manifest.get("docs", {}).values()), None)
+        template_id = (template_entry or {}).get("googleDocsId", "1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os")
+        copy_body = json.dumps({"name": f"{title} — Editable Google Docs"}).encode("utf-8")
+        req = urllib.request.Request(
+            f"https://www.googleapis.com/drive/v3/files/{urllib.parse.quote(template_id)}/copy?supportsAllDrives=true&fields=id,name,webViewLink",
+            data=copy_body,
+            headers={
+                "Authorization": f"Bearer {tok}",
+                "x-goog-user-project": live_qp,
+                "Content-Type": "application/json; charset=UTF-8",
+            },
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            res = json.loads(resp.read().decode("utf-8"))
+        fid = res["id"]
+        _sync_markdown_into_existing_google_doc(fid, md_path, title, tok)
+        webview = res.get("webViewLink", f"https://docs.google.com/document/d/{fid}/edit")
 
     entry = {
         "key": cache_key,
         "title": title,
         "mdPath": rel_path,
         "sha256": sha,
+        "sizeBytes": len(md_bytes),
         "googleDocsId": fid,
         "googleDocsEditUrl": f"https://docs.google.com/document/d/{fid}/edit?authuser={urllib.parse.quote(DEFAULT_USER_EMAIL)}",
         "googleDocsPreviewUrl": f"https://docs.google.com/document/d/{fid}/preview",
         "googleDocsPdfUrl": f"https://docs.google.com/document/d/{fid}/export?format=pdf",
-        "webViewLink": res.get("webViewLink", f"https://docs.google.com/document/d/{fid}/edit"),
+        "webViewLink": webview,
         "syncedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
     }
     manifest.setdefault("docs", {})[cache_key] = entry
@@ -402,6 +581,7 @@ def upload_md_to_google_docs(
 
 
 def export_google_file_pdf_bytes(file_id: str, mode: str = "slides") -> bytes:
+    live_qp = "ramp-portal-dev" if QUOTA_PROJECT == "cymbal-build-sandbox" else QUOTA_PROJECT
     tok = get_drive_access_token()
     if tok:
         try:
@@ -409,7 +589,7 @@ def export_google_file_pdf_bytes(file_id: str, mode: str = "slides") -> bytes:
                 f"https://www.googleapis.com/drive/v3/files/{urllib.parse.quote(file_id)}/export?mimeType=application/pdf",
                 headers={
                     "Authorization": f"Bearer {tok}",
-                    "x-goog-user-project": QUOTA_PROJECT,
+                    "x-goog-user-project": live_qp,
                 },
             )
             with urllib.request.urlopen(req, timeout=60) as resp:
@@ -435,28 +615,38 @@ WORKSTREAM_DECK_SPECS = [
     ("WS4", "WS4 — Pattern C: Dynamic Hybrid Hub-and-Spoke & Tier Upgrade", "slides/ws4-pattern-c-hybrid-editable-slides.pptx", "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md"),
     ("WS5", "WS5 — Executive Decision Guide & Multi-Tenant Agentic Triad", "slides/ws5-wrap-up-editable-slides.pptx", "blogs/ws5-decision-guide-and-agentic-triad.md"),
     ("ALL", "ALL Workstreams 1–5 Master Deck (25 Slides • 14 Diagrams)", "slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx", "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md"),
+    ("DOC-MT-01", "DOC-MT-01 — Building Multi-Tenant Agents: Core Challenges, Cryptographic Identity & Token Propagation (Editable Diagram #78 + Blog Guide)", "slides/doc-mt-01-editable-slides.pptx", ""),
+    ("DOC-MT-02", "DOC-MT-02 — Agent Deployment Models: Navigating the Agentic Trilemma Across Pool, Bridge & Silo (Editable Diagram #78 + Blog Guide)", "slides/doc-mt-02-editable-slides.pptx", ""),
+    ("DOC-MT-03", "DOC-MT-03 — Building the High-Density Pool Tier: An End-to-End Implementation Blueprint (Editable Diagram #78 + Blog Guide)", "slides/doc-mt-03-editable-slides.pptx", ""),
+    ("DOC-MT-04", "DOC-MT-04 — Building the Hybrid Bridge Tier: Private Service Connect (PSC) Spokes & Live Tier Graduation (Editable Diagram #78 + Blog Guide)", "slides/doc-mt-04-editable-slides.pptx", ""),
+    ("DOC-MT-05", "DOC-MT-05 — Building the Sovereign Silo Tier: VPC Service Controls, Customer CMEK & Crypto-Shredding (Editable Diagram #78 + Blog Guide)", "slides/doc-mt-05-editable-slides.pptx", ""),
+    ("DOC-MT-06", "DOC-MT-06 — Production Verification: 10-Point Red-Team Breach Simulation & Cloud Console Runbook (Editable Diagram #78 + Blog Guide)", "slides/doc-mt-06-editable-slides.pptx", ""),
     ("DOC-REF-07", "Ref Arch 1: Enterprise Multimodal GraphRAG with Spanner Graph & Vertex AI", "slides/doc-ref-07-editable-slides.pptx", ""),
     ("DOC-REF-08", "Ref Arch 2: Zero-Trust Enterprise Agent Mesh with Model Armor & VPC-SC", "slides/doc-ref-08-editable-slides.pptx", ""),
     ("DOC-REF-09", "Ref Arch 3: Scalable MCP Tool Server & A2A Ecosystem on Cloud Run", "slides/doc-ref-09-editable-slides.pptx", ""),
 ]
 
 
-def sync_all_workstreams(force_slides: bool = False) -> Dict[str, Any]:
-    print("☁️  Syncing all Editable .pptx Slide Decks (WS1–WS5, ALL & DOC-REF-07..09) to Google Slides...")
-    manifest = load_cloud_manifest()
+def sync_all_workstreams(
+    force_slides: bool = False,
+    force_docs: bool = False,
+    docs_only: bool = False,
+) -> Dict[str, Any]:
+    print("☁️  Syncing Editable .pptx Slide Decks (15 Decks) & Native Google Docs (6 Docs) to Google Workspace...")
     for key, title, pptx_rel, md_rel in WORKSTREAM_DECK_SPECS:
-        pptx_file = ROOT_DIR / pptx_rel
-        if pptx_file.is_file():
-            s_entry = upload_pptx_to_google_slides(pptx_file, title, key, force=force_slides)
-            print(
-                f"   ✅ [Google Slides] {key} ({s_entry.get('slideCount', '?')} slides, {s_entry.get('sizeBytes', 0):,} B): {s_entry['googleSlidesEditUrl']}"
-            )
+        if not docs_only:
+            pptx_file = ROOT_DIR / pptx_rel
+            if pptx_file.is_file():
+                s_entry = upload_pptx_to_google_slides(pptx_file, title, key, force=force_slides)
+                print(
+                    f"   ✅ [Google Slides] {key} ({s_entry.get('slideCount', '?')} slides, {s_entry.get('sizeBytes', 0):,} B): {s_entry['googleSlidesEditUrl']}"
+                )
         if not md_rel:
             continue
         md_file = ROOT_DIR / md_rel
         if md_file.is_file():
-            d_entry = upload_md_to_google_docs(md_file, title, key)
-            print(f"   ✓ [Google Docs]   {key} (native Doc): {d_entry['googleDocsEditUrl']}")
+            d_entry = upload_md_to_google_docs(md_file, title, key, force=force_docs)
+            print(f"   ✅ [Google Docs]   {key} ({d_entry.get('sizeBytes', 0):,} B native Doc): {d_entry['googleDocsEditUrl']}")
     manifest = load_cloud_manifest()
     print(f"🎉 Cloud Viewer Manifest written to {MANIFEST_FILE.relative_to(ROOT_DIR)}")
     return manifest
@@ -465,5 +655,12 @@ def sync_all_workstreams(force_slides: bool = False) -> Dict[str, Any]:
 if __name__ == "__main__":
     import sys
 
-    sync_all_workstreams(force_slides="--force" in sys.argv)
+    force_flag = "--force" in sys.argv
+    force_docs_flag = force_flag or "--force-docs" in sys.argv
+    docs_only_flag = "--docs-only" in sys.argv
+    sync_all_workstreams(
+        force_slides=force_flag,
+        force_docs=force_docs_flag,
+        docs_only=docs_only_flag,
+    )
 

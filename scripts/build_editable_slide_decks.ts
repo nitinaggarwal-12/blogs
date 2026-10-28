@@ -773,7 +773,7 @@ const TITLE_ACTS_BY_DECK: Record<string, TitleActSpec[]> = {
     },
     {
       badge: 'PART 2 • SLIDES 5–6 & 8',
-      title: 'L1 3 Layers -> L2 4 Perimeters -> L4 Wire',
+      title: 'L1 3 Layers → L2 4 Perimeters → L4 Wire',
       sub: 'Zooms macro-to-micro from the 3 Logical Security Layers (~42ms p95, Slide 5) into the 4 Physical VPC-SC Perimeters & Steps 1–7 in Figure 1 (Slide 6) and <0.15ms cached-JWKS STS JWT wire packet (Slide 8).',
     },
     {
@@ -795,7 +795,7 @@ const TITLE_ACTS_BY_DECK: Record<string, TitleActSpec[]> = {
     },
     {
       badge: 'ACT II • SLIDES 4–7',
-      title: 'L1 Pool Zones -> L2 Figure 1 -> L3 Hops -> L4 RLS',
+      title: 'L1 Pool Zones → L2 Figure 1 → L3 Hops → L4 RLS',
       sub: 'Zooms from federated login, the Valkey-governed guardrail engine and AlloyDB/BigQuery RLS (Slide 4) into the Pattern A Figure 1 blueprint (Slide 5), the pooled 5-Hop sequence (Slide 6) and the spoofed X-Tenant-Id header being stripped before SET LOCAL app.current_tenant_id (Slide 7).',
     },
     {
@@ -817,7 +817,7 @@ const TITLE_ACTS_BY_DECK: Record<string, TitleActSpec[]> = {
     },
     {
       badge: 'ACT II • SLIDES 4–7',
-      title: 'L1 Silo Rings -> L2 Figure 1 -> L3 Kill-Switch -> L4 Lock',
+      title: 'L1 Silo Rings → L2 Figure 1 → L3 Kill-Switch → L4 Lock',
       sub: 'Zooms from the PAB edge, dedicated project moat and CMEK vault (Slide 4) into the Pattern B Figure 1 blueprint (Slide 5), the <60s CMEK revocation sequence ending in HTTP 423 Locked (Slide 6) and the revoked-key request rejected on the wire (Slide 7).',
     },
     {
@@ -839,8 +839,8 @@ const TITLE_ACTS_BY_DECK: Record<string, TitleActSpec[]> = {
     },
     {
       badge: 'ACT II • SLIDES 4–7',
-      title: 'L1 Hub Routing -> L2 Figure 1 -> L3 Cutover -> L4 Turn N+1',
-      sub: 'Zooms from the unified ingress hub and /28 PSC NAT routing engine (Slide 4) into the Pattern C Figure 1 blueprint (Slide 5), the SHADOW_SYNC -> ATOMIC_CUTOVER -> DRAIN_AND_VERIFY sequence (Slide 6) and Turn N+1 re-routed across PSC mid-conversation (Slide 7).',
+      title: 'L1 Hub Routing → L2 Figure 1 → L3 Cutover → L4 Turn N+1',
+      sub: 'Zooms from the unified ingress hub and /28 PSC NAT routing engine (Slide 4) into the Pattern C Figure 1 blueprint (Slide 5), the SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY sequence (Slide 6) and Turn N+1 re-routed across PSC mid-conversation (Slide 7).',
     },
     {
       badge: 'ACT III • SLIDES 8–10',
@@ -861,7 +861,7 @@ const TITLE_ACTS_BY_DECK: Record<string, TitleActSpec[]> = {
     },
     {
       badge: 'ACT II • SLIDES 4–7',
-      title: 'L1 80/20 Reuse -> L2 Figure 1 -> L3 Triad -> L4 FinOps',
+      title: 'L1 80/20 Reuse → L2 Figure 1 → L3 Triad → L4 FinOps',
       sub: 'Zooms from the 80/20 code-reuse architecture (Slide 4) into the capstone Figure 1 blueprint (Slide 5), the Agentic Triad sequence of shared, private and GCS-skill agents (Slide 6) and the 84.7% net-savings zero-PII OTel span on the wire (Slide 7).',
     },
     {
@@ -871,8 +871,8 @@ const TITLE_ACTS_BY_DECK: Record<string, TitleActSpec[]> = {
     },
     {
       badge: 'SOLUTION • SLIDES 11–12',
-      title: 'Program Operating Model & 24-File Handoff',
-      sub: 'Closes with margins-plus-compliance, Agentic Triad and 80/20 velocity takeaways (Slide 11) and hands over the 24-file codebase, three Terraform starters and the 8-stage Cloud Shell runbook (Slide 12).',
+      title: 'Program Operating Model & 27-File Handoff',
+      sub: 'Closes with margins-plus-compliance, Agentic Triad and 80/20 velocity takeaways (Slide 11) and hands over the 27-file codebase, three Terraform starters and the 8-stage Cloud Shell runbook (Slide 12).',
     },
   ]),
   ALL: quadColorActs([
@@ -883,7 +883,7 @@ const TITLE_ACTS_BY_DECK: Record<string, TitleActSpec[]> = {
     },
     {
       badge: 'ACT II • SLIDES 3–22',
-      title: '5 Chapters × 4 Slides: Divider -> Figure 1 -> Deep-Dive -> Matrix',
+      title: '5 Chapters × 4 Slides: Divider → Figure 1 → Deep-Dive → Matrix',
       sub: 'Each workstream chapter opens with a section divider, its authoritative Figure 1 blueprint (Slides 4, 8, 12, 16, 20), its signature deep-dive mechanism (Slides 5, 9, 13, 17, 21) and its verification matrix (Slides 6, 10, 14, 18, 22).',
     },
     {
@@ -914,7 +914,7 @@ const NEXT_STEPS_SUBTITLE_BY_WS: Record<string, string> = {
   WS2: 'Terraform 2.6 pooled starter, AlloyDB FORCE RLS policies and run_breach_simulations.py (10/10) before the series moves to Pattern B.',
   WS3: 'Terraform 3.6 silo blueprint, VPC-SC perimeter, Cloud KMS CMEK keys and run_silo_security_tests.py (6/6) before WS4 unifies both tiers.',
   WS4: 'Terraform 4.6 hybrid blueprint, /28 PSC NAT subnet, ServiceAttachment allowlists and run_tier_migration_suite.py (4/4) before the WS5 capstone.',
-  WS5: 'The 24-file codebase, three Terraform starters, 8-stage Cloud Shell runbook and 20/20 simulation harness ready for your engineering team today.',
+  WS5: 'The 27-file codebase, three Terraform starters, 8-stage Cloud Shell runbook and 20/20 simulation harness ready for your engineering team today.',
   PROGRAM: 'Sequenced engineering action items, runnable codebase file paths, assigned platform owners and CI/CD release gates across all five workstreams.',
 };
 
@@ -1032,7 +1032,7 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
     wrap: true,
   });
 
-  // 4 Executive Narrative Pillars in strict Quad-Color order: 1. Blue (#4285F4) -> 2. Red (#EA4335) -> 3. Yellow (#FBBC04) -> 4. Green (#34A853)
+  // 4 Executive Narrative Pillars in strict Quad-Color order: 1. Blue (#4285F4) → 2. Red (#EA4335) → 3. Yellow (#FBBC04) → 4. Green (#34A853)
   const rawTldr =
     deck.tldr && deck.tldr.length >= 4
       ? deck.tldr.slice(0, 4)
@@ -1045,8 +1045,11 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
   rawTldr.forEach((item, idx) => {
     const cleanItem = stripMarkdownFormatting(item);
     const colonIdx = cleanItem.indexOf(':');
-    const label = colonIdx > 0 && colonIdx < 52 ? cleanItem.slice(0, colonIdx).trim() : `Pillar ${idx + 1}`;
-    const sub = colonIdx > 0 && colonIdx < 52 ? cleanItem.slice(colonIdx + 1).trim() : cleanItem;
+    const rawLabel = colonIdx > 0 && colonIdx < 95 ? cleanItem.slice(0, colonIdx).trim() : `Highlight ${idx + 1}`;
+    const trimmedLabel = rawLabel.length > 38 ? rawLabel.replace(/\s*\([^)]*\)\s*$/, '').trim() : rawLabel;
+    const label = trimmedLabel.length > 42 ? `${trimmedLabel.slice(0, 40).trim()}…` : trimmedLabel;
+    const rawSub = colonIdx > 0 && colonIdx < 95 ? cleanItem.slice(colonIdx + 1).trim() : cleanItem;
+    const sub = rawSub.length > 148 ? `${rawSub.slice(0, 145).replace(/\s+\S*$/, '').trim()}.` : rawSub;
     const accent = GOOGLE_CARD_ACCENTS[idx % GOOGLE_CARD_ACCENTS.length];
     const px = Number((0.84 + idx * 1.71).toFixed(3));
 
@@ -1068,10 +1071,10 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
     });
     slide.addText(label, {
       x: px + 0.08,
-      y: 4.54,
+      y: 4.53,
       w: 1.43,
-      h: 0.40,
-      fontSize: 8.0,
+      h: 0.42,
+      fontSize: 7.6,
       bold: true,
       color: TEXT_DARK,
       fontFace: FONT_TITLE,
@@ -1080,10 +1083,10 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
     });
     slide.addText(sub, {
       x: px + 0.08,
-      y: 4.96,
+      y: 4.97,
       w: 1.43,
       h: 1.12,
-      fontSize: 7.2,
+      fontSize: sub.length > 125 ? 6.8 : 7.1,
       color: TEXT_BODY,
       fontFace: FONT_BODY,
       valign: 'top',
@@ -1146,7 +1149,7 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
     fontFace: FONT_TITLE,
   });
 
-  // Strict Quad-Color Order: 1. Blue (#4285F4) -> 2. Red (#EA4335) -> 3. Yellow (#FBBC04) -> 4. Green (#34A853)
+  // Strict Quad-Color Order: 1. Blue (#4285F4) → 2. Red (#EA4335) → 3. Yellow (#FBBC04) → 4. Green (#34A853)
   // Every deck gets its OWN deliverable map grounded in that deck's actual slides (never a copy of WS1's map).
   const titleActs = TITLE_ACTS_BY_DECK[spec?.key || 'ALL'] || TITLE_ACTS_BY_DECK.ALL;
 
@@ -1378,7 +1381,7 @@ function addQuadMetricsSlide(pptx: Pptx, spec: DeckSpec | null) {
       {
         num: '1-Way',
         caption: 'Unidirectional Private Service Connect (PSC)',
-        detail: 'Hub router forwards traffic to Enterprise spoke service attachments (10.10.0.50 -> /24 NAT) with zero reverse spoke-to-hub path.',
+        detail: 'Hub router forwards traffic to Enterprise spoke service attachments (10.10.0.50 → /24 NAT) with zero reverse spoke-to-hub path.',
         pill: 'Private Service Connect Spokes',
       },
     ],
@@ -1418,7 +1421,7 @@ function addQuadMetricsSlide(pptx: Pptx, spec: DeckSpec | null) {
 
   kpis.slice(0, 4).forEach((k, idx) => {
     const cx = Number((0.45 + idx * (cardW + gapX)).toFixed(3));
-    // Strict Quad-Color sequence: 1. Blue (#4285F4) -> 2. Red (#EA4335) -> 3. Yellow (#FBBC04) -> 4. Green (#34A853)
+    // Strict Quad-Color sequence: 1. Blue (#4285F4) → 2. Red (#EA4335) → 3. Yellow (#FBBC04) → 4. Green (#34A853)
     const accent = GOOGLE_CARD_ACCENTS[idx % 4];
 
     // Neutral light gray container (#F8F9FA) with subtle border (#DADCE0) and 8px radius
@@ -1703,7 +1706,7 @@ function addBulletSlide(
 
   parsedCards.forEach((card, idx) => {
     const rect = cardRects[idx];
-    // Strict Quad-Color Order: 1. Blue (#4285F4) -> 2. Red (#EA4335) -> 3. Yellow (#FBBC04) -> 4. Green (#34A853)
+    // Strict Quad-Color Order: 1. Blue (#4285F4) → 2. Red (#EA4335) → 3. Yellow (#FBBC04) → 4. Green (#34A853)
     const accent = GOOGLE_CARD_ACCENTS[idx % GOOGLE_CARD_ACCENTS.length];
     const cx = Number(rect.x.toFixed(3));
     const cy = Number(rect.y.toFixed(3));
@@ -1982,7 +1985,7 @@ function buildComparisonTableSynthesisCards(
         },
         {
           title: '3. Zero-Downtime Promotion vs. Cold Cutover',
-          body: 'Replaces 4–8 hr maintenance blackouts with SHADOW_SYNC -> ATOMIC_CUTOVER -> DRAIN_AND_VERIFY (<10ms Firestore pointer flip, 0 dropped turns).',
+          body: 'Replaces 4–8 hr maintenance blackouts with SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY (<10ms Firestore pointer flip, 0 dropped turns).',
         },
         {
           title: '4. 74% Blended Portfolio TCO Advantage',
@@ -7345,7 +7348,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
         body: 'Logs cached vs. dynamic token counts and latency per tenant_id to BigQuery with zero raw PII text.',
       },
       {
-        badge: 'PROOF 04 • 24-FILE WORKBENCH & 30/30 SAAS GATE',
+        badge: 'PROOF 04 • 27-FILE WORKBENCH & 30/30 SAAS GATE',
         title: 'Terraform 2.6/3.6/4.6, 20/20 GCP & 30/30 SaaS Suite',
         body: 'Ships Terraform modules, ADK runtime code, 20/20 Intra-Cloud GCP suites, and 30/30 Inter-Cloud 10-SaaS AWS AgentCore MCP gates.',
       },
@@ -7531,7 +7534,7 @@ const SERIES_NEXT_STEPS_BY_WS: Record<
 > = {
   WS1: {
     bullets: [
-      '1. Part 1 (Slides 1–4) — Isolation Topologies & 5-Hop Core: Deploy core-cymbal-agent/ (24-File Reference Workbench) with <0.15ms cached-JWKS STS JWT verification, ~3ms Valkey JTI deny-list, and {tenant}:{user} 3LO token vaulting.',
+      '1. Part 1 (Slides 1–4) — Isolation Topologies & 5-Hop Core: Deploy core-cymbal-agent/ (27-File Reference Workbench) with <0.15ms cached-JWKS STS JWT verification, ~3ms Valkey JTI deny-list, and {tenant}:{user} 3LO token vaulting.',
       '2. Part 2 (Slides 5, 6 & 8) — 5-Hop Pipeline & Pattern A Pool: Apply Terraform 2.6 (2.6-terraform-starter/), certify ~42ms p95 5-Hop overhead (~22ms DLP), ~1.8s cold / ~420ms warm TTFT, 84.7% token savings (90% 32k prefix cache), and pass run_breach_simulations.py (10/10 PASS).',
       '3. Part 3 (Slide 7) — Circuit Breakers, CMEK & Valkey L1 Flush: Apply Terraform 3.6 (3.6-terraform-silo-blueprint/), certify gVisor sandbox, <60s HTTP 423 CMEK kill-switch, <5s Valkey SCAN+UNLINK (cache:{tenant}:*), SET NX PX 5000 recovery, and <30s cross-region RTO (6/6 PASS).',
       '4. Part 4 (Slide 9) — EAP Gap Controls & Pattern C Hybrid FinOps: Apply Terraform 4.6 (4.6-terraform-hybrid-psc-blueprint/), certify 74% portfolio TCO reduction (950 Pooled + 50 PSC Spokes), feature-flagged GAP-01..05 sunset hooks, BigQuery OTel FinOps SQL, and 0ms PSC cutover (4/4 PASS).',
@@ -7932,17 +7935,17 @@ function postProcessPptxArrowheadsForGoogleSlides() {
   const fileToDeckKey: Record<string, string> = {
     'ws1-reference-architecture-editable-slides.pptx': 'WS1',
     'ws1-google-slides-design-plugin-editable-slides.pptx': 'WS1',
-    'doc-mt-01-editable-slides.pptx': 'WS1',
+    'doc-mt-01-editable-slides.pptx': 'DOC-MT-01',
     'ws2-pattern-a-pooled-editable-slides.pptx': 'WS2',
-    'doc-mt-02-editable-slides.pptx': 'WS2',
+    'doc-mt-02-editable-slides.pptx': 'DOC-MT-02',
     'ws3-pattern-b-siloed-editable-slides.pptx': 'WS3',
-    'doc-mt-03-editable-slides.pptx': 'WS3',
+    'doc-mt-03-editable-slides.pptx': 'DOC-MT-03',
     'ws4-pattern-c-hybrid-editable-slides.pptx': 'WS4',
-    'doc-mt-04-editable-slides.pptx': 'WS4',
+    'doc-mt-04-editable-slides.pptx': 'DOC-MT-04',
     'ws5-wrap-up-editable-slides.pptx': 'WS5',
-    'doc-mt-05-editable-slides.pptx': 'WS5',
+    'doc-mt-05-editable-slides.pptx': 'DOC-MT-05',
     'geap-multi-tenancy-all-workstreams-editable-slides.pptx': 'ALL',
-    'doc-mt-06-editable-slides.pptx': 'ALL',
+    'doc-mt-06-editable-slides.pptx': 'DOC-MT-06',
     'doc-ref-07-editable-slides.pptx': 'DOC-REF-07',
     'doc-ref-08-editable-slides.pptx': 'DOC-REF-08',
     'doc-ref-09-editable-slides.pptx': 'DOC-REF-09',
@@ -8034,18 +8037,12 @@ async function main() {
   }
   results.push(await buildCombinedDeck(manifest));
 
-  const docMtAliasMap: Record<string, string[]> = {
+  const wsPluginAliasMap: Record<string, string[]> = {
     'ws1-reference-architecture-editable-slides.pptx': [
-      'doc-mt-01-editable-slides.pptx',
       'ws1-google-slides-design-plugin-editable-slides.pptx',
     ],
-    'ws2-pattern-a-pooled-editable-slides.pptx': ['doc-mt-02-editable-slides.pptx'],
-    'ws3-pattern-b-siloed-editable-slides.pptx': ['doc-mt-03-editable-slides.pptx'],
-    'ws4-pattern-c-hybrid-editable-slides.pptx': ['doc-mt-04-editable-slides.pptx'],
-    'ws5-wrap-up-editable-slides.pptx': ['doc-mt-05-editable-slides.pptx'],
-    'geap-multi-tenancy-all-workstreams-editable-slides.pptx': ['doc-mt-06-editable-slides.pptx'],
   };
-  for (const [srcFile, aliases] of Object.entries(docMtAliasMap)) {
+  for (const [srcFile, aliases] of Object.entries(wsPluginAliasMap)) {
     const srcAbs = path.join(SLIDES_DIR, srcFile);
     if (!fs.existsSync(srcAbs)) continue;
     for (const alias of aliases) {
@@ -8055,6 +8052,13 @@ async function main() {
 
   // Post-process arrowheads AND structured 3-part plain-English speaker notes across all 15 PPTX decks in slides/
   postProcessPptxArrowheadsForGoogleSlides();
+
+  for (const r of results) {
+    const pAbs = path.join(SLIDES_DIR, path.basename(String(r.file || '')));
+    if (fs.existsSync(pAbs)) {
+      r.bytes = fs.statSync(pAbs).size;
+    }
+  }
 
   const promptCanvasSlidesDir = path.resolve(FDE_BLOGS_ROOT, '../PromptCanvas/public/slides');
   if (fs.existsSync(promptCanvasSlidesDir)) {

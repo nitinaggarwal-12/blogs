@@ -61,6 +61,7 @@
       '.ufw-table { width: 100%; table-layout: fixed; border-collapse: collapse; text-align: left; font-size: 12px; }',
       '.ufw-table th { background: #f1f5f9; border-bottom: 1px solid #e2e8f0; padding: 11px 14px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: #334155; }',
       '.ufw-table td { border-bottom: 1px solid #e2e8f0; padding: 12px 14px; vertical-align: top; overflow: hidden; max-width: 0; word-break: break-word; }',
+      '@media (max-width: 767px) { .ufw-email-btn { min-height: 36px; } .ufw-backdrop { padding: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom)) 10px; } .ufw-modal-hdr { flex-wrap: wrap; padding: 12px 14px; } .ufw-modal-body { padding: 14px; max-height: 82dvh; } .ufw-input, .ufw-select, .ufw-textarea { font-size: 16px !important; } .ufw-admin-overlay { padding: max(14px, env(safe-area-inset-top)) 12px max(20px, env(safe-area-inset-bottom)) 12px; } .ufw-card { overflow-x: auto; -webkit-overflow-scrolling: touch; } .ufw-table { min-width: 680px; } }',
     ].join('\n');
     document.head.appendChild(style);
   }

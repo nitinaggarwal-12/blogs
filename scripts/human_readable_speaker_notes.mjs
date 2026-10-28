@@ -136,11 +136,11 @@ export const WORKSTREAM_THEMES = {
     slide9Spoken:
       'This master verification ledger consolidates all twenty automated simulation tests across the entire program—combining the ten Shared Pool breach tests from Workstream 2, the six Sovereign Silo and kill-switch tests from Workstream 3, and the four Hybrid Private Service Connect and live tier migration tests from Workstream 4 into one continuous integration gate.',
     slide10Spoken:
-      'Here are the capstone Dual-Plane receipts from our live Google Cloud and AWS environments confirming that the entire 24-file codebase, all fourteen official architecture blueprints, all 20/20 Intra-Cloud GCP runtime simulations, all 30/30 Inter-Cloud 10-SaaS AWS AgentCore MCP flows (60/60 assertions), and all 12/12 forensic gates pass at 100%.',
+      'Here are the capstone Dual-Plane receipts from our live Google Cloud and AWS environments confirming that the entire 27-file codebase, all fourteen official architecture blueprints, all 20/20 Intra-Cloud GCP runtime simulations, all 30/30 Inter-Cloud 10-SaaS AWS AgentCore MCP flows (60/60 assertions), and all 12/12 forensic gates pass at 100%.',
     slide11Spoken:
       'As we wrap up the series for our executive, business, and technical leaders, remember these three foundational takeaways. First, you never have to choose between SaaS gross margins and enterprise compliance—Patterns A, B, and C let you offer both from one platform. Second, the Agentic Triad lets every customer customize their AI agents and skills safely without forking your codebase. And third, our 80/20 architecture and automated twenty-test harness keep engineering velocity high and operational risk near zero.',
     slide12Spoken:
-      'To put this architecture to work immediately, your team has full access to our 24-file production codebase, the three Terraform infrastructure starters for Patterns A, B, and C, and the eight-stage Google Cloud Shell runbook. Thank you all—let’s open the floor for executive and technical questions or jump directly into a live run of the simulation workbench.',
+      'To put this architecture to work immediately, your team has full access to our 27-file production codebase, the three Terraform infrastructure starters for Patterns A, B, and C, and the eight-stage Google Cloud Shell runbook. Thank you all—let’s open the floor for executive and technical questions or jump directly into a live run of the simulation workbench.',
   },
 };
 
@@ -613,7 +613,7 @@ export function getMaster25SlideNotes() {
       whyHere:
         `Rounding out our three Well-Architected executive guarantees from Slide 24, our closing slide serves as your single reference directory for every engineering asset produced across the five workstreams.`,
       whatIsHappening:
-        `Here you can see how all fourteen editable Draw.io and Google Slides blueprints, our twenty-four-file Python runtime, our three Terraform infrastructure starters, and our twenty-test simulation suite map across Workstreams 1 through 5 so your team can adopt them immediately.`,
+        `Here you can see how all fourteen editable Draw.io and Google Slides blueprints, our twenty-seven-file Python runtime, our three Terraform infrastructure starters, and our twenty-test simulation suite map across Workstreams 1 through 5 so your team can adopt them immediately.`,
       whatComesNext:
         `Thank you all for your time—let's open the floor for executive, business, and technical questions, or dive into any individual workstream or live simulation in the workbench.`,
     })
@@ -623,6 +623,102 @@ export function getMaster25SlideNotes() {
 }
 
 export const DOC_REF_THEMES = {
+  'DOC-MT-01': {
+    label: 'DOC-MT-01 (Part 1: Multi-Tenant AI Agents — Architecture & Isolation Topologies)',
+    title: 'Multi-Tenant AI Agents on Google Cloud (Part 1): Architecture & Isolation Topologies',
+    s1Spoken:
+      'In Part 1 of our Google Cloud Architecture Center series, we establish the foundation for running multi-tenant AI agents safely at enterprise scale—comparing Pooled Shared-Plane, Sovereign Dedicated Silo, and Hybrid Control/Data Plane Split topologies while maintaining eighty percent shared Python ADK runtime code.',
+    s2Spoken:
+      'Figure 1 maps out our canonical Google Cloud Hub-and-Spoke blueprint. Tenant requests enter the blue Routing Hub via Cloud Armor and Identity-Aware Proxy, undergo cryptographic JWT exchange and Model Armor screening in the green Governance Hub, and route across pooled or tenant-dedicated spokes for Vertex AI reasoning, AlloyDB storage, and MCP tool execution.',
+    s3Spoken:
+      'Walking through the six architectural stages on this slide shows how a single Python codebase enforces deterministic tenant boundaries at every hop—from cached-JWKS token verification in under zero point one five milliseconds to tenant-scoped Valkey namespaces and PostgreSQL Row-Level Security.',
+    s4Spoken:
+      'For SaaS product and platform leaders, this slide connects topology selection directly to customer onboarding velocity and regulatory compliance—allowing standard commercial tenants to share warm pooled infrastructure while regulated enterprise tenants receive dedicated VPC, Cloud KMS CMEK, and data-plane isolation.',
+    s5Spoken:
+      'This comparison matrix evaluates Pattern A Pooled, Pattern B Sovereign Silo, and Pattern C Hybrid Split across noisy-neighbor blast radius, cryptographic key sovereignty, unit economics, and operational overhead so architects can match every customer tier to the right deployment model.',
+    s6Spoken:
+      'Finally, here is the Part 1 implementation checklist and twenty-seven-file reference workbench entry point so your engineering team can deploy the shared core-cymbal-agent runtime today.',
+  },
+  'DOC-MT-02': {
+    label: 'DOC-MT-02 (Part 2: Solving the Agentic Trilemma — Security, Customization & Cost)',
+    title: 'Multi-Tenant AI Agents (Part 2): Solving the Agentic Trilemma — Security, Customization & Cost',
+    s1Spoken:
+      'In Part 2 of our series, we tackle the Agentic Trilemma in Pattern A pooled environments: delivering strict cross-tenant security, rich per-customer agent customization, and sustainable token economics simultaneously on shared Google Cloud infrastructure.',
+    s2Spoken:
+      'Figure 1 illustrates our Pooled Shared-Plane physical blueprint. Every request passes through our forty-two-millisecond p95 five-hop security pipeline inside the Governance Hub—combining STS token exchange, Cloud DLP and Model Armor redaction, and immutable thirty-two-thousand-token prefix caching before reaching Vertex AI and AlloyDB RLS.',
+    s3Spoken:
+      'Following the six-step execution flow on this slide demonstrates how the Agentic Triad works at runtime: combining a shared diagnostic agent, tenant-private specialist agents, and hot-swappable Cloud Storage skill bundles without forking container images per customer.',
+    s4Spoken:
+      'This slide grounds Pattern A in real multi-tenant SaaS unit economics—showing how freezing the shared system prompt prefix achieves an eighty-four point seven percent input-token cost reduction and four-hundred-twenty-millisecond warm time-to-first-token while blocking cross-tenant prompt leakage.',
+    s5Spoken:
+      'Here we compare our five-hop pooled pipeline with AlloyDB Row-Level Security and Valkey namespace isolation against naive single-prompt filtering and per-tenant container forks across security determinism, latency overhead, and gross margin.',
+    s6Spoken:
+      'To put Pattern A into production immediately, here are the Terraform 2.6 starter commands and our ten-for-ten breach simulation verification checks.',
+  },
+  'DOC-MT-03': {
+    label: 'DOC-MT-03 (Part 3: Noisy-Neighbor Circuit Breakers, CMEK Kill-Switches & Valkey L1)',
+    title: 'Multi-Tenant AI Agents (Part 3): Noisy-Neighbor Circuit Breakers, CMEK Kill-Switches & Valkey L1',
+    s1Spoken:
+      'In Part 3, we dive into Pattern B Sovereign Silo controls and stateful resilience—showing how regulated healthcare, financial, and public-sector workloads enforce hardware-backed cryptographic revocation, kernel sandboxing, and noisy-neighbor circuit breaking on Google Cloud.',
+    s2Spoken:
+      'Figure 1 presents our Sovereign Dedicated Silo blueprint. Regulated tenant traffic traverses VPC Service Controls perimeters into gVisor-sandboxed agent runtimes backed by customer-managed Cloud KMS keys, dedicated Valkey L1 state caches, and isolated AlloyDB instances.',
+    s3Spoken:
+      'Walking through the six resilience stages on this slide shows exactly what happens during a tenant incident or key revocation: disabling a customer Cloud KMS key triggers deterministic HTTP 423 Locked responses within sixty seconds and executes non-blocking Valkey SCAN and UNLINK cache eviction in under five seconds.',
+    s4Spoken:
+      'For chief information security officers and enterprise buyers, this slide demonstrates provable cryptographic offboarding and sub-thirty-second cross-region failover with atomic SET NX PX 5000 cache-stampede protection during traffic spikes.',
+    s5Spoken:
+      'This trade-off table compares hardware-enforced Pattern B Sovereign Silos with gVisor and CMEK kill-switches against software-only logical isolation across blast-radius containment, regulatory auditability, and recovery-time objectives.',
+    s6Spoken:
+      'Finally, here is the Terraform 3.6 sovereign silo deployment runbook and our six-for-six security and CMEK kill-switch test suite.',
+  },
+  'DOC-MT-04': {
+    label: 'DOC-MT-04 (Part 4: Bridging Enterprise Platform Gaps & Pattern C Hybrid FinOps)',
+    title: 'Multi-Tenant AI Agents (Part 4): Bridging Enterprise Platform Gaps & Pattern C Hybrid FinOps',
+    s1Spoken:
+      'In Part 4, we introduce Pattern C—the Hybrid Control/Data Plane Split—alongside five modular application-layer shims with feature-flagged sunset hooks and a zero-PII BigQuery OpenTelemetry FinOps chargeback pipeline.',
+    s2Spoken:
+      'Figure 1 maps out the Pattern C Hybrid topology on Google Cloud: a centralized, stateless control plane orchestrates agent routing and governance once, then bridges via Private Service Connect endpoints into sovereign customer VPC spokes so sensitive data and embeddings never leave the tenant perimeter.',
+    s3Spoken:
+      'Following the six-step hybrid flow on this slide illustrates how standard and regulated tenants coexist seamlessly—streaming SHA-256 prompt hashes and cached-versus-dynamic token telemetry into BigQuery for exact per-tenant cost attribution with zero raw PII.',
+    s4Spoken:
+      'For CFOs and platform VPs managing a thousand-tenant portfolio—nine hundred fifty pooled commercial tenants and fifty enterprise Private Service Connect spokes—this slide shows how Pattern C delivers a seventy-four percent total-cost-of-ownership reduction compared to running full dedicated stacks.',
+    s5Spoken:
+      'Here we evaluate Pattern C Private Service Connect spoke bridging and modular sunset shims against VPC peering meshes and full per-tenant control-plane duplication across IP overlap safety, operational toil, and zero-downtime tier upgrades.',
+    s6Spoken:
+      'Here is the Terraform 4.6 hybrid PSC blueprint and our four-for-four zero-downtime pooled-to-hybrid migration verification runbook.',
+  },
+  'DOC-MT-05': {
+    label: 'DOC-MT-05 (Part 5: Production Validation, Dual-Plane CI/CD Audit & Runbook)',
+    title: 'Multi-Tenant AI Agents (Part 5): Production Validation, Dual-Plane CI/CD Audit & Runbook',
+    s1Spoken:
+      'In Part 5 of our series, we move from architecture into continuous production assurance—presenting our fail-closed dual-plane CI/CD forensic gate across twenty intra-cloud Google Cloud assertions and thirty inter-cloud SaaS MCP target checks.',
+    s2Spoken:
+      'Figure 1 maps our end-to-end production validation topology across Google Cloud and governed external SaaS connectors—verifying Cloud Armor WAF rules, VPC topologies, five-hop runtime guards, and cross-cloud OAuth token-exchange boundaries on every release.',
+    s3Spoken:
+      'Walking through the six verification stages on this slide shows how our twelve-stage automated audit validates live infrastructure state, Terraform resource graphs, cryptographic SHA-256 artifact manifests, and twenty-for-twenty runtime breach and failover tests before traffic shifts.',
+    s4Spoken:
+      'For SRE and DevSecOps leaders, this slide connects automated release gating to day-two operational confidence—preventing configuration drift, cross-tenant IAM regressions, or unverified container deployments from ever reaching customer traffic.',
+    s5Spoken:
+      'This operational matrix compares continuous live-cloud forensic gating and cryptographic receipt verification against static lint-only CI pipelines and manual security reviews across mean-time-to-detect, audit readiness, and release velocity.',
+    s6Spoken:
+      'Finally, here is the complete Day-2 SRE command checklist to run the twelve-for-twelve deep forensic audit and twenty-seven-file workbench verification suite.',
+  },
+  'DOC-MT-06': {
+    label: 'DOC-MT-06 (Part 6: Executive Decision Matrix & Multi-Tenant Topology TCO Calculator)',
+    title: 'Multi-Tenant AI Agents (Part 6): Executive Decision Matrix & Multi-Tenant Topology TCO Calculator',
+    s1Spoken:
+      'In Part 6—the executive capstone to our multi-tenant AI series—we synthesize Patterns A, B, and C into a deterministic architecture decision tree and quantitative total-cost-of-ownership model for CTOs, CISOs, and FinOps leaders.',
+    s2Spoken:
+      'Figure 1 presents our three-outcome executive decision-tree blueprint on Google Cloud, routing every customer segment from regulatory residency, Cloud KMS key-revocation SLAs, and Private Service Connect network requirements directly to Pattern A Pooled, Pattern B Sovereign Silo, or Pattern C Hybrid Split.',
+    s3Spoken:
+      'Following the six decision gates on this slide shows how product, security, and finance teams evaluate tenant tiering objectively—combining eighty percent shared ADK code reuse with zero-downtime promotion paths as commercial customers grow into enterprise contracts.',
+    s4Spoken:
+      'This slide grounds executive portfolio planning in concrete unit economics across one thousand tenants—demonstrating how combining prompt-prefix caching with Pattern C hybrid spokes preserves seventy-eight percent gross margins without compromising sovereign compliance.',
+    s5Spoken:
+      'Here is our side-by-side executive decision matrix comparing Pattern A, Pattern B, and Pattern C across monthly infrastructure floor per tenant, noisy-neighbor blast radius, cryptographic offboarding SLAs, and ideal customer profile.',
+    s6Spoken:
+      'To close out the series, here is the executive adoption roadmap for rolling out your multi-tenant AI platform across commercial, hybrid, and sovereign tiers on Google Cloud.',
+  },
   'DOC-REF-07': {
     label: 'DOC-REF-07 (Multimodal GraphRAG with Spanner Graph)',
     title: 'Multimodal GraphRAG Resource Orchestration with Spanner Graph & Vertex AI',
@@ -743,20 +839,15 @@ export function getDocRef6SlideNotes(docKey) {
 
 export function getDeckSlideNotesList(deckKey) {
   const cleanKey = String(deckKey || 'WS1').toUpperCase();
-  if (cleanKey === 'ALL' || cleanKey === 'DOC-MT-06') {
+  if (cleanKey === 'ALL') {
     return getMaster25SlideNotes();
   }
-  if (cleanKey === 'DOC-REF-07' || cleanKey === 'DOC-REF-08' || cleanKey === 'DOC-REF-09') {
+  if (DOC_REF_THEMES[cleanKey]) {
     return getDocRef6SlideNotes(cleanKey);
   }
   const mapAlias = {
-    'DOC-MT-01': 'WS1',
     'BP-78': 'WS1',
     'PLUGIN-GSLIDES-WS1': 'WS1',
-    'DOC-MT-02': 'WS2',
-    'DOC-MT-03': 'WS3',
-    'DOC-MT-04': 'WS4',
-    'DOC-MT-05': 'WS5',
   };
   const wsKey = mapAlias[cleanKey] || (WORKSTREAM_THEMES[cleanKey] ? cleanKey : 'WS1');
   return getWorkstream12SlideNotes(wsKey);

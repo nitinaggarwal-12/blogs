@@ -483,29 +483,11 @@ for (const spec of ALL_SPECS) {
 console.log('🔄 Synchronizing <!-- E2E_FLOW_START --> blocks via build_diagram_e2e_flows.mjs...');
 execSync('node scripts/build_diagram_e2e_flows.mjs', { cwd: ROOT, stdio: 'inherit' });
 
-const manifestPath = path.join(ROOT, 'slides', 'cloud_viewer_manifest.json');
-if (fs.existsSync(manifestPath)) {
-  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-  if (manifest.docs) {
-    const nowIso = new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
-    for (const [docKey, docEntry] of Object.entries(manifest.docs)) {
-      if (!docEntry || !docEntry.mdPath) continue;
-      const absMd = path.join(ROOT, docEntry.mdPath);
-      if (fs.existsSync(absMd)) {
-        const buf = fs.readFileSync(absMd);
-        docEntry.sha256 = crypto.createHash('sha256').update(buf).digest('hex');
-        docEntry.sizeBytes = buf.length;
-        docEntry.syncedAt = nowIso;
-      }
-    }
-    const serialized = JSON.stringify(manifest, null, 2) + '\n';
-    fs.writeFileSync(manifestPath, serialized, 'utf8');
-    const pcManifestPath = '/Users/nitinagga/Documents/PromptCanvas/src/data/cloud_viewer_manifest.json';
-    if (fs.existsSync(path.dirname(pcManifestPath))) {
-      fs.writeFileSync(pcManifestPath, serialized, 'utf8');
-    }
-    console.log('✅ Synchronized slides/cloud_viewer_manifest.json + PromptCanvas/src/data/cloud_viewer_manifest.json (docs.WS1..WS5 & ALL sha256 + sizeBytes)');
-  }
+console.log('🔄 Synchronizing live Google Docs (WS1..WS5 & ALL) via sync_google_workspace_bridge.py --docs-only...');
+try {
+  execSync('python3 -B scripts/sync_google_workspace_bridge.py --docs-only', { cwd: ROOT, stdio: 'inherit' });
+} catch (err) {
+  console.warn('⚠️ Live Google Docs sync warning (offline fallback):', err && err.message ? err.message : err);
 }
 
 export { BLOG_SPECS, COMMON_PRODUCTS_MD, renderFigureBlock, renderZoneList, renderCalloutSteps };
