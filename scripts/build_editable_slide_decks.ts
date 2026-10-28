@@ -769,17 +769,17 @@ const TITLE_ACTS_BY_DECK: Record<string, TitleActSpec[]> = {
     {
       badge: 'PART 1 • SLIDES 1–4',
       title: 'Agenda, Personas & 12-Dim Pattern Matrix',
-      sub: 'Defines ADK, MCP & ARD upfront; sets the 5-Act agenda (Slide 2), contrasts FinVault (600 RPM: Dedicated PT vs. GKE Gemma 3) & RetailStream (120 RPM: 3LO vault, Slide 3), and compares Patterns A/B/C (Slide 4).',
+      sub: 'Maps ADK/MCP/ARD to CS101 OS primitives; sets the 5-Act agenda (Slide 2), contrasts FinVault (600 RPM: Dedicated PT vs. GKE Gemma 3) & RetailStream (120 RPM: 3LO vault, Slide 3), and compares Patterns A/B/C (Slide 4).',
     },
     {
       badge: 'PART 2 • SLIDES 5–6 & 8',
       title: 'L1 3 Layers -> L2 4 Perimeters -> L4 Wire',
-      sub: 'Zooms macro-to-micro from the 3 Logical Security Layers (~42ms p95, Slide 5) into the 4 Physical VPC-SC Perimeters in Figure 1 (Slide 6) and <0.15ms cached-JWKS KMS-signed STS JWT wire packet (Slide 8).',
+      sub: 'Zooms macro-to-micro from the 3 Logical Security Layers (~42ms p95, Slide 5) into the 4 Physical VPC-SC Perimeters & Steps 1–7 in Figure 1 (Slide 6) and <0.15ms cached-JWKS STS JWT wire packet (Slide 8).',
     },
     {
       badge: 'PART 3 • SLIDE 7 (L3)',
       title: 'Merged L3 UML, Breakers & Stampede Lock',
-      sub: 'Unifies the 5-Actor chronological UML sequence (Steps 1–6) with [Alt] fail-closed circuit breakers (HTTP 401–429), <5s targeted Valkey SCAN+UNLINK, and SET NX PX 5000 single-flight recovery (Slide 7).',
+      sub: 'Unifies the 5-Actor chronological UML sequence (Hops 1–5 / UML Steps 1–6) with [Alt] fail-closed circuit breakers (HTTP 401–429), <5s targeted Valkey SCAN+UNLINK, and SET NX PX 5000 single-flight recovery (Slide 7).',
     },
     {
       badge: 'PARTS 4–5 • SLIDES 9–11',
@@ -3525,17 +3525,21 @@ async function appendGoogleBrandedDiagramSlides(
         if (isTopFullWidthContainer && displayTitle.length > 38) {
           displayTitle = displayTitle
             .replace(/\s*\+\s*\/28.*$/i, '')
-            .replace(/\s*\/\s*cymbal-[a-z0-9-]+$/i, '')
             .replace(/\s*•\s*80%\s*reusable.*$/i, '')
             .replace(/\s*•\s*[^•]+$/i, '')
             .replace(/\s*\([^)]*\)\s*$/, '')
+            .replace(/\s*\/\s*cymbal-[a-z0-9-]+$/i, '')
             .trim();
+          if (displayTitle.includes('(') && !displayTitle.includes(')')) {
+            displayTitle = `${displayTitle})`;
+          }
         } else if (isSpokeOuterWrapper && displayTitle.length > 40) {
           displayTitle = displayTitle
             .replace(/\s*•\s*Project:\s*/i, ' — ')
             .replace(/\s*\(Regulated Scale\)/i, '')
             .replace(/\s*\(High Density\)/i, '')
             .replace(/\s*\(see WS[^)]*\)\s*$/i, '')
+            .replace(/\s*\(WS\d+\s*\/\s*WS\d+\)\s*$/i, '')
             .replace(/\s*\(cymbal-[^)]*\)\s*$/i, '')
             .replace(/\s*—\s*cymbal-[a-z0-9_-]+.*$/i, '')
             .trim();

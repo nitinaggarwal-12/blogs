@@ -96,129 +96,129 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         step: 'Step ①',
         badgeNum: '01',
         zone: 'Client → Blue Zone (Routing Hub)',
-        title: 'Edge Ingress, WAF & Prompt Inspection',
+        title: 'Edge Ingress & Cloud Armor WAF Sanitization',
         logicalNarrative:
-          'User requests enter through the global External Application Load Balancer. Cloud Armor mitigates DDoS/OWASP threats while Model Armor inspects ingress prompts via Service Extensions to block prompt injection at the edge.',
-        components: 'Cloud Load Balancing • Cloud Armor WAF • Model Armor',
+          'User requests enter through the global External Application Load Balancer. Cloud Armor mitigates DDoS/OWASP threats, strips untrusted client-supplied `X-Tenant-ID` headers (`<0.15 ms`), and invokes edge prompt screening.',
+        components: 'Cloud Load Balancing • Cloud Armor WAF • Edge Callout',
       },
       {
         step: 'Step ②',
         badgeNum: '02',
-        zone: 'Blue Zone (Identity & Registry)',
-        title: 'Zero-Trust Identity & Tenant Registry Lookup',
+        zone: 'Blue Zone (Hop 1 Identity & Hop 2 Catalog PDP)',
+        title: 'Zero-Trust OBO/DPoP Identity & Catalog Pruning',
         logicalNarrative:
-          'Identity-Aware Proxy (IAP) validates the upstream OIDC JWT (Google Workspace or Microsoft Entra ID), strips client-supplied tenant headers, and looks up the tenant’s isolation tier and entitlements in Firestore.',
-        components: 'Identity-Aware Proxy • RFC 8693 OBO + DPoP • Firestore',
+          'Identity-Aware Proxy (IAP) validates the upstream OIDC JWT (Google Workspace or Microsoft Entra ID), performs RFC 8693 OBO exchange bound to an RFC 9449 DPoP proof signed by Cloud KMS (`Hop 1`, ~6 ms), and prunes unauthorized agents/tools via Discovery Engine and ADK `before_agent_callback` (`Hop 2`, ~1.2 ms).',
+        components: 'Identity-Aware Proxy • Cloud KMS ECDSA P-256 • Discovery Engine',
       },
       {
         step: 'Step ③',
         badgeNum: '03',
-        zone: 'Blue Zone → Tenant Spokes',
-        title: 'Tier-Aware Routing & Access Boundary Binding',
+        zone: 'Blue Zone → Tenant Spokes (Hop 3a Compute & Bulkhead)',
+        title: 'Tier-Aware Routing, gVisor Sandbox & Valkey Bulkhead',
         logicalNarrative:
-          'The Cloud Run routing service binds an IAM Principal Access Boundary (PAB) and KMS-signed context token, routing Standard tenants to the Pooled Spoke (Pattern A) and Enterprise tenants to Sovereign/PSC Spokes (Pattern B/C).',
-        components: 'Cloud Run Router • IAM Principal Access Boundary (PAB)',
+          'The Cloud Run router binds an IAM Principal Access Boundary (PAB) and routes Standard tenants to the Pooled Spoke (Pattern A) and Enterprise tenants to Sovereign/PSC Spokes (Pattern B/C), where Hop 3 pins `temp:tenant_id` in gVisor and enforces Valkey `jti` revocation and token-bucket RPM bulkheads (~3 ms).',
+        components: 'Cloud Run Router • IAM PAB • Vertex AI Agent Engine • Valkey',
       },
       {
         step: 'Step ④',
         badgeNum: '04',
-        zone: 'Yellow / Red Zone (Guardrails)',
-        title: 'In-Perimeter Model Armor & SDP Screening',
+        zone: 'Yellow / Red Zone (Hop 4a Pre-Inference Guardrails)',
+        title: 'Pre-Inference Model Armor & Semantic NLC Screening (Sanitize Request)',
         logicalNarrative:
-          'Before invoking the foundation model, tenant-scoped Model Armor and Sensitive Data Protection (SDP) templates enforce industry compliance rules (OCC/FDIC banking or PCI retail) and redact sensitive PII.',
-        components: 'Model Armor • Cloud Sensitive Data Protection (SDP)',
+          'Before invoking the foundation model (`4 Sanitize request`), tenant-scoped Vertex AI Model Armor templates and Semantic Natural Language Constraints (NLCs) screen the prompt (~22 ms) for jailbreaks and regulatory compliance rules (`HTTP 400` / `HTTP 422`).',
+        components: 'Vertex AI Model Armor • Tenant Semantic NLCs',
       },
       {
         step: 'Step ⑤',
         badgeNum: '05',
-        zone: 'Yellow / Red Zone (Agent Runtime)',
-        title: 'Scoped Agent Reasoning & Context Caching',
+        zone: 'Yellow & Red Zones (Hops 5a & 3b Data, Tools & Reasoning)',
+        title: 'Scoped 2LO/3LO MCP, AlloyDB RLS & Prefix-Cached Reasoning (Generates Response)',
         logicalNarrative:
-          'Vertex AI Agent Engine (ADK) invokes Gemini 2.5 Pro or Gemma 3 using a shared read-only system prompt cache (90% input token discount) while partitioning session Memory Bank namespaces by tenant ID.',
-        components: 'Vertex AI Agent Engine • Gemini 2.5 Pro • ContextCacheConfig',
+          'The authorized ADK agent (`5 Generates response`) executes DPoP-scoped 2LO/3LO `MCP servers` (`Scoped MCP & RAG`), queries AlloyDB under transactional `SET LOCAL app.current_tenant_id` Row-Level Security (`Hop 5a`, ~1.8 ms), and synthesizes the completion with Gemini 2.5 Pro / Gemma 3 using `ContextCacheConfig` (90% prefix discount) and `{tenant}:{user}:{session}` 5-Level Memory Bank (`Hop 3b`).',
+        components: 'MCP Servers (2LO/3LO) • AlloyDB RLS • Gemini 2.5 Pro • ContextCacheConfig',
       },
       {
         step: 'Step ⑥',
         badgeNum: '06',
-        zone: 'Yellow & Red Zones (Data Plane)',
-        title: 'Isolated MCP Tool & RAG Datastore Execution',
+        zone: 'Yellow / Red Zone (Hop 4b Post-Inference DLP)',
+        title: 'Post-Inference Egress PII/PCI Redaction (Sanitize Response)',
         logicalNarrative:
-          'The agent invokes allow-listed MCP servers and retrieves grounding data enforced by AlloyDB/BigQuery Row-Level Security (Pattern A), dedicated CMEK vaults (Pattern B), or Private Service Connect (Pattern C).',
-        components: 'MCP Toolbox • AlloyDB RLS • BigQuery CMEK • PSC',
+          'Before any completion leaves the tenant runtime spoke (`6 Sanitize response`), Model Armor and Cloud Sensitive Data Protection (SDP) scan the output (~2.8 ms) and deterministically mask regulated identifiers (`IBAN_CODE`/`SWIFT_CODE` for FinVault; `CREDIT_CARD_NUMBER` for RetailStream).',
+        components: 'Vertex AI Model Armor • Cloud Sensitive Data Protection (SDP)',
       },
       {
         step: 'Step ⑦',
         badgeNum: '07',
-        zone: 'Tenant Spokes → Client & Green Zone',
-        title: 'Egress Sanitization & FinOps Chargeback',
+        zone: 'Tenant Spokes → Client & Green Zone (Hop 5b Response & Telemetry)',
+        title: 'Sanitized Response Delivery & Zero-PII FinOps Chargeback',
         logicalNarrative:
-          'Model Armor scans the final completion on egress to redact any residual sensitive identifiers before returning the response and streaming OpenTelemetry token usage spans into BigQuery for tenant chargeback.',
-        components: 'Egress SDP Redaction • Security Command Center • BigQuery OTel',
+          'The sanitized completion (`7 Sanitized response` → `7 Response`) returns through Cloud Run and the External ALB to the caller while streaming zero-PII OpenTelemetry token and security lineage spans (`tenant_id`, `tier`, `thinking_tokens`, `cache_hit`) into BigQuery and Security Command Center.',
+        components: 'Cloud Run • External ALB • Security Command Center • BigQuery OTel',
       },
     ],
     execTechSteps: [
       {
         step: 'Step ①',
-        hopName: 'Edge WAF & Callout',
-        route: 'External ALB, Cloud Armor & Model Armor (Blue Zone)',
+        hopName: 'Edge WAF & Header Strip',
+        route: 'External ALB & Cloud Armor (Blue Zone)',
         protocolAndMechanism:
-          'Terminates HTTPS at Google’s global edge, strips untrusted `x-tenant-id` headers, and invokes Model Armor via ALB Service Extensions to screen prompts before compute.',
-        codeAndResource: 'Header Sanitization & Edge Prompt Screening',
-        verifiedOutcome: 'Spoofed tenant headers and prompt injections are rejected at the edge',
+          'Terminates HTTPS at Google’s global edge, strips untrusted `X-Tenant-ID` headers (`<0.15 ms`), and screens edge payloads before compute.',
+        codeAndResource: 'Header Sanitization & Cloud Armor WAF',
+        verifiedOutcome: 'Spoofed tenant headers are stripped deterministically at the edge',
       },
       {
         step: 'Step ②',
-        hopName: 'OIDC & OBO Token Exchange',
-        route: 'Identity-Aware Proxy & Cloud KMS (Blue Zone)',
+        hopName: 'Hop 1 & Hop 2: OBO/DPoP & Catalog PDP',
+        route: 'Identity-Aware Proxy, Cloud KMS & Discovery Engine (Blue Zone)',
         protocolAndMechanism:
-          'Verifies Google Workspace OIDC or Microsoft Entra ID JWTs and performs RFC 8693 On-Behalf-Of (OBO) exchange bound to an RFC 9449 DPoP thumbprint signed by Cloud KMS.',
-        codeAndResource: 'KMS-Signed CryptographicContext (`adk-agent-signing-key`)',
-        verifiedOutcome: 'Downstream services verify cryptographic tenant identity mathematically',
+          'Verifies OIDC/Entra JWTs, mints KMS ECDSA P-256 signed RFC 8693 OBO + RFC 9449 DPoP `TenantContext` (~6 ms), and prunes unauthorized agents/tools via ADK `before_agent_callback` (~1.2 ms).',
+        codeAndResource: 'hop1_edge_identity_pep.py & hop2_registry_pdp_callbacks.py',
+        verifiedOutcome: 'Forged tokens (HTTP 401) and cross-tenant private agents (HTTP 403) fail closed',
       },
       {
         step: 'Step ③',
-        hopName: 'Tier Router & PAB Enforcement',
-        route: 'Cloud Run Router & IAM PAB (Blue & Green Zones)',
+        hopName: 'Hop 3a: Tier Router & Valkey Bulkhead',
+        route: 'Cloud Run Router, IAM PAB & Memorystore for Valkey (Blue → Spokes)',
         protocolAndMechanism:
-          'Queries the tenant routing table and binds an IAM Principal Access Boundary (PAB) policy scoping the execution principal strictly to Pattern A, Pattern B, or Pattern C.',
-        codeAndResource: 'Deterministic Topology Dispatch & IAM PAB',
-        verifiedOutcome: '80% of agentic platform code is reused unchanged across all 3 tiers',
+          'Dispatches by tenant tier into Pattern A, B, or C, pins `temp:tenant_id` in gVisor, and checks Valkey `jti` deny-list and token-bucket RPM quotas (~3 ms).',
+        codeAndResource: 'hop3_compute_finops_bulkhead.py & IAM PAB',
+        verifiedOutcome: '80% platform code reuse; noisy neighbors throttled with HTTP 429',
       },
       {
         step: 'Step ④',
-        hopName: 'Tenant Guardrail Policy',
-        route: 'Vertex AI Model Armor & SDP (Yellow & Red Zones)',
+        hopName: 'Hop 4a: Pre-Inference Model Armor (Sanitize Request)',
+        route: 'Vertex AI Model Armor (Yellow & Red Zones)',
         protocolAndMechanism:
-          'Evaluates tenant-specific Model Armor templates and Semantic Natural Language Constraints (NLCs), blocking regulatory bypass prompts with HTTP 422.',
-        codeAndResource: 'Tenant-Scoped Model Armor & SDP Templates',
-        verifiedOutcome: 'Adversarial jailbreaks and policy violations are blocked pre-inference',
+          'Evaluates tenant-specific Model Armor templates and Semantic Natural Language Constraints (NLCs) (~22 ms), blocking prompt injections (`HTTP 400`) and compliance bypasses (`HTTP 422`).',
+        codeAndResource: 'hop4_model_armor_guardrails.py (`screen_ingress_prompt`)',
+        verifiedOutcome: 'Adversarial jailbreaks and regulatory NLC violations blocked pre-inference',
       },
       {
         step: 'Step ⑤',
-        hopName: 'Sandboxed Agent & Cache',
-        route: 'Vertex AI Agent Engine & Gemini 2.5 Pro (Yellow & Red Zones)',
+        hopName: 'Hops 5a & 3b: Scoped MCP, RLS & Reasoning (Generates Response)',
+        route: 'MCP Servers, AlloyDB RLS & Gemini 2.5 Pro (Yellow & Red Zones)',
         protocolAndMechanism:
-          'Executes ADK agents in gVisor sandboxes with shared `ContextCacheConfig` (90% prefix discount), Memorystore for Valkey RPM bulkheads, and `{tenant}:{user}:{session}` memory.',
-        codeAndResource: '5-Level Memory Bank & Shared Context Cache',
-        verifiedOutcome: '84.7% lower token COGS with zero cross-tenant memory contamination',
+          'Executes DPoP-bound 2LO/3LO MCP tools, enforces `SET LOCAL app.current_tenant_id` AlloyDB Row-Level Security (~1.8 ms), and runs prefix-cached Gemini 2.5 Pro reasoning (`ContextCacheConfig` 90% discount + 5-Level Memory Bank).',
+        codeAndResource: 'hop5_data_rls_and_otel.py & shared_diagnostic_agent.py',
+        verifiedOutcome: '84.7% lower token COGS with zero cross-tenant SQL or memory bleed',
       },
       {
         step: 'Step ⑥',
-        hopName: 'Multi-Tier Data Perimeter',
-        route: 'AlloyDB RLS, BigQuery CMEK & PSC (Red Zone)',
+        hopName: 'Hop 4b: Post-Inference SDP Redaction (Sanitize Response)',
+        route: 'Vertex AI Model Armor & Cloud SDP (Yellow & Red Zones)',
         protocolAndMechanism:
-          'Enforces `SET LOCAL app.current_tenant_id` Row-Level Security in Pattern A, per-project VPC-SC + Cloud HSM CMEK in Pattern B, and unidirectional PSC endpoints in Pattern C.',
-        codeAndResource: 'RLS Policy, CMEK Vault & PSC ServiceAttachment',
-        verifiedOutcome: 'Tenants can only retrieve records authorized for their verified identity',
+          'Applies outbound Sensitive Data Protection (SDP) infoType detectors (~2.8 ms: `IBAN_CODE`/`SWIFT_CODE` for FinVault, `CREDIT_CARD_NUMBER` for RetailStream) to the model completion.',
+        codeAndResource: 'hop4_model_armor_guardrails.py (`sanitize_egress_response`)',
+        verifiedOutcome: 'Zero unredacted PII/PCI identifiers leave the tenant runtime spoke',
       },
       {
         step: 'Step ⑦',
-        hopName: 'Egress DLP & Response',
-        route: 'Sensitive Data Protection & Cloud Run (Blue Zone)',
+        hopName: 'Hop 5b: Sanitized Response & OTel FinOps',
+        route: 'Cloud Run, External ALB & BigQuery OTel (Blue & Green Zones)',
         protocolAndMechanism:
-          'Applies outbound Sensitive Data Protection (SDP) infoType detectors (IBAN/SWIFT for FinVault, PCI PAN for RetailStream) before delivering the JSON completion.',
-        codeAndResource: 'Outbound InfoType Redaction Pipeline',
-        verifiedOutcome: 'Zero unredacted PII/PCI identifiers leave the tenant perimeter',
+          'Returns the sanitized HTTP 200 completion to the caller while asynchronously streaming zero-PII OpenTelemetry FinOps and security audit spans into BigQuery and Security Command Center.',
+        codeAndResource: 'hop5_data_rls_and_otel.py (`record_bigquery_otel_span`)',
+        verifiedOutcome: 'Complete 5-Hop cryptographic lineage and per-tenant token chargeback',
       },
       {
         step: 'Cost & Audit',
@@ -268,145 +268,145 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zoneId: 'Yellow Zone',
         colorHex: '#feefc3',
         borderHex: '#b06000',
-        name: '3. Hops 3 & 4: Sandbox, Memory & Model Armor',
-        role: 'Enforces gVisor sandbox isolation, 5-Level Memory Bank namespaces, thinking budgets, and Model Armor semantic guardrails.',
+        name: '3. Hops 3–5 (Tenant A): FinVault Bank Spoke',
+        role: 'Enforces gVisor sandbox isolation, 8,000-token thinking cap, OCC/FINRA Model Armor NLCs, Workspace/Jira 3LO MCP, and AlloyDB RLS.',
       },
       {
         zoneId: 'Red Zone',
         colorHex: '#fad2cf',
         borderHex: '#c5221f',
-        name: '4. Hop 5: Row-Locked Storage & Scoped MCP',
-        role: 'Binds verified tenant IDs to AlloyDB/BigQuery Row-Level Security transactions and executes tenant-scoped 2LO/3LO MCP tools.',
+        name: '4. Hops 3–5 (Tenant B): RetailStream Corp Spoke',
+        role: 'Enforces gVisor sandbox isolation, 4,000-token thinking cap, PCI PAN Model Armor NLCs, SharePoint/ServiceNow 3LO MCP, and AlloyDB RLS.',
       },
     ],
     plainSteps: [
       {
         step: 'Step ①',
         badgeNum: '01',
-        zone: 'Client → Blue Zone (Hop 1 PEP)',
-        title: 'Header Sanitization & OIDC/DPoP Verification',
+        zone: 'Client → Blue Zone (Hop 1 Edge Ingress)',
+        title: 'Header Sanitization & Edge WAF Inspection',
         logicalNarrative:
-          'Hop 1 terminates the client request at Cloud Armor and IAP, strips any client-supplied `x-tenant-id` headers, and validates the caller’s Google Workspace or Microsoft Entra ID JWT and DPoP proof.',
-        components: 'Hop 1 (`hop1_edge_identity_pep.py`) • Cloud Armor & IAP',
+          'Hop 1 terminates the client request at External ALB and Cloud Armor, strips any client-supplied `X-Tenant-ID` headers (`<0.15 ms`), and forwards the request to Identity-Aware Proxy (IAP).',
+        components: 'Hop 1 (`hop1_edge_identity_pep.py`) • External ALB & Cloud Armor',
       },
       {
         step: 'Step ②',
         badgeNum: '02',
         zone: 'Blue & Green Zones (Hop 1 → Hop 2)',
-        title: 'KMS Context Minting & Catalog PDP Pruning',
+        title: 'KMS OBO/DPoP Context Minting & Catalog PDP Pruning',
         logicalNarrative:
-          'Cloud KMS signs an immutable `CryptographicContext`. Hop 2 queries the Agent Registry PDP and runs ADK `before_agent_callback` to prune any private agent or MCP tool not owned by the active tenant.',
-        components: 'Hop 2 (`hop2_registry_pdp_callbacks.py`) • Cloud KMS',
+          'IAP validates the OIDC/Entra JWT and Cloud KMS signs an immutable `TenantContext` bound to the caller’s RFC 9449 `dpop_jkt` thumbprint (`Hop 1`, ~6 ms). Hop 2 queries Discovery Engine and runs ADK `before_agent_callback` (~1.2 ms) to prune unauthorized private agents and MCP tools.',
+        components: 'Hop 1 & Hop 2 (`hop2_registry_pdp_callbacks.py`) • Cloud KMS',
       },
       {
         step: 'Step ③',
         badgeNum: '03',
-        zone: 'Blue → Yellow Zone (Hop 3 Sandbox)',
-        title: 'gVisor Sandbox, Rate Bulkhead & Skill Validation',
+        zone: 'Blue → Yellow / Red Zone (Hop 3a Sandbox & Bulkhead)',
+        title: 'Tier-Aware Spoke Dispatch, gVisor Sandbox & Valkey Bulkhead',
         logicalNarrative:
-          'Hop 3 binds `temp:tenant_id` inside the Vertex AI Agent Engine gVisor sandbox, checks Memorystore for Valkey RPM quotas (`600` vs `120` RPM), and validates GCS Skill URIs (`gs://cymbal-skills-{tenant}/`).',
-        components: 'Hop 3 (`hop3_compute_finops_bulkhead.py`) • Memorystore',
+          'Cloud Run routes the signed context to the tenant spoke, where Hop 3 pins `temp:tenant_id` inside the Vertex AI Agent Engine gVisor sandbox, checks the Valkey `jti` revocation deny-list, enforces RPM quotas (`600` vs `120` RPM, ~3 ms), and validates `gs://cymbal-skills-{tenant}/` URIs.',
+        components: 'Hop 3 (`hop3_compute_finops_bulkhead.py`) • Memorystore for Valkey',
       },
       {
         step: 'Step ④',
         badgeNum: '04',
-        zone: 'Yellow Zone (Hop 4 Ingress)',
-        title: 'Model Armor & Semantic Constraint Screening',
+        zone: 'Yellow / Red Zone (Hop 4a Ingress Guardrail)',
+        title: 'Pre-Inference Model Armor & Semantic NLC Screening (Sanitize Request)',
         logicalNarrative:
-          'Hop 4 screens the prompt through Vertex AI Model Armor for prompt injection and evaluates tenant-specific Semantic Natural Language Constraints (NLCs), returning `HTTP 422` on compliance violations.',
-        components: 'Hop 4 (`hop4_model_armor_guardrails.py`) • Model Armor',
+          'Before model invocation (`4 Sanitize request`), Hop 4 screens the prompt through Vertex AI Model Armor (~22 ms) for prompt injection (`HTTP 400`) and evaluates tenant-specific Semantic Natural Language Constraints (NLCs), returning `HTTP 422` on compliance violations.',
+        components: 'Hop 4 (`hop4_model_armor_guardrails.py`) • Vertex AI Model Armor',
       },
       {
         step: 'Step ⑤',
         badgeNum: '05',
-        zone: 'Yellow Zone (Hop 3 & 4 Runtime)',
-        title: 'Partitioned Memory Bank & Budget-Capped Inference',
+        zone: 'Yellow / Red Zone (Hops 5a & 3b Tools, RLS & Inference)',
+        title: 'Scoped 2LO/3LO MCP, AlloyDB RLS & Prefix-Cached Reasoning (Generates Response)',
         logicalNarrative:
-          'Gemini 2.5 Pro executes with the tenant’s thinking budget (`8,000` FinVault vs `4,000` RetailStream), reading shared system instructions from `ContextCacheConfig` and session state from `{tenant}:{user}:{session}`.',
-        components: '5-Level Memory Bank (`L1..L5`) • Gemini 2.5 Pro',
+          'During agent execution (`5 Generates response`), Hop 5 brokers DPoP-scoped 2LO/3LO OAuth tokens for `MCP servers` (`Secure RAG`) and executes `SET LOCAL app.current_tenant_id` on AlloyDB (`Agent-tool interaction`, ~1.8 ms), while Gemini 2.5 Pro synthesizes the response using `ContextCacheConfig` (90% prefix discount) and `{tenant}:{user}:{session}` 5-Level Memory Bank.',
+        components: 'Hop 5 (`hop5_data_rls_and_otel.py`) • AlloyDB RLS • Gemini 2.5 Pro',
       },
       {
         step: 'Step ⑥',
         badgeNum: '06',
-        zone: 'Yellow & Red Zones (Hop 5 Data Plane)',
-        title: 'Transactional Row-Level Security & 2LO/3LO MCP',
+        zone: 'Yellow / Red Zone (Hop 4b Egress DLP)',
+        title: 'Post-Inference Egress PII/PCI Redaction (Sanitize Response)',
         logicalNarrative:
-          'Hop 5 executes `SET LOCAL app.current_tenant_id` on AlloyDB/BigQuery so Row-Level Security restricts rows at the storage engine, and brokers 2LO/3LO OAuth tokens for Jira, Workspace, or ServiceNow MCP calls.',
-        components: 'Hop 5 (`hop5_data_rls_and_otel.py`) • AlloyDB RLS & MCP Hub',
+          'Before the completion exits the tenant spoke (`6 Sanitize response`), Hop 4 runs Cloud Sensitive Data Protection (SDP) egress redaction (~2.8 ms) to deterministically mask tenant-specific regulated patterns (`IBAN_CODE`/`SWIFT_CODE` for FinVault; `CREDIT_CARD_NUMBER` for RetailStream).',
+        components: 'Hop 4 (`hop4_model_armor_guardrails.py`) • Cloud SDP Egress Redaction',
       },
       {
         step: 'Step ⑦',
         badgeNum: '07',
-        zone: 'Red → Blue & Green Zones (Egress)',
-        title: 'Egress PII Redaction & OpenTelemetry Audit Sink',
+        zone: 'Tenant Spokes → Blue & Green Zones (Hop 5b Response & Audit)',
+        title: 'Sanitized Response Delivery & OpenTelemetry FinOps Sink',
         logicalNarrative:
-          'Sensitive Data Protection redacts tenant-specific PII/PCI patterns on egress, returns the sanitized completion to the caller, and writes a tamper-evident `HopAuditRecord` and FinOps span to BigQuery.',
-        components: 'Cloud SDP Egress Redaction • BigQuery OTel Audit Sink',
+          'The sanitized response (`7 Sanitized response` → `7 Response`) returns through Cloud Run and External ALB to the caller while Hop 5 asynchronously writes a tamper-evident, zero-PII `HopAuditRecord` and FinOps token chargeback span to BigQuery and Security Command Center.',
+        components: 'Hop 5 (`hop5_data_rls_and_otel.py`) • BigQuery OTel & SCC',
       },
     ],
     execTechSteps: [
       {
         step: 'Step ①',
-        hopName: 'Hop 1: Edge Identity PEP',
-        route: 'Cloud Armor, IAP & OIDC Verifier (Blue Zone)',
+        hopName: 'Hop 1a: Edge WAF & Header Strip',
+        route: 'External ALB & Cloud Armor (Blue Zone)',
         protocolAndMechanism:
-          'Strips forged `x-tenant-id` / `x-gcp-project-override` headers, validates federated OIDC JWTs, and verifies RFC 9449 DPoP sender-constrained token thumbprints (`jkt`).',
+          'Strips forged `X-Tenant-ID` / `X-GCP-Project-Override` headers (`<0.15 ms`) and blocks malformed edge payloads before IAP.',
         codeAndResource: 'core-cymbal-agent/governance/hop1_edge_identity_pep.py',
-        verifiedOutcome: 'Blocks header spoofing and stolen-token replay with HTTP 401',
+        verifiedOutcome: 'Client-supplied tenant spoofing headers are stripped at the edge',
       },
       {
         step: 'Step ②',
-        hopName: 'Hop 2: Registry PDP',
-        route: 'Discovery Engine Catalog & ADK Callbacks (Blue Zone)',
+        hopName: 'Hop 1b & Hop 2: OBO/DPoP & Catalog PDP',
+        route: 'IAP, Cloud KMS & Discovery Engine Catalog (Blue & Green Zones)',
         protocolAndMechanism:
-          'Filters the Agent Registry by `tenant_id` visibility and enforces ADK `before_agent_callback` / `before_tool_callback` to prune unauthorized private agents and MCP tools.',
-        codeAndResource: 'core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py',
-        verifiedOutcome: 'Cross-tenant private agent calls fail closed with HTTP 403 Forbidden',
+          'Validates federated OIDC JWTs + RFC 9449 DPoP (`jkt`), signs `TenantContext` with Cloud KMS ECDSA P-256 (~6 ms), and runs ADK `before_agent_callback` (~1.2 ms) to prune unauthorized agents and MCP tools.',
+        codeAndResource: 'hop1_edge_identity_pep.py & hop2_registry_pdp_callbacks.py',
+        verifiedOutcome: 'Stolen tokens (HTTP 401) and unauthorized private agents (HTTP 403) fail closed',
       },
       {
         step: 'Step ③',
-        hopName: 'Hop 3a: Compute & Rate Limit',
-        route: 'Vertex AI Agent Engine & Memorystore (Yellow Zone)',
+        hopName: 'Hop 3a: Compute Sandbox & Valkey Bulkhead',
+        route: 'Vertex AI Agent Engine & Memorystore for Valkey (Yellow/Red Zones)',
         protocolAndMechanism:
-          'Pins immutable `temp:tenant_id` in gVisor sandbox state, enforces token-bucket rate limits in Memorystore for Valkey, and validates `gs://cymbal-skills-{tenant}/` URIs.',
+          'Pins immutable `temp:tenant_id` in gVisor sandbox state, verifies Valkey `jti` revocation deny-list, enforces token-bucket rate limits (~3 ms), and validates `gs://cymbal-skills-{tenant}/` URIs.',
         codeAndResource: 'core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py',
         verifiedOutcome: 'Noisy-neighbor bursts throttled with HTTP 429 and Retry-After header',
       },
       {
         step: 'Step ④',
-        hopName: 'Hop 4: Model Armor & NLC',
-        route: 'Vertex AI Model Armor (Yellow Zone)',
+        hopName: 'Hop 4a: Pre-Inference Model Armor (Sanitize Request)',
+        route: 'Vertex AI Model Armor (Yellow/Red Zones)',
         protocolAndMechanism:
-          'Screens ingress prompts for jailbreaks, cache-extraction payloads, and tenant Semantic Natural Language Constraints (e.g., OCC escalation suppression).',
+          'Screens ingress prompts (~22 ms) for jailbreaks, cache-extraction payloads, and tenant Semantic Natural Language Constraints (e.g., OCC escalation suppression).',
         codeAndResource: 'core-cymbal-agent/governance/hop4_model_armor_guardrails.py',
         verifiedOutcome: 'Prompt injections (HTTP 400) and NLC violations (HTTP 422) blocked cold',
       },
       {
         step: 'Step ⑤',
-        hopName: 'Hop 3b: Memory & Cache',
-        route: 'Gemini 2.5 Pro & 5-Level Memory Bank (Yellow Zone)',
+        hopName: 'Hops 5a & 3b: Scoped MCP, RLS & Cache (Generates Response)',
+        route: 'MCP Hub, AlloyDB RLS, Gemini 2.5 Pro & 5-Level Memory Bank',
         protocolAndMechanism:
-          'Applies read-only `ContextCacheConfig` prefix caching (90% discount) to shared system prompts while isolating L1–L4 episodic memory under `{tenant}:{user}:{session}`.',
-        codeAndResource: 'MemoryBankLevel L1..L5 & Thinking Budget Clamping',
-        verifiedOutcome: 'Cross-tenant L4 memory reads blocked with PermissionError',
+          'Dispatches DPoP-bound 2LO/3LO MCP tools, binds `SET LOCAL app.current_tenant_id` on AlloyDB connections (~1.8 ms), and executes Gemini 2.5 Pro with `ContextCacheConfig` (90% prefix discount) and `{tenant}:{user}:{session}` memory.',
+        codeAndResource: 'hop5_data_rls_and_otel.py & MemoryBankLevel L1..L5',
+        verifiedOutcome: 'SQL RLS-bypass returns 0 foreign rows; unconsented 3LO returns HTTP 401',
       },
       {
         step: 'Step ⑥',
-        hopName: 'Hop 5: RLS & 2LO/3LO MCP',
-        route: 'AlloyDB RLS, BigQuery & CymbalMCPHub (Red Zone)',
+        hopName: 'Hop 4b: Post-Inference SDP Scrub (Sanitize Response)',
+        route: 'Vertex AI Model Armor & Cloud SDP (Yellow/Red Zones)',
         protocolAndMechanism:
-          'Binds `SET LOCAL app.current_tenant_id` on database connections and dispatches 2LO (Cymbal Telemetry) and 3LO (Workspace/Jira & Entra/ServiceNow) MCP tools.',
-        codeAndResource: 'core-cymbal-agent/governance/hop5_data_rls_and_otel.py',
-        verifiedOutcome: 'SQL RLS-bypass attempts return 0 foreign rows; unconsented 3LO returns 401',
+          'Executes tenant-specific egress detectors (~2.8 ms: `IBAN_CODE`/`SWIFT_CODE` for FinVault; `CREDIT_CARD_NUMBER` for RetailStream) prior to HTTP response serialization.',
+        codeAndResource: 'hop4_model_armor_guardrails.py (`sanitize_egress_response`)',
+        verifiedOutcome: '100% deterministic masking of regulated financial and payment identifiers',
       },
       {
         step: 'Step ⑦',
-        hopName: 'Hop 4b: Egress SDP Scrub',
-        route: 'Cloud Sensitive Data Protection (Blue Zone)',
+        hopName: 'Hop 5b: Sanitized Response & OTel FinOps',
+        route: 'Cloud Run, External ALB, SCC & BigQuery (Blue & Green Zones)',
         protocolAndMechanism:
-          'Executes tenant-specific egress detectors (`IBAN_CODE`/`SWIFT_CODE` for FinVault; `CREDIT_CARD_NUMBER` for RetailStream) prior to HTTP response serialization.',
-        codeAndResource: 'Tenant-Scoped Egress Redaction Rules',
-        verifiedOutcome: '100% deterministic masking of regulated financial and payment identifiers',
+          'Returns the sanitized HTTP 200 response while emitting zero-PII OpenTelemetry audit records across all 5 hops into BigQuery and Security Command Center.',
+        codeAndResource: 'hop5_data_rls_and_otel.py (`record_bigquery_otel_span`)',
+        verifiedOutcome: 'Complete 5-hop cryptographic lineage for CISO and CFO reporting',
       },
       {
         step: 'Cost & Audit',
@@ -2677,11 +2677,185 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
   },
 };
 
+export function synthesizeDynamicFlowSpecForBlueprint(bp) {
+  const rc = bp.routingCards || {};
+  const gc = bp.govCards || {};
+  const lc = bp.leftCards || {};
+  const sc = bp.rightCards || {};
+
+  const rcTopLeft = [rc.topLeft?.title, rc.topLeft?.title2].filter(Boolean).join(' ') || 'Google Cloud Armor';
+  const rcMidLeft = [rc.midLeft?.title, rc.midLeft?.title2].filter(Boolean).join(' ') || 'Model Armor Shield';
+  const rcBotLeft = [rc.botLeft?.title, rc.botLeft?.title2].filter(Boolean).join(' ') || 'Apigee X & IAM';
+  const rcTopRight = [rc.topRight?.title, rc.topRight?.title2].filter(Boolean).join(' ') || 'External Application Load Balancer';
+  const rcBotRight = [rc.botRight?.title, rc.botRight?.title2].filter(Boolean).join(' ') || 'Cloud Run Coordinator';
+
+  const gcTop = [gc.top?.title, gc.top?.title2].filter(Boolean).join(' ') || 'Security Command Center';
+  const gcMid = [gc.mid?.title, gc.mid?.title2].filter(Boolean).join(' ') || 'Cloud KMS & IAM';
+  const gcBot = [gc.bot?.title, gc.bot?.title2].filter(Boolean).join(' ') || 'Cloud Logging & BQ';
+
+  const lcArmor = [lc.modelArmor?.title, lc.modelArmor?.title2].filter(Boolean).join(' ') || 'Cloud DLP & Guardrails';
+  const lcLlm = [lc.llm?.title, lc.llm?.title2].filter(Boolean).join(' ') || 'Gemini 2.5 Pro';
+  const lcRuntime = [lc.runtime?.title, lc.runtime?.title2].filter(Boolean).join(' ') || 'Vertex AI Agent Engine';
+  const lcMcp = [lc.mcp?.title, lc.mcp?.title2].filter(Boolean).join(' ') || 'MCP Retrieval Tools';
+  const lcStore = [lc.datastore?.title, lc.datastore?.title2].filter(Boolean).join(' ') || 'Cloud Spanner Graph';
+
+  const scArmor = [sc.modelArmor?.title, sc.modelArmor?.title2].filter(Boolean).join(' ') || 'VPC-SC & Action Gate';
+  const scLlm = [sc.llm?.title, sc.llm?.title2].filter(Boolean).join(' ') || 'Gemini 2.5 Flash';
+  const scRuntime = [sc.runtime?.title, sc.runtime?.title2].filter(Boolean).join(' ') || 'Governed Action Agent';
+  const scMcp = [sc.mcp?.title, sc.mcp?.title2].filter(Boolean).join(' ') || 'MCP Action Connectors';
+  const scStore = [sc.datastore?.title, sc.datastore?.title2].filter(Boolean).join(' ') || 'AlloyDB & BigQuery';
+
+  return {
+    workstream: bp.badge || 'Custom Architecture Blueprint (#78)',
+    patternBadge: `${bp.title || bp.id} • Official #78 Hub-and-Spoke`,
+    execCloudServices: `${rcTopLeft}, ${rcMidLeft}, ${rcBotRight}, ${lcRuntime}, ${lcLlm}, ${lcStore}, ${scRuntime}, ${scStore}, ${gcTop}, ${gcMid}`,
+    execTechSummary: `${bp.subtitle || bp.title} — Enforces 5-hop zero-trust ingress via ${rcTopLeft} and ${rcMidLeft}, routes through ${rcBotRight} to ${lcRuntime} (${lcStore}) and ${scRuntime} (${scStore}), and emits telemetry to ${gcBot}.`,
+    outcomeTitle: 'Verified End-to-End Hub-and-Spoke Production Outcome',
+    outcomeBody: `Delivers deterministic policy enforcement across ${rcBotRight}, grounded reasoning via ${lcLlm} + ${lcStore}, and cryptographically governed tool execution via ${scRuntime} + ${scStore}.`,
+    plainZones: [
+      {
+        zoneId: 'Zone 1',
+        colorHex: '#aecbfa',
+        borderHex: '#174ea6',
+        name: bp.routingHubTitle || 'Routing & Policy Enforcement Hub (#aecbfa)',
+        role: `Authenticates ${bp.topUserTitle || 'Enterprise Users'} through ${rcTopRight}, ${rcTopLeft}, ${rcMidLeft}, and ${rcBotLeft} before dispatching to ${rcBotRight}.`,
+      },
+      {
+        zoneId: 'Zone 2',
+        colorHex: '#ceead6',
+        borderHex: '#137333',
+        name: `${bp.govHubTitle || 'Central Governance'} ${bp.govHubTitle2 || '& FinOps Hub'} (#ceead6)`,
+        role: `Aggregates security, KMS/IAM, and FinOps telemetry across ${gcTop}, ${gcMid}, and ${gcBot}.`,
+      },
+      {
+        zoneId: 'Zone 3',
+        colorHex: '#feefc3',
+        borderHex: '#b06000',
+        name: bp.leftZoneTitle || 'Left Spoke: Reasoning & RAG Pool (#feefc3)',
+        role: `Executes ${lcRuntime} with ${lcArmor}, ${lcLlm}, ${lcMcp}, and ${lcStore}.`,
+      },
+      {
+        zoneId: 'Zone 4',
+        colorHex: '#fad2cf',
+        borderHex: '#c5221f',
+        name: bp.rightZoneTitle || 'Right Spoke: Governed Action Enclave (#fad2cf)',
+        role: `Executes ${scRuntime} inside a governed perimeter with ${scArmor}, ${scLlm}, ${scMcp}, and ${scStore}.`,
+      },
+    ],
+    plainSteps: [
+      {
+        step: 'Step 1',
+        badgeNum: '01',
+        zone: 'External Ingress -> Routing Hub (#aecbfa)',
+        title: `${bp.topUserTitle || 'Enterprise User'} Request & Edge WAF Inspection`,
+        logicalNarrative: `${bp.topUserTitle || 'Enterprise Users'} (${bp.topUserSub || 'OIDC / BeyondCorp'}) send a request through ${rcTopRight} and ${rcTopLeft} (${rc.topLeft?.sub || 'WAF & IAP'}).`,
+        components: `${rcTopRight}, ${rcTopLeft}`,
+      },
+      {
+        step: 'Step 2',
+        badgeNum: '02',
+        zone: 'Routing Hub (#aecbfa)',
+        title: `Prompt Screening & Token Verification at ${rcBotRight}`,
+        logicalNarrative: `${rcMidLeft} (${rc.midLeft?.sub || 'Prompt & DLP Filter'}) screens the payload and ${rcBotLeft} (${rc.botLeft?.sub || 'OAuth 2.0 & IAM'}) validates caller identity before ${rcBotRight} plans execution.`,
+        components: `${rcMidLeft}, ${rcBotLeft}, ${rcBotRight}`,
+      },
+      {
+        step: 'Step 3',
+        badgeNum: '03',
+        zone: 'Routing Hub -> Agent Spokes (#feefc3 / #fad2cf)',
+        title: 'Coordinator Dispatch to Specialist Agent Spokes',
+        logicalNarrative: `${rcBotRight} routes the request across the internal VPC to ${lcRuntime} (Left Spoke) and/or ${scRuntime} (Right Spoke) while emitting spans to ${gcBot}.`,
+        components: `${rcBotRight}, ${lcRuntime}, ${scRuntime}, ${gcBot}`,
+      },
+      {
+        step: 'Step 4',
+        badgeNum: '04',
+        zone: 'Agent Spokes (#feefc3 & #fad2cf)',
+        title: `In-Zone Guardrails (${lcArmor} & ${scArmor})`,
+        logicalNarrative: `Before invoking foundation models or tools, ${lcArmor} (${lc.modelArmor?.sub || 'Domain Guardrails'}) and ${scArmor} (${sc.modelArmor?.sub || 'Action Safety Gate'}) validate domain constraints.`,
+        components: `${lcArmor}, ${scArmor}`,
+      },
+      {
+        step: 'Step 5',
+        badgeNum: '05',
+        zone: 'Agent Spokes (#feefc3 & #fad2cf)',
+        title: `Grounded Reasoning & Tool Calls (${lcLlm}, ${lcStore}, ${scStore})`,
+        logicalNarrative: `${lcRuntime} invokes ${lcLlm} and ${lcMcp} against ${lcStore}, while ${scRuntime} validates schemas with ${scLlm} and executes governed mutations via ${scMcp} against ${scStore}.`,
+        components: `${lcLlm}, ${lcMcp}, ${lcStore}, ${scLlm}, ${scMcp}, ${scStore}`,
+      },
+      {
+        step: 'Step 6',
+        badgeNum: '06',
+        zone: 'Agent Spokes -> Governance Hub (#ceead6)',
+        title: `Output Sanitization & Governance Attestation (${gcTop} & ${gcMid})`,
+        logicalNarrative: `Model and tool outputs pass outbound redaction via ${lcArmor} and ${scArmor}, while audit receipts stream to ${gcTop}, ${gcMid}, and ${gcBot}.`,
+        components: `${lcArmor}, ${scArmor}, ${gcTop}, ${gcMid}, ${gcBot}`,
+      },
+      {
+        step: 'Step 7',
+        badgeNum: '07',
+        zone: 'Routing Hub -> Caller',
+        title: 'Grounded Response Delivery to Caller',
+        logicalNarrative: `${rcBotRight} aggregates the verified response and returns it through ${rcTopRight} to ${bp.topUserTitle || 'Enterprise Users'}.`,
+        components: `${rcBotRight}, ${rcTopRight}`,
+      },
+    ],
+    techSteps: [
+      {
+        hop: 'Hop 1',
+        route: `${bp.topUserTitle || 'Caller'} -> ${rcTopRight} -> ${rcTopLeft}`,
+        protocolAndMechanism: `Enforces TLS 1.3 ingress, ${rcTopLeft} WAF rules, and identity headers.`,
+        codeAndResource: 'core-cymbal-agent/security_pep_Verification.py',
+        verifiedOutcome: 'Unauthenticated or malformed payloads blocked at edge',
+      },
+      {
+        hop: 'Hop 2',
+        route: `${rcMidLeft} + ${rcBotLeft} -> ${rcBotRight}`,
+        protocolAndMechanism: `Screens prompts with ${rcMidLeft} and verifies OAuth/IAM scopes via ${rcBotLeft}.`,
+        codeAndResource: 'core-cymbal-agent/runtime_pipeline.py',
+        verifiedOutcome: 'Verified context bound to ADK session state',
+      },
+      {
+        hop: 'Hop 3',
+        route: `${rcBotRight} -> ${lcRuntime} / ${scRuntime}`,
+        protocolAndMechanism: `Dispatches structured ADK agent tasks across the Hub-and-Spoke mesh.`,
+        codeAndResource: 'core-cymbal-agent/runtime_pipeline.py',
+        verifiedOutcome: 'Deterministic routing to specialist agent spokes',
+      },
+      {
+        hop: 'Hop 4',
+        route: `${lcRuntime} -> ${lcArmor} & ${scRuntime} -> ${scArmor}`,
+        protocolAndMechanism: `Applies domain guardrails (${lcArmor}) and pre-commit policy gates (${scArmor}).`,
+        codeAndResource: 'core-cymbal-agent/security_pep_Verification.py',
+        verifiedOutcome: 'PII redacted and policy bounds verified pre-execution',
+      },
+      {
+        hop: 'Hop 5',
+        route: `${lcRuntime} -> ${lcLlm} + ${lcMcp} -> ${lcStore}`,
+        protocolAndMechanism: `Executes grounded reasoning with ${lcLlm} and hybrid retrieval against ${lcStore}.`,
+        codeAndResource: 'core-cymbal-agent/mcp_gateway_server.py',
+        verifiedOutcome: 'Grounded citations retrieved from primary data store',
+      },
+      {
+        hop: 'Hop 6',
+        route: `${scRuntime} -> ${scLlm} + ${scMcp} -> ${scStore}`,
+        protocolAndMechanism: `Validates action schemas with ${scLlm} and commits state changes to ${scStore}.`,
+        codeAndResource: 'core-cymbal-agent/mcp_gateway_server.py',
+        verifiedOutcome: 'ACID state mutation recorded with full audit trail',
+      },
+      {
+        hop: 'Hop 7',
+        route: `Spokes -> ${gcTop} / ${gcMid} / ${gcBot} -> ${rcBotRight}`,
+        protocolAndMechanism: `Emits OpenTelemetry spans and security logs to ${gcBot} and returns response via ${rcBotRight}.`,
+        codeAndResource: 'core-cymbal-agent/finops_telemetry.py',
+        verifiedOutcome: 'End-to-end trace and grounded response delivered',
+      },
+    ],
+  };
+}
+
 function buildDiagramFlowEntry(bp, index) {
-  const spec = DIAGRAM_FLOW_SPECIFICATIONS[bp.id];
-  if (!spec) {
-    throw new Error(`Missing DIAGRAM_FLOW_SPECIFICATIONS entry for blueprint: ${bp.id}`);
-  }
+  const spec = DIAGRAM_FLOW_SPECIFICATIONS[bp.id] || synthesizeDynamicFlowSpecForBlueprint(bp);
 
   // 4-Zone Hub-and-Spoke Summary for the Logical Flow Slide & UI
   const zonesSummary = spec.plainZones.map((pz, idx) => ({
@@ -2860,4 +3034,7 @@ function main() {
   console.log(`✅ Generated Google Cloud Architecture Center Logical & Technical Flows for ${flows.length}/14 diagrams -> diagrams/diagram_e2e_flows.json & synced Markdown guides`);
 }
 
-main();
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main();
+}
+

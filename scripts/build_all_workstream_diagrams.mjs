@@ -54,7 +54,7 @@ const USER_SILHOUETTE_DATA_URI =
   'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NCIgaGVpZ2h0PSIzNiIgdmlld0JveD0iMCAwIDQ0IDM2Ij48Y2lyY2xlIGN4PSIyMiIgY3k9IjExIiByPSI4LjUiIGZpbGw9IiMwMDAwMDAiLz48cGF0aCBkPSJNIDYgMzQgQyA2IDI0IDM4IDI0IDM4IDM0IFoiIGZpbGw9IiMwMDAwMDAiLz48L3N2Zz4=';
 
 function svgToDataUri(svgStr) {
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svgStr.trim())}`;
+  return `data:image/svg+xml,${encodeURIComponent(svgStr.trim()).replace(/;/g, '%3B')}`;
 }
 
 const EXTRA_GCP_ICONS = {
@@ -420,7 +420,7 @@ const WORKSTREAM_BLUEPRINTS = [
       ragLabel: ['Scoped', 'MCP & RAG'],
       toolLabel: ['SET LOCAL', 'current_tenant'],
     },
-    rightBoundaryLabel: 'Dedicated Spoke archetype — Pattern B silo project OR Pattern C PSC spoke (see WS3 / WS4 for each)',
+    rightBoundaryLabel: 'Dedicated Spoke: Pattern B Silo or Pattern C PSC Spoke (WS3 / WS4)',
     rightZoneTitle: 'Dedicated Sovereign Tenant Silo',
     rightZoneSub: 'VPC-SC + IAM PAB + finvault-silo-cmek + PSC',
     rightCards: {
@@ -1651,7 +1651,14 @@ ${svgStr}
   }
 }
 
-export { WORKSTREAM_BLUEPRINTS, EXTENDED_BLUEPRINTS, ALL_BLUEPRINTS };
+export {
+  WORKSTREAM_BLUEPRINTS,
+  EXTENDED_BLUEPRINTS,
+  ALL_BLUEPRINTS,
+  compileOfficialArchCenterSvg,
+  compileOfficialDrawioXml,
+  resolveArchIconUri,
+};
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch((err) => {

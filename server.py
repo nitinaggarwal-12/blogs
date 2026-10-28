@@ -19,19 +19,26 @@ from __future__ import annotations
 
 import contextlib
 import dataclasses
+from datetime import datetime
 import importlib
 import importlib.util
 import io
 import json
 import os
+import signal
 import sys
+import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any, Dict
 from urllib.parse import parse_qs, urlparse
+from zoneinfo import ZoneInfo
 
 sys.dont_write_bytecode = True
+
+_SIM_STDOUT_LOCK = threading.Lock()
+MAX_POST_BODY_BYTES = 10 * 1024 * 1024
 
 ROOT_DIR = Path(__file__).resolve().parent
 if str(ROOT_DIR) not in sys.path:
@@ -294,13 +301,14 @@ def execute_preset_scenario(scenario_id: str) -> Dict[str, Any]:
 
     if scenario_id in ("suite_a", "suite_b", "suite_c"):
         buf = io.StringIO()
-        with contextlib.redirect_stdout(buf):
-            if scenario_id == "suite_a":
-                sim_a_mod.run_all_breach_simulations()
-            elif scenario_id == "suite_b":
-                sim_b_mod.run_all_silo_security_tests()
-            else:
-                sim_c_mod.run_tier_migration_suite()
+        with _SIM_STDOUT_LOCK:
+            with contextlib.redirect_stdout(buf):
+                if scenario_id == "suite_a":
+                    sim_a_mod.run_all_breach_simulations()
+                elif scenario_id == "suite_b":
+                    sim_b_mod.run_all_silo_security_tests()
+                else:
+                    sim_c_mod.run_tier_migration_suite()
         return {
             "scenario_id": scenario_id,
             "execution_ms": round((time.perf_counter() - t0) * 1000, 2),
@@ -314,7 +322,9 @@ def execute_preset_scenario(scenario_id: str) -> Dict[str, Any]:
 def execute_custom_sandbox_turn(payload: Dict[str, Any]) -> Dict[str, Any]:
     t0 = time.perf_counter()
     pattern = str(payload.get("pattern", "PATTERN_A_POOLED"))
-    caller_tenant = str(payload.get("caller_tenant", "finvault"))
+    caller_tenant = str(payload.get("caller_tenant", "finvault")).strip().lower()
+    if caller_tenant not in JWT_CLAIMS_BY_TENANT:
+        caller_tenant = "finvault"
     forged_header_tenant = str(payload.get("forged_header_tenant", "")).strip()
     requested_agent_uri = str(
         payload.get("requested_agent_uri", "agent://cymbal/shared-incident-diagnostic-v2")
@@ -415,17 +425,24 @@ def execute_custom_sandbox_turn(payload: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def execute_all_simulations_bundle() -> Dict[str, Any]:
+_ALL_SIMS_CACHE: Dict[str, Any] | None = None
+
+
+def execute_all_simulations_bundle(force_refresh: bool = False) -> Dict[str, Any]:
+    global _ALL_SIMS_CACHE
+    if _ALL_SIMS_CACHE is not None and not force_refresh:
+        return _ALL_SIMS_CACHE
     t0 = time.perf_counter()
     buf_a = io.StringIO()
-    with contextlib.redirect_stdout(buf_a):
-        sim_a_mod.run_all_breach_simulations()
     buf_b = io.StringIO()
-    with contextlib.redirect_stdout(buf_b):
-        sim_b_mod.run_all_silo_security_tests()
     buf_c = io.StringIO()
-    with contextlib.redirect_stdout(buf_c):
-        sim_c_mod.run_tier_migration_suite()
+    with _SIM_STDOUT_LOCK:
+        with contextlib.redirect_stdout(buf_a):
+            sim_a_mod.run_all_breach_simulations()
+        with contextlib.redirect_stdout(buf_b):
+            sim_b_mod.run_all_silo_security_tests()
+        with contextlib.redirect_stdout(buf_c):
+            sim_c_mod.run_tier_migration_suite()
 
     saas_receipt_file = ROOT_DIR / "docs/third_party_5_saas_verification_receipt.json"
     saas_flows = 30
@@ -452,7 +469,7 @@ def execute_all_simulations_bundle() -> Dict[str, Any]:
         f"VERDICT: {saas_flows}/30 E2E FLOWS • {saas_assertions}/60 ASSERTIONS PASSED (100%)"
     )
 
-    return {
+    _ALL_SIMS_CACHE = {
         "ok": True,
         "status": "PASS",
         "execution_ms": round((time.perf_counter() - t0) * 1000, 2),
@@ -467,6 +484,7 @@ def execute_all_simulations_bundle() -> Dict[str, Any]:
             "saas_10_matrix": "\n".join(saas_summary_lines),
         },
     }
+    return _ALL_SIMS_CACHE
 
 
 CHANGELOG_FILE = ROOT_DIR / "docs/portal_change_log.json"
@@ -474,12 +492,41 @@ COMMENTS_FILE = ROOT_DIR / "docs/portal_comments.json"
 
 
 def _now_iso_and_est() -> tuple[str, str]:
-    now_epoch = time.time()
-    # Format UTC / EST (-04:00 EDT / -05:00 EST)
-    tm_local = time.localtime(now_epoch)
-    iso_str = time.strftime("%Y-%m-%dT%H:%M:%S-04:00", tm_local)
-    est_str = time.strftime("%Y-%m-%d %H:%M:%S EST", tm_local)
+    now_ny = datetime.now(ZoneInfo("America/New_York"))
+    iso_str = now_ny.isoformat(timespec="seconds")
+    tz_abbr = now_ny.tzname() or "EST"
+    est_str = f"{now_ny.strftime('%Y-%m-%d %H:%M:%S')} {tz_abbr}"
     return iso_str, est_str
+
+
+def _normalize_changelog_entry(e: Dict[str, Any]) -> Dict[str, Any]:
+    actor_name = e.get("actorName") or e.get("userName") or "Nitin Aggarwal"
+    actor_email = e.get("actorEmail") or e.get("userEmail") or "nitinagga@google.com"
+    actor_role = e.get("actorRole") or e.get("userRole") or "Principal Cloud Architect"
+    card_id = e.get("cardId") or e.get("targetId") or "card-custom"
+    card_title = e.get("cardTitle") or e.get("targetTitle") or card_id
+    before_text = e.get("beforeText") if e.get("beforeText") is not None else (e.get("beforeSnippet") or "")
+    after_text = e.get("afterText") if e.get("afterText") is not None else (e.get("afterSnippet") or "")
+    ts_iso = e.get("timestamp") or e.get("timestampIso") or ""
+    ts_est = e.get("timestampEst") or ts_iso
+    e["actorName"] = actor_name
+    e["userName"] = actor_name
+    e["actorEmail"] = actor_email
+    e["userEmail"] = actor_email
+    e["actorRole"] = actor_role
+    e["userRole"] = actor_role
+    e["cardId"] = card_id
+    e["targetId"] = card_id
+    e["cardTitle"] = card_title
+    e["targetTitle"] = card_title
+    e["beforeText"] = before_text
+    e["beforeSnippet"] = before_text
+    e["afterText"] = after_text
+    e["afterSnippet"] = after_text
+    e["timestamp"] = ts_iso
+    e["timestampIso"] = ts_iso
+    e["timestampEst"] = ts_est
+    return e
 
 
 def load_portal_changelog() -> Dict[str, Any]:
@@ -488,7 +535,8 @@ def load_portal_changelog() -> Dict[str, Any]:
             data = json.loads(CHANGELOG_FILE.read_text(encoding="utf-8"))
             if isinstance(data, dict):
                 data.setdefault("schemaVersion", "1.0")
-                data.setdefault("entries", [])
+                raw_entries = data.get("entries", [])
+                data["entries"] = [_normalize_changelog_entry(dict(x)) for x in raw_entries if isinstance(x, dict)]
                 data.setdefault("cardOverrides", {})
                 return data
         except Exception:
@@ -531,9 +579,10 @@ def append_changelog_entry(
     iso_str, est_str = _now_iso_and_est()
     seq = len(store.get("entries", [])) + 1
     day_compact = iso_str[:10].replace("-", "")
-    entry = {
+    entry = _normalize_changelog_entry({
         "id": f"CHG-{day_compact}-{seq:04d}",
         "timestamp": iso_str,
+        "timestampIso": iso_str,
         "timestampEst": est_str,
         "actorName": actor_name or "Nitin Aggarwal",
         "actorEmail": actor_email or "nitinagga@google.com",
@@ -548,12 +597,38 @@ def append_changelog_entry(
         "beforeText": (before_text or "")[:4000],
         "afterText": (after_text or "")[:4000],
         "restorable": bool(restorable),
-    }
+    })
     store.setdefault("entries", []).insert(0, entry)
     if card_override and isinstance(card_override, dict) and card_id:
         store.setdefault("cardOverrides", {})[card_id] = card_override
     save_portal_changelog(store)
     return entry
+
+
+def _normalize_comment_thread(t: Dict[str, Any]) -> Dict[str, Any]:
+    card_title = t.get("cardTitle") or t.get("sectionTitle") or t.get("cardId") or "Architecture Section"
+    t["cardTitle"] = card_title
+    t["sectionTitle"] = card_title
+    norm_comments = []
+    for c in t.get("comments", []):
+        if not isinstance(c, dict):
+            continue
+        cc = dict(c)
+        a_name = cc.get("authorName") or cc.get("userName") or "Nitin Aggarwal"
+        a_email = cc.get("authorEmail") or cc.get("userEmail") or "nitinagga@google.com"
+        a_role = cc.get("authorRole") or cc.get("userRole") or "Principal Cloud Architect"
+        c_est = cc.get("createdAtEst") or cc.get("timestampEst") or cc.get("createdAt") or ""
+        cc["authorName"] = a_name
+        cc["userName"] = a_name
+        cc["authorEmail"] = a_email
+        cc["userEmail"] = a_email
+        cc["authorRole"] = a_role
+        cc["userRole"] = a_role
+        cc["createdAtEst"] = c_est
+        cc["timestampEst"] = c_est
+        norm_comments.append(cc)
+    t["comments"] = norm_comments
+    return t
 
 
 def load_portal_comments() -> Dict[str, Any]:
@@ -562,7 +637,8 @@ def load_portal_comments() -> Dict[str, Any]:
             data = json.loads(COMMENTS_FILE.read_text(encoding="utf-8"))
             if isinstance(data, dict):
                 data.setdefault("schemaVersion", "1.0")
-                data.setdefault("threads", [])
+                raw_threads = data.get("threads", [])
+                data["threads"] = [_normalize_comment_thread(dict(t)) for t in raw_threads if isinstance(t, dict)]
                 return data
         except Exception:
             pass
@@ -604,15 +680,31 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         body = body or {}
         iap_hdr = self.headers.get("X-Goog-Authenticated-User-Email", "")
         iap_email = iap_hdr.split(":")[-1].strip() if iap_hdr else ""
-        email = str(body.get("actorEmail") or body.get("authorEmail") or iap_email or "nitinagga@google.com").strip()
-        name = str(body.get("actorName") or body.get("authorName") or "").strip()
+        email = str(
+            body.get("actorEmail")
+            or body.get("authorEmail")
+            or body.get("userEmail")
+            or iap_email
+            or "nitinagga@google.com"
+        ).strip()
+        name = str(
+            body.get("actorName")
+            or body.get("authorName")
+            or body.get("userName")
+            or ""
+        ).strip()
         if not name:
             if email.startswith("nitinagga"):
                 name = "Nitin Aggarwal"
             else:
                 local_part = email.split("@")[0].replace(".", " ").replace("_", " ").title()
                 name = local_part or "Nitin Aggarwal"
-        role = str(body.get("actorRole") or body.get("authorRole") or "Principal Cloud Architect").strip()
+        role = str(
+            body.get("actorRole")
+            or body.get("authorRole")
+            or body.get("userRole")
+            or "Principal Cloud Architect"
+        ).strip()
         return name, email, role
 
     def log_message(self, format: str, *args: Any) -> None:
@@ -696,6 +788,14 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             html_text = index_file.read_text(encoding="utf-8")
             inject_script = "<script>window.__STANDALONE_CHANGELOG_PAGE = true;</script></head>"
             html_text = html_text.replace("</head>", inject_script, 1)
+            if "universal_feedback_widget.js" not in html_text and "</body>" in html_text:
+                head_part, sep, tail_part = html_text.rpartition("</body>")
+                widget_tag = (
+                    '<script src="/universal_feedback_widget.js" '
+                    'data-app-id="ge-blogs" '
+                    'data-app-name="Google Cloud Architecture Guides (ge-blogs)"></script></body>'
+                )
+                html_text = head_part + widget_tag + tail_part
             self._send_html(200, html_text.encode("utf-8"))
             return
 
@@ -774,7 +874,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/simulate/all":
-            self._send_json(200, execute_all_simulations_bundle())
+            force_ref = (qs.get("refresh") or ["0"])[0] in ("1", "true")
+            self._send_json(200, execute_all_simulations_bundle(force_refresh=force_ref))
             return
 
         if path == "/api/saas-5-matrix":
@@ -807,8 +908,10 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
         if path == "/api/google-workspace/pdf":
             qs = parse_qs(parsed.query)
-            key = (qs.get("key") or ["WS1"])[0].strip()
+            key = "".join(ch for ch in (qs.get("key") or ["WS1"])[0].strip() if ch.isalnum() or ch in ("-", "_")) or "WS1"
             mode = (qs.get("mode") or ["slides"])[0].strip().lower()
+            if mode not in ("slides", "docs"):
+                mode = "slides"
             file_id = (qs.get("fileId") or [""])[0].strip()
             manifest = bridge_mod.load_cloud_manifest()
             if not file_id:
@@ -982,6 +1085,16 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     let iframeReady = false;
     let activeEngine = 'native';
     let currentZoom = parseFloat({json.dumps(initial_zoom)});
+
+    function escHtml(s) {{
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }}
+
+    function sanitizeCellHtml(rawHtml) {{
+      return String(rawHtml || '')
+        .replace(/<script\\b[^<]*(?:(?!<\\/script>)<[^<]*)*<\\/script>/gi, '')
+        .replace(/\\son[a-z]+\\s*=\\s*(['"]).*?\\1/gi, '');
+    }}
 
     function exitInlineStudio() {{
       try {{
@@ -1163,7 +1276,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             el.style.justifyContent = styleMap.align === 'left' ? 'flex-start' : 'center';
           }}
 
-          el.innerHTML = val + '<span class="mx-handle tl"></span><span class="mx-handle tr"></span><span class="mx-handle bl"></span><span class="mx-handle br"></span>';
+          el.innerHTML = sanitizeCellHtml(val) + '<span class="mx-handle tl"></span><span class="mx-handle tr"></span><span class="mx-handle bl"></span><span class="mx-handle br"></span>';
           el.addEventListener('mousedown', (e) => onVertexMouseDown(e, id));
           vObj.el = el;
 
@@ -1290,11 +1403,11 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       document.getElementById('insp-edge-count').textContent = String(boundEdges.length);
       const listEl = document.getElementById('insp-edges-list');
       listEl.innerHTML = boundEdges.map(e => {{
-        const ex = e.styleMap.exitX ?? '0.5';
-        const ey = e.styleMap.exitY ?? '0.5';
-        const nx = e.styleMap.entryX ?? '0.5';
-        const ny = e.styleMap.entryY ?? '0.5';
-        return '<div class="edge-pill"><div><code>' + e.id + '</code></div><div><code>' + e.source + '</code> (' + ex + ',' + ey + ') &#8594; <code>' + e.target + '</code> (' + nx + ',' + ny + ')</div></div>';
+        const ex = escHtml(e.styleMap.exitX ?? '0.5');
+        const ey = escHtml(e.styleMap.exitY ?? '0.5');
+        const nx = escHtml(e.styleMap.entryX ?? '0.5');
+        const ny = escHtml(e.styleMap.entryY ?? '0.5');
+        return '<div class="edge-pill"><div><code>' + escHtml(e.id) + '</code></div><div><code>' + escHtml(e.source) + '</code> (' + ex + ',' + ey + ') &#8594; <code>' + escHtml(e.target) + '</code> (' + nx + ',' + ny + ')</div></div>';
       }}).join('') || '<div style="font-size:11px;color:#64748b;">Select a component card to inspect its vertex-bound connectors.</div>';
     }}
 
@@ -1393,7 +1506,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       }} else {{
         v.val = '<div style="font-family:\\'Google Sans\\',Roboto,sans-serif;font-size:12.5px;font-weight:700;color:#202124;padding:6px;">' + safeEsc + '</div>';
       }}
-      v.el.innerHTML = v.val + '<span class="mx-handle tl"></span><span class="mx-handle tr"></span><span class="mx-handle bl"></span><span class="mx-handle br"></span>';
+      v.el.innerHTML = sanitizeCellHtml(v.val) + '<span class="mx-handle tl"></span><span class="mx-handle tr"></span><span class="mx-handle bl"></span><span class="mx-handle br"></span>';
       v.cell.setAttribute('value', v.val);
       syncXmlDocToString();
     }}
@@ -1435,6 +1548,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     }}
 
     window.addEventListener('message', (evt) => {{
+      if (evt.origin && evt.origin !== window.location.origin && evt.origin !== 'https://embed.diagrams.net') return;
       if (!evt.data || typeof evt.data !== 'string') return;
       let msg;
       try {{ msg = JSON.parse(evt.data); }} catch {{ return; }}
@@ -1484,7 +1598,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             candidate = raw_candidate.resolve()
             if (
                 raw_candidate.is_symlink()
-                or not (candidate == ROOT_DIR or ROOT_DIR in candidate.parents)
+                or not candidate.is_relative_to(ROOT_DIR)
                 or not candidate.is_file()
                 or any(part.startswith(".") for part in candidate.relative_to(ROOT_DIR).parts)
             ):
@@ -1519,8 +1633,9 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
             return
         if clean_rel.endswith(".md") and "raw" not in qs_all:
-            target = (ROOT_DIR / clean_rel).resolve()
-            if str(target).startswith(str(ROOT_DIR)) and target.is_file():
+            raw_target = ROOT_DIR / clean_rel
+            target = raw_target.resolve()
+            if not raw_target.is_symlink() and target.is_relative_to(ROOT_DIR) and target.is_file():
                 from urllib.parse import quote
                 self.send_response(302)
                 self.send_header("Location", f"/?doc={quote(clean_rel)}")
@@ -1554,10 +1669,12 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             ".html": "text/html; charset=utf-8",
         }
         if clean_rel:
-            static_file = (ROOT_DIR / clean_rel).resolve()
+            raw_static = ROOT_DIR / clean_rel
+            static_file = raw_static.resolve()
             suffix = static_file.suffix.lower()
             if (
-                str(static_file).startswith(str(ROOT_DIR))
+                not raw_static.is_symlink()
+                and static_file.is_relative_to(ROOT_DIR)
                 and static_file.is_file()
                 and (suffix in STATIC_MIME or static_file.name == "Dockerfile")
                 and not any(part.startswith(".") for part in static_file.relative_to(ROOT_DIR).parts)
@@ -1575,7 +1692,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 return
 
             if (
-                str(static_file).startswith(str(ROOT_DIR))
+                not raw_static.is_symlink()
+                and static_file.is_relative_to(ROOT_DIR)
                 and static_file.is_dir()
                 and not any(part.startswith(".") for part in static_file.relative_to(ROOT_DIR).parts)
             ):
@@ -1630,8 +1748,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{_html.escape(rel_dir)} — Multi-Tenant Agentic AI Artifact Explorer</title>
   <style>
-    body {{ font-family: 'Google Sans', Roboto, -apple-system, BlinkMacSystemFont, sans-serif; background: #f8fafc; color: #202124; margin: 0; padding: 24px; }}
-    .wrap {{ max-width: 1180px; margin: 0 auto; }}
+    body {{ font-family: 'Google Sans', Roboto, -apple-system, BlinkMacSystemFont, sans-serif; background: #f8fafc; color: #202124; margin: 0; padding: 0; }}
+    .wrap {{ width: 100%; max-width: 100%; padding: clamp(16px, 1.8vw, 28px); margin: 0 auto; box-sizing: border-box; }}
     .hdr {{ display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; background: #fff; border: 1px solid #dadce0; border-radius: 10px; padding: 16px 20px; margin-bottom: 18px; }}
     h1 {{ font-size: 18px; margin: 0; color: #1a73e8; }}
     .sub {{ font-size: 13px; color: #5f6368; margin-top: 4px; }}
@@ -1679,7 +1797,14 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     def do_POST(self) -> None:
         parsed = urlparse(self.path)
         path = parsed.path
-        content_len = int(self.headers.get("Content-Length", "0"))
+        try:
+            content_len = int(self.headers.get("Content-Length", "0"))
+        except ValueError:
+            self._send_json(400, {"ok": False, "error": "Invalid Content-Length header"})
+            return
+        if content_len < 0 or content_len > MAX_POST_BODY_BYTES:
+            self._send_json(413, {"ok": False, "error": f"Payload exceeds {MAX_POST_BODY_BYTES} bytes limit"})
+            return
         raw_body = self.rfile.read(content_len) if content_len > 0 else b"{}"
         try:
             body = json.loads(raw_body.decode("utf-8"))
@@ -1741,8 +1866,9 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 if not safe_id or not xml_content or ("<mxfile" not in xml_content and "<mxGraphModel" not in xml_content):
                     self._send_json(400, {"ok": False, "error": "Invalid diagram id or Draw.io XML payload"})
                     return
-                target_drawio = (ROOT_DIR / "diagrams" / f"{safe_id}.drawio").resolve()
-                if not str(target_drawio).startswith(str(ROOT_DIR)):
+                raw_drawio = ROOT_DIR / "diagrams" / f"{safe_id}.drawio"
+                target_drawio = raw_drawio.resolve()
+                if raw_drawio.is_symlink() or not target_drawio.is_relative_to(ROOT_DIR):
                     self._send_json(403, {"ok": False, "error": "Forbidden path"})
                     return
                 prev_bytes = target_drawio.stat().st_size if target_drawio.is_file() else 0
@@ -1781,15 +1907,30 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 actor_name, actor_email, actor_role = self._detect_iap_actor(body)
                 action = str(body.get("action") or "SAVE").strip().upper()
                 target_type = str(body.get("targetType") or "blog_section").strip()
-                card_id = str(body.get("cardId") or "card-custom").strip()
-                card_title = str(body.get("cardTitle") or card_id).strip()
+                card_id = str(body.get("cardId") or body.get("targetId") or "card-custom").strip()
+                card_title = str(body.get("cardTitle") or body.get("targetTitle") or card_id).strip()
                 workstream = str(body.get("workstream") or "WS1").strip()
                 doc_path = str(body.get("docPath") or "").strip()
                 summary = str(body.get("summary") or f"{action} on {card_title}").strip()
-                before_text = str(body.get("beforeText") or "")
-                after_text = str(body.get("afterText") or "")
+                before_text = str(body.get("beforeText") if body.get("beforeText") is not None else (body.get("beforeSnippet") or ""))
+                after_text = str(body.get("afterText") if body.get("afterText") is not None else (body.get("afterSnippet") or ""))
                 restorable = bool(body.get("restorable", True))
                 card_override = body.get("cardOverride") if isinstance(body.get("cardOverride"), dict) else None
+                if card_override is None and card_id:
+                    html_content = str(body.get("htmlContent") or "")
+                    if action in ("SAVE", "ADD") and html_content:
+                        card_override = {
+                            "htmlContent": html_content,
+                            "hidden": False,
+                            "deleted": False,
+                            "cardTitle": card_title,
+                        }
+                    elif action == "DELETE":
+                        card_override = {"deleted": True, "hidden": False, "cardTitle": card_title}
+                    elif action == "HIDE":
+                        card_override = {"hidden": True, "deleted": False, "cardTitle": card_title}
+                    elif action == "UNHIDE":
+                        card_override = {"hidden": False, "deleted": False, "cardTitle": card_title}
                 entry = append_changelog_entry(
                     actor_name=actor_name,
                     actor_email=actor_email,
@@ -1820,12 +1961,26 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
             if path == "/api/changelog/restore":
                 actor_name, actor_email, actor_role = self._detect_iap_actor(body)
-                card_id = str(body.get("cardId") or "").strip()
+                card_id = str(body.get("cardId") or body.get("targetId") or "").strip()
                 entry_id = str(body.get("entryId") or "").strip()
                 store = load_portal_changelog()
                 overrides = store.get("cardOverrides", {})
-                target_entry = next((e for e in store.get("entries", []) if e.get("id") == entry_id), None)
-                card_title = str(body.get("cardTitle") or (target_entry.get("cardTitle") if target_entry else card_id))
+                target_entry = next(
+                    (
+                        e
+                        for e in store.get("entries", [])
+                        if (entry_id and e.get("id") == entry_id)
+                        or (card_id and (e.get("cardId") == card_id or e.get("targetId") == card_id))
+                    ),
+                    None,
+                )
+                if not card_id and target_entry:
+                    card_id = str(target_entry.get("cardId") or target_entry.get("targetId") or "")
+                card_title = str(
+                    body.get("cardTitle")
+                    or body.get("targetTitle")
+                    or (target_entry.get("cardTitle") if target_entry else card_id)
+                )
                 workstream = str(body.get("workstream") or (target_entry.get("workstream") if target_entry else "WS1"))
                 doc_path = str(body.get("docPath") or (target_entry.get("docPath") if target_entry else ""))
                 if card_id in overrides:
@@ -1869,7 +2024,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
                 if op == "add_thread":
                     card_id = str(body.get("cardId") or "card-general").strip()
-                    card_title = str(body.get("cardTitle") or card_id).strip()
+                    card_title = str(body.get("cardTitle") or body.get("sectionTitle") or card_id).strip()
                     workstream = str(body.get("workstream") or "WS1").strip()
                     doc_path = str(body.get("docPath") or "").strip()
                     quoted_text = str(body.get("quotedText") or "").strip()
@@ -1882,17 +2037,22 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                     new_comment = {
                         "commentId": f"CMT-{t_seq:03d}-A",
                         "authorName": actor_name,
+                        "userName": actor_name,
                         "authorEmail": actor_email,
+                        "userEmail": actor_email,
                         "authorRole": actor_role,
+                        "userRole": actor_role,
                         "avatarColor": avatar_color,
                         "text": text,
                         "createdAt": iso_str,
                         "createdAtEst": est_str,
+                        "timestampEst": est_str,
                     }
-                    new_thread = {
+                    new_thread = _normalize_comment_thread({
                         "threadId": thread_id,
                         "cardId": card_id,
                         "cardTitle": card_title,
+                        "sectionTitle": card_title,
                         "workstream": workstream,
                         "docPath": doc_path,
                         "quotedText": quoted_text,
@@ -1904,7 +2064,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                         "createdByRole": actor_role,
                         "avatarColor": avatar_color,
                         "comments": [new_comment],
-                    }
+                    })
                     threads.insert(0, new_thread)
                     save_portal_comments(c_store)
                     chg_entry = append_changelog_entry(
@@ -1944,14 +2104,19 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                     reply_obj = {
                         "commentId": f"{thread_id}-R{len(c_list) + 1}",
                         "authorName": actor_name,
+                        "userName": actor_name,
                         "authorEmail": actor_email,
+                        "userEmail": actor_email,
                         "authorRole": actor_role,
+                        "userRole": actor_role,
                         "avatarColor": avatar_color,
                         "text": text,
                         "createdAt": iso_str,
                         "createdAtEst": est_str,
+                        "timestampEst": est_str,
                     }
                     c_list.append(reply_obj)
+                    _normalize_comment_thread(target_t)
                     save_portal_comments(c_store)
                     chg_entry = append_changelog_entry(
                         actor_name=actor_name,
@@ -2056,8 +2221,9 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
                 if mode == "docs":
                     rel_md = str(body.get("docPath") or default_md).strip().lstrip("/")
-                    md_candidate = (ROOT_DIR / rel_md).resolve()
-                    if not str(md_candidate).startswith(str(ROOT_DIR)) or not md_candidate.is_file():
+                    raw_md = ROOT_DIR / rel_md
+                    md_candidate = raw_md.resolve()
+                    if raw_md.is_symlink() or not md_candidate.is_relative_to(ROOT_DIR) or not md_candidate.is_file():
                         md_candidate = (ROOT_DIR / default_md).resolve()
                     cache_key = key if rel_md == default_md else f"DOC_{rel_md}"
                     entry = bridge_mod.upload_md_to_google_docs(
@@ -2085,8 +2251,9 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
                 # Default: slides or pdf
                 rel_pptx = str(body.get("pptxPath") or default_pptx).strip().lstrip("/")
-                pptx_candidate = (ROOT_DIR / rel_pptx).resolve()
-                if not str(pptx_candidate).startswith(str(ROOT_DIR)) or not pptx_candidate.is_file():
+                raw_pptx = ROOT_DIR / rel_pptx
+                pptx_candidate = raw_pptx.resolve()
+                if raw_pptx.is_symlink() or not pptx_candidate.is_relative_to(ROOT_DIR) or not pptx_candidate.is_file():
                     pptx_candidate = (ROOT_DIR / default_pptx).resolve()
                 entry = bridge_mod.upload_pptx_to_google_slides(
                     pptx_candidate,
@@ -2115,7 +2282,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 return
 
             if path == "/api/simulate/all":
-                self._send_json(200, execute_all_simulations_bundle())
+                self._send_json(200, execute_all_simulations_bundle(force_refresh=bool(body.get("refresh", False))))
                 return
 
             if path == "/api/saas-5-simulate":
@@ -2189,16 +2356,37 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
 def run_server(port: int = 8095) -> None:
     host = os.environ.get("HOST", "0.0.0.0")
+    ThreadingHTTPServer.allow_reuse_address = True
     server = ThreadingHTTPServer((host, port), PortalRequestHandler)
+
+    def _handle_sigterm(signum: int, _frame: Any) -> None:
+        threading.Thread(target=server.shutdown, daemon=True).start()
+
+    try:
+        signal.signal(signal.SIGTERM, _handle_sigterm)
+    except Exception:
+        pass
+
     print(f"================================================================================")
     print(f"Multi-Tenant Agentic AI Portal & Live 5-Hop API listening on:")
     print(f"  -> http://{host}:{port}")
     print(f"  -> Health & Catalog API : http://{host}:{port}/api/health")
     print(f"================================================================================")
     sys.stdout.flush()
-    server.serve_forever()
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.server_close()
 
 
 if __name__ == "__main__":
     port_arg = int(os.environ.get("PORT", "8095"))
+    for idx, arg in enumerate(sys.argv[1:]):
+        if arg == "--port" and idx + 2 < len(sys.argv):
+            try:
+                port_arg = int(sys.argv[idx + 2])
+            except ValueError:
+                pass
     run_server(port=port_arg)

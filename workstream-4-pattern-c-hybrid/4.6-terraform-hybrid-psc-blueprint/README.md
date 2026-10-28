@@ -4,9 +4,13 @@ Provisions the **Cymbal Hub-and-Spoke Private Service Connect (PSC) Bridge**:
 * **Central Ingress Hub VPC** (`cymbal-hybrid-hub-vpc`), consumer PSC endpoint (`psc-consumer-<tenant>`), and **Firestore Dynamic Tenant Routing Rule** (`cymbal_tenant_routing_rules`).
 * **Enterprise Tenant Spoke VPC**, `/28` producer PSC NAT subnet (`10.240.0.0/28`, `purpose = PRIVATE_SERVICE_CONNECT`), and **PSC Service Attachment** (`<tenant>-agent-spoke-psc`) explicitly allowlisting only the Cymbal Hub project.
 
-## Quickstart
+## Quickstart (1-Click Automated Script or Manual CLI)
 
 ```bash
+# Option 1: 1-Click Automated Deployment + 4/4 Hybrid PSC & 10-SaaS Verification
+./deploy_1click.sh --apply
+
+# Option 2: Step-by-Step Terraform CLI
 cp terraform.tfvars.example terraform.tfvars
 terraform init
 terraform plan

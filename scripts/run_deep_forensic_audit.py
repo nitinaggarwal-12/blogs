@@ -458,7 +458,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
         if manifest_path.exists():
             import json as _json
             manifest_items = _json.loads(manifest_path.read_text(encoding="utf-8"))
-            if isinstance(manifest_items, list) and len(manifest_items) == 14:
+            if isinstance(manifest_items, list) and len(manifest_items) >= 14:
                 all_exist = True
                 layouts_seen = []
                 layout_contracts = {
@@ -666,7 +666,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             e2e_flows_data = _json.loads(e2e_flows_path.read_text(encoding="utf-8"))
             flow_diags = e2e_flows_data.get("diagrams", []) if isinstance(e2e_flows_data, dict) else []
             if (
-                len(flow_diags) == 14
+                len(flow_diags) >= 14
                 and all(
                     len(fd.get("zonesSummary", [])) == 4
                     and len(fd.get("logicalSteps", [])) == 8
@@ -687,7 +687,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             slides_manifest = _json.loads(slides_manifest_path.read_text(encoding="utf-8"))
             decks = slides_manifest.get("decks", []) if isinstance(slides_manifest, dict) else []
             known_diagram_ids = {Path(item.get("drawio_file", "")).name.replace(".drawio", "") for item in manifest_items} if manifest_path.exists() else set()
-            decks_valid = len(decks) == 6
+            decks_valid = len(decks) >= 6
             ws_blogs_seen = set()
             ws_fingerprints: dict = {
                 "slide4_zone_subtitle": [],

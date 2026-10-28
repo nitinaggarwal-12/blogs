@@ -5,9 +5,13 @@ Deploys the shared **Cymbal Multi-Tenant Pooled Architecture** on Google Cloud:
 * **Hop 3**: Memorystore for Redis (`cymbal-tenant-bulkhead-redis`), Cloud KMS CMEK key ring (`cymbal-pooled-tenant-kr`), and Gen2 gVisor Cloud Run / GEAP Agent Gateway (`cymbal-pooled-agent-gateway`)
 * **Hop 5**: BigQuery OpenTelemetry dataset (`cymbal_agentic_finops_otel`)
 
-## Quickstart
+## Quickstart (1-Click Automated Script or Manual CLI)
 
 ```bash
+# Option 1: 1-Click Automated Deployment + 10/10 Breach & 10-SaaS Verification
+./deploy_1click.sh --apply
+
+# Option 2: Step-by-Step Terraform CLI
 cp terraform.tfvars.example terraform.tfvars
 terraform init
 terraform plan

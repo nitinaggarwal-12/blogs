@@ -320,9 +320,41 @@
       headers: { Accept: 'application/json', 'Cache-Control': 'no-cache' },
     })
       .then(function (r) {
-        return r.json();
+        return r.json().then(function (d) {
+          return { status: r.status, ok: r.ok, data: d || {} };
+        });
       })
-      .then(function (data) {
+      .then(function (res) {
+        var data = res.data || {};
+        if (res.status === 401 || res.status === 403 || data.ok === false || data.authorized === false) {
+          overlay.innerHTML =
+            '<div class="ufw-card" style="max-width:640px;margin:48px auto;padding:28px;border:1px solid #fda4af;background:#fff1f2;">' +
+            '  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;">' +
+            '    <h1 style="margin:0;font-size:18px;font-weight:800;color:#881337;">🔒 Admin Access Restricted (HTTP ' +
+            escapeHtml(res.status || 403) +
+            ')</h1>' +
+            '    <span style="padding:2px 8px;border-radius:999px;font-size:11px;font-family:monospace;font-weight:700;background:#ffe4e6;color:#9f1239;border:1px solid #fda4af;">Unauthorized (' +
+            escapeHtml(data.authMode || 'denied') +
+            ')</span>' +
+            '  </div>' +
+            '  <p style="margin:0 0 16px;font-size:13px;color:#9f1239;line-height:1.5;">' +
+            escapeHtml(
+              data.error ||
+                'Only nitinagga@google.com is authorized to view the cross-app Admin Feedback Inbox.'
+            ) +
+            '</p>' +
+            '  <button type="button" id="ufw-admin-denied-back-btn" style="padding:8px 14px;border-radius:8px;font-size:12px;font-weight:800;background:#ffffff;color:#1e293b;border:1px solid #cbd5e1;cursor:pointer;">← Back to ' +
+            escapeHtml(APP_NAME) +
+            '</button>' +
+            '</div>';
+          var deniedBackBtn = document.getElementById('ufw-admin-denied-back-btn');
+          if (deniedBackBtn) {
+            deniedBackBtn.onclick = function () {
+              overlay.remove();
+            };
+          }
+          return;
+        }
         var messages = Array.isArray(data.messages) ? data.messages : [];
         var totalAll = Number(data.totalAllApps || 0);
         var totalApp = Number(data.totalCurrentApp || 0);
@@ -628,12 +660,13 @@
       target = document.querySelector(MOUNT_SELECTOR);
     }
     if (!target) {
+      var hdr = document.querySelector('header');
       target =
         document.querySelector('[data-feedback-mount]') ||
         document.querySelector('.header-actions') ||
         document.querySelector('.top-nav-actions') ||
         document.querySelector('header .flex.items-center') ||
-        document.querySelector('header');
+        (hdr && hdr.children.length >= 2 ? hdr.lastElementChild : hdr);
     }
 
     if (target) {

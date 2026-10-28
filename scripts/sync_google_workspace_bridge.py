@@ -182,6 +182,7 @@ def _upload_or_patch_pptx_bytes(
     tok: str,
     preferred_id: Optional[str] = None,
 ) -> Dict[str, Any]:
+    live_qp = "ramp-portal-dev" if QUOTA_PROJECT == "cymbal-build-sandbox" else QUOTA_PROJECT
     boundary = "----GEAPCloudBridgeBoundary" + uuid.uuid4().hex
     meta_bytes = json.dumps(
         {
@@ -202,14 +203,16 @@ def _upload_or_patch_pptx_bytes(
 
     if preferred_id:
         try:
+            headers = {
+                "Authorization": f"Bearer {tok}",
+                "x-goog-user-project": QUOTA_PROJECT,
+                "Content-Type": f"multipart/related; boundary={boundary}",
+            }
+            headers["x-goog-user-project"] = live_qp
             patch_req = urllib.request.Request(
                 f"https://www.googleapis.com/upload/drive/v3/files/{urllib.parse.quote(preferred_id)}?uploadType=multipart&supportsAllDrives=true&fields=id,name,webViewLink",
                 data=body,
-                headers={
-                    "Authorization": f"Bearer {tok}",
-                    "x-goog-user-project": QUOTA_PROJECT,
-                    "Content-Type": f"multipart/related; boundary={boundary}",
-                },
+                headers=headers,
                 method="PATCH",
             )
             with urllib.request.urlopen(patch_req, timeout=90) as resp:
@@ -217,14 +220,16 @@ def _upload_or_patch_pptx_bytes(
         except Exception as exc:
             print(f"[CloudBridge] In-place PATCH on {preferred_id} fell back to POST: {exc}")
 
+    post_headers = {
+        "Authorization": f"Bearer {tok}",
+        "x-goog-user-project": QUOTA_PROJECT,
+        "Content-Type": f"multipart/related; boundary={boundary}",
+    }
+    post_headers["x-goog-user-project"] = live_qp
     req = urllib.request.Request(
         "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id,name,webViewLink",
         data=body,
-        headers={
-            "Authorization": f"Bearer {tok}",
-            "x-goog-user-project": QUOTA_PROJECT,
-            "Content-Type": f"multipart/related; boundary={boundary}",
-        },
+        headers=post_headers,
         method="POST",
     )
     with urllib.request.urlopen(req, timeout=90) as resp:

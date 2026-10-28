@@ -269,6 +269,13 @@ def fetch_sheet_feedback_items(force_refresh: bool = False) -> List[Dict[str, An
     return items
 
 
+def _sanitize_sheet_cell(val: Any) -> str:
+    s = str(val if val is not None else "")
+    if s.startswith(("=", "+", "-", "@", "\t", "\r")):
+        return "'" + s
+    return s
+
+
 def append_feedback_to_google_sheet(record: Dict[str, Any]) -> Tuple[bool, Optional[str], Optional[str]]:
     cfg = load_config()
     spreadsheet_id = cfg.get("spreadsheetId") or DEFAULT_SPREADSHEET_ID
@@ -281,20 +288,20 @@ def append_feedback_to_google_sheet(record: Dict[str, Any]) -> Tuple[bool, Optio
     meta_obj["createdAt"] = record.get("createdAt", "")
     row_values = [
         [
-            record.get("id", ""),
-            record.get("timestampEst", ""),
-            record.get("appId", ""),
-            record.get("appName", ""),
-            record.get("pageUrl", ""),
-            record.get("category", "General"),
-            record.get("priority", "Medium"),
-            record.get("senderEmail", ""),
-            record.get("senderName", ""),
-            record.get("subject", ""),
-            record.get("message", ""),
-            json.dumps(meta_obj, ensure_ascii=False),
-            record.get("status", "New"),
-            record.get("updatedAt", ""),
+            _sanitize_sheet_cell(record.get("id", "")),
+            _sanitize_sheet_cell(record.get("timestampEst", "")),
+            _sanitize_sheet_cell(record.get("appId", "")),
+            _sanitize_sheet_cell(record.get("appName", "")),
+            _sanitize_sheet_cell(record.get("pageUrl", "")),
+            _sanitize_sheet_cell(record.get("category", "General")),
+            _sanitize_sheet_cell(record.get("priority", "Medium")),
+            _sanitize_sheet_cell(record.get("senderEmail", "")),
+            _sanitize_sheet_cell(record.get("senderName", "")),
+            _sanitize_sheet_cell(record.get("subject", "")),
+            _sanitize_sheet_cell(record.get("message", "")),
+            _sanitize_sheet_cell(json.dumps(meta_obj, ensure_ascii=False)),
+            _sanitize_sheet_cell(record.get("status", "New")),
+            _sanitize_sheet_cell(record.get("updatedAt", "")),
         ]
     ]
     append_url = (
