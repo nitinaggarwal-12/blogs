@@ -429,8 +429,10 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             "sim-scenario-preset-select",
             "e2e-workbench-view-select",
             "extractHopTrailFromResponse",
-            "max-width: min(100%, 620px) !important",
-            "max-height: 660px !important",
+            "max-width: min(100%, 960px) !important",
+            "max-height: 920px !important",
+            ".card-toolbar-comment-badge",
+            ".card-is-editing",
         ]
         missing_markers = [m for m in required_markers if m not in html]
         ui_doc_paths = re.findall(r"(?:viewArtifact|openDocInReader)\('([^']+)'\)", html)
