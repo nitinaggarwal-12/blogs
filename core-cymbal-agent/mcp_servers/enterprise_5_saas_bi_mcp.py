@@ -105,11 +105,15 @@ def _validate_sql_tenant_id(tenant_id: str) -> str:
     return tenant_id
 
 
+import random
+import threading
+
 _CACHED_COGNITO_TOKEN: Optional[str] = None
 _CACHED_COGNITO_EXPIRES_AT: float = 0.0
+_COGNITO_TOKEN_LOCK = threading.Lock()
 
 
-def _mint_aws_cognito_access_token() -> Optional[str]:
+def _mint_aws_cognito_access_token(force_refresh: bool = False) -> Optional[str]:
     """
     Mints a live Amazon Cognito RS256 OAuth2 access token (`us-east-1_vqlzYM74B`) for the
     Amazon Bedrock AgentCore MCP Gateway. Supports environment variables (`AWS_COGNITO_CLIENT_ID`,
@@ -118,56 +122,57 @@ def _mint_aws_cognito_access_token() -> Optional[str]:
     (defaulting to `/Users/nitinagga/aws/aws.auto.tfvars.json`).
     """
     global _CACHED_COGNITO_TOKEN, _CACHED_COGNITO_EXPIRES_AT
-    now = time.time()
-    if _CACHED_COGNITO_TOKEN and now < _CACHED_COGNITO_EXPIRES_AT:
-        return _CACHED_COGNITO_TOKEN
+    with _COGNITO_TOKEN_LOCK:
+        now = time.time()
+        if not force_refresh and _CACHED_COGNITO_TOKEN and now < _CACHED_COGNITO_EXPIRES_AT:
+            return _CACHED_COGNITO_TOKEN
 
-    cid = os.environ.get("AWS_COGNITO_CLIENT_ID")
-    csec = os.environ.get("AWS_COGNITO_CLIENT_SECRET")
-    token_url = os.environ.get("AWS_COGNITO_TOKEN_URL")
+        cid = os.environ.get("AWS_COGNITO_CLIENT_ID")
+        csec = os.environ.get("AWS_COGNITO_CLIENT_SECRET")
+        token_url = os.environ.get("AWS_COGNITO_TOKEN_URL")
 
-    if not (cid and csec and token_url):
-        sec_cfg = read_gcp_secret_json("aws-cognito-agentcore-config")
-        if sec_cfg:
-            cid = cid or sec_cfg.get("aws_cognito_client_id")
-            csec = csec or sec_cfg.get("aws_cognito_client_secret")
-            token_url = token_url or sec_cfg.get("aws_cognito_token_url")
+        if not (cid and csec and token_url):
+            sec_cfg = read_gcp_secret_json("aws-cognito-agentcore-config")
+            if sec_cfg:
+                cid = cid or sec_cfg.get("aws_cognito_client_id")
+                csec = csec or sec_cfg.get("aws_cognito_client_secret")
+                token_url = token_url or sec_cfg.get("aws_cognito_token_url")
 
-    if not (cid and csec and token_url):
-        tfvars_path = Path(os.environ.get("AWS_TFVARS_PATH", "/Users/nitinagga/aws/aws.auto.tfvars.json"))
-        if tfvars_path.is_file():
-            try:
-                tf = json.loads(tfvars_path.read_text(encoding="utf-8"))
-                cid = cid or tf.get("aws_cognito_client_id")
-                csec = csec or tf.get("aws_cognito_client_secret")
-                token_url = token_url or tf.get("aws_cognito_token_url")
-            except Exception:
-                return None
+        if not (cid and csec and token_url):
+            tfvars_path = Path(os.environ.get("AWS_TFVARS_PATH", "/Users/nitinagga/aws/aws.auto.tfvars.json"))
+            if tfvars_path.is_file():
+                try:
+                    tf = json.loads(tfvars_path.read_text(encoding="utf-8"))
+                    cid = cid or tf.get("aws_cognito_client_id")
+                    csec = csec or tf.get("aws_cognito_client_secret")
+                    token_url = token_url or tf.get("aws_cognito_token_url")
+                except Exception:
+                    return None
 
-    if not (cid and csec and token_url):
-        return None
+        if not (cid and csec and token_url):
+            return None
 
-    try:
-        basic = base64.b64encode(f"{cid}:{csec}".encode("utf-8")).decode("ascii")
-        form = urllib.parse.urlencode(
-            {"grant_type": "client_credentials", "scope": "merck-safety-agent/invoke"}
-        ).encode("utf-8")
-        creq = urllib.request.Request(
-            token_url,
-            data=form,
-            headers={"Authorization": f"Basic {basic}", "Content-Type": "application/x-www-form-urlencoded"},
-            method="POST",
-        )
-        with urllib.request.urlopen(creq, timeout=12) as cresp:
-            ctok = json.loads(cresp.read().decode("utf-8"))
-            tok = ctok.get("access_token")
-            if tok:
-                ttl = max(60.0, float(ctok.get("expires_in", 3600)) - 120.0)
-                _CACHED_COGNITO_TOKEN = tok
-                _CACHED_COGNITO_EXPIRES_AT = now + ttl
-            return tok
-    except Exception:
-        return None
+        try:
+            basic = base64.b64encode(f"{cid}:{csec}".encode("utf-8")).decode("ascii")
+            form = urllib.parse.urlencode(
+                {"grant_type": "client_credentials", "scope": "merck-safety-agent/invoke"}
+            ).encode("utf-8")
+            creq = urllib.request.Request(
+                token_url,
+                data=form,
+                headers={"Authorization": f"Basic {basic}", "Content-Type": "application/x-www-form-urlencoded"},
+                method="POST",
+            )
+            with urllib.request.urlopen(creq, timeout=12) as cresp:
+                ctok = json.loads(cresp.read().decode("utf-8"))
+                tok = ctok.get("access_token")
+                if tok:
+                    ttl = max(60.0, float(ctok.get("expires_in", 3600)) - 120.0)
+                    _CACHED_COGNITO_TOKEN = tok
+                    _CACHED_COGNITO_EXPIRES_AT = now + ttl
+                return tok
+        except Exception:
+            return None
 
 
 THOUGHTSPOT_ORG_MAP = {
@@ -218,35 +223,64 @@ class Enterprise5ThirdPartySaaSMCP:
             self._cached_cognito_token = _mint_aws_cognito_access_token()
         if not self._cached_cognito_token:
             return {"live_agentcore_ok": False, "reason": "Unable to mint AWS Cognito RS256 token"}
-        req = urllib.request.Request(
-            AWS_AGENTCORE_GW_URL,
-            data=json.dumps(
-                {
-                    "jsonrpc": "2.0",
-                    "id": f"mcp-{tool_name}-{int(time.time()*1000)}",
-                    "method": "tools/call",
-                    "params": {"name": tool_name, "arguments": arguments},
-                }
-            ).encode("utf-8"),
-            headers={"Authorization": f"Bearer {self._cached_cognito_token}", "Content-Type": "application/json"},
-            method="POST",
-        )
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            payload = json.loads(resp.read().decode("utf-8"))
-            res_obj = payload.get("result") or {}
-            is_err = res_obj.get("isError", True)
-            txt = ((res_obj.get("content") or [{}])[0]).get("text", "{}")
-            parsed = json.loads(txt) if isinstance(txt, str) and txt.startswith("{") else {"raw": txt}
-            return {
-                "live_agentcore_ok": resp.status == 200 and not is_err,
-                "http_status": resp.status,
-                "gateway_url": AWS_AGENTCORE_GW_URL,
-                "tool_name": tool_name,
-                "is_error": is_err,
-                "target_id": parsed.get("agentCoreTargetId"),
-                "s3_audit_ledger_uri": parsed.get("s3AuditLedgerUri"),
-                "mcp_payload": parsed,
-            }
+
+        last_status = 0
+        last_err = ""
+        for attempt in range(4):
+            req = urllib.request.Request(
+                AWS_AGENTCORE_GW_URL,
+                data=json.dumps(
+                    {
+                        "jsonrpc": "2.0",
+                        "id": f"mcp-{tool_name}-{int(time.time()*1000)}-{attempt}",
+                        "method": "tools/call",
+                        "params": {"name": tool_name, "arguments": arguments},
+                    }
+                ).encode("utf-8"),
+                headers={"Authorization": f"Bearer {self._cached_cognito_token}", "Content-Type": "application/json"},
+                method="POST",
+            )
+            try:
+                with urllib.request.urlopen(req, timeout=20) as resp:
+                    payload = json.loads(resp.read().decode("utf-8"))
+                    res_obj = payload.get("result") or {}
+                    is_err = res_obj.get("isError", True)
+                    txt = ((res_obj.get("content") or [{}])[0]).get("text", "{}")
+                    parsed = json.loads(txt) if isinstance(txt, str) and txt.startswith("{") else {"raw": txt}
+                    if not is_err:
+                        return {
+                            "live_agentcore_ok": resp.status == 200 and not is_err,
+                            "http_status": resp.status,
+                            "gateway_url": AWS_AGENTCORE_GW_URL,
+                            "tool_name": tool_name,
+                            "is_error": is_err,
+                            "target_id": parsed.get("agentCoreTargetId"),
+                            "s3_audit_ledger_uri": parsed.get("s3AuditLedgerUri"),
+                            "mcp_payload": parsed,
+                        }
+                    last_status = resp.status
+                    last_err = f"MCP isError=True: {txt[:200]}"
+            except urllib.error.HTTPError as exc:
+                last_status = exc.code
+                last_err = f"HTTPError {exc.code}"
+                if exc.code in (401, 403):
+                    fresh_tok = _mint_aws_cognito_access_token(force_refresh=True)
+                    if fresh_tok:
+                        self._cached_cognito_token = fresh_tok
+            except Exception as exc:
+                last_err = str(exc)
+
+            if attempt < 3:
+                time.sleep(0.45 * (2**attempt) + random.uniform(0.05, 0.25))
+
+        return {
+            "live_agentcore_ok": False,
+            "http_status": last_status,
+            "gateway_url": AWS_AGENTCORE_GW_URL,
+            "tool_name": tool_name,
+            "is_error": True,
+            "error": last_err,
+        }
 
     def invoke_thoughtspot_spotter_bi(
         self,
@@ -1543,7 +1577,7 @@ class Enterprise5ThirdPartySaaSMCP:
         if include_live_probes:
             import concurrent.futures
 
-            _mint_aws_cognito_access_token()
+            self._cached_cognito_token = _mint_aws_cognito_access_token()
 
             def _run_one_mcp(cat_item: Dict[str, Any]):
                 sid = cat_item["saas_id"]
@@ -1569,7 +1603,7 @@ class Enterprise5ThirdPartySaaSMCP:
                     )
                 return sid, self._invoke_live_agentcore_mcp_tool(t_name, m_args)
 
-            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as pool:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
                 for sid_k, exec_res in pool.map(_run_one_mcp, catalog):
                     if exec_res:
                         parallel_mcp_by_saas_id[sid_k] = exec_res

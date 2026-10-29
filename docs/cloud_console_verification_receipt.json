@@ -1,6 +1,6 @@
 {
   "schema": "GEAP-Cloud-Console-And-Runtime-Verification-v3.0",
-  "verified_at_utc": "2026-10-29T03:20:45.999175+00:00",
+  "verified_at_utc": "2026-10-29T14:13:30.617887+00:00",
   "overall_status": "CERTIFIED",
   "gcp_cloud_console": {
     "status": "CERTIFIED",
@@ -448,7 +448,7 @@
         "live_bq_query_ok": true,
         "status_code": 200,
         "billing_project": "ramp-portal-dev",
-        "job_id": "job_DNBAoqL02jlm2jndwUcjATCHfN8z",
+        "job_id": "job_-XyB0NtW-dAW7gin0_2TAoaY_gBu",
         "location": "us-west1",
         "total_rows": 1,
         "rows": [
@@ -481,7 +481,7 @@
         "live_bq_query_ok": true,
         "status_code": 200,
         "billing_project": "ramp-portal-dev",
-        "job_id": "job_zWyz9nQQpoYtwfWkEaT38eXLJJuU",
+        "job_id": "job_15XwKIbk24ro2wofPk0KyO8avkaK",
         "location": "us-west1",
         "total_rows": 2,
         "rows": [
@@ -509,7 +509,7 @@
         "live_bq_query_ok": true,
         "status_code": 200,
         "billing_project": "ramp-portal-dev",
-        "job_id": "job_yuMT3J7MrmbF2B-m-Ort_qZ7jfnu",
+        "job_id": "job_00BFHI6TD0NsnuNxkVFRWis4Fl2-",
         "location": "us-west1",
         "total_rows": 2,
         "rows": [
@@ -541,11 +541,11 @@
         "region": "us-central1",
         "model_id": "gemini-2.5-pro",
         "status_code": 200,
-        "latency_ms": 10016.8,
+        "latency_ms": 10825.6,
         "prompt_token_count": 34,
         "candidates_token_count": 38,
-        "total_token_count": 1054,
-        "response_text": "Pooled RLS enforces logical isolation via query-time tenant ID filtering, Sovereign Silos CMEK maintains physical and cryptographic isolation through dedicated infrastructure and tenant-specific keys, and Dynamic Hybrid PSC guarantees"
+        "total_token_count": 1051,
+        "response_text": "Pooled RLS isolates data via database row-level policies, Sovereign Silos use dedicated infrastructure with tenant-controlled cryptographic keys, and Dynamic Hybrid PSC provides isolation through private network-level connectivity."
       },
       "vertex_ai_gemini_2_5_flash": {
         "live_vertex_ok": true,
@@ -553,11 +553,11 @@
         "region": "us-central1",
         "model_id": "gemini-2.5-flash",
         "status_code": 200,
-        "latency_ms": 2061.7,
+        "latency_ms": 7839.0,
         "prompt_token_count": 37,
-        "candidates_token_count": 31,
-        "total_token_count": 249,
-        "response_text": "```json\n{\"pattern_a\":\"PASS\",\"pattern_b\":\"PASS\",\"pattern_c\":\"PASS\",\"overall_score\":99}\n```"
+        "candidates_token_count": 144,
+        "total_token_count": 854,
+        "response_text": "```json\n{\n  \"verification_status\": \"FAILED\",\n  \"reason\": \"AI cannot perform real-world security verification of multi-tenant isolation.\",\n  \"details\": \"As an AI, I lack the ability to access, test, or audit live systems or configurations. Verifying multi-tenant isolation requires direct interaction with the system's architecture, data separation mechanisms, and security controls, which is outside my capabilities.\",\n  \"pattern_a\": \"NOT_APPLICABLE\",\n  \"pattern_b\": \"NOT_APPLICABLE\",\n  \"pattern_c\": \"NOT_APPLICABLE\",\n  \"overall_score\": null\n}\n```"
       },
       "aws_and_3p_mcp_verification": {
         "aws_account_id": "393036065405",

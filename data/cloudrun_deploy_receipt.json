@@ -5,30 +5,32 @@
   "buildProject": "ramp-portal-dev",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "ge-blogs-00028-56l",
-  "latestCreatedRevisionName": "ge-blogs-00028-56l",
+  "latestReadyRevisionName": "ge-blogs-00034-wcb",
+  "latestCreatedRevisionName": "ge-blogs-00034-wcb",
   "readyStatus": "True",
   "trafficPercent": 100,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261029-033437-rule58",
-  "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00028-56l",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261029-151850-rule58",
+  "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00034-wcb",
   "liveHttpVerification": {
-    "verifiedAt": "2026-10-29T03:36:31Z",
+    "verifiedAt": "2026-10-29T15:19:40Z",
     "verificationMode": "cloud_run_revision_live_http_dom_probe",
     "project": "ramp-portal-dev",
     "region": "us-west1",
     "service": "ge-blogs",
-    "revision": "ge-blogs-00028-56l",
+    "revision": "ge-blogs-00034-wcb",
     "overallPassed": true,
     "routes": [
       {
         "path": "/",
         "httpStatus": 200,
-        "responseBytes": 588155,
-        "bodySha256Short": "ef854bbe3bba025b",
-        "latencyMs": 32.2,
+        "responseBytes": 633991,
+        "bodySha256Short": "28a27a86302cbd9e",
+        "latencyMs": 60.1,
         "markersMatched": [
           "Multi-Tenancy Architecture",
-          "Pattern A"
+          "Pattern A",
+          "genuine-multicloud-3p-ui-gallery",
+          "13/13 PASS"
         ],
         "markersMissing": [],
         "passed": true,
@@ -37,9 +39,9 @@
       {
         "path": "/api/health",
         "httpStatus": 200,
-        "responseBytes": 35011,
-        "bodySha256Short": "ac3d1e719fc499a4",
-        "latencyMs": 12801.5,
+        "responseBytes": 37660,
+        "bodySha256Short": "433700d171bf77e4",
+        "latencyMs": 159.1,
         "markersMatched": [
           "HEALTHY",
           "cymbal-geap-multitenant-portal"
@@ -52,8 +54,8 @@
         "path": "/api/saas-5-live-verify",
         "httpStatus": 200,
         "responseBytes": 14809,
-        "bodySha256Short": "cb28581ed9eca3a2",
-        "latencyMs": 56798.6,
+        "bodySha256Short": "07d336b0fedb7c43",
+        "latencyMs": 9280.9,
         "markersMatched": [
           "CLOUDRUN_30_OF_30_LIVE_CROSSCLOUD_PASS",
           "cymbal-a2a-mcp-gateway-suyxm3caof"
@@ -64,7 +66,7 @@
       }
     ]
   },
-  "verifiedAt": "2026-10-29T03:36:42Z",
+  "verifiedAt": "2026-10-29T15:19:51Z",
   "certifiedDiagramsCount": 14,
   "workstreamsCount": 5
 }

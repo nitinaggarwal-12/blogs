@@ -1,0 +1,1 @@
+/Users/nitinagga/.gemini/config/rules/zyvoriq-e2e-content-generation-and-light-personas-gate.md

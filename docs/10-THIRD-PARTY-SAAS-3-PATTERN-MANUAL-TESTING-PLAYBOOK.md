@@ -184,7 +184,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_AupEsYE0wXrM233DtSkruvNTZQns",
+      "job_id": "job_pe9NELLmQ5EfT4UflumEKeVqsfed",
       "row_count": 2,
       "rows": [
         {
@@ -216,7 +216,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "728bcf9ebd672029fd6adb3de6dc64cd",
+      "s3_etag": "f5e99875d4b3d3da97e6a822a0f33a00",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/PATTERN_A_POOLED/finvault.json"
     }
   },
@@ -304,7 +304,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_AupEsYE0wXrM233DtSkruvNTZQns",
+      "job_id": "job_pe9NELLmQ5EfT4UflumEKeVqsfed",
       "row_count": 2,
       "rows": [
         {
@@ -342,7 +342,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "59dc9e23cdc9570ac99d794eb33ffdaf",
+      "s3_etag": "22812a9a0a91d5b7b3043e2b6cb74014",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
@@ -442,7 +442,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_AupEsYE0wXrM233DtSkruvNTZQns",
+      "job_id": "job_pe9NELLmQ5EfT4UflumEKeVqsfed",
       "row_count": 2,
       "rows": [
         {
@@ -480,7 +480,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "600cd8ce1c65071487aee98cd3644e76",
+      "s3_etag": "e1e5299132a6072c7c6a1824e3238177",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
@@ -611,7 +611,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_QSW6Yl1mgtV-G8NGlnHPDFfrF-se",
+      "job_id": "job_Iv_mpMYXNfopR9VFitbhWK8ivEUZ",
       "row_count": 2,
       "rows": [
         {
@@ -643,7 +643,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "6dc82c58669a32e590ee77c4dd2d1c25",
+      "s3_etag": "b08d79bc9d930e89b643dc28d9091a1d",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/PATTERN_A_POOLED/finvault.json"
     }
   },
@@ -732,7 +732,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_QSW6Yl1mgtV-G8NGlnHPDFfrF-se",
+      "job_id": "job_Iv_mpMYXNfopR9VFitbhWK8ivEUZ",
       "row_count": 2,
       "rows": [
         {
@@ -770,7 +770,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "0142dffcc8d2eb56d58b281d490b417a",
+      "s3_etag": "f94774fd001b76623cba9558eff6e91b",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
@@ -870,7 +870,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_QSW6Yl1mgtV-G8NGlnHPDFfrF-se",
+      "job_id": "job_Iv_mpMYXNfopR9VFitbhWK8ivEUZ",
       "row_count": 2,
       "rows": [
         {
@@ -908,7 +908,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "2e238ee1f1515e98d72f092b10529753",
+      "s3_etag": "9a1f879553851b2482cdf47c1c9255a2",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
@@ -1030,7 +1030,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_8lhTUyyfLIhPIZ7fuxVTN0lkiC24",
+      "job_id": "job_B8JRkSFIrGRjQrtPBJD3Fn2_DgSn",
       "row_count": 1,
       "rows": [
         {
@@ -1053,7 +1053,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "43b132e447b7e457476c4dc29d543db6",
+      "s3_etag": "e24b2df1d8d5919b618ed058e2835279",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_A_POOLED/retailstream.json"
     }
   },
@@ -1153,7 +1153,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "e2cc1818b261aa9fba0bd9675e28be09",
+      "s3_etag": "ef9153bbafd65d49e0b1c66d467345e9",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_B_SOVEREIGN_SILO/retailstream.json"
     }
   }
@@ -1265,7 +1265,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "43ad52d52231fd2ca859738d4f49e7d0",
+      "s3_etag": "1f249ff4f4d8b57c1956113ddd0fb352",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_C_HYBRID_PSC_SPOKE/retailstream.json"
     }
   }
@@ -1387,7 +1387,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_wtC400GuaonaeFapGu1bdlo0KoN3",
+      "job_id": "job_c0i81YXVGoiuVawaNvkTYwwJN15G",
       "row_count": 2,
       "rows": [
         {
@@ -1419,7 +1419,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "d89df7f6a1a15670d235bbc01d2943cb",
+      "s3_etag": "3cdb41b341bdb7f7e54ae6d09accb585",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_A_POOLED/finvault.json"
     },
     "cloud_kms_21cfr11_signature": {
@@ -1430,8 +1430,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
       "cfr11_live_kms_signed": true,
       "cfr11_kms_key_version": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
       "cfr11_payload_sha256": "ef0e3734ec18390ea72eb040aa3d677aff92a7906d9f3d88b4017fed9d4b07cf",
-      "cfr11_kms_ecdsa_p256_signature_b64": "MEQCIA7unKYyE3upqeKPuAnJ/7aeV9f3d//qcsHR2OaTYXqIAiA6kVenCpeNqeL3ud0e0Vvt4u1jeMyPOYEnJ9R5uBoBQg==",
-      "cfr11_hmac_sha256_signature": "226f8a70c3860e9e054d12ad30cc1baf051d036e827465f13fec5d594e8dabb4"
+      "cfr11_kms_ecdsa_p256_signature_b64": "MEQCICz6Jh1wJHtNqWHBWciRvQPJz4znxCMlpTr/NHo8QQ43AiBBxuhntNqIuH0pb98XwGAq6QQjq6+gxLSXH/xRosPy3Q==",
+      "cfr11_hmac_sha256_signature": "3b9163128466945bb031979af7246e1d21bf94329651ac54649b31fc98d82fea"
     }
   },
   "cross_tenant_rows_leaked": 0
@@ -1529,7 +1529,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "3d5f5cf59a78e1d5242af68add82c2e7",
+      "s3_etag": "a1d5f99d386b725064b9dca894173945",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     },
     "cloud_kms_21cfr11_signature": {
@@ -1540,8 +1540,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
       "cfr11_live_kms_signed": true,
       "cfr11_kms_key_version": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
       "cfr11_payload_sha256": "ef0e3734ec18390ea72eb040aa3d677aff92a7906d9f3d88b4017fed9d4b07cf",
-      "cfr11_kms_ecdsa_p256_signature_b64": "MEQCIA7unKYyE3upqeKPuAnJ/7aeV9f3d//qcsHR2OaTYXqIAiA6kVenCpeNqeL3ud0e0Vvt4u1jeMyPOYEnJ9R5uBoBQg==",
-      "cfr11_hmac_sha256_signature": "226f8a70c3860e9e054d12ad30cc1baf051d036e827465f13fec5d594e8dabb4"
+      "cfr11_kms_ecdsa_p256_signature_b64": "MEQCICz6Jh1wJHtNqWHBWciRvQPJz4znxCMlpTr/NHo8QQ43AiBBxuhntNqIuH0pb98XwGAq6QQjq6+gxLSXH/xRosPy3Q==",
+      "cfr11_hmac_sha256_signature": "3b9163128466945bb031979af7246e1d21bf94329651ac54649b31fc98d82fea"
     }
   }
 }
@@ -1652,7 +1652,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "71b7e9eef9689fd54cb18d187420a3e1",
+      "s3_etag": "27b914e470fd2ee05a76c2dd55e12639",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     },
     "cloud_kms_21cfr11_signature": {
@@ -1663,8 +1663,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
       "cfr11_live_kms_signed": true,
       "cfr11_kms_key_version": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
       "cfr11_payload_sha256": "ef0e3734ec18390ea72eb040aa3d677aff92a7906d9f3d88b4017fed9d4b07cf",
-      "cfr11_kms_ecdsa_p256_signature_b64": "MEQCIA7unKYyE3upqeKPuAnJ/7aeV9f3d//qcsHR2OaTYXqIAiA6kVenCpeNqeL3ud0e0Vvt4u1jeMyPOYEnJ9R5uBoBQg==",
-      "cfr11_hmac_sha256_signature": "226f8a70c3860e9e054d12ad30cc1baf051d036e827465f13fec5d594e8dabb4"
+      "cfr11_kms_ecdsa_p256_signature_b64": "MEQCICz6Jh1wJHtNqWHBWciRvQPJz4znxCMlpTr/NHo8QQ43AiBBxuhntNqIuH0pb98XwGAq6QQjq6+gxLSXH/xRosPy3Q==",
+      "cfr11_hmac_sha256_signature": "3b9163128466945bb031979af7246e1d21bf94329651ac54649b31fc98d82fea"
     }
   }
 }
@@ -1790,7 +1790,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_wtC400GuaonaeFapGu1bdlo0KoN3",
+      "job_id": "job_c0i81YXVGoiuVawaNvkTYwwJN15G",
       "row_count": 2,
       "rows": [
         {
@@ -1822,7 +1822,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "df24890c4fb9d63e6a64c9f67293e1b9",
+      "s3_etag": "c8178acac1708ec5f88493ffc7a7b4af",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/PATTERN_A_POOLED/finvault.json"
     }
   },
@@ -1921,7 +1921,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "bcb6fbd0ccfefb6563d7c257eeca8a8c",
+      "s3_etag": "4dd46c756554af676401da2e83600957",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
@@ -2033,7 +2033,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "b63c5ed8ae5f026cf007227b0c1b5ab4",
+      "s3_etag": "fc437c80798a7bb7ae207245a1202190",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
@@ -2163,7 +2163,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_iOi1FaPiPujHOTUd_8xV-pUcxQLv",
+      "job_id": "job_RK3jDGkGsYQ_4u-x3NXCsigCFqJg",
       "row_count": 2,
       "rows": [
         {
@@ -2195,7 +2195,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "2003f6f16a189f6a799d0ce40a6e6a4c",
+      "s3_etag": "b916fec15499934670f691902f87e070",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/PATTERN_A_POOLED/finvault.json"
     }
   },
@@ -2283,7 +2283,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_iOi1FaPiPujHOTUd_8xV-pUcxQLv",
+      "job_id": "job_RK3jDGkGsYQ_4u-x3NXCsigCFqJg",
       "row_count": 2,
       "rows": [
         {
@@ -2321,7 +2321,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "27ee1ca7e29b71d8f6ea7e14d1444ba2",
+      "s3_etag": "bf0060e7c52b2aa0a322eae9dbba4c05",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
@@ -2421,7 +2421,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_iOi1FaPiPujHOTUd_8xV-pUcxQLv",
+      "job_id": "job_RK3jDGkGsYQ_4u-x3NXCsigCFqJg",
       "row_count": 2,
       "rows": [
         {
@@ -2459,7 +2459,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "af925ddb1a1fe820afb95b3e810a13fd",
+      "s3_etag": "0d8331d1734e8a82ae5e31b4a85b877f",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
@@ -2583,7 +2583,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_xU1wAB8ruK0ZmcPOZNvJYQcLZaMO",
+      "job_id": "job_-wpR-tTijVwTV99hyqlS_YQqy3y-",
       "row_count": 1,
       "rows": [
         {
@@ -2606,7 +2606,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "9debe9c634b932c93471d7f91f84c006",
+      "s3_etag": "2afa7a6c09ec5ef47277ada33a557905",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/PATTERN_A_POOLED/retailstream.json"
     }
   },
@@ -2694,7 +2694,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_xU1wAB8ruK0ZmcPOZNvJYQcLZaMO",
+      "job_id": "job_-wpR-tTijVwTV99hyqlS_YQqy3y-",
       "row_count": 1,
       "rows": [
         {
@@ -2723,7 +2723,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "96b8a0a15d73d448555a362100fc1bbc",
+      "s3_etag": "2c800465dd7fb7bec442b589e0b6d678",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/PATTERN_B_SOVEREIGN_SILO/retailstream.json"
     }
   }
@@ -2823,7 +2823,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_xU1wAB8ruK0ZmcPOZNvJYQcLZaMO",
+      "job_id": "job_-wpR-tTijVwTV99hyqlS_YQqy3y-",
       "row_count": 1,
       "rows": [
         {
@@ -2852,7 +2852,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "4dee0b1b0fae06d114ae81a526756cdd",
+      "s3_etag": "8f887a02b8c64a3083c91eb72ea10379",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/PATTERN_C_HYBRID_PSC_SPOKE/retailstream.json"
     }
   }
@@ -2978,7 +2978,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_wtC400GuaonaeFapGu1bdlo0KoN3",
+      "job_id": "job_c0i81YXVGoiuVawaNvkTYwwJN15G",
       "row_count": 2,
       "rows": [
         {
@@ -3010,7 +3010,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "f71d3a44b257754336d4203441a329d6",
+      "s3_etag": "feb55620f042f8b0d677d8e1b8efdf8e",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/PATTERN_A_POOLED/finvault.json"
     }
   },
@@ -3110,7 +3110,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "b40aa0f18156e2961b3bde7a13b4b35d",
+      "s3_etag": "47bab0643e616254b17ee4f67845f32a",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
@@ -3222,7 +3222,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "ee00607409dee243ec780ef9505f6923",
+      "s3_etag": "7235f88bd0d5f7d8259735ff5940bbc1",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
@@ -3346,7 +3346,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_wtC400GuaonaeFapGu1bdlo0KoN3",
+      "job_id": "job_c0i81YXVGoiuVawaNvkTYwwJN15G",
       "row_count": 2,
       "rows": [
         {
@@ -3378,7 +3378,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "f9054a31e07211b042bba164f9ad5358",
+      "s3_etag": "d606f02706c7299c4b6274868f7d8c87",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/PATTERN_A_POOLED/finvault.json"
     }
   },
@@ -3477,7 +3477,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "1c9804fc78688e460e0acc791b662555",
+      "s3_etag": "fd268acc4fe10f0128d2ffc0fa98aced",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
@@ -3589,7 +3589,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "cb21141502e3f962d0f59ee578ce4b11",
+      "s3_etag": "21dccfef1eec2da2ab5ab9fdc0e420d9",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
@@ -3713,7 +3713,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_wtC400GuaonaeFapGu1bdlo0KoN3",
+      "job_id": "job_c0i81YXVGoiuVawaNvkTYwwJN15G",
       "row_count": 2,
       "rows": [
         {
@@ -3745,7 +3745,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "4becf0094396cbde4a789898ab0b8ae0",
+      "s3_etag": "2d841260b29ffff0b59c285bdcda7c74",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/PATTERN_A_POOLED/finvault.json"
     }
   },
@@ -3845,7 +3845,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "9bede9f0352f9281a4a6896e54aaa16b",
+      "s3_etag": "6179f0ee0c0bec55df7e0498d32fa193",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
@@ -3957,7 +3957,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "a83f4cfe8f9e00c05141ddb32ace832f",
+      "s3_etag": "1d3fe468587e9dd18424bb4e5110259d",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-28T01:18:46.316Z",
+  "generatedAt": "2026-10-29T14:06:08.939Z",
   "totalDiagrams": 14,
   "templateStandard": "Official Google Cloud Architecture Center Template (#78) • Rule 53G 3-Layout Engine: hub-2-spoke (56v/23e), pooled-shared-plane (60v/20e), decision-tree-3-outcome (46v/19e)",
   "slideSequenceStandard": "Customer-Centric 3-Act Top-Down 12-Slide Architecture Deck: Act I (Slides 1–3 Cover & Briefing Map, Customer Use Cases & Architectural Options Matrix) -> Act II (Slide 4 L1 Logical Zones -> Slide 5 L2 Authoritative Figure 1 #78 Physical Blueprint -> Slide 6 L3 5-Actor Sequence -> Slide 7 L4 Wire Payload Transformation) -> Act III (Slides 8–12 Circuit Breakers, EAP Compensating Controls, Live GCP Proof, 3-Pillar Well-Architected Guarantees & Series Progression)",

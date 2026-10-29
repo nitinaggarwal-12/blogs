@@ -162,3 +162,27 @@ python3 -B scripts/verify_5_third_party_saas_products.py --pattern all --verbose
 | **08** | **Workday HCM & Financials RaaS** | `RAOTMUMJTZ` | [`/saas-ui/workday-raas?format=json`](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json) | `python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --verbose` |
 | **09** | **Datadog Bits AI SRE** | `G767QR3TQZ` | [`/saas-ui/datadog-sre?format=json`](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json) | `python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --verbose` |
 | **10** | **CrowdStrike Falcon + Okta Workforce** | `C7EYM614F2` | [`/saas-ui/crowdstrike-okta?format=json`](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json) | `python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --verbose` |
+
+---
+
+### Stage 10 — Multi-Cloud 10 Upstream 3P Enterprise Software Stacks on Google Cloud Run Gen2 (`bbar-138hf0`) & AWS EC2 (`393036065405`) + 23 Genuine Retina UI Captures
+
+```bash
+# 1. Provision & seed all 10 upstream 3P software containers on AWS EC2 (393036065405 / us-east-1 / i-04924523ac41ff132)
+python3 -B scripts/provision_aws_ec2_third_party_apps.py
+
+# 2. Mirror OCI images, deploy on Google Cloud Run Gen2 (bbar-138hf0 / us-west1), mint OIDC tokens & seed all 10 3P services
+python3 -B scripts/provision_gcp_cloudrun_third_party_apps.py --reseed-only
+
+# 3. Capture all 23 genuine live 2880x1800 Retina UI screenshots (10 GCP Cloud Run + 10 AWS EC2 + 3 AWS Management Console)
+node scripts/capture_genuine_multicloud_3p_uis.mjs
+
+# 4. Verify SHA-256 provenance & sync Cross-Run Continuity Ledgers
+python3 -B scripts/run_all_repeatable_e2e_verifications.py --sync-ledger-only
+```
+
+* **GCP Cloud Run Gen2 Live Receipt (`10/10` Services)**: [`docs/gcp_cloudrun_3p_apps_live_receipt.json`](gcp_cloudrun_3p_apps_live_receipt.json) (`cymbal-gcp-metabase-bi`, `cymbal-gcp-grafana-ent`, `cymbal-gcp-redmine-itsm`, `cymbal-gcp-nocodb-edc`, `cymbal-gcp-gitea-sre`, `cymbal-gcp-trino-sql`, `cymbal-gcp-clickhouse-dw`, `cymbal-gcp-directus-hcm`, `cymbal-gcp-seq-apm`, `cymbal-gcp-vault-cmek`)
+* **AWS EC2 Live Receipt (`10/10` Containers on `i-04924523ac41ff132`)**: [`docs/aws_ec2_3p_apps_live_receipt.json`](aws_ec2_3p_apps_live_receipt.json)
+* **23 Genuine Retina UI Screenshot Provenance Receipt**: [`docs/genuine_ui_screenshot_provenance_receipt.json`](genuine_ui_screenshot_provenance_receipt.json)
+* **Cross-Run Continuity Ledger (`6` Repeatable Steps)**: [`data/run_continuity_ledger.json`](../data/run_continuity_ledger.json)
+

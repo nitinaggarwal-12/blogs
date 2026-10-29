@@ -10,7 +10,7 @@ WORKDIR /app
 # Copy the lean 1.80 MiB source codebase (all 27 Python + Terraform files, SQL, YAML, Markdown & Portal)
 COPY . /app
 
-# Execute all 3 Pattern simulation suites (20/20 assertions) and 12/12 forensic audit gates during Cloud Build
+# Execute all 3 Pattern simulation suites (20/20 assertions) and 13/13 forensic audit gates during Cloud Build
 RUN python3 -B workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py && \
     python3 -B workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py && \
     python3 -B workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py && \

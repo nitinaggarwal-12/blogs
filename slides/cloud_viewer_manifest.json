@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-29T03:22:56Z",
+  "updatedAt": "2026-10-29T15:16:14Z",
   "accountEmail": "nitinagga@google.com",
   "oauthClientId": "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com",
   "slides": {
@@ -337,79 +337,79 @@
       "key": "WS1",
       "title": "WS1 \u2014 Reference Architecture, Taxonomy & 5-Hop Baseline",
       "mdPath": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
-      "sha256": "8b5c08dd0027f08e92d748f7a4ff6d052bb074945e1df4545b64ac2e23a90ba6",
-      "sizeBytes": 67987,
+      "sha256": "88ab86d4b7f12bdbc0a481ff3f8eadc9bf22765d22be302a3c031946fb0d2683",
+      "sizeBytes": 68453,
       "googleDocsId": "1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os",
       "googleDocsEditUrl": "https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?authuser=nitinagga%40google.com",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/preview",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/export?format=pdf",
       "webViewLink": "https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?usp=drivesdk&resourcekey=0-PgO-X5icAK687_G-_WZFpQ",
-      "syncedAt": "2026-10-29T03:22:46Z"
+      "syncedAt": "2026-10-29T14:06:12Z"
     },
     "WS2": {
       "key": "WS2",
       "title": "WS2 \u2014 Pattern A: High-Density Pooled Architecture",
       "mdPath": "blogs/ws2-pattern-a-pooled-architecture.md",
-      "sha256": "c978bf33d00af58f9e88a91a7020e5546c914b44a19c8dd1392ad4cc878c0d92",
-      "sizeBytes": 65486,
+      "sha256": "5b0598c3b4a9473d35defc9abdbef6d9f6d0a12d4cb36e07c1f7b4723fc48f18",
+      "sizeBytes": 65952,
       "googleDocsId": "111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw",
       "googleDocsEditUrl": "https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/edit?authuser=nitinagga%40google.com",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/preview",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/export?format=pdf",
       "webViewLink": "https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/edit?usp=drivesdk&resourcekey=0-OyYSOmx22u8x4Q1kHunGyQ",
-      "syncedAt": "2026-10-29T03:22:46Z"
+      "syncedAt": "2026-10-29T14:06:15Z"
     },
     "WS3": {
       "key": "WS3",
       "title": "WS3 \u2014 Pattern B: Zero-Trust Sovereign Silos",
       "mdPath": "blogs/ws3-pattern-b-sovereign-silos.md",
-      "sha256": "6955658ddc311b5dafd7170720df15fa36765ebb3c47d5a13b52fa0ff913ca07",
-      "sizeBytes": 58509,
+      "sha256": "828299a2c3a5b7a007b97124e2cc311c9eb3eb3fdc0af9be84f061ed02f95bf8",
+      "sizeBytes": 58975,
       "googleDocsId": "1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY",
       "googleDocsEditUrl": "https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/edit?authuser=nitinagga%40google.com",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/preview",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/export?format=pdf",
       "webViewLink": "https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/edit?usp=drivesdk&resourcekey=0-KRCBVysg1k7J4IvKwJKuYQ",
-      "syncedAt": "2026-10-29T03:22:46Z"
+      "syncedAt": "2026-10-29T14:06:18Z"
     },
     "WS4": {
       "key": "WS4",
       "title": "WS4 \u2014 Pattern C: Dynamic Hybrid Hub-and-Spoke & Tier Upgrade",
       "mdPath": "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md",
-      "sha256": "354e00e54c5dc334caf350b8afa62bd810bcea737c75e027e492a552e153ab02",
-      "sizeBytes": 64855,
+      "sha256": "63afd84940267c8eff60cf1b9dfcee1c21660ae3e5be2cddcc7442b4e3144530",
+      "sizeBytes": 65321,
       "googleDocsId": "1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww",
       "googleDocsEditUrl": "https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/edit?authuser=nitinagga%40google.com",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/preview",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/export?format=pdf",
       "webViewLink": "https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/edit?usp=drivesdk",
-      "syncedAt": "2026-10-29T03:22:46Z"
+      "syncedAt": "2026-10-29T14:06:21Z"
     },
     "WS5": {
       "key": "WS5",
       "title": "WS5 \u2014 Executive Decision Guide & Multi-Tenant Agentic Triad",
       "mdPath": "blogs/ws5-decision-guide-and-agentic-triad.md",
-      "sha256": "25be3ea3b9c8f41b6c03664c2dab1834e369c005b97b8b3fb7abfe3ec4457fa9",
-      "sizeBytes": 55378,
+      "sha256": "d5f397caef6ed8e2b5d8c5e61ebf5cbd2c40d9e705c9188c4531fad602852a01",
+      "sizeBytes": 55844,
       "googleDocsId": "10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0",
       "googleDocsEditUrl": "https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit?authuser=nitinagga%40google.com",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/preview",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/export?format=pdf",
       "webViewLink": "https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit?usp=drivesdk",
-      "syncedAt": "2026-10-29T03:22:46Z"
+      "syncedAt": "2026-10-29T14:06:24Z"
     },
     "ALL": {
       "key": "ALL",
       "title": "ALL Workstreams 1\u20135 Master Deck (25 Slides \u2022 14 Diagrams)",
       "mdPath": "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md",
-      "sha256": "a81df1f8b2594b24eb7ca3aaee462a5e6b3e7db159650295f6e1d5a732babb04",
-      "sizeBytes": 596503,
+      "sha256": "7c56d6936bc58b9079364da2c8e3824353247c7639bc6d99171d42783d0a774c",
+      "sizeBytes": 592702,
       "googleDocsId": "150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM",
       "googleDocsEditUrl": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/edit?authuser=nitinagga%40google.com",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/preview",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/export?format=pdf",
       "webViewLink": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/edit?usp=drivesdk&resourcekey=0-hSujxBUvoiHkoIFajcWeQg",
-      "syncedAt": "2026-10-29T03:22:46Z"
+      "syncedAt": "2026-10-29T15:16:14Z"
     }
   }
 }

@@ -461,8 +461,13 @@ function buildBlogMarkdown(spec, existingDiskContent = '') {
   // Preserve the Live Multi-Cloud 10-SaaS Verification Matrix section if present on disk
   const tenSaasMatch = existingDiskContent.match(/## Live Multi-Cloud \(Google Cloud \+ AWS Bedrock AgentCore MCP\) 10-SaaS Verification Matrix[\s\S]*?(?=\n## What's next)/);
   if (tenSaasMatch && !spec.considerationsMd.includes('## Live Multi-Cloud (Google Cloud + AWS Bedrock AgentCore MCP) 10-SaaS Verification Matrix')) {
+    let tenSaasBlock = tenSaasMatch[0].trimEnd().replace(/\n\n> \*\*23 Genuine Live Multi-Cloud 3P UI Screenshots[\s\S]*$/, '');
+    const genuineCallout =
+      '> **23 Genuine Live Multi-Cloud 3P UI Screenshots & Cross-Run Continuity Ledger:** Alongside the 10 Bedrock AgentCore MCP targets above, 10 official upstream enterprise software stacks (`Metabase BI v0.50.26`, `Grafana Enterprise v11.2.0`, `Redmine ITSM v5.1`, `NocoDB v0.255.2`, `Gitea v1.22.3`, `Trino Distributed SQL v440`, `ClickHouse Data Warehouse v24.8`, `Directus Data Studio v11.1.0`, `Datalust Seq Observability v2024.3`, `HashiCorp Vault v1.13.3`) run live on **Google Cloud Run Gen2 (`bbar-138hf0`, `us-west1`)** and **AWS EC2 (`393036065405`, `us-east-1`, `i-04924523ac41ff132`)** + **3 live AWS Management Console views**, verified in [`docs/genuine_ui_screenshot_provenance_receipt.json`](../docs/genuine_ui_screenshot_provenance_receipt.json) and replayed via [`scripts/run_all_repeatable_e2e_verifications.py`](../scripts/run_all_repeatable_e2e_verifications.py) ([`data/run_continuity_ledger.json`](../data/run_continuity_ledger.json)).';
     parts.push('');
-    parts.push(tenSaasMatch[0].trimEnd());
+    parts.push(tenSaasBlock);
+    parts.push('');
+    parts.push(genuineCallout);
     parts.push('');
   }
 

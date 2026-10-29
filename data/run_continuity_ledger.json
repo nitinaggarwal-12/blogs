@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0",
+  "updated_at": "2026-10-29T14:30:56Z",
+  "workspace_root": "/Users/nitinagga/Documents/blogs",
+  "replay_orchestrator_script": "scripts/run_all_repeatable_e2e_verifications.py",
+  "standing_mandates": [
+    {
+      "mandate_id": "MANDATE-01-ZERO-SHORTCUTS",
+      "rule": "Rule 60A / Rule 57",
+      "directive": "No shortcuts are taken ever: only genuine live UI screenshots and codebases backed by saved, git-tracked, successfully executed scripts (exit_code == 0) are accepted; synthetic HTML/DOM mockups (page.setContent, data:text/html, .innerText = tampering) and disguised stand-ins are strictly banned.",
+      "active": true
+    },
+    {
+      "mandate_id": "MANDATE-02-EXACT-INSTRUCTION-FIDELITY",
+      "rule": "Rule 60A / Law 5",
+      "directive": "Follow user instructions verbatim as-is always, reporting exact upstream software names, versions, cloud project/account IDs, and SHA-256 receipts without dilution or substitution.",
+      "active": true
+    },
+    {
+      "mandate_id": "MANDATE-03-CROSS-RUN-CONTINUITY-NOTE-AND-REPEAT",
+      "rule": "Rule 60B",
+      "directive": "Whenever an engineering verification, multi-cloud provisioning, or live UI screenshot step is executed in the current run, record a durable note in data/run_continuity_ledger.json and ~/.gemini/config/run_continuity_ledger.json and repeat it in the next run unless told otherwise.",
+      "active": true
+    },
+    {
+      "mandate_id": "MANDATE-04-AUTONOMOUS-MULTICLOUD-SPINUP",
+      "rule": "Rule 60C / Rule 28A",
+      "directive": "Autonomously spin up, start, configure, and seed any required applications, third-party software stacks, containers, IAM roles, or cloud services across Google Cloud and AWS immediately without asking permission.",
+      "active": true
+    }
+  ],
+  "repeatable_steps": [
+    {
+      "step_id": "STEP-01-AWS-EC2-10-3P-STACKS",
+      "description": "Ensure AWS EC2 host (i-04924523ac41ff132, 393036065405, us-east-1) & MFA Console Auditor IAM Role are running and seed pure Cymbal multi-tenant state across all 10 upstream enterprise software containers.",
+      "cloud_provider": "AWS",
+      "script_path": "scripts/provision_aws_ec2_third_party_apps.py",
+      "script_sha256": "2954015531121b8deb117546c2e90eff4ded63d7046d8ff8e6b64f477add5aed",
+      "command": "python3 -B scripts/provision_aws_ec2_third_party_apps.py",
+      "receipt_path": "docs/aws_ec2_3p_apps_live_receipt.json",
+      "receipt_sha256": "5cf6a813bbd2d9d0e7a2829e8231fbe4e32cbbb4af6df97d065a4bb10f3bf5c4",
+      "last_executed_at": "2026-10-29T14:30:56Z",
+      "last_exit_code": 0,
+      "repeat_in_next_run": true,
+      "superseded_by_user": false
+    },
+    {
+      "step_id": "STEP-02-GCP-CLOUDRUN-10-3P-STACKS",
+      "description": "Ensure all 10 official upstream enterprise software containers are mirrored to Artifact Registry, deployed on Google Cloud Run Gen2 (bbar-138hf0, us-west1), OIDC-authenticated via cymbal-gcp-oidc-minter, and seeded.",
+      "cloud_provider": "GCP",
+      "script_path": "scripts/provision_gcp_cloudrun_third_party_apps.py",
+      "script_sha256": "9bb4024bb1040478f03f1203854bd4f4c61f10f0def7de76ddb137c3b1ed4310",
+      "command": "python3 -B scripts/provision_gcp_cloudrun_third_party_apps.py --reseed-only",
+      "receipt_path": "docs/gcp_cloudrun_3p_apps_live_receipt.json",
+      "receipt_sha256": "78fcce08b6c47d0ecfdd0fcf8a4c394195c02148f0e89c4e1f3f14c66452eeb2",
+      "last_executed_at": "2026-10-29T14:30:56Z",
+      "last_exit_code": 0,
+      "repeat_in_next_run": true,
+      "superseded_by_user": false
+    },
+    {
+      "step_id": "STEP-03-AWS-AGENTCORE-10-SAAS-MCP-TARGETS",
+      "description": "Verify/update AWS Bedrock AgentCore MCP Gateway (cymbal-a2a-mcp-gateway-suyxm3caof) 10 SaaS targets (HXGGFMZBKE..C7EYM614F2), Lambda cymbal-a2a-mcp-remote-peer, and S3 audit ledger.",
+      "cloud_provider": "AWS",
+      "script_path": "scripts/deploy_10_saas_aws_agentcore_targets.py",
+      "script_sha256": "2c7d651cb2e327f9b511743d89de33a27f07ab34f2e9a975362a490a531181d9",
+      "command": "python3 -B scripts/deploy_10_saas_aws_agentcore_targets.py",
+      "receipt_path": "docs/aws_agentcore_10_saas_targets_manifest.json",
+      "receipt_sha256": "1fefd1ef910d38779cc6e788a1f99902cd37332ba0d92db01b84eee757b6c51d",
+      "last_executed_at": "2026-10-29T14:30:56Z",
+      "last_exit_code": 0,
+      "repeat_in_next_run": true,
+      "superseded_by_user": false
+    },
+    {
+      "step_id": "STEP-04-CROSSCLOUD-30-FLOW-SAAS-VERIFIER",
+      "description": "Execute 10-SaaS x 3-Pattern (30 cross-cloud E2E flows, 60/60 positive + negative isolation assertions) across Google Cloud KMS/DLP and AWS Bedrock AgentCore MCP + S3.",
+      "cloud_provider": "GCP+AWS",
+      "script_path": "scripts/verify_5_third_party_saas_products.py",
+      "script_sha256": "a119f614c490859853c0b66511330f556b296946b5a07824b52b1bfc01e71ff5",
+      "command": "python3 -B scripts/verify_5_third_party_saas_products.py",
+      "receipt_path": "docs/third_party_5_saas_verification_receipt.json",
+      "receipt_sha256": "a296dc812382f570d720fd5f12241df5626dd5328eb18a67a38ff6886f0c3fe6",
+      "last_executed_at": "2026-10-29T14:30:56Z",
+      "last_exit_code": 0,
+      "repeat_in_next_run": true,
+      "superseded_by_user": false
+    },
+    {
+      "step_id": "STEP-05-GENUINE-23-MULTICLOUD-UI-SCREENSHOTS",
+      "description": "Capture 23 genuine live 2x Retina (2880x1800) UI screenshots (10 GCP Cloud Run UIs + 10 AWS EC2 UIs + 3 live AWS Management Console UIs) in Headless Signed Chrome with zero page.setContent or DOM tampering.",
+      "cloud_provider": "GCP+AWS",
+      "script_path": "scripts/capture_genuine_multicloud_3p_uis.mjs",
+      "script_sha256": "1fa693a38d800f88906ce81f54aaf38544d47d669c2ace1bcd9a32a6d5e023c9",
+      "command": "node scripts/capture_genuine_multicloud_3p_uis.mjs",
+      "receipt_path": "docs/genuine_ui_screenshot_provenance_receipt.json",
+      "receipt_sha256": "5e59418fdd57325e4d4a5b8a221f094b9afd134541c185049e8d03b25299c019",
+      "last_executed_at": "2026-10-29T14:30:56Z",
+      "last_exit_code": 0,
+      "repeat_in_next_run": true,
+      "superseded_by_user": false
+    },
+    {
+      "step_id": "STEP-06-DEEP-FORENSIC-AND-E2E-PUPPETEER-GATE",
+      "description": "Execute Deep Forensic Audit (F-01..F-13) and Provenance Guard verifying 100% receipt SHA-256 parity, zero synthetic screenshots, and 15/15 Google Slides + 6/6 Google Docs synchronization.",
+      "cloud_provider": "GCP+AWS",
+      "script_path": "scripts/run_deep_forensic_audit.py",
+      "script_sha256": "fd596d5526361aa183ee4256de6b3805eb610c805f9feb57a4847d4b6af4b8d3",
+      "command": "python3 -B scripts/run_deep_forensic_audit.py",
+      "receipt_path": "docs/cloud_console_verification_receipt.json",
+      "receipt_sha256": "cc3d66a560d37d6bbca46d2671b0ca8fafc4039771b8385a73df0edd8918fb0b",
+      "last_executed_at": "2026-10-29T14:30:56Z",
+      "last_exit_code": 0,
+      "repeat_in_next_run": true,
+      "superseded_by_user": false
+    }
+  ]
+}

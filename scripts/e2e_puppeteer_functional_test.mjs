@@ -10,7 +10,7 @@
  *     - Zero table horizontal overflow (table.offsetWidth <= wrapper.clientWidth + 4)
  *     - Zero literal '<br' text leaks or '?principal=' mock links anywhere in DOM
  *  3. Interactive controls: Series Reader switcher, TOC anchor navigation, Step-by-Step Flow toggle,
- *     Tab 2 Live 5-Hop Simulator execution, Tab 3 10-SaaS Live Access Hub, Tab 4 Forensic Audit (12/12).
+ *     Tab 2 Live 5-Hop Simulator execution, Tab 3 10-SaaS Live Access Hub, Tab 4 Forensic Audit (13/13).
  */
 import { createRequire } from "module";
 
@@ -194,7 +194,48 @@ async function run() {
     const cloudVisible = document.getElementById("tab-screenshots")?.classList.contains("active");
     const saasHub = document.getElementById("ten-saas-live-access-hub");
     const saasHubHtml = saasHub ? saasHub.innerHTML : "";
-    const hasEc2InHub = saasHubHtml.includes("13.220.94.209") || saasHubHtml.includes("cloud-console");
+    const genuineGallery = document.getElementById("genuine-multicloud-3p-ui-gallery");
+    const genuineHtml = genuineGallery ? genuineGallery.innerHTML : "";
+    const hasEc2InHub =
+      saasHubHtml.includes("13.220.94.209") ||
+      saasHubHtml.includes("cloud-console") ||
+      genuineHtml.includes("13.220.94.209") ||
+      genuineHtml.includes("cloud-console");
+
+    // Ensure all 23 genuine UI screenshots load with naturalWidth >= 1200
+    const galleryImgs = genuineGallery ? Array.from(genuineGallery.querySelectorAll(".genuine-3p-ui-card img")) : [];
+    for (const img of galleryImgs) {
+      img.scrollIntoView({ behavior: "instant", block: "center" });
+    }
+    await Promise.all(
+      galleryImgs.map((img) => {
+        if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+        return new Promise((res) => {
+          const done = () => res();
+          img.addEventListener("load", done, { once: true });
+          img.addEventListener("error", done, { once: true });
+          setTimeout(done, 5000);
+        });
+      })
+    );
+    const brokenGalleryImgs = galleryImgs
+      .filter((img) => !img.complete || img.naturalWidth < 1200)
+      .map((img) => img.getAttribute("src"));
+
+    // Exercise gallery filter pills (gcp -> 10, aws-ec2 -> 10, aws-console -> 3, all -> 23)
+    const countVisibleCards = () =>
+      genuineGallery
+        ? Array.from(genuineGallery.querySelectorAll(".genuine-3p-ui-card")).filter((c) => c.style.display !== "none").length
+        : 0;
+    const clickFilter = (f) => {
+      const btn = genuineGallery?.querySelector(`[data-gallery-filter="${f}"]`);
+      if (btn) btn.click();
+      return countVisibleCards();
+    };
+    const gcpFiltered = clickFilter("gcp");
+    const awsEc2Filtered = clickFilter("aws-ec2");
+    const awsConsoleFiltered = clickFilter("aws-console");
+    const allFiltered = clickFilter("all");
 
     // Test Cloud Viewer Modal open & close
     let cloudViewerOpened = false;
@@ -206,12 +247,43 @@ async function run() {
       if (typeof window.closeCloudViewerModal === "function") window.closeCloudViewerModal();
     }
 
-    return { simVisible, simRan: simOut.length > 20, cloudVisible, hasSaasHub: Boolean(saasHub), hasEc2InHub, cloudViewerOpened };
+    // Check Tab 4 (13/13 Forensic Audit rows)
+    const tab4 = document.getElementById("tab-btn-forensic");
+    if (tab4) tab4.click();
+    await new Promise((r) => setTimeout(r, 250));
+    const forensicRows = document.querySelectorAll("#forensic-table-body tr").length;
+
+    return {
+      simVisible,
+      simRan: simOut.length > 20,
+      cloudVisible,
+      hasSaasHub: Boolean(saasHub),
+      hasGenuineGallery: Boolean(genuineGallery),
+      galleryImgCount: galleryImgs.length,
+      brokenGalleryImgs,
+      filterCounts: { allFiltered, gcpFiltered, awsEc2Filtered, awsConsoleFiltered },
+      forensicRows,
+      hasEc2InHub,
+      cloudViewerOpened,
+    };
   });
 
   assert(
-    tabsResult.simVisible && tabsResult.simRan && tabsResult.cloudVisible && tabsResult.hasSaasHub && !tabsResult.hasEc2InHub && tabsResult.cloudViewerOpened,
-    "Interactive Portal Tabs (Tab 2 5-Hop Simulator + Tab 3 10-SaaS Hub + Cloud Viewer Modal + Zero EC2 Leaks)",
+    tabsResult.simVisible &&
+      tabsResult.simRan &&
+      tabsResult.cloudVisible &&
+      tabsResult.hasSaasHub &&
+      tabsResult.hasGenuineGallery &&
+      tabsResult.galleryImgCount === 23 &&
+      tabsResult.brokenGalleryImgs.length === 0 &&
+      tabsResult.filterCounts.allFiltered === 23 &&
+      tabsResult.filterCounts.gcpFiltered === 10 &&
+      tabsResult.filterCounts.awsEc2Filtered === 10 &&
+      tabsResult.filterCounts.awsConsoleFiltered === 3 &&
+      tabsResult.forensicRows === 13 &&
+      !tabsResult.hasEc2InHub &&
+      tabsResult.cloudViewerOpened,
+    "Interactive Portal Tabs (Tab 2 5-Hop Simulator + Tab 3 23-UI Gallery & Filters + Tab 4 13/13 Forensic + Cloud Viewer Modal + Zero EC2 Leaks)",
     JSON.stringify(tabsResult)
   );
 

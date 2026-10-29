@@ -12,7 +12,7 @@ Exposes:
                                    against the real Python 5-Hop runtime classes
 - POST /api/runtime/invoke      -> Interactive Custom 5-Hop Sandbox (custom JWT, forged headers,
                                    agent URI, MCP tool, prompt, thinking tokens, RPM, CMEK, PSC upgrade)
-- POST /api/audit/run           -> Runs scripts/run_deep_forensic_audit.py (12/12 checks + 20/20 sims) live
+- POST /api/audit/run           -> Runs scripts/run_deep_forensic_audit.py (13/13 checks + 107/107 sims) live
 """
 
 from __future__ import annotations

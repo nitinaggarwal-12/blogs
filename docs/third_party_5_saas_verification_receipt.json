@@ -1,5 +1,5 @@
 {
-  "verified_at": "2026-10-29T03:20:45.972850+00:00",
+  "verified_at": "2026-10-29T14:13:30.589823+00:00",
   "total_unique_saas_products_tested": 10,
   "patterns_tested": [
     "PATTERN_A_POOLED",
@@ -97,7 +97,7 @@
                 "hop4_ingress_decision": "ALLOW",
                 "live_bigquery_rls": {
                   "billing_project": "ramp-portal-dev",
-                  "job_id": "job_AupEsYE0wXrM233DtSkruvNTZQns",
+                  "job_id": "job_pe9NELLmQ5EfT4UflumEKeVqsfed",
                   "row_count": 2,
                   "rows": [
                     {
@@ -129,7 +129,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "728bcf9ebd672029fd6adb3de6dc64cd",
+                  "s3_etag": "f5e99875d4b3d3da97e6a822a0f33a00",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/PATTERN_A_POOLED/finvault.json"
                 }
               },
@@ -234,7 +234,7 @@
                 "hop4_ingress_decision": "ALLOW",
                 "live_bigquery_rls": {
                   "billing_project": "ramp-portal-dev",
-                  "job_id": "job_QSW6Yl1mgtV-G8NGlnHPDFfrF-se",
+                  "job_id": "job_Iv_mpMYXNfopR9VFitbhWK8ivEUZ",
                   "row_count": 2,
                   "rows": [
                     {
@@ -266,7 +266,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "6dc82c58669a32e590ee77c4dd2d1c25",
+                  "s3_etag": "b08d79bc9d930e89b643dc28d9091a1d",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/PATTERN_A_POOLED/finvault.json"
                 }
               },
@@ -364,7 +364,7 @@
                 "hop4_ingress_decision": "ALLOW",
                 "live_bigquery_rls": {
                   "billing_project": "ramp-portal-dev",
-                  "job_id": "job_8lhTUyyfLIhPIZ7fuxVTN0lkiC24",
+                  "job_id": "job_B8JRkSFIrGRjQrtPBJD3Fn2_DgSn",
                   "row_count": 1,
                   "rows": [
                     {
@@ -387,7 +387,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "43b132e447b7e457476c4dc29d543db6",
+                  "s3_etag": "e24b2df1d8d5919b618ed058e2835279",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_A_POOLED/retailstream.json"
                 }
               },
@@ -484,7 +484,7 @@
                 "hop4_ingress_decision": "ALLOW",
                 "live_bigquery_rls": {
                   "billing_project": "ramp-portal-dev",
-                  "job_id": "job_wtC400GuaonaeFapGu1bdlo0KoN3",
+                  "job_id": "job_c0i81YXVGoiuVawaNvkTYwwJN15G",
                   "row_count": 2,
                   "rows": [
                     {
@@ -516,7 +516,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "d89df7f6a1a15670d235bbc01d2943cb",
+                  "s3_etag": "3cdb41b341bdb7f7e54ae6d09accb585",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_A_POOLED/finvault.json"
                 },
                 "cloud_kms_21cfr11_signature": {
@@ -527,8 +527,8 @@
                   "cfr11_live_kms_signed": true,
                   "cfr11_kms_key_version": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
                   "cfr11_payload_sha256": "ef0e3734ec18390ea72eb040aa3d677aff92a7906d9f3d88b4017fed9d4b07cf",
-                  "cfr11_kms_ecdsa_p256_signature_b64": "MEQCIA7unKYyE3upqeKPuAnJ/7aeV9f3d//qcsHR2OaTYXqIAiA6kVenCpeNqeL3ud0e0Vvt4u1jeMyPOYEnJ9R5uBoBQg==",
-                  "cfr11_hmac_sha256_signature": "226f8a70c3860e9e054d12ad30cc1baf051d036e827465f13fec5d594e8dabb4"
+                  "cfr11_kms_ecdsa_p256_signature_b64": "MEQCICz6Jh1wJHtNqWHBWciRvQPJz4znxCMlpTr/NHo8QQ43AiBBxuhntNqIuH0pb98XwGAq6QQjq6+gxLSXH/xRosPy3Q==",
+                  "cfr11_hmac_sha256_signature": "3b9163128466945bb031979af7246e1d21bf94329651ac54649b31fc98d82fea"
                 }
               },
               "cross_tenant_rows_leaked": 0
@@ -628,7 +628,7 @@
                 "hop4_ingress_decision": "ALLOW",
                 "live_bigquery_rls": {
                   "billing_project": "ramp-portal-dev",
-                  "job_id": "job_wtC400GuaonaeFapGu1bdlo0KoN3",
+                  "job_id": "job_c0i81YXVGoiuVawaNvkTYwwJN15G",
                   "row_count": 2,
                   "rows": [
                     {
@@ -660,7 +660,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "df24890c4fb9d63e6a64c9f67293e1b9",
+                  "s3_etag": "c8178acac1708ec5f88493ffc7a7b4af",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/PATTERN_A_POOLED/finvault.json"
                 }
               },
@@ -765,7 +765,7 @@
                 "hop4_ingress_decision": "ALLOW",
                 "live_bigquery_rls": {
                   "billing_project": "ramp-portal-dev",
-                  "job_id": "job_iOi1FaPiPujHOTUd_8xV-pUcxQLv",
+                  "job_id": "job_RK3jDGkGsYQ_4u-x3NXCsigCFqJg",
                   "row_count": 2,
                   "rows": [
                     {
@@ -797,7 +797,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "2003f6f16a189f6a799d0ce40a6e6a4c",
+                  "s3_etag": "b916fec15499934670f691902f87e070",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/PATTERN_A_POOLED/finvault.json"
                 }
               },
@@ -896,7 +896,7 @@
                 "hop4_ingress_decision": "ALLOW",
                 "live_bigquery_rls": {
                   "billing_project": "ramp-portal-dev",
-                  "job_id": "job_xU1wAB8ruK0ZmcPOZNvJYQcLZaMO",
+                  "job_id": "job_-wpR-tTijVwTV99hyqlS_YQqy3y-",
                   "row_count": 1,
                   "rows": [
                     {
@@ -919,7 +919,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "9debe9c634b932c93471d7f91f84c006",
+                  "s3_etag": "2afa7a6c09ec5ef47277ada33a557905",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/PATTERN_A_POOLED/retailstream.json"
                 }
               },
@@ -1020,7 +1020,7 @@
                 "hop4_ingress_decision": "ALLOW",
                 "live_bigquery_rls": {
                   "billing_project": "ramp-portal-dev",
-                  "job_id": "job_wtC400GuaonaeFapGu1bdlo0KoN3",
+                  "job_id": "job_c0i81YXVGoiuVawaNvkTYwwJN15G",
                   "row_count": 2,
                   "rows": [
                     {
@@ -1052,7 +1052,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "f71d3a44b257754336d4203441a329d6",
+                  "s3_etag": "feb55620f042f8b0d677d8e1b8efdf8e",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/PATTERN_A_POOLED/finvault.json"
                 }
               },
@@ -1151,7 +1151,7 @@
                 "hop4_ingress_decision": "ALLOW",
                 "live_bigquery_rls": {
                   "billing_project": "ramp-portal-dev",
-                  "job_id": "job_wtC400GuaonaeFapGu1bdlo0KoN3",
+                  "job_id": "job_c0i81YXVGoiuVawaNvkTYwwJN15G",
                   "row_count": 2,
                   "rows": [
                     {
@@ -1183,7 +1183,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "f9054a31e07211b042bba164f9ad5358",
+                  "s3_etag": "d606f02706c7299c4b6274868f7d8c87",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/PATTERN_A_POOLED/finvault.json"
                 }
               },
@@ -1282,7 +1282,7 @@
                 "hop4_ingress_decision": "ALLOW",
                 "live_bigquery_rls": {
                   "billing_project": "ramp-portal-dev",
-                  "job_id": "job_wtC400GuaonaeFapGu1bdlo0KoN3",
+                  "job_id": "job_c0i81YXVGoiuVawaNvkTYwwJN15G",
                   "row_count": 2,
                   "rows": [
                     {
@@ -1314,7 +1314,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "4becf0094396cbde4a789898ab0b8ae0",
+                  "s3_etag": "2d841260b29ffff0b59c285bdcda7c74",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/PATTERN_A_POOLED/finvault.json"
                 }
               },
@@ -1343,7 +1343,60 @@
           "negative_redteam_status": 401,
           "e2e_passed": true
         }
-      ]
+      ],
+      "pattern_gcp_telemetry": {
+        "gcp_project_id": "bbar-138hf0",
+        "pattern_a_finvault_rls_rows": 2,
+        "pattern_a_retailstream_rls_rows": 1,
+        "live_bq_query_ok": true,
+        "finvault_bq": {
+          "live_bq_query_ok": true,
+          "status_code": 200,
+          "billing_project": "ramp-portal-dev",
+          "job_id": "job_c0i81YXVGoiuVawaNvkTYwwJN15G",
+          "location": "us-west1",
+          "total_rows": 2,
+          "rows": [
+            {
+              "entity_id": "ENT-FV-1001",
+              "tenant_id": "finvault",
+              "tier": "ENTERPRISE",
+              "rls_tag": "rls:tenant=finvault",
+              "agent_session_namespace": "tenant:finvault:session:sre-01",
+              "payload_summary": "FinVault Core Wire Settlement Diagnostic Context (DPoP + OBO Verified)",
+              "created_at": "1.793199723260118E9"
+            },
+            {
+              "entity_id": "ENT-FV-1003",
+              "tenant_id": "finvault",
+              "tier": "ENTERPRISE",
+              "rls_tag": "rls:tenant=finvault",
+              "agent_session_namespace": "tenant:finvault:session:sre-03",
+              "payload_summary": "FinVault OCC Liquidity Coverage & Fedwire Intraday Settlement Ledger",
+              "created_at": "1.793199723260118E9"
+            }
+          ]
+        },
+        "retailstream_bq": {
+          "live_bq_query_ok": true,
+          "status_code": 200,
+          "billing_project": "ramp-portal-dev",
+          "job_id": "job_B8JRkSFIrGRjQrtPBJD3Fn2_DgSn",
+          "location": "us-west1",
+          "total_rows": 1,
+          "rows": [
+            {
+              "entity_id": "ENT-RS-2001",
+              "tenant_id": "retailstream",
+              "tier": "STANDARD",
+              "rls_tag": "rls:tenant=retailstream",
+              "agent_session_namespace": "tenant:retailstream:session:ops-04",
+              "payload_summary": "RetailStream Omni-Channel Inventory Forecast & ServiceNow Incident Context",
+              "created_at": "1.793199723260118E9"
+            }
+          ]
+        }
+      }
     },
     "PATTERN_B_SOVEREIGN_SILO": {
       "pattern": "PATTERN_B_SOVEREIGN_SILO",
@@ -1432,7 +1485,7 @@
                 "hop4_ingress_decision": "ALLOW",
                 "live_bigquery_rls": {
                   "billing_project": "ramp-portal-dev",
-                  "job_id": "job_AupEsYE0wXrM233DtSkruvNTZQns",
+                  "job_id": "job_pe9NELLmQ5EfT4UflumEKeVqsfed",
                   "row_count": 2,
                   "rows": [
                     {
@@ -1470,7 +1523,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "59dc9e23cdc9570ac99d794eb33ffdaf",
+                  "s3_etag": "22812a9a0a91d5b7b3043e2b6cb74014",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/PATTERN_B_SOVEREIGN_SILO/finvault.json"
                 }
               }
@@ -1586,7 +1639,7 @@
                 "hop4_ingress_decision": "ALLOW",
                 "live_bigquery_rls": {
                   "billing_project": "ramp-portal-dev",
-                  "job_id": "job_QSW6Yl1mgtV-G8NGlnHPDFfrF-se",
+                  "job_id": "job_Iv_mpMYXNfopR9VFitbhWK8ivEUZ",
                   "row_count": 2,
                   "rows": [
                     {
@@ -1624,7 +1677,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "0142dffcc8d2eb56d58b281d490b417a",
+                  "s3_etag": "f94774fd001b76623cba9558eff6e91b",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/PATTERN_B_SOVEREIGN_SILO/finvault.json"
                 }
               }
@@ -1744,7 +1797,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "e2cc1818b261aa9fba0bd9675e28be09",
+                  "s3_etag": "ef9153bbafd65d49e0b1c66d467345e9",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_B_SOVEREIGN_SILO/retailstream.json"
                 }
               }
@@ -1864,7 +1917,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "3d5f5cf59a78e1d5242af68add82c2e7",
+                  "s3_etag": "a1d5f99d386b725064b9dca894173945",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_B_SOVEREIGN_SILO/finvault.json"
                 },
                 "cloud_kms_21cfr11_signature": {
@@ -1875,8 +1928,8 @@
                   "cfr11_live_kms_signed": true,
                   "cfr11_kms_key_version": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
                   "cfr11_payload_sha256": "ef0e3734ec18390ea72eb040aa3d677aff92a7906d9f3d88b4017fed9d4b07cf",
-                  "cfr11_kms_ecdsa_p256_signature_b64": "MEQCIA7unKYyE3upqeKPuAnJ/7aeV9f3d//qcsHR2OaTYXqIAiA6kVenCpeNqeL3ud0e0Vvt4u1jeMyPOYEnJ9R5uBoBQg==",
-                  "cfr11_hmac_sha256_signature": "226f8a70c3860e9e054d12ad30cc1baf051d036e827465f13fec5d594e8dabb4"
+                  "cfr11_kms_ecdsa_p256_signature_b64": "MEQCICz6Jh1wJHtNqWHBWciRvQPJz4znxCMlpTr/NHo8QQ43AiBBxuhntNqIuH0pb98XwGAq6QQjq6+gxLSXH/xRosPy3Q==",
+                  "cfr11_hmac_sha256_signature": "3b9163128466945bb031979af7246e1d21bf94329651ac54649b31fc98d82fea"
                 }
               }
             }
@@ -2000,7 +2053,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "bcb6fbd0ccfefb6563d7c257eeca8a8c",
+                  "s3_etag": "4dd46c756554af676401da2e83600957",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/PATTERN_B_SOVEREIGN_SILO/finvault.json"
                 }
               }
@@ -2117,7 +2170,7 @@
                 "hop4_ingress_decision": "ALLOW",
                 "live_bigquery_rls": {
                   "billing_project": "ramp-portal-dev",
-                  "job_id": "job_iOi1FaPiPujHOTUd_8xV-pUcxQLv",
+                  "job_id": "job_RK3jDGkGsYQ_4u-x3NXCsigCFqJg",
                   "row_count": 2,
                   "rows": [
                     {
@@ -2155,7 +2208,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "27ee1ca7e29b71d8f6ea7e14d1444ba2",
+                  "s3_etag": "bf0060e7c52b2aa0a322eae9dbba4c05",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/PATTERN_B_SOVEREIGN_SILO/finvault.json"
                 }
               }
@@ -2265,7 +2318,7 @@
                 "hop4_ingress_decision": "ALLOW",
                 "live_bigquery_rls": {
                   "billing_project": "ramp-portal-dev",
-                  "job_id": "job_xU1wAB8ruK0ZmcPOZNvJYQcLZaMO",
+                  "job_id": "job_-wpR-tTijVwTV99hyqlS_YQqy3y-",
                   "row_count": 1,
                   "rows": [
                     {
@@ -2294,7 +2347,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "96b8a0a15d73d448555a362100fc1bbc",
+                  "s3_etag": "2c800465dd7fb7bec442b589e0b6d678",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/PATTERN_B_SOVEREIGN_SILO/retailstream.json"
                 }
               }
@@ -2418,7 +2471,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "b40aa0f18156e2961b3bde7a13b4b35d",
+                  "s3_etag": "47bab0643e616254b17ee4f67845f32a",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/PATTERN_B_SOVEREIGN_SILO/finvault.json"
                 }
               }
@@ -2540,7 +2593,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "1c9804fc78688e460e0acc791b662555",
+                  "s3_etag": "fd268acc4fe10f0128d2ffc0fa98aced",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/PATTERN_B_SOVEREIGN_SILO/finvault.json"
                 }
               }
@@ -2663,7 +2716,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "9bede9f0352f9281a4a6896e54aaa16b",
+                  "s3_etag": "6179f0ee0c0bec55df7e0498d32fa193",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/PATTERN_B_SOVEREIGN_SILO/finvault.json"
                 }
               }
@@ -2702,7 +2755,35 @@
           "negative_redteam_status": 423,
           "e2e_passed": true
         }
-      ]
+      ],
+      "pattern_gcp_telemetry": {
+        "gcp_project_id": "bbar-138hf0",
+        "live_cmek_lockout_enforced": true,
+        "active_finvault_cmek_rows": 2,
+        "live_kms_21cfr11_signed": true,
+        "cmek_lockout": {
+          "active_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
+          "active_vault_rows": 2,
+          "revoked_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault",
+          "cmek_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek",
+          "finvault_active_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
+          "finvault_active_key_state": "ENABLED",
+          "medcore_revoked_key_state": "DISABLED",
+          "medcore_silo_locked_423": true,
+          "medcore_lockout_reason": "Cloud KMS Error: projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED.",
+          "live_cmek_lockout_enforced": true,
+          "http_status": 400,
+          "bigquery_kms_error": "Cloud KMS Error: projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED."
+        },
+        "kms_21cfr11": {
+          "live_kms_signed": true,
+          "key_version": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
+          "payload_sha256": "d9688287f3c4490a47611899783740e67ce5e50cf20784b699dff96ef7e150bf",
+          "signature_b64": "MEUCIQCjFWCcVcjs0R/zyJRmDfDNeFkmwSsKgatzYfc78RFfvAIgNeHCRXyBjY1xhW+r3RJCBZsVPF+LfEeoug+RIX69qjY=",
+          "signature_b64_prefix": "MEUCIQCjFWCcVcjs0R/zyJRmDfDNeFkm",
+          "verified_crc32c": true
+        }
+      }
     },
     "PATTERN_C_HYBRID_PSC_SPOKE": {
       "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
@@ -2793,7 +2874,7 @@
                 "hop4_ingress_decision": "ALLOW",
                 "live_bigquery_rls": {
                   "billing_project": "ramp-portal-dev",
-                  "job_id": "job_AupEsYE0wXrM233DtSkruvNTZQns",
+                  "job_id": "job_pe9NELLmQ5EfT4UflumEKeVqsfed",
                   "row_count": 2,
                   "rows": [
                     {
@@ -2831,7 +2912,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "600cd8ce1c65071487aee98cd3644e76",
+                  "s3_etag": "e1e5299132a6072c7c6a1824e3238177",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
                 }
               }
@@ -2941,7 +3022,7 @@
                 "hop4_ingress_decision": "ALLOW",
                 "live_bigquery_rls": {
                   "billing_project": "ramp-portal-dev",
-                  "job_id": "job_QSW6Yl1mgtV-G8NGlnHPDFfrF-se",
+                  "job_id": "job_Iv_mpMYXNfopR9VFitbhWK8ivEUZ",
                   "row_count": 2,
                   "rows": [
                     {
@@ -2979,7 +3060,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "2e238ee1f1515e98d72f092b10529753",
+                  "s3_etag": "9a1f879553851b2482cdf47c1c9255a2",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
                 }
               }
@@ -3093,7 +3174,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "43ad52d52231fd2ca859738d4f49e7d0",
+                  "s3_etag": "1f249ff4f4d8b57c1956113ddd0fb352",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_C_HYBRID_PSC_SPOKE/retailstream.json"
                 }
               }
@@ -3207,7 +3288,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "71b7e9eef9689fd54cb18d187420a3e1",
+                  "s3_etag": "27b914e470fd2ee05a76c2dd55e12639",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
                 },
                 "cloud_kms_21cfr11_signature": {
@@ -3218,8 +3299,8 @@
                   "cfr11_live_kms_signed": true,
                   "cfr11_kms_key_version": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
                   "cfr11_payload_sha256": "ef0e3734ec18390ea72eb040aa3d677aff92a7906d9f3d88b4017fed9d4b07cf",
-                  "cfr11_kms_ecdsa_p256_signature_b64": "MEQCIA7unKYyE3upqeKPuAnJ/7aeV9f3d//qcsHR2OaTYXqIAiA6kVenCpeNqeL3ud0e0Vvt4u1jeMyPOYEnJ9R5uBoBQg==",
-                  "cfr11_hmac_sha256_signature": "226f8a70c3860e9e054d12ad30cc1baf051d036e827465f13fec5d594e8dabb4"
+                  "cfr11_kms_ecdsa_p256_signature_b64": "MEQCICz6Jh1wJHtNqWHBWciRvQPJz4znxCMlpTr/NHo8QQ43AiBBxuhntNqIuH0pb98XwGAq6QQjq6+gxLSXH/xRosPy3Q==",
+                  "cfr11_hmac_sha256_signature": "3b9163128466945bb031979af7246e1d21bf94329651ac54649b31fc98d82fea"
                 }
               }
             }
@@ -3337,7 +3418,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "b63c5ed8ae5f026cf007227b0c1b5ab4",
+                  "s3_etag": "fc437c80798a7bb7ae207245a1202190",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
                 }
               }
@@ -3448,7 +3529,7 @@
                 "hop4_ingress_decision": "ALLOW",
                 "live_bigquery_rls": {
                   "billing_project": "ramp-portal-dev",
-                  "job_id": "job_iOi1FaPiPujHOTUd_8xV-pUcxQLv",
+                  "job_id": "job_RK3jDGkGsYQ_4u-x3NXCsigCFqJg",
                   "row_count": 2,
                   "rows": [
                     {
@@ -3486,7 +3567,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "af925ddb1a1fe820afb95b3e810a13fd",
+                  "s3_etag": "0d8331d1734e8a82ae5e31b4a85b877f",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
                 }
               }
@@ -3590,7 +3671,7 @@
                 "hop4_ingress_decision": "ALLOW",
                 "live_bigquery_rls": {
                   "billing_project": "ramp-portal-dev",
-                  "job_id": "job_xU1wAB8ruK0ZmcPOZNvJYQcLZaMO",
+                  "job_id": "job_-wpR-tTijVwTV99hyqlS_YQqy3y-",
                   "row_count": 1,
                   "rows": [
                     {
@@ -3619,7 +3700,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "4dee0b1b0fae06d114ae81a526756cdd",
+                  "s3_etag": "8f887a02b8c64a3083c91eb72ea10379",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/PATTERN_C_HYBRID_PSC_SPOKE/retailstream.json"
                 }
               }
@@ -3737,7 +3818,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "ee00607409dee243ec780ef9505f6923",
+                  "s3_etag": "7235f88bd0d5f7d8259735ff5940bbc1",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
                 }
               }
@@ -3853,7 +3934,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "cb21141502e3f962d0f59ee578ce4b11",
+                  "s3_etag": "21dccfef1eec2da2ab5ab9fdc0e420d9",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
                 }
               }
@@ -3970,7 +4051,7 @@
                   "http_status": 200,
                   "is_error": false,
                   "s3_persisted": true,
-                  "s3_etag": "a83f4cfe8f9e00c05141ddb32ace832f",
+                  "s3_etag": "1d3fe468587e9dd18424bb4e5110259d",
                   "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
                 }
               }
@@ -4001,7 +4082,72 @@
           "negative_redteam_status": 403,
           "e2e_passed": true
         }
-      ]
+      ],
+      "pattern_gcp_telemetry": {
+        "gcp_project_id": "bbar-138hf0",
+        "live_psc_registry_ok": true,
+        "psc_endpoints_count": 2,
+        "live_tier_promotions_ok": true,
+        "tier_promotions_count": 2,
+        "psc_registry": {
+          "live_bq_query_ok": true,
+          "status_code": 200,
+          "billing_project": "ramp-portal-dev",
+          "job_id": "job_DPNIvoWbBH2fzW1jWTKP0XkOc2Db",
+          "location": "us-west1",
+          "total_rows": 2,
+          "rows": [
+            {
+              "endpoint_id": "psc-ep-finvault",
+              "tenant_id": "finvault",
+              "hub_vpc": "projects/ramp-portal-dev/global/networks/cymbal-pattern-c-hub-vpc",
+              "psc_nat_subnet": "cymbal-psc-nat-us-west1 (10.240.10.0/28)",
+              "spoke_attachment_uri": "projects/bbar-138hf0/regions/us-west1/serviceAttachments/finvault-spoke-psc",
+              "health_status": "HEALTHY_MTLS_DPOP",
+              "updated_at": "1.79319893917766E9"
+            },
+            {
+              "endpoint_id": "psc-ep-retailstream",
+              "tenant_id": "retailstream",
+              "hub_vpc": "projects/ramp-portal-dev/global/networks/cymbal-pattern-c-hub-vpc",
+              "psc_nat_subnet": "cymbal-psc-nat-us-west1 (10.240.10.0/28)",
+              "spoke_attachment_uri": "projects/bbar-138hf0/regions/us-west1/serviceAttachments/retailstream-spoke-psc",
+              "health_status": "HEALTHY_PROMOTED_ZERO_DOWNTIME",
+              "updated_at": "1.79319893917766E9"
+            }
+          ]
+        },
+        "tier_promotions": {
+          "live_bq_query_ok": true,
+          "status_code": 200,
+          "billing_project": "ramp-portal-dev",
+          "job_id": "job_VlLgafQA5EHWGPtU7TjKyZtbZ5cz",
+          "location": "us-west1",
+          "total_rows": 2,
+          "rows": [
+            {
+              "migration_id": "mig-fv-20261015-01",
+              "tenant_id": "finvault",
+              "from_pattern": "PATTERN_C_HYBRID_BRIDGE",
+              "to_pattern": "PATTERN_B_SOVEREIGN_SILO",
+              "psc_endpoint": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
+              "downtime_ms": "0",
+              "status": "VERIFIED_SOVEREIGN_SILO",
+              "migrated_at": "1.793198937610966E9"
+            },
+            {
+              "migration_id": "mig-rs-20261028-01",
+              "tenant_id": "retailstream",
+              "from_pattern": "PATTERN_A_POOLED",
+              "to_pattern": "PATTERN_C_HYBRID_BRIDGE",
+              "psc_endpoint": "projects/ramp-portal-dev/regions/us-west1/subnetworks/cymbal-psc-nat-us-west1",
+              "downtime_ms": "0",
+              "status": "COMPLETED_ZERO_DOWNTIME",
+              "migrated_at": "1.793198937610966E9"
+            }
+          ]
+        }
+      }
     }
   },
   "products": [
@@ -4073,14 +4219,14 @@
                 "val1": "finvault"
               },
               "kpi_summary": "FinVault OCC Wire Settlement Portfolio: $527.0M across 2 RLS-verified entities (FV-TX-901, FV-TX-902)",
-              "executed_at_utc": "2026-10-29T03:20:22Z",
+              "executed_at_utc": "2026-10-29T14:13:08Z",
               "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
               "sanitized_payload": "Show P1 incident entities and portfolio value for my tenant"
             },
             "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
             "s3LatestMirrorUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/finvault.json",
             "s3Persisted": true,
-            "s3ETag": "9778cd17e559793beef0afab5f7d09bc"
+            "s3ETag": "852e9284a49c5010feeb38e15ddd40f6"
           }
         },
         "live_thoughtspot_cloud_probe": {
@@ -4093,7 +4239,7 @@
               "message": {
                 "debug": {
                   "code": 10002,
-                  "incident_id_guid": "496cd747-5967-42ed-9629-245f8c5215bc",
+                  "incident_id_guid": "8db770aa-e18f-4ebf-87eb-e24159fcbc1f",
                   "trace_id_guid": "tracing-disabled",
                   "debug": "[\"Invalid parameter values: {\\\"credential\\\":\\\"Correct Credential is not specified\\\"}\"]"
                 }
@@ -4105,7 +4251,7 @@
           "live_bq_query_ok": true,
           "status_code": 200,
           "billing_project": "ramp-portal-dev",
-          "job_id": "job_AupEsYE0wXrM233DtSkruvNTZQns",
+          "job_id": "job_pe9NELLmQ5EfT4UflumEKeVqsfed",
           "location": "us-west1",
           "total_rows": 2,
           "rows": [
@@ -4204,20 +4350,20 @@
                 "row_count": 2,
                 "cross_tenant_rows": 0
               },
-              "executed_at_utc": "2026-10-29T03:20:24Z",
+              "executed_at_utc": "2026-10-29T14:13:10Z",
               "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
               "sanitized_payload": ""
             },
             "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
             "s3LatestMirrorUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/finvault.json",
             "s3Persisted": true,
-            "s3ETag": "794c935eabf78b8061391be140a8e78a"
+            "s3ETag": "c02e636793c9e449b7d1df2c399a6fd0"
           }
         },
         "live_sigma_cloud_probe": {
           "oauth2_token_endpoint": "https://api.sigmacomputing.com/v2/auth/token",
           "oauth2_http_status": 400,
-          "sigma_request_id": "01a185ac-4953-7557-8d27-0a98323f6869",
+          "sigma_request_id": "01a18801-e9d7-723e-a391-0dd5ed3f3a40",
           "status_api_description": "All Systems Operational",
           "live_endpoint_reachable": true
         },
@@ -4225,7 +4371,7 @@
           "live_bq_query_ok": true,
           "status_code": 200,
           "billing_project": "ramp-portal-dev",
-          "job_id": "job_QSW6Yl1mgtV-G8NGlnHPDFfrF-se",
+          "job_id": "job_Iv_mpMYXNfopR9VFitbhWK8ivEUZ",
           "location": "us-west1",
           "total_rows": 2,
           "rows": [
@@ -4346,14 +4492,14 @@
               "state": "IMPLEMENTED \u2022 CAB-Approved-3LO-Verified",
               "assigned_group": "RetailStream ITOM & Change Governance",
               "cmdb_ci": "RETAILSTREAM-CHECKOUT-PROD",
-              "executed_at_utc": "2026-10-29T03:20:25Z",
+              "executed_at_utc": "2026-10-29T14:13:11Z",
               "pattern": "PATTERN_A_POOLED",
               "sanitized_payload": ""
             },
             "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_A_POOLED/retailstream.json",
             "s3LatestMirrorUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/retailstream.json",
             "s3Persisted": true,
-            "s3ETag": "31df7c3e8cec87cad4b64254fb0a7adb"
+            "s3ETag": "b0ea5a977d40d40336c4e5f974061759"
           }
         },
         "live_mcp_response": {
@@ -4361,7 +4507,7 @@
           "content": [
             {
               "type": "text",
-              "text": "{\"status\": \"SUCCESS\", \"awsAccountId\": \"393036065405\", \"awsRegion\": \"us-east-1\", \"agentCoreGatewayId\": \"cymbal-a2a-mcp-gateway-suyxm3caof\", \"agentCoreTargetId\": \"ZS9VGYHBQL\", \"toolName\": \"servicenow-itsm___query_servicenow_change_records\", \"tenantId\": \"retailstream\", \"principal\": \"ops-eng@retailstream.com\", \"pattern\": \"PATTERN_A_POOLED\", \"hop2ConsentVerified\": true, \"awsAgentCoreLedgerSurface\": {\"backend_surface\": \"AWS Bedrock AgentCore MCP Target + AWS Lambda S3 Audit Ledger\", \"gateway_id\": \"cymbal-a2a-mcp-gateway-suyxm3caof\", \"target_id\": \"ZS9VGYHBQL\", \"tool_name\": \"servicenow-itsm___query_servicenow_change_records\", \"vendor_api_domain\": \"cymbal-itom.service-now.com\", \"live_ui_url\": \"https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json\", \"s3_bucket\": \"cymbal-aws-federation-393036065405-us-east-1\", \"live_http_status\": 200, \"pattern_ledger_url\": \"https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json&pattern=PATTERN_A_POOLED&tenant=retailstream\"}, \"records\": {\"connector\": \"servicenow-itsm (AWS AgentCore MCP Server)\", \"gatewayTargetName\": \"servicenow-itsm\", \"gatewayToolName\": \"servicenow-itsm___query_servicenow_change_records\", \"resource_uri\": \"api://cymbal-servicenow-mcp/.default\", \"scopes\": [\"servicenow.incidents.read\", \"servicenow.changes.verify\"], \"change_ticket\": \"CHG0049218\", \"incident_ticket\": \"INC0948211\", \"priority\": \"P2 - PCI Checkout ITOM Change Control\", \"state\": \"IMPLEMENTED \\u2022 CAB-Approved-3LO-Verified\", \"assigned_group\": \"RetailStream ITOM & Change Governance\", \"cmdb_ci\": \"RETAILSTREAM-CHECKOUT-PROD\", \"executed_at_utc\": \"2026-10-29T03:20:25Z\", \"pattern\": \"PATTERN_A_POOLED\", \"sanitized_payload\": \"\"}, \"s3AuditLedgerUri\": \"s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_A_POOLED/retailstream.json\", \"s3LatestMirrorUri\": \"s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/retailstream.json\", \"s3Persisted\": true, \"s3ETag\": \"31df7c3e8cec87cad4b64254fb0a7adb\"}"
+              "text": "{\"status\": \"SUCCESS\", \"awsAccountId\": \"393036065405\", \"awsRegion\": \"us-east-1\", \"agentCoreGatewayId\": \"cymbal-a2a-mcp-gateway-suyxm3caof\", \"agentCoreTargetId\": \"ZS9VGYHBQL\", \"toolName\": \"servicenow-itsm___query_servicenow_change_records\", \"tenantId\": \"retailstream\", \"principal\": \"ops-eng@retailstream.com\", \"pattern\": \"PATTERN_A_POOLED\", \"hop2ConsentVerified\": true, \"awsAgentCoreLedgerSurface\": {\"backend_surface\": \"AWS Bedrock AgentCore MCP Target + AWS Lambda S3 Audit Ledger\", \"gateway_id\": \"cymbal-a2a-mcp-gateway-suyxm3caof\", \"target_id\": \"ZS9VGYHBQL\", \"tool_name\": \"servicenow-itsm___query_servicenow_change_records\", \"vendor_api_domain\": \"cymbal-itom.service-now.com\", \"live_ui_url\": \"https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json\", \"s3_bucket\": \"cymbal-aws-federation-393036065405-us-east-1\", \"live_http_status\": 200, \"pattern_ledger_url\": \"https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json&pattern=PATTERN_A_POOLED&tenant=retailstream\"}, \"records\": {\"connector\": \"servicenow-itsm (AWS AgentCore MCP Server)\", \"gatewayTargetName\": \"servicenow-itsm\", \"gatewayToolName\": \"servicenow-itsm___query_servicenow_change_records\", \"resource_uri\": \"api://cymbal-servicenow-mcp/.default\", \"scopes\": [\"servicenow.incidents.read\", \"servicenow.changes.verify\"], \"change_ticket\": \"CHG0049218\", \"incident_ticket\": \"INC0948211\", \"priority\": \"P2 - PCI Checkout ITOM Change Control\", \"state\": \"IMPLEMENTED \\u2022 CAB-Approved-3LO-Verified\", \"assigned_group\": \"RetailStream ITOM & Change Governance\", \"cmdb_ci\": \"RETAILSTREAM-CHECKOUT-PROD\", \"executed_at_utc\": \"2026-10-29T14:13:11Z\", \"pattern\": \"PATTERN_A_POOLED\", \"sanitized_payload\": \"\"}, \"s3AuditLedgerUri\": \"s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_A_POOLED/retailstream.json\", \"s3LatestMirrorUri\": \"s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/retailstream.json\", \"s3Persisted\": true, \"s3ETag\": \"b0ea5a977d40d40336c4e5f974061759\"}"
             }
           ]
         }
@@ -4404,8 +4550,8 @@
           "cfr11_live_kms_signed": true,
           "cfr11_kms_key_version": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
           "cfr11_payload_sha256": "ef0e3734ec18390ea72eb040aa3d677aff92a7906d9f3d88b4017fed9d4b07cf",
-          "cfr11_kms_ecdsa_p256_signature_b64": "MEQCIA7unKYyE3upqeKPuAnJ/7aeV9f3d//qcsHR2OaTYXqIAiA6kVenCpeNqeL3ud0e0Vvt4u1jeMyPOYEnJ9R5uBoBQg==",
-          "cfr11_hmac_sha256_signature": "226f8a70c3860e9e054d12ad30cc1baf051d036e827465f13fec5d594e8dabb4"
+          "cfr11_kms_ecdsa_p256_signature_b64": "MEQCICz6Jh1wJHtNqWHBWciRvQPJz4znxCMlpTr/NHo8QQ43AiBBxuhntNqIuH0pb98XwGAq6QQjq6+gxLSXH/xRosPy3Q==",
+          "cfr11_hmac_sha256_signature": "3b9163128466945bb031979af7246e1d21bf94329651ac54649b31fc98d82fea"
         },
         "veeva_vql_document": {
           "artifact_provenance": "HOP2_GXP_21CFR11_POLICY_TEST_ARTIFACT_SIGNED_BY_CLOUD_KMS",
@@ -4415,8 +4561,8 @@
           "cfr11_live_kms_signed": true,
           "cfr11_kms_key_version": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
           "cfr11_payload_sha256": "ef0e3734ec18390ea72eb040aa3d677aff92a7906d9f3d88b4017fed9d4b07cf",
-          "cfr11_kms_ecdsa_p256_signature_b64": "MEQCIA7unKYyE3upqeKPuAnJ/7aeV9f3d//qcsHR2OaTYXqIAiA6kVenCpeNqeL3ud0e0Vvt4u1jeMyPOYEnJ9R5uBoBQg==",
-          "cfr11_hmac_sha256_signature": "226f8a70c3860e9e054d12ad30cc1baf051d036e827465f13fec5d594e8dabb4"
+          "cfr11_kms_ecdsa_p256_signature_b64": "MEQCICz6Jh1wJHtNqWHBWciRvQPJz4znxCMlpTr/NHo8QQ43AiBBxuhntNqIuH0pb98XwGAq6QQjq6+gxLSXH/xRosPy3Q==",
+          "cfr11_hmac_sha256_signature": "3b9163128466945bb031979af7246e1d21bf94329651ac54649b31fc98d82fea"
         },
         "live_aws_agentcore_mcp_execution": {
           "live_agentcore_ok": true,
@@ -4464,14 +4610,14 @@
               "alt_ast_grade3_pct": 11.5,
               "subjects_evaluated": 52,
               "protocol_deviation_id": "DEV-FVGXP-B12-09",
-              "executed_at_utc": "2026-10-29T03:20:25Z",
+              "executed_at_utc": "2026-10-29T14:13:11Z",
               "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
               "sanitized_payload": ""
             },
             "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
             "s3LatestMirrorUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/finvault.json",
             "s3Persisted": true,
-            "s3ETag": "fbd315bd2a79aae429c20bc6e677f1c6"
+            "s3ETag": "41cc0bd5581291f51e0b73d8819aaedf"
           }
         },
         "live_mcp_response": {
@@ -4479,7 +4625,7 @@
           "content": [
             {
               "type": "text",
-              "text": "{\"status\": \"SUCCESS\", \"awsAccountId\": \"393036065405\", \"awsRegion\": \"us-east-1\", \"agentCoreGatewayId\": \"cymbal-a2a-mcp-gateway-suyxm3caof\", \"agentCoreTargetId\": \"TWQU0KSRVF\", \"toolName\": \"muse-poc___query_muse_study_biomarkers\", \"tenantId\": \"finvault\", \"principal\": \"sre-lead@finvault.com\", \"pattern\": \"PATTERN_C_HYBRID_PSC_SPOKE\", \"hop2ConsentVerified\": true, \"awsAgentCoreLedgerSurface\": {\"backend_surface\": \"AWS Bedrock AgentCore MCP Target + AWS Lambda S3 Audit Ledger\", \"gateway_id\": \"cymbal-a2a-mcp-gateway-suyxm3caof\", \"target_id\": \"TWQU0KSRVF\", \"tool_name\": \"muse-poc___query_muse_study_biomarkers\", \"vendor_api_domain\": \"login.veevavault.com\", \"live_ui_url\": \"https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json\", \"s3_bucket\": \"cymbal-aws-federation-393036065405-us-east-1\", \"live_http_status\": 200, \"pattern_ledger_url\": \"https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json&pattern=PATTERN_C_HYBRID_PSC_SPOKE&tenant=finvault\"}, \"records\": {\"study\": \"FV-GXP-2026-04 (Cohort-B Biomarker Sub-Study)\", \"connector\": \"muse-poc (AWS AgentCore MCP Server)\", \"gatewayTargetName\": \"muse-poc\", \"gatewayToolName\": \"muse-poc___query_muse_study_biomarkers\", \"resource_uri\": \"api://cymbal-muse-poc-mcp/.default\", \"scopes\": [\"muse.studies.read\", \"muse.biomarkers.query\"], \"cohort_b_orr_pct\": 53.8, \"pdl1_high_orr_pct\": 61.2, \"p_value\": 0.0018, \"alt_ast_grade3_pct\": 11.5, \"subjects_evaluated\": 52, \"protocol_deviation_id\": \"DEV-FVGXP-B12-09\", \"executed_at_utc\": \"2026-10-29T03:20:25Z\", \"pattern\": \"PATTERN_C_HYBRID_PSC_SPOKE\", \"sanitized_payload\": \"\"}, \"s3AuditLedgerUri\": \"s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json\", \"s3LatestMirrorUri\": \"s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/finvault.json\", \"s3Persisted\": true, \"s3ETag\": \"fbd315bd2a79aae429c20bc6e677f1c6\"}"
+              "text": "{\"status\": \"SUCCESS\", \"awsAccountId\": \"393036065405\", \"awsRegion\": \"us-east-1\", \"agentCoreGatewayId\": \"cymbal-a2a-mcp-gateway-suyxm3caof\", \"agentCoreTargetId\": \"TWQU0KSRVF\", \"toolName\": \"muse-poc___query_muse_study_biomarkers\", \"tenantId\": \"finvault\", \"principal\": \"sre-lead@finvault.com\", \"pattern\": \"PATTERN_C_HYBRID_PSC_SPOKE\", \"hop2ConsentVerified\": true, \"awsAgentCoreLedgerSurface\": {\"backend_surface\": \"AWS Bedrock AgentCore MCP Target + AWS Lambda S3 Audit Ledger\", \"gateway_id\": \"cymbal-a2a-mcp-gateway-suyxm3caof\", \"target_id\": \"TWQU0KSRVF\", \"tool_name\": \"muse-poc___query_muse_study_biomarkers\", \"vendor_api_domain\": \"login.veevavault.com\", \"live_ui_url\": \"https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json\", \"s3_bucket\": \"cymbal-aws-federation-393036065405-us-east-1\", \"live_http_status\": 200, \"pattern_ledger_url\": \"https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json&pattern=PATTERN_C_HYBRID_PSC_SPOKE&tenant=finvault\"}, \"records\": {\"study\": \"FV-GXP-2026-04 (Cohort-B Biomarker Sub-Study)\", \"connector\": \"muse-poc (AWS AgentCore MCP Server)\", \"gatewayTargetName\": \"muse-poc\", \"gatewayToolName\": \"muse-poc___query_muse_study_biomarkers\", \"resource_uri\": \"api://cymbal-muse-poc-mcp/.default\", \"scopes\": [\"muse.studies.read\", \"muse.biomarkers.query\"], \"cohort_b_orr_pct\": 53.8, \"pdl1_high_orr_pct\": 61.2, \"p_value\": 0.0018, \"alt_ast_grade3_pct\": 11.5, \"subjects_evaluated\": 52, \"protocol_deviation_id\": \"DEV-FVGXP-B12-09\", \"executed_at_utc\": \"2026-10-29T14:13:11Z\", \"pattern\": \"PATTERN_C_HYBRID_PSC_SPOKE\", \"sanitized_payload\": \"\"}, \"s3AuditLedgerUri\": \"s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json\", \"s3LatestMirrorUri\": \"s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/finvault.json\", \"s3Persisted\": true, \"s3ETag\": \"41cc0bd5581291f51e0b73d8819aaedf\"}"
             }
           ]
         }
@@ -4547,21 +4693,21 @@
               "jira_cloud_project": "FINVAULT-SRE",
               "jira_issue_key": "FINVAULT-SRE-1402",
               "escalation_state": "CREATED_WITH_HOP4_SDP_PII_MASKING",
-              "executed_at_utc": "2026-10-29T03:20:26Z",
+              "executed_at_utc": "2026-10-29T14:13:13Z",
               "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
               "sanitized_payload": "P1 Core-Ledger wire delay affecting IBAN [REDACTED-FINVAULT-IBAN] and [REDACTED-FINVAULT-SWIFT]"
             },
             "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
             "s3LatestMirrorUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/finvault.json",
             "s3Persisted": true,
-            "s3ETag": "c6e482c1da798778517ae08f0ffc696a"
+            "s3ETag": "c3db2174b0390f30a5c1803d771cdd09"
           }
         },
         "live_salesforce_cloud_probe": {
           "endpoint": "https://api.status.salesforce.com/v1/instances/NA224/status/preview",
           "http_status": 200,
           "instance_key": "NA224",
-          "release_version": "Winter '27 Patch 9.5",
+          "release_version": "Winter '27 Patch 9.6",
           "instance_status": "OK",
           "live_endpoint_reachable": true
         },
@@ -4642,28 +4788,28 @@
               "genie_space_id": "genie-space-fv-treasury-01",
               "sql_warehouse_id": "wh-databricks-serverless-fv-01",
               "dynamic_sql_guard": "EXECUTE_IMMEDIATE_BLOCKED",
-              "executed_at_utc": "2026-10-29T03:20:28Z",
+              "executed_at_utc": "2026-10-29T14:13:14Z",
               "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
               "sanitized_payload": "SELECT entity_id, tenant_id, portfolio_M FROM pattern_a_pooled_rls_entities"
             },
             "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
             "s3LatestMirrorUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/finvault.json",
             "s3Persisted": true,
-            "s3ETag": "19056c3ffe5acac859816260d1ac36b7"
+            "s3ETag": "4b235796d6a5fcd330024108fce2cad4"
           }
         },
         "live_databricks_cloud_probe": {
           "endpoint": "https://community.cloud.databricks.com/api/2.0/clusters/list",
           "http_status": 401,
           "server_header": "databricks",
-          "databricks_gateway_message": "Credential was not sent or was of an unsupported type for this API. [ReqId: 03519936-fe3f-458f-a89d-06ecb538cd2b]",
+          "databricks_gateway_message": "Credential was not sent or was of an unsupported type for this API. [ReqId: 5003454f-be19-41b5-9e9e-345ffbfc8a40]",
           "live_endpoint_reachable": true
         },
         "live_federated_bigquery_rls": {
           "live_bq_query_ok": true,
           "status_code": 200,
           "billing_project": "ramp-portal-dev",
-          "job_id": "job_iOi1FaPiPujHOTUd_8xV-pUcxQLv",
+          "job_id": "job_RK3jDGkGsYQ_4u-x3NXCsigCFqJg",
           "location": "us-west1",
           "total_rows": 2,
           "rows": [
@@ -4755,14 +4901,14 @@
               "primary_role": "ROLE_CYMBAL_RETAILSTREAM",
               "secondary_roles": "NONE",
               "cortex_semantic_model": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake/retailstream_semantic_model.yaml",
-              "executed_at_utc": "2026-10-29T03:20:29Z",
+              "executed_at_utc": "2026-10-29T14:13:16Z",
               "pattern": "PATTERN_A_POOLED",
               "sanitized_payload": "SELECT * FROM `bbar-138hf0.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities` WHERE tenant_id = 'retailstream' ORDER BY entity_id"
             },
             "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/PATTERN_A_POOLED/retailstream.json",
             "s3LatestMirrorUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/retailstream.json",
             "s3Persisted": true,
-            "s3ETag": "91dc364b03d87c5a7ba680212fceb089"
+            "s3ETag": "5f1de1de5702b11575228b02d5a9721d"
           }
         },
         "live_snowflake_cloud_probe": {
@@ -4777,7 +4923,7 @@
           "live_bq_query_ok": true,
           "status_code": 200,
           "billing_project": "ramp-portal-dev",
-          "job_id": "job_xU1wAB8ruK0ZmcPOZNvJYQcLZaMO",
+          "job_id": "job_-wpR-tTijVwTV99hyqlS_YQqy3y-",
           "location": "us-west1",
           "total_rows": 1,
           "rows": [
@@ -4856,14 +5002,14 @@
               "raas_report_id": "WD-RAAS-FV-COMP-2026",
               "composite_3lo_scope": "finvault:sre-lead@finvault.com:mcp://finvault/workday-hcm-financials-raas-3lo",
               "sdp_masking_policy": "US_SOCIAL_SECURITY_NUMBER + IBAN_CODE REDACTED",
-              "executed_at_utc": "2026-10-29T03:20:30Z",
+              "executed_at_utc": "2026-10-29T14:13:17Z",
               "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
               "sanitized_payload": "Worker: Clara Vance (EVP Treasury) | SSN: [REDACTED_US_SSN] | DirectDeposit IBAN: [REDACTED-FINVAULT-IBAN] | BaseSalary: $420,000 | SupervisoryOrg: FinVault-Global-Treasury"
             },
             "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
             "s3LatestMirrorUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/finvault.json",
             "s3Persisted": true,
-            "s3ETag": "9645fe3e6a6ece467f6d44bf680f48be"
+            "s3ETag": "d1cf5e7e70b8276ebf73615b72ea23c7"
           }
         },
         "live_workday_cloud_probe": {
@@ -4949,14 +5095,14 @@
               "enforced_log_query": "index:cymbal-prod @tenant_id:finvault service:core-ledger-api",
               "apm_p99_latency_ms": 14.2,
               "bits_ai_sre_verdict": "HEALTHY_ZERO_INDIRECT_PROMPT_INJECTION",
-              "executed_at_utc": "2026-10-29T03:20:30Z",
+              "executed_at_utc": "2026-10-29T14:13:18Z",
               "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
               "sanitized_payload": "index:cymbal-prod @tenant_id:finvault service:core-ledger-api"
             },
             "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
             "s3LatestMirrorUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/finvault.json",
             "s3Persisted": true,
-            "s3ETag": "438db61fe6cc3971933173bafa788467"
+            "s3ETag": "628e065d2b25888f737e699a1f02e0c2"
           }
         },
         "live_datadog_cloud_probe": {
@@ -5039,20 +5185,20 @@
               "host_aid": "aid-fv-prod-ledger-001",
               "containment_action": "NETWORK_CONTAINMENT_READY_DPOP_VERIFIED",
               "dpop_jkt_bound": "dpop_jkt_fv_001",
-              "executed_at_utc": "2026-10-29T03:20:31Z",
+              "executed_at_utc": "2026-10-29T14:13:19Z",
               "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
               "sanitized_payload": ""
             },
             "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
             "s3LatestMirrorUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/finvault.json",
             "s3Persisted": true,
-            "s3ETag": "29cdd2cdcf58654d2e1861237cc609c2"
+            "s3ETag": "c45999382123ea9b9137007549a16534"
           }
         },
         "live_crowdstrike_falcon_probe": {
           "oauth2_endpoint": "https://api.crowdstrike.com/oauth2/token",
           "http_status": 401,
-          "falcon_trace_id": "c8980776-323f-412e-89fc-55e1b2746a7e",
+          "falcon_trace_id": "80d740fc-083e-47a9-b157-979f144a894e",
           "live_endpoint_reachable": true
         },
         "live_okta_oidc_probe": {

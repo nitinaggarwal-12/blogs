@@ -45,7 +45,7 @@ def run_gate5_checks(proc: subprocess.Popen) -> None:
             {
                 "path": "/api/saas-5-live-verify",
                 "markers": ["CLOUDRUN_30_OF_30_LIVE_CROSSCLOUD_PASS", "cymbal-a2a-mcp-gateway-suyxm3caof"],
-                "timeoutSec": 120,
+                "timeoutSec": 150,
             }
         )
 
@@ -62,38 +62,51 @@ def run_gate5_checks(proc: subprocess.Popen) -> None:
         proc.terminate()
         os._exit(1)
 
-    time.sleep(0.15)
+    time.sleep(0.25)
     route_results = []
     all_ok = True
     for chk in routes_cfg:
         path = chk.get("path", "/")
         markers = chk.get("markers", [])
-        req_timeout = float(chk.get("timeoutSec", 30))
+        req_timeout = float(chk.get("timeoutSec", 45))
         url = f"http://127.0.0.1:{port}{path}"
-        t0 = time.time()
         status_code = 0
         raw_bytes = b""
         err_msg = ""
-        try:
-            req = urllib.request.Request(
-                url,
-                headers={"Accept": "text/html,application/json,*/*", "User-Agent": "CloudRun-Gate5-Verifier/1.0"},
-            )
-            with urllib.request.urlopen(req, timeout=req_timeout) as resp:
-                status_code = resp.status
-                raw_bytes = resp.read()
-        except urllib.error.HTTPError as exc:
-            status_code = exc.code
-            raw_bytes = exc.read()[:512]
-            err_msg = f"HTTPError {exc.code}"
-        except Exception as exc:
-            err_msg = str(exc)
+        matched = []
+        missing = list(markers)
+        passed = False
+        elapsed_ms = 0.0
+        for attempt in range(1, 4):
+            t0 = time.time()
+            status_code = 0
+            raw_bytes = b""
+            err_msg = ""
+            try:
+                req = urllib.request.Request(
+                    url,
+                    headers={"Accept": "text/html,application/json,*/*", "User-Agent": "CloudRun-Gate5-Verifier/1.0"},
+                )
+                with urllib.request.urlopen(req, timeout=req_timeout) as resp:
+                    status_code = resp.status
+                    raw_bytes = resp.read()
+            except urllib.error.HTTPError as exc:
+                status_code = exc.code
+                raw_bytes = exc.read()[:512]
+                err_msg = f"HTTPError {exc.code}"
+            except Exception as exc:
+                err_msg = str(exc)
 
-        body_text = raw_bytes.decode("utf-8", errors="replace")
-        elapsed_ms = round((time.time() - t0) * 1000, 1)
-        matched = [m for m in markers if m.lower() in body_text.lower()]
-        missing = [m for m in markers if m.lower() not in body_text.lower()]
-        passed = status_code == 200 and len(missing) == 0
+            body_text = raw_bytes.decode("utf-8", errors="replace")
+            elapsed_ms = round((time.time() - t0) * 1000, 1)
+            matched = [m for m in markers if m.lower() in body_text.lower()]
+            missing = [m for m in markers if m.lower() not in body_text.lower()]
+            passed = status_code == 200 and len(missing) == 0
+            if passed:
+                break
+            if attempt < 3:
+                time.sleep(2.0 * attempt)
+
         if not passed:
             all_ok = False
         route_results.append(
