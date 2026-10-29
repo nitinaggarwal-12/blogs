@@ -7,7 +7,7 @@
 
 ## 1. Quick-Start Manual CLI Commands (Run Any Product or Pattern Yourself)
 
-Run these commands directly from `./`:
+Run these commands directly from `/Users/nitinagga/Documents/blogs`:
 
 ```bash
 # 1. Run ALL 10 Third-Party SaaS Products across ALL 3 Patterns (30 E2E Flows / 60 Test Cases)
@@ -53,7 +53,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 ## 2A. Step-by-Step Login & Outcome Validation Instructions (Both Sides: Agent Orchestrator & 10 Live Upstream Software Consoles on AWS EC2)
 
 ### Side 1: Authenticate to AWS Bedrock AgentCore MCP Gateway & Google Cloud 5-Hop Runtime
-1. **Verify AWS Account (`393036065405`, `us-east-1`) & GCP Projects (`cymbal-control-plane`, `cymbal-build-sandbox`)**:
+1. **Verify AWS Account (`393036065405`, `us-east-1`) & GCP Projects (`ramp-portal-dev`, `cymbal-build-sandbox`)**:
    ```bash
    aws sts get-caller-identity --region us-east-1
    gcloud config get-value account
@@ -68,31 +68,32 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
      --auth-parameters USERNAME=sre-lead@finvault.com,PASSWORD='FinVault#2026!Secure' \
      --query 'AuthenticationResult.AccessToken' --output text)
    ```
-3. **List All 10 Registered Third-Party SaaS MCP Targets on Bedrock AgentCore Gateway (`cymbal-a2a-mcp-gateway-kiu8omh4aq`)**:
+3. **List All 10 Registered Third-Party SaaS MCP Targets on Bedrock AgentCore Gateway (`cymbal-a2a-mcp-gateway-suyxm3caof`)**:
    ```bash
-   curl -sS -X POST https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp \
+   curl -sS -X POST https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp \
      -H "Authorization: Bearer $COGNITO_TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"jsonrpc":"2.0","id":"list-10","method":"tools/list","params":{}}' | jq .
    ```
 
-### Side 2: Validate Persisted Cross-Cloud S3 Audit Ledger Outcomes (`?format=json`) Across All 10 Enterprise SaaS Targets
-- **AWS Bedrock AgentCore MCP Gateway**: `cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com` (`us-east-1`)
-- **SSO / OIDC / OBO Principal Credentials Verified Across All 10 Targets**:
-  - **Authorized FinVault Principal (`HTTP 200 ALLOW`)**: `sre-lead@finvault.com` (`tenant_id=finvault`)
-  - **Cross-Tenant Red-Team Principal (`HTTP 403 Forbidden`)**: `ops-eng@retailstream.com` (`tenant_id=retailstream`)
+### Side 2: Login Directly to the 10 Live Upstream Enterprise Software Applications (`https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json`) & Validate Persisted S3 Outcomes
+- **Live AWS EC2 Multi-Container Host**: `i-04924523ac41ff132` (`t3.2xlarge`, Public IP `cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com`, `us-east-1c`)
+- **SSO / OIDC / OBO Principal Credentials Used Across All 10 Live Software Consoles**:
+  - **Authorized FinVault Principal (`HTTP 200 ALLOW`)**: `sre-lead@finvault.com` / Password `FinVault#2026!` (ClickHouse: `finvault_user` / `FinVault#2026!`; HashiCorp Vault Token: `fv-token-finvault-sre-2026`)
+  - **Cross-Tenant Red-Team Principal (`HTTP 403 Forbidden`)**: `ops-eng@retailstream.com` / Password `RetailStream#2026!` (ClickHouse: `retailstream_user` / `RetailStream#2026!`; HashiCorp Vault Token: `rs-token-retailstream-ops-2026`)
   - **Revoked CMEK Silo Principal (`HTTP 423 Locked`)**: `clin-ops@medcore.io` (`kms_key=medcore-revoked-cmek` in `DISABLED` state)
-- **Live S3 Audit Ledger Endpoints (`s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1/cymbal-10saas-ledger/`)**:
-  1. **SAAS-01 — ThoughtSpot Cloud (Spotter Agentic BI v2.0)**: [Validate Live S3 Ledger JSON (`?format=json`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter)
-  2. **SAAS-02 — Sigma Computing (Cloud BI Workbooks REST API v2)**: [Validate Live S3 Ledger JSON (`?format=json`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing)
-  3. **SAAS-03 — ServiceNow ITSM & ITOM (`CHG0049218`)**: [Validate Live S3 Ledger JSON (`?format=json`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm)
-  4. **SAAS-04 — Veeva Vault RIM & Muse Clinical EDC (21 CFR Part 11)**: [Validate Live S3 Ledger JSON (`?format=json`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc)
-  5. **SAAS-05 — Salesforce CRM (`NA224`) & Atlassian Jira Cloud**: [Validate Live S3 Ledger JSON (`?format=json`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira)
-  6. **SAAS-06 — Databricks Data Intelligence Platform (Unity Catalog)**: [Validate Live S3 Ledger JSON (`?format=json`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity)
-  7. **SAAS-07 — Snowflake AI Data Cloud (Cortex Analyst & SQL v2)**: [Validate Live S3 Ledger JSON (`?format=json`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex)
-  8. **SAAS-08 — Workday Enterprise HCM & Financial Management (`RaaS`)**: [Validate Live S3 Ledger JSON (`?format=json`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas)
-  9. **SAAS-09 — Datadog Cloud Observability & Bits AI SRE**: [Validate Live S3 Ledger JSON (`?format=json`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre)
-  10. **SAAS-10 — CrowdStrike Falcon Next-Gen SIEM & Okta Workforce Identity**: [Validate Live S3 Ledger JSON (`?format=json`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta)
+- **Direct Live Upstream Software Login URLs (`s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1/cymbal-10saas-ledger/`) & S3 Audit Ledger Endpoints**:
+  1. **SAAS-01 — Metabase BI (`metabase/metabase:v0.50.26` for ThoughtSpot Spotter BI)**: [Open Live Metabase BI (`:3001/question/27`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json) (`sre-lead@finvault.com` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json)
+  2. **SAAS-02 — Grafana Enterprise (`grafana/grafana-enterprise:11.2.0` for Sigma Computing Workbooks)**: [Open Live Grafana Enterprise (`:3002/d/finvault-sre-wb`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json) (`sre-lead@finvault.com` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json)
+  3. **SAAS-03 — Redmine ITSM (`redmine:5.1-alpine` for ServiceNow ITSM Change Console)**: [Open Live Redmine ITSM (`:3003/projects/finvault-itsm/issues`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json) (`sre-lead@finvault.com` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json)
+  4. **SAAS-04 — NocoDB Clinical EDC (`nocodb/nocodb:0.255.2` for Veeva Vault RIM & Muse EDC)**: [Open Live NocoDB Clinical EDC (`:3004/#/nc/base`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json) (`sre-lead@finvault.com` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json)
+  5. **SAAS-05 — Gitea Enterprise Tracker (`gitea/gitea:1.22.3` for Salesforce CRM & Jira Escalations)**: [Open Live Gitea Issue `#1` (`:3005/finvault/sre-escalations/issues/1`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json) (`sre-lead` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json)
+  6. **SAAS-06 — Trino Distributed SQL Lakehouse (`trinodb/trino:440` for Databricks Unity Catalog)**: [Open Live Trino Cluster UI (`:3006/ui/`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json) (`sre-lead@finvault.com`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json)
+  7. **SAAS-07 — ClickHouse Data Warehouse (`clickhouse/clickhouse-server:24.8-alpine` for Snowflake Cortex SQL)**: [Open Live ClickHouse Play UI (`:3007/play`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json) (`finvault_user` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json)
+  8. **SAAS-08 — Directus HCM & Financials (`directus/directus:11.1.0` for Workday RaaS)**: [Open Live Directus Studio (`:3008/admin/content/hcm_compensation`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json) (`sre-lead@finvault.com` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json)
+  9. **SAAS-09 — Seq Structured Log & APM Server (`datalust/seq:2024.3` for Datadog SRE Observability)**: [Open Live Seq Events UI (`:3009/#/events`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json)
+  10. **SAAS-10 — HashiCorp Vault (`hashicorp/vault:1.13.3` for CrowdStrike & Okta Identity/Secrets)**: [Open Live HashiCorp Vault UI (`:3010/ui/vault/secrets/secret/show/tenants/finvault`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json) (Token: `fv-token-finvault-sre-2026`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json)
+
 ---
 
 ## 1.2 SAAS-01: ThoughtSpot Cloud (Spotter Agentic BI & Liveboards REST API v2.0)
@@ -102,7 +103,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN`
 - **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`thoughtspot-spotter`, target `KD6Z3SV8PX`) + ThoughtSpot REST v2.0 (`org_identifier` + `runtime_filter`)
 - **Live Probed Cloud Endpoint**: `https://try-everywhere.thoughtspot.cloud/api/rest/2.0/auth/token/custom`
+- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `metabase/metabase:v0.50.26 (Metabase Enterprise BI)`
 - **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json)
+- **Interactive Login Credentials for Manual Testing**: Email `sre-lead@finvault.com` / Password `FinVault#2026!` (Cross-tenant: `ops-eng@retailstream.com` / `RetailStream#2026!`)
 - **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
@@ -110,7 +113,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 ```json
 {
   "connector_uri": "mcp://cymbal/thoughtspot-spotter-bi-3lo",
-  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "KD6Z3SV8PX",
   "mcp_tool_name": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
   "thoughtspot_host": "https://try-everywhere.thoughtspot.cloud",
@@ -124,7 +127,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
     "op1": "EQ",
     "val1": "${ctx.tenant_id}"
   },
-  "bq_target_table": "cymbal-build-sandbox.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities"
+  "bq_target_table": "bbar-138hf0.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities"
 }
 ```
 
@@ -177,7 +180,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -190,28 +193,28 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
       "row_count": 2,
       "rows": [
         {
-          "entity_id": "ENT-FV-001",
+          "entity_id": "ENT-FV-1001",
           "tenant_id": "finvault",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Institutional Treasury Bond Pool",
-          "portfolio_nav_usd": "148500000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-01",
+          "payload_summary": "FinVault Core Wire Settlement Diagnostic Context (DPoP + OBO Verified)",
+          "created_at": "1.793199723260118E9"
         },
         {
-          "entity_id": "ENT-FV-002",
+          "entity_id": "ENT-FV-1003",
           "tenant_id": "finvault",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Sovereign Fixed-Income Alpha",
-          "portfolio_nav_usd": "92400000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-03",
+          "payload_summary": "FinVault OCC Liquidity Coverage & Fedwire Intraday Settlement Ledger",
+          "created_at": "1.793199723260118E9"
         }
       ],
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "KD6Z3SV8PX",
       "tool_name": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
       "http_status": 200,
@@ -290,7 +293,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -303,28 +306,28 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
       "row_count": 2,
       "rows": [
         {
-          "entity_id": "ENT-FV-001",
+          "entity_id": "ENT-FV-1001",
           "tenant_id": "finvault",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Institutional Treasury Bond Pool",
-          "portfolio_nav_usd": "148500000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-01",
+          "payload_summary": "FinVault Core Wire Settlement Diagnostic Context (DPoP + OBO Verified)",
+          "created_at": "1.793199723260118E9"
         },
         {
-          "entity_id": "ENT-FV-002",
+          "entity_id": "ENT-FV-1003",
           "tenant_id": "finvault",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Sovereign Fixed-Income Alpha",
-          "portfolio_nav_usd": "92400000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-03",
+          "payload_summary": "FinVault OCC Liquidity Coverage & Fedwire Intraday Settlement Ledger",
+          "created_at": "1.793199723260118E9"
         }
       ],
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "KD6Z3SV8PX",
       "tool_name": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
       "http_status": 200,
@@ -415,7 +418,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -428,28 +431,28 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
       "row_count": 2,
       "rows": [
         {
-          "entity_id": "ENT-FV-001",
+          "entity_id": "ENT-FV-1001",
           "tenant_id": "finvault",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Institutional Treasury Bond Pool",
-          "portfolio_nav_usd": "148500000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-01",
+          "payload_summary": "FinVault Core Wire Settlement Diagnostic Context (DPoP + OBO Verified)",
+          "created_at": "1.793199723260118E9"
         },
         {
-          "entity_id": "ENT-FV-002",
+          "entity_id": "ENT-FV-1003",
           "tenant_id": "finvault",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Sovereign Fixed-Income Alpha",
-          "portfolio_nav_usd": "92400000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-03",
+          "payload_summary": "FinVault OCC Liquidity Coverage & Fedwire Intraday Settlement Ledger",
+          "created_at": "1.793199723260118E9"
         }
       ],
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "KD6Z3SV8PX",
       "tool_name": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
       "http_status": 200,
@@ -496,7 +499,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN`
 - **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`sigma-computing`, target `OZ0KTE8Z8M`) + Signed Workbook User-Attributes (`ua_tenant_id`)
 - **Live Probed Cloud Endpoint**: `https://api.sigmacomputing.com/v2/auth/token`
+- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `grafana/grafana-enterprise:11.2.0 (Grafana Enterprise Multi-Org BI)`
 - **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json)
+- **Interactive Login Credentials for Manual Testing**: User `sre-lead@finvault.com` / Password `FinVault#2026!` in Org `FinVault Bank (finvault-org-01)` (Cross-tenant Org 2: `ops-eng@retailstream.com` / `RetailStream#2026!`)
 - **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
@@ -504,7 +509,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
 ```json
 {
   "connector_uri": "mcp://cymbal/sigma-computing-workbooks-3lo",
-  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "OZ0KTE8Z8M",
   "mcp_tool_name": "sigma-computing___eval_sigma_workbook_rls",
   "sigma_oauth_url": "https://api.sigmacomputing.com/v2/auth/token",
@@ -517,7 +522,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
     "ua_tenant_id": "${ctx.tenant_id}",
     "ua_rls_guc": "app.current_tenant_id=${ctx.tenant_id}"
   },
-  "bq_target_table": "cymbal-build-sandbox.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities"
+  "bq_target_table": "bbar-138hf0.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities"
 }
 ```
 
@@ -570,7 +575,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -583,28 +588,28 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
       "row_count": 2,
       "rows": [
         {
-          "entity_id": "ENT-FV-001",
+          "entity_id": "ENT-FV-1001",
           "tenant_id": "finvault",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Institutional Treasury Bond Pool",
-          "portfolio_nav_usd": "148500000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-01",
+          "payload_summary": "FinVault Core Wire Settlement Diagnostic Context (DPoP + OBO Verified)",
+          "created_at": "1.793199723260118E9"
         },
         {
-          "entity_id": "ENT-FV-002",
+          "entity_id": "ENT-FV-1003",
           "tenant_id": "finvault",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Sovereign Fixed-Income Alpha",
-          "portfolio_nav_usd": "92400000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-03",
+          "payload_summary": "FinVault OCC Liquidity Coverage & Fedwire Intraday Settlement Ledger",
+          "created_at": "1.793199723260118E9"
         }
       ],
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "OZ0KTE8Z8M",
       "tool_name": "sigma-computing___eval_sigma_workbook_rls",
       "http_status": 200,
@@ -684,7 +689,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -697,28 +702,28 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
       "row_count": 2,
       "rows": [
         {
-          "entity_id": "ENT-FV-001",
+          "entity_id": "ENT-FV-1001",
           "tenant_id": "finvault",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Institutional Treasury Bond Pool",
-          "portfolio_nav_usd": "148500000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-01",
+          "payload_summary": "FinVault Core Wire Settlement Diagnostic Context (DPoP + OBO Verified)",
+          "created_at": "1.793199723260118E9"
         },
         {
-          "entity_id": "ENT-FV-002",
+          "entity_id": "ENT-FV-1003",
           "tenant_id": "finvault",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Sovereign Fixed-Income Alpha",
-          "portfolio_nav_usd": "92400000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-03",
+          "payload_summary": "FinVault OCC Liquidity Coverage & Fedwire Intraday Settlement Ledger",
+          "created_at": "1.793199723260118E9"
         }
       ],
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "OZ0KTE8Z8M",
       "tool_name": "sigma-computing___eval_sigma_workbook_rls",
       "http_status": 200,
@@ -809,7 +814,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -822,28 +827,28 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
       "row_count": 2,
       "rows": [
         {
-          "entity_id": "ENT-FV-001",
+          "entity_id": "ENT-FV-1001",
           "tenant_id": "finvault",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Institutional Treasury Bond Pool",
-          "portfolio_nav_usd": "148500000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-01",
+          "payload_summary": "FinVault Core Wire Settlement Diagnostic Context (DPoP + OBO Verified)",
+          "created_at": "1.793199723260118E9"
         },
         {
-          "entity_id": "ENT-FV-002",
+          "entity_id": "ENT-FV-1003",
           "tenant_id": "finvault",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Sovereign Fixed-Income Alpha",
-          "portfolio_nav_usd": "92400000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-03",
+          "payload_summary": "FinVault OCC Liquidity Coverage & Fedwire Intraday Settlement Ledger",
+          "created_at": "1.793199723260118E9"
         }
       ],
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "OZ0KTE8Z8M",
       "tool_name": "sigma-computing___eval_sigma_workbook_rls",
       "http_status": 200,
@@ -889,8 +894,10 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
 - **Canonical MCP Connector URI**: `mcp://retailstream/servicenow-itom-3lo`
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION`
 - **Authentication & Zero-Trust Protocol**: Hop 5 Interactive 3LO OAuth2 Consent + AWS Cognito RS256 OBO -> Bedrock AgentCore MCP (`servicenow-itsm`, target `PLOLWRMI0I`)
-- **Live Probed Cloud Endpoint**: `https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp`
+- **Live Probed Cloud Endpoint**: `https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp`
+- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `redmine:5.1-alpine (Redmine ITSM Change & Incident Console)`
 - **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json)
+- **Interactive Login Credentials for Manual Testing**: Login `sre-lead@finvault.com` / Password `FinVault#2026!` (`API Key: fv_redmine_api_key_2026_finvault`; Cross-tenant `ops-eng@retailstream.com` gets HTTP 403)
 - **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
@@ -898,7 +905,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
 ```json
 {
   "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
-  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "PLOLWRMI0I",
   "mcp_tool_name": "servicenow-itsm___query_servicenow_change_records",
   "cognito_user_pool": "us-east-1_vqlzYM74B",
@@ -955,7 +962,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
     "probe_status_code": 200,
@@ -965,7 +972,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
     "hop3_memory_namespace": "retailstream:ops-eng@retailstream.com:sess-saas-03-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "PLOLWRMI0I",
       "tool_name": "servicenow-itsm___query_servicenow_change_records",
       "http_status": 200,
@@ -1043,7 +1050,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
     "probe_status_code": 200,
@@ -1053,7 +1060,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
     "hop3_memory_namespace": "retailstream:ops-eng@retailstream.com:sess-saas-03-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "PLOLWRMI0I",
       "tool_name": "servicenow-itsm___query_servicenow_change_records",
       "http_status": 200,
@@ -1143,7 +1150,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
     "probe_status_code": 200,
@@ -1153,7 +1160,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
     "hop3_memory_namespace": "retailstream:ops-eng@retailstream.com:sess-saas-03-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "PLOLWRMI0I",
       "tool_name": "servicenow-itsm___query_servicenow_change_records",
       "http_status": 200,
@@ -1198,8 +1205,10 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
 - **Canonical MCP Connector URI**: `mcp://finvault/veeva-muse-clinical-3lo`
 - **Verification Tier**: `TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE`
 - **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`muse-poc`, target `1KZWKOFTWQ`) + FDA 21 CFR Part 11 Cloud KMS Signature
-- **Live Probed Cloud Endpoint**: `https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp`
+- **Live Probed Cloud Endpoint**: `https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp`
+- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `nocodb/nocodb:0.255.2 (NocoDB Clinical EDC & GxP 21 CFR Part 11 Vault)`
 - **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json)
+- **Interactive Login Credentials for Manual Testing**: Email `sre-lead@finvault.com` / Password `FinVault#2026!` (Base: `Veeva Vault RIM & Muse Clinical EDC — Study FV-GXP-2026-04`)
 - **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
@@ -1207,7 +1216,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
 ```json
 {
   "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
-  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "1KZWKOFTWQ",
   "mcp_tool_name": "muse-poc___query_muse_study_biomarkers",
   "hop2_gxp_policy_test_artifact": "VV-DOC-004819 / Study FV-GXP-2026-04 Cohort-B (Signed via Cloud KMS adk-agent-signing-key)",
@@ -1264,7 +1273,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE",
     "probe_status_code": 200,
@@ -1274,7 +1283,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-04-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "1KZWKOFTWQ",
       "tool_name": "muse-poc___query_muse_study_biomarkers",
       "http_status": 200,
@@ -1285,10 +1294,10 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
       "document_number__v": "VV-DOC-004819",
       "name__v": "Clinical Study Protocol & Regulatory Dossier (FV-GXP-2026-04)",
       "status__v": "Steady State (Approved)",
-      "cfr11_kms_key_version": "projects/cymbal-build-sandbox/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
+      "cfr11_kms_key_version": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
       "cfr11_payload_sha256": null,
       "cfr11_kms_ecdsa_p256_signature_b64": "",
-      "cfr11_hmac_sha256_signature": "1e935b305d867cae208cc7e8cfa9dd878d14fc1c4a82987dc86a2da070b95f3b"
+      "cfr11_hmac_sha256_signature": "17258f74f57db851ab7e603d6efeed6db6dfbe67a0f9d71ccc9de0a22761366d"
     }
   },
   "cross_tenant_rows_leaked": 0
@@ -1361,7 +1370,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE",
     "probe_status_code": 200,
@@ -1371,7 +1380,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-04-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "1KZWKOFTWQ",
       "tool_name": "muse-poc___query_muse_study_biomarkers",
       "http_status": 200,
@@ -1382,10 +1391,10 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
       "document_number__v": "VV-DOC-004819",
       "name__v": "Clinical Study Protocol & Regulatory Dossier (FV-GXP-2026-04)",
       "status__v": "Steady State (Approved)",
-      "cfr11_kms_key_version": "projects/cymbal-build-sandbox/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
+      "cfr11_kms_key_version": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
       "cfr11_payload_sha256": null,
       "cfr11_kms_ecdsa_p256_signature_b64": "",
-      "cfr11_hmac_sha256_signature": "1e935b305d867cae208cc7e8cfa9dd878d14fc1c4a82987dc86a2da070b95f3b"
+      "cfr11_hmac_sha256_signature": "17258f74f57db851ab7e603d6efeed6db6dfbe67a0f9d71ccc9de0a22761366d"
     }
   }
 }
@@ -1471,7 +1480,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE",
     "probe_status_code": 200,
@@ -1481,7 +1490,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-04-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "1KZWKOFTWQ",
       "tool_name": "muse-poc___query_muse_study_biomarkers",
       "http_status": 200,
@@ -1492,10 +1501,10 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
       "document_number__v": "VV-DOC-004819",
       "name__v": "Clinical Study Protocol & Regulatory Dossier (FV-GXP-2026-04)",
       "status__v": "Steady State (Approved)",
-      "cfr11_kms_key_version": "projects/cymbal-build-sandbox/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
+      "cfr11_kms_key_version": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
       "cfr11_payload_sha256": null,
       "cfr11_kms_ecdsa_p256_signature_b64": "",
-      "cfr11_hmac_sha256_signature": "1e935b305d867cae208cc7e8cfa9dd878d14fc1c4a82987dc86a2da070b95f3b"
+      "cfr11_hmac_sha256_signature": "17258f74f57db851ab7e603d6efeed6db6dfbe67a0f9d71ccc9de0a22761366d"
     }
   }
 }
@@ -1537,7 +1546,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION`
 - **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`salesforce-jira`, target `W7BF0JRWEA`) + Hop 4 Egress SDP IBAN/SWIFT Masking
 - **Live Probed Cloud Endpoint**: `https://api.status.salesforce.com/v1/instances/NA224/status/preview`
+- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `gitea/gitea:1.22.3 (Gitea Enterprise CRM Case & Engineering Issue Tracker)`
 - **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json)
+- **Interactive Login Credentials for Manual Testing**: Username `sre-lead` (or `sre-lead@finvault.com`) / Password `FinVault#2026!` (Cross-tenant `retailstream-ops` / `RetailStream#2026!` gets HTTP 404 on private org `finvault`)
 - **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
@@ -1545,7 +1556,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
 ```json
 {
   "connector_uri": "mcp://finvault/salesforce-jira-escalation-3lo",
-  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "W7BF0JRWEA",
   "mcp_tool_name": "salesforce-jira___create_redacted_sfdc_jira_escalation",
   "salesforce_instance_api": "https://api.status.salesforce.com/v1/instances/NA224/status/preview",
@@ -1607,7 +1618,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
     "probe_status_code": 200,
@@ -1617,7 +1628,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-05-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "W7BF0JRWEA",
       "tool_name": "salesforce-jira___create_redacted_sfdc_jira_escalation",
       "http_status": 200,
@@ -1695,7 +1706,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
     "probe_status_code": 200,
@@ -1705,7 +1716,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-05-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "W7BF0JRWEA",
       "tool_name": "salesforce-jira___create_redacted_sfdc_jira_escalation",
       "http_status": 200,
@@ -1796,7 +1807,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
     "probe_status_code": 200,
@@ -1806,7 +1817,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-05-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "W7BF0JRWEA",
       "tool_name": "salesforce-jira___create_redacted_sfdc_jira_escalation",
       "http_status": 200,
@@ -1853,7 +1864,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN`
 - **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`databricks-unity`, target `Z1RHXLBK6F`) + Unity Catalog 3-Level Namespace (`cymbal_uc_prod.<tenant>_gold`)
 - **Live Probed Cloud Endpoint**: `https://community.cloud.databricks.com/api/2.0/clusters/list`
+- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `trinodb/trino:440 (Trino Distributed SQL Lakehouse & Catalog Web UI)`
 - **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json)
+- **Interactive Login Credentials for Manual Testing**: Username `sre-lead@finvault.com` (No password required on Trino UI; executes `SELECT * FROM memory.finvault_gold.wire_settlements`)
 - **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
@@ -1861,7 +1874,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
 ```json
 {
   "connector_uri": "mcp://cymbal/databricks-unity-catalog-genie-3lo",
-  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "Z1RHXLBK6F",
   "mcp_tool_name": "databricks-unity___execute_uc_genie_federated_sql",
   "databricks_workspace_api": "https://community.cloud.databricks.com/api/2.0/clusters/list",
@@ -1926,7 +1939,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -1939,28 +1952,28 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
       "row_count": 2,
       "rows": [
         {
-          "entity_id": "ENT-FV-001",
+          "entity_id": "ENT-FV-1001",
           "tenant_id": "finvault",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Institutional Treasury Bond Pool",
-          "portfolio_nav_usd": "148500000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-01",
+          "payload_summary": "FinVault Core Wire Settlement Diagnostic Context (DPoP + OBO Verified)",
+          "created_at": "1.793199723260118E9"
         },
         {
-          "entity_id": "ENT-FV-002",
+          "entity_id": "ENT-FV-1003",
           "tenant_id": "finvault",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Sovereign Fixed-Income Alpha",
-          "portfolio_nav_usd": "92400000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-03",
+          "payload_summary": "FinVault OCC Liquidity Coverage & Fedwire Intraday Settlement Ledger",
+          "created_at": "1.793199723260118E9"
         }
       ],
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "Z1RHXLBK6F",
       "tool_name": "databricks-unity___execute_uc_genie_federated_sql",
       "http_status": 200,
@@ -2039,7 +2052,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -2052,28 +2065,28 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
       "row_count": 2,
       "rows": [
         {
-          "entity_id": "ENT-FV-001",
+          "entity_id": "ENT-FV-1001",
           "tenant_id": "finvault",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Institutional Treasury Bond Pool",
-          "portfolio_nav_usd": "148500000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-01",
+          "payload_summary": "FinVault Core Wire Settlement Diagnostic Context (DPoP + OBO Verified)",
+          "created_at": "1.793199723260118E9"
         },
         {
-          "entity_id": "ENT-FV-002",
+          "entity_id": "ENT-FV-1003",
           "tenant_id": "finvault",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Sovereign Fixed-Income Alpha",
-          "portfolio_nav_usd": "92400000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-03",
+          "payload_summary": "FinVault OCC Liquidity Coverage & Fedwire Intraday Settlement Ledger",
+          "created_at": "1.793199723260118E9"
         }
       ],
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "Z1RHXLBK6F",
       "tool_name": "databricks-unity___execute_uc_genie_federated_sql",
       "http_status": 200,
@@ -2164,7 +2177,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -2177,28 +2190,28 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
       "row_count": 2,
       "rows": [
         {
-          "entity_id": "ENT-FV-001",
+          "entity_id": "ENT-FV-1001",
           "tenant_id": "finvault",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Institutional Treasury Bond Pool",
-          "portfolio_nav_usd": "148500000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-01",
+          "payload_summary": "FinVault Core Wire Settlement Diagnostic Context (DPoP + OBO Verified)",
+          "created_at": "1.793199723260118E9"
         },
         {
-          "entity_id": "ENT-FV-002",
+          "entity_id": "ENT-FV-1003",
           "tenant_id": "finvault",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Sovereign Fixed-Income Alpha",
-          "portfolio_nav_usd": "92400000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-03",
+          "payload_summary": "FinVault OCC Liquidity Coverage & Fedwire Intraday Settlement Ledger",
+          "created_at": "1.793199723260118E9"
         }
       ],
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "Z1RHXLBK6F",
       "tool_name": "databricks-unity___execute_uc_genie_federated_sql",
       "http_status": 200,
@@ -2245,7 +2258,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN`
 - **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`snowflake-cortex`, target `7PB1EK3NJO`) + `USE SECONDARY ROLES NONE` + Primary Role `ROLE_CYMBAL_{TENANT}`
 - **Live Probed Cloud Endpoint**: `https://os37291.us-east-1.snowflakecomputing.com/api/v2/statements`
+- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `clickhouse/clickhouse-server:24.8-alpine (ClickHouse Data Warehouse Play UI with Native Row Policy RLS)`
 - **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json)
+- **Interactive Login Credentials for Manual Testing**: User `finvault_user` / Password `FinVault#2026!` (returns only `finvault` rows via `finvault_rls_policy`; `retailstream_user` / `RetailStream#2026!` returns only `retailstream` rows)
 - **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
@@ -2253,7 +2268,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
 ```json
 {
   "connector_uri": "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
-  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "7PB1EK3NJO",
   "mcp_tool_name": "snowflake-cortex___execute_cortex_analyst_sql",
   "snowflake_sql_rest_v2_url": "https://os37291.us-east-1.snowflakecomputing.com/api/v2/statements",
@@ -2312,7 +2327,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -2325,19 +2340,19 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
       "row_count": 1,
       "rows": [
         {
-          "entity_id": "ENT-RS-001",
+          "entity_id": "ENT-RS-2001",
           "tenant_id": "retailstream",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Omnichannel Inventory Fulfillment",
-          "portfolio_nav_usd": "18250000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "STANDARD",
+          "rls_tag": "rls:tenant=retailstream",
+          "agent_session_namespace": "tenant:retailstream:session:ops-04",
+          "payload_summary": "RetailStream Omni-Channel Inventory Forecast & ServiceNow Incident Context",
+          "created_at": "1.793199723260118E9"
         }
       ],
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "7PB1EK3NJO",
       "tool_name": "snowflake-cortex___execute_cortex_analyst_sql",
       "http_status": 200,
@@ -2416,7 +2431,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -2429,19 +2444,19 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
       "row_count": 1,
       "rows": [
         {
-          "entity_id": "ENT-RS-001",
+          "entity_id": "ENT-RS-2001",
           "tenant_id": "retailstream",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Omnichannel Inventory Fulfillment",
-          "portfolio_nav_usd": "18250000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "STANDARD",
+          "rls_tag": "rls:tenant=retailstream",
+          "agent_session_namespace": "tenant:retailstream:session:ops-04",
+          "payload_summary": "RetailStream Omni-Channel Inventory Forecast & ServiceNow Incident Context",
+          "created_at": "1.793199723260118E9"
         }
       ],
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "7PB1EK3NJO",
       "tool_name": "snowflake-cortex___execute_cortex_analyst_sql",
       "http_status": 200,
@@ -2532,7 +2547,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
@@ -2545,19 +2560,19 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
       "row_count": 1,
       "rows": [
         {
-          "entity_id": "ENT-RS-001",
+          "entity_id": "ENT-RS-2001",
           "tenant_id": "retailstream",
-          "isolation_tier": "TIER_1_POOLED_RLS",
-          "asset_class": "Omnichannel Inventory Fulfillment",
-          "portfolio_nav_usd": "18250000",
-          "rls_enforced": "true",
-          "updated_at": "1.792022944688598E9"
+          "tier": "STANDARD",
+          "rls_tag": "rls:tenant=retailstream",
+          "agent_session_namespace": "tenant:retailstream:session:ops-04",
+          "payload_summary": "RetailStream Omni-Channel Inventory Forecast & ServiceNow Incident Context",
+          "created_at": "1.793199723260118E9"
         }
       ],
       "job_location": null
     },
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "7PB1EK3NJO",
       "tool_name": "snowflake-cortex___execute_cortex_analyst_sql",
       "http_status": 200,
@@ -2604,7 +2619,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION`
 - **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`workday-raas`, target `CXH8BK86IF`) + Composite Principal Vault + Hop 4 SSN/IBAN Redaction
 - **Live Probed Cloud Endpoint**: `https://wd5-services1.myworkday.com/ccx/oauth2/cymbal/token`
+- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `directus/directus:11.1.0 (Directus Enterprise HCM & Financials RaaS Studio)`
 - **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json)
+- **Interactive Login Credentials for Manual Testing**: Email `sre-lead@finvault.com` / Password `FinVault#2026!` (Collection `hcm_compensation` with Hop 4 SDP-redacted `[REDACTED_US_SSN]` & `[REDACTED-FINVAULT-IBAN]`)
 - **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
@@ -2612,7 +2629,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
 ```json
 {
   "connector_uri": "mcp://finvault/workday-hcm-financials-raas-3lo",
-  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "CXH8BK86IF",
   "mcp_tool_name": "workday-raas___fetch_compensation_raas_report",
   "workday_ccx_oauth2_url": "https://wd5-services1.myworkday.com/ccx/oauth2/cymbal/token",
@@ -2673,7 +2690,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
     "probe_status_code": 200,
@@ -2683,7 +2700,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-08-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "CXH8BK86IF",
       "tool_name": "workday-raas___fetch_compensation_raas_report",
       "http_status": 200,
@@ -2762,7 +2779,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
     "probe_status_code": 200,
@@ -2772,7 +2789,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-08-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "CXH8BK86IF",
       "tool_name": "workday-raas___fetch_compensation_raas_report",
       "http_status": 200,
@@ -2863,7 +2880,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
     "probe_status_code": 200,
@@ -2873,7 +2890,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-08-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "CXH8BK86IF",
       "tool_name": "workday-raas___fetch_compensation_raas_report",
       "http_status": 200,
@@ -2920,7 +2937,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN`
 - **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`datadog-sre`, target `A2X7LPMPA7`) + `@tenant_id` Log Index Partitioning + Hop 4 Model Armor Log Screen
 - **Live Probed Cloud Endpoint**: `https://api.datadoghq.com/api/v1/validate`
+- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `datalust/seq:2024.3 (Seq Structured Log & APM Observability Server)`
 - **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json)
+- **Interactive Login Credentials for Manual Testing**: Direct Web UI access at `https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json` (Filter `tenant_id = 'finvault'`; shows `BLOCKED_HTTP_400_INDIRECT_LOG_INJECTION` event)
 - **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
@@ -2928,7 +2947,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
 ```json
 {
   "connector_uri": "mcp://cymbal/datadog-observability-sre-3lo",
-  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "A2X7LPMPA7",
   "mcp_tool_name": "datadog-sre___query_tenant_apm_logs",
   "datadog_api_validate_url": "https://api.datadoghq.com/api/v1/validate",
@@ -2987,7 +3006,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN",
     "probe_status_code": 200,
@@ -2997,7 +3016,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-09-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "A2X7LPMPA7",
       "tool_name": "datadog-sre___query_tenant_apm_logs",
       "http_status": 200,
@@ -3075,7 +3094,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN",
     "probe_status_code": 200,
@@ -3085,7 +3104,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-09-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "A2X7LPMPA7",
       "tool_name": "datadog-sre___query_tenant_apm_logs",
       "http_status": 200,
@@ -3176,7 +3195,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN",
     "probe_status_code": 200,
@@ -3186,7 +3205,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-09-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "A2X7LPMPA7",
       "tool_name": "datadog-sre___query_tenant_apm_logs",
       "http_status": 200,
@@ -3233,7 +3252,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_HOP1_DPOP_AND_CMEK_GUARD`
 - **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`crowdstrike-okta`, target `TXGJHVFBWP`) + Hop 1 RFC 9449 DPoP (`jkt` thumbprint)
 - **Live Probed Cloud Endpoint**: `https://api.crowdstrike.com/oauth2/token`
+- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `hashicorp/vault:1.13.3 (HashiCorp Vault Identity, OIDC/DPoP & CMEK Secrets Engine UI)`
 - **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json)
+- **Interactive Login Credentials for Manual Testing**: Method `Token` -> `fv-token-finvault-sre-2026` (`finvault-sre-policy` ALLOW on `secret/data/tenants/finvault`; Cross-tenant token `rs-token-retailstream-ops-2026` gets HTTP 403)
 - **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
@@ -3241,7 +3262,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
 ```json
 {
   "connector_uri": "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
-  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "TXGJHVFBWP",
   "mcp_tool_name": "crowdstrike-okta___contain_xdr_host_with_dpop",
   "crowdstrike_oauth2_url": "https://api.crowdstrike.com/oauth2/token",
@@ -3300,7 +3321,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "hop3_cached_prefix_discount_pct": 90,
   "hop4_model_armor_and_sdp_clean": true,
   "hop5_pooled_rls_verified": true,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_HOP1_DPOP_AND_CMEK_GUARD",
     "probe_status_code": 200,
@@ -3310,7 +3331,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-10-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "TXGJHVFBWP",
       "tool_name": "crowdstrike-okta___contain_xdr_host_with_dpop",
       "http_status": 200,
@@ -3389,7 +3410,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
   "cmek_key_state": "ENABLED",
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_HOP1_DPOP_AND_CMEK_GUARD",
     "probe_status_code": 200,
@@ -3399,7 +3420,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-10-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "TXGJHVFBWP",
       "tool_name": "crowdstrike-okta___contain_xdr_host_with_dpop",
       "http_status": 200,
@@ -3490,7 +3511,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
   "post_upgrade_thinking_budget": 8000,
-  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_HOP1_DPOP_AND_CMEK_GUARD",
     "probe_status_code": 200,
@@ -3500,7 +3521,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-10-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
     "live_aws_bedrock_agentcore_mcp": {
-      "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+      "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
       "target_id": "TXGJHVFBWP",
       "tool_name": "crowdstrike-okta___contain_xdr_host_with_dpop",
       "http_status": 200,

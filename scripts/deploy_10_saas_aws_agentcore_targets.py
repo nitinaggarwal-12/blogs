@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Deploys all 10 Enterprise Third-Party SaaS MCP Targets to Live AWS Bedrock AgentCore MCP Gateway
-(`cymbal-a2a-mcp-gateway-kiu8omh4aq`, AWS Account `393036065405`, `us-east-1`) and updates the
+(`cymbal-a2a-mcp-gateway-suyxm3caof`, AWS Account `393036065405`, `us-east-1`) and updates the
 live AWS Lambda Function (`cymbal-a2a-mcp-remote-peer`) + S3 Audit Ledger (`s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/`).
 
 All 10 Registered Bedrock AgentCore MCP Gateway Targets:
@@ -36,7 +36,7 @@ ACCOUNT_ID = "393036065405"
 REGION = "us-east-1"
 FUNCTION_NAME = "cymbal-a2a-mcp-remote-peer"
 ROLE_ARN = f"arn:aws:iam::{ACCOUNT_ID}:role/a2a-agentcore-runtime-exec"
-GATEWAY_ID = "cymbal-a2a-mcp-gateway-kiu8omh4aq"
+GATEWAY_ID = "cymbal-a2a-mcp-gateway-suyxm3caof"
 GATEWAY_URL = f"https://{GATEWAY_ID}.gateway.bedrock-agentcore.{REGION}.amazonaws.com/mcp"
 S3_BUCKET = f"cymbal-aws-federation-{ACCOUNT_ID}-{REGION}"
 
@@ -417,7 +417,7 @@ _orig_handle_http_request = _handle_http_request
 def _probe_live_ec2_upstream(target_key: str) -> dict:
     info = dict(REAL_EC2_UPSTREAM_MAP.get(target_key, REAL_EC2_UPSTREAM_MAP["thoughtspot-spotter"]))
     info["ec2_instance_id"] = "i-04924523ac41ff132"
-    info["ec2_public_ip"] = "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com"
+    info["ec2_public_ip"] = "cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com"
     try:
         req = urllib.request.Request(info["health_url"], method="GET")
         with urllib.request.urlopen(req, timeout=2.5) as resp:

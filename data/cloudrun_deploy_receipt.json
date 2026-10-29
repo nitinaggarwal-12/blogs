@@ -2,16 +2,55 @@
   "serviceName": "ge-blogs",
   "beyondCorpUrl": "https://ge-blogs-248990048888.cr.gclb.goog",
   "directCloudRunUrl": "https://ge-blogs-mi7l4h536a-uw.a.run.app",
-  "buildProject": "cymbal-build-sandbox",
+  "buildProject": "ramp-portal-dev",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "ge-blogs-00024-ng7",
-  "latestCreatedRevisionName": "ge-blogs-00024-ng7",
+  "latestReadyRevisionName": "ge-blogs-00026-lmw",
+  "latestCreatedRevisionName": "ge-blogs-00026-lmw",
   "readyStatus": "True",
   "trafficPercent": 100,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261028-134428-rule58",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261028-181935-rule58",
   "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
-  "verifiedAt": "2026-10-28T13:45:14Z",
+  "liveHttpVerification": {
+    "verifiedAt": "2026-10-28T18:20:38Z",
+    "verificationMode": "cloud_run_revision_live_http_dom_probe",
+    "project": "ramp-portal-dev",
+    "region": "us-west1",
+    "service": "ge-blogs",
+    "revision": "ge-blogs-00026-lmw",
+    "overallPassed": true,
+    "routes": [
+      {
+        "path": "/",
+        "httpStatus": 200,
+        "responseBytes": 588155,
+        "bodySha256Short": "80f9270b136b8812",
+        "latencyMs": 10400.5,
+        "markersMatched": [
+          "Multi-Tenancy Architecture",
+          "Pattern A"
+        ],
+        "markersMissing": [],
+        "passed": true,
+        "error": ""
+      },
+      {
+        "path": "/api/health",
+        "httpStatus": 200,
+        "responseBytes": 35011,
+        "bodySha256Short": "ac3d1e719fc499a4",
+        "latencyMs": 15901.6,
+        "markersMatched": [
+          "HEALTHY",
+          "cymbal-geap-multitenant-portal"
+        ],
+        "markersMissing": [],
+        "passed": true,
+        "error": ""
+      }
+    ]
+  },
+  "verifiedAt": "2026-10-28T18:20:49Z",
   "certifiedDiagramsCount": 14,
   "workstreamsCount": 5
 }

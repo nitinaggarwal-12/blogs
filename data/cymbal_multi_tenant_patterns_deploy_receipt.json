@@ -1,0 +1,73 @@
+{
+  "serviceName": "cymbal-multi-tenant-patterns",
+  "beyondCorpUrl": "https://cymbal-multi-tenant-patterns-248990048888.cr.gclb.goog",
+  "directCloudRunUrl": "https://cymbal-multi-tenant-patterns-mi7l4h536a-uw.a.run.app",
+  "buildProject": "ramp-portal-dev",
+  "runProject": "ramp-portal-dev",
+  "region": "us-west1",
+  "latestReadyRevisionName": "cymbal-multi-tenant-patterns-00002-vs2",
+  "latestCreatedRevisionName": "cymbal-multi-tenant-patterns-00002-vs2",
+  "readyStatus": "True",
+  "trafficPercent": 100,
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/cymbal-multi-tenant-patterns:v20261028-163440-rule58",
+  "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for cymbal-multi-tenant-patterns-00002-vs2",
+  "liveHttpVerification": {
+    "verifiedAt": "2026-10-28T16:35:17Z",
+    "verificationMode": "cloud_run_revision_live_http_dom_probe",
+    "project": "ramp-portal-dev",
+    "region": "us-west1",
+    "service": "cymbal-multi-tenant-patterns",
+    "revision": "cymbal-multi-tenant-patterns-00002-vs2",
+    "overallPassed": true,
+    "routes": [
+      {
+        "path": "/",
+        "httpStatus": 200,
+        "responseBytes": 2434,
+        "bodySha256Short": "6b319aefb64aafbb",
+        "latencyMs": 19401.6,
+        "markersMatched": [
+          "E2E_MULTI_TENANT_PATTERNS_20_20_PASS",
+          "\"assertions_passed\": 20"
+        ],
+        "markersMissing": [],
+        "passed": true,
+        "error": ""
+      }
+    ],
+    "crossContainerInVpcJobVerification": {
+      "verifiedAt": "2026-10-28T16:35:50Z",
+      "verifierExecution": "cloudrun-live-e2e-verifier-pzds5",
+      "project": "bbar-138hf0",
+      "region": "us-west1",
+      "overallPassed": true,
+      "servicesVerified": 1,
+      "results": [
+        {
+          "service": "cymbal-multi-tenant-patterns",
+          "baseUrl": "https://cymbal-multi-tenant-patterns-fm3mts5x3a-uw.a.run.app",
+          "passed": true,
+          "routes": [
+            {
+              "path": "/",
+              "url": "https://cymbal-multi-tenant-patterns-fm3mts5x3a-uw.a.run.app/",
+              "httpStatus": 200,
+              "responseBytes": 2432,
+              "latencyMs": 2924.5,
+              "markersMatched": [
+                "E2E_MULTI_TENANT_PATTERNS_20_20_PASS",
+                "\"assertions_passed\": 20"
+              ],
+              "markersMissing": [],
+              "passed": true,
+              "error": ""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "verifiedAt": "2026-10-28T16:36:06Z",
+  "assertionsPassed": 20,
+  "assertionsTotal": 20
+}

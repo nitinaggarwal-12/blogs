@@ -1,8 +1,8 @@
 {
   "awsAccountId": "393036065405",
   "awsRegion": "us-east-1",
-  "gatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
-  "gatewayUrl": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "gatewayId": "cymbal-a2a-mcp-gateway-suyxm3caof",
+  "gatewayUrl": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "cognitoUserPoolId": "us-east-1_vqlzYM74B",
   "lambdaFunctionArn": "arn:aws:lambda:us-east-1:393036065405:function:cymbal-a2a-mcp-remote-peer",
   "s3Bucket": "cymbal-aws-federation-393036065405-us-east-1",
@@ -20,7 +20,7 @@
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
         "awsRegion": "us-east-1",
-        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-suyxm3caof",
         "agentCoreTargetId": "KD6Z3SV8PX",
         "toolName": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
         "tenantId": "finvault",
@@ -34,7 +34,7 @@
           "login_user": "sre-lead@finvault.com",
           "login_pass": "FinVault#2026!",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "records": {
@@ -65,7 +65,7 @@
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
         "awsRegion": "us-east-1",
-        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-suyxm3caof",
         "agentCoreTargetId": "OZ0KTE8Z8M",
         "toolName": "sigma-computing___eval_sigma_workbook_rls",
         "tenantId": "finvault",
@@ -79,7 +79,7 @@
           "login_user": "sre-lead@finvault.com",
           "login_pass": "FinVault#2026!",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "records": {
@@ -109,7 +109,7 @@
       "response": {
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
-        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-suyxm3caof",
         "agentCoreTargetId": "PLOLWRMI0I",
         "toolName": "servicenow-itsm___query_servicenow_change_records",
         "studyId": "FV-GXP-2026-04",
@@ -138,7 +138,7 @@
           "login_user": "sre-lead@finvault.com",
           "login_pass": "FinVault#2026!",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/finvault.json"
@@ -154,7 +154,7 @@
       "response": {
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
-        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-suyxm3caof",
         "agentCoreTargetId": "1KZWKOFTWQ",
         "toolName": "muse-poc___query_muse_study_biomarkers",
         "studyId": "FV-GXP-2026-04",
@@ -184,7 +184,7 @@
           "login_user": "sre-lead@finvault.com",
           "login_pass": "FinVault#2026!",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/finvault.json"
@@ -201,7 +201,7 @@
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
         "awsRegion": "us-east-1",
-        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-suyxm3caof",
         "agentCoreTargetId": "W7BF0JRWEA",
         "toolName": "salesforce-jira___create_redacted_sfdc_jira_escalation",
         "tenantId": "finvault",
@@ -215,7 +215,7 @@
           "login_user": "sre-lead",
           "login_pass": "FinVault#2026!",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "records": {
@@ -242,7 +242,7 @@
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
         "awsRegion": "us-east-1",
-        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-suyxm3caof",
         "agentCoreTargetId": "Z1RHXLBK6F",
         "toolName": "databricks-unity___execute_uc_genie_federated_sql",
         "tenantId": "finvault",
@@ -256,7 +256,7 @@
           "login_user": "sre-lead@finvault.com",
           "login_pass": "(No password required in Trino UI)",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "records": {
@@ -282,7 +282,7 @@
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
         "awsRegion": "us-east-1",
-        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-suyxm3caof",
         "agentCoreTargetId": "7PB1EK3NJO",
         "toolName": "snowflake-cortex___execute_cortex_analyst_sql",
         "tenantId": "finvault",
@@ -296,7 +296,7 @@
           "login_user": "finvault_user",
           "login_pass": "FinVault#2026!",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "records": {
@@ -322,7 +322,7 @@
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
         "awsRegion": "us-east-1",
-        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-suyxm3caof",
         "agentCoreTargetId": "CXH8BK86IF",
         "toolName": "workday-raas___fetch_compensation_raas_report",
         "tenantId": "finvault",
@@ -336,7 +336,7 @@
           "login_user": "sre-lead@finvault.com",
           "login_pass": "FinVault#2026!",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "records": {
@@ -362,7 +362,7 @@
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
         "awsRegion": "us-east-1",
-        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-suyxm3caof",
         "agentCoreTargetId": "A2X7LPMPA7",
         "toolName": "datadog-sre___query_tenant_apm_logs",
         "tenantId": "finvault",
@@ -376,7 +376,7 @@
           "login_user": "sre-lead@finvault.com",
           "login_pass": "FinVault#2026!",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "records": {
@@ -402,7 +402,7 @@
         "status": "SUCCESS",
         "awsAccountId": "393036065405",
         "awsRegion": "us-east-1",
-        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
+        "agentCoreGatewayId": "cymbal-a2a-mcp-gateway-suyxm3caof",
         "agentCoreTargetId": "TXGJHVFBWP",
         "toolName": "crowdstrike-okta___contain_xdr_host_with_dpop",
         "tenantId": "finvault",
@@ -416,7 +416,7 @@
           "login_user": "Token",
           "login_pass": "fv-token-finvault-sre-2026",
           "ec2_instance_id": "i-04924523ac41ff132",
-          "ec2_public_ip": "cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
+          "ec2_public_ip": "cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com",
           "live_http_status": 200
         },
         "records": {

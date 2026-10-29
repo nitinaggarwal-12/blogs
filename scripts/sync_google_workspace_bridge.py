@@ -29,7 +29,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 SLIDES_DIR = ROOT_DIR / "slides"
 MANIFEST_FILE = SLIDES_DIR / "cloud_viewer_manifest.json"
 
-QUOTA_PROJECT = "cymbal-build-sandbox"
+QUOTA_PROJECT = "ramp-portal-dev"
 DEFAULT_USER_EMAIL = "nitinagga@google.com"
 DEFAULT_OAUTH_CLIENT_ID = "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com"
 
@@ -189,7 +189,6 @@ def _upload_or_patch_pptx_bytes(
     tok: str,
     preferred_id: Optional[str] = None,
 ) -> Dict[str, Any]:
-    live_qp = "ramp-portal-dev" if QUOTA_PROJECT == "cymbal-build-sandbox" else QUOTA_PROJECT
     boundary = "----GEAPCloudBridgeBoundary" + uuid.uuid4().hex
     meta_bytes = json.dumps(
         {
@@ -212,7 +211,7 @@ def _upload_or_patch_pptx_bytes(
         try:
             headers = {
                 "Authorization": f"Bearer {tok}",
-                "x-goog-user-project": live_qp,
+                "x-goog-user-project": QUOTA_PROJECT,
                 "Content-Type": f"multipart/related; boundary={boundary}",
             }
             patch_req = urllib.request.Request(
@@ -228,7 +227,7 @@ def _upload_or_patch_pptx_bytes(
 
     post_headers = {
         "Authorization": f"Bearer {tok}",
-        "x-goog-user-project": live_qp,
+        "x-goog-user-project": QUOTA_PROJECT,
         "Content-Type": f"multipart/related; boundary={boundary}",
     }
     req = urllib.request.Request(
@@ -450,15 +449,14 @@ def _compile_markdown_for_native_docs_batch(raw_md: str, fallback_title: str) ->
 
 def _sync_markdown_into_existing_google_doc(fid: str, md_path: Path, title: str, tok: str) -> None:
     """Rule 49: Update native Google Doc body in-place via Docs API v1 documents.batchUpdate (0 Drive HTML import)."""
-    live_qp = "ramp-portal-dev" if QUOTA_PROJECT == "cymbal-build-sandbox" else QUOTA_PROJECT
     headers = {
         "Authorization": f"Bearer {tok}",
-        "x-goog-user-project": live_qp,
+        "x-goog-user-project": QUOTA_PROJECT,
         "Content-Type": "application/json; charset=UTF-8",
     }
     get_req = urllib.request.Request(
         f"https://docs.googleapis.com/v1/documents/{urllib.parse.quote(fid)}",
-        headers={"Authorization": f"Bearer {tok}", "x-goog-user-project": live_qp},
+        headers={"Authorization": f"Bearer {tok}", "x-goog-user-project": QUOTA_PROJECT},
         method="GET",
     )
     with urllib.request.urlopen(get_req, timeout=45) as resp:
@@ -535,7 +533,6 @@ def upload_md_to_google_docs(
             return existing
         raise RuntimeError("No Google Drive OAuth token available to sync native Google Doc.")
 
-    live_qp = "ramp-portal-dev" if QUOTA_PROJECT == "cymbal-build-sandbox" else QUOTA_PROJECT
     rel_path = str(md_path.relative_to(ROOT_DIR))
 
     if existing and existing.get("googleDocsId"):
@@ -551,7 +548,7 @@ def upload_md_to_google_docs(
             data=copy_body,
             headers={
                 "Authorization": f"Bearer {tok}",
-                "x-goog-user-project": live_qp,
+                "x-goog-user-project": QUOTA_PROJECT,
                 "Content-Type": "application/json; charset=UTF-8",
             },
             method="POST",
@@ -581,7 +578,6 @@ def upload_md_to_google_docs(
 
 
 def export_google_file_pdf_bytes(file_id: str, mode: str = "slides") -> bytes:
-    live_qp = "ramp-portal-dev" if QUOTA_PROJECT == "cymbal-build-sandbox" else QUOTA_PROJECT
     tok = get_drive_access_token()
     if tok:
         try:
@@ -589,7 +585,7 @@ def export_google_file_pdf_bytes(file_id: str, mode: str = "slides") -> bytes:
                 f"https://www.googleapis.com/drive/v3/files/{urllib.parse.quote(file_id)}/export?mimeType=application/pdf",
                 headers={
                     "Authorization": f"Bearer {tok}",
-                    "x-goog-user-project": live_qp,
+                    "x-goog-user-project": QUOTA_PROJECT,
                 },
             )
             with urllib.request.urlopen(req, timeout=60) as resp:

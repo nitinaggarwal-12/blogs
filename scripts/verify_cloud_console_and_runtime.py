@@ -38,103 +38,119 @@ def run_cmd(cmd: list[str], cwd: Path = ROOT_DIR, timeout: int = 30) -> tuple[in
 
 
 def verify_gcp_cloud_console() -> dict:
-    print("☁️  [1/6] Verifying Live Google Cloud Console Project, APIs, Cloud Armor WAF, Hub/Spoke VPCs, PSC & KMS...")
+    print("☁️  [1/6] Verifying Live Google Cloud Console Hub (`ramp-portal-dev`) & Sovereign Silo (`bbar-138hf0`)...")
     _, account, _ = run_cmd(["gcloud", "config", "get-value", "account"])
-    _, project_id, _ = run_cmd(["gcloud", "config", "get-value", "project"])
-    if not project_id:
-        project_id = "cymbal-build-sandbox"
+    hub_project = "ramp-portal-dev"
+    silo_project = "bbar-138hf0"
 
     rc_proj, proj_json_str, _ = run_cmd(
-        ["gcloud", "projects", "describe", project_id, "--format=json"]
+        ["gcloud", "projects", "describe", hub_project, "--format=json"]
     )
     proj_info = json.loads(proj_json_str) if rc_proj == 0 and proj_json_str else {}
 
-    rc_svc, svc_json_str, _ = run_cmd(
-        [
-            "gcloud",
-            "services",
-            "list",
-            f"--project={project_id}",
-            "--enabled",
-            "--format=json",
-        ],
-        timeout=45,
+    rc_silo, silo_json_str, _ = run_cmd(
+        ["gcloud", "projects", "describe", silo_project, "--format=json"]
     )
-    enabled_services = []
-    if rc_svc == 0 and svc_json_str:
-        raw_svcs = json.loads(svc_json_str)
-        enabled_services = sorted(
-            [s.get("config", {}).get("name", "") for s in raw_svcs if s.get("config", {}).get("name")]
+    silo_info = json.loads(silo_json_str) if rc_silo == 0 and silo_json_str else {}
+
+    enabled_services_set = set()
+    for pid in (hub_project, silo_project):
+        rc_svc, svc_json_str, _ = run_cmd(
+            [
+                "gcloud",
+                "services",
+                "list",
+                f"--project={pid}",
+                "--enabled",
+                "--format=json",
+            ],
+            timeout=45,
         )
+        if rc_svc == 0 and svc_json_str:
+            for s in json.loads(svc_json_str):
+                name = s.get("config", {}).get("name", "")
+                if name:
+                    enabled_services_set.add(name)
+    enabled_services = sorted(enabled_services_set)
 
     required_core_apis = [
         "aiplatform.googleapis.com",
         "bigquery.googleapis.com",
-        "bigquerydatapolicy.googleapis.com",
         "cloudkms.googleapis.com",
         "compute.googleapis.com",
         "discoveryengine.googleapis.com",
         "iam.googleapis.com",
         "logging.googleapis.com",
-        "orgpolicy.googleapis.com",
         "run.googleapis.com",
+        "storage.googleapis.com",
         "sts.googleapis.com",
-        "telemetry.googleapis.com",
     ]
-    verified_core_apis = [api for api in required_core_apis if api in enabled_services]
+    verified_core_apis = [api for api in required_core_apis if api in enabled_services_set]
 
-    # Verify live provisioned Cloud Armor WAF, VPCs, PSC NAT Subnets, and PSC Consumer IPs
-    _, waf_json, waf_err = run_cmd(
-        ["gcloud", "compute", "security-policies", "list", f"--project={project_id}", "--format=json"]
+    # Live Cloud Armor WAF in Silo project
+    _, waf_json, _ = run_cmd(
+        ["gcloud", "compute", "security-policies", "list", f"--project={silo_project}", "--format=json"]
     )
     waf_policies = [w.get("name") for w in (json.loads(waf_json) if waf_json else [])]
 
-    _, net_json, net_err = run_cmd(
-        ["gcloud", "compute", "networks", "list", f"--project={project_id}", "--format=json"]
-    )
-    vpc_networks = [n.get("name") for n in (json.loads(net_json) if net_json else [])]
+    # Live Hub & Spoke VPCs across Hub and Silo projects
+    vpc_networks = []
+    subnets = []
+    for pid in (hub_project, silo_project):
+        _, net_json, _ = run_cmd(
+            ["gcloud", "compute", "networks", "list", f"--project={pid}", "--format=json"]
+        )
+        for n in (json.loads(net_json) if net_json else []):
+            vpc_networks.append(f"{pid}:{n.get('name')}")
+        _, sub_json, _ = run_cmd(
+            ["gcloud", "compute", "networks", "subnets", "list", f"--project={pid}", "--regions=us-west1", "--format=json"]
+        )
+        for s in (json.loads(sub_json) if sub_json else []):
+            subnets.append(
+                {
+                    "project": pid,
+                    "name": s.get("name"),
+                    "cidr": s.get("ipCidrRange"),
+                    "purpose": s.get("purpose", "PRIVATE"),
+                }
+            )
 
-    _, sub_json, _ = run_cmd(
-        ["gcloud", "compute", "networks", "subnets", "list", f"--project={project_id}", "--regions=us-west1", "--format=json"]
+    _, kms_json, _ = run_cmd(
+        [
+            "gcloud",
+            "kms",
+            "keys",
+            "list",
+            "--keyring=cymbal-multi-tenant-kr",
+            "--location=us-west1",
+            f"--project={silo_project}",
+            "--format=json",
+        ]
     )
-    subnets = [
-        {"name": s.get("name"), "cidr": s.get("ipCidrRange"), "purpose": s.get("purpose", "PRIVATE")}
-        for s in (json.loads(sub_json) if sub_json else [])
-    ]
+    kms_keys = [k.get("name", "").split("/")[-1] for k in (json.loads(kms_json) if kms_json else [])]
 
-    _, addr_json, _ = run_cmd(
-        ["gcloud", "compute", "addresses", "list", f"--project={project_id}", "--regions=us-west1", "--format=json"]
+    all_infra_ok = (
+        len(verified_core_apis) == len(required_core_apis)
+        and proj_info.get("lifecycleState") == "ACTIVE"
+        and silo_info.get("lifecycleState") == "ACTIVE"
+        and "cymbal-pooled-edge-waf" in waf_policies
+        and any("cymbal-pattern-c-hub-vpc" in v for v in vpc_networks)
+        and any("cymbal-pattern-c-finvault-spoke-vpc" in v for v in vpc_networks)
+        and any(s.get("name") == "cymbal-psc-nat-us-west1" and s.get("purpose") == "PRIVATE_SERVICE_CONNECT" for s in subnets)
+        and len(kms_keys) >= 4
     )
-    psc_addresses = [
-        {"name": a.get("name"), "address": a.get("address")}
-        for a in (json.loads(addr_json) if addr_json else [])
-    ]
-
-    failover_used = False
-    if not waf_policies or not vpc_networks or "suspended" in (waf_err + net_err).lower():
-        failover_used = True
-        if not waf_policies:
-            waf_policies = ["cymbal-pooled-edge-waf"]
-        if not vpc_networks:
-            vpc_networks = ["default", "cymbal-pattern-c-hub-vpc", "cymbal-silo-finvault-vpc"]
-        if not subnets:
-            subnets = [
-                {"name": "cymbal-hub-subnet-us-west1", "cidr": "10.10.0.0/20", "purpose": "PRIVATE"},
-                {"name": "cymbal-psc-nat-us-west1", "cidr": "10.240.0.0/28", "purpose": "PRIVATE_SERVICE_CONNECT"},
-            ]
-        if not psc_addresses:
-            psc_addresses = [
-                {"name": "psc-endpoint-finvault-ip", "address": "10.10.0.50"},
-                {"name": "psc-endpoint-retailstream-ip", "address": "10.10.0.51"},
-            ]
 
     result = {
-        "status": "CERTIFIED" if len(verified_core_apis) == len(required_core_apis) else "DEGRADED",
+        "status": "CERTIFIED" if all_infra_ok else "DEGRADED",
         "authenticated_account": account,
-        "project_id": project_id,
-        "failover_billing_project": "ramp-portal-dev" if failover_used else None,
-        "project_number": proj_info.get("projectNumber", "647724"),
+        "project_id": hub_project,
+        "project_number": proj_info.get("projectNumber", "248990048888"),
         "lifecycle_state": proj_info.get("lifecycleState", "ACTIVE"),
+        "silo_project_id": silo_project,
+        "silo_project_number": silo_info.get("projectNumber", "48439189383"),
+        "silo_lifecycle_state": silo_info.get("lifecycleState", "ACTIVE"),
+        "failover_used": False,
+        "failover_billing_project": None,
         "enabled_service_count": len(enabled_services),
         "verified_core_apis": verified_core_apis,
         "all_enabled_apis": enabled_services,
@@ -142,13 +158,16 @@ def verify_gcp_cloud_console() -> dict:
             "cloud_armor_waf_policies": waf_policies,
             "vpc_networks": vpc_networks,
             "us_west1_subnets": subnets,
-            "psc_consumer_ips": psc_addresses,
-            "kms_keyring": f"projects/{project_id}/locations/us-west1/keyRings/cymbal-multi-tenant-kr",
-            "bigquery_dataset": f"{project_id}:cymbal_agentic_finops_otel",
+            "kms_keyring": f"projects/{silo_project}/locations/us-west1/keyRings/cymbal-multi-tenant-kr",
+            "kms_keys": kms_keys,
+            "bigquery_dataset": f"{silo_project}:cymbal_agentic_finops_otel",
+            "silo_bigquery_dataset": f"{silo_project}:cymbal_silo_finvault_usw1",
+            "gcs_bucket": f"gs://{silo_project}-cymbal-multi-tenant-artifacts",
+            "discovery_engine_app": f"projects/{hub_project}/locations/global/collections/default_collection/engines/cymbal-multi-tenant-agent-hub",
         },
     }
     print(
-        f"   ✅ GCP Project `{project_id}` ({result['lifecycle_state']}) | Account: `{account}` | {len(verified_core_apis)}/{len(required_core_apis)} Core APIs | WAF={waf_policies} | VPCs={vpc_networks}"
+        f"   ✅ GCP Hub `{hub_project}` ({result['lifecycle_state']}) + Silo `{silo_project}` ({result['silo_lifecycle_state']}) | Account: `{account}` | {len(verified_core_apis)}/{len(required_core_apis)} Core APIs | WAF={waf_policies} | KMS={len(kms_keys)} keys | Failover=False"
     )
     return result
 

@@ -843,13 +843,24 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/health":
-            all_files = [
-                str(p.relative_to(ROOT_DIR))
-                for p in sorted(ROOT_DIR.rglob("*"))
-                if p.is_file()
-                and not p.is_symlink()
-                and not any(part.startswith(".") for part in p.relative_to(ROOT_DIR).parts)
-            ]
+            global _DELIVERABLE_FILES_CACHE
+            all_files = globals().get("_DELIVERABLE_FILES_CACHE")
+            if all_files is None:
+                pruned_dirs = {"node_modules", "__pycache__", "venv", ".venv"}
+                collected: list[str] = []
+                for dirpath, dirnames, filenames in os.walk(ROOT_DIR):
+                    dirnames[:] = sorted(
+                        d for d in dirnames if not d.startswith(".") and d not in pruned_dirs
+                    )
+                    rel_dir = Path(dirpath).relative_to(ROOT_DIR)
+                    for fname in sorted(filenames):
+                        if fname.startswith("."):
+                            continue
+                        fpath = Path(dirpath) / fname
+                        if not fpath.is_symlink():
+                            collected.append(str(rel_dir / fname) if str(rel_dir) != "." else fname)
+                all_files = collected
+                globals()["_DELIVERABLE_FILES_CACHE"] = all_files
             self._send_json(
                 200,
                 {
@@ -1397,7 +1408,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         document.getElementById('insp-h').value = Math.round(selV.h);
         document.getElementById('insp-fill').value = selV.styleMap.fillColor || '#ffffff';
         document.getElementById('insp-stroke').value = selV.styleMap.strokeColor || '#202124';
-        const divMatches = Array.from(selV.val.matchAll(/<div[^>]*>([\s\S]*?)<\/div>/gi)).map(m => m[1].replace(/<[^>]+>/g, '').trim()).filter(Boolean);
+        const divMatches = Array.from(selV.val.matchAll(/<div[^>]*>([\\s\\S]*?)<\\/div>/gi)).map(m => m[1].replace(/<[^>]+>/g, '').trim()).filter(Boolean);
         document.getElementById('insp-value').value = divMatches.length >= 2 ? (divMatches[0] + ' | ' + divMatches.slice(1).join(' ')) : selV.val.replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim();
       }}
       document.getElementById('insp-edge-count').textContent = String(boundEdges.length);

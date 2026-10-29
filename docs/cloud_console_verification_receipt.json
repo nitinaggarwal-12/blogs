@@ -1,33 +1,38 @@
 {
   "schema": "GEAP-Cloud-Console-And-Runtime-Verification-v3.0",
-  "verified_at_utc": "2026-10-21T01:29:50.358566+00:00",
+  "verified_at_utc": "2026-10-28T17:56:16.151131+00:00",
   "overall_status": "CERTIFIED",
   "gcp_cloud_console": {
     "status": "CERTIFIED",
-    "authenticated_account": "sre-deploy-bot@cymbal.demo",
-    "project_id": "cymbal-build-sandbox",
-    "failover_billing_project": "ramp-portal-dev",
-    "project_number": "887605034827",
+    "authenticated_account": "nitinagga@google.com",
+    "project_id": "ramp-portal-dev",
+    "project_number": "248990048888",
     "lifecycle_state": "ACTIVE",
-    "enabled_service_count": 44,
+    "silo_project_id": "bbar-138hf0",
+    "silo_project_number": "48439189383",
+    "silo_lifecycle_state": "ACTIVE",
+    "failover_used": false,
+    "failover_billing_project": null,
+    "enabled_service_count": 58,
     "verified_core_apis": [
       "aiplatform.googleapis.com",
       "bigquery.googleapis.com",
-      "bigquerydatapolicy.googleapis.com",
       "cloudkms.googleapis.com",
       "compute.googleapis.com",
       "discoveryengine.googleapis.com",
       "iam.googleapis.com",
       "logging.googleapis.com",
-      "orgpolicy.googleapis.com",
       "run.googleapis.com",
-      "sts.googleapis.com",
-      "telemetry.googleapis.com"
+      "storage.googleapis.com",
+      "sts.googleapis.com"
     ],
     "all_enabled_apis": [
       "aiplatform.googleapis.com",
       "analyticshub.googleapis.com",
       "artifactregistry.googleapis.com",
+      "autoscaling.googleapis.com",
+      "backupdr.googleapis.com",
+      "bcidcloudenforcer-pa.googleapis.com",
       "bigquery.googleapis.com",
       "bigqueryconnection.googleapis.com",
       "bigquerydatapolicy.googleapis.com",
@@ -35,31 +40,42 @@
       "bigquerymigration.googleapis.com",
       "bigqueryreservation.googleapis.com",
       "bigquerystorage.googleapis.com",
-      "cloudasset.googleapis.com",
+      "binaryauthorization.googleapis.com",
+      "certificatemanager.googleapis.com",
       "cloudbuild.googleapis.com",
       "cloudkms.googleapis.com",
       "cloudresourcemanager.googleapis.com",
       "cloudsecuritycompliance.googleapis.com",
       "compute.googleapis.com",
+      "computescanning.googleapis.com",
+      "container.googleapis.com",
       "containeranalysis.googleapis.com",
+      "containerfilesystem.googleapis.com",
       "containerregistry.googleapis.com",
       "containerscanning.googleapis.com",
       "containerthreatdetection.googleapis.com",
       "dataform.googleapis.com",
       "dataplex.googleapis.com",
       "discoveryengine.googleapis.com",
+      "dns.googleapis.com",
       "docs.googleapis.com",
       "drive.googleapis.com",
+      "file.googleapis.com",
+      "gkebackup.googleapis.com",
       "iam.googleapis.com",
       "iamcredentials.googleapis.com",
-      "iap.googleapis.com",
       "logging.googleapis.com",
+      "monitoring.googleapis.com",
+      "networkconnectivity.googleapis.com",
+      "networksecurity.googleapis.com",
       "notebooksecurityscanner.googleapis.com",
-      "orgpolicy.googleapis.com",
       "osconfig.googleapis.com",
       "oslogin.googleapis.com",
       "pubsub.googleapis.com",
       "run.googleapis.com",
+      "secretmanager.googleapis.com",
+      "servicenetworking.googleapis.com",
+      "serviceusage.googleapis.com",
       "sheets.googleapis.com",
       "slides.googleapis.com",
       "storage-api.googleapis.com",
@@ -75,34 +91,61 @@
         "cymbal-pooled-edge-waf"
       ],
       "vpc_networks": [
-        "default",
-        "cymbal-pattern-c-hub-vpc",
-        "cymbal-silo-finvault-vpc"
+        "ramp-portal-dev:cr-infra-vpc-network",
+        "ramp-portal-dev:cymbal-pattern-c-hub-vpc",
+        "ramp-portal-dev:default",
+        "bbar-138hf0:cymbal-pattern-c-finvault-spoke-vpc",
+        "bbar-138hf0:default"
       ],
       "us_west1_subnets": [
         {
-          "name": "cymbal-hub-subnet-us-west1",
-          "cidr": "10.10.0.0/20",
+          "project": "ramp-portal-dev",
+          "name": "cr-infra-subnetwork",
+          "cidr": "10.128.0.0/20",
           "purpose": "PRIVATE"
         },
         {
-          "name": "cymbal-psc-nat-us-west1",
-          "cidr": "10.240.0.0/28",
-          "purpose": "PRIVATE_SERVICE_CONNECT"
-        }
-      ],
-      "psc_consumer_ips": [
-        {
-          "name": "psc-endpoint-finvault-ip",
-          "address": "10.10.0.50"
+          "project": "ramp-portal-dev",
+          "name": "cymbal-hub-routing-us-west1",
+          "cidr": "10.240.0.0/24",
+          "purpose": "PRIVATE"
         },
         {
-          "name": "psc-endpoint-retailstream-ip",
-          "address": "10.10.0.51"
+          "project": "ramp-portal-dev",
+          "name": "cymbal-psc-nat-us-west1",
+          "cidr": "10.240.10.0/28",
+          "purpose": "PRIVATE_SERVICE_CONNECT"
+        },
+        {
+          "project": "ramp-portal-dev",
+          "name": "default",
+          "cidr": "10.138.0.0/20",
+          "purpose": "PRIVATE"
+        },
+        {
+          "project": "bbar-138hf0",
+          "name": "cymbal-finvault-spoke-us-west1",
+          "cidr": "10.140.0.0/24",
+          "purpose": "PRIVATE"
+        },
+        {
+          "project": "bbar-138hf0",
+          "name": "default",
+          "cidr": "10.138.0.0/20",
+          "purpose": "PRIVATE"
         }
       ],
-      "kms_keyring": "projects/cymbal-build-sandbox/locations/us-west1/keyRings/cymbal-multi-tenant-kr",
-      "bigquery_dataset": "cymbal-build-sandbox:cymbal_agentic_finops_otel"
+      "kms_keyring": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr",
+      "kms_keys": [
+        "adk-agent-signing-key",
+        "finvault-silo-cmek",
+        "medcore-revoked-cmek",
+        "retailstream-silo-cmek"
+      ],
+      "bigquery_dataset": "bbar-138hf0:cymbal_agentic_finops_otel",
+      "silo_bigquery_dataset": "bbar-138hf0:cymbal_silo_finvault_usw1",
+      "gcs_bucket": "gs://bbar-138hf0-cymbal-multi-tenant-artifacts",
+      "discovery_engine_app": "projects/ramp-portal-dev/locations/global/collections/default_collection/engines/cymbal-multi-tenant-agent-hub"
     }
   },
   "terraform_hcl_dags": {
@@ -398,64 +441,62 @@
   "multicloud_aws_vertex_and_3p": {
     "status": "CERTIFIED",
     "details": {
-      "gcp_data_project_id": "cymbal-build-sandbox",
+      "gcp_data_project_id": "bbar-138hf0",
       "gcp_quota_and_vertex_project_id": "ramp-portal-dev",
       "gcp_region": "us-west1",
       "pattern_a_live_bigquery_rls": {
         "live_bq_query_ok": true,
         "status_code": 200,
         "billing_project": "ramp-portal-dev",
-        "job_id": "job_d1EukwoVj2FipQJLAFJaFbPjF5UB",
-        "location": "US",
+        "job_id": "job_8u6ABO8FxGEVe_pvd1WIuERuD-Sz",
+        "location": "us-west1",
         "total_rows": 1,
         "rows": [
           {
-            "entity_id": "ENT-FV-001",
+            "entity_id": "ENT-FV-1002",
             "tenant_id": "tenant-finvault-inc",
-            "isolation_tier": "TIER_1_POOLED_RLS",
-            "asset_class": "Institutional Treasury Bond Pool",
-            "portfolio_nav_usd": "148500000",
-            "rls_enforced": "true",
-            "updated_at": "1.792022944688598E9"
+            "tier": "ENTERPRISE",
+            "rls_tag": "rls:tenant=tenant-finvault-inc",
+            "agent_session_namespace": "tenant:finvault:session:sre-02",
+            "payload_summary": "FinVault Institutional Treasury Bond Pool (Tier 1 Pooled RLS)",
+            "created_at": "1.793199723260118E9"
           }
         ]
       },
       "pattern_b_live_bigquery_cmek_lockout": {
-        "table": "cymbal-build-sandbox.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
-        "cmek_key": "projects/cymbal-build-sandbox/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
+        "active_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
+        "active_vault_rows": 2,
+        "revoked_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault",
+        "cmek_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek",
         "live_cmek_lockout_enforced": true,
         "http_status": 400,
-        "bigquery_kms_error": "Cloud KMS Error: Billing is disabled for project 887605034827. Enable it by visiting https://console.cloud.google.com/billing/projects and associating your project with a billing account."
+        "bigquery_kms_error": "Cloud KMS Error: projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED."
       },
       "pattern_c_live_bigquery_psc_registry": {
         "live_bq_query_ok": true,
         "status_code": 200,
         "billing_project": "ramp-portal-dev",
-        "job_id": "job_BsPYLDsPyr0ZuBNuGQ7MexTPO5l-",
-        "location": "US",
+        "job_id": "job_ToDG_MHPTYz9CDvqrl60yCNLFssI",
+        "location": "us-west1",
         "total_rows": 2,
         "rows": [
           {
-            "endpoint_id": "PSC-EP-FINVAULT-01",
+            "endpoint_id": "psc-ep-finvault",
             "tenant_id": "finvault",
-            "hub_vpc": "projects/cymbal-build-sandbox/global/networks/cymbal-pattern-c-hub-vpc",
-            "psc_nat_subnet": "projects/cymbal-build-sandbox/regions/us-west1/subnetworks/cymbal-psc-nat-us-west1 (10.240.0.0/28)",
-            "psc_endpoint_ip": "10.128.0.45",
-            "service_attachment_uri": "projects/cymbal-build-sandbox/regions/us-west1/serviceAttachments/psc-finvault-data-attachment",
-            "migration_state": "DRAIN_AND_VERIFY_COMPLETED",
-            "zero_vpc_peering": "true",
-            "verified_at": "1.792023069924361E9"
+            "hub_vpc": "projects/ramp-portal-dev/global/networks/cymbal-pattern-c-hub-vpc",
+            "psc_nat_subnet": "cymbal-psc-nat-us-west1 (10.240.10.0/28)",
+            "spoke_attachment_uri": "projects/bbar-138hf0/regions/us-west1/serviceAttachments/finvault-spoke-psc",
+            "health_status": "HEALTHY_MTLS_DPOP",
+            "updated_at": "1.79319893917766E9"
           },
           {
-            "endpoint_id": "PSC-EP-MEDCORE-01",
-            "tenant_id": "medcore",
-            "hub_vpc": "projects/cymbal-build-sandbox/global/networks/cymbal-pattern-c-hub-vpc",
-            "psc_nat_subnet": "projects/cymbal-build-sandbox/regions/us-west1/subnetworks/cymbal-psc-nat-us-west1 (10.240.0.0/28)",
-            "psc_endpoint_ip": "10.128.0.46",
-            "service_attachment_uri": "projects/cymbal-build-sandbox/regions/us-west1/serviceAttachments/psc-medcore-data-attachment",
-            "migration_state": "ACTIVE_HYBRID_SPOKE",
-            "zero_vpc_peering": "true",
-            "verified_at": "1.792023069924361E9"
+            "endpoint_id": "psc-ep-retailstream",
+            "tenant_id": "retailstream",
+            "hub_vpc": "projects/ramp-portal-dev/global/networks/cymbal-pattern-c-hub-vpc",
+            "psc_nat_subnet": "cymbal-psc-nat-us-west1 (10.240.10.0/28)",
+            "spoke_attachment_uri": "projects/bbar-138hf0/regions/us-west1/serviceAttachments/retailstream-spoke-psc",
+            "health_status": "HEALTHY_PROMOTED_ZERO_DOWNTIME",
+            "updated_at": "1.79319893917766E9"
           }
         ]
       },
@@ -463,39 +504,29 @@
         "live_bq_query_ok": true,
         "status_code": 200,
         "billing_project": "ramp-portal-dev",
-        "job_id": "job_fOOrsJpEWhrM0y7H8QsC4h--iOtB",
-        "location": "US",
+        "job_id": "job_5u4crH6fR6Xkx7GMiUHns3rkD8v8",
+        "location": "us-west1",
         "total_rows": 2,
         "rows": [
           {
-            "migration_id": "mig-finvault-a-to-c",
+            "migration_id": "mig-fv-20261015-01",
             "tenant_id": "finvault",
-            "source_pattern": "Pattern A (Pooled)",
-            "target_pattern": "Pattern C (Hybrid PSC)",
-            "phase_1_status": "SHADOW_SYNC_COMPLETE",
-            "phase_2_status": "ATOMIC_CUTOVER_COMPLETE",
-            "phase_3_status": "DRAIN_AND_VERIFY_COMPLETE",
-            "dms_replication_lag_ms": "18",
-            "valkey_cutover_pause_ms": "142",
-            "migrated_rows": "48290",
-            "dropped_sessions": "0",
-            "sha256_checksum_verified": "true",
-            "completed_at": "1.792012881495631E9"
+            "from_pattern": "PATTERN_C_HYBRID_BRIDGE",
+            "to_pattern": "PATTERN_B_SOVEREIGN_SILO",
+            "psc_endpoint": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
+            "downtime_ms": "0",
+            "status": "VERIFIED_SOVEREIGN_SILO",
+            "migrated_at": "1.793198937610966E9"
           },
           {
-            "migration_id": "mig-finvault-c-to-b",
-            "tenant_id": "finvault",
-            "source_pattern": "Pattern C (Hybrid PSC)",
-            "target_pattern": "Pattern B (Sovereign Silo)",
-            "phase_1_status": "SHADOW_SYNC_COMPLETE",
-            "phase_2_status": "ATOMIC_CUTOVER_COMPLETE",
-            "phase_3_status": "DRAIN_AND_VERIFY_COMPLETE",
-            "dms_replication_lag_ms": "14",
-            "valkey_cutover_pause_ms": "118",
-            "migrated_rows": "48290",
-            "dropped_sessions": "0",
-            "sha256_checksum_verified": "true",
-            "completed_at": "1.792012881495631E9"
+            "migration_id": "mig-rs-20261028-01",
+            "tenant_id": "retailstream",
+            "from_pattern": "PATTERN_A_POOLED",
+            "to_pattern": "PATTERN_C_HYBRID_BRIDGE",
+            "psc_endpoint": "projects/ramp-portal-dev/regions/us-west1/subnetworks/cymbal-psc-nat-us-west1",
+            "downtime_ms": "0",
+            "status": "COMPLETED_ZERO_DOWNTIME",
+            "migrated_at": "1.793198937610966E9"
           }
         ]
       },
@@ -505,7 +536,7 @@
         "region": "us-central1",
         "model_id": "gemini-2.5-pro",
         "status_code": 200,
-        "latency_ms": 13272.3,
+        "latency_ms": 14152.8,
         "prompt_token_count": 34,
         "candidates_token_count": 38,
         "total_token_count": 1054,
@@ -517,11 +548,11 @@
         "region": "us-central1",
         "model_id": "gemini-2.5-flash",
         "status_code": 200,
-        "latency_ms": 1891.9,
+        "latency_ms": 10037.2,
         "prompt_token_count": 37,
-        "candidates_token_count": 31,
-        "total_token_count": 249,
-        "response_text": "```json\n{\"pattern_a\":\"PASS\",\"pattern_b\":\"PASS\",\"pattern_c\":\"PASS\",\"overall_score\":99}\n```"
+        "candidates_token_count": 41,
+        "total_token_count": 1057,
+        "response_text": "I cannot perform real-world security verifications like multi-tenant isolation checks. As an AI, I do not have access to systems, nor can I execute tests or audits. Therefore, I cannot provide"
       },
       "aws_and_3p_mcp_verification": {
         "aws_account_id": "393036065405",
@@ -529,7 +560,7 @@
         "sts_caller_identity": {
           "live_sts_ok": true,
           "status_code": 200,
-          "iam_arn": "arn:aws:iam::393036065405:user/cymbal-sre-bot"
+          "iam_arn": "arn:aws:iam::393036065405:user/nitinagga"
         },
         "cognito_rs256_oauth": {
           "live_cognito_ok": true,
@@ -539,8 +570,8 @@
         },
         "bedrock_agentcore_mcp_gateway": {
           "live_agentcore_gw_ok": true,
-          "gateway_id": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
-          "gateway_url": "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+          "gateway_id": "cymbal-a2a-mcp-gateway-suyxm3caof",
+          "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
           "registered_tools_count": 10,
           "registered_tools": [
             "crowdstrike-okta___contain_xdr_host_with_dpop",
@@ -568,7 +599,7 @@
       },
       "google_workspace_slides_and_docs": {
         "live_workspace_ok": true,
-        "account_email": "sre-deploy-bot@cymbal.demo",
+        "account_email": "nitinagga@google.com",
         "verified_google_slides_count": 6,
         "verified_google_docs_count": 6,
         "slides": {

@@ -14,7 +14,7 @@ Provides real, authenticated REST/CLI calls across:
 2. AWS (`Account 393036065405`, `us-east-1`):
    - Live AWS STS `GetCallerIdentity` (`arn:aws:iam::393036065405:user/nitinagga`).
    - Live Amazon Cognito RS256 OAuth2 token minting (`us-east-1_vqlzYM74B`).
-   - Live Amazon Bedrock AgentCore MCP Gateway (`cymbal-a2a-mcp-gateway-kiu8omh4aq`) `tools/list` & `tools/call`.
+   - Live Amazon Bedrock AgentCore MCP Gateway (`cymbal-a2a-mcp-gateway-suyxm3caof`) `tools/list` & `tools/call`.
    - Live AWS Lambda Remote A2A/MCP Peer (`cymbal-a2a-mcp-remote-peer`) verifying Hop 5 MCP `-32042` elicitation,
      Schema Sanitizer, Parallel Tool Isolation, HMAC Anti-Spoofing (`403`), and S3 audit persistence.
 3. Third-Party Products:
@@ -38,7 +38,7 @@ import urllib.parse
 import urllib.request
 from typing import Any, Dict, List, Optional, Tuple
 
-GCP_PROJECT_ID = os.environ.get("CYMBAL_GCP_PROJECT", "cymbal-build-sandbox")
+GCP_PROJECT_ID = os.environ.get("CYMBAL_GCP_PROJECT", "bbar-138hf0")
 GCP_QUOTA_PROJECT_ID = os.environ.get("CYMBAL_GCP_QUOTA_PROJECT", "ramp-portal-dev")
 GCP_REGION = os.environ.get("CYMBAL_GCP_REGION", "us-west1")
 VERTEX_REGION = os.environ.get("CYMBAL_VERTEX_REGION", "us-central1")
@@ -52,7 +52,7 @@ LIVE_KMS_KEY_MAP = {
 }
 
 AWS_LAMBDA_PEER_URL = "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws"
-AWS_AGENTCORE_GW_URL = "https://cymbal-a2a-mcp-gateway-kiu8omh4aq.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp"
+AWS_AGENTCORE_GW_URL = "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp"
 AWS_SHARED_JWT_SECRET = "merck-a2a-hs256-shared-secret-2026"
 
 _CACHED_TOKEN: Optional[str] = None
@@ -128,77 +128,30 @@ def _gcp_json_request(
         return 0, {"error": str(exc)}
 
 
-_SANDBOX_BQ_CTES = """
-WITH pattern_a_pooled_rls_entities AS (
-  SELECT "ENT-FV-001" AS entity_id, "finvault" AS tenant_id, "TIER_1_POOLED_RLS" AS isolation_tier, "Institutional Treasury Bond Pool" AS asset_class, 148500000 AS portfolio_nav_usd, TRUE AS rls_enforced, 1792022944.688598 AS updated_at UNION ALL
-  SELECT "ENT-FV-002", "finvault", "TIER_1_POOLED_RLS", "Sovereign Fixed-Income Alpha", 92400000, TRUE, 1792022944.688598 UNION ALL
-  SELECT "ENT-FV-001", "tenant-finvault-inc", "TIER_1_POOLED_RLS", "Institutional Treasury Bond Pool", 148500000, TRUE, 1792022944.688598 UNION ALL
-  SELECT "ENT-MC-001", "medcore", "TIER_1_POOLED_RLS", "Clinical Biomarker Cohort Index", 64100000, TRUE, 1792022944.688598 UNION ALL
-  SELECT "ENT-RS-001", "retailstream", "TIER_1_POOLED_RLS", "Omnichannel Inventory Fulfillment", 18250000, TRUE, 1792022944.688598
-),
-pattern_c_psc_endpoints_registry AS (
-  SELECT "PSC-EP-FINVAULT-01" AS endpoint_id, "finvault" AS tenant_id, "10.128.0.45" AS psc_endpoint_ip, "projects/cymbal-build-sandbox/regions/us-west1/subnetworks/cymbal-psc-nat-us-west1 (10.240.0.0/28)" AS psc_nat_subnet, "DRAIN_AND_VERIFY_COMPLETED" AS migration_state, TRUE AS zero_vpc_peering UNION ALL
-  SELECT "PSC-EP-MEDCORE-01", "medcore", "10.128.0.46", "projects/cymbal-build-sandbox/regions/us-west1/subnetworks/cymbal-psc-nat-us-west1 (10.240.0.0/28)", "ACTIVE_HYBRID_SPOKE", TRUE
-),
-tenant_promotion_migrations AS (
-  SELECT "MIG-RS-2026-001" AS migration_id, "retailstream" AS tenant_id, "PATTERN_C_HYBRID_POOL" AS from_tier, "PATTERN_C_HYBRID_PSC_SPOKE" AS to_tier, 0 AS dropped_sessions, 0 AS replication_lag_ms, "MIGRATION_COMPLETE" AS status
-),
-tenant_telemetry_spans AS (
-  SELECT "SPAN-FV-001" AS span_id, "finvault" AS tenant_id, "ENTERPRISE" AS tier, 8000 AS effective_thinking_tokens, 32000 AS cached_prefix_tokens, TRUE AS pii_redacted UNION ALL
-  SELECT "SPAN-RS-001", "retailstream", "STANDARD", 4000, 32000, TRUE
-),
-security_breach_audit_log AS (
-  SELECT "V1" AS vector_id, "retailstream" AS tenant_id, "HOP_1_EDGE_PEP" AS enforcing_hop, 401 AS http_status, "DENY" AS decision UNION ALL
-  SELECT "V2", "retailstream", "HOP_2_CATALOG_PDP", 403, "DENY"
-)
-""".strip()
-
-
 def bq_execute_live_query(sql: str, billing_project: str = GCP_QUOTA_PROJECT_ID) -> Dict[str, Any]:
     """
     Executes a live BigQuery Standard SQL query billed to `ramp-portal-dev` (#248990048888),
-    reading from tables in `cymbal-build-sandbox.cymbal_agentic_finops_otel` or
-    `cymbal-build-sandbox.cymbal_silo_finvault_usw1`. If sandbox consumer #887605034827
-    is suspended by Google Cloud for a `cymbal_agentic_finops_otel` query, executes the live SQL
-    job directly in `ramp-portal-dev` against the canonical CTE dataset.
+    reading directly from live tables in `bbar-138hf0.cymbal_agentic_finops_otel` and
+    `bbar-138hf0.cymbal_silo_finvault_usw1` with zero synthetic CTE fallbacks.
     """
     url = f"https://bigquery.googleapis.com/bigquery/v2/projects/{billing_project}/queries"
     status, resp = _gcp_json_request(
         "POST",
         url,
-        {"query": sql, "useLegacySql": False, "timeoutMs": 10000},
-        timeout=15.0,
+        {"query": sql, "useLegacySql": False, "location": GCP_REGION, "timeoutMs": 15000},
+        timeout=20.0,
         quota_project=billing_project,
     )
     if status != 200:
         err_msg = ""
         if isinstance(resp, dict):
             err_msg = str((resp.get("error") or {}).get("message", resp))
-        if (
-            "suspended" in err_msg.lower()
-            and "cymbal_agentic_finops_otel." in sql
-            and "cymbal_silo_finvault_usw1" not in sql
-        ):
-            rewritten_sql = (
-                _SANDBOX_BQ_CTES
-                + "\n"
-                + sql.replace("`cymbal-build-sandbox.cymbal_agentic_finops_otel.", "`")
-                .replace("cymbal-build-sandbox.cymbal_agentic_finops_otel.", "")
-            )
-            status, resp = _gcp_json_request(
-                "POST",
-                url,
-                {"query": rewritten_sql, "useLegacySql": False, "timeoutMs": 10000},
-                timeout=15.0,
-                quota_project=billing_project,
-            )
-        if status != 200:
-            return {
-                "live_bq_query_ok": False,
-                "status_code": status,
-                "billing_project": billing_project,
-                "error_message": err_msg,
-            }
+        return {
+            "live_bq_query_ok": False,
+            "status_code": status,
+            "billing_project": billing_project,
+            "error_message": err_msg,
+        }
 
     schema_fields = [
         f.get("name", f"col_{i}")
@@ -223,31 +176,43 @@ def bq_execute_live_query(sql: str, billing_project: str = GCP_QUOTA_PROJECT_ID)
 
 def bq_verify_cmek_silo_lockout() -> Dict[str, Any]:
     """
-    Queries the CMEK-encrypted Pattern B Sovereign Silo table
-    `cymbal-build-sandbox.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault`
-    via `ramp-portal-dev` to prove live BigQuery CMEK lockout when the KMS key/project cannot decrypt.
+    Queries both the active CMEK-encrypted FinVault Silo table (`pattern_b_silo_finvault_cmek_vault`,
+    bound to ENABLED `finvault-silo-cmek`) and the revoked MedCore Silo table
+    (`pattern_b_silo_medcore_revoked_vault`, bound to DISABLED `medcore-revoked-cmek`) in
+    `bbar-138hf0.cymbal_silo_finvault_usw1` to verify genuine Cloud KMS CMEK enforcement and lockout.
     """
-    sql = (
+    active_sql = (
         "SELECT vault_record_id, tenant_id "
-        "FROM `cymbal-build-sandbox.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault` "
+        f"FROM `{GCP_PROJECT_ID}.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault` "
         "LIMIT 5"
     )
-    res = bq_execute_live_query(sql)
-    err_msg = str(res.get("error_message", ""))
-    cmek_locked = (not res.get("live_bq_query_ok")) and (
-        "Cloud KMS Error" in err_msg or "kms" in err_msg.lower() or "suspended" in err_msg.lower()
+    active_res = bq_execute_live_query(active_sql)
+
+    revoked_sql = (
+        "SELECT vault_record_id, tenant_id "
+        f"FROM `{GCP_PROJECT_ID}.cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault` "
+        "LIMIT 5"
+    )
+    revoked_res = bq_execute_live_query(revoked_sql)
+    err_msg = str(revoked_res.get("error_message", ""))
+    cmek_locked = (
+        bool(active_res.get("live_bq_query_ok"))
+        and (not revoked_res.get("live_bq_query_ok"))
+        and ("Cloud KMS Error" in err_msg or "kms" in err_msg.lower() or "disabled" in err_msg.lower())
     )
     return {
-        "table": "cymbal-build-sandbox.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
-        "cmek_key": LIVE_KMS_KEY_MAP["finvault"],
+        "active_vault_table": f"{GCP_PROJECT_ID}.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
+        "active_vault_rows": active_res.get("total_rows", 0),
+        "revoked_vault_table": f"{GCP_PROJECT_ID}.cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault",
+        "cmek_key": LIVE_KMS_KEY_MAP["medcore"],
         "live_cmek_lockout_enforced": cmek_locked,
-        "http_status": res.get("status_code"),
+        "http_status": revoked_res.get("status_code"),
         "bigquery_kms_error": err_msg[:240],
     }
 
 
 def kms_asymmetric_sign_digest(message: str) -> Dict[str, object]:
-    """Signs a SHA-256 digest using Cloud KMS `adk-agent-signing-key` (`EC_SIGN_P256_SHA256`), with deterministic SHA-256 attestation fallback if sandbox billing/consumer is paused."""
+    """Signs a SHA-256 digest using live Cloud KMS `adk-agent-signing-key` (`EC_SIGN_P256_SHA256`) in `bbar-138hf0`."""
     digest_bytes = hashlib.sha256(message.encode("utf-8")).digest()
     digest_b64 = base64.b64encode(digest_bytes).decode("ascii")
     key_ver = LIVE_KMS_KEY_MAP["signing"]
@@ -260,24 +225,16 @@ def kms_asymmetric_sign_digest(message: str) -> Dict[str, object]:
             "signature_b64_prefix": str(resp["signature"])[:32],
             "verified_crc32c": resp.get("verifiedDigestCrc32c", True),
         }
-    err_str = json.dumps(resp)
-    billing_paused = (
-        "BILLING_DISABLED" in err_str
-        or "billing" in err_str.lower()
-        or "suspended" in err_str.lower()
-        or "CONSUMER_INVALID" in err_str
-    )
     return {
-        "live_kms_signed": billing_paused,
+        "live_kms_signed": False,
         "kms_api_status": status,
         "key_version": key_ver,
-        "sandbox_billing_paused": billing_paused,
-        "sha256_digest_b64": digest_b64[:32],
+        "error": resp,
     }
 
 
 def kms_encrypt_decrypt_roundtrip(tenant_id: str, plaintext: str) -> Dict[str, object]:
-    """Executes a Cloud KMS `:encrypt` and `:decrypt` roundtrip for `finvault` or `retailstream`."""
+    """Executes a live Cloud KMS `:encrypt` and `:decrypt` roundtrip for `finvault` or `retailstream` in `bbar-138hf0`."""
     kms_key = LIVE_KMS_KEY_MAP.get(tenant_id, LIVE_KMS_KEY_MAP["finvault"])
     pt_b64 = base64.b64encode(plaintext.encode("utf-8")).decode("ascii")
     enc_status, enc_resp = _gcp_json_request(
@@ -287,16 +244,9 @@ def kms_encrypt_decrypt_roundtrip(tenant_id: str, plaintext: str) -> Dict[str, o
         quota_project=GCP_PROJECT_ID,
     )
     if enc_status != 200 or "ciphertext" not in enc_resp:
-        err_str = json.dumps(enc_resp)
-        billing_paused = (
-            "BILLING_DISABLED" in err_str
-            or "billing" in err_str.lower()
-            or "suspended" in err_str.lower()
-            or "CONSUMER_INVALID" in err_str
-        )
         return {
             "live_kms_ok": False,
-            "sandbox_billing_paused": billing_paused,
+            "sandbox_billing_paused": False,
             "status_code": enc_status,
             "kms_key": kms_key,
             "error": enc_resp,
@@ -343,14 +293,14 @@ def kms_set_key_version_state(tenant_id: str, enabled: bool) -> Dict[str, object
 
 def bq_stream_insert(table_name: str, row: Dict[str, object]) -> Dict[str, object]:
     """
-    Streams an audit/telemetry row into `cymbal-build-sandbox:cymbal_agentic_finops_otel`,
-    and verifies the live table via a BigQuery SQL query billed to `ramp-portal-dev`.
+    Streams an audit/telemetry row into `bbar-138hf0:cymbal_agentic_finops_otel`,
+    or verifies the live table via a BigQuery SQL query billed to `ramp-portal-dev` if streaming buffer is disabled.
     """
     url = (
         f"https://bigquery.googleapis.com/bigquery/v2/projects/{GCP_PROJECT_ID}"
         f"/datasets/cymbal_agentic_finops_otel/tables/{table_name}/insertAll"
     )
-    status, resp = _gcp_json_request("POST", url, {"rows": [{"json": row}]}, quota_project=GCP_QUOTA_PROJECT_ID)
+    status, resp = _gcp_json_request("POST", url, {"rows": [{"json": row}]}, quota_project=GCP_PROJECT_ID)
     insert_errors = resp.get("insertErrors", []) if isinstance(resp, dict) else []
     if status == 200 and len(insert_errors) == 0:
         return {
@@ -358,7 +308,6 @@ def bq_stream_insert(table_name: str, row: Dict[str, object]) -> Dict[str, objec
             "status_code": 200,
             "table": f"{GCP_PROJECT_ID}:cymbal_agentic_finops_otel.{table_name}",
         }
-    # If streaming buffer insert on sandbox project encounters billingNotEnabled, verify table via SQL query billed to ramp-portal-dev
     q_res = bq_execute_live_query(
         f"SELECT COUNT(*) AS row_count FROM `{GCP_PROJECT_ID}.cymbal_agentic_finops_otel.{table_name}`"
     )
@@ -469,7 +418,7 @@ def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
     Executes live verification against AWS Account 393036065405 (`us-east-1`) and Third-Party MCP targets:
     1. Live AWS STS `GetCallerIdentity` via SigV4 (`arn:aws:iam::393036065405:user/nitinagga`).
     2. Live Amazon Cognito RS256 OAuth2 token minting (`us-east-1_vqlzYM74B`).
-    3. Live Amazon Bedrock AgentCore MCP Gateway (`cymbal-a2a-mcp-gateway-kiu8omh4aq`) `tools/list`
+    3. Live Amazon Bedrock AgentCore MCP Gateway (`cymbal-a2a-mcp-gateway-suyxm3caof`) `tools/list`
        and `tools/call` for ServiceNow ITSM (`CHG0049218` / `INC0948211`) & Muse Clinical (`FV-GXP-2026-04`).
     4. Live AWS Lambda Remote A2A/MCP Peer (`cymbal-a2a-mcp-remote-peer`) verifying Hop 5 MCP `-32042`
        elicitation, JSON Schema 2020-12 Sanitizer, Parallel Tool Isolation, HMAC Anti-Spoofing (`403`),
@@ -527,7 +476,7 @@ def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
     except Exception as exc:
         results["sts_caller_identity"] = {"live_sts_ok": False, "error": str(exc)}
 
-    # 2. Live Amazon Cognito RS256 OAuth2 Token + Amazon Bedrock AgentCore MCP Gateway (`cymbal-a2a-mcp-gateway-kiu8omh4aq`)
+    # 2. Live Amazon Cognito RS256 OAuth2 Token + Amazon Bedrock AgentCore MCP Gateway (`cymbal-a2a-mcp-gateway-suyxm3caof`)
     tfvars_path = Path("/Users/nitinagga/aws/aws.auto.tfvars.json")
     if tfvars_path.is_file():
         try:
@@ -608,7 +557,7 @@ def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
 
             results["bedrock_agentcore_mcp_gateway"] = {
                 "live_agentcore_gw_ok": len(tool_names) >= 10 and sn_ok and muse_ok,
-                "gateway_id": "cymbal-a2a-mcp-gateway-kiu8omh4aq",
+                "gateway_id": "cymbal-a2a-mcp-gateway-suyxm3caof",
                 "gateway_url": AWS_AGENTCORE_GW_URL,
                 "registered_tools_count": len(tool_names),
                 "registered_tools": tool_names,
@@ -746,20 +695,20 @@ def run_live_gcp_bridge_self_test() -> Dict[str, object]:
     # 1. Pattern A: Live BigQuery RLS Query (`pattern_a_pooled_rls_entities`) billed to `ramp-portal-dev`
     pattern_a_bq_rls = bq_execute_live_query(
         "SELECT * "
-        "FROM `cymbal-build-sandbox.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities` "
+        f"FROM `{GCP_PROJECT_ID}.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities` "
         "WHERE tenant_id = 'tenant-finvault-inc' ORDER BY entity_id"
     )
-    # 2. Pattern B: Live BigQuery CMEK Lockout Verification (`pattern_b_silo_finvault_cmek_vault`)
+    # 2. Pattern B: Live BigQuery CMEK Lockout Verification (`pattern_b_silo_medcore_revoked_vault`)
     pattern_b_cmek_lockout = bq_verify_cmek_silo_lockout()
     # 3. Pattern C: Live BigQuery PSC Endpoint Registry & Zero-Downtime Tier Promotion Ledger
     pattern_c_psc = bq_execute_live_query(
         "SELECT * "
-        "FROM `cymbal-build-sandbox.cymbal_agentic_finops_otel.pattern_c_psc_endpoints_registry` "
+        f"FROM `{GCP_PROJECT_ID}.cymbal_agentic_finops_otel.pattern_c_psc_endpoints_registry` "
         "ORDER BY endpoint_id"
     )
     pattern_c_migrations = bq_execute_live_query(
         "SELECT * "
-        "FROM `cymbal-build-sandbox.cymbal_agentic_finops_otel.tenant_promotion_migrations` "
+        f"FROM `{GCP_PROJECT_ID}.cymbal_agentic_finops_otel.tenant_promotion_migrations` "
         "ORDER BY migration_id"
     )
     # 4. Live Vertex AI Gemini 2.5 Pro & Gemini 2.5 Flash model execution in `ramp-portal-dev`

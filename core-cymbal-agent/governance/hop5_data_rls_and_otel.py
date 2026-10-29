@@ -16,7 +16,7 @@ import uuid
 from typing import Dict, List, Optional, Tuple
 from ..models import CryptographicContext, HopAuditRecord
 from ..mcp_servers.cymbal_mcp_hub import CymbalMCPHub
-from ..gcp_live_bridge import bq_stream_insert
+from ..gcp_live_bridge import GCP_PROJECT_ID, bq_stream_insert
 
 
 ALLOYDB_INCIDENTS_TABLE = [
@@ -111,7 +111,7 @@ class DataPlaneRLSAndOTel:
             bq_tenant = "tenant-finvault-inc" if rls_bound_tenant == "finvault" else "tenant-retailspark-co"
             bq_sql = (
                 "SELECT * "
-                "FROM `cymbal-build-sandbox.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities` "
+                f"FROM `{GCP_PROJECT_ID}.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities` "
                 f"WHERE tenant_id = '{bq_tenant}'"
             )
             if attempted_tenant_filter and attempted_tenant_filter != rls_bound_tenant:
@@ -243,7 +243,7 @@ class DataPlaneRLSAndOTel:
                 "cogs_usd": 0.0082,
                 "cache_savings_pct": 84.7 if cache_hit else 0.0,
                 "rls_session_guc": f"app.current_tenant={ctx.tenant_id}",
-                "kms_key_uri": f"projects/cymbal-build-sandbox/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/{ctx.tenant_id}-silo-cmek",
+                "kms_key_uri": f"projects/{GCP_PROJECT_ID}/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/{ctx.tenant_id}-silo-cmek",
                 "verdict": "PASS",
             }
             record["live_bigquery_insert"] = bq_stream_insert("tenant_telemetry_spans", bq_row)
