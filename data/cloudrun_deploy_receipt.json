@@ -5,27 +5,27 @@
   "buildProject": "ramp-portal-dev",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "ge-blogs-00026-lmw",
-  "latestCreatedRevisionName": "ge-blogs-00026-lmw",
+  "latestReadyRevisionName": "ge-blogs-00028-56l",
+  "latestCreatedRevisionName": "ge-blogs-00028-56l",
   "readyStatus": "True",
   "trafficPercent": 100,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261028-181935-rule58",
-  "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261029-033437-rule58",
+  "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00028-56l",
   "liveHttpVerification": {
-    "verifiedAt": "2026-10-28T18:20:38Z",
+    "verifiedAt": "2026-10-29T03:36:31Z",
     "verificationMode": "cloud_run_revision_live_http_dom_probe",
     "project": "ramp-portal-dev",
     "region": "us-west1",
     "service": "ge-blogs",
-    "revision": "ge-blogs-00026-lmw",
+    "revision": "ge-blogs-00028-56l",
     "overallPassed": true,
     "routes": [
       {
         "path": "/",
         "httpStatus": 200,
         "responseBytes": 588155,
-        "bodySha256Short": "80f9270b136b8812",
-        "latencyMs": 10400.5,
+        "bodySha256Short": "ef854bbe3bba025b",
+        "latencyMs": 32.2,
         "markersMatched": [
           "Multi-Tenancy Architecture",
           "Pattern A"
@@ -39,7 +39,7 @@
         "httpStatus": 200,
         "responseBytes": 35011,
         "bodySha256Short": "ac3d1e719fc499a4",
-        "latencyMs": 15901.6,
+        "latencyMs": 12801.5,
         "markersMatched": [
           "HEALTHY",
           "cymbal-geap-multitenant-portal"
@@ -47,10 +47,24 @@
         "markersMissing": [],
         "passed": true,
         "error": ""
+      },
+      {
+        "path": "/api/saas-5-live-verify",
+        "httpStatus": 200,
+        "responseBytes": 14809,
+        "bodySha256Short": "cb28581ed9eca3a2",
+        "latencyMs": 56798.6,
+        "markersMatched": [
+          "CLOUDRUN_30_OF_30_LIVE_CROSSCLOUD_PASS",
+          "cymbal-a2a-mcp-gateway-suyxm3caof"
+        ],
+        "markersMissing": [],
+        "passed": true,
+        "error": ""
       }
     ]
   },
-  "verifiedAt": "2026-10-28T18:20:49Z",
+  "verifiedAt": "2026-10-29T03:36:42Z",
   "certifiedDiagramsCount": 14,
   "workstreamsCount": 5
 }

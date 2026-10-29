@@ -588,8 +588,8 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                 )
             )
             expected_10_target_ids = (
-                "KD6Z3SV8PX", "OZ0KTE8Z8M", "PLOLWRMI0I", "1KZWKOFTWQ", "W7BF0JRWEA",
-                "Z1RHXLBK6F", "7PB1EK3NJO", "CXH8BK86IF", "A2X7LPMPA7", "TXGJHVFBWP",
+                "HXGGFMZBKE", "IZVODT083Q", "ZS9VGYHBQL", "TWQU0KSRVF", "K5JAEFCQ6E",
+                "TERCK8SLBP", "CCMDEVZV2S", "RAOTMUMJTZ", "G767QR3TQZ", "C7EYM614F2",
             )
             expected_10_saas_ui_paths = (
                 "/saas-ui/thoughtspot-spotter?format=json",
@@ -639,11 +639,49 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                 ):
                     bidirectional_docs_ok = False
                     break
+            pattern_matrices = saas_receipt.get("pattern_e2e_matrix", {})
+            all_30_flows = [
+                flow
+                for p_data in pattern_matrices.values()
+                if isinstance(p_data, dict)
+                for flow in p_data.get("saas_e2e_results", [])
+            ]
+            all_30_mcp_blocks = [
+                (((f.get("positive_test_case") or {}).get("output") or {}).get("live_verification_evidence") or {}).get(
+                    "live_aws_bedrock_agentcore_mcp"
+                )
+                or {}
+                for f in all_30_flows
+            ]
+            saas_products = saas_receipt.get("products", [])
+            saas04_prod = next((p for p in saas_products if p.get("id") == "SAAS-04"), {})
+            saas04_kms_sig = (
+                (((saas04_prod.get("positive_result") or {}).get("hop2_gxp_policy_test_artifact")) or {}).get(
+                    "cfr11_kms_ecdsa_p256_signature_b64", ""
+                )
+            )
+            all_30_s3_and_kms_ok = (
+                len(all_30_flows) == 30
+                and all(
+                    isinstance(m.get("s3_audit_ledger_uri"), str)
+                    and m["s3_audit_ledger_uri"].startswith(
+                        "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/"
+                    )
+                    and m.get("s3_persisted") is True
+                    and m.get("is_error") is False
+                    and m.get("http_status") == 200
+                    and bool(m.get("s3_etag"))
+                    for m in all_30_mcp_blocks
+                )
+                and len({m.get("s3_etag") for m in all_30_mcp_blocks}) == 30
+                and len(saas04_kms_sig) >= 64
+            )
             saas_receipt_ok = (
                 saas_receipt.get("status") == "10_SAAS_X_3_PATTERNS_30_E2E_FLOWS_60_OF_60_ASSERTIONS_PASS"
                 and saas_receipt.get("total_unique_saas_products_tested") == 10
                 and saas_receipt.get("total_pattern_by_saas_e2e_flows") == 30
                 and saas_receipt.get("total_assertions_passed") == 60
+                and all_30_s3_and_kms_ok
                 and bidirectional_docs_ok
             )
             cloud_receipt_ok = (

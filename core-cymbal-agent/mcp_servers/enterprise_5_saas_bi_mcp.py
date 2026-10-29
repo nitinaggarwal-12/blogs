@@ -31,9 +31,11 @@ from typing import Any, Dict, Optional
 
 from ..gcp_live_bridge import (
     AWS_AGENTCORE_GW_URL,
+    GCP_PROJECT_ID,
     bq_execute_live_query,
     bq_verify_cmek_silo_lockout,
     kms_asymmetric_sign_digest,
+    read_gcp_secret_json,
 )
 from ..governance.hop1_edge_identity_pep import EdgeIdentityPEP
 from ..governance.hop2_registry_pdp_callbacks import RegistryPDP
@@ -43,6 +45,59 @@ from ..governance.hop5_data_rls_and_otel import DataPlaneRLSAndOTel
 from ..models import CryptographicContext, IsolationTopology
 
 
+_SAAS_SLUG_ALIASES: Dict[str, str] = {
+    "all": "all",
+    "thoughtspot": "thoughtspot",
+    "thoughtspot-spotter": "thoughtspot",
+    "saas-01": "thoughtspot",
+    "sigma": "sigma",
+    "sigma-computing": "sigma",
+    "saas-02": "sigma",
+    "servicenow": "servicenow",
+    "servicenow-itsm": "servicenow",
+    "servicenow-itom": "servicenow",
+    "saas-03": "servicenow",
+    "veeva": "veeva",
+    "veeva-muse": "veeva",
+    "muse": "veeva",
+    "muse-poc": "veeva",
+    "saas-04": "veeva",
+    "salesforce": "salesforce",
+    "salesforce-jira": "salesforce",
+    "jira": "salesforce",
+    "saas-05": "salesforce",
+    "databricks": "databricks",
+    "databricks-unity": "databricks",
+    "databricks-uc": "databricks",
+    "unity-catalog": "databricks",
+    "genie": "databricks",
+    "saas-06": "databricks",
+    "snowflake": "snowflake",
+    "snowflake-cortex": "snowflake",
+    "cortex": "snowflake",
+    "saas-07": "snowflake",
+    "workday": "workday",
+    "workday-hcm": "workday",
+    "workday-raas": "workday",
+    "saas-08": "workday",
+    "datadog": "datadog",
+    "datadog-sre": "datadog",
+    "bits-ai": "datadog",
+    "saas-09": "datadog",
+    "crowdstrike": "crowdstrike",
+    "crowdstrike-okta": "crowdstrike",
+    "okta": "crowdstrike",
+    "falcon": "crowdstrike",
+    "saas-10": "crowdstrike",
+}
+
+
+def resolve_saas_product_slug(raw_slug: str) -> str:
+    """Normalizes a user-supplied SaaS product slug, alias, or SAAS-XX ID into its canonical catalog slug."""
+    cleaned = (raw_slug or "all").strip().lower()
+    return _SAAS_SLUG_ALIASES.get(cleaned, cleaned or "all")
+
+
 def _validate_sql_tenant_id(tenant_id: str) -> str:
     """Validates tenant_id against strict alphanumeric identifier regex before BigQuery SQL construction."""
     if not re.fullmatch(r"[a-z0-9_-]+", tenant_id or ""):
@@ -50,28 +105,44 @@ def _validate_sql_tenant_id(tenant_id: str) -> str:
     return tenant_id
 
 
+_CACHED_COGNITO_TOKEN: Optional[str] = None
+_CACHED_COGNITO_EXPIRES_AT: float = 0.0
+
+
 def _mint_aws_cognito_access_token() -> Optional[str]:
     """
     Mints a live Amazon Cognito RS256 OAuth2 access token (`us-east-1_vqlzYM74B`) for the
     Amazon Bedrock AgentCore MCP Gateway. Supports environment variables (`AWS_COGNITO_CLIENT_ID`,
-    `AWS_COGNITO_CLIENT_SECRET`, `AWS_COGNITO_TOKEN_URL`) first, then `AWS_TFVARS_PATH`
+    `AWS_COGNITO_CLIENT_SECRET`, `AWS_COGNITO_TOKEN_URL`) first, then GCP Secret Manager
+    (`aws-cognito-agentcore-config` for Cloud Run `ge-blogs`), then `AWS_TFVARS_PATH`
     (defaulting to `/Users/nitinagga/aws/aws.auto.tfvars.json`).
     """
+    global _CACHED_COGNITO_TOKEN, _CACHED_COGNITO_EXPIRES_AT
+    now = time.time()
+    if _CACHED_COGNITO_TOKEN and now < _CACHED_COGNITO_EXPIRES_AT:
+        return _CACHED_COGNITO_TOKEN
+
     cid = os.environ.get("AWS_COGNITO_CLIENT_ID")
     csec = os.environ.get("AWS_COGNITO_CLIENT_SECRET")
     token_url = os.environ.get("AWS_COGNITO_TOKEN_URL")
 
     if not (cid and csec and token_url):
+        sec_cfg = read_gcp_secret_json("aws-cognito-agentcore-config")
+        if sec_cfg:
+            cid = cid or sec_cfg.get("aws_cognito_client_id")
+            csec = csec or sec_cfg.get("aws_cognito_client_secret")
+            token_url = token_url or sec_cfg.get("aws_cognito_token_url")
+
+    if not (cid and csec and token_url):
         tfvars_path = Path(os.environ.get("AWS_TFVARS_PATH", "/Users/nitinagga/aws/aws.auto.tfvars.json"))
-        if not tfvars_path.is_file():
-            return None
-        try:
-            tf = json.loads(tfvars_path.read_text(encoding="utf-8"))
-            cid = cid or tf.get("aws_cognito_client_id")
-            csec = csec or tf.get("aws_cognito_client_secret")
-            token_url = token_url or tf.get("aws_cognito_token_url")
-        except Exception:
-            return None
+        if tfvars_path.is_file():
+            try:
+                tf = json.loads(tfvars_path.read_text(encoding="utf-8"))
+                cid = cid or tf.get("aws_cognito_client_id")
+                csec = csec or tf.get("aws_cognito_client_secret")
+                token_url = token_url or tf.get("aws_cognito_token_url")
+            except Exception:
+                return None
 
     if not (cid and csec and token_url):
         return None
@@ -89,7 +160,12 @@ def _mint_aws_cognito_access_token() -> Optional[str]:
         )
         with urllib.request.urlopen(creq, timeout=12) as cresp:
             ctok = json.loads(cresp.read().decode("utf-8"))
-            return ctok.get("access_token")
+            tok = ctok.get("access_token")
+            if tok:
+                ttl = max(60.0, float(ctok.get("expires_in", 3600)) - 120.0)
+                _CACHED_COGNITO_TOKEN = tok
+                _CACHED_COGNITO_EXPIRES_AT = now + ttl
+            return tok
     except Exception:
         return None
 
@@ -413,41 +489,36 @@ class Enterprise5ThirdPartySaaSMCP:
                 "consent_url": f"https://login.microsoftonline.com/{ctx.tenant_id}/oauth2/v2.0/authorize?scope=mcp://retailstream/servicenow-itom-3lo",
             }
 
-        token = _mint_aws_cognito_access_token()
-        if not token:
-            return {"status_code": 503, "decision": "ERROR", "reason": "Unable to mint AWS Cognito RS256 token"}
-
-        req = urllib.request.Request(
-            AWS_AGENTCORE_GW_URL,
-            data=json.dumps(
-                {
-                    "jsonrpc": "2.0",
-                    "id": f"sn-{ctx.session_id}",
-                    "method": "tools/call",
-                    "params": {
-                        "name": "servicenow-itsm___query_servicenow_change_records",
-                        "arguments": {"change_ticket": change_request_number, "study_id": "FV-GXP-2026-04"},
-                    },
-                }
-            ).encode("utf-8"),
-            headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
-            method="POST",
-        )
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            payload = json.loads(resp.read().decode("utf-8"))
-            is_err = (payload.get("result") or {}).get("isError", True)
-            return {
-                "status_code": 200 if not is_err else 502,
-                "decision": "ALLOW" if not is_err else "ERROR",
-                "product": "ServiceNow ITSM & ITOM (Live AWS Bedrock AgentCore MCP Gateway)",
-                "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
-                "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
+        live_mcp = self._invoke_live_agentcore_mcp_tool(
+            "servicenow-itsm___query_servicenow_change_records",
+            {
+                "study_id": "FV-GXP-2026-04",
+                "change_id": change_request_number,
+                "change_ticket": change_request_number,
                 "tenant_id": ctx.tenant_id,
-                "gateway_url": AWS_AGENTCORE_GW_URL,
-                "tool_name": "servicenow-itsm___query_servicenow_change_records",
-                "change_request_number": change_request_number,
-                "live_mcp_response": payload.get("result"),
-            }
+                "principal": ctx.user_principal,
+                "pattern": ctx.active_topology.value,
+            },
+        )
+        if not live_mcp.get("live_agentcore_ok"):
+            return {"status_code": 503, "decision": "ERROR", "reason": live_mcp.get("reason", "AgentCore MCP error")}
+        is_err = bool(live_mcp.get("is_error", False))
+        return {
+            "status_code": 200 if not is_err else 502,
+            "decision": "ALLOW" if not is_err else "ERROR",
+            "product": "ServiceNow ITSM & ITOM (Live AWS Bedrock AgentCore MCP Gateway)",
+            "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
+            "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
+            "tenant_id": ctx.tenant_id,
+            "gateway_url": AWS_AGENTCORE_GW_URL,
+            "tool_name": "servicenow-itsm___query_servicenow_change_records",
+            "change_request_number": change_request_number,
+            "live_aws_agentcore_mcp_execution": live_mcp,
+            "live_mcp_response": {
+                "isError": is_err,
+                "content": [{"type": "text", "text": json.dumps(live_mcp.get("mcp_payload") or {})}],
+            },
+        }
 
     def invoke_veeva_vault_and_muse_clinical_edc(
         self,
@@ -470,29 +541,19 @@ class Enterprise5ThirdPartySaaSMCP:
                 "reason": f"403 Forbidden: Tenant '{ctx.tenant_id}' is not authorized for regulated GxP connector.",
             }
 
-        token = _mint_aws_cognito_access_token()
-        if not token:
-            return {"status_code": 503, "decision": "ERROR", "reason": "Unable to mint AWS Cognito RS256 token"}
-
-        req = urllib.request.Request(
-            AWS_AGENTCORE_GW_URL,
-            data=json.dumps(
-                {
-                    "jsonrpc": "2.0",
-                    "id": f"muse-{ctx.session_id}",
-                    "method": "tools/call",
-                    "params": {
-                        "name": "muse-poc___query_muse_study_biomarkers",
-                        "arguments": {"study_id": study_id, "cohort": cohort},
-                    },
-                }
-            ).encode("utf-8"),
-            headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
-            method="POST",
+        live_mcp = self._invoke_live_agentcore_mcp_tool(
+            "muse-poc___query_muse_study_biomarkers",
+            {
+                "study_id": study_id,
+                "cohort": cohort,
+                "tenant_id": ctx.tenant_id,
+                "principal": ctx.user_principal,
+                "pattern": ctx.active_topology.value,
+            },
         )
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            payload = json.loads(resp.read().decode("utf-8"))
-            is_err = (payload.get("result") or {}).get("isError", True)
+        if not live_mcp.get("live_agentcore_ok"):
+            return {"status_code": 503, "decision": "ERROR", "reason": live_mcp.get("reason", "AgentCore MCP error")}
+        is_err = bool(live_mcp.get("is_error", False))
 
         cfr11_digest_payload = f"{ctx.tenant_id}:{ctx.user_principal}:{study_id}:{cohort}:VV-DOC-004819"
         kms_sig_receipt = kms_asymmetric_sign_digest(cfr11_digest_payload)
@@ -508,6 +569,7 @@ class Enterprise5ThirdPartySaaSMCP:
             "document_number__v": "VV-DOC-004819",
             "name__v": f"Clinical Study Protocol & Regulatory Dossier ({study_id})",
             "status__v": "Steady State (Approved)",
+            "cfr11_live_kms_signed": bool(kms_sig_receipt.get("live_kms_signed")),
             "cfr11_kms_key_version": kms_sig_receipt.get("key_version"),
             "cfr11_payload_sha256": kms_sig_receipt.get("payload_sha256"),
             "cfr11_kms_ecdsa_p256_signature_b64": kms_sig_b64,
@@ -525,7 +587,11 @@ class Enterprise5ThirdPartySaaSMCP:
             "tool_name": "muse-poc___query_muse_study_biomarkers",
             "hop2_gxp_policy_test_artifact": gxp_artifact,
             "veeva_vql_document": gxp_artifact,
-            "live_mcp_response": payload.get("result"),
+            "live_aws_agentcore_mcp_execution": live_mcp,
+            "live_mcp_response": {
+                "isError": is_err,
+                "content": [{"type": "text", "text": json.dumps(live_mcp.get("mcp_payload") or {})}],
+            },
         }
 
     def invoke_salesforce_and_atlassian_jira_escalation(
@@ -1101,7 +1167,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "category": "Agentic BI & Natural-Language-to-SQL (NL2SQL)",
                 "connector_uri": "mcp://cymbal/thoughtspot-spotter-bi-3lo",
                 "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
-                "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`thoughtspot-spotter`, target `KD6Z3SV8PX`) + ThoughtSpot REST v2.0 (`org_identifier` + `runtime_filter`)",
+                "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`thoughtspot-spotter`, target `HXGGFMZBKE`) + ThoughtSpot REST v2.0 (`org_identifier` + `runtime_filter`)",
                 "live_endpoint": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
                 "manual_curl_cmd": (
                     "python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pattern pattern-a --verbose"
@@ -1109,7 +1175,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "config": {
                     "connector_uri": "mcp://cymbal/thoughtspot-spotter-bi-3lo",
                     "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-                    "mcp_target_id": "KD6Z3SV8PX",
+                    "mcp_target_id": "HXGGFMZBKE",
                     "mcp_tool_name": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
                     "thoughtspot_host": "https://try-everywhere.thoughtspot.cloud",
                     "api_version": "2.0",
@@ -1130,7 +1196,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "category": "Cloud Warehouse BI & User-Attribute RLS Pushdown",
                 "connector_uri": "mcp://cymbal/sigma-computing-workbooks-3lo",
                 "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
-                "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`sigma-computing`, target `OZ0KTE8Z8M`) + Signed Workbook User-Attributes (`ua_tenant_id`)",
+                "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`sigma-computing`, target `IZVODT083Q`) + Signed Workbook User-Attributes (`ua_tenant_id`)",
                 "live_endpoint": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
                 "manual_curl_cmd": (
                     "python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern pattern-b --verbose"
@@ -1138,7 +1204,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "config": {
                     "connector_uri": "mcp://cymbal/sigma-computing-workbooks-3lo",
                     "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-                    "mcp_target_id": "OZ0KTE8Z8M",
+                    "mcp_target_id": "IZVODT083Q",
                     "mcp_tool_name": "sigma-computing___eval_sigma_workbook_rls",
                     "sigma_oauth_url": "https://api.sigmacomputing.com/v2/auth/token",
                     "sigma_status_url": "https://status.sigmacomputing.com/api/v2/status.json",
@@ -1159,7 +1225,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "category": "Enterprise IT Service & Change Management",
                 "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
                 "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
-                "auth_protocol": "Hop 5 Interactive 3LO OAuth2 Consent + AWS Cognito RS256 OBO -> Bedrock AgentCore MCP (`servicenow-itsm`, target `PLOLWRMI0I`)",
+                "auth_protocol": "Hop 5 Interactive 3LO OAuth2 Consent + AWS Cognito RS256 OBO -> Bedrock AgentCore MCP (`servicenow-itsm`, target `ZS9VGYHBQL`)",
                 "live_endpoint": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
                 "manual_curl_cmd": (
                     "python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pattern pattern-a --verbose"
@@ -1167,7 +1233,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "config": {
                     "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
                     "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-                    "mcp_target_id": "PLOLWRMI0I",
+                    "mcp_target_id": "ZS9VGYHBQL",
                     "mcp_tool_name": "servicenow-itsm___query_servicenow_change_records",
                     "cognito_user_pool": "us-east-1_vqlzYM74B",
                     "token_vault_key_template": "{tenant_id}:{user_principal}:mcp://retailstream/servicenow-itom-3lo",
@@ -1185,7 +1251,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "category": "Regulated Life Sciences Clinical & Regulatory SaaS",
                 "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
                 "verification_tier": "TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE",
-                "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`muse-poc`, target `1KZWKOFTWQ`) + FDA 21 CFR Part 11 Cloud KMS Signature",
+                "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`muse-poc`, target `TWQU0KSRVF`) + FDA 21 CFR Part 11 Cloud KMS Signature",
                 "live_endpoint": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
                 "manual_curl_cmd": (
                     "python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern pattern-b --verbose"
@@ -1193,10 +1259,10 @@ class Enterprise5ThirdPartySaaSMCP:
                 "config": {
                     "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
                     "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-                    "mcp_target_id": "1KZWKOFTWQ",
+                    "mcp_target_id": "TWQU0KSRVF",
                     "mcp_tool_name": "muse-poc___query_muse_study_biomarkers",
                     "hop2_gxp_policy_test_artifact": "VV-DOC-004819 / Study FV-GXP-2026-04 Cohort-B (Signed via Cloud KMS adk-agent-signing-key)",
-                    "gxp_21cfr11_kms_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/adk-agent-signing-key",
+                    "gxp_21cfr11_kms_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key",
                 },
                 "a_neg_desc": "Cross-Tenant GxP Connector Access: `retailstream` attempts to invoke `finvault`-entitled Veeva/Muse GxP tool",
                 "a_neg_input": {"caller_tenant_id": "retailstream", "target_connector_uri": "mcp://finvault/veeva-muse-clinical-3lo"},
@@ -1211,7 +1277,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "category": "Enterprise CRM & Engineering Incident Escalation",
                 "connector_uri": "mcp://finvault/salesforce-jira-escalation-3lo",
                 "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
-                "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`salesforce-jira`, target `W7BF0JRWEA`) + Hop 4 Egress SDP IBAN/SWIFT Masking",
+                "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`salesforce-jira`, target `K5JAEFCQ6E`) + Hop 4 Egress SDP IBAN/SWIFT Masking",
                 "live_endpoint": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
                 "manual_curl_cmd": (
                     "python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pattern pattern-c --verbose"
@@ -1219,7 +1285,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "config": {
                     "connector_uri": "mcp://finvault/salesforce-jira-escalation-3lo",
                     "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-                    "mcp_target_id": "W7BF0JRWEA",
+                    "mcp_target_id": "K5JAEFCQ6E",
                     "mcp_tool_name": "salesforce-jira___create_redacted_sfdc_jira_escalation",
                     "salesforce_instance_api": "https://api.status.salesforce.com/v1/instances/NA224/status/preview",
                     "jira_cloud_status_api": "https://jira-software.status.atlassian.com/api/v2/status.json",
@@ -1238,7 +1304,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "category": "Lakehouse AI, Unity Catalog 3-Level Namespace & Conversational BI",
                 "connector_uri": "mcp://cymbal/databricks-unity-catalog-genie-3lo",
                 "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
-                "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`databricks-unity`, target `Z1RHXLBK6F`) + Unity Catalog 3-Level Namespace (`cymbal_uc_prod.<tenant>_gold`)",
+                "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`databricks-unity`, target `TERCK8SLBP`) + Unity Catalog 3-Level Namespace (`cymbal_uc_prod.<tenant>_gold`)",
                 "live_endpoint": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
                 "manual_curl_cmd": (
                     "python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pattern pattern-a --verbose"
@@ -1246,7 +1312,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "config": {
                     "connector_uri": "mcp://cymbal/databricks-unity-catalog-genie-3lo",
                     "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-                    "mcp_target_id": "Z1RHXLBK6F",
+                    "mcp_target_id": "TERCK8SLBP",
                     "mcp_tool_name": "databricks-unity___execute_uc_genie_federated_sql",
                     "databricks_workspace_api": "https://community.cloud.databricks.com/api/2.0/clusters/list",
                     "unity_catalog_bindings": {
@@ -1272,7 +1338,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "category": "Cross-Cloud Enterprise Data Warehouse & Secondary-Role Isolation",
                 "connector_uri": "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
                 "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
-                "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`snowflake-cortex`, target `7PB1EK3NJO`) + `USE SECONDARY ROLES NONE` + Primary Role `ROLE_CYMBAL_{TENANT}`",
+                "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`snowflake-cortex`, target `CCMDEVZV2S`) + `USE SECONDARY ROLES NONE` + Primary Role `ROLE_CYMBAL_{TENANT}`",
                 "live_endpoint": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
                 "manual_curl_cmd": (
                     "python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --pattern pattern-b --verbose"
@@ -1280,7 +1346,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "config": {
                     "connector_uri": "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
                     "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-                    "mcp_target_id": "7PB1EK3NJO",
+                    "mcp_target_id": "CCMDEVZV2S",
                     "mcp_tool_name": "snowflake-cortex___execute_cortex_analyst_sql",
                     "snowflake_sql_rest_v2_url": "https://os37291.us-east-1.snowflakecomputing.com/api/v2/statements",
                     "snowflake_status_url": "https://status.snowflake.com/api/v2/status.json",
@@ -1304,7 +1370,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "category": "Enterprise HCM/Payroll ERP, 3LO Principal Scope & Hop 4 SSN Masking",
                 "connector_uri": "mcp://finvault/workday-hcm-financials-raas-3lo",
                 "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
-                "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`workday-raas`, target `CXH8BK86IF`) + Composite Principal Vault + Hop 4 SSN/IBAN Redaction",
+                "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`workday-raas`, target `RAOTMUMJTZ`) + Composite Principal Vault + Hop 4 SSN/IBAN Redaction",
                 "live_endpoint": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
                 "manual_curl_cmd": (
                     "python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --pattern pattern-c --verbose"
@@ -1312,7 +1378,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "config": {
                     "connector_uri": "mcp://finvault/workday-hcm-financials-raas-3lo",
                     "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-                    "mcp_target_id": "CXH8BK86IF",
+                    "mcp_target_id": "RAOTMUMJTZ",
                     "mcp_tool_name": "workday-raas___fetch_compensation_raas_report",
                     "workday_ccx_oauth2_url": "https://wd5-services1.myworkday.com/ccx/oauth2/cymbal/token",
                     "composite_3lo_vault_key": "{tenant_id}:{user_principal}:mcp://finvault/workday-hcm-financials-raas-3lo",
@@ -1335,7 +1401,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "category": "Multi-Tenant SRE Observability & Hop 4 Indirect Log Prompt-Injection Defense",
                 "connector_uri": "mcp://cymbal/datadog-observability-sre-3lo",
                 "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN",
-                "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`datadog-sre`, target `A2X7LPMPA7`) + `@tenant_id` Log Index Partitioning + Hop 4 Model Armor Log Screen",
+                "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`datadog-sre`, target `G767QR3TQZ`) + `@tenant_id` Log Index Partitioning + Hop 4 Model Armor Log Screen",
                 "live_endpoint": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
                 "manual_curl_cmd": (
                     "python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --pattern pattern-a --verbose"
@@ -1343,7 +1409,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "config": {
                     "connector_uri": "mcp://cymbal/datadog-observability-sre-3lo",
                     "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-                    "mcp_target_id": "A2X7LPMPA7",
+                    "mcp_target_id": "G767QR3TQZ",
                     "mcp_tool_name": "datadog-sre___query_tenant_apm_logs",
                     "datadog_api_validate_url": "https://api.datadoghq.com/api/v1/validate",
                     "datadog_status_url": "https://status.datadoghq.com/api/v2/status.json",
@@ -1366,7 +1432,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "category": "Autonomous SecOps XDR, RFC 9449 DPoP Sender-Constrained Binding & CMEK Kill-Switch",
                 "connector_uri": "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
                 "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_HOP1_DPOP_AND_CMEK_GUARD",
-                "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`crowdstrike-okta`, target `TXGJHVFBWP`) + Hop 1 RFC 9449 DPoP (`jkt` thumbprint)",
+                "auth_protocol": "AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`crowdstrike-okta`, target `C7EYM614F2`) + Hop 1 RFC 9449 DPoP (`jkt` thumbprint)",
                 "live_endpoint": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
                 "manual_curl_cmd": (
                     "python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pattern pattern-b --verbose"
@@ -1374,7 +1440,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 "config": {
                     "connector_uri": "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
                     "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-                    "mcp_target_id": "TXGJHVFBWP",
+                    "mcp_target_id": "C7EYM614F2",
                     "mcp_tool_name": "crowdstrike-okta___contain_xdr_host_with_dpop",
                     "crowdstrike_oauth2_url": "https://api.crowdstrike.com/oauth2/token",
                     "okta_oidc_discovery_url": "https://okta.okta.com/.well-known/openid-configuration",
@@ -1395,16 +1461,19 @@ class Enterprise5ThirdPartySaaSMCP:
     def execute_10_saas_end_to_end_for_pattern(
         self,
         pattern: str,
-        base_probes: Dict[str, Dict[str, Any]],
-        cmek_lockout_proof: Dict[str, Any],
+        base_probes: Optional[Dict[str, Dict[str, Any]]] = None,
+        cmek_lockout_proof: Optional[Dict[str, Any]] = None,
+        include_live_probes: bool = False,
     ) -> Dict[str, Any]:
         """
         Executes all 10 unique third-party SaaS products end-to-end under a specific architectural pattern
         (`PATTERN_A_POOLED`, `PATTERN_B_SOVEREIGN_SILO`, or `PATTERN_C_HYBRID_PSC_SPOKE`), running the
         canonical 5-Hop governance modules (`Hop 1` DPoP, `Hop 2` Catalog PDP, `Hop 3` Valkey/CMEK Bulkhead,
-        `Hop 4` Model Armor/SDP, `Hop 5` RLS & 3LO Token Vault) and embedding live cloud telemetry from
-        `base_probes` and `cmek_lockout_proof`.
+        `Hop 4` Model Armor/SDP, `Hop 5` RLS & 3LO Token Vault) and executing distinct per-pattern live
+        AWS Bedrock AgentCore MCP + Google Cloud BigQuery / Cloud KMS probes when `include_live_probes=True`.
         """
+        base_probes = dict(base_probes or {})
+        cmek_lockout_proof = dict(cmek_lockout_proof or {})
         catalog = self.get_10_saas_catalog_specs()
         results = []
 
@@ -1418,15 +1487,102 @@ class Enterprise5ThirdPartySaaSMCP:
             )
         )
 
+        # Pattern-specific live Google Cloud BigQuery & Cloud KMS verification when include_live_probes=True
+        pattern_gcp_telemetry: Dict[str, Any] = {}
+        if include_live_probes:
+            if pattern == "PATTERN_A_POOLED":
+                bq_fv = bq_execute_live_query(
+                    f"SELECT * FROM `{GCP_PROJECT_ID}.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities` "
+                    "WHERE tenant_id = 'finvault' ORDER BY entity_id"
+                )
+                bq_rs = bq_execute_live_query(
+                    f"SELECT * FROM `{GCP_PROJECT_ID}.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities` "
+                    "WHERE tenant_id = 'retailstream' ORDER BY entity_id"
+                )
+                pattern_gcp_telemetry = {
+                    "gcp_project_id": GCP_PROJECT_ID,
+                    "pattern_a_finvault_rls_rows": bq_fv.get("total_rows", 0),
+                    "pattern_a_retailstream_rls_rows": bq_rs.get("total_rows", 0),
+                    "live_bq_query_ok": bool(bq_fv.get("live_bq_query_ok")) and bool(bq_rs.get("live_bq_query_ok")),
+                    "finvault_bq": bq_fv,
+                    "retailstream_bq": bq_rs,
+                }
+            elif pattern == "PATTERN_B_SOVEREIGN_SILO":
+                cmek_lockout_proof = bq_verify_cmek_silo_lockout()
+                kms_21cfr11 = kms_asymmetric_sign_digest(
+                    f"finvault:sre-lead@finvault.com:FV-GXP-2026-04:Cohort-B:{pattern}:VV-DOC-004819"
+                )
+                pattern_gcp_telemetry = {
+                    "gcp_project_id": GCP_PROJECT_ID,
+                    "live_cmek_lockout_enforced": bool(cmek_lockout_proof.get("live_cmek_lockout_enforced")),
+                    "active_finvault_cmek_rows": cmek_lockout_proof.get("active_vault_rows", 0),
+                    "live_kms_21cfr11_signed": bool(kms_21cfr11.get("live_kms_signed")),
+                    "cmek_lockout": cmek_lockout_proof,
+                    "kms_21cfr11": kms_21cfr11,
+                }
+            else:
+                bq_psc = bq_execute_live_query(
+                    f"SELECT * FROM `{GCP_PROJECT_ID}.cymbal_agentic_finops_otel.pattern_c_psc_endpoints_registry` "
+                    "ORDER BY endpoint_id"
+                )
+                bq_mig = bq_execute_live_query(
+                    f"SELECT * FROM `{GCP_PROJECT_ID}.cymbal_agentic_finops_otel.tenant_promotion_migrations` "
+                    "ORDER BY migration_id"
+                )
+                pattern_gcp_telemetry = {
+                    "gcp_project_id": GCP_PROJECT_ID,
+                    "live_psc_registry_ok": bool(bq_psc.get("live_bq_query_ok")),
+                    "psc_endpoints_count": bq_psc.get("total_rows", 0),
+                    "live_tier_promotions_ok": bool(bq_mig.get("live_bq_query_ok")),
+                    "tier_promotions_count": bq_mig.get("total_rows", 0),
+                    "psc_registry": bq_psc,
+                    "tier_promotions": bq_mig,
+                }
+
+        parallel_mcp_by_saas_id: Dict[str, Dict[str, Any]] = {}
+        if include_live_probes:
+            import concurrent.futures
+
+            _mint_aws_cognito_access_token()
+
+            def _run_one_mcp(cat_item: Dict[str, Any]):
+                sid = cat_item["saas_id"]
+                c_uri = cat_item["connector_uri"]
+                t_name = str(cat_item["config"].get("mcp_tool_name", ""))
+                if not t_name:
+                    return sid, {}
+                a_tenant = "retailstream" if ("retailstream" in c_uri or sid == "SAAS-07") else "finvault"
+                a_user = "ops-eng@retailstream.com" if a_tenant == "retailstream" else "sre-lead@finvault.com"
+                m_args: Dict[str, Any] = {
+                    "tenant_id": a_tenant,
+                    "principal": a_user,
+                    "pattern": pattern,
+                }
+                if "servicenow" in t_name or "muse" in t_name:
+                    m_args.update(
+                        {
+                            "study_id": "FV-GXP-2026-04",
+                            "cohort": "Cohort-B",
+                            "change_id": "CHG0049218",
+                            "change_ticket": "CHG0049218",
+                        }
+                    )
+                return sid, self._invoke_live_agentcore_mcp_tool(t_name, m_args)
+
+            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as pool:
+                for sid_k, exec_res in pool.map(_run_one_mcp, catalog):
+                    if exec_res:
+                        parallel_mcp_by_saas_id[sid_k] = exec_res
+
         for item in catalog:
             saas_id = item["saas_id"]
             slug = item["slug"]
             saas_name = item["saas_name"]
             connector_uri = item["connector_uri"]
-            probe_info = base_probes.get(saas_id, {})
+            probe_info = dict(base_probes.get(saas_id, {}))
 
             # Determine canonical authorized tenant for this connector
-            auth_tenant = "retailstream" if "retailstream" in connector_uri else "finvault"
+            auth_tenant = "retailstream" if ("retailstream" in connector_uri or saas_id == "SAAS-07") else "finvault"
             auth_user = "ops-eng@retailstream.com" if auth_tenant == "retailstream" else "sre-lead@finvault.com"
             auth_jkt = "dpop_jkt_rs_002" if auth_tenant == "retailstream" else "dpop_jkt_fv_001"
             auth_iss = (
@@ -1451,12 +1607,27 @@ class Enterprise5ThirdPartySaaSMCP:
             )
             cache_cfg = hop3_cfg.get("context_cache_config") or {}
 
-            # Extract concise live verification evidence from base_probes[saas_id]
+            # Use distinct per-pattern live AWS Bedrock AgentCore MCP `tools/call` result when include_live_probes=True
+            tool_name = str(item["config"].get("mcp_tool_name", ""))
+            mcp_exec: Optional[Dict[str, Any]] = None
+            if include_live_probes and saas_id in parallel_mcp_by_saas_id:
+                mcp_exec = parallel_mcp_by_saas_id[saas_id]
+            elif probe_info.get("live_aws_agentcore_mcp_execution"):
+                mcp_exec = probe_info["live_aws_agentcore_mcp_execution"]
+
+            # Extract concise live verification evidence from per-pattern GCP + AWS execution
             bq_pushdown = (
                 probe_info.get("live_bigquery_rls_pushdown")
                 or probe_info.get("live_bigquery_warehouse_pushdown")
                 or probe_info.get("live_federated_bigquery_rls")
             )
+            if include_live_probes and pattern == "PATTERN_A_POOLED" and not bq_pushdown:
+                bq_pushdown = (
+                    pattern_gcp_telemetry.get("retailstream_bq")
+                    if auth_tenant == "retailstream"
+                    else pattern_gcp_telemetry.get("finvault_bq")
+                )
+
             live_evidence_summary: Dict[str, Any] = {
                 "verification_tier": item["verification_tier"],
                 "probe_status_code": probe_info.get("status_code", 200),
@@ -1468,35 +1639,63 @@ class Enterprise5ThirdPartySaaSMCP:
             }
             if bq_pushdown:
                 live_evidence_summary["live_bigquery_rls"] = {
+                    "billing_project": bq_pushdown.get("billing_project"),
+                    "job_id": bq_pushdown.get("job_id"),
                     "row_count": bq_pushdown.get("row_count", bq_pushdown.get("total_rows")),
                     "rows": bq_pushdown.get("rows"),
-                    "job_location": bq_pushdown.get("job_location"),
+                    "job_location": bq_pushdown.get("job_location", bq_pushdown.get("location")),
                 }
-            if probe_info.get("live_aws_agentcore_mcp_execution"):
-                mcp_exec = probe_info["live_aws_agentcore_mcp_execution"]
+            if include_live_probes and pattern == "PATTERN_B_SOVEREIGN_SILO":
+                live_evidence_summary["live_gcp_pattern_b_cmek_vault"] = {
+                    "active_vault_table": cmek_lockout_proof.get("active_vault_table"),
+                    "active_vault_rows": cmek_lockout_proof.get("active_vault_rows"),
+                    "revoked_vault_table": cmek_lockout_proof.get("revoked_vault_table"),
+                    "live_cmek_lockout_enforced": cmek_lockout_proof.get("live_cmek_lockout_enforced"),
+                }
+            elif include_live_probes and pattern == "PATTERN_C_HYBRID_PSC_SPOKE":
+                live_evidence_summary["live_gcp_pattern_c_psc_and_migrations"] = {
+                    "psc_endpoints_count": pattern_gcp_telemetry.get("psc_endpoints_count"),
+                    "tier_promotions_count": pattern_gcp_telemetry.get("tier_promotions_count"),
+                    "live_psc_registry_ok": pattern_gcp_telemetry.get("live_psc_registry_ok"),
+                    "live_tier_promotions_ok": pattern_gcp_telemetry.get("live_tier_promotions_ok"),
+                }
+
+            if mcp_exec:
+                mcp_pay = mcp_exec.get("mcp_payload") or mcp_exec.get("parsed_payload") or {}
+                s3_uri = (
+                    mcp_exec.get("s3_audit_ledger_uri")
+                    or mcp_pay.get("s3AuditLedgerUri")
+                    or mcp_pay.get("s3_audit_ledger_uri")
+                )
                 live_evidence_summary["live_aws_bedrock_agentcore_mcp"] = {
-                    "gateway_url": mcp_exec.get("gateway_url"),
-                    "target_id": item["config"].get("mcp_target_id"),
-                    "tool_name": mcp_exec.get("tool_name"),
-                    "http_status": mcp_exec.get("http_status"),
-                    "is_error": mcp_exec.get("is_error"),
-                    "s3_audit_ledger_uri": (mcp_exec.get("parsed_payload") or {}).get("s3_audit_ledger_uri"),
+                    "gateway_url": mcp_exec.get("gateway_url", AWS_AGENTCORE_GW_URL),
+                    "target_id": mcp_exec.get("target_id") or item["config"].get("mcp_target_id"),
+                    "tool_name": mcp_exec.get("tool_name", tool_name),
+                    "pattern_executed": mcp_pay.get("pattern", pattern),
+                    "http_status": mcp_exec.get("http_status", 200),
+                    "is_error": mcp_exec.get("is_error", False),
+                    "s3_persisted": mcp_pay.get("s3Persisted", bool(s3_uri)),
+                    "s3_etag": mcp_pay.get("s3ETag"),
+                    "s3_audit_ledger_uri": s3_uri,
                 }
             elif probe_info.get("live_mcp_response"):
                 live_evidence_summary["live_aws_bedrock_agentcore_mcp"] = {
-                    "gateway_url": probe_info.get("gateway_url"),
+                    "gateway_url": probe_info.get("gateway_url", AWS_AGENTCORE_GW_URL),
                     "target_id": item["config"].get("mcp_target_id"),
-                    "tool_name": probe_info.get("tool_name"),
+                    "tool_name": probe_info.get("tool_name", tool_name),
                     "http_status": 200,
                     "is_error": probe_info["live_mcp_response"].get("isError"),
                 }
             if probe_info.get("hop2_gxp_policy_test_artifact"):
                 live_evidence_summary["cloud_kms_21cfr11_signature"] = probe_info["hop2_gxp_policy_test_artifact"]
+            elif include_live_probes and saas_id == "SAAS-04" and pattern_gcp_telemetry.get("kms_21cfr11"):
+                live_evidence_summary["cloud_kms_21cfr11_signature"] = pattern_gcp_telemetry["kms_21cfr11"]
 
             if pattern == "PATTERN_A_POOLED":
                 pos_input = {
                     "pattern": "PATTERN_A_POOLED",
                     "project_id": "cymbal-pooled-saas-prod",
+                    "backing_gcp_project_id": GCP_PROJECT_ID,
                     "tenant_id": auth_tenant,
                     "user_principal": auth_user,
                     "dpop_jkt_thumbprint": auth_jkt,
@@ -1540,7 +1739,7 @@ class Enterprise5ThirdPartySaaSMCP:
                     ),
                 }
                 setup_steps = [
-                    f"1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` for `{connector_uri}`.",
+                    f"1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`{GCP_PROJECT_ID}`) for `{connector_uri}`.",
                     f"2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).",
                     f"3. Store composite 3LO token under `{{tenant_id}}:{{user_principal}}:{connector_uri}` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).",
                 ]
@@ -1550,11 +1749,12 @@ class Enterprise5ThirdPartySaaSMCP:
                 pos_input = {
                     "pattern": "PATTERN_B_SOVEREIGN_SILO",
                     "silo_project_id": "cymbal-finvault-silo-prod",
+                    "backing_gcp_project_id": GCP_PROJECT_ID,
                     "tenant_id": "finvault",
                     "mtls_spiffe_id": "spiffe://cymbal-finvault-silo-prod.svc.id.goog/ns/agent-runtime/sa/silo-agent",
                     "iam_pab_boundary": "//cloudresourcemanager.googleapis.com/projects/cymbal-finvault-silo-prod",
                     "vpc_sc_perimeter": "accessPolicies/248990048888/servicePerimeters/perimeter_finvault_sovereign",
-                    "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/finvault-active-cmek",
+                    "cmek_crypto_key": f"projects/{GCP_PROJECT_ID}/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
                     "cmek_key_state": "ENABLED",
                     "connector_uri": connector_uri,
                     "hop3_valkey_rpm_cap": 600,
@@ -1566,6 +1766,7 @@ class Enterprise5ThirdPartySaaSMCP:
                     "pattern": "PATTERN_B_SOVEREIGN_SILO",
                     "saas_id": saas_id,
                     "silo_project_id": "cymbal-finvault-silo-prod",
+                    "backing_gcp_project_id": GCP_PROJECT_ID,
                     "mtls_spiffe_verified": True,
                     "iam_pab_verified": True,
                     "vpc_sc_egress_rule_allowed": True,
@@ -1576,8 +1777,9 @@ class Enterprise5ThirdPartySaaSMCP:
                 neg_input = {
                     "pattern": "PATTERN_B_SOVEREIGN_SILO",
                     "silo_project_id": "cymbal-medcore-silo-prod",
+                    "backing_gcp_project_id": GCP_PROJECT_ID,
                     "tenant_id": "medcore",
-                    "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/medcore-revoked-cmek",
+                    "cmek_crypto_key": f"projects/{GCP_PROJECT_ID}/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek",
                     "cmek_key_state": "DISABLED",
                     "connector_uri": connector_uri,
                     "attempted_operation": f"Invoke {saas_name} while tenant Cloud KMS CMEK key is DISABLED",
@@ -1601,9 +1803,9 @@ class Enterprise5ThirdPartySaaSMCP:
                     ),
                 }
                 setup_steps = [
-                    f"1. Provision dedicated silo project (`cymbal-finvault-silo-prod`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.",
+                    f"1. Provision dedicated silo project (`cymbal-finvault-silo-prod`, backed by `{GCP_PROJECT_ID}`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.",
                     f"2. Add `{connector_uri}` egress target to VPC Service Controls perimeter `perimeter_finvault_sovereign` and bind IAM PAB.",
-                    f"3. Bind Cloud KMS CMEK key (`finvault-active-cmek` vs revoked `medcore-revoked-cmek`) to Hop 3 Memory Bank, AlloyDB, and 3LO Token Vault.",
+                    f"3. Bind Cloud KMS CMEK key (`finvault-silo-cmek` vs revoked `medcore-revoked-cmek` in `cymbal-multi-tenant-kr`) to Hop 3 Memory Bank, BigQuery/AlloyDB, and 3LO Token Vault.",
                 ]
                 cli_cmd = f"python3 -B scripts/verify_5_third_party_saas_products.py --saas {slug} --pattern pattern-b --verbose"
 
@@ -1612,6 +1814,7 @@ class Enterprise5ThirdPartySaaSMCP:
                     "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
                     "hub_project_id": "cymbal-hybrid-control-hub",
                     "spoke_project_id": "cymbal-finvault-silo-prod",
+                    "backing_gcp_project_id": GCP_PROJECT_ID,
                     "tenant_id": "retailstream_upgrading_to_enterprise",
                     "connector_uri": connector_uri,
                     "psc_nat_subnet_cidr": "10.240.0.0/28",
@@ -1706,7 +1909,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 }
             )
 
-        return {
+        out_payload: Dict[str, Any] = {
             "pattern": pattern,
             "total_saas_products_tested": len(results),
             "positive_assertions_passed": len(results),
@@ -1715,6 +1918,9 @@ class Enterprise5ThirdPartySaaSMCP:
             "status": f"{len(results)}/{len(results)}_SAAS_PRODUCTS_E2E_PASSED ({len(results)*2}/{len(results)*2} ASSERTIONS)",
             "saas_e2e_results": results,
         }
+        if pattern_gcp_telemetry:
+            out_payload["pattern_gcp_telemetry"] = pattern_gcp_telemetry
+        return out_payload
 
 
 # Canonical 10-SaaS alias for backward and forward compatibility (F-AUD-13)

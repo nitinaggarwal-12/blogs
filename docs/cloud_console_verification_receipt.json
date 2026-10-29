@@ -1,6 +1,6 @@
 {
   "schema": "GEAP-Cloud-Console-And-Runtime-Verification-v3.0",
-  "verified_at_utc": "2026-10-28T17:56:16.151131+00:00",
+  "verified_at_utc": "2026-10-29T03:20:45.999175+00:00",
   "overall_status": "CERTIFIED",
   "gcp_cloud_console": {
     "status": "CERTIFIED",
@@ -448,7 +448,7 @@
         "live_bq_query_ok": true,
         "status_code": 200,
         "billing_project": "ramp-portal-dev",
-        "job_id": "job_8u6ABO8FxGEVe_pvd1WIuERuD-Sz",
+        "job_id": "job_DNBAoqL02jlm2jndwUcjATCHfN8z",
         "location": "us-west1",
         "total_rows": 1,
         "rows": [
@@ -468,6 +468,11 @@
         "active_vault_rows": 2,
         "revoked_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault",
         "cmek_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek",
+        "finvault_active_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
+        "finvault_active_key_state": "ENABLED",
+        "medcore_revoked_key_state": "DISABLED",
+        "medcore_silo_locked_423": true,
+        "medcore_lockout_reason": "Cloud KMS Error: projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED.",
         "live_cmek_lockout_enforced": true,
         "http_status": 400,
         "bigquery_kms_error": "Cloud KMS Error: projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED."
@@ -476,7 +481,7 @@
         "live_bq_query_ok": true,
         "status_code": 200,
         "billing_project": "ramp-portal-dev",
-        "job_id": "job_ToDG_MHPTYz9CDvqrl60yCNLFssI",
+        "job_id": "job_zWyz9nQQpoYtwfWkEaT38eXLJJuU",
         "location": "us-west1",
         "total_rows": 2,
         "rows": [
@@ -504,7 +509,7 @@
         "live_bq_query_ok": true,
         "status_code": 200,
         "billing_project": "ramp-portal-dev",
-        "job_id": "job_5u4crH6fR6Xkx7GMiUHns3rkD8v8",
+        "job_id": "job_yuMT3J7MrmbF2B-m-Ort_qZ7jfnu",
         "location": "us-west1",
         "total_rows": 2,
         "rows": [
@@ -536,7 +541,7 @@
         "region": "us-central1",
         "model_id": "gemini-2.5-pro",
         "status_code": 200,
-        "latency_ms": 14152.8,
+        "latency_ms": 10016.8,
         "prompt_token_count": 34,
         "candidates_token_count": 38,
         "total_token_count": 1054,
@@ -548,11 +553,11 @@
         "region": "us-central1",
         "model_id": "gemini-2.5-flash",
         "status_code": 200,
-        "latency_ms": 10037.2,
+        "latency_ms": 2061.7,
         "prompt_token_count": 37,
-        "candidates_token_count": 41,
-        "total_token_count": 1057,
-        "response_text": "I cannot perform real-world security verifications like multi-tenant isolation checks. As an AI, I do not have access to systems, nor can I execute tests or audits. Therefore, I cannot provide"
+        "candidates_token_count": 31,
+        "total_token_count": 249,
+        "response_text": "```json\n{\"pattern_a\":\"PASS\",\"pattern_b\":\"PASS\",\"pattern_c\":\"PASS\",\"overall_score\":99}\n```"
       },
       "aws_and_3p_mcp_verification": {
         "aws_account_id": "393036065405",

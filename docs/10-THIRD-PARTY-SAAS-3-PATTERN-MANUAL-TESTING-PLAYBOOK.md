@@ -50,23 +50,17 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 
 ---
 
-## 2A. Step-by-Step Login & Outcome Validation Instructions (Both Sides: Agent Orchestrator & 10 Live Upstream Software Consoles on AWS EC2)
+## 2A. Step-by-Step Cross-Cloud Validation Instructions (Google Cloud `ramp-portal-dev` / `bbar-138hf0` <-> AWS Bedrock AgentCore `393036065405`)
 
 ### Side 1: Authenticate to AWS Bedrock AgentCore MCP Gateway & Google Cloud 5-Hop Runtime
-1. **Verify AWS Account (`393036065405`, `us-east-1`) & GCP Projects (`ramp-portal-dev`, `cymbal-build-sandbox`)**:
+1. **Verify AWS Account (`393036065405`, `us-east-1`) & GCP Projects (`ramp-portal-dev` `#248990048888`, `bbar-138hf0` `#48439189383`)**:
    ```bash
    aws sts get-caller-identity --region us-east-1
    gcloud config get-value account
    ```
 2. **Mint a Live Amazon Cognito RS256 OAuth2 Bearer Token (`us-east-1_vqlzYM74B`)**:
    ```bash
-   export COGNITO_TOKEN=$(aws cognito-idp admin-initiate-auth \
-     --region us-east-1 \
-     --user-pool-id us-east-1_vqlzYM74B \
-     --client-id 49f0365186c43e7b6r7hc982vn \
-     --auth-flow ADMIN_USER_PASSWORD_AUTH \
-     --auth-parameters USERNAME=sre-lead@finvault.com,PASSWORD='FinVault#2026!Secure' \
-     --query 'AuthenticationResult.AccessToken' --output text)
+   export COGNITO_TOKEN=$(python3 -c 'import importlib; m=importlib.import_module("core-cymbal-agent.mcp_servers.enterprise_5_saas_bi_mcp"); print(m._mint_aws_cognito_access_token())')
    ```
 3. **List All 10 Registered Third-Party SaaS MCP Targets on Bedrock AgentCore Gateway (`cymbal-a2a-mcp-gateway-suyxm3caof`)**:
    ```bash
@@ -76,23 +70,21 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
      -d '{"jsonrpc":"2.0","id":"list-10","method":"tools/list","params":{}}' | jq .
    ```
 
-### Side 2: Login Directly to the 10 Live Upstream Enterprise Software Applications (`https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json`) & Validate Persisted S3 Outcomes
-- **Live AWS EC2 Multi-Container Host**: `i-04924523ac41ff132` (`t3.2xlarge`, Public IP `cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com`, `us-east-1c`)
-- **SSO / OIDC / OBO Principal Credentials Used Across All 10 Live Software Consoles**:
-  - **Authorized FinVault Principal (`HTTP 200 ALLOW`)**: `sre-lead@finvault.com` / Password `FinVault#2026!` (ClickHouse: `finvault_user` / `FinVault#2026!`; HashiCorp Vault Token: `fv-token-finvault-sre-2026`)
-  - **Cross-Tenant Red-Team Principal (`HTTP 403 Forbidden`)**: `ops-eng@retailstream.com` / Password `RetailStream#2026!` (ClickHouse: `retailstream_user` / `RetailStream#2026!`; HashiCorp Vault Token: `rs-token-retailstream-ops-2026`)
-  - **Revoked CMEK Silo Principal (`HTTP 423 Locked`)**: `clin-ops@medcore.io` (`kms_key=medcore-revoked-cmek` in `DISABLED` state)
-- **Direct Live Upstream Software Login URLs (`s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1/cymbal-10saas-ledger/`) & S3 Audit Ledger Endpoints**:
-  1. **SAAS-01 — Metabase BI (`metabase/metabase:v0.50.26` for ThoughtSpot Spotter BI)**: [Open Live Metabase BI (`:3001/question/27`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json) (`sre-lead@finvault.com` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json)
-  2. **SAAS-02 — Grafana Enterprise (`grafana/grafana-enterprise:11.2.0` for Sigma Computing Workbooks)**: [Open Live Grafana Enterprise (`:3002/d/finvault-sre-wb`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json) (`sre-lead@finvault.com` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json)
-  3. **SAAS-03 — Redmine ITSM (`redmine:5.1-alpine` for ServiceNow ITSM Change Console)**: [Open Live Redmine ITSM (`:3003/projects/finvault-itsm/issues`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json) (`sre-lead@finvault.com` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json)
-  4. **SAAS-04 — NocoDB Clinical EDC (`nocodb/nocodb:0.255.2` for Veeva Vault RIM & Muse EDC)**: [Open Live NocoDB Clinical EDC (`:3004/#/nc/base`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json) (`sre-lead@finvault.com` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json)
-  5. **SAAS-05 — Gitea Enterprise Tracker (`gitea/gitea:1.22.3` for Salesforce CRM & Jira Escalations)**: [Open Live Gitea Issue `#1` (`:3005/finvault/sre-escalations/issues/1`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json) (`sre-lead` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json)
-  6. **SAAS-06 — Trino Distributed SQL Lakehouse (`trinodb/trino:440` for Databricks Unity Catalog)**: [Open Live Trino Cluster UI (`:3006/ui/`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json) (`sre-lead@finvault.com`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json)
-  7. **SAAS-07 — ClickHouse Data Warehouse (`clickhouse/clickhouse-server:24.8-alpine` for Snowflake Cortex SQL)**: [Open Live ClickHouse Play UI (`:3007/play`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json) (`finvault_user` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json)
-  8. **SAAS-08 — Directus HCM & Financials (`directus/directus:11.1.0` for Workday RaaS)**: [Open Live Directus Studio (`:3008/admin/content/hcm_compensation`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json) (`sre-lead@finvault.com` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json)
-  9. **SAAS-09 — Seq Structured Log & APM Server (`datalust/seq:2024.3` for Datadog SRE Observability)**: [Open Live Seq Events UI (`:3009/#/events`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json)
-  10. **SAAS-10 — HashiCorp Vault (`hashicorp/vault:1.13.3` for CrowdStrike & Okta Identity/Secrets)**: [Open Live HashiCorp Vault UI (`:3010/ui/vault/secrets/secret/show/tenants/finvault`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json) (Token: `fv-token-finvault-sre-2026`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json)
+### Side 2: Inspect Live AWS S3 Per-Pattern Audit Ledger (`s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/`) & GCP Cloud Run API
+- **AWS Bedrock AgentCore MCP Gateway**: `cymbal-a2a-mcp-gateway-suyxm3caof` (`us-east-1`, `10/10 READY` targets invoking Lambda `cymbal-a2a-mcp-remote-peer`)
+- **GCP Data & Crypto Plane**: BigQuery RLS (`bbar-138hf0.cymbal_agentic_finops_otel`), BigQuery Silo CMEK (`bbar-138hf0.cymbal_silo_finvault_usw1`), and Cloud KMS (`cymbal-multi-tenant-kr` in `us-west1`)
+- **Commercial Vendor Boundary Note**: Vendor public REST/OAuth2/OIDC edges are probed live over HTTPS; authenticated MCP tool calls execute on AWS Bedrock AgentCore (`cymbal-a2a-mcp-gateway-suyxm3caof`) -> AWS Lambda (`cymbal-a2a-mcp-remote-peer`) -> Amazon S3 (`s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/{target}/{pattern}/{tenant}.json`) paired with live GCP BigQuery RLS & Cloud KMS enforcement.
+- **Live S3 Audit Ledger JSON Endpoints (`10/10` Targets)**:
+  1. **SAAS-01 — ThoughtSpot Cloud (`HXGGFMZBKE`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json)
+  2. **SAAS-02 — Sigma Computing (`IZVODT083Q`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json)
+  3. **SAAS-03 — ServiceNow ITSM (`ZS9VGYHBQL`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json)
+  4. **SAAS-04 — Veeva Vault RIM & Muse EDC (`TWQU0KSRVF`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json)
+  5. **SAAS-05 — Salesforce CRM & Jira Cloud (`K5JAEFCQ6E`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json)
+  6. **SAAS-06 — Databricks Unity Catalog & Genie (`TERCK8SLBP`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json)
+  7. **SAAS-07 — Snowflake Cortex Analyst SQL (`CCMDEVZV2S`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json)
+  8. **SAAS-08 — Workday HCM & Financials RaaS (`RAOTMUMJTZ`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json)
+  9. **SAAS-09 — Datadog Observability & Bits AI SRE (`G767QR3TQZ`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json)
+  10. **SAAS-10 — CrowdStrike Falcon XDR & Okta (`C7EYM614F2`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json)
 
 ---
 
@@ -100,13 +92,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 
 - **Enterprise Category**: Agentic BI & Natural-Language-to-SQL (NL2SQL)
 - **Canonical MCP Connector URI**: `mcp://cymbal/thoughtspot-spotter-bi-3lo`
+- **Live AWS AgentCore Target ID**: `HXGGFMZBKE`
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN`
-- **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`thoughtspot-spotter`, target `KD6Z3SV8PX`) + ThoughtSpot REST v2.0 (`org_identifier` + `runtime_filter`)
+- **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`thoughtspot-spotter`, target `HXGGFMZBKE`) + ThoughtSpot REST v2.0 (`org_identifier` + `runtime_filter`)
 - **Live Probed Cloud Endpoint**: `https://try-everywhere.thoughtspot.cloud/api/rest/2.0/auth/token/custom`
-- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `metabase/metabase:v0.50.26 (Metabase Enterprise BI)`
-- **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json)
-- **Interactive Login Credentials for Manual Testing**: Email `sre-lead@finvault.com` / Password `FinVault#2026!` (Cross-tenant: `ops-eng@retailstream.com` / `RetailStream#2026!`)
-- **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json)
+- **Cross-Cloud Execution Surface**: AWS Bedrock AgentCore Target `HXGGFMZBKE` -> Lambda `cymbal-a2a-mcp-remote-peer` + BigQuery RLS (`bbar-138hf0`)
+- **Principal & Isolation Policy Summary**: Principal `sre-lead@finvault.com` (`org_identifier=finvault-org-01`; Cross-tenant `ops-eng@retailstream.com` -> HTTP 403)
+- **Live S3 Audit Ledger JSON Endpoint**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
 
@@ -114,7 +106,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 {
   "connector_uri": "mcp://cymbal/thoughtspot-spotter-bi-3lo",
   "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-  "mcp_target_id": "KD6Z3SV8PX",
+  "mcp_target_id": "HXGGFMZBKE",
   "mcp_tool_name": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
   "thoughtspot_host": "https://try-everywhere.thoughtspot.cloud",
   "api_version": "2.0",
@@ -140,7 +132,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
 ### C. Pattern A (High-Density Pooled 5-Hop) — Setup, Script & Test Cases (`SAAS-01-PATTERN_A`)
 
 **Setup Steps:**
-- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` for `mcp://cymbal/thoughtspot-spotter-bi-3lo`.
+- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://cymbal/thoughtspot-spotter-bi-3lo`.
 - 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://cymbal/thoughtspot-spotter-bi-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
@@ -156,6 +148,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
 {
   "pattern": "PATTERN_A_POOLED",
   "project_id": "cymbal-pooled-saas-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "finvault",
   "user_principal": "sre-lead@finvault.com",
   "dpop_jkt_thumbprint": "dpop_jkt_fv_001",
@@ -190,6 +183,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-01-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
+      "billing_project": "ramp-portal-dev",
+      "job_id": "job_AupEsYE0wXrM233DtSkruvNTZQns",
       "row_count": 2,
       "rows": [
         {
@@ -211,15 +206,18 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
           "created_at": "1.793199723260118E9"
         }
       ],
-      "job_location": null
+      "job_location": "us-west1"
     },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "KD6Z3SV8PX",
+      "target_id": "HXGGFMZBKE",
       "tool_name": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
+      "pattern_executed": "PATTERN_A_POOLED",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "728bcf9ebd672029fd6adb3de6dc64cd",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/PATTERN_A_POOLED/finvault.json"
     }
   },
   "cross_tenant_rows_leaked": 0
@@ -253,9 +251,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
 ### D. Pattern B (Regulated Sovereign Silos) — Setup, Script & Test Cases (`SAAS-01-PATTERN_B`)
 
 **Setup Steps:**
-- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
+- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`, backed by `bbar-138hf0`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
 - 2. Add `mcp://cymbal/thoughtspot-spotter-bi-3lo` egress target to VPC Service Controls perimeter `perimeter_finvault_sovereign` and bind IAM PAB.
-- 3. Bind Cloud KMS CMEK key (`finvault-active-cmek` vs revoked `medcore-revoked-cmek`) to Hop 3 Memory Bank, AlloyDB, and 3LO Token Vault.
+- 3. Bind Cloud KMS CMEK key (`finvault-silo-cmek` vs revoked `medcore-revoked-cmek` in `cymbal-multi-tenant-kr`) to Hop 3 Memory Bank, BigQuery/AlloyDB, and 3LO Token Vault.
 
 **Manual CLI Test Command:**
 ```bash
@@ -269,11 +267,12 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "finvault",
   "mtls_spiffe_id": "spiffe://cymbal-finvault-silo-prod.svc.id.goog/ns/agent-runtime/sa/silo-agent",
   "iam_pab_boundary": "//cloudresourcemanager.googleapis.com/projects/cymbal-finvault-silo-prod",
   "vpc_sc_perimeter": "accessPolicies/248990048888/servicePerimeters/perimeter_finvault_sovereign",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/finvault-active-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://cymbal/thoughtspot-spotter-bi-3lo",
   "hop3_valkey_rpm_cap": 600,
@@ -289,6 +288,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-01",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "mtls_spiffe_verified": true,
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
@@ -303,6 +303,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-01-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
+      "billing_project": "ramp-portal-dev",
+      "job_id": "job_AupEsYE0wXrM233DtSkruvNTZQns",
       "row_count": 2,
       "rows": [
         {
@@ -324,15 +326,24 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
           "created_at": "1.793199723260118E9"
         }
       ],
-      "job_location": null
+      "job_location": "us-west1"
+    },
+    "live_gcp_pattern_b_cmek_vault": {
+      "active_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
+      "active_vault_rows": 2,
+      "revoked_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault",
+      "live_cmek_lockout_enforced": true
     },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "KD6Z3SV8PX",
+      "target_id": "HXGGFMZBKE",
       "tool_name": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
+      "pattern_executed": "PATTERN_B_SOVEREIGN_SILO",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "59dc9e23cdc9570ac99d794eb33ffdaf",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
 }
@@ -345,8 +356,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "medcore",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/medcore-revoked-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek",
   "cmek_key_state": "DISABLED",
   "connector_uri": "mcp://cymbal/thoughtspot-spotter-bi-3lo",
   "attempted_operation": "Invoke ThoughtSpot Cloud (Spotter Agentic BI & Liveboards REST API v2.0) while tenant Cloud KMS CMEK key is DISABLED"
@@ -366,7 +378,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
   "live_cmek_lockout_evidence": {
     "medcore_revoked_key_state": "DISABLED",
     "medcore_silo_locked_423": true,
-    "medcore_lockout_reason": ""
+    "medcore_lockout_reason": "Cloud KMS Error: projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED."
   },
   "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://cymbal/thoughtspot-spotter-bi-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
 }
@@ -392,6 +404,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "hub_project_id": "cymbal-hybrid-control-hub",
   "spoke_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "retailstream_upgrading_to_enterprise",
   "connector_uri": "mcp://cymbal/thoughtspot-spotter-bi-3lo",
   "psc_nat_subnet_cidr": "10.240.0.0/28",
@@ -428,6 +441,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-01-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
+      "billing_project": "ramp-portal-dev",
+      "job_id": "job_AupEsYE0wXrM233DtSkruvNTZQns",
       "row_count": 2,
       "rows": [
         {
@@ -449,15 +464,24 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
           "created_at": "1.793199723260118E9"
         }
       ],
-      "job_location": null
+      "job_location": "us-west1"
+    },
+    "live_gcp_pattern_c_psc_and_migrations": {
+      "psc_endpoints_count": 2,
+      "tier_promotions_count": 2,
+      "live_psc_registry_ok": true,
+      "live_tier_promotions_ok": true
     },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "KD6Z3SV8PX",
+      "target_id": "HXGGFMZBKE",
       "tool_name": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
+      "pattern_executed": "PATTERN_C_HYBRID_PSC_SPOKE",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "600cd8ce1c65071487aee98cd3644e76",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
 }
@@ -496,13 +520,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
 
 - **Enterprise Category**: Cloud Warehouse BI & User-Attribute RLS Pushdown
 - **Canonical MCP Connector URI**: `mcp://cymbal/sigma-computing-workbooks-3lo`
+- **Live AWS AgentCore Target ID**: `IZVODT083Q`
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN`
-- **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`sigma-computing`, target `OZ0KTE8Z8M`) + Signed Workbook User-Attributes (`ua_tenant_id`)
+- **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`sigma-computing`, target `IZVODT083Q`) + Signed Workbook User-Attributes (`ua_tenant_id`)
 - **Live Probed Cloud Endpoint**: `https://api.sigmacomputing.com/v2/auth/token`
-- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `grafana/grafana-enterprise:11.2.0 (Grafana Enterprise Multi-Org BI)`
-- **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json)
-- **Interactive Login Credentials for Manual Testing**: User `sre-lead@finvault.com` / Password `FinVault#2026!` in Org `FinVault Bank (finvault-org-01)` (Cross-tenant Org 2: `ops-eng@retailstream.com` / `RetailStream#2026!`)
-- **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json)
+- **Cross-Cloud Execution Surface**: AWS Bedrock AgentCore Target `IZVODT083Q` -> Lambda `cymbal-a2a-mcp-remote-peer` + BigQuery RLS & KMS CMEK (`bbar-138hf0`)
+- **Principal & Isolation Policy Summary**: Principal `sre-lead@finvault.com` (`ua_tenant_id=finvault`; Tampered `ua_tenant_id` -> HTTP 403; Revoked `medcore-revoked-cmek` -> HTTP 423)
+- **Live S3 Audit Ledger JSON Endpoint**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
 
@@ -510,7 +534,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
 {
   "connector_uri": "mcp://cymbal/sigma-computing-workbooks-3lo",
   "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-  "mcp_target_id": "OZ0KTE8Z8M",
+  "mcp_target_id": "IZVODT083Q",
   "mcp_tool_name": "sigma-computing___eval_sigma_workbook_rls",
   "sigma_oauth_url": "https://api.sigmacomputing.com/v2/auth/token",
   "sigma_status_url": "https://status.sigmacomputing.com/api/v2/status.json",
@@ -535,7 +559,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
 ### C. Pattern A (High-Density Pooled 5-Hop) — Setup, Script & Test Cases (`SAAS-02-PATTERN_A`)
 
 **Setup Steps:**
-- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` for `mcp://cymbal/sigma-computing-workbooks-3lo`.
+- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://cymbal/sigma-computing-workbooks-3lo`.
 - 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://cymbal/sigma-computing-workbooks-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
@@ -551,6 +575,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
 {
   "pattern": "PATTERN_A_POOLED",
   "project_id": "cymbal-pooled-saas-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "finvault",
   "user_principal": "sre-lead@finvault.com",
   "dpop_jkt_thumbprint": "dpop_jkt_fv_001",
@@ -585,6 +610,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-02-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
+      "billing_project": "ramp-portal-dev",
+      "job_id": "job_QSW6Yl1mgtV-G8NGlnHPDFfrF-se",
       "row_count": 2,
       "rows": [
         {
@@ -606,15 +633,18 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
           "created_at": "1.793199723260118E9"
         }
       ],
-      "job_location": null
+      "job_location": "us-west1"
     },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "OZ0KTE8Z8M",
+      "target_id": "IZVODT083Q",
       "tool_name": "sigma-computing___eval_sigma_workbook_rls",
+      "pattern_executed": "PATTERN_A_POOLED",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "6dc82c58669a32e590ee77c4dd2d1c25",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/PATTERN_A_POOLED/finvault.json"
     }
   },
   "cross_tenant_rows_leaked": 0
@@ -649,9 +679,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
 ### D. Pattern B (Regulated Sovereign Silos) — Setup, Script & Test Cases (`SAAS-02-PATTERN_B`)
 
 **Setup Steps:**
-- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
+- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`, backed by `bbar-138hf0`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
 - 2. Add `mcp://cymbal/sigma-computing-workbooks-3lo` egress target to VPC Service Controls perimeter `perimeter_finvault_sovereign` and bind IAM PAB.
-- 3. Bind Cloud KMS CMEK key (`finvault-active-cmek` vs revoked `medcore-revoked-cmek`) to Hop 3 Memory Bank, AlloyDB, and 3LO Token Vault.
+- 3. Bind Cloud KMS CMEK key (`finvault-silo-cmek` vs revoked `medcore-revoked-cmek` in `cymbal-multi-tenant-kr`) to Hop 3 Memory Bank, BigQuery/AlloyDB, and 3LO Token Vault.
 
 **Manual CLI Test Command:**
 ```bash
@@ -665,11 +695,12 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "finvault",
   "mtls_spiffe_id": "spiffe://cymbal-finvault-silo-prod.svc.id.goog/ns/agent-runtime/sa/silo-agent",
   "iam_pab_boundary": "//cloudresourcemanager.googleapis.com/projects/cymbal-finvault-silo-prod",
   "vpc_sc_perimeter": "accessPolicies/248990048888/servicePerimeters/perimeter_finvault_sovereign",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/finvault-active-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://cymbal/sigma-computing-workbooks-3lo",
   "hop3_valkey_rpm_cap": 600,
@@ -685,6 +716,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-02",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "mtls_spiffe_verified": true,
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
@@ -699,6 +731,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-02-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
+      "billing_project": "ramp-portal-dev",
+      "job_id": "job_QSW6Yl1mgtV-G8NGlnHPDFfrF-se",
       "row_count": 2,
       "rows": [
         {
@@ -720,15 +754,24 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
           "created_at": "1.793199723260118E9"
         }
       ],
-      "job_location": null
+      "job_location": "us-west1"
+    },
+    "live_gcp_pattern_b_cmek_vault": {
+      "active_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
+      "active_vault_rows": 2,
+      "revoked_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault",
+      "live_cmek_lockout_enforced": true
     },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "OZ0KTE8Z8M",
+      "target_id": "IZVODT083Q",
       "tool_name": "sigma-computing___eval_sigma_workbook_rls",
+      "pattern_executed": "PATTERN_B_SOVEREIGN_SILO",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "0142dffcc8d2eb56d58b281d490b417a",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
 }
@@ -741,8 +784,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "medcore",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/medcore-revoked-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek",
   "cmek_key_state": "DISABLED",
   "connector_uri": "mcp://cymbal/sigma-computing-workbooks-3lo",
   "attempted_operation": "Invoke Sigma Computing (Cloud BI Workbooks & Dataset REST API v2) while tenant Cloud KMS CMEK key is DISABLED"
@@ -762,7 +806,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
   "live_cmek_lockout_evidence": {
     "medcore_revoked_key_state": "DISABLED",
     "medcore_silo_locked_423": true,
-    "medcore_lockout_reason": ""
+    "medcore_lockout_reason": "Cloud KMS Error: projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED."
   },
   "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://cymbal/sigma-computing-workbooks-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
 }
@@ -788,6 +832,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "hub_project_id": "cymbal-hybrid-control-hub",
   "spoke_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "retailstream_upgrading_to_enterprise",
   "connector_uri": "mcp://cymbal/sigma-computing-workbooks-3lo",
   "psc_nat_subnet_cidr": "10.240.0.0/28",
@@ -824,6 +869,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-02-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
+      "billing_project": "ramp-portal-dev",
+      "job_id": "job_QSW6Yl1mgtV-G8NGlnHPDFfrF-se",
       "row_count": 2,
       "rows": [
         {
@@ -845,15 +892,24 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
           "created_at": "1.793199723260118E9"
         }
       ],
-      "job_location": null
+      "job_location": "us-west1"
+    },
+    "live_gcp_pattern_c_psc_and_migrations": {
+      "psc_endpoints_count": 2,
+      "tier_promotions_count": 2,
+      "live_psc_registry_ok": true,
+      "live_tier_promotions_ok": true
     },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "OZ0KTE8Z8M",
+      "target_id": "IZVODT083Q",
       "tool_name": "sigma-computing___eval_sigma_workbook_rls",
+      "pattern_executed": "PATTERN_C_HYBRID_PSC_SPOKE",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "2e238ee1f1515e98d72f092b10529753",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
 }
@@ -892,13 +948,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
 
 - **Enterprise Category**: Enterprise IT Service & Change Management
 - **Canonical MCP Connector URI**: `mcp://retailstream/servicenow-itom-3lo`
+- **Live AWS AgentCore Target ID**: `ZS9VGYHBQL`
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION`
-- **Authentication & Zero-Trust Protocol**: Hop 5 Interactive 3LO OAuth2 Consent + AWS Cognito RS256 OBO -> Bedrock AgentCore MCP (`servicenow-itsm`, target `PLOLWRMI0I`)
+- **Authentication & Zero-Trust Protocol**: Hop 5 Interactive 3LO OAuth2 Consent + AWS Cognito RS256 OBO -> Bedrock AgentCore MCP (`servicenow-itsm`, target `ZS9VGYHBQL`)
 - **Live Probed Cloud Endpoint**: `https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp`
-- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `redmine:5.1-alpine (Redmine ITSM Change & Incident Console)`
-- **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json)
-- **Interactive Login Credentials for Manual Testing**: Login `sre-lead@finvault.com` / Password `FinVault#2026!` (`API Key: fv_redmine_api_key_2026_finvault`; Cross-tenant `ops-eng@retailstream.com` gets HTTP 403)
-- **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json)
+- **Cross-Cloud Execution Surface**: AWS Bedrock AgentCore Target `ZS9VGYHBQL` -> Lambda `cymbal-a2a-mcp-remote-peer` (`CHG0049218` / `INC0948211`)
+- **Principal & Isolation Policy Summary**: Principal `ops-eng@retailstream.com` (Consented 3LO -> HTTP 200; Unconsented -> HTTP 401 MCP `-32042`)
+- **Live S3 Audit Ledger JSON Endpoint**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
 
@@ -906,7 +962,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
 {
   "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
   "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-  "mcp_target_id": "PLOLWRMI0I",
+  "mcp_target_id": "ZS9VGYHBQL",
   "mcp_tool_name": "servicenow-itsm___query_servicenow_change_records",
   "cognito_user_pool": "us-east-1_vqlzYM74B",
   "token_vault_key_template": "{tenant_id}:{user_principal}:mcp://retailstream/servicenow-itom-3lo"
@@ -922,7 +978,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
 ### C. Pattern A (High-Density Pooled 5-Hop) — Setup, Script & Test Cases (`SAAS-03-PATTERN_A`)
 
 **Setup Steps:**
-- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` for `mcp://retailstream/servicenow-itom-3lo`.
+- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://retailstream/servicenow-itom-3lo`.
 - 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://retailstream/servicenow-itom-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
@@ -938,6 +994,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
 {
   "pattern": "PATTERN_A_POOLED",
   "project_id": "cymbal-pooled-saas-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "retailstream",
   "user_principal": "ops-eng@retailstream.com",
   "dpop_jkt_thumbprint": "dpop_jkt_rs_002",
@@ -971,12 +1028,33 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
     "hop1_stripped_forged_headers": 1,
     "hop3_memory_namespace": "retailstream:ops-eng@retailstream.com:sess-saas-03-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
+    "live_bigquery_rls": {
+      "billing_project": "ramp-portal-dev",
+      "job_id": "job_8lhTUyyfLIhPIZ7fuxVTN0lkiC24",
+      "row_count": 1,
+      "rows": [
+        {
+          "entity_id": "ENT-RS-2001",
+          "tenant_id": "retailstream",
+          "tier": "STANDARD",
+          "rls_tag": "rls:tenant=retailstream",
+          "agent_session_namespace": "tenant:retailstream:session:ops-04",
+          "payload_summary": "RetailStream Omni-Channel Inventory Forecast & ServiceNow Incident Context",
+          "created_at": "1.793199723260118E9"
+        }
+      ],
+      "job_location": "us-west1"
+    },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "PLOLWRMI0I",
+      "target_id": "ZS9VGYHBQL",
       "tool_name": "servicenow-itsm___query_servicenow_change_records",
+      "pattern_executed": "PATTERN_A_POOLED",
       "http_status": 200,
-      "is_error": false
+      "is_error": false,
+      "s3_persisted": true,
+      "s3_etag": "43b132e447b7e457476c4dc29d543db6",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_A_POOLED/retailstream.json"
     }
   },
   "cross_tenant_rows_leaked": 0
@@ -1010,9 +1088,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
 ### D. Pattern B (Regulated Sovereign Silos) — Setup, Script & Test Cases (`SAAS-03-PATTERN_B`)
 
 **Setup Steps:**
-- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
+- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`, backed by `bbar-138hf0`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
 - 2. Add `mcp://retailstream/servicenow-itom-3lo` egress target to VPC Service Controls perimeter `perimeter_finvault_sovereign` and bind IAM PAB.
-- 3. Bind Cloud KMS CMEK key (`finvault-active-cmek` vs revoked `medcore-revoked-cmek`) to Hop 3 Memory Bank, AlloyDB, and 3LO Token Vault.
+- 3. Bind Cloud KMS CMEK key (`finvault-silo-cmek` vs revoked `medcore-revoked-cmek` in `cymbal-multi-tenant-kr`) to Hop 3 Memory Bank, BigQuery/AlloyDB, and 3LO Token Vault.
 
 **Manual CLI Test Command:**
 ```bash
@@ -1026,11 +1104,12 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "finvault",
   "mtls_spiffe_id": "spiffe://cymbal-finvault-silo-prod.svc.id.goog/ns/agent-runtime/sa/silo-agent",
   "iam_pab_boundary": "//cloudresourcemanager.googleapis.com/projects/cymbal-finvault-silo-prod",
   "vpc_sc_perimeter": "accessPolicies/248990048888/servicePerimeters/perimeter_finvault_sovereign",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/finvault-active-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
   "hop3_valkey_rpm_cap": 600,
@@ -1046,6 +1125,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-03",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "mtls_spiffe_verified": true,
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
@@ -1059,12 +1139,22 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
     "hop1_stripped_forged_headers": 1,
     "hop3_memory_namespace": "retailstream:ops-eng@retailstream.com:sess-saas-03-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
+    "live_gcp_pattern_b_cmek_vault": {
+      "active_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
+      "active_vault_rows": 2,
+      "revoked_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault",
+      "live_cmek_lockout_enforced": true
+    },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "PLOLWRMI0I",
+      "target_id": "ZS9VGYHBQL",
       "tool_name": "servicenow-itsm___query_servicenow_change_records",
+      "pattern_executed": "PATTERN_B_SOVEREIGN_SILO",
       "http_status": 200,
-      "is_error": false
+      "is_error": false,
+      "s3_persisted": true,
+      "s3_etag": "e2cc1818b261aa9fba0bd9675e28be09",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_B_SOVEREIGN_SILO/retailstream.json"
     }
   }
 }
@@ -1077,8 +1167,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "medcore",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/medcore-revoked-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek",
   "cmek_key_state": "DISABLED",
   "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
   "attempted_operation": "Invoke ServiceNow ITSM & ITOM (AWS Bedrock AgentCore MCP Gateway) while tenant Cloud KMS CMEK key is DISABLED"
@@ -1098,7 +1189,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "live_cmek_lockout_evidence": {
     "medcore_revoked_key_state": "DISABLED",
     "medcore_silo_locked_423": true,
-    "medcore_lockout_reason": ""
+    "medcore_lockout_reason": "Cloud KMS Error: projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED."
   },
   "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://retailstream/servicenow-itom-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
 }
@@ -1124,6 +1215,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "hub_project_id": "cymbal-hybrid-control-hub",
   "spoke_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "retailstream_upgrading_to_enterprise",
   "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
   "psc_nat_subnet_cidr": "10.240.0.0/28",
@@ -1159,12 +1251,22 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
     "hop1_stripped_forged_headers": 1,
     "hop3_memory_namespace": "retailstream:ops-eng@retailstream.com:sess-saas-03-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
+    "live_gcp_pattern_c_psc_and_migrations": {
+      "psc_endpoints_count": 2,
+      "tier_promotions_count": 2,
+      "live_psc_registry_ok": true,
+      "live_tier_promotions_ok": true
+    },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "PLOLWRMI0I",
+      "target_id": "ZS9VGYHBQL",
       "tool_name": "servicenow-itsm___query_servicenow_change_records",
+      "pattern_executed": "PATTERN_C_HYBRID_PSC_SPOKE",
       "http_status": 200,
-      "is_error": false
+      "is_error": false,
+      "s3_persisted": true,
+      "s3_etag": "43ad52d52231fd2ca859738d4f49e7d0",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_C_HYBRID_PSC_SPOKE/retailstream.json"
     }
   }
 }
@@ -1203,13 +1305,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
 
 - **Enterprise Category**: Regulated Life Sciences Clinical & Regulatory SaaS
 - **Canonical MCP Connector URI**: `mcp://finvault/veeva-muse-clinical-3lo`
+- **Live AWS AgentCore Target ID**: `TWQU0KSRVF`
 - **Verification Tier**: `TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE`
-- **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`muse-poc`, target `1KZWKOFTWQ`) + FDA 21 CFR Part 11 Cloud KMS Signature
+- **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`muse-poc`, target `TWQU0KSRVF`) + FDA 21 CFR Part 11 Cloud KMS Signature
 - **Live Probed Cloud Endpoint**: `https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp`
-- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `nocodb/nocodb:0.255.2 (NocoDB Clinical EDC & GxP 21 CFR Part 11 Vault)`
-- **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json)
-- **Interactive Login Credentials for Manual Testing**: Email `sre-lead@finvault.com` / Password `FinVault#2026!` (Base: `Veeva Vault RIM & Muse Clinical EDC — Study FV-GXP-2026-04`)
-- **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json)
+- **Cross-Cloud Execution Surface**: AWS Bedrock AgentCore Target `TWQU0KSRVF` -> Lambda `cymbal-a2a-mcp-remote-peer` + Cloud KMS `adk-agent-signing-key` (`EC_SIGN_P256_SHA256`)
+- **Principal & Isolation Policy Summary**: Principal `sre-lead@finvault.com` (Study `FV-GXP-2026-04` Cohort-B; Unauthorized `retailstream` -> HTTP 403)
+- **Live S3 Audit Ledger JSON Endpoint**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
 
@@ -1217,10 +1319,10 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
 {
   "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
   "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-  "mcp_target_id": "1KZWKOFTWQ",
+  "mcp_target_id": "TWQU0KSRVF",
   "mcp_tool_name": "muse-poc___query_muse_study_biomarkers",
   "hop2_gxp_policy_test_artifact": "VV-DOC-004819 / Study FV-GXP-2026-04 Cohort-B (Signed via Cloud KMS adk-agent-signing-key)",
-  "gxp_21cfr11_kms_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/adk-agent-signing-key"
+  "gxp_21cfr11_kms_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key"
 }
 ```
 
@@ -1233,7 +1335,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
 ### C. Pattern A (High-Density Pooled 5-Hop) — Setup, Script & Test Cases (`SAAS-04-PATTERN_A`)
 
 **Setup Steps:**
-- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` for `mcp://finvault/veeva-muse-clinical-3lo`.
+- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://finvault/veeva-muse-clinical-3lo`.
 - 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://finvault/veeva-muse-clinical-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
@@ -1249,6 +1351,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
 {
   "pattern": "PATTERN_A_POOLED",
   "project_id": "cymbal-pooled-saas-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "finvault",
   "user_principal": "sre-lead@finvault.com",
   "dpop_jkt_thumbprint": "dpop_jkt_fv_001",
@@ -1282,22 +1385,53 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
     "hop1_stripped_forged_headers": 1,
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-04-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
+    "live_bigquery_rls": {
+      "billing_project": "ramp-portal-dev",
+      "job_id": "job_wtC400GuaonaeFapGu1bdlo0KoN3",
+      "row_count": 2,
+      "rows": [
+        {
+          "entity_id": "ENT-FV-1001",
+          "tenant_id": "finvault",
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-01",
+          "payload_summary": "FinVault Core Wire Settlement Diagnostic Context (DPoP + OBO Verified)",
+          "created_at": "1.793199723260118E9"
+        },
+        {
+          "entity_id": "ENT-FV-1003",
+          "tenant_id": "finvault",
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-03",
+          "payload_summary": "FinVault OCC Liquidity Coverage & Fedwire Intraday Settlement Ledger",
+          "created_at": "1.793199723260118E9"
+        }
+      ],
+      "job_location": "us-west1"
+    },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "1KZWKOFTWQ",
+      "target_id": "TWQU0KSRVF",
       "tool_name": "muse-poc___query_muse_study_biomarkers",
+      "pattern_executed": "PATTERN_A_POOLED",
       "http_status": 200,
-      "is_error": false
+      "is_error": false,
+      "s3_persisted": true,
+      "s3_etag": "d89df7f6a1a15670d235bbc01d2943cb",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_A_POOLED/finvault.json"
     },
     "cloud_kms_21cfr11_signature": {
       "artifact_provenance": "HOP2_GXP_21CFR11_POLICY_TEST_ARTIFACT_SIGNED_BY_CLOUD_KMS",
       "document_number__v": "VV-DOC-004819",
       "name__v": "Clinical Study Protocol & Regulatory Dossier (FV-GXP-2026-04)",
       "status__v": "Steady State (Approved)",
+      "cfr11_live_kms_signed": true,
       "cfr11_kms_key_version": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
-      "cfr11_payload_sha256": null,
-      "cfr11_kms_ecdsa_p256_signature_b64": "",
-      "cfr11_hmac_sha256_signature": "17258f74f57db851ab7e603d6efeed6db6dfbe67a0f9d71ccc9de0a22761366d"
+      "cfr11_payload_sha256": "ef0e3734ec18390ea72eb040aa3d677aff92a7906d9f3d88b4017fed9d4b07cf",
+      "cfr11_kms_ecdsa_p256_signature_b64": "MEQCIA7unKYyE3upqeKPuAnJ/7aeV9f3d//qcsHR2OaTYXqIAiA6kVenCpeNqeL3ud0e0Vvt4u1jeMyPOYEnJ9R5uBoBQg==",
+      "cfr11_hmac_sha256_signature": "226f8a70c3860e9e054d12ad30cc1baf051d036e827465f13fec5d594e8dabb4"
     }
   },
   "cross_tenant_rows_leaked": 0
@@ -1330,9 +1464,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
 ### D. Pattern B (Regulated Sovereign Silos) — Setup, Script & Test Cases (`SAAS-04-PATTERN_B`)
 
 **Setup Steps:**
-- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
+- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`, backed by `bbar-138hf0`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
 - 2. Add `mcp://finvault/veeva-muse-clinical-3lo` egress target to VPC Service Controls perimeter `perimeter_finvault_sovereign` and bind IAM PAB.
-- 3. Bind Cloud KMS CMEK key (`finvault-active-cmek` vs revoked `medcore-revoked-cmek`) to Hop 3 Memory Bank, AlloyDB, and 3LO Token Vault.
+- 3. Bind Cloud KMS CMEK key (`finvault-silo-cmek` vs revoked `medcore-revoked-cmek` in `cymbal-multi-tenant-kr`) to Hop 3 Memory Bank, BigQuery/AlloyDB, and 3LO Token Vault.
 
 **Manual CLI Test Command:**
 ```bash
@@ -1346,11 +1480,12 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "finvault",
   "mtls_spiffe_id": "spiffe://cymbal-finvault-silo-prod.svc.id.goog/ns/agent-runtime/sa/silo-agent",
   "iam_pab_boundary": "//cloudresourcemanager.googleapis.com/projects/cymbal-finvault-silo-prod",
   "vpc_sc_perimeter": "accessPolicies/248990048888/servicePerimeters/perimeter_finvault_sovereign",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/finvault-active-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
   "hop3_valkey_rpm_cap": 600,
@@ -1366,6 +1501,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-04",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "mtls_spiffe_verified": true,
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
@@ -1379,22 +1515,33 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
     "hop1_stripped_forged_headers": 1,
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-04-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
+    "live_gcp_pattern_b_cmek_vault": {
+      "active_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
+      "active_vault_rows": 2,
+      "revoked_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault",
+      "live_cmek_lockout_enforced": true
+    },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "1KZWKOFTWQ",
+      "target_id": "TWQU0KSRVF",
       "tool_name": "muse-poc___query_muse_study_biomarkers",
+      "pattern_executed": "PATTERN_B_SOVEREIGN_SILO",
       "http_status": 200,
-      "is_error": false
+      "is_error": false,
+      "s3_persisted": true,
+      "s3_etag": "3d5f5cf59a78e1d5242af68add82c2e7",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     },
     "cloud_kms_21cfr11_signature": {
       "artifact_provenance": "HOP2_GXP_21CFR11_POLICY_TEST_ARTIFACT_SIGNED_BY_CLOUD_KMS",
       "document_number__v": "VV-DOC-004819",
       "name__v": "Clinical Study Protocol & Regulatory Dossier (FV-GXP-2026-04)",
       "status__v": "Steady State (Approved)",
+      "cfr11_live_kms_signed": true,
       "cfr11_kms_key_version": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
-      "cfr11_payload_sha256": null,
-      "cfr11_kms_ecdsa_p256_signature_b64": "",
-      "cfr11_hmac_sha256_signature": "17258f74f57db851ab7e603d6efeed6db6dfbe67a0f9d71ccc9de0a22761366d"
+      "cfr11_payload_sha256": "ef0e3734ec18390ea72eb040aa3d677aff92a7906d9f3d88b4017fed9d4b07cf",
+      "cfr11_kms_ecdsa_p256_signature_b64": "MEQCIA7unKYyE3upqeKPuAnJ/7aeV9f3d//qcsHR2OaTYXqIAiA6kVenCpeNqeL3ud0e0Vvt4u1jeMyPOYEnJ9R5uBoBQg==",
+      "cfr11_hmac_sha256_signature": "226f8a70c3860e9e054d12ad30cc1baf051d036e827465f13fec5d594e8dabb4"
     }
   }
 }
@@ -1407,8 +1554,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "medcore",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/medcore-revoked-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek",
   "cmek_key_state": "DISABLED",
   "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
   "attempted_operation": "Invoke Veeva Vault RIM & Muse Clinical EDC (GxP 21 CFR Part 11 SaaS) while tenant Cloud KMS CMEK key is DISABLED"
@@ -1428,7 +1576,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
   "live_cmek_lockout_evidence": {
     "medcore_revoked_key_state": "DISABLED",
     "medcore_silo_locked_423": true,
-    "medcore_lockout_reason": ""
+    "medcore_lockout_reason": "Cloud KMS Error: projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED."
   },
   "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://finvault/veeva-muse-clinical-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
 }
@@ -1454,6 +1602,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "hub_project_id": "cymbal-hybrid-control-hub",
   "spoke_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "retailstream_upgrading_to_enterprise",
   "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
   "psc_nat_subnet_cidr": "10.240.0.0/28",
@@ -1489,22 +1638,33 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
     "hop1_stripped_forged_headers": 1,
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-04-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
+    "live_gcp_pattern_c_psc_and_migrations": {
+      "psc_endpoints_count": 2,
+      "tier_promotions_count": 2,
+      "live_psc_registry_ok": true,
+      "live_tier_promotions_ok": true
+    },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "1KZWKOFTWQ",
+      "target_id": "TWQU0KSRVF",
       "tool_name": "muse-poc___query_muse_study_biomarkers",
+      "pattern_executed": "PATTERN_C_HYBRID_PSC_SPOKE",
       "http_status": 200,
-      "is_error": false
+      "is_error": false,
+      "s3_persisted": true,
+      "s3_etag": "71b7e9eef9689fd54cb18d187420a3e1",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     },
     "cloud_kms_21cfr11_signature": {
       "artifact_provenance": "HOP2_GXP_21CFR11_POLICY_TEST_ARTIFACT_SIGNED_BY_CLOUD_KMS",
       "document_number__v": "VV-DOC-004819",
       "name__v": "Clinical Study Protocol & Regulatory Dossier (FV-GXP-2026-04)",
       "status__v": "Steady State (Approved)",
+      "cfr11_live_kms_signed": true,
       "cfr11_kms_key_version": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
-      "cfr11_payload_sha256": null,
-      "cfr11_kms_ecdsa_p256_signature_b64": "",
-      "cfr11_hmac_sha256_signature": "17258f74f57db851ab7e603d6efeed6db6dfbe67a0f9d71ccc9de0a22761366d"
+      "cfr11_payload_sha256": "ef0e3734ec18390ea72eb040aa3d677aff92a7906d9f3d88b4017fed9d4b07cf",
+      "cfr11_kms_ecdsa_p256_signature_b64": "MEQCIA7unKYyE3upqeKPuAnJ/7aeV9f3d//qcsHR2OaTYXqIAiA6kVenCpeNqeL3ud0e0Vvt4u1jeMyPOYEnJ9R5uBoBQg==",
+      "cfr11_hmac_sha256_signature": "226f8a70c3860e9e054d12ad30cc1baf051d036e827465f13fec5d594e8dabb4"
     }
   }
 }
@@ -1543,13 +1703,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
 
 - **Enterprise Category**: Enterprise CRM & Engineering Incident Escalation
 - **Canonical MCP Connector URI**: `mcp://finvault/salesforce-jira-escalation-3lo`
+- **Live AWS AgentCore Target ID**: `K5JAEFCQ6E`
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION`
-- **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`salesforce-jira`, target `W7BF0JRWEA`) + Hop 4 Egress SDP IBAN/SWIFT Masking
+- **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`salesforce-jira`, target `K5JAEFCQ6E`) + Hop 4 Egress SDP IBAN/SWIFT Masking
 - **Live Probed Cloud Endpoint**: `https://api.status.salesforce.com/v1/instances/NA224/status/preview`
-- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `gitea/gitea:1.22.3 (Gitea Enterprise CRM Case & Engineering Issue Tracker)`
-- **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json)
-- **Interactive Login Credentials for Manual Testing**: Username `sre-lead` (or `sre-lead@finvault.com`) / Password `FinVault#2026!` (Cross-tenant `retailstream-ops` / `RetailStream#2026!` gets HTTP 404 on private org `finvault`)
-- **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json)
+- **Cross-Cloud Execution Surface**: AWS Bedrock AgentCore Target `K5JAEFCQ6E` -> Lambda `cymbal-a2a-mcp-remote-peer` + Hop 4 SDP Egress IBAN/SWIFT Masking
+- **Principal & Isolation Policy Summary**: Principal `sre-lead@finvault.com` (`SFDC-CASE-00984120` <-> `FINVAULT-SRE-1402`; Raw IBAN/SWIFT masked before write)
+- **Live S3 Audit Ledger JSON Endpoint**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
 
@@ -1557,7 +1717,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
 {
   "connector_uri": "mcp://finvault/salesforce-jira-escalation-3lo",
   "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-  "mcp_target_id": "W7BF0JRWEA",
+  "mcp_target_id": "K5JAEFCQ6E",
   "mcp_tool_name": "salesforce-jira___create_redacted_sfdc_jira_escalation",
   "salesforce_instance_api": "https://api.status.salesforce.com/v1/instances/NA224/status/preview",
   "jira_cloud_status_api": "https://jira-software.status.atlassian.com/api/v2/status.json",
@@ -1578,7 +1738,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
 ### C. Pattern A (High-Density Pooled 5-Hop) — Setup, Script & Test Cases (`SAAS-05-PATTERN_A`)
 
 **Setup Steps:**
-- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` for `mcp://finvault/salesforce-jira-escalation-3lo`.
+- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://finvault/salesforce-jira-escalation-3lo`.
 - 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://finvault/salesforce-jira-escalation-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
@@ -1594,6 +1754,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
 {
   "pattern": "PATTERN_A_POOLED",
   "project_id": "cymbal-pooled-saas-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "finvault",
   "user_principal": "sre-lead@finvault.com",
   "dpop_jkt_thumbprint": "dpop_jkt_fv_001",
@@ -1627,13 +1788,42 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
     "hop1_stripped_forged_headers": 1,
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-05-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
+    "live_bigquery_rls": {
+      "billing_project": "ramp-portal-dev",
+      "job_id": "job_wtC400GuaonaeFapGu1bdlo0KoN3",
+      "row_count": 2,
+      "rows": [
+        {
+          "entity_id": "ENT-FV-1001",
+          "tenant_id": "finvault",
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-01",
+          "payload_summary": "FinVault Core Wire Settlement Diagnostic Context (DPoP + OBO Verified)",
+          "created_at": "1.793199723260118E9"
+        },
+        {
+          "entity_id": "ENT-FV-1003",
+          "tenant_id": "finvault",
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-03",
+          "payload_summary": "FinVault OCC Liquidity Coverage & Fedwire Intraday Settlement Ledger",
+          "created_at": "1.793199723260118E9"
+        }
+      ],
+      "job_location": "us-west1"
+    },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "W7BF0JRWEA",
+      "target_id": "K5JAEFCQ6E",
       "tool_name": "salesforce-jira___create_redacted_sfdc_jira_escalation",
+      "pattern_executed": "PATTERN_A_POOLED",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "df24890c4fb9d63e6a64c9f67293e1b9",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/PATTERN_A_POOLED/finvault.json"
     }
   },
   "cross_tenant_rows_leaked": 0
@@ -1666,9 +1856,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
 ### D. Pattern B (Regulated Sovereign Silos) — Setup, Script & Test Cases (`SAAS-05-PATTERN_B`)
 
 **Setup Steps:**
-- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
+- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`, backed by `bbar-138hf0`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
 - 2. Add `mcp://finvault/salesforce-jira-escalation-3lo` egress target to VPC Service Controls perimeter `perimeter_finvault_sovereign` and bind IAM PAB.
-- 3. Bind Cloud KMS CMEK key (`finvault-active-cmek` vs revoked `medcore-revoked-cmek`) to Hop 3 Memory Bank, AlloyDB, and 3LO Token Vault.
+- 3. Bind Cloud KMS CMEK key (`finvault-silo-cmek` vs revoked `medcore-revoked-cmek` in `cymbal-multi-tenant-kr`) to Hop 3 Memory Bank, BigQuery/AlloyDB, and 3LO Token Vault.
 
 **Manual CLI Test Command:**
 ```bash
@@ -1682,11 +1872,12 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "finvault",
   "mtls_spiffe_id": "spiffe://cymbal-finvault-silo-prod.svc.id.goog/ns/agent-runtime/sa/silo-agent",
   "iam_pab_boundary": "//cloudresourcemanager.googleapis.com/projects/cymbal-finvault-silo-prod",
   "vpc_sc_perimeter": "accessPolicies/248990048888/servicePerimeters/perimeter_finvault_sovereign",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/finvault-active-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://finvault/salesforce-jira-escalation-3lo",
   "hop3_valkey_rpm_cap": 600,
@@ -1702,6 +1893,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-05",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "mtls_spiffe_verified": true,
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
@@ -1715,13 +1907,22 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
     "hop1_stripped_forged_headers": 1,
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-05-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
+    "live_gcp_pattern_b_cmek_vault": {
+      "active_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
+      "active_vault_rows": 2,
+      "revoked_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault",
+      "live_cmek_lockout_enforced": true
+    },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "W7BF0JRWEA",
+      "target_id": "K5JAEFCQ6E",
       "tool_name": "salesforce-jira___create_redacted_sfdc_jira_escalation",
+      "pattern_executed": "PATTERN_B_SOVEREIGN_SILO",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "bcb6fbd0ccfefb6563d7c257eeca8a8c",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
 }
@@ -1734,8 +1935,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "medcore",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/medcore-revoked-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek",
   "cmek_key_state": "DISABLED",
   "connector_uri": "mcp://finvault/salesforce-jira-escalation-3lo",
   "attempted_operation": "Invoke Salesforce Enterprise CRM (NA224) & Atlassian Jira Cloud while tenant Cloud KMS CMEK key is DISABLED"
@@ -1755,7 +1957,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
   "live_cmek_lockout_evidence": {
     "medcore_revoked_key_state": "DISABLED",
     "medcore_silo_locked_423": true,
-    "medcore_lockout_reason": ""
+    "medcore_lockout_reason": "Cloud KMS Error: projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED."
   },
   "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://finvault/salesforce-jira-escalation-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
 }
@@ -1781,6 +1983,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "hub_project_id": "cymbal-hybrid-control-hub",
   "spoke_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "retailstream_upgrading_to_enterprise",
   "connector_uri": "mcp://finvault/salesforce-jira-escalation-3lo",
   "psc_nat_subnet_cidr": "10.240.0.0/28",
@@ -1816,13 +2019,22 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
     "hop1_stripped_forged_headers": 1,
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-05-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
+    "live_gcp_pattern_c_psc_and_migrations": {
+      "psc_endpoints_count": 2,
+      "tier_promotions_count": 2,
+      "live_psc_registry_ok": true,
+      "live_tier_promotions_ok": true
+    },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "W7BF0JRWEA",
+      "target_id": "K5JAEFCQ6E",
       "tool_name": "salesforce-jira___create_redacted_sfdc_jira_escalation",
+      "pattern_executed": "PATTERN_C_HYBRID_PSC_SPOKE",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "b63c5ed8ae5f026cf007227b0c1b5ab4",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
 }
@@ -1861,13 +2073,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
 
 - **Enterprise Category**: Lakehouse AI, Unity Catalog Governance & Conversational BI
 - **Canonical MCP Connector URI**: `mcp://cymbal/databricks-unity-catalog-genie-3lo`
+- **Live AWS AgentCore Target ID**: `TERCK8SLBP`
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN`
-- **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`databricks-unity`, target `Z1RHXLBK6F`) + Unity Catalog 3-Level Namespace (`cymbal_uc_prod.<tenant>_gold`)
+- **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`databricks-unity`, target `TERCK8SLBP`) + Unity Catalog 3-Level Namespace (`cymbal_uc_prod.<tenant>_gold`)
 - **Live Probed Cloud Endpoint**: `https://community.cloud.databricks.com/api/2.0/clusters/list`
-- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `trinodb/trino:440 (Trino Distributed SQL Lakehouse & Catalog Web UI)`
-- **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json)
-- **Interactive Login Credentials for Manual Testing**: Username `sre-lead@finvault.com` (No password required on Trino UI; executes `SELECT * FROM memory.finvault_gold.wire_settlements`)
-- **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json)
+- **Cross-Cloud Execution Surface**: AWS Bedrock AgentCore Target `TERCK8SLBP` -> Lambda `cymbal-a2a-mcp-remote-peer` + Federated BigQuery RLS (`bbar-138hf0`)
+- **Principal & Isolation Policy Summary**: Principal `sre-lead@finvault.com` (`cymbal_uc_prod.finvault_gold`; Cross-schema / `EXECUTE IMMEDIATE` -> HTTP 403)
+- **Live S3 Audit Ledger JSON Endpoint**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
 
@@ -1875,7 +2087,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
 {
   "connector_uri": "mcp://cymbal/databricks-unity-catalog-genie-3lo",
   "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-  "mcp_target_id": "Z1RHXLBK6F",
+  "mcp_target_id": "TERCK8SLBP",
   "mcp_tool_name": "databricks-unity___execute_uc_genie_federated_sql",
   "databricks_workspace_api": "https://community.cloud.databricks.com/api/2.0/clusters/list",
   "unity_catalog_bindings": {
@@ -1899,7 +2111,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
 ### C. Pattern A (High-Density Pooled 5-Hop) — Setup, Script & Test Cases (`SAAS-06-PATTERN_A`)
 
 **Setup Steps:**
-- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` for `mcp://cymbal/databricks-unity-catalog-genie-3lo`.
+- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://cymbal/databricks-unity-catalog-genie-3lo`.
 - 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://cymbal/databricks-unity-catalog-genie-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
@@ -1915,6 +2127,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
 {
   "pattern": "PATTERN_A_POOLED",
   "project_id": "cymbal-pooled-saas-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "finvault",
   "user_principal": "sre-lead@finvault.com",
   "dpop_jkt_thumbprint": "dpop_jkt_fv_001",
@@ -1949,6 +2162,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-06-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
+      "billing_project": "ramp-portal-dev",
+      "job_id": "job_iOi1FaPiPujHOTUd_8xV-pUcxQLv",
       "row_count": 2,
       "rows": [
         {
@@ -1970,15 +2185,18 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
           "created_at": "1.793199723260118E9"
         }
       ],
-      "job_location": null
+      "job_location": "us-west1"
     },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "Z1RHXLBK6F",
+      "target_id": "TERCK8SLBP",
       "tool_name": "databricks-unity___execute_uc_genie_federated_sql",
+      "pattern_executed": "PATTERN_A_POOLED",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "2003f6f16a189f6a799d0ce40a6e6a4c",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/PATTERN_A_POOLED/finvault.json"
     }
   },
   "cross_tenant_rows_leaked": 0
@@ -2012,9 +2230,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
 ### D. Pattern B (Regulated Sovereign Silos) — Setup, Script & Test Cases (`SAAS-06-PATTERN_B`)
 
 **Setup Steps:**
-- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
+- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`, backed by `bbar-138hf0`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
 - 2. Add `mcp://cymbal/databricks-unity-catalog-genie-3lo` egress target to VPC Service Controls perimeter `perimeter_finvault_sovereign` and bind IAM PAB.
-- 3. Bind Cloud KMS CMEK key (`finvault-active-cmek` vs revoked `medcore-revoked-cmek`) to Hop 3 Memory Bank, AlloyDB, and 3LO Token Vault.
+- 3. Bind Cloud KMS CMEK key (`finvault-silo-cmek` vs revoked `medcore-revoked-cmek` in `cymbal-multi-tenant-kr`) to Hop 3 Memory Bank, BigQuery/AlloyDB, and 3LO Token Vault.
 
 **Manual CLI Test Command:**
 ```bash
@@ -2028,11 +2246,12 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "finvault",
   "mtls_spiffe_id": "spiffe://cymbal-finvault-silo-prod.svc.id.goog/ns/agent-runtime/sa/silo-agent",
   "iam_pab_boundary": "//cloudresourcemanager.googleapis.com/projects/cymbal-finvault-silo-prod",
   "vpc_sc_perimeter": "accessPolicies/248990048888/servicePerimeters/perimeter_finvault_sovereign",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/finvault-active-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://cymbal/databricks-unity-catalog-genie-3lo",
   "hop3_valkey_rpm_cap": 600,
@@ -2048,6 +2267,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-06",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "mtls_spiffe_verified": true,
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
@@ -2062,6 +2282,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-06-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
+      "billing_project": "ramp-portal-dev",
+      "job_id": "job_iOi1FaPiPujHOTUd_8xV-pUcxQLv",
       "row_count": 2,
       "rows": [
         {
@@ -2083,15 +2305,24 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
           "created_at": "1.793199723260118E9"
         }
       ],
-      "job_location": null
+      "job_location": "us-west1"
+    },
+    "live_gcp_pattern_b_cmek_vault": {
+      "active_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
+      "active_vault_rows": 2,
+      "revoked_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault",
+      "live_cmek_lockout_enforced": true
     },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "Z1RHXLBK6F",
+      "target_id": "TERCK8SLBP",
       "tool_name": "databricks-unity___execute_uc_genie_federated_sql",
+      "pattern_executed": "PATTERN_B_SOVEREIGN_SILO",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "27ee1ca7e29b71d8f6ea7e14d1444ba2",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
 }
@@ -2104,8 +2335,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "medcore",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/medcore-revoked-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek",
   "cmek_key_state": "DISABLED",
   "connector_uri": "mcp://cymbal/databricks-unity-catalog-genie-3lo",
   "attempted_operation": "Invoke Databricks Data Intelligence Platform (Unity Catalog & Genie REST API 2.0) while tenant Cloud KMS CMEK key is DISABLED"
@@ -2125,7 +2357,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
   "live_cmek_lockout_evidence": {
     "medcore_revoked_key_state": "DISABLED",
     "medcore_silo_locked_423": true,
-    "medcore_lockout_reason": ""
+    "medcore_lockout_reason": "Cloud KMS Error: projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED."
   },
   "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://cymbal/databricks-unity-catalog-genie-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
 }
@@ -2151,6 +2383,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "hub_project_id": "cymbal-hybrid-control-hub",
   "spoke_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "retailstream_upgrading_to_enterprise",
   "connector_uri": "mcp://cymbal/databricks-unity-catalog-genie-3lo",
   "psc_nat_subnet_cidr": "10.240.0.0/28",
@@ -2187,6 +2420,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-06-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
+      "billing_project": "ramp-portal-dev",
+      "job_id": "job_iOi1FaPiPujHOTUd_8xV-pUcxQLv",
       "row_count": 2,
       "rows": [
         {
@@ -2208,15 +2443,24 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
           "created_at": "1.793199723260118E9"
         }
       ],
-      "job_location": null
+      "job_location": "us-west1"
+    },
+    "live_gcp_pattern_c_psc_and_migrations": {
+      "psc_endpoints_count": 2,
+      "tier_promotions_count": 2,
+      "live_psc_registry_ok": true,
+      "live_tier_promotions_ok": true
     },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "Z1RHXLBK6F",
+      "target_id": "TERCK8SLBP",
       "tool_name": "databricks-unity___execute_uc_genie_federated_sql",
+      "pattern_executed": "PATTERN_C_HYBRID_PSC_SPOKE",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "af925ddb1a1fe820afb95b3e810a13fd",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
 }
@@ -2255,13 +2499,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
 
 - **Enterprise Category**: Cross-Cloud Enterprise Data Warehouse & Secondary-Role Isolation
 - **Canonical MCP Connector URI**: `mcp://cymbal/snowflake-cortex-analyst-sql-3lo`
+- **Live AWS AgentCore Target ID**: `CCMDEVZV2S`
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN`
-- **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`snowflake-cortex`, target `7PB1EK3NJO`) + `USE SECONDARY ROLES NONE` + Primary Role `ROLE_CYMBAL_{TENANT}`
+- **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`snowflake-cortex`, target `CCMDEVZV2S`) + `USE SECONDARY ROLES NONE` + Primary Role `ROLE_CYMBAL_{TENANT}`
 - **Live Probed Cloud Endpoint**: `https://os37291.us-east-1.snowflakecomputing.com/api/v2/statements`
-- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `clickhouse/clickhouse-server:24.8-alpine (ClickHouse Data Warehouse Play UI with Native Row Policy RLS)`
-- **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json)
-- **Interactive Login Credentials for Manual Testing**: User `finvault_user` / Password `FinVault#2026!` (returns only `finvault` rows via `finvault_rls_policy`; `retailstream_user` / `RetailStream#2026!` returns only `retailstream` rows)
-- **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json)
+- **Cross-Cloud Execution Surface**: AWS Bedrock AgentCore Target `CCMDEVZV2S` -> Lambda `cymbal-a2a-mcp-remote-peer` + Federated BigQuery RLS (`SECONDARY_ROLES=NONE`)
+- **Principal & Isolation Policy Summary**: Principal `ops-eng@retailstream.com` (`ROLE_CYMBAL_RETAILSTREAM`; `USE SECONDARY ROLES ALL` escalation -> HTTP 403)
+- **Live S3 Audit Ledger JSON Endpoint**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
 
@@ -2269,7 +2513,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
 {
   "connector_uri": "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
   "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-  "mcp_target_id": "7PB1EK3NJO",
+  "mcp_target_id": "CCMDEVZV2S",
   "mcp_tool_name": "snowflake-cortex___execute_cortex_analyst_sql",
   "snowflake_sql_rest_v2_url": "https://os37291.us-east-1.snowflakecomputing.com/api/v2/statements",
   "snowflake_status_url": "https://status.snowflake.com/api/v2/status.json",
@@ -2287,7 +2531,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
 ### C. Pattern A (High-Density Pooled 5-Hop) — Setup, Script & Test Cases (`SAAS-07-PATTERN_A`)
 
 **Setup Steps:**
-- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` for `mcp://cymbal/snowflake-cortex-analyst-sql-3lo`.
+- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://cymbal/snowflake-cortex-analyst-sql-3lo`.
 - 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://cymbal/snowflake-cortex-analyst-sql-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
@@ -2303,14 +2547,15 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
 {
   "pattern": "PATTERN_A_POOLED",
   "project_id": "cymbal-pooled-saas-prod",
-  "tenant_id": "finvault",
-  "user_principal": "sre-lead@finvault.com",
-  "dpop_jkt_thumbprint": "dpop_jkt_fv_001",
+  "backing_gcp_project_id": "bbar-138hf0",
+  "tenant_id": "retailstream",
+  "user_principal": "ops-eng@retailstream.com",
+  "dpop_jkt_thumbprint": "dpop_jkt_rs_002",
   "connector_uri": "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
   "hop3_valkey_rpm_cap": 120,
   "hop3_thinking_budget_cap": 4000,
   "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
-  "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
+  "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'retailstream'"
 }
 ```
 
@@ -2332,11 +2577,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
-    "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+    "hop1_obo_token_hash": "2b6b245454e3bceea62cd327",
     "hop1_stripped_forged_headers": 1,
-    "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-07-pattern_a_pooled",
+    "hop3_memory_namespace": "retailstream:ops-eng@retailstream.com:sess-saas-07-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
+      "billing_project": "ramp-portal-dev",
+      "job_id": "job_xU1wAB8ruK0ZmcPOZNvJYQcLZaMO",
       "row_count": 1,
       "rows": [
         {
@@ -2349,15 +2596,18 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
           "created_at": "1.793199723260118E9"
         }
       ],
-      "job_location": null
+      "job_location": "us-west1"
     },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "7PB1EK3NJO",
+      "target_id": "CCMDEVZV2S",
       "tool_name": "snowflake-cortex___execute_cortex_analyst_sql",
+      "pattern_executed": "PATTERN_A_POOLED",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "9debe9c634b932c93471d7f91f84c006",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/PATTERN_A_POOLED/retailstream.json"
     }
   },
   "cross_tenant_rows_leaked": 0
@@ -2391,9 +2641,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
 ### D. Pattern B (Regulated Sovereign Silos) — Setup, Script & Test Cases (`SAAS-07-PATTERN_B`)
 
 **Setup Steps:**
-- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
+- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`, backed by `bbar-138hf0`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
 - 2. Add `mcp://cymbal/snowflake-cortex-analyst-sql-3lo` egress target to VPC Service Controls perimeter `perimeter_finvault_sovereign` and bind IAM PAB.
-- 3. Bind Cloud KMS CMEK key (`finvault-active-cmek` vs revoked `medcore-revoked-cmek`) to Hop 3 Memory Bank, AlloyDB, and 3LO Token Vault.
+- 3. Bind Cloud KMS CMEK key (`finvault-silo-cmek` vs revoked `medcore-revoked-cmek` in `cymbal-multi-tenant-kr`) to Hop 3 Memory Bank, BigQuery/AlloyDB, and 3LO Token Vault.
 
 **Manual CLI Test Command:**
 ```bash
@@ -2407,11 +2657,12 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "finvault",
   "mtls_spiffe_id": "spiffe://cymbal-finvault-silo-prod.svc.id.goog/ns/agent-runtime/sa/silo-agent",
   "iam_pab_boundary": "//cloudresourcemanager.googleapis.com/projects/cymbal-finvault-silo-prod",
   "vpc_sc_perimeter": "accessPolicies/248990048888/servicePerimeters/perimeter_finvault_sovereign",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/finvault-active-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
   "hop3_valkey_rpm_cap": 600,
@@ -2427,6 +2678,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-07",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "mtls_spiffe_verified": true,
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
@@ -2436,11 +2688,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
-    "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+    "hop1_obo_token_hash": "2b6b245454e3bceea62cd327",
     "hop1_stripped_forged_headers": 1,
-    "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-07-pattern_b_sovereign_silo",
+    "hop3_memory_namespace": "retailstream:ops-eng@retailstream.com:sess-saas-07-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
+      "billing_project": "ramp-portal-dev",
+      "job_id": "job_xU1wAB8ruK0ZmcPOZNvJYQcLZaMO",
       "row_count": 1,
       "rows": [
         {
@@ -2453,15 +2707,24 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
           "created_at": "1.793199723260118E9"
         }
       ],
-      "job_location": null
+      "job_location": "us-west1"
+    },
+    "live_gcp_pattern_b_cmek_vault": {
+      "active_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
+      "active_vault_rows": 2,
+      "revoked_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault",
+      "live_cmek_lockout_enforced": true
     },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "7PB1EK3NJO",
+      "target_id": "CCMDEVZV2S",
       "tool_name": "snowflake-cortex___execute_cortex_analyst_sql",
+      "pattern_executed": "PATTERN_B_SOVEREIGN_SILO",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "96b8a0a15d73d448555a362100fc1bbc",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/PATTERN_B_SOVEREIGN_SILO/retailstream.json"
     }
   }
 }
@@ -2474,8 +2737,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "medcore",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/medcore-revoked-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek",
   "cmek_key_state": "DISABLED",
   "connector_uri": "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
   "attempted_operation": "Invoke Snowflake AI Data Cloud (Cortex Analyst NL2SQL & SQL REST API v2) while tenant Cloud KMS CMEK key is DISABLED"
@@ -2495,7 +2759,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
   "live_cmek_lockout_evidence": {
     "medcore_revoked_key_state": "DISABLED",
     "medcore_silo_locked_423": true,
-    "medcore_lockout_reason": ""
+    "medcore_lockout_reason": "Cloud KMS Error: projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED."
   },
   "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://cymbal/snowflake-cortex-analyst-sql-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
 }
@@ -2521,6 +2785,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "hub_project_id": "cymbal-hybrid-control-hub",
   "spoke_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "retailstream_upgrading_to_enterprise",
   "connector_uri": "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
   "psc_nat_subnet_cidr": "10.240.0.0/28",
@@ -2552,11 +2817,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
-    "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
+    "hop1_obo_token_hash": "2b6b245454e3bceea62cd327",
     "hop1_stripped_forged_headers": 1,
-    "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-07-pattern_c_hybrid_psc_spoke",
+    "hop3_memory_namespace": "retailstream:ops-eng@retailstream.com:sess-saas-07-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
+      "billing_project": "ramp-portal-dev",
+      "job_id": "job_xU1wAB8ruK0ZmcPOZNvJYQcLZaMO",
       "row_count": 1,
       "rows": [
         {
@@ -2569,15 +2836,24 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
           "created_at": "1.793199723260118E9"
         }
       ],
-      "job_location": null
+      "job_location": "us-west1"
+    },
+    "live_gcp_pattern_c_psc_and_migrations": {
+      "psc_endpoints_count": 2,
+      "tier_promotions_count": 2,
+      "live_psc_registry_ok": true,
+      "live_tier_promotions_ok": true
     },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "7PB1EK3NJO",
+      "target_id": "CCMDEVZV2S",
       "tool_name": "snowflake-cortex___execute_cortex_analyst_sql",
+      "pattern_executed": "PATTERN_C_HYBRID_PSC_SPOKE",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "4dee0b1b0fae06d114ae81a526756cdd",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/PATTERN_C_HYBRID_PSC_SPOKE/retailstream.json"
     }
   }
 }
@@ -2616,13 +2892,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
 
 - **Enterprise Category**: Enterprise HCM/Payroll ERP, 3LO Principal Scope & Hop 4 SSN Masking
 - **Canonical MCP Connector URI**: `mcp://finvault/workday-hcm-financials-raas-3lo`
+- **Live AWS AgentCore Target ID**: `RAOTMUMJTZ`
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION`
-- **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`workday-raas`, target `CXH8BK86IF`) + Composite Principal Vault + Hop 4 SSN/IBAN Redaction
+- **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`workday-raas`, target `RAOTMUMJTZ`) + Composite Principal Vault + Hop 4 SSN/IBAN Redaction
 - **Live Probed Cloud Endpoint**: `https://wd5-services1.myworkday.com/ccx/oauth2/cymbal/token`
-- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `directus/directus:11.1.0 (Directus Enterprise HCM & Financials RaaS Studio)`
-- **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json)
-- **Interactive Login Credentials for Manual Testing**: Email `sre-lead@finvault.com` / Password `FinVault#2026!` (Collection `hcm_compensation` with Hop 4 SDP-redacted `[REDACTED_US_SSN]` & `[REDACTED-FINVAULT-IBAN]`)
-- **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json)
+- **Cross-Cloud Execution Surface**: AWS Bedrock AgentCore Target `RAOTMUMJTZ` -> Lambda `cymbal-a2a-mcp-remote-peer` + Composite 3LO Principal Scope & Hop 4 SSN Masking
+- **Principal & Isolation Policy Summary**: Principal `sre-lead@finvault.com` (`WD-RAAS-FV-COMP-2026`; Intra-tenant `cfo-exec@finvault.com` token reuse -> HTTP 401 MCP `-32042`)
+- **Live S3 Audit Ledger JSON Endpoint**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
 
@@ -2630,7 +2906,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
 {
   "connector_uri": "mcp://finvault/workday-hcm-financials-raas-3lo",
   "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-  "mcp_target_id": "CXH8BK86IF",
+  "mcp_target_id": "RAOTMUMJTZ",
   "mcp_tool_name": "workday-raas___fetch_compensation_raas_report",
   "workday_ccx_oauth2_url": "https://wd5-services1.myworkday.com/ccx/oauth2/cymbal/token",
   "composite_3lo_vault_key": "{tenant_id}:{user_principal}:mcp://finvault/workday-hcm-financials-raas-3lo",
@@ -2650,7 +2926,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
 ### C. Pattern A (High-Density Pooled 5-Hop) — Setup, Script & Test Cases (`SAAS-08-PATTERN_A`)
 
 **Setup Steps:**
-- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` for `mcp://finvault/workday-hcm-financials-raas-3lo`.
+- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://finvault/workday-hcm-financials-raas-3lo`.
 - 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://finvault/workday-hcm-financials-raas-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
@@ -2666,6 +2942,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
 {
   "pattern": "PATTERN_A_POOLED",
   "project_id": "cymbal-pooled-saas-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "finvault",
   "user_principal": "sre-lead@finvault.com",
   "dpop_jkt_thumbprint": "dpop_jkt_fv_001",
@@ -2699,13 +2976,42 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
     "hop1_stripped_forged_headers": 1,
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-08-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
+    "live_bigquery_rls": {
+      "billing_project": "ramp-portal-dev",
+      "job_id": "job_wtC400GuaonaeFapGu1bdlo0KoN3",
+      "row_count": 2,
+      "rows": [
+        {
+          "entity_id": "ENT-FV-1001",
+          "tenant_id": "finvault",
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-01",
+          "payload_summary": "FinVault Core Wire Settlement Diagnostic Context (DPoP + OBO Verified)",
+          "created_at": "1.793199723260118E9"
+        },
+        {
+          "entity_id": "ENT-FV-1003",
+          "tenant_id": "finvault",
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-03",
+          "payload_summary": "FinVault OCC Liquidity Coverage & Fedwire Intraday Settlement Ledger",
+          "created_at": "1.793199723260118E9"
+        }
+      ],
+      "job_location": "us-west1"
+    },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "CXH8BK86IF",
+      "target_id": "RAOTMUMJTZ",
       "tool_name": "workday-raas___fetch_compensation_raas_report",
+      "pattern_executed": "PATTERN_A_POOLED",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "f71d3a44b257754336d4203441a329d6",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/PATTERN_A_POOLED/finvault.json"
     }
   },
   "cross_tenant_rows_leaked": 0
@@ -2739,9 +3045,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
 ### D. Pattern B (Regulated Sovereign Silos) — Setup, Script & Test Cases (`SAAS-08-PATTERN_B`)
 
 **Setup Steps:**
-- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
+- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`, backed by `bbar-138hf0`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
 - 2. Add `mcp://finvault/workday-hcm-financials-raas-3lo` egress target to VPC Service Controls perimeter `perimeter_finvault_sovereign` and bind IAM PAB.
-- 3. Bind Cloud KMS CMEK key (`finvault-active-cmek` vs revoked `medcore-revoked-cmek`) to Hop 3 Memory Bank, AlloyDB, and 3LO Token Vault.
+- 3. Bind Cloud KMS CMEK key (`finvault-silo-cmek` vs revoked `medcore-revoked-cmek` in `cymbal-multi-tenant-kr`) to Hop 3 Memory Bank, BigQuery/AlloyDB, and 3LO Token Vault.
 
 **Manual CLI Test Command:**
 ```bash
@@ -2755,11 +3061,12 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "finvault",
   "mtls_spiffe_id": "spiffe://cymbal-finvault-silo-prod.svc.id.goog/ns/agent-runtime/sa/silo-agent",
   "iam_pab_boundary": "//cloudresourcemanager.googleapis.com/projects/cymbal-finvault-silo-prod",
   "vpc_sc_perimeter": "accessPolicies/248990048888/servicePerimeters/perimeter_finvault_sovereign",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/finvault-active-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://finvault/workday-hcm-financials-raas-3lo",
   "hop3_valkey_rpm_cap": 600,
@@ -2775,6 +3082,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-08",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "mtls_spiffe_verified": true,
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
@@ -2788,13 +3096,22 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
     "hop1_stripped_forged_headers": 1,
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-08-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
+    "live_gcp_pattern_b_cmek_vault": {
+      "active_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
+      "active_vault_rows": 2,
+      "revoked_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault",
+      "live_cmek_lockout_enforced": true
+    },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "CXH8BK86IF",
+      "target_id": "RAOTMUMJTZ",
       "tool_name": "workday-raas___fetch_compensation_raas_report",
+      "pattern_executed": "PATTERN_B_SOVEREIGN_SILO",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "b40aa0f18156e2961b3bde7a13b4b35d",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
 }
@@ -2807,8 +3124,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "medcore",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/medcore-revoked-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek",
   "cmek_key_state": "DISABLED",
   "connector_uri": "mcp://finvault/workday-hcm-financials-raas-3lo",
   "attempted_operation": "Invoke Workday Enterprise HCM & Financial Management (CCX OAuth2 & RaaS REST API) while tenant Cloud KMS CMEK key is DISABLED"
@@ -2828,7 +3146,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "live_cmek_lockout_evidence": {
     "medcore_revoked_key_state": "DISABLED",
     "medcore_silo_locked_423": true,
-    "medcore_lockout_reason": ""
+    "medcore_lockout_reason": "Cloud KMS Error: projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED."
   },
   "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://finvault/workday-hcm-financials-raas-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
 }
@@ -2854,6 +3172,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "hub_project_id": "cymbal-hybrid-control-hub",
   "spoke_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "retailstream_upgrading_to_enterprise",
   "connector_uri": "mcp://finvault/workday-hcm-financials-raas-3lo",
   "psc_nat_subnet_cidr": "10.240.0.0/28",
@@ -2889,13 +3208,22 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
     "hop1_stripped_forged_headers": 1,
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-08-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
+    "live_gcp_pattern_c_psc_and_migrations": {
+      "psc_endpoints_count": 2,
+      "tier_promotions_count": 2,
+      "live_psc_registry_ok": true,
+      "live_tier_promotions_ok": true
+    },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "CXH8BK86IF",
+      "target_id": "RAOTMUMJTZ",
       "tool_name": "workday-raas___fetch_compensation_raas_report",
+      "pattern_executed": "PATTERN_C_HYBRID_PSC_SPOKE",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "ee00607409dee243ec780ef9505f6923",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
 }
@@ -2934,13 +3262,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
 
 - **Enterprise Category**: Multi-Tenant SRE Observability & Hop 4 Indirect Log Prompt-Injection Defense
 - **Canonical MCP Connector URI**: `mcp://cymbal/datadog-observability-sre-3lo`
+- **Live AWS AgentCore Target ID**: `G767QR3TQZ`
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN`
-- **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`datadog-sre`, target `A2X7LPMPA7`) + `@tenant_id` Log Index Partitioning + Hop 4 Model Armor Log Screen
+- **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`datadog-sre`, target `G767QR3TQZ`) + `@tenant_id` Log Index Partitioning + Hop 4 Model Armor Log Screen
 - **Live Probed Cloud Endpoint**: `https://api.datadoghq.com/api/v1/validate`
-- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `datalust/seq:2024.3 (Seq Structured Log & APM Observability Server)`
-- **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json)
-- **Interactive Login Credentials for Manual Testing**: Direct Web UI access at `https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json` (Filter `tenant_id = 'finvault'`; shows `BLOCKED_HTTP_400_INDIRECT_LOG_INJECTION` event)
-- **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json)
+- **Cross-Cloud Execution Surface**: AWS Bedrock AgentCore Target `G767QR3TQZ` -> Lambda `cymbal-a2a-mcp-remote-peer` + Hop 4 Model Armor Indirect Log-Injection Screen
+- **Principal & Isolation Policy Summary**: Principal `sre-lead@finvault.com` (`index:cymbal-prod @tenant_id:finvault`; Poisoned User-Agent stack trace -> HTTP 400)
+- **Live S3 Audit Ledger JSON Endpoint**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
 
@@ -2948,7 +3276,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
 {
   "connector_uri": "mcp://cymbal/datadog-observability-sre-3lo",
   "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-  "mcp_target_id": "A2X7LPMPA7",
+  "mcp_target_id": "G767QR3TQZ",
   "mcp_tool_name": "datadog-sre___query_tenant_apm_logs",
   "datadog_api_validate_url": "https://api.datadoghq.com/api/v1/validate",
   "datadog_status_url": "https://status.datadoghq.com/api/v2/status.json",
@@ -2966,7 +3294,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
 ### C. Pattern A (High-Density Pooled 5-Hop) — Setup, Script & Test Cases (`SAAS-09-PATTERN_A`)
 
 **Setup Steps:**
-- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` for `mcp://cymbal/datadog-observability-sre-3lo`.
+- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://cymbal/datadog-observability-sre-3lo`.
 - 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://cymbal/datadog-observability-sre-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
@@ -2982,6 +3310,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
 {
   "pattern": "PATTERN_A_POOLED",
   "project_id": "cymbal-pooled-saas-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "finvault",
   "user_principal": "sre-lead@finvault.com",
   "dpop_jkt_thumbprint": "dpop_jkt_fv_001",
@@ -3015,13 +3344,42 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
     "hop1_stripped_forged_headers": 1,
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-09-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
+    "live_bigquery_rls": {
+      "billing_project": "ramp-portal-dev",
+      "job_id": "job_wtC400GuaonaeFapGu1bdlo0KoN3",
+      "row_count": 2,
+      "rows": [
+        {
+          "entity_id": "ENT-FV-1001",
+          "tenant_id": "finvault",
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-01",
+          "payload_summary": "FinVault Core Wire Settlement Diagnostic Context (DPoP + OBO Verified)",
+          "created_at": "1.793199723260118E9"
+        },
+        {
+          "entity_id": "ENT-FV-1003",
+          "tenant_id": "finvault",
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-03",
+          "payload_summary": "FinVault OCC Liquidity Coverage & Fedwire Intraday Settlement Ledger",
+          "created_at": "1.793199723260118E9"
+        }
+      ],
+      "job_location": "us-west1"
+    },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "A2X7LPMPA7",
+      "target_id": "G767QR3TQZ",
       "tool_name": "datadog-sre___query_tenant_apm_logs",
+      "pattern_executed": "PATTERN_A_POOLED",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "f9054a31e07211b042bba164f9ad5358",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/PATTERN_A_POOLED/finvault.json"
     }
   },
   "cross_tenant_rows_leaked": 0
@@ -3054,9 +3412,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
 ### D. Pattern B (Regulated Sovereign Silos) — Setup, Script & Test Cases (`SAAS-09-PATTERN_B`)
 
 **Setup Steps:**
-- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
+- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`, backed by `bbar-138hf0`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
 - 2. Add `mcp://cymbal/datadog-observability-sre-3lo` egress target to VPC Service Controls perimeter `perimeter_finvault_sovereign` and bind IAM PAB.
-- 3. Bind Cloud KMS CMEK key (`finvault-active-cmek` vs revoked `medcore-revoked-cmek`) to Hop 3 Memory Bank, AlloyDB, and 3LO Token Vault.
+- 3. Bind Cloud KMS CMEK key (`finvault-silo-cmek` vs revoked `medcore-revoked-cmek` in `cymbal-multi-tenant-kr`) to Hop 3 Memory Bank, BigQuery/AlloyDB, and 3LO Token Vault.
 
 **Manual CLI Test Command:**
 ```bash
@@ -3070,11 +3428,12 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "finvault",
   "mtls_spiffe_id": "spiffe://cymbal-finvault-silo-prod.svc.id.goog/ns/agent-runtime/sa/silo-agent",
   "iam_pab_boundary": "//cloudresourcemanager.googleapis.com/projects/cymbal-finvault-silo-prod",
   "vpc_sc_perimeter": "accessPolicies/248990048888/servicePerimeters/perimeter_finvault_sovereign",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/finvault-active-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://cymbal/datadog-observability-sre-3lo",
   "hop3_valkey_rpm_cap": 600,
@@ -3090,6 +3449,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-09",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "mtls_spiffe_verified": true,
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
@@ -3103,13 +3463,22 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
     "hop1_stripped_forged_headers": 1,
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-09-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
+    "live_gcp_pattern_b_cmek_vault": {
+      "active_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
+      "active_vault_rows": 2,
+      "revoked_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault",
+      "live_cmek_lockout_enforced": true
+    },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "A2X7LPMPA7",
+      "target_id": "G767QR3TQZ",
       "tool_name": "datadog-sre___query_tenant_apm_logs",
+      "pattern_executed": "PATTERN_B_SOVEREIGN_SILO",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "1c9804fc78688e460e0acc791b662555",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
 }
@@ -3122,8 +3491,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "medcore",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/medcore-revoked-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek",
   "cmek_key_state": "DISABLED",
   "connector_uri": "mcp://cymbal/datadog-observability-sre-3lo",
   "attempted_operation": "Invoke Datadog Cloud Observability & Bits AI SRE (REST API v2 Logs/APM) while tenant Cloud KMS CMEK key is DISABLED"
@@ -3143,7 +3513,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
   "live_cmek_lockout_evidence": {
     "medcore_revoked_key_state": "DISABLED",
     "medcore_silo_locked_423": true,
-    "medcore_lockout_reason": ""
+    "medcore_lockout_reason": "Cloud KMS Error: projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED."
   },
   "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://cymbal/datadog-observability-sre-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
 }
@@ -3169,6 +3539,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "hub_project_id": "cymbal-hybrid-control-hub",
   "spoke_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "retailstream_upgrading_to_enterprise",
   "connector_uri": "mcp://cymbal/datadog-observability-sre-3lo",
   "psc_nat_subnet_cidr": "10.240.0.0/28",
@@ -3204,13 +3575,22 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
     "hop1_stripped_forged_headers": 1,
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-09-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
+    "live_gcp_pattern_c_psc_and_migrations": {
+      "psc_endpoints_count": 2,
+      "tier_promotions_count": 2,
+      "live_psc_registry_ok": true,
+      "live_tier_promotions_ok": true
+    },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "A2X7LPMPA7",
+      "target_id": "G767QR3TQZ",
       "tool_name": "datadog-sre___query_tenant_apm_logs",
+      "pattern_executed": "PATTERN_C_HYBRID_PSC_SPOKE",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "cb21141502e3f962d0f59ee578ce4b11",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
 }
@@ -3249,13 +3629,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
 
 - **Enterprise Category**: Autonomous SecOps XDR, RFC 9449 DPoP Binding & CMEK Kill-Switch
 - **Canonical MCP Connector URI**: `mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo`
+- **Live AWS AgentCore Target ID**: `C7EYM614F2`
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_HOP1_DPOP_AND_CMEK_GUARD`
-- **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`crowdstrike-okta`, target `TXGJHVFBWP`) + Hop 1 RFC 9449 DPoP (`jkt` thumbprint)
+- **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`crowdstrike-okta`, target `C7EYM614F2`) + Hop 1 RFC 9449 DPoP (`jkt` thumbprint)
 - **Live Probed Cloud Endpoint**: `https://api.crowdstrike.com/oauth2/token`
-- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `hashicorp/vault:1.13.3 (HashiCorp Vault Identity, OIDC/DPoP & CMEK Secrets Engine UI)`
-- **Direct Live Third-Party Software Web UI URL**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json)
-- **Interactive Login Credentials for Manual Testing**: Method `Token` -> `fv-token-finvault-sre-2026` (`finvault-sre-policy` ALLOW on `secret/data/tenants/finvault`; Cross-tenant token `rs-token-retailstream-ops-2026` gets HTTP 403)
-- **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json)
+- **Cross-Cloud Execution Surface**: AWS Bedrock AgentCore Target `C7EYM614F2` -> Lambda `cymbal-a2a-mcp-remote-peer` + Hop 1 RFC 9449 DPoP & KMS CMEK Kill-Switch
+- **Principal & Isolation Policy Summary**: Principal `sre-lead@finvault.com` (`dpop_jkt_fv_001`; Stolen token replay -> HTTP 401; Disabled `medcore-revoked-cmek` -> HTTP 423)
+- **Live S3 Audit Ledger JSON Endpoint**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json)
 
 ### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)
 
@@ -3263,7 +3643,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
 {
   "connector_uri": "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
   "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-  "mcp_target_id": "TXGJHVFBWP",
+  "mcp_target_id": "C7EYM614F2",
   "mcp_tool_name": "crowdstrike-okta___contain_xdr_host_with_dpop",
   "crowdstrike_oauth2_url": "https://api.crowdstrike.com/oauth2/token",
   "okta_oidc_discovery_url": "https://okta.okta.com/.well-known/openid-configuration",
@@ -3281,7 +3661,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 ### C. Pattern A (High-Density Pooled 5-Hop) — Setup, Script & Test Cases (`SAAS-10-PATTERN_A`)
 
 **Setup Steps:**
-- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` for `mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo`.
+- 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo`.
 - 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
@@ -3297,6 +3677,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 {
   "pattern": "PATTERN_A_POOLED",
   "project_id": "cymbal-pooled-saas-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "finvault",
   "user_principal": "sre-lead@finvault.com",
   "dpop_jkt_thumbprint": "dpop_jkt_fv_001",
@@ -3330,13 +3711,42 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
     "hop1_stripped_forged_headers": 1,
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-10-pattern_a_pooled",
     "hop4_ingress_decision": "ALLOW",
+    "live_bigquery_rls": {
+      "billing_project": "ramp-portal-dev",
+      "job_id": "job_wtC400GuaonaeFapGu1bdlo0KoN3",
+      "row_count": 2,
+      "rows": [
+        {
+          "entity_id": "ENT-FV-1001",
+          "tenant_id": "finvault",
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-01",
+          "payload_summary": "FinVault Core Wire Settlement Diagnostic Context (DPoP + OBO Verified)",
+          "created_at": "1.793199723260118E9"
+        },
+        {
+          "entity_id": "ENT-FV-1003",
+          "tenant_id": "finvault",
+          "tier": "ENTERPRISE",
+          "rls_tag": "rls:tenant=finvault",
+          "agent_session_namespace": "tenant:finvault:session:sre-03",
+          "payload_summary": "FinVault OCC Liquidity Coverage & Fedwire Intraday Settlement Ledger",
+          "created_at": "1.793199723260118E9"
+        }
+      ],
+      "job_location": "us-west1"
+    },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "TXGJHVFBWP",
+      "target_id": "C7EYM614F2",
       "tool_name": "crowdstrike-okta___contain_xdr_host_with_dpop",
+      "pattern_executed": "PATTERN_A_POOLED",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "4becf0094396cbde4a789898ab0b8ae0",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/PATTERN_A_POOLED/finvault.json"
     }
   },
   "cross_tenant_rows_leaked": 0
@@ -3370,9 +3780,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 ### D. Pattern B (Regulated Sovereign Silos) — Setup, Script & Test Cases (`SAAS-10-PATTERN_B`)
 
 **Setup Steps:**
-- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
+- 1. Provision dedicated silo project (`cymbal-finvault-silo-prod`, backed by `bbar-138hf0`) via `workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf`.
 - 2. Add `mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo` egress target to VPC Service Controls perimeter `perimeter_finvault_sovereign` and bind IAM PAB.
-- 3. Bind Cloud KMS CMEK key (`finvault-active-cmek` vs revoked `medcore-revoked-cmek`) to Hop 3 Memory Bank, AlloyDB, and 3LO Token Vault.
+- 3. Bind Cloud KMS CMEK key (`finvault-silo-cmek` vs revoked `medcore-revoked-cmek` in `cymbal-multi-tenant-kr`) to Hop 3 Memory Bank, BigQuery/AlloyDB, and 3LO Token Vault.
 
 **Manual CLI Test Command:**
 ```bash
@@ -3386,11 +3796,12 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "finvault",
   "mtls_spiffe_id": "spiffe://cymbal-finvault-silo-prod.svc.id.goog/ns/agent-runtime/sa/silo-agent",
   "iam_pab_boundary": "//cloudresourcemanager.googleapis.com/projects/cymbal-finvault-silo-prod",
   "vpc_sc_perimeter": "accessPolicies/248990048888/servicePerimeters/perimeter_finvault_sovereign",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/finvault-active-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/finvault-silo-cmek",
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
   "hop3_valkey_rpm_cap": 600,
@@ -3406,6 +3817,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-10",
   "silo_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "mtls_spiffe_verified": true,
   "iam_pab_verified": true,
   "vpc_sc_egress_rule_allowed": true,
@@ -3419,13 +3831,22 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
     "hop1_stripped_forged_headers": 1,
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-10-pattern_b_sovereign_silo",
     "hop4_ingress_decision": "ALLOW",
+    "live_gcp_pattern_b_cmek_vault": {
+      "active_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault",
+      "active_vault_rows": 2,
+      "revoked_vault_table": "bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault",
+      "live_cmek_lockout_enforced": true
+    },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "TXGJHVFBWP",
+      "target_id": "C7EYM614F2",
       "tool_name": "crowdstrike-okta___contain_xdr_host_with_dpop",
+      "pattern_executed": "PATTERN_B_SOVEREIGN_SILO",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "9bede9f0352f9281a4a6896e54aaa16b",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
 }
@@ -3438,8 +3859,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 {
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "medcore",
-  "cmek_crypto_key": "projects/ramp-portal-dev/locations/us-west1/keyRings/cymbal-silo-kr-usw1/cryptoKeys/medcore-revoked-cmek",
+  "cmek_crypto_key": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek",
   "cmek_key_state": "DISABLED",
   "connector_uri": "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
   "attempted_operation": "Invoke CrowdStrike Falcon XDR & Okta Workforce Identity (OAuth2 & OIDC/DPoP) while tenant Cloud KMS CMEK key is DISABLED"
@@ -3459,7 +3881,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "live_cmek_lockout_evidence": {
     "medcore_revoked_key_state": "DISABLED",
     "medcore_silo_locked_423": true,
-    "medcore_lockout_reason": ""
+    "medcore_lockout_reason": "Cloud KMS Error: projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED."
   },
   "reason": "423 Locked: Sovereign Silo kill-switch tripped for 'mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo' because Cloud KMS key 'medcore-revoked-cmek' is DISABLED."
 }
@@ -3485,6 +3907,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "hub_project_id": "cymbal-hybrid-control-hub",
   "spoke_project_id": "cymbal-finvault-silo-prod",
+  "backing_gcp_project_id": "bbar-138hf0",
   "tenant_id": "retailstream_upgrading_to_enterprise",
   "connector_uri": "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
   "psc_nat_subnet_cidr": "10.240.0.0/28",
@@ -3520,13 +3943,22 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
     "hop1_stripped_forged_headers": 1,
     "hop3_memory_namespace": "finvault:sre-lead@finvault.com:sess-saas-10-pattern_c_hybrid_psc_spoke",
     "hop4_ingress_decision": "ALLOW",
+    "live_gcp_pattern_c_psc_and_migrations": {
+      "psc_endpoints_count": 2,
+      "tier_promotions_count": 2,
+      "live_psc_registry_ok": true,
+      "live_tier_promotions_ok": true
+    },
     "live_aws_bedrock_agentcore_mcp": {
       "gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
-      "target_id": "TXGJHVFBWP",
+      "target_id": "C7EYM614F2",
       "tool_name": "crowdstrike-okta___contain_xdr_host_with_dpop",
+      "pattern_executed": "PATTERN_C_HYBRID_PSC_SPOKE",
       "http_status": 200,
       "is_error": false,
-      "s3_audit_ledger_uri": null
+      "s3_persisted": true,
+      "s3_etag": "a83f4cfe8f9e00c05141ddb32ace832f",
+      "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
 }

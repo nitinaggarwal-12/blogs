@@ -1,0 +1,413 @@
+{
+  "verifiedAtUtc": "2026-10-29T03:36:31Z",
+  "service": "ge-blogs",
+  "revision": "ge-blogs-00028-56l",
+  "cloudRunProject": "ramp-portal-dev",
+  "siloProject": "bbar-138hf0",
+  "awsAccountId": "393036065405",
+  "awsGatewayId": "cymbal-a2a-mcp-gateway-suyxm3caof",
+  "status": "CLOUDRUN_30_OF_30_LIVE_CROSSCLOUD_PASS",
+  "overallPassed": true,
+  "totalFlowsVerified": 30,
+  "totalAssertionsPassed": 60,
+  "distinctS3ETags": 30,
+  "elapsedSec": 56.4,
+  "patterns": {
+    "PATTERN_A_POOLED": {
+      "flowsCount": 10,
+      "assertionsPassed": 20,
+      "gcpTelemetryOk": true,
+      "kms21Cfr11Signed": null,
+      "flows": [
+        {
+          "saasId": "SAAS-01",
+          "slug": "thoughtspot",
+          "targetId": "HXGGFMZBKE",
+          "toolName": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/PATTERN_A_POOLED/finvault.json",
+          "s3ETag": "7606f7543b771a88707c65ec06557adf",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-02",
+          "slug": "sigma",
+          "targetId": "IZVODT083Q",
+          "toolName": "sigma-computing___eval_sigma_workbook_rls",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/PATTERN_A_POOLED/finvault.json",
+          "s3ETag": "cea804404ea2a4f8ee54bdb733863434",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-03",
+          "slug": "servicenow",
+          "targetId": "ZS9VGYHBQL",
+          "toolName": "servicenow-itsm___query_servicenow_change_records",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_A_POOLED/retailstream.json",
+          "s3ETag": "8806495a16fc50f8bd1ddaf5475a17e1",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-04",
+          "slug": "veeva",
+          "targetId": "TWQU0KSRVF",
+          "toolName": "muse-poc___query_muse_study_biomarkers",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_A_POOLED/finvault.json",
+          "s3ETag": "0b1c64e8942638218c636b0dbf0762fc",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-05",
+          "slug": "salesforce",
+          "targetId": "K5JAEFCQ6E",
+          "toolName": "salesforce-jira___create_redacted_sfdc_jira_escalation",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/PATTERN_A_POOLED/finvault.json",
+          "s3ETag": "ed027c259cedf9755f96214ea678067c",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-06",
+          "slug": "databricks",
+          "targetId": "TERCK8SLBP",
+          "toolName": "databricks-unity___execute_uc_genie_federated_sql",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/PATTERN_A_POOLED/finvault.json",
+          "s3ETag": "09f50c0013804264d5fb16e713066f18",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-07",
+          "slug": "snowflake",
+          "targetId": "CCMDEVZV2S",
+          "toolName": "snowflake-cortex___execute_cortex_analyst_sql",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/PATTERN_A_POOLED/retailstream.json",
+          "s3ETag": "de0fc39e3a5ccdff8c4a729ecc3e8ae4",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-08",
+          "slug": "workday",
+          "targetId": "RAOTMUMJTZ",
+          "toolName": "workday-raas___fetch_compensation_raas_report",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/PATTERN_A_POOLED/finvault.json",
+          "s3ETag": "d9c684339c64fe74608cff4cbce8799d",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-09",
+          "slug": "datadog",
+          "targetId": "G767QR3TQZ",
+          "toolName": "datadog-sre___query_tenant_apm_logs",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/PATTERN_A_POOLED/finvault.json",
+          "s3ETag": "45d950d1bafd58c9fe0775b4395c53bb",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-10",
+          "slug": "crowdstrike",
+          "targetId": "C7EYM614F2",
+          "toolName": "crowdstrike-okta___contain_xdr_host_with_dpop",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/PATTERN_A_POOLED/finvault.json",
+          "s3ETag": "a62cdded0852430bea75fd9316c602c0",
+          "flowOk": true
+        }
+      ]
+    },
+    "PATTERN_B_SOVEREIGN_SILO": {
+      "flowsCount": 10,
+      "assertionsPassed": 20,
+      "gcpTelemetryOk": true,
+      "kms21Cfr11Signed": true,
+      "flows": [
+        {
+          "saasId": "SAAS-01",
+          "slug": "thoughtspot",
+          "targetId": "HXGGFMZBKE",
+          "toolName": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/PATTERN_B_SOVEREIGN_SILO/finvault.json",
+          "s3ETag": "f759b7e1c091050814422b125ddda540",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-02",
+          "slug": "sigma",
+          "targetId": "IZVODT083Q",
+          "toolName": "sigma-computing___eval_sigma_workbook_rls",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/PATTERN_B_SOVEREIGN_SILO/finvault.json",
+          "s3ETag": "028c047092782c33a0f425536584fb58",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-03",
+          "slug": "servicenow",
+          "targetId": "ZS9VGYHBQL",
+          "toolName": "servicenow-itsm___query_servicenow_change_records",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_B_SOVEREIGN_SILO/retailstream.json",
+          "s3ETag": "cc423932f577a0c81ebd4b070ad2196e",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-04",
+          "slug": "veeva",
+          "targetId": "TWQU0KSRVF",
+          "toolName": "muse-poc___query_muse_study_biomarkers",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_B_SOVEREIGN_SILO/finvault.json",
+          "s3ETag": "42595817f83390272e308a4e13afd559",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-05",
+          "slug": "salesforce",
+          "targetId": "K5JAEFCQ6E",
+          "toolName": "salesforce-jira___create_redacted_sfdc_jira_escalation",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/PATTERN_B_SOVEREIGN_SILO/finvault.json",
+          "s3ETag": "b47d1ccfda63c4362569116107e650b0",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-06",
+          "slug": "databricks",
+          "targetId": "TERCK8SLBP",
+          "toolName": "databricks-unity___execute_uc_genie_federated_sql",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/PATTERN_B_SOVEREIGN_SILO/finvault.json",
+          "s3ETag": "d24f9ddd71d7e9aaaa56923c13e1b41e",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-07",
+          "slug": "snowflake",
+          "targetId": "CCMDEVZV2S",
+          "toolName": "snowflake-cortex___execute_cortex_analyst_sql",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/PATTERN_B_SOVEREIGN_SILO/retailstream.json",
+          "s3ETag": "4dddb982bf97918fad93162d214e45f7",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-08",
+          "slug": "workday",
+          "targetId": "RAOTMUMJTZ",
+          "toolName": "workday-raas___fetch_compensation_raas_report",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/PATTERN_B_SOVEREIGN_SILO/finvault.json",
+          "s3ETag": "948a6e5fc08b59751e7dccb3c928be2c",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-09",
+          "slug": "datadog",
+          "targetId": "G767QR3TQZ",
+          "toolName": "datadog-sre___query_tenant_apm_logs",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/PATTERN_B_SOVEREIGN_SILO/finvault.json",
+          "s3ETag": "ee0bcf7dc6bed470d3d9c655507d83f6",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-10",
+          "slug": "crowdstrike",
+          "targetId": "C7EYM614F2",
+          "toolName": "crowdstrike-okta___contain_xdr_host_with_dpop",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/PATTERN_B_SOVEREIGN_SILO/finvault.json",
+          "s3ETag": "a732b97a5632300e35123aada2fa100e",
+          "flowOk": true
+        }
+      ]
+    },
+    "PATTERN_C_HYBRID_PSC_SPOKE": {
+      "flowsCount": 10,
+      "assertionsPassed": 20,
+      "gcpTelemetryOk": true,
+      "kms21Cfr11Signed": null,
+      "flows": [
+        {
+          "saasId": "SAAS-01",
+          "slug": "thoughtspot",
+          "targetId": "HXGGFMZBKE",
+          "toolName": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
+          "s3ETag": "df9120214721ab9589c279ec5fd35bd7",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-02",
+          "slug": "sigma",
+          "targetId": "IZVODT083Q",
+          "toolName": "sigma-computing___eval_sigma_workbook_rls",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
+          "s3ETag": "f1ed32036d0a86beaabe9b55186af5c8",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-03",
+          "slug": "servicenow",
+          "targetId": "ZS9VGYHBQL",
+          "toolName": "servicenow-itsm___query_servicenow_change_records",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_C_HYBRID_PSC_SPOKE/retailstream.json",
+          "s3ETag": "349de918a79e287d6ea17ec4b7e94573",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-04",
+          "slug": "veeva",
+          "targetId": "TWQU0KSRVF",
+          "toolName": "muse-poc___query_muse_study_biomarkers",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
+          "s3ETag": "103968fdf812f78dc508301a53310f12",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-05",
+          "slug": "salesforce",
+          "targetId": "K5JAEFCQ6E",
+          "toolName": "salesforce-jira___create_redacted_sfdc_jira_escalation",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
+          "s3ETag": "77ee587e86cb97f2ed48dd6f827c650c",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-06",
+          "slug": "databricks",
+          "targetId": "TERCK8SLBP",
+          "toolName": "databricks-unity___execute_uc_genie_federated_sql",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
+          "s3ETag": "f1e62daf98e377a7a2abbaa3266b6b33",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-07",
+          "slug": "snowflake",
+          "targetId": "CCMDEVZV2S",
+          "toolName": "snowflake-cortex___execute_cortex_analyst_sql",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/PATTERN_C_HYBRID_PSC_SPOKE/retailstream.json",
+          "s3ETag": "af7ab4c8f80a48df604ee13be779c3c7",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-08",
+          "slug": "workday",
+          "targetId": "RAOTMUMJTZ",
+          "toolName": "workday-raas___fetch_compensation_raas_report",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
+          "s3ETag": "544e105aad9d9cb4b4e079cda2958641",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-09",
+          "slug": "datadog",
+          "targetId": "G767QR3TQZ",
+          "toolName": "datadog-sre___query_tenant_apm_logs",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
+          "s3ETag": "4e0323f29ca71a3b46f283f61aec29f7",
+          "flowOk": true
+        },
+        {
+          "saasId": "SAAS-10",
+          "slug": "crowdstrike",
+          "targetId": "C7EYM614F2",
+          "toolName": "crowdstrike-okta___contain_xdr_host_with_dpop",
+          "mcpHttpStatus": 200,
+          "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
+          "s3ETag": "b9c4e86d52a91a077be93083eaf9daed",
+          "flowOk": true
+        }
+      ]
+    }
+  },
+  "awsLambdaLedgerUiEndpointsVerified": [
+    {
+      "target": "thoughtspot-spotter",
+      "tenant": "finvault",
+      "httpStatus": 200,
+      "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
+      "agentCoreTargetId": "HXGGFMZBKE"
+    },
+    {
+      "target": "sigma-computing",
+      "tenant": "finvault",
+      "httpStatus": 200,
+      "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
+      "agentCoreTargetId": "IZVODT083Q"
+    },
+    {
+      "target": "servicenow-itsm",
+      "tenant": "retailstream",
+      "httpStatus": 200,
+      "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_C_HYBRID_PSC_SPOKE/retailstream.json",
+      "agentCoreTargetId": "ZS9VGYHBQL"
+    },
+    {
+      "target": "muse-poc",
+      "tenant": "finvault",
+      "httpStatus": 200,
+      "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
+      "agentCoreTargetId": "TWQU0KSRVF"
+    },
+    {
+      "target": "salesforce-jira",
+      "tenant": "finvault",
+      "httpStatus": 200,
+      "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
+      "agentCoreTargetId": "K5JAEFCQ6E"
+    },
+    {
+      "target": "databricks-unity",
+      "tenant": "finvault",
+      "httpStatus": 200,
+      "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
+      "agentCoreTargetId": "TERCK8SLBP"
+    },
+    {
+      "target": "snowflake-cortex",
+      "tenant": "retailstream",
+      "httpStatus": 200,
+      "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/PATTERN_C_HYBRID_PSC_SPOKE/retailstream.json",
+      "agentCoreTargetId": "CCMDEVZV2S"
+    },
+    {
+      "target": "workday-raas",
+      "tenant": "finvault",
+      "httpStatus": 200,
+      "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
+      "agentCoreTargetId": "RAOTMUMJTZ"
+    },
+    {
+      "target": "datadog-sre",
+      "tenant": "finvault",
+      "httpStatus": 200,
+      "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
+      "agentCoreTargetId": "G767QR3TQZ"
+    },
+    {
+      "target": "crowdstrike-okta",
+      "tenant": "finvault",
+      "httpStatus": 200,
+      "s3AuditLedgerUri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json",
+      "agentCoreTargetId": "C7EYM614F2"
+    }
+  ]
+}

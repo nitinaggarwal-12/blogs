@@ -1,0 +1,1 @@
+/Users/nitinagga/.gemini/config/rules/headless-signed-chrome-and-santa-cookies-ban.md

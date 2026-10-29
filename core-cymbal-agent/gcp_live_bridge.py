@@ -2,12 +2,12 @@
 Live Multi-Cloud (Google Cloud + AWS) & Third-Party API Bridge for `core-cymbal-agent`.
 =======================================================================================
 Provides real, authenticated REST/CLI calls across:
-1. Google Cloud (`ramp-portal-dev` #248990048888 + `cymbal-build-sandbox` #887605034827):
-   - BigQuery SQL (`bigquery.googleapis.com/bigquery/v2/projects/ramp-portal-dev/queries`) querying live
-     multi-tenant tables in `cymbal-build-sandbox.cymbal_agentic_finops_otel` (`pattern_a_pooled_rls_entities`,
+1. Google Cloud (`ramp-portal-dev` #248990048888 + `bbar-138hf0` #48439189383):
+   - BigQuery SQL (`bigquery.googleapis.com/bigquery/v2/projects/{billing_project}/queries`) querying live
+     multi-tenant tables in `bbar-138hf0.cymbal_agentic_finops_otel` (`pattern_a_pooled_rls_entities`,
      `pattern_c_psc_endpoints_registry`, `tenant_promotion_migrations`, `tenant_telemetry_spans`,
      `security_breach_audit_log`) and live CMEK lockout verification on
-     `cymbal-build-sandbox.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault`.
+     `bbar-138hf0.cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault`.
    - Vertex AI (`us-central1-aiplatform.googleapis.com` in `ramp-portal-dev`): live `gemini-2.5-pro`
      and `gemini-2.5-flash` execution and LLM-as-a-Judge evaluation across Patterns A, B, and C.
    - Cloud KMS (`cloudkms.googleapis.com` in `us-west1`, KeyRing `cymbal-multi-tenant-kr`).
@@ -56,12 +56,15 @@ AWS_AGENTCORE_GW_URL = "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedroc
 AWS_SHARED_JWT_SECRET = "merck-a2a-hs256-shared-secret-2026"
 
 _CACHED_TOKEN: Optional[str] = None
+_CACHED_TOKEN_EXPIRES_AT: float = 0.0
+_CACHED_SECRETS: Dict[str, Dict[str, Any]] = {}
 
 
 def get_gcp_access_token() -> Optional[str]:
-    """Fetches an active OAuth2 access token from the metadata server or `gcloud auth print-access-token`."""
-    global _CACHED_TOKEN
-    if _CACHED_TOKEN:
+    """Fetches an active OAuth2 access token from the metadata server or `gcloud auth print-access-token` with TTL refresh."""
+    global _CACHED_TOKEN, _CACHED_TOKEN_EXPIRES_AT
+    now = time.time()
+    if _CACHED_TOKEN and now < _CACHED_TOKEN_EXPIRES_AT:
         return _CACHED_TOKEN
 
     # 1. Try Cloud Run Metadata Server first
@@ -72,8 +75,11 @@ def get_gcp_access_token() -> Optional[str]:
         )
         with urllib.request.urlopen(req, timeout=1.5) as resp:
             data = json.loads(resp.read().decode("utf-8"))
-            _CACHED_TOKEN = data.get("access_token")
-            if _CACHED_TOKEN:
+            tok = data.get("access_token")
+            if tok:
+                ttl = max(60.0, float(data.get("expires_in", 3000)) - 120.0)
+                _CACHED_TOKEN = tok
+                _CACHED_TOKEN_EXPIRES_AT = now + ttl
                 return _CACHED_TOKEN
     except Exception:
         pass
@@ -88,6 +94,7 @@ def get_gcp_access_token() -> Optional[str]:
         )
         if proc.returncode == 0 and proc.stdout.strip():
             _CACHED_TOKEN = proc.stdout.strip()
+            _CACHED_TOKEN_EXPIRES_AT = now + 2400.0
             return _CACHED_TOKEN
     except Exception:
         pass
@@ -128,20 +135,54 @@ def _gcp_json_request(
         return 0, {"error": str(exc)}
 
 
+def read_gcp_secret_json(secret_id: str = "aws-cognito-agentcore-config") -> Optional[Dict[str, Any]]:
+    """
+    Reads a JSON secret payload from Google Cloud Secret Manager (`ramp-portal-dev` or `bbar-138hf0`)
+    using the active Cloud Run / gcloud OAuth2 access token so Cloud Run workloads never rely on local files.
+    """
+    if secret_id in _CACHED_SECRETS:
+        return _CACHED_SECRETS[secret_id]
+    for proj in (GCP_QUOTA_PROJECT_ID, GCP_PROJECT_ID):
+        url = f"https://secretmanager.googleapis.com/v1/projects/{proj}/secrets/{secret_id}/versions/latest:access"
+        st, resp = _gcp_json_request("GET", url, timeout=6.0, quota_project=proj)
+        if st == 200 and isinstance(resp, dict):
+            b64_data = ((resp.get("payload") or {}).get("data")) if isinstance(resp.get("payload"), dict) else None
+            if b64_data:
+                try:
+                    decoded = json.loads(base64.b64decode(b64_data).decode("utf-8"))
+                    if isinstance(decoded, dict):
+                        _CACHED_SECRETS[secret_id] = decoded
+                        return decoded
+                except Exception:
+                    pass
+    return None
+
+
 def bq_execute_live_query(sql: str, billing_project: str = GCP_QUOTA_PROJECT_ID) -> Dict[str, Any]:
     """
-    Executes a live BigQuery Standard SQL query billed to `ramp-portal-dev` (#248990048888),
-    reading directly from live tables in `bbar-138hf0.cymbal_agentic_finops_otel` and
-    `bbar-138hf0.cymbal_silo_finvault_usw1` with zero synthetic CTE fallbacks.
+    Executes a live BigQuery Standard SQL query billed to `ramp-portal-dev` (#248990048888) or
+    `bbar-138hf0` (#48439189383), reading directly from live tables in `bbar-138hf0.cymbal_agentic_finops_otel`
+    and `bbar-138hf0.cymbal_silo_finvault_usw1` with zero synthetic CTE fallbacks.
     """
-    url = f"https://bigquery.googleapis.com/bigquery/v2/projects/{billing_project}/queries"
+    effective_billing = billing_project
+    url = f"https://bigquery.googleapis.com/bigquery/v2/projects/{effective_billing}/queries"
     status, resp = _gcp_json_request(
         "POST",
         url,
         {"query": sql, "useLegacySql": False, "location": GCP_REGION, "timeoutMs": 15000},
         timeout=20.0,
-        quota_project=billing_project,
+        quota_project=effective_billing,
     )
+    if status in (401, 403) and effective_billing != GCP_PROJECT_ID:
+        effective_billing = GCP_PROJECT_ID
+        url_fb = f"https://bigquery.googleapis.com/bigquery/v2/projects/{effective_billing}/queries"
+        status, resp = _gcp_json_request(
+            "POST",
+            url_fb,
+            {"query": sql, "useLegacySql": False, "location": GCP_REGION, "timeoutMs": 15000},
+            timeout=20.0,
+            quota_project=effective_billing,
+        )
     if status != 200:
         err_msg = ""
         if isinstance(resp, dict):
@@ -149,7 +190,7 @@ def bq_execute_live_query(sql: str, billing_project: str = GCP_QUOTA_PROJECT_ID)
         return {
             "live_bq_query_ok": False,
             "status_code": status,
-            "billing_project": billing_project,
+            "billing_project": effective_billing,
             "error_message": err_msg,
         }
 
@@ -166,7 +207,7 @@ def bq_execute_live_query(sql: str, billing_project: str = GCP_QUOTA_PROJECT_ID)
     return {
         "live_bq_query_ok": True,
         "status_code": 200,
-        "billing_project": billing_project,
+        "billing_project": effective_billing,
         "job_id": job_ref.get("jobId"),
         "location": job_ref.get("location"),
         "total_rows": int(resp.get("totalRows", len(parsed_rows))),
@@ -205,6 +246,11 @@ def bq_verify_cmek_silo_lockout() -> Dict[str, Any]:
         "active_vault_rows": active_res.get("total_rows", 0),
         "revoked_vault_table": f"{GCP_PROJECT_ID}.cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault",
         "cmek_key": LIVE_KMS_KEY_MAP["medcore"],
+        "finvault_active_key": LIVE_KMS_KEY_MAP["finvault"],
+        "finvault_active_key_state": "ENABLED" if active_res.get("live_bq_query_ok") else "UNKNOWN",
+        "medcore_revoked_key_state": "DISABLED" if cmek_locked else "UNKNOWN",
+        "medcore_silo_locked_423": cmek_locked,
+        "medcore_lockout_reason": err_msg[:240],
         "live_cmek_lockout_enforced": cmek_locked,
         "http_status": revoked_res.get("status_code"),
         "bigquery_kms_error": err_msg[:240],
@@ -214,21 +260,26 @@ def bq_verify_cmek_silo_lockout() -> Dict[str, Any]:
 def kms_asymmetric_sign_digest(message: str) -> Dict[str, object]:
     """Signs a SHA-256 digest using live Cloud KMS `adk-agent-signing-key` (`EC_SIGN_P256_SHA256`) in `bbar-138hf0`."""
     digest_bytes = hashlib.sha256(message.encode("utf-8")).digest()
+    payload_sha256 = digest_bytes.hex()
     digest_b64 = base64.b64encode(digest_bytes).decode("ascii")
     key_ver = LIVE_KMS_KEY_MAP["signing"]
     url = f"https://cloudkms.googleapis.com/v1/{key_ver}:asymmetricSign"
     status, resp = _gcp_json_request("POST", url, {"digest": {"sha256": digest_b64}}, quota_project=GCP_PROJECT_ID)
     if status == 200 and "signature" in resp:
+        sig_str = str(resp["signature"])
         return {
             "live_kms_signed": True,
             "key_version": resp.get("name", key_ver),
-            "signature_b64_prefix": str(resp["signature"])[:32],
+            "payload_sha256": payload_sha256,
+            "signature_b64": sig_str,
+            "signature_b64_prefix": sig_str[:32],
             "verified_crc32c": resp.get("verifiedDigestCrc32c", True),
         }
     return {
         "live_kms_signed": False,
         "kms_api_status": status,
         "key_version": key_ver,
+        "payload_sha256": payload_sha256,
         "error": resp,
     }
 
@@ -477,10 +528,30 @@ def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
         results["sts_caller_identity"] = {"live_sts_ok": False, "error": str(exc)}
 
     # 2. Live Amazon Cognito RS256 OAuth2 Token + Amazon Bedrock AgentCore MCP Gateway (`cymbal-a2a-mcp-gateway-suyxm3caof`)
-    tfvars_path = Path("/Users/nitinagga/aws/aws.auto.tfvars.json")
-    if tfvars_path.is_file():
+    tf: Dict[str, Any] = {}
+    if os.environ.get("AWS_COGNITO_CLIENT_ID") and os.environ.get("AWS_COGNITO_CLIENT_SECRET"):
+        tf = {
+            "aws_cognito_client_id": os.environ["AWS_COGNITO_CLIENT_ID"],
+            "aws_cognito_client_secret": os.environ["AWS_COGNITO_CLIENT_SECRET"],
+            "aws_cognito_token_url": os.environ.get(
+                "AWS_COGNITO_TOKEN_URL", "https://merck-a2a-393036065405.auth.us-east-1.amazoncognito.com/oauth2/token"
+            ),
+            "aws_cognito_user_pool_id": "us-east-1_vqlzYM74B",
+        }
+    else:
+        sec_cfg = read_gcp_secret_json("aws-cognito-agentcore-config")
+        if sec_cfg and sec_cfg.get("aws_cognito_client_id") and sec_cfg.get("aws_cognito_client_secret"):
+            tf = sec_cfg
+        else:
+            tfvars_path = Path("/Users/nitinagga/aws/aws.auto.tfvars.json")
+            if tfvars_path.is_file():
+                try:
+                    tf = json.loads(tfvars_path.read_text(encoding="utf-8"))
+                except Exception:
+                    tf = {}
+
+    if tf.get("aws_cognito_client_id") and tf.get("aws_cognito_client_secret") and tf.get("aws_cognito_token_url"):
         try:
-            tf = json.loads(tfvars_path.read_text(encoding="utf-8"))
             cid = tf["aws_cognito_client_id"]
             csec = tf["aws_cognito_client_secret"]
             basic = base64.b64encode(f"{cid}:{csec}".encode("utf-8")).decode("ascii")

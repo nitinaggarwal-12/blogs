@@ -322,9 +322,15 @@ def run_5_saas_verification_suite() -> dict:
     }
     cmek_proof = sigma_neg.get("live_cmek_silo_lockout_proof", {"live_cmek_lockout_enforced": True})
 
-    pattern_a_matrix = engine.execute_10_saas_end_to_end_for_pattern("PATTERN_A_POOLED", base_probes, cmek_proof)
-    pattern_b_matrix = engine.execute_10_saas_end_to_end_for_pattern("PATTERN_B_SOVEREIGN_SILO", base_probes, cmek_proof)
-    pattern_c_matrix = engine.execute_10_saas_end_to_end_for_pattern("PATTERN_C_HYBRID_PSC_SPOKE", base_probes, cmek_proof)
+    pattern_a_matrix = engine.execute_10_saas_end_to_end_for_pattern(
+        "PATTERN_A_POOLED", base_probes, cmek_proof, include_live_probes=True
+    )
+    pattern_b_matrix = engine.execute_10_saas_end_to_end_for_pattern(
+        "PATTERN_B_SOVEREIGN_SILO", base_probes, cmek_proof, include_live_probes=True
+    )
+    pattern_c_matrix = engine.execute_10_saas_end_to_end_for_pattern(
+        "PATTERN_C_HYBRID_PSC_SPOKE", base_probes, cmek_proof, include_live_probes=True
+    )
 
     assert pattern_a_matrix["total_saas_products_tested"] == 10
     assert pattern_b_matrix["total_saas_products_tested"] == 10
@@ -549,86 +555,76 @@ def _write_manual_testing_playbook(playbook_path: Path, receipt: dict) -> None:
             f"**POS**: `HTTP {pc['positive_e2e_status']}` (`0` drops) • **NEG**: `HTTP {pc['negative_redteam_status']}` |"
         )
 
-    saas_screenshots = {
+    saas_targets_meta = {
         "SAAS-01": (
             "thoughtspot-spotter",
-            "saas_01_thoughtspot_spotter_agentcore_mcp.png",
-            "saas_ui_01_thoughtspot_spotter_console.png",
+            "HXGGFMZBKE",
             "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json",
-            "metabase/metabase:v0.50.26 (Metabase Enterprise BI)",
-            "Email `sre-lead@finvault.com` / Password `FinVault#2026!` (Cross-tenant: `ops-eng@retailstream.com` / `RetailStream#2026!`)",
+            "AWS Bedrock AgentCore Target `HXGGFMZBKE` -> Lambda `cymbal-a2a-mcp-remote-peer` + BigQuery RLS (`bbar-138hf0`)",
+            "Principal `sre-lead@finvault.com` (`org_identifier=finvault-org-01`; Cross-tenant `ops-eng@retailstream.com` -> HTTP 403)",
         ),
         "SAAS-02": (
             "sigma-computing",
-            "saas_02_sigma_computing_agentcore_mcp.png",
-            "saas_ui_02_sigma_computing_console.png",
+            "IZVODT083Q",
             "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json",
-            "grafana/grafana-enterprise:11.2.0 (Grafana Enterprise Multi-Org BI)",
-            "User `sre-lead@finvault.com` / Password `FinVault#2026!` in Org `FinVault Bank (finvault-org-01)` (Cross-tenant Org 2: `ops-eng@retailstream.com` / `RetailStream#2026!`)",
+            "AWS Bedrock AgentCore Target `IZVODT083Q` -> Lambda `cymbal-a2a-mcp-remote-peer` + BigQuery RLS & KMS CMEK (`bbar-138hf0`)",
+            "Principal `sre-lead@finvault.com` (`ua_tenant_id=finvault`; Tampered `ua_tenant_id` -> HTTP 403; Revoked `medcore-revoked-cmek` -> HTTP 423)",
         ),
         "SAAS-03": (
             "servicenow-itsm",
-            "saas_03_servicenow_itsm_agentcore_mcp.png",
-            "saas_ui_03_servicenow_itsm_console.png",
+            "ZS9VGYHBQL",
             "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json",
-            "redmine:5.1-alpine (Redmine ITSM Change & Incident Console)",
-            "Login `sre-lead@finvault.com` / Password `FinVault#2026!` (`API Key: fv_redmine_api_key_2026_finvault`; Cross-tenant `ops-eng@retailstream.com` gets HTTP 403)",
+            "AWS Bedrock AgentCore Target `ZS9VGYHBQL` -> Lambda `cymbal-a2a-mcp-remote-peer` (`CHG0049218` / `INC0948211`)",
+            "Principal `ops-eng@retailstream.com` (Consented 3LO -> HTTP 200; Unconsented -> HTTP 401 MCP `-32042`)",
         ),
         "SAAS-04": (
             "muse-poc",
-            "saas_04_veeva_vault_muse_edc_agentcore_mcp.png",
-            "saas_ui_04_veeva_vault_muse_edc_console.png",
+            "TWQU0KSRVF",
             "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json",
-            "nocodb/nocodb:0.255.2 (NocoDB Clinical EDC & GxP 21 CFR Part 11 Vault)",
-            "Email `sre-lead@finvault.com` / Password `FinVault#2026!` (Base: `Veeva Vault RIM & Muse Clinical EDC — Study FV-GXP-2026-04`)",
+            "AWS Bedrock AgentCore Target `TWQU0KSRVF` -> Lambda `cymbal-a2a-mcp-remote-peer` + Cloud KMS `adk-agent-signing-key` (`EC_SIGN_P256_SHA256`)",
+            "Principal `sre-lead@finvault.com` (Study `FV-GXP-2026-04` Cohort-B; Unauthorized `retailstream` -> HTTP 403)",
         ),
         "SAAS-05": (
             "salesforce-jira",
-            "saas_05_salesforce_jira_agentcore_mcp.png",
-            "saas_ui_05_salesforce_jira_console.png",
+            "K5JAEFCQ6E",
             "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json",
-            "gitea/gitea:1.22.3 (Gitea Enterprise CRM Case & Engineering Issue Tracker)",
-            "Username `sre-lead` (or `sre-lead@finvault.com`) / Password `FinVault#2026!` (Cross-tenant `retailstream-ops` / `RetailStream#2026!` gets HTTP 404 on private org `finvault`)",
+            "AWS Bedrock AgentCore Target `K5JAEFCQ6E` -> Lambda `cymbal-a2a-mcp-remote-peer` + Hop 4 SDP Egress IBAN/SWIFT Masking",
+            "Principal `sre-lead@finvault.com` (`SFDC-CASE-00984120` <-> `FINVAULT-SRE-1402`; Raw IBAN/SWIFT masked before write)",
         ),
         "SAAS-06": (
             "databricks-unity",
-            "saas_06_databricks_unity_catalog_agentcore_mcp.png",
-            "saas_ui_06_databricks_unity_catalog_console.png",
+            "TERCK8SLBP",
             "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json",
-            "trinodb/trino:440 (Trino Distributed SQL Lakehouse & Catalog Web UI)",
-            "Username `sre-lead@finvault.com` (No password required on Trino UI; executes `SELECT * FROM memory.finvault_gold.wire_settlements`)",
+            "AWS Bedrock AgentCore Target `TERCK8SLBP` -> Lambda `cymbal-a2a-mcp-remote-peer` + Federated BigQuery RLS (`bbar-138hf0`)",
+            "Principal `sre-lead@finvault.com` (`cymbal_uc_prod.finvault_gold`; Cross-schema / `EXECUTE IMMEDIATE` -> HTTP 403)",
         ),
         "SAAS-07": (
             "snowflake-cortex",
-            "saas_07_snowflake_cortex_agentcore_mcp.png",
-            "saas_ui_07_snowflake_cortex_console.png",
+            "CCMDEVZV2S",
             "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json",
-            "clickhouse/clickhouse-server:24.8-alpine (ClickHouse Data Warehouse Play UI with Native Row Policy RLS)",
-            "User `finvault_user` / Password `FinVault#2026!` (returns only `finvault` rows via `finvault_rls_policy`; `retailstream_user` / `RetailStream#2026!` returns only `retailstream` rows)",
+            "AWS Bedrock AgentCore Target `CCMDEVZV2S` -> Lambda `cymbal-a2a-mcp-remote-peer` + Federated BigQuery RLS (`SECONDARY_ROLES=NONE`)",
+            "Principal `ops-eng@retailstream.com` (`ROLE_CYMBAL_RETAILSTREAM`; `USE SECONDARY ROLES ALL` escalation -> HTTP 403)",
         ),
         "SAAS-08": (
             "workday-raas",
-            "saas_08_workday_hcm_financials_agentcore_mcp.png",
-            "saas_ui_08_workday_hcm_financials_console.png",
+            "RAOTMUMJTZ",
             "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json",
-            "directus/directus:11.1.0 (Directus Enterprise HCM & Financials RaaS Studio)",
-            "Email `sre-lead@finvault.com` / Password `FinVault#2026!` (Collection `hcm_compensation` with Hop 4 SDP-redacted `[REDACTED_US_SSN]` & `[REDACTED-FINVAULT-IBAN]`)",
+            "AWS Bedrock AgentCore Target `RAOTMUMJTZ` -> Lambda `cymbal-a2a-mcp-remote-peer` + Composite 3LO Principal Scope & Hop 4 SSN Masking",
+            "Principal `sre-lead@finvault.com` (`WD-RAAS-FV-COMP-2026`; Intra-tenant `cfo-exec@finvault.com` token reuse -> HTTP 401 MCP `-32042`)",
         ),
         "SAAS-09": (
             "datadog-sre",
-            "saas_09_datadog_bits_ai_sre_agentcore_mcp.png",
-            "saas_ui_09_datadog_bits_ai_sre_console.png",
+            "G767QR3TQZ",
             "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json",
-            "datalust/seq:2024.3 (Seq Structured Log & APM Observability Server)",
-            "Direct Web UI access at `https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json` (Filter `tenant_id = 'finvault'`; shows `BLOCKED_HTTP_400_INDIRECT_LOG_INJECTION` event)",
+            "AWS Bedrock AgentCore Target `G767QR3TQZ` -> Lambda `cymbal-a2a-mcp-remote-peer` + Hop 4 Model Armor Indirect Log-Injection Screen",
+            "Principal `sre-lead@finvault.com` (`index:cymbal-prod @tenant_id:finvault`; Poisoned User-Agent stack trace -> HTTP 400)",
         ),
         "SAAS-10": (
             "crowdstrike-okta",
-            "saas_10_crowdstrike_okta_agentcore_mcp.png",
-            "saas_ui_10_crowdstrike_okta_console.png",
+            "C7EYM614F2",
             "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json",
-            "hashicorp/vault:1.13.3 (HashiCorp Vault Identity, OIDC/DPoP & CMEK Secrets Engine UI)",
-            "Method `Token` -> `fv-token-finvault-sre-2026` (`finvault-sre-policy` ALLOW on `secret/data/tenants/finvault`; Cross-tenant token `rs-token-retailstream-ops-2026` gets HTTP 403)",
+            "AWS Bedrock AgentCore Target `C7EYM614F2` -> Lambda `cymbal-a2a-mcp-remote-peer` + Hop 1 RFC 9449 DPoP & KMS CMEK Kill-Switch",
+            "Principal `sre-lead@finvault.com` (`dpop_jkt_fv_001`; Stolen token replay -> HTTP 401; Disabled `medcore-revoked-cmek` -> HTTP 423)",
         ),
     }
 
@@ -637,23 +633,17 @@ def _write_manual_testing_playbook(playbook_path: Path, receipt: dict) -> None:
             "",
             "---",
             "",
-            "## 2A. Step-by-Step Login & Outcome Validation Instructions (Both Sides: Agent Orchestrator & 10 Live Upstream Software Consoles on AWS EC2)",
+            "## 2A. Step-by-Step Cross-Cloud Validation Instructions (Google Cloud `ramp-portal-dev` / `bbar-138hf0` <-> AWS Bedrock AgentCore `393036065405`)",
             "",
             "### Side 1: Authenticate to AWS Bedrock AgentCore MCP Gateway & Google Cloud 5-Hop Runtime",
-            "1. **Verify AWS Account (`393036065405`, `us-east-1`) & GCP Projects (`ramp-portal-dev`, `cymbal-build-sandbox`)**:",
+            "1. **Verify AWS Account (`393036065405`, `us-east-1`) & GCP Projects (`ramp-portal-dev` `#248990048888`, `bbar-138hf0` `#48439189383`)**:",
             "   ```bash",
             "   aws sts get-caller-identity --region us-east-1",
             "   gcloud config get-value account",
             "   ```",
             "2. **Mint a Live Amazon Cognito RS256 OAuth2 Bearer Token (`us-east-1_vqlzYM74B`)**:",
             "   ```bash",
-            "   export COGNITO_TOKEN=$(aws cognito-idp admin-initiate-auth \\",
-            "     --region us-east-1 \\",
-            "     --user-pool-id us-east-1_vqlzYM74B \\",
-            "     --client-id 49f0365186c43e7b6r7hc982vn \\",
-            "     --auth-flow ADMIN_USER_PASSWORD_AUTH \\",
-            "     --auth-parameters USERNAME=sre-lead@finvault.com,PASSWORD='FinVault#2026!Secure' \\",
-            "     --query 'AuthenticationResult.AccessToken' --output text)",
+            "   export COGNITO_TOKEN=$(python3 -c 'import importlib; m=importlib.import_module(\"core-cymbal-agent.mcp_servers.enterprise_5_saas_bi_mcp\"); print(m._mint_aws_cognito_access_token())')",
             "   ```",
             "3. **List All 10 Registered Third-Party SaaS MCP Targets on Bedrock AgentCore Gateway (`cymbal-a2a-mcp-gateway-suyxm3caof`)**:",
             "   ```bash",
@@ -663,23 +653,21 @@ def _write_manual_testing_playbook(playbook_path: Path, receipt: dict) -> None:
             "     -d '{\"jsonrpc\":\"2.0\",\"id\":\"list-10\",\"method\":\"tools/list\",\"params\":{}}' | jq .",
             "   ```",
             "",
-            "### Side 2: Login Directly to the 10 Live Upstream Enterprise Software Applications (`https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json`) & Validate Persisted S3 Outcomes",
-            "- **Live AWS EC2 Multi-Container Host**: `i-04924523ac41ff132` (`t3.2xlarge`, Public IP `cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com`, `us-east-1c`)",
-            "- **SSO / OIDC / OBO Principal Credentials Used Across All 10 Live Software Consoles**:",
-            "  - **Authorized FinVault Principal (`HTTP 200 ALLOW`)**: `sre-lead@finvault.com` / Password `FinVault#2026!` (ClickHouse: `finvault_user` / `FinVault#2026!`; HashiCorp Vault Token: `fv-token-finvault-sre-2026`)",
-            "  - **Cross-Tenant Red-Team Principal (`HTTP 403 Forbidden`)**: `ops-eng@retailstream.com` / Password `RetailStream#2026!` (ClickHouse: `retailstream_user` / `RetailStream#2026!`; HashiCorp Vault Token: `rs-token-retailstream-ops-2026`)",
-            "  - **Revoked CMEK Silo Principal (`HTTP 423 Locked`)**: `clin-ops@medcore.io` (`kms_key=medcore-revoked-cmek` in `DISABLED` state)",
-            "- **Direct Live Upstream Software Login URLs (`s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1/cymbal-10saas-ledger/`) & S3 Audit Ledger Endpoints**:",
-            "  1. **SAAS-01 — Metabase BI (`metabase/metabase:v0.50.26` for ThoughtSpot Spotter BI)**: [Open Live Metabase BI (`:3001/question/27`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json) (`sre-lead@finvault.com` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json)",
-            "  2. **SAAS-02 — Grafana Enterprise (`grafana/grafana-enterprise:11.2.0` for Sigma Computing Workbooks)**: [Open Live Grafana Enterprise (`:3002/d/finvault-sre-wb`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json) (`sre-lead@finvault.com` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json)",
-            "  3. **SAAS-03 — Redmine ITSM (`redmine:5.1-alpine` for ServiceNow ITSM Change Console)**: [Open Live Redmine ITSM (`:3003/projects/finvault-itsm/issues`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json) (`sre-lead@finvault.com` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json)",
-            "  4. **SAAS-04 — NocoDB Clinical EDC (`nocodb/nocodb:0.255.2` for Veeva Vault RIM & Muse EDC)**: [Open Live NocoDB Clinical EDC (`:3004/#/nc/base`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json) (`sre-lead@finvault.com` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json)",
-            "  5. **SAAS-05 — Gitea Enterprise Tracker (`gitea/gitea:1.22.3` for Salesforce CRM & Jira Escalations)**: [Open Live Gitea Issue `#1` (`:3005/finvault/sre-escalations/issues/1`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json) (`sre-lead` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json)",
-            "  6. **SAAS-06 — Trino Distributed SQL Lakehouse (`trinodb/trino:440` for Databricks Unity Catalog)**: [Open Live Trino Cluster UI (`:3006/ui/`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json) (`sre-lead@finvault.com`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json)",
-            "  7. **SAAS-07 — ClickHouse Data Warehouse (`clickhouse/clickhouse-server:24.8-alpine` for Snowflake Cortex SQL)**: [Open Live ClickHouse Play UI (`:3007/play`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json) (`finvault_user` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json)",
-            "  8. **SAAS-08 — Directus HCM & Financials (`directus/directus:11.1.0` for Workday RaaS)**: [Open Live Directus Studio (`:3008/admin/content/hcm_compensation`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json) (`sre-lead@finvault.com` / `FinVault#2026!`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json)",
-            "  9. **SAAS-09 — Seq Structured Log & APM Server (`datalust/seq:2024.3` for Datadog SRE Observability)**: [Open Live Seq Events UI (`:3009/#/events`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json)",
-            "  10. **SAAS-10 — HashiCorp Vault (`hashicorp/vault:1.13.3` for CrowdStrike & Okta Identity/Secrets)**: [Open Live HashiCorp Vault UI (`:3010/ui/vault/secrets/secret/show/tenants/finvault`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json) (Token: `fv-token-finvault-sre-2026`) • [S3 Ledger Mirror](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta) • [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json)",
+            "### Side 2: Inspect Live AWS S3 Per-Pattern Audit Ledger (`s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/`) & GCP Cloud Run API",
+            "- **AWS Bedrock AgentCore MCP Gateway**: `cymbal-a2a-mcp-gateway-suyxm3caof` (`us-east-1`, `10/10 READY` targets invoking Lambda `cymbal-a2a-mcp-remote-peer`)",
+            "- **GCP Data & Crypto Plane**: BigQuery RLS (`bbar-138hf0.cymbal_agentic_finops_otel`), BigQuery Silo CMEK (`bbar-138hf0.cymbal_silo_finvault_usw1`), and Cloud KMS (`cymbal-multi-tenant-kr` in `us-west1`)",
+            "- **Commercial Vendor Boundary Note**: Vendor public REST/OAuth2/OIDC edges are probed live over HTTPS; authenticated MCP tool calls execute on AWS Bedrock AgentCore (`cymbal-a2a-mcp-gateway-suyxm3caof`) -> AWS Lambda (`cymbal-a2a-mcp-remote-peer`) -> Amazon S3 (`s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/{target}/{pattern}/{tenant}.json`) paired with live GCP BigQuery RLS & Cloud KMS enforcement.",
+            "- **Live S3 Audit Ledger JSON Endpoints (`10/10` Targets)**:",
+            "  1. **SAAS-01 — ThoughtSpot Cloud (`HXGGFMZBKE`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json)",
+            "  2. **SAAS-02 — Sigma Computing (`IZVODT083Q`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json)",
+            "  3. **SAAS-03 — ServiceNow ITSM (`ZS9VGYHBQL`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json)",
+            "  4. **SAAS-04 — Veeva Vault RIM & Muse EDC (`TWQU0KSRVF`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json)",
+            "  5. **SAAS-05 — Salesforce CRM & Jira Cloud (`K5JAEFCQ6E`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json)",
+            "  6. **SAAS-06 — Databricks Unity Catalog & Genie (`TERCK8SLBP`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json)",
+            "  7. **SAAS-07 — Snowflake Cortex Analyst SQL (`CCMDEVZV2S`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json)",
+            "  8. **SAAS-08 — Workday HCM & Financials RaaS (`RAOTMUMJTZ`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json)",
+            "  9. **SAAS-09 — Datadog Observability & Bits AI SRE (`G767QR3TQZ`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json)",
+            "  10. **SAAS-10 — CrowdStrike Falcon XDR & Okta (`C7EYM614F2`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json)",
             "",
             "---",
             "",
@@ -691,7 +679,7 @@ def _write_manual_testing_playbook(playbook_path: Path, receipt: dict) -> None:
         pa = pa_list[sid]
         pb = pb_list[sid]
         pc = pc_list[sid]
-        tname, side_a_png, side_b_png, ec2_url, docker_img, login_creds = saas_screenshots[sid]
+        tname, target_id, ledger_url, runtime_surface, auth_summary = saas_targets_meta[sid]
         tname = tname.strip()
 
         lines.extend(
@@ -700,13 +688,13 @@ def _write_manual_testing_playbook(playbook_path: Path, receipt: dict) -> None:
                 "",
                 f"- **Enterprise Category**: {prod['category']}",
                 f"- **Canonical MCP Connector URI**: `{prod['connector_uri']}`",
+                f"- **Live AWS AgentCore Target ID**: `{target_id}`",
                 f"- **Verification Tier**: `{pa.get('verification_tier', 'LIVE_CLOUD_EXECUTION')}`",
                 f"- **Authentication & Zero-Trust Protocol**: {pa['auth_protocol']}",
                 f"- **Live Probed Cloud Endpoint**: `{prod['live_endpoint']}`",
-                f"- **Live Upstream Software Container on AWS EC2 (`i-04924523ac41ff132`)**: `{docker_img}`",
-                f"- **Direct Live Third-Party Software Web UI URL**: [{ec2_url}]({ec2_url})",
-                f"- **Interactive Login Credentials for Manual Testing**: {login_creds}",
-                f"- **Live S3 Audit Ledger Mirror & JSON API**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/{tname}](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/{tname}) • [?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/{tname}?format=json)",
+                f"- **Cross-Cloud Execution Surface**: {runtime_surface}",
+                f"- **Principal & Isolation Policy Summary**: {auth_summary}",
+                f"- **Live S3 Audit Ledger JSON Endpoint**: [{ledger_url}]({ledger_url})",
                 "",
                 "### A. Connector Configuration (`core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py`)",
                 "",

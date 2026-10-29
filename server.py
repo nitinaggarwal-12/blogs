@@ -902,6 +902,97 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 self._send_json(200, {"ok": True, "pattern_e2e_matrix": matrix})
             return
 
+        if path == "/api/saas-5-live-verify":
+            t0 = time.perf_counter()
+            mcp = saas_mcp_mod.Enterprise5ThirdPartySaaSMCP()
+            patterns = ("PATTERN_A_POOLED", "PATTERN_B_SOVEREIGN_SILO", "PATTERN_C_HYBRID_PSC_SPOKE")
+            pattern_summaries: Dict[str, Any] = {}
+            distinct_etags = set()
+            all_flows_ok = True
+            total_assertions = 0
+
+            for pat in patterns:
+                pat_res = mcp.execute_10_saas_end_to_end_for_pattern(pat, include_live_probes=True)
+                items = pat_res.get("saas_e2e_results", [])
+                total_assertions += int(pat_res.get("total_pattern_assertions_passed", 0))
+                compact_flows = []
+                for it in items:
+                    ev = ((it.get("positive_test_case") or {}).get("output") or {}).get("live_verification_evidence") or {}
+                    mcp_ev = ev.get("live_aws_bedrock_agentcore_mcp") or {}
+                    s3_uri = str(mcp_ev.get("s3_audit_ledger_uri") or "")
+                    etag = str(mcp_ev.get("s3_etag") or "")
+                    flow_ok = (
+                        mcp_ev.get("http_status") == 200
+                        and mcp_ev.get("is_error") is False
+                        and mcp_ev.get("s3_persisted") is True
+                        and s3_uri.startswith("s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/")
+                        and bool(etag)
+                    )
+                    if "live_gcp_bigquery_rls_probe" in ev and not ev["live_gcp_bigquery_rls_probe"].get("live_bq_query_ok"):
+                        flow_ok = False
+                    if "live_gcp_cmek_silo_vault" in ev and not (
+                        ev["live_gcp_cmek_silo_vault"].get("finvault_active_vault_ok")
+                        and ev["live_gcp_cmek_silo_vault"].get("medcore_revoked_lockout_verified")
+                    ):
+                        flow_ok = False
+                    if "live_gcp_pattern_c_psc_and_migrations" in ev and not ev["live_gcp_pattern_c_psc_and_migrations"].get("live_psc_registry_ok"):
+                        flow_ok = False
+                    if not flow_ok:
+                        all_flows_ok = False
+                    if etag:
+                        distinct_etags.add(etag)
+                    compact_flows.append(
+                        {
+                            "saasId": it.get("saas_id"),
+                            "slug": it.get("slug"),
+                            "targetId": mcp_ev.get("target_id"),
+                            "toolName": mcp_ev.get("tool_name"),
+                            "mcpHttpStatus": mcp_ev.get("http_status"),
+                            "s3AuditLedgerUri": s3_uri,
+                            "s3ETag": etag,
+                            "flowOk": flow_ok,
+                        }
+                    )
+                if len(items) != 10:
+                    all_flows_ok = False
+                pattern_summaries[pat] = {
+                    "flowsCount": len(compact_flows),
+                    "assertionsPassed": pat_res.get("total_pattern_assertions_passed", 0),
+                    "gcpTelemetryOk": bool(
+                        (pat_res.get("pattern_gcp_telemetry") or {}).get("live_bq_query_ok")
+                        or (pat_res.get("pattern_gcp_telemetry") or {}).get("live_cmek_lockout_enforced")
+                        or (pat_res.get("pattern_gcp_telemetry") or {}).get("live_psc_registry_ok")
+                    ),
+                    "kms21Cfr11Signed": (pat_res.get("pattern_gcp_telemetry") or {}).get("live_kms_21cfr11_signed"),
+                    "flows": compact_flows,
+                }
+
+            overall_ok = (
+                all_flows_ok
+                and total_assertions == 60
+                and len(distinct_etags) == 30
+                and bool(pattern_summaries["PATTERN_B_SOVEREIGN_SILO"].get("kms21Cfr11Signed"))
+            )
+            receipt_obj = {
+                "verifiedAtUtc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "service": os.environ.get("K_SERVICE", "ge-blogs"),
+                "revision": os.environ.get("K_REVISION", "local"),
+                "cloudRunProject": os.environ.get("GOOGLE_CLOUD_PROJECT", "ramp-portal-dev"),
+                "siloProject": "bbar-138hf0",
+                "awsAccountId": "393036065405",
+                "awsGatewayId": "cymbal-a2a-mcp-gateway-suyxm3caof",
+                "status": "CLOUDRUN_30_OF_30_LIVE_CROSSCLOUD_PASS" if overall_ok else "CLOUDRUN_LIVE_CROSSCLOUD_FAIL",
+                "overallPassed": overall_ok,
+                "totalFlowsVerified": 30 if overall_ok else sum(p["flowsCount"] for p in pattern_summaries.values()),
+                "totalAssertionsPassed": total_assertions,
+                "distinctS3ETags": len(distinct_etags),
+                "elapsedSec": round(time.perf_counter() - t0, 2),
+                "patterns": pattern_summaries,
+            }
+            print("CLOUDRUN_10SAAS_30FLOW_RECEIPT:" + json.dumps(receipt_obj), flush=True)
+            self._send_json(200 if overall_ok else 500, receipt_obj)
+            return
+
         if path == "/api/google-workspace/manifest":
             self._send_json(200, bridge_mod.load_cloud_manifest())
             return

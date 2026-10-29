@@ -40,6 +40,14 @@ def run_gate5_checks(proc: subprocess.Popen) -> None:
     routes_cfg = json.loads(raw_routes)
     svc = os.environ.get("K_SERVICE", "local-service")
     rev = os.environ.get("K_REVISION", "local-revision")
+    if svc == "ge-blogs" and not any(r.get("path") == "/api/saas-5-live-verify" for r in routes_cfg):
+        routes_cfg.append(
+            {
+                "path": "/api/saas-5-live-verify",
+                "markers": ["CLOUDRUN_30_OF_30_LIVE_CROSSCLOUD_PASS", "cymbal-a2a-mcp-gateway-suyxm3caof"],
+                "timeoutSec": 120,
+            }
+        )
 
     if not wait_for_port(port, timeout_sec=50.0):
         err_report = {
@@ -60,6 +68,7 @@ def run_gate5_checks(proc: subprocess.Popen) -> None:
     for chk in routes_cfg:
         path = chk.get("path", "/")
         markers = chk.get("markers", [])
+        req_timeout = float(chk.get("timeoutSec", 30))
         url = f"http://127.0.0.1:{port}{path}"
         t0 = time.time()
         status_code = 0
@@ -70,7 +79,7 @@ def run_gate5_checks(proc: subprocess.Popen) -> None:
                 url,
                 headers={"Accept": "text/html,application/json,*/*", "User-Agent": "CloudRun-Gate5-Verifier/1.0"},
             )
-            with urllib.request.urlopen(req, timeout=30) as resp:
+            with urllib.request.urlopen(req, timeout=req_timeout) as resp:
                 status_code = resp.status
                 raw_bytes = resp.read()
         except urllib.error.HTTPError as exc:
