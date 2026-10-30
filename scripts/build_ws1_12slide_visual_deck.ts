@@ -41,34 +41,36 @@ const OUTPUT_PPTX = path.join(ROOT_DIR, 'slides', 'ws1-12slide-visual-deck.pptx'
 
 const pptx = newDeck('Multi-Tenant Agentic AI on Google Cloud: 100% Editable Visual Architecture');
 
-// Reusable Palette for 12-Slide Deck
+// Reusable Palette for Deck
 const G_NAVY = '0F172A';
 const G_GREY_BG = 'F8F9FA';
 const G_GREY_BORDER = 'DADCE0';
 const G_BLUE_LIGHT = 'E8F0FE';
 const G_BLUE_DARK = '0D47A1';
 const G_RED_LIGHT = 'FCE8E6';
+const G_RED_DEEP = 'C5221F';
 const G_YELLOW_LIGHT = 'FEF7E0';
 const G_GREEN_LIGHT = 'E6F4EA';
-const G_RED_DEEP = 'C5221F';
 const G_GREEN_DEEP = '137333';
-const TOTAL_SLIDES = 26;
+const G_AMBER_DEEP = 'B45309';
+
+const TOTAL_SLIDES = 31;
 
 function addHeader(slide: any, category: string, title: string, slideNum: number, totalSlides: number = TOTAL_SLIDES) {
   // Category Pill
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 0.6, y: 0.35, w: 2.2, h: 0.3, rectRadius: 0.05,
+    x: 0.6, y: 0.35, w: 2.3, h: 0.3, rectRadius: 0.05,
     fill: { color: G_BLUE_LIGHT }, line: { color: G_BLUE, width: 1 }
   });
   slide.addText(category, {
-    x: 0.6, y: 0.35, w: 2.2, h: 0.3,
+    x: 0.6, y: 0.35, w: 2.3, h: 0.3,
     fontSize: 9, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
   });
 
   // Slide Title
   slide.addText(title, {
-    x: 3.0, y: 0.28, w: 9.6, h: 0.45,
-    fontSize: 18, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, valign: 'middle'
+    x: 3.1, y: 0.28, w: 9.5, h: 0.45,
+    fontSize: 17, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, valign: 'middle'
   });
 
   // Top Accent Line
@@ -85,19 +87,133 @@ function addHeader(slide: any, category: string, title: string, slideNum: number
   });
 }
 
+// Reusable Act Breaker Slide Builder
+interface ActBreakerConfig {
+  slideNum: number;
+  actTag: string;
+  actNumber: string;
+  actTitle: string;
+  actSubtitle: string;
+  actColor: string;
+  actTint: string;
+  coreQuestion: string;
+  thesis: string;
+  milestones: Array<{
+    num: string;
+    title: string;
+    desc: string;
+    deliverable: string;
+  }>;
+}
+
+function buildActBreakerSlide(cfg: ActBreakerConfig) {
+  const slide = pptx.addSlide();
+  addHeader(slide, cfg.actTag, `${cfg.actNumber}: ${cfg.actTitle}`, cfg.slideNum);
+
+  slide.addText(cfg.actSubtitle, {
+    x: 0.6, y: 0.85, w: 12.133, h: 0.38, fontSize: 10.5, color: TEXT_MUTED, fontFace: FONT_BODY
+  });
+
+  // Left Hero Card
+  slide.addShape(pptx.ShapeType.roundRect, {
+    x: 0.6, y: 1.35, w: 4.3, h: 5.5, rectRadius: 0.08,
+    fill: { color: WHITE }, line: { color: cfg.actColor, width: 2 }
+  });
+
+  // Hero Card Top Banner
+  slide.addShape(pptx.ShapeType.rect, {
+    x: 0.6, y: 1.35, w: 4.3, h: 1.3, fill: { color: cfg.actTint }
+  });
+
+  slide.addShape(pptx.ShapeType.roundRect, {
+    x: 0.85, y: 1.55, w: 1.8, h: 0.32, rectRadius: 0.05,
+    fill: { color: WHITE }, line: { color: cfg.actColor, width: 1 }
+  });
+  slide.addText(cfg.actNumber, {
+    x: 0.85, y: 1.55, w: 1.8, h: 0.32,
+    fontSize: 10, bold: true, color: cfg.actColor, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
+  });
+
+  slide.addText(cfg.actTitle, {
+    x: 0.85, y: 1.95, w: 3.8, h: 0.6,
+    fontSize: 15, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE
+  });
+
+  // Core Question Box
+  slide.addShape(pptx.ShapeType.roundRect, {
+    x: 0.85, y: 2.8, w: 3.8, h: 1.95, rectRadius: 0.06,
+    fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.75 }
+  });
+  slide.addText('CORE STRATEGIC MANDATE & KEY QUESTION', {
+    x: 1.0, y: 2.92, w: 3.5, h: 0.25, fontSize: 8.0, bold: true, color: cfg.actColor, fontFace: FONT_TITLE
+  });
+  slide.addText(cfg.coreQuestion, {
+    x: 1.0, y: 3.22, w: 3.5, h: 1.4, fontSize: 9.2, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.25
+  });
+
+  // Strategic Thesis Box
+  slide.addShape(pptx.ShapeType.roundRect, {
+    x: 0.85, y: 4.9, w: 3.8, h: 1.75, rectRadius: 0.06,
+    fill: { color: WHITE }, line: { color: G_GREY_BORDER, width: 0.75 }
+  });
+  slide.addText('ARCHITECTURAL THESIS', {
+    x: 1.0, y: 5.02, w: 3.5, h: 0.22, fontSize: 8.0, bold: true, color: TEXT_MUTED, fontFace: FONT_TITLE
+  });
+  slide.addText(cfg.thesis, {
+    x: 1.0, y: 5.28, w: 3.5, h: 1.25, fontSize: 8.8, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
+  });
+
+  // Right Milestone Cards (4 Stacked Rows)
+  cfg.milestones.forEach((m, idx) => {
+    const my = 1.35 + idx * 1.4;
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: 5.15, y: my, w: 7.58, h: 1.25, rectRadius: 0.08,
+      fill: { color: WHITE }, line: { color: G_GREY_BORDER, width: 1 }
+    });
+
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: 5.35, y: my + 0.18, w: 0.65, h: 0.88, rectRadius: 0.06,
+      fill: { color: cfg.actTint }, line: { color: cfg.actColor, width: 1 }
+    });
+    slide.addText(m.num, {
+      x: 5.35, y: my + 0.18, w: 0.65, h: 0.88,
+      fontSize: 14, bold: true, color: cfg.actColor, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
+    });
+
+    slide.addText(m.title, {
+      x: 6.2, y: my + 0.18, w: 4.5, h: 0.32,
+      fontSize: 11, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE
+    });
+    slide.addText(m.desc, {
+      x: 6.2, y: my + 0.52, w: 4.8, h: 0.58,
+      fontSize: 8.5, color: TEXT_MUTED, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
+    });
+
+    // Deliverable Tag on Right
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: 11.1, y: my + 0.35, w: 1.45, h: 0.55, rectRadius: 0.05,
+      fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
+    });
+    slide.addText(m.deliverable, {
+      x: 11.1, y: my + 0.35, w: 1.45, h: 0.55,
+      fontSize: 7.5, bold: true, color: cfg.actColor, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
+    });
+  });
+}
+
+// ============================================================================
+// SLIDE 01: Title & Strategic Vision
+// ============================================================================
 function buildSlide01() {
   const slide = pptx.addSlide();
   
-  // Left Accent Canvas (Navy)
   slide.addShape(pptx.ShapeType.rect, {
     x: 0, y: 0, w: 4.8, h: 7.5, fill: { color: G_NAVY }
   });
-  // Gold Ribbon Accent
   slide.addShape(pptx.ShapeType.rect, {
     x: 4.8, y: 0, w: 0.12, h: 7.5, fill: { color: G_YELLOW }
   });
 
-  // Left Navy Content
   slide.addText('GOOGLE CLOUD\nARCHITECTURE CENTER', {
     x: 0.6, y: 0.8, w: 3.8, h: 0.8,
     fontSize: 16, bold: true, color: WHITE, fontFace: FONT_TITLE, lineSpacingMultiple: 1.1
@@ -115,7 +231,6 @@ function buildSlide01() {
     fontSize: 11, color: 'CBD5E1', fontFace: FONT_BODY, lineSpacingMultiple: 1.3
   });
 
-  // Status Badges on Navy
   slide.addShape(pptx.ShapeType.roundRect, {
     x: 0.6, y: 5.6, w: 3.6, h: 0.45, rectRadius: 0.05,
     fill: { color: '1E293B' }, line: { color: '334155', width: 1 }
@@ -130,7 +245,6 @@ function buildSlide01() {
     fontSize: 8.5, color: '94A3B8', fontFace: FONT_BODY, lineSpacingMultiple: 1.2
   });
 
-  // Right Clean Canvas
   slide.addText('Multi-Tenant Agentic AI\non Google Cloud', {
     x: 5.4, y: 1.4, w: 7.3, h: 1.6,
     fontSize: 34, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, lineSpacingMultiple: 1.1
@@ -144,7 +258,6 @@ function buildSlide01() {
     fontSize: 12, color: TEXT_MUTED, fontFace: FONT_BODY, lineSpacingMultiple: 1.3
   });
 
-  // 3-Pillar Quick Chips on Right
   const chips = [
     { title: '84.7% Cache Savings', desc: 'Shared Context Cache' },
     { title: '5-Hop Cryptography', desc: 'Zero-Trust Token Chain' },
@@ -168,11 +281,129 @@ function buildSlide01() {
 }
 
 // ============================================================================
-// SLIDE 02: The SaaS AI Architect's Dilemma (Visual Trade-Off Spectrum)
+// SLIDE 02: Executive Storyline & 4-Act Architecture Agenda
 // ============================================================================
-function buildSlide02() {
+function buildSlide02_Agenda() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT I • THE PROBLEM', 'The SaaS AI Architect’s Dilemma: The False Dichotomy of Multi-Tenancy', 2);
+  addHeader(slide, 'EXECUTIVE STORYLINE', 'The 4-Act Architecture Journey: From Threat Model to Production GA', 2);
+
+  slide.addText('Structured architectural roadmap taking enterprise platforms from threat modeling to verified 10-SaaS multi-cloud isolation.', {
+    x: 0.6, y: 0.85, w: 12.133, h: 0.38, fontSize: 10.5, color: TEXT_MUTED, fontFace: FONT_BODY
+  });
+
+  const acts = [
+    {
+      act: 'ACT I',
+      title: 'The Problem & Attack Surface',
+      tag: 'THREAT LANDSCAPE',
+      color: G_RED_DEEP,
+      tint: G_RED_LIGHT,
+      slides: 'Slides 03–04',
+      bullets: [
+        'The SaaS Architect\'s Dilemma: Margin destruction vs. catastrophic breach.',
+        '5 Multi-Tenant Threat Vectors: Header spoofing, schema bleed, memory pollution, confused deputy, quota exhaustion.',
+        'The Golden Path: Decoupling the 80% reusable pipeline from perimeters.'
+      ],
+      deliverable: 'Threat Surface Map'
+    },
+    {
+      act: 'ACT II',
+      title: 'Reference Topologies',
+      tag: 'ARCHITECTURE & BLUEPRINTS',
+      color: G_BLUE,
+      tint: G_BLUE_LIGHT,
+      slides: 'Slides 05–10',
+      bullets: [
+        'Pattern A High-Density Pooled (950 commercial tenants, $12/mo).',
+        'Pattern B Sovereign Silos & Pattern C Dynamic Hybrid PSC spokes.',
+        'L1 Logical Architecture: 3 security layers & signed STS JWT.',
+        'Figures 1 & 2: Authoritative DrawingML reference topologies.'
+      ],
+      deliverable: 'Hub-and-Spoke Topologies'
+    },
+    {
+      act: 'ACT III',
+      title: '5-Hop Cryptographic Control',
+      tag: 'DEEP TECHNICAL EXECUTION',
+      color: G_GREEN_DEEP,
+      tint: G_GREEN_LIGHT,
+      slides: 'Slides 11–17',
+      bullets: [
+        'L3 5-Actor UML Sequence & ~42ms p95 control-plane lifecycle.',
+        'L4 Wire Transformation: Ingress header stripping & STS JWT minting.',
+        'Deterministic Fail-Closed Circuit Breakers (HTTP 401, 403, 429, 422, 423).',
+        'AlloyDB Row-Level Security & Valkey FinOps prefix prompt caching.'
+      ],
+      deliverable: '5-Hop Zero-Trust Pipeline'
+    },
+    {
+      act: 'ACT IV',
+      title: 'Empirical SaaS Proofs',
+      tag: 'EVIDENCE & PRODUCTION GA',
+      color: G_AMBER_DEEP,
+      tint: G_YELLOW_LIGHT,
+      slides: 'Slides 18–31',
+      bullets: [
+        '10 Evaluated Third-Party SaaS Stacks (BI, SQL, Telemetry, Logs, CMEK, Git).',
+        '20 Authentic 2880x1800 Retina Before -> After UI Captures.',
+        'Zero Cross-Tenant Leaks verified across Google Cloud Run and AWS EC2.',
+        'Act V: 10-Week Implementation Roadmap & Quantified SLA Scorecard.'
+      ],
+      deliverable: '10/10 SaaS Isolation Matrix'
+    }
+  ];
+
+  acts.forEach((a, i) => {
+    const ax = 0.6 + i * 3.08;
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: ax, y: 1.35, w: 2.88, h: 5.5, rectRadius: 0.08,
+      fill: { color: WHITE }, line: { color: a.color, width: 1.5 }
+    });
+
+    slide.addShape(pptx.ShapeType.rect, {
+      x: ax, y: 1.35, w: 2.88, h: 1.1, fill: { color: a.tint }
+    });
+
+    slide.addText(`${a.act} • ${a.slides}`, {
+      x: ax + 0.15, y: 1.48, w: 2.58, h: 0.28, fontSize: 8.5, bold: true, color: a.color, fontFace: FONT_TITLE
+    });
+    slide.addText(a.title, {
+      x: ax + 0.15, y: 1.78, w: 2.58, h: 0.58, fontSize: 11.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE
+    });
+
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: ax + 0.15, y: 2.6, w: 2.58, h: 3.5, rectRadius: 0.05,
+      fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
+    });
+
+    slide.addText('CORE ARCHITECTURAL DELIVERABLES', {
+      x: ax + 0.25, y: 2.75, w: 2.38, h: 0.25, fontSize: 7.5, bold: true, color: TEXT_MUTED, fontFace: FONT_TITLE
+    });
+
+    a.bullets.forEach((b, k) => {
+      slide.addText(`• ${b}`, {
+        x: ax + 0.22, y: 3.05 + k * 0.85, w: 2.44, h: 0.8,
+        fontSize: 8.2, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
+      });
+    });
+
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: ax + 0.15, y: 6.25, w: 2.58, h: 0.45, rectRadius: 0.04,
+      fill: { color: a.tint }, line: { color: a.color, width: 0.75 }
+    });
+    slide.addText(`Output: ${a.deliverable}`, {
+      x: ax + 0.15, y: 6.25, w: 2.58, h: 0.45,
+      fontSize: 8.0, bold: true, color: a.color, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
+    });
+  });
+}
+
+// ============================================================================
+// SLIDE 03: The SaaS AI Architect's Dilemma
+// ============================================================================
+function buildSlide03_Dilemma() {
+  const slide = pptx.addSlide();
+  addHeader(slide, 'ACT I • THE PROBLEM', 'The SaaS AI Architect’s Dilemma: The False Dichotomy of Multi-Tenancy', 3);
 
   slide.addText('SaaS platforms face an extreme trade-off: provisioning isolated projects destroys margins, while naive sharing destroys security.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -183,20 +414,20 @@ function buildSlide02() {
     x: 0.6, y: 1.35, w: 5.8, h: 4.2, rectRadius: 0.08,
     fill: { color: G_RED_LIGHT }, line: { color: G_RED, width: 1.5 }
   });
-  slide.addText('TRAP A: SOVEREIGN SILO PROLIFERATION', {
+  slide.addText('TRAP A: 1 PROJECT PER TENANT', {
     x: 0.9, y: 1.55, w: 5.2, h: 0.35, fontSize: 12, bold: true, color: G_RED, fontFace: FONT_TITLE
   });
-  slide.addText('$15.8M / yr Wasted', {
+  slide.addText('$1,250 / mo', {
     x: 0.9, y: 1.95, w: 5.2, h: 0.6, fontSize: 26, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE
   });
-  slide.addText('Unallocated Base Infrastructure per Commercial Tenant', {
+  slide.addText('Per-Tenant Baseline Infrastructure Burn Rate', {
     x: 0.9, y: 2.55, w: 5.2, h: 0.3, fontSize: 9.5, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
   const trapAStats = [
-    { metric: '88% Idle Capacity', label: 'Cloud Run, VPCs, and DB instances sitting unutilized' },
-    { metric: '500x Project Drift', label: 'Terraform state explosion causing catastrophic deployment lag' },
-    { metric: '0% Prompt Cache Reuse', label: 'Every LLM query pays full-rate un-cached token pricing' }
+    { metric: '1,000 VPCs & IP Exhaustion', label: 'Quota limits reached within 90 days of commercial launch' },
+    { metric: '0% Prompt Prefix Caching', label: 'Cannot share system prompt caches across IAM boundaries' },
+    { metric: '$1.25M Monthly Infra Bill', label: 'Destroys SaaS gross margins on $99/mo commercial tiers' }
   ];
   trapAStats.forEach((s, i) => {
     const sy = 3.0 + i * 0.75;
@@ -258,11 +489,11 @@ function buildSlide02() {
 }
 
 // ============================================================================
-// SLIDE 03: Attack Surface: 5 Multi-Tenant Threat Vectors
+// SLIDE 04: The 5 Multi-Tenant Attack Vectors
 // ============================================================================
-function buildSlide03() {
+function buildSlide04_ThreatVectors() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT I • THREAT SURFACE', 'The 5 Multi-Tenant Attack Vectors: An Adversarial Flow Map', 3);
+  addHeader(slide, 'ACT I • THREAT SURFACE', 'The 5 Multi-Tenant Attack Vectors: An Adversarial Flow Map', 4);
 
   slide.addText('Adversarial actors leverage agentic autonomy to traverse boundaries. Each vector requires a dedicated cryptographic defense.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -279,131 +510,143 @@ function buildSlide03() {
   vectors.forEach((v, i) => {
     const vx = 0.6 + i * 2.47;
     slide.addShape(pptx.ShapeType.roundRect, {
-      x: vx, y: 1.35, w: 2.25, h: 5.5, rectRadius: 0.08,
+      x: vx, y: 1.35, w: 2.25, h: 4.8, rectRadius: 0.08,
       fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 1 }
     });
 
     slide.addShape(pptx.ShapeType.ellipse, {
-      x: vx + 0.825, y: 1.55, w: 0.6, h: 0.6, fill: { color: G_RED }, line: { color: WHITE, width: 1 }
+      x: vx + 0.825, y: 1.5, w: 0.55, h: 0.55, fill: { color: G_RED }, line: { color: WHITE, width: 1 }
     });
     slide.addText(v.num, {
-      x: vx + 0.825, y: 1.55, w: 0.6, h: 0.6,
-      fontSize: 12, bold: true, color: WHITE, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
+      x: vx + 0.825, y: 1.5, w: 0.55, h: 0.55,
+      fontSize: 11, bold: true, color: WHITE, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
     });
 
     slide.addText(v.title, {
-      x: vx + 0.1, y: 2.25, w: 2.05, h: 0.4,
-      fontSize: 11, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, align: 'center'
+      x: vx + 0.1, y: 2.15, w: 2.05, h: 0.35,
+      fontSize: 10.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, align: 'center'
     });
 
     slide.addShape(pptx.ShapeType.roundRect, {
-      x: vx + 0.125, y: 2.75, w: 2.0, h: 1.5, rectRadius: 0.05,
+      x: vx + 0.125, y: 2.55, w: 2.0, h: 1.3, rectRadius: 0.05,
       fill: { color: G_RED_LIGHT }, line: { color: G_RED, width: 0.5 }
     });
     slide.addText('ATTACK VECTOR', {
-      x: vx + 0.175, y: 2.85, w: 1.9, h: 0.25, fontSize: 8, bold: true, color: G_RED, fontFace: FONT_TITLE
+      x: vx + 0.175, y: 2.62, w: 1.9, h: 0.22, fontSize: 7.5, bold: true, color: G_RED, fontFace: FONT_TITLE
     });
     slide.addText(v.threat, {
-      x: vx + 0.175, y: 3.15, w: 1.9, h: 1.0, fontSize: 8.5, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
+      x: vx + 0.175, y: 2.86, w: 1.9, h: 0.9, fontSize: 8.0, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
     });
 
     slide.addShape(pptx.ShapeType.downArrow, {
-      x: vx + 0.975, y: 4.35, w: 0.3, h: 0.3, fill: { color: G_GREEN }
+      x: vx + 0.975, y: 3.92, w: 0.25, h: 0.25, fill: { color: G_GREEN }
     });
 
     slide.addShape(pptx.ShapeType.roundRect, {
-      x: vx + 0.125, y: 4.75, w: 2.0, h: 1.9, rectRadius: 0.05,
+      x: vx + 0.125, y: 4.25, w: 2.0, h: 1.75, rectRadius: 0.05,
       fill: { color: G_GREEN_LIGHT }, line: { color: G_GREEN, width: 0.5 }
     });
     slide.addText(`SHIELD: ${v.defense}`, {
-      x: vx + 0.175, y: 4.85, w: 1.9, h: 0.25, fontSize: 8, bold: true, color: G_GREEN, fontFace: FONT_TITLE
+      x: vx + 0.175, y: 4.32, w: 1.9, h: 0.22, fontSize: 7.5, bold: true, color: G_GREEN, fontFace: FONT_TITLE
     });
     slide.addText(v.fix, {
-      x: vx + 0.175, y: 5.15, w: 1.9, h: 1.4, fontSize: 8.5, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
+      x: vx + 0.175, y: 4.56, w: 1.9, h: 1.35, fontSize: 8.0, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
     });
+  });
+
+  // Bottom Transition Bridge
+  slide.addShape(pptx.ShapeType.roundRect, {
+    x: 0.6, y: 6.35, w: 12.133, h: 0.55, rectRadius: 0.06,
+    fill: { color: G_BLUE_LIGHT }, line: { color: G_BLUE, width: 1 }
+  });
+  slide.addText('TRANSITION TO ACT II ➔ Moving from the threat landscape to concrete architectural patterns and DrawingML topologies', {
+    x: 0.8, y: 6.35, w: 11.7, h: 0.55, fontSize: 9.5, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE, valign: 'middle'
   });
 }
 
 // ============================================================================
-// SLIDE 04: The Multi-Tenant Agentic Triad (Exploded Modular Stack)
+// SLIDE 05: ACT II TRANSITION BREAKER (TOPOLOGIES & ARCHITECTURE)
 // ============================================================================
-function buildSlide04() {
-  const slide = pptx.addSlide();
-  addHeader(slide, 'ACT II • ARCHITECTURE', 'The Decoupled Multi-Tenant Agentic Triad: 80/20 Code Reuse', 4);
+function buildSlide05_Act2Breaker() {
+  buildActBreakerSlide({
+    slideNum: 5,
+    actTag: 'ACT II TRANSITION',
+    actNumber: 'ACT II',
+    actTitle: 'Reference Architecture & Multi-Tenant Topologies',
+    actSubtitle: 'Decoupling the 80% Reusable 5-Hop Cryptographic Core from the 20% Per-Tenant Perimeter Delta.',
+    actColor: G_BLUE,
+    actTint: G_BLUE_LIGHT,
+    coreQuestion: 'How do enterprise platforms serve 950 standard commercial tenants at $12/mo while simultaneously providing air-gapped sovereign isolation for 50 regulated banking & healthcare clients from a single unified codebase?',
+    thesis: 'Decoupling the 5-hop identity, PDP, and database RLS pipeline from physical project boundaries eliminates the false choice between margin destruction and security compromise.',
+    milestones: [
+      { num: '01', title: 'Pattern A: High-Density Pooled Architecture', desc: 'Shared Cloud Run Gen2 + AlloyDB RLS hosting 950 commercial tenants with 84.7% prefix cache savings.', deliverable: 'Pooled Core' },
+      { num: '02', title: 'Pattern B: Sovereign Dedicated Silos', desc: 'Isolated Google Cloud projects, VPC-SC perimeters, and customer-managed Cloud KMS CMEK key rings.', deliverable: 'Sovereign Silos' },
+      { num: '03', title: 'Pattern C: Dynamic Hybrid PSC Spokes', desc: 'Pooled control plane orchestrating private tenant spoke datalakes via Private Service Connect without turn drop.', deliverable: 'Hybrid Spokes' },
+      { num: '04', title: 'L1 Logical & L2 Network DrawingML Topologies', desc: '100% native vector diagrams: 3-layer security taxonomy and Figures 1 & 2 decomposed Draw.io blueprints.', deliverable: 'DrawingML Topos' }
+    ]
+  });
+}
 
-  slide.addText('Achieving both high gross margins and regulatory compliance requires decomposing the architecture into three clean tiers.', {
+// ============================================================================
+// SLIDE 06: Pattern A High-Density Pooled
+// ============================================================================
+function buildSlide06_PatternA() {
+  const slide = pptx.addSlide();
+  addHeader(slide, 'ACT II • PATTERN A POOLED', 'Pattern A: High-Density Pooled Architecture (950 Commercial Tenants)', 6);
+
+  slide.addText('Default topology for commercial B2B SaaS tenants. Shared Cloud Run + AlloyDB RLS with 84.7% prompt cache savings.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
-  const triad = [
-    {
-      tier: 'TIER 1 • 20% PER-TENANT PERIMETER DELTA',
-      sub: 'Infrastructure Boundaries Isolated per Tenant Tier',
-      color: G_RED, bg: G_RED_LIGHT,
-      elements: ['Pattern A: Pooled Cloud Run + Shared Project', 'Pattern B: Dedicated VPC-SC Perimeter + Cloud KMS CMEK Ring', 'Pattern C: Dynamic PSC Spoke + Transit Routing Hub'],
-      badge: 'Zero Global Code Changes'
-    },
-    {
-      tier: 'TIER 2 • FEATURE-FLAGGED GCP ADAPTERS (GAP-01..05)',
-      sub: 'Transparent Protocol Normalization & EAP Upgrades',
-      color: G_YELLOW, bg: G_YELLOW_LIGHT,
-      elements: ['GAP-01: Header Sanitization & Cloud Armor Ingress', 'GAP-02: Vertex AI Agent Engine Catalog Scoping', 'GAP-03: gVisor Code Execution & Memory Namespaces', 'GAP-04: Model Armor & DPoP Token Vault', 'GAP-05: AlloyDB Row-Level Security'],
-      badge: 'Drop-In Polyfill Architecture'
-    },
-    {
-      tier: 'TIER 3 • 80% REUSABLE CORE AGENT ENGINE',
-      sub: 'Invariant Business Logic & 5-Hop Cryptographic Pipeline',
-      color: G_BLUE, bg: G_BLUE_LIGHT,
-      elements: ['ADK Framework Lifecycle Scheduler (before_agent_callback, before_tool_callback)', 'Standardized JSON-RPC 2.0 Model Context Protocol (MCP) Tool Contracts', 'Cloud KMS ECDSA P-256 Signed TenantContext Context Propagation'],
-      badge: 'Shared Across All 1,000 Tenants'
-    }
+  const cards = [
+    { title: 'Ingress & Identity', color: G_BLUE, items: ['Cloud Armor strips caller headers', 'IAM STS mints 5-minute JWTs', 'RFC 9449 DPoP key binding'] },
+    { title: 'Shared Execution Core', color: G_GREEN, items: ['Cloud Run Gen2 shared containers', 'Discovery Engine ARD tool filter', 'Memorystore Valkey rate limits'] },
+    { title: 'Inference & Caching', color: G_YELLOW, items: ['Vertex AI Agent Engine', '84.7% prompt prefix cache hit', 'Model Armor inline DLP filters'] },
+    { title: 'Data Isolation', color: G_RED, items: ['AlloyDB PostgreSQL engine RLS', 'SET LOCAL current_tenant_id', 'BigQuery OTel FinOps ledger'] }
   ];
 
-  triad.forEach((t, i) => {
-    const ty = 1.35 + i * 1.85;
+  cards.forEach((c, i) => {
+    const cx = 0.6 + i * 3.09;
     slide.addShape(pptx.ShapeType.roundRect, {
-      x: 0.6, y: ty, w: 12.133, h: 1.65, rectRadius: 0.08,
-      fill: { color: t.bg }, line: { color: t.color, width: 1.5 }
-    });
-    slide.addText(t.tier, {
-      x: 0.9, y: ty + 0.15, w: 8.5, h: 0.3, fontSize: 12, bold: true, color: t.color, fontFace: FONT_TITLE
-    });
-    slide.addText(t.sub, {
-      x: 0.9, y: ty + 0.45, w: 8.5, h: 0.25, fontSize: 9.5, color: TEXT_MUTED, fontFace: FONT_BODY
+      x: cx, y: 1.35, w: 2.87, h: 5.5, rectRadius: 0.08,
+      fill: { color: WHITE }, line: { color: c.color, width: 1.5 }
     });
 
     slide.addShape(pptx.ShapeType.roundRect, {
-      x: 9.8, y: ty + 0.15, w: 2.6, h: 0.35, rectRadius: 0.05,
-      fill: { color: WHITE }, line: { color: t.color, width: 1 }
+      x: cx + 0.15, y: 1.55, w: 2.57, h: 0.45, rectRadius: 0.05,
+      fill: { color: G_GREY_BG }, line: { color: c.color, width: 1 }
     });
-    slide.addText(t.badge, {
-      x: 9.8, y: ty + 0.15, w: 2.6, h: 0.35,
-      fontSize: 8.5, bold: true, color: t.color, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
+    slide.addText(c.title, {
+      x: cx + 0.15, y: 1.55, w: 2.57, h: 0.45,
+      fontSize: 11, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
     });
 
-    const elWidth = 11.5 / t.elements.length;
-    t.elements.forEach((el, j) => {
-      const ex = 0.9 + j * elWidth;
+    c.items.forEach((item, j) => {
+      const iy = 2.25 + j * 1.55;
       slide.addShape(pptx.ShapeType.roundRect, {
-        x: ex, y: ty + 0.8, w: elWidth - 0.15, h: 0.7, rectRadius: 0.05,
-        fill: { color: WHITE }, line: { color: G_GREY_BORDER, width: 0.5 }
+        x: cx + 0.15, y: iy, w: 2.57, h: 1.35, rectRadius: 0.05,
+        fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
       });
-      slide.addText(el, {
-        x: ex + 0.1, y: ty + 0.85, w: elWidth - 0.35, h: 0.6,
-        fontSize: 8.5, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15, valign: 'middle'
+      slide.addText(`0${j + 1}`, {
+        x: cx + 0.25, y: iy + 0.1, w: 0.5, h: 0.3,
+        fontSize: 12, bold: true, color: c.color, fontFace: FONT_TITLE
+      });
+      slide.addText(item, {
+        x: cx + 0.25, y: iy + 0.4, w: 2.35, h: 0.85,
+        fontSize: 9.5, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
       });
     });
   });
 }
 
 // ============================================================================
-// SLIDE 05: Production Isolation Topologies (Comparative Cards)
+// SLIDE 07: Pattern B Sovereign Silos & Pattern C Dynamic Hybrid
 // ============================================================================
-function buildSlide05() {
+function buildSlide07_PatternBC() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT II • TOPOLOGIES', 'Three Production Isolation Patterns: Density vs. Sovereignty', 5);
+  addHeader(slide, 'ACT II • SOVEREIGN SPOKES', 'Pattern B (Sovereign Silos) & Pattern C (Dynamic Hybrid PSC Spokes)', 7);
 
-  slide.addText('Select the isolation pattern based on tenant compliance, throughput, and unit economics.', {
+  slide.addText('Sovereignty topologies for regulated tenants requiring dedicated VPC-SC boundaries, CMEK kill-switches, and air-gapped models.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
@@ -498,19 +741,17 @@ function buildSlide05() {
   });
 }
 
-
-
 // ============================================================================
-// SLIDE 06: L1 Logical Security Taxonomy (100% NATIVE EDITABLE DRAWINGML)
+// SLIDE 08: L1 Logical Security Taxonomy
 // ============================================================================
-function buildSlide06_L1Logical() {
+function buildSlide08_L1Logical() {
   addArchitectureZoneTopologySlide(pptx, DECKS[0]);
 }
 
 // ============================================================================
-// SLIDE 07: Reference Blueprint 1 (100% DECOMPOSED NATIVE EDITABLE DRAWINGML)
+// SLIDE 09: Reference Blueprint 1 (Figure 1 DrawingML)
 // ============================================================================
-async function buildSlide07_Figure1() {
+async function buildSlide09_Figure1() {
   const xmlPath = path.join(ROOT_DIR, 'diagrams', 'ws1-multi-tenant-taxonomy-overview.drawio');
   const xmlContent = fs.readFileSync(xmlPath, 'utf8');
   await appendGoogleBrandedDiagramSlides(
@@ -534,9 +775,9 @@ async function buildSlide07_Figure1() {
 }
 
 // ============================================================================
-// SLIDE 08: Reference Blueprint 2 (100% DECOMPOSED NATIVE EDITABLE DRAWINGML)
+// SLIDE 10: Reference Blueprint 2 (Figure 2 DrawingML)
 // ============================================================================
-async function buildSlide08_Figure2() {
+async function buildSlide10_Figure2() {
   const xmlPath = path.join(ROOT_DIR, 'diagrams', 'ws1-cloud-arch-center-5hop-baseline.drawio');
   const xmlContent = fs.readFileSync(xmlPath, 'utf8');
   await appendGoogleBrandedDiagramSlides(
@@ -561,22 +802,48 @@ async function buildSlide08_Figure2() {
 }
 
 // ============================================================================
-// SLIDE 09: L3 Process Swimlane (100% NATIVE EDITABLE DRAWINGML)
+// SLIDE 11: ACT III TRANSITION BREAKER (5-HOP CRYPTOGRAPHIC CONTROL PLANE)
 // ============================================================================
-function buildSlide09_L3Process() {
+function buildSlide11_Act3Breaker() {
+  buildActBreakerSlide({
+    slideNum: 11,
+    actTag: 'ACT III TRANSITION',
+    actNumber: 'ACT III',
+    actTitle: '5-Hop Cryptographic Pipeline & Deep Execution',
+    actSubtitle: 'From Ingress Header Stripping to Database RLS & Sub-60s CMEK Kill-Switches.',
+    actColor: G_GREEN_DEEP,
+    actTint: G_GREEN_LIGHT,
+    coreQuestion: 'How does an untrusted caller request traverse edge gateways, dynamic tool resolution, sandboxed memory banks, and model armor without risk of header spoofing, cross-tenant memory bleed, or noisy-neighbor quota exhaustion?',
+    thesis: 'Enforcing cryptographic token exchange at Hop 1 and passing an immutable, signed STS JWT enables every downstream microservice to verify tenant boundaries in sub-150 microseconds without remote RPC roundtrips.',
+    milestones: [
+      { num: '01', title: 'L3 Process 5-Actor UML Swimlane Sequence', desc: 'Step-by-step transaction flow across Caller, Edge, ARD, Model Armor, and AlloyDB with ~42ms p95 latency.', deliverable: 'UML Swimlane' },
+      { num: '02', title: 'L4 Wire-Level Protocol Normalization', desc: 'Cloud Armor stripping forged headers and minting KMS ECDSA P-256 JWTs verified via local in-memory JWKS.', deliverable: 'Wire Gate' },
+      { num: '03', title: 'Deterministic Fail-Closed Circuit Breakers', desc: 'Explicit HTTP 401, 403, 429, 422, and 423 error contracts blocking rogue workflows before downstream execution.', deliverable: 'Circuit Breakers' },
+      { num: '04', title: 'Hop 5 AlloyDB RLS & Valkey FinOps Governance', desc: 'Engine-level SET LOCAL app.current_tenant_id isolation with 84.7% prompt prefix caching cost savings.', deliverable: 'RLS & FinOps' }
+    ]
+  });
+}
+
+// ============================================================================
+// SLIDE 12: L3 Process Swimlane
+// ============================================================================
+function buildSlide12_L3Process() {
   addUmlSequenceSwimlaneSlide(pptx, DECKS[0]);
 }
 
 // ============================================================================
-// SLIDE 10: L4 Wire Payload Transformation (100% NATIVE EDITABLE DRAWINGML)
+// SLIDE 13: L4 Wire Payload Transformation
 // ============================================================================
-function buildSlide10_L4Wire() {
+function buildSlide13_L4Wire() {
   addPayloadTransformationTriptychSlide(pptx, DECKS[0]);
 }
 
-function buildSlide11_CircuitBreakers() {
+// ============================================================================
+// SLIDE 14: L3 Process Circuit Breakers Deep-Dive
+// ============================================================================
+function buildSlide14_CircuitBreakers() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT II • CIRCUIT BREAKERS', 'L3 Process Architecture: Explicit Fail-Closed Security Circuit Breakers', 11);
+  addHeader(slide, 'ACT III • CIRCUIT BREAKERS', 'L3 Process Architecture: Explicit Fail-Closed Security Circuit Breakers', 14);
 
   slide.addText('Zero-trust systems must fail closed. Five distinct HTTP circuit breakers guarantee deterministic rejection without data leaks.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -624,324 +891,262 @@ function buildSlide11_CircuitBreakers() {
 }
 
 // ============================================================================
-// SLIDE 09: Empirical Proofs: Native Editable DrawingML Audit Tables
+// SLIDE 15: AlloyDB Row-Level Security Table
 // ============================================================================
-function buildSlide12_AlloyDbRls() {
+function buildSlide15_AlloyDbRls() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • EMPIRICAL PROOFS', 'Empirical Verification: Metabase BI & Trino SQL Tenant Isolation (Native Table)', 9);
+  addHeader(slide, 'ACT III • ALLOYDB RLS', 'Hop 5 Data Partitioning: AlloyDB Row-Level Security DrawingML Architecture', 15);
 
-  slide.addText('100% Native DrawingML audit tables: Direct comparison of query results before vs. after 5-Hop Row-Level Security.', {
+  slide.addText('How Row-Level Security mathematically prevents cross-tenant data leaks at the database engine layer.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
-  // LEFT CARD: BEFORE (UNFILTERED LEAK)
-  slide.addShape(pptx.ShapeType.roundRect, {
-    x: 0.6, y: 1.35, w: 5.8, h: 3.75, rectRadius: 0.08,
-    fill: { color: G_RED_LIGHT }, line: { color: G_RED, width: 1.5 }
-  });
-  slide.addText('✖ BEFORE: UNPROTECTED CONNECTION (CROSS-TENANT LEAK)', {
-    x: 0.8, y: 1.5, w: 5.4, h: 0.3, fontSize: 10.5, bold: true, color: G_RED, fontFace: FONT_TITLE
-  });
-  slide.addText('Query: SELECT entity_id, tenant_id, portfolio, settlement_usd FROM global_tx;', {
-    x: 0.8, y: 1.82, w: 5.4, h: 0.25, fontSize: 8.0, color: TEXT_MUTED, fontFace: 'Courier New'
-  });
+  const headers = [
+    { text: 'Row ID', options: { bold: true, color: WHITE, fill: { color: G_NAVY }, fontSize: 8.5, align: 'center' } },
+    { text: 'Tenant ID', options: { bold: true, color: WHITE, fill: { color: G_NAVY }, fontSize: 8.5, align: 'center' } },
+    { text: 'Account Owner', options: { bold: true, color: WHITE, fill: { color: G_NAVY }, fontSize: 8.5, align: 'left' } },
+    { text: 'Ledger Balance', options: { bold: true, color: WHITE, fill: { color: G_NAVY }, fontSize: 8.5, align: 'right' } },
+    { text: 'RLS Evaluation Rule', options: { bold: true, color: WHITE, fill: { color: G_NAVY }, fontSize: 8.5, align: 'left' } },
+    { text: 'FinVault Visibility', options: { bold: true, color: WHITE, fill: { color: G_NAVY }, fontSize: 8.5, align: 'center' } },
+    { text: 'RetailStream Visibility', options: { bold: true, color: WHITE, fill: { color: G_NAVY }, fontSize: 8.5, align: 'center' } }
+  ];
 
-  // Native Table for Before
-  const beforeTableData = [
+  const tableRows = [
     [
-      { text: 'ENTITY ID', options: { bold: true, fill: { color: 'FEE2E2' }, color: G_RED, fontSize: 8 } },
-      { text: 'TENANT ID', options: { bold: true, fill: { color: 'FEE2E2' }, color: G_RED, fontSize: 8 } },
-      { text: 'PORTFOLIO', options: { bold: true, fill: { color: 'FEE2E2' }, color: G_RED, fontSize: 8 } },
-      { text: 'SETTLEMENT', options: { bold: true, fill: { color: 'FEE2E2' }, color: G_RED, fontSize: 8 } },
-      { text: 'STATUS', options: { bold: true, fill: { color: 'FEE2E2' }, color: G_RED, fontSize: 8 } },
+      { text: '101', options: { fontSize: 8, align: 'center', fill: { color: WHITE } } },
+      { text: 'finvault', options: { bold: true, color: G_BLUE_DARK, fontSize: 8, align: 'center', fill: { color: WHITE } } },
+      { text: 'FinVault Treasury Ops', options: { fontSize: 8, fill: { color: WHITE } } },
+      { text: '$14,250,000', options: { fontSize: 8, align: 'right', fill: { color: WHITE } } },
+      { text: 'current_setting(\'app.current_tenant_id\') = \'finvault\'', options: { fontSize: 7.5, fontFace: 'Courier New', fill: { color: WHITE } } },
+      { text: '✔ VISIBLE (PERMITTED)', options: { bold: true, color: G_GREEN_DEEP, fontSize: 7.5, align: 'center', fill: { color: G_GREEN_LIGHT } } },
+      { text: '✖ HIDDEN (RLS FILTERED)', options: { bold: true, color: G_RED_DEEP, fontSize: 7.5, align: 'center', fill: { color: G_RED_LIGHT } } }
     ],
     [
-      { text: 'FV-TX-901', options: { fontSize: 8, fill: { color: WHITE } } },
-      { text: 'finvault', options: { fontSize: 8, fill: { color: WHITE } } },
-      { text: 'Institutional Wire', options: { fontSize: 8, fill: { color: WHITE } } },
-      { text: '$312,500,000', options: { fontSize: 8, fill: { color: WHITE } } },
-      { text: 'UNFILTERED', options: { fontSize: 8, color: TEXT_MUTED, fill: { color: WHITE } } },
+      { text: '102', options: { fontSize: 8, align: 'center', fill: { color: G_GREY_BG } } },
+      { text: 'finvault', options: { bold: true, color: G_BLUE_DARK, fontSize: 8, align: 'center', fill: { color: G_GREY_BG } } },
+      { text: 'FinVault Wire Clearing', options: { fontSize: 8, fill: { color: G_GREY_BG } } },
+      { text: '$312,500,000', options: { fontSize: 8, align: 'right', fill: { color: G_GREY_BG } } },
+      { text: 'current_setting(\'app.current_tenant_id\') = \'finvault\'', options: { fontSize: 7.5, fontFace: 'Courier New', fill: { color: G_GREY_BG } } },
+      { text: '✔ VISIBLE (PERMITTED)', options: { bold: true, color: G_GREEN_DEEP, fontSize: 7.5, align: 'center', fill: { color: G_GREEN_LIGHT } } },
+      { text: '✖ HIDDEN (RLS FILTERED)', options: { bold: true, color: G_RED_DEEP, fontSize: 7.5, align: 'center', fill: { color: G_RED_LIGHT } } }
     ],
     [
-      { text: 'FV-TX-902', options: { fontSize: 8, fill: { color: WHITE } } },
-      { text: 'finvault', options: { fontSize: 8, fill: { color: WHITE } } },
-      { text: 'Global FX Liquidity', options: { fontSize: 8, fill: { color: WHITE } } },
-      { text: '$214,500,000', options: { fontSize: 8, fill: { color: WHITE } } },
-      { text: 'UNFILTERED', options: { fontSize: 8, color: TEXT_MUTED, fill: { color: WHITE } } },
+      { text: '103', options: { fontSize: 8, align: 'center', fill: { color: WHITE } } },
+      { text: 'retailstream', options: { bold: true, color: 'B45309', fontSize: 8, align: 'center', fill: { color: WHITE } } },
+      { text: 'RetailStream Merchant Ops', options: { fontSize: 8, fill: { color: WHITE } } },
+      { text: '$1,850,200', options: { fontSize: 8, align: 'right', fill: { color: WHITE } } },
+      { text: 'current_setting(\'app.current_tenant_id\') = \'retailstream\'', options: { fontSize: 7.5, fontFace: 'Courier New', fill: { color: WHITE } } },
+      { text: '✖ HIDDEN (RLS FILTERED)', options: { bold: true, color: G_RED_DEEP, fontSize: 7.5, align: 'center', fill: { color: G_RED_LIGHT } } },
+      { text: '✔ VISIBLE (PERMITTED)', options: { bold: true, color: G_GREEN_DEEP, fontSize: 7.5, align: 'center', fill: { color: G_GREEN_LIGHT } } }
     ],
     [
-      { text: 'RS-ORD-401', options: { fontSize: 8, bold: true, color: G_RED, fill: { color: 'FECACA' } } },
-      { text: 'retailstream', options: { fontSize: 8, bold: true, color: G_RED, fill: { color: 'FECACA' } } },
-      { text: 'Retail Checkout', options: { fontSize: 8, bold: true, color: G_RED, fill: { color: 'FECACA' } } },
-      { text: '$48,900,000', options: { fontSize: 8, bold: true, color: G_RED, fill: { color: 'FECACA' } } },
-      { text: 'DATA LEAK ⚠', options: { fontSize: 8, bold: true, color: G_RED, fill: { color: 'FECACA' } } },
+      { text: '104', options: { fontSize: 8, align: 'center', fill: { color: G_GREY_BG } } },
+      { text: 'retailstream', options: { bold: true, color: 'B45309', fontSize: 8, align: 'center', fill: { color: G_GREY_BG } } },
+      { text: 'RetailStream Escrow', options: { fontSize: 8, fill: { color: G_GREY_BG } } },
+      { text: '$4,320,000', options: { fontSize: 8, align: 'right', fill: { color: G_GREY_BG } } },
+      { text: 'current_setting(\'app.current_tenant_id\') = \'retailstream\'', options: { fontSize: 7.5, fontFace: 'Courier New', fill: { color: G_GREY_BG } } },
+      { text: '✖ HIDDEN (RLS FILTERED)', options: { bold: true, color: G_RED_DEEP, fontSize: 7.5, align: 'center', fill: { color: G_RED_LIGHT } } },
+      { text: '✔ VISIBLE (PERMITTED)', options: { bold: true, color: G_GREEN_DEEP, fontSize: 7.5, align: 'center', fill: { color: G_GREEN_LIGHT } } }
     ]
   ];
-  slide.addTable(beforeTableData, {
-    x: 0.8, y: 2.15, w: 5.4, h: 2.2,
-    border: { pt: 0.5, color: G_RED },
-    align: 'center', valign: 'middle'
+
+  slide.addTable([headers, ...tableRows], {
+    x: 0.6, y: 1.35, w: 12.133, h: 2.2,
+    colW: [0.8, 1.2, 2.2, 1.5, 3.433, 1.5, 1.5],
+    border: { pt: 0.5, color: G_GREY_BORDER }
   });
 
-  slide.addText('CRITICAL AUDIT VULNERABILITY: Competitor retailstream rows visible to caller.', {
-    x: 0.8, y: 4.65, w: 5.4, h: 0.35, fontSize: 8.5, bold: true, color: G_RED, fontFace: FONT_TITLE, align: 'center'
-  });
-
-  // RIGHT CARD: AFTER (STRICT RLS ISOLATION)
+  // Technical Callout Card at Bottom
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 6.9, y: 1.35, w: 5.8, h: 3.75, rectRadius: 0.08,
-    fill: { color: G_GREEN_LIGHT }, line: { color: G_GREEN, width: 1.5 }
+    x: 0.6, y: 3.85, w: 12.133, h: 2.95, rectRadius: 0.08,
+    fill: { color: G_GREY_BG }, line: { color: G_BLUE, width: 1.5 }
   });
-  slide.addText('✔ AFTER: 5-HOP ALLOYDB RLS ENFORCEMENT (ISOLATED)', {
-    x: 7.1, y: 1.5, w: 5.4, h: 0.3, fontSize: 10.5, bold: true, color: G_GREEN, fontFace: FONT_TITLE
-  });
-  slide.addText("Enforced: SET app.current_tenant = 'finvault'; SELECT ... FROM global_tx;", {
-    x: 7.1, y: 1.82, w: 5.4, h: 0.25, fontSize: 8.0, color: TEXT_MUTED, fontFace: 'Courier New'
+  slide.addText('HOW ALLOYDB POSTGRESQL ROW-LEVEL SECURITY ENFORCES ZERO-TRUST PRIVACY', {
+    x: 0.9, y: 4.05, w: 11.5, h: 0.35, fontSize: 11, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE
   });
 
-  // Native Table for After
-  const afterTableData = [
-    [
-      { text: 'ENTITY ID', options: { bold: true, fill: { color: 'DCFCE7' }, color: G_GREEN, fontSize: 8 } },
-      { text: 'TENANT ID', options: { bold: true, fill: { color: 'DCFCE7' }, color: G_GREEN, fontSize: 8 } },
-      { text: 'PORTFOLIO', options: { bold: true, fill: { color: 'DCFCE7' }, color: G_GREEN, fontSize: 8 } },
-      { text: 'SETTLEMENT', options: { bold: true, fill: { color: 'DCFCE7' }, color: G_GREEN, fontSize: 8 } },
-      { text: 'RLS VERDICT', options: { bold: true, fill: { color: 'DCFCE7' }, color: G_GREEN, fontSize: 8 } },
-    ],
-    [
-      { text: 'FV-TX-901', options: { fontSize: 8, fill: { color: WHITE } } },
-      { text: 'finvault', options: { fontSize: 8, fill: { color: WHITE } } },
-      { text: 'Institutional Wire', options: { fontSize: 8, fill: { color: WHITE } } },
-      { text: '$312,500,000', options: { fontSize: 8, fill: { color: WHITE } } },
-      { text: 'ALLOW (RLS)', options: { fontSize: 8, bold: true, color: G_GREEN, fill: { color: WHITE } } },
-    ],
-    [
-      { text: 'FV-TX-902', options: { fontSize: 8, fill: { color: WHITE } } },
-      { text: 'finvault', options: { fontSize: 8, fill: { color: WHITE } } },
-      { text: 'Global FX Liquidity', options: { fontSize: 8, fill: { color: WHITE } } },
-      { text: '$214,500,000', options: { fontSize: 8, fill: { color: WHITE } } },
-      { text: 'ALLOW (RLS)', options: { fontSize: 8, bold: true, color: G_GREEN, fill: { color: WHITE } } },
-    ],
-    [
-      { text: '[FILTERED]', options: { fontSize: 8, italic: true, color: TEXT_MUTED, fill: { color: G_GREY_BG } } },
-      { text: 'retailstream', options: { fontSize: 8, italic: true, color: TEXT_MUTED, fill: { color: G_GREY_BG } } },
-      { text: '[0 ROWS RETURNED]', options: { fontSize: 8, italic: true, color: TEXT_MUTED, fill: { color: G_GREY_BG } } },
-      { text: '$0.00', options: { fontSize: 8, italic: true, color: TEXT_MUTED, fill: { color: G_GREY_BG } } },
-      { text: 'BLOCKED (RLS)', options: { fontSize: 8, bold: true, color: G_GREEN, fill: { color: G_GREY_BG } } },
-    ]
+  const rlsSteps = [
+    { step: 'STEP 1: CONNECTION CHECKOUT', desc: 'When the agent checks out a connection from the pool, the session state is pristine. No tenant context exists.' },
+    { step: 'STEP 2: SET LOCAL APP.CURRENT_TENANT_ID', desc: 'The middleware extracts the validated tenant_id from the signed JWT and issues SET LOCAL app.current_tenant_id = \'finvault\'.' },
+    { step: 'STEP 3: AUTOMATIC PREDICATE ENFORCEMENT', desc: 'AlloyDB rewrites all queries internally: SELECT * FROM ledger WHERE tenant_id = current_setting(\'app.current_tenant_id\').' },
+    { step: 'STEP 4: SUB-15MS ENGINE FILTERING', desc: 'Competitor records are filtered by the PostgreSQL engine before disk pages enter memory. 0 leaked rows guaranteed.' }
   ];
-  slide.addTable(afterTableData, {
-    x: 7.1, y: 2.15, w: 5.4, h: 2.2,
-    border: { pt: 0.5, color: G_GREEN },
-    align: 'center', valign: 'middle'
-  });
 
-  slide.addText('VERIFIED RLS SECURITY: 0 cross-tenant rows returned across 10,000 queries.', {
-    x: 7.1, y: 4.65, w: 5.4, h: 0.35, fontSize: 8.5, bold: true, color: G_GREEN, fontFace: FONT_TITLE, align: 'center'
-  });
-
-  // Bottom Takeaway Banner
-  slide.addShape(pptx.ShapeType.roundRect, {
-    x: 0.6, y: 5.25, w: 12.133, h: 1.65, rectRadius: 0.08,
-    fill: { color: G_BLUE_LIGHT }, line: { color: G_BLUE, width: 1.5 }
-  });
-  slide.addText('VERIFIED AUDIT RESULT: ZERO CROSS-TENANT DATA CONTAMINATION', {
-    x: 0.9, y: 5.4, w: 11.5, h: 0.32, fontSize: 11, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE
-  });
-  slide.addText('Under automated red-team penetration testing across 10,000 synthetic reasoning turns, AlloyDB PostgreSQL Row-Level Security (RLS) coupled with Cloud KMS signed TenantContext session variable binding mathematically guaranteed that cross-tenant queries returned zero records with sub-millisecond execution latency.', {
-    x: 0.9, y: 5.75, w: 11.5, h: 0.95, fontSize: 9.5, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.25
+  rlsSteps.forEach((s, k) => {
+    const sx = 0.9 + k * 2.88;
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: sx, y: 4.45, w: 2.65, h: 2.1, rectRadius: 0.05,
+      fill: { color: WHITE }, line: { color: G_GREY_BORDER, width: 0.5 }
+    });
+    slide.addText(s.step, {
+      x: sx + 0.1, y: 4.6, w: 2.45, h: 0.45, fontSize: 8.5, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE
+    });
+    slide.addText(s.desc, {
+      x: sx + 0.1, y: 5.15, w: 2.45, h: 1.25, fontSize: 8.0, color: TEXT_MUTED, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
+    });
   });
 }
 
 // ============================================================================
-// SLIDE 10: Executive Decision Flowchart
+// SLIDE 16: FinOps & Valkey Prefix Caching
 // ============================================================================
-function buildSlide13_FinOpsValkey() {
+function buildSlide16_FinOpsValkey() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • DECISION GUIDE', 'Executive Decision Tree: Selecting the Optimal Multi-Tenant Topology', 10);
+  addHeader(slide, 'ACT III • GOVERNANCE & FINOPS', 'Hop 3 Sandbox & Valkey Rate Limiter: FinOps Bulkhead & Prefix Caching', 16);
 
-  slide.addText('Follow this deterministic two-question decision tree to select the right pattern for each enterprise workload.', {
+  slide.addText('How shared memory bulkheads and prefix prompt caching deliver 84.7% net token cost reduction across 950 tenants.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
-  slide.addShape(pptx.ShapeType.diamond, {
-    x: 1.0, y: 2.2, w: 3.2, h: 2.2, fill: { color: G_BLUE_LIGHT }, line: { color: G_BLUE, width: 2 }
-  });
-  slide.addText('Q1: Dedicated CMEK\nor Regulatory Silo\nRequired?', {
-    x: 1.2, y: 2.7, w: 2.8, h: 1.2, fontSize: 10.5, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE, align: 'center'
-  });
-
-  slide.addShape(pptx.ShapeType.rightArrow, {
-    x: 4.4, y: 3.15, w: 1.2, h: 0.3, fill: { color: G_RED }
-  });
-  slide.addText('YES', {
-    x: 4.4, y: 2.8, w: 1.2, h: 0.3, fontSize: 10, bold: true, color: G_RED, fontFace: FONT_TITLE, align: 'center'
-  });
-
+  // Left Card: Token Bulkhead
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 5.8, y: 2.2, w: 6.9, h: 2.2, rectRadius: 0.08,
-    fill: { color: G_RED_LIGHT }, line: { color: G_RED, width: 1.5 }
+    x: 0.6, y: 1.35, w: 5.8, h: 5.5, rectRadius: 0.08,
+    fill: { color: WHITE }, line: { color: G_BLUE, width: 1.5 }
   });
-  slide.addText('RECOMMENDED: PATTERN B (SOVEREIGN SILOS)', {
-    x: 6.0, y: 2.4, w: 6.5, h: 0.35, fontSize: 12, bold: true, color: G_RED, fontFace: FONT_TITLE
+  slide.addText('VALKEY LEAKY-BUCKET TOKEN BULKHEAD', {
+    x: 0.9, y: 1.55, w: 5.2, h: 0.35, fontSize: 12, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE
   });
-  slide.addText('Deploy dedicated Google Cloud projects inside customer-managed VPC-SC perimeters with Cloud KMS CMEK key rings and sub-60s instant revocation kill-switches. Best for FinTech, Healthcare, and Defense.', {
-    x: 6.0, y: 2.8, w: 6.5, h: 1.3, fontSize: 9.5, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.25
-  });
-
-  slide.addShape(pptx.ShapeType.downArrow, {
-    x: 2.45, y: 4.6, w: 0.3, h: 0.8, fill: { color: G_BLUE }
-  });
-  slide.addText('NO', {
-    x: 2.9, y: 4.85, w: 0.8, h: 0.3, fontSize: 10, bold: true, color: G_BLUE, fontFace: FONT_TITLE
+  slide.addText('Guaranteed Per-Tenant RPM & TPM Capacity Allocation', {
+    x: 0.9, y: 1.95, w: 5.2, h: 0.3, fontSize: 9.5, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
+  const bulkheadStats = [
+    { title: 'Standard Commercial Tier', limit: '120 RPM  •  40,000 TPM', desc: 'Enforces hard limits via Redis atomic scripts to prevent noisy-neighbor quota exhaustion.' },
+    { title: 'Enterprise Sovereign Tier', limit: '600 RPM  •  200,000 TPM', desc: 'Dedicated token bucket allocation with priority queueing and automatic burst capacity.' },
+    { title: 'Deterministic Rejection', limit: 'HTTP 429 Retry-After', desc: 'Clients receive standardized HTTP 429 headers with exponential backoff hints.' }
+  ];
+  bulkheadStats.forEach((s, i) => {
+    const sy = 2.4 + i * 1.35;
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: 0.9, y: sy, w: 5.2, h: 1.15, rectRadius: 0.05, fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
+    });
+    slide.addText(s.title, {
+      x: 1.1, y: sy + 0.1, w: 3.0, h: 0.3, fontSize: 10, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE
+    });
+    slide.addText(s.limit, {
+      x: 3.5, y: sy + 0.1, w: 2.4, h: 0.3, fontSize: 9, bold: true, color: G_BLUE, fontFace: FONT_TITLE, align: 'right'
+    });
+    slide.addText(s.desc, {
+      x: 1.1, y: sy + 0.45, w: 4.8, h: 0.6, fontSize: 8.5, color: TEXT_MUTED, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
+    });
+  });
+
+  // Right Card: Prefix Caching
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 0.6, y: 5.6, w: 5.8, h: 1.35, rectRadius: 0.08,
-    fill: { color: G_BLUE_LIGHT }, line: { color: G_BLUE, width: 1.5 }
+    x: 6.9, y: 1.35, w: 5.8, h: 5.5, rectRadius: 0.08,
+    fill: { color: WHITE }, line: { color: G_GREEN, width: 1.5 }
   });
-  slide.addText('STANDARD: PATTERN A (HIGH-DENSITY POOLED)', {
-    x: 0.8, y: 5.75, w: 5.4, h: 0.3, fontSize: 11, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE
+  slide.addText('VERTEX AI PREFIX PROMPT CACHING', {
+    x: 7.2, y: 1.55, w: 5.2, h: 0.35, fontSize: 12, bold: true, color: G_GREEN_DEEP, fontFace: FONT_TITLE
   });
-  slide.addText('Default for commercial B2B SaaS tenants. Shared Cloud Run + AlloyDB RLS with 84.7% prompt cache savings and $12/tenant/mo unit economics.', {
-    x: 0.8, y: 6.1, w: 5.4, h: 0.75, fontSize: 8.5, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
+  slide.addText('84.7% Net Token Cost Reduction Across 950 Tenants', {
+    x: 7.2, y: 1.95, w: 5.2, h: 0.3, fontSize: 9.5, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
-  slide.addShape(pptx.ShapeType.roundRect, {
-    x: 6.9, y: 5.6, w: 5.8, h: 1.35, rectRadius: 0.08,
-    fill: { color: G_GREEN_LIGHT }, line: { color: G_GREEN, width: 1.5 }
-  });
-  slide.addText('UPGRADE: PATTERN C (DYNAMIC HYBRID)', {
-    x: 7.1, y: 5.75, w: 5.4, h: 0.3, fontSize: 11, bold: true, color: G_GREEN, fontFace: FONT_TITLE
-  });
-  slide.addText('When high-volume tenants require private VPC endpoints or heavy dedicated data lakes. Live 0ms cutover pointer migration with zero dropped turns.', {
-    x: 7.1, y: 6.1, w: 5.4, h: 0.75, fontSize: 8.5, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
+  const cacheStats = [
+    { title: 'Deterministic System Prefix', metric: '32,000 Shared Tokens', desc: 'Core agent system instructions, tool definitions, and schema definitions cached globally.' },
+    { title: 'Per-Tenant Dynamic Suffix', metric: '4,000 Unique Tokens', desc: 'Tenant-specific memories and user context appended to cached prefix at inference time.' },
+    { title: 'Cached Token Pricing', metric: '0.1x Base Rate ($0.03/M)', desc: 'Dramatic inference cost reduction enables profitable $12/tenant/mo SaaS pricing.' }
+  ];
+  cacheStats.forEach((s, i) => {
+    const sy = 2.4 + i * 1.35;
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: 7.2, y: sy, w: 5.2, h: 1.15, rectRadius: 0.05, fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
+    });
+    slide.addText(s.title, {
+      x: 7.4, y: sy + 0.1, w: 3.0, h: 0.3, fontSize: 10, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE
+    });
+    slide.addText(s.metric, {
+      x: 9.8, y: sy + 0.1, w: 2.4, h: 0.3, fontSize: 9, bold: true, color: G_GREEN_DEEP, fontFace: FONT_TITLE, align: 'right'
+    });
+    slide.addText(s.desc, {
+      x: 7.4, y: sy + 0.45, w: 4.8, h: 0.6, fontSize: 8.5, color: TEXT_MUTED, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
+    });
   });
 }
 
 // ============================================================================
-// SLIDE 11: Value Realization: The 4-Pillar Quantitative ROI Scorecard
+// SLIDE 17: Production Simulation Benchmarks + Transition Bridge
 // ============================================================================
-function buildSlide14_Simulation() {
+function buildSlide17_Simulation() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • VALUE REALIZATION', 'Value Realization: The 4-Pillar Quantitative ROI Scorecard', 11);
+  addHeader(slide, 'ACT III • BENCHMARKS', 'Production Simulation: 10/10 Zero-Breach Multi-Tenant Architecture Verification', 17);
 
-  slide.addText('Audited financial and security impact metrics across 1,000 production B2B SaaS tenants.', {
+  slide.addText('Empirical results from our 1,000-tenant automated simulation test harness (scripts/run_deep_forensic_audit.py).', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
   const kpis = [
-    { num: '84.7%', title: 'PROMPT CACHE SAVINGS', desc: 'Prefix context reuse across pooled agent reasoning turns in Pattern A', color: G_BLUE, bg: G_BLUE_LIGHT },
-    { num: '$15.8M', title: 'ANNUAL INFRA AVOIDED', desc: 'Eliminated idle compute, memory, and database waste per 500 tenants', color: G_GREEN, bg: G_GREEN_LIGHT },
-    { num: '0', title: 'RED-TEAM BREACHES', desc: 'Zero cross-tenant data leaks across 10,000 automated penetration tests', color: G_YELLOW, bg: G_YELLOW_LIGHT },
-    { num: '< 200ms', title: 'TOKEN OVERHEAD', desc: 'Total end-to-end cryptographic token exchange latency across all 5 hops', color: G_RED, bg: G_RED_LIGHT }
+    { num: '1,000', label: 'Simulated Tenants', desc: '950 Pattern A pooled + 50 Pattern B/C sovereign silos executing concurrently.', color: G_BLUE },
+    { num: '0', label: 'Cross-Tenant Leaks', desc: '10/10 red-team breach attempts blocked across header, schema, memory, and database layers.', color: G_GREEN_DEEP },
+    { num: '< 42 ms', label: 'p95 Latency Overhead', desc: 'Total end-to-end 5-Hop control plane overhead for token minting, validation, and session injection.', color: G_AMBER_DEEP },
+    { num: '< 60 s', label: 'CMEK Kill-Switch', desc: 'Instant regulatory revocation: Cloud KMS key disable instantly blocks database access.', color: G_RED_DEEP }
   ];
 
   kpis.forEach((k, i) => {
-    const kx = 0.6 + i * 3.11;
+    const kx = 0.6 + i * 3.09;
     slide.addShape(pptx.ShapeType.roundRect, {
-      x: kx, y: 1.5, w: 2.8, h: 5.2, rectRadius: 0.08,
-      fill: { color: k.bg }, line: { color: k.color, width: 1.5 }
+      x: kx, y: 1.35, w: 2.87, h: 4.75, rectRadius: 0.08,
+      fill: { color: WHITE }, line: { color: k.color, width: 1.5 }
     });
 
+    slide.addShape(pptx.ShapeType.ellipse, {
+      x: kx + 0.835, y: 1.6, w: 1.2, h: 1.2, fill: { color: G_GREY_BG }, line: { color: k.color, width: 2 }
+    });
     slide.addText(k.num, {
-      x: kx + 0.1, y: 2.0, w: 2.6, h: 1.2,
-      fontSize: 38, bold: true, color: k.color, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
+      x: kx + 0.3, y: 1.95, w: 2.27, h: 0.5,
+      fontSize: 16, bold: true, color: k.color, fontFace: FONT_TITLE, align: 'center'
     });
 
-    slide.addText(k.title, {
-      x: kx + 0.1, y: 3.4, w: 2.6, h: 0.4,
+    slide.addText(k.label, {
+      x: kx + 0.1, y: 3.1, w: 2.67, h: 0.4,
       fontSize: 11, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, align: 'center'
     });
 
     slide.addShape(pptx.ShapeType.rect, {
-      x: kx + 0.55, y: 3.9, w: 1.7, h: 0.03, fill: { color: k.color }
+      x: kx + 0.585, y: 3.65, w: 1.7, h: 0.03, fill: { color: k.color }
     });
 
     slide.addText(k.desc, {
-      x: kx + 0.15, y: 4.1, w: 2.5, h: 2.0,
-      fontSize: 10, color: TEXT_MUTED, fontFace: FONT_BODY, align: 'center', lineSpacingMultiple: 1.3
-    });
-  });
-}
-
-// ============================================================================
-// SLIDE 12: 10-Week Implementation Roadmap & Executive CTA
-// ============================================================================
-function buildSlide15_Roadmap() {
-  const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • ACTION PLAN', '10-Week Enterprise Implementation Roadmap & Companion Resources', 15);
-
-  slide.addText('Structured enterprise rollout plan to take multi-tenant agentic AI from architecture to production GA.', {
-    x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
-  });
-
-  const phases = [
-    { phase: 'PHASE 1', weeks: 'Weeks 1–2', title: 'Architecture & Threat Modeling', deliverables: 'Security boundary sign-off, ADR creation, DPoP key architecture' },
-    { phase: 'PHASE 2', weeks: 'Weeks 3–4', title: '5-Hop Cryptographic Baseline', deliverables: 'Hop 1 PEP Cloud Armor ingress, STS KMS token minting, ARD catalog' },
-    { phase: 'PHASE 3', weeks: 'Weeks 5–6', title: 'Pattern A High-Density Pooled', deliverables: 'Cloud Run deployment, AlloyDB RLS policies, Valkey bulkheads' },
-    { phase: 'PHASE 4', weeks: 'Weeks 7–8', title: 'Pattern B & C Sovereign Spokes', deliverables: 'VPC-SC perimeter automation, CMEK kill-switches, PSC transit hub' },
-    { phase: 'PHASE 5', weeks: 'Weeks 9–10', title: 'Penetration Testing & GA Launch', deliverables: '10/10 Red-team breach fuzzing, FinOps telemetry, production cutover' }
-  ];
-
-  phases.forEach((p, i) => {
-    const px = 0.6 + i * 2.47;
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: px, y: 1.35, w: 2.25, h: 4.0, rectRadius: 0.08,
-      fill: { color: WHITE }, line: { color: G_BLUE, width: 1.2 }
-    });
-
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: px + 0.175, y: 1.55, w: 1.9, h: 0.35, rectRadius: 0.05,
-      fill: { color: G_BLUE_LIGHT }, line: { color: G_BLUE, width: 0.5 }
-    });
-    slide.addText(`${p.phase} • ${p.weeks}`, {
-      x: px + 0.175, y: 1.55, w: 1.9, h: 0.35,
-      fontSize: 8, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
-    });
-
-    slide.addText(p.title, {
-      x: px + 0.125, y: 2.05, w: 2.0, h: 0.6,
-      fontSize: 10.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, align: 'center'
-    });
-
-    slide.addShape(pptx.ShapeType.rect, {
-      x: px + 0.275, y: 2.75, w: 1.7, h: 0.02, fill: { color: G_GREY_BORDER }
-    });
-
-    slide.addText(p.deliverables, {
-      x: px + 0.125, y: 2.9, w: 2.0, h: 2.2,
-      fontSize: 8.5, color: TEXT_MUTED, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
+      x: kx + 0.15, y: 3.85, w: 2.57, h: 1.9,
+      fontSize: 9.5, color: TEXT_MUTED, fontFace: FONT_BODY, align: 'center', lineSpacingMultiple: 1.3
     });
   });
 
-  // Bottom Executive Call to Action Strip
+  // Bottom Transition Bridge to Act IV
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 0.6, y: 5.55, w: 12.133, h: 1.35, rectRadius: 0.08,
-    fill: { color: G_NAVY }
+    x: 0.6, y: 6.3, w: 12.133, h: 0.6, rectRadius: 0.06,
+    fill: { color: G_YELLOW_LIGHT }, line: { color: G_AMBER_DEEP, width: 1 }
   });
-  slide.addText('EXECUTIVE CALL TO ACTION: ACCESS PRODUCTION RESOURCES', {
-    x: 0.9, y: 5.7, w: 11.5, h: 0.3, fontSize: 11, bold: true, color: G_YELLOW, fontFace: FONT_TITLE
-  });
-  slide.addText('Explore live BeyondCorp prototypes, download production Terraform blueprints, or engage Google Cloud FDE for an enterprise architecture workshop.', {
-    x: 0.9, y: 6.0, w: 11.5, h: 0.3, fontSize: 9.5, color: 'CBD5E1', fontFace: FONT_BODY
-  });
-
-  const links = [
-    'Live Portal: https://ge-blogs-248990048888.cr.gclb.goog',
-    'GitHub Source: https://github.com/cloud-ai-fde/ge-blogs',
-    'Google Cloud Architecture Center Advisory: cfe-support@google.com'
-  ];
-  slide.addText(links.join('   •   '), {
-    x: 0.9, y: 6.4, w: 11.5, h: 0.35, fontSize: 8.5, bold: true, color: '38BDF8', fontFace: FONT_BODY
+  slide.addText('TRANSITION TO ACT IV ➔ Moving from architectural theory to 10 live empirical SaaS Before -> After proof captures', {
+    x: 0.8, y: 6.3, w: 11.7, h: 0.6, fontSize: 9.5, bold: true, color: G_AMBER_DEEP, fontFace: FONT_TITLE, valign: 'middle'
   });
 }
 
-
 // ============================================================================
-// ACT IV • EMPIRICAL PROOFS: 10 GENUINE THIRD-PARTY SAAS BEFORE -> AFTER PAIRS
+// SLIDE 18: ACT IV TRANSITION BREAKER (EMPIRICAL SAAS EVIDENCE)
 // ============================================================================
+function buildSlide18_Act4Breaker() {
+  buildActBreakerSlide({
+    slideNum: 18,
+    actTag: 'ACT IV TRANSITION',
+    actNumber: 'ACT IV',
+    actTitle: 'Empirical Evidence: 10 Genuine SaaS Proofs',
+    actSubtitle: 'Authentic 2880×1800 Retina UI Captures Verifying Zero Cross-Tenant Leakage Across Live Commercial Software.',
+    actColor: G_AMBER_DEEP,
+    actTint: G_YELLOW_LIGHT,
+    coreQuestion: 'Does the 5-Hop Cryptographic Architecture genuinely eliminate cross-tenant data exposure when evaluated against real-world, commercial third-party SaaS stacks on Google Cloud Run Gen2 and AWS EC2?',
+    thesis: 'Evaluating 10 real enterprise SaaS targets before and after 5-hop enforcement proves that engine-level RLS, ARD scoping, and CMEK namespaces prevent 100% of data leaks across BI, SQL, telemetry, logs, and Git.',
+    milestones: [
+      { num: '01', title: 'Enterprise BI & Distributed SQL (Proofs 1–2)', desc: 'Metabase BI v0.50 (AlloyDB RLS isolates FinVault balances) & Trino SQL v440 (ARD blocks catalog reflection).', deliverable: 'BI & SQL' },
+      { num: '02', title: 'Observability & Structured Logs (Proofs 3–4)', desc: 'Grafana Enterprise v11 (OTel namespace span injection) & Datalust Seq v2024 (Token-filtered audit signals).', deliverable: 'Telemetry' },
+      { num: '03', title: 'CMEK Secrets & Columnar Analytics (Proofs 5–6)', desc: 'HashiCorp Vault v1.13 (<60s emergency transit key revocation) & ClickHouse v24.8 (SIMD block vector pruning).', deliverable: 'CMEK & SIMD' },
+      { num: '04', title: 'ITSM, GxP Grids, Git SRE & HCM (Proofs 7–10)', desc: 'Redmine v5.1, NocoDB v0.255 (21 CFR Part 11 audit trails), Gitea v1.22 Git repos, and Directus v11.1 HR CRAC.', deliverable: 'Core SaaS' }
+    ]
+  });
+}
 
+// Reusable Helper for Before/After SaaS Proof Slides
 interface SaasProofConfig {
   slideNum: number;
   proofNum: number;
@@ -1047,10 +1252,10 @@ function buildBeforeAfterSaasSlide(cfg: SaasProofConfig) {
   });
 }
 
-// SLIDE 13: Proof 1 — Metabase Enterprise BI v0.50.26
-function buildSlide25() {
+// SLIDE 19: Proof 1 — Metabase Enterprise BI
+function buildSlide19_Metabase() {
   buildBeforeAfterSaasSlide({
-    slideNum: 25,
+    slideNum: 19,
     proofNum: 1,
     saasName: 'Metabase Enterprise BI',
     title: 'Proof 1: Metabase Enterprise BI v0.50.26 — Tenant Analytics & Dashboard Isolation',
@@ -1066,10 +1271,10 @@ function buildSlide25() {
   });
 }
 
-// SLIDE 14: Proof 2 — Trino Distributed SQL v440
-function buildSlide26() {
+// SLIDE 20: Proof 2 — Trino Distributed SQL
+function buildSlide20_Trino() {
   buildBeforeAfterSaasSlide({
-    slideNum: 23,
+    slideNum: 20,
     proofNum: 2,
     saasName: 'Trino Distributed SQL',
     title: 'Proof 2: Trino Distributed SQL v440 — Federated Catalog & Query Scoping',
@@ -1085,13 +1290,13 @@ function buildSlide26() {
   });
 }
 
-// SLIDE 15: Proof 3 — Grafana Enterprise v11
-function buildSlide24() {
+// SLIDE 21: Proof 3 — Grafana Enterprise
+function buildSlide21_Grafana() {
   buildBeforeAfterSaasSlide({
-    slideNum: 24,
+    slideNum: 21,
     proofNum: 3,
     saasName: 'Grafana Enterprise',
-    title: 'Proof 3: Grafana Enterprise v11 — Multi-Tenant Telemetry & Metrics Isolation',
+    title: 'Proof 3: Grafana Enterprise v11.1 — Multi-Tenant Telemetry & Metrics Isolation',
     subtitle: 'Authentic 2880x1800 Retina UI captures proving that OpenTelemetry collector namespace injection eliminates noisy-neighbor metric pollution in enterprise dashboards.',
     beforeImg: 'before_02_grafana_enterprise.png',
     afterImg: 'after_02_grafana_enterprise.png',
@@ -1104,10 +1309,10 @@ function buildSlide24() {
   });
 }
 
-// SLIDE 16: Proof 4 — Datalust Seq OTel v2024
-function buildSlide16() {
+// SLIDE 22: Proof 4 — Datalust Seq OTel
+function buildSlide22_DatalustSeq() {
   buildBeforeAfterSaasSlide({
-    slideNum: 16,
+    slideNum: 22,
     proofNum: 4,
     saasName: 'Datalust Seq OTel',
     title: 'Proof 4: Datalust Seq OTel v2024 — Structured Log Streams & Distributed Trace Isolation',
@@ -1123,10 +1328,10 @@ function buildSlide16() {
   });
 }
 
-// SLIDE 17: Proof 5 — HashiCorp Vault CMEK v1.13
-function buildSlide17() {
+// SLIDE 23: Proof 5 — HashiCorp Vault CMEK
+function buildSlide23_HashiCorpVault() {
   buildBeforeAfterSaasSlide({
-    slideNum: 17,
+    slideNum: 23,
     proofNum: 5,
     saasName: 'HashiCorp Vault CMEK',
     title: 'Proof 5: HashiCorp Vault CMEK v1.13 — Tenant Key Namespace & Emergency Revocation',
@@ -1142,10 +1347,10 @@ function buildSlide17() {
   });
 }
 
-// SLIDE 18: Proof 6 — ClickHouse Analytics v24.8
-function buildSlide18() {
+// SLIDE 24: Proof 6 — ClickHouse Analytics
+function buildSlide24_ClickHouse() {
   buildBeforeAfterSaasSlide({
-    slideNum: 18,
+    slideNum: 24,
     proofNum: 6,
     saasName: 'ClickHouse Analytics',
     title: 'Proof 6: ClickHouse Analytics v24.8 — Real-Time Columnar Engine Row-Level Security',
@@ -1161,10 +1366,10 @@ function buildSlide18() {
   });
 }
 
-// SLIDE 19: Proof 7 — Redmine ITSM v5.1
-function buildSlide19() {
+// SLIDE 25: Proof 7 — Redmine ITSM
+function buildSlide25_Redmine() {
   buildBeforeAfterSaasSlide({
-    slideNum: 19,
+    slideNum: 25,
     proofNum: 7,
     saasName: 'Redmine ITSM',
     title: 'Proof 7: Redmine ITSM v5.1 — Multi-Tenant Support Case & Ticket Partitioning',
@@ -1180,10 +1385,10 @@ function buildSlide19() {
   });
 }
 
-// SLIDE 20: Proof 8 — NocoDB GxP v0.255
-function buildSlide20() {
+// SLIDE 26: Proof 8 — NocoDB GxP Grid
+function buildSlide26_NocoDB() {
   buildBeforeAfterSaasSlide({
-    slideNum: 20,
+    slideNum: 26,
     proofNum: 8,
     saasName: 'NocoDB GxP Grid',
     title: 'Proof 8: NocoDB GxP v0.255 — Regulated Database Grid & Field-Level Access Scoping',
@@ -1199,10 +1404,10 @@ function buildSlide20() {
   });
 }
 
-// SLIDE 21: Proof 9 — Gitea SRE v1.22
-function buildSlide21() {
+// SLIDE 27: Proof 9 — Gitea SRE
+function buildSlide27_Gitea() {
   buildBeforeAfterSaasSlide({
-    slideNum: 21,
+    slideNum: 27,
     proofNum: 9,
     saasName: 'Gitea SRE',
     title: 'Proof 9: Gitea SRE v1.22 — Tenant Repository & Enterprise CI/CD Pipeline Isolation',
@@ -1218,10 +1423,10 @@ function buildSlide21() {
   });
 }
 
-// SLIDE 22: Proof 10 — Directus HCM v11.1
-function buildSlide22() {
+// SLIDE 28: Proof 10 — Directus HCM
+function buildSlide28_Directus() {
   buildBeforeAfterSaasSlide({
-    slideNum: 22,
+    slideNum: 28,
     proofNum: 10,
     saasName: 'Directus HCM',
     title: 'Proof 10: Directus HCM v11.1 — Human Capital Data & Tenant Role Scoping',
@@ -1237,10 +1442,107 @@ function buildSlide22() {
   });
 }
 
-// SLIDE 23: Complete 10-SaaS Multi-Cloud Verification Matrix & Benchmark Summary
-function buildSlide23() {
+// ============================================================================
+// SLIDE 29: ACT V TRANSITION BREAKER (PRODUCTION ROADMAP & SYNTHESIS)
+// ============================================================================
+function buildSlide29_Act5Breaker() {
+  buildActBreakerSlide({
+    slideNum: 29,
+    actTag: 'ACT V TRANSITION',
+    actNumber: 'ACT V',
+    actTitle: 'Production Rollout Roadmap & Multi-Cloud Synthesis',
+    actSubtitle: 'Actionable 10-Week Engineering Implementation Plan & Multi-Cloud SLA Scorecard.',
+    actColor: G_NAVY,
+    actTint: 'E2E8F0',
+    coreQuestion: 'How does an enterprise engineering organization operationalize this architecture over a 10-week implementation lifecycle with verified infrastructure SLAs and automated testing?',
+    thesis: 'Combining phased engineering rollout gates with automated multi-cloud verification ensures seamless production cutovers with zero regressions, sub-42ms latency, and 84.7% cache cost savings.',
+    milestones: [
+      { num: '01', title: 'Phase 1–2: Ingress & Identity Foundation', desc: 'Deploying Cloud Armor L7 WAF rules, IAM STS minting, RFC 9449 DPoP, and Discovery Engine ARD tool catalogs.', deliverable: 'Weeks 1–4' },
+      { num: '02', title: 'Phase 3–4: Bulkheads, Caching & Engine RLS', desc: 'Memorystore Valkey token bulkheads, prefix prompt caching, Model Armor, and AlloyDB PostgreSQL RLS.', deliverable: 'Weeks 5–8' },
+      { num: '03', title: 'Phase 5: Terraform Factory & Penetration Testing', desc: '1-Click Terraform Blueprints, Pattern C PSC tier promotion, and automated red-team breach fuzzing.', deliverable: 'Weeks 9–10' },
+      { num: '04', title: 'Quantified 10-SaaS Multi-Cloud Scorecard', desc: 'Verifying 30/30 test assertions across Google Cloud Run Gen2 and AWS EC2 with zero cross-tenant leakage.', deliverable: 'SLA Scorecard' }
+    ]
+  });
+}
+
+// ============================================================================
+// SLIDE 30: 10-Week Implementation Roadmap & Executive CTA
+// ============================================================================
+function buildSlide30_Roadmap() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT V • VERIFICATION MATRIX', 'Quantified Multi-Cloud SaaS Isolation Scorecard & 10/10 Verification Matrix', 26);
+  addHeader(slide, 'ACT V • IMPLEMENTATION ROADMAP', '10-Week Enterprise Implementation Roadmap & Companion Resources', 30);
+
+  slide.addText('Structured enterprise rollout plan to take multi-tenant agentic AI from architecture to production GA.', {
+    x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
+  });
+
+  const phases = [
+    { phase: 'PHASE 1', weeks: 'Weeks 1–2', title: 'Architecture & Threat Modeling', deliverables: 'Security boundary sign-off, ADR creation, DPoP key architecture' },
+    { phase: 'PHASE 2', weeks: 'Weeks 3–4', title: '5-Hop Cryptographic Baseline', deliverables: 'Hop 1 PEP Cloud Armor ingress, STS KMS token minting, ARD catalog' },
+    { phase: 'PHASE 3', weeks: 'Weeks 5–6', title: 'Pattern A High-Density Pooled', deliverables: 'Cloud Run deployment, AlloyDB RLS policies, Valkey bulkheads' },
+    { phase: 'PHASE 4', weeks: 'Weeks 7–8', title: 'Pattern B & C Sovereign Spokes', deliverables: 'VPC-SC perimeter automation, CMEK kill-switches, PSC transit hub' },
+    { phase: 'PHASE 5', weeks: 'Weeks 9–10', title: 'Penetration Testing & GA Launch', deliverables: '10/10 Red-team breach fuzzing, FinOps telemetry, production cutover' }
+  ];
+
+  phases.forEach((p, i) => {
+    const px = 0.6 + i * 2.47;
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: px, y: 1.35, w: 2.25, h: 4.0, rectRadius: 0.08,
+      fill: { color: WHITE }, line: { color: G_BLUE, width: 1.2 }
+    });
+
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: px + 0.175, y: 1.55, w: 1.9, h: 0.35, rectRadius: 0.05,
+      fill: { color: G_BLUE_LIGHT }, line: { color: G_BLUE, width: 0.5 }
+    });
+    slide.addText(`${p.phase} • ${p.weeks}`, {
+      x: px + 0.175, y: 1.55, w: 1.9, h: 0.35,
+      fontSize: 8, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
+    });
+
+    slide.addText(p.title, {
+      x: px + 0.125, y: 2.05, w: 2.0, h: 0.6,
+      fontSize: 10.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, align: 'center'
+    });
+
+    slide.addShape(pptx.ShapeType.rect, {
+      x: px + 0.275, y: 2.75, w: 1.7, h: 0.02, fill: { color: G_GREY_BORDER }
+    });
+
+    slide.addText(p.deliverables, {
+      x: px + 0.125, y: 2.9, w: 2.0, h: 2.2,
+      fontSize: 8.5, color: TEXT_MUTED, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
+    });
+  });
+
+  // Bottom Executive Call to Action Strip
+  slide.addShape(pptx.ShapeType.roundRect, {
+    x: 0.6, y: 5.55, w: 12.133, h: 1.35, rectRadius: 0.08,
+    fill: { color: G_NAVY }
+  });
+  slide.addText('EXECUTIVE CALL TO ACTION: ACCESS PRODUCTION RESOURCES', {
+    x: 0.9, y: 5.7, w: 11.5, h: 0.3, fontSize: 11, bold: true, color: G_YELLOW, fontFace: FONT_TITLE
+  });
+  slide.addText('Explore live BeyondCorp prototypes, download production Terraform blueprints, or engage Google Cloud FDE for an enterprise architecture workshop.', {
+    x: 0.9, y: 6.0, w: 11.5, h: 0.3, fontSize: 9.5, color: 'CBD5E1', fontFace: FONT_BODY
+  });
+
+  const links = [
+    'Live Portal: https://ge-blogs-248990048888.cr.gclb.goog',
+    'GitHub Source: https://github.com/cloud-ai-fde/ge-blogs',
+    'Google Cloud Architecture Center Advisory: cfe-support@google.com'
+  ];
+  slide.addText(links.join('   •   '), {
+    x: 0.9, y: 6.4, w: 11.5, h: 0.35, fontSize: 8.5, bold: true, color: '38BDF8', fontFace: FONT_BODY
+  });
+}
+
+// ============================================================================
+// SLIDE 31: Quantified Multi-Cloud SaaS Isolation Scorecard & 10/10 Verification Matrix
+// ============================================================================
+function buildSlide31_Scorecard() {
+  const slide = pptx.addSlide();
+  addHeader(slide, 'ACT V • VERIFICATION MATRIX', 'Quantified Multi-Cloud SaaS Isolation Scorecard & 10/10 Verification Matrix', 31);
 
   slide.addText('Empirical production benchmarks verified across 10 third-party SaaS stacks on Google Cloud Run Gen2 and AWS EC2 (30/30 Test Assertions Passed).', {
     x: 0.6, y: 0.82, w: 12.133, h: 0.36, fontSize: 10.2, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -1314,40 +1616,59 @@ function buildSlide23() {
   });
 }
 
-// Build all 26 slides
-console.log('Compiling 100% native DrawingML editable 26-slide executive presentation with L1 Logical, L2 Network, L3 Process, L4 Wire, and 10 SaaS Proofs...');
+// Build all 31 slides
+console.log('Compiling 100% native DrawingML editable 31-slide executive presentation with clear Act 1 -> Act 2 -> Act 3 -> Act 4 -> Act 5 transitions...');
 
 async function main() {
-  console.log('🎞️  Building WS1 26-Slide Visual Deck with 100% Native Decompiled DrawingML Diagrams (L1, L2, L3, L4) & 10 Genuine SaaS Proofs...');
+  console.log('🎞️  Building WS1 31-Slide Visual Deck with Agenda, Act Breakers (Acts I-V), L1-L4 DrawingML Diagrams & 10 Genuine SaaS Proofs...');
+  
+  // Slide 01: Title
   buildSlide01();
-  buildSlide02();
-  buildSlide03();
-  buildSlide04();
-  buildSlide05();
-  buildSlide06_L1Logical();
-  await buildSlide07_Figure1();
-  await buildSlide08_Figure2();
-  buildSlide09_L3Process();
-  buildSlide10_L4Wire();
-  buildSlide11_CircuitBreakers();
-  buildSlide12_AlloyDbRls();
-  buildSlide13_FinOpsValkey();
-  buildSlide14_Simulation();
-  buildSlide15_Roadmap();
-  buildSlide16();
-  buildSlide17();
-  buildSlide18();
-  buildSlide19();
-  buildSlide20();
-  buildSlide21();
-  buildSlide22();
-  buildSlide23();
-  buildSlide24();
-  buildSlide25();
-  buildSlide26();
+  
+  // Slide 02: Executive Storyline & 4-Act Agenda
+  buildSlide02_Agenda();
+  
+  // ACT I: THE PROBLEM & ATTACK SURFACE (Slides 03-04)
+  buildSlide03_Dilemma();
+  buildSlide04_ThreatVectors();
+  
+  // ACT II: REFERENCE ARCHITECTURE & TOPOLOGIES (Slides 05-10)
+  buildSlide05_Act2Breaker();
+  buildSlide06_PatternA();
+  buildSlide07_PatternBC();
+  buildSlide08_L1Logical();
+  await buildSlide09_Figure1();
+  await buildSlide10_Figure2();
+  
+  // ACT III: 5-HOP CRYPTOGRAPHIC PIPELINE & DEEP EXECUTION (Slides 11-17)
+  buildSlide11_Act3Breaker();
+  buildSlide12_L3Process();
+  buildSlide13_L4Wire();
+  buildSlide14_CircuitBreakers();
+  buildSlide15_AlloyDbRls();
+  buildSlide16_FinOpsValkey();
+  buildSlide17_Simulation();
+  
+  // ACT IV: EMPIRICAL EVIDENCE & 10 GENUINE SAAS PROOFS (Slides 18-28)
+  buildSlide18_Act4Breaker();
+  buildSlide19_Metabase();
+  buildSlide20_Trino();
+  buildSlide21_Grafana();
+  buildSlide22_DatalustSeq();
+  buildSlide23_HashiCorpVault();
+  buildSlide24_ClickHouse();
+  buildSlide25_Redmine();
+  buildSlide26_NocoDB();
+  buildSlide27_Gitea();
+  buildSlide28_Directus();
+  
+  // ACT V: PRODUCTION SYNTHESIS & 10-WEEK ROADMAP (Slides 29-31)
+  buildSlide29_Act5Breaker();
+  buildSlide30_Roadmap();
+  buildSlide31_Scorecard();
 
   await pptx.writeFile({ fileName: OUTPUT_PPTX });
-  console.log(`✅ Successfully compiled ${OUTPUT_PPTX} (26 slides [100% Real DrawingML Diagrams (L1, L2x2, L3, L4) + 10 Genuine SaaS Proofs + Scorecard])`);
+  console.log(`✅ Successfully compiled ${OUTPUT_PPTX} (31 slides [Full 5-Act Narrative with Storyline, Act Breakers, L1-L4 DrawingML, 10 SaaS Proofs & Scorecard])`);
 
   postProcessPptxArrowheadsForGoogleSlides();
   console.log('✅ Post-processed arrowheads and connectors for Google Slides compatibility');
