@@ -266,7 +266,7 @@ def main() -> None:
         print("==> [0/4] Running 13/13 Forensic Audit & 10/10 Unit Tests...")
         subprocess.run(["python3", "-B", "scripts/run_deep_forensic_audit.py"], cwd=BLOGS_ROOT, check=True)
         subprocess.run(
-            ["python3", "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"],
+            ["python3", "-B", "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"],
             cwd=BLOGS_ROOT,
             check=True,
         )
