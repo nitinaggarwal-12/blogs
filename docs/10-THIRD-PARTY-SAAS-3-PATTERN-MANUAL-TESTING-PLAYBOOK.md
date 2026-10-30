@@ -88,12 +88,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 
 
 
+
 ---
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
-## 2B. Genuine Live Before-vs-After Third-Party SaaS Execution UI Captures (`10/10` Upstream Stacks • `20` Retina PNGs)
+## 2B. Live 3rd-Party SaaS Before-vs-After UI Proof (`10/10` Upstream Stacks • `20` Retina PNGs)
 
-> **Zero Synthetic Mockups (`Rule 57` & `Rule 60A–60C`):** Every `BEFORE` and `AFTER` screenshot below was captured via real HTTP/HTTPS browser navigation against the live upstream 3rd-party Docker containers (`2880×1800` Retina, distinct SHA-256 verified in [`docs/genuine_3p_before_after_provenance_receipt.json`](../docs/genuine_3p_before_after_provenance_receipt.json)). Inspect all 10 live Before/After pairs in the [10-SaaS Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md) or interactively in Portal Tab 3.
+> **Zero Synthetic Mockups (`Rule 57` & `Rule 60A–60C`):** Every `BEFORE` and `AFTER` screenshot below was captured via real HTTP/HTTPS browser navigation against the live upstream 3rd-party Docker containers (`2880×1800` Retina, distinct SHA-256 verified in [`docs/genuine_3p_before_after_provenance_receipt.json`](../docs/genuine_3p_before_after_provenance_receipt.json)). Use the **Interactive Split Slider** or **Show All 10 SaaS Stacks Inline** buttons directly below, inspect the [10-SaaS Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md), or open Portal Tab 3.
 
 - **`SAAS-01` — ThoughtSpot Cloud (Spotter Agentic BI v2.0) (`Metabase BI v0.50.26` • Target `HXGGFMZBKE` • `query_thoughtspot_liveboard_rls`):** GEAP MCP tool query_thoughtspot_liveboard_rls (Target HXGGFMZBKE) enforces session predicate WHERE tenant_id = 'finvault' and executes Saved Liveboard Question #27.
 

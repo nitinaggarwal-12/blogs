@@ -284,9 +284,9 @@ Where:
 
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
-### Genuine Live Before-vs-After Third-Party SaaS Execution UI Captures (2880×1800 Retina)
+## Live 3rd-Party SaaS Before-vs-After UI Proof (2880×1800 Retina)
 
-> **Zero Synthetic Mockups (`Rule 57` & `Rule 60A–60C`):** Every `BEFORE` and `AFTER` screenshot below was captured via real HTTP/HTTPS browser navigation against the live upstream 3rd-party Docker containers (`2880×1800` Retina, distinct SHA-256 verified in [`docs/genuine_3p_before_after_provenance_receipt.json`](../docs/genuine_3p_before_after_provenance_receipt.json)). Inspect all 10 live Before/After pairs in the [10-SaaS Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md) or interactively in Portal Tab 3.
+> **Zero Synthetic Mockups (`Rule 57` & `Rule 60A–60C`):** Every `BEFORE` and `AFTER` screenshot below was captured via real HTTP/HTTPS browser navigation against the live upstream 3rd-party Docker containers (`2880×1800` Retina, distinct SHA-256 verified in [`docs/genuine_3p_before_after_provenance_receipt.json`](../docs/genuine_3p_before_after_provenance_receipt.json)). Use the **Interactive Split Slider** or **Show All 10 SaaS Stacks Inline** buttons directly below, inspect the [10-SaaS Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md), or open Portal Tab 3.
 
 - **`SAAS-03` — ServiceNow ITSM & ITOM Change Control (`Redmine ITSM v5.1` • Target `ZS9VGYHBQL` • `query_servicenow_change_records`):** GEAP MCP tool query_servicenow_change_records (Target ZS9VGYHBQL) validates CMEK & Valkey single-flight readiness and creates P1 Change Ticket CHG0049299 via POST /issues.json.
 

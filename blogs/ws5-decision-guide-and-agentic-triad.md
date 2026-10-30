@@ -229,9 +229,9 @@ Where:
 
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
-### Genuine Live Before-vs-After Third-Party SaaS Execution UI Captures (2880×1800 Retina)
+## Live 3rd-Party SaaS Before-vs-After UI Proof (2880×1800 Retina)
 
-> **Zero Synthetic Mockups (`Rule 57` & `Rule 60A–60C`):** Every `BEFORE` and `AFTER` screenshot below was captured via real HTTP/HTTPS browser navigation against the live upstream 3rd-party Docker containers (`2880×1800` Retina, distinct SHA-256 verified in [`docs/genuine_3p_before_after_provenance_receipt.json`](../docs/genuine_3p_before_after_provenance_receipt.json)). Inspect all 10 live Before/After pairs in the [10-SaaS Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md) or interactively in Portal Tab 3.
+> **Zero Synthetic Mockups (`Rule 57` & `Rule 60A–60C`):** Every `BEFORE` and `AFTER` screenshot below was captured via real HTTP/HTTPS browser navigation against the live upstream 3rd-party Docker containers (`2880×1800` Retina, distinct SHA-256 verified in [`docs/genuine_3p_before_after_provenance_receipt.json`](../docs/genuine_3p_before_after_provenance_receipt.json)). Use the **Interactive Split Slider** or **Show All 10 SaaS Stacks Inline** buttons directly below, inspect the [10-SaaS Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md), or open Portal Tab 3.
 
 - **`SAAS-08` — Workday Enterprise HCM & Financial Management RaaS (`Directus Data Studio v11.1.0` • Target `RAOTMUMJTZ` • `fetch_compensation_raas_report`):** GEAP MCP tool fetch_compensation_raas_report (Target RAOTMUMJTZ) masks SSN/IBAN fields via Hop 4 Cloud SDP and inserts audited FinVault executive record via POST /items/hcm_compensation.
 

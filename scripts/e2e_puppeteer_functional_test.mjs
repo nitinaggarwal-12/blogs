@@ -160,6 +160,8 @@ async function run() {
         sideBCount: sideBImgs.length,
         overflowingTables,
         hasBrLeak: nonPreText.includes("<br/>") || nonPreText.includes("<br>") || nonPreText.includes("![BEFORE") || nonPreText.includes("![AFTER"),
+        hasTocBaLink: (document.getElementById("hub-blog-toc")?.innerText || "").includes("Before-vs-After"),
+        hasInlineBaToolbar: Boolean(document.getElementById("blog-inline-ba-toolbar")),
         hasLegacyPrincipal: html.includes("?principal="),
         hasEc2Leak: html.includes("13.220.94.209") || html.includes("screenshots/cloud-console"),
         hasDomainLeak:
@@ -176,7 +178,7 @@ async function run() {
       };
     });
 
-    const maxAllowedHeight = (item.doc.includes("END-TO-END-WORKSTREAM") || item.doc.includes("MANUAL-TESTING-PLAYBOOK")) ? 160000 : 24500;
+    const maxAllowedHeight = (item.doc.includes("END-TO-END-WORKSTREAM") || item.doc.includes("MANUAL-TESTING-PLAYBOOK")) ? 185000 : 25500;
 
     const minDiagrams = (item.doc.includes("/3.2-") || item.doc.includes("/4.2-")) ? 0 : 1;
 
@@ -198,7 +200,8 @@ async function run() {
         !audit.hasLegacyPrincipal &&
         !audit.hasDomainLeak &&
         audit.hasFormatJson &&
-        audit.readerHeightPx < maxAllowedHeight,
+        audit.readerHeightPx < maxAllowedHeight &&
+        (!(item.doc.startsWith("blogs/") || item.doc.startsWith("docs/")) || (audit.hasTocBaLink && audit.hasInlineBaToolbar)),
       `${item.ws} (${item.doc}) Table Containment, Zero Leaks & S3 Receipt Links`,
       `overflowTables=${audit.overflowingTables.length}, brLeak=${audit.hasBrLeak}, domainLeak=${audit.hasDomainLeak}, height=${audit.readerHeightPx}px`
     );
@@ -271,6 +274,21 @@ async function run() {
     const awsConsoleFiltered = clickFilter("aws-console");
     const allFiltered = clickFilter("all");
 
+    // Verify Tab 1 Per-Blog Quick-Jump & In-Blog Split Slider
+    const tab1 = document.getElementById("tab-btn-patterns");
+    if (tab1) tab1.click();
+    await new Promise((r) => setTimeout(r, 250));
+    const quickBaBtn = document.getElementById("hub-quick-ba-uis-btn");
+    if (quickBaBtn) quickBaBtn.click();
+    await new Promise((r) => setTimeout(r, 200));
+    const inlineBaToolbar = document.getElementById("blog-inline-ba-toolbar");
+    if (typeof window.setInlineBlogBaMode === "function") {
+      window.setInlineBlogBaMode("slider");
+      window.setInlineBlogBaMode("side-by-side");
+    }
+    if (tab3) tab3.click();
+    await new Promise((r) => setTimeout(r, 200));
+
     // Verify 10-App (20 Retina PNG) Before-vs-After Comparison Hub & interactive modes
     const baHub = document.getElementById("genuine-3p-before-after-hub");
     const baHubHtml = baHub ? baHub.innerHTML : "";
@@ -326,6 +344,8 @@ async function run() {
       filterCounts: { allFiltered, gcpFiltered, awsEc2Filtered, awsConsoleFiltered },
       forensicRows,
       hasEc2InHub,
+      hasQuickBaBtn: Boolean(quickBaBtn),
+      hasInlineBaToolbar: Boolean(inlineBaToolbar),
       baHubCards,
       baPairImgsCount: baPairImgs.length,
       brokenBaImgs,
@@ -354,12 +374,14 @@ async function run() {
   );
 
   assert(
-    tabsResult.baHubCards === 10 &&
+    tabsResult.hasQuickBaBtn &&
+      tabsResult.hasInlineBaToolbar &&
+      tabsResult.baHubCards === 10 &&
       tabsResult.baPairImgsCount === 20 &&
       tabsResult.brokenBaImgs.length === 0 &&
       !tabsResult.hasBaEc2Leak,
-    "Tab 3 Genuine 10-App Before-vs-After Retina UI Hub (20/20 2880x1800 PNGs & Interactive Modes)",
-    `cards=${tabsResult.baHubCards}, imgs=${tabsResult.baPairImgsCount}, broken=${tabsResult.brokenBaImgs.length}, ec2Leak=${tabsResult.hasBaEc2Leak}`
+    "Per-Blog Tab 1 Before/After Quick-Jump, TOC & Inline Toolbar + Tab 3 Genuine 10-App Hub (20/20 2880x1800 PNGs)",
+    `quickBtn=${tabsResult.hasQuickBaBtn}, inlineToolbar=${tabsResult.hasInlineBaToolbar}, cards=${tabsResult.baHubCards}, imgs=${tabsResult.baPairImgsCount}, broken=${tabsResult.brokenBaImgs.length}, ec2Leak=${tabsResult.hasBaEc2Leak}`
   );
   assert(pageErrors.length === 0, "Zero Uncaught Page Errors", `errors=${pageErrors.length}`);
 
