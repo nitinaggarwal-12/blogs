@@ -1038,6 +1038,280 @@
     }
 
 
+
+
+    /* ---------- Rule 54 & Rule 50A Executive Landing Page (#tab-overview) ---------- */
+    .ov-hero-card {
+      background: linear-gradient(180deg, #eff6ff 0%, #ffffff 42%);
+      border: 1.5px solid #93c5fd;
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+    }
+    .ov-kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #dbeafe;
+    }
+    .ov-kpi-pill {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      padding: 8px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .ov-kpi-val {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.25;
+      font-variant-numeric: tabular-nums;
+    }
+    .ov-kpi-lbl {
+      font-size: 11px;
+      color: #475569;
+      line-height: 1.3;
+    }
+    .ov-flow-strip {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .ov-flow-step {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-top: 3px solid #1a73e8;
+      border-radius: 9px;
+      padding: 8px 10px;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
+      min-width: 0;
+    }
+    .ov-flow-step:hover {
+      border-color: #1a73e8;
+      box-shadow: 0 3px 8px rgba(26, 115, 232, 0.12);
+      transform: translateY(-1px);
+    }
+    .ov-matrix-wrap {
+      width: 100%;
+      overflow-x: auto;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+    table.ov-master-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 12px;
+    }
+    table.ov-master-table th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+      text-align: left;
+      padding: 9px 11px;
+      border-bottom: 1px solid #cbd5e1;
+      font-size: 11.5px;
+    }
+    table.ov-master-table td {
+      padding: 9px 11px;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: middle;
+      overflow: hidden;
+      max-width: 0;
+      word-break: break-word;
+      color: #1e293b;
+      font-variant-numeric: tabular-nums;
+    }
+    table.ov-master-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    table.ov-master-table tbody tr:hover {
+      background: #f8fafc;
+    }
+    .ov-filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 9px 14px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      position: sticky;
+      top: 48px;
+      z-index: 25;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+    }
+    .ov-onepager-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-top: 4px solid #1a73e8;
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+      scroll-margin-top: 108px;
+    }
+    .ov-onepager-hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
+      margin-bottom: 14px;
+    }
+    .ov-two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .ov-subbox {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .ov-subbox h4 {
+      margin: 0 0 7px 0;
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .ov-subbox p, .ov-subbox li {
+      font-size: 12.2px;
+      line-height: 1.5;
+      color: #334155;
+    }
+    .ov-subbox ul {
+      margin: 6px 0 0 0;
+      padding-left: 18px;
+    }
+    .ov-subbox li {
+      margin-bottom: 5px;
+    }
+    .ov-ba-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .ov-ba-mini-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .ov-ba-mini-thumbs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      background: #cbd5e1;
+    }
+    .ov-ba-mini-thumbs img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+      cursor: zoom-in;
+      background: #ffffff;
+    }
+    .ov-asset-directory {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 11px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .ov-asset-row {
+      display: grid;
+      grid-template-columns: 185px minmax(0, 1fr);
+      align-items: start;
+      gap: 6px 10px;
+      font-size: 11.8px;
+      line-height: 1.45;
+    }
+    .ov-asset-lbl {
+      font-weight: 800;
+      color: #0f172a;
+      padding-top: 2px;
+    }
+    .ov-asset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      min-width: 0;
+    }
+    .ov-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #1a73e8;
+      font-size: 11.3px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      line-height: 1.35;
+    }
+    .ov-chip:hover {
+      background: #eff6ff;
+      border-color: #1a73e8;
+    }
+    .ov-chip.primary {
+      background: #1a73e8;
+      border-color: #1a73e8;
+      color: #ffffff;
+    }
+    .ov-chip.primary:hover {
+      background: #1557b0;
+    }
+    .ov-chip:focus-visible,
+    .ov-flow-step:focus-visible,
+    .ov-page-filter-btn:focus-visible {
+      outline: 2px solid #1a73e8;
+      outline-offset: 2px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ov-flow-step {
+        transition: none !important;
+        transform: none !important;
+      }
+    }
+    @media (max-width: 1100px) {
+      .ov-kpi-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .ov-flow-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .ov-two-col { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 720px) {
+      .ov-kpi-strip, .ov-flow-strip, .ov-ba-mini-grid, .ov-asset-row { grid-template-columns: 1fr; }
+    }
+
     /* ---------- Rule 54 Executive Light Theme: 10-App (20-PNG) Before vs. After 3P SaaS Execution Hub ---------- */
     .ba-3p-hub-grid {
       display: flex;
@@ -1776,7 +2050,7 @@
     })();
   </script>
   <header class="portal-top-header">
-    <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
+    <div style="display:flex; align-items:center; gap:6px; flex-shrink:0; cursor:pointer;" onclick="switchTab('overview', document.getElementById('tab-btn-overview'))" title="Return to Executive Landing Page &amp; Content Directory">
       <span class="badge badge-blue" style="white-space:nowrap; padding:2px 7px; font-size:11px;">GCP #78</span>
       <h1 style="margin:0; font-size:13.5px; font-weight:800; white-space:nowrap;">Multi-Tenancy &amp; 5-Hop Portal</h1>
       <span class="sr-only">Multi-Tenancy Architecture, 5-Part Blog Series &amp; Live 5-Hop Execution Portal • Anchor Scenario: Cymbal B2B SaaS Platform (FinVault Bank vs. RetailStream Corp) • Shared Multi-Tenant Pool (Pattern A) • Dedicated Customer Vault (Pattern B) • Smart Hybrid Router &amp; Live Upgrade (Pattern C)</span>
@@ -1784,7 +2058,8 @@
       <span id="gcp-cloud-badge" class="sr-only">☁️ 14/14 Blueprints • Forensic Audit: 13/13 PASS</span>
     </div>
     <nav class="tabs portal-primary-tabs" aria-label="Primary Workspace Navigation">
-      <button class="tab-btn active" id="tab-btn-patterns" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('patterns', this)">1. &#129517; Architecture &amp; Blog Series</button>
+      <button class="tab-btn active" id="tab-btn-overview" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('overview', this)">&#127968; Overview &amp; Links</button>
+      <button class="tab-btn" id="tab-btn-patterns" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('patterns', this)">1. &#129517; Architecture &amp; Blog Series</button>
       <button class="tab-btn" id="tab-btn-simulator" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('simulator', this)">2. &#9889; Live 5-Hop Simulator</button>
       <button class="tab-btn" id="tab-btn-screenshots" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('screenshots', this)">3. &#9729;&#65039; GCP Console &amp; Codebase</button>
       <select id="header-governance-select" aria-label="Governance, Forensic Audit &amp; Change Log" style="width:auto; max-width:158px; padding:4px 20px 4px 7px; font-size:11.5px; font-weight:600; border-radius:7px; cursor:pointer;" onchange="if(this.value==='standalone_changelog'){window.open('/changelog','_blank');this.value='';}else if(this.value){switchTab(this.value);}">
@@ -1814,8 +2089,966 @@
 
   <div class="container">
 
+    <!-- LANDING PAGE (TAB 0): EXECUTIVE 1-PAGE SUMMARIES & COMPLETE CONTENT DIRECTORY -->
+    <section id="tab-overview" class="tab-pane active" data-testid="portal-executive-landing-page">
+      <div class="ov-hero-card" data-no-hover-toolbar="true">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px;">
+          <div style="flex:1 1 620px; min-width:0;">
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px;">
+              <span class="badge badge-blue">EXECUTIVE LANDING PAGE &bull; 1-PAGE SUMMARY PER BLOG &bull; COMPLETE CONTENT DIRECTORY</span>
+              <a href="https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system" target="_blank" rel="noopener noreferrer" style="font-size:11.5px; font-weight:700; color:#1a73e8; text-decoration:none;">Cloud Architecture Center Reference &nearr;</a>
+              <a href="https://github.com/nitinaggarwal-12/blogs" target="_blank" rel="noopener noreferrer" style="font-size:11.5px; font-weight:700; color:#1a73e8; text-decoration:none;">GitHub Repository &nearr;</a>
+            </div>
+            <h2 style="margin:0 0 5px 0; font-size:21px; font-weight:800; color:#0f172a; line-height:1.25;">Gemini Enterprise Agent Platform (GEAP): Multi-Tenancy 5-Part Blog Series &amp; Content Hub</h2>
+            <p style="margin:0; font-size:12.8px; color:#334155; line-height:1.48;">Executive 1-page summaries and complete clickable asset directory across <strong>Workstreams 1–5</strong>—decoupling an <strong>80% reusable 5-Hop Cryptographic Context Chain</strong> (<code>core-cymbal-agent/</code>) from the <strong>20% perimeter delta</strong> across <strong>Pattern A (Pooled)</strong>, <strong>Pattern B (Sovereign Silos)</strong>, and <strong>Pattern C (Dynamic Hybrid)</strong>.</p>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+            <button type="button" class="sim-btn primary" style="padding:6px 12px; font-size:12px; font-weight:700;" onclick="switchTab('patterns')">&#129517; Open Blog Series Reader (WS1–WS5) &rarr;</button>
+            <button type="button" class="sim-btn" style="padding:6px 11px; font-size:12px; font-weight:700;" onclick="jumpToTab3BeforeAfterHub()">&#128260; 20-PNG Before/After Hub</button>
+            <button type="button" class="sim-btn" style="padding:6px 11px; font-size:12px; font-weight:700;" onclick="openCloudViewerModal('ALL', 1, 'slides')">&#127916; 25-Slide Master Deck</button>
+            <button type="button" class="sim-btn" id="ov-copy-md-btn" style="padding:6px 10px; font-size:12px;" onclick="copyOverviewSummaryMarkdown(this)">&#128203; Copy All Summaries MD</button>
+            <button type="button" class="sim-btn" style="padding:6px 10px; font-size:12px;" onclick="window.print()">&#128424;&#65039; Print / PDF</button>
+          </div>
+        </div>
+
+        <div class="ov-kpi-strip">
+          <div class="ov-kpi-pill">
+            <span class="ov-kpi-val">5 Blogs + Master Guide</span>
+            <span class="ov-kpi-lbl">100% PUBLISH_READY • Google Docs Synced</span>
+          </div>
+          <div class="ov-kpi-pill">
+            <span class="ov-kpi-val">15 Editable Slide Decks</span>
+            <span class="ov-kpi-lbl">138 Slides • 3-Act Story Arc • 0 Pricing</span>
+          </div>
+          <div class="ov-kpi-pill">
+            <span class="ov-kpi-val">14 Official #78 Blueprints</span>
+            <span class="ov-kpi-lbl">.drawio • 2x PNG • SVG • Vision AST (0 Collisions)</span>
+          </div>
+          <div class="ov-kpi-pill">
+            <span class="ov-kpi-val">43 Retina 3P SaaS UIs</span>
+            <span class="ov-kpi-lbl">20 Before/After + 23 Multi-Cloud (0 Synthetic)</span>
+          </div>
+          <div class="ov-kpi-pill">
+            <span class="ov-kpi-val">13/13 Forensic • 30/30 MCP</span>
+            <span class="ov-kpi-lbl">107/107 Sim Assertions • 27-File Engine</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6-Stage Interactive Series Progression Strip -->
+      <div class="ov-flow-strip" data-no-hover-toolbar="true" aria-label="Series Progression Flow">
+          <button type="button" class="ov-flow-step" style="border-top-color:#1a73e8;" onclick="scrollToOverviewOnePager('WS1')">
+            <div style="font-size:10px; font-weight:800; color:#475569; text-transform:uppercase;">Part 1 • WS1 Foundation</div>
+            <div style="font-size:12.5px; font-weight:800; color:#0f172a; margin:2px 0;">1. Taxonomy & 5-Hop &rarr;</div>
+            <div style="font-size:10.5px; color:#475569;">1-Page Summary &amp; Links</div>
+          </button>
+          <button type="button" class="ov-flow-step" style="border-top-color:#059669;" onclick="scrollToOverviewOnePager('WS2')">
+            <div style="font-size:10px; font-weight:800; color:#475569; text-transform:uppercase;">Part 2 • WS2 Pattern A</div>
+            <div style="font-size:12.5px; font-weight:800; color:#0f172a; margin:2px 0;">2. Shared Pool (90% Cache) &rarr;</div>
+            <div style="font-size:10.5px; color:#475569;">1-Page Summary &amp; Links</div>
+          </button>
+          <button type="button" class="ov-flow-step" style="border-top-color:#7c3aed;" onclick="scrollToOverviewOnePager('WS3')">
+            <div style="font-size:10px; font-weight:800; color:#475569; text-transform:uppercase;">Part 3 • WS3 Pattern B</div>
+            <div style="font-size:12.5px; font-weight:800; color:#0f172a; margin:2px 0;">3. Sovereign Silos (CMEK) &rarr;</div>
+            <div style="font-size:10.5px; color:#475569;">1-Page Summary &amp; Links</div>
+          </button>
+          <button type="button" class="ov-flow-step" style="border-top-color:#d97706;" onclick="scrollToOverviewOnePager('WS4')">
+            <div style="font-size:10px; font-weight:800; color:#475569; text-transform:uppercase;">Part 4 • WS4 Pattern C</div>
+            <div style="font-size:12.5px; font-weight:800; color:#0f172a; margin:2px 0;">4. Hybrid PSC & Upgrade &rarr;</div>
+            <div style="font-size:10.5px; color:#475569;">1-Page Summary &amp; Links</div>
+          </button>
+          <button type="button" class="ov-flow-step" style="border-top-color:#0284c7;" onclick="scrollToOverviewOnePager('WS5')">
+            <div style="font-size:10px; font-weight:800; color:#475569; text-transform:uppercase;">Part 5 • WS5 Capstone</div>
+            <div style="font-size:12.5px; font-weight:800; color:#0f172a; margin:2px 0;">5. Decision Tree & Triad &rarr;</div>
+            <div style="font-size:10.5px; color:#475569;">1-Page Summary &amp; Links</div>
+          </button>
+          <button type="button" class="ov-flow-step" style="border-top-color:#0f172a;" onclick="scrollToOverviewOnePager('ALL')">
+            <div style="font-size:10px; font-weight:800; color:#475569; text-transform:uppercase;">All-in-One • Master</div>
+            <div style="font-size:12.5px; font-weight:800; color:#0f172a; margin:2px 0;">6. Master Guide &amp; All Assets</div>
+            <div style="font-size:10.5px; color:#475569;">25 Slides • Core Engine • 10-SaaS</div>
+          </button>
+      </div>
+
+      <!-- Quick-Access Master Matrix -->
+      <div class="ov-matrix-wrap" data-no-hover-toolbar="true">
+        <table class="ov-master-table" aria-label="Quick-Access Master Matrix Across All 5 Blogs and Master Guide">
+          <colgroup>
+            <col style="width:12%;" />
+            <col style="width:30%;" />
+            <col style="width:17%;" />
+            <col style="width:16%;" />
+            <col style="width:13%;" />
+            <col style="width:12%;" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Part</th>
+              <th>Blog Title, Focus &amp; Target Audience</th>
+              <th>Blog Reader &amp; 1-Pager</th>
+              <th>Before/After UIs (2880&times;1800)</th>
+              <th>Google Slides</th>
+              <th>Docs &amp; GitHub</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr>
+                <td><strong style="color:#0f172a;">Part 1 (<code>WS1</code>)</strong><div style="font-size:10.5px; color:#475569;">11 Editable Slides</div></td>
+                <td><strong style="color:#0f172a;">Reference Architecture Taxonomy & 5-Hop Governance Baseline</strong><div style="font-size:11px; color:#475569;">Cloud Architects, AI Platform Engineers, CISOs & B2B SaaS Platform Leads</div></td>
+                <td>
+                  <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                    <button type="button" class="ov-chip primary" onclick="openDocInReader('blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md')">&#128214; Open Blog</button>
+                    <button type="button" class="ov-chip" onclick="scrollToOverviewOnePager('WS1')">1-Pager &darr;</button>
+                  </div>
+                </td>
+                <td><button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md', 'live-3p-before-after-ui-proof')">&#128260; Metabase BI + Trino SQL</button></td>
+                <td>
+                  <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                    <button type="button" class="ov-chip" onclick="openCloudViewerModal('WS1', 1, 'slides')">&#128065;&#65039; Viewer</button>
+                    <a class="ov-chip" href="https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit" target="_blank" rel="noopener noreferrer">&#128999; Slides &nearr;</a>
+                  </div>
+                </td>
+                <td>
+                  <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                    <a class="ov-chip" href="https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit" target="_blank" rel="noopener noreferrer">&#128998; Doc &nearr;</a>
+                    <a class="ov-chip" href="https://github.com/nitinaggarwal-12/blogs/blob/main/blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md" target="_blank" rel="noopener noreferrer">&#128025; GitHub &nearr;</a>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong style="color:#0f172a;">Part 2 (<code>WS2</code>)</strong><div style="font-size:10.5px; color:#475569;">12 Editable Slides</div></td>
+                <td><strong style="color:#0f172a;">Pattern A: High-Density Pooled Multi-Tenant Architecture</strong><div style="font-size:11px; color:#475569;">Cloud Architects, AI Platform Engineers, FinOps Leads & CISOs at B2B SaaS Organizations</div></td>
+                <td>
+                  <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                    <button type="button" class="ov-chip primary" onclick="openDocInReader('blogs/ws2-pattern-a-pooled-architecture.md')">&#128214; Open Blog</button>
+                    <button type="button" class="ov-chip" onclick="scrollToOverviewOnePager('WS2')">1-Pager &darr;</button>
+                  </div>
+                </td>
+                <td><button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws2-pattern-a-pooled-architecture.md', 'live-3p-before-after-ui-proof')">&#128260; Redmine ITSM + ClickHouse DW</button></td>
+                <td>
+                  <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                    <button type="button" class="ov-chip" onclick="openCloudViewerModal('WS2', 1, 'slides')">&#128065;&#65039; Viewer</button>
+                    <a class="ov-chip" href="https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit" target="_blank" rel="noopener noreferrer">&#128999; Slides &nearr;</a>
+                  </div>
+                </td>
+                <td>
+                  <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                    <a class="ov-chip" href="https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/edit" target="_blank" rel="noopener noreferrer">&#128998; Doc &nearr;</a>
+                    <a class="ov-chip" href="https://github.com/nitinaggarwal-12/blogs/blob/main/blogs/ws2-pattern-a-pooled-architecture.md" target="_blank" rel="noopener noreferrer">&#128025; GitHub &nearr;</a>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong style="color:#0f172a;">Part 3 (<code>WS3</code>)</strong><div style="font-size:10.5px; color:#475569;">12 Editable Slides</div></td>
+                <td><strong style="color:#0f172a;">Pattern B: Zero-Trust Sovereign Silos for Regulated Workloads</strong><div style="font-size:11px; color:#475569;">Cloud Architects, CISOs & Compliance Leads in FinTech, Healthcare & Public Sector</div></td>
+                <td>
+                  <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                    <button type="button" class="ov-chip primary" onclick="openDocInReader('blogs/ws3-pattern-b-sovereign-silos.md')">&#128214; Open Blog</button>
+                    <button type="button" class="ov-chip" onclick="scrollToOverviewOnePager('WS3')">1-Pager &darr;</button>
+                  </div>
+                </td>
+                <td><button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws3-pattern-b-sovereign-silos.md', 'live-3p-before-after-ui-proof')">&#128260; NocoDB GxP + HashiCorp Vault</button></td>
+                <td>
+                  <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                    <button type="button" class="ov-chip" onclick="openCloudViewerModal('WS3', 1, 'slides')">&#128065;&#65039; Viewer</button>
+                    <a class="ov-chip" href="https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit" target="_blank" rel="noopener noreferrer">&#128999; Slides &nearr;</a>
+                  </div>
+                </td>
+                <td>
+                  <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                    <a class="ov-chip" href="https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/edit" target="_blank" rel="noopener noreferrer">&#128998; Doc &nearr;</a>
+                    <a class="ov-chip" href="https://github.com/nitinaggarwal-12/blogs/blob/main/blogs/ws3-pattern-b-sovereign-silos.md" target="_blank" rel="noopener noreferrer">&#128025; GitHub &nearr;</a>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong style="color:#0f172a;">Part 4 (<code>WS4</code>)</strong><div style="font-size:10.5px; color:#475569;">12 Editable Slides</div></td>
+                <td><strong style="color:#0f172a;">Pattern C: Dynamic Hybrid Routing & Zero-Downtime Tier Upgrades</strong><div style="font-size:11px; color:#475569;">Cloud Architects, Platform Product Managers & FinOps Leads Operating Tiered B2B SaaS</div></td>
+                <td>
+                  <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                    <button type="button" class="ov-chip primary" onclick="openDocInReader('blogs/ws4-pattern-c-hybrid-dynamic-tiering.md')">&#128214; Open Blog</button>
+                    <button type="button" class="ov-chip" onclick="scrollToOverviewOnePager('WS4')">1-Pager &darr;</button>
+                  </div>
+                </td>
+                <td><button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws4-pattern-c-hybrid-dynamic-tiering.md', 'live-3p-before-after-ui-proof')">&#128260; Grafana Ent + Gitea SRE</button></td>
+                <td>
+                  <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                    <button type="button" class="ov-chip" onclick="openCloudViewerModal('WS4', 1, 'slides')">&#128065;&#65039; Viewer</button>
+                    <a class="ov-chip" href="https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit" target="_blank" rel="noopener noreferrer">&#128999; Slides &nearr;</a>
+                  </div>
+                </td>
+                <td>
+                  <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                    <a class="ov-chip" href="https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/edit" target="_blank" rel="noopener noreferrer">&#128998; Doc &nearr;</a>
+                    <a class="ov-chip" href="https://github.com/nitinaggarwal-12/blogs/blob/main/blogs/ws4-pattern-c-hybrid-dynamic-tiering.md" target="_blank" rel="noopener noreferrer">&#128025; GitHub &nearr;</a>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong style="color:#0f172a;">Part 5 (<code>WS5</code>)</strong><div style="font-size:10.5px; color:#475569;">12 Editable Slides</div></td>
+                <td><strong style="color:#0f172a;">Executive Decision Guide & The Multi-Tenant Agentic Triad</strong><div style="font-size:11px; color:#475569;">CTOs, Principal Architects, CISOs & Platform Product Managers</div></td>
+                <td>
+                  <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                    <button type="button" class="ov-chip primary" onclick="openDocInReader('blogs/ws5-decision-guide-and-agentic-triad.md')">&#128214; Open Blog</button>
+                    <button type="button" class="ov-chip" onclick="scrollToOverviewOnePager('WS5')">1-Pager &darr;</button>
+                  </div>
+                </td>
+                <td><button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws5-decision-guide-and-agentic-triad.md', 'live-3p-before-after-ui-proof')">&#128260; Directus HCM + Datalust Seq</button></td>
+                <td>
+                  <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                    <button type="button" class="ov-chip" onclick="openCloudViewerModal('WS5', 1, 'slides')">&#128065;&#65039; Viewer</button>
+                    <a class="ov-chip" href="https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit" target="_blank" rel="noopener noreferrer">&#128999; Slides &nearr;</a>
+                  </div>
+                </td>
+                <td>
+                  <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                    <a class="ov-chip" href="https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit" target="_blank" rel="noopener noreferrer">&#128998; Doc &nearr;</a>
+                    <a class="ov-chip" href="https://github.com/nitinaggarwal-12/blogs/blob/main/blogs/ws5-decision-guide-and-agentic-triad.md" target="_blank" rel="noopener noreferrer">&#128025; GitHub &nearr;</a>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong style="color:#0f172a;">Master (<code>ALL</code>)</strong><div style="font-size:10.5px; color:#475569;">25 Editable Slides</div></td>
+                <td><strong style="color:#0f172a;">End-to-End Workstream &amp; 14-Diagram Master Guide + 10-SaaS Playbook</strong><div style="font-size:11px; color:#475569;">Complete Synthesis Across WS1–WS5, 27-File Codebase &amp; Runbooks</div></td>
+                <td>
+                  <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                    <button type="button" class="ov-chip primary" onclick="openDocInReader('docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md')">&#128218; Master Guide</button>
+                    <button type="button" class="ov-chip" onclick="scrollToOverviewOnePager('ALL')">1-Pager &darr;</button>
+                  </div>
+                </td>
+                <td><button type="button" class="ov-chip" onclick="jumpToTab3BeforeAfterHub()">&#128260; All 10 Pairs (20 PNGs)</button></td>
+                <td>
+                  <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                    <button type="button" class="ov-chip" onclick="openCloudViewerModal('ALL', 1, 'slides')">&#128065;&#65039; Viewer</button>
+                    <a class="ov-chip" href="https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/edit" target="_blank" rel="noopener noreferrer">&#128999; 25-Slide &nearr;</a>
+                  </div>
+                </td>
+                <td>
+                  <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                    <a class="ov-chip" href="https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/edit" target="_blank" rel="noopener noreferrer">&#128998; Doc &nearr;</a>
+                    <a class="ov-chip" href="https://github.com/nitinaggarwal-12/blogs/blob/main/docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md" target="_blank" rel="noopener noreferrer">&#128025; GitHub &nearr;</a>
+                  </div>
+                </td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Sticky 1-Page Isolation Filter Bar -->
+      <div class="ov-filter-bar" data-no-hover-toolbar="true">
+        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+          <span style="font-size:12px; font-weight:800; color:#0f172a;">1-Page Executive Briefs:</span>
+          <button type="button" class="genuine-3p-filter-btn ov-page-filter-btn active" aria-pressed="true" data-ov-filter="ALL_PAGES" onclick="filterOverviewOnePager('ALL_PAGES', this)">All 6 Pages</button>
+          <button type="button" class="genuine-3p-filter-btn ov-page-filter-btn" aria-pressed="false" data-ov-filter="WS1" onclick="filterOverviewOnePager('WS1', this)">Page 1: WS1 Taxonomy &amp; 5-Hop</button>
+          <button type="button" class="genuine-3p-filter-btn ov-page-filter-btn" aria-pressed="false" data-ov-filter="WS2" onclick="filterOverviewOnePager('WS2', this)">Page 2: WS2 Pattern A Pool</button>
+          <button type="button" class="genuine-3p-filter-btn ov-page-filter-btn" aria-pressed="false" data-ov-filter="WS3" onclick="filterOverviewOnePager('WS3', this)">Page 3: WS3 Pattern B Silos</button>
+          <button type="button" class="genuine-3p-filter-btn ov-page-filter-btn" aria-pressed="false" data-ov-filter="WS4" onclick="filterOverviewOnePager('WS4', this)">Page 4: WS4 Pattern C Hybrid</button>
+          <button type="button" class="genuine-3p-filter-btn ov-page-filter-btn" aria-pressed="false" data-ov-filter="WS5" onclick="filterOverviewOnePager('WS5', this)">Page 5: WS5 Decision Guide</button>
+          <button type="button" class="genuine-3p-filter-btn ov-page-filter-btn" aria-pressed="false" data-ov-filter="ALL" onclick="filterOverviewOnePager('ALL', this)">Page 6: Master (ALL) &amp; Engine</button>
+        </div>
+        <span style="font-size:11.5px; color:#475569;">Tip: Select any single page above to isolate a clean 1-page brief for screen-sharing or <code>Print / PDF</code>.</span>
+      </div>
+
+      <article class="ov-onepager-card" id="overview-page-WS1" data-ov-page="WS1" data-no-hover-toolbar="true" style="border-top-color:#1a73e8;">
+        <div class="ov-onepager-hdr">
+          <div style="flex:1 1 460px; min-width:0;">
+            <div style="margin-bottom:4px;">
+              <span class="badge badge-blue" style="font-size:10.5px;">PAGE 1 OF 6 • BLOG 1 (WS1) • 14 MIN READ</span>
+            </div>
+            <h3 style="margin:0 0 3px 0; font-size:18px; font-weight:800; color:#0f172a;">Reference Architecture Taxonomy & 5-Hop Governance Baseline</h3>
+            <div style="font-size:11.5px; color:#475569; font-weight:600;">Audience: Cloud Architects, AI Platform Engineers, CISOs & B2B SaaS Platform Leads</div>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+            <button type="button" class="ov-chip primary" onclick="openDocInReader('blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md')">&#128214; Open Full Blog in Reader &rarr;</button>
+            <button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md', 'live-3p-before-after-ui-proof')">&#128260; Before/After UIs</button>
+            <button type="button" class="ov-chip" onclick="openCloudViewerModal('WS1', 1, 'slides')">&#128065;&#65039; Cloud Viewer</button>
+            <a class="ov-chip" href="https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit" target="_blank" rel="noopener noreferrer">&#128999; Google Slides &nearr;</a>
+            <a class="ov-chip" href="https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit" target="_blank" rel="noopener noreferrer">&#128998; Google Doc &nearr;</a>
+            <a class="ov-chip" href="https://github.com/nitinaggarwal-12/blogs/blob/main/blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md" target="_blank" rel="noopener noreferrer">&#128025; GitHub MD &nearr;</a>
+          </div>
+        </div>
+
+        <div class="ov-two-col">
+          <div style="display:flex; flex-direction:column; gap:12px; min-width:0;">
+            <div class="ov-subbox">
+              <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
+              <p style="margin:0;">Stateful multi-turn agents running on <strong>Vertex AI Agent Engine</strong>, <strong>ADK</strong>, and <strong>Gemini Enterprise</strong> introduce shared LLM context caches, dynamic <strong>MCP</strong> tool calls, multi-level memory banks, and customer-authored private agents. Blog 1 establishes that <strong>isolation is a per-tenant tier decision, not a single platform-wide compromise</strong>—decoupling an <strong>80% reusable 5-Hop Cryptographic Context Chain</strong> from the <strong>20% perimeter delta</strong> across Pooled (Pattern A), Sovereign Silos (Pattern B), and Dynamic Hybrid (Pattern C).</p>
+            </div>
+            <div class="ov-subbox" style="flex:1;">
+              <h4>2. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
+              <ul>
+              <li><strong>Hop 1 — Edge &amp; Identity PEP</strong> (<button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/governance/hop1_edge_identity_pep.py')">hop1_edge_identity_pep.py</button>): Cloud Armor &amp; IAP strip spoofed <code>X-Tenant-Id</code> headers, execute <strong>RFC 8693 OBO</strong> + <strong>RFC 9449 DPoP</strong> proofs (<code>jkt</code>), and sign immutable <code>TenantContext</code> digests via <strong>Cloud KMS</strong> (<code>EC-P256</code>).</li>
+              <li><strong>Hop 2 — ARD Catalog &amp; Callback PDP</strong> (<button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py')">hop2_registry_pdp_callbacks.py</button>): Filters Discovery Engine / Agent Registry catalogs and prunes unauthorized tools via ADK <code>before_agent_callback</code> (blocking RetailStream from FinVault's private <code>Agent Alpha</code> with <code>HTTP 403</code>).</li>
+              <li><strong>Hop 3 — Compute, 5-Level Memory &amp; Bulkheads</strong> (<button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py')">hop3_compute_finops_bulkhead.py</button>): Binds gVisor <code>temp:tenant_id</code>, isolates <code>L1–L5</code> memory, enforces <strong>Valkey</strong> rate buckets (<code>HTTP 429</code>), and yields <strong>up to 90% COGS savings</strong> via <code>ContextCacheConfig</code>.</li>
+              <li><strong>Hops 4 &amp; 5 — Model Armor, SDP &amp; AlloyDB RLS</strong> (<button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/governance/hop4_model_armor_guardrails.py')">hop4</button> • <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/governance/hop5_data_rls_and_otel.py')">hop5</button>): Blocks prompt injection (<code>HTTP 400</code>) &amp; Semantic NLCs (<code>HTTP 422</code>), scrubs IBAN/SSN PII, binds <code>SET LOCAL app.current_tenant_id</code> on AlloyDB RLS, and streams zero-PII BigQuery OTel spans.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:12px; min-width:0;">
+            <div class="ov-subbox">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px;">
+                <h4 style="margin:0;">3. Companion 3-Act Editable Slide Deck</h4>
+                <span class="badge badge-green" style="font-size:10px;">11 Editable Slides • 153 Shapes • 51 Connectors</span>
+              </div>
+              <p style="margin:0;"><strong>Act I (Slides 1–3)</strong> Executive Briefing Map, FinVault (<code>600 RPM</code> / <code>8k</code> thinking / CMEK) vs. RetailStream (<code>120 RPM</code> / <code>4k</code> thinking / RLS) &amp; Pattern A/B/C Matrix &rarr; <strong>Act II (Slides 4–7)</strong> <code>L1</code> 3-Zone Topology, <code>L2</code> Official <code>#78</code> 5-Hop Blueprint (<code>56</code>v/<code>23</code>e), <code>L3</code> 5-Actor Swimlane, <code>L4</code> OBO+DPoP Packet Triptych &rarr; <strong>Act III (Slides 8–11)</strong> Circuit Breakers (<code>401/403/422/423/429</code>), EAP Gaps (<code>GAP-01..05</code>), Grounded Cloud CLI Proof &amp; Series Roadmap.</p>
+            </div>
+            <div class="ov-subbox" style="flex:1;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+                <h4 style="margin:0;">4. Genuine 2880&times;1800 Before &rarr; After 3P SaaS Proof</h4>
+                <button type="button" class="ov-chip" style="padding:1px 7px; font-size:10.5px;" onclick="openDocInReader('blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md', 'live-3p-before-after-ui-proof')">Interactive Split Slider &rarr;</button>
+              </div>
+              <div class="ov-ba-mini-grid">
+                <div class="ov-ba-mini-card">
+                  <div style="display:flex; justify-content:space-between; align-items:center; gap:4px; padding:5px 8px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:10.8px; font-weight:700; color:#0f172a;">
+                    <span>SAAS-01 &bull; Metabase BI v0.50.26</span>
+                    <code style="font-size:10px; color:#15803d;">HXGGFMZBKE</code>
+                  </div>
+                  <div class="ov-ba-mini-thumbs">
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_01_metabase_bi.png" alt="BEFORE SAAS-01 (Metabase BI v0.50.26)" title="Click to zoom BEFORE UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_01_metabase_bi.png', 'BEFORE SAAS-01 (Metabase BI v0.50.26)')" decoding="async" />
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_01_metabase_bi.png" alt="AFTER SAAS-01 (Metabase BI v0.50.26 • Target HXGGFMZBKE)" title="Click to zoom AFTER UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_01_metabase_bi.png', 'AFTER SAAS-01 (Metabase BI v0.50.26 • Target HXGGFMZBKE)')" decoding="async" />
+                  </div>
+                  <div style="padding:6px 8px; font-size:10.8px; color:#334155; line-height:1.35; flex:1;">
+                    <div style="margin-bottom:4px;"><strong>Before &rarr; After:</strong> 3-row unfiltered wire ledger -> 2 FinVault-only rows (RLS)</div>
+                    <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://cymbal-gcp-metabase-bi-fm3mts5x3a-uw.a.run.app/question/27" target="_blank" rel="noopener noreferrer">Live SaaS UI &nearr;</a>
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json" target="_blank" rel="noopener noreferrer">S3 JSON &nearr;</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="ov-ba-mini-card">
+                  <div style="display:flex; justify-content:space-between; align-items:center; gap:4px; padding:5px 8px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:10.8px; font-weight:700; color:#0f172a;">
+                    <span>SAAS-06 &bull; Trino SQL v440</span>
+                    <code style="font-size:10px; color:#15803d;">TERCK8SLBP</code>
+                  </div>
+                  <div class="ov-ba-mini-thumbs">
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_06_trino_sql.png" alt="BEFORE SAAS-06 (Trino SQL v440)" title="Click to zoom BEFORE UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_06_trino_sql.png', 'BEFORE SAAS-06 (Trino SQL v440)')" decoding="async" />
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_06_trino_sql.png" alt="AFTER SAAS-06 (Trino SQL v440 • Target TERCK8SLBP)" title="Click to zoom AFTER UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_06_trino_sql.png', 'AFTER SAAS-06 (Trino SQL v440 • Target TERCK8SLBP)')" decoding="async" />
+                  </div>
+                  <div style="padding:6px 8px; font-size:10.8px; color:#334155; line-height:1.35; flex:1;">
+                    <div style="margin-bottom:4px;"><strong>Before &rarr; After:</strong> 2 baseline FINISHED queries -> 3 FINISHED (geap-hop5-agent@finvault.com)</div>
+                    <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://cymbal-gcp-trino-sql-fm3mts5x3a-uw.a.run.app/ui/" target="_blank" rel="noopener noreferrer">Live SaaS UI &nearr;</a>
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json" target="_blank" rel="noopener noreferrer">S3 JSON &nearr;</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ov-asset-directory">
+          <div class="ov-asset-row">
+            <span class="ov-asset-lbl">&#128218; Publication, Slides &amp; Docs:</span>
+            <div class="ov-asset-chips">
+              <button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md')">Portal Blog Reader</button>
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit" target="_blank" rel="noopener noreferrer">Google Slides (Edit) &nearr;</a>
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/export/pdf" target="_blank" rel="noopener noreferrer">Slides PDF &nearr;</a>
+              <a class="ov-chip" href="slides/ws1-reference-architecture-editable-slides.pptx" download>Download .pptx</a>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.deck.json')">.deck.json Spec</button>
+              <a class="ov-chip" href="https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit" target="_blank" rel="noopener noreferrer">Google Doc (Edit) &nearr;</a>
+              <a class="ov-chip" href="https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/export?format=pdf" target="_blank" rel="noopener noreferrer">Doc PDF &nearr;</a>
+              <a class="ov-chip" href="https://github.com/nitinaggarwal-12/blogs/blob/main/blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md" target="_blank" rel="noopener noreferrer">GitHub Raw/Blob &nearr;</a>
+            </div>
+          </div>
+          <div class="ov-asset-row">
+            <span class="ov-asset-lbl">&#128506;&#65039; Official #78 Blueprints:</span>
+            <div class="ov-asset-chips">
+              <button type="button" class="ov-chip" onclick="openGenuineScreenshotLightbox('diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png', 'WS 1.1 Taxonomy (#78 Blueprint)')">&#128269; WS 1.1 Taxonomy PNG</button><a class="ov-chip" href="diagrams/ws1-multi-tenant-taxonomy-overview.drawio" target="_blank" rel="noopener noreferrer">.drawio</a><a class="ov-chip" href="diagrams/ws1-multi-tenant-taxonomy-overview.svg" target="_blank" rel="noopener noreferrer">.svg</a><button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('diagrams/vision_metadata/ws1-multi-tenant-taxonomy-overview.vision.json')">.vision.json</button>
+              <button type="button" class="ov-chip" onclick="openGenuineScreenshotLightbox('diagrams/ws1-cloud-arch-center-5hop-baseline.drawio.png', 'WS 1.3 5-Hop Baseline (#78 Blueprint)')">&#128269; WS 1.3 5-Hop Baseline PNG</button><a class="ov-chip" href="diagrams/ws1-cloud-arch-center-5hop-baseline.drawio" target="_blank" rel="noopener noreferrer">.drawio</a><a class="ov-chip" href="diagrams/ws1-cloud-arch-center-5hop-baseline.svg" target="_blank" rel="noopener noreferrer">.svg</a><button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('diagrams/vision_metadata/ws1-cloud-arch-center-5hop-baseline.vision.json')">.vision.json</button>
+            </div>
+          </div>
+          <div class="ov-asset-row">
+            <span class="ov-asset-lbl">&#128736;&#65039; Deliverables, Code &amp; Labs:</span>
+            <div class="ov-asset-chips">
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md')">&#128196; 1.1 Taxonomy & Diagrams</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-1-reference-architecture/1.2-product-team-review-pack.md')">&#128196; 1.2 Product Review Pack</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-1-reference-architecture/1.3-cloud-architecture-center-doc-update-pr.md')">&#128196; 1.3 Arch Center Doc PR</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md')">&#128196; 1.4 EAP & Gap Tracker</button>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/runtime_pipeline.py')">&#128187; runtime_pipeline.py</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="ov-onepager-card" id="overview-page-WS2" data-ov-page="WS2" data-no-hover-toolbar="true" style="border-top-color:#059669;">
+        <div class="ov-onepager-hdr">
+          <div style="flex:1 1 460px; min-width:0;">
+            <div style="margin-bottom:4px;">
+              <span class="badge badge-blue" style="font-size:10.5px;">PAGE 2 OF 6 • BLOG 2 (WS2 • PATTERN A) • 13 MIN READ</span>
+            </div>
+            <h3 style="margin:0 0 3px 0; font-size:18px; font-weight:800; color:#0f172a;">Pattern A: High-Density Pooled Multi-Tenant Architecture</h3>
+            <div style="font-size:11.5px; color:#475569; font-weight:600;">Audience: Cloud Architects, AI Platform Engineers, FinOps Leads & CISOs at B2B SaaS Organizations</div>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+            <button type="button" class="ov-chip primary" onclick="openDocInReader('blogs/ws2-pattern-a-pooled-architecture.md')">&#128214; Open Full Blog in Reader &rarr;</button>
+            <button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws2-pattern-a-pooled-architecture.md', 'live-3p-before-after-ui-proof')">&#128260; Before/After UIs</button>
+            <button type="button" class="ov-chip" onclick="openCloudViewerModal('WS2', 1, 'slides')">&#128065;&#65039; Cloud Viewer</button>
+            <a class="ov-chip" href="https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit" target="_blank" rel="noopener noreferrer">&#128999; Google Slides &nearr;</a>
+            <a class="ov-chip" href="https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/edit" target="_blank" rel="noopener noreferrer">&#128998; Google Doc &nearr;</a>
+            <a class="ov-chip" href="https://github.com/nitinaggarwal-12/blogs/blob/main/blogs/ws2-pattern-a-pooled-architecture.md" target="_blank" rel="noopener noreferrer">&#128025; GitHub MD &nearr;</a>
+          </div>
+        </div>
+
+        <div class="ov-two-col">
+          <div style="display:flex; flex-direction:column; gap:12px; min-width:0;">
+            <div class="ov-subbox">
+              <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
+              <p style="margin:0;">Standard B2B SaaS tiers serving hundreds of competing organizations cannot provision dedicated GCP projects per tenant without collapsing gross margins. <strong>Pattern A (High-Density Pooled Architecture)</strong> runs competing corporate tenants inside one shared Google Cloud project (<code>cymbal-pooled-prod</code>) while cutting shared input-token COGS by <strong>90%</strong> (<code>84.7%</code> total turn COGS reduction) and blocking <strong>10/10 red-team cross-tenant breach simulations</strong>.</p>
+            </div>
+            <div class="ov-subbox" style="flex:1;">
+              <h4>2. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
+              <ul>
+              <li><strong>Shared Prefix Caching Without Bleed</strong>: Caches immutable platform prompts &amp; tool schemas once via Vertex AI <code>ContextCacheConfig</code> while injecting per-tenant Firestore prompts, GCS Skills URIs, and <code>L1–L4</code> memory post-cache in Hop 3.</li>
+              <li><strong>Multi-IdP 3LO Federated Sandbox</strong>: Simultaneously brokers <strong>Google OIDC</strong> (Workspace/Jira for FinVault) and <strong>Microsoft Entra ID</strong> (SharePoint/ServiceNow for RetailStream), keyed by composite <code>{tenant_id}:{user_id}</code> + DPoP <code>jkt</code> so intra-tenant peers cannot replay tokens (<code>HTTP 401</code>).</li>
+              <li><strong>Database RLS &amp; Valkey Bulkheads</strong> (<button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_gateway_and_rls.sql')">pooled_gateway_and_rls.sql</button>): Enforces PostgreSQL/AlloyDB <code>FORCE ROW LEVEL SECURITY</code> via <code>SET LOCAL app.current_tenant_id</code> and isolates noisy neighbors in Memorystore for Valkey.</li>
+              <li><strong>10/10 Red-Team Breach Simulation Suite</strong> (<button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py')">run_breach_simulations.py</button>): Verifies deterministic rejection of forged headers, catalog probing, memory traversal, prompt injection, NLC bypass, PII leaks, SQL RLS escape, RPM floods, 3LO reuse, and DPoP replay.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:12px; min-width:0;">
+            <div class="ov-subbox">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px;">
+                <h4 style="margin:0;">3. Companion 3-Act Editable Slide Deck</h4>
+                <span class="badge badge-green" style="font-size:10px;">12 Editable Slides • 194 Shapes • 55 Connectors</span>
+              </div>
+              <p style="margin:0;"><strong>Act I (Slides 1–3)</strong> Pooled Margin Economics vs. Zero-Bleed Security &rarr; <strong>Act II (Slides 4–7)</strong> <code>L1</code> Pooled Trust Zones, <code>L2</code> Pooled Shared-Plane Blueprint (<code>60</code>v/<code>20</code>e), <code>L3</code> Multi-IdP 3LO &amp; Prefix-Cache Swimlane, <code>L4</code> Header Stripping &amp; RLS Session Binding &rarr; <strong>Act III (Slides 8–12)</strong> <code>10/10</code> Red-Team Circuit Breakers, Pooled EAP Controls, Live CLI Proof, Well-Architected Guarantees &amp; 1-Click Terraform Starter.</p>
+            </div>
+            <div class="ov-subbox" style="flex:1;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+                <h4 style="margin:0;">4. Genuine 2880&times;1800 Before &rarr; After 3P SaaS Proof</h4>
+                <button type="button" class="ov-chip" style="padding:1px 7px; font-size:10.5px;" onclick="openDocInReader('blogs/ws2-pattern-a-pooled-architecture.md', 'live-3p-before-after-ui-proof')">Interactive Split Slider &rarr;</button>
+              </div>
+              <div class="ov-ba-mini-grid">
+                <div class="ov-ba-mini-card">
+                  <div style="display:flex; justify-content:space-between; align-items:center; gap:4px; padding:5px 8px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:10.8px; font-weight:700; color:#0f172a;">
+                    <span>SAAS-03 &bull; Redmine ITSM v5.1</span>
+                    <code style="font-size:10px; color:#15803d;">ZS9VGYHBQL</code>
+                  </div>
+                  <div class="ov-ba-mini-thumbs">
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_03_redmine_itsm.png" alt="BEFORE SAAS-03 (Redmine ITSM v5.1)" title="Click to zoom BEFORE UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_03_redmine_itsm.png', 'BEFORE SAAS-03 (Redmine ITSM v5.1)')" decoding="async" />
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_03_redmine_itsm.png" alt="AFTER SAAS-03 (Redmine ITSM v5.1 • Target ZS9VGYHBQL)" title="Click to zoom AFTER UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_03_redmine_itsm.png', 'AFTER SAAS-03 (Redmine ITSM v5.1 • Target ZS9VGYHBQL)')" decoding="async" />
+                  </div>
+                  <div style="padding:6px 8px; font-size:10.8px; color:#334155; line-height:1.35; flex:1;">
+                    <div style="margin-bottom:4px;"><strong>Before &rarr; After:</strong> 2 baseline tickets (1-2/2) -> 3 tickets (#3 CHG0049299 KMS CMEK attested)</div>
+                    <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://cymbal-gcp-redmine-itsm-fm3mts5x3a-uw.a.run.app/projects/finvault-itsm/issues?set_filter=1&status_id=*" target="_blank" rel="noopener noreferrer">Live SaaS UI &nearr;</a>
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json" target="_blank" rel="noopener noreferrer">S3 JSON &nearr;</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="ov-ba-mini-card">
+                  <div style="display:flex; justify-content:space-between; align-items:center; gap:4px; padding:5px 8px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:10.8px; font-weight:700; color:#0f172a;">
+                    <span>SAAS-07 &bull; ClickHouse DW v24.8</span>
+                    <code style="font-size:10px; color:#15803d;">CCMDEVZV2S</code>
+                  </div>
+                  <div class="ov-ba-mini-thumbs">
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_07_clickhouse_rls.png" alt="BEFORE SAAS-07 (ClickHouse DW v24.8)" title="Click to zoom BEFORE UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_07_clickhouse_rls.png', 'BEFORE SAAS-07 (ClickHouse DW v24.8)')" decoding="async" />
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_07_clickhouse_rls.png" alt="AFTER SAAS-07 (ClickHouse DW v24.8 • Target CCMDEVZV2S)" title="Click to zoom AFTER UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_07_clickhouse_rls.png', 'AFTER SAAS-07 (ClickHouse DW v24.8 • Target CCMDEVZV2S)')" decoding="async" />
+                  </div>
+                  <div style="padding:6px 8px; font-size:10.8px; color:#334155; line-height:1.35; flex:1;">
+                    <div style="margin-bottom:4px;"><strong>Before &rarr; After:</strong> 0 rows (cross-tenant retailstream blocked by RLS) -> 2 FinVault rows ($527.0M)</div>
+                    <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://cymbal-gcp-clickhouse-dw-fm3mts5x3a-uw.a.run.app/play" target="_blank" rel="noopener noreferrer">Live SaaS UI &nearr;</a>
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json" target="_blank" rel="noopener noreferrer">S3 JSON &nearr;</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ov-asset-directory">
+          <div class="ov-asset-row">
+            <span class="ov-asset-lbl">&#128218; Publication, Slides &amp; Docs:</span>
+            <div class="ov-asset-chips">
+              <button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws2-pattern-a-pooled-architecture.md')">Portal Blog Reader</button>
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit" target="_blank" rel="noopener noreferrer">Google Slides (Edit) &nearr;</a>
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/export/pdf" target="_blank" rel="noopener noreferrer">Slides PDF &nearr;</a>
+              <a class="ov-chip" href="slides/ws2-pattern-a-pooled-editable-slides.pptx" download>Download .pptx</a>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('blogs/ws2-pattern-a-pooled-architecture.deck.json')">.deck.json Spec</button>
+              <a class="ov-chip" href="https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/edit" target="_blank" rel="noopener noreferrer">Google Doc (Edit) &nearr;</a>
+              <a class="ov-chip" href="https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/export?format=pdf" target="_blank" rel="noopener noreferrer">Doc PDF &nearr;</a>
+              <a class="ov-chip" href="https://github.com/nitinaggarwal-12/blogs/blob/main/blogs/ws2-pattern-a-pooled-architecture.md" target="_blank" rel="noopener noreferrer">GitHub Raw/Blob &nearr;</a>
+            </div>
+          </div>
+          <div class="ov-asset-row">
+            <span class="ov-asset-lbl">&#128506;&#65039; Official #78 Blueprints:</span>
+            <div class="ov-asset-chips">
+              <button type="button" class="ov-chip" onclick="openGenuineScreenshotLightbox('diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio.png', 'WS 2.1 Pooled 5-Hop (#78 Blueprint)')">&#128269; WS 2.1 Pooled 5-Hop PNG</button><a class="ov-chip" href="diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio" target="_blank" rel="noopener noreferrer">.drawio</a><a class="ov-chip" href="diagrams/ws2-pattern-a-pooled-5hop-architecture.svg" target="_blank" rel="noopener noreferrer">.svg</a><button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('diagrams/vision_metadata/ws2-pattern-a-pooled-5hop-architecture.vision.json')">.vision.json</button>
+              <button type="button" class="ov-chip" onclick="openGenuineScreenshotLightbox('diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.drawio.png', 'WS 2.2 3P Auth Sandbox (#78 Blueprint)')">&#128269; WS 2.2 3P Auth Sandbox PNG</button><a class="ov-chip" href="diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.drawio" target="_blank" rel="noopener noreferrer">.drawio</a><a class="ov-chip" href="diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.svg" target="_blank" rel="noopener noreferrer">.svg</a><button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('diagrams/vision_metadata/ws2-demo-env-and-3p-auth-sandbox-topology.vision.json')">.vision.json</button>
+              <button type="button" class="ov-chip" onclick="openGenuineScreenshotLightbox('diagrams/ws2-pattern-a-breach-defense-sequence.drawio.png', 'WS 2.5 Breach Defense (#78 Blueprint)')">&#128269; WS 2.5 Breach Defense PNG</button><a class="ov-chip" href="diagrams/ws2-pattern-a-breach-defense-sequence.drawio" target="_blank" rel="noopener noreferrer">.drawio</a><a class="ov-chip" href="diagrams/ws2-pattern-a-breach-defense-sequence.svg" target="_blank" rel="noopener noreferrer">.svg</a><button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('diagrams/vision_metadata/ws2-pattern-a-breach-defense-sequence.vision.json')">.vision.json</button>
+              <button type="button" class="ov-chip" onclick="openGenuineScreenshotLightbox('diagrams/ws2-terraform-starter-resource-graph.drawio.png', 'WS 2.6 Terraform Graph (#78 Blueprint)')">&#128269; WS 2.6 Terraform Graph PNG</button><a class="ov-chip" href="diagrams/ws2-terraform-starter-resource-graph.drawio" target="_blank" rel="noopener noreferrer">.drawio</a><a class="ov-chip" href="diagrams/ws2-terraform-starter-resource-graph.svg" target="_blank" rel="noopener noreferrer">.svg</a><button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('diagrams/vision_metadata/ws2-terraform-starter-resource-graph.vision.json')">.vision.json</button>
+            </div>
+          </div>
+          <div class="ov-asset-row">
+            <span class="ov-asset-lbl">&#128736;&#65039; Deliverables, Code &amp; Labs:</span>
+            <div class="ov-asset-chips">
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md')">&#128196; 2.1 Case Study & Arch</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md')">&#128196; 2.2 3P Auth Sandbox</button>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py')">&#128187; 2.3 pattern_a_pooled_service.py</button>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_gateway_and_rls.sql')">&#128187; 2.3 pooled_gateway_and_rls.sql</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-2-pattern-a-pooled/2.4-product-gaps-prioritization.md')">&#128196; 2.4 Product Gaps</button>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py')">&#128187; 2.5 run_breach_simulations.py</button>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf')">&#128187; 2.6 Terraform main.tf</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck/codelab-90min-breach-sim.md')">&#128196; 2.8 90-Min Codelab</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck/workshop-deck-pattern-a.md')">&#128196; 2.8 Workshop Deck MD</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-2-pattern-a-pooled/2.9-go-demos-and-video-script.md')">&#128196; 2.9 Demo & Video Script</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="ov-onepager-card" id="overview-page-WS3" data-ov-page="WS3" data-no-hover-toolbar="true" style="border-top-color:#7c3aed;">
+        <div class="ov-onepager-hdr">
+          <div style="flex:1 1 460px; min-width:0;">
+            <div style="margin-bottom:4px;">
+              <span class="badge badge-blue" style="font-size:10.5px;">PAGE 3 OF 6 • BLOG 3 (WS3 • PATTERN B) • 14 MIN READ</span>
+            </div>
+            <h3 style="margin:0 0 3px 0; font-size:18px; font-weight:800; color:#0f172a;">Pattern B: Zero-Trust Sovereign Silos for Regulated Workloads</h3>
+            <div style="font-size:11.5px; color:#475569; font-weight:600;">Audience: Cloud Architects, CISOs & Compliance Leads in FinTech, Healthcare & Public Sector</div>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+            <button type="button" class="ov-chip primary" onclick="openDocInReader('blogs/ws3-pattern-b-sovereign-silos.md')">&#128214; Open Full Blog in Reader &rarr;</button>
+            <button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws3-pattern-b-sovereign-silos.md', 'live-3p-before-after-ui-proof')">&#128260; Before/After UIs</button>
+            <button type="button" class="ov-chip" onclick="openCloudViewerModal('WS3', 1, 'slides')">&#128065;&#65039; Cloud Viewer</button>
+            <a class="ov-chip" href="https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit" target="_blank" rel="noopener noreferrer">&#128999; Google Slides &nearr;</a>
+            <a class="ov-chip" href="https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/edit" target="_blank" rel="noopener noreferrer">&#128998; Google Doc &nearr;</a>
+            <a class="ov-chip" href="https://github.com/nitinaggarwal-12/blogs/blob/main/blogs/ws3-pattern-b-sovereign-silos.md" target="_blank" rel="noopener noreferrer">&#128025; GitHub MD &nearr;</a>
+          </div>
+        </div>
+
+        <div class="ov-two-col">
+          <div style="display:flex; flex-direction:column; gap:12px; min-width:0;">
+            <div class="ov-subbox">
+              <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
+              <p style="margin:0;">When <strong>OCC/FDIC banking rules, EU DORA, HIPAA, FDA 21 CFR Part 11, or FedRAMP</strong> prohibit shared compute and shared databases, <strong>Pattern B (Sovereign Silos)</strong> wraps the <strong>unchanged 80% reusable 5-Hop Cymbal core</strong> inside a dedicated Google Cloud project per corporate tenant (<code>cymbal-finvault-silo-prod</code> &amp; <code>cymbal-retailstream-silo-prod</code>) with VPC Service Controls, IAM Principal Access Boundaries, a <code>&lt; 5 s</code> customer-held <strong>Cloud KMS CMEK kill-switch (<code>HTTP 423 Locked</code>)</strong>, and air-gapped <strong>Gemma 3 (27B)</strong> on GKE.</p>
+            </div>
+            <div class="ov-subbox" style="flex:1;">
+              <h4>2. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
+              <ul>
+              <li><strong>Dedicated VPC-SC Perimeter &amp; IAM PAB</strong> (<button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py')">pattern_b_siloed_service.py</button>): Confines principals via Organization IAM v3 PAB and blocks cross-project API exfiltration with <code>HTTP 403 VPC_SC_PERIMETER_VIOLATION</code>.</li>
+              <li><strong>Cloud KMS / EKM <code>&lt; 5 s</code> Crypto-Shredding Kill-Switch</strong>: Disabling the tenant's KMS key version triggers targeted Valkey <code>UNLINK {tenant_id}:*</code> (<code>0</code> peer evictions) and immediately halts in-flight agent turns, memory reads, and AlloyDB queries with <code>HTTP 423 Locked</code>.</li>
+              <li><strong>Vertex AI Dedicated PT &amp; Air-Gapped Gemma 3 on Private GKE</strong> (<button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-3-pattern-b-siloed/3.3-solution-implementation/gke_gemma3_airgapped_manifest.yaml')">gke_gemma3_airgapped_manifest.yaml</button>): Supports reserved Vertex AI GSUs or private GKE GPU enclaves with <code>0.0.0.0/0</code> WAN egress blocked.</li>
+              <li><strong>6/6 Silo Exfiltration &amp; CMEK Revocation Suite</strong> (<button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py')">run_silo_security_tests.py</button>): Certifies dual-tenant silo parity, VPC-SC blocks, PAB confinement, live KMS kill-switch, and zero-WAN GKE routing.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:12px; min-width:0;">
+            <div class="ov-subbox">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px;">
+                <h4 style="margin:0;">3. Companion 3-Act Editable Slide Deck</h4>
+                <span class="badge badge-green" style="font-size:10px;">12 Editable Slides • 190 Shapes • 58 Connectors</span>
+              </div>
+              <p style="margin:0;"><strong>Act I (Slides 1–3)</strong> Regulated Banking/Pharma Mandates &amp; Dedicated Silo Trade-Offs &rarr; <strong>Act II (Slides 4–7)</strong> <code>L1</code> Per-Project VPC-SC + PAB Zones, <code>L2</code> Official <code>#78</code> Sovereign Silo Blueprint (<code>56</code>v/<code>23</code>e), <code>L3</code> KMS Envelope &amp; Air-Gapped GKE Swimlane, <code>L4</code> SPIFFE mTLS + CMEK Kill-Switch Wire Packet &rarr; <strong>Act III (Slides 8–12)</strong> <code>HTTP 403/423</code> Circuit Breakers, <code>6/6</code> Silo Matrix, Live KMS Proof, Well-Architected Pillars &amp; Terraform Silo Factory.</p>
+            </div>
+            <div class="ov-subbox" style="flex:1;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+                <h4 style="margin:0;">4. Genuine 2880&times;1800 Before &rarr; After 3P SaaS Proof</h4>
+                <button type="button" class="ov-chip" style="padding:1px 7px; font-size:10.5px;" onclick="openDocInReader('blogs/ws3-pattern-b-sovereign-silos.md', 'live-3p-before-after-ui-proof')">Interactive Split Slider &rarr;</button>
+              </div>
+              <div class="ov-ba-mini-grid">
+                <div class="ov-ba-mini-card">
+                  <div style="display:flex; justify-content:space-between; align-items:center; gap:4px; padding:5px 8px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:10.8px; font-weight:700; color:#0f172a;">
+                    <span>SAAS-04 &bull; NocoDB GxP v0.255.2</span>
+                    <code style="font-size:10px; color:#15803d;">TWQU0KSRVF</code>
+                  </div>
+                  <div class="ov-ba-mini-thumbs">
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_04_nocodb_gxp.png" alt="BEFORE SAAS-04 (NocoDB GxP v0.255.2)" title="Click to zoom BEFORE UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_04_nocodb_gxp.png', 'BEFORE SAAS-04 (NocoDB GxP v0.255.2)')" decoding="async" />
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_04_nocodb_gxp.png" alt="AFTER SAAS-04 (NocoDB GxP v0.255.2 • Target TWQU0KSRVF)" title="Click to zoom AFTER UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_04_nocodb_gxp.png', 'AFTER SAAS-04 (NocoDB GxP v0.255.2 • Target TWQU0KSRVF)')" decoding="async" />
+                  </div>
+                  <div style="padding:6px 8px; font-size:10.8px; color:#334155; line-height:1.35; flex:1;">
+                    <div style="margin-bottom:4px;"><strong>Before &rarr; After:</strong> 3 clinical records -> 4 records (AWS-GXP-104 KMS-attested)</div>
+                    <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://cymbal-gcp-nocodb-edc-fm3mts5x3a-uw.a.run.app/" target="_blank" rel="noopener noreferrer">Live SaaS UI &nearr;</a>
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json" target="_blank" rel="noopener noreferrer">S3 JSON &nearr;</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="ov-ba-mini-card">
+                  <div style="display:flex; justify-content:space-between; align-items:center; gap:4px; padding:5px 8px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:10.8px; font-weight:700; color:#0f172a;">
+                    <span>SAAS-10 &bull; HashiCorp Vault v1.13.3</span>
+                    <code style="font-size:10px; color:#15803d;">C7EYM614F2</code>
+                  </div>
+                  <div class="ov-ba-mini-thumbs">
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_10_hashicorp_vault.png" alt="BEFORE SAAS-10 (HashiCorp Vault v1.13.3)" title="Click to zoom BEFORE UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_10_hashicorp_vault.png', 'BEFORE SAAS-10 (HashiCorp Vault v1.13.3)')" decoding="async" />
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_10_hashicorp_vault.png" alt="AFTER SAAS-10 (HashiCorp Vault v1.13.3 • Target C7EYM614F2)" title="Click to zoom AFTER UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_10_hashicorp_vault.png', 'AFTER SAAS-10 (HashiCorp Vault v1.13.3 • Target C7EYM614F2)')" decoding="async" />
+                  </div>
+                  <div style="padding:6px 8px; font-size:10.8px; color:#334155; line-height:1.35; flex:1;">
+                    <div style="margin-bottom:4px;"><strong>Before &rarr; After:</strong> Secret v1 (PENDING_HOP5_DPOP_CONTAINMENT) -> v2 (HOST_CONTAINED_DPOP_VERIFIED_200)</div>
+                    <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://cymbal-gcp-vault-cmek-fm3mts5x3a-uw.a.run.app/ui/vault/secrets/secret/show/tenants/finvault" target="_blank" rel="noopener noreferrer">Live SaaS UI &nearr;</a>
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json" target="_blank" rel="noopener noreferrer">S3 JSON &nearr;</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ov-asset-directory">
+          <div class="ov-asset-row">
+            <span class="ov-asset-lbl">&#128218; Publication, Slides &amp; Docs:</span>
+            <div class="ov-asset-chips">
+              <button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws3-pattern-b-sovereign-silos.md')">Portal Blog Reader</button>
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit" target="_blank" rel="noopener noreferrer">Google Slides (Edit) &nearr;</a>
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/export/pdf" target="_blank" rel="noopener noreferrer">Slides PDF &nearr;</a>
+              <a class="ov-chip" href="slides/ws3-pattern-b-siloed-editable-slides.pptx" download>Download .pptx</a>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('blogs/ws3-pattern-b-sovereign-silos.deck.json')">.deck.json Spec</button>
+              <a class="ov-chip" href="https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/edit" target="_blank" rel="noopener noreferrer">Google Doc (Edit) &nearr;</a>
+              <a class="ov-chip" href="https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/export?format=pdf" target="_blank" rel="noopener noreferrer">Doc PDF &nearr;</a>
+              <a class="ov-chip" href="https://github.com/nitinaggarwal-12/blogs/blob/main/blogs/ws3-pattern-b-sovereign-silos.md" target="_blank" rel="noopener noreferrer">GitHub Raw/Blob &nearr;</a>
+            </div>
+          </div>
+          <div class="ov-asset-row">
+            <span class="ov-asset-lbl">&#128506;&#65039; Official #78 Blueprints:</span>
+            <div class="ov-asset-chips">
+              <button type="button" class="ov-chip" onclick="openGenuineScreenshotLightbox('diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio.png', 'WS 3.1 Sovereign Silos (#78 Blueprint)')">&#128269; WS 3.1 Sovereign Silos PNG</button><a class="ov-chip" href="diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio" target="_blank" rel="noopener noreferrer">.drawio</a><a class="ov-chip" href="diagrams/ws3-pattern-b-sovereign-silos-architecture.svg" target="_blank" rel="noopener noreferrer">.svg</a><button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('diagrams/vision_metadata/ws3-pattern-b-sovereign-silos-architecture.vision.json')">.vision.json</button>
+              <button type="button" class="ov-chip" onclick="openGenuineScreenshotLightbox('diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio.png', 'WS 3.2 Silo & CMEK Setup (#78 Blueprint)')">&#128269; WS 3.2 Silo & CMEK Setup PNG</button><a class="ov-chip" href="diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio" target="_blank" rel="noopener noreferrer">.drawio</a><a class="ov-chip" href="diagrams/ws3-multi-project-silo-and-cmek-setup-topology.svg" target="_blank" rel="noopener noreferrer">.svg</a><button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('diagrams/vision_metadata/ws3-multi-project-silo-and-cmek-setup-topology.vision.json')">.vision.json</button>
+              <button type="button" class="ov-chip" onclick="openGenuineScreenshotLightbox('diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio.png', 'WS 3.6 Terraform Silo Graph (#78 Blueprint)')">&#128269; WS 3.6 Terraform Silo Graph PNG</button><a class="ov-chip" href="diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio" target="_blank" rel="noopener noreferrer">.drawio</a><a class="ov-chip" href="diagrams/ws3-terraform-silo-blueprint-resource-graph.svg" target="_blank" rel="noopener noreferrer">.svg</a><button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('diagrams/vision_metadata/ws3-terraform-silo-blueprint-resource-graph.vision.json')">.vision.json</button>
+            </div>
+          </div>
+          <div class="ov-asset-row">
+            <span class="ov-asset-lbl">&#128736;&#65039; Deliverables, Code &amp; Labs:</span>
+            <div class="ov-asset-chips">
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md')">&#128196; 3.1 Case Study & Arch</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md')">&#128196; 3.2 Silo & CMEK Setup</button>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py')">&#128187; 3.3 pattern_b_siloed_service.py</button>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-3-pattern-b-siloed/3.3-solution-implementation/gke_gemma3_airgapped_manifest.yaml')">&#128187; 3.3 gke_gemma3_airgapped_manifest.yaml</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-3-pattern-b-siloed/3.4-product-collaboration-vpc-sc-signoff.md')">&#128196; 3.4 VPC-SC Sign-Off</button>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py')">&#128187; 3.5 run_silo_security_tests.py</button>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf')">&#128187; 3.6 Terraform main.tf</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/codelab-90min-regulated-airgapped.md')">&#128196; 3.8 90-Min Codelab</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/workshop-deck-pattern-b.md')">&#128196; 3.8 Workshop Deck MD</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-3-pattern-b-siloed/3.9-go-demos-and-video-script.md')">&#128196; 3.9 Demo & Video Script</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="ov-onepager-card" id="overview-page-WS4" data-ov-page="WS4" data-no-hover-toolbar="true" style="border-top-color:#d97706;">
+        <div class="ov-onepager-hdr">
+          <div style="flex:1 1 460px; min-width:0;">
+            <div style="margin-bottom:4px;">
+              <span class="badge badge-blue" style="font-size:10.5px;">PAGE 4 OF 6 • BLOG 4 (WS4 • PATTERN C) • 13 MIN READ</span>
+            </div>
+            <h3 style="margin:0 0 3px 0; font-size:18px; font-weight:800; color:#0f172a;">Pattern C: Dynamic Hybrid Routing & Zero-Downtime Tier Upgrades</h3>
+            <div style="font-size:11.5px; color:#475569; font-weight:600;">Audience: Cloud Architects, Platform Product Managers & FinOps Leads Operating Tiered B2B SaaS</div>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+            <button type="button" class="ov-chip primary" onclick="openDocInReader('blogs/ws4-pattern-c-hybrid-dynamic-tiering.md')">&#128214; Open Full Blog in Reader &rarr;</button>
+            <button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws4-pattern-c-hybrid-dynamic-tiering.md', 'live-3p-before-after-ui-proof')">&#128260; Before/After UIs</button>
+            <button type="button" class="ov-chip" onclick="openCloudViewerModal('WS4', 1, 'slides')">&#128065;&#65039; Cloud Viewer</button>
+            <a class="ov-chip" href="https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit" target="_blank" rel="noopener noreferrer">&#128999; Google Slides &nearr;</a>
+            <a class="ov-chip" href="https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/edit" target="_blank" rel="noopener noreferrer">&#128998; Google Doc &nearr;</a>
+            <a class="ov-chip" href="https://github.com/nitinaggarwal-12/blogs/blob/main/blogs/ws4-pattern-c-hybrid-dynamic-tiering.md" target="_blank" rel="noopener noreferrer">&#128025; GitHub MD &nearr;</a>
+          </div>
+        </div>
+
+        <div class="ov-two-col">
+          <div style="display:flex; flex-direction:column; gap:12px; min-width:0;">
+            <div class="ov-subbox">
+              <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
+              <p style="margin:0;">Tiered B2B SaaS platforms typically serve a bimodal <strong>950 Standard + 50 Regulated Enterprise</strong> customer portfolio—plus mid-contract Standard &rarr; Enterprise upsells. <strong>Pattern C (Dynamic Hybrid Hub-and-Spoke)</strong> serves every customer from one unified global ingress domain, routing Standard tenants to the shared Pool and bridging Enterprise tenants over <strong>Private Service Connect (PSC)</strong> to dedicated CMEK spokes with <strong><code>0 ms</code>-downtime live tier graduation</strong>.</p>
+            </div>
+            <div class="ov-subbox" style="flex:1;">
+              <h4>2. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
+              <ul>
+              <li><strong>Unidirectional PSC Hub-to-Spoke Bridge</strong>: Consumer Hub VPC connects to Enterprise Producer Spoke <code>ServiceAttachment</code> endpoints over PSC NAT with zero VPC peering or CIDR overlap, blocking pooled spoke impersonation with <code>HTTP 403</code>.</li>
+              <li><strong>3-Phase Live Tier Graduation State Machine</strong> (<button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py')">pattern_c_hybrid_router_and_migrator.py</button>): Executes <code>SHADOW_SYNC</code> (backfill + SHA-256 parity) &rarr; <code>ATOMIC_CUTOVER</code> (sub-ms routing flip, <code>0</code> dropped turns) &rarr; <code>DRAIN_AND_VERIFY</code> (pooled <code>UNLINK</code> + OTel attestation).</li>
+              <li><strong>Instance-Scoped Profile Isolation &amp; 4/4 Migration Suite</strong> (<button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py')">run_tier_migration_suite.py</button>): Upgrades a tenant instance from <code>STANDARD</code> to <code>ENTERPRISE</code> with zero global state bleed across <code>TENANT_PROFILES</code>.</li>
+              <li><strong>Dual-Provider Terraform Blueprint</strong> (<button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf')">4.6 main.tf</button>): Declaratively wires <code>google.hub</code> forwarding rules to <code>google.spoke</code> PSC service attachments.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:12px; min-width:0;">
+            <div class="ov-subbox">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px;">
+                <h4 style="margin:0;">3. Companion 3-Act Editable Slide Deck</h4>
+                <span class="badge badge-green" style="font-size:10px;">12 Editable Slides • 190 Shapes • 58 Connectors</span>
+              </div>
+              <p style="margin:0;"><strong>Act I (Slides 1–3)</strong> Bimodal <code>950 + 50</code> Portfolio Economics &amp; Single-Product Mandate &rarr; <strong>Act II (Slides 4–7)</strong> <code>L1</code> Hub + Pool + PSC Spoke Zones, <code>L2</code> Official <code>#78</code> Hybrid PSC Blueprint (<code>56</code>v/<code>23</code>e), <code>L3</code> <code>SHADOW_SYNC &rarr; ATOMIC_CUTOVER &rarr; DRAIN</code> Swimlane, <code>L4</code> PSC Routing &amp; Attestation Packet &rarr; <strong>Act III (Slides 8–12)</strong> Cross-Spoke <code>HTTP 403</code> Breakers, <code>4/4</code> Migration Matrix, Dual-Provider Terraform Proof &amp; Roadmap.</p>
+            </div>
+            <div class="ov-subbox" style="flex:1;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+                <h4 style="margin:0;">4. Genuine 2880&times;1800 Before &rarr; After 3P SaaS Proof</h4>
+                <button type="button" class="ov-chip" style="padding:1px 7px; font-size:10.5px;" onclick="openDocInReader('blogs/ws4-pattern-c-hybrid-dynamic-tiering.md', 'live-3p-before-after-ui-proof')">Interactive Split Slider &rarr;</button>
+              </div>
+              <div class="ov-ba-mini-grid">
+                <div class="ov-ba-mini-card">
+                  <div style="display:flex; justify-content:space-between; align-items:center; gap:4px; padding:5px 8px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:10.8px; font-weight:700; color:#0f172a;">
+                    <span>SAAS-02 &bull; Grafana Ent v11.2.0</span>
+                    <code style="font-size:10px; color:#15803d;">IZVODT083Q</code>
+                  </div>
+                  <div class="ov-ba-mini-thumbs">
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_02_grafana_enterprise.png" alt="BEFORE SAAS-02 (Grafana Ent v11.2.0)" title="Click to zoom BEFORE UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_02_grafana_enterprise.png', 'BEFORE SAAS-02 (Grafana Ent v11.2.0)')" decoding="async" />
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_02_grafana_enterprise.png" alt="AFTER SAAS-02 (Grafana Ent v11.2.0 • Target IZVODT083Q)" title="Click to zoom AFTER UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_02_grafana_enterprise.png', 'AFTER SAAS-02 (Grafana Ent v11.2.0 • Target IZVODT083Q)')" decoding="async" />
+                  </div>
+                  <div style="padding:6px 8px; font-size:10.8px; color:#334155; line-height:1.35; flex:1;">
+                    <div style="margin-bottom:4px;"><strong>Before &rarr; After:</strong> 1-panel baseline (v1) -> 2-panel live RLS workbook (v2)</div>
+                    <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://cymbal-gcp-grafana-ent-fm3mts5x3a-uw.a.run.app/d/finvault-sre-wb?orgId=1" target="_blank" rel="noopener noreferrer">Live SaaS UI &nearr;</a>
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json" target="_blank" rel="noopener noreferrer">S3 JSON &nearr;</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="ov-ba-mini-card">
+                  <div style="display:flex; justify-content:space-between; align-items:center; gap:4px; padding:5px 8px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:10.8px; font-weight:700; color:#0f172a;">
+                    <span>SAAS-05 &bull; Gitea SRE v1.22.3</span>
+                    <code style="font-size:10px; color:#15803d;">K5JAEFCQ6E</code>
+                  </div>
+                  <div class="ov-ba-mini-thumbs">
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_05_gitea_sre.png" alt="BEFORE SAAS-05 (Gitea SRE v1.22.3)" title="Click to zoom BEFORE UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_05_gitea_sre.png', 'BEFORE SAAS-05 (Gitea SRE v1.22.3)')" decoding="async" />
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_05_gitea_sre.png" alt="AFTER SAAS-05 (Gitea SRE v1.22.3 • Target K5JAEFCQ6E)" title="Click to zoom AFTER UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_05_gitea_sre.png', 'AFTER SAAS-05 (Gitea SRE v1.22.3 • Target K5JAEFCQ6E)')" decoding="async" />
+                  </div>
+                  <div style="padding:6px 8px; font-size:10.8px; color:#334155; line-height:1.35; flex:1;">
+                    <div style="margin-bottom:4px;"><strong>Before &rarr; After:</strong> Issue #1 open (0 comments) -> 1 SDP-redacted RCA & Valkey receipt comment</div>
+                    <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://cymbal-gcp-gitea-sre-fm3mts5x3a-uw.a.run.app/finvault/sre-escalations/issues/1" target="_blank" rel="noopener noreferrer">Live SaaS UI &nearr;</a>
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json" target="_blank" rel="noopener noreferrer">S3 JSON &nearr;</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ov-asset-directory">
+          <div class="ov-asset-row">
+            <span class="ov-asset-lbl">&#128218; Publication, Slides &amp; Docs:</span>
+            <div class="ov-asset-chips">
+              <button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws4-pattern-c-hybrid-dynamic-tiering.md')">Portal Blog Reader</button>
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit" target="_blank" rel="noopener noreferrer">Google Slides (Edit) &nearr;</a>
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/export/pdf" target="_blank" rel="noopener noreferrer">Slides PDF &nearr;</a>
+              <a class="ov-chip" href="slides/ws4-pattern-c-hybrid-editable-slides.pptx" download>Download .pptx</a>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('blogs/ws4-pattern-c-hybrid-dynamic-tiering.deck.json')">.deck.json Spec</button>
+              <a class="ov-chip" href="https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/edit" target="_blank" rel="noopener noreferrer">Google Doc (Edit) &nearr;</a>
+              <a class="ov-chip" href="https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/export?format=pdf" target="_blank" rel="noopener noreferrer">Doc PDF &nearr;</a>
+              <a class="ov-chip" href="https://github.com/nitinaggarwal-12/blogs/blob/main/blogs/ws4-pattern-c-hybrid-dynamic-tiering.md" target="_blank" rel="noopener noreferrer">GitHub Raw/Blob &nearr;</a>
+            </div>
+          </div>
+          <div class="ov-asset-row">
+            <span class="ov-asset-lbl">&#128506;&#65039; Official #78 Blueprints:</span>
+            <div class="ov-asset-chips">
+              <button type="button" class="ov-chip" onclick="openGenuineScreenshotLightbox('diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio.png', 'WS 4.1 Hybrid PSC (#78 Blueprint)')">&#128269; WS 4.1 Hybrid PSC PNG</button><a class="ov-chip" href="diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio" target="_blank" rel="noopener noreferrer">.drawio</a><a class="ov-chip" href="diagrams/ws4-pattern-c-hybrid-psc-and-migration.svg" target="_blank" rel="noopener noreferrer">.svg</a><button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('diagrams/vision_metadata/ws4-pattern-c-hybrid-psc-and-migration.vision.json')">.vision.json</button>
+              <button type="button" class="ov-chip" onclick="openGenuineScreenshotLightbox('diagrams/ws4-hub-and-spoke-demo-env-setup-topology.drawio.png', 'WS 4.2 Hub-Spoke Setup (#78 Blueprint)')">&#128269; WS 4.2 Hub-Spoke Setup PNG</button><a class="ov-chip" href="diagrams/ws4-hub-and-spoke-demo-env-setup-topology.drawio" target="_blank" rel="noopener noreferrer">.drawio</a><a class="ov-chip" href="diagrams/ws4-hub-and-spoke-demo-env-setup-topology.svg" target="_blank" rel="noopener noreferrer">.svg</a><button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('diagrams/vision_metadata/ws4-hub-and-spoke-demo-env-setup-topology.vision.json')">.vision.json</button>
+              <button type="button" class="ov-chip" onclick="openGenuineScreenshotLightbox('diagrams/ws4-zero-downtime-tier-upgrade-sequence.drawio.png', 'WS 4.5 Upgrade Sequence (#78 Blueprint)')">&#128269; WS 4.5 Upgrade Sequence PNG</button><a class="ov-chip" href="diagrams/ws4-zero-downtime-tier-upgrade-sequence.drawio" target="_blank" rel="noopener noreferrer">.drawio</a><a class="ov-chip" href="diagrams/ws4-zero-downtime-tier-upgrade-sequence.svg" target="_blank" rel="noopener noreferrer">.svg</a><button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('diagrams/vision_metadata/ws4-zero-downtime-tier-upgrade-sequence.vision.json')">.vision.json</button>
+              <button type="button" class="ov-chip" onclick="openGenuineScreenshotLightbox('diagrams/ws4-terraform-hybrid-psc-blueprint-resource-graph.drawio.png', 'WS 4.6 Terraform PSC Graph (#78 Blueprint)')">&#128269; WS 4.6 Terraform PSC Graph PNG</button><a class="ov-chip" href="diagrams/ws4-terraform-hybrid-psc-blueprint-resource-graph.drawio" target="_blank" rel="noopener noreferrer">.drawio</a><a class="ov-chip" href="diagrams/ws4-terraform-hybrid-psc-blueprint-resource-graph.svg" target="_blank" rel="noopener noreferrer">.svg</a><button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('diagrams/vision_metadata/ws4-terraform-hybrid-psc-blueprint-resource-graph.vision.json')">.vision.json</button>
+            </div>
+          </div>
+          <div class="ov-asset-row">
+            <span class="ov-asset-lbl">&#128736;&#65039; Deliverables, Code &amp; Labs:</span>
+            <div class="ov-asset-chips">
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md')">&#128196; 4.1 Case Study & Arch</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md')">&#128196; 4.2 Hub & Spoke Setup</button>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py')">&#128187; 4.3 pattern_c_hybrid_router_and_migrator.py</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-4-pattern-c-hybrid/4.4-product-collaboration-psc-and-registry.md')">&#128196; 4.4 PSC & Registry Collab</button>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py')">&#128187; 4.5 run_tier_migration_suite.py</button>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf')">&#128187; 4.6 Terraform main.tf</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-4-pattern-c-hybrid/4.8-codelab-and-workshop-deck/codelab-90min-multi-pattern-master-lab.md')">&#128196; 4.8 90-Min Master Lab</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-4-pattern-c-hybrid/4.8-codelab-and-workshop-deck/workshop-deck-pattern-c.md')">&#128196; 4.8 Workshop Deck MD</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-4-pattern-c-hybrid/4.9-go-demos-and-video-script.md')">&#128196; 4.9 Demo & Video Script</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="ov-onepager-card" id="overview-page-WS5" data-ov-page="WS5" data-no-hover-toolbar="true" style="border-top-color:#0284c7;">
+        <div class="ov-onepager-hdr">
+          <div style="flex:1 1 460px; min-width:0;">
+            <div style="margin-bottom:4px;">
+              <span class="badge badge-blue" style="font-size:10.5px;">PAGE 5 OF 6 • BLOG 5 (WS5 • CAPSTONE) • 14 MIN READ</span>
+            </div>
+            <h3 style="margin:0 0 3px 0; font-size:18px; font-weight:800; color:#0f172a;">Executive Decision Guide & The Multi-Tenant Agentic Triad</h3>
+            <div style="font-size:11.5px; color:#475569; font-weight:600;">Audience: CTOs, Principal Architects, CISOs & Platform Product Managers</div>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+            <button type="button" class="ov-chip primary" onclick="openDocInReader('blogs/ws5-decision-guide-and-agentic-triad.md')">&#128214; Open Full Blog in Reader &rarr;</button>
+            <button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws5-decision-guide-and-agentic-triad.md', 'live-3p-before-after-ui-proof')">&#128260; Before/After UIs</button>
+            <button type="button" class="ov-chip" onclick="openCloudViewerModal('WS5', 1, 'slides')">&#128065;&#65039; Cloud Viewer</button>
+            <a class="ov-chip" href="https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit" target="_blank" rel="noopener noreferrer">&#128999; Google Slides &nearr;</a>
+            <a class="ov-chip" href="https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit" target="_blank" rel="noopener noreferrer">&#128998; Google Doc &nearr;</a>
+            <a class="ov-chip" href="https://github.com/nitinaggarwal-12/blogs/blob/main/blogs/ws5-decision-guide-and-agentic-triad.md" target="_blank" rel="noopener noreferrer">&#128025; GitHub MD &nearr;</a>
+          </div>
+        </div>
+
+        <div class="ov-two-col">
+          <div style="display:flex; flex-direction:column; gap:12px; min-width:0;">
+            <div class="ov-subbox">
+              <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
+              <p style="margin:0;">Under-isolating regulated tenants blocks enterprise security sign-off, while over-provisioning dedicated GCP projects for SMB tiers erodes SaaS gross margins. <strong>Blog 5 (WS5)</strong> distills the entire program into a deterministic <strong>2-Question Executive Decision Tree</strong>, the <strong>Multi-Tenant Agentic Triad</strong> (<code>Cryptographic Identity</code> &times; <code>Elastic Compute/Memory Bulkheads</code> &times; <code>Zero-PII FinOps Telemetry</code>), and a prioritized <strong>10-Week GA Engineering Roadmap</strong>.</p>
+            </div>
+            <div class="ov-subbox" style="flex:1;">
+              <h4>2. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
+              <ul>
+              <li><strong>2-Question Deterministic Topology Selector</strong>: (Q1) <em>Do 100% of customers mandate dedicated GCP projects, VPC-SC &amp; CMEK kill-switches?</em> &rarr; <strong>Pattern B</strong>. (Q2) <em>Do you serve mixed Standard + Regulated tiers or need live upgrades?</em> &rarr; <strong>Pattern C</strong>; else <strong>Pattern A</strong>.</li>
+              <li><strong>Pillar 1 — Cryptographic Context Integrity</strong>: End-to-end OBO + RFC 9449 DPoP + Cloud KMS <code>EC-P256</code> context signing across Hops 1–5 (<code>0</code> raw header trust, <code>0</code> cross-user 3LO token reuse).</li>
+              <li><strong>Pillar 2 &amp; 3 — Tiered Bulkheads &amp; Shared-Prefix FinOps</strong>: Combines <code>90%</code> shared prompt-prefix caching &amp; <code>80%</code> reusable Python engine with Valkey rate bulkheads, AlloyDB RLS, PSC graduation, and BigQuery OTel chargeback.</li>
+              <li><strong>Capstone Backlog &amp; 10-Week GA Roadmap</strong> (<button type="button" class="ov-chip" onclick="openDocInReader('workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md')">5.2-capstone-backlog-and-ga-roadmap.md</button>): Sequences productization of <code>GAP-01..05</code> compensating controls across Weeks 1–10.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:12px; min-width:0;">
+            <div class="ov-subbox">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px;">
+                <h4 style="margin:0;">3. Companion 3-Act Editable Slide Deck</h4>
+                <span class="badge badge-green" style="font-size:10px;">12 Editable Slides • 180 Shapes • 54 Connectors</span>
+              </div>
+              <p style="margin:0;"><strong>Act I (Slides 1–3)</strong> Executive Synthesis &amp; 7-Dimension Pattern Comparison &rarr; <strong>Act II (Slides 4–7)</strong> <code>L1</code> Agentic Triad Zones, <code>L2</code> Decision-Tree 3-Outcome Blueprint (<code>46</code>v/<code>19</code>e), <code>L3</code> Unified Cross-Pattern Swimlane, <code>L4</code> End-to-End OTel Chargeback Packet &rarr; <strong>Act III (Slides 8–12)</strong> Unified <code>400/401/403/422/423/429</code> Guardrails, <code>GAP-01..05</code> Backlog, <code>30/30</code> Multi-Cloud Proof &amp; 10-Week Execution Plan.</p>
+            </div>
+            <div class="ov-subbox" style="flex:1;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+                <h4 style="margin:0;">4. Genuine 2880&times;1800 Before &rarr; After 3P SaaS Proof</h4>
+                <button type="button" class="ov-chip" style="padding:1px 7px; font-size:10.5px;" onclick="openDocInReader('blogs/ws5-decision-guide-and-agentic-triad.md', 'live-3p-before-after-ui-proof')">Interactive Split Slider &rarr;</button>
+              </div>
+              <div class="ov-ba-mini-grid">
+                <div class="ov-ba-mini-card">
+                  <div style="display:flex; justify-content:space-between; align-items:center; gap:4px; padding:5px 8px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:10.8px; font-weight:700; color:#0f172a;">
+                    <span>SAAS-08 &bull; Directus HCM v11.1.0</span>
+                    <code style="font-size:10px; color:#15803d;">RAOTMUMJTZ</code>
+                  </div>
+                  <div class="ov-ba-mini-thumbs">
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_08_directus_hcm.png" alt="BEFORE SAAS-08 (Directus HCM v11.1.0)" title="Click to zoom BEFORE UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_08_directus_hcm.png', 'BEFORE SAAS-08 (Directus HCM v11.1.0)')" decoding="async" />
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_08_directus_hcm.png" alt="AFTER SAAS-08 (Directus HCM v11.1.0 • Target RAOTMUMJTZ)" title="Click to zoom AFTER UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_08_directus_hcm.png', 'AFTER SAAS-08 (Directus HCM v11.1.0 • Target RAOTMUMJTZ)')" decoding="async" />
+                  </div>
+                  <div style="padding:6px 8px; font-size:10.8px; color:#334155; line-height:1.35; flex:1;">
+                    <div style="margin-bottom:4px;"><strong>Before &rarr; After:</strong> 2 baseline HCM items -> 3 Items (Elena Rostova added, [REDACTED_US_SSN])</div>
+                    <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://cymbal-gcp-directus-hcm-fm3mts5x3a-uw.a.run.app/admin/content/hcm_compensation" target="_blank" rel="noopener noreferrer">Live SaaS UI &nearr;</a>
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json" target="_blank" rel="noopener noreferrer">S3 JSON &nearr;</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="ov-ba-mini-card">
+                  <div style="display:flex; justify-content:space-between; align-items:center; gap:4px; padding:5px 8px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:10.8px; font-weight:700; color:#0f172a;">
+                    <span>SAAS-09 &bull; Datalust Seq v2024.3</span>
+                    <code style="font-size:10px; color:#15803d;">G767QR3TQZ</code>
+                  </div>
+                  <div class="ov-ba-mini-thumbs">
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_09_datalust_seq.png" alt="BEFORE SAAS-09 (Datalust Seq v2024.3)" title="Click to zoom BEFORE UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_09_datalust_seq.png', 'BEFORE SAAS-09 (Datalust Seq v2024.3)')" decoding="async" />
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_09_datalust_seq.png" alt="AFTER SAAS-09 (Datalust Seq v2024.3 • Target G767QR3TQZ)" title="Click to zoom AFTER UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_09_datalust_seq.png', 'AFTER SAAS-09 (Datalust Seq v2024.3 • Target G767QR3TQZ)')" decoding="async" />
+                  </div>
+                  <div style="padding:6px 8px; font-size:10.8px; color:#334155; line-height:1.35; flex:1;">
+                    <div style="margin-bottom:4px;"><strong>Before &rarr; After:</strong> Collapsed Seq stream -> Expanded [LIVE-MCP] trace (PASS_ZERO_PROMPT_INJECTION)</div>
+                    <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://cymbal-gcp-seq-apm-fm3mts5x3a-uw.a.run.app/#/events" target="_blank" rel="noopener noreferrer">Live SaaS UI &nearr;</a>
+                      <a class="ov-chip" style="padding:1px 6px; font-size:10.3px;" href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json" target="_blank" rel="noopener noreferrer">S3 JSON &nearr;</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ov-asset-directory">
+          <div class="ov-asset-row">
+            <span class="ov-asset-lbl">&#128218; Publication, Slides &amp; Docs:</span>
+            <div class="ov-asset-chips">
+              <button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws5-decision-guide-and-agentic-triad.md')">Portal Blog Reader</button>
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit" target="_blank" rel="noopener noreferrer">Google Slides (Edit) &nearr;</a>
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/export/pdf" target="_blank" rel="noopener noreferrer">Slides PDF &nearr;</a>
+              <a class="ov-chip" href="slides/ws5-wrap-up-editable-slides.pptx" download>Download .pptx</a>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('blogs/ws5-decision-guide-and-agentic-triad.deck.json')">.deck.json Spec</button>
+              <a class="ov-chip" href="https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit" target="_blank" rel="noopener noreferrer">Google Doc (Edit) &nearr;</a>
+              <a class="ov-chip" href="https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/export?format=pdf" target="_blank" rel="noopener noreferrer">Doc PDF &nearr;</a>
+              <a class="ov-chip" href="https://github.com/nitinaggarwal-12/blogs/blob/main/blogs/ws5-decision-guide-and-agentic-triad.md" target="_blank" rel="noopener noreferrer">GitHub Raw/Blob &nearr;</a>
+            </div>
+          </div>
+          <div class="ov-asset-row">
+            <span class="ov-asset-lbl">&#128506;&#65039; Official #78 Blueprints:</span>
+            <div class="ov-asset-chips">
+              <button type="button" class="ov-chip" onclick="openGenuineScreenshotLightbox('diagrams/ws5-decision-tree-and-agentic-triad.drawio.png', 'WS 5.1 Decision Tree & Triad (#78 Blueprint)')">&#128269; WS 5.1 Decision Tree & Triad PNG</button><a class="ov-chip" href="diagrams/ws5-decision-tree-and-agentic-triad.drawio" target="_blank" rel="noopener noreferrer">.drawio</a><a class="ov-chip" href="diagrams/ws5-decision-tree-and-agentic-triad.svg" target="_blank" rel="noopener noreferrer">.svg</a><button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('diagrams/vision_metadata/ws5-decision-tree-and-agentic-triad.vision.json')">.vision.json</button>
+            </div>
+          </div>
+          <div class="ov-asset-row">
+            <span class="ov-asset-lbl">&#128736;&#65039; Deliverables, Code &amp; Labs:</span>
+            <div class="ov-asset-chips">
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md')">&#128196; 5.1 Comparison & Decision Guide</button>
+              <button type="button" class="ov-chip" onclick="openDocInReader('workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md')">&#128196; 5.2 Capstone Backlog & GA Roadmap</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="ov-onepager-card" id="overview-page-ALL" data-ov-page="ALL" data-no-hover-toolbar="true" style="border-top-color:#0f172a;">
+        <div class="ov-onepager-hdr">
+          <div style="flex:1 1 460px; min-width:0;">
+            <div style="margin-bottom:4px;">
+              <span class="badge badge-blue" style="font-size:10.5px;">PAGE 6 OF 6 • MASTER SYNTHESIS (ALL) • SHARED CORE ENGINE &amp; COMPLETE DIRECTORY</span>
+            </div>
+            <h3 style="margin:0 0 3px 0; font-size:18px; font-weight:800; color:#0f172a;">All-Workstreams Master Synthesis, Shared 80% Core Engine &amp; Cross-Cutting Runbooks</h3>
+            <div style="font-size:11.5px; color:#475569; font-weight:600;">25-Slide Master Deck • 27-File Reusable Engine • 9 Companion DevSite Decks • Cryptographic Receipts</div>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+            <button type="button" class="ov-chip primary" onclick="openDocInReader('docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md')">&#128218; Open E2E Master Guide &rarr;</button>
+            <button type="button" class="ov-chip" onclick="openDocInReader('docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md')">&#128260; 10-SaaS Playbook</button>
+            <button type="button" class="ov-chip" onclick="openCloudViewerModal('ALL', 1, 'slides')">&#128065;&#65039; 25-Slide Viewer</button>
+            <a class="ov-chip" href="https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/edit" target="_blank" rel="noopener noreferrer">&#128999; Master Slides &nearr;</a>
+            <a class="ov-chip" href="https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/edit" target="_blank" rel="noopener noreferrer">&#128998; Master Doc &nearr;</a>
+          </div>
+        </div>
+
+        <div class="ov-two-col">
+          <div class="ov-subbox">
+            <h4>1. Master Guides, Operational Runbooks &amp; Interactive Portal Tabs</h4>
+            <ul>
+              <li><strong>End-to-End Workstream &amp; 14-Diagram Master Guide</strong>: <button type="button" class="ov-chip" onclick="openDocInReader('docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md')">Portal Reader</button> • <a class="ov-chip" href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx" download>25-Slide .pptx</a> • <a class="ov-chip" href="https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/export/pdf" target="_blank" rel="noopener noreferrer">25-Slide PDF &nearr;</a></li>
+              <li><strong>10-SaaS &times; 3-Pattern Manual Testing Playbook (30/30 Flows + 20 PNGs)</strong>: <button type="button" class="ov-chip" onclick="openDocInReader('docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md')">Open Playbook</button> • <a class="ov-chip" href="https://github.com/nitinaggarwal-12/blogs/blob/main/docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md" target="_blank" rel="noopener noreferrer">GitHub &nearr;</a></li>
+              <li><strong>10-Stage Google Cloud Console &amp; Cloud Shell SSH Runbook</strong>: <button type="button" class="ov-chip" onclick="openDocInReader('docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md')">Open SSH Runbook</button> • <button type="button" class="ov-chip" onclick="openDocInReader('docs/MULTI-MODEL-LLM-JUDGE-EVALUATION-REPORT.md')">LLM-Judge Report</button></li>
+              <li><strong>Portal Interactive Workspaces</strong>: <button type="button" class="ov-chip" onclick="switchTab('patterns')">1. &#129517; Blog Series Reader</button> • <button type="button" class="ov-chip" onclick="switchTab('simulator')">2. &#9889; Live 5-Hop Simulator (20/20)</button> • <button type="button" class="ov-chip" onclick="jumpToTab3BeforeAfterHub()">3. &#128260; 20-PNG Before/After Hub</button> • <button type="button" class="ov-chip" onclick="switchTab('forensic')">4. &#9989; 13/13 Forensic Audit</button></li>
+            </ul>
+          </div>
+
+          <div class="ov-subbox">
+            <h4>2. Reusable 80% Shared Core Engine (<code>core-cymbal-agent/</code>)</h4>
+            <ul>
+              <li><strong>Pipeline, Models &amp; Live GCP KMS/BQ Bridge</strong>: <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/models.py')">models.py</button> • <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/runtime_pipeline.py')">runtime_pipeline.py</button> • <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/gcp_live_bridge.py')">gcp_live_bridge.py</button> • <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/tests/test_five_hop_pipeline.py')">test_five_hop_pipeline.py</button></li>
+              <li><strong>5-Hop Governance Gates</strong>: <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/governance/hop1_edge_identity_pep.py')">hop1</button> • <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py')">hop2</button> • <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py')">hop3</button> • <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/governance/hop4_model_armor_guardrails.py')">hop4</button> • <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/governance/hop5_data_rls_and_otel.py')">hop5</button></li>
+              <li><strong>Agents &amp; 2LO/3LO/10-SaaS MCP Servers</strong>: <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/agents/shared_diagnostic_agent.py')">shared_diagnostic_agent.py</button> • <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/agents/finvault_agent_alpha.py')">finvault_agent_alpha.py</button> • <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py')">cymbal_mcp_hub.py</button> • <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py')">enterprise_5_saas_bi_mcp.py</button></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="ov-asset-directory">
+          <div class="ov-asset-row">
+            <span class="ov-asset-lbl">&#127916; 9 Companion DevSite Decks:</span>
+            <div class="ov-asset-chips">
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/1T2vGGXJe_HD-eq25Hrua2nvndkzIKDyL7DUwUDdtvaU/edit" target="_blank" rel="noopener noreferrer">DOC-MT-01 (Identity) &nearr;</a>
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/1CTQ2EtyaX6JMOok1ra5jW3GEFXPzWZ4L4paIfKpmKOs/edit" target="_blank" rel="noopener noreferrer">DOC-MT-02 (Trilemma) &nearr;</a>
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/15uqspZ_Sck5yaR5W4sDFPHQ_7GKsf6UQy94oCcKEb3M/edit" target="_blank" rel="noopener noreferrer">DOC-MT-03 (Pool) &nearr;</a>
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/1BBJYWllV606yVoGXfO8OyDCxTMt_oQpYUyszaibWeTY/edit" target="_blank" rel="noopener noreferrer">DOC-MT-04 (Hybrid PSC) &nearr;</a>
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/1sFabWmeLM2EntoGkwaaidqytF05tX5HPGILhEYcn9sM/edit" target="_blank" rel="noopener noreferrer">DOC-MT-05 (Silo CMEK) &nearr;</a>
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/1Zr7Hj_tFGvfL1x_WNTvwmZ6mpZlcNyIIFhIZy6k41ys/edit" target="_blank" rel="noopener noreferrer">DOC-MT-06 (Red-Team) &nearr;</a>
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/1gHV5hVNCB8phgq_JYQiNfoOGYOt7VFW5MuZOzKd4jLU/edit" target="_blank" rel="noopener noreferrer">DOC-REF-07 (GraphRAG) &nearr;</a>
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/1fHwVkECJFr1HQvkYHYuMOraerpxO-0C6guF8PFHLlTw/edit" target="_blank" rel="noopener noreferrer">DOC-REF-08 (Zero-Trust) &nearr;</a>
+              <a class="ov-chip" href="https://docs.google.com/presentation/d/10TpWnWIho8kXmN4866HXz34CI3lKxmh-NWSAd6QYiMM/edit" target="_blank" rel="noopener noreferrer">DOC-REF-09 (MCP/A2A) &nearr;</a>
+            </div>
+          </div>
+          <div class="ov-asset-row">
+            <span class="ov-asset-lbl">&#128220; Cryptographic Receipts:</span>
+            <div class="ov-asset-chips">
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('data/cloudrun_deploy_receipt.json')">cloudrun_deploy_receipt.json</button>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('docs/genuine_3p_before_after_provenance_receipt.json')">genuine_3p_before_after_provenance_receipt.json</button>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('docs/genuine_ui_screenshot_provenance_receipt.json')">genuine_ui_screenshot_provenance_receipt.json</button>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('docs/cloud_console_verification_receipt.json')">cloud_console_verification_receipt.json</button>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('docs/third_party_5_saas_verification_receipt.json')">third_party_5_saas_verification_receipt.json</button>
+              <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('data/run_continuity_ledger.json')">run_continuity_ledger.json</button>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
     <!-- TAB 1: WORKSTREAM 1-5 ARCHITECTURE, SLIDES & FULL-WIDTH SERIES READER -->
-    <section id="tab-patterns" class="tab-pane active">
+    <section id="tab-patterns" class="tab-pane">
       <div class="ws-hub-card" id="guided-workstream-hub">
         <!-- Unified Workstream 1–5 + Master Deck Stepper -->
         <div class="ws-stepper" role="tablist" aria-label="Select Workstream 1 to 5 or All-in-One Master Deck" style="margin-top:0;">
@@ -4900,7 +6133,8 @@
         simLabel: '⚡ Run Full Breach Simulation Suite',
         docs: [
           { label: '📚 End-to-End Master Guide (WS1–WS5)', path: 'docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md' },
-          { label: '🔄 10-SaaS Before/After Playbook (20 PNGs)', path: 'docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md' }
+          { label: '🔄 10-SaaS Before/After Playbook (20 PNGs)', path: 'docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md' },
+          { label: '🏠 Executive 1-Page Blog Summaries & Links', path: 'docs/EXECUTIVE-BLOG-SUMMARIES-AND-CONTENT-DIRECTORY.md' }
         ],
         diagrams: [
           { id: 'ws1-multi-tenant-taxonomy-overview', label: 'WS1 Fig 1: Multi-Tenant Taxonomy', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 4, logicalSlide: 5, technicalSlide: 6 },
@@ -7219,7 +8453,12 @@
           const btn = document.getElementById('tab-btn-' + tabParam);
           switchTab(tabParam, btn);
         }
+        const pageParam = initialParams.get('page');
+        if (pageParam && ['ALL_PAGES', 'WS1', 'WS2', 'WS3', 'WS4', 'WS5', 'ALL'].includes(pageParam) && typeof window.filterOverviewOnePager === 'function') {
+          window.filterOverviewOnePager(pageParam, null, true);
+        }
         if (wbParam && ['execution', 'resources', 'codebase', 'runbook', 'deliverables'].includes(wbParam)) {
+          if (!tabParam) switchTab('screenshots', document.getElementById('tab-btn-screenshots'));
           switchE2EWorkbenchTab(wbParam);
         }
         if (initialDocParam) {
@@ -7332,6 +8571,58 @@
       }
     };
 
+
+
+    window.filterOverviewOnePager = function filterOverviewOnePager(pageKey, btn, skipUrlSync) {
+      const ov = document.getElementById('tab-overview');
+      if (!ov) return;
+      ov.querySelectorAll('.ov-page-filter-btn').forEach(b => {
+        const isAct = b === btn || (!btn && b.getAttribute('data-ov-filter') === pageKey);
+        b.classList.toggle('active', isAct);
+        b.setAttribute('aria-pressed', isAct ? 'true' : 'false');
+      });
+      ov.querySelectorAll('.ov-onepager-card').forEach(card => {
+        const k = card.getAttribute('data-ov-page');
+        card.style.display = (pageKey === 'ALL_PAGES' || k === pageKey) ? '' : 'none';
+      });
+      if (!skipUrlSync) {
+        try {
+          const u = new URL(window.location.href);
+          if (pageKey === 'ALL_PAGES') u.searchParams.delete('page');
+          else u.searchParams.set('page', pageKey);
+          history.replaceState(null, '', u.pathname + u.search + u.hash);
+        } catch (_) {}
+      }
+    };
+
+    window.scrollToOverviewOnePager = function scrollToOverviewOnePager(pageKey) {
+      const ov = document.getElementById('tab-overview');
+      if (!ov) return;
+      if (!ov.classList.contains('active')) {
+        switchTab('overview', document.getElementById('tab-btn-overview'));
+      }
+      window.filterOverviewOnePager('ALL_PAGES', null, true);
+      const card = document.getElementById('overview-page-' + pageKey);
+      if (card) {
+        const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        card.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
+      }
+    };
+
+    window.copyOverviewSummaryMarkdown = async function copyOverviewSummaryMarkdown(btn) {
+      try {
+        const resp = await fetch('/api/artifact?path=' + encodeURIComponent('docs/EXECUTIVE-BLOG-SUMMARIES-AND-CONTENT-DIRECTORY.md'));
+        const data = await resp.json();
+        if (data && data.content) {
+          await navigator.clipboard.writeText(data.content);
+          if (btn) {
+            const prev = btn.textContent;
+            btn.textContent = '✓ Copied Summary MD!';
+            setTimeout(() => { btn.textContent = prev; }, 1800);
+          }
+        }
+      } catch (_) {}
+    };
 
     window.setBeforeAfterViewMode = function setBeforeAfterViewMode(mode, btn) {
       const hub = document.getElementById('genuine-3p-before-after-hub');

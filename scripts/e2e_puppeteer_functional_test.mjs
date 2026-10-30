@@ -212,6 +212,35 @@ async function run() {
   await new Promise((r) => setTimeout(r, 1000));
 
   const tabsResult = await page.evaluate(async () => {
+    // Verify `/` defaults to the Executive Landing Page (#tab-overview) with 6 One-Pagers, 6 Matrix Rows & 20 Retina Thumbnails
+    const ovSec = document.getElementById("tab-overview");
+    const overviewLandingActive = Boolean(ovSec && ovSec.classList.contains("active"));
+    const overviewOnePagerCount = ovSec ? ovSec.querySelectorAll(".ov-onepager-card").length : 0;
+    const overviewMatrixRows = ovSec ? ovSec.querySelectorAll("table.ov-master-table tbody tr").length : 0;
+    const headerHeightPx = document.querySelector(".portal-top-header")?.offsetHeight || 0;
+    const ovTbl = ovSec?.querySelector("table.ov-master-table");
+    const ovTblOverflow = Boolean(ovTbl && ovTbl.parentElement && ovTbl.offsetWidth > ovTbl.parentElement.clientWidth + 4);
+    const ovImgs = ovSec ? Array.from(ovSec.querySelectorAll("img")) : [];
+    for (const img of ovImgs) {
+      img.scrollIntoView({ behavior: "instant", block: "center" });
+    }
+    await Promise.all(
+      ovImgs.map((img) => {
+        if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+        return new Promise((res) => {
+          const done = () => res();
+          img.addEventListener("load", done, { once: true });
+          img.addEventListener("error", done, { once: true });
+          setTimeout(done, 5000);
+        });
+      })
+    );
+    const brokenOvImgs = ovImgs.filter((img) => !img.complete || img.naturalWidth < 2800).map((img) => img.getAttribute("src"));
+    if (typeof window.filterOverviewOnePager === "function") {
+      window.filterOverviewOnePager("WS2");
+      window.filterOverviewOnePager("ALL_PAGES");
+    }
+
     const tabBtns = Array.from(document.querySelectorAll(".tab-btn"));
     // Click Tab 2 (Simulator) and execute a scenario
     const tab2 = tabBtns.find((b) => b.textContent.includes("Live 5-Hop Simulator"));
@@ -334,6 +363,13 @@ async function run() {
     const forensicRows = document.querySelectorAll("#forensic-table-body tr").length;
 
     return {
+      overviewLandingActive,
+      overviewOnePagerCount,
+      overviewMatrixRows,
+      headerHeightPx,
+      ovTblOverflow,
+      ovImgsCount: ovImgs.length,
+      brokenOvImgs,
       simVisible,
       simRan: simOut.length > 20,
       cloudVisible,
@@ -382,6 +418,17 @@ async function run() {
       !tabsResult.hasBaEc2Leak,
     "Per-Blog Tab 1 Before/After Quick-Jump, TOC & Inline Toolbar + Tab 3 Genuine 10-App Hub (20/20 2880x1800 PNGs)",
     `quickBtn=${tabsResult.hasQuickBaBtn}, inlineToolbar=${tabsResult.hasInlineBaToolbar}, cards=${tabsResult.baHubCards}, imgs=${tabsResult.baPairImgsCount}, broken=${tabsResult.brokenBaImgs.length}, ec2Leak=${tabsResult.hasBaEc2Leak}`
+  );
+  assert(
+    tabsResult.overviewLandingActive &&
+      tabsResult.overviewOnePagerCount === 6 &&
+      tabsResult.overviewMatrixRows === 6 &&
+      tabsResult.ovImgsCount === 20 &&
+      tabsResult.brokenOvImgs.length === 0 &&
+      !tabsResult.ovTblOverflow &&
+      tabsResult.headerHeightPx <= 60,
+    "Default `/` Executive Landing Page (#tab-overview: 6 One-Pagers, 6-Row Master Matrix, 20/20 Retina Previews & Zero Overflow)",
+    `active=${tabsResult.overviewLandingActive}, pages=${tabsResult.overviewOnePagerCount}, rows=${tabsResult.overviewMatrixRows}, imgs=${tabsResult.ovImgsCount}, broken=${tabsResult.brokenOvImgs.length}, hdrH=${tabsResult.headerHeightPx}px`
   );
   assert(pageErrors.length === 0, "Zero Uncaught Page Errors", `errors=${pageErrors.length}`);
 

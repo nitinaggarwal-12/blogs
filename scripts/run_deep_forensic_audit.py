@@ -419,6 +419,8 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             "setInlineFigureMode",
             "toggleInlineFigureFlow",
             "let activeHubFlowTab = 'logical';",
+            "portal-executive-landing-page",
+            "tab-btn-overview",
             "tab-screenshots",
             "e2e-pane-deliverables",
             "blog-visual-proof-screenshots-gallery",
