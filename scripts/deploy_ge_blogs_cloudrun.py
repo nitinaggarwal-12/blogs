@@ -255,19 +255,19 @@ def sync_receipt_after_deploy(ready_rev: str) -> None:
                 if fde_res.returncode == 0:
                     print(f"  [git-sync]  Also pushed data/cloudrun_deploy_receipt.json ({ready_rev}) to fde/main")
         else:
-            # Revert commit & restore tracked receipt so working tree stays 100% clean for future `git pull`
+            # Revert commit & restore tracked receipt (both staged index + worktree) so future `git pull` stays clean
             subprocess.run(["git", "reset", "--mixed", "HEAD~1"], cwd=BLOGS_ROOT, check=False, env=git_env)
-            subprocess.run(["git", "checkout", "--", "data/cloudrun_deploy_receipt.json"], cwd=BLOGS_ROOT, check=False, env=git_env)
+            subprocess.run(["git", "checkout", "HEAD", "--", "data/cloudrun_deploy_receipt.json"], cwd=BLOGS_ROOT, check=False, env=git_env)
             print("  [git-clean] Kept working tree clean (receipt saved to /tmp/ge_blogs_cloudrun_deploy_receipt.json)")
     except Exception as exc:
-        subprocess.run(["git", "checkout", "--", "data/cloudrun_deploy_receipt.json"], cwd=BLOGS_ROOT, check=False, env=git_env)
+        subprocess.run(["git", "checkout", "HEAD", "--", "data/cloudrun_deploy_receipt.json"], cwd=BLOGS_ROOT, check=False, env=git_env)
         print(f"  [git-clean] Restored clean receipt state ({exc})")
 
 
 def main() -> None:
     verify_only = "--verify-only" in sys.argv[1:]
     if "--pull" in sys.argv[1:]:
-        subprocess.run(["git", "checkout", "--", "data/cloudrun_deploy_receipt.json"], cwd=BLOGS_ROOT, check=False)
+        subprocess.run(["git", "checkout", "HEAD", "--", "data/cloudrun_deploy_receipt.json"], cwd=BLOGS_ROOT, check=False)
         subprocess.run(["git", "pull", "--ff-only", "origin", "main"], cwd=BLOGS_ROOT, check=True)
     service_name = "ge-blogs"
     dest_host = "us-west1-docker.pkg.dev"
