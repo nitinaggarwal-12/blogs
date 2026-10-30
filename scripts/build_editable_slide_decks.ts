@@ -1949,20 +1949,20 @@ function buildComparisonTableSynthesisCards(
   if (isAgendaTable) {
     return [
       {
-        title: '1. Macro-to-Micro L1 → L2 → L3 → L4 Flow',
-        body: 'Restores strict top-down abstraction: L1 Logical (Slide 5) → L2 Physical Blueprint (Slide 6) → L3 Process & Breakers (Slide 7) → L4 Wire JWT (Slide 8).',
+        title: '1. Conceptual → Process → L1–L4 Flow',
+        body: 'Progresses from Conceptual (Slide 4) & Process (Slide 5) to L1 Logical (Slide 6), L2 Blueprints (Slides 8–9), L3 UML (Slide 10) & L4 Wire (Slide 11).',
       },
       {
         title: '2. Unified Layer vs. Perimeter Taxonomy',
-        body: 'Separates Slide 5’s 3 Logical Security Layers (Ingress, 5-Hop Control Plane, Data Planes) from Slide 6’s 4 Physical VPC-SC Network Perimeters.',
+        body: 'Separates Slide 6’s 3 Logical Security Layers (Ingress, 5-Hop Control Plane, Data Planes) from Slides 8–9’s 4 Physical VPC-SC Network Perimeters.',
       },
       {
-        title: '3. Merged L3 UML & Circuit Breakers (Slide 7)',
+        title: '3. Merged L3 UML & Circuit Breakers (Slide 10)',
         body: 'Unifies the 5-Hop happy path (~42ms p95) with fail-closed HTTP 401/403/429/422/423 breakers, <5s Valkey SCAN+UNLINK, and SET NX PX 5000 recovery.',
       },
       {
-        title: '4. Merged SLAs & 5-Part Roadmap (Slide 11)',
-        body: 'Consolidates all Well-Architected SLAs (~42ms 5-Hop, 84.7% token savings, 74% TCO reduction, <30s RTO) directly into the 5 runnable milestones.',
+        title: '4. Dual-Plane Proofs & SLAs (Slides 13–15)',
+        body: 'Pairs grounded GCP/AWS CLI telemetry (Slide 13) & 2880x1800 Retina 3P SaaS UIs (Slide 14) with Well-Architected SLAs & 5 milestones (Slide 15).',
       },
     ];
   }
@@ -2181,7 +2181,7 @@ function addComparisonTableSlide(
   const headerBreadcrumb = isAgendaTable
     ? 'ACT I • EXECUTIVE AGENDA & 5-PART ARCHITECTURAL SERIES NAVIGATION'
     : isGapTable
-      ? 'ACT IV • EAP PRODUCT GAP REGISTER (GAP-01..05) & COMPENSATING CONTROLS'
+      ? 'ACT III • EAP PRODUCT GAP REGISTER (GAP-01..05) & COMPENSATING CONTROLS'
       : isPatternOptionTable
         ? 'ACT I • ARCHITECTURAL OPTIONS & PATTERN A / B / C DECISION MATRIX'
         : 'ACT III • AUTOMATED SECURITY & MIGRATION VERIFICATION MATRIX';
@@ -2204,7 +2204,7 @@ function addComparisonTableSlide(
   });
   slide.addText(
     isAgendaTable
-      ? 'Streamlined 11-slide executive deck & 5-part blog series roadmap: macro-to-micro L1→L2→L3→L4 hierarchy with zero redundant slides.'
+      ? '15-slide executive deck & 5-part blog series roadmap: Conceptual → Process → L1–L4 Technical → Dual-Plane Proofs & SLAs.'
       : isGapTable
         ? 'Production compensating controls in core-cymbal-agent/ closing all 5 multi-tenant EAP limitations with fail-closed gates.'
         : isPatternOptionTable
@@ -4589,7 +4589,7 @@ const ZONE_TOPOLOGY_BY_WS: Record<string, ZoneTopologySpec> = {
     z3MidTitle: 'Sovereign Silo & Hybrid PSC Spokes (Perimeter 4)',
     z3BotBadge: 'OTel',
     z3BotTitle: 'Hop 5: 2LO/3LO MCP & Governance Hub (Perimeters 1–2)',
-    footer: 'Workstream 1 L1 Logical Taxonomy (3 Logical Security Layers → 4 Physical VPC-SC Perimeters on Slide 6)  •  ~42ms p95 5-Hop Control Plane',
+    footer: 'Workstream 1 L1 Logical Taxonomy (3 Logical Security Layers → 4 Physical VPC-SC Perimeters on Slides 8–9)  •  ~42ms p95 5-Hop Control Plane',
   },
   WS2: {
     slideTitle: 'WS2 • ACT II (L1 LOGICAL): Pattern A High-Density Pooled Runtime & AlloyDB RLS Topology',
@@ -7351,13 +7351,16 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
   WS1: {
     verify1: [
       '• Live GCP: ramp-portal-dev (#248990048888) • bbar-138hf0 (#48439189383)',
-      '• Runtime: Cloud Run Gen2 (gVisor runsc, 100% traffic)',
-      '• CLI Gate: run_deep_forensic_audit.py (13/13 PASS)',
+      '• Runtime: Cloud Run Gen2 (gVisor runsc, 100% traffic, 0 cold-start errors)',
+      '• Edge & STS Probe: Spoofed X-Tenant-Id -> HTTP 403; Valid DPoP -> HTTP 200',
+      '• AlloyDB RLS Proof: SET LOCAL app.current_tenant_id -> 0 foreign rows returned',
+      '• CLI Gate: python3 -B scripts/run_deep_forensic_audit.py (13/13 PASS • 107/107)',
       '• Artifact: core-cymbal-agent/runtime_pipeline.py',
     ],
     verify2: [
       '• Dual-Plane: 20/20 GCP + 30/30 10-SaaS MCP PASS',
-      '• 3P UIs (2880×1800): Metabase BI v0.50.26 & Trino SQL v440',
+      '• AWS AgentCore MCP: 10/10 SaaS targets READY (30/30 cross-cloud flows PASS)',
+      '• 3P UIs (2880×1800): Metabase BI v0.50.26 & Trino SQL v440 (20/20 Before/After)',
       '• Ledger: s3://cymbal-aws-federation-393036065405-us-east-1',
       '• Artifact: docs/genuine_3p_before_after_provenance_receipt.json',
     ],
