@@ -3,10 +3,10 @@
   "deckTitle": "Pattern B — Zero-Trust Sovereign Silos: Dedicated Projects, VPC-SC & CMEK Kill-Switch (Workstream 3)",
   "deckSubtitle": "How regulated financial, healthcare, and public-sector enterprises achieve physical Google Cloud project isolation, air-gapped Gemma 3 hosting, and a sub-60-second CMEK kill-switch while reusing 80% of the platform codebase",
   "tldr": [
-    "Meeting Strict Regulatory Sovereignty Mandates: Banking (OCC/FFIEC), healthcare (HIPAA), and sovereign cloud auditors frequently mandate zero shared compute, zero shared storage, and customer-revocable encryption keys.",
-    "80% Reusable ADK Codebase, 20% Dedicated Cloud Perimeter: Pattern B deploys the exact same 5-hop Python ADK runtime inside a dedicated per-tenant Google Cloud project (`cymbal-finvault-silo-prod`).",
-    "Three Hardware-Enforced Perimeter Walls: Every tenant vault is locked by mTLS + IAM Principal Access Boundaries (PAB), a VPC Service Controls (VPC-SC) perimeter, and dedicated Cloud KMS Customer-Managed Encryption Keys (CMEK).",
-    "Sub-60-Second Customer CMEK Kill-Switch (`HTTP 423 Locked`): If a tenant Security Operations Center revokes or disables its Cloud KMS key, all Agent Engine memory, AlloyDB reads, and GKE inference halt immediately with HTTP 423.",
+    "Regulatory Sovereignty Mandates: Banking (OCC/FFIEC), healthcare (HIPAA), and public-sector auditors require zero shared compute or storage.",
+    "80% Reusable Core, 20% Perimeter: Pattern B deploys the exact same 5-hop Python ADK runtime inside a dedicated per-tenant GCP project.",
+    "Three Hardware Perimeter Walls: Every tenant silo is locked by mTLS + IAM PAB, a VPC Service Controls perimeter, and dedicated Cloud KMS CMEK.",
+    "Sub-60s Customer CMEK Kill-Switch: Disabling the tenant Cloud KMS key halts Agent Engine memory, AlloyDB reads, and GKE inference (`HTTP 423`).",
     "Verified 6/6 Sovereign Compliance Suite & Terraform Blueprint: Ships with automated dual-silo security tests (`FinVault` + `RetailStream`), a 4-stage onboarding provisioner, and a 1-click Terraform silo blueprint (`3.6`)."
   ],
   "tldrSpecs": [

@@ -12,7 +12,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const promptCanvasPkg = fs.existsSync(path.resolve(__dirname, '../../PromptCanvas/package.json'))
   ? path.resolve(__dirname, '../../PromptCanvas/package.json')
-  : '/Users/nitinagga/Documents/PromptCanvas/package.json';
+  : path.join(os.homedir(), 'Documents', 'PromptCanvas', 'package.json');
 const require = createRequire(promptCanvasPkg);
 const puppeteer = require('puppeteer-core');
 

@@ -295,16 +295,16 @@ Where:
 - $T_{\\text{think}}(t) \\le B_{\\text{tier}}$ is the Hop 3 clamped reasoning token budget ($B_{\\text{std}} = 4,000\\text{ tokens}$ for RetailStream Standard vs. $B_{\\text{ent}} = 8,000\\text{ tokens}$ for FinVault Enterprise), and $T_{\\text{out}}(t)$ is the final completion length billed at rates $r_{\\text{in}}, r_{\\text{out}}$.
 - $N_{\\text{std}} = 950$ and $N_{\\text{ent}} = 50$ represent the canonical 1,000-tenant B2B SaaS fleet split, where consolidating 950 Standard tenants into $C_{\\text{pool\\_base}}$ while isolating 50 regulated Enterprise tenants into dedicated PSC spokes ($C_{\\text{psc\\_spoke}}$) reduces monthly infrastructure and token TCO by **74%** relative to 1,000 standalone Pattern B silos.
 
-> **Architectural Grounding Boundary (FinOps Token Caching & Fleet TCO Model):** The 90% \`ContextCacheConfig\` prefix discount ($\alpha_{\text{cache}} = 0.10$) and thinking-budget clamp ($B_{\text{std}} = 4,000$, $B_{\text{ent}} = 8,000$) are enforced deterministically at **Hop 3** (\`hop3_compute_finops_bulkhead.py\`, \`runtime_pipeline.py:L99-L162\`) and audited per turn in BigQuery (\`cymbal_agentic_finops_otel.tenant_telemetry_spans\`).
+> **Architectural Grounding Boundary (FinOps Token Caching & Fleet TCO Model):** The 90% \`ContextCacheConfig\` prefix discount ($\\alpha_{\\text{cache}} = 0.10$) and thinking-budget clamp ($B_{\\text{std}} = 4,000$, $B_{\\text{ent}} = 8,000$) are enforced deterministically at **Hop 3** (\`hop3_compute_finops_bulkhead.py\`, \`runtime_pipeline.py:L99-L162\`) and audited per turn in BigQuery (\`cymbal_agentic_finops_otel.tenant_telemetry_spans\`).
 
 ### Operational excellence
 
 - **Maintain a single 80% reusable agent codebase:** Centralize identity verification, catalog pruning, memory namespacing, DLP redaction, and telemetry in [\`core-cymbal-agent/\`](../core-cymbal-agent/) so security patches apply simultaneously to Patterns A, B, and C.
-- **Reproduce the 12/12 CI/CD forensic gate and Cloud Logging audit query:** Run the automated forensic and simulation verification suite locally or in Cloud Build:
+- **Reproduce the 13/13 CI/CD forensic gate and Cloud Logging audit query:** Run the automated forensic and simulation verification suite locally or in Cloud Build:
 
 \`\`\`bash
 python3 -B scripts/run_deep_forensic_audit.py
-# Expected output: 12/12 FORENSIC CHECKS PASSED • 107/107 SIMULATION & SAAS ASSERTIONS PASSED
+# Expected output: 13/13 FORENSIC CHECKS PASSED • 107/107 SIMULATION & SAAS ASSERTIONS PASSED
 \`\`\`
 
 And query **Cloud Logging Explorer** across \`cymbal-control-plane\` (\`#248990048888\`), \`cymbal-pooled-prod\` (\`#638420508320\`), and \`cymbal-build-sandbox\` (\`#887605034827\`) to verify zero cross-tenant RLS rows and deterministic fail-closed status codes:
@@ -458,14 +458,21 @@ function buildBlogMarkdown(spec, existingDiskContent = '') {
   parts.push(spec.considerationsMd);
   parts.push('');
 
-  // Preserve the Live Multi-Cloud 10-SaaS Verification Matrix section if present on disk
+  // Preserve the Live Multi-Cloud 10-SaaS Verification Matrix section without duplicating tables already in spec.considerationsMd
   const tenSaasMatch = existingDiskContent.match(/## Live Multi-Cloud \(Google Cloud \+ AWS Bedrock AgentCore MCP\) 10-SaaS Verification Matrix[\s\S]*?(?=\n## What's next)/);
-  if (tenSaasMatch && !spec.considerationsMd.includes('## Live Multi-Cloud (Google Cloud + AWS Bedrock AgentCore MCP) 10-SaaS Verification Matrix')) {
+  const hasTenSaasTableInSpec =
+    spec.considerationsMd.includes('| # | Third-Party SaaS Product & MCP URI |') ||
+    spec.considerationsMd.includes('Live Multi-Cloud (Google Cloud + AWS Bedrock AgentCore MCP) 10-SaaS Verification Matrix');
+  const genuineCallout =
+    '> **23 Genuine Live Multi-Cloud 3P UI Screenshots & Cross-Run Continuity Ledger:** Alongside the 10 Bedrock AgentCore MCP targets above, 10 official upstream enterprise software stacks (`Metabase BI v0.50.26`, `Grafana Enterprise v11.2.0`, `Redmine ITSM v5.1`, `NocoDB v0.255.2`, `Gitea v1.22.3`, `Trino Distributed SQL v440`, `ClickHouse Data Warehouse v24.8`, `Directus Data Studio v11.1.0`, `Datalust Seq Observability v2024.3`, `HashiCorp Vault v1.13.3`) run live on **Google Cloud Run Gen2 (`bbar-138hf0`, `us-west1`)** and **AWS EC2 (`393036065405`, `us-east-1`, `i-04924523ac41ff132`)** + **3 live AWS Management Console views**, verified in [`docs/genuine_ui_screenshot_provenance_receipt.json`](../docs/genuine_ui_screenshot_provenance_receipt.json) and replayed via [`scripts/run_all_repeatable_e2e_verifications.py`](../scripts/run_all_repeatable_e2e_verifications.py) ([`data/run_continuity_ledger.json`](../data/run_continuity_ledger.json)).';
+  if (tenSaasMatch && !hasTenSaasTableInSpec) {
     let tenSaasBlock = tenSaasMatch[0].trimEnd().replace(/\n\n> \*\*23 Genuine Live Multi-Cloud 3P UI Screenshots[\s\S]*$/, '');
-    const genuineCallout =
-      '> **23 Genuine Live Multi-Cloud 3P UI Screenshots & Cross-Run Continuity Ledger:** Alongside the 10 Bedrock AgentCore MCP targets above, 10 official upstream enterprise software stacks (`Metabase BI v0.50.26`, `Grafana Enterprise v11.2.0`, `Redmine ITSM v5.1`, `NocoDB v0.255.2`, `Gitea v1.22.3`, `Trino Distributed SQL v440`, `ClickHouse Data Warehouse v24.8`, `Directus Data Studio v11.1.0`, `Datalust Seq Observability v2024.3`, `HashiCorp Vault v1.13.3`) run live on **Google Cloud Run Gen2 (`bbar-138hf0`, `us-west1`)** and **AWS EC2 (`393036065405`, `us-east-1`, `i-04924523ac41ff132`)** + **3 live AWS Management Console views**, verified in [`docs/genuine_ui_screenshot_provenance_receipt.json`](../docs/genuine_ui_screenshot_provenance_receipt.json) and replayed via [`scripts/run_all_repeatable_e2e_verifications.py`](../scripts/run_all_repeatable_e2e_verifications.py) ([`data/run_continuity_ledger.json`](../data/run_continuity_ledger.json)).';
     parts.push('');
     parts.push(tenSaasBlock);
+    parts.push('');
+    parts.push(genuineCallout);
+    parts.push('');
+  } else if (hasTenSaasTableInSpec && !spec.considerationsMd.includes('23 Genuine Live Multi-Cloud 3P UI Screenshots')) {
     parts.push('');
     parts.push(genuineCallout);
     parts.push('');

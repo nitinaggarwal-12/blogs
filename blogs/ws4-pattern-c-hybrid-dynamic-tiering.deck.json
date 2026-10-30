@@ -3,10 +3,10 @@
   "deckTitle": "Pattern C — Dynamic Hybrid Hub-and-Spoke, PSC & Zero-Downtime Tier Migration (Workstream 4)",
   "deckSubtitle": "Unifying high-margin Pooled Standard tenants and sovereign Enterprise spokes behind one SaaS URL using Private Service Connect (PSC) and a 3-phase zero-downtime live tier upgrade engine",
   "tldr": [
-    "One Unified SaaS Front Door for Every Tier: Pattern C fronts both Standard pooled tenants (120 RPM Pool) and regulated Enterprise sovereign spokes (600 RPM Silo) behind a single Global Application Load Balancer URL.",
-    "Cryptographic Tier Lookup & Dispatch: Cloud Armor, IAP, and the Cloud Run Hybrid Router inspect the verified OBO/DPoP identity token, query the Firestore routing table, and dispatch traffic per tenant tier.",
-    "Unidirectional Private Service Connect (PSC) Bridges: Enterprise requests traverse NAT-based PSC endpoints (`10.10.0.50`) into dedicated spoke projects (`ServiceAttachment`) with zero VPC peering or IP overlap.",
-    "3-Phase Zero-Downtime Live Tier Migration (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`): Promotes a live Standard tenant into a dedicated Enterprise PSC spoke mid-conversation without dropping a single turn.",
+    "Unified SaaS Front Door: Pattern C fronts Standard pooled tenants (120 RPM) and Enterprise PSC spokes (600 RPM) behind one Global ALB URL.",
+    "Cryptographic Tier Routing: Cloud Armor, IAP, and the Hybrid Router verify OBO/DPoP tokens and query Firestore to dispatch per tenant tier.",
+    "Unidirectional PSC Bridges: Enterprise turns traverse NAT PSC endpoints (`10.10.0.50`) into dedicated spoke projects with zero VPC peering.",
+    "Zero-Downtime Tier Promotion: `SHADOW_SYNC -> ATOMIC_CUTOVER -> DRAIN_AND_VERIFY` promotes live tenants to Enterprise spokes with 0 dropped turns.",
     "4/4 Automated Migration & Isolation Assertions Verified: Proves 0ms replication lag at cutover, 0 dropped active sessions, immediate 4,000 → 8,000 thinking budget unlock, and zero global state bleed across instances."
   ],
   "tldrSpecs": [

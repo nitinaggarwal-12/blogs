@@ -3,11 +3,11 @@
   "deckTitle": "Multi-Tenant Agentic AI on Google Cloud: Reference Taxonomy & 5-Hop Governance (Workstream 1)",
   "deckSubtitle": "Solving the SaaS AI Dilemma: Prevent tool-schema leaks and rogue-tenant quota starvation using Agent Development Kit (ADK), Model Context Protocol (MCP) & Agent Registry Discovery (ARD) across Pooled, Silo & Hybrid tiers",
   "tldr": [
-    "Why It Matters (The SaaS AI Dilemma): Dedicated projects per Standard tenant erode SaaS gross margins, whereas naive shared agents leak cross-tenant data via tool schemas and let one rogue tenant starve shared LLM rate limits.",
-    "Core Primitives (ADK • MCP • ARD): ADK (OS syscall scheduler), MCP (POSIX tool driver ABI) & ARD (chrooted VFS catalog) isolate every tenant turn across 5 cryptographic hops.",
-    "Three Topologies & 80/20 Code Reuse: Pattern A (Pooled RLS + 90% prefix cache), Pattern B (Sovereign Silo VPC-SC + CMEK), and Pattern C (Dynamic Hybrid PSC + 0ms tier upgrade) share 80% identical Python ADK code.",
-    "5-Hop Pipeline (~42ms p95 Overhead): Enforces KMS-signed STS JWTs (<0.15ms cached JWKS verify), ARD pruning, targeted Valkey SCAN+UNLINK L1 eviction, streaming Model Armor/DLP (~22ms), and AlloyDB FORCE RLS.",
-    "Architecture Center & GitHub Kit: Ships 14 Official (#78) blueprints, 27 runnable files (core-cymbal-agent/ (27-File Workbench)), feature-flagged EAP compensating controls (GAP-01..05), and 12/12 forensic + 107/107 runtime assertions."
+    "Why It Matters (SaaS AI Dilemma): Dedicated projects erode SaaS gross margins, while naive shared agents leak tool schemas and allow quota starvation.",
+    "Core Primitives (ADK • MCP • ARD): ADK (syscall scheduler), MCP (tool driver ABI) & ARD (chrooted catalog) isolate every tenant across 5 hops.",
+    "Three Topologies & 80/20 Reuse: Pattern A (Pooled RLS), Pattern B (Sovereign Silos), and Pattern C (Hybrid PSC) share 80% identical Python ADK code.",
+    "5-Hop Pipeline (~42ms p95 Gate): Enforces KMS-signed OBO/DPoP tokens, ARD pruning, Valkey bulkheads, Model Armor DLP, and AlloyDB FORCE RLS.",
+    "Architecture Center & GitHub Kit: Ships 14 Official (#78) blueprints, 27 runnable files (core-cymbal-agent/ (27-File Workbench)), feature-flagged EAP compensating controls (GAP-01..05), and 13/13 forensic + 107/107 runtime assertions."
   ],
   "tldrSpecs": [
     {
@@ -32,7 +32,7 @@
     },
     {
       "stack": "core-cymbal-agent/ (27-File Workbench) • BigQuery OTel Chargeback • Cloud KMS CMEK",
-      "sla": "12/12 Forensic Checks PASS • 107/107 Automated Security, Migration & SaaS Assertions PASS",
+      "sla": "13/13 Forensic Checks PASS • 107/107 Automated Security, Migration & SaaS Assertions PASS",
       "tag": "Public GitHub & Audit Readiness"
     }
   ],
@@ -145,7 +145,7 @@
           "Part 5 • Slides 10–11\nCI/CD Audit & SLAs",
           "Automating Compliance & Well-Architected SLAs: Live GCP Console Receipts, 5 Milestones & Forensic CI/CD Gate",
           "How do we prove zero cross-tenant data bleed continuously in CI/CD and map every Well-Architected SLA to code?",
-          "12/12 Forensic + 107/107 Runtime Assertions PASS • 84.7% Token & 74% TCO Savings • <30s HA RTO"
+          "13/13 Forensic + 107/107 Runtime Assertions PASS • 84.7% Token & 74% TCO Savings • <30s HA RTO"
         ]
       ],
       "bullets": [],
@@ -328,7 +328,7 @@
         "1. Security, Privacy & Compliance: Enforces zero-trust defense-in-depth across all 5 hops—combining <0.15ms cached-JWKS DPoP verification, per-user 3LO vaults against Confused Deputy attacks, AlloyDB RLS, and revocable Cloud KMS CMEK.",
         "2. Reliability & Anti-Stampede Resilience: Prevents noisy-neighbor outages via Valkey token-bucket bulkheads, targeted SCAN+UNLINK cache:{tenant_id}:* eviction (0 peer cache misses), and Valkey SET NX single-flight lazy re-hydration.",
         "3. Cost Optimization (FinOps): Shares a 32,000-token immutable system prefix in Gemini 2.5 Pro ContextCacheConfig (90% discount, 84.7% net token savings) and attributes COGS via BigQuery OTel SQL chargeback views.",
-        "4. Operational Excellence & 5. Performance (~42ms p95): Reuses 80% of the Python ADK codebase across Terraform 2.6/3.6/4.6, bounds total 5-Hop control-plane overhead to ~42ms p95 (<2.5% TTFT), and gates CI/CD on 12/12 + 107/107 tests."
+        "4. Operational Excellence & 5. Performance (~42ms p95): Reuses 80% of the Python ADK codebase across Terraform 2.6/3.6/4.6, bounds total 5-Hop control-plane overhead to ~42ms p95 (<2.5% TTFT), and gates CI/CD on 13/13 + 107/107 tests."
       ],
       "specs": [
         {
@@ -348,7 +348,7 @@
         },
         {
           "stack": "core-cymbal-agent/ (80% Reusable Code + GA Sunset Flags) • Terraform 2.6/3.6/4.6 • ~42ms p95 5-Hop Budget",
-          "sla": "12/12 Forensic Gates + 107/107 Assertions PASS • ~22ms Streaming DLP (<2.5% TTFT Overhead)",
+          "sla": "13/13 Forensic Gates + 107/107 Assertions PASS • ~22ms Streaming DLP (<2.5% TTFT Overhead)",
           "tag": "Pillars 4 & 5: Ops & Performance"
         }
       ]
@@ -385,7 +385,7 @@
     "2. Part 2 (Slides 5, 6 & 8) — 5-Hop Pipeline & Pattern A Pool: Apply Terraform 2.6 (2.6-terraform-starter/), certify ~42ms p95 5-Hop overhead (~22ms DLP), ~1.8s cold / ~420ms warm TTFT, 84.7% token savings (90% 32k prefix cache), and pass run_breach_simulations.py (10/10 PASS).",
     "3. Part 3 (Slide 7) — Circuit Breakers, CMEK & Valkey L1 Flush: Apply Terraform 3.6 (3.6-terraform-silo-blueprint/), certify gVisor sandbox, <60s HTTP 423 CMEK kill-switch, <5s Valkey SCAN+UNLINK (cache:{tenant}:*), SET NX PX 5000 recovery, and <30s cross-region RTO (6/6 PASS).",
     "4. Part 4 (Slide 9) — EAP Gap Controls & Pattern C Hybrid FinOps: Apply Terraform 4.6 (4.6-terraform-hybrid-psc-blueprint/), certify 74% portfolio TCO reduction (950 Pooled + 50 PSC Spokes), feature-flagged GAP-01..05 sunset hooks, BigQuery OTel FinOps SQL, and 0ms PSC cutover (4/4 PASS).",
-    "5. Part 5 (Slides 10–11) — CI/CD Forensic Audit & Day-2 Operations: Enforce python3 -B scripts/run_deep_forensic_audit.py (12/12 PASS • 107/107 Assertions) and Cloud Logging gate (jsonPayload.rls_cross_tenant_rows=0) across WS1–WS5 in CI/CD."
+    "5. Part 5 (Slides 10–11) — CI/CD Forensic Audit & Day-2 Operations: Enforce python3 -B scripts/run_deep_forensic_audit.py (13/13 PASS • 107/107 Assertions) and Cloud Logging gate (jsonPayload.rls_cross_tenant_rows=0) across WS1–WS5 in CI/CD."
   ],
   "takeawaySpecs": [
     {
@@ -410,11 +410,11 @@
     },
     {
       "stack": "scripts/run_deep_forensic_audit.py • blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
-      "sla": "SLA: 12/12 Forensic Gate (107/107 Assertions) • 20/20 Breach/Silo/PSC Suite • 0 RLS Bleed (Slides 10–11)",
+      "sla": "SLA: 13/13 Forensic Gate (107/107 Assertions) • 20/20 Breach/Silo/PSC Suite • 0 RLS Bleed (Slides 10–11)",
       "tag": "Part 5: CI/CD Forensic Gate (Slides 10–11)"
     }
   ],
-  "callToAction": "Clone core-cymbal-agent/ (27-File Workbench), run python3 -B scripts/run_deep_forensic_audit.py (12/12 • 107/107 PASS), and launch the 5-Part Multi-Tenant Agentic AI Blog Series.",
+  "callToAction": "Clone core-cymbal-agent/ (27-File Workbench), run python3 -B scripts/run_deep_forensic_audit.py (13/13 • 107/107 PASS), and launch the 5-Part Multi-Tenant Agentic AI Blog Series.",
   "slideSpeakerNotes": [
     {
       "slide": 1,

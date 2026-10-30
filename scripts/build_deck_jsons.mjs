@@ -80,11 +80,11 @@ const DECKS = {
     "deckTitle": "Multi-Tenant Agentic AI on Google Cloud: Reference Taxonomy & 5-Hop Governance (Workstream 1)",
     "deckSubtitle": "Solving the SaaS AI Dilemma: Prevent tool-schema leaks and rogue-tenant quota starvation using Agent Development Kit (ADK), Model Context Protocol (MCP) & Agent Registry Discovery (ARD) across Pooled, Silo & Hybrid tiers",
     "tldr": [
-      "Why It Matters (The SaaS AI Dilemma): Dedicated projects per Standard tenant erode SaaS gross margins, whereas naive shared agents leak cross-tenant data via tool schemas and let one rogue tenant starve shared LLM rate limits.",
-      "Core Primitives (ADK • MCP • ARD): ADK (OS syscall scheduler), MCP (POSIX tool driver ABI) & ARD (chrooted VFS catalog) isolate every tenant turn across 5 cryptographic hops.",
-      "Three Topologies & 80/20 Code Reuse: Pattern A (Pooled RLS + 90% prefix cache), Pattern B (Sovereign Silo VPC-SC + CMEK), and Pattern C (Dynamic Hybrid PSC + 0ms tier upgrade) share 80% identical Python ADK code.",
-      "5-Hop Pipeline (~42ms p95 Overhead): Enforces KMS-signed STS JWTs (<0.15ms cached JWKS verify), ARD pruning, targeted Valkey SCAN+UNLINK L1 eviction, streaming Model Armor/DLP (~22ms), and AlloyDB FORCE RLS.",
-      "Architecture Center & GitHub Kit: Ships 14 Official (#78) blueprints, 27 runnable files (core-cymbal-agent/ (27-File Workbench)), feature-flagged EAP compensating controls (GAP-01..05), and 12/12 forensic + 107/107 runtime assertions."
+      "Why It Matters (SaaS AI Dilemma): Dedicated projects erode SaaS gross margins, while naive shared agents leak tool schemas and allow quota starvation.",
+      "Core Primitives (ADK • MCP • ARD): ADK (syscall scheduler), MCP (tool driver ABI) & ARD (chrooted catalog) isolate every tenant across 5 hops.",
+      "Three Topologies & 80/20 Reuse: Pattern A (Pooled RLS), Pattern B (Sovereign Silos), and Pattern C (Hybrid PSC) share 80% identical Python ADK code.",
+      "5-Hop Pipeline (~42ms p95 Gate): Enforces KMS-signed OBO/DPoP tokens, ARD pruning, Valkey bulkheads, Model Armor DLP, and AlloyDB FORCE RLS.",
+      "Architecture Center & GitHub Kit: Ships 14 Official (#78) blueprints, 27 runnable files (core-cymbal-agent/ (27-File Workbench)), feature-flagged EAP compensating controls (GAP-01..05), and 13/13 forensic + 107/107 runtime assertions."
     ],
     "tldrSpecs": [
       {
@@ -109,7 +109,7 @@ const DECKS = {
       },
       {
         "stack": "core-cymbal-agent/ (27-File Workbench) • BigQuery OTel Chargeback • Cloud KMS CMEK",
-        "sla": "12/12 Forensic Checks PASS • 107/107 Automated Security, Migration & SaaS Assertions PASS",
+        "sla": "13/13 Forensic Checks PASS • 107/107 Automated Security, Migration & SaaS Assertions PASS",
         "tag": "Public GitHub & Audit Readiness"
       }
     ],
@@ -222,7 +222,7 @@ const DECKS = {
             "Part 5 • Slides 10–11\nCI/CD Audit & SLAs",
             "Automating Compliance & Well-Architected SLAs: Live GCP Console Receipts, 5 Milestones & Forensic CI/CD Gate",
             "How do we prove zero cross-tenant data bleed continuously in CI/CD and map every Well-Architected SLA to code?",
-            "12/12 Forensic + 107/107 Runtime Assertions PASS • 84.7% Token & 74% TCO Savings • <30s HA RTO"
+            "13/13 Forensic + 107/107 Runtime Assertions PASS • 84.7% Token & 74% TCO Savings • <30s HA RTO"
           ]
         ],
         "bullets": [],
@@ -405,7 +405,7 @@ const DECKS = {
           "1. Security, Privacy & Compliance: Enforces zero-trust defense-in-depth across all 5 hops—combining <0.15ms cached-JWKS DPoP verification, per-user 3LO vaults against Confused Deputy attacks, AlloyDB RLS, and revocable Cloud KMS CMEK.",
           "2. Reliability & Anti-Stampede Resilience: Prevents noisy-neighbor outages via Valkey token-bucket bulkheads, targeted SCAN+UNLINK cache:{tenant_id}:* eviction (0 peer cache misses), and Valkey SET NX single-flight lazy re-hydration.",
           "3. Cost Optimization (FinOps): Shares a 32,000-token immutable system prefix in Gemini 2.5 Pro ContextCacheConfig (90% discount, 84.7% net token savings) and attributes COGS via BigQuery OTel SQL chargeback views.",
-          "4. Operational Excellence & 5. Performance (~42ms p95): Reuses 80% of the Python ADK codebase across Terraform 2.6/3.6/4.6, bounds total 5-Hop control-plane overhead to ~42ms p95 (<2.5% TTFT), and gates CI/CD on 12/12 + 107/107 tests."
+          "4. Operational Excellence & 5. Performance (~42ms p95): Reuses 80% of the Python ADK codebase across Terraform 2.6/3.6/4.6, bounds total 5-Hop control-plane overhead to ~42ms p95 (<2.5% TTFT), and gates CI/CD on 13/13 + 107/107 tests."
         ],
         "specs": [
           {
@@ -425,7 +425,7 @@ const DECKS = {
           },
           {
             "stack": "core-cymbal-agent/ (80% Reusable Code + GA Sunset Flags) • Terraform 2.6/3.6/4.6 • ~42ms p95 5-Hop Budget",
-            "sla": "12/12 Forensic Gates + 107/107 Assertions PASS • ~22ms Streaming DLP (<2.5% TTFT Overhead)",
+            "sla": "13/13 Forensic Gates + 107/107 Assertions PASS • ~22ms Streaming DLP (<2.5% TTFT Overhead)",
             "tag": "Pillars 4 & 5: Ops & Performance"
           }
         ]
@@ -462,7 +462,7 @@ const DECKS = {
       "2. Part 2 (Slides 5, 6 & 8) — 5-Hop Pipeline & Pattern A Pool: Apply Terraform 2.6 (2.6-terraform-starter/), certify ~42ms p95 5-Hop overhead (~22ms DLP), ~1.8s cold / ~420ms warm TTFT, 84.7% token savings (90% 32k prefix cache), and pass run_breach_simulations.py (10/10 PASS).",
       "3. Part 3 (Slide 7) — Circuit Breakers, CMEK & Valkey L1 Flush: Apply Terraform 3.6 (3.6-terraform-silo-blueprint/), certify gVisor sandbox, <60s HTTP 423 CMEK kill-switch, <5s Valkey SCAN+UNLINK (cache:{tenant}:*), SET NX PX 5000 recovery, and <30s cross-region RTO (6/6 PASS).",
       "4. Part 4 (Slide 9) — EAP Gap Controls & Pattern C Hybrid FinOps: Apply Terraform 4.6 (4.6-terraform-hybrid-psc-blueprint/), certify 74% portfolio TCO reduction (950 Pooled + 50 PSC Spokes), feature-flagged GAP-01..05 sunset hooks, BigQuery OTel FinOps SQL, and 0ms PSC cutover (4/4 PASS).",
-      "5. Part 5 (Slides 10–11) — CI/CD Forensic Audit & Day-2 Operations: Enforce python3 -B scripts/run_deep_forensic_audit.py (12/12 PASS • 107/107 Assertions) and Cloud Logging gate (jsonPayload.rls_cross_tenant_rows=0) across WS1–WS5 in CI/CD."
+      "5. Part 5 (Slides 10–11) — CI/CD Forensic Audit & Day-2 Operations: Enforce python3 -B scripts/run_deep_forensic_audit.py (13/13 PASS • 107/107 Assertions) and Cloud Logging gate (jsonPayload.rls_cross_tenant_rows=0) across WS1–WS5 in CI/CD."
     ],
     "takeawaySpecs": [
       {
@@ -487,11 +487,11 @@ const DECKS = {
       },
       {
         "stack": "scripts/run_deep_forensic_audit.py • blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
-        "sla": "SLA: 12/12 Forensic Gate (107/107 Assertions) • 20/20 Breach/Silo/PSC Suite • 0 RLS Bleed (Slides 10–11)",
+        "sla": "SLA: 13/13 Forensic Gate (107/107 Assertions) • 20/20 Breach/Silo/PSC Suite • 0 RLS Bleed (Slides 10–11)",
         "tag": "Part 5: CI/CD Forensic Gate (Slides 10–11)"
       }
     ],
-    "callToAction": "Clone core-cymbal-agent/ (27-File Workbench), run python3 -B scripts/run_deep_forensic_audit.py (12/12 • 107/107 PASS), and launch the 5-Part Multi-Tenant Agentic AI Blog Series."
+    "callToAction": "Clone core-cymbal-agent/ (27-File Workbench), run python3 -B scripts/run_deep_forensic_audit.py (13/13 • 107/107 PASS), and launch the 5-Part Multi-Tenant Agentic AI Blog Series."
   },
 
   'blogs/ws2-pattern-a-pooled-architecture.deck.json': {
@@ -500,10 +500,10 @@ const DECKS = {
     deckSubtitle:
       'Serving hundreds of commercial B2B SaaS tenants on a single shared Cloud Run v2, Vertex AI Agent Engine, and AlloyDB RLS footprint with 84.7% lower inference cost and 10/10 red-team attacks blocked',
     tldr: [
-      'Solving the Commercial SaaS Margin Equation: Pattern A hosts hundreds of Standard Tier–Enterprise Tier commercial tenants inside one shared Google Cloud project (`cymbal-control-plane`) at a 120 RPM Pooled infrastructure floor.',
-      'Cryptographic Logical Isolation (Zero Physical Sprawl): Instead of spinning up separate VPCs per tenant, Pattern A enforces non-bypassable tenant boundaries across all 5 runtime hops in software.',
-      '10/10 Adversarial Red-Team Attacks Neutralized: Competing tenants FinVault Bank and RetailStream Corp share the exact same Cloud Run v2 workers and AlloyDB cluster with zero cross-tenant data or tool bleed.',
-      '84.7% Net Inference Cost Reduction: A 32,000-token immutable platform runbook is cached once in Gemini 2.5 Pro ContextCacheConfig at a 90% discount, cutting billable input tokens from 34,000 to 5,200 per turn.',
+      'Commercial SaaS Margin Equation: Pattern A co-hosts hundreds of commercial tenants in one shared project (`cymbal-control-plane`) at a 120 RPM floor.',
+      'Cryptographic Logical Isolation: Rather than spinning up per-tenant VPCs, Pattern A enforces non-bypassable tenant boundaries across all 5 hops.',
+      '10/10 Red-Team Attacks Blocked: FinVault Bank and RetailStream Corp share Cloud Run v2 workers and AlloyDB with zero cross-tenant bleed.',
+      '84.7% Net Inference Savings: A 32k-token immutable system runbook is cached once in ContextCacheConfig at 90% off (34,000 -> 5,200 tokens).',
       'Turnkey Milestone 1 Production Kit: Includes the 80% reusable ADK runtime pipeline, a 1-click Terraform starter (`2.6-terraform-starter`), a 90-minute hands-on codelab, and the 10-point breach simulation suite.',
     ],
     tldrSpecs: [
@@ -801,10 +801,10 @@ const DECKS = {
     deckSubtitle:
       'How regulated financial, healthcare, and public-sector enterprises achieve physical Google Cloud project isolation, air-gapped Gemma 3 hosting, and a sub-60-second CMEK kill-switch while reusing 80% of the platform codebase',
     tldr: [
-      'Meeting Strict Regulatory Sovereignty Mandates: Banking (OCC/FFIEC), healthcare (HIPAA), and sovereign cloud auditors frequently mandate zero shared compute, zero shared storage, and customer-revocable encryption keys.',
-      '80% Reusable ADK Codebase, 20% Dedicated Cloud Perimeter: Pattern B deploys the exact same 5-hop Python ADK runtime inside a dedicated per-tenant Google Cloud project (`cymbal-finvault-silo-prod`).',
-      'Three Hardware-Enforced Perimeter Walls: Every tenant vault is locked by mTLS + IAM Principal Access Boundaries (PAB), a VPC Service Controls (VPC-SC) perimeter, and dedicated Cloud KMS Customer-Managed Encryption Keys (CMEK).',
-      'Sub-60-Second Customer CMEK Kill-Switch (`HTTP 423 Locked`): If a tenant Security Operations Center revokes or disables its Cloud KMS key, all Agent Engine memory, AlloyDB reads, and GKE inference halt immediately with HTTP 423.',
+      'Regulatory Sovereignty Mandates: Banking (OCC/FFIEC), healthcare (HIPAA), and public-sector auditors require zero shared compute or storage.',
+      '80% Reusable Core, 20% Perimeter: Pattern B deploys the exact same 5-hop Python ADK runtime inside a dedicated per-tenant GCP project.',
+      'Three Hardware Perimeter Walls: Every tenant silo is locked by mTLS + IAM PAB, a VPC Service Controls perimeter, and dedicated Cloud KMS CMEK.',
+      'Sub-60s Customer CMEK Kill-Switch: Disabling the tenant Cloud KMS key halts Agent Engine memory, AlloyDB reads, and GKE inference (`HTTP 423`).',
       'Verified 6/6 Sovereign Compliance Suite & Terraform Blueprint: Ships with automated dual-silo security tests (`FinVault` + `RetailStream`), a 4-stage onboarding provisioner, and a 1-click Terraform silo blueprint (`3.6`).',
     ],
     tldrSpecs: [
@@ -1141,10 +1141,10 @@ const DECKS = {
     deckSubtitle:
       'Unifying high-margin Pooled Standard tenants and sovereign Enterprise spokes behind one SaaS URL using Private Service Connect (PSC) and a 3-phase zero-downtime live tier upgrade engine',
     tldr: [
-      'One Unified SaaS Front Door for Every Tier: Pattern C fronts both Standard pooled tenants (120 RPM Pool) and regulated Enterprise sovereign spokes (600 RPM Silo) behind a single Global Application Load Balancer URL.',
-      'Cryptographic Tier Lookup & Dispatch: Cloud Armor, IAP, and the Cloud Run Hybrid Router inspect the verified OBO/DPoP identity token, query the Firestore routing table, and dispatch traffic per tenant tier.',
-      'Unidirectional Private Service Connect (PSC) Bridges: Enterprise requests traverse NAT-based PSC endpoints (`10.10.0.50`) into dedicated spoke projects (`ServiceAttachment`) with zero VPC peering or IP overlap.',
-      '3-Phase Zero-Downtime Live Tier Migration (`SHADOW_SYNC` → `ATOMIC_CUTOVER` → `DRAIN_AND_VERIFY`): Promotes a live Standard tenant into a dedicated Enterprise PSC spoke mid-conversation without dropping a single turn.',
+      'Unified SaaS Front Door: Pattern C fronts Standard pooled tenants (120 RPM) and Enterprise PSC spokes (600 RPM) behind one Global ALB URL.',
+      'Cryptographic Tier Routing: Cloud Armor, IAP, and the Hybrid Router verify OBO/DPoP tokens and query Firestore to dispatch per tenant tier.',
+      'Unidirectional PSC Bridges: Enterprise turns traverse NAT PSC endpoints (`10.10.0.50`) into dedicated spoke projects with zero VPC peering.',
+      'Zero-Downtime Tier Promotion: `SHADOW_SYNC -> ATOMIC_CUTOVER -> DRAIN_AND_VERIFY` promotes live tenants to Enterprise spokes with 0 dropped turns.',
       '4/4 Automated Migration & Isolation Assertions Verified: Proves 0ms replication lag at cutover, 0 dropped active sessions, immediate 4,000 → 8,000 thinking budget unlock, and zero global state bleed across instances.',
     ],
     tldrSpecs: [
@@ -1487,10 +1487,10 @@ const DECKS = {
     deckSubtitle:
       'Workstream 5 capstone: 2-question topology decision tree, side-by-side Well-Architected comparison matrix, 1,000-tenant FinOps TCO model, and 3-stage elastic tenant tier lifecycle',
     tldr: [
-      'Two Architectural Questions Select Your Pattern: First evaluate whether 100% of tenants legally require dedicated cloud projects (Pattern B); second evaluate whether you sell one uniform tier (Pattern A) or multiple tiers (Pattern C).',
-      'One 80% Reusable 5-Hop Codebase: Engineering writes the 5-hop ADK security and governance pipeline once; Patterns A, B, and C merely parameterize the surrounding Google Cloud isolation boundary.',
-      'The Multi-Tenant Agentic Triad: Sustainable enterprise AI platforms balance three interdependent pillars—Zero-Trust Cryptographic Security, Predictable Unit Economics, and Zero-PII FinOps Chargeback.',
-      'Proven 1,000-Tenant Portfolio Economics: Across 950 Standard and 50 Enterprise tenants, Pattern C reduces Gemini 2.5 Pro input token spend by 84.7%, lowers total cloud TCO by 74% vs. all-siloed, and maintains a 99.99% SLA.',
+      '2-Question Pattern Selector: Q1 checks if 100% of tenants require dedicated projects (Pattern B); Q2 separates single-tier (A) from multi-tier (C).',
+      '80% Reusable 5-Hop Codebase: Engineering writes the 5-hop ADK security pipeline once; Patterns A, B, and C parameterize the cloud boundary.',
+      'Multi-Tenant Agentic Triad: Balances Zero-Trust 5-Hop Security, Predictable FinOps Unit Economics, and Zero-PII BigQuery OTel Chargeback.',
+      '1,000-Tenant Portfolio TCO: Across 950 Standard and 50 Enterprise tenants, Pattern C cuts token spend by 84.7% and total cloud TCO by 74%.',
       'Elastic 3-Stage Tenant Tier Lifecycle: Onboard commercial tenants in <50ms into Pattern A (120 RPM Pool), promote expanding enterprises live into Pattern C PSC spokes (0ms lag, 0 dropped turns), and enforce <60s HTTP 423 CMEK kill-switches in Pattern B silos.',
     ],
     tldrSpecs: [
@@ -1516,7 +1516,7 @@ const DECKS = {
       },
       {
         stack: 'Stage 1: Pooled (120 RPM Pool) -> Stage 2: Live PSC Promotion (0ms Lag) -> Stage 3: CMEK Silo',
-        sla: '12/12 Forensic Gates & 20/20 Automated Simulations Verified Across All 3 Tiers',
+        sla: '13/13 Forensic Gates & 20/20 Automated Simulations Verified Across All 3 Tiers',
         tag: '3-Stage Tenant Lifecycle',
       },
     ],
@@ -1548,7 +1548,7 @@ const DECKS = {
           },
           {
             stack: 'Cloud Armor • IAP • Agent Engine • Gemini 2.5 Pro • Valkey • Model Armor • AlloyDB • BigQuery',
-            sla: '80% Identical Python ADK Codebase • 12/12 Forensic Gates & 20/20 Simulations PASS',
+            sla: '80% Identical Python ADK Codebase • 13/13 Forensic Gates & 20/20 Simulations PASS',
             tag: '4. Unified 5-Hop Google Cloud Stack',
           },
         ],
@@ -1728,9 +1728,9 @@ const DECKS = {
         talkingPoints: [
           'Zone 1 (1. The 2-Question Executive Topology Selector): Evaluates `Decision inputs` (`Step 1`), `Q1 · Compliance gate` (`100% mandate VPC-SC or air-gap?` at `Step 2`), and `Q2 · Tier gate` (`Multi-tier Standard + Enterprise?` at `Step 3`).',
           'Zone 2 (2. The Agentic Triad — 80% Reusable Core): Unifies `Pillar 1 • Zero-Trust 5-Hop`, `Pillar 2 • Predictable FinOps`, and `Pillar 3 • Zero-PII OTel Chargeback` (`Step 7`) above the `AGENTIC TRIAD CORE` banner.',
-          'Pattern B Outcome Column (`Q1 = YES` -> `Step 4` • Coral `#fad2cf`): Provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`).',
-          'Pattern A Outcome Column (`Q2 = NO` -> `Step 5` • Amber `#feefc3`): Provisions `Shared Agent Engine Pool` (`120 RPM • 4k cap • 90% cache`) and `Shared AlloyDB & BigQuery RLS` (`FORCE RLS • 10/10 breach tests`).',
-          'Pattern C Outcome Column (`Q2 = YES` -> `Step 6` • Slate `#e8eaed`): Provisions `Hybrid Router & PSC Hub` (`Pool + PSC 10.10.0.50`) and `3-Phase Live Tier Migrator` (`0-downtime upgrade • 4/4 tests`).',
+          'Pattern B Outcome Column (`Q1 = YES` -> `Step 4`): Provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`).',
+          'Pattern A Outcome Column (`Q2 = NO` -> `Step 5`): Provisions `Shared Agent Engine Pool` (`120 RPM • 4k cap • 90% cache`) and `Shared AlloyDB & BigQuery RLS` (`FORCE RLS • 10/10 breach tests`).',
+          'Pattern C Outcome Column (`Q2 = YES` -> `Step 6`): Provisions `Hybrid Router & PSC Hub` (`Pool + PSC 10.10.0.50`) and `3-Phase Live Tier Migrator` (`0-downtime upgrade • 4/4 tests`).',
         ],
       },
     ],
@@ -1739,7 +1739,7 @@ const DECKS = {
       'Standardize on One 5-Hop Security Pipeline Across All Tiers: Keep 80% of your Python ADK application code identical across Pooled, Siloed, and Hybrid environments.',
       'Treat Pooled ($), Hybrid ($$), and Siloed ($$$) as One Continuous Platform: Use Firestore routing metadata and Private Service Connect to move tenants across tiers without changing URLs or rewriting agents.',
       'Balance All Three Pillars of the Agentic Triad: Combining 5-hop zero-trust security, 90% prefix caching + Valkey bulkheads, and zero-PII BigQuery OTel chargeback protects both CISO compliance and CFO margins.',
-      'Gate Every Production Release on the 12-Point Forensic & 20-Test Simulation Suite: Run `python3 -B scripts/run_deep_forensic_audit.py` to certify code, diagrams, Terraform blueprints, and live GCP resources.',
+      'Gate Every Production Release on the 13-Point Forensic & 20-Test Simulation Suite: Run `python3 -B scripts/run_deep_forensic_audit.py` to certify code, diagrams, Terraform blueprints, and live GCP resources.',
     ],
     takeawaySpecs: [
       {
@@ -1763,7 +1763,7 @@ const DECKS = {
         tag: 'Takeaway 4: The Agentic Triad',
       },
       {
-        stack: 'scripts/run_deep_forensic_audit.py • 12/12 Forensic Gates • 20/20 Simulations',
+        stack: 'scripts/run_deep_forensic_audit.py • 13/13 Forensic Gates • 20/20 Simulations',
         sla: '100% Automated Verification Across Code, Diagrams, Slides & Live GCP Resources',
         tag: 'Takeaway 5: Continuous Governance',
       },

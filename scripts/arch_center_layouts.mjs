@@ -276,11 +276,11 @@ const POOL = {
   wrapper: { x: 70, y: 772, w: 1060, h: 560 },
   runtime: { x: 86, y: 808, w: 512, h: 508 },
   data: { x: 614, y: 808, w: 500, h: 508 },
-  ma: { x: 100, y: 874, w: 206, h: 72 },
-  run: { x: 366, y: 874, w: 218, h: 74 },
-  llm: { x: 100, y: 990, w: 206, h: 72 },
-  valkey: { x: 366, y: 990, w: 218, h: 74 },
-  mem: { x: 100, y: 1118, w: 484, h: 168 },
+  ma: { x: 100, y: 868, w: 206, h: 72 },
+  run: { x: 366, y: 868, w: 218, h: 74 },
+  llm: { x: 100, y: 980, w: 206, h: 72 },
+  valkey: { x: 366, y: 980, w: 218, h: 74 },
+  mem: { x: 100, y: 1102, w: 484, h: 192 },
   db: { x: 628, y: 874, w: 472, h: 190 },
   bq: { x: 628, y: 1096, w: 224, h: 74 },
   mcp: { x: 876, y: 1096, w: 224, h: 74 },
@@ -308,9 +308,8 @@ function hubTopSvg(bp, P) {
   ${S(566, 180, '1')}
   ${S(612, 180, '7')}
   ${svgText(640, 185, bp.step7RightLabel, { size: 14 }, P)}
-  ${svgArrow([[452, 470], [418, 470], [418, 431], [294, 431]])}
-  ${svgArrow([[418, 470], [418, 515], [294, 515]])}
-  ${svgArrow([[418, 470], [450, 470]])}
+  ${svgArrow([[452, 456], [418, 456], [418, 431], [294, 431]], { start: true })}
+  ${svgArrow([[452, 484], [418, 484], [418, 515], [294, 515]], { start: true })}
   ${svgText(355, 408, rc.edgeTopLeft[0], { anchor: 'middle' }, P)}
   ${svgText(355, 425, rc.edgeTopLeft[1], { anchor: 'middle' }, P)}
   ${svgText(355, 534, rc.edgeMidLeft[0], { anchor: 'middle' }, P)}
@@ -373,8 +372,8 @@ function hubTopDrawio(B, bp) {
   B.addCalloutText('lbl_step7_mid', 634, 529, 102, 28, [rc.step7Mid], 'left');
   B.addPointEdge('e_user_to_alb', [566, 138], [566, 430], [], { source: 'actor_top_user', target: 'card_rc_alb' });
   B.addPointEdge('e_alb_to_user', [612, 432], [612, 140], [], { source: 'card_rc_alb', target: 'actor_top_user' });
-  B.addPointEdge('e_alb_to_top_left', [452, 470], [292, 431], [[418, 470], [418, 431]], { startArrow: true, source: 'card_rc_alb', target: 'card_rc_topleft' });
-  B.addPointEdge('e_alb_to_mid_left', [452, 470], [292, 515], [[418, 470], [418, 515]], { startArrow: true, source: 'card_rc_alb', target: 'card_rc_midleft' });
+  B.addPointEdge('e_alb_to_top_left', [452, 456], [292, 431], [[418, 456], [418, 431]], { startArrow: true, source: 'card_rc_alb', target: 'card_rc_topleft' });
+  B.addPointEdge('e_alb_to_mid_left', [452, 484], [292, 515], [[418, 484], [418, 515]], { startArrow: true, source: 'card_rc_alb', target: 'card_rc_midleft' });
   B.addPointEdge('e_iap_to_cloudrun', [292, 613], [476, 613], [], { startArrow: true, source: 'card_rc_botleft', target: 'card_rc_cloudrun' });
   B.addPointEdge('e_alb_to_crun', [566, 508], [566, 580], [], { source: 'card_rc_alb', target: 'card_rc_cloudrun' });
   B.addPointEdge('e_crun_to_alb', [612, 580], [612, 508], [], { source: 'card_rc_cloudrun', target: 'card_rc_alb' });
@@ -429,21 +428,21 @@ export function compilePooledSharedPlaneSvg(bp, P) {
   ${C({ x: K.kms.x, y: K.kms.y, w: K.kms.w, h: K.kms.h, iconKey: d.kms.icon, title: d.kms.title, sub: d.kms.sub })}
 
   <!-- Flow: ③ hub → runtime, ④ Model Armor ↔ Agent Engine, ⑤ Gemini/cache ↔ Agent Engine, memory, ⑥ Agent Engine → AlloyDB (RLS) & MCP, ⑦ SDP → hub -->
-  ${svgArrow([[586, 646], [586, 740], [475, 740], [475, 872]])}
+  ${svgArrow([[586, 646], [586, 740], [475, 740], [475, 866]])}
   ${S(372, 700, '3')}
   ${svgText(400, 695, st.s3[0], {}, P)}
   ${svgText(400, 713, st.s3[1], {}, P)}
-  ${svgArrow([[K.ma.x + K.ma.w, 910], [K.run.x, 910]], { start: true })}
-  ${S(120, 968, '4')}
-  ${svgText(148, 964, st.s4[0], {}, P)}
-  ${svgText(148, 981, st.s4[1], {}, P)}
-  ${svgArrow([[K.llm.x + K.llm.w, 1026], [K.run.x, 1026]], { start: true })}
-  ${S(120, 1090, '5')}
-  ${svgText(148, 1086, st.s5[0], {}, P)}
-  ${svgText(148, 1103, st.s5[1], {}, P)}
-  ${svgArrow([[475, 948], [475, 988]])}
-  ${svgArrow([[475, 1064], [475, 1116]], { start: true })}
-  ${svgText(500, 1094, st.mem[0], { size: 12.5 }, P)}
+  ${svgArrow([[K.ma.x + K.ma.w, 904], [K.run.x, 904]], { start: true })}
+  ${S(120, 960, '4')}
+  ${svgText(148, 956, st.s4[0], {}, P)}
+  ${svgText(148, 973, st.s4[1], {}, P)}
+  ${svgArrow([[K.llm.x + K.llm.w, 1016], [K.run.x, 1016]], { start: true })}
+  ${S(120, 1076, '5')}
+  ${svgText(148, 1072, st.s5[0], {}, P)}
+  ${svgText(148, 1089, st.s5[1], {}, P)}
+  ${svgArrow([[475, 942], [475, 978]])}
+  ${svgArrow([[475, 1054], [475, 1100]], { start: true })}
+  ${svgText(500, 1082, st.mem[0], { size: 12.5 }, P)}
   ${svgArrow([[K.run.x + K.run.w, 896], [K.db.x, 896]])}
   ${S(606, 896, '6')}
   ${svgArrow([[K.db.x + 112, K.db.y + K.db.h], [K.db.x + 112, K.bq.y]])}
@@ -520,11 +519,11 @@ export function compilePooledSharedPlaneDrawio(bp, P) {
   // Steps & callouts
   B.addStepBadge('step_3_trunk', 372, 700, '3');
   B.addCalloutText('lbl_step3_trunk', 394, 680, 170, 36, st.s3, 'left');
-  B.addStepBadge('step_4_left', 120, 968, '4');
-  B.addCalloutText('lbl_step4_left', 144, 954, 158, 34, st.s4, 'left');
-  B.addStepBadge('step_5_left', 120, 1090, '5');
-  B.addCalloutText('lbl_step5_left', 144, 1076, 158, 34, st.s5, 'left');
-  B.addCalloutText('lbl_mem_link', 494, 1080, 96, 26, st.mem, 'left');
+  B.addStepBadge('step_4_left', 120, 960, '4');
+  B.addCalloutText('lbl_step4_left', 144, 946, 158, 34, st.s4, 'left');
+  B.addStepBadge('step_5_left', 120, 1076, '5');
+  B.addCalloutText('lbl_step5_left', 144, 1062, 158, 34, st.s5, 'left');
+  B.addCalloutText('lbl_mem_link', 494, 1068, 96, 26, st.mem, 'left');
   B.addStepBadge('step_6_data', 606, 896, '6');
   B.addCalloutText('lbl_mcp_link', K.mcp.x + 116, K.db.y + K.db.h + 4, 110, 26, st.mcp, 'left', 11.5);
   B.addStepBadge('step_7_resp', 956, 738, '7');
@@ -532,11 +531,11 @@ export function compilePooledSharedPlaneDrawio(bp, P) {
   B.addCalloutText('lbl_gov_trunk', 590, 724, 320, 24, st.gov, 'center', 11.5);
 
   // Edges
-  B.addPointEdge('e_trunk_crun_to_pool', [586, 646], [475, 872], [[586, 740], [475, 740]], { source: 'card_rc_cloudrun', target: 'card_pool_run' });
-  B.addPointEdge('e_pool_ma_run', [K.ma.x + K.ma.w, 910], [K.run.x, 910], [], { startArrow: true, source: 'card_pool_ma', target: 'card_pool_run' });
-  B.addPointEdge('e_pool_llm_run', [K.llm.x + K.llm.w, 1026], [K.run.x, 1026], [], { startArrow: true, source: 'card_pool_llm', target: 'card_pool_run' });
-  B.addPointEdge('e_pool_run_valkey', [475, 948], [475, 988], [], { source: 'card_pool_run', target: 'card_pool_valkey' });
-  B.addPointEdge('e_pool_valkey_mem', [475, 1064], [475, 1116], [], { startArrow: true, source: 'card_pool_valkey', target: 'card_pool_mem' });
+  B.addPointEdge('e_trunk_crun_to_pool', [586, 646], [475, 866], [[586, 740], [475, 740]], { source: 'card_rc_cloudrun', target: 'card_pool_run' });
+  B.addPointEdge('e_pool_ma_run', [K.ma.x + K.ma.w, 904], [K.run.x, 904], [], { startArrow: true, source: 'card_pool_ma', target: 'card_pool_run' });
+  B.addPointEdge('e_pool_llm_run', [K.llm.x + K.llm.w, 1016], [K.run.x, 1016], [], { startArrow: true, source: 'card_pool_llm', target: 'card_pool_run' });
+  B.addPointEdge('e_pool_run_valkey', [475, 942], [475, 978], [], { source: 'card_pool_run', target: 'card_pool_valkey' });
+  B.addPointEdge('e_pool_valkey_mem', [475, 1054], [475, 1100], [], { startArrow: true, source: 'card_pool_valkey', target: 'card_pool_mem' });
   B.addPointEdge('e_pool_run_db', [K.run.x + K.run.w, 896], [K.db.x, 896], [], { source: 'card_pool_run', target: 'card_pool_db' });
   B.addPointEdge('e_pool_db_bq', [K.db.x + 112, K.db.y + K.db.h], [K.db.x + 112, K.bq.y], [], { source: 'card_pool_db', target: 'card_pool_bq' });
   B.addPointEdge('e_pool_db_mcp', [K.mcp.x + 112, K.mcp.y], [K.mcp.x + 112, K.db.y + K.db.h], [], { startArrow: true, endArrow: false, source: 'card_pool_mcp', target: 'card_pool_db' });
@@ -564,17 +563,17 @@ const TREE = {
   sel: { x: 68, y: 338, w: 664, h: 330 },
   gov: { x: 798, y: 346, w: 328, h: 320 },
   inputs: { x: 108, y: 388, w: 592, h: 58 },
-  q1: { x: 108, y: 474, w: 272, h: 100 },
-  q2: { x: 420, y: 474, w: 280, h: 100 },
-  bar: { x: 70, y: 736, w: 1060, h: 30 },
-  outcomeY: 790,
-  outcomeH: 542,
+  q1: { x: 104, y: 474, w: 266, h: 100 },
+  q2: { x: 426, y: 474, w: 278, h: 100 },
+  bar: { x: 70, y: 724, w: 1060, h: 28 },
+  outcomeY: 798,
+  outcomeH: 534,
   outcomeW: 340,
   outcomeXs: [70, 430, 790],
   cardW: 300,
-  cardH: 70,
-  cardYs: [876, 960, 1044, 1128],
-  verdictY: 1222,
+  cardH: 68,
+  cardYs: [880, 962, 1044, 1126],
+  verdictY: 1216,
   verdictH: 64,
 };
 
@@ -606,7 +605,7 @@ export function compileDecisionTreeSvg(bp, P) {
   ${svgText(ox + 16, T.outcomeY + 22, o.label, { size: 13, weight: 700, halo: '#ffffff', fit: P.fitAttr(o.label, T.outcomeW - 32, 7.3) }, P)}
   ${svgText(zx + 16, T.outcomeY + 60, o.zoneTitle, { size: 14.5, weight: 700, halo: o.fill, fit: P.fitAttr(o.zoneTitle, zw - 32, 8.0) }, P)}
   ${svgText(zx + 16, T.outcomeY + 78, o.zoneSub, { size: 12.5, halo: o.fill, fit: P.fitAttr(o.zoneSub, zw - 32, 6.9) }, P)}
-  ${S(ox + T.outcomeW / 2, T.bar.y + T.bar.h + 12, o.step)}`;
+  ${S(ox + T.outcomeW / 2, T.bar.y + T.bar.h + 19, o.step)}`;
     })
     .join('');
 
@@ -646,12 +645,12 @@ export function compileDecisionTreeSvg(bp, P) {
 
   <!-- Decision edges (zero crossings: B | A | C) -->
   ${svgArrow([[590, 138], [590, T.inputs.y - 2]])}
-  ${S(590, 180, '1')}
-  ${svgText(618, 185, bp.step1Label, { size: 14 }, P)}
+  ${S(562, 180, '1')}
+  ${svgText(604, 185, bp.step1Label, { size: 14 }, P)}
   ${svgArrow([[240, T.inputs.y + T.inputs.h], [240, T.q1.y - 2]])}
   ${S(88, 524, '2')}
   ${svgArrow([[T.q1.x + T.q1.w, 524], [T.q2.x - 2, 524]])}
-  ${svgText(400, 512, bp.q1No, { size: 12, weight: 700, anchor: 'middle' }, P)}
+  ${svgText(398, 512, bp.q1No, { size: 12, weight: 700, anchor: 'middle' }, P)}
   ${S(716, 524, '3')}
   ${svgArrow([[240, T.q1.y + T.q1.h], [240, T.bar.y - 2]])}
   ${svgText(252, 610, bp.q1Yes[0], { size: 12, weight: 700 }, P)}
@@ -735,19 +734,19 @@ export function compileDecisionTreeDrawio(bp, P) {
     [0, 1, 2].forEach((j) =>
       B.addPointEdge(`e_${k}_${j + 1}_${j + 2}`, [cx + 40, T.cardYs[j] + T.cardH], [cx + 40, T.cardYs[j + 1]], [], { source: `card_${k}_${j + 1}`, target: `card_${k}_${j + 2}` })
     );
-    B.addStepBadge(`step_${o.step}_outcome_${k}`, centers[i], T.bar.y + T.bar.h + 12, o.step);
+    B.addStepBadge(`step_${o.step}_outcome_${k}`, centers[i], T.bar.y + T.bar.h + 19, o.step);
     B.addPointEdge(`e_bar_to_${k}`, [centers[i], T.bar.y + T.bar.h], [centers[i], T.outcomeY], [], { source: 'bar_triad_core', target: `outcome_${k}_wrapper` });
   });
 
   // Decision flow
-  B.addStepBadge('step_1_top', 590, 180, '1');
-  B.addCalloutText('lbl_step1_top', 612, 166, 120, 28, [bp.step1Label], 'left');
+  B.addStepBadge('step_1_top', 562, 180, '1');
+  B.addCalloutText('lbl_step1_top', 602, 166, 128, 28, [bp.step1Label], 'left');
   B.addPointEdge('e_actor_to_inputs', [590, 138], [590, T.inputs.y], [], { source: 'actor_top_user', target: 'card_inputs' });
   B.addPointEdge('e_inputs_to_q1', [240, T.inputs.y + T.inputs.h], [240, T.q1.y], [], { source: 'card_inputs', target: 'q1_compliance' });
   B.addStepBadge('step_2_q1', 88, 524, '2');
   B.addStepBadge('step_3_q2', 716, 524, '3');
   B.addPointEdge('e_q1_no_q2', [T.q1.x + T.q1.w, 524], [T.q2.x, 524], [], { source: 'q1_compliance', target: 'q2_tiers' });
-  B.addCalloutText('lbl_q1_no', 384, 496, 32, 22, [bp.q1No], 'center', 12, true);
+  B.addCalloutText('lbl_q1_no', 382, 496, 32, 22, [bp.q1No], 'center', 12, true);
   B.addPointEdge('e_q1_yes_b', [240, T.q1.y + T.q1.h], [240, T.bar.y], [], { source: 'q1_compliance', target: 'bar_triad_core' });
   B.addCalloutText('lbl_q1_yes', 250, 596, 150, 36, bp.q1Yes, 'left');
   B.addPointEdge('e_q2_single_a', [496, T.q2.y + T.q2.h], [496, T.bar.y], [], { source: 'q2_tiers', target: 'bar_triad_core' });

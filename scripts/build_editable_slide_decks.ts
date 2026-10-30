@@ -31,12 +31,36 @@ import {
 // @ts-ignore
 import { getDeckSlideNotesList, getSlideSpeakerNoteText } from './human_readable_speaker_notes.mjs';
 
+const localReq = createRequire(import.meta.url);
 const promptCanvasPkg = fs.existsSync(path.resolve(__dirname, '../../PromptCanvas/package.json'))
   ? path.resolve(__dirname, '../../PromptCanvas/package.json')
-  : '/Users/nitinagga/Documents/PromptCanvas/package.json';
-const requireFromPromptCanvas = createRequire(promptCanvasPkg);
+  : path.join(process.env.HOME || '', 'Documents', 'PromptCanvas', 'package.json');
+const requireFromPromptCanvas = fs.existsSync(promptCanvasPkg) ? createRequire(promptCanvasPkg) : localReq;
+function resolveOptionalPkg(pkgName: string): any {
+  for (const reqFn of [localReq, requireFromPromptCanvas]) {
+    try {
+      return reqFn(pkgName);
+    } catch {
+      // try next resolver
+    }
+  }
+  const siblingCandidates = [
+    path.resolve(__dirname, '../../zyvoriq/package.json'),
+    path.resolve(__dirname, '../../trainex/package.json'),
+  ];
+  for (const cand of siblingCandidates) {
+    if (fs.existsSync(cand)) {
+      try {
+        return createRequire(cand)(pkgName);
+      } catch {
+        // continue
+      }
+    }
+  }
+  throw new Error(`Unable to resolve package: ${pkgName}`);
+}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const PptxGenJS: any = requireFromPromptCanvas('pptxgenjs');
+const PptxGenJS: any = resolveOptionalPkg('pptxgenjs');
 
 const FDE_BLOGS_ROOT = path.resolve(__dirname, '..');
 const DIAGRAMS_DIR = path.join(FDE_BLOGS_ROOT, 'diagrams');
@@ -245,7 +269,7 @@ export const DECKS: DeckSpec[] = [
     diagramIds: ['ws5-decision-tree-and-agentic-triad'],
     sourceDocs: [
       'blogs/ws5-decision-guide-and-agentic-triad.md',
-      'workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md',
+      'workstream-5-wrap-up-and-backlog/5.1 + 5.2-capstone-backlog-and-ga-roadmap.md',
     ],
   },
 ];
@@ -612,7 +636,7 @@ function parseBulletIntoCard(raw: string, index: number, explicitSpec?: CardTech
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const sharpInstance: any = (() => {
   try {
-    const s = requireFromPromptCanvas('sharp');
+    const s = resolveOptionalPkg('sharp');
     return s.default || s;
   } catch {
     return null;
@@ -656,7 +680,7 @@ async function rasterizeSvgIcon(svgOrDataUrl: string, widthPx: number = 128, hei
       // fall through
     }
   }
-  return renderInlineSvgToPngDataUrl(svgOrDataUrl, widthPx, heightPx);
+  return typeof renderInlineSvgToPngDataUrl === 'function' ? renderInlineSvgToPngDataUrl(svgOrDataUrl, widthPx, heightPx) : null;
 }
 
 function extractInlineImgSrc(htmlValue: string | undefined): string | undefined {
@@ -1042,14 +1066,45 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
           'Pattern C • Dynamic Hybrid: Unified Hub ALB, Private Service Connect spokes & 0ms live tier upgrades',
           '5-Hop Defense & Verification: OBO/DPoP, ARD, Valkey, Model Armor & 20/20 automated security gates',
         ];
+  const formatCoverTitle = (raw: string): string => {
+    let s = raw.length > 38 ? raw.replace(/\s*\([^)]*\)\s*$/, '').trim() : raw;
+    if (s.length <= 38) return s;
+    const words = s.split(/\s+/);
+    let out = '';
+    for (const w of words) {
+      if ((out ? out.length + 1 : 0) + w.length <= 38) {
+        out = out ? `${out} ${w}` : w;
+      } else {
+        break;
+      }
+    }
+    return out || s.slice(0, 38).trim();
+  };
+  const formatCoverBody = (raw: string, maxLen = 136): string => {
+    const cleaned = raw.replace(/\s+/g, ' ').trim();
+    if (cleaned.length <= maxLen) {
+      return /[.!?]$/.test(cleaned) ? cleaned : `${cleaned}.`;
+    }
+    const candidate = cleaned.slice(0, maxLen);
+    const sentenceEnd = Math.max(candidate.lastIndexOf('. '), candidate.lastIndexOf('; '));
+    if (sentenceEnd >= 68) {
+      return `${candidate.slice(0, sentenceEnd).trim()}.`;
+    }
+    let wordTrim = candidate.replace(/\s+\S*$/, '').trim();
+    const dangling = /(?:at|a|an|the|and|or|of|to|in|for|with|vs|via|by|on|as|is|are|that|which|from|into|across|per)$/i;
+    while (dangling.test(wordTrim) && wordTrim.includes(' ')) {
+      wordTrim = wordTrim.replace(/\s+\S+$/, '').trim();
+    }
+    wordTrim = wordTrim.replace(/[,;:\-–—.]+$/, '').trim();
+    return `${wordTrim}.`;
+  };
   rawTldr.forEach((item, idx) => {
     const cleanItem = stripMarkdownFormatting(item);
     const colonIdx = cleanItem.indexOf(':');
     const rawLabel = colonIdx > 0 && colonIdx < 95 ? cleanItem.slice(0, colonIdx).trim() : `Highlight ${idx + 1}`;
-    const trimmedLabel = rawLabel.length > 38 ? rawLabel.replace(/\s*\([^)]*\)\s*$/, '').trim() : rawLabel;
-    const label = trimmedLabel.length > 42 ? `${trimmedLabel.slice(0, 40).trim()}…` : trimmedLabel;
+    const label = formatCoverTitle(rawLabel);
     const rawSub = colonIdx > 0 && colonIdx < 95 ? cleanItem.slice(colonIdx + 1).trim() : cleanItem;
-    const sub = rawSub.length > 148 ? `${rawSub.slice(0, 145).replace(/\s+\S*$/, '').trim()}.` : rawSub;
+    const sub = formatCoverBody(rawSub, 136);
     const accent = GOOGLE_CARD_ACCENTS[idx % GOOGLE_CARD_ACCENTS.length];
     const px = Number((0.84 + idx * 1.71).toFixed(3));
 
@@ -1224,7 +1279,7 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
     fill: { color: WHITE },
     line: { color: BORDER_GREY, width: 0.85 },
   });
-  slide.addText('Verified Across 3 GCP Projects (#248990048888 • #638420508320 • #887605034827) • 12/12 Forensic PASS', {
+  slide.addText('Verified Across 3 GCP Projects (#248990048888 • #638420508320 • #887605034827) • 13/13 Forensic PASS', {
     x: 8.34,
     y: 6.32,
     w: 4.30,
@@ -1304,7 +1359,7 @@ function addQuadMetricsSlide(pptx: Pptx, spec: DeckSpec | null) {
         num: '20/20',
         caption: 'Automated Security & Migration Gates PASS',
         detail: 'Verified across 10 Pattern A red-team breach tests, 6 Pattern B CMEK kill-switch tests, and 4 Pattern C zero-downtime live upgrade tests.',
-        pill: '12/12 Forensic Audit • 20/20 Sims',
+        pill: '13/13 Forensic Audit • 20/20 Sims',
       },
     ],
     WS2: [
@@ -2087,8 +2142,8 @@ function buildComparisonTableSynthesisCards(
       body: 'Model Armor + SDP block prompt injection (400), NLC violations (422) & PII leaks while AlloyDB FORCE RLS and BigQuery OTel certify 0 bleed.',
     },
     {
-      title: '4. Continuous 12/12 + 20/20 CI/CD Gate',
-      body: 'Every pull request executes 12 forensic checks and 20 live security/migration assertions (10 Pattern A + 6 Pattern B + 4 Pattern C) in CI/CD.',
+      title: '4. Continuous 13/13 + 20/20 CI/CD Gate',
+      body: 'Every pull request executes 13 forensic checks and 20 live security/migration assertions (10 Pattern A + 6 Pattern B + 4 Pattern C) in CI/CD.',
     },
   ];
 }
@@ -2693,8 +2748,8 @@ function addAssetsSlide(pptx: Pptx, spec: DeckSpec | null, deck: DeckJson, manif
     },
     {
       title: '2. Automated Security & FinOps Proof',
-      body: 'All patterns are certified by 12 forensic checks and 20 simulation assertions—proving zero cross-tenant data bleed and 90% shared prefix caching.',
-      tag: '12/12 Forensic Gates • 20/20 Simulations PASS',
+      body: 'All patterns are certified by 13 forensic checks and 20 simulation assertions—proving zero cross-tenant data bleed and 90% shared prefix caching.',
+      tag: '13/13 Forensic Gates • 20/20 Simulations PASS',
       accent: GOOGLE_CARD_ACCENTS[1],
     },
     {
@@ -2953,12 +3008,20 @@ function renderArchitectureCenterDiagramSidebar(
     return GOOGLE_CARD_ACCENTS[fallbackIdx % 4];
   };
 
+  const stripHexHints = (s: string): string =>
+    stripMarkdownFormatting(s)
+      .replace(/\s*\(#[0-9a-fA-F]{6}\)/g, '')
+      .replace(/\s*#[0-9a-fA-F]{6}/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+
   const zoneStartY = sideY + 1.22;
-  const zoneCardH = 0.56;
-  const zoneGap = 0.06;
+  const zoneCardH = 0.62;
+  const zoneGap = 0.05;
   zones.slice(0, 4).forEach((zn, zIdx) => {
     const zy = Number((zoneStartY + zIdx * (zoneCardH + zoneGap)).toFixed(3));
     const accent = resolveSemanticZoneAccent(zn, zIdx);
+    const cleanZoneRole = stripHexHints(zn.role);
     slide.addShape(pptx.ShapeType.roundRect, {
       x: Number((sideX + 0.12).toFixed(3)),
       y: zy,
@@ -2995,23 +3058,23 @@ function renderArchitectureCenterDiagramSidebar(
       valign: 'middle',
       fontFace: FONT_TITLE,
     });
-    slide.addText(stripMarkdownFormatting(zn.name), {
+    slide.addText(stripHexHints(zn.name), {
       x: Number((sideX + 1.18).toFixed(3)),
       y: Number((zy + 0.03).toFixed(3)),
       w: Number((sideW - 1.36).toFixed(3)),
       h: 0.20,
-      fontSize: 7.4,
+      fontSize: 7.3,
       bold: true,
       color: TEXT_DARK,
       valign: 'middle',
       fontFace: FONT_TITLE,
     });
-    slide.addText(stripMarkdownFormatting(zn.role), {
+    slide.addText(cleanZoneRole, {
       x: Number((sideX + 0.24).toFixed(3)),
       y: Number((zy + 0.24).toFixed(3)),
-      w: Number((sideW - 0.42).toFixed(3)),
-      h: 0.29,
-      fontSize: 6.7,
+      w: Number((sideW - 0.40).toFixed(3)),
+      h: 0.35,
+      fontSize: cleanZoneRole.length > 145 ? 6.15 : 6.6,
       color: TEXT_BODY,
       valign: 'top',
       fontFace: FONT_BODY,
@@ -3020,23 +3083,23 @@ function renderArchitectureCenterDiagramSidebar(
   });
 
   // 3. Key Walkthrough Takeaways (4 Compact Numbered Cards in Quad-Color sequence)
-  const tpLabelY = zoneStartY + 4 * (zoneCardH + zoneGap) + 0.04;
+  const tpLabelY = zoneStartY + 4 * (zoneCardH + zoneGap) + 0.03;
   slide.addText('KEY ARCHITECTURAL WALKTHROUGH POINTS', {
     x: Number((sideX + 0.14).toFixed(3)),
     y: Number(tpLabelY.toFixed(3)),
     w: Number((sideW - 0.28).toFixed(3)),
-    h: 0.18,
-    fontSize: 7.2,
+    h: 0.17,
+    fontSize: 7.1,
     bold: true,
     color: TEXT_MUTED,
     fontFace: FONT_TITLE,
   });
 
   const tpList = talkingPoints.slice(0, 4);
-  const tpStartY = tpLabelY + 0.20;
-  const bottomPillY = sideY + sideH - 0.46;
-  const tpAvailH = bottomPillY - tpStartY - 0.08;
-  const tpGap = 0.055;
+  const tpStartY = tpLabelY + 0.18;
+  const bottomPillY = sideY + sideH - 0.44;
+  const tpAvailH = bottomPillY - tpStartY - 0.06;
+  const tpGap = 0.045;
   const tpCardH = (tpAvailH - tpGap * (tpList.length - 1)) / Math.max(1, tpList.length);
 
   tpList.forEach((tp, idx) => {
@@ -3071,12 +3134,12 @@ function renderArchitectureCenterDiagramSidebar(
       valign: 'middle',
       fontFace: FONT_TITLE,
     });
-    slide.addText(stripMarkdownFormatting(tp), {
+    slide.addText(stripHexHints(tp), {
       x: Number((sideX + 0.50).toFixed(3)),
-      y: Number((ty + 0.03).toFixed(3)),
+      y: Number((ty + 0.02).toFixed(3)),
       w: Number((sideW - 0.68).toFixed(3)),
-      h: Number((tpCardH - 0.06).toFixed(3)),
-      fontSize: 6.9,
+      h: Number((tpCardH - 0.04).toFixed(3)),
+      fontSize: 6.75,
       color: TEXT_BODY,
       fontFace: FONT_BODY,
       valign: 'middle',
@@ -6044,7 +6107,7 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
   });
   slide.addText('5', {
     x: 8.10,
-    y: 4.92,
+    y: 4.82,
     w: 0.32,
     h: 0.32,
     fontSize: 11,
@@ -6056,18 +6119,18 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
   });
   slide.addShape(pptx.ShapeType.roundRect, {
     x: 6.86,
-    y: 4.94,
+    y: 4.84,
     w: 0.94,
-    h: 0.30,
+    h: 0.28,
     rectRadius: 0.05,
     fill: { color: EXEC_SLATE },
   });
   slide.addText(cfg.step5Pill, {
     x: 6.86,
-    y: 4.94,
+    y: 4.84,
     w: 0.94,
-    h: 0.30,
-    fontSize: 8.0,
+    h: 0.28,
+    fontSize: 7.8,
     bold: true,
     color: WHITE,
     align: 'center',
@@ -6075,28 +6138,28 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
     fontFace: FONT_TITLE,
   });
   slide.addText(cfg.step5Desc, {
-    x: 5.82,
-    y: 5.30,
-    w: 2.02,
-    h: 0.48,
-    fontSize: 8.0,
+    x: 5.74,
+    y: 5.16,
+    w: 2.12,
+    h: 0.45,
+    fontSize: 7.7,
     bold: true,
     color: TEXT_DARK,
     fontFace: FONT_TITLE,
   });
   slide.addShape(pptx.ShapeType.line, {
     x: 8.03,
-    y: 5.36,
+    y: 5.26,
     w: 2.34,
     h: 0,
     line: { color: EXEC_NAVY, width: 1.5, endArrowType: 'triangle' },
   });
   slide.addText(cfg.step5Arrow, {
     x: 8.46,
-    y: 5.12,
+    y: 5.02,
     w: 1.84,
     h: 0.20,
-    fontSize: 8.0,
+    fontSize: 7.8,
     bold: true,
     color: EXEC_NAVY,
     align: 'center',
@@ -6859,7 +6922,7 @@ const OPERATING_MODEL_BY_WS: Record<string, OperatingModelSpec> = {
         bullets: [
           'Mints KMS P-256 STS JWT (<0.15ms cached JWKS) + ~3ms Valkey JTI deny-list',
           'Vaults per-user 3LO tokens ({tenant}:{user}) & enforces <5s SCAN+UNLINK L1 purge',
-          'Automates 12/12 CI/CD forensic gates (107/107 assertions) & GA sunset hooks',
+          'Automates 13/13 CI/CD forensic gates (107/107 assertions) & GA sunset hooks',
         ],
       },
       {
@@ -7148,7 +7211,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
     verify1: [
       '• Projects: cymbal-control-plane • cymbal-pooled-prod',
       '• Runtime: Cloud Run Gen2 (gVisor runsc, 100% traffic)',
-      '• CLI Gate: run_deep_forensic_audit.py (12/12 PASS)',
+      '• CLI Gate: run_deep_forensic_audit.py (13/13 PASS)',
       '• Artifact: core-cymbal-agent/runtime_pipeline.py',
     ],
     verify2: [
@@ -7182,7 +7245,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       {
         badge: 'AUDIT 04 • DUAL-PLANE 20/20 GCP + 30/30 SAAS',
         title: 'Intra-Cloud GCP + Inter-Cloud 10-SaaS MCP Proof',
-        body: 'Certifies 20/20 GCP runtime suites plus 30/30 Inter-Cloud AWS AgentCore MCP target flows (60/60 assertions, 12/12 forensic gates).',
+        body: 'Certifies 20/20 GCP runtime suites plus 30/30 Inter-Cloud AWS AgentCore MCP target flows (60/60 assertions, 13/13 forensic gates).',
       },
     ],
   },
@@ -7322,7 +7385,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
     verify2: [
       '• Verification: scripts/verify_cloud_console_and_runtime.py',
       '• Dual-Plane: 20/20 GCP + 30/30 10-SaaS MCP PASS',
-      '• Forensic Gate: 12/12 PASS (run_deep_forensic_audit.py)',
+      '• Forensic Gate: 13/13 PASS (run_deep_forensic_audit.py)',
       '• Artifact: docs/cloud_console_verification_receipt.json',
     ],
     file1: 'scripts/run_deep_forensic_audit.py',
@@ -7538,7 +7601,7 @@ const SERIES_NEXT_STEPS_BY_WS: Record<
       '2. Part 2 (Slides 5, 6 & 8) — 5-Hop Pipeline & Pattern A Pool: Apply Terraform 2.6 (2.6-terraform-starter/), certify ~42ms p95 5-Hop overhead (~22ms DLP), ~1.8s cold / ~420ms warm TTFT, 84.7% token savings (90% 32k prefix cache), and pass run_breach_simulations.py (10/10 PASS).',
       '3. Part 3 (Slide 7) — Circuit Breakers, CMEK & Valkey L1 Flush: Apply Terraform 3.6 (3.6-terraform-silo-blueprint/), certify gVisor sandbox, <60s HTTP 423 CMEK kill-switch, <5s Valkey SCAN+UNLINK (cache:{tenant}:*), SET NX PX 5000 recovery, and <30s cross-region RTO (6/6 PASS).',
       '4. Part 4 (Slide 9) — EAP Gap Controls & Pattern C Hybrid FinOps: Apply Terraform 4.6 (4.6-terraform-hybrid-psc-blueprint/), certify 74% portfolio TCO reduction (950 Pooled + 50 PSC Spokes), feature-flagged GAP-01..05 sunset hooks, BigQuery OTel FinOps SQL, and 0ms PSC cutover (4/4 PASS).',
-      '5. Part 5 (Slides 10–11) — Dual-Plane CI/CD Forensic Audit & Day-2 Operations: Enforce python3 -B scripts/run_deep_forensic_audit.py (12/12 PASS • 107/107 Assertions) across 20/20 GCP suites and 30/30 Inter-Cloud 10-SaaS MCP target assertions.',
+      '5. Part 5 (Slides 10–11) — Dual-Plane CI/CD Forensic Audit & Day-2 Operations: Enforce python3 -B scripts/run_deep_forensic_audit.py (13/13 PASS • 107/107 Assertions) across 20/20 GCP suites and 30/30 Inter-Cloud 10-SaaS MCP target assertions.',
     ],
     specs: [
       {
@@ -7563,7 +7626,7 @@ const SERIES_NEXT_STEPS_BY_WS: Record<
       },
       {
         stack: 'run_deep_forensic_audit.py • verify_5_third_party_saas_products.py',
-        sla: 'SLA: 12/12 Forensic (107/107) • 20/20 GCP + 30/30 10-SaaS MCP',
+        sla: 'SLA: 13/13 Forensic (107/107) • 20/20 GCP + 30/30 10-SaaS MCP',
         tag: 'Part 5: Dual-Plane CI/CD Gate (Slides 10–11)',
       },
     ],

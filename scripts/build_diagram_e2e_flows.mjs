@@ -2496,7 +2496,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       'How do Chief Architects, CISOs, and CFOs select between Pattern A, Pattern B, and Pattern C—and how does the Multi-Tenant Agentic Triad balance Cryptographic Tenant Governance, Predictable FinOps COGS, and Zero-PII Observability across 1,000+ tenants?',
     gcpProject: 'cymbal-control-plane (#248990048888) & cymbal-build-sandbox (#887605034827)',
     runtimeTarget: 'enterprise-s2p-global • cymbal_agentic_finops_otel.tenant_telemetry_spans',
-    codeModules: 'workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md • blogs/ws5-decision-guide-and-agentic-triad.md',
+    codeModules: 'workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md • workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md • blogs/ws5-decision-guide-and-agentic-triad.md',
     execCloudServices:
       'Vertex AI Agent Engine • Google ADK • Gemini 2.5 Pro & Gemma 3 • Cloud Armor & IAP • Model Armor & SDP • Memorystore for Valkey • AlloyDB RLS & Cloud KMS CMEK • BigQuery OTel',
     execTechSummary:
@@ -2504,7 +2504,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     outcomeTitle: '2-Question Topology Selector + 74% Total Cloud COGS Reduction Across 1,000 Tenants',
     outcomeBody:
       'Across a 1,000-tenant B2B SaaS portfolio (950 Standard + 50 Enterprise), Pattern C guided by the Agentic Triad reduces shared prompt token costs by 90%, cuts total monthly infrastructure COGS by 74% (via 90% shared ContextCacheConfig), and maintains 99.99% SLA with 0 cross-tenant leaks.',
-    outcomeTech: 'Verified live across all 12 forensic checks (F-01..F-12) and 20/20 simulation assertions (10 Pattern A + 6 Pattern B + 4 Pattern C)',
+    outcomeTech: 'Verified live across all 13 forensic checks (F-01..F-13) and 107/107 simulation & 10-SaaS assertions (20 Pattern A/B/C + 60 SaaS + 27 OTel/Ledger)',
     plainZones: [
       {
         zoneId: 'Blue Zone (Top-Left)',
@@ -2607,7 +2607,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         route: 'Executive Topology Decision Matrix (Blue Zone)',
         protocolAndMechanism:
           'Evaluates regulatory blast-radius mandates (Q1 → Pattern B) and multi-tiered SaaS packaging (Q2 → Pattern A vs. Pattern C) on an 80% shared codebase.',
-        codeAndResource: 'workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md',
+        codeAndResource: 'workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md • 5.2-capstone-backlog-and-ga-roadmap.md',
         verifiedOutcome: 'Eliminates architectural forks; isolation is a per-tenant configuration',
       },
       {
@@ -2667,10 +2667,10 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       {
         step: 'Cost & Audit',
         hopName: '10-Week Program Roadmap',
-        route: '12/12 Forensic Gates & Product EAP Backlog (All Workstreams)',
+        route: '13/13 Forensic Gates & Product EAP Backlog (All Workstreams)',
         protocolAndMechanism:
           'Delivers Pattern A in Week 4, Pattern B in Week 7, and Pattern C in Week 10 alongside the 9-item Google Cloud Product EAP Tracker (`GAP-P0-01`..`GAP-P2-02`).',
-        codeAndResource: 'scripts/run_deep_forensic_audit.py (12/12 PASS • 20/20 SIMS)',
+        codeAndResource: 'scripts/run_deep_forensic_audit.py (13/13 PASS • 107/107 SIMS)',
         verifiedOutcome: 'Complete, production-certified reference architecture across WS1–WS5',
       },
     ],

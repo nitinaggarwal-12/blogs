@@ -23,6 +23,7 @@ import fs from 'fs';
 import path from 'path';
 import http from 'http';
 import { createRequire } from 'module';
+import { fileURLToPath } from 'url';
 import bp08 from './blueprints_ext/08-ws2-demo-env-and-3p-auth-sandbox-topology.mjs';
 import bp09 from './blueprints_ext/09-ws2-terraform-starter-resource-graph.mjs';
 import bp10 from './blueprints_ext/10-ws3-multi-project-silo-and-cmek-setup-topology.mjs';
@@ -41,10 +42,10 @@ import {
   layoutGeometryContract,
 } from './arch_center_layouts.mjs';
 
-const require = createRequire('/Users/nitinagga/Documents/PromptCanvas/package.json');
+const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const PROMPTCANVAS_PKG = path.resolve(ROOT_DIR, '..', 'PromptCanvas', 'package.json');
+const require = createRequire(fs.existsSync(PROMPTCANVAS_PKG) ? PROMPTCANVAS_PKG : path.join(ROOT_DIR, 'package.json'));
 const puppeteer = require('puppeteer-core');
-
-const ROOT_DIR = '/Users/nitinagga/Documents/blogs';
 const CENTRAL_DIAGRAMS_DIR = path.join(ROOT_DIR, 'diagrams');
 const ASSETS_PATH = path.join(ROOT_DIR, 'scripts', 'official_arch_center_assets.json');
 
@@ -803,7 +804,7 @@ const WORKSTREAM_BLUEPRINTS = [
     id: 'ws5-decision-tree-and-agentic-triad',
     badge: 'WORKSTREAM 5.1 & 5.2 • CAPSTONE BLUEPRINT',
     title: 'Workstream 5 Capstone: Executive Topology Decision Guide & The Multi-Tenant Agentic Triad',
-    subtitle: 'Verified 20/20 Suites PASS Across cymbal-build-sandbox & ramp-portal-dev (Security • FinOps -84.7% • Zero-PII OTel)',
+    subtitle: 'Verified 20/20 Suites PASS Across cymbal-build-sandbox & ramp-portal-dev (Security • FinOps 84.7% Savings • Zero-PII OTel)',
     workstreamDir: 'workstream-5-synthesis-and-publishing/diagrams',
     // ---- Rule 53G: a decision guide is a decision tree, not a request/response hub ----
     layout: LAYOUT_DECISION_TREE_3_OUTCOME,
@@ -869,7 +870,7 @@ const WORKSTREAM_BLUEPRINTS = [
         cards: [
           { icon: 'gemini_agent_platform', title: 'Shared Agent Engine gVisor Pool', sub: 'temp:tenant_id bound per request' },
           { icon: 'datastore_alloydb_bq', title: 'Shared AlloyDB + BigQuery FORCE RLS', sub: 'tenant_id rows • 0 cross-tenant rows' },
-          { icon: 'context_cache', title: 'Namespaced Memory + 90% ContextCache', sub: '32k shared prefix • -84.7% input tokens' },
+          { icon: 'context_cache', title: 'Namespaced Memory + 90% ContextCache', sub: '32k shared prefix • 84.7% input token savings' },
           { icon: 'valkey_cache', title: 'Valkey Bulkheads + Thinking Caps', sub: '120 / 600 RPM • 4k / 8k tokens' },
         ],
         verdict: ['Choose when one commercial tier is enough', '10/10 breach vectors blocked • lowest unit cost'],
@@ -1455,8 +1456,8 @@ function compileOfficialDrawioXml(bp) {
   addPointEdge('e_user_to_alb', [566, 138], [566, 430], [], { endArrow: true, source: 'actor_top_user', target: 'card_rc_alb' });
   addPointEdge('e_alb_to_user', [612, 432], [612, 140], [], { endArrow: true, source: 'card_rc_alb', target: 'actor_top_user' });
 
-  addPointEdge('e_alb_to_top_left', [452, 470], [292, 431], [[418, 470], [418, 431]], { startArrow: true, endArrow: true, source: 'card_rc_alb', target: 'card_rc_topleft' });
-  addPointEdge('e_alb_to_mid_left', [452, 470], [292, 515], [[418, 470], [418, 515]], { startArrow: true, endArrow: true, source: 'card_rc_alb', target: 'card_rc_midleft' });
+  addPointEdge('e_alb_to_top_left', [452, 456], [292, 431], [[418, 456], [418, 431]], { startArrow: true, endArrow: true, source: 'card_rc_alb', target: 'card_rc_topleft' });
+  addPointEdge('e_alb_to_mid_left', [452, 484], [292, 515], [[418, 484], [418, 515]], { startArrow: true, endArrow: true, source: 'card_rc_alb', target: 'card_rc_midleft' });
 
   addPointEdge('e_iap_to_cloudrun', [292, 613], [476, 613], [], { startArrow: true, endArrow: true, source: 'card_rc_botleft', target: 'card_rc_cloudrun' });
 

@@ -565,7 +565,7 @@ def main() -> None:
     if e2e_start > 0 and e2e_end > e2e_start:
         raw_e2e = (
             existing[e2e_start : e2e_end + len("<!-- E2E_FLOW_END -->")]
-            .replace("12/12 Forensic Gates", "13/13 Forensic Gates")
+            .replace("13/13 Forensic Gates", "13/13 Forensic Gates")
             .replace("12/12 PASS • 20/20 SIMS", "13/13 PASS • 107/107 SIMS")
         )
         e2e_suffix = "\n\n---\n\n" + raw_e2e + "\n"

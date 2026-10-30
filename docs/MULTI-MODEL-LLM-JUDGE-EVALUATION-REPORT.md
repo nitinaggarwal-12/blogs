@@ -4,7 +4,8 @@
 - **GCP Runtime Project:** `ramp-portal-dev`
 - **Total Model × Workstream Evaluations:** `9/10 PASS`
 - **Cross-Model Consensus Mean Score:** **`97.93 / 100`**
-- **Machine-Readable Receipt:** [`docs/multi_model_llm_judge_evaluation_receipt.json`](file:///Users/nitinagga/Documents/blogs/docs/multi_model_llm_judge_evaluation_receipt.json)
+- **Machine-Readable Receipt:** [`docs/multi_model_llm_judge_evaluation_receipt.json`](multi_model_llm_judge_evaluation_receipt.json)
+
 
 ## 1. Cross-Model Judge Consensus Matrix (`2 Live Vertex AI Models × 5 Blogs`)
 

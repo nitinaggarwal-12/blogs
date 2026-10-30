@@ -13,12 +13,29 @@
  *     Tab 2 Live 5-Hop Simulator execution, Tab 3 10-SaaS Live Access Hub, Tab 4 Forensic Audit (13/13).
  */
 import { createRequire } from "module";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const require = createRequire("/Users/nitinagga/Documents/PromptCanvas/package.json");
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const pkgPath = fs.existsSync(path.resolve(__dirname, "../../PromptCanvas/package.json"))
+  ? path.resolve(__dirname, "../../PromptCanvas/package.json")
+  : fs.existsSync("/usr/local/google/home/nitinagga/Documents/PromptCanvas/package.json")
+  ? "/usr/local/google/home/nitinagga/Documents/PromptCanvas/package.json"
+  : "/Users/nitinagga/Documents/PromptCanvas/package.json";
+
+const require = createRequire(pkgPath);
 const puppeteer = require("puppeteer-core");
 
 const BASE_URL = process.env.PORTAL_BASE_URL || "http://localhost:8080";
-const CHROME_PATH = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+const chromeCandidates = [
+  process.env.CHROME_BIN,
+  "/usr/bin/google-chrome",
+  "/usr/bin/google-chrome-stable",
+  "/usr/bin/chromium",
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+].filter(Boolean);
+const CHROME_PATH = chromeCandidates.find((p) => fs.existsSync(p)) || chromeCandidates[chromeCandidates.length - 1];
 
 const DOCS_TO_TEST = [
   { doc: "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md", ws: "WS1" },

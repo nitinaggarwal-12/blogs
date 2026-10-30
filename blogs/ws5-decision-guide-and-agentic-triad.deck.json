@@ -3,10 +3,10 @@
   "deckTitle": "Pooled, Siloed, or Hybrid? Executive Decision Guide & Multi-Tenant Agentic Triad (Workstream 5)",
   "deckSubtitle": "Workstream 5 capstone: 2-question topology decision tree, side-by-side Well-Architected comparison matrix, 1,000-tenant FinOps TCO model, and 3-stage elastic tenant tier lifecycle",
   "tldr": [
-    "Two Architectural Questions Select Your Pattern: First evaluate whether 100% of tenants legally require dedicated cloud projects (Pattern B); second evaluate whether you sell one uniform tier (Pattern A) or multiple tiers (Pattern C).",
-    "One 80% Reusable 5-Hop Codebase: Engineering writes the 5-hop ADK security and governance pipeline once; Patterns A, B, and C merely parameterize the surrounding Google Cloud isolation boundary.",
-    "The Multi-Tenant Agentic Triad: Sustainable enterprise AI platforms balance three interdependent pillars—Zero-Trust Cryptographic Security, Predictable Unit Economics, and Zero-PII FinOps Chargeback.",
-    "Proven 1,000-Tenant Portfolio Economics: Across 950 Standard and 50 Enterprise tenants, Pattern C reduces Gemini 2.5 Pro input token spend by 84.7%, lowers total cloud TCO by 74% vs. all-siloed, and maintains a 99.99% SLA.",
+    "2-Question Pattern Selector: Q1 checks if 100% of tenants require dedicated projects (Pattern B); Q2 separates single-tier (A) from multi-tier (C).",
+    "80% Reusable 5-Hop Codebase: Engineering writes the 5-hop ADK security pipeline once; Patterns A, B, and C parameterize the cloud boundary.",
+    "Multi-Tenant Agentic Triad: Balances Zero-Trust 5-Hop Security, Predictable FinOps Unit Economics, and Zero-PII BigQuery OTel Chargeback.",
+    "1,000-Tenant Portfolio TCO: Across 950 Standard and 50 Enterprise tenants, Pattern C cuts token spend by 84.7% and total cloud TCO by 74%.",
     "Elastic 3-Stage Tenant Tier Lifecycle: Onboard commercial tenants in <50ms into Pattern A (120 RPM Pool), promote expanding enterprises live into Pattern C PSC spokes (0ms lag, 0 dropped turns), and enforce <60s HTTP 423 CMEK kill-switches in Pattern B silos."
   ],
   "tldrSpecs": [
@@ -32,7 +32,7 @@
     },
     {
       "stack": "Stage 1: Pooled (120 RPM Pool) -> Stage 2: Live PSC Promotion (0ms Lag) -> Stage 3: CMEK Silo",
-      "sla": "12/12 Forensic Gates & 20/20 Automated Simulations Verified Across All 3 Tiers",
+      "sla": "13/13 Forensic Gates & 20/20 Automated Simulations Verified Across All 3 Tiers",
       "tag": "3-Stage Tenant Lifecycle"
     }
   ],
@@ -64,7 +64,7 @@
         },
         {
           "stack": "Cloud Armor • IAP • Agent Engine • Gemini 2.5 Pro • Valkey • Model Armor • AlloyDB • BigQuery",
-          "sla": "80% Identical Python ADK Codebase • 12/12 Forensic Gates & 20/20 Simulations PASS",
+          "sla": "80% Identical Python ADK Codebase • 13/13 Forensic Gates & 20/20 Simulations PASS",
           "tag": "4. Unified 5-Hop Google Cloud Stack"
         }
       ]
@@ -300,9 +300,9 @@
       "talkingPoints": [
         "Zone 1 (1. The 2-Question Executive Topology Selector): Evaluates `Decision inputs` (`Step 1`), `Q1 · Compliance gate` (`100% mandate VPC-SC or air-gap?` at `Step 2`), and `Q2 · Tier gate` (`Multi-tier Standard + Enterprise?` at `Step 3`).",
         "Zone 2 (2. The Agentic Triad — 80% Reusable Core): Unifies `Pillar 1 • Zero-Trust 5-Hop`, `Pillar 2 • Predictable FinOps`, and `Pillar 3 • Zero-PII OTel Chargeback` (`Step 7`) above the `AGENTIC TRIAD CORE` banner.",
-        "Pattern B Outcome Column (`Q1 = YES` -> `Step 4` • Coral `#fad2cf`): Provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`).",
-        "Pattern A Outcome Column (`Q2 = NO` -> `Step 5` • Amber `#feefc3`): Provisions `Shared Agent Engine Pool` (`120 RPM • 4k cap • 90% cache`) and `Shared AlloyDB & BigQuery RLS` (`FORCE RLS • 10/10 breach tests`).",
-        "Pattern C Outcome Column (`Q2 = YES` -> `Step 6` • Slate `#e8eaed`): Provisions `Hybrid Router & PSC Hub` (`Pool + PSC 10.10.0.50`) and `3-Phase Live Tier Migrator` (`0-downtime upgrade • 4/4 tests`)."
+        "Pattern B Outcome Column (`Q1 = YES` -> `Step 4`): Provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`).",
+        "Pattern A Outcome Column (`Q2 = NO` -> `Step 5`): Provisions `Shared Agent Engine Pool` (`120 RPM • 4k cap • 90% cache`) and `Shared AlloyDB & BigQuery RLS` (`FORCE RLS • 10/10 breach tests`).",
+        "Pattern C Outcome Column (`Q2 = YES` -> `Step 6`): Provisions `Hybrid Router & PSC Hub` (`Pool + PSC 10.10.0.50`) and `3-Phase Live Tier Migrator` (`0-downtime upgrade • 4/4 tests`)."
       ]
     }
   ],
@@ -311,7 +311,7 @@
     "Standardize on One 5-Hop Security Pipeline Across All Tiers: Keep 80% of your Python ADK application code identical across Pooled, Siloed, and Hybrid environments.",
     "Treat Pooled ($), Hybrid ($$), and Siloed ($$$) as One Continuous Platform: Use Firestore routing metadata and Private Service Connect to move tenants across tiers without changing URLs or rewriting agents.",
     "Balance All Three Pillars of the Agentic Triad: Combining 5-hop zero-trust security, 90% prefix caching + Valkey bulkheads, and zero-PII BigQuery OTel chargeback protects both CISO compliance and CFO margins.",
-    "Gate Every Production Release on the 12-Point Forensic & 20-Test Simulation Suite: Run `python3 -B scripts/run_deep_forensic_audit.py` to certify code, diagrams, Terraform blueprints, and live GCP resources."
+    "Gate Every Production Release on the 13-Point Forensic & 20-Test Simulation Suite: Run `python3 -B scripts/run_deep_forensic_audit.py` to certify code, diagrams, Terraform blueprints, and live GCP resources."
   ],
   "takeawaySpecs": [
     {
@@ -335,7 +335,7 @@
       "tag": "Takeaway 4: The Agentic Triad"
     },
     {
-      "stack": "scripts/run_deep_forensic_audit.py • 12/12 Forensic Gates • 20/20 Simulations",
+      "stack": "scripts/run_deep_forensic_audit.py • 13/13 Forensic Gates • 20/20 Simulations",
       "sla": "100% Automated Verification Across Code, Diagrams, Slides & Live GCP Resources",
       "tag": "Takeaway 5: Continuous Governance"
     }

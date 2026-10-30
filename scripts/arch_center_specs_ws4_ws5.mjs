@@ -482,12 +482,12 @@ Where:
 
 Open the [Workstream 5 Editable Google Slides Deck (\`ws5-wrap-up-editable-slides.pptx\`)](../slides/ws5-wrap-up-editable-slides.pptx) or the [All-in-One 25-Slide Master Presentation (\`geap-multi-tenancy-all-workstreams-editable-slides.pptx\`)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx) in the **Cloud Viewer** at the top of this page:
 
-| Slides | Presentation Theme | Companion Executable Script / Terraform Module |
+| Slides | Presentation Theme (3-Act Top-Down Progression) | Companion Executable Script / Deliverable / Terraform Module |
 | :--- | :--- | :--- |
-| **Slides 1–3** | Executive Decision Tree (\`Q1 Compliance\` + \`Q2 Tiering\`) & Pattern A/B/C Selector (Fig 1) | [\`5.1-pattern-comparison-and-decision-guide.md\`](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md) |
-| **Slides 4–6** | The Multi-Tenant Agentic Triad (\`80% Reusable 5-Hop Core\`) & FinOps Breakeven Model | [\`core-cymbal-agent/governance/\`](../core-cymbal-agent/governance/) |
-| **Slides 7–9** | Multi-Cloud (GCP + AWS Account \`393036065405\`) & 10-SaaS Verification Matrix (\`30/30 Flows PASS\`) | [\`scripts/verify_5_third_party_saas_products.py\`](../scripts/verify_5_third_party_saas_products.py) • [\`10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md\`](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md) |
-| **Slides 10–12** | 3-Stage Technical Solution Lifecycle, EAP Roadmap Tracker & 1-Click Terraform Factory | [\`1.4-eap-and-product-gap-tracker.md\`](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md) • [\`2.6/deploy_1click.sh\`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/deploy_1click.sh) • [\`3.6/deploy_1click.sh\`](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/deploy_1click.sh) • [\`4.6/deploy_1click.sh\`](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/deploy_1click.sh) |
+| **Slides 1–3 (Act I)** | Executive Title & 3-Act Map, Competing Tenant Use Cases & 12-Dimension Pattern Matrix | [\`5.1-pattern-comparison-and-decision-guide.md\`](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md) |
+| **Slides 4–7 (Act II)** | L1 80/20 Reuse Topology $\\rightarrow$ L2 Fig 1 Decision Tree & Agentic Triad $\\rightarrow$ L3 UML Sequence $\\rightarrow$ L4 FinOps/OTel Triptych | [\`core-cymbal-agent/governance/\`](../core-cymbal-agent/governance/) • [\`ws5-decision-tree-and-agentic-triad.drawio\`](../diagrams/ws5-decision-tree-and-agentic-triad.drawio) |
+| **Slides 8–10 (Act III)** | Fail-Closed Circuit Breakers, 20/20 Security/Silo/Migration Ledger & Live GCP/AWS Console Proof | [\`scripts/verify_5_third_party_saas_products.py\`](../scripts/verify_5_third_party_saas_products.py) • [\`10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md\`](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md) |
+| **Slides 11–12 (Act III)** | 3-Pillar Well-Architected Operating Model, EAP Sunset Backlog & 10-Week Series Roadmap | [\`5.2-capstone-backlog-and-ga-roadmap.md\`](../workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md) • [\`1.4-eap-and-product-gap-tracker.md\`](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md) • [\`2.6/3.6/4.6 deploy_1click.sh\`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/deploy_1click.sh) |
 
 - **Launch the Interactive Codebase Workbench & 1-Click Terraform Scripts:**
   - [Open Interactive 27-File Codebase Workbench & Live Terminal Runner (\`#blog-e2e-pattern-execution-and-codebase-workbench\`)](#blog-e2e-pattern-execution-and-codebase-workbench)
@@ -502,6 +502,7 @@ Open the [Workstream 5 Editable Google Slides Deck (\`ws5-wrap-up-editable-slide
   - [Part 4 (Workstream 4): Pattern C — Dynamic Hybrid Hub-and-Spoke & Zero-Downtime Tier Upgrades](ws4-pattern-c-hybrid-dynamic-tiering.md)
 - Explore the Workstream 5 capstone deliverables and complete program guide:
   - [5.1 Executive Pattern Comparison & Topology Decision Guide](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md)
+  - [5.2 Capstone Engineering Backlog, EAP Sunset Matrix & 10-Week GA Roadmap](../workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md)
   - [1.4 Consolidated EAP & Product Gap Tracker](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md)
   - [Complete End-to-End Workstream & 14-Diagram Master Guide](../docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md)
   - [10 Third-Party SaaS × 3-Pattern Manual Testing Playbook (\`10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md\`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md)
