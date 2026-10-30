@@ -1,16 +1,27 @@
 {
   "serviceName": "ge-blogs",
   "beyondCorpUrl": "https://ge-blogs-248990048888.cr.gclb.goog",
-  "directCloudRunUrl": "https://ge-blogs-248990048888.us-west1.run.app",
+  "beyondCorpEdgeStatus": 302,
+  "directCloudRunUrl": "https://ge-blogs-mi7l4h536a-uw.a.run.app",
   "buildProject": "ramp-portal-dev",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "ge-blogs-00039-7hg",
-  "latestCreatedRevisionName": "ge-blogs-00039-7hg",
+  "latestReadyRevisionName": "ge-blogs-00040-85b",
+  "latestCreatedRevisionName": "ge-blogs-00040-85b",
   "readyStatus": "True",
   "trafficPercent": 100,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261030-163751-light-clean",
-  "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00039-7hg",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261030-210553-light-clean",
+  "entrypointCmd": [
+    "python3",
+    "-B",
+    "server.py"
+  ],
+  "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
+  "verifiedAt": "2026-10-30T21:06:35Z",
+  "certifiedDiagramsCount": 14,
+  "workstreamsCount": 5,
+  "multiCloudGenuineScreenshotsCount": 23,
+  "beforeAfterScreenshotsCount": 20,
   "liveHttpVerification": {
     "verifiedAt": "2026-10-30T13:20:00Z",
     "verificationMode": "cloud_run_revision_live_http_dom_probe",
@@ -65,16 +76,5 @@
         "error": ""
       }
     ]
-  },
-  "verifiedAt": "2026-10-30T16:38:55Z",
-  "certifiedDiagramsCount": 14,
-  "workstreamsCount": 5,
-  "beyondCorpEdgeStatus": 302,
-  "entrypointCmd": [
-    "python3",
-    "-B",
-    "server.py"
-  ],
-  "multiCloudGenuineScreenshotsCount": 23,
-  "beforeAfterScreenshotsCount": 20
+  }
 }
