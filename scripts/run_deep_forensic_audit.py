@@ -1242,6 +1242,53 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             else:
                 verified_png_count += 1
 
+        # Verify 20/20 Genuine Before-vs-After 3P SaaS Retina UI PNGs & distinct SHA-256 digests
+        ba_dir = genuine_dir / "before-after"
+        ba_prov_receipt_path = ROOT_DIR / "docs/genuine_3p_before_after_provenance_receipt.json"
+        ba_verified_count = 0
+        if not ba_dir.is_dir() or not ba_prov_receipt_path.is_file() or 'id="genuine-3p-before-after-hub"' not in html_txt:
+            f13_errors.append("ba_hub_or_receipt_missing")
+        else:
+            ba_obj = _f13_json.loads(ba_prov_receipt_path.read_text(encoding="utf-8"))
+            ba_cap_abs = ROOT_DIR / str(ba_obj.get("capture_script_path", ""))
+            if (
+                ba_obj.get("exit_code") != 0
+                or ba_obj.get("zero_synthetic_markup") is not True
+                or ba_obj.get("all_before_after_hashes_distinct") is not True
+                or not ba_cap_abs.is_file()
+                or _f13_hashlib.sha256(ba_cap_abs.read_bytes()).hexdigest() != ba_obj.get("capture_script_sha256")
+                or "page.setContent(" in ba_cap_abs.read_text(encoding="utf-8")
+            ):
+                f13_errors.append("ba_script_or_receipt_integrity")
+            ba_pairs = ba_obj.get("pairs", [])
+            if len(ba_pairs) != 10:
+                f13_errors.append(f"ba_pairs_len={len(ba_pairs)}")
+            for bp in ba_pairs:
+                b_meta = bp.get("before", {})
+                a_meta = bp.get("after", {})
+                if not b_meta.get("sha256") or b_meta.get("sha256") == a_meta.get("sha256"):
+                    f13_errors.append(f"ba_identical_sha:{bp.get('key')}")
+                    continue
+                for side_meta in (b_meta, a_meta):
+                    sp = ROOT_DIR / str(side_meta.get("rel_path", ""))
+                    if not sp.is_file():
+                        f13_errors.append(f"ba_missing:{side_meta.get('filename')}")
+                        continue
+                    sraw = sp.read_bytes()
+                    sw, sh = _f13_struct.unpack(">II", sraw[16:24])
+                    if (
+                        sraw[:8] != b"\x89PNG\r\n\x1a\n"
+                        or _f13_hashlib.sha256(sraw).hexdigest() != side_meta.get("sha256")
+                        or sw < 2800
+                        or sh < 1700
+                        or str(side_meta.get("rel_path", "")) not in html_txt
+                    ):
+                        f13_errors.append(f"ba_png_invalid:{side_meta.get('filename')}")
+                    else:
+                        ba_verified_count += 1
+        if ba_verified_count != 20:
+            f13_errors.append(f"ba_verified_count={ba_verified_count}/20")
+
         ledger_obj = _f13_json.loads(repo_ledger_path.read_text(encoding="utf-8"))
         mandates = ledger_obj.get("standing_mandates", [])
         steps = [s for s in ledger_obj.get("repeatable_steps", []) if s.get("repeat_in_next_run") is True]
@@ -1267,7 +1314,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
         "title": "Genuine Multi-Cloud 3P UI Screenshot Provenance (23 Live Retina UIs) & Cross-Run Continuity Ledger (Rule 60A–60C)",
         "status": "PASS" if f13_ok else "FAIL",
         "details": (
-            f"Verified {gcp_svc_count}/10 Google Cloud Run Gen2 (bbar-138hf0) + {aws_svc_count}/10 AWS EC2 (393036065405 • i-04924523ac41ff132) upstream 3P software stacks, {verified_png_count}/23 live 2880x1800 Retina UI PNGs (SHA-256 matched, 0 page.setContent, 0 synthetic HTML screenshot cards), #genuine-multicloud-3p-ui-gallery in index.html, and {active_step_count}/6 repeatable multi-cloud verification steps in data/run_continuity_ledger.json."
+            f"Verified {gcp_svc_count}/10 Google Cloud Run Gen2 (bbar-138hf0) + {aws_svc_count}/10 AWS EC2 (393036065405 • i-04924523ac41ff132) upstream 3P software stacks, {verified_png_count}/23 multi-cloud + {ba_verified_count}/20 Before/After (43 total) live 2880x1800 Retina UI PNGs (SHA-256 matched, 0 page.setContent, 0 synthetic HTML screenshot cards), #genuine-multicloud-3p-ui-gallery in index.html, and {active_step_count}/6 repeatable multi-cloud verification steps in data/run_continuity_ledger.json."
             if f13_ok
             else f"f13_errors={f13_errors}"
         ),

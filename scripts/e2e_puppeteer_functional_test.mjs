@@ -68,6 +68,7 @@ const DOCS_TO_TEST = [
   { doc: "workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md", ws: "WS4" },
   { doc: "workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md", ws: "WS5" },
   { doc: "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md", ws: "WS5" },
+  { doc: "docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md", ws: "WS5" },
 ];
 
 async function run() {
@@ -158,7 +159,7 @@ async function run() {
         sideACount: sideAImgs.length,
         sideBCount: sideBImgs.length,
         overflowingTables,
-        hasBrLeak: nonPreText.includes("<br/>") || nonPreText.includes("<br>"),
+        hasBrLeak: nonPreText.includes("<br/>") || nonPreText.includes("<br>") || nonPreText.includes("![BEFORE") || nonPreText.includes("![AFTER"),
         hasLegacyPrincipal: html.includes("?principal="),
         hasEc2Leak: html.includes("13.220.94.209") || html.includes("screenshots/cloud-console"),
         hasDomainLeak:
@@ -175,7 +176,7 @@ async function run() {
       };
     });
 
-    const maxAllowedHeight = item.doc.includes("END-TO-END-WORKSTREAM") ? 160000 : 24500;
+    const maxAllowedHeight = (item.doc.includes("END-TO-END-WORKSTREAM") || item.doc.includes("MANUAL-TESTING-PLAYBOOK")) ? 160000 : 24500;
 
     const minDiagrams = (item.doc.includes("/3.2-") || item.doc.includes("/4.2-")) ? 0 : 1;
 
@@ -270,6 +271,34 @@ async function run() {
     const awsConsoleFiltered = clickFilter("aws-console");
     const allFiltered = clickFilter("all");
 
+    // Verify 10-App (20 Retina PNG) Before-vs-After Comparison Hub & interactive modes
+    const baHub = document.getElementById("genuine-3p-before-after-hub");
+    const baHubHtml = baHub ? baHub.innerHTML : "";
+    const baPairImgs = baHub ? Array.from(baHub.querySelectorAll(".ba-3p-pair-grid img")) : [];
+    for (const img of baPairImgs) {
+      img.scrollIntoView({ behavior: "instant", block: "center" });
+    }
+    await Promise.all(
+      baPairImgs.map((img) => {
+        if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+        return new Promise((res) => {
+          const done = () => res();
+          img.addEventListener("load", done, { once: true });
+          img.addEventListener("error", done, { once: true });
+          setTimeout(done, 5000);
+        });
+      })
+    );
+    const brokenBaImgs = baPairImgs.filter((img) => !img.complete || img.naturalWidth < 2800).map((img) => img.getAttribute("src"));
+    const baHubCards = baHub ? baHub.querySelectorAll(".ba-3p-ui-card").length : 0;
+    if (typeof window.setBeforeAfterViewMode === "function") {
+      window.setBeforeAfterViewMode("slider");
+      window.setBeforeAfterViewMode("before");
+      window.setBeforeAfterViewMode("after");
+      window.setBeforeAfterViewMode("side-by-side");
+    }
+    const hasBaEc2Leak = baHubHtml.includes("13.220.94.209") || baHubHtml.includes("cloud-console");
+
     // Test Cloud Viewer Modal open & close
     let cloudViewerOpened = false;
     if (typeof window.openCloudViewerModal === "function") {
@@ -297,6 +326,10 @@ async function run() {
       filterCounts: { allFiltered, gcpFiltered, awsEc2Filtered, awsConsoleFiltered },
       forensicRows,
       hasEc2InHub,
+      baHubCards,
+      baPairImgsCount: baPairImgs.length,
+      brokenBaImgs,
+      hasBaEc2Leak,
       cloudViewerOpened,
     };
   });
@@ -320,6 +353,14 @@ async function run() {
     JSON.stringify(tabsResult)
   );
 
+  assert(
+    tabsResult.baHubCards === 10 &&
+      tabsResult.baPairImgsCount === 20 &&
+      tabsResult.brokenBaImgs.length === 0 &&
+      !tabsResult.hasBaEc2Leak,
+    "Tab 3 Genuine 10-App Before-vs-After Retina UI Hub (20/20 2880x1800 PNGs & Interactive Modes)",
+    `cards=${tabsResult.baHubCards}, imgs=${tabsResult.baPairImgsCount}, broken=${tabsResult.brokenBaImgs.length}, ec2Leak=${tabsResult.hasBaEc2Leak}`
+  );
   assert(pageErrors.length === 0, "Zero Uncaught Page Errors", `errors=${pageErrors.length}`);
 
   await browser.close();

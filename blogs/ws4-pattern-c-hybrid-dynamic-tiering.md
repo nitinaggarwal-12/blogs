@@ -284,6 +284,26 @@ Where:
 
 > **23 Genuine Live Multi-Cloud 3P UI Screenshots & Cross-Run Continuity Ledger:** Alongside the 10 Bedrock AgentCore MCP targets above, 10 official upstream enterprise software stacks (`Metabase BI v0.50.26`, `Grafana Enterprise v11.2.0`, `Redmine ITSM v5.1`, `NocoDB v0.255.2`, `Gitea v1.22.3`, `Trino Distributed SQL v440`, `ClickHouse Data Warehouse v24.8`, `Directus Data Studio v11.1.0`, `Datalust Seq Observability v2024.3`, `HashiCorp Vault v1.13.3`) run live on **Google Cloud Run Gen2 (`bbar-138hf0`, `us-west1`)** and **AWS EC2 (`393036065405`, `us-east-1`, `i-04924523ac41ff132`)** + **3 live AWS Management Console views**, verified in [`docs/genuine_ui_screenshot_provenance_receipt.json`](../docs/genuine_ui_screenshot_provenance_receipt.json) and replayed via [`scripts/run_all_repeatable_e2e_verifications.py`](../scripts/run_all_repeatable_e2e_verifications.py) ([`data/run_continuity_ledger.json`](../data/run_continuity_ledger.json)).
 
+
+<!-- GENUINE_3P_BEFORE_AFTER_START -->
+### Genuine Live Before-vs-After Third-Party SaaS Execution UI Captures (2880×1800 Retina)
+
+> **Zero Synthetic Mockups (`Rule 57` & `Rule 60A–60C`):** Every `BEFORE` and `AFTER` screenshot below was captured via real HTTP/HTTPS browser navigation against the live upstream 3rd-party Docker containers (`2880×1800` Retina, distinct SHA-256 verified in [`docs/genuine_3p_before_after_provenance_receipt.json`](../docs/genuine_3p_before_after_provenance_receipt.json)). Inspect all 10 live Before/After pairs in the [10-SaaS Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md) or interactively in Portal Tab 3.
+
+- **`SAAS-02` — Sigma Computing (Cloud BI Workbooks REST API v2) (`Grafana Enterprise v11.2.0` • Target `IZVODT083Q` • `eval_sigma_workbook_rls`):** GEAP MCP tool eval_sigma_workbook_rls (Target IZVODT083Q) evaluates tenant RLS session GUC and updates Grafana dashboard finvault-sre-wb via POST /api/dashboards/db with the live Hop 5 execution & HTTP 403 spoof-block attestation panel.
+
+![BEFORE SAAS-02 (Grafana Enterprise v11.2.0): Grafana Enterprise workbook finvault-sre-wb (orgId=1) in single-panel pre-audit baseline before GEAP Hop 5 workbook evaluation and live S3 attestation write-back.](../screenshots/genuine-multicloud-3p-uis/before-after/before_02_grafana_enterprise.png)
+
+![AFTER SAAS-02 (Grafana Enterprise v11.2.0 — Target IZVODT083Q): Grafana Enterprise renders the newly appended Panel #2 (GEAP Hop 5 Live Agentic Execution Attestation & Cross-Org Spoof Audit) alongside the verified $527.0M FinVault summary.](../screenshots/genuine-multicloud-3p-uis/before-after/after_02_grafana_enterprise.png)
+
+- **`SAAS-05` — Salesforce CRM (NA224) & Atlassian Jira Cloud Escalations (`Gitea v1.22.3` • Target `K5JAEFCQ6E` • `create_redacted_sfdc_jira_escalation`):** GEAP MCP tool create_redacted_sfdc_jira_escalation (Target K5JAEFCQ6E) strips IBAN/SWIFT PII via Cloud SDP and posts a structured Markdown RCA comment via POST /api/v1/repos/finvault/sre-escalations/issues/1/comments.
+
+![BEFORE SAAS-05 (Gitea v1.22.3): Gitea repository finvault/sre-escalations Issue #1 ((SFDC-CASE-00984120 / FINVAULT-SRE-1402)) open with 0 comments prior to GEAP Hop 4 SDP-redacted RCA triage.](../screenshots/genuine-multicloud-3p-uis/before-after/before_05_gitea_sre.png)
+
+![AFTER SAAS-05 (Gitea v1.22.3 — Target K5JAEFCQ6E): Gitea Issue #1 updates live to 1 comment, rendering the authenticated sre-lead Hop 4 SDP-redacted automated RCA & Valkey mitigation receipt directly in the issue timeline.](../screenshots/genuine-multicloud-3p-uis/before-after/after_05_gitea_sre.png)
+
+<!-- GENUINE_3P_BEFORE_AFTER_END -->
+
 ## What's next
 
 ### Companion 12-Slide Deck & Slide-to-Code Launch Matrix

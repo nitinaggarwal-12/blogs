@@ -86,6 +86,77 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   9. **SAAS-09 — Datadog Observability & Bits AI SRE (`G767QR3TQZ`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json)
   10. **SAAS-10 — CrowdStrike Falcon XDR & Okta (`C7EYM614F2`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json)
 
+
+
+---
+
+<!-- GENUINE_3P_BEFORE_AFTER_START -->
+## 2B. Genuine Live Before-vs-After Third-Party SaaS Execution UI Captures (`10/10` Upstream Stacks • `20` Retina PNGs)
+
+> **Zero Synthetic Mockups (`Rule 57` & `Rule 60A–60C`):** Every `BEFORE` and `AFTER` screenshot below was captured via real HTTP/HTTPS browser navigation against the live upstream 3rd-party Docker containers (`2880×1800` Retina, distinct SHA-256 verified in [`docs/genuine_3p_before_after_provenance_receipt.json`](../docs/genuine_3p_before_after_provenance_receipt.json)). Inspect all 10 live Before/After pairs in the [10-SaaS Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md) or interactively in Portal Tab 3.
+
+- **`SAAS-01` — ThoughtSpot Cloud (Spotter Agentic BI v2.0) (`Metabase BI v0.50.26` • Target `HXGGFMZBKE` • `query_thoughtspot_liveboard_rls`):** GEAP MCP tool query_thoughtspot_liveboard_rls (Target HXGGFMZBKE) enforces session predicate WHERE tenant_id = 'finvault' and executes Saved Liveboard Question #27.
+
+![BEFORE SAAS-01 (Metabase BI v0.50.26): Unfiltered multi-tenant settlement table exposing 3 rows across tenants (FV-TX-901 finvault, FV-TX-902 finvault, plus cross-tenant RS-ORD-401 retailstream) prior to GEAP Hop 5 RLS binding.](../screenshots/genuine-multicloud-3p-uis/before-after/before_01_metabase_bi.png)
+
+![AFTER SAAS-01 (Metabase BI v0.50.26 — Target HXGGFMZBKE): Metabase Liveboard Question #27 returns strictly the 2 authorized FinVault rows ($527.0M total: FV-TX-901 $312.5M + FV-TX-902 $214.5M) with 0 cross-tenant RetailStream rows.](../screenshots/genuine-multicloud-3p-uis/before-after/after_01_metabase_bi.png)
+
+- **`SAAS-02` — Sigma Computing (Cloud BI Workbooks REST API v2) (`Grafana Enterprise v11.2.0` • Target `IZVODT083Q` • `eval_sigma_workbook_rls`):** GEAP MCP tool eval_sigma_workbook_rls (Target IZVODT083Q) evaluates tenant RLS session GUC and updates Grafana dashboard finvault-sre-wb via POST /api/dashboards/db with the live Hop 5 execution & HTTP 403 spoof-block attestation panel.
+
+![BEFORE SAAS-02 (Grafana Enterprise v11.2.0): Grafana Enterprise workbook finvault-sre-wb (orgId=1) in single-panel pre-audit baseline before GEAP Hop 5 workbook evaluation and live S3 attestation write-back.](../screenshots/genuine-multicloud-3p-uis/before-after/before_02_grafana_enterprise.png)
+
+![AFTER SAAS-02 (Grafana Enterprise v11.2.0 — Target IZVODT083Q): Grafana Enterprise renders the newly appended Panel #2 (GEAP Hop 5 Live Agentic Execution Attestation & Cross-Org Spoof Audit) alongside the verified $527.0M FinVault summary.](../screenshots/genuine-multicloud-3p-uis/before-after/after_02_grafana_enterprise.png)
+
+- **`SAAS-03` — ServiceNow ITSM & ITOM Change Control (`Redmine ITSM v5.1` • Target `ZS9VGYHBQL` • `query_servicenow_change_records`):** GEAP MCP tool query_servicenow_change_records (Target ZS9VGYHBQL) validates CMEK & Valkey single-flight readiness and creates P1 Change Ticket CHG0049299 via POST /issues.json.
+
+![BEFORE SAAS-03 (Redmine ITSM v5.1): Redmine ITSM project finvault-itsm queue showing 2 baseline tickets (#1 CHG0049218 and #2 INC0948211 — 1-2/2) prior to automated GEAP change-attestation ticket creation.](../screenshots/genuine-multicloud-3p-uis/before-after/before_03_redmine_itsm.png)
+
+![AFTER SAAS-03 (Redmine ITSM v5.1 — Target ZS9VGYHBQL): Redmine ITSM queue updates live to 3 tickets (1-3/3) displaying newly created CHG0049299 ((GEAP-MCP ZS9VGYHBQL) Automated Hop 5 Valkey Single-Flight & KMS CMEK Attestation) assigned to FinVault SRE Lead.](../screenshots/genuine-multicloud-3p-uis/before-after/after_03_redmine_itsm.png)
+
+- **`SAAS-04` — Veeva Vault RIM & Muse Clinical EDC (21 CFR Part 11) (`NocoDB v0.255.2` • Target `TWQU0KSRVF` • `query_muse_study_biomarkers`):** GEAP MCP tool query_muse_study_biomarkers (Target TWQU0KSRVF) signs the Hop 5 audit digest with Cloud KMS HSM and inserts record AWS-GXP-104 via POST /api/v2/tables/.../records.
+
+![BEFORE SAAS-04 (NocoDB v0.255.2): NocoDB FinVault KMS 21 CFR 11 Full Ledger showing 3 seeded compliance rows (AWS-GXP-101..103 — 3 records in footer) prior to live Cloud KMS ECDSA-P256 electronic signature insertion.](../screenshots/genuine-multicloud-3p-uis/before-after/before_04_nocodb_gxp.png)
+
+![AFTER SAAS-04 (NocoDB v0.255.2 — Target TWQU0KSRVF): NocoDB grid updates live to 4 records, displaying row #4 AWS-GXP-104 (finvault • Pattern C Hybrid PSC + Hop 5 KMS Sign • ECDSA_P256_LIVE_AGENT_SIGNED).](../screenshots/genuine-multicloud-3p-uis/before-after/after_04_nocodb_gxp.png)
+
+- **`SAAS-05` — Salesforce CRM (NA224) & Atlassian Jira Cloud Escalations (`Gitea v1.22.3` • Target `K5JAEFCQ6E` • `create_redacted_sfdc_jira_escalation`):** GEAP MCP tool create_redacted_sfdc_jira_escalation (Target K5JAEFCQ6E) strips IBAN/SWIFT PII via Cloud SDP and posts a structured Markdown RCA comment via POST /api/v1/repos/finvault/sre-escalations/issues/1/comments.
+
+![BEFORE SAAS-05 (Gitea v1.22.3): Gitea repository finvault/sre-escalations Issue #1 ((SFDC-CASE-00984120 / FINVAULT-SRE-1402)) open with 0 comments prior to GEAP Hop 4 SDP-redacted RCA triage.](../screenshots/genuine-multicloud-3p-uis/before-after/before_05_gitea_sre.png)
+
+![AFTER SAAS-05 (Gitea v1.22.3 — Target K5JAEFCQ6E): Gitea Issue #1 updates live to 1 comment, rendering the authenticated sre-lead Hop 4 SDP-redacted automated RCA & Valkey mitigation receipt directly in the issue timeline.](../screenshots/genuine-multicloud-3p-uis/before-after/after_05_gitea_sre.png)
+
+- **`SAAS-06` — Databricks Data Intelligence Platform (Unity Catalog SQL) (`Trino Distributed SQL v440` • Target `TERCK8SLBP` • `execute_uc_genie_federated_sql`):** GEAP MCP tool execute_uc_genie_federated_sql (Target TERCK8SLBP) dispatches federated SQL via POST /v1/statement with X-Trino-User: geap-hop5-agent@finvault.com and X-Trino-Source: geap-agentcore-TERCK8SLBP.
+
+![BEFORE SAAS-06 (Trino Distributed SQL v440): Trino v440 Cluster Overview (/ui/) query ledger prior to GEAP Target TERCK8SLBP tenant-scoped federated SQL dispatch.](../screenshots/genuine-multicloud-3p-uis/before-after/before_06_trino_sql.png)
+
+![AFTER SAAS-06 (Trino Distributed SQL v440 — Target TERCK8SLBP): Trino Cluster Overview (/ui/) displays the newly completed FINISHED query at top of Query Details attributed to geap-hop5-agent@finvault.com (source: geap-agentcore-TERCK8SLBP).](../screenshots/genuine-multicloud-3p-uis/before-after/after_06_trino_sql.png)
+
+- **`SAAS-07` — Snowflake AI Data Cloud (Cortex Analyst & SQL v2) (`ClickHouse Data Warehouse v24.8` • Target `CCMDEVZV2S` • `execute_cortex_analyst_sql`):** GEAP MCP tool execute_cortex_analyst_sql (Target CCMDEVZV2S) executes the tenant-aligned query (WHERE tenant_id = 'finvault') under finvault_user RLS policy.
+
+![BEFORE SAAS-07 (ClickHouse Data Warehouse v24.8): ClickHouse v24.8 /play SQL console authenticated as finvault_user attempting a cross-tenant query (WHERE tenant_id = 'retailstream') — database Row-Level Security blocks cross-tenant exposure and returns 0 rows.](../screenshots/genuine-multicloud-3p-uis/before-after/before_07_clickhouse_rls.png)
+
+![AFTER SAAS-07 (ClickHouse Data Warehouse v24.8 — Target CCMDEVZV2S): ClickHouse /play console returns the 2 CMEK-protected FinVault wire settlement rows (FV-TX-901 $312.5M and FV-TX-902 $214.5M, gcp-kms://finvault-cmek-hsm) in <5ms.](../screenshots/genuine-multicloud-3p-uis/before-after/after_07_clickhouse_rls.png)
+
+- **`SAAS-08` — Workday Enterprise HCM & Financial Management RaaS (`Directus Data Studio v11.1.0` • Target `RAOTMUMJTZ` • `fetch_compensation_raas_report`):** GEAP MCP tool fetch_compensation_raas_report (Target RAOTMUMJTZ) masks SSN/IBAN fields via Hop 4 Cloud SDP and inserts audited FinVault executive record via POST /items/hcm_compensation.
+
+![BEFORE SAAS-08 (Directus Data Studio v11.1.0): Directus v11.1.0 Hcm Compensation collection showing 2 baseline executive records (Clara Vance & Marcus Thorne — 2 Items) prior to GEAP RaaS compensation audit sync.](../screenshots/genuine-multicloud-3p-uis/before-after/before_08_directus_hcm.png)
+
+![AFTER SAAS-08 (Directus Data Studio v11.1.0 — Target RAOTMUMJTZ): Directus Hcm Compensation collection updates live to 3 Items, adding Elena Rostova (MD Quantitative Risk — GEAP Audited, $395,000.00, (REDACTED_US_SSN)).](../screenshots/genuine-multicloud-3p-uis/before-after/after_08_directus_hcm.png)
+
+- **`SAAS-09` — Datadog Cloud Observability & Bits AI SRE (`Datalust Seq Observability v2024.3` • Target `G767QR3TQZ` • `query_tenant_apm_logs`):** GEAP MCP tool query_tenant_apm_logs (Target G767QR3TQZ) ingests a structured Serilog CLEF span via POST /api/events/raw?clef and expands the live event inspector in Seq UI.
+
+![BEFORE SAAS-09 (Datalust Seq Observability v2024.3): Datalust Seq v2024.3 /#/events telemetry view in compact collapsed stream baseline prior to live GEAP Hop 4 Model Armor + Hop 5 RLS structured OTel span ingestion.](../screenshots/genuine-multicloud-3p-uis/before-after/before_09_datalust_seq.png)
+
+![AFTER SAAS-09 (Datalust Seq Observability v2024.3 — Target G767QR3TQZ): Datalust Seq displays the newly ingested GEAP Hop 5 APM trace expanded in-place with structured properties (AgentCoreTarget=G767QR3TQZ, Hop4ModelArmor=PASS_ZERO_PROMPT_INJECTION, TenantId=finvault, ZeroPiiAttested=true).](../screenshots/genuine-multicloud-3p-uis/before-after/after_09_datalust_seq.png)
+
+- **`SAAS-10` — CrowdStrike Falcon XDR & Okta Workforce Identity (`HashiCorp Vault v1.13.3` • Target `C7EYM614F2` • `contain_xdr_host_with_dpop`):** GEAP MCP tool contain_xdr_host_with_dpop (Target C7EYM614F2) verifies RFC 9449 DPoP proof thumbprint and rotates tenants/finvault to Version 2 via POST /v1/secret/data/tenants/finvault.
+
+![BEFORE SAAS-10 (HashiCorp Vault v1.13.3): HashiCorp Vault v1.13.3 secret tenants/finvault at Version 1 (JSON view enabled) showing pre-containment state (xdr_containment_status: PENDING_HOP5_DPOP_CONTAINMENT).](../screenshots/genuine-multicloud-3p-uis/before-after/before_10_hashicorp_vault.png)
+
+![AFTER SAAS-10 (HashiCorp Vault v1.13.3 — Target C7EYM614F2): HashiCorp Vault UI displays Version 2 of tenants/finvault in live JSON mode with xdr_containment_status: HOST_CONTAINED_DPOP_VERIFIED_200 and S3 audit binding crowdstrike-okta/finvault.json.](../screenshots/genuine-multicloud-3p-uis/before-after/after_10_hashicorp_vault.png)
+
+<!-- GENUINE_3P_BEFORE_AFTER_END -->
+
 ---
 
 ## 1.2 SAAS-01: ThoughtSpot Cloud (Spotter Agentic BI & Liveboards REST API v2.0)

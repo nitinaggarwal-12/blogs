@@ -288,6 +288,26 @@ Where:
 
 > **23 Genuine Live Multi-Cloud 3P UI Screenshots & Cross-Run Continuity Ledger:** Alongside the 10 Bedrock AgentCore MCP targets above, 10 official upstream enterprise software stacks (`Metabase BI v0.50.26`, `Grafana Enterprise v11.2.0`, `Redmine ITSM v5.1`, `NocoDB v0.255.2`, `Gitea v1.22.3`, `Trino Distributed SQL v440`, `ClickHouse Data Warehouse v24.8`, `Directus Data Studio v11.1.0`, `Datalust Seq Observability v2024.3`, `HashiCorp Vault v1.13.3`) run live on **Google Cloud Run Gen2 (`bbar-138hf0`, `us-west1`)** and **AWS EC2 (`393036065405`, `us-east-1`, `i-04924523ac41ff132`)** + **3 live AWS Management Console views**, verified in [`docs/genuine_ui_screenshot_provenance_receipt.json`](../docs/genuine_ui_screenshot_provenance_receipt.json) and replayed via [`scripts/run_all_repeatable_e2e_verifications.py`](../scripts/run_all_repeatable_e2e_verifications.py) ([`data/run_continuity_ledger.json`](../data/run_continuity_ledger.json)).
 
+
+<!-- GENUINE_3P_BEFORE_AFTER_START -->
+### Genuine Live Before-vs-After Third-Party SaaS Execution UI Captures (2880×1800 Retina)
+
+> **Zero Synthetic Mockups (`Rule 57` & `Rule 60A–60C`):** Every `BEFORE` and `AFTER` screenshot below was captured via real HTTP/HTTPS browser navigation against the live upstream 3rd-party Docker containers (`2880×1800` Retina, distinct SHA-256 verified in [`docs/genuine_3p_before_after_provenance_receipt.json`](../docs/genuine_3p_before_after_provenance_receipt.json)). Inspect all 10 live Before/After pairs in the [10-SaaS Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md) or interactively in Portal Tab 3.
+
+- **`SAAS-01` — ThoughtSpot Cloud (Spotter Agentic BI v2.0) (`Metabase BI v0.50.26` • Target `HXGGFMZBKE` • `query_thoughtspot_liveboard_rls`):** GEAP MCP tool query_thoughtspot_liveboard_rls (Target HXGGFMZBKE) enforces session predicate WHERE tenant_id = 'finvault' and executes Saved Liveboard Question #27.
+
+![BEFORE SAAS-01 (Metabase BI v0.50.26): Unfiltered multi-tenant settlement table exposing 3 rows across tenants (FV-TX-901 finvault, FV-TX-902 finvault, plus cross-tenant RS-ORD-401 retailstream) prior to GEAP Hop 5 RLS binding.](../screenshots/genuine-multicloud-3p-uis/before-after/before_01_metabase_bi.png)
+
+![AFTER SAAS-01 (Metabase BI v0.50.26 — Target HXGGFMZBKE): Metabase Liveboard Question #27 returns strictly the 2 authorized FinVault rows ($527.0M total: FV-TX-901 $312.5M + FV-TX-902 $214.5M) with 0 cross-tenant RetailStream rows.](../screenshots/genuine-multicloud-3p-uis/before-after/after_01_metabase_bi.png)
+
+- **`SAAS-06` — Databricks Data Intelligence Platform (Unity Catalog SQL) (`Trino Distributed SQL v440` • Target `TERCK8SLBP` • `execute_uc_genie_federated_sql`):** GEAP MCP tool execute_uc_genie_federated_sql (Target TERCK8SLBP) dispatches federated SQL via POST /v1/statement with X-Trino-User: geap-hop5-agent@finvault.com and X-Trino-Source: geap-agentcore-TERCK8SLBP.
+
+![BEFORE SAAS-06 (Trino Distributed SQL v440): Trino v440 Cluster Overview (/ui/) query ledger prior to GEAP Target TERCK8SLBP tenant-scoped federated SQL dispatch.](../screenshots/genuine-multicloud-3p-uis/before-after/before_06_trino_sql.png)
+
+![AFTER SAAS-06 (Trino Distributed SQL v440 — Target TERCK8SLBP): Trino Cluster Overview (/ui/) displays the newly completed FINISHED query at top of Query Details attributed to geap-hop5-agent@finvault.com (source: geap-agentcore-TERCK8SLBP).](../screenshots/genuine-multicloud-3p-uis/before-after/after_06_trino_sql.png)
+
+<!-- GENUINE_3P_BEFORE_AFTER_END -->
+
 ## What's next
 
 ### 5-Part Engineering Blog Series & Slide-to-Code Launch Matrix
