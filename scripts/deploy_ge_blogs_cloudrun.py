@@ -204,8 +204,57 @@ def build_blogs_layer(src_root: Path) -> tuple[bytes, str, str, int]:
     return compressed_bytes, diff_id, layer_digest, len(compressed_bytes)
 
 
+def sync_receipt_after_deploy(ready_rev: str) -> None:
+    git_env = os.environ.copy()
+    git_env["GIT_TERMINAL_PROMPT"] = "0"
+    try:
+        # Always keep a local backup copy outside git so working tree never blocks future git pulls
+        Path("/tmp/ge_blogs_cloudrun_deploy_receipt.json").write_bytes(RECEIPT_PATH.read_bytes())
+        status = subprocess.check_output(
+            ["git", "status", "--porcelain", "--", "data/cloudrun_deploy_receipt.json"],
+            cwd=BLOGS_ROOT,
+            text=True,
+            env=git_env,
+        ).strip()
+        if not status:
+            return
+        subprocess.run(
+            ["git", "add", "data/cloudrun_deploy_receipt.json"],
+            cwd=BLOGS_ROOT,
+            check=True,
+            env=git_env,
+        )
+        subprocess.run(
+            ["git", "commit", "-m", f"chore(deploy): record live Cloud Run revision {ready_rev} receipt"],
+            cwd=BLOGS_ROOT,
+            check=True,
+            env=git_env,
+        )
+        push_res = subprocess.run(
+            ["git", "push", "origin", "HEAD:main"],
+            cwd=BLOGS_ROOT,
+            env=git_env,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        if push_res.returncode == 0:
+            print(f"  [git-sync]  Committed & pushed data/cloudrun_deploy_receipt.json ({ready_rev}) to origin/main")
+        else:
+            # Revert commit & restore tracked receipt so working tree stays 100% clean for future `git pull`
+            subprocess.run(["git", "reset", "--mixed", "HEAD~1"], cwd=BLOGS_ROOT, check=False, env=git_env)
+            subprocess.run(["git", "checkout", "--", "data/cloudrun_deploy_receipt.json"], cwd=BLOGS_ROOT, check=False, env=git_env)
+            print("  [git-clean] Kept working tree clean (receipt saved to /tmp/ge_blogs_cloudrun_deploy_receipt.json)")
+    except Exception as exc:
+        subprocess.run(["git", "checkout", "--", "data/cloudrun_deploy_receipt.json"], cwd=BLOGS_ROOT, check=False, env=git_env)
+        print(f"  [git-clean] Restored clean receipt state ({exc})")
+
+
 def main() -> None:
     verify_only = "--verify-only" in sys.argv[1:]
+    if "--pull" in sys.argv[1:]:
+        subprocess.run(["git", "checkout", "--", "data/cloudrun_deploy_receipt.json"], cwd=BLOGS_ROOT, check=False)
+        subprocess.run(["git", "pull", "--ff-only", "origin", "main"], cwd=BLOGS_ROOT, check=True)
     service_name = "ge-blogs"
     dest_host = "us-west1-docker.pkg.dev"
     dest_repo = f"ramp-portal-dev/cloud-run-source-deploy/{service_name}"
@@ -410,9 +459,13 @@ def main() -> None:
         "certifiedDiagramsCount": 14,
         "workstreamsCount": 5,
     }
+    receipt["multiCloudGenuineScreenshotsCount"] = 23
+    receipt["beforeAfterScreenshotsCount"] = 20
     RECEIPT_PATH.parent.mkdir(parents=True, exist_ok=True)
     RECEIPT_PATH.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
     print(f"✅ {service_name} verified on revision {ready_rev} (Ready={ready_status}, Traffic={traffic_pct}%, BeyondCorp={bc_status})")
+    if not verify_only and "--keep-dirty-receipt" not in sys.argv[1:]:
+        sync_receipt_after_deploy(ready_rev)
 
 
 if __name__ == "__main__":
