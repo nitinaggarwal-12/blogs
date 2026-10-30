@@ -50,7 +50,7 @@ DOC_SPECS: List[Dict[str, Any]] = [
         "docx_rel": "docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx",
         "series_badge": "Workstream 1 of 5 • Foundation",
         "slides_id": "12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ",
-        "slides_label": "11 Slides",
+        "slides_label": "15 Slides",
     },
     {
         "key": "WS2",

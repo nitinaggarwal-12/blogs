@@ -797,23 +797,23 @@ const TITLE_ACTS_BY_DECK: Record<string, TitleActSpec[]> = {
   WS1: quadColorActs([
     {
       badge: 'PART 1 • SLIDES 1–4',
-      title: 'Agenda, Personas & 12-Dim Pattern Matrix',
-      sub: 'Maps ADK/MCP/ARD to CS101 OS primitives; sets the 5-Act agenda (Slide 2), contrasts FinVault (600 RPM: Dedicated PT vs. GKE Gemma 3) & RetailStream (120 RPM: 3LO vault, Slide 3), and compares Patterns A/B/C (Slide 4).',
+      title: 'Problem, Personas & Conceptual Model',
+      sub: 'Maps ADK/MCP/ARD to CS101 OS primitives; sets the 5-Part agenda (Slide 2), contrasts FinVault & RetailStream (Slide 3), and decouples the 80% 5-Hop Core from 20% Perimeter Delta (Slide 4).',
     },
     {
-      badge: 'PART 2 • SLIDES 5–6 & 8',
-      title: 'L1 3 Layers → L2 4 Perimeters → L4 Wire',
-      sub: 'Zooms macro-to-micro from the 3 Logical Security Layers (~42ms p95, Slide 5) into the 4 Physical VPC-SC Perimeters & Steps 1–7 in Figure 1 (Slide 6) and <0.15ms cached-JWKS STS JWT wire packet (Slide 8).',
+      badge: 'PART 2 • SLIDES 5–9',
+      title: 'Process Flow, L1 Layers, Matrix & L2 Figures',
+      sub: 'Traces the ~42ms p95 6-stage lifecycle (Slide 5), L1 3 Security Layers (Slide 6), 12-Dim Pattern A/B/C Matrix (Slide 7), and L2 Physical Figures 1 & 2 (Slides 8–9).',
     },
     {
-      badge: 'PART 3 • SLIDE 7 (L3)',
-      title: 'Merged L3 UML, Breakers & Stampede Lock',
-      sub: 'Unifies the 5-Actor chronological UML sequence (Hops 1–5 / UML Steps 1–6) with [Alt] fail-closed circuit breakers (HTTP 401–429), <5s targeted Valkey SCAN+UNLINK, and SET NX PX 5000 single-flight recovery (Slide 7).',
+      badge: 'PART 3 • SLIDES 10–12',
+      title: 'L3 UML, L4 Wire JWT & GAP-01..05 Controls',
+      sub: 'Unifies the 5-Actor UML sequence & <5s Valkey eviction (Slide 10), <0.15ms cached-JWKS STS JWT wire packet (Slide 11), and feature-flagged GAP-01..05 sunset hooks (Slide 12).',
     },
     {
-      badge: 'PARTS 4–5 • SLIDES 9–11',
-      title: 'GAP-01..05, Live GCP Proof & Merged SLAs',
-      sub: 'Details feature-flagged GAP-01..05 sunset hooks + BigQuery OTel SQL (Slide 9), live Cloud Run & Cloud Logging proof (Slide 10), and merged Well-Architected SLAs + 5 runnable GitHub milestones (Slide 11).',
+      badge: 'PARTS 4–5 • SLIDES 13–15',
+      title: 'Dual-Plane Proofs, Retina UIs & SLAs',
+      sub: 'Presents grounded GCP/AWS CLI telemetry (Slide 13), live 2880x1800 Retina Before/After 3P SaaS UIs (Slide 14), and Well-Architected SLAs + 5 GitHub milestones (Slide 15).',
     },
   ]),
   WS2: quadColorActs([
@@ -7781,10 +7781,10 @@ const SERIES_NEXT_STEPS_BY_WS: Record<
   WS1: {
     bullets: [
       '1. Part 1 (Slides 1–4) — Isolation Topologies & 5-Hop Core: Deploy core-cymbal-agent/ (27-File Reference Workbench) with <0.15ms cached-JWKS STS JWT verification, ~3ms Valkey JTI deny-list, and {tenant}:{user} 3LO token vaulting.',
-      '2. Part 2 (Slides 5, 6 & 8) — 5-Hop Pipeline & Pattern A Pool: Apply Terraform 2.6 (2.6-terraform-starter/), certify ~42ms p95 5-Hop overhead (~22ms DLP), ~1.8s cold / ~420ms warm TTFT, 84.7% token savings (90% 32k prefix cache), and pass run_breach_simulations.py (10/10 PASS).',
-      '3. Part 3 (Slide 7) — Circuit Breakers, CMEK & Valkey L1 Flush: Apply Terraform 3.6 (3.6-terraform-silo-blueprint/), certify gVisor sandbox, <60s HTTP 423 CMEK kill-switch, <5s Valkey SCAN+UNLINK (cache:{tenant}:*), SET NX PX 5000 recovery, and <30s cross-region RTO (6/6 PASS).',
-      '4. Part 4 (Slide 9) — EAP Gap Controls & Pattern C Hybrid FinOps: Apply Terraform 4.6 (4.6-terraform-hybrid-psc-blueprint/), certify 74% portfolio TCO reduction (950 Pooled + 50 PSC Spokes), feature-flagged GAP-01..05 sunset hooks, BigQuery OTel FinOps SQL, and 0ms PSC cutover (4/4 PASS).',
-      '5. Part 5 (Slides 10–11) — Dual-Plane CI/CD Forensic Audit & Day-2 Operations: Enforce python3 -B scripts/run_deep_forensic_audit.py (13/13 PASS • 107/107 Assertions) across 20/20 GCP suites and 30/30 Inter-Cloud 10-SaaS MCP target assertions.',
+      '2. Part 2 (Slides 5–9) — 5-Hop Pipeline & Pattern A Pool: Apply Terraform 2.6 (2.6-terraform-starter/), certify ~42ms p95 5-Hop overhead (~22ms DLP), ~1.8s cold / ~420ms warm TTFT, 84.7% token savings (90% 32k prefix cache), and pass run_breach_simulations.py (10/10 PASS).',
+      '3. Part 3 (Slide 10) — Circuit Breakers, CMEK & Valkey L1 Flush: Apply Terraform 3.6 (3.6-terraform-silo-blueprint/), certify gVisor sandbox, <60s HTTP 423 CMEK kill-switch, <5s Valkey SCAN+UNLINK (cache:{tenant}:*), SET NX PX 5000 recovery, and <30s cross-region RTO (6/6 PASS).',
+      '4. Part 4 (Slides 11–12) — EAP Gap Controls & Pattern C Hybrid FinOps: Apply Terraform 4.6 (4.6-terraform-hybrid-psc-blueprint/), certify 74% portfolio TCO reduction (950 Pooled + 50 PSC Spokes), feature-flagged GAP-01..05 sunset hooks, BigQuery OTel FinOps SQL, and 0ms PSC cutover (4/4 PASS).',
+      '5. Part 5 (Slides 13–15) — Dual-Plane CI/CD Forensic Audit & Day-2 Operations: Enforce python3 -B scripts/run_deep_forensic_audit.py (13/13 PASS • 107/107 Assertions) across 20/20 GCP suites and 30/30 Inter-Cloud 10-SaaS MCP target assertions.',
     ],
     specs: [
       {
@@ -7795,22 +7795,22 @@ const SERIES_NEXT_STEPS_BY_WS: Record<
       {
         stack: '2.6-terraform-starter/ • run_breach_simulations.py',
         sla: 'SLA: ~42ms 5-Hop • ~420ms Warm TTFT • 84.7% Savings (10/10)',
-        tag: 'Part 2: 5-Hop & Pattern A',
+        tag: 'Part 2: 5-Hop & Pattern A (Slides 5–9)',
       },
       {
         stack: '3.6-terraform-silo-blueprint/ • run_silo_security_tests.py',
         sla: 'SLA: <60s CMEK (423) • <5s SCAN+UNLINK • <30s RTO (6/6)',
-        tag: 'Part 3: Breakers & Silos (Slide 7)',
+        tag: 'Part 3: Breakers & Silos (Slide 10)',
       },
       {
         stack: '4.6-terraform-hybrid-psc-blueprint/ • run_tier_migration_suite.py',
         sla: 'SLA: 74% TCO Savings (950 Pool + 50 PSC) • 0ms Cutover (4/4)',
-        tag: 'Part 4: Gaps & Hybrid PSC (Slide 9)',
+        tag: 'Part 4: Gaps & Hybrid PSC (Slides 11–12)',
       },
       {
         stack: 'run_deep_forensic_audit.py • verify_5_third_party_saas_products.py',
         sla: 'SLA: 13/13 Forensic (107/107) • 20/20 GCP + 30/30 10-SaaS MCP',
-        tag: 'Part 5: Dual-Plane CI/CD Gate (Slides 10–11)',
+        tag: 'Part 5: Dual-Plane CI/CD Gate (Slides 13–15)',
       },
     ],
     footer:
@@ -8289,7 +8289,7 @@ async function buildWorkstreamDeck(spec: DeckSpec, manifest: ManifestItem[]) {
   // WS1 Slide 2 (`comparison-grid`): Agenda & 5-Part Series Navigation (Table of Contents)
   if (spec.key === 'WS1' && agendaSection) {
     addSectionSlideDispatch(pptx, spec.key, agendaSection, {
-      footer: `${spec.label}  •  Streamlined 11-Slide Executive Deck & 5-Part Editorial Blog Series Roadmap`,
+      footer: `${spec.label}  •  15-Slide Executive Architecture Deck & 5-Part Editorial Blog Series Roadmap`,
     });
     slideCount++;
   }

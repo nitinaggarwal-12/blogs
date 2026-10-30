@@ -102,7 +102,7 @@
       ]
     },
     {
-      "heading": "Agenda & 5-Part Series Navigation — Streamlined 11-Slide Architecture Roadmap",
+      "heading": "Agenda & 5-Part Series Navigation — 15-Slide Architecture Roadmap",
       "layout": "table",
       "tableHeaders": [
         "Series Part & Slides",
@@ -118,31 +118,31 @@
       ],
       "tableRows": [
         [
-          "Part 1 • Slides 1–4\nIsolation Topologies",
+          "Part 1 • Slides 1–4\nIsolation Topologies & Concepts",
           "The SaaS AI Architect's Dilemma: High-Density Pooled (A) vs. Sovereign Silos (B) vs. Dynamic Hybrid (C)",
           "How do we serve 950 commercial tenants and 50 regulated banks without margin erosion or 500-silo IaC sprawl?",
           "12-Dimension Decision Matrix • 80/20 ADK Code Reuse • {tenant}:{user} DPoP 3LO Vault"
         ],
         [
-          "Part 2 • Slides 5, 6 & 8\n5-Hop Pipeline (L1/L2/L4)",
+          "Part 2 • Slides 5–9\n5-Hop Lifecycle & L1/L2 Blueprints",
           "Securing the Agent Loop: L1 3 Logical Security Layers → L2 4 Physical VPC-SC Perimeters → L4 Wire STS JWT",
           "How do we enforce cryptographic tenant identity from edge ingress down to wire packets without per-hop KMS latency?",
           "<0.15ms Cached-JWKS STS JWT • ~3ms Valkey JTI Deny-List • ~42ms p95 5-Hop Control Plane"
         ],
         [
-          "Part 3 • Slide 7\nL3 Sequence & Breakers",
+          "Part 3 • Slide 10\nL3 Sequence & Breakers",
           "Operational Resilience: Merged L3 5-Actor UML Sequence, Fail-Closed Circuit Breakers & Valkey L1 Flushes",
           "What happens chronologically during a live turn—and how do we fail closed on RPM floods or CMEK key revocation?",
           "HTTP 401/403/429/422/423 Breakers • <5s Valkey SCAN+UNLINK (cache:{tenant}:*) • SET NX PX 5000 Recovery"
         ],
         [
-          "Part 4 • Slide 9\nMind the Gap (GAP-01..05)",
+          "Part 4 • Slides 11–12\nL4 Wire Protocol & EAP Gap Controls",
           "Compensating Controls for Vertex AI EAP: Custom Token Buckets, Envelope CMEK & Zero-PII BigQuery OTel FinOps",
           "How do we close current preview platform gaps today while guaranteeing clean retirement at native GCP GA?",
           "Feature-Flagged GAP-01..05 Sunset Hooks (feature-flagged native adapter) • BigQuery OTel Chargeback SQL"
         ],
         [
-          "Part 5 • Slides 10–11\nCI/CD Audit & SLAs",
+          "Part 5 • Slides 13–15\nRetina UI Proofs & Well-Architected SLAs",
           "Automating Compliance & Well-Architected SLAs: Live GCP Console Receipts, 5 Milestones & Forensic CI/CD Gate",
           "How do we prove zero cross-tenant data bleed continuously in CI/CD and map every Well-Architected SLA to code?",
           "13/13 Forensic + 107/107 Runtime Assertions PASS • 84.7% Token & 74% TCO Savings • <30s HA RTO"
