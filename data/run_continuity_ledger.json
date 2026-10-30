@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-10-30T19:13:59Z",
+  "updated_at": "2026-10-30T19:25:28Z",
   "workspace_root": ".",
   "replay_orchestrator_script": "scripts/run_all_repeatable_e2e_verifications.py",
   "standing_mandates": [
@@ -123,7 +123,7 @@
       "command": "python3 -B scripts/run_deep_forensic_audit.py",
       "receipt_path": "docs/cloud_console_verification_receipt.json",
       "receipt_sha256": "cc3d66a560d37d6bbca46d2671b0ca8fafc4039771b8385a73df0edd8918fb0b",
-      "last_executed_at": "2026-10-30T19:13:59Z",
+      "last_executed_at": "2026-10-30T19:25:28Z",
       "last_exit_code": 0,
       "repeat_in_next_run": true,
       "superseded_by_user": false
@@ -136,8 +136,8 @@
       "script_sha256": "f79bcb95c514d3d3c84d0417bf63f8ae5c031e15d0d88d065171af39f5b6ebbd",
       "command": "PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/build_gcp_branded_blog_docs.py --refresh-manifest",
       "receipt_path": "slides/cloud_viewer_manifest.json",
-      "receipt_sha256": "3dc4debafd9e6eb71ff1db1dd355ca4714457e0c0b1fe8e8fc8420ef2c69025d",
-      "last_executed_at": "2026-10-30T19:13:59Z",
+      "receipt_sha256": "2f1941107f91ad84972fdb9cb50fe571905ee86493ed31a471556d6a6b766b8c",
+      "last_executed_at": "2026-10-30T19:25:28Z",
       "last_exit_code": 0,
       "repeat_in_next_run": true,
       "superseded_by_user": false

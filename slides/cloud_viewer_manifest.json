@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-30T19:10:32Z",
+  "updatedAt": "2026-10-30T19:23:55Z",
   "accountEmail": "nitinagga@google.com",
   "oauthClientId": "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com",
   "slides": {
@@ -7,8 +7,8 @@
       "key": "WS1",
       "title": "WS1 \u2014 Reference Architecture, Taxonomy & 5-Hop Baseline",
       "pptxPath": "slides/ws1-reference-architecture-editable-slides.pptx",
-      "sha256": "f94f2fdb9c46d2fb9a4f92da2f37270f1d74b4db54211387ad4ddc5cc855a296",
-      "sizeBytes": 954854,
+      "sha256": "c3f854e0354159d709446801b99c7bf9f717a1a68cc5bf97a6919aee494cd7bb",
+      "sizeBytes": 956162,
       "slideCount": 11,
       "googleSlidesId": "12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit?authuser=nitinagga%40google.com",
@@ -16,14 +16,14 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit?usp=drivesdk",
-      "syncedAt": "2026-10-30T19:09:39Z"
+      "syncedAt": "2026-10-30T19:23:01Z"
     },
     "WS2": {
       "key": "WS2",
       "title": "WS2 \u2014 Pattern A: High-Density Pooled Architecture",
       "pptxPath": "slides/ws2-pattern-a-pooled-editable-slides.pptx",
-      "sha256": "18795c9234b6ca92a5113e4f95b51cc921370d0363253d4628785daabd2915ec",
-      "sizeBytes": 916537,
+      "sha256": "74c19352314af5b8798bdcbe5329e77fb2b14ec305515e45e4124467e23b8512",
+      "sizeBytes": 917839,
       "slideCount": 12,
       "googleSlidesId": "1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit?authuser=nitinagga%40google.com",
@@ -31,14 +31,14 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit?usp=drivesdk&resourcekey=0-VBrM33i2sQ8J1B3Z7ycw5g",
-      "syncedAt": "2026-10-30T19:09:49Z"
+      "syncedAt": "2026-10-30T19:23:10Z"
     },
     "WS3": {
       "key": "WS3",
       "title": "WS3 \u2014 Pattern B: Zero-Trust Sovereign Silos",
       "pptxPath": "slides/ws3-pattern-b-siloed-editable-slides.pptx",
-      "sha256": "6a602ce1a077bb5788ccc03f64d97da76cc588aaa43db27c44e86fc0714cb2a2",
-      "sizeBytes": 953157,
+      "sha256": "ae6aa299e65c33ecad2843b4b2632ae7e45c55b4324dc6918d09e8e86c69017f",
+      "sizeBytes": 954463,
       "slideCount": 12,
       "googleSlidesId": "1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit?authuser=nitinagga%40google.com",
@@ -46,14 +46,14 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit?usp=drivesdk&resourcekey=0-hzmJ995FIAdtQEUwWa9YQw",
-      "syncedAt": "2026-10-30T19:09:57Z"
+      "syncedAt": "2026-10-30T19:23:20Z"
     },
     "WS4": {
       "key": "WS4",
       "title": "WS4 \u2014 Pattern C: Dynamic Hybrid Hub-and-Spoke & Tier Upgrade",
       "pptxPath": "slides/ws4-pattern-c-hybrid-editable-slides.pptx",
-      "sha256": "f549a504532ef840b66491abb4b3329ddc5bf83b028facf41ac9076e620c5afe",
-      "sizeBytes": 920499,
+      "sha256": "e368c4c9c3ca5d888ae3a5a797e5a58cba33740d18ead19290e7599bf8484603",
+      "sizeBytes": 921805,
       "slideCount": 12,
       "googleSlidesId": "1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit?authuser=nitinagga%40google.com",
@@ -61,14 +61,14 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit?usp=drivesdk",
-      "syncedAt": "2026-10-30T19:10:07Z"
+      "syncedAt": "2026-10-30T19:23:29Z"
     },
     "WS5": {
       "key": "WS5",
       "title": "WS5 \u2014 Executive Decision Guide & Multi-Tenant Agentic Triad",
       "pptxPath": "slides/ws5-wrap-up-editable-slides.pptx",
-      "sha256": "91446b0a50229047c9818bf2c954084dd4f506ca20b5b0a25c9e38263ab8a04e",
-      "sizeBytes": 843460,
+      "sha256": "73b139f556af9029f0cec2093a786e8ccd15ec19fe028ad6bd99b57bf417c74e",
+      "sizeBytes": 845097,
       "slideCount": 12,
       "googleSlidesId": "1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit?authuser=nitinagga%40google.com",
@@ -76,14 +76,14 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit?usp=drivesdk",
-      "syncedAt": "2026-10-30T19:10:20Z"
+      "syncedAt": "2026-10-30T19:23:42Z"
     },
     "ALL": {
       "key": "ALL",
       "title": "ALL Workstreams 1\u20135 Master Deck (25 Slides \u2022 14 Diagrams)",
       "pptxPath": "slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx",
-      "sha256": "2d935b03705878d8fb4ec0c0f010443b127a81a9a7edf3a71b016c87a8468c08",
-      "sizeBytes": 2439909,
+      "sha256": "2ca4aec95eb8df9f35de8a884847d258e487f65a51cae1945c76fb78dda2a909",
+      "sizeBytes": 2446766,
       "slideCount": 25,
       "googleSlidesId": "111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/edit?authuser=nitinagga%40google.com",
@@ -91,14 +91,14 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/edit?usp=drivesdk",
-      "syncedAt": "2026-10-30T19:10:32Z"
+      "syncedAt": "2026-10-30T19:23:55Z"
     },
     "BP-78": {
       "key": "BP-78",
       "title": "BP-78 \u2014 Building Multi-Tenant Agents: Core Challenges, Cryptographic Identity & Token Propagation (Editable Diagram #78 + Blog Guide)",
       "pptxPath": "slides/ws1-reference-architecture-editable-slides.pptx",
-      "sha256": "f94f2fdb9c46d2fb9a4f92da2f37270f1d74b4db54211387ad4ddc5cc855a296",
-      "sizeBytes": 954854,
+      "sha256": "c3f854e0354159d709446801b99c7bf9f717a1a68cc5bf97a6919aee494cd7bb",
+      "sizeBytes": 956162,
       "slideCount": 11,
       "googleSlidesId": "12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit?authuser=nitinagga%40google.com",
@@ -106,7 +106,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit?usp=drivesdk",
-      "syncedAt": "2026-10-30T19:09:39Z"
+      "syncedAt": "2026-10-30T19:23:01Z"
     },
     "DOC-MT-01": {
       "key": "DOC-MT-01",
@@ -247,8 +247,8 @@
       "key": "PLUGIN-GSLIDES-WS1",
       "title": "WS1 \u2014 Multi-Tenant Agentic AI Systems on Google Cloud (Google Slides Design Plugin v2.0)",
       "pptxPath": "slides/ws1-google-slides-design-plugin-editable-slides.pptx",
-      "sha256": "f94f2fdb9c46d2fb9a4f92da2f37270f1d74b4db54211387ad4ddc5cc855a296",
-      "sizeBytes": 954854,
+      "sha256": "c3f854e0354159d709446801b99c7bf9f717a1a68cc5bf97a6919aee494cd7bb",
+      "sizeBytes": 956162,
       "slideCount": 11,
       "googleSlidesId": "12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit?authuser=nitinagga%40google.com",
@@ -256,14 +256,14 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit?usp=drivesdk",
-      "syncedAt": "2026-10-30T19:09:39Z"
+      "syncedAt": "2026-10-30T19:23:01Z"
     },
     "BP-78-A": {
       "key": "BP-78-A",
       "title": "WS2 \u2014 Pattern A: High-Density Pooled Architecture",
       "pptxPath": "slides/ws2-pattern-a-pooled-editable-slides.pptx",
-      "sha256": "18795c9234b6ca92a5113e4f95b51cc921370d0363253d4628785daabd2915ec",
-      "sizeBytes": 916537,
+      "sha256": "74c19352314af5b8798bdcbe5329e77fb2b14ec305515e45e4124467e23b8512",
+      "sizeBytes": 917839,
       "slideCount": 12,
       "googleSlidesId": "1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit?authuser=nitinagga%40google.com",
@@ -271,14 +271,14 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit?usp=drivesdk&resourcekey=0-VBrM33i2sQ8J1B3Z7ycw5g",
-      "syncedAt": "2026-10-30T19:09:49Z"
+      "syncedAt": "2026-10-30T19:23:10Z"
     },
     "BP-78-B": {
       "key": "BP-78-B",
       "title": "WS3 \u2014 Pattern B: Zero-Trust Sovereign Silos",
       "pptxPath": "slides/ws3-pattern-b-siloed-editable-slides.pptx",
-      "sha256": "6a602ce1a077bb5788ccc03f64d97da76cc588aaa43db27c44e86fc0714cb2a2",
-      "sizeBytes": 953157,
+      "sha256": "ae6aa299e65c33ecad2843b4b2632ae7e45c55b4324dc6918d09e8e86c69017f",
+      "sizeBytes": 954463,
       "slideCount": 12,
       "googleSlidesId": "1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit?authuser=nitinagga%40google.com",
@@ -286,14 +286,14 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit?usp=drivesdk&resourcekey=0-hzmJ995FIAdtQEUwWa9YQw",
-      "syncedAt": "2026-10-30T19:09:57Z"
+      "syncedAt": "2026-10-30T19:23:20Z"
     },
     "BP-78-C": {
       "key": "BP-78-C",
       "title": "WS4 \u2014 Pattern C: Dynamic Hybrid Hub-and-Spoke & Tier Upgrade",
       "pptxPath": "slides/ws4-pattern-c-hybrid-editable-slides.pptx",
-      "sha256": "f549a504532ef840b66491abb4b3329ddc5bf83b028facf41ac9076e620c5afe",
-      "sizeBytes": 920499,
+      "sha256": "e368c4c9c3ca5d888ae3a5a797e5a58cba33740d18ead19290e7599bf8484603",
+      "sizeBytes": 921805,
       "slideCount": 12,
       "googleSlidesId": "1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit?authuser=nitinagga%40google.com",
@@ -301,14 +301,14 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit?usp=drivesdk",
-      "syncedAt": "2026-10-30T19:10:07Z"
+      "syncedAt": "2026-10-30T19:23:29Z"
     },
     "BP-78-E": {
       "key": "BP-78-E",
       "title": "WS5 \u2014 Executive Decision Guide & Multi-Tenant Agentic Triad",
       "pptxPath": "slides/ws5-wrap-up-editable-slides.pptx",
-      "sha256": "91446b0a50229047c9818bf2c954084dd4f506ca20b5b0a25c9e38263ab8a04e",
-      "sizeBytes": 843460,
+      "sha256": "73b139f556af9029f0cec2093a786e8ccd15ec19fe028ad6bd99b57bf417c74e",
+      "sizeBytes": 845097,
       "slideCount": 12,
       "googleSlidesId": "1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit?authuser=nitinagga%40google.com",
@@ -316,7 +316,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit?usp=drivesdk",
-      "syncedAt": "2026-10-30T19:10:20Z"
+      "syncedAt": "2026-10-30T19:23:42Z"
     }
   },
   "docs": {

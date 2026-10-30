@@ -3720,17 +3720,21 @@ async function appendGoogleBrandedDiagramSlides(
         const contTextY = Number((by + (isSingleBandWrapper ? 0.018 : 0.028)).toFixed(3));
         const contTextH = isSingleBandWrapper ? 0.122 : isColoredZone ? 0.23 : 0.25;
         const emitContainerHeader = () => {
-          if (isSpokeOuterWrapper && !isDarkDiagram) {
-            const estMaskW = Math.min(
-              contTextW,
-              Math.max(0.45, (displayTitle.length * contTitlePt * 0.57) / 72 + 0.08)
+          if ((isSpokeOuterWrapper || isColoredZone) && !isDarkDiagram) {
+            const maxHdrTextW = Math.max(
+              (displayTitle.length * contTitlePt * 0.57) / 72 + 0.08,
+              displaySubtitle && !isSingleBandWrapper
+                ? (displaySubtitle.length * contSubPt * 0.56) / 72 + 0.08
+                : 0
             );
+            const estMaskW = Math.min(contTextW, Math.max(0.45, maxHdrTextW));
+            const maskH = isSingleBandWrapper ? 0.124 : displaySubtitle ? 0.215 : 0.130;
             slide2.addShape(pptx.ShapeType.rect, {
-              x: Number((contTextX - 0.02).toFixed(3)),
-              y: Number((by + 0.016).toFixed(3)),
+              x: Number((contTextX - 0.015).toFixed(3)),
+              y: Number((by + (isSingleBandWrapper ? 0.016 : 0.022)).toFixed(3)),
               w: Number(estMaskW.toFixed(3)),
-              h: 0.124,
-              fill: { color: 'FFFFFF' },
+              h: maskH,
+              fill: { color: isSpokeOuterWrapper ? 'FFFFFF' : fillColor },
               line: { type: 'none' },
             });
           }
@@ -3747,7 +3751,7 @@ async function appendGoogleBrandedDiagramSlides(
             wrap: !isSingleBandWrapper,
           });
         };
-        if (isSpokeOuterWrapper) {
+        if (isSpokeOuterWrapper || isColoredZone) {
           deferredWrapperHeaders.push(emitContainerHeader);
         } else {
           emitContainerHeader();
@@ -3771,13 +3775,13 @@ async function appendGoogleBrandedDiagramSlides(
           : isFootNote
             ? 4.0
             : isEdgeCalloutPill
-              ? 4.1
+              ? 3.85
               : isFloatingLabel
                 ? 4.5
                 : bh < 0.46
                   ? 4.8
                   : 5.2;
-        const lblSubPt = isFootNote ? 3.9 : isEdgeCalloutPill ? 3.75 : isFloatingLabel ? 4.0 : bh < 0.46 ? 4.1 : 4.5;
+        const lblSubPt = isFootNote ? 3.9 : isEdgeCalloutPill ? 3.50 : isFloatingLabel ? 4.0 : bh < 0.46 ? 4.1 : 4.5;
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const runs: any[] = [
@@ -3805,11 +3809,16 @@ async function appendGoogleBrandedDiagramSlides(
         if (isEdgeCalloutPill) {
           const maxLineLen = Math.max(title.length, subtitle.length);
           const isShortPill = maxLineLen <= 4;
-          const minPillW = isShortPill ? 0.18 : 0.30;
-          const neededTextW = isShortPill ? maxLineLen * 0.032 + 0.075 : maxLineLen * 0.030 + 0.085;
-          const boundedOrigW = Math.min(bw, neededTextW + 0.08);
+          const minPillW = isShortPill ? 0.18 : 0.28;
+          const neededTextW = isShortPill ? maxLineLen * 0.031 + 0.070 : maxLineLen * 0.0285 + 0.080;
+          const boundedOrigW = Math.min(bw, neededTextW + 0.07);
           const pillW = Number(Math.min(1.36, Math.max(boundedOrigW, minPillW, neededTextW)).toFixed(3));
-          const pillH = Number((subtitle ? Math.max(bh, 0.228) : Math.max(bh, 0.152)).toFixed(3));
+          const pillH = Number(
+            (subtitle
+              ? Math.min(0.156, Math.max(bh * 0.88, 0.146))
+              : Math.min(0.118, Math.max(bh * 0.85, 0.108))
+            ).toFixed(3)
+          );
           const centerX = bx + bw / 2;
           const centerY = by + bh / 2;
           const basePillX =
@@ -3822,26 +3831,30 @@ async function appendGoogleBrandedDiagramSlides(
 
           const candidateOffsets: [number, number][] = [
             [0, 0],
+            [0, -0.012],
+            [0, 0.012],
+            [0, -0.024],
+            [0, 0.024],
+            [0, -0.036],
+            [0, 0.036],
             [0.05, 0],
             [-0.05, 0],
-            [0, -0.06],
-            [0, 0.06],
+            [0, -0.055],
+            [0, 0.055],
             [0.10, 0],
             [-0.10, 0],
-            [0, -0.11],
-            [0, 0.11],
+            [0, -0.10],
+            [0, 0.10],
             [0.16, 0],
             [-0.16, 0],
             [0.22, 0],
             [-0.22, 0],
-            [-0.10, -0.06],
-            [0.10, -0.06],
-            [-0.10, 0.06],
-            [0.10, 0.06],
-            [-0.15, -0.09],
-            [0.15, 0.09],
+            [-0.10, -0.05],
+            [0.10, -0.05],
+            [-0.10, 0.05],
+            [0.10, 0.05],
           ];
-          const overlapPad = isShortPill ? 0.005 : 0.007;
+          const overlapPad = isShortPill ? 0.004 : 0.005;
           const boxesOverlap = (
             a: { x: number; y: number; w: number; h: number },
             b: { x: number; y: number; w: number; h: number },
@@ -3877,20 +3890,20 @@ async function appendGoogleBrandedDiagramSlides(
             y: finalPillY,
             w: pillW,
             h: pillH,
-            rectRadius: 0.05,
+            rectRadius: 0.045,
             fill: { color: isDarkDiagram ? '1E293B' : 'FFFFFF' },
             line: { color: isDarkDiagram ? '475569' : 'DADCE0', width: 0.45 },
           });
-          const innerPadPillX = isShortPill ? 0.015 : 0.022;
+          const innerPadPillX = isShortPill ? 0.014 : 0.020;
           slide2.addText(runs, {
             x: Number((finalPillX + innerPadPillX).toFixed(3)),
-            y: Number((finalPillY + 0.010).toFixed(3)),
+            y: Number((finalPillY + 0.006).toFixed(3)),
             w: Number(Math.max(0.14, pillW - innerPadPillX * 2).toFixed(3)),
-            h: Number(Math.max(0.12, pillH - 0.020).toFixed(3)),
+            h: Number(Math.max(0.095, pillH - 0.012).toFixed(3)),
             align: 'center',
             valign: 'middle',
             margin: 0,
-            lineSpacingMultiple: 1.02,
+            lineSpacingMultiple: 1.0,
             fontFace: 'Arial',
             wrap: true,
           });
@@ -3932,7 +3945,7 @@ async function appendGoogleBrandedDiagramSlides(
         }
       }
     }
-    if (!isContainer && (hasFill || hasStroke)) {
+    if ((!isContainer || node.id.startsWith('card_')) && (hasFill || hasStroke)) {
       placedCardBoxes.push({ x: bx, y: by, w: bw, h: bh });
     }
   };
@@ -7351,7 +7364,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
     file1: 'core-cymbal-agent/runtime_pipeline.py',
     badge1: 'ACT III FORENSIC AUDIT 01 • LIVE CLOUD RUN REVISIONS',
     cap1: 'ramp-portal-dev (#248990048888) & bbar-138hf0 (#48439189383) serving Pattern A/B/C endpoints (HTTP 200)',
-    file2: 'scripts/verify_5_third_party_saas_products.py',
+    file2: 'scripts/capture_genuine_3p_before_after_uis.mjs',
     badge2: 'ACT III FORENSIC AUDIT 02 • DUAL-PLANE GCP 20/20, SAAS 30/30 & BEFORE/AFTER 3P UIs',
     cap2: 'Cloud Logging MQL + Metabase BI v0.50.26 & Trino SQL v440 Before/After Retina UI captures (2880×1800)',
     callouts: [

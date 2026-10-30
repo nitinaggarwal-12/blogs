@@ -563,8 +563,8 @@ const TREE = {
   sel: { x: 68, y: 338, w: 664, h: 330 },
   gov: { x: 798, y: 346, w: 328, h: 320 },
   inputs: { x: 108, y: 388, w: 592, h: 58 },
-  q1: { x: 104, y: 474, w: 266, h: 100 },
-  q2: { x: 426, y: 474, w: 278, h: 100 },
+  q1: { x: 112, y: 474, w: 258, h: 100 },
+  q2: { x: 426, y: 474, w: 260, h: 100 },
   bar: { x: 70, y: 724, w: 1060, h: 28 },
   outcomeY: 798,
   outcomeH: 534,
@@ -648,19 +648,19 @@ export function compileDecisionTreeSvg(bp, P) {
   ${S(562, 180, '1')}
   ${svgText(604, 185, bp.step1Label, { size: 14 }, P)}
   ${svgArrow([[240, T.inputs.y + T.inputs.h], [240, T.q1.y - 2]])}
-  ${S(88, 524, '2')}
+  ${S(89, 524, '2')}
   ${svgArrow([[T.q1.x + T.q1.w, 524], [T.q2.x - 2, 524]])}
   ${svgText(398, 512, bp.q1No, { size: 12, weight: 700, anchor: 'middle' }, P)}
-  ${S(716, 524, '3')}
+  ${S(710, 524, '3')}
   ${svgArrow([[240, T.q1.y + T.q1.h], [240, T.bar.y - 2]])}
   ${svgText(252, 610, bp.q1Yes[0], { size: 12, weight: 700 }, P)}
   ${svgText(252, 626, bp.q1Yes[1], { size: 11.5 }, P)}
   ${svgArrow([[496, T.q2.y + T.q2.h], [496, T.bar.y - 2]])}
   ${svgText(508, 610, bp.q2Single[0], { size: 12, weight: 700 }, P)}
   ${svgText(508, 626, bp.q2Single[1], { size: 11.5 }, P)}
-  ${svgArrow([[686, T.q2.y + T.q2.h], [686, 702], [1000, 702], [1000, T.bar.y - 2]])}
-  ${svgText(990, 684, bp.q2Multi[0], { size: 12, weight: 700, anchor: 'end' }, P)}
-  ${svgText(990, 698, bp.q2Multi[1], { size: 11.5, anchor: 'end' }, P)}
+  ${svgArrow([[672, T.q2.y + T.q2.h], [672, 708], [1000, 708], [1000, T.bar.y - 2]])}
+  ${svgText(990, 686, bp.q2Multi[0], { size: 12, weight: 700, anchor: 'end' }, P)}
+  ${svgText(990, 700, bp.q2Multi[1], { size: 11.5, anchor: 'end' }, P)}
   ${svgArrow([[1090, T.gov.y + T.gov.h], [1090, T.bar.y - 2]], { dashed: true })}
   ${centers.map((cxp) => svgArrow([[cxp, T.bar.y + T.bar.h], [cxp, T.outcomeY - 2]])).join('')}
 
@@ -743,16 +743,16 @@ export function compileDecisionTreeDrawio(bp, P) {
   B.addCalloutText('lbl_step1_top', 602, 166, 128, 28, [bp.step1Label], 'left');
   B.addPointEdge('e_actor_to_inputs', [590, 138], [590, T.inputs.y], [], { source: 'actor_top_user', target: 'card_inputs' });
   B.addPointEdge('e_inputs_to_q1', [240, T.inputs.y + T.inputs.h], [240, T.q1.y], [], { source: 'card_inputs', target: 'q1_compliance' });
-  B.addStepBadge('step_2_q1', 88, 524, '2');
-  B.addStepBadge('step_3_q2', 716, 524, '3');
+  B.addStepBadge('step_2_q1', 89, 524, '2');
+  B.addStepBadge('step_3_q2', 710, 524, '3');
   B.addPointEdge('e_q1_no_q2', [T.q1.x + T.q1.w, 524], [T.q2.x, 524], [], { source: 'q1_compliance', target: 'q2_tiers' });
   B.addCalloutText('lbl_q1_no', 382, 496, 32, 22, [bp.q1No], 'center', 12, true);
   B.addPointEdge('e_q1_yes_b', [240, T.q1.y + T.q1.h], [240, T.bar.y], [], { source: 'q1_compliance', target: 'bar_triad_core' });
   B.addCalloutText('lbl_q1_yes', 250, 596, 150, 36, bp.q1Yes, 'left');
   B.addPointEdge('e_q2_single_a', [496, T.q2.y + T.q2.h], [496, T.bar.y], [], { source: 'q2_tiers', target: 'bar_triad_core' });
   B.addCalloutText('lbl_q2_single', 508, 596, 156, 36, bp.q2Single, 'left');
-  B.addPointEdge('e_q2_multi_c', [686, T.q2.y + T.q2.h], [1000, T.bar.y], [[686, 702], [1000, 702]], { source: 'q2_tiers', target: 'bar_triad_core' });
-  B.addCalloutText('lbl_q2_multi', 800, 670, 192, 32, bp.q2Multi, 'right');
+  B.addPointEdge('e_q2_multi_c', [672, T.q2.y + T.q2.h], [1000, T.bar.y], [[672, 708], [1000, 708]], { source: 'q2_tiers', target: 'bar_triad_core' });
+  B.addCalloutText('lbl_q2_multi', 800, 674, 192, 30, bp.q2Multi, 'right');
   B.addPointEdge('e_triad_to_bar', [1090, T.gov.y + T.gov.h], [1090, T.bar.y], [], { dashed: true, source: 'zone_triad_core', target: 'bar_triad_core' });
 
   return B.finish(bp);
