@@ -203,7 +203,7 @@ function buildSlide02() {
     '• Multi-Hour Onboarding Lag: Spinning up sovereign VPC perimeters and Cloud KMS rings delays customer time-to-value.',
     '• Outcome: SaaS Gross Margins collapse below 22%, destroying software unit economics.',
   ];
-  slide.addText(siloPoints'.join('\n\n'), {
+  slide.addText(siloPoints.join('\n\n'), {
     x: 0.65, y: 1.78, w: 5.6, h: 3.5, fontSize: 9.0, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15, valign: 'top',
   });
 
@@ -226,7 +226,7 @@ function buildSlide02() {
     '• Noisy-Neighbor Quota Starvation: A single tenant\'s runaway reasoning loop consumes 100% of regional Gemini LLM RPM quotas.',
     '• Outcome: Regulatory audit rejection, catastrophic data leaks, and loss of customer trust.',
   ];
-  slide.addText(sharedPoints'.join('\n\n'), {
+  slide.addText(sharedPoints.join('\n\n'), {
     x: 7.08, y: 1.78, w: 5.6, h: 3.5, fontSize: 9.0, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15, valign: 'top',
   });
 
@@ -289,7 +289,7 @@ function buildSlide03() {
       num: '4',
       title: 'Confused Deputy 3LO Replay',
       threat: 'Delegated User Token Hijacking',
-      desc: 'Shared worker threads executing Three-Legged OAuth actions (ServiceNow, SharePoint) can be manipulated via prompt injection to use another user's token.',
+      desc: 'Shared worker threads executing Three-Legged OAuth actions (ServiceNow, SharePoint) can be manipulated via prompt injection to use another user\'s token.',
       mitigation: 'DPoP-bound {tenant}:{user} vault keys (RFC 9449) with inline step-up user consent.',
       color: G_GREEN_DEEP,
       tint: G_GREEN_TINT,
@@ -425,7 +425,7 @@ function buildSlide04() {
     slide.addText(p.badge, {
       x: p.x + 0.15, y: 1.55, w: 3.7, h: 0.22, fontSize: 8.0, bold: true, color: p.badgeColor, fontFace: FONT_TITLE,
     });
-    slide.addText(p.points'.join('\n\n'), {
+    slide.addText(p.points.join('\n\n'), {
       x: p.x + 0.2, y: 1.95, w: 3.6, h: 4.8, fontSize: 9.0, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.2, valign: 'top',
     });
   });
@@ -481,8 +481,7 @@ function buildSlide05() {
     slide.addText(tc.title, {
       x: 0.7, y: tc.y + 0.04, w: 2.65, h: 0.26, fontSize: 9.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE,
     });
-    slide.addText(tc.lines.join('
-'), {
+    slide.addText(tc.lines.join('\n'), {
       x: 0.7, y: tc.y + 0.42, w: 2.65, h: 1.8, fontSize: 8.8, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.2, valign: 'top',
     });
   });
@@ -521,8 +520,7 @@ function buildSlide05() {
     x: 4.13, y: 6.15, w: 4.25, h: 0.6, rectRadius: 0.05,
     fill: { color: WHITE }, line: { color: G_GREEN, width: 1.2 },
   });
-  slide.addText('Feature-Flagged Native GCP Adapters (GAP-01..05)
-Zero application rewrite when EAP features reach GA', {
+  slide.addText('Feature-Flagged Native GCP Adapters (GAP-01..05)\nZero application rewrite when EAP features reach GA', {
     x: 4.25, y: 6.2, w: 4.0, h: 0.5, fontSize: 8.3, bold: true, color: G_GREEN_DEEP, align: 'center', fontFace: FONT_BODY,
   });
 
@@ -716,7 +714,7 @@ function buildSlide07() {
     slide.addText('CORE GOVERNANCE COMPONENTS:', {
       x: l.x + 0.2, y: 3.25, w: 3.6, h: 0.22, fontSize: 8.0, bold: true, color: l.accent, fontFace: FONT_TITLE,
     });
-    slide.addText(l.components'.join('\n\n'), {
+    slide.addText(l.components.join('\n\n'), {
       x: l.x + 0.2, y: 3.55, w: 3.6, h: 3.2, fontSize: 8.6, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15, valign: 'top',
     });
   });
@@ -959,8 +957,7 @@ function buildSlide10() {
     slide.addText(b.desc, {
       x: 2.95, y: by + 0.08, w: 6.8, h: 0.72, fontSize: 8.4, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15, valign: 'middle',
     });
-    slide.addText('SLA / IMPACT:
-' + b.sla, {
+    slide.addText('SLA / IMPACT:\n' + b.sla, {
       x: 9.85, y: by + 0.08, w: 2.9, h: 0.72, fontSize: 8.0, bold: true, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15, valign: 'middle',
     });
   });
@@ -1067,8 +1064,7 @@ function buildSlide11() {
       x: p.x + 0.2, y: 1.95, w: 3.6, h: 4.8, rectRadius: 0.04,
       fill: { color: 'F1F3F4' }, line: { color: BORDER_GREY, width: 0.5 },
     });
-    slide.addText(p.code.join('
-'), {
+    slide.addText(p.code.join('\n'), {
       x: p.x + 0.3, y: 2.05, w: 3.4, h: 4.6, fontSize: 8.2, color: TEXT_DARK, fontFace: 'Consolas', lineSpacingMultiple: 1.15, valign: 'top',
     });
   });
@@ -1426,8 +1422,7 @@ function buildSlide16() {
       x: 0.55, y: py + 0.48, w: 2.3, h: 0.42, fontSize: 9.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE,
     });
 
-    slide.addText(ph.deliverables.join('
-'), {
+    slide.addText(ph.deliverables.join('\n'), {
       x: 3.15, y: py + 0.08, w: 9.5, h: 0.86, fontSize: 8.5, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15, valign: 'middle',
     });
   });
