@@ -327,14 +327,14 @@ function buildSlide02_Agenda() {
       tag: 'DEEP TECHNICAL EXECUTION',
       color: G_GREEN_DEEP,
       tint: G_GREEN_LIGHT,
-      slides: 'Slides 11–17',
+      slides: 'Slides 11–18',
       bullets: [
         'L3 5-Actor UML Sequence & ~42ms p95 control-plane lifecycle.',
         'L4 Wire Transformation: Ingress header stripping & STS JWT minting.',
         'Deterministic Fail-Closed Circuit Breakers (HTTP 401, 403, 429, 422, 423).',
-        'AlloyDB Row-Level Security & Valkey FinOps prefix prompt caching.'
+        'AlloyDB RLS, Valkey FinOps & 4 Production Engineering Caveats.'
       ],
-      deliverable: '5-Hop Zero-Trust Pipeline'
+      deliverable: '5-Hop Pipeline & Guardrails'
     },
     {
       act: 'ACT IV',
@@ -342,7 +342,7 @@ function buildSlide02_Agenda() {
       tag: 'EVIDENCE & PRODUCTION GA',
       color: G_AMBER_DEEP,
       tint: G_YELLOW_LIGHT,
-      slides: 'Slides 18–31',
+      slides: 'Slides 19–29',
       bullets: [
         '10 Evaluated Third-Party SaaS Stacks (BI, SQL, Telemetry, Logs, CMEK, Git).',
         '20 Authentic 2880x1800 Retina Before -> After UI Captures.',
@@ -975,7 +975,7 @@ function buildSlide15_AlloyDbRls() {
 
   const rlsSteps = [
     { step: 'STEP 1: CONNECTION CHECKOUT', desc: 'When the agent checks out a connection from the pool, the session state is pristine. No tenant context exists.' },
-    { step: 'STEP 2: SET LOCAL APP.CURRENT_TENANT_ID', desc: 'The middleware extracts the validated tenant_id from the signed JWT and issues SET LOCAL app.current_tenant_id = \'finvault\'.' },
+    { step: 'STEP 2: SET LOCAL APP.CURRENT_TENANT_ID', desc: 'Middleware extracts verified tenant_id from JWT and issues SET LOCAL. Caveat: Auto-resets on COMMIT; with PgBouncer session mode, pool hooks must issue DISCARD ALL.' },
     { step: 'STEP 3: AUTOMATIC PREDICATE ENFORCEMENT', desc: 'AlloyDB rewrites all queries internally: SELECT * FROM ledger WHERE tenant_id = current_setting(\'app.current_tenant_id\').' },
     { step: 'STEP 4: SUB-15MS ENGINE FILTERING', desc: 'Competitor records are filtered by the PostgreSQL engine before disk pages enter memory. 0 leaked rows guaranteed.' }
   ];
@@ -1021,7 +1021,7 @@ function buildSlide16_FinOpsValkey() {
   const bulkheadStats = [
     { title: 'Standard Commercial Tier', limit: '120 RPM  •  40,000 TPM', desc: 'Enforces hard limits via Redis atomic scripts to prevent noisy-neighbor quota exhaustion.' },
     { title: 'Enterprise Sovereign Tier', limit: '600 RPM  •  200,000 TPM', desc: 'Dedicated token bucket allocation with priority queueing and automatic burst capacity.' },
-    { title: 'Deterministic Rejection', limit: 'HTTP 429 Retry-After', desc: 'Clients receive standardized HTTP 429 headers with exponential backoff hints.' }
+    { title: 'Deterministic Rejection', limit: 'HTTP 429 Retry-After', desc: 'Clients receive HTTP 429 backoff hints. Single-flight SET NX PX 5000 and <5s SCAN+UNLINK prevent cache stampedes.' }
   ];
   bulkheadStats.forEach((s, i) => {
     const sy = 2.4 + i * 1.35;
@@ -1052,7 +1052,7 @@ function buildSlide16_FinOpsValkey() {
   });
 
   const cacheStats = [
-    { title: 'Deterministic System Prefix', metric: '32,000 Shared Tokens', desc: 'Core agent system instructions, tool definitions, and schema definitions cached globally.' },
+    { title: 'Deterministic System Prefix', metric: '32,000 Shared Tokens', desc: 'Core agent system instructions, tool definitions, and schemas cached globally (Vertex AI requires >=32,768 token floor).' },
     { title: 'Per-Tenant Dynamic Suffix', metric: '4,000 Unique Tokens', desc: 'Tenant-specific memories and user context appended to cached prefix at inference time.' },
     { title: 'Cached Token Pricing', metric: '0.1x Base Rate ($0.03/M)', desc: 'Dramatic inference cost reduction enables profitable $12/tenant/mo SaaS pricing.' }
   ];
@@ -1121,22 +1121,167 @@ function buildSlide17_Simulation() {
     });
   });
 
+  // Bottom Transition Bridge to Guardrails
+  slide.addShape(pptx.ShapeType.roundRect, {
+    x: 0.6, y: 6.3, w: 12.133, h: 0.6, rectRadius: 0.06,
+    fill: { color: G_BLUE_LIGHT }, line: { color: G_BLUE, width: 1 }
+  });
+  slide.addText('TRANSITION TO PRODUCTION GUARDRAILS ➔ Moving from simulation benchmarks to non-negotiable architectural caveats & operational nuances', {
+    x: 0.8, y: 6.3, w: 11.7, h: 0.6, fontSize: 9.5, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE, valign: 'middle'
+  });
+}
+
+// ============================================================================
+// SLIDE 18: Architectural Caveats & Operational Nuances
+// ============================================================================
+function buildSlide18_ArchitecturalCaveats() {
+  const slide = pptx.addSlide();
+  addHeader(
+    slide,
+    'ACT III • ARCHITECTURAL CAVEATS',
+    'Architectural Caveats & Operational Nuances: 4 Non-Negotiable Production Guardrails',
+    18
+  );
+
+  slide.addText(
+    'Crucial runtime trade-offs and edge-case invariants that principal systems architects and security engineers must enforce in production.',
+    {
+      x: 0.6,
+      y: 0.85,
+      w: 12.133,
+      h: 0.4,
+      fontSize: 11,
+      color: TEXT_MUTED,
+      fontFace: FONT_BODY,
+    }
+  );
+
+  const caveats = [
+    {
+      badge: 'HOP 1 SIGNING VS HOPS 2–5 JWKS',
+      badgeColor: G_BLUE,
+      badgeBg: G_BLUE_LIGHT,
+      title: 'Token Signing vs Local Verify',
+      stat: '~8–14ms Mint  •  <0.15ms Verify',
+      subtitle: 'Asymmetric Signature vs. In-Memory Validation',
+      points: [
+        'Initial Hop 1 token exchange invokes Cloud KMS asymmetricSign (ECDSA P-256), adding ~8–14ms latency on ingress.',
+        'Downstream Hops 2–5 verify the signed STS JWT in <0.15ms purely via in-memory cached JWKS (/.well-known/jwks.json).',
+        'Zero remote network RPCs to Cloud KMS across internal microservices, preventing API quota exhaustion at scale.'
+      ],
+      rule: 'RULE: Cache JWKS in process memory with 60-min TTL & background refresh.'
+    },
+    {
+      badge: 'ALLOYDB / PGBOUNCER RLS',
+      badgeColor: '00897B',
+      badgeBg: 'E0F2F1',
+      title: 'Connection Pool Scoping & Bleed',
+      stat: 'SET LOCAL  •  DISCARD ALL',
+      subtitle: 'Transaction Scoping vs. Session State Leaks',
+      points: [
+        'SET LOCAL app.current_tenant_id is strictly transaction-scoped and automatically cleared on COMMIT or ROLLBACK.',
+        'If non-transactional pooling (e.g. PgBouncer in session mode) is used, connection reuse can leak tenant context across turns.',
+        'Connection checkout/checkin middleware MUST execute DISCARD ALL or RESET ALL upon returning connections to the pool.'
+      ],
+      rule: 'RULE: Enforce transaction-mode pooling or mandate DISCARD ALL on pool return.'
+    },
+    {
+      badge: 'VERTEX AI PROMPT CACHE',
+      badgeColor: G_GREEN_DEEP,
+      badgeBg: G_GREEN_LIGHT,
+      title: 'Context Cache 32k Floor & TTL',
+      stat: '>= 32,768 Tokens  •  84.7% Net TCO',
+      subtitle: 'Prefix Minimum Window & Dynamic Suffixes',
+      points: [
+        'Vertex AI Context Caching requires a minimum threshold of 32,768 tokens (combined system prompt, tools, and schemas).',
+        'The 84.7% prompt cost reduction materializes only when shared static instructions meet or exceed this 32k token floor.',
+        'Tenant-specific memories and user inputs must be appended strictly as the dynamic suffix at inference time.'
+      ],
+      rule: 'RULE: Bundle global OpenAPI schemas into >=32k static prefix; append tenant data.'
+    },
+    {
+      badge: 'VALKEY / REDIS BULKHEAD',
+      badgeColor: G_AMBER_DEEP,
+      badgeBg: G_YELLOW_LIGHT,
+      title: 'Stampede Lock & Targeted Unlink',
+      stat: 'SET NX PX 5000  •  <5s UNLINK',
+      subtitle: 'Thundering Herd & Targeted Eviction',
+      points: [
+        'Emergency CMEK key revocation or cache invalidation must not trigger a database thundering herd across 1,000 tenants.',
+        'Single-flight leader election (SET lock:{tenant} leader NX PX 5000) coordinates DB re-hydration while followers wait on Pub/Sub.',
+        'Emergency tenant eviction uses targeted SCAN + UNLINK (cache:{tenant}:*) in <5s, leaving peer tenant caches intact (no FLUSHALL).'
+      ],
+      rule: 'RULE: Elect single-flight leaders for warm-up; never execute blocking FLUSHALL.'
+    }
+  ];
+
+  caveats.forEach((c, i) => {
+    const cx = 0.6 + i * 3.09;
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: cx, y: 1.35, w: 2.87, h: 4.8, rectRadius: 0.08,
+      fill: { color: WHITE }, line: { color: c.badgeColor, width: 1.5 }
+    });
+
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: cx + 0.15, y: 1.5, w: 2.57, h: 0.32, rectRadius: 0.04,
+      fill: { color: c.badgeBg }, line: { color: c.badgeColor, width: 0.75 }
+    });
+    slide.addText(c.badge, {
+      x: cx + 0.15, y: 1.5, w: 2.57, h: 0.32,
+      fontSize: 7.2, bold: true, color: c.badgeColor, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
+    });
+
+    slide.addText(c.title, {
+      x: cx + 0.15, y: 1.9, w: 2.57, h: 0.35,
+      fontSize: 11, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE
+    });
+    slide.addText(c.stat, {
+      x: cx + 0.15, y: 2.22, w: 2.57, h: 0.28,
+      fontSize: 9.5, bold: true, color: c.badgeColor, fontFace: FONT_TITLE
+    });
+    slide.addText(c.subtitle, {
+      x: cx + 0.15, y: 2.5, w: 2.57, h: 0.25,
+      fontSize: 7.8, color: TEXT_MUTED, fontFace: FONT_BODY
+    });
+
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: cx + 0.12, y: 2.82, w: 2.63, h: 2.45, rectRadius: 0.05,
+      fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
+    });
+
+    c.points.forEach((pt, k) => {
+      slide.addText(`•  ${pt}`, {
+        x: cx + 0.2, y: 2.92 + k * 0.72, w: 2.47, h: 0.68,
+        fontSize: 7.6, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
+      });
+    });
+
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: cx + 0.12, y: 5.38, w: 2.63, h: 0.65, rectRadius: 0.05,
+      fill: { color: c.badgeBg }, line: { color: c.badgeColor, width: 0.5 }
+    });
+    slide.addText(c.rule, {
+      x: cx + 0.2, y: 5.42, w: 2.47, h: 0.58,
+      fontSize: 7.4, bold: true, color: c.badgeColor, fontFace: FONT_TITLE, lineSpacingMultiple: 1.15
+    });
+  });
+
   // Bottom Transition Bridge to Act IV
   slide.addShape(pptx.ShapeType.roundRect, {
     x: 0.6, y: 6.3, w: 12.133, h: 0.6, rectRadius: 0.06,
     fill: { color: G_YELLOW_LIGHT }, line: { color: G_AMBER_DEEP, width: 1 }
   });
-  slide.addText('TRANSITION TO ACT IV ➔ Moving from architectural theory to 10 live empirical SaaS Before -> After proof captures', {
+  slide.addText('TRANSITION TO ACT IV ➔ Moving from architectural guardrails to 10 live empirical SaaS Before -> After proof captures', {
     x: 0.8, y: 6.3, w: 11.7, h: 0.6, fontSize: 9.5, bold: true, color: G_AMBER_DEEP, fontFace: FONT_TITLE, valign: 'middle'
   });
 }
 
 // ============================================================================
-// SLIDE 18: ACT IV TRANSITION BREAKER (EMPIRICAL SAAS EVIDENCE)
+// SLIDE 19: ACT IV TRANSITION BREAKER (EMPIRICAL SAAS EVIDENCE)
 // ============================================================================
-function buildSlide18_Act4Breaker() {
+function buildSlide19_Act4Breaker() {
   buildActBreakerSlide({
-    slideNum: 18,
+    slideNum: 19,
     actTag: 'ACT IV TRANSITION',
     actNumber: 'ACT IV',
     actTitle: 'Empirical Evidence: 10 Genuine SaaS Proofs',
@@ -1261,9 +1406,9 @@ function buildBeforeAfterSaasSlide(cfg: SaasProofConfig) {
 }
 
 // SLIDE 19: Proof 1 — Metabase Enterprise BI
-function buildSlide19_Metabase() {
+function buildSlide20_Metabase() {
   buildBeforeAfterSaasSlide({
-    slideNum: 19,
+    slideNum: 20,
     proofNum: 1,
     saasName: 'Metabase Enterprise BI',
     title: 'Proof 1: Metabase Enterprise BI v0.50.26 — Tenant Analytics & Dashboard Isolation',
@@ -1280,9 +1425,9 @@ function buildSlide19_Metabase() {
 }
 
 // SLIDE 20: Proof 2 — Trino Distributed SQL
-function buildSlide20_Trino() {
+function buildSlide21_Trino() {
   buildBeforeAfterSaasSlide({
-    slideNum: 20,
+    slideNum: 21,
     proofNum: 2,
     saasName: 'Trino Distributed SQL',
     title: 'Proof 2: Trino Distributed SQL v440 — Federated Catalog & Query Scoping',
@@ -1299,9 +1444,9 @@ function buildSlide20_Trino() {
 }
 
 // SLIDE 21: Proof 3 — Grafana Enterprise
-function buildSlide21_Grafana() {
+function buildSlide22_Grafana() {
   buildBeforeAfterSaasSlide({
-    slideNum: 21,
+    slideNum: 22,
     proofNum: 3,
     saasName: 'Grafana Enterprise',
     title: 'Proof 3: Grafana Enterprise v11.1 — Multi-Tenant Telemetry & Metrics Isolation',
@@ -1318,9 +1463,9 @@ function buildSlide21_Grafana() {
 }
 
 // SLIDE 22: Proof 4 — Datalust Seq OTel
-function buildSlide22_DatalustSeq() {
+function buildSlide23_DatalustSeq() {
   buildBeforeAfterSaasSlide({
-    slideNum: 22,
+    slideNum: 23,
     proofNum: 4,
     saasName: 'Datalust Seq OTel',
     title: 'Proof 4: Datalust Seq OTel v2024 — Structured Log Streams & Distributed Trace Isolation',
@@ -1337,9 +1482,9 @@ function buildSlide22_DatalustSeq() {
 }
 
 // SLIDE 23: Proof 5 — HashiCorp Vault CMEK
-function buildSlide23_HashiCorpVault() {
+function buildSlide24_HashiCorpVault() {
   buildBeforeAfterSaasSlide({
-    slideNum: 23,
+    slideNum: 24,
     proofNum: 5,
     saasName: 'HashiCorp Vault CMEK',
     title: 'Proof 5: HashiCorp Vault CMEK v1.13 — Tenant Key Namespace & Emergency Revocation',
@@ -1356,9 +1501,9 @@ function buildSlide23_HashiCorpVault() {
 }
 
 // SLIDE 24: Proof 6 — ClickHouse Analytics
-function buildSlide24_ClickHouse() {
+function buildSlide25_ClickHouse() {
   buildBeforeAfterSaasSlide({
-    slideNum: 24,
+    slideNum: 25,
     proofNum: 6,
     saasName: 'ClickHouse Analytics',
     title: 'Proof 6: ClickHouse Analytics v24.8 — Real-Time Columnar Engine Row-Level Security',
@@ -1375,9 +1520,9 @@ function buildSlide24_ClickHouse() {
 }
 
 // SLIDE 25: Proof 7 — Redmine ITSM
-function buildSlide25_Redmine() {
+function buildSlide26_Redmine() {
   buildBeforeAfterSaasSlide({
-    slideNum: 25,
+    slideNum: 26,
     proofNum: 7,
     saasName: 'Redmine ITSM',
     title: 'Proof 7: Redmine ITSM v5.1 — Multi-Tenant Support Case & Ticket Partitioning',
@@ -1394,9 +1539,9 @@ function buildSlide25_Redmine() {
 }
 
 // SLIDE 26: Proof 8 — NocoDB GxP Grid
-function buildSlide26_NocoDB() {
+function buildSlide27_NocoDB() {
   buildBeforeAfterSaasSlide({
-    slideNum: 26,
+    slideNum: 27,
     proofNum: 8,
     saasName: 'NocoDB GxP Grid',
     title: 'Proof 8: NocoDB GxP v0.255 — Regulated Database Grid & Field-Level Access Scoping',
@@ -1413,9 +1558,9 @@ function buildSlide26_NocoDB() {
 }
 
 // SLIDE 27: Proof 9 — Gitea SRE
-function buildSlide27_Gitea() {
+function buildSlide28_Gitea() {
   buildBeforeAfterSaasSlide({
-    slideNum: 27,
+    slideNum: 28,
     proofNum: 9,
     saasName: 'Gitea SRE',
     title: 'Proof 9: Gitea SRE v1.22 — Tenant Repository & Enterprise CI/CD Pipeline Isolation',
@@ -1432,9 +1577,9 @@ function buildSlide27_Gitea() {
 }
 
 // SLIDE 28: Proof 10 — Directus HCM
-function buildSlide28_Directus() {
+function buildSlide29_Directus() {
   buildBeforeAfterSaasSlide({
-    slideNum: 28,
+    slideNum: 29,
     proofNum: 10,
     saasName: 'Directus HCM',
     title: 'Proof 10: Directus HCM v11.1 — Human Capital Data & Tenant Role Scoping',
@@ -1453,9 +1598,9 @@ function buildSlide28_Directus() {
 // ============================================================================
 // SLIDE 29: ACT V TRANSITION BREAKER (PRODUCTION ROADMAP & SYNTHESIS)
 // ============================================================================
-function buildSlide29_Act5Breaker() {
+function buildSlide30_Act5Breaker() {
   buildActBreakerSlide({
-    slideNum: 29,
+    slideNum: 30,
     actTag: 'ACT V TRANSITION',
     actNumber: 'ACT V',
     actTitle: 'Production Rollout Roadmap & Multi-Cloud Synthesis',
@@ -1476,7 +1621,7 @@ function buildSlide29_Act5Breaker() {
 // ============================================================================
 // SLIDE 30: 10-Week Implementation Roadmap & Executive CTA
 // ============================================================================
-function buildSlide30_Roadmap() {
+function buildSlide31_Roadmap() {
   const slide = pptx.addSlide();
   addHeader(slide, 'ACT V • IMPLEMENTATION ROADMAP', '10-Week Enterprise Implementation Roadmap & Companion Resources', 30);
 
@@ -1548,7 +1693,7 @@ function buildSlide30_Roadmap() {
 // ============================================================================
 // SLIDE 31: Quantified Multi-Cloud SaaS Isolation Scorecard & 10/10 Verification Matrix
 // ============================================================================
-function buildSlide31_Scorecard() {
+function buildSlide32_Scorecard() {
   const slide = pptx.addSlide();
   addHeader(slide, 'ACT V • VERIFICATION MATRIX', 'Quantified Multi-Cloud SaaS Isolation Scorecard & 10/10 Verification Matrix', 31);
 
@@ -1625,10 +1770,10 @@ function buildSlide31_Scorecard() {
 }
 
 // Build all 31 slides
-console.log('Compiling 100% native DrawingML editable 31-slide executive presentation with clear Act 1 -> Act 2 -> Act 3 -> Act 4 -> Act 5 transitions...');
+console.log('Compiling 100% native DrawingML editable 32-slide executive presentation with clear Act 1 -> Act 2 -> Act 3 -> Act 4 -> Act 5 transitions...');
 
 async function main() {
-  console.log('🎞️  Building WS1 31-Slide Visual Deck with Agenda, Act Breakers (Acts I-V), L1-L4 DrawingML Diagrams & 10 Genuine SaaS Proofs...');
+  console.log('🎞️  Building WS1 32-Slide Visual Deck with Agenda, Act Breakers (Acts I-V), L1-L4 DrawingML Diagrams & 10 Genuine SaaS Proofs...');
   
   // Slide 01: Title
   buildSlide01();
@@ -1648,7 +1793,7 @@ async function main() {
   await buildSlide09_Figure1();
   await buildSlide10_Figure2();
   
-  // ACT III: 5-HOP CRYPTOGRAPHIC PIPELINE & DEEP EXECUTION (Slides 11-17)
+  // ACT III: 5-HOP CRYPTOGRAPHIC PIPELINE & DEEP EXECUTION (Slides 11-18)
   buildSlide11_Act3Breaker();
   buildSlide12_L3Process();
   buildSlide13_L4Wire();
@@ -1656,27 +1801,28 @@ async function main() {
   buildSlide15_AlloyDbRls();
   buildSlide16_FinOpsValkey();
   buildSlide17_Simulation();
+  buildSlide18_ArchitecturalCaveats();
   
-  // ACT IV: EMPIRICAL EVIDENCE & 10 GENUINE SAAS PROOFS (Slides 18-28)
-  buildSlide18_Act4Breaker();
-  buildSlide19_Metabase();
-  buildSlide20_Trino();
-  buildSlide21_Grafana();
-  buildSlide22_DatalustSeq();
-  buildSlide23_HashiCorpVault();
-  buildSlide24_ClickHouse();
-  buildSlide25_Redmine();
-  buildSlide26_NocoDB();
-  buildSlide27_Gitea();
-  buildSlide28_Directus();
+  // ACT IV: EMPIRICAL EVIDENCE & 10 GENUINE SAAS PROOFS (Slides 19-29)
+  buildSlide19_Act4Breaker();
+  buildSlide20_Metabase();
+  buildSlide21_Trino();
+  buildSlide22_Grafana();
+  buildSlide23_DatalustSeq();
+  buildSlide24_HashiCorpVault();
+  buildSlide25_ClickHouse();
+  buildSlide26_Redmine();
+  buildSlide27_NocoDB();
+  buildSlide28_Gitea();
+  buildSlide29_Directus();
   
   // ACT V: PRODUCTION SYNTHESIS & 10-WEEK ROADMAP (Slides 29-31)
-  buildSlide29_Act5Breaker();
-  buildSlide30_Roadmap();
-  buildSlide31_Scorecard();
+  buildSlide30_Act5Breaker();
+  buildSlide31_Roadmap();
+  buildSlide32_Scorecard();
 
   await pptx.writeFile({ fileName: OUTPUT_PPTX });
-  console.log(`✅ Successfully compiled ${OUTPUT_PPTX} (31 slides [Full 5-Act Narrative with Storyline, Act Breakers, L1-L4 DrawingML, 10 SaaS Proofs & Scorecard])`);
+  console.log(`✅ Successfully compiled ${OUTPUT_PPTX} (32 slides [Full 5-Act Narrative with Storyline, Act Breakers, L1-L4 DrawingML, Architectural Caveats, 10 SaaS Proofs & Scorecard])`);
 
   postProcessPptxArrowheadsForGoogleSlides();
   console.log('✅ Post-processed arrowheads and connectors for Google Slides compatibility');

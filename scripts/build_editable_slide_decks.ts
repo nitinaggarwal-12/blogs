@@ -5286,7 +5286,7 @@ interface PayloadTriptychSpec {
 const PAYLOAD_TRIPTYCH_BY_WS: Record<string, PayloadTriptychSpec> = {
   WS1: {
     slideTitle: 'WS1 • ACT II (L4 WIRE): Hop 1 Spoofed Header Stripping & Signed STS JWT Context',
-    subtitle: 'Wire-level protocol normalization: an untrusted ingress payload is stripped at Hop 1 and exits as a KMS-signed STS JWT verified locally via cached JWKS in sub-150 microseconds (0 per-hop KMS network calls).',
+    subtitle: 'Wire-level protocol normalization: untrusted headers stripped at Hop 1. Cloud KMS asymmetricSign (~8–14ms) mints STS JWT; downstream Hops 2–5 verify via in-memory cached JWKS in <0.15ms (0 KMS network RPCs).',
     leftVerdict: '✕ Unverified Client Claims • Blocked at Edge',
     rightVerdict: '✓ <0.15ms Cached-JWKS Verify • 0 KMS Network Calls',
     leftHeader: 'Untrusted Caller\nIngress Request',
