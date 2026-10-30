@@ -1,72 +1,23 @@
 {
   "serviceName": "ge-blogs",
   "beyondCorpUrl": "https://ge-blogs-248990048888.cr.gclb.goog",
+  "beyondCorpEdgeStatus": 302,
   "directCloudRunUrl": "https://ge-blogs-mi7l4h536a-uw.a.run.app",
   "buildProject": "ramp-portal-dev",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "ge-blogs-00034-wcb",
-  "latestCreatedRevisionName": "ge-blogs-00034-wcb",
+  "latestReadyRevisionName": "ge-blogs-00036-ddk",
+  "latestCreatedRevisionName": "ge-blogs-00036-ddk",
   "readyStatus": "True",
   "trafficPercent": 100,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261029-151850-rule58",
-  "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00034-wcb",
-  "liveHttpVerification": {
-    "verifiedAt": "2026-10-29T15:19:40Z",
-    "verificationMode": "cloud_run_revision_live_http_dom_probe",
-    "project": "ramp-portal-dev",
-    "region": "us-west1",
-    "service": "ge-blogs",
-    "revision": "ge-blogs-00034-wcb",
-    "overallPassed": true,
-    "routes": [
-      {
-        "path": "/",
-        "httpStatus": 200,
-        "responseBytes": 633991,
-        "bodySha256Short": "28a27a86302cbd9e",
-        "latencyMs": 60.1,
-        "markersMatched": [
-          "Multi-Tenancy Architecture",
-          "Pattern A",
-          "genuine-multicloud-3p-ui-gallery",
-          "13/13 PASS"
-        ],
-        "markersMissing": [],
-        "passed": true,
-        "error": ""
-      },
-      {
-        "path": "/api/health",
-        "httpStatus": 200,
-        "responseBytes": 37660,
-        "bodySha256Short": "433700d171bf77e4",
-        "latencyMs": 159.1,
-        "markersMatched": [
-          "HEALTHY",
-          "cymbal-geap-multitenant-portal"
-        ],
-        "markersMissing": [],
-        "passed": true,
-        "error": ""
-      },
-      {
-        "path": "/api/saas-5-live-verify",
-        "httpStatus": 200,
-        "responseBytes": 14809,
-        "bodySha256Short": "07d336b0fedb7c43",
-        "latencyMs": 9280.9,
-        "markersMatched": [
-          "CLOUDRUN_30_OF_30_LIVE_CROSSCLOUD_PASS",
-          "cymbal-a2a-mcp-gateway-suyxm3caof"
-        ],
-        "markersMissing": [],
-        "passed": true,
-        "error": ""
-      }
-    ]
-  },
-  "verifiedAt": "2026-10-29T15:19:51Z",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261030-042215-light-clean",
+  "entrypointCmd": [
+    "python3",
+    "-B",
+    "server.py"
+  ],
+  "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
+  "verifiedAt": "2026-10-30T04:23:04Z",
   "certifiedDiagramsCount": 14,
   "workstreamsCount": 5
 }
