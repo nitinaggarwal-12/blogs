@@ -141,6 +141,14 @@ SECONDARY_WORKSTREAM_SLIDES_IDS: Dict[str, list[str]] = {
         "18ntSD7plHarlsERB93n8vLUL2ctaoKuNXMoRptK7lmw",
     ],
     "ALL": ["1FyHevA50i5TeseuH33caW31Xr5Wsjjt87xmWvi__rHw"],
+    "DOC-MT-01": [
+        "1RUkSWKaufU1PgLhI7-ufJ_Y7DPlZeLp8REHoXsHc-cI",
+        "1rBHt-al8JDO9UZY6IIJpOdAR76zZQvvoNhPnX-ae9NY",
+        "1fp-Q21VVhy3hnqWDHBmZu1GLpLD6ts2ylhFfMR7LXsg",
+    ],
+    "DOC-REF-07": ["1WBXxlnExatYy_A1S3Lnv-TM1tt6MNq5RTp3JFGQb_u8"],
+    "DOC-REF-08": ["1sHSR73_osu8Z6UpklKtsa71Y9Z97JVCt_9g6TFlVUfI"],
+    "DOC-REF-09": ["1OPrnB1L0iZhVX3bD05vrnvsEEznsSLccdag6Wq_CEd8"],
 }
 
 WORKSTREAM_ALIAS_SLIDES_KEYS: Dict[str, list[tuple[str, str]]] = {
@@ -275,21 +283,43 @@ def upload_pptx_to_google_slides(
         return existing
 
     tok = access_token_override or get_drive_access_token()
-    if not tok:
-        raise RuntimeError("No Google Drive OAuth token available to convert .pptx to Google Slides.")
-
     pptx_bytes = pptx_path.read_bytes()
-    res = _upload_or_patch_pptx_bytes(pptx_bytes, title, tok, preferred_id=preferred_id)
+    gdrive_cli = Path("/google/bin/releases/gemini-agents-gdrive/gdrive")
+    if tok:
+        res = _upload_or_patch_pptx_bytes(pptx_bytes, title, tok, preferred_id=preferred_id)
+        for sec_id in SECONDARY_WORKSTREAM_SLIDES_IDS.get(cache_key, []):
+            if sec_id != res["id"]:
+                try:
+                    sec_res = _upload_or_patch_pptx_bytes(pptx_bytes, title, tok, preferred_id=sec_id)
+                    print(f"   ✓ [Patched Secondary ID] {cache_key} -> {sec_res.get('id', sec_id)} ({slide_count} slides)")
+                except Exception as exc:
+                    print(f"   ⚠️ [Secondary Patch Warning] {cache_key} ({sec_id}): {exc}")
+        fid = res["id"]
+    elif preferred_id and gdrive_cli.is_file():
+        import subprocess
 
-    for sec_id in SECONDARY_WORKSTREAM_SLIDES_IDS.get(cache_key, []):
-        if sec_id != res["id"]:
-            try:
-                sec_res = _upload_or_patch_pptx_bytes(pptx_bytes, title, tok, preferred_id=sec_id)
-                print(f"   ✓ [Patched Secondary ID] {cache_key} -> {sec_res.get('id', sec_id)} ({slide_count} slides)")
-            except Exception as exc:
-                print(f"   ⚠️ [Secondary Patch Warning] {cache_key} ({sec_id}): {exc}")
-
-    fid = res["id"]
+        subprocess.run(
+            [str(gdrive_cli), "mutate", "update", preferred_id, str(pptx_path)],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        for sec_id in SECONDARY_WORKSTREAM_SLIDES_IDS.get(cache_key, []):
+            if sec_id != preferred_id:
+                try:
+                    subprocess.run(
+                        [str(gdrive_cli), "mutate", "update", sec_id, str(pptx_path)],
+                        check=True,
+                        capture_output=True,
+                        text=True,
+                    )
+                    print(f"   ✓ [Patched Secondary ID via gdrive] {cache_key} -> {sec_id} ({slide_count} slides)")
+                except Exception as exc:
+                    print(f"   ⚠️ [Secondary gdrive Patch Warning] {cache_key} ({sec_id}): {exc}")
+        fid = preferred_id
+        res = {"id": fid, "webViewLink": f"https://docs.google.com/presentation/d/{fid}/edit"}
+    else:
+        raise RuntimeError("No Google Drive OAuth token or gdrive CLI available to sync .pptx to Google Slides.")
     now_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     preserved_webview = (
         existing.get("webViewLink")
@@ -537,7 +567,32 @@ def upload_md_to_google_docs(
 
     if existing and existing.get("googleDocsId"):
         fid = existing["googleDocsId"]
-        _sync_markdown_into_existing_google_doc(fid, md_path, title, tok)
+        gdocs_cli = Path("/google/bin/releases/gemini-agents-gdocs/gdocs")
+        if gdocs_cli.is_file() and cache_key in {"WS1", "WS2", "WS3", "WS4", "WS5", "ALL"}:
+            import subprocess
+            subprocess.run(
+                [
+                    "python3",
+                    "-B",
+                    str(ROOT_DIR / "scripts" / "build_gcp_branded_blog_docs.py"),
+                    "--only",
+                    cache_key,
+                    "--refresh-manifest",
+                ],
+                cwd=ROOT_DIR,
+                check=True,
+            )
+            refreshed = load_cloud_manifest().get("docs", {}).get(cache_key)
+            if refreshed:
+                return refreshed
+        elif os.environ.get("ALLOW_PLAIN_TEXT_DOCS_FALLBACK") != "1":
+            # Protect formatted bluedoc Google Docs (tables, Chroma code blocks, inline figures) from plain-text overwrite
+            existing["sha256"] = sha
+            existing["sizeBytes"] = len(md_bytes)
+            save_cloud_manifest(manifest)
+            return existing
+        else:
+            _sync_markdown_into_existing_google_doc(fid, md_path, title, tok)
         webview = existing.get("webViewLink", f"https://docs.google.com/document/d/{fid}/edit")
     else:
         template_entry = manifest.get("docs", {}).get("WS1") or next(iter(manifest.get("docs", {}).values()), None)

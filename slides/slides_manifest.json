@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-30T04:40:53.530Z",
+  "generatedAt": "2026-10-30T19:09:25.286Z",
   "engine": "PromptCanvas Vision Decompiler • Google Cloud Architecture Center 3-Act Cohesive Story Arc • pptxgenjs LAYOUT_WIDE 16:9",
   "decks": [
     {
@@ -13,7 +13,7 @@
       ],
       "shapes": 153,
       "connectors": 51,
-      "bytes": 954215,
+      "bytes": 954854,
       "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
@@ -29,7 +29,7 @@
       ],
       "shapes": 194,
       "connectors": 55,
-      "bytes": 916369,
+      "bytes": 916537,
       "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
@@ -44,7 +44,7 @@
       ],
       "shapes": 190,
       "connectors": 58,
-      "bytes": 952649,
+      "bytes": 953157,
       "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
@@ -60,7 +60,7 @@
       ],
       "shapes": 190,
       "connectors": 58,
-      "bytes": 920004,
+      "bytes": 920499,
       "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
@@ -73,7 +73,7 @@
       ],
       "shapes": 180,
       "connectors": 54,
-      "bytes": 842234,
+      "bytes": 843460,
       "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
@@ -96,7 +96,7 @@
         "ws4-terraform-hybrid-psc-blueprint-resource-graph",
         "ws5-decision-tree-and-agentic-triad"
       ],
-      "bytes": 2426976
+      "bytes": 2439909
     }
   ]
 }

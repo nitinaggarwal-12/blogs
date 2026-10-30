@@ -1822,6 +1822,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             ".json": "application/json; charset=utf-8",
             ".md": "text/markdown; charset=utf-8",
             ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             ".pdf": "application/pdf",
             ".py": "text/plain; charset=utf-8",
             ".sql": "text/plain; charset=utf-8",
@@ -1855,7 +1856,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 self.send_header("Content-Type", mime)
                 self.send_header("Content-Length", str(len(data)))
                 self.send_header("Cache-Control", "no-store")
-                if suffix == ".pptx" or suffix == ".drawio":
+                if suffix in (".pptx", ".docx", ".drawio"):
                     self.send_header("Content-Disposition", f'attachment; filename="{static_file.name}"')
                 self.end_headers()
                 self.wfile.write(data)

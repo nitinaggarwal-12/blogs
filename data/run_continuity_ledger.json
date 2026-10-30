@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-10-30T17:11:40Z",
+  "updated_at": "2026-10-30T19:13:59Z",
   "workspace_root": ".",
   "replay_orchestrator_script": "scripts/run_all_repeatable_e2e_verifications.py",
   "standing_mandates": [
@@ -123,7 +123,21 @@
       "command": "python3 -B scripts/run_deep_forensic_audit.py",
       "receipt_path": "docs/cloud_console_verification_receipt.json",
       "receipt_sha256": "cc3d66a560d37d6bbca46d2671b0ca8fafc4039771b8385a73df0edd8918fb0b",
-      "last_executed_at": "2026-10-30T17:11:40Z",
+      "last_executed_at": "2026-10-30T19:13:59Z",
+      "last_exit_code": 0,
+      "repeat_in_next_run": true,
+      "superseded_by_user": false
+    },
+    {
+      "step_id": "STEP-07-GCP-BRANDED-GOOGLE-DOCS-WORD-AND-23-SLIDE-DECKS-SYNC",
+      "description": "Compile and sync all 6 GCP Blue-Doc branded native Google Docs (?resourcekey= preserved, embedded #78 blueprints & 2880x1800 Retina Before/After SaaS UIs), export 6 Microsoft Word (.docx) files, and audit/sync all 15 editable .pptx decks across 29 Google Slides IDs (15 Primary + 14 Secondary).",
+      "cloud_provider": "GCP+Workspace",
+      "script_path": "scripts/build_gcp_branded_blog_docs.py",
+      "script_sha256": "f79bcb95c514d3d3c84d0417bf63f8ae5c031e15d0d88d065171af39f5b6ebbd",
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/build_gcp_branded_blog_docs.py --refresh-manifest",
+      "receipt_path": "slides/cloud_viewer_manifest.json",
+      "receipt_sha256": "3dc4debafd9e6eb71ff1db1dd355ca4714457e0c0b1fe8e8fc8420ef2c69025d",
+      "last_executed_at": "2026-10-30T19:13:59Z",
       "last_exit_code": 0,
       "repeat_in_next_run": true,
       "superseded_by_user": false

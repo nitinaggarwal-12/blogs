@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-30T04:29:31.514Z",
+  "generatedAt": "2026-10-30T17:38:18.382Z",
   "totalDiagrams": 14,
   "templateStandard": "Official Google Cloud Architecture Center Template (#78) • Rule 53G 3-Layout Engine: hub-2-spoke (56v/23e), pooled-shared-plane (60v/20e), decision-tree-3-outcome (46v/19e)",
   "slideSequenceStandard": "Customer-Centric 3-Act Top-Down 12-Slide Architecture Deck: Act I (Slides 1–3 Cover & Briefing Map, Customer Use Cases & Architectural Options Matrix) -> Act II (Slide 4 L1 Logical Zones -> Slide 5 L2 Authoritative Figure 1 #78 Physical Blueprint -> Slide 6 L3 5-Actor Sequence -> Slide 7 L4 Wire Payload Transformation) -> Act III (Slides 8–12 Circuit Breakers, EAP Compensating Controls, Live GCP Proof, 3-Pillar Well-Architected Guarantees & Series Progression)",
@@ -2556,7 +2556,7 @@
           "zoneId": "Coral Outcome Column (Left)",
           "colorHex": "#fad2cf",
           "borderHex": "#c5221f",
-          "name": "Pattern B — Sovereign Silos • $$$ • Terraform module 3.6",
+          "name": "Pattern B — Sovereign Silos • Tier 3 • Terraform module 3.6",
           "role": "Triggered by `Q1 = YES (100% regulated)`: provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`).",
           "nodes": [
             "Triggered by `Q1 = YES (100% regulated)`: provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`)."
@@ -2566,7 +2566,7 @@
           "zoneId": "Amber & Slate Outcome Columns (Center & Right)",
           "colorHex": "#feefc3",
           "borderHex": "#b06000",
-          "name": "Pattern A — Pooled ($) & Pattern C — Hybrid PSC ($$)",
+          "name": "Pattern A — Pooled (Tier 1) & Pattern C — Hybrid PSC (Tier 2)",
           "role": "`Q2 = NO (Single tier)` routes to `Pattern A — Pooled` (`Shared Agent Engine Pool` + `Shared AlloyDB & BigQuery RLS`); `Q2 = YES (Multi-tier)` routes to `Pattern C — Hybrid PSC` (`Hybrid Router & PSC Hub` + `3-Phase Live Tier Migrator`).",
           "nodes": [
             "`Q2 = NO (Single tier)` routes to `Pattern A — Pooled` (`Shared Agent Engine Pool` + `Shared AlloyDB & BigQuery RLS`); `Q2 = YES (Multi-tier)` routes to `Pattern C — Hybrid PSC` (`Hybrid Router & PSC Hub` + `3-Phase Live Tier Migrator`)."
@@ -2602,7 +2602,7 @@
           "step": "Step ④",
           "badgeNum": "04",
           "zone": "Coral Outcome Column (Pattern B)",
-          "title": "Pattern B — Sovereign Silos ($$$ • Terraform Module 3.6)",
+          "title": "Pattern B — Sovereign Silos (Tier 3 • Terraform Module 3.6)",
           "logicalNarrative": "Triggered by `Q1 = YES`: provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`).",
           "components": "Per-Tenant Project & VPC-SC • Dedicated Agent & Gemma 3"
         },
@@ -2610,7 +2610,7 @@
           "step": "Step ⑤",
           "badgeNum": "05",
           "zone": "Amber Outcome Column (Pattern A)",
-          "title": "Pattern A — Pooled ($ • Terraform Module 2.6)",
+          "title": "Pattern A — Pooled (Tier 1 • Terraform Module 2.6)",
           "logicalNarrative": "Triggered by `Q2 = NO`: provisions `Shared Agent Engine Pool` (`120 RPM • 4k cap • 90% cache`) and `Shared AlloyDB & BigQuery RLS` (`FORCE RLS • 10/10 breach tests`).",
           "components": "Shared Agent Engine Pool • Shared AlloyDB & BigQuery RLS"
         },
@@ -2618,7 +2618,7 @@
           "step": "Step ⑥",
           "badgeNum": "06",
           "zone": "Slate Outcome Column (Pattern C)",
-          "title": "Pattern C — Hybrid PSC ($$ • Terraform Module 4.6)",
+          "title": "Pattern C — Hybrid PSC (Tier 2 • Terraform Module 4.6)",
           "logicalNarrative": "Triggered by `Q2 = YES`: provisions `Hybrid Router & PSC Hub` (`Pool + PSC 10.10.0.50`) and `3-Phase Live Tier Migrator` (`0-downtime upgrade • 4/4 tests`).",
           "components": "Hybrid Router & PSC Hub • 3-Phase Live Tier Migrator"
         },

@@ -221,7 +221,7 @@ Where:
 - $T_{\text{think}}(t) \le B_{\text{tier}}$ is the Hop 3 clamped reasoning token budget ($B_{\text{std}} = 4,000\text{ tokens}$ for RetailStream Standard vs. $B_{\text{ent}} = 8,000\text{ tokens}$ for FinVault Enterprise), and $T_{\text{out}}(t)$ is the final completion length billed at rates $r_{\text{in}}, r_{\text{out}}$.
 - $N_{\text{std}} = 950$ and $N_{\text{ent}} = 50$ represent the canonical 1,000-tenant B2B SaaS fleet split, where consolidating 950 Standard tenants into $C_{\text{pool\_base}}$ while isolating 50 regulated Enterprise tenants into dedicated PSC spokes ($C_{\text{psc\_spoke}}$) reduces monthly infrastructure and token TCO by **74%** relative to 1,000 standalone Pattern B silos.
 
-> **Architectural Grounding Boundary (FinOps Token Caching & Fleet TCO Model):** The 90% `ContextCacheConfig` prefix discount ($alpha_{	ext{cache}} = 0.10$) and thinking-budget clamp ($B_{	ext{std}} = 4,000$, $B_{	ext{ent}} = 8,000$) are enforced deterministically at **Hop 3** (`hop3_compute_finops_bulkhead.py`, `runtime_pipeline.py:L99-L162`) and audited per turn in BigQuery (`cymbal_agentic_finops_otel.tenant_telemetry_spans`).
+> **Architectural Grounding Boundary (FinOps Token Caching & Fleet TCO Model):** The 90% `ContextCacheConfig` prefix discount ($\alpha_{\text{cache}} = 0.10$) and thinking-budget clamp ($B_{\text{std}} = 4,000$, $B_{\text{ent}} = 8,000$) are enforced deterministically at **Hop 3** (`hop3_compute_finops_bulkhead.py`, `runtime_pipeline.py:L99-L162`) and audited per turn in BigQuery (`cymbal_agentic_finops_otel.tenant_telemetry_spans`).
 
 ### Operational excellence
 

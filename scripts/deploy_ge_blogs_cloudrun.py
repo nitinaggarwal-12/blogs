@@ -230,6 +230,9 @@ def sync_receipt_after_deploy(ready_rev: str) -> None:
             check=True,
             env=git_env,
         )
+        remotes_out = subprocess.check_output(
+            ["git", "remote"], cwd=BLOGS_ROOT, text=True, env=git_env
+        ).split()
         push_res = subprocess.run(
             ["git", "push", "origin", "HEAD:main"],
             cwd=BLOGS_ROOT,
@@ -240,6 +243,17 @@ def sync_receipt_after_deploy(ready_rev: str) -> None:
         )
         if push_res.returncode == 0:
             print(f"  [git-sync]  Committed & pushed data/cloudrun_deploy_receipt.json ({ready_rev}) to origin/main")
+            if "fde" in remotes_out:
+                fde_res = subprocess.run(
+                    ["git", "push", "fde", "HEAD:main"],
+                    cwd=BLOGS_ROOT,
+                    env=git_env,
+                    capture_output=True,
+                    text=True,
+                    timeout=30,
+                )
+                if fde_res.returncode == 0:
+                    print(f"  [git-sync]  Also pushed data/cloudrun_deploy_receipt.json ({ready_rev}) to fde/main")
         else:
             # Revert commit & restore tracked receipt so working tree stays 100% clean for future `git pull`
             subprocess.run(["git", "reset", "--mixed", "HEAD~1"], cwd=BLOGS_ROOT, check=False, env=git_env)

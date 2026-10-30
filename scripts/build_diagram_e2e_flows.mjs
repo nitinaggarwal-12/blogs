@@ -2524,14 +2524,14 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zoneId: 'Coral Outcome Column (Left)',
         colorHex: '#fad2cf',
         borderHex: '#c5221f',
-        name: 'Pattern B — Sovereign Silos • $$$ • Terraform module 3.6',
+        name: 'Pattern B — Sovereign Silos • Tier 3 • Terraform module 3.6',
         role: 'Triggered by `Q1 = YES (100% regulated)`: provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`).',
       },
       {
         zoneId: 'Amber & Slate Outcome Columns (Center & Right)',
         colorHex: '#feefc3',
         borderHex: '#b06000',
-        name: 'Pattern A — Pooled ($) & Pattern C — Hybrid PSC ($$)',
+        name: 'Pattern A — Pooled (Tier 1) & Pattern C — Hybrid PSC (Tier 2)',
         role: '`Q2 = NO (Single tier)` routes to `Pattern A — Pooled` (`Shared Agent Engine Pool` + `Shared AlloyDB & BigQuery RLS`); `Q2 = YES (Multi-tier)` routes to `Pattern C — Hybrid PSC` (`Hybrid Router & PSC Hub` + `3-Phase Live Tier Migrator`).',
       },
     ],
@@ -2567,7 +2567,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         step: 'Step ④',
         badgeNum: '04',
         zone: 'Coral Outcome Column (Pattern B)',
-        title: 'Pattern B — Sovereign Silos ($$$ • Terraform Module 3.6)',
+        title: 'Pattern B — Sovereign Silos (Tier 3 • Terraform Module 3.6)',
         logicalNarrative:
           'Triggered by `Q1 = YES`: provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`).',
         components: 'Per-Tenant Project & VPC-SC • Dedicated Agent & Gemma 3',
@@ -2576,7 +2576,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         step: 'Step ⑤',
         badgeNum: '05',
         zone: 'Amber Outcome Column (Pattern A)',
-        title: 'Pattern A — Pooled ($ • Terraform Module 2.6)',
+        title: 'Pattern A — Pooled (Tier 1 • Terraform Module 2.6)',
         logicalNarrative:
           'Triggered by `Q2 = NO`: provisions `Shared Agent Engine Pool` (`120 RPM • 4k cap • 90% cache`) and `Shared AlloyDB & BigQuery RLS` (`FORCE RLS • 10/10 breach tests`).',
         components: 'Shared Agent Engine Pool • Shared AlloyDB & BigQuery RLS',
@@ -2585,7 +2585,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         step: 'Step ⑥',
         badgeNum: '06',
         zone: 'Slate Outcome Column (Pattern C)',
-        title: 'Pattern C — Hybrid PSC ($$ • Terraform Module 4.6)',
+        title: 'Pattern C — Hybrid PSC (Tier 2 • Terraform Module 4.6)',
         logicalNarrative:
           'Triggered by `Q2 = YES`: provisions `Hybrid Router & PSC Hub` (`Pool + PSC 10.10.0.50`) and `3-Phase Live Tier Migrator` (`0-downtime upgrade • 4/4 tests`).',
         components: 'Hybrid Router & PSC Hub • 3-Phase Live Tier Migrator',

@@ -848,7 +848,7 @@ const WORKSTREAM_BLUEPRINTS = [
         step: '4',
         fill: '#fad2cf',
         accent: '#c5221f',
-        label: 'Pattern B — Sovereign Silos • $$$ • Terraform module 3.6',
+        label: 'Pattern B — Sovereign Silos • Tier 3 • Terraform module 3.6',
         zoneTitle: 'One dedicated project per tenant',
         zoneSub: 'Zero blast radius • customer holds the key',
         cards: [
@@ -864,7 +864,7 @@ const WORKSTREAM_BLUEPRINTS = [
         step: '5',
         fill: '#feefc3',
         accent: '#b06000',
-        label: 'Pattern A — Pooled • $ • Terraform module 2.6',
+        label: 'Pattern A — Pooled • Tier 1 • Terraform module 2.6',
         zoneTitle: 'One shared plane for all tenants',
         zoneSub: 'Lowest COGS • logical isolation only',
         cards: [
@@ -880,7 +880,7 @@ const WORKSTREAM_BLUEPRINTS = [
         step: '6',
         fill: '#e8d9f7',
         accent: '#6a1b9a',
-        label: 'Pattern C — Hybrid PSC • $$ • Terraform module 4.6',
+        label: 'Pattern C — Hybrid PSC • Tier 2 • Terraform module 4.6',
         zoneTitle: 'Shared pool + private spokes',
         zoneSub: 'Standard pooled, Enterprise over PSC',
         cards: [

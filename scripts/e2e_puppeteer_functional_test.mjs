@@ -217,6 +217,17 @@ async function run() {
     const overviewLandingActive = Boolean(ovSec && ovSec.classList.contains("active"));
     const overviewOnePagerCount = ovSec ? ovSec.querySelectorAll(".ov-onepager-card").length : 0;
     const overviewMatrixRows = ovSec ? ovSec.querySelectorAll("table.ov-master-table tbody tr").length : 0;
+    const overviewDocxLinks = ["WS1", "WS2", "WS3", "WS4", "WS5", "ALL"].filter((ws) =>
+      Boolean(ovSec && ovSec.querySelector(`[data-testid="ov-docx-link-${ws}"]`))
+    ).length;
+    const hubDocxHref = document.getElementById("hub-docx-download")?.getAttribute("href") || "";
+    const ws1DocLinkHref =
+      ovSec?.querySelector('a[href*="1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os"]')?.getAttribute("href") || "";
+    const docxResp = await fetch("/docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx");
+    const docxBuf = docxResp.ok ? await docxResp.arrayBuffer() : new ArrayBuffer(0);
+    const docxStatus = docxResp.status;
+    const docxBytes = docxBuf.byteLength;
+    const docxContentType = docxResp.headers.get("content-type") || "";
     const headerHeightPx = document.querySelector(".portal-top-header")?.offsetHeight || 0;
     const ovTbl = ovSec?.querySelector("table.ov-master-table");
     const ovTblOverflow = Boolean(ovTbl && ovTbl.parentElement && ovTbl.offsetWidth > ovTbl.parentElement.clientWidth + 4);
@@ -366,6 +377,12 @@ async function run() {
       overviewLandingActive,
       overviewOnePagerCount,
       overviewMatrixRows,
+      overviewDocxLinks,
+      hubDocxHref,
+      ws1DocLinkHref,
+      docxStatus,
+      docxBytes,
+      docxContentType,
       headerHeightPx,
       ovTblOverflow,
       ovImgsCount: ovImgs.length,
@@ -429,6 +446,16 @@ async function run() {
       tabsResult.headerHeightPx <= 60,
     "Default `/` Executive Landing Page (#tab-overview: 6 One-Pagers, 6-Row Master Matrix, 20/20 Retina Previews & Zero Overflow)",
     `active=${tabsResult.overviewLandingActive}, pages=${tabsResult.overviewOnePagerCount}, rows=${tabsResult.overviewMatrixRows}, imgs=${tabsResult.ovImgsCount}, broken=${tabsResult.brokenOvImgs.length}, hdrH=${tabsResult.headerHeightPx}px`
+  );
+  assert(
+    tabsResult.overviewDocxLinks === 6 &&
+      tabsResult.hubDocxHref.endsWith(".docx") &&
+      tabsResult.ws1DocLinkHref.includes("resourcekey=0-PgO-X5icAK687_G-_WZFpQ") &&
+      tabsResult.docxStatus === 200 &&
+      tabsResult.docxBytes >= 3000000 &&
+      tabsResult.docxContentType.includes("officedocument.wordprocessingml.document"),
+    "GCP-Branded Google Docs (`?resourcekey=` Preserved) & Microsoft Word (`.docx`) Exports Served Cleanly (`6/6` Matrix Links + HTTP 200)",
+    `docxLinks=${tabsResult.overviewDocxLinks}, hubHref=${tabsResult.hubDocxHref}, status=${tabsResult.docxStatus}, bytes=${tabsResult.docxBytes}, ct=${tabsResult.docxContentType}`
   );
   assert(pageErrors.length === 0, "Zero Uncaught Page Errors", `errors=${pageErrors.length}`);
 

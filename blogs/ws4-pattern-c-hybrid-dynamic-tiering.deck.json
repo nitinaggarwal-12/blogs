@@ -151,7 +151,7 @@
           "1,000-tenant portfolio FinOps",
           "2x engineering maintenance overhead + high customer churn on upgrade friction",
           "Hard scaling ceiling at 25 Enterprise tenants per Hub VPC network",
-          "`74%` lower TCO (`950 Pooled + 50 Spokes` vs. `1,000 All-Siloed` all-silo) + `4/4` migration tests PASS"
+          "`74%` lower TCO (`950 Pooled + 50 Spokes` vs. `1,000 All-Siloed`) + `4/4` migration tests PASS"
         ]
       ],
       "bullets": [],

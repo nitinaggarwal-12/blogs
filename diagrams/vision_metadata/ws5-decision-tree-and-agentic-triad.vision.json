@@ -102,8 +102,8 @@
     {
       "id": "outcome_b_wrapper",
       "urlSlug": "OBJ-06-PATTERN-B-SOVEREIGN-SILO",
-      "label": "Pattern B — Sovereign Silos • $$$ • Terraform module 3.6",
-      "plainTitle": "Pattern B — Sovereign Silos • $$$ • Terraform module 3.6",
+      "label": "Pattern B — Sovereign Silos • Tier 3 • Terraform module 3.6",
+      "plainTitle": "Pattern B — Sovereign Silos • Tier 3 • Terraform module 3.6",
       "zone": "Agentic Capabilities Platform",
       "x": 70,
       "y": 790,
@@ -126,8 +126,8 @@
     {
       "id": "outcome_a_wrapper",
       "urlSlug": "OBJ-08-PATTERN-A-POOLED-TERRAFO",
-      "label": "Pattern A — Pooled • $ • Terraform module 2.6",
-      "plainTitle": "Pattern A — Pooled • $ • Terraform module 2.6",
+      "label": "Pattern A — Pooled • Tier 1 • Terraform module 2.6",
+      "plainTitle": "Pattern A — Pooled • Tier 1 • Terraform module 2.6",
       "zone": "Agentic Capabilities Platform",
       "x": 430,
       "y": 790,
@@ -150,8 +150,8 @@
     {
       "id": "outcome_c_wrapper",
       "urlSlug": "OBJ-10-PATTERN-C-HYBRID-PSC-TER",
-      "label": "Pattern C — Hybrid PSC • $$ • Terraform module 4.6",
-      "plainTitle": "Pattern C — Hybrid PSC • $$ • Terraform module 4.6",
+      "label": "Pattern C — Hybrid PSC • Tier 2 • Terraform module 4.6",
+      "plainTitle": "Pattern C — Hybrid PSC • Tier 2 • Terraform module 4.6",
       "zone": "Agentic Capabilities Platform",
       "x": 790,
       "y": 790,

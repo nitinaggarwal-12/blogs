@@ -1284,7 +1284,7 @@ const DECKS = {
             '1,000-tenant portfolio FinOps',
             '2x engineering maintenance overhead + high customer churn on upgrade friction',
             'Hard scaling ceiling at 25 Enterprise tenants per Hub VPC network',
-            '`74%` lower TCO (`950 Pooled + 50 Spokes` vs. `1,000 All-Siloed` all-silo) + `4/4` migration tests PASS',
+            '`74%` lower TCO (`950 Pooled + 50 Spokes` vs. `1,000 All-Siloed`) + `4/4` migration tests PASS',
           ],
         ],
         bullets: [],
@@ -1527,7 +1527,7 @@ const DECKS = {
         bullets: [
           'Decision Gate 1 (Universal Regulatory Sovereignty Mandate): Do 100% of your customers legally require dedicated GCP projects, VPC Service Controls, IAM PAB, and customer-revocable CMEK kill-switches? If YES, standardize on Pattern B (600 RPM Silo).',
           'Decision Gate 2 (Single-Tier vs. Multi-Tier SaaS Packaging): If not all customers require physical silos, choose Pattern A (120 RPM Pool shared pool, 90% prefix cache) for one uniform commercial tier, or Pattern C (74% TCO savings) for multi-tier portfolios.',
-          'Competing Tenant Profiles (FinVault Bank vs. RetailStream Corp): Co-host RetailStream in the 120 RPM Pool Standard pool (Entra ID, 4k cap, 120 RPM) and isolate FinVault in an 600 RPM Silo Enterprise spoke/silo (Workspace, 8k cap, 600 RPM, Agent Alpha, CMEK).',
+          'Competing Tenant Profiles (FinVault Bank vs. RetailStream Corp): Co-host RetailStream in the 120 RPM Pool Standard pool (Entra ID, 4k cap, 120 RPM) and isolate FinVault in a 600 RPM Silo Enterprise spoke/silo (Workspace, 8k cap, 600 RPM, Agent Alpha, CMEK).',
           'One 80% Reusable 5-Hop Google Cloud Stack: Cloud Armor, IAP OBO/DPoP, Agent Engine Registry, Memorystore Valkey, Gemini 2.5 Pro / Gemma 3, Model Armor, Cloud DLP, AlloyDB RLS/CMEK, and BigQuery OTel power all three patterns without code forks.',
         ],
         specs: [
@@ -1650,7 +1650,7 @@ const DECKS = {
           'Triad Pillar 1 — Zero-Trust Cryptographic Tenant Security: Enforces non-bypassable identity, tool discovery, memory namespace, prompt safety, and SQL RLS boundaries so tenant assets never commingle.',
           'Triad Pillar 2 — Predictable Unit Economics & Quota Bulkheads: Combines 90% Gemini 2.5 Pro shared prefix caching discounts with Memorystore for Valkey RPM rate limiters and per-tier thinking token caps.',
           'Triad Pillar 3 — Privacy-Safe FinOps Chargeback Telemetry: Streams zero-PII OpenTelemetry spans (`tenant_id`, `cached_tokens`, `thinking_tokens`, `silo_cmek_verify_ms`) into BigQuery for 3-model billing.',
-          '1,000-Tenant Portfolio Financial Proof: Across 950 Standard and 50 Enterprise tenants, the Agentic Triad saves 90% Cache Hit in cloud infrastructure and reduces per-turn LLM token costs by 84.7%.',
+          '1,000-Tenant Portfolio Financial Proof: Across 950 Standard and 50 Enterprise tenants, the Agentic Triad reduces 1,000-tenant cloud infrastructure TCO by 74% and per-turn LLM token costs by 84.7%.',
         ],
         specs: [
           {
@@ -1669,7 +1669,7 @@ const DECKS = {
             tag: 'Pillar 3: Zero-PII FinOps',
           },
           {
-            stack: '950 Pooled (950 Pooled Tenants) + 50 Spokes (50 PSC Spoke Tenants) = 950 Pooled + 50 Dedicated PSC Spokes All-Silo',
+            stack: '950 Standard Pooled Tenants + 50 Dedicated Enterprise PSC Spokes = 74% Lower Cloud TCO vs. 1,000 Silos',
             sla: 'Delivers 82%+ Blended SaaS Gross Margin with Full Regulatory Compliance',
             tag: 'Portfolio Financial Impact',
           },
@@ -1737,7 +1737,7 @@ const DECKS = {
     takeaways: [
       'Resolve Regulatory Mandates Before Product Packaging: Always evaluate whether compliance requires physical per-tenant projects (Gate 1 -> Pattern B) before choosing between single-tier (Pattern A) and multi-tier (Pattern C).',
       'Standardize on One 5-Hop Security Pipeline Across All Tiers: Keep 80% of your Python ADK application code identical across Pooled, Siloed, and Hybrid environments.',
-      'Treat Pooled ($), Hybrid ($$), and Siloed ($$$) as One Continuous Platform: Use Firestore routing metadata and Private Service Connect to move tenants across tiers without changing URLs or rewriting agents.',
+      'Treat Pooled (Tier 1), Hybrid (Tier 2), and Siloed (Tier 3) as One Continuous Platform: Use Firestore routing metadata and Private Service Connect to move tenants across tiers without changing URLs or rewriting agents.',
       'Balance All Three Pillars of the Agentic Triad: Combining 5-hop zero-trust security, 90% prefix caching + Valkey bulkheads, and zero-PII BigQuery OTel chargeback protects both CISO compliance and CFO margins.',
       'Gate Every Production Release on the 13-Point Forensic & 20-Test Simulation Suite: Run `python3 -B scripts/run_deep_forensic_audit.py` to certify code, diagrams, Terraform blueprints, and live GCP resources.',
     ],
