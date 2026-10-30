@@ -159,119 +159,163 @@ function makeSpokenNote({ slideNum, totalSlides, slideTitle, whyHere, whatIsHapp
 
 export function getWorkstream12SlideNotes(wsKey) {
   const t = WORKSTREAM_THEMES[wsKey] || WORKSTREAM_THEMES.WS1;
-  const total = wsKey === 'WS1' ? 11 : 12;
+  const total = wsKey === 'WS1' ? 15 : 12;
 
   if (wsKey === 'WS1') {
     return [
       makeSpokenNote({
         slideNum: 1,
         totalSlides: total,
-        slideTitle: 'Part 1 (Slide 1) — Executive Cover & 5-Part Deep-Dive Map',
+        slideTitle: 'Act I (Slide 1) — Executive Title Cover & 4-Act Briefing Map',
         whyHere:
-          `Welcome everyone. We have structured this streamlined eleven-slide reference architecture briefing into a cohesive five-part engineering series roadmap so you can trace the SaaS AI Dilemma from isolation topologies all the way to automated CI/CD forensic compliance.`,
+          `Welcome everyone. We have structured this fifteen-slide flagship briefing for Blog 1 into a clear four-act progression—moving from the real multi-tenant problem and conceptual model, through our process and L1-to-L4 technical diagrams, to live dual-plane proofs, quantified benefits, and your 30-60-90 day call to action.`,
         whatIsHappening: t.slide1Spoken,
         whatComesNext:
-          `With our thesis defined on Slide 1, let's turn to Slide 2 for our Agenda and 5-Part Series Navigation table so you can see the exact macro-to-micro flow of the deck.`,
+          `With that roadmap in mind, let's turn to Slide 2 to review our agenda and how this deck maps directly to the five-part engineering series.`,
       }),
       makeSpokenNote({
         slideNum: 2,
         totalSlides: total,
-        slideTitle: 'Part 1 (Slide 2) — Agenda & 5-Part Series Navigation (Table of Contents)',
+        slideTitle: 'Act I (Slide 2) — Agenda & 5-Part Series Navigation',
         whyHere:
-          `Following our executive cover on Slide 1, Slide 2 provides an explicit Table of Contents mapping all eleven slides across the five-part blog series and our L1-to-L4 architectural hierarchy.`,
+          `Slide 2 serves as our table of contents, connecting every section of our reference architecture to the corresponding deep-dive workstream.`,
         whatIsHappening: t.slide2Spoken,
         whatComesNext:
-          `Now that we have the full eleven-slide roadmap in front of us, let's turn to Slide 3 to meet the competing customer personas whose business and regulatory constraints drive this architecture.`,
+          `Now let's turn to Slide 3 to examine the real customer problem and competing tenant profiles that drive every architectural decision.`,
       }),
       makeSpokenNote({
         slideNum: 3,
         totalSlides: total,
-        slideTitle: 'Part 1 (Slide 3) — Competing Enterprise Tenants & Workload Personas',
+        slideTitle: 'Act I (Slide 3) — The Real Problem: Customer Use Cases & Tenant Tension',
         whyHere:
-          `Stepping into Part 1 from our Agenda on Slide 2, we start with the customer personas first—contrasting regulated banking workloads against high-density commercial SaaS workloads.`,
+          `We always start with the customer problem first: why naive SaaS multi-tenancy fails for stateful AI agents, and why single-tenant silos destroy unit economics.`,
         whatIsHappening: t.slide3Spoken,
         whatComesNext:
-          `Now that we see what FinVault Bank and RetailStream Corp require on Slide 3, let's turn to Slide 4 to compare our three isolation topologies across twelve architectural and operational dimensions.`,
+          `To resolve that tension without maintaining two separate codebases, let's look at our Conceptual Diagram on Slide 4.`,
       }),
       makeSpokenNote({
         slideNum: 4,
         totalSlides: total,
-        slideTitle: 'Part 1 (Slide 4) — 12-Dimension Multi-Tenant Isolation Decision Matrix',
+        slideTitle: 'Act I (Slide 4) — Conceptual Diagram: 80% Reusable 5-Hop Core vs. 20% Perimeter Delta',
         whyHere:
-          `Building directly on the customer personas from Slide 3, this matrix closes Part 1 by comparing Pooled (Pattern A), Sovereign Silos (Pattern B), and Dynamic Hybrid (Pattern C).`,
-        whatIsHappening: t.slide4Spoken,
+          `This conceptual diagram illustrates our core architectural thesis: decoupling the eighty-percent reusable five-hop agentic core from the twenty-percent per-tenant infrastructure perimeter.`,
+        whatIsHappening:
+          `On the left, competing commercial and regulated tenants enter the same core-cymbal-agent codebase in the center. Every request traverses the exact same five governance hops—Edge STS, ARD Catalog, Valkey Bulkhead, Model Armor, and AlloyDB RLS—while feature-flagged native adapters future-proof EAP capabilities. On the right, per-tenant infrastructure configuration deploys each customer into Pattern A Shared Pool, Pattern B Sovereign Silos, or Pattern C Dynamic Hybrid PSC.`,
         whatComesNext:
-          `With our three isolation topologies defined in Part 1, let's enter Part 2 on Slide 5 at Level 1 Logical—examining our three logical security layers before zooming into the four physical VPC-SC network perimeters on Slide 6.`,
+          `Now that we see the conceptual separation of concerns, let's trace the end-to-end runtime process lifecycle on Slide 5.`,
       }),
       makeSpokenNote({
         slideNum: 5,
         totalSlides: total,
-        slideTitle: 'Part 2 (Slide 5) — L1 Logical: Reference Taxonomy — 3 Logical Security Layers & Signed STS JWT',
+        slideTitle: 'Act I (Slide 5) — Process Diagram: End-to-End 5-Hop Governance & FinOps Lifecycle',
         whyHere:
-          `Opening Part 2 on securing the agent loop, Slide 5 establishes the Level 1 Logical view—organizing our architecture into three logical security layers so it maps cleanly onto the four physical VPC-SC perimeters on Slide 6.`,
-        whatIsHappening: t.slide5Spoken,
+          `Slide 5 translates our conceptual model into a deterministic six-stage process diagram with explicit latency budgets and fail-closed circuit breakers.`,
+        whatIsHappening:
+          `Across Stages 1 through 5, a customer turn completes in roughly forty-two milliseconds of control-plane overhead: eight milliseconds at Hop 1 Edge STS, four milliseconds at Hop 2 ARD scoping, three milliseconds at Hop 3 Valkey revocation check, twenty-two milliseconds at Hop 4 regional Model Armor and Cloud DLP, and five milliseconds at Hop 5 AlloyDB RLS—followed by asynchronous Stage 6 OpenTelemetry export to BigQuery. Below, four red circuit breakers guarantee fail-closed HTTP 401, 403, 429, 422, and 423 enforcement.`,
         whatComesNext:
-          `Now that we have the three logical security layers in mind, let's zoom directly into Level 2 Physical on Slide 6 to see how those layers map onto our fifty-six-shape Google Cloud blueprint across four physical VPC-SC network perimeters.`,
+          `With the conceptual and process flows clear, let's enter Act II on Slide 6 to examine our Level 1 Logical Security Layers.`,
       }),
       makeSpokenNote({
         slideNum: 6,
         totalSlides: total,
-        slideTitle: 'Part 2 (Slide 6) — L2 Physical: 4 Physical Network Perimeters (VPC-SC Boundaries) — Figure 1 Blueprint',
+        slideTitle: 'Act II (Slide 6) — Logical Diagram (L1): 3 Logical Security Layers',
         whyHere:
-          `Following our strict macro-to-micro L1-to-L2 progression from Slide 5, Slide 6 maps the three logical security layers onto concrete Google Cloud services across four color-coded physical VPC Service Controls perimeters.`,
-        whatIsHappening: t.slide6Spoken,
+          `Opening Act II at Level 1 of our macro-to-micro zoom, Slide 6 organizes the platform into three logical security layers before we map physical VPC Service Controls perimeters.`,
+        whatIsHappening: t.slide5Spoken,
         whatComesNext:
-          `With both the L1 logical layers and L2 physical perimeters established, let's step into Level 3 Process on Slide 7 to trace a live request chronologically across all five actors alongside our merged fail-closed circuit breakers and Valkey L1 cache recovery.`,
+          `Before we inspect the physical blueprints, let's review our twelve-dimension Pattern A, B, and C decision matrix on Slide 7.`,
       }),
       makeSpokenNote({
         slideNum: 7,
         totalSlides: total,
-        slideTitle: 'Part 3 (Slide 7) — L3 Process: 5-Actor UML Sequence, Fail-Closed Circuit Breakers & Stampede Recovery',
+        slideTitle: 'Act II (Slide 7) — 12-Dimension Pattern A / B / C Architectural Decision Matrix',
         whyHere:
-          `Moving from L2 Physical on Slide 6 to L3 Process on Slide 7, this unified diagram combines our chronological five-actor request sequence with our fail-closed circuit breakers, sub-five-second Valkey SCAN+UNLINK eviction, and SET NX PX 5000 single-flight recovery.`,
-        whatIsHappening: t.slide7Spoken,
+          `Slide 7 gives architects and FinOps leads a concrete twelve-dimension rubric to assign each tenant to Pattern A, Pattern B, or Pattern C.`,
+        whatIsHappening: t.slide4Spoken,
         whatComesNext:
-          `Having watched the request and its circuit breakers execute across Hops 1 through 5 on Slide 7, let's zoom all the way down to Level 4 Wire on Slide 8 to inspect the exact JSON packet and KMS-signed STS JWT on the wire.`,
+          `Now let's zoom into Level 2 physical topology on Slide 8 with Figure 1: our four-zone Hub-and-Spoke VPC-SC taxonomy blueprint.`,
       }),
       makeSpokenNote({
         slideNum: 8,
         totalSlides: total,
-        slideTitle: 'Part 2 (Slide 8) — L4 Wire: Spoofed Header Stripping & <0.15ms Cached-JWKS STS JWT',
+        slideTitle: 'Act II (Slide 8) — Technical Diagram 1 (L2): Figure 1 Multi-Tenant Taxonomy Blueprint',
         whyHere:
-          `Completing our L1 → L2 → L3 → L4 macro-to-micro hierarchy, Slide 8 inspects the raw JSON payload on the wire before and after Hop 1 token exchange.`,
-        whatIsHappening: t.slide8Spoken,
+          `Figure 1 maps our fifty-six-component Google Cloud reference topology across four physical VPC Service Controls network perimeters.`,
+        whatIsHappening: t.slide6Spoken,
         whatComesNext:
-          `With the five-hop architecture proven from logical layers down to the wire packet, let's move into Part 4 on Slide 9 to inspect the five EAP product gaps we encountered and the feature-flagged compensating controls we built to close them.`,
+          `Next, let's examine Figure 2 on Slide 9: the official Cloud Architecture Center 5-Hop Cryptographic Context Chain baseline.`,
       }),
       makeSpokenNote({
         slideNum: 9,
         totalSlides: total,
-        slideTitle: 'Part 4 (Slide 9) — Mind the Gap: GAP-01..05 Compensating Controls & BigQuery OTel SQL',
+        slideTitle: 'Act II (Slide 9) — Technical Diagram 2 (L2): Figure 2 Official 5-Hop Baseline Blueprint',
         whyHere:
-          `Part 4 on Slide 9 provides our transparent engineering ledger of five current platform gaps, our codebase compensating controls, and our feature-flagged native adapter sunset hooks.`,
-        whatIsHappening: t.slide9Spoken,
+          `Complementing Figure 1, Figure 2 details the official Cloud Architecture Center 5-Hop Cryptographic Context Chain across routing, governance, and execution spokes.`,
+        whatIsHappening:
+          `Notice how every hop in Figure 2 enforces asymmetric KMS ECDSA P-256 verification, composite tenant-user-session key scoping, and gVisor kernel sandboxing so no compromised tool or prompt can pivot laterally across spokes.`,
         whatComesNext:
-          `With our compensating controls documented on Slide 9, let's enter Part 5 on Slide 10 to inspect the live Google Cloud Console and Cloud Logging Explorer proof from our deployed projects.`,
+          `Now let's zoom into Level 3 on Slide 10 to trace the five-actor UML sequence swimlane over time.`,
       }),
       makeSpokenNote({
         slideNum: 10,
         totalSlides: total,
-        slideTitle: 'Part 5 (Slide 10) — Automating Compliance: Live GCP Console & Cloud Logging Audit Proof',
+        slideTitle: 'Act II (Slide 10) — Technical Diagram 3 (L3): 5-Actor UML Sequence & Circuit Breakers',
         whyHere:
-          `Opening Part 5 on automated compliance, Slide 10 presents live evidence captured from our running Google Cloud projects along with the exact Cloud Logging Explorer queries used by SRE and CISO auditors.`,
-        whatIsHappening: t.slide10Spoken,
+          `Slide 10 traces the exact chronological message sequence across five system actors alongside our sub-five-second Valkey cache eviction and single-flight recovery.`,
+        whatIsHappening: t.slide7Spoken,
         whatComesNext:
-          `With the live cloud verification complete, let's move to our final slide—Slide 11—where we merge our Google Cloud Well-Architected SLA scorecard directly into the five runnable engineering milestones and five-part blog series roadmap.`,
+          `Completing our L1-to-L4 technical zoom, let's inspect the raw wire packet on Slide 11.`,
       }),
       makeSpokenNote({
         slideNum: 11,
         totalSlides: total,
-        slideTitle: 'Part 5 (Slide 11) — Well-Architected SLA Scorecard & 5-Part Engineering Roadmap',
+        slideTitle: 'Act II (Slide 11) — Technical Diagram 4 (L4): Wire-Packet Transformation & Signed STS JWT',
         whyHere:
-          `Rounding out Part 5, our final slide consolidates our Well-Architected SLA scorecard directly into the five executable GitHub milestones and five-part blog series roadmap.`,
+          `Slide 11 opens the HTTP and gRPC wire payload before and after Hop 1 token exchange to show how spoofed tenant headers are neutralized.`,
+        whatIsHappening: t.slide8Spoken,
+        whatComesNext:
+          `With the technical architecture proven from conceptual model down to wire packet, let's enter Act III on Slide 12 to review our genuine solution approach and EAP compensating controls.`,
+      }),
+      makeSpokenNote({
+        slideNum: 12,
+        totalSlides: total,
+        slideTitle: 'Act III (Slide 12) — Genuine Solution Approach & EAP Compensating Controls (GAP-01..05)',
+        whyHere:
+          `Slide 12 documents our transparent engineering ledger of five early-access platform boundaries and the feature-flagged compensating controls in core-cymbal-agent.`,
+        whatIsHappening: t.slide9Spoken,
+        whatComesNext:
+          `Now let's inspect our live dual-plane verification proofs, starting with grounded GCP and AWS CLI telemetry on Slide 13.`,
+      }),
+      makeSpokenNote({
+        slideNum: 13,
+        totalSlides: total,
+        slideTitle: 'Act III (Slide 13) — Proof 1: Grounded GCP & AWS CLI Telemetry Receipt',
+        whyHere:
+          `Slide 13 presents verifiable runtime receipts from our deployed Cloud Run services, AlloyDB RLS policies, and cross-cloud AWS Bedrock AgentCore MCP harness.`,
+        whatIsHappening: t.slide10Spoken,
+        whatComesNext:
+          `Complementing our CLI telemetry, Slide 14 shows live 2880x1800 Retina before-and-after captures from third-party enterprise BI and SQL interfaces.`,
+      }),
+      makeSpokenNote({
+        slideNum: 14,
+        totalSlides: total,
+        slideTitle: 'Act III (Slide 14) — Proof 2: Live 2880x1800 Retina Before/After 3P SaaS UI Isolation',
+        whyHere:
+          `Slide 14 visually proves that third-party enterprise tools—Metabase BI v0.50.26 and Trino Distributed SQL v440—enforce strict tenant isolation once 5-Hop AlloyDB RLS is active.`,
+        whatIsHappening:
+          `On the left, Metabase BI transitions from an unscoped multi-tenant view exposing all customer records to a strictly filtered FinVault-only workspace. On the right, Trino Distributed SQL transitions from cross-tenant catalog enumeration to zero-leakage scoped execution.`,
+        whatComesNext:
+          `Finally, let's turn to Slide 15 to summarize our quantified business benefits and your 30-60-90 day call to action.`,
+      }),
+      makeSpokenNote({
+        slideNum: 15,
+        totalSlides: total,
+        slideTitle: 'Act IV (Slide 15) — Quantified Benefits, Call to Action & 30-60-90 Day Roadmap',
+        whyHere:
+          `Closing our briefing in Act IV, Slide 15 consolidates our quantified security, latency, and FinOps benefits alongside concrete next steps for your engineering team.`,
         whatIsHappening: t.slide11Spoken,
         whatComesNext:
-          `That completes our streamlined eleven-slide walkthrough—I would love to open the floor for your questions, or we can jump straight into the live codebase and Terraform modules.`,
+          `Thank you—let's open the floor for your architecture questions or launch the interactive codebase workbench to inspect the Terraform and Python modules directly.`,
       }),
     ];
   }

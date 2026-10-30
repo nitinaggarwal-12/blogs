@@ -7837,6 +7837,415 @@ function newDeck(title: string): Pptx {
   return pptx;
 }
 
+function addWs1ConceptualArchitectureSlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
+  const slide = pptx.addSlide();
+  let shapes = 0;
+  let connectors = 0;
+
+  addHeaderBar(
+    pptx,
+    slide,
+    'CONCEPTUAL-ARCHITECTURE',
+    'Conceptual Architecture: Decoupling the 80% Reusable 5-Hop Core from 20% Perimeter Delta',
+    'ACT I • CONCEPTUAL MODEL'
+  );
+  shapes += 4;
+
+  slide.addText(
+    'One shared agent codebase (core-cymbal-agent/) serves both commercial SaaS tenants and regulated sovereign contracts by isolating per-tenant network, KMS, and storage boundaries.',
+    { x: 0.45, y: 0.68, w: 12.43, h: 0.36, fontSize: 10.5, color: TEXT_BODY, fontFace: FONT_BODY }
+  );
+  shapes += 1;
+
+  slide.addShape(pptx.ShapeType.roundRect, {
+    x: 0.45, y: 1.15, w: 3.15, h: 5.75, rectRadius: 0.08,
+    fill: { color: CARD_BG }, line: { color: BORDER_GREY, width: 1 },
+  });
+  slide.addText('1. COMPETING TENANT PROFILES', {
+    x: 0.6, y: 1.28, w: 2.85, h: 0.28, fontSize: 9.5, bold: true, color: G_BLUE_DEEP, fontFace: FONT_TITLE,
+  });
+  shapes += 2;
+
+  const tenantCards = [
+    {
+      title: 'FinVault Bank (Regulated)',
+      accent: G_RED,
+      tint: G_RED_TINT,
+      lines: [
+        '• 600 RPM burst SLA, <60s CMEK kill-switch',
+        '• Customer-managed Cloud KMS ECDSA keys',
+        '• Dedicated Vertex AI PT or air-gapped GKE',
+        '• Zero internet egress (VPC-SC perimeter)',
+      ],
+      y: 1.68,
+    },
+    {
+      title: 'RetailStream Corp (Commercial)',
+      accent: G_YELLOW_TEXT,
+      tint: G_YELLOW_TINT,
+      lines: [
+        '• 120 RPM commercial SaaS tier',
+        '• Microsoft Entra ID + ServiceNow 3LO',
+        '• DPoP-bound per-user token vault',
+        '• Shared prompt cache (84.7% token savings)',
+      ],
+      y: 4.25,
+    },
+  ];
+  for (const tc of tenantCards) {
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: 0.6, y: tc.y, w: 2.85, h: 2.4, rectRadius: 0.06,
+      fill: { color: WHITE }, line: { color: tc.accent, width: 1.25 },
+    });
+    slide.addShape(pptx.ShapeType.rect, {
+      x: 0.6, y: tc.y, w: 2.85, h: 0.34,
+      fill: { color: tc.tint },
+    });
+    slide.addText(tc.title, {
+      x: 0.7, y: tc.y + 0.04, w: 2.65, h: 0.26, fontSize: 9.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE,
+    });
+    slide.addText(tc.lines.join('\n'), {
+      x: 0.7, y: tc.y + 0.42, w: 2.65, h: 1.88, fontSize: 8.6, color: TEXT_BODY, fontFace: FONT_BODY, valign: 'top',
+    });
+    shapes += 4;
+  }
+
+  slide.addShape(pptx.ShapeType.roundRect, {
+    x: 3.98, y: 1.15, w: 4.55, h: 5.75, rectRadius: 0.08,
+    fill: { color: G_BLUE_TINT }, line: { color: G_BLUE, width: 1.5 },
+  });
+  slide.addText('2. 80% REUSABLE 5-HOP CORE (core-cymbal-agent/)', {
+    x: 4.13, y: 1.28, w: 4.25, h: 0.28, fontSize: 9.5, bold: true, color: G_BLUE_DEEP, fontFace: FONT_TITLE,
+  });
+  shapes += 2;
+
+  const hops = [
+    { hop: 'Hop 1 • Edge Identity & STS', desc: 'Strip X-Tenant-Id; verify OIDC + DPoP; mint KMS JWT (<0.15ms JWKS)' },
+    { hop: 'Hop 2 • ARD Catalog Scoping', desc: 'Chrooted agent/{tenant_id}/* VFS; bind {tenant}:{user} 3LO vault' },
+    { hop: 'Hop 3 • Valkey Bulkhead & Memory', desc: '3ms JTI/CMEK deny-list; RPM token bucket; <5s SCAN+UNLINK evict' },
+    { hop: 'Hop 4 • Model Armor & Cloud DLP', desc: '22ms regional gRPC prompt-injection & PII/PHI redaction' },
+    { hop: 'Hop 5 • AlloyDB RLS & OTel FinOps', desc: 'SET LOCAL app.current_tenant_id; BigQuery SHA-256 token ledger' },
+  ];
+  hops.forEach((h, idx) => {
+    const hy = 1.68 + idx * 0.88;
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: 4.13, y: hy, w: 4.25, h: 0.76, rectRadius: 0.05,
+      fill: { color: WHITE }, line: { color: G_BLUE, width: 1 },
+    });
+    slide.addText(h.hop, {
+      x: 4.25, y: hy + 0.06, w: 4.0, h: 0.24, fontSize: 9.2, bold: true, color: G_BLUE_DEEP, fontFace: FONT_TITLE,
+    });
+    slide.addText(h.desc, {
+      x: 4.25, y: hy + 0.32, w: 4.0, h: 0.38, fontSize: 8.2, color: TEXT_BODY, fontFace: FONT_BODY,
+    });
+    shapes += 3;
+  });
+
+  slide.addShape(pptx.ShapeType.roundRect, {
+    x: 4.13, y: 6.12, w: 4.25, h: 0.62, rectRadius: 0.05,
+    fill: { color: WHITE }, line: { color: G_GREEN, width: 1.2 },
+  });
+  slide.addText('Feature-Flagged Native GCP Adapters (GAP-01..05)\nZero application rewrite when EAP features reach GA', {
+    x: 4.25, y: 6.18, w: 4.0, h: 0.5, fontSize: 8.3, bold: true, color: G_GREEN_DEEP, align: 'center', fontFace: FONT_BODY,
+  });
+  shapes += 2;
+
+  slide.addShape(pptx.ShapeType.roundRect, {
+    x: 8.91, y: 1.15, w: 3.97, h: 5.75, rectRadius: 0.08,
+    fill: { color: CARD_BG }, line: { color: BORDER_GREY, width: 1 },
+  });
+  slide.addText('3. 20% PER-TENANT PERIMETER DELTA', {
+    x: 9.06, y: 1.28, w: 3.67, h: 0.28, fontSize: 9.5, bold: true, color: G_GREEN_DEEP, fontFace: FONT_TITLE,
+  });
+  shapes += 2;
+
+  const patterns = [
+    {
+      title: 'Pattern A • High-Density Shared Pool',
+      color: G_YELLOW_TEXT,
+      tint: G_YELLOW_TINT,
+      body: '950 commercial tenants • Shared Cloud Run + AlloyDB RLS • 84.7% prompt-cache savings',
+      y: 1.68,
+    },
+    {
+      title: 'Pattern B • Zero-Trust Sovereign Silos',
+      color: G_RED,
+      tint: G_RED_TINT,
+      body: '50 regulated tenants • Dedicated VPC-SC, CMEK KMS, AlloyDB & GKE/Vertex PT',
+      y: 3.45,
+    },
+    {
+      title: 'Pattern C • Dynamic Hybrid PSC Bridge',
+      color: G_GREEN,
+      tint: G_GREEN_TINT,
+      body: '0ms live tier promotion from Pool to Private Service Connect spoke • 74% TCO savings',
+      y: 5.22,
+    },
+  ];
+  for (const p of patterns) {
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: 9.06, y: p.y, w: 3.67, h: 1.54, rectRadius: 0.06,
+      fill: { color: WHITE }, line: { color: p.color, width: 1.25 },
+    });
+    slide.addShape(pptx.ShapeType.rect, {
+      x: 9.06, y: p.y, w: 3.67, h: 0.34, fill: { color: p.tint },
+    });
+    slide.addText(p.title, {
+      x: 9.16, y: p.y + 0.04, w: 3.47, h: 0.26, fontSize: 9.0, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE,
+    });
+    slide.addText(p.body, {
+      x: 9.16, y: p.y + 0.42, w: 3.47, h: 1.02, fontSize: 8.5, color: TEXT_BODY, fontFace: FONT_BODY,
+    });
+    shapes += 4;
+  }
+
+  for (const ay of [2.85, 5.25]) {
+    slide.addShape(pptx.ShapeType.line, {
+      x: 3.6, y: ay, w: 0.38, h: 0,
+      line: { color: G_BLUE, width: 1.75, endArrowType: 'arrow' },
+    });
+    connectors += 1;
+  }
+  for (const ay of [2.45, 4.22, 5.98]) {
+    slide.addShape(pptx.ShapeType.line, {
+      x: 8.53, y: ay, w: 0.38, h: 0,
+      line: { color: G_GREEN, width: 1.75, endArrowType: 'arrow' },
+    });
+    connectors += 1;
+  }
+
+  addFooter(pptx, slide, `${spec.label}  •  Conceptual Architecture: 80% Reusable 5-Hop Core vs. 20% Per-Tenant Perimeter Delta`);
+  return { shapes, connectors };
+}
+
+function addWs1ProcessLifecycleSlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
+  const slide = pptx.addSlide();
+  let shapes = 0;
+  let connectors = 0;
+
+  addHeaderBar(
+    pptx,
+    slide,
+    'PROCESS-LIFECYCLE',
+    'Process Diagram: End-to-End 5-Hop Request, Governance, Execution & FinOps Lifecycle',
+    'ACT I • PROCESS FLOW'
+  );
+  shapes += 4;
+
+  slide.addText(
+    'Deterministic ~42ms p95 control-plane pipeline from edge OIDC + DPoP verification through inline Model Armor screening to BigQuery OpenTelemetry FinOps chargeback.',
+    { x: 0.45, y: 0.68, w: 12.43, h: 0.36, fontSize: 10.5, color: TEXT_BODY, fontFace: FONT_BODY }
+  );
+  shapes += 1;
+
+  const stages = [
+    {
+      num: 'STAGE 1 • HOP 1',
+      sla: '~8ms p95',
+      title: 'Edge Auth & STS Mint',
+      svc: 'Cloud Armor + IAP + STS',
+      body: 'Strip spoofed X-Tenant-Id; verify OIDC + DPoP proof; mint ECDSA P-256 TenantContext JWT.',
+      color: G_BLUE,
+      tint: G_BLUE_TINT,
+    },
+    {
+      num: 'STAGE 2 • HOP 2',
+      sla: '~4ms p95',
+      title: 'Catalog & Tool Scope',
+      svc: 'ARD + MCP Gateway',
+      body: 'Resolve chrooted agent/{tenant}/* VFS; bind composite {tenant}:{user} 3LO vault token.',
+      color: G_BLUE,
+      tint: G_BLUE_TINT,
+    },
+    {
+      num: 'STAGE 3 • HOP 3',
+      sla: '~3ms p95',
+      title: 'Quota & Revocation',
+      svc: 'Memorystore Valkey',
+      body: 'Check JTI/CMEK deny-list & RPM token bucket; enforce <5s SCAN+UNLINK cache eviction.',
+      color: G_GREEN,
+      tint: G_GREEN_TINT,
+    },
+    {
+      num: 'STAGE 4 • HOP 4',
+      sla: '~22ms p95',
+      title: 'Prompt & DLP Guard',
+      svc: 'Model Armor + Cloud DLP',
+      body: 'Regional gRPC screen for prompt injection, jailbreaks & PII/PHI redaction; reuse prefix cache.',
+      color: G_YELLOW_TEXT,
+      tint: G_YELLOW_TINT,
+    },
+    {
+      num: 'STAGE 5 • HOP 5',
+      sla: '~5ms p95',
+      title: 'RLS Data & Inference',
+      svc: 'AlloyDB RLS + Vertex AI',
+      body: 'SET LOCAL app.current_tenant_id; execute Gemini 2.5 Pro PT or air-gapped Gemma 3 27B.',
+      color: G_RED,
+      tint: G_RED_TINT,
+    },
+    {
+      num: 'STAGE 6 • ASYNC',
+      sla: '0ms hot-path',
+      title: 'OTel FinOps Ledger',
+      svc: 'BigQuery OTel Sink',
+      body: 'Export SHA-256 prompt hash + cached & thinking token counters for exact SQL chargeback.',
+      color: G_GREEN,
+      tint: G_GREEN_TINT,
+    },
+  ];
+
+  const cardW = 1.92;
+  const gap = 0.18;
+  const startX = 0.45;
+  stages.forEach((st, idx) => {
+    const cx = Number((startX + idx * (cardW + gap)).toFixed(3));
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: cx, y: 1.18, w: cardW, h: 3.55, rectRadius: 0.07,
+      fill: { color: WHITE }, line: { color: st.color, width: 1.35 },
+    });
+    slide.addShape(pptx.ShapeType.rect, {
+      x: cx, y: 1.18, w: cardW, h: 0.34, fill: { color: st.tint },
+    });
+    slide.addText(st.num, {
+      x: cx + 0.06, y: 1.22, w: cardW - 0.12, h: 0.26, fontSize: 8.0, bold: true, color: st.color, align: 'center', fontFace: FONT_TITLE,
+    });
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: cx + 0.26, y: 1.6, w: cardW - 0.52, h: 0.24, rectRadius: 0.06,
+      fill: { color: CARD_BG }, line: { color: BORDER_GREY, width: 0.75 },
+    });
+    slide.addText(st.sla, {
+      x: cx + 0.26, y: 1.6, w: cardW - 0.52, h: 0.24, fontSize: 7.8, bold: true, color: TEXT_DARK, align: 'center', fontFace: FONT_BODY,
+    });
+    slide.addText(st.title, {
+      x: cx + 0.08, y: 1.92, w: cardW - 0.16, h: 0.42, fontSize: 9.4, bold: true, color: TEXT_DARK, align: 'center', fontFace: FONT_TITLE,
+    });
+    slide.addText(st.svc, {
+      x: cx + 0.08, y: 2.38, w: cardW - 0.16, h: 0.32, fontSize: 8.0, bold: true, color: G_BLUE_DEEP, align: 'center', fontFace: FONT_BODY,
+    });
+    slide.addText(st.body, {
+      x: cx + 0.08, y: 2.76, w: cardW - 0.16, h: 1.85, fontSize: 8.1, color: TEXT_BODY, fontFace: FONT_BODY, valign: 'top',
+    });
+    shapes += 6;
+
+    if (idx < stages.length - 1) {
+      slide.addShape(pptx.ShapeType.line, {
+        x: Number((cx + cardW).toFixed(3)), y: 2.95, w: gap, h: 0,
+        line: { color: G_BLUE, width: 1.6, endArrowType: 'arrow' },
+      });
+      connectors += 1;
+    }
+  });
+
+  slide.addShape(pptx.ShapeType.roundRect, {
+    x: 0.45, y: 4.95, w: 12.43, h: 1.95, rectRadius: 0.08,
+    fill: { color: G_RED_TINT }, line: { color: G_RED, width: 1.25 },
+  });
+  slide.addText('DETERMINISTIC FAIL-CLOSED CIRCUIT BREAKERS (ZERO CROSS-TENANT FALLBACK)', {
+    x: 0.65, y: 5.06, w: 12.0, h: 0.28, fontSize: 9.5, bold: true, color: G_RED_DEEP, fontFace: FONT_TITLE,
+  });
+  shapes += 2;
+
+  const gates = [
+    { code: 'HTTP 401 / 403', title: 'Identity or JTI Revoked', desc: 'Spoofed X-Tenant-Id, invalid DPoP proof, or ~3ms Valkey JTI deny-list hit.' },
+    { code: 'HTTP 429', title: 'Noisy-Neighbor Bulkhead', desc: 'Tenant exceeds 120 or 600 RPM bucket; returns Retry-After with jitter.' },
+    { code: 'HTTP 422', title: 'Model Armor / DLP Block', desc: 'Prompt injection, jailbreak, or unredacted PHI/PCI blocked before LLM call.' },
+    { code: 'HTTP 423', title: 'CMEK Key Revoked Lock', desc: '<60s KMS state + <5s Valkey SCAN+UNLINK eviction; SET NX PX 5000 recovery.' },
+  ];
+  gates.forEach((g, idx) => {
+    const gx = Number((0.65 + idx * 3.04).toFixed(3));
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: gx, y: 5.42, w: 2.88, h: 1.34, rectRadius: 0.06,
+      fill: { color: WHITE }, line: { color: G_RED, width: 1 },
+    });
+    slide.addText(`${g.code}  •  ${g.title}`, {
+      x: gx + 0.1, y: 5.5, w: 2.68, h: 0.28, fontSize: 8.6, bold: true, color: G_RED_DEEP, fontFace: FONT_TITLE,
+    });
+    slide.addText(g.desc, {
+      x: gx + 0.1, y: 5.82, w: 2.68, h: 0.85, fontSize: 8.0, color: TEXT_BODY, fontFace: FONT_BODY,
+    });
+    shapes += 3;
+  });
+
+  addFooter(pptx, slide, `${spec.label}  •  End-to-End 5-Hop Process Lifecycle (~42ms p95 Control-Plane Overhead) & Fail-Closed Gates`);
+  return { shapes, connectors };
+}
+
+function addWs1BeforeAfterSaasProofSlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
+  const slide = pptx.addSlide();
+  let shapes = 0;
+
+  addHeaderBar(
+    pptx,
+    slide,
+    'BEFORE-AFTER-SAAS-PROOF',
+    'Proof 2: Live 2880x1800 Retina Before -> After 3P SaaS UI Isolation',
+    'ACT III • VISUAL PROOF'
+  );
+  shapes += 4;
+
+  slide.addText(
+    'Authentic 2880x1800 Retina captures proving zero cross-tenant leakage across live third-party enterprise BI and SQL surfaces before and after 5-Hop RLS enforcement.',
+    { x: 0.45, y: 0.68, w: 12.43, h: 0.34, fontSize: 10.2, color: TEXT_BODY, fontFace: FONT_BODY }
+  );
+  shapes += 1;
+
+  const pairs = [
+    {
+      x: 0.45,
+      header: 'Metabase Enterprise BI v0.50.26 — Tenant Analytics Isolation',
+      beforeImg: path.join(FDE_BLOGS_ROOT, 'screenshots/genuine-multicloud-3p-uis/before-after/before_01_metabase_bi.png'),
+      afterImg: path.join(FDE_BLOGS_ROOT, 'screenshots/genuine-multicloud-3p-uis/before-after/after_01_metabase_bi.png'),
+      beforeLabel: 'BEFORE: Unscoped Multi-Tenant Query (All Tenants Exposed)',
+      afterLabel: 'AFTER: 5-Hop AlloyDB RLS + TenantContext JWT (FinVault Only)',
+    },
+    {
+      x: 6.83,
+      header: 'Trino Distributed SQL v440 — Federated Catalog & Query Scoping',
+      beforeImg: path.join(FDE_BLOGS_ROOT, 'screenshots/genuine-multicloud-3p-uis/before-after/before_06_trino_sql.png'),
+      afterImg: path.join(FDE_BLOGS_ROOT, 'screenshots/genuine-multicloud-3p-uis/before-after/after_06_trino_sql.png'),
+      beforeLabel: 'BEFORE: Cross-Tenant Schema & Catalog Enumeration',
+      afterLabel: 'AFTER: ARD + MCP + RLS Scoped Execution (0 Leaked Rows)',
+    },
+  ];
+
+  for (const pair of pairs) {
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: pair.x, y: 1.12, w: 6.05, h: 5.82, rectRadius: 0.08,
+      fill: { color: CARD_BG }, line: { color: BORDER_GREY, width: 1 },
+    });
+    slide.addText(pair.header, {
+      x: pair.x + 0.15, y: 1.2, w: 5.75, h: 0.28, fontSize: 9.6, bold: true, color: G_BLUE_DEEP, fontFace: FONT_TITLE,
+    });
+    shapes += 2;
+
+    slide.addShape(pptx.ShapeType.rect, {
+      x: pair.x + 0.15, y: 1.54, w: 5.75, h: 0.26, fill: { color: G_RED_TINT },
+    });
+    slide.addText(pair.beforeLabel, {
+      x: pair.x + 0.22, y: 1.54, w: 5.6, h: 0.26, fontSize: 8.0, bold: true, color: G_RED_DEEP, valign: 'middle', fontFace: FONT_BODY,
+    });
+    if (fs.existsSync(pair.beforeImg)) {
+      slide.addImage({ path: pair.beforeImg, x: pair.x + 0.15, y: 1.82, w: 5.75, h: 2.22 });
+    }
+    shapes += 3;
+
+    slide.addShape(pptx.ShapeType.rect, {
+      x: pair.x + 0.15, y: 4.14, w: 5.75, h: 0.26, fill: { color: G_GREEN_TINT },
+    });
+    slide.addText(pair.afterLabel, {
+      x: pair.x + 0.22, y: 4.14, w: 5.6, h: 0.26, fontSize: 8.0, bold: true, color: G_GREEN_DEEP, valign: 'middle', fontFace: FONT_BODY,
+    });
+    if (fs.existsSync(pair.afterImg)) {
+      slide.addImage({ path: pair.afterImg, x: pair.x + 0.15, y: 4.42, w: 5.75, h: 2.22 });
+    }
+    shapes += 3;
+  }
+
+  addFooter(pptx, slide, `${spec.label}  •  Live 2880x1800 Retina Before/After 3P SaaS UI Isolation Proof (10/10 SaaS Targets Verified)`);
+  return { shapes, connectors: 0 };
+}
+
 async function buildWorkstreamDeck(spec: DeckSpec, manifest: ManifestItem[]) {
   const deckJsonPath = path.join(FDE_BLOGS_ROOT, spec.deckJsonFile);
   const hasDeckJson = fs.existsSync(deckJsonPath);
@@ -7893,24 +8302,13 @@ async function buildWorkstreamDeck(spec: DeckSpec, manifest: ManifestItem[]) {
     slideCount++;
   }
 
-  // Slide 3 (WS2–WS5) / Slide 4 (WS1) (`comparison-grid` / `three-pillar`): Architectural Options & Pattern A/B/C Decision Matrix
   const act1Slide4Section = patternComparisonTable || productsUsedSection;
-  if (act1Slide4Section && act1Slide4Section !== useCasesSection) {
+  if (spec.key !== 'WS1' && act1Slide4Section && act1Slide4Section !== useCasesSection) {
     addSectionSlideDispatch(pptx, spec.key, act1Slide4Section, {
       footer: `${spec.label}  •  Side-by-Side Architectural Options, Selection Rules & Google Cloud Stack`,
     });
     slideCount++;
   }
-
-  // =========================================================================
-  // ACT II & ACT III: WORKSTREAM ARCHITECTURAL & OPERATIONAL FLOW
-  // - WS1 follows the streamlined 11-Slide Macro-to-Micro L1 -> L2 -> L3 -> L4 sequence:
-  //   Part 1 (Slides 1–4): Cover (1), Agenda & 5-Part Navigation (2), Personas (3) & 12-Dimension Decision Matrix (4)
-  //   Part 2 (Slides 5, 6 & 8): L1 3 Logical Security Layers (5) -> L2 4 Physical Network Perimeters Figure 1 (6) -> L4 Wire Payload (8)
-  //   Part 3 (Slide 7):    L3 5-Actor UML Sequence, Fail-Closed Circuit Breakers & Stampede Recovery (7)
-  //   Part 4 (Slide 9):    GAP-01..05 Compensating Controls & BigQuery OTel Attribution (9)
-  //   Part 5 (Slides 10–11): Live GCP Console Proof (10) -> Well-Architected SLA Scorecard & 5-Part Engineering Roadmap (11)
-  // =========================================================================
 
   const primaryId = spec.diagramIds[0];
   const mPrimary = manifest.find((x) => x.id === primaryId);
@@ -7927,13 +8325,33 @@ async function buildWorkstreamDeck(spec: DeckSpec, manifest: ManifestItem[]) {
     cardSections.find((s) => s !== useCasesSection && s !== act1Slide4Section);
 
   if (spec.key === 'WS1') {
-    // Slide 5 (`architecture-zone-topology`): L1 Logical — 3 Logical Security Layers
+    // Slide 4: Conceptual Diagram — 80% Reusable 5-Hop Core vs. 20% Per-Tenant Perimeter Delta
+    const rConcept = addWs1ConceptualArchitectureSlide(pptx, spec);
+    totalVertices += rConcept.shapes;
+    totalEdges += rConcept.connectors;
+    slideCount++;
+
+    // Slide 5: Process Diagram — End-to-End 5-Hop Request, Governance, Execution & FinOps Lifecycle
+    const rProc = addWs1ProcessLifecycleSlide(pptx, spec);
+    totalVertices += rProc.shapes;
+    totalEdges += rProc.connectors;
+    slideCount++;
+
+    // Slide 6: L1 Logical — 3 Logical Security Layers
     const rZone = addArchitectureZoneTopologySlide(pptx, spec);
     totalVertices += rZone.shapes;
     totalEdges += rZone.connectors;
     slideCount++;
 
-    // Slide 6 (`decomposed-drawio-diagram`): L2 Physical — 4 Physical Network Perimeters (VPC-SC Boundaries) Figure 1
+    // Slide 7: 12-Dimension Pattern A / B / C Decision Matrix
+    if (act1Slide4Section && act1Slide4Section !== useCasesSection) {
+      addSectionSlideDispatch(pptx, spec.key, act1Slide4Section, {
+        footer: `${spec.label}  •  Side-by-Side Architectural Options, Selection Rules & Google Cloud Stack`,
+      });
+      slideCount++;
+    }
+
+    // Slide 8: L2 Technical Diagram 1 — Figure 1 (ws1-multi-tenant-taxonomy-overview)
     const rDiag = await appendGoogleBrandedDiagramSlides(
       pptx,
       xmlPrimary,
@@ -7950,19 +8368,46 @@ async function buildWorkstreamDeck(spec: DeckSpec, manifest: ManifestItem[]) {
     totalEdges += rDiag.edgeCount;
     slideCount += rDiag.slides;
 
-    // Slide 7 (`uml-sequence-swimlane`): L3 Process — Merged 5-Actor UML Sequence, Fail-Closed Circuit Breakers & Stampede Recovery
+    // Slide 9: L2 Technical Diagram 2 — Figure 2 (ws1-cloud-arch-center-5hop-baseline)
+    const secondaryId = spec.diagramIds[1];
+    const mSecondary = manifest.find((x) => x.id === secondaryId);
+    if (mSecondary) {
+      const djSecondary = deck.diagrams.find((d) => d.id === secondaryId);
+      const relDrawioSecondary = mSecondary.central_drawio_file || mSecondary.central_drawio || `diagrams/${mSecondary.id}.drawio`;
+      const xmlSecondary = fs.readFileSync(path.join(FDE_BLOGS_ROOT, relDrawioSecondary), 'utf8');
+      const pngPathSecondary = path.join(FDE_BLOGS_ROOT, mSecondary.central_drawio_png || `diagrams/${mSecondary.id}.drawio.png`);
+      const masterImageSecondary = fs.existsSync(pngPathSecondary) ? fileToDataUri(pngPathSecondary) : undefined;
+      const talkingSecondary = djSecondary?.talkingPoints?.length ? djSecondary.talkingPoints : [mSecondary.subtitle];
+      const rDiag2 = await appendGoogleBrandedDiagramSlides(
+        pptx,
+        xmlSecondary,
+        spec.key,
+        'Figure 2',
+        djSecondary?.title || mSecondary.title,
+        `VIS-${mSecondary.id.toUpperCase()}`,
+        masterImageSecondary,
+        talkingSecondary,
+        relDrawioSecondary,
+        true
+      );
+      totalVertices += rDiag2.vertexCount;
+      totalEdges += rDiag2.edgeCount;
+      slideCount += rDiag2.slides;
+    }
+
+    // Slide 10: L3 Technical Diagram 3 — 5-Actor UML Sequence & Fail-Closed Circuit Breakers
     const rUml = addUmlSequenceSwimlaneSlide(pptx, spec);
     totalVertices += rUml.shapes;
     totalEdges += rUml.connectors;
     slideCount++;
 
-    // Slide 8 (`payload-transformation-triptych`): L4 Wire — Payload Transformation & Signed STS JWT
+    // Slide 11: L4 Technical Diagram 4 — Wire-Packet Transformation & Signed STS JWT
     const rPayload = addPayloadTransformationTriptychSlide(pptx, spec);
     totalVertices += rPayload.shapes;
     totalEdges += rPayload.connectors;
     slideCount++;
 
-    // Slide 9 (`comparison-grid`): EAP Product Gap Register (GAP-01..05) & Compensating Controls
+    // Slide 12: Genuine Solution Approach & EAP Compensating Controls (GAP-01..05)
     if (act3Slide10Section) {
       addSectionSlideDispatch(pptx, spec.key, act3Slide10Section, {
         footer: `${spec.label}  •  Compensating Controls, Automated Security Verification & FinOps Economics`,
@@ -7970,9 +8415,14 @@ async function buildWorkstreamDeck(spec: DeckSpec, manifest: ManifestItem[]) {
       slideCount++;
     }
 
-    // Slide 10 (`live-screenshot-callout`): Forensic Verification Audit & Live Google Cloud Console Proof
+    // Slide 13: Proof 1 — Grounded GCP & AWS CLI Telemetry Receipt
     const rShots = addLiveScreenshotCalloutSlide(pptx, spec);
     totalVertices += rShots.shapes;
+    slideCount++;
+
+    // Slide 14: Proof 2 — Live 2880x1800 Retina Before/After 3P SaaS UI Isolation
+    const rBeforeAfter = addWs1BeforeAfterSaasProofSlide(pptx, spec);
+    totalVertices += rBeforeAfter.shapes;
     slideCount++;
   } else {
     // Slide 4 (`architecture-zone-topology`): L1 Conceptual / Logical 3-Zone Trust Boundary Overview

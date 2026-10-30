@@ -741,7 +741,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             }
             for deck in decks:
                 deck_file = ROOT_DIR / deck.get("file", "")
-                min_expected_slides = 11 if deck.get("key") == "WS1" else 12
+                min_expected_slides = 15 if deck.get("key") == "WS1" else 12
                 if not deck_file.is_file() or deck_file.stat().st_size < 100_000 or deck.get("slides", 0) < min_expected_slides:
                     decks_valid = False
                 else:
@@ -830,7 +830,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                         ):
                             decks_valid = False
                         if ws_key in ("WS1", "WS2", "WS3", "WS4", "WS5"):
-                            expected_ws_slides = 11 if ws_key == "WS1" else 12
+                            expected_ws_slides = 15 if ws_key == "WS1" else 12
                             if len(slide_xml_names) != expected_ws_slides or deck.get("slides") != expected_ws_slides:
                                 decks_valid = False
                             if "ppt/slides/slide1.xml" in zf.namelist():
@@ -841,19 +841,19 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                                 s2_toc_xml = zf.read("ppt/slides/slide2.xml").decode("utf-8", errors="ignore")
                                 if "COMPARISON-GRID" not in s2_toc_xml or "Agenda" not in s2_toc_xml:
                                     decks_valid = False
-                            _opt_xml_name = "ppt/slides/slide4.xml" if ws_key == "WS1" else "ppt/slides/slide3.xml"
+                            _opt_xml_name = "ppt/slides/slide7.xml" if ws_key == "WS1" else "ppt/slides/slide3.xml"
                             if _opt_xml_name in zf.namelist():
                                 s3_xml = zf.read(_opt_xml_name).decode("utf-8", errors="ignore")
                                 if "COMPARISON-GRID" not in s3_xml or "ARCHITECTURAL OPTIONS" not in s3_xml:
                                     decks_valid = False
-                            _zone_xml_name = "ppt/slides/slide5.xml" if ws_key == "WS1" else "ppt/slides/slide4.xml"
-                            _fig1_xml_name = "ppt/slides/slide6.xml" if ws_key == "WS1" else "ppt/slides/slide5.xml"
-                            _uml_xml_name = "ppt/slides/slide7.xml" if ws_key == "WS1" else "ppt/slides/slide6.xml"
-                            _payload_xml_name = "ppt/slides/slide8.xml" if ws_key == "WS1" else "ppt/slides/slide7.xml"
+                            _zone_xml_name = "ppt/slides/slide6.xml" if ws_key == "WS1" else "ppt/slides/slide4.xml"
+                            _fig1_xml_name = "ppt/slides/slide8.xml" if ws_key == "WS1" else "ppt/slides/slide5.xml"
+                            _uml_xml_name = "ppt/slides/slide10.xml" if ws_key == "WS1" else "ppt/slides/slide6.xml"
+                            _payload_xml_name = "ppt/slides/slide11.xml" if ws_key == "WS1" else "ppt/slides/slide7.xml"
                             _pipe_xml_name = None if ws_key == "WS1" else "ppt/slides/slide8.xml"
                             _op_xml_name = None if ws_key == "WS1" else "ppt/slides/slide11.xml"
-                            _grid_xml_name = "ppt/slides/slide9.xml"
-                            _shot_xml_name = "ppt/slides/slide10.xml"
+                            _grid_xml_name = "ppt/slides/slide12.xml" if ws_key == "WS1" else "ppt/slides/slide9.xml"
+                            _shot_xml_name = "ppt/slides/slide13.xml" if ws_key == "WS1" else "ppt/slides/slide10.xml"
 
                             if _zone_xml_name in zf.namelist():
                                 s4_xml = zf.read(_zone_xml_name).decode("utf-8", errors="ignore")

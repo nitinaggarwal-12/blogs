@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-10-30T19:22:45.247Z",
+  "generatedAt": "2026-10-30T21:12:52.193Z",
   "engine": "PromptCanvas Vision Decompiler • Google Cloud Architecture Center 3-Act Cohesive Story Arc • pptxgenjs LAYOUT_WIDE 16:9",
   "decks": [
     {
       "key": "WS1",
       "file": "slides/ws1-reference-architecture-editable-slides.pptx",
       "blog": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
-      "slides": 11,
+      "slides": 15,
       "diagrams": [
         "ws1-multi-tenant-taxonomy-overview",
         "ws1-cloud-arch-center-5hop-baseline"
       ],
-      "shapes": 153,
-      "connectors": 51,
-      "bytes": 956162,
+      "shapes": 333,
+      "connectors": 84,
+      "bytes": 2237071,
       "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
