@@ -8,7 +8,8 @@ const ROOT_DIR = '/usr/local/google/home/nitinagga/Documents/blogs';
 const OUTPUT_PPTX = path.join(ROOT_DIR, 'slides', 'ws1-12slide-visual-deck.pptx');
 
 const pptx = new PptxGenJS();
-pptx.layout = 'LAYOUT_16x9'; // 13.333 x 7.5 in
+pptx.defineLayout({ name: 'LAYOUT_16x9_WIDE', width: 13.333, height: 7.5 });
+pptx.layout = 'LAYOUT_16x9_WIDE';
 pptx.author = 'Google Cloud Field-Deployed Engineering (FDE)';
 pptx.company = 'Google Cloud';
 pptx.title = 'Multi-Tenant Agentic AI on Google Cloud: Executive Visual Architecture';
@@ -499,11 +500,11 @@ function buildSlide06() {
   if (fs.existsSync(diagPath)) {
     slide.addImage({
       path: diagPath,
-      x: 0.6, y: 0.95, w: 8.8, h: 6.0
+      x: 0.6, y: 0.95, w: 7.8, h: 5.9
     });
   } else {
     slide.addShape(pptx.ShapeType.rect, {
-      x: 0.6, y: 0.95, w: 8.8, h: 6.0, fill: { color: G_GREY_BG }, line: { color: G_BLUE, width: 1 }
+      x: 0.6, y: 0.95, w: 7.8, h: 5.9, fill: { color: G_GREY_BG }, line: { color: G_BLUE, width: 1 }
     });
   }
 
@@ -517,14 +518,14 @@ function buildSlide06() {
   callouts.forEach((c, i) => {
     const cy = 0.95 + i * 2.05;
     slide.addShape(pptx.ShapeType.roundRect, {
-      x: 9.6, y: cy, w: 3.133, h: 1.85, rectRadius: 0.08,
+      x: 8.7, y: cy, w: 4.0, h: 1.85, rectRadius: 0.08,
       fill: { color: WHITE }, line: { color: c.color, width: 1.5 }
     });
     slide.addText(c.title, {
-      x: 9.8, y: cy + 0.15, w: 2.7, h: 0.3, fontSize: 10.5, bold: true, color: c.color, fontFace: FONT_TITLE
+      x: 8.9, y: cy + 0.15, w: 3.6, h: 0.3, fontSize: 10.5, bold: true, color: c.color, fontFace: FONT_TITLE
     });
     slide.addText(c.text, {
-      x: 9.8, y: cy + 0.5, w: 2.7, h: 1.2, fontSize: 9, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
+      x: 8.9, y: cy + 0.5, w: 3.6, h: 1.2, fontSize: 9, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
     });
   });
 }
@@ -731,14 +732,14 @@ function buildSlide10() {
 
   // Pattern B Box
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 6.0, y: 2.3, w: 6.7, h: 2.0, rectRadius: 0.08,
+    x: 5.8, y: 2.2, w: 6.9, h: 2.2, rectRadius: 0.08,
     fill: { color: G_RED_LIGHT }, line: { color: G_RED, width: 1.5 }
   });
   slide.addText('RECOMMENDED: PATTERN B (SOVEREIGN SILOS)', {
-    x: 6.2, y: 2.5, w: 6.3, h: 0.35, fontSize: 12, bold: true, color: G_RED, fontFace: FONT_TITLE
+    x: 6.0, y: 2.4, w: 6.5, h: 0.35, fontSize: 12, bold: true, color: G_RED, fontFace: FONT_TITLE
   });
   slide.addText('Deploy dedicated Google Cloud projects inside customer-managed VPC-SC perimeters with Cloud KMS CMEK key rings and sub-60s instant revocation kill-switches. Best for FinTech, Healthcare, and Defense.', {
-    x: 6.2, y: 2.9, w: 6.3, h: 1.2, fontSize: 9.5, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.25
+    x: 6.0, y: 2.8, w: 6.5, h: 1.2, fontSize: 9.5, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.25
   });
 
   // Arrow NO -> Decision 2
