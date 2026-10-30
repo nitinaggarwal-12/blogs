@@ -8812,7 +8812,41 @@ async function main() {
   console.log(`\n🎉 ${results.length} Google Cloud Architecture Center decks written to slides/ (manifest: slides/slides_manifest.json)`);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+if (process.argv[1] && process.argv[1].endsWith('build_editable_slide_decks.ts')) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}
+export {
+  main,
+  appendGoogleBrandedDiagramSlides,
+  addHeaderBar,
+  addFooter,
+  newDeck,
+  PptxGenJS,
+  SLIDE_W,
+  SLIDE_H,
+  HEADER_H,
+  RIBBON_H,
+  G_BLUE,
+  G_BLUE_DEEP,
+  G_BLUE_TINT,
+  G_RED,
+  G_RED_TINT,
+  G_YELLOW,
+  G_YELLOW_TINT,
+  G_GREEN,
+  G_GREEN_TINT,
+  WHITE,
+  CARD_BG,
+  BORDER_GREY,
+  BORDER_LIGHT,
+  TEXT_DARK,
+  TEXT_BODY,
+  TEXT_MUTED,
+  FONT_TITLE,
+  FONT_BODY,
+  FONT_DISPLAY,
+  postProcessPptxArrowheadsForGoogleSlides,
+};
