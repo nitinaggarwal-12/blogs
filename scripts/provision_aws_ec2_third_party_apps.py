@@ -28,7 +28,7 @@ from typing import Any
 ROOT_DIR = Path(__file__).resolve().parents[1]
 RECEIPT_PATH = ROOT_DIR / "docs/aws_ec2_3p_apps_live_receipt.json"
 
-sys.path.insert(0, "/Users/nitinagga/aws")
+sys.path.insert(0, str(Path.home() / "aws"))
 import aws_mfa_helper  # type: ignore
 
 AWS_ACCOUNT_ID = "393036065405"

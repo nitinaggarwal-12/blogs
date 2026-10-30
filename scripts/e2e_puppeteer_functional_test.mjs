@@ -14,18 +14,34 @@
  */
 import { createRequire } from "module";
 import fs from "fs";
+import os from "os";
 import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const pkgPath = fs.existsSync(path.resolve(__dirname, "../../PromptCanvas/package.json"))
-  ? path.resolve(__dirname, "../../PromptCanvas/package.json")
-  : fs.existsSync("/usr/local/google/home/nitinagga/Documents/PromptCanvas/package.json")
-  ? "/usr/local/google/home/nitinagga/Documents/PromptCanvas/package.json"
-  : "/Users/nitinagga/Documents/PromptCanvas/package.json";
+const homeDir = os.homedir();
+const pkgCandidates = [
+  path.resolve(__dirname, "../../PromptCanvas/package.json"),
+  path.join(homeDir, "Documents/PromptCanvas/package.json"),
+  path.resolve(__dirname, "../../trainex/package.json"),
+  path.join(homeDir, "Documents/trainex/package.json"),
+];
+const pkgPath = pkgCandidates.find((p) => fs.existsSync(p)) || pkgCandidates[0];
 
-const require = createRequire(pkgPath);
-const puppeteer = require("puppeteer-core");
+const reqPaths = [
+  path.dirname(pkgPath),
+  ...(process.env.NODE_PATH || "").split(path.delimiter).filter(Boolean),
+  path.resolve(__dirname, "../../trainex"),
+  path.join(homeDir, "Documents/trainex"),
+];
+const require = createRequire(import.meta.url);
+let puppeteer;
+try {
+  puppeteer = require("puppeteer-core");
+} catch {
+  const resolved = require.resolve("puppeteer-core", { paths: reqPaths });
+  puppeteer = require(resolved);
+}
 
 const BASE_URL = process.env.PORTAL_BASE_URL || "http://localhost:8080";
 const chromeCandidates = [

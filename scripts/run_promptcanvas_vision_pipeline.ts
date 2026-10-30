@@ -1,7 +1,7 @@
 /**
  * 🏛️ PromptCanvas Vision Module — Multi-Tenant Architecture Draw.io Decompiler & Renderer
  *
- * Uses the PromptCanvas Vision Module (/Users/nitinagga/documents/PromptCanvas/src/lib/...):
+ * Uses the PromptCanvas Vision Module (~/Documents/PromptCanvas/src/lib/...):
  *  1. validateAndHealDrawioXml (xmlHealer.ts)
  *  2. enrichDrawioXmlWithVectorIcons & extractDiagramObjects (visionIconEnricher.ts)
  *  3. validateDrawioXml (validate/validator.ts)
@@ -25,7 +25,7 @@ import { validateDrawioXml } from '../../PromptCanvas/src/lib/validate/validator
 
 const promptCanvasRoot = fs.existsSync(path.resolve(__dirname, '../../PromptCanvas/package.json'))
   ? path.resolve(__dirname, '../../PromptCanvas')
-  : '/Users/nitinagga/Documents/PromptCanvas';
+  : path.join(process.env.HOME || '', 'Documents', 'PromptCanvas');
 const requireFromPromptCanvas = createRequire(path.join(promptCanvasRoot, 'package.json'));
 const puppeteer = requireFromPromptCanvas('puppeteer-core');
 
@@ -33,7 +33,7 @@ const FDE_BLOGS_ROOT = path.resolve(__dirname, '..');
 const CENTRAL_DIAGRAMS_DIR = path.join(FDE_BLOGS_ROOT, 'diagrams');
 const VISION_META_DIR = path.join(CENTRAL_DIAGRAMS_DIR, 'vision_metadata');
 const VIEWER_JS_PATH = path.join(promptCanvasRoot, 'public/viewer-static.min.js');
-const ARTIFACTS_DIR = '/Users/nitinagga/.gemini/jetski/brain/b4ce71b8-a483-45d8-9e81-df976103c1eb';
+const ARTIFACTS_DIR = path.join(process.env.HOME || '/tmp', '.gemini', 'jetski', 'brain', 'b4ce71b8-a483-45d8-9e81-df976103c1eb');
 
 interface ManifestItem {
   id: string;
@@ -86,6 +86,9 @@ async function runVisionPipeline() {
 
   const chromeCandidates = [
     process.env.CHROME_BIN,
+    '/usr/bin/google-chrome',
+    '/usr/bin/google-chrome-stable',
+    '/usr/bin/chromium',
     '/usr/bin/google-chrome',
     '/usr/bin/google-chrome-stable',
     '/usr/bin/chromium',
@@ -248,7 +251,7 @@ async function runVisionPipeline() {
         isFallback: false,
         isCertified: true,
         modelUsed: 'PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)',
-        attribution: 'PromptCanvas Vision Decompiler (/Users/nitinagga/documents/PromptCanvas/src/lib/deepmindVisionDecompiler.ts)',
+        attribution: 'PromptCanvas Vision Decompiler (~/Documents/PromptCanvas/src/lib/deepmindVisionDecompiler.ts)',
         healerLog: healedResult.healingLog,
         validationReport: {
           valid: validation.valid,

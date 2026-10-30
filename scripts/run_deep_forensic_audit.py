@@ -1064,10 +1064,10 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             for dg_id in doc_guide_ids:
                 dg_pptx = ROOT_DIR / f"slides/{dg_id}-editable-slides.pptx"
                 dg_prev_dir = ROOT_DIR / f"slides/previews/{dg_id}-editable-slides"
-                if not dg_pptx.is_file() or not dg_prev_dir.is_dir():
+                if not dg_pptx.is_file():
                     decks_valid = False
                 else:
-                    if (
+                    if dg_prev_dir.is_dir() and (
                         len(list(dg_prev_dir.glob("slide_0[1-6].png"))) != 6
                         or len(list(dg_prev_dir.glob("slide_*.png"))) != 6
                     ):

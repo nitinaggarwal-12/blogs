@@ -6,7 +6,7 @@ Enforces standing user mandates across every current and future run:
   1. Zero shortcuts ever: only genuine live UI screenshots & saved, executed scripts (`exit_code == 0`) accepted.
   2. Follow user instructions as-is always.
   3. Record every action performed in the current run in `data/run_continuity_ledger.json` AND
-     `/Users/nitinagga/.gemini/config/run_continuity_ledger.json`, and repeat in the next run unless
+     `~/.gemini/config/run_continuity_ledger.json`, and repeat in the next run unless
      explicitly superseded by the user.
   4. Spin up required applications, software stacks, and services on GCP and AWS autonomously without asking.
 
@@ -28,9 +28,9 @@ from typing import Any
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 REPO_LEDGER_PATH = ROOT_DIR / "data/run_continuity_ledger.json"
-GLOBAL_LEDGER_PATH = Path("/Users/nitinagga/.gemini/config/run_continuity_ledger.json")
-PROVENANCE_GUARD_MJS = Path("/Users/nitinagga/.gemini/config/guards/verify_genuine_screenshot_and_script_provenance.mjs")
-CONTINUITY_GUARD_MJS = Path("/Users/nitinagga/.gemini/config/guards/enforce_run_continuity_ledger.mjs")
+GLOBAL_LEDGER_PATH = Path.home() / ".gemini" / "config" / "run_continuity_ledger.json"
+PROVENANCE_GUARD_MJS = Path.home() / ".gemini" / "config" / "guards" / "verify_genuine_screenshot_and_script_provenance.mjs"
+CONTINUITY_GUARD_MJS = Path.home() / ".gemini" / "config" / "guards" / "enforce_run_continuity_ledger.mjs"
 
 STANDING_MANDATES: list[dict[str, Any]] = [
     {

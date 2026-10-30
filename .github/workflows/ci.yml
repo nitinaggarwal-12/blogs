@@ -1,0 +1,49 @@
+name: GEAP Forensic & Security CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  forensic-and-security-gates:
+    name: 13-Point Forensic Audit, Pattern Security Suites & Portal Smoke
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run Pattern A Pooled Breach Simulation Suite
+        run: python3 -B workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py
+
+      - name: Run Pattern B Sovereign Silo & CMEK Kill-Switch Suite
+        run: python3 -B workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py
+
+      - name: Run Pattern C Hybrid Zero-Downtime Tier Migration Suite
+        run: python3 -B workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py
+
+      - name: Run 13-Point Deep Forensic Audit (F-01 .. F-13)
+        run: python3 -B scripts/run_deep_forensic_audit.py
+
+      - name: Run 5-Hop Pipeline Unit Tests
+        run: python3 -B -m unittest discover -v -s tests -p "test_*.py"
+
+      - name: Portal HTTP & BeyondCorp IAP Header Smoke Check
+        run: |
+          python3 -B server.py --port 18099 >/dev/null 2>&1 &
+          SRV_PID=$!
+          trap "kill $SRV_PID 2>/dev/null || true" EXIT
+          sleep 1
+          curl -fsS -H "X-Goog-Authenticated-User-Email: accounts.google.com:ci-verifier@google.com" http://127.0.0.1:18099/api/health | python3 -B -c "import sys, json; d=json.load(sys.stdin); assert d['status']=='HEALTHY' and d['authenticated_user']['iap_verified'] is True, d; print('IAP Health Verified:', d['authenticated_user'])"
+          HEAD_CODE=$(curl -s -o /dev/null -w "%{http_code}" -I http://127.0.0.1:18099/ws1)
+          test "$HEAD_CODE" = "302"
+          echo "HEAD /ws1 redirect verified: HTTP $HEAD_CODE"

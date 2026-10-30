@@ -543,7 +543,7 @@ def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
         if sec_cfg and sec_cfg.get("aws_cognito_client_id") and sec_cfg.get("aws_cognito_client_secret"):
             tf = sec_cfg
         else:
-            tfvars_path = Path("/Users/nitinagga/aws/aws.auto.tfvars.json")
+            tfvars_path = Path.home() / "aws" / "aws.auto.tfvars.json"
             if tfvars_path.is_file():
                 try:
                     tf = json.loads(tfvars_path.read_text(encoding="utf-8"))
@@ -690,7 +690,7 @@ def workspace_verify_live_slides_and_docs() -> Dict[str, Any]:
     manifest_path = root_dir / "slides" / "cloud_viewer_manifest.json"
     token_paths = [
         root_dir / ".gsheet_oauth_token.json",
-        Path("/Users/nitinagga/Documents/gantry-pulse/.gsheet_oauth_token.json"),
+        Path.home() / "Documents" / "gantry-pulse" / ".gsheet_oauth_token.json",
     ]
     access_token: Optional[str] = None
     for tf in token_paths:

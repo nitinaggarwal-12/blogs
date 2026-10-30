@@ -22,7 +22,7 @@ import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 
-const require = createRequire("/Users/nitinagga/Documents/PromptCanvas/package.json");
+const require = createRequire(import.meta.url);
 const puppeteer = require("puppeteer-core");
 
 const __filename = fileURLToPath(import.meta.url);
@@ -35,8 +35,14 @@ const GCP_RECEIPT_PATH = path.join(ROOT_DIR, "docs/gcp_cloudrun_3p_apps_live_rec
 const AWS_RECEIPT_PATH = path.join(ROOT_DIR, "docs/aws_ec2_3p_apps_live_receipt.json");
 const OIDC_CACHE_PATH = "/tmp/cymbal_gcp_cloudrun_oidc_cache.json";
 
-const CHROME_PATH = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
-const USER_DATA_DIR = "/Users/nitinagga/.gemini/chrome_profile_multicloud_3p_e2e";
+const CHROME_PATH = process.env.CHROME_PATH || [
+  "/usr/bin/google-chrome",
+  "/usr/bin/google-chrome-stable",
+  "/usr/bin/chromium",
+  "/usr/bin/chromium-browser",
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+].find((p) => fs.existsSync(p)) || "/usr/bin/google-chrome";
+const USER_DATA_DIR = path.join(process.env.HOME || "/tmp", ".gemini", "chrome_profile_multicloud_3p_e2e");
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -86,7 +92,7 @@ function mintAwsConsoleFederationUrl(destinationUrl) {
   const tmpOut = `/tmp/aws_fed_url_${process.pid}_${Date.now()}.json`;
   const pyCode = `
 import sys, os, json, urllib.request, urllib.parse, xml.etree.ElementTree as ET
-sys.path.insert(0, "/Users/nitinagga/aws")
+sys.path.insert(0, os.path.expanduser("~/aws"))
 import aws_mfa_helper
 
 role_arn = f"arn:aws:iam::{aws_mfa_helper.ACCOUNT_ID}:role/cymbal-console-readonly-auditor"

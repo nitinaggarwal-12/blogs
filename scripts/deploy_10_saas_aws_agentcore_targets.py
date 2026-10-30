@@ -29,7 +29,7 @@ import urllib.parse
 import urllib.request
 import zipfile
 
-sys.path.insert(0, "/Users/nitinagga/aws")
+sys.path.insert(0, str(Path.home() / "aws"))
 import aws_mfa_helper as h  # type: ignore
 
 ACCOUNT_ID = "393036065405"
@@ -734,7 +734,7 @@ TARGET_SPECS = [
 
 
 def build_extended_lambda_zip() -> bytes:
-    base_code = Path("/Users/nitinagga/aws/aws_merck_agentcore_peer_lambda.py").read_text(encoding="utf-8")
+    base_code = (Path.home() / "aws" / "aws_merck_agentcore_peer_lambda.py").read_text(encoding="utf-8")
     if "CYMBAL_10_SAAS_RECORDS" not in base_code:
         marker = "def lambda_handler(event: dict, context=None) -> dict:"
         base_code = base_code.replace(marker, CYMBAL_10_SAAS_LAMBDA_EXTENSION + "\n\n" + marker, 1)
@@ -990,7 +990,7 @@ def main() -> int:
 
     # Verify via live Cognito RS256 token + MCP `tools/list` and `tools/call` across all 10 targets!
     print("[4/4] Minting live Cognito RS256 OAuth2 token & invoking all 10 MCP targets on Bedrock AgentCore Gateway...")
-    tfvars = json.loads(Path("/Users/nitinagga/aws/aws.auto.tfvars.json").read_text(encoding="utf-8"))
+    tfvars = json.loads((Path.home() / "aws" / "aws.auto.tfvars.json").read_text(encoding="utf-8"))
     basic = base64.b64encode(f"{tfvars['aws_cognito_client_id']}:{tfvars['aws_cognito_client_secret']}".encode("utf-8")).decode("ascii")
     creq = urllib.request.Request(
         tfvars["aws_cognito_token_url"],

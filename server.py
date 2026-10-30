@@ -550,12 +550,16 @@ def load_portal_changelog() -> Dict[str, Any]:
     }
 
 
+_STATE_WRITE_LOCK = threading.Lock()
+
+
 def save_portal_changelog(data: Dict[str, Any]) -> Dict[str, Any]:
-    iso_str, _ = _now_iso_and_est()
-    data["updatedAt"] = iso_str
-    CHANGELOG_FILE.parent.mkdir(parents=True, exist_ok=True)
-    CHANGELOG_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
-    return data
+    with _STATE_WRITE_LOCK:
+        iso_str, _ = _now_iso_and_est()
+        data["updatedAt"] = iso_str
+        CHANGELOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+        CHANGELOG_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
+        return data
 
 
 def append_changelog_entry(
@@ -651,11 +655,12 @@ def load_portal_comments() -> Dict[str, Any]:
 
 
 def save_portal_comments(data: Dict[str, Any]) -> Dict[str, Any]:
-    iso_str, _ = _now_iso_and_est()
-    data["updatedAt"] = iso_str
-    COMMENTS_FILE.parent.mkdir(parents=True, exist_ok=True)
-    COMMENTS_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
-    return data
+    with _STATE_WRITE_LOCK:
+        iso_str, _ = _now_iso_and_est()
+        data["updatedAt"] = iso_str
+        COMMENTS_FILE.parent.mkdir(parents=True, exist_ok=True)
+        COMMENTS_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
+        return data
 
 
 class PortalRequestHandler(BaseHTTPRequestHandler):
@@ -681,10 +686,10 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         iap_hdr = self.headers.get("X-Goog-Authenticated-User-Email", "")
         iap_email = iap_hdr.split(":")[-1].strip() if iap_hdr else ""
         email = str(
-            body.get("actorEmail")
+            iap_email
+            or body.get("actorEmail")
             or body.get("authorEmail")
             or body.get("userEmail")
-            or iap_email
             or "nitinagga@google.com"
         ).strip()
         name = str(
@@ -711,10 +716,40 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         # Clean concise single-line access log
         sys.stdout.write(f"[GEAP-Portal] {self.address_string()} - {format % args}\n")
 
+    def do_HEAD(self) -> None:
+        orig_wfile = self.wfile
+
+        class _HeadNullWriter:
+            def write(self, data: bytes) -> int:
+                return len(data)
+            def flush(self) -> None:
+                pass
+
+        self.wfile = _HeadNullWriter()  # type: ignore[assignment]
+        try:
+            self.do_GET()
+        finally:
+            self.wfile = orig_wfile
+
     def do_GET(self) -> None:
         parsed = urlparse(self.path)
         path = parsed.path
         qs = parse_qs(parsed.query)
+
+        if path == "/favicon.ico":
+            svg_icon = (
+                b'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">'
+                b'<rect width="32" height="32" rx="7" fill="#1a73e8"/>'
+                b'<text x="16" y="22" font-family="Arial,sans-serif" font-size="16" font-weight="bold" fill="#fff" text-anchor="middle">G</text>'
+                b'</svg>'
+            )
+            self.send_response(200)
+            self.send_header("Content-Type", "image/svg+xml; charset=utf-8")
+            self.send_header("Cache-Control", "public, max-age=86400")
+            self.send_header("Content-Length", str(len(svg_icon)))
+            self.end_headers()
+            self.wfile.write(svg_icon)
+            return
 
         if path == "/universal_feedback_widget.js":
             widget_file = ROOT_DIR / "universal_feedback_widget.js"
@@ -846,7 +881,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             global _DELIVERABLE_FILES_CACHE
             all_files = globals().get("_DELIVERABLE_FILES_CACHE")
             if all_files is None:
-                pruned_dirs = {"node_modules", "__pycache__", "venv", ".venv"}
+                pruned_dirs = {"node_modules", "__pycache__", "venv", ".venv", "previews"}
                 collected: list[str] = []
                 for dirpath, dirnames, filenames in os.walk(ROOT_DIR):
                     dirnames[:] = sorted(
@@ -861,16 +896,24 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                             collected.append(str(rel_dir / fname) if str(rel_dir) != "." else fname)
                 all_files = collected
                 globals()["_DELIVERABLE_FILES_CACHE"] = all_files
+            iap_name, iap_email, iap_role = self._detect_iap_actor()
+            iap_verified = bool(self.headers.get("X-Goog-Authenticated-User-Email", "").strip())
             self._send_json(
                 200,
                 {
                     "status": "HEALTHY",
                     "service": "cymbal-geap-multitenant-portal",
                     "engine": "CymbalMultiTenantRuntime (5-Hop Cryptographic Context Chain)",
+                    "authenticated_user": {
+                        "name": iap_name,
+                        "email": iap_email,
+                        "role": iap_role,
+                        "iap_verified": iap_verified,
+                    },
                     "tenants": to_jsonable(core_models.TENANT_PROFILES),
                     "deliverable_file_count": len(all_files),
                     "deliverable_files": all_files,
-                    "forensic_checks_verified": 12,
+                    "forensic_checks_verified": 13,
                     "simulation_tests_verified": 107,
                 },
             )
@@ -1194,8 +1237,11 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
     function sanitizeCellHtml(rawHtml) {{
       return String(rawHtml || '')
-        .replace(/<script\\b[^<]*(?:(?!<\\/script>)<[^<]*)*<\\/script>/gi, '')
-        .replace(/\\son[a-z]+\\s*=\\s*(['"]).*?\\1/gi, '');
+        .replace(/<(script|iframe|object|embed|svg|meta|link|style)\\b[^>]*>[\\s\\S]*?<\\/\\1>/gi, '')
+        .replace(/<(script|iframe|object|embed|svg|meta|link|style)\\b[^>]*\\/?>/gi, '')
+        .replace(/\\son[a-z]+\\s*=\\s*(['"]).*?\\1/gi, '')
+        .replace(/\\son[a-z]+\\s*=\\s*[^\\s>]+/gi, '')
+        .replace(/(href|src)\\s*=\\s*(['"])\\s*(?:javascript|vbscript|data:text\\/html):[^'"]*\\2/gi, '$1="#"');
     }}
 
     function exitInlineStudio() {{
@@ -1652,9 +1698,10 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     window.addEventListener('message', (evt) => {{
       if (evt.origin && evt.origin !== window.location.origin && evt.origin !== 'https://embed.diagrams.net') return;
       if (!evt.data || typeof evt.data !== 'string') return;
+      const frame = document.getElementById('drawio-studio-iframe');
+      if (frame && frame.contentWindow && evt.source !== frame.contentWindow) return;
       let msg;
       try {{ msg = JSON.parse(evt.data); }} catch {{ return; }}
-      const frame = document.getElementById('drawio-studio-iframe');
       if (msg.event === 'configure' && frame && frame.contentWindow) {{
         frame.contentWindow.postMessage(JSON.stringify({{
           action: 'configure',
@@ -1690,9 +1737,23 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(data)
             return
 
+        DOC_SHORT_ALIASES = {
+            "ws1": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
+            "ws2": "blogs/ws2-pattern-a-pooled-architecture.md",
+            "ws3": "blogs/ws3-pattern-b-sovereign-silos.md",
+            "ws4": "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md",
+            "ws5": "blogs/ws5-decision-guide-and-agentic-triad.md",
+            "all": "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md",
+            "guide": "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md",
+            "runbook": "docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md",
+            "5.2": "workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md",
+            "backlog": "workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md",
+        }
+
         if path == "/api/artifact":
             qs = parse_qs(parsed.query)
             rel_path = (qs.get("path") or [""])[0].strip().lstrip("/")
+            rel_path = DOC_SHORT_ALIASES.get(rel_path.lower(), rel_path)
             if not rel_path:
                 self._send_json(400, {"error": "Missing ?path= query parameter"})
                 return
@@ -1720,6 +1781,13 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         # portal's Publish Studio reader; append ?raw=1 to download the raw file instead.
         clean_rel = path.strip("/")
         qs_all = parse_qs(parsed.query)
+        if clean_rel.lower() in DOC_SHORT_ALIASES:
+            from urllib.parse import quote
+            self.send_response(302)
+            self.send_header("Location", f"/?doc={quote(DOC_SHORT_ALIASES[clean_rel.lower()])}")
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            return
         if clean_rel == "docs":
             from urllib.parse import quote
             self.send_response(302)
@@ -1877,10 +1945,10 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         <a href="/" class="btn primary">&larr; Back to Main Architecture Portal (/)</a>
       </div>
     </div>
-    <table>
+    <div style="overflow-x:auto;"><table>
       <thead><tr><th>Name</th><th>Type</th><th>Size</th><th>Action</th></tr></thead>
       <tbody>{''.join(rows_html)}</tbody>
-    </table>
+    </table></div>
     {''.join(code_cards_html)}
   </div>
 </body>
@@ -1973,8 +2041,9 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 if raw_drawio.is_symlink() or not target_drawio.is_relative_to(ROOT_DIR):
                     self._send_json(403, {"ok": False, "error": "Forbidden path"})
                     return
-                prev_bytes = target_drawio.stat().st_size if target_drawio.is_file() else 0
-                target_drawio.write_text(xml_content, encoding="utf-8")
+                with _STATE_WRITE_LOCK:
+                    prev_bytes = target_drawio.stat().st_size if target_drawio.is_file() else 0
+                    target_drawio.write_text(xml_content, encoding="utf-8")
                 new_bytes = len(xml_content.encode("utf-8"))
                 actor_name, actor_email, actor_role = self._detect_iap_actor(body)
                 ws_prefix = safe_id.split("-")[0].upper() if safe_id.startswith("ws") else "WS1"
@@ -2452,12 +2521,14 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 return
 
             self._send_json(404, {"error": f"POST route not found: {path}"})
+        except OSError as exc:
+            self._send_json(503, {"ok": False, "error": f"Storage write unavailable: {exc}"})
         except Exception as exc:
-            self._send_json(500, {"error": str(exc)})
+            self._send_json(500, {"ok": False, "error": str(exc)})
 
 
 def run_server(port: int = 8095) -> None:
-    host = os.environ.get("HOST", "0.0.0.0")
+    host = os.environ.get("HOST") or ("0.0.0.0" if os.environ.get("K_SERVICE") else "127.0.0.1")
     ThreadingHTTPServer.allow_reuse_address = True
     server = ThreadingHTTPServer((host, port), PortalRequestHandler)
 

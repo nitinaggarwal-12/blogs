@@ -1,10 +1,15 @@
 # Gemini Enterprise Agent Platform (GEAP): Multi-Tenancy Architecture & Enablement Program
 
+[![GEAP Forensic & Security CI](https://github.com/nitinaggarwal-12/blogs/actions/workflows/ci.yml/badge.svg)](https://github.com/nitinaggarwal-12/blogs/actions/workflows/ci.yml)
+
+> **Live BeyondCorp Portal**: [https://ge-blogs-248990048888.cr.gclb.goog/](https://ge-blogs-248990048888.cr.gclb.goog/) (`ramp-portal-dev` • `us-west1` • Cloud Run + GCLB/IAP)  
 > **Anchor Reference**: [Multi-tenant agentic AI system — Google Cloud Architecture Center](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system)  
 > **Program Sprint Rhythm**: `1W Design • 2W Build • 1W Launch` (Weeks 1–10)  
 > **Core Engineering Principle**: **80% Reusable Core Code** (`core-cymbal-agent/`) + **20% Pattern-Specific Delta** across Pooled (Pattern A), Siloed (Pattern B), and Hybrid (Pattern C).
 
 ---
+
+- **Workstream 5.2 Capstone Backlog & 10-Week GA Roadmap**: [`workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md`](workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md)
 
 ## 1. Program Overview & Three Core Multi-Tenant Patterns
 

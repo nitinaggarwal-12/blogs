@@ -1596,7 +1596,7 @@ function addQuadMetricsSlide(pptx: Pptx, spec: DeckSpec | null) {
     pptx,
     slide,
     'VERIFIED TELEMETRY',
-    `${spec ? spec.label : SERIES_LINE} • Certified by 12 Forensic Checks & 20 Simulation Assertions`,
+    `${spec ? spec.label : SERIES_LINE} • Certified by 13 Forensic Checks & 20 Simulation Assertions`,
     true
   );
   addFooter(pptx, slide, SERIES_LINE);
@@ -3011,12 +3011,12 @@ function renderArchitectureCenterDiagramSidebar(
   const stripHexHints = (s: string): string =>
     stripMarkdownFormatting(s)
       .replace(/\s*\(#[0-9a-fA-F]{6}\)/g, '')
-      .replace(/\s*#[0-9a-fA-F]{6}/g, '')
+      .replace(/\s*#[0-9a-fA-F]{6}\b/g, '')
       .replace(/\s{2,}/g, ' ')
       .trim();
 
   const zoneStartY = sideY + 1.22;
-  const zoneCardH = 0.62;
+  const zoneCardH = 0.65;
   const zoneGap = 0.05;
   zones.slice(0, 4).forEach((zn, zIdx) => {
     const zy = Number((zoneStartY + zIdx * (zoneCardH + zoneGap)).toFixed(3));
@@ -3071,10 +3071,10 @@ function renderArchitectureCenterDiagramSidebar(
     });
     slide.addText(cleanZoneRole, {
       x: Number((sideX + 0.24).toFixed(3)),
-      y: Number((zy + 0.24).toFixed(3)),
+      y: Number((zy + 0.22).toFixed(3)),
       w: Number((sideW - 0.40).toFixed(3)),
-      h: 0.35,
-      fontSize: cleanZoneRole.length > 145 ? 6.15 : 6.6,
+      h: 0.41,
+      fontSize: cleanZoneRole.length > 155 ? 5.95 : cleanZoneRole.length > 130 ? 6.25 : 6.6,
       color: TEXT_BODY,
       valign: 'top',
       fontFace: FONT_BODY,

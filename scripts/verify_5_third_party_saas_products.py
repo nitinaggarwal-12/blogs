@@ -511,7 +511,7 @@ def _write_manual_testing_playbook(playbook_path: Path, receipt: dict) -> None:
         "",
         "## 1. Quick-Start Manual CLI Commands (Run Any Product or Pattern Yourself)",
         "",
-        "Run these commands directly from `/Users/nitinagga/Documents/blogs`:",
+        "Run these commands directly from `~/Documents/blogs`:",
         "",
         "```bash",
         "# 1. Run ALL 10 Third-Party SaaS Products across ALL 3 Patterns (30 E2E Flows / 60 Test Cases)",

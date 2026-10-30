@@ -5,7 +5,7 @@ Strictly zero fake/synthetic/seed data. Only real user-submitted feedback is sto
 
 Persists to:
 1. App-local JSON store (and SQLite table when provided)
-2. Shared local cross-app ledger (/Users/nitinagga/.gemini/config/shared_app_feedback_ledger.json)
+2. Shared local cross-app ledger (~/.gemini/config/shared_app_feedback_ledger.json)
 3. Live Google Sheet ("Unified App Feedback Ledger (nitinagga@google.com)",
    spreadsheetId: 1iPv52nblJISD7WNeEe3m4VovG_JS1qh79MYftMxrnhY, tab: FeedbackInbox)
    via OAuth 2.0 refresh_token with x-goog-user-project: ramp-portal-dev.
@@ -31,13 +31,13 @@ DEFAULT_SPREADSHEET_URL = f"https://docs.google.com/spreadsheets/d/{DEFAULT_SPRE
 DEFAULT_SHEET_NAME = "FeedbackInbox"
 QUOTA_PROJECT = "ramp-portal-dev"
 
-CONFIG_PATH = Path("/Users/nitinagga/.gemini/config/unified_feedback_config.json")
-SHARED_LEDGER_PATH = Path("/Users/nitinagga/.gemini/config/shared_app_feedback_ledger.json")
+CONFIG_PATH = Path.home() / ".gemini" / "config" / "unified_feedback_config.json"
+SHARED_LEDGER_PATH = Path.home() / ".gemini" / "config" / "shared_app_feedback_ledger.json"
 
 TOKEN_CANDIDATE_PATHS = [
-    Path("/Users/nitinagga/Documents/gantry-pulse/.gsheet_oauth_token.json"),
-    Path("/Users/nitinagga/Documents/blogs/.gsheet_oauth_token.json"),
-    Path("/Users/nitinagga/Documents/PromptCanvas/.gsheet_oauth_token.json"),
+    Path.home() / "Documents" / "gantry-pulse" / ".gsheet_oauth_token.json",
+    Path.home() / "Documents" / "blogs" / ".gsheet_oauth_token.json",
+    Path.home() / "Documents" / "PromptCanvas" / ".gsheet_oauth_token.json",
 ]
 
 VALID_CATEGORIES = [

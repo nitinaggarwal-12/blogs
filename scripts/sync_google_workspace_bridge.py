@@ -35,7 +35,7 @@ DEFAULT_OAUTH_CLIENT_ID = "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.go
 
 TOKEN_CANDIDATE_PATHS = [
     ROOT_DIR / ".gsheet_oauth_token.json",
-    Path("/Users/nitinagga/Documents/gantry-pulse/.gsheet_oauth_token.json"),
+    Path.home() / "Documents" / "gantry-pulse" / ".gsheet_oauth_token.json",
 ]
 
 _TOKEN_CACHE: Dict[str, Any] = {"access_token": None, "expires_at": 0.0}

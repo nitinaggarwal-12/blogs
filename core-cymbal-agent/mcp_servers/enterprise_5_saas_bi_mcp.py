@@ -119,7 +119,7 @@ def _mint_aws_cognito_access_token(force_refresh: bool = False) -> Optional[str]
     Amazon Bedrock AgentCore MCP Gateway. Supports environment variables (`AWS_COGNITO_CLIENT_ID`,
     `AWS_COGNITO_CLIENT_SECRET`, `AWS_COGNITO_TOKEN_URL`) first, then GCP Secret Manager
     (`aws-cognito-agentcore-config` for Cloud Run `ge-blogs`), then `AWS_TFVARS_PATH`
-    (defaulting to `/Users/nitinagga/aws/aws.auto.tfvars.json`).
+    (defaulting to `~/aws/aws.auto.tfvars.json`).
     """
     global _CACHED_COGNITO_TOKEN, _CACHED_COGNITO_EXPIRES_AT
     with _COGNITO_TOKEN_LOCK:
@@ -139,7 +139,7 @@ def _mint_aws_cognito_access_token(force_refresh: bool = False) -> Optional[str]
                 token_url = token_url or sec_cfg.get("aws_cognito_token_url")
 
         if not (cid and csec and token_url):
-            tfvars_path = Path(os.environ.get("AWS_TFVARS_PATH", "/Users/nitinagga/aws/aws.auto.tfvars.json"))
+            tfvars_path = Path(os.environ.get("AWS_TFVARS_PATH", str(Path.home() / "aws" / "aws.auto.tfvars.json")))
             if tfvars_path.is_file():
                 try:
                     tf = json.loads(tfvars_path.read_text(encoding="utf-8"))

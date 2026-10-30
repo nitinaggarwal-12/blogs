@@ -31,10 +31,10 @@
       --pre-text: #0f172a;
       --reader-bg: #ffffff;
       --heading: #0f172a;
-      --link: #1a73e8;
+      --link: #1557b0;
       --accent-2: #6d28d9;
       --ok-text: #188038;
-      --warn-text: #9a6700;
+      --warn-text: #7c4d00;
       --warn-border: #fcd34d;
       --err-text: #c5221f;
       --quote-text: #1e3a8a;
@@ -49,7 +49,7 @@
       --bg: #ffffff; --panel: #f8f9fa; --panel-alt: #e8f0fe; --border: #dadce0;
       --text: #202124; --muted: #5f6368; --blue: #1a73e8; --purple: #a142f4; --green: #34a853; --amber: #f9ab00; --red: #ea4335;
       --header-grad-a: #1a73e8; --header-grad-b: #174ea6; --input-bg: #ffffff; --pre-bg: #202124; --pre-text: #e8eaed;
-      --reader-bg: #ffffff; --heading: #202124; --link: #1a73e8; --accent-2: #a142f4; --ok-text: #188038; --warn-text: #e37400; --err-text: #c5221f;
+      --reader-bg: #ffffff; --heading: #202124; --link: #1557b0; --accent-2: #a142f4; --ok-text: #188038; --warn-text: #7c4d00; --err-text: #c5221f;
       --quote-text: #174ea6; --code-bg: rgba(26,115,232,0.08); --th-text: #202124; --hover-tint: rgba(26,115,232,0.10);
     }
     [data-theme="google-cloud"] header, [data-theme="google-cloud"] header .muted { color: #ffffff; }
@@ -80,6 +80,53 @@
       top: 0;
       z-index: 100;
     }
+    .portal-top-header {
+      padding: 8px 14px;
+      gap: 6px;
+      flex-wrap: nowrap;
+    }
+    .portal-primary-tabs {
+      flex-wrap: nowrap;
+      flex-shrink: 0;
+      align-items: center;
+      gap: 4px;
+    }
+    .portal-header-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: nowrap;
+      flex-shrink: 0;
+    }
+    @media (max-width: 1120px) {
+      .portal-top-header {
+        flex-wrap: wrap;
+        padding: 8px 12px;
+        gap: 6px;
+      }
+      .portal-header-actions {
+        margin-left: auto;
+      }
+      .portal-primary-tabs {
+        order: 3;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+    }
+    #gdocs-comments-drawer:not(.open) { visibility: hidden; pointer-events: none; }
+    @media (max-width: 640px) {
+      .container { padding: 8px 10px; }
+      .portal-primary-tabs { display: grid !important; grid-template-columns: 1fr 1fr; width: 100%; gap: 4px; }
+      .portal-primary-tabs > .tab-btn:not(.sr-only), .portal-primary-tabs > select { width: 100% !important; max-width: 100% !important; min-width: 0 !important; font-size: 11px !important; padding: 6px 6px !important; }
+      .portal-header-actions { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
+      .grid-4, .grid-3, .genuine-3p-gallery-grid { grid-template-columns: 1fr !important; }
+      .card table { display: block; overflow-x: auto; max-width: 100%; }
+      .article-reader table { table-layout: auto; font-size: 11.5px; }
+      .article-reader th, .article-reader td { max-width: none; padding: 6px 7px; }
+    }
+    a code { padding: 1px 3px; }
+    .article-table-wrap { width: 100%; overflow-x: auto; max-width: 100%; }
     .sr-only {
       position: absolute;
       width: 1px;
@@ -100,12 +147,12 @@
       letter-spacing: 0.03em;
       text-transform: uppercase;
     }
-    .badge-blue { background: rgba(79,140,255,0.2); color: var(--link); border: 1px solid rgba(79,140,255,0.4); }
-    .badge-cyan { background: rgba(14,165,233,0.16); color: #0284c7; border: 1px solid rgba(14,165,233,0.4); }
-    .badge-purple { background: rgba(155,107,255,0.2); color: var(--accent-2); border: 1px solid rgba(155,107,255,0.4); }
-    .badge-green { background: rgba(24,201,100,0.2); color: var(--ok-text); border: 1px solid rgba(24,201,100,0.4); }
-    .badge-amber { background: rgba(245,165,36,0.2); color: var(--warn-text); border: 1px solid rgba(245,165,36,0.4); }
-    .badge-red { background: rgba(243,18,96,0.2); color: var(--err-text); border: 1px solid rgba(243,18,96,0.4); }
+    .badge-blue { background: #e8f0fe; color: #174ea6; border: 1px solid #93c5fd; }
+    .badge-cyan { background: #e0f2fe; color: #075985; border: 1px solid #7dd3fc; }
+    .badge-purple { background: #f3e8ff; color: #5b21b6; border: 1px solid #d8b4fe; }
+    .badge-green { background: #e6f4ea; color: #137333; border: 1px solid #86efac; }
+    .badge-amber { background: #fef7e0; color: #8c4a00; border: 1px solid #fcd34d; }
+    .badge-red { background: #fce8e6; color: #a50e0e; border: 1px solid #fca5a5; }
     .container { width: 100%; max-width: 100%; margin: 0; padding: 10px 24px; }
     .ws-split-grid.full-diagram { grid-template-columns: 1fr; }
     .tabs {
@@ -118,7 +165,7 @@
     }
     .tab-btn {
       background: var(--panel-alt);
-      color: var(--muted);
+      color: #1e293b;
       border: 1px solid var(--border);
       padding: 5px 9px;
       border-radius: 7px;
@@ -662,9 +709,9 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(245, 158, 11, 0.16);
-      color: #fbbf24;
-      border: 1.5px solid rgba(245, 158, 11, 0.55);
+      background: #fef3c7;
+      color: #92400e;
+      border: 1.5px solid #f59e0b;
       padding: 7px 13px;
       border-radius: 999px;
       font-size: 12.5px;
@@ -681,7 +728,7 @@
     [data-theme="light"] .pc-cloud-btn,
     [data-theme="google-cloud"] .pc-cloud-btn {
       background: #fef3c7;
-      color: #b45309;
+      color: #92400e;
       border-color: #f59e0b;
     }
     .pc-split-wrap {
@@ -1345,7 +1392,7 @@
       height: 15px;
       padding: 0 4px;
       border-radius: 999px;
-      background: #f59e0b;
+      background: #b45309;
       color: #ffffff;
       font-size: 9.5px;
       font-weight: 800;
@@ -1584,7 +1631,7 @@
       });
     })();
   </script>
-  <header style="flex-wrap:nowrap; gap:6px; padding:8px 14px;">
+  <header class="portal-top-header">
     <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
       <span class="badge badge-blue" style="white-space:nowrap; padding:2px 7px; font-size:11px;">GCP #78</span>
       <h1 style="margin:0; font-size:13.5px; font-weight:800; white-space:nowrap;">Multi-Tenancy &amp; 5-Hop Portal</h1>
@@ -1592,7 +1639,7 @@
       <span id="api-status-badge" class="sr-only">● Live Python API • Simulations: 20/20 PASS</span>
       <span id="gcp-cloud-badge" class="sr-only">☁️ 14/14 Blueprints • Forensic Audit: 13/13 PASS</span>
     </div>
-    <nav class="tabs" aria-label="Primary Workspace Navigation" style="flex-wrap:nowrap; flex-shrink:0; align-items:center; gap:4px;">
+    <nav class="tabs portal-primary-tabs" aria-label="Primary Workspace Navigation">
       <button class="tab-btn active" id="tab-btn-patterns" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('patterns', this)">1. &#129517; Architecture &amp; Blog Series</button>
       <button class="tab-btn" id="tab-btn-simulator" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('simulator', this)">2. &#9889; Live 5-Hop Simulator</button>
       <button class="tab-btn" id="tab-btn-screenshots" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('screenshots', this)">3. &#9729;&#65039; GCP Console &amp; Codebase</button>
@@ -1605,7 +1652,7 @@
       <button class="tab-btn sr-only" id="tab-btn-forensic" onclick="switchTab('forensic', this)">4. Forensic Audit (13/13)</button>
       <button class="tab-btn sr-only" id="tab-btn-changelog" onclick="switchTab('changelog', this)">5. Change Log (<span id="nav-changelog-count">3</span>)</button>
     </nav>
-    <div style="display:flex; gap:6px; align-items:center; flex-wrap:nowrap; flex-shrink:0;">
+    <div class="portal-header-actions">
       <button type="button" id="header-active-user-btn" class="sim-btn" style="padding:4px 8px; font-size:11px; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;" onclick="toggleCommentsDrawer()" title="Switch active user identity or open Google Docs / Slides Collaborative Comments Drawer">
         <span id="header-user-avatar" class="gdocs-avatar" style="width:17px; height:17px; font-size:9px; background:#1a73e8;">NA</span>
         <span id="header-user-name">Nitin Aggarwal</span>
@@ -2005,70 +2052,70 @@
                 <td><strong>01</strong></td>
                 <td><strong>ThoughtSpot Cloud (Spotter Agentic BI v2.0)</strong><br/><span class="muted" style="font-size:11px;"><code>try-everywhere.thoughtspot.cloud</code></span></td>
                 <td><code>HXGGFMZBKE</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>query_thoughtspot_liveboard_rls</code></span></td>
-                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json" target="_blank" rel="noopener"><code>thoughtspot-spotter/finvault.json</code> &nearr;</a></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json" target="_blank" rel="noopener" style="white-space:nowrap; font-size:11.5px;"><code>thoughtspot-spotter/finvault.json</code> &nearr;</a></td>
                 <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --verbose</code></td>
               </tr>
               <tr>
                 <td><strong>02</strong></td>
                 <td><strong>Sigma Computing (Cloud BI Workbooks REST API v2)</strong><br/><span class="muted" style="font-size:11px;"><code>api.sigmacomputing.com</code></span></td>
                 <td><code>IZVODT083Q</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>eval_sigma_workbook_rls</code></span></td>
-                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json" target="_blank" rel="noopener"><code>sigma-computing/finvault.json</code> &nearr;</a></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json" target="_blank" rel="noopener" style="white-space:nowrap; font-size:11.5px;"><code>sigma-computing/finvault.json</code> &nearr;</a></td>
                 <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --verbose</code></td>
               </tr>
               <tr>
                 <td><strong>03</strong></td>
                 <td><strong>ServiceNow ITSM &amp; ITOM (<code>CHG0049218</code>)</strong><br/><span class="muted" style="font-size:11px;"><code>developer.servicenow.com</code></span></td>
                 <td><code>ZS9VGYHBQL</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>query_servicenow_change_records</code></span></td>
-                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json" target="_blank" rel="noopener"><code>servicenow-itsm/finvault.json</code> &nearr;</a></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json" target="_blank" rel="noopener" style="white-space:nowrap; font-size:11.5px;"><code>servicenow-itsm/finvault.json</code> &nearr;</a></td>
                 <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --verbose</code></td>
               </tr>
               <tr>
                 <td><strong>04</strong></td>
                 <td><strong>Veeva Vault RIM &amp; Muse Clinical EDC (21 CFR Part 11)</strong><br/><span class="muted" style="font-size:11px;"><code>login.veevavault.com</code></span></td>
                 <td><code>TWQU0KSRVF</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>query_muse_study_biomarkers</code></span></td>
-                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json" target="_blank" rel="noopener"><code>muse-poc/finvault.json</code> &nearr;</a></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json" target="_blank" rel="noopener" style="white-space:nowrap; font-size:11.5px;"><code>muse-poc/finvault.json</code> &nearr;</a></td>
                 <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --verbose</code></td>
               </tr>
               <tr>
                 <td><strong>05</strong></td>
                 <td><strong>Salesforce CRM (<code>NA224</code>) &amp; Atlassian Jira Cloud</strong><br/><span class="muted" style="font-size:11px;"><code>api.status.salesforce.com</code></span></td>
                 <td><code>K5JAEFCQ6E</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>create_redacted_sfdc_jira_escalation</code></span></td>
-                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json" target="_blank" rel="noopener"><code>salesforce-jira/finvault.json</code> &nearr;</a></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json" target="_blank" rel="noopener" style="white-space:nowrap; font-size:11.5px;"><code>salesforce-jira/finvault.json</code> &nearr;</a></td>
                 <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --verbose</code></td>
               </tr>
               <tr>
                 <td><strong>06</strong></td>
                 <td><strong>Databricks Data Intelligence Platform (Unity Catalog)</strong><br/><span class="muted" style="font-size:11px;"><code>community.cloud.databricks.com</code></span></td>
                 <td><code>TERCK8SLBP</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>execute_uc_genie_federated_sql</code></span></td>
-                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json" target="_blank" rel="noopener"><code>databricks-unity/finvault.json</code> &nearr;</a></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json" target="_blank" rel="noopener" style="white-space:nowrap; font-size:11.5px;"><code>databricks-unity/finvault.json</code> &nearr;</a></td>
                 <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --verbose</code></td>
               </tr>
               <tr>
                 <td><strong>07</strong></td>
                 <td><strong>Snowflake AI Data Cloud (Cortex Analyst &amp; SQL v2)</strong><br/><span class="muted" style="font-size:11px;"><code>snowflakecomputing.com</code></span></td>
                 <td><code>CCMDEVZV2S</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>execute_cortex_analyst_sql</code></span></td>
-                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json" target="_blank" rel="noopener"><code>snowflake-cortex/retailstream.json</code> &nearr;</a></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json" target="_blank" rel="noopener" style="white-space:nowrap; font-size:11.5px;"><code>snowflake-cortex/retailstream.json</code> &nearr;</a></td>
                 <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --verbose</code></td>
               </tr>
               <tr>
                 <td><strong>08</strong></td>
                 <td><strong>Workday Enterprise HCM &amp; Financial Management RaaS</strong><br/><span class="muted" style="font-size:11px;"><code>wd5-services1.myworkday.com</code></span></td>
                 <td><code>RAOTMUMJTZ</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>fetch_compensation_raas_report</code></span></td>
-                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json" target="_blank" rel="noopener"><code>workday-raas/finvault.json</code> &nearr;</a></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json" target="_blank" rel="noopener" style="white-space:nowrap; font-size:11.5px;"><code>workday-raas/finvault.json</code> &nearr;</a></td>
                 <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --verbose</code></td>
               </tr>
               <tr>
                 <td><strong>09</strong></td>
                 <td><strong>Datadog Cloud Observability &amp; Bits AI SRE</strong><br/><span class="muted" style="font-size:11px;"><code>api.datadoghq.com</code></span></td>
                 <td><code>G767QR3TQZ</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>query_tenant_apm_logs</code></span></td>
-                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json" target="_blank" rel="noopener"><code>datadog-sre/finvault.json</code> &nearr;</a></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json" target="_blank" rel="noopener" style="white-space:nowrap; font-size:11.5px;"><code>datadog-sre/finvault.json</code> &nearr;</a></td>
                 <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --verbose</code></td>
               </tr>
               <tr>
                 <td><strong>10</strong></td>
                 <td><strong>CrowdStrike Falcon XDR &amp; Okta Workforce Identity</strong><br/><span class="muted" style="font-size:11px;"><code>api.crowdstrike.com</code></span></td>
                 <td><code>C7EYM614F2</code> (<code>READY</code>)<br/><span class="muted" style="font-size:11px;"><code>contain_xdr_host_with_dpop</code></span></td>
-                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json" target="_blank" rel="noopener"><code>crowdstrike-okta/finvault.json</code> &nearr;</a></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json" target="_blank" rel="noopener" style="white-space:nowrap; font-size:11.5px;"><code>crowdstrike-okta/finvault.json</code> &nearr;</a></td>
                 <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --verbose</code></td>
               </tr>
             </tbody>
@@ -2113,7 +2160,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-blue" style="font-size:10.5px;">GCP Cloud Run &bull; 01</span>
+                <span class="badge badge-blue" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">GCP Cloud Run &bull; 01</span>
                 <code style="font-size:10.5px; color:#475569;">metabase/metabase:v0.50.26</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">Metabase BI v0.50.26 &mdash; Wire Settlement RLS Question #27</strong>
@@ -2128,7 +2175,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-blue" style="font-size:10.5px;">GCP Cloud Run &bull; 02</span>
+                <span class="badge badge-blue" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">GCP Cloud Run &bull; 02</span>
                 <code style="font-size:10.5px; color:#475569;">grafana/grafana-enterprise:11.2.0</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">Grafana Enterprise v11.2.0 &mdash; FinVault Org Telemetry</strong>
@@ -2143,7 +2190,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-blue" style="font-size:10.5px;">GCP Cloud Run &bull; 03</span>
+                <span class="badge badge-blue" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">GCP Cloud Run &bull; 03</span>
                 <code style="font-size:10.5px; color:#475569;">library/redmine:5.1</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">Redmine ITSM v5.1 &mdash; FinVault Change Queue (<code>CHG0049218</code>)</strong>
@@ -2158,7 +2205,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-blue" style="font-size:10.5px;">GCP Cloud Run &bull; 04</span>
+                <span class="badge badge-blue" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">GCP Cloud Run &bull; 04</span>
                 <code style="font-size:10.5px; color:#475569;">nocodb/nocodb:0.255.2</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">NocoDB v0.255.2 &mdash; GxP 21 CFR Part 11 Study Ledger</strong>
@@ -2173,7 +2220,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-blue" style="font-size:10.5px;">GCP Cloud Run &bull; 05</span>
+                <span class="badge badge-blue" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">GCP Cloud Run &bull; 05</span>
                 <code style="font-size:10.5px; color:#475569;">gitea/gitea:1.22.3</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">Gitea v1.22.3 &mdash; Hop 4 SDP-Redacted SRE Escalation</strong>
@@ -2188,7 +2235,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-blue" style="font-size:10.5px;">GCP Cloud Run &bull; 06</span>
+                <span class="badge badge-blue" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">GCP Cloud Run &bull; 06</span>
                 <code style="font-size:10.5px; color:#475569;">trinodb/trino:440</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">Trino Distributed SQL v440 &mdash; Federated SQL Cluster</strong>
@@ -2203,7 +2250,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-blue" style="font-size:10.5px;">GCP Cloud Run &bull; 07</span>
+                <span class="badge badge-blue" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">GCP Cloud Run &bull; 07</span>
                 <code style="font-size:10.5px; color:#475569;">clickhouse/clickhouse-server:24.8</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">ClickHouse v24.8 &mdash; Warehouse SQL Play UI</strong>
@@ -2218,7 +2265,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-blue" style="font-size:10.5px;">GCP Cloud Run &bull; 08</span>
+                <span class="badge badge-blue" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">GCP Cloud Run &bull; 08</span>
                 <code style="font-size:10.5px; color:#475569;">directus/directus:11.1.0</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">Directus Data Studio v11.1.0 &mdash; HCM Compensation</strong>
@@ -2233,7 +2280,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-blue" style="font-size:10.5px;">GCP Cloud Run &bull; 09</span>
+                <span class="badge badge-blue" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">GCP Cloud Run &bull; 09</span>
                 <code style="font-size:10.5px; color:#475569;">datalust/seq:2024.3</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">Datalust Seq v2024.3 &mdash; Tenant OpenTelemetry APM</strong>
@@ -2248,7 +2295,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-blue" style="font-size:10.5px;">GCP Cloud Run &bull; 10</span>
+                <span class="badge badge-blue" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">GCP Cloud Run &bull; 10</span>
                 <code style="font-size:10.5px; color:#475569;">hashicorp/vault:1.13.3</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">HashiCorp Vault v1.13.3 &mdash; Tenant CMEK &amp; DPoP KV v2</strong>
@@ -2264,7 +2311,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-amber" style="font-size:10.5px;">AWS EC2 &bull; 01</span>
+                <span class="badge badge-amber" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">AWS EC2 &bull; 01</span>
                 <code style="font-size:10.5px; color:#475569;">metabase/metabase:v0.50.26</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">Metabase BI v0.50.26 &mdash; AWS Federation Peer (<code>:3001</code>)</strong>
@@ -2279,7 +2326,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-amber" style="font-size:10.5px;">AWS EC2 &bull; 02</span>
+                <span class="badge badge-amber" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">AWS EC2 &bull; 02</span>
                 <code style="font-size:10.5px; color:#475569;">grafana/grafana-enterprise:11.2.0</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">Grafana Enterprise v11.2.0 &mdash; AWS Peer (<code>:3002</code>)</strong>
@@ -2294,7 +2341,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-amber" style="font-size:10.5px;">AWS EC2 &bull; 03</span>
+                <span class="badge badge-amber" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">AWS EC2 &bull; 03</span>
                 <code style="font-size:10.5px; color:#475569;">library/redmine:5.1</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">Redmine ITSM v5.1 &mdash; AWS Federation Peer (<code>:3003</code>)</strong>
@@ -2309,7 +2356,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-amber" style="font-size:10.5px;">AWS EC2 &bull; 04</span>
+                <span class="badge badge-amber" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">AWS EC2 &bull; 04</span>
                 <code style="font-size:10.5px; color:#475569;">nocodb/nocodb:0.255.2</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">NocoDB v0.255.2 &mdash; AWS Federation Peer (<code>:3004</code>)</strong>
@@ -2324,7 +2371,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-amber" style="font-size:10.5px;">AWS EC2 &bull; 05</span>
+                <span class="badge badge-amber" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">AWS EC2 &bull; 05</span>
                 <code style="font-size:10.5px; color:#475569;">gitea/gitea:1.22.3</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">Gitea v1.22.3 &mdash; AWS Federation Peer (<code>:3005</code>)</strong>
@@ -2339,7 +2386,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-amber" style="font-size:10.5px;">AWS EC2 &bull; 06</span>
+                <span class="badge badge-amber" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">AWS EC2 &bull; 06</span>
                 <code style="font-size:10.5px; color:#475569;">trinodb/trino:440</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">Trino Distributed SQL v440 &mdash; AWS Peer (<code>:3006</code>)</strong>
@@ -2354,7 +2401,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-amber" style="font-size:10.5px;">AWS EC2 &bull; 07</span>
+                <span class="badge badge-amber" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">AWS EC2 &bull; 07</span>
                 <code style="font-size:10.5px; color:#475569;">clickhouse/clickhouse-server:24.8</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">ClickHouse v24.8 &mdash; AWS Federation Peer (<code>:3007</code>)</strong>
@@ -2369,7 +2416,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-amber" style="font-size:10.5px;">AWS EC2 &bull; 08</span>
+                <span class="badge badge-amber" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">AWS EC2 &bull; 08</span>
                 <code style="font-size:10.5px; color:#475569;">directus/directus:11.1.0</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">Directus Data Studio v11.1.0 &mdash; AWS Peer (<code>:3008</code>)</strong>
@@ -2384,7 +2431,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-amber" style="font-size:10.5px;">AWS EC2 &bull; 09</span>
+                <span class="badge badge-amber" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">AWS EC2 &bull; 09</span>
                 <code style="font-size:10.5px; color:#475569;">datalust/seq:2024.3</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">Datalust Seq v2024.3 &mdash; AWS Federation Peer (<code>:3009</code>)</strong>
@@ -2399,7 +2446,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-amber" style="font-size:10.5px;">AWS EC2 &bull; 10</span>
+                <span class="badge badge-amber" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">AWS EC2 &bull; 10</span>
                 <code style="font-size:10.5px; color:#475569;">hashicorp/vault:1.13.3</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">HashiCorp Vault v1.13.3 &mdash; AWS Peer (<code>:3010</code>)</strong>
@@ -2415,7 +2462,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-green" style="font-size:10.5px;">AWS Console &bull; EC2</span>
+                <span class="badge badge-green" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">AWS Console &bull; EC2</span>
                 <code style="font-size:10.5px; color:#475569;">393036065405 / us-east-1</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">AWS EC2 Console &mdash; Running Host <code>i-04924523ac41ff132</code></strong>
@@ -2430,7 +2477,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-green" style="font-size:10.5px;">AWS Console &bull; Lambda</span>
+                <span class="badge badge-green" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">AWS Console &bull; Lambda</span>
                 <code style="font-size:10.5px; color:#475569;">393036065405 / us-east-1</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">AWS Lambda Console &mdash; <code>cymbal-a2a-mcp-remote-peer</code></strong>
@@ -2445,7 +2492,7 @@
             </div>
             <div class="genuine-3p-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span class="badge badge-green" style="font-size:10.5px;">AWS Console &bull; S3</span>
+                <span class="badge badge-green" style="font-size:10.5px; white-space:nowrap; flex-shrink:0;">AWS Console &bull; S3</span>
                 <code style="font-size:10.5px; color:#475569;">393036065405 / us-east-1</code>
               </div>
               <strong style="font-size:13px; color:#0f172a;">AWS S3 Console &mdash; <code>cymbal-10saas-ledger/</code> Prefix</strong>
@@ -2505,7 +2552,7 @@
                 <tbody>
                   <tr>
                     <td><strong>WS1</strong> &bull; 5-Hop Taxonomy &amp; Baseline</td>
-                    <td><a href="/?doc=blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md" onclick="selectGuidedWorkstream('WS1'); switchTab('patterns', document.getElementById('tab-btn-patterns')); return false;">ge-blogs-248990048888.cr.gclb.goog/?doc=ws1 &#8599;</a><br/><a href="https://a2a-gateway-248990048888.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">a2a-gateway-248990048888.cr.gclb.goog &#8599;</a></td>
+                    <td><a href="/?doc=blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md" onclick="openDocInReader('blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md'); return false;">ge-blogs-248990048888.cr.gclb.goog/?doc=ws1 &#8599;</a><br/><a href="https://a2a-gateway-248990048888.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">a2a-gateway-248990048888.cr.gclb.goog &#8599;</a></td>
                     <td><a href="https://console.cloud.google.com/vertex-ai/studio/multimodal?project=ramp-portal-dev" target="_blank" rel="noopener">Vertex AI Gemini 2.5 Router &#8599;</a><br/><a href="https://console.cloud.google.com/gen-app-builder/engines?project=ramp-portal-dev" target="_blank" rel="noopener" style="font-size:11.5px;">GE Engine enterprise-s2p-global &#8599;</a></td>
                     <td><a href="https://us-east-1.console.aws.amazon.com/bedrock/home?region=us-east-1#/agentcore/gateways" target="_blank" rel="noopener">Bedrock AgentCore MCP Gateway &#8599;</a></td>
                     <td><a href="https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit" target="_blank" rel="noopener">WS1 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS1 Native Google Doc &#8599;</a></td>
@@ -2513,7 +2560,7 @@
                   </tr>
                   <tr>
                     <td><strong>WS2</strong> &bull; Pattern A: Pooled RLS &amp; 3P OBO</td>
-                    <td><a href="/?doc=blogs/ws2-pattern-a-pooled-architecture.md" onclick="selectGuidedWorkstream('WS2'); switchTab('patterns', document.getElementById('tab-btn-patterns')); return false;">ge-blogs-248990048888.cr.gclb.goog/?doc=ws2 &#8599;</a><br/><a href="https://ge-demos-248990048888.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">ge-demos-248990048888.cr.gclb.goog &#8599;</a></td>
+                    <td><a href="/?doc=blogs/ws2-pattern-a-pooled-architecture.md" onclick="openDocInReader('blogs/ws2-pattern-a-pooled-architecture.md'); return false;">ge-blogs-248990048888.cr.gclb.goog/?doc=ws2 &#8599;</a><br/><a href="https://ge-demos-248990048888.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">ge-demos-248990048888.cr.gclb.goog &#8599;</a></td>
                     <td><a href="https://console.cloud.google.com/bigquery?project=cymbal-build-sandbox&amp;ws=!1m5!1m4!4m3!1scymbal-build-sandbox!2scymbal_agentic_finops_otel!3spattern_a_pooled_rls_entities" target="_blank" rel="noopener">BigQuery Pattern A RLS Table &#8599;</a></td>
                     <td><a href="https://us-east-1.console.aws.amazon.com/cognito/v2/idp/user-pools/us-east-1_vqlzYM74B/overview?region=us-east-1" target="_blank" rel="noopener">Cognito RS256 OBO Pool &#8599;</a><br/><span class="muted" style="font-size:11px;">ServiceNow CHG0049218 (200 OK)</span></td>
                     <td><a href="https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit" target="_blank" rel="noopener">WS2 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS2 Native Google Doc &#8599;</a></td>
@@ -2521,7 +2568,7 @@
                   </tr>
                   <tr>
                     <td><strong>WS3</strong> &bull; Pattern B: Sovereign Silos &amp; CMEK</td>
-                    <td><a href="/?doc=blogs/ws3-pattern-b-sovereign-silos.md" onclick="selectGuidedWorkstream('WS3'); switchTab('patterns', document.getElementById('tab-btn-patterns')); return false;">ge-blogs-248990048888.cr.gclb.goog/?doc=ws3 &#8599;</a><br/><a href="https://askaioce-248990048888.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">askaioce-248990048888.cr.gclb.goog &#8599;</a></td>
+                    <td><a href="/?doc=blogs/ws3-pattern-b-sovereign-silos.md" onclick="openDocInReader('blogs/ws3-pattern-b-sovereign-silos.md'); return false;">ge-blogs-248990048888.cr.gclb.goog/?doc=ws3 &#8599;</a><br/><a href="https://askaioce-248990048888.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">askaioce-248990048888.cr.gclb.goog &#8599;</a></td>
                     <td><a href="https://console.cloud.google.com/security/kms/keyring/manage/us-west1/cymbal-multi-tenant-kr?project=cymbal-build-sandbox" target="_blank" rel="noopener">Cloud KMS Keyring (4 Keys) &#8599;</a><br/><a href="https://console.cloud.google.com/bigquery?project=cymbal-build-sandbox&amp;ws=!1m5!1m4!4m3!1scymbal-build-sandbox!2scymbal_silo_finvault_usw1!3spattern_b_silo_finvault_cmek_vault" target="_blank" rel="noopener" style="font-size:11.5px;">BigQuery CMEK Silo Vault &#8599;</a></td>
                     <td><a href="https://us-east-1.console.aws.amazon.com/bedrock/home?region=us-east-1#/agentcore/runtimes" target="_blank" rel="noopener">Bedrock Dedicated Silo Runtime &#8599;</a><br/><span class="muted" style="font-size:11px;">Muse Study FV-GXP-2026-04 (200 OK)</span></td>
                     <td><a href="https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit" target="_blank" rel="noopener">WS3 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS3 Native Google Doc &#8599;</a></td>
@@ -2529,7 +2576,7 @@
                   </tr>
                   <tr>
                     <td><strong>WS4</strong> &bull; Pattern C: Hybrid PSC &amp; Cell Stamps</td>
-                    <td><a href="/?doc=blogs/ws4-pattern-c-hybrid-dynamic-tiering.md" onclick="selectGuidedWorkstream('WS4'); switchTab('patterns', document.getElementById('tab-btn-patterns')); return false;">ge-blogs-248990048888.cr.gclb.goog/?doc=ws4 &#8599;</a><br/><a href="https://promptcanvas-248990048888.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">promptcanvas-248990048888.cr.gclb.goog &#8599;</a></td>
+                    <td><a href="/?doc=blogs/ws4-pattern-c-hybrid-dynamic-tiering.md" onclick="openDocInReader('blogs/ws4-pattern-c-hybrid-dynamic-tiering.md'); return false;">ge-blogs-248990048888.cr.gclb.goog/?doc=ws4 &#8599;</a><br/><a href="https://promptcanvas-248990048888.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">promptcanvas-248990048888.cr.gclb.goog &#8599;</a></td>
                     <td><a href="https://console.cloud.google.com/networking/subnetworks/details/us-west1/cymbal-psc-nat-us-west1?project=cymbal-build-sandbox" target="_blank" rel="noopener">VPC /28 PSC NAT Subnet &#8599;</a><br/><a href="https://console.cloud.google.com/bigquery?project=cymbal-build-sandbox&amp;ws=!1m5!1m4!4m3!1scymbal-build-sandbox!2scymbal_agentic_finops_otel!3spattern_c_psc_endpoints_registry" target="_blank" rel="noopener" style="font-size:11.5px;">BigQuery PSC Migration Ledger &#8599;</a></td>
                     <td><a href="https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/cymbal-a2a-mcp-remote-peer" target="_blank" rel="noopener">Lambda Hop 5 GxP Guardrails &#8599;</a><br/><span class="muted" style="font-size:11px;">21 CFR Part 11 + 403 Block</span></td>
                     <td><a href="https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit" target="_blank" rel="noopener">WS4 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS4 Native Google Doc &#8599;</a></td>
@@ -2537,7 +2584,7 @@
                   </tr>
                   <tr>
                     <td><strong>WS5</strong> &bull; Decision Matrix, FinOps &amp; Triad</td>
-                    <td><a href="/?doc=blogs/ws5-decision-guide-and-agentic-triad.md" onclick="selectGuidedWorkstream('WS5'); switchTab('patterns', document.getElementById('tab-btn-patterns')); return false;">ge-blogs-248990048888.cr.gclb.goog/?doc=ws5 &#8599;</a><br/><a href="https://scorex-248990048888.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">scorex-248990048888.cr.gclb.goog &#8599;</a></td>
+                    <td><a href="/?doc=blogs/ws5-decision-guide-and-agentic-triad.md" onclick="openDocInReader('blogs/ws5-decision-guide-and-agentic-triad.md'); return false;">ge-blogs-248990048888.cr.gclb.goog/?doc=ws5 &#8599;</a><br/><a href="https://scorex-248990048888.cr.gclb.goog" target="_blank" rel="noopener" style="font-size:11.5px;">scorex-248990048888.cr.gclb.goog &#8599;</a></td>
                     <td><a href="https://console.cloud.google.com/bigquery?project=cymbal-build-sandbox&amp;ws=!1m5!1m4!4m3!1scymbal-build-sandbox!2scymbal_agentic_finops_otel!3stenant_telemetry_spans" target="_blank" rel="noopener">BigQuery OTel FinOps Ledger &#8599;</a></td>
                     <td><a href="https://us-east-1.console.aws.amazon.com/s3/buckets/cymbal-multi-tenant-audit-ledger-393036065405-us-east-1?region=us-east-1" target="_blank" rel="noopener">S3 Cross-Cloud Audit Ledger &#8599;</a></td>
                     <td><a href="https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit" target="_blank" rel="noopener">WS5 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit" target="_blank" rel="noopener" style="font-size:11.5px;">WS5 Native Google Doc &#8599;</a></td>
@@ -2801,6 +2848,7 @@
                 <td>
                   <span class="file-pill" onclick="openDocInReader('blogs/ws5-decision-guide-and-agentic-triad.md')">blogs/ws5-decision-guide-and-agentic-triad.md</span>
                   <span class="file-pill" onclick="openDocInReader('workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md')">5.1-pattern-comparison-and-decision-guide.md</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md')">5.2-capstone-backlog-and-ga-roadmap.md</span>
                   <span class="file-pill" onclick="openDocInReader('docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md')">docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md</span>
                   <span class="file-pill" onclick="viewArtifact('core-cymbal-agent/runtime_pipeline.py')">core-cymbal-agent/runtime_pipeline.py</span>
                   <span class="file-pill" onclick="viewArtifact('diagrams/diagrams_manifest.json')">diagrams/diagrams_manifest.json</span>
@@ -3573,8 +3621,27 @@
       return breadcrumbsHtml + wrappedSectionsHtml;
     }
 
+    const DOC_SHORT_ALIASES = {
+      'ws1': 'blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md',
+      'ws2': 'blogs/ws2-pattern-a-pooled-architecture.md',
+      'ws3': 'blogs/ws3-pattern-b-sovereign-silos.md',
+      'ws4': 'blogs/ws4-pattern-c-hybrid-dynamic-tiering.md',
+      'ws5': 'blogs/ws5-decision-guide-and-agentic-triad.md',
+      'all': 'docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md',
+      'guide': 'docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md',
+      'runbook': 'docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md',
+      '5.2': 'workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md',
+      'backlog': 'workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md'
+    };
+
+    function resolveDocAlias(p) {
+      const cleaned = normalizeRepoPath(p);
+      return DOC_SHORT_ALIASES[cleaned.toLowerCase()] || cleaned;
+    }
+    window.resolveDocAlias = resolveDocAlias;
+
     function openDocInReader(relPath, anchorHash) {
-      relPath = normalizeRepoPath(relPath);
+      relPath = resolveDocAlias(relPath);
       const wsKey = inferWorkstreamFromDocPath(relPath);
       switchTab('patterns', document.getElementById('tab-btn-patterns'));
       if (wsKey && GUIDED_WORKSTREAMS[wsKey] && wsKey !== activeHubWsKey) {
@@ -4026,6 +4093,7 @@
         docs: [
           { label: '📘 Main Blog Guide', path: 'blogs/ws5-decision-guide-and-agentic-triad.md' },
           { label: '🧭 Decision Guide (5.1)', path: 'workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md' },
+          { label: '🗺️ Capstone Backlog & GA Roadmap (5.2)', path: 'workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md' },
           { label: '📚 Master E2E Guide', path: 'docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md' }
         ],
         diagrams: [
@@ -4441,6 +4509,7 @@
     }
 
     async function loadHubBlogDoc(relPath, anchorHash) {
+      relPath = resolveDocAlias(relPath);
       activeHubDocPath = relPath;
       const ws = GUIDED_WORKSTREAMS[activeHubWsKey];
       const switcher = document.getElementById('hub-doc-switcher');
@@ -4961,7 +5030,21 @@
             </div>
           </div>
           <div style="width:100%; background:#ffffff; border-radius:10px; padding:6px; box-shadow:0 20px 50px rgba(0,0,0,0.65); border:2px solid ${slideObj.editable ? '#18c964' : '#444746'};">
-            <img src="${imgUrl}" alt="Slide ${slideObj.num}" style="width:100%; height:auto; display:block; border-radius:6px;" />
+            <img src="${imgUrl}" alt="Slide ${slideObj.num}" style="width:100%; height:auto; display:block; border-radius:6px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <div style="display:none; flex-direction:column; justify-content:space-between; min-height:360px; padding:28px 32px; background:linear-gradient(135deg,#f8fafc 0%,#eef2ff 100%); color:#0f172a; border-radius:6px; border:1px solid #cbd5e1;">
+              <div>
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:14px;">
+                  <span class="badge badge-blue">GOOGLE CLOUD ARCHITECTURE CENTER • SLIDE ${slideObj.num} OF ${total}</span>
+                  <span class="badge badge-green">100% EDITABLE .PPTX / GOOGLE SLIDES</span>
+                </div>
+                <h3 style="margin:0 0 10px 0; font-size:20px; color:#0f172a;">${escapeHtml(slideObj.label)}</h3>
+                <p style="margin:0; font-size:14px; color:#334155; line-height:1.6;">${escapeHtml(slideObj.desc)}</p>
+              </div>
+              <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; padding-top:14px; border-top:1px solid #cbd5e1;">
+                <button type="button" class="pc-toolbar-btn active" onclick="openInGoogleWorkspace('${cvWsKey}', 'slides', ${slideObj.num})">Open Slide #${slideObj.num} in Google Slides ↗</button>
+                <a href="${ws.pptxPath}" download class="sim-btn" style="text-decoration:none;">Download Editable .pptx (${total} Slides)</a>
+              </div>
+            </div>
           </div>
           ${(() => {
             const notesArr = (typeof HUMAN_READABLE_SPEAKER_NOTES !== "undefined" && HUMAN_READABLE_SPEAKER_NOTES[cvWsKey]) || [];
@@ -6373,7 +6456,46 @@
       } catch (_) {}
     });
 
-    // Check API health on load
+    // BeyondCorp / GCLB UberProxy (maxAge=1200) 20-min SSO expiry handler
+    window.__showBeyondCorpSessionExpiredBanner = function showBeyondCorpSessionExpiredBanner() {
+      if (document.getElementById('beyondcorp-sso-banner')) return;
+      const banner = document.createElement('div');
+      banner.id = 'beyondcorp-sso-banner';
+      banner.setAttribute('role', 'alert');
+      banner.style.cssText = 'position:sticky;top:0;z-index:10050;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 20px;background:#fffbeb;border-bottom:1.5px solid #f59e0b;color:#7c4d00;font-size:13px;font-weight:600;box-shadow:0 2px 8px rgba(15,23,42,0.08);';
+      banner.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span aria-hidden="true">&#128274;</span>
+          <span>BeyondCorp SSO Session Expired (20-min UberProxy <code>authLevel=2000000</code> window) &mdash; Re-authenticate via corp login / Ubikey to restore live API &amp; persistence.</span>
+        </div>
+        <button type="button" onclick="window.location.reload()" style="background:#b45309;color:#ffffff;border:none;border-radius:6px;padding:6px 14px;font-size:12.5px;font-weight:700;cursor:pointer;">Refresh BeyondCorp Session &#8635;</button>
+      `;
+      document.body.insertBefore(banner, document.body.firstChild);
+    };
+
+    (function installBeyondCorpFetchGuard() {
+      if (typeof window.fetch !== 'function' || window.__beyondCorpFetchGuardInstalled) return;
+      window.__beyondCorpFetchGuardInstalled = true;
+      const origFetch = window.fetch.bind(window);
+      window.fetch = async function guardedFetch(input, init) {
+        const urlStr = typeof input === 'string' ? input : (input && input.url ? input.url : '');
+        const isApiCall = urlStr.startsWith('/api/') || urlStr.startsWith(window.location.origin + '/api/');
+        try {
+          const resp = await origFetch(input, init);
+          if (isApiCall && (resp.type === 'opaqueredirect' || (window.location.hostname.endsWith('.cr.gclb.goog') && (resp.status === 401 || resp.status === 403)))) {
+            window.__showBeyondCorpSessionExpiredBanner();
+          }
+          return resp;
+        } catch (err) {
+          if (isApiCall && window.location.hostname.endsWith('.cr.gclb.goog')) {
+            window.__showBeyondCorpSessionExpiredBanner();
+          }
+          throw err;
+        }
+      };
+    })();
+
+    // Check API health & BeyondCorp IAP identity on load
     (async function checkHealth() {
       const badge = document.getElementById('api-status-badge');
       if (!badge) return;
@@ -6383,6 +6505,28 @@
         if (d && d.status === 'HEALTHY') {
           badge.textContent = `● Live Python API (${d.deliverable_file_count} Deliverables)`;
           badge.className = 'sr-only';
+          if (d.authenticated_user && d.authenticated_user.iap_verified && d.authenticated_user.email) {
+            let hasManualOverride = false;
+            try { hasManualOverride = Boolean(localStorage.getItem('ge_blogs_active_actor_v1')); } catch (_) {}
+            if (!hasManualOverride) {
+              portalActiveActor = {
+                name: d.authenticated_user.name || portalActiveActor.name,
+                email: d.authenticated_user.email,
+                role: d.authenticated_user.role || portalActiveActor.role,
+                avatarColor: '#1a73e8',
+                iapVerified: true
+              };
+              syncActorUiElements();
+            }
+            try {
+              if (!localStorage.getItem('ufw_last_sender_name') && d.authenticated_user.name) {
+                localStorage.setItem('ufw_last_sender_name', d.authenticated_user.name);
+              }
+              if (!localStorage.getItem('ufw_last_sender_email') && d.authenticated_user.email) {
+                localStorage.setItem('ufw_last_sender_email', d.authenticated_user.email);
+              }
+            } catch (_) {}
+          }
         }
       } catch (_) {
         badge.textContent = '○ Static Mode (Run python3 -B server.py)';
