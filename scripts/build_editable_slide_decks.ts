@@ -8821,6 +8821,9 @@ if (process.argv[1] && process.argv[1].endsWith('build_editable_slide_decks.ts')
 export {
   main,
   appendGoogleBrandedDiagramSlides,
+  addArchitectureZoneTopologySlide,
+  addUmlSequenceSwimlaneSlide,
+  addPayloadTransformationTriptychSlide,
   addHeaderBar,
   addFooter,
   newDeck,

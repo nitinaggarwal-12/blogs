@@ -3,6 +3,10 @@ import * as path from 'path';
 import {
   newDeck,
   appendGoogleBrandedDiagramSlides,
+  addArchitectureZoneTopologySlide,
+  addUmlSequenceSwimlaneSlide,
+  addPayloadTransformationTriptychSlide,
+  DECKS,
   addHeaderBar,
   addFooter,
   PptxGenJS,
@@ -48,7 +52,7 @@ const G_YELLOW_LIGHT = 'FEF7E0';
 const G_GREEN_LIGHT = 'E6F4EA';
 const G_RED_DEEP = 'C5221F';
 const G_GREEN_DEEP = '137333';
-const TOTAL_SLIDES = 23;
+const TOTAL_SLIDES = 26;
 
 function addHeader(slide: any, category: string, title: string, slideNum: number, totalSlides: number = TOTAL_SLIDES) {
   // Category Pill
@@ -497,9 +501,16 @@ function buildSlide05() {
 
 
 // ============================================================================
-// SLIDE 06: Reference Blueprint 1 (100% DECOMPOSED NATIVE EDITABLE DRAWINGML)
+// SLIDE 06: L1 Logical Security Taxonomy (100% NATIVE EDITABLE DRAWINGML)
 // ============================================================================
-async function buildSlide06() {
+function buildSlide06_L1Logical() {
+  addArchitectureZoneTopologySlide(pptx, DECKS[0]);
+}
+
+// ============================================================================
+// SLIDE 07: Reference Blueprint 1 (100% DECOMPOSED NATIVE EDITABLE DRAWINGML)
+// ============================================================================
+async function buildSlide07_Figure1() {
   const xmlPath = path.join(ROOT_DIR, 'diagrams', 'ws1-multi-tenant-taxonomy-overview.drawio');
   const xmlContent = fs.readFileSync(xmlPath, 'utf8');
   await appendGoogleBrandedDiagramSlides(
@@ -523,9 +534,9 @@ async function buildSlide06() {
 }
 
 // ============================================================================
-// SLIDE 07: Reference Blueprint 2 (100% DECOMPOSED NATIVE EDITABLE DRAWINGML)
+// SLIDE 08: Reference Blueprint 2 (100% DECOMPOSED NATIVE EDITABLE DRAWINGML)
 // ============================================================================
-async function buildSlide07() {
+async function buildSlide08_Figure2() {
   const xmlPath = path.join(ROOT_DIR, 'diagrams', 'ws1-cloud-arch-center-5hop-baseline.drawio');
   const xmlContent = fs.readFileSync(xmlPath, 'utf8');
   await appendGoogleBrandedDiagramSlides(
@@ -549,9 +560,23 @@ async function buildSlide07() {
   );
 }
 
-function buildSlide08() {
+// ============================================================================
+// SLIDE 09: L3 Process Swimlane (100% NATIVE EDITABLE DRAWINGML)
+// ============================================================================
+function buildSlide09_L3Process() {
+  addUmlSequenceSwimlaneSlide(pptx, DECKS[0]);
+}
+
+// ============================================================================
+// SLIDE 10: L4 Wire Payload Transformation (100% NATIVE EDITABLE DRAWINGML)
+// ============================================================================
+function buildSlide10_L4Wire() {
+  addPayloadTransformationTriptychSlide(pptx, DECKS[0]);
+}
+
+function buildSlide11_CircuitBreakers() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT II • CIRCUIT BREAKERS', 'L3 Process Architecture: Explicit Fail-Closed Security Circuit Breakers', 8);
+  addHeader(slide, 'ACT II • CIRCUIT BREAKERS', 'L3 Process Architecture: Explicit Fail-Closed Security Circuit Breakers', 11);
 
   slide.addText('Zero-trust systems must fail closed. Five distinct HTTP circuit breakers guarantee deterministic rejection without data leaks.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -601,7 +626,7 @@ function buildSlide08() {
 // ============================================================================
 // SLIDE 09: Empirical Proofs: Native Editable DrawingML Audit Tables
 // ============================================================================
-function buildSlide09() {
+function buildSlide12_AlloyDbRls() {
   const slide = pptx.addSlide();
   addHeader(slide, 'ACT III • EMPIRICAL PROOFS', 'Empirical Verification: Metabase BI & Trino SQL Tenant Isolation (Native Table)', 9);
 
@@ -731,7 +756,7 @@ function buildSlide09() {
 // ============================================================================
 // SLIDE 10: Executive Decision Flowchart
 // ============================================================================
-function buildSlide10() {
+function buildSlide13_FinOpsValkey() {
   const slide = pptx.addSlide();
   addHeader(slide, 'ACT III • DECISION GUIDE', 'Executive Decision Tree: Selecting the Optimal Multi-Tenant Topology', 10);
 
@@ -797,7 +822,7 @@ function buildSlide10() {
 // ============================================================================
 // SLIDE 11: Value Realization: The 4-Pillar Quantitative ROI Scorecard
 // ============================================================================
-function buildSlide11() {
+function buildSlide14_Simulation() {
   const slide = pptx.addSlide();
   addHeader(slide, 'ACT III • VALUE REALIZATION', 'Value Realization: The 4-Pillar Quantitative ROI Scorecard', 11);
 
@@ -843,9 +868,9 @@ function buildSlide11() {
 // ============================================================================
 // SLIDE 12: 10-Week Implementation Roadmap & Executive CTA
 // ============================================================================
-function buildSlide12() {
+function buildSlide15_Roadmap() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • ACTION PLAN', '10-Week Enterprise Implementation Roadmap & Companion Resources', 12);
+  addHeader(slide, 'ACT III • ACTION PLAN', '10-Week Enterprise Implementation Roadmap & Companion Resources', 15);
 
   slide.addText('Structured enterprise rollout plan to take multi-tenant agentic AI from architecture to production GA.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -1023,9 +1048,9 @@ function buildBeforeAfterSaasSlide(cfg: SaasProofConfig) {
 }
 
 // SLIDE 13: Proof 1 — Metabase Enterprise BI v0.50.26
-function buildSlide13() {
+function buildSlide25() {
   buildBeforeAfterSaasSlide({
-    slideNum: 13,
+    slideNum: 25,
     proofNum: 1,
     saasName: 'Metabase Enterprise BI',
     title: 'Proof 1: Metabase Enterprise BI v0.50.26 — Tenant Analytics & Dashboard Isolation',
@@ -1042,9 +1067,9 @@ function buildSlide13() {
 }
 
 // SLIDE 14: Proof 2 — Trino Distributed SQL v440
-function buildSlide14() {
+function buildSlide26() {
   buildBeforeAfterSaasSlide({
-    slideNum: 14,
+    slideNum: 23,
     proofNum: 2,
     saasName: 'Trino Distributed SQL',
     title: 'Proof 2: Trino Distributed SQL v440 — Federated Catalog & Query Scoping',
@@ -1061,9 +1086,9 @@ function buildSlide14() {
 }
 
 // SLIDE 15: Proof 3 — Grafana Enterprise v11
-function buildSlide15() {
+function buildSlide24() {
   buildBeforeAfterSaasSlide({
-    slideNum: 15,
+    slideNum: 24,
     proofNum: 3,
     saasName: 'Grafana Enterprise',
     title: 'Proof 3: Grafana Enterprise v11 — Multi-Tenant Telemetry & Metrics Isolation',
@@ -1215,7 +1240,7 @@ function buildSlide22() {
 // SLIDE 23: Complete 10-SaaS Multi-Cloud Verification Matrix & Benchmark Summary
 function buildSlide23() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT V • VERIFICATION MATRIX', 'Quantified Multi-Cloud SaaS Isolation Scorecard & 10/10 Verification Matrix', 23);
+  addHeader(slide, 'ACT V • VERIFICATION MATRIX', 'Quantified Multi-Cloud SaaS Isolation Scorecard & 10/10 Verification Matrix', 26);
 
   slide.addText('Empirical production benchmarks verified across 10 third-party SaaS stacks on Google Cloud Run Gen2 and AWS EC2 (30/30 Test Assertions Passed).', {
     x: 0.6, y: 0.82, w: 12.133, h: 0.36, fontSize: 10.2, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -1289,26 +1314,26 @@ function buildSlide23() {
   });
 }
 
-// Build all 23 slides
-console.log('Compiling 100% native DrawingML editable 23-slide executive presentation with genuine Before/After SaaS proofs...');
+// Build all 26 slides
+console.log('Compiling 100% native DrawingML editable 26-slide executive presentation with L1 Logical, L2 Network, L3 Process, L4 Wire, and 10 SaaS Proofs...');
 
 async function main() {
-  console.log('🎞️  Building WS1 23-Slide Visual Deck with 100% Native Decompiled DrawingML Diagrams & 10 Genuine SaaS Before/After Pairs...');
+  console.log('🎞️  Building WS1 26-Slide Visual Deck with 100% Native Decompiled DrawingML Diagrams (L1, L2, L3, L4) & 10 Genuine SaaS Proofs...');
   buildSlide01();
   buildSlide02();
   buildSlide03();
   buildSlide04();
   buildSlide05();
-  await buildSlide06();
-  await buildSlide07();
-  buildSlide08();
-  buildSlide09();
-  buildSlide10();
-  buildSlide11();
-  buildSlide12();
-  buildSlide13();
-  buildSlide14();
-  buildSlide15();
+  buildSlide06_L1Logical();
+  await buildSlide07_Figure1();
+  await buildSlide08_Figure2();
+  buildSlide09_L3Process();
+  buildSlide10_L4Wire();
+  buildSlide11_CircuitBreakers();
+  buildSlide12_AlloyDbRls();
+  buildSlide13_FinOpsValkey();
+  buildSlide14_Simulation();
+  buildSlide15_Roadmap();
   buildSlide16();
   buildSlide17();
   buildSlide18();
@@ -1317,9 +1342,12 @@ async function main() {
   buildSlide21();
   buildSlide22();
   buildSlide23();
+  buildSlide24();
+  buildSlide25();
+  buildSlide26();
 
   await pptx.writeFile({ fileName: OUTPUT_PPTX });
-  console.log(`✅ Successfully compiled ${OUTPUT_PPTX} (23 slides [100% Real Decompiled DrawingML Diagrams + 10 Genuine SaaS Proofs + Scorecard])`);
+  console.log(`✅ Successfully compiled ${OUTPUT_PPTX} (26 slides [100% Real DrawingML Diagrams (L1, L2x2, L3, L4) + 10 Genuine SaaS Proofs + Scorecard])`);
 
   postProcessPptxArrowheadsForGoogleSlides();
   console.log('✅ Post-processed arrowheads and connectors for Google Slides compatibility');
