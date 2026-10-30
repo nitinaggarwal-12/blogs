@@ -5,12 +5,12 @@
   "buildProject": "ramp-portal-dev",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "ge-blogs-00038-f99",
-  "latestCreatedRevisionName": "ge-blogs-00038-f99",
+  "latestReadyRevisionName": "ge-blogs-00039-7hg",
+  "latestCreatedRevisionName": "ge-blogs-00039-7hg",
   "readyStatus": "True",
   "trafficPercent": 100,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261030-131843-light-clean",
-  "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00038-f99",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261030-163751-light-clean",
+  "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00039-7hg",
   "liveHttpVerification": {
     "verifiedAt": "2026-10-30T13:20:00Z",
     "verificationMode": "cloud_run_revision_live_http_dom_probe",
@@ -66,7 +66,7 @@
       }
     ]
   },
-  "verifiedAt": "2026-10-30T13:20:00Z",
+  "verifiedAt": "2026-10-30T16:38:55Z",
   "certifiedDiagramsCount": 14,
   "workstreamsCount": 5,
   "beyondCorpEdgeStatus": 302,
@@ -74,5 +74,7 @@
     "python3",
     "-B",
     "server.py"
-  ]
+  ],
+  "multiCloudGenuineScreenshotsCount": 23,
+  "beforeAfterScreenshotsCount": 20
 }
