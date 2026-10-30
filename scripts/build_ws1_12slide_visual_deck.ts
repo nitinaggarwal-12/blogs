@@ -396,6 +396,16 @@ function buildSlide02_Agenda() {
       fontSize: 8.0, bold: true, color: a.color, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
     });
   });
+
+  // Bottom Architecture Abstraction Bar
+  slide.addShape(pptx.ShapeType.roundRect, {
+    x: 0.6, y: 6.95, w: 12.133, h: 0.38, rectRadius: 0.05,
+    fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
+  });
+  slide.addText('ARCHITECTURE ABSTRACTION HIERARCHY:  L1 Logical Security (Slide 8)  ➔  L2 Physical DrawingML (Slides 9–10)  ➔  L3 Process Swimlane (Slide 12)  ➔  L4 Wire Protocol (Slide 13)  ➔  L5 Database RLS (Slide 15)', {
+    x: 0.8, y: 6.95, w: 11.7, h: 0.38,
+    fontSize: 7.8, bold: true, color: TEXT_MUTED, fontFace: FONT_TITLE, valign: 'middle'
+  });
 }
 
 // ============================================================================
@@ -758,7 +768,7 @@ async function buildSlide09_Figure1() {
     pptx,
     xmlContent,
     'WS1',
-    'Figure 1',
+    'WS1 • ACT II: Figure 1',
     'Vertex AI Agent Engine Multi-Tenant Taxonomy: Pooled (A), Sovereign Silos (B) & Hybrid (C)',
     'ws1-multi-tenant-taxonomy-overview',
     undefined,
@@ -784,7 +794,7 @@ async function buildSlide10_Figure2() {
     pptx,
     xmlContent,
     'WS1',
-    'Figure 2',
+    'WS1 • ACT II: Figure 2',
     'Google Cloud Architecture Center (#78): Multi-Tenant Agentic AI with 5-Hop Governance',
     'ws1-cloud-arch-center-5hop-baseline',
     undefined,
