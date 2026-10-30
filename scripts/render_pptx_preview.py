@@ -303,7 +303,7 @@ def render_slide(zf, slide_path, rels, out_html):
     html,body{{margin:0;padding:0;width:1280px;height:720px;overflow:hidden;background:{bg_color};font-family:Arial,Helvetica,sans-serif}}
     .slide{{position:relative;width:1280px;height:720px;background:{bg_color}}}
     .sp,.pic,.tbl{{position:absolute;box-sizing:border-box}}
-    .pic{{object-fit:fill}}
+    .pic{{object-fit:contain}}
     </style></head><body><div class="slide">{"".join(ordered)}</div></body></html>"""
     Path(out_html).write_text(doc, encoding="utf-8")
 

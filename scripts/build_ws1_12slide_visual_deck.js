@@ -497,35 +497,36 @@ function buildSlide06() {
   addHeader(slide, 'ACT II • REFERENCE BLUEPRINT', 'Conceptual Architecture: Multi-Tenant Hub-and-Spoke Governance', 6);
 
   const diagPath = path.join(ROOT_DIR, 'diagrams', 'ws1-multi-tenant-taxonomy-overview.drawio.png');
+  // Native aspect ratio: 2400 x 2820 = 0.85106. With h = 5.90", w = 5.02" (zero distortion)
   if (fs.existsSync(diagPath)) {
     slide.addImage({
       path: diagPath,
-      x: 0.6, y: 0.95, w: 7.8, h: 5.9
+      x: 0.8, y: 0.95, w: 5.02, h: 5.90
     });
   } else {
     slide.addShape(pptx.ShapeType.rect, {
-      x: 0.6, y: 0.95, w: 7.8, h: 5.9, fill: { color: G_GREY_BG }, line: { color: G_BLUE, width: 1 }
+      x: 0.8, y: 0.95, w: 5.02, h: 5.90, fill: { color: G_GREY_BG }, line: { color: G_BLUE, width: 1 }
     });
   }
 
-  // Right Side: 3 Key Callout Cards
+  // Right Side: 3 Key Callout Cards (widened to 6.4" to fill the canvas naturally)
   const callouts = [
-    { title: 'ROUTING HUB', color: G_BLUE, text: 'Central ingress layer running Cloud Armor L7 WAF and Identity-Aware Proxy to strip untrusted caller headers.' },
-    { title: 'GOVERNANCE HUB', color: G_YELLOW, text: 'Vertex AI Agent Engine catalog and Cloud KMS verifying tenant capability tokens in <0.15ms.' },
-    { title: 'SPOKE ISOLATION', color: G_GREEN, text: 'PSC endpoints establishing zero-trust private channels into customer VPCs with zero public egress.' }
+    { title: 'ROUTING HUB (HOP 1 PEP)', color: G_BLUE, text: 'Central ingress layer running Cloud Armor L7 WAF and Identity-Aware Proxy. Strips client-supplied X-Tenant-ID headers and performs IAM STS token exchange to mint an ECDSA P-256 signed TenantContext in <0.15ms.' },
+    { title: 'GOVERNANCE HUB (HOP 2 PDP)', color: G_YELLOW, text: 'Discovery Engine and Vertex AI Agent Engine catalog. Evaluates tenant capability grants and prunes unauthorized tools from the system prompt via ADK before_agent_callback, preventing confused deputy attacks.' },
+    { title: 'SPOKE ISOLATION (PSC TRANSIT)', color: G_GREEN, text: 'Private Service Connect endpoints establish zero-trust, unidirectional private channels into customer-owned VPCs. Completely blocks 0.0.0.0/0 public internet egress for sovereign data lake access.' }
   ];
 
   callouts.forEach((c, i) => {
-    const cy = 0.95 + i * 2.05;
+    const cy = 0.95 + i * 2.0;
     slide.addShape(pptx.ShapeType.roundRect, {
-      x: 8.7, y: cy, w: 4.0, h: 1.85, rectRadius: 0.08,
+      x: 6.3, y: cy, w: 6.4, h: 1.85, rectRadius: 0.08,
       fill: { color: WHITE }, line: { color: c.color, width: 1.5 }
     });
     slide.addText(c.title, {
-      x: 8.9, y: cy + 0.15, w: 3.6, h: 0.3, fontSize: 10.5, bold: true, color: c.color, fontFace: FONT_TITLE
+      x: 6.55, y: cy + 0.15, w: 5.9, h: 0.32, fontSize: 11, bold: true, color: c.color, fontFace: FONT_TITLE
     });
     slide.addText(c.text, {
-      x: 8.9, y: cy + 0.5, w: 3.6, h: 1.2, fontSize: 9, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
+      x: 6.55, y: cy + 0.52, w: 5.9, h: 1.2, fontSize: 9.5, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.25
     });
   });
 }
@@ -668,11 +669,12 @@ function buildSlide09() {
   const imgBefore1 = path.join(ROOT_DIR, 'screenshots', 'genuine-multicloud-3p-uis', 'before-after', 'before_01_metabase_bi.png');
   const imgAfter1 = path.join(ROOT_DIR, 'screenshots', 'genuine-multicloud-3p-uis', 'before-after', 'after_01_metabase_bi.png');
 
+  // Native aspect ratio: 2880 x 1800 = 1.6000 (16:10 Retina). With w = 5.80", h = 3.625" (zero distortion)
   if (fs.existsSync(imgBefore1)) {
-    slide.addImage({ path: imgBefore1, x: 0.6, y: 1.35, w: 5.7, h: 4.2 });
+    slide.addImage({ path: imgBefore1, x: 0.6, y: 1.35, w: 5.80, h: 3.625 });
   }
   if (fs.existsSync(imgAfter1)) {
-    slide.addImage({ path: imgAfter1, x: 7.033, y: 1.35, w: 5.7, h: 4.2 });
+    slide.addImage({ path: imgAfter1, x: 6.933, y: 1.35, w: 5.80, h: 3.625 });
   }
 
   // Overlay Badges
@@ -684,22 +686,22 @@ function buildSlide09() {
   });
 
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 7.233, y: 1.55, w: 3.2, h: 0.4, rectRadius: 0.05, fill: { color: G_GREEN }
+    x: 7.133, y: 1.55, w: 3.2, h: 0.4, rectRadius: 0.05, fill: { color: G_GREEN }
   });
   slide.addText('✔ AFTER: STRICT RLS ISOLATION', {
-    x: 7.233, y: 1.55, w: 3.2, h: 0.4, fontSize: 9, bold: true, color: WHITE, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
+    x: 7.133, y: 1.55, w: 3.2, h: 0.4, fontSize: 9, bold: true, color: WHITE, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
   });
 
-  // Bottom Takeaway
+  // Bottom Takeaway (Placed at y = 5.20, h = 1.65 with ample vertical padding)
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 0.6, y: 5.75, w: 12.133, h: 1.15, rectRadius: 0.08,
+    x: 0.6, y: 5.20, w: 12.133, h: 1.65, rectRadius: 0.08,
     fill: { color: G_BLUE_LIGHT }, line: { color: G_BLUE, width: 1 }
   });
   slide.addText('VERIFIED AUDIT RESULT: ZERO CROSS-TENANT DATA CONTAMINATION', {
-    x: 0.9, y: 5.9, w: 11.5, h: 0.3, fontSize: 11, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE
+    x: 0.9, y: 5.35, w: 11.5, h: 0.35, fontSize: 11, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE
   });
   slide.addText('Under automated red-team fuzzing across 10,000 synthetic reasoning turns, AlloyDB RLS session variable enforcement perfectly constrained query execution to the authenticated tenant context with 0 leaked rows.', {
-    x: 0.9, y: 6.25, w: 11.5, h: 0.55, fontSize: 10, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
+    x: 0.9, y: 5.75, w: 11.5, h: 0.95, fontSize: 10, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.25
   });
 }
 
