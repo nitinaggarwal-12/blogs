@@ -6539,7 +6539,7 @@ const STATE_PIPELINE_BY_WS: Record<string, StateFlowPipelineSpec> = {
   },
 };
 
-function addAsyncStateFlowPipelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
+export function addAsyncStateFlowPipelineSlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
   const cfg = STATE_PIPELINE_BY_WS[spec.key] || STATE_PIPELINE_BY_WS.WS1;
   const slide = pptx.addSlide();
   slide.background = { color: WHITE };
@@ -7225,7 +7225,7 @@ const OPERATING_MODEL_BY_WS: Record<string, OperatingModelSpec> = {
   },
 };
 
-function addStrategicOperatingModelPillarsSlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
+export function addStrategicOperatingModelPillarsSlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
   const cfg = OPERATING_MODEL_BY_WS[spec.key] || OPERATING_MODEL_BY_WS.WS1;
   const slide = pptx.addSlide();
   slide.background = { color: WHITE };
@@ -7605,7 +7605,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
   },
 };
 
-function addLiveScreenshotCalloutSlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
+export function addLiveScreenshotCalloutSlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
   const slide = pptx.addSlide();
   slide.background = { color: WHITE };
   addHeaderBar(
