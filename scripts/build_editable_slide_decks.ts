@@ -4709,11 +4709,11 @@ const ZONE_TOPOLOGY_BY_WS: Record<string, ZoneTopologySpec> = {
   },
 };
 
-function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
+function addArchitectureZoneTopologySlide(pptx: Pptx, spec: DeckSpec, customTitle?: string): { shapes: number; connectors: number } {
   const cfg = ZONE_TOPOLOGY_BY_WS[spec.key] || ZONE_TOPOLOGY_BY_WS.WS1;
   const slide = pptx.addSlide();
   slide.background = { color: WHITE };
-  addHeaderBar(pptx, slide, spec.key, cfg.slideTitle, 'ARCHITECTURE-ZONE-TOPOLOGY');
+  addHeaderBar(pptx, slide, spec.key, customTitle || cfg.slideTitle, 'ARCHITECTURE-ZONE-TOPOLOGY');
 
   const ACRONYMS: Record<string, string> = {
     VPC: 'VPC', PSC: 'PSC', GKE: 'GKE', SAAS: 'SaaS', CMEK: 'CMEK', KMS: 'KMS', IAM: 'IAM', PAB: 'PAB',
@@ -5417,11 +5417,11 @@ const PAYLOAD_TRIPTYCH_BY_WS: Record<string, PayloadTriptychSpec> = {
   },
 };
 
-function addPayloadTransformationTriptychSlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
+function addPayloadTransformationTriptychSlide(pptx: Pptx, spec: DeckSpec, customTitle?: string): { shapes: number; connectors: number } {
   const cfg = PAYLOAD_TRIPTYCH_BY_WS[spec.key] || PAYLOAD_TRIPTYCH_BY_WS.WS1;
   const slide = pptx.addSlide();
   slide.background = { color: WHITE };
-  addHeaderBar(pptx, slide, spec.key, cfg.slideTitle, 'PAYLOAD-TRANSFORMATION');
+  addHeaderBar(pptx, slide, spec.key, customTitle || cfg.slideTitle, 'PAYLOAD-TRANSFORMATION');
 
   slide.addText(
     cfg.subtitle,
@@ -5938,11 +5938,11 @@ const UML_SEQUENCE_BY_WS: Record<string, UmlSequenceSpec> = {
   },
 };
 
-function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec): { shapes: number; connectors: number } {
+function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec, customTitle?: string): { shapes: number; connectors: number } {
   const cfg = UML_SEQUENCE_BY_WS[spec.key] || UML_SEQUENCE_BY_WS.WS1;
   const slide = pptx.addSlide();
   slide.background = { color: WHITE };
-  addHeaderBar(pptx, slide, spec.key, cfg.slideTitle, 'UML-SEQUENCE-SWIMLANE');
+  addHeaderBar(pptx, slide, spec.key, customTitle || cfg.slideTitle, 'UML-SEQUENCE-SWIMLANE');
 
   const actorXs = [1.05, 3.35, 5.65, 7.95, 10.45];
   const actorColors = [EXEC_NAVY, EXEC_TEAL, EXEC_SLATE, '38988E', EXEC_NAVY];

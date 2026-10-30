@@ -825,17 +825,25 @@ function buildSlide11_Act3Breaker() {
 }
 
 // ============================================================================
-// SLIDE 12: L3 Process Swimlane
+// SLIDE 12: L3 Process Swimlane (ACT III)
 // ============================================================================
 function buildSlide12_L3Process() {
-  addUmlSequenceSwimlaneSlide(pptx, DECKS[0]);
+  addUmlSequenceSwimlaneSlide(
+    pptx,
+    DECKS[0],
+    'WS1 • ACT III (L3 PROCESS): 5-Actor UML Sequence, Fail-Closed Circuit Breakers & Stampede Recovery'
+  );
 }
 
 // ============================================================================
-// SLIDE 13: L4 Wire Payload Transformation
+// SLIDE 13: L4 Wire Payload Transformation (ACT III)
 // ============================================================================
 function buildSlide13_L4Wire() {
-  addPayloadTransformationTriptychSlide(pptx, DECKS[0]);
+  addPayloadTransformationTriptychSlide(
+    pptx,
+    DECKS[0],
+    'WS1 • ACT III (L4 WIRE): Hop 1 Spoofed Header Stripping & Signed STS JWT Context'
+  );
 }
 
 // ============================================================================
