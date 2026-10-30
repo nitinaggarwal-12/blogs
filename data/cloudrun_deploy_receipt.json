@@ -1,30 +1,30 @@
 {
   "serviceName": "ge-blogs",
   "beyondCorpUrl": "https://ge-blogs-248990048888.cr.gclb.goog",
-  "directCloudRunUrl": "https://ge-blogs-mi7l4h536a-uw.a.run.app",
+  "directCloudRunUrl": "https://ge-blogs-248990048888.us-west1.run.app",
   "buildProject": "ramp-portal-dev",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "ge-blogs-00037-pf8",
-  "latestCreatedRevisionName": "ge-blogs-00037-pf8",
+  "latestReadyRevisionName": "ge-blogs-00038-f99",
+  "latestCreatedRevisionName": "ge-blogs-00038-f99",
   "readyStatus": "True",
   "trafficPercent": 100,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261030-042415-rule58",
-  "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261030-131843-light-clean",
+  "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00038-f99",
   "liveHttpVerification": {
-    "verifiedAt": "2026-10-30T04:24:58Z",
+    "verifiedAt": "2026-10-30T13:20:00Z",
     "verificationMode": "cloud_run_revision_live_http_dom_probe",
     "project": "ramp-portal-dev",
     "region": "us-west1",
     "service": "ge-blogs",
-    "revision": "ge-blogs-00037-pf8",
+    "revision": "ge-blogs-00038-f99",
     "overallPassed": true,
     "routes": [
       {
         "path": "/",
         "httpStatus": 200,
-        "responseBytes": 629470,
-        "bodySha256Short": "61936ef7e988a7ce",
+        "responseBytes": 638337,
+        "bodySha256Short": "a1f21f6ec2827f8d",
         "latencyMs": 36.5,
         "markersMatched": [
           "Multi-Tenancy Architecture",
@@ -66,7 +66,13 @@
       }
     ]
   },
-  "verifiedAt": "2026-10-30T04:25:17Z",
+  "verifiedAt": "2026-10-30T13:20:00Z",
   "certifiedDiagramsCount": 14,
-  "workstreamsCount": 5
+  "workstreamsCount": 5,
+  "beyondCorpEdgeStatus": 302,
+  "entrypointCmd": [
+    "python3",
+    "-B",
+    "server.py"
+  ]
 }
