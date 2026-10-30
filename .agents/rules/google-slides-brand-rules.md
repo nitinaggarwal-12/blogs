@@ -1,1 +1,0 @@
-/Users/nitinagga/.gemini/config/rules/google-slides-brand-rules.md

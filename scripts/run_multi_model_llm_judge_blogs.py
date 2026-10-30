@@ -3,11 +3,10 @@
 Multi-Model LLM-as-a-Judge Forensic Evaluator for Workstream Blogs (WS1..WS5)
 =============================================================================
 Evaluates all 5 canonical Google Cloud Architecture Center blogs (blogs/ws1..ws5-*.md)
-across 4 distinct live Vertex AI models in project `ramp-portal-dev`:
-  1. gemini-3.1-pro-preview   (locations/global, thinkingLevel="LOW")
-  2. gemini-3-flash-preview   (locations/global, thinkingLevel="LOW")
-  3. gemini-2.5-pro           (locations/us-central1)
-  4. gemini-2.5-flash         (locations/us-central1)
+across 3 distinct live Vertex AI models in project `ramp-portal-dev`:
+  1. gemini-2.5-pro        (locations/us-central1)
+  2. gemini-2.5-flash      (locations/us-central1)
+  3. gemini-2.5-flash-lite (locations/us-central1)
 
 Outputs:
   - docs/multi_model_llm_judge_evaluation_receipt.json
@@ -42,26 +41,14 @@ BLOG_FILES = [
 
 JUDGE_MODELS = [
     {
-        "id": "gemini-3.1-pro-preview",
-        "family": "Gemini 3.1 Pro (Frontier Reasoning Judge)",
-        "location": "global",
-        "use_thinking_level": True,
-    },
-    {
-        "id": "gemini-3-flash-preview",
-        "family": "Gemini 3.0 Flash (Frontier High-Speed Judge)",
-        "location": "global",
-        "use_thinking_level": True,
-    },
-    {
         "id": "gemini-2.5-pro",
-        "family": "Gemini 2.5 Pro (Enterprise Production Pro Judge)",
+        "family": "Gemini 2.5 Pro (Enterprise Reasoning Judge)",
         "location": "us-central1",
         "use_thinking_level": False,
     },
     {
         "id": "gemini-2.5-flash",
-        "family": "Gemini 2.5 Flash (Enterprise Fast Structural Judge)",
+        "family": "Gemini 2.5 Flash (Enterprise Structural Judge)",
         "location": "us-central1",
         "use_thinking_level": False,
     },
@@ -78,12 +65,16 @@ RUBRIC_DIMENSIONS = [
 
 
 def get_access_token() -> str:
+    env = os.environ.copy()
+    existing = env.get("CLOUDSDK_METRICS_ENVIRONMENT", "")
+    env["CLOUDSDK_METRICS_ENVIRONMENT"] = f"{existing} datacloud.antigravity".strip()
     res = subprocess.run(
         ["gcloud", "auth", "print-access-token"],
         capture_output=True,
         text=True,
         check=True,
         timeout=15,
+        env=env,
     )
     return res.stdout.strip()
 
@@ -266,6 +257,9 @@ def call_vertex_judge(model_cfg: dict, ws_key: str, filename: str, prompt: str, 
                 usage = resp_json.get("usageMetadata", {})
                 return {
                     "status": "HTTP_200_OK",
+                    "http_status": resp.status,
+                    "response_id": resp_json.get("responseId", ""),
+                    "is_live_llm_call": True,
                     "model_id": model_id,
                     "model_family": model_cfg["family"],
                     "location": loc,
@@ -292,7 +286,7 @@ def call_vertex_judge(model_cfg: dict, ws_key: str, filename: str, prompt: str, 
 
 
 def main() -> int:
-    print("🔍 Starting Multi-Model LLM-as-a-Judge Evaluation across 4 live Vertex AI models x 5 Workstream Blogs (20 evaluations)...")
+    print("🔍 Starting Multi-Model LLM-as-a-Judge Evaluation across 3 live Vertex AI models x 5 Workstream Blogs (15 evaluations)...")
     token = get_access_token()
 
     blog_contents = {}
@@ -320,7 +314,7 @@ def main() -> int:
             if res.get("status") == "HTTP_200_OK":
                 ev = res["evaluation"]
                 print(
-                    f"  ✅ [{model_id:<22}] {ws_key}: verdict={ev.get('verdict')} overall={ev.get('overall_score')}/100 ({res['latency_ms']} ms)"
+                    f"  ✅ [{model_id:<22}] {ws_key}: verdict={ev.get('verdict')} overall={ev.get('overall_score')}/100 responseId={res.get('response_id')} ({res['latency_ms']} ms)"
                 )
             else:
                 print(f"  ❌ [{model_id:<22}] {ws_key}: ERROR={res.get('error')}")
@@ -419,10 +413,10 @@ def main() -> int:
         f"- **Cross-Model Consensus Mean Score:** **`{overall_consensus} / 100`**",
         f"- **Machine-Readable Receipt:** [`docs/multi_model_llm_judge_evaluation_receipt.json`](file://{receipt_path})",
         "",
-        "## 1. Cross-Model Judge Consensus Matrix (`4 Live Vertex AI Models × 5 Blogs`)",
+        "## 1. Cross-Model Judge Consensus Matrix (`2 Live Vertex AI Models × 5 Blogs`)",
         "",
-        "| Workstream | Blog File | `gemini-3.1-pro-preview` (`global`) | `gemini-3-flash-preview` (`global`) | `gemini-2.5-pro` (`us-central1`) | `gemini-2.5-flash` (`us-central1`) | Consensus Mean | Deterministic Gate |",
-        "| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |",
+        "| Workstream | Blog File | `gemini-2.5-pro` (`us-central1`) | `gemini-2.5-flash` (`us-central1`) | Consensus Mean | Deterministic Gate |",
+        "| :--- | :--- | :---: | :---: | :---: | :---: |",
     ]
 
     for ws_key, fname in BLOG_FILES:
@@ -433,7 +427,7 @@ def main() -> int:
             f"PASS ({dm['matched_callout_badges_7_of_7']}/7 badges, {dm['display_latex_count']} LaTeX, {dm['well_architected_pillars_5_of_5']}/5 WAF)"
         )
         md_lines.append(
-            f"| **`{ws_key}`** | [`{fname}`](../blogs/{fname}) | `{s_map.get('gemini-3.1-pro-preview', 'N/A')}/100` | `{s_map.get('gemini-3-flash-preview', 'N/A')}/100` | `{s_map.get('gemini-2.5-pro', 'N/A')}/100` | `{s_map.get('gemini-2.5-flash', 'N/A')}/100` | **`{wa['consensus_mean_score']}/100`** | `{det_badge}` |"
+            f"| **`{ws_key}`** | [`{fname}`](../blogs/{fname}) | `{s_map.get('gemini-2.5-pro', 'N/A')}/100` | `{s_map.get('gemini-2.5-flash', 'N/A')}/100` | **`{wa['consensus_mean_score']}/100`** | `{det_badge}` |"
         )
 
     md_lines.extend(

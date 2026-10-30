@@ -1,1 +1,0 @@
-/Users/nitinagga/.gemini/config/rules/closed-loop-semantic-topology-and-grounding.md

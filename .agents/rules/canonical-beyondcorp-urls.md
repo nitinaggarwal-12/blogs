@@ -1,1 +1,0 @@
-/Users/nitinagga/.gemini/config/rules/canonical-beyondcorp-urls.md

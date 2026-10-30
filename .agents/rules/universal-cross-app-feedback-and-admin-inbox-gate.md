@@ -1,1 +1,0 @@
-/Users/nitinagga/.gemini/config/rules/universal-cross-app-feedback-and-admin-inbox-gate.md

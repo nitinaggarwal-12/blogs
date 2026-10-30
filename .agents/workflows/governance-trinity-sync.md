@@ -1,1 +1,0 @@
-/Users/nitinagga/.gemini/jetski/global_workflows/governance-trinity-sync.md

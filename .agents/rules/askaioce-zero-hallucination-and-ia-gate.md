@@ -1,1 +1,0 @@
-/Users/nitinagga/.gemini/config/rules/askaioce-zero-hallucination-and-ia-gate.md

@@ -1,1 +1,0 @@
-/Users/nitinagga/.gemini/config/rules/mandatory-light-theme-default.md

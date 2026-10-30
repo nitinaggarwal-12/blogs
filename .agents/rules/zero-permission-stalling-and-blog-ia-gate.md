@@ -1,1 +1,0 @@
-/Users/nitinagga/.gemini/config/rules/zero-permission-stalling-and-blog-ia-gate.md

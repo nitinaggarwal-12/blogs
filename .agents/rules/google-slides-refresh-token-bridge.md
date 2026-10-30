@@ -1,1 +1,0 @@
-/Users/nitinagga/.gemini/config/rules/google-slides-refresh-token-bridge.md

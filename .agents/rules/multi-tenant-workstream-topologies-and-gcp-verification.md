@@ -1,1 +1,0 @@
-/Users/nitinagga/.gemini/config/rules/multi-tenant-workstream-topologies-and-gcp-verification.md

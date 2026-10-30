@@ -1,1 +1,0 @@
-/Users/nitinagga/.gemini/config/rules/google-docs-native-cloning-and-html-ban.md

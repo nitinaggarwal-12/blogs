@@ -1,1 +1,0 @@
-/Users/nitinagga/.gemini/config/rules/zero-shortcut-and-adversarial-visual-gate.md

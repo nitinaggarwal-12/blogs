@@ -45,13 +45,6 @@
       --on-primary: #ffffff;
     }
     /* ---------- Themes (select via <html data-theme="…">) ---------- */
-    [data-theme="midnight"] {
-      --bg: #0b1020; --panel: #131b33; --panel-alt: #192342; --border: #2a3968;
-      --text: #eef2ff; --muted: #9fb0d9; --blue: #4f8cff; --purple: #9b6bff; --green: #18c964; --amber: #f5a524; --red: #f31260;
-      --header-grad-a: #0f172a; --header-grad-b: #172554; --input-bg: #090d1a; --pre-bg: #070a14; --pre-text: #a7f3d0;
-      --reader-bg: #0d1428; --heading: #ffffff; --link: #93bbfd; --accent-2: #c4b5fd; --ok-text: #86efac; --warn-text: #fcd34d; --err-text: #fda4af;
-      --quote-text: #dbeafe; --code-bg: rgba(255,255,255,0.08); --th-text: #ffffff; --hover-tint: rgba(79,140,255,0.18);
-    }
     [data-theme="google-cloud"] {
       --bg: #ffffff; --panel: #f8f9fa; --panel-alt: #e8f0fe; --border: #dadce0;
       --text: #202124; --muted: #5f6368; --blue: #1a73e8; --purple: #a142f4; --green: #34a853; --amber: #f9ab00; --red: #ea4335;
@@ -62,28 +55,6 @@
     [data-theme="google-cloud"] header, [data-theme="google-cloud"] header .muted { color: #ffffff; }
     [data-theme="google-cloud"] header .badge { background: rgba(255,255,255,0.18); color: #ffffff; border-color: rgba(255,255,255,0.55); }
     [data-theme="google-cloud"] header .theme-picker select { background: #ffffff; color: #202124; border-color: rgba(255,255,255,0.7); }
-    [data-theme="slate"] {
-      --bg: #1e1e1e; --panel: #252526; --panel-alt: #2d2d30; --border: #3e3e42;
-      --text: #d4d4d4; --muted: #9d9d9d; --blue: #569cd6; --purple: #c586c0; --green: #4ec9b0; --amber: #dcdcaa; --red: #f44747;
-      --header-grad-a: #252526; --header-grad-b: #1e1e1e; --input-bg: #1a1a1a; --pre-bg: #141414; --pre-text: #ce9178;
-      --reader-bg: #1f1f1f; --heading: #ffffff; --link: #9cdcfe; --accent-2: #c586c0; --ok-text: #4ec9b0; --warn-text: #dcdcaa; --err-text: #f48771;
-      --quote-text: #d4d4d4; --code-bg: rgba(255,255,255,0.08); --th-text: #ffffff; --hover-tint: rgba(86,156,214,0.18);
-    }
-    [data-theme="solarized"] {
-      --bg: #002b36; --panel: #073642; --panel-alt: #0a3d4a; --border: #16505c;
-      --text: #eee8d5; --muted: #93a1a1; --blue: #268bd2; --purple: #6c71c4; --green: #859900; --amber: #b58900; --red: #dc322f;
-      --header-grad-a: #002b36; --header-grad-b: #073642; --input-bg: #00212b; --pre-bg: #00212b; --pre-text: #2aa198;
-      --reader-bg: #03313d; --heading: #fdf6e3; --link: #2aa198; --accent-2: #6c71c4; --ok-text: #859900; --warn-text: #b58900; --err-text: #dc322f;
-      --quote-text: #eee8d5; --code-bg: rgba(238,232,213,0.08); --th-text: #fdf6e3; --hover-tint: rgba(38,139,210,0.2);
-    }
-    [data-theme="high-contrast"] {
-      --bg: #000000; --panel: #000000; --panel-alt: #111111; --border: #ffffff;
-      --text: #ffffff; --muted: #e0e0e0; --blue: #00a2ff; --purple: #ff7eff; --green: #00ff6a; --amber: #ffd600; --red: #ff4d4d;
-      --header-grad-a: #000000; --header-grad-b: #000000; --input-bg: #000000; --pre-bg: #000000; --pre-text: #00ff6a;
-      --reader-bg: #000000; --heading: #ffffff; --link: #7fd1ff; --accent-2: #ff7eff; --ok-text: #00ff6a; --warn-text: #ffd600; --err-text: #ff4d4d;
-      --quote-text: #ffffff; --code-bg: #222222; --th-text: #ffffff; --hover-tint: rgba(0,162,255,0.3); --on-primary: #000000;
-    }
-    [data-theme="high-contrast"] .card, [data-theme="high-contrast"] .sim-btn, [data-theme="high-contrast"] .tab-btn { border-width: 2px; }
     html { transition: background-color .2s ease, color .2s ease; }
     .theme-picker { display:flex; align-items:center; gap:6px; }
     .theme-picker select { width:auto; padding:6px 28px 6px 10px; font-weight:600; cursor:pointer; }
@@ -644,11 +615,6 @@
       padding: 8px;
       position: relative;
       text-align: center;
-    }
-    [data-theme="midnight"] .slide-stage,
-    [data-theme="slate"] .slide-stage,
-    [data-theme="high-contrast"] .slide-stage {
-      background: #0f172a;
     }
     .slide-stage img {
       width: 100%;
@@ -1331,23 +1297,6 @@
       transform: translateY(-2px);
       transition: opacity 0.14s ease, transform 0.14s ease;
     }
-    [data-theme="midnight"] .card-hover-toolbar,
-    [data-theme="slate"] .card-hover-toolbar,
-    [data-theme="high-contrast"] .card-hover-toolbar {
-      background: rgba(15, 23, 42, 0.96);
-      border-color: #475569;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
-    }
-    .card:hover > .card-hover-toolbar,
-    .gcp-figure-card:hover > .card-hover-toolbar,
-    .doc-section-card:hover > .card-hover-toolbar,
-    [data-editing="true"] > .card-hover-toolbar,
-    [data-comments-open="true"] > .card-hover-toolbar,
-    .card-hover-toolbar:focus-within {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0);
-    }
     @media (hover: none), (max-width: 900px) {
       .card-hover-toolbar {
         opacity: 1;
@@ -1404,16 +1353,6 @@
     }
     .card-action-icon-btn.comment-btn.has-comments .card-toolbar-comment-badge {
       display: inline-flex;
-    }
-    [data-theme="midnight"] .card-action-icon-btn,
-    [data-theme="slate"] .card-action-icon-btn,
-    [data-theme="high-contrast"] .card-action-icon-btn {
-      color: #e2e8f0;
-    }
-    .card-action-icon-btn:hover {
-      background: #eff6ff;
-      border-color: #bfdbfe;
-      color: #1d4ed8;
     }
     .card-action-icon-btn[data-action="save"]:hover,
     .card-action-icon-btn[data-card-action="save"]:hover,
@@ -1627,25 +1566,19 @@
   <script>
     // Apply the persisted theme before first paint to avoid a flash of the default theme.
     (function () {
-      var THEMES = ['midnight','light','google-cloud','slate','solarized','high-contrast','auto'];
-      function resolve(t) { return t === 'auto' ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'midnight') : t; }
+      var THEMES = ['light', 'google-cloud'];
+      function resolve(t) { return THEMES.indexOf(t) >= 0 ? t : 'light'; }
       var saved = 'light';
-      try { saved = localStorage.getItem('geap-portal-theme') || 'light'; } catch (_) {}
-      if (THEMES.indexOf(saved) < 0) saved = 'light';
-      document.documentElement.setAttribute('data-theme', resolve(saved));
+      try { saved = resolve(localStorage.getItem('geap-portal-theme') || 'light'); } catch (_) {}
+      document.documentElement.setAttribute('data-theme', saved);
       document.documentElement.setAttribute('data-theme-choice', saved);
       window.setPortalTheme = function (t) {
-        if (THEMES.indexOf(t) < 0) t = 'light';
-        try { localStorage.setItem('geap-portal-theme', t); } catch (_) {}
-        document.documentElement.setAttribute('data-theme', resolve(t));
-        document.documentElement.setAttribute('data-theme-choice', t);
-        var sel = document.getElementById('theme-select'); if (sel && sel.value !== t) sel.value = t;
+        var clean = resolve(t);
+        try { localStorage.setItem('geap-portal-theme', clean); } catch (_) {}
+        document.documentElement.setAttribute('data-theme', clean);
+        document.documentElement.setAttribute('data-theme-choice', clean);
+        var sel = document.getElementById('theme-select'); if (sel && sel.value !== clean) sel.value = clean;
       };
-      if (window.matchMedia) {
-        window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function () {
-          if (document.documentElement.getAttribute('data-theme-choice') === 'auto') window.setPortalTheme('auto');
-        });
-      }
       document.addEventListener('DOMContentLoaded', function () {
         var sel = document.getElementById('theme-select'); if (sel) sel.value = saved;
       });
@@ -1683,11 +1616,6 @@
         <select id="theme-select" style="width:72px; max-width:74px; padding:4px 18px 4px 6px; font-size:11px;" onchange="setPortalTheme(this.value)" aria-label="Theme">
           <option value="light">Light</option>
           <option value="google-cloud">Google Cloud</option>
-          <option value="midnight">Midnight</option>
-          <option value="slate">Slate</option>
-          <option value="solarized">Solarized</option>
-          <option value="high-contrast">High Contrast</option>
-          <option value="auto">Auto</option>
         </select>
       </label>
     </div>

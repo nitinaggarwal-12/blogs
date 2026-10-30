@@ -132,10 +132,10 @@ def verify_admin_access(
     """
     Verifies whether the caller is authorized to view/manage the Admin Feedback Inbox.
     1. Production BeyondCorp IAP: X-Goog-Authenticated-User-Email == nitinagga@google.com
-    2. Explicit Admin Header/Param: X-Feedback-Admin-Email == nitinagga@google.com
-    3. Localhost development fallback: 127.0.0.1 / ::1 / localhost
-    Returns (is_authorized, resolved_email, auth_mode).
+    2. Localhost development (never on Cloud Run K_SERVICE): strict loopback socket without forwarded IPs.
+    Spoofable headers (X-Feedback-Admin-Email) and query params (?adminEmail=) are never trusted.
     """
+    _ = query_params
     hdrs = {str(k).lower(): str(v) for k, v in (headers or {}).items() if v is not None}
     iap_email = normalize_iap_email(hdrs.get("x-goog-authenticated-user-email"))
     if iap_email:
@@ -143,25 +143,15 @@ def verify_admin_access(
             return True, iap_email, "iap_verified"
         return False, iap_email, "iap_denied_non_admin"
 
-    admin_hdr = normalize_iap_email(hdrs.get("x-feedback-admin-email"))
-    if admin_hdr == ADMIN_EMAIL:
-        return True, ADMIN_EMAIL, "admin_header_verified"
+    if bool(os.environ.get("K_SERVICE", "").strip()):
+        return False, "anonymous", "unauthorized"
 
-    qp_admin = ""
-    if query_params:
-        raw_qp = query_params.get("adminEmail") or query_params.get("admin_email") or ""
-        if isinstance(raw_qp, list):
-            raw_qp = raw_qp[0] if raw_qp else ""
-        qp_admin = normalize_iap_email(str(raw_qp))
-    if qp_admin == ADMIN_EMAIL:
-        return True, ADMIN_EMAIL, "admin_query_verified"
-
-    host_hdr = hdrs.get("host", "").split(":")[0].strip().lower()
+    has_forwarded = bool(hdrs.get("x-forwarded-for", "").strip())
     addr = (remote_addr or "").strip().lower()
-    if addr in ("127.0.0.1", "::1", "localhost", "::ffff:127.0.0.1") or host_hdr in ("localhost", "127.0.0.1"):
+    if (not has_forwarded) and addr in ("127.0.0.1", "::1", "::ffff:127.0.0.1"):
         return True, ADMIN_EMAIL, "localhost_dev_session"
 
-    return False, iap_email or "anonymous", "unauthorized"
+    return False, "anonymous", "unauthorized"
 
 
 def _read_json_list(path: Path) -> List[Dict[str, Any]]:

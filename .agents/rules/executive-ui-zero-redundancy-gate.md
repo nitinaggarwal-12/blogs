@@ -1,1 +1,0 @@
-/Users/nitinagga/.gemini/config/rules/executive-ui-zero-redundancy-gate.md

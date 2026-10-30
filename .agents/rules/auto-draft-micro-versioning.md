@@ -1,1 +1,0 @@
-/Users/nitinagga/.gemini/config/rules/auto-draft-micro-versioning.md

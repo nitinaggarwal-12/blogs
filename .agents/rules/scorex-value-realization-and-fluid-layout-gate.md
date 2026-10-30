@@ -1,1 +1,0 @@
-/Users/nitinagga/.gemini/config/rules/scorex-value-realization-and-fluid-layout-gate.md

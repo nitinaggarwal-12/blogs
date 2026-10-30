@@ -136,11 +136,33 @@
       '      <div class="ufw-grid-2">' +
       '        <div>' +
       '          <label class="ufw-label" for="ufw-sender-name">Your Name (Optional)</label>' +
-      '          <input id="ufw-sender-name" type="text" data-testid="feedback-sender-name-input" class="ufw-input" value="Nitin Aggarwal" placeholder="e.g., Nitin Aggarwal" />' +
+      '          <input id="ufw-sender-name" type="text" data-testid="feedback-sender-name-input" class="ufw-input" value="' +
+      escapeHtml(
+        cfg.defaultSenderName ||
+          (function () {
+            try {
+              return localStorage.getItem('ufw_last_sender_name') || '';
+            } catch (_) {
+              return '';
+            }
+          })()
+      ) +
+      '" placeholder="e.g., Jane Doe" />' +
       '        </div>' +
       '        <div>' +
       '          <label class="ufw-label" for="ufw-sender-email">Your Email (Optional)</label>' +
-      '          <input id="ufw-sender-email" type="email" data-testid="feedback-sender-email-input" class="ufw-input" value="nitinagga@google.com" placeholder="user@google.com" />' +
+      '          <input id="ufw-sender-email" type="email" data-testid="feedback-sender-email-input" class="ufw-input" value="' +
+      escapeHtml(
+        cfg.defaultSenderEmail ||
+          (function () {
+            try {
+              return localStorage.getItem('ufw_last_sender_email') || '';
+            } catch (_) {
+              return '';
+            }
+          })()
+      ) +
+      '" placeholder="user@google.com" />' +
       '        </div>' +
       '      </div>' +
       '      <div style="margin-bottom:14px;">' +
@@ -190,6 +212,13 @@
       submitBtn.textContent = 'Submitting...';
       errBanner.style.display = 'none';
 
+      var cleanSenderName = document.getElementById('ufw-sender-name').value.trim();
+      var cleanSenderEmail = document.getElementById('ufw-sender-email').value.trim();
+      try {
+        if (cleanSenderName) localStorage.setItem('ufw_last_sender_name', cleanSenderName);
+        if (cleanSenderEmail) localStorage.setItem('ufw_last_sender_email', cleanSenderEmail);
+      } catch (_) {}
+
       fetch('/api/feedback/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -199,8 +228,8 @@
           pageUrl: getCurrentRoute(),
           category: document.getElementById('ufw-category').value,
           priority: document.getElementById('ufw-priority').value,
-          senderName: document.getElementById('ufw-sender-name').value.trim(),
-          senderEmail: document.getElementById('ufw-sender-email').value.trim(),
+          senderName: cleanSenderName,
+          senderEmail: cleanSenderEmail,
           message: message,
           contextMeta: {
             url: window.location.href,
