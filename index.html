@@ -5388,15 +5388,41 @@
               }
               const meta = findDiagramMetaById(diagId);
               const slideBtnHtml = meta
-                ? `<button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--green); color:var(--ok-text);" onclick="openCloudViewerModal('${meta.wsKey}', ${meta.decomposedSlide}, 'slides')">&#127916; Slide #${meta.decomposedSlide}</button>`
+                ? `<button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--green); color:var(--ok-text); font-weight:700;" onclick="openCloudViewerModal('${meta.wsKey}', ${meta.decomposedSlide}, 'slides')">&#127916; Slide #${meta.decomposedSlide}</button>`
+                : '';
+              const manifestEntry = (meta && cloudViewerManifest && cloudViewerManifest.slides) ? cloudViewerManifest.slides[meta.wsKey] : null;
+              const gSlidesUrl = (manifestEntry && manifestEntry.googleSlidesEditUrl && meta)
+                ? `${manifestEntry.googleSlidesEditUrl}#slide=id.p${meta.decomposedSlide}`
+                : '';
+              const gSlidesBtnHtml = gSlidesUrl
+                ? `<a href="${gSlidesUrl}" target="_blank" rel="noopener" class="sim-btn primary" style="padding:4px 9px; font-size:11.5px; text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-weight:700;"><span style="background:#fbbc04; color:#000; font-weight:900; border-radius:2px; padding:0 3px; font-size:10px;">S</span> Open with Google Slides &#8599;</a>`
+                : '';
+              const hasFlow = meta && meta.logicalSlide && meta.technicalSlide && (meta.logicalSlide !== meta.decomposedSlide);
+              const flowBtnHtml = hasFlow
+                ? `<button type="button" id="inline-fig-btn-flow-${diagId}" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--blue); color:var(--link); font-weight:700;" onclick="toggleInlineFigureFlow('${diagId}')">&#129517; Step-by-Step Flow (Slides 2 &amp; 3) &#9662;</button>`
+                : '';
+              const flowWrapHtml = hasFlow
+                ? `<div id="inline-fig-flow-wrap-${diagId}" style="display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--border); background:var(--panel-alt); border-radius:8px; padding:12px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+                      <strong style="font-size:13.5px; color:var(--heading);">Step-by-Step End-to-End Flow (Slides 2 &amp; 3 Preview)</strong>
+                      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <button type="button" id="inline-flow-tab-logical-${diagId}" class="sim-btn primary" style="padding:4px 10px; font-size:11.5px;" onclick="setInlineFigureFlowTab('${diagId}', 'logical')">&#129517; 1. Logical Flow (Steps &#9312;&ndash;&#9318;)</button>
+                        <button type="button" id="inline-flow-tab-technical-${diagId}" class="sim-btn" style="padding:4px 10px; font-size:11.5px;" onclick="setInlineFigureFlowTab('${diagId}', 'technical')">&#9881;&#65039; 2. Technical Specification Table</button>
+                        <button type="button" id="inline-flow-tab-both-${diagId}" class="sim-btn" style="padding:4px 10px; font-size:11.5px;" onclick="setInlineFigureFlowTab('${diagId}', 'both')">&#128214; View Both</button>
+                        <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px;" onclick="toggleInlineFigureFlow('${diagId}')">&#10005; Hide</button>
+                      </div>
+                    </div>
+                    <div id="inline-fig-flow-body-${diagId}"></div>
+                  </div>`
                 : '';
               return `
                 <div class="gcp-figure-card" id="inline-fig-card-${diagId}" data-card-id="inline-fig-card-${diagId}" data-diag-id="${diagId}" data-card-type="diagram" data-card-title="${escapeHtml(alt)}" data-doc-path="${escapeHtml(docRelPath || '')}" style="padding:12px 14px;">
-                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border); padding-right:250px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border); padding-right:190px;">
                     <strong class="card-editable-body" id="inline-fig-title-${diagId}" style="font-size:13.5px; color:var(--heading);">${alt}</strong>
                     <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
                       ${slideBtnHtml}
-                      <button type="button" id="inline-fig-btn-flow-${diagId}" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--blue); color:var(--link); font-weight:700;" onclick="toggleInlineFigureFlow('${diagId}')">&#129517; Step-by-Step Flow (Slides 2 &amp; 3) &#9662;</button>
+                      ${gSlidesBtnHtml}
+                      ${flowBtnHtml}
                       <button type="button" id="inline-fig-btn-edit-${diagId}" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--warn-text); color:var(--warn-text); font-weight:700;" onclick="setInlineFigureMode('${diagId}', 'edit')">&#9999;&#65039; Edit in Draw.io</button>
                       <details class="export-dropdown">
                         <summary class="sim-btn" style="padding:4px 9px; font-size:11.5px;">&#11015; Assets &#9662;</summary>
@@ -5410,23 +5436,12 @@
                     </div>
                   </div>
                   <div id="inline-fig-img-wrap-${diagId}">
-                    <img id="inline-fig-img-${diagId}" src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:auto; max-width:min(100%, 860px); max-height:720px; height:auto; display:block; margin:0 auto; border-radius:6px; cursor:zoom-in;" onclick="window.open(this.src, '_blank')" title="Click to open full-resolution diagram in new tab" />
+                    <img id="inline-fig-img-${diagId}" src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:auto; max-width:min(100%, 960px); max-height:720px; height:auto; display:block; margin:0 auto; border-radius:6px; cursor:zoom-in;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', this.alt); } else { window.open(this.src, '_blank'); }" title="Click to open full-resolution diagram in new tab" />
                   </div>
                   <div id="inline-fig-edit-wrap-${diagId}" style="display:none; border-radius:8px; overflow:hidden; border:2px solid #2563eb; margin-top:4px;">
                     <iframe id="inline-fig-iframe-${diagId}" src="about:blank" style="width:100%; height:780px; border:0; display:block;" title="Inline Draw.io Editor (${diagId})"></iframe>
                   </div>
-                  <div id="inline-fig-flow-wrap-${diagId}" style="display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--border); background:var(--panel-alt); border-radius:8px; padding:12px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
-                      <strong style="font-size:13.5px; color:var(--heading);">Step-by-Step End-to-End Flow (Slides 2 &amp; 3 Preview)</strong>
-                      <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                        <button type="button" id="inline-flow-tab-logical-${diagId}" class="sim-btn primary" style="padding:4px 10px; font-size:11.5px;" onclick="setInlineFigureFlowTab('${diagId}', 'logical')">&#129517; 1. Logical Flow (Steps &#9312;&ndash;&#9318;)</button>
-                        <button type="button" id="inline-flow-tab-technical-${diagId}" class="sim-btn" style="padding:4px 10px; font-size:11.5px;" onclick="setInlineFigureFlowTab('${diagId}', 'technical')">&#9881;&#65039; 2. Technical Specification Table</button>
-                        <button type="button" id="inline-flow-tab-both-${diagId}" class="sim-btn" style="padding:4px 10px; font-size:11.5px;" onclick="setInlineFigureFlowTab('${diagId}', 'both')">&#128214; View Both</button>
-                        <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px;" onclick="toggleInlineFigureFlow('${diagId}')">&#10005; Hide</button>
-                      </div>
-                    </div>
-                    <div id="inline-fig-flow-body-${diagId}"></div>
-                  </div>
+                  ${flowWrapHtml}
                 </div>`;
             })
             .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => {
@@ -6018,7 +6033,10 @@
         ],
         diagrams: [
           { id: 'ws1-multi-tenant-taxonomy-overview', label: 'Fig 1: Multi-Tenant Taxonomy (A, B & C)', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 6, logicalSlide: 5, technicalSlide: 7 },
-          { id: 'ws1-cloud-arch-center-5hop-baseline', label: 'Fig 2: Cloud Arch Center 5-Hop Baseline', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 6, logicalSlide: 5, technicalSlide: 8 }
+          { id: 'ws1-cloud-arch-center-5hop-baseline', label: 'Fig 2: Cloud Arch Center 5-Hop Baseline', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 6, logicalSlide: 5, technicalSlide: 8 },
+          { id: 'ws1-l1-logical-security-taxonomy', label: 'Fig 1A: L1 Logical Security Taxonomy', archetype: 'C4 LEVEL 1 LOGICAL BOUNDARY SPECIFICATION', decomposedSlide: 8, logicalSlide: 8, technicalSlide: 8 },
+          { id: 'ws1-l3-process-sequence-swimlane', label: 'Fig 2A: L3 Process UML Sequence Swimlane', archetype: 'C4 LEVEL 3 PROCESS SWIMLANE SPECIFICATION', decomposedSlide: 13, logicalSlide: 13, technicalSlide: 13 },
+          { id: 'ws1-l4-wire-protocol-transformation', label: 'Fig 2B: L4 Wire Protocol Transformation', archetype: 'C4 LEVEL 4 WIRE SPECIFICATION', decomposedSlide: 14, logicalSlide: 14, technicalSlide: 14 }
         ],
         slides: [
           { num: 1, label: '1. REFERENCE ARCHITECTURE & TAXONOM', editable: true, desc: 'Slide 1/34 — REFERENCE ARCHITECTURE & TAXONOMY: A production blueprint and cryptographic 5-Hop pipeline to govern multi-tenant age' },

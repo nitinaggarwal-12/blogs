@@ -100,7 +100,7 @@ To provide enterprise executive sponsors, CISOs, CFOs, and architecture review b
 
 The following `L1 Logical` architecture diagram synthesizes the complete multi-tenant landscape, illustrating the common 5-hop cryptographic control plane, shared governance hub, and the three distinct execution planes:
 
-![Figure 1A — Multi-tenant agentic triad system context: 80% reusable cryptographic core across Pooled (A), Silos (B), and Hybrid (C)](../slides/previews/ws5-12slide-visual-deck/slide_07.png)
+![Figure 1A — Multi-tenant agentic triad system context: 80% reusable cryptographic core across Pooled (A), Silos (B), and Hybrid (C)](../diagrams/ws1-l1-logical-security-taxonomy.drawio.png)
 
 *Figure 1A. Official Google Cloud Architecture Center L1 Logical Security Taxonomy diagram showing the 3 logical security tiers: Layer 1 (Tenant Identity & Multi-IdP Ingress PEP), Layer 2 (Shared 5-Hop ADK Control Plane Hub with ~3ms Valkey JTI Deny-List and Model Armor DLP), and Layer 3 (Bifurcated Execution Planes: Pooled Cloud Run + AlloyDB RLS vs Sovereign VPC-SC Silos vs Hybrid PSC Spokes).*
 
@@ -135,7 +135,7 @@ The seven numbered badges (`1`–`7`) on Figure 1 trace the 2-question decision 
 
 The following `L3 Process` swimlane details the step-by-step transaction flow across the five runtime actors governing the Multi-Tenant Agentic Triad, illustrating fail-closed security enforcement, prompt prefix cache reuse, and FinOps ledger recording:
 
-![Figure 2A — Multi-tenant agentic triad 5-actor UML sequence swimlane, fail-closed circuit breakers, and FinOps recording](../slides/previews/ws5-12slide-visual-deck/slide_13.png)
+![Figure 2A — Multi-tenant agentic triad 5-actor UML sequence swimlane, fail-closed circuit breakers, and FinOps recording](../diagrams/ws1-l3-process-sequence-swimlane.drawio.png)
 
 *Figure 2A. Official Google Cloud Architecture Center L3 Process UML Sequence Swimlane tracing the 5 runtime actors across Hop 1 Edge & IAM STS, Hop 2 ARD & Registry, Hop 3 Runtime Bulkheads, Hop 4 Model Armor & LLM, and Hop 5 Data Isolation & KMS CMEK, illustrating fail-closed HTTP 401/403/429/422/423 circuit breakers and BigQuery OTel FinOps recording.*
 
@@ -143,7 +143,7 @@ The following `L3 Process` swimlane details the step-by-step transaction flow ac
 
 The following `L4 Wire` triptych demonstrates how untrusted caller requests are cryptographically normalized across all three multi-tenant patterns, stripping client-injected headers and binding the identity context to an immutable, sender-constrained STS JWT:
 
-![Figure 2B — Multi-tenant agentic triad wire-level protocol normalization: Hop 1 spoofed header stripping and signed STS JWT context](../slides/previews/ws5-12slide-visual-deck/slide_14.png)
+![Figure 2B — Multi-tenant agentic triad wire-level protocol normalization: Hop 1 spoofed header stripping and signed STS JWT context](../diagrams/ws1-l4-wire-protocol-transformation.drawio.png)
 
 *Figure 2B. Official Google Cloud Architecture Center L4 Wire-Level Protocol Normalization Triptych demonstrating how unverified client claims and spoofed tenant headers are stripped at Cloud Armor (Stage 01), exchanged via RFC 8693 OBO + RFC 9449 DPoP JKT (Stage 02), and signed with Cloud KMS ECDSA P-256 for <0.15ms in-memory cached JWKS verification across microservices.*
 

@@ -98,7 +98,7 @@ To provide enterprise architecture review boards, CISOs, and compliance officers
 
 The following `L1 Logical` architecture diagram synthesizes the complete Pattern B sovereign silo reference model, illustrating the strict multi-project boundary, dedicated VPC Service Controls perimeters, and customer-held Cloud KMS CMEK encryption keys:
 
-![Figure 1A — Pattern B sovereign silos system context: dedicated project perimeters, customer-managed CMEK keys, and air-gapped Gemma 3 on GKE](../slides/previews/ws3-12slide-visual-deck/slide_07.png)
+![Figure 1A — Pattern B sovereign silos system context: dedicated project perimeters, customer-managed CMEK keys, and air-gapped Gemma 3 on GKE](../diagrams/ws1-l1-logical-security-taxonomy.drawio.png)
 
 *Figure 1A. Official Google Cloud Architecture Center L1 Logical Security Taxonomy diagram for Pattern B showing the 3 logical security tiers: Layer 1 (Tenant Identity & Dedicated Ingress PEP with SPIFFE mTLS certificates), Layer 2 (Organization VPC-SC & Cloud KMS Governance Hub managing CMEK kill-switches and IAM PAB policies), and Layer 3 (Dedicated Sovereign Silo Data Planes with 0 shared compute, memory, or database storage).*
 
@@ -178,7 +178,7 @@ The seven numbered steps in Figure 3 (`1`–`7`) match the visual diagram badges
 
 The following `L3 Process` swimlane details the step-by-step transaction flow across the five runtime actors in a sovereign silo, illustrating how fail-closed circuit breakers and instant CMEK revocation are enforced during live execution:
 
-![Figure 2A — Pattern B 5-actor UML sequence swimlane, fail-closed circuit breakers, and sub-60s CMEK revocation](../slides/previews/ws3-12slide-visual-deck/slide_13.png)
+![Figure 2A — Pattern B 5-actor UML sequence swimlane, fail-closed circuit breakers, and sub-60s CMEK revocation](../diagrams/ws1-l3-process-sequence-swimlane.drawio.png)
 
 *Figure 2A. Official Google Cloud Architecture Center L3 Process UML Sequence Swimlane tracing the 5 runtime actors across Hop 1 Edge & IAM STS, Hop 2 ARD & Registry, Hop 3 Isolated Compute (Cloud Run / GKE), Hop 4 Model Armor & Gemma 3, and Hop 5 Dedicated AlloyDB & Cloud KMS, illustrating fail-closed HTTP 401/403/429/422/423 circuit breakers and sub-60s CMEK key-disable enforcement.*
 
@@ -186,7 +186,7 @@ The following `L3 Process` swimlane details the step-by-step transaction flow ac
 
 The following `L4 Wire` triptych demonstrates how untrusted caller requests are cryptographically normalized at the edge of the sovereign silo, stripping client-injected headers and binding the identity context to an immutable, sender-constrained STS JWT:
 
-![Figure 2B — Pattern B wire-level protocol normalization: Hop 1 spoofed header stripping and signed STS JWT context](../slides/previews/ws3-12slide-visual-deck/slide_14.png)
+![Figure 2B — Pattern B wire-level protocol normalization: Hop 1 spoofed header stripping and signed STS JWT context](../diagrams/ws1-l4-wire-protocol-transformation.drawio.png)
 
 *Figure 2B. Official Google Cloud Architecture Center L4 Wire-Level Protocol Normalization Triptych demonstrating how unverified client claims and spoofed tenant headers are stripped at Cloud Armor (Stage 01), exchanged via RFC 8693 OBO + RFC 9449 DPoP JKT (Stage 02), and signed with Cloud KMS ECDSA P-256 for <0.15ms in-memory cached JWKS verification across microservices.*
 

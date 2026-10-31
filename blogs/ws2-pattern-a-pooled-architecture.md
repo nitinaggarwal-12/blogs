@@ -103,7 +103,7 @@ To provide enterprise architecture review boards, CISOs, and engineering teams w
 
 The following `L1 Logical` architecture diagram shows the end-to-end 3-layer security taxonomy for Pattern A, mapping multi-tenant ingress callers through the shared 5-hop ADK control plane and into the shared AlloyDB data plane:
 
-![Figure 0A — Pattern A L1 Logical System Context: Multi-tenant ingress PEP, pooled Cloud Run v2 runtime, and shared AlloyDB data plane](../slides/previews/ws2-12slide-visual-deck/slide_07.png)
+![Figure 0A — Pattern A L1 Logical System Context: Multi-tenant ingress PEP, pooled Cloud Run v2 runtime, and shared AlloyDB data plane](../diagrams/ws1-l1-logical-security-taxonomy.drawio.png)
 
 *Figure 0A. Official Google Cloud Architecture Center Pattern A L1 Logical Security Taxonomy diagram showing multi-tenant callers (FinVault Bank, RetailStream Corp, and federated partners), the shared 5-Hop ADK control plane running in Vertex AI Agent Engine with ~3ms Valkey JTI Deny-List, and the shared AlloyDB data plane partitioned by Row-Level Security.*
 
@@ -205,7 +205,7 @@ The seven numbered steps in Figure 4 (`1`–`7`) match the visual diagram badges
 
 The following `L3 Process` diagram models the synchronous 5-actor UML sequence for Pattern A, tracing an agent turn from multi-tenant ingress through fail-closed circuit breakers and single-flight cache recovery:
 
-![Figure 4A — Pattern A L3 Process: 5-Actor UML sequence swimlane, fail-closed circuit breakers, and stampede recovery](../slides/previews/ws2-12slide-visual-deck/slide_13.png)
+![Figure 4A — Pattern A L3 Process: 5-Actor UML sequence swimlane, fail-closed circuit breakers, and stampede recovery](../diagrams/ws1-l3-process-sequence-swimlane.drawio.png)
 
 *Figure 4A. Pattern A L3 Process UML sequence swimlane showing multi-tenant turns, fail-closed circuit breakers (HTTP 401/403/429/422/423), and single-flight SET NX PX 5000 cache recovery.*
 
@@ -213,7 +213,7 @@ The following `L3 Process` diagram models the synchronous 5-actor UML sequence f
 
 The following `L4 Wire` diagram details the three-stage wire protocol transformation for Pattern A, comparing an adversarial red-team payload against Hop 1 Cloud Armor header stripping and the resulting KMS-signed STS JWT:
 
-![Figure 4B — Pattern A L4 Wire: Red-team breach payload vs. 5-hop sanitized execution triptych](../slides/previews/ws2-12slide-visual-deck/slide_14.png)
+![Figure 4B — Pattern A L4 Wire: Red-team breach payload vs. 5-hop sanitized execution triptych](../diagrams/ws1-l4-wire-protocol-transformation.drawio.png)
 
 *Figure 4B. Pattern A L4 Wire-level protocol normalization triptych comparing an adversarial ingress payload against Hop 1 Cloud Armor header stripping and the resulting KMS-signed STS JWT.*
 

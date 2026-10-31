@@ -102,7 +102,7 @@ To provide enterprise architecture review boards, CISOs, and cloud platform lead
 
 The following `L1 Logical` architecture diagram synthesizes the complete Pattern C dynamic hybrid reference model, illustrating the central routing and governance hub, Private Service Connect (PSC) transits, and live tier promotion mechanism:
 
-![Figure 1A — Pattern C dynamic hybrid system context: unified routing hub, Private Service Connect transits, and live tier promotion](../slides/previews/ws4-12slide-visual-deck/slide_07.png)
+![Figure 1A — Pattern C dynamic hybrid system context: unified routing hub, Private Service Connect transits, and live tier promotion](../diagrams/ws1-l1-logical-security-taxonomy.drawio.png)
 
 *Figure 1A. Official Google Cloud Architecture Center L1 Logical Security Taxonomy diagram for Pattern C showing the 3 logical security tiers: Layer 1 (Tenant Identity & Unified Ingress PEP with dynamic tier routing), Layer 2 (Shared Control Plane Hub managing PSC endpoint registries, migration state machines, and KMS key federation), and Layer 3 (Bifurcated Execution Planes: Standard Shared Pool Spoke vs Dedicated Enterprise PSC Spokes).*
 
@@ -205,7 +205,7 @@ The seven numbered badges (`1`–`7`) on Figure 4 trace the multi-project Terraf
 
 The following `L3 Process` swimlane details the step-by-step transaction flow across the five runtime actors in a dynamic hybrid environment, illustrating how fail-closed circuit breakers and live PSC cutovers execute without turn drop:
 
-![Figure 2A — Pattern C 5-actor UML sequence swimlane, fail-closed circuit breakers, and zero-downtime PSC cutover](../slides/previews/ws4-12slide-visual-deck/slide_13.png)
+![Figure 2A — Pattern C 5-actor UML sequence swimlane, fail-closed circuit breakers, and zero-downtime PSC cutover](../diagrams/ws1-l3-process-sequence-swimlane.drawio.png)
 
 *Figure 2A. Official Google Cloud Architecture Center L3 Process UML Sequence Swimlane tracing the 5 runtime actors across Hop 1 Edge & IAM STS, Hop 2 ARD & Registry, Hop 3 Hybrid Compute (Cloud Run Pooled vs PSC Spoke), Hop 4 Model Armor & LLM, and Hop 5 AlloyDB & Cloud KMS, illustrating fail-closed HTTP 401/403/429/422/423 circuit breakers and sub-50ms atomic pointer cutovers.*
 
@@ -213,7 +213,7 @@ The following `L3 Process` swimlane details the step-by-step transaction flow ac
 
 The following `L4 Wire` triptych demonstrates how untrusted caller requests are cryptographically normalized at the edge of the hybrid hub, stripping client-injected headers and binding the identity context to an immutable, sender-constrained STS JWT:
 
-![Figure 2B — Pattern C wire-level protocol normalization: Hop 1 spoofed header stripping and signed STS JWT context](../slides/previews/ws4-12slide-visual-deck/slide_14.png)
+![Figure 2B — Pattern C wire-level protocol normalization: Hop 1 spoofed header stripping and signed STS JWT context](../diagrams/ws1-l4-wire-protocol-transformation.drawio.png)
 
 *Figure 2B. Official Google Cloud Architecture Center L4 Wire-Level Protocol Normalization Triptych demonstrating how unverified client claims and spoofed tenant headers are stripped at Cloud Armor (Stage 01), exchanged via RFC 8693 OBO + RFC 9449 DPoP JKT (Stage 02), and signed with Cloud KMS ECDSA P-256 for <0.15ms in-memory cached JWKS verification across microservices.*
 

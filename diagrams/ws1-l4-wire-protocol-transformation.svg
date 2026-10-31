@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
+  <rect width="1200" height="800" fill="#ffffff"/>
+  <text x="30" y="32" font-family="'Google Sans', Roboto, sans-serif" font-size="14" font-weight="700" fill="#174ea6">[WORKSTREAM 1 • C4 LEVEL 4] Wire-Level Protocol Normalization: Hop 1 Spoofed Header Stripping &amp; Signed STS JWT Context</text>
+  <text x="30" y="52" font-family="'Google Sans', Roboto, sans-serif" font-size="11.5" fill="#5f6368">Cryptographic Transformation Triptych: Untrusted Ingress Request ➔ Hop 1 Security Gate ➔ Sender-Constrained STS JWT</text>
+</svg>

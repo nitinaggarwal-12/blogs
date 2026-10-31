@@ -124,7 +124,7 @@ To bridge executive security strategy and production runtime implementation, thi
 
 The following `L1 Logical` architecture diagram shows the end-to-end 3-layer security taxonomy connecting untrusted multi-tenant callers to the shared 5-hop ADK control plane and downstream VPC-SC isolation data planes:
 
-![Figure 1A — Multi-tenant agentic AI reference taxonomy: 3 logical security layers (Tenant Ingress PEP, 5-Hop ADK Control Plane, and VPC-SC Isolation Data Planes)](../slides/previews/ws1-12slide-visual-deck/slide_08.png)
+![Figure 1A — Multi-tenant agentic AI reference taxonomy: 3 logical security layers (Tenant Ingress PEP, 5-Hop ADK Control Plane, and VPC-SC Isolation Data Planes)](../diagrams/ws1-l1-logical-security-taxonomy.drawio.png)
 
 *Figure 1A. Official Google Cloud Architecture Center L1 Logical Security Taxonomy diagram showing the 3 logical security tiers: Layer 1 (Tenant Identity & Ingress PEP for competing enterprise callers), Layer 2 (Shared 5-Hop ADK Control Plane running in Vertex AI Agent Engine with ~3ms Valkey JTI Deny-List), and Layer 3 (Isolation Data Planes mapping to 4 Physical VPC-SC Perimeters across Pattern A pooled AlloyDB RLS, Pattern B sovereign silos, Pattern C PSC spokes, and OpenTelemetry governance).*
 
@@ -180,7 +180,7 @@ The seven numbered steps in Figure 2 (`1`–`7`) verify every state transition i
 
 The following `L3 Process` diagram models the synchronous 5-actor UML sequence tracing an agent turn from untrusted tenant caller ingress through fail-closed circuit breakers and single-flight cache recovery:
 
-![Figure 2A — 5-Actor UML sequence swimlane, fail-closed circuit breakers, and stampede recovery](../slides/previews/ws1-12slide-visual-deck/slide_13.png)
+![Figure 2A — 5-Actor UML sequence swimlane, fail-closed circuit breakers, and stampede recovery](../diagrams/ws1-l3-process-sequence-swimlane.drawio.png)
 
 *Figure 2A. Official Google Cloud Architecture Center L3 Process UML Sequence Swimlane tracing the 5 runtime actors across Hop 1 Edge & IAM STS, Hops 2–3 ARD & Memory, Hop 4 Model Armor & LLM, and Hop 5 MCP & AlloyDB, illustrating fail-closed HTTP 401/403/429/422/423 circuit breakers and single-flight SET NX PX 5000 stampede recovery.*
 
@@ -188,7 +188,7 @@ The following `L3 Process` diagram models the synchronous 5-actor UML sequence t
 
 The following `L4 Wire` diagram details the three-stage protocol transformation stripping untrusted caller headers at Hop 1 and outputting an immutable, sender-constrained STS JWT:
 
-![Figure 2B — Wire-level protocol normalization: Hop 1 spoofed header stripping and signed STS JWT context](../slides/previews/ws1-12slide-visual-deck/slide_14.png)
+![Figure 2B — Wire-level protocol normalization: Hop 1 spoofed header stripping and signed STS JWT context](../diagrams/ws1-l4-wire-protocol-transformation.drawio.png)
 
 *Figure 2B. Official Google Cloud Architecture Center L4 Wire-Level Protocol Normalization Triptych demonstrating how unverified client claims and spoofed tenant headers are stripped at Cloud Armor (Stage 01), exchanged via RFC 8693 OBO + RFC 9449 DPoP JKT (Stage 02), and signed with Cloud KMS ECDSA P-256 for <0.15ms in-memory cached JWKS verification across downstream microservices.*
 

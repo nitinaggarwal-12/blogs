@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="embed.diagrams.net" modified="2026-10-31T05:00:00.000Z" agent="PromptCanvas-Vision-Decompiler-v4.0" version="24.7.5" type="device">
+  <diagram id="ws1-l1-logical-security-taxonomy" name="C4 L1: Multi-Tenant Agentic AI Reference Taxonomy">
+    <mxGraphModel dx="1200" dy="880" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="880" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        
+        <!-- Header -->
+        <mxCell id="hdr_title" value="&lt;div style=&quot;font-family:'Google Sans',Roboto,Arial,sans-serif;&quot;&gt;&lt;b style=&quot;font-size:14px;color:#174ea6;&quot;&gt;[WORKSTREAM 1 • C4 LEVEL 1] Multi-Tenant Agentic AI Reference Taxonomy: 3 Logical Security Layers&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:11.5px;color:#5f6368;&quot;&gt;Enterprise Architectural Boundaries: Ingress PEP, 5-Hop ADK Cryptographic Controller &amp;amp; Multi-Tenant Isolation Enclaves&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="30" y="15" width="1140" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- LAYER 1: Ingress PEP -->
+        <mxCell id="layer_1_box" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#1a73e8;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="70" width="1140" height="210" as="geometry"/>
+        </mxCell>
+        <mxCell id="layer_1_lbl" value="&lt;b style=&quot;font-family:'Google Sans',sans-serif;font-size:12px;color:#1a73e8;&quot;&gt;LOGICAL BOUNDARY 1: TENANT INGRESS &amp;amp; POLICY ENFORCEMENT POINT (PEP)&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#475569;&quot;&gt;Untrusted Client Ingress • TLS Termination • Spoofed Header Stripping • Ingress Prompt Screening&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="50" y="82" width="600" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- Layer 1 Cards -->
+        <mxCell id="card_caller_finvault" value="&lt;b style=&quot;font-size:12px;color:#0f172a;&quot;&gt;Tenant Caller A: FinVault Bank&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#475569;&quot;&gt;Tier: ENTERPRISE (8k RPM)&lt;br/&gt;Bearer OIDC JWT + DPoP Proof&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="60" y="130" width="220" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_caller_retail" value="&lt;b style=&quot;font-size:12px;color:#0f172a;&quot;&gt;Tenant Caller B: RetailStream&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#475569;&quot;&gt;Tier: STANDARD (4k RPM)&lt;br/&gt;Bearer OIDC JWT + DPoP Proof&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="310" y="130" width="220" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_cloud_armor" value="&lt;b style=&quot;font-size:12.5px;color:#1a73e8;&quot;&gt;Google Cloud Armor WAF&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#334155;&quot;&gt;• Strips Forged X-Tenant-Id&lt;br/&gt;• Rate Limiter &amp;amp; Geo Perimeters&lt;br/&gt;• Adaptive DDoS Mitigation&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1a73e8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="580" y="130" width="260" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_model_armor_in" value="&lt;b style=&quot;font-size:12.5px;color:#1a73e8;&quot;&gt;Model Armor (Ingress Screen)&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#334155;&quot;&gt;• Jailbreak &amp;amp; Prompt Injection Block&lt;br/&gt;• Inline DLP PII Redaction (~22ms p95)&lt;br/&gt;• Fail-Closed HTTP 422 on Breach&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1a73e8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="870" y="130" width="270" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- LAYER 2: 5-Hop ADK Controller -->
+        <mxCell id="layer_2_box" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#e6f4ea;strokeColor=#137333;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="310" width="1140" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="layer_2_lbl" value="&lt;b style=&quot;font-family:'Google Sans',sans-serif;font-size:12px;color:#137333;&quot;&gt;LOGICAL BOUNDARY 2: 5-HOP CRYPTOGRAPHIC CONTEXT CHAIN (ADK CONTROLLER)&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#475569;&quot;&gt;Hop 1 Edge STS ➔ Hop 2 ARD PDP ➔ Hop 3 Dynamic Runtime &amp;amp; Memory ➔ Hop 4 Model Armor &amp;amp; LLM ➔ Hop 5 Scoped MCP &amp;amp; AlloyDB&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="50" y="322" width="750" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- Layer 2 Cards -->
+        <mxCell id="card_hop1" value="&lt;b style=&quot;font-size:11.5px;color:#137333;&quot;&gt;Hop 1: IAM STS &amp;amp; KMS&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10px;color:#334155;&quot;&gt;RFC 8693 OBO Exchange&lt;br/&gt;RFC 9449 DPoP JKT Binding&lt;br/&gt;KMS ECDSA P-256 Sign&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#137333;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="50" y="370" width="200" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_hop2" value="&lt;b style=&quot;font-size:11.5px;color:#137333;&quot;&gt;Hop 2: ARD Catalog PDP&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10px;color:#334155;&quot;&gt;Tenant Tool Isolation&lt;br/&gt;Agent Alpha Discovery Guard&lt;br/&gt;Hides Private Agents&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#137333;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="275" y="370" width="200" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_hop3" value="&lt;b style=&quot;font-size:11.5px;color:#137333;&quot;&gt;Hop 3: Dynamic Runtime&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10px;color:#334155;&quot;&gt;5-Level Memory Bank (L1..L5)&lt;br/&gt;GCS Dynamic Skills Injection&lt;br/&gt;Namespace isolation&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#137333;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="500" y="370" width="200" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_hop4" value="&lt;b style=&quot;font-size:11.5px;color:#137333;&quot;&gt;Hop 4: Model Armor &amp;amp; LLM&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10px;color:#334155;&quot;&gt;Gemini 2.5 Pro Engine&lt;br/&gt;90% Prefix Cache Savings&lt;br/&gt;Semantic NLC Guardrails&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#137333;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="725" y="370" width="200" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_hop5" value="&lt;b style=&quot;font-size:11.5px;color:#137333;&quot;&gt;Hop 5: Scoped MCP &amp;amp; RLS&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10px;color:#334155;&quot;&gt;2LO / 3LO OAuth Hub&lt;br/&gt;AlloyDB FORCE RLS&lt;br/&gt;SET LOCAL app.current_tenant_id&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#137333;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="950" y="370" width="200" height="140" as="geometry"/>
+        </mxCell>
+
+        <!-- LAYER 3: Multi-Tenant Isolation Enclaves -->
+        <mxCell id="layer_3_box" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#fef7e0;strokeColor=#f2994a;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="570" width="1140" height="270" as="geometry"/>
+        </mxCell>
+        <mxCell id="layer_3_lbl" value="&lt;b style=&quot;font-family:'Google Sans',sans-serif;font-size:12px;color:#b06000;&quot;&gt;LOGICAL BOUNDARY 3: MULTI-TENANT ISOLATION ENCLAVES (PATTERNS A, B &amp;amp; C)&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#475569;&quot;&gt;Physical Infrastructure Realization • Database Row-Level Security • Dedicated Sovereign Silos • Hybrid Dynamic Tiering&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="50" y="582" width="750" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- Layer 3 Cards -->
+        <mxCell id="card_enclave_a" value="&lt;b style=&quot;font-size:12.5px;color:#b06000;&quot;&gt;Pattern A: High-Density Pooled Shared Runtime&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#334155;&quot;&gt;• Multi-Tenant Cloud Run Container Pool (FinVault + RetailStream)&lt;br/&gt;• Single Shared AlloyDB for PostgreSQL Cluster&lt;br/&gt;• Cryptographic Row-Level Security: FORCE ROW LEVEL SECURITY&lt;br/&gt;• 90% Shared Prompt Prefix Cache Hit Rate • Lowest Cost-per-Tenant&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#f2994a;strokeWidth=1.5;align=left;spacingLeft=14;" vertex="1" parent="1">
+          <mxGeometry x="50" y="630" width="350" height="180" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_enclave_b" value="&lt;b style=&quot;font-size:12.5px;color:#ea4335;&quot;&gt;Pattern B: Dedicated Sovereign Silos&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#334155;&quot;&gt;• Dedicated VPC Service Controls (VPC-SC) Perimeter&lt;br/&gt;• Isolated Project &amp;amp; Dedicated Private Vertex AI Agent Engine&lt;br/&gt;• Dedicated Cloud KMS HSM CMEK (1-Click Cryptoshredding)&lt;br/&gt;• Air-Gapped Private Vector RAG • Zero Shared Blast Radius&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#ea4335;strokeWidth=1.5;align=left;spacingLeft=14;" vertex="1" parent="1">
+          <mxGeometry x="425" y="630" width="350" height="180" as="geometry"/>
+        </mxCell>
+        <mxCell id="card_enclave_c" value="&lt;b style=&quot;font-size:12.5px;color:#1a73e8;&quot;&gt;Pattern C: Dynamic Hybrid Tiering&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#334155;&quot;&gt;• Standard Tenants on Shared Pooled Runtime (Pattern A)&lt;br/&gt;• Enterprise Tenants routed via Private Service Connect (PSC)&lt;br/&gt;• Zero-Downtime Live Migration between Tiers&lt;br/&gt;• Unified Hub-and-Spoke Governance &amp;amp; Consolidated FinOps&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1a73e8;strokeWidth=1.5;align=left;spacingLeft=14;" vertex="1" parent="1">
+          <mxGeometry x="800" y="630" width="350" height="180" as="geometry"/>
+        </mxCell>
+
+        <!-- Directional Edges -->
+        <mxCell id="e_layer1_to_layer2" value="Sanitized HTTPS + Signed OBO/DPoP Token Context" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1a73e8;strokeWidth=2;fontSize=10;fontColor=#1a73e8;endArrow=block;endFill=1;" edge="1" parent="1" source="card_cloud_armor" target="card_hop1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_hop1_to_hop2" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#137333;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="card_hop1" target="card_hop2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_hop2_to_hop3" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#137333;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="card_hop2" target="card_hop3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_hop3_to_hop4" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#137333;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="card_hop3" target="card_hop4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_hop4_to_hop5" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#137333;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="card_hop4" target="card_hop5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_layer2_to_pattern_a" value="Tier: STANDARD" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#f2994a;strokeWidth=2;fontSize=10;fontColor=#b06000;endArrow=block;endFill=1;" edge="1" parent="1" source="card_hop5" target="card_enclave_a">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_layer2_to_pattern_b" value="Tier: SOVEREIGN" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#ea4335;strokeWidth=2;fontSize=10;fontColor=#ea4335;endArrow=block;endFill=1;" edge="1" parent="1" source="card_hop5" target="card_enclave_b">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_layer2_to_pattern_c" value="Tier: HYBRID PSC" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1a73e8;strokeWidth=2;fontSize=10;fontColor=#1a73e8;endArrow=block;endFill=1;" edge="1" parent="1" source="card_hop5" target="card_enclave_c">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

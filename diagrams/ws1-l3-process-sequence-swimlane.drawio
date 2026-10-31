@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="embed.diagrams.net" modified="2026-10-31T05:00:00.000Z" agent="PromptCanvas-Vision-Decompiler-v4.0" version="24.7.5" type="device">
+  <diagram id="ws1-l3-process-sequence-swimlane" name="C4 L3: 5-Actor UML Sequence Swimlane">
+    <mxGraphModel dx="1200" dy="860" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="860" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Header -->
+        <mxCell id="hdr_title" value="&lt;div style=&quot;font-family:'Google Sans',Roboto,Arial,sans-serif;&quot;&gt;&lt;b style=&quot;font-size:14px;color:#174ea6;&quot;&gt;[WORKSTREAM 1 • C4 LEVEL 3] 5-Actor UML Sequence Swimlane, Fail-Closed Circuit Breakers &amp;amp; Stampede Recovery&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:11.5px;color:#5f6368;&quot;&gt;Synchronous Request Execution Path • Hop-by-Hop Policy Enforcement • Fail-Closed Error Traps&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="30" y="15" width="1140" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- 5 Actor Header Blocks -->
+        <mxCell id="act_1_head" value="&lt;b style=&quot;font-size:12px;color:#0f172a;&quot;&gt;ACTOR 1&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:11px;color:#475569;&quot;&gt;Tenant Caller&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#94a3b8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="50" y="70" width="180" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="act_2_head" value="&lt;b style=&quot;font-size:12px;color:#1d4ed8;&quot;&gt;HOP 1&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:11px;color:#1e40af;&quot;&gt;Hop 1: Edge &amp;amp; IAM STS&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#3b82f6;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="270" y="70" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="act_3_head" value="&lt;b style=&quot;font-size:12px;color:#065f46;&quot;&gt;HOPS 2-3&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:11px;color:#047857;&quot;&gt;Hops 2–3: ARD &amp;amp; Memory&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ecfdf5;strokeColor=#10b981;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="510" y="70" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="act_4_head" value="&lt;b style=&quot;font-size:12px;color:#854d0e;&quot;&gt;HOP 4&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:11px;color:#a16207;&quot;&gt;Hop 4: Model Armor &amp;amp; LLM&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#fefce8;strokeColor=#eab308;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="750" y="70" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="act_5_head" value="&lt;b style=&quot;font-size:12px;color:#831843;&quot;&gt;HOP 5&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:11px;color:#be185d;&quot;&gt;Hop 5: MCP &amp;amp; AlloyDB&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#fdf2f8;strokeColor=#ec4899;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="990" y="70" width="180" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Vertical Lifelines -->
+        <mxCell id="line_act1" value="" style="edgeStyle=none;dashed=1;strokeColor=#cbd5e1;strokeWidth=1.5;endArrow=none;" edge="1" parent="1" source="act_1_head">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="140" y="690" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="line_act2" value="" style="edgeStyle=none;dashed=1;strokeColor=#93c5fd;strokeWidth=1.5;endArrow=none;" edge="1" parent="1" source="act_2_head">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="370" y="690" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="line_act3" value="" style="edgeStyle=none;dashed=1;strokeColor=#a7f3d0;strokeWidth=1.5;endArrow=none;" edge="1" parent="1" source="act_3_head">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="610" y="690" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="line_act4" value="" style="edgeStyle=none;dashed=1;strokeColor=#fde047;strokeWidth=1.5;endArrow=none;" edge="1" parent="1" source="act_4_head">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="850" y="690" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="line_act5" value="" style="edgeStyle=none;dashed=1;strokeColor=#fbcfe8;strokeWidth=1.5;endArrow=none;" edge="1" parent="1" source="act_5_head">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1080" y="690" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- Step 1: Caller sends OIDC JWT -->
+        <mxCell id="step_1_box" value="&lt;b style=&quot;font-size:11px;color:#1e40af;&quot;&gt;1. Caller sends OIDC JWT + DPoP proof&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;HTTPS POST /v1/agents/turn • Header: Bearer &amp;lt;jwt&amp;gt;&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#3b82f6;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="150" y="150" width="210" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Step 2: Edge STS -->
+        <mxCell id="step_2_box" value="&lt;b style=&quot;font-size:11px;color:#15803d;&quot;&gt;2. Hop 1 Strips Spoofed Headers &amp;amp; Mints 5-Min STS JWT&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Verify OBO + ~3ms JTI • Mint 5-Min STS JWT (&amp;lt;0.15ms Cached JWKS)&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#10b981;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="380" y="230" width="220" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- Step 3: ARD & Memory -->
+        <mxCell id="step_3_box" value="&lt;b style=&quot;font-size:11px;color:#047857;&quot;&gt;3. Hops 2–3 Filter ARD &amp;amp; Scope Cache&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;ARD ACL + 120/600 RPM Cap &amp;amp; 4k/8k Token Clamp • 5-Level Memory Bank&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#10b981;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="620" y="320" width="220" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- Step 4: Model Armor & LLM -->
+        <mxCell id="step_4_box" value="&lt;b style=&quot;font-size:11px;color:#a16207;&quot;&gt;4. Hop 4 Model Armor &amp;amp; Gemini 2.5 Pro&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Inline DLP (~22ms p95) • 90% Shared Prefix Cache Hit [32k Tok]&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#eab308;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="860" y="410" width="210" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- Step 5: MCP & AlloyDB -->
+        <mxCell id="step_5_box" value="&lt;b style=&quot;font-size:11px;color:#be185d;&quot;&gt;5. Hop 5 Binds AlloyDB RLS&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;SET LOCAL app.current_tenant_id • Vaults per-user 3LO&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#ec4899;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="720" y="490" width="350" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Step 6: Parameterized SQL & Return -->
+        <mxCell id="step_6_box" value="&lt;b style=&quot;font-size:11px;color:#0f172a;&quot;&gt;6. Executes Parameterized SQL &amp;amp; Streams Telemetry&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;0 Cross-Tenant Rows • Streams Zero-PII Span to BigQuery OTel • HTTP 200&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#3b82f6;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="150" y="570" width="920" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Bottom Fail-Closed Circuit Breakers Callout -->
+        <mxCell id="card_fail_closed" value="&lt;div style=&quot;font-family:'Google Sans',sans-serif;text-align:left;&quot;&gt;&lt;b style=&quot;font-size:11.5px;color:#be123c;&quot;&gt;[FAIL-CLOSED CIRCUIT BREAKERS &amp;amp; STAMPEDE RECOVERY]:&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10px;color:#475569;&quot;&gt;• &lt;b&gt;Hop 1–3 Breakers:&lt;/b&gt; Bad OBO/DPoP, ~3ms JTI revoke, or ARD probe fail ➔ &lt;b style=&quot;color:#e11d48;&quot;&gt;HTTP 401/403&lt;/b&gt; | Rate Cap &amp;gt;120/600 RPM ➔ &lt;b style=&quot;color:#e11d48;&quot;&gt;HTTP 429&lt;/b&gt; Retry-After jitter &amp;amp; 5x30k clamp&lt;br/&gt;• &lt;b&gt;Hop 4–5 &amp;amp; Recovery:&lt;/b&gt; Semantic NLC violation ➔ &lt;b style=&quot;color:#e11d48;&quot;&gt;HTTP 422&lt;/b&gt; | KMS key revocation ➔ &amp;lt;50s SCAN+UNLINK &amp;amp; &lt;b style=&quot;color:#059669;&quot;&gt;SET NX PX 5000&lt;/b&gt; AlloyDB RLS cache re-hydrate&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#fff1f2;strokeColor=#e11d48;strokeWidth=1.5;spacingLeft=12;spacingRight=12;" vertex="1" parent="1">
+          <mxGeometry x="50" y="650" width="1120" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Sequence Flow Arrows -->
+        <mxCell id="e_step1" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#3b82f6;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="act_1_head" target="step_1_box"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_step1_to_step2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#3b82f6;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="step_1_box" target="step_2_box"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_step2_to_step3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#10b981;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="step_2_box" target="step_3_box"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_step3_to_step4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#eab308;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="step_3_box" target="step_4_box"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_step4_to_step5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#ec4899;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="step_4_box" target="step_5_box"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_step5_to_step6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#3b82f6;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="step_5_box" target="step_6_box"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
