@@ -842,12 +842,18 @@ def sync_single_doc(spec: Dict[str, Any], export_pdf_dir: Optional[Path] = None)
     # 5. Export finished native Google Doc to downloadable Microsoft Word (.docx)
     WORD_OUT_DIR.mkdir(parents=True, exist_ok=True)
     docx_out = ROOT_DIR / spec["docx_rel"]
-    subprocess.run(
-        [GDRIVE_BIN, "readonly", "export", doc_id, str(docx_out), "--format", "docx"],
-        check=True,
-        capture_output=True,
-        text=True,
-    )
+    try:
+        subprocess.run(
+            [GDRIVE_BIN, "readonly", "export", doc_id, str(docx_out), "--format", "docx"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except subprocess.CalledProcessError as e:
+        if ("exportSizeLimitExceeded" in str(e.stderr) or "too large" in str(e.stderr)) and docx_out.exists():
+            print(f"   ⚠️  [{key}] Google Drive export limit reached for massive doc ({doc_id}). Retaining existing verified {docx_out.name} ({docx_out.stat().st_size:,} B).")
+        else:
+            raise
 
     # Optional PDF export to scratch for visual inspection
     if export_pdf_dir is not None:

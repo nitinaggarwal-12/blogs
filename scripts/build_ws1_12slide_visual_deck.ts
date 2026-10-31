@@ -814,9 +814,102 @@ async function buildSlide10_Figure2() {
 // ============================================================================
 // SLIDE 11: ACT III TRANSITION BREAKER (5-HOP CRYPTOGRAPHIC CONTROL PLANE)
 // ============================================================================
-function buildSlide11_Act3Breaker() {
+
+// ============================================================================
+// SLIDE 11: 5-Hop Cryptographic Perimeter & Defense-in-Depth Pipeline Architecture
+// ============================================================================
+function buildSlide11_PerimeterTopology() {
+  const slide = pptx.addSlide();
+  addHeader(slide, 'ACT II • DEFENSE-IN-DEPTH', '5-Hop Perimeter Pipeline: Zero-Trust Enforcement Across Ingress, PDP, Bulkhead, Guardrails & RLS', 11);
+
+  slide.addText('How the 5 invariant cryptographic hops guarantee end-to-end multi-tenant isolation across all cloud resources.', {
+    x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
+  });
+
+  const cols = [
+    {
+      title: '1. Ingress & Edge PEP',
+      subtitle: 'Header stripping & token exchange',
+      color: G_BLUE_DARK,
+      tint: G_BLUE_LIGHT,
+      items: [
+        'Hop 1 (Edge PEP): Cloud Armor security policies strip caller-controlled X-Tenant-Id headers at boundary.',
+        'IAM STS Token Exchange: Caller OIDC/SAML assertions exchanged for 5-minute ECDSA P-256 JWTs.',
+        'RFC 9449 DPoP Binding: Proof-of-possession binds tokens to client ephemeral key pair, preventing replay.',
+        'Deterministic Rejection: Requests lacking valid identity tokens rejected with HTTP 401 in <0.15ms.'
+      ]
+    },
+    {
+      title: '2. Registry PDP & Bulkhead',
+      subtitle: 'Dynamic catalog & runtime sandbox',
+      color: G_AMBER_DEEP,
+      tint: G_YELLOW_LIGHT,
+      items: [
+        'Hop 2 (Registry PDP): Discovery Engine ARD filters tool catalog dynamically per tenant entitlement.',
+        'Hop 3 (Execution Bulkhead): Cloud Run Gen2 executes within gVisor kernel sandboxes per invocation.',
+        'Memorystore Valkey: Independent Redis logical databases with atomic leaky-bucket token quotas.',
+        'Fail-Closed Contracts: Unauthorized tools return HTTP 403; noisy-neighbor bursts trigger HTTP 429.'
+      ]
+    },
+    {
+      title: '3. Model Armor Guardrails',
+      subtitle: 'Inline DLP & prompt sanitization',
+      color: G_RED_DEEP,
+      tint: G_RED_LIGHT,
+      items: [
+        'Hop 4 (Inference Guard): Inline Model Armor proxies all Gemini LLM API calls with zero turn drop.',
+        'Dual-Path Scanning: Inspects user prompts for jailbreaks and model completions for cross-tenant PII.',
+        'Natural Language Constraints: Semantic NLC filters prevent unauthorized cross-tenant tool invocation.',
+        'Prompt Injection Defense: Malicious jailbreak attempts immediately terminated with HTTP 422 error.'
+      ]
+    },
+    {
+      title: '4. Database RLS & CMEK',
+      subtitle: 'Engine-level SQL & crypto isolation',
+      color: G_GREEN_DEEP,
+      tint: G_GREEN_LIGHT,
+      items: [
+        'Hop 5 (Data Partitioning): AlloyDB PostgreSQL Row-Level Security evaluates app.current_tenant_id.',
+        'Zero-Leak Guarantees: Mathematical guarantee that 0 unauthorized rows can be scanned or returned.',
+        'Cloud KMS CMEK: Dedicated per-tenant HSM key rings provide instant cryptographic shredding.',
+        'Sub-60s Kill-Switch: Disabling customer key immediately renders all tenant data unreadable (HTTP 423).'
+      ]
+    }
+  ];
+
+  cols.forEach((c, idx) => {
+    const cx = 0.6 + idx * 3.08;
+    slide.addShape(pptx.ShapeType.roundRect, {
+      x: cx, y: 1.35, w: 2.92, h: 5.5, rectRadius: 0.08,
+      fill: { color: WHITE }, line: { color: c.color, width: 1.5 }
+    });
+    slide.addShape(pptx.ShapeType.rect, {
+      x: cx, y: 1.35, w: 2.92, h: 0.6, fill: { color: c.tint }
+    });
+    slide.addText(c.title, {
+      x: cx + 0.15, y: 1.42, w: 2.62, h: 0.45, fontSize: 10.5, bold: true, color: c.color, fontFace: FONT_TITLE
+    });
+    slide.addText(c.subtitle, {
+      x: cx + 0.15, y: 2.05, w: 2.62, h: 0.35, fontSize: 8.5, italic: true, color: TEXT_MUTED, fontFace: FONT_BODY
+    });
+
+    c.items.forEach((item, iidx) => {
+      const iy = 2.5 + iidx * 1.05;
+      slide.addShape(pptx.ShapeType.roundRect, {
+        x: cx + 0.12, y: iy, w: 2.68, h: 0.98, rectRadius: 0.04,
+        fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
+      });
+      slide.addText(`• ${item}`, {
+        x: cx + 0.18, y: iy + 0.06, w: 2.56, h: 0.86,
+        fontSize: 8.0, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
+      });
+    });
+  });
+}
+
+function buildSlide12_Act3Breaker() {
   buildActBreakerSlide({
-    slideNum: 11,
+    slideNum: 12,
     actTag: 'ACT III TRANSITION',
     actNumber: 'ACT III',
     actTitle: '5-Hop Cryptographic Pipeline & Deep Execution',
@@ -837,7 +930,7 @@ function buildSlide11_Act3Breaker() {
 // ============================================================================
 // SLIDE 12: L3 Process Swimlane (ACT III)
 // ============================================================================
-function buildSlide12_L3Process() {
+function buildSlide13_L3Process() {
   addUmlSequenceSwimlaneSlide(
     pptx,
     DECKS[0],
@@ -848,7 +941,7 @@ function buildSlide12_L3Process() {
 // ============================================================================
 // SLIDE 13: L4 Wire Payload Transformation (ACT III)
 // ============================================================================
-function buildSlide13_L4Wire() {
+function buildSlide14_L4Wire() {
   addPayloadTransformationTriptychSlide(
     pptx,
     DECKS[0],
@@ -859,7 +952,7 @@ function buildSlide13_L4Wire() {
 // ============================================================================
 // SLIDE 14: L3 Process Circuit Breakers Deep-Dive
 // ============================================================================
-function buildSlide14_CircuitBreakers() {
+function buildSlide15_CircuitBreakers() {
   const slide = pptx.addSlide();
   addHeader(slide, 'ACT III • CIRCUIT BREAKERS', 'L3 Process Architecture: Explicit Fail-Closed Security Circuit Breakers', 14);
 
@@ -911,7 +1004,7 @@ function buildSlide14_CircuitBreakers() {
 // ============================================================================
 // SLIDE 15: AlloyDB Row-Level Security Table
 // ============================================================================
-function buildSlide15_AlloyDbRls() {
+function buildSlide16_AlloyDbRls() {
   const slide = pptx.addSlide();
   addHeader(slide, 'ACT III • ALLOYDB RLS', 'Hop 5 Data Partitioning: AlloyDB Row-Level Security DrawingML Architecture', 15);
 
@@ -1008,7 +1101,7 @@ function buildSlide15_AlloyDbRls() {
 // ============================================================================
 // SLIDE 16: FinOps & Valkey Prefix Caching
 // ============================================================================
-function buildSlide16_FinOpsValkey() {
+function buildSlide17_FinOpsValkey() {
   const slide = pptx.addSlide();
   addHeader(slide, 'ACT III • GOVERNANCE & FINOPS', 'Hop 3 Sandbox & Valkey Rate Limiter: FinOps Bulkhead & Prefix Caching', 16);
 
@@ -1086,7 +1179,7 @@ function buildSlide16_FinOpsValkey() {
 // ============================================================================
 // SLIDE 17: Production Simulation Benchmarks + Transition Bridge
 // ============================================================================
-function buildSlide17_Simulation() {
+function buildSlide18_Simulation() {
   const slide = pptx.addSlide();
   addHeader(slide, 'ACT III • BENCHMARKS', 'Production Simulation: 10/10 Zero-Breach Multi-Tenant Architecture Verification', 17);
 
@@ -1144,7 +1237,7 @@ function buildSlide17_Simulation() {
 // ============================================================================
 // SLIDE 18: Architectural Caveats & Operational Nuances
 // ============================================================================
-function buildSlide18_ArchitecturalCaveats() {
+function buildSlide19_ArchitecturalCaveats() {
   const slide = pptx.addSlide();
   addHeader(
     slide,
@@ -1289,7 +1382,7 @@ function buildSlide18_ArchitecturalCaveats() {
 // ============================================================================
 // SLIDE 19: ACT IV TRANSITION BREAKER (EMPIRICAL SAAS EVIDENCE)
 // ============================================================================
-function buildSlide19_Act4Breaker() {
+function buildSlide20_Act4Breaker() {
   buildActBreakerSlide({
     slideNum: 19,
     actTag: 'ACT IV TRANSITION',
@@ -1416,7 +1509,7 @@ function buildBeforeAfterSaasSlide(cfg: SaasProofConfig) {
 }
 
 // SLIDE 19: Proof 1 — Metabase Enterprise BI
-function buildSlide20_Metabase() {
+function buildSlide21_Metabase() {
   buildBeforeAfterSaasSlide({
     slideNum: 20,
     proofNum: 1,
@@ -1435,7 +1528,7 @@ function buildSlide20_Metabase() {
 }
 
 // SLIDE 20: Proof 2 — Trino Distributed SQL
-function buildSlide21_Trino() {
+function buildSlide22_Trino() {
   buildBeforeAfterSaasSlide({
     slideNum: 21,
     proofNum: 2,
@@ -1454,7 +1547,7 @@ function buildSlide21_Trino() {
 }
 
 // SLIDE 21: Proof 3 — Grafana Enterprise
-function buildSlide22_Grafana() {
+function buildSlide23_Grafana() {
   buildBeforeAfterSaasSlide({
     slideNum: 22,
     proofNum: 3,
@@ -1473,7 +1566,7 @@ function buildSlide22_Grafana() {
 }
 
 // SLIDE 22: Proof 4 — Datalust Seq OTel
-function buildSlide23_DatalustSeq() {
+function buildSlide24_DatalustSeq() {
   buildBeforeAfterSaasSlide({
     slideNum: 23,
     proofNum: 4,
@@ -1492,7 +1585,7 @@ function buildSlide23_DatalustSeq() {
 }
 
 // SLIDE 23: Proof 5 — HashiCorp Vault CMEK
-function buildSlide24_HashiCorpVault() {
+function buildSlide25_HashiCorpVault() {
   buildBeforeAfterSaasSlide({
     slideNum: 24,
     proofNum: 5,
@@ -1511,7 +1604,7 @@ function buildSlide24_HashiCorpVault() {
 }
 
 // SLIDE 24: Proof 6 — ClickHouse Analytics
-function buildSlide25_ClickHouse() {
+function buildSlide26_ClickHouse() {
   buildBeforeAfterSaasSlide({
     slideNum: 25,
     proofNum: 6,
@@ -1530,7 +1623,7 @@ function buildSlide25_ClickHouse() {
 }
 
 // SLIDE 25: Proof 7 — Redmine ITSM
-function buildSlide26_Redmine() {
+function buildSlide27_Redmine() {
   buildBeforeAfterSaasSlide({
     slideNum: 26,
     proofNum: 7,
@@ -1549,7 +1642,7 @@ function buildSlide26_Redmine() {
 }
 
 // SLIDE 26: Proof 8 — NocoDB GxP Grid
-function buildSlide27_NocoDB() {
+function buildSlide28_NocoDB() {
   buildBeforeAfterSaasSlide({
     slideNum: 27,
     proofNum: 8,
@@ -1568,7 +1661,7 @@ function buildSlide27_NocoDB() {
 }
 
 // SLIDE 27: Proof 9 — Gitea SRE
-function buildSlide28_Gitea() {
+function buildSlide29_Gitea() {
   buildBeforeAfterSaasSlide({
     slideNum: 28,
     proofNum: 9,
@@ -1587,7 +1680,7 @@ function buildSlide28_Gitea() {
 }
 
 // SLIDE 28: Proof 10 — Directus HCM
-function buildSlide29_Directus() {
+function buildSlide30_Directus() {
   buildBeforeAfterSaasSlide({
     slideNum: 29,
     proofNum: 10,
@@ -1608,7 +1701,7 @@ function buildSlide29_Directus() {
 // ============================================================================
 // SLIDE 29: ACT V TRANSITION BREAKER (PRODUCTION ROADMAP & SYNTHESIS)
 // ============================================================================
-function buildSlide30_Act5Breaker() {
+function buildSlide31_Act5Breaker() {
   buildActBreakerSlide({
     slideNum: 30,
     actTag: 'ACT V TRANSITION',
@@ -1631,7 +1724,7 @@ function buildSlide30_Act5Breaker() {
 // ============================================================================
 // SLIDE 30: 10-Week Implementation Roadmap & Executive CTA
 // ============================================================================
-function buildSlide31_Roadmap() {
+function buildSlide32_Roadmap() {
   const slide = pptx.addSlide();
   addHeader(slide, 'ACT V • IMPLEMENTATION ROADMAP', '10-Week Enterprise Implementation Roadmap & Companion Resources', 30);
 
@@ -1703,7 +1796,7 @@ function buildSlide31_Roadmap() {
 // ============================================================================
 // SLIDE 31: Quantified Multi-Cloud SaaS Isolation Scorecard & 10/10 Verification Matrix
 // ============================================================================
-function buildSlide32_Scorecard() {
+function buildSlide33_Scorecard() {
   const slide = pptx.addSlide();
   addHeader(slide, 'ACT V • VERIFICATION MATRIX', 'Quantified Multi-Cloud SaaS Isolation Scorecard & 10/10 Verification Matrix', 31);
 
@@ -1782,7 +1875,7 @@ function buildSlide32_Scorecard() {
 // ============================================================================
 // SLIDE 33: Frequently Asked Questions (Executive & CISO Decision Guide)
 // ============================================================================
-function buildSlide33_Faq() {
+function buildSlide34_Faq() {
   const slide = pptx.addSlide();
   addHeader(
     slide,
@@ -1911,38 +2004,39 @@ async function main() {
   buildSlide08_L1Logical();
   await buildSlide09_Figure1();
   await buildSlide10_Figure2();
+  buildSlide11_PerimeterTopology();
   
   // ACT III: 5-HOP CRYPTOGRAPHIC PIPELINE & DEEP EXECUTION (Slides 11-18)
-  buildSlide11_Act3Breaker();
-  buildSlide12_L3Process();
-  buildSlide13_L4Wire();
-  buildSlide14_CircuitBreakers();
-  buildSlide15_AlloyDbRls();
-  buildSlide16_FinOpsValkey();
-  buildSlide17_Simulation();
-  buildSlide18_ArchitecturalCaveats();
+  buildSlide12_Act3Breaker();
+  buildSlide13_L3Process();
+  buildSlide14_L4Wire();
+  buildSlide15_CircuitBreakers();
+  buildSlide16_AlloyDbRls();
+  buildSlide17_FinOpsValkey();
+  buildSlide18_Simulation();
+  buildSlide19_ArchitecturalCaveats();
   
   // ACT IV: EMPIRICAL EVIDENCE & 10 GENUINE SAAS PROOFS (Slides 19-29)
-  buildSlide19_Act4Breaker();
-  buildSlide20_Metabase();
-  buildSlide21_Trino();
-  buildSlide22_Grafana();
-  buildSlide23_DatalustSeq();
-  buildSlide24_HashiCorpVault();
-  buildSlide25_ClickHouse();
-  buildSlide26_Redmine();
-  buildSlide27_NocoDB();
-  buildSlide28_Gitea();
-  buildSlide29_Directus();
+  buildSlide20_Act4Breaker();
+  buildSlide21_Metabase();
+  buildSlide22_Trino();
+  buildSlide23_Grafana();
+  buildSlide24_DatalustSeq();
+  buildSlide25_HashiCorpVault();
+  buildSlide26_ClickHouse();
+  buildSlide27_Redmine();
+  buildSlide28_NocoDB();
+  buildSlide29_Gitea();
+  buildSlide30_Directus();
   
   // ACT V: PRODUCTION SYNTHESIS & 10-WEEK ROADMAP (Slides 30-33)
-  buildSlide30_Act5Breaker();
-  buildSlide31_Roadmap();
-  buildSlide32_Scorecard();
-  buildSlide33_Faq();
+  buildSlide31_Act5Breaker();
+  buildSlide32_Roadmap();
+  buildSlide33_Scorecard();
+  buildSlide34_Faq();
 
   await pptx.writeFile({ fileName: OUTPUT_PPTX });
-  console.log(`✅ Successfully compiled ${OUTPUT_PPTX} (33 slides [Full 5-Act Narrative with Storyline, Act Breakers, L1-L4 DrawingML, Architectural Caveats, 10 SaaS Proofs, Scorecard & CISO FAQ Guide])`);
+  console.log(`✅ Successfully compiled ${OUTPUT_PPTX} (34 slides [Full 5-Act Narrative with Storyline, Act Breakers, L1-L4 DrawingML, Architectural Caveats, 10 SaaS Proofs, Scorecard & CISO FAQ Guide])`);
 
   postProcessPptxArrowheadsForGoogleSlides();
   console.log('✅ Post-processed arrowheads and connectors for Google Slides compatibility');

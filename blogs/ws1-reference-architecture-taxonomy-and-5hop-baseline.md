@@ -124,7 +124,7 @@ To bridge executive security strategy and production runtime implementation, thi
 
 The following `L1 Logical` architecture diagram shows the end-to-end 3-layer security taxonomy connecting untrusted multi-tenant callers to the shared 5-hop ADK control plane and downstream VPC-SC isolation data planes:
 
-![Figure 1A — Multi-tenant agentic AI reference taxonomy: 3 logical security layers (Tenant Ingress PEP, 5-Hop ADK Control Plane, and VPC-SC Isolation Data Planes)](../slides/previews/ws1-12slide-visual-deck/slide_07.png)
+![Figure 1A — Multi-tenant agentic AI reference taxonomy: 3 logical security layers (Tenant Ingress PEP, 5-Hop ADK Control Plane, and VPC-SC Isolation Data Planes)](../slides/previews/ws1-12slide-visual-deck/slide_08.png)
 
 *Figure 1A. Official Google Cloud Architecture Center L1 Logical Security Taxonomy diagram showing the 3 logical security tiers: Layer 1 (Tenant Identity & Ingress PEP for competing enterprise callers), Layer 2 (Shared 5-Hop ADK Control Plane running in Vertex AI Agent Engine with ~3ms Valkey JTI Deny-List), and Layer 3 (Isolation Data Planes mapping to 4 Physical VPC-SC Perimeters across Pattern A pooled AlloyDB RLS, Pattern B sovereign silos, Pattern C PSC spokes, and OpenTelemetry governance).*
 
