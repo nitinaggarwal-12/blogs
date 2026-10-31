@@ -742,6 +742,195 @@ SAAS_LIVE_TARGETS: Dict[str, Dict[str, Any]] = {
 }
 
 
+
+PAYG_SAAS_CATALOG: list[dict[str, Any]] = [
+    {
+        "id": "snowflake",
+        "name": "Snowflake AI Data Cloud",
+        "category": "Data Warehouse & Cortex NL2SQL",
+        "vendor": "Snowflake Inc.",
+        "marketplace_provider": "Google Cloud Marketplace & AWS Marketplace",
+        "marketplace_url": "https://console.cloud.google.com/marketplace/product/snowflake-cloud-data-platform/snowflake-gcp",
+        "pricing_model": "Pay-As-You-Go ($2.00–$4.00 per compute credit hour, billed per-second)",
+        "scale_to_zero": "Yes (AUTO_SUSPEND = 60 seconds; turns off automatically when idle)",
+        "estimated_idle_cost": "< $2.00 / month",
+        "finvault_scenario": "FinVault Core Financial Ledger & Cortex NL2SQL Banking Analyst",
+        "retailstream_scenario": "RetailStream Product Catalog & Sales Analytics",
+        "api_endpoint_template": "https://<org_account>.snowflakecomputing.com/api/v2/statements",
+        "auth_methods": ["Key-Pair JWT", "OAuth2", "Personal Access Token"],
+        "terraform_provider": "Snowflake-Labs/snowflake",
+        "setup_steps": [
+            "1. Subscribe via Google Cloud Marketplace (Search 'Snowflake') and link to project bbar-138hf0.",
+            "2. Create Virtual Warehouse with AUTO_SUSPEND = 60 to enforce scale-to-zero.",
+            "3. Execute DDL to seed FINVAULT_DB and RETAILSTREAM_DB schemas.",
+            "4. Configure Cortex Analyst role and generate API service user key pair."
+        ],
+        "ddl_snippet": "CREATE WAREHOUSE IF NOT EXISTS FINVAULT_WH WITH WAREHOUSE_SIZE = 'XSMALL' AUTO_SUSPEND = 60 AUTO_RESUME = TRUE;\nCREATE DATABASE IF NOT EXISTS FINVAULT_DB;\nCREATE TABLE FINVAULT_DB.PUBLIC.WIRE_SETTLEMENTS (TX_ID VARCHAR, AMOUNT NUMBER, TENANT VARCHAR, STATUS VARCHAR);"
+    },
+    {
+        "id": "datadog",
+        "name": "Datadog Cloud Observability",
+        "category": "APM, Distributed Tracing & Security",
+        "vendor": "Datadog Inc.",
+        "marketplace_provider": "Google Cloud Marketplace & AWS Marketplace",
+        "marketplace_url": "https://console.cloud.google.com/marketplace/product/datadog-saas/datadog",
+        "pricing_model": "Pay-As-You-Go ($15–$23 per monitored host/month + $1.70 per million APM spans)",
+        "scale_to_zero": "Yes (Consumption-metered on actual ingested spans and active agent nodes)",
+        "estimated_idle_cost": "$5.00 – $15.00 / month",
+        "finvault_scenario": "P1 Security Injection Alerts & Hopkins E2E Distributed Trace Waterfall",
+        "retailstream_scenario": "Standard Tier API Rate-Limit Throttling & Latency Heatmaps",
+        "api_endpoint_template": "https://api.datadoghq.com/api/v2/spans",
+        "auth_methods": ["DD-API-KEY", "DD-APPLICATION-KEY"],
+        "terraform_provider": "DataDog/datadog",
+        "setup_steps": [
+            "1. Subscribe via Google Cloud Marketplace under standard consumption billing.",
+            "2. Generate Datadog API Key & Application Key from Organization Settings.",
+            "3. Point OpenTelemetry OTLP exporter to http-intake.logs.datadoghq.com.",
+            "4. Ingest trace spans with tags tenant:finvault and tier:enterprise."
+        ],
+        "ddl_snippet": "POST /api/v2/spans\n{\"data\": [{\"type\": \"spans\", \"attributes\": {\"service\": \"geap-5hop\", \"operation_name\": \"hop4_model_armor\", \"resource_name\": \"suppress_occ_escalation\", \"tags\": {\"tenant\": \"finvault\", \"decision\": \"HTTP_422\"}}]}"
+    },
+    {
+        "id": "databricks",
+        "name": "Databricks Data Intelligence Platform",
+        "category": "Unity Catalog & Lakehouse Governance",
+        "vendor": "Databricks Inc.",
+        "marketplace_provider": "Google Cloud Marketplace & AWS Marketplace",
+        "marketplace_url": "https://console.cloud.google.com/marketplace/product/databricks-prod/databricks",
+        "pricing_model": "Pay-As-You-Go (Databricks Units / DBU, $0.15–$0.55/DBU per second of compute)",
+        "scale_to_zero": "Yes (Serverless SQL Warehouses automatically stop after 5–10 minutes idle)",
+        "estimated_idle_cost": "< $5.00 / month",
+        "finvault_scenario": "Unity Catalog 3-Level Namespace (finvault_cat.regulatory.wire_clearing)",
+        "retailstream_scenario": "RetailStream Shared Bronze/Silver/Gold Lakehouse Tables",
+        "api_endpoint_template": "https://<workspace>.cloud.databricks.com/api/2.1/unity-catalog/tables",
+        "auth_methods": ["Personal Access Token (dapi...)", "OAuth M2M Service Principal"],
+        "terraform_provider": "databricks/databricks",
+        "setup_steps": [
+            "1. Subscribe via Google Cloud Marketplace (Databricks on Google Cloud).",
+            "2. Provision workspace in us-central1 linked to existing Cloud Storage bucket.",
+            "3. Enable Unity Catalog and create sovereign catalog finvault_sovereign_cat.",
+            "4. Configure fine-grained column masks and Row Filters for tenant data."
+        ],
+        "ddl_snippet": "CREATE CATALOG IF NOT EXISTS finvault_sovereign_cat;\nCREATE SCHEMA IF NOT EXISTS finvault_sovereign_cat.wire_ops;\nCREATE TABLE finvault_sovereign_cat.wire_ops.settlements (tx_id STRING, amount DOUBLE, pii_ssn STRING MASKED);"
+    },
+    {
+        "id": "clickhouse_cloud",
+        "name": "ClickHouse Cloud",
+        "category": "Real-Time Analytical Database",
+        "vendor": "ClickHouse Inc.",
+        "marketplace_provider": "Google Cloud Marketplace & AWS Marketplace",
+        "marketplace_url": "https://console.cloud.google.com/marketplace/product/clickhouse-public/clickhouse-cloud",
+        "pricing_model": "Pay-As-You-Go (Compute Hour + Storage, per-second meter with auto-scaling)",
+        "scale_to_zero": "Yes (Development service scales down to 0 compute when idle)",
+        "estimated_idle_cost": "< $5.00 / month",
+        "finvault_scenario": "Sub-millisecond Financial Ledger Audits & Real-Time Settlement Feeds",
+        "retailstream_scenario": "High-Throughput Clickstream & Inventory Depletion Events",
+        "api_endpoint_template": "https://<service-id>.clickhouse.cloud:8443/?query=",
+        "auth_methods": ["Basic Auth (HTTPS)", "ClickHouse Cloud API Token"],
+        "terraform_provider": "ClickHouse/clickhouse",
+        "setup_steps": [
+            "1. Subscribe via Google Cloud Marketplace to ClickHouse Cloud.",
+            "2. Spin up a Development / Production service in GCP us-west1 or AWS us-east-1.",
+            "3. Enable Auto-Scaling and scale-to-zero for non-production environments.",
+            "4. Connect via HTTPS standard REST SQL endpoint."
+        ],
+        "ddl_snippet": "CREATE TABLE IF NOT EXISTS finvault_ledger (tx_id UUID DEFAULT generateUUIDv4(), amount Decimal64(2), tenant LowCardinality(String), created_at DateTime64(3) DEFAULT now64()) ENGINE = MergeTree() ORDER BY (tenant, created_at);"
+    },
+    {
+        "id": "mongodb_atlas",
+        "name": "MongoDB Atlas",
+        "category": "Serverless Document & Vector Store",
+        "vendor": "MongoDB Inc.",
+        "marketplace_provider": "Google Cloud Marketplace & AWS Marketplace",
+        "marketplace_url": "https://console.cloud.google.com/marketplace/product/mongodb/mongodb-atlas",
+        "pricing_model": "Pay-As-You-Go ($0.10 per million read operations, $1.00 per million write operations)",
+        "scale_to_zero": "Yes (Serverless cluster instances charge strictly per operation, $0 idle)",
+        "estimated_idle_cost": "< $2.00 / month",
+        "finvault_scenario": "Unstructured Agent Episodic Memory & Customer Dossier Document Store",
+        "retailstream_scenario": "Dynamic Product Catalog & Vector Search Embeddings",
+        "api_endpoint_template": "https://cloud.mongodb.com/api/atlas/v1.0",
+        "auth_methods": ["Atlas Public/Private API Key (Digest Auth)", "MongoDB Connection URI"],
+        "terraform_provider": "mongodb/mongodbatlas",
+        "setup_steps": [
+            "1. Subscribe via Google Cloud Marketplace or AWS Marketplace to MongoDB Atlas.",
+            "2. Deploy an Atlas Serverless Instance in your preferred cloud region.",
+            "3. Configure Database Access user with SCRAM authentication.",
+            "4. Add Network Access IP allowlist (or VPC Peering / Private Service Connect)."
+        ],
+        "ddl_snippet": "db.agent_episodic_memory.createIndex({ tenant_id: 1, session_id: 1 });\ndb.agent_episodic_memory.insertOne({ tenant_id: 'finvault', session_id: 'audit-sess-1', vector: [0.12, -0.45, 0.88], timestamp: new Date() });"
+    },
+    {
+        "id": "confluent_cloud",
+        "name": "Confluent Cloud (Apache Kafka)",
+        "category": "Event Streaming & Schema Registry",
+        "vendor": "Confluent Inc.",
+        "marketplace_provider": "Google Cloud Marketplace & AWS Marketplace",
+        "marketplace_url": "https://console.cloud.google.com/marketplace/product/confluent-cloud/confluent-cloud",
+        "pricing_model": "Pay-As-You-Go ($0.11 per GB throughput, zero base cluster fee for Basic clusters)",
+        "scale_to_zero": "Yes (Basic cluster incurs zero hourly charge; charges strictly on throughput)",
+        "estimated_idle_cost": "< $1.00 / month",
+        "finvault_scenario": "Real-time OCC Wire Settlement Pub/Sub & CMEK Revocation Signals",
+        "retailstream_scenario": "Retail Order Events & Dynamic Tier Migration Event Stream",
+        "api_endpoint_template": "https://pkc-<id>.us-west1.gcp.confluent.cloud:443",
+        "auth_methods": ["Confluent API Key + Secret (SASL_SSL / PLAIN)", "OAuth OIDC"],
+        "terraform_provider": "confluentinc/confluent",
+        "setup_steps": [
+            "1. Subscribe via Google Cloud Marketplace to Confluent Cloud.",
+            "2. Create a 'Basic' or 'Standard' cluster in us-west1 (GCP) or us-east-1 (AWS).",
+            "3. Generate API Key and Secret for Kafka Cluster.",
+            "4. Create topics: cymbal.finvault.wire-settlements and cymbal.security.alerts."
+        ],
+        "ddl_snippet": "confluent kafka topic create cymbal.finvault.wire-settlements --partitions 3\nconfluent kafka produce cymbal.finvault.wire-settlements --value '{\"tenant\": \"finvault\", \"action\": \"WIRE_CLEARED\", \"amount\": 5000000}'"
+    },
+    {
+        "id": "servicenow_pdi",
+        "name": "ServiceNow Developer Platform (PDI)",
+        "category": "Enterprise ITSM & ITOM Change Control",
+        "vendor": "ServiceNow Inc.",
+        "marketplace_provider": "Direct ServiceNow Developer Program",
+        "marketplace_url": "https://developer.servicenow.com",
+        "pricing_model": "Permanent Free Developer Tier (Dedicated cloud instance devXXXXX.service-now.com)",
+        "scale_to_zero": "Always running (Hibernate mode when inactive; wakes up on first API request)",
+        "estimated_idle_cost": "$0.00 / month (Free)",
+        "finvault_scenario": "P1 Emergency ITIL Change Ticket (CHG0049299) & Sovereign Perimeter Approvals",
+        "retailstream_scenario": "RetailStream Standard Service Request Catalog",
+        "api_endpoint_template": "https://dev<id>.service-now.com/api/now/table/change_request",
+        "auth_methods": ["Basic Auth (admin)", "OAuth2 Client Credentials"],
+        "terraform_provider": "ServiceNow REST API",
+        "setup_steps": [
+            "1. Sign up for free at developer.servicenow.com and click 'Request an Instance'.",
+            "2. Select the latest release (Washington DC / Xanadu).",
+            "3. Retrieve the admin password and instance URL.",
+            "4. Call the Table REST API to query or insert Change Requests and Incidents."
+        ],
+        "ddl_snippet": "curl -u 'admin:password' -H 'Accept: application/json' -H 'Content-Type: application/json' -X POST 'https://devXXXXX.service-now.com/api/now/table/change_request' -d '{\"short_description\": \"FinVault P1 CMEK Key Rotation CHG0049299\", \"priority\": \"1\"}'"
+    },
+    {
+        "id": "salesforce_dev",
+        "name": "Salesforce Enterprise CRM (Developer Edition)",
+        "category": "Enterprise CRM & Case Escalation",
+        "vendor": "Salesforce Inc.",
+        "marketplace_provider": "Direct Salesforce Developer Program",
+        "marketplace_url": "https://developer.salesforce.com/signup",
+        "pricing_model": "Permanent Free Developer Tier (Full Enterprise Edition CRM features)",
+        "scale_to_zero": "Always accessible cloud SaaS, $0 cost indefinitely",
+        "estimated_idle_cost": "$0.00 / month (Free)",
+        "finvault_scenario": "FinVault VIP Banking Case Escalation & Customer Account Dossier",
+        "retailstream_scenario": "Retail Customer Support Ticketing & Return Authorizations",
+        "api_endpoint_template": "https://<domain>.my.salesforce.com/services/data/v59.0/sobjects/Case",
+        "auth_methods": ["OAuth2 JWT Bearer", "OAuth2 Username-Password", "Connected App Token"],
+        "terraform_provider": "Salesforce REST API",
+        "setup_steps": [
+            "1. Sign up for free at developer.salesforce.com/signup.",
+            "2. Verify email and set your custom MyDomain name.",
+            "3. Create a Connected App under App Manager to generate OAuth Client ID and Secret.",
+            "4. Query and insert Cases, Accounts, and Contacts via the REST API."
+        ],
+        "ddl_snippet": "curl -H 'Authorization: Bearer <TOKEN>' -H 'Content-Type: application/json' -X POST 'https://<domain>.my.salesforce.com/services/data/v59.0/sobjects/Case' -d '{\"Subject\": \"FinVault Sovereign Escrow Authorization\", \"Priority\": \"High\", \"Status\": \"New\"}'"
+    }
+]
+
+
 class PortalRequestHandler(BaseHTTPRequestHandler):
     def _send_json(self, status_code: int, payload: Dict[str, Any]) -> None:
         raw = json.dumps(payload, indent=2).encode("utf-8")
@@ -1147,6 +1336,16 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
         if path == "/api/saas-live" or path.startswith("/api/saas-live/"):
             self._handle_saas_live_proxy("GET")
+            return
+
+        if path == "/api/payg-saas/catalog":
+            self._send_json(200, {"ok": True, "count": len(PAYG_SAAS_CATALOG), "catalog": PAYG_SAAS_CATALOG})
+            return
+
+        if path in ("/payg", "/payg-saas"):
+            self.send_response(302)
+            self.send_header("Location", "/?tab=payg")
+            self.end_headers()
             return
 
         if path == "/api/health":
@@ -2282,6 +2481,46 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             body = {}
 
         try:
+            if path == "/api/payg-saas/test-connection":
+                service_id = str(body.get("service_id", "")).strip().lower()
+                endpoint_url = str(body.get("endpoint_url", "")).strip()
+                api_token = str(body.get("api_token", "")).strip()
+                if not endpoint_url:
+                    self._send_json(400, {"ok": False, "error": "Missing endpoint_url"})
+                    return
+                t_start = time.time()
+                try:
+                    req_hdrs = {"User-Agent": "Cymbal-GEAP-PAYG-Connector/1.0"}
+                    if api_token:
+                        req_hdrs["Authorization"] = f"Bearer {api_token}"
+                    test_req = urllib.request.Request(endpoint_url, headers=req_hdrs)
+                    with urllib.request.urlopen(test_req, timeout=5) as t_resp:
+                        st = t_resp.status
+                        lat_ms = round((time.time() - t_start) * 1000, 1)
+                        self._send_json(200, {
+                            "ok": True,
+                            "service_id": service_id,
+                            "status": "CONNECTED",
+                            "http_status": st,
+                            "latency_ms": lat_ms,
+                            "message": f"Successfully connected to {service_id} live endpoint in {lat_ms}ms"
+                        })
+                        return
+                except urllib.error.HTTPError as he:
+                    lat_ms = round((time.time() - t_start) * 1000, 1)
+                    self._send_json(200, {
+                        "ok": True,
+                        "service_id": service_id,
+                        "status": "HOST_REACHED_AUTH_REQUIRED" if he.code in (401, 403) else "HTTP_ERROR",
+                        "http_status": he.code,
+                        "latency_ms": lat_ms,
+                        "message": f"Host reached in {lat_ms}ms with HTTP {he.code}"
+                    })
+                    return
+                except Exception as exc:
+                    self._send_json(502, {"ok": False, "service_id": service_id, "error": str(exc)})
+                    return
+
             if path == "/api/feedback/submit":
                 _ufe = load_module_from_path(
                     "unified_feedback_engine", ROOT_DIR / "scripts/unified_feedback_engine.py"
