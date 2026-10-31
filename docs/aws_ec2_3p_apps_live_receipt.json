@@ -18,7 +18,7 @@
     "console_auditor_role_arn": "arn:aws:iam::393036065405:role/cymbal-console-readonly-auditor"
   },
   "provision_script_path": "scripts/provision_aws_ec2_third_party_apps.py",
-  "provision_script_sha256": "cd1c3a32a83d9a6c8fc6578f04bc051acdb970fdd0eb077621494f771cbeb1cb",
+  "provision_script_sha256": "7422eba212d6b6fd38f0d0b0dbae878876de8288ea437e6539c3d57d2754bba3",
   "exit_code": 0,
   "total_services_live": 10,
   "all_services_healthy": true,

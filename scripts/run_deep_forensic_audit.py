@@ -1145,6 +1145,26 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                 deck_count = len(decks)
                 ws_blog_count = len(ws_blogs_seen)
 
+        server_src = (ROOT_DIR / "server.py").read_text(encoding="utf-8")
+        proxy_src = (ROOT_DIR / "scripts/saas_cloudrun_proxy.py").read_text(encoding="utf-8")
+        bridge_src = (ROOT_DIR / "core-cymbal-agent/gcp_live_bridge.py").read_text(encoding="utf-8")
+        mcp_src = (ROOT_DIR / "core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py").read_text(encoding="utf-8")
+        p0_security_ok = (
+            "FinVault#2026!" not in html
+            and "fv-token-finvault-sre-2026" not in html
+            and "openSaaSConnectModal(\\'" not in html
+            and "FinVault#2026!" not in proxy_src
+            and "fv-token-finvault-sre-2026" not in proxy_src
+            and "13.220.94.209" not in server_src
+            and "13.220.94.209" not in proxy_src
+            and "merck-" not in bridge_src.lower()
+            and "merck-" not in mcp_src.lower()
+            and "AWS_SHARED_JWT_SECRET =" not in bridge_src
+            and "validate_payg_outbound_url" in server_src
+            and "_verify_verified_admin_iap" in server_src
+            and "sanitize_html_fragment_allowlist" in server_src
+        )
+
         index_ok = (
             len(missing_markers) == 0
             and len(missing_ui_paths) == 0
@@ -1152,6 +1172,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             and diagrams_ok
             and cloud_receipt_ok
             and slides_ok
+            and p0_security_ok
         )
         index_detail = (
             f"index.html verified ({len(html):,} bytes, 0 nitinagga-ge-2 leaks), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI Series Reader links resolve on disk (0 broken), {certified_diagram_count}/14 Official Google Cloud Architecture Center & PromptCanvas Vision Draw.io blueprints CERTIFIED (Rule 53G Per-Pattern Geometry: 12 hub-2-spoke 56v/23e, WS2 pooled-shared-plane 60v/20e, WS5 decision-tree-3-outcome 46v/19e, .drawio/.drawio.png/.svg/.vision.json quartet, 0 collisions), 14/14 Executive-Friendly Plain-English Logical & Technical Flows verified (diagrams/diagram_e2e_flows.json + 3-Act 12-Slide Pure Technical Workstream Decks, 0 pricing slides), Cloud Console receipt + 27-file SHA-256 bundle + 10-SaaS × 3-Pattern receipt (30/30 flows, 60/60 assertions) CERTIFIED (0 fake/synthetic PNGs in screenshots/cloud-console/, 0 EC2 13.220.94.209 Execution Twin links), {deck_count}/6 Workstream/Master + 9/9 DevSite Guide editable .pptx slide decks (0 emojis, 0 pricing slides, 0 <a:tr h=\"0\"> auto-collapsing table rows, 0.14\"–0.16\" table-to-card vertical gap, 100% first-person spoken customer talk tracks, 100% native DrawingML CLI telemetry cards on Slide 10, 15/15 Google Slides + 6/6 Google Docs SHA-256 synced) + Rule 53F/53G content & topology grounding (5/5 distinct per-WS Slide 4/6/7 fingerprints, 3 distinct Slide 5 diagram topologies, 0 ungrounded facts [18.4s/850-150/6-Pillar/220ms], 0 hex-code leaks, WS4 950+50 canonical split) + {ws_blog_count}/5 canonical 5-part series blogs verified (PUBLISH_READY)."

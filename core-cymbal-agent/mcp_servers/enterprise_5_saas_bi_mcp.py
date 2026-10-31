@@ -130,6 +130,7 @@ def _mint_aws_cognito_access_token(force_refresh: bool = False) -> Optional[str]
         cid = os.environ.get("AWS_COGNITO_CLIENT_ID")
         csec = os.environ.get("AWS_COGNITO_CLIENT_SECRET")
         token_url = os.environ.get("AWS_COGNITO_TOKEN_URL")
+        cognito_scope = os.environ.get("AWS_COGNITO_SCOPE", "").strip()
 
         if not (cid and csec and token_url):
             sec_cfg = read_gcp_secret_json("aws-cognito-agentcore-config")
@@ -137,6 +138,7 @@ def _mint_aws_cognito_access_token(force_refresh: bool = False) -> Optional[str]
                 cid = cid or sec_cfg.get("aws_cognito_client_id")
                 csec = csec or sec_cfg.get("aws_cognito_client_secret")
                 token_url = token_url or sec_cfg.get("aws_cognito_token_url")
+                cognito_scope = cognito_scope or str(sec_cfg.get("aws_cognito_scope") or "").strip()
 
         if not (cid and csec and token_url):
             tfvars_path = Path(os.environ.get("AWS_TFVARS_PATH", str(Path.home() / "aws" / "aws.auto.tfvars.json")))
@@ -146,6 +148,7 @@ def _mint_aws_cognito_access_token(force_refresh: bool = False) -> Optional[str]
                     cid = cid or tf.get("aws_cognito_client_id")
                     csec = csec or tf.get("aws_cognito_client_secret")
                     token_url = token_url or tf.get("aws_cognito_token_url")
+                    cognito_scope = cognito_scope or str(tf.get("aws_cognito_scope") or "").strip()
                 except Exception:
                     return None
 
@@ -154,9 +157,10 @@ def _mint_aws_cognito_access_token(force_refresh: bool = False) -> Optional[str]
 
         try:
             basic = base64.b64encode(f"{cid}:{csec}".encode("utf-8")).decode("ascii")
-            form = urllib.parse.urlencode(
-                {"grant_type": "client_credentials", "scope": "merck-safety-agent/invoke"}
-            ).encode("utf-8")
+            token_params: Dict[str, str] = {"grant_type": "client_credentials"}
+            if cognito_scope:
+                token_params["scope"] = cognito_scope
+            form = urllib.parse.urlencode(token_params).encode("utf-8")
             creq = urllib.request.Request(
                 token_url,
                 data=form,

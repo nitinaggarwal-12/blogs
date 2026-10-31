@@ -734,7 +734,7 @@ TARGET_SPECS = [
 
 
 def build_extended_lambda_zip() -> bytes:
-    base_code = (Path.home() / "aws" / "aws_merck_agentcore_peer_lambda.py").read_text(encoding="utf-8")
+    base_code = Path(os.environ.get("AWS_AGENTCORE_PEER_LAMBDA_FILE", str(Path.home() / "aws" / "aws_cymbal_agentcore_peer_lambda.py"))).read_text(encoding="utf-8")
     if "CYMBAL_10_SAAS_RECORDS" not in base_code:
         marker = "def lambda_handler(event: dict, context=None) -> dict:"
         base_code = base_code.replace(marker, CYMBAL_10_SAAS_LAMBDA_EXTENSION + "\n\n" + marker, 1)
@@ -891,7 +891,6 @@ def main() -> int:
     print(f"[1/4] Deploying AWS Lambda `{FUNCTION_NAME}` (+ updating `/saas-ui`Function URL mirror) in `{ACCOUNT_ID}` ({REGION})...")
     zip_b64 = base64.b64encode(build_extended_lambda_zip()).decode("ascii")
     fn_arn = _create_or_update_lambda(FUNCTION_NAME, zip_b64, creds)
-    _create_or_update_lambda("merck-a2a-mcp-remote-peer", zip_b64, creds)
     print(f"   ✅ Lambda `{fn_arn}` deployed and Active.")
 
     print(f"[2/4] Synchronizing all 10 Enterprise SaaS MCP Targets on Bedrock AgentCore Gateway `{GATEWAY_ID}`...")
@@ -994,7 +993,7 @@ def main() -> int:
     basic = base64.b64encode(f"{tfvars['aws_cognito_client_id']}:{tfvars['aws_cognito_client_secret']}".encode("utf-8")).decode("ascii")
     creq = urllib.request.Request(
         tfvars["aws_cognito_token_url"],
-        data=urllib.parse.urlencode({"grant_type": "client_credentials", "scope": "merck-safety-agent/invoke"}).encode("utf-8"),
+        data=urllib.parse.urlencode({"grant_type": "client_credentials", "scope": str(tfvars.get("aws_cognito_scope") or os.environ.get("AWS_COGNITO_SCOPE") or "cymbal-agentcore/invoke")}).encode("utf-8"),
         headers={"Authorization": f"Basic {basic}", "Content-Type": "application/x-www-form-urlencoded"},
         method="POST",
     )

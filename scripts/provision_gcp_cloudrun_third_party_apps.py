@@ -40,6 +40,12 @@ GCP_REGION = "us-west1"
 AR_HOST = "us-west1-docker.pkg.dev"
 AR_REPO = f"{GCP_PROJECT}/cloud-run-source-deploy"
 
+# Loaded from environment / GCP Secret Manager (`cymbal-saas-demo-credentials`); zero plaintext secrets in source ([FA-10]/[FA-14])
+SAAS_DEMO_PASSWORD = os.environ.get("CYMBAL_SAAS_DEMO_PASSWORD", "").strip()
+SAAS_VAULT_TOKEN = os.environ.get("CYMBAL_SAAS_VAULT_TOKEN", "").strip()
+DIRECTUS_APP_KEY = os.environ.get("CYMBAL_DIRECTUS_KEY", "").strip()
+DIRECTUS_APP_SECRET = os.environ.get("CYMBAL_DIRECTUS_SECRET", "").strip()
+
 APPS_SPEC: list[dict[str, Any]] = [
     {
         "key": "metabase",
@@ -78,7 +84,7 @@ APPS_SPEC: list[dict[str, Any]] = [
         "env": {
             "GF_SERVER_HTTP_PORT": "3000",
             "GF_SECURITY_ADMIN_USER": "sre-lead@finvault.com",
-            "GF_SECURITY_ADMIN_PASSWORD": "FinVault#2026!",
+            "GF_SECURITY_ADMIN_PASSWORD": SAAS_DEMO_PASSWORD,
             "GF_USERS_DEFAULT_THEME": "light",
             "GF_PATHS_DATA": "/tmp/grafana-data",
             "GF_PATHS_LOGS": "/tmp/grafana-logs",
@@ -176,7 +182,7 @@ APPS_SPEC: list[dict[str, Any]] = [
         "env": {
             "CLICKHOUSE_DB": "cymbal_warehouse",
             "CLICKHOUSE_USER": "finvault_user",
-            "CLICKHOUSE_PASSWORD": "FinVault#2026!",
+            "CLICKHOUSE_PASSWORD": SAAS_DEMO_PASSWORD,
             "CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT": "1",
         },
         "args": None,
@@ -195,13 +201,13 @@ APPS_SPEC: list[dict[str, Any]] = [
         "startup_timeout_sec": 180,
         "health_path": "/server/health",
         "env": {
-            "KEY": "cymbal-directus-key-2026-finvault",
-            "SECRET": "cymbal-directus-secret-2026-finvault-silo-key",
+            "KEY": DIRECTUS_APP_KEY,
+            "SECRET": DIRECTUS_APP_SECRET,
             "DB_CLIENT": "sqlite3",
             "DB_FILENAME": "/tmp/directus-data.db",
             "STORAGE_LOCAL_ROOT": "/tmp/directus-uploads",
             "ADMIN_EMAIL": "sre-lead@finvault.com",
-            "ADMIN_PASSWORD": "FinVault#2026!",
+            "ADMIN_PASSWORD": SAAS_DEMO_PASSWORD,
             "WEBSOCKETS_ENABLED": "false",
             "TELEMETRY": "false",
         },
@@ -241,14 +247,14 @@ APPS_SPEC: list[dict[str, Any]] = [
         "health_path": "/v1/sys/health",
         "env": {
             "SKIP_SETCAP": "1",
-            "VAULT_DEV_ROOT_TOKEN_ID": "fv-token-finvault-sre-2026",
+            "VAULT_DEV_ROOT_TOKEN_ID": SAAS_VAULT_TOKEN,
             "VAULT_DEV_LISTEN_ADDRESS": "0.0.0.0:8200",
             "VAULT_ADDR": "http://127.0.0.1:8200",
         },
         "args": [
             "server",
             "-dev",
-            "-dev-root-token-id=fv-token-finvault-sre-2026",
+            f"-dev-root-token-id={SAAS_VAULT_TOKEN}",
             "-dev-listen-address=0.0.0.0:8200",
         ],
     },
@@ -809,7 +815,7 @@ def seed_service_data(spec: dict[str, Any], base_url: str) -> dict[str, Any]:
     print(f"==> [Seed Multi-Tenant Data] {spec['service_name']} ({key})...")
 
     if key == "grafana":
-        basic = base64.b64encode(b"sre-lead@finvault.com:FinVault#2026!").decode("ascii")
+        basic = base64.b64encode(f"sre-lead@finvault.com:{SAAS_DEMO_PASSWORD}".encode("utf-8")).decode("ascii")
         auth_h = {"Authorization": f"Basic {basic}", "Content-Type": "application/json"}
         cr_http(base_url, "/api/orgs", oidc, "POST", auth_h, json.dumps({"name": "FinVault Bank (Pattern B Silo)"}))
         cr_http(base_url, "/api/orgs", oidc, "POST", auth_h, json.dumps({"name": "RetailStream Corp (Pattern A Pool)"}))
@@ -909,7 +915,7 @@ def seed_service_data(spec: dict[str, Any], base_url: str) -> dict[str, Any]:
                     "first_name": "FinVault",
                     "last_name": "SRE Lead",
                     "email": "sre-lead@finvault.com",
-                    "password": "FinVault#2026!",
+                    "password": SAAS_DEMO_PASSWORD,
                     "site_name": "Cymbal Multi-Tenant BI (GCP Cloud Run)",
                 },
                 "prefs": {"site_name": "Cymbal Multi-Tenant BI (GCP Cloud Run)", "allow_tracking": False},
@@ -926,7 +932,7 @@ def seed_service_data(spec: dict[str, Any], base_url: str) -> dict[str, Any]:
                 oidc,
                 "POST",
                 {"Content-Type": "application/json"},
-                json.dumps({"username": "sre-lead@finvault.com", "password": "FinVault#2026!"}),
+                json.dumps({"username": "sre-lead@finvault.com", "password": SAAS_DEMO_PASSWORD}),
             )
             session_id = json.loads(raw_l.decode("utf-8")).get("id")
         mb_h = {"Content-Type": "application/json", "X-Metabase-Session": session_id}
@@ -979,7 +985,7 @@ def seed_service_data(spec: dict[str, Any], base_url: str) -> dict[str, Any]:
         opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))
         _, _, login_html = cr_http(base_url, "/login", oidc, opener=opener)
         csrf = _extract_rails_csrf(login_html)
-        form = urllib.parse.urlencode({"authenticity_token": csrf, "username": "admin", "password": "FinVault#2026!"}).encode()
+        form = urllib.parse.urlencode({"authenticity_token": csrf, "username": "admin", "password": SAAS_DEMO_PASSWORD}).encode()
         cr_http(
             base_url, "/login", oidc, "POST", {"Content-Type": "application/x-www-form-urlencoded"}, form, opener=opener
         )
@@ -997,8 +1003,8 @@ def seed_service_data(spec: dict[str, Any], base_url: str) -> dict[str, Any]:
                     {
                         "authenticity_token": pw_csrf,
                         "password": "admin",
-                        "new_password": "FinVault#2026!",
-                        "new_password_confirmation": "FinVault#2026!",
+                        "new_password": SAAS_DEMO_PASSWORD,
+                        "new_password_confirmation": SAAS_DEMO_PASSWORD,
                     }
                 ).encode()
                 cr_http(base_url, "/my/password", oidc, "POST", {"Content-Type": "application/x-www-form-urlencoded"}, pw_form, opener=opener)
@@ -1017,7 +1023,7 @@ def seed_service_data(spec: dict[str, Any], base_url: str) -> dict[str, Any]:
             s_form = urllib.parse.urlencode({"authenticity_token": set_csrf, "settings[rest_api_enabled]": "1"}).encode()
             cr_http(base_url, "/settings/edit?tab=api", oidc, "POST", {"Content-Type": "application/x-www-form-urlencoded"}, s_form, opener=opener)
 
-        rm_basic = base64.b64encode(b"admin:FinVault#2026!").decode("ascii")
+        rm_basic = base64.b64encode(f"admin:{SAAS_DEMO_PASSWORD}".encode("utf-8")).decode("ascii")
         rm_h = {"Authorization": f"Basic {rm_basic}", "Content-Type": "application/json"}
         st_proj, _, _ = cr_http(base_url, "/projects/finvault-itsm.json", oidc, "GET", rm_h)
         if st_proj != 200:
@@ -1077,7 +1083,7 @@ def seed_service_data(spec: dict[str, Any], base_url: str) -> dict[str, Any]:
             oidc,
             "POST",
             {"Content-Type": "application/json"},
-            json.dumps({"email": "sre-lead@finvault.com", "password": "FinVault#2026!"}),
+            json.dumps({"email": "sre-lead@finvault.com", "password": SAAS_DEMO_PASSWORD}),
         )
         tok = json.loads(raw_su.decode("utf-8")).get("token") if st_su == 200 else None
         if not tok:
@@ -1087,7 +1093,7 @@ def seed_service_data(spec: dict[str, Any], base_url: str) -> dict[str, Any]:
                 oidc,
                 "POST",
                 {"Content-Type": "application/json"},
-                json.dumps({"email": "sre-lead@finvault.com", "password": "FinVault#2026!"}),
+                json.dumps({"email": "sre-lead@finvault.com", "password": SAAS_DEMO_PASSWORD}),
             )
             tok = json.loads(raw_si.decode("utf-8")).get("token")
         nc_h = {"Content-Type": "application/json", "xc-auth": tok}
@@ -1166,12 +1172,12 @@ def seed_service_data(spec: dict[str, Any], base_url: str) -> dict[str, Any]:
                     "_csrf": m_csrf.group(1),
                     "user_name": "sre-lead",
                     "email": "sre-lead@finvault.com",
-                    "password": "FinVault#2026!",
-                    "retype": "FinVault#2026!",
+                    "password": SAAS_DEMO_PASSWORD,
+                    "retype": SAAS_DEMO_PASSWORD,
                 }
             ).encode()
             cr_http(base_url, "/user/sign_up", oidc, "POST", {"Content-Type": "application/x-www-form-urlencoded"}, reg_form, opener=opener)
-        gt_basic = base64.b64encode(b"sre-lead:FinVault#2026!").decode("ascii")
+        gt_basic = base64.b64encode(f"sre-lead:{SAAS_DEMO_PASSWORD}".encode("utf-8")).decode("ascii")
         gt_h = {"Authorization": f"Basic {gt_basic}", "Content-Type": "application/json"}
         cr_http(
             base_url,
@@ -1242,7 +1248,7 @@ def seed_service_data(spec: dict[str, Any], base_url: str) -> dict[str, Any]:
     if key == "clickhouse":
         ch_auth = {
             "X-ClickHouse-User": "finvault_user",
-            "X-ClickHouse-Key": "FinVault#2026!",
+            "X-ClickHouse-Key": SAAS_DEMO_PASSWORD,
         }
         ddls = [
             "CREATE DATABASE IF NOT EXISTS cymbal_warehouse",
@@ -1271,7 +1277,7 @@ def seed_service_data(spec: dict[str, Any], base_url: str) -> dict[str, Any]:
             oidc,
             "POST",
             {"Content-Type": "application/json"},
-            json.dumps({"email": "sre-lead@finvault.com", "password": "FinVault#2026!"}),
+            json.dumps({"email": "sre-lead@finvault.com", "password": SAAS_DEMO_PASSWORD}),
         )
         jwt_tok = json.loads(raw_l.decode("utf-8"))["data"]["access_token"]
         # Remember: Directus uses Authorization: Bearer <jwt>, while Cloud Run uses X-Serverless-Authorization!
@@ -1346,7 +1352,7 @@ def seed_service_data(spec: dict[str, Any], base_url: str) -> dict[str, Any]:
         return {"seeded": st_e in (200, 201), "ui_path": "/#/events", "status": st_e}
 
     if key == "vault":
-        vt_h = {"X-Vault-Token": "fv-token-finvault-sre-2026", "Content-Type": "application/json"}
+        vt_h = {"X-Vault-Token": SAAS_VAULT_TOKEN, "Content-Type": "application/json"}
         secret_payload = {
             "data": {
                 "tenant_id": "finvault",

@@ -38,16 +38,14 @@ SERVICES = {
         "service_name": "cymbal-gcp-directus-hcm",
         "url": "https://cymbal-gcp-directus-hcm-fm3mts5x3a-uw.a.run.app",
         "default_port": 8090,
-        "ec2_port": 3008,
         "entry_path": "/admin/content/hcm_compensation",
         "title": "Directus Data Studio v11.1.0 (HCM Compensation RLS)",
-        "credentials": "Email: sre-lead@finvault.com | Password: FinVault#2026!",
+        "credentials": "Auth: Cloud Run IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
     },
     "seq": {
         "service_name": "cymbal-gcp-seq-apm",
         "url": "https://cymbal-gcp-seq-apm-fm3mts5x3a-uw.a.run.app",
         "default_port": 8081,
-        "ec2_port": 3009,
         "entry_path": "/#/events",
         "title": "Datalust Seq Observability v2024.3 (OpenTelemetry Spans)",
         "credentials": "No authentication required (Open access)",
@@ -56,52 +54,46 @@ SERVICES = {
         "service_name": "cymbal-gcp-metabase-bi",
         "url": "https://cymbal-gcp-metabase-bi-fm3mts5x3a-uw.a.run.app",
         "default_port": 8082,
-        "ec2_port": 3001,
         "entry_path": "/question/27",
         "title": "Metabase Enterprise BI v0.50.26 (Saved Question #27 Liveboard)",
-        "credentials": "Email: sre-lead@finvault.com | Password: FinVault#2026!",
+        "credentials": "Auth: Cloud Run IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
     },
     "grafana": {
         "service_name": "cymbal-gcp-grafana-ent",
         "url": "https://cymbal-gcp-grafana-ent-fm3mts5x3a-uw.a.run.app",
         "default_port": 8083,
-        "ec2_port": 3002,
         "entry_path": "/d/finvault-sre-wb",
         "title": "Grafana Enterprise v11.2.0 (FinVault SRE Workbench)",
-        "credentials": "Email: sre-lead@finvault.com | Password: FinVault#2026!",
+        "credentials": "Auth: Cloud Run IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
     },
     "redmine": {
         "service_name": "cymbal-gcp-redmine-itsm",
         "url": "https://cymbal-gcp-redmine-itsm-fm3mts5x3a-uw.a.run.app",
         "default_port": 8084,
-        "ec2_port": 3003,
         "entry_path": "/projects/finvault-itsm/issues",
         "title": "Redmine ITSM v5.1 (FinVault Bank Support Cases)",
-        "credentials": "Username: admin | Password: FinVault#2026!",
+        "credentials": "Auth: Cloud Run IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
     },
     "nocodb": {
         "service_name": "cymbal-gcp-nocodb-edc",
         "url": "https://cymbal-gcp-nocodb-edc-fm3mts5x3a-uw.a.run.app",
         "default_port": 8085,
-        "ec2_port": 3004,
         "entry_path": "/dashboard",
         "title": "NocoDB EDC / GxP v0.255.2 (Clinical Trial Records)",
-        "credentials": "Email: sre-lead@finvault.com | Password: FinVault#2026!",
+        "credentials": "Auth: Cloud Run IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
     },
     "gitea": {
         "service_name": "cymbal-gcp-gitea-sre",
         "url": "https://cymbal-gcp-gitea-sre-fm3mts5x3a-uw.a.run.app",
         "default_port": 8086,
-        "ec2_port": 3005,
         "entry_path": "/finvault/agentic-runbooks",
         "title": "Gitea Enterprise Git v1.22.3 (SRE Escalation Repo)",
-        "credentials": "Username: sre-lead | Password: FinVault#2026!",
+        "credentials": "Auth: Cloud Run IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
     },
     "trino": {
         "service_name": "cymbal-gcp-trino-sql",
         "url": "https://cymbal-gcp-trino-sql-fm3mts5x3a-uw.a.run.app",
         "default_port": 8087,
-        "ec2_port": 3006,
         "entry_path": "/ui/",
         "title": "Trino Distributed SQL v440 (Query Coordinator)",
         "credentials": "Username: sre-lead@finvault.com (No password)",
@@ -110,19 +102,17 @@ SERVICES = {
         "service_name": "cymbal-gcp-clickhouse-dw",
         "url": "https://cymbal-gcp-clickhouse-dw-fm3mts5x3a-uw.a.run.app",
         "default_port": 8088,
-        "ec2_port": 3007,
         "entry_path": "/play",
         "title": "ClickHouse Data Warehouse v24.8 (SQL Console)",
-        "credentials": "Username: finvault_user | Password: FinVault#2026!",
+        "credentials": "Auth: Cloud Run IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
     },
     "vault": {
         "service_name": "cymbal-gcp-vault-cmek",
         "url": "https://cymbal-gcp-vault-cmek-fm3mts5x3a-uw.a.run.app",
         "default_port": 8089,
-        "ec2_port": 3010,
         "entry_path": "/ui/vault/secrets/secret/show/tenants/finvault",
         "title": "HashiCorp Vault v1.13.3 (CMEK Key Namespace)",
-        "credentials": "Method: Token | Token: fv-token-finvault-sre-2026",
+        "credentials": "Auth: Cloud Run IAM OIDC + Vault Token in Secret Manager (cymbal-saas-demo-credentials)",
     },
 }
 _TOKEN_CACHE: dict[str, tuple[str, float]] = {}
@@ -132,51 +122,65 @@ OIDC_CACHE_FILE = Path("/tmp/cymbal_gcp_cloudrun_oidc_cache.json")
 COMPUTE_SA = "48439189383-compute@developer.gserviceaccount.com"
 
 
+def _read_safe_oidc_cache() -> dict[str, Any]:
+    try:
+        if OIDC_CACHE_FILE.is_symlink() or not OIDC_CACHE_FILE.is_file():
+            return {}
+        st = OIDC_CACHE_FILE.stat()
+        if hasattr(os, "getuid") and st.st_uid != os.getuid():
+            return {}
+        return json.loads(OIDC_CACHE_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
 def get_oidc_token(audience: str) -> str:
     now = time.time()
+    clean_aud = audience.rstrip("/")
     # 1. In-memory cache
-    cached = _TOKEN_CACHE.get(audience)
+    cached = _TOKEN_CACHE.get(clean_aud)
     if cached and cached[1] > now:
         return cached[0]
 
-    # 2. Check /tmp/cymbal_gcp_cloudrun_oidc_cache.json
-    clean_aud = audience.rstrip("/")
-    if OIDC_CACHE_FILE.is_file():
-        try:
-            cache_data = json.loads(OIDC_CACHE_FILE.read_text(encoding="utf-8"))
-            if float(cache_data.get("expires_at", 0)) > now:
-                tokens = cache_data.get("tokens", {})
-                for k, v in tokens.items():
-                    _TOKEN_CACHE[k.rstrip("/")] = (v, float(cache_data.get("expires_at", now + 1800)))
-                if clean_aud in _TOKEN_CACHE:
-                    return _TOKEN_CACHE[clean_aud][0]
-        except Exception:
-            pass
+    # 2. Check owner-verified /tmp/cymbal_gcp_cloudrun_oidc_cache.json
+    cache_data = _read_safe_oidc_cache()
+    if cache_data and float(cache_data.get("expires_at", 0)) > now:
+        tokens = cache_data.get("tokens", {})
+        exp_ts = float(cache_data.get("expires_at", now + 1800))
+        for k, v in tokens.items():
+            if isinstance(k, str) and isinstance(v, str) and v.startswith("ey"):
+                _TOKEN_CACHE[k.rstrip("/")] = (v, exp_ts)
+        if clean_aud in _TOKEN_CACHE:
+            return _TOKEN_CACHE[clean_aud][0]
 
-    # 3. Try user @google.com identity token (gcloud auth print-identity-token)
-    try:
-        proc = subprocess.run(["gcloud", "auth", "print-identity-token"], capture_output=True, text=True)
-        tok = proc.stdout.strip()
-        if proc.returncode == 0 and tok.startswith("ey"):
-            _TOKEN_CACHE[clean_aud] = (tok, now + 1800)
-            return tok
-    except Exception:
-        pass
-
-    # 3b. Try gcloud impersonation of compute SA
+    # 3a. Audience-bound gcloud impersonation of compute SA (preferred for --no-allow-unauthenticated Cloud Run)
     cmd_imp = [
         "gcloud", "auth", "print-identity-token",
         f"--impersonate-service-account={COMPUTE_SA}",
         f"--audiences={clean_aud}",
     ]
     try:
-        proc = subprocess.run(cmd_imp, capture_output=True, text=True)
+        proc = subprocess.run(cmd_imp, capture_output=True, text=True, timeout=8)
         tok = proc.stdout.strip()
         if proc.returncode == 0 and tok.startswith("ey"):
             _TOKEN_CACHE[clean_aud] = (tok, now + 2400)
             return tok
     except Exception:
         pass
+
+    # 3b. Audience-bound active identity token, falling back to default user identity token
+    for cmd_user in (
+        ["gcloud", "auth", "print-identity-token", f"--audiences={clean_aud}"],
+        ["gcloud", "auth", "print-identity-token"],
+    ):
+        try:
+            proc = subprocess.run(cmd_user, capture_output=True, text=True, timeout=6)
+            tok = proc.stdout.strip()
+            if proc.returncode == 0 and tok.startswith("ey"):
+                _TOKEN_CACHE[clean_aud] = (tok, now + 1800)
+                return tok
+        except Exception:
+            pass
 
     # 4. Fallback: Trigger Cloud Run oidc-minter batch job
     print(f"\n==> [OIDC Minter] Minting audience token via Cloud Run minter job for {clean_aud}...")
@@ -186,12 +190,15 @@ def get_oidc_token(audience: str) -> str:
             subprocess.run(
                 [sys.executable, "-B", str(minter_script), "--mint-tokens-only"],
                 check=True,
+                timeout=30,
             )
-            if OIDC_CACHE_FILE.is_file():
-                cache_data = json.loads(OIDC_CACHE_FILE.read_text(encoding="utf-8"))
+            cache_data = _read_safe_oidc_cache()
+            if cache_data:
                 tokens = cache_data.get("tokens", {})
+                exp_ts = float(cache_data.get("expires_at", now + 1800))
                 for k, v in tokens.items():
-                    _TOKEN_CACHE[k.rstrip("/")] = (v, float(cache_data.get("expires_at", now + 1800)))
+                    if isinstance(k, str) and isinstance(v, str) and v.startswith("ey"):
+                        _TOKEN_CACHE[k.rstrip("/")] = (v, exp_ts)
                 if clean_aud in _TOKEN_CACHE:
                     return _TOKEN_CACHE[clean_aud][0]
         except Exception as exc:
@@ -240,10 +247,19 @@ class CloudRunProxyHandler(http.server.BaseHTTPRequestHandler):
         # 1. Attempt Cloud Run if OIDC token is present
         if tok:
             target_full = f"{self.target_url}{self.path}"
+            stripped_hdrs = {
+                "host",
+                "connection",
+                "accept-encoding",
+                "content-length",
+                "authorization",
+                "proxy-authorization",
+                "x-serverless-authorization",
+            }
             headers = {}
             for k, v in self.headers.items():
                 k_lower = k.lower()
-                if k_lower in ("host", "connection", "accept-encoding", "content-length"):
+                if k_lower in stripped_hdrs or k_lower.startswith("x-goog-"):
                     continue
                 headers[k] = v
             headers["Host"] = self.target_host
@@ -253,6 +269,7 @@ class CloudRunProxyHandler(http.server.BaseHTTPRequestHandler):
                 cr_resp = opener.open(req, timeout=12)
                 st = cr_resp.status if hasattr(cr_resp, "status") else cr_resp.code
                 if st in (401, 403):
+                    _TOKEN_CACHE.pop(self.target_url.rstrip("/"), None)
                     resp = None
                 else:
                     resp = cr_resp
@@ -261,6 +278,7 @@ class CloudRunProxyHandler(http.server.BaseHTTPRequestHandler):
                     resp_body = cr_resp.read()
             except urllib.error.HTTPError as exc:
                 if exc.code in (401, 403):
+                    _TOKEN_CACHE.pop(self.target_url.rstrip("/"), None)
                     resp = None
                 else:
                     resp = exc
@@ -270,57 +288,24 @@ class CloudRunProxyHandler(http.server.BaseHTTPRequestHandler):
             except Exception:
                 resp = None
 
-        # 2. Seamless fallback to live upstream container
-        if resp is None and not resp_body:
-            ec2_port = self.service_spec.get("ec2_port") if hasattr(self, "service_spec") else None
-            if ec2_port:
-                aws_receipt_file = Path(__file__).resolve().parent.parent / "docs" / "aws_ec2_3p_apps_live_receipt.json"
-                ec2_ip = "13.220.94.209"
-                if aws_receipt_file.is_file():
-                    try:
-                        rdata = json.loads(aws_receipt_file.read_text(encoding="utf-8"))
-                        ec2_ip = rdata.get("ec2_host", {}).get("public_ip") or rdata.get("public_ip") or ec2_ip
-                    except Exception:
-                        pass
-                fb_base = f"http://{ec2_ip}:{ec2_port}"
-                fb_url = f"{fb_base}{self.path}"
-                fb_headers = {}
-                for k, v in self.headers.items():
-                    k_lower = k.lower()
-                    if k_lower in ("host", "connection", "accept-encoding", "content-length"):
-                        continue
-                    fb_headers[k] = v
-                fb_headers["Host"] = f"{ec2_ip}:{ec2_port}"
-                fb_req = urllib.request.Request(fb_url, data=body, method=method, headers=fb_headers)
-                try:
-                    fb_resp = opener.open(fb_req, timeout=15)
-                    resp = fb_resp
-                    status = fb_resp.status if hasattr(fb_resp, "status") else fb_resp.code
-                    resp_headers = fb_resp.headers
-                    resp_body = fb_resp.read()
-                except urllib.error.HTTPError as exc:
-                    resp = exc
-                    status = exc.code
-                    resp_headers = exc.headers
-                    resp_body = exc.read()
-                except Exception as exc:
-                    self.send_error(502, f"Failed to connect to SaaS upstream: {exc}")
-                    return
+        # Cleartext HTTP EC2 fallback permanently disabled ([FA-11]); fail closed if TLS Cloud Run + OIDC unavailable
+        if not tok and resp is None and not resp_body:
+            self.send_error(503, "Cloud Run IAM OIDC token unavailable; cleartext HTTP fallback disabled [FA-11]. Run gcloud auth login.")
+            return
 
         if resp is None and not resp_body:
-            self.send_error(502, "Failed to connect to upstream service")
+            self.send_error(502, "Failed to connect to TLS Cloud Run upstream service")
             return
 
         self.send_response(status)
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
         for hk, hv in resp_headers.items():
             hk_lower = hk.lower()
             if hk_lower in ("connection", "transfer-encoding"):
                 continue
             if hk_lower == "location":
                 hv = hv.replace(self.target_url, f"http://localhost:{self.local_port}")
-                ec2_port = self.service_spec.get("ec2_port") if hasattr(self, "service_spec") else None
-                if ec2_port:
-                    hv = re.sub(rf"http://[0-9\.]+{ec2_port}", f"http://localhost:{self.local_port}", hv)
             if hk_lower == "set-cookie":
                 hv = re.sub(r";\s*secure", "", hv, flags=re.IGNORECASE)
                 hv = re.sub(r";\s*domain=[^;]+", "", hv, flags=re.IGNORECASE)

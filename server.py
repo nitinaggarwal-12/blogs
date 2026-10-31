@@ -29,8 +29,12 @@ import signal
 import sys
 import threading
 import time
+from html import escape as html_escape
+from html.parser import HTMLParser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import ipaddress
 from pathlib import Path
+import socket
 from typing import Any, Dict
 from urllib.parse import parse_qs, urlparse
 import urllib.parse
@@ -1062,13 +1066,402 @@ PAYG_SAAS_CATALOG: list[dict[str, Any]] = [
 ]
 
 
+# =============================================================================
+# P0 Security Controls ([FA-08] SSRF Guard, [FA-09] Admin IAP & HTML Sanitizer,
+# [FA-10] Sensitive Artifact Filter)
+# =============================================================================
+VERIFIED_IAP_ADMIN_EMAILS = frozenset(
+    e.strip().lower()
+    for e in os.environ.get("GEAP_IAP_ADMIN_EMAILS", "nitinagga@google.com").split(",")
+    if e.strip()
+)
+
+BLOCKED_SENSITIVE_SUFFIXES = (
+    ".env",
+    ".pem",
+    ".key",
+    ".p12",
+    ".pfx",
+    ".secret",
+    ".credentials",
+    ".sqlite",
+    ".db",
+    ".jks",
+    ".keystore",
+)
+BLOCKED_SENSITIVE_FILENAMES = frozenset(
+    {
+        ".env",
+        ".git",
+        ".gitignore",
+        ".npmrc",
+        ".pypirc",
+        "credentials.json",
+        "service_account.json",
+        "application_default_credentials.json",
+    }
+)
+
+PAYG_ALLOWED_HTTPS_HOSTS_EXACT = frozenset(
+    {
+        "app.snowflake.com",
+        "api.datadoghq.com",
+        "api.datadoghq.eu",
+        "api.us3.datadoghq.com",
+        "api.us5.datadoghq.com",
+        "api.ap1.datadoghq.com",
+        "api.clickhouse.cloud",
+        "cloud.mongodb.com",
+        "api.confluent.cloud",
+    }
+)
+PAYG_ALLOWED_HTTPS_HOST_SUFFIXES = (
+    ".snowflakecomputing.com",
+    ".datadoghq.com",
+    ".datadoghq.eu",
+    ".databricks.com",
+    ".gcp.databricks.com",
+    ".azuredatabricks.net",
+    ".clickhouse.cloud",
+    ".mongodb.net",
+    ".confluent.cloud",
+    ".service-now.com",
+    ".salesforce.com",
+    ".my.salesforce.com",
+    ".force.com",
+)
+_CGNAT_NET = ipaddress.ip_network("100.64.0.0/10")
+_METADATA_V6_HOSTS = frozenset({"fd00:ec2::254"})
+
+
+def is_sensitive_repo_path(candidate: Path) -> bool:
+    name_lower = candidate.name.lower()
+    if name_lower in BLOCKED_SENSITIVE_FILENAMES or name_lower.startswith(".env."):
+        return True
+    if any(name_lower.endswith(sfx) for sfx in BLOCKED_SENSITIVE_SUFFIXES):
+        return True
+    return False
+
+
+def _classify_disallowed_ip(ip_raw: str) -> str | None:
+    try:
+        ip_obj = ipaddress.ip_address(ip_raw)
+    except ValueError:
+        return "invalid_ip_address"
+    candidates = [ip_obj]
+    if isinstance(ip_obj, ipaddress.IPv6Address):
+        if ip_obj.compressed.lower() in _METADATA_V6_HOSTS:
+            return "cloud_metadata_ip_blocked"
+        if ip_obj.ipv4_mapped is not None:
+            candidates.append(ip_obj.ipv4_mapped)
+        if ip_obj.sixtofour is not None:
+            candidates.append(ip_obj.sixtofour)
+        if ip_obj.teredo is not None:
+            candidates.extend(ip_obj.teredo)
+    for addr in candidates:
+        if str(addr) == "169.254.169.254":
+            return "cloud_metadata_ip_blocked"
+        if addr.is_loopback:
+            return "loopback_ip_blocked"
+        if addr.is_link_local:
+            return "link_local_or_metadata_ip_blocked"
+        if isinstance(addr, ipaddress.IPv4Address) and addr in _CGNAT_NET:
+            return "cgnat_internal_ip_blocked"
+        if addr.is_private:
+            return "rfc1918_private_ip_blocked"
+        if addr.is_multicast:
+            return "multicast_ip_blocked"
+        if addr.is_reserved or addr.is_unspecified or not addr.is_global:
+            return "non_global_ip_blocked"
+    return None
+
+
+def validate_payg_outbound_url(raw_url: str, resolve_dns: bool = True) -> tuple[bool, int, str, str]:
+    """Fail-closed SSRF guard for `/api/payg-saas/test-connection` ([FA-08])."""
+    url = str(raw_url or "").strip()
+    if not url or len(url) > 2048 or any(ord(c) < 33 for c in url):
+        return (False, 400, "INVALID_ENDPOINT_URL", "Invalid or malformed endpoint_url.")
+    try:
+        parsed = urlparse(url)
+    except Exception:
+        return (False, 400, "INVALID_ENDPOINT_URL", "Unable to parse endpoint_url.")
+
+    if parsed.scheme.lower() != "https":
+        return (
+            False,
+            403,
+            "SSRF_HTTPS_REQUIRED",
+            "Blocked by SSRF policy [FA-08]: only outbound https:// endpoints on approved SaaS domains are permitted.",
+        )
+    if parsed.username or parsed.password:
+        return (False, 400, "SSRF_USERINFO_BLOCKED", "Blocked by SSRF policy [FA-08]: embedded URL credentials are forbidden.")
+
+    host = (parsed.hostname or "").strip().rstrip(".").lower()
+    if not host:
+        return (False, 400, "INVALID_ENDPOINT_URL", "Missing hostname in endpoint_url.")
+
+    try:
+        port = parsed.port
+    except ValueError:
+        return (False, 400, "INVALID_ENDPOINT_URL", "Invalid TCP port in endpoint_url.")
+    if port not in (None, 443, 8443):
+        return (
+            False,
+            403,
+            "SSRF_PORT_BLOCKED",
+            f"Blocked by SSRF policy [FA-08]: port {port} is forbidden (only TLS 443/8443 allowed).",
+        )
+
+    # Reject raw IPv4 / IPv6 literals directly (including [::1] and [::ffff:127.0.0.1])
+    ip_literal_probe = host.split("%")[0]
+    try:
+        ipaddress.ip_address(ip_literal_probe)
+        reason = _classify_disallowed_ip(ip_literal_probe) or "raw_ip_literal_blocked"
+        return (
+            False,
+            403,
+            "SSRF_IP_LITERAL_BLOCKED",
+            f"Blocked by SSRF policy [FA-08]: direct IP literals are forbidden ({reason}). Use an allowlisted HTTPS SaaS hostname.",
+        )
+    except ValueError:
+        pass
+
+    if re.fullmatch(r"[0-9.]+", host) or re.fullmatch(r"0x[0-9a-f]+", host):
+        return (False, 403, "SSRF_IP_LITERAL_BLOCKED", "Blocked by SSRF policy [FA-08]: numeric IP hostnames are forbidden.")
+
+    if (
+        host in ("localhost", "metadata", "metadata.google.internal", "instance-data")
+        or host.endswith((".localhost", ".internal", ".local", ".corp", ".lan", ".home.arpa"))
+    ):
+        return (
+            False,
+            403,
+            "SSRF_INTERNAL_HOST_BLOCKED",
+            f"Blocked by SSRF policy [FA-08]: internal/loopback/metadata host '{host}' is forbidden.",
+        )
+
+    host_allowed = host in PAYG_ALLOWED_HTTPS_HOSTS_EXACT or any(
+        host.endswith(sfx) and len(host) > len(sfx) for sfx in PAYG_ALLOWED_HTTPS_HOST_SUFFIXES
+    )
+    if not host_allowed:
+        return (
+            False,
+            403,
+            "SSRF_HOST_NOT_IN_ALLOWLIST",
+            f"Blocked by SSRF policy [FA-08]: host '{host}' is not in the approved PAYG SaaS HTTPS vendor allowlist.",
+        )
+
+    if resolve_dns:
+        try:
+            addr_infos = socket.getaddrinfo(host, port or 443, type=socket.SOCK_STREAM)
+        except socket.gaierror:
+            return (False, 502, "DNS_RESOLUTION_FAILED", f"Unable to resolve approved SaaS host '{host}'.")
+        if not addr_infos:
+            return (False, 502, "DNS_RESOLUTION_FAILED", f"No DNS records returned for '{host}'.")
+        for info in addr_infos:
+            sockaddr = info[4]
+            resolved_ip = str(sockaddr[0]).split("%")[0]
+            bad_reason = _classify_disallowed_ip(resolved_ip)
+            if bad_reason is not None:
+                return (
+                    False,
+                    403,
+                    "SSRF_PRIVATE_OR_LOOPBACK_IP_BLOCKED",
+                    f"Blocked by SSRF policy [FA-08]: '{host}' resolved to disallowed address ({bad_reason}).",
+                )
+
+    return (True, 200, "ALLOWED", url)
+
+
+class _SafePaygRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        abs_url = urllib.parse.urljoin(req.full_url, newurl)
+        allowed, _, err_code, err_msg = validate_payg_outbound_url(abs_url, resolve_dns=True)
+        if not allowed:
+            raise PermissionError(f"{err_code}: {err_msg}")
+        new_req = super().redirect_request(req, fp, code, msg, headers, abs_url)
+        if new_req is not None:
+            orig_host = (urlparse(req.full_url).hostname or "").lower()
+            next_host = (urlparse(abs_url).hostname or "").lower()
+            if orig_host != next_host:
+                new_req.headers.pop("Authorization", None)
+                new_req.unredirected_hdrs.pop("Authorization", None)
+        return new_req
+
+
+_SANITIZE_DROP_SUBTREE_TAGS = frozenset(
+    {
+        "script",
+        "style",
+        "iframe",
+        "frame",
+        "frameset",
+        "object",
+        "embed",
+        "applet",
+        "svg",
+        "math",
+        "form",
+        "base",
+        "meta",
+        "link",
+        "noscript",
+        "template",
+    }
+)
+_SANITIZE_ALLOWED_TAGS = frozenset(
+    {
+        "p",
+        "div",
+        "span",
+        "strong",
+        "b",
+        "em",
+        "i",
+        "u",
+        "s",
+        "code",
+        "pre",
+        "blockquote",
+        "ul",
+        "ol",
+        "li",
+        "br",
+        "hr",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "table",
+        "thead",
+        "tbody",
+        "tr",
+        "th",
+        "td",
+        "a",
+        "img",
+        "sup",
+        "sub",
+        "small",
+        "mark",
+        "dl",
+        "dt",
+        "dd",
+    }
+)
+_SANITIZE_VOID_TAGS = frozenset({"br", "hr", "img"})
+_SANITIZE_GLOBAL_ATTRS = frozenset({"class", "id", "title", "role", "aria-label"})
+_SANITIZE_TAG_ATTRS = {
+    "a": frozenset({"href", "target", "rel"}),
+    "img": frozenset({"src", "alt", "width", "height", "loading", "decoding"}),
+    "th": frozenset({"colspan", "rowspan", "scope"}),
+    "td": frozenset({"colspan", "rowspan"}),
+}
+
+
+def _is_safe_sanitized_url(raw_val: str, attr_name: str) -> bool:
+    cleaned = re.sub(r"[\x00-\x20\x7f]+", "", str(raw_val or ""))
+    if not cleaned:
+        return False
+    lower = cleaned.lower()
+    if lower.startswith("//"):
+        return False
+    scheme_match = re.match(r"^([a-z][a-z0-9+.-]*):", lower)
+    if scheme_match:
+        scheme = scheme_match.group(1)
+        if attr_name == "href":
+            return scheme in ("https", "mailto")
+        return scheme == "https"
+    return True
+
+
+class _AllowlistHtmlSanitizer(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.out: list[str] = []
+        self._drop_depth = 0
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        t = tag.lower()
+        if self._drop_depth > 0:
+            if t in _SANITIZE_DROP_SUBTREE_TAGS:
+                self._drop_depth += 1
+            return
+        if t in _SANITIZE_DROP_SUBTREE_TAGS:
+            self._drop_depth = 1
+            return
+        if t not in _SANITIZE_ALLOWED_TAGS:
+            return
+        allowed_for_tag = _SANITIZE_GLOBAL_ATTRS | _SANITIZE_TAG_ATTRS.get(t, frozenset())
+        rendered_attrs: list[str] = []
+        has_target_blank = False
+        for k, v in attrs:
+            ak = (k or "").strip().lower()
+            if not ak or ak.startswith("on") or ak not in allowed_for_tag:
+                continue
+            av = str(v or "").strip()
+            if ak in ("href", "src"):
+                if not _is_safe_sanitized_url(av, ak):
+                    continue
+            if ak == "target":
+                av = "_blank" if av == "_blank" else "_self"
+                if av == "_blank":
+                    has_target_blank = True
+            if ak == "rel":
+                continue
+            rendered_attrs.append(f' {ak}="{html_escape(av, quote=True)}"')
+        if t == "a" and has_target_blank:
+            rendered_attrs.append(' rel="noopener noreferrer"')
+        attr_str = "".join(rendered_attrs)
+        self.out.append(f"<{t}{attr_str} />" if t in _SANITIZE_VOID_TAGS else f"<{t}{attr_str}>")
+
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        t = tag.lower()
+        if self._drop_depth > 0 or t in _SANITIZE_DROP_SUBTREE_TAGS:
+            return
+        self.handle_starttag(t, attrs)
+        if t in _SANITIZE_ALLOWED_TAGS and t not in _SANITIZE_VOID_TAGS:
+            self.out.append(f"</{t}>")
+
+    def handle_endtag(self, tag: str) -> None:
+        t = tag.lower()
+        if self._drop_depth > 0:
+            if t in _SANITIZE_DROP_SUBTREE_TAGS:
+                self._drop_depth -= 1
+            return
+        if t in _SANITIZE_ALLOWED_TAGS and t not in _SANITIZE_VOID_TAGS:
+            self.out.append(f"</{t}>")
+
+    def handle_data(self, data: str) -> None:
+        if self._drop_depth == 0 and data:
+            self.out.append(html_escape(data, quote=False))
+
+
+def sanitize_html_fragment_allowlist(raw_html: str, max_len: int = 200_000) -> str:
+    """Server-side allowlist HTML sanitizer blocking stored XSS in card overrides ([FA-09])."""
+    clipped = str(raw_html or "")[:max_len]
+    parser = _AllowlistHtmlSanitizer()
+    parser.feed(clipped)
+    parser.close()
+    return "".join(parser.out)
+
+
 class PortalRequestHandler(BaseHTTPRequestHandler):
+    def _send_security_headers(self) -> None:
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("X-Frame-Options", "SAMEORIGIN")
+        self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
+        self.send_header("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+
     def _send_json(self, status_code: int, payload: Dict[str, Any]) -> None:
         raw = json.dumps(payload, indent=2).encode("utf-8")
         self.send_response(status_code)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(raw)))
         self.send_header("Cache-Control", "no-store")
+        self._send_security_headers()
         self.end_headers()
         self.wfile.write(raw)
 
@@ -1077,39 +1470,96 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Content-Length", str(len(html_bytes)))
         self.send_header("Cache-Control", "no-store")
+        self._send_security_headers()
         self.end_headers()
         self.wfile.write(html_bytes)
 
+    def _extract_verified_iap_email(self) -> str:
+        raw_hdr = str(self.headers.get("X-Goog-Authenticated-User-Email") or "").strip()
+        if not raw_hdr:
+            return ""
+        candidate = raw_hdr.split(":")[-1].strip().lower()
+        if re.fullmatch(r"[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}", candidate):
+            return candidate
+        return ""
+
+    def _verify_verified_admin_iap(self) -> tuple[bool, str, str]:
+        iap_email = self._extract_verified_iap_email()
+        if not iap_email:
+            return (
+                False,
+                "",
+                "Missing verified Google Cloud IAP header (X-Goog-Authenticated-User-Email). Admin IAP authentication is required [FA-09].",
+            )
+        if iap_email not in VERIFIED_IAP_ADMIN_EMAILS:
+            return (
+                False,
+                iap_email,
+                f"Authenticated IAP user '{iap_email}' is not in VERIFIED_IAP_ADMIN_EMAILS [FA-09].",
+            )
+        return (True, iap_email, "verified_iap_admin")
+
     def _detect_iap_actor(self, body: Dict[str, Any] | None = None) -> tuple[str, str, str]:
-        body = body or {}
-        iap_hdr = self.headers.get("X-Goog-Authenticated-User-Email", "")
-        iap_email = iap_hdr.split(":")[-1].strip() if iap_hdr else ""
-        email = str(
-            iap_email
-            or body.get("actorEmail")
-            or body.get("authorEmail")
-            or body.get("userEmail")
-            or "nitinagga@google.com"
-        ).strip()
-        name = str(
-            body.get("actorName")
-            or body.get("authorName")
-            or body.get("userName")
-            or ""
-        ).strip()
-        if not name:
-            if email.startswith("nitinagga"):
+        iap_email = self._extract_verified_iap_email()
+        if iap_email:
+            body_dict = body or {}
+            raw_name = re.sub(
+                r"[\x00-\x1f<>]+",
+                "",
+                str(body_dict.get("actorName") or body_dict.get("authorName") or body_dict.get("userName") or "").strip(),
+            )[:80]
+            if iap_email == "nitinagga@google.com":
                 name = "Nitin Aggarwal"
+            elif raw_name:
+                name = raw_name
             else:
-                local_part = email.split("@")[0].replace(".", " ").replace("_", " ").title()
-                name = local_part or "Nitin Aggarwal"
-        role = str(
-            body.get("actorRole")
-            or body.get("authorRole")
-            or body.get("userRole")
-            or "Principal Cloud Architect"
-        ).strip()
-        return name, email, role
+                name = iap_email.split("@")[0].replace(".", " ").replace("_", " ").title() or "Verified User"
+            role = (
+                "Principal Cloud Architect (IAP Verified Admin)"
+                if iap_email in VERIFIED_IAP_ADMIN_EMAILS
+                else "Authenticated Viewer (IAP Verified)"
+            )
+            return name, iap_email, role
+
+        if body is None:
+            return (
+                "Read-Only Viewer",
+                "viewer@unverified.session",
+                "Read-Only Viewer (Admin IAP Required for Edits)",
+            )
+
+        raw_email = re.sub(
+            r"[\x00-\x20<>]+",
+            "",
+            str(body.get("actorEmail") or body.get("authorEmail") or body.get("userEmail") or "").strip().lower(),
+        )[:120]
+        raw_name = re.sub(
+            r"[\x00-\x1f<>]+",
+            "",
+            str(body.get("actorName") or body.get("authorName") or body.get("userName") or "").strip(),
+        )[:80]
+        raw_role = re.sub(
+            r"[\x00-\x1f<>]+",
+            "",
+            str(body.get("actorRole") or body.get("authorRole") or body.get("userRole") or "").strip(),
+        )[:80]
+
+        # Block unverified requests from impersonating privileged/internal identities ([FA-09])
+        if (
+            not raw_email
+            or "@" not in raw_email
+            or raw_email in VERIFIED_IAP_ADMIN_EMAILS
+            or raw_email.endswith("@google.com")
+        ):
+            safe_email = "guest@unverified.session"
+        else:
+            safe_email = raw_email
+        if not raw_name or raw_name.lower() in ("nitin aggarwal", "nitin a."):
+            safe_name = "Guest Reviewer"
+        else:
+            safe_name = raw_name
+        safe_role = f"{raw_role} [Unverified]" if raw_role and "[Unverified]" not in raw_role else "Guest Reviewer [Unverified]"
+        return safe_name, safe_email, safe_role
 
     def log_message(self, format: str, *args: Any) -> None:
         # Clean concise single-line access log
@@ -1198,52 +1648,62 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             except Exception:
                 token = ""
 
-        if not token:
-            # Check for active gcloud user @google.com identity token
-            try:
-                proc = subprocess.run(["gcloud", "auth", "print-identity-token"], capture_output=True, text=True, timeout=3)
-                tok = proc.stdout.strip()
-                if proc.returncode == 0 and tok.startswith("ey"):
-                    token = tok
-            except Exception:
-                pass
+        target_base = str(spec.get("cloud_run") or "").rstrip("/")
+        target_parsed = urllib.parse.urlparse(target_base)
+        if target_parsed.scheme != "https" or not (target_parsed.hostname or "").endswith(".a.run.app"):
+            self._send_json(500, {"ok": False, "error": f"Invalid Cloud Run TLS upstream config for {app_key}"})
+            return
 
-        # Determine target host
-        if token:
-            target_base = spec["cloud_run"].rstrip("/")
-            use_oidc = True
-        else:
-            aws_receipt_file = ROOT_DIR / "docs" / "aws_ec2_3p_apps_live_receipt.json"
-            ec2_ip = "13.220.94.209"
-            if aws_receipt_file.is_file():
-                try:
-                    rdata = json.loads(aws_receipt_file.read_text(encoding="utf-8"))
-                    ec2_ip = rdata.get("ec2_host", {}).get("public_ip") or rdata.get("public_ip") or ec2_ip
-                except Exception:
-                    pass
-            target_base = f"http://{ec2_ip}:{spec['ec2_port']}"
-            use_oidc = False
+        # Fail closed when Cloud Run IAM OIDC token is unavailable; zero cleartext HTTP EC2 fallback ([FA-11])
+        if not token:
+            self._send_json(
+                503,
+                {
+                    "ok": False,
+                    "status": "OIDC_IDENTITY_REQUIRED",
+                    "app": app_key,
+                    "cloud_run": target_base,
+                    "error": (
+                        "Cloud Run IAM OIDC token unavailable; cleartext HTTP upstream fallback is disabled "
+                        f"by security policy [FA-11]. Authenticate locally via: python3 scripts/saas_cloudrun_proxy.py {app_key}"
+                    ),
+                },
+            )
+            return
 
         query_str = f"?{parsed.query}" if parsed.query else ""
         upstream_url = f"{target_base}{subpath}{query_str}"
 
+        # Strip ambient portal cookies & IAP/auth headers so credentials never leak cross-service ([FA-11])
+        stripped_req_headers = {
+            "host",
+            "connection",
+            "accept-encoding",
+            "content-length",
+            "cookie",
+            "authorization",
+            "proxy-authorization",
+            "x-goog-authenticated-user-email",
+            "x-goog-authenticated-user-id",
+            "x-goog-iap-jwt-assertion",
+            "x-serverless-authorization",
+        }
         headers: Dict[str, str] = {}
         for k, v in self.headers.items():
-            k_lower = k.lower()
-            if k_lower in ("host", "connection", "accept-encoding", "content-length"):
+            if k.lower() in stripped_req_headers:
                 continue
             headers[k] = v
 
-        target_parsed = urllib.parse.urlparse(target_base)
         headers["Host"] = target_parsed.netloc
-        if use_oidc and token:
-            headers["X-Serverless-Authorization"] = f"Bearer {token}"
+        headers["X-Serverless-Authorization"] = f"Bearer {token}"
 
         body: bytes | None = None
         content_length = self.headers.get("Content-Length")
         if content_length:
             try:
-                body = self.rfile.read(int(content_length))
+                clen = int(content_length)
+                if 0 < clen <= MAX_POST_BODY_BYTES:
+                    body = self.rfile.read(clen)
             except Exception:
                 body = None
 
@@ -1253,45 +1713,14 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             http_error_301 = http_error_303 = http_error_307 = http_error_308 = http_error_302
 
         opener = urllib.request.build_opener(_NoRedirect)
-        resp = None
-
-        # Try primary upstream (Cloud Run with OIDC if token present)
         req = urllib.request.Request(upstream_url, data=body, method=method, headers=headers)
         try:
             resp = opener.open(req, timeout=12)
-            if hasattr(resp, "status") and resp.status in (401, 403) and use_oidc:
-                resp = None  # Fallback to upstream container
         except urllib.error.HTTPError as he:
-            if he.code in (401, 403) and use_oidc:
-                resp = None  # Fallback to upstream container
-            else:
-                resp = he
+            resp = he
         except Exception:
-            resp = None
-
-        # Seamless Fallback to upstream container
-        if resp is None:
-            aws_receipt_file = ROOT_DIR / "docs" / "aws_ec2_3p_apps_live_receipt.json"
-            ec2_ip = "13.220.94.209"
-            if aws_receipt_file.is_file():
-                try:
-                    rdata = json.loads(aws_receipt_file.read_text(encoding="utf-8"))
-                    ec2_ip = rdata.get("ec2_host", {}).get("public_ip") or rdata.get("public_ip") or ec2_ip
-                except Exception:
-                    pass
-            fb_base = f"http://{ec2_ip}:{spec['ec2_port']}"
-            fb_url = f"{fb_base}{subpath}{query_str}"
-            fb_headers = dict(headers)
-            fb_headers["Host"] = urllib.parse.urlparse(fb_base).netloc
-            fb_headers.pop("X-Serverless-Authorization", None)
-            try:
-                fb_req = urllib.request.Request(fb_url, data=body, method=method, headers=fb_headers)
-                resp = opener.open(fb_req, timeout=15)
-            except urllib.error.HTTPError as he:
-                resp = he
-            except Exception as exc:
-                self._send_json(502, {"error": f"Failed to connect to SaaS service: {exc}"})
-                return
+            self._send_json(502, {"ok": False, "app": app_key, "error": "Failed to reach TLS Cloud Run SaaS upstream."})
+            return
 
         try:
             status_code = resp.status if hasattr(resp, "status") else resp.code
@@ -1425,6 +1854,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         if path == "/api/changelog":
             store = load_portal_changelog()
             actor_name, actor_email, actor_role = self._detect_iap_actor()
+            is_admin, verified_iap_email, _ = self._verify_verified_admin_iap()
             entries = store.get("entries", [])
             self._send_json(
                 200,
@@ -1437,6 +1867,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                         "actorName": actor_name,
                         "actorEmail": actor_email,
                         "actorRole": actor_role,
+                        "iapVerified": bool(verified_iap_email),
+                        "isAdmin": is_admin,
                     },
                     "entries": entries,
                     "cardOverrides": store.get("cardOverrides", {}),
@@ -2381,11 +2813,18 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 return
             raw_candidate = ROOT_DIR / rel_path
             candidate = raw_candidate.resolve()
+            if is_sensitive_repo_path(raw_candidate):
+                self._send_json(
+                    403,
+                    {"ok": False, "error": "Access to sensitive file type blocked by security policy [FA-10]."},
+                )
+                return
             if (
                 raw_candidate.is_symlink()
                 or not candidate.is_relative_to(ROOT_DIR)
                 or not candidate.is_file()
                 or any(part.startswith(".") for part in candidate.relative_to(ROOT_DIR).parts)
+                or is_sensitive_repo_path(candidate)
             ):
                 self._send_json(404, {"error": f"Artifact not found: {rel_path}"})
                 return
@@ -2471,6 +2910,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 and static_file.is_file()
                 and (suffix in STATIC_MIME or static_file.name == "Dockerfile")
                 and not any(part.startswith(".") for part in static_file.relative_to(ROOT_DIR).parts)
+                and not is_sensitive_repo_path(static_file)
             ):
                 data = static_file.read_bytes()
                 mime = STATIC_MIME.get(suffix, "text/plain; charset=utf-8")
@@ -2478,6 +2918,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 self.send_header("Content-Type", mime)
                 self.send_header("Content-Length", str(len(data)))
                 self.send_header("Cache-Control", "no-store")
+                self._send_security_headers()
                 if suffix in (".pptx", ".docx", ".drawio"):
                     self.send_header("Content-Disposition", f'attachment; filename="{static_file.name}"')
                 self.end_headers()
@@ -2630,43 +3071,90 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
         try:
             if path == "/api/payg-saas/test-connection":
-                service_id = str(body.get("service_id", "")).strip().lower()
+                service_id = re.sub(r"[^a-z0-9_-]", "", str(body.get("service_id", "")).strip().lower())[:48]
                 endpoint_url = str(body.get("endpoint_url", "")).strip()
-                api_token = str(body.get("api_token", "")).strip()
+                api_token = re.sub(r"[\r\n\x00]", "", str(body.get("api_token", "")).strip())[:512]
                 if not endpoint_url:
-                    self._send_json(400, {"ok": False, "error": "Missing endpoint_url"})
+                    self._send_json(400, {"ok": False, "status": "MISSING_URL", "http_status": 400, "error": "Missing endpoint_url"})
                     return
                 t_start = time.time()
+                allowed, v_http, v_code, v_detail = validate_payg_outbound_url(endpoint_url, resolve_dns=True)
+                if not allowed:
+                    lat_ms = round((time.time() - t_start) * 1000, 1)
+                    self._send_json(
+                        v_http,
+                        {
+                            "ok": False,
+                            "service_id": service_id,
+                            "status": v_code,
+                            "http_status": v_http,
+                            "latency_ms": lat_ms,
+                            "error": v_detail,
+                        },
+                    )
+                    return
                 try:
                     req_hdrs = {"User-Agent": "Cymbal-GEAP-PAYG-Connector/1.0"}
                     if api_token:
                         req_hdrs["Authorization"] = f"Bearer {api_token}"
-                    test_req = urllib.request.Request(endpoint_url, headers=req_hdrs)
-                    with urllib.request.urlopen(test_req, timeout=5) as t_resp:
+                    safe_opener = urllib.request.build_opener(_SafePaygRedirectHandler)
+                    test_req = urllib.request.Request(v_detail, headers=req_hdrs, method="GET")
+                    with safe_opener.open(test_req, timeout=5) as t_resp:
                         st = t_resp.status
                         lat_ms = round((time.time() - t_start) * 1000, 1)
-                        self._send_json(200, {
-                            "ok": True,
-                            "service_id": service_id,
-                            "status": "CONNECTED",
-                            "http_status": st,
-                            "latency_ms": lat_ms,
-                            "message": f"Successfully connected to {service_id} live endpoint in {lat_ms}ms"
-                        })
+                        self._send_json(
+                            200,
+                            {
+                                "ok": True,
+                                "service_id": service_id,
+                                "status": "CONNECTED",
+                                "http_status": st,
+                                "latency_ms": lat_ms,
+                                "message": f"Successfully connected to {service_id} HTTPS endpoint in {lat_ms}ms",
+                            },
+                        )
                         return
+                except PermissionError as pe:
+                    lat_ms = round((time.time() - t_start) * 1000, 1)
+                    self._send_json(
+                        403,
+                        {
+                            "ok": False,
+                            "service_id": service_id,
+                            "status": "SSRF_REDIRECT_BLOCKED",
+                            "http_status": 403,
+                            "latency_ms": lat_ms,
+                            "error": str(pe),
+                        },
+                    )
+                    return
                 except urllib.error.HTTPError as he:
                     lat_ms = round((time.time() - t_start) * 1000, 1)
-                    self._send_json(200, {
-                        "ok": True,
-                        "service_id": service_id,
-                        "status": "HOST_REACHED_AUTH_REQUIRED" if he.code in (401, 403) else "HTTP_ERROR",
-                        "http_status": he.code,
-                        "latency_ms": lat_ms,
-                        "message": f"Host reached in {lat_ms}ms with HTTP {he.code}"
-                    })
+                    self._send_json(
+                        200,
+                        {
+                            "ok": True,
+                            "service_id": service_id,
+                            "status": "HOST_REACHED_AUTH_REQUIRED" if he.code in (401, 403) else "HTTP_ERROR",
+                            "http_status": he.code,
+                            "latency_ms": lat_ms,
+                            "message": f"Approved HTTPS host reached in {lat_ms}ms with HTTP {he.code}",
+                        },
+                    )
                     return
-                except Exception as exc:
-                    self._send_json(502, {"ok": False, "service_id": service_id, "error": str(exc)})
+                except Exception:
+                    lat_ms = round((time.time() - t_start) * 1000, 1)
+                    self._send_json(
+                        502,
+                        {
+                            "ok": False,
+                            "service_id": service_id,
+                            "status": "UPSTREAM_UNREACHABLE",
+                            "http_status": 502,
+                            "latency_ms": lat_ms,
+                            "error": f"Unable to establish TLS connection to {service_id or 'SaaS'} endpoint.",
+                        },
+                    )
                     return
 
             if path == "/api/telemetry/clickstream":
@@ -2701,23 +3189,30 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 return
 
             if path == "/api/telemetry/clickstream/clear":
-                actor_name, actor_email, actor_role = self._detect_iap_actor(body)
-                client_ip = self.client_address[0] if self.client_address else ""
-                if actor_email.startswith("nitinagga") or client_ip in ("127.0.0.1", "localhost", "::1"):
-                    iso_str, _ = _now_iso_and_est()
-                    empty_store = {
-                        "schemaVersion": "1.0",
-                        "updatedAt": iso_str,
-                        "totalEvents": 0,
-                        "uniqueVisitorsCount": 0,
-                        "visitors": {},
-                        "eventTypeCounts": {},
-                        "events": [],
-                    }
-                    save_portal_clickstream(empty_store)
-                    self._send_json(200, {"ok": True, "message": "Clickstream events cleared by admin"})
-                else:
-                    self._send_json(403, {"ok": False, "error": "Unauthorized: admin permissions required to reset clickstream"})
+                is_admin, verified_email, deny_reason = self._verify_verified_admin_iap()
+                if not is_admin:
+                    self._send_json(
+                        403,
+                        {
+                            "ok": False,
+                            "status": "ADMIN_IAP_REQUIRED",
+                            "resolvedEmail": verified_email,
+                            "error": deny_reason,
+                        },
+                    )
+                    return
+                iso_str, _ = _now_iso_and_est()
+                empty_store = {
+                    "schemaVersion": "1.0",
+                    "updatedAt": iso_str,
+                    "totalEvents": 0,
+                    "uniqueVisitorsCount": 0,
+                    "visitors": {},
+                    "eventTypeCounts": {},
+                    "events": [],
+                }
+                save_portal_clickstream(empty_store)
+                self._send_json(200, {"ok": True, "message": f"Clickstream events cleared by verified IAP admin ({verified_email})"})
                 return
 
             if path == "/api/feedback/submit":
@@ -2768,15 +3263,38 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 return
 
             if path == "/api/save-drawio":
+                is_admin, verified_email, deny_reason = self._verify_verified_admin_iap()
+                if not is_admin:
+                    self._send_json(
+                        403,
+                        {
+                            "ok": False,
+                            "status": "ADMIN_IAP_REQUIRED",
+                            "resolvedEmail": verified_email,
+                            "error": deny_reason,
+                        },
+                    )
+                    return
                 diag_id = str(body.get("id") or "").strip()
                 xml_content = str(body.get("xml") or "").strip()
-                safe_id = "".join(ch for ch in diag_id if ch.isalnum() or ch in ("-", "_"))
-                if not safe_id or not xml_content or ("<mxfile" not in xml_content and "<mxGraphModel" not in xml_content):
-                    self._send_json(400, {"ok": False, "error": "Invalid diagram id or Draw.io XML payload"})
+                if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,119}", diag_id):
+                    self._send_json(400, {"ok": False, "error": "Invalid diagram id (only alphanumeric, '-', '_' allowed)."})
                     return
+                safe_id = diag_id
+                xml_lower = xml_content.lower()
+                if (
+                    not xml_content
+                    or len(xml_content.encode("utf-8")) > 2_000_000
+                    or ("<mxfile" not in xml_content and "<mxGraphModel" not in xml_content)
+                    or "<!doctype" in xml_lower
+                    or "<!entity" in xml_lower
+                ):
+                    self._send_json(400, {"ok": False, "error": "Invalid or disallowed Draw.io XML payload (DOCTYPE/ENTITY blocked)."})
+                    return
+                diagrams_root = (ROOT_DIR / "diagrams").resolve()
                 raw_drawio = ROOT_DIR / "diagrams" / f"{safe_id}.drawio"
                 target_drawio = raw_drawio.resolve()
-                if raw_drawio.is_symlink() or not target_drawio.is_relative_to(ROOT_DIR):
+                if raw_drawio.is_symlink() or not target_drawio.is_relative_to(diagrams_root):
                     self._send_json(403, {"ok": False, "error": "Forbidden path"})
                     return
                 with _STATE_WRITE_LOCK:
@@ -2813,21 +3331,45 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 return
 
             if path == "/api/changelog":
+                is_admin, verified_email, deny_reason = self._verify_verified_admin_iap()
+                if not is_admin:
+                    self._send_json(
+                        403,
+                        {
+                            "ok": False,
+                            "status": "ADMIN_IAP_REQUIRED",
+                            "resolvedEmail": verified_email,
+                            "error": deny_reason,
+                        },
+                    )
+                    return
                 actor_name, actor_email, actor_role = self._detect_iap_actor(body)
-                action = str(body.get("action") or "SAVE").strip().upper()
-                target_type = str(body.get("targetType") or "blog_section").strip()
-                card_id = str(body.get("cardId") or body.get("targetId") or "card-custom").strip()
-                card_title = str(body.get("cardTitle") or body.get("targetTitle") or card_id).strip()
-                workstream = str(body.get("workstream") or "WS1").strip()
-                doc_path = str(body.get("docPath") or "").strip()
-                summary = str(body.get("summary") or f"{action} on {card_title}").strip()
-                before_text = str(body.get("beforeText") if body.get("beforeText") is not None else (body.get("beforeSnippet") or ""))
-                after_text = str(body.get("afterText") if body.get("afterText") is not None else (body.get("afterSnippet") or ""))
+                action = re.sub(r"[^A-Z0-9_]", "", str(body.get("action") or "SAVE").strip().upper())[:32] or "SAVE"
+                target_type = re.sub(r"[^a-zA-Z0-9_-]", "", str(body.get("targetType") or "blog_section").strip())[:64]
+                card_id = re.sub(r"[^a-zA-Z0-9_.:-]", "", str(body.get("cardId") or body.get("targetId") or "card-custom").strip())[:160]
+                card_title = str(body.get("cardTitle") or body.get("targetTitle") or card_id).strip()[:240]
+                workstream = re.sub(r"[^a-zA-Z0-9_-]", "", str(body.get("workstream") or "WS1").strip())[:32]
+                doc_path = str(body.get("docPath") or "").strip()[:240]
+                summary = str(body.get("summary") or f"{action} on {card_title}").strip()[:1000]
+                before_text = str(body.get("beforeText") if body.get("beforeText") is not None else (body.get("beforeSnippet") or ""))[:4000]
+                after_text = str(body.get("afterText") if body.get("afterText") is not None else (body.get("afterSnippet") or ""))[:4000]
                 restorable = bool(body.get("restorable", True))
-                card_override = body.get("cardOverride") if isinstance(body.get("cardOverride"), dict) else None
-                if card_override is None and card_id:
-                    html_content = str(body.get("htmlContent") or "")
-                    if action in ("SAVE", "ADD") and html_content:
+                card_override = None
+                if isinstance(body.get("cardOverride"), dict):
+                    raw_ov = body["cardOverride"]
+                    card_override = {
+                        "htmlContent": sanitize_html_fragment_allowlist(str(raw_ov.get("htmlContent") or "")),
+                        "hidden": bool(raw_ov.get("hidden", False)),
+                        "deleted": bool(raw_ov.get("deleted", False)),
+                        "cardTitle": str(raw_ov.get("cardTitle") or card_title)[:240],
+                    }
+                    if raw_ov.get("status"):
+                        card_override["status"] = re.sub(r"[^a-z0-9_-]", "", str(raw_ov.get("status")).lower())[:32]
+                    if raw_ov.get("parentCardId"):
+                        card_override["parentCardId"] = re.sub(r"[^a-zA-Z0-9_.:-]", "", str(raw_ov.get("parentCardId")))[:160]
+                elif card_id:
+                    html_content = sanitize_html_fragment_allowlist(str(body.get("htmlContent") or ""))
+                    if action in ("SAVE", "ADD", "CLONE") and html_content:
                         card_override = {
                             "htmlContent": html_content,
                             "hidden": False,
@@ -2869,6 +3411,18 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 return
 
             if path == "/api/changelog/restore":
+                is_admin, verified_email, deny_reason = self._verify_verified_admin_iap()
+                if not is_admin:
+                    self._send_json(
+                        403,
+                        {
+                            "ok": False,
+                            "status": "ADMIN_IAP_REQUIRED",
+                            "resolvedEmail": verified_email,
+                            "error": deny_reason,
+                        },
+                    )
+                    return
                 actor_name, actor_email, actor_role = self._detect_iap_actor(body)
                 card_id = str(body.get("cardId") or body.get("targetId") or "").strip()
                 entry_id = str(body.get("entryId") or "").strip()
@@ -3091,6 +3645,18 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                     return
 
                 if op == "delete_thread":
+                    is_admin, verified_email, deny_reason = self._verify_verified_admin_iap()
+                    if not is_admin:
+                        self._send_json(
+                            403,
+                            {
+                                "ok": False,
+                                "status": "ADMIN_IAP_REQUIRED",
+                                "resolvedEmail": verified_email,
+                                "error": deny_reason,
+                            },
+                        )
+                        return
                     thread_id = str(body.get("threadId") or "").strip()
                     target_t = next((t for t in threads if t.get("threadId") == thread_id), None)
                     if target_t:

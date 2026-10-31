@@ -34,6 +34,9 @@ const RECEIPT_PATH = path.join(ROOT_DIR, "docs/genuine_ui_screenshot_provenance_
 const GCP_RECEIPT_PATH = path.join(ROOT_DIR, "docs/gcp_cloudrun_3p_apps_live_receipt.json");
 const AWS_RECEIPT_PATH = path.join(ROOT_DIR, "docs/aws_ec2_3p_apps_live_receipt.json");
 const OIDC_CACHE_PATH = "/tmp/cymbal_gcp_cloudrun_oidc_cache.json";
+// Loaded from env / GCP Secret Manager (`cymbal-saas-demo-credentials`); zero plaintext secrets in source ([FA-10]/[FA-14])
+const SAAS_DEMO_PASSWORD = (process.env.CYMBAL_SAAS_DEMO_PASSWORD || "").trim();
+const SAAS_VAULT_TOKEN = (process.env.CYMBAL_SAAS_VAULT_TOKEN || "").trim();
 
 const CHROME_PATH = process.env.CHROME_PATH || [
   "/usr/bin/google-chrome",
@@ -180,7 +183,7 @@ async function navigateAndAuthenticateApp(page, appKey, baseUrl, meta, cloudProv
       await fetch("/api/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: "sre-lead@finvault.com", password: "FinVault#2026!" })
+        body: JSON.stringify({ username: "sre-lead@finvault.com", password: SAAS_DEMO_PASSWORD })
       });
     });
     const targetUrl = meta.ui_url || `${cleanBase}/question/1`;
@@ -215,7 +218,7 @@ async function navigateAndAuthenticateApp(page, appKey, baseUrl, meta, cloudProv
       await fetch("/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user: "sre-lead@finvault.com", password: "FinVault#2026!" })
+        body: JSON.stringify({ user: "sre-lead@finvault.com", password: SAAS_DEMO_PASSWORD })
       });
       await fetch("/api/user/preferences", {
         method: "PUT",
@@ -239,7 +242,7 @@ async function navigateAndAuthenticateApp(page, appKey, baseUrl, meta, cloudProv
     const rmUser = cloudProvider === "AWS" ? "sre-lead@finvault.com" : "admin";
     if (hasLogin) {
       await page.type("#username", rmUser);
-      await page.type("#password", "FinVault#2026!");
+      await page.type("#password", SAAS_DEMO_PASSWORD);
       await Promise.all([
         page.waitForNavigation({ waitUntil: "networkidle2", timeout: 30000 }).catch(() => {}),
         page.click("#login-submit")
@@ -263,7 +266,7 @@ async function navigateAndAuthenticateApp(page, appKey, baseUrl, meta, cloudProv
       await emailInput.click({ clickCount: 3 });
       await emailInput.type("sre-lead@finvault.com");
       await passInput.click({ clickCount: 3 });
-      await passInput.type("FinVault#2026!");
+      await passInput.type(SAAS_DEMO_PASSWORD);
       const submitBtn = await page.$('button[type="submit"]');
       if (submitBtn) {
         await submitBtn.click();
@@ -375,7 +378,7 @@ async function navigateAndAuthenticateApp(page, appKey, baseUrl, meta, cloudProv
       await el.type(text);
     };
     await clearAndType("#user", "finvault_user");
-    await clearAndType("#password", "FinVault#2026!");
+    await clearAndType("#password", SAAS_DEMO_PASSWORD);
     await clearAndType(
       "#query",
       "SELECT entity_id, tenant_id, portfolio, settlement_usd, cmek_key_uri FROM cymbal_warehouse.wire_settlement_ledger ORDER BY entity_id;"
@@ -397,7 +400,7 @@ async function navigateAndAuthenticateApp(page, appKey, baseUrl, meta, cloudProv
       await emailEl.click({ clickCount: 3 });
       await emailEl.type("sre-lead@finvault.com");
       await passEl.click({ clickCount: 3 });
-      await passEl.type("FinVault#2026!");
+      await passEl.type(SAAS_DEMO_PASSWORD);
       await page.keyboard.press("Enter");
       await page
         .waitForFunction(() => !window.location.pathname.includes("/login"), { timeout: 20000 })
@@ -432,7 +435,7 @@ async function navigateAndAuthenticateApp(page, appKey, baseUrl, meta, cloudProv
     const tokInput = await page.$('input[name="token"]');
     if (tokInput) {
       await tokInput.click();
-      await tokInput.type("fv-token-finvault-sre-2026");
+      await tokInput.type(SAAS_VAULT_TOKEN);
       const authBtn = await page.$("button#auth-submit");
       if (authBtn) {
         await authBtn.click();

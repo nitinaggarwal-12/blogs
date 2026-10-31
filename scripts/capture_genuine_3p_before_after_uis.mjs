@@ -33,6 +33,9 @@ const RECEIPT_PATH = path.join(ROOT_DIR, "docs/genuine_3p_before_after_provenanc
 const AWS_RECEIPT_PATH = path.join(ROOT_DIR, "docs/aws_ec2_3p_apps_live_receipt.json");
 const GCP_RECEIPT_PATH = path.join(ROOT_DIR, "docs/gcp_cloudrun_3p_apps_live_receipt.json");
 const OIDC_CACHE_PATH = "/tmp/cymbal_gcp_cloudrun_oidc_cache.json";
+// Loaded from env / GCP Secret Manager (`cymbal-saas-demo-credentials`); zero plaintext secrets in source ([FA-10]/[FA-14])
+const SAAS_DEMO_PASSWORD = (process.env.CYMBAL_SAAS_DEMO_PASSWORD || "").trim();
+const SAAS_VAULT_TOKEN = (process.env.CYMBAL_SAAS_VAULT_TOKEN || "").trim();
 
 const homeDir = os.homedir();
 const reqPaths = [
@@ -331,7 +334,7 @@ async function runPairCapture(browser, spec, svcMeta, provider, oidcTok) {
     if (spec.key === "metabase") {
       const sess = await apiJson(`${cleanBase}/api/session`, "POST", extraHeaders, {
         username: "sre-lead@finvault.com",
-        password: "FinVault#2026!"
+        password: SAAS_DEMO_PASSWORD
       });
       const mbTok = sess.data?.id;
       const mbHeaders = { ...extraHeaders, "X-Metabase-Session": mbTok };
@@ -363,7 +366,7 @@ async function runPairCapture(browser, spec, svcMeta, provider, oidcTok) {
         await fetch("/api/session", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username: "sre-lead@finvault.com", password: "FinVault#2026!" })
+          body: JSON.stringify({ username: "sre-lead@finvault.com", password: SAAS_DEMO_PASSWORD })
         });
       });
 
@@ -392,7 +395,7 @@ async function runPairCapture(browser, spec, svcMeta, provider, oidcTok) {
     // 02. GRAFANA ENTERPRISE v11.2.0
     // =========================================================================
     else if (spec.key === "grafana") {
-      const gfAuth = "Basic " + Buffer.from("sre-lead@finvault.com:FinVault#2026!").toString("base64");
+      const gfAuth = "Basic " + Buffer.from(`sre-lead@finvault.com:${SAAS_DEMO_PASSWORD}`).toString("base64");
       const gfHeaders = { ...extraHeaders, Authorization: gfAuth };
       const cur = await apiJson(`${cleanBase}/api/dashboards/uid/finvault-sre-wb`, "GET", gfHeaders);
       const baseDash = cur.data.dashboard;
@@ -409,7 +412,7 @@ async function runPairCapture(browser, spec, svcMeta, provider, oidcTok) {
         await fetch("/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user: "sre-lead@finvault.com", password: "FinVault#2026!" })
+          body: JSON.stringify({ user: "sre-lead@finvault.com", password: SAAS_DEMO_PASSWORD })
         });
         await fetch("/api/user/preferences", {
           method: "PUT",
@@ -465,7 +468,7 @@ async function runPairCapture(browser, spec, svcMeta, provider, oidcTok) {
     // =========================================================================
     else if (spec.key === "redmine") {
       const rmUser = provider === "AWS" ? "sre-lead@finvault.com" : "admin";
-      const rmAuth = "Basic " + Buffer.from(`${rmUser}:FinVault#2026!`).toString("base64");
+      const rmAuth = "Basic " + Buffer.from(`${rmUser}:${SAAS_DEMO_PASSWORD}`).toString("base64");
       const rmHeaders = { ...extraHeaders, Authorization: rmAuth };
 
       // Step A: Idempotent cleanup of any prior CHG0049299 ticket
@@ -480,7 +483,7 @@ async function runPairCapture(browser, spec, svcMeta, provider, oidcTok) {
       const hasLogin = await page.$("#username");
       if (hasLogin) {
         await page.type("#username", rmUser);
-        await page.type("#password", "FinVault#2026!");
+        await page.type("#password", SAAS_DEMO_PASSWORD);
         await Promise.all([
           page.waitForNavigation({ waitUntil: "networkidle2", timeout: 30000 }).catch(() => {}),
           page.click("#login-submit")
@@ -528,7 +531,7 @@ async function runPairCapture(browser, spec, svcMeta, provider, oidcTok) {
     else if (spec.key === "nocodb") {
       const si = await apiJson(`${cleanBase}/api/v1/auth/user/signin`, "POST", extraHeaders, {
         email: "sre-lead@finvault.com",
-        password: "FinVault#2026!"
+        password: SAAS_DEMO_PASSWORD
       });
       const ncTok = si.data?.token;
       const ncHeaders = { ...extraHeaders, "xc-auth": ncTok };
@@ -622,7 +625,7 @@ async function runPairCapture(browser, spec, svcMeta, provider, oidcTok) {
         await emailInput.click({ clickCount: 3 });
         await emailInput.type("sre-lead@finvault.com");
         await passInput.click({ clickCount: 3 });
-        await passInput.type("FinVault#2026!");
+        await passInput.type(SAAS_DEMO_PASSWORD);
         const submitBtn = await page.$('button[type="submit"]');
         if (submitBtn) await submitBtn.click();
         else await page.keyboard.press("Enter");
@@ -670,7 +673,7 @@ async function runPairCapture(browser, spec, svcMeta, provider, oidcTok) {
     // 05. GITEA v1.22.3 (SRE Escalation Issue Tracker)
     // =========================================================================
     else if (spec.key === "gitea") {
-      const gtAuth = "Basic " + Buffer.from("sre-lead:FinVault#2026!").toString("base64");
+      const gtAuth = "Basic " + Buffer.from(`sre-lead:${SAAS_DEMO_PASSWORD}`).toString("base64");
       const gtHeaders = { ...extraHeaders, Authorization: gtAuth };
 
       // Step A: Align Issue #1 canonical AgentCore Target ID (K5JAEFCQ6E) & clean prior RCA comments via Gitea REST API
@@ -693,7 +696,7 @@ async function runPairCapture(browser, spec, svcMeta, provider, oidcTok) {
       const pField = await page.$("#password");
       if (uField && pField) {
         await uField.type("sre-lead");
-        await pField.type("FinVault#2026!");
+        await pField.type(SAAS_DEMO_PASSWORD);
         await Promise.all([
           page.waitForNavigation({ waitUntil: "networkidle2", timeout: 30000 }).catch(() => {}),
           page.keyboard.press("Enter")
@@ -819,7 +822,7 @@ async function runPairCapture(browser, spec, svcMeta, provider, oidcTok) {
       };
 
       await clearAndType("#user", "finvault_user");
-      await clearAndType("#password", "FinVault#2026!");
+      await clearAndType("#password", SAAS_DEMO_PASSWORD);
 
       // BEFORE: Cross-tenant spoof attempt under finvault_user -> ClickHouse RLS returns 0 rows!
       await clearAndType(
@@ -855,7 +858,7 @@ async function runPairCapture(browser, spec, svcMeta, provider, oidcTok) {
     else if (spec.key === "directus") {
       const loginRes = await apiJson(`${cleanBase}/auth/login`, "POST", extraHeaders, {
         email: "sre-lead@finvault.com",
-        password: "FinVault#2026!"
+        password: SAAS_DEMO_PASSWORD
       });
       const drTok = loginRes.data?.data?.access_token;
       const drHeaders = { ...extraHeaders, Authorization: `Bearer ${drTok}` };
@@ -876,7 +879,7 @@ async function runPairCapture(browser, spec, svcMeta, provider, oidcTok) {
         await emailEl.click({ clickCount: 3 });
         await emailEl.type("sre-lead@finvault.com");
         await passEl.click({ clickCount: 3 });
-        await passEl.type("FinVault#2026!");
+        await passEl.type(SAAS_DEMO_PASSWORD);
         await page.keyboard.press("Enter");
         await page.waitForFunction(() => !window.location.pathname.includes("/login"), { timeout: 20000 }).catch(() => {});
         await sleep(2200);
@@ -984,7 +987,7 @@ async function runPairCapture(browser, spec, svcMeta, provider, oidcTok) {
     // 10. HASHICORP VAULT v1.13.3 (DPoP & CMEK Secrets Engine)
     // =========================================================================
     else if (spec.key === "vault") {
-      const vtHeaders = { ...extraHeaders, "X-Vault-Token": "fv-token-finvault-sre-2026" };
+      const vtHeaders = { ...extraHeaders, "X-Vault-Token": SAAS_VAULT_TOKEN };
 
       // Step A: Reset secret metadata cleanly so Version 1 = BEFORE, Version 2 = AFTER every single run
       await apiJson(`${cleanBase}/v1/secret/metadata/tenants/finvault`, "DELETE", vtHeaders);
@@ -1010,7 +1013,7 @@ async function runPairCapture(browser, spec, svcMeta, provider, oidcTok) {
         const tokInput = await page.$('input[name="token"]');
         if (tokInput) {
           await tokInput.click({ clickCount: 3 });
-          await tokInput.type("fv-token-finvault-sre-2026");
+          await tokInput.type(SAAS_VAULT_TOKEN);
           const authBtn = await page.$("button#auth-submit");
           if (authBtn) await authBtn.click();
           else await page.keyboard.press("Enter");

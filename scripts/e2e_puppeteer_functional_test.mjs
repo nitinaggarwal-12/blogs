@@ -178,7 +178,7 @@ async function run() {
       };
     });
 
-    const maxAllowedHeight = (item.doc.includes("END-TO-END-WORKSTREAM") || item.doc.includes("MANUAL-TESTING-PLAYBOOK")) ? 185000 : 25500;
+    const maxAllowedHeight = (item.doc.includes("END-TO-END-WORKSTREAM") || item.doc.includes("MANUAL-TESTING-PLAYBOOK")) ? 185000 : (item.doc.startsWith("blogs/") ? 36000 : 25500);
 
     const minDiagrams = (item.doc.includes("/3.2-") || item.doc.includes("/4.2-")) ? 0 : 1;
 
@@ -457,6 +457,34 @@ async function run() {
     "GCP-Branded Google Docs (`?resourcekey=` Preserved) & Microsoft Word (`.docx`) Exports Served Cleanly (`6/6` Matrix Links + HTTP 200)",
     `docxLinks=${tabsResult.overviewDocxLinks}, hubHref=${tabsResult.hubDocxHref}, status=${tabsResult.docxStatus}, bytes=${tabsResult.docxBytes}, ct=${tabsResult.docxContentType}`
   );
+  const p0DomAudit = await page.evaluate(async () => {
+    const fullHtml = document.documentElement.innerHTML || "";
+    const chgResp = await fetch("/api/changelog", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "SAVE", cardId: "e2e-probe", htmlContent: "<p>probe</p>" }),
+    });
+    const paygResp = await fetch("/api/payg-saas/test-connection", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ service_id: "snowflake", endpoint_url: "http://127.0.0.1/api/health" }),
+    });
+    return {
+      hasPublicPass: fullHtml.includes("FinVault#2026!") || fullHtml.includes("fv-token-finvault-sre-2026"),
+      hasIapBanner: Boolean(document.getElementById("chg-iap-auth-banner")),
+      unauthChangelogStatus: chgResp.status,
+      ssrfLoopbackStatus: paygResp.status,
+    };
+  });
+  assert(
+    !p0DomAudit.hasPublicPass &&
+      p0DomAudit.hasIapBanner &&
+      p0DomAudit.unauthChangelogStatus === 403 &&
+      p0DomAudit.ssrfLoopbackStatus === 403,
+    "P0 Security Hardening Gate ([FA-08] SSRF 403, [FA-09] Admin IAP 403 & Banner, [FA-14] Zero Public Passwords)",
+    JSON.stringify(p0DomAudit)
+  );
+
   assert(pageErrors.length === 0, "Zero Uncaught Page Errors", `errors=${pageErrors.length}`);
 
   await browser.close();

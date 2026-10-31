@@ -31,6 +31,7 @@ import hmac
 import json
 import os
 from pathlib import Path
+import secrets
 import subprocess
 import time
 import urllib.error
@@ -53,7 +54,23 @@ LIVE_KMS_KEY_MAP = {
 
 AWS_LAMBDA_PEER_URL = "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws"
 AWS_AGENTCORE_GW_URL = "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp"
-AWS_SHARED_JWT_SECRET = "merck-a2a-hs256-shared-secret-2026"
+_EPHEMERAL_FALLBACK_JWT_SECRET: Optional[str] = None
+
+
+def get_aws_shared_jwt_secret() -> str:
+    """Resolves HS256 peer JWT secret from env or GCP Secret Manager (`aws-cognito-agentcore-config`); zero hardcoded secrets."""
+    global _EPHEMERAL_FALLBACK_JWT_SECRET
+    env_sec = os.environ.get("CYMBAL_AWS_SHARED_JWT_SECRET", "").strip()
+    if env_sec:
+        return env_sec
+    sec_cfg = read_gcp_secret_json("aws-cognito-agentcore-config")
+    if isinstance(sec_cfg, dict):
+        sm_val = str(sec_cfg.get("aws_shared_jwt_secret") or sec_cfg.get("peer_jwt_secret") or "").strip()
+        if sm_val:
+            return sm_val
+    if not _EPHEMERAL_FALLBACK_JWT_SECRET:
+        _EPHEMERAL_FALLBACK_JWT_SECRET = secrets.token_hex(32)
+    return _EPHEMERAL_FALLBACK_JWT_SECRET
 
 _CACHED_TOKEN: Optional[str] = None
 _CACHED_TOKEN_EXPIRES_AT: float = 0.0
@@ -455,12 +472,12 @@ def _mint_aws_peer_hs256_jwt(principal: str = "finvault-admin@cymbal.com") -> st
             {
                 "iss": "cymbal-multi-tenant-verifier",
                 "sub": principal,
-                "aud": "merck-safety-agent",
+                "aud": os.environ.get("CYMBAL_AWS_JWT_AUDIENCE", "cymbal-multi-tenant-agent"),
                 "exp": int(time.time()) + 300,
             }
         ).encode("utf-8")
     )
-    sig = _b64u(hmac.new(AWS_SHARED_JWT_SECRET.encode("utf-8"), f"{hdr}.{pay}".encode("ascii"), hashlib.sha256).digest())
+    sig = _b64u(hmac.new(get_aws_shared_jwt_secret().encode("utf-8"), f"{hdr}.{pay}".encode("ascii"), hashlib.sha256).digest())
     return f"{hdr}.{pay}.{sig}"
 
 
@@ -533,9 +550,7 @@ def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
         tf = {
             "aws_cognito_client_id": os.environ["AWS_COGNITO_CLIENT_ID"],
             "aws_cognito_client_secret": os.environ["AWS_COGNITO_CLIENT_SECRET"],
-            "aws_cognito_token_url": os.environ.get(
-                "AWS_COGNITO_TOKEN_URL", "https://merck-a2a-393036065405.auth.us-east-1.amazoncognito.com/oauth2/token"
-            ),
+            "aws_cognito_token_url": os.environ.get("AWS_COGNITO_TOKEN_URL", "").strip(),
             "aws_cognito_user_pool_id": "us-east-1_vqlzYM74B",
         }
     else:
@@ -555,7 +570,11 @@ def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
             cid = tf["aws_cognito_client_id"]
             csec = tf["aws_cognito_client_secret"]
             basic = base64.b64encode(f"{cid}:{csec}".encode("utf-8")).decode("ascii")
-            form = urllib.parse.urlencode({"grant_type": "client_credentials", "scope": "merck-safety-agent/invoke"}).encode("utf-8")
+            token_params: Dict[str, str] = {"grant_type": "client_credentials"}
+            configured_scope = (os.environ.get("AWS_COGNITO_SCOPE") or str(tf.get("aws_cognito_scope") or "")).strip()
+            if configured_scope:
+                token_params["scope"] = configured_scope
+            form = urllib.parse.urlencode(token_params).encode("utf-8")
             creq = urllib.request.Request(
                 tf["aws_cognito_token_url"],
                 data=form,

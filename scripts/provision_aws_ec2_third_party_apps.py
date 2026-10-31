@@ -16,6 +16,7 @@ import base64
 import datetime as dt
 import hashlib
 import json
+import os
 import sys
 import time
 import urllib.error
@@ -267,7 +268,7 @@ def seed_pure_cymbal_state_on_aws(public_ip: str) -> dict[str, Any]:
         f"http://{public_ip}:3004/api/v1/auth/user/signin",
         "POST",
         {"Content-Type": "application/json"},
-        json.dumps({"email": "sre-lead@finvault.com", "password": "FinVault#2026!"}),
+        json.dumps({"email": "sre-lead@finvault.com", "password": os.environ.get("CYMBAL_SAAS_DEMO_PASSWORD", "").strip()}),
     )
     if st_si == 200:
         tok = json.loads(raw_si.decode("utf-8")).get("token")

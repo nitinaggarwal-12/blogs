@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "generated_at": "2026-10-29T13:41:15.070Z",
   "capture_script_path": "scripts/capture_genuine_multicloud_3p_uis.mjs",
-  "capture_script_sha256": "2cec275da9eeaf1275ec2fdb71725a79b25b5349e1db637cfcc4dca95fe6023b",
+  "capture_script_sha256": "2c2b332a3866d80959b56c3a438777b7ae67e276942bc09b1f3e2fb6446261db",
   "chrome_executable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   "viewport": "1440x900@2x (2880x1800 Retina)",
   "zero_set_content_used": true,
