@@ -17,6 +17,5 @@ crash.log
 .idea/
 
 # PPTX preview renders (regenerate via scripts/render_pptx_preview.py)
-slides/previews/
 .local_backup/
 
