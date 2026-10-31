@@ -798,13 +798,30 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     def do_HEAD(self) -> None:
         orig_wfile = self.wfile
 
-        class _HeadNullWriter:
-            def write(self, data: bytes) -> int:
-                return len(data)
-            def flush(self) -> None:
-                pass
+        class _HeadWriter:
+            def __init__(self, real_wfile):
+                self.real_wfile = real_wfile
+                self.headers_ended = False
 
-        self.wfile = _HeadNullWriter()  # type: ignore[assignment]
+            def write(self, data: bytes) -> int:
+                if not self.headers_ended:
+                    try:
+                        self.real_wfile.write(data)
+                    except Exception:
+                        pass
+                    if b"\r\n\r\n" in data or data == b"\r\n":
+                        self.headers_ended = True
+                    return len(data)
+                # Drop response body for HEAD requests
+                return len(data)
+
+            def flush(self) -> None:
+                try:
+                    self.real_wfile.flush()
+                except Exception:
+                    pass
+
+        self.wfile = _HeadWriter(orig_wfile)  # type: ignore[assignment]
         try:
             self.do_GET()
         finally:

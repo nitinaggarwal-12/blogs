@@ -2051,7 +2051,89 @@
       justify-content: space-between;
       gap: 10px;
     }
-  </style>
+  
+    /* FAQ Accordion Styles */
+    .faq-container {
+      margin-top: 24px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .faq-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 14px;
+    }
+    .faq-item {
+      border: 1px solid #e2e8f0;
+      border-radius: 9px;
+      margin-bottom: 10px;
+      background: #f8fafc;
+      transition: all 0.2s ease;
+      overflow: hidden;
+    }
+    .faq-item.active {
+      background: #ffffff;
+      border-color: #cbd5e1;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+    }
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #0f172a;
+      background: none;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      gap: 12px;
+    }
+    .faq-question:hover {
+      color: #1a73e8;
+    }
+    .faq-chevron {
+      transition: transform 0.2s ease;
+      font-size: 11px;
+      color: #64748b;
+    }
+    .faq-item.active .faq-chevron {
+      transform: rotate(180deg);
+      color: #1a73e8;
+    }
+    .faq-answer {
+      display: none;
+      padding: 0 16px 14px 16px;
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: #334155;
+      border-top: 1px dashed #e2e8f0;
+      padding-top: 12px;
+    }
+    .faq-item.active .faq-answer {
+      display: block;
+    }
+    .faq-answer p {
+      margin: 0 0 8px 0;
+    }
+    .faq-answer ul {
+      margin: 6px 0 8px 0;
+      padding-left: 20px;
+    }
+    .faq-answer li {
+      margin-bottom: 4px;
+    }
+</style>
 </head>
 <body>
   <script>
@@ -2098,6 +2180,7 @@
       <button class="tab-btn sr-only" id="tab-btn-changelog" onclick="switchTab('changelog', this)">5. Change Log (<span id="nav-changelog-count">3</span>)</button>
     </nav>
     <div class="portal-header-actions">
+      <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; display:inline-flex; align-items:center; gap:4px; font-weight:700;" onclick="scrollToPortalFAQ()" title="Architecture, Brand (Cymbal) &amp; Security FAQ">&#10067; FAQ</button>
       <button type="button" id="header-active-user-btn" class="sim-btn" style="padding:4px 8px; font-size:11px; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;" onclick="toggleCommentsDrawer()" title="Switch active user identity or open Google Docs / Slides Collaborative Comments Drawer">
         <span id="header-user-avatar" class="gdocs-avatar" style="width:17px; height:17px; font-size:9px; background:#1a73e8;">NA</span>
         <span id="header-user-name">Nitin Aggarwal</span>
@@ -3089,6 +3172,104 @@
               <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('docs/cloud_console_verification_receipt.json')">cloud_console_verification_receipt.json</button>
               <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('docs/third_party_5_saas_verification_receipt.json')">third_party_5_saas_verification_receipt.json</button>
               <button type="button" class="ov-chip" onclick="openCodeOrArtifactInWorkbench('data/run_continuity_ledger.json')">run_continuity_ledger.json</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 5: FREQUENTLY ASKED QUESTIONS (ARCHITECTURE, BRAND & SECURITY FAQ) -->
+        <div id="portal-faq-section" class="faq-container">
+          <div class="faq-header">
+            <div>
+              <span class="badge badge-blue" style="font-size:10.5px; padding:2px 8px;">Architecture &amp; Reference Guide</span>
+              <h3 style="margin:4px 0 0 0; font-size:16px; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:8px;">
+                <span>&#10067; Frequently Asked Questions (Cymbal, Tenants &amp; Authentication)</span>
+              </h3>
+              <p style="margin:2px 0 0 0; font-size:12.3px; color:#64748b;">Authoritative answers to core architectural concepts, reference brands, multi-tenancy models, and Google single sign-on.</p>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="sim-btn" style="font-size:11px; padding:4px 9px;" onclick="expandAllFAQs(true)">Expand All</button>
+              <button type="button" class="sim-btn" style="font-size:11px; padding:4px 9px;" onclick="expandAllFAQs(false)">Collapse All</button>
+            </div>
+          </div>
+
+          <!-- FAQ Item 1 -->
+          <div class="faq-item active">
+            <button type="button" class="faq-question" onclick="toggleFAQ(this)">
+              <span>1. What is Cymbal? Why is it used across this architecture?</span>
+              <span class="faq-chevron">&#9660;</span>
+            </button>
+            <div class="faq-answer">
+              <p><strong>Cymbal</strong> is <strong>Google Cloud&#39;s official fictitious demo brand and enterprise holding company</strong> (documented internally at <a href="http://go/cymbalgroup" target="_blank" rel="noopener noreferrer">go/cymbalgroup</a>).</p>
+              <p>Google Cloud created Cymbal so that Solutions Architects, Product Managers, and engineers can build and demonstrate realistic, production-grade enterprise architectures&mdash;such as <strong>multi-tenant AI platforms, cross-cloud federation, and regulatory compliance (PCI-DSS, SOC 2, HIPAA)</strong>&mdash;without using real customer names or exposing confidential customer IP.</p>
+              <p>Cymbal has its own official design system, corporate backstories, compliance requirements, and realistic dataset schemas used across Google Cloud Next keynotes, Architecture Center whitepapers, and Codelabs.</p>
+            </div>
+          </div>
+
+          <!-- FAQ Item 2 -->
+          <div class="faq-item active">
+            <button type="button" class="faq-question" onclick="toggleFAQ(this)">
+              <span>2. Who are FinVault Bank and RetailStream Corp?</span>
+              <span class="faq-chevron">&#9660;</span>
+            </button>
+            <div class="faq-answer">
+              <p>They are the two flagship customer tenants anchoring this multi-tenant Agentic AI platform:</p>
+              <ul>
+                <li><strong>FinVault Bank (<code>finvault</code>)</strong>: The Tier-1 Enterprise tenant representing Cymbal Bank. It exercises sovereign Cloud Run/VPC silos (Pattern B), dedicated Customer-Managed Encryption Keys (CMEK), private agent alpha CLI provisioning, 5-level memory namespace isolation, and strict OCC/FDIC natural language constraints (Semantic NLC).</li>
+                <li><strong>RetailStream Corp (<code>retailstream</code>)</strong>: The Standard pooled tenant representing Cymbal Retail. It exercises cost-effective shared infrastructure (Pattern A), multi-tenant memory isolation, and dynamic tier migration (Pattern C).</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- FAQ Item 3 -->
+          <div class="faq-item">
+            <button type="button" class="faq-question" onclick="toggleFAQ(this)">
+              <span>3. How does Authentication &amp; BeyondCorp / IAP work for Google users?</span>
+              <span class="faq-chevron">&#9660;</span>
+            </button>
+            <div class="faq-answer">
+              <p>The production portal is fronted by Google Cloud Load Balancing with <strong>BeyondCorp Enterprise (<code>login.corp.google.com</code>)</strong> at <code>https://ge-blogs-248990048888.cr.gclb.goog</code>.</p>
+              <p>When any Googler browses on their work laptop, Google SSO transparently authenticates their active <code>@google.com</code> corporate session without requiring manual CLI tokens or VPNs. The embedded reverse-proxy gateway (<code>/api/saas-live/&lt;app&gt;</code>) in <code>server.py</code> automatically handles downstream token injection, cookie rewriting, and upstream container routing.</p>
+            </div>
+          </div>
+
+          <!-- FAQ Item 4 -->
+          <div class="faq-item">
+            <button type="button" class="faq-question" onclick="toggleFAQ(this)">
+              <span>4. What are the 10 Third-Party SaaS Applications featured in the Architecture?</span>
+              <span class="faq-chevron">&#9660;</span>
+            </button>
+            <div class="faq-answer">
+              <p>The platform integrates 10 genuine multi-cloud third-party enterprise tools to verify all 5 hops and cross-cloud MCP federation:</p>
+              <ul>
+                <li><strong>SAAS-01 &bull; Metabase Enterprise BI v0.50.26</strong>: Saved Question #27 liveboard &amp; financial RLS.</li>
+                <li><strong>SAAS-02 &bull; Grafana Enterprise v11.2.0</strong>: SRE operations workbench &amp; HTTP 403 spoof-block attestation panel.</li>
+                <li><strong>SAAS-03 &bull; Redmine ITSM v5.1</strong>: P1 change ticket CHG0049299 &amp; customer case escalation.</li>
+                <li><strong>SAAS-04 &bull; NocoDB EDC / GxP v0.255.2</strong>: Clinical trial electronic data capture &amp; FDA 21 CFR Part 11 audit trails.</li>
+                <li><strong>SAAS-05 &bull; Gitea Enterprise Git v1.22.3</strong>: SRE escalation runbooks &amp; issue #1 single-flight remediation.</li>
+                <li><strong>SAAS-06 &bull; Trino Distributed SQL v440</strong>: Federated query coordinator across cross-cloud data lakes.</li>
+                <li><strong>SAAS-07 &bull; ClickHouse Data Warehouse v24.8</strong>: High-throughput financial ledger SQL console.</li>
+                <li><strong>SAAS-08 &bull; Directus Data Studio v11.1.0</strong>: HCM compensation row-level security &amp; PII redaction.</li>
+                <li><strong>SAAS-09 &bull; Datalust Seq v2024.3</strong>: APM OpenTelemetry span ingestion &amp; prompt injection audit log.</li>
+                <li><strong>SAAS-10 &bull; HashiCorp Vault v1.13.3</strong>: CMEK tenant key namespace &amp; secret revocation kill-switch.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- FAQ Item 5 -->
+          <div class="faq-item">
+            <button type="button" class="faq-question" onclick="toggleFAQ(this)">
+              <span>5. How does Multi-Tenant Cryptographic Isolation Work Across the 5 Hops?</span>
+              <span class="faq-chevron">&#9660;</span>
+            </button>
+            <div class="faq-answer">
+              <p>Every inbound agent request traverses five mandatory cryptographic gates:</p>
+              <ul>
+                <li><strong>Hop 1 (Edge PEP)</strong>: Validates caller DPoP / OIDC tokens, strips forged <code>X-Tenant-ID</code> headers, and binds tenant identity.</li>
+                <li><strong>Hop 2 (Registry PDP)</strong>: Enforces agent visibility filters and validates tool schemas against tenant policy.</li>
+                <li><strong>Hop 3 (Compute FinOps &amp; Bulkheads)</strong>: Clamps token limits per tier and isolates memory banks (L1..L5) into tenant namespaces.</li>
+                <li><strong>Hop 4 (Model Armor Guardrails)</strong>: Rejects prompt injections and blocks Semantic Natural Language Constraint (NLC) violations with HTTP 422.</li>
+                <li><strong>Hop 5 (Data RLS &amp; Telemetry)</strong>: Enforces AlloyDB row-level security, attaches CMEK encryption keys, and records zero-PII OpenTelemetry traces.</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -7081,7 +7262,32 @@
           '<div style="text-align:center;padding:28px;border:1px solid #444746;border-radius:14px;background:#202124;">' +
           '<div style="font-size:18px;font-weight:700;color:#fbbc04;margin-bottom:8px;">☁️ Syncing to Google Workspace (' + targetMode.toUpperCase() + ')...</div>' +
           '<div style="font-size:13px;color:#9aa0a6;">Converting &amp; opening in Google Drive (nitinagga@google.com)...</div>' +
-          '</div></body></html>'
+          '</div><script>
+function toggleFAQ(btn) {
+  var item = btn.closest('.faq-item');
+  if (item) {
+    item.classList.toggle('active');
+  }
+}
+function expandAllFAQs(expand) {
+  var items = document.querySelectorAll('.faq-item');
+  items.forEach(function(item) {
+    if (expand) item.classList.add('active');
+    else item.classList.remove('active');
+  });
+}
+function scrollToPortalFAQ() {
+  switchTab('overview', document.getElementById('tab-btn-overview'));
+  var el = document.getElementById('portal-faq-section');
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    var items = el.querySelectorAll('.faq-item');
+    if (items.length > 0) items[0].classList.add('active');
+    if (items.length > 1) items[1].classList.add('active');
+  }
+}
+</script>
+</body></html>'
         );
       }
       try {
