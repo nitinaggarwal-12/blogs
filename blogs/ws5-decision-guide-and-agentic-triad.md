@@ -15,6 +15,12 @@ status: "PUBLISH_READY"
 
 # Multi-tenant agentic AI system: Executive decision guide and the Multi-Tenant Agentic Triad
 
+> **Companion Cloud Architecture Assets:**
+> - 📊 **Google Slides**: [Open WS5 12-Slide Canonical Deck (Google Slides ↗)](https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit?authuser=nitinagga@google.com) • [Open Master 25-Slide Presentation (Google Slides ↗)](https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/edit?authuser=nitinagga@google.com) • [Download 12-Slide Canonical (.pptx)](../slides/ws5-wrap-up-editable-slides.pptx) • [Download Master 25-Slide (.pptx)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)
+> - 📄 **Google Docs & Word**: [Open WS5 GCP-Branded Google Doc ↗](https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit) • [Download Microsoft Word (.docx)](../docs/word/ws5-decision-guide-and-agentic-triad.docx)
+> - 📐 **Official Draw.io Blueprints**: [Figure 1 Decision Tree & Agentic Triad (.drawio)](../diagrams/ws5-decision-tree-and-agentic-triad.drawio)
+
+
 This document provides an executive decision framework to help you select, combine, and operate the right multi-tenant isolation topology for agentic AI systems on Google Cloud. It synthesizes the architectural patterns, security verification suites, and FinOps benchmarks from across this 5-part series—[Part 1 (Reference Taxonomy & 5-Hop Baseline)](ws1-reference-architecture-taxonomy-and-5hop-baseline.md), [Part 2 (Pattern A Pooled)](ws2-pattern-a-pooled-architecture.md), [Part 3 (Pattern B Sovereign Silos)](ws3-pattern-b-sovereign-silos.md), and [Part 4 (Pattern C Dynamic Hybrid)](ws4-pattern-c-hybrid-dynamic-tiering.md)—into a two-question decision tree and the **Multi-Tenant Agentic Triad**.
 
 This document is intended for CTOs, principal cloud architects, CISOs, and AI product leaders evaluating [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview) and [Agent Development Kit (ADK)](https://google.github.io/adk-docs/) for multi-customer B2B SaaS or internal enterprise platform deployments.
@@ -277,8 +283,13 @@ Open the [Workstream 5 Editable Google Slides Deck (`ws5-wrap-up-editable-slides
   - [Complete End-to-End Workstream & 14-Diagram Master Guide](../docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md)
   - [10 Third-Party SaaS × 3-Pattern Manual Testing Playbook (`10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md)
 - Download or open the editable slide decks:
-  - [Workstream 5 Editable Google Slides Deck (`ws5-wrap-up-editable-slides.pptx`)](../slides/ws5-wrap-up-editable-slides.pptx)
-  - [All-in-One 25-Slide Master Presentation (`geap-multi-tenancy-all-workstreams-editable-slides.pptx`)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)
+  - [Open WS5 12-Slide Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit?authuser=nitinagga@google.com)
+  - [Open Master 25-Slide Presentation in Google Slides ↗](https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/edit?authuser=nitinagga@google.com)
+  - [Open WS5 GCP-Branded Document in Google Docs ↗](https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit)
+  - [Download Workstream 5 Editable Word Document (`.docx`)](../docs/word/ws5-decision-guide-and-agentic-triad.docx)
+  - [Download Workstream 5 Canonical 12-Slide Presentation (`.pptx`)](../slides/ws5-wrap-up-editable-slides.pptx)
+  - [Download Master 25-Slide Presentation (`.pptx`)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)
+  - [Figure 1 Draw.io Source (`ws5-decision-tree-and-agentic-triad.drawio`)](../diagrams/ws5-decision-tree-and-agentic-triad.drawio)
 
 ---
 

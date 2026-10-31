@@ -15,6 +15,12 @@ status: "PUBLISH_READY"
 
 # Multi-tenant agentic AI system: Pattern A high-density pooled architecture
 
+> **Companion Cloud Architecture Assets:**
+> - 📊 **Google Slides**: [Open WS2 34-Slide Upgraded Visual Presentation (Google Slides ↗)](https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit?authuser=nitinagga@google.com) • [Download 34-Slide Upgraded Visual Presentation (.pptx)](../slides/ws2-12slide-visual-deck.pptx) • [Download 12-Slide Canonical (.pptx)](../slides/ws2-pattern-a-pooled-editable-slides.pptx)
+> - 📄 **Google Docs & Word**: [Open WS2 GCP-Branded Google Doc ↗](https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/edit?resourcekey=0-OyYSOmx22u8x4Q1kHunGyQ) • [Download Microsoft Word (.docx)](../docs/word/ws2-pattern-a-pooled-architecture.docx)
+> - 📐 **Official Draw.io Blueprints**: [Figure 1 5-Hop Pooled (.drawio)](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio) • [Figure 2 Breach Defense (.drawio)](../diagrams/ws2-pattern-a-breach-defense-sequence.drawio) • [Figure 3 Demo Sandbox (.drawio)](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.drawio) • [Figure 4 Terraform Resource Graph (.drawio)](../diagrams/ws2-terraform-starter-resource-graph.drawio)
+
+
 This document describes **Pattern A (High-Density Pooled Architecture)** for building and operating a multi-tenant agentic AI system on Google Cloud. In Pattern A, thousands of corporate B2B SaaS customers share a single Google Cloud project (`cymbal-pooled-saas-prod`), a shared [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview) runtime, a shared [Gemini 2.5 Pro](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models) prompt prefix cache (`ContextCacheConfig`), and a shared [AlloyDB for PostgreSQL](https://cloud.google.com/alloydb/docs) cluster while maintaining strict cryptographic tenant isolation.
 
 This document is part 2 of a 5-part series extending the official Google Cloud [Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) reference architecture (introduced in [Part 1: Reference architecture taxonomy and 5-Hop baseline](ws1-reference-architecture-taxonomy-and-5hop-baseline.md)). It is intended for cloud architects, AI platform engineers, and FinOps practitioners who need maximum tenant density and lowest unit cost (`120 RPM Pooled` baseline per tenant).
@@ -468,7 +474,15 @@ The companion 34-slide Workstream 2 presentation deck ([`slides/ws2-pattern-a-po
   - [2.8 90-Minute Hands-On Codelab: Red-Teaming Pooled Multi-Tenant Agents](../workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck/codelab-90min-breach-sim.md)
   - [10 Third-Party SaaS × 3-Pattern Manual Testing Playbook (`10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md)
 - Download or open the editable slides and diagrams:
-  - [Workstream 2 Editable Google Slides Deck (`ws2-pattern-a-pooled-editable-slides.pptx`)](../slides/ws2-pattern-a-pooled-editable-slides.pptx)
+  - [Open WS2 34-Slide Upgraded Visual Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit?authuser=nitinagga@google.com)
+  - [Open WS2 GCP-Branded Document in Google Docs ↗](https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/edit?resourcekey=0-OyYSOmx22u8x4Q1kHunGyQ)
+  - [Download Workstream 2 Editable Word Document (`.docx`)](../docs/word/ws2-pattern-a-pooled-architecture.docx)
+  - [Download Workstream 2 Upgraded 34-Slide Visual Presentation (`.pptx`)](../slides/ws2-12slide-visual-deck.pptx)
+  - [Download Workstream 2 Canonical 12-Slide Presentation (`.pptx`)](../slides/ws2-pattern-a-pooled-editable-slides.pptx)
+  - [Figure 1 Draw.io Source (`ws2-pattern-a-pooled-5hop-architecture.drawio`)](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio)
+  - [Figure 2 Draw.io Source (`ws2-pattern-a-breach-defense-sequence.drawio`)](../diagrams/ws2-pattern-a-breach-defense-sequence.drawio)
+  - [Figure 3 Draw.io Source (`ws2-demo-env-and-3p-auth-sandbox-topology.drawio`)](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.drawio)
+  - [Figure 4 Draw.io Source (`ws2-terraform-starter-resource-graph.drawio`)](../diagrams/ws2-terraform-starter-resource-graph.drawio)
 
 ---
 

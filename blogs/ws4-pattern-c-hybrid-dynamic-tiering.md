@@ -15,6 +15,12 @@ status: "PUBLISH_READY"
 
 # Multi-tenant agentic AI system: Pattern C dynamic hybrid routing and zero-downtime tier upgrades
 
+> **Companion Cloud Architecture Assets:**
+> - 📊 **Google Slides**: [Open WS4 12-Slide Canonical Deck (Google Slides ↗)](https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit?authuser=nitinagga@google.com) • [Download 12-Slide Canonical (.pptx)](../slides/ws4-pattern-c-hybrid-editable-slides.pptx)
+> - 📄 **Google Docs & Word**: [Open WS4 GCP-Branded Google Doc ↗](https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/edit) • [Download Microsoft Word (.docx)](../docs/word/ws4-pattern-c-hybrid-dynamic-tiering.docx)
+> - 📐 **Official Draw.io Blueprints**: [Figure 1 Dynamic Hybrid (.drawio)](../diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio) • [Figure 2 Hub & Spoke (.drawio)](../diagrams/ws4-hub-and-spoke-demo-env-setup-topology.drawio) • [Figure 3 Zero-Downtime Upgrade (.drawio)](../diagrams/ws4-zero-downtime-tier-upgrade-sequence.drawio) • [Figure 4 Terraform Hybrid (.drawio)](../diagrams/ws4-terraform-hybrid-psc-blueprint-resource-graph.drawio)
+
+
 This document describes **Pattern C (Dynamic Hybrid Hub-and-Spoke Architecture)** for building and operating a multi-tiered agentic AI SaaS platform on Google Cloud. Pattern C combines the high-density unit economics of [Pattern A (Pooled Architecture)](ws2-pattern-a-pooled-architecture.md) with the physical project and encryption isolation of [Pattern B (Sovereign Silos)](ws3-pattern-b-sovereign-silos.md) behind a single unified control plane (`cymbal-hybrid-hub-prod`). A tenant-aware [Cloud Run](https://cloud.google.com/run/docs) router directs Standard-tier customers to a shared pooled runtime while bridging regulated Enterprise-tier customers across [Private Service Connect (PSC)](https://cloud.google.com/vpc/docs/private-service-connect) into dedicated CMEK-encrypted spoke projects.
 
 This document is part 4 of a 5-part series extending the official Google Cloud [Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) reference architecture (introduced in [Part 1: Taxonomy & 5-Hop Baseline](ws1-reference-architecture-taxonomy-and-5hop-baseline.md)). It also details a **3-phase zero-downtime tier migration engine** that promotes a live customer from the shared pool into a dedicated PSC spoke with **zero dropped turns**.
@@ -336,7 +342,14 @@ Open the [Workstream 4 Editable Google Slides Deck (`ws4-pattern-c-hybrid-editab
   - [4.8 90-Minute Master Codelab: Multi-Pattern Routing & Live Tier Upgrades](../workstream-4-pattern-c-hybrid/4.8-codelab-and-workshop-deck/codelab-90min-multi-pattern-master-lab.md)
   - [10 Third-Party SaaS × 3-Pattern Manual Testing Playbook (`10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md)
 - Download or open the editable slides:
-  - [Workstream 4 Editable Google Slides Deck (`ws4-pattern-c-hybrid-editable-slides.pptx`)](../slides/ws4-pattern-c-hybrid-editable-slides.pptx)
+  - [Open WS4 12-Slide Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit?authuser=nitinagga@google.com)
+  - [Open WS4 GCP-Branded Document in Google Docs ↗](https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/edit)
+  - [Download Workstream 4 Editable Word Document (`.docx`)](../docs/word/ws4-pattern-c-hybrid-dynamic-tiering.docx)
+  - [Download Workstream 4 Canonical 12-Slide Presentation (`.pptx`)](../slides/ws4-pattern-c-hybrid-editable-slides.pptx)
+  - [Figure 1 Draw.io Source (`ws4-pattern-c-hybrid-psc-and-migration.drawio`)](../diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio)
+  - [Figure 2 Draw.io Source (`ws4-hub-and-spoke-demo-env-setup-topology.drawio`)](../diagrams/ws4-hub-and-spoke-demo-env-setup-topology.drawio)
+  - [Figure 3 Draw.io Source (`ws4-zero-downtime-tier-upgrade-sequence.drawio`)](../diagrams/ws4-zero-downtime-tier-upgrade-sequence.drawio)
+  - [Figure 4 Draw.io Source (`ws4-terraform-hybrid-psc-blueprint-resource-graph.drawio`)](../diagrams/ws4-terraform-hybrid-psc-blueprint-resource-graph.drawio)
 
 ---
 
