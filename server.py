@@ -3066,8 +3066,9 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             self._send_json(500, {"ok": False, "error": str(exc)})
 
 
-def run_server(port: int = 8095) -> None:
-    host = os.environ.get("HOST") or ("0.0.0.0" if os.environ.get("K_SERVICE") else "127.0.0.1")
+def run_server(port: int = 8095, host: Optional[str] = None) -> None:
+    if host is None:
+        host = os.environ.get("HOST", "0.0.0.0")
     ThreadingHTTPServer.allow_reuse_address = True
     server = ThreadingHTTPServer((host, port), PortalRequestHandler)
 
@@ -3095,10 +3096,13 @@ def run_server(port: int = 8095) -> None:
 
 if __name__ == "__main__":
     port_arg = int(os.environ.get("PORT", "8095"))
+    host_arg = os.environ.get("HOST", "0.0.0.0")
     for idx, arg in enumerate(sys.argv[1:]):
         if arg == "--port" and idx + 2 < len(sys.argv):
             try:
                 port_arg = int(sys.argv[idx + 2])
             except ValueError:
                 pass
-    run_server(port=port_arg)
+        if arg == "--host" and idx + 2 < len(sys.argv):
+            host_arg = sys.argv[idx + 2]
+    run_server(port=port_arg, host=host_arg)
