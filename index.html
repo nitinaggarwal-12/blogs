@@ -5351,6 +5351,38 @@
               const diagMatch = resolved.match(/diagrams\/([a-zA-Z0-9_-]+)\.(?:drawio\.png|svg|png)/);
               const diagId = diagMatch ? diagMatch[1] : '';
               if (!diagId) {
+                const slideMatch = resolved.match(/(?:slides\/previews\/)?(ws[1-5])-12slide-visual-deck\/slide_(\d+)\.png/i);
+                const isFigureDiagram = Boolean(slideMatch || /^Figure/i.test(alt) || resolved.includes('/slides/previews/'));
+                if (isFigureDiagram) {
+                  const wsKey = slideMatch ? slideMatch[1].toUpperCase() : (activeHubWsKey || 'WS1');
+                  const slideNum = slideMatch ? parseInt(slideMatch[2], 10) : 1;
+                  const figSlug = slideMatch ? `${wsKey.toLowerCase()}-slide-${slideNum}` : resolved.replace(/[^a-zA-Z0-9_-]/g, '-');
+                  const manifestEntry = (cloudViewerManifest && cloudViewerManifest.slides) ? cloudViewerManifest.slides[wsKey] : null;
+                  const gSlidesEditUrl = manifestEntry && manifestEntry.googleSlidesEditUrl
+                    ? `${manifestEntry.googleSlidesEditUrl}#slide=id.p${slideNum}`
+                    : '';
+                  const gSlidesBtnHtml = gSlidesEditUrl
+                    ? `<a href="${gSlidesEditUrl}" target="_blank" rel="noopener" class="sim-btn primary" style="padding:4px 9px; font-size:11.5px; text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-weight:700;"><span style="background:#fbbc04; color:#000; font-weight:900; border-radius:2px; padding:0 3px; font-size:10px;">S</span> Open with Google Slides &#8599;</a>`
+                    : '';
+                  const slideBadgeHtml = slideMatch
+                    ? `<button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--green); color:var(--ok-text); font-weight:700;" onclick="openCloudViewerModal('${wsKey}', ${slideNum}, 'slides')">&#127916; Slide #${slideNum}</button>`
+                    : '';
+                  return `
+                <div class="gcp-figure-card" id="inline-fig-card-${figSlug}" data-card-id="inline-fig-card-${figSlug}" data-diag-id="${figSlug}" data-card-type="diagram" data-card-title="${escapeHtml(alt)}" data-doc-path="${escapeHtml(docRelPath || '')}" style="padding:12px 14px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border); padding-right:250px;">
+                    <strong class="card-editable-body" id="inline-fig-title-${figSlug}" style="font-size:13.5px; color:var(--heading);">${alt}</strong>
+                    <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                      ${slideBadgeHtml}
+                      ${gSlidesBtnHtml}
+                      <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--blue); color:var(--link); font-weight:700;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', '${escapeHtml(alt)}'); } else { window.open('${resolved}', '_blank'); }">&#128269; High-Res &#8599;</button>
+                    </div>
+                  </div>
+                  <div id="inline-fig-img-wrap-${figSlug}">
+                    <img id="inline-fig-img-${figSlug}" src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:auto; max-width:min(100%, 960px); max-height:720px; height:auto; display:block; margin:0 auto; border-radius:6px; cursor:zoom-in;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', this.alt); } else { window.open(this.src, '_blank'); }" title="Click to open full-resolution diagram in new tab" />
+                  </div>
+                </div>`;
+                }
+
                 const figSlug = resolved.replace(/[^a-zA-Z0-9_-]/g, '-');
                 return `<div class="gcp-figure-card" id="inline-fig-card-${figSlug}" data-card-id="inline-fig-card-${figSlug}" data-card-type="figure" data-no-hover-toolbar="true" data-card-title="${escapeHtml(alt)}" data-doc-path="${escapeHtml(docRelPath || '')}" style="margin:0; padding:8px 10px; display:flex; flex-direction:column; justify-content:space-between;"><img src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:100%; max-width:100%; max-height:330px; height:auto; object-fit:contain; background:#f8fafc; display:block; margin:0 auto; border-radius:6px; border:1px solid #e2e8f0; cursor:zoom-in;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', this.alt); } else { window.open('${resolved}', '_blank'); }" /><div class="gcp-figure-caption" style="font-size:11.5px; line-height:1.35; margin-top:6px; display:flex; justify-content:space-between; align-items:flex-start; gap:8px;"><span class="card-editable-body"><strong>${alt}</strong></span><a href="${resolved}" target="_blank" rel="noopener" style="color:#1a73e8; font-weight:600; text-decoration:none; white-space:nowrap;">&#128269; High-Res &#8599;</a></div></div>`;
               }
@@ -5472,7 +5504,11 @@
 
         function flushFigures() {
           if (!figureCards.length) return;
-          html += `<div class="gcp-proof-gallery-grid" style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; margin:12px 0; align-items:stretch;">${figureCards.join('')}</div>`;
+          if (figureCards.length === 1) {
+            html += `<div style="margin:16px 0;">${figureCards[0]}</div>`;
+          } else {
+            html += `<div class="gcp-proof-gallery-grid" style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; margin:12px 0; align-items:stretch;">${figureCards.join('')}</div>`;
+          }
           figureCards = [];
         }
 
