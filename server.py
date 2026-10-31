@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import contextlib
 import dataclasses
-from datetime import datetime
+from datetime import datetime, timezone
 import importlib
 import importlib.util
 import io
@@ -493,6 +493,8 @@ def execute_all_simulations_bundle(force_refresh: bool = False) -> Dict[str, Any
 
 CHANGELOG_FILE = ROOT_DIR / "docs/portal_change_log.json"
 COMMENTS_FILE = ROOT_DIR / "docs/portal_comments.json"
+CLICKSTREAM_FILE = ROOT_DIR / "docs/portal_clickstream.json"
+MAX_CLICKSTREAM_EVENTS = 2000
 
 
 def _now_iso_and_est() -> tuple[str, str]:
@@ -665,6 +667,135 @@ def save_portal_comments(data: Dict[str, Any]) -> Dict[str, Any]:
         COMMENTS_FILE.parent.mkdir(parents=True, exist_ok=True)
         COMMENTS_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
         return data
+
+
+def load_portal_clickstream() -> Dict[str, Any]:
+    if CLICKSTREAM_FILE.is_file():
+        try:
+            data = json.loads(CLICKSTREAM_FILE.read_text(encoding="utf-8"))
+            if isinstance(data, dict):
+                data.setdefault("schemaVersion", "1.0")
+                data.setdefault("totalEvents", len(data.get("events", [])))
+                data.setdefault("visitors", {})
+                data.setdefault("eventTypeCounts", {})
+                data.setdefault("events", [])
+                return data
+        except Exception:
+            pass
+    iso_str, _ = _now_iso_and_est()
+    return {
+        "schemaVersion": "1.0",
+        "updatedAt": iso_str,
+        "totalEvents": 0,
+        "uniqueVisitorsCount": 0,
+        "visitors": {},
+        "eventTypeCounts": {},
+        "events": [],
+    }
+
+
+def save_portal_clickstream(data: Dict[str, Any]) -> Dict[str, Any]:
+    with _STATE_WRITE_LOCK:
+        iso_str, _ = _now_iso_and_est()
+        data["updatedAt"] = iso_str
+        CLICKSTREAM_FILE.parent.mkdir(parents=True, exist_ok=True)
+        CLICKSTREAM_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
+        return data
+
+
+def record_clickstream_event(
+    *,
+    actor_email: str,
+    actor_name: str,
+    event_type: str,
+    tab: str = "",
+    target_id: str = "",
+    target_title: str = "",
+    session_id: str = "",
+    url: str = "",
+    referrer: str = "",
+    client_ip: str = "",
+    user_agent: str = "",
+    metadata: Dict[str, Any] | None = None,
+) -> Dict[str, Any]:
+    store = load_portal_clickstream()
+    events = store.setdefault("events", [])
+    visitors = store.setdefault("visitors", {})
+    type_counts = store.setdefault("eventTypeCounts", {})
+
+    iso_str, est_str = _now_iso_and_est()
+    ev_id = f"CLK-{datetime.now(timezone.utc).strftime('%Y%m%d')}-{len(events) + 1:05d}"
+
+    clean_email = (actor_email or "anonymous@google.com").strip().lower()
+    clean_type = (event_type or "GENERIC_EVENT").strip().upper()
+
+    # Update visitor tracking
+    if clean_email not in visitors:
+        visitors[clean_email] = {
+            "actorName": actor_name,
+            "firstSeen": iso_str,
+            "firstSeenEst": est_str,
+            "lastSeen": iso_str,
+            "lastSeenEst": est_str,
+            "eventCount": 0,
+            "clientIp": client_ip,
+        }
+    visitors[clean_email]["lastSeen"] = iso_str
+    visitors[clean_email]["lastSeenEst"] = est_str
+    visitors[clean_email]["eventCount"] += 1
+    if client_ip and not visitors[clean_email].get("clientIp"):
+        visitors[clean_email]["clientIp"] = client_ip
+
+    # Update event counts
+    type_counts[clean_type] = type_counts.get(clean_type, 0) + 1
+
+    new_event = {
+        "id": ev_id,
+        "timestamp": iso_str,
+        "timestampEst": est_str,
+        "actorEmail": clean_email,
+        "actorName": actor_name,
+        "eventType": clean_type,
+        "tab": tab or "overview",
+        "targetId": target_id,
+        "targetTitle": target_title,
+        "sessionId": session_id,
+        "url": url,
+        "referrer": referrer,
+        "clientIp": client_ip,
+        "userAgent": user_agent,
+        "metadata": metadata or {},
+    }
+
+    events.insert(0, new_event)
+    if len(events) > MAX_CLICKSTREAM_EVENTS:
+        events = events[:MAX_CLICKSTREAM_EVENTS]
+    store["events"] = events
+    store["totalEvents"] = store.get("totalEvents", 0) + 1
+    store["uniqueVisitorsCount"] = len(visitors)
+
+    save_portal_clickstream(store)
+
+    # Cloud Logging structured JSON emission to stdout
+    log_payload = {
+        "severity": "INFO",
+        "log_type": "CLICKSTREAM_EVENT",
+        "event_id": ev_id,
+        "actor_email": clean_email,
+        "actor_name": actor_name,
+        "client_ip": client_ip,
+        "event_type": clean_type,
+        "tab": tab,
+        "target_id": target_id,
+        "target_title": target_title,
+        "timestamp": iso_str,
+        "session_id": session_id,
+        "metadata": metadata or {},
+    }
+    sys.stdout.write("[GEAP-Clickstream] " + json.dumps(log_payload) + "\n")
+    sys.stdout.flush()
+
+    return new_event
 
 
 
@@ -1309,6 +1440,23 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                     },
                     "entries": entries,
                     "cardOverrides": store.get("cardOverrides", {}),
+                },
+            )
+            return
+
+        if path in ("/api/telemetry/clickstream", "/api/telemetry/summary"):
+            store = load_portal_clickstream()
+            self._send_json(
+                200,
+                {
+                    "ok": True,
+                    "schemaVersion": store.get("schemaVersion", "1.0"),
+                    "updatedAt": store.get("updatedAt", ""),
+                    "totalEvents": store.get("totalEvents", 0),
+                    "uniqueVisitorsCount": store.get("uniqueVisitorsCount", len(store.get("visitors", {}))),
+                    "visitors": store.get("visitors", {}),
+                    "eventTypeCounts": store.get("eventTypeCounts", {}),
+                    "recentEvents": store.get("events", [])[:100],
                 },
             )
             return
@@ -2520,6 +2668,57 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 except Exception as exc:
                     self._send_json(502, {"ok": False, "service_id": service_id, "error": str(exc)})
                     return
+
+            if path == "/api/telemetry/clickstream":
+                actor_name, actor_email, actor_role = self._detect_iap_actor(body)
+                client_ip = (self.headers.get("X-Forwarded-For") or (self.client_address[0] if self.client_address else "")).split(",")[0].strip()
+                user_agent = self.headers.get("User-Agent", "")
+
+                event_type = str(body.get("eventType") or body.get("event") or "PAGE_VIEW").strip().upper()
+                tab = str(body.get("tab") or "").strip()
+                target_id = str(body.get("targetId") or body.get("id") or "").strip()
+                target_title = str(body.get("targetTitle") or body.get("title") or "").strip()
+                session_id = str(body.get("sessionId") or "").strip()
+                url = str(body.get("url") or "").strip()
+                referrer = str(body.get("referrer") or "").strip()
+                metadata = body.get("metadata") if isinstance(body.get("metadata"), dict) else {}
+
+                recorded = record_clickstream_event(
+                    actor_email=actor_email,
+                    actor_name=actor_name,
+                    event_type=event_type,
+                    tab=tab,
+                    target_id=target_id,
+                    target_title=target_title,
+                    session_id=session_id,
+                    url=url,
+                    referrer=referrer,
+                    client_ip=client_ip,
+                    user_agent=user_agent,
+                    metadata=metadata,
+                )
+                self._send_json(200, {"ok": True, "recorded": True, "event": recorded})
+                return
+
+            if path == "/api/telemetry/clickstream/clear":
+                actor_name, actor_email, actor_role = self._detect_iap_actor(body)
+                client_ip = self.client_address[0] if self.client_address else ""
+                if actor_email.startswith("nitinagga") or client_ip in ("127.0.0.1", "localhost", "::1"):
+                    iso_str, _ = _now_iso_and_est()
+                    empty_store = {
+                        "schemaVersion": "1.0",
+                        "updatedAt": iso_str,
+                        "totalEvents": 0,
+                        "uniqueVisitorsCount": 0,
+                        "visitors": {},
+                        "eventTypeCounts": {},
+                        "events": [],
+                    }
+                    save_portal_clickstream(empty_store)
+                    self._send_json(200, {"ok": True, "message": "Clickstream events cleared by admin"})
+                else:
+                    self._send_json(403, {"ok": False, "error": "Unauthorized: admin permissions required to reset clickstream"})
+                return
 
             if path == "/api/feedback/submit":
                 _ufe = load_module_from_path(
