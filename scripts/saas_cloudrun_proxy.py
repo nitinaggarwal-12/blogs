@@ -31,6 +31,7 @@ import urllib.parse
 import urllib.request
 import webbrowser
 from typing import Any
+from pathlib import Path
 
 SERVICES = {
     "directus": {
@@ -118,24 +119,69 @@ SERVICES = {
 _TOKEN_CACHE: dict[str, tuple[str, float]] = {}
 
 
+OIDC_CACHE_FILE = Path("/tmp/cymbal_gcp_cloudrun_oidc_cache.json")
+COMPUTE_SA = "48439189383-compute@developer.gserviceaccount.com"
+
+
 def get_oidc_token(audience: str) -> str:
     now = time.time()
+    # 1. In-memory cache
     cached = _TOKEN_CACHE.get(audience)
     if cached and cached[1] > now:
         return cached[0]
 
-    cmd = ["gcloud", "auth", "print-identity-token", f"--audiences={audience}"]
+    # 2. Check /tmp/cymbal_gcp_cloudrun_oidc_cache.json
+    clean_aud = audience.rstrip("/")
+    if OIDC_CACHE_FILE.is_file():
+        try:
+            cache_data = json.loads(OIDC_CACHE_FILE.read_text(encoding="utf-8"))
+            if float(cache_data.get("expires_at", 0)) > now:
+                tokens = cache_data.get("tokens", {})
+                for k, v in tokens.items():
+                    _TOKEN_CACHE[k.rstrip("/")] = (v, float(cache_data.get("expires_at", now + 1800)))
+                if clean_aud in _TOKEN_CACHE:
+                    return _TOKEN_CACHE[clean_aud][0]
+        except Exception:
+            pass
+
+    # 3. Try gcloud impersonation of compute SA
+    cmd_imp = [
+        "gcloud", "auth", "print-identity-token",
+        f"--impersonate-service-account={COMPUTE_SA}",
+        f"--audiences={clean_aud}",
+    ]
     try:
-        proc = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        proc = subprocess.run(cmd_imp, capture_output=True, text=True)
         tok = proc.stdout.strip()
-        if not tok:
-            raise RuntimeError("Empty token returned from gcloud")
-        _TOKEN_CACHE[audience] = (tok, now + 2400)  # cache 40 min
-        return tok
-    except Exception as e:
-        sys.stderr.write(f"\n[ERROR] Failed to mint OIDC token via gcloud: {e}\n")
-        sys.stderr.write("Make sure 'gcloud auth login' is active in your terminal.\n")
-        raise
+        if proc.returncode == 0 and tok.startswith("ey"):
+            _TOKEN_CACHE[clean_aud] = (tok, now + 2400)
+            return tok
+    except Exception:
+        pass
+
+    # 4. Fallback: Trigger Cloud Run oidc-minter batch job
+    print(f"\n==> [OIDC Minter] Minting audience token via Cloud Run minter job for {clean_aud}...")
+    minter_script = Path(__file__).resolve().parent / "provision_gcp_cloudrun_third_party_apps.py"
+    if minter_script.is_file():
+        try:
+            subprocess.run(
+                [sys.executable, "-B", str(minter_script), "--mint-tokens-only"],
+                check=True,
+            )
+            if OIDC_CACHE_FILE.is_file():
+                cache_data = json.loads(OIDC_CACHE_FILE.read_text(encoding="utf-8"))
+                tokens = cache_data.get("tokens", {})
+                for k, v in tokens.items():
+                    _TOKEN_CACHE[k.rstrip("/")] = (v, float(cache_data.get("expires_at", now + 1800)))
+                if clean_aud in _TOKEN_CACHE:
+                    return _TOKEN_CACHE[clean_aud][0]
+        except Exception as exc:
+            print(f"[WARN] Cloud Run minter job invocation returned: {exc}")
+
+    raise RuntimeError(
+        f"Unable to mint Cloud Run OIDC token for audience: {audience}. "
+        f"Please run 'python3 scripts/provision_gcp_cloudrun_third_party_apps.py --mint-tokens-only' on your Mac."
+    )
 
 
 class CloudRunProxyHandler(http.server.BaseHTTPRequestHandler):

@@ -317,6 +317,21 @@
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit?usp=drivesdk",
       "syncedAt": "2026-10-31T03:55:39Z"
+    },
+    "WS1_EXEC": {
+      "key": "WS1_EXEC",
+      "title": "WS1 (Option 2) \u2014 Executive Multi-Tenant Agentic AI Architecture Presentation (23 Slides)",
+      "pptxPath": "slides/ws1-executive-architecture-23slide-deck.pptx",
+      "sha256": "23d18c0f54d0c8b464560198106c59d715a64e757749e96df63bff48e9f1bb75",
+      "sizeBytes": 4870688,
+      "slideCount": 23,
+      "googleSlidesId": "1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg",
+      "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit?authuser=nitinagga%40google.com",
+      "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/preview",
+      "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/embed?start=false&loop=false&delayms=5000",
+      "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/export/pdf",
+      "webViewLink": "https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit?usp=drivesdk",
+      "syncedAt": "2026-10-31T05:22:00Z"
     }
   },
   "docs": {
