@@ -16,7 +16,7 @@ status: "PUBLISH_READY"
 # Multi-tenant agentic AI system: Executive decision guide and the Multi-Tenant Agentic Triad
 
 > **Companion Cloud Architecture Assets:**
-> - 📊 **Google Slides**: [Open WS5 12-Slide Canonical Deck (Google Slides ↗)](https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit?authuser=nitinagga@google.com) • [Open Master 25-Slide Presentation (Google Slides ↗)](https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/edit?authuser=nitinagga@google.com) • [Download 12-Slide Canonical (.pptx)](../slides/ws5-wrap-up-editable-slides.pptx) • [Download Master 25-Slide (.pptx)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)
+> - 📊 **Google Slides**: [Open WS5 34-Slide Upgraded Visual Presentation (Google Slides ↗)](https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit?authuser=nitinagga@google.com) • [Open Master 25-Slide Presentation (Google Slides ↗)](https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/edit?authuser=nitinagga@google.com) • [Download 34-Slide Upgraded Visual Presentation (.pptx)](../slides/ws5-12slide-visual-deck.pptx) • [Download 12-Slide Canonical (.pptx)](../slides/ws5-wrap-up-editable-slides.pptx) • [Download Master 25-Slide (.pptx)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)
 > - 📄 **Google Docs & Word**: [Open WS5 GCP-Branded Google Doc ↗](https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit) • [Download Microsoft Word (.docx)](../docs/word/ws5-decision-guide-and-agentic-triad.docx)
 > - 📐 **Official Draw.io Blueprints**: [Figure 1 Decision Tree & Agentic Triad (.drawio)](../diagrams/ws5-decision-tree-and-agentic-triad.drawio)
 
@@ -283,7 +283,8 @@ Open the [Workstream 5 Editable Google Slides Deck (`ws5-wrap-up-editable-slides
   - [Complete End-to-End Workstream & 14-Diagram Master Guide](../docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md)
   - [10 Third-Party SaaS × 3-Pattern Manual Testing Playbook (`10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md)
 - Download or open the editable slide decks:
-  - [Open WS5 12-Slide Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit?authuser=nitinagga@google.com)
+  - [Open WS5 34-Slide Upgraded Visual Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit?authuser=nitinagga@google.com)
+  - [Download Workstream 5 Upgraded 34-Slide Visual Presentation (`.pptx`)](../slides/ws5-12slide-visual-deck.pptx)
   - [Open Master 25-Slide Presentation in Google Slides ↗](https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/edit?authuser=nitinagga@google.com)
   - [Open WS5 GCP-Branded Document in Google Docs ↗](https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit)
   - [Download Workstream 5 Editable Word Document (`.docx`)](../docs/word/ws5-decision-guide-and-agentic-triad.docx)

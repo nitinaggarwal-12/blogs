@@ -16,7 +16,7 @@ status: "PUBLISH_READY"
 # Multi-tenant agentic AI system: Pattern C dynamic hybrid routing and zero-downtime tier upgrades
 
 > **Companion Cloud Architecture Assets:**
-> - 📊 **Google Slides**: [Open WS4 12-Slide Canonical Deck (Google Slides ↗)](https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit?authuser=nitinagga@google.com) • [Download 12-Slide Canonical (.pptx)](../slides/ws4-pattern-c-hybrid-editable-slides.pptx)
+> - 📊 **Google Slides**: [Open WS4 34-Slide Upgraded Visual Presentation (Google Slides ↗)](https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit?authuser=nitinagga@google.com) • [Download 34-Slide Upgraded Visual Presentation (.pptx)](../slides/ws4-12slide-visual-deck.pptx) • [Download 12-Slide Canonical (.pptx)](../slides/ws4-pattern-c-hybrid-editable-slides.pptx)
 > - 📄 **Google Docs & Word**: [Open WS4 GCP-Branded Google Doc ↗](https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/edit) • [Download Microsoft Word (.docx)](../docs/word/ws4-pattern-c-hybrid-dynamic-tiering.docx)
 > - 📐 **Official Draw.io Blueprints**: [Figure 1 Dynamic Hybrid (.drawio)](../diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio) • [Figure 2 Hub & Spoke (.drawio)](../diagrams/ws4-hub-and-spoke-demo-env-setup-topology.drawio) • [Figure 3 Zero-Downtime Upgrade (.drawio)](../diagrams/ws4-zero-downtime-tier-upgrade-sequence.drawio) • [Figure 4 Terraform Hybrid (.drawio)](../diagrams/ws4-terraform-hybrid-psc-blueprint-resource-graph.drawio)
 
@@ -342,7 +342,8 @@ Open the [Workstream 4 Editable Google Slides Deck (`ws4-pattern-c-hybrid-editab
   - [4.8 90-Minute Master Codelab: Multi-Pattern Routing & Live Tier Upgrades](../workstream-4-pattern-c-hybrid/4.8-codelab-and-workshop-deck/codelab-90min-multi-pattern-master-lab.md)
   - [10 Third-Party SaaS × 3-Pattern Manual Testing Playbook (`10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md)
 - Download or open the editable slides:
-  - [Open WS4 12-Slide Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit?authuser=nitinagga@google.com)
+  - [Open WS4 34-Slide Upgraded Visual Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit?authuser=nitinagga@google.com)
+  - [Download Workstream 4 Upgraded 34-Slide Visual Presentation (`.pptx`)](../slides/ws4-12slide-visual-deck.pptx)
   - [Open WS4 GCP-Branded Document in Google Docs ↗](https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/edit)
   - [Download Workstream 4 Editable Word Document (`.docx`)](../docs/word/ws4-pattern-c-hybrid-dynamic-tiering.docx)
   - [Download Workstream 4 Canonical 12-Slide Presentation (`.pptx`)](../slides/ws4-pattern-c-hybrid-editable-slides.pptx)
