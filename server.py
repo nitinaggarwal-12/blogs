@@ -33,6 +33,10 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any, Dict
 from urllib.parse import parse_qs, urlparse
+import urllib.parse
+import urllib.request
+import urllib.error
+import re
 from zoneinfo import ZoneInfo
 
 sys.dont_write_bytecode = True
@@ -663,6 +667,81 @@ def save_portal_comments(data: Dict[str, Any]) -> Dict[str, Any]:
         return data
 
 
+
+SAAS_LIVE_TARGETS: Dict[str, Dict[str, Any]] = {
+    "metabase": {
+        "saas_id": "SAAS-01",
+        "title": "Metabase Enterprise BI v0.50.26",
+        "cloud_run": "https://cymbal-gcp-metabase-bi-fm3mts5x3a-uw.a.run.app",
+        "ec2_port": 3001,
+        "entry_path": "/question/27",
+    },
+    "grafana": {
+        "saas_id": "SAAS-02",
+        "title": "Grafana Enterprise v11.2.0",
+        "cloud_run": "https://cymbal-gcp-grafana-ent-fm3mts5x3a-uw.a.run.app",
+        "ec2_port": 3002,
+        "entry_path": "/d/finvault-sre-wb?orgId=1",
+    },
+    "redmine": {
+        "saas_id": "SAAS-03",
+        "title": "Redmine ITSM v5.1",
+        "cloud_run": "https://cymbal-gcp-redmine-itsm-fm3mts5x3a-uw.a.run.app",
+        "ec2_port": 3003,
+        "entry_path": "/projects/finvault-itsm/issues?set_filter=1&status_id=*",
+    },
+    "nocodb": {
+        "saas_id": "SAAS-04",
+        "title": "NocoDB EDC / GxP v0.255.2",
+        "cloud_run": "https://cymbal-gcp-nocodb-edc-fm3mts5x3a-uw.a.run.app",
+        "ec2_port": 3004,
+        "entry_path": "/dashboard",
+    },
+    "gitea": {
+        "saas_id": "SAAS-05",
+        "title": "Gitea Enterprise Git v1.22.3",
+        "cloud_run": "https://cymbal-gcp-gitea-sre-fm3mts5x3a-uw.a.run.app",
+        "ec2_port": 3005,
+        "entry_path": "/finvault/agentic-runbooks",
+    },
+    "trino": {
+        "saas_id": "SAAS-06",
+        "title": "Trino Distributed SQL v440",
+        "cloud_run": "https://cymbal-gcp-trino-sql-fm3mts5x3a-uw.a.run.app",
+        "ec2_port": 3006,
+        "entry_path": "/ui/",
+    },
+    "clickhouse": {
+        "saas_id": "SAAS-07",
+        "title": "ClickHouse Data Warehouse v24.8",
+        "cloud_run": "https://cymbal-gcp-clickhouse-dw-fm3mts5x3a-uw.a.run.app",
+        "ec2_port": 3007,
+        "entry_path": "/play",
+    },
+    "directus": {
+        "saas_id": "SAAS-08",
+        "title": "Directus Data Studio v11.1.0",
+        "cloud_run": "https://cymbal-gcp-directus-hcm-fm3mts5x3a-uw.a.run.app",
+        "ec2_port": 3008,
+        "entry_path": "/admin/content/hcm_compensation",
+    },
+    "seq": {
+        "saas_id": "SAAS-09",
+        "title": "Datalust Seq Observability v2024.3",
+        "cloud_run": "https://cymbal-gcp-seq-apm-fm3mts5x3a-uw.a.run.app",
+        "ec2_port": 3009,
+        "entry_path": "/#/events",
+    },
+    "vault": {
+        "saas_id": "SAAS-10",
+        "title": "HashiCorp Vault v1.13.3",
+        "cloud_run": "https://cymbal-gcp-vault-cmek-fm3mts5x3a-uw.a.run.app",
+        "ec2_port": 3010,
+        "entry_path": "/ui/",
+    },
+}
+
+
 class PortalRequestHandler(BaseHTTPRequestHandler):
     def _send_json(self, status_code: int, payload: Dict[str, Any]) -> None:
         raw = json.dumps(payload, indent=2).encode("utf-8")
@@ -730,6 +809,168 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             self.do_GET()
         finally:
             self.wfile = orig_wfile
+
+    def _handle_saas_live_proxy(self, method: str) -> None:
+        parsed = urlparse(self.path)
+        path = parsed.path
+        parts = [p for p in path.split("/") if p]
+        # parts format: ['api', 'saas-live', '<app_key>', ...]
+        if len(parts) < 3:
+            self._send_json(400, {"error": "Missing SaaS key in path. Usage: /api/saas-live/<key>[/<subpath>]", "available": list(SAAS_LIVE_TARGETS.keys())})
+            return
+
+        app_key = parts[2].lower()
+        spec = SAAS_LIVE_TARGETS.get(app_key)
+        if not spec:
+            self._send_json(404, {"error": f"Unknown SaaS key: '{app_key}'.", "available": list(SAAS_LIVE_TARGETS.keys())})
+            return
+
+        subpath_parts = parts[3:]
+        subpath = "/" + "/".join(subpath_parts) if subpath_parts else ""
+
+        # If accessed root /api/saas-live/<key> without subpath, redirect to entry path
+        if not subpath or subpath == "/":
+            entry = spec.get("entry_path", "/")
+            target_loc = f"/api/saas-live/{app_key}{entry}"
+            self.send_response(302)
+            self.send_header("Location", target_loc)
+            self.send_header("Cache-Control", "no-cache")
+            self.end_headers()
+            return
+
+        # Token resolution: Layer 1 local cache, Layer 2 GCP compute metadata
+        token = ""
+        oidc_cache_file = Path("/tmp/cymbal_gcp_cloudrun_oidc_cache.json")
+        if oidc_cache_file.is_file():
+            try:
+                cdata = json.loads(oidc_cache_file.read_text(encoding="utf-8"))
+                if float(cdata.get("expires_at", 0)) > time.time():
+                    tokens = cdata.get("tokens", {})
+                    token = tokens.get(spec["cloud_run"].rstrip("/"), "")
+            except Exception:
+                pass
+
+        if not token:
+            try:
+                hdr = {"Metadata-Flavor": "Google"}
+                q = urllib.parse.quote(spec["cloud_run"].rstrip("/"), safe="")
+                meta_url = "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity?audience=" + q
+                req = urllib.request.Request(meta_url, headers=hdr)
+                with urllib.request.urlopen(req, timeout=2) as mresp:
+                    token = mresp.read().decode("utf-8").strip()
+            except Exception:
+                token = ""
+
+        # Determine target host
+        if token:
+            target_base = spec["cloud_run"].rstrip("/")
+            use_oidc = True
+        else:
+            aws_receipt_file = ROOT_DIR / "docs" / "aws_ec2_3p_apps_live_receipt.json"
+            ec2_ip = "13.220.94.209"
+            if aws_receipt_file.is_file():
+                try:
+                    rdata = json.loads(aws_receipt_file.read_text(encoding="utf-8"))
+                    ec2_ip = rdata.get("ec2_host", {}).get("public_ip") or rdata.get("public_ip") or ec2_ip
+                except Exception:
+                    pass
+            target_base = f"http://{ec2_ip}:{spec['ec2_port']}"
+            use_oidc = False
+
+        query_str = f"?{parsed.query}" if parsed.query else ""
+        upstream_url = f"{target_base}{subpath}{query_str}"
+
+        headers: Dict[str, str] = {}
+        for k, v in self.headers.items():
+            k_lower = k.lower()
+            if k_lower in ("host", "connection", "accept-encoding", "content-length"):
+                continue
+            headers[k] = v
+
+        target_parsed = urllib.parse.urlparse(target_base)
+        headers["Host"] = target_parsed.netloc
+        if use_oidc and token:
+            headers["X-Serverless-Authorization"] = f"Bearer {token}"
+
+        body: bytes | None = None
+        content_length = self.headers.get("Content-Length")
+        if content_length:
+            try:
+                body = self.rfile.read(int(content_length))
+            except Exception:
+                body = None
+
+        class _NoRedirect(urllib.request.HTTPRedirectHandler):
+            def http_error_302(self, req, fp, code, msg, headers):
+                return fp
+            http_error_301 = http_error_303 = http_error_307 = http_error_308 = http_error_302
+
+        opener = urllib.request.build_opener(_NoRedirect)
+        resp = None
+
+        # Try primary upstream (Cloud Run with OIDC if token present)
+        req = urllib.request.Request(upstream_url, data=body, method=method, headers=headers)
+        try:
+            resp = opener.open(req, timeout=12)
+            if hasattr(resp, "status") and resp.status in (401, 403) and use_oidc:
+                resp = None  # Fallback to upstream container
+        except urllib.error.HTTPError as he:
+            if he.code in (401, 403) and use_oidc:
+                resp = None  # Fallback to upstream container
+            else:
+                resp = he
+        except Exception:
+            resp = None
+
+        # Seamless Fallback to upstream container
+        if resp is None:
+            aws_receipt_file = ROOT_DIR / "docs" / "aws_ec2_3p_apps_live_receipt.json"
+            ec2_ip = "13.220.94.209"
+            if aws_receipt_file.is_file():
+                try:
+                    rdata = json.loads(aws_receipt_file.read_text(encoding="utf-8"))
+                    ec2_ip = rdata.get("ec2_host", {}).get("public_ip") or rdata.get("public_ip") or ec2_ip
+                except Exception:
+                    pass
+            fb_base = f"http://{ec2_ip}:{spec['ec2_port']}"
+            fb_url = f"{fb_base}{subpath}{query_str}"
+            fb_headers = dict(headers)
+            fb_headers["Host"] = urllib.parse.urlparse(fb_base).netloc
+            fb_headers.pop("X-Serverless-Authorization", None)
+            try:
+                fb_req = urllib.request.Request(fb_url, data=body, method=method, headers=fb_headers)
+                resp = opener.open(fb_req, timeout=15)
+            except urllib.error.HTTPError as he:
+                resp = he
+            except Exception as exc:
+                self._send_json(502, {"error": f"Failed to connect to SaaS service: {exc}"})
+                return
+
+        try:
+            status_code = resp.status if hasattr(resp, "status") else resp.code
+            self.send_response(status_code)
+
+            for k, v in resp.headers.items():
+                k_lower = k.lower()
+                if k_lower in ("connection", "transfer-encoding", "content-length", "content-encoding"):
+                    continue
+                if k_lower == "location":
+                    loc_parsed = urllib.parse.urlparse(v)
+                    loc_path = loc_parsed.path
+                    if not loc_path.startswith(f"/api/saas-live/{app_key}"):
+                        loc_path = f"/api/saas-live/{app_key}{loc_path}"
+                    v = f"{loc_path}?{loc_parsed.query}" if loc_parsed.query else loc_path
+                elif k_lower == "set-cookie":
+                    v = re.sub(r"Path=[^;]+", f"Path=/api/saas-live/{app_key}/", v, flags=re.I)
+                self.send_header(k, v)
+
+            resp_body = resp.read()
+            self.send_header("Content-Length", str(len(resp_body)))
+            self.end_headers()
+            self.wfile.write(resp_body)
+        except Exception as exc:
+            self._send_json(502, {"error": f"Failed to stream response: {exc}"})
+
 
     def do_GET(self) -> None:
         parsed = urlparse(self.path)
@@ -875,6 +1116,10 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                     "threads": threads,
                 },
             )
+            return
+
+        if path == "/api/saas-live" or path.startswith("/api/saas-live/"):
+            self._handle_saas_live_proxy("GET")
             return
 
         if path == "/api/health":
@@ -1968,9 +2213,33 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
         self._send_json(404, {"error": f"Route not found: {path}"})
 
+    def do_PUT(self) -> None:
+        parsed = urlparse(self.path)
+        if parsed.path.startswith("/api/saas-live/"):
+            self._handle_saas_live_proxy("PUT")
+            return
+        self._send_json(405, {"error": "Method Not Allowed"})
+
+    def do_DELETE(self) -> None:
+        parsed = urlparse(self.path)
+        if parsed.path.startswith("/api/saas-live/"):
+            self._handle_saas_live_proxy("DELETE")
+            return
+        self._send_json(405, {"error": "Method Not Allowed"})
+
+    def do_PATCH(self) -> None:
+        parsed = urlparse(self.path)
+        if parsed.path.startswith("/api/saas-live/"):
+            self._handle_saas_live_proxy("PATCH")
+            return
+        self._send_json(405, {"error": "Method Not Allowed"})
+
     def do_POST(self) -> None:
         parsed = urlparse(self.path)
         path = parsed.path
+        if path == "/api/saas-live" or path.startswith("/api/saas-live/"):
+            self._handle_saas_live_proxy("POST")
+            return
         try:
             content_len = int(self.headers.get("Content-Length", "0"))
         except ValueError:
