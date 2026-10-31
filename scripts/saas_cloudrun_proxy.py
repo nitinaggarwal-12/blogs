@@ -153,7 +153,17 @@ def get_oidc_token(audience: str) -> str:
         except Exception:
             pass
 
-    # 3. Try gcloud impersonation of compute SA
+    # 3. Try user @google.com identity token (gcloud auth print-identity-token)
+    try:
+        proc = subprocess.run(["gcloud", "auth", "print-identity-token"], capture_output=True, text=True)
+        tok = proc.stdout.strip()
+        if proc.returncode == 0 and tok.startswith("ey"):
+            _TOKEN_CACHE[clean_aud] = (tok, now + 1800)
+            return tok
+    except Exception:
+        pass
+
+    # 3b. Try gcloud impersonation of compute SA
     cmd_imp = [
         "gcloud", "auth", "print-identity-token",
         f"--impersonate-service-account={COMPUTE_SA}",

@@ -861,6 +861,16 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             except Exception:
                 token = ""
 
+        if not token:
+            # Check for active gcloud user @google.com identity token
+            try:
+                proc = subprocess.run(["gcloud", "auth", "print-identity-token"], capture_output=True, text=True, timeout=3)
+                tok = proc.stdout.strip()
+                if proc.returncode == 0 and tok.startswith("ey"):
+                    token = tok
+            except Exception:
+                pass
+
         # Determine target host
         if token:
             target_base = spec["cloud_run"].rstrip("/")
