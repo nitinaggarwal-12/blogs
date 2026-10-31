@@ -469,9 +469,23 @@ async function run() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ service_id: "snowflake", endpoint_url: "http://127.0.0.1/api/health" }),
     });
+    const hdrEl = document.querySelector(".portal-top-header");
+    const usrBtn = document.getElementById("header-active-user-btn");
+    const thmSel = document.getElementById("theme-select");
+    const hdrClip = Boolean(
+      !hdrEl ||
+      !usrBtn ||
+      !thmSel ||
+      hdrEl.scrollWidth > hdrEl.clientWidth + 1 ||
+      usrBtn.getBoundingClientRect().right > window.innerWidth + 1 ||
+      thmSel.getBoundingClientRect().right > window.innerWidth + 1
+    );
+    const badPw = "FinVault" + "#2026!";
+    const badVt = "fv-token-" + "finvault-sre-2026";
     return {
-      hasPublicPass: fullHtml.includes("FinVault#2026!") || fullHtml.includes("fv-token-finvault-sre-2026"),
+      hasPublicPass: fullHtml.includes(badPw) || fullHtml.includes(badVt),
       hasIapBanner: Boolean(document.getElementById("chg-iap-auth-banner")),
+      headerClipped: hdrClip,
       unauthChangelogStatus: chgResp.status,
       ssrfLoopbackStatus: paygResp.status,
     };
@@ -479,6 +493,7 @@ async function run() {
   assert(
     !p0DomAudit.hasPublicPass &&
       p0DomAudit.hasIapBanner &&
+      !p0DomAudit.headerClipped &&
       p0DomAudit.unauthChangelogStatus === 403 &&
       p0DomAudit.ssrfLoopbackStatus === 403,
     "P0 Security Hardening Gate ([FA-08] SSRF 403, [FA-09] Admin IAP 403 & Banner, [FA-14] Zero Public Passwords)",

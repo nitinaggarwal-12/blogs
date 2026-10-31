@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0",
-  "updatedAt": "2026-10-31T15:42:49-04:00",
-  "totalEvents": 14,
+  "updatedAt": "2026-10-31T15:06:56-04:00",
+  "totalEvents": 10,
   "uniqueVisitorsCount": 3,
   "visitors": {
     "nitinagga@google.com": {
@@ -17,103 +17,31 @@
       "actorName": "Alice Googler",
       "firstSeen": "2026-10-31T15:05:20-04:00",
       "firstSeenEst": "2026-10-31 15:05:20 EDT",
-      "lastSeen": "2026-10-31T15:42:49-04:00",
-      "lastSeenEst": "2026-10-31 15:42:49 EDT",
-      "eventCount": 4,
+      "lastSeen": "2026-10-31T15:06:56-04:00",
+      "lastSeenEst": "2026-10-31 15:06:56 EDT",
+      "eventCount": 2,
       "clientIp": "172.253.31.100"
     },
     "bob@google.com": {
       "actorName": "Bob Googler",
       "firstSeen": "2026-10-31T15:05:20-04:00",
       "firstSeenEst": "2026-10-31 15:05:20 EDT",
-      "lastSeen": "2026-10-31T15:42:49-04:00",
-      "lastSeenEst": "2026-10-31 15:42:49 EDT",
-      "eventCount": 4,
+      "lastSeen": "2026-10-31T15:06:56-04:00",
+      "lastSeenEst": "2026-10-31 15:06:56 EDT",
+      "eventCount": 2,
       "clientIp": "172.253.31.101"
     }
   },
   "eventTypeCounts": {
     "PAGE_LOAD": 3,
-    "TAB_SWITCH": 6,
+    "TAB_SWITCH": 4,
     "BLUEPRINT_VIEW": 0,
-    "SIMULATION_RUN": 4,
+    "SIMULATION_RUN": 2,
     "PAYG_ACTION": 0,
     "SLIDE_DOWNLOAD": 0,
     "PAGE_DWELL": 1
   },
   "events": [
-    {
-      "id": "CLK-20261031-00014",
-      "timestamp": "2026-10-31T15:42:49-04:00",
-      "timestampEst": "2026-10-31 15:42:49 EDT",
-      "actorEmail": "bob@google.com",
-      "actorName": "Bob Googler",
-      "eventType": "SIMULATION_RUN",
-      "tab": "simulator",
-      "targetId": "sim3a_prompt_injection",
-      "targetTitle": "Sim 3A: Prompt Injection Defense",
-      "sessionId": "sess-unit-02",
-      "url": "",
-      "referrer": "",
-      "clientIp": "172.253.31.101",
-      "userAgent": "",
-      "metadata": {}
-    },
-    {
-      "id": "CLK-20261031-00013",
-      "timestamp": "2026-10-31T15:42:49-04:00",
-      "timestampEst": "2026-10-31 15:42:49 EDT",
-      "actorEmail": "alice@google.com",
-      "actorName": "Alice Googler",
-      "eventType": "TAB_SWITCH",
-      "tab": "simulator",
-      "targetId": "tab-simulator",
-      "targetTitle": "Switched to tab: simulator",
-      "sessionId": "sess-unit-01",
-      "url": "",
-      "referrer": "",
-      "clientIp": "172.253.31.100",
-      "userAgent": "Mozilla/5.0 Unit-Test",
-      "metadata": {
-        "testKey": "testVal"
-      }
-    },
-    {
-      "id": "CLK-20261031-00012",
-      "timestamp": "2026-10-31T15:41:48-04:00",
-      "timestampEst": "2026-10-31 15:41:48 EDT",
-      "actorEmail": "bob@google.com",
-      "actorName": "Bob Googler",
-      "eventType": "SIMULATION_RUN",
-      "tab": "simulator",
-      "targetId": "sim3a_prompt_injection",
-      "targetTitle": "Sim 3A: Prompt Injection Defense",
-      "sessionId": "sess-unit-02",
-      "url": "",
-      "referrer": "",
-      "clientIp": "172.253.31.101",
-      "userAgent": "",
-      "metadata": {}
-    },
-    {
-      "id": "CLK-20261031-00011",
-      "timestamp": "2026-10-31T15:41:48-04:00",
-      "timestampEst": "2026-10-31 15:41:48 EDT",
-      "actorEmail": "alice@google.com",
-      "actorName": "Alice Googler",
-      "eventType": "TAB_SWITCH",
-      "tab": "simulator",
-      "targetId": "tab-simulator",
-      "targetTitle": "Switched to tab: simulator",
-      "sessionId": "sess-unit-01",
-      "url": "",
-      "referrer": "",
-      "clientIp": "172.253.31.100",
-      "userAgent": "Mozilla/5.0 Unit-Test",
-      "metadata": {
-        "testKey": "testVal"
-      }
-    },
     {
       "id": "CLK-20261031-00010",
       "timestamp": "2026-10-31T15:06:56-04:00",

@@ -81,24 +81,42 @@
       z-index: 100;
     }
     .portal-top-header {
-      padding: 8px 14px;
-      gap: 6px;
+      padding: 6px 10px;
+      gap: 5px;
       flex-wrap: nowrap;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow-x: hidden;
     }
     .portal-primary-tabs {
-      flex-wrap: nowrap;
-      flex-shrink: 0;
+      flex-wrap: nowrap !important;
+      flex: 0 1 auto;
+      min-width: 0;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
+    }
+    .portal-primary-tabs > .tab-btn:not(.sr-only) {
+      padding: 4px 5.5px !important;
+      font-size: 10.75px !important;
+      white-space: nowrap;
     }
     .portal-header-actions {
       display: flex;
-      gap: 6px;
+      gap: 3px;
       align-items: center;
       flex-wrap: nowrap;
       flex-shrink: 0;
+      margin-left: auto;
     }
-    @media (max-width: 1120px) {
+    @media (max-width: 1640px) {
+      .portal-top-header { padding: 6px 8px; gap: 4px; }
+      .portal-top-header h1 { font-size: 12px !important; }
+      #header-brand-5hop { display: none; }
+      #header-telemetry-label, #header-user-name, .theme-picker > span { display: none; }
+      #header-governance-select { width: 138px !important; max-width: 138px !important; font-size: 10.75px !important; padding: 4px 16px 4px 5px !important; }
+      #theme-select { width: 68px !important; max-width: 68px !important; padding: 4px 14px 4px 5px !important; font-size: 10.5px !important; }
+    }
+    @media (max-width: 1360px) {
       .portal-top-header {
         flex-wrap: wrap;
         padding: 8px 12px;
@@ -2162,7 +2180,7 @@
   <header class="portal-top-header">
     <div style="display:flex; align-items:center; gap:6px; flex-shrink:0; cursor:pointer;" onclick="switchTab('overview', document.getElementById('tab-btn-overview'))" title="Return to Executive Landing Page &amp; Content Directory">
       <span class="badge badge-blue" style="white-space:nowrap; padding:2px 7px; font-size:11px;">GCP #78</span>
-      <h1 style="margin:0; font-size:13.5px; font-weight:800; white-space:nowrap;">Multi-Tenancy &amp; 5-Hop Portal</h1>
+      <h1 style="margin:0; font-size:13.5px; font-weight:800; white-space:nowrap;">Multi-Tenancy<span id="header-brand-5hop"> &amp; 5-Hop</span> Portal</h1>
       <span class="sr-only">Multi-Tenancy Architecture, 5-Part Blog Series &amp; Live 5-Hop Execution Portal • Anchor Scenario: Cymbal B2B SaaS Platform (FinVault Bank vs. RetailStream Corp) • Shared Multi-Tenant Pool (Pattern A) • Dedicated Customer Vault (Pattern B) • Smart Hybrid Router &amp; Live Upgrade (Pattern C)</span>
       <span id="api-status-badge" class="sr-only">● Live Python API • Simulations: 20/20 PASS</span>
       <span id="gcp-cloud-badge" class="sr-only">☁️ 14/14 Blueprints • Forensic Audit: 13/13 PASS</span>
@@ -2184,14 +2202,14 @@
     </nav>
     <div class="portal-header-actions">
       <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; display:inline-flex; align-items:center; gap:4px; font-weight:700;" onclick="scrollToPortalFAQ()" title="Architecture, Brand (Cymbal) &amp; Security FAQ">&#10067; FAQ</button>
-      <button type="button" id="header-telemetry-btn" class="sim-btn" style="padding:4px 8px; font-size:11px; display:inline-flex; align-items:center; gap:4px; font-weight:700; color:#1a73e8; border-color:#aecbfa; background:#f8fafd;" onclick="toggleTelemetryDrawer()" title="View Real-Time Googler Access & Clickstream Telemetry">
-        <span style="font-size:12px;">📊</span>
-        <span>Clickstream</span>
+      <button type="button" id="header-telemetry-btn" class="sim-btn" style="padding:4px 7px; font-size:11px; display:inline-flex; align-items:center; gap:3px; font-weight:700; color:#1a73e8; border-color:#aecbfa; background:#f8fafd; white-space:nowrap;" onclick="toggleTelemetryDrawer()" title="View Real-Time Googler Access &amp; Clickstream Telemetry">
+        <span style="font-size:11.5px;">📊</span>
+        <span id="header-telemetry-label">Clickstream</span>
         <span id="header-telemetry-badge" class="badge badge-blue" style="padding:1px 5px; font-size:9.5px;">1</span>
       </button>
-      <button type="button" id="header-active-user-btn" class="sim-btn" style="padding:4px 8px; font-size:11px; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;" onclick="toggleCommentsDrawer()" title="Open Collaborative Review Comments Drawer (Mutations require verified Google Cloud IAP Admin)">
+      <button type="button" id="header-active-user-btn" class="sim-btn" style="padding:4px 7px; font-size:11px; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;" onclick="toggleCommentsDrawer()" title="Unverified Session (Read-Only Viewer) — Open Review Comments Drawer (Admin IAP Required for Mutations)">
         <span id="header-user-avatar" class="gdocs-avatar" style="width:17px; height:17px; font-size:9px; background:#475569;">RV</span>
-        <span id="header-user-name">Read-Only Viewer</span>
+        <span id="header-user-name">Viewer</span>
         <span class="badge badge-amber" style="padding:1px 5px; font-size:9.5px;">&#128172; <span id="nav-comments-count">2</span></span>
       </button>
       <label class="theme-picker" title="Switch portal theme (persists in this browser)" style="display:inline-flex; align-items:center; gap:3px; flex-shrink:0; margin:0;">
@@ -8835,7 +8853,7 @@ Payload: {"Subject": "FinVault Sovereign Escrow Authorization", "Priority": "Hig
       const hdrLabel = document.getElementById('header-active-user-label');
       if (hdrLabel) hdrLabel.textContent = `${portalActiveActor.name} (${portalActiveActor.email.split('@')[0]})`;
       const hdrName = document.getElementById('header-user-name');
-      if (hdrName) hdrName.textContent = portalActiveActor.name;
+      if (hdrName) hdrName.textContent = (!portalActiveActor.iapVerified && portalActiveActor.name === 'Read-Only Viewer') ? 'Viewer' : portalActiveActor.name;
       const hdrAvatar = document.getElementById('header-user-avatar');
       if (hdrAvatar) {
         hdrAvatar.textContent = computeInitials(portalActiveActor.name);
@@ -9363,7 +9381,7 @@ Payload: {"Subject": "FinVault Sovereign Escrow Authorization", "Priority": "Hig
               <div class="gdocs-comment-item">
                 <div class="gdocs-comment-header">
                   <div class="gdocs-user-chip">
-                    <span class="gdocs-avatar" style="background:${escapeHtml(c.avatarColor || '#1a73e8')};">${escapeHtml(c.userInitials || computeInitials(cName))}</span>
+                    <span class="gdocs-avatar" style="background:${/^#[0-9a-fA-F]{3,8}$/.test(String(c.avatarColor || '').trim()) ? String(c.avatarColor).trim() : '#1a73e8'};">${escapeHtml(c.userInitials || computeInitials(cName))}</span>
                     <div>
                       <div class="gdocs-user-name">${escapeHtml(cName)}</div>
                       <div class="gdocs-user-role">${escapeHtml(cRole)}</div>
@@ -9622,7 +9640,7 @@ Payload: {"Subject": "FinVault Sovereign Escrow Authorization", "Priority": "Hig
       const govSel = document.getElementById('header-governance-select');
       if (govSel) {
         const chgOpt = Array.from(govSel.options).find(o => o.value === 'changelog');
-        if (chgOpt) chgOpt.textContent = `📜 Change Log & Diffs (${total})`;
+        if (chgOpt) chgOpt.textContent = `📜 Change Log (${total})`;
       }
       const kpiTotal = document.getElementById('chg-kpi-total');
       if (kpiTotal) kpiTotal.textContent = String(total);
@@ -10539,7 +10557,7 @@ Payload: {"Subject": "FinVault Sovereign Escrow Authorization", "Priority": "Hig
       if (!data) return;
       let text = '';
       if (field === 'user') text = data.username;
-      else if (field === 'pass') text = data.password;
+      else if (field === 'pass' || field === 'secret') text = 'gcloud secrets versions access latest --secret=cymbal-saas-demo-credentials --project=bbar-138hf0';
       else if (field === 'proxy') text = data.proxyCmd;
       if (!text) return;
 
@@ -10655,7 +10673,7 @@ function openGenuineScreenshotLightbox(src, title) {
               <span style="font-size:10.5px; font-weight:700; color:#64748b; text-transform:uppercase; display:block; margin-bottom:2px;">Secret Reference (Secret Manager Only)</span>
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
                 <code id="saas-modal-pass" style="font-size:11.5px; color:#065f46; word-break:break-word; overflow-wrap:anywhere;">[Redacted — Secret Manager: cymbal-saas-demo-credentials]</code>
-                <button type="button" class="sim-btn" style="font-size:10px; padding:2px 6px;" onclick="copySaaSModalField('pass', this)">Copy</button>
+                <button type="button" class="sim-btn" style="font-size:10px; padding:2px 6px; white-space:nowrap;" onclick="copySaaSModalField('secret', this)" title="Copy gcloud Secret Manager fetch command">Copy Cmd</button>
               </div>
             </div>
           </div>
@@ -10669,7 +10687,7 @@ function openGenuineScreenshotLightbox(src, title) {
             <button type="button" class="sim-btn primary" style="font-size:10.5px; padding:3px 8px;" onclick="copySaaSModalField('proxy', this)">📋 Copy CLI Command</button>
           </div>
           <p style="margin:0 0 6px 0; font-size:11.5px; color:#1e3a8a;">Runs a local proxy on your Mac with auto-refreshed Google IAM OIDC tokens, rewrites session cookies, and opens your browser directly to the authenticated page:</p>
-          <pre style="margin:0; background:#1e293b; color:#f8fafc; padding:8px 12px; border-radius:6px; font-size:11.5px; overflow-x:auto;"><code id="saas-modal-proxy-cmd">python3 scripts/saas_cloudrun_proxy.py metabase</code></pre>
+          <pre style="margin:0; background:#ffffff; color:#0f172a; border:1px solid #cbd5e1; padding:8px 12px; border-radius:6px; font-size:11.5px; overflow-x:auto;"><code id="saas-modal-proxy-cmd">python3 scripts/saas_cloudrun_proxy.py metabase</code></pre>
         </div>
 
         <!-- Quick Links & Live Gateway Access -->

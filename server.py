@@ -32,7 +32,10 @@ import time
 from html import escape as html_escape
 from html.parser import HTMLParser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import base64
+import http.client
 import ipaddress
+import ssl
 from pathlib import Path
 import socket
 from typing import Any, Dict
@@ -808,70 +811,60 @@ SAAS_LIVE_TARGETS: Dict[str, Dict[str, Any]] = {
         "saas_id": "SAAS-01",
         "title": "Metabase Enterprise BI v0.50.26",
         "cloud_run": "https://cymbal-gcp-metabase-bi-fm3mts5x3a-uw.a.run.app",
-        "ec2_port": 3001,
         "entry_path": "/question/27",
     },
     "grafana": {
         "saas_id": "SAAS-02",
         "title": "Grafana Enterprise v11.2.0",
         "cloud_run": "https://cymbal-gcp-grafana-ent-fm3mts5x3a-uw.a.run.app",
-        "ec2_port": 3002,
         "entry_path": "/d/finvault-sre-wb?orgId=1",
     },
     "redmine": {
         "saas_id": "SAAS-03",
         "title": "Redmine ITSM v5.1",
         "cloud_run": "https://cymbal-gcp-redmine-itsm-fm3mts5x3a-uw.a.run.app",
-        "ec2_port": 3003,
         "entry_path": "/projects/finvault-itsm/issues?set_filter=1&status_id=*",
     },
     "nocodb": {
         "saas_id": "SAAS-04",
         "title": "NocoDB EDC / GxP v0.255.2",
         "cloud_run": "https://cymbal-gcp-nocodb-edc-fm3mts5x3a-uw.a.run.app",
-        "ec2_port": 3004,
         "entry_path": "/dashboard",
     },
     "gitea": {
         "saas_id": "SAAS-05",
         "title": "Gitea Enterprise Git v1.22.3",
         "cloud_run": "https://cymbal-gcp-gitea-sre-fm3mts5x3a-uw.a.run.app",
-        "ec2_port": 3005,
         "entry_path": "/finvault/agentic-runbooks",
     },
     "trino": {
         "saas_id": "SAAS-06",
         "title": "Trino Distributed SQL v440",
         "cloud_run": "https://cymbal-gcp-trino-sql-fm3mts5x3a-uw.a.run.app",
-        "ec2_port": 3006,
         "entry_path": "/ui/",
     },
     "clickhouse": {
         "saas_id": "SAAS-07",
         "title": "ClickHouse Data Warehouse v24.8",
         "cloud_run": "https://cymbal-gcp-clickhouse-dw-fm3mts5x3a-uw.a.run.app",
-        "ec2_port": 3007,
         "entry_path": "/play",
     },
     "directus": {
         "saas_id": "SAAS-08",
         "title": "Directus Data Studio v11.1.0",
         "cloud_run": "https://cymbal-gcp-directus-hcm-fm3mts5x3a-uw.a.run.app",
-        "ec2_port": 3008,
         "entry_path": "/admin/content/hcm_compensation",
     },
     "seq": {
         "saas_id": "SAAS-09",
         "title": "Datalust Seq Observability v2024.3",
         "cloud_run": "https://cymbal-gcp-seq-apm-fm3mts5x3a-uw.a.run.app",
-        "ec2_port": 3009,
         "entry_path": "/#/events",
     },
     "vault": {
         "saas_id": "SAAS-10",
         "title": "HashiCorp Vault v1.13.3",
         "cloud_run": "https://cymbal-gcp-vault-cmek-fm3mts5x3a-uw.a.run.app",
-        "ec2_port": 3010,
         "entry_path": "/ui/",
     },
 }
@@ -1088,6 +1081,8 @@ BLOCKED_SENSITIVE_SUFFIXES = (
     ".db",
     ".jks",
     ".keystore",
+    ".tfvars",
+    ".tfvars.json",
 )
 BLOCKED_SENSITIVE_FILENAMES = frozenset(
     {
@@ -1130,6 +1125,16 @@ PAYG_ALLOWED_HTTPS_HOST_SUFFIXES = (
     ".my.salesforce.com",
     ".force.com",
 )
+PAYG_SERVICE_VENDOR_DOMAINS: Dict[str, tuple[str, ...]] = {
+    "snowflake": ("app.snowflake.com", ".snowflakecomputing.com"),
+    "datadog": ("api.datadoghq.com", "api.datadoghq.eu", ".datadoghq.com", ".datadoghq.eu"),
+    "databricks": (".databricks.com", ".gcp.databricks.com", ".azuredatabricks.net"),
+    "clickhouse": ("api.clickhouse.cloud", ".clickhouse.cloud"),
+    "mongodb": ("cloud.mongodb.com", ".mongodb.net"),
+    "confluent": ("api.confluent.cloud", ".confluent.cloud"),
+    "servicenow": (".service-now.com",),
+    "salesforce": (".salesforce.com", ".my.salesforce.com", ".force.com"),
+}
 _CGNAT_NET = ipaddress.ip_network("100.64.0.0/10")
 _METADATA_V6_HOSTS = frozenset({"fd00:ec2::254"})
 
@@ -1176,7 +1181,11 @@ def _classify_disallowed_ip(ip_raw: str) -> str | None:
     return None
 
 
-def validate_payg_outbound_url(raw_url: str, resolve_dns: bool = True) -> tuple[bool, int, str, str]:
+def validate_payg_outbound_url(
+    raw_url: str,
+    resolve_dns: bool = True,
+    service_id: str = "",
+) -> tuple[bool, int, str, str]:
     """Fail-closed SSRF guard for `/api/payg-saas/test-connection` ([FA-08])."""
     url = str(raw_url or "").strip()
     if not url or len(url) > 2048 or any(ord(c) < 33 for c in url):
@@ -1251,6 +1260,23 @@ def validate_payg_outbound_url(raw_url: str, resolve_dns: bool = True) -> tuple[
             f"Blocked by SSRF policy [FA-08]: host '{host}' is not in the approved PAYG SaaS HTTPS vendor allowlist.",
         )
 
+    svc_clean = str(service_id or "").strip().lower()
+    if svc_clean:
+        matched_vendor_rules = next(
+            (rules for vk, rules in PAYG_SERVICE_VENDOR_DOMAINS.items() if vk in svc_clean),
+            None,
+        )
+        if matched_vendor_rules and not any(
+            host == r or (r.startswith(".") and host.endswith(r) and len(host) > len(r))
+            for r in matched_vendor_rules
+        ):
+            return (
+                False,
+                403,
+                "SSRF_SERVICE_DOMAIN_MISMATCH",
+                f"Blocked by SSRF policy [FA-08]: host '{host}' does not belong to vendor '{svc_clean}'.",
+            )
+
     if resolve_dns:
         try:
             addr_infos = socket.getaddrinfo(host, port or 443, type=socket.SOCK_STREAM)
@@ -1271,6 +1297,33 @@ def validate_payg_outbound_url(raw_url: str, resolve_dns: bool = True) -> tuple[
                 )
 
     return (True, 200, "ALLOWED", url)
+
+
+class _PinnedHTTPSConnection(http.client.HTTPSConnection):
+    """Dials a validated global IP while keeping TLS SNI & hostname check pinned to self.host ([FA-08] anti-rebinding)."""
+
+    def connect(self) -> None:
+        host_clean = (self.host or "").strip().rstrip(".").lower()
+        port_num = self.port or 443
+        addr_infos = socket.getaddrinfo(host_clean, port_num, type=socket.SOCK_STREAM)
+        if not addr_infos:
+            raise OSError(f"No DNS records for {host_clean}")
+        safe_ip: str | None = None
+        for info in addr_infos:
+            cand_ip = str(info[4][0]).split("%")[0]
+            bad = _classify_disallowed_ip(cand_ip)
+            if bad is not None:
+                raise PermissionError(f"SSRF_PRIVATE_OR_LOOPBACK_IP_BLOCKED: '{host_clean}' resolved to {bad}")
+            if safe_ip is None:
+                safe_ip = cand_ip
+        raw_sock = socket.create_connection((safe_ip, port_num), self.timeout)
+        ctx = self._context if hasattr(self, "_context") else ssl.create_default_context()
+        self.sock = ctx.wrap_socket(raw_sock, server_hostname=host_clean)
+
+
+class _PinnedPaygHTTPSHandler(urllib.request.HTTPSHandler):
+    def https_open(self, req):
+        return self.do_open(_PinnedHTTPSConnection, req, context=self._context)
 
 
 class _SafePaygRedirectHandler(urllib.request.HTTPRedirectHandler):
@@ -1479,7 +1532,34 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         if not raw_hdr:
             return ""
         candidate = raw_hdr.split(":")[-1].strip().lower()
-        if re.fullmatch(r"[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}", candidate):
+        if not re.fullmatch(r"[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}", candidate):
+            return ""
+
+        raw_jwt = str(self.headers.get("X-Goog-IAP-JWT-Assertion") or "").strip()
+        if raw_jwt:
+            try:
+                parts = raw_jwt.split(".")
+                if len(parts) != 3 or not parts[2]:
+                    return ""
+                hdr_obj = json.loads(base64.urlsafe_b64decode(parts[0] + "===").decode("utf-8"))
+                pay_obj = json.loads(base64.urlsafe_b64decode(parts[1] + "===").decode("utf-8"))
+                if (
+                    hdr_obj.get("alg") != "ES256"
+                    or pay_obj.get("iss") != "https://cloud.google.com/iap"
+                    or str(pay_obj.get("email") or "").strip().lower() != candidate
+                    or float(pay_obj.get("exp") or 0) <= time.time()
+                ):
+                    return ""
+                return candidate
+            except Exception:
+                return ""
+
+        # Reject unsigned X-Goog-Authenticated-User-Email outside loopback explicit unit-test harness ([FA-09])
+        remote_ip = str(self.client_address[0] if self.client_address else "")
+        if (
+            os.environ.get("GEAP_TRUST_IAP_EMAIL_HEADER_IN_TESTS") == "1"
+            and remote_ip in ("127.0.0.1", "::1", "::ffff:127.0.0.1")
+        ):
             return candidate
         return ""
 
@@ -1622,15 +1702,20 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             self.send_response(302)
             self.send_header("Location", target_loc)
             self.send_header("Cache-Control", "no-cache")
+            self._send_security_headers()
             self.end_headers()
             return
 
-        # Token resolution: Layer 1 local cache, Layer 2 GCP compute metadata
+        # Token resolution: Layer 1 owner-verified local cache, Layer 2 GCP compute metadata
         token = ""
         oidc_cache_file = Path("/tmp/cymbal_gcp_cloudrun_oidc_cache.json")
-        if oidc_cache_file.is_file():
+        if not oidc_cache_file.is_symlink() and oidc_cache_file.is_file():
             try:
-                cdata = json.loads(oidc_cache_file.read_text(encoding="utf-8"))
+                st = oidc_cache_file.stat()
+                if not hasattr(os, "getuid") or st.st_uid == os.getuid():
+                    cdata = json.loads(oidc_cache_file.read_text(encoding="utf-8"))
+                else:
+                    cdata = {}
                 if float(cdata.get("expires_at", 0)) > time.time():
                     tokens = cdata.get("tokens", {})
                     token = tokens.get(spec["cloud_run"].rstrip("/"), "")
@@ -1742,6 +1827,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
             resp_body = resp.read()
             self.send_header("Content-Length", str(len(resp_body)))
+            self._send_security_headers()
             self.end_headers()
             self.wfile.write(resp_body)
         except Exception as exc:
@@ -1764,6 +1850,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "image/svg+xml; charset=utf-8")
             self.send_header("Cache-Control", "public, max-age=86400")
             self.send_header("Content-Length", str(len(svg_icon)))
+            self._send_security_headers()
             self.end_headers()
             self.wfile.write(svg_icon)
             return
@@ -1776,6 +1863,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 self.send_header("Content-Type", "application/javascript; charset=utf-8")
                 self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
                 self.send_header("Content-Length", str(len(raw_js)))
+                self._send_security_headers()
                 self.end_headers()
                 self.wfile.write(raw_js)
                 return
@@ -1925,6 +2013,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         if path in ("/payg", "/payg-saas"):
             self.send_response(302)
             self.send_header("Location", "/?tab=payg")
+            self._send_security_headers()
             self.end_headers()
             return
 
@@ -1943,12 +2032,12 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                         if fname.startswith("."):
                             continue
                         fpath = Path(dirpath) / fname
-                        if not fpath.is_symlink():
+                        if not fpath.is_symlink() and not is_sensitive_repo_path(fpath):
                             collected.append(str(rel_dir / fname) if str(rel_dir) != "." else fname)
                 all_files = collected
                 globals()["_DELIVERABLE_FILES_CACHE"] = all_files
             iap_name, iap_email, iap_role = self._detect_iap_actor()
-            iap_verified = bool(self.headers.get("X-Goog-Authenticated-User-Email", "").strip())
+            iap_verified = bool(self._extract_verified_iap_email())
             self._send_json(
                 200,
                 {
@@ -2125,6 +2214,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 self.send_header("Content-Length", str(len(pdf_bytes)))
                 self.send_header("Content-Disposition", f'inline; filename="GEAP-{key}-{mode}.pdf"')
                 self.send_header("Cache-Control", "no-store")
+                self._send_security_headers()
                 self.end_headers()
                 self.wfile.write(pdf_bytes)
                 return
@@ -2290,12 +2380,28 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     }}
 
     function sanitizeCellHtml(rawHtml) {{
-      return String(rawHtml || '')
-        .replace(/<(script|iframe|object|embed|svg|meta|link|style)\\b[^>]*>[\\s\\S]*?<\\/\\1>/gi, '')
-        .replace(/<(script|iframe|object|embed|svg|meta|link|style)\\b[^>]*\\/?>/gi, '')
-        .replace(/\\son[a-z]+\\s*=\\s*(['"]).*?\\1/gi, '')
-        .replace(/\\son[a-z]+\\s*=\\s*[^\\s>]+/gi, '')
-        .replace(/(href|src)\\s*=\\s*(['"])\\s*(?:javascript|vbscript|data:text\\/html):[^'"]*\\2/gi, '$1="#"');
+      const ALLOWED = new Set(['div','span','b','strong','i','em','u','br','code','small','sub','sup','p','ul','ol','li','font']);
+      const parser = new DOMParser();
+      const doc = parser.parseFromString('<body>' + String(rawHtml || '') + '</body>', 'text/html');
+      function clean(node) {{
+        for (const ch of Array.from(node.childNodes)) {{
+          if (ch.nodeType === Node.ELEMENT_NODE) {{
+            const tag = ch.tagName.toLowerCase();
+            if (!ALLOWED.has(tag)) {{ ch.remove(); continue; }}
+            for (const a of Array.from(ch.attributes)) {{
+              const n = a.name.toLowerCase();
+              if (n === 'color' && /^#[0-9a-fA-F]{{3,8}}$/.test(a.value.trim())) continue;
+              if (n === 'class' || n === 'title') continue;
+              ch.removeAttribute(a.name);
+            }}
+            clean(ch);
+          }} else if (ch.nodeType !== Node.TEXT_NODE) {{
+            ch.remove();
+          }}
+        }}
+      }}
+      clean(doc.body);
+      return doc.body.innerHTML;
     }}
 
     function exitInlineStudio() {{
@@ -2787,6 +2893,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.send_header("Content-Length", str(len(data)))
             self.send_header("Cache-Control", "no-store")
+            self._send_security_headers()
             self.end_headers()
             self.wfile.write(data)
             return
@@ -2889,7 +2996,6 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             ".sql": "text/plain; charset=utf-8",
             ".sh": "text/plain; charset=utf-8",
             ".tf": "text/plain; charset=utf-8",
-            ".tfvars": "text/plain; charset=utf-8",
             ".example": "text/plain; charset=utf-8",
             ".yaml": "text/plain; charset=utf-8",
             ".yml": "text/plain; charset=utf-8",
@@ -2935,12 +3041,18 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 from urllib.parse import quote
                 rel_dir = str(static_file.relative_to(ROOT_DIR))
                 children = sorted(
-                    [c for c in static_file.iterdir() if not c.name.startswith(".") and c.name != "__pycache__"],
+                    [
+                        c
+                        for c in static_file.iterdir()
+                        if not c.name.startswith(".")
+                        and c.name != "__pycache__"
+                        and not is_sensitive_repo_path(c)
+                    ],
                     key=lambda p: (not p.is_dir(), p.name.lower()),
                 )
                 rows_html = []
                 code_cards_html = []
-                CODE_PREVIEW_EXTS = {".py", ".tf", ".tfvars", ".example", ".sql", ".yaml", ".yml", ".md"}
+                CODE_PREVIEW_EXTS = {".py", ".tf", ".example", ".sql", ".yaml", ".yml", ".md"}
                 for child in children:
                     c_rel = str(child.relative_to(ROOT_DIR))
                     if child.is_dir():
@@ -3022,6 +3134,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 self.send_header("Content-Type", "text/html; charset=utf-8")
                 self.send_header("Content-Length", str(len(data)))
                 self.send_header("Cache-Control", "no-store")
+                self._send_security_headers()
                 self.end_headers()
                 self.wfile.write(data)
                 return
@@ -3078,7 +3191,9 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                     self._send_json(400, {"ok": False, "status": "MISSING_URL", "http_status": 400, "error": "Missing endpoint_url"})
                     return
                 t_start = time.time()
-                allowed, v_http, v_code, v_detail = validate_payg_outbound_url(endpoint_url, resolve_dns=True)
+                allowed, v_http, v_code, v_detail = validate_payg_outbound_url(
+                    endpoint_url, resolve_dns=True, service_id=service_id
+                )
                 if not allowed:
                     lat_ms = round((time.time() - t_start) * 1000, 1)
                     self._send_json(
@@ -3097,7 +3212,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                     req_hdrs = {"User-Agent": "Cymbal-GEAP-PAYG-Connector/1.0"}
                     if api_token:
                         req_hdrs["Authorization"] = f"Bearer {api_token}"
-                    safe_opener = urllib.request.build_opener(_SafePaygRedirectHandler)
+                    safe_opener = urllib.request.build_opener(_PinnedPaygHTTPSHandler(), _SafePaygRedirectHandler)
                     test_req = urllib.request.Request(v_detail, headers=req_hdrs, method="GET")
                     with safe_opener.open(test_req, timeout=5) as t_resp:
                         st = t_resp.status
@@ -3162,14 +3277,15 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 client_ip = (self.headers.get("X-Forwarded-For") or (self.client_address[0] if self.client_address else "")).split(",")[0].strip()
                 user_agent = self.headers.get("User-Agent", "")
 
-                event_type = str(body.get("eventType") or body.get("event") or "PAGE_VIEW").strip().upper()
-                tab = str(body.get("tab") or "").strip()
-                target_id = str(body.get("targetId") or body.get("id") or "").strip()
-                target_title = str(body.get("targetTitle") or body.get("title") or "").strip()
-                session_id = str(body.get("sessionId") or "").strip()
-                url = str(body.get("url") or "").strip()
-                referrer = str(body.get("referrer") or "").strip()
-                metadata = body.get("metadata") if isinstance(body.get("metadata"), dict) else {}
+                event_type = re.sub(r"[^A-Z0-9_.-]", "", str(body.get("eventType") or body.get("event") or "PAGE_VIEW").strip().upper())[:48] or "PAGE_VIEW"
+                tab = str(body.get("tab") or "").strip()[:64]
+                target_id = str(body.get("targetId") or body.get("id") or "").strip()[:128]
+                target_title = str(body.get("targetTitle") or body.get("title") or "").strip()[:240]
+                session_id = re.sub(r"[^a-zA-Z0-9_.:-]", "", str(body.get("sessionId") or "").strip())[:96]
+                url = str(body.get("url") or "").strip()[:512]
+                referrer = str(body.get("referrer") or "").strip()[:512]
+                raw_meta = body.get("metadata") if isinstance(body.get("metadata"), dict) else {}
+                metadata = {str(mk)[:64]: str(mv)[:256] for mk, mv in list(raw_meta.items())[:16]}
 
                 recorded = record_clickstream_event(
                     actor_email=actor_email,
@@ -3480,18 +3596,19 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             if path == "/api/comments":
                 op = str(body.get("op") or "add_thread").strip().lower()
                 actor_name, actor_email, actor_role = self._detect_iap_actor(body)
-                avatar_color = str(body.get("avatarColor") or "#1a73e8").strip()
+                raw_avatar_color = str(body.get("avatarColor") or "#1a73e8").strip()
+                avatar_color = raw_avatar_color if re.fullmatch(r"#[0-9a-fA-F]{3,8}", raw_avatar_color) else "#1a73e8"
                 iso_str, est_str = _now_iso_and_est()
                 c_store = load_portal_comments()
                 threads = c_store.setdefault("threads", [])
 
                 if op == "add_thread":
-                    card_id = str(body.get("cardId") or "card-general").strip()
-                    card_title = str(body.get("cardTitle") or body.get("sectionTitle") or card_id).strip()
-                    workstream = str(body.get("workstream") or "WS1").strip()
-                    doc_path = str(body.get("docPath") or "").strip()
-                    quoted_text = str(body.get("quotedText") or "").strip()
-                    text = str(body.get("text") or "").strip()
+                    card_id = re.sub(r"[^a-zA-Z0-9_.:/-]", "", str(body.get("cardId") or "card-general").strip())[:128] or "card-general"
+                    card_title = str(body.get("cardTitle") or body.get("sectionTitle") or card_id).strip()[:240]
+                    workstream = re.sub(r"[^a-zA-Z0-9_-]", "", str(body.get("workstream") or "WS1").strip())[:32] or "WS1"
+                    doc_path = str(body.get("docPath") or "").strip()[:240]
+                    quoted_text = str(body.get("quotedText") or "").strip()[:2000]
+                    text = str(body.get("text") or "").strip()[:4000]
                     if not text:
                         self._send_json(400, {"ok": False, "error": "Comment text is required"})
                         return
@@ -3557,8 +3674,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                     return
 
                 if op == "reply":
-                    thread_id = str(body.get("threadId") or "").strip()
-                    text = str(body.get("text") or "").strip()
+                    thread_id = str(body.get("threadId") or "").strip()[:96]
+                    text = str(body.get("text") or "").strip()[:4000]
                     target_t = next((t for t in threads if t.get("threadId") == thread_id), None)
                     if not target_t or not text:
                         self._send_json(400, {"ok": False, "error": "Invalid threadId or empty reply text"})
@@ -3608,7 +3725,19 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                     return
 
                 if op in ("resolve", "reopen"):
-                    thread_id = str(body.get("threadId") or "").strip()
+                    is_admin, verified_email, deny_reason = self._verify_verified_admin_iap()
+                    if not is_admin:
+                        self._send_json(
+                            403,
+                            {
+                                "ok": False,
+                                "status": "ADMIN_IAP_REQUIRED",
+                                "resolvedEmail": verified_email,
+                                "error": deny_reason,
+                            },
+                        )
+                        return
+                    thread_id = str(body.get("threadId") or "").strip()[:96]
                     target_t = next((t for t in threads if t.get("threadId") == thread_id), None)
                     if not target_t:
                         self._send_json(404, {"ok": False, "error": "Comment thread not found"})
@@ -3688,6 +3817,19 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 mode = str(body.get("mode") or "slides").strip().lower()
                 force = bool(body.get("force", False))
                 token_override = str(body.get("accessToken") or "").strip() or None
+                if force or token_override:
+                    is_admin, verified_email, deny_reason = self._verify_verified_admin_iap()
+                    if not is_admin:
+                        self._send_json(
+                            403,
+                            {
+                                "ok": False,
+                                "status": "ADMIN_IAP_REQUIRED",
+                                "resolvedEmail": verified_email,
+                                "error": deny_reason,
+                            },
+                        )
+                        return
                 spec_map = {k: (t, p, m) for k, t, p, m in bridge_mod.WORKSTREAM_DECK_SPECS}
                 default_title, default_pptx, default_md = spec_map.get(
                     key, spec_map["WS1"]
