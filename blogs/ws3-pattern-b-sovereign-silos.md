@@ -16,7 +16,7 @@ status: "PUBLISH_READY"
 # Multi-tenant agentic AI system: Pattern B sovereign silos for regulated workloads
 
 > **Companion Cloud Architecture Assets:**
-> - 📊 **Google Slides**: [Open WS3 12-Slide Canonical Deck (Google Slides ↗)](https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit?authuser=nitinagga@google.com) • [Download 12-Slide Canonical (.pptx)](../slides/ws3-pattern-b-siloed-editable-slides.pptx)
+> - 📊 **Google Slides**: [Open WS3 34-Slide Upgraded Visual Presentation (Google Slides ↗)](https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit?authuser=nitinagga@google.com) • [Download 34-Slide Upgraded Visual Presentation (.pptx)](../slides/ws3-12slide-visual-deck.pptx) • [Download 12-Slide Canonical (.pptx)](../slides/ws3-pattern-b-siloed-editable-slides.pptx)
 > - 📄 **Google Docs & Word**: [Open WS3 GCP-Branded Google Doc ↗](https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/edit?resourcekey=0-KRCBVysg1k7J4IvKwJKuYQ) • [Download Microsoft Word (.docx)](../docs/word/ws3-pattern-b-sovereign-silos.docx)
 > - 📐 **Official Draw.io Blueprints**: [Figure 1 Sovereign Silos (.drawio)](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio) • [Figure 2 Multi-Project CMEK (.drawio)](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio) • [Figure 3 Terraform Silo (.drawio)](../diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio)
 
@@ -311,7 +311,8 @@ The companion 12-slide Workstream 3 presentation deck ([`slides/ws3-pattern-b-si
   - [3.8 90-Minute Codelab: Regulated Sovereign Silos & CMEK Kill-Switch](../workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/codelab-90min-regulated-airgapped.md)
   - [10 Third-Party SaaS × 3-Pattern Manual Testing Playbook (`10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md)
 - Download or open the editable slides:
-  - [Open WS3 12-Slide Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit?authuser=nitinagga@google.com)
+  - [Open WS3 34-Slide Upgraded Visual Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit?authuser=nitinagga@google.com)
+  - [Download Workstream 3 Upgraded 34-Slide Visual Presentation (`.pptx`)](../slides/ws3-12slide-visual-deck.pptx)
   - [Open WS3 GCP-Branded Document in Google Docs ↗](https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/edit?resourcekey=0-KRCBVysg1k7J4IvKwJKuYQ)
   - [Download Workstream 3 Editable Word Document (`.docx`)](../docs/word/ws3-pattern-b-sovereign-silos.docx)
   - [Download Workstream 3 Canonical 12-Slide Presentation (`.pptx`)](../slides/ws3-pattern-b-siloed-editable-slides.pptx)

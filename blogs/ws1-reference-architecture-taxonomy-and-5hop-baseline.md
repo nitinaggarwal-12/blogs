@@ -16,7 +16,7 @@ status: "PUBLISH_READY"
 # Multi-tenant agentic AI system: Reference architecture taxonomy and 5-Hop governance baseline
 
 > **Companion Cloud Architecture Assets:**
-> - 📊 **Google Slides**: [Open WS1 15-Slide Canonical Deck (Google Slides ↗)](https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit?authuser=nitinagga@google.com) • [Download 33-Slide Upgraded Visual Presentation (.pptx)](../slides/ws1-12slide-visual-deck.pptx) • [Download 15-Slide Canonical (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx)
+> - 📊 **Google Slides**: [Open WS1 33-Slide Upgraded Visual Presentation (Google Slides ↗)](https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit?authuser=nitinagga@google.com) • [Download 33-Slide Upgraded Visual Presentation (.pptx)](../slides/ws1-12slide-visual-deck.pptx) • [Download 15-Slide Canonical (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx)
 > - 📄 **Google Docs & Word**: [Open WS1 GCP-Branded Google Doc ↗](https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?resourcekey=0-PgO-X5icAK687_G-_WZFpQ) • [Download Microsoft Word (.docx)](../docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx)
 > - 📐 **Official Draw.io Blueprints**: [Figure 1 Multi-Tenant Taxonomy (.drawio)](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio) • [Figure 2 5-Hop Baseline (.drawio)](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio)
 
@@ -442,7 +442,7 @@ The companion 15-slide Workstream 1 presentation deck ([`slides/ws1-reference-ar
   - [1.4 Early Access Program (EAP) & Product Gap Tracker](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md)
   - [10 Third-Party SaaS × 3-Pattern Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md)
 - Download or open the editable architecture assets for Workstream 1:
-  - [Open WS1 15-Slide Canonical Deck in Google Slides ↗](https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit?authuser=nitinagga@google.com)
+  - [Open WS1 33-Slide Upgraded Visual Presentation in Google Slides ↗](https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit?authuser=nitinagga@google.com)
   - [Open WS1 GCP-Branded Document in Google Docs ↗](https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?resourcekey=0-PgO-X5icAK687_G-_WZFpQ)
   - [Download Workstream 1 Editable Word Document (`.docx`)](../docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx)
   - [Download Workstream 1 Upgraded 33-Slide Visual Presentation (`.pptx`)](../slides/ws1-12slide-visual-deck.pptx)
