@@ -136,7 +136,7 @@
       "script_sha256": "acb278e6dc74742ed304a667557235104d3149ef4db69f6d6795ef1d8551611f",
       "command": "PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/build_gcp_branded_blog_docs.py --refresh-manifest",
       "receipt_path": "slides/cloud_viewer_manifest.json",
-      "receipt_sha256": "87380b6c476f21b40fb9687427b5186019645306c0665420cd077ddcb956d31f",
+      "receipt_sha256": "489e6d5aa2ee3cd8098157348e78cffc5b8961fdeed80baa42b1e9a9318f9998",
       "last_executed_at": "2026-10-30T19:25:28Z",
       "last_exit_code": 0,
       "repeat_in_next_run": true,
