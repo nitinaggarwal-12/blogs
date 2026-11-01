@@ -44,17 +44,8 @@
       --hover-tint: rgba(26,115,232,0.10);
       --on-primary: #ffffff;
     }
-    /* ---------- Themes (select via <html data-theme="…">) ---------- */
-    [data-theme="google-cloud"] {
-      --bg: #ffffff; --panel: #f8f9fa; --panel-alt: #e8f0fe; --border: #dadce0;
-      --text: #202124; --muted: #5f6368; --blue: #1a73e8; --purple: #a142f4; --green: #34a853; --amber: #f9ab00; --red: #ea4335;
-      --header-grad-a: #1a73e8; --header-grad-b: #174ea6; --input-bg: #ffffff; --pre-bg: #202124; --pre-text: #e8eaed;
-      --reader-bg: #ffffff; --heading: #202124; --link: #1557b0; --accent-2: #a142f4; --ok-text: #188038; --warn-text: #7c4d00; --err-text: #c5221f;
-      --quote-text: #174ea6; --code-bg: rgba(26,115,232,0.08); --th-text: #202124; --hover-tint: rgba(26,115,232,0.10);
-    }
-    [data-theme="google-cloud"] header, [data-theme="google-cloud"] header .muted { color: #ffffff; }
-    [data-theme="google-cloud"] header .badge { background: rgba(255,255,255,0.18); color: #ffffff; border-color: rgba(255,255,255,0.55); }
-    [data-theme="google-cloud"] header .theme-picker select { background: #ffffff; color: #202124; border-color: rgba(255,255,255,0.7); }
+    /* ---------- Universal Executive Light Theme Default (Rule 54) ---------- */
+    /* [FA-02, FA-45]: Deleted broken white-on-white 'Google Cloud' theme option; Executive Light is standard. */
     html { transition: background-color .2s ease, color .2s ease; }
     .theme-picker { display:flex; align-items:center; gap:6px; }
     .theme-picker select { width:auto; padding:6px 28px 6px 10px; font-weight:600; cursor:pointer; }
@@ -81,19 +72,25 @@
       z-index: 100;
     }
     .portal-top-header {
-      padding: 6px 10px;
+      padding: 6px 12px;
       gap: 5px;
       flex-wrap: nowrap;
       max-width: 100%;
       box-sizing: border-box;
-      overflow-x: hidden;
+      overflow: visible;
     }
     .portal-primary-tabs {
       flex-wrap: nowrap !important;
-      flex: 0 1 auto;
+      flex: 1 1 auto;
       min-width: 0;
       align-items: center;
       gap: 3px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .portal-primary-tabs::-webkit-scrollbar {
+      display: none;
     }
     .portal-primary-tabs > .tab-btn:not(.sr-only) {
       padding: 4px 5.5px !important;
@@ -107,6 +104,7 @@
       flex-wrap: nowrap;
       flex-shrink: 0;
       margin-left: auto;
+      z-index: 10;
     }
     @media (max-width: 1640px) {
       .portal-top-header { padding: 6px 8px; gap: 4px; }
@@ -130,6 +128,51 @@
         width: 100%;
         flex-wrap: wrap;
         gap: 4px;
+      }
+    }
+    /* [FA-49] Standalone Portal FAQ Modal styles accessible from all tabs */
+    .portal-faq-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10001;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(2px);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .portal-faq-modal.open {
+      display: flex;
+    }
+    .portal-faq-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 16px;
+      max-width: 860px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35);
+      display: flex;
+      flex-direction: column;
+    }
+    /* [FA-04] Tab 4 Mobile Responsive Stacking */
+    @media (max-width: 820px) {
+      .payg-tester-grid, #payg-tester-card .payg-tester-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .payg-compare-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .payg-guidance-grid {
+        grid-template-columns: 1fr !important;
+      }
+      #payg-tester-card {
+        padding: 12px 14px !important;
+      }
+      #tab-payg .card, #tab-payg .ov-hero-card, #payg-before-after-hub {
+        padding: 12px 14px !important;
       }
     }
     #gdocs-comments-drawer:not(.open) { visibility: hidden; pointer-events: none; }
@@ -745,8 +788,7 @@
       border-color: #f59e0b;
       transform: translateY(-1px);
     }
-    [data-theme="light"] .pc-cloud-btn,
-    [data-theme="google-cloud"] .pc-cloud-btn {
+    [data-theme="light"] .pc-cloud-btn {
       background: #fef3c7;
       color: #92400e;
       border-color: #f59e0b;
@@ -2159,7 +2201,7 @@
   <script>
     // Apply the persisted theme before first paint to avoid a flash of the default theme.
     (function () {
-      var THEMES = ['light', 'google-cloud'];
+      var THEMES = ['light'];
       function resolve(t) { return THEMES.indexOf(t) >= 0 ? t : 'light'; }
       var saved = 'light';
       try { saved = resolve(localStorage.getItem('geap-portal-theme') || 'light'); } catch (_) {}
@@ -2201,7 +2243,7 @@
       <button class="tab-btn sr-only" id="tab-btn-changelog" onclick="switchTab('changelog', this)">6. Change Log (<span id="nav-changelog-count">3</span>)</button>
     </nav>
     <div class="portal-header-actions">
-      <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; display:inline-flex; align-items:center; gap:4px; font-weight:700;" onclick="scrollToPortalFAQ()" title="Architecture, Brand (Cymbal) &amp; Security FAQ">&#10067; FAQ</button>
+      <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; display:inline-flex; align-items:center; gap:4px; font-weight:700;" onclick="openPortalFAQ()" title="Architecture, Brand (Cymbal) &amp; Security FAQ">&#10067; FAQ</button>
       <button type="button" id="header-telemetry-btn" class="sim-btn" style="padding:4px 7px; font-size:11px; display:inline-flex; align-items:center; gap:3px; font-weight:700; color:#1a73e8; border-color:#aecbfa; background:#f8fafd; white-space:nowrap;" onclick="toggleTelemetryDrawer()" title="View Real-Time Googler Access &amp; Clickstream Telemetry">
         <span style="font-size:11.5px;">📊</span>
         <span id="header-telemetry-label">Clickstream</span>
@@ -2216,7 +2258,6 @@
         <span style="font-size:12.5px;">&#127912;</span>
         <select id="theme-select" style="width:72px; max-width:74px; padding:4px 18px 4px 6px; font-size:11px;" onchange="setPortalTheme(this.value)" aria-label="Theme">
           <option value="light">Light</option>
-          <option value="google-cloud">Google Cloud</option>
         </select>
       </label>
     </div>
@@ -3202,102 +3243,16 @@
           </div>
         </div>
 
-        <!-- SECTION 5: FREQUENTLY ASKED QUESTIONS (ARCHITECTURE, BRAND & SECURITY FAQ) -->
-        <div id="portal-faq-section" class="faq-container">
-          <div class="faq-header">
+        <!-- SECTION 5: FREQUENTLY ASKED QUESTIONS BANNER [FA-49] -->
+        <div style="margin-bottom:20px; padding:16px 20px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:24px;">❓</span>
             <div>
-              <span class="badge badge-blue" style="font-size:10.5px; padding:2px 8px;">Architecture &amp; Reference Guide</span>
-              <h3 style="margin:4px 0 0 0; font-size:16px; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:8px;">
-                <span>&#10067; Frequently Asked Questions (Cymbal, Tenants &amp; Authentication)</span>
-              </h3>
-              <p style="margin:2px 0 0 0; font-size:12.3px; color:#64748b;">Authoritative answers to core architectural concepts, reference brands, multi-tenancy models, and Google single sign-on.</p>
-            </div>
-            <div style="display:flex; gap:8px;">
-              <button type="button" class="sim-btn" style="font-size:11px; padding:4px 9px;" onclick="expandAllFAQs(true)">Expand All</button>
-              <button type="button" class="sim-btn" style="font-size:11px; padding:4px 9px;" onclick="expandAllFAQs(false)">Collapse All</button>
+              <strong style="font-size:14.5px; color:#0f172a;">Frequently Asked Questions (Cymbal Brand, Tenants &amp; 5-Hop Security)</strong>
+              <div style="font-size:12.5px; color:#64748b;">Authoritative answers to core architectural concepts, reference brands, multi-tenancy models, and Google single sign-on.</div>
             </div>
           </div>
-
-          <!-- FAQ Item 1 -->
-          <div class="faq-item active">
-            <button type="button" class="faq-question" onclick="toggleFAQ(this)">
-              <span>1. What is Cymbal? Why is it used across this architecture?</span>
-              <span class="faq-chevron">&#9660;</span>
-            </button>
-            <div class="faq-answer">
-              <p><strong>Cymbal</strong> is <strong>Google Cloud&#39;s official fictitious demo brand and enterprise holding company</strong> (documented internally at <a href="http://go/cymbalgroup" target="_blank" rel="noopener noreferrer">go/cymbalgroup</a>).</p>
-              <p>Google Cloud created Cymbal so that Solutions Architects, Product Managers, and engineers can build and demonstrate realistic, production-grade enterprise architectures&mdash;such as <strong>multi-tenant AI platforms, cross-cloud federation, and regulatory compliance (PCI-DSS, SOC 2, HIPAA)</strong>&mdash;without using real customer names or exposing confidential customer IP.</p>
-              <p>Cymbal has its own official design system, corporate backstories, compliance requirements, and realistic dataset schemas used across Google Cloud Next keynotes, Architecture Center whitepapers, and Codelabs.</p>
-            </div>
-          </div>
-
-          <!-- FAQ Item 2 -->
-          <div class="faq-item active">
-            <button type="button" class="faq-question" onclick="toggleFAQ(this)">
-              <span>2. Who are FinVault Bank and RetailStream Corp?</span>
-              <span class="faq-chevron">&#9660;</span>
-            </button>
-            <div class="faq-answer">
-              <p>They are the two flagship customer tenants anchoring this multi-tenant Agentic AI platform:</p>
-              <ul>
-                <li><strong>FinVault Bank (<code>finvault</code>)</strong>: The Tier-1 Enterprise tenant representing Cymbal Bank. It exercises sovereign Cloud Run/VPC silos (Pattern B), dedicated Customer-Managed Encryption Keys (CMEK), private agent alpha CLI provisioning, 5-level memory namespace isolation, and strict OCC/FDIC natural language constraints (Semantic NLC).</li>
-                <li><strong>RetailStream Corp (<code>retailstream</code>)</strong>: The Standard pooled tenant representing Cymbal Retail. It exercises cost-effective shared infrastructure (Pattern A), multi-tenant memory isolation, and dynamic tier migration (Pattern C).</li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- FAQ Item 3 -->
-          <div class="faq-item">
-            <button type="button" class="faq-question" onclick="toggleFAQ(this)">
-              <span>3. How does Authentication &amp; BeyondCorp / IAP work for Google users?</span>
-              <span class="faq-chevron">&#9660;</span>
-            </button>
-            <div class="faq-answer">
-              <p>The production portal is fronted by Google Cloud Load Balancing with <strong>BeyondCorp Enterprise (<code>login.corp.google.com</code>)</strong> at <code>https://ge-blogs-248990048888.cr.gclb.goog</code>.</p>
-              <p>When any Googler browses on their work laptop, Google SSO transparently authenticates their active <code>@google.com</code> corporate session without requiring manual CLI tokens or VPNs. The embedded reverse-proxy gateway (<code>/api/saas-live/&lt;app&gt;</code>) in <code>server.py</code> automatically handles downstream token injection, cookie rewriting, and upstream container routing.</p>
-            </div>
-          </div>
-
-          <!-- FAQ Item 4 -->
-          <div class="faq-item">
-            <button type="button" class="faq-question" onclick="toggleFAQ(this)">
-              <span>4. What are the 10 Third-Party SaaS Applications featured in the Architecture?</span>
-              <span class="faq-chevron">&#9660;</span>
-            </button>
-            <div class="faq-answer">
-              <p>The platform integrates 10 genuine multi-cloud third-party enterprise tools to verify all 5 hops and cross-cloud MCP federation:</p>
-              <ul>
-                <li><strong>SAAS-01 &bull; Metabase Enterprise BI v0.50.26</strong>: Saved Question #27 liveboard &amp; financial RLS.</li>
-                <li><strong>SAAS-02 &bull; Grafana Enterprise v11.2.0</strong>: SRE operations workbench &amp; HTTP 403 spoof-block attestation panel.</li>
-                <li><strong>SAAS-03 &bull; Redmine ITSM v5.1</strong>: P1 change ticket CHG0049299 &amp; customer case escalation.</li>
-                <li><strong>SAAS-04 &bull; NocoDB EDC / GxP v0.255.2</strong>: Clinical trial electronic data capture &amp; FDA 21 CFR Part 11 audit trails.</li>
-                <li><strong>SAAS-05 &bull; Gitea Enterprise Git v1.22.3</strong>: SRE escalation runbooks &amp; issue #1 single-flight remediation.</li>
-                <li><strong>SAAS-06 &bull; Trino Distributed SQL v440</strong>: Federated query coordinator across cross-cloud data lakes.</li>
-                <li><strong>SAAS-07 &bull; ClickHouse Data Warehouse v24.8</strong>: High-throughput financial ledger SQL console.</li>
-                <li><strong>SAAS-08 &bull; Directus Data Studio v11.1.0</strong>: HCM compensation row-level security &amp; PII redaction.</li>
-                <li><strong>SAAS-09 &bull; Datalust Seq v2024.3</strong>: APM OpenTelemetry span ingestion &amp; prompt injection audit log.</li>
-                <li><strong>SAAS-10 &bull; HashiCorp Vault v1.13.3</strong>: CMEK tenant key namespace &amp; secret revocation kill-switch.</li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- FAQ Item 5 -->
-          <div class="faq-item">
-            <button type="button" class="faq-question" onclick="toggleFAQ(this)">
-              <span>5. How does Multi-Tenant Cryptographic Isolation Work Across the 5 Hops?</span>
-              <span class="faq-chevron">&#9660;</span>
-            </button>
-            <div class="faq-answer">
-              <p>Every inbound agent request traverses five mandatory cryptographic gates:</p>
-              <ul>
-                <li><strong>Hop 1 (Edge PEP)</strong>: Validates caller DPoP / OIDC tokens, strips forged <code>X-Tenant-ID</code> headers, and binds tenant identity.</li>
-                <li><strong>Hop 2 (Registry PDP)</strong>: Enforces agent visibility filters and validates tool schemas against tenant policy.</li>
-                <li><strong>Hop 3 (Compute FinOps &amp; Bulkheads)</strong>: Clamps token limits per tier and isolates memory banks (L1..L5) into tenant namespaces.</li>
-                <li><strong>Hop 4 (Model Armor Guardrails)</strong>: Rejects prompt injections and blocks Semantic Natural Language Constraint (NLC) violations with HTTP 422.</li>
-                <li><strong>Hop 5 (Data RLS &amp; Telemetry)</strong>: Enforces AlloyDB row-level security, attaches CMEK encryption keys, and records zero-PII OpenTelemetry traces.</li>
-              </ul>
-            </div>
-          </div>
+          <button type="button" class="sim-btn primary" onclick="openPortalFAQ()" style="font-size:12px; padding:6px 14px; font-weight:700;">❓ Open FAQ Modal &rarr;</button>
         </div>
       </article>
     </section>
@@ -5231,7 +5186,7 @@
               <h3 style="margin:0 0 6px 0; font-size:14px; font-weight:700; color:#0369a1;">
                 Enterprise Reference Architecture Strategy: Vendor SaaS Subscriptions vs. Self-Hosted EC2 VMs
               </h3>
-              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); gap:12px; font-size:12px; line-height:1.5; color:#0c4a6e;">
+              <div class="payg-guidance-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); gap:12px; font-size:12px; line-height:1.5; color:#0c4a6e;">
                 <div style="background:#ffffff; padding:10px 14px; border-radius:8px; border:1px solid #e0f2fe;">
                   <strong style="color:#b91c1c;">&#10060; Limitations of Self-Hosting on EC2 VMs:</strong>
                   <ul style="margin:4px 0 0 0; padding-left:18px;">
@@ -5296,7 +5251,7 @@
           </div>
         </div>
 
-        <div style="display:grid; grid-template-columns:220px 1fr 1fr auto; gap:10px; align-items:flex-end;">
+        <div class="payg-tester-grid" style="display:grid; grid-template-columns:220px 1fr 1fr auto; gap:10px; align-items:flex-end;">
           <div>
             <label style="display:block; font-size:11px; font-weight:700; color:#475569; margin-bottom:4px;">Select SaaS Target:</label>
             <select id="payg-tester-service-select" style="width:100%; padding:7px 10px; font-size:12px; border-radius:7px; border:1px solid #cbd5e1; background:#ffffff;" onchange="populatePAYGSampleEndpoint(this.value)">
@@ -5381,7 +5336,7 @@
                 <button type="button" class="sim-btn" style="font-size:11px;" onclick="switchTab('screenshots'); document.querySelector('[data-ba-key=\'clickhouse\']')?.scrollIntoView({behavior:'smooth'});">&#127970; View Tab 3 Reference Container</button>
               </div>
             </div>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
+            <div class="payg-compare-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
               <div style="background:#ffffff; border:1px solid #fecaca; border-radius:10px; padding:14px; font-size:12.5px; line-height:1.5;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                   <span class="badge badge-red" style="font-weight:700;">&#10060; BEFORE: Un-Governed Default Tenant</span>
@@ -5419,7 +5374,7 @@
                 <button type="button" class="sim-btn" style="font-size:11px;" onclick="switchTab('screenshots'); document.querySelector('[data-ba-key=\'seq\']')?.scrollIntoView({behavior:'smooth'});">&#127970; View Tab 3 Reference Container</button>
               </div>
             </div>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
+            <div class="payg-compare-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
               <div style="background:#ffffff; border:1px solid #fecaca; border-radius:10px; padding:14px; font-size:12.5px; line-height:1.5;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                   <span class="badge badge-red" style="font-weight:700;">&#10060; BEFORE: Un-Governed Datadog APM</span>
@@ -5457,7 +5412,7 @@
                 <button type="button" class="sim-btn" style="font-size:11px;" onclick="switchTab('screenshots'); document.querySelector('[data-ba-key=\'trino\']')?.scrollIntoView({behavior:'smooth'});">&#127970; View Tab 3 Reference Container</button>
               </div>
             </div>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
+            <div class="payg-compare-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
               <div style="background:#ffffff; border:1px solid #fecaca; border-radius:10px; padding:14px; font-size:12.5px; line-height:1.5;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                   <span class="badge badge-red" style="font-weight:700;">&#10060; BEFORE: Un-Governed Hive Metastore</span>
@@ -5495,7 +5450,7 @@
                 <button type="button" class="sim-btn" style="font-size:11px;" onclick="switchTab('screenshots'); document.querySelector('[data-ba-key=\'clickhouse\']')?.scrollIntoView({behavior:'smooth'});">&#127970; View Tab 3 Reference Container</button>
               </div>
             </div>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
+            <div class="payg-compare-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
               <div style="background:#ffffff; border:1px solid #fecaca; border-radius:10px; padding:14px; font-size:12.5px; line-height:1.5;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                   <span class="badge badge-red" style="font-weight:700;">&#10060; BEFORE: Un-Governed ClickHouse</span>
@@ -5531,7 +5486,7 @@
                 <button type="button" class="sim-btn" style="font-size:11px;" onclick="switchTab('screenshots'); document.querySelector('[data-ba-key=\'nocodb\']')?.scrollIntoView({behavior:'smooth'});">&#127970; View Tab 3 Reference Container</button>
               </div>
             </div>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
+            <div class="payg-compare-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
               <div style="background:#ffffff; border:1px solid #fecaca; border-radius:10px; padding:14px; font-size:12.5px; line-height:1.5;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                   <span class="badge badge-red" style="font-weight:700;">&#10060; BEFORE: Un-Governed Mongo Atlas</span>
@@ -5567,7 +5522,7 @@
                 <button type="button" class="sim-btn" style="font-size:11px;" onclick="switchTab('screenshots'); document.querySelector('[data-ba-key=\'redmine\']')?.scrollIntoView({behavior:'smooth'});">&#127970; View Tab 3 Reference Container</button>
               </div>
             </div>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
+            <div class="payg-compare-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
               <div style="background:#ffffff; border:1px solid #fecaca; border-radius:10px; padding:14px; font-size:12.5px; line-height:1.5;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                   <span class="badge badge-red" style="font-weight:700;">&#10060; BEFORE: Un-Partitioned Kafka Topics</span>
@@ -5603,7 +5558,7 @@
                 <button type="button" class="sim-btn" style="font-size:11px;" onclick="switchTab('screenshots'); document.querySelector('[data-ba-key=\'redmine\']')?.scrollIntoView({behavior:'smooth'});">&#127970; View Tab 3 Reference Container</button>
               </div>
             </div>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
+            <div class="payg-compare-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
               <div style="background:#ffffff; border:1px solid #fecaca; border-radius:10px; padding:14px; font-size:12.5px; line-height:1.5;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                   <span class="badge badge-red" style="font-weight:700;">&#10060; BEFORE: Un-Governed ITSM Integration</span>
@@ -5639,7 +5594,7 @@
                 <button type="button" class="sim-btn" style="font-size:11px;" onclick="switchTab('screenshots'); document.querySelector('[data-ba-key=\'gitea\']')?.scrollIntoView({behavior:'smooth'});">&#127970; View Tab 3 Reference Container</button>
               </div>
             </div>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
+            <div class="payg-compare-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
               <div style="background:#ffffff; border:1px solid #fecaca; border-radius:10px; padding:14px; font-size:12.5px; line-height:1.5;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                   <span class="badge badge-red" style="font-weight:700;">&#10060; BEFORE: Un-Governed Salesforce REST</span>
@@ -10223,7 +10178,16 @@
       document.getElementById('saas-modal-cloudrun-link').href = data.cloudRunUrl;
       document.getElementById('saas-modal-s3-link').href = data.s3Url;
       const liveGw = document.getElementById('saas-modal-live-gateway-link');
-      if (liveGw) liveGw.href = '/api/saas-live/' + encodeURIComponent(key);
+      if (liveGw) {
+        liveGw.href = '/api/saas-live/' + encodeURIComponent(key);
+        liveGw.setAttribute('data-target-key', key);
+        liveGw.title = 'Open live authenticated ' + data.title + ' session via Portal Gateway';
+        liveGw.onclick = function() {
+          if (window.__trackClickstream) {
+            window.__trackClickstream('GATEWAY_CLICK', 'saas-modal-live-gateway-link', 'Open live ' + data.title, { saasKey: key, targetId: data.targetId });
+          }
+        };
+      }
       window._currentSaaSModalKey = key;
       const modal = document.getElementById('saas-connect-modal');
       if (modal) modal.classList.add('open');
@@ -10312,6 +10276,8 @@ function openGenuineScreenshotLightbox(src, title) {
     document.addEventListener('keydown', (ev) => {
       if (ev.key === 'Escape') {
         window.closeGenuineScreenshotLightbox();
+        window.closeSaaSConnectModal();
+        if (window.closePortalFAQ) window.closePortalFAQ();
       }
     });
   </script>
@@ -10399,6 +10365,109 @@ function openGenuineScreenshotLightbox(src, title) {
       <div style="overflow:auto; background:#f1f5f9; padding:12px; display:flex; justify-content:center; align-items:flex-start;">
         <img id="genuine-ui-lightbox-img" src="screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_01_metabase_v050_bi_rls_ledger.png" alt="Live Multi-Cloud UI Capture" style="max-width:100%; max-height:calc(92vh - 76px); height:auto; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff;" />
       </div>
+    </div>
+  </div>
+
+  <!-- TOP-LEVEL PORTAL FAQ MODAL (ACCESSIBLE FROM EVERY TAB) [FA-49] -->
+  <div id="portal-faq-modal" class="portal-faq-modal" role="dialog" aria-modal="true" aria-label="Frequently Asked Questions" onclick="if (event.target === this) closePortalFAQ();">
+    <div class="portal-faq-card">
+<div id="portal-faq-section" class="faq-container" style="margin:0; border:none; box-shadow:none; padding:20px 24px;">
+          <div class="faq-header">
+            <div>
+              <span class="badge badge-blue" style="font-size:10.5px; padding:2px 8px;">Architecture &amp; Reference Guide</span>
+              <h3 style="margin:4px 0 0 0; font-size:16px; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:8px;">
+                <span>&#10067; Frequently Asked Questions (Cymbal, Tenants &amp; Authentication)</span>
+              </h3>
+              <p style="margin:2px 0 0 0; font-size:12.3px; color:#64748b;">Authoritative answers to core architectural concepts, reference brands, multi-tenancy models, and Google single sign-on.</p>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <button type="button" class="sim-btn" style="font-size:11px; padding:4px 9px;" onclick="expandAllFAQs(true)">Expand All</button>
+              <button type="button" class="sim-btn" style="font-size:11px; padding:4px 9px;" onclick="expandAllFAQs(false)">Collapse All</button>
+              <button type="button" class="sim-btn" onclick="closePortalFAQ()" style="font-size:16px; padding:2px 8px; line-height:1; border-radius:6px; cursor:pointer;" title="Close FAQ Modal (Esc)">&times;</button>
+            </div>
+          </div>
+
+          <!-- FAQ Item 1 -->
+          <div class="faq-item active">
+            <button type="button" class="faq-question" onclick="toggleFAQ(this)">
+              <span>1. What is Cymbal? Why is it used across this architecture?</span>
+              <span class="faq-chevron">&#9660;</span>
+            </button>
+            <div class="faq-answer">
+              <p><strong>Cymbal</strong> is <strong>Google Cloud&#39;s official fictitious demo brand and enterprise holding company</strong> (documented internally at <a href="http://go/cymbalgroup" target="_blank" rel="noopener noreferrer">go/cymbalgroup</a>).</p>
+              <p>Google Cloud created Cymbal so that Solutions Architects, Product Managers, and engineers can build and demonstrate realistic, production-grade enterprise architectures&mdash;such as <strong>multi-tenant AI platforms, cross-cloud federation, and regulatory compliance (PCI-DSS, SOC 2, HIPAA)</strong>&mdash;without using real customer names or exposing confidential customer IP.</p>
+              <p>Cymbal has its own official design system, corporate backstories, compliance requirements, and realistic dataset schemas used across Google Cloud Next keynotes, Architecture Center whitepapers, and Codelabs.</p>
+            </div>
+          </div>
+
+          <!-- FAQ Item 2 -->
+          <div class="faq-item active">
+            <button type="button" class="faq-question" onclick="toggleFAQ(this)">
+              <span>2. Who are FinVault Bank and RetailStream Corp?</span>
+              <span class="faq-chevron">&#9660;</span>
+            </button>
+            <div class="faq-answer">
+              <p>They are the two flagship customer tenants anchoring this multi-tenant Agentic AI platform:</p>
+              <ul>
+                <li><strong>FinVault Bank (<code>finvault</code>)</strong>: The Tier-1 Enterprise tenant representing Cymbal Bank. It exercises sovereign Cloud Run/VPC silos (Pattern B), dedicated Customer-Managed Encryption Keys (CMEK), private agent alpha CLI provisioning, 5-level memory namespace isolation, and strict OCC/FDIC natural language constraints (Semantic NLC).</li>
+                <li><strong>RetailStream Corp (<code>retailstream</code>)</strong>: The Standard pooled tenant representing Cymbal Retail. It exercises cost-effective shared infrastructure (Pattern A), multi-tenant memory isolation, and dynamic tier migration (Pattern C).</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- FAQ Item 3 -->
+          <div class="faq-item">
+            <button type="button" class="faq-question" onclick="toggleFAQ(this)">
+              <span>3. How does Authentication &amp; BeyondCorp / IAP work for Google users?</span>
+              <span class="faq-chevron">&#9660;</span>
+            </button>
+            <div class="faq-answer">
+              <p>The production portal is fronted by Google Cloud Load Balancing with <strong>BeyondCorp Enterprise (<code>login.corp.google.com</code>)</strong> at <code>https://ge-blogs-248990048888.cr.gclb.goog</code>.</p>
+              <p>When any Googler browses on their work laptop, Google SSO transparently authenticates their active <code>@google.com</code> corporate session without requiring manual CLI tokens or VPNs. The embedded reverse-proxy gateway (<code>/api/saas-live/&lt;app&gt;</code>) in <code>server.py</code> automatically handles downstream token injection, cookie rewriting, and upstream container routing.</p>
+            </div>
+          </div>
+
+          <!-- FAQ Item 4 -->
+          <div class="faq-item">
+            <button type="button" class="faq-question" onclick="toggleFAQ(this)">
+              <span>4. What are the 10 Third-Party SaaS Applications featured in the Architecture?</span>
+              <span class="faq-chevron">&#9660;</span>
+            </button>
+            <div class="faq-answer">
+              <p>The platform integrates 10 genuine multi-cloud third-party enterprise tools to verify all 5 hops and cross-cloud MCP federation:</p>
+              <ul>
+                <li><strong>SAAS-01 &bull; Metabase Enterprise BI v0.50.26</strong>: Saved Question #27 liveboard &amp; financial RLS.</li>
+                <li><strong>SAAS-02 &bull; Grafana Enterprise v11.2.0</strong>: SRE operations workbench &amp; HTTP 403 spoof-block attestation panel.</li>
+                <li><strong>SAAS-03 &bull; Redmine ITSM v5.1</strong>: P1 change ticket CHG0049299 &amp; customer case escalation.</li>
+                <li><strong>SAAS-04 &bull; NocoDB EDC / GxP v0.255.2</strong>: Clinical trial electronic data capture &amp; FDA 21 CFR Part 11 audit trails.</li>
+                <li><strong>SAAS-05 &bull; Gitea Enterprise Git v1.22.3</strong>: SRE escalation runbooks &amp; issue #1 single-flight remediation.</li>
+                <li><strong>SAAS-06 &bull; Trino Distributed SQL v440</strong>: Federated query coordinator across cross-cloud data lakes.</li>
+                <li><strong>SAAS-07 &bull; ClickHouse Data Warehouse v24.8</strong>: High-throughput financial ledger SQL console.</li>
+                <li><strong>SAAS-08 &bull; Directus Data Studio v11.1.0</strong>: HCM compensation row-level security &amp; PII redaction.</li>
+                <li><strong>SAAS-09 &bull; Datalust Seq v2024.3</strong>: APM OpenTelemetry span ingestion &amp; prompt injection audit log.</li>
+                <li><strong>SAAS-10 &bull; HashiCorp Vault v1.13.3</strong>: CMEK tenant key namespace &amp; secret revocation kill-switch.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- FAQ Item 5 -->
+          <div class="faq-item">
+            <button type="button" class="faq-question" onclick="toggleFAQ(this)">
+              <span>5. How does Multi-Tenant Cryptographic Isolation Work Across the 5 Hops?</span>
+              <span class="faq-chevron">&#9660;</span>
+            </button>
+            <div class="faq-answer">
+              <p>Every inbound agent request traverses five mandatory cryptographic gates:</p>
+              <ul>
+                <li><strong>Hop 1 (Edge PEP)</strong>: Validates caller DPoP / OIDC tokens, strips forged <code>X-Tenant-ID</code> headers, and binds tenant identity.</li>
+                <li><strong>Hop 2 (Registry PDP)</strong>: Enforces agent visibility filters and validates tool schemas against tenant policy.</li>
+                <li><strong>Hop 3 (Compute FinOps &amp; Bulkheads)</strong>: Clamps token limits per tier and isolates memory banks (L1..L5) into tenant namespaces.</li>
+                <li><strong>Hop 4 (Model Armor Guardrails)</strong>: Rejects prompt injections and blocks Semantic Natural Language Constraint (NLC) violations with HTTP 422.</li>
+                <li><strong>Hop 5 (Data RLS &amp; Telemetry)</strong>: Enforces AlloyDB row-level security, attaches CMEK encryption keys, and records zero-PII OpenTelemetry traces.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
     </div>
   </div>
 
@@ -10507,16 +10576,23 @@ function openGenuineScreenshotLightbox(src, title) {
         else item.classList.remove('active');
       });
     }
-    function scrollToPortalFAQ() {
-      switchTab('overview', document.getElementById('tab-btn-overview'));
-      var el = document.getElementById('portal-faq-section');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        var items = el.querySelectorAll('.faq-item');
-        if (items.length > 0) items[0].classList.add('active');
-        if (items.length > 1) items[1].classList.add('active');
+    window.openPortalFAQ = function openPortalFAQ() {
+      const modal = document.getElementById('portal-faq-modal');
+      if (modal) {
+        modal.classList.add('open');
+        const items = modal.querySelectorAll('.faq-item');
+        if (items.length > 0 && !items[0].classList.contains('active')) items[0].classList.add('active');
+        if (items.length > 1 && !items[1].classList.contains('active')) items[1].classList.add('active');
+        if (window.__trackClickstream) {
+          window.__trackClickstream('FAQ_OPEN', 'portal-faq-modal', 'Opened Frequently Asked Questions Modal');
+        }
       }
-    }
+    };
+    window.closePortalFAQ = function closePortalFAQ() {
+      const modal = document.getElementById('portal-faq-modal');
+      if (modal) modal.classList.remove('open');
+    };
+    window.scrollToPortalFAQ = window.openPortalFAQ;
 
     // Commercial PAYG SaaS Hub Client Helpers
     const PAYG_SAMPLE_ENDPOINTS = {
