@@ -128,11 +128,8 @@ def compute_deterministic_structural_metrics(md_text: str) -> dict:
 
 
 def build_judge_prompt(ws_key: str, filename: str, md_text: str, det_metrics: dict) -> str:
-    # Provide full text up to 48,000 chars (plus tail if longer) so the LLM judge sees frontmatter, terminology, figures, equations, WAF pillars, and What's next
-    if len(md_text) > 52000:
-        excerpt = md_text[:40000] + "\n\n... [MIDDLE E2E JSON PAYLOAD OMITTED FOR CONTEXT WINDOW] ...\n\n" + md_text[-12000:]
-    else:
-        excerpt = md_text
+    # Provide complete full text (Gemini 2.5 Pro and Flash have 1,000,000 token context window; blogs are <25,000 tokens)
+    excerpt = md_text
 
     return f"""You are a Principal Cloud Architect and O'Reilly Technical Book Editor performing a rigorous, zero-bias forensic LLM-as-a-Judge evaluation of `{filename}` ({ws_key}).
 
