@@ -156,11 +156,17 @@
       }
     }
 
+async function runSim() {
+  return await invokeCustomSandbox();
+}
+
 if (typeof window !== 'undefined') {
   if (typeof setPromptPreset !== 'undefined') window.setPromptPreset = setPromptPreset;
   if (typeof extractHopTrailFromResponse !== 'undefined') window.extractHopTrailFromResponse = extractHopTrailFromResponse;
   if (typeof renderHopVisualStrip !== 'undefined') window.renderHopVisualStrip = renderHopVisualStrip;
   if (typeof runLiveScenario !== 'undefined') window.runLiveScenario = runLiveScenario;
   if (typeof setRuntimeMode !== 'undefined') window.setRuntimeMode = setRuntimeMode;
-  if (typeof runSim !== 'undefined') window.runSim = runSim;
+  if (typeof switchExecutionMode !== 'undefined') window.switchExecutionMode = switchExecutionMode;
+  if (typeof invokeCustomSandbox !== 'undefined') window.invokeCustomSandbox = invokeCustomSandbox;
+  window.runSim = runSim;
 }

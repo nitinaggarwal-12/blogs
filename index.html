@@ -3781,6 +3781,18 @@
       }
     };
 
+    // Domain & Platform Aliases for SaaS Connect Modal
+    window.SAAS_CONNECT_REGISTRY['thoughtspot-spotter'] = window.SAAS_CONNECT_REGISTRY['metabase'];
+    window.SAAS_CONNECT_REGISTRY['sigma-computing'] = window.SAAS_CONNECT_REGISTRY['trino'];
+    window.SAAS_CONNECT_REGISTRY['servicenow-itsm'] = window.SAAS_CONNECT_REGISTRY['redmine'];
+    window.SAAS_CONNECT_REGISTRY['muse-poc'] = window.SAAS_CONNECT_REGISTRY['nocodb'];
+    window.SAAS_CONNECT_REGISTRY['salesforce-jira'] = window.SAAS_CONNECT_REGISTRY['gitea'];
+    window.SAAS_CONNECT_REGISTRY['databricks-unity'] = window.SAAS_CONNECT_REGISTRY['grafana'];
+    window.SAAS_CONNECT_REGISTRY['snowflake-cortex'] = window.SAAS_CONNECT_REGISTRY['clickhouse'];
+    window.SAAS_CONNECT_REGISTRY['workday-raas'] = window.SAAS_CONNECT_REGISTRY['directus'];
+    window.SAAS_CONNECT_REGISTRY['datadog-sre'] = window.SAAS_CONNECT_REGISTRY['seq'];
+    window.SAAS_CONNECT_REGISTRY['crowdstrike-okta'] = window.SAAS_CONNECT_REGISTRY['vault'];
+
     window.openSaaSConnectModal = function openSaaSConnectModal(key) {
       const data = window.SAAS_CONNECT_REGISTRY[key];
       if (!data) return;
