@@ -57,6 +57,7 @@
     span.truncate { display: inline-block; max-width: 100%; vertical-align: bottom; }
     body {
       margin: 0;
+    }
 
 /* WCAG 2.2 AA/AAA Global Focus-Visible Outline Standard [FA-50, FA-51] */
 :focus-visible,

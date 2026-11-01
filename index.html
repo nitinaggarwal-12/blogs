@@ -458,13 +458,24 @@
             }
           }
           if (cur.length) paragraphs.push(cur.join(' '));
-          html += `<blockquote class="gcp-arch-callout">${paragraphs.map(p => `<p>${formatInline(p)}</p>`).join('')}</blockquote>`;
+          const fullText = paragraphs.join(' ');
+          let calloutType = 'info';
+          if (fullText.includes('Companion Cloud Architecture Assets') || fullText.includes('Google Slides') || fullText.includes('Google Docs')) {
+            calloutType = 'assets';
+          } else if (fullText.includes('Warning') || fullText.includes('Caveat') || fullText.includes('caution')) {
+            calloutType = 'warning';
+          } else if (fullText.includes('Invariant') || fullText.includes('Verified')) {
+            calloutType = 'success';
+          }
+          html += `<blockquote class="gcp-arch-callout callout-${calloutType}">${paragraphs.map(p => `<p>${formatInline(p)}</p>`).join('')}</blockquote>`;
           quoteLines = [];
         }
 
         function flushUl() {
           if (!ulItems.length) return;
-          html += `<ul class="gcp-arch-list">${ulItems.map(it => `<li class="${it.nested ? 'nested-li' : ''}">${formatInline(it.text)}</li>`).join('')}</ul>`;
+          const isDefList = ulItems.some(it => it.text.startsWith('**') || it.text.startsWith('`'));
+          const listClass = isDefList ? 'gcp-arch-list gcp-def-cards' : 'gcp-arch-list';
+          html += `<ul class="${listClass}">${ulItems.map(it => `<li class="${it.nested ? 'nested-li' : (it.text.startsWith('**') ? 'def-card-li' : '')}">${formatInline(it.text)}</li>`).join('')}</ul>`;
           ulItems = [];
         }
 
