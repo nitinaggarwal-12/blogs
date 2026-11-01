@@ -180,9 +180,10 @@
     #telemetry-drawer:not(.open) { visibility: hidden; pointer-events: none; }
     @media (max-width: 640px) {
       .container { padding: 8px 10px; }
-      .portal-primary-tabs { display: grid !important; grid-template-columns: 1fr 1fr; width: 100%; gap: 4px; }
-      .portal-primary-tabs > .tab-btn:not(.sr-only), .portal-primary-tabs > select { width: 100% !important; max-width: 100% !important; min-width: 0 !important; font-size: 11px !important; padding: 6px 6px !important; }
-      .portal-header-actions { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
+      .portal-primary-tabs { display: flex !important; flex-wrap: nowrap !important; overflow-x: auto !important; width: 100%; gap: 3px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+      .portal-primary-tabs::-webkit-scrollbar { display: none; }
+      .portal-primary-tabs > .tab-btn:not(.sr-only), .portal-primary-tabs > select { width: auto !important; max-width: none !important; min-width: 0 !important; font-size: 11px !important; padding: 3px 6px !important; height: 26px !important; flex-shrink: 0 !important; white-space: nowrap !important; }
+      .portal-header-actions { width: auto; justify-content: flex-end; flex-wrap: nowrap !important; display: flex !important; align-items: center !important; gap: 3px !important; }
       .grid-4, .grid-3, .genuine-3p-gallery-grid { grid-template-columns: 1fr !important; }
       .card table { display: block; overflow-x: auto; max-width: 100%; }
       .article-reader table { table-layout: auto; font-size: 11.5px; }
@@ -216,7 +217,7 @@
     .badge-green { background: #e6f4ea; color: #137333; border: 1px solid #86efac; }
     .badge-amber { background: #fef7e0; color: #8c4a00; border: 1px solid #fcd34d; }
     .badge-red { background: #fce8e6; color: #a50e0e; border: 1px solid #fca5a5; }
-    .container { width: 100%; max-width: 100%; margin: 0; padding: 10px 24px; }
+    .container { width: 100%; max-width: 100%; margin: 0; padding: 6px 20px; }
     .ws-split-grid.full-diagram { grid-template-columns: 1fr; }
     .tabs {
       display: flex;
@@ -669,48 +670,119 @@
       margin-bottom: 12px;
       box-shadow: none;
     }
+    .ws-compact-selector-bar {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+      scrollbar-width: none !important;
+      -webkit-overflow-scrolling: touch;
+      gap: 6px !important;
+      margin: 0 0 2px 0 !important;
+      padding: 2px 6px !important;
+      background: var(--panel) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 8px !important;
+      height: 30px !important;
+      min-height: 30px !important;
+      max-height: 30px !important;
+      box-sizing: border-box !important;
+    }
+    .ws-compact-selector-bar::-webkit-scrollbar {
+      display: none !important;
+    }
+    #hub-blog-section {
+      margin-top: 0 !important;
+      margin-bottom: 12px !important;
+    }
+    .gcp-doc-breadcrumbs {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      margin: 0 0 2px 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      font-size: 10.5px !important;
+      line-height: 1.2 !important;
+    }
+    .doc-section-card {
+      padding: 5px 12px !important;
+      margin: 0 0 6px 0 !important;
+    }
+    .doc-section-card h1 {
+      font-size: 16.5px !important;
+      line-height: 1.2 !important;
+      margin: 0 0 3px 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+    }
+    .doc-section-card .gcp-arch-callout {
+      margin: 3px 0 4px 0 !important;
+      padding: 2px 8px !important;
+      font-size: 11px !important;
+    }
+    .doc-section-card .gcp-arch-callout p {
+      margin: 0 !important;
+      line-height: 1.3 !important;
+      font-size: 11px !important;
+    }
+    .doc-section-card p {
+      margin: 2px 0 !important;
+      line-height: 1.4 !important;
+    }
     .ws-stepper {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
-      gap: 6px;
-      margin: 0 0 8px 0;
+      display: flex !important;
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+      align-items: center !important;
+      gap: 5px !important;
+      margin: 0 !important;
+      padding: 1px 0 !important;
+      scrollbar-width: none !important;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ws-stepper::-webkit-scrollbar {
+      display: none;
     }
     .ws-step-btn {
-      text-align: left;
-      background: var(--panel);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 6px 10px;
-      cursor: pointer;
-      transition: all 0.15s ease;
+      flex: 0 0 auto !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      height: 28px !important;
+      min-height: 28px !important;
+      padding: 0 9px !important;
+      border-radius: 6px !important;
+      background: var(--panel) !important;
+      color: var(--text) !important;
+      border: 1px solid var(--border) !important;
+      font-size: 11.5px !important;
+      font-weight: 700 !important;
+      cursor: pointer !important;
+      transition: all 0.15s ease !important;
+      white-space: nowrap !important;
+      text-align: center !important;
     }
     .ws-step-btn:hover {
-      border-color: var(--blue);
+      border-color: var(--blue) !important;
     }
     .ws-step-btn.active {
-      background: var(--blue);
-      color: var(--on-primary);
-      border-color: var(--blue);
-      box-shadow: 0 2px 8px rgba(79,140,255,0.28);
+      background: var(--blue) !important;
+      color: #ffffff !important;
+      border-color: var(--blue) !important;
+      box-shadow: 0 2px 6px rgba(26,115,232,0.28) !important;
     }
     .ws-step-btn .ws-kicker {
-      font-size: 9.5px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      opacity: 0.85;
-      display: block;
-      margin-bottom: 1px;
+      display: none !important;
     }
     .ws-step-btn .ws-name {
-      font-size: 12.5px;
-      font-weight: 700;
-      display: block;
-      margin-bottom: 0;
+      display: inline !important;
+      font-size: 11.5px !important;
+      font-weight: 700 !important;
+      margin: 0 !important;
     }
     .ws-step-btn .ws-meta {
-      display: none;
+      display: none !important;
     }
     .ws-pane {
       background: transparent;
@@ -1778,27 +1850,41 @@
     @media (max-width: 768px) {
       header {
         flex-direction: column !important;
-        flex-wrap: wrap !important;
+        flex-wrap: nowrap !important;
         align-items: stretch !important;
         max-width: 100vw !important;
-        padding: max(8px, env(safe-area-inset-top, 0px)) 12px 8px 12px !important;
-        gap: 6px !important;
+        padding: max(4px, env(safe-area-inset-top, 0px)) 8px 3px 8px !important;
+        gap: 2px !important;
       }
-      header > div {
-        flex-wrap: wrap !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
+      header > div:first-child {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100% !important;
+        flex-wrap: nowrap !important;
       }
       header h1 {
-        font-size: 13.5px !important;
-        white-space: normal !important;
-        line-height: 1.3;
+        font-size: 11.5px !important;
+        white-space: nowrap !important;
+        line-height: 1.2;
       }
       #theme-select {
         width: auto !important;
-        min-width: 96px !important;
-        max-width: 135px !important;
-        padding: 4px 24px 4px 8px !important;
+        min-width: 60px !important;
+        max-width: 72px !important;
+        padding: 2px 14px 2px 4px !important;
+        font-size: 10.5px !important;
+      }
+      .portal-header-actions {
+        display: flex !important;
+        align-items: center !important;
+        gap: 3px !important;
+        flex-wrap: nowrap !important;
+      }
+      .portal-header-actions .sim-btn {
+        padding: 2px 5px !important;
+        font-size: 10.5px !important;
+        height: 24px !important;
       }
       nav.tabs {
         width: 100% !important;
@@ -1808,25 +1894,61 @@
         -webkit-overflow-scrolling: touch;
         overscroll-behavior-x: contain;
         flex-wrap: nowrap !important;
-        padding-bottom: 2px;
+        padding: 1px 0 !important;
         scrollbar-width: none;
       }
       nav.tabs::-webkit-scrollbar {
         display: none;
       }
       .tab-btn {
-        padding: 7px 11px;
-        font-size: 12px;
-        flex-shrink: 0;
+        padding: 3px 7px !important;
+        font-size: 10.5px !important;
+        flex-shrink: 0 !important;
+        height: 24px !important;
       }
       .container {
-        padding: 10px 10px;
+        padding: 4px 6px !important;
         max-width: 100vw;
         overflow-x: hidden;
       }
+      .series-reader-grid {
+        display: flex !important;
+        flex-direction: column !important;
+      }
+      #hub-blog-toc {
+        order: 2 !important;
+        margin-top: 14px !important;
+      }
+      .series-reader-main-lane {
+        order: 1 !important;
+        width: 100% !important;
+      }
       .card {
-        padding: 12px;
-        border-radius: 10px;
+        padding: 8px 10px !important;
+        border-radius: 8px;
+      }
+      .doc-section-card {
+        padding: 6px 10px !important;
+        margin-bottom: 8px !important;
+      }
+      .doc-section-card h1 {
+        font-size: 15px !important;
+        margin: 0 0 4px 0 !important;
+        line-height: 1.25 !important;
+      }
+      .doc-section-card .gcp-arch-callout {
+        margin: 3px 0 6px 0 !important;
+        padding: 3px 8px !important;
+      }
+      .doc-section-card .gcp-arch-callout p {
+        font-size: 11px !important;
+        margin: 1px 0 !important;
+        line-height: 1.3 !important;
+      }
+      .doc-section-card p {
+        font-size: 11.8px !important;
+        margin: 3px 0 !important;
+        line-height: 1.4 !important;
       }
       .grid-2, .grid-3, .grid-4, .grid-5 {
         grid-template-columns: 1fr !important;
@@ -2024,38 +2146,96 @@
     .doc-section-card h2:first-child,
     .doc-section-card h3:first-child {
       margin-top: 0 !important;
-      padding-right: 220px;
+      padding-right: 0 !important;
     }
-    .card-hover-toolbar {
-      position: absolute;
-      top: 8px;
-      right: 10px;
-      z-index: 40;
-      display: inline-flex;
-      align-items: center;
-      gap: 2px;
-      background: rgba(255, 255, 255, 0.98);
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      padding: 2px 4px;
-      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(-2px);
-      transition: opacity 0.14s ease, transform 0.14s ease;
+    .review-mode-active .doc-section-card h1:first-child,
+    .review-mode-active .doc-section-card h2:first-child,
+    .review-mode-active .doc-section-card h3:first-child {
+      padding-right: 120px !important;
+    }
+    /* Calm, Distraction-Free Reader Mode: Hide CMS Hover Toolbars [FA-33, FA-47] */
+    .card-hover-toolbar,
+    #tab-patterns:not(.review-mode-active) .card-hover-toolbar,
+    #hub-blog-reader:not(.review-mode-active) .card-hover-toolbar,
+    .doc-section-card:not(.review-mode-active) .card-hover-toolbar {
+      display: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    /* Opt-In Google-Docs-Style Comments in Review Mode with Verified IAP Identity [FA-12] */
+    #tab-patterns.review-mode-active .card-hover-toolbar,
+    #hub-blog-reader.review-mode-active .card-hover-toolbar,
+    .review-mode-active .doc-section-card .card-hover-toolbar {
+      display: inline-flex !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      position: absolute !important;
+      top: 8px !important;
+      right: 10px !important;
+      z-index: 40 !important;
+      align-items: center !important;
+      gap: 3px !important;
+      background: rgba(255, 255, 255, 0.98) !important;
+      border: 1px solid #bfdbfe !important;
+      border-radius: 8px !important;
+      padding: 2px 6px !important;
+      box-shadow: 0 2px 10px rgba(26, 115, 232, 0.16) !important;
+      transform: none !important;
+    }
+    /* Gate Google-Docs comments only: hide all 6 CMS authoring buttons for readers/reviewers */
+    #tab-patterns.review-mode-active .card-hover-toolbar .card-action-icon-btn:not(.comment-btn),
+    #hub-blog-reader.review-mode-active .card-hover-toolbar .card-action-icon-btn:not(.comment-btn),
+    .review-mode-active .doc-section-card .card-hover-toolbar .card-action-icon-btn:not(.comment-btn) {
+      display: none !important;
+    }
+    #tab-patterns.review-mode-active .card-hover-toolbar .comment-btn,
+    #hub-blog-reader.review-mode-active .card-hover-toolbar .comment-btn,
+    .review-mode-active .doc-section-card .card-hover-toolbar .comment-btn {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      width: auto !important;
+      height: 26px !important;
+      padding: 0 8px !important;
+      font-size: 11.5px !important;
+      font-weight: 700 !important;
+      color: #1a73e8 !important;
+      background: #eff6ff !important;
+      border: 1px solid #dbeafe !important;
+      border-radius: 6px !important;
+      cursor: pointer !important;
+    }
+    #tab-patterns.review-mode-active .card-hover-toolbar .comment-btn:hover,
+    #hub-blog-reader.review-mode-active .card-hover-toolbar .comment-btn:hover,
+    .review-mode-active .doc-section-card .card-hover-toolbar .comment-btn:hover {
+      background: #dbeafe !important;
+    }
+    #tab-patterns.review-mode-active .card-hover-toolbar .comment-btn::after,
+    #hub-blog-reader.review-mode-active .card-hover-toolbar .comment-btn::after,
+    .review-mode-active .doc-section-card .card-hover-toolbar .comment-btn::after {
+      content: " Comment";
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'Google Sans', sans-serif;
     }
     @media (hover: none), (max-width: 900px) {
-      .card-hover-toolbar {
-        opacity: 1;
-        pointer-events: auto;
-        position: static;
-        margin-bottom: 8px;
-        flex-wrap: wrap;
+      .card-hover-toolbar,
+      #tab-patterns:not(.review-mode-active) .card-hover-toolbar {
+        display: none !important;
+      }
+      #tab-patterns.review-mode-active .card-hover-toolbar,
+      #hub-blog-reader.review-mode-active .card-hover-toolbar,
+      .review-mode-active .doc-section-card .card-hover-toolbar {
+        display: inline-flex !important;
+        position: static !important;
+        margin-bottom: 6px !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
       }
       .doc-section-card h1:first-child,
       .doc-section-card h2:first-child,
       .doc-section-card h3:first-child {
-        padding-right: 0;
+        padding-right: 0 !important;
       }
     }
     .card-action-icon-btn {
@@ -3298,70 +3478,75 @@
     <!-- TAB 1: WORKSTREAM 1-5 ARCHITECTURE, SLIDES & FULL-WIDTH SERIES READER -->
     <section id="tab-patterns" class="tab-pane">
       <div class="ws-hub-card" id="guided-workstream-hub">
-        <!-- Unified Workstream 1–5 + Master Deck Stepper -->
-        <div class="ws-stepper" role="tablist" aria-label="Select Workstream 1 to 5 or All-in-One Master Deck" style="margin-top:0;">
-          <button class="ws-step-btn active" id="ws-btn-WS1" onclick="selectGuidedWorkstream('WS1')">
-            <span class="ws-kicker">Part 1 of 5 • WS 1 Foundation</span>
-            <span class="ws-name">1. Reference Architecture &amp; 5-Hop</span>
-            <span class="ws-meta">2 Blueprints • 34 Slides • Part 1 Blog</span>
-          </button>
-          <button class="ws-step-btn" id="ws-btn-WS2" onclick="selectGuidedWorkstream('WS2')">
-            <span class="ws-kicker">Part 2 of 5 • WS 2 Pattern A</span>
-            <span class="ws-name">2. Shared Multi-Tenant Pool</span>
-            <span class="ws-meta">4 Blueprints • 34 Slides • Part 2 Blog</span>
-          </button>
-          <button class="ws-step-btn" id="ws-btn-WS3" onclick="selectGuidedWorkstream('WS3')">
-            <span class="ws-kicker">Part 3 of 5 • WS 3 Pattern B</span>
-            <span class="ws-name">3. Dedicated Customer Vault</span>
-            <span class="ws-meta">3 Blueprints • 34 Slides • Part 3 Blog</span>
-          </button>
-          <button class="ws-step-btn" id="ws-btn-WS4" onclick="selectGuidedWorkstream('WS4')">
-            <span class="ws-kicker">Part 4 of 5 • WS 4 Pattern C</span>
-            <span class="ws-name">4. Smart Hybrid Router &amp; PSC</span>
-            <span class="ws-meta">4 Blueprints • 34 Slides • Part 4 Blog</span>
-          </button>
-          <button class="ws-step-btn" id="ws-btn-WS5" onclick="selectGuidedWorkstream('WS5')">
-            <span class="ws-kicker">Part 5 of 5 • WS 5 Capstone</span>
-            <span class="ws-name">5. Decision Guide &amp; Triad</span>
-            <span class="ws-meta">1 Blueprint • 34 Slides • Part 5 Blog</span>
-          </button>
-          <button class="ws-step-btn" id="ws-btn-ALL" onclick="selectGuidedWorkstream('ALL')">
-            <span class="ws-kicker">All-in-One • Master Synthesis</span>
-            <span class="ws-name">6. Master 25-Slide Deck &amp; Guide</span>
-            <span class="ws-meta">All 14 Blueprints • 25 Slides • E2E Guide</span>
-          </button>
-        </div>
-
-        <!-- Single 1-Line Document Switcher & Header-Only Google Workspace Controls (Rule 47 & Rule 25) -->
-        <div id="hub-ws-summary-bar" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:7px 12px; background:var(--panel); border:1px solid var(--border); border-radius:10px; margin-bottom:10px;">
-          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <span id="hub-ws-badge" class="badge badge-blue" style="display:none;">WS1 • Part 1 of 5 • 34 Editable Slides</span>
-            <strong id="hub-ws-title" style="display:none;">Workstream 1: Reference Architecture, Taxonomy &amp; 5-Hop Baseline</strong>
-            <div id="hub-ws-sub" class="muted" style="display:none;">Pooled (Pattern A), Sovereign Silos (Pattern B) &amp; Dynamic Hybrid (Pattern C) extending the Cloud Architecture Center reference</div>
-            <div id="hub-doc-switcher" style="display:flex; gap:6px; flex-wrap:wrap; margin:0;"></div>
+        <!-- Compact Breadcrumb/Pill Selector Bar & Header-Only Workspace Controls (Rule 47, Rule 25 & [FA-52]) -->
+        <div class="ws-compact-selector-bar" role="navigation" aria-label="Workstream Series Navigation">
+          <!-- Left: Series breadcrumb + 6 Compact Pills -->
+          <div style="display:flex; align-items:center; gap:6px; flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%; scrollbar-width:none;">
+            <span class="ws-breadcrumb-label" style="font-size:11px; font-weight:800; color:var(--link); text-transform:uppercase; letter-spacing:0.04em; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;">
+              <span>&#129517;</span> <span>Series:</span>
+            </span>
+            <div class="ws-stepper" role="tablist" aria-label="Select Workstream 1 to 5 or All-in-One Master Deck" style="margin:0; display:inline-flex; gap:5px; flex-wrap:nowrap;">
+              <button class="ws-step-btn active" id="ws-btn-WS1" onclick="selectGuidedWorkstream('WS1')" title="Part 1 of 5 • WS 1 Foundation: Reference Architecture & 5-Hop Baseline">
+                <span class="ws-kicker" style="display:none;">Part 1 of 5</span>
+                <span class="ws-name">1. WS1 Foundation</span>
+                <span class="ws-meta" style="display:none;">2 Blueprints • 34 Slides</span>
+              </button>
+              <button class="ws-step-btn" id="ws-btn-WS2" onclick="selectGuidedWorkstream('WS2')" title="Part 2 of 5 • WS 2 Pattern A: Shared Multi-Tenant Pool">
+                <span class="ws-kicker" style="display:none;">Part 2 of 5</span>
+                <span class="ws-name">2. WS2 Pooled (A)</span>
+                <span class="ws-meta" style="display:none;">4 Blueprints • 34 Slides</span>
+              </button>
+              <button class="ws-step-btn" id="ws-btn-WS3" onclick="selectGuidedWorkstream('WS3')" title="Part 3 of 5 • WS 3 Pattern B: Dedicated Customer Vault">
+                <span class="ws-kicker" style="display:none;">Part 3 of 5</span>
+                <span class="ws-name">3. WS3 Dedicated (B)</span>
+                <span class="ws-meta" style="display:none;">3 Blueprints • 34 Slides</span>
+              </button>
+              <button class="ws-step-btn" id="ws-btn-WS4" onclick="selectGuidedWorkstream('WS4')" title="Part 4 of 5 • WS 4 Pattern C: Smart Hybrid Router & PSC">
+                <span class="ws-kicker" style="display:none;">Part 4 of 5</span>
+                <span class="ws-name">4. WS4 Hybrid (C)</span>
+                <span class="ws-meta" style="display:none;">4 Blueprints • 34 Slides</span>
+              </button>
+              <button class="ws-step-btn" id="ws-btn-WS5" onclick="selectGuidedWorkstream('WS5')" title="Part 5 of 5 • WS 5 Capstone: Decision Guide & Triad">
+                <span class="ws-kicker" style="display:none;">Part 5 of 5</span>
+                <span class="ws-name">5. WS5 Decision</span>
+                <span class="ws-meta" style="display:none;">1 Blueprint • 34 Slides</span>
+              </button>
+              <button class="ws-step-btn" id="ws-btn-ALL" onclick="selectGuidedWorkstream('ALL')" title="All-in-One • Master Synthesis: 25-Slide Deck & Guide">
+                <span class="ws-kicker" style="display:none;">All-in-One</span>
+                <span class="ws-name">6. Master Deck</span>
+                <span class="ws-meta" style="display:none;">All 14 Blueprints • 25 Slides</span>
+              </button>
+            </div>
           </div>
-          <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
-            <button type="button" id="hub-quick-codebase-btn" class="sim-btn" style="padding:5px 10px; font-size:12px; font-weight:700; border-color:var(--blue); color:var(--link);" onclick="openWorkbenchView('codebase')" title="Jump directly to the Interactive 27-File Production Codebase Explorer">
+
+          <!-- Right: Opt-in Review Mode Toggle & Essential Actions -->
+          <div style="display:flex; align-items:center; gap:5px; flex-wrap:wrap;">
+            <!-- Review Mode Toggle Button [FA-12] -->
+            <button type="button" id="btn-toggle-review-mode" class="sim-btn" onclick="toggleReaderReviewMode()" style="padding:3px 8px; font-size:11px; font-weight:700; height:26px; display:inline-flex; align-items:center; gap:4px; border-color:#93c5fd; background:#f0fdf4;" title="Toggle Opt-in Google-Docs-Style Review Comments with Authenticated IAP Identity [FA-12]">
+              <span id="review-mode-icon">&#128172;</span>
+              <span id="review-mode-label">Review Mode: OFF</span>
+            </button>
+            <button type="button" id="hub-quick-codebase-btn" class="sim-btn" style="padding:3px 8px; font-size:11px; font-weight:700; border-color:var(--blue); color:var(--link); height:26px;" onclick="openWorkbenchView('codebase')" title="Jump directly to the Interactive 27-File Production Codebase Explorer">
               &#128187; 27-File Codebase
             </button>
-            <button type="button" id="hub-quick-ba-uis-btn" data-testid="hub-quick-ba-uis-btn" class="sim-btn primary" style="padding:5px 10px; font-size:12px; font-weight:700;" onclick="jumpToActiveBlogBeforeAfterSection()" title="Scroll directly to this blog's genuine 2880x1800 Before-vs-After 3P SaaS UI captures &amp; Interactive Split Slider">
-              &#128260; Before/After SaaS UIs
+            <button type="button" id="hub-quick-ba-uis-btn" data-testid="hub-quick-ba-uis-btn" class="sim-btn primary" style="padding:3px 8px; font-size:11px; font-weight:700; height:26px;" onclick="jumpToActiveBlogBeforeAfterSection()" title="Scroll directly to this blog's genuine 2880x1800 Before-vs-After 3P SaaS UI captures &amp; Interactive Split Slider">
+              &#128260; SaaS UIs
             </button>
-            <button type="button" id="hub-quick-console-btn" class="sim-btn" style="padding:5px 10px; font-size:12px; font-weight:700; border-color:var(--green); color:var(--ok-text);" onclick="openWorkbenchView('resources')" title="Jump directly to Live GCP &amp; AWS Console Verification, 10-SaaS Targets &amp; 8-Stage Runbook">
-              &#9729;&#65039; GCP &amp; AWS Console
+            <button type="button" id="hub-quick-console-btn" class="sim-btn" style="padding:3px 7px; font-size:11px; font-weight:700; border-color:var(--green); color:var(--ok-text); height:26px;" onclick="openWorkbenchView('resources')" title="Jump directly to Live GCP &amp; AWS Console Verification, 10-SaaS Targets &amp; 8-Stage Runbook">
+              &#9729;&#65039; Console
             </button>
-            <button type="button" id="hub-quick-terraform-btn" class="sim-btn" style="padding:5px 10px; font-size:12px; font-weight:700; border-color:#7c3aed; color:#6d28d9;" onclick="openWorkbenchView('deliverables', 'terraform')" title="Jump directly to 1-Click Terraform Deployment Scripts (deploy_1click.sh) &amp; HCL Modules">
-              &#128640; 1-Click Terraform
+            <button type="button" id="hub-quick-terraform-btn" class="sim-btn" style="padding:3px 7px; font-size:11px; font-weight:700; border-color:#7c3aed; color:#6d28d9; height:26px;" onclick="openWorkbenchView('deliverables', 'terraform')" title="Jump directly to 1-Click Terraform Deployment Scripts (deploy_1click.sh) &amp; HCL Modules">
+              &#128640; Terraform
             </button>
-            <button type="button" id="hub-cloud-viewer-btn" class="pc-cloud-btn" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'slides')" title="Open Same-Screen Cloud Viewer (Interactive Studio + Live Google Slides + Google Docs)">
+            <button type="button" id="hub-cloud-viewer-btn" class="pc-cloud-btn" style="padding:3px 8px; font-size:11px; height:26px;" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'slides')" title="Open Same-Screen Cloud Viewer (Interactive Studio + Live Google Slides + Google Docs)">
               &#128065;&#65039; Cloud Viewer
             </button>
             <div class="pc-split-wrap" id="hub-open-gslides-split">
-              <button type="button" class="pc-split-main" id="hub-open-gslides-main" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1)">
+              <button type="button" class="pc-split-main" id="hub-open-gslides-main" style="padding:3px 8px; font-size:11px; height:26px;" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1)">
                 <span class="pc-gslides-icon">S</span>
-                <span id="hub-open-gslides-label">Open with Google Slides (WS1 &bull; 34 Slides) &#8599;</span>
+                <span id="hub-open-gslides-label">Google Slides &#8599;</span>
               </button>
-              <button type="button" class="pc-split-caret" onclick="togglePcDropdown(event, 'hub-gslides-menu')" aria-label="Choose Google Workspace app">&#9660;</button>
+              <button type="button" class="pc-split-caret" style="height:26px; padding:0 5px;" onclick="togglePcDropdown(event, 'hub-gslides-menu')" aria-label="Choose Google Workspace app">&#9660;</button>
               <div id="hub-gslides-menu" class="pc-dropdown-menu">
                 <div class="pc-dropdown-section">Google Workspace Direct Open</div>
                 <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1)">
@@ -3415,6 +3600,14 @@
           </div>
         </div>
 
+        <!-- Preserved Hidden Compatibility Elements (Rule 25 & Zero-Regression) -->
+        <div id="hub-ws-summary-bar" style="display:none;">
+          <span id="hub-ws-badge">WS1 • Part 1 of 5 • 34 Editable Slides</span>
+          <strong id="hub-ws-title">Workstream 1: Reference Architecture, Taxonomy &amp; 5-Hop Baseline</strong>
+          <div id="hub-ws-sub">Pooled (Pattern A), Sovereign Silos (Pattern B) &amp; Dynamic Hybrid (Pattern C)</div>
+          <div id="hub-doc-switcher"></div>
+        </div>
+        
         <!-- TIER 1 (ARTICLE-FIRST): FULL-WIDTH GOOGLE CLOUD DOCUMENTATION SERIES READER WITH INLINE INTERACTIVE FIGURES -->
         <div class="ws-pane" id="hub-blog-section" style="margin-bottom:16px;">
           <div id="hub-blog-meta-banner" class="muted" style="display:none;"></div>
@@ -8986,6 +9179,50 @@
       if (drw.classList.contains('open')) closeCommentsDrawer();
       else openCommentsDrawer();
     }
+
+    let portalReaderReviewModeActive = false;
+
+    function toggleReaderReviewMode() {
+      const tabPatterns = document.getElementById('tab-patterns');
+      const reader = document.getElementById('hub-blog-reader');
+      const btn = document.getElementById('btn-toggle-review-mode');
+      const icon = document.getElementById('review-mode-icon');
+      const label = document.getElementById('review-mode-label');
+
+      portalReaderReviewModeActive = !portalReaderReviewModeActive;
+
+      if (portalReaderReviewModeActive) {
+        if (tabPatterns) tabPatterns.classList.add('review-mode-active');
+        if (reader) reader.classList.add('review-mode-active');
+        if (btn) {
+          btn.classList.add('active');
+          btn.style.background = '#1a73e8';
+          btn.style.color = '#ffffff';
+          btn.style.borderColor = '#1a73e8';
+        }
+        const actorName = (portalActiveActor && portalActiveActor.name) || 'IAP Reviewer';
+        const actorEmail = (portalActiveActor && portalActiveActor.email) || 'reviewer@google.com';
+        const shortActor = (portalActiveActor && portalActiveActor.iapVerified)
+          ? `🔒 IAP: ${actorName}`
+          : (actorEmail.includes('@') ? actorEmail.split('@')[0] : 'Reviewer');
+        if (label) label.textContent = `Review Mode: ON (${shortActor})`;
+        if (icon) icon.textContent = '💬';
+        showPortalToast('💬 Review Mode ON', `Collaborative Google-Docs comments enabled for ${actorName} (${actorEmail}) [FA-12].`);
+      } else {
+        if (tabPatterns) tabPatterns.classList.remove('review-mode-active');
+        if (reader) reader.classList.remove('review-mode-active');
+        if (btn) {
+          btn.classList.remove('active');
+          btn.style.background = '#f0fdf4';
+          btn.style.color = '';
+          btn.style.borderColor = '#93c5fd';
+        }
+        if (label) label.textContent = 'Review Mode: OFF';
+        if (icon) icon.textContent = '💬';
+        showPortalToast('📖 Calm Reader Mode', 'Distraction-free reader restored. CMS hover toolbars and inline comments hidden [FA-33, FA-47].');
+      }
+    }
+    window.toggleReaderReviewMode = toggleReaderReviewMode;
 
     function openSectionComments(cardId, cardTitle) {
       const cardEl = document.querySelector(`[data-card-id="${cardId}"]`) || document.getElementById(cardId);
