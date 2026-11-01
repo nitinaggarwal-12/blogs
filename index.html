@@ -51,6 +51,142 @@
 
   <!-- Portal Application & Interactive Workbench Script -->
   <script>
+    
+    function buildBlogExecutiveSummaryCard(docRelPath, readingTimeStr) {
+      const dp = String(docRelPath || '').toLowerCase();
+      const timeBadge = readingTimeStr ? ` &bull; ${escapeHtml(readingTimeStr.replace(/\s+read$/i, ''))} read` : '';
+
+      let patternTitle = 'Enterprise Reference Architecture &bull; Multi-Tenant Agentic AI System';
+      let tagline = 'Production-grade reference architecture for multi-tenant agentic AI systems on Google Cloud, combining zero-trust security with optimal FinOps efficiency.';
+      let p1Title = 'Compute & Ingress', p1Sub = 'Cloud Run Gen2 + Cloud Armor', p1Desc = 'Stateless auto-scaling with zero-trust PEP';
+      let p2Title = 'Data & Memory', p2Sub = 'AlloyDB + 5-Level Memory', p2Desc = 'PostgreSQL RLS & isolated namespaces';
+      let p3Title = 'AI Foundation', p3Sub = 'Vertex AI Gemini 2.5', p3Desc = 'Prompt prefix caching & Model Armor';
+      let p4Title = 'Multi-Cloud Egress', p4Sub = 'AWS Bedrock AgentCore MCP', p4Desc = '10 upstream SaaS verification targets';
+      let jumps = [
+        ['#architecture', 'Architecture'],
+        ['#live-3p-before-after-ui-proof', 'Live Verification'],
+        ['#design-considerations', 'Design Considerations']
+      ];
+
+      if (dp.includes('ws2')) {
+        patternTitle = 'Pattern A &bull; High-Density Pooled Multi-Tenant Architecture';
+        tagline = 'Shared compute and data plane with session-scoped PostgreSQL Row-Level Security, Vertex AI prefix caching, and tenant-keyed CMEK.';
+        p1Title = 'Compute & Runtime'; p1Sub = 'Cloud Run Gen2 + VPC-SC'; p1Desc = 'Pooled stateless execution with mTLS';
+        p2Title = 'Data & Persistence'; p2Sub = 'AlloyDB Omni + Session RLS'; p2Desc = 'app.current_tenant session isolation';
+        p3Title = 'AI & Reasoning'; p3Sub = 'Vertex AI Context Caching'; p3Desc = '78% FinOps cost reduction on 32k prefix';
+        p4Title = 'Security & Ingress'; p4Sub = 'Cloud Armor + Model Armor'; p4Desc = '10-point red-team breach defense';
+        jumps = [
+          ['#core-terminology-and-pooled-multi-tenant-systems-primitives', 'Core Primitives'],
+          ['#architecture', 'C4 Architecture & 7 Topologies'],
+          ['#design-considerations', 'FinOps & Security Guardrails'],
+          ['#live-3p-before-after-ui-proof', 'Live 10-SaaS Proof (2880×1800)'],
+          ['#frequently-asked-questions-executive-and-ciso-decision-guide-for-pattern-a', 'CISO FAQ']
+        ];
+      } else if (dp.includes('ws1')) {
+        patternTitle = 'Reference Architecture &bull; 5-Hop Zero-Trust Baseline &amp; Identity Taxonomy';
+        tagline = 'Foundational zero-trust pipeline establishing deterministic identity propagation (DPoP + mTLS), catalog-scoped agent discovery, 5-level memory bank isolation, and dual-layer prompt defense.';
+        p1Title = 'Compute & Ingress'; p1Sub = 'Cloud Run Gen2 + Cloud Armor'; p1Desc = 'Hop 1 PEP header stripping & DPoP minting';
+        p2Title = 'Discovery & Catalog'; p2Sub = 'Agent Registry Discovery (ARD)'; p2Desc = 'Hop 2 PDP catalog visibility boundary';
+        p3Title = 'Memory & Sessions'; p3Sub = '5-Level Memory Bank (L1..L5)'; p3Desc = 'Hop 3 namespace-isolated episodic memory';
+        p4Title = 'AI Safety & DLP'; p4Sub = 'Model Armor + Cloud DLP'; p4Desc = 'Hop 4 NLC guardrails & Hop 5 PII redaction';
+        jumps = [
+          ['#taxonomy-and-system-abstractions', 'Architecture Taxonomy'],
+          ['#architecture', '5-Hop Pipeline'],
+          ['#security-and-identity-federation', 'Identity Federation'],
+          ['#live-3p-before-after-ui-proof', 'Live 10-SaaS Proof'],
+          ['#what-s-next', 'Next Steps']
+        ];
+      } else if (dp.includes('ws3')) {
+        patternTitle = 'Pattern B &bull; Sovereign Silo Multi-Tenant Architecture';
+        tagline = 'Dedicated per-tenant sovereign silos provisioned in isolated GCP projects and VPC Service Controls perimeters with independent CMEK keyrings and dedicated AlloyDB instances, guaranteeing zero cross-tenant blast radius.';
+        p1Title = 'Sovereign Compute'; p1Sub = 'Dedicated Project Cloud Run'; p1Desc = 'Strict VPC-SC ingress/egress perimeters';
+        p2Title = 'Dedicated Data'; p2Sub = 'Isolated AlloyDB Clusters'; p2Desc = 'Per-tenant physical database instance';
+        p3Title = 'AI Quotas'; p3Sub = 'Dedicated Vertex AI Quotas'; p3Desc = 'Dedicated throughput & token reservations';
+        p4Title = 'Cryptographic Purge'; p4Sub = 'Per-Tenant CMEK Keyrings'; p4Desc = '1-click instant cryptographic kill-switch';
+        jumps = [
+          ['#architecture', 'Sovereign Silo Topologies'],
+          ['#cmek-killswitch-and-crypto-purge', 'CMEK Killswitch'],
+          ['#finops-and-cost-modeling', 'Silo Cost Modeling'],
+          ['#live-3p-before-after-ui-proof', 'Live 10-SaaS Proof'],
+          ['#faq', 'CISO FAQ']
+        ];
+      } else if (dp.includes('ws4')) {
+        patternTitle = 'Pattern C &bull; Smart Hybrid Router &amp; Dynamic Live Migration';
+        tagline = 'Intelligent hybrid architecture that routes standard tenants to the pooled cluster and dynamically upgrades premium/regulated tenants to dedicated sovereign silos with zero downtime and state-preserving schema migration.';
+        p1Title = 'Smart Ingress'; p1Sub = 'Hybrid Routing Proxy'; p1Desc = 'Dynamic tenant tier inspection & routing';
+        p2Title = 'Live Migration'; p2Sub = 'Dual-Plane CDC Streaming'; p2Desc = 'Zero-downtime state replication & cutover';
+        p3Title = 'Tiered AI'; p3Sub = 'Tiered Vertex AI Routing'; p3Desc = 'Flash for pooled, Pro for sovereign';
+        p4Title = 'Private Ingress'; p4Sub = 'Dynamic Private Service Connect'; p4Desc = 'Per-tenant PSC endpoints & firewalls';
+        jumps = [
+          ['#architecture', 'Hybrid Router Topologies'],
+          ['#zero-downtime-migration', 'Live Migration Engine'],
+          ['#cost-tiering', 'Dynamic Tiering FinOps'],
+          ['#live-3p-before-after-ui-proof', 'Live 10-SaaS Proof'],
+          ['#faq', 'CISO FAQ']
+        ];
+      } else if (dp.includes('ws5')) {
+        patternTitle = 'Synthesis &bull; Tenancy Decision Guide, FinOps TCO &amp; CISO Evaluation';
+        tagline = 'Comprehensive decision framework and multi-dimensional scoring rubric guiding enterprise architects and CISOs in selecting the optimal tenancy pattern based on compliance, latency, operational complexity, and FinOps TCO.';
+        p1Title = 'Decision Logic'; p1Sub = '3-Outcome Decision Tree'; p1Desc = 'Pooled vs. Siloed vs. Hybrid evaluation';
+        p2Title = 'Framework'; p2Sub = 'The Agentic Triad'; p2Desc = 'Balancing Tenancy, Identity, and Memory';
+        p3Title = 'FinOps Realization'; p3Sub = '3-Year TCO Cost Curves'; p3Desc = 'Unit economics across 100 to 10k tenants';
+        p4Title = 'Governance'; p4Sub = 'CISO Compliance Checklist'; p4Desc = 'SOC2, HIPAA, PCI-DSS, FedRAMP mapping';
+        jumps = [
+          ['#decision-framework', 'Decision Framework'],
+          ['#the-agentic-triad', 'The Agentic Triad'],
+          ['#finops-and-tco-analysis', '3-Year TCO Analysis'],
+          ['#ciso-executive-evaluation', 'CISO Evaluation'],
+          ['#companion-presentation-deck', 'Companion Presentation']
+        ];
+      }
+
+      const jumpLinksHtml = jumps.map(([href, label]) => `<a href="${href}" class="arch-nav-pill">${escapeHtml(label)} &rarr;</a>`).join(' ');
+
+      return `
+        <div class="gcp-exec-summary-card" data-no-hover-toolbar="true" style="background:#ffffff; border:1px solid #cbd5e1; border-left:5px solid #1a73e8; border-radius:10px; padding:18px 22px; margin:14px 0 24px 0; box-shadow:0 2px 8px rgba(15,23,42,0.04);">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid #f1f5f9; padding-bottom:10px;">
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <span class="badge badge-blue" style="font-size:11px; font-weight:700;">Executive Overview</span>
+              <span class="badge badge-green" style="font-size:11px; font-weight:700;">Google Cloud Certified</span>
+              <span class="badge badge-purple" style="font-size:11px; font-weight:700;">Level 300 Blueprint</span>
+            </div>
+            <div style="font-size:12px; color:#64748b; font-weight:600;">
+              <span>Zero-Trust 10/10 PASS</span> &bull; <span>78% FinOps Savings</span>${timeBadge}
+            </div>
+          </div>
+          <div style="font-size:14.5px; line-height:1.65; color:#1e293b; margin-bottom:14px;">
+            <strong>${patternTitle}:</strong> ${tagline}
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-bottom:14px;">
+            <div class="gcp-exec-pillar-card" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px 12px;">
+              <div style="font-size:11px; font-weight:700; color:#1a73e8; text-transform:uppercase; letter-spacing:0.03em; margin-bottom:4px;">${p1Title}</div>
+              <div style="font-size:12.5px; color:#334155; font-weight:600;">${p1Sub}</div>
+              <div style="font-size:11px; color:#64748b;">${p1Desc}</div>
+            </div>
+            <div class="gcp-exec-pillar-card" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px 12px;">
+              <div style="font-size:11px; font-weight:700; color:#059669; text-transform:uppercase; letter-spacing:0.03em; margin-bottom:4px;">${p2Title}</div>
+              <div style="font-size:12.5px; color:#334155; font-weight:600;">${p2Sub}</div>
+              <div style="font-size:11px; color:#64748b;">${p2Desc}</div>
+            </div>
+            <div class="gcp-exec-pillar-card" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px 12px;">
+              <div style="font-size:11px; font-weight:700; color:#7c3aed; text-transform:uppercase; letter-spacing:0.03em; margin-bottom:4px;">${p3Title}</div>
+              <div style="font-size:12.5px; color:#334155; font-weight:600;">${p3Sub}</div>
+              <div style="font-size:11px; color:#64748b;">${p3Desc}</div>
+            </div>
+            <div class="gcp-exec-pillar-card" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px 12px;">
+              <div style="font-size:11px; font-weight:700; color:#d97706; text-transform:uppercase; letter-spacing:0.03em; margin-bottom:4px;">${p4Title}</div>
+              <div style="font-size:12.5px; color:#334155; font-weight:600;">${p4Sub}</div>
+              <div style="font-size:11px; color:#64748b;">${p4Desc}</div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:12px; color:#475569; padding-top:8px; border-top:1px solid #f1f5f9;">
+            <strong style="color:#0f172a;">Quick Navigation:</strong>
+            ${jumpLinksHtml}
+          </div>
+        </div>
+      `;
+    }
+
     function renderMarkdownToHtml(md, docRelPath) {
       let body = String(md || '');
       let readingTimeStr = '';
@@ -193,7 +329,7 @@
                     : '';
                   return `
                 <div class="gcp-figure-card" id="inline-fig-card-${figSlug}" data-card-id="inline-fig-card-${figSlug}" data-diag-id="${figSlug}" data-card-type="diagram" data-card-title="${escapeHtml(alt)}" data-doc-path="${escapeHtml(docRelPath || '')}" style="padding:12px 14px;">
-                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border); padding-right:250px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border); padding-right:8px;">
                     <strong class="card-editable-body" id="inline-fig-title-${figSlug}" style="font-size:13.5px; color:var(--heading);">${alt}</strong>
                     <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
                       ${slideBadgeHtml}
@@ -241,7 +377,7 @@
                 : '';
               return `
                 <div class="gcp-figure-card" id="inline-fig-card-${diagId}" data-card-id="inline-fig-card-${diagId}" data-diag-id="${diagId}" data-card-type="diagram" data-card-title="${escapeHtml(alt)}" data-doc-path="${escapeHtml(docRelPath || '')}" style="padding:12px 14px;">
-                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border); padding-right:190px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border); padding-right:8px;">
                     <strong class="card-editable-body" id="inline-fig-title-${diagId}" style="font-size:13.5px; color:var(--heading);">${alt}</strong>
                     <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
                       ${slideBtnHtml}
@@ -306,7 +442,7 @@
             const cols = r.split('|').slice(1, -1).map(c => `<td>${formatInline(c.trim())}</td>`).join('');
             return `<tr>${cols}</tr>`;
           }).join('');
-          html += `<div style="overflow-x:auto; margin:16px 0;"><table><thead><tr>${headers}</tr></thead><tbody>${bodyRows}</tbody></table></div>`;
+          html += `<div class="gcp-arch-table-wrap" style="overflow-x:auto; margin:20px 0;"><table class="gcp-arch-table"><thead><tr>${headers}</tr></thead><tbody>${bodyRows}</tbody></table></div>`;
           tableRows = [];
         }
 
@@ -451,6 +587,27 @@
             flushPara(); flushFigures();
             const hText = line.slice(3);
             html += `<h2 ${buildHeadingAttrs(hText)}>${formatInline(hText)}</h2>`;
+            if (hText.trim().toLowerCase() === 'architecture' && String(docRelPath || '').includes('ws2')) {
+              html += `
+                <div class="gcp-arch-nav-strip" data-no-hover-toolbar="true" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:12px 16px; margin:16px 0 24px 0;">
+                  <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:8px;">
+                    <span style="font-size:12px; font-weight:700; color:#0f172a; text-transform:uppercase; letter-spacing:0.04em; display:inline-flex; align-items:center; gap:6px;">
+                      <span style="color:#1a73e8;">🏛️</span> 7 Architecture Topologies &amp; C4 Views:
+                    </span>
+                    <span style="font-size:11.5px; color:#64748b;">Click to jump directly to any diagram &amp; interactive flow</span>
+                  </div>
+                  <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
+                    <a href="#inline-fig-card-ws2-pattern-a-pooled-5hop-architecture" class="arch-nav-pill" style="background:#e8f0fe; color:#174ea6; font-weight:700; border-color:#aecbfa;"><span style="background:#1a73e8; color:#fff; border-radius:3px; padding:1px 5px; font-size:10px;">Primary</span> Fig 1: L2 Pooled Topology</a>
+                    <a href="#inline-fig-card-ws1-l1-logical-security-taxonomy" class="arch-nav-pill">Fig 0A: L1 System Context</a>
+                    <a href="#inline-fig-card-ws2-pattern-a-breach-defense-sequence" class="arch-nav-pill">Fig 2: Breach Defense</a>
+                    <a href="#inline-fig-card-ws2-demo-env-and-3p-auth-sandbox-topology" class="arch-nav-pill">Fig 3: 3LO Auth</a>
+                    <a href="#inline-fig-card-ws2-terraform-starter-resource-graph" class="arch-nav-pill">Fig 4: Terraform IaC</a>
+                    <a href="#inline-fig-card-ws1-l3-process-sequence-swimlane" class="arch-nav-pill">Fig 4A: L3 Sequence</a>
+                    <a href="#inline-fig-card-ws1-l4-wire-protocol-transformation" class="arch-nav-pill">Fig 4B: L4 Wire</a>
+                  </div>
+                </div>
+              `;
+            }
           } else if (line.startsWith('### ')) {
             flushPara(); flushFigures();
             const hText = line.slice(4);
@@ -505,7 +662,7 @@
       const rawParsedHtml = parseMarkdownChunk(body);
       const docSlug = String(docRelPath || 'ws1-doc').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase();
       const rawSections = rawParsedHtml.split(/(?=<h2[\s>])/);
-      const wrappedSectionsHtml = rawSections.map((secHtml, secIdx) => {
+      const wrappedSections = rawSections.map((secHtml, secIdx) => {
         const headingMatch = secHtml.match(/<h[12][^>]*>([\s\S]*?)<\/h[12]>/i);
         const plainTitle = headingMatch
           ? headingMatch[1].replace(/<[^>]+>/g, '').trim()
@@ -516,9 +673,13 @@
             <div class="card-editable-body">${secHtml}</div>
           </div>
         `;
-      }).join('');
+      });
 
-      return breadcrumbsHtml + wrappedSectionsHtml;
+      const summaryCardHtml = buildBlogExecutiveSummaryCard(docRelPath, readingTimeStr);
+      if (wrappedSections.length > 0) {
+        return breadcrumbsHtml + wrappedSections[0] + summaryCardHtml + wrappedSections.slice(1).join('');
+      }
+      return breadcrumbsHtml + summaryCardHtml + wrappedSections.join('');
     }
 
     // DOC_SHORT_ALIASES loaded from /js/data.js
@@ -3591,6 +3752,40 @@
         </div>
       `;
       baH2.insertAdjacentElement('afterend', bar);
+
+      const targetStrip = document.createElement('div');
+      targetStrip.id = 'blog-inline-ba-target-strip';
+      targetStrip.setAttribute('data-no-hover-toolbar', 'true');
+      targetStrip.style.cssText = 'display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin:0 0 16px 0; padding:10px 14px; background:#ffffff; border:1px solid #cbd5e1; border-radius:8px;';
+      targetStrip.innerHTML = `
+        <span style="font-size:11.5px; font-weight:700; color:#334155; text-transform:uppercase; letter-spacing:0.03em; margin-right:4px;">Jump to SaaS Target:</span>
+        <button type="button" class="arch-nav-pill" onclick="scrollToSaasTarget('saas-01')">1. ThoughtSpot</button>
+        <button type="button" class="arch-nav-pill" onclick="scrollToSaasTarget('saas-02')">2. Sigma</button>
+        <button type="button" class="arch-nav-pill" onclick="scrollToSaasTarget('saas-03')">3. ServiceNow</button>
+        <button type="button" class="arch-nav-pill" onclick="scrollToSaasTarget('saas-04')">4. Muse/Veeva</button>
+        <button type="button" class="arch-nav-pill" onclick="scrollToSaasTarget('saas-05')">5. Salesforce</button>
+        <button type="button" class="arch-nav-pill" onclick="scrollToSaasTarget('saas-06')">6. Databricks</button>
+        <button type="button" class="arch-nav-pill" onclick="scrollToSaasTarget('saas-07')">7. Snowflake</button>
+        <button type="button" class="arch-nav-pill" onclick="scrollToSaasTarget('saas-08')">8. Workday</button>
+        <button type="button" class="arch-nav-pill" onclick="scrollToSaasTarget('saas-09')">9. Datadog</button>
+        <button type="button" class="arch-nav-pill" onclick="scrollToSaasTarget('saas-10')">10. CrowdStrike</button>
+      `;
+      bar.insertAdjacentElement('afterend', targetStrip);
+
+      window.scrollToSaasTarget = function(targetKey) {
+        const reader = document.getElementById('hub-blog-reader');
+        if (!reader) return;
+        const normalized = targetKey.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const headings = Array.from(reader.querySelectorAll('h3'));
+        const match = headings.find(h => h.textContent.toLowerCase().replace(/[^a-z0-9]/g, '').includes(normalized));
+        if (match) {
+          match.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          match.style.transition = 'background 0.3s ease';
+          const prev = match.style.background;
+          match.style.background = '#fef08a';
+          setTimeout(() => { match.style.background = prev; }, 1500);
+        }
+      };
 
       if (pairCount < 10) {
         const drawer = document.createElement('div');

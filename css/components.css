@@ -323,29 +323,81 @@
       line-height: 1.2 !important;
     }
     .doc-section-card {
-      padding: 5px 12px !important;
-      margin: 0 0 6px 0 !important;
+      padding: 0 0 24px 0 !important;
+      margin: 0 0 32px 0 !important;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
     }
     .doc-section-card h1 {
-      font-size: 16.5px !important;
-      line-height: 1.2 !important;
-      margin: 0 0 3px 0 !important;
+      font-size: 28px !important;
+      line-height: 1.3 !important;
+      font-weight: 700 !important;
+      margin: 28px 0 14px 0 !important;
       padding: 0 !important;
       border: 0 !important;
+      color: var(--heading) !important;
+      letter-spacing: -0.015em !important;
+    }
+    .doc-section-card h2 {
+      font-size: 22px !important;
+      line-height: 1.35 !important;
+      font-weight: 700 !important;
+      margin: 36px 0 16px 0 !important;
+      padding: 0 0 8px 0 !important;
+      border: 0 !important;
+      border-bottom: 2px solid var(--border) !important;
+      color: var(--heading) !important;
+      letter-spacing: -0.01em !important;
+    }
+    .doc-section-card h3 {
+      font-size: 17.5px !important;
+      line-height: 1.4 !important;
+      font-weight: 600 !important;
+      margin: 24px 0 12px 0 !important;
+      color: var(--heading) !important;
+    }
+    .doc-section-card h4 {
+      font-size: 15px !important;
+      line-height: 1.45 !important;
+      font-weight: 600 !important;
+      margin: 18px 0 8px 0 !important;
+      color: var(--muted) !important;
     }
     .doc-section-card .gcp-arch-callout {
-      margin: 3px 0 4px 0 !important;
-      padding: 2px 8px !important;
-      font-size: 11px !important;
+      margin: 18px 0 !important;
+      padding: 14px 20px !important;
+      font-size: 14.5px !important;
+      line-height: 1.65 !important;
+      border-radius: 8px !important;
+      background: #f8fafc !important;
+      border: 1px solid #e2e8f0 !important;
+      border-left: 5px solid var(--blue) !important;
+      max-width: 960px !important;
     }
     .doc-section-card .gcp-arch-callout p {
-      margin: 0 !important;
-      line-height: 1.3 !important;
-      font-size: 11px !important;
+      margin: 6px 0 !important;
+      line-height: 1.65 !important;
+      font-size: 14.5px !important;
+      color: var(--quote-text) !important;
     }
     .doc-section-card p {
-      margin: 2px 0 !important;
-      line-height: 1.4 !important;
+      margin: 12px 0 16px 0 !important;
+      font-size: 15px !important;
+      line-height: 1.72 !important;
+      color: var(--text) !important;
+      max-width: 960px !important;
+    }
+    .doc-section-card ul.gcp-arch-list,
+    .doc-section-card ol.gcp-arch-steps {
+      max-width: 960px !important;
+    }
+    .doc-section-card ul.gcp-arch-list li,
+    .doc-section-card ol.gcp-arch-steps li {
+      font-size: 15px !important;
+      line-height: 1.68 !important;
+      margin-bottom: 8px !important;
+      color: var(--text) !important;
     }
     .ws-stepper {
       display: flex !important;
@@ -1802,4 +1854,71 @@
     }
     .faq-answer li {
       margin-bottom: 4px;
+    }
+    /* Publication-Grade Document Reader Enhancements (Zero-Clutter Google Cloud Typography) */
+    .gcp-arch-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      margin: 20px 0;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+    .gcp-arch-table-wrap table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0;
+    }
+    .gcp-arch-table-wrap tbody tr:nth-child(even) {
+      background: rgba(248, 250, 252, 0.6);
+    }
+    .gcp-arch-table-wrap tbody tr:hover {
+      background: rgba(241, 245, 249, 0.85);
+    }
+    .gcp-exec-summary-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-left: 5px solid #1a73e8;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin: 14px 0 24px 0;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+    .gcp-exec-pillar-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 12px;
+      transition: border-color 0.15s ease, transform 0.15s ease;
+    }
+    .gcp-exec-pillar-card:hover {
+      border-color: #94a3b8;
+      transform: translateY(-1px);
+    }
+    .arch-nav-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      background: #ffffff;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 6px;
+      text-decoration: none;
+      border: 1px solid #cbd5e1;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .arch-nav-pill:hover,
+    .arch-nav-pill.active {
+      background: #e8f0fe;
+      color: #174ea6;
+      border-color: #aecbfa;
+    }
+    .arch-nav-pill:focus-visible {
+      outline: 2px solid #1a73e8;
+      outline-offset: 2px;
     }
