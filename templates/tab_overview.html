@@ -44,54 +44,171 @@
       </div>
 
       <!-- Interactive 2-Question Topology Selector (WS5 Capstone Decision Tree) -->
+            <!-- Interactive Topology & Tenancy Fit Selector (Decision Tree + 5-Axis MCDA Radar Scorer) -->
       <div class="ov-pattern-selector-card" id="ov-pattern-selector" data-no-hover-toolbar="true">
-        <div class="pattern-sel-header">
+        <div class="pattern-sel-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
           <div style="display:flex; align-items:center; gap:10px;">
             <span style="font-size:24px;">🧭</span>
             <div>
-              <h3 style="margin:0 0 2px 0; font-size:16px; font-weight:800; color:#0f172a;">Interactive 2-Question Topology Selector</h3>
-              <p style="margin:0; font-size:12px; color:#475569;">Answer 2 executive governance questions to determine the optimal enterprise multi-tenant pattern for your SaaS platform.</p>
+              <h3 style="margin:0 0 2px 0; font-size:16px; font-weight:800; color:#0f172a;">Interactive Tenancy Pattern &amp; Fit Selector</h3>
+              <p style="margin:0; font-size:12px; color:#475569;">Determine the optimal enterprise multi-tenant pattern using either the executive 2-question gate or the 5-axis MCDA radar model.</p>
             </div>
           </div>
-          <button type="button" class="sim-btn" onclick="resetPatternSelector()" style="min-height:36px; padding:6px 12px; font-size:11.5px; font-weight:700;">↺ Reset Questions</button>
-        </div>
-
-        <div class="pattern-sel-questions-grid">
-          <!-- Question 1 -->
-          <div class="pattern-q-box" id="pattern-q1-box">
-            <div class="pattern-q-num">QUESTION 1 • REGULATORY &amp; COMPLIANCE GATE</div>
-            <div class="pattern-q-text">Do 100% of your corporate tenants mandate dedicated GCP projects, VPC Service Controls perimeters, and customer-held CMEK kill-switches (e.g. strict banking/healthcare/public sector regulations)?</div>
-            <div class="pattern-q-options">
-              <button type="button" class="pattern-q-btn" id="btn-q1-yes" onclick="setPatternSelectorQ1(true)">
-                <span class="q-opt-bullet">A</span>
-                <span class="q-opt-text"><strong>YES</strong> — 100% Sovereign Silos</span>
-              </button>
-              <button type="button" class="pattern-q-btn active" id="btn-q1-no" onclick="setPatternSelectorQ1(false)">
-                <span class="q-opt-bullet">B</span>
-                <span class="q-opt-text"><strong>NO</strong> — Shared or Multi-Tier</span>
-              </button>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <div style="display:inline-flex; border:1px solid #cbd5e1; border-radius:8px; overflow:hidden; background:#f1f5f9;">
+              <button type="button" id="btn-sel-mode-tree" class="sim-btn active" style="border:none; border-radius:0; padding:5px 11px; font-size:11.5px; font-weight:700;" onclick="switchPatternSelectorMode('tree')">⚡ 2-Question Decision Tree</button>
+              <button type="button" id="btn-sel-mode-mcda" class="sim-btn" style="border:none; border-radius:0; padding:5px 11px; font-size:11.5px; font-weight:700;" onclick="switchPatternSelectorMode('mcda')">🎯 5-Axis MCDA Radar Scorer</button>
             </div>
-          </div>
-
-          <!-- Question 2 -->
-          <div class="pattern-q-box" id="pattern-q2-box">
-            <div class="pattern-q-num">QUESTION 2 • TIERING &amp; UPGRADE GATE</div>
-            <div class="pattern-q-text">Do you package a multi-tier customer portfolio (e.g. Standard pooled tiers + Premium dedicated Enterprise spokes) or require zero-downtime live tier upgrades?</div>
-            <div class="pattern-q-options">
-              <button type="button" class="pattern-q-btn" id="btn-q2-yes" onclick="setPatternSelectorQ2(true)">
-                <span class="q-opt-bullet">A</span>
-                <span class="q-opt-text"><strong>YES</strong> — Multi-Tier / Live Upgrades</span>
-              </button>
-              <button type="button" class="pattern-q-btn active" id="btn-q2-no" onclick="setPatternSelectorQ2(false)">
-                <span class="q-opt-bullet">B</span>
-                <span class="q-opt-text"><strong>NO</strong> — Single Pooled SaaS Tier</span>
-              </button>
-            </div>
+            <button type="button" class="sim-btn" onclick="resetPatternSelector()" style="min-height:32px; padding:4px 10px; font-size:11px; font-weight:700;">↺ Reset</button>
           </div>
         </div>
 
-        <!-- Dynamic Recommendation Banner -->
-        <div class="pattern-rec-banner" id="pattern-rec-banner">
+        <!-- MODE 1: 2-QUESTION DECISION TREE -->
+        <div id="pattern-tree-view">
+          <div class="pattern-sel-questions-grid">
+            <!-- Question 1 -->
+            <div class="pattern-q-box" id="pattern-q1-box">
+              <div class="pattern-q-num">QUESTION 1 • REGULATORY &amp; COMPLIANCE GATE</div>
+              <div class="pattern-q-text">Do 100% of your corporate tenants mandate dedicated GCP projects, VPC Service Controls perimeters, and customer-held CMEK kill-switches (e.g. strict banking/healthcare/public sector regulations)?</div>
+              <div class="pattern-q-options">
+                <button type="button" class="pattern-q-btn" id="btn-q1-yes" onclick="setPatternSelectorQ1(true)">
+                  <span class="q-opt-bullet">A</span>
+                  <span class="q-opt-text"><strong>YES</strong> — 100% Sovereign Silos</span>
+                </button>
+                <button type="button" class="pattern-q-btn active" id="btn-q1-no" onclick="setPatternSelectorQ1(false)">
+                  <span class="q-opt-bullet">B</span>
+                  <span class="q-opt-text"><strong>NO</strong> — Shared or Multi-Tier</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="pattern-q-box" id="pattern-q2-box">
+              <div class="pattern-q-num">QUESTION 2 • TIERING &amp; UPGRADE GATE</div>
+              <div class="pattern-q-text">Do you package a multi-tier customer portfolio (e.g. Standard pooled tiers + Premium dedicated Enterprise spokes) or require zero-downtime live tier upgrades?</div>
+              <div class="pattern-q-options">
+                <button type="button" class="pattern-q-btn" id="btn-q2-yes" onclick="setPatternSelectorQ2(true)">
+                  <span class="q-opt-bullet">A</span>
+                  <span class="q-opt-text"><strong>YES</strong> — Multi-Tier / Live Upgrades</span>
+                </button>
+                <button type="button" class="pattern-q-btn active" id="btn-q2-no" onclick="setPatternSelectorQ2(false)">
+                  <span class="q-opt-bullet">B</span>
+                  <span class="q-opt-text"><strong>NO</strong> — Single Pooled SaaS Tier</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODE 2: 5-AXIS MCDA WEIGHTED RADAR SCORER -->
+        <div id="pattern-mcda-view" style="display:none; margin-top:14px;">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:20px; align-items:start;">
+            <!-- Left: Sliders -->
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:16px; display:flex; flex-direction:column; gap:14px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:0.04em; border-bottom:1px solid #e2e8f0; padding-bottom:6px;">
+                <span>Enterprise Decision Dimension</span>
+                <span>Priority Weight</span>
+              </div>
+
+              <!-- Slider 1 -->
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:12.5px; font-weight:700; color:#1e293b; margin-bottom:3px;">
+                  <span>🛡️ Compliance &amp; Perimeter Rigidity</span>
+                  <span id="val-compliance" style="font-family:monospace; color:#1a73e8; font-weight:800;">75%</span>
+                </div>
+                <input type="range" min="0" max="100" value="75" aria-label="Compliance &amp; Perimeter Rigidity Weight" style="width:100%; height:6px; accent-color:#1a73e8; cursor:pointer;" oninput="updateMcdaScore('compliance', this.value)">
+                <div style="font-size:11px; color:#64748b; margin-top:2px;">Physical VPC-SC, independent CMEK killswitches, HIPAA/SOC2 perimeter isolation.</div>
+              </div>
+
+              <!-- Slider 2 -->
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:12.5px; font-weight:700; color:#1e293b; margin-bottom:3px;">
+                  <span>💰 Token FinOps &amp; Unit Margin Efficiency</span>
+                  <span id="val-finops" style="font-family:monospace; color:#1a73e8; font-weight:800;">60%</span>
+                </div>
+                <input type="range" min="0" max="100" value="60" aria-label="Token FinOps &amp; Unit Margin Efficiency Weight" style="width:100%; height:6px; accent-color:#1a73e8; cursor:pointer;" oninput="updateMcdaScore('finops', this.value)">
+                <div style="font-size:11px; color:#64748b; margin-top:2px;">Vertex AI 32k prompt prefix caching (78% savings), pooled Cloud Run concurrency.</div>
+              </div>
+
+              <!-- Slider 3 -->
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:12.5px; font-weight:700; color:#1e293b; margin-bottom:3px;">
+                  <span>⚙️ DevOps Simplicity &amp; Operational Overhead</span>
+                  <span id="val-devops" style="font-family:monospace; color:#1a73e8; font-weight:800;">40%</span>
+                </div>
+                <input type="range" min="0" max="100" value="40" aria-label="DevOps Simplicity &amp; Operational Overhead Weight" style="width:100%; height:6px; accent-color:#1a73e8; cursor:pointer;" oninput="updateMcdaScore('devops', this.value)">
+                <div style="font-size:11px; color:#64748b; margin-top:2px;">Managing 1 shared project vs N per-tenant GCP projects, Terraform maintenance.</div>
+              </div>
+
+              <!-- Slider 4 -->
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:12.5px; font-weight:700; color:#1e293b; margin-bottom:3px;">
+                  <span>⚡ Tenant Onboarding Velocity</span>
+                  <span id="val-onboarding" style="font-family:monospace; color:#1a73e8; font-weight:800;">70%</span>
+                </div>
+                <input type="range" min="0" max="100" value="70" aria-label="Tenant Onboarding Velocity Weight" style="width:100%; height:6px; accent-color:#1a73e8; cursor:pointer;" oninput="updateMcdaScore('onboarding', this.value)">
+                <div style="font-size:11px; color:#64748b; margin-top:2px;">Instant self-service onboarding (&lt; 2s) vs provisioning dedicated infrastructure (~8m).</div>
+              </div>
+
+              <!-- Slider 5 -->
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:12.5px; font-weight:700; color:#1e293b; margin-bottom:3px;">
+                  <span>🎯 Blast Radius Mitigation</span>
+                  <span id="val-blast" style="font-family:monospace; color:#1a73e8; font-weight:800;">80%</span>
+                </div>
+                <input type="range" min="0" max="100" value="80" aria-label="Blast Radius Mitigation Weight" style="width:100%; height:6px; accent-color:#1a73e8; cursor:pointer;" oninput="updateMcdaScore('blast', this.value)">
+                <div style="font-size:11px; color:#64748b; margin-top:2px;">Zero cross-tenant noisy neighbor impact or shared failure domain risk.</div>
+              </div>
+            </div>
+
+            <!-- Right: Radar Chart & Multi-Pattern Capability Polygon -->
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:16px; display:flex; flex-direction:column; align-items:center;">
+              <span style="font-size:11px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;">Multi-Dimensional Fit Polygon</span>
+              <div style="width:100%; max-width:280px; aspect-ratio:1/1;">
+                <svg id="radar-svg" viewBox="0 0 340 340" style="width:100%; height:100%; overflow:visible;">
+                  <!-- Webs -->
+                  <polygon points="170,40 293,130 246,275 94,275 47,130" fill="none" stroke="#cbd5e1" stroke-width="1" />
+                  <polygon points="170,72 262,140 228,248 112,248 78,140" fill="none" stroke="#e2e8f0" stroke-width="1" />
+                  <polygon points="170,105 231,150 209,222 131,222 109,150" fill="none" stroke="#f1f5f9" stroke-width="1" />
+                  <line x1="170" y1="170" x2="170" y2="40" stroke="#cbd5e1" stroke-dasharray="3,3" />
+                  <line x1="170" y1="170" x2="293" y2="130" stroke="#cbd5e1" stroke-dasharray="3,3" />
+                  <line x1="170" y1="170" x2="246" y2="275" stroke="#cbd5e1" stroke-dasharray="3,3" />
+                  <line x1="170" y1="170" x2="94" y2="275" stroke="#cbd5e1" stroke-dasharray="3,3" />
+                  <line x1="170" y1="170" x2="47" y2="130" stroke="#cbd5e1" stroke-dasharray="3,3" />
+                  <!-- Labels -->
+                  <text x="170" y="26" text-anchor="middle" font-size="11" font-weight="700" fill="#475569">Compliance</text>
+                  <text x="305" y="134" text-anchor="start" font-size="11" font-weight="700" fill="#475569">FinOps</text>
+                  <text x="255" y="295" text-anchor="middle" font-size="11" font-weight="700" fill="#475569">Simplicity</text>
+                  <text x="85" y="295" text-anchor="middle" font-size="11" font-weight="700" fill="#475569">Velocity</text>
+                  <text x="35" y="134" text-anchor="end" font-size="11" font-weight="700" fill="#475569">Blast Rad.</text>
+                  <!-- Pattern Polygons -->
+                  <polygon id="poly-pat-a" points="170,140 270,138 230,250 82,250 145,160" fill="rgba(26, 115, 232, 0.15)" stroke="#1a73e8" stroke-width="1.8" />
+                  <polygon id="poly-pat-b" points="170,50 190,162 130,195 155,180 60,138" fill="rgba(217, 119, 6, 0.15)" stroke="#d97706" stroke-width="1.8" />
+                  <polygon id="poly-pat-c" points="170,65 260,138 180,215 105,230 75,150" fill="rgba(16, 185, 129, 0.25)" stroke="#059669" stroke-width="2.5" />
+                </svg>
+              </div>
+
+              <!-- Pattern Score Summary Pills -->
+              <div style="display:flex; flex-direction:column; gap:6px; width:100%; margin-top:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:6px; font-size:11.5px;">
+                  <span style="font-weight:700; color:#1e40af;">Pattern A: Pooled (WS2)</span>
+                  <span id="score-pat-a" style="font-family:monospace; font-weight:800; color:#1d4ed8;">62.4%</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; background:#fffbeb; border:1px solid #fde68a; border-radius:6px; font-size:11.5px;">
+                  <span style="font-weight:700; color:#92400e;">Pattern B: Sovereign Silos (WS3)</span>
+                  <span id="score-pat-b" style="font-family:monospace; font-weight:800; color:#b45309;">71.8%</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; background:#ecfdf5; border:2px solid #10b981; border-radius:6px; font-size:11.5px;">
+                  <span style="font-weight:800; color:#065f46;">Pattern C: Dynamic Hybrid (WS4) &bull; Winner</span>
+                  <span id="score-pat-c" style="font-family:monospace; font-weight:900; color:#047857; font-size:12.5px;">91.6%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Recommendation Banner (Shared across both modes) -->
+        <div class="pattern-rec-banner" id="pattern-rec-banner" style="margin-top:14px;">
           <div class="pattern-rec-badge" id="pattern-rec-badge">RECOMMENDED ARCHITECTURE</div>
           <div class="pattern-rec-body">
             <div style="flex:1 1 520px; min-width:0;">
@@ -111,7 +228,6 @@
           </div>
         </div>
       </div>
-
       <!-- Quick-Access Master Matrix -->
       <div class="ov-matrix-wrap" data-no-hover-toolbar="true">
         <table class="ov-master-table" aria-label="Quick-Access Master Matrix Across All 5 Blogs and Master Guide">

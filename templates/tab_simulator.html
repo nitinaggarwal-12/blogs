@@ -19,6 +19,149 @@
           </div>
         </div>
 
+        <!-- [MOCK 3 INTEGRATION] ADVERSARIAL RESILIENCE & CVSS RESIDUAL RISK MATRIX -->
+        <div class="card" style="margin-bottom:14px; padding:14px; background:#ffffff; border:1px solid #cbd5e1; border-radius:10px;" data-no-hover-toolbar="true">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; border-bottom:1px solid #e2e8f0; padding-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="badge badge-rose" style="font-size:10.5px; font-weight:800; text-transform:uppercase;">MITRE ATLAS &bull; OWASP LLM Top 10</span>
+              <strong style="font-size:13.5px; color:#0f172a;">Adversarial Resilience &amp; CVSS Residual Risk Matrix</strong>
+            </div>
+            <span style="font-size:11.5px; color:#64748b;">Click any threat to trigger real Python 5-Hop defense execution</span>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <!-- Threat 1: Prompt Injection -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+              <div style="flex:1 1 320px; min-width:0;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span class="badge badge-rose" style="font-size:9.5px; font-family:monospace; padding:1px 5px;">ATLAS-01</span>
+                  <strong style="font-size:12.5px; color:#1e293b;">Indirect Prompt Injection via 3LO MCP Output</strong>
+                </div>
+                <div style="font-size:11px; color:#64748b; margin-top:2px;">Defense: <strong style="color:#0f172a;">Hop 4 Model Armor + Semantic NLC Filter (HTTP 422)</strong></div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div style="display:flex; flex-direction:column; gap:2px; min-width:140px;">
+                  <div style="display:flex; justify-content:space-between; font-size:10.5px; font-family:monospace;">
+                    <span style="color:#e11d48; font-weight:700;">Base: 8.6</span>
+                    <span style="color:#059669; font-weight:800;">Residual: 0.6</span>
+                  </div>
+                  <div style="height:6px; width:140px; background:#e2e8f0; border-radius:999px; overflow:hidden; display:flex;">
+                    <div style="width:86%; background:#e11d48;"></div>
+                    <div style="width:14%; background:#059669;"></div>
+                  </div>
+                </div>
+                <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11px; font-weight:700; color:#1a73e8; border-color:#aecbfa; background:#f0f9ff;" onclick="runLiveScenario('sim3');">
+                  ▶ Replay Sim 3
+                </button>
+              </div>
+            </div>
+
+            <!-- Threat 2: Memory Exfiltration -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+              <div style="flex:1 1 320px; min-width:0;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span class="badge badge-rose" style="font-size:9.5px; font-family:monospace; padding:1px 5px;">ATLAS-02</span>
+                  <strong style="font-size:12.5px; color:#1e293b;">Cross-Tenant Memory Extraction via Vector Drift</strong>
+                </div>
+                <div style="font-size:11px; color:#64748b; margin-top:2px;">Defense: <strong style="color:#0f172a;">Hop 3 5-Level Composite Namespace Keying + Hop 5 RLS</strong></div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div style="display:flex; flex-direction:column; gap:2px; min-width:140px;">
+                  <div style="display:flex; justify-content:space-between; font-size:10.5px; font-family:monospace;">
+                    <span style="color:#e11d48; font-weight:700;">Base: 9.1</span>
+                    <span style="color:#059669; font-weight:800;">Residual: 0.0</span>
+                  </div>
+                  <div style="height:6px; width:140px; background:#e2e8f0; border-radius:999px; overflow:hidden; display:flex;">
+                    <div style="width:91%; background:#e11d48;"></div>
+                    <div style="width:9%; background:#059669;"></div>
+                  </div>
+                </div>
+                <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11px; font-weight:700; color:#1a73e8; border-color:#aecbfa; background:#f0f9ff;" onclick="runLiveScenario('sim2');">
+                  ▶ Replay Sim 2
+                </button>
+              </div>
+            </div>
+
+            <!-- Threat 3: Header Spoofing -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+              <div style="flex:1 1 320px; min-width:0;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span class="badge badge-rose" style="font-size:9.5px; font-family:monospace; padding:1px 5px;">ATLAS-03</span>
+                  <strong style="font-size:12.5px; color:#1e293b;">Tenant Impersonation via Forged Ingress Headers</strong>
+                </div>
+                <div style="font-size:11px; color:#64748b; margin-top:2px;">Defense: <strong style="color:#0f172a;">Hop 1 PEP Header Stripping &amp; DPoP Verification (HTTP 403)</strong></div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div style="display:flex; flex-direction:column; gap:2px; min-width:140px;">
+                  <div style="display:flex; justify-content:space-between; font-size:10.5px; font-family:monospace;">
+                    <span style="color:#e11d48; font-weight:700;">Base: 8.9</span>
+                    <span style="color:#059669; font-weight:800;">Residual: 0.0</span>
+                  </div>
+                  <div style="height:6px; width:140px; background:#e2e8f0; border-radius:999px; overflow:hidden; display:flex;">
+                    <div style="width:89%; background:#e11d48;"></div>
+                    <div style="width:11%; background:#059669;"></div>
+                  </div>
+                </div>
+                <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11px; font-weight:700; color:#1a73e8; border-color:#aecbfa; background:#f0f9ff;" onclick="runLiveScenario('sim1');">
+                  ▶ Replay Sim 1
+                </button>
+              </div>
+            </div>
+
+            <!-- Threat 4: Denial of Wallet / Token Quota -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+              <div style="flex:1 1 320px; min-width:0;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span class="badge badge-rose" style="font-size:9.5px; font-family:monospace; padding:1px 5px;">ATLAS-04</span>
+                  <strong style="font-size:12.5px; color:#1e293b;">Denial of Wallet &amp; Token Quota Starvation</strong>
+                </div>
+                <div style="font-size:11px; color:#64748b; margin-top:2px;">Defense: <strong style="color:#0f172a;">Hop 3 Valkey Token Bucket (120 RPM) &amp; Thinking Budget Clamp</strong></div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div style="display:flex; flex-direction:column; gap:2px; min-width:140px;">
+                  <div style="display:flex; justify-content:space-between; font-size:10.5px; font-family:monospace;">
+                    <span style="color:#e11d48; font-weight:700;">Base: 7.5</span>
+                    <span style="color:#059669; font-weight:800;">Residual: 1.1</span>
+                  </div>
+                  <div style="height:6px; width:140px; background:#e2e8f0; border-radius:999px; overflow:hidden; display:flex;">
+                    <div style="width:75%; background:#e11d48;"></div>
+                    <div style="width:25%; background:#059669;"></div>
+                  </div>
+                </div>
+                <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11px; font-weight:700; color:#1a73e8; border-color:#aecbfa; background:#f0f9ff;" onclick="runLiveScenario('sim4');">
+                  ▶ Replay Sim 4
+                </button>
+              </div>
+            </div>
+
+            <!-- Threat 5: Sovereign Silo Exfiltration -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+              <div style="flex:1 1 320px; min-width:0;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span class="badge badge-rose" style="font-size:9.5px; font-family:monospace; padding:1px 5px;">ATLAS-05</span>
+                  <strong style="font-size:12.5px; color:#1e293b;">Sovereign Perimeter Exfiltration &amp; Cryptographic Purge</strong>
+                </div>
+                <div style="font-size:11px; color:#64748b; margin-top:2px;">Defense: <strong style="color:#0f172a;">Pattern B VPC-SC Perimeter + CMEK Kill-Switch Revocation (HTTP 423)</strong></div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div style="display:flex; flex-direction:column; gap:2px; min-width:140px;">
+                  <div style="display:flex; justify-content:space-between; font-size:10.5px; font-family:monospace;">
+                    <span style="color:#e11d48; font-weight:700;">Base: 9.5</span>
+                    <span style="color:#059669; font-weight:800;">Residual: 0.0</span>
+                  </div>
+                  <div style="height:6px; width:140px; background:#e2e8f0; border-radius:999px; overflow:hidden; display:flex;">
+                    <div style="width:95%; background:#e11d48;"></div>
+                    <div style="width:5%; background:#059669;"></div>
+                  </div>
+                </div>
+                <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11px; font-weight:700; color:#1a73e8; border-color:#aecbfa; background:#f0f9ff;" onclick="runLiveScenario('sim5');">
+                  ▶ Replay Sim 5
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- [FA-16, FA-17] DYNAMIC RUNTIME EXECUTION PROVENANCE & MODE SWITCHER -->
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px; padding:10px 14px; background:#f0fdf4; border:1.5px solid #86efac; border-radius:10px; font-size:12px;">
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">

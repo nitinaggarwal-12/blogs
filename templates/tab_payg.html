@@ -90,6 +90,74 @@
         </div>
       </div>
 
+      <!-- [MOCK 4 INTEGRATION] FINOPS UNIT ECONOMICS & AMORTIZATION DIAL -->
+      <div id="finops-amortization-card" style="margin-bottom:20px; background:#ffffff; border:1px solid #cbd5e1; border-radius:12px; padding:18px 22px; box-shadow:0 1px 4px rgba(15,23,42,0.05);" data-no-hover-toolbar="true">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px; border-bottom:1px solid #f1f5f9; padding-bottom:10px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="badge badge-green" style="font-size:10.5px; font-weight:800; text-transform:uppercase;">FinOps Unit Economics</span>
+              <h2 style="margin:0; font-size:16px; color:#0f172a; font-weight:800;">
+                Tenant Scale &amp; Infrastructure Amortization Dial
+              </h2>
+            </div>
+            <p class="muted" style="margin:2px 0 0 0; font-size:12px;">
+              Slide to scale active enterprise tenants. Calculates real-time monthly infrastructure cost crossover curves across Pattern A, B, and C.
+            </p>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span style="font-size:12px; color:#475569; font-weight:600;">Active Scale:</span>
+            <span id="finops-tenant-count" style="font-family:monospace; font-size:15px; font-weight:900; color:#1a73e8; background:#eff6ff; border:1px solid #bfdbfe; padding:2px 8px; border-radius:6px;">100</span>
+            <span style="font-size:12px; color:#475569;">Tenants</span>
+          </div>
+        </div>
+
+        <!-- Slider Control -->
+        <div style="margin-bottom:16px;">
+          <input type="range" min="10" max="1000" step="10" value="100" aria-label="Active Tenant Scale" style="width:100%; height:8px; accent-color:#1a73e8; cursor:pointer;" oninput="updateFinopsCost(this.value)">
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:#64748b; font-family:monospace; margin-top:4px;">
+            <span>10 Tenants (Startup)</span>
+            <span>250 Tenants (Growth)</span>
+            <span>500 Tenants (Mid-Market)</span>
+            <span>1,000 Tenants (Enterprise Hyperscale)</span>
+          </div>
+        </div>
+
+        <!-- Cost Comparison Cards -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:12px;">
+          <!-- Pattern A -->
+          <div style="background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:10px; padding:12px 14px;">
+            <div style="font-size:11px; font-weight:700; color:#1e40af; text-transform:uppercase;">Pattern A (Pooled Shared)</div>
+            <div id="cost-pat-a" style="font-size:20px; font-weight:900; color:#1d4ed8; font-family:monospace; margin:4px 0;">$2,220 /mo</div>
+            <div style="font-size:11px; color:#1e40af; line-height:1.4;">Formula: <code>$420 base + $18/tenant</code></div>
+            <div style="font-size:11px; color:#059669; font-weight:700; margin-top:4px;">&#10003; 78% Vertex AI Cache Savings</div>
+          </div>
+
+          <!-- Pattern B -->
+          <div style="background:#fffbeb; border:1.5px solid #fde68a; border-radius:10px; padding:12px 14px;">
+            <div style="font-size:11px; font-weight:700; color:#92400e; text-transform:uppercase;">Pattern B (Sovereign Silos)</div>
+            <div id="cost-pat-b" style="font-size:20px; font-weight:900; color:#b45309; font-family:monospace; margin:4px 0;">$85,000 /mo</div>
+            <div style="font-size:11px; color:#92400e; line-height:1.4;">Formula: <code>$850/tenant dedicated VPC-SC</code></div>
+            <div style="font-size:11px; color:#d97706; font-weight:700; margin-top:4px;">&#9888; Linear scaling, zero amortized sharing</div>
+          </div>
+
+          <!-- Pattern C -->
+          <div style="background:#ecfdf5; border:2px solid #10b981; border-radius:10px; padding:12px 14px;">
+            <div style="font-size:11px; font-weight:800; color:#065f46; text-transform:uppercase;">Pattern C (Dynamic Hybrid)</div>
+            <div id="cost-pat-c" style="font-size:20px; font-weight:900; color:#047857; font-family:monospace; margin:4px 0;">$10,770 /mo</div>
+            <div style="font-size:11px; color:#065f46; line-height:1.4;">Formula: <code>90% Pooled ($18) + 10% VIP Spoke ($850)</code></div>
+            <div style="font-size:11px; color:#047857; font-weight:800; margin-top:4px;">&#10003; Optimal B2B blended TCO efficiency</div>
+          </div>
+
+          <!-- Savings Counter -->
+          <div style="background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:10px; padding:12px 14px;">
+            <div style="font-size:11px; font-weight:700; color:#475569; text-transform:uppercase;">Monthly Pooled Savings vs Silo</div>
+            <div id="finops-cache-savings" style="font-size:20px; font-weight:900; color:#16a34a; font-family:monospace; margin:4px 0;">$82,780 /mo</div>
+            <div style="font-size:11px; color:#64748b; line-height:1.4;">Capital retained by using shared Cloud Run &amp; RLS</div>
+            <div style="font-size:11px; color:#2563eb; font-weight:700; margin-top:4px;">Annualized: <span id="finops-annual-savings" style="font-family:monospace;">$993,360 /yr</span></div>
+          </div>
+        </div>
+      </div>
+
       <!-- INTERACTIVE LIVE CONNECTION TESTER -->
       <div id="payg-tester-card" style="margin-bottom:20px; background:#ffffff; border:1px solid #cbd5e1; border-radius:12px; padding:18px 22px; box-shadow:0 1px 4px rgba(15,23,42,0.05);">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px; border-bottom:1px solid #f1f5f9; padding-bottom:10px;">

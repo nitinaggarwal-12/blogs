@@ -3401,6 +3401,114 @@
       q2: false
     };
 
+    window.mcdaWeights = { compliance: 75, finops: 60, devops: 40, onboarding: 70, blast: 80 };
+
+    window.switchPatternSelectorMode = function(mode) {
+      const treeView = document.getElementById('pattern-tree-view');
+      const mcdaView = document.getElementById('pattern-mcda-view');
+      const btnTree = document.getElementById('btn-sel-mode-tree');
+      const btnMcda = document.getElementById('btn-sel-mode-mcda');
+
+      if (mode === 'mcda') {
+        if (treeView) treeView.style.display = 'none';
+        if (mcdaView) mcdaView.style.display = 'block';
+        if (btnTree) btnTree.classList.remove('active');
+        if (btnMcda) btnMcda.classList.add('active');
+        window.updateMcdaScore('compliance', window.mcdaWeights.compliance);
+      } else {
+        if (treeView) treeView.style.display = 'block';
+        if (mcdaView) mcdaView.style.display = 'none';
+        if (btnTree) btnTree.classList.add('active');
+        if (btnMcda) btnMcda.classList.remove('active');
+        window.updatePatternSelectorUI();
+      }
+    };
+
+    window.updateFinopsCost = function(n) {
+      const count = parseInt(n, 10);
+      const nEl = document.getElementById('finops-tenant-count');
+      if (nEl) nEl.innerText = count.toLocaleString();
+
+      const costA = 420 + count * 18;
+      const costB = count * 850;
+      const costC = Math.round((count * 0.9 * 18) + (count * 0.1 * 850) + 650);
+      const savings = costB - costA;
+      const annualSavings = savings * 12;
+
+      const elA = document.getElementById('cost-pat-a');
+      if (elA) elA.innerText = '$' + costA.toLocaleString() + ' /mo';
+      const elB = document.getElementById('cost-pat-b');
+      if (elB) elB.innerText = '$' + costB.toLocaleString() + ' /mo';
+      const elC = document.getElementById('cost-pat-c');
+      if (elC) elC.innerText = '$' + costC.toLocaleString() + ' /mo';
+
+      const elSav = document.getElementById('finops-cache-savings');
+      if (elSav) elSav.innerText = '$' + savings.toLocaleString() + ' /mo';
+      const elAnn = document.getElementById('finops-annual-savings');
+      if (elAnn) elAnn.innerText = '$' + annualSavings.toLocaleString() + ' /yr';
+    };
+
+    window.updateMcdaScore = function(key, val) {
+      window.mcdaWeights[key] = parseInt(val, 10);
+      const valEl = document.getElementById('val-' + key);
+      if (valEl) valEl.innerText = val + '%';
+
+      const capA = [40, 95, 90, 95, 35]; // Pooled
+      const capB = [98, 30, 30, 20, 98]; // Sovereign Silo
+      const capC = [85, 80, 65, 80, 85]; // Dynamic Hybrid
+
+      const sumW = window.mcdaWeights.compliance + window.mcdaWeights.finops + window.mcdaWeights.devops + window.mcdaWeights.onboarding + window.mcdaWeights.blast || 1;
+      const wArr = [
+        window.mcdaWeights.compliance / sumW,
+        window.mcdaWeights.finops / sumW,
+        window.mcdaWeights.devops / sumW,
+        window.mcdaWeights.onboarding / sumW,
+        window.mcdaWeights.blast / sumW
+      ];
+
+      const scoreA = wArr.reduce((acc, w, i) => acc + w * capA[i], 0);
+      const scoreB = wArr.reduce((acc, w, i) => acc + w * capB[i], 0);
+      const scoreC = wArr.reduce((acc, w, i) => acc + w * capC[i], 0);
+
+      const elA = document.getElementById('score-pat-a');
+      if (elA) elA.innerText = scoreA.toFixed(1) + '%';
+      const elB = document.getElementById('score-pat-b');
+      if (elB) elB.innerText = scoreB.toFixed(1) + '%';
+      const elC = document.getElementById('score-pat-c');
+      if (elC) elC.innerText = scoreC.toFixed(1) + '%';
+
+      const recTitle = document.getElementById('pattern-rec-title');
+      const recDesc = document.getElementById('pattern-rec-desc');
+      const recCta = document.getElementById('pattern-rec-cta');
+      const recTags = document.getElementById('pattern-rec-tags');
+
+      if (scoreB > scoreA && scoreB > scoreC) {
+        if (recTitle) recTitle.innerText = 'Pattern B: Sovereign Silos Architecture (Blog 3 • WS3)';
+        if (recDesc) recDesc.innerText = `Based on your priority of ${window.mcdaWeights.compliance}% compliance and ${window.mcdaWeights.blast}% blast radius mitigation, dedicated per-tenant GCP projects, VPC-SC perimeters, and customer-held CMEK kill-switches are mandatory.`;
+        if (recTags) recTags.innerHTML = `<span class="badge badge-purple text-2xs">Physical Project Perimeter</span><span class="badge badge-amber text-2xs">Dedicated CMEK HSM</span><span class="badge badge-blue text-2xs">Zero Shared Resources</span>`;
+        if (recCta) {
+          recCta.innerText = '📖 View Recommended 1-Pager (WS3 Pattern B) →';
+          recCta.setAttribute('data-target-ws', 'WS3');
+        }
+      } else if (scoreA >= scoreB && scoreA >= scoreC) {
+        if (recTitle) recTitle.innerText = 'Pattern A: High-Density Pooled Architecture (Blog 2 • WS2)';
+        if (recDesc) recDesc.innerText = `With ${window.mcdaWeights.finops}% FinOps sensitivity and ${window.mcdaWeights.onboarding}% onboarding velocity, a shared Cloud Run + AlloyDB RLS pool maximizes operational efficiency and prompt cache savings.`;
+        if (recTags) recTags.innerHTML = `<span class="badge badge-green text-2xs">78% Input-Token Cache Savings</span><span class="badge badge-blue text-2xs">AlloyDB RLS Isolation</span><span class="badge badge-purple text-2xs">10/10 Red-Team Defenses</span>`;
+        if (recCta) {
+          recCta.innerText = '📖 View Recommended 1-Pager (WS2 Pattern A) →';
+          recCta.setAttribute('data-target-ws', 'WS2');
+        }
+      } else {
+        if (recTitle) recTitle.innerText = 'Pattern C: Dynamic Hybrid Multi-Tenant Router (Blog 4 • WS4)';
+        if (recDesc) recDesc.innerText = `Balancing ${window.mcdaWeights.compliance}% compliance with ${window.mcdaWeights.finops}% cost efficiency, Pattern C provides a pooled baseline with seamless dynamic upgrade to dedicated Private Service Connect spokes.`;
+        if (recTags) recTags.innerHTML = `<span class="badge badge-blue text-2xs">Zero-Downtime Tier Upgrades</span><span class="badge badge-green text-2xs">Dynamic PSC Routing</span><span class="badge badge-purple text-2xs">Unified 5-Hop Agent Core</span>`;
+        if (recCta) {
+          recCta.innerText = '📖 View Recommended 1-Pager (WS4 Pattern C) →';
+          recCta.setAttribute('data-target-ws', 'WS4');
+        }
+      }
+    };
+
     window.setPatternSelectorQ1 = function(val) {
       patternSelectorState.q1 = Boolean(val);
       window.updatePatternSelectorUI();
@@ -3733,7 +3841,7 @@
             </div>
             <div style="display:flex; gap:6px; align-items:center;">
               <span class="badge badge-green" style="font-size:11px; font-weight:700;">100% GCP Verified</span>
-              <a href="/mocks" target="_blank" class="sim-btn" style="padding:2px 8px; font-size:11px; text-decoration:none; color:#1a73e8; font-weight:700;">🎯 Scoring Studio ↗</a>
+              <button type="button" class="sim-btn" style="padding:2px 8px; font-size:11px; color:#1a73e8; font-weight:700;" onclick="switchTab('overview'); switchPatternSelectorMode('mcda'); document.getElementById('ov-pattern-selector').scrollIntoView({behavior:'smooth'});">🎯 Tenancy Fit Scorer &rarr;</button>
             </div>
           </div>
           <p style="margin:0 0 14px 0; font-size:13px; line-height:1.6; color:#334155; font-style:italic;">
