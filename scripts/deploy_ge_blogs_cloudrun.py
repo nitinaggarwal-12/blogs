@@ -485,6 +485,15 @@ def main() -> None:
     RECEIPT_PATH.parent.mkdir(parents=True, exist_ok=True)
     RECEIPT_PATH.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
     print(f"✅ {service_name} verified on revision {ready_rev} (Ready={ready_status}, Traffic={traffic_pct}%, BeyondCorp={bc_status})")
+    print("==================================================================")
+    print("🌐 CANONICAL BEYONDCORP ACCESSIBLE URL:")
+    print(f"   👉 https://ge-blogs-248990048888.cr.gclb.goog/")
+    print(f"   👉 https://ge-blogs-248990048888.cr.gclb.goog/mocks (Scoring Mocks Studio)")
+    print("⚠️  NOTE ON *.run.app 404:")
+    print("   Project ramp-portal-dev enforces GCP Org Policy constraints/run.allowedIngress")
+    print("   = internal-and-cloud-load-balancing. Direct *.run.app URLs return 404 Page Not Found.")
+    print("   Always use the BeyondCorp GCLB URL above.")
+    print("==================================================================")
     if not verify_only and "--keep-dirty-receipt" not in sys.argv[1:]:
         sync_receipt_after_deploy(ready_rev)
 

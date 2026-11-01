@@ -2176,6 +2176,12 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 self._send_json(500, {"ok": False, "error": str(exc)})
             return
 
+        if path in ("/mocks", "/scoring-mocks", "/scoring-mocks.html"):
+            mocks_file = ROOT_DIR / "scoring_mocks.html"
+            if mocks_file.is_file():
+                self._send_html(200, mocks_file.read_bytes())
+                return
+
         if path in ("/", "/index.html", "/admin/feedback"):
             html_text = render_assembled_portal_html()
             if "universal_feedback_widget.js" not in html_text and "</body>" in html_text:
