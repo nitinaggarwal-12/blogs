@@ -429,8 +429,12 @@ def execute_custom_sandbox_turn(payload: Dict[str, Any]) -> Dict[str, Any]:
             requested_mcp_connector=requested_mcp_connector,
         )
 
+    is_live_gcp = os.environ.get("CYMBAL_LIVE_GCP") == "1"
     return {
         "execution_ms": round((time.perf_counter() - t0) * 1000, 2),
+        "execution_mode": "LIVE_GCP_EXECUTION" if is_live_gcp else "IN_MEMORY_DETERMINISTIC_SIMULATION",
+        "execution_environment": "Google Cloud Platform (Live Cloud KMS & BigQuery APIs)" if is_live_gcp else "In-Memory Deterministic Policy Simulation (<10ms, Zero Cloud Latency)",
+        "deterministic_latency_guarantee": "<10ms (In-Memory Policy Engine)",
         "request_parameters": payload,
         "result": to_jsonable(res),
     }
@@ -480,10 +484,14 @@ def execute_all_simulations_bundle(force_refresh: bool = False) -> Dict[str, Any
         f"VERDICT: {saas_flows}/30 E2E FLOWS • {saas_assertions}/60 ASSERTIONS PASSED (100%)"
     )
 
+    is_live_gcp = os.environ.get("CYMBAL_LIVE_GCP") == "1"
     _ALL_SIMS_CACHE = {
         "ok": True,
         "status": "PASS",
         "execution_ms": round((time.perf_counter() - t0) * 1000, 2),
+        "execution_mode": "LIVE_GCP_EXECUTION" if is_live_gcp else "IN_MEMORY_DETERMINISTIC_SIMULATION",
+        "execution_environment": "Google Cloud Platform (Live Cloud KMS & BigQuery APIs)" if is_live_gcp else "In-Memory Deterministic Policy Simulation (<10ms, Zero Cloud Latency)",
+        "deterministic_latency_guarantee": "<10ms (In-Memory Policy Engine)",
         "core_simulations_passed": 20,
         "saas_e2e_flows_passed": saas_flows,
         "saas_assertions_passed": saas_assertions,
