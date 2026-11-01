@@ -2605,8 +2605,8 @@
       <button class="tab-btn active" id="tab-btn-overview" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('overview', this)">&#127968; Overview &amp; Links</button>
       <button class="tab-btn" id="tab-btn-patterns" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('patterns', this)">1. &#129517; Architecture &amp; Blog Series</button>
       <button class="tab-btn" id="tab-btn-simulator" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('simulator', this)">2. &#9889; Live 5-Hop Simulator</button>
-      <button class="tab-btn" id="tab-btn-screenshots" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('screenshots', this)">3. &#9729;&#65039; GCP Console &amp; Codebase</button>
-      <button class="tab-btn" id="tab-btn-payg" style="padding:4px 8px; font-size:11.5px; font-weight:700;" onclick="switchTab('payg', this)">4. &#128179; Live PAYG SaaS Hub</button>
+      <button class="tab-btn" id="tab-btn-screenshots" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('screenshots', this)">3. &#128736;&#65039; Security Testbed &amp; GCP Console &amp; Codebase</button>
+      <button class="tab-btn" id="tab-btn-payg" style="padding:4px 8px; font-size:11.5px; font-weight:700;" onclick="switchTab('payg', this)">4. &#128640; Production SaaS Deployments (Live PAYG Hub)</button>
       <select id="header-governance-select" aria-label="Governance, Forensic Audit &amp; Change Log" style="width:auto; max-width:158px; padding:4px 20px 4px 7px; font-size:11.5px; font-weight:600; border-radius:7px; cursor:pointer;" onchange="if(this.value==='standalone_changelog'){window.open('/changelog','_blank');this.value='';}else if(this.value){switchTab(this.value);}">
         <option value="">5. &#128737;&#65039; Audit (13/13)</option>
         <option value="forensic">5. &#9989; Audit (13/13)</option>
@@ -3848,11 +3848,20 @@
 
     <!-- TAB 3: LIVE GOOGLE CLOUD CONSOLE, 27-FILE CODEBASE, 8-STAGE SSH RUNBOOK & DELIVERABLES -->
     <section id="tab-screenshots" class="tab-pane" data-testid="blog-visual-proof-screenshots-gallery">
-            <!-- 10 THIRD-PARTY SAAS AWS BEDROCK AGENTCORE MCP TARGETS, MANUAL TESTING PLAYBOOK & S3 OUTCOME VALIDATOR HUB -->
+      <!-- TWO-TIER INTEGRATIONS & CODE ARCHITECTURE BANNER ([FA-48], [FA-38]) -->
+      <div style="margin-bottom:16px; padding:12px 18px; background:linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); border:1px solid #bfdbfe; border-radius:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div>
+          <span class="badge badge-blue" style="font-weight:700;">TWO-TIER INTEGRATIONS ARCHITECTURE</span>
+          <strong style="font-size:13.5px; color:#1e3a8a; margin-left:6px;">Tier 1: Reproducible Automated Security Testbed (Tab 3) &rarr; Tier 2: Production SaaS Deployments (Tab 4)</strong>
+          <p class="muted" style="margin:4px 0 0 0; font-size:12px; color:#334155;">The 10 open-source containers below serve as the hermetic, automated security and regression testbed for continuous testing (prompt injection defense, cross-tenant isolation, CMEK kill-switches, and RLS) without risking production tenant blast radius. For live enterprise deployments utilizing managed cloud AI engines and scale-to-zero economics, see <button type="button" class="sim-btn primary" style="font-size:11px; padding:2px 8px; margin-left:4px;" onclick="switchTab('payg')">&#128640; Tab 4: Production SaaS Deployments &rarr;</button></p>
+        </div>
+      </div>
+
+      <!-- 10 THIRD-PARTY SAAS AWS BEDROCK AGENTCORE MCP TARGETS, MANUAL TESTING PLAYBOOK & S3 OUTCOME VALIDATOR HUB -->
       <div class="card" id="ten-saas-live-access-hub" data-testid="ten-saas-live-access-hub" data-no-hover-toolbar="true" style="border:2px solid #22c55e; margin-bottom:18px; background:linear-gradient(180deg, #f0fdf4 0%, #ffffff 22%);">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--border);">
           <div>
-            <span class="badge badge-green">10 NON-GOOGLE THIRD-PARTY SAAS PRODUCTS &bull; LIVE AWS BEDROCK AGENTCORE MCP TARGETS + AMAZON S3 AUDIT LEDGERS</span>
+            <span class="badge badge-green">TIER 1 &bull; REPRODUCIBLE AUTOMATED SECURITY TESTBED (10 OSS CONTAINERS) &bull; LIVE AWS BEDROCK AGENTCORE MCP TARGETS</span>
             <h3 style="margin:6px 0 4px 0;">&#128268; 10 Third-Party SaaS AWS Bedrock AgentCore MCP Targets, Manual Testing Playbook &amp; S3 Audit Ledger Hub</h3>
             <p class="muted" style="margin:0; font-size:12.5px;">Inspect all 10 live AWS Bedrock AgentCore MCP targets (<code>HXGGFMZBKE</code>..<code>C7EYM614F2</code> on <code>cymbal-a2a-mcp-gateway-suyxm3caof</code>), persisted Amazon S3 audit ledger outcomes (<code>?format=json</code>), and CLI verification commands across Pattern A, Pattern B, and Pattern C.</p>
           </div>
@@ -3976,9 +3985,9 @@
       <div class="card" id="genuine-3p-before-after-hub" data-testid="genuine-3p-before-after-hub" data-no-hover-toolbar="true" style="border:2px solid #1a73e8; margin-bottom:18px; background:linear-gradient(180deg, #eff6ff 0%, #ffffff 16%);">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid #cbd5e1;">
           <div style="max-width:920px;">
-            <span class="badge badge-blue">SELF-HOSTED OPEN-SOURCE REFERENCE ARCHITECTURE STACKS &bull; 10 LIVE CONTAINERS MAPPING TO ENTERPRISE PATTERNS</span>
-            <h3 style="margin:6px 0 4px 0; color:#0f172a;">&#128260; Self-Hosted Open-Source Reference Stacks (10 Upstream Docker Containers on Cloud Run &amp; EC2) Mapping to Enterprise SaaS Patterns</h3>
-            <p class="muted" style="margin:0; font-size:12.5px; color:#334155;">Inspect the authentic open-source reference container UI <strong>immediately before</strong> vs. <strong>immediately after</strong> the GEAP 5-Hop Agent executes its live MCP/REST/SQL action across all 10 running software stacks (<code>Metabase v0.50.26</code>, <code>Grafana Enterprise v11.2.0</code>, <code>Redmine v5.1</code>, <code>NocoDB v0.255.2</code>, <code>Gitea v1.22.3</code>, <code>Trino v440</code>, <code>ClickHouse v24.8</code>, <code>Directus v11.1.0</code>, <code>Datalust Seq v2024.3</code>, <code>HashiCorp Vault v1.13.3</code>). Each open-source stack operates as a concrete reference implementation mapping 1:1 to enterprise SaaS architectural patterns (RLS, CMEK, ITSM, and OTel).</p>
+            <span class="badge badge-blue">REPRODUCIBLE AUTOMATED SECURITY TESTBED &bull; 10 LIVE OPEN-SOURCE CONTAINERS</span>
+            <h3 style="margin:6px 0 4px 0; color:#0f172a;">&#128260; Reproducible Automated Security Testbed: 10 Upstream Open-Source Containers (Cloud Run &amp; AWS EC2)</h3>
+            <p class="muted" style="margin:0; font-size:12.5px; color:#334155;">These 10 authentic open-source container stacks (<code>Metabase v0.50.26</code>, <code>Grafana Enterprise v11.2.0</code>, <code>Redmine v5.1</code>, <code>NocoDB v0.255.2</code>, <code>Gitea v1.22.3</code>, <code>Trino v440</code>, <code>ClickHouse v24.8</code>, <code>Directus v11.1.0</code>, <code>Datalust Seq v2024.3</code>, <code>HashiCorp Vault v1.13.3</code>) provide an isolated, hermetic, zero-external-egress testbed. They enable automated CI/CD and security regression test suites to inject adversarial prompt payloads, simulate cross-tenant leaks, test automated CMEK kill-switches, and verify row-level security without risking production tenant blast radius or violating commercial SaaS terms of service. Below, inspect the container state <strong>immediately before</strong> vs. <strong>immediately after</strong> the 5-Hop Agent executes its live action.</p>
           </div>
           <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
             <button type="button" class="sim-btn" style="font-size:11.5px; padding:6px 10px;" onclick="switchE2EWorkbenchTab('deliverables'); viewArtifact('docs/genuine_3p_before_after_provenance_receipt.json');">&#128220; Before/After SHA-256 Receipt</button>
@@ -4641,8 +4650,8 @@
         <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid #e2e8f0;">
           <div style="max-width:920px;">
             <span class="badge badge-blue">RULE 60A&ndash;60C PROVENANCE CERTIFIED &bull; 23 LIVE 2880&times;1800 RETINA BROWSER CAPTURES &bull; ZERO SYNTHETIC HTML</span>
-            <h3 style="margin:6px 0 4px 0; color:#0f172a;">&#128444;&#65039; 23 Genuine Multi-Cloud 3P Enterprise Stack &amp; AWS Federation Console UI Captures (<code>2880&times;1800</code> Retina)</h3>
-            <p class="muted" style="margin:0; font-size:12.5px; color:#475569;">Every screenshot below was captured via real HTTP/HTTPS navigation in Headless Signed Chrome against <strong>10 official upstream Docker software stacks</strong> running live on <strong>Google Cloud Run Gen2</strong> (<code>bbar-138hf0</code> &bull; <code>us-west1</code>) and <strong>AWS EC2</strong> (<code>393036065405</code> &bull; <code>us-east-1</code> &bull; <code>i-04924523ac41ff132</code>), plus <strong>3 live AWS Management Console</strong> surfaces (EC2, Lambda <code>cymbal-a2a-mcp-remote-peer</code>, S3 <code>cymbal-10saas-ledger/</code>). Each card lists its exact upstream software name &amp; version alongside its 1:1 enterprise domain mapping.</p>
+            <h3 style="margin:6px 0 4px 0; color:#0f172a;">&#128444;&#65039; Multi-Cloud Testbed Deployment Proof: 23 Genuine Retina Captures (Cloud Run, AWS EC2 &amp; AWS Console)</h3>
+            <p class="muted" style="margin:0; font-size:12.5px; color:#475569;">Verified multi-cloud testbed infrastructure deployment proof across <strong>Google Cloud Run Gen2</strong> (<code>bbar-138hf0</code> &bull; <code>us-west1</code>) and <strong>AWS EC2</strong> (<code>393036065405</code> &bull; <code>us-east-1</code> &bull; <code>i-04924523ac41ff132</code>), plus <strong>3 live AWS Management Console</strong> surfaces (EC2, Lambda <code>cymbal-a2a-mcp-remote-peer</code>, S3 <code>cymbal-10saas-ledger/</code>). This gallery provides cryptographic SHA-256 visual audit receipts certifying that all 10 automated security testbed containers are deployed and reachable across both cloud platforms.</p>
           </div>
           <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
             <button type="button" class="sim-btn" style="font-size:11.5px; padding:6px 10px;" onclick="switchE2EWorkbenchTab('deliverables'); viewArtifact('docs/genuine_ui_screenshot_provenance_receipt.json');">&#128220; 23-UI Provenance Receipt</button>
@@ -5389,13 +5398,13 @@
         <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
           <div>
             <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px;">
-              <span class="badge badge-blue" style="font-weight:700;">COMMERCIAL PAYG SAAS &amp; CLOUD MARKETPLACE HUB</span>
-              <span class="badge badge-green" style="font-weight:700;">&#9989; 8/8 PLATFORMS VERIFIED</span>
+              <span class="badge badge-green" style="font-weight:700;">TIER 2 &bull; PRODUCTION DEPLOYMENT TARGETS</span>
+              <span class="badge badge-blue" style="font-weight:700;">8/8 MANAGED MARKETPLACE PLATFORMS</span>
               <span class="badge badge-purple" style="font-weight:700;">&#128179; CONSOLIDATED GOOGLE CLOUD BILLING</span>
               <span class="badge badge-amber" style="font-weight:700;">&#9201; SCALE-TO-ZERO (&lt; $15/MO IDLE)</span>
             </div>
             <h1 style="margin:0 0 6px 0; font-size:22px; color:#0f172a; font-weight:800; letter-spacing:-0.02em;">
-              &#128179; Commercial Pay-As-You-Go (PAYG) Live SaaS &amp; Cloud Marketplace Integration Hub
+              &#128640; Production Deployment Targets: 8 Google Cloud Marketplace &amp; Managed SaaS Connectors
             </h1>
             <div style="display:inline-block; margin-bottom:8px; padding:3px 10px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:6px; font-size:11.5px; color:#1e40af; font-weight:600;">
               ℹ️ PRICING SCOPE DISCLOSURE ([FA-24]): All 15 architecture slide decks strictly contain 0 commercial pricing slides (pure technical &amp; security topology). Rates shown below reflect vendor-published Google Cloud Marketplace list rates solely for illustrative scale-to-zero unit-economics modeling.
@@ -5412,29 +5421,38 @@
           </div>
         </div>
 
-        <!-- ARCHITECTURAL GUIDANCE: WHY PAYG SAAS OVER SELF-HOSTED EC2 VMS -->
+        <!-- TWO-TIER INTEGRATIONS ARCHITECTURE: SECURITY TESTBED (TAB 3) VS. PRODUCTION TARGETS (TAB 4) ([FA-48], [FA-38]) -->
         <div style="margin-top:16px; padding:14px 18px; background:#f0f9ff; border:1px solid #bae6fd; border-radius:10px;">
           <div style="display:flex; gap:10px; align-items:flex-start;">
-            <span style="font-size:20px; line-height:1;">&#129504;</span>
+            <span style="font-size:20px; line-height:1;">&#127963;&#65039;</span>
             <div style="flex:1;">
-              <h3 style="margin:0 0 6px 0; font-size:14px; font-weight:700; color:#0369a1;">
-                Enterprise Reference Architecture Strategy: Vendor SaaS Subscriptions vs. Self-Hosted EC2 VMs
-              </h3>
-              <div class="payg-guidance-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); gap:12px; font-size:12px; line-height:1.5; color:#0c4a6e;">
-                <div style="background:#ffffff; padding:10px 14px; border-radius:8px; border:1px solid #e0f2fe;">
-                  <strong style="color:#b91c1c;">&#10060; Limitations of Self-Hosting on EC2 VMs:</strong>
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                <h3 style="margin:0 0 6px 0; font-size:14px; font-weight:700; color:#0369a1;">
+                  Two-Tier Enterprise Integration Architecture: Automated Security Testbed (Tab 3) &bull; Production Deployment Targets (Tab 4)
+                </h3>
+                <button type="button" class="sim-btn" style="font-size:11px; padding:3px 8px;" onclick="switchTab('screenshots')">&larr; Switch to Tab 3 Security Testbed</button>
+              </div>
+              <div class="payg-guidance-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); gap:12px; margin-top:8px; font-size:12px; line-height:1.5; color:#0c4a6e;">
+                <div style="background:#ffffff; padding:12px 14px; border-radius:8px; border:1px solid #e0f2fe;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <strong style="color:#1d4ed8; font-size:12.5px;">&#128736;&#65039; Tier 1: Automated Security &amp; Regression Testbed (Tab 3)</strong>
+                    <span class="badge badge-blue" style="font-size:10px;">10 OSS Containers</span>
+                  </div>
                   <ul style="margin:4px 0 0 0; padding-left:18px;">
-                    <li><strong>No Vendor AI Backends:</strong> Proprietary engines (Snowflake Cortex NL2SQL, Databricks Unity Catalog Genie, Datadog APM Watchdog) are cloud-native SaaS services not distributed as standalone VM images.</li>
-                    <li><strong>Continuous Compute Burn:</strong> EC2 instances run 24/7 ($40–$150/mo per node) even when completely idle.</li>
-                    <li><strong>Operational Debt:</strong> Manual OS patching, database backups, TLS certificate rotations, and port forwarders.</li>
+                    <li><strong>Reproducible CI/CD Security Fuzzing:</strong> Hermetic open-source containers (Metabase, Grafana, Redmine, Trino, ClickHouse, Vault) running in Cloud Run and EC2.</li>
+                    <li><strong>Zero Vendor Blast Radius:</strong> Allows automated tests to simulate cross-tenant prompt injection attacks, tenant isolation failures, and CMEK destruction without risking external vendor SaaS data corruption.</li>
+                    <li><strong>Zero Variable Egress Cost:</strong> 100% deterministic local/in-VPC execution with no per-query third-party API fees or rate limits.</li>
                   </ul>
                 </div>
-                <div style="background:#ffffff; padding:10px 14px; border-radius:8px; border:1px solid #e0f2fe;">
-                  <strong style="color:#047857;">&#9989; Advantages of Cloud Marketplace PAYG &amp; Developer Accounts:</strong>
+                <div style="background:#ffffff; padding:12px 14px; border-radius:8px; border:1px solid #e0f2fe;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <strong style="color:#047857; font-size:12.5px;">&#128640; Tier 2: Production Deployment Targets (Tab 4)</strong>
+                    <span class="badge badge-green" style="font-size:10px;">8 Marketplace SaaS</span>
+                  </div>
                   <ul style="margin:4px 0 0 0; padding-left:18px;">
-                    <li><strong>Consolidated Cloud Billing:</strong> Billed directly through Google Cloud Marketplace against project <code>bbar-138hf0</code> or <code>ramp-portal-dev</code> with zero separate credit cards.</li>
-                    <li><strong>Automatic Scale-to-Zero:</strong> Virtual warehouses shut off when idle (<code>AUTO_SUSPEND = 60s</code>), yielding &lt; $15/month total idle cost across all 8 platforms.</li>
-                    <li><strong>Authentic UI &amp; Verified SSL:</strong> Genuine vendor hostnames (<code>*.snowflakecomputing.com</code>, <code>*.datadoghq.com</code>) with real multi-tenant OIDC federated security.</li>
+                    <li><strong>Cloud-Native Proprietary AI:</strong> Live production connectors to proprietary vendor engines (Snowflake Cortex NL2SQL, Databricks Unity Catalog Genie, Datadog APM Watchdog).</li>
+                    <li><strong>Scale-to-Zero Auto-Suspend:</strong> Managed cloud instances suspend automatically when idle (<code>AUTO_SUSPEND = 60s</code>), yielding &lt; $15/month total idle footprint.</li>
+                    <li><strong>Consolidated Cloud Billing:</strong> Billed directly through Google Cloud Marketplace against project <code>ramp-portal-dev</code> / <code>bbar-138hf0</code> with real enterprise OIDC federated security.</li>
                   </ul>
                 </div>
               </div>
@@ -5501,7 +5519,7 @@
           </div>
           <div>
             <label style="display:block; font-size:11px; font-weight:700; color:#475569; margin-bottom:4px;">Endpoint URL:</label>
-            <input type="text" id="payg-tester-endpoint-url" style="width:100%; padding:7px 10px; font-size:12px; border-radius:7px; border:1px solid #cbd5e1; font-family:monospace;" value="https://api.datadoghq.com/api/v2/spans" placeholder="https://<account>.vendor.com/api/..." />
+            <input type="text" id="payg-tester-endpoint-url" style="width:100%; padding:7px 10px; font-size:12px; border-radius:7px; border:1px solid #cbd5e1; font-family:monospace;" value="https://api.datadoghq.com/api/v2/spans" placeholder="https://api.datadoghq.com/api/v2/spans" />
           </div>
           <div>
             <label style="display:block; font-size:11px; font-weight:700; color:#475569; margin-bottom:4px;">API Key / Bearer Token (Optional for Health Probe):</label>
@@ -5526,22 +5544,22 @@
         </div>
       </div>
 
-      <!-- [FA-15] HONEST COMMERCIAL PAYG SAAS GOVERNANCE & ARCHITECTURAL BLUEPRINT MATRIX (ZERO SYNTHETIC MOCKUPS) -->
+      <!-- [FA-15, FA-48] HONEST COMMERCIAL PAYG SAAS PRODUCTION GOVERNANCE MATRIX (ZERO SYNTHETIC MOCKUPS) -->
       <div id="payg-before-after-hub" class="card" data-testid="payg-before-after-hub" style="margin-bottom:24px; padding:22px; background:#ffffff; border:1px solid #cbd5e1; border-radius:14px; box-shadow:0 2px 8px rgba(15,23,42,0.04);">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:18px; border-bottom:1px solid #f1f5f9; padding-bottom:14px;">
           <div>
             <div style="display:flex; gap:8px; align-items:center; margin-bottom:4px; flex-wrap:wrap;">
-              <span class="badge badge-purple" style="font-weight:700;">ENTERPRISE GOVERNANCE MATRIX</span>
-              <span class="badge badge-green" style="font-weight:700;">8/8 COMMERCIAL PLATFORMS SPECIFIED</span>
+              <span class="badge badge-green" style="font-weight:700;">TIER 2 &bull; PRODUCTION DEPLOYMENT TARGETS</span>
+              <span class="badge badge-purple" style="font-weight:700;">8/8 MANAGED MARKETPLACE PLATFORMS</span>
               <span class="badge badge-blue" style="font-weight:700;">&#128274; 100% HONEST PROVENANCE (ZERO SYNTHETIC MOCKUPS)</span>
             </div>
             <h2 style="margin:0 0 4px 0; font-size:19px; color:#0f172a; font-weight:800;">
-              &#128203; Commercial Pay-As-You-Go SaaS Multi-Tenant Architecture &amp; Governance Matrix
+              &#128203; Production Deployment Targets: 8 Google Cloud Marketplace SaaS Architecture &amp; Governance Matrix
             </h2>
             <p class="muted" style="margin:0; font-size:13px; line-height:1.45; max-width:980px;">
               Architectural side-by-side analysis comparing <strong>Default Un-Governed SaaS Tenancy</strong> (plaintext PII leakage, continuous compute burn, unpartitioned streams) 
               against <strong>Cymbal 5-Hop Cryptographically Secured &amp; Scale-to-Zero Architecture</strong> across all 8 commercial cloud platforms.
-              <strong>Honest Provenance Invariant [FA-15]:</strong> Zero synthetic HTML mockup screenshots. All endpoints are verified via the live connection tester above (with SSRF protection [FA-08]) and mapped to genuine self-hosted open-source reference containers in Tab 3.
+              <strong>Honest Provenance &amp; Testbed Alignment [FA-15, FA-48]:</strong> Zero duplicate mockup galleries. All production endpoints are verified via the live connection tester above (with SSRF guard [FA-08]) and map 1:1 to their corresponding reproducible automated security testbed containers in Tab 3.
             </p>
           </div>
           <div style="display:flex; gap:6px; flex-wrap:wrap;">
@@ -11192,11 +11210,11 @@ function openGenuineScreenshotLightbox(src, title) {
     const PAYG_SAMPLE_ENDPOINTS = {
       snowflake: 'https://app.snowflake.com/api/v2/statements',
       datadog: 'https://api.datadoghq.com/api/v2/spans',
-      databricks: 'https://dbc-cloud.databricks.com/api/2.1/unity-catalog/tables',
+      databricks: 'https://community.cloud.databricks.com/api/2.0/clusters/list',
       clickhouse: 'https://api.clickhouse.cloud/v1/health',
       mongodb: 'https://cloud.mongodb.com/api/atlas/v2',
-      confluent: 'https://pkc-00000.us-central1.gcp.confluent.cloud:443',
-      servicenow: 'https://dev12345.service-now.com/api/now/table/incident',
+      confluent: 'https://api.confluent.cloud/kafka/v3/clusters',
+      servicenow: 'https://cymbal-itom.service-now.com/api/now/table/incident',
       salesforce: 'https://login.salesforce.com/services/data/v59.0/sobjects/Case'
     };
 

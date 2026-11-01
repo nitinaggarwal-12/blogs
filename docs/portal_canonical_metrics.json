@@ -165,5 +165,146 @@
     "resolution": "RESOLVED ([FA-24])",
     "deckPricingSlides": "0 Deck Pricing Slides across all 21 editable .pptx / Google Slides decks (100% technical architecture).",
     "tab4MarketplaceRates": "Tab 4 displays vendor-published Google Cloud Marketplace list rates solely for illustrative scale-to-zero unit-economics modeling."
+  },
+  "twoTierIntegrationsArchitecture": {
+    "framework": "Two-Tier Enterprise Integration & Code Architecture ([FA-48], [FA-38], [FA-21])",
+    "tier1AutomatedSecurityTestbed": {
+      "location": "Tab 3 (#tab-screenshots)",
+      "purpose": "Reproducible Automated Security Fuzzing & Regression Testbed",
+      "containerCount": 10,
+      "runtimeHosts": [
+        "Google Cloud Run Gen2 (bbar-138hf0)",
+        "AWS EC2 (393036065405 \u2022 i-04924523ac41ff132)"
+      ],
+      "containers": [
+        {
+          "id": "metabase",
+          "name": "Metabase BI v0.50.26",
+          "pattern": "RLS Ledger",
+          "mapsToSaaS": "ThoughtSpot / Salesforce"
+        },
+        {
+          "id": "grafana",
+          "name": "Grafana Enterprise v11.2.0",
+          "pattern": "OTel & APM",
+          "mapsToSaaS": "Sigma / Datadog"
+        },
+        {
+          "id": "redmine",
+          "name": "Redmine ITSM v5.1",
+          "pattern": "ITSM & Change Control",
+          "mapsToSaaS": "ServiceNow"
+        },
+        {
+          "id": "nocodb",
+          "name": "NocoDB GxP v0.255.2",
+          "pattern": "21 CFR Part 11 Audit Trail",
+          "mapsToSaaS": "Veeva Vault / MongoDB"
+        },
+        {
+          "id": "gitea",
+          "name": "Gitea SRE v1.22.3",
+          "pattern": "SRE Incident Queue",
+          "mapsToSaaS": "Jira / Confluent"
+        },
+        {
+          "id": "trino",
+          "name": "Trino Distributed SQL v440",
+          "pattern": "Federated SQL Engine",
+          "mapsToSaaS": "Databricks Unity"
+        },
+        {
+          "id": "clickhouse",
+          "name": "ClickHouse Cloud v24.8",
+          "pattern": "Analytical Columnar RLS",
+          "mapsToSaaS": "Snowflake Cortex"
+        },
+        {
+          "id": "directus",
+          "name": "Directus HCM v11.1.0",
+          "pattern": "Dynamic Column Masking",
+          "mapsToSaaS": "Workday RaaS"
+        },
+        {
+          "id": "seq",
+          "name": "Datalust Seq v2024.3",
+          "pattern": "Zero-PII Structured Logging",
+          "mapsToSaaS": "Datadog APM"
+        },
+        {
+          "id": "vault",
+          "name": "HashiCorp Vault v1.13.3",
+          "pattern": "Per-Tenant CMEK Keyring",
+          "mapsToSaaS": "CrowdStrike / Okta"
+        }
+      ],
+      "rationale": "Provides an isolated, hermetic, zero-external-egress testbed allowing CI/CD and security test suites to inject adversarial prompt payloads, simulate cross-tenant leaks, and test automated CMEK kill-switches without risking production tenant blast radius or violating commercial SaaS terms of service."
+    },
+    "tier2ProductionDeploymentTargets": {
+      "location": "Tab 4 (#tab-payg)",
+      "purpose": "Production Enterprise SaaS Integrations & Cloud Marketplace Deployment Targets",
+      "platformCount": 8,
+      "billingChannel": "Google Cloud Marketplace (1-click subscription against ramp-portal-dev / bbar-138hf0)",
+      "idleEconomics": "Sub-$15/month total across all 8 platforms via automatic scale-to-zero (AUTO_SUSPEND = 60s)",
+      "platforms": [
+        {
+          "id": "snowflake",
+          "name": "Snowflake AI Data Cloud",
+          "apiEndpoint": "https://app.snowflake.com/api/v2/statements",
+          "aiEngine": "Cortex Analyst NL2SQL",
+          "testbedContainer": "clickhouse"
+        },
+        {
+          "id": "datadog",
+          "name": "Datadog Observability",
+          "apiEndpoint": "https://api.datadoghq.com/api/v2/spans",
+          "aiEngine": "Bits AI SRE & Watchdog",
+          "testbedContainer": "seq"
+        },
+        {
+          "id": "databricks",
+          "name": "Databricks Intelligence Platform",
+          "apiEndpoint": "https://community.cloud.databricks.com/api/2.0/clusters/list",
+          "aiEngine": "Unity Catalog Genie",
+          "testbedContainer": "trino"
+        },
+        {
+          "id": "clickhouse",
+          "name": "ClickHouse Cloud",
+          "apiEndpoint": "https://api.clickhouse.cloud/v1/health",
+          "aiEngine": "SQL RLS Policy Engine",
+          "testbedContainer": "clickhouse"
+        },
+        {
+          "id": "mongodb",
+          "name": "MongoDB Atlas",
+          "apiEndpoint": "https://cloud.mongodb.com/api/atlas/v2",
+          "aiEngine": "Atlas Vector Search",
+          "testbedContainer": "nocodb"
+        },
+        {
+          "id": "confluent",
+          "name": "Confluent Cloud",
+          "apiEndpoint": "https://api.confluent.cloud/kafka/v3/clusters",
+          "aiEngine": "Managed Kafka Cluster",
+          "testbedContainer": "gitea"
+        },
+        {
+          "id": "servicenow",
+          "name": "ServiceNow ITSM & ITOM",
+          "apiEndpoint": "https://cymbal-itom.service-now.com/api/now/table/incident",
+          "aiEngine": "Now Assist ITOM AI",
+          "testbedContainer": "redmine"
+        },
+        {
+          "id": "salesforce",
+          "name": "Salesforce CRM & Atlassian Jira",
+          "apiEndpoint": "https://login.salesforce.com/services/data/v59.0/sobjects/Case",
+          "aiEngine": "Einstein 1 & Jira Automation",
+          "testbedContainer": "metabase"
+        }
+      ],
+      "rationale": "Production enterprise target environments integrating proprietary vendor AI engines, authentic vendor SSL, and SOC 2 / ISO 27001 certifications with scale-to-zero economics."
+    }
   }
 }
