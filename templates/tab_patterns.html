@@ -1,0 +1,200 @@
+    <section id="tab-patterns" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-patterns">
+      <div class="ws-hub-card" id="guided-workstream-hub">
+        <!-- Compact Breadcrumb/Pill Selector Bar & Header-Only Workspace Controls (Rule 47, Rule 25 & [FA-52]) -->
+        <div class="ws-compact-selector-bar" role="navigation" aria-label="Workstream Series Navigation">
+          <!-- Left: Series breadcrumb + 6 Compact Pills -->
+          <div style="display:flex; align-items:center; gap:6px; flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%; scrollbar-width:none;">
+            <span class="ws-breadcrumb-label" style="font-size:11px; font-weight:800; color:var(--link); text-transform:uppercase; letter-spacing:0.04em; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;">
+              <span>&#129517;</span> <span>Series:</span>
+            </span>
+            <div class="ws-stepper" role="tablist" aria-label="Select Workstream 1 to 5 or All-in-One Master Deck" style="margin:0; display:inline-flex; gap:5px; flex-wrap:nowrap;">
+              <button class="ws-step-btn active" id="ws-btn-WS1" role="tab" aria-selected="true" onclick="selectGuidedWorkstream('WS1')" title="Part 1 of 5 • WS 1 Foundation: Reference Architecture & 5-Hop Baseline">
+                <span class="ws-kicker" style="display:none;">Part 1 of 5</span>
+                <span class="ws-name">1. WS1 Foundation</span>
+                <span class="ws-meta" style="display:none;">2 Blueprints • 34 Slides</span>
+              </button>
+              <button class="ws-step-btn" id="ws-btn-WS2" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS2')" title="Part 2 of 5 • WS 2 Pattern A: Shared Multi-Tenant Pool">
+                <span class="ws-kicker" style="display:none;">Part 2 of 5</span>
+                <span class="ws-name">2. WS2 Pooled (A)</span>
+                <span class="ws-meta" style="display:none;">4 Blueprints • 34 Slides</span>
+              </button>
+              <button class="ws-step-btn" id="ws-btn-WS3" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS3')" title="Part 3 of 5 • WS 3 Pattern B: Dedicated Customer Vault">
+                <span class="ws-kicker" style="display:none;">Part 3 of 5</span>
+                <span class="ws-name">3. WS3 Dedicated (B)</span>
+                <span class="ws-meta" style="display:none;">3 Blueprints • 34 Slides</span>
+              </button>
+              <button class="ws-step-btn" id="ws-btn-WS4" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS4')" title="Part 4 of 5 • WS 4 Pattern C: Smart Hybrid Router & PSC">
+                <span class="ws-kicker" style="display:none;">Part 4 of 5</span>
+                <span class="ws-name">4. WS4 Hybrid (C)</span>
+                <span class="ws-meta" style="display:none;">4 Blueprints • 34 Slides</span>
+              </button>
+              <button class="ws-step-btn" id="ws-btn-WS5" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS5')" title="Part 5 of 5 • WS 5 Capstone: Decision Guide & Triad">
+                <span class="ws-kicker" style="display:none;">Part 5 of 5</span>
+                <span class="ws-name">5. WS5 Decision</span>
+                <span class="ws-meta" style="display:none;">1 Blueprint • 34 Slides</span>
+              </button>
+              <button class="ws-step-btn" id="ws-btn-ALL" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('ALL')" title="All-in-One • Master Synthesis: 25-Slide Deck & Guide">
+                <span class="ws-kicker" style="display:none;">All-in-One</span>
+                <span class="ws-name">6. Master Deck</span>
+                <span class="ws-meta" style="display:none;">All 14 Blueprints • 25 Slides</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right: Opt-in Review Mode Toggle & Essential Actions -->
+          <div style="display:flex; align-items:center; gap:5px; flex-wrap:wrap;">
+            <!-- Review Mode Toggle Button [FA-12] -->
+            <button type="button" id="btn-toggle-review-mode" class="sim-btn" onclick="toggleReaderReviewMode()" style="padding:3px 8px; font-size:11px; font-weight:700; height:26px; display:inline-flex; align-items:center; gap:4px; border-color:#93c5fd; background:#f0fdf4;" title="Toggle Opt-in Google-Docs-Style Review Comments with Authenticated IAP Identity [FA-12]">
+              <span id="review-mode-icon">&#128172;</span>
+              <span id="review-mode-label">Review Mode: OFF</span>
+            </button>
+            <button type="button" id="hub-quick-codebase-btn" class="sim-btn" style="padding:3px 8px; font-size:11px; font-weight:700; border-color:var(--blue); color:var(--link); height:26px;" onclick="openWorkbenchView('codebase')" title="Jump directly to the Interactive 27-File Production Codebase Explorer">
+              &#128187; 27-File Codebase
+            </button>
+            <button type="button" id="hub-quick-ba-uis-btn" data-testid="hub-quick-ba-uis-btn" class="sim-btn primary" style="padding:3px 8px; font-size:11px; font-weight:700; height:26px;" onclick="jumpToActiveBlogBeforeAfterSection()" title="Scroll directly to this blog's genuine 2880x1800 Before-vs-After 3P SaaS UI captures &amp; Interactive Split Slider">
+              &#128260; SaaS UIs
+            </button>
+            <button type="button" id="hub-quick-console-btn" class="sim-btn" style="padding:3px 7px; font-size:11px; font-weight:700; border-color:var(--green); color:var(--ok-text); height:26px;" onclick="openWorkbenchView('resources')" title="Jump directly to Live GCP &amp; AWS Console Verification, 10-SaaS Targets &amp; 8-Stage Runbook">
+              &#9729;&#65039; Console
+            </button>
+            <button type="button" id="hub-quick-terraform-btn" class="sim-btn" style="padding:3px 7px; font-size:11px; font-weight:700; border-color:#7c3aed; color:#6d28d9; height:26px;" onclick="openWorkbenchView('deliverables', 'terraform')" title="Jump directly to 1-Click Terraform Deployment Scripts (deploy_1click.sh) &amp; HCL Modules">
+              &#128640; Terraform
+            </button>
+            <button type="button" id="hub-cloud-viewer-btn" class="pc-cloud-btn" style="padding:3px 8px; font-size:11px; height:26px;" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'slides')" title="Open Same-Screen Cloud Viewer (Interactive Studio + Live Google Slides + Google Docs)">
+              &#128065;&#65039; Cloud Viewer
+            </button>
+            <div class="pc-split-wrap" id="hub-open-gslides-split">
+              <button type="button" class="pc-split-main" id="hub-open-gslides-main" style="padding:3px 8px; font-size:11px; height:26px;" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1)">
+                <span class="pc-gslides-icon">S</span>
+                <span id="hub-open-gslides-label">Google Slides &#8599;</span>
+              </button>
+              <button type="button" class="pc-split-caret" style="height:26px; padding:0 5px;" onclick="togglePcDropdown(event, 'hub-gslides-menu')" aria-label="Choose Google Workspace app">&#9660;</button>
+              <div id="hub-gslides-menu" class="pc-dropdown-menu">
+                <div class="pc-dropdown-section">Google Workspace Direct Open</div>
+                <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1)">
+                  <span class="pc-gslides-icon">S</span> <span>Google Slides (Active Workstream Deck)</span>
+                </button>
+                <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace('ALL', 'slides', 1)">
+                  <span class="pc-gslides-icon">S</span> <span>Google Slides (Master 25-Slide Deck)</span>
+                </button>
+                <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'docs', 1, activeHubDocPath)">
+                  <span class="pc-gdocs-icon">D</span> <span>Google Docs (Editable Blog + Figures)</span>
+                </button>
+                <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'pdf', 1)">
+                  <span class="pc-gpdf-icon">PDF</span> <span>PDF Document (Vector Slide Export)</span>
+                </button>
+                <div class="pc-dropdown-divider"></div>
+                <div class="pc-dropdown-section">Same-Screen Cloud Viewer</div>
+                <button type="button" class="pc-dropdown-item" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'slides')">
+                  <span>&#10024;</span> <span>Interactive Slide Studio (Fast Canvas)</span>
+                </button>
+                <button type="button" class="pc-dropdown-item" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'embed')">
+                  <span>&#127760;</span> <span>Embedded Live Google Slides Viewer</span>
+                </button>
+                <button type="button" class="pc-dropdown-item" onclick="openCloudViewerModal(activeHubWsKey, 1, 'docs')">
+                  <span>&#128196;</span> <span>Embedded Live Google Docs Viewer</span>
+                </button>
+                <div class="pc-dropdown-divider"></div>
+                <div class="pc-dropdown-section">Article &amp; Local Exports</div>
+                <button type="button" id="hub-copy-md-btn" class="pc-dropdown-item" onclick="copyHubBlogMarkdown()">
+                  <span>&#128203;</span> <span>Copy Raw Article Markdown</span>
+                </button>
+                <button type="button" class="pc-dropdown-item" onclick="window.print()">
+                  <span>&#128424;</span> <span>Print / Save Article as PDF</span>
+                </button>
+                <a id="hub-pptx-download" class="pc-dropdown-item" href="slides/ws1-12slide-visual-deck.pptx" download>
+                  <span>&#11015;</span> <span>Download Editable .pptx (WS1 &bull; 34 Slides)</span>
+                </a>
+                <a id="hub-docx-download" class="pc-dropdown-item" href="docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx" download>
+                  <span>&#128196;</span> <span>Download Editable Word .docx (WS1)</span>
+                </a>
+                <a class="pc-dropdown-item" href="docs/word/all-end-to-end-workstream-and-diagram-guide.docx" download>
+                  <span>&#128196;</span> <span>Download Master Word .docx (ALL)</span>
+                </a>
+                <a class="pc-dropdown-item" href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx?v=20261027-v33" download>
+                  <span>&#11015;</span> <span>Download Master .pptx (25 Slides)</span>
+                </a>
+                <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1, '', true)">
+                  <span>&#128260;</span> <span>Force Re-Sync .pptx &rarr; Google Slides</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preserved Hidden Compatibility Elements (Rule 25 & Zero-Regression) -->
+        <div id="hub-ws-summary-bar" style="display:none;">
+          <span id="hub-ws-badge">WS1 • Part 1 of 5 • 34 Editable Slides</span>
+          <strong id="hub-ws-title">Workstream 1: Reference Architecture, Taxonomy &amp; 5-Hop Baseline</strong>
+          <div id="hub-ws-sub">Pooled (Pattern A), Sovereign Silos (Pattern B) &amp; Dynamic Hybrid (Pattern C)</div>
+          <div id="hub-doc-switcher"></div>
+        </div>
+        
+        <!-- TIER 1 (ARTICLE-FIRST): FULL-WIDTH GOOGLE CLOUD DOCUMENTATION SERIES READER WITH INLINE INTERACTIVE FIGURES -->
+        <div class="ws-pane" id="hub-blog-section" class="mb-4">
+          <div id="hub-blog-meta-banner" class="muted" style="display:none;"></div>
+
+          <!-- 2-Column Google Cloud Docs Style Reader: Left Sticky Section TOC + Right Full-Width Article Canvas -->
+          <div class="series-reader-grid">
+            <aside id="hub-blog-toc" class="series-toc-rail" aria-label="Article Table of Contents">
+              <div style="font-size:11px; font-weight:800; letter-spacing:0.05em; text-transform:uppercase; color:var(--link); margin-bottom:8px;">On This Page</div>
+            </aside>
+            <div class="series-reader-main-lane">
+              <article id="hub-blog-reader" class="article-reader">Loading workstream blog...</article>
+              <div id="hub-series-footer" style="display:flex; justify-content:space-between; align-items:stretch; flex-wrap:wrap; gap:12px;"></div>
+
+              <!-- TIER 2: FALLBACK STANDALONE STUDIO (HIDDEN WHEN ARTICLE ALREADY CONTAINS INLINE INTERACTIVE FIGURES) -->
+              <details id="hub-standalone-studio-details" style="display:none;">
+                <summary style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-weight:700; font-size:15px; color:var(--heading); list-style:none;">
+                  <span>&#128208; Interactive Blueprint &amp; 3-Slide Flow Studio (<span id="hub-diag-heading">Fig 1: Multi-Tenant Taxonomy (Pattern A, B &amp; C)</span>)</span>
+                  <span class="badge badge-blue">Switch Blueprints, Edit in Draw.io &amp; Inspect Slide 2/3 Flows</span>
+                </summary>
+
+                <div id="hub-diagram-pane" style="margin-top:12px; margin-bottom:14px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+                    <div id="hub-diag-buttons" class="sim-controls" style="margin-bottom:0;"></div>
+                    <div class="flex-wrap-center">
+                      <button type="button" id="hub-btn-mode-drawio" class="sim-btn primary" style="padding:5px 10px; font-size:11.5px;" onclick="setHubDiagramRenderMode('drawio')">&#128269; 2x PNG</button>
+                      <button type="button" id="hub-btn-mode-png" class="sim-btn" style="padding:5px 10px; font-size:11.5px;" onclick="setHubDiagramRenderMode('png')">&#127912; Vector SVG</button>
+                      <button type="button" id="hub-btn-mode-edit-inline" class="sim-btn" style="padding:5px 10px; font-size:11.5px; border-color:var(--warn-text); color:var(--warn-text); font-weight:700;" onclick="setHubDiagramRenderMode('edit-inline')">&#9999;&#65039; Edit Inline in Draw.io</button>
+                      <a id="hub-btn-open-drawio-tab" href="/drawio-editor?id=ws1-multi-tenant-taxonomy-overview" target="_blank" rel="noopener noreferrer" class="sim-btn" style="text-decoration:none; padding:5px 10px; font-size:11.5px; border-color:var(--link); color:var(--link); font-weight:700;">&#8599; Draw.io Tab</a>
+                      <details class="export-dropdown">
+                        <summary class="sim-btn" style="padding:5px 10px; font-size:11.5px;">&#11015; Export &#9662;</summary>
+                        <div class="export-dropdown-menu">
+                          <a id="hub-diag-drawio" href="diagrams/ws1-multi-tenant-taxonomy-overview.drawio" download class="sim-btn" style="text-decoration:none; padding:6px 10px; font-size:11.5px; text-align:left;">&#11015; Download .drawio Source</a>
+                          <a id="hub-diag-svg" href="diagrams/ws1-multi-tenant-taxonomy-overview.svg" target="_blank" class="sim-btn" style="text-decoration:none; padding:6px 10px; font-size:11.5px; text-align:left;">&#8599; Open Vector .svg</a>
+                          <a id="hub-diag-png" href="diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png" target="_blank" class="sim-btn" style="text-decoration:none; padding:6px 10px; font-size:11.5px; text-align:left;">&#8599; Open High-Res 2x PNG</a>
+                          <a id="hub-diag-vision-json" href="diagrams/vision_metadata/ws1-multi-tenant-taxonomy-overview.vision.json" target="_blank" class="sim-btn" style="text-decoration:none; padding:6px 10px; font-size:11.5px; text-align:left;">&#8599; Inspect Vision AST (.json)</a>
+                        </div>
+                      </details>
+                    </div>
+                  </div>
+
+                  <div id="hub-diag-img-wrap" style="background:#ffffff; border-radius:10px; padding:12px 14px; border:1.5px solid var(--border); text-align:center;">
+                    <img id="hub-diag-img" src="diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png" alt="Workstream Architecture Diagram" style="width:auto; max-width:min(100%, 860px); max-height:720px; height:auto; display:block; margin:0 auto; border-radius:6px; cursor:zoom-in;" onclick="window.open(this.src, '_blank')" title="Click to open full-resolution 2x diagram in new tab" />
+                  </div>
+                  <div id="hub-drawio-inline-wrap" style="display:none; background:#ffffff; border-radius:10px; overflow:hidden; border:2px solid #2563eb;">
+                    <iframe id="hub-drawio-inline-iframe" src="about:blank" style="width:100%; height:860px; border:0; display:block;" title="Inline Draw.io Architecture Editor"></iframe>
+                  </div>
+                </div>
+
+                <!-- 1-TAB-AT-A-TIME STEP-BY-STEP LOGICAL & EXECUTIVE TECHNICAL FLOW WALKTHROUGH -->
+                <div id="hub-diag-e2e-flow-card" style="background:var(--panel-alt); border:1px solid var(--border); border-radius:12px; padding:14px 16px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+                    <h4 id="hub-flow-title" style="margin:0; font-size:15px; color:var(--heading);">Step-by-Step End-to-End Flow (Slides 2 &amp; 3 Preview)</h4>
+                    <div class="flex-wrap-gap6" id="hub-flow-tab-btns">
+                      <button type="button" id="hub-flow-tab-logical" class="sim-btn primary" style="padding:5px 11px; font-size:12px;" onclick="setHubDiagramFlowTab('logical')">&#129517; 1. Logical Flow (Steps &#9312;&ndash;&#9318;)</button>
+                      <button type="button" id="hub-flow-tab-technical" class="sim-btn" style="padding:5px 11px; font-size:12px;" onclick="setHubDiagramFlowTab('technical')">&#9881;&#65039; 2. Technical Specification Table</button>
+                      <button type="button" id="hub-flow-tab-both" class="sim-btn" style="padding:5px 11px; font-size:12px;" onclick="setHubDiagramFlowTab('both')">&#128214; View Both</button>
+                    </div>
+                  </div>
+                  <div id="hub-diag-e2e-flow-body"></div>
+                </div>
+              </details>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: UNIFIED LIVE 5-HOP RUNTIME & BREACH SIMULATOR -->

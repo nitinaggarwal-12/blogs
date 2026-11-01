@@ -1,0 +1,132 @@
+    <section id="tab-changelog" class="tab-pane" data-testid="portal-separate-changelog-page" role="tabpanel" aria-labelledby="tab-btn-changelog">
+      <div id="standalone-changelog-banner" style="display:none; margin-bottom:14px; padding:12px 16px; background:linear-gradient(90deg, #eff6ff 0%, #f0fdf4 100%); border:1px solid #bfdbfe; border-radius:12px; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <span class="badge badge-blue">STANDALONE CHANGE LOG &amp; COLLABORATIVE AUDIT PAGE (/changelog)</span>
+          <h2 style="margin:4px 0 2px 0; font-size:18px; color:#0f172a;">&#128220; Live Portal Change Log: Who Did What Across Content Cards, Draw.io Diagrams &amp; Multi-User Comments</h2>
+          <p class="muted" style="margin:0; font-size:12.5px;">Real-time persistent audit trail backed by <code>docs/portal_change_log.json</code> &amp; <code>docs/portal_comments.json</code> via <code>GET / POST /api/changelog</code> and <code>/api/comments</code>.</p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+          <a href="/" class="sim-btn primary" style="text-decoration:none;">&larr; Back to Main Architecture Portal (/)</a>
+          <button type="button" class="sim-btn" onclick="toggleCommentsDrawer()">&#128172; Open Google Docs / Slides Comments Drawer (<span id="chg-btn-comments-count">2</span>)</button>
+          <button type="button" class="sim-btn" onclick="exportChangeLogCsv()">&#11015; Export CSV</button>
+          <button type="button" class="sim-btn" onclick="exportChangeLogJson()">&#11015; Export JSON</button>
+          <button type="button" class="sim-btn" onclick="fetchAndRenderChangeLog()">&#128260; Refresh Log</button>
+        </div>
+      </div>
+
+      <!-- KPI Summary Strip -->
+      <div class="grid-4" style="margin-bottom:14px;" data-no-hover-toolbar="true">
+        <div class="card" style="margin-bottom:0; padding:12px 14px;" data-no-hover-toolbar="true">
+          <div class="muted" style="font-size:11px; font-weight:700; text-transform:uppercase;">Total Logged Actions</div>
+          <div id="chg-kpi-total" style="font-size:24px; font-weight:800; color:var(--link); margin-top:2px;">3</div>
+          <div class="muted text-xs-plus">Persisted in <code>docs/portal_change_log.json</code></div>
+        </div>
+        <div class="card" style="margin-bottom:0; padding:12px 14px;" data-no-hover-toolbar="true">
+          <div class="muted" style="font-size:11px; font-weight:700; text-transform:uppercase;">Content &amp; Card Mutations</div>
+          <div id="chg-kpi-cards" style="font-size:24px; font-weight:800; color:#0d9488; margin-top:2px;">1</div>
+          <div class="muted text-xs-plus">Edit &bull; Save &bull; Add &bull; Delete &bull; Hide &bull; Clone</div>
+        </div>
+        <div class="card" style="margin-bottom:0; padding:12px 14px;" data-no-hover-toolbar="true">
+          <div class="muted" style="font-size:11px; font-weight:700; text-transform:uppercase;">Draw.io Diagram Saves</div>
+          <div id="chg-kpi-diagrams" style="font-size:24px; font-weight:800; color:#7c3aed; margin-top:2px;">1</div>
+          <div class="muted text-xs-plus">Online <code>.drawio</code> XML commits</div>
+        </div>
+        <div class="card" style="margin-bottom:0; padding:12px 14px;" data-no-hover-toolbar="true">
+          <div class="muted" style="font-size:11px; font-weight:700; text-transform:uppercase;">Multi-User Section Comments</div>
+          <div id="chg-kpi-comments" style="font-size:24px; font-weight:800; color:#d97706; margin-top:2px;">2 Threads (3 Comments)</div>
+          <div class="muted text-xs-plus">Google Docs &amp; Slides style threads</div>
+        </div>
+      </div>
+
+      <!-- Main Change Log Filter & Ledger Card -->
+      <div class="card" data-no-hover-toolbar="true">
+        <div id="changelog-inner-card-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+          <div>
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:4px;">
+              <span class="badge badge-green">&#9679; LIVE PERSISTENT CHANGE LOG</span>
+              <span class="badge badge-blue">7-ICON CARD HOVER ACTIONS + MULTI-USER COMMENTS</span>
+              <span class="badge badge-purple" id="chg-active-actor-badge">Session: Read-Only Viewer (Admin IAP Required for Edits)</span>
+            </div>
+            <h3 style="margin:4px 0;">&#128220; Change Log &amp; Collaborative Audit History (Who Did What &amp; When)</h3>
+            <p class="muted" style="margin:0; font-size:12.5px;">Every card action (<code>✏️ Edit</code>, <code>💾 Save</code>, <code>➕ Add</code>, <code>🗑️ Delete</code>, <code>🙈 Hide</code>, <code>📋 Clone</code>, <code>💬 Comment</code>) and inline Draw.io diagram edit is automatically saved with the user's name, email, role, timestamp, and before/after snapshot.</p>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <a href="/changelog" target="_blank" rel="noopener" class="sim-btn primary" style="text-decoration:none;">&#8599; Open Separate Change Log Page (/changelog)</a>
+            <button type="button" class="sim-btn" onclick="toggleCommentsDrawer()">&#128172; All Section Comments</button>
+            <button type="button" class="sim-btn" onclick="unhideAllHiddenCards()" id="chg-unhide-all-btn" style="display:none;">&#128065;&#65039; Unhide All Cards</button>
+            <button type="button" class="sim-btn" onclick="exportChangeLogCsv()">&#11015; Export CSV</button>
+            <button type="button" class="sim-btn" onclick="exportChangeLogJson()">&#11015; Export JSON</button>
+            <button type="button" class="sim-btn" onclick="fetchAndRenderChangeLog()">&#128260; Refresh Log</button>
+          </div>
+        </div>
+
+        <!-- Verified Google Cloud IAP Admin Identity Gate Banner ([FA-09]: Zero Client Identity Impersonation) -->
+        <div id="chg-iap-auth-banner" data-testid="chg-iap-auth-banner" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:10px 14px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:14px;">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span class="badge badge-green font-bold">&#128274; IAP ADMIN MUTATION GATE [FA-09]</span>
+            <strong id="chg-iap-verified-label" style="font-size:12.5px; color:#0f172a;">Session: Read-Only Viewer (No verified X-Goog-Authenticated-User-Email header)</strong>
+          </div>
+          <div class="text-xs-plus text-muted">
+            All writes to <code>/api/changelog</code>, <code>/api/changelog/restore</code>, <code>/api/save-drawio</code> &amp; <code>delete_thread</code> require verified Google Cloud IAP Admin identity &amp; server-side HTML allowlist sanitization (client actor spoofing disabled).
+          </div>
+        </div>
+
+        <!-- Live Search & Multi-Filter Controls (Rule 25C & Rule 25K) -->
+        <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap:10px; align-items:center; margin-bottom:14px;">
+          <input type="text" id="chg-search-input" placeholder="Search change log by user name, email, card title, action, or summary..." aria-label="Search Change Log" oninput="renderChangeLogTable()" />
+          <select id="chg-filter-action" aria-label="Filter by Action" onchange="renderChangeLogTable()">
+            <option value="ALL">All Actions</option>
+            <option value="SAVE">💾 Save Content (SAVE)</option>
+            <option value="EDIT">✏️ Inline Edit (EDIT)</option>
+            <option value="ADD">➕ Add Card (ADD)</option>
+            <option value="DELETE">🗑️ Delete Card (DELETE)</option>
+            <option value="HIDE">🙈 Hide / Unhide (HIDE/UNHIDE)</option>
+            <option value="CLONE">📋 Clone Card (CLONE)</option>
+            <option value="DIAGRAM_SAVE">📐 Diagram Save (DIAGRAM_SAVE)</option>
+            <option value="COMMENT">💬 Section Comments (COMMENT_*)</option>
+            <option value="RESTORE">↩️ Restore / Revert (RESTORE)</option>
+          </select>
+          <select id="chg-filter-actor" aria-label="Filter by User" onchange="renderChangeLogTable()">
+            <option value="ALL">All Users / Contributors</option>
+          </select>
+          <select id="chg-filter-ws" aria-label="Filter by Workstream" onchange="renderChangeLogTable()">
+            <option value="ALL">All Workstreams</option>
+            <option value="WS1">WS1 (Reference Arch)</option>
+            <option value="WS2">WS2 (Pattern A Pooled)</option>
+            <option value="WS3">WS3 (Pattern B Siloed)</option>
+            <option value="WS4">WS4 (Pattern C Hybrid)</option>
+            <option value="WS5">WS5 (Decision Guide)</option>
+            <option value="ALL_DECK">ALL (Master Guide)</option>
+          </select>
+          <button type="button" class="sim-btn" onclick="resetChangeLogFilters()">&#8634; Reset Filters</button>
+        </div>
+
+        <!-- Empty State (Rule 25K) -->
+        <div id="chg-empty-state" style="display:none; text-align:center; padding:28px 16px; background:var(--panel-alt); border:1px dashed var(--border); border-radius:10px; margin-bottom:14px;">
+          <div style="font-size:15px; font-weight:700; color:var(--heading); margin-bottom:6px;">No matching Change Log entries found</div>
+          <div class="muted" style="font-size:12.5px; margin-bottom:12px;">Try clearing your search term or resetting the active action/user filters.</div>
+          <button type="button" class="sim-btn primary" onclick="resetChangeLogFilters()">&#8634; Reset All Filters</button>
+        </div>
+
+        <!-- Chronological Change Log Table -->
+        <div style="overflow-x:auto;">
+          <table id="changelog-ledger-table">
+            <thead>
+              <tr>
+                <th>Audit ID &amp; Timestamp (EST)</th>
+                <th>Who (User Name, Email &amp; Role)</th>
+                <th>Action</th>
+                <th>Target Card / Section / Diagram</th>
+                <th>Workstream &amp; Document</th>
+                <th>Change Summary &amp; Diff</th>
+                <th>Inspect / Restore</th>
+              </tr>
+            </thead>
+            <tbody id="changelog-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- NON-BLOCKING RIGHT-SIDE DRAWER 1: GOOGLE DOCS & SLIDES MULTI-USER COMMENTS STREAM (Rule 25F) -->

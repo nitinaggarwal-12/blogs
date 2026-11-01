@@ -360,7 +360,7 @@ def submit_feedback(
     """
     Validates and persists a real user feedback submission.
     """
-    message = str(payload.get("message") or "").strip()
+    message = str(payload.get("message") or payload.get("feedback") or "").strip()
     if not message:
         raise ValueError("Feedback message is required and cannot be empty.")
 

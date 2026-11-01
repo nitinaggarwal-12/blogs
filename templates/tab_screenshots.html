@@ -1,0 +1,1546 @@
+    <section id="tab-screenshots" class="tab-pane" data-testid="blog-visual-proof-screenshots-gallery" role="tabpanel" aria-labelledby="tab-btn-screenshots">
+      <!-- TWO-TIER INTEGRATIONS & CODE ARCHITECTURE BANNER ([FA-48], [FA-38]) -->
+      <div style="margin-bottom:16px; padding:12px 18px; background:linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); border:1px solid #bfdbfe; border-radius:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div>
+          <span class="badge badge-blue font-bold">TWO-TIER INTEGRATIONS ARCHITECTURE</span>
+          <strong style="font-size:13.5px; color:#1e3a8a; margin-left:6px;">Tier 1: Reproducible Automated Security Testbed (Tab 3) &rarr; Tier 2: Production SaaS Deployments (Tab 4)</strong>
+          <p class="muted" style="margin:4px 0 0 0; font-size:12px; color:#334155;">The 10 open-source containers below serve as the hermetic, automated security and regression testbed for continuous testing (prompt injection defense, cross-tenant isolation, CMEK kill-switches, and RLS) without risking production tenant blast radius. For live enterprise deployments utilizing managed cloud AI engines and scale-to-zero economics, see <button type="button" class="sim-btn primary" style="font-size:11px; padding:2px 8px; margin-left:4px;" onclick="switchTab('payg')">&#128640; Tab 4: Production SaaS Deployments &rarr;</button></p>
+        </div>
+      </div>
+
+      <!-- 10 THIRD-PARTY SAAS AWS BEDROCK AGENTCORE MCP TARGETS, MANUAL TESTING PLAYBOOK & S3 OUTCOME VALIDATOR HUB -->
+      <div class="card" id="ten-saas-live-access-hub" data-testid="ten-saas-live-access-hub" data-no-hover-toolbar="true" style="border:2px solid #22c55e; margin-bottom:18px; background:linear-gradient(180deg, #f0fdf4 0%, #ffffff 22%);">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+          <div>
+            <span class="badge badge-green">TIER 1 &bull; REPRODUCIBLE AUTOMATED SECURITY TESTBED (10 OSS CONTAINERS) &bull; LIVE AWS BEDROCK AGENTCORE MCP TARGETS</span>
+            <h3 style="margin:6px 0 4px 0;">&#128268; 10 Third-Party SaaS AWS Bedrock AgentCore MCP Targets, Manual Testing Playbook &amp; S3 Audit Ledger Hub</h3>
+            <p class="muted" style="margin:0; font-size:12.5px;">Inspect all 10 live AWS Bedrock AgentCore MCP targets (<code>HXGGFMZBKE</code>..<code>C7EYM614F2</code> on <code>cymbal-a2a-mcp-gateway-suyxm3caof</code>), persisted Amazon S3 audit ledger outcomes (<code>?format=json</code>), and CLI verification commands across Pattern A, Pattern B, and Pattern C.</p>
+          </div>
+          <div class="flex-wrap-gap8">
+            <button type="button" class="sim-btn primary" onclick="document.getElementById('genuine-3p-before-after-hub')?.scrollIntoView({behavior:'smooth', block:'start'});">&#128260; Inspect 10 Before &rarr; After Live UI Diffs (20 PNGs)</button>
+            <button type="button" class="sim-btn primary" onclick="openDocInReader('docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md')">&#128214; Open Full 10-SaaS &times; 3-Pattern Manual Testing Playbook</button>
+            <button type="button" class="sim-btn" onclick="switchE2EWorkbenchTab('deliverables'); viewArtifact('docs/third_party_5_saas_verification_receipt.json');">&#128220; View Signed 10-SaaS Verification Receipt JSON</button>
+            <button type="button" class="sim-btn" onclick="switchE2EWorkbenchTab('deliverables'); viewArtifact('docs/aws_agentcore_10_saas_targets_manifest.json');">&#9729;&#65039; View AWS AgentCore 10-Target Manifest JSON</button>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom:12px; gap:12px;">
+          <div style="background:#f8fafc; border:1px solid var(--border); border-radius:10px; padding:10px 14px; font-size:12px;">
+            <strong style="color:var(--heading); display:block; margin-bottom:4px;">&#128272; Control Plane: Google Cloud 5-Hop Agent &rarr; AWS Bedrock AgentCore MCP Gateway</strong>
+            <div style="font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:11.3px; line-height:1.45;">
+              &bull; <strong>MCP Gateway URL</strong>: <code>https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp</code><br/>
+              &bull; <strong>AWS Account / Region</strong>: <code>393036065405</code> (<code>us-east-1</code>) &bull; <strong>Cognito Pool</strong>: <code>us-east-1_vqlzYM74B</code><br/>
+              &bull; <strong>OAuth2 ClientId</strong>: <code>49f0365186c43e7b6r7hc982vn</code> &bull; <strong>Principal</strong>: <code>sre-lead@finvault.com</code><br/>
+              &bull; <strong>Manual CLI Suite</strong>: <code>python3 -B scripts/verify_5_third_party_saas_products.py --verbose</code>
+            </div>
+          </div>
+          <div style="background:#f8fafc; border:1px solid var(--border); border-radius:10px; padding:10px 14px; font-size:12px;">
+            <strong style="color:var(--heading); display:block; margin-bottom:4px;">&#128273; Audit Plane: Immutable Amazon S3 Cross-Cloud Outcome Ledger (<code>?format=json</code>)</strong>
+            <div style="font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:11.3px; line-height:1.45;">
+              &bull; <strong>S3 Audit Ledger Bucket</strong>: <code>s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1/cymbal-10saas-ledger/</code><br/>
+              &bull; <strong>FinVault Tenant Verdict</strong>: <code>HTTP 200 ALLOW</code> (RLS &amp; CMEK verified)<br/>
+              &bull; <strong>RetailStream Spoof Verdict</strong>: <code>HTTP 403 FORBIDDEN</code> / <code>HTTP 401 UNAUTHORIZED</code><br/>
+              &bull; <strong>MedCore Revoked CMEK Verdict</strong>: <code>HTTP 423 LOCKED</code> (<code>valkey_purged=True</code>)
+            </div>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Third-Party SaaS Product &amp; Vendor Endpoint</th>
+                <th>AWS AgentCore MCP Target &amp; Tool</th>
+                <th>Live S3 Ledger Outcome JSON (<code>?format=json</code>)</th>
+                <th>Manual Playbook CLI Command</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>01</strong></td>
+                <td><strong>ThoughtSpot Cloud (Spotter Agentic BI v2.0)</strong><br/><span class="muted text-xs"><code>try-everywhere.thoughtspot.cloud</code></span></td>
+                <td><code>HXGGFMZBKE</code> (<code>READY</code>)<br/><span class="muted text-xs"><code>query_thoughtspot_liveboard_rls</code></span></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json" target="_blank" rel="noopener" class="whitespace-nowrap text-xs-plus"><code>thoughtspot-spotter/finvault.json</code> &nearr;</a></td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --verbose</code></td>
+              </tr>
+              <tr>
+                <td><strong>02</strong></td>
+                <td><strong>Sigma Computing (Cloud BI Workbooks REST API v2)</strong><br/><span class="muted text-xs"><code>api.sigmacomputing.com</code></span></td>
+                <td><code>IZVODT083Q</code> (<code>READY</code>)<br/><span class="muted text-xs"><code>eval_sigma_workbook_rls</code></span></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json" target="_blank" rel="noopener" class="whitespace-nowrap text-xs-plus"><code>sigma-computing/finvault.json</code> &nearr;</a></td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --verbose</code></td>
+              </tr>
+              <tr>
+                <td><strong>03</strong></td>
+                <td><strong>ServiceNow ITSM &amp; ITOM (<code>CHG0049218</code>)</strong><br/><span class="muted text-xs"><code>developer.servicenow.com</code></span></td>
+                <td><code>ZS9VGYHBQL</code> (<code>READY</code>)<br/><span class="muted text-xs"><code>query_servicenow_change_records</code></span></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json" target="_blank" rel="noopener" class="whitespace-nowrap text-xs-plus"><code>servicenow-itsm/finvault.json</code> &nearr;</a></td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --verbose</code></td>
+              </tr>
+              <tr>
+                <td><strong>04</strong></td>
+                <td><strong>Veeva Vault RIM &amp; Muse Clinical EDC (21 CFR Part 11)</strong><br/><span class="muted text-xs"><code>login.veevavault.com</code></span></td>
+                <td><code>TWQU0KSRVF</code> (<code>READY</code>)<br/><span class="muted text-xs"><code>query_muse_study_biomarkers</code></span></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json" target="_blank" rel="noopener" class="whitespace-nowrap text-xs-plus"><code>muse-poc/finvault.json</code> &nearr;</a></td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --verbose</code></td>
+              </tr>
+              <tr>
+                <td><strong>05</strong></td>
+                <td><strong>Salesforce CRM (<code>NA224</code>) &amp; Atlassian Jira Cloud</strong><br/><span class="muted text-xs"><code>api.status.salesforce.com</code></span></td>
+                <td><code>K5JAEFCQ6E</code> (<code>READY</code>)<br/><span class="muted text-xs"><code>create_redacted_sfdc_jira_escalation</code></span></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json" target="_blank" rel="noopener" class="whitespace-nowrap text-xs-plus"><code>salesforce-jira/finvault.json</code> &nearr;</a></td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --verbose</code></td>
+              </tr>
+              <tr>
+                <td><strong>06</strong></td>
+                <td><strong>Databricks Data Intelligence Platform (Unity Catalog)</strong><br/><span class="muted text-xs"><code>community.cloud.databricks.com</code></span></td>
+                <td><code>TERCK8SLBP</code> (<code>READY</code>)<br/><span class="muted text-xs"><code>execute_uc_genie_federated_sql</code></span></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json" target="_blank" rel="noopener" class="whitespace-nowrap text-xs-plus"><code>databricks-unity/finvault.json</code> &nearr;</a></td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --verbose</code></td>
+              </tr>
+              <tr>
+                <td><strong>07</strong></td>
+                <td><strong>Snowflake AI Data Cloud (Cortex Analyst &amp; SQL v2)</strong><br/><span class="muted text-xs"><code>snowflakecomputing.com</code></span></td>
+                <td><code>CCMDEVZV2S</code> (<code>READY</code>)<br/><span class="muted text-xs"><code>execute_cortex_analyst_sql</code></span></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json" target="_blank" rel="noopener" class="whitespace-nowrap text-xs-plus"><code>snowflake-cortex/retailstream.json</code> &nearr;</a></td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --verbose</code></td>
+              </tr>
+              <tr>
+                <td><strong>08</strong></td>
+                <td><strong>Workday Enterprise HCM &amp; Financial Management RaaS</strong><br/><span class="muted text-xs"><code>wd5-services1.myworkday.com</code></span></td>
+                <td><code>RAOTMUMJTZ</code> (<code>READY</code>)<br/><span class="muted text-xs"><code>fetch_compensation_raas_report</code></span></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json" target="_blank" rel="noopener" class="whitespace-nowrap text-xs-plus"><code>workday-raas/finvault.json</code> &nearr;</a></td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --verbose</code></td>
+              </tr>
+              <tr>
+                <td><strong>09</strong></td>
+                <td><strong>Datadog Cloud Observability &amp; Bits AI SRE</strong><br/><span class="muted text-xs"><code>api.datadoghq.com</code></span></td>
+                <td><code>G767QR3TQZ</code> (<code>READY</code>)<br/><span class="muted text-xs"><code>query_tenant_apm_logs</code></span></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json" target="_blank" rel="noopener" class="whitespace-nowrap text-xs-plus"><code>datadog-sre/finvault.json</code> &nearr;</a></td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --verbose</code></td>
+              </tr>
+              <tr>
+                <td><strong>10</strong></td>
+                <td><strong>CrowdStrike Falcon XDR &amp; Okta Workforce Identity</strong><br/><span class="muted text-xs"><code>api.crowdstrike.com</code></span></td>
+                <td><code>C7EYM614F2</code> (<code>READY</code>)<br/><span class="muted text-xs"><code>contain_xdr_host_with_dpop</code></span></td>
+                <td><a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json" target="_blank" rel="noopener" class="whitespace-nowrap text-xs-plus"><code>crowdstrike-okta/finvault.json</code> &nearr;</a></td>
+                <td><code>python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --verbose</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 10-APP (20 RETINA PNG) GENUINE LIVE BEFORE-VS-AFTER 3RD-PARTY SAAS INTEGRATION UI COMPARISON HUB -->
+      <div class="card" id="genuine-3p-before-after-hub" data-testid="genuine-3p-before-after-hub" data-no-hover-toolbar="true" style="border:2px solid #1a73e8; margin-bottom:18px; background:linear-gradient(180deg, #eff6ff 0%, #ffffff 16%);">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid #cbd5e1;">
+          <div style="max-width:920px;">
+            <span class="badge badge-blue">REPRODUCIBLE AUTOMATED SECURITY TESTBED &bull; 10 LIVE OPEN-SOURCE CONTAINERS</span>
+            <h3 style="margin:6px 0 4px 0; color:#0f172a;">&#128260; Reproducible Automated Security Testbed: 10 Upstream Open-Source Containers (Cloud Run &amp; AWS EC2)</h3>
+            <p class="muted" style="margin:0; font-size:12.5px; color:#334155;">These 10 authentic open-source container stacks (<code>Metabase v0.50.26</code>, <code>Grafana Enterprise v11.2.0</code>, <code>Redmine v5.1</code>, <code>NocoDB v0.255.2</code>, <code>Gitea v1.22.3</code>, <code>Trino v440</code>, <code>ClickHouse v24.8</code>, <code>Directus v11.1.0</code>, <code>Datalust Seq v2024.3</code>, <code>HashiCorp Vault v1.13.3</code>) provide an isolated, hermetic, zero-external-egress testbed. They enable automated CI/CD and security regression test suites to inject adversarial prompt payloads, simulate cross-tenant leaks, test automated CMEK kill-switches, and verify row-level security without risking production tenant blast radius or violating commercial SaaS terms of service. Below, inspect the container state <strong>immediately before</strong> vs. <strong>immediately after</strong> the 5-Hop Agent executes its live action.</p>
+          </div>
+          <div class="flex-wrap-center">
+            <button type="button" class="sim-btn" style="font-size:11.5px; padding:6px 10px;" onclick="switchE2EWorkbenchTab('deliverables'); viewArtifact('docs/genuine_3p_before_after_provenance_receipt.json');">&#128220; Before/After SHA-256 Receipt</button>
+            <button type="button" class="sim-btn" style="font-size:11.5px; padding:6px 10px;" onclick="switchE2EWorkbenchTab('deliverables'); viewArtifact('scripts/capture_genuine_3p_before_after_uis.mjs');">&#128187; Before/After Capture Script (.mjs)</button>
+            <button type="button" class="sim-btn primary" style="font-size:11.5px; padding:6px 10px;" onclick="openDocInReader('docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md')">&#128214; Full 10-SaaS Playbook</button>
+          </div>
+        </div>
+
+                <!-- ENTERPRISE IAM ACCESS ARCHITECTURE & CREDENTIALS CALLOUT -->
+        <div style="background:#eff6ff; border:1.5px solid #93c5fd; border-radius:8px; padding:10px 14px; margin-bottom:14px; display:flex; gap:12px; align-items:flex-start;">
+          <div style="font-size:20px; line-height:1;">🔐</div>
+          <div style="font-size:12px; color:#1e3a8a; line-height:1.45;">
+            <strong>Enterprise IAM Access Architecture &amp; Credentials:</strong> All 10 third-party applications run live in Google Cloud Run Gen2 (<code>bbar-138hf0</code>). Per corporate domain security policy (Domain Restricted Sharing), raw browser hits without an IAM identity token return <code style="background:#fee2e2; color:#991b1b; padding:1px 4px; border-radius:3px;">403 Forbidden</code>. To authenticate, click <strong>"🔑 Credentials &amp; Connect"</strong> on any card below to view the login credentials, launch via the 1-command local reverse proxy (<code>python3 scripts/saas_cloudrun_proxy.py &lt;app&gt;</code>), or inspect the 43 genuine SHA-256 verified Retina UIs.
+          </div>
+        </div>
+
+<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:8px 12px;">
+          <div class="flex-wrap-center">
+            <span style="font-size:12px; font-weight:700; color:#1e293b;">View Mode:</span>
+            <button type="button" class="genuine-3p-filter-btn ba-mode-btn active" data-ba-mode="side-by-side" onclick="setBeforeAfterViewMode('side-by-side', this)">Side-by-Side (Before &rarr; After)</button>
+            <button type="button" class="genuine-3p-filter-btn ba-mode-btn" data-ba-mode="slider" onclick="setBeforeAfterViewMode('slider', this)">Interactive Split Slider</button>
+            <button type="button" class="genuine-3p-filter-btn ba-mode-btn" data-ba-mode="before" onclick="setBeforeAfterViewMode('before', this)">Before Only (10)</button>
+            <button type="button" class="genuine-3p-filter-btn ba-mode-btn" data-ba-mode="after" onclick="setBeforeAfterViewMode('after', this)">After Only (10)</button>
+          </div>
+          <div class="flex-wrap-center">
+            <span style="font-size:12px; font-weight:700; color:#1e293b;">Domain:</span>
+            <button type="button" class="genuine-3p-filter-btn ba-cat-btn active" data-ba-cat="all" onclick="filterBeforeAfterCategory('all', this)">All 10 Pairs (20 PNGs)</button>
+            <button type="button" class="genuine-3p-filter-btn ba-cat-btn" data-ba-cat="bi-sql" onclick="filterBeforeAfterCategory('bi-sql', this)">BI &amp; Lakehouse SQL (4)</button>
+            <button type="button" class="genuine-3p-filter-btn ba-cat-btn" data-ba-cat="itsm-sre" onclick="filterBeforeAfterCategory('itsm-sre', this)">ITSM, SRE &amp; APM (3)</button>
+            <button type="button" class="genuine-3p-filter-btn ba-cat-btn" data-ba-cat="gxp-secops" onclick="filterBeforeAfterCategory('gxp-secops', this)">GxP, HCM &amp; Vault (3)</button>
+          </div>
+        </div>
+
+        <div class="ba-3p-hub-grid" id="ba-3p-hub-grid">
+          <div class="ba-3p-ui-card" data-ba-category="bi-sql" data-ba-key="metabase">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; padding-bottom:8px; border-bottom:1px solid #e2e8f0;">
+              <div style="flex:1 1 540px; min-width:0;">
+                <div class="flex-wrap-center mb-1">
+                  <span class="badge badge-blue text-2xs">SAAS-01 &bull; Metabase BI v0.50.26</span>
+                  <code class="text-xs text-muted">metabase/metabase:v0.50.26</code>
+                  <span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:10.5px; font-weight:600;">🔒 IAM OIDC + Secret Manager Auth</span>
+                <span class="badge badge-green text-2xs">AgentCore Target: HXGGFMZBKE &bull; query_thoughtspot_liveboard_rls</span>
+                </div>
+                <strong class="text-base text-dark">Metabase Open-Source BI v0.50.26 <span class="text-sm font-semibold text-blue">(Self-Hosted Reference Stack &bull; ThoughtSpot Spotter Agentic BI &amp; RLS Pattern)</span></strong>
+                <div class="text-xs text-muted"><strong>Live GEAP 5-Hop Transition:</strong> GEAP MCP tool query_thoughtspot_liveboard_rls (Target HXGGFMZBKE) enforces session predicate WHERE tenant_id = &#x27;finvault&#x27; and executes Saved Liveboard Question #27.</div>
+              </div>
+              <div class="flex-wrap-center flex-shrink-0">
+                <a href="/api/saas-live/metabase" target="_blank" rel="noopener" class="sim-btn primary" style="font-size:11.3px; padding:5px 10px; text-decoration:none; background:#16a34a; border-color:#15803d;">&#128640; 1-Click Live Web UI &nearr;</a>
+                <button type="button" class="sim-btn primary chip-link" onclick="openSaaSConnectModal('metabase')">🔒 IAM OIDC Connect &rarr;</button>
+                <a href="https://cymbal-gcp-metabase-bi-fm3mts5x3a-uw.a.run.app/question/27" target="_blank" rel="noopener" class="sim-btn chip-link">Cloud Run (IAM Protected) &nearr;</a>
+                <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json" target="_blank" rel="noopener" class="sim-btn chip-link">S3 Ledger JSON (<code>?format=json</code>) &nearr;</a>
+              </div>
+            </div>
+
+            <div class="ba-3p-pair-grid">
+              <div class="ba-3p-pane before-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9203; BEFORE GEAP MCP EXECUTION (Baseline UI)</span>
+                  <code class="text-2xs text-muted">2880&times;1800 &bull; sha256:b1c45d4e2b09</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_01_metabase_bi.png', 'BEFORE [01] Metabase BI v0.50.26 — Pre-Execution Baseline')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_01_metabase_bi.png" alt="BEFORE 01 Metabase BI v0.50.26 Pre-Agentic Baseline UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Pre-Action State:</strong> Unfiltered multi-tenant settlement table exposing 3 rows across tenants (FV-TX-901 finvault, FV-TX-902 finvault, plus cross-tenant RS-ORD-401 retailstream) prior to GEAP Hop 5 RLS binding.</div>
+              </div>
+
+              <div class="ba-3p-pane after-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9989; AFTER GEAP MCP EXECUTION (Live Mutated / Filtered UI)</span>
+                  <code class="text-2xs text-emerald">2880&times;1800 &bull; sha256:d6fdc81d4a63</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_01_metabase_bi.png', 'AFTER [01] Metabase BI v0.50.26 — Post-GEAP MCP (HXGGFMZBKE)')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_01_metabase_bi.png" alt="AFTER 01 Metabase BI v0.50.26 Post-GEAP Agentic Execution UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Post-Action Outcome:</strong> Metabase Liveboard Question #27 returns strictly the 2 authorized FinVault rows ($527.0M total: FV-TX-901 $312.5M + FV-TX-902 $214.5M) with 0 cross-tenant RetailStream rows.</div>
+              </div>
+            </div>
+
+            <div class="ba-3p-slider-stage">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:12px;">
+                <span style="font-weight:700; color:#334155;">&#9664; Left: BEFORE GEAP MCP (<code>b1c45d4e2b09</code>)</span>
+                <label style="display:inline-flex; align-items:center; gap:8px; margin:0; font-weight:700; color:#1a73e8;">
+                  <span>Scrub Split:</span>
+                  <input type="range" min="5" max="95" value="50" aria-label="Compare Before and After UI for Metabase BI v0.50.26" oninput="updateBaSplitSlider(this)" style="width:180px; accent-color:#1a73e8; cursor:ew-resize;" />
+                </label>
+                <span style="font-weight:700; color:#14532d;">Right: AFTER GEAP MCP (<code>d6fdc81d4a63</code>) &#9654;</span>
+              </div>
+              <div class="ba-3p-slider-viewport" onpointerdown="scrubBaViewportPointer(event, this)" onpointermove="if (event.buttons === 1) scrubBaViewportPointer(event, this)">
+                <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_01_metabase_bi.png" alt="AFTER Metabase BI v0.50.26 Split Layer" loading="lazy" decoding="async" />
+                <div class="ba-3p-slider-before-clip">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_01_metabase_bi.png" alt="BEFORE Metabase BI v0.50.26 Split Layer" loading="lazy" decoding="async" />
+                </div>
+                <div class="ba-3p-slider-divider"><div class="ba-3p-slider-knob">&#9664;&#9654;</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="ba-3p-ui-card" data-ba-category="bi-sql" data-ba-key="grafana">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; padding-bottom:8px; border-bottom:1px solid #e2e8f0;">
+              <div style="flex:1 1 540px; min-width:0;">
+                <div class="flex-wrap-center mb-1">
+                  <span class="badge badge-blue text-2xs">SAAS-02 &bull; Grafana Enterprise v11.2.0</span>
+                  <code class="text-xs text-muted">grafana/grafana-enterprise:11.2.0</code>
+                  <span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:10.5px; font-weight:600;">🔒 IAM OIDC + Secret Manager Auth</span>
+                <span class="badge badge-green text-2xs">AgentCore Target: IZVODT083Q &bull; eval_sigma_workbook_rls</span>
+                </div>
+                <strong class="text-base text-dark">Grafana Enterprise v11.2.0 <span class="text-sm font-semibold text-blue">(Self-Hosted Reference Stack &bull; Sigma Computing &amp; Tableau Multi-Tenant Workbook Pattern)</span></strong>
+                <div class="text-xs text-muted"><strong>Live GEAP 5-Hop Transition:</strong> GEAP MCP tool eval_sigma_workbook_rls (Target IZVODT083Q) evaluates tenant RLS session GUC and updates Grafana dashboard finvault-sre-wb via POST /api/dashboards/db with the live Hop 5 execution &amp; HTTP 403 spoof-block attestation panel.</div>
+              </div>
+              <div class="flex-wrap-center flex-shrink-0">
+                <a href="/api/saas-live/grafana" target="_blank" rel="noopener" class="sim-btn primary" style="font-size:11.3px; padding:5px 10px; text-decoration:none; background:#16a34a; border-color:#15803d;">&#128640; 1-Click Live Web UI &nearr;</a>
+                <button type="button" class="sim-btn primary chip-link" onclick="openSaaSConnectModal('grafana')">🔒 IAM OIDC Connect &rarr;</button>
+                <a href="https://cymbal-gcp-grafana-ent-fm3mts5x3a-uw.a.run.app/d/finvault-sre-wb?orgId=1" target="_blank" rel="noopener" class="sim-btn chip-link">Cloud Run (IAM Protected) &nearr;</a>
+                <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json" target="_blank" rel="noopener" class="sim-btn chip-link">S3 Ledger JSON (<code>?format=json</code>) &nearr;</a>
+              </div>
+            </div>
+
+            <div class="ba-3p-pair-grid">
+              <div class="ba-3p-pane before-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9203; BEFORE GEAP MCP EXECUTION (Baseline UI)</span>
+                  <code class="text-2xs text-muted">2880&times;1800 &bull; sha256:fe7451dcec1f</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_02_grafana_enterprise.png', 'BEFORE [02] Grafana Enterprise v11.2.0 — Pre-Execution Baseline')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_02_grafana_enterprise.png" alt="BEFORE 02 Grafana Enterprise v11.2.0 Pre-Agentic Baseline UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Pre-Action State:</strong> Grafana Enterprise workbook finvault-sre-wb (orgId=1) in single-panel pre-audit baseline before GEAP Hop 5 workbook evaluation and live S3 attestation write-back.</div>
+              </div>
+
+              <div class="ba-3p-pane after-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9989; AFTER GEAP MCP EXECUTION (Live Mutated / Filtered UI)</span>
+                  <code class="text-2xs text-emerald">2880&times;1800 &bull; sha256:3957e3f721d0</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_02_grafana_enterprise.png', 'AFTER [02] Grafana Enterprise v11.2.0 — Post-GEAP MCP (IZVODT083Q)')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_02_grafana_enterprise.png" alt="AFTER 02 Grafana Enterprise v11.2.0 Post-GEAP Agentic Execution UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Post-Action Outcome:</strong> Grafana Enterprise renders the newly appended Panel #2 (GEAP Hop 5 Live Agentic Execution Attestation &amp; Cross-Org Spoof Audit) alongside the verified $527.0M FinVault summary.</div>
+              </div>
+            </div>
+
+            <div class="ba-3p-slider-stage">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:12px;">
+                <span style="font-weight:700; color:#334155;">&#9664; Left: BEFORE GEAP MCP (<code>fe7451dcec1f</code>)</span>
+                <label style="display:inline-flex; align-items:center; gap:8px; margin:0; font-weight:700; color:#1a73e8;">
+                  <span>Scrub Split:</span>
+                  <input type="range" min="5" max="95" value="50" aria-label="Compare Before and After UI for Grafana Enterprise v11.2.0" oninput="updateBaSplitSlider(this)" style="width:180px; accent-color:#1a73e8; cursor:ew-resize;" />
+                </label>
+                <span style="font-weight:700; color:#14532d;">Right: AFTER GEAP MCP (<code>3957e3f721d0</code>) &#9654;</span>
+              </div>
+              <div class="ba-3p-slider-viewport" onpointerdown="scrubBaViewportPointer(event, this)" onpointermove="if (event.buttons === 1) scrubBaViewportPointer(event, this)">
+                <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_02_grafana_enterprise.png" alt="AFTER Grafana Enterprise v11.2.0 Split Layer" loading="lazy" decoding="async" />
+                <div class="ba-3p-slider-before-clip">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_02_grafana_enterprise.png" alt="BEFORE Grafana Enterprise v11.2.0 Split Layer" loading="lazy" decoding="async" />
+                </div>
+                <div class="ba-3p-slider-divider"><div class="ba-3p-slider-knob">&#9664;&#9654;</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="ba-3p-ui-card" data-ba-category="itsm-sre" data-ba-key="redmine">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; padding-bottom:8px; border-bottom:1px solid #e2e8f0;">
+              <div style="flex:1 1 540px; min-width:0;">
+                <div class="flex-wrap-center mb-1">
+                  <span class="badge badge-blue text-2xs">SAAS-03 &bull; Redmine ITSM v5.1</span>
+                  <code class="text-xs text-muted">library/redmine:5.1</code>
+                  <span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:10.5px; font-weight:600;">🔒 IAM OIDC + Secret Manager Auth</span>
+                <span class="badge badge-green text-2xs">AgentCore Target: ZS9VGYHBQL &bull; query_servicenow_change_records</span>
+                </div>
+                <strong class="text-base text-dark">Redmine Open-Source ITSM v5.1 <span class="text-sm font-semibold text-blue">(Self-Hosted Reference Stack &bull; ServiceNow ITSM &amp; ITOM Change Control Pattern)</span></strong>
+                <div class="text-xs text-muted"><strong>Live GEAP 5-Hop Transition:</strong> GEAP MCP tool query_servicenow_change_records (Target ZS9VGYHBQL) validates CMEK &amp; Valkey single-flight readiness and creates P1 Change Ticket CHG0049299 via POST /issues.json.</div>
+              </div>
+              <div class="flex-wrap-center flex-shrink-0">
+                <a href="/api/saas-live/redmine" target="_blank" rel="noopener" class="sim-btn primary" style="font-size:11.3px; padding:5px 10px; text-decoration:none; background:#16a34a; border-color:#15803d;">&#128640; 1-Click Live Web UI &nearr;</a>
+                <button type="button" class="sim-btn primary chip-link" onclick="openSaaSConnectModal('redmine')">🔒 IAM OIDC Connect &rarr;</button>
+                <a href="https://cymbal-gcp-redmine-itsm-fm3mts5x3a-uw.a.run.app/projects/finvault-itsm/issues?set_filter=1&amp;status_id=*" target="_blank" rel="noopener" class="sim-btn chip-link">Cloud Run (IAM Protected) &nearr;</a>
+                <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json" target="_blank" rel="noopener" class="sim-btn chip-link">S3 Ledger JSON (<code>?format=json</code>) &nearr;</a>
+              </div>
+            </div>
+
+            <div class="ba-3p-pair-grid">
+              <div class="ba-3p-pane before-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9203; BEFORE GEAP MCP EXECUTION (Baseline UI)</span>
+                  <code class="text-2xs text-muted">2880&times;1800 &bull; sha256:5d9b0c6d0f7d</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_03_redmine_itsm.png', 'BEFORE [03] Redmine ITSM v5.1 — Pre-Execution Baseline')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_03_redmine_itsm.png" alt="BEFORE 03 Redmine ITSM v5.1 Pre-Agentic Baseline UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Pre-Action State:</strong> Redmine ITSM project finvault-itsm queue showing 2 baseline tickets (#1 CHG0049218 and #2 INC0948211 — 1-2/2) prior to automated GEAP change-attestation ticket creation.</div>
+              </div>
+
+              <div class="ba-3p-pane after-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9989; AFTER GEAP MCP EXECUTION (Live Mutated / Filtered UI)</span>
+                  <code class="text-2xs text-emerald">2880&times;1800 &bull; sha256:394c45763ca4</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_03_redmine_itsm.png', 'AFTER [03] Redmine ITSM v5.1 — Post-GEAP MCP (ZS9VGYHBQL)')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_03_redmine_itsm.png" alt="AFTER 03 Redmine ITSM v5.1 Post-GEAP Agentic Execution UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Post-Action Outcome:</strong> Redmine ITSM queue updates live to 3 tickets (1-3/3) displaying newly created CHG0049299 ([GEAP-MCP ZS9VGYHBQL] Automated Hop 5 Valkey Single-Flight &amp; KMS CMEK Attestation) assigned to FinVault SRE Lead.</div>
+              </div>
+            </div>
+
+            <div class="ba-3p-slider-stage">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:12px;">
+                <span style="font-weight:700; color:#334155;">&#9664; Left: BEFORE GEAP MCP (<code>5d9b0c6d0f7d</code>)</span>
+                <label style="display:inline-flex; align-items:center; gap:8px; margin:0; font-weight:700; color:#1a73e8;">
+                  <span>Scrub Split:</span>
+                  <input type="range" min="5" max="95" value="50" aria-label="Compare Before and After UI for Redmine ITSM v5.1" oninput="updateBaSplitSlider(this)" style="width:180px; accent-color:#1a73e8; cursor:ew-resize;" />
+                </label>
+                <span style="font-weight:700; color:#14532d;">Right: AFTER GEAP MCP (<code>394c45763ca4</code>) &#9654;</span>
+              </div>
+              <div class="ba-3p-slider-viewport" onpointerdown="scrubBaViewportPointer(event, this)" onpointermove="if (event.buttons === 1) scrubBaViewportPointer(event, this)">
+                <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_03_redmine_itsm.png" alt="AFTER Redmine ITSM v5.1 Split Layer" loading="lazy" decoding="async" />
+                <div class="ba-3p-slider-before-clip">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_03_redmine_itsm.png" alt="BEFORE Redmine ITSM v5.1 Split Layer" loading="lazy" decoding="async" />
+                </div>
+                <div class="ba-3p-slider-divider"><div class="ba-3p-slider-knob">&#9664;&#9654;</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="ba-3p-ui-card" data-ba-category="gxp-secops" data-ba-key="nocodb">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; padding-bottom:8px; border-bottom:1px solid #e2e8f0;">
+              <div style="flex:1 1 540px; min-width:0;">
+                <div class="flex-wrap-center mb-1">
+                  <span class="badge badge-blue text-2xs">SAAS-04 &bull; NocoDB v0.255.2</span>
+                  <code class="text-xs text-muted">nocodb/nocodb:0.255.2</code>
+                  <span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:10.5px; font-weight:600;">🔒 IAM OIDC + Secret Manager Auth</span>
+                <span class="badge badge-green text-2xs">AgentCore Target: TWQU0KSRVF &bull; query_muse_study_biomarkers</span>
+                </div>
+                <strong class="text-base text-dark">NocoDB Smart Database v0.255.2 <span class="text-sm font-semibold text-blue">(Self-Hosted Reference Stack &bull; Veeva Vault RIM &amp; Muse Clinical EDC 21 CFR Part 11 Pattern)</span></strong>
+                <div class="text-xs text-muted"><strong>Live GEAP 5-Hop Transition:</strong> GEAP MCP tool query_muse_study_biomarkers (Target TWQU0KSRVF) signs the Hop 5 audit digest with Cloud KMS HSM and inserts record AWS-GXP-104 via POST /api/v2/tables/.../records.</div>
+              </div>
+              <div class="flex-wrap-center flex-shrink-0">
+                <a href="/api/saas-live/nocodb" target="_blank" rel="noopener" class="sim-btn primary" style="font-size:11.3px; padding:5px 10px; text-decoration:none; background:#16a34a; border-color:#15803d;">&#128640; 1-Click Live Web UI &nearr;</a>
+                <button type="button" class="sim-btn primary chip-link" onclick="openSaaSConnectModal('nocodb')">🔒 IAM OIDC Connect &rarr;</button>
+                <a href="https://cymbal-gcp-nocodb-edc-fm3mts5x3a-uw.a.run.app/" target="_blank" rel="noopener" class="sim-btn chip-link">Cloud Run (IAM Protected) &nearr;</a>
+                <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json" target="_blank" rel="noopener" class="sim-btn chip-link">S3 Ledger JSON (<code>?format=json</code>) &nearr;</a>
+              </div>
+            </div>
+
+            <div class="ba-3p-pair-grid">
+              <div class="ba-3p-pane before-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9203; BEFORE GEAP MCP EXECUTION (Baseline UI)</span>
+                  <code class="text-2xs text-muted">2880&times;1800 &bull; sha256:4f373d705a45</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_04_nocodb_gxp.png', 'BEFORE [04] NocoDB v0.255.2 — Pre-Execution Baseline')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_04_nocodb_gxp.png" alt="BEFORE 04 NocoDB v0.255.2 Pre-Agentic Baseline UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Pre-Action State:</strong> NocoDB FinVault KMS 21 CFR 11 Full Ledger showing 3 seeded compliance rows (AWS-GXP-101..103 — 3 records in footer) prior to live Cloud KMS ECDSA-P256 electronic signature insertion.</div>
+              </div>
+
+              <div class="ba-3p-pane after-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9989; AFTER GEAP MCP EXECUTION (Live Mutated / Filtered UI)</span>
+                  <code class="text-2xs text-emerald">2880&times;1800 &bull; sha256:cc7d99494817</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_04_nocodb_gxp.png', 'AFTER [04] NocoDB v0.255.2 — Post-GEAP MCP (TWQU0KSRVF)')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_04_nocodb_gxp.png" alt="AFTER 04 NocoDB v0.255.2 Post-GEAP Agentic Execution UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Post-Action Outcome:</strong> NocoDB grid updates live to 4 records, displaying row #4 AWS-GXP-104 (finvault • Pattern C Hybrid PSC + Hop 5 KMS Sign • ECDSA_P256_LIVE_AGENT_SIGNED).</div>
+              </div>
+            </div>
+
+            <div class="ba-3p-slider-stage">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:12px;">
+                <span style="font-weight:700; color:#334155;">&#9664; Left: BEFORE GEAP MCP (<code>4f373d705a45</code>)</span>
+                <label style="display:inline-flex; align-items:center; gap:8px; margin:0; font-weight:700; color:#1a73e8;">
+                  <span>Scrub Split:</span>
+                  <input type="range" min="5" max="95" value="50" aria-label="Compare Before and After UI for NocoDB v0.255.2" oninput="updateBaSplitSlider(this)" style="width:180px; accent-color:#1a73e8; cursor:ew-resize;" />
+                </label>
+                <span style="font-weight:700; color:#14532d;">Right: AFTER GEAP MCP (<code>cc7d99494817</code>) &#9654;</span>
+              </div>
+              <div class="ba-3p-slider-viewport" onpointerdown="scrubBaViewportPointer(event, this)" onpointermove="if (event.buttons === 1) scrubBaViewportPointer(event, this)">
+                <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_04_nocodb_gxp.png" alt="AFTER NocoDB v0.255.2 Split Layer" loading="lazy" decoding="async" />
+                <div class="ba-3p-slider-before-clip">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_04_nocodb_gxp.png" alt="BEFORE NocoDB v0.255.2 Split Layer" loading="lazy" decoding="async" />
+                </div>
+                <div class="ba-3p-slider-divider"><div class="ba-3p-slider-knob">&#9664;&#9654;</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="ba-3p-ui-card" data-ba-category="itsm-sre" data-ba-key="gitea">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; padding-bottom:8px; border-bottom:1px solid #e2e8f0;">
+              <div style="flex:1 1 540px; min-width:0;">
+                <div class="flex-wrap-center mb-1">
+                  <span class="badge badge-blue text-2xs">SAAS-05 &bull; Gitea v1.22.3</span>
+                  <code class="text-xs text-muted">gitea/gitea:1.22.3</code>
+                  <span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:10.5px; font-weight:600;">🔒 IAM OIDC + Secret Manager Auth</span>
+                <span class="badge badge-green text-2xs">AgentCore Target: K5JAEFCQ6E &bull; create_redacted_sfdc_jira_escalation</span>
+                </div>
+                <strong class="text-base text-dark">Gitea Lightweight Git &amp; Issue Tracker v1.22.3 <span class="text-sm font-semibold text-blue">(Self-Hosted Reference Stack &bull; Salesforce CRM &amp; Atlassian Jira Cloud Escalation Pattern)</span></strong>
+                <div class="text-xs text-muted"><strong>Live GEAP 5-Hop Transition:</strong> GEAP MCP tool create_redacted_sfdc_jira_escalation (Target K5JAEFCQ6E) strips IBAN/SWIFT PII via Cloud SDP and posts a structured Markdown RCA comment via POST /api/v1/repos/finvault/sre-escalations/issues/1/comments.</div>
+              </div>
+              <div class="flex-wrap-center flex-shrink-0">
+                <a href="/api/saas-live/gitea" target="_blank" rel="noopener" class="sim-btn primary" style="font-size:11.3px; padding:5px 10px; text-decoration:none; background:#16a34a; border-color:#15803d;">&#128640; 1-Click Live Web UI &nearr;</a>
+                <button type="button" class="sim-btn primary chip-link" onclick="openSaaSConnectModal('gitea')">🔒 IAM OIDC Connect &rarr;</button>
+                <a href="https://cymbal-gcp-gitea-sre-fm3mts5x3a-uw.a.run.app/finvault/sre-escalations/issues/1" target="_blank" rel="noopener" class="sim-btn chip-link">Cloud Run (IAM Protected) &nearr;</a>
+                <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json" target="_blank" rel="noopener" class="sim-btn chip-link">S3 Ledger JSON (<code>?format=json</code>) &nearr;</a>
+              </div>
+            </div>
+
+            <div class="ba-3p-pair-grid">
+              <div class="ba-3p-pane before-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9203; BEFORE GEAP MCP EXECUTION (Baseline UI)</span>
+                  <code class="text-2xs text-muted">2880&times;1800 &bull; sha256:4317e1037937</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_05_gitea_sre.png', 'BEFORE [05] Gitea v1.22.3 — Pre-Execution Baseline')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_05_gitea_sre.png" alt="BEFORE 05 Gitea v1.22.3 Pre-Agentic Baseline UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Pre-Action State:</strong> Gitea repository finvault/sre-escalations Issue #1 ([SFDC-CASE-00984120 / FINVAULT-SRE-1402]) open with 0 comments prior to GEAP Hop 4 SDP-redacted RCA triage.</div>
+              </div>
+
+              <div class="ba-3p-pane after-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9989; AFTER GEAP MCP EXECUTION (Live Mutated / Filtered UI)</span>
+                  <code class="text-2xs text-emerald">2880&times;1800 &bull; sha256:15d3ea9d83da</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_05_gitea_sre.png', 'AFTER [05] Gitea v1.22.3 — Post-GEAP MCP (K5JAEFCQ6E)')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_05_gitea_sre.png" alt="AFTER 05 Gitea v1.22.3 Post-GEAP Agentic Execution UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Post-Action Outcome:</strong> Gitea Issue #1 updates live to 1 comment, rendering the authenticated sre-lead Hop 4 SDP-redacted automated RCA &amp; Valkey mitigation receipt directly in the issue timeline.</div>
+              </div>
+            </div>
+
+            <div class="ba-3p-slider-stage">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:12px;">
+                <span style="font-weight:700; color:#334155;">&#9664; Left: BEFORE GEAP MCP (<code>4317e1037937</code>)</span>
+                <label style="display:inline-flex; align-items:center; gap:8px; margin:0; font-weight:700; color:#1a73e8;">
+                  <span>Scrub Split:</span>
+                  <input type="range" min="5" max="95" value="50" aria-label="Compare Before and After UI for Gitea v1.22.3" oninput="updateBaSplitSlider(this)" style="width:180px; accent-color:#1a73e8; cursor:ew-resize;" />
+                </label>
+                <span style="font-weight:700; color:#14532d;">Right: AFTER GEAP MCP (<code>15d3ea9d83da</code>) &#9654;</span>
+              </div>
+              <div class="ba-3p-slider-viewport" onpointerdown="scrubBaViewportPointer(event, this)" onpointermove="if (event.buttons === 1) scrubBaViewportPointer(event, this)">
+                <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_05_gitea_sre.png" alt="AFTER Gitea v1.22.3 Split Layer" loading="lazy" decoding="async" />
+                <div class="ba-3p-slider-before-clip">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_05_gitea_sre.png" alt="BEFORE Gitea v1.22.3 Split Layer" loading="lazy" decoding="async" />
+                </div>
+                <div class="ba-3p-slider-divider"><div class="ba-3p-slider-knob">&#9664;&#9654;</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="ba-3p-ui-card" data-ba-category="bi-sql" data-ba-key="trino">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; padding-bottom:8px; border-bottom:1px solid #e2e8f0;">
+              <div style="flex:1 1 540px; min-width:0;">
+                <div class="flex-wrap-center mb-1">
+                  <span class="badge badge-blue text-2xs">SAAS-06 &bull; Trino Distributed SQL v440</span>
+                  <code class="text-xs text-muted">trinodb/trino:440</code>
+                  <span class="badge" style="background:#fef3c7; color:#92400e; border:1px solid #fde68a; font-size:10.5px; font-weight:600;">🔑 sre-lead@finvault.com (No password)</span>
+                <span class="badge badge-green text-2xs">AgentCore Target: TERCK8SLBP &bull; execute_uc_genie_federated_sql</span>
+                </div>
+                <strong class="text-base text-dark">Trino Distributed SQL Query Engine v440 <span class="text-sm font-semibold text-blue">(Self-Hosted Reference Stack &bull; Databricks Data Intelligence &amp; Unity Catalog SQL Pattern)</span></strong>
+                <div class="text-xs text-muted"><strong>Live GEAP 5-Hop Transition:</strong> GEAP MCP tool execute_uc_genie_federated_sql (Target TERCK8SLBP) dispatches federated SQL via POST /v1/statement with X-Trino-User: geap-hop5-agent@finvault.com and X-Trino-Source: geap-agentcore-TERCK8SLBP.</div>
+              </div>
+              <div class="flex-wrap-center flex-shrink-0">
+                <a href="/api/saas-live/trino" target="_blank" rel="noopener" class="sim-btn primary" style="font-size:11.3px; padding:5px 10px; text-decoration:none; background:#16a34a; border-color:#15803d;">&#128640; 1-Click Live Web UI &nearr;</a>
+                <button type="button" class="sim-btn primary chip-link" onclick="openSaaSConnectModal('trino')">🔒 IAM OIDC Connect &rarr;</button>
+                <a href="https://cymbal-gcp-trino-sql-fm3mts5x3a-uw.a.run.app/ui/" target="_blank" rel="noopener" class="sim-btn chip-link">Cloud Run (IAM Protected) &nearr;</a>
+                <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json" target="_blank" rel="noopener" class="sim-btn chip-link">S3 Ledger JSON (<code>?format=json</code>) &nearr;</a>
+              </div>
+            </div>
+
+            <div class="ba-3p-pair-grid">
+              <div class="ba-3p-pane before-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9203; BEFORE GEAP MCP EXECUTION (Baseline UI)</span>
+                  <code class="text-2xs text-muted">2880&times;1800 &bull; sha256:3b9d35a850a5</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_06_trino_sql.png', 'BEFORE [06] Trino Distributed SQL v440 — Pre-Execution Baseline')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_06_trino_sql.png" alt="BEFORE 06 Trino Distributed SQL v440 Pre-Agentic Baseline UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Pre-Action State:</strong> Trino v440 Cluster Overview (/ui/) query ledger prior to GEAP Target TERCK8SLBP tenant-scoped federated SQL dispatch.</div>
+              </div>
+
+              <div class="ba-3p-pane after-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9989; AFTER GEAP MCP EXECUTION (Live Mutated / Filtered UI)</span>
+                  <code class="text-2xs text-emerald">2880&times;1800 &bull; sha256:5a2241216d38</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_06_trino_sql.png', 'AFTER [06] Trino Distributed SQL v440 — Post-GEAP MCP (TERCK8SLBP)')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_06_trino_sql.png" alt="AFTER 06 Trino Distributed SQL v440 Post-GEAP Agentic Execution UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Post-Action Outcome:</strong> Trino Cluster Overview (/ui/) displays the newly completed FINISHED query at top of Query Details attributed to geap-hop5-agent@finvault.com (source: geap-agentcore-TERCK8SLBP).</div>
+              </div>
+            </div>
+
+            <div class="ba-3p-slider-stage">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:12px;">
+                <span style="font-weight:700; color:#334155;">&#9664; Left: BEFORE GEAP MCP (<code>3b9d35a850a5</code>)</span>
+                <label style="display:inline-flex; align-items:center; gap:8px; margin:0; font-weight:700; color:#1a73e8;">
+                  <span>Scrub Split:</span>
+                  <input type="range" min="5" max="95" value="50" aria-label="Compare Before and After UI for Trino Distributed SQL v440" oninput="updateBaSplitSlider(this)" style="width:180px; accent-color:#1a73e8; cursor:ew-resize;" />
+                </label>
+                <span style="font-weight:700; color:#14532d;">Right: AFTER GEAP MCP (<code>5a2241216d38</code>) &#9654;</span>
+              </div>
+              <div class="ba-3p-slider-viewport" onpointerdown="scrubBaViewportPointer(event, this)" onpointermove="if (event.buttons === 1) scrubBaViewportPointer(event, this)">
+                <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_06_trino_sql.png" alt="AFTER Trino Distributed SQL v440 Split Layer" loading="lazy" decoding="async" />
+                <div class="ba-3p-slider-before-clip">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_06_trino_sql.png" alt="BEFORE Trino Distributed SQL v440 Split Layer" loading="lazy" decoding="async" />
+                </div>
+                <div class="ba-3p-slider-divider"><div class="ba-3p-slider-knob">&#9664;&#9654;</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="ba-3p-ui-card" data-ba-category="bi-sql" data-ba-key="clickhouse">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; padding-bottom:8px; border-bottom:1px solid #e2e8f0;">
+              <div style="flex:1 1 540px; min-width:0;">
+                <div class="flex-wrap-center mb-1">
+                  <span class="badge badge-blue text-2xs">SAAS-07 &bull; ClickHouse Data Warehouse v24.8</span>
+                  <code class="text-xs text-muted">clickhouse/clickhouse-server:24.8</code>
+                  <span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:10.5px; font-weight:600;">🔒 IAM OIDC + Secret Manager Auth</span>
+                <span class="badge badge-green text-2xs">AgentCore Target: CCMDEVZV2S &bull; execute_cortex_analyst_sql</span>
+                </div>
+                <strong class="text-base text-dark">ClickHouse Real-Time Columnar DBMS v24.8 <span class="text-sm font-semibold text-blue">(Self-Hosted Reference Stack &bull; Snowflake AI Data Cloud Cortex Analyst &amp; SQL v2 Pattern)</span></strong>
+                <div class="text-xs text-muted"><strong>Live GEAP 5-Hop Transition:</strong> GEAP MCP tool execute_cortex_analyst_sql (Target CCMDEVZV2S) executes the tenant-aligned query (WHERE tenant_id = &#x27;finvault&#x27;) under finvault_user RLS policy.</div>
+              </div>
+              <div class="flex-wrap-center flex-shrink-0">
+                <a href="/api/saas-live/clickhouse" target="_blank" rel="noopener" class="sim-btn primary" style="font-size:11.3px; padding:5px 10px; text-decoration:none; background:#16a34a; border-color:#15803d;">&#128640; 1-Click Live Web UI &nearr;</a>
+                <button type="button" class="sim-btn primary chip-link" onclick="openSaaSConnectModal('clickhouse')">🔒 IAM OIDC Connect &rarr;</button>
+                <a href="https://cymbal-gcp-clickhouse-dw-fm3mts5x3a-uw.a.run.app/play" target="_blank" rel="noopener" class="sim-btn chip-link">Cloud Run (IAM Protected) &nearr;</a>
+                <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json" target="_blank" rel="noopener" class="sim-btn chip-link">S3 Ledger JSON (<code>?format=json</code>) &nearr;</a>
+              </div>
+            </div>
+
+            <div class="ba-3p-pair-grid">
+              <div class="ba-3p-pane before-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9203; BEFORE GEAP MCP EXECUTION (Baseline UI)</span>
+                  <code class="text-2xs text-muted">2880&times;1800 &bull; sha256:40c6a4c46b87</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_07_clickhouse_rls.png', 'BEFORE [07] ClickHouse Data Warehouse v24.8 — Pre-Execution Baseline')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_07_clickhouse_rls.png" alt="BEFORE 07 ClickHouse Data Warehouse v24.8 Pre-Agentic Baseline UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Pre-Action State:</strong> ClickHouse v24.8 /play SQL console authenticated as finvault_user attempting a cross-tenant query (WHERE tenant_id = &#x27;retailstream&#x27;) — database Row-Level Security blocks cross-tenant exposure and returns 0 rows.</div>
+              </div>
+
+              <div class="ba-3p-pane after-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9989; AFTER GEAP MCP EXECUTION (Live Mutated / Filtered UI)</span>
+                  <code class="text-2xs text-emerald">2880&times;1800 &bull; sha256:5118174f054a</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_07_clickhouse_rls.png', 'AFTER [07] ClickHouse Data Warehouse v24.8 — Post-GEAP MCP (CCMDEVZV2S)')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_07_clickhouse_rls.png" alt="AFTER 07 ClickHouse Data Warehouse v24.8 Post-GEAP Agentic Execution UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Post-Action Outcome:</strong> ClickHouse /play console returns the 2 CMEK-protected FinVault wire settlement rows (FV-TX-901 $312.5M and FV-TX-902 $214.5M, gcp-kms://finvault-cmek-hsm) in &lt;5ms.</div>
+              </div>
+            </div>
+
+            <div class="ba-3p-slider-stage">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:12px;">
+                <span style="font-weight:700; color:#334155;">&#9664; Left: BEFORE GEAP MCP (<code>40c6a4c46b87</code>)</span>
+                <label style="display:inline-flex; align-items:center; gap:8px; margin:0; font-weight:700; color:#1a73e8;">
+                  <span>Scrub Split:</span>
+                  <input type="range" min="5" max="95" value="50" aria-label="Compare Before and After UI for ClickHouse Data Warehouse v24.8" oninput="updateBaSplitSlider(this)" style="width:180px; accent-color:#1a73e8; cursor:ew-resize;" />
+                </label>
+                <span style="font-weight:700; color:#14532d;">Right: AFTER GEAP MCP (<code>5118174f054a</code>) &#9654;</span>
+              </div>
+              <div class="ba-3p-slider-viewport" onpointerdown="scrubBaViewportPointer(event, this)" onpointermove="if (event.buttons === 1) scrubBaViewportPointer(event, this)">
+                <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_07_clickhouse_rls.png" alt="AFTER ClickHouse Data Warehouse v24.8 Split Layer" loading="lazy" decoding="async" />
+                <div class="ba-3p-slider-before-clip">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_07_clickhouse_rls.png" alt="BEFORE ClickHouse Data Warehouse v24.8 Split Layer" loading="lazy" decoding="async" />
+                </div>
+                <div class="ba-3p-slider-divider"><div class="ba-3p-slider-knob">&#9664;&#9654;</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="ba-3p-ui-card" data-ba-category="gxp-secops" data-ba-key="directus">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; padding-bottom:8px; border-bottom:1px solid #e2e8f0;">
+              <div style="flex:1 1 540px; min-width:0;">
+                <div class="flex-wrap-center mb-1">
+                  <span class="badge badge-blue text-2xs">SAAS-08 &bull; Directus Data Studio v11.1.0</span>
+                  <code class="text-xs text-muted">directus/directus:11.1.0</code>
+                  <span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:10.5px; font-weight:600;">🔒 IAM OIDC + Secret Manager Auth</span>
+                <span class="badge badge-green text-2xs">AgentCore Target: RAOTMUMJTZ &bull; fetch_compensation_raas_report</span>
+                </div>
+                <strong class="text-base text-dark">Directus Headless Data Studio v11.1.0 <span class="text-sm font-semibold text-blue">(Self-Hosted Reference Stack &bull; Workday Enterprise HCM &amp; Financial Management RaaS Pattern)</span></strong>
+                <div class="text-xs text-muted"><strong>Live GEAP 5-Hop Transition:</strong> GEAP MCP tool fetch_compensation_raas_report (Target RAOTMUMJTZ) masks SSN/IBAN fields via Hop 4 Cloud SDP and inserts audited FinVault executive record via POST /items/hcm_compensation.</div>
+              </div>
+              <div class="flex-wrap-center flex-shrink-0">
+                <a href="/api/saas-live/directus" target="_blank" rel="noopener" class="sim-btn primary" style="font-size:11.3px; padding:5px 10px; text-decoration:none; background:#16a34a; border-color:#15803d;">&#128640; 1-Click Live Web UI &nearr;</a>
+                <button type="button" class="sim-btn primary chip-link" onclick="openSaaSConnectModal('directus')">🔒 IAM OIDC Connect &rarr;</button>
+                <a href="https://cymbal-gcp-directus-hcm-fm3mts5x3a-uw.a.run.app/admin/content/hcm_compensation" target="_blank" rel="noopener" class="sim-btn chip-link">Cloud Run (IAM Protected) &nearr;</a>
+                <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json" target="_blank" rel="noopener" class="sim-btn chip-link">S3 Ledger JSON (<code>?format=json</code>) &nearr;</a>
+              </div>
+            </div>
+
+            <div class="ba-3p-pair-grid">
+              <div class="ba-3p-pane before-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9203; BEFORE GEAP MCP EXECUTION (Baseline UI)</span>
+                  <code class="text-2xs text-muted">2880&times;1800 &bull; sha256:a06e141d9d13</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_08_directus_hcm.png', 'BEFORE [08] Directus Data Studio v11.1.0 — Pre-Execution Baseline')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_08_directus_hcm.png" alt="BEFORE 08 Directus Data Studio v11.1.0 Pre-Agentic Baseline UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Pre-Action State:</strong> Directus v11.1.0 Hcm Compensation collection showing 2 baseline executive records (Clara Vance &amp; Marcus Thorne — 2 Items) prior to GEAP RaaS compensation audit sync.</div>
+              </div>
+
+              <div class="ba-3p-pane after-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9989; AFTER GEAP MCP EXECUTION (Live Mutated / Filtered UI)</span>
+                  <code class="text-2xs text-emerald">2880&times;1800 &bull; sha256:7f3ff88d0cc4</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_08_directus_hcm.png', 'AFTER [08] Directus Data Studio v11.1.0 — Post-GEAP MCP (RAOTMUMJTZ)')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_08_directus_hcm.png" alt="AFTER 08 Directus Data Studio v11.1.0 Post-GEAP Agentic Execution UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Post-Action Outcome:</strong> Directus Hcm Compensation collection updates live to 3 Items, adding Elena Rostova (MD Quantitative Risk — GEAP Audited, $395,000.00, [REDACTED_US_SSN]).</div>
+              </div>
+            </div>
+
+            <div class="ba-3p-slider-stage">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:12px;">
+                <span style="font-weight:700; color:#334155;">&#9664; Left: BEFORE GEAP MCP (<code>a06e141d9d13</code>)</span>
+                <label style="display:inline-flex; align-items:center; gap:8px; margin:0; font-weight:700; color:#1a73e8;">
+                  <span>Scrub Split:</span>
+                  <input type="range" min="5" max="95" value="50" aria-label="Compare Before and After UI for Directus Data Studio v11.1.0" oninput="updateBaSplitSlider(this)" style="width:180px; accent-color:#1a73e8; cursor:ew-resize;" />
+                </label>
+                <span style="font-weight:700; color:#14532d;">Right: AFTER GEAP MCP (<code>7f3ff88d0cc4</code>) &#9654;</span>
+              </div>
+              <div class="ba-3p-slider-viewport" onpointerdown="scrubBaViewportPointer(event, this)" onpointermove="if (event.buttons === 1) scrubBaViewportPointer(event, this)">
+                <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_08_directus_hcm.png" alt="AFTER Directus Data Studio v11.1.0 Split Layer" loading="lazy" decoding="async" />
+                <div class="ba-3p-slider-before-clip">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_08_directus_hcm.png" alt="BEFORE Directus Data Studio v11.1.0 Split Layer" loading="lazy" decoding="async" />
+                </div>
+                <div class="ba-3p-slider-divider"><div class="ba-3p-slider-knob">&#9664;&#9654;</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="ba-3p-ui-card" data-ba-category="itsm-sre" data-ba-key="seq">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; padding-bottom:8px; border-bottom:1px solid #e2e8f0;">
+              <div style="flex:1 1 540px; min-width:0;">
+                <div class="flex-wrap-center mb-1">
+                  <span class="badge badge-blue text-2xs">SAAS-09 &bull; Datalust Seq Observability v2024.3</span>
+                  <code class="text-xs text-muted">datalust/seq:2024.3</code>
+                  <span class="badge" style="background:#fef3c7; color:#92400e; border:1px solid #fde68a; font-size:10.5px; font-weight:600;">🔑 No auth required (Public stream)</span>
+                <span class="badge badge-green text-2xs">AgentCore Target: G767QR3TQZ &bull; query_tenant_apm_logs</span>
+                </div>
+                <strong class="text-base text-dark">Datalust Seq Structured Event Log Server v2024.3 <span class="text-sm font-semibold text-blue">(Self-Hosted Reference Stack &bull; Datadog Cloud Observability &amp; APM Trace Pattern)</span></strong>
+                <div class="text-xs text-muted"><strong>Live GEAP 5-Hop Transition:</strong> GEAP MCP tool query_tenant_apm_logs (Target G767QR3TQZ) ingests a structured Serilog CLEF span via POST /api/events/raw?clef and expands the live event inspector in Seq UI.</div>
+              </div>
+              <div class="flex-wrap-center flex-shrink-0">
+                <a href="/api/saas-live/seq" target="_blank" rel="noopener" class="sim-btn primary" style="font-size:11.3px; padding:5px 10px; text-decoration:none; background:#16a34a; border-color:#15803d;">&#128640; 1-Click Live Web UI &nearr;</a>
+                <button type="button" class="sim-btn primary chip-link" onclick="openSaaSConnectModal('seq')">🔒 IAM OIDC Connect &rarr;</button>
+                <a href="https://cymbal-gcp-seq-apm-fm3mts5x3a-uw.a.run.app/#/events" target="_blank" rel="noopener" class="sim-btn chip-link">Cloud Run (IAM Protected) &nearr;</a>
+                <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json" target="_blank" rel="noopener" class="sim-btn chip-link">S3 Ledger JSON (<code>?format=json</code>) &nearr;</a>
+              </div>
+            </div>
+
+            <div class="ba-3p-pair-grid">
+              <div class="ba-3p-pane before-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9203; BEFORE GEAP MCP EXECUTION (Baseline UI)</span>
+                  <code class="text-2xs text-muted">2880&times;1800 &bull; sha256:ace89a1b913f</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_09_datalust_seq.png', 'BEFORE [09] Datalust Seq Observability v2024.3 — Pre-Execution Baseline')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_09_datalust_seq.png" alt="BEFORE 09 Datalust Seq Observability v2024.3 Pre-Agentic Baseline UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Pre-Action State:</strong> Datalust Seq v2024.3 /#/events telemetry view in compact collapsed stream baseline prior to live GEAP Hop 4 Model Armor + Hop 5 RLS structured OTel span ingestion.</div>
+              </div>
+
+              <div class="ba-3p-pane after-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9989; AFTER GEAP MCP EXECUTION (Live Mutated / Filtered UI)</span>
+                  <code class="text-2xs text-emerald">2880&times;1800 &bull; sha256:1633de1b110b</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_09_datalust_seq.png', 'AFTER [09] Datalust Seq Observability v2024.3 — Post-GEAP MCP (G767QR3TQZ)')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_09_datalust_seq.png" alt="AFTER 09 Datalust Seq Observability v2024.3 Post-GEAP Agentic Execution UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Post-Action Outcome:</strong> Datalust Seq displays the newly ingested GEAP Hop 5 APM trace expanded in-place with structured properties (AgentCoreTarget=G767QR3TQZ, Hop4ModelArmor=PASS_ZERO_PROMPT_INJECTION, TenantId=finvault, ZeroPiiAttested=true).</div>
+              </div>
+            </div>
+
+            <div class="ba-3p-slider-stage">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:12px;">
+                <span style="font-weight:700; color:#334155;">&#9664; Left: BEFORE GEAP MCP (<code>ace89a1b913f</code>)</span>
+                <label style="display:inline-flex; align-items:center; gap:8px; margin:0; font-weight:700; color:#1a73e8;">
+                  <span>Scrub Split:</span>
+                  <input type="range" min="5" max="95" value="50" aria-label="Compare Before and After UI for Datalust Seq Observability v2024.3" oninput="updateBaSplitSlider(this)" style="width:180px; accent-color:#1a73e8; cursor:ew-resize;" />
+                </label>
+                <span style="font-weight:700; color:#14532d;">Right: AFTER GEAP MCP (<code>1633de1b110b</code>) &#9654;</span>
+              </div>
+              <div class="ba-3p-slider-viewport" onpointerdown="scrubBaViewportPointer(event, this)" onpointermove="if (event.buttons === 1) scrubBaViewportPointer(event, this)">
+                <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_09_datalust_seq.png" alt="AFTER Datalust Seq Observability v2024.3 Split Layer" loading="lazy" decoding="async" />
+                <div class="ba-3p-slider-before-clip">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_09_datalust_seq.png" alt="BEFORE Datalust Seq Observability v2024.3 Split Layer" loading="lazy" decoding="async" />
+                </div>
+                <div class="ba-3p-slider-divider"><div class="ba-3p-slider-knob">&#9664;&#9654;</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="ba-3p-ui-card" data-ba-category="gxp-secops" data-ba-key="vault">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; padding-bottom:8px; border-bottom:1px solid #e2e8f0;">
+              <div style="flex:1 1 540px; min-width:0;">
+                <div class="flex-wrap-center mb-1">
+                  <span class="badge badge-blue text-2xs">SAAS-10 &bull; HashiCorp Vault v1.13.3</span>
+                  <code class="text-xs text-muted">hashicorp/vault:1.13.3</code>
+                  <span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:10.5px; font-weight:600;">🔒 IAM OIDC + Secret Manager Auth</span>
+                <span class="badge badge-green text-2xs">AgentCore Target: C7EYM614F2 &bull; contain_xdr_host_with_dpop</span>
+                </div>
+                <strong class="text-base text-dark">HashiCorp Vault Secrets Management v1.13.3 <span class="text-sm font-semibold text-blue">(Self-Hosted Reference Stack &bull; CrowdStrike Falcon &amp; Okta Workforce Identity CMEK Pattern)</span></strong>
+                <div class="text-xs text-muted"><strong>Live GEAP 5-Hop Transition:</strong> GEAP MCP tool contain_xdr_host_with_dpop (Target C7EYM614F2) verifies RFC 9449 DPoP proof thumbprint and rotates tenants/finvault to Version 2 via POST /v1/secret/data/tenants/finvault.</div>
+              </div>
+              <div class="flex-wrap-center flex-shrink-0">
+                <a href="/api/saas-live/vault" target="_blank" rel="noopener" class="sim-btn primary" style="font-size:11.3px; padding:5px 10px; text-decoration:none; background:#16a34a; border-color:#15803d;">&#128640; 1-Click Live Web UI &nearr;</a>
+                <button type="button" class="sim-btn primary chip-link" onclick="openSaaSConnectModal('vault')">🔒 IAM OIDC Connect &rarr;</button>
+                <a href="https://cymbal-gcp-vault-cmek-fm3mts5x3a-uw.a.run.app/ui/vault/secrets/secret/show/tenants/finvault" target="_blank" rel="noopener" class="sim-btn chip-link">Cloud Run (IAM Protected) &nearr;</a>
+                <a href="https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json" target="_blank" rel="noopener" class="sim-btn chip-link">S3 Ledger JSON (<code>?format=json</code>) &nearr;</a>
+              </div>
+            </div>
+
+            <div class="ba-3p-pair-grid">
+              <div class="ba-3p-pane before-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9203; BEFORE GEAP MCP EXECUTION (Baseline UI)</span>
+                  <code class="text-2xs text-muted">2880&times;1800 &bull; sha256:95fbae1e2b77</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_10_hashicorp_vault.png', 'BEFORE [10] HashiCorp Vault v1.13.3 — Pre-Execution Baseline')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_10_hashicorp_vault.png" alt="BEFORE 10 HashiCorp Vault v1.13.3 Pre-Agentic Baseline UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Pre-Action State:</strong> HashiCorp Vault v1.13.3 secret tenants/finvault at Version 1 (JSON view enabled) showing pre-containment state (xdr_containment_status: PENDING_HOP5_DPOP_CONTAINMENT).</div>
+              </div>
+
+              <div class="ba-3p-pane after-pane">
+                <div class="ba-3p-pane-hdr">
+                  <span>&#9989; AFTER GEAP MCP EXECUTION (Live Mutated / Filtered UI)</span>
+                  <code class="text-2xs text-emerald">2880&times;1800 &bull; sha256:a0156ef0e023</code>
+                </div>
+                <div class="ba-3p-img-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_10_hashicorp_vault.png', 'AFTER [10] HashiCorp Vault v1.13.3 — Post-GEAP MCP (C7EYM614F2)')">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_10_hashicorp_vault.png" alt="AFTER 10 HashiCorp Vault v1.13.3 Post-GEAP Agentic Execution UI" decoding="async" />
+                </div>
+                <div class="ba-3p-pane-caption"><strong>Post-Action Outcome:</strong> HashiCorp Vault UI displays Version 2 of tenants/finvault in live JSON mode with xdr_containment_status: HOST_CONTAINED_DPOP_VERIFIED_200 and S3 audit binding crowdstrike-okta/finvault.json.</div>
+              </div>
+            </div>
+
+            <div class="ba-3p-slider-stage">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; font-size:12px;">
+                <span style="font-weight:700; color:#334155;">&#9664; Left: BEFORE GEAP MCP (<code>95fbae1e2b77</code>)</span>
+                <label style="display:inline-flex; align-items:center; gap:8px; margin:0; font-weight:700; color:#1a73e8;">
+                  <span>Scrub Split:</span>
+                  <input type="range" min="5" max="95" value="50" aria-label="Compare Before and After UI for HashiCorp Vault v1.13.3" oninput="updateBaSplitSlider(this)" style="width:180px; accent-color:#1a73e8; cursor:ew-resize;" />
+                </label>
+                <span style="font-weight:700; color:#14532d;">Right: AFTER GEAP MCP (<code>a0156ef0e023</code>) &#9654;</span>
+              </div>
+              <div class="ba-3p-slider-viewport" onpointerdown="scrubBaViewportPointer(event, this)" onpointermove="if (event.buttons === 1) scrubBaViewportPointer(event, this)">
+                <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_10_hashicorp_vault.png" alt="AFTER HashiCorp Vault v1.13.3 Split Layer" loading="lazy" decoding="async" />
+                <div class="ba-3p-slider-before-clip">
+                  <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_10_hashicorp_vault.png" alt="BEFORE HashiCorp Vault v1.13.3 Split Layer" loading="lazy" decoding="async" />
+                </div>
+                <div class="ba-3p-slider-divider"><div class="ba-3p-slider-knob">&#9664;&#9654;</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 23 GENUINE LIVE 2880x1800 RETINA MULTI-CLOUD 3P UI VERIFICATION GALLERY (10 GCP CLOUD RUN + 10 AWS EC2 + 3 AWS MANAGEMENT CONSOLE) -->
+      <div class="card" id="genuine-multicloud-3p-ui-gallery" data-testid="genuine-multicloud-3p-ui-gallery" data-no-hover-toolbar="true" style="border:1.5px solid #cbd5e1; margin-bottom:18px; background:#ffffff;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid #e2e8f0;">
+          <div style="max-width:920px;">
+            <span class="badge badge-blue">RULE 60A&ndash;60C PROVENANCE CERTIFIED &bull; 23 LIVE 2880&times;1800 RETINA BROWSER CAPTURES &bull; ZERO SYNTHETIC HTML</span>
+            <h3 style="margin:6px 0 4px 0; color:#0f172a;">&#128444;&#65039; Multi-Cloud Testbed Deployment Proof: 23 Genuine Retina Captures (Cloud Run, AWS EC2 &amp; AWS Console)</h3>
+            <p class="muted" style="margin:0; font-size:12.5px; color:#475569;">Verified multi-cloud testbed infrastructure deployment proof across <strong>Google Cloud Run Gen2</strong> (<code>bbar-138hf0</code> &bull; <code>us-west1</code>) and <strong>AWS EC2</strong> (<code>393036065405</code> &bull; <code>us-east-1</code> &bull; <code>i-04924523ac41ff132</code>), plus <strong>3 live AWS Management Console</strong> surfaces (EC2, Lambda <code>cymbal-a2a-mcp-remote-peer</code>, S3 <code>cymbal-10saas-ledger/</code>). This gallery provides cryptographic SHA-256 visual audit receipts certifying that all 10 automated security testbed containers are deployed and reachable across both cloud platforms.</p>
+          </div>
+          <div class="flex-wrap-center">
+            <button type="button" class="sim-btn" style="font-size:11.5px; padding:6px 10px;" onclick="switchE2EWorkbenchTab('deliverables'); viewArtifact('docs/genuine_ui_screenshot_provenance_receipt.json');">&#128220; 23-UI Provenance Receipt</button>
+            <button type="button" class="sim-btn" style="font-size:11.5px; padding:6px 10px;" onclick="switchE2EWorkbenchTab('deliverables'); viewArtifact('docs/gcp_cloudrun_3p_apps_live_receipt.json');">&#9729;&#65039; GCP 10-Stack Receipt</button>
+            <button type="button" class="sim-btn" style="font-size:11.5px; padding:6px 10px;" onclick="switchE2EWorkbenchTab('deliverables'); viewArtifact('docs/aws_ec2_3p_apps_live_receipt.json');">&#128421;&#65039; AWS 10-Stack Receipt</button>
+            <button type="button" class="sim-btn" style="font-size:11.5px; padding:6px 10px;" onclick="switchE2EWorkbenchTab('deliverables'); viewArtifact('data/run_continuity_ledger.json');">&#128279; Continuity Ledger</button>
+            <button type="button" class="sim-btn" style="font-size:11.5px; padding:6px 10px;" onclick="switchE2EWorkbenchTab('deliverables'); viewArtifact('scripts/capture_genuine_multicloud_3p_uis.mjs');">&#128187; Capture Script (.mjs)</button>
+            <button type="button" class="sim-btn" style="font-size:11.5px; padding:6px 10px;" onclick="switchE2EWorkbenchTab('deliverables'); viewArtifact('scripts/run_all_repeatable_e2e_verifications.py');">&#9881;&#65039; Repeatable Runner (.py)</button>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:8px 12px;">
+          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <span style="font-size:12px; font-weight:700; color:#334155;">Filter Plane:</span>
+            <button type="button" class="genuine-3p-filter-btn active" data-gallery-filter="all" onclick="filterGenuineUiGallery('all', this)">All Multi-Cloud UIs (23)</button>
+            <button type="button" class="genuine-3p-filter-btn" data-gallery-filter="gcp" onclick="filterGenuineUiGallery('gcp', this)">Google Cloud Run Gen2 (10)</button>
+            <button type="button" class="genuine-3p-filter-btn" data-gallery-filter="aws-ec2" onclick="filterGenuineUiGallery('aws-ec2', this)">AWS EC2 Upstream Stacks (10)</button>
+            <button type="button" class="genuine-3p-filter-btn" data-gallery-filter="aws-console" onclick="filterGenuineUiGallery('aws-console', this)">AWS Management Console (3)</button>
+          </div>
+          <span id="genuine-3p-gallery-count-label" style="font-size:11.5px; font-weight:600; color:#475569;">Showing 23 / 23 SHA-256 verified Retina captures (click any screenshot to zoom)</span>
+        </div>
+
+        <div class="genuine-3p-gallery-grid" id="genuine-3p-gallery-grid">
+          <!-- 10 GOOGLE CLOUD RUN GEN2 UPSTREAM 3P STACKS -->
+          <div class="genuine-3p-ui-card" data-cloud-group="gcp">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_01_metabase_v050_bi_rls_ledger.png', 'GCP Cloud Run 01 — Metabase BI v0.50.26 (cymbal-gcp-metabase-bi)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_01_metabase_v050_bi_rls_ledger.png" alt="GCP Cloud Run 01 Metabase BI v0.50.26 Multi-Tenant Wire Settlement RLS Ledger" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-blue text-2xs whitespace-nowrap flex-shrink-0">GCP Cloud Run &bull; 01</span>
+                <code class="text-2xs text-muted">metabase/metabase:v0.50.26</code>
+              </div>
+              <strong class="text-sm text-dark">Metabase BI v0.50.26 &mdash; Wire Settlement RLS Question #27</strong>
+              <span class="text-xs-plus text-muted">Domain Twin: BI Liveboard Analytics (<code>HXGGFMZBKE</code>) &bull; Seeded <code>FinVault</code> ($527.0M) &amp; <code>RetailStream</code> rows.</span>
+              <a href="https://cymbal-gcp-metabase-bi-fm3mts5x3a-uw.a.run.app/question/27" target="_blank" rel="noopener" class="text-xs-plus font-semibold text-blue mt-auto">Open Live Cloud Run Service &nearr;</a>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="gcp">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_02_grafana_enterprise_v11_org_telemetry.png', 'GCP Cloud Run 02 — Grafana Enterprise v11.2.0 (cymbal-gcp-grafana-ent)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_02_grafana_enterprise_v11_org_telemetry.png" alt="GCP Cloud Run 02 Grafana Enterprise v11.2.0 FinVault OCC Wire Settlement Workbook" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-blue text-2xs whitespace-nowrap flex-shrink-0">GCP Cloud Run &bull; 02</span>
+                <code class="text-2xs text-muted">grafana/grafana-enterprise:11.2.0</code>
+              </div>
+              <strong class="text-sm text-dark">Grafana Enterprise v11.2.0 &mdash; FinVault Org Telemetry</strong>
+              <span class="text-xs-plus text-muted">Domain Twin: Cloud BI Workbooks (<code>IZVODT083Q</code>) &bull; Dashboard <code>finvault-sre-wb</code> (<code>orgId=1</code>).</span>
+              <a href="https://cymbal-gcp-grafana-ent-fm3mts5x3a-uw.a.run.app/d/finvault-sre-wb?orgId=1" target="_blank" rel="noopener" class="text-xs-plus font-semibold text-blue mt-auto">Open Live Cloud Run Service &nearr;</a>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="gcp">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_03_redmine_v51_itsm_change_queue.png', 'GCP Cloud Run 03 — Redmine ITSM v5.1 (cymbal-gcp-redmine-itsm)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_03_redmine_v51_itsm_change_queue.png" alt="GCP Cloud Run 03 Redmine ITSM v5.1 Change Control Queue CHG0049218" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-blue text-2xs whitespace-nowrap flex-shrink-0">GCP Cloud Run &bull; 03</span>
+                <code class="text-2xs text-muted">library/redmine:5.1</code>
+              </div>
+              <strong class="text-sm text-dark">Redmine ITSM v5.1 &mdash; FinVault Change Queue (<code>CHG0049218</code>)</strong>
+              <span class="text-xs-plus text-muted">Domain Twin: ITSM Change Control (<code>ZS9VGYHBQL</code>) &bull; Multi-tenant project <code>finvault-itsm</code>.</span>
+              <a href="https://cymbal-gcp-redmine-itsm-fm3mts5x3a-uw.a.run.app/projects/finvault-itsm/issues?set_filter=1&amp;status_id=*" target="_blank" rel="noopener" class="text-xs-plus font-semibold text-blue mt-auto">Open Live Cloud Run Service &nearr;</a>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="gcp">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_04_nocodb_v0255_gxp_21cfr11_ledger.png', 'GCP Cloud Run 04 — NocoDB v0.255.2 (cymbal-gcp-nocodb-edc)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_04_nocodb_v0255_gxp_21cfr11_ledger.png" alt="GCP Cloud Run 04 NocoDB v0.255.2 GxP 21 CFR Part 11 Clinical Biomarker Ledger" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-blue text-2xs whitespace-nowrap flex-shrink-0">GCP Cloud Run &bull; 04</span>
+                <code class="text-2xs text-muted">nocodb/nocodb:0.255.2</code>
+              </div>
+              <strong class="text-sm text-dark">NocoDB v0.255.2 &mdash; GxP 21 CFR Part 11 Study Ledger</strong>
+              <span class="text-xs-plus text-muted">Domain Twin: Clinical EDC Biomarkers (<code>TWQU0KSRVF</code>) &bull; KMS ECDSA-P256 signed rows.</span>
+              <a href="https://cymbal-gcp-nocodb-edc-fm3mts5x3a-uw.a.run.app/#/nc/p7hoixnq3pk7t5j/mwlpti8f0afxn8s" target="_blank" rel="noopener" class="text-xs-plus font-semibold text-blue mt-auto">Open Live Cloud Run Service &nearr;</a>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="gcp">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_05_gitea_v122_sre_issue_tracker.png', 'GCP Cloud Run 05 — Gitea v1.22.3 (cymbal-gcp-gitea-sre)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_05_gitea_v122_sre_issue_tracker.png" alt="GCP Cloud Run 05 Gitea v1.22.3 Hop 4 SDP Redacted SRE Escalation Issue #1" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-blue text-2xs whitespace-nowrap flex-shrink-0">GCP Cloud Run &bull; 05</span>
+                <code class="text-2xs text-muted">gitea/gitea:1.22.3</code>
+              </div>
+              <strong class="text-sm text-dark">Gitea v1.22.3 &mdash; Hop 4 SDP-Redacted SRE Escalation</strong>
+              <span class="text-xs-plus text-muted">Domain Twin: CRM/Issue Escalation (<code>K5JAEFCQ6E</code>) &bull; Repo <code>finvault/sre-escalations#1</code>.</span>
+              <a href="https://cymbal-gcp-gitea-sre-fm3mts5x3a-uw.a.run.app/finvault/sre-escalations/issues/1" target="_blank" rel="noopener" class="text-xs-plus font-semibold text-blue mt-auto">Open Live Cloud Run Service &nearr;</a>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="gcp">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_06_trino_v440_distributed_sql_cluster.png', 'GCP Cloud Run 06 — Trino Distributed SQL v440 (cymbal-gcp-trino-sql)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_06_trino_v440_distributed_sql_cluster.png" alt="GCP Cloud Run 06 Trino Distributed SQL v440 Cluster Overview Federated SQL" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-blue text-2xs whitespace-nowrap flex-shrink-0">GCP Cloud Run &bull; 06</span>
+                <code class="text-2xs text-muted">trinodb/trino:440</code>
+              </div>
+              <strong class="text-sm text-dark">Trino Distributed SQL v440 &mdash; Federated SQL Cluster</strong>
+              <span class="text-xs-plus text-muted">Domain Twin: Lakehouse Federated SQL (<code>TERCK8SLBP</code>) &bull; Finished tenant RLS queries.</span>
+              <a href="https://cymbal-gcp-trino-sql-fm3mts5x3a-uw.a.run.app/ui/" target="_blank" rel="noopener" class="text-xs-plus font-semibold text-blue mt-auto">Open Live Cloud Run Service &nearr;</a>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="gcp">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_07_clickhouse_v248_warehouse_rls_play.png', 'GCP Cloud Run 07 — ClickHouse Data Warehouse v24.8 (cymbal-gcp-clickhouse-dw)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_07_clickhouse_v248_warehouse_rls_play.png" alt="GCP Cloud Run 07 ClickHouse Data Warehouse v24.8 Play UI Wire Settlement Table" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-blue text-2xs whitespace-nowrap flex-shrink-0">GCP Cloud Run &bull; 07</span>
+                <code class="text-2xs text-muted">clickhouse/clickhouse-server:24.8</code>
+              </div>
+              <strong class="text-sm text-dark">ClickHouse v24.8 &mdash; Warehouse SQL Play UI</strong>
+              <span class="text-xs-plus text-muted">Domain Twin: Cloud Data Warehouse SQL (<code>CCMDEVZV2S</code>) &bull; <code>cymbal_warehouse.wire_settlement_ledger</code>.</span>
+              <a href="https://cymbal-gcp-clickhouse-dw-fm3mts5x3a-uw.a.run.app/play" target="_blank" rel="noopener" class="text-xs-plus font-semibold text-blue mt-auto">Open Live Cloud Run Service &nearr;</a>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="gcp">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_08_directus_v111_hcm_data_studio.png', 'GCP Cloud Run 08 — Directus Data Studio v11.1.0 (cymbal-gcp-directus-hcm)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_08_directus_v111_hcm_data_studio.png" alt="GCP Cloud Run 08 Directus Data Studio v11.1.0 HCM Compensation Collection" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-blue text-2xs whitespace-nowrap flex-shrink-0">GCP Cloud Run &bull; 08</span>
+                <code class="text-2xs text-muted">directus/directus:11.1.0</code>
+              </div>
+              <strong class="text-sm text-dark">Directus Data Studio v11.1.0 &mdash; HCM Compensation</strong>
+              <span class="text-xs-plus text-muted">Domain Twin: Enterprise HCM RaaS (<code>RAOTMUMJTZ</code>) &bull; Collection <code>hcm_compensation</code>.</span>
+              <a href="https://cymbal-gcp-directus-hcm-fm3mts5x3a-uw.a.run.app/admin/content/hcm_compensation" target="_blank" rel="noopener" class="text-xs-plus font-semibold text-blue mt-auto">Open Live Cloud Run Service &nearr;</a>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="gcp">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_09_datalust_seq_v2024_otel_events.png', 'GCP Cloud Run 09 — Datalust Seq v2024.3 (cymbal-gcp-seq-apm)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_09_datalust_seq_v2024_otel_events.png" alt="GCP Cloud Run 09 Datalust Seq Observability v2024.3 Structured OpenTelemetry Events" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-blue text-2xs whitespace-nowrap flex-shrink-0">GCP Cloud Run &bull; 09</span>
+                <code class="text-2xs text-muted">datalust/seq:2024.3</code>
+              </div>
+              <strong class="text-sm text-dark">Datalust Seq v2024.3 &mdash; Tenant OpenTelemetry APM</strong>
+              <span class="text-xs-plus text-muted">Domain Twin: APM &amp; SRE Logs (<code>G767QR3TQZ</code>) &bull; CLEF structured multi-tenant spans.</span>
+              <a href="https://cymbal-gcp-seq-apm-fm3mts5x3a-uw.a.run.app/#/events" target="_blank" rel="noopener" class="text-xs-plus font-semibold text-blue mt-auto">Open Live Cloud Run Service &nearr;</a>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="gcp">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_10_hashicorp_vault_v113_cmek_secrets_ui.png', 'GCP Cloud Run 10 — HashiCorp Vault v1.13.3 (cymbal-gcp-vault-cmek)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_10_hashicorp_vault_v113_cmek_secrets_ui.png" alt="GCP Cloud Run 10 HashiCorp Vault v1.13.3 KV v2 Tenant CMEK &amp; DPoP Secret UI" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-blue text-2xs whitespace-nowrap flex-shrink-0">GCP Cloud Run &bull; 10</span>
+                <code class="text-2xs text-muted">hashicorp/vault:1.13.3</code>
+              </div>
+              <strong class="text-sm text-dark">HashiCorp Vault v1.13.3 &mdash; Tenant CMEK &amp; DPoP KV v2</strong>
+              <span class="text-xs-plus text-muted">Domain Twin: XDR &amp; DPoP Identity Vault (<code>C7EYM614F2</code>) &bull; Secret <code>tenants/finvault</code>.</span>
+              <a href="https://cymbal-gcp-vault-cmek-fm3mts5x3a-uw.a.run.app/ui/vault/secrets/secret/show/tenants/finvault" target="_blank" rel="noopener" class="text-xs-plus font-semibold text-blue mt-auto">Open Live Cloud Run Service &nearr;</a>
+            </div>
+          </div>
+
+          <!-- 10 AWS EC2 (393036065405 • us-east-1 • i-04924523ac41ff132) UPSTREAM 3P STACKS -->
+          <div class="genuine-3p-ui-card" data-cloud-group="aws-ec2">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/aws_ec2_01_metabase_v050_bi_rls_ledger.png', 'AWS EC2 01 — Metabase BI v0.50.26 (i-04924523ac41ff132 :3001)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/aws_ec2_01_metabase_v050_bi_rls_ledger.png" alt="AWS EC2 01 Metabase BI v0.50.26 FinVault OCC Wire Settlement Liveboard" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-amber text-2xs whitespace-nowrap flex-shrink-0">AWS EC2 &bull; 01</span>
+                <code class="text-2xs text-muted">metabase/metabase:v0.50.26</code>
+              </div>
+              <strong class="text-sm text-dark">Metabase BI v0.50.26 &mdash; AWS Federation Peer (<code>:3001</code>)</strong>
+              <span class="text-xs-plus text-muted">Host: <code>i-04924523ac41ff132</code> (<code>us-east-1</code>) &bull; Question #27 OCC Wire Settlement RLS.</span>
+              <span style="font-size:11px; color:#64748b; margin-top:auto;">Verified in <code>docs/aws_ec2_3p_apps_live_receipt.json</code></span>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="aws-ec2">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/aws_ec2_02_grafana_enterprise_v11_org_telemetry.png', 'AWS EC2 02 — Grafana Enterprise v11.2.0 (i-04924523ac41ff132 :3002)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/aws_ec2_02_grafana_enterprise_v11_org_telemetry.png" alt="AWS EC2 02 Grafana Enterprise v11.2.0 FinVault FinOps Workbook" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-amber text-2xs whitespace-nowrap flex-shrink-0">AWS EC2 &bull; 02</span>
+                <code class="text-2xs text-muted">grafana/grafana-enterprise:11.2.0</code>
+              </div>
+              <strong class="text-sm text-dark">Grafana Enterprise v11.2.0 &mdash; AWS Peer (<code>:3002</code>)</strong>
+              <span class="text-xs-plus text-muted">Host: <code>i-04924523ac41ff132</code> (<code>us-east-1</code>) &bull; Workbook <code>finvault-sre-wb</code> (<code>orgId=1</code>).</span>
+              <span style="font-size:11px; color:#64748b; margin-top:auto;">Verified in <code>docs/aws_ec2_3p_apps_live_receipt.json</code></span>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="aws-ec2">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/aws_ec2_03_redmine_v51_itsm_change_queue.png', 'AWS EC2 03 — Redmine ITSM v5.1 (i-04924523ac41ff132 :3003)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/aws_ec2_03_redmine_v51_itsm_change_queue.png" alt="AWS EC2 03 Redmine ITSM v5.1 FinVault Change Control Issues" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-amber text-2xs whitespace-nowrap flex-shrink-0">AWS EC2 &bull; 03</span>
+                <code class="text-2xs text-muted">library/redmine:5.1</code>
+              </div>
+              <strong class="text-sm text-dark">Redmine ITSM v5.1 &mdash; AWS Federation Peer (<code>:3003</code>)</strong>
+              <span class="text-xs-plus text-muted">Host: <code>i-04924523ac41ff132</code> (<code>us-east-1</code>) &bull; Seeded <code>CHG0049218</code> &amp; <code>INC0918442</code>.</span>
+              <span style="font-size:11px; color:#64748b; margin-top:auto;">Verified in <code>docs/aws_ec2_3p_apps_live_receipt.json</code></span>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="aws-ec2">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/aws_ec2_04_nocodb_v0255_gxp_21cfr11_ledger.png', 'AWS EC2 04 — NocoDB v0.255.2 (i-04924523ac41ff132 :3004)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/aws_ec2_04_nocodb_v0255_gxp_21cfr11_ledger.png" alt="AWS EC2 04 NocoDB v0.255.2 Clinical EDC 21 CFR Part 11 Grid" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-amber text-2xs whitespace-nowrap flex-shrink-0">AWS EC2 &bull; 04</span>
+                <code class="text-2xs text-muted">nocodb/nocodb:0.255.2</code>
+              </div>
+              <strong class="text-sm text-dark">NocoDB v0.255.2 &mdash; AWS Federation Peer (<code>:3004</code>)</strong>
+              <span class="text-xs-plus text-muted">Host: <code>i-04924523ac41ff132</code> (<code>us-east-1</code>) &bull; Cymbal GxP 21 CFR Part 11 Biomarker Base.</span>
+              <span style="font-size:11px; color:#64748b; margin-top:auto;">Verified in <code>docs/aws_ec2_3p_apps_live_receipt.json</code></span>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="aws-ec2">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/aws_ec2_05_gitea_v122_sre_issue_tracker.png', 'AWS EC2 05 — Gitea v1.22.3 (i-04924523ac41ff132 :3005)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/aws_ec2_05_gitea_v122_sre_issue_tracker.png" alt="AWS EC2 05 Gitea v1.22.3 SRE Escalation Tracker Issue #1" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-amber text-2xs whitespace-nowrap flex-shrink-0">AWS EC2 &bull; 05</span>
+                <code class="text-2xs text-muted">gitea/gitea:1.22.3</code>
+              </div>
+              <strong class="text-sm text-dark">Gitea v1.22.3 &mdash; AWS Federation Peer (<code>:3005</code>)</strong>
+              <span class="text-xs-plus text-muted">Host: <code>i-04924523ac41ff132</code> (<code>us-east-1</code>) &bull; Redacted <code>SFDC-CASE-00984120</code> escalation.</span>
+              <span style="font-size:11px; color:#64748b; margin-top:auto;">Verified in <code>docs/aws_ec2_3p_apps_live_receipt.json</code></span>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="aws-ec2">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/aws_ec2_06_trino_v440_distributed_sql_cluster.png', 'AWS EC2 06 — Trino Distributed SQL v440 (i-04924523ac41ff132 :3006)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/aws_ec2_06_trino_v440_distributed_sql_cluster.png" alt="AWS EC2 06 Trino Distributed SQL v440 Cluster Overview" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-amber text-2xs whitespace-nowrap flex-shrink-0">AWS EC2 &bull; 06</span>
+                <code class="text-2xs text-muted">trinodb/trino:440</code>
+              </div>
+              <strong class="text-sm text-dark">Trino Distributed SQL v440 &mdash; AWS Peer (<code>:3006</code>)</strong>
+              <span class="text-xs-plus text-muted">Host: <code>i-04924523ac41ff132</code> (<code>us-east-1</code>) &bull; Cluster Overview with Finished SQL queries.</span>
+              <span style="font-size:11px; color:#64748b; margin-top:auto;">Verified in <code>docs/aws_ec2_3p_apps_live_receipt.json</code></span>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="aws-ec2">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/aws_ec2_07_clickhouse_v248_warehouse_rls_play.png', 'AWS EC2 07 — ClickHouse Data Warehouse v24.8 (i-04924523ac41ff132 :3007)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/aws_ec2_07_clickhouse_v248_warehouse_rls_play.png" alt="AWS EC2 07 ClickHouse Data Warehouse v24.8 Play UI" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-amber text-2xs whitespace-nowrap flex-shrink-0">AWS EC2 &bull; 07</span>
+                <code class="text-2xs text-muted">clickhouse/clickhouse-server:24.8</code>
+              </div>
+              <strong class="text-sm text-dark">ClickHouse v24.8 &mdash; AWS Federation Peer (<code>:3007</code>)</strong>
+              <span class="text-xs-plus text-muted">Host: <code>i-04924523ac41ff132</code> (<code>us-east-1</code>) &bull; Live SQL results over <code>wire_settlement_ledger</code>.</span>
+              <span style="font-size:11px; color:#64748b; margin-top:auto;">Verified in <code>docs/aws_ec2_3p_apps_live_receipt.json</code></span>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="aws-ec2">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/aws_ec2_08_directus_v111_hcm_data_studio.png', 'AWS EC2 08 — Directus Data Studio v11.1.0 (i-04924523ac41ff132 :3008)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/aws_ec2_08_directus_v111_hcm_data_studio.png" alt="AWS EC2 08 Directus Data Studio v11.1.0 HCM Compensation" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-amber text-2xs whitespace-nowrap flex-shrink-0">AWS EC2 &bull; 08</span>
+                <code class="text-2xs text-muted">directus/directus:11.1.0</code>
+              </div>
+              <strong class="text-sm text-dark">Directus Data Studio v11.1.0 &mdash; AWS Peer (<code>:3008</code>)</strong>
+              <span class="text-xs-plus text-muted">Host: <code>i-04924523ac41ff132</code> (<code>us-east-1</code>) &bull; Seeded <code>hcm_compensation</code> tenant bands.</span>
+              <span style="font-size:11px; color:#64748b; margin-top:auto;">Verified in <code>docs/aws_ec2_3p_apps_live_receipt.json</code></span>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="aws-ec2">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/aws_ec2_09_datalust_seq_v2024_otel_events.png', 'AWS EC2 09 — Datalust Seq v2024.3 (i-04924523ac41ff132 :3009)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/aws_ec2_09_datalust_seq_v2024_otel_events.png" alt="AWS EC2 09 Datalust Seq v2024.3 OpenTelemetry Event Stream" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-amber text-2xs whitespace-nowrap flex-shrink-0">AWS EC2 &bull; 09</span>
+                <code class="text-2xs text-muted">datalust/seq:2024.3</code>
+              </div>
+              <strong class="text-sm text-dark">Datalust Seq v2024.3 &mdash; AWS Federation Peer (<code>:3009</code>)</strong>
+              <span class="text-xs-plus text-muted">Host: <code>i-04924523ac41ff132</code> (<code>us-east-1</code>) &bull; Multi-tenant CLEF APM spans.</span>
+              <span style="font-size:11px; color:#64748b; margin-top:auto;">Verified in <code>docs/aws_ec2_3p_apps_live_receipt.json</code></span>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="aws-ec2">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/aws_ec2_10_hashicorp_vault_v113_cmek_secrets_ui.png', 'AWS EC2 10 — HashiCorp Vault v1.13.3 (i-04924523ac41ff132 :3010)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/aws_ec2_10_hashicorp_vault_v113_cmek_secrets_ui.png" alt="AWS EC2 10 HashiCorp Vault v1.13.3 KV v2 Tenant CMEK UI" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-amber text-2xs whitespace-nowrap flex-shrink-0">AWS EC2 &bull; 10</span>
+                <code class="text-2xs text-muted">hashicorp/vault:1.13.3</code>
+              </div>
+              <strong class="text-sm text-dark">HashiCorp Vault v1.13.3 &mdash; AWS Peer (<code>:3010</code>)</strong>
+              <span class="text-xs-plus text-muted">Host: <code>i-04924523ac41ff132</code> (<code>us-east-1</code>) &bull; KV v2 <code>secret/tenants/finvault</code>.</span>
+              <span style="font-size:11px; color:#64748b; margin-top:auto;">Verified in <code>docs/aws_ec2_3p_apps_live_receipt.json</code></span>
+            </div>
+          </div>
+
+          <!-- 3 LIVE AWS MANAGEMENT CONSOLE SURFACES (ACCOUNT 393036065405 • us-east-1) -->
+          <div class="genuine-3p-ui-card" data-cloud-group="aws-console">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/aws_console_01_ec2_running_10_3p_saas_host.png', 'AWS Management Console 01 — EC2 Instance i-04924523ac41ff132 (us-east-1)')">
+              <img src="screenshots/genuine-multicloud-3p-uis/aws_console_01_ec2_running_10_3p_saas_host.png" alt="AWS Management Console EC2 Running Instance i-04924523ac41ff132" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-green text-2xs whitespace-nowrap flex-shrink-0">AWS Console &bull; EC2</span>
+                <code class="text-2xs text-muted">393036065405 / us-east-1</code>
+              </div>
+              <strong class="text-sm text-dark">AWS EC2 Console &mdash; Running Host <code>i-04924523ac41ff132</code></strong>
+              <span class="text-xs-plus text-muted">Live federated session showing running multi-container 3P enterprise software host.</span>
+              <a href="https://us-east-1.console.aws.amazon.com/ec2/home?region=us-east-1#Instances:instanceId=i-04924523ac41ff132" target="_blank" rel="noopener" class="text-xs-plus font-semibold text-blue mt-auto">Open in AWS EC2 Console &nearr;</a>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="aws-console">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/aws_console_02_lambda_cymbal_a2a_mcp_remote_peer.png', 'AWS Management Console 02 — Lambda cymbal-a2a-mcp-remote-peer')">
+              <img src="screenshots/genuine-multicloud-3p-uis/aws_console_02_lambda_cymbal_a2a_mcp_remote_peer.png" alt="AWS Management Console Lambda cymbal-a2a-mcp-remote-peer Configuration" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-green text-2xs whitespace-nowrap flex-shrink-0">AWS Console &bull; Lambda</span>
+                <code class="text-2xs text-muted">393036065405 / us-east-1</code>
+              </div>
+              <strong class="text-sm text-dark">AWS Lambda Console &mdash; <code>cymbal-a2a-mcp-remote-peer</code></strong>
+              <span class="text-xs-plus text-muted">Live AgentCore MCP remote peer backing targets <code>HXGGFMZBKE</code>..<code>C7EYM614F2</code>.</span>
+              <a href="https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/cymbal-a2a-mcp-remote-peer?tab=configure" target="_blank" rel="noopener" class="text-xs-plus font-semibold text-blue mt-auto">Open in AWS Lambda Console &nearr;</a>
+            </div>
+          </div>
+
+          <div class="genuine-3p-ui-card" data-cloud-group="aws-console">
+            <div class="genuine-3p-thumb-wrap" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/aws_console_03_s3_cymbal_10saas_audit_ledger.png', 'AWS Management Console 03 — S3 cymbal-aws-federation-393036065405-us-east-1')">
+              <img src="screenshots/genuine-multicloud-3p-uis/aws_console_03_s3_cymbal_10saas_audit_ledger.png" alt="AWS Management Console S3 Bucket cymbal-10saas-ledger Audit Objects" decoding="async" />
+            </div>
+            <div class="genuine-3p-card-body">
+              <div class="flex-between">
+                <span class="badge badge-green text-2xs whitespace-nowrap flex-shrink-0">AWS Console &bull; S3</span>
+                <code class="text-2xs text-muted">393036065405 / us-east-1</code>
+              </div>
+              <strong class="text-sm text-dark">AWS S3 Console &mdash; <code>cymbal-10saas-ledger/</code> Prefix</strong>
+              <span class="text-xs-plus text-muted">Immutable cross-cloud S3 outcome ledger across all 10 SaaS &times; 3 Pattern flows.</span>
+              <a href="https://us-east-1.console.aws.amazon.com/s3/buckets/cymbal-aws-federation-393036065405-us-east-1?region=us-east-1&amp;prefix=cymbal-10saas-ledger/" target="_blank" rel="noopener" class="text-xs-plus font-semibold text-blue mt-auto">Open in AWS S3 Console &nearr;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5-TAB E2E PATTERN EXECUTION, 20 PROVISIONED MULTI-CLOUD (GCP + AWS + 3P) RESOURCES, 27-FILE SOURCE CODEBASE, 8-STAGE RUNBOOK & DELIVERABLES WORKBENCH -->
+      <div class="card" id="blog-e2e-pattern-execution-and-codebase-workbench" data-testid="blog-e2e-pattern-execution-and-codebase-workbench" data-no-hover-toolbar="true" style="border:1.5px solid rgba(56, 189, 248, 0.45); margin-bottom:18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+          <div>
+            <h3 style="margin:0 0 2px 0;">&#9889; End-to-End Multi-Cloud Pattern Execution (GCP + AWS + 10 Third-Party SaaS), Deployment Links &amp; 27-File Source Codebase</h3>
+            <p class="muted" style="margin:0; font-size:12.5px;">Inspect all 6 test suites (<code>107/107 PASS</code> including <code>30/30 E2E Flows &bull; 60/60 Assertions</code> across 10 Third-Party SaaS &times; 3 Patterns), 20 live resources across <code>cymbal-control-plane (#248990048888)</code>, <code>ramp-portal-dev (#248990048888)</code> &amp; <code>bbar-138hf0 (#48439189383)</code>, AWS <code>393036065405</code> &amp; 10 3P SaaS platforms, per-workstream deployment links, and 27 source files.</p>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <label for="e2e-workbench-view-select" style="margin:0; font-size:12px; font-weight:700; color:var(--heading); white-space:nowrap;">&#128194; Workbench View:</label>
+            <select id="e2e-workbench-view-select" style="width:auto; min-width:320px; padding:7px 28px 7px 10px; font-weight:600; font-size:12.5px;" onchange="switchE2EWorkbenchTab(this.value)" aria-label="Select E2E Workbench View">
+              <option value="execution">1. Live E2E Execution Results (6 Suites &bull; 107/107 PASS)</option>
+              <option value="resources">2. Multi-Cloud Resources &amp; WS1&ndash;WS5 Deployment Links (20 Live)</option>
+              <option value="codebase">3. Complete Source Codebase (27 Python &amp; TF Files)</option>
+              <option value="runbook">4. Cloud Console &amp; SSH Verification Runbook (8 Stages)</option>
+              <option value="deliverables">5. All Workstream Deliverables &amp; Codelabs Index</option>
+            </select>
+            <button type="button" id="e2e-rerun-live-btn" class="sim-btn primary" style="padding:7px 12px; font-size:12.5px;" onclick="runLiveE2ESimulationsInWorkbench()">&#9654; Re-Run All 107 Multi-Cloud &amp; 10-SaaS Tests Live</button>
+          </div>
+        </div>
+
+        <!-- E2E SUB-PANE 1: LIVE E2E EXECUTION RESULTS -->
+        <div id="e2e-pane-execution" style="display:block;">
+          <div id="e2e-execution-suites-container" class="grid-2"></div>
+        </div>
+
+        <!-- E2E SUB-PANE 2: PER-WORKSTREAM DEPLOYMENT LINKS + 20 PROVISIONED MULTI-CLOUD (GCP + AWS + 3P) RESOURCES -->
+        <div id="e2e-pane-resources" style="display:none;">
+          <div class="card" style="background:var(--panel-alt); margin-bottom:14px; padding:12px 14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+              <div>
+                <span class="badge badge-green">PER-WORKSTREAM (WS1&ndash;WS5) LIVE DEPLOYMENT &amp; MULTI-CLOUD CONSOLE LINKS</span>
+                <h4 style="margin:4px 0 2px 0; font-size:14.5px;">Canonical BeyondCorp Cloud Run, GCP Console, AWS Account 393036065405, Google Slides &amp; Native Docs Links</h4>
+              </div>
+            </div>
+            <div style="overflow-x:auto;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Workstream &amp; Pattern</th>
+                    <th>BeyondCorp &amp; Cloud Run Live UI</th>
+                    <th>GCP Console (ramp-portal-dev #248990048888 / bbar-138hf0 #48439189383)</th>
+                    <th>AWS Console (393036065405) &amp; 3P SaaS</th>
+                    <th>Live Google Slides &amp; Native Docs</th>
+                    <th>Codebase Entrypoint</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>WS1</strong> &bull; 5-Hop Taxonomy &amp; Baseline</td>
+                    <td><a href="/?doc=blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md" onclick="openDocInReader('blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md'); return false;">ge-blogs-248990048888.cr.gclb.goog/?doc=ws1 &#8599;</a><br/><a href="https://a2a-gateway-248990048888.cr.gclb.goog" target="_blank" rel="noopener" class="text-xs-plus">a2a-gateway-248990048888.cr.gclb.goog &#8599;</a></td>
+                    <td><a href="https://console.cloud.google.com/vertex-ai/studio/multimodal?project=ramp-portal-dev" target="_blank" rel="noopener">Vertex AI Gemini 2.5 Router &#8599;</a><br/><a href="https://console.cloud.google.com/gen-app-builder/engines?project=ramp-portal-dev" target="_blank" rel="noopener" class="text-xs-plus">GE Engine enterprise-s2p-global &#8599;</a></td>
+                    <td><a href="https://us-east-1.console.aws.amazon.com/bedrock/home?region=us-east-1#/agentcore/gateways" target="_blank" rel="noopener">Bedrock AgentCore MCP Gateway &#8599;</a></td>
+                    <td><a href="https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit" target="_blank" rel="noopener">WS1 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?resourcekey=0-PgO-X5icAK687_G-_WZFpQ" target="_blank" rel="noopener" class="text-xs-plus">WS1 Native Google Doc &#8599;</a></td>
+                    <td><span class="file-pill" onclick="switchE2EWorkbenchTab('codebase')">core-cymbal-agent/</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>WS2</strong> &bull; Pattern A: Pooled RLS &amp; 3P OBO</td>
+                    <td><a href="/?doc=blogs/ws2-pattern-a-pooled-architecture.md" onclick="openDocInReader('blogs/ws2-pattern-a-pooled-architecture.md'); return false;">ge-blogs-248990048888.cr.gclb.goog/?doc=ws2 &#8599;</a><br/><a href="https://ge-demos-248990048888.cr.gclb.goog" target="_blank" rel="noopener" class="text-xs-plus">ge-demos-248990048888.cr.gclb.goog &#8599;</a></td>
+                    <td><a href="https://console.cloud.google.com/bigquery?project=ramp-portal-dev&amp;ws=!1m5!1m4!4m3!1sramp-portal-dev!2scymbal_agentic_finops_otel!3spattern_a_pooled_rls_entities" target="_blank" rel="noopener">BigQuery Pattern A RLS Table &#8599;</a></td>
+                    <td><a href="https://us-east-1.console.aws.amazon.com/cognito/v2/idp/user-pools/us-east-1_vqlzYM74B/overview?region=us-east-1" target="_blank" rel="noopener">Cognito RS256 OBO Pool &#8599;</a><br/><span class="muted text-xs">ServiceNow CHG0049218 (200 OK)</span></td>
+                    <td><a href="https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit?resourcekey=0-VBrM33i2sQ8J1B3Z7ycw5g" target="_blank" rel="noopener">WS2 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/edit?resourcekey=0-OyYSOmx22u8x4Q1kHunGyQ" target="_blank" rel="noopener" class="text-xs-plus">WS2 Native Google Doc &#8599;</a></td>
+                    <td><span class="file-pill" onclick="viewArtifact('workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py')">workstream-2-pattern-a-pooled/</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>WS3</strong> &bull; Pattern B: Sovereign Silos &amp; CMEK</td>
+                    <td><a href="/?doc=blogs/ws3-pattern-b-sovereign-silos.md" onclick="openDocInReader('blogs/ws3-pattern-b-sovereign-silos.md'); return false;">ge-blogs-248990048888.cr.gclb.goog/?doc=ws3 &#8599;</a><br/><a href="https://askaioce-248990048888.cr.gclb.goog" target="_blank" rel="noopener" class="text-xs-plus">askaioce-248990048888.cr.gclb.goog &#8599;</a></td>
+                    <td><a href="https://console.cloud.google.com/security/kms/keyring/manage/us-west1/cymbal-multi-tenant-kr?project=ramp-portal-dev" target="_blank" rel="noopener">Cloud KMS Keyring (4 Keys) &#8599;</a><br/><a href="https://console.cloud.google.com/bigquery?project=ramp-portal-dev&amp;ws=!1m5!1m4!4m3!1sramp-portal-dev!2scymbal_silo_finvault_usw1!3spattern_b_silo_finvault_cmek_vault" target="_blank" rel="noopener" class="text-xs-plus">BigQuery CMEK Silo Vault &#8599;</a></td>
+                    <td><a href="https://us-east-1.console.aws.amazon.com/bedrock/home?region=us-east-1#/agentcore/runtimes" target="_blank" rel="noopener">Bedrock Dedicated Silo Runtime &#8599;</a><br/><span class="muted text-xs">Muse Study FV-GXP-2026-04 (200 OK)</span></td>
+                    <td><a href="https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit?resourcekey=0-hzmJ995FIAdtQEUwWa9YQw" target="_blank" rel="noopener">WS3 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/edit?resourcekey=0-KRCBVysg1k7J4IvKwJKuYQ" target="_blank" rel="noopener" class="text-xs-plus">WS3 Native Google Doc &#8599;</a></td>
+                    <td><span class="file-pill" onclick="viewArtifact('workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py')">workstream-3-pattern-b-siloed/</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>WS4</strong> &bull; Pattern C: Hybrid PSC &amp; Cell Stamps</td>
+                    <td><a href="/?doc=blogs/ws4-pattern-c-hybrid-dynamic-tiering.md" onclick="openDocInReader('blogs/ws4-pattern-c-hybrid-dynamic-tiering.md'); return false;">ge-blogs-248990048888.cr.gclb.goog/?doc=ws4 &#8599;</a><br/><a href="https://promptcanvas-248990048888.cr.gclb.goog" target="_blank" rel="noopener" class="text-xs-plus">promptcanvas-248990048888.cr.gclb.goog &#8599;</a></td>
+                    <td><a href="https://console.cloud.google.com/networking/subnetworks/details/us-west1/cymbal-psc-nat-us-west1?project=ramp-portal-dev" target="_blank" rel="noopener">VPC /28 PSC NAT Subnet &#8599;</a><br/><a href="https://console.cloud.google.com/bigquery?project=ramp-portal-dev&amp;ws=!1m5!1m4!4m3!1sramp-portal-dev!2scymbal_agentic_finops_otel!3spattern_c_psc_endpoints_registry" target="_blank" rel="noopener" class="text-xs-plus">BigQuery PSC Migration Ledger &#8599;</a></td>
+                    <td><a href="https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/cymbal-a2a-mcp-remote-peer" target="_blank" rel="noopener">Lambda Hop 5 GxP Guardrails &#8599;</a><br/><span class="muted text-xs">21 CFR Part 11 + 403 Block</span></td>
+                    <td><a href="https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit" target="_blank" rel="noopener">WS4 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/edit" target="_blank" rel="noopener" class="text-xs-plus">WS4 Native Google Doc &#8599;</a></td>
+                    <td><span class="file-pill" onclick="viewArtifact('workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py')">workstream-4-pattern-c-hybrid/</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>WS5</strong> &bull; Decision Matrix, FinOps &amp; Triad</td>
+                    <td><a href="/?doc=blogs/ws5-decision-guide-and-agentic-triad.md" onclick="openDocInReader('blogs/ws5-decision-guide-and-agentic-triad.md'); return false;">ge-blogs-248990048888.cr.gclb.goog/?doc=ws5 &#8599;</a><br/><a href="https://scorex-248990048888.cr.gclb.goog" target="_blank" rel="noopener" class="text-xs-plus">scorex-248990048888.cr.gclb.goog &#8599;</a></td>
+                    <td><a href="https://console.cloud.google.com/bigquery?project=ramp-portal-dev&amp;ws=!1m5!1m4!4m3!1sramp-portal-dev!2scymbal_agentic_finops_otel!3stenant_telemetry_spans" target="_blank" rel="noopener">BigQuery OTel FinOps Ledger &#8599;</a></td>
+                    <td><a href="https://us-east-1.console.aws.amazon.com/s3/buckets/cymbal-multi-tenant-audit-ledger-393036065405-us-east-1?region=us-east-1" target="_blank" rel="noopener">S3 Cross-Cloud Audit Ledger &#8599;</a></td>
+                    <td><a href="https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit" target="_blank" rel="noopener">WS5 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit" target="_blank" rel="noopener" class="text-xs-plus">WS5 Native Google Doc &#8599;</a></td>
+                    <td><span class="file-pill" onclick="viewArtifact('core-cymbal-agent/gcp_live_bridge.py')">core-cymbal-agent/gcp_live_bridge.py</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Pattern</th>
+                  <th>Cloud / 3P Service</th>
+                  <th>Resource Name &amp; Full URI</th>
+                  <th>Project / Account &amp; Location</th>
+                  <th>Verification Proof &amp; Direct Deployment Link</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="e2e-provisioned-resources-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- E2E SUB-PANE 3: COMPLETE 27-FILE SOURCE CODEBASE EXPLORER -->
+        <div id="e2e-pane-codebase" style="display:none;">
+          <div id="e2e-codebase-category-bar" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;"></div>
+          <div style="display:grid; grid-template-columns: 320px 1fr; gap:14px; align-items:start;">
+            <div id="e2e-codebase-file-list" style="max-height:560px; overflow-y:auto; display:flex; flex-direction:column; gap:6px; padding-right:4px;"></div>
+            <div style="background:var(--panel); border:1px solid var(--border); border-radius:10px; overflow:hidden;">
+              <div id="e2e-codebase-viewer-header" style="padding:10px 14px; background:var(--panel-alt); border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:12.5px;"></div>
+              <pre id="e2e-codebase-viewer-pre" style="margin:0; max-height:510px; overflow:auto; border:none; border-radius:0; padding:14px; font-size:12px; line-height:1.5;"></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- E2E SUB-PANE 4: END-TO-END GOOGLE CLOUD CONSOLE & SSH RUNBOOK (8 STAGES) -->
+        <div id="e2e-pane-runbook" style="display:none;">
+          <div class="card" style="background:var(--panel-alt); margin-bottom:14px; padding:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+              <div>
+                <span class="badge badge-green">LIVE GOOGLE CLOUD CONSOLE CLOUD RUN + DOCKED CLOUD SHELL RUNBOOK</span>
+                <span class="badge badge-blue">cymbal-multi-tenant-patterns-00003-wfh (us-west1)</span>
+                <span class="badge badge-purple">root@localhost:/app# Verified</span>
+                <h4 style="margin:6px 0 2px 0; font-size:16px;">End-to-End Google Cloud Console Setup, Execution, Validation &amp; Deployment Process (8 Stages)</h4>
+                <p class="muted" style="margin:0; font-size:12.5px;">Complete step-by-step operational guide with Google Cloud Console Cloud Run + Docked Cloud Shell screenshots showing how to inspect all 27 files, open an interactive SSH tunnel into the live Gen2 container, execute Pattern A/B/C &amp; Core 5-Hop suites, validate Cloud KMS &amp; BigQuery streaming inserts, and deploy revisions.</p>
+              </div>
+              <div class="flex-wrap-gap8">
+                <a href="https://console.cloud.google.com/run/detail/us-west1/ge-blogs/source?project=ramp-portal-dev&amp;cloudshell=true" target="_blank" rel="noopener" class="sim-btn primary" style="text-decoration:none;">&#9729;&#65039; Open Cloud Run Source + Cloud Shell &#8599;</a>
+                <a href="https://console.cloud.google.com/run/detail/us-west1/ge-blogs/revisions?project=ramp-portal-dev&amp;cloudshell=true" target="_blank" rel="noopener" class="sim-btn" style="text-decoration:none;">&gt;_ Open Revision History &amp; SSH &#8599;</a>
+                <button type="button" class="sim-btn" onclick="openDocInReader('docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md')">&#128196; Read Full Runbook in Series Reader &#8599;</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-bottom:14px;">
+            <div class="card" style="margin-bottom:0; padding:14px;">
+              <span class="badge badge-green">LIVE USER CAPTURE • CLOUD CONSOLE SOURCE + CLOUD SHELL SSH</span>
+              <h4 style="margin:8px 0 4px 0; font-size:14px;">Live Authenticated Session in <code>cymbal-multi-tenant-patterns</code> (<code>root@localhost:/app#</code>)</h4>
+              <p class="muted" style="font-size:12px; margin:0 0 8px 0;">Google Cloud Console <code>Source</code> tab inspecting <code>server.py</code> &amp; repository tree on top + Docked Cloud Shell Terminal executing live BigQuery <code>security_breach_audit_log</code> streaming insert (<code>status_code: 200</code>) at the bottom.</p>
+            </div>
+
+            <div class="card" style="margin-bottom:0; padding:14px;">
+              <span class="badge badge-blue">STAGE 1 • CLOUD RUN SOURCE EDITOR (CODE WRITTEN IN CONSOLE)</span>
+              <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 1: Write &amp; Inspect Multi-Tenant Pattern A/B/C Code in Cloud Run <code>Source</code> Tab</h4>
+              <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console <code>Source</code> tab on service <code>cymbal-multi-tenant-patterns</code> (<code>ramp-portal-dev</code> / <code>us-central1</code>) inspecting <code>main.py</code>:</p>
+              <pre style="margin:0 0 8px 0; padding:8px; font-size:11px;"><code>gcloud run services describe cymbal-multi-tenant-patterns \
+  --project=ramp-portal-dev --region=us-central1</code></pre>
+            </div>
+
+            <div class="card" style="margin-bottom:0; padding:14px;">
+              <span class="badge badge-purple">STAGE 2 • CLOUD RUN REVISIONS &amp; DEPLOYMENT (00001-dmg • 100% TRAFFIC)</span>
+              <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 2: Verify Deployed Cloud Run Revision <code>cymbal-multi-tenant-patterns-00001-dmg</code></h4>
+              <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console <code>Revisions</code> tab confirming active revision serving 100% traffic with Gen2 execution environment:</p>
+              <pre style="margin:0 0 8px 0; padding:8px; font-size:11px;"><code>gcloud run revisions list --service=cymbal-multi-tenant-patterns \
+  --project=ramp-portal-dev --region=us-central1</code></pre>
+            </div>
+
+            <div class="card" style="margin-bottom:0; padding:14px;">
+              <span class="badge badge-green">STAGE 3 • BIGQUERY STUDIO: PATTERN A POOLED RLS TABLE &amp; SCHEMA</span>
+              <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 3: Inspect Pattern A Pooled Table <code>pattern_a_pooled_rls_entities</code> &amp; RLS Policy</h4>
+              <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console BigQuery Studio showing <code>cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities</code> with <code>tenant_pooled_rls_policy</code>:</p>
+              <pre style="margin:0 0 8px 0; padding:8px; font-size:11px;"><code>bq show --format=prettyjson \
+  ramp-portal-dev:cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities</code></pre>
+            </div>
+
+            <div class="card" style="margin-bottom:0; padding:14px;">
+              <span class="badge badge-blue">STAGE 4 • BIGQUERY STUDIO: PATTERN B SOVEREIGN SILO CMEK VAULT</span>
+              <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 4: Inspect Pattern B Sovereign Silo Table <code>pattern_b_silo_finvault_cmek_vault</code></h4>
+              <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console BigQuery Studio showing <code>cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault</code> with Cloud KMS CMEK key URI &amp; ECDSA P-256 signature:</p>
+              <pre style="margin:0 0 8px 0; padding:8px; font-size:11px;"><code>bq head -n 5 \
+  ramp-portal-dev:cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault</code></pre>
+            </div>
+
+            <div class="card" style="margin-bottom:0; padding:14px;">
+              <span class="badge badge-purple">STAGE 5 • CLOUD KMS: CRYPTOGRAPHIC KEYS &amp; ECDSA SIGNING KEYRING</span>
+              <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 5: Verify Cloud KMS Keyring <code>cymbal-multi-tenant-kr</code> in GCP Console</h4>
+              <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console Cryptographic Keys view showing <code>finvault-silo-cmek</code>, <code>biohealth-silo-cmek</code>, <code>retailstream-hybrid-cmek</code>, and <code>adk-agent-signing-key</code>:</p>
+              <pre style="margin:0 0 8px 0; padding:8px; font-size:11px;"><code>gcloud kms keys list --keyring=cymbal-multi-tenant-kr \
+  --location=us-central1 --project=ramp-portal-dev</code></pre>
+            </div>
+
+            <div class="card" style="margin-bottom:0; padding:14px;">
+              <span class="badge badge-green">STAGE 6 • VPC NETWORKS: PATTERN C HUB VPC &amp; /28 PSC NAT SUBNET</span>
+              <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 6: Verify <code>cymbal-pattern-c-hub-vpc</code> &amp; <code>PRIVATE_SERVICE_CONNECT</code> Subnet</h4>
+              <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console VPC network details showing <code>cymbal-psc-nat-us-west1</code> (<code>10.240.0.0/28</code>, purpose <code>PRIVATE_SERVICE_CONNECT</code>):</p>
+              <pre style="margin:0 0 8px 0; padding:8px; font-size:11px;"><code>gcloud compute networks subnets describe cymbal-psc-nat-us-west1 \
+  --region=us-west1 --project=ramp-portal-dev</code></pre>
+            </div>
+
+            <div class="card" style="margin-bottom:0; padding:14px;">
+              <span class="badge badge-amber">STAGE 7 • CLOUD LOGGING: LOGS EXPLORER LIVE EXECUTION (20/20 PASS)</span>
+              <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 7: Inspect Live 20/20 Execution Telemetry in Google Cloud Logs Explorer</h4>
+              <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console Logs Explorer showing structured JSON execution payload and HTTP 200 traces for <code>cymbal-multi-tenant-patterns</code>:</p>
+              <pre style="margin:0 0 8px 0; padding:8px; font-size:11px;"><code>curl -s https://ge-blogs-248990048888.cr.gclb.goog/api/health \
+  | python3 -m json.tool</code></pre>
+            </div>
+
+            <div class="card" style="margin-bottom:0; padding:14px; grid-column: 1 / -1;">
+              <span class="badge badge-blue">STAGE 8 • VERTEX AI AGENT BUILDER &amp; GEMINI ENTERPRISE ENGINES CATALOG</span>
+              <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 8: Verify Vertex AI Agent Builder &amp; Gemini Enterprise Engines (<code>ramp-portal-dev</code>)</h4>
+              <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console Agent Builder / Gemini Enterprise view showing live enterprise engines and multi-tenant data stores:</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- E2E SUB-TAB 5: ALL WORKSTREAM DELIVERABLES & CODELABS INDEX -->
+        <div id="e2e-pane-deliverables" style="display:none;">
+          <!-- 1-CLICK TERRAFORM DEPLOYMENT SCRIPTS & HCL BLUEPRINTS HUB -->
+          <div id="terraform-1click-deployment-hub" style="margin-bottom:14px; padding:14px 16px; background:#f8fafc; border:1px solid #cbd5e1; border-left:5px solid #7c3aed; border-radius:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
+              <div>
+                <span class="badge badge-purple" style="margin-right:6px;">1-CLICK TERRAFORM DEPLOYMENT SCRIPTS &amp; HCL MODULES</span>
+                <strong style="color:var(--heading); font-size:14px;">Automated Multi-Pattern Terraform Provisioning + Post-Deploy 107/107 Verification</strong>
+              </div>
+              <div class="flex-wrap-gap6">
+                <button type="button" class="sim-btn primary" style="padding:4px 10px; font-size:11.5px;" onclick="viewArtifact('scripts/deploy_terraform_1click.sh')">&#128640; Inspect Master Script (<code>scripts/deploy_terraform_1click.sh</code>)</button>
+                <button type="button" class="sim-btn" style="padding:4px 10px; font-size:11.5px;" onclick="switchE2EWorkbenchTab('codebase'); selectE2ECodebaseCategory('Workstream 2 • Pattern A (Pooled)');">&#128187; Browse Terraform HCL in Codebase Explorer</button>
+              </div>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:10px;">
+              <div class="card" style="margin:0; padding:12px; background:#ffffff;">
+                <span class="badge badge-blue">PATTERN A (WS2.6) &bull; POOLED MULTI-TENANCY</span>
+                <div style="font-weight:700; font-size:12.5px; margin:6px 0 4px 0;"><code>workstream-2-pattern-a-pooled/2.6-terraform-starter/</code></div>
+                <pre style="margin:4px 0 8px 0; padding:7px 9px; font-size:11px; white-space:pre-wrap; word-break:break-all;"><code>./workstream-2-pattern-a-pooled/2.6-terraform-starter/deploy_1click.sh --apply</code></pre>
+                <div class="flex-wrap-gap5">
+                  <span class="file-pill" onclick="viewArtifact('workstream-2-pattern-a-pooled/2.6-terraform-starter/deploy_1click.sh')">deploy_1click.sh</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf')">main.tf</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-2-pattern-a-pooled/2.6-terraform-starter/variables.tf')">variables.tf</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-2-pattern-a-pooled/2.6-terraform-starter/README.md')">README.md</span>
+                  <a class="file-pill" href="diagrams/ws2-terraform-starter-resource-graph.drawio.png" target="_blank" rel="noopener" style="text-decoration:none;">&#128506;&#65039; Resource Graph PNG &#8599;</a>
+                </div>
+              </div>
+              <div class="card" style="margin:0; padding:12px; background:#ffffff;">
+                <span class="badge badge-purple">PATTERN B (WS3.6) &bull; SOVEREIGN SILO &amp; GEMMA 3 GKE</span>
+                <div style="font-weight:700; font-size:12.5px; margin:6px 0 4px 0;"><code>workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/</code></div>
+                <pre style="margin:4px 0 8px 0; padding:7px 9px; font-size:11px; white-space:pre-wrap; word-break:break-all;"><code>./workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/deploy_1click.sh --apply</code></pre>
+                <div class="flex-wrap-gap5">
+                  <span class="file-pill" onclick="viewArtifact('workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/deploy_1click.sh')">deploy_1click.sh</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf')">main.tf</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/variables.tf')">variables.tf</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/README.md')">README.md</span>
+                  <a class="file-pill" href="diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio.png" target="_blank" rel="noopener" style="text-decoration:none;">&#128506;&#65039; Resource Graph PNG &#8599;</a>
+                </div>
+              </div>
+              <div class="card" style="margin:0; padding:12px; background:#ffffff;">
+                <span class="badge badge-green">PATTERN C (WS4.6) &bull; HYBRID PSC HUB-AND-SPOKE</span>
+                <div style="font-weight:700; font-size:12.5px; margin:6px 0 4px 0;"><code>workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/</code></div>
+                <pre style="margin:4px 0 8px 0; padding:7px 9px; font-size:11px; white-space:pre-wrap; word-break:break-all;"><code>./workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/deploy_1click.sh --apply</code></pre>
+                <div class="flex-wrap-gap5">
+                  <span class="file-pill" onclick="viewArtifact('workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/deploy_1click.sh')">deploy_1click.sh</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf')">main.tf</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/variables.tf')">variables.tf</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/README.md')">README.md</span>
+                  <a class="file-pill" href="diagrams/ws4-terraform-hybrid-psc-blueprint-resource-graph.drawio.png" target="_blank" rel="noopener" style="text-decoration:none;">&#128506;&#65039; Resource Graph PNG &#8599;</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:12px; padding:12px 14px; background:var(--panel-alt); border:1px solid var(--border); border-radius:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <strong style="color:var(--link);">Canonical Workstream 1–5 Deliverable &amp; Codelab Index (Purged &amp; Zero-Duplicate):</strong>
+              <span class="muted" style="font-size:12.5px; margin-left:6px;">Click any Markdown blog or codelab to open in the Full-Width Series Reader, or click any code/Terraform/JSON artifact to inspect its raw file contents below.</span>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Workstream</th>
+                <th>Deliverables, Codelabs, Terraform &amp; Canonical Diagrams</th>
+                <th>Verification Proof</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Workstream 1</strong><br/><span class="muted">Reference Architecture &amp; 5-Hop Baseline</span></td>
+                <td>
+                  <span class="file-pill" onclick="openDocInReader('blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md')">blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md')">1.1-architecture-taxonomy-and-diagrams.md</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-1-reference-architecture/1.2-product-team-review-pack.md')">1.2-product-team-review-pack.md</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-1-reference-architecture/1.3-cloud-architecture-center-doc-update-pr.md')">1.3-cloud-architecture-center-doc-update-pr.md</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md')">1.4-eap-and-product-gap-tracker.md</span>
+                  <span class="file-pill" onclick="viewArtifact('diagrams/ws1-multi-tenant-taxonomy-overview.drawio')">diagrams/ws1-multi-tenant-taxonomy-overview.drawio</span>
+                  <span class="file-pill" onclick="viewArtifact('diagrams/ws1-cloud-arch-center-5hop-baseline.drawio')">diagrams/ws1-cloud-arch-center-5hop-baseline.drawio</span>
+                </td>
+                <td><span class="badge badge-green">VERIFIED</span></td>
+              </tr>
+              <tr>
+                <td><strong>Workstream 2</strong><br/><span class="muted">Pattern A: Pooled Multi-Tenancy</span></td>
+                <td>
+                  <span class="file-pill" onclick="openDocInReader('blogs/ws2-pattern-a-pooled-architecture.md')">blogs/ws2-pattern-a-pooled-architecture.md</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md')">2.1-case-study-and-solution-architecture.md</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md')">2.2-demo-env-and-3p-auth-sandbox.md</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py')">2.3 pattern_a_pooled_service.py</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_gateway_and_rls.sql')">2.3 pooled_gateway_and_rls.sql</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py')">2.5 run_breach_simulations.py</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-2-pattern-a-pooled/2.6-terraform-starter/deploy_1click.sh')">2.6-terraform-starter/deploy_1click.sh</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf')">2.6-terraform-starter/main.tf</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck/codelab-90min-breach-sim.md')">2.8 codelab-90min-breach-sim.md</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck/workshop-deck-pattern-a.md')">2.8 workshop-deck-pattern-a.md</span>
+                </td>
+                <td><span class="badge badge-green">10/10 SIMS PASS</span></td>
+              </tr>
+              <tr>
+                <td><strong>Workstream 3</strong><br/><span class="muted">Pattern B: Sovereign Silos</span></td>
+                <td>
+                  <span class="file-pill" onclick="openDocInReader('blogs/ws3-pattern-b-sovereign-silos.md')">blogs/ws3-pattern-b-sovereign-silos.md</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md')">3.1-case-study-and-solution-architecture.md</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md')">3.2-multi-project-silo-and-cmek-setup.md</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py')">3.3 pattern_b_siloed_service.py</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-3-pattern-b-siloed/3.3-solution-implementation/gke_gemma3_airgapped_manifest.yaml')">3.3 gke_gemma3_airgapped_manifest.yaml</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py')">3.5 run_silo_security_tests.py</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/deploy_1click.sh')">3.6-terraform-silo-blueprint/deploy_1click.sh</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf')">3.6-terraform-silo-blueprint/main.tf</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/codelab-90min-regulated-airgapped.md')">3.8 codelab-90min-regulated-airgapped.md</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/workshop-deck-pattern-b.md')">3.8 workshop-deck-pattern-b.md</span>
+                </td>
+                <td><span class="badge badge-green">6/6 TESTS PASS</span></td>
+              </tr>
+              <tr>
+                <td><strong>Workstream 4</strong><br/><span class="muted">Pattern C: Hybrid &amp; Live Tiering</span></td>
+                <td>
+                  <span class="file-pill" onclick="openDocInReader('blogs/ws4-pattern-c-hybrid-dynamic-tiering.md')">blogs/ws4-pattern-c-hybrid-dynamic-tiering.md</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md')">4.1-case-study-and-solution-architecture.md</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md')">4.2-hub-and-spoke-demo-env-setup.md</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py')">4.3 pattern_c_hybrid_router_and_migrator.py</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py')">4.5 run_tier_migration_suite.py</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/deploy_1click.sh')">4.6-terraform-hybrid-psc-blueprint/deploy_1click.sh</span>
+                  <span class="file-pill" onclick="viewArtifact('workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf')">4.6-terraform-hybrid-psc-blueprint/main.tf</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-4-pattern-c-hybrid/4.8-codelab-and-workshop-deck/codelab-90min-multi-pattern-master-lab.md')">4.8 codelab-90min-multi-pattern-master-lab.md</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-4-pattern-c-hybrid/4.8-codelab-and-workshop-deck/workshop-deck-pattern-c.md')">4.8 workshop-deck-pattern-c.md</span>
+                </td>
+                <td><span class="badge badge-green">4/4 MIGRATION PASS</span></td>
+              </tr>
+              <tr>
+                <td><strong>Workstream 5</strong><br/><span class="muted">Executive Decision Guide &amp; Triad</span></td>
+                <td>
+                  <span class="file-pill" onclick="openDocInReader('blogs/ws5-decision-guide-and-agentic-triad.md')">blogs/ws5-decision-guide-and-agentic-triad.md</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md')">5.1-pattern-comparison-and-decision-guide.md</span>
+                  <span class="file-pill" onclick="openDocInReader('workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md')">5.2-capstone-backlog-and-ga-roadmap.md</span>
+                  <span class="file-pill" onclick="openDocInReader('docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md')">docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md</span>
+                  <span class="file-pill" onclick="viewArtifact('core-cymbal-agent/runtime_pipeline.py')">core-cymbal-agent/runtime_pipeline.py</span>
+                  <span class="file-pill" onclick="viewArtifact('diagrams/diagrams_manifest.json')">diagrams/diagrams_manifest.json</span>
+                  <span class="file-pill" onclick="viewArtifact('diagrams/diagram_e2e_flows.json')">diagrams/diagram_e2e_flows.json</span>
+                </td>
+                <td><span class="badge badge-green">13/13 FORENSIC PASS</span></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="margin-top:16px; padding:14px; background:var(--panel-alt); border:1px solid var(--border); border-radius:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <h4 id="artifact-viewer-title" style="margin:0; font-size:14px;"> Raw Deliverable Inspector (Select any code/config pill above)</h4>
+              <span class="badge badge-blue" id="artifact-viewer-meta">Ready</span>
+            </div>
+            <pre id="artifact-viewer-content" style="max-height:500px; overflow-y:auto; margin:0;">Click any code or configuration pill above to inspect its raw source file directly from disk via /api/artifact.</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: COMMERCIAL PAY-AS-YOU-GO (PAYG) LIVE SAAS & CLOUD MARKETPLACE INTEGRATION HUB -->

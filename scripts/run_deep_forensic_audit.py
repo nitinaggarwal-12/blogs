@@ -393,7 +393,14 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
     index_ok = False
     index_detail = "index.html missing"
     if index_path.exists():
-        html = index_path.read_text(encoding="utf-8")
+        try:
+            import sys as _sys
+            if str(ROOT_DIR.resolve()) not in _sys.path:
+                _sys.path.insert(0, str(ROOT_DIR.resolve()))
+            from server import render_assembled_portal_html
+            html = render_assembled_portal_html()
+        except Exception as _e:
+            html = index_path.read_text(encoding="utf-8")
         required_markers = [
             "Shared Multi-Tenant Pool (Pattern A)",
             "Dedicated Customer Vault (Pattern B)",
@@ -437,7 +444,14 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             ".card-toolbar-comment-badge",
             ".card-is-editing",
         ]
-        missing_markers = [m for m in required_markers if m not in html]
+        css_blob = ""
+        for _cf in (ROOT_DIR / "css").glob("*.css"):
+            css_blob += "\n" + _cf.read_text(encoding="utf-8")
+        js_blob = ""
+        for _jf in (ROOT_DIR / "js").glob("*.js"):
+            js_blob += "\n" + _jf.read_text(encoding="utf-8")
+        all_portal_code = html + css_blob + js_blob
+        missing_markers = [m for m in required_markers if m not in all_portal_code]
         ui_doc_paths = re.findall(r"(?:viewArtifact|openDocInReader)\('([^']+)'\)", html)
         missing_ui_paths = [
             p for p in ui_doc_paths
@@ -632,7 +646,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                 if not doc_p.is_file():
                     bidirectional_docs_ok = False
                     break
-                doc_txt = doc_p.read_text(encoding="utf-8")
+                doc_txt = html if rel_doc == "index.html" else doc_p.read_text(encoding="utf-8")
                 if not (
                     all(tid in doc_txt for tid in expected_10_target_ids)
                     and all(up in doc_txt for up in expected_10_saas_ui_paths)
@@ -1243,7 +1257,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
         by_fname = {it.get("filename"): it for it in shot_items if isinstance(it, dict)}
         if len(disk_pngs) < 23 or len(shot_items) != len(disk_pngs):
             f13_errors.append(f"png_count={len(disk_pngs)}/{len(shot_items)}")
-        html_txt = index_path.read_text(encoding="utf-8") if index_path.is_file() else ""
+        html_txt = html
         if "13.220.94.209" in html_txt or 'id="genuine-multicloud-3p-ui-gallery"' not in html_txt:
             f13_errors.append("gallery_dom_or_ip_leak")
         for fname in disk_pngs:

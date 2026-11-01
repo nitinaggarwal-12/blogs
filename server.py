@@ -2157,7 +2157,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                         },
                     )
                     return
-                local_fb = ROOT_DIR / ".local_backup/user_feedback.json"
+                local_fb = FEEDBACK_RUNTIME_FILE
                 payload = _ufe.list_feedback(
                     default_app_id="ge-blogs",
                     local_store_path=local_fb,
@@ -2177,8 +2177,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             return
 
         if path in ("/", "/index.html", "/admin/feedback"):
-            index_file = ROOT_DIR / "index.html"
-            html_text = index_file.read_text(encoding="utf-8")
+            html_text = render_assembled_portal_html()
             if "universal_feedback_widget.js" not in html_text and "</body>" in html_text:
                 head_part, sep, tail_part = html_text.rpartition("</body>")
                 widget_tag = (
@@ -2191,8 +2190,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             return
 
         if path in ("/changelog", "/changelog.html"):
-            index_file = ROOT_DIR / "index.html"
-            html_text = index_file.read_text(encoding="utf-8")
+            html_text = render_assembled_portal_html()
             inject_script = "<script>window.__STANDALONE_CHANGELOG_PAGE = true;</script></head>"
             html_text = html_text.replace("</head>", inject_script, 1)
             if "universal_feedback_widget.js" not in html_text and "</body>" in html_text:
@@ -3311,6 +3309,37 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             ".html": "text/html; charset=utf-8",
         }
         if clean_rel:
+            # Check for server-side durable Draw.io / SVG overlay [FA-05]
+            if clean_rel.startswith("diagrams/") and (clean_rel.endswith(".svg") or clean_rel.endswith(".drawio")):
+                try:
+                    diag_key = Path(clean_rel).stem
+                    ov_store = durable_storage_mod.load_drawio_overlays(DRAWIO_OVERLAYS_FILE)
+                    diag_entry = ov_store.get("diagrams", {}).get(diag_key)
+                    if diag_entry:
+                        if clean_rel.endswith(".svg") and diag_entry.get("svg"):
+                            data = diag_entry["svg"].encode("utf-8")
+                            self.send_response(200)
+                            self.send_header("Content-Type", "image/svg+xml; charset=utf-8")
+                            self.send_header("Content-Length", str(len(data)))
+                            self.send_header("Cache-Control", "no-store")
+                            self._send_security_headers()
+                            self.end_headers()
+                            self.wfile.write(data)
+                            return
+                        elif clean_rel.endswith(".drawio") and diag_entry.get("xml"):
+                            data = diag_entry["xml"].encode("utf-8")
+                            self.send_response(200)
+                            self.send_header("Content-Type", "application/xml; charset=utf-8")
+                            self.send_header("Content-Length", str(len(data)))
+                            self.send_header("Cache-Control", "no-store")
+                            self._send_security_headers()
+                            self.send_header("Content-Disposition", f'attachment; filename="{diag_key}.drawio"')
+                            self.end_headers()
+                            self.wfile.write(data)
+                            return
+                except Exception:
+                    pass
+
             raw_static = ROOT_DIR / clean_rel
             static_file = raw_static.resolve()
             suffix = static_file.suffix.lower()
@@ -3664,19 +3693,27 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 return
 
             if path == "/api/feedback/submit":
-                _ufe = load_module_from_path(
-                    "unified_feedback_engine", ROOT_DIR / "scripts/unified_feedback_engine.py"
-                )
-                req_headers = {k: v for k, v in self.headers.items()}
-                local_fb = ROOT_DIR / ".local_backup/user_feedback.json"
-                res = _ufe.submit_feedback(
-                    payload=body,
-                    default_app_id="ge-blogs",
-                    default_app_name="Google Cloud Architecture Guides (ge-blogs)",
-                    local_store_path=local_fb,
-                    headers=req_headers,
-                )
-                self._send_json(200, res)
+                try:
+                    _ufe = load_module_from_path(
+                        "unified_feedback_engine", ROOT_DIR / "scripts/unified_feedback_engine.py"
+                    )
+                    req_headers = {k: v for k, v in self.headers.items()}
+                    local_fb = FEEDBACK_RUNTIME_FILE
+                    res = _ufe.submit_feedback(
+                        payload=body,
+                        default_app_id="ge-blogs",
+                        default_app_name="Google Cloud Architecture Guides (ge-blogs)",
+                        local_store_path=local_fb,
+                        headers=req_headers,
+                    )
+                    try:
+                        fb_data = json.loads(local_fb.read_text(encoding="utf-8")) if local_fb.is_file() else res
+                        DurableGcsStore.persist_async("portal_feedback.json", fb_data, FEEDBACK_RUNTIME_FILE)
+                    except Exception:
+                        pass
+                    self._send_json(200, res)
+                except Exception as exc:
+                    self._send_json(400, {"ok": False, "error": str(exc)})
                 return
 
             if path in ("/api/feedback/status", "/api/feedback/update"):
@@ -3700,13 +3737,18 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                         },
                     )
                     return
-                local_fb = ROOT_DIR / ".local_backup/user_feedback.json"
+                local_fb = FEEDBACK_RUNTIME_FILE
                 res = _ufe.update_feedback_status(
                     feedback_id=str(body.get("id") or body.get("feedbackId") or ""),
                     new_status=body.get("status"),
                     delete=bool(body.get("delete", False)),
                     local_store_path=local_fb,
                 )
+                try:
+                    fb_data = json.loads(local_fb.read_text(encoding="utf-8")) if local_fb.is_file() else res
+                    DurableGcsStore.persist_async("portal_feedback.json", fb_data, FEEDBACK_RUNTIME_FILE)
+                except Exception:
+                    pass
                 self._send_json(200, res)
                 return
 

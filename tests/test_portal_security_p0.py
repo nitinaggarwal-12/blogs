@@ -541,7 +541,11 @@ class TestPortalSecurityP0(unittest.TestCase):
             self.assertNotIn(bad_vt, txt, f"Leaked Vault token in {path.name}")
             self.assertNotIn(bad_dk, txt, f"Leaked Directus secret in {path.name}")
 
-        html_txt = (ROOT_DIR / "index.html").read_text(encoding="utf-8")
+        try:
+            from server import render_assembled_portal_html
+            html_txt = render_assembled_portal_html()
+        except Exception:
+            html_txt = (ROOT_DIR / "index.html").read_text(encoding="utf-8")
         self.assertNotIn(r"openSaaSConnectModal(\'", html_txt)
         self.assertIn("document.getElementById('saas-modal-live-gateway-link')", html_txt)
         self.assertIn("/api/saas-live/", html_txt)

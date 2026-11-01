@@ -1,0 +1,132 @@
+    <section id="tab-simulator" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-simulator">
+      <div class="card" data-no-hover-toolbar="true">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+          <div>
+            <h3 style="margin:0 0 2px 0;">Live 5-Hop Cryptographic Runtime &amp; Breach Simulator (<code>POST /api/runtime/invoke</code>)</h3>
+            <p class="muted" style="margin:0; font-size:12.5px;">Select a scenario preset from the dropdown to populate &amp; execute immediately, or customize any 5-Hop field below:</p>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:nowrap;">
+            <label for="sim-scenario-preset-select" style="margin:0; font-size:12px; font-weight:700; color:var(--heading); white-space:nowrap;">&#9889; Scenario Preset:</label>
+            <select id="sim-scenario-preset-select" style="width:auto; min-width:340px; padding:7px 28px 7px 10px; font-weight:600; font-size:12.5px;" onchange="runLiveScenario(this.value)" aria-label="Select 5-Hop Scenario Preset">
+              <option value="sim1">Sim 1: Forged X-Tenant-ID Spoof (Hop 1 &rarr; 403 Blocked)</option>
+              <option value="sim2">Sim 2: Cross-Tenant Agent Alpha &amp; 3LO Jira (Hop 2 &rarr; 403 Blocked)</option>
+              <option value="sim3">Sim 3: Prompt Injection &amp; OCC NLC Violation (Hop 4 &rarr; 400/422 Blocked)</option>
+              <option value="sim4">Sim 4: Noisy Neighbor 16k Token Clamp &amp; RPM Burst (Hop 3 &rarr; 429)</option>
+              <option value="sim5">Sim 5: Sovereign VPC-SC Egress &amp; CMEK Kill-Switch (Pattern B &rarr; 423)</option>
+              <option value="sim6">Sim 6: Zero-Downtime Tier Upgrade (Pattern C Pool &rarr; PSC Spoke)</option>
+              <option value="clean">Clean Baseline Diagnostic Turn (Hop 1&ndash;5 &rarr; 200 OK)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- [FA-16, FA-17] DYNAMIC RUNTIME EXECUTION PROVENANCE & MODE SWITCHER -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px; padding:10px 14px; background:#f0fdf4; border:1.5px solid #86efac; border-radius:10px; font-size:12px;">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span style="font-weight:700; color:#166534; font-size:12.5px;">⚡ Runtime Execution Mode:</span>
+            <div style="display:inline-flex; border:1px solid #86efac; border-radius:8px; overflow:hidden; background:#ffffff;">
+              <button type="button" id="btn-mode-in-memory" class="sim-btn active" style="padding:4px 10px; font-size:11.5px; font-weight:700; border:none; border-radius:0; cursor:pointer; background:#15803d; color:#ffffff;" onclick="switchExecutionMode('IN_MEMORY')">
+                ⚡ In-Memory Policy Simulation (&lt;10ms)
+              </button>
+              <button type="button" id="btn-mode-live-gcp" class="sim-btn" style="padding:4px 10px; font-size:11.5px; font-weight:600; border:none; border-radius:0; cursor:pointer; background:#ffffff; color:#334155;" onclick="switchExecutionMode('LIVE_GCP')">
+                ☁️ Live Cloud KMS &amp; BigQuery Execution (Live GCP)
+              </button>
+            </div>
+            <span id="runtime-mode-badge" class="badge badge-green" style="font-weight:700; font-size:11px;">Active: In-Memory (&lt;10ms)</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span id="runtime-credentials-badge" style="font-size:11px; color:#166534; background:#ffffff; border:1px solid #bbf7d0; padding:3px 8px; border-radius:6px;">
+              IAM Service Account: <code>248990048888-compute</code> (ramp-portal-dev)
+            </span>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div>
+            <label for="sb-pattern">Isolation Pattern</label>
+            <select id="sb-pattern" aria-label="Isolation Pattern">
+              <option value="PATTERN_A_POOLED">Pattern A: Pooled Shared Runtime</option>
+              <option value="PATTERN_B_SILOED">Pattern B: Sovereign Silo (VPC-SC + CMEK + Gemma 3)</option>
+              <option value="PATTERN_C_HYBRID">Pattern C: Dynamic Hybrid Router &amp; PSC Spoke</option>
+            </select>
+          </div>
+          <div>
+            <label for="sb-tenant">Authenticated OIDC/Entra JWT Caller</label>
+            <select id="sb-tenant" aria-label="Authenticated OIDC or Entra JWT Caller">
+              <option value="finvault">FinVault Bank (Enterprise • Google OIDC)</option>
+              <option value="retailstream">RetailStream Corp (Standard • Microsoft Entra ID)</option>
+            </select>
+          </div>
+          <div>
+            <label for="sb-forged">Forged HTTP Header (X-Tenant-ID Spoof)</label>
+            <select id="sb-forged" aria-label="Forged HTTP Header">
+              <option value="">None (Clean Request)</option>
+              <option value="finvault">Inject X-Tenant-ID: finvault</option>
+              <option value="retailstream">Inject X-Tenant-ID: retailstream</option>
+            </select>
+          </div>
+          <div>
+            <label for="sb-agent">Target GEAP Agent URI</label>
+            <select id="sb-agent" aria-label="Target GEAP Agent URI">
+              <option value="agent://cymbal/shared-incident-diagnostic-v2">Shared Diagnostic Agent v2</option>
+              <option value="agent://finvault/private-agent-alpha-regulatory">FinVault Private Agent Alpha (Gemini 2.5 Pro (Dedicated PT))</option>
+            </select>
+          </div>
+          <div>
+            <label for="sb-mcp">Requested MCP Connector</label>
+            <select id="sb-mcp" aria-label="Requested MCP Connector">
+              <option value="mcp://cymbal/core-telemetry-2lo">2LO Cymbal Core Telemetry API</option>
+              <option value="mcp://finvault/google-workspace-3lo">3LO FinVault Google Workspace (Drive/Calendar/Gmail)</option>
+              <option value="mcp://finvault/jira-enterprise-3lo">3LO FinVault Jira Enterprise</option>
+              <option value="mcp://retailstream/servicenow-itom-3lo">3LO RetailStream ServiceNow ITOM</option>
+              <option value="mcp://retailstream/sharepoint-runbooks-3lo">3LO RetailStream SharePoint Runbooks</option>
+            </select>
+          </div>
+          <div>
+            <label for="sb-tokens">Requested Thinking Tokens</label>
+            <input id="sb-tokens" type="number" value="8000" min="1000" max="32000" step="1000" aria-label="Requested Thinking Tokens" />
+          </div>
+          <div>
+            <label for="sb-rpm">Simulated Current RPM Load</label>
+            <input id="sb-rpm" type="number" value="25" min="1" max="1000" aria-label="Simulated Current RPM Load" />
+          </div>
+          <div>
+            <label for="sb-egress">Pattern B Egress Project (VPC-SC Test)</label>
+            <input id="sb-egress" type="text" placeholder="Optional: external-attacker-exfil-proj" aria-label="Pattern B Egress Project" />
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:12px; font-size:13px;">
+          <div style="display:flex; gap:20px; flex-wrap:wrap;">
+            <label style="display:flex; align-items:center; gap:6px; color:var(--text); cursor:pointer; margin:0;">
+              <input id="sb-cmek" type="checkbox" aria-label="Revoke Tenant CMEK Key" /> Revoke Tenant Cloud KMS CMEK Key (423 Kill-Switch)
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; color:var(--text); cursor:pointer; margin:0;">
+              <input id="sb-upgrade" type="checkbox" aria-label="Live Upgrade RetailStream to Enterprise PSC Spoke" /> Pattern C: Live Upgrade RetailStream (Standard Pool &rarr; Enterprise PSC Spoke)
+            </label>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; margin-bottom:12px;">
+          <div style="flex:1; min-width:260px;">
+            <label for="sb-prompt">User Prompt Payload</label>
+            <textarea id="sb-prompt" rows="2" aria-label="User Prompt Payload">Diagnose active wire settlement or checkout gateway latency and summarize root cause.</textarea>
+          </div>
+          <button class="sim-btn primary" style="padding:10px 16px;" onclick="invokeCustomSandbox()">&#9889; Execute Live 5-Hop Turn</button>
+        </div>
+
+        <div id="hop-visual-strip" class="hop-strip"></div>
+        <pre id="sim-output">Select any Sim 1–6 preset from the Scenario Preset dropdown or click "Execute Live 5-Hop Turn" above to run the real Python 5-Hop Cryptographic Pipeline...</pre>
+
+        <div style="margin-top:14px; padding:12px 16px; background:linear-gradient(90deg, #eff6ff 0%, #f0fdf4 100%); border:1px solid #86efac; border-radius:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <span class="badge badge-green">10 LIVE THIRD-PARTY SAAS CONSOLES &amp; MANUAL TESTING PLAYBOOK</span>
+            <strong style="font-size:13.5px; color:var(--heading); display:block; margin-top:3px;">Want to log into the 10 Third-Party SaaS Product UIs, run the manual testing playbook, and validate live Amazon S3 outcomes?</strong>
+            <span class="muted" style="font-size:12px;">Access all 10 live SaaS Target Web Consoles (<code>/saas-ui/&lt;target&gt;</code>), switch SSO principals (<code>200 ALLOW</code> / <code>403 DENY</code> / <code>423 LOCKED</code>), inspect live S3 JSON ledgers, and view Side-A &amp; Side-B screenshots.</span>
+          </div>
+          <div class="flex-wrap-gap8">
+            <button type="button" class="sim-btn primary" onclick="switchTab('screenshots'); document.getElementById('ten-saas-live-access-hub').scrollIntoView({behavior:'smooth'});">&#128268; Open 10 Third-Party SaaS Live Consoles &amp; Validator Hub &rarr;</button>
+            <button type="button" class="sim-btn" onclick="openDocInReader('docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md')">&#128214; Open 10-SaaS Manual Testing Playbook</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: 13-POINT FORENSIC AUDIT LEDGER -->

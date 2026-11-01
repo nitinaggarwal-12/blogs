@@ -1,0 +1,75 @@
+/* ==========================================================================
+   css/tokens.css — Universal Executive Light Theme & WCAG Design Tokens (Rule 54)
+   ========================================================================== */
+
+    :root, [data-theme="light"] {
+      --bg: #f6f8fc;
+      --panel: #ffffff;
+      --panel-alt: #eef2f9;
+      --border: #d5dcea;
+      --text: #0f172a;
+      --muted: #475569;
+      --blue: #1a73e8;
+      --purple: #7c3aed;
+      --green: #188038;
+      --amber: #b06000;
+      --red: #c5221f;
+      /* extended tokens (themeable) */
+      --header-grad-a: #ffffff;
+      --header-grad-b: #e8f0fe;
+      --input-bg: #ffffff;
+      --pre-bg: #f8fafc;
+      --pre-text: #0f172a;
+      --reader-bg: #ffffff;
+      --heading: #0f172a;
+      --link: #1557b0;
+      --accent-2: #6d28d9;
+      --ok-text: #188038;
+      --warn-text: #7c4d00;
+      --warn-border: #fcd34d;
+      --err-text: #c5221f;
+      --quote-text: #1e3a8a;
+      --code-bg: rgba(15,23,42,0.07);
+      --th-text: #0f172a;
+      --diagram-frame: #ffffff;
+      --hover-tint: rgba(26,115,232,0.10);
+      --on-primary: #ffffff;
+    }
+    /* ---------- Universal Executive Light Theme Default (Rule 54) ---------- */
+    /* [FA-02, FA-45]: Deleted broken white-on-white 'Google Cloud' theme option; Executive Light is standard. */
+    html { transition: background-color .2s ease, color .2s ease; }
+    .theme-picker { display:flex; align-items:center; gap:6px; }
+    .theme-picker select { width:auto; padding:6px 28px 6px 10px; font-weight:600; cursor:pointer; }
+    * { box-sizing: border-box; }
+    /* WCAG 2.2 AA/AAA Global Focus-Visible Outline Standard [FA-50, FA-51] */
+    :focus-visible,
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible,
+    [tabindex]:focus-visible,
+    summary:focus-visible {
+      outline: 2.5px solid #1a73e8 !important;
+      outline-offset: 2px !important;
+      box-shadow: 0 0 0 3px rgba(26,115,232,0.25) !important;
+    }
+    span.truncate { display: inline-block; max-width: 100%; vertical-align: bottom; }
+    body {
+      margin: 0;
+
+/* WCAG 2.2 AA/AAA Global Focus-Visible Outline Standard [FA-50, FA-51] */
+:focus-visible,
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="tab"]:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible,
+summary:focus-visible {
+  outline: 2.5px solid #1a73e8 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 3px rgba(26,115,232,0.25) !important;
+}
