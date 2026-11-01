@@ -1158,6 +1158,7 @@
         activeHubRawMd = data.content;
         readerEl.innerHTML = renderMarkdownToHtml(data.content, relPath);
         if (typeof window.enhanceBlogBeforeAfterSection === 'function') { window.enhanceBlogBeforeAfterSection(); }
+        if (typeof window.enhanceBlogExecutiveLayout === 'function') { window.enhanceBlogExecutiveLayout(relPath); }
 
         // Build vertical sticky left TOC rail from h2 elements inside #hub-blog-reader
         // Preserve existing GitHub slug IDs on h2 elements so in-page #anchor links work!
@@ -3680,6 +3681,145 @@
       }
       drawer.style.display = 'block';
       if (btn) btn.innerHTML = '&#9650; Collapse All-10 Inline View';
+    };
+
+    window.enhanceBlogExecutiveLayout = function enhanceBlogExecutiveLayout(relPath) {
+      const readerEl = document.getElementById('hub-blog-reader');
+      if (!readerEl) return;
+
+      // 1. Executive Summary & 4-Pillar Grid Card
+      const h1 = readerEl.querySelector('h1');
+      if (h1 && !document.getElementById('blog-exec-summary-card')) {
+        const isWs2 = (relPath || '').includes('ws2') || (h1.textContent || '').includes('Pattern A');
+        const isWs3 = (relPath || '').includes('ws3') || (h1.textContent || '').includes('Pattern B');
+        const isWs4 = (relPath || '').includes('ws4') || (h1.textContent || '').includes('Pattern C');
+        const isWs5 = (relPath || '').includes('ws5') || (h1.textContent || '').includes('Decision');
+
+        let invariant = 'Hop 1 Ingress PEP strips spoofed headers and verifies DPoP tokens; Hop 3 isolates tenant namespaces; Hop 4 enforces active Semantic NLC guardrails; Hop 5 ensures cryptographic data isolation.';
+        let p1Title = 'Compute & Ingress', p1Sub = 'Cloud Run Gen2 + Cloud Armor', p1Desc = 'Hop 1 PEP header stripping & DPoP token minting';
+        let p2Title = 'Data Isolation', p2Sub = 'AlloyDB Multi-Tenant RLS', p2Desc = 'Tenant-scoped connection pooling & CMEK';
+        let p3Title = 'Memory & Cache', p3Sub = '5-Level Memory Bank (L1..L5)', p3Desc = 'Valkey rate-limiting & Thinking Budget clamp';
+        let p4Title = 'AI & Compliance', p4Sub = 'Model Armor + Semantic NLC', p4Desc = 'Active HTTP 422 defense & Egress SDP PII scrubbing';
+
+        if (isWs3) {
+          invariant = 'Complete physical resource isolation per enterprise tenant with dedicated VPC Service Controls perimeters, isolated AlloyDB clusters, and independent CMEK instant revocation keys.';
+          p1Title = 'Dedicated Compute'; p1Sub = 'Sovereign Cloud Run Instances'; p1Desc = 'Zero shared CPU/RAM between tenant workloads';
+          p2Title = 'Dedicated Data'; p2Sub = 'Isolated AlloyDB Clusters'; p2Desc = 'Per-tenant physical database instances & CMEK';
+          p3Title = 'Perimeter Security'; p3Sub = 'VPC Service Controls'; p3Desc = 'Strict ingress/egress boundaries blocking exfiltration';
+          p4Title = 'Instant Revocation'; p4Sub = 'CMEK Kill-Switch'; p4Desc = 'Cryptographic purge rendering tenant data inaccessible';
+        } else if (isWs4) {
+          invariant = 'Dynamic multi-tenant routing with seamless, zero-downtime tier upgrade from Shared Pooled (Pattern A) to Sovereign Siloed (Pattern B) via Private Service Connect (PSC).';
+          p1Title = 'Dynamic Routing'; p1Sub = 'Smart Ingress Gateway'; p1Desc = 'Real-time tier inspection and tenant dispatch';
+          p2Title = 'Live Migration'; p2Sub = 'Zero-Downtime Data Mover'; p2Desc = 'Dual-write CDC replication during tenant tier upgrade';
+          p3Title = 'Private Connect'; p3Sub = 'Private Service Connect (PSC)'; p3Desc = 'In-VPC cross-project endpoint publication';
+          p4Title = 'Unified Ops'; p4Sub = 'Hybrid Telemetry & Billing'; p4Desc = 'Single-pane monitoring across pooled and siloed tiers';
+        } else if (isWs5) {
+          invariant = 'Executive multi-criteria decision framework evaluating Compliance, FinOps, DevOps velocity, Onboarding agility, and Blast radius to select optimal tenancy architectures.';
+          p1Title = 'Tenancy Selection'; p1Sub = 'Decision Tree & Flowchart'; p1Desc = '3-outcome deterministic pattern evaluation';
+          p2Title = 'MCDA Scorer'; p2Sub = '5-Axis Weighted Fit Model'; p2Desc = 'Sensitivity curves balancing cost vs blast radius';
+          p3Title = 'Maturity Index'; p3Sub = 'L100 -> L400 Progression'; p3Desc = 'Cryptographic certification roadmap';
+          p4Title = 'FinOps Dial'; p4Sub = 'Unit Economics & TCO'; p4Desc = 'Amortization curves across 10..1,000 active tenants';
+        }
+
+        const card = document.createElement('div');
+        card.id = 'blog-exec-summary-card';
+        card.className = 'gcp-exec-summary-card';
+        card.setAttribute('data-no-hover-toolbar', 'true');
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px; border-bottom:1px solid #cbd5e1; padding-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="badge badge-blue" style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.04em;">Executive Briefing</span>
+              <strong style="font-size:14px; color:#0f172a;">Architectural Invariant &amp; Core Engineering Pillars</strong>
+            </div>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <span class="badge badge-green" style="font-size:11px; font-weight:700;">100% GCP Verified</span>
+              <a href="/mocks" target="_blank" class="sim-btn" style="padding:2px 8px; font-size:11px; text-decoration:none; color:#1a73e8; font-weight:700;">🎯 Scoring Studio ↗</a>
+            </div>
+          </div>
+          <p style="margin:0 0 14px 0; font-size:13px; line-height:1.6; color:#334155; font-style:italic;">
+            &ldquo;${escapeHtml(invariant)}&rdquo;
+          </p>
+          <div class="gcp-exec-pillars-grid">
+            <div class="gcp-exec-pillar-card">
+              <span class="pillar-label">${escapeHtml(p1Title)}</span>
+              <strong class="pillar-sub">${escapeHtml(p1Sub)}</strong>
+              <span class="pillar-desc">${escapeHtml(p1Desc)}</span>
+            </div>
+            <div class="gcp-exec-pillar-card">
+              <span class="pillar-label">${escapeHtml(p2Title)}</span>
+              <strong class="pillar-sub">${escapeHtml(p2Sub)}</strong>
+              <span class="pillar-desc">${escapeHtml(p2Desc)}</span>
+            </div>
+            <div class="gcp-exec-pillar-card">
+              <span class="pillar-label">${escapeHtml(p3Title)}</span>
+              <strong class="pillar-sub">${escapeHtml(p3Sub)}</strong>
+              <span class="pillar-desc">${escapeHtml(p3Desc)}</span>
+            </div>
+            <div class="gcp-exec-pillar-card">
+              <span class="pillar-label">${escapeHtml(p4Title)}</span>
+              <strong class="pillar-sub">${escapeHtml(p4Sub)}</strong>
+              <span class="pillar-desc">${escapeHtml(p4Desc)}</span>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-top:14px; padding-top:10px; border-top:1px solid #e2e8f0; font-size:12px;">
+            <span style="font-weight:700; color:#475569;">Quick Jump:</span>
+            <button type="button" class="arch-nav-pill" onclick="scrollToReaderAnchor('architecture')">🏛️ Architecture &amp; Diagrams</button>
+            <button type="button" class="arch-nav-pill" onclick="scrollToReaderAnchor('live-3p-before-after-ui-proof')">🔄 10 SaaS Before/After UI</button>
+            <button type="button" class="arch-nav-pill" onclick="scrollToReaderAnchor('use-cases')">💼 Use Cases &amp; Scenarios</button>
+            <button type="button" class="arch-nav-pill" onclick="scrollToReaderAnchor('design-considerations')">🛡️ Production Guardrails</button>
+          </div>
+        `;
+        h1.insertAdjacentElement('afterend', card);
+      }
+
+      // 2. Architecture 6-Pill Navigation Strip
+      const archH2 = Array.from(readerEl.querySelectorAll('h2')).find(h => {
+        const t = (h.textContent || '').toLowerCase();
+        return t === 'architecture' || t.includes('high-level architecture') || t.includes('c4 architecture');
+      });
+      if (archH2 && !document.getElementById('blog-inline-arch-pill-nav')) {
+        const archNav = document.createElement('div');
+        archNav.id = 'blog-inline-arch-pill-nav';
+        archNav.className = 'gcp-arch-nav-strip';
+        archNav.setAttribute('data-no-hover-toolbar', 'true');
+        archNav.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; width:100%; margin-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="font-size:12px; font-weight:800; color:#0f172a; text-transform:uppercase; letter-spacing:0.04em;">Architecture Multi-View Switcher:</span>
+              <span class="badge badge-blue" style="font-size:10.5px;">6 C4 Topologies</span>
+            </div>
+            <span style="font-size:11.5px; color:#64748b;">Click any diagram to jump &amp; inspect</span>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; width:100%;">
+            <button type="button" class="arch-nav-pill active" onclick="scrollToDiagramFigure(1, this)">🏢 1. Primary Topology</button>
+            <button type="button" class="arch-nav-pill" onclick="scrollToDiagramFigure(2, this)">🔀 2. Routing Mesh</button>
+            <button type="button" class="arch-nav-pill" onclick="scrollToDiagramFigure(3, this)">🛡️ 3. Isolation Boundary</button>
+            <button type="button" class="arch-nav-pill" onclick="scrollToDiagramFigure(4, this)">⏱️ 4. Quota Limits</button>
+            <button type="button" class="arch-nav-pill" onclick="scrollToDiagramFigure(5, this)">🔄 5. Sequence Flow</button>
+            <button type="button" class="arch-nav-pill" onclick="scrollToDiagramFigure(6, this)">📊 6. Spectrum Comparison</button>
+          </div>
+        `;
+        archH2.insertAdjacentElement('afterend', archNav);
+
+        window.scrollToDiagramFigure = function(figNum, btn) {
+          if (btn && btn.parentElement) {
+            btn.parentElement.querySelectorAll('.arch-nav-pill').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+          }
+          const cards = Array.from(readerEl.querySelectorAll('.gcp-figure-card'));
+          const target = cards[figNum - 1];
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            target.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+            target.style.boxShadow = '0 0 0 3px #1a73e8';
+            target.style.borderColor = '#1a73e8';
+            setTimeout(() => {
+              target.style.boxShadow = '';
+              target.style.borderColor = '';
+            }, 1800);
+          }
+        };
+      }
     };
 
     window.enhanceBlogBeforeAfterSection = function enhanceBlogBeforeAfterSection() {
