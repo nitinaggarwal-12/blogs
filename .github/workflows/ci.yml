@@ -47,3 +47,59 @@ jobs:
           HEAD_CODE=$(curl -s -o /dev/null -w "%{http_code}" -I http://127.0.0.1:18099/ws1)
           test "$HEAD_CODE" = "302"
           echo "HEAD /ws1 redirect verified: HTTP $HEAD_CODE"
+
+  deploy-to-cloudrun:
+    name: Automated Deploy to Cloud Run (ramp-portal-dev)
+    needs: [forensic-and-security-gates]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Authenticate to Google Cloud (Workload Identity Federation)
+        id: auth
+        uses: google-github-actions/auth@v2
+        continue-on-error: true
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER || 'projects/248990048888/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider' }}
+          service_account: ${{ vars.GCP_WIF_SERVICE_ACCOUNT || 'ge-blogs-deployer@ramp-portal-dev.iam.gserviceaccount.com' }}
+
+      - name: Set up Cloud SDK
+        if: steps.auth.outcome == 'success'
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Set up Python 3.11
+        if: steps.auth.outcome == 'success'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Build OCI Container & Deploy to Cloud Run
+        if: steps.auth.outcome == 'success'
+        run: |
+          python3 -B scripts/deploy_ge_blogs_cloudrun.py --keep-dirty-receipt
+
+      - name: Commit & Push Updated Cloud Run Deployment Receipt
+        if: steps.auth.outcome == 'success'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [[ -n $(git status --porcelain data/cloudrun_deploy_receipt.json) ]]; then
+            git add data/cloudrun_deploy_receipt.json
+            git commit -m "chore(deploy): record live Cloud Run revision receipt [skip ci] (TAG=agy)"
+            git push origin HEAD:main || true
+          else
+            echo "Receipt unchanged."
+          fi
+
+      - name: WIF Setup Notice
+        if: steps.auth.outcome != 'success'
+        run: |
+          echo "::warning title=WIF Setup Pending::Google Cloud Workload Identity Federation (WIF) is not yet active in ramp-portal-dev. Run 'bash scripts/setup_workload_identity_federation.sh' once to activate automatic deployments."
