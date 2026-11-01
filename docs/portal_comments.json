@@ -1,1 +1,6 @@
-{"schemaVersion": "1.0", "updatedAt": "2026-11-01T10:00:00Z", "totalThreads": 0, "threads": []}
+{
+  "schemaVersion": "1.0",
+  "updatedAt": "2026-11-01T00:00:00Z",
+  "storageBackend": "gs://scorex-durable-state-bbar-138hf0/ge-blogs/portal_comments.json",
+  "threads": []
+}

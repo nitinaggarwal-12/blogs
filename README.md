@@ -1,6 +1,6 @@
 # Gemini Enterprise Agent Platform (GEAP): Multi-Tenancy Architecture & Enablement Program
 
-[![GEAP Forensic & Security CI](https://github.com/nitinaggarwal-12/blogs/actions/workflows/ci.yml/badge.svg)](https://github.com/nitinaggarwal-12/blogs/actions/workflows/ci.yml)
+[![GEAP Forensic & Security CI](https://github.com/cloud-ai-fde/ge-blogs/actions/workflows/ci.yml/badge.svg)](https://github.com/cloud-ai-fde/ge-blogs/actions/workflows/ci.yml)
 
 > **Live BeyondCorp Portal**: [https://ge-blogs-248990048888.cr.gclb.goog/](https://ge-blogs-248990048888.cr.gclb.goog/) (`ramp-portal-dev` • `us-west1` • Cloud Run + GCLB/IAP)  
 > **Anchor Reference**: [Multi-tenant agentic AI system — Google Cloud Architecture Center](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system)  

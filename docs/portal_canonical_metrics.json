@@ -1,0 +1,129 @@
+{
+  "schemaVersion": "1.0",
+  "updatedAt": "2026-11-01T00:00:00Z",
+  "canonicalRepositoryUrl": "https://github.com/cloud-ai-fde/ge-blogs",
+  "productionPortalUrl": "https://ge-blogs-248990048888.cr.gclb.goog/",
+  "liveGcpProjects": {
+    "primaryHubAndRuntime": {
+      "projectId": "ramp-portal-dev",
+      "projectNumber": "248990048888",
+      "region": "us-west1"
+    },
+    "enterpriseSovereignSpoke": {
+      "projectId": "bbar-138hf0",
+      "projectNumber": "48439189383",
+      "region": "us-central1"
+    }
+  },
+  "slideDeckInventory": {
+    "workstreamFullVisualDecks": {
+      "WS1": {
+        "title": "Part 1 \u2014 Multi-Tenant Reference Architecture & 5-Hop Chain (Full Visual Deck)",
+        "pptxPath": "slides/ws1-12slide-visual-deck.pptx",
+        "slides": 34
+      },
+      "WS2": {
+        "title": "Part 2 \u2014 Pattern A: Shared Multi-Tenant Pool (Full Visual Deck)",
+        "pptxPath": "slides/ws2-12slide-visual-deck.pptx",
+        "slides": 34
+      },
+      "WS3": {
+        "title": "Part 3 \u2014 Pattern B: Dedicated Sovereign Silo Vaults (Full Visual Deck)",
+        "pptxPath": "slides/ws3-12slide-visual-deck.pptx",
+        "slides": 34
+      },
+      "WS4": {
+        "title": "Part 4 \u2014 Pattern C: Hybrid PSC Router & Zero-Downtime Upgrade (Full Visual Deck)",
+        "pptxPath": "slides/ws4-12slide-visual-deck.pptx",
+        "slides": 34
+      },
+      "WS5": {
+        "title": "Part 5 \u2014 Executive Decision Guide & Agentic Triad (Full Visual Deck)",
+        "pptxPath": "slides/ws5-12slide-visual-deck.pptx",
+        "slides": 34
+      },
+      "ALL": {
+        "title": "Master Synthesis \u2014 End-to-End Multi-Tenancy & 5-Hop Guide (25-Slide Master Deck)",
+        "pptxPath": "slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx",
+        "slides": 25
+      }
+    },
+    "workstreamOption2BriefingDecks": {
+      "WS1": {
+        "key": "WS1_EXEC",
+        "title": "Part 1 \u2014 Executive Architecture Briefing (23 Slides)",
+        "pptxPath": "slides/ws1-executive-architecture-23slide-deck.pptx",
+        "slides": 23
+      },
+      "WS2": {
+        "key": "BP-78-A",
+        "title": "Part 2 \u2014 Compact 3-Act Briefing (12 Slides)",
+        "pptxPath": "slides/ws2-pattern-a-pooled-editable-slides.pptx",
+        "slides": 12
+      },
+      "WS3": {
+        "key": "BP-78-B",
+        "title": "Part 3 \u2014 Compact 3-Act Briefing (12 Slides)",
+        "pptxPath": "slides/ws3-pattern-b-siloed-editable-slides.pptx",
+        "slides": 12
+      },
+      "WS4": {
+        "key": "BP-78-C",
+        "title": "Part 4 \u2014 Compact 3-Act Briefing (12 Slides)",
+        "pptxPath": "slides/ws4-pattern-c-hybrid-editable-slides.pptx",
+        "slides": 12
+      },
+      "WS5": {
+        "key": "BP-78-E",
+        "title": "Part 5 \u2014 Compact 3-Act Briefing (12 Slides)",
+        "pptxPath": "slides/ws5-wrap-up-editable-slides.pptx",
+        "slides": 12
+      },
+      "ALL": {
+        "key": "BP-78",
+        "title": "Foundation 3-Act Reference Briefing (15 Slides)",
+        "pptxPath": "slides/ws1-reference-architecture-editable-slides.pptx",
+        "slides": 15
+      }
+    },
+    "devsiteCompanionDecks": {
+      "count": 9,
+      "slidesPerDeck": 6,
+      "totalSlides": 54
+    },
+    "totals": {
+      "workstreamFullSlidesTotal": 195,
+      "primarySyncedGoogleSlidesTotal": 249,
+      "compactThreeActBriefingSlidesTotal": 88,
+      "canonicalPptxFilesOnDisk": 21,
+      "orphanPptxFilesOnDisk": 0,
+      "deckPricingSlidesCount": 0
+    }
+  },
+  "architectureBlueprints": {
+    "workstreamSeriesDiagrams": 14,
+    "c4SupplementaryViews": 3,
+    "totalDrawioDiagramsInRepo": 17
+  },
+  "assertionsAndVerification": {
+    "inMemoryPolicySimulations": 20,
+    "recordedSaaSE2EAssertions": 60,
+    "liveCodebaseBundleFiles": 27,
+    "totalWorkbenchAssertions": 107,
+    "forensicAuditGatesPassed": "13/13",
+    "multiModelLlmJudge": {
+      "modelsEvaluated": [
+        "gemini-2.5-pro",
+        "gemini-2.5-flash"
+      ],
+      "strictEvaluationsPassed": 9,
+      "strictEvaluationsTotal": 10,
+      "consensusMeanScore": 97.93,
+      "disclosureNote": "gemini-2.5-pro passed 5/5 blogs (100.0%); gemini-2.5-flash passed 4/5 blogs (95.87%) and marked WS1 display_latex_and_symbol_definitions=0 ('VERIFY') despite 3 deterministic display LaTeX blocks."
+    }
+  },
+  "pricingDisclosure": {
+    "deckPricingSlides": "0 Deck Pricing Slides across all 21 editable .pptx / Google Slides decks",
+    "tab4MarketplaceRates": "Tab 4 displays vendor-published Google Cloud Marketplace PAYG list rates solely for illustrative scale-to-zero unit-economics modeling."
+  }
+}

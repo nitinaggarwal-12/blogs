@@ -141,6 +141,7 @@ def execute_preset_scenario(scenario_id: str) -> Dict[str, Any]:
             "scenario_id": "sim1",
             "title": "Sim 1: Forged X-Tenant-ID Header Spoof (Hop 1) & Egress PAN Redaction (Hop 4)",
             "execution_ms": round((time.perf_counter() - t0) * 1000, 2),
+        **get_runtime_execution_posture(),
             "result": to_jsonable(res),
         }
 
@@ -166,6 +167,7 @@ def execute_preset_scenario(scenario_id: str) -> Dict[str, Any]:
             "scenario_id": "sim2",
             "title": "Sim 2: Cross-Tenant Agent Alpha Call Blocked (Hop 2 ARD & Registry PDP -> 403)",
             "execution_ms": round((time.perf_counter() - t0) * 1000, 2),
+        **get_runtime_execution_posture(),
             "ard_catalog_for_retailstream": ard_view,
             "result": to_jsonable(res),
         }
@@ -192,6 +194,7 @@ def execute_preset_scenario(scenario_id: str) -> Dict[str, Any]:
             "scenario_id": "sim3",
             "title": "Sim 3: Prompt Injection (HTTP 400) & Semantic NLC Violation (HTTP 422) Blocked at Hop 4",
             "execution_ms": round((time.perf_counter() - t0) * 1000, 2),
+        **get_runtime_execution_posture(),
             "attack_3a_prompt_injection": to_jsonable(res_inj),
             "attack_3b_semantic_nlc_violation": to_jsonable(res_nlc),
         }
@@ -222,6 +225,7 @@ def execute_preset_scenario(scenario_id: str) -> Dict[str, Any]:
             "scenario_id": "sim4",
             "title": "Sim 4: Noisy Neighbor 16k Thinking Token Clamp (4,000 Cap) & Redis 429 Bulkhead (Hop 3)",
             "execution_ms": round((time.perf_counter() - t0) * 1000, 2),
+        **get_runtime_execution_posture(),
             "turn_4a_thinking_budget_clamped": to_jsonable(res_clamp),
             "turn_4b_redis_bulkhead_429": to_jsonable(res_burst),
         }
@@ -266,6 +270,7 @@ def execute_preset_scenario(scenario_id: str) -> Dict[str, Any]:
             "scenario_id": "sim5",
             "title": "Sim 5: Sovereign Silo VPC-SC Exfiltration Block (403), CMEK Kill-Switch (423) & Air-Gapped Gemma 3",
             "execution_ms": round((time.perf_counter() - t0) * 1000, 2),
+        **get_runtime_execution_posture(),
             "revoked_cmek_uri": revoked_key,
             "step_1_vpc_sc_exfil_blocked": to_jsonable(exfil),
             "step_2_cmek_killswitch_423": to_jsonable(cmek_locked),
@@ -302,6 +307,7 @@ def execute_preset_scenario(scenario_id: str) -> Dict[str, Any]:
             "scenario_id": "sim6",
             "title": "Sim 6: Pattern C 3-Phase Zero-Downtime Live Tenant Tier Upgrade (Standard Pool -> Enterprise PSC Spoke)",
             "execution_ms": round((time.perf_counter() - t0) * 1000, 2),
+        **get_runtime_execution_posture(),
             "pre_upgrade_route": pre_turn.get("hybrid_route"),
             "pre_upgrade_effective_thinking_budget": pre_turn.get("runtime_config", {}).get("effective_thinking_budget"),
             "migration_receipt": to_jsonable(migration_receipt),
@@ -323,6 +329,7 @@ def execute_preset_scenario(scenario_id: str) -> Dict[str, Any]:
         return {
             "scenario_id": scenario_id,
             "execution_ms": round((time.perf_counter() - t0) * 1000, 2),
+        **get_runtime_execution_posture(),
             "status": "PASS",
             "stdout": buf.getvalue(),
         }
@@ -501,6 +508,7 @@ def execute_all_simulations_bundle(force_refresh: bool = False) -> Dict[str, Any
         "ok": True,
         "status": "PASS",
         "execution_ms": round((time.perf_counter() - t0) * 1000, 2),
+        **get_runtime_execution_posture(),
         "execution_mode": "LIVE_GCP_EXECUTION" if is_live_gcp else "IN_MEMORY_DETERMINISTIC_SIMULATION",
         "execution_environment": "Google Cloud Platform (Live Cloud KMS & BigQuery APIs in ramp-portal-dev)" if is_live_gcp else "In-Memory Deterministic Policy Simulation (<10ms, Zero Cloud Latency)",
         "deterministic_latency_guarantee": "150-350ms (Live Cloud KMS Roundtrip)" if is_live_gcp else "<10ms (In-Memory Policy Engine)",
@@ -518,9 +526,17 @@ def execute_all_simulations_bundle(force_refresh: bool = False) -> Dict[str, Any
     return _ALL_SIMS_CACHE
 
 
-CHANGELOG_FILE = ROOT_DIR / "docs/portal_change_log.json"
-COMMENTS_FILE = ROOT_DIR / "docs/portal_comments.json"
-CLICKSTREAM_FILE = ROOT_DIR / "docs/portal_clickstream.json"
+from scripts import durable_portal_storage as durable_storage_mod
+
+READONLY_SEED_CHANGELOG_FILE = ROOT_DIR / "docs/portal_change_log.json"
+READONLY_SEED_COMMENTS_FILE = ROOT_DIR / "docs/portal_comments.json"
+READONLY_SEED_CLICKSTREAM_FILE = ROOT_DIR / "docs/portal_clickstream.json"
+RUNTIME_STATE_DIR = durable_storage_mod.get_runtime_state_dir()
+CHANGELOG_FILE = RUNTIME_STATE_DIR / "portal_change_log.json"
+COMMENTS_FILE = RUNTIME_STATE_DIR / "portal_comments.json"
+CLICKSTREAM_FILE = RUNTIME_STATE_DIR / "portal_clickstream.json"
+DRAWIO_OVERLAYS_FILE = RUNTIME_STATE_DIR / "drawio_overlays.json"
+FEEDBACK_RUNTIME_FILE = RUNTIME_STATE_DIR / "portal_feedback.json"
 MAX_CLICKSTREAM_EVENTS = 2000
 
 DURABLE_GCS_BUCKET = os.environ.get("DURABLE_GCS_BUCKET", "scorex-durable-state-bbar-138hf0")
@@ -592,6 +608,8 @@ class DurableGcsStore:
             ("portal_comments.json", COMMENTS_FILE),
             ("portal_clickstream.json", CLICKSTREAM_FILE),
             ("portal_change_log.json", CHANGELOG_FILE),
+            ("drawio_overlays.json", DRAWIO_OVERLAYS_FILE),
+            ("portal_feedback.json", FEEDBACK_RUNTIME_FILE),
         ]:
             try:
                 obj_name = f"{DURABLE_GCS_PREFIX}{rel_name}"
@@ -612,7 +630,10 @@ class DurableGcsStore:
     def persist_async(cls, rel_name: str, data: Dict[str, Any], local_file: Path) -> None:
         # Skip GCS sync during temporary unit test overrides
         try:
-            if not local_file.resolve().is_relative_to(ROOT_DIR.resolve()) or "test" in str(local_file).lower():
+            s_path = str(local_file).lower()
+            if "test" in s_path or "tmp" in local_file.name.lower():
+                return
+            if local_file.parent.resolve() != RUNTIME_STATE_DIR.resolve():
                 return
         except Exception:
             pass
@@ -718,9 +739,9 @@ def _now_iso_and_est() -> tuple[str, str]:
 
 
 def _normalize_changelog_entry(e: Dict[str, Any]) -> Dict[str, Any]:
-    actor_name = e.get("actorName") or e.get("userName") or "Nitin Aggarwal"
-    actor_email = e.get("actorEmail") or e.get("userEmail") or "nitinagga@google.com"
-    actor_role = e.get("actorRole") or e.get("userRole") or "Principal Cloud Architect"
+    actor_name = e.get("actorName") or e.get("userName") or "Authenticated Reviewer"
+    actor_email = e.get("actorEmail") or e.get("userEmail") or "reviewer@unverified.session"
+    actor_role = e.get("actorRole") or e.get("userRole") or "Portal Reviewer"
     card_id = e.get("cardId") or e.get("targetId") or "card-custom"
     card_title = e.get("cardTitle") or e.get("targetTitle") or card_id
     before_text = e.get("beforeText") if e.get("beforeText") is not None else (e.get("beforeSnippet") or "")
@@ -748,6 +769,10 @@ def _normalize_changelog_entry(e: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def load_portal_changelog() -> Dict[str, Any]:
+    if CHANGELOG_FILE == RUNTIME_STATE_DIR / "portal_change_log.json" and not CHANGELOG_FILE.is_file():
+        durable_storage_mod.ensure_runtime_store_file(
+            CHANGELOG_FILE, READONLY_SEED_CHANGELOG_FILE, {"schemaVersion": "1.0", "entries": [], "cardOverrides": {}}
+        )
     if CHANGELOG_FILE.is_file():
         try:
             data = json.loads(CHANGELOG_FILE.read_text(encoding="utf-8"))
@@ -807,9 +832,9 @@ def append_changelog_entry(
         "timestamp": iso_str,
         "timestampIso": iso_str,
         "timestampEst": est_str,
-        "actorName": actor_name or "Nitin Aggarwal",
-        "actorEmail": actor_email or "nitinagga@google.com",
-        "actorRole": actor_role or "Principal Cloud Architect",
+        "actorName": actor_name or "Authenticated Reviewer",
+        "actorEmail": actor_email or "reviewer@unverified.session",
+        "actorRole": actor_role or "Portal Reviewer",
         "action": action.upper(),
         "targetType": target_type,
         "cardId": card_id,
@@ -837,9 +862,9 @@ def _normalize_comment_thread(t: Dict[str, Any]) -> Dict[str, Any]:
         if not isinstance(c, dict):
             continue
         cc = dict(c)
-        a_name = cc.get("authorName") or cc.get("userName") or "Nitin Aggarwal"
-        a_email = cc.get("authorEmail") or cc.get("userEmail") or "nitinagga@google.com"
-        a_role = cc.get("authorRole") or cc.get("userRole") or "Principal Cloud Architect"
+        a_name = cc.get("authorName") or cc.get("userName") or "Guest Reviewer"
+        a_email = cc.get("authorEmail") or cc.get("userEmail") or "guest@unverified.session"
+        a_role = cc.get("authorRole") or cc.get("userRole") or "Portal Reviewer"
         c_est = cc.get("createdAtEst") or cc.get("timestampEst") or cc.get("createdAt") or ""
         cc["authorName"] = a_name
         cc["userName"] = a_name
@@ -855,6 +880,10 @@ def _normalize_comment_thread(t: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def load_portal_comments() -> Dict[str, Any]:
+    if COMMENTS_FILE == RUNTIME_STATE_DIR / "portal_comments.json" and not COMMENTS_FILE.is_file():
+        durable_storage_mod.ensure_runtime_store_file(
+            COMMENTS_FILE, READONLY_SEED_COMMENTS_FILE, {"schemaVersion": "1.0", "threads": []}
+        )
     if COMMENTS_FILE.is_file():
         try:
             data = json.loads(COMMENTS_FILE.read_text(encoding="utf-8"))
@@ -884,6 +913,12 @@ def save_portal_comments(data: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def load_portal_clickstream() -> Dict[str, Any]:
+    if CLICKSTREAM_FILE == RUNTIME_STATE_DIR / "portal_clickstream.json" and not CLICKSTREAM_FILE.is_file():
+        durable_storage_mod.ensure_runtime_store_file(
+            CLICKSTREAM_FILE,
+            READONLY_SEED_CLICKSTREAM_FILE,
+            {"schemaVersion": "1.0", "totalEvents": 0, "uniqueVisitorsCount": 0, "visitors": {}, "eventTypeCounts": {}, "events": []},
+        )
     if CLICKSTREAM_FILE.is_file():
         try:
             data = json.loads(CLICKSTREAM_FILE.read_text(encoding="utf-8"))
@@ -1329,6 +1364,7 @@ PAYG_ALLOWED_HTTPS_HOST_SUFFIXES = (
     ".mongodb.net",
     ".confluent.cloud",
     ".service-now.com",
+    ".servicenow.com",
     ".salesforce.com",
     ".my.salesforce.com",
     ".force.com",
@@ -1340,7 +1376,7 @@ PAYG_SERVICE_VENDOR_DOMAINS: Dict[str, tuple[str, ...]] = {
     "clickhouse": ("api.clickhouse.cloud", ".clickhouse.cloud"),
     "mongodb": ("cloud.mongodb.com", ".mongodb.net"),
     "confluent": ("api.confluent.cloud", ".confluent.cloud"),
-    "servicenow": (".service-now.com",),
+    "servicenow": (".service-now.com", ".servicenow.com"),
     "salesforce": (".salesforce.com", ".my.salesforce.com", ".force.com"),
 }
 _CGNAT_NET = ipaddress.ip_network("100.64.0.0/10")
@@ -1840,8 +1876,13 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             or raw_email.endswith("@google.com")
         ):
             safe_email = "guest@unverified.session"
+            raw_name = "Guest Reviewer (Unverified)"
+            raw_role = "Unverified Session Reviewer"
         else:
             safe_email = raw_email
+            if "nitin" in raw_name.lower() or "admin" in raw_role.lower():
+                raw_name = "External Reviewer (Unverified)"
+                raw_role = "Unverified Session Reviewer"
         if not raw_name or raw_name.lower() in ("nitin aggarwal", "nitin a."):
             safe_name = "Guest Reviewer"
         else:
@@ -3704,11 +3745,18 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 if raw_drawio.is_symlink() or not target_drawio.is_relative_to(diagrams_root):
                     self._send_json(403, {"ok": False, "error": "Forbidden path"})
                     return
-                with _STATE_WRITE_LOCK:
-                    prev_bytes = target_drawio.stat().st_size if target_drawio.is_file() else 0
-                    target_drawio.write_text(xml_content, encoding="utf-8")
-                new_bytes = len(xml_content.encode("utf-8"))
+                prev_bytes = target_drawio.stat().st_size if target_drawio.is_file() else 0
                 actor_name, actor_email, actor_role = self._detect_iap_actor(body)
+                iso_now, _ = _now_iso_and_est()
+                try:
+                    ov_data = durable_storage_mod.save_drawio_overlay(
+                        DRAWIO_OVERLAYS_FILE, safe_id, xml_content, actor_email=actor_email, updated_at=iso_now
+                    )
+                    DurableGcsStore.persist_async("drawio_overlays.json", ov_data, DRAWIO_OVERLAYS_FILE)
+                except ValueError as ve:
+                    self._send_json(400, {"ok": False, "error": str(ve)})
+                    return
+                new_bytes = len(xml_content.encode("utf-8"))
                 ws_prefix = safe_id.split("-")[0].upper() if safe_id.startswith("ws") else "WS1"
                 entry = append_changelog_entry(
                     actor_name=actor_name,
@@ -3720,10 +3768,10 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                     card_title=f"Architecture Diagram: {safe_id}.drawio",
                     workstream=ws_prefix,
                     doc_path=f"diagrams/{safe_id}.drawio",
-                    summary=f"Saved interactive Draw.io XML for diagrams/{safe_id}.drawio ({new_bytes:,} bytes).",
-                    before_text=f"diagrams/{safe_id}.drawio ({prev_bytes:,} bytes)",
-                    after_text=f"diagrams/{safe_id}.drawio ({new_bytes:,} bytes)",
-                    restorable=False,
+                    summary=f"Saved durable Draw.io XML + live SVG overlay for diagrams/{safe_id}.drawio ({new_bytes:,} bytes, off-container).",
+                    before_text=f"diagrams/{safe_id}.drawio (canonical baseline {prev_bytes:,} bytes)",
+                    after_text=f"diagrams/{safe_id}.drawio (durable overlay {new_bytes:,} bytes + live SVG)",
+                    restorable=True,
                 )
                 self._send_json(
                     200,
@@ -3731,6 +3779,9 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                         "ok": True,
                         "id": safe_id,
                         "path": f"diagrams/{safe_id}.drawio",
+                        "svgUrl": f"/diagrams/{safe_id}.svg?t={int(time.time() * 1000)}",
+                        "storageMode": "durable_gcs_and_tmp_overlay",
+                        "canonicalFileUntouched": True,
                         "bytes": new_bytes,
                         "changelogEntry": entry,
                     },
@@ -4271,6 +4322,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                         "total_count": len(checks),
                         "simulations_passed": "107/107",
                         "execution_ms": round((time.perf_counter() - t0) * 1000, 2),
+        **get_runtime_execution_posture(),
                         "checks": checks,
                     },
                 )
@@ -4281,6 +4333,37 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             self._send_json(503, {"ok": False, "error": f"Storage write unavailable: {exc}"})
         except Exception as exc:
             self._send_json(500, {"ok": False, "error": str(exc)})
+
+
+
+def get_runtime_execution_posture() -> Dict[str, Any]:
+    is_live = _CURRENT_EXECUTION_MODE == "LIVE_GCP" or os.environ.get("CYMBAL_LIVE_GCP") == "1"
+    return {
+        "execution_mode": "LIVE_GCP_EXECUTION" if is_live else "IN_MEMORY_POLICY_SIMULATION",
+        "cymbal_live_gcp": bool(is_live),
+        "jti_store_backend": "in_memory_python_set",
+        "core_20_assertions_mode": "LIVE_CLOUD_KMS_AND_BIGQUERY" if is_live else "IN_MEMORY_DETERMINISTIC_POLICY_ENGINE",
+        "saas_60_assertions_mode": "RECORDED_CLOUDRUN_AND_AGENTCORE_RECEIPT_PLUS_IN_MEMORY_GATE",
+        "mutable_state_backend": f"gs://{DURABLE_GCS_BUCKET}/{DURABLE_GCS_PREFIX}* + /tmp/ge-blogs-runtime-state (Zero Container-Disk Writes)",
+    }
+
+
+def render_assembled_portal_html() -> str:
+    """Assembles modular `index.html` shell + `templates/*.html` fragments server-side."""
+    index_file = ROOT_DIR / "index.html"
+    html_text = index_file.read_text(encoding="utf-8")
+    templates_dir = ROOT_DIR / "templates"
+
+    def _repl(match: re.Match[str]) -> str:
+        tpl_name = match.group(1).strip()
+        if not re.fullmatch(r"[A-Za-z0-9_.-]+\.html", tpl_name):
+            return ""
+        tpl_file = (templates_dir / tpl_name).resolve()
+        if tpl_file.is_file() and tpl_file.is_relative_to(templates_dir.resolve()):
+            return tpl_file.read_text(encoding="utf-8")
+        return ""
+
+    return re.sub(r"<!--\s*TEMPLATE:([A-Za-z0-9_.-]+\.html)\s*-->", _repl, html_text)
 
 
 def run_server(port: int = 8095, host: Optional[str] = None) -> None:

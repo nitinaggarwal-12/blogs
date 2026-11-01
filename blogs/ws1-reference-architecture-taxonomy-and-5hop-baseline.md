@@ -16,7 +16,7 @@ status: "PUBLISH_READY"
 # Multi-tenant agentic AI system: Reference architecture taxonomy and 5-Hop governance baseline
 
 > **Companion Cloud Architecture Assets:**
-> - 📊 **Google Slides**: [Open WS1 33-Slide Upgraded Visual Presentation (Google Slides ↗)](https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit?authuser=nitinagga@google.com) • [Download 33-Slide Upgraded Visual Presentation (.pptx)](../slides/ws1-12slide-visual-deck.pptx) • [Download 15-Slide Canonical (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx)
+> - 📊 **Google Slides**: [Open WS1 34-Slide Upgraded Visual Presentation (Google Slides ↗)](https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit?authuser=nitinagga@google.com) • [Download 34-Slide Upgraded Visual Presentation (.pptx)](../slides/ws1-12slide-visual-deck.pptx) • [Download 15-Slide Canonical (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx)
 > - 📄 **Google Docs & Word**: [Open WS1 GCP-Branded Google Doc ↗](https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?resourcekey=0-PgO-X5icAK687_G-_WZFpQ) • [Download Microsoft Word (.docx)](../docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx)
 > - 📐 **Official Draw.io Blueprints**: [Figure 1 Multi-Tenant Taxonomy (.drawio)](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio) • [Figure 2 5-Hop Baseline (.drawio)](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio)
 
@@ -265,7 +265,7 @@ python3 -B scripts/run_deep_forensic_audit.py
 # Expected output: 12/12 FORENSIC CHECKS PASSED • 107/107 SIMULATION & SAAS ASSERTIONS PASSED
 ```
 
-And query **Cloud Logging Explorer** across `cymbal-control-plane` (`#248990048888`), `cymbal-pooled-prod` (`#638420508320`), and `cymbal-build-sandbox` (`#887605034827`) to verify zero cross-tenant RLS rows and deterministic fail-closed status codes:
+And query **Cloud Logging Explorer** across `cymbal-control-plane` (`#248990048888`), `cymbal-pooled-prod` (`#638420508320`), and `cymbal-build-sandbox` (`#248990048888`) to verify zero cross-tenant RLS rows and deterministic fail-closed status codes:
 
 ```text
 resource.type="cloud_run_revision"
@@ -303,7 +303,7 @@ Where:
 
 ## Live Multi-Cloud (Google Cloud + AWS Bedrock AgentCore MCP) 10-SaaS Verification Matrix — 5-Hop Baseline & Reference Taxonomy
 
-> **Live Multi-Cloud & AWS Bedrock AgentCore MCP Verification (All 3 Patterns (`A` • `B` • `C`)):** Every architectural invariant in **WS1** is verified across Google Cloud (`cymbal-control-plane` `#248990048888`, `cymbal-pooled-prod` `#638420508320`, and `cymbal-build-sandbox` `#887605034827`) and **AWS Bedrock AgentCore MCP Gateway** (`cymbal-a2a-mcp-gateway-suyxm3caof`, AWS Account `393036065405`, `us-east-1`, Targets `HXGGFMZBKE`..`C7EYM614F2`) backed by immutable **Amazon S3 Audit Ledgers** (`s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1/cymbal-10saas-ledger/<target>/finvault.json`). Run `python3 -B scripts/verify_5_third_party_saas_products.py` to execute all `30/30` pattern-by-SaaS flows (`60/60` positive and negative assertions).
+> **Live Multi-Cloud & AWS Bedrock AgentCore MCP Verification (All 3 Patterns (`A` • `B` • `C`)):** Every architectural invariant in **WS1** is verified across Google Cloud (`cymbal-control-plane` `#248990048888`, `cymbal-pooled-prod` `#638420508320`, and `cymbal-build-sandbox` `#248990048888`) and **AWS Bedrock AgentCore MCP Gateway** (`cymbal-a2a-mcp-gateway-suyxm3caof`, AWS Account `393036065405`, `us-east-1`, Targets `HXGGFMZBKE`..`C7EYM614F2`) backed by immutable **Amazon S3 Audit Ledgers** (`s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1/cymbal-10saas-ledger/<target>/finvault.json`). Run `python3 -B scripts/verify_5_third_party_saas_products.py` to execute all `30/30` pattern-by-SaaS flows (`60/60` positive and negative assertions).
 
 | SaaS ID & Product (Vendor Control Plane) | AWS AgentCore Target ID & Pattern Config | Positive E2E Input & Verified Output (`200 ALLOW`) | Adversarial / Negative Input & Verified Block (`403 / 401 / 400 / 423`) | Persisted Amazon S3 Audit Ledger JSON (`?format=json`) |
 | :--- | :--- | :--- | :--- | :--- |
@@ -442,10 +442,10 @@ The companion 15-slide Workstream 1 presentation deck ([`slides/ws1-reference-ar
   - [1.4 Early Access Program (EAP) & Product Gap Tracker](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md)
   - [10 Third-Party SaaS × 3-Pattern Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md)
 - Download or open the editable architecture assets for Workstream 1:
-  - [Open WS1 33-Slide Upgraded Visual Presentation in Google Slides ↗](https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit?authuser=nitinagga@google.com)
+  - [Open WS1 34-Slide Upgraded Visual Presentation in Google Slides ↗](https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit?authuser=nitinagga@google.com)
   - [Open WS1 GCP-Branded Document in Google Docs ↗](https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?resourcekey=0-PgO-X5icAK687_G-_WZFpQ)
   - [Download Workstream 1 Editable Word Document (`.docx`)](../docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx)
-  - [Download Workstream 1 Upgraded 33-Slide Visual Presentation (`.pptx`)](../slides/ws1-12slide-visual-deck.pptx)
+  - [Download Workstream 1 Upgraded 34-Slide Visual Presentation (`.pptx`)](../slides/ws1-12slide-visual-deck.pptx)
   - [Download Workstream 1 Canonical 15-Slide Presentation (`.pptx`)](../slides/ws1-reference-architecture-editable-slides.pptx)
   - [Figure 1 Draw.io Source (`ws1-multi-tenant-taxonomy-overview.drawio`)](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio)
   - [Figure 2 Draw.io Source (`ws1-cloud-arch-center-5hop-baseline.drawio`)](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio)
