@@ -6146,7 +6146,95 @@
   <script>
     let currentRawMarkdown = '';
 
-    function switchTab(name, btn) {
+    function getActivePortalTabName() {
+      const activePane = document.querySelector('.tab-pane.active');
+      if (activePane && activePane.id && activePane.id.startsWith('tab-')) {
+        return activePane.id.replace(/^tab-/, '');
+      }
+      const activeBtn = document.querySelector('.tab-btn.active');
+      if (activeBtn && activeBtn.id && activeBtn.id.startsWith('tab-btn-')) {
+        return activeBtn.id.replace(/^tab-btn-/, '');
+      }
+      return 'overview';
+    }
+    window.getActivePortalTabName = getActivePortalTabName;
+
+    function syncPortalUrl(opts = {}) {
+      try {
+        const currentUrl = new URL(window.location.href);
+        const params = new URLSearchParams(currentUrl.search);
+
+        // Determine active tab
+        const tab = opts.tab || getActivePortalTabName() || 'overview';
+        if (tab && tab !== 'overview') {
+          params.set('tab', tab);
+        } else {
+          params.set('tab', 'overview');
+        }
+
+        // Tab 1 Patterns: sync ?tab=patterns&ws=...&doc=...
+        if (tab === 'patterns') {
+          const ws = opts.ws || (typeof activeHubWsKey !== 'undefined' ? activeHubWsKey : 'WS1');
+          if (ws) params.set('ws', ws);
+          if (opts.doc) {
+            params.set('doc', opts.doc);
+          } else {
+            params.delete('doc');
+          }
+          params.delete('wb');
+        } else {
+          // When not on patterns tab, remove ws and doc unless keepWsDoc is requested
+          if (!opts.keepWsDoc) {
+            params.delete('ws');
+            params.delete('doc');
+          }
+        }
+
+        // Tab 3 Screenshots / Workbench: sync ?tab=screenshots&wb=...
+        if (tab === 'screenshots') {
+          if (opts.wb) {
+            params.set('wb', opts.wb);
+          }
+        } else {
+          params.delete('wb');
+        }
+
+        const newQuery = params.toString() ? ('?' + params.toString()) : '';
+        let newHash = '';
+        if (opts.hash !== undefined) {
+          newHash = opts.hash ? ('#' + String(opts.hash).replace(/^#/, '')) : '';
+        } else {
+          newHash = currentUrl.hash || '';
+        }
+
+        const targetUrl = currentUrl.pathname + newQuery + newHash;
+        const currentFullUrl = window.location.pathname + window.location.search + window.location.hash;
+
+        const stateObj = {
+          tab: tab,
+          ws: (tab === 'patterns') ? (params.get('ws') || null) : null,
+          doc: (tab === 'patterns') ? (params.get('doc') || null) : null,
+          wb: (tab === 'screenshots') ? (params.get('wb') || null) : null
+        };
+
+        if (targetUrl !== currentFullUrl) {
+          if (opts.replace) {
+            history.replaceState(stateObj, '', targetUrl);
+          } else {
+            history.pushState(stateObj, '', targetUrl);
+          }
+        }
+      } catch (err) {
+        console.warn('[syncPortalUrl] Failed to sync URL state:', err);
+      }
+    }
+    window.syncPortalUrl = syncPortalUrl;
+
+    function switchTab(name, btn, skipHistoryPush) {
+      if (typeof btn === 'boolean' && skipHistoryPush === undefined) {
+        skipHistoryPush = btn;
+        btn = null;
+      }
       try {
         if (typeof trackClickstream === 'function') {
           trackClickstream('TAB_SWITCH', 'tab-' + name, 'Switched to tab: ' + name);
@@ -6172,7 +6260,74 @@
       if (name === 'changelog' && typeof renderChangeLogTable === 'function') {
         renderChangeLogTable();
       }
+
+      // Smooth scroll to top on tab transitions ([FA-06])
+      try {
+        const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: 0, left: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+      } catch (_) {
+        window.scrollTo(0, 0);
+      }
+
+      // Sync URL query params via history.pushState ([FA-06])
+      if (!skipHistoryPush) {
+        syncPortalUrl({
+          tab: name,
+          ws: (name === 'patterns') ? (typeof activeHubWsKey !== 'undefined' ? activeHubWsKey : 'WS1') : null,
+          doc: (name === 'patterns') ? (typeof activeHubDocPath !== 'undefined' ? activeHubDocPath : null) : null
+        });
+      }
     }
+    window.switchTab = switchTab;
+
+    // Browser History popstate Listener ([FA-06])
+    window.addEventListener('popstate', function (event) {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const state = event.state || {};
+        const tab = state.tab || params.get('tab') || 'overview';
+        const ws = state.ws || params.get('ws');
+        const doc = state.doc || params.get('doc');
+        const wb = state.wb || params.get('wb');
+        const page = params.get('page');
+        const hash = window.location.hash ? window.location.hash.slice(1) : '';
+
+        // Switch to the target tab without pushing duplicate history
+        const tabBtn = document.getElementById('tab-btn-' + tab);
+        switchTab(tab, tabBtn, true);
+
+        // If on patterns tab, restore workstream and/or doc
+        if (tab === 'patterns') {
+          if (doc && typeof openDocInReader === 'function') {
+            openDocInReader(doc, hash, true);
+          } else if (ws && typeof GUIDED_WORKSTREAMS !== 'undefined' && GUIDED_WORKSTREAMS[ws] && typeof selectGuidedWorkstream === 'function') {
+            selectGuidedWorkstream(ws, null, hash, true);
+          } else if (typeof activeHubWsKey !== 'undefined' && typeof selectGuidedWorkstream === 'function') {
+            selectGuidedWorkstream(activeHubWsKey, null, hash, true);
+          }
+        }
+
+        // If on screenshots tab and workbench subtab specified
+        if (tab === 'screenshots' && wb && typeof switchE2EWorkbenchTab === 'function') {
+          switchE2EWorkbenchTab(wb);
+        }
+
+        // If on overview tab and one-pager page specified
+        if (tab === 'overview' && page && typeof window.filterOverviewOnePager === 'function') {
+          window.filterOverviewOnePager(page, null, true);
+        }
+
+        // Anchor scroll if hash exists
+        if (hash) {
+          const el = document.getElementById(hash);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      } catch (err) {
+        console.warn('[popstate] Failed to restore history state:', err);
+      }
+    });
 
     function escapeHtml(str) {
       return String(str || '')
@@ -6763,17 +6918,23 @@
     }
     window.resolveDocAlias = resolveDocAlias;
 
-    function openDocInReader(relPath, anchorHash) {
+    function openDocInReader(relPath, anchorHash, skipHistoryPush) {
       relPath = resolveDocAlias(relPath);
       const wsKey = inferWorkstreamFromDocPath(relPath);
-      switchTab('patterns', document.getElementById('tab-btn-patterns'));
+      switchTab('patterns', document.getElementById('tab-btn-patterns'), skipHistoryPush);
       if (wsKey && GUIDED_WORKSTREAMS[wsKey] && wsKey !== activeHubWsKey) {
-        selectGuidedWorkstream(wsKey, relPath, anchorHash);
+        selectGuidedWorkstream(wsKey, relPath, anchorHash, skipHistoryPush);
       } else {
         loadHubBlogDoc(relPath, anchorHash);
       }
-      const hashSuffix = anchorHash ? `#${String(anchorHash).replace(/^#/, '')}` : '';
-      try { history.replaceState(null, '', `/?doc=${encodeURIComponent(relPath)}${hashSuffix}`); } catch (_) {}
+      if (!skipHistoryPush) {
+        syncPortalUrl({
+          tab: 'patterns',
+          ws: wsKey || (typeof activeHubWsKey !== 'undefined' ? activeHubWsKey : 'WS1'),
+          doc: relPath,
+          hash: anchorHash
+        });
+      }
       if (!anchorHash) {
         const blogSec = document.getElementById('hub-blog-section');
         if (blogSec) blogSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -7887,7 +8048,7 @@
       if (simOut) simOut.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    function selectGuidedWorkstream(wsKey, customDocPath, anchorHash) {
+    function selectGuidedWorkstream(wsKey, customDocPath, anchorHash, skipHistoryPush) {
       if (!GUIDED_WORKSTREAMS[wsKey]) return;
       activeHubWsKey = wsKey;
       const ws = GUIDED_WORKSTREAMS[wsKey];
@@ -7930,8 +8091,19 @@
 
       activeHubSlideIdx = 0;
       selectHubDiagram(0);
-      loadHubBlogDoc(customDocPath || ws.docs[0].path, anchorHash);
+      const targetDoc = customDocPath || (ws.docs && ws.docs[0] ? ws.docs[0].path : '');
+      loadHubBlogDoc(targetDoc, anchorHash);
+
+      if (!skipHistoryPush) {
+        syncPortalUrl({
+          tab: 'patterns',
+          ws: wsKey,
+          doc: targetDoc,
+          hash: anchorHash
+        });
+      }
     }
+    window.selectGuidedWorkstream = selectGuidedWorkstream;
 
     // -------------------------------------------------------------------------
     // PromptCanvas-Style Cloud Viewer Modal & Google Workspace Direct-Open Bridge
@@ -9851,48 +10023,68 @@
 
       const initialParams = new URLSearchParams(window.location.search);
       const initialDocParam = initialParams.get('doc');
+      const initialWsParam = initialParams.get('ws');
+      const initialTabParam = initialParams.get('tab');
+      const initialWbParam = initialParams.get('wb');
+      const initialPageParam = initialParams.get('page');
       const initialHash = window.location.hash ? window.location.hash.slice(1) : '';
 
       loadCloudViewerManifest();
       loadE2EPatternBundle();
       loadDiagramE2eFlows();
-      if (!initialDocParam) {
-        selectGuidedWorkstream('WS1', null, initialHash);
+
+      // Resolve initial workstream: from ?ws= or inferred from ?doc= or default WS1
+      let startWs = 'WS1';
+      if (initialWsParam && GUIDED_WORKSTREAMS[initialWsParam]) {
+        startWs = initialWsParam;
+      } else if (initialDocParam) {
+        const inferred = inferWorkstreamFromDocPath(initialDocParam);
+        if (inferred && GUIDED_WORKSTREAMS[inferred]) startWs = inferred;
       }
+      selectGuidedWorkstream(startWs, initialDocParam || null, initialHash, true);
+
       initAllPortalCardHoverToolbars();
       fetchAndRenderChangeLog();
       fetchAndRenderComments();
 
       try {
-        const tabParam = initialParams.get('tab');
-        const wbParam = initialParams.get('wb');
         const isStandaloneChangelog = Boolean(window.__STANDALONE_CHANGELOG_PAGE || window.location.pathname.replace(/\/+$/, '') === '/changelog');
         if (isStandaloneChangelog) {
           const banner = document.getElementById('standalone-changelog-banner');
           if (banner) banner.style.display = 'flex';
           const innerHdr = document.getElementById('changelog-inner-card-header');
           if (innerHdr) innerHdr.style.display = 'none';
-          switchTab('changelog', document.getElementById('tab-btn-changelog'));
-        } else if (tabParam && document.getElementById('tab-' + tabParam)) {
-          const btn = document.getElementById('tab-btn-' + tabParam);
-          switchTab(tabParam, btn);
+          switchTab('changelog', document.getElementById('tab-btn-changelog'), true);
+        } else if (initialTabParam && document.getElementById('tab-' + initialTabParam)) {
+          const btn = document.getElementById('tab-btn-' + initialTabParam);
+          switchTab(initialTabParam, btn, true);
+        } else if (initialDocParam || initialWsParam) {
+          // If ?doc= or ?ws= was explicitly passed without ?tab=, activate patterns tab
+          switchTab('patterns', document.getElementById('tab-btn-patterns'), true);
+        } else {
+          // Default tab is overview
+          switchTab('overview', document.getElementById('tab-btn-overview'), true);
         }
-        const pageParam = initialParams.get('page');
-        if (pageParam && ['ALL_PAGES', 'WS1', 'WS2', 'WS3', 'WS4', 'WS5', 'ALL'].includes(pageParam) && typeof window.filterOverviewOnePager === 'function') {
-          window.filterOverviewOnePager(pageParam, null, true);
+
+        if (initialPageParam && ['ALL_PAGES', 'WS1', 'WS2', 'WS3', 'WS4', 'WS5', 'ALL'].includes(initialPageParam) && typeof window.filterOverviewOnePager === 'function') {
+          window.filterOverviewOnePager(initialPageParam, null, true);
         } else if (typeof window.filterOverviewOnePager === 'function') {
           window.filterOverviewOnePager('WS1', null, true);
         }
+
         if (typeof window.updatePatternSelectorUI === 'function') {
           window.updatePatternSelectorUI();
         }
-        if (wbParam && ['execution', 'resources', 'codebase', 'runbook', 'deliverables'].includes(wbParam)) {
-          if (!tabParam) switchTab('screenshots', document.getElementById('tab-btn-screenshots'));
-          switchE2EWorkbenchTab(wbParam);
+
+        if (initialWbParam && ['execution', 'resources', 'codebase', 'runbook', 'deliverables'].includes(initialWbParam)) {
+          if (!initialTabParam) switchTab('screenshots', document.getElementById('tab-btn-screenshots'), true);
+          switchE2EWorkbenchTab(initialWbParam);
         }
+
         if (initialDocParam) {
-          openDocInReader(initialDocParam, initialHash);
+          openDocInReader(initialDocParam, initialHash, true);
         }
+
         if (initialParams.get('scroll') === 'gallery') {
           const wbCard = document.getElementById('blog-e2e-pattern-execution-and-codebase-workbench');
           if (wbCard) wbCard.style.display = 'none';
