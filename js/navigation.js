@@ -742,6 +742,8 @@
         if (blogSec) blogSec.style.display = 'block';
         if (proofsSec) proofsSec.style.display = 'none';
         if (btnEap) btnEap.classList.add('primary');
+        const tocLinks = document.querySelectorAll('#hub-blog-toc .series-toc-link');
+        tocLinks.forEach(a => a.classList.toggle('active', (a.textContent || '').includes('Compensating controls') || (a.textContent || '').includes('EAP')));
         setTimeout(() => {
           const readerEl = document.getElementById('hub-blog-reader');
           if (readerEl) {
@@ -759,6 +761,8 @@
         if (blogSec) blogSec.style.display = 'block';
         if (proofsSec) proofsSec.style.display = 'none';
         if (btnDeliverables) btnDeliverables.classList.add('primary');
+        const tocLinks = document.querySelectorAll('#hub-blog-toc .series-toc-link');
+        tocLinks.forEach(a => a.classList.toggle('active', (a.textContent || '').includes("What's next") || (a.textContent || '').includes('Deliverables')));
         setTimeout(() => {
           const readerEl = document.getElementById('hub-blog-reader');
           if (readerEl) {
@@ -776,12 +780,18 @@
         if (blogSec) blogSec.style.display = 'block';
         if (proofsSec) proofsSec.style.display = 'none';
         if (btnGuide) btnGuide.classList.add('primary');
+        const tocLinks = document.querySelectorAll('#hub-blog-toc .series-toc-link');
         if (targetId) {
+          const targetEl = document.getElementById(targetId);
+          if (targetEl) {
+            tocLinks.forEach(a => a.classList.toggle('active', (a.textContent || '').trim() === (targetEl.textContent || '').trim()));
+          }
           setTimeout(() => {
             const el = document.getElementById(targetId);
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }, 50);
         } else {
+          tocLinks.forEach((a, idx) => a.classList.toggle('active', idx === 0));
           const blogReader = document.getElementById('hub-blog-reader');
           if (blogReader) {
             const headerOrH1 = blogReader.querySelector('h1') || blogSec;

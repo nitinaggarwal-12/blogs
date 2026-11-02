@@ -550,6 +550,30 @@ class TestPortalSecurityP0(unittest.TestCase):
         self.assertIn("document.getElementById('saas-modal-live-gateway-link')", html_txt)
         self.assertIn("/api/saas-live/", html_txt)
 
+    def test_portal_viewport_sticky_and_links_hygiene(self):
+        """Asserts Law 13 viewport sticky invariants, TOC scroll spy, and anonymous slide links."""
+        layout_css = (ROOT_DIR / "css/layout.css").read_text(encoding="utf-8")
+        components_css = (ROOT_DIR / "css/components.css").read_text(encoding="utf-8")
+        index_html = (ROOT_DIR / "index.html").read_text(encoding="utf-8")
+        ws1_md = (ROOT_DIR / "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md").read_text(encoding="utf-8")
+
+        # 1. Overflow-x clip on html and body to preserve position: sticky
+        self.assertIn("overflow-x: clip;", layout_css)
+        self.assertNotIn("html {\n  max-width: 100vw;\n  overflow-x: hidden;", layout_css)
+        self.assertNotIn("body {\n  max-width: 100vw;\n  min-height: 100dvh;\n  padding-left: env(safe-area-inset-left, 0px);\n  padding-right: env(safe-area-inset-right, 0px);\n  padding-bottom: env(safe-area-inset-bottom, 0px);\n  overflow-x: hidden;", layout_css)
+
+        # 2. Heading scroll margin and TOC rail sticky top
+        self.assertIn("scroll-margin-top: 98px;", components_css)
+        self.assertIn("top: 96px;", components_css)
+
+        # 3. Dynamic scroll spy in index.html
+        self.assertIn("window._hubTocScrollSpyCleanup", index_html)
+        self.assertIn("requestAnimationFrame", index_html)
+
+        # 4. Zero personal email leaks in Google Slides links
+        self.assertNotIn("?authuser=", ws1_md)
+        self.assertNotIn("nitinagga@google.com", ws1_md)
+
 
 if __name__ == "__main__":
     unittest.main()

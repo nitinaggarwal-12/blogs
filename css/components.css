@@ -13,12 +13,12 @@
     }
     .series-toc-rail {
       position: sticky;
-      top: 56px;
+      top: 96px;
       background: var(--panel-alt);
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 14px;
-      max-height: calc(100vh - 72px);
+      max-height: calc(100vh - 110px);
       overflow-y: auto;
     }
     .series-toc-link {
@@ -79,7 +79,7 @@
       padding-bottom: 14px;
       line-height: 1.28;
       letter-spacing: -0.01em;
-      scroll-margin-top: 84px;
+      scroll-margin-top: 98px;
     }
     .article-reader h2 {
       font-size: 21px;
@@ -89,7 +89,7 @@
       margin-bottom: 12px;
       padding-bottom: 8px;
       border-bottom: 1px solid var(--border);
-      scroll-margin-top: 84px;
+      scroll-margin-top: 98px;
     }
     .article-reader h3 {
       font-size: 17px;
@@ -97,10 +97,10 @@
       color: var(--link);
       margin-top: 26px;
       margin-bottom: 10px;
-      scroll-margin-top: 84px;
+      scroll-margin-top: 98px;
     }
     .article-reader h4 {
-      scroll-margin-top: 84px;
+      scroll-margin-top: 98px;
     }
     .article-reader p {
       margin: 12px 0 16px 0;

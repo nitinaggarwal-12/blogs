@@ -1180,6 +1180,40 @@
           } else {
             tocEl.innerHTML = `<div class="series-toc-title">On This Page</div><div class="muted" style="font-size:12px;">Document Overview</div>`;
           }
+
+          // Setup scroll-spy to dynamically track active reading section in left TOC rail
+          if (window._hubTocScrollSpyCleanup) {
+            window.removeEventListener('scroll', window._hubTocScrollSpyCleanup);
+            window._hubTocScrollSpyCleanup = null;
+          }
+          if (h2s.length > 0) {
+            let ticking = false;
+            const onScrollSpy = () => {
+              if (!ticking) {
+                window.requestAnimationFrame(() => {
+                  const tocLinks = Array.from(document.querySelectorAll('#hub-blog-toc .series-toc-link'));
+                  if (tocLinks.length === h2s.length) {
+                    let curIdx = 0;
+                    for (let i = 0; i < h2s.length; i++) {
+                      const top = h2s[i].getBoundingClientRect().top;
+                      if (top <= 140) {
+                        curIdx = i;
+                      } else {
+                        break;
+                      }
+                    }
+                    tocLinks.forEach((a, idx) => {
+                      a.classList.toggle('active', idx === curIdx);
+                    });
+                  }
+                  ticking = false;
+                });
+                ticking = true;
+              }
+            };
+            window.addEventListener('scroll', onScrollSpy, { passive: true });
+            window._hubTocScrollSpyCleanup = onScrollSpy;
+          }
         }
 
         // Build Previous / Next Series Part navigation footer

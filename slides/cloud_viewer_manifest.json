@@ -324,8 +324,8 @@
       "key": "WS1",
       "title": "WS1 \u2014 Reference Architecture, Taxonomy & 5-Hop Baseline",
       "mdPath": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
-      "sha256": "b8485222bd9e77a048228f397b1cc4d344140de8b2754c6cf047aa1911f2d9c3",
-      "sizeBytes": 77685,
+      "sha256": "684184c63fa5858afc5d74cbfb1f9ff2c3aa1e4a574c0e7f50e1e8da4d84b39a",
+      "sizeBytes": 77504,
       "googleDocsId": "1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os",
       "googleDocsEditUrl": "https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?resourcekey=0-PgO-X5icAK687_G-_WZFpQ",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/preview",
@@ -335,7 +335,7 @@
       "googleDocsDocxUrl": "https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/export?format=docx",
       "wordDocxPath": "docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx",
       "wordDocxSizeBytes": 7263024,
-      "bytes": 77564
+      "bytes": 77504
     },
     "WS2": {
       "key": "WS2",
