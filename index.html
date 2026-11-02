@@ -331,13 +331,13 @@
                     </div>
                   </div>
                   <div id="inline-fig-img-wrap-${figSlug}">
-                    <img id="inline-fig-img-${figSlug}" src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:auto; max-width:min(100%, 960px); max-height:720px; height:auto; display:block; margin:0 auto; border-radius:6px; cursor:zoom-in;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', this.alt); } else { window.open(this.src, '_blank'); }" title="Click to open full-resolution diagram in new tab" />
+                    <img id="inline-fig-img-${figSlug}" src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:auto; max-width:min(100%, 960px); max-height:720px; height:auto; display:block; margin:0; border-radius:6px; cursor:zoom-in;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', this.alt); } else { window.open(this.src, '_blank'); }" title="Click to open full-resolution diagram in new tab" />
                   </div>
                 </div>`;
                 }
 
                 const figSlug = resolved.replace(/[^a-zA-Z0-9_-]/g, '-');
-                return `<div class="gcp-figure-card" id="inline-fig-card-${figSlug}" data-card-id="inline-fig-card-${figSlug}" data-card-type="figure" data-no-hover-toolbar="true" data-card-title="${escapeHtml(alt)}" data-doc-path="${escapeHtml(docRelPath || '')}" style="margin:0; padding:8px 10px; display:flex; flex-direction:column; justify-content:space-between;"><img src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:100%; max-width:100%; max-height:330px; height:auto; object-fit:contain; background:#f8fafc; display:block; margin:0 auto; border-radius:6px; border:1px solid #e2e8f0; cursor:zoom-in;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', this.alt); } else { window.open('${resolved}', '_blank'); }" /><div class="gcp-figure-caption" style="font-size:11.5px; line-height:1.35; margin-top:6px; display:flex; justify-content:space-between; align-items:flex-start; gap:8px;"><span class="card-editable-body"><strong>${alt}</strong></span><a href="${resolved}" target="_blank" rel="noopener" style="color:#1a73e8; font-weight:600; text-decoration:none; white-space:nowrap;">&#128269; High-Res &#8599;</a></div></div>`;
+                return `<div class="gcp-figure-card" id="inline-fig-card-${figSlug}" data-card-id="inline-fig-card-${figSlug}" data-card-type="figure" data-no-hover-toolbar="true" data-card-title="${escapeHtml(alt)}" data-doc-path="${escapeHtml(docRelPath || '')}" style="margin:0; padding:8px 10px; display:flex; flex-direction:column; justify-content:space-between;"><img src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:100%; max-width:100%; max-height:330px; height:auto; object-fit:contain; background:#f8fafc; display:block; margin:0; border-radius:6px; border:1px solid #e2e8f0; cursor:zoom-in;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', this.alt); } else { window.open('${resolved}', '_blank'); }" /><div class="gcp-figure-caption" style="font-size:11.5px; line-height:1.35; margin-top:6px; display:flex; justify-content:space-between; align-items:flex-start; gap:8px;"><span class="card-editable-body"><strong>${alt}</strong></span><a href="${resolved}" target="_blank" rel="noopener" style="color:#1a73e8; font-weight:600; text-decoration:none; white-space:nowrap;">&#128269; High-Res &#8599;</a></div></div>`;
               }
               const meta = findDiagramMetaById(diagId);
               const slideBtnHtml = meta
@@ -378,8 +378,8 @@
                       </details>
                     </div>
                   </div>
-                  <div id="inline-fig-img-wrap-${diagId}">
-                    <img id="inline-fig-img-${diagId}" src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:auto; max-width:min(100%, 960px); max-height:720px; height:auto; display:block; margin:0 auto; border-radius:6px; cursor:zoom-in;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', this.alt); } else { window.open(this.src, '_blank'); }" title="Click to open full-resolution diagram in new tab" />
+                  <div id="inline-fig-img-wrap-${diagId}" style="display:flex; justify-content:flex-start;">
+                    <img id="inline-fig-img-${diagId}" src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:auto; max-width:min(100%, 960px); max-height:720px; height:auto; display:block; margin:0; border-radius:6px; cursor:zoom-in;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', this.alt); } else { window.open(this.src, '_blank'); }" title="Click to open full-resolution diagram in new tab" />
                   </div>
                   <div id="inline-fig-edit-wrap-${diagId}" style="display:none; border-radius:8px; overflow:hidden; border:2px solid #2563eb; margin-top:4px;">
                     <iframe id="inline-fig-iframe-${diagId}" src="about:blank" style="width:100%; height:780px; border:0; display:block;" title="Inline Draw.io Editor (${diagId})"></iframe>
