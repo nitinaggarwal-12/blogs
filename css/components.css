@@ -326,6 +326,8 @@
     }
     .export-dropdown summary {
       list-style: none;
+      cursor: pointer;
+      user-select: none;
     }
     .export-dropdown summary::-webkit-details-marker {
       display: none;

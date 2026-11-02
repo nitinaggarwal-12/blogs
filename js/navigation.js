@@ -1018,3 +1018,12 @@
       if (label) label.textContent = "Listen to Architectural Walkthrough";
     }
     window.stopDigitalTwinAudio = stopDigitalTwinAudio;
+
+    // Automatically close open details.export-dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('details.export-dropdown')) {
+        document.querySelectorAll('details.export-dropdown[open]').forEach((el) => {
+          el.removeAttribute('open');
+        });
+      }
+    });
