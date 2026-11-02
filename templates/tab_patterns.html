@@ -65,14 +65,13 @@
             </button>
             <div class="pc-split-wrap" id="hub-open-gslides-split" style="flex-shrink:0;">
               <button type="button" class="pc-split-main" id="hub-open-gslides-main" style="padding:3px 8px; font-size:11px; height:26px;" onclick="window.open('/drawio-editor?id=' + encodeURIComponent((GUIDED_WORKSTREAMS[activeHubWsKey] && GUIDED_WORKSTREAMS[activeHubWsKey].diagrams && GUIDED_WORKSTREAMS[activeHubWsKey].diagrams[0] ? GUIDED_WORKSTREAMS[activeHubWsKey].diagrams[0].id : 'ws1-multi-tenant-taxonomy-overview')) + '&engine=cloud', '_blank')">
-                <span>&#127760;</span>
-                <span id="hub-open-gslides-label">diagrams.net Cloud UI &#8599;</span>
+                <span id="hub-open-gslides-label">&#128208; Blueprints (WS1) &#8599;</span>
               </button>
               <button type="button" class="pc-split-caret" style="height:26px; padding:0 5px;" onclick="togglePcDropdown(event, 'hub-gslides-menu')" aria-label="Architecture and exports menu">&#9660;</button>
               <div id="hub-gslides-menu" class="pc-dropdown-menu">
                 <div class="pc-dropdown-section">Architecture Blueprint Editors</div>
                 <a id="hub-deck-cloud-drawio" class="pc-dropdown-item" href="/drawio-editor?id=ws1-multi-tenant-taxonomy-overview&engine=cloud" target="_blank" rel="noopener">
-                  <span>&#127760;</span> <span>diagrams.net Cloud UI (Full Editor)</span>
+                  <span>&#128208;</span> <span>Open Architecture Studio (Cloud Editor)</span>
                 </a>
                 <a id="hub-deck-native-drawio" class="pc-dropdown-item" href="/drawio-editor?id=ws1-multi-tenant-taxonomy-overview&engine=native" target="_blank" rel="noopener">
                   <span>&#9889;</span> <span>Local Offline mxGraph Canvas</span>
@@ -178,7 +177,7 @@
                       <button type="button" id="hub-btn-mode-drawio" class="sim-btn primary" style="padding:5px 10px; font-size:11.5px;" onclick="setHubDiagramRenderMode('drawio')">&#128269; 2x PNG</button>
                       <button type="button" id="hub-btn-mode-png" class="sim-btn" style="padding:5px 10px; font-size:11.5px;" onclick="setHubDiagramRenderMode('png')">&#127912; Vector SVG</button>
                       <button type="button" id="hub-btn-mode-edit-inline" class="sim-btn" style="padding:5px 10px; font-size:11.5px; border-color:var(--warn-text); color:var(--warn-text); font-weight:700;" onclick="setHubDiagramRenderMode('edit-inline')">&#9999;&#65039; Edit Inline in Draw.io</button>
-                      <a id="hub-btn-open-drawio-tab" href="/drawio-editor?id=ws1-multi-tenant-taxonomy-overview&engine=cloud" target="_blank" rel="noopener noreferrer" class="sim-btn primary" style="text-decoration:none; padding:5px 10px; font-size:11.5px; border-color:#2563eb; background:#2563eb; color:#ffffff; font-weight:700;"><span style="font-size:13px;">&#127760;</span> diagrams.net Cloud UI &#8599;</a>
+                      <a id="hub-btn-open-drawio-tab" href="/drawio-editor?id=ws1-multi-tenant-taxonomy-overview&engine=cloud" target="_blank" rel="noopener noreferrer" class="sim-btn primary" style="text-decoration:none; padding:5px 10px; font-size:11.5px; border-color:#2563eb; background:#2563eb; color:#ffffff; font-weight:700;"><span style="font-size:13px;">&#128208;</span> Open Architecture Studio &#8599;</a>
                       <details class="export-dropdown">
                         <summary class="sim-btn" style="padding:5px 10px; font-size:11.5px;">&#11015; Export &#9662;</summary>
                         <div class="export-dropdown-menu">

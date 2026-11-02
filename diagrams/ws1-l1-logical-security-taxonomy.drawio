@@ -16,14 +16,14 @@
           <mxGeometry x="30" y="70" width="1140" height="210" as="geometry"/>
         </mxCell>
         <mxCell id="layer_1_lbl" value="&lt;b style=&quot;font-family:'Google Sans',sans-serif;font-size:12px;color:#1a73e8;&quot;&gt;LOGICAL BOUNDARY 1: TENANT INGRESS &amp;amp; POLICY ENFORCEMENT POINT (PEP)&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#475569;&quot;&gt;Untrusted Client Ingress • TLS Termination • Spoofed Header Stripping • Ingress Prompt Screening&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="50" y="82" width="600" height="36" as="geometry"/>
+          <mxGeometry x="50" y="80" width="1100" height="34" as="geometry"/>
         </mxCell>
 
         <!-- Layer 1 Cards -->
-        <mxCell id="card_caller_finvault" value="&lt;b style=&quot;font-size:12px;color:#0f172a;&quot;&gt;Tenant Caller A: FinVault Bank&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#475569;&quot;&gt;Tier: ENTERPRISE (8k RPM)&lt;br/&gt;Bearer OIDC JWT + DPoP Proof&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e1;strokeWidth=1.5;" vertex="1" parent="1">
+        <mxCell id="card_caller_finvault" value="&lt;b style=&quot;font-size:12px;color:#0f172a;&quot;&gt;Tenant Caller A: FinVault Bank&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#475569;&quot;&gt;Tier: ENTERPRISE (600 RPM)&lt;br/&gt;Bearer OIDC JWT + DPoP Proof&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e1;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="60" y="130" width="220" height="120" as="geometry"/>
         </mxCell>
-        <mxCell id="card_caller_retail" value="&lt;b style=&quot;font-size:12px;color:#0f172a;&quot;&gt;Tenant Caller B: RetailStream&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#475569;&quot;&gt;Tier: STANDARD (4k RPM)&lt;br/&gt;Bearer OIDC JWT + DPoP Proof&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e1;strokeWidth=1.5;" vertex="1" parent="1">
+        <mxCell id="card_caller_retail" value="&lt;b style=&quot;font-size:12px;color:#0f172a;&quot;&gt;Tenant Caller B: RetailStream&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#475569;&quot;&gt;Tier: STANDARD (120 RPM)&lt;br/&gt;Bearer OIDC JWT + DPoP Proof&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e1;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="310" y="130" width="220" height="120" as="geometry"/>
         </mxCell>
         <mxCell id="card_cloud_armor" value="&lt;b style=&quot;font-size:12.5px;color:#1a73e8;&quot;&gt;Google Cloud Armor WAF&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#334155;&quot;&gt;• Strips Forged X-Tenant-Id&lt;br/&gt;• Rate Limiter &amp;amp; Geo Perimeters&lt;br/&gt;• Adaptive DDoS Mitigation&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1a73e8;strokeWidth=1.5;" vertex="1" parent="1">
@@ -38,7 +38,7 @@
           <mxGeometry x="30" y="310" width="1140" height="230" as="geometry"/>
         </mxCell>
         <mxCell id="layer_2_lbl" value="&lt;b style=&quot;font-family:'Google Sans',sans-serif;font-size:12px;color:#137333;&quot;&gt;LOGICAL BOUNDARY 2: 5-HOP CRYPTOGRAPHIC CONTEXT CHAIN (ADK CONTROLLER)&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#475569;&quot;&gt;Hop 1 Edge STS ➔ Hop 2 ARD PDP ➔ Hop 3 Dynamic Runtime &amp;amp; Memory ➔ Hop 4 Model Armor &amp;amp; LLM ➔ Hop 5 Scoped MCP &amp;amp; AlloyDB&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="50" y="322" width="750" height="36" as="geometry"/>
+          <mxGeometry x="50" y="320" width="1100" height="34" as="geometry"/>
         </mxCell>
 
         <!-- Layer 2 Cards -->
@@ -63,7 +63,7 @@
           <mxGeometry x="30" y="570" width="1140" height="270" as="geometry"/>
         </mxCell>
         <mxCell id="layer_3_lbl" value="&lt;b style=&quot;font-family:'Google Sans',sans-serif;font-size:12px;color:#b06000;&quot;&gt;LOGICAL BOUNDARY 3: MULTI-TENANT ISOLATION ENCLAVES (PATTERNS A, B &amp;amp; C)&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:10.5px;color:#475569;&quot;&gt;Physical Infrastructure Realization • Database Row-Level Security • Dedicated Sovereign Silos • Hybrid Dynamic Tiering&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="50" y="582" width="750" height="36" as="geometry"/>
+          <mxGeometry x="50" y="580" width="1100" height="34" as="geometry"/>
         </mxCell>
 
         <!-- Layer 3 Cards -->
@@ -77,30 +77,70 @@
           <mxGeometry x="800" y="630" width="350" height="180" as="geometry"/>
         </mxCell>
 
-        <!-- Directional Edges -->
-        <mxCell id="e_layer1_to_layer2" value="Sanitized HTTPS + Signed OBO/DPoP Token Context" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1a73e8;strokeWidth=2;fontSize=10;fontColor=#1a73e8;endArrow=block;endFill=1;" edge="1" parent="1" source="card_cloud_armor" target="card_hop1">
-          <mxGeometry relative="1" as="geometry"/>
+        <!-- Layer 1 Internal Connectors -->
+        <mxCell id="e_retail_to_armor" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#1a73e8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="card_caller_retail" target="card_cloud_armor">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="530" y="190" as="sourcePoint"/><mxPoint x="580" y="190" as="targetPoint"/></mxGeometry>
         </mxCell>
-        <mxCell id="e_hop1_to_hop2" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#137333;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="card_hop1" target="card_hop2">
-          <mxGeometry relative="1" as="geometry"/>
+        <mxCell id="e_finvault_to_armor" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1a73e8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="card_caller_finvault" target="card_cloud_armor">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="250" as="sourcePoint"/><mxPoint x="580" y="220" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="170" y="265"/>
+              <mxPoint x="555" y="265"/>
+              <mxPoint x="555" y="220"/>
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e_hop2_to_hop3" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#137333;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="card_hop2" target="card_hop3">
-          <mxGeometry relative="1" as="geometry"/>
+        <mxCell id="e_armor_to_model_armor" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#1a73e8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="card_cloud_armor" target="card_model_armor_in">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="840" y="190" as="sourcePoint"/><mxPoint x="870" y="190" as="targetPoint"/></mxGeometry>
         </mxCell>
-        <mxCell id="e_hop3_to_hop4" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#137333;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="card_hop3" target="card_hop4">
-          <mxGeometry relative="1" as="geometry"/>
+
+        <!-- Directional Edge: Layer 1 to Layer 2 -->
+        <mxCell id="e_layer1_to_layer2" value="Sanitized HTTPS + Signed OBO/DPoP Token Context" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1a73e8;strokeWidth=2;fontSize=10;fontColor=#174ea6;labelBackgroundColor=#ffffff;labelBorderColor=#1a73e8;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="card_model_armor_in" target="card_hop1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1005" y="250" as="sourcePoint"/><mxPoint x="150" y="370" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="1005" y="295"/>
+              <mxPoint x="150" y="295"/>
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="e_hop4_to_hop5" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#137333;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="card_hop4" target="card_hop5">
-          <mxGeometry relative="1" as="geometry"/>
+
+        <!-- Layer 2 Internal Connectors -->
+        <mxCell id="e_hop1_to_hop2" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#137333;strokeWidth=2;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="card_hop1" target="card_hop2">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="250" y="440" as="sourcePoint"/><mxPoint x="275" y="440" as="targetPoint"/></mxGeometry>
         </mxCell>
-        <mxCell id="e_layer2_to_pattern_a" value="Tier: STANDARD" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#f2994a;strokeWidth=2;fontSize=10;fontColor=#b06000;endArrow=block;endFill=1;" edge="1" parent="1" source="card_hop5" target="card_enclave_a">
-          <mxGeometry relative="1" as="geometry"/>
+        <mxCell id="e_hop2_to_hop3" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#137333;strokeWidth=2;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="card_hop2" target="card_hop3">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="475" y="440" as="sourcePoint"/><mxPoint x="500" y="440" as="targetPoint"/></mxGeometry>
         </mxCell>
-        <mxCell id="e_layer2_to_pattern_b" value="Tier: SOVEREIGN" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#ea4335;strokeWidth=2;fontSize=10;fontColor=#ea4335;endArrow=block;endFill=1;" edge="1" parent="1" source="card_hop5" target="card_enclave_b">
-          <mxGeometry relative="1" as="geometry"/>
+        <mxCell id="e_hop3_to_hop4" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#137333;strokeWidth=2;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="card_hop3" target="card_hop4">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="700" y="440" as="sourcePoint"/><mxPoint x="725" y="440" as="targetPoint"/></mxGeometry>
         </mxCell>
-        <mxCell id="e_layer2_to_pattern_c" value="Tier: HYBRID PSC" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1a73e8;strokeWidth=2;fontSize=10;fontColor=#1a73e8;endArrow=block;endFill=1;" edge="1" parent="1" source="card_hop5" target="card_enclave_c">
-          <mxGeometry relative="1" as="geometry"/>
+        <mxCell id="e_hop4_to_hop5" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#137333;strokeWidth=2;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="card_hop4" target="card_hop5">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="925" y="440" as="sourcePoint"/><mxPoint x="950" y="440" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- Layer 2 to Layer 3 Connectors -->
+        <mxCell id="e_layer2_to_pattern_a" value="Tier: STANDARD (Pooled RLS)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#f2994a;strokeWidth=2;fontSize=10;fontColor=#b06000;labelBackgroundColor=#ffffff;labelBorderColor=#fed7aa;endArrow=block;endFill=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="card_hop5" target="card_enclave_a">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1000" y="510" as="sourcePoint"/><mxPoint x="225" y="630" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="1000" y="555"/>
+              <mxPoint x="225" y="555"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_layer2_to_pattern_b" value="Tier: SOVEREIGN (Air-Gapped)" style="edgeStyle=none;rounded=0;html=1;strokeColor=#ea4335;strokeWidth=2;fontSize=10;fontColor=#ea4335;labelBackgroundColor=#ffffff;labelBorderColor=#fca5a5;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="card_hop3" target="card_enclave_b">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="600" y="510" as="sourcePoint"/><mxPoint x="600" y="630" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="e_layer2_to_pattern_c" value="Tier: HYBRID PSC (Dynamic Promotion)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1a73e8;strokeWidth=2;fontSize=10;fontColor=#1a73e8;labelBackgroundColor=#ffffff;labelBorderColor=#bfdbfe;endArrow=block;endFill=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="card_hop5" target="card_enclave_c">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1100" y="510" as="sourcePoint"/><mxPoint x="975" y="630" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="1100" y="555"/>
+              <mxPoint x="975" y="555"/>
+            </Array>
+          </mxGeometry>
         </mxCell>
 
       </root>

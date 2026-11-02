@@ -2608,7 +2608,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
   <div class="studio-bar">
     <div class="studio-left">
       <span id="tb-topology-badge" class="studio-badge">#78 • 56 SHAPES • 23 EDGES</span>{select_html}
-      <button type="button" id="btn-mode-cloud" class="studio-btn {'active' if engine_mode == 'cloud' else ''}" onclick="setStudioEngine('cloud')">&#127760; diagrams.net Cloud UI</button>
+      <button type="button" id="btn-mode-cloud" class="studio-btn {'active' if engine_mode == 'cloud' else ''}" onclick="setStudioEngine('cloud')">&#128208; Cloud Architecture Studio</button>
       <button type="button" id="btn-mode-native" class="studio-btn {'active' if engine_mode == 'native' else ''}" onclick="setStudioEngine('native')">&#9889; Interactive mxGraph Canvas</button>
       <button type="button" class="studio-btn" onclick="adjustCanvasZoom(-0.1)" title="Zoom Out">&#8722;</button>
       <button type="button" class="studio-btn" onclick="adjustCanvasZoom(0.1)" title="Zoom In">&#43;</button>
@@ -2885,7 +2885,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
           const vObj = {{ id, cell, geom, x, y, w, h, val, styleStr, styleMap, origX: x, origY: y }};
           verticesMap.set(id, vObj);
 
-          const isBgZone = id.startsWith('gcp_') || id.startsWith('wrapper_') || id.startsWith('zone_') || id === 'hdr_title_box';
+          const isBgZone = id.startsWith('gcp_') || id.startsWith('wrapper_') || id.startsWith('zone_') || id.startsWith('layer_') || id === 'hdr_title_box';
           const el = document.createElement('div');
           el.className = 'mx-vertex' + (id === selectedCellId ? ' selected' : '');
           el.dataset.cellId = id;
@@ -2894,6 +2894,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
           el.style.width = w + 'px';
           el.style.height = h + 'px';
           el.style.pointerEvents = 'auto';
+          el.style.boxSizing = 'border-box';
+          el.style.overflow = 'hidden';
 
           const fill = styleMap.fillColor && styleMap.fillColor !== 'none' ? styleMap.fillColor : 'transparent';
           const stroke = styleMap.strokeColor && styleMap.strokeColor !== 'none' ? styleMap.strokeColor : 'transparent';
@@ -2908,18 +2910,15 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             el.style.borderRadius = (w > 400 ? 12 : 6) + 'px';
           }}
 
-          if (styleMap.verticalAlign === 'top') {{
-            el.style.display = 'flex';
-            el.style.flexDirection = 'column';
-            el.style.justifyContent = 'flex-start';
-            el.style.alignItems = 'flex-start';
-            el.style.paddingLeft = (styleMap.spacingLeft || 12) + 'px';
-            el.style.paddingTop = (styleMap.spacingTop || 6) + 'px';
-          }} else {{
-            el.style.display = 'flex';
-            el.style.alignItems = 'center';
-            el.style.justifyContent = styleMap.align === 'left' ? 'flex-start' : 'center';
-          }}
+          el.style.display = 'flex';
+          el.style.flexDirection = 'column';
+          el.style.justifyContent = 'flex-start';
+          el.style.alignItems = styleMap.align === 'center' ? 'center' : (styleMap.align === 'right' ? 'flex-end' : 'flex-start');
+          el.style.textAlign = styleMap.align === 'center' ? 'center' : (styleMap.align === 'right' ? 'right' : 'left');
+          el.style.paddingLeft = (styleMap.spacingLeft || 10) + 'px';
+          el.style.paddingTop = (styleMap.spacingTop || 8) + 'px';
+          el.style.paddingRight = (styleMap.spacingRight || 10) + 'px';
+          el.style.paddingBottom = '6px';
 
           el.innerHTML = sanitizeCellHtml(val) + '<span class="mx-handle tl"></span><span class="mx-handle tr"></span><span class="mx-handle bl"></span><span class="mx-handle br"></span>';
           el.addEventListener('mousedown', (e) => onVertexMouseDown(e, id));
@@ -2942,6 +2941,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
           }}));
           edgesList.push({{
             id, cell, geom, source, target, styleStr, styleMap,
+            val: cell.getAttribute('value') || '',
             srcPtEl, tgtPtEl,
             x1: srcPtEl ? parseFloat(srcPtEl.getAttribute('x') || '0') : 0,
             y1: srcPtEl ? parseFloat(srcPtEl.getAttribute('y') || '0') : 0,
@@ -2968,19 +2968,31 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       let dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
       const srcV = verticesMap.get(eObj.source);
       const tgtV = verticesMap.get(eObj.target);
-      if (srcV && (srcV.x !== srcV.origX || srcV.y !== srcV.origY)) {{
+      if (srcV) {{
         const ex = parseFloat(eObj.styleMap.exitX ?? '0.5');
         const ey = parseFloat(eObj.styleMap.exitY ?? '0.5');
-        p1 = {{ x: Math.round(srcV.x + ex * srcV.w), y: Math.round(srcV.y + ey * srcV.h) }};
-        dx1 = p1.x - eObj.x1;
-        dy1 = p1.y - eObj.y1;
+        const computedX1 = Math.round(srcV.x + ex * srcV.w);
+        const computedY1 = Math.round(srcV.y + ey * srcV.h);
+        if (eObj.x1 === 0 && eObj.y1 === 0) {{
+          p1 = {{ x: computedX1, y: computedY1 }};
+        }} else if (srcV.x !== srcV.origX || srcV.y !== srcV.origY) {{
+          p1 = {{ x: computedX1, y: computedY1 }};
+          dx1 = p1.x - eObj.x1;
+          dy1 = p1.y - eObj.y1;
+        }}
       }}
-      if (tgtV && (tgtV.x !== tgtV.origX || tgtV.y !== tgtV.origY)) {{
+      if (tgtV) {{
         const nx = parseFloat(eObj.styleMap.entryX ?? '0.5');
         const ny = parseFloat(eObj.styleMap.entryY ?? '0.5');
-        p2 = {{ x: Math.round(tgtV.x + nx * tgtV.w), y: Math.round(tgtV.y + ny * tgtV.h) }};
-        dx2 = p2.x - eObj.x2;
-        dy2 = p2.y - eObj.y2;
+        const computedX2 = Math.round(tgtV.x + nx * tgtV.w);
+        const computedY2 = Math.round(tgtV.y + ny * tgtV.h);
+        if (eObj.x2 === 0 && eObj.y2 === 0) {{
+          p2 = {{ x: computedX2, y: computedY2 }};
+        }} else if (tgtV.x !== tgtV.origX || tgtV.y !== tgtV.origY) {{
+          p2 = {{ x: computedX2, y: computedY2 }};
+          dx2 = p2.x - eObj.x2;
+          dy2 = p2.y - eObj.y2;
+        }}
       }}
       const nPts = eObj.points.length;
       const adjMid = eObj.points.map((pt, idx) => {{
@@ -3031,6 +3043,50 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
           path.setAttribute('marker-start', markerId);
         }}
         g.appendChild(path);
+
+        if (eObj.val) {{
+          const cleanTxt = eObj.val.replace(/<[^>]+>/g, '').trim();
+          if (cleanTxt) {{
+            const midIdx = Math.floor(pts.length / 2);
+            const pA = pts[Math.max(0, midIdx - 1)];
+            const pB = pts[midIdx];
+            const mx = Math.round((pA.x + pB.x) / 2);
+            const my = Math.round((pA.y + pB.y) / 2);
+            const lblBg = eObj.styleMap.labelBackgroundColor || '#ffffff';
+            const lblBorder = eObj.styleMap.labelBorderColor || eObj.styleMap.strokeColor || '#cbd5e1';
+            const lblColor = eObj.styleMap.fontColor || '#0f172a';
+            const lblSize = parseInt(eObj.styleMap.fontSize || '10');
+
+            const textEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            textEl.setAttribute('x', String(mx));
+            textEl.setAttribute('y', String(my));
+            textEl.setAttribute('text-anchor', 'middle');
+            textEl.setAttribute('dominant-baseline', 'central');
+            textEl.setAttribute('fill', lblColor);
+            textEl.setAttribute('font-size', lblSize + 'px');
+            textEl.setAttribute('font-weight', '600');
+            textEl.setAttribute('font-family', "'Google Sans', Roboto, sans-serif");
+            textEl.textContent = cleanTxt;
+
+            const padX = 6;
+            const padY = 3;
+            const approxW = cleanTxt.length * (lblSize * 0.58) + padX * 2;
+            const approxH = lblSize + padY * 2 + 2;
+
+            const rectEl = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rectEl.setAttribute('x', String(Math.round(mx - approxW / 2)));
+            rectEl.setAttribute('y', String(Math.round(my - approxH / 2)));
+            rectEl.setAttribute('width', String(Math.round(approxW)));
+            rectEl.setAttribute('height', String(Math.round(approxH)));
+            rectEl.setAttribute('rx', '4');
+            rectEl.setAttribute('fill', lblBg);
+            rectEl.setAttribute('stroke', lblBorder);
+            rectEl.setAttribute('stroke-width', '1');
+
+            g.appendChild(rectEl);
+            g.appendChild(textEl);
+          }}
+        }}
       }});
 
       const selV = verticesMap.get(selectedCellId);

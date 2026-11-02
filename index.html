@@ -367,7 +367,7 @@
                     <strong class="card-editable-body" id="inline-fig-title-${diagId}" style="font-size:13.5px; color:var(--heading);">${alt}</strong>
                     <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
                       ${flowBtnHtml}
-                      <a href="/drawio-editor?id=${encodeURIComponent(diagId)}&engine=cloud" target="_blank" rel="noopener" id="inline-fig-btn-cloud-${diagId}" class="sim-btn primary" style="padding:4px 10px; font-size:11.5px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:5px; background:#1a73e8; border-color:#1557b0; color:#ffffff;" title="Open official diagrams.net Cloud UI with full editable mxGraph model">&#127760; diagrams.net Cloud UI &#8599;</a>
+                      <a href="/drawio-editor?id=${encodeURIComponent(diagId)}&engine=cloud" target="_blank" rel="noopener" id="inline-fig-btn-cloud-${diagId}" class="sim-btn primary" style="padding:4px 10px; font-size:11.5px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:5px; background:#1a73e8; border-color:#1557b0; color:#ffffff;" title="Open official diagrams.net Cloud UI with full editable mxGraph model">&#128208; Architecture Studio &#8599;</a>
                       <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--border); color:var(--text); font-weight:600;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', '${escapeHtml(alt)}'); } else { window.open('${resolved}', '_blank'); }">&#128269; High-Res &#8599;</button>
                       <details class="export-dropdown">
                         <summary class="sim-btn" style="padding:4px 9px; font-size:11.5px;">&#11015; Assets &#9662;</summary>
@@ -1099,7 +1099,7 @@
       const openTabLink = document.getElementById('hub-btn-open-drawio-tab');
       if (openTabLink) {
         openTabLink.href = `/drawio-editor?id=${encodeURIComponent(d.id)}&engine=cloud`;
-        openTabLink.innerHTML = `<span style="font-size:13px;">&#127760;</span> diagrams.net Cloud UI &#8599;`;
+        openTabLink.innerHTML = `<span style="font-size:13px;">&#128208;</span> Open Architecture Studio &#8599;`;
         openTabLink.className = 'sim-btn primary';
         openTabLink.style.background = '#1a73e8';
         openTabLink.style.borderColor = '#1557b0';
@@ -1314,7 +1314,7 @@
         dlDocx.innerHTML = `<span>&#128196;</span> <span>Download Editable Word .docx (${ws.key})</span>`;
       }
       const gslidesLabel = document.getElementById('hub-open-gslides-label');
-      if (gslidesLabel) gslidesLabel.innerHTML = `diagrams.net (${ws.key}) &#8599;`;
+      if (gslidesLabel) gslidesLabel.innerHTML = `&#128208; Blueprints (${ws.key}) &#8599;`;
       const firstDiagId = (ws.diagrams && ws.diagrams[0]) ? ws.diagrams[0].id : 'ws1-multi-tenant-taxonomy-overview';
       const cloudDrawio = document.getElementById('hub-deck-cloud-drawio');
       if (cloudDrawio) cloudDrawio.href = `/drawio-editor?id=${encodeURIComponent(firstDiagId)}&engine=cloud`;
@@ -1733,16 +1733,16 @@
 
       stage.innerHTML = `
         <div style="width:100%; max-width:${maxWidthPx}px; display:flex; flex-direction:column; gap:10px; align-items:center;">
-          <div style="width:100%; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:8px 14px; background:#202124; border:1px solid #444746; border-radius:10px; font-size:12.5px;">
+          <div style="width:100%; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:8px 14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; font-size:12.5px; color:#0f172a;">
             <div>
               ${badgeHtml}
               <strong>${escapeHtml(slideObj.desc)}</strong>
             </div>
             <div style="display:flex; gap:6px; align-items:center;">
-              <a href="/drawio-editor?id=${encodeURIComponent(boundDiag.id)}&engine=cloud" target="_blank" rel="noopener" class="pc-toolbar-btn active" style="text-decoration:none; display:inline-flex; align-items:center; gap:5px;">
-                <span>&#127760;</span> diagrams.net Cloud UI &#8599;
+              <a href="/drawio-editor?id=${encodeURIComponent(boundDiag.id)}&engine=cloud" target="_blank" rel="noopener" class="sim-btn primary" style="text-decoration:none; display:inline-flex; align-items:center; gap:5px; padding:4px 10px; font-size:11.5px; font-weight:700; background:#1a73e8; border-color:#1557b0; color:#ffffff; border-radius:6px;">
+                <span>&#128208;</span> Architecture Studio &#8599;
               </a>
-              <a href="${ws.pptxPath}" download class="pc-toolbar-btn" style="border:1px solid #444746; text-decoration:none;">
+              <a href="${ws.pptxPath}" download class="sim-btn" style="border:1px solid #cbd5e1; background:#ffffff; color:#0f172a; text-decoration:none; padding:4px 10px; font-size:11.5px; font-weight:600; border-radius:6px;">
                 &#11015; Download .pptx
               </a>
             </div>
@@ -1759,7 +1759,7 @@
                 <p style="margin:0; font-size:14px; color:#334155; line-height:1.6;">${escapeHtml(slideObj.desc)}</p>
               </div>
               <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; padding-top:14px; border-top:1px solid #cbd5e1;">
-                <a href="/drawio-editor?id=${encodeURIComponent(boundDiag.id)}&engine=cloud" target="_blank" rel="noopener" class="pc-toolbar-btn active" style="text-decoration:none;">&#127760; Open in diagrams.net Cloud UI &#8599;</a>
+                <a href="/drawio-editor?id=${encodeURIComponent(boundDiag.id)}&engine=cloud" target="_blank" rel="noopener" class="sim-btn primary" style="text-decoration:none; padding:4px 10px; font-size:11.5px; font-weight:700; background:#1a73e8; border-color:#1557b0; color:#ffffff; border-radius:6px;">&#128208; Open Architecture Studio &#8599;</a>
                 <a href="${ws.pptxPath}" download class="sim-btn" style="text-decoration:none;">Download Editable .pptx (${total} Slides)</a>
               </div>
             </div>
