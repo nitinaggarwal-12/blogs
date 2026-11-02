@@ -1152,7 +1152,7 @@
       if (btns) {
         btns.innerHTML = ws.diagrams.map((item, i) => {
           const activeCls = i === idx ? 'sim-btn primary' : 'sim-btn';
-          return `<button class="${activeCls}" style="padding:6px 10px; font-size:12px;" onclick="selectHubDiagram(${i})">${escapeHtml(item.label)}</button>`;
+          return `<button type="button" class="${activeCls}" style="padding:6px 10px; font-size:12px;" onclick="selectHubDiagram(${i})">${escapeHtml(item.label)}</button>`;
         }).join('');
       }
 

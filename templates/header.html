@@ -7,11 +7,11 @@
       <span id="gcp-cloud-badge" class="sr-only">☁️ 14/14 Blueprints • Forensic Audit: 13/13 PASS</span>
     </div>
     <nav class="tabs portal-primary-tabs" role="tablist" aria-label="Primary Workspace Navigation">
-      <button class="tab-btn active" id="tab-btn-overview" role="tab" aria-selected="true" aria-controls="tab-overview" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('overview', this)">&#127968; Overview &amp; Links</button>
-      <button class="tab-btn" id="tab-btn-patterns" role="tab" aria-selected="false" aria-controls="tab-patterns" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('patterns', this)">1. &#129517; Architecture &amp; Blog Series</button>
-      <button class="tab-btn" id="tab-btn-simulator" role="tab" aria-selected="false" aria-controls="tab-simulator" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('simulator', this)">2. &#9889; Live 5-Hop Simulator</button>
-      <button class="tab-btn" id="tab-btn-screenshots" role="tab" aria-selected="false" aria-controls="tab-screenshots" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('screenshots', this)">3. &#128736;&#65039; Security Testbed &amp; GCP Console &amp; Codebase</button>
-      <button class="tab-btn" id="tab-btn-payg" role="tab" aria-selected="false" aria-controls="tab-payg" style="padding:4px 8px; font-size:11.5px; font-weight:700;" onclick="switchTab('payg', this)">4. &#128640; Production SaaS Deployments (Live PAYG Hub)</button>
+      <button type="button" class="tab-btn active" id="tab-btn-overview" role="tab" aria-selected="true" aria-controls="tab-overview" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('overview', this)">&#127968; Overview &amp; Links</button>
+      <button type="button" class="tab-btn" id="tab-btn-patterns" role="tab" aria-selected="false" aria-controls="tab-patterns" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('patterns', this)">1. &#129517; Architecture &amp; Blog Series</button>
+      <button type="button" class="tab-btn" id="tab-btn-simulator" role="tab" aria-selected="false" aria-controls="tab-simulator" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('simulator', this)">2. &#9889; Live 5-Hop Simulator</button>
+      <button type="button" class="tab-btn" id="tab-btn-screenshots" role="tab" aria-selected="false" aria-controls="tab-screenshots" style="padding:4px 8px; font-size:11.5px;" onclick="switchTab('screenshots', this)">3. &#128736;&#65039; Security Testbed &amp; GCP Console &amp; Codebase</button>
+      <button type="button" class="tab-btn" id="tab-btn-payg" role="tab" aria-selected="false" aria-controls="tab-payg" style="padding:4px 8px; font-size:11.5px; font-weight:700;" onclick="switchTab('payg', this)">4. &#128640; Production SaaS Deployments (Live PAYG Hub)</button>
       <select id="header-governance-select" aria-label="Governance, Forensic Audit &amp; Change Log" style="width:auto; max-width:158px; padding:4px 20px 4px 7px; font-size:11.5px; font-weight:600; border-radius:7px; cursor:pointer;" onchange="if(this.value==='standalone_changelog'){window.open('/changelog','_blank');this.value='';}else if(this.value==='mocks'){window.open('/mocks','_blank');this.value='';}else if(this.value){switchTab(this.value);}">
         <option value="">5. &#128737;&#65039; Audit (13/13)</option>
         <option value="forensic">5. &#9989; Audit (13/13)</option>
@@ -19,8 +19,8 @@
         <option value="standalone_changelog">&#8599; /changelog Page</option>
       </select>
       <!-- [FA-40]: Removed duplicate .sr-only tab buttons from tablist; retained headless DOM IDs with aria-hidden for backwards compatibility -->
-      <button id="tab-btn-forensic" style="display:none;" aria-hidden="true" tabindex="-1" onclick="switchTab('forensic', this)"></button>
-      <button id="tab-btn-changelog" style="display:none;" aria-hidden="true" tabindex="-1" onclick="switchTab('changelog', this)"></button>
+      <button type="button" id="tab-btn-forensic" style="display:none;" aria-hidden="true" tabindex="-1" onclick="switchTab('forensic', this)"></button>
+      <button type="button" id="tab-btn-changelog" style="display:none;" aria-hidden="true" tabindex="-1" onclick="switchTab('changelog', this)"></button>
     </nav>
     <div class="portal-header-actions">
       <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; display:inline-flex; align-items:center; gap:4px; font-weight:700;" onclick="openPortalFAQ()" title="Architecture, Brand (Cymbal) &amp; Security FAQ">&#10067; FAQ</button>
