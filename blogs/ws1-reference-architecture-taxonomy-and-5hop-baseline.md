@@ -98,34 +98,6 @@ The following table compares the architectural characteristics, security boundar
 | **Baseline unit cost** | **Low ($)** (120 RPM Pool floor per tenant) | **High ($$$)** (600 RPM Silo floor per tenant project) | **Blended ($$)** (Hybrid Tier floor across Standard & Enterprise) |
 | **Target workload** | High-volume Standard B2B SaaS tiers ([Workstream 2](ws2-pattern-a-pooled-architecture.md)) | Regulated FinTech, Healthcare, Public Sector ([Workstream 3](ws3-pattern-b-sovereign-silos.md)) | Multi-tiered SaaS with live tier upgrades ([Workstream 4](ws4-pattern-c-hybrid-dynamic-tiering.md)) |
 
-## Products used
-
-This reference architecture uses the following Google Cloud products and open-source frameworks across Patterns A, B, and C:
-
-### Agentic AI and foundation models
-
-- [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview): Managed runtime that deploys, scales, and isolates multi-agent workloads inside gVisor (`runsc`) sandboxes.
-- [Agent Development Kit (ADK)](https://google.github.io/adk-docs/): Open-source framework orchestrating multi-agent hierarchies with deterministic lifecycle callbacks (`before_agent_callback`, `before_tool_callback`, `before_model_callback`).
-- [Gemini 2.5 Pro on Vertex AI](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models): Multimodal reasoning model supporting shared prompt prefix caching (`ContextCacheConfig`), dedicated Provisioned Throughput (PT), and configurable `thinking_budget` controls.
-- [Vertex AI Model Garden](https://cloud.google.com/model-garden): Enterprise model repository providing governed access to dedicated PT endpoints (`gemini-2.5-pro-dedicated`) and open-weight models (Gemma 3 27B IT).
-- [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs): Managed Kubernetes hosting air-gapped open-weight Gemma 3 on private GPU node pools (`g2-standard-48`) with `0.0.0.0/0` egress blocked in Sovereign Silos (Pattern B).
-
-### Ingress, identity, and AI safety guardrails
-
-- [Cloud Load Balancing](https://cloud.google.com/load-balancing/docs): Global anycast External Application Load Balancer terminating TLS 1.3 and mTLS at Google's edge.
-- [Google Cloud Armor](https://cloud.google.com/armor/docs): L7 WAF and DDoS defense stripping untrusted client-supplied headers (`X-Tenant-ID`) at ingress (`<0.15 ms`).
-- [Identity-Aware Proxy (IAP)](https://cloud.google.com/iap/docs) and [Workload Identity Federation](https://cloud.google.com/iam/docs/workload-identity-federation): Validates upstream OIDC/SAML JWTs and brokers RFC 8693 OBO exchange bound to RFC 9449 DPoP proofs.
-- [Model Armor](https://cloud.google.com/security-command-center/docs/model-armor-overview): Inline AI safety service screening prompts and completions for prompt injection and Natural Language Policy Compliance (`NLC`).
-- [Sensitive Data Protection (Cloud DLP)](https://cloud.google.com/sensitive-data-protection/docs): De-identifies regulated PII, PCI, and PHI tokens inline before data reaches foundation models or logs.
-
-### Data, storage, networking, and governance
-
-- [AlloyDB for PostgreSQL](https://cloud.google.com/alloydb/docs): Transactional database enforcing `FORCE ROW LEVEL SECURITY (RLS)` keyed by `app.current_tenant_id`.
-- [Memorystore for Valkey](https://cloud.google.com/memorystore/docs/valkey/overview) and [Firestore](https://cloud.google.com/firestore/docs): Fast state plane for token-bucket rate limiting, JTI/CMEK deny-lists, 5-level memory caching, and single-flight cache locks (`SET NX PX 5000`).
-- [VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs) and [Private Service Connect](https://cloud.google.com/vpc/docs/private-service-connect): Network perimeters preventing exfiltration and establishing unidirectional NAT-based private peering between routing hub and spokes.
-- [Cloud Key Management Service (Cloud KMS)](https://cloud.google.com/kms/docs): Asymmetric ECDSA P-256 STS JWT signing, CMEK keys, and sub-60s `HTTP 423 Locked` tenant kill-switches.
-- [Security Command Center](https://cloud.google.com/security-command-center/docs), [Cloud Logging](https://cloud.google.com/logging/docs), and [BigQuery](https://cloud.google.com/bigquery/docs): Posture monitoring, PII-redacted OpenTelemetry logging, and per-tenant FinOps chargeback analytics (`cymbal_agentic_finops_otel.tenant_telemetry_spans`).
-
 ## Architecture
 
 To bridge executive security strategy and production runtime implementation, this reference architecture decomposes defense-in-depth across four engineering levels (`L1 → L4`) and five canonical blueprints:
@@ -180,6 +152,34 @@ The following `L4 Wire` diagram details the three-stage protocol transformation 
 ![Figure 5 — Wire-level protocol normalization: Hop 1 spoofed header stripping and signed STS JWT context](../diagrams/ws1-l4-wire-protocol-transformation.drawio.png)
 
 *Figure 5. Official Google Cloud Architecture Center L4 Wire-Level Protocol Normalization Triptych demonstrating how unverified client claims and spoofed tenant headers are stripped at Cloud Armor (Stage 01), exchanged via RFC 8693 OBO + RFC 9449 DPoP JKT (Stage 02), and signed with Cloud KMS ECDSA P-256 for <0.15ms in-memory cached JWKS verification across downstream microservices. Editable assets: [Draw.io source](../diagrams/ws1-l4-wire-protocol-transformation.drawio) | [Architecture Center SVG](../diagrams/ws1-l4-wire-protocol-transformation.svg).*
+
+## Products used
+
+This reference architecture uses the following Google Cloud products and open-source frameworks across Patterns A, B, and C:
+
+### Agentic AI and foundation models
+
+- [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview): Managed runtime that deploys, scales, and isolates multi-agent workloads inside gVisor (`runsc`) sandboxes.
+- [Agent Development Kit (ADK)](https://google.github.io/adk-docs/): Open-source framework orchestrating multi-agent hierarchies with deterministic lifecycle callbacks (`before_agent_callback`, `before_tool_callback`, `before_model_callback`).
+- [Gemini 2.5 Pro on Vertex AI](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models): Multimodal reasoning model supporting shared prompt prefix caching (`ContextCacheConfig`), dedicated Provisioned Throughput (PT), and configurable `thinking_budget` controls.
+- [Vertex AI Model Garden](https://cloud.google.com/model-garden): Enterprise model repository providing governed access to dedicated PT endpoints (`gemini-2.5-pro-dedicated`) and open-weight models (Gemma 3 27B IT).
+- [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs): Managed Kubernetes hosting air-gapped open-weight Gemma 3 on private GPU node pools (`g2-standard-48`) with `0.0.0.0/0` egress blocked in Sovereign Silos (Pattern B).
+
+### Ingress, identity, and AI safety guardrails
+
+- [Cloud Load Balancing](https://cloud.google.com/load-balancing/docs): Global anycast External Application Load Balancer terminating TLS 1.3 and mTLS at Google's edge.
+- [Google Cloud Armor](https://cloud.google.com/armor/docs): L7 WAF and DDoS defense stripping untrusted client-supplied headers (`X-Tenant-ID`) at ingress (`<0.15 ms`).
+- [Identity-Aware Proxy (IAP)](https://cloud.google.com/iap/docs) and [Workload Identity Federation](https://cloud.google.com/iam/docs/workload-identity-federation): Validates upstream OIDC/SAML JWTs and brokers RFC 8693 OBO exchange bound to RFC 9449 DPoP proofs.
+- [Model Armor](https://cloud.google.com/security-command-center/docs/model-armor-overview): Inline AI safety service screening prompts and completions for prompt injection and Natural Language Policy Compliance (`NLC`).
+- [Sensitive Data Protection (Cloud DLP)](https://cloud.google.com/sensitive-data-protection/docs): De-identifies regulated PII, PCI, and PHI tokens inline before data reaches foundation models or logs.
+
+### Data, storage, networking, and governance
+
+- [AlloyDB for PostgreSQL](https://cloud.google.com/alloydb/docs): Transactional database enforcing `FORCE ROW LEVEL SECURITY (RLS)` keyed by `app.current_tenant_id`.
+- [Memorystore for Valkey](https://cloud.google.com/memorystore/docs/valkey/overview) and [Firestore](https://cloud.google.com/firestore/docs): Fast state plane for token-bucket rate limiting, JTI/CMEK deny-lists, 5-level memory caching, and single-flight cache locks (`SET NX PX 5000`).
+- [VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs) and [Private Service Connect](https://cloud.google.com/vpc/docs/private-service-connect): Network perimeters preventing exfiltration and establishing unidirectional NAT-based private peering between routing hub and spokes.
+- [Cloud Key Management Service (Cloud KMS)](https://cloud.google.com/kms/docs): Asymmetric ECDSA P-256 STS JWT signing, CMEK keys, and sub-60s `HTTP 423 Locked` tenant kill-switches.
+- [Security Command Center](https://cloud.google.com/security-command-center/docs), [Cloud Logging](https://cloud.google.com/logging/docs), and [BigQuery](https://cloud.google.com/bigquery/docs): Posture monitoring, PII-redacted OpenTelemetry logging, and per-tenant FinOps chargeback analytics (`cymbal_agentic_finops_otel.tenant_telemetry_spans`).
 
 ## Design considerations
 
