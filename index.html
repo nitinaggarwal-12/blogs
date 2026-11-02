@@ -1391,7 +1391,6 @@
     window.loadPortalCanonicalMetrics = loadPortalCanonicalMetrics;
 
     let cloudViewerManifest = {
-      accountEmail: 'nitinagga@google.com',
       slides: {
         WS1: {
           slideCount: 34,
@@ -1537,10 +1536,10 @@
       const popup = window.open('about:blank', '_blank');
       if (popup && popup.document) {
         popup.document.write(
-          '<!DOCTYPE html><html><body style="background:#131314;color:#e8eaed;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">' +
-          '<div style="text-align:center;padding:28px;border:1px solid #444746;border-radius:14px;background:#202124;">' +
-          '<div style="font-size:18px;font-weight:700;color:#fbbc04;margin-bottom:8px;">☁️ Syncing to Google Workspace (' + targetMode.toUpperCase() + ')...</div>' +
-          '<div style="font-size:13px;color:#9aa0a6;">Converting &amp; opening in Google Drive (nitinagga@google.com)...</div>' +
+          '<!DOCTYPE html><html><body style="background:#f8fafc;color:#0f172a;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">' +
+          '<div style="text-align:center;padding:28px;border:1px solid #cbd5e1;border-radius:14px;background:#ffffff;box-shadow:0 10px 25px -5px rgba(0,0,0,0.1);">' +
+          '<div style="font-size:18px;font-weight:700;color:#1a73e8;margin-bottom:8px;">☁️ Syncing to Google Workspace (' + targetMode.toUpperCase() + ')...</div>' +
+          '<div style="font-size:13px;color:#64748b;">Opening document in Google Drive...</div>' +
           '</div></body></html>'
         );
       }
@@ -1710,18 +1709,18 @@
         const embedUrl = sEntry.googleSlidesEmbedUrl || sEntry.googleSlidesPreviewUrl || '';
         stage.innerHTML = `
           <div style="width:100%; max-width:1600px; display:flex; flex-direction:column; gap:10px; height:100%;">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:8px 14px; background:#202124; border:1px solid #444746; border-radius:10px; font-size:12.5px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:8px 14px; background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; font-size:12.5px; color:#0f172a;">
               <div>
                 <span class="badge badge-green" style="margin-right:6px;">LIVE GOOGLE SLIDES CLOUD EMBED</span>
                 <strong>${escapeHtml(ws.title)}</strong>
-                <span style="color:#9aa0a6; margin-left:8px;">(Google Drive ID: <code>${escapeHtml(sEntry.googleSlidesId || 'synced')}</code>)</span>
+                <span style="color:#64748b; margin-left:8px;">(Google Drive ID: <code>${escapeHtml(sEntry.googleSlidesId || 'synced')}</code>)</span>
               </div>
               <div style="display:flex; gap:8px;">
                 <button type="button" class="pc-toolbar-btn active" onclick="openInGoogleWorkspace('${cvWsKey}', 'slides', ${cvSlideNum})">&#8599; Open Full Google Slides Editor</button>
                 <button type="button" class="pc-toolbar-btn" onclick="setCloudViewerMode('slides')">&#10024; Switch to Fast Interactive Slide Studio</button>
               </div>
             </div>
-            <iframe src="${embedUrl}" style="width:100%; flex:1; min-height:560px; border:1px solid #444746; border-radius:12px; background:#ffffff;" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" title="Live Google Slides Embed"></iframe>
+            <iframe src="${embedUrl}" style="width:100%; flex:1; min-height:560px; border:1px solid #cbd5e1; border-radius:12px; background:#ffffff;" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" title="Live Google Slides Embed"></iframe>
           </div>
         `;
         filmstrip.style.display = 'none';
@@ -1732,18 +1731,18 @@
         const previewUrl = dEntry.googleDocsPreviewUrl || dEntry.googleDocsEditUrl || '';
         stage.innerHTML = `
           <div style="width:100%; max-width:1600px; display:flex; flex-direction:column; gap:10px; height:100%;">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:8px 14px; background:#202124; border:1px solid #444746; border-radius:10px; font-size:12.5px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:8px 14px; background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; font-size:12.5px; color:#0f172a;">
               <div>
                 <span class="badge badge-blue" style="margin-right:6px;">LIVE GOOGLE DOCS CLOUD PREVIEW</span>
                 <strong>${escapeHtml(ws.title)} — Editable Specification</strong>
-                <span style="color:#9aa0a6; margin-left:8px;">(Google Docs ID: <code>${escapeHtml(dEntry.googleDocsId || 'synced')}</code>)</span>
+                <span style="color:#64748b; margin-left:8px;">(Google Docs ID: <code>${escapeHtml(dEntry.googleDocsId || 'synced')}</code>)</span>
               </div>
               <div style="display:flex; gap:8px;">
                 <button type="button" class="pc-toolbar-btn active" style="background:#4285f4; color:#fff;" onclick="openInGoogleWorkspace('${cvWsKey}', 'docs', 1, '${escapeHtml(cvCustomDocPath)}')">&#8599; Open Full Google Docs Editor</button>
                 <button type="button" class="pc-toolbar-btn" onclick="setCloudViewerMode('slides')">&#10024; Switch to Editable Slides Studio</button>
               </div>
             </div>
-            <iframe src="${previewUrl}" style="width:100%; flex:1; min-height:580px; border:1px solid #444746; border-radius:12px; background:#ffffff;" title="Live Google Docs Preview"></iframe>
+            <iframe src="${previewUrl}" style="width:100%; flex:1; min-height:580px; border:1px solid #cbd5e1; border-radius:12px; background:#ffffff;" title="Live Google Docs Preview"></iframe>
           </div>
         `;
         filmstrip.style.display = 'none';

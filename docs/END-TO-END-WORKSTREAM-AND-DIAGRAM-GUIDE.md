@@ -600,9 +600,7 @@ Companion assets outside the workstream folder:
 - [`pattern_a_pooled_service.py`](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py)
   defines `PatternAPooledService`, which instantiates `CymbalMultiTenantRuntime` from
   [`core-cymbal-agent/runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py) and exposes
-  one method, `invoke_pooled_agent(raw_headers, jwt_claims, dpop_proof_jkt, session_id,
-  requested_agent_uri, user_prompt, requested_thinking_tokens=6000, simulated_current_rpm=10,
-  attempted_db_tenant_filter=None, requested_mcp_connector="mcp://cymbal/core-telemetry-2lo")`,
+  one method, `invoke_pooled_agent(raw_headers, jwt_claims, dpop_proof_jkt, session_id, requested_agent_uri, user_prompt, requested_thinking_tokens=6000, simulated_current_rpm=10, attempted_db_tenant_filter=None, requested_mcp_connector="mcp://cymbal/core-telemetry-2lo")`,
   forwarding everything to `handle_agent_turn(..., topology=IsolationTopology.PATTERN_A_POOLED)`.
   The file is ~55 lines; the pattern-specific delta is the topology enum, not new hop logic.
 - [`pooled_gateway_and_rls.sql`](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_gateway_and_rls.sql)
@@ -1094,7 +1092,7 @@ Every editable container, service card, isolation chip, and flow callout present
 | `wrapper_right_pab` | Boundary / Perimeter Wrapper | **Data Graph: Memorystore Valkey + AlloyDB/BQ RLS (pattern_a_pooled_rls_entities) & Firestore** | — | `x=614, y=772, 516×560` |
 | `zone_right_tenant` | Architecture Zone Container | **Tenant Data & Bulkhead Stores** | Memorystore Valkey STANDARD_HA 5GB (Hop 3 FinOps) | `x=630, y=808, 484×508` |
 | `card_rc_topleft` | Zone 1 — Routing & Ingress Hub Card | **Security Policy** | cymbal_pooled_waf (Cloud Armor) | `x=88, y=398, 204×66` |
-| `card_rc_midleft` | Zone 1 — Routing & Ingress Hub Card | **Rule 1000 deny(403)** | sqli-v33 \|\| xss-v33 | `x=88, y=482, 204×66` |
+| `card_rc_midleft` | Zone 1 — Routing & Ingress Hub Card | **Rule 1000 deny(403)** | `sqli-v33 or xss-v33` | `x=88, y=482, 204×66` |
 | `card_rc_botleft` | Zone 1 — Routing & Ingress Hub Card | **Default allow rule** | SRC_IPS_V1 to IAP & PEP | `x=96, y=580, 196×66` |
 | `card_rc_alb` | Zone 1 — Routing & Ingress Hub Card | **google provider >= 5.30.0** | var.project_id / var.region | `x=452, y=432, 262×76` |
 | `card_rc_cloudrun` | Zone 1 — Routing & Ingress Hub Card | **Internal LB Ingress** | INGRESS_TRAFFIC_INTERNAL_LB | `x=476, y=580, 224×66` |
@@ -1826,7 +1824,7 @@ Every editable container, service card, isolation chip, and flow callout present
 | `card_rc_botleft` | Zone 1 — Routing & Ingress Hub Card | **Firestore Route Table** | pattern_c_psc_endpoints_registry | `x=96, y=580, 196×66` |
 | `card_rc_alb` | Zone 1 — Routing & Ingress Hub Card | **External Application Load Balancer** | Cloud Load Balancing | `x=452, y=432, 262×76` |
 | `card_rc_cloudrun` | Zone 1 — Routing & Ingress Hub Card | **Cloud Run Router** | Tier Router & Live Migrator | `x=476, y=580, 224×66` |
-| `card_gc_top` | Zone 2 — Governance & FinOps Hub Card | **Firestore Route Table (atomic tier pointer)** | tenant → pool \| psc://10.10.0.5x | `x=824, y=406, 276×72` |
+| `card_gc_top` | Zone 2 — Governance & FinOps Hub Card | **Firestore Route Table (atomic tier pointer)** | `tenant → pool or psc://10.10.0.5x` | `x=824, y=406, 276×72` |
 | `card_gc_mid` | Zone 2 — Governance & FinOps Hub Card | **Migration Coordinator** | SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY | `x=830, y=492, 264×68` |
 | `card_gc_bot` | Zone 2 — Governance & FinOps Hub Card | **BigQuery OTel Sink** | tenant_promotion_migrations • routing_plane | `x=828, y=574, 268×68` |
 | `card_lc_ma` | Left Spoke / Outcome Column Card | **Shared Model Armor** | Multi-Tenant Prompt & SDP | `x=96, y=874, 194×72` |
@@ -2463,7 +2461,7 @@ Span fields the query depends on: `tenant_id`, `tier`, `topology`, `prompt_prefi
 | **Source deliverable** | WS5 • Deliverable `5.1 / 5.2` (Workstream 5 • Executive Topology Decision Guide & The Multi-Tenant Agentic Triad (WS 5.1–5.2)) |
 | **Badge** | `WORKSTREAM 5.1 & 5.2 • CAPSTONE BLUEPRINT` (`WORKSTREAM 5 • AGENTIC TRIAD`) |
 | **Subtitle** | Verified 20/20 Suites PASS Across cymbal-build-sandbox & ramp-portal-dev (Security • FinOps -84.7% • Zero-PII OTel) |
-| **Layout template (Rule 53G)** | `decision-tree-3-outcome` — Rule 53G • Decision tree: 2 questions → 3 outcome spokes (B | A | C) through the Agentic Triad core bar; 0 request/response hub |
+| **Layout template (Rule 53G)** | `decision-tree-3-outcome` — Rule 53G • Decision tree: 2 questions → 3 outcome spokes (B / A / C) through the Agentic Triad core bar; 0 request/response hub |
 | **Files** | [`.drawio`](../diagrams/ws5-decision-tree-and-agentic-triad.drawio) • [`.drawio.png`](../diagrams/ws5-decision-tree-and-agentic-triad.drawio.png) • [`SVG`](../diagrams/ws5-decision-tree-and-agentic-triad.svg) • [`vision.json`](../diagrams/vision_metadata/ws5-decision-tree-and-agentic-triad.vision.json) |
 | **Editable deck** | [`ws5-wrap-up-editable-slides.pptx`](../slides/ws5-wrap-up-editable-slides.pptx) (12 slides • 180 editable shapes • 54 connectors — 12-Slide 3-Act Deck Standard) |
 | **Shape & Vision AST stats** | `46` editable shapes (vertices) • `19` connectors (edges) • `44` addressable vision objects • `isCertified: true`, `validationReport.valid: false`, `errorCount: 56` |
