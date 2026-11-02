@@ -27,7 +27,7 @@
         if (tab && tab !== 'overview') {
           params.set('tab', tab);
         } else {
-          params.set('tab', 'overview');
+          params.delete('tab');
         }
 
         // Tab 1 Patterns: sync ?tab=patterns&ws=...&doc=...
@@ -57,15 +57,26 @@
           params.delete('wb');
         }
 
+        // Overview / Homepage: strip deep-linking params to ensure clean root URL '/'
+        if (tab === 'overview') {
+          params.delete('tab');
+          params.delete('ws');
+          params.delete('doc');
+          params.delete('wb');
+          params.delete('page');
+        }
+
         const newQuery = params.toString() ? ('?' + params.toString()) : '';
         let newHash = '';
-        if (opts.hash !== undefined) {
+        if (tab === 'overview') {
+          newHash = '';
+        } else if (opts.hash !== undefined) {
           newHash = opts.hash ? ('#' + String(opts.hash).replace(/^#/, '')) : '';
         } else {
           newHash = currentUrl.hash || '';
         }
 
-        const targetUrl = currentUrl.pathname + newQuery + newHash;
+        const targetUrl = (tab === 'overview' && !newQuery && !newHash) ? '/' : (currentUrl.pathname + newQuery + newHash);
         const currentFullUrl = window.location.pathname + window.location.search + window.location.hash;
 
         const stateObj = {
@@ -87,6 +98,23 @@
       }
     }
     window.syncPortalUrl = syncPortalUrl;
+
+    function navigateToHomepage(btn) {
+      const targetBtn = btn || document.getElementById('tab-btn-overview');
+      if (typeof switchTab === 'function') {
+        switchTab('overview', targetBtn);
+      }
+      try {
+        if (window.location.search || window.location.hash) {
+          history.pushState({ tab: 'overview', ws: null, doc: null, wb: null }, '', '/');
+        }
+        const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: 0, left: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+      } catch (_) {
+        window.scrollTo(0, 0);
+      }
+    }
+    window.navigateToHomepage = navigateToHomepage;
 
     function switchTab(name, btn, skipHistoryPush) {
       if (typeof btn === 'boolean' && skipHistoryPush === undefined) {

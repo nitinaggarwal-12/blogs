@@ -1021,14 +1021,6 @@ body {
     .faq-answer li {
       margin-bottom: 4px;
     }
-    .header-home-btn {
-      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
-    }
-    .header-home-btn:hover {
-      background-color: #f1f5f9 !important;
-      border-color: #94a3b8 !important;
-      transform: translateY(-0.5px);
-    }
 
     /* ==========================================================================
        @media print — DevSite Executive Print & PDF Generation Invariant (Rule 54)
