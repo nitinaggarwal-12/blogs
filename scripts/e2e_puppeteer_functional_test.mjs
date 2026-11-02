@@ -229,6 +229,14 @@ async function run() {
     const docxBytes = docxBuf.byteLength;
     const docxContentType = docxResp.headers.get("content-type") || "";
     const headerHeightPx = document.querySelector(".portal-top-header")?.offsetHeight || 0;
+    const shellEl = ovSec ? ovSec.querySelector(".stripe-shell, .ov-workspace-split") : null;
+    const railEl = document.getElementById("ov-selector-rail");
+    const stageEl = document.getElementById("ov-stage-canvas");
+    const shellDisplay = shellEl ? window.getComputedStyle(shellEl).display : "";
+    const railW = railEl ? railEl.offsetWidth : 0;
+    const isSideBySide = Boolean(
+      railEl && stageEl && (railEl.getBoundingClientRect().right <= stageEl.getBoundingClientRect().left + 15)
+    );
     const ovTbl = ovSec?.querySelector("table.ov-master-table");
     const ovTblOverflow = Boolean(ovTbl && ovTbl.parentElement && ovTbl.offsetWidth > ovTbl.parentElement.clientWidth + 4);
     const ovImgs = ovSec ? Array.from(ovSec.querySelectorAll("img")) : [];
@@ -387,6 +395,9 @@ async function run() {
       ovTblOverflow,
       ovImgsCount: ovImgs.length,
       brokenOvImgs,
+      shellDisplay,
+      railW,
+      isSideBySide,
       simVisible,
       simRan: simOut.length > 20,
       cloudVisible,
@@ -443,9 +454,13 @@ async function run() {
       tabsResult.ovImgsCount === 20 &&
       tabsResult.brokenOvImgs.length === 0 &&
       !tabsResult.ovTblOverflow &&
-      tabsResult.headerHeightPx <= 60,
-    "Default `/` Executive Landing Page (#tab-overview: 6 One-Pagers, 6-Row Master Matrix, 20/20 Retina Previews & Zero Overflow)",
-    `active=${tabsResult.overviewLandingActive}, pages=${tabsResult.overviewOnePagerCount}, rows=${tabsResult.overviewMatrixRows}, imgs=${tabsResult.ovImgsCount}, broken=${tabsResult.brokenOvImgs.length}, hdrH=${tabsResult.headerHeightPx}px`
+      tabsResult.headerHeightPx <= 60 &&
+      tabsResult.shellDisplay === "grid" &&
+      tabsResult.railW <= 360 &&
+      tabsResult.railW >= 300 &&
+      tabsResult.isSideBySide,
+    "Default `/` Executive Landing Page (#tab-overview: 2-Column Master-Detail Grid Geometry, 6 One-Pagers, 6-Row Master Matrix, 20/20 Retina Previews & Zero Overflow)",
+    `active=${tabsResult.overviewLandingActive}, grid=${tabsResult.shellDisplay}, railW=${tabsResult.railW}px, sideBySide=${tabsResult.isSideBySide}, pages=${tabsResult.overviewOnePagerCount}, rows=${tabsResult.overviewMatrixRows}, imgs=${tabsResult.ovImgsCount}, broken=${tabsResult.brokenOvImgs.length}, hdrH=${tabsResult.headerHeightPx}px`
   );
   assert(
     tabsResult.overviewDocxLinks === 6 &&
