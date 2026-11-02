@@ -270,7 +270,8 @@ body {
     }
     .article-reader th,
     .article-reader td {
-      padding: 7px 10px;
+      padding: 5px 8px;
+      line-height: 1.36;
       overflow-wrap: anywhere;
       word-break: normal;
       hyphens: none;
@@ -281,39 +282,37 @@ body {
     .article-reader th {
       font-weight: 600;
     }
-    /* Proportional Column Distribution via CSS Quantity Queries (Rule 54) */
-    /* 4-column tables: 15% Col 1 guarantees multi-word headers like "Architectural Layer" never split */
+    /* Fallback Column Distribution (Overridden by Dynamic Content-Weighted colgroup/inline styles) */
     .article-reader table tr > th:first-child:nth-last-child(4),
     .article-reader table tr > td:first-child:nth-last-child(4) {
-      width: 15% !important;
+      width: 15%;
       font-weight: 600;
     }
     .article-reader table tr > th:nth-child(2):nth-last-child(3),
     .article-reader table tr > td:nth-child(2):nth-last-child(3) {
-      width: 25% !important;
+      width: 25%;
     }
     .article-reader table tr > th:nth-child(3):nth-last-child(2),
     .article-reader table tr > td:nth-child(3):nth-last-child(2) {
-      width: 25% !important;
+      width: 20%;
     }
     .article-reader table tr > th:nth-child(4):nth-last-child(1),
     .article-reader table tr > td:nth-child(4):nth-last-child(1) {
-      width: 35% !important;
+      width: 40%;
     }
 
-    /* 3-column tables: Dimension/ID (15%), Context/Profile (40%), Mitigation/Details (45%) */
     .article-reader table tr > th:first-child:nth-last-child(3),
     .article-reader table tr > td:first-child:nth-last-child(3) {
-      width: 15% !important;
+      width: 15%;
       font-weight: 600;
     }
     .article-reader table tr > th:nth-child(2):nth-last-child(2),
     .article-reader table tr > td:nth-child(2):nth-last-child(2) {
-      width: 40% !important;
+      width: 35%;
     }
     .article-reader table tr > th:nth-child(3):nth-last-child(1),
     .article-reader table tr > td:nth-child(3):nth-last-child(1) {
-      width: 45% !important;
+      width: 50%;
     }
     .article-reader td code,
     .article-reader th code {
@@ -321,6 +320,10 @@ body {
       word-break: break-word;
       white-space: normal;
       font-size: 11.5px;
+    }
+    .article-reader td:first-child code,
+    .article-reader td .badge {
+      white-space: nowrap;
     }
     .sim-controls {
       display: flex;

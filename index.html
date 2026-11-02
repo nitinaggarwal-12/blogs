@@ -420,12 +420,47 @@
           if (!inTable) return;
           inTable = false;
           if (tableRows.length < 2) { tableRows = []; return; }
-          const headers = tableRows[0].split('|').slice(1, -1).map(c => `<th>${formatInline(c.trim())}</th>`).join('');
-          const bodyRows = tableRows.slice(2).map(r => {
-            const cols = r.split('|').slice(1, -1).map(c => `<td>${formatInline(c.trim())}</td>`).join('');
+          const rawHeaders = tableRows[0].split('|').slice(1, -1).map(c => c.trim());
+          const numCols = rawHeaders.length;
+          const rawRows = tableRows.slice(2).map(r => r.split('|').slice(1, -1).map(c => c.trim()));
+
+          // Dynamic Content-Weighted Column Distribution (Rule 54 & Min-Height Optimization)
+          const colLengths = [];
+          for (let c = 0; c < numCols; c++) {
+            let maxL = rawHeaders[c] ? rawHeaders[c].length : 0;
+            let sumL = 0;
+            let count = 0;
+            rawRows.forEach(r => {
+              if (r[c]) {
+                const txt = r[c].replace(/<[^>]+>/g, '').replace(/`[^`]+`/g, 'XXXX').trim();
+                maxL = Math.max(maxL, txt.length);
+                sumL += txt.length;
+                count++;
+              }
+            });
+            const avgL = count > 0 ? sumL / count : maxL;
+            colLengths.push({ maxL, avgL, blend: Math.sqrt(maxL) * 0.4 + avgL * 0.6 });
+          }
+
+          const totalBlend = colLengths.reduce((acc, c) => acc + c.blend, 0) || 1;
+          let rawPcts = colLengths.map(c => Math.max(11, (c.blend / totalBlend) * 100));
+          if (rawPcts[0] < 17) rawPcts[0] = 17; // Preserve multi-word titles and full badges in Col 1 without ellipsis
+          const rawSum = rawPcts.reduce((a, b) => a + b, 0);
+          const finalPcts = rawPcts.map(p => Math.round((p / rawSum) * 100));
+          const delta = 100 - finalPcts.reduce((a, b) => a + b, 0);
+          let maxIdx = 0;
+          for (let i = 1; i < finalPcts.length; i++) {
+            if (finalPcts[i] > finalPcts[maxIdx]) maxIdx = i;
+          }
+          finalPcts[maxIdx] += delta;
+
+          const colGroup = `<colgroup>${finalPcts.map(p => `<col style="width:${p}%;">`).join('')}</colgroup>`;
+          const headers = rawHeaders.map((c, i) => `<th style="width:${finalPcts[i]}%;">${formatInline(c)}</th>`).join('');
+          const bodyRows = rawRows.map(r => {
+            const cols = r.map((c, i) => `<td style="width:${finalPcts[i]}%;">${formatInline(c)}</td>`).join('');
             return `<tr>${cols}</tr>`;
           }).join('');
-          html += `<div class="gcp-arch-table-wrap" style="overflow-x:auto; margin:20px 0;"><table class="gcp-arch-table"><thead><tr>${headers}</tr></thead><tbody>${bodyRows}</tbody></table></div>`;
+          html += `<div class="gcp-arch-table-wrap" style="overflow-x:auto; margin:20px 0;"><table class="gcp-arch-table">${colGroup}<thead><tr>${headers}</tr></thead><tbody>${bodyRows}</tbody></table></div>`;
           tableRows = [];
         }
 
@@ -3665,9 +3700,32 @@
     };
 
     /* ---------- Rule 25 & Rule 50A Executive 1-Page Filter & Isolation ---------- */
+    window.switchOverviewStageView = function switchOverviewStageView(viewName, btn, keepWorkstreamActive) {
+      const views = ['dossiers', 'matrix', 'tree', 'pillars'];
+      views.forEach(v => {
+        const el = document.getElementById('ov-stage-' + v + '-view');
+        if (el) el.style.display = (v === viewName) ? '' : 'none';
+        const pill = document.getElementById('ov-pill-view-' + v);
+        if (pill) pill.classList.toggle('active', v === viewName);
+      });
+      if (!keepWorkstreamActive && viewName !== 'dossiers') {
+        const ov = document.getElementById('tab-overview');
+        if (ov) {
+          ov.querySelectorAll('.ov-page-filter-btn').forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-pressed', 'false');
+            b.setAttribute('aria-selected', 'false');
+          });
+        }
+      }
+    };
+
     window.filterOverviewOnePager = function filterOverviewOnePager(pageKey, btn, skipUrlSync) {
       const ov = document.getElementById('tab-overview');
       if (!ov) return;
+      if (typeof window.switchOverviewStageView === 'function') {
+        window.switchOverviewStageView('dossiers', document.getElementById('ov-pill-view-dossiers'), true);
+      }
       ov.querySelectorAll('.ov-page-filter-btn').forEach(b => {
         const isAct = b === btn || (!btn && b.getAttribute('data-ov-filter') === pageKey);
         b.classList.toggle('active', isAct);

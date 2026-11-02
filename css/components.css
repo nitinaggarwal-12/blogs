@@ -1015,43 +1015,180 @@
 
 
     /* ---------- Rule 54 & Rule 50A Executive Landing Page (#tab-overview) ---------- */
+    /* Google Cloud Executive Brand Strip & Hero (Rule 54 & Google Brand Invariant) */
+    .gcp-brand-accent-strip {
+      height: 4px;
+      width: 100%;
+      border-radius: 12px 12px 0 0;
+      background: linear-gradient(90deg, #4285f4 0%, #4285f4 25%, #ea4335 25%, #ea4335 50%, #fbbc05 50%, #fbbc05 75%, #34a853 75%, #34a853 100%);
+    }
     .ov-hero-card {
-      background: linear-gradient(180deg, #eff6ff 0%, #ffffff 42%);
-      border: 1.5px solid #93c5fd;
-      border-radius: 14px;
-      padding: 16px 20px;
+      background: #ffffff;
+      border: 1px solid #d2e3fc;
+      border-radius: 12px;
+      padding: 0;
       margin-bottom: 16px;
-      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+      box-shadow: 0 1px 3px rgba(60, 64, 67, 0.08);
+      overflow: hidden;
+    }
+    .ov-hero-inner {
+      padding: 18px 22px;
+    }
+    .gcp-arch-meta-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .gcp-cloud-logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #1a73e8;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      padding: 3px 8px;
+      letter-spacing: 0.02em;
     }
     .ov-kpi-strip {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 10px;
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid #dbeafe;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #e2e8f0;
     }
     .ov-kpi-pill {
       background: #f8fafc;
-      border: 1px solid #cbd5e1;
-      border-radius: 9px;
-      padding: 8px 11px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 10px;
       display: flex;
       flex-direction: column;
       gap: 2px;
       min-width: 0;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .ov-kpi-pill:hover {
+      border-color: #cbd5e1;
+      background: #f1f5f9;
     }
     .ov-kpi-val {
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 800;
       color: #0f172a;
       line-height: 1.25;
       font-variant-numeric: tabular-nums;
     }
     .ov-kpi-lbl {
-      font-size: 11px;
-      color: #475569;
+      font-size: 10.5px;
+      color: #64748b;
       line-height: 1.3;
+    }
+
+    /* 3-Pillar Multi-Tenancy Architecture Cards */
+    .ov-arch-pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .ov-pillar-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .ov-pillar-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.07);
+    }
+    .ov-pillar-card.pillar-pat-a {
+      border-top: 4px solid #1a73e8;
+    }
+    .ov-pillar-card.pillar-pat-a:hover {
+      border-color: #93c5fd;
+      border-top-color: #1a73e8;
+    }
+    .ov-pillar-card.pillar-pat-b {
+      border-top: 4px solid #d97706;
+    }
+    .ov-pillar-card.pillar-pat-b:hover {
+      border-color: #fde68a;
+      border-top-color: #d97706;
+    }
+    .ov-pillar-card.pillar-pat-c {
+      border-top: 4px solid #059669;
+    }
+    .ov-pillar-card.pillar-pat-c:hover {
+      border-color: #a7f3d0;
+      border-top-color: #059669;
+    }
+    .pillar-hdr-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .pillar-pat-a .pillar-hdr-badge {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+    .pillar-pat-b .pillar-hdr-badge {
+      background: #fffbeb;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+    .pillar-pat-c .pillar-hdr-badge {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+    .pillar-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.3;
+      margin: 4px 0 2px 0;
+    }
+    .pillar-summary {
+      font-size: 12px;
+      color: #334155;
+      line-height: 1.48;
+      margin: 0;
+    }
+    .pillar-metrics-strip {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .pillar-metric-tag {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
     }
     /* Interactive 2-Question Topology Selector (Rule 25 & Rule 50A) */
     .ov-pattern-selector-card {
@@ -1304,6 +1441,237 @@
       background: #ffffff;
     }
 
+    /* Executive 2-Column Master-Detail Layout */
+    .ov-workspace-split {
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+      margin-top: 14px;
+    }
+    @media (max-width: 1024px) {
+      .ov-workspace-split {
+        grid-template-columns: 1fr;
+      }
+    }
+    .ov-workspace-rail {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 14px;
+      position: sticky;
+      top: 96px;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .ov-workspace-rail .ov-rail-pills {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .ov-workspace-rail .ov-rail-pill {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      position: relative;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      box-sizing: border-box;
+      min-height: auto;
+      color: #0f172a;
+    }
+    .ov-workspace-rail .ov-rail-pill:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    .ov-workspace-rail .ov-rail-pill.active {
+      background: #ffffff;
+      border-color: #1a73e8;
+      box-shadow: 0 2px 8px rgba(26, 115, 232, 0.12);
+      color: #0f172a;
+    }
+    .ov-workspace-rail .ov-rail-pill.active::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      border-radius: 4px 0 0 4px;
+      background: #1a73e8;
+    }
+    .ov-workspace-rail .ov-rail-pill[data-ov-filter="WS2"].active::before { background: #059669; }
+    .ov-workspace-rail .ov-rail-pill[data-ov-filter="WS3"].active::before { background: #d97706; }
+    .ov-workspace-rail .ov-rail-pill[data-ov-filter="WS4"].active::before { background: #059669; }
+    .ov-workspace-rail .ov-rail-pill[data-ov-filter="WS5"].active::before { background: #0284c7; }
+    .ov-workspace-rail .ov-rail-pill[data-ov-filter="ALL"].active::before { background: #0f172a; }
+    
+    .ov-rail-view-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      width: 100%;
+      text-align: left;
+      box-sizing: border-box;
+      color: #0f172a;
+    }
+    .ov-rail-view-pill:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    .ov-rail-view-pill.active {
+      background: #eff6ff;
+      border-color: #1a73e8;
+      box-shadow: 0 1px 3px rgba(26, 115, 232, 0.1);
+    }
+    .ov-workspace-stage {
+      min-width: 0;
+    }
+    .ov-stage-view {
+      display: block;
+    }
+
+    /* Variation 5: Stripe Connected Stepper Styles */
+    .stepper-list {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .stepper-list::before {
+      content: "";
+      position: absolute;
+      left: 21px;
+      top: 18px;
+      bottom: 24px;
+      width: 2px;
+      background: #e2e8f0;
+      z-index: 1;
+    }
+    .stepper-item {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: flex-start !important;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      position: relative;
+      z-index: 2;
+      text-align: left;
+      width: 100%;
+      box-sizing: border-box;
+      color: #0f172a;
+    }
+    .stepper-item:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    .stepper-item.active {
+      background: #eff6ff !important;
+      border-color: #1a73e8 !important;
+      box-shadow: 0 2px 8px rgba(26, 115, 232, 0.12);
+    }
+    .stepper-circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+      margin-top: 1px;
+    }
+    .stepper-item.active .stepper-circle {
+      background: #1a73e8;
+      border-color: #1a73e8;
+      color: #ffffff;
+      box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.18);
+    }
+    .stepper-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .stepper-item .pill-step {
+      font-size: 10px;
+      font-weight: 800;
+      color: #1a73e8;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .stepper-item .pill-name {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.25;
+      display: block;
+    }
+    .stepper-desc {
+      font-size: 10.5px;
+      color: #64748b;
+      margin-top: 2px;
+      line-height: 1.3;
+    }
+    .stepper-item[data-ov-filter="WS2"].active .stepper-circle { background: #059669; border-color: #059669; box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.18); }
+    .stepper-item[data-ov-filter="WS2"] .pill-step { color: #059669; }
+    .stepper-item[data-ov-filter="WS3"].active .stepper-circle { background: #d97706; border-color: #d97706; box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.18); }
+    .stepper-item[data-ov-filter="WS3"] .pill-step { color: #d97706; }
+    .stepper-item[data-ov-filter="WS4"].active .stepper-circle { background: #059669; border-color: #059669; box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.18); }
+    .stepper-item[data-ov-filter="WS4"] .pill-step { color: #059669; }
+    .stepper-item[data-ov-filter="WS5"].active .stepper-circle { background: #0284c7; border-color: #0284c7; box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.18); }
+    .stepper-item[data-ov-filter="WS5"] .pill-step { color: #0284c7; }
+    .stepper-item[data-ov-filter="ALL"].active .stepper-circle { background: #0f172a; border-color: #0f172a; box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.18); }
+    .stepper-item[data-ov-filter="ALL"] .pill-step { color: #0f172a; }
+
+    .ov-blueprint-hero-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 12px 14px;
+      background: #ffffff;
+      margin-bottom: 14px;
+    }
+    .ov-blueprint-hero-canvas {
+      height: 360px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .ov-blueprint-hero-canvas object {
+      width: 100%;
+      height: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
     /* Isolated 1-Card Executive View (1 Selected at a Time) */
     .ov-onepager-card {
       background: #ffffff;
@@ -1474,12 +1842,13 @@
       }
     }
     @media (max-width: 1100px) {
+      .ov-arch-pillars-grid { grid-template-columns: 1fr; }
       .ov-kpi-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .pattern-sel-questions-grid { grid-template-columns: 1fr; }
       .ov-two-col { grid-template-columns: 1fr; }
     }
     @media (max-width: 720px) {
-      .ov-kpi-strip, .ov-ba-mini-grid, .pattern-q-options { grid-template-columns: 1fr; }
+      .ov-arch-pillars-grid, .ov-kpi-strip, .ov-ba-mini-grid, .pattern-q-options { grid-template-columns: 1fr; }
     }
 
     /* ---------- Rule 54 Executive Light Theme: 10-App (20-PNG) Before vs. After 3P SaaS Execution Hub ---------- */
