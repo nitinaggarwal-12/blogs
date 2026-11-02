@@ -1,13 +1,13 @@
     <section id="tab-simulator" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-simulator">
       <div class="card" data-no-hover-toolbar="true">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid var(--border);">
           <div>
-            <h3 style="margin:0 0 2px 0;">Live 5-Hop Cryptographic Runtime &amp; Breach Simulator (<code>POST /api/runtime/invoke</code>)</h3>
-            <p class="muted" style="margin:0; font-size:12.5px;">Select a scenario preset from the dropdown to populate &amp; execute immediately, or customize any 5-Hop field below:</p>
+            <h3 style="margin:0 0 2px 0; font-size:15px;">Live 5-Hop Cryptographic Runtime &amp; Breach Simulator (<code>POST /api/runtime/invoke</code>)</h3>
+            <p class="muted" style="margin:0; font-size:12px;">Select a scenario preset from the dropdown to populate &amp; execute immediately, or customize any 5-Hop field below:</p>
           </div>
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:nowrap;">
             <label for="sim-scenario-preset-select" style="margin:0; font-size:12px; font-weight:700; color:var(--heading); white-space:nowrap;">&#9889; Scenario Preset:</label>
-            <select id="sim-scenario-preset-select" style="width:auto; min-width:340px; padding:7px 28px 7px 10px; font-weight:600; font-size:12.5px;" onchange="runLiveScenario(this.value)" aria-label="Select 5-Hop Scenario Preset">
+            <select id="sim-scenario-preset-select" style="width:auto; min-width:320px; padding:5px 24px 5px 8px; font-weight:600; font-size:12px;" onchange="runLiveScenario(this.value)" aria-label="Select 5-Hop Scenario Preset">
               <option value="sim1">Sim 1: Forged X-Tenant-ID Spoof (Hop 1 &rarr; 403 Blocked)</option>
               <option value="sim2">Sim 2: Cross-Tenant Agent Alpha &amp; 3LO Jira (Hop 2 &rarr; 403 Blocked)</option>
               <option value="sim3">Sim 3: Prompt Injection &amp; OCC NLC Violation (Hop 4 &rarr; 400/422 Blocked)</option>
@@ -20,16 +20,16 @@
         </div>
 
         <!-- [MOCK 3 INTEGRATION] ADVERSARIAL RESILIENCE & CVSS RESIDUAL RISK MATRIX -->
-        <div class="card" id="adversarial-resilience-matrix" style="margin-bottom:14px; padding:14px; background:#ffffff; border:1px solid #cbd5e1; border-radius:10px;" data-no-hover-toolbar="true">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; border-bottom:1px solid #e2e8f0; padding-bottom:8px;">
+        <div class="card" id="adversarial-resilience-matrix" style="margin-bottom:10px; padding:10px 12px; background:#ffffff; border:1px solid #cbd5e1; border-radius:10px;" data-no-hover-toolbar="true">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:8px; border-bottom:1px solid #e2e8f0; padding-bottom:6px;">
             <div style="display:flex; align-items:center; gap:8px;">
-              <span class="badge badge-rose" style="font-size:10.5px; font-weight:800; text-transform:uppercase;">MITRE ATLAS &bull; OWASP LLM Top 10</span>
-              <strong style="font-size:13.5px; color:#0f172a;">Adversarial Resilience &amp; CVSS Residual Risk Matrix</strong>
+              <span class="badge badge-rose" style="font-size:10px; font-weight:800; text-transform:uppercase;">MITRE ATLAS &bull; OWASP LLM Top 10</span>
+              <strong style="font-size:13px; color:#0f172a;">Adversarial Resilience &amp; CVSS Residual Risk Matrix</strong>
             </div>
-            <span style="font-size:11.5px; color:#64748b;">Click any threat to trigger real Python 5-Hop defense execution</span>
+            <span style="font-size:11px; color:#64748b;">Click any threat to trigger real Python 5-Hop defense execution</span>
           </div>
 
-          <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(360px, 1fr)); gap:6px;">
             <!-- Threat 1: Prompt Injection -->
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
               <div style="flex:1 1 320px; min-width:0;">

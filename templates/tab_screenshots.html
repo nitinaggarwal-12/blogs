@@ -1,43 +1,45 @@
     <section id="tab-screenshots" class="tab-pane" data-testid="blog-visual-proof-screenshots-gallery" role="tabpanel" aria-labelledby="tab-btn-screenshots">
       <!-- TWO-TIER INTEGRATIONS & CODE ARCHITECTURE BANNER ([FA-48], [FA-38]) -->
-      <div style="margin-bottom:16px; padding:12px 18px; background:linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); border:1px solid #bfdbfe; border-radius:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+      <div style="margin-bottom:10px; padding:8px 14px; background:linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); border:1px solid #bfdbfe; border-radius:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <div>
           <span class="badge badge-blue font-bold">TWO-TIER INTEGRATIONS ARCHITECTURE</span>
-          <strong style="font-size:13.5px; color:#1e3a8a; margin-left:6px;">Tier 1: Reproducible Automated Security Testbed (Tab 3) &rarr; Tier 2: Production SaaS Deployments (Tab 4)</strong>
-          <p class="muted" style="margin:4px 0 0 0; font-size:12px; color:#334155;">The 10 open-source containers below serve as the hermetic, automated security and regression testbed for continuous testing (prompt injection defense, cross-tenant isolation, CMEK kill-switches, and RLS) without risking production tenant blast radius. For live enterprise deployments utilizing managed cloud AI engines and scale-to-zero economics, see <button type="button" class="sim-btn primary" style="font-size:11px; padding:2px 8px; margin-left:4px;" onclick="switchTab('payg')">&#128640; Tab 4: Production SaaS Deployments &rarr;</button></p>
+          <strong style="font-size:12.5px; color:#1e3a8a; margin-left:6px;">Tier 1: Reproducible Security Testbed (Tab 3) &rarr; Tier 2: Production SaaS Deployments (Tab 4)</strong>
+          <p class="muted" style="margin:2px 0 0 0; font-size:11.5px; color:#334155;">10 open-source containers serve as the hermetic security and regression testbed for continuous testing (prompt injection defense, cross-tenant isolation, CMEK kill-switches, and RLS) without risking production blast radius. <button type="button" class="sim-btn primary" style="font-size:10.5px; padding:1px 6px; margin-left:4px;" onclick="switchTab('payg')">&#128640; Tab 4: Production SaaS &rarr;</button></p>
         </div>
       </div>
 
       <!-- 10 THIRD-PARTY SAAS AWS BEDROCK AGENTCORE MCP TARGETS, MANUAL TESTING PLAYBOOK & S3 OUTCOME VALIDATOR HUB -->
-      <div class="card" id="ten-saas-live-access-hub" data-testid="ten-saas-live-access-hub" data-no-hover-toolbar="true" style="border:2px solid #22c55e; margin-bottom:18px; background:linear-gradient(180deg, #f0fdf4 0%, #ffffff 22%);">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+      <div class="card" id="ten-saas-live-access-hub" data-testid="ten-saas-live-access-hub" data-no-hover-toolbar="true" style="border:2px solid #22c55e; margin-bottom:12px; background:linear-gradient(180deg, #f0fdf4 0%, #ffffff 22%); padding:12px 14px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px; margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid var(--border);">
           <div>
-            <span class="badge badge-green">TIER 1 &bull; REPRODUCIBLE AUTOMATED SECURITY TESTBED (10 OSS CONTAINERS) &bull; LIVE AWS BEDROCK AGENTCORE MCP TARGETS</span>
-            <h3 style="margin:6px 0 4px 0;">&#128268; 10 Third-Party SaaS AWS Bedrock AgentCore MCP Targets, Manual Testing Playbook &amp; S3 Audit Ledger Hub</h3>
-            <p class="muted" style="margin:0; font-size:12.5px;">Inspect all 10 live AWS Bedrock AgentCore MCP targets (<code>HXGGFMZBKE</code>..<code>C7EYM614F2</code> on <code>cymbal-a2a-mcp-gateway-suyxm3caof</code>), persisted Amazon S3 audit ledger outcomes (<code>?format=json</code>), and CLI verification commands across Pattern A, Pattern B, and Pattern C.</p>
+            <span class="badge badge-green">TIER 1 &bull; REPRODUCIBLE TESTBED (10 OSS CONTAINERS) &bull; LIVE AWS BEDROCK MCP TARGETS</span>
+            <h3 style="margin:3px 0 2px 0; font-size:15px;">&#128268; 10 Third-Party SaaS AWS Bedrock AgentCore MCP Targets &amp; S3 Audit Ledger</h3>
+            <p class="muted" style="margin:0; font-size:12px;">Inspect all 10 live AWS Bedrock AgentCore MCP targets (<code>HXGGFMZBKE</code>..<code>C7EYM614F2</code> on <code>cymbal-a2a-mcp-gateway-suyxm3caof</code>) and persisted Amazon S3 audit ledger outcomes.</p>
           </div>
           <div class="flex-wrap-gap8">
-            <button type="button" class="sim-btn primary" onclick="document.getElementById('genuine-3p-before-after-hub')?.scrollIntoView({behavior:'smooth', block:'start'});">&#128260; Inspect 10 Before &rarr; After Live UI Diffs (20 PNGs)</button>
-            <button type="button" class="sim-btn primary" onclick="openDocInReader('docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md')">&#128214; Open Full 10-SaaS &times; 3-Pattern Manual Testing Playbook</button>
-            <button type="button" class="sim-btn" onclick="switchE2EWorkbenchTab('deliverables'); viewArtifact('docs/third_party_5_saas_verification_receipt.json');">&#128220; View Signed 10-SaaS Verification Receipt JSON</button>
-            <button type="button" class="sim-btn" onclick="switchE2EWorkbenchTab('deliverables'); viewArtifact('docs/aws_agentcore_10_saas_targets_manifest.json');">&#9729;&#65039; View AWS AgentCore 10-Target Manifest JSON</button>
+            <button type="button" class="sim-btn primary" style="font-size:11px; padding:3px 8px;" onclick="document.getElementById('genuine-3p-before-after-hub')?.scrollIntoView({behavior:'smooth', block:'start'});">&#128260; 10 Before &rarr; After Live Diffs (20 PNGs)</button>
+            <button type="button" class="sim-btn primary" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md')">&#128214; Full Manual Testing Playbook</button>
+            <button type="button" class="sim-btn" style="font-size:11px; padding:3px 8px;" onclick="switchE2EWorkbenchTab('deliverables'); viewArtifact('docs/third_party_5_saas_verification_receipt.json');">&#128220; Signed Receipt JSON</button>
+            <button type="button" class="sim-btn" style="font-size:11px; padding:3px 8px;" onclick="switchE2EWorkbenchTab('deliverables'); viewArtifact('docs/aws_agentcore_10_saas_targets_manifest.json');">&#9729;&#65039; Manifest JSON</button>
           </div>
         </div>
 
-        <div class="grid-2" style="margin-bottom:12px; gap:12px;">
-          <div style="background:#f8fafc; border:1px solid var(--border); border-radius:10px; padding:10px 14px; font-size:12px;">
-            <strong style="color:var(--heading); display:block; margin-bottom:4px;">&#128272; Control Plane: Google Cloud 5-Hop Agent &rarr; AWS Bedrock AgentCore MCP Gateway</strong>
-            <div style="font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:11.3px; line-height:1.45;">
-              &bull; <strong>MCP Gateway URL</strong>: <code>https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp</code><br/>
-              &bull; <strong>AWS Account / Region</strong>: <code>393036065405</code> (<code>us-east-1</code>) &bull; <strong>Cognito Pool</strong>: <code>us-east-1_vqlzYM74B</code><br/>
-              &bull; <strong>OAuth2 ClientId</strong>: <code>49f0365186c43e7b6r7hc982vn</code> &bull; <strong>Principal</strong>: <code>sre-lead@finvault.com</code><br/>
-              &bull; <strong>Manual CLI Suite</strong>: <code>python3 -B scripts/verify_5_third_party_saas_products.py --verbose</code>
+        <div class="grid-2" style="margin-bottom:8px; gap:8px;">
+          <div style="background:#f8fafc; border:1px solid var(--border); border-radius:8px; padding:6px 10px; font-size:11.5px;">
+            <strong style="color:var(--heading); display:block; margin-bottom:2px;">&#128272; Control Plane: Google Cloud 5-Hop Agent &rarr; AWS Bedrock MCP Gateway</strong>
+            <div style="font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:10.5px; line-height:1.4;">
+              &bull; <strong>Gateway URL</strong>: <code>https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp</code><br/>
+              &bull; <strong>AWS / Region</strong>: <code>393036065405</code> (<code>us-east-1</code>) &bull; <strong>Principal</strong>: <code>sre-lead@finvault.com</code>
             </div>
           </div>
-          <div style="background:#f8fafc; border:1px solid var(--border); border-radius:10px; padding:10px 14px; font-size:12px;">
-            <strong style="color:var(--heading); display:block; margin-bottom:4px;">&#128273; Audit Plane: Immutable Amazon S3 Cross-Cloud Outcome Ledger (<code>?format=json</code>)</strong>
-            <div style="font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:11.3px; line-height:1.45;">
-              &bull; <strong>S3 Audit Ledger Bucket</strong>: <code>s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1/cymbal-10saas-ledger/</code><br/>
+          <div style="background:#f8fafc; border:1px solid var(--border); border-radius:8px; padding:6px 10px; font-size:11.5px;">
+            <strong style="color:var(--heading); display:block; margin-bottom:2px;">&#128273; Audit Plane: Amazon S3 Cross-Cloud Outcome Ledger (<code>?format=json</code>)</strong>
+            <div style="font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:10.5px; line-height:1.4;">
+              &bull; <strong>S3 Bucket</strong>: <code>s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1/cymbal-10saas-ledger/</code><br/>
+              &bull; <strong>FinVault</strong>: <code>HTTP 200 ALLOW</code> &bull; <strong>RetailStream Spoof</strong>: <code>HTTP 403 FORBIDDEN</code>
+            </div>
+          </div>
+        </div>
               &bull; <strong>FinVault Tenant Verdict</strong>: <code>HTTP 200 ALLOW</code> (RLS &amp; CMEK verified)<br/>
               &bull; <strong>RetailStream Spoof Verdict</strong>: <code>HTTP 403 FORBIDDEN</code> / <code>HTTP 401 UNAUTHORIZED</code><br/>
               &bull; <strong>MedCore Revoked CMEK Verdict</strong>: <code>HTTP 423 LOCKED</code> (<code>valkey_purged=True</code>)

@@ -1,57 +1,42 @@
 <section id="tab-overview" class="tab-pane active" data-testid="portal-executive-landing-page" role="tabpanel" aria-labelledby="tab-btn-overview">
-      <!-- Google Cloud Architecture Center Executive Hero Card -->
-      <div class="ov-hero-card" data-no-hover-toolbar="true">
+      <!-- Google Cloud Architecture Center Executive Hero Bar (Consolidated & Compact) -->
+      <div class="ov-hero-card" id="ov-compact-hero-card" data-no-hover-toolbar="true">
         <div class="gcp-brand-accent-strip"></div>
         <div class="ov-hero-inner">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px;">
-            <div style="flex:1 1 640px; min-width:0;">
+          <div class="ov-hero-compact-grid">
+            <div class="ov-hero-left">
               <div class="gcp-arch-meta-strip">
                 <div class="gcp-cloud-logo-badge">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;">
                     <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z" fill="#4285F4"/>
                   </svg>
-                  <span>GOOGLE CLOUD ARCHITECTURE CENTER</span>
+                  <span>ARCHITECTURE CENTER</span>
                 </div>
-                <span class="badge badge-blue">REFERENCE ARCHITECTURE &bull; PRODUCTION RUNBOOKS</span>
-                <a href="https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system" target="_blank" rel="noopener noreferrer" style="font-size:11.5px; font-weight:700; color:#1a73e8; text-decoration:none;">Cloud Architecture Center Reference &nearr;</a>
-                <a href="https://github.com/cloud-ai-fde/ge-blogs" target="_blank" rel="noopener noreferrer" style="font-size:11.5px; font-weight:700; color:#1a73e8; text-decoration:none;" title="Canonical Organization Repository: cloud-ai-fde/ge-blogs (Mirror: nitinaggarwal-12/blogs)">GitHub Repository &nearr;</a>
+                <span class="badge badge-blue">REFERENCE ARCHITECTURE &bull; GCP #78</span>
+                <a href="https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system" target="_blank" rel="noopener noreferrer" class="ov-meta-link">DevSite Reference &nearr;</a>
+                <a href="https://github.com/cloud-ai-fde/ge-blogs" target="_blank" rel="noopener noreferrer" class="ov-meta-link" title="Canonical Organization Repository: cloud-ai-fde/ge-blogs (Mirror: nitinaggarwal-12/blogs)">GitHub &nearr;</a>
               </div>
-              <h2 style="margin:0 0 6px 0; font-size:22px; font-weight:800; color:#0f172a; line-height:1.25; letter-spacing:-0.01em;">Gemini Enterprise Agent Platform (GEAP): Multi-Tenant Agentic AI Architecture</h2>
-              <div style="font-size:13.5px; font-weight:700; color:#1a73e8; margin-bottom:6px;">5-Part Enterprise Production Blueprint &bull; 80% Reusable Governance Core &bull; 3 Canonical Topologies</div>
-              <p style="margin:0; font-size:12.8px; color:#334155; line-height:1.5;">A production-grade reference architecture for enterprise SaaS platforms and solutions architects deploying stateful agentic AI on Google Cloud (Vertex AI Agent Engine, ADK, Gemini 2.5 Pro). Establishes the <strong>80/20 Invariant</strong>: an <strong>80% reusable 5-Hop Cryptographic Context Chain</strong> (<code>core-cymbal-agent/</code>) decoupled from the <strong>20% perimeter topology</strong> across <strong>Pattern A (Pooled)</strong>, <strong>Pattern B (Sovereign Silos)</strong>, and <strong>Pattern C (Dynamic Hybrid)</strong>.</p>
+              <h2 class="ov-hero-title">Gemini Enterprise Agent Platform (GEAP): Multi-Tenant Agentic AI Architecture</h2>
+              <div class="ov-hero-subline">
+                <span class="ov-subline-highlight">5-Part Enterprise Production Blueprint &bull; 80% Reusable Governance Core &bull; 3 Canonical Topologies</span>
+                <span class="ov-subline-sep">&bull;</span>
+                <span class="ov-kpi-micro-chip"><strong>5</strong> Blogs (Docs Synced)</span>
+                <span class="ov-kpi-micro-chip"><strong>15</strong> Slide Decks</span>
+                <span class="ov-kpi-micro-chip"><strong>14</strong> #78 Blueprints</span>
+                <span class="ov-kpi-micro-chip"><strong>43</strong> Retina SaaS UIs</span>
+                <span class="ov-kpi-micro-chip"><strong>13/13</strong> Forensic Audit</span>
+              </div>
             </div>
-            <div class="flex-wrap-center" style="gap:8px;">
-              <button type="button" class="sim-btn primary" style="padding:7px 14px; font-size:12.5px; font-weight:700;" onclick="switchTab('patterns')">&#129517; Open Blog Series Reader (WS1–WS5) &rarr;</button>
-              <button type="button" class="sim-btn" style="padding:7px 12px; font-size:12px; font-weight:700;" onclick="jumpToTab3BeforeAfterHub()">&#128260; 20-PNG Before/After Hub</button>
-              <button type="button" class="sim-btn" style="padding:7px 12px; font-size:12px; font-weight:700;" onclick="openCloudViewerModal('ALL', 1, 'slides')">&#127916; 25-Slide Master Deck</button>
-              <button type="button" class="sim-btn" id="ov-copy-md-btn" style="padding:7px 11px; font-size:12px;" onclick="copyOverviewSummaryMarkdown(this)">&#128203; Copy All Summaries MD</button>
-              <button type="button" class="sim-btn" style="padding:7px 11px; font-size:12px;" onclick="window.print()">&#128424;&#65039; Print / PDF</button>
-            </div>
-          </div>
-
-          <div class="ov-kpi-strip">
-            <div class="ov-kpi-pill">
-              <span class="ov-kpi-val">5 Blogs + Master Guide</span>
-              <span class="ov-kpi-lbl">100% PUBLISH_READY • Google Docs Synced</span>
-            </div>
-            <div class="ov-kpi-pill" title="15 Canonical Slide Decks: 142 Compact Architecture Slides (or 195 Full-Visual Slides). Zero vendor pricing slides in decks (pure technical architecture); Tab 4 provides illustrative scale-to-zero GCP Marketplace rates.">
-              <span class="ov-kpi-val">15 Editable Slide Decks</span>
-              <span class="ov-kpi-lbl">142 Compact / 195 Full Slides • 0 Pricing in Decks</span>
-            </div>
-            <div class="ov-kpi-pill">
-              <span class="ov-kpi-val">14 Official #78 Blueprints</span>
-              <span class="ov-kpi-lbl">.drawio • 2x PNG • SVG • Vision AST (0 Collisions)</span>
-            </div>
-            <div class="ov-kpi-pill">
-              <span class="ov-kpi-val">43 Retina 3P SaaS UIs</span>
-              <span class="ov-kpi-lbl">20 Before/After + 23 Multi-Cloud (0 Synthetic)</span>
-            </div>
-            <div class="ov-kpi-pill">
-              <span class="ov-kpi-val">13/13 Forensic • 30/30 MCP</span>
-              <span class="ov-kpi-lbl">107/107 Sim Assertions • 27-File Engine</span>
+            <div class="ov-hero-actions">
+              <button type="button" class="sim-btn primary ov-hero-btn" onclick="switchTab('patterns')">&#129517; Series Reader &rarr;</button>
+              <button type="button" class="sim-btn ov-hero-btn" onclick="jumpToTab3BeforeAfterHub()">&#128260; 20-PNG Hub</button>
+              <button type="button" class="sim-btn ov-hero-btn" onclick="openCloudViewerModal('ALL', 1, 'slides')">&#127916; 25-Slide Deck</button>
+              <button type="button" class="sim-btn ov-hero-btn" id="ov-copy-md-btn" onclick="copyOverviewSummaryMarkdown(this)">&#128203; Copy MD</button>
+              <button type="button" class="sim-btn ov-hero-btn" onclick="window.print()">&#128424;&#65039; PDF</button>
             </div>
           </div>
         </div>
+      </div>
 
       <!-- Variation 5: Stripe-Style Connected Architecture Pipeline (2-Column Master-Detail) -->
       <div class="stripe-shell ov-workspace-split">
@@ -67,10 +52,12 @@
             <button type="button" class="stepper-item ov-rail-pill ov-page-filter-btn active" role="tab" aria-selected="true" aria-pressed="true" data-ov-filter="WS1" onclick="filterOverviewOnePager('WS1', this)">
               <div class="stepper-circle">01</div>
               <div class="stepper-content">
-                <span class="pill-step">PART 1 &bull; FOUNDATION</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
+                  <span class="pill-step">PART 1 &bull; FOUNDATION</span>
+                  <span class="badge badge-blue text-2xs" style="padding:1px 5px; font-size:9px;">PEP/PDP</span>
+                </div>
                 <span class="pill-name">WS1: Reference Taxonomy</span>
                 <div class="stepper-desc">5-Hop Cryptographic Context Chain</div>
-                <div style="margin-top:3px;"><span class="badge badge-blue text-2xs">Foundational PEP/PDP</span></div>
               </div>
             </button>
 
@@ -78,10 +65,12 @@
             <button type="button" class="stepper-item ov-rail-pill ov-page-filter-btn" role="tab" aria-selected="false" aria-pressed="false" data-ov-filter="WS2" onclick="filterOverviewOnePager('WS2', this)">
               <div class="stepper-circle">02</div>
               <div class="stepper-content">
-                <span class="pill-step" style="color:#059669;">PART 2 &bull; PATTERN A (POOLED)</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
+                  <span class="pill-step" style="color:#059669;">PART 2 &bull; PATTERN A</span>
+                  <span class="badge badge-green text-2xs" style="padding:1px 5px; font-size:9px;">90% Cache</span>
+                </div>
                 <span class="pill-name">WS2: Pooled Architecture</span>
                 <div class="stepper-desc">High-Density FinOps Margin</div>
-                <div style="margin-top:3px;"><span class="badge badge-green text-2xs">90% Cache Savings</span></div>
               </div>
             </button>
 
@@ -89,10 +78,12 @@
             <button type="button" class="stepper-item ov-rail-pill ov-page-filter-btn" role="tab" aria-selected="false" aria-pressed="false" data-ov-filter="WS3" onclick="filterOverviewOnePager('WS3', this)">
               <div class="stepper-circle">03</div>
               <div class="stepper-content">
-                <span class="pill-step" style="color:#d97706;">PART 3 &bull; PATTERN B (SILOS)</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
+                  <span class="pill-step" style="color:#d97706;">PART 3 &bull; PATTERN B</span>
+                  <span class="badge badge-amber text-2xs" style="padding:1px 5px; font-size:9px;">VPC-SC &bull; CMEK</span>
+                </div>
                 <span class="pill-name">WS3: Sovereign Silos</span>
                 <div class="stepper-desc">Zero-Trust Sovereign Vaults</div>
-                <div style="margin-top:3px;"><span class="badge badge-amber text-2xs">VPC-SC &bull; CMEK</span></div>
               </div>
             </button>
 
@@ -100,10 +91,12 @@
             <button type="button" class="stepper-item ov-rail-pill ov-page-filter-btn" role="tab" aria-selected="false" aria-pressed="false" data-ov-filter="WS4" onclick="filterOverviewOnePager('WS4', this)">
               <div class="stepper-circle">04</div>
               <div class="stepper-content">
-                <span class="pill-step" style="color:#059669;">PART 4 &bull; PATTERN C (HYBRID)</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
+                  <span class="pill-step" style="color:#059669;">PART 4 &bull; PATTERN C</span>
+                  <span class="badge badge-green text-2xs" style="padding:1px 5px; font-size:9px;">1-Way PSC</span>
+                </div>
                 <span class="pill-name">WS4: Dynamic Hybrid Routing</span>
                 <div class="stepper-desc">1-Way PSC Spokes &amp; Upgrades</div>
-                <div style="margin-top:3px;"><span class="badge badge-green text-2xs">Live Tier Graduation</span></div>
               </div>
             </button>
 
@@ -111,10 +104,12 @@
             <button type="button" class="stepper-item ov-rail-pill ov-page-filter-btn" role="tab" aria-selected="false" aria-pressed="false" data-ov-filter="WS5" onclick="filterOverviewOnePager('WS5', this)">
               <div class="stepper-circle">05</div>
               <div class="stepper-content">
-                <span class="pill-step" style="color:#0284c7;">PART 5 &bull; CAPSTONE</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
+                  <span class="pill-step" style="color:#0284c7;">PART 5 &bull; CAPSTONE</span>
+                  <span class="badge badge-purple text-2xs" style="padding:1px 5px; font-size:9px;">MCDA Radar</span>
+                </div>
                 <span class="pill-name">WS5: Decision Capstone</span>
                 <div class="stepper-desc">MCDA Radar &amp; GA Roadmap</div>
-                <div style="margin-top:3px;"><span class="badge badge-purple text-2xs">Executive Gate</span></div>
               </div>
             </button>
 
@@ -122,10 +117,12 @@
             <button type="button" class="stepper-item ov-rail-pill ov-page-filter-btn" role="tab" aria-selected="false" aria-pressed="false" data-ov-filter="ALL" onclick="filterOverviewOnePager('ALL', this)">
               <div class="stepper-circle">06</div>
               <div class="stepper-content">
-                <span class="pill-step" style="color:#0f172a;">PART 6 &bull; MASTER GUIDE</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
+                  <span class="pill-step" style="color:#0f172a;">PART 6 &bull; MASTER GUIDE</span>
+                  <span class="badge badge-blue text-2xs" style="padding:1px 5px; font-size:9px;">14 Blueprints</span>
+                </div>
                 <span class="pill-name">Master Guide &amp; Playbook</span>
                 <div class="stepper-desc">14 Blueprints &amp; 10-SaaS Synthesis</div>
-                <div style="margin-top:3px;"><span class="badge badge-blue text-2xs">All Runbooks</span></div>
               </div>
             </button>
 
@@ -801,12 +798,12 @@
           <!-- Stage View 2: 6-Row Master Matrix Table -->
           <div id="ov-stage-matrix-view" class="ov-stage-view" style="display:none;">
 <!-- Master Architecture Curriculum & Deliverable Matrix -->
-      <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:8px; margin:22px 0 10px 0;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:8px; margin:4px 0 8px 0;">
         <div>
           <span style="font-size:10.5px; font-weight:800; color:#1a73e8; letter-spacing:0.04em; text-transform:uppercase;">CURRICULUM MATRIX &bull; COMPLETE ASSET DIRECTORY</span>
-          <h3 style="margin:2px 0 0 0; font-size:17px; font-weight:800; color:#0f172a;">5-Part Multi-Tenancy Architecture Series &amp; Deliverables</h3>
+          <h3 style="margin:2px 0 0 0; font-size:16px; font-weight:800; color:#0f172a;">5-Part Multi-Tenancy Architecture Series &amp; Deliverables</h3>
         </div>
-        <div style="font-size:11.5px; color:#64748b;">Synchronized in-place: Google Docs &bull; Google Slides &bull; Word (.docx) &bull; GitHub</div>
+        <div style="font-size:11px; color:#64748b;">Synchronized in-place: Google Docs &bull; Google Slides &bull; Word (.docx) &bull; GitHub</div>
       </div>
       <div class="ov-matrix-wrap" data-no-hover-toolbar="true">
         <table class="ov-master-table" aria-label="Quick-Access Master Matrix Across All 5 Blogs and Master Guide">
