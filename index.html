@@ -1236,6 +1236,9 @@
           applyPersistedCardOverrides();
           renderCommentsDrawerAndInlineBadges();
         }
+        if (typeof renderHubCompanionRail === 'function') {
+          renderHubCompanionRail(activeHubWsKey);
+        }
         const urlParams = new URLSearchParams(window.location.search);
         const activeView = urlParams.get('view');
         if (activeView && activeView !== 'guide' && typeof window.setHubViewMode === 'function') {
@@ -1328,6 +1331,9 @@
       selectHubDiagram(0);
       const targetDoc = customDocPath || (ws.docs && ws.docs[0] ? ws.docs[0].path : '');
       loadHubBlogDoc(targetDoc, anchorHash);
+      if (typeof renderHubCompanionRail === 'function') {
+        renderHubCompanionRail(wsKey);
+      }
 
       if (!skipHistoryPush) {
         syncPortalUrl({
@@ -1339,6 +1345,102 @@
       }
     }
     window.selectGuidedWorkstream = selectGuidedWorkstream;
+
+    function renderHubCompanionRail(wsKey) {
+      const railEl = document.getElementById('hub-blog-companion-rail');
+      if (!railEl) return;
+      const key = wsKey || activeHubWsKey || 'WS1';
+      const ws = (typeof GUIDED_WORKSTREAMS !== 'undefined' && GUIDED_WORKSTREAMS[key]) ? GUIDED_WORKSTREAMS[key] : null;
+      if (!ws) return;
+
+      const docxMap = {
+        WS1: 'docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx',
+        WS2: 'docs/word/ws2-pattern-a-pooled-architecture.docx',
+        WS3: 'docs/word/ws3-pattern-b-sovereign-silos.docx',
+        WS4: 'docs/word/ws4-pattern-c-hybrid-dynamic-tiering.docx',
+        WS5: 'docs/word/ws5-decision-guide-and-agentic-triad.docx',
+        ALL: 'docs/word/all-end-to-end-workstream-and-diagram-guide.docx'
+      };
+
+      const telemetryMap = {
+        WS1: { iac: 'modules/1.0_baseline', finops: '84.7% Token Reduction', comp: 'Signed STS JWT + DPoP', badge: 'BASELINE' },
+        WS2: { iac: 'modules/2.6_pooled', finops: '90% Prefix Sharing', comp: 'FORCE RLS + Valkey Bulkheads', badge: 'PATTERN A' },
+        WS3: { iac: 'modules/3.6_sovereign', finops: '+74% vs Pooled (Sovereign)', comp: 'VPC-SC + IAM PAB + CMEK', badge: 'PATTERN B' },
+        WS4: { iac: 'modules/4.6_hybrid', finops: 'Zero-Downtime Live Migration', comp: 'Consumer PSC /28 Endpoint', badge: 'PATTERN C' },
+        WS5: { iac: 'modules/{2.6, 3.6, 4.6}', finops: '80% Reusable Agentic Triad', comp: '10/10 Isolation Matrix', badge: 'DECISION' },
+        ALL: { iac: 'terraform/', finops: 'Unified 3-Pattern Benchmark', comp: '5-Hop Perimeter Pipeline', badge: 'MASTER' }
+      };
+
+      const t = telemetryMap[key] || telemetryMap.WS1;
+      const firstDiagId = (ws.diagrams && ws.diagrams[0]) ? ws.diagrams[0].id : 'ws1-multi-tenant-taxonomy-overview';
+      const pptxHref = `${ws.pptxPath}?v=${PPTX_CACHE_VER}`;
+      const docxHref = docxMap[key] || 'docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx';
+
+      railEl.innerHTML = `
+        <div class="series-companion-card">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; border-bottom:1px solid var(--border); padding-bottom:10px;">
+            <div class="series-companion-title">Executive Assets</div>
+            <span style="background:#e0f2fe; color:#0369a1; font-size:10px; font-weight:700; padding:2px 8px; border-radius:999px;">${t.badge}</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <a href="${pptxHref}" download class="series-companion-link" title="Download editable slide deck">
+              <span style="font-size:15px;">&#128202;</span> Google Slides (.pptx)
+            </a>
+            <a href="${docxHref}" download class="series-companion-link" title="Download official architecture Word document">
+              <span style="font-size:15px;">&#128196;</span> Google Docs Spec (.docx)
+            </a>
+            <a href="/drawio-editor?id=${encodeURIComponent(firstDiagId)}&engine=cloud" target="_blank" rel="noopener noreferrer" class="series-companion-link primary" title="Launch fullscreen Architecture Studio">
+              <span style="font-size:15px;">&#128208;</span> Architecture Studio &nearr;
+            </a>
+            <a href="diagrams/${firstDiagId}.drawio" download class="series-companion-link" title="Download native Draw.io XML source">
+              <span style="font-size:15px;">&#11015;</span> Download .drawio XML
+            </a>
+          </div>
+        </div>
+
+        <div class="series-companion-card">
+          <div class="series-companion-title" style="margin-bottom:12px; border-bottom:1px solid var(--border); padding-bottom:10px;">
+            Blueprint Telemetry
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px; font-size:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="color:var(--muted);">Terraform IaC:</span>
+              <code style="background:var(--panel-alt); padding:2px 6px; border-radius:4px; font-size:11px; color:var(--text);">${t.iac}</code>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="color:var(--muted);">FinOps Delta:</span>
+              <span style="font-weight:700; color:var(--success-text, #16a34a);">${t.finops}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="color:var(--muted);">Compliance:</span>
+              <span style="font-weight:700; color:var(--heading);">${t.comp}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="color:var(--muted);">Audit Status:</span>
+              <span style="font-weight:700; color:#16a34a;">13/13 Checks PASS</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="series-companion-card">
+          <div class="series-companion-title" style="margin-bottom:10px;">
+            Interactive Verifications
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <button type="button" class="sim-btn" style="width:100%; justify-content:center; padding:7px 10px; font-size:12px;" onclick="switchTab('overview'); switchPatternSelectorMode('mcda'); document.getElementById('ov-pattern-selector').scrollIntoView({behavior:'smooth'});">
+              &#9878;&#65039; Tenancy Fit Scorer
+            </button>
+            <button type="button" class="sim-btn" style="width:100%; justify-content:center; padding:7px 10px; font-size:12px;" onclick="jumpToWorkstreamSim('${ws.simScenario}')">
+              &#9889; Run 5-Hop Simulator (Live)
+            </button>
+            <button type="button" class="sim-btn primary" style="width:100%; justify-content:center; padding:7px 10px; font-size:12px;" onclick="setHubViewMode('proofs')">
+              &#128248; 10-SaaS Retina UI Proofs
+            </button>
+          </div>
+        </div>
+      `;
+    }
+    window.renderHubCompanionRail = renderHubCompanionRail;
 
     // -------------------------------------------------------------------------
     // PromptCanvas-Style Cloud Viewer Modal & Google Workspace Direct-Open Bridge

@@ -294,7 +294,7 @@ Where:
 - **Asynchronous non-blocking audit streaming:** Stream OpenTelemetry spans and BigQuery FinOps audit rows asynchronously using background worker threads to decouple security telemetry from the user-facing latency budget.
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
-## Live 3rd-party SaaS verification: 10 upstream enterprise software stacks
+## Live 3rd-Party SaaS Before-vs-After UI Proof (2880×1800 Retina)
 
 > **Zero Synthetic Mockups (`Rule 57` & `Rule 60A–60C`):** Every before-and-after proof was captured via real HTTP/HTTPS browser navigation against live upstream enterprise software stacks (`2880×1800` Retina, distinct SHA-256 verified in [`docs/genuine_3p_before_after_provenance_receipt.json`](../docs/genuine_3p_before_after_provenance_receipt.json)).
 > 
