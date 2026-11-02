@@ -570,9 +570,17 @@ class TestPortalSecurityP0(unittest.TestCase):
         self.assertIn("window._hubTocScrollSpyCleanup", index_html)
         self.assertIn("requestAnimationFrame", index_html)
 
-        # 4. Zero personal email leaks in Google Slides links
-        self.assertNotIn("?authuser=", ws1_md)
-        self.assertNotIn("nitinagga@google.com", ws1_md)
+        # 4. Zero personal email leaks in Google Slides links across all workstream blogs
+        for ws_idx, fname in enumerate([
+            "ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
+            "ws2-pattern-a-pooled-architecture.md",
+            "ws3-pattern-b-sovereign-silos.md",
+            "ws4-pattern-c-hybrid-dynamic-tiering.md",
+            "ws5-decision-guide-and-agentic-triad.md",
+        ], 1):
+            md_content = (ROOT_DIR / f"blogs/{fname}").read_text(encoding="utf-8")
+            self.assertNotIn("?authuser=", md_content, f"authuser parameter leaked in WS{ws_idx} ({fname})")
+            self.assertNotIn("nitinagga@google.com", md_content, f"Personal email leaked in WS{ws_idx} ({fname})")
 
 
 if __name__ == "__main__":

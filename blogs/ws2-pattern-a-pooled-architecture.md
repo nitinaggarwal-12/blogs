@@ -335,7 +335,7 @@ To explore and deploy the Pattern A (High-Density Pooled Architecture) reference
 - **Interactive Verification Lab:** Open Portal Tab 3 to use the interactive Before-vs-After Split Slider across all 20 verified 2880×1800 Retina UI captures.
 
 ### 3. Native Editable Slide Decks & Vector Blueprints
-- **Google Slides & PowerPoint:** [Open WS2 34-Slide Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit?authuser=nitinagga@google.com) • [Download Presentation (.pptx)](../slides/ws2-12slide-visual-deck.pptx) • [Download Canonical 12-Slide Deck (.pptx)](../slides/ws2-pattern-a-pooled-editable-slides.pptx).
+- **Google Slides & PowerPoint:** [Open WS2 34-Slide Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit) • [Download Presentation (.pptx)](../slides/ws2-12slide-visual-deck.pptx) • [Download Canonical 12-Slide Deck (.pptx)](../slides/ws2-pattern-a-pooled-editable-slides.pptx).
 - **Google Docs & Microsoft Word:** [Open WS2 in Google Docs ↗](https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/edit?resourcekey=0-OyYSOmx22u8x4Q1kHunGyQ) • [Download Word Document (.docx)](../docs/word/ws2-pattern-a-pooled-architecture.docx).
 - **Official Draw.io Blueprints:** [Figure 1 5-Hop Architecture (.drawio)](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio) • [Figure 2 Breach Defense Sequence (.drawio)](../diagrams/ws2-pattern-a-breach-defense-sequence.drawio) • [Figure 3 Multi-IdP Auth & Sandbox (.drawio)](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.drawio) • [Figure 4 Terraform Resource Graph (.drawio)](../diagrams/ws2-terraform-starter-resource-graph.drawio).
 
