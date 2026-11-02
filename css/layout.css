@@ -61,8 +61,6 @@ body {
     }
     @media (max-width: 1640px) {
       .portal-top-header { padding: 6px 8px; gap: 4px; }
-      .portal-top-header h1 { font-size: 12px !important; }
-      #header-brand-5hop { display: none; }
       #header-telemetry-label, #header-user-name, .theme-picker > span { display: none; }
       #header-governance-select { width: 138px !important; max-width: 138px !important; font-size: 10.75px !important; padding: 4px 16px 4px 5px !important; }
       #theme-select { width: 68px !important; max-width: 68px !important; padding: 4px 14px 4px 5px !important; font-size: 10.5px !important; }
