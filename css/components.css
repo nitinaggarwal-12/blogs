@@ -1762,15 +1762,18 @@
       box-sizing: border-box;
     }
 
-    /* Side-by-Side Blueprint & Executive Dossier Split Layout */
+    /* Side-by-Side Blueprint & Executive Briefing Split Layout (Tier 1) */
     .ov-dossier-split {
       display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(360px, 1fr);
+      grid-template-columns: minmax(0, 1.25fr) minmax(360px, 1fr);
       gap: 14px;
-      align-items: start;
+      align-items: stretch;
+      margin-bottom: 12px;
     }
     .ov-dossier-visual {
       min-width: 0;
+      display: flex;
+      flex-direction: column;
     }
     .ov-dossier-visual .ov-blueprint-hero-card {
       margin-bottom: 0;
@@ -1779,36 +1782,33 @@
       flex-direction: column;
     }
     .ov-dossier-visual .ov-blueprint-hero-canvas {
-      height: 640px;
-      min-height: 580px;
+      height: 520px;
+      min-height: 480px;
       flex: 1;
+      background: #ffffff;
     }
     .ov-dossier-sidebar {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      max-height: 694px;
-      overflow-y: auto;
-      padding-right: 6px;
+      max-height: none;
+      overflow: visible;
+      padding-right: 0;
       min-width: 0;
     }
-    .ov-dossier-sidebar::-webkit-scrollbar {
-      width: 5px;
+    .ov-dossier-sidebar .ov-subbox {
+      margin-bottom: 0;
     }
-    .ov-dossier-sidebar::-webkit-scrollbar-track {
-      background: #f1f5f9;
-      border-radius: 4px;
+
+    /* Full-Width Before/After 3P SaaS Proof Section (Tier 2) */
+    .ov-dossier-proof-section {
+      width: 100%;
+      margin-top: 12px;
     }
-    .ov-dossier-sidebar::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 4px;
-    }
-    .ov-dossier-sidebar::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
-    }
-    .ov-dossier-sidebar .ov-ba-mini-grid {
-      grid-template-columns: 1fr;
-      gap: 8px;
+    .ov-dossier-proof-section .ov-ba-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
     }
     @media (max-width: 1160px) {
       .ov-dossier-split {
@@ -1818,12 +1818,8 @@
         height: 480px;
         min-height: 440px;
       }
-      .ov-dossier-sidebar {
-        max-height: none;
-        overflow-y: visible;
-      }
-      .ov-dossier-sidebar .ov-ba-mini-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      .ov-dossier-proof-section .ov-ba-mini-grid {
+        grid-template-columns: 1fr;
       }
     }
 
