@@ -2534,6 +2534,9 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             qs = parse_qs(parsed.query)
             diag_id = (qs.get("id") or ["ws1-multi-tenant-taxonomy-overview"])[0].strip()
             is_inline = (qs.get("inline") or ["0"])[0].strip() == "1"
+            engine_mode = (qs.get("engine") or ["cloud"])[0].strip()
+            if engine_mode not in ("cloud", "native"):
+                engine_mode = "cloud"
             safe_id = "".join(ch for ch in diag_id if ch.isalnum() or ch in ("-", "_")) or "ws1-multi-tenant-taxonomy-overview"
             initial_zoom = "0.56" if is_inline else "0.88"
             inspector_w = "260px" if is_inline else "320px"
@@ -2598,15 +2601,15 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     .insp-field input, .insp-field textarea {{ width: 100%; background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 4px; padding: 5px 7px; font-size: 11.5px; font-family: monospace; }}
     .edge-pill {{ background: #ffffff; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px; font-size: 11px; margin-bottom: 5px; line-height: 1.35; color: #0f172a; }}
     .edge-pill code {{ color: #1d4ed8; font-weight: 700; }}
-    #drawio-studio-iframe {{ flex: 1; width: 100%; height: 100%; border: 0; background: #ffffff; display: none; }}
+    #drawio-studio-iframe {{ flex: 1; width: 100%; height: 100%; border: 0; background: #ffffff; display: {'block' if engine_mode == 'cloud' else 'none'}; }}
   </style>
 </head>
 <body>
   <div class="studio-bar">
     <div class="studio-left">
       <span id="tb-topology-badge" class="studio-badge">#78 • 56 SHAPES • 23 EDGES</span>{select_html}
-      <button type="button" id="btn-mode-native" class="studio-btn active" onclick="setStudioEngine('native')">&#9889; Interactive mxGraph Canvas</button>
-      <button type="button" id="btn-mode-cloud" class="studio-btn" onclick="setStudioEngine('cloud')">&#127760; diagrams.net Cloud UI</button>
+      <button type="button" id="btn-mode-cloud" class="studio-btn {'active' if engine_mode == 'cloud' else ''}" onclick="setStudioEngine('cloud')">&#127760; diagrams.net Cloud UI</button>
+      <button type="button" id="btn-mode-native" class="studio-btn {'active' if engine_mode == 'native' else ''}" onclick="setStudioEngine('native')">&#9889; Interactive mxGraph Canvas</button>
       <button type="button" class="studio-btn" onclick="adjustCanvasZoom(-0.1)" title="Zoom Out">&#8722;</button>
       <button type="button" class="studio-btn" onclick="adjustCanvasZoom(0.1)" title="Zoom In">&#43;</button>
     </div>
@@ -2618,7 +2621,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     </div>
   </div>
 
-  <div class="studio-workspace" id="native-studio-workspace">
+  <div class="studio-workspace" id="native-studio-workspace" style="display:{'none' if engine_mode == 'cloud' else 'flex'};">
     <div class="canvas-scroll">
       <div class="drawio-stage" id="drawio-stage">
         <div id="drawio-bg-layer" style="position:absolute;inset:0;"></div>
@@ -2668,7 +2671,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     </div>
   </div>
 
-  <iframe id="drawio-studio-iframe" src="about:blank" title="Full-Screen Draw.io Cloud Editor"></iframe>
+  <iframe id="drawio-studio-iframe" src="{'https://embed.diagrams.net/?embed=1&ui=kennedy&spin=1&proto=json&configure=1&saveAndExit=0&noSaveBtn=0' if engine_mode == 'cloud' else 'about:blank'}" style="flex: 1; width: 100%; height: 100%; border: 0; background: #ffffff; display: {'block' if engine_mode == 'cloud' else 'none'};" title="Full-Screen Draw.io Cloud Editor"></iframe>
 
   <script>
     let currentDiagramId = {json.dumps(safe_id)};
@@ -2680,7 +2683,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     let selectedCellId = 'card_rc_alb';
     let dragState = null;
     let iframeReady = false;
-    let activeEngine = 'native';
+    let activeEngine = {json.dumps(engine_mode)};
     let currentZoom = parseFloat({json.dumps(initial_zoom)});
 
     function escHtml(s) {{
@@ -3131,6 +3134,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       currentDiagramId = newId;
       const url = new URL(window.location.href);
       url.searchParams.set('id', newId);
+      url.searchParams.set('engine', activeEngine);
       window.history.replaceState({{}}, '', url.toString());
       document.title = 'Draw.io Interactive Architecture Studio — ' + newId;
       fetchAndLoadDiagram(newId);

@@ -11,9 +11,9 @@
   <title>Gemini Enterprise Agent Platform — Multi-Tenancy Architecture &amp; Live 5-Hop Execution Portal</title>
   <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'&gt;&lt;rect width='32' height='32' rx='6' fill='%231a73e8'/&gt;&lt;text x='16' y='22' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold' font-size='18'&gt;G&lt;/text&gt;&lt;/svg&gt;" />
   <!-- Modular CSS Tokens, Layout & Components (Item 10) -->
-  <link rel="stylesheet" href="/css/tokens.css">
-  <link rel="stylesheet" href="/css/layout.css">
-  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/tokens.css?v=20261102">
+  <link rel="stylesheet" href="/css/layout.css?v=20261102">
+  <link rel="stylesheet" href="/css/components.css?v=20261102">
 </head>
 <body>
   <script>
@@ -317,13 +317,6 @@
                   const wsKey = slideMatch ? slideMatch[1].toUpperCase() : (activeHubWsKey || 'WS1');
                   const slideNum = slideMatch ? parseInt(slideMatch[2], 10) : 1;
                   const figSlug = slideMatch ? `${wsKey.toLowerCase()}-slide-${slideNum}` : resolved.replace(/[^a-zA-Z0-9_-]/g, '-');
-                  const manifestEntry = (cloudViewerManifest && cloudViewerManifest.slides) ? cloudViewerManifest.slides[wsKey] : null;
-                  const gSlidesEditUrl = manifestEntry && manifestEntry.googleSlidesEditUrl
-                    ? `${manifestEntry.googleSlidesEditUrl}#slide=id.p${slideNum}`
-                    : '';
-                  const gSlidesBtnHtml = gSlidesEditUrl
-                    ? `<a href="${gSlidesEditUrl}" target="_blank" rel="noopener" class="sim-btn primary" style="padding:4px 9px; font-size:11.5px; text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-weight:700;"><span style="background:#fbbc04; color:#000; font-weight:900; border-radius:2px; padding:0 3px; font-size:10px;">S</span> Open with Google Slides &#8599;</a>`
-                    : '';
                   const slideBadgeHtml = slideMatch
                     ? `<button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--green); color:var(--ok-text); font-weight:700;" onclick="openCloudViewerModal('${wsKey}', ${slideNum}, 'slides')">&#127916; Slide #${slideNum}</button>`
                     : '';
@@ -333,7 +326,6 @@
                     <strong class="card-editable-body" id="inline-fig-title-${figSlug}" style="font-size:13.5px; color:var(--heading);">${alt}</strong>
                     <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
                       ${slideBadgeHtml}
-                      ${gSlidesBtnHtml}
                       <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--blue); color:var(--link); font-weight:700;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', '${escapeHtml(alt)}'); } else { window.open('${resolved}', '_blank'); }">&#128269; High-Res &#8599;</button>
                     </div>
                   </div>
@@ -349,13 +341,6 @@
               const meta = findDiagramMetaById(diagId);
               const slideBtnHtml = meta
                 ? `<button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--green); color:var(--ok-text); font-weight:700;" onclick="openCloudViewerModal('${meta.wsKey}', ${meta.decomposedSlide}, 'slides')">&#127916; Slide #${meta.decomposedSlide}</button>`
-                : '';
-              const manifestEntry = (meta && cloudViewerManifest && cloudViewerManifest.slides) ? cloudViewerManifest.slides[meta.wsKey] : null;
-              const gSlidesUrl = (manifestEntry && manifestEntry.googleSlidesEditUrl && meta)
-                ? `${manifestEntry.googleSlidesEditUrl}#slide=id.p${meta.decomposedSlide}`
-                : '';
-              const gSlidesBtnHtml = gSlidesUrl
-                ? `<a href="${gSlidesUrl}" target="_blank" rel="noopener" class="sim-btn primary" style="padding:4px 9px; font-size:11.5px; text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-weight:700;"><span style="background:#fbbc04; color:#000; font-weight:900; border-radius:2px; padding:0 3px; font-size:10px;">S</span> Open with Google Slides &#8599;</a>`
                 : '';
               const hasFlow = meta && meta.logicalSlide && meta.technicalSlide && (meta.logicalSlide !== meta.decomposedSlide);
               const flowBtnHtml = hasFlow
@@ -380,17 +365,16 @@
                   <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border); padding-right:8px;">
                     <strong class="card-editable-body" id="inline-fig-title-${diagId}" style="font-size:13.5px; color:var(--heading);">${alt}</strong>
                     <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
-                      ${slideBtnHtml}
-                      ${gSlidesBtnHtml}
                       ${flowBtnHtml}
-                      <button type="button" id="inline-fig-btn-edit-${diagId}" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--warn-text); color:var(--warn-text); font-weight:700;" onclick="setInlineFigureMode('${diagId}', 'edit')">&#9999;&#65039; Edit in Draw.io</button>
+                      <a href="/drawio-editor?id=${encodeURIComponent(diagId)}&engine=cloud" target="_blank" rel="noopener" id="inline-fig-btn-cloud-${diagId}" class="sim-btn primary" style="padding:4px 10px; font-size:11.5px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:5px; background:#1a73e8; border-color:#1557b0; color:#ffffff;" title="Open official diagrams.net Cloud UI with full editable mxGraph model">&#127760; diagrams.net Cloud UI &#8599;</a>
+                      <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--border); color:var(--text); font-weight:600;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', '${escapeHtml(alt)}'); } else { window.open('${resolved}', '_blank'); }">&#128269; High-Res &#8599;</button>
                       <details class="export-dropdown">
                         <summary class="sim-btn" style="padding:4px 9px; font-size:11.5px;">&#11015; Assets &#9662;</summary>
                         <div class="export-dropdown-menu">
-                          <a href="#" id="inline-fig-btn-png-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'png'); this.closest('details').removeAttribute('open');">&#128269; 2x PNG Canvas View</a>
-                          <a href="#" id="inline-fig-btn-svg-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'svg'); this.closest('details').removeAttribute('open');">&#127912; Vector SVG Canvas View</a>
-                          <a href="/drawio-editor?id=${encodeURIComponent(diagId)}" target="_blank" rel="noopener">&#8599; Open in Draw.io Tab</a>
                           <a href="diagrams/${diagId}.drawio" download>&#11015; Download .drawio XML</a>
+                          <a href="#" id="inline-fig-btn-png-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'png'); this.closest('details').removeAttribute('open');">&#128269; 2x PNG View</a>
+                          <a href="#" id="inline-fig-btn-svg-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'svg'); this.closest('details').removeAttribute('open');">&#127912; Vector SVG View</a>
+                          <a href="#" id="inline-fig-btn-edit-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'edit'); this.closest('details').removeAttribute('open');">&#9999;&#65039; Edit Inline (Studio)</a>
                         </div>
                       </details>
                     </div>
@@ -848,7 +832,7 @@
         if (imgWrap) imgWrap.style.display = 'none';
         if (editWrap) editWrap.style.display = 'block';
         if (iframeEl) {
-          const targetSrc = '/drawio-editor?id=' + encodeURIComponent(diagId) + '&inline=1';
+          const targetSrc = '/drawio-editor?id=' + encodeURIComponent(diagId) + '&inline=1&engine=cloud';
           if (iframeEl.getAttribute('src') !== targetSrc) iframeEl.setAttribute('src', targetSrc);
         }
       } else {
@@ -1046,7 +1030,7 @@
       const statusEl = document.getElementById('hub-drawio-inline-status');
       const frame = document.getElementById('hub-drawio-inline-iframe');
       if (!frame) return;
-      const targetSrc = '/drawio-editor?id=' + encodeURIComponent(diagId) + '&inline=1';
+      const targetSrc = '/drawio-editor?id=' + encodeURIComponent(diagId) + '&inline=1&engine=cloud';
       if (frame.getAttribute('src') !== targetSrc) {
         frame.setAttribute('src', targetSrc);
       }
@@ -1111,7 +1095,15 @@
       }
 
       const openTabLink = document.getElementById('hub-btn-open-drawio-tab');
-      if (openTabLink) openTabLink.href = `/drawio-editor?id=${encodeURIComponent(d.id)}`;
+      if (openTabLink) {
+        openTabLink.href = `/drawio-editor?id=${encodeURIComponent(d.id)}&engine=cloud`;
+        openTabLink.innerHTML = `<span style="font-size:13px;">&#127760;</span> diagrams.net Cloud UI &#8599;`;
+        openTabLink.className = 'sim-btn primary';
+        openTabLink.style.background = '#1a73e8';
+        openTabLink.style.borderColor = '#1557b0';
+        openTabLink.style.color = '#ffffff';
+        openTabLink.style.fontWeight = '700';
+      }
       const drawioLink = document.getElementById('hub-diag-drawio');
       if (drawioLink) drawioLink.href = `diagrams/${d.id}.drawio`;
       const svgLink = document.getElementById('hub-diag-svg');
