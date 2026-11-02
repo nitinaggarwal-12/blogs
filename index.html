@@ -1272,7 +1272,12 @@
         dlDocx.innerHTML = `<span>&#128196;</span> <span>Download Editable Word .docx (${ws.key})</span>`;
       }
       const gslidesLabel = document.getElementById('hub-open-gslides-label');
-      if (gslidesLabel) gslidesLabel.innerHTML = `Slides (${ws.key} &bull; ${ws.slides.length}) &#8599;`;
+      if (gslidesLabel) gslidesLabel.innerHTML = `diagrams.net (${ws.key}) &#8599;`;
+      const firstDiagId = (ws.diagrams && ws.diagrams[0]) ? ws.diagrams[0].id : 'ws1-multi-tenant-taxonomy-overview';
+      const cloudDrawio = document.getElementById('hub-deck-cloud-drawio');
+      if (cloudDrawio) cloudDrawio.href = `/drawio-editor?id=${encodeURIComponent(firstDiagId)}&engine=cloud`;
+      const nativeDrawio = document.getElementById('hub-deck-native-drawio');
+      if (nativeDrawio) nativeDrawio.href = `/drawio-editor?id=${encodeURIComponent(firstDiagId)}&engine=native`;
       const simBtn = document.getElementById('hub-sim-btn');
       if (simBtn) {
         simBtn.textContent = ws.simLabel;
@@ -1673,6 +1678,13 @@
       filmstrip.style.display = 'flex';
       const maxWidthPx = Math.round((1060 * cvZoom) / 100);
       const imgUrl = `slides/previews/${ws.deckStem}/slide_${pad2(slideObj.num)}.png?v=${PPTX_CACHE_VER}`;
+      const boundDiag = (ws.diagrams && ws.diagrams.find(d => d.decomposedSlide === slideObj.num)) || (ws.diagrams && ws.diagrams[0]) || { id: 'ws1-multi-tenant-taxonomy-overview' };
+      const cvCloudMain = document.getElementById('cv-cloud-drawio-main');
+      if (cvCloudMain) cvCloudMain.href = `/drawio-editor?id=${encodeURIComponent(boundDiag.id)}&engine=cloud`;
+      const cvCloudItem = document.getElementById('cv-cloud-drawio-item');
+      if (cvCloudItem) cvCloudItem.href = `/drawio-editor?id=${encodeURIComponent(boundDiag.id)}&engine=cloud`;
+      const cvNativeItem = document.getElementById('cv-native-drawio-item');
+      if (cvNativeItem) cvNativeItem.href = `/drawio-editor?id=${encodeURIComponent(boundDiag.id)}&engine=native`;
       const badgeHtml = slideObj.editable
         ? `<span class="badge badge-green" style="margin-right:8px;">★ 100% DECOMPOSED NATIVE EDITABLE BESPOKE DIAGRAM SLIDE</span>`
         : `<span class="badge badge-blue" style="margin-right:8px;">GOOGLE CLOUD BRANDED SLIDE (${slideObj.num} / ${total})</span>`;
@@ -1685,12 +1697,12 @@
               <strong>${escapeHtml(slideObj.desc)}</strong>
             </div>
             <div style="display:flex; gap:6px; align-items:center;">
-              <button type="button" class="pc-toolbar-btn active" onclick="openInGoogleWorkspace('${cvWsKey}', 'slides', ${slideObj.num})">
-                <span class="pc-gslides-icon">S</span> Edit Slide #${slideObj.num} in Google Slides &#8599;
-              </button>
-              <button type="button" class="pc-toolbar-btn" style="border:1px solid #444746;" onclick="setCloudViewerMode('embed')">
-                &#127760; Live Google Slides Embed
-              </button>
+              <a href="/drawio-editor?id=${encodeURIComponent(boundDiag.id)}&engine=cloud" target="_blank" rel="noopener" class="pc-toolbar-btn active" style="text-decoration:none; display:inline-flex; align-items:center; gap:5px;">
+                <span>&#127760;</span> diagrams.net Cloud UI &#8599;
+              </a>
+              <a href="${ws.pptxPath}" download class="pc-toolbar-btn" style="border:1px solid #444746; text-decoration:none;">
+                &#11015; Download .pptx
+              </a>
             </div>
           </div>
           <div style="width:100%; background:#ffffff; border-radius:10px; padding:6px; box-shadow:0 20px 50px rgba(0,0,0,0.65); border:2px solid ${slideObj.editable ? '#18c964' : '#444746'};">
@@ -1699,13 +1711,13 @@
               <div>
                 <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:14px;">
                   <span class="badge badge-blue">GOOGLE CLOUD ARCHITECTURE CENTER • SLIDE ${slideObj.num} OF ${total}</span>
-                  <span class="badge badge-green">100% EDITABLE .PPTX / GOOGLE SLIDES</span>
+                  <span class="badge badge-green">100% EDITABLE .PPTX &amp; DRAW.IO</span>
                 </div>
                 <h3 style="margin:0 0 10px 0; font-size:20px; color:#0f172a;">${escapeHtml(slideObj.label)}</h3>
                 <p style="margin:0; font-size:14px; color:#334155; line-height:1.6;">${escapeHtml(slideObj.desc)}</p>
               </div>
               <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; padding-top:14px; border-top:1px solid #cbd5e1;">
-                <button type="button" class="pc-toolbar-btn active" onclick="openInGoogleWorkspace('${cvWsKey}', 'slides', ${slideObj.num})">Open Slide #${slideObj.num} in Google Slides ↗</button>
+                <a href="/drawio-editor?id=${encodeURIComponent(boundDiag.id)}&engine=cloud" target="_blank" rel="noopener" class="pc-toolbar-btn active" style="text-decoration:none;">&#127760; Open in diagrams.net Cloud UI &#8599;</a>
                 <a href="${ws.pptxPath}" download class="sim-btn" style="text-decoration:none;">Download Editable .pptx (${total} Slides)</a>
               </div>
             </div>

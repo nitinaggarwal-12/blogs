@@ -214,36 +214,32 @@
         <button type="button" id="cv-mode-docs" class="pc-toolbar-btn" onclick="setCloudViewerMode('docs')">&#128196; Live Google Docs Spec</button>
       </div>
 
-      <!-- Right Split-Pill: [ Open with Google Slides | ▼ ] -->
+      <!-- Right Split-Pill: [ 🌐 diagrams.net Cloud UI | ▼ ] -->
       <div class="flex-center-y gap-2">
         <div class="pc-split-wrap" id="cv-open-gslides-split">
-          <button type="button" class="pc-split-main" onclick="openInGoogleWorkspace(cvWsKey, cvMode === 'docs' ? 'docs' : 'slides', cvSlideNum, cvCustomDocPath)">
-            <span class="pc-gslides-icon">S</span>
-            <span>Open with Google Slides</span>
-          </button>
+          <a id="cv-cloud-drawio-main" href="/drawio-editor?id=ws1-multi-tenant-taxonomy-overview&engine=cloud" target="_blank" rel="noopener" class="pc-split-main" style="text-decoration:none;">
+            <span>&#127760;</span>
+            <span>diagrams.net Cloud UI &#8599;</span>
+          </a>
           <button type="button" class="pc-split-caret" onclick="togglePcDropdown(event, 'cv-gslides-menu')" aria-label="Open with menu">&#9660;</button>
           <div id="cv-gslides-menu" class="pc-dropdown-menu">
-            <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(cvWsKey, 'slides', cvSlideNum)">
-              <span>&#8599;</span> <span>Open in new tab</span>
-            </button>
+            <div class="pc-dropdown-section">Architecture Editors</div>
+            <a id="cv-cloud-drawio-item" class="pc-dropdown-item" href="/drawio-editor?id=ws1-multi-tenant-taxonomy-overview&engine=cloud" target="_blank" rel="noopener">
+              <span>&#127760;</span> <span>diagrams.net Cloud UI (Full Editor)</span>
+            </a>
+            <a id="cv-native-drawio-item" class="pc-dropdown-item" href="/drawio-editor?id=ws1-multi-tenant-taxonomy-overview&engine=native" target="_blank" rel="noopener">
+              <span>&#9889;</span> <span>Local Offline mxGraph Canvas</span>
+            </a>
             <div class="pc-dropdown-divider"></div>
-            <div class="pc-dropdown-section">Google apps</div>
-            <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(cvWsKey, 'slides', cvSlideNum)">
-              <span class="pc-gslides-icon">S</span> <span>Google Slides (Native Editable Deck)</span>
-            </button>
+            <div class="pc-dropdown-section">Downloads &amp; Specs</div>
+            <a id="cv-download-pptx" class="pc-dropdown-item" href="slides/ws1-12slide-visual-deck.pptx" download>
+              <span>&#11015;</span> <span>Download Editable .pptx</span>
+            </a>
             <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(cvWsKey, 'docs', 1, cvCustomDocPath)">
               <span class="pc-gdocs-icon">D</span> <span>Google Docs (Native Editable Spec)</span>
             </button>
             <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(cvWsKey, 'pdf', 1)">
               <span class="pc-gpdf-icon">PDF</span> <span>PDF Document (Vector Handout)</span>
-            </button>
-            <div class="pc-dropdown-divider"></div>
-            <div class="pc-dropdown-section">Local &amp; Sync</div>
-            <a id="cv-download-pptx" class="pc-dropdown-item" href="slides/ws1-12slide-visual-deck.pptx" download>
-              <span>&#11015;</span> <span>Download Editable .pptx</span>
-            </a>
-            <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(cvWsKey, 'slides', cvSlideNum, '', true)">
-              <span>&#128260;</span> <span>Force Re-Sync .pptx &rarr; Google Drive</span>
             </button>
           </div>
         </div>

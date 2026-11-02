@@ -64,35 +64,32 @@
               &#128065;&#65039; Cloud Viewer
             </button>
             <div class="pc-split-wrap" id="hub-open-gslides-split" style="flex-shrink:0;">
-              <button type="button" class="pc-split-main" id="hub-open-gslides-main" style="padding:3px 8px; font-size:11px; height:26px;" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1)">
-                <span class="pc-gslides-icon">S</span>
-                <span id="hub-open-gslides-label">Slides &#8599;</span>
+              <button type="button" class="pc-split-main" id="hub-open-gslides-main" style="padding:3px 8px; font-size:11px; height:26px;" onclick="window.open('/drawio-editor?id=' + encodeURIComponent((GUIDED_WORKSTREAMS[activeHubWsKey] && GUIDED_WORKSTREAMS[activeHubWsKey].diagrams && GUIDED_WORKSTREAMS[activeHubWsKey].diagrams[0] ? GUIDED_WORKSTREAMS[activeHubWsKey].diagrams[0].id : 'ws1-multi-tenant-taxonomy-overview')) + '&engine=cloud', '_blank')">
+                <span>&#127760;</span>
+                <span id="hub-open-gslides-label">diagrams.net Cloud UI &#8599;</span>
               </button>
-              <button type="button" class="pc-split-caret" style="height:26px; padding:0 5px;" onclick="togglePcDropdown(event, 'hub-gslides-menu')" aria-label="Choose Google Workspace app">&#9660;</button>
+              <button type="button" class="pc-split-caret" style="height:26px; padding:0 5px;" onclick="togglePcDropdown(event, 'hub-gslides-menu')" aria-label="Architecture and exports menu">&#9660;</button>
               <div id="hub-gslides-menu" class="pc-dropdown-menu">
-                <div class="pc-dropdown-section">Google Workspace Direct Open</div>
-                <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1)">
-                  <span class="pc-gslides-icon">S</span> <span>Google Slides (Active Workstream Deck)</span>
+                <div class="pc-dropdown-section">Architecture Blueprint Editors</div>
+                <a id="hub-deck-cloud-drawio" class="pc-dropdown-item" href="/drawio-editor?id=ws1-multi-tenant-taxonomy-overview&engine=cloud" target="_blank" rel="noopener">
+                  <span>&#127760;</span> <span>diagrams.net Cloud UI (Full Editor)</span>
+                </a>
+                <a id="hub-deck-native-drawio" class="pc-dropdown-item" href="/drawio-editor?id=ws1-multi-tenant-taxonomy-overview&engine=native" target="_blank" rel="noopener">
+                  <span>&#9889;</span> <span>Local Offline mxGraph Canvas</span>
+                </a>
+                <div class="pc-dropdown-divider"></div>
+                <div class="pc-dropdown-section">Same-Screen Cloud Viewer &amp; Docs</div>
+                <button type="button" class="pc-dropdown-item" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'slides')">
+                  <span>&#10024;</span> <span>Interactive Slide Studio (Fast Canvas)</span>
                 </button>
-                <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace('ALL', 'slides', 1)">
-                  <span class="pc-gslides-icon">S</span> <span>Google Slides (Master 25-Slide Deck)</span>
+                <button type="button" class="pc-dropdown-item" onclick="openCloudViewerModal(activeHubWsKey, 1, 'docs')">
+                  <span>&#128196;</span> <span>Embedded Live Google Docs Viewer</span>
                 </button>
                 <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'docs', 1, activeHubDocPath)">
                   <span class="pc-gdocs-icon">D</span> <span>Google Docs (Editable Blog + Figures)</span>
                 </button>
                 <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'pdf', 1)">
-                  <span class="pc-gpdf-icon">PDF</span> <span>PDF Document (Vector Slide Export)</span>
-                </button>
-                <div class="pc-dropdown-divider"></div>
-                <div class="pc-dropdown-section">Same-Screen Cloud Viewer</div>
-                <button type="button" class="pc-dropdown-item" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'slides')">
-                  <span>&#10024;</span> <span>Interactive Slide Studio (Fast Canvas)</span>
-                </button>
-                <button type="button" class="pc-dropdown-item" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'embed')">
-                  <span>&#127760;</span> <span>Embedded Live Google Slides Viewer</span>
-                </button>
-                <button type="button" class="pc-dropdown-item" onclick="openCloudViewerModal(activeHubWsKey, 1, 'docs')">
-                  <span>&#128196;</span> <span>Embedded Live Google Docs Viewer</span>
+                  <span class="pc-gpdf-icon">PDF</span> <span>PDF Document (Vector Export)</span>
                 </button>
                 <div class="pc-dropdown-divider"></div>
                 <div class="pc-dropdown-section">Article &amp; Local Exports</div>

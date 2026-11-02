@@ -2617,6 +2617,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       <span id="studio-status" class="studio-status">&#128994; 56 Shapes &amp; 23 Connectors Ready</span>
       <button type="button" class="studio-btn primary" onclick="saveCurrentStudioXml()">&#128190; Save .drawio</button>
       <a id="studio-download-link" class="studio-btn" href="/diagrams/{safe_id}.drawio" download>&#11015; .drawio</a>
+      <a id="studio-svg-link" class="studio-btn" href="/diagrams/{safe_id}.svg" download>&#11015; .svg</a>
       {back_btn_html}
     </div>
   </div>
@@ -2671,7 +2672,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     </div>
   </div>
 
-  <iframe id="drawio-studio-iframe" src="{'https://embed.diagrams.net/?embed=1&ui=kennedy&spin=1&proto=json&configure=1&saveAndExit=0&noSaveBtn=0' if engine_mode == 'cloud' else 'about:blank'}" style="flex: 1; width: 100%; height: 100%; border: 0; background: #ffffff; display: {'block' if engine_mode == 'cloud' else 'none'};" title="Full-Screen Draw.io Cloud Editor"></iframe>
+  <iframe id="drawio-studio-iframe" src="{'https://embed.diagrams.net/?embed=1&ui=kennedy&spin=1&proto=json&configure=1&saveAndExit=0&noSaveBtn=0' if engine_mode == 'cloud' else 'about:blank'}" style="flex: 1; width: 100%; height: 100%; border: 0; background: #ffffff; display: {'block' if engine_mode == 'cloud' else 'none'};" onerror="fallbackToNativeEngine('Cloud UI network unreachable')" title="Full-Screen Draw.io Cloud Editor"></iframe>
 
   <script>
     let currentDiagramId = {json.dumps(safe_id)};
@@ -2791,6 +2792,26 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       return out.join(';') + ';';
     }}
 
+    let cloudWatchdogTimer = null;
+
+    function startCloudWatchdog() {{
+      if (cloudWatchdogTimer) clearTimeout(cloudWatchdogTimer);
+      cloudWatchdogTimer = setTimeout(() => {{
+        if (!iframeReady && activeEngine === 'cloud') {{
+          fallbackToNativeEngine('Cloud UI handshake timed out (offline / restricted network)');
+        }}
+      }}, 4500);
+    }}
+
+    function fallbackToNativeEngine(reason) {{
+      if (cloudWatchdogTimer) clearTimeout(cloudWatchdogTimer);
+      setStudioEngine('native');
+      const statusEl = document.getElementById('studio-status');
+      if (statusEl) {{
+        statusEl.textContent = '⚡ Local Offline Canvas Active — ' + (reason || 'Zero External Dependencies');
+      }}
+    }}
+
     function setStudioEngine(engine) {{
       activeEngine = engine;
       document.getElementById('btn-mode-native').className = engine === 'native' ? 'studio-btn active' : 'studio-btn';
@@ -2799,11 +2820,14 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       const frame = document.getElementById('drawio-studio-iframe');
       frame.style.display = engine === 'cloud' ? 'block' : 'none';
       if (engine === 'cloud') {{
+        if (!iframeReady) startCloudWatchdog();
         if (!frame.src || frame.src === 'about:blank') {{
           frame.src = 'https://embed.diagrams.net/?embed=1&ui=kennedy&spin=1&proto=json&configure=1&saveAndExit=0&noSaveBtn=0';
         }} else if (iframeReady && latestXml) {{
           frame.contentWindow.postMessage(JSON.stringify({{ action: 'load', xml: latestXml, autosave: 1 }}), '*');
         }}
+      }} else {{
+        if (cloudWatchdogTimer) clearTimeout(cloudWatchdogTimer);
       }}
     }}
 
@@ -2811,6 +2835,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       const statusEl = document.getElementById('studio-status');
       const dlEl = document.getElementById('studio-download-link');
       if (dlEl) dlEl.href = '/diagrams/' + diagId + '.drawio';
+      const svgEl = document.getElementById('studio-svg-link');
+      if (svgEl) svgEl.href = '/diagrams/' + diagId + '.svg';
       if (statusEl) statusEl.textContent = '⏳ Loading ' + diagId + '.drawio...';
       try {{
         const res = await fetch('/api/artifact?path=diagrams/' + encodeURIComponent(diagId) + '.drawio');
@@ -3175,11 +3201,13 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       let msg;
       try {{ msg = JSON.parse(evt.data); }} catch {{ return; }}
       if (msg.event === 'configure' && frame && frame.contentWindow) {{
+        if (cloudWatchdogTimer) clearTimeout(cloudWatchdogTimer);
         frame.contentWindow.postMessage(JSON.stringify({{
           action: 'configure',
           config: {{ defaultFonts: ['Google Sans', 'Roboto', 'Inter', 'Arial'] }}
         }}), '*');
       }} else if (msg.event === 'init') {{
+        if (cloudWatchdogTimer) clearTimeout(cloudWatchdogTimer);
         iframeReady = true;
         if (latestXml && frame && frame.contentWindow) {{
           frame.contentWindow.postMessage(JSON.stringify({{ action: 'load', xml: latestXml, autosave: 1 }}), '*');
@@ -3196,6 +3224,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       }}
     }});
 
+    if (activeEngine === 'cloud') startCloudWatchdog();
     fetchAndLoadDiagram(currentDiagramId);
   </script>
 </body>
