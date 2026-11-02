@@ -122,6 +122,25 @@
           </div>
         </div>
 
+                <!-- Workstream View Mode Switcher: 1. Architecture Guide vs 2. Live UI Proofs & Digital Twin Walkthrough -->
+        <div class="ws-view-mode-bar" id="hub-view-mode-bar" role="navigation" aria-label="Workstream View Mode Switcher" style="display:flex; justify-content:space-between; align-items:center; background:#ffffff; border:1px solid var(--border); border-radius:8px; padding:6px 12px; margin-bottom:12px; gap:8px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span class="ws-view-mode-label" style="font-size:11px; font-weight:800; color:var(--link); text-transform:uppercase; letter-spacing:0.04em; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;">
+              <span>📑</span> <span>View Mode:</span>
+            </span>
+            <button type="button" id="btn-view-mode-guide" class="sim-btn primary" onclick="setHubViewMode('guide')" style="padding:4px 11px; font-size:11.5px; font-weight:700; height:28px; display:inline-flex; align-items:center; gap:5px;" title="Switch to the full-width, distraction-free Google Cloud Architecture Center reading guide">
+              <span>📖</span> <span>1. Architecture Guide</span>
+            </button>
+            <button type="button" id="btn-view-mode-proofs" class="sim-btn" onclick="setHubViewMode('proofs')" style="padding:4px 11px; font-size:11.5px; font-weight:700; height:28px; display:inline-flex; align-items:center; gap:5px;" title="Switch to the 10-SaaS Live UI Proofs and Nitin Aggarwal's Digital Twin walkthrough">
+              <span>📸</span> <span>2. Live UI Proofs &amp; Digital Twin Walkthrough (20 Proofs)</span>
+            </button>
+          </div>
+          <div style="font-size:11.5px; color:#475569; display:flex; align-items:center; gap:8px; flex-wrap:nowrap;">
+            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981;"></span>
+            <span>Digital Twin: <strong>Nitin Aggarwal (Google · AI Architect)</strong></span>
+          </div>
+        </div>
+
         <!-- Preserved Hidden Compatibility Elements (Rule 25 & Zero-Regression) -->
         <div id="hub-ws-summary-bar" style="display:none;">
           <span id="hub-ws-badge">WS1 • Part 1 of 5 • 34 Editable Slides</span>
@@ -194,7 +213,122 @@
             </div>
           </div>
         </div>
-      </div>
+      
+        <!-- TIER 2: DEDICATED LIVE UI PROOFS & DIGITAL TWIN WALKTHROUGH STUDIO (SUB-TAB ON BLOG PAGE) -->
+        <div class="ws-pane" id="hub-proofs-section" style="display:none; margin-top:0;">
+          <div class="card" id="hub-proofs-card" style="border:2px solid #1a73e8; margin-bottom:18px; background:linear-gradient(180deg, #eff6ff 0%, #ffffff 12%); padding:18px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid #cbd5e1;">
+              <div style="max-width:920px;">
+                <span class="badge badge-blue">REPRODUCIBLE MULTI-CLOUD VERIFICATION • 10 ENTERPRISE SAAS TARGETS</span>
+                <h3 style="margin:6px 0 4px 0; color:#0f172a; font-size:17px; display:flex; align-items:center; gap:8px;">
+                  <span>📸</span> <span>Live 3rd-Party SaaS UI Proofs &amp; Digital Twin Walkthrough</span>
+                </h3>
+                <p class="muted" style="margin:0; font-size:12.5px; color:#334155; line-height:1.5;">Inspect authentic 2880×1800 Retina Before-vs-After screen captures verifying zero-leakage tenant isolation across Google Cloud Run Gen2 (<code>bbar-138hf0</code>) and AWS Bedrock AgentCore MCP Gateway (<code>cymbal-a2a-mcp-gateway-suyxm3caof</code>). Nitin Aggarwal's Digital Twin provides interactive spoken commentary explaining how each breach test is proven in reality.</p>
+              </div>
+              <div class="flex-wrap-center">
+                <button type="button" class="sim-btn" style="font-size:11.5px; padding:6px 10px;" onclick="setHubViewMode('guide')">&#8592; Back to Architecture Guide</button>
+                <button type="button" class="sim-btn primary" style="font-size:11.5px; padding:6px 10px;" onclick="openDocInReader('docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md')">&#128214; Full Testing Playbook</button>
+              </div>
+            </div>
+
+            <!-- 2-Column Digital Twin & Proofs Studio Grid -->
+            <div style="display:grid; grid-template-columns:360px 1fr; gap:18px; align-items:start;" class="proofs-studio-grid">
+              
+              <!-- Left Column: Nitin's Digital Twin Presenter Card -->
+              <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px; box-shadow:0 2px 8px rgba(15,23,42,0.06); display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:12px; font-weight:800; color:#1e293b; text-transform:uppercase; letter-spacing:0.04em;">🎙️ AI Presenter</span>
+                  <span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:10px; font-weight:700;">🟢 Omni 1.1 Flash</span>
+                </div>
+
+                <!-- Video Stage -->
+                <div style="position:relative; width:100%; aspect-ratio:16/9; background:#090d16; border-radius:8px; overflow:hidden; border:1px solid #334155;">
+                  <video id="aiPresenterOmniVideo" src="screenshots/avatars/custom-nitin-aggarwal-live-studio-loop.mp4" poster="screenshots/avatars/custom-nitin-aggarwal-live-studio.jpg" autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover; display:block;"></video>
+                  <div style="position:absolute; bottom:6px; left:6px; background:rgba(11,15,25,0.85); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.2); border-radius:4px; padding:2px 6px; font-size:10.5px; color:#ffffff; font-weight:600; display:inline-flex; align-items:center; gap:4px;">
+                    <span style="width:6px; height:6px; border-radius:50%; background:#22c55e;"></span>
+                    <span>Nitin Aggarwal, Google · AI Architect</span>
+                  </div>
+                </div>
+
+                <!-- Spoken Audio Controls -->
+                <button type="button" id="dt-audio-toggle-btn" class="sim-btn primary" onclick="toggleDigitalTwinAudio()" style="width:100%; justify-content:center; padding:7px 12px; font-weight:700; font-size:12px;">
+                  <span id="dt-audio-icon">🔊</span> <span id="dt-audio-label">Listen to Nitin's Walkthrough</span>
+                </button>
+
+                <div style="font-size:11px; color:#64748b; display:flex; justify-content:space-between; border-bottom:1px solid #e2e8f0; padding-bottom:6px;">
+                  <span>Persona: <strong>custom-nitin-aggarwal-live</strong></span>
+                  <span>Audio: <strong>Studio HD en-IN</strong></span>
+                </div>
+
+                <!-- Spoken Transcript Card -->
+                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:10px;">
+                  <div style="font-size:11px; font-weight:800; color:#3b82f6; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:4px;">Spoken Walkthrough Transcript</div>
+                  <p id="dt-spoken-transcript-body" style="font-size:12px; line-height:1.55; color:#1e293b; margin:0;">
+                    Loading architectural talk track...
+                  </p>
+                </div>
+              </div>
+
+              <!-- Right Column: 10-Target Selector & Before-vs-After Retina Viewer -->
+              <div style="display:flex; flex-direction:column; gap:12px; min-width:0;">
+                
+                <!-- Target Selector Pill Strip -->
+                <div style="display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; scrollbar-width:thin;" id="dt-target-pill-strip"></div>
+
+                <!-- Active Target Metadata Card -->
+                <div id="dt-target-meta-card" style="background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:10px 14px;">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
+                    <div>
+                      <div class="flex-wrap-center mb-1">
+                        <span id="dt-meta-saas-badge" class="badge badge-blue text-2xs">SAAS-01</span>
+                        <code id="dt-meta-stack-code" class="text-xs text-muted">Metabase v0.50.26</code>
+                        <span class="badge badge-green text-2xs" id="dt-meta-target-badge">AgentCore: HXGGFMZBKE</span>
+                      </div>
+                      <strong id="dt-meta-title" style="font-size:14px; color:#0f172a;">ThoughtSpot Cloud (Spotter Agentic BI v2.0)</strong>
+                      <div id="dt-meta-action" class="text-xs text-muted" style="margin-top:2px;">GEAP MCP tool query_thoughtspot_liveboard_rls</div>
+                    </div>
+                    <div class="flex-wrap-center">
+                      <a id="dt-meta-s3-link" href="#" target="_blank" rel="noopener" class="sim-btn chip-link" style="font-size:11px; padding:4px 8px;">S3 Audit Ledger JSON &nearr;</a>
+                      <a id="dt-meta-runbook-link" href="#" target="_blank" rel="noopener" class="sim-btn chip-link" style="font-size:11px; padding:4px 8px;">Runbook &nearr;</a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- View Mode Controls & Split Slider -->
+                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                  <div class="flex-wrap-center">
+                    <span style="font-size:11.5px; font-weight:700; color:#334155;">Display:</span>
+                    <button type="button" class="genuine-3p-filter-btn active" id="btn-dt-mode-slider" onclick="setDtSliderViewMode('slider')">Interactive Split Slider</button>
+                    <button type="button" class="genuine-3p-filter-btn" id="btn-dt-mode-side" onclick="setDtSliderViewMode('side-by-side')">Side-by-Side (Before &rarr; After)</button>
+                    <button type="button" class="genuine-3p-filter-btn" id="btn-dt-mode-before" onclick="setDtSliderViewMode('before')">Before Only</button>
+                    <button type="button" class="genuine-3p-filter-btn" id="btn-dt-mode-after" onclick="setDtSliderViewMode('after')">After Only</button>
+                  </div>
+                  <div id="dt-slider-range-wrap" style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:11px; color:#64748b; font-weight:600;">Slide Split:</span>
+                    <input type="range" id="dt-split-range-input" min="0" max="100" value="50" oninput="updateDtSplitPosition(this.value)" style="width:120px; cursor:ew-resize;" />
+                  </div>
+                </div>
+
+                <!-- Interactive Stage Container -->
+                <div id="dt-stage-display-container" style="background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:10px; overflow:hidden;"></div>
+
+                <!-- Target Invariant Description Callouts -->
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;" id="dt-captions-grid">
+                  <div style="background:#fff1f2; border:1px solid #fecdd3; border-radius:6px; padding:8px 10px;">
+                    <div style="font-size:11px; font-weight:800; color:#9f1239; margin-bottom:2px;">&#9203; BEFORE (Pre-Agentic Baseline / Risk)</div>
+                    <div id="dt-before-caption-text" style="font-size:11.5px; color:#4c0519; line-height:1.4;"></div>
+                  </div>
+                  <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:6px; padding:8px 10px;">
+                    <div style="font-size:11px; font-weight:800; color:#065f46; margin-bottom:2px;">&#9989; AFTER (Live GEAP MCP Verified Execution)</div>
+                    <div id="dt-after-caption-text" style="font-size:11.5px; color:#064e3b; line-height:1.4;"></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+</div>
     </section>
 
     <!-- TAB 2: UNIFIED LIVE 5-HOP RUNTIME & BREACH SIMULATOR -->
