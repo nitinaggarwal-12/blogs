@@ -190,34 +190,42 @@
             <a class="ov-chip" href="https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?resourcekey=0-PgO-X5icAK687_G-_WZFpQ" target="_blank" rel="noopener noreferrer">&#128998; Google Doc &nearr;</a>
             <a class="ov-chip" href="https://github.com/cloud-ai-fde/ge-blogs/blob/main/blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md" target="_blank" rel="noopener noreferrer">&#128025; GitHub MD &nearr;</a>
           </div>
-        </div>
-
-        
-        <!-- Blueprint Hero Stage (Figure 1/3) -->
-        <div class="ov-blueprint-hero-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:12.5px; font-weight:800; color:#0f172a;">Official Blueprint: 5-Hop Baseline (Figure 3)</span>
-              <span class="badge badge-green text-2xs">56 Vertices • 23 Edges</span>
-            </div>
-            <div style="display:flex; gap:6px;">
-              <button type="button" class="ov-chip" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md', 'end-to-end-5-hop-cryptographic-governance-baseline-figure-3')">🧭 Step-by-Step Flow ▾</button>
-              <button type="button" class="ov-chip primary" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md')">📐 Architecture Studio &nearr;</button>
+              <!-- Side-by-Side Blueprint & Executive Dossier Split Layout -->
+        <div class="ov-dossier-split">
+          <div class="ov-dossier-visual">
+            <div class="ov-blueprint-hero-card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:12.5px; font-weight:800; color:#0f172a;">Official Blueprint: 5-Hop Baseline (Figure 3)</span>
+                  <span class="badge badge-green text-2xs">56 Vertices • 23 Edges</span>
+                </div>
+                <div style="display:flex; gap:6px;">
+                  <button type="button" class="ov-chip" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md', 'end-to-end-5-hop-cryptographic-governance-baseline-figure-3')">🧭 Step-by-Step Flow ▾</button>
+                  <button type="button" class="ov-chip primary" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md')">📐 Architecture Studio &nearr;</button>
+                </div>
+              </div>
+              <div class="ov-blueprint-hero-canvas">
+                <object type="image/svg+xml" data="diagrams/ws1-cloud-arch-center-5hop-baseline.svg" title="Official Blueprint: 5-Hop Baseline (Figure 3)"></object>
+              </div>
             </div>
           </div>
-          <div class="ov-blueprint-hero-canvas">
-            <object type="image/svg+xml" data="diagrams/ws1-cloud-arch-center-5hop-baseline.svg" title="Official Blueprint: 5-Hop Baseline (Figure 3)"></object>
-          </div>
-        </div>
 
-        <div class="ov-two-col">
-          <div class="flex-col gap-3 min-w-0">
+          <div class="ov-dossier-sidebar">
             <div class="ov-subbox">
               <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
               <p class="m-0">Stateful multi-turn agents running on <strong>Vertex AI Agent Engine</strong>, <strong>ADK</strong>, and <strong>Gemini Enterprise</strong> introduce shared LLM context caches, dynamic <strong>MCP</strong> tool calls, multi-level memory banks, and customer-authored private agents. Blog 1 establishes that <strong>isolation is a per-tenant tier decision, not a single platform-wide compromise</strong>—decoupling an <strong>80% reusable 5-Hop Cryptographic Context Chain</strong> from the <strong>20% perimeter delta</strong> across Pooled (Pattern A), Sovereign Silos (Pattern B), and Dynamic Hybrid (Pattern C).</p>
             </div>
-            <div class="ov-subbox flex-1">
-              <h4>2. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
+
+            <div class="ov-subbox">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px;">
+                <h4 class="m-0">2. Companion 3-Act Editable Slide Deck</h4>
+                <span class="badge badge-green" style="font-size:10px;">34 Editable Slides • Visual Deck • L1-L4 DrawingML</span>
+              </div>
+              <p class="m-0"><strong>Act I (Slides 1–3)</strong> Executive Briefing Map, FinVault (<code>600 RPM</code> / <code>8k</code> thinking / CMEK) vs. RetailStream (<code>120 RPM</code> / <code>4k</code> thinking / RLS) &amp; Pattern A/B/C Matrix &rarr; <strong>Act II (Slides 4–7)</strong> <code>L1</code> 3-Zone Topology, <code>L2</code> Official <code>#78</code> 5-Hop Blueprint (<code>56</code>v/<code>23</code>e), <code>L3</code> 5-Actor Swimlane, <code>L4</code> OBO+DPoP Packet Triptych &rarr; <strong>Act III (Slides 8–11)</strong> Circuit Breakers (<code>401/403/422/423/429</code>), EAP Gaps (<code>GAP-01..05</code>), Grounded Cloud CLI Proof &amp; Series Roadmap.</p>
+            </div>
+
+            <div class="ov-subbox">
+              <h4>3. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
               <ul>
               <li><strong>Hop 1 — Edge &amp; Identity PEP</strong> (<code>hop1_edge_identity_pep.py</code>): Cloud Armor &amp; IAP strip spoofed <code>X-Tenant-Id</code> headers, execute <strong>RFC 8693 OBO</strong> + <strong>RFC 9449 DPoP</strong> proofs (<code>jkt</code>), and sign immutable <code>TenantContext</code> digests via <strong>Cloud KMS</strong> (<code>EC-P256</code>).</li>
               <li><strong>Hop 2 — ARD Catalog &amp; Callback PDP</strong> (<code>hop2_registry_pdp_callbacks.py</code>): Filters Discovery Engine / Agent Registry catalogs and prunes unauthorized tools via ADK <code>before_agent_callback</code> (blocking RetailStream from FinVault's private <code>Agent Alpha</code> with <code>HTTP 403</code>).</li>
@@ -225,17 +233,8 @@
               <li><strong>Hops 4 &amp; 5 — Model Armor, SDP &amp; AlloyDB RLS</strong> (<code>hop4</code> • <code>hop5</code>): Blocks prompt injection (<code>HTTP 400</code>) &amp; Semantic NLCs (<code>HTTP 422</code>), scrubs IBAN/SSN PII, binds <code>SET LOCAL app.current_tenant_id</code> on AlloyDB RLS, and streams zero-PII BigQuery OTel spans.</li>
               </ul>
             </div>
-          </div>
 
-          <div class="flex-col gap-3 min-w-0">
             <div class="ov-subbox">
-              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px;">
-                <h4 class="m-0">3. Companion 3-Act Editable Slide Deck</h4>
-                <span class="badge badge-green" style="font-size:10px;">34 Editable Slides • Visual Deck • L1-L4 DrawingML</span>
-              </div>
-              <p class="m-0"><strong>Act I (Slides 1–3)</strong> Executive Briefing Map, FinVault (<code>600 RPM</code> / <code>8k</code> thinking / CMEK) vs. RetailStream (<code>120 RPM</code> / <code>4k</code> thinking / RLS) &amp; Pattern A/B/C Matrix &rarr; <strong>Act II (Slides 4–7)</strong> <code>L1</code> 3-Zone Topology, <code>L2</code> Official <code>#78</code> 5-Hop Blueprint (<code>56</code>v/<code>23</code>e), <code>L3</code> 5-Actor Swimlane, <code>L4</code> OBO+DPoP Packet Triptych &rarr; <strong>Act III (Slides 8–11)</strong> Circuit Breakers (<code>401/403/422/423/429</code>), EAP Gaps (<code>GAP-01..05</code>), Grounded Cloud CLI Proof &amp; Series Roadmap.</p>
-            </div>
-            <div class="ov-subbox flex-1">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
                 <h4 class="m-0">4. Genuine 2880&times;1800 Before &rarr; After 3P SaaS Proof</h4>
                 <button type="button" class="ov-chip" style="padding:1px 7px; font-size:10.5px;" onclick="openDocInReader('blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md', 'live-3p-before-after-ui-proof')">Interactive Split Slider &rarr;</button>
@@ -248,7 +247,7 @@
                   </div>
                   <div class="ov-ba-mini-thumbs">
                     <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_01_metabase_bi.png" alt="BEFORE SAAS-01 (Metabase BI v0.50.26)" title="Click to zoom BEFORE UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_01_metabase_bi.png', 'BEFORE SAAS-01 (Metabase BI v0.50.26)')" decoding="async" />
-                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_01_metabase_bi.png" alt="AFTER SAAS-01 (Metabase BI v0.50.26 • Target HXGGFMZBKE)" title="Click to zoom AFTER UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_01_metabase_bi.png', 'AFTER SAAS-01 (Metabase BI v0.50.26 • Target HXGGFMZBKE)')" decoding="async" />
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_01_metabase_bi.png" alt="AFTER SAAS-01 (Metabase BI v0.50.26 • Target HXGGFMZBKE)" title="Click to zoom AFTER UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_01_metabase_bi.png', 'AFTER SAAS-01 (Metabase BI v0.50.26 • Target HXGGFMZBKE)')" decoding="async" />
                   </div>
                   <div style="padding:6px 8px; font-size:10.8px; color:#334155; line-height:1.35; flex:1;">
                     <div class="mb-1"><strong>Before &rarr; After:</strong> 3-row unfiltered wire ledger -> 2 FinVault-only rows (RLS)</div>
@@ -303,31 +302,42 @@
         </div>
 
         
-        <!-- Blueprint Hero Stage (Figure 1/3) -->
-        <div class="ov-blueprint-hero-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:12.5px; font-weight:800; color:#0f172a;">Official Blueprint: Pattern A Pooled 5-Hop Architecture (Figure 1)</span>
-              <span class="badge badge-green text-2xs">60 Vertices • 20 Edges</span>
-            </div>
-            <div style="display:flex; gap:6px;">
-              <button type="button" class="ov-chip" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws2-pattern-a-pooled-architecture.md')">🧭 Step-by-Step Flow ▾</button>
-              <button type="button" class="ov-chip primary" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws2-pattern-a-pooled-architecture.md')">📐 Architecture Studio &nearr;</button>
+        <!-- Side-by-Side Blueprint & Executive Dossier Split Layout -->
+        <div class="ov-dossier-split">
+          <div class="ov-dossier-visual">
+            <div class="ov-blueprint-hero-card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:12.5px; font-weight:800; color:#0f172a;">Official Blueprint: Pattern A Pooled 5-Hop Architecture (Figure 1)</span>
+                  <span class="badge badge-green text-2xs">60 Vertices • 20 Edges</span>
+                </div>
+                <div style="display:flex; gap:6px;">
+                  <button type="button" class="ov-chip" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws2-pattern-a-pooled-architecture.md')">🧭 Step-by-Step Flow ▾</button>
+                  <button type="button" class="ov-chip primary" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws2-pattern-a-pooled-architecture.md')">📐 Architecture Studio &nearr;</button>
+                </div>
+              </div>
+              <div class="ov-blueprint-hero-canvas">
+                <object type="image/svg+xml" data="diagrams/ws2-pattern-a-pooled-5hop-architecture.svg" title="Official Blueprint: Pattern A Pooled 5-Hop Architecture (Figure 1)"></object>
+              </div>
             </div>
           </div>
-          <div class="ov-blueprint-hero-canvas">
-            <object type="image/svg+xml" data="diagrams/ws2-pattern-a-pooled-5hop-architecture.svg" title="Official Blueprint: Pattern A Pooled 5-Hop Architecture (Figure 1)"></object>
-          </div>
-        </div>
 
-        <div class="ov-two-col">
-          <div class="flex-col gap-3 min-w-0">
+          <div class="ov-dossier-sidebar">
             <div class="ov-subbox">
               <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
               <p class="m-0">Standard B2B SaaS tiers serving hundreds of competing organizations cannot provision dedicated GCP projects per tenant without collapsing gross margins. <strong>Pattern A (High-Density Pooled Architecture)</strong> runs competing corporate tenants inside one shared Google Cloud project (<code>cymbal-pooled-prod</code>) while cutting shared input-token COGS by <strong>90%</strong> (<code>84.7%</code> total turn COGS reduction) and blocking <strong>10/10 red-team cross-tenant breach simulations</strong>.</p>
             </div>
-            <div class="ov-subbox flex-1">
-              <h4>2. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
+
+            <div class="ov-subbox">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px;">
+                <h4 class="m-0">2. Companion 3-Act Editable Slide Deck</h4>
+                <span class="badge badge-green" style="font-size:10px;">34 Editable Slides • Visual Deck • L1-L4 DrawingML</span>
+              </div>
+              <p class="m-0"><strong>Act I (Slides 1–3)</strong> Pooled Margin Economics vs. Zero-Bleed Security &rarr; <strong>Act II (Slides 4–7)</strong> <code>L1</code> Pooled Trust Zones, <code>L2</code> Pooled Shared-Plane Blueprint (<code>60</code>v/<code>20</code>e), <code>L3</code> Multi-IdP 3LO &amp; Prefix-Cache Swimlane, <code>L4</code> Header Stripping &amp; RLS Session Binding &rarr; <strong>Act III (Slides 8–12)</strong> <code>10/10</code> Red-Team Circuit Breakers, Pooled EAP Controls, Live CLI Proof, Well-Architected Guarantees &amp; 1-Click Terraform Starter.</p>
+            </div>
+
+            <div class="ov-subbox">
+              <h4>3. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
               <ul>
               <li><strong>Shared Prefix Caching Without Bleed</strong>: Caches immutable platform prompts &amp; tool schemas once via Vertex AI <code>ContextCacheConfig</code> while injecting per-tenant Firestore prompts, GCS Skills URIs, and <code>L1–L4</code> memory post-cache in Hop 3.</li>
               <li><strong>Multi-IdP 3LO Federated Sandbox</strong>: Simultaneously brokers <strong>Google OIDC</strong> (Workspace/Jira for FinVault) and <strong>Microsoft Entra ID</strong> (SharePoint/ServiceNow for RetailStream), keyed by composite <code>{tenant_id}:{user_id}</code> + DPoP <code>jkt</code> so intra-tenant peers cannot replay tokens (<code>HTTP 401</code>).</li>
@@ -335,17 +345,8 @@
               <li><strong>10/10 Red-Team Breach Simulation Suite</strong> (<code>run_breach_simulations.py</code>): Verifies deterministic rejection of forged headers, catalog probing, memory traversal, prompt injection, NLC bypass, PII leaks, SQL RLS escape, RPM floods, 3LO reuse, and DPoP replay.</li>
               </ul>
             </div>
-          </div>
 
-          <div class="flex-col gap-3 min-w-0">
             <div class="ov-subbox">
-              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px;">
-                <h4 class="m-0">3. Companion 3-Act Editable Slide Deck</h4>
-                <span class="badge badge-green" style="font-size:10px;">34 Editable Slides • Visual Deck • L1-L4 DrawingML</span>
-              </div>
-              <p class="m-0"><strong>Act I (Slides 1–3)</strong> Pooled Margin Economics vs. Zero-Bleed Security &rarr; <strong>Act II (Slides 4–7)</strong> <code>L1</code> Pooled Trust Zones, <code>L2</code> Pooled Shared-Plane Blueprint (<code>60</code>v/<code>20</code>e), <code>L3</code> Multi-IdP 3LO &amp; Prefix-Cache Swimlane, <code>L4</code> Header Stripping &amp; RLS Session Binding &rarr; <strong>Act III (Slides 8–12)</strong> <code>10/10</code> Red-Team Circuit Breakers, Pooled EAP Controls, Live CLI Proof, Well-Architected Guarantees &amp; 1-Click Terraform Starter.</p>
-            </div>
-            <div class="ov-subbox flex-1">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
                 <h4 class="m-0">4. Genuine 2880&times;1800 Before &rarr; After 3P SaaS Proof</h4>
                 <button type="button" class="ov-chip" style="padding:1px 7px; font-size:10.5px;" onclick="openDocInReader('blogs/ws2-pattern-a-pooled-architecture.md', 'live-3p-before-after-ui-proof')">Interactive Split Slider &rarr;</button>
@@ -413,31 +414,42 @@
         </div>
 
         
-        <!-- Blueprint Hero Stage (Figure 1/3) -->
-        <div class="ov-blueprint-hero-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:12.5px; font-weight:800; color:#0f172a;">Official Blueprint: Pattern B Sovereign Silos Architecture (Figure 1)</span>
-              <span class="badge badge-amber text-2xs">Dedicated VPC-SC • Tenant CMEK</span>
-            </div>
-            <div style="display:flex; gap:6px;">
-              <button type="button" class="ov-chip" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws3-pattern-b-sovereign-silos.md')">🧭 Step-by-Step Flow ▾</button>
-              <button type="button" class="ov-chip primary" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws3-pattern-b-sovereign-silos.md')">📐 Architecture Studio &nearr;</button>
+        <!-- Side-by-Side Blueprint & Executive Dossier Split Layout -->
+        <div class="ov-dossier-split">
+          <div class="ov-dossier-visual">
+            <div class="ov-blueprint-hero-card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:12.5px; font-weight:800; color:#0f172a;">Official Blueprint: Pattern B Sovereign Silos Architecture (Figure 1)</span>
+                  <span class="badge badge-amber text-2xs">Dedicated VPC-SC • Tenant CMEK</span>
+                </div>
+                <div style="display:flex; gap:6px;">
+                  <button type="button" class="ov-chip" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws3-pattern-b-sovereign-silos.md')">🧭 Step-by-Step Flow ▾</button>
+                  <button type="button" class="ov-chip primary" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws3-pattern-b-sovereign-silos.md')">📐 Architecture Studio &nearr;</button>
+                </div>
+              </div>
+              <div class="ov-blueprint-hero-canvas">
+                <object type="image/svg+xml" data="diagrams/ws3-pattern-b-sovereign-silos-architecture.svg" title="Official Blueprint: Pattern B Sovereign Silos Architecture (Figure 1)"></object>
+              </div>
             </div>
           </div>
-          <div class="ov-blueprint-hero-canvas">
-            <object type="image/svg+xml" data="diagrams/ws3-pattern-b-sovereign-silos-architecture.svg" title="Official Blueprint: Pattern B Sovereign Silos Architecture (Figure 1)"></object>
-          </div>
-        </div>
 
-        <div class="ov-two-col">
-          <div class="flex-col gap-3 min-w-0">
+          <div class="ov-dossier-sidebar">
             <div class="ov-subbox">
               <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
               <p class="m-0">When <strong>OCC/FDIC banking rules, EU DORA, HIPAA, FDA 21 CFR Part 11, or FedRAMP</strong> prohibit shared compute and shared databases, <strong>Pattern B (Sovereign Silos)</strong> wraps the <strong>unchanged 80% reusable 5-Hop Cymbal core</strong> inside a dedicated Google Cloud project per corporate tenant (<code>cymbal-finvault-silo-prod</code> &amp; <code>cymbal-retailstream-silo-prod</code>) with VPC Service Controls, IAM Principal Access Boundaries, a <code>&lt; 5 s</code> customer-held <strong>Cloud KMS CMEK kill-switch (<code>HTTP 423 Locked</code>)</strong>, and air-gapped <strong>Gemma 3 (27B)</strong> on GKE.</p>
             </div>
-            <div class="ov-subbox flex-1">
-              <h4>2. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
+
+            <div class="ov-subbox">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px;">
+                <h4 class="m-0">2. Companion 3-Act Editable Slide Deck</h4>
+                <span class="badge badge-green" style="font-size:10px;">34 Editable Slides • Visual Deck • L1-L4 DrawingML</span>
+              </div>
+              <p class="m-0"><strong>Act I (Slides 1–3)</strong> Regulated Banking/Pharma Mandates &amp; Dedicated Silo Trade-Offs &rarr; <strong>Act II (Slides 4–7)</strong> <code>L1</code> Per-Project VPC-SC + PAB Zones, <code>L2</code> Official <code>#78</code> Sovereign Silo Blueprint (<code>56</code>v/<code>23</code>e), <code>L3</code> KMS Envelope &amp; Air-Gapped GKE Swimlane, <code>L4</code> SPIFFE mTLS + CMEK Kill-Switch Wire Packet &rarr; <strong>Act III (Slides 8–12)</strong> <code>HTTP 403/423</code> Circuit Breakers, <code>6/6</code> Silo Matrix, Live KMS Proof, Well-Architected Pillars &amp; Terraform Silo Factory.</p>
+            </div>
+
+            <div class="ov-subbox">
+              <h4>3. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
               <ul>
               <li><strong>Dedicated VPC-SC Perimeter &amp; IAM PAB</strong> (<code>pattern_b_siloed_service.py</code>): Confines principals via Organization IAM v3 PAB and blocks cross-project API exfiltration with <code>HTTP 403 VPC_SC_PERIMETER_VIOLATION</code>.</li>
               <li><strong>Cloud KMS / EKM <code>&lt; 5 s</code> Crypto-Shredding Kill-Switch</strong>: Disabling the tenant's KMS key version triggers targeted Valkey <code>UNLINK {tenant_id}:*</code> (<code>0</code> peer evictions) and immediately halts in-flight agent turns, memory reads, and AlloyDB queries with <code>HTTP 423 Locked</code>.</li>
@@ -445,17 +457,8 @@
               <li><strong>6/6 Silo Exfiltration &amp; CMEK Revocation Suite</strong> (<code>run_silo_security_tests.py</code>): Certifies dual-tenant silo parity, VPC-SC blocks, PAB confinement, live KMS kill-switch, and zero-WAN GKE routing.</li>
               </ul>
             </div>
-          </div>
 
-          <div class="flex-col gap-3 min-w-0">
             <div class="ov-subbox">
-              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px;">
-                <h4 class="m-0">3. Companion 3-Act Editable Slide Deck</h4>
-                <span class="badge badge-green" style="font-size:10px;">34 Editable Slides • Visual Deck • L1-L4 DrawingML</span>
-              </div>
-              <p class="m-0"><strong>Act I (Slides 1–3)</strong> Regulated Banking/Pharma Mandates &amp; Dedicated Silo Trade-Offs &rarr; <strong>Act II (Slides 4–7)</strong> <code>L1</code> Per-Project VPC-SC + PAB Zones, <code>L2</code> Official <code>#78</code> Sovereign Silo Blueprint (<code>56</code>v/<code>23</code>e), <code>L3</code> KMS Envelope &amp; Air-Gapped GKE Swimlane, <code>L4</code> SPIFFE mTLS + CMEK Kill-Switch Wire Packet &rarr; <strong>Act III (Slides 8–12)</strong> <code>HTTP 403/423</code> Circuit Breakers, <code>6/6</code> Silo Matrix, Live KMS Proof, Well-Architected Pillars &amp; Terraform Silo Factory.</p>
-            </div>
-            <div class="ov-subbox flex-1">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
                 <h4 class="m-0">4. Genuine 2880&times;1800 Before &rarr; After 3P SaaS Proof</h4>
                 <button type="button" class="ov-chip" style="padding:1px 7px; font-size:10.5px;" onclick="openDocInReader('blogs/ws3-pattern-b-sovereign-silos.md', 'live-3p-before-after-ui-proof')">Interactive Split Slider &rarr;</button>
@@ -523,31 +526,42 @@
         </div>
 
         
-        <!-- Blueprint Hero Stage (Figure 1/3) -->
-        <div class="ov-blueprint-hero-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:12.5px; font-weight:800; color:#0f172a;">Official Blueprint: Pattern C Dynamic Hybrid PSC Spoke (Figure 1)</span>
-              <span class="badge badge-green text-2xs">1-Way PSC Egress • Live Upgrades</span>
-            </div>
-            <div style="display:flex; gap:6px;">
-              <button type="button" class="ov-chip" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws4-pattern-c-hybrid-dynamic-tiering.md')">🧭 Step-by-Step Flow ▾</button>
-              <button type="button" class="ov-chip primary" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws4-pattern-c-hybrid-dynamic-tiering.md')">📐 Architecture Studio &nearr;</button>
+        <!-- Side-by-Side Blueprint & Executive Dossier Split Layout -->
+        <div class="ov-dossier-split">
+          <div class="ov-dossier-visual">
+            <div class="ov-blueprint-hero-card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:12.5px; font-weight:800; color:#0f172a;">Official Blueprint: Pattern C Dynamic Hybrid PSC Spoke (Figure 1)</span>
+                  <span class="badge badge-green text-2xs">1-Way PSC Egress • Live Upgrades</span>
+                </div>
+                <div style="display:flex; gap:6px;">
+                  <button type="button" class="ov-chip" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws4-pattern-c-hybrid-dynamic-tiering.md')">🧭 Step-by-Step Flow ▾</button>
+                  <button type="button" class="ov-chip primary" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws4-pattern-c-hybrid-dynamic-tiering.md')">📐 Architecture Studio &nearr;</button>
+                </div>
+              </div>
+              <div class="ov-blueprint-hero-canvas">
+                <object type="image/svg+xml" data="diagrams/ws4-pattern-c-hybrid-psc-and-migration.svg" title="Official Blueprint: Pattern C Dynamic Hybrid PSC Spoke (Figure 1)"></object>
+              </div>
             </div>
           </div>
-          <div class="ov-blueprint-hero-canvas">
-            <object type="image/svg+xml" data="diagrams/ws4-pattern-c-hybrid-psc-and-migration.svg" title="Official Blueprint: Pattern C Dynamic Hybrid PSC Spoke (Figure 1)"></object>
-          </div>
-        </div>
 
-        <div class="ov-two-col">
-          <div class="flex-col gap-3 min-w-0">
+          <div class="ov-dossier-sidebar">
             <div class="ov-subbox">
               <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
               <p class="m-0">Tiered B2B SaaS platforms typically serve a bimodal <strong>950 Standard + 50 Regulated Enterprise</strong> customer portfolio—plus mid-contract Standard &rarr; Enterprise upsells. <strong>Pattern C (Dynamic Hybrid Hub-and-Spoke)</strong> serves every customer from one unified global ingress domain, routing Standard tenants to the shared Pool and bridging Enterprise tenants over <strong>Private Service Connect (PSC)</strong> to dedicated CMEK spokes with <strong><code>0 ms</code>-downtime live tier graduation</strong>.</p>
             </div>
-            <div class="ov-subbox flex-1">
-              <h4>2. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
+
+            <div class="ov-subbox">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px;">
+                <h4 class="m-0">2. Companion 3-Act Editable Slide Deck</h4>
+                <span class="badge badge-green" style="font-size:10px;">34 Editable Slides • Visual Deck • L1-L4 DrawingML</span>
+              </div>
+              <p class="m-0"><strong>Act I (Slides 1–3)</strong> Bimodal <code>950 + 50</code> Portfolio Economics &amp; Single-Product Mandate &rarr; <strong>Act II (Slides 4–7)</strong> <code>L1</code> Hub + Pool + PSC Spoke Zones, <code>L2</code> Official <code>#78</code> Hybrid PSC Blueprint (<code>56</code>v/<code>23</code>e), <code>L3</code> <code>SHADOW_SYNC &rarr; ATOMIC_CUTOVER &rarr; DRAIN</code> Swimlane, <code>L4</code> PSC Routing &amp; Attestation Packet &rarr; <strong>Act III (Slides 8–12)</strong> Cross-Spoke <code>HTTP 403</code> Breakers, <code>4/4</code> Migration Matrix, Dual-Provider Terraform Proof &amp; Roadmap.</p>
+            </div>
+
+            <div class="ov-subbox">
+              <h4>3. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
               <ul>
               <li><strong>Unidirectional PSC Hub-to-Spoke Bridge</strong>: Consumer Hub VPC connects to Enterprise Producer Spoke <code>ServiceAttachment</code> endpoints over PSC NAT with zero VPC peering or CIDR overlap, blocking pooled spoke impersonation with <code>HTTP 403</code>.</li>
               <li><strong>3-Phase Live Tier Graduation State Machine</strong> (<code>pattern_c_hybrid_router_and_migrator.py</code>): Executes <code>SHADOW_SYNC</code> (backfill + SHA-256 parity) &rarr; <code>ATOMIC_CUTOVER</code> (sub-ms routing flip, <code>0</code> dropped turns) &rarr; <code>DRAIN_AND_VERIFY</code> (pooled <code>UNLINK</code> + OTel attestation).</li>
@@ -555,17 +569,8 @@
               <li><strong>Dual-Provider Terraform Blueprint</strong> (<code>4.6 main.tf</code>): Declaratively wires <code>google.hub</code> forwarding rules to <code>google.spoke</code> PSC service attachments.</li>
               </ul>
             </div>
-          </div>
 
-          <div class="flex-col gap-3 min-w-0">
             <div class="ov-subbox">
-              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px;">
-                <h4 class="m-0">3. Companion 3-Act Editable Slide Deck</h4>
-                <span class="badge badge-green" style="font-size:10px;">34 Editable Slides • Visual Deck • L1-L4 DrawingML</span>
-              </div>
-              <p class="m-0"><strong>Act I (Slides 1–3)</strong> Bimodal <code>950 + 50</code> Portfolio Economics &amp; Single-Product Mandate &rarr; <strong>Act II (Slides 4–7)</strong> <code>L1</code> Hub + Pool + PSC Spoke Zones, <code>L2</code> Official <code>#78</code> Hybrid PSC Blueprint (<code>56</code>v/<code>23</code>e), <code>L3</code> <code>SHADOW_SYNC &rarr; ATOMIC_CUTOVER &rarr; DRAIN</code> Swimlane, <code>L4</code> PSC Routing &amp; Attestation Packet &rarr; <strong>Act III (Slides 8–12)</strong> Cross-Spoke <code>HTTP 403</code> Breakers, <code>4/4</code> Migration Matrix, Dual-Provider Terraform Proof &amp; Roadmap.</p>
-            </div>
-            <div class="ov-subbox flex-1">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
                 <h4 class="m-0">4. Genuine 2880&times;1800 Before &rarr; After 3P SaaS Proof</h4>
                 <button type="button" class="ov-chip" style="padding:1px 7px; font-size:10.5px;" onclick="openDocInReader('blogs/ws4-pattern-c-hybrid-dynamic-tiering.md', 'live-3p-before-after-ui-proof')">Interactive Split Slider &rarr;</button>
@@ -633,31 +638,42 @@
         </div>
 
         
-        <!-- Blueprint Hero Stage (Figure 1/3) -->
-        <div class="ov-blueprint-hero-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:12.5px; font-weight:800; color:#0f172a;">Official Blueprint: Decision Tree & Agentic Triad (Figure 1)</span>
-              <span class="badge badge-purple text-2xs">2-Question Gate • 10-Week GA Plan</span>
-            </div>
-            <div style="display:flex; gap:6px;">
-              <button type="button" class="ov-chip" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws5-decision-guide-and-agentic-triad.md')">🧭 Step-by-Step Flow ▾</button>
-              <button type="button" class="ov-chip primary" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws5-decision-guide-and-agentic-triad.md')">📐 Architecture Studio &nearr;</button>
+        <!-- Side-by-Side Blueprint & Executive Dossier Split Layout -->
+        <div class="ov-dossier-split">
+          <div class="ov-dossier-visual">
+            <div class="ov-blueprint-hero-card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:12.5px; font-weight:800; color:#0f172a;">Official Blueprint: Decision Tree & Agentic Triad (Figure 1)</span>
+                  <span class="badge badge-purple text-2xs">2-Question Gate • 10-Week GA Plan</span>
+                </div>
+                <div style="display:flex; gap:6px;">
+                  <button type="button" class="ov-chip" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws5-decision-guide-and-agentic-triad.md')">🧭 Step-by-Step Flow ▾</button>
+                  <button type="button" class="ov-chip primary" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('blogs/ws5-decision-guide-and-agentic-triad.md')">📐 Architecture Studio &nearr;</button>
+                </div>
+              </div>
+              <div class="ov-blueprint-hero-canvas">
+                <object type="image/svg+xml" data="diagrams/ws5-decision-tree-and-agentic-triad.svg" title="Official Blueprint: Decision Tree & Agentic Triad (Figure 1)"></object>
+              </div>
             </div>
           </div>
-          <div class="ov-blueprint-hero-canvas">
-            <object type="image/svg+xml" data="diagrams/ws5-decision-tree-and-agentic-triad.svg" title="Official Blueprint: Decision Tree & Agentic Triad (Figure 1)"></object>
-          </div>
-        </div>
 
-        <div class="ov-two-col">
-          <div class="flex-col gap-3 min-w-0">
+          <div class="ov-dossier-sidebar">
             <div class="ov-subbox">
               <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
               <p class="m-0">Under-isolating regulated tenants blocks enterprise security sign-off, while over-provisioning dedicated GCP projects for SMB tiers erodes SaaS gross margins. <strong>Blog 5 (WS5)</strong> distills the entire program into a deterministic <strong>2-Question Executive Decision Tree</strong>, the <strong>Multi-Tenant Agentic Triad</strong> (<code>Cryptographic Identity</code> &times; <code>Elastic Compute/Memory Bulkheads</code> &times; <code>Zero-PII FinOps Telemetry</code>), and a prioritized <strong>10-Week GA Engineering Roadmap</strong>.</p>
             </div>
-            <div class="ov-subbox flex-1">
-              <h4>2. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
+
+            <div class="ov-subbox">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px;">
+                <h4 class="m-0">2. Companion 3-Act Editable Slide Deck</h4>
+                <span class="badge badge-green" style="font-size:10px;">34 Editable Slides • Visual Deck • L1-L4 DrawingML</span>
+              </div>
+              <p class="m-0"><strong>Act I (Slides 1–3)</strong> Executive Synthesis &amp; 7-Dimension Pattern Comparison &rarr; <strong>Act II (Slides 4–7)</strong> <code>L1</code> Agentic Triad Zones, <code>L2</code> Decision-Tree 3-Outcome Blueprint (<code>46</code>v/<code>19</code>e), <code>L3</code> Unified Cross-Pattern Swimlane, <code>L4</code> End-to-End OTel Chargeback Packet &rarr; <strong>Act III (Slides 8–12)</strong> Unified <code>400/401/403/422/423/429</code> Guardrails, <code>GAP-01..05</code> Backlog, <code>30/30</code> Multi-Cloud Proof &amp; 10-Week Execution Plan.</p>
+            </div>
+
+            <div class="ov-subbox">
+              <h4>3. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
               <ul>
               <li><strong>2-Question Deterministic Topology Selector</strong>: (Q1) <em>Do 100% of customers mandate dedicated GCP projects, VPC-SC &amp; CMEK kill-switches?</em> &rarr; <strong>Pattern B</strong>. (Q2) <em>Do you serve mixed Standard + Regulated tiers or need live upgrades?</em> &rarr; <strong>Pattern C</strong>; else <strong>Pattern A</strong>.</li>
               <li><strong>Pillar 1 — Cryptographic Context Integrity</strong>: End-to-end OBO + RFC 9449 DPoP + Cloud KMS <code>EC-P256</code> context signing across Hops 1–5 (<code>0</code> raw header trust, <code>0</code> cross-user 3LO token reuse).</li>
@@ -665,17 +681,8 @@
               <li><strong>Capstone Backlog &amp; 10-Week GA Roadmap</strong> (<button type="button" class="ov-chip" onclick="openDocInReader('workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md')">5.2-capstone-backlog-and-ga-roadmap.md</button>): Sequences productization of <code>GAP-01..05</code> compensating controls across Weeks 1–10.</li>
               </ul>
             </div>
-          </div>
 
-          <div class="flex-col gap-3 min-w-0">
             <div class="ov-subbox">
-              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px;">
-                <h4 class="m-0">3. Companion 3-Act Editable Slide Deck</h4>
-                <span class="badge badge-green" style="font-size:10px;">34 Editable Slides • Visual Deck • L1-L4 DrawingML</span>
-              </div>
-              <p class="m-0"><strong>Act I (Slides 1–3)</strong> Executive Synthesis &amp; 7-Dimension Pattern Comparison &rarr; <strong>Act II (Slides 4–7)</strong> <code>L1</code> Agentic Triad Zones, <code>L2</code> Decision-Tree 3-Outcome Blueprint (<code>46</code>v/<code>19</code>e), <code>L3</code> Unified Cross-Pattern Swimlane, <code>L4</code> End-to-End OTel Chargeback Packet &rarr; <strong>Act III (Slides 8–12)</strong> Unified <code>400/401/403/422/423/429</code> Guardrails, <code>GAP-01..05</code> Backlog, <code>30/30</code> Multi-Cloud Proof &amp; 10-Week Execution Plan.</p>
-            </div>
-            <div class="ov-subbox flex-1">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
                 <h4 class="m-0">4. Genuine 2880&times;1800 Before &rarr; After 3P SaaS Proof</h4>
                 <button type="button" class="ov-chip" style="padding:1px 7px; font-size:10.5px;" onclick="openDocInReader('blogs/ws5-decision-guide-and-agentic-triad.md', 'live-3p-before-after-ui-proof')">Interactive Split Slider &rarr;</button>
@@ -743,54 +750,55 @@
         </div>
 
         
-        <!-- Blueprint Hero Stage (Figure 1/3) -->
-        <div class="ov-blueprint-hero-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:12.5px; font-weight:800; color:#0f172a;">Official Blueprint: Multi-Tenant Architecture Taxonomy Overview (Figure 1)</span>
-              <span class="badge badge-blue text-2xs">14 Blueprints • 10-SaaS Playbook</span>
-            </div>
-            <div style="display:flex; gap:6px;">
-              <button type="button" class="ov-chip" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md')">🧭 Step-by-Step Flow ▾</button>
-              <button type="button" class="ov-chip primary" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md')">📐 Architecture Studio &nearr;</button>
-            </div>
-          </div>
-          <div class="ov-blueprint-hero-canvas">
-            <object type="image/svg+xml" data="diagrams/ws1-multi-tenant-taxonomy-overview.svg" title="Official Blueprint: Multi-Tenant Architecture Taxonomy Overview (Figure 1)"></object>
-          </div>
-        </div>
-
-        <div class="ov-two-col">
-          <div class="ov-subbox">
-            <h4>1. Master Guides, Operational Runbooks &amp; Interactive Portal Tabs</h4>
-            <ul>
-              <li><strong>End-to-End Workstream &amp; 14-Diagram Master Guide</strong>: <button type="button" class="ov-chip" onclick="openDocInReader('docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md')">Portal Reader</button> • <a class="ov-chip" href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx" download>25-Slide .pptx</a> • <a class="ov-chip" href="https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/export/pdf" target="_blank" rel="noopener noreferrer">25-Slide PDF &nearr;</a></li>
-              <li><strong>10-SaaS &times; 3-Pattern Manual Testing Playbook (30/30 Flows + 20 PNGs)</strong>: <button type="button" class="ov-chip" onclick="openDocInReader('docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md')">Open Playbook</button> • <a class="ov-chip" href="https://github.com/cloud-ai-fde/ge-blogs/blob/main/docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md" target="_blank" rel="noopener noreferrer">GitHub &nearr;</a></li>
-              <li><strong>10-Stage Google Cloud Console &amp; Cloud Shell SSH Runbook</strong>: <button type="button" class="ov-chip" onclick="openDocInReader('docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md')">Open SSH Runbook</button> • <button type="button" class="ov-chip" onclick="openDocInReader('docs/MULTI-MODEL-LLM-JUDGE-EVALUATION-REPORT.md')">LLM-Judge Report</button></li>
-              <li><strong>Portal Interactive Workspaces</strong>: <button type="button" class="ov-chip" onclick="switchTab('patterns')">1. &#129517; Blog Series Reader</button> • <button type="button" class="ov-chip" onclick="switchTab('simulator')">2. &#9889; Live 5-Hop Simulator (20/20)</button> • <button type="button" class="ov-chip" onclick="jumpToTab3BeforeAfterHub()">3. &#128260; 20-PNG Before/After Hub</button> • <button type="button" class="ov-chip" onclick="switchTab('forensic')">4. &#9989; 13/13 Forensic Audit</button></li>
-            </ul>
-          </div>
-
-          <div class="ov-subbox">
-            <h4>2. Reusable 80% Shared Core Engine (<code>core-cymbal-agent/</code>)</h4>
-            <ul>
-              <li><strong>Pipeline, Models &amp; Live GCP KMS/BQ Bridge</strong>: <code>models.py</code> • <code>runtime_pipeline.py</code> • <code>gcp_live_bridge.py</code> • <code>test_five_hop_pipeline.py</code></li>
-              <li><strong>5-Hop Governance Gates</strong>: <code>hop1</code> • <code>hop2</code> • <code>hop3</code> • <code>hop4</code> • <code>hop5</code></li>
-              <li><strong>Agents &amp; 2LO/3LO/10-SaaS MCP Servers</strong>: <code>shared_diagnostic_agent.py</code> • <code>finvault_agent_alpha.py</code> • <code>cymbal_mcp_hub.py</code> • <code>enterprise_5_saas_bi_mcp.py</code></li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- SECTION 5: FREQUENTLY ASKED QUESTIONS BANNER [FA-49] -->
-        <div style="margin-bottom:20px; padding:16px 20px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <span style="font-size:24px;">❓</span>
-            <div>
-              <strong style="font-size:14.5px; color:#0f172a;">Frequently Asked Questions (Cymbal Brand, Tenants &amp; 5-Hop Security)</strong>
-              <div style="font-size:12.5px; color:#64748b;">Authoritative answers to core architectural concepts, reference brands, multi-tenancy models, and Google single sign-on.</div>
+        <!-- Side-by-Side Blueprint & Executive Dossier Split Layout -->
+        <div class="ov-dossier-split">
+          <div class="ov-dossier-visual">
+            <div class="ov-blueprint-hero-card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:12.5px; font-weight:800; color:#0f172a;">Official Blueprint: Multi-Tenant Architecture Taxonomy Overview (Figure 1)</span>
+                  <span class="badge badge-blue text-2xs">14 Blueprints • 10-SaaS Playbook</span>
+                </div>
+                <div style="display:flex; gap:6px;">
+                  <button type="button" class="ov-chip" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md')">🧭 Step-by-Step Flow ▾</button>
+                  <button type="button" class="ov-chip primary" style="font-size:11px; padding:3px 8px;" onclick="openDocInReader('docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md')">📐 Architecture Studio &nearr;</button>
+                </div>
+              </div>
+              <div class="ov-blueprint-hero-canvas">
+                <object type="image/svg+xml" data="diagrams/ws1-multi-tenant-taxonomy-overview.svg" title="Official Blueprint: Multi-Tenant Architecture Taxonomy Overview (Figure 1)"></object>
+              </div>
             </div>
           </div>
-          <button type="button" class="sim-btn primary" onclick="openPortalFAQ()" style="font-size:12px; padding:6px 14px; font-weight:700;">❓ Open FAQ Modal &rarr;</button>
+
+          <div class="ov-dossier-sidebar">
+            <div class="ov-subbox">
+              <h4>1. Master Guides, Operational Runbooks &amp; Interactive Portal Tabs</h4>
+              <ul>
+                <li><strong>End-to-End Workstream &amp; 14-Diagram Master Guide</strong>: <button type="button" class="ov-chip" onclick="openDocInReader('docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md')">Portal Reader</button> • <a class="ov-chip" href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx" download>25-Slide .pptx</a> • <a class="ov-chip" href="https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/export/pdf" target="_blank" rel="noopener noreferrer">25-Slide PDF &nearr;</a></li>
+                <li><strong>10-SaaS &times; 3-Pattern Manual Testing Playbook (30/30 Flows + 20 PNGs)</strong>: <button type="button" class="ov-chip" onclick="openDocInReader('docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md')">Open Playbook</button> • <a class="ov-chip" href="https://github.com/cloud-ai-fde/ge-blogs/blob/main/docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md" target="_blank" rel="noopener noreferrer">GitHub &nearr;</a></li>
+                <li><strong>10-Stage Google Cloud Console &amp; Cloud Shell SSH Runbook</strong>: <button type="button" class="ov-chip" onclick="openDocInReader('docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md')">Open SSH Runbook</button> • <button type="button" class="ov-chip" onclick="openDocInReader('docs/MULTI-MODEL-LLM-JUDGE-EVALUATION-REPORT.md')">LLM-Judge Report</button></li>
+                <li><strong>Portal Interactive Workspaces</strong>: <button type="button" class="ov-chip" onclick="switchTab('patterns')">1. &#129517; Blog Series Reader</button> • <button type="button" class="ov-chip" onclick="switchTab('simulator')">2. &#9889; Live 5-Hop Simulator (20/20)</button> • <button type="button" class="ov-chip" onclick="jumpToTab3BeforeAfterHub()">3. &#128260; 20-PNG Before/After Hub</button> • <button type="button" class="ov-chip" onclick="switchTab('forensic')">4. &#9989; 13/13 Forensic Audit</button></li>
+              </ul>
+            </div>
+
+            <div class="ov-subbox">
+              <h4>2. Reusable 80% Shared Core Engine (<code>core-cymbal-agent/</code>)</h4>
+              <ul>
+                <li><strong>Pipeline, Models &amp; Live GCP KMS/BQ Bridge</strong>: <code>models.py</code> • <code>runtime_pipeline.py</code> • <code>gcp_live_bridge.py</code> • <code>test_five_hop_pipeline.py</code></li>
+                <li><strong>5-Hop Governance Gates</strong>: <code>hop1</code> • <code>hop2</code> • <code>hop3</code> • <code>hop4</code> • <code>hop5</code></li>
+                <li><strong>Agents &amp; 2LO/3LO/10-SaaS MCP Servers</strong>: <code>shared_diagnostic_agent.py</code> • <code>finvault_agent_alpha.py</code> • <code>cymbal_mcp_hub.py</code> • <code>enterprise_5_saas_bi_mcp.py</code></li>
+              </ul>
+            </div>
+
+            <!-- Frequently Asked Questions Box -->
+            <div class="ov-subbox" style="background:#f8fafc; border:1px solid #cbd5e1;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:wrap;">
+                <h4 class="m-0" style="display:flex; align-items:center; gap:6px;">❓ Frequently Asked Questions</h4>
+                <button type="button" class="sim-btn primary" onclick="openPortalFAQ()" style="font-size:11px; padding:3px 8px; font-weight:700;">Open FAQ Modal &rarr;</button>
+              </div>
+              <p class="m-0" style="font-size:11.5px; color:#475569;">Authoritative answers to core architectural concepts, reference brands, multi-tenancy models, and Google single sign-on.</p>
+            </div>
+          </div>
         </div>
       </article>
           </div>

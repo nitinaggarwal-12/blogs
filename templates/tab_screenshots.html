@@ -36,10 +36,6 @@
             <strong style="color:var(--heading); display:block; margin-bottom:2px;">&#128273; Audit Plane: Amazon S3 Cross-Cloud Outcome Ledger (<code>?format=json</code>)</strong>
             <div style="font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:10.5px; line-height:1.4;">
               &bull; <strong>S3 Bucket</strong>: <code>s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1/cymbal-10saas-ledger/</code><br/>
-              &bull; <strong>FinVault</strong>: <code>HTTP 200 ALLOW</code> &bull; <strong>RetailStream Spoof</strong>: <code>HTTP 403 FORBIDDEN</code>
-            </div>
-          </div>
-        </div>
               &bull; <strong>FinVault Tenant Verdict</strong>: <code>HTTP 200 ALLOW</code> (RLS &amp; CMEK verified)<br/>
               &bull; <strong>RetailStream Spoof Verdict</strong>: <code>HTTP 403 FORBIDDEN</code> / <code>HTTP 401 UNAUTHORIZED</code><br/>
               &bull; <strong>MedCore Revoked CMEK Verdict</strong>: <code>HTTP 423 LOCKED</code> (<code>valkey_purged=True</code>)

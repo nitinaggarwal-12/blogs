@@ -1740,13 +1740,13 @@
     .ov-blueprint-hero-card {
       border: 1px solid #cbd5e1;
       border-radius: 10px;
-      padding: 12px 14px;
+      padding: 10px 12px;
       background: #ffffff;
       margin-bottom: 14px;
     }
     .ov-blueprint-hero-canvas {
       height: 360px;
-      background: #f8fafc;
+      background: #ffffff;
       border: 1px solid #e2e8f0;
       border-radius: 8px;
       display: flex;
@@ -1758,8 +1758,73 @@
     .ov-blueprint-hero-canvas object {
       width: 100%;
       height: 100%;
-      padding: 10px;
+      padding: 4px;
       box-sizing: border-box;
+    }
+
+    /* Side-by-Side Blueprint & Executive Dossier Split Layout */
+    .ov-dossier-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(360px, 1fr);
+      gap: 14px;
+      align-items: start;
+    }
+    .ov-dossier-visual {
+      min-width: 0;
+    }
+    .ov-dossier-visual .ov-blueprint-hero-card {
+      margin-bottom: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .ov-dossier-visual .ov-blueprint-hero-canvas {
+      height: 640px;
+      min-height: 580px;
+      flex: 1;
+    }
+    .ov-dossier-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 694px;
+      overflow-y: auto;
+      padding-right: 6px;
+      min-width: 0;
+    }
+    .ov-dossier-sidebar::-webkit-scrollbar {
+      width: 5px;
+    }
+    .ov-dossier-sidebar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+    .ov-dossier-sidebar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .ov-dossier-sidebar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    .ov-dossier-sidebar .ov-ba-mini-grid {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    @media (max-width: 1160px) {
+      .ov-dossier-split {
+        grid-template-columns: 1fr;
+      }
+      .ov-dossier-visual .ov-blueprint-hero-canvas {
+        height: 480px;
+        min-height: 440px;
+      }
+      .ov-dossier-sidebar {
+        max-height: none;
+        overflow-y: visible;
+      }
+      .ov-dossier-sidebar .ov-ba-mini-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
     /* Isolated 1-Card Executive View (1 Selected at a Time) */
