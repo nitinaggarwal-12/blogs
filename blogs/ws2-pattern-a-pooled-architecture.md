@@ -289,7 +289,7 @@ Where:
 
 > **Zero Synthetic Mockups (`Rule 57` & `Rule 60A–60C`):** Every before-and-after proof was captured via real HTTP/HTTPS browser navigation against live upstream enterprise software stacks (`2880×1800` Retina, distinct SHA-256 verified in [`docs/genuine_3p_before_after_provenance_receipt.json`](../docs/genuine_3p_before_after_provenance_receipt.json)).
 > 
-> 🎙️ **Interactive Digital Twin & Split Slider:** Rather than scrolling through 20 static images, switch to the **"📸 Live UI Proofs & Digital Twin Walkthrough"** sub-tab at the top of this page to inspect the interactive 2880×1800 Before-vs-After Split Slider while Nitin Aggarwal's Digital Twin provides spoken architectural commentary on each breach test. You can also inspect the complete [10-SaaS Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md) or open Portal Tab 3.
+> 🎙️ **Interactive Digital Twin & Split Slider:** Rather than scrolling through 20 static images, switch to the **"📸 Live UI Proofs & Digital Twin Walkthrough"** sub-tab at the top of this page to inspect the interactive 2880×1800 Before-vs-After Split Slider while the Architecture Twin provides spoken architectural commentary on each breach test. You can also inspect the complete [10-SaaS Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md) or open Portal Tab 3.
 
 | Upstream Software Stack | Target ID & MCP Tool | Verification Scope & Tenant Isolation Guarantee | Live UI Proof & Digital Twin Walkthrough |
 | :--- | :--- | :--- | :--- |

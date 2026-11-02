@@ -18,7 +18,7 @@ status: "PUBLISH_READY"
 > **Companion Cloud Architecture Assets:**
 > - 📊 **Google Slides**: [Open WS1 34-Slide Upgraded Visual Presentation (Google Slides ↗)](https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit?authuser=nitinagga@google.com) • [Download 34-Slide Upgraded Visual Presentation (.pptx)](../slides/ws1-12slide-visual-deck.pptx) • [Download 15-Slide Canonical (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx)
 > - 📄 **Google Docs & Word**: [Open WS1 GCP-Branded Google Doc ↗](https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?resourcekey=0-PgO-X5icAK687_G-_WZFpQ) • [Download Microsoft Word (.docx)](../docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx)
-> - 📐 **Official Draw.io Blueprints**: [Figure 1 Multi-Tenant Taxonomy (.drawio)](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio) • [Figure 2 5-Hop Baseline (.drawio)](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio)
+> - 📐 **Official Draw.io Blueprints**: [Figure 1 L1 Logical Taxonomy (.drawio)](../diagrams/ws1-l1-logical-security-taxonomy.drawio) • [Figure 2 L2 Physical Taxonomy (.drawio)](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio) • [Figure 3 5-Hop Baseline (.drawio)](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio) • [Figure 4 L3 Process Swimlane (.drawio)](../diagrams/ws1-l3-process-sequence-swimlane.drawio) • [Figure 5 L4 Wire Protocol (.drawio)](../diagrams/ws1-l4-wire-protocol-transformation.drawio)
 
 This document establishes the reference architecture and three-pattern isolation taxonomy for building, governing, and operating external B2B SaaS multi-tenant agentic AI systems on Google Cloud. It extends the official Google Cloud [Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) hub-and-spoke architecture—which models internal enterprise business units—to Independent Software Vendors (ISVs) serving competing corporate enterprises across shared, dedicated, and hybrid cloud tiers using [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview), [Agent Development Kit (ADK)](https://google.github.io/adk-docs/), and [Gemini Enterprise](https://cloud.google.com/gemini/docs/enterprise).
 
@@ -88,110 +88,6 @@ The following table compares the architectural characteristics, security boundar
 | **Baseline unit cost** | **Low ($)** (120 RPM Pool floor per tenant) | **High ($$$)** (600 RPM Silo floor per tenant project) | **Blended ($$)** (Hybrid Tier floor across Standard & Enterprise) |
 | **Target workload** | High-volume Standard B2B SaaS tiers ([Workstream 2](ws2-pattern-a-pooled-architecture.md)) | Regulated FinTech, Healthcare, Public Sector ([Workstream 3](ws3-pattern-b-sovereign-silos.md)) | Multi-tiered SaaS with live tier upgrades ([Workstream 4](ws4-pattern-c-hybrid-dynamic-tiering.md)) |
 
-### Compensating controls for Early Access Program (EAP) product gaps and GA sunset roadmap
-
-During cross-product architecture reviews ([1.2 Product Team Review Pack](../workstream-1-reference-architecture/1.2-product-team-review-pack.md) and [1.4 EAP & Product Gap Tracker](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md)), five platform behaviors required explicit compensating controls in `core-cymbal-agent/`. Every compensating layer is wrapped in a **feature-flagged GA Sunset Hook** with an explicit engineering roadmap target so platform teams can retire custom Python/Valkey shims as native Google Cloud features reach General Availability:
-
-| Gap ID | Platform behavior under multi-tenancy | Production compensating control in `core-cymbal-agent/` | Feature-flagged GA sunset target & Roadmap |
-| :--- | :--- | :--- | :--- |
-| `GAP-01` | Discovery Engine Agent Catalog (`ARD`) does not natively filter custom agents by sub-project `tenant_id` | **Hop 2 Catalog PDP** (`hop2_registry_pdp_callbacks.py`) enforces signed STS JWT `tenant_id` ACL filtering + ADK `before_agent_callback` pruning (`HTTP 403`) | `Feature-Flagged Native Hook` (`CYMBAL_NATIVE_ARD_ACL_ENABLED`)<br>• Target: **Q3 2026 Native Agent Engine RBAC** |
-| `GAP-02` | Vertex AI Agent Engine Memory Bank shares namespace unless prefixed and caches decrypted L1 state after CMEK disable | **Hop 3 Memory Bank** (`hop3_compute_finops_bulkhead.py`) prefixes `{tenant}:{user}:{session}`, intercepts KMS revocation for **<5 s targeted Valkey `SCAN + UNLINK` (`cache:{tenant}:*`)**, and re-hydrates via **`SET NX PX 5000` single-flight lock** | `Feature-Flagged Native Hook` (`CYMBAL_NATIVE_CMEK_CACHE_SYNC`)<br>• Target: **Q4 2026 KMS Event-Driven Memory Purge** |
-| `GAP-03` | Shared `ContextCacheConfig` can bleed if dynamic tenant suffixes enter cache key; project-wide Vertex RPM lacks sub-tenant fairness | **Hop 3 Prefix Hash Guard & Valkey Bulkhead** caches only the immutable 32k `cymbal-shared-incident-system-prompt-v2` prefix and enforces 120/600 RPM token buckets (`HTTP 429` + `Retry-After` jitter) | `Feature-Flagged Native Hook` (`CYMBAL_NATIVE_SUBTENANT_QUOTA`)<br>• Target: **Q3 2026 Sub-Tenant Vertex AI Quotas** |
-| `GAP-04` | 3LO MCP tokens (Entra ID / ServiceNow) can trigger **Confused Deputy** cross-tenant replay if cached at worker level | **Hop 1 & Hop 5 3LO Vault** (`hop1_edge_identity_pep.py` & `hop5_data_rls_and_otel.py`) binds `{tenant_id}:{user_id}` DPoP (`dpop_jkt`) token vaults and returns `-32042` step-up consent on missing scopes | `Feature-Flagged Native Hook` (`CYMBAL_NATIVE_AUTH_MGR_3LO`)<br>• Target: **Q4 2026 Native Auth Manager 3LO Binding** |
-| `GAP-05` | Per-tenant token consumption (cached prefix vs. dynamic vs. thinking tokens) is aggregated at the GCP project level in Cloud Billing | **Hop 5 OTel FinOps Span** (`hop5_data_rls_and_otel.py`) emits SHA-256 prompt hashes (0 raw PII) and token counters to BigQuery (`cymbal_agentic_finops_otel.tenant_telemetry_spans`) | `Feature-Flagged Native Hook` (`CYMBAL_NATIVE_VERTEX_TENANT_BILLING`)<br>• Target: **Q1 2027 Vertex AI Sub-Billing Export** |
-
-#### BigQuery OpenTelemetry SQL chargeback aggregation (`GAP-05`)
-
-Finance and platform teams query the BigQuery OpenTelemetry sink directly to compute exact per-tenant token Cost of Goods Sold (COGS), applying the 90% Vertex AI `ContextCacheConfig` discount (0.1x weight) to cached prefix tokens:
-
-```sql
-SELECT
-  tenant_id,
-  tier,
-  COUNT(*) AS completed_turns,
-  SUM(cached_input_tokens) AS total_cached_prefix_tokens,
-  SUM(uncached_input_tokens + thinking_tokens + output_tokens) AS total_full_rate_tokens,
-  ROUND(
-    SUM(cached_input_tokens * 0.10 + uncached_input_tokens + thinking_tokens + output_tokens),
-    0
-  ) AS billable_equivalent_tokens,
-  LOGICAL_AND(NOT raw_pii_logged) AS zero_pii_attestation
-FROM `cymbal_agentic_finops_otel.tenant_telemetry_spans`
-WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)
-GROUP BY tenant_id, tier
-ORDER BY billable_equivalent_tokens DESC;
-```
-
-> **Architectural Grounding Boundary (BigQuery OpenTelemetry SQL Ledger):** The `cymbal_agentic_finops_otel.tenant_telemetry_spans` table is live-provisioned in Google Cloud project `ramp-portal-dev` (`#248990048888`) and populated asynchronously by `hop5_data_rls_and_otel.py` (`runtime_pipeline.py:L190-L209`) with SHA-256 prompt hashes and zero raw PII (`raw_pii_logged = FALSE`).
-
-## Architecture
-
-To bridge executive security strategy and production runtime implementation, this reference architecture follows a four-level **Macro-to-Micro (`L1 → L4`) decomposition** across the companion 15-slide deck:
-
-- **`L1 Logical View` — 3 Logical Security Layers (Slide 5):** Groups controls functionally into **Layer 1: Edge Identity & Ingress PEP (Hop 1)**, **Layer 2: Agent Runtime, Registry & Safety Guardrails (Hops 2, 3 & 4)**, and **Layer 3: Data Persistence, CMEK & FinOps OTel (Hop 5)**.
-- **`L2 Physical View` — 4 Physical Network Perimeters (VPC-SC) (Slide 6 / Figure 1):** Maps those three logical security layers onto four physical Google Cloud project and VPC Service Controls (`VPC-SC`) network boundaries (**Blue Perimeter 1**, **Green Perimeter 2**, **Yellow Perimeter 3**, and **Red Perimeter 4**).
-- **`L3 Process View` — 5-Hop Execution Lifecycle, Fail-Closed Circuit Breakers & Stampede Recovery (Slide 7 / Figure 2):** Traces the synchronous per-turn request sequence alongside <5 s targeted Valkey `SCAN + UNLINK` revocation and `SET NX PX 5000` single-flight cache rebuilds.
-- **`L4 Wire View` — Signed STS JWT & DPoP Cryptographic Contract (Slide 8):** Specifies the KMS ECDSA P-256 signed JWT payload, <0.15 ms local pod JWKS verification, and ~3 ms Valkey JTI/CMEK revocation deny-list check.
-
-### Level 1: System Context & Logical Taxonomy (L1 Logical)
-
-The following `L1 Logical` architecture diagram shows the end-to-end 3-layer security taxonomy connecting untrusted multi-tenant callers to the shared 5-hop ADK control plane and downstream VPC-SC isolation data planes:
-
-![Figure 1A — Multi-tenant agentic AI reference taxonomy: 3 logical security layers (Tenant Ingress PEP, 5-Hop ADK Control Plane, and VPC-SC Isolation Data Planes)](../diagrams/ws1-l1-logical-security-taxonomy.drawio.png)
-
-*Figure 1A. Official Google Cloud Architecture Center L1 Logical Security Taxonomy diagram showing the 3 logical security tiers: Layer 1 (Tenant Identity & Ingress PEP for competing enterprise callers), Layer 2 (Shared 5-Hop ADK Control Plane running in Vertex AI Agent Engine with ~3ms Valkey JTI Deny-List), and Layer 3 (Isolation Data Planes mapping to 4 Physical VPC-SC Perimeters across Pattern A pooled AlloyDB RLS, Pattern B sovereign silos, Pattern C PSC spokes, and OpenTelemetry governance).*
-
-### Level 2: Physical Network Perimeters (L2 Physical)
-
-The following `L2 Physical` diagram shows the multi-tenant agentic AI reference architecture on Google Cloud, organized into a central routing and governance hub connected to pooled and sovereign tenant workspaces:
-
-![Figure 1 — Multi-tenant agentic AI taxonomy: Pooled (Pattern A), Sovereign Silos (Pattern B), and Dynamic Hybrid (Pattern C)](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png)
-
-*Figure 1. Official Google Cloud Architecture Center L2 Physical hub-and-spoke topology showing the 4 Physical Network Perimeters (VPC-SC): Routing Hub (Blue Perimeter 1), Central Governance and Security Hub (Green Perimeter 2), Pooled Shared Runtime (Yellow Perimeter 3 — Pattern A), and Sovereign Silo / Hybrid PSC Spokes (Red Perimeter 4 — Patterns B and C). Editable assets: [Draw.io source](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio) | [Google Slides (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx) | [Architecture Center SVG](../diagrams/ws1-multi-tenant-taxonomy-overview.svg) | [Vision AST](../diagrams/vision_metadata/ws1-multi-tenant-taxonomy-overview.vision.json).*
-
-The `L2 Physical` architecture in Figure 1 maps the 3 Logical Security Layers onto **4 Physical Network Perimeters (VPC-SC)** that enforce defense-in-depth isolation across every agent turn:
-
-- **Blue Perimeter 1 — Routing Hub (Zone 1 `#aecbfa`):** Terminates external client traffic at the External Application Load Balancer, strips unverified `X-Tenant-ID` headers in Google Cloud Armor, verifies upstream OIDC/SAML tokens in Identity-Aware Proxy (IAP), and performs RFC 8693 token exchange bound to RFC 9449 DPoP proofs (`Hop 1` in [`hop1_edge_identity_pep.py`](../core-cymbal-agent/governance/hop1_edge_identity_pep.py)).
-- **Green Perimeter 2 — Central Governance and Security Hub (Zone 2 `#ceead6`):** Enforces catalog-level access control in the Discovery Engine Agent Catalog (`Hop 2` in [`hop2_registry_pdp_callbacks.py`](../core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py)), manages customer-managed encryption keys (CMEK) in Cloud KMS, monitors posture in Security Command Center, and exports PII-redacted OpenTelemetry FinOps spans to Cloud Logging and BigQuery (`Hop 5` in [`hop5_data_rls_and_otel.py`](../core-cymbal-agent/governance/hop5_data_rls_and_otel.py)).
-- **Yellow Perimeter 3 — Pattern A Pooled Shared Runtime Spoke (Zone 3 `#feefc3`):** Hosts high-density Standard-tier tenants inside a shared Vertex AI Agent Engine / Cloud Run Gen2 **gVisor (`runsc`) user-space kernel sandbox** (`Hop 3` in [`hop3_compute_finops_bulkhead.py`](../core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py)) with shared `ContextCacheConfig` prompt prefix caching (up to 90% input token savings), inline Model Armor + Cloud DLP guardrails (`Hop 4` in [`hop4_model_armor_guardrails.py`](../core-cymbal-agent/governance/hop4_model_armor_guardrails.py)), and shared AlloyDB with `FORCE ROW LEVEL SECURITY (RLS)`.
-- **Red Perimeter 4 — Pattern B Sovereign Silo and Pattern C Hybrid PSC Spoke (Zone 4 `#fad2cf`):** Isolates regulated Enterprise tenants inside dedicated Google Cloud projects protected by VPC Service Controls (`VPC-SC`), IAM Principal Access Boundaries (`PAB`), tenant-owned Cloud KMS CMEK keys (`HTTP 423` kill-switch), and either Managed Vertex AI Dedicated Provisioned Throughput (`gemini-2.5-pro-dedicated`), air-gapped Gemma 3 (27B) on private GKE, or Private Service Connect (`PSC`) producer attachments.
-
-### End-to-end 5-Hop cryptographic governance baseline (Figure 2)
-
-The following `5-Hop Baseline` diagram details the defense-in-depth security chain, showing the exact enforcement boundaries, protocol exchanges, and cryptographic transformations executed during every turn:
-
-![Figure 2 — End-to-end 5-Hop cryptographic governance baseline](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio.png)
-
-*Figure 2. Official Google Cloud Architecture Center 5-Hop Cryptographic Governance Baseline diagram showing the 5 sequential enforcement layers: Hop 1 (Edge Identity PEP), Hop 2 (Catalog Registry PDP), Hop 3 (Compute Sandbox & Quota Bulkhead), Hop 4 (Bidirectional Model Armor & Cloud SDP), and Hop 5 (Transactional AlloyDB RLS & OpenTelemetry FinOps). Editable assets: [Draw.io source](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio) | [Google Slides (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx) | [Architecture Center SVG](../diagrams/ws1-cloud-arch-center-5hop-baseline.svg) | [Vision AST](../diagrams/vision_metadata/ws1-cloud-arch-center-5hop-baseline.vision.json).*
-
-The numbered callouts across Figure 1 and Figure 2 (`1`–`7`) trace every state transition in the 5-Hop governance pipeline in exact causal execution sequence ([`runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py)):
-
-| Step & Badge | Governance Hop & Component | Latency Budget | Enforcement Action & Code Implementation |
-| :--- | :--- | :--- | :--- |
-| **`1 Request`** | **Hop 1a: Edge Ingress & WAF Sanitization** | `<0.15 ms` | External ALB terminates TLS 1.3 / mTLS. Cloud Armor strips client-supplied `X-Tenant-ID` headers; rejects unverified callers at the perimeter edge. |
-| **`2 Request`** | **Hop 1b & 2: Token Exchange & ARD Pruning** | `~6 ms` mint<br>`~1.2 ms` ARD | IAP and `hop1_edge_identity_pep.py` ([`runtime_pipeline.py:L60-L80`](../core-cymbal-agent/runtime_pipeline.py)) exchange upstream OIDC JWT for Cloud KMS ECDSA P-256 signed STS JWT (`5-min TTL`, `<0.15 ms` cached JWKS verify). Discovery Engine (`ARD`) and ADK `before_agent_callback` (`hop2_registry_pdp_callbacks.py`, [`runtime_pipeline.py:L82-L97`](../core-cymbal-agent/runtime_pipeline.py)) filter agent catalogs, returning `HTTP 403 Forbidden` on unauthorized cross-tenant calls. |
-| **`3 Route`** | **Hop 3a: Sandbox Binding & Quota Bulkhead** | `~3 ms` | Dispatches to target workspace (Pool/Silo/PSC). Inside gVisor (`runsc`) sandbox (`hop3_compute_finops_bulkhead.py`, [`runtime_pipeline.py:L99-L113`](../core-cymbal-agent/runtime_pipeline.py)), binds immutable `temp:tenant_id`, checks Memorystore Valkey JTI/CMEK deny-list (`revoked_jti:{tenant_id}`, returning `HTTP 423 Locked`), enforces Lua RPM token bucket (`120` vs. `600 RPM`, returning `HTTP 429`), and clamps `thinking_budget` (`4,000` vs. `8,000` tokens). |
-| **`4 Sanitize request`** | **Hop 4a: Pre-Inference Safety & NLC Screening** | `~22 ms` p95 | Model Armor and Cloud SDP (`hop4_model_armor_guardrails.py`, [`runtime_pipeline.py:L115-L125`](../core-cymbal-agent/runtime_pipeline.py)) scan ingress prompt and tool parameters, blocking prompt/SQL injection (`HTTP 400 Bad Request`) and tenant Natural Language Policy Compliance violations (`HTTP 422 Unprocessable Entity`). |
-| **`5 Generates response`** | **Hop 5a & 3b: RLS, Scoped MCP & Inference** | `~1.8 ms` RLS<br>`1,800 ms` LLM | AlloyDB sets `SET LOCAL app.current_tenant_id` under `FORCE ROW LEVEL SECURITY` (`hop5_data_rls_and_otel.py`, [`runtime_pipeline.py:L127-L182`](../core-cymbal-agent/runtime_pipeline.py)); verifies `{tenant_id}:{user_id}` DPoP-vaulted 3LO tokens (returning MCP `-32042` / `HTTP 401` step-up consent if absent); attaches 32k prefix `ContextCacheConfig` (90% cached input discount); invokes Gemini 2.5 Pro, dedicated PT (`gemini-2.5-pro-dedicated`), or air-gapped Gemma 3 (27B). |
-| **`6 Sanitize response`** | **Hop 4b: Post-Inference Egress Redaction** | `~8 ms` | Model Armor and Cloud SDP (`hop4_model_armor_guardrails.py`, [`runtime_pipeline.py:L184-L188`](../core-cymbal-agent/runtime_pipeline.py)) scrub regulated PII, PCI, SSN, or IBAN tokens (`[REDACTED_PII]` / `[REDACTED-FINVAULT-IBAN]`) before model completion or tool payloads leave tenant boundary. |
-| **`7 Sanitized response`** | **Hop 5b: Delivery & FinOps OTel Export** | `~2.8 ms` async | Delivers sanitized `HTTP 200` response to caller. OpenTelemetry (`hop5_data_rls_and_otel.py`, [`runtime_pipeline.py:L190-L209`](../core-cymbal-agent/runtime_pipeline.py)) asynchronously exports SHA-256 hashed, zero-PII token metrics to BigQuery (`cymbal_agentic_finops_otel.tenant_telemetry_spans`). |
-
-### Level 3: Process & Sequence Swimlanes (L3 Process)
-
-The following `L3 Process` diagram models the synchronous 5-actor UML sequence tracing an agent turn from untrusted tenant caller ingress through fail-closed circuit breakers and single-flight cache recovery:
-
-![Figure 2A — 5-Actor UML sequence swimlane, fail-closed circuit breakers, and stampede recovery](../diagrams/ws1-l3-process-sequence-swimlane.drawio.png)
-
-*Figure 2A. Official Google Cloud Architecture Center L3 Process UML Sequence Swimlane tracing the 5 runtime actors across Hop 1 Edge & IAM STS, Hops 2–3 ARD & Memory, Hop 4 Model Armor & LLM, and Hop 5 MCP & AlloyDB, illustrating fail-closed HTTP 401/403/429/422/423 circuit breakers and single-flight SET NX PX 5000 stampede recovery.*
-
-### Level 4: Wire-Level Protocol Normalization (L4 Wire)
-
-The following `L4 Wire` diagram details the three-stage protocol transformation stripping untrusted caller headers at Hop 1 and outputting an immutable, sender-constrained STS JWT:
-
-![Figure 2B — Wire-level protocol normalization: Hop 1 spoofed header stripping and signed STS JWT context](../diagrams/ws1-l4-wire-protocol-transformation.drawio.png)
-
-*Figure 2B. Official Google Cloud Architecture Center L4 Wire-Level Protocol Normalization Triptych demonstrating how unverified client claims and spoofed tenant headers are stripped at Cloud Armor (Stage 01), exchanged via RFC 8693 OBO + RFC 9449 DPoP JKT (Stage 02), and signed with Cloud KMS ECDSA P-256 for <0.15ms in-memory cached JWKS verification across downstream microservices.*
-
 ## Products used
 
 This reference architecture uses the following Google Cloud products and open-source frameworks across Patterns A, B, and C:
@@ -219,6 +115,75 @@ This reference architecture uses the following Google Cloud products and open-so
 - [VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs) and [Private Service Connect](https://cloud.google.com/vpc/docs/private-service-connect): Network perimeters preventing exfiltration and establishing unidirectional NAT-based private peering between routing hub and spokes.
 - [Cloud Key Management Service (Cloud KMS)](https://cloud.google.com/kms/docs): Asymmetric ECDSA P-256 STS JWT signing, CMEK keys, and sub-60s `HTTP 423 Locked` tenant kill-switches.
 - [Security Command Center](https://cloud.google.com/security-command-center/docs), [Cloud Logging](https://cloud.google.com/logging/docs), and [BigQuery](https://cloud.google.com/bigquery/docs): Posture monitoring, PII-redacted OpenTelemetry logging, and per-tenant FinOps chargeback analytics (`cymbal_agentic_finops_otel.tenant_telemetry_spans`).
+
+## Architecture
+
+To bridge executive security strategy and production runtime implementation, this reference architecture follows a four-level **Macro-to-Micro (`L1 → L4`) decomposition** across five canonical diagrams and the companion 15-slide deck:
+
+- **`L1 Logical View` — 3 Logical Security Layers (Figure 1 / Slide 5):** Groups controls functionally into **Layer 1: Edge Identity & Ingress PEP (Hop 1)**, **Layer 2: Agent Runtime, Registry & Safety Guardrails (Hops 2, 3 & 4)**, and **Layer 3: Data Persistence, CMEK & FinOps OTel (Hop 5)**.
+- **`L2 Physical View` — 4 Physical Network Perimeters (VPC-SC) (Figure 2 / Slide 6):** Maps those three logical security layers onto four physical Google Cloud project and VPC Service Controls (`VPC-SC`) network boundaries (**Blue Perimeter 1**, **Green Perimeter 2**, **Yellow Perimeter 3**, and **Red Perimeter 4**).
+- **`5-Hop Governance Baseline` — End-to-End Cryptographic Chain (Figure 3 / Slide 7):** Details the 5 sequential enforcement layers, latency budgets, and state transitions across edge identity, catalog filtering, compute bulkhead, model armor, and AlloyDB RLS.
+- **`L3 Process View` — 5-Hop Execution Lifecycle, Fail-Closed Circuit Breakers & Stampede Recovery (Figure 4 / Slide 13):** Traces the synchronous per-turn request sequence alongside <5 s targeted Valkey `SCAN + UNLINK` revocation and `SET NX PX 5000` single-flight cache rebuilds.
+- **`L4 Wire View` — Signed STS JWT & DPoP Cryptographic Contract (Figure 5 / Slide 14):** Specifies the KMS ECDSA P-256 signed JWT payload, <0.15 ms local pod JWKS verification, and ~3 ms Valkey JTI/CMEK revocation deny-list check.
+
+### Level 1: System Context & Logical Taxonomy (Figure 1)
+
+The following `L1 Logical` architecture diagram shows the end-to-end 3-layer security taxonomy connecting untrusted multi-tenant callers to the shared 5-hop ADK control plane and downstream VPC-SC isolation data planes:
+
+![Figure 1 — Multi-tenant agentic AI reference taxonomy: 3 logical security layers (Tenant Ingress PEP, 5-Hop ADK Control Plane, and VPC-SC Isolation Data Planes)](../diagrams/ws1-l1-logical-security-taxonomy.drawio.png)
+
+*Figure 1. Official Google Cloud Architecture Center L1 Logical Security Taxonomy diagram showing the 3 logical security tiers: Layer 1 (Tenant Identity & Ingress PEP for competing enterprise callers), Layer 2 (Shared 5-Hop ADK Control Plane running in Vertex AI Agent Engine with ~3ms Valkey JTI Deny-List), and Layer 3 (Isolation Data Planes mapping to 4 Physical VPC-SC Perimeters across Pattern A pooled AlloyDB RLS, Pattern B sovereign silos, Pattern C PSC spokes, and OpenTelemetry governance). Editable assets: [Draw.io source](../diagrams/ws1-l1-logical-security-taxonomy.drawio) | [Architecture Center SVG](../diagrams/ws1-l1-logical-security-taxonomy.svg).*
+
+### Level 2: Physical Network Perimeters (Figure 2)
+
+The following `L2 Physical` diagram shows the multi-tenant agentic AI reference architecture on Google Cloud, organized into a central routing and governance hub connected to pooled and sovereign tenant workspaces:
+
+![Figure 2 — Multi-tenant agentic AI taxonomy: Pooled (Pattern A), Sovereign Silos (Pattern B), and Dynamic Hybrid (Pattern C)](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png)
+
+*Figure 2. Official Google Cloud Architecture Center L2 Physical hub-and-spoke topology showing the 4 Physical Network Perimeters (VPC-SC): Routing Hub (Blue Perimeter 1), Central Governance and Security Hub (Green Perimeter 2), Pooled Shared Runtime (Yellow Perimeter 3 — Pattern A), and Sovereign Silo / Hybrid PSC Spokes (Red Perimeter 4 — Patterns B and C). Editable assets: [Draw.io source](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio) | [Google Slides (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx) | [Architecture Center SVG](../diagrams/ws1-multi-tenant-taxonomy-overview.svg) | [Vision AST](../diagrams/vision_metadata/ws1-multi-tenant-taxonomy-overview.vision.json).*
+
+The `L2 Physical` architecture in Figure 2 maps the 3 Logical Security Layers onto **4 Physical Network Perimeters (VPC-SC)** that enforce defense-in-depth isolation across every agent turn:
+
+- **Blue Perimeter 1 — Routing Hub (Zone 1 `#aecbfa`):** Terminates external client traffic at the External Application Load Balancer, strips unverified `X-Tenant-ID` headers in Google Cloud Armor, verifies upstream OIDC/SAML tokens in Identity-Aware Proxy (IAP), and performs RFC 8693 token exchange bound to RFC 9449 DPoP proofs (`Hop 1` in [`hop1_edge_identity_pep.py`](../core-cymbal-agent/governance/hop1_edge_identity_pep.py)).
+- **Green Perimeter 2 — Central Governance and Security Hub (Zone 2 `#ceead6`):** Enforces catalog-level access control in the Discovery Engine Agent Catalog (`Hop 2` in [`hop2_registry_pdp_callbacks.py`](../core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py)), manages customer-managed encryption keys (CMEK) in Cloud KMS, monitors posture in Security Command Center, and exports PII-redacted OpenTelemetry FinOps spans to Cloud Logging and BigQuery (`Hop 5` in [`hop5_data_rls_and_otel.py`](../core-cymbal-agent/governance/hop5_data_rls_and_otel.py)).
+- **Yellow Perimeter 3 — Pattern A Pooled Shared Runtime Spoke (Zone 3 `#feefc3`):** Hosts high-density Standard-tier tenants inside a shared Vertex AI Agent Engine / Cloud Run Gen2 **gVisor (`runsc`) user-space kernel sandbox** (`Hop 3` in [`hop3_compute_finops_bulkhead.py`](../core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py)) with shared `ContextCacheConfig` prompt prefix caching (up to 90% input token savings), inline Model Armor + Cloud DLP guardrails (`Hop 4` in [`hop4_model_armor_guardrails.py`](../core-cymbal-agent/governance/hop4_model_armor_guardrails.py)), and shared AlloyDB with `FORCE ROW LEVEL SECURITY (RLS)`.
+- **Red Perimeter 4 — Pattern B Sovereign Silo and Pattern C Hybrid PSC Spoke (Zone 4 `#fad2cf`):** Isolates regulated Enterprise tenants inside dedicated Google Cloud projects protected by VPC Service Controls (`VPC-SC`), IAM Principal Access Boundaries (`PAB`), tenant-owned Cloud KMS CMEK keys (`HTTP 423` kill-switch), and either Managed Vertex AI Dedicated Provisioned Throughput (`gemini-2.5-pro-dedicated`), air-gapped Gemma 3 (27B) on private GKE, or Private Service Connect (`PSC`) producer attachments.
+
+### End-to-end 5-Hop cryptographic governance baseline (Figure 3)
+
+The following `5-Hop Baseline` diagram details the defense-in-depth security chain, showing the exact enforcement boundaries, protocol exchanges, and cryptographic transformations executed during every turn:
+
+![Figure 3 — End-to-end 5-Hop cryptographic governance baseline](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio.png)
+
+*Figure 3. Official Google Cloud Architecture Center 5-Hop Cryptographic Governance Baseline diagram showing the 5 sequential enforcement layers: Hop 1 (Edge Identity PEP), Hop 2 (Catalog Registry PDP), Hop 3 (Compute Sandbox & Quota Bulkhead), Hop 4 (Bidirectional Model Armor & Cloud SDP), and Hop 5 (Transactional AlloyDB RLS & OpenTelemetry FinOps). Editable assets: [Draw.io source](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio) | [Google Slides (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx) | [Architecture Center SVG](../diagrams/ws1-cloud-arch-center-5hop-baseline.svg) | [Vision AST](../diagrams/vision_metadata/ws1-cloud-arch-center-5hop-baseline.vision.json).*
+
+The numbered callouts across Figure 2 and Figure 3 (`1`–`7`) trace every state transition in the 5-Hop governance pipeline in exact causal execution sequence ([`runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py)):
+
+| Step & Badge | Governance Hop & Component | Latency Budget | Enforcement Action & Code Implementation |
+| :--- | :--- | :--- | :--- |
+| **`1 Request`** | **Hop 1a: Edge Ingress & WAF Sanitization** | `<0.15 ms` | External ALB terminates TLS 1.3 / mTLS. Cloud Armor strips client-supplied `X-Tenant-ID` headers; rejects unverified callers at the perimeter edge. |
+| **`2 Request`** | **Hop 1b & 2: Token Exchange & ARD Pruning** | `~6 ms` mint<br>`~1.2 ms` ARD | IAP and `hop1_edge_identity_pep.py` ([`runtime_pipeline.py:L60-L80`](../core-cymbal-agent/runtime_pipeline.py)) exchange upstream OIDC JWT for Cloud KMS ECDSA P-256 signed STS JWT (`5-min TTL`, `<0.15 ms` cached JWKS verify). Discovery Engine (`ARD`) and ADK `before_agent_callback` (`hop2_registry_pdp_callbacks.py`, [`runtime_pipeline.py:L82-L97`](../core-cymbal-agent/runtime_pipeline.py)) filter agent catalogs, returning `HTTP 403 Forbidden` on unauthorized cross-tenant calls. |
+| **`3 Route`** | **Hop 3a: Sandbox Binding & Quota Bulkhead** | `~3 ms` | Dispatches to target workspace (Pool/Silo/PSC). Inside gVisor (`runsc`) sandbox (`hop3_compute_finops_bulkhead.py`, [`runtime_pipeline.py:L99-L113`](../core-cymbal-agent/runtime_pipeline.py)), binds immutable `temp:tenant_id`, checks Memorystore Valkey JTI/CMEK deny-list (`revoked_jti:{tenant_id}`, returning `HTTP 423 Locked`), enforces Lua RPM token bucket (`120` vs. `600 RPM`, returning `HTTP 429`), and clamps `thinking_budget` (`4,000` vs. `8,000` tokens). |
+| **`4 Sanitize request`** | **Hop 4a: Pre-Inference Safety & NLC Screening** | `~22 ms` p95 | Model Armor and Cloud SDP (`hop4_model_armor_guardrails.py`, [`runtime_pipeline.py:L115-L125`](../core-cymbal-agent/runtime_pipeline.py)) scan ingress prompt and tool parameters, blocking prompt/SQL injection (`HTTP 400 Bad Request`) and tenant Natural Language Policy Compliance violations (`HTTP 422 Unprocessable Entity`). |
+| **`5 Generates response`** | **Hop 5a & 3b: RLS, Scoped MCP & Inference** | `~1.8 ms` RLS<br>`1,800 ms` LLM | AlloyDB sets `SET LOCAL app.current_tenant_id` under `FORCE ROW LEVEL SECURITY` (`hop5_data_rls_and_otel.py`, [`runtime_pipeline.py:L127-L182`](../core-cymbal-agent/runtime_pipeline.py)); verifies `{tenant_id}:{user_id}` DPoP-vaulted 3LO tokens (returning MCP `-32042` / `HTTP 401` step-up consent if absent); attaches 32k prefix `ContextCacheConfig` (90% cached input discount); invokes Gemini 2.5 Pro, dedicated PT (`gemini-2.5-pro-dedicated`), or air-gapped Gemma 3 (27B). |
+| **`6 Sanitize response`** | **Hop 4b: Post-Inference Egress Redaction** | `~8 ms` | Model Armor and Cloud SDP (`hop4_model_armor_guardrails.py`, [`runtime_pipeline.py:L184-L188`](../core-cymbal-agent/runtime_pipeline.py)) scrub regulated PII, PCI, SSN, or IBAN tokens (`[REDACTED_PII]` / `[REDACTED-FINVAULT-IBAN]`) before model completion or tool payloads leave tenant boundary. |
+| **`7 Sanitized response`** | **Hop 5b: Delivery & FinOps OTel Export** | `~2.8 ms` async | Delivers sanitized `HTTP 200` response to caller. OpenTelemetry (`hop5_data_rls_and_otel.py`, [`runtime_pipeline.py:L190-L209`](../core-cymbal-agent/runtime_pipeline.py)) asynchronously exports SHA-256 hashed, zero-PII token metrics to BigQuery (`cymbal_agentic_finops_otel.tenant_telemetry_spans`). |
+
+### Level 3: Process & Sequence Swimlanes (Figure 4)
+
+The following `L3 Process` diagram models the synchronous 5-actor UML sequence tracing an agent turn from untrusted tenant caller ingress through fail-closed circuit breakers and single-flight cache recovery:
+
+![Figure 4 — 5-Actor UML sequence swimlane, fail-closed circuit breakers, and stampede recovery](../diagrams/ws1-l3-process-sequence-swimlane.drawio.png)
+
+*Figure 4. Official Google Cloud Architecture Center L3 Process UML Sequence Swimlane tracing the 5 runtime actors across Hop 1 Edge & IAM STS, Hops 2–3 ARD & Memory, Hop 4 Model Armor & LLM, and Hop 5 MCP & AlloyDB, illustrating fail-closed HTTP 401/403/429/422/423 circuit breakers and single-flight SET NX PX 5000 stampede recovery. Editable assets: [Draw.io source](../diagrams/ws1-l3-process-sequence-swimlane.drawio) | [Architecture Center SVG](../diagrams/ws1-l3-process-sequence-swimlane.svg).*
+
+### Level 4: Wire-Level Protocol Normalization (Figure 5)
+
+The following `L4 Wire` diagram details the three-stage protocol transformation stripping untrusted caller headers at Hop 1 and outputting an immutable, sender-constrained STS JWT:
+
+![Figure 5 — Wire-level protocol normalization: Hop 1 spoofed header stripping and signed STS JWT context](../diagrams/ws1-l4-wire-protocol-transformation.drawio.png)
+
+*Figure 5. Official Google Cloud Architecture Center L4 Wire-Level Protocol Normalization Triptych demonstrating how unverified client claims and spoofed tenant headers are stripped at Cloud Armor (Stage 01), exchanged via RFC 8693 OBO + RFC 9449 DPoP JKT (Stage 02), and signed with Cloud KMS ECDSA P-256 for <0.15ms in-memory cached JWKS verification across downstream microservices. Editable assets: [Draw.io source](../diagrams/ws1-l4-wire-protocol-transformation.drawio) | [Architecture Center SVG](../diagrams/ws1-l4-wire-protocol-transformation.svg).*
 
 ## Design considerations
 
@@ -309,6 +274,42 @@ Where:
 - **Real-World Enterprise Load & Payload Scaling:** Under heavy multi-turn conversational history (>50 KB context) or multi-page tool outputs, Hop 4 regional inspection scales gracefully from ~22 ms p95 to **~85 ms p95**, remaining under 5% of total LLM generation time. External 3LO MCP calls (ServiceNow, Jira) introduce 300–850 ms external roundtrips that execute asynchronously without blocking control-plane state validation.
 
 > **Architectural Grounding Boundary (Live Cloud Execution vs. Reference Emulation):** In the accompanying verification suite (`scripts/verify_cloud_console_and_runtime.py`), **Cloud Run Gen2** (`ge-blogs` / `cymbal-multi-tenant-patterns`), **Vertex AI** (`gemini-2.5-pro` & `gemini-2.5-flash`), **BigQuery** (`pattern_a_pooled_rls_entities`, `pattern_b_sovereign_silo_ledger`, `pattern_c_psc_endpoint_registry`), **Google Workspace** (`15/15` Slides decks & `6/6` Docs), **AWS Bedrock AgentCore MCP Gateway** (`cymbal-a2a-mcp-gateway-suyxm3caof`, 10 `READY` targets), **Amazon Cognito RS256 OAuth2**, **AWS Lambda MCP Proxy** (`cymbal-10-saas-mcp-proxy`), and **immutable Amazon S3 Audit Ledgers** (`s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1/cymbal-10saas-ledger/`) execute against **live cloud APIs**. To keep continuous red-team regression suites deterministic and avoid continuous hourly cluster charges for idle database/GPU nodes, **AlloyDB for PostgreSQL**, **Memorystore for Valkey**, and **Private GKE Gemma 3 (27B)** are provided as **production-ready Terraform HCL blueprints** (`workstream-2/2.6`, `workstream-3/3.6`, `workstream-4/4.6`) paired with **deterministic in-memory Python reference state machines** (`core-cymbal-agent/governance/hop1..hop5`).
+
+## Compensating controls for Early Access Program (EAP) product gaps and GA sunset roadmap
+
+During cross-product architecture reviews ([1.2 Product Team Review Pack](../workstream-1-reference-architecture/1.2-product-team-review-pack.md) and [1.4 EAP & Product Gap Tracker](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md)), five platform behaviors required explicit compensating controls in `core-cymbal-agent/`. Every compensating layer is wrapped in a **feature-flagged GA Sunset Hook** with an explicit engineering roadmap target so platform teams can retire custom Python/Valkey shims as native Google Cloud features reach General Availability:
+
+| Gap ID | Platform behavior under multi-tenancy | Production compensating control in `core-cymbal-agent/` | Feature-flagged GA sunset target & Roadmap |
+| :--- | :--- | :--- | :--- |
+| `GAP-01` | Discovery Engine Agent Catalog (`ARD`) does not natively filter custom agents by sub-project `tenant_id` | **Hop 2 Catalog PDP** (`hop2_registry_pdp_callbacks.py`) enforces signed STS JWT `tenant_id` ACL filtering + ADK `before_agent_callback` pruning (`HTTP 403`) | `Feature-Flagged Native Hook` (`CYMBAL_NATIVE_ARD_ACL_ENABLED`)<br>• Target: **Q3 2026 Native Agent Engine RBAC** |
+| `GAP-02` | Vertex AI Agent Engine Memory Bank shares namespace unless prefixed and caches decrypted L1 state after CMEK disable | **Hop 3 Memory Bank** (`hop3_compute_finops_bulkhead.py`) prefixes `{tenant}:{user}:{session}`, intercepts KMS revocation for **<5 s targeted Valkey `SCAN + UNLINK` (`cache:{tenant}:*`)**, and re-hydrates via **`SET NX PX 5000` single-flight lock** | `Feature-Flagged Native Hook` (`CYMBAL_NATIVE_CMEK_CACHE_SYNC`)<br>• Target: **Q4 2026 KMS Event-Driven Memory Purge** |
+| `GAP-03` | Shared `ContextCacheConfig` can bleed if dynamic tenant suffixes enter cache key; project-wide Vertex RPM lacks sub-tenant fairness | **Hop 3 Prefix Hash Guard & Valkey Bulkhead** caches only the immutable 32k `cymbal-shared-incident-system-prompt-v2` prefix and enforces 120/600 RPM token buckets (`HTTP 429` + `Retry-After` jitter) | `Feature-Flagged Native Hook` (`CYMBAL_NATIVE_SUBTENANT_QUOTA`)<br>• Target: **Q3 2026 Sub-Tenant Vertex AI Quotas** |
+| `GAP-04` | 3LO MCP tokens (Entra ID / ServiceNow) can trigger **Confused Deputy** cross-tenant replay if cached at worker level | **Hop 1 & Hop 5 3LO Vault** (`hop1_edge_identity_pep.py` & `hop5_data_rls_and_otel.py`) binds `{tenant_id}:{user_id}` DPoP (`dpop_jkt`) token vaults and returns `-32042` step-up consent on missing scopes | `Feature-Flagged Native Hook` (`CYMBAL_NATIVE_AUTH_MGR_3LO`)<br>• Target: **Q4 2026 Native Auth Manager 3LO Binding** |
+| `GAP-05` | Per-tenant token consumption (cached prefix vs. dynamic vs. thinking tokens) is aggregated at the GCP project level in Cloud Billing | **Hop 5 OTel FinOps Span** (`hop5_data_rls_and_otel.py`) emits SHA-256 prompt hashes (0 raw PII) and token counters to BigQuery (`cymbal_agentic_finops_otel.tenant_telemetry_spans`) | `Feature-Flagged Native Hook` (`CYMBAL_NATIVE_VERTEX_TENANT_BILLING`)<br>• Target: **Q1 2027 Vertex AI Sub-Billing Export** |
+
+### BigQuery OpenTelemetry SQL chargeback aggregation (`GAP-05`)
+
+Finance and platform teams query the BigQuery OpenTelemetry sink directly to compute exact per-tenant token Cost of Goods Sold (COGS), applying the 90% Vertex AI `ContextCacheConfig` discount (0.1x weight) to cached prefix tokens:
+
+```sql
+SELECT
+  tenant_id,
+  tier,
+  COUNT(*) AS completed_turns,
+  SUM(cached_input_tokens) AS total_cached_prefix_tokens,
+  SUM(uncached_input_tokens + thinking_tokens + output_tokens) AS total_full_rate_tokens,
+  ROUND(
+    SUM(cached_input_tokens * 0.10 + uncached_input_tokens + thinking_tokens + output_tokens),
+    0
+  ) AS billable_equivalent_tokens,
+  LOGICAL_AND(NOT raw_pii_logged) AS zero_pii_attestation
+FROM `cymbal_agentic_finops_otel.tenant_telemetry_spans`
+WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)
+GROUP BY tenant_id, tier
+ORDER BY billable_equivalent_tokens DESC;
+```
+
+> **Architectural Grounding Boundary (BigQuery OpenTelemetry SQL Ledger):** The `cymbal_agentic_finops_otel.tenant_telemetry_spans` table is live-provisioned in Google Cloud project `ramp-portal-dev` (`#248990048888`) and populated asynchronously by `hop5_data_rls_and_otel.py` (`runtime_pipeline.py:L190-L209`) with SHA-256 prompt hashes and zero raw PII (`raw_pii_logged = FALSE`).
 
 ## Live Multi-Cloud (Google Cloud + AWS Bedrock AgentCore MCP) 10-SaaS Verification Matrix — 5-Hop Baseline & Reference Taxonomy
 
@@ -414,11 +415,11 @@ The companion 15-slide Workstream 1 presentation deck ([`slides/ws1-reference-ar
 
 | Blog Series Installment | Companion WS1 Deck Slides (15-Slide Architecture Arc) | Core Architectural Focus | Runnable Codebase & Terraform Modules |
 | :--- | :--- | :--- | :--- |
-| **Part 1: The SaaS AI Architect's Dilemma** | **Slides 1–4** (Cover, Agenda TOC, Personas & 12-Dim Matrix) | Pooled vs. Siloed vs. Hybrid economics, Confused-Deputy 3LO vaults (`{tenant}:{user}`), Dedicated PT vs. Air-Gapped GKE Gemma 3, and SRE fleet scale trade-offs | [`core-cymbal-agent/models.py`](../core-cymbal-agent/models.py) • [`runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py) |
-| **Part 2: Securing the Agent Loop** | **Slides 5–9** (Process Lifecycle, `L1` Logical Layers, Decision Matrix, `L2` Figure 1 & `L2` Figure 2) | Strict macro-to-micro taxonomy: 3 Logical Security Layers mapping to 4 Physical Network Perimeters (`Figure 1`), Cloud Armor header stripping, RFC 8693 OBO + DPoP, and `<0.15 ms` cached-JWKS verification | [`core-cymbal-agent/governance/hop1_edge_identity_pep.py`](../core-cymbal-agent/governance/hop1_edge_identity_pep.py) • [`hop2_registry_pdp_callbacks.py`](../core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py) |
-| **Part 3: Operational Resilience at Scale** | **Slide 10** (`L3` Merged 5-Actor UML Sequence, Fail-Closed Circuit Breakers & Stampede Recovery) | Consolidated `L3` runtime sequence, `~3 ms` Valkey JTI deny-list, `120/600 RPM` bulkheads (`HTTP 429` jitter), `<5 s` targeted `SCAN + UNLINK` L1 eviction (`0` peer evictions), and `SET NX PX 5000` single-flight AlloyDB re-hydration | [`core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py`](../core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py) • [`hop4_model_armor_guardrails.py`](../core-cymbal-agent/governance/hop4_model_armor_guardrails.py) |
-| **Part 4: Mind the Gap** | **Slides 11–12** (`L4` Wire Protocol Normalization & `GAP-01..05` EAP Product Gap Controls) | Compensating controls for cutting-edge AI platforms, feature-flagged GA sunset hooks (`feature-flagged native adapter`), and zero-PII BigQuery OpenTelemetry SQL chargeback (`0.1×` cached prefix weight) | [`core-cymbal-agent/governance/hop5_data_rls_and_otel.py`](../core-cymbal-agent/governance/hop5_data_rls_and_otel.py) • [`1.4 EAP & Product Gap Tracker`](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md) |
-| **Part 5: Automating Compliance** | **Slides 13–15** (Forensic Telemetry, Retina Before/After UI Proofs & Well-Architected SLA Scorecard) | Continuous forensic verification (`12/12 PASS • 107/107 Assertions`), Cloud Logging MQL queries, consolidated Well-Architected SLAs (`~42 ms` p95, `84.7%` token savings, `74%` TCO reduction), and 1-Click Terraform 2.6 / 3.6 / 4.6 deployment into Workstreams 2–5 | [`scripts/deploy_terraform_1click.sh`](../scripts/deploy_terraform_1click.sh) • [`scripts/run_deep_forensic_audit.py`](../scripts/run_deep_forensic_audit.py) • [WS2](ws2-pattern-a-pooled-architecture.md) • [WS3](ws3-pattern-b-sovereign-silos.md) • [WS4](ws4-pattern-c-hybrid-dynamic-tiering.md) • [WS5](ws5-decision-guide-and-agentic-triad.md) |
+| **Part 1: The SaaS AI Architect's Dilemma** | **Slides 1–4** (Cover, Agenda TOC, Personas & 12-Dim Matrix) | Pooled vs. Siloed vs. Hybrid economics, Confused-Deputy 3LO vaults (`{tenant}:{user}`), Dedicated PT vs. Air-Gapped GKE Gemma 3, and SRE fleet scale trade-offs | [`models.py`](../core-cymbal-agent/models.py) • [`runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py) |
+| **Part 2: Securing the Agent Loop** | **Slides 5–9** (Process Lifecycle, `L1` Logical Layers, Decision Matrix, `L2` Figure 2 & `5-Hop` Figure 3) | Strict macro-to-micro taxonomy: 3 Logical Security Layers mapping to 4 Physical Network Perimeters (`Figure 2`), Cloud Armor header stripping, RFC 8693 OBO + DPoP, and `<0.15 ms` cached-JWKS verification | [`hop1_edge_identity_pep.py`](../core-cymbal-agent/governance/hop1_edge_identity_pep.py) • [`hop2_registry_pdp_callbacks.py`](../core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py) |
+| **Part 3: Operational Resilience at Scale** | **Slide 10** (`L3` Merged 5-Actor UML Sequence, Fail-Closed Circuit Breakers & Stampede Recovery, Figure 4) | Consolidated `L3` runtime sequence, `~3 ms` Valkey JTI deny-list, `120/600 RPM` bulkheads (`HTTP 429` jitter), `<5 s` targeted `SCAN + UNLINK` L1 eviction (`0` peer evictions), and `SET NX PX 5000` single-flight AlloyDB re-hydration | [`hop3_compute_finops_bulkhead.py`](../core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py) • [`hop4_model_armor_guardrails.py`](../core-cymbal-agent/governance/hop4_model_armor_guardrails.py) |
+| **Part 4: Mind the Gap** | **Slides 11–12** (`L4` Wire Protocol Normalization, Figure 5 & `GAP-01..05` EAP Product Gap Controls) | Compensating controls for cutting-edge AI platforms, feature-flagged GA sunset hooks (`feature-flagged native adapter`), and zero-PII BigQuery OpenTelemetry SQL chargeback (`0.1×` cached prefix weight) | [`hop5_data_rls_and_otel.py`](../core-cymbal-agent/governance/hop5_data_rls_and_otel.py) • [`1.4 EAP & Product Gap Tracker`](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md) |
+| **Part 5: Automating Compliance** | **Slides 13–15** (Forensic Telemetry, Retina Before/After UI Proofs & Well-Architected SLA Scorecard) | Continuous forensic verification (`12/12 PASS • 107/107 Assertions`), Cloud Logging MQL queries, consolidated Well-Architected SLAs (`~42 ms` p95, `84.7%` token savings, `74%` TCO reduction), and 1-Click Terraform 2.6 / 3.6 / 4.6 deployment into Workstreams 2–5 | [`deploy_terraform_1click.sh`](../scripts/deploy_terraform_1click.sh) • [`run_deep_forensic_audit.py`](../scripts/run_deep_forensic_audit.py) • [WS2](ws2-pattern-a-pooled-architecture.md) • [WS3](ws3-pattern-b-sovereign-silos.md) • [WS4](ws4-pattern-c-hybrid-dynamic-tiering.md) • [WS5](ws5-decision-guide-and-agentic-triad.md) |
 
 - Run the **1-Click Terraform Deployment Scripts & HCL Modules** across all 3 multi-tenant patterns:
   - [Master 1-Click All-Pattern Terraform Orchestrator (`scripts/deploy_terraform_1click.sh`)](../scripts/deploy_terraform_1click.sh)
@@ -445,8 +446,11 @@ The companion 15-slide Workstream 1 presentation deck ([`slides/ws1-reference-ar
   - [Download Workstream 1 Editable Word Document (`.docx`)](../docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx)
   - [Download Workstream 1 Upgraded 34-Slide Visual Presentation (`.pptx`)](../slides/ws1-12slide-visual-deck.pptx)
   - [Download Workstream 1 Canonical 15-Slide Presentation (`.pptx`)](../slides/ws1-reference-architecture-editable-slides.pptx)
-  - [Figure 1 Draw.io Source (`ws1-multi-tenant-taxonomy-overview.drawio`)](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio)
-  - [Figure 2 Draw.io Source (`ws1-cloud-arch-center-5hop-baseline.drawio`)](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio)
+  - [Figure 1 Draw.io Source (`ws1-l1-logical-security-taxonomy.drawio`)](../diagrams/ws1-l1-logical-security-taxonomy.drawio)
+  - [Figure 2 Draw.io Source (`ws1-multi-tenant-taxonomy-overview.drawio`)](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio)
+  - [Figure 3 Draw.io Source (`ws1-cloud-arch-center-5hop-baseline.drawio`)](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio)
+  - [Figure 4 Draw.io Source (`ws1-l3-process-sequence-swimlane.drawio`)](../diagrams/ws1-l3-process-sequence-swimlane.drawio)
+  - [Figure 5 Draw.io Source (`ws1-l4-wire-protocol-transformation.drawio`)](../diagrams/ws1-l4-wire-protocol-transformation.drawio)
 
 ---
 

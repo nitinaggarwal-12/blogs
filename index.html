@@ -143,15 +143,16 @@
       const jumpLinksHtml = jumps.map(([href, label]) => `<a href="${href}" class="arch-nav-pill">${escapeHtml(label)} &rarr;</a>`).join(' ');
 
       return `
-        <div class="gcp-exec-summary-card" data-no-hover-toolbar="true" style="background:#ffffff; border:1px solid #cbd5e1; border-left:5px solid #1a73e8; border-radius:10px; padding:18px 22px; margin:14px 0 24px 0; box-shadow:0 2px 8px rgba(15,23,42,0.04);">
+        <div class="gcp-exec-summary-card" id="blog-exec-summary-card" data-no-hover-toolbar="true" style="background:#ffffff; border:1px solid #cbd5e1; border-left:5px solid #1a73e8; border-radius:10px; padding:18px 22px; margin:14px 0 24px 0; box-shadow:0 2px 8px rgba(15,23,42,0.04);">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid #f1f5f9; padding-bottom:10px;">
             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
               <span class="badge badge-blue" style="font-size:11px; font-weight:700;">Executive Overview</span>
               <span class="badge badge-green" style="font-size:11px; font-weight:700;">Google Cloud Certified</span>
               <span class="badge badge-purple" style="font-size:11px; font-weight:700;">Level 300 Blueprint</span>
             </div>
-            <div style="font-size:12px; color:#64748b; font-weight:600;">
-              <span>Zero-Trust 10/10 PASS</span> &bull; <span>78% FinOps Savings</span>${timeBadge}
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:12px; color:#64748b; font-weight:600;">Zero-Trust 10/10 PASS &bull; 78% FinOps Savings${timeBadge}</span>
+              <button type="button" class="sim-btn" style="padding:2px 8px; font-size:11px; color:#1a73e8; font-weight:700;" onclick="switchTab('overview'); switchPatternSelectorMode('mcda'); document.getElementById('ov-pattern-selector').scrollIntoView({behavior:'smooth'});">🎯 Tenancy Fit Scorer &rarr;</button>
             </div>
           </div>
           <div style="font-size:14.5px; line-height:1.65; color:#1e293b; margin-bottom:14px;">
@@ -702,7 +703,8 @@
           hash: anchorHash
         });
       }
-      if (!anchorHash) {
+      const currentView = new URLSearchParams(window.location.search).get('view');
+      if (!anchorHash && (!currentView || currentView === 'guide')) {
         const blogSec = document.getElementById('hub-blog-section');
         if (blogSec) blogSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
@@ -1202,9 +1204,15 @@
           applyPersistedCardOverrides();
           renderCommentsDrawerAndInlineBadges();
         }
-        const targetHash = anchorHash || (window.location.hash ? window.location.hash.slice(1) : '');
-        if (targetHash) {
-          setTimeout(() => scrollToReaderAnchor(targetHash), 60);
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeView = urlParams.get('view');
+        if (activeView && activeView !== 'guide' && typeof window.setHubViewMode === 'function') {
+          setTimeout(() => window.setHubViewMode(activeView, urlParams.get('target'), true), 50);
+        } else {
+          const targetHash = anchorHash || (window.location.hash ? window.location.hash.slice(1) : '');
+          if (targetHash) {
+            setTimeout(() => scrollToReaderAnchor(targetHash), 60);
+          }
         }
       } catch (err) {
         readerEl.textContent = `Unable to load blog (${err.message}).`;
@@ -3300,6 +3308,11 @@
           openDocInReader(initialDocParam, initialHash, true);
         }
 
+        const initialViewParam = initialParams.get('view');
+        if (initialViewParam && typeof window.setHubViewMode === 'function') {
+          window.setHubViewMode(initialViewParam, initialParams.get('target'), true);
+        }
+
         if (initialParams.get('scroll') === 'gallery') {
           const wbCard = document.getElementById('blog-e2e-pattern-execution-and-codebase-workbench');
           if (wbCard) wbCard.style.display = 'none';
@@ -3905,21 +3918,37 @@
         archNav.id = 'blog-inline-arch-pill-nav';
         archNav.className = 'gcp-arch-nav-strip';
         archNav.setAttribute('data-no-hover-toolbar', 'true');
+        const wsKey = (typeof activeHubWsKey !== 'undefined' ? activeHubWsKey : 'WS1') || 'WS1';
+        const ws = (typeof GUIDED_WORKSTREAMS !== 'undefined' && GUIDED_WORKSTREAMS[wsKey]) ? GUIDED_WORKSTREAMS[wsKey] : null;
+        const diagrams = (ws && Array.isArray(ws.diagrams) && ws.diagrams.length > 0) ? ws.diagrams : [];
+        const diagCount = diagrams.length || 5;
+
+        const defaultIcons = ['🏢', '🌐', '🔒', '🔄', '📜', '📊', '⚡', '🛡️'];
+        const pillsHtml = diagrams.length > 0
+          ? diagrams.map((d, idx) => {
+              const icon = defaultIcons[idx % defaultIcons.length];
+              const cleanLabel = (d.label || '').replace(/^Fig(?:ure)?\s*\d+:\s*/i, '');
+              const activeClass = idx === 0 ? ' active' : '';
+              return `<button type="button" class="arch-nav-pill${activeClass}" onclick="scrollToDiagramFigure(${idx + 1}, this)">${icon} ${idx + 1}. ${escapeHtml(cleanLabel)}</button>`;
+            }).join(' ')
+          : `
+            <button type="button" class="arch-nav-pill active" onclick="scrollToDiagramFigure(1, this)">🏢 1. L1 Logical Taxonomy</button>
+            <button type="button" class="arch-nav-pill" onclick="scrollToDiagramFigure(2, this)">🌐 2. L2 Physical Perimeters</button>
+            <button type="button" class="arch-nav-pill" onclick="scrollToDiagramFigure(3, this)">🔒 3. 5-Hop Baseline</button>
+            <button type="button" class="arch-nav-pill" onclick="scrollToDiagramFigure(4, this)">🔄 4. L3 Process Flow</button>
+            <button type="button" class="arch-nav-pill" onclick="scrollToDiagramFigure(5, this)">📜 5. L4 Wire Protocol</button>
+          `;
+
         archNav.innerHTML = `
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; width:100%; margin-bottom:8px;">
             <div style="display:flex; align-items:center; gap:6px;">
               <span style="font-size:12px; font-weight:800; color:#0f172a; text-transform:uppercase; letter-spacing:0.04em;">Architecture Multi-View Switcher:</span>
-              <span class="badge badge-blue" style="font-size:10.5px;">6 C4 Topologies</span>
+              <span class="badge badge-blue" style="font-size:10.5px;">${diagCount} Verified Blueprints</span>
             </div>
             <span style="font-size:11.5px; color:#64748b;">Click any diagram to jump &amp; inspect</span>
           </div>
           <div style="display:flex; flex-wrap:wrap; gap:6px; width:100%;">
-            <button type="button" class="arch-nav-pill active" onclick="scrollToDiagramFigure(1, this)">🏢 1. Primary Topology</button>
-            <button type="button" class="arch-nav-pill" onclick="scrollToDiagramFigure(2, this)">🔀 2. Routing Mesh</button>
-            <button type="button" class="arch-nav-pill" onclick="scrollToDiagramFigure(3, this)">🛡️ 3. Isolation Boundary</button>
-            <button type="button" class="arch-nav-pill" onclick="scrollToDiagramFigure(4, this)">⏱️ 4. Quota Limits</button>
-            <button type="button" class="arch-nav-pill" onclick="scrollToDiagramFigure(5, this)">🔄 5. Sequence Flow</button>
-            <button type="button" class="arch-nav-pill" onclick="scrollToDiagramFigure(6, this)">📊 6. Spectrum Comparison</button>
+            ${pillsHtml}
           </div>
         `;
         archH2.insertAdjacentElement('afterend', archNav);

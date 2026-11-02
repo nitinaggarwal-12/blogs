@@ -171,6 +171,10 @@
           } else if (typeof activeHubWsKey !== 'undefined' && typeof selectGuidedWorkstream === 'function') {
             selectGuidedWorkstream(activeHubWsKey, null, hash, true);
           }
+          const view = state.view || params.get('view');
+          if (view && typeof setHubViewMode === 'function') {
+            setHubViewMode(view, params.get('target'), true);
+          }
         }
 
         // If on screenshots tab and workbench subtab specified
@@ -716,36 +720,90 @@
     let dtIsSpeaking = false;
     let dtCurrentUtterance = null;
 
-    function setHubViewMode(mode, targetId) {
+    function setHubViewMode(mode, targetId, skipHistoryReplace) {
       const blogSec = document.getElementById('hub-blog-section');
       const proofsSec = document.getElementById('hub-proofs-section');
       const btnGuide = document.getElementById('btn-view-mode-guide');
+      const btnEap = document.getElementById('btn-view-mode-eap');
       const btnProofs = document.getElementById('btn-view-mode-proofs');
+      const btnDeliverables = document.getElementById('btn-view-mode-deliverables');
+
+      // Clear all active primary classes
+      [btnGuide, btnEap, btnProofs, btnDeliverables].forEach(btn => {
+        if (btn) btn.classList.remove('primary');
+      });
 
       if (mode === 'proofs') {
         if (blogSec) blogSec.style.display = 'none';
         if (proofsSec) proofsSec.style.display = 'block';
-        if (btnGuide) btnGuide.classList.remove('primary');
         if (btnProofs) btnProofs.classList.add('primary');
         initDtProofsStudio(targetId);
-      } else {
+      } else if (mode === 'eap') {
+        if (blogSec) blogSec.style.display = 'block';
+        if (proofsSec) proofsSec.style.display = 'none';
+        if (btnEap) btnEap.classList.add('primary');
+        setTimeout(() => {
+          const readerEl = document.getElementById('hub-blog-reader');
+          if (readerEl) {
+            const h = Array.from(readerEl.querySelectorAll('h2, h3')).find(el => 
+              (el.textContent || '').includes('Compensating controls') || 
+              (el.textContent || '').includes('EAP') ||
+              (el.textContent || '').includes('Early Access Program')
+            );
+            if (h) {
+              h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }
+        }, 50);
+      } else if (mode === 'deliverables') {
+        if (blogSec) blogSec.style.display = 'block';
+        if (proofsSec) proofsSec.style.display = 'none';
+        if (btnDeliverables) btnDeliverables.classList.add('primary');
+        setTimeout(() => {
+          const readerEl = document.getElementById('hub-blog-reader');
+          if (readerEl) {
+            const h = Array.from(readerEl.querySelectorAll('h2, h3')).find(el => 
+              (el.textContent || '').includes("What's next") || 
+              (el.textContent || '').includes('Deliverables') ||
+              (el.textContent || '').includes('Launch Matrix')
+            );
+            if (h) {
+              h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }
+        }, 50);
+      } else { // 'guide' (default)
         if (blogSec) blogSec.style.display = 'block';
         if (proofsSec) proofsSec.style.display = 'none';
         if (btnGuide) btnGuide.classList.add('primary');
-        if (btnProofs) btnProofs.classList.remove('primary');
+        if (targetId) {
+          setTimeout(() => {
+            const el = document.getElementById(targetId);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 50);
+        } else {
+          const blogReader = document.getElementById('hub-blog-reader');
+          if (blogReader) {
+            const headerOrH1 = blogReader.querySelector('h1') || blogSec;
+            if (headerOrH1) headerOrH1.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
       }
 
-      try {
-        const u = new URL(window.location.href);
-        if (mode === 'proofs') {
-          u.searchParams.set('view', 'proofs');
-          if (targetId) u.searchParams.set('target', targetId);
-        } else {
-          u.searchParams.delete('view');
-          u.searchParams.delete('target');
-        }
-        history.replaceState(null, '', u.pathname + u.search + u.hash);
-      } catch (_) {}
+      if (!skipHistoryReplace) {
+        try {
+          const u = new URL(window.location.href);
+          if (mode && mode !== 'guide') {
+            u.searchParams.set('view', mode);
+            if (targetId) u.searchParams.set('target', targetId);
+            else u.searchParams.delete('target');
+          } else {
+            u.searchParams.delete('view');
+            u.searchParams.delete('target');
+          }
+          history.replaceState(null, '', u.pathname + u.search + u.hash);
+        } catch (_) {}
+      }
     }
     window.setHubViewMode = setHubViewMode;
 
@@ -947,6 +1005,6 @@
       const label = document.getElementById('dt-audio-label');
       if (btn) btn.classList.remove('warn');
       if (icon) icon.textContent = '🔊';
-      if (label) label.textContent = "Listen to Nitin's Walkthrough";
+      if (label) label.textContent = "Listen to Architectural Walkthrough";
     }
     window.stopDigitalTwinAudio = stopDigitalTwinAudio;

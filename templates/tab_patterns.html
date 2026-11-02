@@ -119,7 +119,7 @@
           </div>
         </div>
 
-                <!-- Workstream View Mode Switcher: 1. Architecture Guide vs 2. Live UI Proofs & Digital Twin Walkthrough -->
+                <!-- Workstream View Mode Switcher: 1. Architecture Guide, 2. Systems & EAP Gaps, 3. Live UI Proofs, 4. Deliverables & Code -->
         <div class="ws-view-mode-bar" id="hub-view-mode-bar" role="navigation" aria-label="Workstream View Mode Switcher" style="display:flex; justify-content:space-between; align-items:center; background:#ffffff; border:1px solid var(--border); border-radius:8px; padding:6px 12px; margin-bottom:12px; gap:8px; flex-wrap:wrap;">
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <span class="ws-view-mode-label" style="font-size:11px; font-weight:800; color:var(--link); text-transform:uppercase; letter-spacing:0.04em; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;">
@@ -128,13 +128,19 @@
             <button type="button" id="btn-view-mode-guide" class="sim-btn primary" onclick="setHubViewMode('guide')" style="padding:4px 11px; font-size:11.5px; font-weight:700; height:28px; display:inline-flex; align-items:center; gap:5px;" title="Switch to the full-width, distraction-free Google Cloud Architecture Center reading guide">
               <span>📖</span> <span>1. Architecture Guide</span>
             </button>
-            <button type="button" id="btn-view-mode-proofs" class="sim-btn" onclick="setHubViewMode('proofs')" style="padding:4px 11px; font-size:11.5px; font-weight:700; height:28px; display:inline-flex; align-items:center; gap:5px;" title="Switch to the 10-SaaS Live UI Proofs and Nitin Aggarwal's Digital Twin walkthrough">
-              <span>📸</span> <span>2. Live UI Proofs &amp; Digital Twin Walkthrough (20 Proofs)</span>
+            <button type="button" id="btn-view-mode-eap" class="sim-btn" onclick="setHubViewMode('eap')" style="padding:4px 11px; font-size:11.5px; font-weight:700; height:28px; display:inline-flex; align-items:center; gap:5px;" title="Jump to Systems Primitives, EAP Gaps &amp; BigQuery FinOps Chargeback">
+              <span>⚙️</span> <span>2. Systems &amp; EAP Gaps</span>
+            </button>
+            <button type="button" id="btn-view-mode-proofs" class="sim-btn" onclick="setHubViewMode('proofs')" style="padding:4px 11px; font-size:11.5px; font-weight:700; height:28px; display:inline-flex; align-items:center; gap:5px;" title="Switch to the 10-SaaS Live UI Proofs and Architecture Studio walkthrough">
+              <span>📸</span> <span>3. Live UI Proofs (20 Proofs)</span>
+            </button>
+            <button type="button" id="btn-view-mode-deliverables" class="sim-btn" onclick="setHubViewMode('deliverables')" style="padding:4px 11px; font-size:11.5px; font-weight:700; height:28px; display:inline-flex; align-items:center; gap:5px;" title="Jump to Engineering Deliverables, Terraform Blueprints &amp; 5-Part Series Matrix">
+              <span>📦</span> <span>4. Deliverables &amp; Code</span>
             </button>
           </div>
           <div style="font-size:11.5px; color:#475569; display:flex; align-items:center; gap:8px; flex-wrap:nowrap;">
             <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981;"></span>
-            <span>Digital Twin: <strong>Nitin Aggarwal (Google · AI Architect)</strong></span>
+            <span>Architecture Twin: <strong>Google Cloud Solution Architecture</strong></span>
           </div>
         </div>
 
@@ -211,16 +217,16 @@
           </div>
         </div>
       
-        <!-- TIER 2: DEDICATED LIVE UI PROOFS & DIGITAL TWIN WALKTHROUGH STUDIO (SUB-TAB ON BLOG PAGE) -->
+        <!-- TIER 2: DEDICATED LIVE UI PROOFS & ARCHITECTURAL WALKTHROUGH STUDIO (SUB-TAB ON BLOG PAGE) -->
         <div class="ws-pane" id="hub-proofs-section" style="display:none; margin-top:0;">
           <div class="card" id="hub-proofs-card" style="border:2px solid #1a73e8; margin-bottom:18px; background:linear-gradient(180deg, #eff6ff 0%, #ffffff 12%); padding:18px;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid #cbd5e1;">
               <div style="max-width:920px;">
                 <span class="badge badge-blue">REPRODUCIBLE MULTI-CLOUD VERIFICATION • 10 ENTERPRISE SAAS TARGETS</span>
                 <h3 style="margin:6px 0 4px 0; color:#0f172a; font-size:17px; display:flex; align-items:center; gap:8px;">
-                  <span>📸</span> <span>Live 3rd-Party SaaS UI Proofs &amp; Digital Twin Walkthrough</span>
+                  <span>📸</span> <span>Live 3rd-Party SaaS UI Proofs &amp; Architecture Studio Walkthrough</span>
                 </h3>
-                <p class="muted" style="margin:0; font-size:12.5px; color:#334155; line-height:1.5;">Inspect authentic 2880×1800 Retina Before-vs-After screen captures verifying zero-leakage tenant isolation across Google Cloud Run Gen2 (<code>bbar-138hf0</code>) and AWS Bedrock AgentCore MCP Gateway (<code>cymbal-a2a-mcp-gateway-suyxm3caof</code>). Nitin Aggarwal's Digital Twin provides interactive spoken commentary explaining how each breach test is proven in reality.</p>
+                <p class="muted" style="margin:0; font-size:12.5px; color:#334155; line-height:1.5;">Inspect authentic 2880×1800 Retina Before-vs-After screen captures verifying zero-leakage tenant isolation across Google Cloud Run Gen2 (<code>bbar-138hf0</code>) and AWS Bedrock AgentCore MCP Gateway (<code>cymbal-a2a-mcp-gateway-suyxm3caof</code>). The interactive Architecture Twin provides spoken commentary explaining how each breach test is proven in reality.</p>
               </div>
               <div class="flex-wrap-center">
                 <button type="button" class="sim-btn" style="font-size:11.5px; padding:6px 10px;" onclick="setHubViewMode('guide')">&#8592; Back to Architecture Guide</button>
@@ -228,32 +234,38 @@
               </div>
             </div>
 
-            <!-- 2-Column Digital Twin & Proofs Studio Grid -->
+            <!-- 2-Column Architecture Twin & Proofs Studio Grid -->
             <div style="display:grid; grid-template-columns:360px 1fr; gap:18px; align-items:start;" class="proofs-studio-grid">
               
-              <!-- Left Column: Nitin's Digital Twin Presenter Card -->
+              <!-- Left Column: Architecture Twin Presenter Card -->
               <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px; box-shadow:0 2px 8px rgba(15,23,42,0.06); display:flex; flex-direction:column; gap:10px;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                   <span style="font-size:12px; font-weight:800; color:#1e293b; text-transform:uppercase; letter-spacing:0.04em;">🎙️ AI Presenter</span>
                   <span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:10px; font-weight:700;">🟢 Omni 1.1 Flash</span>
                 </div>
 
-                <!-- Video Stage -->
-                <div style="position:relative; width:100%; aspect-ratio:16/9; background:#090d16; border-radius:8px; overflow:hidden; border:1px solid #334155;">
-                  <video id="aiPresenterOmniVideo" src="screenshots/avatars/custom-nitin-aggarwal-live-studio-loop.mp4" poster="screenshots/avatars/custom-nitin-aggarwal-live-studio.jpg" autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover; display:block;"></video>
-                  <div style="position:absolute; bottom:6px; left:6px; background:rgba(11,15,25,0.85); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.2); border-radius:4px; padding:2px 6px; font-size:10.5px; color:#ffffff; font-weight:600; display:inline-flex; align-items:center; gap:4px;">
+                <!-- Architecture Twin Stage -->
+                <div style="position:relative; width:100%; aspect-ratio:16/9; background:linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius:8px; overflow:hidden; border:1px solid #334155; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:16px; box-sizing:border-box;">
+                  <div style="width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg, #1a73e8 0%, #4285f4 100%); display:flex; align-items:center; justify-content:center; box-shadow:0 0 16px rgba(66,133,244,0.4); border:2px solid #ffffff;">
+                    <span style="font-size:24px;">🎙️</span>
+                  </div>
+                  <div style="text-align:center;">
+                    <div style="font-size:12.5px; font-weight:700; color:#ffffff; letter-spacing:0.02em;">Google Cloud Architecture Twin</div>
+                    <div style="font-size:10.5px; color:#94a3b8; margin-top:2px;">Omni 1.1 Flash &bull; Studio HD Speech Engine</div>
+                  </div>
+                  <div style="position:absolute; bottom:6px; left:6px; background:rgba(11,15,25,0.85); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.2); border-radius:4px; padding:2px 6px; font-size:10px; color:#ffffff; font-weight:600; display:inline-flex; align-items:center; gap:4px;">
                     <span style="width:6px; height:6px; border-radius:50%; background:#22c55e;"></span>
-                    <span>Nitin Aggarwal, Google · AI Architect</span>
+                    <span>Solution Architecture Studio</span>
                   </div>
                 </div>
 
                 <!-- Spoken Audio Controls -->
                 <button type="button" id="dt-audio-toggle-btn" class="sim-btn primary" onclick="toggleDigitalTwinAudio()" style="width:100%; justify-content:center; padding:7px 12px; font-weight:700; font-size:12px;">
-                  <span id="dt-audio-icon">🔊</span> <span id="dt-audio-label">Listen to Nitin's Walkthrough</span>
+                  <span id="dt-audio-icon">🔊</span> <span id="dt-audio-label">Listen to Architectural Walkthrough</span>
                 </button>
 
                 <div style="font-size:11px; color:#64748b; display:flex; justify-content:space-between; border-bottom:1px solid #e2e8f0; padding-bottom:6px;">
-                  <span>Persona: <strong>custom-nitin-aggarwal-live</strong></span>
+                  <span>Persona: <strong>cloud-solution-architect</strong></span>
                   <span>Audio: <strong>Studio HD en-IN</strong></span>
                 </div>
 

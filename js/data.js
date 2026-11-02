@@ -126,11 +126,11 @@
           { label: '📋 Product Gap & EAP Tracker (1.4)', path: 'workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md' }
         ],
         diagrams: [
-          { id: 'ws1-multi-tenant-taxonomy-overview', label: 'Fig 1: Multi-Tenant Taxonomy (A, B & C)', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 6, logicalSlide: 5, technicalSlide: 7 },
-          { id: 'ws1-cloud-arch-center-5hop-baseline', label: 'Fig 2: Cloud Arch Center 5-Hop Baseline', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 6, logicalSlide: 5, technicalSlide: 8 },
-          { id: 'ws1-l1-logical-security-taxonomy', label: 'Fig 1A: L1 Logical Security Taxonomy', archetype: 'C4 LEVEL 1 LOGICAL BOUNDARY SPECIFICATION', decomposedSlide: 8, logicalSlide: 8, technicalSlide: 8 },
-          { id: 'ws1-l3-process-sequence-swimlane', label: 'Fig 2A: L3 Process UML Sequence Swimlane', archetype: 'C4 LEVEL 3 PROCESS SWIMLANE SPECIFICATION', decomposedSlide: 13, logicalSlide: 13, technicalSlide: 13 },
-          { id: 'ws1-l4-wire-protocol-transformation', label: 'Fig 2B: L4 Wire Protocol Transformation', archetype: 'C4 LEVEL 4 WIRE SPECIFICATION', decomposedSlide: 14, logicalSlide: 14, technicalSlide: 14 }
+          { id: 'ws1-l1-logical-security-taxonomy', label: 'Fig 1: L1 Logical Security Taxonomy', archetype: 'C4 LEVEL 1 LOGICAL BOUNDARY SPECIFICATION', decomposedSlide: 8, logicalSlide: 8, technicalSlide: 8 },
+          { id: 'ws1-multi-tenant-taxonomy-overview', label: 'Fig 2: L2 Physical Network Taxonomy (A, B & C)', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 6, logicalSlide: 5, technicalSlide: 7 },
+          { id: 'ws1-cloud-arch-center-5hop-baseline', label: 'Fig 3: 5-Hop Cryptographic Governance Baseline', archetype: 'OFFICIAL GCP ARCH CENTER HUB-AND-SPOKE TEMPLATE (56 VERTICES • 23 EDGES)', decomposedSlide: 6, logicalSlide: 5, technicalSlide: 8 },
+          { id: 'ws1-l3-process-sequence-swimlane', label: 'Fig 4: L3 Process UML Sequence Swimlane', archetype: 'C4 LEVEL 3 PROCESS SWIMLANE SPECIFICATION', decomposedSlide: 13, logicalSlide: 13, technicalSlide: 13 },
+          { id: 'ws1-l4-wire-protocol-transformation', label: 'Fig 5: L4 Wire Protocol Transformation', archetype: 'C4 LEVEL 4 WIRE SPECIFICATION', decomposedSlide: 14, logicalSlide: 14, technicalSlide: 14 }
         ],
         slides: [
           { num: 1, label: '1. REFERENCE ARCHITECTURE & TAXONOM', editable: true, desc: 'Slide 1/34 — REFERENCE ARCHITECTURE & TAXONOMY: A production blueprint and cryptographic 5-Hop pipeline to govern multi-tenant age' },
