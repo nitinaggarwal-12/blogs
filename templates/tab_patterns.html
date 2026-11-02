@@ -3,7 +3,7 @@
         <!-- Compact Breadcrumb/Pill Selector Bar & Header-Only Workspace Controls (Rule 47, Rule 25 & [FA-52]) -->
         <div class="ws-compact-selector-bar" role="navigation" aria-label="Workstream Series Navigation">
           <!-- Left: Series breadcrumb + 6 Compact Pills -->
-          <div style="display:flex; align-items:center; gap:6px; flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%; scrollbar-width:none;">
+          <div class="ws-selector-left" style="display:flex; align-items:center; gap:6px; flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; flex:0 1 auto; min-width:0;">
             <span class="ws-breadcrumb-label" style="font-size:11px; font-weight:800; color:var(--link); text-transform:uppercase; letter-spacing:0.04em; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;">
               <span>&#129517;</span> <span>Series:</span>
             </span>
@@ -42,7 +42,7 @@
           </div>
 
           <!-- Right: Opt-in Review Mode Toggle & Essential Actions -->
-          <div style="display:flex; align-items:center; gap:5px; flex-wrap:wrap;">
+          <div class="ws-selector-right" style="display:flex; align-items:center; gap:5px; flex-wrap:nowrap; flex-shrink:0;">
             <!-- Review Mode Toggle Button [FA-12] -->
             <button type="button" id="btn-toggle-review-mode" class="sim-btn" onclick="toggleReaderReviewMode()" style="padding:3px 8px; font-size:11px; font-weight:700; height:26px; display:inline-flex; align-items:center; gap:4px; border-color:#93c5fd; background:#f0fdf4;" title="Toggle Opt-in Google-Docs-Style Review Comments with Authenticated IAP Identity [FA-12]">
               <span id="review-mode-icon">&#128172;</span>
@@ -63,10 +63,10 @@
             <button type="button" id="hub-cloud-viewer-btn" class="pc-cloud-btn" style="padding:3px 8px; font-size:11px; height:26px;" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'slides')" title="Open Same-Screen Cloud Viewer (Interactive Studio + Live Google Slides + Google Docs)">
               &#128065;&#65039; Cloud Viewer
             </button>
-            <div class="pc-split-wrap" id="hub-open-gslides-split">
+            <div class="pc-split-wrap" id="hub-open-gslides-split" style="flex-shrink:0;">
               <button type="button" class="pc-split-main" id="hub-open-gslides-main" style="padding:3px 8px; font-size:11px; height:26px;" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1)">
                 <span class="pc-gslides-icon">S</span>
-                <span id="hub-open-gslides-label">Google Slides &#8599;</span>
+                <span id="hub-open-gslides-label">Slides &#8599;</span>
               </button>
               <button type="button" class="pc-split-caret" style="height:26px; padding:0 5px;" onclick="togglePcDropdown(event, 'hub-gslides-menu')" aria-label="Choose Google Workspace app">&#9660;</button>
               <div id="hub-gslides-menu" class="pc-dropdown-menu">
