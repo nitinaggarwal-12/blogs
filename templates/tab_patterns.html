@@ -41,34 +41,14 @@
             </div>
           </div>
 
-          <!-- Right: Opt-in Review Mode Toggle & Essential Actions -->
-          <div class="ws-selector-right" style="display:flex; align-items:center; gap:5px; flex-wrap:nowrap; flex-shrink:0;">
-            <!-- Review Mode Toggle Button [FA-12] -->
-            <button type="button" id="btn-toggle-review-mode" class="sim-btn" onclick="toggleReaderReviewMode()" style="padding:3px 8px; font-size:11px; font-weight:700; height:26px; display:inline-flex; align-items:center; gap:4px; border-color:#93c5fd; background:#f0fdf4;" title="Toggle Opt-in Google-Docs-Style Review Comments with Authenticated IAP Identity [FA-12]">
-              <span id="review-mode-icon">&#128172;</span>
-              <span id="review-mode-label">Review Mode: OFF</span>
-            </button>
-            <button type="button" id="hub-quick-codebase-btn" class="sim-btn" style="padding:3px 8px; font-size:11px; font-weight:700; border-color:var(--blue); color:var(--link); height:26px;" onclick="openWorkbenchView('codebase')" title="Jump directly to the Interactive 27-File Production Codebase Explorer">
-              &#128187; 27-File Codebase
-            </button>
-            <button type="button" id="hub-quick-ba-uis-btn" data-testid="hub-quick-ba-uis-btn" class="sim-btn primary" style="padding:3px 8px; font-size:11px; font-weight:700; height:26px;" onclick="jumpToActiveBlogBeforeAfterSection()" title="Scroll directly to this blog's genuine 2880x1800 Before-vs-After 3P SaaS UI captures &amp; Interactive Split Slider">
-              &#128260; SaaS UIs
-            </button>
-            <button type="button" id="hub-quick-console-btn" class="sim-btn" style="padding:3px 7px; font-size:11px; font-weight:700; border-color:var(--green); color:var(--ok-text); height:26px;" onclick="openWorkbenchView('resources')" title="Jump directly to Live GCP &amp; AWS Console Verification, 10-SaaS Targets &amp; 8-Stage Runbook">
-              &#9729;&#65039; Console
-            </button>
-            <button type="button" id="hub-quick-terraform-btn" class="sim-btn" style="padding:3px 7px; font-size:11px; font-weight:700; border-color:#7c3aed; color:#6d28d9; height:26px;" onclick="openWorkbenchView('deliverables', 'terraform')" title="Jump directly to 1-Click Terraform Deployment Scripts (deploy_1click.sh) &amp; HCL Modules">
-              &#128640; Terraform
-            </button>
-            <button type="button" id="hub-cloud-viewer-btn" class="pc-cloud-btn" style="padding:3px 8px; font-size:11px; height:26px;" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'slides')" title="Open Same-Screen Cloud Viewer (Interactive Studio + Live Google Slides + Google Docs)">
-              &#128065;&#65039; Cloud Viewer
-            </button>
+          <!-- Right: Consolidated Architecture Studio, Tools & Exports Split Menu (Phase 1 Toolbar De-Duplication) -->
+          <div class="ws-selector-right" style="display:flex; align-items:center; gap:6px; flex-wrap:nowrap; flex-shrink:0;">
             <div class="pc-split-wrap" id="hub-open-gslides-split" style="flex-shrink:0;">
-              <button type="button" class="pc-split-main" id="hub-open-gslides-main" style="padding:3px 8px; font-size:11px; height:26px;" onclick="window.open('/drawio-editor?id=' + encodeURIComponent((GUIDED_WORKSTREAMS[activeHubWsKey] && GUIDED_WORKSTREAMS[activeHubWsKey].diagrams && GUIDED_WORKSTREAMS[activeHubWsKey].diagrams[0] ? GUIDED_WORKSTREAMS[activeHubWsKey].diagrams[0].id : 'ws1-multi-tenant-taxonomy-overview')) + '&engine=cloud', '_blank')">
+              <button type="button" class="pc-split-main" id="hub-open-gslides-main" style="padding:3px 10px; font-size:11.5px; height:26px; font-weight:700;" onclick="window.open('/drawio-editor?id=' + encodeURIComponent((GUIDED_WORKSTREAMS[activeHubWsKey] && GUIDED_WORKSTREAMS[activeHubWsKey].diagrams && GUIDED_WORKSTREAMS[activeHubWsKey].diagrams[0] ? GUIDED_WORKSTREAMS[activeHubWsKey].diagrams[0].id : 'ws1-multi-tenant-taxonomy-overview')) + '&engine=cloud', '_blank')">
                 <span id="hub-open-gslides-label">&#128208; Blueprints (WS1) &#8599;</span>
               </button>
-              <button type="button" class="pc-split-caret" style="height:26px; padding:0 5px;" onclick="togglePcDropdown(event, 'hub-gslides-menu')" aria-label="Architecture and exports menu">&#9660;</button>
-              <div id="hub-gslides-menu" class="pc-dropdown-menu">
+              <button type="button" class="pc-split-caret" style="height:26px; padding:0 6px;" onclick="togglePcDropdown(event, 'hub-gslides-menu')" aria-label="Architecture blueprints, viewer, and exports menu">&#9660;</button>
+              <div id="hub-gslides-menu" class="pc-dropdown-menu" style="min-width:280px;">
                 <div class="pc-dropdown-section">Architecture Blueprint Editors</div>
                 <a id="hub-deck-cloud-drawio" class="pc-dropdown-item" href="/drawio-editor?id=ws1-multi-tenant-taxonomy-overview&engine=cloud" target="_blank" rel="noopener">
                   <span>&#128208;</span> <span>Open Architecture Studio (Cloud Editor)</span>
@@ -77,9 +57,9 @@
                   <span>&#9889;</span> <span>Local Offline mxGraph Canvas</span>
                 </a>
                 <div class="pc-dropdown-divider"></div>
-                <div class="pc-dropdown-section">Same-Screen Cloud Viewer &amp; Docs</div>
-                <button type="button" class="pc-dropdown-item" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'slides')">
-                  <span>&#10024;</span> <span>Interactive Slide Studio (Fast Canvas)</span>
+                <div class="pc-dropdown-section">Same-Screen Cloud Viewer &amp; Specs</div>
+                <button type="button" id="hub-cloud-viewer-btn" class="pc-dropdown-item" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'slides')">
+                  <span>&#128065;&#65039;</span> <span>Same-Screen Cloud Viewer (Studio + Docs)</span>
                 </button>
                 <button type="button" class="pc-dropdown-item" onclick="openCloudViewerModal(activeHubWsKey, 1, 'docs')">
                   <span>&#128196;</span> <span>Embedded Live Google Docs Viewer</span>
@@ -89,6 +69,23 @@
                 </button>
                 <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'pdf', 1)">
                   <span class="pc-gpdf-icon">PDF</span> <span>PDF Document (Vector Export)</span>
+                </button>
+                <div class="pc-dropdown-divider"></div>
+                <div class="pc-dropdown-section">Quick Navigation &amp; Testbeds</div>
+                <button type="button" id="hub-quick-ba-uis-btn" data-testid="hub-quick-ba-uis-btn" class="pc-dropdown-item" onclick="jumpToActiveBlogBeforeAfterSection()">
+                  <span>&#128260;</span> <span>Live 3P SaaS UI Proofs (20 Proofs)</span>
+                </button>
+                <button type="button" id="hub-quick-codebase-btn" class="pc-dropdown-item" onclick="openWorkbenchView('codebase')">
+                  <span>&#128187;</span> <span>Interactive 27-File Production Codebase</span>
+                </button>
+                <button type="button" id="hub-quick-console-btn" class="pc-dropdown-item" onclick="openWorkbenchView('resources')">
+                  <span>&#9729;&#65039;</span> <span>Live GCP &amp; AWS Console Verification</span>
+                </button>
+                <button type="button" id="hub-quick-terraform-btn" class="pc-dropdown-item" onclick="openWorkbenchView('deliverables', 'terraform')">
+                  <span>&#128640;</span> <span>1-Click Terraform Deployment Scripts</span>
+                </button>
+                <button type="button" id="btn-toggle-review-mode" class="pc-dropdown-item" onclick="toggleReaderReviewMode()">
+                  <span id="review-mode-icon">&#128172;</span> <span id="review-mode-label">Review Mode: OFF</span>
                 </button>
                 <div class="pc-dropdown-divider"></div>
                 <div class="pc-dropdown-section">Article &amp; Local Exports</div>
