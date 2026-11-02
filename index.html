@@ -1528,7 +1528,17 @@
           return;
         }
         if (targetMode === 'pdf') {
-          window.open(`/api/google-workspace/pdf?key=${encodeURIComponent(key)}&mode=slides`, '_blank', 'noopener,noreferrer');
+          const directPdf = (sEntry && sEntry.googleSlidesPdfUrl)
+            ? sEntry.googleSlidesPdfUrl
+            : `/api/google-workspace/pdf?key=${encodeURIComponent(key)}&mode=slides`;
+          window.open(directPdf, '_blank', 'noopener,noreferrer');
+          return;
+        }
+        if (targetMode === 'pdf-doc' || targetMode === 'doc-pdf') {
+          const directPdf = (dEntry && dEntry.googleDocsPdfUrl)
+            ? dEntry.googleDocsPdfUrl
+            : `/api/google-workspace/pdf?key=${encodeURIComponent(key)}&mode=docs`;
+          window.open(directPdf, '_blank', 'noopener,noreferrer');
           return;
         }
       }

@@ -2515,6 +2515,32 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             if not file_id:
                 self._send_json(404, {"error": f"No Google Drive fileId found for key={key} mode={mode}"})
                 return
+            # Authoritative direct export URL with resourcekey preserved
+            d_entry = manifest.get("docs", {}).get(key, {}) if mode == "docs" else {}
+            s_entry = manifest.get("slides", {}).get(key, {}) if mode == "slides" else {}
+            entry = d_entry or s_entry or {}
+            export_url = entry.get("googleDocsPdfUrl") if mode == "docs" else entry.get("googleSlidesPdfUrl")
+            if not export_url:
+                if mode == "docs":
+                    export_url = f"https://docs.google.com/document/d/{file_id}/export?format=pdf"
+                else:
+                    export_url = f"https://docs.google.com/presentation/d/{file_id}/export/pdf"
+
+            web_link = entry.get("webViewLink") or entry.get("googleDocsEditUrl") or entry.get("googleSlidesEditUrl") or ""
+            if "resourcekey=" in web_link and "resourcekey=" not in export_url:
+                m_rk = re.search(r"resourcekey=([a-zA-Z0-9_-]+)", web_link)
+                if m_rk:
+                    sep = "&" if "?" in export_url else "?"
+                    export_url += f"{sep}resourcekey={m_rk.group(1)}"
+
+            if (qs.get("direct") or ["0"])[0] == "1":
+                self.send_response(302)
+                self.send_header("Location", export_url)
+                self.send_header("Cache-Control", "no-cache")
+                self._send_security_headers()
+                self.end_headers()
+                return
+
             try:
                 pdf_bytes = bridge_mod.export_google_file_pdf_bytes(file_id, mode=mode)
                 self.send_response(200)
@@ -2527,7 +2553,11 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 self.wfile.write(pdf_bytes)
                 return
             except Exception as exc:
-                self._send_json(500, {"error": str(exc)})
+                self.send_response(302)
+                self.send_header("Location", export_url)
+                self.send_header("Cache-Control", "no-cache")
+                self._send_security_headers()
+                self.end_headers()
                 return
 
         if path == "/drawio-editor":

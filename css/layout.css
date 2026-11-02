@@ -1021,3 +1021,151 @@ body {
     .faq-answer li {
       margin-bottom: 4px;
     }
+    .header-home-btn {
+      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+    .header-home-btn:hover {
+      background-color: #f1f5f9 !important;
+      border-color: #94a3b8 !important;
+      transform: translateY(-0.5px);
+    }
+
+    /* ==========================================================================
+       @media print — DevSite Executive Print & PDF Generation Invariant (Rule 54)
+       ========================================================================== */
+    @media print {
+      @page {
+        margin: 12mm 14mm 14mm 14mm;
+        size: auto;
+      }
+      *, *::before, *::after {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+      }
+      html, body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+        font-size: 11pt !important;
+        line-height: 1.5 !important;
+        overflow: visible !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      /* Hide all web chrome, sidebars, interactive controls, drawers, and modal backdrops */
+      .portal-top-header,
+      .pc-action-strip,
+      .portal-header-actions,
+      .theme-picker,
+      .sim-btn,
+      .export-dropdown,
+      .ov-rail-card,
+      .stripe-rail,
+      #ov-selector-rail,
+      .series-toc-rail,
+      #hub-view-mode-bar,
+      #tab-btn-overview,
+      nav.tabs,
+      .tabs,
+      .portal-modal,
+      .pc-modal-backdrop,
+      .pc-modal-overlay,
+      .drawer,
+      .gdocs-comments-drawer,
+      .telemetry-drawer,
+      .faq-modal,
+      #toast-container,
+      .sr-only,
+      .ov-hero-actions,
+      .pc-split-wrap,
+      .pc-dropdown-menu,
+      .btn,
+      .copy-btn {
+        display: none !important;
+      }
+      /* Expand layout containers to 100% fluid edge-to-edge reading width */
+      .portal-container,
+      .portal-main,
+      .stripe-shell,
+      .stripe-canvas,
+      .ov-workspace-split,
+      .ov-workspace-stage,
+      .series-reader-grid,
+      .series-reader-main-lane,
+      .tab-pane.active {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        position: static !important;
+      }
+      /* Print cards and dossiers cleanly */
+      .ov-onepager-card,
+      .card-diagram,
+      .ov-blueprint-hero-card,
+      .ov-dossier-split,
+      .ov-ba-mini-card,
+      .doc-card {
+        border: 1px solid #cbd5e1 !important;
+        background: #ffffff !important;
+        margin-bottom: 16pt !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      .ov-dossier-split {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12pt !important;
+      }
+      .ov-blueprint-hero-canvas {
+        height: auto !important;
+        min-height: 0 !important;
+      }
+      .ov-blueprint-hero-canvas object,
+      .ov-blueprint-hero-canvas svg,
+      .card-diagram img,
+      img {
+        max-width: 100% !important;
+        height: auto !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      /* Prevent headings and table rows from being split across page breaks */
+      h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+        color: #0f172a !important;
+      }
+      table, tr, td, th {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      table {
+        border-collapse: collapse !important;
+        width: 100% !important;
+      }
+      th, td {
+        border: 1px solid #cbd5e1 !important;
+        padding: 6pt 8pt !important;
+      }
+      th {
+        background-color: #f8fafc !important;
+        color: #0f172a !important;
+      }
+      pre, code {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        font-family: 'Roboto Mono', monospace !important;
+        background-color: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+      }
+      a {
+        color: #1a73e8 !important;
+        text-decoration: none !important;
+      }
+    }
