@@ -1,39 +1,23 @@
 <section id="tab-overview" class="tab-pane active" data-testid="portal-executive-landing-page" role="tabpanel" aria-labelledby="tab-btn-overview">
-      <!-- Google Cloud Architecture Center Executive Hero Bar (Consolidated & Compact) -->
-      <div class="ov-hero-card" id="ov-compact-hero-card" data-no-hover-toolbar="true">
-        <div class="gcp-brand-accent-strip"></div>
-        <div class="ov-hero-inner">
-          <div class="ov-hero-compact-grid">
-            <div class="ov-hero-left">
-              <div class="gcp-arch-meta-strip">
-                <div class="gcp-cloud-logo-badge">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;">
-                    <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z" fill="#4285F4"/>
-                  </svg>
-                  <span>ARCHITECTURE CENTER</span>
-                </div>
-                <span class="badge badge-blue">REFERENCE ARCHITECTURE &bull; GCP #78</span>
-                <a href="https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system" target="_blank" rel="noopener noreferrer" class="ov-meta-link">DevSite Reference &nearr;</a>
-                <a href="https://github.com/cloud-ai-fde/ge-blogs" target="_blank" rel="noopener noreferrer" class="ov-meta-link" title="Canonical Organization Repository: cloud-ai-fde/ge-blogs (Mirror: nitinaggarwal-12/blogs)">GitHub &nearr;</a>
-              </div>
-              <h2 class="ov-hero-title">Gemini Enterprise Agent Platform (GEAP): Multi-Tenant Agentic AI Architecture</h2>
-              <div class="ov-hero-subline">
-                <span class="ov-subline-highlight">5-Part Enterprise Production Blueprint &bull; 80% Reusable Governance Core &bull; 3 Canonical Topologies</span>
-              </div>
-            </div>
-            <div class="ov-hero-actions">
-              <button type="button" class="sim-btn primary ov-hero-btn" onclick="switchTab('patterns')">&#129517; Series Reader &rarr;</button>
-              <button type="button" class="sim-btn ov-hero-btn" id="ov-copy-md-btn" onclick="copyOverviewSummaryMarkdown(this)">&#128203; Copy MD</button>
-              <button type="button" class="sim-btn ov-hero-btn" onclick="window.print()" title="Print or Save Executive Briefing as Clean PDF">&#128424;&#65039; Print / PDF</button>
-            </div>
-          </div>
-        </div>
+      <div class="sr-only" aria-hidden="true">
+        <h2>Gemini Enterprise Agent Platform (GEAP): Multi-Tenant Agentic AI Architecture</h2>
+        <span>REFERENCE ARCHITECTURE &bull; GCP #78 &bull; 5-Part Enterprise Production Blueprint &bull; 80% Reusable Governance Core &bull; 3 Canonical Topologies</span>
       </div>
 
       <!-- Variation 5: Stripe-Style Connected Architecture Pipeline (2-Column Master-Detail) -->
       <div class="stripe-shell ov-workspace-split">
         <!-- Left Stepper Rail (340px) -->
         <aside class="stripe-rail ov-workspace-rail" id="ov-selector-rail" data-no-hover-toolbar="true">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; padding-bottom:5px; border-bottom:1px solid #e2e8f0;">
+            <div style="display:flex; align-items:center; gap:5px;">
+              <span class="badge badge-blue text-2xs" style="padding:1px 5px; font-size:9.5px;">GCP #78</span>
+              <a href="https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system" target="_blank" rel="noopener noreferrer" style="font-size:10.5px; color:#1a73e8; text-decoration:none;" title="Google Cloud Architecture Center Reference">DevSite &nearr;</a>
+            </div>
+            <div style="display:flex; align-items:center; gap:4px;">
+              <button type="button" class="sim-btn ov-hero-btn" id="ov-copy-md-btn" style="padding:1px 6px; font-size:10.5px;" onclick="copyOverviewSummaryMarkdown(this)" title="Copy Executive Summary Markdown">&#128203; Copy MD</button>
+              <button type="button" class="sim-btn ov-hero-btn" style="padding:1px 6px; font-size:10.5px;" onclick="window.print()" title="Print or Save Executive Briefing as Clean PDF">&#128424;&#65039; Print</button>
+            </div>
+          </div>
           <div style="font-size:11px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
             <span>Architecture Journey</span>
             <span class="badge badge-blue text-2xs">5 Parts + Master</span>
@@ -161,13 +145,11 @@
           <div id="ov-stage-dossiers-view" class="ov-stage-view">
 <article class="ov-onepager-card active" id="overview-page-WS1" data-ov-page="WS1" data-no-hover-toolbar="true" style="border-top-color:#1a73e8;">
         <div class="ov-onepager-hdr">
-          <div style="flex:1 1 460px; min-width:0;">
-            <div class="mb-1">
-              <span class="badge badge-blue text-2xs">PAGE 1 OF 6 • BLOG 1 (WS1) • 14 MIN READ</span>
-            </div>
-            <h3 style="margin:0 0 3px 0; font-size:18px; font-weight:800; color:#0f172a;">Reference Architecture Taxonomy & 5-Hop Governance Baseline</h3>
-            </div>
-          <div class="flex-wrap-center">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; min-width:0;">
+            <span class="badge badge-blue text-2xs" style="white-space:nowrap;">PAGE 1 OF 6 &bull; BLOG 1 (WS1) &bull; 14 MIN READ</span>
+            <h3 style="margin:0; font-size:14px; font-weight:800; color:#0f172a; white-space:nowrap;">Reference Architecture Taxonomy &amp; 5-Hop Governance Baseline</h3>
+          </div>
+          <div class="flex-wrap-center" style="gap:5px;">
             <button type="button" class="ov-chip primary" onclick="openDocInReader('blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md')">&#128214; Read Full Guide &rarr;</button>
             <button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md', 'live-3p-before-after-ui-proof')">&#128260; Before/After UIs</button>
             <details class="export-dropdown">
@@ -185,7 +167,9 @@
               </div>
             </details>
           </div>
-              <!-- Side-by-Side Blueprint & Executive Dossier Split Layout -->
+        </div>
+
+        <!-- Side-by-Side Blueprint & Executive Dossier Split Layout -->
         <div class="ov-dossier-split">
           <div class="ov-dossier-visual">
             <div class="ov-blueprint-hero-card">
@@ -282,13 +266,11 @@
 
 <article class="ov-onepager-card" id="overview-page-WS2" data-ov-page="WS2" data-no-hover-toolbar="true" style="border-top-color:#059669;">
         <div class="ov-onepager-hdr">
-          <div style="flex:1 1 460px; min-width:0;">
-            <div class="mb-1">
-              <span class="badge badge-blue text-2xs">PAGE 2 OF 6 • BLOG 2 (WS2 • PATTERN A) • 13 MIN READ</span>
-            </div>
-            <h3 style="margin:0 0 3px 0; font-size:18px; font-weight:800; color:#0f172a;">Pattern A: High-Density Pooled Multi-Tenant Architecture</h3>
-            </div>
-          <div class="flex-wrap-center">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; min-width:0;">
+            <span class="badge badge-blue text-2xs" style="white-space:nowrap;">PAGE 2 OF 6 &bull; BLOG 2 (WS2 &bull; PATTERN A) &bull; 13 MIN READ</span>
+            <h3 style="margin:0; font-size:14px; font-weight:800; color:#0f172a; white-space:nowrap;">Pattern A: High-Density Pooled Multi-Tenant Architecture</h3>
+          </div>
+          <div class="flex-wrap-center" style="gap:5px;">
             <button type="button" class="ov-chip primary" onclick="openDocInReader('blogs/ws2-pattern-a-pooled-architecture.md')">&#128214; Read Full Guide &rarr;</button>
             <button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws2-pattern-a-pooled-architecture.md', 'live-3p-before-after-ui-proof')">&#128260; Before/After UIs</button>
             <details class="export-dropdown">
@@ -406,13 +388,11 @@
 
 <article class="ov-onepager-card" id="overview-page-WS3" data-ov-page="WS3" data-no-hover-toolbar="true" style="border-top-color:#7c3aed;">
         <div class="ov-onepager-hdr">
-          <div style="flex:1 1 460px; min-width:0;">
-            <div class="mb-1">
-              <span class="badge badge-blue text-2xs">PAGE 3 OF 6 • BLOG 3 (WS3 • PATTERN B) • 14 MIN READ</span>
-            </div>
-            <h3 style="margin:0 0 3px 0; font-size:18px; font-weight:800; color:#0f172a;">Pattern B: Zero-Trust Sovereign Silos for Regulated Workloads</h3>
-            </div>
-          <div class="flex-wrap-center">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; min-width:0;">
+            <span class="badge badge-blue text-2xs" style="white-space:nowrap;">PAGE 3 OF 6 &bull; BLOG 3 (WS3 &bull; PATTERN B) &bull; 14 MIN READ</span>
+            <h3 style="margin:0; font-size:14px; font-weight:800; color:#0f172a; white-space:nowrap;">Pattern B: Zero-Trust Sovereign Silos for Regulated Workloads</h3>
+          </div>
+          <div class="flex-wrap-center" style="gap:5px;">
             <button type="button" class="ov-chip primary" onclick="openDocInReader('blogs/ws3-pattern-b-sovereign-silos.md')">&#128214; Read Full Guide &rarr;</button>
             <button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws3-pattern-b-sovereign-silos.md', 'live-3p-before-after-ui-proof')">&#128260; Before/After UIs</button>
             <details class="export-dropdown">
@@ -531,13 +511,11 @@
 
 <article class="ov-onepager-card" id="overview-page-WS4" data-ov-page="WS4" data-no-hover-toolbar="true" style="border-top-color:#d97706;">
         <div class="ov-onepager-hdr">
-          <div style="flex:1 1 460px; min-width:0;">
-            <div class="mb-1">
-              <span class="badge badge-blue text-2xs">PAGE 4 OF 6 • BLOG 4 (WS4 • PATTERN C) • 13 MIN READ</span>
-            </div>
-            <h3 style="margin:0 0 3px 0; font-size:18px; font-weight:800; color:#0f172a;">Pattern C: Dynamic Hybrid Routing & Zero-Downtime Tier Upgrades</h3>
-            </div>
-          <div class="flex-wrap-center">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; min-width:0;">
+            <span class="badge badge-blue text-2xs" style="white-space:nowrap;">PAGE 4 OF 6 &bull; BLOG 4 (WS4 &bull; PATTERN C) &bull; 13 MIN READ</span>
+            <h3 style="margin:0; font-size:14px; font-weight:800; color:#0f172a; white-space:nowrap;">Pattern C: Dynamic Hybrid Routing &amp; Zero-Downtime Tier Upgrades</h3>
+          </div>
+          <div class="flex-wrap-center" style="gap:5px;">
             <button type="button" class="ov-chip primary" onclick="openDocInReader('blogs/ws4-pattern-c-hybrid-dynamic-tiering.md')">&#128214; Read Full Guide &rarr;</button>
             <button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws4-pattern-c-hybrid-dynamic-tiering.md', 'live-3p-before-after-ui-proof')">&#128260; Before/After UIs</button>
             <details class="export-dropdown">
@@ -656,13 +634,11 @@
 
 <article class="ov-onepager-card" id="overview-page-WS5" data-ov-page="WS5" data-no-hover-toolbar="true" style="border-top-color:#0284c7;">
         <div class="ov-onepager-hdr">
-          <div style="flex:1 1 460px; min-width:0;">
-            <div class="mb-1">
-              <span class="badge badge-blue text-2xs">PAGE 5 OF 6 • BLOG 5 (WS5 • CAPSTONE) • 14 MIN READ</span>
-            </div>
-            <h3 style="margin:0 0 3px 0; font-size:18px; font-weight:800; color:#0f172a;">Executive Decision Guide & The Multi-Tenant Agentic Triad</h3>
-            </div>
-          <div class="flex-wrap-center">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; min-width:0;">
+            <span class="badge badge-blue text-2xs" style="white-space:nowrap;">PAGE 5 OF 6 &bull; BLOG 5 (WS5 &bull; CAPSTONE) &bull; 14 MIN READ</span>
+            <h3 style="margin:0; font-size:14px; font-weight:800; color:#0f172a; white-space:nowrap;">Executive Decision Guide &amp; The Multi-Tenant Agentic Triad</h3>
+          </div>
+          <div class="flex-wrap-center" style="gap:5px;">
             <button type="button" class="ov-chip primary" onclick="openDocInReader('blogs/ws5-decision-guide-and-agentic-triad.md')">&#128214; Read Full Guide &rarr;</button>
             <button type="button" class="ov-chip" onclick="openDocInReader('blogs/ws5-decision-guide-and-agentic-triad.md', 'live-3p-before-after-ui-proof')">&#128260; Before/After UIs</button>
             <details class="export-dropdown">
@@ -781,14 +757,11 @@
 
 <article class="ov-onepager-card" id="overview-page-ALL" data-ov-page="ALL" data-no-hover-toolbar="true" style="border-top-color:#0f172a;">
         <div class="ov-onepager-hdr">
-          <div style="flex:1 1 460px; min-width:0;">
-            <div class="mb-1">
-              <span class="badge badge-blue text-2xs">PAGE 6 OF 6 • MASTER SYNTHESIS (ALL) • SHARED CORE ENGINE &amp; COMPLETE DIRECTORY</span>
-            </div>
-            <h3 style="margin:0 0 3px 0; font-size:18px; font-weight:800; color:#0f172a;">All-Workstreams Master Synthesis, Shared 80% Core Engine &amp; Cross-Cutting Runbooks</h3>
-            <div style="font-size:11.5px; color:#475569; font-weight:600;">25-Slide Master Deck • 27-File Reusable Engine • 9 Companion DevSite Decks • Cryptographic Receipts</div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; min-width:0;">
+            <span class="badge badge-blue text-2xs" style="white-space:nowrap;">PAGE 6 OF 6 &bull; MASTER SYNTHESIS &bull; 14 BLUEPRINTS</span>
+            <h3 style="margin:0; font-size:14px; font-weight:800; color:#0f172a; white-space:nowrap;">All-Workstreams Master Synthesis &amp; Shared Engine</h3>
           </div>
-          <div class="flex-wrap-center">
+          <div class="flex-wrap-center" style="gap:5px;">
             <button type="button" class="ov-chip primary" onclick="openDocInReader('docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md')">&#128218; Open E2E Master Guide &rarr;</button>
             <button type="button" class="ov-chip" onclick="openDocInReader('docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md')">&#128260; 10-SaaS Playbook</button>
             <details class="export-dropdown">
