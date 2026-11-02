@@ -128,17 +128,7 @@ This reference architecture uses the following Google Cloud products and open-so
 
 ## Architecture
 
-To bridge executive security strategy and production runtime implementation, this reference architecture follows a four-level **Macro-to-Micro (`L1 → L4`) decomposition** across five canonical diagrams and the companion 15-slide deck:
-
-- **`L1 Logical View` — 3 Logical Security Layers (Figure 1 / Slide 5):** Groups controls functionally into **Layer 1: Edge Identity & Ingress PEP (Hop 1)**, **Layer 2: Agent Runtime, Registry & Safety Guardrails (Hops 2, 3 & 4)**, and **Layer 3: Data Persistence, CMEK & FinOps OTel (Hop 5)**.
-- **`L2 Physical View` — 4 Physical Network Perimeters (VPC-SC) (Figure 2 / Slide 6):** Maps those three logical security layers onto four physical Google Cloud project and VPC Service Controls (`VPC-SC`) network boundaries (**Blue Perimeter 1**, **Green Perimeter 2**, **Yellow Perimeter 3**, and **Red Perimeter 4**).
-- **`5-Hop Governance Baseline` — End-to-End Cryptographic Chain (Figure 3 / Slide 7):** Details the 5 sequential enforcement layers, latency budgets, and state transitions across edge identity, catalog filtering, compute bulkhead, model armor, and AlloyDB RLS.
-- **`L3 Process View` — 5-Hop Execution Lifecycle, Fail-Closed Circuit Breakers & Stampede Recovery (Figure 4 / Slide 13):** Traces the synchronous per-turn request sequence alongside <5 s targeted Valkey `SCAN + UNLINK` revocation and `SET NX PX 5000` single-flight cache rebuilds.
-- **`L4 Wire View` — Signed STS JWT & DPoP Cryptographic Contract (Figure 5 / Slide 14):** Specifies the KMS ECDSA P-256 signed JWT payload, <0.15 ms local pod JWKS verification, and ~3 ms Valkey JTI/CMEK revocation deny-list check.
-
-### Level 1: System Context & Logical Taxonomy
-
-As established in **Figure 1 (Executive Architecture Summary above)**, the 3-layer security taxonomy connects untrusted multi-tenant callers to the shared 5-hop ADK control plane and downstream VPC-SC isolation data planes across Layer 1 (Tenant Identity & Ingress PEP), Layer 2 (Shared 5-Hop ADK Control Plane), and Layer 3 (Isolation Data Planes).
+To bridge executive security strategy and production runtime implementation, this reference architecture decomposes defense-in-depth across four engineering levels (`L1 → L4`) and five canonical blueprints:
 
 ### Level 2: Physical Network Perimeters (Figure 2)
 
@@ -148,12 +138,12 @@ The following `L2 Physical` diagram shows the multi-tenant agentic AI reference 
 
 *Figure 2. Official Google Cloud Architecture Center L2 Physical hub-and-spoke topology showing the 4 Physical Network Perimeters (VPC-SC): Routing Hub (Blue Perimeter 1), Central Governance and Security Hub (Green Perimeter 2), Pooled Shared Runtime (Yellow Perimeter 3 — Pattern A), and Sovereign Silo / Hybrid PSC Spokes (Red Perimeter 4 — Patterns B and C). Editable assets: [Draw.io source](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio) | [Google Slides (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx) | [Architecture Center SVG](../diagrams/ws1-multi-tenant-taxonomy-overview.svg) | [Vision AST](../diagrams/vision_metadata/ws1-multi-tenant-taxonomy-overview.vision.json).*
 
-The `L2 Physical` architecture in Figure 2 maps the 3 Logical Security Layers onto **4 Physical Network Perimeters (VPC-SC)** that enforce defense-in-depth isolation across every agent turn:
+The physical network topology establishes four concentric isolation perimeters to enforce strict defense-in-depth:
 
-- **Blue Perimeter 1 — Routing Hub (Zone 1 `#aecbfa`):** Terminates external client traffic at the External Application Load Balancer, strips unverified `X-Tenant-ID` headers in Google Cloud Armor, verifies upstream OIDC/SAML tokens in Identity-Aware Proxy (IAP), and performs RFC 8693 token exchange bound to RFC 9449 DPoP proofs (`Hop 1` in [`hop1_edge_identity_pep.py`](../core-cymbal-agent/governance/hop1_edge_identity_pep.py)).
-- **Green Perimeter 2 — Central Governance and Security Hub (Zone 2 `#ceead6`):** Enforces catalog-level access control in the Discovery Engine Agent Catalog (`Hop 2` in [`hop2_registry_pdp_callbacks.py`](../core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py)), manages customer-managed encryption keys (CMEK) in Cloud KMS, monitors posture in Security Command Center, and exports PII-redacted OpenTelemetry FinOps spans to Cloud Logging and BigQuery (`Hop 5` in [`hop5_data_rls_and_otel.py`](../core-cymbal-agent/governance/hop5_data_rls_and_otel.py)).
-- **Yellow Perimeter 3 — Pattern A Pooled Shared Runtime Spoke (Zone 3 `#feefc3`):** Hosts high-density Standard-tier tenants inside a shared Vertex AI Agent Engine / Cloud Run Gen2 **gVisor (`runsc`) user-space kernel sandbox** (`Hop 3` in [`hop3_compute_finops_bulkhead.py`](../core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py)) with shared `ContextCacheConfig` prompt prefix caching (up to 90% input token savings), inline Model Armor + Cloud DLP guardrails (`Hop 4` in [`hop4_model_armor_guardrails.py`](../core-cymbal-agent/governance/hop4_model_armor_guardrails.py)), and shared AlloyDB with `FORCE ROW LEVEL SECURITY (RLS)`.
-- **Red Perimeter 4 — Pattern B Sovereign Silo and Pattern C Hybrid PSC Spoke (Zone 4 `#fad2cf`):** Isolates regulated Enterprise tenants inside dedicated Google Cloud projects protected by VPC Service Controls (`VPC-SC`), IAM Principal Access Boundaries (`PAB`), tenant-owned Cloud KMS CMEK keys (`HTTP 423` kill-switch), and either Managed Vertex AI Dedicated Provisioned Throughput (`gemini-2.5-pro-dedicated`), air-gapped Gemma 3 (27B) on private GKE, or Private Service Connect (`PSC`) producer attachments.
+- **Perimeter 1: Edge Routing & Sanitization Hub:** Terminates untrusted client TLS at the External ALB and uses Cloud Armor to strip client-supplied identity claims (`X-Tenant-ID`) before token exchange. Callers without valid OIDC/SAML tokens are dropped at the edge, shielding internal agents from unauthenticated traffic.
+- **Perimeter 2: Central Governance & Compliance Authority:** Operates the Discovery Engine catalog PDP and Cloud KMS HSM key rings. Spoke runtimes never hold master cryptographic keys; they receive short-lived, sender-constrained STS JWTs with scoped lifetime budgets.
+- **Perimeter 3: Multi-Tenant Bulkhead Sandbox (Pattern A):** Restricts high-density tenants within gVisor (`runsc`) user-space kernels. Tenants share model prefix cache memory (`ContextCacheConfig`) for 90% cost reduction, but are strictly sandboxed at the memory and token-bucket rate limits.
+- **Perimeter 4: Sovereign & Hybrid PSC Spokes (Patterns B & C):** Bounded by VPC Service Controls (`VPC-SC`) and IAM Principal Access Boundaries (`PAB`). Even if an agent runtime inside this perimeter is compromised, Google Andromeda SDN hardware drops any API calls to external projects.
 
 ### End-to-end 5-Hop cryptographic governance baseline (Figure 3)
 

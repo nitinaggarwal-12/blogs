@@ -105,36 +105,7 @@ To provide enterprise executive sponsors, CISOs, CFOs, and architecture review b
 | **Level 4: Wire-Level Protocol Normalization (L4 Wire)** | Wire packet transformation: untrusted ingress payload stripped of client claims and minted into a signed STS JWT | Cloud Armor security rules, RFC 8693 OAuth Token Exchange, and RFC 9449 DPoP key binding | Ingress packet with spoofed claims exits as an immutable ECDSA P-256 JWT verified in `<0.15 ms` via in-memory JWKS |
 | **Level 5: Agentic Triad Governance & FinOps Attestation** | Continuous zero-trust security audits, predictable unit economics, and privacy-preserving observability | BigQuery OTel FinOps ledger, Cloud Audit Logs, and S3 Attestation Ledgers | 100% auditable proof verifying 0 cross-tenant data bleed across 10 genuine third-party enterprise SaaS products |
 
-#### Level 1: System Context & Logical Taxonomy (L1 Logical)
-
-The following `L1 Logical` architecture diagram synthesizes the complete multi-tenant landscape, illustrating the common 5-hop cryptographic control plane, shared governance hub, and the three distinct execution planes:
-
-![Figure 1A — Multi-tenant agentic triad system context: 80% reusable cryptographic core across Pooled (A), Silos (B), and Hybrid (C)](../diagrams/ws1-l1-logical-security-taxonomy.drawio.png)
-
-*Figure 1A. Official Google Cloud Architecture Center L1 Logical Security Taxonomy diagram showing the 3 logical security tiers: Layer 1 (Tenant Identity & Multi-IdP Ingress PEP), Layer 2 (Shared 5-Hop ADK Control Plane Hub with ~3ms Valkey JTI Deny-List and Model Armor DLP), and Layer 3 (Bifurcated Execution Planes: Pooled Cloud Run + AlloyDB RLS vs Sovereign VPC-SC Silos vs Hybrid PSC Spokes).*
-
-#### Level 2: Decision Tree & Container Topologies (L2 Physical)
-
-
-As established in **Figure 1 (Executive Architecture Summary above)**, the executive topology decision tree and the **Multi-Tenant Agentic Triad** (Zero-Trust Security, Predictable FinOps Economics, and Privacy-Preserving Observability) govern all three patterns. Figure 1 brings together the 2-question topology decision tree, the three operational pillars of the **Multi-Tenant Agentic Triad**, and the three side-by-side Pattern Outcome Columns ([5.1 Pattern Comparison & Decision Guide](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md)):
-
-- **1. The 2-Question Executive Topology Selector (Zone 1 — Top-left blue container `#aecbfa`):** Evaluates `Decision inputs` (`Tenant tier, compliance & pricing model`), `Q1 · Compliance gate` (`100% mandate VPC-SC or air-gap?`), and `Q2 · Tier gate` (`Multi-tier Standard + Enterprise?`) before branching into the three Pattern Outcome Columns.
-- **2. The Agentic Triad (80% reusable core) (Zone 2 — Top-right green container `#ceead6`):** Unifies `Pillar 1 • Zero-Trust 5-Hop` (`OBO/DPoP + Model Armor`), `Pillar 2 • Predictable FinOps` (`90% cache + Valkey cap`), and `Pillar 3 • Zero-PII OTel Chargeback` (`SDP -> BigQuery FinOps`) above the `AGENTIC TRIAD CORE` banner (`Shared across Pattern A, B & C`).
-- **Pattern B — Sovereign Silos • $$$ • Terraform module 3.6 (Outcome Column 1 — Left coral container `#fad2cf`):** Triggered by `Q1 = YES (100% regulated)`: provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`).
-- **Pattern A — Pooled • $ • Terraform module 2.6 (Outcome Column 2 — Center amber container `#feefc3`):** Triggered by `Q2 = NO (Single tier)`: provisions `Shared Agent Engine Pool` (`120 RPM • 4k cap • 90% cache`) and `Shared AlloyDB & BigQuery RLS` (`FORCE RLS • 10/10 breach tests`).
-- **Pattern C — Hybrid PSC • $$ • Terraform module 4.6 (Outcome Column 3 — Right slate container `#e8eaed`):** Triggered by `Q2 = YES (Multi-tier)`: provisions `Hybrid Router & PSC Hub` (`Pool + PSC 10.10.0.50`) and `3-Phase Live Tier Migrator` (`0-downtime upgrade • 4/4 tests`).
-
-The seven numbered badges (`1`–`7`) on Figure 1 trace the 2-question decision flow and the three resulting pattern deployments—matching the exact visual callouts on the diagram (and mapping the canonical 5-Hop flow stages `1 Request`, `2 Request`, `3 Route`, `4 Sanitize request`, `5 Generates response`, `6 Sanitize response`, and `7 Sanitized response` across sub-hops `Hop 3a/3b`, `Hop 4a/4b`, and `Hop 5a/5b` in [`runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py)):
-
-1. **Badge 1 (`1 Decision inputs` / `1 Request`) — Ingest decision inputs and Hop 1 request parameters:** Evaluate the SaaS product's regulatory surface area, customer contract mandates, and pricing tier packaging ([`5.1-pattern-comparison-and-decision-guide.md`](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md), `runtime_pipeline.py:L60-L80`).
-2. **Badge 2 (`2 Q1 · Compliance gate` / `2 Request`) — Evaluate Q1 · Compliance gate & Hop 2 ARD Catalog requirements:** If `Q1 = YES (100% regulated)`, route directly to **Pattern B — Sovereign Silos** (`Badge 4`); if `Q1 = NO`, proceed to `Q2 · Tier gate` (`Badge 3`, `runtime_pipeline.py:L82-L97`).
-3. **Badge 3 (`3 Q2 · Tier gate` / `3 Route`) — Evaluate Q2 · Tier gate & Hop 3a routing topology (Multi-tier Standard + Enterprise?):** If `Q2 = NO (Single tier)`, route to **Pattern A — Pooled** (`Badge 5`); if `Q2 = YES (Multi-tier)`, route to **Pattern C — Hybrid PSC** (`Badge 6`, `runtime_pipeline.py:L99-L113`).
-4. **Badge 4 (`4 Pattern B — Sovereign Silos` / `4 Sanitize request`) — Deploy Pattern B Sovereign Silos (Terraform module 3.6 & Hop 4a VPC-SC/Armor):** Provision `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`) via [`3.6-terraform-silo-blueprint/main.tf`](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf) (`runtime_pipeline.py:L115-L125`).
-5. **Badge 5 (`5 Pattern A — Pooled` / `5 Generates response`) — Deploy Pattern A Pooled (Terraform module 2.6 & Hop 3b 90% Cache):** Provision `Shared Agent Engine Pool` (`120 RPM • 4k cap • 90% cache`) and `Shared AlloyDB & BigQuery RLS` (`FORCE RLS • 10/10 breach tests`) via [`2.6-terraform-starter/main.tf`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf) (`runtime_pipeline.py:L127-L162`).
-6. **Badge 6 (`6 Pattern C — Hybrid PSC` / `6 Sanitize response`) — Deploy Pattern C Hybrid PSC (Terraform module 4.6 & Hop 4b/5a PSC Spoke):** Provision `Hybrid Router & PSC Hub` (`Pool + PSC 10.10.0.50`) and `3-Phase Live Tier Migrator` (`0-downtime upgrade • 4/4 tests`) via [`4.6-terraform-hybrid-psc-blueprint/main.tf`](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf) (`runtime_pipeline.py:L164-L182`).
-7. **Badge 7 (`7 Enforce the Agentic Triad Core across all patterns` / `7 Sanitized response`) — Bind the 80% Reusable Agentic Triad Core & Hop 5b OTel Chargeback:** Apply `Pillar 1 • Zero-Trust 5-Hop` ([`core-cymbal-agent/governance/`](../core-cymbal-agent/governance/)), `Pillar 2 • Predictable FinOps`, and `Pillar 3 • Zero-PII OTel Chargeback` (`SDP -> BigQuery FinOps`, `runtime_pipeline.py:L184-L209`) uniformly across Pattern A, Pattern B, and Pattern C.
-
-#### Level 3: Process & Sequence Swimlanes (L3 Process)
+### Level 3: Process & Sequence Swimlanes (L3 Process)
 
 The following `L3 Process` swimlane details the step-by-step transaction flow across the five runtime actors governing the Multi-Tenant Agentic Triad, illustrating fail-closed security enforcement, prompt prefix cache reuse, and FinOps ledger recording:
 

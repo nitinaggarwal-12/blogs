@@ -107,34 +107,6 @@ To provide enterprise architecture review boards, CISOs, and cloud platform lead
 | **Level 4: Wire-Level Protocol Normalization (L4 Wire)** | Wire packet transformation: untrusted ingress payload stripped of client claims and minted into a signed STS JWT | Cloud Armor security rules, RFC 8693 OAuth Token Exchange, and RFC 9449 DPoP key binding | Ingress packet with spoofed claims exits as an immutable ECDSA P-256 JWT verified in `<0.15 ms` via in-memory JWKS |
 | **Level 5: Live Migration Data Cutover & Dual-Write Routing** | Continuous change-data capture, dual-write shadow synchronization, and atomic pointer flip | AlloyDB CDC replication streams, Memorystore Valkey pointer cache, and BigQuery FinOps ledger | Atomic pointer cutover swaps target spoke in `<50 ms`; in-flight turns complete on source before graceful teardown |
 
-#### Level 1: System Context & Logical Taxonomy (L1 Logical)
-
-The following `L1 Logical` architecture diagram synthesizes the complete Pattern C dynamic hybrid reference model, illustrating the central routing and governance hub, Private Service Connect (PSC) transits, and live tier promotion mechanism:
-
-![Figure 1A — Pattern C dynamic hybrid system context: unified routing hub, Private Service Connect transits, and live tier promotion](../diagrams/ws1-l1-logical-security-taxonomy.drawio.png)
-
-*Figure 1A. Official Google Cloud Architecture Center L1 Logical Security Taxonomy diagram for Pattern C showing the 3 logical security tiers: Layer 1 (Tenant Identity & Unified Ingress PEP with dynamic tier routing), Layer 2 (Shared Control Plane Hub managing PSC endpoint registries, migration state machines, and KMS key federation), and Layer 3 (Bifurcated Execution Planes: Standard Shared Pool Spoke vs Dedicated Enterprise PSC Spokes).*
-
-#### Level 2: Container & Physical Topologies (L2 Physical)
-
-
-As established in **Figure 1 (Executive Architecture Summary above)**, the Pattern C dynamic hybrid hub-and-spoke architecture connects the central routing and governance hub to both the shared pooled runtime and dedicated Enterprise Private Service Connect (PSC) spokes. Figure 1 organizes the hybrid platform across four functional zones:
-
-- **Unified Hybrid Routing and Identity Hub (`cymbal-hybrid-hub-prod`) (Zone 1 — Blue container `#aecbfa`):** Terminates all Standard and Enterprise traffic at one External Application Load Balancer, strips forged headers in Cloud Armor, verifies OIDC/Entra JWTs in IAP (`Hop 1`), and queries the Firestore Route Table in the Cloud Run Hybrid Router to dispatch turns to `pool://` or `psc://`.
-- **Federated Agent Catalog, KMS, and Live Migration Hub (Zone 2 — Green container `#ceead6`):** Synchronizes private spoke agent descriptors (`Agent Alpha`) into the hub's Discovery Engine Catalog PDP (`Hop 2`), orchestrates the 3-phase Zero-Downtime Tier Migration Engine (`pattern_c_hybrid_router_and_migrator.py`), and aggregates cross-tier BigQuery FinOps telemetry (`Hop 5`).
-- **Shared Pooled Runtime Spoke (Standard Tier — `pool://`) (Zone 3 — Left amber container `#feefc3`):** Serves Standard-tier tenants (`RetailStream Corp` prior to upgrade) inside the shared Vertex AI Agent Engine runtime (`4,000` token cap, `120 RPM`) with 90% shared `ContextCacheConfig` savings and shared AlloyDB RLS.
-- **Dedicated Enterprise PSC Spoke (`psc://10.10.0.50/...`) (Zone 4 — Right coral container `#fad2cf`):** Serves Enterprise tenants (`FinVault Bank` and upgraded `RetailStream Corp`) across unidirectional Private Service Connect (`ServiceAttachment`) inside a dedicated VPC-SC perimeter with `8,000` thinking-token budgets, dedicated CMEK AlloyDB, and private `Agent Alpha` (`gemini-2.5-pro-dedicated` on Dedicated Provisioned Throughput).
-
-The numbered callouts (`1`–`7`) on Figure 1 trace dynamic tier routing and cross-project PSC execution—matching the exact visual arrow badge labels on the architecture canvas (and canonical 5-Hop stages `1 Request`, `2 Request`, `3 Route`, `4 Sanitize request`, `5 Generates response`, `6 Sanitize response`, and `7 Sanitized response` across sub-hops `Hop 3a/3b`, `Hop 4a/4b`, and `Hop 5a/5b` in [`runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py)):
-
-1. **Badge 1 (`1 Request`) — Unified SaaS ingress request:** Standard (`RetailStream Corp`) and Enterprise (`FinVault Bank`) customers send HTTPS requests to the same public Cymbal SaaS hostname (`cymbal-hybrid-hub-prod`, `runtime_pipeline.py:L60-L72`).
-2. **Badge 2 (`2 Request`) — Hop 1 cryptographic identity verification:** Cloud Armor strips forged `X-Tenant-ID` headers and IAP + `Hop1EdgeIdentityPEP.authenticate_and_mint_context()` ([`hop1_edge_identity_pep.py:L115-L176`](../core-cymbal-agent/governance/hop1_edge_identity_pep.py), `runtime_pipeline.py:L60-L80`) derive `ctx.tenant_id` from the verified JWT + DPoP proof.
-3. **Badge 3 (`3 Route` / `3 Route Standard to Pool or Enterprise via PSC`) — Firestore route lookup & Hop 2 Federated ARD Catalog PDP:** The Cloud Run Hybrid Router ([`pattern_c_hybrid_router_and_migrator.py:L138-L210`](../workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py), `runtime_pipeline.py:L82-L113`) looks up `ctx.tenant_id` in Firestore (`PATTERN_C_HYBRID_POOL` vs `PATTERN_C_HYBRID_PSC_SPOKE`) and resolves shared vs private `Agent Alpha` ACLs (`HTTP 403` on cross-tier spoofing).
-4. **Badge 4 (`4 Sanitize request`) — Hop 4a pre-inference Model Armor and Cloud DLP inspection:** Prompts and tool arguments pass through `Hop4ModelArmorGuardrails.inspect_prompt_and_tools()` ([`hop4_model_armor_guardrails.py:L92-L164`](../core-cymbal-agent/governance/hop4_model_armor_guardrails.py), `runtime_pipeline.py:L115-L125`) before traversing either the pool or the PSC forwarding rule.
-5. **Badge 5 (`5 Generates response` / `5 Pooled inference` / `Spoke Agent Engine via PSC`) — Hop 3a/3b & Hop 5a dynamic dispatch to Shared Pool (`pool://`) or PSC Spoke (`psc://`):** Standard tenants execute in Zone 3 (`pool://`, `4,000` token cap, `120 RPM`); Enterprise tenants traverse consumer PSC IP `10.10.0.50` into Zone 4 (`psc://`, `8,000` token budget, `600 RPM`, CMEK verification, `runtime_pipeline.py:L127-L162`).
-6. **Badge 6 (`6 Sanitize response`) — Hop 4b post-inference output DLP and tier-scoped 3LO MCP execution:** Responses and 3LO MCP calls are validated against the caller's DPoP proof (`401` on replay) and semantic Natural Language Policy Compliance (`NLC`) rules (`422`, `runtime_pipeline.py:L164-L182`).
-7. **Badge 7 (`7 Sanitized response` / `7 Seamless response (0 dropped sessions)`) — Hop 5b tier-isolated persistence and unified BigQuery FinOps chargeback:** Data persists in shared AlloyDB RLS (`SET LOCAL app.current_tenant_id` for Standard) or dedicated CMEK AlloyDB (Enterprise), while redacted OTel spans stream to `cymbal_agentic_finops_otel.tenant_telemetry_spans` and the sanitized response returns with `0` dropped sessions (`runtime_pipeline.py:L184-L209`).
-
 ### Cross-project Private Service Connect (PSC) network topology (Figure 2)
 
 ![Figure 2 — Pattern C: Hub-and-spoke VPC and Private Service Connect (PSC) NAT peering topology](../diagrams/ws4-hub-and-spoke-demo-env-setup-topology.drawio.png)
@@ -143,10 +115,10 @@ The numbered callouts (`1`–`7`) on Figure 1 trace dynamic tier routing and cro
 
 Figure 2 illustrates the network architecture detailed in [4.2 Hub-and-Spoke Demo Environment Setup](../workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md):
 
-- **Hub VPC and Cloud Run Direct VPC Egress (`10.10.0.0/20`) (Zone 1 — Blue container `#aecbfa`):** Hosts the Cloud Run Hybrid Router with Direct VPC Egress to internal consumer PSC forwarding rules (`10.10.0.50`, `10.10.0.51`).
-- **PSC Producer-Consumer Handshake and VPC-SC Ingress Bridge (Zone 2 — Green container `#ceead6`):** Enforces `ACCEPT_MANUAL` consumer accept lists on each spoke `ServiceAttachment` and binds VPC-SC ingress rules exclusively to the hub router service account.
-- **FinVault Enterprise PSC Spoke (`10.40.0.0/20`) (Zone 3 — Left amber container `#feefc3`):** Dedicated spoke project publishing `finvault-agent-spoke-psc` in front of an Internal Application Load Balancer, Agent Engine runtime, and CMEK AlloyDB.
-- **RetailStream Promoted Enterprise PSC Spoke (`10.40.0.0/20` reused) (Zone 4 — Right coral container `#fad2cf`):** Demonstrates non-overlapping CIDR reuse: because PSC uses source NAT (`/28` subnet `10.240.0.0/28`), every enterprise spoke can reuse `10.40.0.0/20` without IP exhaustion.
+- **Hub VPC and Cloud Run Direct VPC Egress (`10.10.0.0/20`):** Hosts the Cloud Run Hybrid Router with Direct VPC Egress to internal consumer PSC forwarding rules (`10.10.0.50`, `10.10.0.51`).
+- **PSC Producer-Consumer Handshake and VPC-SC Ingress Bridge:** Enforces `ACCEPT_MANUAL` consumer accept lists on each spoke `ServiceAttachment` and binds VPC-SC ingress rules exclusively to the hub router service account.
+- **FinVault Enterprise PSC Spoke (`10.40.0.0/20`):** Dedicated spoke project publishing `finvault-agent-spoke-psc` in front of an Internal Application Load Balancer, Agent Engine runtime, and CMEK AlloyDB.
+- **RetailStream Promoted Enterprise PSC Spoke (`10.40.0.0/20` reused):** Demonstrates non-overlapping CIDR reuse: because PSC uses source NAT (`/28` subnet `10.240.0.0/28`), every enterprise spoke can reuse `10.40.0.0/20` without IP exhaustion.
 
 The seven numbered badges (`1`–`7`) on Figure 2 trace packet flow and setup across the Private Service Connect boundary:
 

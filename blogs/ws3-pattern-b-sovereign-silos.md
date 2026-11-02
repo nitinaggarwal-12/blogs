@@ -103,34 +103,6 @@ To provide enterprise architecture review boards, CISOs, and compliance officers
 | **Level 4: Wire-Level Protocol Normalization (L4 Wire)** | Wire packet transformation: untrusted ingress payload stripped of client claims and minted into a signed STS JWT | Cloud Armor security rules, RFC 8693 OAuth Token Exchange, and RFC 9449 DPoP key binding | Ingress packet with spoofed claims exits as an immutable ECDSA P-256 JWT verified in `<0.15 ms` via in-memory JWKS |
 | **Level 5: Physical & Cryptographic Data Plane Isolation (L5 Kernel CMEK)** | Hardware-level cryptographic shredding and dedicated physical storage encryption keys | Customer-held Cloud KMS HSM CMEK key rings and Dedicated AlloyDB clusters | Key version disabled renders all database pages, model weights, and object storage instantly unreadable |
 
-#### Level 1: System Context & Logical Taxonomy (L1 Logical)
-
-The following `L1 Logical` architecture diagram synthesizes the complete Pattern B sovereign silo reference model, illustrating the strict multi-project boundary, dedicated VPC Service Controls perimeters, and customer-held Cloud KMS CMEK encryption keys:
-
-![Figure 1A — Pattern B sovereign silos system context: dedicated project perimeters, customer-managed CMEK keys, and air-gapped Gemma 3 on GKE](../diagrams/ws1-l1-logical-security-taxonomy.drawio.png)
-
-*Figure 1A. Official Google Cloud Architecture Center L1 Logical Security Taxonomy diagram for Pattern B showing the 3 logical security tiers: Layer 1 (Tenant Identity & Dedicated Ingress PEP with SPIFFE mTLS certificates), Layer 2 (Organization VPC-SC & Cloud KMS Governance Hub managing CMEK kill-switches and IAM PAB policies), and Layer 3 (Dedicated Sovereign Silo Data Planes with 0 shared compute, memory, or database storage).*
-
-#### Level 2: Container & Physical Topologies (L2 Physical)
-
-
-As established in **Figure 1 (Executive Architecture Summary above)**, each corporate tenant operates inside an isolated Google Cloud project and VPC Service Controls perimeter. Figure 1 organizes the Pattern B sovereign deployment into four security zones:
-
-- **Sovereign mTLS and PAB Ingress Hub (Zone 1 — Blue container `#aecbfa`):** Verifies client mutual TLS (mTLS) SPIFFE certificates (`spiffe://finvault.com/ns/sre/sa/agent-client`) and evaluates the organization-level IAM Principal Access Boundary (`PAB`) before routing traffic into the tenant's dedicated project (`Hop 1`).
-- **Organization VPC-SC, Cloud KMS CMEK, and SCC Governance Hub (Zone 2 — Green container `#ceead6`):** Enforces per-project VPC Service Controls perimeters (`perimeter_finvault_sovereign`), verifies live Cloud KMS / Cloud EKM key state (`agent-memory-cmek`), monitors compliance in Security Command Center, and exports per-silo audit logs (`Hops 2 & 5`).
-- **Sovereign Silo Project A — FinVault Bank (`cymbal-finvault-silo-prod`) (Zone 3 — Left amber container `#feefc3`):** Dedicated Google Cloud project hosting FinVault's isolated Vertex AI Agent Engine runtime, private `Agent Alpha` (`gemini-2.5-pro-dedicated` on Dedicated Provisioned Throughput), air-gapped **Gemma 3 (27B IT)** on private GKE GPU nodes (zero public internet egress), and CMEK-encrypted AlloyDB and Memory Bank.
-- **Sovereign Silo Project B — RetailStream Corp / MedCore Health (`cymbal-retailstream-silo-prod`) (Zone 4 — Right coral container `#fad2cf`):** Physically separate Google Cloud project inside `perimeter_retailstream_sovereign` with its own IAM PAB policy, dedicated Provisioned Throughput Gemini 2.5 Pro endpoint, dedicated CMEK AlloyDB cluster, and isolated Microsoft Entra ID 3LO MCP servers.
-
-The numbered callouts in Figure 1 (`1`–`7`) match the visual diagram badges 1:1 (mapping canonical 5-Hop flow stages `1 Request`, `2 Request`, `3 Route`, `4 Sanitize request`, `5 Generates response`, `6 Sanitize response`, and `7 Sanitized response` across sub-hops `Hop 3a/3b`, `Hop 4a/4b`, and `Hop 5a/5b`) and trace a sovereign agent turn in [`pattern_b_siloed_service.py`](../workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py) and [`runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py):
-
-1. **Mutual TLS (mTLS) and OIDC ingress (`1 Request` / `1 mTLS Request`):** The tenant client connects to the sovereign ingress gateway with a pinned mTLS SPIFFE client certificate (`spiffe://finvault.com/ns/sre/sa/agent-client`) and an upstream OIDC JWT (`pattern_b_siloed_service.py:L62-L88`, `runtime_pipeline.py:L60-L80`).
-2. **Hop 1 & Hop 2 — Sovereign mTLS SPIFFE, IAM PAB, and ARD Catalog (`2 Request` / `2 mTLS Valid`):** `PatternBSiloedService` verifies that the client certificate (`HTTP 401` on SPIFFE mismatch) and IAM principal (`HTTP 403` on PAB violation) are bound exclusively to the target silo project (`cymbal-finvault-silo-prod`), and filters the silo-local Discovery Engine ARD Agent Catalog (`pattern_b_siloed_service.py:L90-L122`, `runtime_pipeline.py:L82-L97`).
-3. **Hop 3a — Route to isolated VPC-SC tenant project (`3 Route` / `3 Route to isolated VPC-SC tenant project`):** Verified requests cross the VPC-SC ingress policy into the dedicated tenant project (`perimeter_finvault_sovereign` or `perimeter_retailstream_sovereign`), blocking any unauthorized cross-project API egress (`HTTP 403 VPC_SC_PERIMETER_VIOLATION`, `runtime_pipeline.py:L99-L113`).
-4. **Hop 4a (Pre-inference) — VPC-SC & Model Armor prompt sanitization (`4 Sanitize request`):** Inside the silo perimeter, regional Vertex AI Model Armor and Cloud DLP inspect the prompt inline (`hop4_model_armor_guardrails.py`, `runtime_pipeline.py:L115-L125`), blocking prompt/SQL injection (`HTTP 400`) and OCC/FDIC or HIPAA NLC policy violations (`HTTP 422`).
-5. **Hop 3b & Hop 5a — Live Cloud KMS CMEK check, air-gapped Gemma 3 / Vertex AI PT, and local MCP (`5 Generates response` / `5 Air-gapped inference`):** The runtime verifies that `agent-memory-cmek` is `ENABLED` (halting within `< 5s` via Valkey `UNLINK` and returning `HTTP 423 Locked` if revoked), executes inference on air-gapped **Gemma 3 (27B IT)** on private GKE (`gemma-3-27b-it-vllm`, `public_egress = False`) or dedicated Vertex AI PT (`gemini-2.5-pro-dedicated`), and invokes silo-local MCP servers + CMEK AlloyDB (`pattern_b_siloed_service.py:L124-L168`, `runtime_pipeline.py:L127-L162`).
-6. **Hop 4b (Post-inference) — Output DLP and semantic NLC compliance (`6 Sanitize response`):** Generated completions and tool outputs pass post-inference Cloud DLP de-identification and semantic NLC verification before leaving the silo runtime (`runtime_pipeline.py:L164-L182`).
-7. **Hop 5b — Sovereign response delivery or HTTP 423 Locked halt (`7 Sanitized response` / `7 Sovereign response (or HTTP 423 Locked)`):** Returns the sanitized sovereign `HTTP 200` response (or `HTTP 423 Locked` on revoked CMEK) and writes a zero-PII CMEK-encrypted OpenTelemetry audit span to the silo's BigQuery dataset (`hop5_data_rls_and_otel.py`, `runtime_pipeline.py:L184-L209`).
-
 ### Multi-project silo and Cloud KMS CMEK setup topology (Figure 2)
 
 ![Figure 2 — Pattern B: 4-stage multi-project provisioning, VPC-SC perimeter, and CMEK kill-switch topology](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio.png)
@@ -139,10 +111,10 @@ The numbered callouts in Figure 1 (`1`–`7`) match the visual diagram badges 1:
 
 Figure 2 details the four provisioning stages documented in [3.2 Multi-Project Silo & CMEK Setup](../workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md):
 
-- **Stage 1 — Identity, mTLS Certificate Authority, and IAM PAB (Zone 1 — Blue container `#aecbfa`):** Configures Certificate Authority Service for SPIFFE mTLS certificates and binds the IAM Principal Access Boundary policy to the tenant folder/project.
-- **Stage 2 — Access Context Manager, VPC-SC, and Cloud KMS CMEK (Zone 2 — Green container `#ceead6`):** Creates the dry-run and enforced VPC-SC service perimeters covering `aiplatform.googleapis.com`, `alloydb.googleapis.com`, and `storage.googleapis.com`, and provisions customer-managed KMS keys.
-- **Stage 3 — Air-Gapped GKE Gemma 3 (27B) and Silo Agent Runtime (Zone 3 — Left amber container `#feefc3`):** Deploys a private GKE cluster (`enable_private_nodes = true`, `enable_private_endpoint = true`) serving `gemma-3-27b-it-vllm` from a local Artifact Registry mirror alongside Vertex AI Agent Engine.
-- **Stage 4 — CMEK Data Plane and Automated Kill-Switch Verification (Zone 4 — Right coral container `#fad2cf`):** Binds `agent-memory-cmek` to AlloyDB, Memorystore, Vertex AI Memory Bank, and BigQuery, and validates instant `HTTP 423` revocation.
+- **Stage 1 — Identity, mTLS Certificate Authority, and IAM PAB:** Configures Certificate Authority Service for SPIFFE mTLS certificates and binds the IAM Principal Access Boundary policy to the tenant folder/project.
+- **Stage 2 — Access Context Manager, VPC-SC, and Cloud KMS CMEK:** Creates the dry-run and enforced VPC-SC service perimeters covering `aiplatform.googleapis.com`, `alloydb.googleapis.com`, and `storage.googleapis.com`, and provisions customer-managed KMS keys.
+- **Stage 3 — Air-Gapped GKE Gemma 3 (27B) and Silo Agent Runtime:** Deploys a private GKE cluster (`enable_private_nodes = true`, `enable_private_endpoint = true`) serving `gemma-3-27b-it-vllm` from a local Artifact Registry mirror alongside Vertex AI Agent Engine.
+- **Stage 4 — CMEK Data Plane and Automated Kill-Switch Verification:** Binds `agent-memory-cmek` to AlloyDB, Memorystore, Vertex AI Memory Bank, and BigQuery, and validates instant `HTTP 423` revocation.
 
 The seven numbered steps in Figure 2 (`1`–`7`) match the visual diagram badges for multi-project provisioning and CMEK revocation ([3.2 Multi-Project Silo & CMEK Setup](../workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md)):
 
