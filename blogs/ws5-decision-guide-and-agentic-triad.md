@@ -15,17 +15,26 @@ status: "PUBLISH_READY"
 
 # Multi-tenant agentic AI system: Executive decision guide and the Multi-Tenant Agentic Triad
 
-> **Companion Cloud Architecture Assets:**
-> - 📊 **Google Slides**: [Open WS5 34-Slide Upgraded Visual Presentation (Google Slides ↗)](https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit) • [Open Master 25-Slide Presentation (Google Slides ↗)](https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/edit) • [Download 34-Slide Upgraded Visual Presentation (.pptx)](../slides/ws5-12slide-visual-deck.pptx) • [Download 12-Slide Canonical (.pptx)](../slides/ws5-wrap-up-editable-slides.pptx) • [Download Master 25-Slide (.pptx)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)
-> - 📄 **Google Docs & Word**: [Open WS5 GCP-Branded Google Doc ↗](https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit) • [Download Microsoft Word (.docx)](../docs/word/ws5-decision-guide-and-agentic-triad.docx)
-> - 📐 **Official Draw.io Blueprints**: [Figure 1 Decision Tree & Agentic Triad (.drawio)](../diagrams/ws5-decision-tree-and-agentic-triad.drawio)
-
+> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation ↗](https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit) • [📐 Draw.io Source (.drawio)](../diagrams/ws5-decision-tree-and-agentic-triad.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download Slides (.pptx)](../slides/ws5-wrap-up-editable-slides.pptx)
 
 This document provides an executive decision framework to help you select, combine, and operate the right multi-tenant isolation topology for agentic AI systems on Google Cloud. It synthesizes the architectural patterns, security verification suites, and FinOps benchmarks from across this 5-part series—[Part 1 (Reference Taxonomy & 5-Hop Baseline)](ws1-reference-architecture-taxonomy-and-5hop-baseline.md), [Part 2 (Pattern A Pooled)](ws2-pattern-a-pooled-architecture.md), [Part 3 (Pattern B Sovereign Silos)](ws3-pattern-b-sovereign-silos.md), and [Part 4 (Pattern C Dynamic Hybrid)](ws4-pattern-c-hybrid-dynamic-tiering.md)—into a two-question decision tree and the **Multi-Tenant Agentic Triad**.
 
 This document is intended for CTOs, principal cloud architects, CISOs, and AI product leaders evaluating [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview) and [Agent Development Kit (ADK)](https://google.github.io/adk-docs/) for multi-customer B2B SaaS or internal enterprise platform deployments.
 
 > **Key point:** Two gating questions determine your topology: (1) *Do 100% of your customers legally mandate dedicated Google Cloud projects, VPC Service Controls perimeters, or air-gapped open-weight models?* If yes, deploy **Pattern B (Sovereign Silos)**. (2) *If not, do you sell multiple pricing tiers (a shared Standard tier plus a dedicated Enterprise tier)?* If no, deploy **Pattern A (Pooled)**; if yes, deploy **Pattern C (Dynamic Hybrid)**.
+
+## Executive Architecture Summary & System Context (Figure 1)
+
+The following `L2 Physical` decision framework diagram synthesizes the 2-question gating tree, the Multi-Tenant Agentic Triad, and the 74% fleet TCO reduction model across Patterns A, B, and C:
+
+![Figure 1 — Executive decision tree, Pattern A/B/C selector, and the Multi-Tenant Agentic Triad](../diagrams/ws5-decision-tree-and-agentic-triad.drawio.png)
+
+*Figure 1. Official Google Cloud Architecture Center decision tree and Multi-Tenant Agentic Triad showing the 2-question gating tree, the 3 pillars of multi-tenant governance (Zero-Trust 5-Hop Chain, Predictable FinOps, and Privacy-Preserving OTel Chargeback), and the 3-stage technical solution lifecycle.*
+
+> ⚡ **At a Glance: Multi-Tenant Decision Framework Context**
+> - **2-Question Gating Tree**: Branch immediately to Pattern B (Sovereign Silos) on regulatory isolation mandates; branch to Pattern A (Pooled) for single-tier SaaS; branch to Pattern C (Dynamic Hybrid) for tiered offerings.
+> - **80% Reusable Agentic Triad**: The exact same 5-hop cryptographic context chain, rate limiters, Model Armor templates, and AlloyDB RLS run across all three patterns with 0 codebase rewrites.
+> - **74% Fleet TCO Savings**: Combining pooled density for 950 Standard tenants with isolated PSC spokes for 50 Enterprise tenants optimizes gross margin without sacrificing compliance.
 
 ## Core terminology and executive decision primitives
 
@@ -107,13 +116,7 @@ The following `L1 Logical` architecture diagram synthesizes the complete multi-t
 #### Level 2: Decision Tree & Container Topologies (L2 Physical)
 
 
-The following diagram shows the executive topology decision tree and the **Multi-Tenant Agentic Triad** (Zero-Trust Security, Predictable FinOps Economics, and Privacy-Preserving Observability) governing all three patterns:
-
-![Figure 1 — Executive decision tree, Pattern A/B/C selector, and the Multi-Tenant Agentic Triad](../diagrams/ws5-decision-tree-and-agentic-triad.drawio.png)
-
-*Figure 1. Rule 53G 3-Outcome Decision-Tree Blueprint (46 vertices, 19 edges) showing the 2-Question Executive Topology Selector (Zone 1 `#aecbfa`), the Multi-Tenant Agentic Triad 80% Reusable Core (Zone 2 `#ceead6`), and the three side-by-side Pattern Outcome Columns: Pattern B Sovereign Silos (`#fad2cf`, Step 4), Pattern A Pooled (`#feefc3`, Step 5), and Pattern C Hybrid PSC (`#e8eaed`, Step 6). Editable assets: [Draw.io source](../diagrams/ws5-decision-tree-and-agentic-triad.drawio) | [Google Slides (.pptx)](../slides/ws5-12slide-visual-deck.pptx) | [Architecture Center SVG](../diagrams/ws5-decision-tree-and-agentic-triad.svg) | [Vision AST](../diagrams/vision_metadata/ws5-decision-tree-and-agentic-triad.vision.json).*
-
-Figure 1 brings together the 2-question topology decision tree, the three operational pillars of the **Multi-Tenant Agentic Triad**, and the three side-by-side Pattern Outcome Columns ([5.1 Pattern Comparison & Decision Guide](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md)):
+As established in **Figure 1 (Executive Architecture Summary above)**, the executive topology decision tree and the **Multi-Tenant Agentic Triad** (Zero-Trust Security, Predictable FinOps Economics, and Privacy-Preserving Observability) govern all three patterns. Figure 1 brings together the 2-question topology decision tree, the three operational pillars of the **Multi-Tenant Agentic Triad**, and the three side-by-side Pattern Outcome Columns ([5.1 Pattern Comparison & Decision Guide](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md)):
 
 - **1. The 2-Question Executive Topology Selector (Zone 1 — Top-left blue container `#aecbfa`):** Evaluates `Decision inputs` (`Tenant tier, compliance & pricing model`), `Q1 · Compliance gate` (`100% mandate VPC-SC or air-gap?`), and `Q2 · Tier gate` (`Multi-tier Standard + Enterprise?`) before branching into the three Pattern Outcome Columns.
 - **2. The Agentic Triad (80% reusable core) (Zone 2 — Top-right green container `#ceead6`):** Unifies `Pillar 1 • Zero-Trust 5-Hop` (`OBO/DPoP + Model Armor`), `Pillar 2 • Predictable FinOps` (`90% cache + Valkey cap`), and `Pillar 3 • Zero-PII OTel Chargeback` (`SDP -> BigQuery FinOps`) above the `AGENTIC TRIAD CORE` banner (`Shared across Pattern A, B & C`).

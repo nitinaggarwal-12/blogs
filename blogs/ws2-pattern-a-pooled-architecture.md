@@ -15,11 +15,26 @@ status: "PUBLISH_READY"
 
 # Multi-tenant agentic AI system: Pattern A high-density pooled architecture
 
+> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation ↗](https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit?resourcekey=0-VBrM33i2sQ8J1B3Z7ycw5g) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/edit?resourcekey=0-OyYSOmx22u8x4Q1kHunGyQ) • [📐 Draw.io Source (.drawio)](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download Slides (.pptx)](../slides/ws2-pattern-a-pooled-editable-slides.pptx)
+
 This document describes **Pattern A (High-Density Pooled Architecture)** for building and operating a multi-tenant agentic AI system on Google Cloud. In Pattern A, thousands of corporate B2B SaaS customers share a single Google Cloud project (`cymbal-pooled-saas-prod`), a shared [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview) runtime, a shared [Gemini 2.5 Pro](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models) prompt prefix cache (`ContextCacheConfig`), and a shared [AlloyDB for PostgreSQL](https://cloud.google.com/alloydb/docs) cluster while maintaining strict cryptographic tenant isolation.
 
 This document is part 2 of a 5-part series extending the official Google Cloud [Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) reference architecture (introduced in [Part 1: Reference architecture taxonomy and 5-Hop baseline](ws1-reference-architecture-taxonomy-and-5hop-baseline.md)). It is intended for cloud architects, AI platform engineers, and FinOps practitioners who need maximum tenant density and lowest unit cost (`120 RPM Pooled` baseline per tenant).
 
 > **Key point:** Pattern A achieves **90% input token savings** on shared system instructions (`84.7%` total turn COGS reduction) while blocking **10 out of 10 automated cross-tenant breach vectors**—including HTTP header spoofing, private `Agent Alpha` enumeration, prompt injection, noisy-neighbor token exhaustion, and cross-tenant database queries.
+
+## Executive Architecture Summary & System Context (Figure 1)
+
+The following `L2 Physical` diagram shows the Pattern A high-density pooled architecture deployed inside a single shared Google Cloud project (`cymbal-pooled-saas-prod`), isolating thousands of corporate tenants within shared compute, cache, and database layers:
+
+![Figure 1 — Pattern A: High-density pooled multi-tenant architecture and shared runtime governance](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio.png)
+
+*Figure 1. Official Google Cloud Architecture Center pooled-shared-plane topology (60 vertices, 20 edges) inside a single shared project (`cymbal-pooled-saas-prod`), showing Hop 1 & Hop 2 Edge PEP & Agent Catalog PDP, Hop 3 & 5 Shared FinOps, Cache & OTel Hub, the Pooled Agent Runtime (shared by all tenants with inline namespace chips), and the Shared Data & Tool Plane (RLS-partitioned with inline tenant row chips).*
+
+> ⚡ **At a Glance: Pattern A Pooled Architecture Context**
+> - **Single Shared Perimeter**: Thousands of tenants co-exist inside a single Google Cloud project (`cymbal-pooled-saas-prod`) with gVisor (`runsc`) user-space sandbox isolation and zero per-tenant project overhead.
+> - **90% Prompt Cache Savings**: Shared `ContextCacheConfig` prefix cache on Gemini 2.5 Pro reduces billable input tokens from 34,000 to 5,200 (84.7% net COGS reduction) across common SRE runbooks.
+> - **Database Kernel Isolation**: PostgreSQL `FORCE ROW LEVEL SECURITY` with `SET LOCAL app.current_tenant_id` rewrites all SQL and vector queries, guaranteeing zero cross-tenant row leakage.
 
 ## Core terminology and Pooled multi-tenant systems primitives
 
@@ -95,13 +110,7 @@ To provide enterprise architecture review boards, CISOs, and engineering teams w
 
 #### Level 2: Container & Physical Topologies (L2 Physical)
 
-The following diagram shows the Pattern A high-density pooled architecture deployed inside a single shared Google Cloud project (`cymbal-pooled-saas-prod`):
-
-![Figure 1 — Pattern A: High-density pooled multi-tenant architecture and shared runtime governance](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio.png)
-
-*Figure 1. Official Google Cloud Architecture Center pooled-shared-plane topology (60 vertices, 20 edges) inside a single shared project (`cymbal-pooled-saas-prod`), showing Hop 1 & Hop 2 Edge PEP & Agent Catalog PDP, Hop 3 & 5 Shared FinOps, Cache & OTel Hub, the Pooled Agent Runtime (shared by all tenants with inline namespace chips), and the Shared Data & Tool Plane (RLS-partitioned with inline tenant row chips). Editable assets: [Draw.io source](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio) | [Google Slides (.pptx)](../slides/ws2-pattern-a-pooled-editable-slides.pptx) | [Architecture Center SVG](../diagrams/ws2-pattern-a-pooled-5hop-architecture.svg) | [Vision AST](../diagrams/vision_metadata/ws2-pattern-a-pooled-5hop-architecture.vision.json).*
-
-Figure 1 organizes the shared project into four color-coded functional zones inside a single shared data and runtime plane (`ONE Shared Data Plane • ONE Agent Engine Pool • ONE AlloyDB Schema — tenants are rows & namespaces, NOT separate boxes`):
+As established in **Figure 1 (Executive Architecture Summary above)**, the Pattern A high-density pooled architecture deploys inside a single shared Google Cloud project (`cymbal-pooled-saas-prod`). Figure 1 organizes the shared project into four color-coded functional zones inside a single shared data and runtime plane (`ONE Shared Data Plane • ONE Agent Engine Pool • ONE AlloyDB Schema — tenants are rows & namespaces, NOT separate boxes`):
 
 - **Hop 1 & Hop 2: Edge PEP & Agent Catalog PDP (Zone 1 — Blue container `#aecbfa`):** Terminates multi-tenant traffic at the External Application Load Balancer, strips forged `X-Tenant-ID` headers in Google Cloud Armor, filters the catalog in Discovery Engine PDP (`403` on private `Agent Alpha`), exchanges Google OIDC (`FinVault`) and Microsoft Entra ID (`RetailStream`) JWTs in IAP + OBO Broker (`adk-agent-signing-key`), and prunes unauthorized tools at the ADK Callback Gate (`before_agent_callback`).
 - **Hop 3 & 5: Shared FinOps, Cache & OTel Hub (Zone 2 — Green container `#ceead6`):** Maintains the shared `ContextCacheConfig (90% COGS Save)` (`32k` shared operator prefix), enforces per-tenant thinking-token caps (`4k Standard vs 8k Enterprise`) in Memorystore Valkey, and streams PII-redacted per-turn telemetry to the BigQuery OTel Sink (`tenant_telemetry_spans`).

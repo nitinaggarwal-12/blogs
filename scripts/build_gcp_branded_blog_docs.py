@@ -444,23 +444,33 @@ def preprocess_markdown_for_gdocs(
 
 
 def get_shareable_doc_url(doc_id: str) -> str:
-    res = subprocess.run(
-        [GDOCS_BIN, "readonly", "get-url", doc_id],
-        capture_output=True,
-        text=True,
-        check=True,
-    )
-    return res.stdout.strip()
+    if not Path(GDOCS_BIN).exists():
+        return f"https://docs.google.com/document/d/{doc_id}/edit"
+    try:
+        res = subprocess.run(
+            [GDOCS_BIN, "readonly", "get-url", doc_id],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        return res.stdout.strip()
+    except Exception:
+        return f"https://docs.google.com/document/d/{doc_id}/edit"
 
 
 def get_shareable_drive_url(file_id: str) -> str:
-    res = subprocess.run(
-        [GDRIVE_BIN, "readonly", "url", file_id],
-        capture_output=True,
-        text=True,
-    )
-    if res.returncode == 0 and res.stdout.strip().startswith("http"):
-        return res.stdout.strip()
+    if not Path(GDRIVE_BIN).exists():
+        return f"https://docs.google.com/presentation/d/{file_id}/edit"
+    try:
+        res = subprocess.run(
+            [GDRIVE_BIN, "readonly", "url", file_id],
+            capture_output=True,
+            text=True,
+        )
+        if res.returncode == 0 and res.stdout.strip().startswith("http"):
+            return res.stdout.strip()
+    except Exception:
+        pass
     return f"https://docs.google.com/presentation/d/{file_id}/edit"
 
 
@@ -912,6 +922,10 @@ def refresh_cloud_viewer_manifest() -> None:
         docx_p = ROOT_DIR / spec["docx_rel"]
         d_entry = manifest.setdefault("docs", {}).get(dkey, {})
         share_url = get_shareable_doc_url(spec["doc_id"])
+        existing_doc_url = d_entry.get("googleDocsEditUrl") or ""
+        existing_view_url = d_entry.get("webViewLink") or ""
+        final_doc_url = share_url if ("resourcekey=" in share_url or not existing_doc_url) else existing_doc_url
+        final_view_url = share_url if ("resourcekey=" in share_url or not existing_view_url) else existing_view_url
         d_entry.update(
             {
                 "key": dkey,
@@ -920,13 +934,13 @@ def refresh_cloud_viewer_manifest() -> None:
                 "sha256": hashlib.sha256(md_b).hexdigest(),
                 "sizeBytes": len(md_b),
                 "googleDocsId": spec["doc_id"],
-                "googleDocsEditUrl": share_url,
+                "googleDocsEditUrl": final_doc_url,
                 "googleDocsPreviewUrl": f"https://docs.google.com/document/d/{spec['doc_id']}/preview",
                 "googleDocsPdfUrl": f"https://docs.google.com/document/d/{spec['doc_id']}/export?format=pdf",
                 "googleDocsDocxUrl": f"https://docs.google.com/document/d/{spec['doc_id']}/export?format=docx",
                 "wordDocxPath": spec["docx_rel"],
                 "wordDocxSizeBytes": docx_p.stat().st_size if docx_p.is_file() else 0,
-                "webViewLink": share_url,
+                "webViewLink": final_view_url,
                 "syncedAt": now_iso,
             }
         )

@@ -15,14 +15,24 @@ status: "PUBLISH_READY"
 
 # Multi-tenant agentic AI system: Reference architecture taxonomy and 5-Hop governance baseline
 
-> **Companion Cloud Architecture Assets:**
-> - 📊 **Google Slides**: [Open WS1 34-Slide Upgraded Visual Presentation (Google Slides ↗)](https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit) • [Download 34-Slide Upgraded Visual Presentation (.pptx)](../slides/ws1-12slide-visual-deck.pptx) • [Download 15-Slide Canonical (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx)
-> - 📄 **Google Docs & Word**: [Open WS1 GCP-Branded Google Doc ↗](https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?resourcekey=0-PgO-X5icAK687_G-_WZFpQ) • [Download Microsoft Word (.docx)](../docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx)
-> - 📐 **Official Draw.io Blueprints**: [Figure 1 L1 Logical Taxonomy (.drawio)](../diagrams/ws1-l1-logical-security-taxonomy.drawio) • [Figure 2 L2 Physical Taxonomy (.drawio)](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio) • [Figure 3 5-Hop Baseline (.drawio)](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio) • [Figure 4 L3 Process Swimlane (.drawio)](../diagrams/ws1-l3-process-sequence-swimlane.drawio) • [Figure 5 L4 Wire Protocol (.drawio)](../diagrams/ws1-l4-wire-protocol-transformation.drawio)
+> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation ↗](https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?resourcekey=0-PgO-X5icAK687_G-_WZFpQ) • [📐 Draw.io Source (.drawio)](../diagrams/ws1-l1-logical-security-taxonomy.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download Slides (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx)
 
 This document establishes the reference architecture and three-pattern isolation taxonomy for building, governing, and operating external B2B SaaS multi-tenant agentic AI systems on Google Cloud. It extends the official Google Cloud [Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) hub-and-spoke architecture—which models internal enterprise business units—to Independent Software Vendors (ISVs) serving competing corporate enterprises across shared, dedicated, and hybrid cloud tiers using [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview), [Agent Development Kit (ADK)](https://google.github.io/adk-docs/), and [Gemini Enterprise](https://cloud.google.com/gemini/docs/enterprise).
 
 > **Key point:** Multi-tenant isolation in agentic AI is a per-tenant tier policy decision, not an all-or-nothing platform compromise. By decoupling the **80% reusable 5-Hop Cryptographic Context Chain** ([`core-cymbal-agent/`](../core-cymbal-agent/)) from the underlying project perimeter, you can run high-density **Pooled tenants (Pattern A)**, regulated **Sovereign Silos (Pattern B)**, and **Dynamic Hybrid PSC Spokes (Pattern C)** from a single agent codebase.
+
+## Executive Architecture Summary & System Context (Figure 1)
+
+The following `L1 Logical` architecture diagram shows the end-to-end 3-layer security taxonomy connecting untrusted multi-tenant callers to the shared 5-hop ADK control plane and downstream VPC-SC isolation data planes:
+
+![Figure 1 — Multi-tenant agentic AI reference taxonomy: 3 logical security layers (Tenant Ingress PEP, 5-Hop ADK Control Plane, and VPC-SC Isolation Data Planes)](../diagrams/ws1-l1-logical-security-taxonomy.drawio.png)
+
+*Figure 1. Official Google Cloud Architecture Center L1 Logical Security Taxonomy diagram showing the 3 logical security tiers: Layer 1 (Tenant Identity & Ingress PEP for competing enterprise callers), Layer 2 (Shared 5-Hop ADK Control Plane running in Vertex AI Agent Engine with ~3ms Valkey JTI Deny-List), and Layer 3 (Isolation Data Planes mapping to 4 Physical VPC-SC Perimeters across Pattern A pooled AlloyDB RLS, Pattern B sovereign silos, Pattern C PSC spokes, and OpenTelemetry governance).*
+
+> ⚡ **At a Glance: Multi-Tenant Architecture Context**
+> - **Ingress & Perimeter (Layer 1)**: Anycast External ALB TLS 1.3 termination, Google Cloud Armor client header stripping (`X-Tenant-ID`), and RFC 9449 DPoP key validation with STS token exchange.
+> - **Control Plane & Guardrails (Layer 2)**: Vertex AI Agent Engine gVisor (`runsc`) container virtualization, Valkey ~3ms JTI/CMEK revocation deny-list, 120/600 RPM token buckets, and inline Model Armor safety filtering.
+> - **Isolation Data Planes (Layer 3)**: Decoupled perimeters spanning Pattern A pooled AlloyDB RLS (`SET LOCAL app.current_tenant_id`), Pattern B sovereign VPC-SC silos with CMEK kill-switches, and Pattern C PSC dynamic spokes.
 
 ## Core terminology, systems primitives, and the SaaS AI Architect's Dilemma
 
@@ -126,13 +136,9 @@ To bridge executive security strategy and production runtime implementation, thi
 - **`L3 Process View` — 5-Hop Execution Lifecycle, Fail-Closed Circuit Breakers & Stampede Recovery (Figure 4 / Slide 13):** Traces the synchronous per-turn request sequence alongside <5 s targeted Valkey `SCAN + UNLINK` revocation and `SET NX PX 5000` single-flight cache rebuilds.
 - **`L4 Wire View` — Signed STS JWT & DPoP Cryptographic Contract (Figure 5 / Slide 14):** Specifies the KMS ECDSA P-256 signed JWT payload, <0.15 ms local pod JWKS verification, and ~3 ms Valkey JTI/CMEK revocation deny-list check.
 
-### Level 1: System Context & Logical Taxonomy (Figure 1)
+### Level 1: System Context & Logical Taxonomy
 
-The following `L1 Logical` architecture diagram shows the end-to-end 3-layer security taxonomy connecting untrusted multi-tenant callers to the shared 5-hop ADK control plane and downstream VPC-SC isolation data planes:
-
-![Figure 1 — Multi-tenant agentic AI reference taxonomy: 3 logical security layers (Tenant Ingress PEP, 5-Hop ADK Control Plane, and VPC-SC Isolation Data Planes)](../diagrams/ws1-l1-logical-security-taxonomy.drawio.png)
-
-*Figure 1. Official Google Cloud Architecture Center L1 Logical Security Taxonomy diagram showing the 3 logical security tiers: Layer 1 (Tenant Identity & Ingress PEP for competing enterprise callers), Layer 2 (Shared 5-Hop ADK Control Plane running in Vertex AI Agent Engine with ~3ms Valkey JTI Deny-List), and Layer 3 (Isolation Data Planes mapping to 4 Physical VPC-SC Perimeters across Pattern A pooled AlloyDB RLS, Pattern B sovereign silos, Pattern C PSC spokes, and OpenTelemetry governance). Editable assets: [Draw.io source](../diagrams/ws1-l1-logical-security-taxonomy.drawio) | [Architecture Center SVG](../diagrams/ws1-l1-logical-security-taxonomy.svg).*
+As established in **Figure 1 (Executive Architecture Summary above)**, the 3-layer security taxonomy connects untrusted multi-tenant callers to the shared 5-hop ADK control plane and downstream VPC-SC isolation data planes across Layer 1 (Tenant Identity & Ingress PEP), Layer 2 (Shared 5-Hop ADK Control Plane), and Layer 3 (Isolation Data Planes).
 
 ### Level 2: Physical Network Perimeters (Figure 2)
 

@@ -15,17 +15,26 @@ status: "PUBLISH_READY"
 
 # Multi-tenant agentic AI system: Pattern B sovereign silos for regulated workloads
 
-> **Companion Cloud Architecture Assets:**
-> - 📊 **Google Slides**: [Open WS3 34-Slide Upgraded Visual Presentation (Google Slides ↗)](https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit?resourcekey=0-hzmJ995FIAdtQEUwWa9YQw) • [Download 34-Slide Upgraded Visual Presentation (.pptx)](../slides/ws3-12slide-visual-deck.pptx) • [Download 12-Slide Canonical (.pptx)](../slides/ws3-pattern-b-siloed-editable-slides.pptx)
-> - 📄 **Google Docs & Word**: [Open WS3 GCP-Branded Google Doc ↗](https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/edit?resourcekey=0-KRCBVysg1k7J4IvKwJKuYQ) • [Download Microsoft Word (.docx)](../docs/word/ws3-pattern-b-sovereign-silos.docx)
-> - 📐 **Official Draw.io Blueprints**: [Figure 1 Sovereign Silos (.drawio)](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio) • [Figure 2 Multi-Project CMEK (.drawio)](../diagrams/ws3-multi-project-silo-and-cmek-setup-topology.drawio) • [Figure 3 Terraform Silo (.drawio)](../diagrams/ws3-terraform-silo-blueprint-resource-graph.drawio)
-
+> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation ↗](https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit?resourcekey=0-hzmJ995FIAdtQEUwWa9YQw) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/edit?resourcekey=0-KRCBVysg1k7J4IvKwJKuYQ) • [📐 Draw.io Source (.drawio)](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download Slides (.pptx)](../slides/ws3-pattern-b-siloed-editable-slides.pptx)
 
 This document describes **Pattern B (Sovereign Silos)** for deploying a multi-tenant agentic AI system on Google Cloud when regulatory mandates (such as OCC/FDIC banking rules, EU DORA, HIPAA, or FedRAMP) prohibit shared compute pools and shared databases. Pattern B wraps the unchanged **80% reusable 5-Hop Cymbal agent core** ([`core-cymbal-agent/`](../core-cymbal-agent/)) inside a dedicated Google Cloud project per corporate tenant (`cymbal-finvault-silo-prod` and `cymbal-retailstream-silo-prod`), protected by a dedicated [VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs) perimeter, an organization-level [IAM Principal Access Boundary (PAB)](https://cloud.google.com/iam/docs/principal-access-boundary-policies), a customer-controlled [Cloud KMS](https://cloud.google.com/kms/docs) encryption key (`HTTP 423 Locked` kill-switch), and optional air-gapped **Gemma 3 (27B)** inference on private [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs).
 
 This document is part 3 of a 5-part series extending the official Google Cloud [Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) reference architecture (following [Part 1: Taxonomy & 5-Hop Baseline](ws1-reference-architecture-taxonomy-and-5hop-baseline.md) and [Part 2: Pattern A Pooled Architecture](ws2-pattern-a-pooled-architecture.md)).
 
 > **Key point:** Pattern B reuses the exact same 5-Hop agent governance code as Pattern A while adding a physical project and cryptographic boundary around each tenant. If a customer revokes or disables their Cloud KMS key version, every in-flight and queued agent turn, memory bank read, and AlloyDB query halts immediately with **`HTTP 423 Locked`**.
+
+## Executive Architecture Summary & System Context (Figure 1)
+
+The following `L2 Physical` diagram shows the Pattern B sovereign silo architecture, where each corporate tenant operates inside an isolated Google Cloud project and dedicated VPC Service Controls perimeter:
+
+![Figure 1 — Pattern B: Sovereign silos with VPC Service Controls, IAM PAB, Cloud KMS CMEK, and air-gapped Gemma 3 on GKE](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio.png)
+
+*Figure 1. Official Google Cloud Architecture Center hub-and-spoke topology showing the Sovereign mTLS & PAB Ingress Hub, Organization VPC-SC & Cloud KMS Governance Hub, Sovereign Silo Project A (`cymbal-finvault-silo-prod` with air-gapped Gemma 3 27B on GKE), and Sovereign Silo Project B (`cymbal-retailstream-silo-prod`).*
+
+> ⚡ **At a Glance: Pattern B Sovereign Silo Context**
+> - **Dedicated Project Perimeter**: Each regulated tenant gets a dedicated Google Cloud project (`cymbal-finvault-silo-prod`) bounded by VPC Service Controls (`VPC-SC`) and IAM Principal Access Boundaries (`PAB`).
+> - **Cryptographic Kill-Switch**: Customer-managed Cloud KMS / Cloud EKM encryption key revokes access in `< 5 s` (`HTTP 423 Locked`), instantly halting turns and memory lookups without peer impact.
+> - **Air-Gapped Foundation Models**: Option to deploy open-weight Gemma 3 (27B IT) on private GKE GPU node pools with `0.0.0.0/0` public internet egress blocked.
 
 ## Core terminology and Sovereign Silo systems primitives
 
@@ -105,13 +114,7 @@ The following `L1 Logical` architecture diagram synthesizes the complete Pattern
 #### Level 2: Container & Physical Topologies (L2 Physical)
 
 
-The following diagram shows the Pattern B sovereign silo architecture, where each corporate tenant operates inside an isolated Google Cloud project and VPC Service Controls perimeter:
-
-![Figure 1 — Pattern B: Sovereign silos with VPC Service Controls, IAM PAB, Cloud KMS CMEK, and air-gapped Gemma 3 on GKE](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio.png)
-
-*Figure 1. Official Google Cloud Architecture Center hub-and-spoke topology showing the Sovereign mTLS & PAB Ingress Hub, Organization VPC-SC & Cloud KMS Governance Hub, Sovereign Silo Project A (`cymbal-finvault-silo-prod` with air-gapped Gemma 3 27B on GKE), and Sovereign Silo Project B (`cymbal-retailstream-silo-prod`). Editable assets: [Draw.io source](../diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio) | [Google Slides (.pptx)](../slides/ws3-12slide-visual-deck.pptx) | [Architecture Center SVG](../diagrams/ws3-pattern-b-sovereign-silos-architecture.svg) | [Vision AST](../diagrams/vision_metadata/ws3-pattern-b-sovereign-silos-architecture.vision.json).*
-
-Figure 1 organizes the Pattern B sovereign deployment into four security zones:
+As established in **Figure 1 (Executive Architecture Summary above)**, each corporate tenant operates inside an isolated Google Cloud project and VPC Service Controls perimeter. Figure 1 organizes the Pattern B sovereign deployment into four security zones:
 
 - **Sovereign mTLS and PAB Ingress Hub (Zone 1 — Blue container `#aecbfa`):** Verifies client mutual TLS (mTLS) SPIFFE certificates (`spiffe://finvault.com/ns/sre/sa/agent-client`) and evaluates the organization-level IAM Principal Access Boundary (`PAB`) before routing traffic into the tenant's dedicated project (`Hop 1`).
 - **Organization VPC-SC, Cloud KMS CMEK, and SCC Governance Hub (Zone 2 — Green container `#ceead6`):** Enforces per-project VPC Service Controls perimeters (`perimeter_finvault_sovereign`), verifies live Cloud KMS / Cloud EKM key state (`agent-memory-cmek`), monitors compliance in Security Command Center, and exports per-silo audit logs (`Hops 2 & 5`).

@@ -15,17 +15,26 @@ status: "PUBLISH_READY"
 
 # Multi-tenant agentic AI system: Pattern C dynamic hybrid routing and zero-downtime tier upgrades
 
-> **Companion Cloud Architecture Assets:**
-> - 📊 **Google Slides**: [Open WS4 34-Slide Upgraded Visual Presentation (Google Slides ↗)](https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit) • [Download 34-Slide Upgraded Visual Presentation (.pptx)](../slides/ws4-12slide-visual-deck.pptx) • [Download 12-Slide Canonical (.pptx)](../slides/ws4-pattern-c-hybrid-editable-slides.pptx)
-> - 📄 **Google Docs & Word**: [Open WS4 GCP-Branded Google Doc ↗](https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/edit) • [Download Microsoft Word (.docx)](../docs/word/ws4-pattern-c-hybrid-dynamic-tiering.docx)
-> - 📐 **Official Draw.io Blueprints**: [Figure 1 Dynamic Hybrid (.drawio)](../diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio) • [Figure 2 Hub & Spoke (.drawio)](../diagrams/ws4-hub-and-spoke-demo-env-setup-topology.drawio) • [Figure 3 Zero-Downtime Upgrade (.drawio)](../diagrams/ws4-zero-downtime-tier-upgrade-sequence.drawio) • [Figure 4 Terraform Hybrid (.drawio)](../diagrams/ws4-terraform-hybrid-psc-blueprint-resource-graph.drawio)
-
+> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation ↗](https://docs.google.com/presentation/d/1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s/edit) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/edit) • [📐 Draw.io Source (.drawio)](../diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download Slides (.pptx)](../slides/ws4-pattern-c-hybrid-editable-slides.pptx)
 
 This document describes **Pattern C (Dynamic Hybrid Hub-and-Spoke Architecture)** for building and operating a multi-tiered agentic AI SaaS platform on Google Cloud. Pattern C combines the high-density unit economics of [Pattern A (Pooled Architecture)](ws2-pattern-a-pooled-architecture.md) with the physical project and encryption isolation of [Pattern B (Sovereign Silos)](ws3-pattern-b-sovereign-silos.md) behind a single unified control plane (`cymbal-hybrid-hub-prod`). A tenant-aware [Cloud Run](https://cloud.google.com/run/docs) router directs Standard-tier customers to a shared pooled runtime while bridging regulated Enterprise-tier customers across [Private Service Connect (PSC)](https://cloud.google.com/vpc/docs/private-service-connect) into dedicated CMEK-encrypted spoke projects.
 
 This document is part 4 of a 5-part series extending the official Google Cloud [Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) reference architecture (introduced in [Part 1: Taxonomy & 5-Hop Baseline](ws1-reference-architecture-taxonomy-and-5hop-baseline.md)). It also details a **3-phase zero-downtime tier migration engine** that promotes a live customer from the shared pool into a dedicated PSC spoke with **zero dropped turns**.
 
 > **Key point:** Pattern C eliminates the need to maintain separate SaaS products for Standard and Enterprise tiers. All customers connect to one SaaS URL, authenticate through one Hop 1 gateway, and run on the same **80% reusable 5-Hop agent core**—while upgrading from the shared pool to a dedicated PSC spoke requires only a single atomic Firestore route flip (`SHADOW_SYNC -> ATOMIC_CUTOVER -> DRAIN_AND_VERIFY`).
+
+## Executive Architecture Summary & System Context (Figure 1)
+
+The following `L2 Physical` diagram shows the Pattern C dynamic hybrid hub-and-spoke architecture, connecting Standard tenants in a shared pool and Enterprise tenants across Private Service Connect into dedicated CMEK spokes:
+
+![Figure 1 — Pattern C: Dynamic hybrid hub-and-spoke architecture, Private Service Connect (PSC) spokes, and live tier migration](../diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio.png)
+
+*Figure 1. Official Google Cloud Architecture Center hub-and-spoke topology showing the Central Ingress PEP & Dynamic Router Hub (`cymbal-hybrid-hub-prod`), Central Governance & SCC Hub, Zone 3 Pooled Runtime (Standard tenants), and Zone 4 Dedicated Enterprise PSC Spokes with 3-phase live tier migration.*
+
+> ⚡ **At a Glance: Pattern C Dynamic Hybrid Context**
+> - **Unified Ingress & Dynamic Routing**: Single customer-facing SaaS endpoint transparently routes requests to `pool://` or `psc://10.10.0.50` based on the cryptographically validated tenant tier.
+> - **Private Service Connect Isolation**: Enterprise tenants run in dedicated Google Cloud projects bridged via `/28` PSC NAT subnets (`ServiceAttachment`), eliminating cross-tenant VPC peering limits and IP CIDR overlap.
+> - **Zero-Downtime Tier Upgrades**: 3-Phase live migration engine (`SHADOW_SYNC -> ATOMIC_CUTOVER -> DRAIN_AND_VERIFY`) promotes active tenants from pool to spoke with 0 ms pointer cutover lag and zero dropped turns.
 
 ## Core terminology and dynamic hybrid systems primitives
 
@@ -109,13 +118,7 @@ The following `L1 Logical` architecture diagram synthesizes the complete Pattern
 #### Level 2: Container & Physical Topologies (L2 Physical)
 
 
-The following diagram shows the Pattern C dynamic hybrid hub-and-spoke architecture, connecting the central routing and governance hub to both the shared pooled runtime and dedicated Enterprise Private Service Connect (PSC) spokes:
-
-![Figure 1 — Pattern C: Dynamic hybrid hub-and-spoke architecture, Private Service Connect (PSC) spokes, and live tier migration](../diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio.png)
-
-*Figure 1. Official Google Cloud Architecture Center hub-and-spoke topology showing the Unified Hybrid Routing Hub (`cymbal-hybrid-hub-prod`), Federated Agent Catalog & Migration Control Hub, Shared Pooled Runtime Spoke (Standard Tier), and Dedicated Enterprise PSC Spoke (`cymbal-finvault-silo-prod` / promoted `cymbal-retailstream-spoke-prod`). Editable assets: [Draw.io source](../diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio) | [Google Slides (.pptx)](../slides/ws4-12slide-visual-deck.pptx) | [Architecture Center SVG](../diagrams/ws4-pattern-c-hybrid-psc-and-migration.svg) | [Vision AST](../diagrams/vision_metadata/ws4-pattern-c-hybrid-psc-and-migration.vision.json).*
-
-Figure 1 organizes the hybrid platform across four functional zones:
+As established in **Figure 1 (Executive Architecture Summary above)**, the Pattern C dynamic hybrid hub-and-spoke architecture connects the central routing and governance hub to both the shared pooled runtime and dedicated Enterprise Private Service Connect (PSC) spokes. Figure 1 organizes the hybrid platform across four functional zones:
 
 - **Unified Hybrid Routing and Identity Hub (`cymbal-hybrid-hub-prod`) (Zone 1 — Blue container `#aecbfa`):** Terminates all Standard and Enterprise traffic at one External Application Load Balancer, strips forged headers in Cloud Armor, verifies OIDC/Entra JWTs in IAP (`Hop 1`), and queries the Firestore Route Table in the Cloud Run Hybrid Router to dispatch turns to `pool://` or `psc://`.
 - **Federated Agent Catalog, KMS, and Live Migration Hub (Zone 2 — Green container `#ceead6`):** Synchronizes private spoke agent descriptors (`Agent Alpha`) into the hub's Discovery Engine Catalog PDP (`Hop 2`), orchestrates the 3-phase Zero-Downtime Tier Migration Engine (`pattern_c_hybrid_router_and_migrator.py`), and aggregates cross-tier BigQuery FinOps telemetry (`Hop 5`).
