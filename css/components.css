@@ -343,6 +343,23 @@
       flex-direction: column;
       gap: 4px;
     }
+    .export-dropdown-menu a {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--text);
+      text-decoration: none;
+      border-radius: 5px;
+      white-space: nowrap;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .export-dropdown-menu a:hover {
+      background: var(--panel-alt);
+      color: var(--link);
+    }
     .tab-pane { display: none; }
     .tab-pane.active { display: block; }
     /* ---------- Guided Workstream 1–5 + Master Deck Hub ---------- */

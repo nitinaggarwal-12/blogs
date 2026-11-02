@@ -345,12 +345,12 @@
                 : '';
               const hasFlow = meta && meta.logicalSlide && meta.technicalSlide && (meta.logicalSlide !== meta.decomposedSlide);
               const flowBtnHtml = hasFlow
-                ? `<button type="button" id="inline-fig-btn-flow-${diagId}" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--blue); color:var(--link); font-weight:700;" onclick="toggleInlineFigureFlow('${diagId}')">&#129517; Step-by-Step Flow (Slides 2 &amp; 3) &#9662;</button>`
+                ? `<button type="button" id="inline-fig-btn-flow-${diagId}" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--blue); color:var(--link); font-weight:700;" onclick="toggleInlineFigureFlow('${diagId}')">&#129517; Step-by-Step Flow &#9662;</button>`
                 : '';
               const flowWrapHtml = hasFlow
                 ? `<div id="inline-fig-flow-wrap-${diagId}" style="display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--border); background:var(--panel-alt); border-radius:8px; padding:12px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
-                      <strong style="font-size:13.5px; color:var(--heading);">Step-by-Step End-to-End Flow (Slides 2 &amp; 3 Preview)</strong>
+                      <strong style="font-size:13.5px; color:var(--heading);">Step-by-Step End-to-End Flow</strong>
                       <div style="display:flex; gap:6px; flex-wrap:wrap;">
                         <button type="button" id="inline-flow-tab-logical-${diagId}" class="sim-btn primary" style="padding:4px 10px; font-size:11.5px;" onclick="setInlineFigureFlowTab('${diagId}', 'logical')">&#129517; 1. Logical Flow (Steps &#9312;&ndash;&#9318;)</button>
                         <button type="button" id="inline-flow-tab-technical-${diagId}" class="sim-btn" style="padding:4px 10px; font-size:11.5px;" onclick="setInlineFigureFlowTab('${diagId}', 'technical')">&#9881;&#65039; 2. Technical Specification Table</button>
@@ -368,14 +368,12 @@
                     <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
                       ${flowBtnHtml}
                       <a href="/drawio-editor?id=${encodeURIComponent(diagId)}&engine=cloud" target="_blank" rel="noopener" id="inline-fig-btn-cloud-${diagId}" class="sim-btn primary" style="padding:4px 10px; font-size:11.5px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:5px; background:#1a73e8; border-color:#1557b0; color:#ffffff;" title="Open official diagrams.net Cloud UI with full editable mxGraph model">&#128208; Architecture Studio &#8599;</a>
-                      <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--border); color:var(--text); font-weight:600;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', '${escapeHtml(alt)}'); } else { window.open('${resolved}', '_blank'); }">&#128269; High-Res &#8599;</button>
                       <details class="export-dropdown">
                         <summary class="sim-btn" style="padding:4px 9px; font-size:11.5px;">&#11015; Assets &#9662;</summary>
                         <div class="export-dropdown-menu">
                           <a href="diagrams/${diagId}.drawio" download>&#11015; Download .drawio XML</a>
-                          <a href="#" id="inline-fig-btn-png-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'png'); this.closest('details').removeAttribute('open');">&#128269; 2x PNG View</a>
                           <a href="#" id="inline-fig-btn-svg-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'svg'); this.closest('details').removeAttribute('open');">&#127912; Vector SVG View</a>
-                          <a href="#" id="inline-fig-btn-edit-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'edit'); this.closest('details').removeAttribute('open');">&#9999;&#65039; Edit Inline (Studio)</a>
+                          <a href="#" id="inline-fig-btn-png-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'png'); this.closest('details').removeAttribute('open');">&#128269; 2x PNG View</a>
                         </div>
                       </details>
                     </div>
