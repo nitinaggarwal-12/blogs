@@ -924,14 +924,14 @@ body {
     }
     .portal-toast {
       pointer-events: auto;
-      background: #0f172a;
-      color: #f8fafc;
-      border: 1px solid #334155;
-      border-left: 4px solid #38bdf8;
+      background: #ffffff;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+      border-left: 4px solid #1a73e8;
       border-radius: 10px;
       padding: 10px 14px;
       font-size: 12.5px;
-      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
       display: flex;
       align-items: center;
       justify-content: space-between;

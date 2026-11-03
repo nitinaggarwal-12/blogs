@@ -618,10 +618,10 @@ def deploy_cloud_run_service(spec: dict[str, Any], ar_image_uri: str) -> dict[st
 
     subprocess.run(cmd, check=True, env=gcloud_env())
 
-    for member in (
-        "user:nitinagga@google.com",
-        "serviceAccount:48439189383-compute@developer.gserviceaccount.com",
-    ):
+    invoker_members = ["serviceAccount:48439189383-compute@developer.gserviceaccount.com"]
+    if os.environ.get("GCP_ADMIN_USER_EMAIL"):
+        invoker_members.insert(0, f"user:{os.environ['GCP_ADMIN_USER_EMAIL']}")
+    for member in invoker_members:
         subprocess.run(
             [
                 "gcloud",
@@ -709,10 +709,10 @@ def describe_existing_ready_cloud_run_service(spec: dict[str, Any]) -> dict[str,
         env=gcloud_env(),
     )
     iam_txt = iam_proc.stdout if iam_proc.returncode == 0 else ""
-    for member in (
-        "user:nitinagga@google.com",
-        "serviceAccount:48439189383-compute@developer.gserviceaccount.com",
-    ):
+    invoker_members = ["serviceAccount:48439189383-compute@developer.gserviceaccount.com"]
+    if os.environ.get("GCP_ADMIN_USER_EMAIL"):
+        invoker_members.insert(0, f"user:{os.environ['GCP_ADMIN_USER_EMAIL']}")
+    for member in invoker_members:
         if member not in iam_txt:
             subprocess.run(
                 [

@@ -157,8 +157,8 @@
       ],
       "evaluationsPassed": 10,
       "evaluationsTotal": 10,
-      "consensusMeanScore": 99.97,
-      "reconciliationNotes": "Re-run against full un-truncated markdown content across all 5 blogs. Both gemini-2.5-pro (99.94%) and gemini-2.5-flash (100.0%) awarded publication-grade PASS across all 6 rubric dimensions."
+      "consensusMeanScore": 99.94,
+      "reconciliationNotes": "Re-run against full un-truncated markdown content across all 5 blogs using exact rubric-weighted scoring. Both gemini-2.5-pro (99.94%) and gemini-2.5-flash (99.94%) awarded publication-grade PASS across all 6 rubric dimensions."
     }
   },
   "pricingDisclosure": {
@@ -244,7 +244,7 @@
       "location": "Tab 4 (#tab-payg)",
       "purpose": "Production Enterprise SaaS Integrations & Cloud Marketplace Deployment Targets",
       "platformCount": 8,
-      "billingChannel": "Google Cloud Marketplace (1-click subscription against ramp-portal-dev / bbar-138hf0)",
+      "billingChannel": "6 Google Cloud Marketplace PAYG subscriptions + 2 direct vendor developer tiers (ServiceNow PDI & Salesforce Developer Edition)",
       "idleEconomics": "Sub-$15/month total across all 8 platforms via automatic scale-to-zero (AUTO_SUSPEND = 60s)",
       "platforms": [
         {
@@ -292,7 +292,7 @@
         {
           "id": "servicenow",
           "name": "ServiceNow ITSM & ITOM",
-          "apiEndpoint": "https://cymbal-itom.service-now.com/api/now/table/incident",
+          "apiEndpoint": "https://developer.servicenow.com/",
           "aiEngine": "Now Assist ITOM AI",
           "testbedContainer": "redmine"
         },

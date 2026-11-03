@@ -41,13 +41,13 @@
               </div>
               <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                 <div style="display:flex; flex-direction:column; gap:2px; min-width:140px;">
-                  <div style="display:flex; justify-content:space-between; font-size:10.5px; font-family:monospace;">
+                  <div style="display:flex; justify-content:space-between; gap:8px; font-size:10.5px; font-family:monospace;">
                     <span style="color:#e11d48; font-weight:700;">Base: 8.6</span>
-                    <span style="color:#059669; font-weight:800;">Residual: 0.6</span>
+                    <span style="color:#059669; font-weight:800;">Residual: 2.4</span>
                   </div>
                   <div style="height:6px; width:140px; background:#e2e8f0; border-radius:999px; overflow:hidden; display:flex;">
-                    <div style="width:86%; background:#e11d48;"></div>
-                    <div style="width:14%; background:#059669;"></div>
+                    <div style="width:76%; background:#e11d48;"></div>
+                    <div style="width:24%; background:#059669;"></div>
                   </div>
                 </div>
                 <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11px; font-weight:700; color:#1a73e8; border-color:#aecbfa; background:#f0f9ff;" onclick="runLiveScenario('sim3');">
@@ -67,7 +67,7 @@
               </div>
               <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                 <div style="display:flex; flex-direction:column; gap:2px; min-width:140px;">
-                  <div style="display:flex; justify-content:space-between; font-size:10.5px; font-family:monospace;">
+                  <div style="display:flex; justify-content:space-between; gap:8px; font-size:10.5px; font-family:monospace;">
                     <span style="color:#e11d48; font-weight:700;">Base: 9.1</span>
                     <span style="color:#059669; font-weight:800;">Residual: 0.0</span>
                   </div>
@@ -93,7 +93,7 @@
               </div>
               <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                 <div style="display:flex; flex-direction:column; gap:2px; min-width:140px;">
-                  <div style="display:flex; justify-content:space-between; font-size:10.5px; font-family:monospace;">
+                  <div style="display:flex; justify-content:space-between; gap:8px; font-size:10.5px; font-family:monospace;">
                     <span style="color:#e11d48; font-weight:700;">Base: 8.9</span>
                     <span style="color:#059669; font-weight:800;">Residual: 0.0</span>
                   </div>
@@ -119,13 +119,13 @@
               </div>
               <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                 <div style="display:flex; flex-direction:column; gap:2px; min-width:140px;">
-                  <div style="display:flex; justify-content:space-between; font-size:10.5px; font-family:monospace;">
+                  <div style="display:flex; justify-content:space-between; gap:8px; font-size:10.5px; font-family:monospace;">
                     <span style="color:#e11d48; font-weight:700;">Base: 7.5</span>
-                    <span style="color:#059669; font-weight:800;">Residual: 1.1</span>
+                    <span style="color:#059669; font-weight:800;">Residual: 2.7</span>
                   </div>
                   <div style="height:6px; width:140px; background:#e2e8f0; border-radius:999px; overflow:hidden; display:flex;">
-                    <div style="width:75%; background:#e11d48;"></div>
-                    <div style="width:25%; background:#059669;"></div>
+                    <div style="width:64%; background:#e11d48;"></div>
+                    <div style="width:36%; background:#059669;"></div>
                   </div>
                 </div>
                 <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11px; font-weight:700; color:#1a73e8; border-color:#aecbfa; background:#f0f9ff;" onclick="runLiveScenario('sim4');">
@@ -145,7 +145,7 @@
               </div>
               <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                 <div style="display:flex; flex-direction:column; gap:2px; min-width:140px;">
-                  <div style="display:flex; justify-content:space-between; font-size:10.5px; font-family:monospace;">
+                  <div style="display:flex; justify-content:space-between; gap:8px; font-size:10.5px; font-family:monospace;">
                     <span style="color:#e11d48; font-weight:700;">Base: 9.5</span>
                     <span style="color:#059669; font-weight:800;">Residual: 0.0</span>
                   </div>
@@ -171,14 +171,15 @@
                 ⚡ In-Memory Policy Simulation (&lt;10ms)
               </button>
               <button type="button" id="btn-mode-live-gcp" class="sim-btn" style="padding:4px 10px; font-size:11.5px; font-weight:600; border:none; border-radius:0; cursor:pointer; background:#ffffff; color:#334155;" onclick="switchExecutionMode('LIVE_GCP')">
-                ☁️ Live Cloud KMS &amp; BigQuery Execution (Live GCP)
+                ☁️ Live Cloud KMS KeyRing Probe + In-Memory 5-Hop Policy
               </button>
             </div>
             <span id="runtime-mode-badge" class="badge badge-green" style="font-weight:700; font-size:11px;">Active: In-Memory (&lt;10ms)</span>
+            <span class="badge badge-amber" style="font-size:10.5px; font-weight:700;">isLiveLlmCall: false &bull; Deterministic Policy Engine</span>
           </div>
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <span id="runtime-credentials-badge" style="font-size:11px; color:#166534; background:#ffffff; border:1px solid #bbf7d0; padding:3px 8px; border-radius:6px;">
-              IAM Service Account: <code>248990048888-compute</code> (ramp-portal-dev)
+              GCP Runtime Posture: Checking <code>/api/runtime/mode</code>...
             </span>
           </div>
         </div>

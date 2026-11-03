@@ -332,7 +332,7 @@ def provision_bigquery(token: str) -> Dict[str, Any]:
         f"""
         CREATE OR REPLACE ROW ACCESS POLICY tenant_pooled_rls_policy
         ON `{SILO_PROJECT_ID}.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities`
-        GRANT TO ('user:nitinagga@google.com', 'serviceAccount:{HUB_PROJECT_NUMBER}-compute@developer.gserviceaccount.com', 'serviceAccount:{SILO_PROJECT_NUMBER}-compute@developer.gserviceaccount.com')
+        GRANT TO ('serviceAccount:{HUB_PROJECT_NUMBER}-compute@developer.gserviceaccount.com', 'serviceAccount:{SILO_PROJECT_NUMBER}-compute@developer.gserviceaccount.com')
         FILTER USING (tenant_id IN ('finvault', 'tenant-finvault-inc', 'retailstream', 'tenant-retailspark-co', 'medcore', 'globex'));
         """,
         f"""

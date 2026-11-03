@@ -111,14 +111,15 @@ def run_all_breach_simulations() -> None:
     )
     ctx_fv = res2b["context"]
     assert res2b["status_code"] == 200
-    assert "gemini-2.5-pro-dedicated" in res2b["response"]
+    assert "ModelGarden=gemini-2.5-pro" in res2b["response"]
+    assert "RequestType=dedicated" in res2b["response"]
     assert "[REDACTED-FINVAULT-BANK-ACCOUNT]" in res2b["response"]
     assert "[REDACTED-FINVAULT-SWIFT]" in res2b["response"]
 
     # Verify FinVault hot-swappable Model Garden config & block RetailStream from hot-swapping
     svc.runtime.agent_alpha.hot_swap_model(ctx_fv, "gemini-2.5-flash")
     assert svc.runtime.agent_alpha.active_model == "gemini-2.5-flash"
-    svc.runtime.agent_alpha.hot_swap_model(ctx_fv, "gemini-2.5-pro-dedicated")
+    svc.runtime.agent_alpha.hot_swap_model(ctx_fv, "gemini-2.5-pro", request_type="dedicated")
     try:
         svc.runtime.agent_alpha.hot_swap_model(ctx1, "gemini-2.5-pro")
         raise AssertionError("RetailStream should not be allowed to hot-swap Agent Alpha!")

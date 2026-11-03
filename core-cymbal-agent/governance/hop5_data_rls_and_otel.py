@@ -235,7 +235,7 @@ class DataPlaneRLSAndOTel:
                 "workstream": "WS2.1" if "POOLED" in ctx.active_topology.value else ("WS3.1" if "SILO" in ctx.active_topology.value else "WS4.1"),
                 "isolation_pattern": ctx.active_topology.value,
                 "agent_name": agent_uri,
-                "model_id": "gemini-2.5-pro-dedicated" if "alpha" in agent_uri else "gemini-2.5-pro",
+                "model_id": "gemini-2.5-pro",
                 "cached_input_tokens": cached_prefix_tokens,
                 "uncached_input_tokens": uncached_prompt_tokens,
                 "thinking_tokens": thinking_tokens_used,

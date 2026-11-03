@@ -159,6 +159,39 @@
 
     window.__currentExecutionMode = 'IN_MEMORY';
 
+    async function hydrateRuntimeExecutionModeBadge() {
+      const credBadge = document.getElementById('runtime-credentials-badge');
+      const modeBadge = document.getElementById('runtime-mode-badge');
+      try {
+        const resp = await fetch('/api/runtime/mode');
+        if (!resp.ok) return;
+        const data = await resp.json();
+        if (credBadge) {
+          if (data.gcp_credentials_available) {
+            const saLabel = String(data.service_account || 'local_adc_credentials').replace('@developer.gserviceaccount.com', '');
+            const projLabel = String(data.project_id || 'ramp-portal-dev');
+            credBadge.innerHTML = `IAM Token Active: <code>${escapeHtml(saLabel)}</code> (${escapeHtml(projLabel)})`;
+            credBadge.style.color = '#166534';
+            credBadge.style.borderColor = '#bbf7d0';
+          } else {
+            credBadge.textContent = 'Local Offline Mode (Zero Cloud Credentials Required • In-Memory Policy)';
+            credBadge.style.color = '#334155';
+            credBadge.style.borderColor = '#cbd5e1';
+          }
+        }
+        if (data.mode === 'LIVE_GCP' && modeBadge) {
+          modeBadge.textContent = 'Active: Live Cloud KMS KeyRing Probe + In-Memory Policy';
+          modeBadge.className = 'badge badge-blue';
+        }
+      } catch (_) {}
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', hydrateRuntimeExecutionModeBadge);
+    } else {
+      hydrateRuntimeExecutionModeBadge();
+    }
+
     async function switchExecutionMode(newMode) {
       window.__currentExecutionMode = newMode;
       const btnInMem = document.getElementById('btn-mode-in-memory');
@@ -168,7 +201,7 @@
         if (btnInMem) { btnInMem.style.background = '#ffffff'; btnInMem.style.color = '#334155'; btnInMem.style.fontWeight = '600'; }
         if (btnLiveGcp) { btnLiveGcp.style.background = '#1d4ed8'; btnLiveGcp.style.color = '#ffffff'; btnLiveGcp.style.fontWeight = '700'; }
         if (modeBadge) {
-          modeBadge.textContent = 'Active: Live Cloud KMS & BigQuery APIs (150-350ms)';
+          modeBadge.textContent = 'Active: Live Cloud KMS KeyRing Probe + In-Memory Policy';
           modeBadge.className = 'badge badge-blue';
         }
       } else {
@@ -186,7 +219,7 @@
           body: JSON.stringify({ mode: newMode })
         });
       } catch (_) {}
-      showPortalToast('⚡ Execution Mode Updated', `Switched runtime mode to ${newMode === 'LIVE_GCP' ? 'Live Cloud KMS & BigQuery Execution' : 'In-Memory Deterministic Policy Simulation'}.`);
+      showPortalToast('⚡ Execution Mode Updated', `Switched runtime mode to ${newMode === 'LIVE_GCP' ? 'Live Cloud KMS KeyRing Probe + In-Memory 5-Hop Policy' : 'In-Memory Deterministic Policy Simulation'}.`);
     }
 
     async function invokeCustomSandbox() {

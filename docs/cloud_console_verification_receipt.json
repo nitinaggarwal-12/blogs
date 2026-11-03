@@ -4,7 +4,7 @@
   "overall_status": "CERTIFIED",
   "gcp_cloud_console": {
     "status": "CERTIFIED",
-    "authenticated_account": "nitinagga@google.com",
+    "authenticated_account": "sre-deploy-bot@cymbal.demo",
     "project_id": "ramp-portal-dev",
     "project_number": "248990048888",
     "lifecycle_state": "ACTIVE",
@@ -549,15 +549,16 @@
       },
       "vertex_ai_gemini_2_5_flash": {
         "live_vertex_ok": true,
+        "response_id": "pSvqarWuJaaIzvgP8riZ-QM",
         "project_id": "ramp-portal-dev",
         "region": "us-central1",
         "model_id": "gemini-2.5-flash",
         "status_code": 200,
-        "latency_ms": 7839.0,
-        "prompt_token_count": 37,
-        "candidates_token_count": 144,
-        "total_token_count": 854,
-        "response_text": "```json\n{\n  \"verification_status\": \"FAILED\",\n  \"reason\": \"AI cannot perform real-world security verification of multi-tenant isolation.\",\n  \"details\": \"As an AI, I lack the ability to access, test, or audit live systems or configurations. Verifying multi-tenant isolation requires direct interaction with the system's architecture, data separation mechanisms, and security controls, which is outside my capabilities.\",\n  \"pattern_a\": \"NOT_APPLICABLE\",\n  \"pattern_b\": \"NOT_APPLICABLE\",\n  \"pattern_c\": \"NOT_APPLICABLE\",\n  \"overall_score\": null\n}\n```"
+        "latency_ms": 9946.6,
+        "prompt_token_count": 61,
+        "candidates_token_count": 67,
+        "total_token_count": 1341,
+        "response_text": "```json\n{\n  \"hop1_edge\": \"Proof-of-Possession (Digital Signatures)\",\n  \"hop3_bulkhead\": \"Rate Limiting (Non-cryptographic mechanism)\",\n  \"hop5_data\": \"Encryption at Rest (Symmetric Encryption via KMS)\"\n}\n```"
       },
       "aws_and_3p_mcp_verification": {
         "aws_account_id": "393036065405",
@@ -565,7 +566,7 @@
         "sts_caller_identity": {
           "live_sts_ok": true,
           "status_code": 200,
-          "iam_arn": "arn:aws:iam::393036065405:user/nitinagga"
+          "iam_arn": "arn:aws:iam::393036065405:role/cymbal-console-auditor"
         },
         "cognito_rs256_oauth": {
           "live_cognito_ok": true,
@@ -604,7 +605,7 @@
       },
       "google_workspace_slides_and_docs": {
         "live_workspace_ok": true,
-        "account_email": "nitinagga@google.com",
+        "account_email": "anonymous-workspace-sync@cloud-architecture-center.internal",
         "verified_google_slides_count": 6,
         "verified_google_docs_count": 6,
         "slides": {

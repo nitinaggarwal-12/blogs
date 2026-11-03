@@ -3,10 +3,10 @@
 - **Timestamp (UTC):** `2026-11-01T11:31:22Z`
 - **GCP Runtime Project:** `ramp-portal-dev`
 - **Total Model × Workstream Evaluations:** `10/10 PASS`
-- **Cross-Model Consensus Mean Score:** **`99.97 / 100`**
+- **Cross-Model Consensus Mean Score:** **`99.94 / 100`** (Same-Family Gemini 2.5 Pro + Flash Weighted Mean)
 - **Machine-Readable Receipt:** [`docs/multi_model_llm_judge_evaluation_receipt.json`](multi_model_llm_judge_evaluation_receipt.json)
 
-## 1. Cross-Model Judge Consensus Matrix (`2 Live Vertex AI Models × 5 Blogs`)
+## 1. Dual-Model Gemini 2.5 Judge Consensus Matrix (`2 Live Vertex AI Models × 5 Blogs`)
 
 | Workstream | Blog File | `gemini-2.5-pro` (`us-central1`) | `gemini-2.5-flash` (`us-central1`) | Consensus Mean | Deterministic Gate |
 | :--- | :--- | :---: | :---: | :---: | :---: |
@@ -14,14 +14,14 @@
 | **`WS2`** | [`ws2-pattern-a-pooled-architecture.md`](../blogs/ws2-pattern-a-pooled-architecture.md) | `100/100` | `100/100` | **`100.0/100`** | `PASS (7/7 badges, 2 LaTeX, 5/5 WAF)` |
 | **`WS3`** | [`ws3-pattern-b-sovereign-silos.md`](../blogs/ws3-pattern-b-sovereign-silos.md) | `100/100` | `100/100` | **`100.0/100`** | `PASS (7/7 badges, 2 LaTeX, 5/5 WAF)` |
 | **`WS4`** | [`ws4-pattern-c-hybrid-dynamic-tiering.md`](../blogs/ws4-pattern-c-hybrid-dynamic-tiering.md) | `100/100` | `100/100` | **`100.0/100`** | `PASS (7/7 badges, 2 LaTeX, 5/5 WAF)` |
-| **`WS5`** | [`ws5-decision-guide-and-agentic-triad.md`](../blogs/ws5-decision-guide-and-agentic-triad.md) | `100/100` | `100/100` | **`100.0/100`** | `PASS (7/7 badges, 4 LaTeX, 5/5 WAF)` |
+| **`WS5`** | [`ws5-decision-guide-and-agentic-triad.md`](../blogs/ws5-decision-guide-and-agentic-triad.md) | `100/100` | `99.7/100` | **`99.85/100`** | `PASS (7/7 badges, 4 LaTeX, 5/5 WAF)` |
 
 ## 2. Per-Model Rubric Dimension Breakdown
 
 | Judge Model | Location | Terminology & Primitives | Pedagogical Flow & Bridges | 1:1 Badge & Code Grounding | Display LaTeX & `Where:` | Production Code & 10-SaaS | WAF Pillars & Slide Matrix | Model Mean |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **`gemini-2.5-pro`** | `us-central1` | `100.0` | `100.0` | `100.0` | `99.6` | `100.0` | `100.0` | **`99.94/100`** |
-| **`gemini-2.5-flash`** | `us-central1` | `100.0` | `99.6` | `100.0` | `100.0` | `100.0` | `100.0` | **`100.0/100`** |
+| **`gemini-2.5-flash`** | `us-central1` | `100.0` | `99.6` | `100.0` | `100.0` | `100.0` | `100.0` | **`99.94/100`** |
 
 ## 3. Deterministic Pre-Check Structural Telemetry (`WS1`–`WS5`)
 

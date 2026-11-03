@@ -1666,8 +1666,15 @@ class Enterprise5ThirdPartySaaSMCP:
                     else pattern_gcp_telemetry.get("finvault_bq")
                 )
 
+            effective_tier = (
+                item["verification_tier"]
+                if include_live_probes
+                else "IN_MEMORY_DETERMINISTIC_MCP_SIMULATION"
+            )
             live_evidence_summary: Dict[str, Any] = {
-                "verification_tier": item["verification_tier"],
+                "verification_tier": effective_tier,
+                "include_live_probes": bool(include_live_probes),
+                "isLiveLlmCall": False,
                 "probe_status_code": probe_info.get("status_code", 200),
                 "probe_decision": probe_info.get("decision", "ALLOW"),
                 "hop1_obo_token_hash": live_ctx.obo_access_token_hash,
@@ -1754,7 +1761,7 @@ class Enterprise5ThirdPartySaaSMCP:
                     "hop3_cached_prefix_discount_pct": int(cache_cfg.get("estimated_cogs_savings_pct", 90)),
                     "hop4_model_armor_and_sdp_clean": bool(hop4_screen.status_code == 200),
                     "hop5_pooled_rls_verified": True,
-                    "live_cloud_endpoint_probed": item["live_endpoint"],
+                    "live_cloud_endpoint_probed": item["live_endpoint"] if include_live_probes else None,
                     "live_verification_evidence": live_evidence_summary,
                     "cross_tenant_rows_leaked": 0,
                 }
@@ -1765,6 +1772,7 @@ class Enterprise5ThirdPartySaaSMCP:
                     "pattern": "PATTERN_A_POOLED",
                     "saas_id": saas_id,
                     "connector_uri": connector_uri,
+                    "execution_mode": "deterministic_in_memory_policy_assertion",
                     "reason": item["a_neg_reason"],
                     "enforced_by_governance_module": (
                         "core-cymbal-agent/governance/hop4_model_armor_guardrails.py"
@@ -1809,7 +1817,7 @@ class Enterprise5ThirdPartySaaSMCP:
                     "iam_pab_verified": True,
                     "vpc_sc_egress_rule_allowed": True,
                     "cmek_key_state": cmek_lockout_proof.get("finvault_active_key_state", "ENABLED"),
-                    "live_cloud_endpoint_probed": item["live_endpoint"],
+                    "live_cloud_endpoint_probed": item["live_endpoint"] if include_live_probes else None,
                     "live_verification_evidence": live_evidence_summary,
                 }
                 neg_input = {
@@ -1828,6 +1836,7 @@ class Enterprise5ThirdPartySaaSMCP:
                     "pattern": "PATTERN_B_SOVEREIGN_SILO",
                     "saas_id": saas_id,
                     "silo_project_id": "cymbal-medcore-silo-prod",
+                    "execution_mode": "deterministic_in_memory_policy_assertion",
                     "valkey_cache_unlinked_in_under_5s": True,
                     "gvisor_worker_recycled": True,
                     "live_cmek_lockout_evidence": {
@@ -1875,7 +1884,7 @@ class Enterprise5ThirdPartySaaSMCP:
                     "dropped_inflight_3lo_or_sse_turns": 0,
                     "post_upgrade_rpm_limit": 600,
                     "post_upgrade_thinking_budget": 8000,
-                    "live_cloud_endpoint_probed": item["live_endpoint"],
+                    "live_cloud_endpoint_probed": item["live_endpoint"] if include_live_probes else None,
                     "live_verification_evidence": live_evidence_summary,
                 }
                 neg_input = {
@@ -1891,6 +1900,7 @@ class Enterprise5ThirdPartySaaSMCP:
                     "decision": "DENY_UNIDIRECTIONAL_PSC_AND_ABORT_ON_CHECKSUM_MISMATCH",
                     "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
                     "saas_id": saas_id,
+                    "execution_mode": "deterministic_in_memory_policy_assertion",
                     "reverse_spoke_to_hub_blocked": True,
                     "rollback_to_route_epoch_1_preserved": True,
                     "reason": (
@@ -1913,7 +1923,7 @@ class Enterprise5ThirdPartySaaSMCP:
                     "saas_name": saas_name,
                     "category": item["category"],
                     "connector_uri": connector_uri,
-                    "verification_tier": item["verification_tier"],
+                    "verification_tier": effective_tier,
                     "auth_protocol": item["auth_protocol"],
                     "pattern": pattern,
                     "live_endpoint": item["live_endpoint"],
@@ -1949,6 +1959,9 @@ class Enterprise5ThirdPartySaaSMCP:
 
         out_payload: Dict[str, Any] = {
             "pattern": pattern,
+            "isLiveLlmCall": False,
+            "include_live_probes": bool(include_live_probes),
+            "negative_case_execution_mode": "deterministic_in_memory_policy_assertion",
             "total_saas_products_tested": len(results),
             "positive_assertions_passed": len(results),
             "negative_assertions_passed": len(results),

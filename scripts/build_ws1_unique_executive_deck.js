@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const PptxGenJS = require('/usr/local/google/home/nitinagga/Documents/_legacy_cloudtop_backups_20261029/PromptCanvas_oct02_backup/node_modules/pptxgenjs');
+const PptxGenJS = require(process.env.PPTXGENJS_MODULE || 'pptxgenjs');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 const PPTX_OUT = path.join(ROOT_DIR, 'slides', 'ws1-executive-solution-deck.pptx');

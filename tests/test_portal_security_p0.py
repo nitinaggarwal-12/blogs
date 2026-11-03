@@ -75,7 +75,7 @@ def _make_iap_jwt(
     return f"{hdr}.{pay}.{sig}"
 
 
-def _admin_iap_headers(email: str = "nitinagga@google.com") -> dict[str, str]:
+def _admin_iap_headers(email: str = "architect-admin@google.com") -> dict[str, str]:
     return {
         "X-Goog-Authenticated-User-Email": f"accounts.google.com:{email}",
         "X-Goog-IAP-JWT-Assertion": _make_iap_jwt(email),
@@ -283,7 +283,7 @@ class TestPortalSecurityP0(unittest.TestCase):
             self.assertEqual(st_nonadm, 403, f"Non-admin IAP POST {path} must return 403: {body_nonadm}")
 
     def test_fa09_verified_admin_iap_sanitizes_html_css_and_blocks_drawio_xxe(self) -> None:
-        admin_hdr = _admin_iap_headers("nitinagga@google.com")
+        admin_hdr = _admin_iap_headers("architect-admin@google.com")
         xss_html = (
             '<p onclick="alert(1)">Clean <strong>bold</strong> '
             '<script>window.__pwn=1</script>'
@@ -307,7 +307,7 @@ class TestPortalSecurityP0(unittest.TestCase):
         self.assertNotIn("onclick", stored_html.lower())
         self.assertNotIn("javascript:", stored_html.lower())
         self.assertIn('rel="noopener noreferrer"', stored_html)
-        self.assertEqual(data["entry"]["actorEmail"], "nitinagga@google.com")
+        self.assertEqual(data["entry"]["actorEmail"], "architect-admin@google.com")
 
         # Verify unauthenticated comment strips spoofed identity AND neutralizes avatarColor CSS injection
         st_c, data_c, _ = self._http_json(

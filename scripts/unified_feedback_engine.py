@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 """
-Unified Cross-App Feedback Engine (Python) — nitinagga@google.com
+Unified Feedback Engine (Python) — Google Cloud Architecture Center Hub (ge-blogs)
 Strictly zero fake/synthetic/seed data. Only real user-submitted feedback is stored.
 
 Persists to:
 1. App-local JSON store (and SQLite table when provided)
-2. Shared local cross-app ledger (~/.gemini/config/shared_app_feedback_ledger.json)
-3. Live Google Sheet ("Unified App Feedback Ledger (nitinagga@google.com)",
-   spreadsheetId: 1iPv52nblJISD7WNeEe3m4VovG_JS1qh79MYftMxrnhY, tab: FeedbackInbox)
+2. Shared local ledger (~/.gemini/config/shared_app_feedback_ledger.json)
+3. Live Google Sheet (spreadsheetId: 1iPv52nblJISD7WNeEe3m4VovG_JS1qh79MYftMxrnhY, tab: FeedbackInbox)
    via OAuth 2.0 refresh_token with x-goog-user-project: ramp-portal-dev.
-4. Google Drive API comment on the live Feedback Sheet mentioning nitinagga@google.com.
+4. Google Drive API comment on the live Feedback Sheet.
 """
 
 from __future__ import annotations
@@ -25,7 +24,7 @@ import urllib.request
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-ADMIN_EMAIL = "nitinagga@google.com"
+ADMIN_EMAIL = os.environ.get("FEEDBACK_ADMIN_EMAIL", "")
 DEFAULT_SPREADSHEET_ID = "1iPv52nblJISD7WNeEe3m4VovG_JS1qh79MYftMxrnhY"
 DEFAULT_SPREADSHEET_URL = f"https://docs.google.com/spreadsheets/d/{DEFAULT_SPREADSHEET_ID}/edit"
 DEFAULT_SHEET_NAME = "FeedbackInbox"
@@ -35,9 +34,8 @@ CONFIG_PATH = Path.home() / ".gemini" / "config" / "unified_feedback_config.json
 SHARED_LEDGER_PATH = Path.home() / ".gemini" / "config" / "shared_app_feedback_ledger.json"
 
 TOKEN_CANDIDATE_PATHS = [
-    Path.home() / "Documents" / "gantry-pulse" / ".gsheet_oauth_token.json",
-    Path.home() / "Documents" / "blogs" / ".gsheet_oauth_token.json",
-    Path.home() / "Documents" / "PromptCanvas" / ".gsheet_oauth_token.json",
+    *([Path(os.environ["GSHEET_OAUTH_TOKEN_FILE"])] if os.environ.get("GSHEET_OAUTH_TOKEN_FILE") else []),
+    Path(__file__).resolve().parent.parent / ".gsheet_oauth_token.json",
 ]
 
 VALID_CATEGORIES = [
@@ -131,7 +129,7 @@ def verify_admin_access(
 ) -> Tuple[bool, str, str]:
     """
     Verifies whether the caller is authorized to view/manage the Admin Feedback Inbox.
-    1. Production BeyondCorp IAP: X-Goog-Authenticated-User-Email == nitinagga@google.com
+    1. Production BeyondCorp IAP: verified @google.com IAP header (or explicit FEEDBACK_ADMIN_EMAIL).
     2. Localhost development (never on Cloud Run K_SERVICE): strict loopback socket without forwarded IPs.
     Spoofable headers (X-Feedback-Admin-Email) and query params (?adminEmail=) are never trusted.
     """
@@ -139,7 +137,8 @@ def verify_admin_access(
     hdrs = {str(k).lower(): str(v) for k, v in (headers or {}).items() if v is not None}
     iap_email = normalize_iap_email(hdrs.get("x-goog-authenticated-user-email"))
     if iap_email:
-        if iap_email == ADMIN_EMAIL:
+        allowed = (iap_email == ADMIN_EMAIL.lower()) if ADMIN_EMAIL else iap_email.endswith("@google.com")
+        if allowed:
             return True, iap_email, "iap_verified"
         return False, iap_email, "iap_denied_non_admin"
 
@@ -149,7 +148,7 @@ def verify_admin_access(
     has_forwarded = bool(hdrs.get("x-forwarded-for", "").strip())
     addr = (remote_addr or "").strip().lower()
     if (not has_forwarded) and addr in ("127.0.0.1", "::1", "::ffff:127.0.0.1"):
-        return True, ADMIN_EMAIL, "localhost_dev_session"
+        return True, (ADMIN_EMAIL or "localhost-admin@local.dev"), "localhost_dev_session"
 
     return False, "anonymous", "unauthorized"
 
@@ -319,11 +318,12 @@ def append_feedback_to_google_sheet(record: Dict[str, Any]) -> Tuple[bool, Optio
     except Exception as exc:
         err_msg = str(exc)
 
-    # Also post a real Google Drive comment on the ledger spreadsheet mentioning nitinagga@google.com
+    # Also post a real Google Drive comment on the ledger spreadsheet
     try:
+        target_tag = f" for +{ADMIN_EMAIL}" if ADMIN_EMAIL else ""
         comment_body = {
             "content": (
-                f"New Feedback for +{ADMIN_EMAIL}\n"
+                f"New Feedback{target_tag}\n"
                 f"App: {record.get('appName')} ({record.get('appId')})\n"
                 f"Category: {record.get('category')} | Priority: {record.get('priority')}\n"
                 f"From: {record.get('senderName') or 'User'} <{record.get('senderEmail') or 'unspecified'}>\n"
@@ -692,8 +692,8 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Unified Cross-App Feedback Engine CLI")
     parser.add_argument("action", choices=["submit", "list", "update"])
-    parser.add_argument("--app-id", default="gantry-pulse")
-    parser.add_argument("--app-name", default="GantryPulse")
+    parser.add_argument("--app-id", default="ge-blogs")
+    parser.add_argument("--app-name", default="Google Cloud Multi-Tenant Agentic AI Architecture Hub")
     parser.add_argument("--local-store", default="")
     parser.add_argument("--payload-json", default="{}")
     parser.add_argument("--headers-json", default="{}")

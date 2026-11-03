@@ -1,13 +1,11 @@
 const { execFileSync } = require('child_process');
 const path = require('path');
 
-const tsxBin = '/usr/local/google/home/nitinagga/Documents/_legacy_cloudtop_backups_20261029/PromptCanvas_oct02_backup/node_modules/.bin/tsx';
+const tsxBin = process.env.TSX_BIN || 'npx';
 const scriptTs = path.join(__dirname, 'build_ws1_12slide_visual_deck.ts');
+const args = tsxBin === 'npx' ? ['tsx', scriptTs] : [scriptTs];
 
-execFileSync(tsxBin, [scriptTs], {
+execFileSync(tsxBin, args, {
   stdio: 'inherit',
-  env: {
-    ...process.env,
-    NODE_PATH: '/usr/local/google/home/nitinagga/Documents/_legacy_cloudtop_backups_20261029/PromptCanvas_oct02_backup/node_modules'
-  }
+  env: { ...process.env }
 });

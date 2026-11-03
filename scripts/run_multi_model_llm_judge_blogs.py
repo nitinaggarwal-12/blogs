@@ -3,10 +3,9 @@
 Multi-Model LLM-as-a-Judge Forensic Evaluator for Workstream Blogs (WS1..WS5)
 =============================================================================
 Evaluates all 5 canonical Google Cloud Architecture Center blogs (blogs/ws1..ws5-*.md)
-across 3 distinct live Vertex AI models in project `ramp-portal-dev`:
+across 2 distinct live Vertex AI Gemini 2.5 models in project `ramp-portal-dev`:
   1. gemini-2.5-pro        (locations/us-central1)
   2. gemini-2.5-flash      (locations/us-central1)
-  3. gemini-2.5-flash-lite (locations/us-central1)
 
 Outputs:
   - docs/multi_model_llm_judge_evaluation_receipt.json
@@ -62,6 +61,15 @@ RUBRIC_DIMENSIONS = [
     "production_code_and_10saas_evidence",
     "well_architected_and_slide_launch_parity",
 ]
+
+RUBRIC_WEIGHTS = {
+    "terminology_and_systems_primitives": 0.20,
+    "pedagogical_flow_and_context_bridges": 0.15,
+    "visual_1to1_badge_and_code_grounding": 0.20,
+    "display_latex_and_symbol_definitions": 0.15,
+    "production_code_and_10saas_evidence": 0.15,
+    "well_architected_and_slide_launch_parity": 0.15,
+}
 
 
 def get_access_token() -> str:
@@ -158,7 +166,7 @@ Return ONLY valid JSON matching this exact schema (no markdown fences outside JS
     "well_architected_and_slide_launch_parity": <number 0-100>
   }},
   "key_strengths": ["<strength 1>", "<strength 2>"],
-  "remaining_gaps_or_VERIFY_flags": ["<any remaining gap, or 'NONE — 100% compliant across all 6 rubric dimensions'>"]
+  "remaining_gaps_or_VERIFY_flags": ["<specific minor gap or verification note if any; return an empty list [] if none found>"]
 }}
 
 DOCUMENT CONTENT (`{filename}`):
@@ -251,6 +259,12 @@ def call_vertex_judge(model_cfg: dict, ws_key: str, filename: str, prompt: str, 
                 if text_out.startswith("```"):
                     text_out = re.sub(r"^```(?:json)?\s*|\s*```$", "", text_out, flags=re.DOTALL).strip()
                 parsed_eval = json.loads(text_out)
+                parsed_eval["raw_model_overall_score"] = parsed_eval.get("overall_score")
+                weighted_score = round(
+                    sum(float(parsed_eval["dimension_scores"].get(k, 0)) * w for k, w in RUBRIC_WEIGHTS.items()),
+                    2,
+                )
+                parsed_eval["overall_score"] = int(weighted_score) if weighted_score.is_integer() else weighted_score
                 usage = resp_json.get("usageMetadata", {})
                 return {
                     "status": "HTTP_200_OK",
@@ -283,7 +297,7 @@ def call_vertex_judge(model_cfg: dict, ws_key: str, filename: str, prompt: str, 
 
 
 def main() -> int:
-    print("🔍 Starting Multi-Model LLM-as-a-Judge Evaluation across 3 live Vertex AI models x 5 Workstream Blogs (15 evaluations)...")
+    print("🔍 Starting Dual-Model Gemini 2.5 LLM-as-a-Judge Evaluation across 2 live Vertex AI models x 5 Workstream Blogs (10 evaluations)...")
     token = get_access_token()
 
     blog_contents = {}

@@ -57,7 +57,7 @@
       clickhouse: 'https://api.clickhouse.cloud/v1/health',
       mongodb: 'https://cloud.mongodb.com/api/atlas/v2',
       confluent: 'https://api.confluent.cloud/kafka/v3/clusters',
-      servicenow: 'https://cymbal-itom.service-now.com/api/now/table/incident',
+      servicenow: 'https://developer.servicenow.com/',
       salesforce: 'https://login.salesforce.com/services/data/v59.0/sobjects/Case'
     };
 
@@ -147,10 +147,13 @@
           latencyBadge.textContent = 'Latency: ' + (data.latency_ms ?? '--') + ' ms' + attemptNote;
         }
         if (statusBadge) {
-          if (data.ok && (data.http_status < 400 || data.http_status === 401 || data.http_status === 403)) {
-            const warmTag = data.cold_start_mitigated ? ' <span style="font-size:10.5px; background:#dcfce7; color:#166534; padding:2px 6px; border-radius:8px; border:1px solid #86efac; margin-left:6px;">WARMED UP</span>' : '';
-            statusBadge.innerHTML = '✅ REACHED: HTTP ' + data.http_status + ' (' + data.status + ')' + warmTag;
+          const warmTag = data.cold_start_mitigated ? ' <span style="font-size:10.5px; background:#dcfce7; color:#166534; padding:2px 6px; border-radius:8px; border:1px solid #86efac; margin-left:6px;">WARMED UP</span>' : '';
+          if (data.ok && data.authenticated) {
+            statusBadge.innerHTML = '✅ AUTHENTICATED &amp; REACHED: HTTP ' + data.http_status + ' (' + data.status + ')' + warmTag;
             statusBadge.style.color = '#15803d';
+          } else if (data.tls_reachable && !data.authenticated) {
+            statusBadge.innerHTML = '🔒 TLS HOST REACHED — AUTH CREDENTIALS REQUIRED: HTTP ' + data.http_status + ' (' + data.status + ')' + warmTag;
+            statusBadge.style.color = '#b45309';
           } else {
             statusBadge.textContent = '🛡️ BLOCKED / ERROR — ' + (data.status || 'ERROR') + ': HTTP ' + (data.http_status || resp.status || '403');
             statusBadge.style.color = '#b91c1c';

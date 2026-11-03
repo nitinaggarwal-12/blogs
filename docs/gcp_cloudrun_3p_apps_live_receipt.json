@@ -6,7 +6,7 @@
   "gcp_project_number": "48439189383",
   "gcp_region": "us-west1",
   "provision_script_path": "scripts/provision_gcp_cloudrun_third_party_apps.py",
-  "provision_script_sha256": "12e7a3b0d8cba619071447c8d3ccff1656bedbedd56a01e8b90a13f7d6bf0d1c",
+  "provision_script_sha256": "bfcf0299cad7263fdc524c50cb6c09a20e9aa3675cd78e47075a9f719a837ccb",
   "exit_code": 0,
   "total_services_live": 10,
   "all_services_healthy_and_seeded": true,

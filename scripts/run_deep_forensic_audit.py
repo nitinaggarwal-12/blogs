@@ -166,7 +166,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
     alpha = finvault_alpha_mod.FinVaultPrivateAgentAlpha()
     prov = alpha.provision_via_agents_cli(
         caller_ctx=finvault_ctx,
-        model_id="gemini-2.5-pro-dedicated",
+        model_id="gemini-2.5-pro",
     )
     swapped_model = alpha.hot_swap_model(
         caller_ctx=finvault_ctx,

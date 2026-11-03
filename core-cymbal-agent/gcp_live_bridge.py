@@ -12,7 +12,7 @@ Provides real, authenticated REST/CLI calls across:
      and `gemini-2.5-flash` execution and LLM-as-a-Judge evaluation across Patterns A, B, and C.
    - Cloud KMS (`cloudkms.googleapis.com` in `us-west1`, KeyRing `cymbal-multi-tenant-kr`).
 2. AWS (`Account 393036065405`, `us-east-1`):
-   - Live AWS STS `GetCallerIdentity` (`arn:aws:iam::393036065405:user/nitinagga`).
+   - Live AWS STS `GetCallerIdentity` (`arn:aws:iam::393036065405:role/cymbal-console-auditor`).
    - Live Amazon Cognito RS256 OAuth2 token minting (`us-east-1_vqlzYM74B`).
    - Live Amazon Bedrock AgentCore MCP Gateway (`cymbal-a2a-mcp-gateway-suyxm3caof`) `tools/list` & `tools/call`.
    - Live AWS Lambda Remote A2A/MCP Peer (`cymbal-a2a-mcp-remote-peer`) verifying Hop 5 MCP `-32042` elicitation,
@@ -28,6 +28,7 @@ import configparser
 import datetime
 import hashlib
 import hmac
+import re
 import json
 import os
 from pathlib import Path
@@ -381,8 +382,11 @@ def bq_stream_insert(table_name: str, row: Dict[str, object]) -> Dict[str, objec
     )
     row_cnt = int((q_res.get("rows") or [{}])[0].get("row_count", 0)) if q_res.get("live_bq_query_ok") else 0
     return {
-        "live_bq_inserted": bool(q_res.get("live_bq_query_ok")),
-        "status_code": q_res.get("status_code", status),
+        "live_bq_inserted": False,
+        "table_reachable": bool(q_res.get("live_bq_query_ok")),
+        "insert_status_code": status,
+        "insert_errors": insert_errors,
+        "status_code": status,
         "billing_project": GCP_QUOTA_PROJECT_ID,
         "job_id": q_res.get("job_id"),
         "verified_existing_rows": row_cnt,
@@ -447,9 +451,19 @@ def vertex_ai_generate_content(
     if candidates:
         parts = ((candidates[0].get("content") or {}).get("parts")) or []
         text = "".join(str(p.get("text", "")) for p in parts).strip()
+    semantic_ok = bool(text)
+    cleaned = re.sub(r"^```(?:json)?\s*|\s*```$", "", text.strip(), flags=re.DOTALL).strip()
+    if cleaned.startswith("{"):
+        try:
+            parsed_json = json.loads(cleaned)
+            if isinstance(parsed_json, dict) and str(parsed_json.get("verification_status", "")).upper() == "FAILED":
+                semantic_ok = False
+        except Exception:
+            pass
     usage = resp.get("usageMetadata") or {}
     return {
-        "live_vertex_ok": True,
+        "live_vertex_ok": semantic_ok,
+        "response_id": resp.get("responseId", ""),
         "project_id": GCP_QUOTA_PROJECT_ID,
         "region": VERTEX_REGION,
         "model_id": model_id,
@@ -484,7 +498,7 @@ def _mint_aws_peer_hs256_jwt(principal: str = "finvault-admin@cymbal.com") -> st
 def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
     """
     Executes live verification against AWS Account 393036065405 (`us-east-1`) and Third-Party MCP targets:
-    1. Live AWS STS `GetCallerIdentity` via SigV4 (`arn:aws:iam::393036065405:user/nitinagga`).
+    1. Live AWS STS `GetCallerIdentity` via SigV4 (`arn:aws:iam::393036065405:role/cymbal-console-auditor`).
     2. Live Amazon Cognito RS256 OAuth2 token minting (`us-east-1_vqlzYM74B`).
     3. Live Amazon Bedrock AgentCore MCP Gateway (`cymbal-a2a-mcp-gateway-suyxm3caof`) `tools/list`
        and `tools/call` for ServiceNow ITSM (`CHG0049218` / `INC0948211`) & Muse Clinical (`FV-GXP-2026-04`).
@@ -539,7 +553,7 @@ def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
             results["sts_caller_identity"] = {
                 "live_sts_ok": resp.status == 200 and "393036065405" in xml_text,
                 "status_code": resp.status,
-                "iam_arn": "arn:aws:iam::393036065405:user/nitinagga",
+                "iam_arn": "arn:aws:iam::393036065405:role/cymbal-console-auditor",
             }
     except Exception as exc:
         results["sts_caller_identity"] = {"live_sts_ok": False, "error": str(exc)}
@@ -701,16 +715,15 @@ def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
 
 def workspace_verify_live_slides_and_docs() -> Dict[str, Any]:
     """
-    Verifies live Google Slides presentations and Google Docs documents in Google Drive (`nitinagga@google.com`)
+    Verifies live Google Slides presentations and Google Docs documents in Google Drive (`anonymous-workspace-sync@cloud-architecture-center.internal`)
     for WS1 (Reference Architecture), WS2 (Pattern A Pooled), WS3 (Pattern B Sovereign Silos),
     WS4 (Pattern C Dynamic Hybrid), WS5 (Executive Decision Guide), and ALL (Master Deck).
     """
     root_dir = Path(__file__).resolve().parent.parent
     manifest_path = root_dir / "slides" / "cloud_viewer_manifest.json"
-    token_paths = [
-        root_dir / ".gsheet_oauth_token.json",
-        Path.home() / "Documents" / "gantry-pulse" / ".gsheet_oauth_token.json",
-    ]
+    token_paths = [root_dir / ".gsheet_oauth_token.json"]
+    if os.environ.get("GOOGLE_WORKSPACE_OAUTH_TOKEN_FILE"):
+        token_paths.insert(0, Path(os.environ["GOOGLE_WORKSPACE_OAUTH_TOKEN_FILE"]))
     access_token: Optional[str] = None
     for tf in token_paths:
         if tf.is_file():
@@ -772,7 +785,7 @@ def workspace_verify_live_slides_and_docs() -> Dict[str, Any]:
 
     return {
         "live_workspace_ok": len(verified_slides) == 6 and len(verified_docs) == 6,
-        "account_email": manifest.get("accountEmail", "nitinagga@google.com"),
+        "account_email": manifest.get("accountEmail", "anonymous-workspace-sync@cloud-architecture-center.internal"),
         "verified_google_slides_count": len(verified_slides),
         "verified_google_docs_count": len(verified_docs),
         "slides": verified_slides,
@@ -808,9 +821,9 @@ def run_live_gcp_bridge_self_test() -> Dict[str, object]:
         max_output_tokens=1024,
     )
     vertex_flash = vertex_ai_generate_content(
-        "Return only raw JSON {\"pattern_a\":\"PASS\",\"pattern_b\":\"PASS\",\"pattern_c\":\"PASS\",\"overall_score\":99} after verifying multi-tenant isolation.",
+        "Return compact JSON with keys hop1_edge, hop3_bulkhead, and hop5_data summarizing the cryptographic primitive enforced at each hop (RFC 9449 DPoP/OBO, Valkey RPM token bucket, and PostgreSQL FORCE ROW LEVEL SECURITY + Cloud KMS CMEK).",
         model_id="gemini-2.5-flash",
-        max_output_tokens=1024,
+        max_output_tokens=2048,
     )
     # 5. Live AWS (Account 393036065405) + Third-Party (ServiceNow, Muse, Entra ID OBO, S3)
     aws_3p = aws_verify_cross_cloud_pattern_execution()

@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import os
 import html
 import json
 import re
@@ -30,12 +31,12 @@ SLIDES_DIR = ROOT_DIR / "slides"
 MANIFEST_FILE = SLIDES_DIR / "cloud_viewer_manifest.json"
 
 QUOTA_PROJECT = "ramp-portal-dev"
-DEFAULT_USER_EMAIL = "nitinagga@google.com"
+DEFAULT_USER_EMAIL = os.environ.get("WORKSPACE_SYNC_EMAIL", "anonymous-workspace-sync@cloud-architecture-center.internal")
 DEFAULT_OAUTH_CLIENT_ID = "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com"
 
 TOKEN_CANDIDATE_PATHS = [
+    *([Path(os.environ["GSHEET_OAUTH_TOKEN_FILE"])] if os.environ.get("GSHEET_OAUTH_TOKEN_FILE") else []),
     ROOT_DIR / ".gsheet_oauth_token.json",
-    Path.home() / "Documents" / "gantry-pulse" / ".gsheet_oauth_token.json",
 ]
 
 _TOKEN_CACHE: Dict[str, Any] = {"access_token": None, "expires_at": 0.0}
@@ -95,11 +96,9 @@ def save_cloud_manifest(data: Dict[str, Any]) -> None:
     data["updatedAt"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     serialized = json.dumps(data, indent=2)
     MANIFEST_FILE.write_text(serialized, encoding="utf-8")
-    for mirror_rel in (
-        "../PromptCanvas/public/slides/cloud_viewer_manifest.json",
-        "../PromptCanvas/src/data/cloud_viewer_manifest.json",
-    ):
-        mirror_path = (ROOT_DIR / mirror_rel).resolve()
+    extra_mirrors = [p.strip() for p in os.environ.get("WORKSPACE_MIRROR_MANIFEST_PATHS", "").split(",") if p.strip()]
+    for mirror_rel in extra_mirrors:
+        mirror_path = Path(mirror_rel).expanduser().resolve()
         if mirror_path.parent.is_dir():
             mirror_path.write_text(serialized, encoding="utf-8")
 

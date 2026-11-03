@@ -1179,18 +1179,18 @@
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid var(--border);">
           <div>
             <h3 style="margin:0 0 2px 0;">&#9889; End-to-End Multi-Cloud Pattern Execution (GCP + AWS + 10 Third-Party SaaS), Deployment Links &amp; 27-File Source Codebase</h3>
-            <p class="muted" style="margin:0; font-size:12.5px;">Inspect all 6 test suites (<code>107/107 PASS</code> including <code>30/30 E2E Flows &bull; 60/60 Assertions</code> across 10 Third-Party SaaS &times; 3 Patterns), 20 live resources across <code>cymbal-control-plane (#248990048888)</code>, <code>ramp-portal-dev (#248990048888)</code> &amp; <code>bbar-138hf0 (#48439189383)</code>, AWS <code>393036065405</code> &amp; 10 3P SaaS platforms, per-workstream deployment links, and 27 source files.</p>
+            <p class="muted" style="margin:0; font-size:12.5px;">Inspect all 6 test suites (<code>107/107 PASS</code>: <code>20</code> Live In-Memory Policy Assertions + <code>87</code> Recorded Multi-Cloud Receipt Assertions across 10 Third-Party SaaS &times; 3 Patterns, <code>isLiveLlmCall: false</code>), 20 live resources across <code>cymbal-control-plane (#248990048888)</code>, <code>ramp-portal-dev (#248990048888)</code> &amp; <code>bbar-138hf0 (#48439189383)</code>, AWS <code>393036065405</code> &amp; 10 3P SaaS platforms, per-workstream deployment links, and 27 source files.</p>
           </div>
           <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
             <label for="e2e-workbench-view-select" style="margin:0; font-size:12px; font-weight:700; color:var(--heading); white-space:nowrap;">&#128194; Workbench View:</label>
             <select id="e2e-workbench-view-select" style="width:auto; min-width:320px; padding:7px 28px 7px 10px; font-weight:600; font-size:12.5px;" onchange="switchE2EWorkbenchTab(this.value)" aria-label="Select E2E Workbench View">
-              <option value="execution">1. Live E2E Execution Results (6 Suites &bull; 107/107 PASS)</option>
+              <option value="execution">1. E2E Execution Results (20 In-Memory + 87 Receipt &bull; 107/107 PASS)</option>
               <option value="resources">2. Multi-Cloud Resources &amp; WS1&ndash;WS5 Deployment Links (20 Live)</option>
               <option value="codebase">3. Complete Source Codebase (27 Python &amp; TF Files)</option>
               <option value="runbook">4. Cloud Console &amp; SSH Verification Runbook (8 Stages)</option>
               <option value="deliverables">5. All Workstream Deliverables &amp; Codelabs Index</option>
             </select>
-            <button type="button" id="e2e-rerun-live-btn" class="sim-btn primary" style="padding:7px 12px; font-size:12.5px;" onclick="runLiveE2ESimulationsInWorkbench()">&#9654; Re-Run All 107 Multi-Cloud &amp; 10-SaaS Tests Live</button>
+            <button type="button" id="e2e-rerun-live-btn" class="sim-btn primary" style="padding:7px 12px; font-size:12.5px;" onclick="runLiveE2ESimulationsInWorkbench()">&#9654; Re-Verify 20 In-Memory + 87 Receipt Assertions (107 Total)</button>
           </div>
         </div>
 

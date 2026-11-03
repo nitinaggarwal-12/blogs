@@ -30,14 +30,17 @@ SILO_PERIMETER_MAP = {
         "vpc_sc_perimeter": "perimeter_finvault_sovereign",
         "expected_mtls_spiffe": "spiffe://finvault.com/ns/sre/sa/agent-client",
         "allowed_egress_projects": {"cymbal-finvault-silo-prod"},
-        "airgapped_gke_model": "gke://cymbal-finvault-silo-prod/us-central1/gemma-3-27b-it-vllm",
+        "airgapped_model_id": "gemma-3-27b-it",
+        # Self-hosted internal GKE vLLM Kubernetes Service inside the VPC-SC perimeter (not a Vertex API model ID)
+        "airgapped_gke_model": "http://gemma-3-27b-it-vllm.silo-inference.svc.cluster.local:8000/v1",
     },
     "retailstream": {
         "project_id": "cymbal-retailstream-silo-prod",
         "vpc_sc_perimeter": "perimeter_retailstream_sovereign",
         "expected_mtls_spiffe": "spiffe://retailstream.com/ns/itom/sa/agent-client",
         "allowed_egress_projects": {"cymbal-retailstream-silo-prod"},
-        "airgapped_gke_model": "gke://cymbal-retailstream-silo-prod/us-central1/gemma-3-27b-it-vllm",
+        "airgapped_model_id": "gemma-3-27b-it",
+        "airgapped_gke_model": "http://gemma-3-27b-it-vllm.silo-inference.svc.cluster.local:8000/v1",
     },
 }
 

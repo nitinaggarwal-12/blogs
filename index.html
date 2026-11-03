@@ -249,6 +249,7 @@
       // Normalize canonical AWS S3 audit ledger URI & Pattern C tier-upgrade function symbol at render time (preserving blogs/*.md SHA-256 on disk)
       body = body.replace(/cymbal-multi-tenant-audit-ledger-393036065405-us-east-1/g, 'cymbal-aws-federation-393036065405-us-east-1');
       body = body.replace(/\bpromote_tenant_zero_downtime\b/g, 'execute_zero_downtime_tier_upgrade');
+      body = body.replace(/\bgemini-2\.5-pro-dedicated\b/g, 'gemini-2.5-pro (Provisioned Throughput: X-Vertex-AI-LLM-Request-Type: dedicated)');
 
       // Extract keyed <!-- E2E_FLOW_START:diagId --> ... <!-- E2E_FLOW_END:diagId --> (used in Master E2E Guide) into collapsible accordions
       const e2eBlocks = [];
@@ -2122,7 +2123,7 @@
 
     async function runLiveE2ESimulationsInWorkbench() {
       const btn = document.getElementById('e2e-rerun-live-btn');
-      if (btn) btn.textContent = '⏳ Running 107 Live Multi-Cloud & 10-SaaS Assertions...';
+      if (btn) btn.textContent = '⏳ Verifying 20 In-Memory Policy + 87 Recorded Receipt Assertions...';
       switchE2EWorkbenchTab('execution');
       try {
         const resp = await fetch('/api/simulate/all?refresh=1');
@@ -2145,7 +2146,7 @@
           }
           const total = data.total_assertions_passed || 107;
           if (btn) {
-            btn.textContent = `✓ ${total} / ${total} Live Assertions Verified PASS`;
+            btn.textContent = `✓ ${total} / ${total} Verified PASS (20 In-Memory + 87 Receipt)`;
             btn.style.background = '';
           }
           return;
@@ -2158,7 +2159,7 @@
           btn.textContent = `❌ Simulation Run Failed: ${err.message || 'Network Error'}`;
           btn.style.background = '#dc2626';
           setTimeout(() => {
-            btn.textContent = '▶ Re-Run All 107 Multi-Cloud & 10-SaaS Tests Live';
+            btn.textContent = '▶ Re-Verify 20 In-Memory + 87 Receipt Assertions (107 Total)';
             btn.style.background = '';
           }, 4500);
         }
@@ -2250,7 +2251,7 @@
       if (!container) return;
       const toast = document.createElement('div');
       toast.className = 'portal-toast';
-      toast.innerHTML = `<div><strong>${escapeHtml(title)}</strong><div style="font-size:11.5px; color:#cbd5e1; margin-top:2px;">${escapeHtml(detail || '')}</div></div>`;
+      toast.innerHTML = `<div><strong>${escapeHtml(title)}</strong><div style="font-size:11.5px; color:#475569; margin-top:2px;">${escapeHtml(detail || '')}</div></div>`;
       container.appendChild(toast);
       setTimeout(() => {
         try { toast.remove(); } catch (_) {}

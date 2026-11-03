@@ -447,7 +447,7 @@
       "sha256": "3957e3f721d0afb58410fe05eacbacb3f885584c634a5aee7ec4334840db53dc",
       "captured_at": "2026-10-30T14:08:51.159Z"
     },
-    "spoken_script": "For Sigma Computing workbook analytics, we verify warehouse RLS pushdown. When RetailStream queries workbook 02, the proxy validates their ua_tenant_id. Notice the red-team breach attempt: when RetailStream attempts to tamper with their user attribute to impersonate FinVault, the agent runtime terminates the turn with HTTP 403 DENY_SIGMA_UA_TENANT_TAMPERING, protecting the warehouse."
+    "spoken_script": "For Sigma Computing workbook analytics on Grafana Enterprise v11.2.0, the BEFORE baseline shows FinVault's single-panel finvault-sre-wb dashboard prior to agentic attestation. In the AFTER view, GEAP MCP tool eval_sigma_workbook_rls (Target IZVODT083Q) validates the ua_tenant_id=finvault RLS session context and appends Panel #2 via POST /api/dashboards/db (HTTP 200), displaying the live Hop 5 execution and cross-org spoof-audit receipt alongside the $527.0M FinVault summary."
   },
   {
     "index": 3,
@@ -488,7 +488,7 @@
       "sha256": "394c45763ca4414e3e30e6f407d551783207bef0ca10febaeab1a7eedf5ca3ad",
       "captured_at": "2026-10-30T13:41:31.519Z"
     },
-    "spoken_script": "In ServiceNow change management, we enforce RFC 9449 DPoP-bound 3-legged OAuth consent. If an agent attempts to modify change order CHG0049218 without explicit user consent, Hop 5 intercepts the call and emits an interactive OAuth consent challenge with MCP error code minus 32042. Once consented, the live change details are retrieved safely."
+    "spoken_script": "For ServiceNow ITSM change control on Redmine v5.1, the BEFORE queue displays two baseline tickets (#1 CHG0049218 and #2 INC0948211). In the AFTER view, GEAP MCP tool query_servicenow_change_records (Target ZS9VGYHBQL) verifies CMEK and Valkey single-flight readiness and creates P1 Change Ticket CHG0049299 via POST /issues.json (HTTP 200), updating the live FinVault ITSM queue to three tickets."
   },
   {
     "index": 4,
@@ -529,7 +529,7 @@
       "sha256": "cc7d99494817dce5b6b609a68308eebcf6b6d904866fb22aee7a13877569482f",
       "captured_at": "2026-10-30T14:13:10.732Z"
     },
-    "spoken_script": "In regulated life sciences, tenant isolation is a GxP requirement. Here, Veeva clinical biomarker queries are restricted by Hop 2 catalog ACLs. Any unauthorized tenant attempting to discover or invoke the restricted clinical MCP is rejected at the registry layer with HTTP 403 TENANT_CONNECTOR_ACL_DENIED. Authorized runs are sealed with a Cloud KMS 21 CFR Part 11 digital signature."
+    "spoken_script": "For Veeva Vault RIM and 21 CFR Part 11 clinical compliance on NocoDB v0.255.2, the BEFORE ledger displays three seeded compliance records (AWS-GXP-101 through 103). In the AFTER view, GEAP MCP tool query_muse_study_biomarkers (Target TWQU0KSRVF) signs the Hop 5 audit digest with Cloud KMS HSM and inserts record #4 AWS-GXP-104 (ECDSA_P256_LIVE_AGENT_SIGNED) via POST /api/v2/tables/records (HTTP 200)."
   },
   {
     "index": 5,
@@ -570,7 +570,7 @@
       "sha256": "15d3ea9d83dab4fb8f63909c9b97b8b4c32c9f3d889edd078807f3227b9e5410",
       "captured_at": "2026-10-30T14:09:22.444Z"
     },
-    "spoken_script": "Here we evaluate cross-tenant data loss prevention during support ticket escalation. Even if a prompt contains raw SWIFT codes or banking IBANs, Hop 4 Cloud Sensitive Data Protection intercepts the payload and masks the sensitive data before external SaaS egress, ensuring clean compliance."
+    "spoken_script": "For Salesforce CRM and Jira SRE escalations on Gitea v1.22.3, the BEFORE view shows Issue #1 (SFDC-CASE-00984120 / FINVAULT-SRE-1402) open with zero comments. In the AFTER view, GEAP MCP tool create_redacted_sfdc_jira_escalation (Target K5JAEFCQ6E) masks raw IBAN and SWIFT fields via Hop 4 Cloud Sensitive Data Protection and posts the structured Markdown RCA comment as sre-lead via POST /api/v1/repos/finvault/sre-escalations/issues/1/comments (HTTP 200)."
   },
   {
     "index": 6,
@@ -611,7 +611,7 @@
       "sha256": "5a2241216d38414641c4cf3a5088a6e5dc8e16832f455eee1b29f24e8e0b79c7",
       "captured_at": "2026-10-30T13:42:10.943Z"
     },
-    "spoken_script": "For Databricks Unity Catalog, we red-team SQL injection and schema escalation. When an adversarial prompt injects a semicolon and drop table statement, Hop 4 SQL sanitization blocks the execution with HTTP 403, while legitimate analytical queries execute cleanly within the tenant's Gold lakehouse catalog."
+    "spoken_script": "For Databricks Unity Catalog federated SQL on Trino v440, the BEFORE Cluster Overview shows the baseline query ledger prior to agent dispatch. In the AFTER view, GEAP MCP tool execute_uc_genie_federated_sql (Target TERCK8SLBP) dispatches tenant-scoped SQL via POST /v1/statement (HTTP 200), surfacing the newly completed FINISHED query attributed to geap-hop5-agent@finvault.com (source geap-agentcore-TERCK8SLBP)."
   },
   {
     "index": 7,
@@ -652,7 +652,7 @@
       "sha256": "5118174f054abdf0a434232534dd66297bd410d855e11677450988529d337029",
       "captured_at": "2026-10-30T13:42:18.506Z"
     },
-    "spoken_script": "With Snowflake Cortex Analyst, we enforce secondary role restrictions. An adversary attempting to execute USE SECONDARY ROLES ALL to escalate privileges across roles is blocked immediately. Authorized turns execute strictly within ROLE_CYMBAL_RETAILSTREAM."
+    "spoken_script": "For Snowflake Cortex Analyst warehouse isolation on ClickHouse v24.8, the BEFORE /play console shows finvault_user attempting a cross-tenant query (WHERE tenant_id = 'retailstream'), where Row-Level Security blocks exposure and returns zero rows. In the AFTER view, GEAP MCP tool execute_cortex_analyst_sql (Target CCMDEVZV2S) executes the authorized tenant-aligned query (WHERE tenant_id = 'finvault', HTTP 200), returning the two CMEK-protected FinVault wire settlement rows ($312.5M and $214.5M)."
   },
   {
     "index": 8,
@@ -693,7 +693,7 @@
       "sha256": "7f3ff88d0cc445cf633a41d4d860164069507cba191a25ce39e2dcc7acf19c84",
       "captured_at": "2026-10-30T13:42:33.601Z"
     },
-    "spoken_script": "In Workday HR and compensation workflows, we guard against intra-tenant token replay. If user Bob attempts to replay Alice's cached 3LO bearer token to inspect executive compensation, the runtime detects the principal mismatch and returns HTTP 401, while authorized syncs redact US Social Security numbers."
+    "spoken_script": "For Workday HCM compensation RaaS on Directus v11.1.0, the BEFORE collection displays two baseline executive items (Clara Vance and Marcus Thorne). In the AFTER view, GEAP MCP tool fetch_compensation_raas_report (Target RAOTMUMJTZ) masks US Social Security numbers via Hop 4 Cloud SDP and inserts Elena Rostova ($395,000.00, [REDACTED_US_SSN]) via POST /items/hcm_compensation (HTTP 200), updating the live collection to three items."
   },
   {
     "index": 9,
@@ -734,7 +734,7 @@
       "sha256": "1633de1b110bececdce19116e6493dda1ec8c7f92357f607560e48073dc623aa",
       "captured_at": "2026-10-30T14:09:32.942Z"
     },
-    "spoken_script": "For Datadog observability and APM, we test prompt injection defense inside operational logs. When an adversarial payload injects an 'IGNORE ALL PREVIOUS INSTRUCTIONS' payload, Hop 4 Model Armor classifies the threat and blocks ingestion with HTTP 400, preserving log stream integrity."
+    "spoken_script": "For Datadog observability and SRE telemetry on Datalust Seq v2024.3, the BEFORE /#/events stream shows the collapsed baseline prior to Hop 5 span ingestion. In the AFTER view, GEAP MCP tool query_tenant_apm_logs (Target G767QR3TQZ) ingests a structured Serilog CLEF span via POST /api/events/raw?clef (HTTP 200) and expands the live trace showing AgentCoreTarget=G767QR3TQZ, Hop4ModelArmor=PASS_ZERO_PROMPT_INJECTION, and ZeroPiiAttested=true."
   },
   {
     "index": 10,
@@ -775,7 +775,7 @@
       "sha256": "a0156ef0e02391f44e0e44be806e21a260d3fde5661dc8184a6dd41ebb091460",
       "captured_at": "2026-10-30T13:49:55.978Z"
     },
-    "spoken_script": "Finally, for SecOps host containment and credential rotation in HashiCorp Vault, we enforce cryptographic DPoP proof binding. Replaying a stolen bearer token without the private key proof fails with HTTP 401 proof mismatch, while legitimate rotation transitions the host to contained status safely."
+    "spoken_script": "For CrowdStrike Falcon XDR containment and secret rotation on HashiCorp Vault v1.13.3, the BEFORE view shows secret tenants/finvault at Version 1 (PENDING_HOP5_DPOP_CONTAINMENT). In the AFTER view, GEAP MCP tool contain_xdr_host_with_dpop (Target C7EYM614F2) verifies the RFC 9449 DPoP proof thumbprint and rotates tenants/finvault to Version 2 via POST /v1/secret/data/tenants/finvault (HTTP 200), displaying HOST_CONTAINED_DPOP_VERIFIED_200."
   }
 ];
     let dtActiveIndex = 1;
@@ -1014,7 +1014,7 @@
 
       if (dtSliderMode === 'slider') {
         container.innerHTML = `
-          <div style="position:relative; width:100%; aspect-ratio:16/10; max-height:560px; background:#0f172a; border-radius:6px; overflow:hidden; cursor:ew-resize;" onclick="openGenuineScreenshotLightbox('${data.after.rel_path}', '${data.enterprise_saas_domain}')">
+          <div style="position:relative; width:100%; aspect-ratio:16/10; max-height:560px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px; overflow:hidden; cursor:ew-resize;" onclick="openGenuineScreenshotLightbox('${data.after.rel_path}', '${data.enterprise_saas_domain}')">
             <img src="${data.before.rel_path}" alt="Before" style="position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:#f8fafc;" />
             <img id="dt-split-after-img" src="${data.after.rel_path}" alt="After" style="position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:#f8fafc; clip-path:polygon(50% 0, 100% 0, 100% 100%, 50% 100%);" />
             <div id="dt-split-divider-line" style="position:absolute; top:0; bottom:0; left:50%; width:3px; background:#3b82f6; box-shadow:0 0 8px rgba(59,130,246,0.8); pointer-events:none;">

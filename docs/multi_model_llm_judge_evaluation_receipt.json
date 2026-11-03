@@ -5,7 +5,7 @@
   "total_evaluations_expected": 10,
   "total_evaluations_completed": 10,
   "total_evaluations_passed": 10,
-  "overall_consensus_mean_score": 99.97,
+  "overall_consensus_mean_score": 99.94,
   "status": "PASS",
   "judge_models": [
     {
@@ -42,7 +42,7 @@
       "location": "us-central1",
       "evaluated_blogs": 5,
       "passed_blogs": 5,
-      "mean_overall_score": 100.0,
+      "mean_overall_score": 99.94,
       "mean_dimension_scores": {
         "terminology_and_systems_primitives": 100.0,
         "pedagogical_flow_and_context_bridges": 99.6,
@@ -163,10 +163,10 @@
       },
       "models_evaluated": 2,
       "models_passed": 2,
-      "consensus_mean_score": 100.0,
+      "consensus_mean_score": 99.85,
       "scores_by_model": {
         "gemini-2.5-pro": 100,
-        "gemini-2.5-flash": 100
+        "gemini-2.5-flash": 99.7
       }
     }
   },
@@ -204,7 +204,8 @@
         ],
         "remaining_gaps_or_VERIFY_flags": [
           "A minor deviation in the 'Performance optimization' section: the 'Architectural Grounding Boundary' callout is placed after the subsequent table, not immediately following the LaTeX formula's 'Where:' block as per the strictest interpretation of the rubric."
-        ]
+        ],
+        "raw_model_overall_score": 99.7
       }
     },
     {
@@ -242,7 +243,8 @@
         ],
         "remaining_gaps_or_VERIFY_flags": [
           "NONE \u2014 100% compliant across all 6 rubric dimensions"
-        ]
+        ],
+        "raw_model_overall_score": 100
       }
     },
     {
@@ -278,7 +280,8 @@
         ],
         "remaining_gaps_or_VERIFY_flags": [
           "NONE \u2014 100% compliant across all 6 rubric dimensions"
-        ]
+        ],
+        "raw_model_overall_score": 100
       }
     },
     {
@@ -316,7 +319,8 @@
         ],
         "remaining_gaps_or_VERIFY_flags": [
           "NONE \u2014 100% compliant across all 6 rubric dimensions"
-        ]
+        ],
+        "raw_model_overall_score": 100
       }
     },
     {
@@ -352,7 +356,8 @@
         ],
         "remaining_gaps_or_VERIFY_flags": [
           "NONE \u2014 100% compliant across all 6 rubric dimensions"
-        ]
+        ],
+        "raw_model_overall_score": 100
       }
     },
     {
@@ -390,7 +395,8 @@
         ],
         "remaining_gaps_or_VERIFY_flags": [
           "NONE \u2014 100% compliant across all 6 rubric dimensions"
-        ]
+        ],
+        "raw_model_overall_score": 100
       }
     },
     {
@@ -426,7 +432,8 @@
         ],
         "remaining_gaps_or_VERIFY_flags": [
           "NONE \u2014 100% compliant across all 6 rubric dimensions"
-        ]
+        ],
+        "raw_model_overall_score": 100
       }
     },
     {
@@ -464,7 +471,8 @@
         ],
         "remaining_gaps_or_VERIFY_flags": [
           "NONE \u2014 100% compliant across all 6 rubric dimensions"
-        ]
+        ],
+        "raw_model_overall_score": 100
       }
     },
     {
@@ -500,7 +508,8 @@
         ],
         "remaining_gaps_or_VERIFY_flags": [
           "NONE \u2014 100% compliant across all 6 rubric dimensions"
-        ]
+        ],
+        "raw_model_overall_score": 100
       }
     },
     {
@@ -519,7 +528,7 @@
       "evaluation": {
         "workstream": "WS5",
         "verdict": "PASS",
-        "overall_score": 100,
+        "overall_score": 99.7,
         "dimension_scores": {
           "terminology_and_systems_primitives": 100,
           "pedagogical_flow_and_context_bridges": 98,
@@ -538,7 +547,8 @@
         ],
         "remaining_gaps_or_VERIFY_flags": [
           "NONE \u2014 100% compliant across all 6 rubric dimensions"
-        ]
+        ],
+        "raw_model_overall_score": 100
       }
     }
   ]

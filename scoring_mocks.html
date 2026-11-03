@@ -68,7 +68,7 @@
       4. FinOps Amortization Dial
     </button>
     <button type="button" onclick="switchMockTab('mock-llm-judge', this)" class="tab-btn px-4 py-2 text-xs md:text-sm font-semibold rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 transition shadow-sm">
-      5. Multi-Model LLM-as-a-Judge
+      5. Dual-Model Gemini 2.5 Judge
     </button>
   </div>
 
@@ -264,7 +264,7 @@
         <p class="text-xs text-blue-800 mt-2">DPoP token exchange, PostgreSQL RLS, 5-Level Memory, Model Armor, 32k prefix caching.</p>
         <div class="mt-4 pt-3 border-t border-blue-200 flex justify-between items-center text-xs">
           <span class="text-blue-700 font-medium">Target Score:</span>
-          <span class="font-mono font-bold text-blue-900">85 / 100</span>
+          <span class="font-mono font-bold text-blue-900">88 / 100</span>
         </div>
       </div>
 
@@ -286,31 +286,31 @@
         <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider">Live Architectural Control Checklist</h3>
         <div class="flex items-center gap-2">
           <span class="text-xs text-slate-600">Calculated Maturity Score:</span>
-          <span id="maturity-score-display" class="font-mono font-bold text-lg text-blue-700">85 / 100 (Level 300 Certified)</span>
+          <span id="maturity-score-display" class="font-mono font-bold text-lg text-blue-700">88 / 100 (Level 300 Certified)</span>
         </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
         <label class="flex items-start gap-2.5 p-2.5 rounded-lg bg-white border border-slate-200 cursor-pointer hover:bg-blue-50/50">
-          <input type="checkbox" checked data-points="17" class="mt-1 custom-slider" onchange="calcMaturityScore()">
+          <input type="checkbox" checked data-points="18" class="mt-1 custom-slider" onchange="calcMaturityScore()">
           <div>
-            <strong class="text-slate-900">Hop 1: Edge PEP Header Stripping (+17 pts)</strong>
+            <strong class="text-slate-900">Hop 1: Edge PEP Header Stripping (+18 pts)</strong>
             <p class="text-xs text-slate-500">Strips client-supplied X-Tenant-ID; mints RFC 9449 DPoP key binding.</p>
           </div>
         </label>
 
         <label class="flex items-start gap-2.5 p-2.5 rounded-lg bg-white border border-slate-200 cursor-pointer hover:bg-blue-50/50">
-          <input type="checkbox" checked data-points="17" class="mt-1 custom-slider" onchange="calcMaturityScore()">
+          <input type="checkbox" checked data-points="18" class="mt-1 custom-slider" onchange="calcMaturityScore()">
           <div>
-            <strong class="text-slate-900">Hop 2: Discovery Engine PDP Catalog Pruning (+17 pts)</strong>
+            <strong class="text-slate-900">Hop 2: Discovery Engine PDP Catalog Pruning (+18 pts)</strong>
             <p class="text-xs text-slate-500">Blocks cross-tenant tool visibility via before_agent_callback.</p>
           </div>
         </label>
 
         <label class="flex items-start gap-2.5 p-2.5 rounded-lg bg-white border border-slate-200 cursor-pointer hover:bg-blue-50/50">
-          <input type="checkbox" checked data-points="17" class="mt-1 custom-slider" onchange="calcMaturityScore()">
+          <input type="checkbox" checked data-points="18" class="mt-1 custom-slider" onchange="calcMaturityScore()">
           <div>
-            <strong class="text-slate-900">Hop 3: Valkey Token Clamping &amp; Cache Binding (+17 pts)</strong>
+            <strong class="text-slate-900">Hop 3: Valkey Token Clamping &amp; Cache Binding (+18 pts)</strong>
             <p class="text-xs text-slate-500">Enforces RPM bulkhead and 32k prompt prefix cache isolation.</p>
           </div>
         </label>
@@ -332,10 +332,10 @@
         </label>
 
         <label class="flex items-start gap-2.5 p-2.5 rounded-lg bg-white border border-slate-200 cursor-pointer hover:bg-blue-50/50">
-          <input type="checkbox" data-points="13" class="mt-1 custom-slider" onchange="calcMaturityScore()">
+          <input type="checkbox" data-points="10" class="mt-1 custom-slider" onchange="calcMaturityScore()">
           <div>
-            <strong class="text-slate-900">Sovereign CMEK 1-Click Cryptographic Purge (+13 pts)</strong>
-            <p class="text-xs text-slate-500">Per-tenant Cloud KMS key destruction locking data plane within 150ms.</p>
+            <strong class="text-slate-900">Sovereign CMEK 1-Click Cryptographic Purge (+10 pts)</strong>
+            <p class="text-xs text-slate-500">Per-tenant Cloud KMS key revocation (&lt;60s KMS propagation SLA, up to minutes) + &lt;5s local Valkey cache purge.</p>
           </div>
         </label>
       </div>
@@ -368,11 +368,11 @@
           <div class="space-y-1">
             <div class="flex justify-between text-xs text-slate-500 gap-4">
               <span>Raw CVSS: <strong class="text-rose-600 font-mono">8.6 (High)</strong></span>
-              <span>Residual: <strong class="text-emerald-600 font-mono">0.6 (Deflected)</strong></span>
+              <span>Residual: <strong class="text-emerald-600 font-mono">2.4 (Low)</strong></span>
             </div>
             <div class="w-48 h-2 bg-slate-200 rounded-full overflow-hidden flex">
-              <div class="bg-rose-500 h-full w-[86%]"></div>
-              <div class="bg-emerald-500 h-full w-[14%]"></div>
+              <div class="bg-rose-500 h-full w-[76%]"></div>
+              <div class="bg-emerald-500 h-full w-[24%]"></div>
             </div>
           </div>
           <button type="button" id="btn-replay-atlas-01" onclick="replayScenarioInPortal('sim3')" class="px-3 py-1.5 text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition whitespace-nowrap">
@@ -394,7 +394,7 @@
           <div class="space-y-1">
             <div class="flex justify-between text-xs text-slate-500 gap-4">
               <span>Raw CVSS: <strong class="text-rose-600 font-mono">9.1 (Crit)</strong></span>
-              <span>Residual: <strong class="text-emerald-600 font-mono">0.0 (Zero Bleed)</strong></span>
+              <span>Residual: <strong class="text-emerald-600 font-mono">0.0 (None)</strong></span>
             </div>
             <div class="w-48 h-2 bg-slate-200 rounded-full overflow-hidden flex">
               <div class="bg-rose-500 h-full w-[91%]"></div>
@@ -420,11 +420,11 @@
           <div class="space-y-1">
             <div class="flex justify-between text-xs text-slate-500 gap-4">
               <span>Raw CVSS: <strong class="text-rose-600 font-mono">7.5 (High)</strong></span>
-              <span>Residual: <strong class="text-emerald-600 font-mono">1.1 (Throttled 429)</strong></span>
+              <span>Residual: <strong class="text-emerald-600 font-mono">2.7 (Low)</strong></span>
             </div>
             <div class="w-48 h-2 bg-slate-200 rounded-full overflow-hidden flex">
-              <div class="bg-rose-500 h-full w-[75%]"></div>
-              <div class="bg-emerald-500 h-full w-[25%]"></div>
+              <div class="bg-rose-500 h-full w-[64%]"></div>
+              <div class="bg-emerald-500 h-full w-[36%]"></div>
             </div>
           </div>
           <button type="button" id="btn-replay-atlas-03" onclick="replayScenarioInPortal('sim4')" class="px-3 py-1.5 text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition whitespace-nowrap">
@@ -517,15 +517,15 @@
   </section>
 
   <!-- ========================================================================= -->
-  <!-- MOCK 5: ORTHOGONAL MULTI-MODEL LLM-AS-A-JUDGE EVALUATION MATRIX -->
+  <!-- MOCK 5: DUAL-MODEL VERTEX AI GEMINI 2.5 JUDGE EVALUATION MATRIX -->
   <!-- ========================================================================= -->
   <section id="mock-llm-judge" class="mock-section hidden bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-sm">
     <div class="border-b border-slate-200 pb-4 mb-6">
       <div class="flex items-center justify-between flex-wrap gap-2">
-        <h2 class="text-xl md:text-2xl font-bold text-slate-900">Mockup 5: Orthogonal Multi-Model LLM-as-a-Judge Matrix</h2>
-        <span class="text-xs bg-cyan-50 text-cyan-700 font-bold px-3 py-1 rounded-full border border-cyan-200">10/10 Live Vertex AI HTTP 200 Receipts (99.97 / 100)</span>
+        <h2 class="text-xl md:text-2xl font-bold text-slate-900">Mockup 5: Dual-Model Vertex AI Gemini 2.5 Judge Matrix (Same-Family Pro + Flash)</h2>
+        <span class="text-xs bg-cyan-50 text-cyan-700 font-bold px-3 py-1 rounded-full border border-cyan-200">10/10 Live Vertex AI HTTP 200 Receipts (99.94 / 100)</span>
       </div>
-      <p class="text-sm text-slate-600 mt-1">Cross-model evaluation across 6 rubric dimensions independently scored on WS1–WS5 by Vertex AI <code>gemini-2.5-flash</code> and <code>gemini-2.5-pro</code> (<code>docs/multi_model_llm_judge_evaluation_receipt.json</code>).</p>
+      <p class="text-sm text-slate-600 mt-1">Same-family dual-tier evaluation across 6 weighted rubric dimensions independently scored on WS1–WS5 by Vertex AI <code>gemini-2.5-flash</code> (99.94) and <code>gemini-2.5-pro</code> (99.94) (<code>docs/multi_model_llm_judge_evaluation_receipt.json</code>).</p>
     </div>
 
     <div class="overflow-x-auto">
@@ -592,9 +592,9 @@
           <tr class="bg-slate-50 border-t-2 border-slate-200 font-bold">
             <td class="py-3 px-4 text-slate-900">Overall Consensus Mean (WS1–WS5 &bull; 10 Live Calls)</td>
             <td class="py-3 px-4 font-mono text-slate-700">100%</td>
-            <td class="py-3 px-4 font-mono text-blue-800">100.00 / 100</td>
+            <td class="py-3 px-4 font-mono text-blue-800">99.94 / 100</td>
             <td class="py-3 px-4 font-mono text-indigo-800">99.94 / 100</td>
-            <td class="py-3 px-4 font-mono text-emerald-700">99.97 / 100 (&Delta; 0.06%)</td>
+            <td class="py-3 px-4 font-mono text-emerald-700">99.94 / 100 (&Delta; 0.00%)</td>
             <td class="py-3 px-4"><a href="/docs/multi_model_llm_judge_evaluation_receipt.json" target="_blank" rel="noopener" class="text-xs font-semibold text-emerald-700 hover:underline">JSON Receipt &nearr;</a></td>
           </tr>
         </tbody>
@@ -741,60 +741,84 @@
 
     const JUDGE_REASONING_DATA = [
       {
-        title: '1. Terminology & Systems Primitives Accuracy (20% Weight)',
-        flash: '100.0 / 100',
-        pro: '100.0 / 100',
-        delta: '0.0%',
-        proNote: 'Gemini 2.5 Pro: "Exceptional grounding of architectural concepts in specific code files (e.g., runtime_pipeline.py), line-number citations, and classical OS/distributed-systems analogies to clarify complex agentic AI primitives."',
-        flashNote: 'Gemini 2.5 Flash: "Comprehensive and rigorous definition of core terminology across WS1–WS5, framing RFC 8693 token exchange, RFC 9449 DPoP sender-constraint, and PostgreSQL FORCE ROW LEVEL SECURITY with zero ambiguity."',
-        meta: 'Vertex AI us-central1 • HTTP 200 OK • Response IDs: 3SLnarOOKoe_48APwaziyAs (Pro), 5SLnauDhM_mJ48APpu3lgA0 (Flash)'
+            "title": "1. Terminology & Systems Primitives Accuracy (20% Weight)",
+            "flash": "100.0 / 100",
+            "pro": "100.0 / 100",
+            "delta": "0.0%",
+            "proResponseId": "3SLnarOOKoe_48APwaziyAs",
+            "flashResponseId": "5SLnauDhM_mJ48APpu3lgA0",
+            "proVerbatim": "Rigorous pedagogical structure using a Macro-to-Micro (L1-L4) decomposition and classical OS/distributed-systems analogies to clarify complex agentic AI primitives.",
+            "flashVerbatim": "Exceptional clarity and rigor in defining core terminology with classical systems analogies, making complex concepts immediately accessible.",
+            "proNote": "Gemini 2.5 Pro (WS1): \"Rigorous pedagogical structure using a Macro-to-Micro (L1-L4) decomposition and classical OS/distributed-systems analogies to clarify complex agentic AI primitives.\"",
+            "flashNote": "Gemini 2.5 Flash (WS1): \"Exceptional clarity and rigor in defining core terminology with classical systems analogies, making complex concepts immediately accessible.\"",
+            "meta": "Vertex AI us-central1 \u2022 HTTP 200 OK \u2022 Response IDs: 3SLnarOOKoe_48APwaziyAs (Pro WS1), 5SLnauDhM_mJ48APpu3lgA0 (Flash WS1)"
       },
       {
-        title: '2. Pedagogical Flow & 5-Hop Context Bridges (15% Weight)',
-        flash: '99.6 / 100',
-        pro: '100.0 / 100',
-        delta: '0.4%',
-        proNote: 'Gemini 2.5 Pro: "The document masterfully uses the C4 model for a macro-to-micro deep dive (L1–L4) and provides explicit 5-Hop context bridges with zero cold transitions."',
-        flashNote: 'Gemini 2.5 Flash: "Scored 100/100 on WS1–WS4 and 98/100 on WS5 (mean 99.6/100), noting seamless macro-to-micro transitions from the 2-Question Decision Tree into runtime enforcement."',
-        meta: 'Vertex AI us-central1 • HTTP 200 OK • Response IDs: 3SLnasTOKtC248APmZGtgQw (Pro), 5yLnauLRIbGS48AP8IGg0Qk (Flash)'
+            "title": "2. Pedagogical Flow & 5-Hop Context Bridges (15% Weight)",
+            "flash": "99.6 / 100",
+            "pro": "100.0 / 100",
+            "delta": "0.4%",
+            "proResponseId": "3SLnarfsKfmJ48APpu3lgA0",
+            "flashResponseId": "5yLnauLRIbGS48AP8IGg0Qk",
+            "proVerbatim": "Pedagogical Rigor & Depth: The document masterfully uses the C4 model for a macro-to-micro deep dive, explains complex primitives with classical CS/OS analogies, and provides explicit context bridges, making a dense topic accessible without sacrificing technical precision.",
+            "flashVerbatim": "Exceptional pedagogical flow, guiding the reader seamlessly from macro-level executive decisions to micro-level C4 architectural details, with explicit 5-Hop context bridges and zero cold transitions.",
+            "proNote": "Gemini 2.5 Pro (WS2): \"Pedagogical Rigor & Depth: The document masterfully uses the C4 model for a macro-to-micro deep dive, explains complex primitives with classical CS/OS analogies, and provides explicit context bridges, making a dense topic accessible without sacrificing technical precision.\"",
+            "flashNote": "Gemini 2.5 Flash (WS5, 98/100 dimension score): \"Exceptional pedagogical flow, guiding the reader seamlessly from macro-level executive decisions to micro-level C4 architectural details, with explicit 5-Hop context bridges and zero cold transitions.\"",
+            "meta": "Vertex AI us-central1 \u2022 HTTP 200 OK \u2022 Response IDs: 3SLnarfsKfmJ48APpu3lgA0 (Pro WS2), 5yLnauLRIbGS48AP8IGg0Qk (Flash WS5)"
       },
       {
-        title: '3. Visual 1:1 Callout Badge & Code Grounding (20% Weight)',
-        flash: '100.0 / 100',
-        pro: '100.0 / 100',
-        delta: '0.0%',
-        proNote: 'Gemini 2.5 Pro: "Unanimous 100/100 across all 5 canonical blogs: all 7/7 numbered Figure 1 badges map 1:1 to explicit prose callouts, sub-phases (3a/3b, 4a/4b, 5a/5b), and exact runtime_pipeline.py line ranges."',
-        flashNote: 'Gemini 2.5 Flash: "Meticulous visual grounding of architectural diagrams, with every numbered callout bound to diagram labels and executable Terraform/Python modules."',
-        meta: 'Vertex AI us-central1 • HTTP 200 OK • Response IDs: 3SLnarfsKfmJ48APpu3lgA0 (Pro), 5yLnauLRIbGS48AP8IGg0Qk (Flash)'
+            "title": "3. Visual 1:1 Callout Badge & Code Grounding (20% Weight)",
+            "flash": "100.0 / 100",
+            "pro": "100.0 / 100",
+            "delta": "0.0%",
+            "proResponseId": "3SLnavXjKfmJ48APpu3lgA0",
+            "flashResponseId": "5yLnauLRIbGS48AP8IGg0Qk",
+            "proVerbatim": "Comprehensive Asset Parity: The document demonstrates perfect parity between the text, diagrams (with 1:1 callout bindings to code), companion slide decks (via the launch matrix), and the underlying codebase, creating a cohesive and fully-integrated set of assets.",
+            "flashVerbatim": "Flawless 1:1 visual grounding, meticulously binding all 7 diagram badge labels to their corresponding callout steps, resolving sub-phases (3a/3b, 4a/4b, 5a/5b), and providing precise `runtime_pipeline.py` line range citations.",
+            "proNote": "Gemini 2.5 Pro (WS3): \"Comprehensive Asset Parity: The document demonstrates perfect parity between the text, diagrams (with 1:1 callout bindings to code), companion slide decks (via the launch matrix), and the underlying codebase, creating a cohesive and fully-integrated set of assets.\"",
+            "flashNote": "Gemini 2.5 Flash (WS5): \"Flawless 1:1 visual grounding, meticulously binding all 7 diagram badge labels to their corresponding callout steps, resolving sub-phases (3a/3b, 4a/4b, 5a/5b), and providing precise `runtime_pipeline.py` line range citations.\"",
+            "meta": "Vertex AI us-central1 \u2022 HTTP 200 OK \u2022 Response IDs: 3SLnavXjKfmJ48APpu3lgA0 (Pro WS3), 5yLnauLRIbGS48AP8IGg0Qk (Flash WS5)"
       },
       {
-        title: '4. Display LaTeX & FinOps Symbol Definitions (15% Weight)',
-        flash: '100.0 / 100',
-        pro: '99.6 / 100',
-        delta: '0.4%',
-        proNote: 'Gemini 2.5 Pro: "Scored 98/100 on WS1 and 100/100 on WS2–WS5 (mean 99.6/100). Noted that in WS1 Performance optimization, the Architectural Grounding Boundary callout appeared after the summary table rather than immediately after the Where: block."',
-        flashNote: 'Gemini 2.5 Flash: "100/100 across WS1–WS5: display LaTeX $$...$$ equations are paired with bulleted Where: symbol/unit legends and explicit FinOps grounding boundaries."',
-        meta: 'Vertex AI us-central1 • HTTP 200 OK • Response IDs: 3SLnarOOKoe_48APwaziyAs (Pro), 5SLnauDhM_mJ48APpu3lgA0 (Flash)'
+            "title": "4. Display LaTeX & FinOps Symbol Definitions (15% Weight)",
+            "flash": "100.0 / 100",
+            "pro": "99.6 / 100",
+            "delta": "0.4%",
+            "proResponseId": "3SLnarOOKoe_48APwaziyAs",
+            "flashResponseId": "5yLnauLRIbGS48AP8IGg0Qk",
+            "proVerbatim": "A minor deviation in the 'Performance optimization' section: the 'Architectural Grounding Boundary' callout is placed after the subsequent table, not immediately following the LaTeX formula's 'Where:' block as per the strictest interpretation of the rubric.",
+            "flashVerbatim": "Perfect adherence to quantitative formula presentation standards, utilizing display LaTeX `$$...$$` immediately followed by bulleted `Where:` symbol/unit legends and `Architectural Grounding Boundary` callouts.",
+            "proNote": "Gemini 2.5 Pro (WS1, 98/100 dimension score): \"A minor deviation in the 'Performance optimization' section: the 'Architectural Grounding Boundary' callout is placed after the subsequent table, not immediately following the LaTeX formula's 'Where:' block as per the strictest interpretation of the rubric.\"",
+            "flashNote": "Gemini 2.5 Flash (WS5): \"Perfect adherence to quantitative formula presentation standards, utilizing display LaTeX `$$...$$` immediately followed by bulleted `Where:` symbol/unit legends and `Architectural Grounding Boundary` callouts.\"",
+            "meta": "Vertex AI us-central1 \u2022 HTTP 200 OK \u2022 Response IDs: 3SLnarOOKoe_48APwaziyAs (Pro WS1), 5yLnauLRIbGS48AP8IGg0Qk (Flash WS5)"
       },
       {
-        title: '5. Production Code & 10-SaaS Multi-Cloud Evidence (15% Weight)',
-        flash: '100.0 / 100',
-        pro: '100.0 / 100',
-        delta: '0.0%',
-        proNote: 'Gemini 2.5 Pro: "Unprecedented level of verifiable evidence through the 10-SaaS multi-cloud verification matrix, complete with links to AWS S3 audit ledgers, Terraform blueprints, and genuine before-and-after UI proofs."',
-        flashNote: 'Gemini 2.5 Flash: "Strong evidence of production-grade executable artifacts (core-cymbal-agent/, Terraform, deploy_1click.sh) verified across all 3 tenancy patterns."',
-        meta: 'Vertex AI us-central1 • HTTP 200 OK • Response IDs: 3SLnarfsKfmJ48APpu3lgA0 (Pro), 5SLnauDhM_mJ48APpu3lgA0 (Flash)'
+            "title": "5. Production Code & 10-SaaS Multi-Cloud Evidence (15% Weight)",
+            "flash": "100.0 / 100",
+            "pro": "100.0 / 100",
+            "delta": "0.0%",
+            "proResponseId": "3SLnarOOKoe_48APwaziyAs",
+            "flashResponseId": "5yLnauLRIbGS48AP8IGg0Qk",
+            "proVerbatim": "Unprecedented level of verifiable evidence through the 10-SaaS multi-cloud verification matrix, complete with links to live AWS S3 audit ledgers and genuine before-and-after UI screenshots.",
+            "flashVerbatim": "Extensive evidence of production-grade code grounding, referencing executable artifacts (`core-cymbal-agent/`, `terraform/`, `deploy_1click.sh`), and a highly detailed 10-SaaS Multi-Cloud verification matrix with live audit links and genuine UI proofs.",
+            "proNote": "Gemini 2.5 Pro (WS1): \"Unprecedented level of verifiable evidence through the 10-SaaS multi-cloud verification matrix, complete with links to live AWS S3 audit ledgers and genuine before-and-after UI screenshots.\"",
+            "flashNote": "Gemini 2.5 Flash (WS5): \"Extensive evidence of production-grade code grounding, referencing executable artifacts (`core-cymbal-agent/`, `terraform/`, `deploy_1click.sh`), and a highly detailed 10-SaaS Multi-Cloud verification matrix with live audit links and genuine UI proofs.\"",
+            "meta": "Vertex AI us-central1 \u2022 HTTP 200 OK \u2022 Response IDs: 3SLnarOOKoe_48APwaziyAs (Pro WS1), 5yLnauLRIbGS48AP8IGg0Qk (Flash WS5)"
       },
       {
-        title: '6. Well-Architected & 34-Slide Launch Parity (15% Weight)',
-        flash: '100.0 / 100',
-        pro: '100.0 / 100',
-        delta: '0.0%',
-        proNote: 'Gemini 2.5 Pro: "Comprehensive integration of all 5 Google Cloud Well-Architected Framework pillars and a Slide Launch Matrix ensuring 1:1 parity across 34-slide decks, Google Docs, and runnable codebase modules."',
-        flashNote: 'Gemini 2.5 Flash: "100/100 across all 5 workstreams: complete coverage of Security, Reliability, Cost Optimization, Operational Excellence, and Performance Efficiency."',
-        meta: 'Vertex AI us-central1 • HTTP 200 OK • Response IDs: 3SLnasTOKtC248APmZGtgQw (Pro), 5yLnauLRIbGS48AP8IGg0Qk (Flash)'
+            "title": "6. Well-Architected & 34-Slide Launch Parity (15% Weight)",
+            "flash": "100.0 / 100",
+            "pro": "100.0 / 100",
+            "delta": "0.0%",
+            "proResponseId": "3SLnarOOKoe_48APwaziyAs",
+            "flashResponseId": "5yLnauLRIbGS48AP8IGg0Qk",
+            "proVerbatim": "Comprehensive integration of the Google Cloud Well-Architected Framework and a 'Slide Launch Matrix' that ensures perfect parity across the entire suite of assets (slides, documents, code).",
+            "flashVerbatim": "Complete coverage of all 5 Google Cloud Well-Architected Framework pillars and a comprehensive Slide Launch Matrix, ensuring full parity between documentation and presentation assets.",
+            "proNote": "Gemini 2.5 Pro (WS1): \"Comprehensive integration of the Google Cloud Well-Architected Framework and a 'Slide Launch Matrix' that ensures perfect parity across the entire suite of assets (slides, documents, code).\"",
+            "flashNote": "Gemini 2.5 Flash (WS5): \"Complete coverage of all 5 Google Cloud Well-Architected Framework pillars and a comprehensive Slide Launch Matrix, ensuring full parity between documentation and presentation assets.\"",
+            "meta": "Vertex AI us-central1 \u2022 HTTP 200 OK \u2022 Response IDs: 3SLnarOOKoe_48APwaziyAs (Pro WS1), 5yLnauLRIbGS48AP8IGg0Qk (Flash WS5)"
       }
-    ];
+];
 
     function openJudgeReasoningModal(idx) {
       const item = JUDGE_REASONING_DATA[idx] || JUDGE_REASONING_DATA[0];

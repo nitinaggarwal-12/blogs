@@ -447,13 +447,16 @@ def execute_custom_sandbox_turn(payload: Dict[str, Any]) -> Dict[str, Any]:
         live_gcp_telemetry = probe_live_gcp_kms()
         kms_verified = bool(live_gcp_telemetry.get("verified"))
 
-    execution_time = policy_eval_ms
-    if kms_verified and live_gcp_telemetry and live_gcp_telemetry.get("latency_ms"):
-        execution_time = round(policy_eval_ms + float(live_gcp_telemetry["latency_ms"]), 2)
+    kms_probe_latency_ms = (
+        round(float(live_gcp_telemetry["latency_ms"]), 2)
+        if (kms_verified and live_gcp_telemetry and live_gcp_telemetry.get("latency_ms"))
+        else 0.0
+    )
 
     return {
-        "execution_ms": execution_time,
+        "execution_ms": policy_eval_ms,
         "policy_eval_ms": policy_eval_ms,
+        "kms_probe_latency_ms": kms_probe_latency_ms,
         "isLiveLlmCall": False,
         "execution_mode": (
             "LIVE_GCP_KMS_VERIFIED_PLUS_IN_MEMORY_POLICY"
@@ -1341,9 +1344,17 @@ PAYG_SAAS_CATALOG: list[dict[str, Any]] = [
 # =============================================================================
 VERIFIED_IAP_ADMIN_EMAILS = frozenset(
     e.strip().lower()
-    for e in os.environ.get("GEAP_IAP_ADMIN_EMAILS", "nitinagga@google.com").split(",")
+    for e in os.environ.get("GEAP_IAP_ADMIN_EMAILS", "").split(",")
     if e.strip()
 )
+
+
+def _is_verified_admin_iap_email(iap_email: str) -> bool:
+    if not iap_email:
+        return False
+    if VERIFIED_IAP_ADMIN_EMAILS:
+        return iap_email in VERIFIED_IAP_ADMIN_EMAILS
+    return iap_email.endswith("@google.com")
 
 BLOCKED_SENSITIVE_SUFFIXES = (
     ".env",
@@ -1384,6 +1395,7 @@ PAYG_ALLOWED_HTTPS_HOSTS_EXACT = frozenset(
         "api.clickhouse.cloud",
         "cloud.mongodb.com",
         "api.confluent.cloud",
+        "developer.servicenow.com",
     }
 )
 PAYG_ALLOWED_HTTPS_HOST_SUFFIXES = (
@@ -1848,11 +1860,11 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 "",
                 "Missing verified Google Cloud IAP header (X-Goog-Authenticated-User-Email). Admin IAP authentication is required [FA-09].",
             )
-        if iap_email not in VERIFIED_IAP_ADMIN_EMAILS:
+        if not _is_verified_admin_iap_email(iap_email):
             return (
                 False,
                 iap_email,
-                f"Authenticated IAP user '{iap_email}' is not in VERIFIED_IAP_ADMIN_EMAILS [FA-09].",
+                f"Authenticated IAP user '{iap_email}' is not authorized as an IAP Admin [FA-09].",
             )
         return (True, iap_email, "verified_iap_admin")
 
@@ -1865,15 +1877,13 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 "",
                 str(body_dict.get("actorName") or body_dict.get("authorName") or body_dict.get("userName") or "").strip(),
             )[:80]
-            if iap_email == "nitinagga@google.com":
-                name = "Nitin Aggarwal"
-            elif raw_name:
+            if raw_name:
                 name = raw_name
             else:
                 name = iap_email.split("@")[0].replace(".", " ").replace("_", " ").title() or "Verified User"
             role = (
-                "Principal Cloud Architect (IAP Verified Admin)"
-                if iap_email in VERIFIED_IAP_ADMIN_EMAILS
+                "Cloud Architecture Admin (IAP Verified)"
+                if _is_verified_admin_iap_email(iap_email)
                 else "Authenticated Viewer (IAP Verified)"
             )
             return name, iap_email, role
@@ -1913,10 +1923,10 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             raw_role = "Unverified Session Reviewer"
         else:
             safe_email = raw_email
-            if "nitin" in raw_name.lower() or "admin" in raw_role.lower():
+            if any(tok in raw_name.lower() for tok in ("admin", "principal", "google")) or "admin" in raw_role.lower():
                 raw_name = "External Reviewer (Unverified)"
                 raw_role = "Unverified Session Reviewer"
-        if not raw_name or raw_name.lower() in ("nitin aggarwal", "nitin a."):
+        if not raw_name:
             safe_name = "Guest Reviewer"
         else:
             safe_name = raw_name
@@ -2354,22 +2364,27 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 200,
                 {
                     "ok": True,
+                    "isLiveLlmCall": False,
                     "mode": _CURRENT_EXECUTION_MODE,
                     "gcp_credentials_available": token is not None,
-                    "service_account": "248990048888-compute@developer.gserviceaccount.com" if token else "offline_or_local",
+                    "service_account": (
+                        "248990048888-compute@developer.gserviceaccount.com"
+                        if (token and os.environ.get("K_SERVICE"))
+                        else ("local_adc_credentials" if token else "offline_or_local")
+                    ),
                     "project_id": "ramp-portal-dev",
                     "supported_modes": [
                         {
                             "id": "IN_MEMORY",
                             "name": "In-Memory Deterministic Policy Simulation (<10ms)",
-                            "description": "Zero Cloud Latency, 5-Hop Cryptographic Guardrails, Offline Capable",
+                            "description": "Zero Cloud Latency, 5-Hop Cryptographic Guardrails, Offline Capable (isLiveLlmCall: false)",
                             "latency_guarantee": "<10ms (In-Memory Policy Engine)",
                         },
                         {
                             "id": "LIVE_GCP",
-                            "name": "Live Cloud KMS & BigQuery Execution (Live GCP APIs)",
-                            "description": "Live Google Cloud APIs in ramp-portal-dev, IAM Verified Token, Live Cloud KMS Key Checks",
-                            "latency_guarantee": "150-350ms (Cloud KMS Roundtrip)",
+                            "name": "Live Cloud KMS KeyRing Probe + In-Memory 5-Hop Policy",
+                            "description": "Live Cloud KMS KeyRing GET probe in ramp-portal-dev + Deterministic In-Memory 5-Hop Policy Engine (isLiveLlmCall: false)",
+                            "latency_guarantee": "150-350ms KMS Probe + <10ms In-Memory Policy",
                         },
                     ],
                 },
@@ -2439,14 +2454,17 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         if path == "/api/saas-5-matrix":
             saas_file = ROOT_DIR / "docs/third_party_5_saas_verification_receipt.json"
             if saas_file.is_file():
-                self._send_json(200, json.loads(saas_file.read_text(encoding="utf-8")))
+                payload_obj = json.loads(saas_file.read_text(encoding="utf-8"))
+                if isinstance(payload_obj, dict):
+                    payload_obj.setdefault("isLiveLlmCall", False)
+                self._send_json(200, payload_obj)
             else:
                 mcp = saas_mcp_mod.Enterprise5ThirdPartySaaSMCP()
                 matrix = {
                     p: mcp.execute_10_saas_end_to_end_for_pattern(p, include_live_probes=False)
                     for p in ("PATTERN_A_POOLED", "PATTERN_B_SOVEREIGN_SILO", "PATTERN_C_HYBRID_PSC_SPOKE")
                 }
-                self._send_json(200, {"ok": True, "pattern_e2e_matrix": matrix})
+                self._send_json(200, {"ok": True, "isLiveLlmCall": False, "pattern_e2e_matrix": matrix})
             return
 
         if path == "/api/saas-5-live-verify":
@@ -2521,6 +2539,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 and bool(pattern_summaries["PATTERN_B_SOVEREIGN_SILO"].get("kms21Cfr11Signed"))
             )
             receipt_obj = {
+                "isLiveLlmCall": False,
                 "verifiedAtUtc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                 "service": os.environ.get("K_SERVICE", "ge-blogs"),
                 "revision": os.environ.get("K_REVISION", "local"),
@@ -3743,6 +3762,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 warmup_detected = False
                 last_error = None
                 attempt_count = 0
+                resp_content_type = ""
 
                 for attempt in range(1, max_retries + 1):
                     attempt_count = attempt
@@ -3755,6 +3775,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                         test_req = urllib.request.Request(v_detail, headers=req_hdrs, method="GET")
                         with safe_opener.open(test_req, timeout=curr_timeout) as t_resp:
                             resp_status = t_resp.status
+                            resp_content_type = str(t_resp.headers.get("Content-Type", "")).lower()
                             connected = True
                             if attempt > 1:
                                 warmup_detected = True
@@ -3775,6 +3796,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                         return
                     except urllib.error.HTTPError as he:
                         resp_status = he.code
+                        resp_content_type = str(he.headers.get("Content-Type", "")).lower() if he.headers else ""
                         connected = True
                         if attempt > 1:
                             warmup_detected = True
@@ -3790,17 +3812,35 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
                 lat_ms = round((time.time() - t_start) * 1000, 1)
                 if connected:
-                    is_auth_needed = resp_status in (401, 403)
-                    status_name = "HOST_REACHED_AUTH_REQUIRED" if is_auth_needed else ("CONNECTED" if resp_status < 400 else "HTTP_ERROR")
-                    msg = (
-                        f"Successfully connected to {service_id} (Container warmed up on attempt {attempt_count}/3) in {lat_ms}ms"
-                        if warmup_detected
-                        else f"Successfully connected to {service_id} HTTPS endpoint in {lat_ms}ms"
+                    is_html_login = ("text/html" in resp_content_type) and not bool(api_token)
+                    is_auth_needed = (resp_status in (401, 403)) or is_html_login
+                    is_authenticated_ok = bool(resp_status < 400 and not is_auth_needed)
+                    status_name = (
+                        "TLS_HOST_REACHED_AUTH_REQUIRED"
+                        if is_auth_needed
+                        else ("AUTHENTICATED_CONNECTED" if resp_status < 400 else "HTTP_ERROR")
                     )
+                    if is_auth_needed:
+                        msg = (
+                            f"TLS handshake succeeded for {service_id} in {lat_ms}ms (HTTP {resp_status}), "
+                            f"but API credentials / Bearer token are required for authenticated data access."
+                        )
+                    elif is_authenticated_ok:
+                        msg = (
+                            f"Authenticated API probe succeeded for {service_id} (warmed in attempt {attempt_count}/3) in {lat_ms}ms"
+                            if warmup_detected
+                            else f"Authenticated API probe succeeded for {service_id} HTTPS endpoint in {lat_ms}ms"
+                        )
+                    else:
+                        msg = f"TLS host reached for {service_id} in {lat_ms}ms, upstream returned HTTP {resp_status}."
                     self._send_json(
                         200,
                         {
-                            "ok": True,
+                            "ok": is_authenticated_ok,
+                            "tls_reachable": True,
+                            "authenticated": is_authenticated_ok,
+                            "auth_required": is_auth_needed,
+                            "content_type": resp_content_type,
                             "service_id": service_id,
                             "status": status_name,
                             "http_status": resp_status,
@@ -4514,7 +4554,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                     ]
                     pat_res["saas_e2e_results"] = filtered
                     pat_res["filtered_slug"] = resolved_slug
-                self._send_json(200, {"ok": True, "pattern": norm_pattern, "result": pat_res})
+                self._send_json(200, {"ok": True, "isLiveLlmCall": False, "pattern": norm_pattern, "result": pat_res})
                 return
 
             if path == "/api/simulate/scenario":

@@ -7,7 +7,7 @@
         </div>
         <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
           <a href="/" class="sim-btn primary" style="text-decoration:none;">&larr; Back to Main Architecture Portal (/)</a>
-          <button type="button" class="sim-btn" onclick="toggleCommentsDrawer()">&#128172; Open Google Docs / Slides Comments Drawer (<span id="chg-btn-comments-count">2</span>)</button>
+          <button type="button" class="sim-btn" onclick="toggleCommentsDrawer()">&#128172; Open Google Docs / Slides Comments Drawer (<span id="chg-btn-comments-count">0</span>)</button>
           <button type="button" class="sim-btn" onclick="exportChangeLogCsv()">&#11015; Export CSV</button>
           <button type="button" class="sim-btn" onclick="exportChangeLogJson()">&#11015; Export JSON</button>
           <button type="button" class="sim-btn" onclick="fetchAndRenderChangeLog()">&#128260; Refresh Log</button>
@@ -18,22 +18,22 @@
       <div class="grid-4" style="margin-bottom:14px;" data-no-hover-toolbar="true">
         <div class="card" style="margin-bottom:0; padding:12px 14px;" data-no-hover-toolbar="true">
           <div class="muted" style="font-size:11px; font-weight:700; text-transform:uppercase;">Total Logged Actions</div>
-          <div id="chg-kpi-total" style="font-size:24px; font-weight:800; color:var(--link); margin-top:2px;">3</div>
+          <div id="chg-kpi-total" style="font-size:24px; font-weight:800; color:var(--link); margin-top:2px;">0</div>
           <div class="muted text-xs-plus">Persisted in <code>docs/portal_change_log.json</code></div>
         </div>
         <div class="card" style="margin-bottom:0; padding:12px 14px;" data-no-hover-toolbar="true">
           <div class="muted" style="font-size:11px; font-weight:700; text-transform:uppercase;">Content &amp; Card Mutations</div>
-          <div id="chg-kpi-cards" style="font-size:24px; font-weight:800; color:#0d9488; margin-top:2px;">1</div>
+          <div id="chg-kpi-cards" style="font-size:24px; font-weight:800; color:#0d9488; margin-top:2px;">0</div>
           <div class="muted text-xs-plus">Edit &bull; Save &bull; Add &bull; Delete &bull; Hide &bull; Clone</div>
         </div>
         <div class="card" style="margin-bottom:0; padding:12px 14px;" data-no-hover-toolbar="true">
           <div class="muted" style="font-size:11px; font-weight:700; text-transform:uppercase;">Draw.io Diagram Saves</div>
-          <div id="chg-kpi-diagrams" style="font-size:24px; font-weight:800; color:#7c3aed; margin-top:2px;">1</div>
+          <div id="chg-kpi-diagrams" style="font-size:24px; font-weight:800; color:#7c3aed; margin-top:2px;">0</div>
           <div class="muted text-xs-plus">Online <code>.drawio</code> XML commits</div>
         </div>
         <div class="card" style="margin-bottom:0; padding:12px 14px;" data-no-hover-toolbar="true">
           <div class="muted" style="font-size:11px; font-weight:700; text-transform:uppercase;">Multi-User Section Comments</div>
-          <div id="chg-kpi-comments" style="font-size:24px; font-weight:800; color:#d97706; margin-top:2px;">2 Threads (3 Comments)</div>
+          <div id="chg-kpi-comments" style="font-size:24px; font-weight:800; color:#d97706; margin-top:2px;">0 Threads (0 Comments)</div>
           <div class="muted text-xs-plus">Google Docs &amp; Slides style threads</div>
         </div>
       </div>

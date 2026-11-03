@@ -886,7 +886,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Yellow Zone (FinVault 3LO Execution)',
         title: 'FinVault Workspace, Jira & Private Agent Alpha',
         logicalNarrative:
-          'For FinVault, the runtime invokes `google_workspace_jira_3lo_mcp.py` (fetching Drive runbooks and Jira tickets) and permits model hot-swapping on private `Agent Alpha` (`gemini-2.5-pro-dedicated` Provisioned Throughput ↔ shared Pay-As-You-Go `gemini-2.5-pro`).',
+          'For FinVault, the runtime invokes `google_workspace_jira_3lo_mcp.py` (fetching Drive runbooks and Jira tickets) and permits model hot-swapping on private `Agent Alpha` (`gemini-2.5-pro` (`X-Vertex-AI-LLM-Request-Type: dedicated`) Provisioned Throughput ↔ shared Pay-As-You-Go `gemini-2.5-pro`).',
         components: 'FinVault 3LO MCP • Private Agent Alpha Model Hot-Swap',
       },
       {
@@ -959,7 +959,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'Private Agent Alpha CLI',
         route: 'Vertex AI Agent Engine & Model Garden (Yellow Zone)',
         protocolAndMechanism:
-          'Allows FinVault to provision `FinVaultPrivateAgentAlpha` via `gcloud alpha agents` CLI and hot-swap between `gemini-2.5-pro-dedicated` and `gemini-2.5-pro`.',
+          'Allows FinVault to provision `FinVaultPrivateAgentAlpha` via `gcloud alpha agents` CLI and hot-swap between `gemini-2.5-pro` (`X-Vertex-AI-LLM-Request-Type: dedicated`) and shared PayGo `gemini-2.5-pro`.',
         codeAndResource: 'core-cymbal-agent/agents/finvault_agent_alpha.py',
         verifiedOutcome: 'Verified F-03: FinVault hot-swap succeeds; RetailStream attempt raises PermissionError',
       },
@@ -1262,7 +1262,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Yellow Zone (Dedicated Inference)',
         title: 'Air-Gapped Gemma 3 on GKE or Provisioned Gemini',
         logicalNarrative:
-          'FinVault runs inference inside its perimeter using either air-gapped Gemma 3 (27B) on private GKE (`--internal-ip`, CMEK boot disks) or dedicated Provisioned Throughput Gemini 2.5 Pro (`gemini-2.5-pro-dedicated`).',
+          'FinVault runs inference inside its perimeter using either air-gapped Gemma 3 (27B) on private GKE (`--internal-ip`, CMEK boot disks) or dedicated Provisioned Throughput Gemini 2.5 Pro (`gemini-2.5-pro` (`X-Vertex-AI-LLM-Request-Type: dedicated`)).',
         components: 'Air-Gapped Gemma 3 27B on Private GKE • Provisioned Throughput',
       },
       {

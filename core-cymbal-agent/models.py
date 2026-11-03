@@ -54,6 +54,7 @@ class TenantProfile:
     pii_redaction_detectors: List[str]
     dedicated_project_id: str
     psc_service_attachment: Optional[str] = None
+    custom_agent_request_type: Optional[str] = None
 
 
 # Canonical Cymbal Anchor Case Study Tenants (Slides 7, 8 & 11)
@@ -84,7 +85,7 @@ TENANT_PROFILES: Dict[str, TenantProfile] = {
             "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
         ],
         primary_model="gemini-2.5-pro",
-        custom_agent_model="gemini-2.5-pro-dedicated",
+        custom_agent_model="gemini-2.5-pro",
         cmek_key_uri="projects/cymbal-finvault-silo-prod/locations/us-central1/keyRings/finvault-kr/cryptoKeys/agent-memory-cmek",
         silo_cmek_key_uri="projects/cymbal-finvault-silo-prod/locations/us-central1/keyRings/finvault-kr/cryptoKeys/agent-memory-cmek",
         system_prompt_template="FinVault Regulated Banking SRE Diagnostic Policy (OCC/FDIC Tier-1).",
@@ -104,6 +105,7 @@ TENANT_PROFILES: Dict[str, TenantProfile] = {
         pii_redaction_detectors=["US_SOCIAL_SECURITY_NUMBER", "US_BANK_ACCOUNT_NUMBER", "IBAN_CODE", "SWIFT_CODE", "EMAIL_ADDRESS"],
         dedicated_project_id="cymbal-finvault-silo-prod",
         psc_service_attachment="projects/cymbal-finvault-silo-prod/regions/us-central1/serviceAttachments/finvault-agent-spoke-psc",
+        custom_agent_request_type="dedicated",
     ),
     "retailstream": TenantProfile(
         tenant_id="retailstream",

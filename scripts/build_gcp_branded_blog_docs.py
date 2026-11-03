@@ -30,9 +30,7 @@ from typing import Any, Dict, List, Optional, Tuple
 ROOT_DIR = Path(__file__).resolve().parent.parent
 WORD_OUT_DIR = ROOT_DIR / "docs" / "word"
 MANIFEST_PATH = ROOT_DIR / "slides" / "cloud_viewer_manifest.json"
-SCRATCH_OPS_DIR = Path(
-    "/usr/local/google/home/nitinagga/.gemini/jetski/brain/2c7fde92-72d4-42ed-90f2-9fb2672c3870/scratch/gdocs_ops"
-)
+SCRATCH_OPS_DIR = Path(os.environ.get("GDOCS_SCRATCH_OPS_DIR", "/tmp/ge_blogs_gdocs_ops"))
 
 GDOCS_BIN = "/google/bin/releases/gemini-agents-gdocs/gdocs"
 GDRIVE_BIN = "/google/bin/releases/gemini-agents-gdrive/gdrive"
@@ -949,14 +947,12 @@ def refresh_cloud_viewer_manifest() -> None:
     manifest["updatedAt"] = now_iso
     serialized = json.dumps(manifest, indent=2) + "\n"
     MANIFEST_PATH.write_text(serialized, encoding="utf-8")
-    for mirror_rel in (
-        "../PromptCanvas/public/slides/cloud_viewer_manifest.json",
-        "../PromptCanvas/src/data/cloud_viewer_manifest.json",
-    ):
-        mp = (ROOT_DIR / mirror_rel).resolve()
+    extra_mirrors = [p.strip() for p in os.environ.get("WORKSPACE_MIRROR_MANIFEST_PATHS", "").split(",") if p.strip()]
+    for mirror_rel in extra_mirrors:
+        mp = Path(mirror_rel).expanduser().resolve()
         if mp.parent.is_dir():
             mp.write_text(serialized, encoding="utf-8")
-    print(f"🎉 Updated {MANIFEST_PATH.relative_to(ROOT_DIR)} (+ PromptCanvas mirrors) with verified SHA-256 & resourcekey URLs.")
+    print(f"🎉 Updated {MANIFEST_PATH.relative_to(ROOT_DIR)} with verified SHA-256 & resourcekey URLs.")
 
 
 def main() -> None:
