@@ -11,9 +11,9 @@
   <title>Gemini Enterprise Agent Platform — Multi-Tenancy Architecture &amp; Live 5-Hop Execution Portal</title>
   <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'&gt;&lt;rect width='32' height='32' rx='6' fill='%231a73e8'/&gt;&lt;text x='16' y='22' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold' font-size='18'&gt;G&lt;/text&gt;&lt;/svg&gt;" />
   <!-- Modular CSS Tokens, Layout & Components (Item 10) -->
-  <link rel="stylesheet" href="/css/tokens.css?v=20261102-v101">
-  <link rel="stylesheet" href="/css/layout.css?v=20261102-v101">
-  <link rel="stylesheet" href="/css/components.css?v=20261102-v101">
+  <link rel="stylesheet" href="/css/tokens.css?v=20261102-v102">
+  <link rel="stylesheet" href="/css/layout.css?v=20261102-v102">
+  <link rel="stylesheet" href="/css/components.css?v=20261102-v102">
 </head>
 <body>
   <script>
@@ -625,27 +625,6 @@
             flushPara(); flushFigures();
             const hText = line.slice(3);
             html += `<h2 ${buildHeadingAttrs(hText)}>${formatInline(hText)}</h2>`;
-            if (hText.trim().toLowerCase() === 'architecture' && String(docRelPath || '').includes('ws2')) {
-              html += `
-                <div class="gcp-arch-nav-strip" data-no-hover-toolbar="true" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:12px 16px; margin:16px 0 24px 0;">
-                  <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:8px;">
-                    <span style="font-size:12px; font-weight:700; color:#0f172a; text-transform:uppercase; letter-spacing:0.04em; display:inline-flex; align-items:center; gap:6px;">
-                      <span style="color:#1a73e8;">🏛️</span> 7 Architecture Topologies &amp; C4 Views:
-                    </span>
-                    <span style="font-size:11.5px; color:#64748b;">Click to jump directly to any diagram &amp; interactive flow</span>
-                  </div>
-                  <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
-                    <a href="#inline-fig-card-ws2-pattern-a-pooled-5hop-architecture" class="arch-nav-pill" style="background:#e8f0fe; color:#174ea6; font-weight:700; border-color:#aecbfa;"><span style="background:#1a73e8; color:#fff; border-radius:3px; padding:1px 5px; font-size:10px;">Primary</span> Fig 1: L2 Pooled Topology</a>
-                    <a href="#inline-fig-card-ws1-l1-logical-security-taxonomy" class="arch-nav-pill">Fig 0A: L1 System Context</a>
-                    <a href="#inline-fig-card-ws2-pattern-a-breach-defense-sequence" class="arch-nav-pill">Fig 2: Breach Defense</a>
-                    <a href="#inline-fig-card-ws2-demo-env-and-3p-auth-sandbox-topology" class="arch-nav-pill">Fig 3: 3LO Auth</a>
-                    <a href="#inline-fig-card-ws2-terraform-starter-resource-graph" class="arch-nav-pill">Fig 4: Terraform IaC</a>
-                    <a href="#inline-fig-card-ws1-l3-process-sequence-swimlane" class="arch-nav-pill">Fig 4A: L3 Sequence</a>
-                    <a href="#inline-fig-card-ws1-l4-wire-protocol-transformation" class="arch-nav-pill">Fig 4B: L4 Wire</a>
-                  </div>
-                </div>
-              `;
-            }
           } else if (line.startsWith('### ')) {
             flushPara(); flushFigures();
             const hText = line.slice(4);
@@ -3994,71 +3973,6 @@
           </div>
         `;
         h1.insertAdjacentElement('afterend', card);
-      }
-
-      // 2. Architecture 6-Pill Navigation Strip
-      const archH2 = Array.from(readerEl.querySelectorAll('h2')).find(h => {
-        const t = (h.textContent || '').toLowerCase();
-        return t === 'architecture' || t.includes('high-level architecture') || t.includes('c4 architecture');
-      });
-      if (archH2 && !document.getElementById('blog-inline-arch-pill-nav')) {
-        const archNav = document.createElement('div');
-        archNav.id = 'blog-inline-arch-pill-nav';
-        archNav.className = 'gcp-arch-nav-strip';
-        archNav.setAttribute('data-no-hover-toolbar', 'true');
-        const wsKey = (typeof activeHubWsKey !== 'undefined' ? activeHubWsKey : 'WS1') || 'WS1';
-        const ws = (typeof GUIDED_WORKSTREAMS !== 'undefined' && GUIDED_WORKSTREAMS[wsKey]) ? GUIDED_WORKSTREAMS[wsKey] : null;
-        const diagrams = (ws && Array.isArray(ws.diagrams) && ws.diagrams.length > 0) ? ws.diagrams : [];
-        const diagCount = diagrams.length || 5;
-
-        const defaultIcons = ['🏢', '🌐', '🔒', '🔄', '📜', '📊', '⚡', '🛡️'];
-        const pillsHtml = diagrams.length > 0
-          ? diagrams.map((d, idx) => {
-              const icon = defaultIcons[idx % defaultIcons.length];
-              const cleanLabel = (d.label || '').replace(/^Fig(?:ure)?\s*\d+:\s*/i, '');
-              const activeClass = idx === 0 ? ' active' : '';
-              return `<button type="button" class="arch-nav-pill${activeClass}" onclick="scrollToDiagramFigure(${idx + 1}, this)">${icon} ${idx + 1}. ${escapeHtml(cleanLabel)}</button>`;
-            }).join(' ')
-          : `
-            <button type="button" class="arch-nav-pill active" onclick="scrollToDiagramFigure(1, this)">🏢 1. L1 Logical Taxonomy</button>
-            <button type="button" class="arch-nav-pill" onclick="scrollToDiagramFigure(2, this)">🌐 2. L2 Physical Perimeters</button>
-            <button type="button" class="arch-nav-pill" onclick="scrollToDiagramFigure(3, this)">🔒 3. 5-Hop Baseline</button>
-            <button type="button" class="arch-nav-pill" onclick="scrollToDiagramFigure(4, this)">🔄 4. L3 Process Flow</button>
-            <button type="button" class="arch-nav-pill" onclick="scrollToDiagramFigure(5, this)">📜 5. L4 Wire Protocol</button>
-          `;
-
-        archNav.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; width:100%; margin-bottom:8px;">
-            <div style="display:flex; align-items:center; gap:6px;">
-              <span style="font-size:12px; font-weight:800; color:#0f172a; text-transform:uppercase; letter-spacing:0.04em;">Architecture Multi-View Switcher:</span>
-              <span class="badge badge-blue" style="font-size:10.5px;">${diagCount} Verified Blueprints</span>
-            </div>
-            <span style="font-size:11.5px; color:#64748b;">Click any diagram to jump &amp; inspect</span>
-          </div>
-          <div style="display:flex; flex-wrap:wrap; gap:6px; width:100%;">
-            ${pillsHtml}
-          </div>
-        `;
-        archH2.insertAdjacentElement('afterend', archNav);
-
-        window.scrollToDiagramFigure = function(figNum, btn) {
-          if (btn && btn.parentElement) {
-            btn.parentElement.querySelectorAll('.arch-nav-pill').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-          }
-          const cards = Array.from(readerEl.querySelectorAll('.gcp-figure-card'));
-          const target = cards[figNum - 1];
-          if (target) {
-            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            target.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
-            target.style.boxShadow = '0 0 0 3px #1a73e8';
-            target.style.borderColor = '#1a73e8';
-            setTimeout(() => {
-              target.style.boxShadow = '';
-              target.style.borderColor = '';
-            }, 1800);
-          }
-        };
       }
     };
 
