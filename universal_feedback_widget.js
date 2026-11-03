@@ -1,7 +1,7 @@
 /**
  * Universal Top-Corner Email Feedback Widget & Admin Feedback Inbox Renderer
- * Tooltip: "Give Feedback to nitinagga@google.com"
- * Strictly zero fake/synthetic data. Executive Light Theme (Rule 54) + Rigid Table Containment (Rule 26).
+ * Tooltip: "Share Architecture Portal Feedback"
+ * Strictly zero fake/synthetic data & zero personal contributor emails. Executive Light Theme (Rule 54) + Rigid Table Containment (Rule 26).
  */
 (function () {
   if (typeof window === 'undefined' || window.__UNIVERSAL_FEEDBACK_INITIALIZED__) return;
@@ -70,17 +70,46 @@
     return window.location.pathname + window.location.search + window.location.hash;
   }
 
+  var activeModalKeyHandler = null;
+  var activeAdminKeyHandler = null;
+
   function openFeedbackModal() {
     injectStyles();
     var existing = document.querySelector('[data-testid="give-feedback-modal-backdrop"]');
     if (existing) existing.remove();
+    if (activeModalKeyHandler) {
+      document.removeEventListener('keydown', activeModalKeyHandler);
+      activeModalKeyHandler = null;
+    }
 
+    var triggerEl = document.activeElement;
     var route = getCurrentRoute();
     var backdrop = document.createElement('div');
     backdrop.className = 'ufw-backdrop';
     backdrop.setAttribute('data-testid', 'give-feedback-modal-backdrop');
+
+    function closeFeedbackModal() {
+      if (activeModalKeyHandler) {
+        document.removeEventListener('keydown', activeModalKeyHandler);
+        activeModalKeyHandler = null;
+      }
+      if (backdrop.parentNode) backdrop.remove();
+      if (triggerEl && typeof triggerEl.focus === 'function') {
+        try { triggerEl.focus(); } catch (_) {}
+      }
+    }
+
+    activeModalKeyHandler = function (e) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+        closeFeedbackModal();
+      }
+    };
+    document.addEventListener('keydown', activeModalKeyHandler);
+
     backdrop.addEventListener('click', function (e) {
-      if (e.target === backdrop) backdrop.remove();
+      if (e.target === backdrop) closeFeedbackModal();
     });
 
     backdrop.innerHTML =
@@ -91,7 +120,7 @@
       '        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>' +
       '      </div>' +
       '      <div style="min-width:0;">' +
-      '        <h2 id="give-feedback-modal-title" style="margin:0;font-size:16px;font-weight:800;color:#0f172a;line-height:1.3;">Give Feedback to nitinagga@google.com</h2>' +
+      '        <h2 id="give-feedback-modal-title" style="margin:0;font-size:16px;font-weight:800;color:#0f172a;line-height:1.3;">Share Architecture Portal Feedback</h2>' +
       '        <p style="margin:2px 0 0;font-size:12px;color:#475569;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">App: <strong style="color:#0f172a;">' +
       escapeHtml(APP_NAME) +
       '</strong> · Route: <code style="font-family:monospace;font-size:11px;background:#e2e8f0;padding:1px 5px;border-radius:4px;">' +
@@ -162,11 +191,11 @@
             }
           })()
       ) +
-      '" placeholder="user@google.com" />' +
+      '" placeholder="name@example.com" />' +
       '        </div>' +
       '      </div>' +
       '      <div style="margin-bottom:14px;">' +
-      '        <label class="ufw-label" for="ufw-message">Feedback Message for <span style="color:#1d4ed8;">nitinagga@google.com</span> *</label>' +
+      '        <label class="ufw-label" for="ufw-message">Feedback Message for <span style="color:#1d4ed8;">Architecture Portal Team</span> *</label>' +
       '        <textarea id="ufw-message" data-testid="feedback-message-textarea" class="ufw-textarea" rows="4" required placeholder="Describe what worked well, what needs fixing, or what feature you would like added..."></textarea>' +
       '      </div>' +
       '      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:12px;border-top:1px solid #e2e8f0;">' +
@@ -183,13 +212,13 @@
     document.body.appendChild(backdrop);
 
     document.getElementById('ufw-close-modal-btn').onclick = function () {
-      backdrop.remove();
+      closeFeedbackModal();
     };
     document.getElementById('ufw-cancel-btn').onclick = function () {
-      backdrop.remove();
+      closeFeedbackModal();
     };
     document.getElementById('ufw-open-admin-btn').onclick = function () {
-      backdrop.remove();
+      closeFeedbackModal();
       openAdminInboxPage();
     };
 
@@ -290,7 +319,7 @@
           var viewAdminBtn = document.getElementById('ufw-success-admin-btn');
           if (viewAdminBtn) {
             viewAdminBtn.onclick = function () {
-              backdrop.remove();
+              closeFeedbackModal();
               openAdminInboxPage();
             };
           }
@@ -315,12 +344,26 @@
     search: '',
   };
 
+  function closeAdminInboxOverlay(overlay) {
+    if (activeAdminKeyHandler) {
+      document.removeEventListener('keydown', activeAdminKeyHandler);
+      activeAdminKeyHandler = null;
+    }
+    if (overlay && overlay.parentNode) overlay.remove();
+    try {
+      var cleanUrl = new URL(window.location.href);
+      cleanUrl.searchParams.delete('feedback_admin');
+      if (cleanUrl.pathname === '/admin/feedback') cleanUrl.pathname = '/';
+      window.history.pushState({}, '', cleanUrl.toString());
+    } catch (_) {}
+  }
+
   function openAdminInboxPage() {
     injectStyles();
     if (window.location.pathname !== '/admin/feedback') {
       try {
         var nextUrl = new URL(window.location.href);
-        nextUrl.searchParams.set('page', 'admin-feedback');
+        nextUrl.searchParams.set('feedback_admin', '1');
         window.history.pushState({}, '', nextUrl.toString());
       } catch (_) {}
     }
@@ -333,6 +376,18 @@
       overlay.setAttribute('data-testid', 'admin-feedback-inbox-page');
       document.body.appendChild(overlay);
     }
+
+    if (activeAdminKeyHandler) {
+      document.removeEventListener('keydown', activeAdminKeyHandler);
+    }
+    activeAdminKeyHandler = function (e) {
+      if (e.key === 'Escape' && !document.querySelector('[data-testid="give-feedback-modal-backdrop"]')) {
+        e.preventDefault();
+        closeAdminInboxOverlay(overlay);
+      }
+    };
+    document.addEventListener('keydown', activeAdminKeyHandler);
+
     renderAdminInbox(overlay, false);
   }
 
@@ -370,7 +425,7 @@
             '  <p style="margin:0 0 16px;font-size:13px;color:#9f1239;line-height:1.5;">' +
             escapeHtml(
               data.error ||
-                'Only nitinagga@google.com is authorized to view the cross-app Admin Feedback Inbox.'
+                'Authorized portal administrators only may view the cross-app Admin Feedback Inbox.'
             ) +
             '</p>' +
             '  <button type="button" id="ufw-admin-denied-back-btn" style="padding:8px 14px;border-radius:8px;font-size:12px;font-weight:800;background:#ffffff;color:#1e293b;border:1px solid #cbd5e1;cursor:pointer;">← Back to ' +
@@ -380,7 +435,7 @@
           var deniedBackBtn = document.getElementById('ufw-admin-denied-back-btn');
           if (deniedBackBtn) {
             deniedBackBtn.onclick = function () {
-              overlay.remove();
+              closeAdminInboxOverlay(overlay);
             };
           }
           return;
@@ -407,7 +462,7 @@
           '</button>' +
           '    <div style="min-width:0;">' +
           '      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;">' +
-          '        <h1 style="margin:0;font-size:18px;font-weight:800;color:#0f172a;">Admin Feedback Inbox — nitinagga@google.com</h1>' +
+          '        <h1 style="margin:0;font-size:18px;font-weight:800;color:#0f172a;">Admin Feedback Inbox — Architecture Portal Team</h1>' +
           '        <span style="padding:2px 8px;border-radius:999px;font-size:11px;font-family:monospace;font-weight:700;background:#ecfdf5;color:#065f46;border:1px solid #6ee7b7;">🔒 Admin Verified (' +
           escapeHtml(authMode) +
           ')</span>' +
@@ -529,15 +584,18 @@
                         : item.priority === 'Medium'
                           ? 'background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;'
                           : 'background:#f1f5f9;color:#334155;border:1px solid #cbd5e1;';
-                  var replyTo =
-                    item.senderEmail && item.senderEmail !== 'anonymous'
-                      ? item.senderEmail
-                      : 'nitinagga@google.com';
-                  var replyUrl =
-                    'https://mail.google.com/mail/?view=cm&fs=1&to=' +
-                    encodeURIComponent(replyTo) +
-                    '&su=' +
-                    encodeURIComponent('Re: ' + (item.subject || item.id));
+                  var hasValidSender =
+                    item.senderEmail && item.senderEmail !== 'anonymous';
+                  var replyHtml = hasValidSender
+                    ? '<a href="' +
+                      escapeHtml(
+                        'https://mail.google.com/mail/?view=cm&fs=1&to=' +
+                          encodeURIComponent(item.senderEmail) +
+                          '&su=' +
+                          encodeURIComponent('Re: ' + (item.subject || item.id))
+                      ) +
+                      '" target="_blank" rel="noopener noreferrer" style="padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;text-decoration:none;">Reply ↗</a>'
+                    : '';
                   return (
                     '<tr data-testid="admin-feedback-row-' +
                     escapeHtml(item.id) +
@@ -586,9 +644,7 @@
                     }).join('') +
                     '    </select>' +
                     '    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
-                    '      <a href="' +
-                    escapeHtml(replyUrl) +
-                    '" target="_blank" rel="noopener noreferrer" style="padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;text-decoration:none;">Reply ↗</a>' +
+                    replyHtml +
                     '      <button type="button" data-fb-delete-id="' +
                     escapeHtml(item.id) +
                     '" data-testid="admin-feedback-delete-btn-' +
@@ -604,13 +660,7 @@
           '</div>';
 
         document.getElementById('ufw-admin-back-btn').onclick = function () {
-          overlay.remove();
-          try {
-            var cleanUrl = new URL(window.location.href);
-            cleanUrl.searchParams.delete('page');
-            if (cleanUrl.pathname === '/admin/feedback') cleanUrl.pathname = '/';
-            window.history.pushState({}, '', cleanUrl.toString());
-          } catch (_) {}
+          closeAdminInboxOverlay(overlay);
         };
         document.getElementById('ufw-scope-all').onclick = function () {
           adminState.scope = 'all';
@@ -679,11 +729,11 @@
     var wrap = document.createElement('div');
     wrap.className = 'ufw-btn-wrap';
     wrap.innerHTML =
-      '<button type="button" id="top-corner-feedback-email-btn" data-testid="give-feedback-email-icon-btn" title="Give Feedback to nitinagga@google.com" aria-label="Give Feedback to nitinagga@google.com" class="ufw-email-btn">' +
+      '<button type="button" id="top-corner-feedback-email-btn" data-testid="give-feedback-email-icon-btn" title="Share Architecture Portal Feedback" aria-label="Share Architecture Portal Feedback" class="ufw-email-btn">' +
       '  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>' +
       '  <span>Feedback</span>' +
       '</button>' +
-      '<div role="tooltip" data-testid="give-feedback-email-tooltip" class="ufw-tooltip">Give Feedback to nitinagga@google.com</div>';
+      '<div role="tooltip" data-testid="give-feedback-email-tooltip" class="ufw-tooltip">Share Architecture Portal Feedback</div>';
 
     var target = null;
     if (MOUNT_SELECTOR) {
@@ -721,7 +771,7 @@
     if (
       path === '/admin/feedback' ||
       initPath === '/admin/feedback' ||
-      sp.get('page') === 'admin-feedback'
+      sp.get('feedback_admin') === '1'
     ) {
       openAdminInboxPage();
     }

@@ -414,7 +414,7 @@ def submit_feedback(
         "priority": priority,
         "senderEmail": sender_email or "anonymous",
         "senderName": sender_name or "Workspace User",
-        "recipientEmail": ADMIN_EMAIL,
+        "recipientEmail": "architecture-portal-team",
         "subject": subject,
         "message": message,
         "contextMeta": context_meta,
@@ -451,12 +451,11 @@ def submit_feedback(
     )
     gmail_compose_url = (
         "https://mail.google.com/mail/?view=cm&fs=1"
-        f"&to={urllib.parse.quote(ADMIN_EMAIL)}"
         f"&su={urllib.parse.quote(subject)}"
         f"&body={urllib.parse.quote(email_body)}"
     )
     mailto_url = (
-        f"mailto:{ADMIN_EMAIL}"
+        "mailto:"
         f"?subject={urllib.parse.quote(subject)}"
         f"&body={urllib.parse.quote(email_body)}"
     )
@@ -465,7 +464,7 @@ def submit_feedback(
         "ok": True,
         "feedback": record,
         "delivery": {
-            "recipientEmail": ADMIN_EMAIL,
+            "recipientEmail": "architecture-portal-team",
             "persistedToLocalStore": persisted_local,
             "persistedToSharedLedger": True,
             "persistedToGoogleSheet": sheet_ok,

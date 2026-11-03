@@ -218,6 +218,31 @@
       // (the Markdown file retains it on disk for standalone/Google Docs export, while the web UI provides interactive per-figure flow tabs)
       body = body.replace(/<!--\s*E2E_FLOW_START\s*-->[\s\S]*?<!--\s*E2E_FLOW_END\s*-->/g, '');
 
+      // Close unclosed <!-- GENUINE_3P_BEFORE_AFTER_START --> comment block (WS1) before ## What's next (P2-01)
+      if (body.includes('<!-- GENUINE_3P_BEFORE_AFTER_START -->') && !body.includes('<!-- GENUINE_3P_BEFORE_AFTER_END -->')) {
+        if (/\n## What's next\b/.test(body)) {
+          body = body.replace(/\n## What's next\b/, '\n<!-- GENUINE_3P_BEFORE_AFTER_END -->\n\n## What\'s next');
+        } else {
+          body += '\n<!-- GENUINE_3P_BEFORE_AFTER_END -->\n';
+        }
+      }
+
+      // Normalize out-of-order Figure 2A / Figure 2B numbering in WS3, WS4, and WS5 before caption cleanup (P2-01)
+      const relLower = String(docRelPath || '').toLowerCase();
+      if (relLower.includes('ws3-pattern-b-sovereign-silos.md')) {
+        body = body.replace(/\bFigure 2A\b/g, 'Figure 4').replace(/\bFigure 2B\b/g, 'Figure 5');
+      } else if (relLower.includes('ws4-pattern-c-hybrid-dynamic-tiering.md')) {
+        body = body.replace(/\bFigure 2A\b/g, 'Figure 5').replace(/\bFigure 2B\b/g, 'Figure 6');
+        body = body.replace(/to review the 12 executive slides paired with this guide:/g, 'to review the 34 executive slides (and 12-slide core brief) paired with this guide:');
+      } else if (relLower.includes('ws5-decision-guide-and-agentic-triad.md')) {
+        body = body.replace(/\bFigure 2A\b/g, 'Figure 2').replace(/\bFigure 2B\b/g, 'Figure 3');
+      } else if (relLower.includes('ws2-pattern-a-pooled-architecture.md')) {
+        body = body.replace(
+          /\[34-slide editable visual deck \(`slides\/ws2-pattern-a-pooled-editable-slides\.pptx`\)\]\(\.\.\/slides\/ws2-pattern-a-pooled-editable-slides\.pptx\)/g,
+          '[34-slide editable visual deck (`slides/ws2-12slide-visual-deck.pptx`)](../slides/ws2-12slide-visual-deck.pptx)'
+        );
+      }
+
       // Strip duplicate "Editable assets: ..." link sentences inside *Figure N.* captions (already provided by the figure card header toolbar)
       body = body.replace(/(\*Figure\s+\d+\.[^\n*]*?)\s*Editable assets:[^\n*]*(\*?)/g, '$1$2');
 
@@ -273,8 +298,7 @@
         return `\n${token}\n`;
       });
 
-      const slugCounts = {};
-      function buildHeadingAttrs(rawHeadingText) {
+      function computeHeadingSlugs(rawHeadingText) {
         const plain = String(rawHeadingText || '')
           .replace(/`([^`]+)`/g, '$1')
           .replace(/\*\*([^*]+)\*\*/g, '$1')
@@ -287,11 +311,49 @@
           .replace(/[^a-z0-9 _-]/g, '')
           .replace(/ /g, '-');
         const collapsed = plain.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        return { base, collapsed };
+      }
+
+      // Pre-scan headings (including inline E2E blocks) so sequential duplicate TOC links (e.g., Master Guide WS1..WS5) map 1:1 to #slug, #slug-1, #slug-2... (P2-05)
+      const expectedSlugTotals = {};
+      function countHeadingsInText(chunkStr) {
+        String(chunkStr || '').split('\n').forEach(rawL => {
+          const tLine = rawL.trimEnd();
+          if (tLine.startsWith('@@E2EFLOW_')) {
+            const eIdx = Number(tLine.replace('@@E2EFLOW_', '').replace('@@', ''));
+            if (e2eBlocks[eIdx]) countHeadingsInText(e2eBlocks[eIdx].innerMd);
+            return;
+          }
+          const hMatch = tLine.match(/^(#{1,5})\s+(.+)$/);
+          if (hMatch) {
+            const { base } = computeHeadingSlugs(hMatch[2]);
+            if (base) expectedSlugTotals[base] = (expectedSlugTotals[base] || 0) + 1;
+          }
+        });
+      }
+      countHeadingsInText(body);
+      const tocSeenBySlug = {};
+      body = body.split('\n').map(rawL => {
+        const tocMatch = rawL.match(/^(\s*[-*]\s+\[[^\]]+\]\(#)([a-z0-9_-]+)(\).*)$/);
+        if (tocMatch && (expectedSlugTotals[tocMatch[2]] || 0) > 1) {
+          const slug = tocMatch[2];
+          const seen = tocSeenBySlug[slug] || 0;
+          tocSeenBySlug[slug] = seen + 1;
+          if (seen > 0 && seen < expectedSlugTotals[slug]) {
+            return `${tocMatch[1]}${slug}-${seen}${tocMatch[3]}`;
+          }
+        }
+        return rawL;
+      }).join('\n');
+
+      const slugCounts = {};
+      function buildHeadingAttrs(rawHeadingText) {
+        const { base, collapsed } = computeHeadingSlugs(rawHeadingText);
         const count = slugCounts[base] || 0;
         slugCounts[base] = count + 1;
         const fullSlug = count === 0 ? base : `${base}-${count}`;
         const collapsedFull = count === 0 ? collapsed : `${collapsed}-${count}`;
-        return `id="${escapeHtml(fullSlug)}" data-slug="${escapeHtml(base)}" data-collapsed-slug="${escapeHtml(collapsedFull)}"`;
+        return `id="${escapeHtml(fullSlug)}" data-slug="${escapeHtml(fullSlug)}" data-base-slug="${escapeHtml(base)}" data-collapsed-slug="${escapeHtml(collapsedFull)}"`;
       }
 
       function parseMarkdownChunk(chunkText) {
@@ -432,11 +494,19 @@
                   cleanHref = `${basePart}${sep}resourcekey=${rkMap[idMatch[1]]}${fragPart ? '#' + fragPart : ''}`;
                 }
               }
-              if (cleanHref === 'diagrams/ws1-l1-logical-security-taxonomy.drawio' && /Draw\.io Source/i.test(label)) {
+              if (cleanHref === 'diagrams/ws1-l1-logical-security-taxonomy.drawio' && /^&#128208;|^📐/u.test(String(label || '').trim())) {
                 cleanHref = 'diagrams/ws1-multi-tenant-taxonomy-overview.drawio';
               } else {
-                const c4StubMatch = cleanHref.match(/^diagrams\/(ws1-l[134]-[a-z0-9-]+)\.(?:drawio|svg)$/i);
-                if (c4StubMatch) cleanHref = `diagrams/${c4StubMatch[1]}.drawio.png`;
+                const c4StubMatch = cleanHref.match(/^diagrams\/(ws[1-5]-l[134]-[a-z0-9-]+)\.(?:drawio|svg)$/i);
+                if (c4StubMatch) {
+                  const pngHref = `diagrams/${c4StubMatch[1]}.drawio.png`;
+                  const cleanedLabel = String(label || '')
+                    .replace(/Draw\.io\s+Source/gi, 'High-Res C4 PNG')
+                    .replace(/Architecture\s+Center\s+SVG/gi, 'High-Res C4 PNG')
+                    .replace(/\.(?:drawio|svg)\b/gi, '.drawio.png');
+                  const plainTitle = cleanedLabel.replace(/<[^>]+>/g, '').replace(/'/g, "\\'");
+                  return `<a href="${pngHref}" onclick="if (window.openGenuineScreenshotLightbox) { event.preventDefault(); openGenuineScreenshotLightbox('${pngHref}', '${plainTitle}'); }" target="_blank" rel="noopener" style="color:var(--link); font-weight:500;">${cleanedLabel}</a>`;
+                }
               }
               if (!/^[a-z][a-z0-9+.-]*:/i.test(cleanHref) && !cleanHref.startsWith('/') && (/\.(py|sql|tf|tfvars|yaml|yml|sh|json)$/i.test(cleanHref) || /(^core-cymbal-agent|2\.6-terraform-starter|3\.6-terraform-silo-blueprint|4\.6-terraform-hybrid-psc-blueprint|2\.3-solution-implementation|3\.3-solution-implementation|4\.3-solution-implementation|4\.5-zero-downtime-tier-upgrade-suite)\/?$/i.test(cleanHref))) {
                 return `<a href="/?tab=screenshots&wb=codebase" onclick="event.preventDefault(); openCodeOrArtifactInWorkbench('${cleanHref.replace(/'/g, "\\'")}');" style="color:var(--link); font-weight:600;">${label}</a>`;
@@ -1244,7 +1314,7 @@
                 const hid = h.id || ('hub-sec-' + i);
                 if (!h.id) h.id = hid;
                 const safeHid = hid.replace(/'/g, "\\'");
-                return `<a class="series-toc-link ${i === 0 ? 'active' : ''}" onclick="document.querySelectorAll('#hub-blog-toc .series-toc-link').forEach(a=>a.classList.remove('active')); this.classList.add('active'); scrollToReaderAnchor('${safeHid}')">${escapeHtml(h.textContent)}</a>`;
+                return `<a href="#${escapeHtml(hid)}" class="series-toc-link ${i === 0 ? 'active' : ''}" onclick="event.preventDefault(); document.querySelectorAll('#hub-blog-toc .series-toc-link').forEach(a=>a.classList.remove('active')); this.classList.add('active'); scrollToReaderAnchor('${safeHid}')">${escapeHtml(h.textContent)}</a>`;
               }).join('');
           } else {
             tocEl.innerHTML = `<div class="series-toc-title">On This Page</div><div class="muted" style="font-size:12px;">Document Overview</div>`;
@@ -3936,9 +4006,28 @@
     window.jumpToTab3BeforeAfterHub = function jumpToTab3BeforeAfterHub() {
       const tab3Btn = document.getElementById('tab-btn-screenshots');
       if (typeof switchTab === 'function') switchTab('screenshots', tab3Btn);
+      if (typeof window.filterBeforeAfterCategory === 'function') window.filterBeforeAfterCategory('all');
       setTimeout(() => {
         const hub = document.getElementById('genuine-3p-before-after-hub');
         if (hub) hub.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 80);
+    };
+
+    window.jumpToTab3ReferenceContainer = function jumpToTab3ReferenceContainer(baKey) {
+      const tab3Btn = document.getElementById('tab-btn-screenshots');
+      if (typeof switchTab === 'function') switchTab('screenshots', tab3Btn);
+      if (typeof window.filterBeforeAfterCategory === 'function') window.filterBeforeAfterCategory('all');
+      setTimeout(() => {
+        const card = document.querySelector(`[data-ba-key="${String(baKey || '').replace(/"/g, '')}"]`);
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const prevOutline = card.style.outline;
+          card.style.outline = '3px solid #1a73e8';
+          setTimeout(() => { card.style.outline = prevOutline; }, 1600);
+        } else {
+          const hub = document.getElementById('genuine-3p-before-after-hub');
+          if (hub) hub.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }, 80);
     };
 
@@ -4576,7 +4665,6 @@ function openGenuineScreenshotLightbox(src, title) {
         }
       });
     })();
-  </script>
   </script>
 </body>
 </html>

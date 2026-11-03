@@ -2207,9 +2207,9 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                         {
                             "ok": False,
                             "authorized": False,
-                            "resolvedEmail": resolved_email,
+                            "resolvedEmail": "anonymous",
                             "authMode": auth_mode,
-                            "error": f"Admin access restricted to {_ufe.ADMIN_EMAIL}",
+                            "error": "Admin access restricted to authorized portal administrators",
                         },
                     )
                     return
@@ -2624,6 +2624,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             if engine_mode not in ("cloud", "native"):
                 engine_mode = "cloud"
             safe_id = "".join(ch for ch in diag_id if ch.isalnum() or ch in ("-", "_")) or "ws1-multi-tenant-taxonomy-overview"
+            if re.match(r"^ws[1-5]-l[134]-", safe_id, re.IGNORECASE):
+                safe_id = "ws1-multi-tenant-taxonomy-overview"
             initial_zoom = "0.56" if is_inline else "0.88"
             inspector_w = "260px" if is_inline else "320px"
             select_html = "" if is_inline else f"""
@@ -2642,9 +2644,6 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         <option value="ws4-zero-downtime-tier-upgrade-sequence">12. WS 4.5: Pattern C Zero-Downtime Upgrade Sequence</option>
         <option value="ws4-terraform-hybrid-psc-blueprint-resource-graph">13. WS 4.6: Pattern C Dual-Provider Terraform PSC DAG</option>
         <option value="ws5-decision-tree-and-agentic-triad">14. WS 5.1/5.2: Executive Decision Tree &amp; Agentic Triad</option>
-        <option value="ws1-l1-logical-security-taxonomy">15. C4 L1: Logical Security Taxonomy (3 Layers)</option>
-        <option value="ws1-l3-process-sequence-swimlane">16. C4 L3: 5-Actor Process Sequence Swimlane</option>
-        <option value="ws1-l4-wire-protocol-transformation">17. C4 L4: Wire-Level Protocol Normalization</option>
       </select>"""
             back_btn_html = '<button type="button" id="btn-exit-inline" class="studio-btn" style="background:#dc2626;border-color:#b91c1c;color:#ffffff;" onclick="exitInlineStudio()">&#10005; Exit Inline</button>' if is_inline else '<a class="studio-btn" href="/">&#8592; Back to Portal</a>'
             html_doc = f"""<!DOCTYPE html>
@@ -3927,9 +3926,9 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                         {
                             "ok": False,
                             "authorized": False,
-                            "resolvedEmail": resolved_email,
+                            "resolvedEmail": "anonymous",
                             "authMode": auth_mode,
-                            "error": f"Admin access restricted to {_ufe.ADMIN_EMAIL}",
+                            "error": "Admin access restricted to authorized portal administrators",
                         },
                     )
                     return
