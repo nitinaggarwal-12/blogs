@@ -1765,13 +1765,16 @@
     }
 
     /* Side-by-Side Blueprint & Executive Briefing Split Layout (Tier 1) */
-    /* Side-by-Side Blueprint & Executive Briefing Split Layout (Tier 1: Uniform Equal-Height Split) */
+    /* Side-by-Side Blueprint & Executive Briefing Split Layout (Tier 1: Uniform 748px Equal-Height Split) */
     .ov-dossier-split {
       display: grid;
       grid-template-columns: minmax(0, 1.25fr) minmax(360px, 1fr);
       gap: 14px;
       align-items: stretch;
       margin-bottom: 12px;
+      height: 748px;
+      min-height: 748px;
+      max-height: 748px;
       box-sizing: border-box;
     }
     .ov-dossier-visual {
@@ -1805,6 +1808,7 @@
       flex-direction: column;
       gap: 8px;
       min-width: 0;
+      overflow: hidden;
     }
     .ov-dossier-sidebar .ov-subbox {
       padding: 8px 12px;
@@ -1982,6 +1986,11 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
+      height: 262px;
+      min-height: 262px;
+      max-height: 262px;
+      box-sizing: border-box;
     }
     .ov-ba-mini-thumbs {
       display: grid;
