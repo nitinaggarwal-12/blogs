@@ -188,17 +188,17 @@
 
   <!-- SAME-SCREEN GMAIL ATTACHMENT OPENER CLOUD VIEWER MODAL (PROMPTCANVAS STYLE) -->
   <div id="pc-cloud-viewer-modal" class="pc-modal-overlay" role="dialog" aria-modal="true" aria-label="PromptCanvas Cloud Viewer">
-    <!-- Top Gmail Attachment Opener Header Bar (#131314) -->
+    <!-- Top Executive Light Theme Cloud Viewer Header Bar -->
     <div class="pc-modal-topbar">
       <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-        <button type="button" onclick="closeCloudViewerModal()" style="background:transparent; border:none; color:#e8eaed; font-size:18px; cursor:pointer; padding:4px 8px; border-radius:6px;" title="Close Cloud Viewer (Esc)">&#10005;</button>
+        <button type="button" onclick="closeCloudViewerModal()" style="background:transparent; border:none; color:#334155; font-size:18px; cursor:pointer; padding:4px 8px; border-radius:6px;" title="Close Cloud Viewer (Esc)">&#10005;</button>
         <span style="display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:5px; background:#fbbc04; color:#202124; font-weight:900; font-size:13px;">P</span>
         <div>
           <div class="flex-center-y gap-2">
-            <strong id="cv-filename" style="font-size:14px; color:#ffffff;">ws1-12slide-visual-deck.pptx</strong>
+            <strong id="cv-filename" style="font-size:14px; color:#0f172a;">ws1-12slide-visual-deck.pptx</strong>
             <span class="badge badge-green" style="font-size:10px; padding:2px 7px;">Google Slides &amp; Docs Synced ✓</span>
           </div>
-          <div style="font-size:11.5px; color:#9aa0a6; display:flex; gap:12px; margin-top:2px;">
+          <div style="font-size:11.5px; color:#475569; display:flex; gap:12px; margin-top:2px;">
             <span style="cursor:pointer;" onclick="openInGoogleWorkspace(cvWsKey, 'slides', cvSlideNum)">File</span>
             <span style="cursor:pointer;" onclick="setCloudViewerMode(cvMode === 'slides' ? 'embed' : 'slides')">View</span>
             <span style="cursor:pointer;" onclick="jumpToNextEditableSlideInCloudViewer()">Tools (★ Jump to Editable Diagram)</span>
@@ -217,7 +217,7 @@
       <!-- Right Split-Pill: [ 📊 Open Google Slides | ▼ ] -->
       <div class="flex-center-y gap-2">
         <div class="pc-split-wrap" id="cv-open-gslides-split">
-          <button type="button" id="cv-open-gslides-main" class="pc-split-main" onclick="openInGoogleWorkspace(cvWsKey, 'slides', cvSlideIdx + 1)">
+          <button type="button" id="cv-open-gslides-main" class="pc-split-main" onclick="openInGoogleWorkspace(cvWsKey, 'slides', cvSlideNum)">
             <span>&#128202; Open Google Slides &#8599;</span>
           </button>
           <button type="button" class="pc-split-caret" onclick="togglePcDropdown(event, 'cv-gslides-menu')" aria-label="Open with menu">&#9660;</button>
@@ -238,21 +238,21 @@
       </div>
     </div>
 
-    <!-- Second Row Floating Pill Toolbar (#28292A) -->
+    <!-- Second Row Floating Pill Toolbar (Executive Light Theme) -->
     <div class="pc-modal-subbar">
       <div id="cv-ws-strip" class="pc-pill-toolbar"></div>
       <div class="pc-pill-toolbar">
         <button type="button" class="pc-toolbar-btn" onclick="stepCloudViewerSlide(-1)">&#9664; Prev</button>
-        <span id="cv-page-indicator" style="font-size:12.5px; font-weight:700; padding:0 8px; color:#fbbc04;">Slide 1 / 11</span>
+        <span id="cv-page-indicator" style="font-size:12.5px; font-weight:700; padding:0 8px; color:#1d4ed8;">Slide 1 / 11</span>
         <button type="button" class="pc-toolbar-btn" onclick="stepCloudViewerSlide(1)">Next &#9654;</button>
-        <span style="color:#444746;">|</span>
-        <button type="button" class="pc-toolbar-btn" style="color:#86efac;" onclick="jumpToNextEditableSlideInCloudViewer()">&#9733; Next Editable Diagram</button>
-        <span style="color:#444746;">|</span>
+        <span style="color:#cbd5e1;">|</span>
+        <button type="button" class="pc-toolbar-btn" style="color:#15803d; font-weight:700;" onclick="jumpToNextEditableSlideInCloudViewer()">&#9733; Next Editable Diagram</button>
+        <span style="color:#cbd5e1;">|</span>
         <button type="button" class="pc-toolbar-btn" onclick="openInGoogleWorkspace(cvWsKey, 'slides', cvSlideNum)" title="Open in Google Slides">&#8599; Google Slides</button>
         <button type="button" class="pc-toolbar-btn" onclick="openInGoogleWorkspace(cvWsKey, 'pdf', cvSlideNum)" title="Export / Print PDF">&#128424; PDF</button>
-        <span style="color:#444746;">|</span>
+        <span style="color:#cbd5e1;">|</span>
         <button type="button" class="pc-toolbar-btn" onclick="setCloudViewerZoom(-15)">&minus;</button>
-        <span id="cv-zoom-label" style="font-size:12px; min-width:42px; text-align:center;">100%</span>
+        <span id="cv-zoom-label" style="font-size:12px; min-width:42px; text-align:center; color:#0f172a; font-weight:700;">100%</span>
         <button type="button" class="pc-toolbar-btn" onclick="setCloudViewerZoom(15)">&#43;</button>
       </div>
     </div>

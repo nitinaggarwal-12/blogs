@@ -440,19 +440,40 @@ def execute_custom_sandbox_turn(payload: Dict[str, Any]) -> Dict[str, Any]:
     effective_mode = req_mode if req_mode in ("LIVE_GCP", "IN_MEMORY") else _CURRENT_EXECUTION_MODE
     is_live_gcp = effective_mode == "LIVE_GCP" or os.environ.get("CYMBAL_LIVE_GCP") == "1"
 
+    policy_eval_ms = round((time.perf_counter() - t0) * 1000, 2)
     live_gcp_telemetry = None
+    kms_verified = False
     if is_live_gcp:
         live_gcp_telemetry = probe_live_gcp_kms()
+        kms_verified = bool(live_gcp_telemetry.get("verified"))
 
-    execution_time = round((time.perf_counter() - t0) * 1000, 2)
-    if is_live_gcp and live_gcp_telemetry and live_gcp_telemetry.get("latency_ms"):
-        execution_time = round(execution_time + float(live_gcp_telemetry["latency_ms"]), 2)
+    execution_time = policy_eval_ms
+    if kms_verified and live_gcp_telemetry and live_gcp_telemetry.get("latency_ms"):
+        execution_time = round(policy_eval_ms + float(live_gcp_telemetry["latency_ms"]), 2)
 
     return {
         "execution_ms": execution_time,
-        "execution_mode": "LIVE_GCP_EXECUTION" if is_live_gcp else "IN_MEMORY_DETERMINISTIC_SIMULATION",
-        "execution_environment": "Google Cloud Platform (Live Cloud KMS & BigQuery APIs in ramp-portal-dev)" if is_live_gcp else "In-Memory Deterministic Policy Simulation (<10ms, Zero Cloud Latency)",
-        "deterministic_latency_guarantee": "150-350ms (Live Cloud KMS Roundtrip)" if is_live_gcp else "<10ms (In-Memory Policy Engine)",
+        "policy_eval_ms": policy_eval_ms,
+        "isLiveLlmCall": False,
+        "execution_mode": (
+            "LIVE_GCP_KMS_VERIFIED_PLUS_IN_MEMORY_POLICY"
+            if kms_verified
+            else ("IN_MEMORY_POLICY_SIMULATION_KMS_UNVERIFIED" if is_live_gcp else "IN_MEMORY_DETERMINISTIC_SIMULATION")
+        ),
+        "execution_environment": (
+            "Google Cloud Platform (Live Verified Cloud KMS Probe in ramp-portal-dev + Deterministic 5-Hop Policy Engine)"
+            if kms_verified
+            else (
+                f"In-Memory Deterministic Policy Engine (Live Cloud KMS Probe Unverified: {live_gcp_telemetry.get('error', 'unverified')})"
+                if is_live_gcp and live_gcp_telemetry
+                else "In-Memory Deterministic Policy Simulation (<10ms, Zero Cloud Latency)"
+            )
+        ),
+        "deterministic_latency_guarantee": (
+            "150-350ms (Live Verified Cloud KMS Roundtrip)"
+            if kms_verified
+            else "<10ms (In-Memory Policy Engine)"
+        ),
         "live_gcp_telemetry": live_gcp_telemetry,
         "request_parameters": payload,
         "result": to_jsonable(res),
@@ -503,15 +524,23 @@ def execute_all_simulations_bundle(force_refresh: bool = False) -> Dict[str, Any
         f"VERDICT: {saas_flows}/30 E2E FLOWS • {saas_assertions}/60 ASSERTIONS PASSED (100%)"
     )
 
-    is_live_gcp = _CURRENT_EXECUTION_MODE == "LIVE_GCP" or os.environ.get("CYMBAL_LIVE_GCP") == "1"
+    posture = get_runtime_execution_posture()
+    kms_verified = posture.get("execution_mode") == "LIVE_GCP_KMS_VERIFIED_PLUS_IN_MEMORY_POLICY"
     _ALL_SIMS_CACHE = {
         "ok": True,
         "status": "PASS",
         "execution_ms": round((time.perf_counter() - t0) * 1000, 2),
-        **get_runtime_execution_posture(),
-        "execution_mode": "LIVE_GCP_EXECUTION" if is_live_gcp else "IN_MEMORY_DETERMINISTIC_SIMULATION",
-        "execution_environment": "Google Cloud Platform (Live Cloud KMS & BigQuery APIs in ramp-portal-dev)" if is_live_gcp else "In-Memory Deterministic Policy Simulation (<10ms, Zero Cloud Latency)",
-        "deterministic_latency_guarantee": "150-350ms (Live Cloud KMS Roundtrip)" if is_live_gcp else "<10ms (In-Memory Policy Engine)",
+        **posture,
+        "execution_environment": (
+            "Google Cloud KMS Probe Verified + In-Memory Deterministic Policy Engine"
+            if kms_verified
+            else "In-Memory Deterministic Policy Simulation (<10ms, Zero Live LLM Calls)"
+        ),
+        "deterministic_latency_guarantee": (
+            "Cloud KMS Probe + <10ms In-Memory Policy Engine"
+            if kms_verified
+            else "<10ms (In-Memory Policy Engine)"
+        ),
         "core_simulations_passed": 20,
         "saas_e2e_flows_passed": saas_flows,
         "saas_assertions_passed": saas_assertions,
@@ -713,7 +742,8 @@ def probe_live_gcp_kms() -> Dict[str, Any]:
     except urllib.error.HTTPError as he:
         rtt_ms = round((time.perf_counter() - t_start) * 1000, 1)
         return {
-            "verified": True,
+            "verified": False,
+            "error": f"Cloud KMS API returned HTTP {he.code}",
             "project_id": "ramp-portal-dev",
             "location": "us-west1",
             "api_endpoint": "cloudkms.googleapis.com",
@@ -802,7 +832,8 @@ def save_portal_changelog(data: Dict[str, Any]) -> Dict[str, Any]:
         data["updatedAt"] = iso_str
         CHANGELOG_FILE.parent.mkdir(parents=True, exist_ok=True)
         CHANGELOG_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
-        DurableGcsStore.persist_async("portal_change_log.json", data, CHANGELOG_FILE)
+        if CHANGELOG_FILE == RUNTIME_STATE_DIR / "portal_change_log.json":
+            DurableGcsStore.persist_async("portal_change_log.json", data, CHANGELOG_FILE)
         return data
 
 
@@ -908,7 +939,8 @@ def save_portal_comments(data: Dict[str, Any]) -> Dict[str, Any]:
         data["updatedAt"] = iso_str
         COMMENTS_FILE.parent.mkdir(parents=True, exist_ok=True)
         COMMENTS_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
-        DurableGcsStore.persist_async("portal_comments.json", data, COMMENTS_FILE)
+        if COMMENTS_FILE == RUNTIME_STATE_DIR / "portal_comments.json":
+            DurableGcsStore.persist_async("portal_comments.json", data, COMMENTS_FILE)
         return data
 
 
@@ -949,7 +981,8 @@ def save_portal_clickstream(data: Dict[str, Any]) -> Dict[str, Any]:
         data["updatedAt"] = iso_str
         CLICKSTREAM_FILE.parent.mkdir(parents=True, exist_ok=True)
         CLICKSTREAM_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
-        DurableGcsStore.persist_async("portal_clickstream.json", data, CLICKSTREAM_FILE)
+        if CLICKSTREAM_FILE == RUNTIME_STATE_DIR / "portal_clickstream.json":
+            DurableGcsStore.persist_async("portal_clickstream.json", data, CLICKSTREAM_FILE)
         return data
 
 
@@ -976,7 +1009,7 @@ def record_clickstream_event(
     iso_str, est_str = _now_iso_and_est()
     ev_id = f"CLK-{datetime.now(timezone.utc).strftime('%Y%m%d')}-{len(events) + 1:05d}"
 
-    clean_email = (actor_email or "anonymous@google.com").strip().lower()
+    clean_email = (actor_email or "guest@unverified.session").strip().lower()
     clean_type = (event_type or "GENERIC_EVENT").strip().upper()
 
     # Update visitor tracking
@@ -1935,10 +1968,33 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             self._send_json(400, {"error": "Missing SaaS key in path. Usage: /api/saas-live/<key>[/<subpath>]", "available": list(SAAS_LIVE_TARGETS.keys())})
             return
 
-        app_key = parts[2].lower()
+        raw_key = parts[2].lower()
+        saas_live_aliases = {
+            "thoughtspot-spotter": "metabase",
+            "thoughtspot": "metabase",
+            "sigma-computing": "grafana",
+            "sigma": "grafana",
+            "servicenow-itsm": "redmine",
+            "servicenow": "redmine",
+            "muse-poc": "nocodb",
+            "veeva": "nocodb",
+            "salesforce-jira": "gitea",
+            "salesforce": "gitea",
+            "databricks-unity": "trino",
+            "databricks": "trino",
+            "snowflake-cortex": "clickhouse",
+            "snowflake": "clickhouse",
+            "workday-raas": "directus",
+            "workday": "directus",
+            "datadog-sre": "seq",
+            "datadog": "seq",
+            "crowdstrike-okta": "vault",
+            "crowdstrike": "vault",
+        }
+        app_key = saas_live_aliases.get(raw_key, raw_key)
         spec = SAAS_LIVE_TARGETS.get(app_key)
         if not spec:
-            self._send_json(404, {"error": f"Unknown SaaS key: '{app_key}'.", "available": list(SAAS_LIVE_TARGETS.keys())})
+            self._send_json(404, {"error": f"Unknown SaaS key: '{raw_key}'.", "available": list(SAAS_LIVE_TARGETS.keys())})
             return
 
         subpath_parts = parts[3:]
@@ -3397,6 +3453,17 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             self.send_header("Cache-Control", "no-store")
             self.end_headers()
             return
+        if clean_rel in (
+            "core-cymbal-agent",
+            "workstream-2-pattern-a-pooled/2.6-terraform-starter",
+            "workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint",
+            "workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint",
+        ):
+            self.send_response(302)
+            self.send_header("Location", "/?tab=screenshots&wb=codebase")
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            return
         if clean_rel.endswith(".md") and "raw" not in qs_all:
             raw_target = ROOT_DIR / clean_rel
             target = raw_target.resolve()
@@ -4509,11 +4576,20 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
 def get_runtime_execution_posture() -> Dict[str, Any]:
     is_live = _CURRENT_EXECUTION_MODE == "LIVE_GCP" or os.environ.get("CYMBAL_LIVE_GCP") == "1"
+    live_probe = probe_live_gcp_kms() if is_live else None
+    kms_verified = bool(live_probe and live_probe.get("verified"))
     return {
-        "execution_mode": "LIVE_GCP_EXECUTION" if is_live else "IN_MEMORY_POLICY_SIMULATION",
+        "execution_mode": (
+            "LIVE_GCP_KMS_VERIFIED_PLUS_IN_MEMORY_POLICY"
+            if kms_verified
+            else ("IN_MEMORY_POLICY_SIMULATION_KMS_UNVERIFIED" if is_live else "IN_MEMORY_POLICY_SIMULATION")
+        ),
+        "isLiveLlmCall": False,
+        "policy_engine_mode": "IN_MEMORY_DETERMINISTIC_POLICY_ENGINE",
         "cymbal_live_gcp": bool(is_live),
+        "live_gcp_telemetry": live_probe,
         "jti_store_backend": "in_memory_python_set",
-        "core_20_assertions_mode": "LIVE_CLOUD_KMS_AND_BIGQUERY" if is_live else "IN_MEMORY_DETERMINISTIC_POLICY_ENGINE",
+        "core_20_assertions_mode": "LIVE_CLOUD_KMS_PROBE_PLUS_IN_MEMORY_POLICY" if kms_verified else "IN_MEMORY_DETERMINISTIC_POLICY_ENGINE",
         "saas_60_assertions_mode": "RECORDED_CLOUDRUN_AND_AGENTCORE_RECEIPT_PLUS_IN_MEMORY_GATE",
         "mutable_state_backend": f"gs://{DURABLE_GCS_BUCKET}/{DURABLE_GCS_PREFIX}* + /tmp/ge-blogs-runtime-state (Zero Container-Disk Writes)",
     }

@@ -39,13 +39,24 @@
           } else {
             params.delete('doc');
           }
+          if (opts.view !== undefined) {
+            if (opts.view && opts.view !== 'guide') {
+              params.set('view', opts.view);
+            } else {
+              params.delete('view');
+              params.delete('target');
+            }
+          }
           params.delete('wb');
+          params.delete('page');
         } else {
-          // When not on patterns tab, remove ws and doc unless keepWsDoc is requested
+          // When not on patterns tab, remove ws, doc, view, and target unless keepWsDoc is requested
           if (!opts.keepWsDoc) {
             params.delete('ws');
             params.delete('doc');
           }
+          params.delete('view');
+          params.delete('target');
         }
 
         // Tab 3 Screenshots / Workbench: sync ?tab=screenshots&wb=...
@@ -63,6 +74,12 @@
           params.delete('ws');
           params.delete('doc');
           params.delete('wb');
+          params.delete('view');
+          params.delete('target');
+          if (!opts.keepPage) {
+            params.delete('page');
+          }
+        } else {
           params.delete('page');
         }
 
@@ -83,6 +100,7 @@
           tab: tab,
           ws: (tab === 'patterns') ? (params.get('ws') || null) : null,
           doc: (tab === 'patterns') ? (params.get('doc') || null) : null,
+          view: (tab === 'patterns') ? (params.get('view') || null) : null,
           wb: (tab === 'screenshots') ? (params.get('wb') || null) : null
         };
 
@@ -122,7 +140,7 @@
         btn = null;
       }
       try {
-        if (typeof trackClickstream === 'function') {
+        if (!skipHistoryPush && typeof trackClickstream === 'function') {
           trackClickstream('TAB_SWITCH', 'tab-' + name, 'Switched to tab: ' + name);
         }
       } catch (_) {}
@@ -145,7 +163,12 @@
       }
       const govSel = document.getElementById('header-governance-select');
       if (govSel) {
-        govSel.value = (name === 'forensic' || name === 'changelog') ? name : '';
+        const isGovActive = (name === 'forensic' || name === 'changelog');
+        govSel.value = isGovActive ? name : '';
+        govSel.classList.toggle('active', isGovActive);
+        govSel.style.borderColor = isGovActive ? '#1a73e8' : '';
+        govSel.style.backgroundColor = isGovActive ? '#e8f0fe' : '';
+        govSel.style.color = isGovActive ? '#174ea6' : '';
       }
       if (name === 'simulator' && !window.__simInitialRunDone) {
         window.__simInitialRunDone = true;
@@ -168,7 +191,8 @@
         syncPortalUrl({
           tab: name,
           ws: (name === 'patterns') ? (typeof activeHubWsKey !== 'undefined' ? activeHubWsKey : 'WS1') : null,
-          doc: (name === 'patterns') ? (typeof activeHubDocPath !== 'undefined' ? activeHubDocPath : null) : null
+          doc: (name === 'patterns') ? (typeof activeHubDocPath !== 'undefined' ? activeHubDocPath : null) : null,
+          hash: ''
         });
       }
     }
@@ -200,8 +224,8 @@
             selectGuidedWorkstream(activeHubWsKey, null, hash, true);
           }
           const view = state.view || params.get('view');
-          if (view && typeof setHubViewMode === 'function') {
-            setHubViewMode(view, params.get('target'), true);
+          if (typeof setHubViewMode === 'function') {
+            setHubViewMode(view || 'guide', params.get('target'), true);
           }
         }
 
@@ -211,8 +235,8 @@
         }
 
         // If on overview tab and one-pager page specified
-        if (tab === 'overview' && page && typeof window.filterOverviewOnePager === 'function') {
-          window.filterOverviewOnePager(page, null, true);
+        if (tab === 'overview' && typeof window.filterOverviewOnePager === 'function') {
+          window.filterOverviewOnePager(page || 'WS1', null, true);
         }
 
         // Anchor scroll if hash exists
@@ -290,6 +314,17 @@
       if (!anchor) return;
       if (anchor === 'blog-e2e-pattern-execution-and-codebase-workbench') {
         openWorkbenchView('codebase');
+        return;
+      }
+      if (anchor.startsWith('tab-patterns?')) {
+        const qs = new URLSearchParams(anchor.slice('tab-patterns?'.length));
+        const viewMode = qs.get('view') || 'proofs';
+        const targetId = qs.get('target') || '';
+        const patternsTab = document.getElementById('tab-patterns');
+        if (patternsTab && patternsTab.style.display === 'none') {
+          switchTab('patterns', document.getElementById('tab-btn-patterns'));
+        }
+        setHubViewMode(viewMode, targetId);
         return;
       }
       const readerEl = document.getElementById('hub-blog-reader');
@@ -748,6 +783,18 @@
     let dtIsSpeaking = false;
     let dtCurrentUtterance = null;
 
+    function isEapSectionTitle(txt) {
+      const s = String(txt || '');
+      return /Compensating controls|\bEAP\b|Early Access Program|Design considerations|Security, privacy|Architectural caveats|Operational nuances|Cost optimization|Capstone backlog|GA roadmap|Production hardening|FinOps|Chargeback/i.test(s);
+    }
+    window.isEapSectionTitle = isEapSectionTitle;
+
+    function isDeliverablesSectionTitle(txt) {
+      const s = String(txt || '');
+      return /What['’]s next|Deliverables|Launch Matrix|Next steps|Deployment|Terraform|Verification|Manual Testing|Runbook/i.test(s);
+    }
+    window.isDeliverablesSectionTitle = isDeliverablesSectionTitle;
+
     function setHubViewMode(mode, targetId, skipHistoryReplace) {
       const blogSec = document.getElementById('hub-blog-section');
       const proofsSec = document.getElementById('hub-proofs-section');
@@ -770,18 +817,20 @@
         if (blogSec) blogSec.style.display = 'block';
         if (proofsSec) proofsSec.style.display = 'none';
         if (btnEap) btnEap.classList.add('primary');
-        const tocLinks = document.querySelectorAll('#hub-blog-toc .series-toc-link');
-        tocLinks.forEach(a => a.classList.toggle('active', (a.textContent || '').includes('Compensating controls') || (a.textContent || '').includes('EAP')));
         setTimeout(() => {
           const readerEl = document.getElementById('hub-blog-reader');
           if (readerEl) {
-            const h = Array.from(readerEl.querySelectorAll('h2, h3')).find(el => 
-              (el.textContent || '').includes('Compensating controls') || 
-              (el.textContent || '').includes('EAP') ||
-              (el.textContent || '').includes('Early Access Program')
-            );
+            const headings = Array.from(readerEl.querySelectorAll('h2, h3'));
+            const h2s = Array.from(readerEl.querySelectorAll('h2'));
+            const h = headings.find(el => /Compensating controls|\bEAP\b|Early Access Program/i.test(el.textContent || ''))
+              || headings.find(el => isEapSectionTitle(el.textContent || ''))
+              || h2s[Math.min(1, Math.max(0, h2s.length - 1))]
+              || headings[0];
             if (h) {
               h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              const tocLinks = Array.from(document.querySelectorAll('#hub-blog-toc .series-toc-link'));
+              const matchedIdx = tocLinks.findIndex(a => isEapSectionTitle(a.textContent || ''));
+              tocLinks.forEach((a, idx) => a.classList.toggle('active', matchedIdx >= 0 ? idx === matchedIdx : idx === Math.min(1, tocLinks.length - 1)));
             }
           }
         }, 50);
@@ -789,18 +838,21 @@
         if (blogSec) blogSec.style.display = 'block';
         if (proofsSec) proofsSec.style.display = 'none';
         if (btnDeliverables) btnDeliverables.classList.add('primary');
-        const tocLinks = document.querySelectorAll('#hub-blog-toc .series-toc-link');
-        tocLinks.forEach(a => a.classList.toggle('active', (a.textContent || '').includes("What's next") || (a.textContent || '').includes('Deliverables')));
         setTimeout(() => {
           const readerEl = document.getElementById('hub-blog-reader');
           if (readerEl) {
-            const h = Array.from(readerEl.querySelectorAll('h2, h3')).find(el => 
-              (el.textContent || '').includes("What's next") || 
-              (el.textContent || '').includes('Deliverables') ||
-              (el.textContent || '').includes('Launch Matrix')
-            );
+            const headings = Array.from(readerEl.querySelectorAll('h2, h3'));
+            const h2s = Array.from(readerEl.querySelectorAll('h2'));
+            const h = headings.find(el => /What['’]s next|Deliverables|Launch Matrix|Next steps/i.test(el.textContent || ''))
+              || headings.find(el => isDeliverablesSectionTitle(el.textContent || ''))
+              || headings.find(el => /Products used/i.test(el.textContent || ''))
+              || h2s[h2s.length - 1]
+              || headings[headings.length - 1];
             if (h) {
               h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              const tocLinks = Array.from(document.querySelectorAll('#hub-blog-toc .series-toc-link'));
+              const matchedIdx = tocLinks.findIndex(a => isDeliverablesSectionTitle(a.textContent || ''));
+              tocLinks.forEach((a, idx) => a.classList.toggle('active', matchedIdx >= 0 ? idx === matchedIdx : idx === tocLinks.length - 1));
             }
           }
         }, 50);
@@ -831,15 +883,29 @@
       if (!skipHistoryReplace) {
         try {
           const u = new URL(window.location.href);
-          if (mode && mode !== 'guide') {
-            u.searchParams.set('view', mode);
+          const prevView = u.searchParams.get('view') || 'guide';
+          const nextView = (mode && mode !== 'guide') ? mode : 'guide';
+          if (nextView !== 'guide') {
+            u.searchParams.set('view', nextView);
             if (targetId) u.searchParams.set('target', targetId);
             else u.searchParams.delete('target');
           } else {
             u.searchParams.delete('view');
             u.searchParams.delete('target');
           }
-          history.replaceState(null, '', u.pathname + u.search + u.hash);
+          const stateObj = {
+            tab: getActivePortalTabName(),
+            ws: u.searchParams.get('ws') || null,
+            doc: u.searchParams.get('doc') || null,
+            view: u.searchParams.get('view') || null,
+            wb: null
+          };
+          const nextUrl = u.pathname + u.search + u.hash;
+          if (prevView !== nextView && (prevView === 'proofs' || nextView === 'proofs')) {
+            history.pushState(stateObj, '', nextUrl);
+          } else {
+            history.replaceState(stateObj, '', nextUrl);
+          }
         } catch (_) {}
       }
     }

@@ -63,9 +63,9 @@
       let p3Title = 'AI Foundation', p3Sub = 'Vertex AI Gemini 2.5', p3Desc = 'Prompt prefix caching & Model Armor';
       let p4Title = 'Multi-Cloud Egress', p4Sub = 'AWS Bedrock AgentCore MCP', p4Desc = '10 upstream SaaS verification targets';
       let jumps = [
-        ['#architecture', 'Architecture'],
-        ['#live-3p-before-after-ui-proof', 'Live Verification'],
-        ['#design-considerations', 'Design Considerations']
+        ['architecture', 'Architecture'],
+        ['live-3p-before-after-ui-proof', 'Live Verification'],
+        ['design-considerations', 'Design Considerations']
       ];
 
       if (dp.includes('ws2')) {
@@ -76,11 +76,11 @@
         p3Title = 'AI & Reasoning'; p3Sub = 'Vertex AI Context Caching'; p3Desc = '78% FinOps cost reduction on 32k prefix';
         p4Title = 'Security & Ingress'; p4Sub = 'Cloud Armor + Model Armor'; p4Desc = '10-point red-team breach defense';
         jumps = [
-          ['#core-terminology-and-pooled-multi-tenant-systems-primitives', 'Core Primitives'],
-          ['#architecture', 'C4 Architecture & 7 Topologies'],
-          ['#design-considerations', 'FinOps & Security Guardrails'],
-          ['#live-3p-before-after-ui-proof', 'Live 10-SaaS Proof (2880×1800)'],
-          ['#frequently-asked-questions-executive-and-ciso-decision-guide-for-pattern-a', 'CISO FAQ']
+          ['core-terminology-and-pooled-multi-tenant-systems-primitives', 'Core Primitives'],
+          ['architecture', 'C4 Architecture & 7 Topologies'],
+          ['design-considerations', 'FinOps & Security Guardrails'],
+          ['live-3p-before-after-ui-proof', 'Live 10-SaaS Proof (2880×1800)'],
+          ['frequently-asked-questions-executive-and-ciso-decision-guide-for-pattern-a', 'CISO FAQ']
         ];
       } else if (dp.includes('ws1')) {
         patternTitle = 'Reference Architecture &bull; 5-Hop Zero-Trust Baseline &amp; Identity Taxonomy';
@@ -90,11 +90,11 @@
         p3Title = 'Memory & Sessions'; p3Sub = '5-Level Memory Bank (L1..L5)'; p3Desc = 'Hop 3 namespace-isolated episodic memory';
         p4Title = 'AI Safety & DLP'; p4Sub = 'Model Armor + Cloud DLP'; p4Desc = 'Hop 4 NLC guardrails & Hop 5 PII redaction';
         jumps = [
-          ['#taxonomy-and-system-abstractions', 'Architecture Taxonomy'],
-          ['#architecture', '5-Hop Pipeline'],
-          ['#security-and-identity-federation', 'Identity Federation'],
-          ['#live-3p-before-after-ui-proof', 'Live 10-SaaS Proof'],
-          ['#what-s-next', 'Next Steps']
+          ['core-terminology-systems-primitives-and-the-saas-ai-architect-s-dilemma', 'Architecture Taxonomy'],
+          ['architecture', '5-Hop Pipeline'],
+          ['design-considerations', 'Security & Guardrails'],
+          ['live-3p-before-after-ui-proof', 'Live 10-SaaS Proof'],
+          ['what-s-next', 'Next Steps']
         ];
       } else if (dp.includes('ws3')) {
         patternTitle = 'Pattern B &bull; Sovereign Silo Multi-Tenant Architecture';
@@ -104,11 +104,11 @@
         p3Title = 'AI Quotas'; p3Sub = 'Dedicated Vertex AI Quotas'; p3Desc = 'Dedicated throughput & token reservations';
         p4Title = 'Cryptographic Purge'; p4Sub = 'Per-Tenant CMEK Keyrings'; p4Desc = '1-click instant cryptographic kill-switch';
         jumps = [
-          ['#architecture', 'Sovereign Silo Topologies'],
-          ['#cmek-killswitch-and-crypto-purge', 'CMEK Killswitch'],
-          ['#finops-and-cost-modeling', 'Silo Cost Modeling'],
-          ['#live-3p-before-after-ui-proof', 'Live 10-SaaS Proof'],
-          ['#faq', 'CISO FAQ']
+          ['core-terminology-and-sovereign-silo-systems-primitives', 'Sovereign Primitives'],
+          ['architecture', 'Sovereign Silo Topologies'],
+          ['security-privacy-and-compliance', 'CMEK Kill-Switch & Security'],
+          ['cost-optimization', 'Silo Cost Modeling'],
+          ['live-3p-before-after-ui-proof', 'Live 10-SaaS Proof']
         ];
       } else if (dp.includes('ws4')) {
         patternTitle = 'Pattern C &bull; Smart Hybrid Router &amp; Dynamic Live Migration';
@@ -118,11 +118,11 @@
         p3Title = 'Tiered AI'; p3Sub = 'Tiered Vertex AI Routing'; p3Desc = 'Flash for pooled, Pro for sovereign';
         p4Title = 'Private Ingress'; p4Sub = 'Dynamic Private Service Connect'; p4Desc = 'Per-tenant PSC endpoints & firewalls';
         jumps = [
-          ['#architecture', 'Hybrid Router Topologies'],
-          ['#zero-downtime-migration', 'Live Migration Engine'],
-          ['#cost-tiering', 'Dynamic Tiering FinOps'],
-          ['#live-3p-before-after-ui-proof', 'Live 10-SaaS Proof'],
-          ['#faq', 'CISO FAQ']
+          ['architecture', 'Hybrid Router Topologies'],
+          ['3-phase-zero-downtime-live-tier-upgrade-sequence-figure-3', 'Live Migration Engine'],
+          ['cost-optimization', 'Dynamic Tiering FinOps'],
+          ['live-3p-before-after-ui-proof', 'Live 10-SaaS Proof'],
+          ['what-s-next', 'Next Steps & Workbench']
         ];
       } else if (dp.includes('ws5')) {
         patternTitle = 'Synthesis &bull; Tenancy Decision Guide, FinOps TCO &amp; CISO Evaluation';
@@ -132,15 +132,19 @@
         p3Title = 'FinOps Realization'; p3Sub = '3-Year TCO Cost Curves'; p3Desc = 'Unit economics across 100 to 10k tenants';
         p4Title = 'Governance'; p4Sub = 'CISO Compliance Checklist'; p4Desc = 'SOC2, HIPAA, PCI-DSS, FedRAMP mapping';
         jumps = [
-          ['#decision-framework', 'Decision Framework'],
-          ['#the-agentic-triad', 'The Agentic Triad'],
-          ['#finops-and-tco-analysis', '3-Year TCO Analysis'],
-          ['#ciso-executive-evaluation', 'CISO Evaluation'],
-          ['#companion-presentation-deck', 'Companion Presentation']
+          ['design-alternatives', 'Decision Framework'],
+          ['architecture', 'The Agentic Triad'],
+          ['cost-optimization', '3-Year TCO Analysis'],
+          ['design-considerations', 'CISO Evaluation'],
+          ['what-s-next', 'Companion Presentation']
         ];
       }
 
-      const jumpLinksHtml = jumps.map(([href, label]) => `<a href="${href}" class="arch-nav-pill">${escapeHtml(label)} &rarr;</a>`).join(' ');
+      const jumpLinksHtml = jumps.map(([slug, label]) => {
+        const cleanSlug = String(slug || '').replace(/^#/, '');
+        const safeSlug = cleanSlug.replace(/'/g, "\\'");
+        return `<a href="#${escapeHtml(cleanSlug)}" data-quick-jump-slug="${escapeHtml(cleanSlug)}" onclick="event.preventDefault(); scrollToReaderAnchor('${safeSlug}');" class="arch-nav-pill">${escapeHtml(label)} &rarr;</a>`;
+      }).join(' ');
 
       return `
         <div class="gcp-exec-summary-card" id="blog-exec-summary-card" data-no-hover-toolbar="true" style="background:#ffffff; border:1px solid #cbd5e1; border-left:5px solid #1a73e8; border-radius:10px; padding:18px 22px; margin:14px 0 24px 0; box-shadow:0 2px 8px rgba(15,23,42,0.04);">
@@ -152,7 +156,7 @@
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
               <span style="font-size:12px; color:#64748b; font-weight:600;">Zero-Trust 10/10 PASS &bull; 78% FinOps Savings${timeBadge}</span>
-              <button type="button" class="sim-btn" style="padding:2px 8px; font-size:11px; color:#1a73e8; font-weight:700;" onclick="switchTab('overview'); switchPatternSelectorMode('mcda'); document.getElementById('ov-pattern-selector').scrollIntoView({behavior:'smooth'});">🎯 Tenancy Fit Scorer &rarr;</button>
+              <button type="button" class="sim-btn" style="padding:2px 8px; font-size:11px; color:#1a73e8; font-weight:700;" onclick="switchTab('overview', document.getElementById('tab-btn-overview')); if (typeof switchOverviewStageView === 'function') switchOverviewStageView('tree', document.getElementById('ov-pill-view-tree')); switchPatternSelectorMode('mcda'); setTimeout(function(){ var el = document.getElementById('ov-pattern-selector'); if (el) el.scrollIntoView({behavior:'smooth', block:'start'}); }, 40);">🎯 Tenancy Fit Scorer &rarr;</button>
             </div>
           </div>
           <div style="font-size:14.5px; line-height:1.65; color:#1e293b; margin-bottom:14px;">
@@ -180,7 +184,7 @@
               <div style="font-size:11px; color:#64748b;">${p4Desc}</div>
             </div>
           </div>
-          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:12px; color:#475569; padding-top:8px; border-top:1px solid #f1f5f9;">
+          <div id="blog-exec-quick-jumps" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:12px; color:#475569; padding-top:8px; border-top:1px solid #f1f5f9;">
             <strong style="color:#0f172a;">Quick Navigation:</strong>
             ${jumpLinksHtml}
           </div>
@@ -216,6 +220,10 @@
 
       // Strip duplicate "Editable assets: ..." link sentences inside *Figure N.* captions (already provided by the figure card header toolbar)
       body = body.replace(/(\*Figure\s+\d+\.[^\n*]*?)\s*Editable assets:[^\n*]*(\*?)/g, '$1$2');
+
+      // Normalize canonical AWS S3 audit ledger URI & Pattern C tier-upgrade function symbol at render time (preserving blogs/*.md SHA-256 on disk)
+      body = body.replace(/cymbal-multi-tenant-audit-ledger-393036065405-us-east-1/g, 'cymbal-aws-federation-393036065405-us-east-1');
+      body = body.replace(/\bpromote_tenant_zero_downtime\b/g, 'execute_zero_downtime_tier_upgrade');
 
       // Extract keyed <!-- E2E_FLOW_START:diagId --> ... <!-- E2E_FLOW_END:diagId --> (used in Master E2E Guide) into collapsible accordions
       const e2eBlocks = [];
@@ -313,7 +321,7 @@
               const diagId = diagMatch ? diagMatch[1] : '';
               if (!diagId) {
                 const slideMatch = resolved.match(/(?:slides\/previews\/)?(ws[1-5])-12slide-visual-deck\/slide_(\d+)\.png/i);
-                const isFigureDiagram = Boolean(slideMatch || /^Figure/i.test(alt) || resolved.includes('/slides/previews/'));
+                const isFigureDiagram = Boolean(slideMatch || /^Figure /i.test(alt) || resolved.includes('/slides/previews/'));
                 if (isFigureDiagram) {
                   const wsKey = slideMatch ? slideMatch[1].toUpperCase() : (activeHubWsKey || 'WS1');
                   const slideNum = slideMatch ? parseInt(slideMatch[2], 10) : 1;
@@ -340,11 +348,11 @@
                 return `<div class="gcp-figure-card" id="inline-fig-card-${figSlug}" data-card-id="inline-fig-card-${figSlug}" data-card-type="figure" data-no-hover-toolbar="true" data-card-title="${escapeHtml(alt)}" data-doc-path="${escapeHtml(docRelPath || '')}" style="margin:0; padding:8px 10px; display:flex; flex-direction:column; justify-content:space-between;"><img src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:100%; max-width:100%; max-height:330px; height:auto; object-fit:contain; background:#f8fafc; display:block; margin:0; border-radius:6px; border:1px solid #e2e8f0; cursor:zoom-in;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', this.alt); } else { window.open('${resolved}', '_blank'); }" /><div class="gcp-figure-caption" style="font-size:11.5px; line-height:1.35; margin-top:6px; display:flex; justify-content:space-between; align-items:flex-start; gap:8px;"><span class="card-editable-body"><strong>${alt}</strong></span><a href="${resolved}" target="_blank" rel="noopener" style="color:#1a73e8; font-weight:600; text-decoration:none; white-space:nowrap;">&#128269; High-Res &#8599;</a></div></div>`;
               }
               const meta = findDiagramMetaById(diagId);
-              const slideAuthoredC4Num = ({
-                'ws1-l1-logical-security-taxonomy': 8,
-                'ws1-l3-process-sequence-swimlane': 13,
-                'ws1-l4-wire-protocol-transformation': 14
-              })[diagId] || 0;
+              const figWsKeyRaw = inferWorkstreamFromDocPath(docRelPath || '') || activeHubWsKey || 'WS1';
+              const figWsKey = figWsKeyRaw === 'ALL' ? 'WS1' : figWsKeyRaw;
+              const slideAuthoredC4Num = /^ws[1-5]-l1-/i.test(diagId)
+                ? (figWsKey === 'WS1' ? 8 : 7)
+                : (/^ws[1-5]-l3-/i.test(diagId) ? 13 : (/^ws[1-5]-l4-/i.test(diagId) ? 14 : 0));
               const hasFlow = !slideAuthoredC4Num && meta && meta.logicalSlide && meta.technicalSlide && (meta.logicalSlide !== meta.decomposedSlide);
               const flowBtnHtml = hasFlow
                 ? `<button type="button" id="inline-fig-btn-flow-${diagId}" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--blue); color:var(--link); font-weight:700;" onclick="toggleInlineFigureFlow('${diagId}')">&#129517; Step-by-Step Flow &#9662;</button>`
@@ -364,7 +372,7 @@
                   </div>`
                 : '';
               const rightControlsHtml = slideAuthoredC4Num
-                ? `<button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; font-weight:600;" onclick="openCloudViewerModal('WS1', ${slideAuthoredC4Num}, 'slides')">&#128202; Slide #${slideAuthoredC4Num}</button>
+                ? `<button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; font-weight:600;" onclick="openCloudViewerModal('${figWsKey}', ${slideAuthoredC4Num}, 'slides')">&#128202; Slide #${slideAuthoredC4Num} (${figWsKey})</button>
                    <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', '${escapeHtml(alt).replace(/'/g, "\\'")}'); } else { window.open('${resolved}', '_blank'); }">&#128269; Zoom</button>`
                 : `${flowBtnHtml}
                    <details class="export-dropdown">
@@ -407,13 +415,30 @@
                 return `<a href="${hrefUrl}" onclick="event.preventDefault(); openDocInReader('${clean.replace(/'/g, "\\'")}', '${hashArg}');" style="color:var(--link); font-weight:600;">${label}</a>`;
               }
               let cleanHref = (!/^[a-z][a-z0-9+.-]*:/i.test(resolved) && !resolved.startsWith('/')) ? normalizeRepoPath(resolved) : resolved;
+              if (/^https:\/\/docs\.google\.com\/(?:document|presentation)\/d\//i.test(cleanHref)) {
+                cleanHref = cleanHref.replace(/([?&])authuser=[^&#]*(&?)/gi, (_, p1, p2) => (p1 === '?' && p2 === '&' ? '?' : (p1 === '&' && p2 === '&' ? '&' : ''))).replace(/[?&]$/, '');
+                const rkMap = {
+                  '1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os': '0-PgO-X5icAK687_G-_WZFpQ',
+                  '111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw': '0-OyYSOmx22u8x4Q1kHunGyQ',
+                  '1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY': '0-KRCBVysg1k7J4IvKwJKuYQ',
+                  '150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM': '0-hSujxBUvoiHkoIFajcWeQg',
+                  '1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE': '0-VBrM33i2sQ8J1B3Z7ycw5g',
+                  '1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM': '0-hzmJ995FIAdtQEUwWa9YQw'
+                };
+                const idMatch = cleanHref.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                if (idMatch && rkMap[idMatch[1]] && !/resourcekey=/i.test(cleanHref)) {
+                  const [basePart, fragPart] = cleanHref.split('#');
+                  const sep = basePart.includes('?') ? '&' : '?';
+                  cleanHref = `${basePart}${sep}resourcekey=${rkMap[idMatch[1]]}${fragPart ? '#' + fragPart : ''}`;
+                }
+              }
               if (cleanHref === 'diagrams/ws1-l1-logical-security-taxonomy.drawio' && /Draw\.io Source/i.test(label)) {
                 cleanHref = 'diagrams/ws1-multi-tenant-taxonomy-overview.drawio';
               } else {
                 const c4StubMatch = cleanHref.match(/^diagrams\/(ws1-l[134]-[a-z0-9-]+)\.(?:drawio|svg)$/i);
                 if (c4StubMatch) cleanHref = `diagrams/${c4StubMatch[1]}.drawio.png`;
               }
-              if (!/^[a-z][a-z0-9+.-]*:/i.test(cleanHref) && !cleanHref.startsWith('/') && (/\.(py|sql|tf|tfvars|yaml|yml|sh|json)$/i.test(cleanHref) || /(2\.6-terraform-starter|3\.6-terraform-silo-blueprint|4\.6-terraform-hybrid-psc-blueprint)\/?$/i.test(cleanHref))) {
+              if (!/^[a-z][a-z0-9+.-]*:/i.test(cleanHref) && !cleanHref.startsWith('/') && (/\.(py|sql|tf|tfvars|yaml|yml|sh|json)$/i.test(cleanHref) || /(^core-cymbal-agent|2\.6-terraform-starter|3\.6-terraform-silo-blueprint|4\.6-terraform-hybrid-psc-blueprint|2\.3-solution-implementation|3\.3-solution-implementation|4\.3-solution-implementation|4\.5-zero-downtime-tier-upgrade-suite)\/?$/i.test(cleanHref))) {
                 return `<a href="/?tab=screenshots&wb=codebase" onclick="event.preventDefault(); openCodeOrArtifactInWorkbench('${cleanHref.replace(/'/g, "\\'")}');" style="color:var(--link); font-weight:600;">${label}</a>`;
               }
               const dlAttr = /\.drawio$/i.test(cleanHref) ? ' download' : ' target="_blank" rel="noopener"';
@@ -711,18 +736,25 @@
       relPath = resolveDocAlias(relPath);
       const wsKey = inferWorkstreamFromDocPath(relPath);
       switchTab('patterns', document.getElementById('tab-btn-patterns'), skipHistoryPush);
+      if (!skipHistoryPush) {
+        const proofsSec = document.getElementById('hub-proofs-section');
+        if (proofsSec && proofsSec.style.display !== 'none' && typeof window.setHubViewMode === 'function') {
+          window.setHubViewMode('guide', null, true);
+        }
+      }
       if (wsKey && GUIDED_WORKSTREAMS[wsKey] && wsKey !== activeHubWsKey) {
         selectGuidedWorkstream(wsKey, relPath, anchorHash, skipHistoryPush);
       } else {
+        if (!skipHistoryPush) {
+          syncPortalUrl({
+            tab: 'patterns',
+            ws: wsKey || (typeof activeHubWsKey !== 'undefined' ? activeHubWsKey : 'WS1'),
+            doc: relPath,
+            view: null,
+            hash: anchorHash || ''
+          });
+        }
         loadHubBlogDoc(relPath, anchorHash);
-      }
-      if (!skipHistoryPush) {
-        syncPortalUrl({
-          tab: 'patterns',
-          ws: wsKey || (typeof activeHubWsKey !== 'undefined' ? activeHubWsKey : 'WS1'),
-          doc: relPath,
-          hash: anchorHash
-        });
       }
       const currentView = new URLSearchParams(window.location.search).get('view');
       if (!anchorHash && (!currentView || currentView === 'guide')) {
@@ -1149,16 +1181,16 @@
       const ws = GUIDED_WORKSTREAMS[activeHubWsKey];
       const switcher = document.getElementById('hub-doc-switcher');
       if (switcher && ws && Array.isArray(ws.docs)) {
-        switcher.style.display = ws.docs.length > 1 ? 'flex' : 'none';
+        switcher.style.display = ws.docs.length > 1 ? 'inline-flex' : 'none';
         switcher.style.alignItems = 'center';
         const optionsHtml = ws.docs.map(d => {
           const sel = d.path === relPath ? ' selected' : '';
           return `<option value="${escapeHtml(d.path)}"${sel}>${escapeHtml(d.label)}</option>`;
         }).join('');
         switcher.innerHTML = ws.docs.length > 1 ? `
-          <label for="hub-doc-select" style="display:inline-flex; align-items:center; gap:6px; margin:0; font-size:12px; font-weight:700; color:var(--heading);">
-            <span>&#128194; Active Deliverable:</span>
-            <select id="hub-doc-select" style="width:auto; min-width:230px; padding:5px 26px 5px 10px; font-size:12px; font-weight:600;" onchange="loadHubBlogDoc(this.value)" aria-label="Select Workstream Deliverable Document">
+          <label for="hub-doc-select" style="display:inline-flex; align-items:center; gap:5px; margin:0; font-size:11.5px; font-weight:700; color:#334155; white-space:nowrap;">
+            <span>&#128194; Doc:</span>
+            <select id="hub-doc-select" style="width:auto; min-width:195px; max-width:255px; height:26px; padding:2px 24px 2px 8px; font-size:11.5px; font-weight:600; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#0f172a;" onchange="openDocInReader(this.value)" aria-label="Select Workstream Deliverable Document">
               ${optionsHtml}
             </select>
           </label>
@@ -1180,7 +1212,27 @@
         activeHubRawMd = data.content;
         readerEl.innerHTML = renderMarkdownToHtml(data.content, relPath);
         if (typeof window.enhanceBlogBeforeAfterSection === 'function') { window.enhanceBlogBeforeAfterSection(); }
-        if (typeof window.enhanceBlogExecutiveLayout === 'function') { window.enhanceBlogExecutiveLayout(relPath); }
+
+        // Ensure 100% of Quick Navigation pills resolve to real headings (including companion sub-docs & Master Guide)
+        const quickJumpsEl = document.getElementById('blog-exec-quick-jumps');
+        if (quickJumpsEl) {
+          const jumpLinks = Array.from(quickJumpsEl.querySelectorAll('a[data-quick-jump-slug]'));
+          const unresolved = jumpLinks.some(a => {
+            const s = a.getAttribute('data-quick-jump-slug') || '';
+            return !s || (!document.getElementById(s) && !readerEl.querySelector(`[data-slug="${s}"], [data-collapsed-slug="${s}"]`));
+          });
+          if (unresolved) {
+            const realH2s = Array.from(readerEl.querySelectorAll('h2')).filter(h => h.id && !(h.textContent || '').includes('Executive Architecture Summary')).slice(0, 5);
+            if (realH2s.length > 0) {
+              quickJumpsEl.innerHTML = `<strong style="color:#0f172a;">Quick Navigation:</strong> ` + realH2s.map(h => {
+                const hid = h.id;
+                const safeHid = hid.replace(/'/g, "\\'");
+                const shortLabel = (h.textContent || '').replace(/\s*\(Figure.*$/i, '').replace(/\s*—.*$/, '').trim().slice(0, 36);
+                return `<a href="#${escapeHtml(hid)}" data-quick-jump-slug="${escapeHtml(hid)}" onclick="event.preventDefault(); scrollToReaderAnchor('${safeHid}');" class="arch-nav-pill">${escapeHtml(shortLabel)} &rarr;</a>`;
+              }).join(' ');
+            }
+          }
+        }
 
         // Build vertical sticky left TOC rail from h2 elements inside #hub-blog-reader
         // Preserve existing GitHub slug IDs on h2 elements so in-page #anchor links work!
@@ -1198,7 +1250,7 @@
             tocEl.innerHTML = `<div class="series-toc-title">On This Page</div><div class="muted" style="font-size:12px;">Document Overview</div>`;
           }
 
-          // Setup scroll-spy to dynamically track active reading section in left TOC rail
+          // Setup scroll-spy to dynamically track active reading section in left TOC rail & View Mode bar
           if (window._hubTocScrollSpyCleanup) {
             window.removeEventListener('scroll', window._hubTocScrollSpyCleanup);
             window._hubTocScrollSpyCleanup = null;
@@ -1222,6 +1274,20 @@
                     tocLinks.forEach((a, idx) => {
                       a.classList.toggle('active', idx === curIdx);
                     });
+                    const proofsSec = document.getElementById('hub-proofs-section');
+                    if (!proofsSec || proofsSec.style.display === 'none') {
+                      const activeText = h2s[curIdx] ? (h2s[curIdx].textContent || '') : '';
+                      let spyMode = 'guide';
+                      if (typeof window.isDeliverablesSectionTitle === 'function' && window.isDeliverablesSectionTitle(activeText)) {
+                        spyMode = 'deliverables';
+                      } else if (typeof window.isEapSectionTitle === 'function' && window.isEapSectionTitle(activeText)) {
+                        spyMode = 'eap';
+                      }
+                      ['guide', 'eap', 'deliverables'].forEach(m => {
+                        const b = document.getElementById('btn-view-mode-' + m);
+                        if (b) b.classList.toggle('primary', m === spyMode);
+                      });
+                    }
                   }
                   ticking = false;
                 });
@@ -1243,10 +1309,10 @@
           const nextWs = nextKey ? GUIDED_WORKSTREAMS[nextKey] : null;
           footerEl.innerHTML = `
             <div>
-              ${prevWs ? `<button type="button" class="sim-btn" onclick="selectGuidedWorkstream('${prevKey}'); document.getElementById('hub-blog-section').scrollIntoView({behavior:'smooth', block:'start'});">&larr; Previous: ${escapeHtml(prevKey)} (${escapeHtml(prevWs.docs[0].label)})</button>` : ''}
+              ${prevWs ? `<button type="button" class="sim-btn" onclick="selectGuidedWorkstream('${prevKey}', null, ''); document.getElementById('hub-blog-section').scrollIntoView({behavior:'smooth', block:'start'});">&larr; Previous: ${escapeHtml(prevKey)} (${escapeHtml(prevWs.docs[0].label)})</button>` : ''}
             </div>
             <div>
-              ${nextWs ? `<button type="button" class="sim-btn primary" onclick="selectGuidedWorkstream('${nextKey}'); document.getElementById('hub-blog-section').scrollIntoView({behavior:'smooth', block:'start'});">Next in Series: ${escapeHtml(nextKey)} (${escapeHtml(nextWs.docs[0].label)}) &rarr;</button>` : ''}
+              ${nextWs ? `<button type="button" class="sim-btn primary" onclick="selectGuidedWorkstream('${nextKey}', null, ''); document.getElementById('hub-blog-section').scrollIntoView({behavior:'smooth', block:'start'});">Next in Series: ${escapeHtml(nextKey)} (${escapeHtml(nextWs.docs[0].label)}) &rarr;</button>` : ''}
             </div>
           `;
         }
@@ -1296,6 +1362,13 @@
       activeHubWsKey = wsKey;
       const ws = GUIDED_WORKSTREAMS[wsKey];
 
+      if (!skipHistoryPush) {
+        const proofsSec = document.getElementById('hub-proofs-section');
+        if (proofsSec && proofsSec.style.display !== 'none' && typeof window.setHubViewMode === 'function') {
+          window.setHubViewMode('guide', null, true);
+        }
+      }
+
       document.querySelectorAll('.ws-step-btn').forEach(b => {
         b.classList.remove('active');
         b.setAttribute('aria-selected', 'false');
@@ -1341,16 +1414,17 @@
       activeHubSlideIdx = 0;
       selectHubDiagram(0);
       const targetDoc = customDocPath || (ws.docs && ws.docs[0] ? ws.docs[0].path : '');
-      loadHubBlogDoc(targetDoc, anchorHash);
 
       if (!skipHistoryPush) {
         syncPortalUrl({
           tab: 'patterns',
           ws: wsKey,
           doc: targetDoc,
-          hash: anchorHash
+          view: null,
+          hash: anchorHash || ''
         });
       }
+      loadHubBlogDoc(targetDoc, anchorHash);
     }
     window.selectGuidedWorkstream = selectGuidedWorkstream;
 
@@ -1383,17 +1457,17 @@
           slideCount: 34,
           googleSlidesId: '1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE',
           googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit?resourcekey=0-VBrM33i2sQ8J1B3Z7ycw5g',
-          googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/preview',
-          googleSlidesEmbedUrl: 'https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/embed?start=false&loop=false&delayms=5000',
-          googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/export/pdf'
+          googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/preview?resourcekey=0-VBrM33i2sQ8J1B3Z7ycw5g',
+          googleSlidesEmbedUrl: 'https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/embed?start=false&loop=false&delayms=5000&resourcekey=0-VBrM33i2sQ8J1B3Z7ycw5g',
+          googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/export/pdf?resourcekey=0-VBrM33i2sQ8J1B3Z7ycw5g'
         },
         WS3: {
           slideCount: 34,
           googleSlidesId: '1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM',
           googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit?resourcekey=0-hzmJ995FIAdtQEUwWa9YQw',
-          googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/preview',
-          googleSlidesEmbedUrl: 'https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/embed?start=false&loop=false&delayms=5000',
-          googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/export/pdf'
+          googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/preview?resourcekey=0-hzmJ995FIAdtQEUwWa9YQw',
+          googleSlidesEmbedUrl: 'https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/embed?start=false&loop=false&delayms=5000&resourcekey=0-hzmJ995FIAdtQEUwWa9YQw',
+          googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/export/pdf?resourcekey=0-hzmJ995FIAdtQEUwWa9YQw'
         },
         WS4: {
           slideCount: 34,
@@ -1424,20 +1498,20 @@
         WS1: {
           googleDocsId: '1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os',
           googleDocsEditUrl: 'https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?resourcekey=0-PgO-X5icAK687_G-_WZFpQ',
-          googleDocsPreviewUrl: 'https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/preview',
-          googleDocsPdfUrl: 'https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/export?format=pdf'
+          googleDocsPreviewUrl: 'https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/preview?resourcekey=0-PgO-X5icAK687_G-_WZFpQ',
+          googleDocsPdfUrl: 'https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/export?format=pdf&resourcekey=0-PgO-X5icAK687_G-_WZFpQ'
         },
         WS2: {
           googleDocsId: '111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw',
           googleDocsEditUrl: 'https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/edit?resourcekey=0-OyYSOmx22u8x4Q1kHunGyQ',
-          googleDocsPreviewUrl: 'https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/preview',
-          googleDocsPdfUrl: 'https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/export?format=pdf'
+          googleDocsPreviewUrl: 'https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/preview?resourcekey=0-OyYSOmx22u8x4Q1kHunGyQ',
+          googleDocsPdfUrl: 'https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/export?format=pdf&resourcekey=0-OyYSOmx22u8x4Q1kHunGyQ'
         },
         WS3: {
           googleDocsId: '1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY',
           googleDocsEditUrl: 'https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/edit?resourcekey=0-KRCBVysg1k7J4IvKwJKuYQ',
-          googleDocsPreviewUrl: 'https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/preview',
-          googleDocsPdfUrl: 'https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/export?format=pdf'
+          googleDocsPreviewUrl: 'https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/preview?resourcekey=0-KRCBVysg1k7J4IvKwJKuYQ',
+          googleDocsPdfUrl: 'https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/export?format=pdf&resourcekey=0-KRCBVysg1k7J4IvKwJKuYQ'
         },
         WS4: {
           googleDocsId: '1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww',
@@ -1454,8 +1528,8 @@
         ALL: {
           googleDocsId: '150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM',
           googleDocsEditUrl: 'https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/edit?resourcekey=0-hSujxBUvoiHkoIFajcWeQg',
-          googleDocsPreviewUrl: 'https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/preview',
-          googleDocsPdfUrl: 'https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/export?format=pdf'
+          googleDocsPreviewUrl: 'https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/preview?resourcekey=0-hSujxBUvoiHkoIFajcWeQg',
+          googleDocsPdfUrl: 'https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/export?format=pdf&resourcekey=0-hSujxBUvoiHkoIFajcWeQg'
         }
       }
     };
@@ -1981,7 +2055,7 @@
       if (btn) btn.textContent = '⏳ Running 107 Live Multi-Cloud & 10-SaaS Assertions...';
       switchE2EWorkbenchTab('execution');
       try {
-        const resp = await fetch('/api/simulate/all');
+        const resp = await fetch('/api/simulate/all?refresh=1');
         if (resp.ok) {
           const data = await resp.json();
           if (e2eBundleData && Array.isArray(e2eBundleData.executionSuites) && data.outputs) {
@@ -3348,8 +3422,10 @@
           switchE2EWorkbenchTab(initialWbParam);
         }
 
-        if (initialDocParam) {
-          openDocInReader(initialDocParam, initialHash, true);
+        const initialSimParam = initialParams.get('sim');
+        if (initialSimParam && typeof window.runLiveScenario === 'function') {
+          if (!initialTabParam) switchTab('simulator', document.getElementById('tab-btn-simulator'), true);
+          window.runLiveScenario(initialSimParam);
         }
 
         const initialViewParam = initialParams.get('view');
@@ -3521,22 +3597,38 @@
     };
 
     window.updateMcdaScore = function(key, val) {
-      window.mcdaWeights[key] = parseInt(val, 10);
-      const valEl = document.getElementById('val-' + key);
-      if (valEl) valEl.innerText = val + '%';
+      if (key && val !== undefined) {
+        window.mcdaWeights[key] = parseInt(val, 10);
+      } else {
+        ['compliance', 'finops', 'devops', 'onboarding', 'blast'].forEach(k => {
+          const sEl = document.getElementById('slider-mcda-' + k);
+          if (sEl && sEl.value !== '') {
+            const parsed = parseInt(sEl.value, 10);
+            if (!Number.isNaN(parsed)) window.mcdaWeights[k] = parsed;
+          }
+        });
+      }
+      ['compliance', 'finops', 'devops', 'onboarding', 'blast'].forEach(k => {
+        const v = window.mcdaWeights[k];
+        const vEl = document.getElementById('val-' + k);
+        if (vEl) vEl.innerText = v + '%';
+        const sEl = document.getElementById('slider-mcda-' + k);
+        if (sEl && String(sEl.value) !== String(v)) sEl.value = String(v);
+      });
 
       const capA = [40, 95, 90, 95, 35]; // Pooled
       const capB = [98, 30, 30, 20, 98]; // Sovereign Silo
       const capC = [85, 80, 65, 80, 85]; // Dynamic Hybrid
 
-      const sumW = window.mcdaWeights.compliance + window.mcdaWeights.finops + window.mcdaWeights.devops + window.mcdaWeights.onboarding + window.mcdaWeights.blast || 1;
-      const wArr = [
-        window.mcdaWeights.compliance / sumW,
-        window.mcdaWeights.finops / sumW,
-        window.mcdaWeights.devops / sumW,
-        window.mcdaWeights.onboarding / sumW,
-        window.mcdaWeights.blast / sumW
+      const rawW = [
+        window.mcdaWeights.compliance,
+        window.mcdaWeights.finops,
+        window.mcdaWeights.devops,
+        window.mcdaWeights.onboarding,
+        window.mcdaWeights.blast
       ];
+      const sumW = rawW.reduce((a, b) => a + b, 0) || 1;
+      const wArr = rawW.map(w => w / sumW);
 
       const scoreA = wArr.reduce((acc, w, i) => acc + w * capA[i], 0);
       const scoreB = wArr.reduce((acc, w, i) => acc + w * capB[i], 0);
@@ -3548,6 +3640,23 @@
       if (elB) elB.innerText = scoreB.toFixed(1) + '%';
       const elC = document.getElementById('score-pat-c');
       if (elC) elC.innerText = scoreC.toFixed(1) + '%';
+
+      // Recompute 5-axis SVG radar polygons (center 160,128, max radius 88) modulated by slider weights
+      const cx = 160, cy = 128, maxR = 88;
+      const buildRadarPoints = (caps) => caps.map((c, i) => {
+        const angle = (-Math.PI / 2) + (i * 2 * Math.PI / 5);
+        const weightFactor = 0.35 + 0.65 * (rawW[i] / 100);
+        const r = maxR * (c / 100) * weightFactor;
+        const x = (cx + r * Math.cos(angle)).toFixed(1);
+        const y = (cy + r * Math.sin(angle)).toFixed(1);
+        return `${x},${y}`;
+      }).join(' ');
+      const polyA = document.getElementById('poly-pat-a');
+      if (polyA) polyA.setAttribute('points', buildRadarPoints(capA));
+      const polyB = document.getElementById('poly-pat-b');
+      if (polyB) polyB.setAttribute('points', buildRadarPoints(capB));
+      const polyC = document.getElementById('poly-pat-c');
+      if (polyC) polyC.setAttribute('points', buildRadarPoints(capC));
 
       const recTitle = document.getElementById('pattern-rec-title');
       const recDesc = document.getElementById('pattern-rec-desc');
@@ -3594,7 +3703,13 @@
     window.resetPatternSelector = function() {
       patternSelectorState.q1 = false;
       patternSelectorState.q2 = false;
-      window.updatePatternSelectorUI();
+      window.mcdaWeights = { compliance: 85, finops: 70, devops: 50, onboarding: 60, blast: 90 };
+      const mcdaView = document.getElementById('pattern-mcda-view');
+      if (mcdaView && mcdaView.style.display !== 'none') {
+        window.updateMcdaScore('compliance', 85);
+      } else {
+        window.updatePatternSelectorUI();
+      }
     };
 
     window.updatePatternSelectorUI = function() {
@@ -3884,96 +3999,7 @@
       }
       drawer.style.display = 'block';
       if (btn) btn.innerHTML = '&#9650; Collapse All-10 Inline View';
-    };
-
-    window.enhanceBlogExecutiveLayout = function enhanceBlogExecutiveLayout(relPath) {
-      const readerEl = document.getElementById('hub-blog-reader');
-      if (!readerEl) return;
-
-      // 1. Executive Summary & 4-Pillar Grid Card
-      const h1 = readerEl.querySelector('h1');
-      if (h1 && !document.getElementById('blog-exec-summary-card')) {
-        const isWs2 = (relPath || '').includes('ws2') || (h1.textContent || '').includes('Pattern A');
-        const isWs3 = (relPath || '').includes('ws3') || (h1.textContent || '').includes('Pattern B');
-        const isWs4 = (relPath || '').includes('ws4') || (h1.textContent || '').includes('Pattern C');
-        const isWs5 = (relPath || '').includes('ws5') || (h1.textContent || '').includes('Decision');
-
-        let invariant = 'Hop 1 Ingress PEP strips spoofed headers and verifies DPoP tokens; Hop 3 isolates tenant namespaces; Hop 4 enforces active Semantic NLC guardrails; Hop 5 ensures cryptographic data isolation.';
-        let p1Title = 'Compute & Ingress', p1Sub = 'Cloud Run Gen2 + Cloud Armor', p1Desc = 'Hop 1 PEP header stripping & DPoP token minting';
-        let p2Title = 'Data Isolation', p2Sub = 'AlloyDB Multi-Tenant RLS', p2Desc = 'Tenant-scoped connection pooling & CMEK';
-        let p3Title = 'Memory & Cache', p3Sub = '5-Level Memory Bank (L1..L5)', p3Desc = 'Valkey rate-limiting & Thinking Budget clamp';
-        let p4Title = 'AI & Compliance', p4Sub = 'Model Armor + Semantic NLC', p4Desc = 'Active HTTP 422 defense & Egress SDP PII scrubbing';
-
-        if (isWs3) {
-          invariant = 'Complete physical resource isolation per enterprise tenant with dedicated VPC Service Controls perimeters, isolated AlloyDB clusters, and independent CMEK instant revocation keys.';
-          p1Title = 'Dedicated Compute'; p1Sub = 'Sovereign Cloud Run Instances'; p1Desc = 'Zero shared CPU/RAM between tenant workloads';
-          p2Title = 'Dedicated Data'; p2Sub = 'Isolated AlloyDB Clusters'; p2Desc = 'Per-tenant physical database instances & CMEK';
-          p3Title = 'Perimeter Security'; p3Sub = 'VPC Service Controls'; p3Desc = 'Strict ingress/egress boundaries blocking exfiltration';
-          p4Title = 'Instant Revocation'; p4Sub = 'CMEK Kill-Switch'; p4Desc = 'Cryptographic purge rendering tenant data inaccessible';
-        } else if (isWs4) {
-          invariant = 'Dynamic multi-tenant routing with seamless, zero-downtime tier upgrade from Shared Pooled (Pattern A) to Sovereign Siloed (Pattern B) via Private Service Connect (PSC).';
-          p1Title = 'Dynamic Routing'; p1Sub = 'Smart Ingress Gateway'; p1Desc = 'Real-time tier inspection and tenant dispatch';
-          p2Title = 'Live Migration'; p2Sub = 'Zero-Downtime Data Mover'; p2Desc = 'Dual-write CDC replication during tenant tier upgrade';
-          p3Title = 'Private Connect'; p3Sub = 'Private Service Connect (PSC)'; p3Desc = 'In-VPC cross-project endpoint publication';
-          p4Title = 'Unified Ops'; p4Sub = 'Hybrid Telemetry & Billing'; p4Desc = 'Single-pane monitoring across pooled and siloed tiers';
-        } else if (isWs5) {
-          invariant = 'Executive multi-criteria decision framework evaluating Compliance, FinOps, DevOps velocity, Onboarding agility, and Blast radius to select optimal tenancy architectures.';
-          p1Title = 'Tenancy Selection'; p1Sub = 'Decision Tree & Flowchart'; p1Desc = '3-outcome deterministic pattern evaluation';
-          p2Title = 'MCDA Scorer'; p2Sub = '5-Axis Weighted Fit Model'; p2Desc = 'Sensitivity curves balancing cost vs blast radius';
-          p3Title = 'Maturity Index'; p3Sub = 'L100 -> L400 Progression'; p3Desc = 'Cryptographic certification roadmap';
-          p4Title = 'FinOps Dial'; p4Sub = 'Unit Economics & TCO'; p4Desc = 'Amortization curves across 10..1,000 active tenants';
-        }
-
-        const card = document.createElement('div');
-        card.id = 'blog-exec-summary-card';
-        card.className = 'gcp-exec-summary-card';
-        card.setAttribute('data-no-hover-toolbar', 'true');
-        card.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px; border-bottom:1px solid #cbd5e1; padding-bottom:8px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="badge badge-blue" style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.04em;">Executive Briefing</span>
-              <strong style="font-size:14px; color:#0f172a;">Architectural Invariant &amp; Core Engineering Pillars</strong>
-            </div>
-            <div style="display:flex; gap:6px; align-items:center;">
-              <span class="badge badge-green" style="font-size:11px; font-weight:700;">100% GCP Verified</span>
-              <button type="button" class="sim-btn" style="padding:2px 8px; font-size:11px; color:#1a73e8; font-weight:700;" onclick="switchTab('overview'); switchPatternSelectorMode('mcda'); document.getElementById('ov-pattern-selector').scrollIntoView({behavior:'smooth'});">🎯 Tenancy Fit Scorer &rarr;</button>
-            </div>
-          </div>
-          <p style="margin:0 0 14px 0; font-size:13px; line-height:1.6; color:#334155; font-style:italic;">
-            &ldquo;${escapeHtml(invariant)}&rdquo;
-          </p>
-          <div class="gcp-exec-pillars-grid">
-            <div class="gcp-exec-pillar-card">
-              <span class="pillar-label">${escapeHtml(p1Title)}</span>
-              <strong class="pillar-sub">${escapeHtml(p1Sub)}</strong>
-              <span class="pillar-desc">${escapeHtml(p1Desc)}</span>
-            </div>
-            <div class="gcp-exec-pillar-card">
-              <span class="pillar-label">${escapeHtml(p2Title)}</span>
-              <strong class="pillar-sub">${escapeHtml(p2Sub)}</strong>
-              <span class="pillar-desc">${escapeHtml(p2Desc)}</span>
-            </div>
-            <div class="gcp-exec-pillar-card">
-              <span class="pillar-label">${escapeHtml(p3Title)}</span>
-              <strong class="pillar-sub">${escapeHtml(p3Sub)}</strong>
-              <span class="pillar-desc">${escapeHtml(p3Desc)}</span>
-            </div>
-            <div class="gcp-exec-pillar-card">
-              <span class="pillar-label">${escapeHtml(p4Title)}</span>
-              <strong class="pillar-sub">${escapeHtml(p4Sub)}</strong>
-              <span class="pillar-desc">${escapeHtml(p4Desc)}</span>
-            </div>
-          </div>
-          <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-top:14px; padding-top:10px; border-top:1px solid #e2e8f0; font-size:12px;">
-            <span style="font-weight:700; color:#475569;">Quick Jump:</span>
-            <button type="button" class="arch-nav-pill" onclick="scrollToReaderAnchor('architecture')">🏛️ Architecture &amp; Diagrams</button>
-            <button type="button" class="arch-nav-pill" onclick="scrollToReaderAnchor('live-3p-before-after-ui-proof')">🔄 10 SaaS Before/After UI</button>
-            <button type="button" class="arch-nav-pill" onclick="scrollToReaderAnchor('use-cases')">💼 Use Cases &amp; Scenarios</button>
-            <button type="button" class="arch-nav-pill" onclick="scrollToReaderAnchor('design-considerations')">🛡️ Production Guardrails</button>
-          </div>
-        `;
-        h1.insertAdjacentElement('afterend', card);
-      }
+      drawer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     };
 
     window.enhanceBlogBeforeAfterSection = function enhanceBlogBeforeAfterSection() {
@@ -4034,11 +4060,19 @@
       bar.setAttribute('data-testid', 'blog-inline-ba-toolbar');
       bar.setAttribute('data-no-hover-toolbar', 'true');
       bar.style.cssText = 'display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin:10px 0 14px 0; padding:9px 12px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px;';
-      bar.innerHTML = `
-        <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+      const leftModeControls = pairCount > 0
+        ? `
           <span style="font-size:12px; font-weight:700; color:#0f172a;">In-Blog View:</span>
           <button type="button" class="genuine-3p-filter-btn blog-inline-ba-mode-btn active" onclick="setInlineBlogBaMode('side-by-side', this)">Side-by-Side (Before &rarr; After)</button>
           <button type="button" class="genuine-3p-filter-btn blog-inline-ba-mode-btn" onclick="setInlineBlogBaMode('slider', this)">&#8644; Interactive Split Slider</button>
+        `
+        : `
+          <span style="font-size:12px; font-weight:700; color:#0f172a;">Interactive Proof Mode:</span>
+          <button type="button" class="genuine-3p-filter-btn active" onclick="setHubViewMode('proofs')">&#128248; Launch Interactive Split Slider &amp; Digital Twin (All 20 Proofs) &rarr;</button>
+        `;
+      bar.innerHTML = `
+        <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+          ${leftModeControls}
         </div>
         <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
           ${pairCount < 10 ? `<button type="button" class="sim-btn" style="font-size:11.5px; padding:5px 10px;" onclick="toggleInlineBlogAll10Pairs(this)">&#128269; Show All 10 SaaS Stacks Inline</button>` : ''}
@@ -4066,14 +4100,35 @@
       `;
       bar.insertAdjacentElement('afterend', targetStrip);
 
+      const saasTargetIdByKey = {
+        'saas01': 'HXGGFMZBKE',
+        'saas02': 'IZVODT083Q',
+        'saas03': 'ZS9VGYHBQL',
+        'saas04': 'TWQU0KSRVF',
+        'saas05': 'K5JAEFCQ6E',
+        'saas06': 'TERCK8SLBP',
+        'saas07': 'CCMDEVZV2S',
+        'saas08': 'RAOTMUMJTZ',
+        'saas09': 'G767QR3TQZ',
+        'saas10': 'C7EYM614F2'
+      };
+
       window.scrollToSaasTarget = function(targetKey) {
         const reader = document.getElementById('hub-blog-reader');
         if (!reader) return;
-        const normalized = targetKey.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const normalized = String(targetKey || '').toLowerCase().replace(/[^a-z0-9]/g, '');
         const headings = Array.from(reader.querySelectorAll('h3'));
-        const match = headings.find(h => h.textContent.toLowerCase().replace(/[^a-z0-9]/g, '').includes(normalized));
+        let match = headings.find(h => (h.textContent || '').toLowerCase().replace(/[^a-z0-9]/g, '').includes(normalized));
+        if (!match) {
+          const targetId = saasTargetIdByKey[normalized] || '';
+          const baSection = baH2.parentElement || reader;
+          if (targetId) {
+            const rows = Array.from(baSection.querySelectorAll('tr, .ba-3p-card'));
+            match = rows.find(r => (r.textContent || '').includes(targetId));
+          }
+        }
         if (match) {
-          match.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          match.scrollIntoView({ behavior: 'smooth', block: 'center' });
           match.style.transition = 'background 0.3s ease';
           const prev = match.style.background;
           match.style.background = '#fef08a';
@@ -4087,13 +4142,16 @@
         drawer.className = 'ba-3p-hub-grid';
         drawer.setAttribute('data-no-hover-toolbar', 'true');
         drawer.style.cssText = 'display:none; margin:14px 0 18px 0; padding:12px; background:#f8fafc; border:1.5px dashed #94a3b8; border-radius:10px;';
-        // Insert right before the next H2 (or end of reader)
-        let anchorBefore = bar.nextElementSibling;
+        const sectionParent = targetStrip.parentNode || readerEl;
+        let anchorBefore = targetStrip.nextElementSibling;
         while (anchorBefore && anchorBefore.tagName !== 'H2') {
           anchorBefore = anchorBefore.nextElementSibling;
         }
-        if (anchorBefore) readerEl.insertBefore(drawer, anchorBefore);
-        else readerEl.appendChild(drawer);
+        if (anchorBefore && anchorBefore.parentNode === sectionParent) {
+          sectionParent.insertBefore(drawer, anchorBefore);
+        } else {
+          sectionParent.appendChild(drawer);
+        }
       }
     };
 
@@ -4136,9 +4194,9 @@
         key: "redmine",
         saasId: "SAAS-03",
         title: "Redmine ITSM v5.1",
-        enterpriseDomain: "ServiceNow ITSM (Incident Management REST API)",
-        targetId: "OGJ8586Q2K",
-        mcpTool: "mutate_servicenow_incident_priority",
+        enterpriseDomain: "ServiceNow ITSM & ITOM Change Control",
+        targetId: "ZS9VGYHBQL",
+        mcpTool: "query_servicenow_change_records",
         cloudRunUrl: "https://cymbal-gcp-redmine-itsm-fm3mts5x3a-uw.a.run.app/projects/finvault-itsm/issues?set_filter=1&status_id=*",
         credentials: "Auth: Google Cloud Run IAM OIDC + GCP Secret Manager (cymbal-saas-demo-credentials)",
         username: "admin (IAM OIDC Role)",
@@ -4153,9 +4211,9 @@
         key: "nocodb",
         saasId: "SAAS-04",
         title: "NocoDB EDC / GxP v0.255.2",
-        enterpriseDomain: "Salesforce Data Cloud / Veeva Vault CDMS EDC",
-        targetId: "0C0R3W4A8G",
-        mcpTool: "sync_veeva_edc_patient_cohort",
+        enterpriseDomain: "Veeva Vault RIM & Muse Clinical EDC (21 CFR Part 11)",
+        targetId: "TWQU0KSRVF",
+        mcpTool: "query_muse_study_biomarkers",
         cloudRunUrl: "https://cymbal-gcp-nocodb-edc-fm3mts5x3a-uw.a.run.app/",
         credentials: "Auth: Google Cloud Run IAM OIDC + GCP Secret Manager (cymbal-saas-demo-credentials)",
         username: "sre-lead@finvault.com (IAM OIDC Role)",
@@ -4163,16 +4221,16 @@
         defaultPort: 8085,
         proxyCmd: "python3 scripts/saas_cloudrun_proxy.py nocodb",
         s3Url: "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json",
-        beforeImg: "screenshots/genuine-multicloud-3p-uis/before-after/before_04_nocodb_edc.png",
-        afterImg: "screenshots/genuine-multicloud-3p-uis/before-after/after_04_nocodb_edc.png"
+        beforeImg: "screenshots/genuine-multicloud-3p-uis/before-after/before_04_nocodb_gxp.png",
+        afterImg: "screenshots/genuine-multicloud-3p-uis/before-after/after_04_nocodb_gxp.png"
       },
       gitea: {
         key: "gitea",
         saasId: "SAAS-05",
         title: "Gitea Enterprise Git v1.22.3",
-        enterpriseDomain: "Salesforce Platform / Jira Software Enterprise",
-        targetId: "PZMY8CUVQ4",
-        mcpTool: "create_jira_issue_and_dispatch_escalation",
+        enterpriseDomain: "Salesforce CRM (NA224) & Atlassian Jira Cloud Escalations",
+        targetId: "K5JAEFCQ6E",
+        mcpTool: "create_redacted_sfdc_jira_escalation",
         cloudRunUrl: "https://cymbal-gcp-gitea-sre-fm3mts5x3a-uw.a.run.app/finvault/sre-escalations/issues/1",
         credentials: "Auth: Google Cloud Run IAM OIDC + GCP Secret Manager (cymbal-saas-demo-credentials)",
         username: "sre-lead (IAM OIDC Role)",
@@ -4187,9 +4245,9 @@
         key: "trino",
         saasId: "SAAS-06",
         title: "Trino Distributed SQL v440",
-        enterpriseDomain: "Databricks Unity Catalog / Trino Iceberg Federation",
-        targetId: "O9DFW35K27",
-        mcpTool: "execute_unity_cross_catalog_sql",
+        enterpriseDomain: "Databricks Data Intelligence Platform (Unity Catalog SQL)",
+        targetId: "TERCK8SLBP",
+        mcpTool: "execute_uc_genie_federated_sql",
         cloudRunUrl: "https://cymbal-gcp-trino-sql-fm3mts5x3a-uw.a.run.app/ui/",
         credentials: "Username: sre-lead@finvault.com (No password)",
         username: "sre-lead@finvault.com",
@@ -4204,9 +4262,9 @@
         key: "clickhouse",
         saasId: "SAAS-07",
         title: "ClickHouse Data Warehouse v24.8",
-        enterpriseDomain: "Snowflake Cortex Data Cloud / ClickHouse Cloud",
-        targetId: "0C895K1WQE",
-        mcpTool: "query_snowflake_cortex_analyst",
+        enterpriseDomain: "Snowflake AI Data Cloud (Cortex Analyst & SQL v2)",
+        targetId: "CCMDEVZV2S",
+        mcpTool: "execute_cortex_analyst_sql",
         cloudRunUrl: "https://cymbal-gcp-clickhouse-dw-fm3mts5x3a-uw.a.run.app/play",
         credentials: "Auth: Google Cloud Run IAM OIDC + GCP Secret Manager (cymbal-saas-demo-credentials)",
         username: "finvault_user (IAM OIDC Role)",
@@ -4214,8 +4272,8 @@
         defaultPort: 8088,
         proxyCmd: "python3 scripts/saas_cloudrun_proxy.py clickhouse",
         s3Url: "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json",
-        beforeImg: "screenshots/genuine-multicloud-3p-uis/before-after/before_07_clickhouse_dw.png",
-        afterImg: "screenshots/genuine-multicloud-3p-uis/before-after/after_07_clickhouse_dw.png"
+        beforeImg: "screenshots/genuine-multicloud-3p-uis/before-after/before_07_clickhouse_rls.png",
+        afterImg: "screenshots/genuine-multicloud-3p-uis/before-after/after_07_clickhouse_rls.png"
       },
       directus: {
         key: "directus",
@@ -4238,9 +4296,9 @@
         key: "seq",
         saasId: "SAAS-09",
         title: "Datalust Seq Observability v2024.3",
-        enterpriseDomain: "Datadog Cloud Observability & SRE Incident Stream",
+        enterpriseDomain: "Datadog Cloud Observability & Bits AI SRE",
         targetId: "G767QR3TQZ",
-        mcpTool: "emit_datadog_agentic_span",
+        mcpTool: "query_tenant_apm_logs",
         cloudRunUrl: "https://cymbal-gcp-seq-apm-fm3mts5x3a-uw.a.run.app/#/events",
         credentials: "No authentication required (Public event stream)",
         username: "(Public stream - No login required)",
@@ -4248,16 +4306,16 @@
         defaultPort: 8081,
         proxyCmd: "python3 scripts/saas_cloudrun_proxy.py seq",
         s3Url: "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json",
-        beforeImg: "screenshots/genuine-multicloud-3p-uis/before-after/before_09_seq_apm.png",
-        afterImg: "screenshots/genuine-multicloud-3p-uis/before-after/after_09_seq_apm.png"
+        beforeImg: "screenshots/genuine-multicloud-3p-uis/before-after/before_09_datalust_seq.png",
+        afterImg: "screenshots/genuine-multicloud-3p-uis/before-after/after_09_datalust_seq.png"
       },
       vault: {
         key: "vault",
         saasId: "SAAS-10",
         title: "HashiCorp Vault v1.13.3",
-        enterpriseDomain: "CrowdStrike Falcon Zero Trust / Okta Identity Cloud",
+        enterpriseDomain: "CrowdStrike Falcon XDR & Okta Workforce Identity",
         targetId: "C7EYM614F2",
-        mcpTool: "rotate_cymbal_tenant_dek_vault",
+        mcpTool: "contain_xdr_host_with_dpop",
         cloudRunUrl: "https://cymbal-gcp-vault-cmek-fm3mts5x3a-uw.a.run.app/ui/vault/secrets/secret/show/tenants/finvault",
         credentials: "Auth: Google Cloud Run IAM OIDC + Vault Token in GCP Secret Manager (cymbal-saas-demo-credentials)",
         username: "role:finvault-sre-lead (Vault AppRole)",
@@ -4265,26 +4323,35 @@
         defaultPort: 8089,
         proxyCmd: "python3 scripts/saas_cloudrun_proxy.py vault",
         s3Url: "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json",
-        beforeImg: "screenshots/genuine-multicloud-3p-uis/before-after/before_10_vault_cmek.png",
-        afterImg: "screenshots/genuine-multicloud-3p-uis/before-after/after_10_vault_cmek.png"
+        beforeImg: "screenshots/genuine-multicloud-3p-uis/before-after/before_10_hashicorp_vault.png",
+        afterImg: "screenshots/genuine-multicloud-3p-uis/before-after/after_10_hashicorp_vault.png"
       }
     };
 
     // Domain & Platform Aliases for SaaS Connect Modal
     window.SAAS_CONNECT_REGISTRY['thoughtspot-spotter'] = window.SAAS_CONNECT_REGISTRY['metabase'];
-    window.SAAS_CONNECT_REGISTRY['sigma-computing'] = window.SAAS_CONNECT_REGISTRY['trino'];
+    window.SAAS_CONNECT_REGISTRY['sigma-computing'] = window.SAAS_CONNECT_REGISTRY['grafana'];
     window.SAAS_CONNECT_REGISTRY['servicenow-itsm'] = window.SAAS_CONNECT_REGISTRY['redmine'];
     window.SAAS_CONNECT_REGISTRY['muse-poc'] = window.SAAS_CONNECT_REGISTRY['nocodb'];
     window.SAAS_CONNECT_REGISTRY['salesforce-jira'] = window.SAAS_CONNECT_REGISTRY['gitea'];
-    window.SAAS_CONNECT_REGISTRY['databricks-unity'] = window.SAAS_CONNECT_REGISTRY['grafana'];
+    window.SAAS_CONNECT_REGISTRY['databricks-unity'] = window.SAAS_CONNECT_REGISTRY['trino'];
     window.SAAS_CONNECT_REGISTRY['snowflake-cortex'] = window.SAAS_CONNECT_REGISTRY['clickhouse'];
     window.SAAS_CONNECT_REGISTRY['workday-raas'] = window.SAAS_CONNECT_REGISTRY['directus'];
     window.SAAS_CONNECT_REGISTRY['datadog-sre'] = window.SAAS_CONNECT_REGISTRY['seq'];
     window.SAAS_CONNECT_REGISTRY['crowdstrike-okta'] = window.SAAS_CONNECT_REGISTRY['vault'];
 
+    window.setPortalTheme = function setPortalTheme(theme) {
+      const normalized = 'light';
+      document.documentElement.setAttribute('data-theme', normalized);
+      const sel = document.getElementById('theme-select');
+      if (sel && sel.value !== normalized) sel.value = normalized;
+      try { localStorage.setItem('portal_theme', normalized); } catch (_) {}
+    };
+
     window.openSaaSConnectModal = function openSaaSConnectModal(key) {
       const data = window.SAAS_CONNECT_REGISTRY[key];
       if (!data) return;
+      const canonicalKey = data.key || key;
       document.getElementById('saas-modal-id-badge').textContent = data.saasId;
       document.getElementById('saas-modal-target-badge').textContent = 'AgentCore Target: ' + data.targetId;
       document.getElementById('saas-modal-title').textContent = data.title;
@@ -4297,16 +4364,16 @@
       document.getElementById('saas-modal-s3-link').href = data.s3Url;
       const liveGw = document.getElementById('saas-modal-live-gateway-link');
       if (liveGw) {
-        liveGw.href = '/api/saas-live/' + encodeURIComponent(key);
-        liveGw.setAttribute('data-target-key', key);
+        liveGw.href = '/api/saas-live/' + encodeURIComponent(canonicalKey);
+        liveGw.setAttribute('data-target-key', canonicalKey);
         liveGw.title = 'Open live authenticated ' + data.title + ' session via Portal Gateway';
         liveGw.onclick = function() {
           if (window.__trackClickstream) {
-            window.__trackClickstream('GATEWAY_CLICK', 'saas-modal-live-gateway-link', 'Open live ' + data.title, { saasKey: key, targetId: data.targetId });
+            window.__trackClickstream('GATEWAY_CLICK', 'saas-modal-live-gateway-link', 'Open live ' + data.title, { saasKey: canonicalKey, targetId: data.targetId });
           }
         };
       }
-      window._currentSaaSModalKey = key;
+      window._currentSaaSModalKey = canonicalKey;
       const modal = document.getElementById('saas-connect-modal');
       if (modal) modal.classList.add('open');
     };

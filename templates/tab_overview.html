@@ -251,7 +251,7 @@
                   </div>
                   <div class="ov-ba-mini-thumbs">
                     <img src="screenshots/genuine-multicloud-3p-uis/before-after/before_01_metabase_bi.png" alt="BEFORE SAAS-01 (Metabase BI v0.50.26)" title="Click to zoom BEFORE UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_01_metabase_bi.png', 'BEFORE SAAS-01 (Metabase BI v0.50.26)')" decoding="async" />
-                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_01_metabase_bi.png" alt="AFTER SAAS-01 (Metabase BI v0.50.26 • Target HXGGFMZBKE)" title="Click to zoom AFTER UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/before_01_metabase_bi.png', 'AFTER SAAS-01 (Metabase BI v0.50.26 • Target HXGGFMZBKE)')" decoding="async" />
+                    <img src="screenshots/genuine-multicloud-3p-uis/before-after/after_01_metabase_bi.png" alt="AFTER SAAS-01 (Metabase BI v0.50.26 • Target HXGGFMZBKE)" title="Click to zoom AFTER UI (2880x1800)" onclick="openGenuineScreenshotLightbox('screenshots/genuine-multicloud-3p-uis/before-after/after_01_metabase_bi.png', 'AFTER SAAS-01 (Metabase BI v0.50.26 • Target HXGGFMZBKE)')" decoding="async" />
                   </div>
                   <div style="padding:6px 8px; font-size:10.8px; color:#334155; line-height:1.35; flex:1;">
                     <div class="mb-1"><strong>Before &rarr; After:</strong> 3-row unfiltered wire ledger -> 2 FinVault-only rows (RLS)</div>
@@ -384,7 +384,7 @@
           <div class="ov-subbox">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
                 <h4 class="m-0">4. Genuine 2880&times;1800 Before &rarr; After 3P SaaS Proof</h4>
-                <button type="button" class="ov-chip" style="padding:1px 7px; font-size:10.5px;" onclick="openDocInReader('blogs/ws2-pattern-a-pooled-architecture.md', 'live-3p-before-after-ui-proof')">Interactive Split Slider &rarr;</button>
+                <button type="button" class="ov-chip" style="padding:1px 7px; font-size:10.5px;" onclick="selectGuidedWorkstream('WS2'); switchTab('patterns', document.getElementById('tab-btn-patterns')); setHubViewMode('proofs', 'ZS9VGYHBQL');">Interactive Split Slider &rarr;</button>
               </div>
               <div class="ov-ba-mini-grid">
                 <div class="ov-ba-mini-card">
@@ -965,7 +965,7 @@
                     <strong style="font-size:12px; color:#0f172a;">SAAS-PROVENANCE &bull; 10 Upstream Stacks</strong>
                     <span class="badge badge-green text-2xs" style="padding:1px 5px; font-size:9.5px;">10/10 VERIFIED</span>
                   </div>
-                  <p style="font-size:11.2px; color:#334155; line-height:1.4; margin:0 0 8px 0;">10 live upstream SaaS platforms verified across Google Cloud Run Gen2 &amp; AWS EC2: Metabase BI, Cube Semantic, Flowise AI, Langfuse, OpenWebUI, Trino SQL, Superset Analytics, Directus HCM, Datalust Seq, and Grafana Dashboards.</p>
+                  <p style="font-size:11.2px; color:#334155; line-height:1.4; margin:0 0 8px 0;">10 live upstream SaaS stacks verified across Google Cloud Run Gen2 &amp; AWS Bedrock AgentCore MCP: Metabase BI, Grafana Enterprise, Redmine ITSM, NocoDB GxP, Gitea DevSecOps, Trino Distributed SQL, ClickHouse Analytics, Directus HCM, Datalust Seq, and HashiCorp Vault.</p>
                   <div style="font-size:10.8px; color:#64748b; line-height:1.35;">
                     &bull; 20/20 genuine 2880&times;1800 Before/After Retina captures<br/>
                     &bull; 30/30 repeatable end-to-end execution twin flows
@@ -1236,6 +1236,123 @@
             </div>
           </div>
         </div>
+
+        <!-- MODE 2: 5-AXIS MCDA RADAR SCORER -->
+        <div id="pattern-mcda-view" style="display:none; margin-top:14px;">
+          <div style="display:grid; grid-template-columns:minmax(280px, 1fr) minmax(300px, 1.05fr); gap:16px; align-items:stretch;">
+            <!-- Left: 5 Weighted Priority Sliders -->
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:6px;">
+                <strong style="font-size:12.5px; color:#0f172a;">5-Axis Enterprise Priority Weights</strong>
+                <span class="badge badge-blue" style="font-size:10px;">Interactive Sensitivity</span>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:11.5px; font-weight:700; color:#1e293b; margin-bottom:2px;">
+                  <label for="slider-mcda-compliance">1. Regulatory &amp; Sovereign Compliance</label>
+                  <span id="val-compliance" style="color:#1d4ed8;">85%</span>
+                </div>
+                <input type="range" id="slider-mcda-compliance" min="0" max="100" value="85" oninput="updateMcdaScore('compliance', this.value)" style="width:100%; accent-color:#1a73e8; cursor:pointer;" />
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:11.5px; font-weight:700; color:#1e293b; margin-bottom:2px;">
+                  <label for="slider-mcda-finops">2. FinOps Gross-Margin &amp; Cache Efficiency</label>
+                  <span id="val-finops" style="color:#059669;">70%</span>
+                </div>
+                <input type="range" id="slider-mcda-finops" min="0" max="100" value="70" oninput="updateMcdaScore('finops', this.value)" style="width:100%; accent-color:#059669; cursor:pointer;" />
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:11.5px; font-weight:700; color:#1e293b; margin-bottom:2px;">
+                  <label for="slider-mcda-devops">3. Fleet DevOps Simplicity (Single Control Plane)</label>
+                  <span id="val-devops" style="color:#7c3aed;">50%</span>
+                </div>
+                <input type="range" id="slider-mcda-devops" min="0" max="100" value="50" oninput="updateMcdaScore('devops', this.value)" style="width:100%; accent-color:#7c3aed; cursor:pointer;" />
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:11.5px; font-weight:700; color:#1e293b; margin-bottom:2px;">
+                  <label for="slider-mcda-onboarding">4. Sub-Second Tenant Onboarding Velocity</label>
+                  <span id="val-onboarding" style="color:#d97706;">60%</span>
+                </div>
+                <input type="range" id="slider-mcda-onboarding" min="0" max="100" value="60" oninput="updateMcdaScore('onboarding', this.value)" style="width:100%; accent-color:#d97706; cursor:pointer;" />
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:11.5px; font-weight:700; color:#1e293b; margin-bottom:2px;">
+                  <label for="slider-mcda-blast">5. Zero Cross-Tenant Blast Radius &amp; CMEK Kill-Switch</label>
+                  <span id="val-blast" style="color:#dc2626;">90%</span>
+                </div>
+                <input type="range" id="slider-mcda-blast" min="0" max="100" value="90" oninput="updateMcdaScore('blast', this.value)" style="width:100%; accent-color:#dc2626; cursor:pointer;" />
+              </div>
+            </div>
+
+            <!-- Right: Live 5-Axis SVG Radar Chart + Weighted Pattern Fit Cards -->
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px 14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                <strong style="font-size:12.5px; color:#0f172a;">Weighted Topology Radar</strong>
+                <div style="display:flex; gap:10px; font-size:10.5px; font-weight:700;">
+                  <span style="color:#059669;">&#9632; Pattern A (Pooled)</span>
+                  <span style="color:#7c3aed;">&#9632; Pattern B (Silo)</span>
+                  <span style="color:#1a73e8;">&#9632; Pattern C (Hybrid)</span>
+                </div>
+              </div>
+              <svg id="mcda-radar-svg" viewBox="0 0 320 242" style="width:100%; max-height:196px; display:block; margin:0 auto;" role="img" aria-label="5-Axis Tenancy Fit Radar Chart">
+                <!-- Concentric Pentagon Gridlines (cx=160, cy=128, R=88) -->
+                <polygon points="160,40 243.7,100.8 211.7,199.2 108.3,199.2 76.3,100.8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+                <polygon points="160,62 222.8,107.6 198.8,181.4 121.2,181.4 97.2,107.6" fill="none" stroke="#e2e8f0" stroke-width="1" />
+                <polygon points="160,84 201.8,114.4 185.9,163.6 134.1,163.6 118.2,114.4" fill="none" stroke="#e2e8f0" stroke-width="1" />
+                <polygon points="160,106 180.9,121.2 172.9,145.8 147.1,145.8 139.1,121.2" fill="none" stroke="#e2e8f0" stroke-width="1" />
+                <!-- Axis Spokes -->
+                <line x1="160" y1="128" x2="160" y2="40" stroke="#cbd5e1" stroke-width="1" />
+                <line x1="160" y1="128" x2="243.7" y2="100.8" stroke="#cbd5e1" stroke-width="1" />
+                <line x1="160" y1="128" x2="211.7" y2="199.2" stroke="#cbd5e1" stroke-width="1" />
+                <line x1="160" y1="128" x2="108.3" y2="199.2" stroke="#cbd5e1" stroke-width="1" />
+                <line x1="160" y1="128" x2="76.3" y2="100.8" stroke="#cbd5e1" stroke-width="1" />
+                <!-- Live Pattern Polygons -->
+                <polygon id="poly-pat-a" points="160,92.8 239.5,102.2 206.5,192.1 110.9,195.6 130.7,118.5" fill="rgba(5, 150, 105, 0.14)" stroke="#059669" stroke-width="2" />
+                <polygon id="poly-pat-b" points="160,41.8 185.1,119.8 175.5,149.4 149.7,142.2 78.0,101.3" fill="rgba(124, 58, 237, 0.14)" stroke="#7c3aed" stroke-width="2" />
+                <polygon id="poly-pat-c" points="160,53.2 226.9,106.2 193.6,174.3 118.6,185.0 88.8,104.9" fill="rgba(26, 115, 232, 0.18)" stroke="#1a73e8" stroke-width="2.4" />
+                <!-- Axis Labels -->
+                <text x="160" y="27" text-anchor="middle" fill="#0f172a" font-size="10.5" font-weight="700">Compliance</text>
+                <text x="251" y="103" text-anchor="start" fill="#0f172a" font-size="10.5" font-weight="700">FinOps</text>
+                <text x="218" y="213" text-anchor="start" fill="#0f172a" font-size="10.5" font-weight="700">DevOps</text>
+                <text x="102" y="213" text-anchor="end" fill="#0f172a" font-size="10.5" font-weight="700">Onboarding</text>
+                <text x="69" y="103" text-anchor="end" fill="#0f172a" font-size="10.5" font-weight="700">Zero Blast</text>
+              </svg>
+              <div style="display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:8px;">
+                <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px; padding:7px 8px; text-align:center;">
+                  <div style="font-size:10px; font-weight:700; color:#065f46;">Pattern A &bull; Pooled</div>
+                  <div id="score-pat-a" style="font-size:15px; font-weight:800; color:#047857;">65.8%</div>
+                </div>
+                <div style="background:#f5f3ff; border:1px solid #ddd6fe; border-radius:8px; padding:7px 8px; text-align:center;">
+                  <div style="font-size:10px; font-weight:700; color:#5b21b6;">Pattern B &bull; Silo</div>
+                  <div id="score-pat-b" style="font-size:15px; font-weight:800; color:#6d28d9;">64.1%</div>
+                </div>
+                <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:7px 8px; text-align:center;">
+                  <div style="font-size:10px; font-weight:700; color:#1e40af;">Pattern C &bull; Hybrid</div>
+                  <div id="score-pat-c" style="font-size:15px; font-weight:800; color:#1d4ed8;">80.4%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LIVE ARCHITECTURAL RECOMMENDATION BANNER (Shared by Decision Tree & 5-Axis MCDA Scorer) -->
+        <div id="pattern-rec-banner" style="margin-top:14px; padding:14px 16px; background:#eff6ff; border:1px solid #93c5fd; border-left:5px solid #1a73e8; border-radius:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div style="flex:1 1 420px; min-width:0;">
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px;">
+              <span class="badge badge-blue" style="font-size:10.5px; font-weight:800; text-transform:uppercase;">Recommended Topology</span>
+              <strong id="pattern-rec-title" style="font-size:14px; color:#0f172a;">Pattern A: High-Density Pooled Architecture (Blog 2 &bull; WS2)</strong>
+            </div>
+            <p id="pattern-rec-desc" style="margin:0 0 8px 0; font-size:12px; color:#334155; line-height:1.5;">Standard single-tier SaaS running competing corporate tenants inside one shared Google Cloud project. Maximizes gross margin with up to 90% prompt-cache savings and database RLS isolation.</p>
+            <div id="pattern-rec-tags" style="display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="badge badge-green" style="font-size:10.5px;">90% Input-Token Cache Savings</span>
+              <span class="badge badge-blue" style="font-size:10.5px;">AlloyDB RLS Isolation</span>
+              <span class="badge badge-purple" style="font-size:10.5px;">10/10 Red-Team Defenses</span>
+            </div>
+          </div>
+          <div>
+            <button type="button" id="pattern-rec-cta" class="sim-btn primary" data-target-ws="WS2" onclick="activateRecommendedOnePager()" style="padding:8px 14px; font-size:12px; font-weight:700; white-space:nowrap;">&#128214; View Recommended 1-Pager (WS2 Pattern A) &rarr;</button>
+          </div>
+        </div>
+      </div>
           </div>
 
           <!-- Stage View 4: 3 Architecture Archetype Pillars -->

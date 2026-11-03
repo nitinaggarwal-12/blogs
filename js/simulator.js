@@ -15,20 +15,62 @@
 
     function extractHopTrailFromResponse(data) {
       if (!data || typeof data !== 'object') return [];
-      const candidates = [
+      const multiTurnPhases = [
+        { key: 'attack_3a_prompt_injection', label: 'Turn 3A • Prompt Injection (400)' },
+        { key: 'attack_3b_semantic_nlc_violation', label: 'Turn 3B • Semantic NLC (422)' },
+        { key: 'turn_4a_thinking_budget_clamped', label: 'Turn 4A • 4k Budget Clamp' },
+        { key: 'turn_4b_redis_bulkhead_429', label: 'Turn 4B • Redis 429 Bulkhead' },
+        { key: 'step_1_vpc_sc_exfil_blocked', label: 'Turn 5A • VPC-SC 403 Block' },
+        { key: 'step_2_cmek_killswitch_423', label: 'Turn 5B • CMEK 423 Kill-Switch' },
+        { key: 'step_3_cmek_restored_airgapped_gemma3', label: 'Turn 5C • Restored Gemma 3' }
+      ];
+      const matchedPhases = [];
+      for (const p of multiTurnPhases) {
+        const sub = data[p.key];
+        if (!sub || typeof sub !== 'object') continue;
+        let arr = Array.isArray(sub.hops) && sub.hops.length > 0
+          ? sub.hops
+          : (Array.isArray(sub.hop_audit_trail) && sub.hop_audit_trail.length > 0 ? sub.hop_audit_trail : null);
+        if (!arr && sub.decision && sub.status_code) {
+          arr = [{
+            hop_number: 1,
+            hop_name: `Hop 1 • ${sub.violation_type || 'Perimeter Gate'}`,
+            decision: sub.decision,
+            status_code: sub.status_code,
+            detail: sub.reason || ''
+          }];
+        }
+        if (arr) {
+          matchedPhases.push({ label: p.label, hops: arr });
+        }
+      }
+      if (matchedPhases.length > 0) {
+        const combined = [];
+        for (const mp of matchedPhases) {
+          for (const h of mp.hops) {
+            combined.push(Object.assign({}, h, { _phaseLabel: mp.label }));
+          }
+        }
+        return combined;
+      }
+
+      const singleCandidates = [
         data.result,
-        data.attack_3b_semantic_nlc_violation,
-        data.attack_3a_prompt_injection,
-        data.turn_4b_redis_bulkhead_429,
-        data.turn_4a_thinking_budget_clamped,
-        data.step_2_cmek_killswitch_423,
-        data.step_1_vpc_sc_exfil_blocked,
         data.post_upgrade_turn_result,
         data
       ];
-      for (const c of candidates) {
+      for (const c of singleCandidates) {
         if (c && Array.isArray(c.hops) && c.hops.length > 0) return c.hops;
         if (c && Array.isArray(c.hop_audit_trail) && c.hop_audit_trail.length > 0) return c.hop_audit_trail;
+        if (c && c.decision && c.status_code) {
+          return [{
+            hop_number: 1,
+            hop_name: `Hop 1 • ${c.violation_type || 'Perimeter Gate'}`,
+            decision: c.decision,
+            status_code: c.status_code,
+            detail: c.reason || ''
+          }];
+        }
       }
       return [];
     }
@@ -40,11 +82,33 @@
         strip.innerHTML = '';
         return;
       }
-      strip.innerHTML = hopTrail.map(h => {
+      const renderPill = (h) => {
         const cls = h.decision === 'ALLOW' ? 'allow' : 'deny';
         const shortName = h.hop_name ? String(h.hop_name).split('•')[1] || h.hop_name : '';
         return `<div class="hop-pill ${cls}" title="${escapeHtml(h.detail || '')}"><strong>Hop ${h.hop_number}:</strong> ${escapeHtml(shortName.trim())} &bull; ${h.decision} (${h.status_code})</div>`;
-      }).join('');
+      };
+      const hasPhases = hopTrail.some(h => Boolean(h._phaseLabel));
+      if (!hasPhases) {
+        strip.innerHTML = hopTrail.map(renderPill).join('');
+        return;
+      }
+      const groups = [];
+      for (const h of hopTrail) {
+        const lbl = h._phaseLabel || 'Execution Turn';
+        if (!groups.length || groups[groups.length - 1].label !== lbl) {
+          groups.push({ label: lbl, items: [h] });
+        } else {
+          groups[groups.length - 1].items.push(h);
+        }
+      }
+      strip.innerHTML = `<div style="display:flex; flex-direction:column; gap:6px; width:100%;">` +
+        groups.map(g => `
+          <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; background:#f8fafc; border:1px solid #e2e8f0; border-radius:7px; padding:5px 8px;">
+            <span class="badge badge-blue" style="font-size:10.5px; font-weight:700; white-space:nowrap;">${escapeHtml(g.label)}</span>
+            ${g.items.map(renderPill).join('')}
+          </div>
+        `).join('') +
+        `</div>`;
     }
 
     // SCENARIO_FORM_PRESETS loaded from /js/data.js

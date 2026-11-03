@@ -35,7 +35,7 @@
           <div style="background:#f8fafc; border:1px solid var(--border); border-radius:8px; padding:6px 10px; font-size:11.5px;">
             <strong style="color:var(--heading); display:block; margin-bottom:2px;">&#128273; Audit Plane: Amazon S3 Cross-Cloud Outcome Ledger (<code>?format=json</code>)</strong>
             <div style="font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:10.5px; line-height:1.4;">
-              &bull; <strong>S3 Bucket</strong>: <code>s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1/cymbal-10saas-ledger/</code><br/>
+              &bull; <strong>S3 Bucket</strong>: <code>s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/</code><br/>
               &bull; <strong>FinVault Tenant Verdict</strong>: <code>HTTP 200 ALLOW</code> (RLS &amp; CMEK verified)<br/>
               &bull; <strong>RetailStream Spoof Verdict</strong>: <code>HTTP 403 FORBIDDEN</code> / <code>HTTP 401 UNAUTHORIZED</code><br/>
               &bull; <strong>MedCore Revoked CMEK Verdict</strong>: <code>HTTP 423 LOCKED</code> (<code>valkey_purged=True</code>)
@@ -1240,7 +1240,7 @@
                   <tr>
                     <td><strong>WS3</strong> &bull; Pattern B: Sovereign Silos &amp; CMEK</td>
                     <td><a href="/?doc=blogs/ws3-pattern-b-sovereign-silos.md" onclick="openDocInReader('blogs/ws3-pattern-b-sovereign-silos.md'); return false;">ge-blogs-248990048888.cr.gclb.goog/?doc=ws3 &#8599;</a><br/><a href="https://askaioce-248990048888.cr.gclb.goog" target="_blank" rel="noopener" class="text-xs-plus">askaioce-248990048888.cr.gclb.goog &#8599;</a></td>
-                    <td><a href="https://console.cloud.google.com/security/kms/keyring/manage/us-west1/cymbal-multi-tenant-kr?project=ramp-portal-dev" target="_blank" rel="noopener">Cloud KMS Keyring (4 Keys) &#8599;</a><br/><a href="https://console.cloud.google.com/bigquery?project=ramp-portal-dev&amp;ws=!1m5!1m4!4m3!1sramp-portal-dev!2scymbal_silo_finvault_usw1!3spattern_b_silo_finvault_cmek_vault" target="_blank" rel="noopener" class="text-xs-plus">BigQuery CMEK Silo Vault &#8599;</a></td>
+                    <td><a href="https://console.cloud.google.com/security/kms/keyring/manage/us-west1/cymbal-multi-tenant-kr?project=bbar-138hf0" target="_blank" rel="noopener">Cloud KMS Keyring (4 Keys) &#8599;</a><br/><a href="https://console.cloud.google.com/bigquery?project=bbar-138hf0&amp;ws=!1m5!1m4!4m3!1sbbar-138hf0!2scymbal_silo_finvault_usw1!3spattern_b_silo_finvault_cmek_vault" target="_blank" rel="noopener" class="text-xs-plus">BigQuery CMEK Silo Vault &#8599;</a></td>
                     <td><a href="https://us-east-1.console.aws.amazon.com/bedrock/home?region=us-east-1#/agentcore/runtimes" target="_blank" rel="noopener">Bedrock Dedicated Silo Runtime &#8599;</a><br/><span class="muted text-xs">Muse Study FV-GXP-2026-04 (200 OK)</span></td>
                     <td><a href="https://docs.google.com/presentation/d/1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM/edit?resourcekey=0-hzmJ995FIAdtQEUwWa9YQw" target="_blank" rel="noopener">WS3 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/1lU6oV9LkNp_W1ifH9hMCq-9buoxDe_8cRtxTYb5QECY/edit?resourcekey=0-KRCBVysg1k7J4IvKwJKuYQ" target="_blank" rel="noopener" class="text-xs-plus">WS3 Native Google Doc &#8599;</a></td>
                     <td><span class="file-pill" onclick="viewArtifact('workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py')">workstream-3-pattern-b-siloed/</span></td>
@@ -1257,7 +1257,7 @@
                     <td><strong>WS5</strong> &bull; Decision Matrix, FinOps &amp; Triad</td>
                     <td><a href="/?doc=blogs/ws5-decision-guide-and-agentic-triad.md" onclick="openDocInReader('blogs/ws5-decision-guide-and-agentic-triad.md'); return false;">ge-blogs-248990048888.cr.gclb.goog/?doc=ws5 &#8599;</a><br/><a href="https://scorex-248990048888.cr.gclb.goog" target="_blank" rel="noopener" class="text-xs-plus">scorex-248990048888.cr.gclb.goog &#8599;</a></td>
                     <td><a href="https://console.cloud.google.com/bigquery?project=ramp-portal-dev&amp;ws=!1m5!1m4!4m3!1sramp-portal-dev!2scymbal_agentic_finops_otel!3stenant_telemetry_spans" target="_blank" rel="noopener">BigQuery OTel FinOps Ledger &#8599;</a></td>
-                    <td><a href="https://us-east-1.console.aws.amazon.com/s3/buckets/cymbal-multi-tenant-audit-ledger-393036065405-us-east-1?region=us-east-1" target="_blank" rel="noopener">S3 Cross-Cloud Audit Ledger &#8599;</a></td>
+                    <td><a href="https://us-east-1.console.aws.amazon.com/s3/buckets/cymbal-aws-federation-393036065405-us-east-1?region=us-east-1" target="_blank" rel="noopener">S3 Cross-Cloud Audit Ledger &#8599;</a></td>
                     <td><a href="https://docs.google.com/presentation/d/1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU/edit" target="_blank" rel="noopener">WS5 Slides Deck &#8599;</a><br/><a href="https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit" target="_blank" rel="noopener" class="text-xs-plus">WS5 Native Google Doc &#8599;</a></td>
                     <td><span class="file-pill" onclick="viewArtifact('core-cymbal-agent/gcp_live_bridge.py')">core-cymbal-agent/gcp_live_bridge.py</span></td>
                   </tr>
@@ -1324,17 +1324,17 @@
             <div class="card" style="margin-bottom:0; padding:14px;">
               <span class="badge badge-blue">STAGE 1 • CLOUD RUN SOURCE EDITOR (CODE WRITTEN IN CONSOLE)</span>
               <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 1: Write &amp; Inspect Multi-Tenant Pattern A/B/C Code in Cloud Run <code>Source</code> Tab</h4>
-              <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console <code>Source</code> tab on service <code>cymbal-multi-tenant-patterns</code> (<code>ramp-portal-dev</code> / <code>us-central1</code>) inspecting <code>main.py</code>:</p>
+              <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console <code>Source</code> tab on service <code>cymbal-multi-tenant-patterns</code> (<code>ramp-portal-dev</code> / <code>us-west1</code>) inspecting <code>main.py</code>:</p>
               <pre style="margin:0 0 8px 0; padding:8px; font-size:11px;"><code>gcloud run services describe cymbal-multi-tenant-patterns \
-  --project=ramp-portal-dev --region=us-central1</code></pre>
+  --project=ramp-portal-dev --region=us-west1</code></pre>
             </div>
 
             <div class="card" style="margin-bottom:0; padding:14px;">
-              <span class="badge badge-purple">STAGE 2 • CLOUD RUN REVISIONS &amp; DEPLOYMENT (00001-dmg • 100% TRAFFIC)</span>
-              <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 2: Verify Deployed Cloud Run Revision <code>cymbal-multi-tenant-patterns-00001-dmg</code></h4>
+              <span class="badge badge-purple">STAGE 2 • CLOUD RUN REVISIONS &amp; DEPLOYMENT (00003-wfh • 100% TRAFFIC)</span>
+              <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 2: Verify Deployed Cloud Run Revision <code>cymbal-multi-tenant-patterns-00003-wfh</code></h4>
               <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console <code>Revisions</code> tab confirming active revision serving 100% traffic with Gen2 execution environment:</p>
               <pre style="margin:0 0 8px 0; padding:8px; font-size:11px;"><code>gcloud run revisions list --service=cymbal-multi-tenant-patterns \
-  --project=ramp-portal-dev --region=us-central1</code></pre>
+  --project=ramp-portal-dev --region=us-west1</code></pre>
             </div>
 
             <div class="card" style="margin-bottom:0; padding:14px;">
@@ -1342,7 +1342,7 @@
               <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 3: Inspect Pattern A Pooled Table <code>pattern_a_pooled_rls_entities</code> &amp; RLS Policy</h4>
               <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console BigQuery Studio showing <code>cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities</code> with <code>tenant_pooled_rls_policy</code>:</p>
               <pre style="margin:0 0 8px 0; padding:8px; font-size:11px;"><code>bq show --format=prettyjson \
-  ramp-portal-dev:cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities</code></pre>
+  bbar-138hf0:cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities</code></pre>
             </div>
 
             <div class="card" style="margin-bottom:0; padding:14px;">
@@ -1350,15 +1350,15 @@
               <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 4: Inspect Pattern B Sovereign Silo Table <code>pattern_b_silo_finvault_cmek_vault</code></h4>
               <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console BigQuery Studio showing <code>cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault</code> with Cloud KMS CMEK key URI &amp; ECDSA P-256 signature:</p>
               <pre style="margin:0 0 8px 0; padding:8px; font-size:11px;"><code>bq head -n 5 \
-  ramp-portal-dev:cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault</code></pre>
+  bbar-138hf0:cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault</code></pre>
             </div>
 
             <div class="card" style="margin-bottom:0; padding:14px;">
               <span class="badge badge-purple">STAGE 5 • CLOUD KMS: CRYPTOGRAPHIC KEYS &amp; ECDSA SIGNING KEYRING</span>
               <h4 style="margin:8px 0 4px 0; font-size:14px;">Step 5: Verify Cloud KMS Keyring <code>cymbal-multi-tenant-kr</code> in GCP Console</h4>
-              <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console Cryptographic Keys view showing <code>finvault-silo-cmek</code>, <code>biohealth-silo-cmek</code>, <code>retailstream-hybrid-cmek</code>, and <code>adk-agent-signing-key</code>:</p>
+              <p class="muted" style="font-size:12px; margin:0 0 6px 0;">Real Google Cloud Console Cryptographic Keys view showing <code>finvault-silo-cmek</code>, <code>medcore-revoked-cmek</code>, <code>retailstream-silo-cmek</code>, and <code>adk-agent-signing-key</code>:</p>
               <pre style="margin:0 0 8px 0; padding:8px; font-size:11px;"><code>gcloud kms keys list --keyring=cymbal-multi-tenant-kr \
-  --location=us-central1 --project=ramp-portal-dev</code></pre>
+  --location=us-west1 --project=bbar-138hf0</code></pre>
             </div>
 
             <div class="card" style="margin-bottom:0; padding:14px;">

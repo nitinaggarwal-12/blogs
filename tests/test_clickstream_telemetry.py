@@ -73,6 +73,27 @@ class TestClickstreamTelemetry(unittest.TestCase):
         self.assertIsInstance(store.get("visitors"), dict)
         self.assertIsInstance(store.get("eventTypeCounts"), dict)
 
+    def test_04_temp_clickstream_override_skips_gcs_persist_and_anonymous_default(self):
+        calls = []
+        orig_persist = server.DurableGcsStore.persist_async
+        server.DurableGcsStore.persist_async = classmethod(lambda cls, name, payload: calls.append(name))
+        try:
+            ev = server.record_clickstream_event(
+                actor_email="",
+                actor_name="",
+                event_type="PAGE_VIEW",
+                tab="overview",
+                target_id="tab-overview",
+                target_title="Overview",
+                session_id="sess-unit-03",
+                client_ip="127.0.0.1",
+            )
+            self.assertEqual(ev["actorEmail"], "guest@unverified.session")
+            self.assertEqual(calls, [])
+        finally:
+            server.DurableGcsStore.persist_async = orig_persist
+
 
 if __name__ == "__main__":
     unittest.main()
+
