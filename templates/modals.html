@@ -214,22 +214,14 @@
         <button type="button" id="cv-mode-docs" class="pc-toolbar-btn" onclick="setCloudViewerMode('docs')">&#128196; Live Google Docs Spec</button>
       </div>
 
-      <!-- Right Split-Pill: [ 📐 Blueprints (WS1) | ▼ ] -->
+      <!-- Right Split-Pill: [ 📊 Open Google Slides | ▼ ] -->
       <div class="flex-center-y gap-2">
         <div class="pc-split-wrap" id="cv-open-gslides-split">
-          <a id="cv-cloud-drawio-main" href="/drawio-editor?id=ws1-multi-tenant-taxonomy-overview&engine=cloud" target="_blank" rel="noopener" class="pc-split-main" style="text-decoration:none;">
-            <span>&#128208; Blueprints (WS1) &#8599;</span>
-          </a>
+          <button type="button" id="cv-open-gslides-main" class="pc-split-main" onclick="openInGoogleWorkspace(cvWsKey, 'slides', cvSlideIdx + 1)">
+            <span>&#128202; Open Google Slides &#8599;</span>
+          </button>
           <button type="button" class="pc-split-caret" onclick="togglePcDropdown(event, 'cv-gslides-menu')" aria-label="Open with menu">&#9660;</button>
           <div id="cv-gslides-menu" class="pc-dropdown-menu">
-            <div class="pc-dropdown-section">Architecture Editors</div>
-            <a id="cv-cloud-drawio-item" class="pc-dropdown-item" href="/drawio-editor?id=ws1-multi-tenant-taxonomy-overview&engine=cloud" target="_blank" rel="noopener">
-              <span>&#128208;</span> <span>Open Architecture Studio (Cloud Editor)</span>
-            </a>
-            <a id="cv-native-drawio-item" class="pc-dropdown-item" href="/drawio-editor?id=ws1-multi-tenant-taxonomy-overview&engine=native" target="_blank" rel="noopener">
-              <span>&#9889;</span> <span>Local Offline mxGraph Canvas</span>
-            </a>
-            <div class="pc-dropdown-divider"></div>
             <div class="pc-dropdown-section">Downloads &amp; Specs</div>
             <a id="cv-download-pptx" class="pc-dropdown-item" href="slides/ws1-12slide-visual-deck.pptx" download>
               <span>&#11015;</span> <span>Download Editable .pptx</span>

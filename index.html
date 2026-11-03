@@ -11,9 +11,9 @@
   <title>Gemini Enterprise Agent Platform — Multi-Tenancy Architecture &amp; Live 5-Hop Execution Portal</title>
   <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'&gt;&lt;rect width='32' height='32' rx='6' fill='%231a73e8'/&gt;&lt;text x='16' y='22' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold' font-size='18'&gt;G&lt;/text&gt;&lt;/svg&gt;" />
   <!-- Modular CSS Tokens, Layout & Components (Item 10) -->
-  <link rel="stylesheet" href="/css/tokens.css?v=20261102-v100">
-  <link rel="stylesheet" href="/css/layout.css?v=20261102-v100">
-  <link rel="stylesheet" href="/css/components.css?v=20261102-v100">
+  <link rel="stylesheet" href="/css/tokens.css?v=20261102-v101">
+  <link rel="stylesheet" href="/css/layout.css?v=20261102-v101">
+  <link rel="stylesheet" href="/css/components.css?v=20261102-v101">
 </head>
 <body>
   <script>
@@ -340,10 +340,12 @@
                 return `<div class="gcp-figure-card" id="inline-fig-card-${figSlug}" data-card-id="inline-fig-card-${figSlug}" data-card-type="figure" data-no-hover-toolbar="true" data-card-title="${escapeHtml(alt)}" data-doc-path="${escapeHtml(docRelPath || '')}" style="margin:0; padding:8px 10px; display:flex; flex-direction:column; justify-content:space-between;"><img src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:100%; max-width:100%; max-height:330px; height:auto; object-fit:contain; background:#f8fafc; display:block; margin:0; border-radius:6px; border:1px solid #e2e8f0; cursor:zoom-in;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', this.alt); } else { window.open('${resolved}', '_blank'); }" /><div class="gcp-figure-caption" style="font-size:11.5px; line-height:1.35; margin-top:6px; display:flex; justify-content:space-between; align-items:flex-start; gap:8px;"><span class="card-editable-body"><strong>${alt}</strong></span><a href="${resolved}" target="_blank" rel="noopener" style="color:#1a73e8; font-weight:600; text-decoration:none; white-space:nowrap;">&#128269; High-Res &#8599;</a></div></div>`;
               }
               const meta = findDiagramMetaById(diagId);
-              const slideBtnHtml = meta
-                ? `<button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--green); color:var(--ok-text); font-weight:700;" onclick="openCloudViewerModal('${meta.wsKey}', ${meta.decomposedSlide}, 'slides')">&#127916; Slide #${meta.decomposedSlide}</button>`
-                : '';
-              const hasFlow = meta && meta.logicalSlide && meta.technicalSlide && (meta.logicalSlide !== meta.decomposedSlide);
+              const slideAuthoredC4Num = ({
+                'ws1-l1-logical-security-taxonomy': 8,
+                'ws1-l3-process-sequence-swimlane': 13,
+                'ws1-l4-wire-protocol-transformation': 14
+              })[diagId] || 0;
+              const hasFlow = !slideAuthoredC4Num && meta && meta.logicalSlide && meta.technicalSlide && (meta.logicalSlide !== meta.decomposedSlide);
               const flowBtnHtml = hasFlow
                 ? `<button type="button" id="inline-fig-btn-flow-${diagId}" class="sim-btn" style="padding:4px 9px; font-size:11.5px; border-color:var(--blue); color:var(--link); font-weight:700;" onclick="toggleInlineFigureFlow('${diagId}')">&#129517; Step-by-Step Flow &#9662;</button>`
                 : '';
@@ -361,28 +363,28 @@
                     <div id="inline-fig-flow-body-${diagId}"></div>
                   </div>`
                 : '';
+              const rightControlsHtml = slideAuthoredC4Num
+                ? `<button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px; font-weight:600;" onclick="openCloudViewerModal('WS1', ${slideAuthoredC4Num}, 'slides')">&#128202; Slide #${slideAuthoredC4Num}</button>
+                   <button type="button" class="sim-btn" style="padding:4px 9px; font-size:11.5px;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', '${escapeHtml(alt).replace(/'/g, "\\'")}'); } else { window.open('${resolved}', '_blank'); }">&#128269; Zoom</button>`
+                : `${flowBtnHtml}
+                   <details class="export-dropdown">
+                     <summary class="sim-btn" style="padding:4px 9px; font-size:11.5px;">&#11015; Assets &#9662;</summary>
+                     <div class="export-dropdown-menu">
+                       <a href="diagrams/${diagId}.drawio" download>&#11015; Download .drawio XML</a>
+                       <a href="#" id="inline-fig-btn-svg-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'svg'); this.closest('details').removeAttribute('open');">&#127912; Vector SVG View</a>
+                       <a href="#" id="inline-fig-btn-png-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'png'); this.closest('details').removeAttribute('open');">&#128269; 2x PNG View</a>
+                     </div>
+                   </details>`;
               return `
                 <div class="gcp-figure-card" id="inline-fig-card-${diagId}" data-card-id="inline-fig-card-${diagId}" data-diag-id="${diagId}" data-card-type="diagram" data-card-title="${escapeHtml(alt)}" data-doc-path="${escapeHtml(docRelPath || '')}" style="padding:12px 14px;">
                   <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border); padding-right:8px;">
                     <strong class="card-editable-body" id="inline-fig-title-${diagId}" style="font-size:13.5px; color:var(--heading);">${alt}</strong>
                     <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
-                      ${flowBtnHtml}
-                      <a href="/drawio-editor?id=${encodeURIComponent(diagId)}&engine=cloud" target="_blank" rel="noopener" id="inline-fig-btn-cloud-${diagId}" class="sim-btn primary" style="padding:4px 10px; font-size:11.5px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:5px; background:#1a73e8; border-color:#1557b0; color:#ffffff;" title="Open official diagrams.net Cloud UI with full editable mxGraph model">&#128208; Architecture Studio &#8599;</a>
-                      <details class="export-dropdown">
-                        <summary class="sim-btn" style="padding:4px 9px; font-size:11.5px;">&#11015; Assets &#9662;</summary>
-                        <div class="export-dropdown-menu">
-                          <a href="diagrams/${diagId}.drawio" download>&#11015; Download .drawio XML</a>
-                          <a href="#" id="inline-fig-btn-svg-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'svg'); this.closest('details').removeAttribute('open');">&#127912; Vector SVG View</a>
-                          <a href="#" id="inline-fig-btn-png-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'png'); this.closest('details').removeAttribute('open');">&#128269; 2x PNG View</a>
-                        </div>
-                      </details>
+                      ${rightControlsHtml}
                     </div>
                   </div>
                   <div id="inline-fig-img-wrap-${diagId}" style="display:flex; justify-content:flex-start;">
-                    <img id="inline-fig-img-${diagId}" src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:auto; max-width:min(100%, 960px); max-height:720px; height:auto; display:block; margin:0; border-radius:6px; cursor:zoom-in;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', this.alt); } else { window.open(this.src, '_blank'); }" title="Click to open full-resolution diagram in new tab" />
-                  </div>
-                  <div id="inline-fig-edit-wrap-${diagId}" style="display:none; border-radius:8px; overflow:hidden; border:2px solid #2563eb; margin-top:4px;">
-                    <iframe id="inline-fig-iframe-${diagId}" src="about:blank" style="width:100%; height:780px; border:0; display:block;" title="Inline Draw.io Editor (${diagId})"></iframe>
+                    <img id="inline-fig-img-${diagId}" src="${resolved}?v=${PPTX_CACHE_VER}" alt="${alt}" style="width:auto; max-width:min(100%, 960px); max-height:720px; height:auto; display:block; margin:0; border-radius:6px; cursor:zoom-in;" onclick="if (window.openGenuineScreenshotLightbox) { openGenuineScreenshotLightbox('${resolved}', this.alt); } else { window.open(this.src, '_blank'); }" title="Click to zoom full-resolution architecture diagram" />
                   </div>
                   ${flowWrapHtml}
                 </div>`;
@@ -404,11 +406,18 @@
                 const hrefUrl = `/?doc=${encodeURIComponent(clean)}${hashPart ? '#' + encodeURIComponent(hashPart) : ''}`;
                 return `<a href="${hrefUrl}" onclick="event.preventDefault(); openDocInReader('${clean.replace(/'/g, "\\'")}', '${hashArg}');" style="color:var(--link); font-weight:600;">${label}</a>`;
               }
-              const cleanHref = (!/^[a-z][a-z0-9+.-]*:/i.test(resolved) && !resolved.startsWith('/')) ? normalizeRepoPath(resolved) : resolved;
+              let cleanHref = (!/^[a-z][a-z0-9+.-]*:/i.test(resolved) && !resolved.startsWith('/')) ? normalizeRepoPath(resolved) : resolved;
+              if (cleanHref === 'diagrams/ws1-l1-logical-security-taxonomy.drawio' && /Draw\.io Source/i.test(label)) {
+                cleanHref = 'diagrams/ws1-multi-tenant-taxonomy-overview.drawio';
+              } else {
+                const c4StubMatch = cleanHref.match(/^diagrams\/(ws1-l[134]-[a-z0-9-]+)\.(?:drawio|svg)$/i);
+                if (c4StubMatch) cleanHref = `diagrams/${c4StubMatch[1]}.drawio.png`;
+              }
               if (!/^[a-z][a-z0-9+.-]*:/i.test(cleanHref) && !cleanHref.startsWith('/') && (/\.(py|sql|tf|tfvars|yaml|yml|sh|json)$/i.test(cleanHref) || /(2\.6-terraform-starter|3\.6-terraform-silo-blueprint|4\.6-terraform-hybrid-psc-blueprint)\/?$/i.test(cleanHref))) {
                 return `<a href="/?tab=screenshots&wb=codebase" onclick="event.preventDefault(); openCodeOrArtifactInWorkbench('${cleanHref.replace(/'/g, "\\'")}');" style="color:var(--link); font-weight:600;">${label}</a>`;
               }
-              return `<a href="${cleanHref}" target="_blank" rel="noopener" style="color:var(--link); font-weight:500;">${label}</a>`;
+              const dlAttr = /\.drawio$/i.test(cleanHref) ? ' download' : ' target="_blank" rel="noopener"';
+              return `<a href="${cleanHref}"${dlAttr} style="color:var(--link); font-weight:500;">${label}</a>`;
             });
           inlineMathTokens.forEach((renderedMath, idx) => {
             out = out.replace(`@@INLINEMATH_${idx}@@`, renderedMath);
@@ -1131,13 +1140,9 @@
 
       const openTabLink = document.getElementById('hub-btn-open-drawio-tab');
       if (openTabLink) {
-        openTabLink.href = `/drawio-editor?id=${encodeURIComponent(d.id)}&engine=cloud`;
-        openTabLink.innerHTML = `<span style="font-size:13px;">&#128208;</span> Open Architecture Studio &#8599;`;
-        openTabLink.className = 'sim-btn primary';
-        openTabLink.style.background = '#1a73e8';
-        openTabLink.style.borderColor = '#1557b0';
-        openTabLink.style.color = '#ffffff';
-        openTabLink.style.fontWeight = '700';
+        openTabLink.href = `diagrams/${d.id}.drawio`;
+        openTabLink.innerHTML = `&#11015; Download .drawio`;
+        openTabLink.className = 'sim-btn';
       }
       const drawioLink = document.getElementById('hub-diag-drawio');
       if (drawioLink) drawioLink.href = `diagrams/${d.id}.drawio`;
@@ -1347,12 +1352,7 @@
         dlDocx.innerHTML = `<span>&#128196;</span> <span>Download Editable Word .docx (${ws.key})</span>`;
       }
       const gslidesLabel = document.getElementById('hub-open-gslides-label');
-      if (gslidesLabel) gslidesLabel.innerHTML = `&#128208; Blueprints (${ws.key}) &#8599;`;
-      const firstDiagId = (ws.diagrams && ws.diagrams[0]) ? ws.diagrams[0].id : 'ws1-multi-tenant-taxonomy-overview';
-      const cloudDrawio = document.getElementById('hub-deck-cloud-drawio');
-      if (cloudDrawio) cloudDrawio.href = `/drawio-editor?id=${encodeURIComponent(firstDiagId)}&engine=cloud`;
-      const nativeDrawio = document.getElementById('hub-deck-native-drawio');
-      if (nativeDrawio) nativeDrawio.href = `/drawio-editor?id=${encodeURIComponent(firstDiagId)}&engine=native`;
+      if (gslidesLabel) gslidesLabel.innerHTML = `&#128202; Slides &amp; Specs (${ws.key})`;
       const simBtn = document.getElementById('hub-sim-btn');
       if (simBtn) {
         simBtn.textContent = ws.simLabel;
@@ -1762,13 +1762,6 @@
       filmstrip.style.display = 'flex';
       const maxWidthPx = Math.round((1060 * cvZoom) / 100);
       const imgUrl = `slides/previews/${ws.deckStem}/slide_${pad2(slideObj.num)}.png?v=${PPTX_CACHE_VER}`;
-      const boundDiag = (ws.diagrams && ws.diagrams.find(d => d.decomposedSlide === slideObj.num)) || (ws.diagrams && ws.diagrams[0]) || { id: 'ws1-multi-tenant-taxonomy-overview' };
-      const cvCloudMain = document.getElementById('cv-cloud-drawio-main');
-      if (cvCloudMain) cvCloudMain.href = `/drawio-editor?id=${encodeURIComponent(boundDiag.id)}&engine=cloud`;
-      const cvCloudItem = document.getElementById('cv-cloud-drawio-item');
-      if (cvCloudItem) cvCloudItem.href = `/drawio-editor?id=${encodeURIComponent(boundDiag.id)}&engine=cloud`;
-      const cvNativeItem = document.getElementById('cv-native-drawio-item');
-      if (cvNativeItem) cvNativeItem.href = `/drawio-editor?id=${encodeURIComponent(boundDiag.id)}&engine=native`;
       const badgeHtml = slideObj.editable
         ? `<span class="badge badge-green" style="margin-right:8px;">★ 100% DECOMPOSED NATIVE EDITABLE BESPOKE DIAGRAM SLIDE</span>`
         : `<span class="badge badge-blue" style="margin-right:8px;">GOOGLE CLOUD BRANDED SLIDE (${slideObj.num} / ${total})</span>`;
@@ -1781,9 +1774,6 @@
               <strong>${escapeHtml(slideObj.desc)}</strong>
             </div>
             <div style="display:flex; gap:6px; align-items:center;">
-              <a href="/drawio-editor?id=${encodeURIComponent(boundDiag.id)}&engine=cloud" target="_blank" rel="noopener" class="sim-btn primary" style="text-decoration:none; display:inline-flex; align-items:center; gap:5px; padding:4px 10px; font-size:11.5px; font-weight:700; background:#1a73e8; border-color:#1557b0; color:#ffffff; border-radius:6px;">
-                <span>&#128208;</span> Architecture Studio &#8599;
-              </a>
               <a href="${ws.pptxPath}" download class="sim-btn" style="border:1px solid #cbd5e1; background:#ffffff; color:#0f172a; text-decoration:none; padding:4px 10px; font-size:11.5px; font-weight:600; border-radius:6px;">
                 &#11015; Download .pptx
               </a>
@@ -1795,13 +1785,12 @@
               <div>
                 <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:14px;">
                   <span class="badge badge-blue">GOOGLE CLOUD ARCHITECTURE CENTER • SLIDE ${slideObj.num} OF ${total}</span>
-                  <span class="badge badge-green">100% EDITABLE .PPTX &amp; DRAW.IO</span>
+                  <span class="badge badge-green">100% EDITABLE .PPTX</span>
                 </div>
                 <h3 style="margin:0 0 10px 0; font-size:20px; color:#0f172a;">${escapeHtml(slideObj.label)}</h3>
                 <p style="margin:0; font-size:14px; color:#334155; line-height:1.6;">${escapeHtml(slideObj.desc)}</p>
               </div>
               <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; padding-top:14px; border-top:1px solid #cbd5e1;">
-                <a href="/drawio-editor?id=${encodeURIComponent(boundDiag.id)}&engine=cloud" target="_blank" rel="noopener" class="sim-btn primary" style="text-decoration:none; padding:4px 10px; font-size:11.5px; font-weight:700; background:#1a73e8; border-color:#1557b0; color:#ffffff; border-radius:6px;">&#128208; Open Architecture Studio &#8599;</a>
                 <a href="${ws.pptxPath}" download class="sim-btn" style="text-decoration:none;">Download Editable .pptx (${total} Slides)</a>
               </div>
             </div>
