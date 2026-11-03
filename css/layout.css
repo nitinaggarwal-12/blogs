@@ -1111,6 +1111,24 @@ body {
         display: flex !important;
         flex-direction: column !important;
         gap: 12pt !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      .ov-dossier-visual,
+      .ov-dossier-sidebar,
+      .ov-dossier-proof-section,
+      .ov-ba-mini-card {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      .ov-ba-mini-thumbs {
+        grid-template-rows: auto !important;
+        flex: 0 0 auto !important;
+        overflow: visible !important;
       }
       .ov-blueprint-hero-canvas {
         height: auto !important;
@@ -1118,6 +1136,7 @@ body {
       }
       .ov-blueprint-hero-canvas object,
       .ov-blueprint-hero-canvas svg,
+      .ov-ba-mini-thumbs img,
       .card-diagram img,
       img {
         max-width: 100% !important;

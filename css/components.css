@@ -1760,26 +1760,33 @@
     .ov-blueprint-hero-canvas object {
       width: 100%;
       height: 100%;
+      max-width: 100%;
+      max-height: 100%;
       padding: 4px;
       box-sizing: border-box;
+      display: block;
     }
 
-    /* Side-by-Side Blueprint & Executive Briefing Split Layout (Tier 1) */
     /* Side-by-Side Blueprint & Executive Briefing Split Layout (Tier 1: Uniform 748px Equal-Height Split) */
     .ov-dossier-split {
       display: grid;
       grid-template-columns: minmax(0, 1.25fr) minmax(360px, 1fr);
+      grid-template-rows: minmax(0, 1fr);
       gap: 14px;
       align-items: stretch;
       margin-bottom: 12px;
       height: 748px;
       min-height: 748px;
       max-height: 748px;
+      overflow: hidden;
       box-sizing: border-box;
     }
     .ov-dossier-visual {
       min-width: 0;
+      min-height: 0;
       height: 100%;
+      max-height: 100%;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
     }
@@ -1803,6 +1810,8 @@
     }
     .ov-dossier-sidebar {
       height: 100%;
+      min-height: 0;
+      max-height: 100%;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
@@ -1869,9 +1878,17 @@
     @media (max-width: 1160px) {
       .ov-dossier-split {
         grid-template-columns: 1fr;
+        grid-template-rows: auto;
         height: auto;
         min-height: 0;
         max-height: none;
+        overflow: visible;
+      }
+      .ov-dossier-visual,
+      .ov-dossier-sidebar {
+        height: auto;
+        max-height: none;
+        overflow: visible;
       }
       .ov-dossier-visual .ov-blueprint-hero-canvas {
         height: 480px;
@@ -1937,11 +1954,26 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 8px;
       padding-bottom: 6px;
       border-bottom: 1px solid #e2e8f0;
       margin-bottom: 8px;
+    }
+    .ov-onepager-hdr > div:first-child {
+      flex: 1 1 0;
+      min-width: 0;
+      flex-wrap: nowrap !important;
+      overflow: hidden;
+    }
+    .ov-onepager-hdr > div:first-child h3 {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+    .ov-onepager-hdr > div:last-child {
+      flex: 0 0 auto;
+      flex-wrap: nowrap;
     }
     .ov-two-col {
       display: grid;
@@ -1995,17 +2027,51 @@
     .ov-ba-mini-thumbs {
       display: grid;
       grid-template-columns: 1fr 1fr;
+      grid-template-rows: minmax(0, 1fr);
       gap: 2px;
       background: #cbd5e1;
+      flex: 1 1 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .ov-ba-mini-thumbs + div {
+      flex: 0 0 auto !important;
     }
     .ov-ba-mini-thumbs img {
       width: 100%;
-      aspect-ratio: 16 / 10;
+      height: 100%;
+      min-height: 0;
       object-fit: cover;
       object-position: top center;
       display: block;
       cursor: zoom-in;
       background: #ffffff;
+    }
+    @media (max-width: 1160px) {
+      .ov-onepager-hdr {
+        flex-wrap: wrap;
+      }
+      .ov-onepager-hdr > div:first-child {
+        flex: 1 1 auto;
+        flex-wrap: wrap !important;
+      }
+      .ov-onepager-hdr > div:last-child {
+        flex-wrap: wrap;
+      }
+      .ov-ba-mini-card {
+        height: auto !important;
+        min-height: 0;
+        max-height: none;
+      }
+      .ov-ba-mini-thumbs {
+        grid-template-rows: auto;
+        flex: 0 0 auto;
+        overflow: visible;
+      }
+      .ov-ba-mini-thumbs img {
+        height: auto;
+        aspect-ratio: 16 / 10;
+      }
     }
     .ov-asset-directory {
       background: #f8fafc;
