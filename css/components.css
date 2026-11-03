@@ -1770,7 +1770,7 @@
     /* Side-by-Side Blueprint & Executive Briefing Split Layout (Tier 1: Uniform 748px Equal-Height Split) */
     .ov-dossier-split {
       display: grid;
-      grid-template-columns: minmax(0, 1.25fr) minmax(360px, 1fr);
+      grid-template-columns: minmax(0, 1.1fr) minmax(390px, 1fr);
       grid-template-rows: minmax(0, 1fr);
       gap: 14px;
       align-items: stretch;
@@ -1826,43 +1826,323 @@
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      justify-content: space-between;
+      gap: 10px;
       min-width: 0;
       overflow: hidden;
     }
     .ov-dossier-sidebar .ov-subbox {
-      padding: 8px 12px;
+      padding: 10px 12px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
+      gap: 7px;
+      min-height: 0;
       overflow: hidden;
       margin-bottom: 0;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
     }
     .ov-dossier-sidebar .ov-subbox:nth-child(1) {
-      flex: 0 0 auto;
+      flex: 0.45 1 auto;
+      border-left: 3.5px solid #1a73e8;
     }
     .ov-dossier-sidebar .ov-subbox:nth-child(2) {
-      flex: 0 0 auto;
+      flex: 0.85 1 auto;
+      border-left: 3.5px solid #059669;
     }
     .ov-dossier-sidebar .ov-subbox:nth-child(3) {
-      flex: 1 1 auto;
+      flex: 1.55 1 auto;
+      border-left: 3.5px solid #7c3aed;
+    }
+    .ov-ds-hdr {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
     }
     .ov-dossier-sidebar .ov-subbox h4 {
-      margin: 0 0 4px 0;
+      margin: 0;
       font-size: 12.2px;
-      line-height: 1.3;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.25;
     }
-    .ov-dossier-sidebar .ov-subbox p,
-    .ov-dossier-sidebar .ov-subbox li {
+    .ov-ds-tag {
+      font-size: 9.5px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      padding: 2px 7px;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .ov-ds-tag.tag-blue {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+    .ov-ds-tag.tag-green {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+    .ov-ds-tag.tag-purple {
+      background: #f5f3ff;
+      color: #6d28d9;
+      border: 1px solid #ddd6fe;
+    }
+    .ov-ds-thesis {
+      margin: 0;
+      font-size: 11.3px;
+      line-height: 1.42;
+      color: #334155;
+    }
+    .ov-ds-kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+      margin-top: auto;
+      flex-shrink: 0;
+    }
+    .ov-ds-kpi {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 5px 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+    .ov-ds-kval {
+      font-size: 12px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ov-ds-kpi.kpi-blue .ov-ds-kval { color: #1d4ed8; }
+    .ov-ds-kpi.kpi-green .ov-ds-kval { color: #047857; }
+    .ov-ds-kpi.kpi-purple .ov-ds-kval { color: #6d28d9; }
+    .ov-ds-klbl {
+      font-size: 9.8px;
+      font-weight: 600;
+      color: #64748b;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+    .ov-ds-guarantees {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .ov-ds-grow {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 5px 9px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      text-align: left;
+      gap: 8px;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .ov-ds-gidx {
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #047857;
+      font-size: 10px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .ov-ds-gbody {
       font-size: 11px;
-      line-height: 1.38;
+      line-height: 1.35;
+      color: #334155;
+      min-width: 0;
+      flex: 1 1 auto;
     }
-    .ov-dossier-sidebar .ov-subbox ul {
-      margin: 2px 0 0 0;
-      padding-left: 15px;
+    .ov-ds-gbody strong {
+      color: #0f172a;
     }
-    .ov-dossier-sidebar .ov-subbox li {
-      margin-bottom: 2px;
+    .ov-ds-gbody code,
+    .ov-ds-mdesc code {
+      font-size: 10px;
+      padding: 0 3px;
+    }
+    .ov-ds-mech-grid {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .ov-ds-mcard {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-top: 2.5px solid #1a73e8;
+      border-radius: 7px;
+      padding: 7px 9px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      text-align: left;
+      gap: 3px;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .ov-ds-mcard.mc-blue { border-top-color: #1a73e8; }
+    .ov-ds-mcard.mc-green { border-top-color: #059669; }
+    .ov-ds-mcard.mc-amber { border-top-color: #d97706; }
+    .ov-ds-mcard.mc-purple { border-top-color: #7c3aed; }
+    .ov-ds-mtop {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: 5px;
+      min-width: 0;
+      flex-shrink: 0;
+    }
+    .ov-ds-mstep {
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: #0f172a;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .ov-ds-mcard.mc-blue .ov-ds-mstep { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
+    .ov-ds-mcard.mc-green .ov-ds-mstep { background: #ecfdf5; border-color: #a7f3d0; color: #047857; }
+    .ov-ds-mcard.mc-amber .ov-ds-mstep { background: #fffbeb; border-color: #fde68a; color: #b45309; }
+    .ov-ds-mcard.mc-purple .ov-ds-mstep { background: #f5f3ff; border-color: #ddd6fe; color: #6d28d9; }
+    .ov-ds-mfile {
+      font-size: 9.6px;
+      color: #475569;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 0 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      min-width: 0;
+    }
+    .ov-ds-mtitle {
+      font-size: 11.1px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.24;
+      flex-shrink: 0;
+    }
+    .ov-ds-mdesc {
+      margin: 0;
+      font-size: 10.6px;
+      line-height: 1.34;
+      color: #334155;
+    }
+    @media (min-width: 1161px) and (max-width: 1560px) {
+      .ov-dossier-sidebar {
+        gap: 6px;
+      }
+      .ov-dossier-sidebar .ov-subbox {
+        padding: 6px 8px;
+        gap: 4px;
+      }
+      .ov-dossier-sidebar .ov-subbox h4 {
+        font-size: 11.2px;
+      }
+      .ov-ds-tag {
+        font-size: 8.8px;
+        padding: 1px 6px;
+      }
+      .ov-ds-thesis {
+        font-size: 10px;
+        line-height: 1.3;
+      }
+      .ov-ds-kpi-strip {
+        gap: 5px;
+      }
+      .ov-ds-kpi {
+        padding: 3px 6px;
+      }
+      .ov-ds-kval {
+        font-size: 10.5px;
+      }
+      .ov-ds-klbl {
+        font-size: 8.8px;
+      }
+      .ov-ds-guarantees {
+        gap: 4px;
+      }
+      .ov-ds-grow {
+        padding: 3px 6px;
+        gap: 6px;
+      }
+      .ov-ds-gidx {
+        width: 18px;
+        height: 18px;
+        font-size: 8.8px;
+      }
+      .ov-ds-gbody {
+        font-size: 9.8px;
+        line-height: 1.24;
+      }
+      .ov-ds-gbody code,
+      .ov-ds-mdesc code {
+        font-size: 9px;
+        padding: 0 2px;
+      }
+      .ov-ds-mech-grid {
+        gap: 5px;
+      }
+      .ov-ds-mcard {
+        padding: 5px 6px;
+        gap: 2px;
+      }
+      .ov-ds-mstep {
+        font-size: 8.8px;
+        padding: 0 4px;
+      }
+      .ov-ds-mfile {
+        font-size: 8.8px;
+        padding: 0 4px;
+      }
+      .ov-ds-mtitle {
+        font-size: 10px;
+        line-height: 1.18;
+      }
+      .ov-ds-mdesc {
+        font-size: 9.4px;
+        line-height: 1.22;
+      }
     }
 
     /* Full-Width Before/After 3P SaaS Proof Section (Tier 2: Uniform 320px Height) */
@@ -1900,6 +2180,18 @@
         height: auto;
         max-height: none;
         overflow: visible;
+      }
+      .ov-dossier-sidebar .ov-subbox:nth-child(1),
+      .ov-dossier-sidebar .ov-subbox:nth-child(2),
+      .ov-dossier-sidebar .ov-subbox:nth-child(3) {
+        flex: 0 0 auto;
+      }
+      .ov-ds-guarantees {
+        grid-template-rows: auto;
+      }
+      .ov-ds-mech-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
       }
       .ov-dossier-visual .ov-blueprint-hero-canvas {
         height: 480px;

@@ -181,27 +181,57 @@
 
           <div class="ov-dossier-sidebar">
             <div class="ov-subbox">
-              <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
-              <p class="m-0">Stateful multi-turn agents running on <strong>Vertex AI Agent Engine</strong>, <strong>ADK</strong>, and <strong>Gemini Enterprise</strong> introduce shared LLM context caches, dynamic <strong>MCP</strong> tool calls, multi-level memory banks, and customer-authored private agents. Blog 1 establishes that <strong>isolation is a per-tenant tier decision, not a single platform-wide compromise</strong>—decoupling an <strong>80% reusable 5-Hop Cryptographic Context Chain</strong> from the <strong>20% perimeter delta</strong> across Pooled (Pattern A), Sovereign Silos (Pattern B), and Dynamic Hybrid (Pattern C).</p>
+              <div class="ov-ds-hdr">
+                <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
+                <span class="ov-ds-tag tag-blue">80/20 BASELINE</span>
+              </div>
+              <p class="ov-ds-thesis">Stateful multi-turn agents on <strong>Vertex AI Agent Engine</strong>, <strong>ADK</strong>, and <strong>Gemini Enterprise</strong> share LLM context caches, dynamic <strong>MCP</strong> tools, memory banks, and private agents. Blog 1 proves <strong>isolation is a per-tenant tier decision, not a platform-wide compromise</strong>&mdash;decoupling an <strong>80% reusable 5-Hop Context Chain</strong> from the <strong>20% perimeter delta</strong> across Patterns A, B, and C.</p>
+              <div class="ov-ds-kpi-strip">
+                <div class="ov-ds-kpi kpi-blue"><span class="ov-ds-kval">80% / 20%</span><span class="ov-ds-klbl">Reusable Core vs Perimeter</span></div>
+                <div class="ov-ds-kpi kpi-green"><span class="ov-ds-kval">&lt; 18 ms</span><span class="ov-ds-klbl">Cloud KMS OBO Exchange</span></div>
+                <div class="ov-ds-kpi kpi-purple"><span class="ov-ds-kval">5 HTTP Gates</span><span class="ov-ds-klbl">401 &bull; 403 &bull; 422 &bull; 423 &bull; 429</span></div>
+              </div>
             </div>
 
             <div class="ov-subbox">
-              <h4>2. Key Production Trade-offs &amp; Isolation Guarantees</h4>
-              <ul>
-                <li><strong>80/20 Governance Invariant</strong>: Cryptographic context propagation (RFC 8693 OBO + RFC 9449 DPoP) is 100% reusable across all tenants; isolation tiering is applied at data/compute perimeters rather than rewriting agent code.</li>
-                <li><strong>Zero-Trust Token Exchange</strong>: Identity propagation latency overhead is bounded to &lt;18ms via Cloud KMS ECDSA session caching while eliminating shared long-lived service account keys.</li>
-                <li><strong>Defense-in-Depth Circuit Breakers</strong>: Deterministic fail-closed semantics across 5 HTTP error gates (<code>401</code> Unauthorized, <code>403</code> ARD Filtered, <code>422</code> Semantic NLC, <code>423</code> CMEK Locked, <code>429</code> Rate Limited).</li>
-              </ul>
+              <div class="ov-ds-hdr">
+                <h4>2. Key Production Trade-offs &amp; Isolation Guarantees</h4>
+                <span class="ov-ds-tag tag-green">ZERO-TRUST GUARANTEES</span>
+              </div>
+              <div class="ov-ds-guarantees">
+                <div class="ov-ds-grow"><span class="ov-ds-gidx">01</span><div class="ov-ds-gbody"><strong>80/20 Governance Invariant</strong>: Cryptographic context propagation (RFC 8693 OBO + RFC 9449 DPoP) is 100% reusable; isolation tiering applies at data/compute perimeters.</div></div>
+                <div class="ov-ds-grow"><span class="ov-ds-gidx">02</span><div class="ov-ds-gbody"><strong>Zero-Trust Token Exchange</strong>: Identity propagation stays &lt;18ms via Cloud KMS ECDSA session caching while eliminating shared long-lived service account keys.</div></div>
+                <div class="ov-ds-grow"><span class="ov-ds-gidx">03</span><div class="ov-ds-gbody"><strong>Defense-in-Depth Circuit Breakers</strong>: Deterministic fail-closed gates across 5 HTTP codes (<code>401</code> Auth, <code>403</code> ARD, <code>422</code> NLC, <code>423</code> CMEK, <code>429</code> Rate).</div></div>
+              </div>
             </div>
 
             <div class="ov-subbox">
-              <h4>3. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
-              <ul>
-              <li><strong>Hop 1 — Edge &amp; Identity PEP</strong> (<code>hop1_edge_identity_pep.py</code>): Cloud Armor &amp; IAP strip spoofed <code>X-Tenant-Id</code> headers, execute <strong>RFC 8693 OBO</strong> + <strong>RFC 9449 DPoP</strong> proofs (<code>jkt</code>), and sign immutable <code>TenantContext</code> digests via <strong>Cloud KMS</strong> (<code>EC-P256</code>).</li>
-              <li><strong>Hop 2 — ARD Catalog &amp; Callback PDP</strong> (<code>hop2_registry_pdp_callbacks.py</code>): Filters Discovery Engine / Agent Registry catalogs and prunes unauthorized tools via ADK <code>before_agent_callback</code> (blocking RetailStream from FinVault's private <code>Agent Alpha</code> with <code>HTTP 403</code>).</li>
-              <li><strong>Hop 3 — Compute, 5-Level Memory &amp; Bulkheads</strong> (<code>hop3_compute_finops_bulkhead.py</code>): Binds gVisor <code>temp:tenant_id</code>, isolates <code>L1–L5</code> memory, enforces <strong>Valkey</strong> rate buckets (<code>HTTP 429</code>), and yields <strong>up to 90% COGS savings</strong> via <code>ContextCacheConfig</code>.</li>
-              <li><strong>Hops 4 &amp; 5 — Model Armor, SDP &amp; AlloyDB RLS</strong> (<code>hop4</code> • <code>hop5</code>): Blocks prompt injection (<code>HTTP 400</code>) &amp; Semantic NLCs (<code>HTTP 422</code>), scrubs IBAN/SSN PII, binds <code>SET LOCAL app.current_tenant_id</code> on AlloyDB RLS, and streams zero-PII BigQuery OTel spans.</li>
-              </ul>
+              <div class="ov-ds-hdr">
+                <h4>3. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
+                <span class="ov-ds-tag tag-purple">HOPS 1&ndash;5 PIPELINE</span>
+              </div>
+              <div class="ov-ds-mech-grid">
+                <div class="ov-ds-mcard mc-blue">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">HOP 1</span><code class="ov-ds-mfile" title="hop1_edge_identity_pep.py">hop1_edge_identity_pep.py</code></div>
+                  <div class="ov-ds-mtitle">Edge &amp; Identity PEP</div>
+                  <p class="ov-ds-mdesc">Cloud Armor &amp; IAP strip spoofed <code>X-Tenant-Id</code>, verify <strong>RFC 8693 OBO</strong> + <strong>RFC 9449 DPoP</strong> (<code>jkt</code>), and sign <code>TenantContext</code> via <strong>Cloud KMS</strong> (<code>EC-P256</code>).</p>
+                </div>
+                <div class="ov-ds-mcard mc-green">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">HOP 2</span><code class="ov-ds-mfile" title="hop2_registry_pdp_callbacks.py">hop2_registry_pdp_callbacks.py</code></div>
+                  <div class="ov-ds-mtitle">ARD Catalog &amp; Callback PDP</div>
+                  <p class="ov-ds-mdesc">Filters Discovery Engine / Agent Registry catalogs and prunes tools via ADK <code>before_agent_callback</code> (blocking RetailStream from <code>Agent Alpha</code> with <code>HTTP 403</code>).</p>
+                </div>
+                <div class="ov-ds-mcard mc-amber">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">HOP 3</span><code class="ov-ds-mfile" title="hop3_compute_finops_bulkhead.py">hop3_compute_finops_bulkhead.py</code></div>
+                  <div class="ov-ds-mtitle">Compute, Memory &amp; Bulkheads</div>
+                  <p class="ov-ds-mdesc">Binds gVisor <code>temp:tenant_id</code>, isolates <code>L1&ndash;L5</code> memory, enforces <strong>Valkey</strong> rate buckets (<code>HTTP 429</code>), and cuts input COGS <strong>90%</strong> via <code>ContextCacheConfig</code>.</p>
+                </div>
+                <div class="ov-ds-mcard mc-purple">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">HOPS 4&ndash;5</span><code class="ov-ds-mfile" title="hop4 &bull; hop5">hop4 &bull; hop5</code></div>
+                  <div class="ov-ds-mtitle">Model Armor, SDP &amp; AlloyDB RLS</div>
+                  <p class="ov-ds-mdesc">Blocks prompt injection (<code>HTTP 400</code>) &amp; Semantic NLCs (<code>HTTP 422</code>), scrubs IBAN/SSN PII, pins <code>SET LOCAL app.current_tenant_id</code>, and streams BQ OTel spans.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -294,27 +324,57 @@
 
           <div class="ov-dossier-sidebar">
             <div class="ov-subbox">
-              <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
-              <p class="m-0">Standard B2B SaaS tiers serving hundreds of competing organizations cannot provision dedicated GCP projects per tenant without collapsing gross margins. <strong>Pattern A (High-Density Pooled Architecture)</strong> runs competing corporate tenants inside one shared Google Cloud project (<code>cymbal-pooled-prod</code>) while cutting shared input-token COGS by <strong>90%</strong> (<code>84.7%</code> total turn COGS reduction) and blocking <strong>10/10 red-team cross-tenant breach simulations</strong>.</p>
+              <div class="ov-ds-hdr">
+                <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
+                <span class="ov-ds-tag tag-blue">PATTERN A &bull; POOLED</span>
+              </div>
+              <p class="ov-ds-thesis">Standard B2B SaaS tiers serving hundreds of competing organizations cannot provision dedicated GCP projects per tenant without collapsing gross margins. <strong>Pattern A (High-Density Pooled Architecture)</strong> runs competing tenants inside one shared project (<code>cymbal-pooled-prod</code>) while cutting shared input-token COGS by <strong>90%</strong> and blocking <strong>10/10 red-team breach simulations</strong>.</p>
+              <div class="ov-ds-kpi-strip">
+                <div class="ov-ds-kpi kpi-blue"><span class="ov-ds-kval">90% Saved</span><span class="ov-ds-klbl">Shared Input-Token COGS</span></div>
+                <div class="ov-ds-kpi kpi-green"><span class="ov-ds-kval">84.7% Lower</span><span class="ov-ds-klbl">Blended Per-Turn Cost</span></div>
+                <div class="ov-ds-kpi kpi-purple"><span class="ov-ds-kval">10 / 10</span><span class="ov-ds-klbl">Breach Simulations Blocked</span></div>
+              </div>
             </div>
 
             <div class="ov-subbox">
-              <h4>2. Key Production Trade-offs &amp; Isolation Guarantees</h4>
-              <ul>
-                <li><strong>Multi-Tenant FinOps Efficiency</strong>: Delivers up to <strong>90% COGS reduction</strong> via prompt prefix caching and shared gVisor agent workers, ideal for high-volume, cost-sensitive Tier-3 tenants.</li>
-                <li><strong>Row-Level Security (RLS) Guarantee</strong>: Database isolation is enforced via session-pinned <code>SET LOCAL app.current_tenant_id</code> on pooled AlloyDB clusters, verified by automated cross-tenant leak probes.</li>
-                <li><strong>Noisy Neighbor Protection</strong>: Valkey token buckets enforce dynamic RPM/TPM throttling (<code>HTTP 429</code>), preventing bursty tenants from starving shared Gemini context quotas.</li>
-              </ul>
+              <div class="ov-ds-hdr">
+                <h4>2. Key Production Trade-offs &amp; Isolation Guarantees</h4>
+                <span class="ov-ds-tag tag-green">POOLED FINOPS &amp; RLS</span>
+              </div>
+              <div class="ov-ds-guarantees">
+                <div class="ov-ds-grow"><span class="ov-ds-gidx">01</span><div class="ov-ds-gbody"><strong>Multi-Tenant FinOps Efficiency</strong>: Delivers up to <strong>90% COGS reduction</strong> via prompt prefix caching and shared gVisor agent workers for high-volume Standard tiers.</div></div>
+                <div class="ov-ds-grow"><span class="ov-ds-gidx">02</span><div class="ov-ds-gbody"><strong>Row-Level Security (RLS) Guarantee</strong>: Database isolation is enforced via session-pinned <code>SET LOCAL app.current_tenant_id</code> on pooled AlloyDB clusters.</div></div>
+                <div class="ov-ds-grow"><span class="ov-ds-gidx">03</span><div class="ov-ds-gbody"><strong>Noisy-Neighbor Bulkheads</strong>: Memorystore for Valkey token buckets enforce dynamic RPM/TPM throttling (<code>HTTP 429</code>), protecting shared Gemini context quotas.</div></div>
+              </div>
             </div>
 
             <div class="ov-subbox">
-              <h4>3. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
-              <ul>
-              <li><strong>Shared Prefix Caching Without Bleed</strong>: Caches immutable platform prompts &amp; tool schemas once via Vertex AI <code>ContextCacheConfig</code> while injecting per-tenant Firestore prompts, GCS Skills URIs, and <code>L1–L4</code> memory post-cache in Hop 3.</li>
-              <li><strong>Multi-IdP 3LO Federated Sandbox</strong>: Simultaneously brokers <strong>Google OIDC</strong> (Workspace/Jira for FinVault) and <strong>Microsoft Entra ID</strong> (SharePoint/ServiceNow for RetailStream), keyed by composite <code>{tenant_id}:{user_id}</code> + DPoP <code>jkt</code> so intra-tenant peers cannot replay tokens (<code>HTTP 401</code>).</li>
-              <li><strong>Database RLS &amp; Valkey Bulkheads</strong> (<code>pooled_gateway_and_rls.sql</code>): Enforces PostgreSQL/AlloyDB <code>FORCE ROW LEVEL SECURITY</code> via <code>SET LOCAL app.current_tenant_id</code> and isolates noisy neighbors in Memorystore for Valkey.</li>
-              <li><strong>10/10 Red-Team Breach Simulation Suite</strong> (<code>run_breach_simulations.py</code>): Verifies deterministic rejection of forged headers, catalog probing, memory traversal, prompt injection, NLC bypass, PII leaks, SQL RLS escape, RPM floods, 3LO reuse, and DPoP replay.</li>
-              </ul>
+              <div class="ov-ds-hdr">
+                <h4>3. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
+                <span class="ov-ds-tag tag-purple">4 POOLED ENFORCERS</span>
+              </div>
+              <div class="ov-ds-mech-grid">
+                <div class="ov-ds-mcard mc-blue">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">CACHE</span><code class="ov-ds-mfile" title="ContextCacheConfig">ContextCacheConfig</code></div>
+                  <div class="ov-ds-mtitle">Shared Prefix Without Bleed</div>
+                  <p class="ov-ds-mdesc">Caches immutable platform prompts &amp; tool schemas once while injecting per-tenant Firestore prompts, GCS Skills URIs, and <code>L1&ndash;L4</code> memory post-cache in Hop 3.</p>
+                </div>
+                <div class="ov-ds-mcard mc-green">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">3LO IDP</span><code class="ov-ds-mfile" title="Google OIDC &bull; Entra ID">OIDC &bull; Entra ID</code></div>
+                  <div class="ov-ds-mtitle">Multi-IdP Federated Sandbox</div>
+                  <p class="ov-ds-mdesc">Brokers <strong>Google OIDC</strong> (Workspace/Jira) and <strong>Entra ID</strong> (SharePoint/ServiceNow) keyed by <code>{tenant_id}:{user_id}</code> + DPoP <code>jkt</code> (<code>HTTP 401</code> on peer replay).</p>
+                </div>
+                <div class="ov-ds-mcard mc-amber">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">DATA RLS</span><code class="ov-ds-mfile" title="pooled_gateway_and_rls.sql">pooled_gateway_and_rls.sql</code></div>
+                  <div class="ov-ds-mtitle">AlloyDB FORCE RLS &amp; Valkey</div>
+                  <p class="ov-ds-mdesc">Enforces PostgreSQL/AlloyDB <code>FORCE ROW LEVEL SECURITY</code> via transaction-scoped <code>SET LOCAL</code> and per-tenant Valkey noisy-neighbor bulkheads.</p>
+                </div>
+                <div class="ov-ds-mcard mc-purple">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">RED-TEAM</span><code class="ov-ds-mfile" title="run_breach_simulations.py">run_breach_simulations.py</code></div>
+                  <div class="ov-ds-mtitle">10/10 Breach Simulation Suite</div>
+                  <p class="ov-ds-mdesc">Certifies rejection of forged headers, catalog probing, memory traversal, prompt injection, NLC bypass, PII leaks, RLS escape, RPM floods, 3LO reuse, and DPoP replay.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -407,27 +467,57 @@
 
           <div class="ov-dossier-sidebar">
             <div class="ov-subbox">
-              <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
-              <p class="m-0">When <strong>OCC/FDIC banking rules, EU DORA, HIPAA, FDA 21 CFR Part 11, or FedRAMP</strong> prohibit shared compute and shared databases, <strong>Pattern B (Sovereign Silos)</strong> wraps the <strong>unchanged 80% reusable 5-Hop Cymbal core</strong> inside a dedicated Google Cloud project per corporate tenant (<code>cymbal-finvault-silo-prod</code> &amp; <code>cymbal-retailstream-silo-prod</code>) with VPC Service Controls, IAM Principal Access Boundaries, a <code>&lt; 5 s</code> customer-held <strong>Cloud KMS CMEK kill-switch (<code>HTTP 423 Locked</code>)</strong>, and air-gapped <strong>Gemma 3 (27B)</strong> on GKE.</p>
+              <div class="ov-ds-hdr">
+                <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
+                <span class="ov-ds-tag tag-blue">PATTERN B &bull; SOVEREIGN</span>
+              </div>
+              <p class="ov-ds-thesis">When <strong>OCC/FDIC, EU DORA, HIPAA, FDA 21 CFR Part 11, or FedRAMP</strong> prohibit shared compute and databases, <strong>Pattern B (Sovereign Silos)</strong> wraps the <strong>unchanged 80% reusable 5-Hop core</strong> inside a dedicated GCP project per tenant (<code>cymbal-finvault-silo-prod</code>) with VPC-SC, IAM PAB, a <code>&lt; 5 s</code> <strong>CMEK kill-switch (<code>HTTP 423</code>)</strong>, and air-gapped <strong>Gemma 3 (27B)</strong> on GKE.</p>
+              <div class="ov-ds-kpi-strip">
+                <div class="ov-ds-kpi kpi-blue"><span class="ov-ds-kval">0 Shared</span><span class="ov-ds-klbl">Dedicated Project, VPC &amp; DB</span></div>
+                <div class="ov-ds-kpi kpi-green"><span class="ov-ds-kval">&lt; 5 sec</span><span class="ov-ds-klbl">CMEK Kill-Switch (HTTP 423)</span></div>
+                <div class="ov-ds-kpi kpi-purple"><span class="ov-ds-kval">6 / 6</span><span class="ov-ds-klbl">Silo Exfiltration Certs</span></div>
+              </div>
             </div>
 
             <div class="ov-subbox">
-              <h4>2. Key Production Trade-offs &amp; Isolation Guarantees</h4>
-              <ul>
-                <li><strong>Zero-Shared Infrastructure</strong>: Dedicated per-tenant GCP projects, private VPC Service Controls (VPC-SC) perimeters, and isolated GKE node pools eliminate co-tenancy risks for regulated clients.</li>
-                <li><strong>Customer-Managed Encryption Keys (CMEK)</strong>: Tenant data and agent caches are cryptographically sealed with tenant-owned Cloud KMS keys; instant revocation yields hardware-level kill-switch isolation (<code>HTTP 423</code>).</li>
-                <li><strong>Cross-Project IAM Federation</strong>: Strictly prohibits cross-tenant service account impersonation through Principal Access Boundaries (PAB) and conditional attribute bindings.</li>
-              </ul>
+              <div class="ov-ds-hdr">
+                <h4>2. Key Production Trade-offs &amp; Isolation Guarantees</h4>
+                <span class="ov-ds-tag tag-green">HARDWARE &amp; PERIMETER</span>
+              </div>
+              <div class="ov-ds-guarantees">
+                <div class="ov-ds-grow"><span class="ov-ds-gidx">01</span><div class="ov-ds-gbody"><strong>Zero-Shared Infrastructure</strong>: Dedicated per-tenant GCP projects, private VPC Service Controls (VPC-SC) perimeters, and isolated GKE node pools eliminate co-tenancy risk.</div></div>
+                <div class="ov-ds-grow"><span class="ov-ds-gidx">02</span><div class="ov-ds-gbody"><strong>Customer-Managed Encryption Keys (CMEK)</strong>: Tenant data and caches are sealed with customer-held Cloud KMS / EKM keys; revocation triggers instant cryptographic freeze (<code>HTTP 423</code>).</div></div>
+                <div class="ov-ds-grow"><span class="ov-ds-gidx">03</span><div class="ov-ds-gbody"><strong>Cross-Project IAM Confinement</strong>: Prohibits cross-tenant service account impersonation via Organization IAM v3 Principal Access Boundaries (PAB).</div></div>
+              </div>
             </div>
 
             <div class="ov-subbox">
-              <h4>3. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
-              <ul>
-              <li><strong>Dedicated VPC-SC Perimeter &amp; IAM PAB</strong> (<code>pattern_b_siloed_service.py</code>): Confines principals via Organization IAM v3 PAB and blocks cross-project API exfiltration with <code>HTTP 403 VPC_SC_PERIMETER_VIOLATION</code>.</li>
-              <li><strong>Cloud KMS / EKM <code>&lt; 5 s</code> Crypto-Shredding Kill-Switch</strong>: Disabling the tenant's KMS key version triggers targeted Valkey <code>UNLINK {tenant_id}:*</code> (<code>0</code> peer evictions) and immediately halts in-flight agent turns, memory reads, and AlloyDB queries with <code>HTTP 423 Locked</code>.</li>
-              <li><strong>Vertex AI Dedicated PT &amp; Air-Gapped Gemma 3 on Private GKE</strong> (<code>gke_gemma3_airgapped_manifest.yaml</code>): Supports reserved Vertex AI GSUs or private GKE GPU enclaves with <code>0.0.0.0/0</code> WAN egress blocked.</li>
-              <li><strong>6/6 Silo Exfiltration &amp; CMEK Revocation Suite</strong> (<code>run_silo_security_tests.py</code>): Certifies dual-tenant silo parity, VPC-SC blocks, PAB confinement, live KMS kill-switch, and zero-WAN GKE routing.</li>
-              </ul>
+              <div class="ov-ds-hdr">
+                <h4>3. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
+                <span class="ov-ds-tag tag-purple">4 SOVEREIGN CONTROLS</span>
+              </div>
+              <div class="ov-ds-mech-grid">
+                <div class="ov-ds-mcard mc-blue">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">VPC-SC</span><code class="ov-ds-mfile" title="pattern_b_siloed_service.py">pattern_b_siloed_service.py</code></div>
+                  <div class="ov-ds-mtitle">Dedicated VPC-SC &amp; IAM PAB</div>
+                  <p class="ov-ds-mdesc">Confines credentials via Organization IAM v3 PAB and blocks cross-project API exfiltration at the perimeter (<code>HTTP 403 VPC_SC_PERIMETER_VIOLATION</code>).</p>
+                </div>
+                <div class="ov-ds-mcard mc-green">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">CMEK</span><code class="ov-ds-mfile" title="UNLINK &bull; HTTP 423">UNLINK &bull; HTTP 423</code></div>
+                  <div class="ov-ds-mtitle">&lt; 5 s Crypto-Shred Kill-Switch</div>
+                  <p class="ov-ds-mdesc">Disabling the tenant KMS key triggers targeted Valkey <code>UNLINK {tenant_id}:*</code> (<code>0</code> peer evictions) and halts in-flight turns, memory, and AlloyDB reads (<code>HTTP 423</code>).</p>
+                </div>
+                <div class="ov-ds-mcard mc-amber">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">AIR-GAP</span><code class="ov-ds-mfile" title="gke_gemma3_airgapped_manifest.yaml">gke_gemma3_airgapped.yaml</code></div>
+                  <div class="ov-ds-mtitle">Vertex PT &amp; Private GKE Gemma 3</div>
+                  <p class="ov-ds-mdesc">Supports reserved Vertex AI Provisioned Throughput GSUs or private GKE GPU enclaves running Gemma 3 (27B) with <code>0.0.0.0/0</code> WAN egress blocked.</p>
+                </div>
+                <div class="ov-ds-mcard mc-purple">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">AUDIT</span><code class="ov-ds-mfile" title="run_silo_security_tests.py">run_silo_security_tests.py</code></div>
+                  <div class="ov-ds-mtitle">6/6 Silo &amp; CMEK Security Suite</div>
+                  <p class="ov-ds-mdesc">Certifies dual-tenant silo parity, VPC-SC blocks, PAB confinement, live KMS revocation freeze, and zero-WAN air-gapped GKE routing.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -520,27 +610,57 @@
 
           <div class="ov-dossier-sidebar">
             <div class="ov-subbox">
-              <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
-              <p class="m-0">Tiered B2B SaaS platforms typically serve a bimodal <strong>950 Standard + 50 Regulated Enterprise</strong> customer portfolio—plus mid-contract Standard &rarr; Enterprise upsells. <strong>Pattern C (Dynamic Hybrid Hub-and-Spoke)</strong> serves every customer from one unified global ingress domain, routing Standard tenants to the shared Pool and bridging Enterprise tenants over <strong>Private Service Connect (PSC)</strong> to dedicated CMEK spokes with <strong><code>0 ms</code>-downtime live tier graduation</strong>.</p>
+              <div class="ov-ds-hdr">
+                <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
+                <span class="ov-ds-tag tag-blue">PATTERN C &bull; HYBRID PSC</span>
+              </div>
+              <p class="ov-ds-thesis">Tiered B2B SaaS platforms typically serve a bimodal <strong>950 Standard + 50 Regulated Enterprise</strong> portfolio&mdash;plus mid-contract Standard &rarr; Enterprise upsells. <strong>Pattern C (Dynamic Hybrid Hub-and-Spoke)</strong> unifies Standard Pool routing and Enterprise <strong>Private Service Connect (PSC)</strong> CMEK spokes behind one ingress domain with <strong><code>0 ms</code>-downtime live graduation</strong>.</p>
+              <div class="ov-ds-kpi-strip">
+                <div class="ov-ds-kpi kpi-blue"><span class="ov-ds-kval">950 + 50</span><span class="ov-ds-klbl">Pooled + Sovereign Fleet</span></div>
+                <div class="ov-ds-kpi kpi-green"><span class="ov-ds-kval">0 ms</span><span class="ov-ds-klbl">Live Cutover Downtime</span></div>
+                <div class="ov-ds-kpi kpi-purple"><span class="ov-ds-kval">4 / 4</span><span class="ov-ds-klbl">Tier Migration Suite</span></div>
+              </div>
             </div>
 
             <div class="ov-subbox">
-              <h4>2. Key Production Trade-offs &amp; Isolation Guarantees</h4>
-              <ul>
-                <li><strong>1-Way PSC Spoke Topology</strong>: Central shared control plane communicates with tenant VPCs via 1-Way Private Service Connect endpoints, preventing tenant-to-hub reverse traversal.</li>
-                <li><strong>Live Non-Disruptive Migration</strong>: Tenants dynamically graduate from pooled Tier-3 to sovereign Tier-1 silos without downtime, DNS reconfiguration, or losing active conversation state.</li>
-                <li><strong>Dual-Provider Infrastructure Automation</strong>: Terraform modules orchestrate bidirectional PSC bindings across Google Cloud and third-party SaaS interconnects with strict health-checked failover.</li>
-              </ul>
+              <div class="ov-ds-hdr">
+                <h4>2. Key Production Trade-offs &amp; Isolation Guarantees</h4>
+                <span class="ov-ds-tag tag-green">PSC &amp; LIVE GRADUATION</span>
+              </div>
+              <div class="ov-ds-guarantees">
+                <div class="ov-ds-grow"><span class="ov-ds-gidx">01</span><div class="ov-ds-gbody"><strong>1-Way PSC Spoke Topology</strong>: Central routing hub connects to Enterprise spoke VPCs via unidirectional Private Service Connect endpoints, preventing reverse traversal.</div></div>
+                <div class="ov-ds-grow"><span class="ov-ds-gidx">02</span><div class="ov-ds-gbody"><strong>Zero-Downtime Tier Graduation</strong>: Tenants dynamically upgrade from pooled Tier-3 to sovereign Tier-1 silos without DNS changes, dropped turns, or lost session state.</div></div>
+                <div class="ov-ds-grow"><span class="ov-ds-gidx">03</span><div class="ov-ds-gbody"><strong>Dual-Provider Terraform Automation</strong>: Declarative IaC orchestrates hub forwarding rules and spoke <code>ServiceAttachment</code> bindings with health-checked failover.</div></div>
+              </div>
             </div>
 
             <div class="ov-subbox">
-              <h4>3. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
-              <ul>
-              <li><strong>Unidirectional PSC Hub-to-Spoke Bridge</strong>: Consumer Hub VPC connects to Enterprise Producer Spoke <code>ServiceAttachment</code> endpoints over PSC NAT with zero VPC peering or CIDR overlap, blocking pooled spoke impersonation with <code>HTTP 403</code>.</li>
-              <li><strong>3-Phase Live Tier Graduation State Machine</strong> (<code>pattern_c_hybrid_router_and_migrator.py</code>): Executes <code>SHADOW_SYNC</code> (backfill + SHA-256 parity) &rarr; <code>ATOMIC_CUTOVER</code> (sub-ms routing flip, <code>0</code> dropped turns) &rarr; <code>DRAIN_AND_VERIFY</code> (pooled <code>UNLINK</code> + OTel attestation).</li>
-              <li><strong>Instance-Scoped Profile Isolation &amp; 4/4 Migration Suite</strong> (<code>run_tier_migration_suite.py</code>): Upgrades a tenant instance from <code>STANDARD</code> to <code>ENTERPRISE</code> with zero global state bleed across <code>TENANT_PROFILES</code>.</li>
-              <li><strong>Dual-Provider Terraform Blueprint</strong> (<code>4.6 main.tf</code>): Declaratively wires <code>google.hub</code> forwarding rules to <code>google.spoke</code> PSC service attachments.</li>
-              </ul>
+              <div class="ov-ds-hdr">
+                <h4>3. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
+                <span class="ov-ds-tag tag-purple">4 HYBRID MECHANISMS</span>
+              </div>
+              <div class="ov-ds-mech-grid">
+                <div class="ov-ds-mcard mc-blue">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">PSC NAT</span><code class="ov-ds-mfile" title="ServiceAttachment">ServiceAttachment</code></div>
+                  <div class="ov-ds-mtitle">1-Way Hub-to-Spoke Bridge</div>
+                  <p class="ov-ds-mdesc">Consumer Hub VPC connects to Producer Spoke <code>ServiceAttachment</code> over PSC NAT with zero VPC peering or CIDR overlap (<code>HTTP 403</code> on spoke spoofing).</p>
+                </div>
+                <div class="ov-ds-mcard mc-green">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">3-PHASE</span><code class="ov-ds-mfile" title="pattern_c_hybrid_router_and_migrator.py">pattern_c_migrator.py</code></div>
+                  <div class="ov-ds-mtitle">Live Tier Graduation Engine</div>
+                  <p class="ov-ds-mdesc">Executes <code>SHADOW_SYNC</code> (SHA-256 parity) &rarr; <code>ATOMIC_CUTOVER</code> (<code>0</code> dropped turns) &rarr; <code>DRAIN_AND_VERIFY</code> (pooled <code>UNLINK</code> + OTel attestation).</p>
+                </div>
+                <div class="ov-ds-mcard mc-amber">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">ISOLATE</span><code class="ov-ds-mfile" title="run_tier_migration_suite.py">run_tier_migration_suite.py</code></div>
+                  <div class="ov-ds-mtitle">4/4 Profile Migration Suite</div>
+                  <p class="ov-ds-mdesc">Upgrades a tenant instance from <code>STANDARD</code> to <code>ENTERPRISE</code> with deterministic 4/4 verification and zero global state bleed across <code>TENANT_PROFILES</code>.</p>
+                </div>
+                <div class="ov-ds-mcard mc-purple">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">IAC</span><code class="ov-ds-mfile" title="4.6 main.tf">4.6 main.tf</code></div>
+                  <div class="ov-ds-mtitle">Dual-Provider Terraform</div>
+                  <p class="ov-ds-mdesc">Declaratively wires <code>google.hub</code> consumer PSC forwarding rules to <code>google.spoke</code> producer service attachments across isolated projects.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -633,27 +753,57 @@
 
           <div class="ov-dossier-sidebar">
             <div class="ov-subbox">
-              <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
-              <p class="m-0">Under-isolating regulated tenants blocks enterprise security sign-off, while over-provisioning dedicated GCP projects for SMB tiers erodes SaaS gross margins. <strong>Blog 5 (WS5)</strong> distills the entire program into a deterministic <strong>2-Question Executive Decision Tree</strong>, the <strong>Multi-Tenant Agentic Triad</strong> (<code>Cryptographic Identity</code> &times; <code>Elastic Compute/Memory Bulkheads</code> &times; <code>Zero-PII FinOps Telemetry</code>), and a prioritized <strong>10-Week GA Engineering Roadmap</strong>.</p>
+              <div class="ov-ds-hdr">
+                <h4>1. Executive Thesis &amp; Core Problem Solved</h4>
+                <span class="ov-ds-tag tag-blue">CAPSTONE &bull; DECISION</span>
+              </div>
+              <p class="ov-ds-thesis">Under-isolating regulated tenants blocks enterprise security sign-off, while over-provisioning dedicated GCP projects for SMB tiers erodes SaaS gross margins. <strong>Blog 5 (WS5)</strong> distills the program into a deterministic <strong>2-Question Executive Decision Tree</strong>, the <strong>Multi-Tenant Agentic Triad</strong> (<code>Identity</code> &times; <code>Bulkheads</code> &times; <code>Zero-PII FinOps</code>), and a prioritized <strong>10-Week GA Roadmap</strong>.</p>
+              <div class="ov-ds-kpi-strip">
+                <div class="ov-ds-kpi kpi-blue"><span class="ov-ds-kval">2 Questions</span><span class="ov-ds-klbl">Deterministic Pattern Tree</span></div>
+                <div class="ov-ds-kpi kpi-green"><span class="ov-ds-kval">8 Dimensions</span><span class="ov-ds-klbl">Weighted MCDA Scorecard</span></div>
+                <div class="ov-ds-kpi kpi-purple"><span class="ov-ds-kval">10 Weeks</span><span class="ov-ds-klbl">PoC-to-GA Productization</span></div>
+              </div>
             </div>
 
             <div class="ov-subbox">
-              <h4>2. Key Production Trade-offs &amp; Isolation Guarantees</h4>
-              <ul>
-                <li><strong>MCDA Quantitative Selection</strong>: 8-dimension weighted scorecard (compliance, blast radius, latency, cost per query, maintenance overhead) removes subjective bias from architectural selection.</li>
-                <li><strong>Compensating Controls for Platform Gaps</strong>: Hardens enterprise deployments against 5 production challenges (<code>GAP-01</code> through <code>GAP-05</code>) across quota isolation, vector partitioning, and audit trails.</li>
-                <li><strong>10-Week Productization Sequence</strong>: Step-by-step transition roadmap for platform engineering teams from Day 1 PoC to Day 70 enterprise-wide GA.</li>
-              </ul>
+              <div class="ov-ds-hdr">
+                <h4>2. Key Production Trade-offs &amp; Isolation Guarantees</h4>
+                <span class="ov-ds-tag tag-green">MCDA &amp; GAP CONTROLS</span>
+              </div>
+              <div class="ov-ds-guarantees">
+                <div class="ov-ds-grow"><span class="ov-ds-gidx">01</span><div class="ov-ds-gbody"><strong>MCDA Quantitative Selection</strong>: 8-dimension weighted scorecard (compliance, blast radius, latency, COGS, ops overhead) eliminates subjective pattern selection.</div></div>
+                <div class="ov-ds-grow"><span class="ov-ds-gidx">02</span><div class="ov-ds-gbody"><strong>Compensating Controls (GAP-01..05)</strong>: Hardens rollouts across regional quota bulkheads, vector namespace partitioning, and cryptographic audit trails.</div></div>
+                <div class="ov-ds-grow"><span class="ov-ds-gidx">03</span><div class="ov-ds-gbody"><strong>10-Week Productization Sequence</strong>: Step-by-step platform engineering execution plan from Day 1 PoC baseline to Day 70 enterprise-wide GA.</div></div>
+              </div>
             </div>
 
             <div class="ov-subbox">
-              <h4>3. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
-              <ul>
-              <li><strong>2-Question Deterministic Topology Selector</strong>: (Q1) <em>Do 100% of customers mandate dedicated GCP projects, VPC-SC &amp; CMEK kill-switches?</em> &rarr; <strong>Pattern B</strong>. (Q2) <em>Do you serve mixed Standard + Regulated tiers or need live upgrades?</em> &rarr; <strong>Pattern C</strong>; else <strong>Pattern A</strong>.</li>
-              <li><strong>Pillar 1 — Cryptographic Context Integrity</strong>: End-to-end OBO + RFC 9449 DPoP + Cloud KMS <code>EC-P256</code> context signing across Hops 1–5 (<code>0</code> raw header trust, <code>0</code> cross-user 3LO token reuse).</li>
-              <li><strong>Pillar 2 &amp; 3 — Tiered Bulkheads &amp; Shared-Prefix FinOps</strong>: Combines <code>90%</code> shared prompt-prefix caching &amp; <code>80%</code> reusable Python engine with Valkey rate bulkheads, AlloyDB RLS, PSC graduation, and BigQuery OTel chargeback.</li>
-              <li><strong>Capstone Backlog &amp; 10-Week GA Roadmap</strong> (<button type="button" class="ov-chip" onclick="openDocInReader('workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md')">5.2-capstone-backlog-and-ga-roadmap.md</button>): Sequences productization of <code>GAP-01..05</code> compensating controls across Weeks 1–10.</li>
-              </ul>
+              <div class="ov-ds-hdr">
+                <h4>3. Core Technical Architecture &amp; 5-Hop Isolation Mechanics</h4>
+                <span class="ov-ds-tag tag-purple">AGENTIC TRIAD &amp; GA</span>
+              </div>
+              <div class="ov-ds-mech-grid">
+                <div class="ov-ds-mcard mc-blue">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">SELECTOR</span><code class="ov-ds-mfile" title="2-Question Decision Tree">Q1 &rarr; Q2 Tree</code></div>
+                  <div class="ov-ds-mtitle">2-Question Topology Selector</div>
+                  <p class="ov-ds-mdesc">(Q1) <em>100% mandate dedicated GCP projects, VPC-SC &amp; CMEK?</em> &rarr; <strong>Pattern B</strong>. (Q2) <em>Mixed tiers or live upgrades?</em> &rarr; <strong>Pattern C</strong>; else <strong>Pattern A</strong>.</p>
+                </div>
+                <div class="ov-ds-mcard mc-green">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">PILLAR 1</span><code class="ov-ds-mfile" title="OBO &bull; DPoP &bull; KMS">OBO &bull; DPoP &bull; KMS</code></div>
+                  <div class="ov-ds-mtitle">Cryptographic Context Chain</div>
+                  <p class="ov-ds-mdesc">End-to-end RFC 8693 OBO + RFC 9449 DPoP + Cloud KMS <code>EC-P256</code> signing across Hops 1&ndash;5 (<code>0</code> raw header trust, <code>0</code> cross-user 3LO reuse).</p>
+                </div>
+                <div class="ov-ds-mcard mc-amber">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">PILLAR 2&ndash;3</span><code class="ov-ds-mfile" title="90% Cache &bull; BQ OTel">90% Cache &bull; OTel</code></div>
+                  <div class="ov-ds-mtitle">Elastic Bulkheads &amp; FinOps</div>
+                  <p class="ov-ds-mdesc">Pairs <code>90%</code> shared prompt-prefix caching &amp; <code>80%</code> reusable core with Valkey rate buckets, AlloyDB RLS, PSC graduation, and BQ OTel chargeback.</p>
+                </div>
+                <div class="ov-ds-mcard mc-purple">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">ROADMAP</span><button type="button" class="ov-chip" style="padding:0 6px; font-size:9.5px; height:18px;" onclick="openDocInReader('workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md')" title="5.2-capstone-backlog-and-ga-roadmap.md">5.2 Roadmap &nearr;</button></div>
+                  <div class="ov-ds-mtitle">Capstone Backlog &amp; 10-Wk GA</div>
+                  <p class="ov-ds-mdesc">Sequences engineering productization of <code>GAP-01..05</code> compensating controls across Weeks 1&ndash;10 with measurable exit gates.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -746,31 +896,57 @@
 
           <div class="ov-dossier-sidebar">
             <div class="ov-subbox">
-              <h4>1. Master Guides, Operational Runbooks &amp; Interactive Portal Tabs</h4>
-              <ul>
-                <li><strong>End-to-End Workstream &amp; 14-Diagram Master Guide</strong>: <button type="button" class="ov-chip" onclick="openDocInReader('docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md')">Portal Reader</button> • <a class="ov-chip" href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx" download>25-Slide .pptx</a> • <a class="ov-chip" href="https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/export/pdf" target="_blank" rel="noopener noreferrer">25-Slide PDF &nearr;</a></li>
-                <li><strong>10-SaaS &times; 3-Pattern Manual Testing Playbook (30/30 Flows + 20 PNGs)</strong>: <button type="button" class="ov-chip" onclick="openDocInReader('docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md')">Open Playbook</button> • <a class="ov-chip" href="https://github.com/cloud-ai-fde/ge-blogs/blob/main/docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md" target="_blank" rel="noopener noreferrer">GitHub &nearr;</a></li>
-                <li><strong>10-Stage Google Cloud Console &amp; Cloud Shell SSH Runbook</strong>: <button type="button" class="ov-chip" onclick="openDocInReader('docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md')">Open SSH Runbook</button> • <button type="button" class="ov-chip" onclick="openDocInReader('docs/MULTI-MODEL-LLM-JUDGE-EVALUATION-REPORT.md')">LLM-Judge Report</button></li>
-                <li><strong>Portal Interactive Workspaces</strong>: <button type="button" class="ov-chip" onclick="switchTab('patterns')">1. &#129517; Blog Series Reader</button> • <button type="button" class="ov-chip" onclick="switchTab('simulator')">2. &#9889; Live 5-Hop Simulator (20/20)</button> • <button type="button" class="ov-chip" onclick="jumpToTab3BeforeAfterHub()">3. &#128260; 20-PNG Before/After Hub</button> • <button type="button" class="ov-chip" onclick="switchTab('forensic')">4. &#9989; 13/13 Forensic Audit</button></li>
-              </ul>
+              <div class="ov-ds-hdr">
+                <h4>1. Master Synthesis &amp; Interactive Workspaces</h4>
+                <span class="ov-ds-tag tag-blue">5 GUIDES + MASTER</span>
+              </div>
+              <p class="ov-ds-thesis">Unified synthesis across all 5 Architecture Center guides, 14 SVG blueprints, <code>core-cymbal-agent/</code>, and 10 live SaaS targets: <button type="button" class="ov-chip" style="padding:0 5px; font-size:9.8px; height:18px;" onclick="switchTab('patterns')">1. &#129517; Reader</button> <button type="button" class="ov-chip" style="padding:0 5px; font-size:9.8px; height:18px;" onclick="switchTab('simulator')">2. &#9889; Simulator</button> <button type="button" class="ov-chip" style="padding:0 5px; font-size:9.8px; height:18px;" onclick="jumpToTab3BeforeAfterHub()">3. &#128260; 20-PNG Hub</button> <button type="button" class="ov-chip" style="padding:0 5px; font-size:9.8px; height:18px;" onclick="switchTab('forensic')">4. &#9989; 13/13 Audit</button></p>
+              <div class="ov-ds-kpi-strip">
+                <div class="ov-ds-kpi kpi-blue"><span class="ov-ds-kval">14 Blueprints</span><span class="ov-ds-klbl">Verified Draw.io &amp; SVG</span></div>
+                <div class="ov-ds-kpi kpi-green"><span class="ov-ds-kval">30 / 30 Flows</span><span class="ov-ds-klbl">10-SaaS &times; 3-Pattern Matrix</span></div>
+                <div class="ov-ds-kpi kpi-purple"><span class="ov-ds-kval">107 / 107</span><span class="ov-ds-klbl">13/13 Forensic Assertions</span></div>
+              </div>
             </div>
 
             <div class="ov-subbox">
-              <h4>2. Reusable 80% Shared Core Engine (<code>core-cymbal-agent/</code>)</h4>
-              <ul>
-                <li><strong>Pipeline, Models &amp; Live GCP KMS/BQ Bridge</strong>: <code>models.py</code> &bull; <code>runtime_pipeline.py</code> &bull; <code>gcp_live_bridge.py</code> &bull; <code>test_five_hop_pipeline.py</code></li>
-                <li><strong>5-Hop Governance Gates</strong>: <code>hop1</code> &bull; <code>hop2</code> &bull; <code>hop3</code> &bull; <code>hop4</code> &bull; <code>hop5</code></li>
-                <li><strong>Agents &amp; 2LO/3LO/10-SaaS MCP Servers</strong>: <code>shared_diagnostic_agent.py</code> &bull; <code>finvault_agent_alpha.py</code> &bull; <code>cymbal_mcp_hub.py</code> &bull; <code>enterprise_5_saas_bi_mcp.py</code></li>
-              </ul>
+              <div class="ov-ds-hdr">
+                <h4>2. Master Runbooks &amp; Reusable 80% Shared Core Engine</h4>
+                <span class="ov-ds-tag tag-green">RUNBOOKS &amp; CODEBASE</span>
+              </div>
+              <div class="ov-ds-guarantees">
+                <div class="ov-ds-grow"><span class="ov-ds-gidx">01</span><div class="ov-ds-gbody"><strong>Guides &amp; Playbooks</strong>: <button type="button" class="ov-chip" style="padding:0 5px; font-size:9.8px; height:18px;" onclick="openDocInReader('docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md')">E2E Guide</button> <a class="ov-chip" style="padding:0 5px; font-size:9.8px; height:18px;" href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx" download>25-Slide .pptx</a> <button type="button" class="ov-chip" style="padding:0 5px; font-size:9.8px; height:18px;" onclick="openDocInReader('docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md')">10-SaaS Playbook</button> <button type="button" class="ov-chip" style="padding:0 5px; font-size:9.8px; height:18px;" onclick="openDocInReader('docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md')">SSH Runbook</button> <button type="button" class="ov-chip" style="padding:0 5px; font-size:9.8px; height:18px;" onclick="openDocInReader('docs/MULTI-MODEL-LLM-JUDGE-EVALUATION-REPORT.md')">LLM-Judge</button></div></div>
+                <div class="ov-ds-grow"><span class="ov-ds-gidx">02</span><div class="ov-ds-gbody"><strong>Pipeline &amp; 5-Hop Gates (<code>core-cymbal-agent/</code>)</strong>: <code>models.py</code> &bull; <code>runtime_pipeline.py</code> &bull; <code>gcp_live_bridge.py</code> &bull; <code>hop1</code>&ndash;<code>hop5</code> &bull; <code>test_five_hop_pipeline.py</code></div></div>
+                <div class="ov-ds-grow"><span class="ov-ds-gidx">03</span><div class="ov-ds-gbody"><strong>Agents &amp; 10-SaaS MCP Servers</strong>: <code>shared_diagnostic_agent.py</code> &bull; <code>finvault_agent_alpha.py</code> &bull; <code>cymbal_mcp_hub.py</code> &bull; <code>enterprise_5_saas_bi_mcp.py</code></div></div>
+              </div>
             </div>
 
             <div class="ov-subbox">
-              <h4>3. Multi-Tenant Governance Invariants &amp; Enterprise Verification Gates</h4>
-              <ul>
-                <li><strong>Cryptographic Context Propagation</strong>: RFC 8693 OBO + RFC 9449 DPoP + Cloud KMS <code>EC-P256</code> token exchange across Hops 1–5 (<code>0</code> raw headers, <code>0</code> shared SA keys).</li>
-                <li><strong>Sovereign VPC-SC &amp; CMEK</strong>: Strict perimeter isolation with instant cryptographic data freeze and zero cross-tenant state bleed.</li>
-                <li><strong>10-SaaS Multi-Cloud Infrastructure Parity</strong>: Verified upstream stacks across Cloud Run Gen2 and AWS EC2 with continuous forensic verification ledger.</li>
-              </ul>
+              <div class="ov-ds-hdr">
+                <h4>3. Multi-Tenant Governance Invariants &amp; Verification Gates</h4>
+                <span class="ov-ds-tag tag-purple">4 PROGRAM GATES</span>
+              </div>
+              <div class="ov-ds-mech-grid">
+                <div class="ov-ds-mcard mc-blue">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">GATE 1</span><code class="ov-ds-mfile" title="OBO &bull; DPoP &bull; KMS">OBO &bull; DPoP &bull; KMS</code></div>
+                  <div class="ov-ds-mtitle">Cryptographic Context Chain</div>
+                  <p class="ov-ds-mdesc">RFC 8693 OBO + RFC 9449 DPoP + Cloud KMS <code>EC-P256</code> token exchange across Hops 1&ndash;5 (<code>0</code> raw headers, <code>0</code> shared SA keys).</p>
+                </div>
+                <div class="ov-ds-mcard mc-green">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">GATE 2</span><code class="ov-ds-mfile" title="90% Cache &bull; AlloyDB RLS">90% Cache &bull; RLS</code></div>
+                  <div class="ov-ds-mtitle">Pooled FinOps &amp; Bulkheads</div>
+                  <p class="ov-ds-mdesc"><code>90%</code> shared prompt-prefix caching, AlloyDB <code>FORCE RLS</code> session pinning, and Valkey noisy-neighbor throttling (<code>HTTP 429</code>).</p>
+                </div>
+                <div class="ov-ds-mcard mc-amber">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">GATE 3</span><code class="ov-ds-mfile" title="VPC-SC &bull; CMEK &bull; PSC">VPC-SC &bull; PSC</code></div>
+                  <div class="ov-ds-mtitle">Sovereign Silos &amp; Cutover</div>
+                  <p class="ov-ds-mdesc">Dedicated VPC-SC &amp; IAM PAB perimeters, <code>&lt; 5 s</code> CMEK kill-switch (<code>HTTP 423</code>), and <code>0 ms</code> live PSC tier graduation.</p>
+                </div>
+                <div class="ov-ds-mcard mc-purple">
+                  <div class="ov-ds-mtop"><span class="ov-ds-mstep">GATE 4</span><code class="ov-ds-mfile" title="Cloud Run Gen2 &bull; AWS EC2">Cloud Run &bull; EC2</code></div>
+                  <div class="ov-ds-mtitle">10-SaaS Multi-Cloud Parity</div>
+                  <p class="ov-ds-mdesc">Verified upstream stacks on Cloud Run Gen2 &amp; AWS EC2 with <code>20/20</code> retina captures and continuous <code>13/13</code> forensic audit.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
