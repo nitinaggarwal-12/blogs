@@ -111,4 +111,4 @@ jobs:
       - name: Verify Committed Cloud Run Deployment Receipt (Direct Cloudtop Deploy Mode)
         if: steps.auth.outcome != 'success'
         run: |
-          python3 -B -c "import json; r=json.load(open('data/cloudrun_deploy_receipt.json')); assert r.get('status')=='READY' and r.get('traffic_percent')==100, r; print('Verified live Cloud Run deployment receipt:', r.get('latest_ready_revision'), r.get('portal_url'))"
+          python3 -B -c "import json; r=json.load(open('data/cloudrun_deploy_receipt.json')); assert r.get('readyStatus')=='True' and r.get('trafficPercent')==100, r; print('Verified live Cloud Run deployment receipt:', r.get('latestReadyRevisionName'), r.get('beyondCorpUrl'))"
