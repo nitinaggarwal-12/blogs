@@ -359,12 +359,12 @@
       {
         "key": "WS4",
         "type": "Docs Link Missing Resourcekey",
-        "desc": "Doc WS4 URL missing '?resourcekey=' parameter: https://docs.google.com/document/d/1FzR_s47BceQO30T0Prg9s9iB7y8GCnglt7T0jOKh4Ww/edit"
+        "desc": "Doc WS4 URL missing '?resourcekey=' parameter: https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/edit?resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw"
       },
       {
         "key": "WS5",
         "type": "Docs Link Missing Resourcekey",
-        "desc": "Doc WS5 URL missing '?resourcekey=' parameter: https://docs.google.com/document/d/10WiwkugdSM8B2DnQ_wEyg82ZDFMFV9RzQrc7gqhezU0/edit"
+        "desc": "Doc WS5 URL missing '?resourcekey=' parameter: https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/edit?resourcekey=0-XWkODR5elYC9-fuGO6aBaQ"
       }
     ]
   },

@@ -6,16 +6,15 @@ workstream: "Workstream 1 — Prepare Reference Architectures & Update GCP Docum
 authors: "Google Cloud Forward Deployed Engineering (FDE) & AI Platform Architecture Team"
 target_audience: "Cloud Architects, AI Platform Engineers, CISOs, and B2B SaaS Platform Leads"
 reading_time: "14 min read"
-tags: ["Gemini Enterprise Agent Platform","ADK","Multi-Tenancy","Reference Architecture","VPC Service Controls","Principal Access Boundary","Vertex AI Model Armor","AlloyDB RLS","FinOps","Cloud Architecture Center"]
+tags: "["Gemini Enterprise Agent Platform","ADK","Multi-Tenancy","Reference Architecture","VPC Service Controls","Principal Access Boundary","Vertex AI Model Armor","AlloyDB RLS","FinOps","Cloud Architecture Center"]"
 canonical_architecture: "https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system"
-diagrams: ["ws1-multi-tenant-taxonomy-overview","ws1-cloud-arch-center-5hop-baseline"]
+diagrams: "["ws1-multi-tenant-taxonomy-overview","ws1-cloud-arch-center-5hop-baseline"]"
 editable_slides: "slides/ws1-reference-architecture-editable-slides.pptx"
 status: "PUBLISH_READY"
 ---
-
 # Multi-tenant agentic AI system: Reference architecture taxonomy and 5-Hop governance baseline
 
-> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation (34 Slides) ↗](https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?resourcekey=0-PgO-X5icAK687_G-_WZFpQ) • [📐 Draw.io Source (.drawio)](../diagrams/ws1-l1-logical-security-taxonomy.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download 34-Slide Visual Deck (.pptx)](../slides/ws1-12slide-visual-deck.pptx) • [Download Canonical 15-Slide Deck (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx)
+> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation (24 Slides) ↗](https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit?resourcekey=0-77zXQOQhM63BNHXHkhxpjA) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA/edit) • [📐 Draw.io Source (.drawio)](../diagrams/ws1-l1-logical-security-taxonomy.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download 24-Slide Visual Deck (.pptx)](../slides/ws1-12slide-visual-deck.pptx) • [Download Canonical 15-Slide Deck (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx)
 
 This document establishes the reference architecture and three-pattern isolation taxonomy for building, governing, and operating external B2B SaaS multi-tenant agentic AI systems on Google Cloud. It extends the official Google Cloud [Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) hub-and-spoke architecture—which models internal enterprise business units—to Independent Software Vendors (ISVs) serving competing corporate enterprises across shared, dedicated, and hybrid cloud tiers using [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview), [Agent Development Kit (ADK)](https://google.github.io/adk-docs/), and [Gemini Enterprise](https://cloud.google.com/gemini/docs/enterprise).
 
@@ -34,9 +33,18 @@ The following `L1 Logical` architecture diagram shows the end-to-end 3-layer sec
 > - **Control Plane & Guardrails (Layer 2)**: Vertex AI Agent Engine gVisor (`runsc`) container virtualization, Valkey ~3ms JTI/CMEK revocation deny-list, 120/600 RPM token buckets, and inline Model Armor safety filtering.
 > - **Isolation Data Planes (Layer 3)**: Decoupled perimeters spanning Pattern A pooled AlloyDB RLS (`SET LOCAL app.current_tenant_id`), Pattern B sovereign VPC-SC silos with CMEK kill-switches, and Pattern C PSC dynamic spokes.
 
+
+## When NOT to Use a Single Static Multi-Tenant Pattern (Architectural Disqualifiers)
+
+> [!WARNING]
+> **Architectural Disqualifier Checklist — Do NOT Force a Single Pattern Across All Tenants When:**
+> - **Mixed Regulatory Tiers Coexist in One Portfolio:** If your commercial cohort (`950+` tenants) requires sub-second onboarding and `84.7%` shared prompt cache savings while your regulated enterprise cohort (`20–50` banking/pharma tenants) mandates dedicated GCP projects, VPC Service Controls (`VPC-SC`), and customer-held Cloud KMS CMEK kill-switches, forcing everyone into **Pattern A** fails compliance audits, whereas forcing everyone into **Pattern B** destroys unit economics (`USD 8,400+/mo` per tenant) and exhausts GCP organization perimeter quotas.
+> - **Sub-32,768 Token System Prompts with High Per-Tenant Schema Variance:** If every tenant injects a completely bespoke tool catalog with `< 32,768` shared static tokens, Vertex AI `ContextCacheConfig` cannot amortize a shared prefix (`alpha_cache = 0.10` requires `>= 32,768` immutable tokens).
+> - **Non-Idempotent External 3rd-Party SaaS Mutations Without Outbox Ledgers:** If ADK agents invoke state-mutating MCP tools (ServiceNow, Jira, Workday) without deterministic `X-Idempotency-Key` headers and an asynchronous compensating saga ledger, mid-flight `HTTP 423 Locked` CMEK revocations or `HTTP 429` bulkheads will leave orphaned third-party side-effects.
+
 ## Core terminology, systems primitives, and the SaaS AI Architect's Dilemma
 
-Four foundational primitives appear throughout this reference architecture and its companion [34-slide upgraded visual presentation (`slides/ws1-12slide-visual-deck.pptx`)](../slides/ws1-12slide-visual-deck.pptx) (and [canonical 15-slide editable deck (`slides/ws1-reference-architecture-editable-slides.pptx`)](../slides/ws1-reference-architecture-editable-slides.pptx)):
+Four foundational primitives appear throughout this reference architecture and its companion [24-slide upgraded visual presentation (`slides/ws1-12slide-visual-deck.pptx`)](../slides/ws1-12slide-visual-deck.pptx) (and [canonical 15-slide editable deck (`slides/ws1-reference-architecture-editable-slides.pptx`)](../slides/ws1-reference-architecture-editable-slides.pptx)):
 
 | Primitive | Google Cloud Implementation | OS / Distributed Systems Analog | Multi-Tenant Enforcement Mechanism |
 | :--- | :--- | :--- | :--- |
@@ -271,6 +279,31 @@ Where:
 
 > **Architectural Grounding Boundary (Live Cloud Execution vs. Reference Emulation):** In the accompanying verification suite (`scripts/verify_cloud_console_and_runtime.py`), **Cloud Run Gen2** (`ge-blogs` / `cymbal-multi-tenant-patterns`), **Vertex AI** (`gemini-2.5-pro` & `gemini-2.5-flash`), **BigQuery** (`pattern_a_pooled_rls_entities`, `pattern_b_sovereign_silo_ledger`, `pattern_c_psc_endpoint_registry`), **Google Workspace** (`15/15` Slides decks & `6/6` Docs), **AWS Bedrock AgentCore MCP Gateway** (`cymbal-a2a-mcp-gateway-suyxm3caof`, 10 `READY` targets), **Amazon Cognito RS256 OAuth2**, **AWS Lambda MCP Proxy** (`cymbal-10-saas-mcp-proxy`), and **immutable Amazon S3 Audit Ledgers** (`s3://cymbal-multi-tenant-audit-ledger-393036065405-us-east-1/cymbal-10saas-ledger/`) execute against **live cloud APIs**. To keep continuous red-team regression suites deterministic and avoid continuous hourly cluster charges for idle database/GPU nodes, **AlloyDB for PostgreSQL**, **Memorystore for Valkey**, and **Private GKE Gemma 3 (27B)** are provided as **production-ready Terraform HCL blueprints** (`workstream-2/2.6`, `workstream-3/3.6`, `workstream-4/4.6`) paired with **deterministic in-memory Python reference state machines** (`core-cymbal-agent/governance/hop1..hop5`).
 
+
+## Hard Google Cloud Quotas, Control-Plane Scaling Limits & Asynchronous Edge Cases
+
+Production deployments of the 5-Hop Cryptographic Context Chain at `1,000+` tenant scale encounter four hard cloud platform boundaries and distributed systems failure modes that must be engineered around explicitly:
+
+### 1. Hard Google Cloud Platform Quotas & Control-Plane Ceilings
+
+| Platform Subsystem & Hop | Hard Google Cloud Quota / Limit | Failure Mode at Scale | Mandatory Production Engineering Mitigation |
+| :--- | :--- | :--- | :--- |
+| **Hop 1: Cloud KMS Asymmetric Signing (`ECDSA P-256`)** | Regional HSM crypto-operations quota (`~10,000 ops/sec` software, `~1,500–2,500 ops/sec` Cloud HSM per region) | Signing or verifying STS JWTs via remote KMS RPCs on every microservice hop exhausts KMS quota at `> 500 RPS`. | Mint the STS JWT **once at Hop 1**, and verify downstream at Hops 2–5 in **`< 0.15 ms`** using an in-memory cached JWKS public key (`60-min` TTL, `0` per-hop KMS RPCs). |
+| **Hop 3: Vertex AI `ContextCacheConfig` Prefix Floor** | **Minimum `32,768` tokens** per cached content object; TTL expiry causes simultaneous cache-miss re-tokenization | Sub-`32,768` token prefixes fail cache creation (`INVALID_ARGUMENT`); simultaneous 1-hour TTL expiry triggers `10x` input-token billing spikes. | Pad/consolidate immutable system instructions + OpenAPI tool schemas above **`32,768` tokens** (`cymbal-shared-incident-system-prompt-v2`) and rotate cache handles asynchronously at **`t = 55 min`** (`5-min` overlap window). |
+| **Hop 3/4: `locations/global` vs. Regional CMEK Residency** | Vertex AI `locations/global` dynamic routing does **not** support single-region customer-managed encryption keys (`CMEK`) | Regulated tenants requiring `us-central1` CMEK data residency fail validation if routed to `locations/global`. | Route **Pattern A** commercial tenants via `locations/global` for maximum throughput, while pinning **Pattern B & C** CMEK-bound tenants strictly to regional endpoints (`us-central1` / `us-west1`). |
+| **Hop 5: AlloyDB PgBouncer Connection Pool Modes** | `SET LOCAL app.current_tenant_id` is transaction-scoped (`COMMIT`/`ROLLBACK`); session-mode pooling retains state | Reusing a session-pooled connection without resetting GUC variables leaks the prior tenant's RLS context (`Cross-Tenant Bleed`). | Enforce **PgBouncer `pool_mode = transaction`**, wrap every checkout in an explicit `BEGIN ... COMMIT` block, and execute `DISCARD ALL` on connection return. |
+
+### 2. Non-Rollbackable External 3rd-Party SaaS Side-Effects During Mid-Flight CMEK Revocation (`HTTP 423`) or Rate Bulkheads
+
+Database transactions (`AlloyDB RLS`) roll back cleanly on error, but **multi-step agentic tool chains mutating external 3rd-party SaaS APIs (`ServiceNow`, `Jira`, `Workday`, `Salesforce`) cannot be rolled back by PostgreSQL `ROLLBACK`**.
+
+- **Failure Scenario (Mid-Turn CMEK Kill-Switch):** Suppose an ADK agent servicing `finvault` executes Step 1 (`ServiceNow ITSM` change ticket `CHG0049218` created at $t = 140\text{ ms}$) and Step 2 (AlloyDB audit row staged), and at $t = 310\text{ ms}$ the customer's security operations center revokes their Cloud KMS CMEK key. Hop 3/4 immediately traps `FAILED_PRECONDITION`, purges Valkey (`SCAN + UNLINK cache:finvault:*` in `< 5\text{ s}`), rolls back the local AlloyDB transaction, and returns **`HTTP 423 Locked`** before Step 3 (`Jira Cloud` escalation comment) executes. Without compensation, `CHG0049218` remains orphaned in ServiceNow, and retrying the turn after key restoration creates a duplicate change ticket.
+- **Production Mitigation — Deterministic `X-Idempotency-Key` & Compensating Outbox Saga Ledger:**
+  1. Every outbound MCP tool invocation attaches a deterministic idempotency token derived from the signed `TenantContext`:
+     $$\text{IdempotencyKey} = \text{SHA256}(\texttt{tenant\_id} \,\|\, \texttt{session\_id} \,\|\, \texttt{turn\_id} \,\|\, \texttt{tool\_name} \,\|\, \texttt{canonical\_args\_hash})$$
+  2. Before dispatching any external `POST`/`PATCH` tool call over AWS Bedrock AgentCore MCP, Hop 5 writes a `PENDING_EXTERNAL_MUTATION` intent record to the append-only **Outbox Saga Ledger** (`cymbal_agentic_finops_otel.external_tool_saga_ledger`).
+  3. If `HTTP 423 Locked`, `HTTP 429`, or `ATOMIC_CUTOVER` aborts the turn mid-flight, the reconciliation worker marks the saga entry `COMPENSATION_REQUIRED` and dispatches either a compensating reversal (`close_orphaned_change_ticket`) or resumes idempotently using the identical `X-Idempotency-Key` once the tenant key is re-enabled.
+
 ## Compensating controls for Early Access Program (EAP) product gaps and GA sunset roadmap
 
 During cross-product architecture reviews ([1.2 Product Team Review Pack](../workstream-1-reference-architecture/1.2-product-team-review-pack.md) and [1.4 EAP & Product Gap Tracker](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md)), five platform behaviors required explicit compensating controls in `core-cymbal-agent/`. Every compensating layer is wrapped in a **feature-flagged GA Sunset Hook** with an explicit engineering roadmap target so platform teams can retire custom Python/Valkey shims as native Google Cloud features reach General Availability:
@@ -329,9 +362,10 @@ ORDER BY billable_equivalent_tokens DESC;
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-## Live 3rd-Party SaaS Before-vs-After UI Proof (2880×1800 Retina)
+## Signature 3rd-Party SaaS Before-vs-After UI Proofs for WS1 (SAAS-01, SAAS-06 • 2880×1800 Retina)
 
-> **Zero Synthetic Mockups (`Rule 57` & `Rule 60A–60C`):** Every `BEFORE` and `AFTER` screenshot below was captured via real HTTP/HTTPS browser navigation against the live upstream 3rd-party Docker containers (`2880×1800` Retina, distinct SHA-256 verified in [`docs/genuine_3p_before_after_provenance_receipt.json`](../docs/genuine_3p_before_after_provenance_receipt.json)). Inspect the companion [10-SaaS Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md) or open Portal Tab 3 for interactive comparisons.
+> [!IMPORTANT]
+> **Streamlined 2-SaaS Visual Proof Edition (`4` Inline Captures + Standalone `10-SaaS` Visual Atlas):** To keep this architectural guide focused, we embed the **2 signature Before/After UI proof pairs (SAAS-01, SAAS-06)** most directly governed by **WS1** below. For the complete 20-image gallery (`SAAS-01` through `SAAS-10`) across all 10 commercial stacks, open the dedicated **[10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas (Portal Reader)](saas-10-visual-verification-and-redteam-atlas.md)**, the **[21-Figure Google Docs Visual Atlas](https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/edit?resourcekey=0-klzhSI2SvWYPCvpPwwMSUw)**, or the **[16-Slide Google Slides Visual Atlas](https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw)**.
 
 ### SAAS-01: ThoughtSpot Cloud (Spotter Agentic BI v2.0)
 **Upstream Stack:** `Metabase BI v0.50.26` • Target `HXGGFMZBKE` • `query_thoughtspot_liveboard_rls`
@@ -340,34 +374,6 @@ ORDER BY billable_equivalent_tokens DESC;
 
 ![AFTER SAAS-01 (Metabase BI v0.50.26 — Target HXGGFMZBKE): Metabase Liveboard Question #27 returns strictly the 2 authorized FinVault rows ($527.0M total: FV-TX-901 $312.5M + FV-TX-902 $214.5M) with 0 cross-tenant RetailStream rows.](../screenshots/genuine-multicloud-3p-uis/before-after/after_01_metabase_bi.png)
 
-### SAAS-02: Sigma Computing & Grafana Enterprise
-**Upstream Stack:** `Grafana Enterprise v11.2.0` • Target `IZVODT083Q` • `evaluate_sigma_incident_workbook`
-
-![BEFORE SAAS-02 (Grafana Enterprise v11.2.0): Grafana Enterprise workbook finvault-sre-wb (orgId=1) in single-panel pre-audit baseline before GEAP Hop 5 workbook evaluation and live S3 attestation write-back.](../screenshots/genuine-multicloud-3p-uis/before-after/before_02_grafana_enterprise.png)
-
-![AFTER SAAS-02 (Grafana Enterprise v11.2.0 — Target IZVODT083Q): Grafana Enterprise renders the newly appended Panel #2 (GEAP Hop 5 Live Agentic Execution Attestation & Cross-Org Spoof Audit) alongside the verified $527.0M FinVault summary.](../screenshots/genuine-multicloud-3p-uis/before-after/after_02_grafana_enterprise.png)
-
-### SAAS-03: ServiceNow ITSM & ITOM Change Control
-**Upstream Stack:** `Redmine ITSM v5.1` • Target `ZS9VGYHBQL` • `query_servicenow_change_records`
-
-![BEFORE SAAS-03 (Redmine ITSM v5.1): Redmine ITSM project finvault-itsm queue showing 2 baseline tickets (#1 CHG0049218 and #2 INC0948211 — 1-2/2) prior to automated GEAP change-attestation ticket creation.](../screenshots/genuine-multicloud-3p-uis/before-after/before_03_redmine_itsm.png)
-
-![AFTER SAAS-03 (Redmine ITSM v5.1 — Target ZS9VGYHBQL): Redmine ITSM queue updates live to 3 tickets (1-3/3) displaying newly created CHG0049299 ((GEAP-MCP ZS9VGYHBQL) Automated Hop 5 Valkey Single-Flight & KMS CMEK Attestation) assigned to FinVault SRE Lead.](../screenshots/genuine-multicloud-3p-uis/before-after/after_03_redmine_itsm.png)
-
-### SAAS-04: Veeva Vault RIM & Muse Clinical EDC
-**Upstream Stack:** `NocoDB v0.255.2` • Target `TWQU0KSRVF` • `sync_clinical_trial_edc_cohort`
-
-![BEFORE SAAS-04 (NocoDB v0.255.2): NocoDB FinVault KMS 21 CFR 11 Full Ledger showing 3 seeded compliance rows (AWS-GXP-101..103 — 3 records in footer) prior to live Cloud KMS ECDSA-P256 electronic signature insertion.](../screenshots/genuine-multicloud-3p-uis/before-after/before_04_nocodb_gxp.png)
-
-![AFTER SAAS-04 (NocoDB v0.255.2 — Target TWQU0KSRVF): NocoDB grid updates live to 4 records, displaying row #4 AWS-GXP-104 (finvault • Pattern C Hybrid PSC + Hop 5 KMS Sign • ECDSA_P256_LIVE_AGENT_SIGNED).](../screenshots/genuine-multicloud-3p-uis/before-after/after_04_nocodb_gxp.png)
-
-### SAAS-05: Salesforce CRM & Atlassian Jira Cloud
-**Upstream Stack:** `Gitea v1.22.3` • Target `K5JAEFCQ6E` • `escalate_salesforce_case_to_jira`
-
-![BEFORE SAAS-05 (Gitea v1.22.3): Gitea repository finvault/sre-escalations Issue #1 ((SFDC-CASE-00984120 / FINVAULT-SRE-1402)) open with 0 comments prior to GEAP Hop 4 SDP-redacted RCA triage.](../screenshots/genuine-multicloud-3p-uis/before-after/before_05_gitea_sre.png)
-
-![AFTER SAAS-05 (Gitea v1.22.3 — Target K5JAEFCQ6E): Gitea Issue #1 updates live to 1 comment, rendering the authenticated sre-lead Hop 4 SDP-redacted automated RCA & Valkey mitigation receipt directly in the issue timeline.](../screenshots/genuine-multicloud-3p-uis/before-after/after_05_gitea_sre.png)
-
 ### SAAS-06: Databricks Data Intelligence Platform (Unity Catalog SQL)
 **Upstream Stack:** `Trino Distributed SQL v440` • Target `TERCK8SLBP` • `execute_uc_genie_federated_sql`
 
@@ -375,78 +381,45 @@ ORDER BY billable_equivalent_tokens DESC;
 
 ![AFTER SAAS-06 (Trino Distributed SQL v440 — Target TERCK8SLBP): Trino Cluster Overview (/ui/) displays the newly completed FINISHED query at top of Query Details attributed to geap-hop5-agent@finvault.com (source: geap-agentcore-TERCK8SLBP).](../screenshots/genuine-multicloud-3p-uis/before-after/after_06_trino_sql.png)
 
-### SAAS-07: Snowflake AI Data Cloud (Cortex Analyst & SQL v2)
-**Upstream Stack:** `ClickHouse Data Warehouse v24.8` • Target `CCMDEVZV2S` • `execute_cortex_analyst_sql`
-
-![BEFORE SAAS-07 (ClickHouse Data Warehouse v24.8): ClickHouse v24.8 /play SQL console authenticated as finvault_user attempting a cross-tenant query (WHERE tenant_id = 'retailstream') — database Row-Level Security blocks cross-tenant exposure and returns 0 rows.](../screenshots/genuine-multicloud-3p-uis/before-after/before_07_clickhouse_rls.png)
-
-![AFTER SAAS-07 (ClickHouse Data Warehouse v24.8 — Target CCMDEVZV2S): ClickHouse /play console returns the 2 CMEK-protected FinVault wire settlement rows (FV-TX-901 $312.5M and FV-TX-902 $214.5M, gcp-kms://finvault-cmek-hsm) in <5ms.](../screenshots/genuine-multicloud-3p-uis/before-after/after_07_clickhouse_rls.png)
-
-### SAAS-08: Workday Human Capital Management (HCM RaaS)
-**Upstream Stack:** `Directus Data Studio v11.1.0` • Target `RAOTMUMJTZ` • `sync_workday_raas_compensation`
-
-![BEFORE SAAS-08 (Directus Data Studio v11.1.0): Directus v11.1.0 Hcm Compensation collection showing 2 baseline executive records (Clara Vance & Marcus Thorne — 2 Items) prior to GEAP RaaS compensation audit sync.](../screenshots/genuine-multicloud-3p-uis/before-after/before_08_directus_hcm.png)
-
-![AFTER SAAS-08 (Directus Data Studio v11.1.0 — Target RAOTMUMJTZ): Directus Hcm Compensation collection updates live to 3 Items, adding Elena Rostova (MD Quantitative Risk — GEAP Audited, $395,000.00, (REDACTED_US_SSN)).](../screenshots/genuine-multicloud-3p-uis/before-after/after_08_directus_hcm.png)
-
-### SAAS-09: Datadog SRE & Observability Platform
-**Upstream Stack:** `Datalust Seq Observability v2024.3` • Target `G767QR3TQZ` • `query_datadog_tenant_slos`
-
-![BEFORE SAAS-09 (Datalust Seq Observability v2024.3): Datalust Seq v2024.3 /#/events telemetry view in compact collapsed stream baseline prior to live GEAP Hop 4 Model Armor + Hop 5 RLS structured OTel span ingestion.](../screenshots/genuine-multicloud-3p-uis/before-after/before_09_datalust_seq.png)
-
-![AFTER SAAS-09 (Datalust Seq Observability v2024.3 — Target G767QR3TQZ): Datalust Seq displays the newly ingested GEAP Hop 5 APM trace expanded in-place with structured properties (AgentCoreTarget=G767QR3TQZ, Hop4ModelArmor=PASS_ZERO_PROMPT_INJECTION, TenantId=finvault, ZeroPiiAttested=true).](../screenshots/genuine-multicloud-3p-uis/before-after/after_09_datalust_seq.png)
-
-### SAAS-10: CrowdStrike Falcon & Okta Workforce Identity
-**Upstream Stack:** `HashiCorp Vault v1.13.3` • Target `C7EYM614F2` • `rotate_crowdstrike_api_key`
-
-![BEFORE SAAS-10 (HashiCorp Vault v1.13.3): HashiCorp Vault v1.13.3 secret tenants/finvault at Version 1 (JSON view enabled) showing pre-containment state (xdr_containment_status: PENDING_HOP5_DPOP_CONTAINMENT).](../screenshots/genuine-multicloud-3p-uis/before-after/before_10_hashicorp_vault.png)
-
-![AFTER SAAS-10 (HashiCorp Vault v1.13.3 — Target C7EYM614F2): HashiCorp Vault UI displays Version 2 of tenants/finvault in live JSON mode with xdr_containment_status: HOST_CONTAINED_DPOP_VERIFIED_200 and S3 audit binding crowdstrike-okta/finvault.json.](../screenshots/genuine-multicloud-3p-uis/before-after/after_10_hashicorp_vault.png)
-
+<!-- GENUINE_3P_BEFORE_AFTER_END -->
 ## What's next
 
-### 5-Part Engineering Blog Series & 34-Slide Visual Deck Launch Matrix
+### Companion 24-Slide Streamlined Visual Deck, Standalone 10-SaaS Visual Atlas & Slide-to-Code Launch Matrix
 
-The companion 34-slide Workstream 1 visual presentation deck ([`slides/ws1-12slide-visual-deck.pptx`](../slides/ws1-12slide-visual-deck.pptx), synced live to [Google Slides `12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ`](https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit), alongside the [15-slide canonical deck (`slides/ws1-reference-architecture-editable-slides.pptx`)](../slides/ws1-reference-architecture-editable-slides.pptx)) maps directly to our 5-part engineering blog series (indexed on **Slide 2: Executive Storyline & The 5-Act Architecture Journey**) and runnable modules in [`core-cymbal-agent/ (27-File Workbench)`](#blog-e2e-pattern-execution-and-codebase-workbench):
+> [!IMPORTANT]
+> **Streamlined 24-Slide Architecture Deck + Standalone `10-SaaS` Visual Verification Atlas:** This guide pairs a focused **24-slide executive presentation** ([`slides/ws1-12slide-visual-deck.pptx`](../slides/ws1-12slide-visual-deck.pptx))—featuring the **2 signature Before/After UI proofs** for **WS1** and an expanded **Hard GCP Quotas, Async 3P Saga & Disqualifiers** briefing—with the standalone **[10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas (20 Retina Screenshots)](saas-10-visual-verification-and-redteam-atlas.md)** ([Google Docs](https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/edit?resourcekey=0-klzhSI2SvWYPCvpPwwMSUw) • [16-Slide Google Slides](https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw)).
 
-| Blog Series Installment | Companion WS1 34-Slide Visual Deck (5-Act Arc) | Core Architectural Focus | Runnable Codebase & Terraform Modules |
+| 5-Act Presentation Arc | Slide Range & Direct Launch Links | Core Architectural Content & C4 Abstraction | Companion Codebase & Verification Assets |
 | :--- | :--- | :--- | :--- |
-| **Part 1: The SaaS AI Architect's Dilemma** | **Act I: Slides 1–4** (Title Cover, 5-Act Storyline Agenda, SaaS AI Architect's Dilemma & 5 Multi-Tenant Attack Vectors) | Pooled vs. Siloed vs. Hybrid economics, Confused-Deputy 3LO vaults (`{tenant}:{user}`), 5 multi-tenant threat vectors, and decoupling the 80% reusable pipeline from perimeters | [`models.py`](../core-cymbal-agent/models.py) • [`runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py) |
-| **Part 2: Reference Topologies & Blueprints** | **Act II: Slides 5–11** (Act II Breaker, Pattern A Pooled, Pattern B/C Silos & Spokes, `L1` Logical Security, Figures 1–2 DrawingML & 5-Hop Perimeter) | Strict macro-to-micro taxonomy: 3 Logical Security Layers mapping to 4 Physical Network Perimeters, Cloud Armor header stripping, RFC 8693 OBO + DPoP, and `<0.15 ms` cached-JWKS verification | [`hop1_edge_identity_pep.py`](../core-cymbal-agent/governance/hop1_edge_identity_pep.py) • [`hop2_registry_pdp_callbacks.py`](../core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py) • [WS2](ws2-pattern-a-pooled-architecture.md) |
-| **Part 3: 5-Hop Control Plane & Deep Execution** | **Act III: Slides 12–19** (Act III Breaker, `L3` 5-Actor UML Swimlane, `L4` Wire Protocol Gate, Fail-Closed Circuit Breakers, AlloyDB RLS, Valkey FinOps, Benchmarks & 4 Production Caveats) | Consolidated `L3` runtime sequence, `~3 ms` Valkey JTI deny-list, `120/600 RPM` bulkheads (`HTTP 429` jitter), `<5 s` targeted `SCAN + UNLINK` L1 eviction (`0` peer evictions), `SET NX PX 5000` single-flight AlloyDB re-hydration, and 4 production guardrails | [`hop3_compute_finops_bulkhead.py`](../core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py) • [`hop4_model_armor_guardrails.py`](../core-cymbal-agent/governance/hop4_model_armor_guardrails.py) • [`hop5_data_rls_and_otel.py`](../core-cymbal-agent/governance/hop5_data_rls_and_otel.py) |
-| **Part 4: Empirical Multi-Cloud SaaS Proofs** | **Act IV: Slides 20–30** (Act IV Breaker & Proofs 1–10: 20 Authentic `2880×1800` Retina Before → After UI Captures across 10 Third-Party SaaS Stacks) | Live before-and-after isolation proofs across Metabase BI, Trino SQL, Grafana Enterprise, Datalust Seq, HashiCorp Vault CMEK, ClickHouse RLS, Redmine ITSM, NocoDB GxP, Gitea SRE, and Directus HCM | [`enterprise_5_saas_bi_mcp.py`](../core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py) • [`verify_5_third_party_saas_products.py`](../scripts/verify_5_third_party_saas_products.py) • [WS3](ws3-pattern-b-sovereign-silos.md) • [WS4](ws4-pattern-c-hybrid-dynamic-tiering.md) |
-| **Part 5: Production Rollout, Scorecard & CISO FAQ** | **Act V: Slides 31–34** (Act V Breaker, 10-Week Implementation Roadmap, Quantified 10/10 Multi-Cloud Verification Matrix & CISO FAQ Guide) | Continuous forensic verification (`13/13 PASS • 107/107 Assertions`), consolidated Well-Architected SLAs (`~42 ms` p95, `84.7%` token savings, `<60 s` CMEK kill-switch), CISO review board FAQ, and 1-Click Terraform 2.6 / 3.6 / 4.6 deployment | [`deploy_terraform_1click.sh`](../scripts/deploy_terraform_1click.sh) • [`run_deep_forensic_audit.py`](../scripts/run_deep_forensic_audit.py) • [WS5](ws5-decision-guide-and-agentic-triad.md) |
+| **Act I: Executive Storyline, Threat Surface & Disqualifiers** | **[Slides 1–4](https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit?resourcekey=0-77zXQOQhM63BNHXHkhxpjA#slide=id.p1)** | Title Cover (`Slide 1`), 5-Act Executive Roadmap (`Slide 2`), Core Multi-Tenancy Dilemma (`Slide 3`), and Adversarial Threat / Compliance Matrix (`Slide 4`). | [`core-cymbal-agent/runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py) |
+| **Act II: C4 L1–L2 Topologies & `#78` Architecture Blueprints** | **[Slides 5–9](https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit?resourcekey=0-77zXQOQhM63BNHXHkhxpjA#slide=id.p5)** | Act II Breaker (`Slide 5`), `L1` Logical Security Layers (`Slide 6`), and Decompiled `L2` Physical `#78` Architecture Blueprints (`Slides 7–9`). | [`diagrams/`](../diagrams/) (`100%` Native DrawingML) |
+| **Act III: 5-Hop Control Plane, Hard GCP Quotas & Disqualifiers** | **[Slides 10–17](https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit?resourcekey=0-77zXQOQhM63BNHXHkhxpjA#slide=id.p12)** | Act III Breaker (`Slide 10`), `L3` UML Sequence (`Slide 11`), `L4` Wire JWT Normalization (`Slide 12`), Hops 1–5 Deep Dives (`Slides 13–16`), and **Hard GCP Quotas, Async 3P Saga & Disqualifiers (`Slide 17`)**. | [`core-cymbal-agent/governance/`](../core-cymbal-agent/governance/) |
+| **Act IV: Signature 3rd-Party SaaS Before/After Retina Proofs** | **[Slides 18–20](https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit?resourcekey=0-77zXQOQhM63BNHXHkhxpjA#slide=id.p20)** | Act IV Breaker (`Slide 18`) + **2 Signature `2880×1800` Retina Proofs**: `SAAS-01` Metabase BI RLS (`Slide 19`) & `SAAS-06` Trino Distributed SQL Catalog Scoping (`Slide 20`). *(All 10 SaaS proofs in the [16-Slide Companion Visual Atlas](https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw))*. | [`scripts/verify_5_third_party_saas_products.py`](../scripts/verify_5_third_party_saas_products.py) |
+| **Act V: 10-Week Rollout Roadmap, 30/30 Scorecard & CISO FAQ** | **[Slides 21–24](https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit?resourcekey=0-77zXQOQhM63BNHXHkhxpjA#slide=id.p31)** | Act V Breaker, 10-Week Phased Enterprise Implementation Roadmap, Quantified Multi-Cloud `30/30` Isolation Scorecard, and Executive CISO FAQ Decision Guide. | [`scripts/run_all_repeatable_e2e_verifications.py`](../scripts/run_all_repeatable_e2e_verifications.py) |
 
-- Run the **1-Click Terraform Deployment Scripts & HCL Modules** across all 3 multi-tenant patterns:
-  - [Master 1-Click All-Pattern Terraform Orchestrator (`scripts/deploy_terraform_1click.sh`)](../scripts/deploy_terraform_1click.sh)
-  - [Pattern A (WS2.6 Pooled) 1-Click Terraform Script (`workstream-2-pattern-a-pooled/2.6-terraform-starter/deploy_1click.sh`)](../workstream-2-pattern-a-pooled/2.6-terraform-starter/deploy_1click.sh) • [`main.tf`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf)
-  - [Pattern B (WS3.6 Sovereign Silo & Gemma 3 GKE) 1-Click Terraform Script (`workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/deploy_1click.sh`)](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/deploy_1click.sh) • [`main.tf`](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf)
-  - [Pattern C (WS4.6 Hybrid PSC Bridge) 1-Click Terraform Script (`workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/deploy_1click.sh`)](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/deploy_1click.sh) • [`main.tf`](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf)
-- Inspect the **Live GCP & AWS Console Verification Receipts & 8-Stage Cloud Shell Runbook**:
-  - [8-Stage Google Cloud Console & Cloud Shell End-to-End Runbook (`docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md`)](../docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md)
-  - [Live GCP Cloud Console Verification Receipt (`docs/cloud_console_verification_receipt.json`)](../docs/cloud_console_verification_receipt.json) • [Live 10-SaaS × 3-Pattern AWS AgentCore S3 Receipt (`docs/third_party_5_saas_verification_receipt.json`)](../docs/third_party_5_saas_verification_receipt.json)
-- Explore the deep-dive implementation guides for each isolation pattern in this 5-part series:
-  - [Part 2 (Workstream 2): Pattern A — High-Density Pooled Architecture](ws2-pattern-a-pooled-architecture.md)
-  - [Part 3 (Workstream 3): Pattern B — Sovereign Silos for Regulated Agentic AI](ws3-pattern-b-sovereign-silos.md)
-  - [Part 4 (Workstream 4): Pattern C — Dynamic Hybrid Hub-and-Spoke & Zero-Downtime Tier Upgrades](ws4-pattern-c-hybrid-dynamic-tiering.md)
-  - [Part 5 (Workstream 5): Executive Decision Guide & The Multi-Tenant Agentic Triad](ws5-decision-guide-and-agentic-triad.md)
-- Review the Workstream 1 engineering deliverables:
-  - [1.1 Multi-Tenant Architecture Taxonomy & Diagrams](../workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md)
-  - [1.2 Cross-Product Engineering Alignment & Review Pack](../workstream-1-reference-architecture/1.2-product-team-review-pack.md)
-  - [1.3 Official Cloud Architecture Center Documentation Update PR](../workstream-1-reference-architecture/1.3-cloud-architecture-center-doc-update-pr.md)
-  - [1.4 Early Access Program (EAP) & Product Gap Tracker](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md)
-  - [10 Third-Party SaaS × 3-Pattern Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md)
-- Download or open the editable architecture assets for Workstream 1:
-  - [Open WS1 34-Slide Upgraded Visual Presentation in Google Slides ↗](https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit)
-  - [Open WS1 GCP-Branded Document in Google Docs ↗](https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?resourcekey=0-PgO-X5icAK687_G-_WZFpQ)
-  - [Download Workstream 1 Editable Word Document (`.docx`)](../docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx)
-  - [Download Workstream 1 Upgraded 34-Slide Visual Presentation (`.pptx`)](../slides/ws1-12slide-visual-deck.pptx)
+### Direct Cloud Deliverables, Editable Slide Decks & Series Navigation
+
+- **Editable Google Slides & PowerPoint (`24 Slides` + Canonical `15-Slide` Brief):**
+  - [Open WS1 24-Slide Streamlined Visual Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit?resourcekey=0-77zXQOQhM63BNHXHkhxpjA)
+  - [Download WS1 24-Slide Streamlined Visual Presentation (`.pptx`)](../slides/ws1-12slide-visual-deck.pptx)
   - [Download Workstream 1 Canonical 15-Slide Presentation (`.pptx`)](../slides/ws1-reference-architecture-editable-slides.pptx)
-  - [Figure 1 Draw.io Source (`ws1-l1-logical-security-taxonomy.drawio`)](../diagrams/ws1-l1-logical-security-taxonomy.drawio)
-  - [Figure 2 Draw.io Source (`ws1-multi-tenant-taxonomy-overview.drawio`)](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio)
-  - [Figure 3 Draw.io Source (`ws1-cloud-arch-center-5hop-baseline.drawio`)](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio)
-  - [Figure 4 Draw.io Source (`ws1-l3-process-sequence-swimlane.drawio`)](../diagrams/ws1-l3-process-sequence-swimlane.drawio)
-  - [Figure 5 Draw.io Source (`ws1-l4-wire-protocol-transformation.drawio`)](../diagrams/ws1-l4-wire-protocol-transformation.drawio)
+  - [Download Master All-Workstreams 25-Slide Presentation (`.pptx`)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)
+- **Editable Google Docs & Microsoft Word (`.docx`):**
+  - [Open WS1 Streamlined Whitepaper in Google Docs ↗](https://docs.google.com/document/d/1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA/edit)
+  - [Download WS1 Streamlined Whitepaper (`.docx`)](../docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx)
+- **Standalone 10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas (`20 Retina Screenshots`):**
+  - [Open 10-SaaS Visual Verification Atlas in Portal Reader](saas-10-visual-verification-and-redteam-atlas.md)
+  - [Open 10-SaaS Visual Verification Atlas in Google Docs (`21 Figures`) ↗](https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/edit?resourcekey=0-klzhSI2SvWYPCvpPwwMSUw)
+  - [Open 10-SaaS Visual Verification Atlas 16-Slide Deck in Google Slides ↗](https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw)
+  - [Open 10-SaaS Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md)
+- **5-Part Engineering Blog Series Navigation:**
+  - **Part 1 (`WS1`):** [Reference Architecture, Taxonomy & The 5-Hop Governance Baseline](ws1-reference-architecture-taxonomy-and-5hop-baseline.md)
+  - **Part 2 (`WS2`):** [Pattern A: High-Density Pooled Multi-Tenant Architecture](ws2-pattern-a-pooled-architecture.md)
+  - **Part 3 (`WS3`):** [Pattern B: Zero-Trust Sovereign Silos for Regulated Workloads](ws3-pattern-b-sovereign-silos.md)
+  - **Part 4 (`WS4`):** [Pattern C: Dynamic Hybrid Routing & Zero-Downtime Tier Upgrades](ws4-pattern-c-hybrid-dynamic-tiering.md)
+  - **Part 5 (`WS5`):** [Executive Decision Guide & The Multi-Tenant Agentic Triad](ws5-decision-guide-and-agentic-triad.md)
+  - **Companion Visual Atlas (`ATLAS`):** [10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas](saas-10-visual-verification-and-redteam-atlas.md)
+
 
 ---
 

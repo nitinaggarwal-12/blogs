@@ -11,27 +11,27 @@
               <button type="button" class="ws-step-btn active" id="ws-btn-WS1" role="tab" aria-selected="true" onclick="selectGuidedWorkstream('WS1')" title="Part 1 of 5 • WS 1 Foundation: Reference Architecture & 5-Hop Baseline">
                 <span class="ws-kicker" style="display:none;">Part 1 of 5</span>
                 <span class="ws-name">1. WS1 Foundation</span>
-                <span class="ws-meta" style="display:none;">2 Blueprints • 34 Slides</span>
+                <span class="ws-meta" style="display:none;">2 Blueprints • 24 Slides</span>
               </button>
               <button type="button" class="ws-step-btn" id="ws-btn-WS2" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS2')" title="Part 2 of 5 • WS 2 Pattern A: Shared Multi-Tenant Pool">
                 <span class="ws-kicker" style="display:none;">Part 2 of 5</span>
                 <span class="ws-name">2. WS2 Pooled (A)</span>
-                <span class="ws-meta" style="display:none;">4 Blueprints • 34 Slides</span>
+                <span class="ws-meta" style="display:none;">4 Blueprints • 24 Slides</span>
               </button>
               <button type="button" class="ws-step-btn" id="ws-btn-WS3" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS3')" title="Part 3 of 5 • WS 3 Pattern B: Dedicated Customer Vault">
                 <span class="ws-kicker" style="display:none;">Part 3 of 5</span>
                 <span class="ws-name">3. WS3 Dedicated (B)</span>
-                <span class="ws-meta" style="display:none;">3 Blueprints • 34 Slides</span>
+                <span class="ws-meta" style="display:none;">3 Blueprints • 24 Slides</span>
               </button>
               <button type="button" class="ws-step-btn" id="ws-btn-WS4" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS4')" title="Part 4 of 5 • WS 4 Pattern C: Smart Hybrid Router & PSC">
                 <span class="ws-kicker" style="display:none;">Part 4 of 5</span>
                 <span class="ws-name">4. WS4 Hybrid (C)</span>
-                <span class="ws-meta" style="display:none;">4 Blueprints • 34 Slides</span>
+                <span class="ws-meta" style="display:none;">4 Blueprints • 24 Slides</span>
               </button>
               <button type="button" class="ws-step-btn" id="ws-btn-WS5" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS5')" title="Part 5 of 5 • WS 5 Capstone: Decision Guide & Triad">
                 <span class="ws-kicker" style="display:none;">Part 5 of 5</span>
                 <span class="ws-name">5. WS5 Decision</span>
-                <span class="ws-meta" style="display:none;">1 Blueprint • 34 Slides</span>
+                <span class="ws-meta" style="display:none;">1 Blueprint • 24 Slides</span>
               </button>
               <button type="button" class="ws-step-btn" id="ws-btn-ALL" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('ALL')" title="All-in-One • Master Synthesis: 25-Slide Deck & Guide">
                 <span class="ws-kicker" style="display:none;">All-in-One</span>
@@ -68,7 +68,16 @@
                 <div class="pc-dropdown-divider"></div>
                 <div class="pc-dropdown-section">Quick Navigation &amp; Testbeds</div>
                 <button type="button" id="hub-quick-ba-uis-btn" data-testid="hub-quick-ba-uis-btn" class="pc-dropdown-item" onclick="jumpToActiveBlogBeforeAfterSection()">
-                  <span>&#128260;</span> <span>Live 3P SaaS UI Proofs (20 Proofs)</span>
+                  <span>&#128260;</span> <span>Live 3P SaaS UI Proofs (Signature + 20 Proofs)</span>
+                </button>
+                <button type="button" class="pc-dropdown-item" onclick="openDocInReader('blogs/saas-10-visual-verification-and-redteam-atlas.md')">
+                  <span>&#128248;</span> <span>Execution: 10-SaaS Visual Atlas (Reader • 20 PNGs)</span>
+                </button>
+                <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace('ATLAS', 'docs', 1)">
+                  <span class="pc-gdocs-icon">D</span> <span>Execution: 10-SaaS Visual Atlas (Google Docs • 21 Figs)</span>
+                </button>
+                <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace('ATLAS', 'slides', 1)">
+                  <span class="pc-gpdf-icon">S</span> <span>Execution: 10-SaaS Visual Atlas (Google Slides • 16 Slides)</span>
                 </button>
                 <button type="button" id="hub-quick-codebase-btn" class="pc-dropdown-item" onclick="openWorkbenchView('codebase')">
                   <span>&#128187;</span> <span>Interactive 27-File Production Codebase</span>
@@ -91,7 +100,7 @@
                   <span>&#128424;</span> <span>Print / Save Article as PDF</span>
                 </button>
                 <a id="hub-pptx-download" class="pc-dropdown-item" href="slides/ws1-12slide-visual-deck.pptx" download>
-                  <span>&#11015;</span> <span>Download Editable .pptx (WS1 &bull; 34 Slides)</span>
+                  <span>&#11015;</span> <span>Download Editable .pptx (WS1 &bull; 24 Slides)</span>
                 </a>
                 <a id="hub-docx-download" class="pc-dropdown-item" href="docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx" download>
                   <span>&#128196;</span> <span>Download Editable Word .docx (WS1)</span>
@@ -135,7 +144,7 @@
 
         <!-- Preserved Hidden Compatibility Elements (Rule 25 & Zero-Regression) -->
         <div id="hub-ws-summary-bar" style="display:none;">
-          <span id="hub-ws-badge">WS1 • Part 1 of 5 • 34 Editable Slides</span>
+          <span id="hub-ws-badge">WS1 • Part 1 of 5 • 24 Editable Slides</span>
           <strong id="hub-ws-title">Workstream 1: Reference Architecture, Taxonomy &amp; 5-Hop Baseline</strong>
           <div id="hub-ws-sub">Pooled (Pattern A), Sovereign Silos (Pattern B) &amp; Dynamic Hybrid (Pattern C)</div>
         </div>
@@ -218,7 +227,10 @@
               </div>
               <div class="flex-wrap-center">
                 <button type="button" class="sim-btn" style="font-size:11.5px; padding:6px 10px;" onclick="setHubViewMode('guide')">&#8592; Back to Architecture Guide</button>
-                <button type="button" class="sim-btn primary" style="font-size:11.5px; padding:6px 10px;" onclick="openDocInReader('docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md')">&#128214; Full Testing Playbook</button>
+                <button type="button" class="sim-btn primary" style="font-size:11.5px; padding:6px 10px;" onclick="openDocInReader('blogs/saas-10-visual-verification-and-redteam-atlas.md')">&#128248; 10-SaaS Visual Atlas (20 Screenshots)</button>
+                <a class="sim-btn" style="font-size:11.5px; padding:6px 10px; text-decoration:none;" href="https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/edit?resourcekey=0-klzhSI2SvWYPCvpPwwMSUw" target="_blank" rel="noopener noreferrer">&#128998; Execution Atlas Doc &nearr;</a>
+                <a class="sim-btn" style="font-size:11.5px; padding:6px 10px; text-decoration:none;" href="https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw" target="_blank" rel="noopener noreferrer">&#128999; Execution Atlas Slides (16) &nearr;</a>
+                <button type="button" class="sim-btn" style="font-size:11.5px; padding:6px 10px;" onclick="openDocInReader('docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md')">&#128214; Manual Playbook</button>
               </div>
             </div>
 

@@ -110,11 +110,11 @@ def file_sha256(path: Path) -> str:
 
 
 PREFERRED_WORKSTREAM_SLIDES_IDS: Dict[str, str] = {
-    "WS1": "12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ",
-    "WS2": "1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE",
-    "WS3": "1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM",
-    "WS4": "1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s",
-    "WS5": "1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU",
+    "WS1": "1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w",
+    "WS2": "1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ",
+    "WS3": "1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac",
+    "WS4": "1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c",
+    "WS5": "1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A",
     "ALL": "111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc",
     "DOC-MT-01": "1T2vGGXJe_HD-eq25Hrua2nvndkzIKDyL7DUwUDdtvaU",
     "DOC-MT-02": "1CTQ2EtyaX6JMOok1ra5jW3GEFXPzWZ4L4paIfKpmKOs",
@@ -170,11 +170,11 @@ WORKSTREAM_ALIAS_SLIDES_KEYS: Dict[str, list[tuple[str, str]]] = {
 }
 
 LEGACY_SHARED_WORKSTREAM_SLIDES_IDS = {
-    "12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ",
-    "1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE",
-    "1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM",
-    "1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s",
-    "1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU",
+    "1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w",
+    "1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ",
+    "1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac",
+    "1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c",
+    "1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A",
     "111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc",
 }
 
@@ -595,7 +595,7 @@ def upload_md_to_google_docs(
         webview = existing.get("webViewLink", f"https://docs.google.com/document/d/{fid}/edit")
     else:
         template_entry = manifest.get("docs", {}).get("WS1") or next(iter(manifest.get("docs", {}).values()), None)
-        template_id = (template_entry or {}).get("googleDocsId", "1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os")
+        template_id = (template_entry or {}).get("googleDocsId", "1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA")
         copy_body = json.dumps({"name": f"{title} — Editable Google Docs"}).encode("utf-8")
         req = urllib.request.Request(
             f"https://www.googleapis.com/drive/v3/files/{urllib.parse.quote(template_id)}/copy?supportsAllDrives=true&fields=id,name,webViewLink",

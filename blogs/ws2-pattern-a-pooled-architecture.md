@@ -5,17 +5,16 @@ series: "Multi-Tenant Agentic AI on Google Cloud — Workstream 2 of 5"
 workstream: "Workstream 2 • Pattern A — High-Density Pooled Architecture"
 authors: "Google Cloud Forward Deployed Engineering (FDE) & AI Platform Architecture Team"
 target_audience: "Cloud Architects, AI Platform Engineers, FinOps Leads, and CISOs at B2B SaaS organizations"
-reading_time: "13 min read"
-tags: ["Gemini Enterprise Agent Platform","ADK","Multi-Tenancy","Pooled Architecture","Vertex AI Model Armor","AlloyDB RLS","ContextCacheConfig","FinOps","Zero Trust"]
+reading_time: "14 min read"
+tags: "["Gemini Enterprise Agent Platform","ADK","Multi-Tenancy","Pooled Architecture","Vertex AI Model Armor","AlloyDB RLS","ContextCacheConfig","FinOps","Zero Trust"]"
 canonical_architecture: "https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system"
-diagrams: ["ws2-pattern-a-pooled-5hop-architecture","ws2-pattern-a-breach-defense-sequence","ws2-demo-env-and-3p-auth-sandbox-topology","ws2-terraform-starter-resource-graph"]
+diagrams: "["ws2-pattern-a-pooled-5hop-architecture","ws2-pattern-a-breach-defense-sequence","ws2-demo-env-and-3p-auth-sandbox-topology","ws2-terraform-starter-resource-graph"]"
 editable_slides: "slides/ws2-pattern-a-pooled-editable-slides.pptx"
 status: "PUBLISH_READY"
 ---
-
 # Multi-tenant agentic AI system: Pattern A high-density pooled architecture
 
-> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation (34 Slides) ↗](https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit?resourcekey=0-VBrM33i2sQ8J1B3Z7ycw5g) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/edit?resourcekey=0-OyYSOmx22u8x4Q1kHunGyQ) • [📐 Draw.io Source (.drawio)](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download 34-Slide Visual Deck (.pptx)](../slides/ws2-12slide-visual-deck.pptx) • [Download Canonical 12-Slide Deck (.pptx)](../slides/ws2-pattern-a-pooled-editable-slides.pptx)
+> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation (24 Slides) ↗](https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/edit?resourcekey=0-lLM1d36y60xMkgO678CtSA) • [📐 Draw.io Source (.drawio)](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download 24-Slide Visual Deck (.pptx)](../slides/ws2-12slide-visual-deck.pptx) • [Download Canonical 12-Slide Deck (.pptx)](../slides/ws2-pattern-a-pooled-editable-slides.pptx)
 
 This document describes **Pattern A (High-Density Pooled Architecture)** for building and operating a multi-tenant agentic AI system on Google Cloud. In Pattern A, thousands of corporate B2B SaaS customers share a single Google Cloud project (`cymbal-pooled-saas-prod`), a shared [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview) runtime, a shared [Gemini 2.5 Pro](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models) prompt prefix cache (`ContextCacheConfig`), and a shared [AlloyDB for PostgreSQL](https://cloud.google.com/alloydb/docs) cluster while maintaining strict cryptographic tenant isolation.
 
@@ -36,9 +35,19 @@ The following `L2 Physical` diagram shows the Pattern A high-density pooled arch
 > - **90% Prompt Cache Savings**: Shared `ContextCacheConfig` prefix cache on Gemini 2.5 Pro reduces billable input tokens from 34,000 to 5,200 (84.7% net COGS reduction) across common SRE runbooks.
 > - **Database Kernel Isolation**: PostgreSQL `FORCE ROW LEVEL SECURITY` with `SET LOCAL app.current_tenant_id` rewrites all SQL and vector queries, guaranteeing zero cross-tenant row leakage.
 
+
+## When NOT to Use Pattern A High-Density Pooled Architecture (Architectural Disqualifiers)
+
+> [!WARNING]
+> **Pattern A Disqualifiers — Immediately Route the Tenant to Pattern B (Silo) or Pattern C (Hybrid PSC Spoke) If Any Condition Below Holds:**
+> - **Disqualifier 1 — Hardware-Enforced Network Perimeter Mandate (OCC 2013-29, EU DORA, HIPAA/GxP):** The customer contract legally prohibits shared container kernels (`Cloud Run Gen2` / `Vertex AI Agent Engine`), shared Memorystore for Valkey instances, or shared AlloyDB clusters—even with `FORCE ROW LEVEL SECURITY`—and requires a dedicated GCP project (`cymbal-{tenant}-silo-prod`) bounded by a dedicated **VPC Service Controls (`VPC-SC`)** perimeter.
+> - **Disqualifier 2 — Independent Customer-Held Cloud KMS CMEK / EKM Kill-Switch SLA (`< 60s`):** The customer requires unilateral cryptographic revocation via their own external HSM (**Cloud EKM**) or dedicated Cloud KMS key ring such that disabling their key physically halts all database I/O and inference without affecting any other tenant on the platform.
+> - **Disqualifier 3 — Custom Fine-Tuned Weights or Air-Gapped Open-Weight Models (`Gemma 3 27B`):** The tenant requires dedicated GPU node pools (`g2-standard-48` on private GKE with AMD SEV-SNP Confidential VMs) and `0.0.0.0/0` internet egress disabled.
+> - **Disqualifier 4 — Non-Transactional Legacy Connection Pooling (`PgBouncer Session Mode`):** If downstream data services use session-mode pooling without `DISCARD ALL` or prepared-statement reset hooks, `SET LOCAL app.current_tenant_id` guarantees are violated; Pattern A is strictly disqualified until transaction-mode pooling (`hop5_data_rls_and_otel.py`) is enforced.
+
 ## Core terminology and Pooled multi-tenant systems primitives
 
-Before diving into Pattern A's reference implementation and its companion [34-slide editable visual deck (`slides/ws2-12slide-visual-deck.pptx`)](../slides/ws2-12slide-visual-deck.pptx) (and [canonical 12-slide editable deck (`slides/ws2-pattern-a-pooled-editable-slides.pptx`)](../slides/ws2-pattern-a-pooled-editable-slides.pptx)), we anchor the **SaaS AI Architect's Dilemma**—how to capture **90% shared `ContextCacheConfig` prompt-prefix savings** and low-friction onboarding inside a single shared project without risking cross-tenant tool, memory, or database bleed—across the four foundational series primitives ([Part 1](ws1-reference-architecture-taxonomy-and-5hop-baseline.md)) and Pattern A's **Computer Science (CS101)** operating-system and database-kernel mechanisms:
+Before diving into Pattern A's reference implementation and its companion [24-slide editable visual deck (`slides/ws2-12slide-visual-deck.pptx`)](../slides/ws2-12slide-visual-deck.pptx) (and [canonical 12-slide editable deck (`slides/ws2-pattern-a-pooled-editable-slides.pptx`)](../slides/ws2-pattern-a-pooled-editable-slides.pptx)), we anchor the **SaaS AI Architect's Dilemma**—how to capture **90% shared `ContextCacheConfig` prompt-prefix savings** and low-friction onboarding inside a single shared project without risking cross-tenant tool, memory, or database bleed—across the four foundational series primitives ([Part 1](ws1-reference-architecture-taxonomy-and-5hop-baseline.md)) and Pattern A's **Computer Science (CS101)** operating-system and database-kernel mechanisms:
 
 - **Agent Development Kit (`ADK`):** The Python runtime framework ([`core-cymbal-agent/runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py)) that binds immutable `temp:tenant_id` session state and executes deterministic `before_agent_callback`, `before_model_callback`, and `before_tool_callback` interceptors inside the shared worker pool.
 - **Agent Registry & Discovery (`ARD`):** The Hop 2 Discovery Engine catalog Policy Decision Point ([`hop2_registry_pdp_callbacks.py`](../core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py)) that resolves global shared agents while returning `HTTP 403 Forbidden` if a Standard tenant (`retailstream`) enumerates an Enterprise tenant's private `Agent Alpha` (`finvault`).
@@ -154,28 +163,6 @@ The seven numbered steps in Figure 3 (`1`–`7`) match the visual diagram badges
 6. **Seed tenant entitlements and RLS fixtures (`6 Seed tenant config`):** Populates Firestore tenant profiles (`4,000` vs `8,000` token budgets, allowed MCP tools) and AlloyDB `FORCE ROW LEVEL SECURITY` tables.
 7. **Run automated breach simulation suite (`7 Run breach simulation suite`):** Executes `run_breach_simulations.py` to verify all `10/10` cross-tenant isolation and 3LO Confused-Deputy defenses.
 
-### 1-click Terraform starter resource dependency graph (Figure 4)
-
-![Figure 4 — Pattern A: Terraform infrastructure-as-code (IaC) resource graph](../diagrams/ws2-terraform-starter-resource-graph.drawio.png)
-
-*Figure 4. Declarative Terraform resource dependency graph (`workstream-2-pattern-a-pooled/2.6-terraform-starter/`) provisioning the complete Pattern A pooled stack in a single Google Cloud project. Editable assets: [Draw.io source](../diagrams/ws2-terraform-starter-resource-graph.drawio) | [Google Slides (.pptx)](../slides/ws2-pattern-a-pooled-editable-slides.pptx) | [Architecture Center SVG](../diagrams/ws2-terraform-starter-resource-graph.svg) | [Vision AST](../diagrams/vision_metadata/ws2-terraform-starter-resource-graph.vision.json).*
-
-Figure 4 shows the declarative Terraform module topology ([`2.6-terraform-starter/main.tf`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf) and [`2.6-terraform-starter/deploy_1click.sh`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/deploy_1click.sh)):
-
-- **Edge Networking and WAF Module (Zone 1 — Blue container `#aecbfa`):** Provisions `google_compute_global_forwarding_rule`, `google_compute_security_policy` (Cloud Armor header-strip rules), and `google_iap_web_backend_service`.
-- **IAM, KMS, and Observability Module (Zone 2 — Green container `#ceead6`):** Provisions `google_kms_key_ring`, `google_kms_crypto_key`, least-privilege service accounts, and the `google_bigquery_table` FinOps ledger.
-- **Agent Runtime, Model Armor, and Valkey Module (Zone 3 — Left amber container `#feefc3`):** Provisions Vertex AI Agent Engine runtime endpoints, `google_model_armor_template`, and `google_memorystore_instance` (Valkey token buckets).
-- **AlloyDB RLS and Firestore Seed Module (Zone 4 — Right coral container `#fad2cf`):** Provisions `google_alloydb_cluster`, initializes `FORCE ROW LEVEL SECURITY` policies, and seeds tenant profiles in `google_firestore_document`.
-
-The seven numbered steps in Figure 4 (`1`–`7`) match the visual diagram badges in the Terraform DAG ([`2.6-terraform-starter/main.tf`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf)):
-
-1. **Validate input variables (`1 tfvars`):** Loads `project_id`, `region`, `tenants` tier map, and `enable_context_caching` from `variables.tf` via `deploy_1click.sh`.
-2. **Initialize Google provider and enable APIs (`2 Provider`):** `google_project_service` enables Vertex AI, Discovery Engine, Model Armor, DLP, AlloyDB, Memorystore, and Cloud KMS APIs.
-3. **Provision Hop 3–5 runtime, Valkey, and AlloyDB RLS (`3 Apply Hop 3 runtime & data`):** Provisions `google_redis_instance.valkey_bulkhead`, `google_alloydb_cluster.pooled_cluster` (`FORCE ROW LEVEL SECURITY`), and `google_bigquery_table.otel_token_ledger`.
-4. **Build Hop 4 DLP/Model Armor templates and Firestore registry (`4 Build template`):** Creates per-tenant `google_dlp_deidentify_template` resources (`for_each = var.tenants`) and seeds `google_firestore_document.tenant_registry`.
-5. **Deploy Cloud Run Gen2 gVisor gateway and inject env vars (`5 Inject env variables`):** Deploys `google_cloud_run_v2_service.pooled_agent_gateway` with `EXECUTION_ENVIRONMENT_GEN2`, injecting Valkey, AlloyDB, and `ContextCacheConfig` environment bindings.
-6. **Bind Hop 1 Cloud Armor edge security policy (`6 Export URI`):** Attaches `google_compute_security_policy.hop1_edge_armor` (header-strip + SQLi WAF rules) and exports the gateway endpoint.
-7. **Emit Terraform outputs and run breach smoke tests (`7 pooled_gateway_uri & valkey_bulkhead`):** Outputs `pooled_gateway_uri`, `valkey_bulkhead_host`, and `bigquery_chargeback_table` (`outputs.tf`) and runs `run_breach_simulations.py` (`10/10 PASS`).
 
 ## Products used
 
@@ -274,41 +261,30 @@ Where:
 - **Cache-aligned multi-turn conversation packing:** Pack user turns and system state into deterministic boundaries so subsequent turns reuse the established `32k` prompt prefix cache without invalidating tokens.
 - **Asynchronous non-blocking audit streaming:** Stream OpenTelemetry spans and BigQuery FinOps audit rows asynchronously using background worker threads to decouple security telemetry from the user-facing latency budget.
 
-<!-- GENUINE_3P_BEFORE_AFTER_START -->
-## Live 3rd-Party SaaS Before-vs-After UI Proof (2880×1800 Retina)
 
-> **Zero Synthetic Mockups (`Rule 57` & `Rule 60A–60C`):** Every before-and-after proof was captured via real HTTP/HTTPS browser navigation against live upstream enterprise software stacks (`2880×1800` Retina, distinct SHA-256 verified in [`docs/genuine_3p_before_after_provenance_receipt.json`](../docs/genuine_3p_before_after_provenance_receipt.json)).
-> 
-> 🎙️ **Interactive Digital Twin & Split Slider:** Rather than scrolling through 20 static images, switch to the **"📸 Live UI Proofs & Digital Twin Walkthrough"** sub-tab at the top of this page to inspect the interactive 2880×1800 Before-vs-After Split Slider while the Architecture Twin provides spoken architectural commentary on each breach test. You can also inspect the complete [10-SaaS Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md) or open Portal Tab 3.
+## Hard Google Cloud Quotas, Control-Plane Scaling Limits & Asynchronous Edge Cases (Pattern A Pooled)
 
-| Upstream Software Stack | Target ID & MCP Tool | Verification Scope & Tenant Isolation Guarantee | Live UI Proof & Digital Twin Walkthrough |
+When operating **Pattern A (High-Density Pooled Architecture)** across `950+` commercial tenants in a single shared GCP project (`cymbal-pooled-prod`), platform engineers must design around four concrete cloud limits and edge cases:
+
+### 1. Pattern A Pooled Quotas & Shared-Runtime Bottlenecks
+
+| Pooled Resource / Hop | Hard Google Cloud / Engine Limit | Edge-Case Failure Mode | Mandatory Pattern A Engineering Control |
 | :--- | :--- | :--- | :--- |
-| **Metabase BI v0.50.26** | `HXGGFMZBKE` (`query_thoughtspot_liveboard_rls`) | ThoughtSpot Spotter Agentic BI: RLS pushdown returns strictly 2 rows for `finvault` while blocking `retailstream` | [Open Interactive Proof & Twin Walkthrough ↗](#tab-patterns?view=proofs&target=HXGGFMZBKE) |
-| **Grafana Enterprise v11.2.0** | `IZVODT083Q` (`export_sigma_dataset_sql`) | Sigma Computing: Tenant `ua_tenant_id` tampering returns HTTP 403 `DENY_SIGMA_UA_TENANT_TAMPERING` | [Open Interactive Proof & Twin Walkthrough ↗](#tab-patterns?view=proofs&target=IZVODT083Q) |
-| **Redmine ITSM v5.1** | `ZS9VGYHBQL` (`manage_servicenow_incident_change`) | ServiceNow ITSM: Missing 3LO user consent emits interactive challenge; valid 3LO retrieves change order `CHG0049218` | [Open Interactive Proof & Twin Walkthrough ↗](#tab-patterns?view=proofs&target=ZS9VGYHBQL) |
-| **NocoDB v0.255.2** | `TWQU0KSRVF` (`query_veeva_vault_study_biomarkers`) | Veeva Vault & Muse EDC: Hop 2 catalog ACL blocks cross-tenant invocation; valid turn seals Cloud KMS 21 CFR Part 11 signature | [Open Interactive Proof & Twin Walkthrough ↗](#tab-patterns?view=proofs&target=TWQU0KSRVF) |
-| **Gitea v1.22.3** | `K5JAEFCQ6E` (`escalate_crm_case_to_jira_issue`) | Salesforce CRM & Jira: Hop 4 Cloud SDP masks raw SWIFT/IBAN (`[REDACTED-FINVAULT-IBAN]`) before external SaaS egress | [Open Interactive Proof & Twin Walkthrough ↗](#tab-patterns?view=proofs&target=K5JAEFCQ6E) |
-| **Trino Distributed SQL v440** | `TERCK8SLBP` (`execute_unity_catalog_sql`) | Databricks Platform: SQL injection attempt (`'; DROP TABLE--`) blocked; valid turn completes under tenant catalog | [Open Interactive Proof & Twin Walkthrough ↗](#tab-patterns?view=proofs&target=TERCK8SLBP) |
-| **ClickHouse Data Warehouse v24.8** | `CCMDEVZV2S` (`execute_cortex_analyst_sql`) | Snowflake AI Data Cloud: Cross-role escalation blocked (`SECONDARY ROLES NONE`); valid query returns CMEK-protected rows | [Open Interactive Proof & Twin Walkthrough ↗](#tab-patterns?view=proofs&target=CCMDEVZV2S) |
-| **Directus Data Studio v11.1.0** | `RAOTMUMJTZ` (`sync_workday_raas_compensation`) | Workday HCM: Cross-user 3LO token reuse blocked with HTTP 401; valid sync masks US SSN under principal isolation | [Open Interactive Proof & Twin Walkthrough ↗](#tab-patterns?view=proofs&target=RAOTMUMJTZ) |
-| **Datalust Seq Observability v2024.3** | `G767QR3TQZ` (`query_datadog_tenant_slos`) | Datadog SRE: Model Armor detects and blocks prompt injection in log telemetry (`HTTP 400`); valid OTel spans ingested | [Open Interactive Proof & Twin Walkthrough ↗](#tab-patterns?view=proofs&target=G767QR3TQZ) |
-| **HashiCorp Vault v1.13.3** | `C7EYM614F2` (`rotate_crowdstrike_api_key`) | CrowdStrike Falcon & Okta: Stolen bearer token replay rejected via RFC 9449 DPoP proof mismatch; valid key rotated safely | [Open Interactive Proof & Twin Walkthrough ↗](#tab-patterns?view=proofs&target=C7EYM614F2) |
+| **Vertex AI `ContextCacheConfig` (`Hop 3`)** | **Minimum `32,768` tokens**; cache handle TTL expiry (`3,600s` default) | If the shared cache expires at `:00` across `950` active tenants simultaneously, `100%` of concurrent turns pay full uncached input rates (`10x` cost spike) and hit TPM quotas. | Enforce a **staggered dual-handle blue/green cache warmer** that mints `cache_handle_v(N+1)` at **`t = 55 min`** and atomically swaps the pointer in Memorystore for Valkey with zero uncached gap. |
+| **Cloud Run Gen2 Shared Worker Pool (`Hop 3`)** | Max `1,000` instances per service default quota; `80–250` concurrent requests/instance; `/tmp` shares in-memory tmpfs | A runaway tenant streaming large MCP JSON payloads can exhaust container memory (`OOMKilled`), crashing co-located turns from peer tenants on the same container instance. | Set **`--concurrency=16`** (or `--concurrency=1` for untrusted code-execution tools), cap response buffers at `4 MB` in Hop 4, and bind ephemeral scratch paths to `/tmp/{tenant_id}/{turn_uuid}` with post-turn `shutil.rmtree()`. |
+| **AlloyDB Pooled RLS & `PgBouncer` (`Hop 5`)** | Max connections per AlloyDB instance (`1,000–4,000`); `SET LOCAL` only lasts until transaction end | Using PgBouncer in `session` mode or executing autocommit queries outside a `BEGIN ... COMMIT` block causes `app.current_tenant_id` to reset or bleed across pooled checkouts. | Mandate **`pool_mode = transaction`**, reject any SQL execution where `current_setting('app.current_tenant_id', true)` is empty (`FORCE ROW LEVEL SECURITY`), and run `DISCARD ALL` on checkin. |
+| **Memorystore for Valkey Key Eviction (`Hop 3`)** | Single-threaded Lua script execution budget (`< 5 ms`); blocking `KEYS *` or `FLUSHALL` freezes all `950` tenants | Executing `KEYS cache:tenant_a:*` or `FLUSHALL` during tenant offboarding blocks the Valkey event loop for `200–800 ms`, tripping Hop 3 circuit breakers platform-wide. | Use non-blocking cursor iteration **`SCAN 0 MATCH cache:{tenant_id}:* COUNT 500`** paired with asynchronous **`UNLINK`** (`O(1)` main-thread deallocation in `< 5 s`). |
 
-### SAAS-01: ThoughtSpot Cloud (Spotter Agentic BI v2.0)
-**Upstream Stack:** `Metabase BI v0.50.26` • Target `HXGGFMZBKE` • `query_thoughtspot_liveboard_rls`
-GEAP MCP tool query_thoughtspot_liveboard_rls (Target HXGGFMZBKE) enforces session predicate WHERE tenant_id = 'finvault' and executes Saved Liveboard Question #27.
+### 2. Mid-Flight External 3LO Tool Failure & Idempotent Outbox Saga Reconciliation
 
-![BEFORE SAAS-01 (Metabase BI v0.50.26): Unfiltered multi-tenant settlement table exposing 3 rows across tenants (FV-TX-901 finvault, FV-TX-902 finvault, plus cross-tenant RS-ORD-401 retailstream) prior to GEAP Hop 5 RLS binding.](../screenshots/genuine-multicloud-3p-uis/before-after/before_01_metabase_bi.png)
+In Pattern A, when a tenant hits their **`120 RPM` Valkey token-bucket ceiling (`HTTP 429`)** or triggers a **Hop 4 post-inference Cloud SDP block** *after* an external 3LO tool (`ServiceNow`, `Jira`, `ClickHouse`) has already executed Step 1 of a multi-tool chain, PostgreSQL `ROLLBACK` only reverts local AlloyDB rows. To prevent duplicate tickets on client retry (`Retry-After`), `core-cymbal-agent/governance/hop5_data_rls_and_otel.py` binds every external MCP mutation to a deterministic **`X-Idempotency-Key: SHA256(tenant_id:session_id:turn_id:tool_call_index)`** recorded in the tenant-scoped outbox table before external network dispatch.
 
-![AFTER SAAS-01 (Metabase BI v0.50.26 — Target HXGGFMZBKE): Metabase Liveboard Question #27 returns strictly the 2 authorized FinVault rows ($527.0M total: FV-TX-901 $312.5M + FV-TX-902 $214.5M) with 0 cross-tenant RetailStream rows.](../screenshots/genuine-multicloud-3p-uis/before-after/after_01_metabase_bi.png)
+<!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-### SAAS-02: Sigma Computing & Grafana Enterprise
-**Upstream Stack:** `Grafana Enterprise v11.2.0` • Target `IZVODT083Q` • `evaluate_sigma_incident_workbook`
-GEAP MCP tool evaluate_sigma_incident_workbook (Target IZVODT083Q) evaluates the multi-tenant workbook finvault-sre-wb under tenant isolation and writes back the S3 attestation ledger.
+## Signature 3rd-Party SaaS Before-vs-After UI Proofs for WS2 (SAAS-03, SAAS-07 • 2880×1800 Retina)
 
-![BEFORE SAAS-02 (Grafana Enterprise v11.2.0): Grafana Enterprise workbook finvault-sre-wb (orgId=1) in single-panel pre-audit baseline before GEAP Hop 5 workbook evaluation and live S3 attestation write-back.](../screenshots/genuine-multicloud-3p-uis/before-after/before_02_grafana_enterprise.png)
-
-![AFTER SAAS-02 (Grafana Enterprise v11.2.0 — Target IZVODT083Q): Grafana Enterprise renders the newly appended Panel #2 (GEAP Hop 5 Live Agentic Execution Attestation & Cross-Org Spoof Audit) alongside the verified $527.0M FinVault summary.](../screenshots/genuine-multicloud-3p-uis/before-after/after_02_grafana_enterprise.png)
+> [!IMPORTANT]
+> **Streamlined 2-SaaS Visual Proof Edition (`4` Inline Captures + Standalone `10-SaaS` Visual Atlas):** To keep this architectural guide focused, we embed the **2 signature Before/After UI proof pairs (SAAS-03, SAAS-07)** most directly governed by **WS2** below. For the complete 20-image gallery (`SAAS-01` through `SAAS-10`) across all 10 commercial stacks, open the dedicated **[10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas (Portal Reader)](saas-10-visual-verification-and-redteam-atlas.md)**, the **[21-Figure Google Docs Visual Atlas](https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/edit?resourcekey=0-klzhSI2SvWYPCvpPwwMSUw)**, or the **[16-Slide Google Slides Visual Atlas](https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw)**.
 
 ### SAAS-03: ServiceNow ITSM & ITOM Change Control
 **Upstream Stack:** `Redmine ITSM v5.1` • Target `ZS9VGYHBQL` • `query_servicenow_change_records`
@@ -318,30 +294,6 @@ GEAP MCP tool query_servicenow_change_records (Target ZS9VGYHBQL) validates CMEK
 
 ![AFTER SAAS-03 (Redmine ITSM v5.1 — Target ZS9VGYHBQL): Redmine ITSM queue updates live to 3 tickets (1-3/3) displaying newly created CHG0049299 ((GEAP-MCP ZS9VGYHBQL) Automated Hop 5 Valkey Single-Flight & KMS CMEK Attestation) assigned to FinVault SRE Lead.](../screenshots/genuine-multicloud-3p-uis/before-after/after_03_redmine_itsm.png)
 
-### SAAS-04: Veeva Vault RIM & Muse Clinical EDC
-**Upstream Stack:** `NocoDB v0.255.2` • Target `TWQU0KSRVF` • `sync_clinical_trial_edc_cohort`
-GEAP MCP tool sync_clinical_trial_edc_cohort (Target TWQU0KSRVF) signs audit records with Cloud KMS ECDSA P-256 for 21 CFR Part 11 electronic compliance.
-
-![BEFORE SAAS-04 (NocoDB v0.255.2): NocoDB FinVault KMS 21 CFR 11 Full Ledger showing 3 seeded compliance rows (AWS-GXP-101..103 — 3 records in footer) prior to live Cloud KMS ECDSA-P256 electronic signature insertion.](../screenshots/genuine-multicloud-3p-uis/before-after/before_04_nocodb_gxp.png)
-
-![AFTER SAAS-04 (NocoDB v0.255.2 — Target TWQU0KSRVF): NocoDB grid updates live to 4 records, displaying row #4 AWS-GXP-104 (finvault • Pattern C Hybrid PSC + Hop 5 KMS Sign • ECDSA_P256_LIVE_AGENT_SIGNED).](../screenshots/genuine-multicloud-3p-uis/before-after/after_04_nocodb_gxp.png)
-
-### SAAS-05: Salesforce CRM & Atlassian Jira Cloud
-**Upstream Stack:** `Gitea v1.22.3` • Target `K5JAEFCQ6E` • `escalate_salesforce_case_to_jira`
-GEAP MCP tool escalate_salesforce_case_to_jira (Target K5JAEFCQ6E) screens customer tickets through Cloud SDP, masks sensitive IBAN/SWIFT tokens, and posts sanitized remediation plans.
-
-![BEFORE SAAS-05 (Gitea v1.22.3): Gitea repository finvault/sre-escalations Issue #1 ((SFDC-CASE-00984120 / FINVAULT-SRE-1402)) open with 0 comments prior to GEAP Hop 4 SDP-redacted RCA triage.](../screenshots/genuine-multicloud-3p-uis/before-after/before_05_gitea_sre.png)
-
-![AFTER SAAS-05 (Gitea v1.22.3 — Target K5JAEFCQ6E): Gitea Issue #1 updates live to 1 comment, rendering the authenticated sre-lead Hop 4 SDP-redacted automated RCA & Valkey mitigation receipt directly in the issue timeline.](../screenshots/genuine-multicloud-3p-uis/before-after/after_05_gitea_sre.png)
-
-### SAAS-06: Databricks Data Intelligence Platform (Unity Catalog SQL)
-**Upstream Stack:** `Trino Distributed SQL v440` • Target `TERCK8SLBP` • `execute_uc_genie_federated_sql`
-GEAP MCP tool execute_uc_genie_federated_sql (Target TERCK8SLBP) dispatches federated SQL via POST /v1/statement with X-Trino-User: geap-hop5-agent@finvault.com and X-Trino-Source: geap-agentcore-TERCK8SLBP.
-
-![BEFORE SAAS-06 (Trino Distributed SQL v440): Trino v440 Cluster Overview (/ui/) query ledger prior to GEAP Target TERCK8SLBP tenant-scoped federated SQL dispatch.](../screenshots/genuine-multicloud-3p-uis/before-after/before_06_trino_sql.png)
-
-![AFTER SAAS-06 (Trino Distributed SQL v440 — Target TERCK8SLBP): Trino Cluster Overview (/ui/) displays the newly completed FINISHED query at top of Query Details attributed to geap-hop5-agent@finvault.com (source: geap-agentcore-TERCK8SLBP).](../screenshots/genuine-multicloud-3p-uis/before-after/after_06_trino_sql.png)
-
 ### SAAS-07: Snowflake AI Data Cloud (Cortex Analyst & SQL v2)
 **Upstream Stack:** `ClickHouse Data Warehouse v24.8` • Target `CCMDEVZV2S` • `execute_cortex_analyst_sql`
 GEAP MCP tool execute_cortex_analyst_sql (Target CCMDEVZV2S) executes the tenant-aligned query (WHERE tenant_id = 'finvault') under finvault_user RLS policy.
@@ -350,29 +302,6 @@ GEAP MCP tool execute_cortex_analyst_sql (Target CCMDEVZV2S) executes the tenant
 
 ![AFTER SAAS-07 (ClickHouse Data Warehouse v24.8 — Target CCMDEVZV2S): ClickHouse /play console returns the 2 CMEK-protected FinVault wire settlement rows (FV-TX-901 $312.5M and FV-TX-902 $214.5M, gcp-kms://finvault-cmek-hsm) in <5ms.](../screenshots/genuine-multicloud-3p-uis/before-after/after_07_clickhouse_rls.png)
 
-### SAAS-08: Workday Human Capital Management (HCM RaaS)
-**Upstream Stack:** `Directus Data Studio v11.1.0` • Target `RAOTMUMJTZ` • `sync_workday_raas_compensation`
-GEAP MCP tool sync_workday_raas_compensation (Target RAOTMUMJTZ) syncs executive compensation with US SSN masking under strict tenant isolation.
-
-![BEFORE SAAS-08 (Directus Data Studio v11.1.0): Directus v11.1.0 Hcm Compensation collection showing 2 baseline executive records (Clara Vance & Marcus Thorne — 2 Items) prior to GEAP RaaS compensation audit sync.](../screenshots/genuine-multicloud-3p-uis/before-after/before_08_directus_hcm.png)
-
-![AFTER SAAS-08 (Directus Data Studio v11.1.0 — Target RAOTMUMJTZ): Directus Hcm Compensation collection updates live to 3 Items, adding Elena Rostova (MD Quantitative Risk — GEAP Audited, $395,000.00, (REDACTED_US_SSN)).](../screenshots/genuine-multicloud-3p-uis/before-after/after_08_directus_hcm.png)
-
-### SAAS-09: Datadog SRE & Observability Platform
-**Upstream Stack:** `Datalust Seq Observability v2024.3` • Target `G767QR3TQZ` • `query_datadog_tenant_slos`
-GEAP MCP tool query_datadog_tenant_slos (Target G767QR3TQZ) ingests structured OpenTelemetry traces verifying zero prompt injection and tenant-scoped APM telemetry.
-
-![BEFORE SAAS-09 (Datalust Seq Observability v2024.3): Datalust Seq v2024.3 /#/events telemetry view in compact collapsed stream baseline prior to live GEAP Hop 4 Model Armor + Hop 5 RLS structured OTel span ingestion.](../screenshots/genuine-multicloud-3p-uis/before-after/before_09_datalust_seq.png)
-
-![AFTER SAAS-09 (Datalust Seq Observability v2024.3 — Target G767QR3TQZ): Datalust Seq displays the newly ingested GEAP Hop 5 APM trace expanded in-place with structured properties (AgentCoreTarget=G767QR3TQZ, Hop4ModelArmor=PASS_ZERO_PROMPT_INJECTION, TenantId=finvault, ZeroPiiAttested=true).](../screenshots/genuine-multicloud-3p-uis/before-after/after_09_datalust_seq.png)
-
-### SAAS-10: CrowdStrike Falcon & Okta Workforce Identity
-**Upstream Stack:** `HashiCorp Vault v1.13.3` • Target `C7EYM614F2` • `rotate_crowdstrike_api_key`
-GEAP MCP tool rotate_crowdstrike_api_key (Target C7EYM614F2) rotates host containment API secrets under DPoP verification and writes audit proofs to S3.
-
-![BEFORE SAAS-10 (HashiCorp Vault v1.13.3): HashiCorp Vault v1.13.3 secret tenants/finvault at Version 1 (JSON view enabled) showing pre-containment state (xdr_containment_status: PENDING_HOP5_DPOP_CONTAINMENT).](../screenshots/genuine-multicloud-3p-uis/before-after/before_10_hashicorp_vault.png)
-
-![AFTER SAAS-10 (HashiCorp Vault v1.13.3 — Target C7EYM614F2): HashiCorp Vault UI displays Version 2 of tenants/finvault in live JSON mode with xdr_containment_status: HOST_CONTAINED_DPOP_VERIFIED_200 and S3 audit binding crowdstrike-okta/finvault.json.](../screenshots/genuine-multicloud-3p-uis/before-after/after_10_hashicorp_vault.png)
 <!-- GENUINE_3P_BEFORE_AFTER_END -->
 
 ## Frequently asked questions: Executive and CISO decision guide for Pattern A
@@ -393,32 +322,79 @@ To assist enterprise architecture review boards, CISOs, and platform engineering
 
 ## What's next
 
-### Companion 34-Slide Upgraded Visual WS2 Deck & Slide-to-Code Launch Matrix
+### Companion 24-Slide Streamlined Visual Deck, Standalone 10-SaaS Visual Atlas & Slide-to-Code Launch Matrix
 
-The companion 34-slide upgraded visual Workstream 2 presentation deck ([`slides/ws2-12slide-visual-deck.pptx`](../slides/ws2-12slide-visual-deck.pptx), synced live to [Google Slides `1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE`](https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit?resourcekey=0-VBrM33i2sQ8J1B3Z7ycw5g)) maps directly to the runnable modules in [`core-cymbal-agent/ (27-File Workbench)`](#blog-e2e-pattern-execution-and-codebase-workbench) and `workstream-2-pattern-a-pooled/`:
+> [!IMPORTANT]
+> **Streamlined 24-Slide Architecture Deck + Standalone `10-SaaS` Visual Verification Atlas:** This guide pairs a focused **24-slide executive presentation** ([`slides/ws2-12slide-visual-deck.pptx`](../slides/ws2-12slide-visual-deck.pptx))—featuring the **2 signature Before/After UI proofs** for **WS2** and an expanded **Hard GCP Quotas, Async 3P Saga & Disqualifiers** briefing—with the standalone **[10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas (20 Retina Screenshots)](saas-10-visual-verification-and-redteam-atlas.md)** ([Google Docs](https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/edit?resourcekey=0-klzhSI2SvWYPCvpPwwMSUw) • [16-Slide Google Slides](https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw)).
 
-| WS2 Slide Group (34-Slide Upgraded Visual Deck) | Core Architectural Focus | Runnable Code & Terraform Modules | Verification Command / Gate |
+| 5-Act Presentation Arc | Slide Range & Direct Launch Links | Core Architectural Content & C4 Abstraction | Companion Codebase & Verification Assets |
 | :--- | :--- | :--- | :--- |
-| **Act I: Slides 1–4** (Title Cover, 5-Act Agenda, High-Density Pooled Dilemma & 10 Cross-Tenant Breach Vectors) | Unit economics vs. blast-radius dilemma; 90% shared `ContextCacheConfig` prefix savings (`84.7%` net COGS reduction) & 10-vector adversarial flow map | [`2.1 Case Study & Pooled Architecture`](../workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md) • [`pattern_a_pooled_service.py`](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py) | `python3 workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py` |
-| **Act II: Slides 5–11** (Act II Breaker, 4 Runtime Pillars, `L1` Security Taxonomy & Figures 1–4 Decompiled DrawingML Blueprints) | Single shared project (`cymbal-pooled-saas-prod`), gVisor (`runsc`) sandboxes, multi-IdP 3LO sandbox topology, and Terraform starter resource graph | [`2.2 Demo Env & 3P Auth Sandbox`](../workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md) • [`2.4 Product Gaps Prioritization`](../workstream-2-pattern-a-pooled/2.4-product-gaps-prioritization.md) | `python3 scripts/run_deep_forensic_audit.py` |
-| **Act III: Slides 12–19** (Act III Breaker, `L3` UML Sequence, `L4` Wire Gate, Hops 1–5 Deep Dive, AlloyDB RLS & 4 Production Caveats) | Cloud Armor header strip, ARD `Agent Alpha` catalog filter, Valkey leaky-bucket bulkheads, Model Armor + Cloud SDP, and transactional `SET LOCAL app.current_tenant_id` | [`run_breach_simulations.py`](../workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py) • [`hop5_data_rls_and_otel.py`](../core-cymbal-agent/governance/hop5_data_rls_and_otel.py) | `python3 workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py` (`10/10 PASS`) |
-| **Act IV: Slides 20–30** (Act IV Breaker & Proofs 1–10: 20 Authentic `2880×1800` Retina Before → After UI Captures across 10 SaaS Stacks) | Live before-and-after isolation proofs across Metabase BI, Trino SQL, Grafana Enterprise, Datalust Seq, HashiCorp Vault, ClickHouse, Redmine, NocoDB, Gitea, and Directus | [`enterprise_5_saas_bi_mcp.py`](../core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py) • [`verify_5_third_party_saas_products.py`](../scripts/verify_5_third_party_saas_products.py) | `python3 -B scripts/verify_5_third_party_saas_products.py` (`10/10 PASS`) |
-| **Act V: Slides 31–34** (Act V Breaker, 10-Week Migration Roadmap, Multi-Cloud Scorecard & Executive CISO FAQ Guide) | 10-week phased rollout, Terraform 2.6 starter deployment, 90-minute breach simulation codelab, and CISO review board FAQ | [`2.6-terraform-starter/main.tf`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf) • [`deploy_1click.sh`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/deploy_1click.sh) • [`codelab-90min-breach-sim.md`](../workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck/codelab-90min-breach-sim.md) | `bash workstream-2-pattern-a-pooled/2.6-terraform-starter/deploy_1click.sh --validate-only` |
+| **Act I: Executive Storyline, Threat Surface & Disqualifiers** | **[Slides 1–4](https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit#slide=id.p1)** | Title Cover (`Slide 1`), 5-Act Executive Roadmap (`Slide 2`), Core Multi-Tenancy Dilemma (`Slide 3`), and Adversarial Threat / Compliance Matrix (`Slide 4`). | [`core-cymbal-agent/runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py) |
+| **Act II: C4 L1–L2 Topologies & `#78` Architecture Blueprints** | **[Slides 5–9](https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit#slide=id.p5)** | Act II Breaker (`Slide 5`), `L1` Logical Security Layers (`Slide 6`), and Decompiled `L2` Physical `#78` Architecture Blueprints (`Slides 7–9`). | [`diagrams/`](../diagrams/) (`100%` Native DrawingML) |
+| **Act III: 5-Hop Control Plane, Hard GCP Quotas & Disqualifiers** | **[Slides 10–17](https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit#slide=id.p12)** | Act III Breaker (`Slide 10`), `L3` UML Sequence (`Slide 11`), `L4` Wire JWT Normalization (`Slide 12`), Hops 1–5 Deep Dives (`Slides 13–16`), and **Hard GCP Quotas, Async 3P Saga & Disqualifiers (`Slide 17`)**. | [`core-cymbal-agent/governance/`](../core-cymbal-agent/governance/) |
+| **Act IV: Signature 3rd-Party SaaS Before/After Retina Proofs** | **[Slides 18–20](https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit#slide=id.p20)** | Act IV Breaker (`Slide 18`) + **2 Signature `2880×1800` Retina Proofs**: `SAAS-07` ClickHouse Columnar RLS (`Slide 19`) & `SAAS-03` Redmine ITSM 3LO DPoP (`Slide 20`). *(All 10 SaaS proofs in the [16-Slide Companion Visual Atlas](https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw))*. | [`scripts/verify_5_third_party_saas_products.py`](../scripts/verify_5_third_party_saas_products.py) |
+| **Act V: 10-Week Rollout Roadmap, 30/30 Scorecard & CISO FAQ** | **[Slides 21–24](https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit#slide=id.p31)** | Act V Breaker, 10-Week Phased Enterprise Implementation Roadmap, Quantified Multi-Cloud `30/30` Isolation Scorecard, and Executive CISO FAQ Decision Guide. | [`scripts/run_all_repeatable_e2e_verifications.py`](../scripts/run_all_repeatable_e2e_verifications.py) |
 
-To explore and deploy the Pattern A (High-Density Pooled Architecture) reference implementation, use the following production resources:
+### Direct Cloud Deliverables, Editable Slide Decks & Series Navigation
+
+- **Editable Google Slides & PowerPoint (`24 Slides` + Canonical `12-Slide` Brief):**
+  - [Open WS2 24-Slide Streamlined Visual Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit)
+  - [Download WS2 24-Slide Streamlined Visual Presentation (`.pptx`)](../slides/ws2-12slide-visual-deck.pptx)
+  - [Download Workstream 2 Canonical 12-Slide Presentation (`.pptx`)](../slides/ws2-pattern-a-pooled-editable-slides.pptx)
+  - [Download Master All-Workstreams 25-Slide Presentation (`.pptx`)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)
+- **Editable Google Docs & Microsoft Word (`.docx`):**
+  - [Open WS2 Streamlined Whitepaper in Google Docs ↗](https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/edit?resourcekey=0-lLM1d36y60xMkgO678CtSA)
+  - [Download WS2 Streamlined Whitepaper (`.docx`)](../docs/word/ws2-pattern-a-pooled-architecture.docx)
+- **Standalone 10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas (`20 Retina Screenshots`):**
+  - [Open 10-SaaS Visual Verification Atlas in Portal Reader](saas-10-visual-verification-and-redteam-atlas.md)
+  - [Open 10-SaaS Visual Verification Atlas in Google Docs (`21 Figures`) ↗](https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/edit?resourcekey=0-klzhSI2SvWYPCvpPwwMSUw)
+  - [Open 10-SaaS Visual Verification Atlas 16-Slide Deck in Google Slides ↗](https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw)
+  - [Open 10-SaaS Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md)
+- **5-Part Engineering Blog Series Navigation:**
+  - **Part 1 (`WS1`):** [Reference Architecture, Taxonomy & The 5-Hop Governance Baseline](ws1-reference-architecture-taxonomy-and-5hop-baseline.md)
+  - **Part 2 (`WS2`):** [Pattern A: High-Density Pooled Multi-Tenant Architecture](ws2-pattern-a-pooled-architecture.md)
+  - **Part 3 (`WS3`):** [Pattern B: Zero-Trust Sovereign Silos for Regulated Workloads](ws3-pattern-b-sovereign-silos.md)
+  - **Part 4 (`WS4`):** [Pattern C: Dynamic Hybrid Routing & Zero-Downtime Tier Upgrades](ws4-pattern-c-hybrid-dynamic-tiering.md)
+  - **Part 5 (`WS5`):** [Executive Decision Guide & The Multi-Tenant Agentic Triad](ws5-decision-guide-and-agentic-triad.md)
+  - **Companion Visual Atlas (`ATLAS`):** [10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas](saas-10-visual-verification-and-redteam-atlas.md)
+
 
 ### 1. Production Terraform Kit & Hands-On Codelab
 - **1-Click Starter Kit:** Deploy the complete pooled infrastructure using the [Pattern A Terraform Starter (`workstream-2-pattern-a-pooled/2.6-terraform-starter/`)](../workstream-2-pattern-a-pooled/2.6-terraform-starter/) and its [1-Click Deployment Script (`deploy_1click.sh`)](../workstream-2-pattern-a-pooled/2.6-terraform-starter/deploy_1click.sh).
 - **Automated Breach Codelab:** Follow the [90-Minute Hands-On Breach Simulation Codelab](../workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck/codelab-90min-breach-sim.md) to execute all 10 automated breach scenarios against Cloud Run and Valkey.
 - **Runbooks & Console Receipts:** Inspect the [8-Stage Google Cloud Console Runbook (`docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md`)](../docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md) and [Live GCP Verification Receipt (`docs/cloud_console_verification_receipt.json`)](../docs/cloud_console_verification_receipt.json).
 
+### 1-click Terraform starter resource dependency graph (Figure 4)
+
+![Figure 4 — Pattern A: Terraform infrastructure-as-code (IaC) resource graph](../diagrams/ws2-terraform-starter-resource-graph.drawio.png)
+
+*Figure 4. Declarative Terraform resource dependency graph (`workstream-2-pattern-a-pooled/2.6-terraform-starter/`) provisioning the complete Pattern A pooled stack in a single Google Cloud project. Editable assets: [Draw.io source](../diagrams/ws2-terraform-starter-resource-graph.drawio) | [Google Slides (.pptx)](../slides/ws2-pattern-a-pooled-editable-slides.pptx) | [Architecture Center SVG](../diagrams/ws2-terraform-starter-resource-graph.svg) | [Vision AST](../diagrams/vision_metadata/ws2-terraform-starter-resource-graph.vision.json).*
+
+Figure 4 shows the declarative Terraform module topology ([`2.6-terraform-starter/main.tf`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf) and [`2.6-terraform-starter/deploy_1click.sh`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/deploy_1click.sh)):
+
+- **Edge Networking and WAF Module (Zone 1 — Blue container `#aecbfa`):** Provisions `google_compute_global_forwarding_rule`, `google_compute_security_policy` (Cloud Armor header-strip rules), and `google_iap_web_backend_service`.
+- **IAM, KMS, and Observability Module (Zone 2 — Green container `#ceead6`):** Provisions `google_kms_key_ring`, `google_kms_crypto_key`, least-privilege service accounts, and the `google_bigquery_table` FinOps ledger.
+- **Agent Runtime, Model Armor, and Valkey Module (Zone 3 — Left amber container `#feefc3`):** Provisions Vertex AI Agent Engine runtime endpoints, `google_model_armor_template`, and `google_memorystore_instance` (Valkey token buckets).
+- **AlloyDB RLS and Firestore Seed Module (Zone 4 — Right coral container `#fad2cf`):** Provisions `google_alloydb_cluster`, initializes `FORCE ROW LEVEL SECURITY` policies, and seeds tenant profiles in `google_firestore_document`.
+
+The seven numbered steps in Figure 4 (`1`–`7`) match the visual diagram badges in the Terraform DAG ([`2.6-terraform-starter/main.tf`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf)):
+
+1. **Validate input variables (`1 tfvars`):** Loads `project_id`, `region`, `tenants` tier map, and `enable_context_caching` from `variables.tf` via `deploy_1click.sh`.
+2. **Initialize Google provider and enable APIs (`2 Provider`):** `google_project_service` enables Vertex AI, Discovery Engine, Model Armor, DLP, AlloyDB, Memorystore, and Cloud KMS APIs.
+3. **Provision Hop 3–5 runtime, Valkey, and AlloyDB RLS (`3 Apply Hop 3 runtime & data`):** Provisions `google_redis_instance.valkey_bulkhead`, `google_alloydb_cluster.pooled_cluster` (`FORCE ROW LEVEL SECURITY`), and `google_bigquery_table.otel_token_ledger`.
+4. **Build Hop 4 DLP/Model Armor templates and Firestore registry (`4 Build template`):** Creates per-tenant `google_dlp_deidentify_template` resources (`for_each = var.tenants`) and seeds `google_firestore_document.tenant_registry`.
+5. **Deploy Cloud Run Gen2 gVisor gateway and inject env vars (`5 Inject env variables`):** Deploys `google_cloud_run_v2_service.pooled_agent_gateway` with `EXECUTION_ENVIRONMENT_GEN2`, injecting Valkey, AlloyDB, and `ContextCacheConfig` environment bindings.
+6. **Bind Hop 1 Cloud Armor edge security policy (`6 Export URI`):** Attaches `google_compute_security_policy.hop1_edge_armor` (header-strip + SQLi WAF rules) and exports the gateway endpoint.
+7. **Emit Terraform outputs and run breach smoke tests (`7 pooled_gateway_uri & valkey_bulkhead`):** Outputs `pooled_gateway_uri`, `valkey_bulkhead_host`, and `bigquery_chargeback_table` (`outputs.tf`) and runs `run_breach_simulations.py` (`10/10 PASS`).
+
+
 ### 2. Multi-Cloud 10-SaaS Verification Playbook
 - **Step-by-Step Playbook:** Review the comprehensive [10-SaaS Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md) covering setup JSON, `curl` probes, and live AWS Bedrock AgentCore MCP verification.
 - **Interactive Verification Lab:** Open Portal Tab 3 to use the interactive Before-vs-After Split Slider across all 20 verified 2880×1800 Retina UI captures.
 
 ### 3. Native Editable Slide Decks & Vector Blueprints
-- **Google Slides & PowerPoint:** [Open WS2 34-Slide Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE/edit) • [Download Presentation (.pptx)](../slides/ws2-12slide-visual-deck.pptx) • [Download Canonical 12-Slide Deck (.pptx)](../slides/ws2-pattern-a-pooled-editable-slides.pptx).
-- **Google Docs & Microsoft Word:** [Open WS2 in Google Docs ↗](https://docs.google.com/document/d/111jtFsn8u6RFRyaQUfemC1Lgn4M0smpCiXiGtPXFyzw/edit?resourcekey=0-OyYSOmx22u8x4Q1kHunGyQ) • [Download Word Document (.docx)](../docs/word/ws2-pattern-a-pooled-architecture.docx).
+- **Google Slides & PowerPoint:** [Open WS2 24-Slide Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit) • [Download Presentation (.pptx)](../slides/ws2-12slide-visual-deck.pptx) • [Download Canonical 12-Slide Deck (.pptx)](../slides/ws2-pattern-a-pooled-editable-slides.pptx).
+- **Google Docs & Microsoft Word:** [Open WS2 in Google Docs ↗](https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/edit?resourcekey=0-lLM1d36y60xMkgO678CtSA) • [Download Word Document (.docx)](../docs/word/ws2-pattern-a-pooled-architecture.docx).
 - **Official Draw.io Blueprints:** [Figure 1 5-Hop Architecture (.drawio)](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio) • [Figure 2 Breach Defense Sequence (.drawio)](../diagrams/ws2-pattern-a-breach-defense-sequence.drawio) • [Figure 3 Multi-IdP Auth & Sandbox (.drawio)](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.drawio) • [Figure 4 Terraform Resource Graph (.drawio)](../diagrams/ws2-terraform-starter-resource-graph.drawio).
 
 ### 4. 5-Part Reference Architecture Series Navigation

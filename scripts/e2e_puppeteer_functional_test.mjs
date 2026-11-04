@@ -59,6 +59,7 @@ const DOCS_TO_TEST = [
   { doc: "blogs/ws3-pattern-b-sovereign-silos.md", ws: "WS3" },
   { doc: "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md", ws: "WS4" },
   { doc: "blogs/ws5-decision-guide-and-agentic-triad.md", ws: "WS5" },
+  { doc: "blogs/saas-10-visual-verification-and-redteam-atlas.md", ws: "ATLAS" },
   { doc: "workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md", ws: "WS1" },
   { doc: "workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md", ws: "WS2" },
   { doc: "workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md", ws: "WS2" },
@@ -178,7 +179,7 @@ async function run() {
       };
     });
 
-    const maxAllowedHeight = (item.doc.includes("END-TO-END-WORKSTREAM") || item.doc.includes("MANUAL-TESTING-PLAYBOOK")) ? 185000 : (item.doc.startsWith("blogs/") ? 36000 : 25500);
+    const maxAllowedHeight = (item.doc.includes("END-TO-END-WORKSTREAM") || item.doc.includes("MANUAL-TESTING-PLAYBOOK") || item.doc.includes("saas-10-visual-verification")) ? 185000 : (item.doc.startsWith("blogs/") ? 36000 : 25500);
 
     const minDiagrams = (item.doc.includes("/3.2-") || item.doc.includes("/4.2-")) ? 0 : 1;
 
@@ -222,7 +223,11 @@ async function run() {
     ).length;
     const hubDocxHref = document.getElementById("hub-docx-download")?.getAttribute("href") || "";
     const ws1DocLinkHref =
-      ovSec?.querySelector('a[href*="1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os"]')?.getAttribute("href") || "";
+      ovSec?.querySelector('a[href*="1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA"]')?.getAttribute("href") || "";
+    const ws2DocLinkHref =
+      ovSec?.querySelector('a[href*="15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0"]')?.getAttribute("href") || "";
+    const atlasDocLinkHref =
+      ovSec?.querySelector('a[href*="1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY"]')?.getAttribute("href") || "";
     const docxResp = await fetch("/docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx");
     const docxBuf = docxResp.ok ? await docxResp.arrayBuffer() : new ArrayBuffer(0);
     const docxStatus = docxResp.status;
@@ -388,6 +393,8 @@ async function run() {
       overviewDocxLinks,
       hubDocxHref,
       ws1DocLinkHref,
+      ws2DocLinkHref,
+      atlasDocLinkHref,
       docxStatus,
       docxBytes,
       docxContentType,
@@ -465,7 +472,9 @@ async function run() {
   assert(
     tabsResult.overviewDocxLinks === 6 &&
       tabsResult.hubDocxHref.endsWith(".docx") &&
-      tabsResult.ws1DocLinkHref.includes("resourcekey=0-PgO-X5icAK687_G-_WZFpQ") &&
+      tabsResult.ws1DocLinkHref.includes("1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA") &&
+      tabsResult.ws2DocLinkHref.includes("resourcekey=0-lLM1d36y60xMkgO678CtSA") &&
+      tabsResult.atlasDocLinkHref.includes("resourcekey=0-klzhSI2SvWYPCvpPwwMSUw") &&
       tabsResult.docxStatus === 200 &&
       tabsResult.docxBytes >= 3000000 &&
       tabsResult.docxContentType.includes("officedocument.wordprocessingml.document"),

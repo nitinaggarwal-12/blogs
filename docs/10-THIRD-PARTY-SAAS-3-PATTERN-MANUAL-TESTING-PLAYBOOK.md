@@ -1,5 +1,12 @@
 # 10 Third-Party SaaS Products × 3 Multi-Tenant Agentic Patterns — Complete Manual Testing Playbook
 
+> [!IMPORTANT]
+> **Companion 10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas (`20 Retina Captures` + `16 Slides` + `Google Doc`):**
+> - **Interactive Portal Visual Atlas (`20` Before/After Screenshots):** [`blogs/saas-10-visual-verification-and-redteam-atlas.md`](../blogs/saas-10-visual-verification-and-redteam-atlas.md)
+> - **Editable Google Docs Visual Atlas (`21` Native Figures):** [Open 10-SaaS Visual Verification Atlas in Google Docs ↗](https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/edit?resourcekey=0-klzhSI2SvWYPCvpPwwMSUw)
+> - **Editable Google Slides Visual Atlas (`16` Native Slides):** [Open 10-SaaS Visual Verification Atlas in Google Slides ↗](https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw)
+> - **Offline Exports:** [Download Word `.docx`](word/saas-10-visual-verification-and-redteam-atlas.docx) • [Download 16-Slide `.pptx`](../slides/saas-10-visual-verification-atlas-16slide-deck.pptx)
+
 > **100% Reproducible Operator Runbook (`30/30 Pattern × SaaS End-to-End Flows • 60/60 Test Cases PASS`)**
 > This playbook provides complete documentation, connector configuration, environment setup, copy-pasteable `curl` and Python CLI scripts, and exact **Test Case Inputs & Expected JSON Outputs** so you can manually test each of the **10 Third-Party SaaS Products** across **Pattern A (Pooled 5-Hop)**, **Pattern B (Sovereign Silos)**, and **Pattern C (Dynamic Hybrid PSC & Zero-Downtime Tier Migration)**.
 

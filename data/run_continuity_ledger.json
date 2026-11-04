@@ -122,7 +122,7 @@
       "script_sha256": "65da3bf674efa1fedf73f921a920c489d99998cbfd80b190c916b4db1dbd197a",
       "command": "python3 -B scripts/run_deep_forensic_audit.py",
       "receipt_path": "docs/cloud_console_verification_receipt.json",
-      "receipt_sha256": "5f9f72f5ba0619ea33d0eb48d3064e94c71f8ed630dde5753bc5ec7a12afa64e",
+      "receipt_sha256": "c1bcf26d3b80007fb77cde16e6faca572562e997b11f027fd97001576a7834f1",
       "last_executed_at": "2026-11-01T10:18:21Z",
       "last_exit_code": 0,
       "repeat_in_next_run": true,
