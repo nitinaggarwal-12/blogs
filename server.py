@@ -38,7 +38,7 @@ import ipaddress
 import ssl
 from pathlib import Path
 import socket
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 from urllib.parse import parse_qs, urlparse
 import urllib.parse
 import urllib.request
@@ -585,6 +585,7 @@ class DurableGcsStore:
     """
     _cached_token: Optional[str] = None
     _token_expiry: float = 0.0
+    _last_failed_check: float = 0.0
     _last_sync_timestamp: Optional[str] = None
     _sync_errors: int = 0
     _sync_success_count: int = 0
@@ -593,10 +594,14 @@ class DurableGcsStore:
 
     @classmethod
     def get_auth_token(cls) -> Optional[str]:
+        if os.environ.get("GEAP_DISABLE_GCS_SYNC") == "1":
+            return None
         now = time.time()
         with cls._token_lock:
             if cls._cached_token and now < cls._token_expiry:
                 return cls._cached_token
+            if cls._last_failed_check and (now - cls._last_failed_check) < 30.0:
+                return None
             # 1. Try Google Cloud Metadata Server (Cloud Run / GCE)
             try:
                 req = urllib.request.Request(
@@ -609,6 +614,7 @@ class DurableGcsStore:
                     expires_in = int(data.get("expires_in", 3600))
                     cls._cached_token = token
                     cls._token_expiry = now + expires_in - 60
+                    cls._last_failed_check = 0.0
                     return token
             except Exception:
                 pass
@@ -623,9 +629,11 @@ class DurableGcsStore:
                 if token and token.startswith("ya29."):
                     cls._cached_token = token
                     cls._token_expiry = now + 1800
+                    cls._last_failed_check = 0.0
                     return token
             except Exception:
                 pass
+            cls._last_failed_check = now
             return None
 
     @classmethod
@@ -4667,7 +4675,8 @@ def run_server(port: int = 8095, host: Optional[str] = None) -> None:
         pass
 
     try:
-        DurableGcsStore.hydrate_from_gcs_once()
+        if os.environ.get("GEAP_DISABLE_GCS_SYNC") != "1":
+            threading.Thread(target=DurableGcsStore.hydrate_from_gcs_once, daemon=True).start()
     except Exception:
         pass
 

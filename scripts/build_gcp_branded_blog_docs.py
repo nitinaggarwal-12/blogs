@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -48,7 +49,7 @@ DOC_SPECS: List[Dict[str, Any]] = [
         "docx_rel": "docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx",
         "series_badge": "Workstream 1 of 5 • Foundation",
         "slides_id": "12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ",
-        "slides_label": "15 Slides",
+        "slides_label": "34 Slides",
     },
     {
         "key": "WS2",
@@ -59,7 +60,7 @@ DOC_SPECS: List[Dict[str, Any]] = [
         "docx_rel": "docs/word/ws2-pattern-a-pooled-architecture.docx",
         "series_badge": "Workstream 2 of 5 • Pattern A (Pooled)",
         "slides_id": "1tELjvuuFKkt-Z9W3es8CsNITbmAGAp2S7qMiTYEQOGE",
-        "slides_label": "12 Slides",
+        "slides_label": "34 Slides",
     },
     {
         "key": "WS3",
@@ -70,7 +71,7 @@ DOC_SPECS: List[Dict[str, Any]] = [
         "docx_rel": "docs/word/ws3-pattern-b-sovereign-silos.docx",
         "series_badge": "Workstream 3 of 5 • Pattern B (Silos)",
         "slides_id": "1PdLfTBPSat-6M-8yOo4MEi5uGChRqyRm7AJLNvei7ZM",
-        "slides_label": "12 Slides",
+        "slides_label": "34 Slides",
     },
     {
         "key": "WS4",
@@ -81,7 +82,7 @@ DOC_SPECS: List[Dict[str, Any]] = [
         "docx_rel": "docs/word/ws4-pattern-c-hybrid-dynamic-tiering.docx",
         "series_badge": "Workstream 4 of 5 • Pattern C (Hybrid)",
         "slides_id": "1p6UOu0JPurkx46lAnXrpvob1R9Cwb-SL8k1vBCwWo-s",
-        "slides_label": "12 Slides",
+        "slides_label": "34 Slides",
     },
     {
         "key": "WS5",
@@ -92,7 +93,7 @@ DOC_SPECS: List[Dict[str, Any]] = [
         "docx_rel": "docs/word/ws5-decision-guide-and-agentic-triad.docx",
         "series_badge": "Workstream 5 of 5 • Capstone Guide",
         "slides_id": "1Pl3XOh9-eN1AeYcnbvGua8wYWx2EewTzExu_VoO_AqU",
-        "slides_label": "12 Slides",
+        "slides_label": "34 Slides",
     },
     {
         "key": "ALL",
@@ -403,7 +404,22 @@ def preprocess_markdown_for_gdocs(
                 slug = re.sub(r"[^a-zA-Z0-9]+", "-", src_img.stem.replace(".drawio", "")).strip("-").lower()
                 staged_name = f"fig-{img_counter:02d}-{slug[:48].strip('-')}.png"
                 staged_path = assets_dir / staged_name
-                shutil.copy2(src_img, staged_path)
+                if spec_md_rel == "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md" and src_img.stat().st_size > 180_000 and shutil.which("convert"):
+                    subprocess.run(
+                        [
+                            "convert",
+                            str(src_img),
+                            "-resize",
+                            "1440x900>",
+                            "-strip",
+                            "-define",
+                            "png:compression-level=9",
+                            str(staged_path),
+                        ],
+                        check=True,
+                    )
+                else:
+                    shutil.copy2(src_img, staged_path)
                 rel_staged = f"{assets_dir.name}/{staged_name}"
 
                 if out_lines and out_lines[-1].strip() != "":

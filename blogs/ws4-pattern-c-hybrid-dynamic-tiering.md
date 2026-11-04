@@ -403,14 +403,15 @@ GEAP MCP tool rotate_crowdstrike_api_key (Target C7EYM614F2) rotates host contai
 
 ### Companion 34-Slide Upgraded Visual Deck & Slide-to-Code Launch Matrix
 
-Open the [Workstream 4 Editable Google Slides Deck (`ws4-12slide-visual-deck.pptx`)](../slides/ws4-12slide-visual-deck.pptx) in the **Cloud Viewer** at the top of this page to review the 12 executive slides paired with this guide:
+Open the [Workstream 4 Editable Google Slides Deck (`ws4-12slide-visual-deck.pptx`)](../slides/ws4-12slide-visual-deck.pptx) in the **Cloud Viewer** at the top of this page to review the 34 executive and technical slides paired with this guide:
 
-| Slides | Presentation Theme | Companion Executable Script / Terraform Module |
+| WS4 Slide Group (34-Slide Upgraded Visual Deck) | Presentation Theme | Companion Executable Script / Terraform Module |
 | :--- | :--- | :--- |
-| **Slides 1–3** | Pattern C Executive Summary, Tiered SaaS Packaging & Hub-and-Spoke Topology (Fig 1) | [`4.1-case-study-and-solution-architecture.md`](../workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md) |
-| **Slides 4–6** | Cross-Project Private Service Connect (PSC) NAT Peering & Federated Catalog PDP (Fig 2) | [`4.2-hub-and-spoke-demo-env-setup.md`](../workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md) • [`4.4-product-collaboration-psc-and-registry.md`](../workstream-4-pattern-c-hybrid/4.4-product-collaboration-psc-and-registry.md) |
-| **Slides 7–9** | 3-Phase Zero-Downtime Live Tier Migration (`SHADOW_SYNC -> ATOMIC_CUTOVER -> DRAIN_AND_VERIFY`) (Fig 3) | [`pattern_c_hybrid_router_and_migrator.py`](../workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py) • [`run_tier_migration_suite.py`](../workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py) |
-| **Slides 10–12** | Dual-Provider Terraform Hybrid PSC Blueprint (Fig 4), Blended FinOps & 90-Min Master Lab | [`4.6-terraform-hybrid-psc-blueprint/main.tf`](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf) • [`deploy_1click.sh`](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/deploy_1click.sh) |
+| **Act I: Slides 1–4** | Pattern C Executive Summary, Dynamic Hybrid Dilemma & 4-Point Zero-Turn-Loss Invariants | [`4.1-case-study-and-solution-architecture.md`](../workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md) |
+| **Act II: Slides 5–11** | Cross-Project Private Service Connect (PSC) NAT Peering, `L1` Taxonomy & Figures 1–4 Blueprints | [`4.2-hub-and-spoke-demo-env-setup.md`](../workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md) • [`4.4-product-collaboration-psc-and-registry.md`](../workstream-4-pattern-c-hybrid/4.4-product-collaboration-psc-and-registry.md) |
+| **Act III: Slides 12–20** | 3-Phase Zero-Downtime Live Tier Migration (`SHADOW_SYNC -> ATOMIC_CUTOVER -> DRAIN_AND_VERIFY`), `L3/L4` Flows & Production Caveats | [`pattern_c_hybrid_router_and_migrator.py`](../workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py) • [`run_tier_migration_suite.py`](../workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py) |
+| **Act IV: Slides 21–31** | Proofs 1–10: 20 Authentic `2880×1800` Retina Before → After UI Captures across 10 Third-Party SaaS Stacks | [`enterprise_5_saas_bi_mcp.py`](../core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py) • [`verify_5_third_party_saas_products.py`](../scripts/verify_5_third_party_saas_products.py) |
+| **Act V: Slides 32–34** | Dual-Provider Terraform Hybrid PSC Blueprint, 10-Week Implementation Roadmap, Multi-Cloud Scorecard & CISO FAQ | [`4.6-terraform-hybrid-psc-blueprint/main.tf`](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf) • [`deploy_1click.sh`](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/deploy_1click.sh) |
 
 - **Launch the Interactive Codebase Workbench & 1-Click Terraform Deployment:**
   - [Open Interactive 27-File Codebase Workbench & Live Terminal Runner (`#blog-e2e-pattern-execution-and-codebase-workbench`)](#blog-e2e-pattern-execution-and-codebase-workbench)

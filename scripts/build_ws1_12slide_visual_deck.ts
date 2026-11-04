@@ -54,7 +54,7 @@ const G_GREEN_LIGHT = 'E6F4EA';
 const G_GREEN_DEEP = '137333';
 const G_AMBER_DEEP = 'B45309';
 
-const TOTAL_SLIDES = 31;
+const TOTAL_SLIDES = 34;
 
 function addHeader(slide: any, category: string, title: string, slideNum: number, totalSlides: number = TOTAL_SLIDES) {
   // Category Pill
@@ -281,13 +281,13 @@ function buildSlide01() {
 }
 
 // ============================================================================
-// SLIDE 02: Executive Storyline & 4-Act Architecture Agenda
+// SLIDE 02: Executive Storyline & 5-Act Architecture Agenda
 // ============================================================================
 function buildSlide02_Agenda() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'EXECUTIVE STORYLINE', 'The 4-Act Architecture Journey: From Threat Model to Production GA', 2);
+  addHeader(slide, 'EXECUTIVE STORYLINE', 'The 5-Act Architecture Journey: From Threat Model to Production GA', 2);
 
-  slide.addText('Structured architectural roadmap taking enterprise platforms from threat modeling to verified 10-SaaS multi-cloud isolation.', {
+  slide.addText('Structured 5-Act architectural roadmap taking enterprise platforms from threat modeling to verified 10-SaaS multi-cloud isolation.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.38, fontSize: 10.5, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
@@ -300,100 +300,111 @@ function buildSlide02_Agenda() {
       tint: G_RED_LIGHT,
       slides: 'Slides 03–04',
       bullets: [
-        'The SaaS Architect\'s Dilemma: Margin destruction vs. catastrophic breach.',
-        '5 Multi-Tenant Threat Vectors: Header spoofing, schema bleed, memory pollution, confused deputy, quota exhaustion.',
-        'The Golden Path: Decoupling the 80% reusable pipeline from perimeters.'
+        'SaaS Architect\'s Dilemma: Margin destruction vs. breach.',
+        '5 Multi-Tenant Threat Vectors: Spoofing, bleed, pollution.',
+        'Golden Path: Decoupling 80% pipeline from perimeters.'
       ],
       deliverable: 'Threat Surface Map'
     },
     {
       act: 'ACT II',
       title: 'Reference Topologies',
-      tag: 'ARCHITECTURE & BLUEPRINTS',
+      tag: 'L1–L2 BLUEPRINTS',
       color: G_BLUE,
       tint: G_BLUE_LIGHT,
-      slides: 'Slides 05–10',
+      slides: 'Slides 05–11',
       bullets: [
-        'Pattern A High-Density Pooled (950 commercial tenants, $12/mo).',
-        'Pattern B Sovereign Silos & Pattern C Dynamic Hybrid PSC spokes.',
-        'L1 Logical Architecture: 3 security layers & signed STS JWT.',
-        'Figures 1 & 2: Authoritative DrawingML reference topologies.'
+        'Pattern A High-Density Pooled (950 tenants, $12/mo).',
+        'Pattern B Sovereign Silos & Pattern C Dynamic Hybrid PSC.',
+        'Figures 1 & 2 DrawingML + 5-Hop Defense-in-Depth.'
       ],
       deliverable: 'Hub-and-Spoke Topologies'
     },
     {
       act: 'ACT III',
       title: '5-Hop Cryptographic Control',
-      tag: 'DEEP TECHNICAL EXECUTION',
+      tag: 'L3–L5 EXECUTION',
       color: G_GREEN_DEEP,
       tint: G_GREEN_LIGHT,
-      slides: 'Slides 11–18',
+      slides: 'Slides 12–19',
       bullets: [
-        'L3 5-Actor UML Sequence & ~42ms p95 control-plane lifecycle.',
-        'L4 Wire Transformation: Ingress header stripping & STS JWT minting.',
-        'Deterministic Fail-Closed Circuit Breakers (HTTP 401, 403, 429, 422, 423).',
-        'AlloyDB RLS, Valkey FinOps & 4 Production Engineering Caveats.'
+        'L3 5-Actor UML Sequence & ~42ms p95 lifecycle.',
+        'L4 Wire Gate: Header stripping & KMS STS JWT minting.',
+        'Circuit Breakers, AlloyDB RLS, Valkey & 4 Caveats.'
       ],
       deliverable: '5-Hop Pipeline & Guardrails'
     },
     {
       act: 'ACT IV',
       title: 'Empirical SaaS Proofs',
-      tag: 'EVIDENCE & PRODUCTION GA',
+      tag: 'RETINA UI PROOFS',
       color: G_AMBER_DEEP,
       tint: G_YELLOW_LIGHT,
-      slides: 'Slides 19–29',
+      slides: 'Slides 20–30',
       bullets: [
-        '10 Evaluated Third-Party SaaS Stacks (BI, SQL, Telemetry, Logs, CMEK, Git).',
-        '20 Authentic 2880x1800 Retina Before -> After UI Captures.',
-        'Zero Cross-Tenant Leaks verified across Google Cloud Run and AWS EC2.',
-        'Act V: 10-Week Roadmap, SLA Scorecard & Executive CISO FAQ Guide.'
+        '10 Evaluated Third-Party SaaS Stacks (BI, SQL, Logs, Git).',
+        '20 Authentic 2880x1800 Retina Before -> After Captures.',
+        'Zero Cross-Tenant Leaks across Cloud Run & AWS EC2.'
       ],
-      deliverable: '10/10 SaaS Isolation Matrix'
+      deliverable: '10/10 SaaS Proof Gallery'
+    },
+    {
+      act: 'ACT V',
+      title: 'Production Rollout & FAQ',
+      tag: 'GA & GOVERNANCE',
+      color: G_NAVY,
+      tint: 'E2E8F0',
+      slides: 'Slides 31–34',
+      bullets: [
+        '10-Week Phased Engineering Implementation Roadmap.',
+        'Quantified 10/10 Multi-Cloud SaaS Isolation Scorecard.',
+        'Executive & CISO Architecture Review Board FAQ Guide.'
+      ],
+      deliverable: 'Roadmap, Scorecard & FAQ'
     }
   ];
 
   acts.forEach((a, i) => {
-    const ax = 0.6 + i * 3.08;
+    const ax = 0.6 + i * 2.45;
     slide.addShape(pptx.ShapeType.roundRect, {
-      x: ax, y: 1.35, w: 2.88, h: 5.5, rectRadius: 0.08,
+      x: ax, y: 1.35, w: 2.32, h: 5.5, rectRadius: 0.08,
       fill: { color: WHITE }, line: { color: a.color, width: 1.5 }
     });
 
     slide.addShape(pptx.ShapeType.rect, {
-      x: ax, y: 1.35, w: 2.88, h: 1.1, fill: { color: a.tint }
+      x: ax, y: 1.35, w: 2.32, h: 1.05, fill: { color: a.tint }
     });
 
     slide.addText(`${a.act} • ${a.slides}`, {
-      x: ax + 0.15, y: 1.48, w: 2.58, h: 0.28, fontSize: 8.5, bold: true, color: a.color, fontFace: FONT_TITLE
+      x: ax + 0.12, y: 1.45, w: 2.08, h: 0.26, fontSize: 8.2, bold: true, color: a.color, fontFace: FONT_TITLE
     });
     slide.addText(a.title, {
-      x: ax + 0.15, y: 1.78, w: 2.58, h: 0.58, fontSize: 11.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE
+      x: ax + 0.12, y: 1.74, w: 2.08, h: 0.56, fontSize: 10.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE
     });
 
     slide.addShape(pptx.ShapeType.roundRect, {
-      x: ax + 0.15, y: 2.6, w: 2.58, h: 3.5, rectRadius: 0.05,
+      x: ax + 0.12, y: 2.52, w: 2.08, h: 3.58, rectRadius: 0.05,
       fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
     });
 
-    slide.addText('CORE ARCHITECTURAL DELIVERABLES', {
-      x: ax + 0.25, y: 2.75, w: 2.38, h: 0.25, fontSize: 7.5, bold: true, color: TEXT_MUTED, fontFace: FONT_TITLE
+    slide.addText('CORE DELIVERABLES', {
+      x: ax + 0.2, y: 2.64, w: 1.92, h: 0.22, fontSize: 7.2, bold: true, color: TEXT_MUTED, fontFace: FONT_TITLE
     });
 
     a.bullets.forEach((b, k) => {
       slide.addText(`• ${b}`, {
-        x: ax + 0.22, y: 3.05 + k * 0.85, w: 2.44, h: 0.8,
-        fontSize: 8.2, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
+        x: ax + 0.18, y: 2.92 + k * 0.98, w: 1.96, h: 0.9,
+        fontSize: 7.8, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
       });
     });
 
     slide.addShape(pptx.ShapeType.roundRect, {
-      x: ax + 0.15, y: 6.25, w: 2.58, h: 0.45, rectRadius: 0.04,
+      x: ax + 0.12, y: 6.25, w: 2.08, h: 0.45, rectRadius: 0.04,
       fill: { color: a.tint }, line: { color: a.color, width: 0.75 }
     });
     slide.addText(`Output: ${a.deliverable}`, {
-      x: ax + 0.15, y: 6.25, w: 2.58, h: 0.45,
-      fontSize: 8.0, bold: true, color: a.color, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
+      x: ax + 0.12, y: 6.25, w: 2.08, h: 0.45,
+      fontSize: 7.5, bold: true, color: a.color, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
     });
   });
 
@@ -402,7 +413,7 @@ function buildSlide02_Agenda() {
     x: 0.6, y: 6.95, w: 12.133, h: 0.38, rectRadius: 0.05,
     fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
   });
-  slide.addText('ARCHITECTURE ABSTRACTION HIERARCHY:  L1 Logical Security (Slide 8)  ➔  L2 Physical DrawingML (Slides 9–10)  ➔  L3 Process Swimlane (Slide 12)  ➔  L4 Wire Protocol (Slide 13)  ➔  L5 Database RLS (Slide 15)', {
+  slide.addText('ARCHITECTURE ABSTRACTION HIERARCHY:  L1 Logical Security (Slide 8)  ➔  L2 Physical DrawingML (Slides 9–11)  ➔  L3 Process Swimlane (Slide 13)  ➔  L4 Wire Protocol (Slide 14)  ➔  L5 Database RLS (Slide 16)', {
     x: 0.8, y: 6.95, w: 11.7, h: 0.38,
     fontSize: 7.8, bold: true, color: TEXT_MUTED, fontFace: FONT_TITLE, valign: 'middle'
   });
@@ -950,11 +961,11 @@ function buildSlide14_L4Wire() {
 }
 
 // ============================================================================
-// SLIDE 14: L3 Process Circuit Breakers Deep-Dive
+// SLIDE 15: L3 Process Circuit Breakers Deep-Dive
 // ============================================================================
 function buildSlide15_CircuitBreakers() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • CIRCUIT BREAKERS', 'L3 Process Architecture: Explicit Fail-Closed Security Circuit Breakers', 14);
+  addHeader(slide, 'ACT III • CIRCUIT BREAKERS', 'L3 Process Architecture: Explicit Fail-Closed Security Circuit Breakers', 15);
 
   slide.addText('Zero-trust systems must fail closed. Five distinct HTTP circuit breakers guarantee deterministic rejection without data leaks.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -1002,11 +1013,11 @@ function buildSlide15_CircuitBreakers() {
 }
 
 // ============================================================================
-// SLIDE 15: AlloyDB Row-Level Security Table
+// SLIDE 16: AlloyDB Row-Level Security Table
 // ============================================================================
 function buildSlide16_AlloyDbRls() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • ALLOYDB RLS', 'Hop 5 Data Partitioning: AlloyDB Row-Level Security DrawingML Architecture', 15);
+  addHeader(slide, 'ACT III • ALLOYDB RLS', 'Hop 5 Data Partitioning: AlloyDB Row-Level Security DrawingML Architecture', 16);
 
   slide.addText('How Row-Level Security mathematically prevents cross-tenant data leaks at the database engine layer.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -1099,11 +1110,11 @@ function buildSlide16_AlloyDbRls() {
 }
 
 // ============================================================================
-// SLIDE 16: FinOps & Valkey Prefix Caching
+// SLIDE 17: FinOps & Valkey Prefix Caching
 // ============================================================================
 function buildSlide17_FinOpsValkey() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • GOVERNANCE & FINOPS', 'Hop 3 Sandbox & Valkey Rate Limiter: FinOps Bulkhead & Prefix Caching', 16);
+  addHeader(slide, 'ACT III • GOVERNANCE & FINOPS', 'Hop 3 Sandbox & Valkey Rate Limiter: FinOps Bulkhead & Prefix Caching', 17);
 
   slide.addText('How shared memory bulkheads and prefix prompt caching deliver 84.7% net token cost reduction across 950 tenants.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -1177,11 +1188,11 @@ function buildSlide17_FinOpsValkey() {
 }
 
 // ============================================================================
-// SLIDE 17: Production Simulation Benchmarks + Transition Bridge
+// SLIDE 18: Production Simulation Benchmarks + Transition Bridge
 // ============================================================================
 function buildSlide18_Simulation() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • BENCHMARKS', 'Production Simulation: 10/10 Zero-Breach Multi-Tenant Architecture Verification', 17);
+  addHeader(slide, 'ACT III • BENCHMARKS', 'Production Simulation: 10/10 Zero-Breach Multi-Tenant Architecture Verification', 18);
 
   slide.addText('Empirical results from our 1,000-tenant automated simulation test harness (scripts/run_deep_forensic_audit.py).', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -1235,7 +1246,7 @@ function buildSlide18_Simulation() {
 }
 
 // ============================================================================
-// SLIDE 18: Architectural Caveats & Operational Nuances
+// SLIDE 19: Architectural Caveats & Operational Nuances
 // ============================================================================
 function buildSlide19_ArchitecturalCaveats() {
   const slide = pptx.addSlide();
@@ -1243,7 +1254,7 @@ function buildSlide19_ArchitecturalCaveats() {
     slide,
     'ACT III • ARCHITECTURAL CAVEATS',
     'Architectural Caveats & Operational Nuances: 4 Non-Negotiable Production Guardrails',
-    18
+    19
   );
 
   slide.addText(
@@ -1380,11 +1391,11 @@ function buildSlide19_ArchitecturalCaveats() {
 }
 
 // ============================================================================
-// SLIDE 19: ACT IV TRANSITION BREAKER (EMPIRICAL SAAS EVIDENCE)
+// SLIDE 20: ACT IV TRANSITION BREAKER (EMPIRICAL SAAS EVIDENCE)
 // ============================================================================
 function buildSlide20_Act4Breaker() {
   buildActBreakerSlide({
-    slideNum: 19,
+    slideNum: 20,
     actTag: 'ACT IV TRANSITION',
     actNumber: 'ACT IV',
     actTitle: 'Empirical Evidence: 10 Genuine SaaS Proofs',
@@ -1394,10 +1405,10 @@ function buildSlide20_Act4Breaker() {
     coreQuestion: 'Does the 5-Hop Cryptographic Architecture genuinely eliminate cross-tenant data exposure when evaluated against real-world, commercial third-party SaaS stacks on Google Cloud Run Gen2 and AWS EC2?',
     thesis: 'Evaluating 10 real enterprise SaaS targets before and after 5-hop enforcement proves that engine-level RLS, ARD scoping, and CMEK namespaces prevent 100% of data leaks across BI, SQL, telemetry, logs, and Git.',
     milestones: [
-      { num: '01', title: 'Enterprise BI & Distributed SQL (Proofs 1–2)', desc: 'Metabase BI v0.50 (AlloyDB RLS isolates FinVault balances) & Trino SQL v440 (ARD blocks catalog reflection).', deliverable: 'BI & SQL' },
-      { num: '02', title: 'Observability & Structured Logs (Proofs 3–4)', desc: 'Grafana Enterprise v11 (OTel namespace span injection) & Datalust Seq v2024 (Token-filtered audit signals).', deliverable: 'Telemetry' },
-      { num: '03', title: 'CMEK Secrets & Columnar Analytics (Proofs 5–6)', desc: 'HashiCorp Vault v1.13 (<60s emergency transit key revocation) & ClickHouse v24.8 (SIMD block vector pruning).', deliverable: 'CMEK & SIMD' },
-      { num: '04', title: 'ITSM, GxP Grids, Git SRE & HCM (Proofs 7–10)', desc: 'Redmine v5.1, NocoDB v0.255 (21 CFR Part 11 audit trails), Gitea v1.22 Git repos, and Directus v11.1 HR CRAC.', deliverable: 'Core SaaS' }
+      { num: '01', title: 'Enterprise BI & Distributed SQL (Proofs 1–2)', desc: 'Metabase BI v0.50.26 (AlloyDB RLS isolates FinVault balances) & Trino SQL v440 (ARD blocks catalog reflection).', deliverable: 'BI & SQL' },
+      { num: '02', title: 'Observability & Structured Logs (Proofs 3–4)', desc: 'Grafana Enterprise v11.2.0 (OTel namespace span injection) & Datalust Seq v2024.3 (Token-filtered audit signals).', deliverable: 'Telemetry' },
+      { num: '03', title: 'CMEK Secrets & Columnar Analytics (Proofs 5–6)', desc: 'HashiCorp Vault v1.13.3 (<60s emergency transit key revocation) & ClickHouse v24.8 (SIMD block vector pruning).', deliverable: 'CMEK & SIMD' },
+      { num: '04', title: 'ITSM, GxP Grids, Git SRE & HCM (Proofs 7–10)', desc: 'Redmine v5.1.3, NocoDB v0.255.2 (21 CFR Part 11 audit trails), Gitea v1.22.3 Git repos, and Directus v11.1.0 HR CRAC.', deliverable: 'Core SaaS' }
     ]
   });
 }
@@ -1508,10 +1519,10 @@ function buildBeforeAfterSaasSlide(cfg: SaasProofConfig) {
   });
 }
 
-// SLIDE 19: Proof 1 — Metabase Enterprise BI
+// SLIDE 21: Proof 1 — Metabase Enterprise BI
 function buildSlide21_Metabase() {
   buildBeforeAfterSaasSlide({
-    slideNum: 20,
+    slideNum: 21,
     proofNum: 1,
     saasName: 'Metabase Enterprise BI',
     title: 'Proof 1: Metabase Enterprise BI v0.50.26 — Tenant Analytics & Dashboard Isolation',
@@ -1527,10 +1538,10 @@ function buildSlide21_Metabase() {
   });
 }
 
-// SLIDE 20: Proof 2 — Trino Distributed SQL
+// SLIDE 22: Proof 2 — Trino Distributed SQL
 function buildSlide22_Trino() {
   buildBeforeAfterSaasSlide({
-    slideNum: 21,
+    slideNum: 22,
     proofNum: 2,
     saasName: 'Trino Distributed SQL',
     title: 'Proof 2: Trino Distributed SQL v440 — Federated Catalog & Query Scoping',
@@ -1546,13 +1557,13 @@ function buildSlide22_Trino() {
   });
 }
 
-// SLIDE 21: Proof 3 — Grafana Enterprise
+// SLIDE 23: Proof 3 — Grafana Enterprise
 function buildSlide23_Grafana() {
   buildBeforeAfterSaasSlide({
-    slideNum: 22,
+    slideNum: 23,
     proofNum: 3,
     saasName: 'Grafana Enterprise',
-    title: 'Proof 3: Grafana Enterprise v11.1 — Multi-Tenant Telemetry & Metrics Isolation',
+    title: 'Proof 3: Grafana Enterprise v11.2.0 — Multi-Tenant Telemetry & Metrics Isolation',
     subtitle: 'Authentic 2880x1800 Retina UI captures proving that OpenTelemetry collector namespace injection eliminates noisy-neighbor metric pollution in enterprise dashboards.',
     beforeImg: 'before_02_grafana_enterprise.png',
     afterImg: 'after_02_grafana_enterprise.png',
@@ -1565,13 +1576,13 @@ function buildSlide23_Grafana() {
   });
 }
 
-// SLIDE 22: Proof 4 — Datalust Seq OTel
+// SLIDE 24: Proof 4 — Datalust Seq OTel
 function buildSlide24_DatalustSeq() {
   buildBeforeAfterSaasSlide({
-    slideNum: 23,
+    slideNum: 24,
     proofNum: 4,
     saasName: 'Datalust Seq OTel',
-    title: 'Proof 4: Datalust Seq OTel v2024 — Structured Log Streams & Distributed Trace Isolation',
+    title: 'Proof 4: Datalust Seq OTel v2024.3 — Structured Log Streams & Distributed Trace Isolation',
     subtitle: 'Authentic 2880x1800 Retina UI captures showing that Cloud Run token filtering and Seq Signal partitions prevent cross-tenant audit log and trace disclosure.',
     beforeImg: 'before_09_datalust_seq.png',
     afterImg: 'after_09_datalust_seq.png',
@@ -1584,13 +1595,13 @@ function buildSlide24_DatalustSeq() {
   });
 }
 
-// SLIDE 23: Proof 5 — HashiCorp Vault CMEK
+// SLIDE 25: Proof 5 — HashiCorp Vault CMEK
 function buildSlide25_HashiCorpVault() {
   buildBeforeAfterSaasSlide({
-    slideNum: 24,
+    slideNum: 25,
     proofNum: 5,
     saasName: 'HashiCorp Vault CMEK',
-    title: 'Proof 5: HashiCorp Vault CMEK v1.13 — Tenant Key Namespace & Emergency Revocation',
+    title: 'Proof 5: HashiCorp Vault CMEK v1.13.3 — Tenant Key Namespace & Emergency Revocation',
     subtitle: 'Authentic 2880x1800 Retina UI captures demonstrating independent cryptographic key namespaces and sub-60-second emergency kill-switch revocation.',
     beforeImg: 'before_10_hashicorp_vault.png',
     afterImg: 'after_10_hashicorp_vault.png',
@@ -1603,10 +1614,10 @@ function buildSlide25_HashiCorpVault() {
   });
 }
 
-// SLIDE 24: Proof 6 — ClickHouse Analytics
+// SLIDE 26: Proof 6 — ClickHouse Analytics
 function buildSlide26_ClickHouse() {
   buildBeforeAfterSaasSlide({
-    slideNum: 25,
+    slideNum: 26,
     proofNum: 6,
     saasName: 'ClickHouse Analytics',
     title: 'Proof 6: ClickHouse Analytics v24.8 — Real-Time Columnar Engine Row-Level Security',
@@ -1622,13 +1633,13 @@ function buildSlide26_ClickHouse() {
   });
 }
 
-// SLIDE 25: Proof 7 — Redmine ITSM
+// SLIDE 27: Proof 7 — Redmine ITSM
 function buildSlide27_Redmine() {
   buildBeforeAfterSaasSlide({
-    slideNum: 26,
+    slideNum: 27,
     proofNum: 7,
     saasName: 'Redmine ITSM',
-    title: 'Proof 7: Redmine ITSM v5.1 — Multi-Tenant Support Case & Ticket Partitioning',
+    title: 'Proof 7: Redmine ITSM v5.1.3 — Multi-Tenant Support Case & Ticket Partitioning',
     subtitle: 'Authentic 2880x1800 Retina UI captures proving that TenantContext JWT project isolation conceals confidential support tickets, notes, and attachments.',
     beforeImg: 'before_03_redmine_itsm.png',
     afterImg: 'after_03_redmine_itsm.png',
@@ -1641,13 +1652,13 @@ function buildSlide27_Redmine() {
   });
 }
 
-// SLIDE 26: Proof 8 — NocoDB GxP Grid
+// SLIDE 28: Proof 8 — NocoDB GxP Grid
 function buildSlide28_NocoDB() {
   buildBeforeAfterSaasSlide({
-    slideNum: 27,
+    slideNum: 28,
     proofNum: 8,
     saasName: 'NocoDB GxP Grid',
-    title: 'Proof 8: NocoDB GxP v0.255 — Regulated Database Grid & Field-Level Access Scoping',
+    title: 'Proof 8: NocoDB GxP v0.255.2 — Regulated Database Grid & Field-Level Access Scoping',
     subtitle: 'Authentic 2880x1800 Retina UI captures verifying that dynamic role view filtering satisfies 21 CFR Part 11 electronic records isolation and audit trail requirements.',
     beforeImg: 'before_04_nocodb_gxp.png',
     afterImg: 'after_04_nocodb_gxp.png',
@@ -1660,13 +1671,13 @@ function buildSlide28_NocoDB() {
   });
 }
 
-// SLIDE 27: Proof 9 — Gitea SRE
+// SLIDE 29: Proof 9 — Gitea SRE
 function buildSlide29_Gitea() {
   buildBeforeAfterSaasSlide({
-    slideNum: 28,
+    slideNum: 29,
     proofNum: 9,
     saasName: 'Gitea SRE',
-    title: 'Proof 9: Gitea SRE v1.22 — Tenant Repository & Enterprise CI/CD Pipeline Isolation',
+    title: 'Proof 9: Gitea SRE v1.22.3 — Tenant Repository & Enterprise CI/CD Pipeline Isolation',
     subtitle: 'Authentic 2880x1800 Retina UI captures demonstrating zero-knowledge repository indexing and branch policy segregation across tenant organizations.',
     beforeImg: 'before_05_gitea_sre.png',
     afterImg: 'after_05_gitea_sre.png',
@@ -1679,13 +1690,13 @@ function buildSlide29_Gitea() {
   });
 }
 
-// SLIDE 28: Proof 10 — Directus HCM
+// SLIDE 30: Proof 10 — Directus HCM
 function buildSlide30_Directus() {
   buildBeforeAfterSaasSlide({
-    slideNum: 29,
+    slideNum: 30,
     proofNum: 10,
     saasName: 'Directus HCM',
-    title: 'Proof 10: Directus HCM v11.1 — Human Capital Data & Tenant Role Scoping',
+    title: 'Proof 10: Directus HCM v11.1.0 — Human Capital Data & Tenant Role Scoping',
     subtitle: 'Authentic 2880x1800 Retina UI captures confirming that Custom Role Access Control (CRAC) policies filter HR and executive compensation models down to tenant boundaries.',
     beforeImg: 'before_08_directus_hcm.png',
     afterImg: 'after_08_directus_hcm.png',
@@ -1699,11 +1710,11 @@ function buildSlide30_Directus() {
 }
 
 // ============================================================================
-// SLIDE 29: ACT V TRANSITION BREAKER (PRODUCTION ROADMAP & SYNTHESIS)
+// SLIDE 31: ACT V TRANSITION BREAKER (PRODUCTION ROADMAP & SYNTHESIS)
 // ============================================================================
 function buildSlide31_Act5Breaker() {
   buildActBreakerSlide({
-    slideNum: 30,
+    slideNum: 31,
     actTag: 'ACT V TRANSITION',
     actNumber: 'ACT V',
     actTitle: 'Production Rollout Roadmap & Multi-Cloud Synthesis',
@@ -1722,11 +1733,11 @@ function buildSlide31_Act5Breaker() {
 }
 
 // ============================================================================
-// SLIDE 30: 10-Week Implementation Roadmap & Executive CTA
+// SLIDE 32: 10-Week Implementation Roadmap & Executive CTA
 // ============================================================================
 function buildSlide32_Roadmap() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT V • IMPLEMENTATION ROADMAP', '10-Week Enterprise Implementation Roadmap & Companion Resources', 30);
+  addHeader(slide, 'ACT V • IMPLEMENTATION ROADMAP', '10-Week Enterprise Implementation Roadmap & Companion Resources', 32);
 
   slide.addText('Structured enterprise rollout plan to take multi-tenant agentic AI from architecture to production GA.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -1794,11 +1805,11 @@ function buildSlide32_Roadmap() {
 }
 
 // ============================================================================
-// SLIDE 31: Quantified Multi-Cloud SaaS Isolation Scorecard & 10/10 Verification Matrix
+// SLIDE 33: Quantified Multi-Cloud SaaS Isolation Scorecard & 10/10 Verification Matrix
 // ============================================================================
 function buildSlide33_Scorecard() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT V • VERIFICATION MATRIX', 'Quantified Multi-Cloud SaaS Isolation Scorecard & 10/10 Verification Matrix', 31);
+  addHeader(slide, 'ACT V • VERIFICATION MATRIX', 'Quantified Multi-Cloud SaaS Isolation Scorecard & 10/10 Verification Matrix', 33);
 
   slide.addText('Empirical production benchmarks verified across 10 third-party SaaS stacks on Google Cloud Run Gen2 and AWS EC2 (30/30 Test Assertions Passed).', {
     x: 0.6, y: 0.82, w: 12.133, h: 0.36, fontSize: 10.2, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -1842,14 +1853,14 @@ function buildSlide33_Scorecard() {
   const rows = [
     ['Metabase v0.50.26', 'Enterprise BI & Analytics', 'Cloud Run Gen2', 'Unscoped dashboards aggregate multi-tenant GMV/orders', 'Hop 5 AlloyDB RLS (SET LOCAL current_tenant_id)', '0 Leaked Rows'],
     ['Trino SQL v440', 'Distributed Query Federation', 'AWS EC2 (m6i)', 'SHOW CATALOGS exposes cross-tenant datalake tables', 'Hop 2 ARD Catalog Scoping + System Access Control', 'Catalog Denied'],
-    ['Grafana v11.1', 'Observability & Metrics', 'Cloud Run Gen2', 'Interleaved Prometheus metrics & noisy neighbor spikes', 'Hop 3 OTel collector tenant namespace injection', 'Org Scoped'],
-    ['Datalust Seq v2024', 'Structured Audit Logs', 'Cloud Run Gen2', 'Shared full-text log search leaks cross-tenant PII', 'Hop 1 Cloud Armor + CR Token Filters & Signal scopes', 'Strict Stream Segregation'],
-    ['HashiCorp Vault v1.13', 'CMEK Key Management', 'AWS EC2 (m6i)', 'Single shared encryption root; no independent kill-switch', 'Hop 4 Dedicated Cloud KMS / Vault transit key per tenant', '<60s Kill-Switch'],
+    ['Grafana v11.2.0', 'Observability & Metrics', 'Cloud Run Gen2', 'Interleaved Prometheus metrics & noisy neighbor spikes', 'Hop 3 OTel collector tenant namespace injection', 'Org Scoped'],
+    ['Datalust Seq v2024.3', 'Structured Audit Logs', 'Cloud Run Gen2', 'Shared full-text log search leaks cross-tenant PII', 'Hop 1 Cloud Armor + CR Token Filters & Signal scopes', 'Strict Stream Segregation'],
+    ['HashiCorp Vault v1.13.3', 'CMEK Key Management', 'AWS EC2 (m6i)', 'Single shared encryption root; no independent kill-switch', 'Hop 4 Dedicated Cloud KMS / Vault transit key per tenant', '<60s Kill-Switch'],
     ['ClickHouse v24.8', 'Columnar Vector Engine', 'AWS EC2 (m6i)', 'SIMD block scans return multi-tenant data in memory', 'Hop 5 Native Row Policy (WHERE tenant_id = currentUser())', 'Vector Pruned (<15ms)'],
-    ['Redmine ITSM v5.1', 'ITSM & Case Management', 'Cloud Run Gen2', 'Public issue lists expose competitor tickets and notes', 'Hop 1-3 TenantContext JWT project & role scoping', 'Zero Case Leakage'],
-    ['NocoDB v0.255', 'GxP Regulated Database', 'Cloud Run Gen2', 'Relational grid displays unmasked clinical trial data', 'Hop 2 Role-based views + 21 CFR Part 11 audit trails', 'GxP Compliant'],
-    ['Gitea SRE v1.22', 'Source Code & CI/CD', 'AWS EC2 (m6i)', 'Open repository indexing exposes proprietary microservices', 'Hop 3 Organization isolation & private repository guards', 'Sealed Git Repo'],
-    ['Directus HCM v11.1', 'HR & Human Capital Mgmt', 'Cloud Run Gen2', 'CMS data models leak salary bands & employee PII', 'Hop 5 Custom Role Access Control (CRAC) policies', 'GDPR/CCPA Bound']
+    ['Redmine ITSM v5.1.3', 'ITSM & Case Management', 'Cloud Run Gen2', 'Public issue lists expose competitor tickets and notes', 'Hop 1-3 TenantContext JWT project & role scoping', 'Zero Case Leakage'],
+    ['NocoDB v0.255.2', 'GxP Regulated Database', 'Cloud Run Gen2', 'Relational grid displays unmasked clinical trial data', 'Hop 2 Role-based views + 21 CFR Part 11 audit trails', 'GxP Compliant'],
+    ['Gitea SRE v1.22.3', 'Source Code & CI/CD', 'AWS EC2 (m6i)', 'Open repository indexing exposes proprietary microservices', 'Hop 3 Organization isolation & private repository guards', 'Sealed Git Repo'],
+    ['Directus HCM v11.1.0', 'HR & Human Capital Mgmt', 'Cloud Run Gen2', 'CMS data models leak salary bands & employee PII', 'Hop 5 Custom Role Access Control (CRAC) policies', 'GDPR/CCPA Bound']
   ];
 
   const tableData = [headers];
@@ -1873,7 +1884,7 @@ function buildSlide33_Scorecard() {
 }
 
 // ============================================================================
-// SLIDE 33: Frequently Asked Questions (Executive & CISO Decision Guide)
+// SLIDE 34: Frequently Asked Questions (Executive & CISO Decision Guide)
 // ============================================================================
 function buildSlide34_Faq() {
   const slide = pptx.addSlide();
@@ -1881,7 +1892,7 @@ function buildSlide34_Faq() {
     slide,
     'ACT V • FREQUENTLY ASKED QUESTIONS',
     'Frequently Asked Questions: Executive & CISO Architecture Decision Guide',
-    33
+    34
   );
 
   slide.addText(

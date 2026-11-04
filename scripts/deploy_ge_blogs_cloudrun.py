@@ -225,7 +225,7 @@ def sync_receipt_after_deploy(ready_rev: str) -> None:
             env=git_env,
         )
         subprocess.run(
-            ["git", "commit", "--no-verify", "-m", f"chore(deploy): record live Cloud Run revision {ready_rev} receipt"],
+            ["git", "commit", "--no-verify", "-m", f"chore(deploy): record live Cloud Run revision {ready_rev} receipt [skip ci]"],
             cwd=BLOGS_ROOT,
             check=True,
             env=git_env,

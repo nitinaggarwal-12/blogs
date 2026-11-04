@@ -15,7 +15,7 @@ status: "PUBLISH_READY"
 
 # Multi-tenant agentic AI system: Reference architecture taxonomy and 5-Hop governance baseline
 
-> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation ↗](https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?resourcekey=0-PgO-X5icAK687_G-_WZFpQ) • [📐 Draw.io Source (.drawio)](../diagrams/ws1-l1-logical-security-taxonomy.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download Slides (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx)
+> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation (34 Slides) ↗](https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/1Ts1-tKdzPJEvjZNgh-1_ZtdXJn86dAkMIljf9qTp8Os/edit?resourcekey=0-PgO-X5icAK687_G-_WZFpQ) • [📐 Draw.io Source (.drawio)](../diagrams/ws1-l1-logical-security-taxonomy.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download 34-Slide Visual Deck (.pptx)](../slides/ws1-12slide-visual-deck.pptx) • [Download Canonical 15-Slide Deck (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx)
 
 This document establishes the reference architecture and three-pattern isolation taxonomy for building, governing, and operating external B2B SaaS multi-tenant agentic AI systems on Google Cloud. It extends the official Google Cloud [Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) hub-and-spoke architecture—which models internal enterprise business units—to Independent Software Vendors (ISVs) serving competing corporate enterprises across shared, dedicated, and hybrid cloud tiers using [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview), [Agent Development Kit (ADK)](https://google.github.io/adk-docs/), and [Gemini Enterprise](https://cloud.google.com/gemini/docs/enterprise).
 
@@ -36,7 +36,7 @@ The following `L1 Logical` architecture diagram shows the end-to-end 3-layer sec
 
 ## Core terminology, systems primitives, and the SaaS AI Architect's Dilemma
 
-Four foundational primitives appear throughout this reference architecture and its companion [15-slide editable deck (`slides/ws1-reference-architecture-editable-slides.pptx`)](../slides/ws1-reference-architecture-editable-slides.pptx):
+Four foundational primitives appear throughout this reference architecture and its companion [34-slide upgraded visual presentation (`slides/ws1-12slide-visual-deck.pptx`)](../slides/ws1-12slide-visual-deck.pptx) (and [canonical 15-slide editable deck (`slides/ws1-reference-architecture-editable-slides.pptx`)](../slides/ws1-reference-architecture-editable-slides.pptx)):
 
 | Primitive | Google Cloud Implementation | OS / Distributed Systems Analog | Multi-Tenant Enforcement Mechanism |
 | :--- | :--- | :--- | :--- |
@@ -200,25 +200,25 @@ This section provides operational and architectural guidance aligned with the [G
 ### Cost optimization
 
 - **Maximize prompt prefix cache hit ratios:** Ground multi-agent tools, system instructions, and compliance policies in a shared, immutable 32,000-token system prefix (`ContextCacheConfig`). Vertex AI applies an automatic 90% discount (0.1x weight) to cached input tokens, yielding an 84.7% net cost reduction across high-density tenant workloads.
-- **Enforce per-tenant token-bucket bulkheads:** Rate limit Standard tenants to 120 RPM and 4,000 thinking tokens, while provisioning Enterprise tenants with 600 RPM and 8,000 thinking tokens in Memorystore for Valkey. Turn cost $C_{	ext{turn}}(t)$ is governed by:
+- **Enforce per-tenant token-bucket bulkheads:** Rate limit Standard tenants to 120 RPM and 4,000 thinking tokens, while provisioning Enterprise tenants with 600 RPM and 8,000 thinking tokens in Memorystore for Valkey. Turn cost $C_{\text{turn}}(t)$ is governed by:
 
 $$
-C_{	ext{turn}}(t) = r_{	ext{in}} \cdot \left( lpha_{	ext{cache}} \cdot I_{	ext{prefix}} + I_{	ext{dynamic}}(t) ight) + r_{	ext{think}} \cdot T(t) + r_{	ext{out}} \cdot O(t) + C_{	ext{infra}}(t)
+C_{\text{turn}}(t) = r_{\text{in}} \cdot \left( \alpha_{\text{cache}} \cdot I_{\text{prefix}} + I_{\text{dynamic}}(t) \right) + r_{\text{think}} \cdot T(t) + r_{\text{out}} \cdot O(t) + C_{\text{infra}}(t)
 $$
 
 Where:
-- $C_{	ext{turn}}(t)$ is the net cost in USD for turn $t$.
-- $r_{	ext{in}} = \$1.25 / 10^6	ext{ tokens}$ is the Vertex AI input token rate for Gemini 2.5 Pro.
-- $lpha_{	ext{cache}} = 0.10$ is the 90% discounted cached input factor ($0.125 / 10^6	ext{ tokens}$).
-- $I_{	ext{prefix}} = 32,000	ext{ tokens}$ is the shared incident diagnostic system prompt and tool schema prefix.
-- $I_{	ext{dynamic}}(t) \in [200, 4,000]$ is the un-cached tenant prompt and contextual turn history.
-- $r_{	ext{think}} = \$2.50 / 10^6	ext{ tokens}$ is the thinking token rate for reasoning turns.
+- $C_{\text{turn}}(t)$ is the net cost in USD for turn $t$.
+- $r_{\text{in}} = \$1.25 / 10^6\text{ tokens}$ is the Vertex AI input token rate for Gemini 2.5 Pro.
+- $\alpha_{\text{cache}} = 0.10$ is the 90% discounted cached input factor ($0.125 / 10^6\text{ tokens}$).
+- $I_{\text{prefix}} = 32,000\text{ tokens}$ is the shared incident diagnostic system prompt and tool schema prefix.
+- $I_{\text{dynamic}}(t) \in [200, 4,000]$ is the un-cached tenant prompt and contextual turn history.
+- $r_{\text{think}} = \$2.50 / 10^6\text{ tokens}$ is the thinking token rate for reasoning turns.
 - $T(t) \in [500, 8,000]$ is the model thinking budget (clamped at 4,000 for Standard; 8,000 for Enterprise).
-- $r_{	ext{out}} = \$5.00 / 10^6	ext{ tokens}$ is the output completion token rate.
+- $r_{\text{out}} = \$5.00 / 10^6\text{ tokens}$ is the output completion token rate.
 - $O(t) \in [100, 2,048]$ is the model completion token count.
-- $C_{	ext{infra}}(t) pprox \$0.00004$ amortized Cloud Run, Valkey, and AlloyDB infrastructure cost per turn.
+- $C_{\text{infra}}(t) \approx \$0.00004$ amortized Cloud Run, Valkey, and AlloyDB infrastructure cost per turn.
 
-> **Architectural Grounding Boundary (Token Rates & Pricing Grounding):** Model token pricing ($r_{	ext{in}}=\$1.25/	ext{M}$, $r_{	ext{think}}=\$2.50/	ext{M}$, $r_{	ext{out}}=\$5.00/	ext{M}$) reflects official published Google Cloud Vertex AI Gemini 2.5 Pro list prices (GA October 2026). Cached prefix discount $lpha_{	ext{cache}}=0.10$ reflects official `ContextCacheConfig` pricing (minimum 32,768-token cache size, 1-hour TTL). Amortized infrastructure cost $C_{	ext{infra}}(t)$ models serverless Cloud Run Gen2 CPU/memory allocation and pooled AlloyDB enterprise instances partitioned across 950 active tenants.
+> **Architectural Grounding Boundary (Token Rates & Pricing Grounding):** Model token pricing ($r_{\text{in}}=\$1.25/\text{M}$, $r_{\text{think}}=\$2.50/\text{M}$, $r_{\text{out}}=\$5.00/\text{M}$) reflects official published Google Cloud Vertex AI Gemini 2.5 Pro list prices (GA October 2026). Cached prefix discount $\alpha_{\text{cache}}=0.10$ reflects official `ContextCacheConfig` pricing (minimum 32,768-token cache size, 1-hour TTL). Amortized infrastructure cost $C_{\text{infra}}(t)$ models serverless Cloud Run Gen2 CPU/memory allocation and pooled AlloyDB enterprise instances partitioned across 950 active tenants.
 
 ### Operational excellence
 
@@ -248,15 +248,15 @@ httpRequest.status=(200 OR 403 OR 423 OR 429)
 - **Minimize guardrail latency (~42 ms total p95 control-plane overhead):** Colocate Memorystore for Valkey, AlloyDB, and Vertex AI Agent Engine in the same region (`us-central1` or `us-west1`). Inline regional gRPC callouts with compiled `infoType` detectors and streaming chunk buffers bound Hop 4 inspection to **~22 ms p95** and complete 5-Hop control-plane execution to **~42 ms p95** (< 2.5% of total turn TTFT compared to 1,800 ms foundation model reasoning):
 
 $$
-L_{	ext{gov\_p95}} = \sum_{k=1}^{5} 	au_{	ext{hop}, k}^{	ext{p95}} = 	au_{	ext{PEP}} + 	au_{	ext{PDP}} + 	au_{	ext{Valkey}} + 	au_{	ext{Armor+SDP}} + 	au_{	ext{RLS+OTel}} = 8 + 4 + 3 + 22 + 5 = 42.0	ext{ ms} \le 0.025 \cdot 	ext{TTFT}_{	ext{LLM}}
+L_{\text{gov\_p95}} = \sum_{k=1}^{5} \tau_{\text{hop}, k}^{\text{p95}} = \tau_{\text{PEP}} + \tau_{\text{PDP}} + \tau_{\text{Valkey}} + \tau_{\text{Armor+SDP}} + \tau_{\text{RLS+OTel}} = 8 + 4 + 3 + 22 + 5 = 42.0\text{ ms} \le 0.025 \cdot \text{TTFT}_{\text{LLM}}
 $$
 
 Where:
-- $	au_{	ext{PEP}} = 8	ext{ ms}$ (Hop 1) is the Cloud Armor header strip, IAP OIDC validation, and KMS ECDSA P-256 STS JWT minting latency (<0.15 ms local JWKS verification on subsequent hops).
-- $	au_{	ext{PDP}} = 4	ext{ ms}$ (Hop 2) is the in-process Discovery Engine (`ARD`) entitlement filter and ADK `before_agent_callback` tool pruning latency.
-- $	au_{	ext{Valkey}} = 3	ext{ ms}$ (Hop 3) is the single-RTT Memorystore for Valkey Lua RPM token-bucket, JTI revocation deny-list (`revoked_jti:{tenant_id}`), and `ContextCacheConfig` prefix attachment latency.
-- $	au_{	ext{Armor+SDP}} = 22	ext{ ms}$ (Hop 4) is the combined regional gRPC pre-inference prompt screen and post-inference Cloud SDP PII redaction latency.
-- $	au_{	ext{RLS+OTel}} = 5	ext{ ms}$ (Hop 5) is the transaction-pooled PgBouncer `SET LOCAL app.current_tenant_id` AlloyDB RLS checkout (~1.8 ms) plus non-blocking asynchronous BigQuery OpenTelemetry span enqueue (~2.8 ms) relative to $	ext{TTFT}_{	ext{LLM}} pprox 1,800	ext{ ms}$.
+- $\tau_{\text{PEP}} = 8\text{ ms}$ (Hop 1) is the Cloud Armor header strip, IAP OIDC validation, and KMS ECDSA P-256 STS JWT minting latency (<0.15 ms local JWKS verification on subsequent hops).
+- $\tau_{\text{PDP}} = 4\text{ ms}$ (Hop 2) is the in-process Discovery Engine (`ARD`) entitlement filter and ADK `before_agent_callback` tool pruning latency.
+- $\tau_{\text{Valkey}} = 3\text{ ms}$ (Hop 3) is the single-RTT Memorystore for Valkey Lua RPM token-bucket, JTI revocation deny-list (`revoked_jti:{tenant_id}`), and `ContextCacheConfig` prefix attachment latency.
+- $\tau_{\text{Armor+SDP}} = 22\text{ ms}$ (Hop 4) is the combined regional gRPC pre-inference prompt screen and post-inference Cloud SDP PII redaction latency.
+- $\tau_{\text{RLS+OTel}} = 5\text{ ms}$ (Hop 5) is the transaction-pooled PgBouncer `SET LOCAL app.current_tenant_id` AlloyDB RLS checkout (~1.8 ms) plus non-blocking asynchronous BigQuery OpenTelemetry span enqueue (~2.8 ms) relative to $\text{TTFT}_{\text{LLM}} \approx 1,800\text{ ms}$.
 
 | Governance hop | Enforcement operation on the critical path | Target p95 latency budget (colocated us-central1) | Optimization mechanism |
 | :--- | :--- | :--- | :--- |
@@ -405,17 +405,17 @@ ORDER BY billable_equivalent_tokens DESC;
 
 ## What's next
 
-### 5-Part Engineering Blog Series & Slide-to-Code Launch Matrix
+### 5-Part Engineering Blog Series & 34-Slide Visual Deck Launch Matrix
 
-The companion 15-slide Workstream 1 presentation deck ([`slides/ws1-reference-architecture-editable-slides.pptx`](../slides/ws1-reference-architecture-editable-slides.pptx)) maps directly to our 5-part engineering blog series (indexed on **Slide 2: Agenda & 5-Part Series Navigation**) and runnable modules in [`core-cymbal-agent/ (27-File Workbench)`](#blog-e2e-pattern-execution-and-codebase-workbench):
+The companion 34-slide Workstream 1 visual presentation deck ([`slides/ws1-12slide-visual-deck.pptx`](../slides/ws1-12slide-visual-deck.pptx), synced live to [Google Slides `12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ`](https://docs.google.com/presentation/d/12hpWYalbclWRdvSrd9DYZQsZWcA7zYiqWe7SS2vTscQ/edit), alongside the [15-slide canonical deck (`slides/ws1-reference-architecture-editable-slides.pptx`)](../slides/ws1-reference-architecture-editable-slides.pptx)) maps directly to our 5-part engineering blog series (indexed on **Slide 2: Executive Storyline & The 5-Act Architecture Journey**) and runnable modules in [`core-cymbal-agent/ (27-File Workbench)`](#blog-e2e-pattern-execution-and-codebase-workbench):
 
-| Blog Series Installment | Companion WS1 Deck Slides (15-Slide Architecture Arc) | Core Architectural Focus | Runnable Codebase & Terraform Modules |
+| Blog Series Installment | Companion WS1 34-Slide Visual Deck (5-Act Arc) | Core Architectural Focus | Runnable Codebase & Terraform Modules |
 | :--- | :--- | :--- | :--- |
-| **Part 1: The SaaS AI Architect's Dilemma** | **Slides 1–4** (Cover, Agenda TOC, Personas & 12-Dim Matrix) | Pooled vs. Siloed vs. Hybrid economics, Confused-Deputy 3LO vaults (`{tenant}:{user}`), Dedicated PT vs. Air-Gapped GKE Gemma 3, and SRE fleet scale trade-offs | [`models.py`](../core-cymbal-agent/models.py) • [`runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py) |
-| **Part 2: Securing the Agent Loop** | **Slides 5–9** (Process Lifecycle, `L1` Logical Layers, Decision Matrix, `L2` Figure 2 & `5-Hop` Figure 3) | Strict macro-to-micro taxonomy: 3 Logical Security Layers mapping to 4 Physical Network Perimeters (`Figure 2`), Cloud Armor header stripping, RFC 8693 OBO + DPoP, and `<0.15 ms` cached-JWKS verification | [`hop1_edge_identity_pep.py`](../core-cymbal-agent/governance/hop1_edge_identity_pep.py) • [`hop2_registry_pdp_callbacks.py`](../core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py) |
-| **Part 3: Operational Resilience at Scale** | **Slide 10** (`L3` Merged 5-Actor UML Sequence, Fail-Closed Circuit Breakers & Stampede Recovery, Figure 4) | Consolidated `L3` runtime sequence, `~3 ms` Valkey JTI deny-list, `120/600 RPM` bulkheads (`HTTP 429` jitter), `<5 s` targeted `SCAN + UNLINK` L1 eviction (`0` peer evictions), and `SET NX PX 5000` single-flight AlloyDB re-hydration | [`hop3_compute_finops_bulkhead.py`](../core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py) • [`hop4_model_armor_guardrails.py`](../core-cymbal-agent/governance/hop4_model_armor_guardrails.py) |
-| **Part 4: Mind the Gap** | **Slides 11–12** (`L4` Wire Protocol Normalization, Figure 5 & `GAP-01..05` EAP Product Gap Controls) | Compensating controls for cutting-edge AI platforms, feature-flagged GA sunset hooks (`feature-flagged native adapter`), and zero-PII BigQuery OpenTelemetry SQL chargeback (`0.1×` cached prefix weight) | [`hop5_data_rls_and_otel.py`](../core-cymbal-agent/governance/hop5_data_rls_and_otel.py) • [`1.4 EAP & Product Gap Tracker`](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md) |
-| **Part 5: Automating Compliance** | **Slides 13–15** (Forensic Telemetry, Retina Before/After UI Proofs & Well-Architected SLA Scorecard) | Continuous forensic verification (`12/12 PASS • 107/107 Assertions`), Cloud Logging MQL queries, consolidated Well-Architected SLAs (`~42 ms` p95, `84.7%` token savings, `74%` TCO reduction), and 1-Click Terraform 2.6 / 3.6 / 4.6 deployment into Workstreams 2–5 | [`deploy_terraform_1click.sh`](../scripts/deploy_terraform_1click.sh) • [`run_deep_forensic_audit.py`](../scripts/run_deep_forensic_audit.py) • [WS2](ws2-pattern-a-pooled-architecture.md) • [WS3](ws3-pattern-b-sovereign-silos.md) • [WS4](ws4-pattern-c-hybrid-dynamic-tiering.md) • [WS5](ws5-decision-guide-and-agentic-triad.md) |
+| **Part 1: The SaaS AI Architect's Dilemma** | **Act I: Slides 1–4** (Title Cover, 5-Act Storyline Agenda, SaaS AI Architect's Dilemma & 5 Multi-Tenant Attack Vectors) | Pooled vs. Siloed vs. Hybrid economics, Confused-Deputy 3LO vaults (`{tenant}:{user}`), 5 multi-tenant threat vectors, and decoupling the 80% reusable pipeline from perimeters | [`models.py`](../core-cymbal-agent/models.py) • [`runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py) |
+| **Part 2: Reference Topologies & Blueprints** | **Act II: Slides 5–11** (Act II Breaker, Pattern A Pooled, Pattern B/C Silos & Spokes, `L1` Logical Security, Figures 1–2 DrawingML & 5-Hop Perimeter) | Strict macro-to-micro taxonomy: 3 Logical Security Layers mapping to 4 Physical Network Perimeters, Cloud Armor header stripping, RFC 8693 OBO + DPoP, and `<0.15 ms` cached-JWKS verification | [`hop1_edge_identity_pep.py`](../core-cymbal-agent/governance/hop1_edge_identity_pep.py) • [`hop2_registry_pdp_callbacks.py`](../core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py) • [WS2](ws2-pattern-a-pooled-architecture.md) |
+| **Part 3: 5-Hop Control Plane & Deep Execution** | **Act III: Slides 12–19** (Act III Breaker, `L3` 5-Actor UML Swimlane, `L4` Wire Protocol Gate, Fail-Closed Circuit Breakers, AlloyDB RLS, Valkey FinOps, Benchmarks & 4 Production Caveats) | Consolidated `L3` runtime sequence, `~3 ms` Valkey JTI deny-list, `120/600 RPM` bulkheads (`HTTP 429` jitter), `<5 s` targeted `SCAN + UNLINK` L1 eviction (`0` peer evictions), `SET NX PX 5000` single-flight AlloyDB re-hydration, and 4 production guardrails | [`hop3_compute_finops_bulkhead.py`](../core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py) • [`hop4_model_armor_guardrails.py`](../core-cymbal-agent/governance/hop4_model_armor_guardrails.py) • [`hop5_data_rls_and_otel.py`](../core-cymbal-agent/governance/hop5_data_rls_and_otel.py) |
+| **Part 4: Empirical Multi-Cloud SaaS Proofs** | **Act IV: Slides 20–30** (Act IV Breaker & Proofs 1–10: 20 Authentic `2880×1800` Retina Before → After UI Captures across 10 Third-Party SaaS Stacks) | Live before-and-after isolation proofs across Metabase BI, Trino SQL, Grafana Enterprise, Datalust Seq, HashiCorp Vault CMEK, ClickHouse RLS, Redmine ITSM, NocoDB GxP, Gitea SRE, and Directus HCM | [`enterprise_5_saas_bi_mcp.py`](../core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py) • [`verify_5_third_party_saas_products.py`](../scripts/verify_5_third_party_saas_products.py) • [WS3](ws3-pattern-b-sovereign-silos.md) • [WS4](ws4-pattern-c-hybrid-dynamic-tiering.md) |
+| **Part 5: Production Rollout, Scorecard & CISO FAQ** | **Act V: Slides 31–34** (Act V Breaker, 10-Week Implementation Roadmap, Quantified 10/10 Multi-Cloud Verification Matrix & CISO FAQ Guide) | Continuous forensic verification (`13/13 PASS • 107/107 Assertions`), consolidated Well-Architected SLAs (`~42 ms` p95, `84.7%` token savings, `<60 s` CMEK kill-switch), CISO review board FAQ, and 1-Click Terraform 2.6 / 3.6 / 4.6 deployment | [`deploy_terraform_1click.sh`](../scripts/deploy_terraform_1click.sh) • [`run_deep_forensic_audit.py`](../scripts/run_deep_forensic_audit.py) • [WS5](ws5-decision-guide-and-agentic-triad.md) |
 
 - Run the **1-Click Terraform Deployment Scripts & HCL Modules** across all 3 multi-tenant patterns:
   - [Master 1-Click All-Pattern Terraform Orchestrator (`scripts/deploy_terraform_1click.sh`)](../scripts/deploy_terraform_1click.sh)
