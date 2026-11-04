@@ -14,7 +14,7 @@ status: "PUBLISH_READY"
 ---
 # Multi-tenant agentic AI system: Pattern C dynamic hybrid routing and zero-downtime tier upgrades
 
-> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation ↗](https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/edit?resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/edit?resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw) • [📐 Draw.io Source (.drawio)](../diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download Slides (.pptx)](../slides/ws4-pattern-c-hybrid-editable-slides.pptx)
+> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation (24 Slides) ↗](https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/edit?resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/edit?resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw) • [📐 Draw.io Source (.drawio)](../diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download 24-Slide Visual Deck (.pptx)](../slides/ws4-12slide-visual-deck.pptx) • [📸 10-SaaS Visual Atlas (20 Screenshots)](saas-10-visual-verification-and-redteam-atlas.md)
 
 This document describes **Pattern C (Dynamic Hybrid Hub-and-Spoke Architecture)** for building and operating a multi-tiered agentic AI SaaS platform on Google Cloud. Pattern C combines the high-density unit economics of [Pattern A (Pooled Architecture)](ws2-pattern-a-pooled-architecture.md) with the physical project and encryption isolation of [Pattern B (Sovereign Silos)](ws3-pattern-b-sovereign-silos.md) behind a single unified control plane (`cymbal-hybrid-hub-prod`). A tenant-aware [Cloud Run](https://cloud.google.com/run/docs) router directs Standard-tier customers to a shared pooled runtime while bridging regulated Enterprise-tier customers across [Private Service Connect (PSC)](https://cloud.google.com/vpc/docs/private-service-connect) into dedicated CMEK-encrypted spoke projects.
 
@@ -358,10 +358,10 @@ GEAP MCP tool escalate_salesforce_case_to_jira (Target K5JAEFCQ6E) screens custo
 
 ### Direct Cloud Deliverables, Editable Slide Decks & Series Navigation
 
-- **Editable Google Slides & PowerPoint (`24 Slides` + Canonical `12-Slide` Brief):**
+- **Editable Google Slides & PowerPoint (`24-Slide` Workstream Deck + `16-Slide` Visual Atlas):**
   - [Open WS4 24-Slide Streamlined Visual Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/edit?resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ)
   - [Download WS4 24-Slide Streamlined Visual Presentation (`.pptx`)](../slides/ws4-12slide-visual-deck.pptx)
-  - [Download Workstream 4 Canonical 12-Slide Presentation (`.pptx`)](../slides/ws4-pattern-c-hybrid-editable-slides.pptx)
+  - [Download 16-Slide 10-SaaS Visual Verification Atlas (`.pptx`)](../slides/saas-10-visual-verification-atlas-16slide-deck.pptx)
   - [Download Master All-Workstreams 25-Slide Presentation (`.pptx`)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)
 - **Editable Google Docs & Microsoft Word (`.docx`):**
   - [Open WS4 Streamlined Whitepaper in Google Docs ↗](https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/edit?resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw)

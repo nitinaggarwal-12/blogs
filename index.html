@@ -19,6 +19,34 @@
   <script>
     (function() {
       document.documentElement.setAttribute('data-theme', 'light');
+      function isThirdPartyExtensionError(msg, src) {
+        var m = String(msg || '');
+        var s = String(src || '');
+        return (
+          s.indexOf('share-modal.js') !== -1 ||
+          s.indexOf('chrome-extension://') === 0 ||
+          s.indexOf('moz-extension://') === 0 ||
+          m.indexOf('Could not establish connection. Receiving end does not exist') !== -1 ||
+          m.indexOf('Extension context invalidated') !== -1 ||
+          (s.indexOf('share-modal') !== -1 && m.indexOf('addEventListener') !== -1)
+        );
+      }
+      window.addEventListener('error', function(ev) {
+        if (isThirdPartyExtensionError(ev && ev.message, ev && ev.filename)) {
+          ev.preventDefault();
+          ev.stopImmediatePropagation();
+          return true;
+        }
+      }, true);
+      window.addEventListener('unhandledrejection', function(ev) {
+        var reasonMsg = ev && ev.reason ? (ev.reason.message || String(ev.reason)) : '';
+        var reasonStack = ev && ev.reason && ev.reason.stack ? String(ev.reason.stack) : '';
+        if (isThirdPartyExtensionError(reasonMsg, reasonStack)) {
+          ev.preventDefault();
+          ev.stopImmediatePropagation();
+          return true;
+        }
+      }, true);
     })();
   </script>
 
@@ -512,7 +540,7 @@
                   return `<a href="${pngHref}" onclick="if (window.openGenuineScreenshotLightbox) { event.preventDefault(); openGenuineScreenshotLightbox('${pngHref}', '${plainTitle}'); }" target="_blank" rel="noopener" style="color:var(--link); font-weight:500;">${cleanedLabel}</a>`;
                 }
               }
-              if (!/^[a-z][a-z0-9+.-]*:/i.test(cleanHref) && !cleanHref.startsWith('/') && (/\.(py|sql|tf|tfvars|yaml|yml|sh|json)$/i.test(cleanHref) || /(^core-cymbal-agent|2\.6-terraform-starter|3\.6-terraform-silo-blueprint|4\.6-terraform-hybrid-psc-blueprint|2\.3-solution-implementation|3\.3-solution-implementation|4\.3-solution-implementation|4\.5-zero-downtime-tier-upgrade-suite)\/?$/i.test(cleanHref))) {
+              if (!/^[a-z][a-z0-9+.-]*:/i.test(cleanHref) && !cleanHref.startsWith('/') && (/\.(py|sql|tf|tfvars|yaml|yml|sh|json)$/i.test(cleanHref) || /(^core-cymbal-agent(?:\/governance|\/agents|\/mcp_servers)?|^diagrams(?:\/vision_metadata)?|^scripts\/blueprints_ext|^slides|2\.6-terraform-starter|3\.6-terraform-silo-blueprint|4\.6-terraform-hybrid-psc-blueprint|2\.3-solution-implementation|3\.3-solution-implementation|4\.3-solution-implementation|4\.5-zero-downtime-tier-upgrade-suite)\/?$/i.test(cleanHref))) {
                 return `<a href="/?tab=screenshots&wb=codebase" onclick="event.preventDefault(); openCodeOrArtifactInWorkbench('${cleanHref.replace(/'/g, "\\'")}');" style="color:var(--link); font-weight:600;">${label}</a>`;
               }
               const dlAttr = /\.drawio$/i.test(cleanHref) ? ' download' : ' target="_blank" rel="noopener"';

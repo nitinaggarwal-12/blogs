@@ -14,7 +14,7 @@ status: "PUBLISH_READY"
 ---
 # Multi-tenant agentic AI system: Executive decision guide and the Multi-Tenant Agentic Triad
 
-> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation ↗](https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/edit) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/edit?resourcekey=0-XWkODR5elYC9-fuGO6aBaQ) • [📐 Draw.io Source (.drawio)](../diagrams/ws5-decision-tree-and-agentic-triad.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download Slides (.pptx)](../slides/ws5-wrap-up-editable-slides.pptx)
+> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation (24 Slides) ↗](https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/edit) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/edit?resourcekey=0-XWkODR5elYC9-fuGO6aBaQ) • [📐 Draw.io Source (.drawio)](../diagrams/ws5-decision-tree-and-agentic-triad.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download 24-Slide Visual Deck (.pptx)](../slides/ws5-12slide-visual-deck.pptx) • [📸 10-SaaS Visual Atlas (20 Screenshots)](saas-10-visual-verification-and-redteam-atlas.md)
 
 This document provides an executive decision framework to help you select, combine, and operate the right multi-tenant isolation topology for agentic AI systems on Google Cloud. It synthesizes the architectural patterns, security verification suites, and FinOps benchmarks from across this 5-part series—[Part 1 (Reference Taxonomy & 5-Hop Baseline)](ws1-reference-architecture-taxonomy-and-5hop-baseline.md), [Part 2 (Pattern A Pooled)](ws2-pattern-a-pooled-architecture.md), [Part 3 (Pattern B Sovereign Silos)](ws3-pattern-b-sovereign-silos.md), and [Part 4 (Pattern C Dynamic Hybrid)](ws4-pattern-c-hybrid-dynamic-tiering.md)—into a two-question decision tree and the **Multi-Tenant Agentic Triad**.
 
@@ -321,10 +321,10 @@ GEAP MCP tool query_datadog_tenant_slos (Target G767QR3TQZ) ingests structured O
 
 ### Direct Cloud Deliverables, Editable Slide Decks & Series Navigation
 
-- **Editable Google Slides & PowerPoint (`24 Slides` + Canonical `12-Slide` Brief):**
+- **Editable Google Slides & PowerPoint (`24-Slide` Workstream Deck + `16-Slide` Visual Atlas):**
   - [Open WS5 24-Slide Streamlined Visual Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/edit)
   - [Download WS5 24-Slide Streamlined Visual Presentation (`.pptx`)](../slides/ws5-12slide-visual-deck.pptx)
-  - [Download Workstream 5 Canonical 12-Slide Presentation (`.pptx`)](../slides/ws5-wrap-up-editable-slides.pptx)
+  - [Download 16-Slide 10-SaaS Visual Verification Atlas (`.pptx`)](../slides/saas-10-visual-verification-atlas-16slide-deck.pptx)
   - [Download Master All-Workstreams 25-Slide Presentation (`.pptx`)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)
 - **Editable Google Docs & Microsoft Word (`.docx`):**
   - [Open WS5 Streamlined Whitepaper in Google Docs ↗](https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/edit?resourcekey=0-XWkODR5elYC9-fuGO6aBaQ)

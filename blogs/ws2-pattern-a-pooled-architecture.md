@@ -14,7 +14,7 @@ status: "PUBLISH_READY"
 ---
 # Multi-tenant agentic AI system: Pattern A high-density pooled architecture
 
-> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation (24 Slides) ↗](https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/edit?resourcekey=0-lLM1d36y60xMkgO678CtSA) • [📐 Draw.io Source (.drawio)](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download 24-Slide Visual Deck (.pptx)](../slides/ws2-12slide-visual-deck.pptx) • [Download Canonical 12-Slide Deck (.pptx)](../slides/ws2-pattern-a-pooled-editable-slides.pptx)
+> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation (24 Slides) ↗](https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/edit?resourcekey=0-lLM1d36y60xMkgO678CtSA) • [📐 Draw.io Source (.drawio)](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download 24-Slide Visual Deck (.pptx)](../slides/ws2-12slide-visual-deck.pptx) • [📸 10-SaaS Visual Atlas (20 Screenshots)](saas-10-visual-verification-and-redteam-atlas.md)
 
 This document describes **Pattern A (High-Density Pooled Architecture)** for building and operating a multi-tenant agentic AI system on Google Cloud. In Pattern A, thousands of corporate B2B SaaS customers share a single Google Cloud project (`cymbal-pooled-saas-prod`), a shared [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview) runtime, a shared [Gemini 2.5 Pro](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models) prompt prefix cache (`ContextCacheConfig`), and a shared [AlloyDB for PostgreSQL](https://cloud.google.com/alloydb/docs) cluster while maintaining strict cryptographic tenant isolation.
 
@@ -47,7 +47,7 @@ The following `L2 Physical` diagram shows the Pattern A high-density pooled arch
 
 ## Core terminology and Pooled multi-tenant systems primitives
 
-Before diving into Pattern A's reference implementation and its companion [24-slide editable visual deck (`slides/ws2-12slide-visual-deck.pptx`)](../slides/ws2-12slide-visual-deck.pptx) (and [canonical 12-slide editable deck (`slides/ws2-pattern-a-pooled-editable-slides.pptx`)](../slides/ws2-pattern-a-pooled-editable-slides.pptx)), we anchor the **SaaS AI Architect's Dilemma**—how to capture **90% shared `ContextCacheConfig` prompt-prefix savings** and low-friction onboarding inside a single shared project without risking cross-tenant tool, memory, or database bleed—across the four foundational series primitives ([Part 1](ws1-reference-architecture-taxonomy-and-5hop-baseline.md)) and Pattern A's **Computer Science (CS101)** operating-system and database-kernel mechanisms:
+Before diving into Pattern A's reference implementation and its companion [24-slide editable visual deck (`slides/ws2-12slide-visual-deck.pptx`)](../slides/ws2-12slide-visual-deck.pptx), we anchor the **SaaS AI Architect's Dilemma**—how to capture **90% shared `ContextCacheConfig` prompt-prefix savings** and low-friction onboarding inside a single shared project without risking cross-tenant tool, memory, or database bleed—across the four foundational series primitives ([Part 1](ws1-reference-architecture-taxonomy-and-5hop-baseline.md)) and Pattern A's **Computer Science (CS101)** operating-system and database-kernel mechanisms:
 
 - **Agent Development Kit (`ADK`):** The Python runtime framework ([`core-cymbal-agent/runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py)) that binds immutable `temp:tenant_id` session state and executes deterministic `before_agent_callback`, `before_model_callback`, and `before_tool_callback` interceptors inside the shared worker pool.
 - **Agent Registry & Discovery (`ARD`):** The Hop 2 Discovery Engine catalog Policy Decision Point ([`hop2_registry_pdp_callbacks.py`](../core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py)) that resolves global shared agents while returning `HTTP 403 Forbidden` if a Standard tenant (`retailstream`) enumerates an Enterprise tenant's private `Agent Alpha` (`finvault`).
@@ -121,7 +121,7 @@ To provide enterprise architecture review boards, CISOs, and engineering teams w
 
 ![Figure 2 — Pattern A: 10-point red-team attack simulation and deterministic hop defense matrix](../diagrams/ws2-pattern-a-breach-defense-sequence.drawio.png)
 
-*Figure 2. End-to-end red-team defense architecture showing where each of the 10 cross-tenant attack vectors (Vectors V1–V10) is intercepted across Hops 1 through 5. Editable assets: [Draw.io source](../diagrams/ws2-pattern-a-breach-defense-sequence.drawio) | [Google Slides (.pptx)](../slides/ws2-pattern-a-pooled-editable-slides.pptx) | [Architecture Center SVG](../diagrams/ws2-pattern-a-breach-defense-sequence.svg) | [Vision AST](../diagrams/vision_metadata/ws2-pattern-a-breach-defense-sequence.vision.json).*
+*Figure 2. End-to-end red-team defense architecture showing where each of the 10 cross-tenant attack vectors (Vectors V1–V10) is intercepted across Hops 1 through 5. Editable assets: [Draw.io source](../diagrams/ws2-pattern-a-breach-defense-sequence.drawio) | [Google Slides (.pptx)](../slides/ws2-12slide-visual-deck.pptx) | [Architecture Center SVG](../diagrams/ws2-pattern-a-breach-defense-sequence.svg) | [Vision AST](../diagrams/vision_metadata/ws2-pattern-a-breach-defense-sequence.vision.json).*
 
 Figure 2 maps the 10 automated red-team attack vectors ([2.5 Breach Simulation Suite](../workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py)) to the four defense sectors:
 
@@ -144,7 +144,7 @@ The seven numbered steps in Figure 2 (`1`–`7`) match the visual diagram badges
 
 ![Figure 3 — Pattern A: Multi-IdP 3LO OAuth federation (Google OIDC and Microsoft Entra ID) and MCP sandbox](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.drawio.png)
 
-*Figure 3. Multi-IdP identity federation architecture showing how Google Workspace OIDC (FinVault Bank) and Microsoft Entra ID v2.0 (RetailStream Corp) federate into the shared Pattern A runtime and broker 2LO and 3LO MCP tool calls. Editable assets: [Draw.io source](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.drawio) | [Google Slides (.pptx)](../slides/ws2-pattern-a-pooled-editable-slides.pptx) | [Architecture Center SVG](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.svg) | [Vision AST](../diagrams/vision_metadata/ws2-demo-env-and-3p-auth-sandbox-topology.vision.json).*
+*Figure 3. Multi-IdP identity federation architecture showing how Google Workspace OIDC (FinVault Bank) and Microsoft Entra ID v2.0 (RetailStream Corp) federate into the shared Pattern A runtime and broker 2LO and 3LO MCP tool calls. Editable assets: [Draw.io source](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.drawio) | [Google Slides (.pptx)](../slides/ws2-12slide-visual-deck.pptx) | [Architecture Center SVG](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.svg) | [Vision AST](../diagrams/vision_metadata/ws2-demo-env-and-3p-auth-sandbox-topology.vision.json).*
 
 Figure 3 illustrates the identity and 3P connector sandbox described in [2.2 Demo Environment & 3P Auth Sandbox](../workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md):
 
@@ -337,10 +337,10 @@ To assist enterprise architecture review boards, CISOs, and platform engineering
 
 ### Direct Cloud Deliverables, Editable Slide Decks & Series Navigation
 
-- **Editable Google Slides & PowerPoint (`24 Slides` + Canonical `12-Slide` Brief):**
+- **Editable Google Slides & PowerPoint (`24-Slide` Workstream Deck + `16-Slide` Visual Atlas):**
   - [Open WS2 24-Slide Streamlined Visual Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit)
   - [Download WS2 24-Slide Streamlined Visual Presentation (`.pptx`)](../slides/ws2-12slide-visual-deck.pptx)
-  - [Download Workstream 2 Canonical 12-Slide Presentation (`.pptx`)](../slides/ws2-pattern-a-pooled-editable-slides.pptx)
+  - [Download 16-Slide 10-SaaS Visual Verification Atlas (`.pptx`)](../slides/saas-10-visual-verification-atlas-16slide-deck.pptx)
   - [Download Master All-Workstreams 25-Slide Presentation (`.pptx`)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)
 - **Editable Google Docs & Microsoft Word (`.docx`):**
   - [Open WS2 Streamlined Whitepaper in Google Docs ↗](https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/edit?resourcekey=0-lLM1d36y60xMkgO678CtSA)
@@ -368,7 +368,7 @@ To assist enterprise architecture review boards, CISOs, and platform engineering
 
 ![Figure 4 — Pattern A: Terraform infrastructure-as-code (IaC) resource graph](../diagrams/ws2-terraform-starter-resource-graph.drawio.png)
 
-*Figure 4. Declarative Terraform resource dependency graph (`workstream-2-pattern-a-pooled/2.6-terraform-starter/`) provisioning the complete Pattern A pooled stack in a single Google Cloud project. Editable assets: [Draw.io source](../diagrams/ws2-terraform-starter-resource-graph.drawio) | [Google Slides (.pptx)](../slides/ws2-pattern-a-pooled-editable-slides.pptx) | [Architecture Center SVG](../diagrams/ws2-terraform-starter-resource-graph.svg) | [Vision AST](../diagrams/vision_metadata/ws2-terraform-starter-resource-graph.vision.json).*
+*Figure 4. Declarative Terraform resource dependency graph (`workstream-2-pattern-a-pooled/2.6-terraform-starter/`) provisioning the complete Pattern A pooled stack in a single Google Cloud project. Editable assets: [Draw.io source](../diagrams/ws2-terraform-starter-resource-graph.drawio) | [Google Slides (.pptx)](../slides/ws2-12slide-visual-deck.pptx) | [Architecture Center SVG](../diagrams/ws2-terraform-starter-resource-graph.svg) | [Vision AST](../diagrams/vision_metadata/ws2-terraform-starter-resource-graph.vision.json).*
 
 Figure 4 shows the declarative Terraform module topology ([`2.6-terraform-starter/main.tf`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf) and [`2.6-terraform-starter/deploy_1click.sh`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/deploy_1click.sh)):
 
@@ -393,7 +393,7 @@ The seven numbered steps in Figure 4 (`1`–`7`) match the visual diagram badges
 - **Interactive Verification Lab:** Open Portal Tab 3 to use the interactive Before-vs-After Split Slider across all 20 verified 2880×1800 Retina UI captures.
 
 ### 3. Native Editable Slide Decks & Vector Blueprints
-- **Google Slides & PowerPoint:** [Open WS2 24-Slide Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit) • [Download Presentation (.pptx)](../slides/ws2-12slide-visual-deck.pptx) • [Download Canonical 12-Slide Deck (.pptx)](../slides/ws2-pattern-a-pooled-editable-slides.pptx).
+- **Google Slides & PowerPoint:** [Open WS2 24-Slide Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit) • [Download Presentation (.pptx)](../slides/ws2-12slide-visual-deck.pptx).
 - **Google Docs & Microsoft Word:** [Open WS2 in Google Docs ↗](https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/edit?resourcekey=0-lLM1d36y60xMkgO678CtSA) • [Download Word Document (.docx)](../docs/word/ws2-pattern-a-pooled-architecture.docx).
 - **Official Draw.io Blueprints:** [Figure 1 5-Hop Architecture (.drawio)](../diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio) • [Figure 2 Breach Defense Sequence (.drawio)](../diagrams/ws2-pattern-a-breach-defense-sequence.drawio) • [Figure 3 Multi-IdP Auth & Sandbox (.drawio)](../diagrams/ws2-demo-env-and-3p-auth-sandbox-topology.drawio) • [Figure 4 Terraform Resource Graph (.drawio)](../diagrams/ws2-terraform-starter-resource-graph.drawio).
 

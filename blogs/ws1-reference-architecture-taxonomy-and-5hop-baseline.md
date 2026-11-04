@@ -14,7 +14,7 @@ status: "PUBLISH_READY"
 ---
 # Multi-tenant agentic AI system: Reference architecture taxonomy and 5-Hop governance baseline
 
-> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation (24 Slides) ↗](https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit?resourcekey=0-77zXQOQhM63BNHXHkhxpjA) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA/edit) • [📐 Draw.io Source (.drawio)](../diagrams/ws1-l1-logical-security-taxonomy.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download 24-Slide Visual Deck (.pptx)](../slides/ws1-12slide-visual-deck.pptx) • [Download Canonical 15-Slide Deck (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx)
+> **Executive Cloud Architecture Assets**: [📊 Google Slides Presentation (24 Slides) ↗](https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit?resourcekey=0-77zXQOQhM63BNHXHkhxpjA) • [📄 Google Docs Spec ↗](https://docs.google.com/document/d/1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA/edit) • [📐 Draw.io Source (.drawio)](../diagrams/ws1-l1-logical-security-taxonomy.drawio) • [📦 Codebase & Runtime](../core-cymbal-agent/) • [Download 24-Slide Visual Deck (.pptx)](../slides/ws1-12slide-visual-deck.pptx) • [📸 10-SaaS Visual Atlas (20 Screenshots)](saas-10-visual-verification-and-redteam-atlas.md)
 
 This document establishes the reference architecture and three-pattern isolation taxonomy for building, governing, and operating external B2B SaaS multi-tenant agentic AI systems on Google Cloud. It extends the official Google Cloud [Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) hub-and-spoke architecture—which models internal enterprise business units—to Independent Software Vendors (ISVs) serving competing corporate enterprises across shared, dedicated, and hybrid cloud tiers using [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview), [Agent Development Kit (ADK)](https://google.github.io/adk-docs/), and [Gemini Enterprise](https://cloud.google.com/gemini/docs/enterprise).
 
@@ -44,7 +44,7 @@ The following `L1 Logical` architecture diagram shows the end-to-end 3-layer sec
 
 ## Core terminology, systems primitives, and the SaaS AI Architect's Dilemma
 
-Four foundational primitives appear throughout this reference architecture and its companion [24-slide upgraded visual presentation (`slides/ws1-12slide-visual-deck.pptx`)](../slides/ws1-12slide-visual-deck.pptx) (and [canonical 15-slide editable deck (`slides/ws1-reference-architecture-editable-slides.pptx`)](../slides/ws1-reference-architecture-editable-slides.pptx)):
+Four foundational primitives appear throughout this reference architecture and its companion [24-slide upgraded visual presentation (`slides/ws1-12slide-visual-deck.pptx`)](../slides/ws1-12slide-visual-deck.pptx):
 
 | Primitive | Google Cloud Implementation | OS / Distributed Systems Analog | Multi-Tenant Enforcement Mechanism |
 | :--- | :--- | :--- | :--- |
@@ -116,7 +116,7 @@ The following `L2 Physical` diagram shows the multi-tenant agentic AI reference 
 
 ![Figure 2 — Multi-tenant agentic AI taxonomy: Pooled (Pattern A), Sovereign Silos (Pattern B), and Dynamic Hybrid (Pattern C)](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png)
 
-*Figure 2. Official Google Cloud Architecture Center L2 Physical hub-and-spoke topology showing the 4 Physical Network Perimeters (VPC-SC): Routing Hub (Blue Perimeter 1), Central Governance and Security Hub (Green Perimeter 2), Pooled Shared Runtime (Yellow Perimeter 3 — Pattern A), and Sovereign Silo / Hybrid PSC Spokes (Red Perimeter 4 — Patterns B and C). Editable assets: [Draw.io source](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio) | [Google Slides (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx) | [Architecture Center SVG](../diagrams/ws1-multi-tenant-taxonomy-overview.svg) | [Vision AST](../diagrams/vision_metadata/ws1-multi-tenant-taxonomy-overview.vision.json).*
+*Figure 2. Official Google Cloud Architecture Center L2 Physical hub-and-spoke topology showing the 4 Physical Network Perimeters (VPC-SC): Routing Hub (Blue Perimeter 1), Central Governance and Security Hub (Green Perimeter 2), Pooled Shared Runtime (Yellow Perimeter 3 — Pattern A), and Sovereign Silo / Hybrid PSC Spokes (Red Perimeter 4 — Patterns B and C). Editable assets: [Draw.io source](../diagrams/ws1-multi-tenant-taxonomy-overview.drawio) | [Google Slides (.pptx)](../slides/ws1-12slide-visual-deck.pptx) | [Architecture Center SVG](../diagrams/ws1-multi-tenant-taxonomy-overview.svg) | [Vision AST](../diagrams/vision_metadata/ws1-multi-tenant-taxonomy-overview.vision.json).*
 
 The physical network topology establishes four concentric isolation perimeters to enforce strict defense-in-depth:
 
@@ -131,7 +131,7 @@ The following `5-Hop Baseline` diagram details the defense-in-depth security cha
 
 ![Figure 3 — End-to-end 5-Hop cryptographic governance baseline](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio.png)
 
-*Figure 3. Official Google Cloud Architecture Center 5-Hop Cryptographic Governance Baseline diagram showing the 5 sequential enforcement layers: Hop 1 (Edge Identity PEP), Hop 2 (Catalog Registry PDP), Hop 3 (Compute Sandbox & Quota Bulkhead), Hop 4 (Bidirectional Model Armor & Cloud SDP), and Hop 5 (Transactional AlloyDB RLS & OpenTelemetry FinOps). Editable assets: [Draw.io source](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio) | [Google Slides (.pptx)](../slides/ws1-reference-architecture-editable-slides.pptx) | [Architecture Center SVG](../diagrams/ws1-cloud-arch-center-5hop-baseline.svg) | [Vision AST](../diagrams/vision_metadata/ws1-cloud-arch-center-5hop-baseline.vision.json).*
+*Figure 3. Official Google Cloud Architecture Center 5-Hop Cryptographic Governance Baseline diagram showing the 5 sequential enforcement layers: Hop 1 (Edge Identity PEP), Hop 2 (Catalog Registry PDP), Hop 3 (Compute Sandbox & Quota Bulkhead), Hop 4 (Bidirectional Model Armor & Cloud SDP), and Hop 5 (Transactional AlloyDB RLS & OpenTelemetry FinOps). Editable assets: [Draw.io source](../diagrams/ws1-cloud-arch-center-5hop-baseline.drawio) | [Google Slides (.pptx)](../slides/ws1-12slide-visual-deck.pptx) | [Architecture Center SVG](../diagrams/ws1-cloud-arch-center-5hop-baseline.svg) | [Vision AST](../diagrams/vision_metadata/ws1-cloud-arch-center-5hop-baseline.vision.json).*
 
 The numbered callouts across Figure 2 and Figure 3 (`1`–`7`) trace every state transition in the 5-Hop governance pipeline in exact causal execution sequence ([`runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py)):
 
@@ -399,10 +399,10 @@ ORDER BY billable_equivalent_tokens DESC;
 
 ### Direct Cloud Deliverables, Editable Slide Decks & Series Navigation
 
-- **Editable Google Slides & PowerPoint (`24 Slides` + Canonical `15-Slide` Brief):**
+- **Editable Google Slides & PowerPoint (`24-Slide` Workstream Deck + `16-Slide` Visual Atlas):**
   - [Open WS1 24-Slide Streamlined Visual Presentation in Google Slides ↗](https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit?resourcekey=0-77zXQOQhM63BNHXHkhxpjA)
   - [Download WS1 24-Slide Streamlined Visual Presentation (`.pptx`)](../slides/ws1-12slide-visual-deck.pptx)
-  - [Download Workstream 1 Canonical 15-Slide Presentation (`.pptx`)](../slides/ws1-reference-architecture-editable-slides.pptx)
+  - [Download 16-Slide 10-SaaS Visual Verification Atlas (`.pptx`)](../slides/saas-10-visual-verification-atlas-16slide-deck.pptx)
   - [Download Master All-Workstreams 25-Slide Presentation (`.pptx`)](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx)
 - **Editable Google Docs & Microsoft Word (`.docx`):**
   - [Open WS1 Streamlined Whitepaper in Google Docs ↗](https://docs.google.com/document/d/1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA/edit)

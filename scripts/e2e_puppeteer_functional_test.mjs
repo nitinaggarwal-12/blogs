@@ -173,7 +173,9 @@ async function run() {
           nonPreText.includes("merck-a2a-mcp-") ||
           nonPreText.includes("ADK 2.0") ||
           nonPreText.includes("Q4 2026") ||
-          nonPreText.includes("Q1 2027"),
+          nonPreText.includes("Q1 2027") ||
+          nonPreText.includes("Download Canonical 15-Slide Deck") ||
+          nonPreText.includes("Download Canonical 12-Slide Deck"),
         hasFormatJson: html.includes("?format=json"),
         readerHeightPx: reader.scrollHeight,
       };
@@ -506,12 +508,20 @@ async function run() {
     );
     const badPw = "FinVault" + "#2026!";
     const badVt = "fv-token-" + "finvault-sre-2026";
+    const coreDirResp = await fetch("/api/artifact?path=core-cymbal-agent");
+    const govDirResp = await fetch("/api/artifact?path=core-cymbal-agent/governance");
+    const diagDirResp = await fetch("/api/artifact?path=diagrams");
+    const aboutBlankIframes = document.querySelectorAll('iframe[src="about:blank"]').length;
     return {
       hasPublicPass: fullHtml.includes(badPw) || fullHtml.includes(badVt),
       hasIapBanner: Boolean(document.getElementById("chg-iap-auth-banner")),
       headerClipped: hdrClip,
       unauthChangelogStatus: chgResp.status,
       ssrfLoopbackStatus: paygResp.status,
+      coreDirStatus: coreDirResp.status,
+      govDirStatus: govDirResp.status,
+      diagDirStatus: diagDirResp.status,
+      aboutBlankIframes,
     };
   });
   assert(
@@ -519,8 +529,12 @@ async function run() {
       p0DomAudit.hasIapBanner &&
       !p0DomAudit.headerClipped &&
       p0DomAudit.unauthChangelogStatus === 403 &&
-      p0DomAudit.ssrfLoopbackStatus === 403,
-    "P0 Security Hardening Gate ([FA-08] SSRF 403, [FA-09] Admin IAP 403 & Banner, [FA-14] Zero Public Passwords)",
+      p0DomAudit.ssrfLoopbackStatus === 403 &&
+      p0DomAudit.coreDirStatus === 200 &&
+      p0DomAudit.govDirStatus === 200 &&
+      p0DomAudit.diagDirStatus === 200 &&
+      p0DomAudit.aboutBlankIframes === 0,
+    "P0 Security Hardening & Zero 404 Directory Artifact / Zero about:blank Iframe Gate ([FA-08], [FA-09], [FA-14], /api/artifact?path=core-cymbal-agent 200)",
     JSON.stringify(p0DomAudit)
   );
 

@@ -292,7 +292,27 @@
 
     function openCodeOrArtifactInWorkbench(repoRelPath) {
       let clean = normalizeRepoPath(String(repoRelPath || '').replace(/\/+$/, ''));
-      if (clean.endsWith('2.6-terraform-starter') || clean.endsWith('3.6-terraform-silo-blueprint') || clean.endsWith('4.6-terraform-hybrid-psc-blueprint')) {
+      const dirAliases = {
+        'core-cymbal-agent': 'core-cymbal-agent/runtime_pipeline.py',
+        'core-cymbal-agent/governance': 'core-cymbal-agent/governance/hop1_edge_identity_pep.py',
+        'core-cymbal-agent/agents': 'core-cymbal-agent/agents/shared_diagnostic_agent.py',
+        'core-cymbal-agent/mcp_servers': 'core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py',
+        'diagrams': 'diagrams/ws1-l1-logical-security-taxonomy.drawio',
+        'diagrams/vision_metadata': 'diagrams/vision_metadata/ws1-l1-logical-security-taxonomy.vision.json',
+        'scripts/blueprints_ext': 'scripts/blueprints_ext/arch_center_blueprints.py',
+        'slides': 'slides/slides_manifest.json',
+        'workstream-2-pattern-a-pooled/2.3-solution-implementation': 'workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_agent_service.py',
+        'workstream-2-pattern-a-pooled/2.6-terraform-starter': 'workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf',
+        'workstream-3-pattern-b-siloed/3.3-solution-implementation': 'workstream-3-pattern-b-siloed/3.3-solution-implementation/siloed_agent_service.py',
+        'workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint': 'workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf',
+        'workstream-4-pattern-c-hybrid': 'workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md',
+        'workstream-4-pattern-c-hybrid/4.3-solution-implementation': 'workstream-4-pattern-c-hybrid/4.3-solution-implementation/hybrid_router_service.py',
+        'workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite': 'workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/tier_migration_orchestrator.py',
+        'workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint': 'workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf'
+      };
+      if (dirAliases[clean]) {
+        clean = dirAliases[clean];
+      } else if (clean.endsWith('2.6-terraform-starter') || clean.endsWith('3.6-terraform-silo-blueprint') || clean.endsWith('4.6-terraform-hybrid-psc-blueprint')) {
         clean = clean + '/main.tf';
       }
       if (e2eBundleData && Array.isArray(e2eBundleData.codebaseFiles)) {

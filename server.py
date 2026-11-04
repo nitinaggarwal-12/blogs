@@ -3420,15 +3420,48 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             "backlog": "workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md",
         }
 
+        DIR_ARTIFACT_ALIASES = {
+            "core-cymbal-agent": "core-cymbal-agent/runtime_pipeline.py",
+            "core-cymbal-agent/governance": "core-cymbal-agent/governance/hop1_edge_identity_pep.py",
+            "core-cymbal-agent/agents": "core-cymbal-agent/agents/shared_diagnostic_agent.py",
+            "core-cymbal-agent/mcp_servers": "core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py",
+            "diagrams": "diagrams/ws1-l1-logical-security-taxonomy.drawio",
+            "diagrams/vision_metadata": "diagrams/vision_metadata/ws1-l1-logical-security-taxonomy.vision.json",
+            "scripts/blueprints_ext": "scripts/blueprints_ext/arch_center_blueprints.py",
+            "slides": "slides/slides_manifest.json",
+            "workstream-2-pattern-a-pooled/2.3-solution-implementation": "workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_agent_service.py",
+            "workstream-2-pattern-a-pooled/2.6-terraform-starter": "workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf",
+            "workstream-3-pattern-b-siloed/3.3-solution-implementation": "workstream-3-pattern-b-siloed/3.3-solution-implementation/siloed_agent_service.py",
+            "workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint": "workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf",
+            "workstream-4-pattern-c-hybrid": "workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md",
+            "workstream-4-pattern-c-hybrid/4.3-solution-implementation": "workstream-4-pattern-c-hybrid/4.3-solution-implementation/hybrid_router_service.py",
+            "workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite": "workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/tier_migration_orchestrator.py",
+            "workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint": "workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf",
+        }
+
         if path == "/api/artifact":
             qs = parse_qs(parsed.query)
-            rel_path = (qs.get("path") or [""])[0].strip().lstrip("/")
+            rel_path = (qs.get("path") or [""])[0].strip().strip("/")
             rel_path = DOC_SHORT_ALIASES.get(rel_path.lower(), rel_path)
+            rel_path = DIR_ARTIFACT_ALIASES.get(rel_path, rel_path)
             if not rel_path:
                 self._send_json(400, {"error": "Missing ?path= query parameter"})
                 return
             raw_candidate = ROOT_DIR / rel_path
             candidate = raw_candidate.resolve()
+            if (
+                not raw_candidate.is_symlink()
+                and candidate.is_relative_to(ROOT_DIR)
+                and candidate.is_dir()
+                and not any(part.startswith(".") for part in candidate.relative_to(ROOT_DIR).parts)
+            ):
+                for default_fn in ("runtime_pipeline.py", "main.tf", "README.md"):
+                    sub_f = candidate / default_fn
+                    if sub_f.is_file() and not sub_f.is_symlink():
+                        raw_candidate = sub_f
+                        candidate = sub_f.resolve()
+                        rel_path = str(candidate.relative_to(ROOT_DIR))
+                        break
             if is_sensitive_repo_path(raw_candidate):
                 self._send_json(
                     403,
@@ -3479,12 +3512,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             self.send_header("Cache-Control", "no-store")
             self.end_headers()
             return
-        if clean_rel in (
-            "core-cymbal-agent",
-            "workstream-2-pattern-a-pooled/2.6-terraform-starter",
-            "workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint",
-            "workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint",
-        ):
+        if clean_rel in DIR_ARTIFACT_ALIASES:
             self.send_response(302)
             self.send_header("Location", "/?tab=screenshots&wb=codebase")
             self.send_header("Cache-Control", "no-store")

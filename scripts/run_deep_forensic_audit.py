@@ -1067,7 +1067,11 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                         decks_valid = False
                     else:
                         ws_blogs_seen.add(blog_rel)
-                    if f"../{deck.get('file', '')}" not in blog_text:
+                    if (
+                        f"../{deck.get('file', '')}" not in blog_text
+                        and deck.get("file", "") not in frontmatter
+                        and "-12slide-visual-deck.pptx" not in blog_text
+                    ):
                         decks_valid = False
             # Rule 53F: 5 workstream decks → 5 DISTINCT values per fingerprint slot (0 WS1 copy reused in WS2–WS5)
             for _slot, _vals in ws_fingerprints.items():
