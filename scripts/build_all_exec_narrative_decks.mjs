@@ -1817,7 +1817,7 @@ async function buildWs2Exec() {
       { range: "SLIDE 03", title: "Mode A vs. Mode B Compute Isolation", desc: "~3.2ms CoW 1-shot heap wipe vs. <100ms WarmPool irreversible HTTP 403 pod latch." },
       { range: "SLIDES 04–06", title: "Approved Pattern A Blueprints (3 Figs)", desc: "100% native editable DrawingML: Pool Topology, Mode A CoW & Mode B WarmPool." },
       { range: "SLIDES 07–08", title: "FORCE RLS, Quotas & 10-Point Red-Team", desc: "PgBouncer DISCARD ALL, 4 hard GCP quotas, and deterministic V1–V10 breach blocks." },
-      { range: "SLIDES 09–10", title: "FinOps Bulkheads, Terraform & ROI", desc: "120 vs. 600 RPM Lua buckets, 1-click Terraform starter, and ~15x vs. 1.0x COGS proof." },
+      { range: "SLIDES 09–10", title: "Live BigQuery RLS Proof & Unit ROI", desc: "Genuine 2880×1620 BigQuery RLS BEFORE→AFTER proof, Cloud Run Hub & 1.0x COGS ROI." },
     ],
     notes: "Welcome to Workstream 2: Pattern A High-Density Pooled Architecture. This 10-slide executive deck shows how B2B SaaS platforms co-locate over a thousand competing customers inside one Google Cloud project at 1.0x baseline COGS without cross-tenant memory leaks, noisy-neighbor starvation, or SQL data bleed.",
   });
@@ -2058,7 +2058,7 @@ async function buildWs3Exec() {
       { range: "SLIDE 03", title: "4-Layer Sovereign Perimeter Stack", desc: "IAM PAB, VPC-SC 0.0.0.0/0 deny, AMD SEV-SNP Gemma 3 (27B), and FIPS 140-3 L3 HSM." },
       { range: "SLIDES 04–05", title: "Approved Pattern B Blueprints (2 Figs)", desc: "100% native editable DrawingML: Sovereign Silo Architecture & CMEK Revocation Swimlane." },
       { range: "SLIDES 06–07", title: "41.2s Kill-Switch & 4-Stage Terraform", desc: "30s poll (<60s SLA) KMS heartbeat, <5s Valkey purge, declarative bootstrap & VPC-SC quotas." },
-      { range: "SLIDES 08–10", title: "7 Security Gates, Compliance & ROI", desc: "10/10 AWS HTTP 403/423 proofs, OCC/HIPAA/DORA matrix & turning silos into a premium SKU." },
+      { range: "SLIDES 08–10", title: "Live CMEK Kill-Switch Proof & SKU ROI", desc: "Live 2880×1620 BigQuery CMEK lockout + Cloud KMS Keyring proof & sovereign SKU economics." },
     ],
     notes: "Welcome to Workstream 3: Pattern B Zero-Trust Sovereign Silos. This deck demonstrates how to win your most demanding banking, healthcare, and public-sector deals using dedicated GCP projects, Confidential GKE with AMD SEV-SNP, and a verified 41.2-second customer-controlled CMEK kill-switch—without forking your agent codebase.",
   });
@@ -2302,7 +2302,7 @@ async function buildWs4Exec() {
       { range: "SLIDE 03", title: "Unidirectional /28 PSC Topology", desc: "Zero-trust consumer-to-producer ServiceAttachments with 0 reverse spoke reachability." },
       { range: "SLIDES 04–05", title: "Approved Pattern C Blueprints (2 Figs)", desc: "100% native editable DrawingML: Hybrid PSC Architecture & 0ms Live Promotion Swimlane." },
       { range: "SLIDES 06–07", title: "3-Phase CAS Cutover & NAT Quotas", desc: "SHADOW_SYNC, 100% SHA-256 parity, 30s drain, /28 NAT port math & regional pinning." },
-      { range: "SLIDES 08–10", title: "Live Jira UI Proof, Telemetry & ROI", desc: "Live Atlassian Jira Retina capture, 10/10 AWS HTTP 403 blocks & 1.8x–2.8x blended COGS." },
+      { range: "SLIDES 08–10", title: "Live Jira 3LO + Hub→Spoke VPC & ROI", desc: "Live Jira 3LO & Hub→Spoke VPC Retina proofs, 10/10 AWS HTTP 403 blocks & 1.8x–2.8x COGS." },
     ],
     notes: "Welcome to Workstream 4: Pattern C Governed Hybrid PSC and Zero-Downtime Tier Upgrades. This deck details the commercial SaaS sweet spot: uniting a single warm Hub with unidirectional Private Service Connect enterprise spokes and 0ms live tier graduation.",
   });
@@ -2545,7 +2545,7 @@ async function buildWs5Exec() {
       { range: "SLIDES 04–06", title: "Approved Capstone Blueprints (3 Figs)", desc: "100% native editable DrawingML: Pattern Selector, Multi-Cloud Bridge & Dynamic GCS Triad." },
       { range: "SLIDE 07", title: "3-Phase GA Sunset Roadmap", desc: "Feature-flagged migration from today's compensating hooks to native Agent Engine GA APIs." },
       { range: "SLIDE 08", title: "Unified 10-SaaS × 3-Pattern Matrix", desc: "30/30 live GCP ↔ AWS Bedrock AgentCore flows (60/60 assertions) + immutable S3 ledgers." },
-      { range: "SLIDES 09–10", title: "Live ThoughtSpot UI Proof & 14-Day Plan", desc: "Genuine 2880×1620 ThoughtSpot Retina captures + executive portfolio rollout blueprint." },
+      { range: "SLIDES 09–10", title: "Live BI + A2A Hub Proofs & 14-Day Plan", desc: "Live 2880×1620 ThoughtSpot BI + Cloud Run A2A Hub proofs & executive portfolio rollout." },
     ],
     notes: "Welcome to Workstream 5, the executive capstone of our 5-part Multi-Tenant Agentic AI series. In ten slides, we unify Patterns A, B, and C into a deterministic 3-gate decision framework, demonstrate zero-rebuild dynamic GCS skill delegation, and prove keyless multi-cloud governance across AWS Bedrock AgentCore and ten enterprise SaaS platforms.",
   });

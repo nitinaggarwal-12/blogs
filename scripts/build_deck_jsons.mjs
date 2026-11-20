@@ -259,7 +259,7 @@ const DECKS = {
           [
             "Network & perimeter isolation",
             "Shared VPC protected by Cloud Armor L7 WAF header stripping",
-            "Per-tenant VPC Service Controls (VPC-SC) perimeter + BeyondCorp mTLS pinning",
+            "Per-tenant VPC Service Controls (VPC-SC) perimeter + Chrome Enterprise Premium mTLS pinning",
             "Unidirectional Private Service Connect (PSC) endpoints (`10.10.0.50` -> `/28` NAT subnet)"
           ],
           [
@@ -613,7 +613,7 @@ const DECKS = {
             'Ingress & identity binding',
             'Trusts client-supplied `X-Tenant-Id` HTTP header or shared API key in application code',
             'Cloud Armor strips `X-Tenant-Id`; IAP + STS mints RFC 8693 OBO & RFC 9449 DPoP context',
-            'BeyondCorp mTLS cert pinning + per-project IAM Principal Access Boundary (PAB)',
+            'Chrome Enterprise Premium mTLS cert pinning + per-project IAM Principal Access Boundary (PAB)',
           ],
           [
             'Tool catalog & memory state',
@@ -819,7 +819,7 @@ const DECKS = {
         tag: 'Single Codebase Architecture',
       },
       {
-        stack: 'BeyondCorp mTLS • IAM Principal Access Boundary (PAB) • VPC Service Controls',
+        stack: 'Chrome Enterprise Premium mTLS • IAM Principal Access Boundary (PAB) • VPC Service Controls',
         sla: 'Blocks Cross-Tenant Principal Reuse & Cross-Project Data Exfiltration (HTTP 403)',
         tag: '3-Layer Perimeter Defense',
       },
@@ -839,14 +839,14 @@ const DECKS = {
         heading: 'Products used — VPC-SC, IAM PAB, Cloud KMS CMEK & Air-Gapped Gemma 3',
         layout: 'cards',
         bullets: [
-          'Wall 1 — mTLS & IAM Principal Access Boundaries (PAB): Every request must present a pinned BeyondCorp client certificate (`cert_sha256`) and pass an IAM PAB rule binding the caller strictly to that tenant’s project.',
+          'Wall 1 — mTLS & IAM Principal Access Boundaries (PAB): Every request must present a pinned Chrome Enterprise Premium mTLS client certificate (`cert_sha256`) and pass an IAM PAB rule binding the caller strictly to that tenant’s project.',
           'Wall 2 — VPC Service Controls (VPC-SC) Data Perimeter: Wraps Vertex AI, AlloyDB, Cloud Storage, GKE, and BigQuery inside a service perimeter that blocks unauthorized egress or cross-project copies (HTTP 403).',
           'Wall 3 — Ubiquitous Cloud KMS CMEK Binding: A single tenant-managed Cloud KMS key encrypts AlloyDB tables, Vertex AI Memory Bank state, GKE persistent disks, and BigQuery audit datasets.',
           'Flexible Sovereign Model Hosting: Tenants can run Gemini 3.8 Flash on Provisioned Throughput inside VPC-SC or deploy air-gapped Gemma 3 (27B) on a private GKE GPU node pool (`172.16.0.2/28`, zero public IPs).',
         ],
         specs: [
           {
-            stack: 'BeyondCorp Enterprise mTLS + Google Cloud IAM Principal Access Boundary (PAB)',
+            stack: 'Chrome Enterprise Premium mTLS + Google Cloud IAM Principal Access Boundary (PAB)',
             sla: 'Neutralizes Stolen Credentials: Principals Cannot Authenticate Outside Their Silo',
             tag: 'Wall 1: Identity & mTLS Boundary',
           },
@@ -874,7 +874,7 @@ const DECKS = {
           'The Regulated CISO Threat Model (Zero Physical Blast Radius): Tier-1 banks (OCC/FFIEC, EU DORA) and healthcare systems (HIPAA) mandate physically separate GCP projects (`cymbal-{tenant}-silo-prod`) with zero shared compute or databases.',
           'FinVault Bank Sovereign Vault (`cymbal-finvault-silo-prod`): Runs air-gapped Gemma 3 (27B IT) on private GKE GPU nodes (`172.16.0.2/28`, 0 public IPs) alongside private Agent Alpha (Gemini 3.8 Flash Dedicated PT) and CMEK AlloyDB.',
           'RetailStream Sovereign Vault (`cymbal-retailstream-silo-prod`): Demonstrates dual-silo parity with its own VPC Service Controls perimeter, IAM Principal Access Boundary (PAB), Entra ID 3LO connectors, and independent Cloud KMS CMEK key ring.',
-          '3-Wall Hardware Perimeter & <60s CMEK Kill-Switch Stack: BeyondCorp mTLS, IAM PAB, VPC-SC, Cloud KMS CMEK (`HTTP 423 Locked`), Model Armor, Cloud DLP, AlloyDB, and BigQuery wrap the unchanged 80% reusable ADK core.',
+          '3-Wall Hardware Perimeter & <60s CMEK Kill-Switch Stack: Chrome Enterprise Premium mTLS, IAM PAB, VPC-SC, Cloud KMS CMEK (`HTTP 423 Locked`), Model Armor, Cloud DLP, AlloyDB, and BigQuery wrap the unchanged 80% reusable ADK core.',
         ],
         specs: [
           {
@@ -893,7 +893,7 @@ const DECKS = {
             tag: '3. RetailStream Sovereign Vault',
           },
           {
-            stack: 'BeyondCorp mTLS • IAM PAB • VPC-SC • Cloud KMS CMEK • Model Armor • Cloud DLP • 3.6 Terraform',
+            stack: 'Chrome Enterprise Premium mTLS • IAM PAB • VPC-SC • Cloud KMS CMEK • Model Armor • Cloud DLP • 3.6 Terraform',
             sla: '80% Shared ADK Code + 20% Declarative Sovereign Shell • 6/6 Sovereign Security Tests PASS',
             tag: '4. Unified Pattern B Sovereign Stack',
           },
@@ -919,8 +919,8 @@ const DECKS = {
           [
             'Identity & perimeter walls',
             'Cloud Armor WAF + IAP OIDC + RFC 8693 OBO & RFC 9449 DPoP tokens',
-            'BeyondCorp mTLS cert pinning + IAM PAB + VPC Service Controls (`Restricted VIP`)',
-            'BeyondCorp mTLS + IAM PAB + VPC-SC + private GKE control plane (`172.16.0.2/28`)',
+            'Chrome Enterprise Premium mTLS cert pinning + IAM PAB + VPC Service Controls (`Restricted VIP`)',
+            'Chrome Enterprise Premium mTLS + IAM PAB + VPC-SC + private GKE control plane (`172.16.0.2/28`)',
           ],
           [
             'Foundation model hosting',
@@ -958,7 +958,7 @@ const DECKS = {
             hop: 'HOP 01',
             stage: 'mTLS & IAM PAB',
             title: 'Client Certificate Pinning & Principal Access Boundary',
-            service: 'BeyondCorp mTLS • IAM PAB',
+            service: 'Chrome Enterprise Premium mTLS • IAM PAB',
             mechanism:
               'Verifies the caller’s X.509 client certificate SHA-256 fingerprint and evaluates IAM Principal Access Boundary policies before minting a silo-scoped OBO/DPoP token.',
             invariant: 'mTLS cert_sha256 Match + PAB Project == cymbal-{tenant}-silo-prod',
@@ -1026,7 +1026,7 @@ const DECKS = {
         tableRows: [
           [
             'Test 1: mTLS Device Identity\nUnverified Client Certificate',
-            'BeyondCorp Enterprise mTLS +\nLoad Balancer Cert Pinning',
+            'Chrome Enterprise Premium mTLS +\nLoad Balancer Cert Pinning',
             'Caller presents a valid OIDC token for FinVault but omits or spoofs the pinned X.509 client certificate.',
             'Blocked at Hop 1 with `HTTP 401 Unauthorized` (mTLS SHA-256 fingerprint mismatch)',
           ],
@@ -1065,7 +1065,7 @@ const DECKS = {
         figure: 'Figure 1',
         title: 'Pattern B: Zero-Trust Sovereign Silos (VPC-SC, IAM PAB, CMEK & Air-Gapped Gemma 3 on GKE)',
         talkingPoints: [
-          'Enterprise callers authenticate at Step 1 with pinned BeyondCorp mTLS certificates and receive a silo-isolated response at Step 7 (or HTTP 423 if CMEK is revoked).',
+          'Enterprise callers authenticate at Step 1 with pinned Chrome Enterprise Premium mTLS certificates and receive a silo-isolated response at Step 7 (or HTTP 423 if CMEK is revoked).',
           'Zone 1 (Silo Ingress & Identity): Validates mTLS device certificates, enforces IAM Principal Access Boundaries, and screens prompts with Model Armor.',
           'Zone 2 (Sovereign Governance Hub): Monitors VPC Service Controls perimeters, polls Cloud KMS CMEK liveness on every turn, and runs all 6 compliance assertions.',
           'Zone 3 (FinVault Sovereign Project): Dedicated GCP project running air-gapped Gemma 3 (27B) on private GKE and CMEK-encrypted AlloyDB/Memory Bank.',
@@ -1116,7 +1116,7 @@ const DECKS = {
         tag: 'Takeaway 2: Operational Scale',
       },
       {
-        stack: 'BeyondCorp mTLS + IAM Principal Access Boundary + VPC-SC Restricted VIP',
+        stack: 'Chrome Enterprise Premium mTLS + IAM Principal Access Boundary + VPC-SC Restricted VIP',
         sla: 'Blocks Both Inbound Credential Spoofing (401/403) & Outbound Exfiltration (403)',
         tag: 'Takeaway 3: Dual Perimeter Lock',
       },
@@ -1612,7 +1612,7 @@ const DECKS = {
           [
             'Hop 1: Edge & Identity\n`Hop1EdgeAndIdentity`',
             'Cloud Armor WAF strips `X-Tenant-Id` + IAP OIDC + RFC 8693 OBO & RFC 9449 DPoP (`Test 1 PASS`)',
-            'BeyondCorp mTLS cert pinning (`HTTP 401`) + IAM Principal Access Boundary (`Tests 1–2 PASS`)',
+            'Chrome Enterprise Premium mTLS cert pinning (`HTTP 401`) + IAM Principal Access Boundary (`Tests 1–2 PASS`)',
             'Hub ALB OIDC/DPoP verification + Firestore authoritative route lookup (`Hybrid Test 1 PASS`)',
           ],
           [

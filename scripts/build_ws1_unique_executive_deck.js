@@ -737,7 +737,8 @@ function buildSlide08() {
   const fig1Path = path.join(ROOT_DIR, 'diagrams', 'ws1-multi-tenant-taxonomy-overview.drawio.png');
   if (fs.existsSync(fig1Path)) {
     slide.addImage({
-      path: fig1Path,
+      data: 'image/png;base64,' + fs.readFileSync(fig1Path).toString('base64'),
+      altText: 'Figure 1 Multi-Tenant Agentic AI Topology Taxonomy',
       x: 0.45, y: 1.18, w: 8.8, h: 5.75,
     });
   }
@@ -806,7 +807,8 @@ function buildSlide09() {
   const fig2Path = path.join(ROOT_DIR, 'diagrams', 'ws1-cloud-arch-center-5hop-baseline.drawio.png');
   if (fs.existsSync(fig2Path)) {
     slide.addImage({
-      path: fig2Path,
+      data: 'image/png;base64,' + fs.readFileSync(fig2Path).toString('base64'),
+      altText: 'Figure 2 Google Cloud Architecture Center 5-Hop Baseline',
       x: 0.45, y: 1.18, w: 8.8, h: 5.75,
     });
   }
@@ -1154,18 +1156,18 @@ function buildSlide12() {
 }
 
 // -----------------------------------------------------------------------------
-// SLIDE 13: Empirical Proof 1 — Real-Time BI Isolation in ThoughtSpot Cloud
+// SLIDE 13: Empirical Proof 1 — Live Google Cloud Model Armor (WS1-BA-01)
 // -----------------------------------------------------------------------------
 function buildSlide13() {
   const slide = pptx.addSlide();
-  addStandardHeader(slide, 'EMPIRICAL PROOFS', 'Proof 1: Real-Time BI Isolation in ThoughtSpot Cloud (Retina Captures)', 'ACT III • PROOF 1');
+  addStandardHeader(slide, 'EMPIRICAL PROOFS', 'Proof 1: Live Vertex AI Model Armor — Unprotected vs. Zero-Trust Firewall', 'ACT III • PROOF 1');
 
-  slide.addText('Live 2880x1620 Retina captures from commercial ThoughtSpot Cloud (team2.thoughtspot.cloud) paired with Hop 5 AlloyDB Row-Level Security tenant-isolation architecture.', {
+  slide.addText('Two genuine 2880x1620 Retina captures from console.cloud.google.com (cymbal-ge-hub-2026) testing the exact same cross-tenant SSN prompt-injection payload live.', {
     x: 0.45, y: 0.72, w: 12.43, h: 0.38, fontSize: 10.5, color: TEXT_BODY, fontFace: FONT_BODY,
   });
 
-  const beforeImg = path.join(ROOT_DIR, 'screenshots', 'verified-cloud-console', 'saas_01_thoughtspot_liveboard.png');
-  const afterImg = path.join(ROOT_DIR, 'screenshots', 'verified-cloud-console', 'saas_02_thoughtspot_saved_answer.png');
+  const beforeImg = path.join(ROOT_DIR, 'screenshots', 'verified-cloud-console', 'ws1_before_model_armor_unprotected.png');
+  const afterImg = path.join(ROOT_DIR, 'screenshots', 'verified-cloud-console', 'ws1_after_model_armor_blocked.png');
 
   // Left Before
   slide.addShape(pptx.ShapeType.roundRect, {
@@ -1175,16 +1177,17 @@ function buildSlide13() {
   slide.addShape(pptx.ShapeType.rect, {
     x: 0.45, y: 1.22, w: 6.0, h: 0.42, fill: { color: G_RED_TINT },
   });
-  slide.addText('LIVE VIEW 1: THOUGHTSPOT CLOUD EXECUTIVE LIVEBOARD', {
+  slide.addText('BEFORE: UNPROTECTED BASELINE (NO VIOLATIONS DETECTED)', {
     x: 0.65, y: 1.22, w: 5.6, h: 0.42, fontSize: 9.2, bold: true, color: G_RED, fontFace: FONT_TITLE, valign: 'middle',
   });
   if (fs.existsSync(beforeImg)) {
     slide.addImage({
-      path: beforeImg,
+      data: 'image/png;base64,' + fs.readFileSync(beforeImg).toString('base64'),
+      altText: 'WS1 Model Armor Unprotected Baseline Capture',
       x: 0.65, y: 1.75, w: 5.6, h: 3.15,
     });
   }
-  slide.addText('Live View 1 captures the commercial ThoughtSpot Cloud Executive Retail Sales Liveboard ($735.3K KPIs) on team2.thoughtspot.cloud; unscoped multi-tenant BI queries risk cross-tenant leakage without Hop 5 AlloyDB RLS.', {
+  slide.addText('Live Console Capture (ge-ws1-before-unprotected-baseline • SHA-256 2bda7e68993a): With PI/Jailbreak, Malicious URL, and SDP disabled, the cross-tenant SSN exfiltration prompt returns "No violations detected" and passes unblocked.', {
     x: 0.65, y: 5.45, w: 5.6, h: 1.35, fontSize: 8.5, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15,
   });
 
@@ -1196,36 +1199,37 @@ function buildSlide13() {
   slide.addShape(pptx.ShapeType.rect, {
     x: 6.88, y: 1.22, w: 6.0, h: 0.42, fill: { color: G_GREEN_TINT },
   });
-  slide.addText('LIVE VIEW 2: THOUGHTSPOT CLOUD GOVERNED SAVED ANSWER', {
+  slide.addText('AFTER: ZERO-TRUST AI FIREWALL (VIOLATIONS BLOCKED LIVE)', {
     x: 7.08, y: 1.22, w: 5.6, h: 0.42, fontSize: 9.2, bold: true, color: G_GREEN_DEEP, fontFace: FONT_TITLE, valign: 'middle',
   });
   if (fs.existsSync(afterImg)) {
     slide.addImage({
-      path: afterImg,
+      data: 'image/png;base64,' + fs.readFileSync(afterImg).toString('base64'),
+      altText: 'WS1 Model Armor Zero-Trust Blocked Capture',
       x: 7.08, y: 1.75, w: 5.6, h: 3.15,
     });
   }
-  slide.addText('Live View 2 captures the commercial ThoughtSpot Cloud Pharma Supply Saved Answer (100 rows) on team2.thoughtspot.cloud; in production, Hop 5 AlloyDB FORCE RLS enforces SET LOCAL app.current_tenant_id with zero cross-tenant leakage.', {
+  slide.addText('Live Console Capture (ge-zero-trust-ai-firewall • SHA-256 93471e0d7b17): Enabling WS1 Hop 4 Model Armor (Confidence level: Low and above) flags "Template violations detected" — Dangerous content: Match found & Prompt injection and jailbreak: Match found.', {
     x: 7.08, y: 5.45, w: 5.6, h: 1.35, fontSize: 8.5, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15,
   });
 
-  addStandardFooter(slide, 13, 16, 'Empirical Proof 1: ThoughtSpot Cloud BI Isolation');
-  slide.addNotes('This slide pairs two live 2880x1620 Retina captures from commercial ThoughtSpot Cloud (team2.thoughtspot.cloud) — the Executive Retail Sales Liveboard and Pharma Supply Saved Answer — with Hop 5 AlloyDB FORCE RLS tenant-isolation architecture.');
+  addStandardFooter(slide, 13, 16, 'Empirical Proof 1: Live Google Cloud Model Armor (WS1-BA-01)');
+  slide.addNotes('Slide 13 pairs two live 2880x1620 Retina captures from Google Cloud Console Model Armor in cymbal-ge-hub-2026: on the left, ge-ws1-before-unprotected-baseline (SHA-256 2bda7e68993a) returns No violations detected; on the right, ge-zero-trust-ai-firewall (SHA-256 93471e0d7b17) blocks the exact same cross-tenant SSN prompt with Template violations detected.');
 }
 
 // -----------------------------------------------------------------------------
-// SLIDE 14: Empirical Proof 2 — Schema & Catalog Isolation in Databricks Unity SQL
+// SLIDE 14: Empirical Proof 2 — Live Google Cloud Armor Hop 1 WAF (WS1-BA-02)
 // -----------------------------------------------------------------------------
 function buildSlide14() {
   const slide = pptx.addSlide();
-  addStandardHeader(slide, 'EMPIRICAL PROOFS', 'Proof 2: Schema & Catalog Isolation in Databricks Unity Catalog SQL (F-13 Commercial Slot)', 'ACT III • PROOF 2');
+  addStandardHeader(slide, 'EMPIRICAL PROOFS', 'Proof 2: Live Google Cloud Armor Hop 1 Edge WAF (WS1-BA-02)', 'ACT III • PROOF 2');
 
-  slide.addText('Commercial SaaS verification slot (pending Google Cloud Marketplace Free Trial / SSO — zero open-source stand-ins) backed by Hop 2 ARD catalog scoping and AWS Bedrock AgentCore MCP target TERCK8SLBP.', {
+  slide.addText('Two genuine 2880x1620 Retina captures from console.cloud.google.com (cymbal-ge-hub-2026) proving deterministic Hop 1 header anti-spoofing and OWASP SQLi/XSS protection.', {
     x: 0.45, y: 0.72, w: 12.43, h: 0.38, fontSize: 10.5, color: TEXT_BODY, fontFace: FONT_BODY,
   });
 
-  const beforeImg2 = '';
-  const afterImg2 = '';
+  const beforeImg2 = path.join(ROOT_DIR, 'screenshots', 'verified-cloud-console', 'ws1_before_open_edge_baseline.png');
+  const afterImg2 = path.join(ROOT_DIR, 'screenshots', 'verified-cloud-console', 'ws1_after_cloud_armor_hop1_waf.png');
 
   // Left Before
   slide.addShape(pptx.ShapeType.roundRect, {
@@ -1235,16 +1239,17 @@ function buildSlide14() {
   slide.addShape(pptx.ShapeType.rect, {
     x: 0.45, y: 1.22, w: 6.0, h: 0.42, fill: { color: G_RED_TINT },
   });
-  slide.addText('BEFORE: UNRESTRICTED SQL CATALOG (GLOBAL SCHEMA EXPOSURE)', {
+  slide.addText('BEFORE: OPEN DEFAULT-ALLOW EDGE POLICY (1 RULE: ALLOW *)', {
     x: 0.65, y: 1.22, w: 5.6, h: 0.42, fontSize: 9.2, bold: true, color: G_RED, fontFace: FONT_TITLE, valign: 'middle',
   });
   if (beforeImg2 && fs.existsSync(beforeImg2)) {
     slide.addImage({
-      path: beforeImg2,
+      data: 'image/png;base64,' + fs.readFileSync(beforeImg2).toString('base64'),
+      altText: 'WS1 Cloud Armor Open Edge Baseline Capture',
       x: 0.65, y: 1.75, w: 5.6, h: 3.15,
     });
   }
-  slide.addText('Vulnerability: A standard SQL agent executing queries against Databricks Unity Catalog can query SHOW CATALOGS and SHOW SCHEMAS, exposing all enterprise tenant tables, internal columns, and database metadata across Google Cloud and AWS datalakes.', {
+  slide.addText('Live Console Capture (cymbal-ws1-before-open-edge • SHA-256 f721577a1e05): A single default Allow * rule at priority 2,147,483,647 permits spoofed X-Tenant-ID headers and SQLi/XSS payloads straight into the shared agent tier.', {
     x: 0.65, y: 5.45, w: 5.6, h: 1.35, fontSize: 8.5, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15,
   });
 
@@ -1256,21 +1261,22 @@ function buildSlide14() {
   slide.addShape(pptx.ShapeType.rect, {
     x: 6.88, y: 1.22, w: 6.0, h: 0.42, fill: { color: G_GREEN_TINT },
   });
-  slide.addText('AFTER: GOVERNED CATALOG ACL (STRICT TENANT ISOLATION)', {
+  slide.addText('AFTER: HOP 1 EDGE WAF (P1000 & P1100 DENY 403 ENFORCED)', {
     x: 7.08, y: 1.22, w: 5.6, h: 0.42, fontSize: 9.2, bold: true, color: G_GREEN_DEEP, fontFace: FONT_TITLE, valign: 'middle',
   });
   if (afterImg2 && fs.existsSync(afterImg2)) {
     slide.addImage({
-      path: afterImg2,
+      data: 'image/png;base64,' + fs.readFileSync(afterImg2).toString('base64'),
+      altText: 'WS1 Cloud Armor Hop 1 WAF Capture',
       x: 7.08, y: 1.75, w: 5.6, h: 3.15,
     });
   }
-  slide.addText('Verified Isolation: With Hop 2 ARD Catalog scoping and Databricks Unity Catalog System Access Control, the query executor is restricted strictly to the caller\'s catalog. Inquiries into competitor catalogs throw access denied. Cross-tenant data exfiltration is blocked.', {
+  slide.addText('Live Console Capture (cymbal-pooled-edge-waf • SHA-256 37fcc76e0f37): Enforces 3 rules — Priority 1000 Deny (403) blocking spoofed X-Tenant-ID smuggling and Priority 1100 Deny (403) blocking OWASP SQLi/XSS before compute is invoked.', {
     x: 7.08, y: 5.45, w: 5.6, h: 1.35, fontSize: 8.5, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15,
   });
 
-  addStandardFooter(slide, 14, 16, 'Empirical Proof 2: Databricks Unity SQL Catalog Isolation');
-  slide.addNotes('Slide 14 presents the fail-closed F-13 commercial verification slot for Databricks Unity Catalog SQL (pending Google Cloud Marketplace Free Trial / SSO capture), backed by Hop 2 ARD catalog scoping and AWS Bedrock AgentCore MCP target TERCK8SLBP.');
+  addStandardFooter(slide, 14, 16, 'Empirical Proof 2: Live Google Cloud Armor Hop 1 WAF (WS1-BA-02)');
+  slide.addNotes('Slide 14 pairs two live 2880x1620 Retina captures from Google Cloud Armor in cymbal-ge-hub-2026: on the left, cymbal-ws1-before-open-edge (SHA-256 f721577a1e05) exposes an open Allow-all edge; on the right, cymbal-pooled-edge-waf (SHA-256 37fcc76e0f37) enforces Priority 1000 and 1100 Deny-403 WAF rules.');
 }
 
 // -----------------------------------------------------------------------------

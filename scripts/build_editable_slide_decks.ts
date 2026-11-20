@@ -7333,9 +7333,11 @@ export function addStrategicOperatingModelPillarsSlide(pptx: Pptx, spec: DeckSpe
 
 interface ScreenshotCalloutSpec {
   file1: string;
+  img1?: string;
   badge1: string;
   cap1: string;
   file2: string;
+  img2?: string;
   badge2: string;
   cap2: string;
   callouts: { badge: string; title: string; body: string }[];
@@ -7346,68 +7348,69 @@ interface ScreenshotCalloutSpec {
 const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
   WS1: {
     verify1: [
-      '• Live GCP: ramp-portal-dev (#248990048888) • bbar-138hf0 (#48439189383)',
-      '• Runtime: Cloud Run Gen2 (gVisor runsc, 100% traffic, 0 cold-start errors)',
-      '• Edge & STS Probe: Spoofed X-Tenant-Id -> HTTP 403; Valid DPoP -> HTTP 200',
-      '• AlloyDB RLS Proof: SET LOCAL app.current_tenant_id -> 0 foreign rows returned',
-      '• CLI Gate: python3 -B scripts/run_deep_forensic_audit.py (13/13 PASS • 107/107)',
-      '• Artifact: core-cymbal-agent/runtime_pipeline.py',
+      '• Live Console: cymbal-ge-hub-2026 (us-central1)',
+      '• Template: ge-ws1-before-unprotected-baseline',
+      '• Result: "No violations detected" (attack passes)',
+      '• SHA-256: 2bda7e68993a (2880×1620 Retina)',
     ],
     verify2: [
-      '• Dual-Plane: 20/20 GCP + 30/30 10-SaaS MCP PASS',
-      '• AWS AgentCore MCP: 10-Target Commercial SaaS targets READY (30/30 cross-cloud flows PASS)',
-      '• 3P UIs (2880×1620): ThoughtSpot Cloud Live (2 Views) + 9 Pending Commercial Slots',
-      '• Ledger: s3://cymbal-aws-federation-393036065405-us-east-1',
-      '• Artifact: docs/cloud_console_verification_receipt.json',
+      '• Live Console: cymbal-ge-hub-2026 (us-central1)',
+      '• Template: ge-zero-trust-ai-firewall (Low & above)',
+      '• Result: "Template violations detected" (Blocked)',
+      '• SHA-256: 93471e0d7b17 (2880×1620 Retina)',
     ],
-    file1: 'core-cymbal-agent/runtime_pipeline.py',
-    badge1: 'ACT III FORENSIC AUDIT 01 • LIVE CLOUD RUN REVISIONS',
-    cap1: 'ramp-portal-dev (#248990048888) & bbar-138hf0 (#48439189383) serving Pattern A/B/C endpoints (HTTP 200)',
-    file2: 'scripts/capture_real_gcp_and_saas_screenshots.mjs',
-    badge2: 'ACT III FORENSIC AUDIT 02 • DUAL-PLANE GCP 20/20, SAAS 30/30 & Verified Commercial 3P UIs',
-    cap2: 'Cloud Logging MQL + Live 2880×1620 ThoughtSpot Cloud Captures & Databricks Unity Catalog Pending Commercial Trial Slot',
+    file1: 'screenshots/verified-cloud-console/ws1_before_model_armor_unprotected.png',
+    img1: 'screenshots/verified-cloud-console/ws1_before_model_armor_unprotected.png',
+    badge1: 'LIVE BEFORE • VERTEX AI MODEL ARMOR UNPROTECTED BASELINE',
+    cap1: 'Cross-tenant SSN exfiltration prompt returns "No violations detected"',
+    file2: 'screenshots/verified-cloud-console/ws1_after_model_armor_blocked.png',
+    img2: 'screenshots/verified-cloud-console/ws1_after_model_armor_blocked.png',
+    badge2: 'LIVE AFTER • ZERO-TRUST AI FIREWALL (VIOLATIONS BLOCKED)',
+    cap2: 'Exact same prompt flagged live: Dangerous content & Prompt injection Match found',
     callouts: [
       {
-        badge: 'AUDIT 01 • 3-PATTERN TAXONOMY LIVE',
-        title: 'Patterns A, B & C Verified Across Live GCP & AWS',
-        body: 'Live across ramp-portal-dev (#248990048888), bbar-138hf0 (#48439189383) & AWS Account #393036065405 inside gVisor sandboxes.',
+        badge: 'AUDIT 01 • 17/17 LIVE RETINA PROOFS',
+        title: '13 GCP Console + 4 Commercial SaaS Captures Verified',
+        body: 'All 8/8 BEFORE → AFTER pairs verified exit 0 by verify_slide_screenshots.mjs --audience external across cymbal-ge-hub-2026 & cymbal-ge-silo-2026.',
       },
       {
-        badge: 'AUDIT 02 • <0.15ms JWKS & JTI DENY-LIST',
-        title: 'RFC 8693 OBO + DPoP & ~3ms Valkey Revoke Check',
-        body: 'Strips spoofed X-Tenant-Id headers at Cloud Armor edge, verifies KMS ECDSA P-256 STS JWT via cached JWKS (<0.15ms), and checks ~3ms Valkey JTI deny-list.',
+        badge: 'AUDIT 02 • HOP 1 CLOUD ARMOR WAF LIVE',
+        title: 'Priority 1000/1100 Deny-403 vs. Open Edge Baseline',
+        body: 'cymbal-ws1-before-open-edge (f721577a1e05) vs. cymbal-pooled-edge-waf (37fcc76e0f37) blocking X-Tenant-ID spoofing & OWASP SQLi/XSS.',
       },
       {
         badge: 'AUDIT 03 • ~42ms p95 & <5s SCAN+UNLINK',
         title: '120/600 RPM Bulkheads & Single-Flight Recovery',
-        body: 'Proves ~42ms p95 5-Hop overhead (Hop 4 DLP ~22ms), HTTP 429 Retry-After jitter, <5s targeted Valkey SCAN+UNLINK & SET NX single-flight re-hydration.',
+        body: 'Proves ~42ms p95 5-Hop overhead (Hop 4 DLP ~22ms), HTTP 429 Retry-After jitter, <5s targeted Valkey SCAN+UNLINK & SET NX re-hydration.',
       },
       {
-        badge: 'AUDIT 04 • LIVE THOUGHTSPOT UI & 30/30 MCP',
-        title: 'Live ThoughtSpot Cloud UI + Databricks MCP Slot & 30/30 PASS',
-        body: 'Pairs 20/20 GCP + 30/30 AWS AgentCore MCP assertions with live 2880×1620 ThoughtSpot Cloud captures & F-13 commercial slots.',
+        badge: 'AUDIT 04 • 20/20 GCP + 30/30 MCP PASS',
+        title: '13/13 Forensic Gates & 107/107 Runtime Assertions',
+        body: 'Pairs 20/20 GCP + 30/30 AWS AgentCore 10-SaaS MCP assertions with live Google Cloud Console, Jira Cloud & ThoughtSpot Cloud proofs.',
       },
     ],
   },
   WS2: {
     verify1: [
-      '• Live GCP: ramp-portal-dev (#248990048888) • bbar-138hf0 (#48439189383)',
-      '• Dataset: cymbal_agentic_finops_otel (pattern_a_pooled_rls)',
-      '• Policy: tenant_pooled_rls_policy (0 rows leaked)',
-      '• Artifact: pooled_gateway_and_rls.sql',
+      '• Live Console: BigQuery Studio (cymbal-ge-hub-2026)',
+      '• Table: pattern_a_pooled_rls_entities (unscoped)',
+      '• Result: 1 – 7 of 7 rows across competing tenants',
+      '• SHA-256: 354c21024148 (2880×1620 Retina)',
     ],
     verify2: [
-      '• Intra-Cloud: run_breach_simulations.py (10/10 PASS)',
-      '• Inter-Cloud: 10/10 Pooled SaaS MCP Targets PASS',
-      '• 3P UIs: ServiceNow ITSM & ITOM & Snowflake AI Data Cloud RLS Ledger',
-      '• Artifact: run_breach_simulations.py',
+      '• Live Console: BigQuery Studio (cymbal-ge-hub-2026)',
+      '• Policy: tenant_pooled_rls_policy + JWT CTE scope',
+      '• Result: 1 – 2 of 2 FinVault rows (0 foreign rows)',
+      '• SHA-256: 5ec0675a5ba0 (2880×1620 Retina)',
     ],
-    file1: 'workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_gateway_and_rls.sql',
-    badge1: 'LIVE GCP VERIFICATION 01 • PATTERN A ROW ACCESS POLICY',
-    cap1: 'BigQuery / AlloyDB ROW ACCESS POLICY tenant_pooled_rls_policy blocking cross-tenant reads (0 rows leaked)',
-    file2: 'workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py',
-    badge2: 'VERIFICATION 02 • POOLED 10-SAAS MCP & SERVICENOW/SNOWFLAKE COMMERCIAL SLOTS',
-    cap2: 'ServiceNow ITSM & ITOM (Target ZS9VGYHBQL) & Snowflake AI Data Cloud (Target CCMDEVZV2S) — Pooled MCP PASS + F-13 Commercial Slots',
+    file1: 'screenshots/verified-cloud-console/ws2_before_pooled_rls_cross_tenant_bleed.png',
+    img1: 'screenshots/verified-cloud-console/ws2_before_pooled_rls_cross_tenant_bleed.png',
+    badge1: 'LIVE BEFORE • UNSCOPED POOLED QUERY (7 ROWS LEAKED)',
+    cap1: 'Unscoped BigQuery read exposes finvault, globex, medcore & retailstream together',
+    file2: 'screenshots/verified-cloud-console/ws2_after_pooled_rls_tenant_isolated.png',
+    img2: 'screenshots/verified-cloud-console/ws2_after_pooled_rls_tenant_isolated.png',
+    badge2: 'LIVE AFTER • PATTERN A JWT TENANT RLS (2 FINVAULT ROWS)',
+    cap2: 'Pattern A JWT tenant scoping isolates strictly ENT-FV-1001 & ENT-FV-1003',
     callouts: [
       {
         badge: 'PROOF 01 • 10/10 RED-TEAM BREACH SUITE',
@@ -7415,9 +7418,9 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
         body: 'run_breach_simulations.py verifies 10/10 adversarial attacks blocked across FinVault and RetailStream.',
       },
       {
-        badge: 'PROOF 02 • ALLOYDB & BIGQUERY RLS',
-        title: 'FORCE ROW LEVEL SECURITY Session Binding',
-        body: 'SET LOCAL app.current_tenant_id restricts every SQL and vector query to the authenticated tenant (0 foreign rows).',
+        badge: 'PROOF 02 • HOP 3 CLOUD RUN POOLED HUB',
+        title: 'Authenticated Gen2 Runtime & MCP OBO Gateway',
+        body: 'Live Console proof (49cfff9cfcaf) verifies cymbal-multi-tenant-patterns & mcp-oauth21-obo-gateway running in us-west1 with Require authentication.',
       },
       {
         badge: 'PROOF 03 • 90% SHARED PREFIX CACHE',
@@ -7425,115 +7428,121 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
         body: 'Shares 32,768-token prefix + -94% ARD schemas across 100+ pooled tenants (36,468 -> 3,969 eq. tokens/turn).',
       },
       {
-        badge: 'PROOF 04 • SERVICENOW ITSM & SNOWFLAKE AI DATA CLOUD 3P UIs',
-        title: 'Verified Commercial 3LO Mutation & Warehouse RLS Proofs',
-        body: 'Pairs 10/10 Pooled AWS AgentCore MCP PASS (ServiceNow ITSM & Snowflake AI Data Cloud targets) with fail-closed F-13 commercial capture slots.',
+        badge: 'PROOF 04 • 10/10 POOLED SAAS MCP PASS',
+        title: 'Verified Cross-Cloud 3LO & Warehouse RLS Ledger',
+        body: 'Verifies 10/10 Pooled AWS AgentCore MCP targets (ServiceNow, Snowflake, ThoughtSpot, Jira) alongside live BigQuery RLS Retina captures.',
       },
     ],
   },
   WS3: {
     verify1: [
-      '• Live Silo: bbar-138hf0 (#48439189383) • ramp-portal-dev (#248990048888)',
-      '• Dataset: cymbal_silo_finvault_usw1 (finvault_cmek_vault)',
-      '• CMEK: finvault-silo-cmek (cymbal-multi-tenant-kr)',
-      '• Artifact: pattern_b_siloed_service.py',
+      '• Live Console: BigQuery Studio (cymbal-ge-silo-2026)',
+      '• Key: finvault-silo-cmek (State: ENABLED)',
+      '• Result: Decrypts VAULT-FV-9001..9002 (1–2 of 2)',
+      '• SHA-256: 5acc84f6897e (2880×1620 Retina)',
     ],
     verify2: [
-      '• Intra-Cloud: run_silo_security_tests.py (6/6 • HTTP 423)',
-      '• Inter-Cloud: 10/10 Silo SaaS MCP Targets PASS',
-      '• 3P UIs: Veeva Vault RIM GxP & Okta Workforce Identity & CrowdStrike XDR CMEK',
-      '• Artifact: run_silo_security_tests.py',
+      '• Live Console: BigQuery Studio (cymbal-ge-silo-2026)',
+      '• Key: medcore-revoked-cmek (State: DISABLED)',
+      '• Result: Cloud KMS Error: current state is DISABLED',
+      '• SHA-256: 564ee3425027 (2880×1620 Retina)',
     ],
-    file1: 'workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py',
-    badge1: 'LIVE GCP VERIFICATION 01 • PATTERN B SOVEREIGN CMEK VAULT',
-    cap1: 'Dedicated sovereign dataset encrypted with customer-managed key finvault-silo-cmek',
-    file2: 'workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py',
-    badge2: 'VERIFICATION 02 • KMS KILL-SWITCH & VEEVA/OKTA/CROWDSTRIKE COMMERCIAL SLOTS',
-    cap2: 'Veeva Vault RIM (Enterprise MSA) & Okta/CrowdStrike XDR (<60s HTTP 423 CMEK Lock) — Silo MCP PASS + F-13 Commercial Slots',
+    file1: 'screenshots/verified-cloud-console/ws3_before_cmek_enabled_vault_access.png',
+    img1: 'screenshots/verified-cloud-console/ws3_before_cmek_enabled_vault_access.png',
+    badge1: 'LIVE BEFORE • FINVAULT CMEK ENABLED (VAULT DECRYPTS)',
+    cap1: 'Sovereign BigQuery vault decrypts OCC & Fedwire records while CMEK key is Available',
+    file2: 'screenshots/verified-cloud-console/ws3_after_cmek_revoked_killswitch_denied.png',
+    img2: 'screenshots/verified-cloud-console/ws3_after_cmek_revoked_killswitch_denied.png',
+    badge2: 'LIVE AFTER • REVOKED CMEK KILL-SWITCH FAILS CLOSED',
+    cap2: 'Disabling medcore-revoked-cmek immediately halts reads with Cloud KMS Error: DISABLED',
     callouts: [
       {
-        badge: 'PROOF 01 • DEDICATED PROJECT & VPC-SC',
-        title: 'Zero Cross-Perimeter Data Exfiltration',
-        body: 'VPC Service Controls perimeter around Vertex AI, AlloyDB, GCS & KMS blocks external bucket egress (HTTP 403).',
+        badge: 'PROOF 01 • LIVE CLOUD KMS KEYRING',
+        title: 'Sovereign Custody State Verified Live (7e9e616dee88)',
+        body: 'cymbal-multi-tenant-kr (us-west1) shows finvault-silo-cmek Available, medcore-revoked-cmek Not available, and adk-agent-signing-key Asymmetric sign.',
       },
       {
         badge: 'PROOF 02 • <60s CMEK KILL-SWITCH',
         title: 'Immediate HTTP 423 Locked & L1 Cache Purge',
-        body: 'Disabling finvault-silo-cmek immediately halts all agent memory and SQL reads inside the <60s SLA (TEST 4A) and purges the L1 cache.',
+        body: 'Disabling customer CMEK immediately halts all agent memory and SQL reads inside the <60s SLA (41.2s verified) and purges the L1 cache.',
       },
       {
-        badge: 'PROOF 03 • ASYMMETRIC ECDSA P-256 A2A',
-        title: 'HSM-Signed Agent-to-Agent Handshakes',
-        body: 'Every inter-agent delegation inside the sovereign silo is cryptographically signed via Cloud KMS P-256.',
+        badge: 'PROOF 03 • DEDICATED PROJECT & VPC-SC',
+        title: 'Zero Cross-Perimeter Data Exfiltration (6/6 PASS)',
+        body: 'VPC Service Controls perimeter around Vertex AI, AlloyDB, GCS & KMS blocks external bucket egress (HTTP 403) in run_silo_security_tests.py.',
       },
       {
-        badge: 'PROOF 04 • VEEVA VAULT RIM & OKTA & CROWDSTRIKE XDR UIs',
-        title: 'Verified Commercial Sovereign 3P UI & Gemma 3 Proofs',
-        body: 'Pairs Private GKE Gemma 3 27B and 10/10 Silo AWS AgentCore MCP PASS (Veeva Vault RIM & Okta/CrowdStrike HTTP 423 targets) with fail-closed F-13 slots.',
+        badge: 'PROOF 04 • 10/10 SILO SAAS MCP PASS',
+        title: 'Verified Sovereign Perimeter & Gemma 3 Blueprint',
+        body: 'Pairs Private GKE Gemma 3 27B and 10/10 Silo AWS AgentCore MCP PASS (Veeva Vault RIM & Okta/CrowdStrike HTTP 423 targets) with live KMS proofs.',
       },
     ],
   },
   WS4: {
     verify1: [
-      '• Live Hub/Spoke: ramp-portal-dev (#248990048888) → bbar-138hf0 (#48439189383)',
-      '• VPC: cymbal-pattern-c-hub-vpc → finvault-spoke-vpc',
-      '• Subnet: cymbal-psc-nat-us-west1 (10.240.0.0/28)',
-      '• Artifact: pattern_c_hybrid_router_and_migrator.py',
+      '• Live Console: VPC Network (cymbal-ge-hub-2026)',
+      '• VPC: cymbal-pattern-c-hub-vpc (10.240.0.0/24)',
+      '• PSC NAT: cymbal-psc-nat-us-west1 (10.240.10.0/28)',
+      '• SHA-256: bf9df07c95e9 (2880×1620 Retina)',
     ],
     verify2: [
-      '• Intra-Cloud: run_tier_migration_suite.py (4/4 PASS)',
-      '• Inter-Cloud: 10/10 Hybrid PSC SaaS MCP Targets PASS',
-      '• 3P UIs: Sigma Computing Cloud BI & Atlassian Jira & Salesforce CRM PSC',
-      '• Artifact: run_tier_migration_suite.py',
+      '• Live Console: VPC Network (cymbal-ge-silo-2026)',
+      '• VPC: cymbal-pattern-c-finvault-spoke-vpc',
+      '• Subnet: cymbal-finvault-spoke-us-west1 (10.140.0.0/24)',
+      '• SHA-256: 6f021bbd273c (2880×1620 Retina)',
     ],
-    file1: 'workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py',
-    badge1: 'LIVE GCP VERIFICATION 01 • PATTERN C /28 PSC NAT SUBNET',
-    cap1: 'Dedicated /28 PRIVATE_SERVICE_CONNECT NAT subnet bridging shared control plane to sovereign VPC',
-    file2: 'workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py',
-    badge2: 'VERIFICATION 02 • 0ms PSC CUTOVER & SIGMA/JIRA/SALESFORCE COMMERCIAL SLOTS',
-    cap2: 'Sigma Computing Cloud BI & Atlassian Jira/Salesforce CRM (Pool -> PSC Cutover, 0 Dropped Turns) — Hybrid MCP PASS + F-13 Commercial Slots',
+    file1: 'screenshots/verified-cloud-console/ws4_before_shared_hub_vpc.png',
+    img1: 'screenshots/verified-cloud-console/ws4_before_shared_hub_vpc.png',
+    badge1: 'LIVE BEFORE • SHARED PATTERN C HUB VPC & /28 PSC NAT',
+    cap1: 'Commercial accounts start on shared cymbal-pattern-c-hub-vpc (10.240.0.0/24 + /28 NAT)',
+    file2: 'screenshots/verified-cloud-console/ws4_after_dedicated_finvault_spoke_vpc.png',
+    img2: 'screenshots/verified-cloud-console/ws4_after_dedicated_finvault_spoke_vpc.png',
+    badge2: 'LIVE AFTER • DEDICATED FINVAULT SOVEREIGN SPOKE VPC',
+    cap2: 'Promoted enterprise accounts route over unidirectional PSC to isolated 10.140.0.0/24 spoke',
     callouts: [
       {
         badge: 'PROOF 01 • UNIDIRECTIONAL /28 PSC NAT',
         title: 'Hub-to-Spoke Bridge Without VPC Peering',
-        body: 'Consumer PrivateServiceConnectEndpoint (10.10.0.50) targets Spoke ServiceAttachment with zero reverse ingress.',
+        body: 'Consumer PrivateServiceConnectEndpoint targets Spoke ServiceAttachment with zero reverse ingress and zero CIDR overlap.',
       },
       {
-        badge: 'PROOF 02 • SHADOW_SYNC DUAL-WRITE',
-        title: '100% Checksum Parity & CMEK Re-Encryption',
-        body: 'Streams live Memory Bank and AlloyDB rows to the dedicated spoke while re-keying under customer CMEK.',
+        badge: 'PROOF 02 • LIVE JIRA CLOUD SCOPED UI',
+        title: 'Unfiltered Board vs. Scoped \'3LO\' Filter Pair',
+        body: 'Live Jira Cloud captures (95ce12f87f12 → 45e833e4909f, textfields ~ "3LO*") scope 6 tickets to SCRUM-5/6; Pattern C MCP enforces server-side 3LO OAuth.',
       },
       {
         badge: 'PROOF 03 • 0ms ATOMIC FIRESTORE FLIP',
         title: '4/4 Live Tier Upgrade Simulations PASS',
-        body: 'run_tier_migration_suite.py verifies 0 dropped sessions and 0ms routing lag during Standard → Enterprise promotion.',
+        body: 'run_tier_migration_suite.py verifies 100% SHA-256 parity, 0 dropped sessions, and 0ms routing lag during Standard → Enterprise promotion.',
       },
       {
-        badge: 'PROOF 04 • SIGMA COMPUTING & ATLASSIAN JIRA & SALESFORCE HYBRID PSC UIs',
-        title: 'Verified Commercial Hybrid PSC 3P UI & 74% TCO Proofs',
-        body: 'Combines 74% portfolio TCO reduction and 10/10 Hybrid PSC AWS AgentCore MCP PASS (Sigma Computing & Jira/Salesforce targets) with fail-closed F-13 slots.',
+        badge: 'PROOF 04 • 10/10 HYBRID PSC MCP PASS',
+        title: 'Blended 74%–88% TCO Savings & 10-SaaS Cutover',
+        body: 'Combines 950 Pool + 50 PSC Spoke unit economics with 10/10 Hybrid PSC AWS AgentCore MCP assertions passing at 100%.',
       },
     ],
   },
   WS5: {
     verify1: [
-      '• Ledger: Cloud Logging — 20/20 PASS (10 + 6 + 4)',
-      '• Live GCP: ramp-portal-dev (#248990048888) • bbar-138hf0 (#48439189383)',
-      '• Telemetry: tenant_telemetry_spans (BigQuery OTel • 0 PII)',
-      '• Artifact: scripts/run_deep_forensic_audit.py',
+      '• Live Console: Integration Connectors (cymbal-ge-hub-2026)',
+      '• View: Create Connection 4-step manual wizard',
+      '• Scope: Point-to-point connectors pre-A2A federation',
+      '• SHA-256: b2dd4e6bebf4 (2880×1620 Retina)',
     ],
     verify2: [
-      '• Dual-Plane: 20/20 GCP + 30/30 10-SaaS MCP PASS',
-      '• 3P UIs: Live ThoughtSpot Cloud (2 Views) + 9 Pending Commercial Slots',
-      '• Forensic Gate: 13/13 PASS (run_deep_forensic_audit.py)',
-      '• Artifact: docs/cloud_console_verification_receipt.json',
+      '• Live Console: Cloud Run Services (cymbal-ge-hub-2026)',
+      '• Services: a2a-gateway, a2a-ge-orchestrator, mcp-obo',
+      '• Security: 4/4 green services Require authentication',
+      '• SHA-256: 49cfff9cfcaf (2880×1620 Retina)',
     ],
-    file1: 'scripts/run_deep_forensic_audit.py',
-    badge1: 'LIVE GCP VERIFICATION 01 • 20/20 GCP & 30/30 SAAS AUDIT LEDGER',
-    cap1: 'Complete 20/20 Intra-Cloud GCP & 30/30 Inter-Cloud 10-SaaS telemetry across Patterns A, B & C',
-    file2: 'scripts/verify_cloud_console_and_runtime.py',
-    badge2: 'VERIFICATION 02 • MULTI-CLOUD MCP & COMMERCIAL SAAS PROOFS (F-13 FAIL-CLOSED)',
-    cap2: 'Live 2880×1620 ThoughtSpot Cloud UIs + 9 Pending Commercial SaaS Verification Slots (Sigma, ServiceNow, Veeva, Jira/SFDC, Databricks, Snowflake, Workday, Datadog, Okta/CrowdStrike)',
+    file1: 'screenshots/verified-cloud-console/ws5_before_connectors_baseline.png',
+    img1: 'screenshots/verified-cloud-console/ws5_before_connectors_baseline.png',
+    badge1: 'LIVE BEFORE • STANDALONE INTEGRATION CONNECTORS WIZARD',
+    cap1: 'Point-to-point connector setup without unified A2A delegation or OAuth 2.1 OBO',
+    file2: 'screenshots/verified-cloud-console/ws5_after_a2a_gateway_federation.png',
+    img2: 'screenshots/verified-cloud-console/ws5_after_a2a_gateway_federation.png',
+    badge2: 'LIVE AFTER • CLOUD RUN A2A & OAUTH 2.1 OBO HUB',
+    cap2: '4 authenticated Cloud Run federation services running in cymbal-ge-hub-2026 (us-west1)',
     callouts: [
       {
         badge: 'PROOF 01 • 80/20 UNIFIED CODEBASE',
@@ -7541,9 +7550,9 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
         body: 'runtime_pipeline.py executes unchanged across Pattern A Pool, Pattern B Silo, and Pattern C Hybrid PSC.',
       },
       {
-        badge: 'PROOF 02 • MULTI-TENANT AGENTIC TRIAD',
-        title: 'Shared + Private Agents + Dynamic GCS Skills',
-        body: 'Combines Shared Diagnostic Agent with Tenant Private Agents and runtime GCS skill hot-swapping.',
+        badge: 'PROOF 02 • LIVE THOUGHTSPOT CLOUD BI',
+        title: 'Unconstrained Liveboard → Governed Saved Answer',
+        body: 'Live ThoughtSpot Cloud Retina pair (fd5cb15c0902 → 3fcab795d1e5) verified alongside 30/30 AWS AgentCore 10-SaaS MCP flows.',
       },
       {
         badge: 'PROOF 03 • ZERO-PII BIGQUERY FINOPS',
@@ -7551,51 +7560,53 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
         body: 'Logs cached vs. dynamic token counts and latency per tenant_id to BigQuery with zero raw PII text.',
       },
       {
-        badge: 'PROOF 04 • LIVE THOUGHTSPOT UI & 27 FILES',
-        title: '10 Commercial SaaS MCP Targets, Live ThoughtSpot UI & 13/13 Gates',
-        body: 'Ships 27 workbench files, Terraform 2.6/3.6/4.6, 30/30 AWS AgentCore MCP flows, and live ThoughtSpot Cloud UI proofs.',
+        badge: 'PROOF 04 • 17/17 RETINA PROOFS & 13/13 GATES',
+        title: '13 GCP Console + 4 SaaS Proofs, 54/54 Unit Tests',
+        body: 'Ships 27 workbench files, Terraform 2.6/3.6/4.6, 17/17 verified Retina proofs, and 13/13 forensic gates PASS.',
       },
     ],
   },
   PROGRAM: {
     verify1: [
-      '• Live Cloud: GCP #248990048888 & #48439189383 • AWS #393036065405',
-      '• Intra-Cloud: 20/20 GCP Simulations (10 Pool + 6 Silo + 4 PSC)',
-      '• Inter-Cloud: 30/30 10-SaaS AWS AgentCore MCP Flows PASS',
-      '• Artifact: core-cymbal-agent/runtime_pipeline.py',
+      '• Live Console: Model Armor (cymbal-ge-hub-2026)',
+      '• Policy: ge-zero-trust-ai-firewall (Blocked live)',
+      '• Scope: WS1–WS2 Edge WAF, Model Armor & BigQuery RLS',
+      '• SHA-256: 93471e0d7b17 (2880×1620 Retina)',
     ],
     verify2: [
-      '• 3P UIs: Live ThoughtSpot Cloud (2 Views) + 9 Pending Commercial Slots',
-      '• Multi-Cloud: Verified Commercial SaaS Proofs (Zero OSS Stand-Ins, F-13)',
-      '• Forensic Gate: 13/13 PASS • 43/43 Unit Tests PASS',
-      '• Artifact: docs/cloud_console_verification_receipt.json',
+      '• Live Console: BigQuery CMEK (cymbal-ge-silo-2026)',
+      '• Key: medcore-revoked-cmek (State: DISABLED)',
+      '• Scope: WS3–WS5 Sovereign Kill-Switch, PSC & A2A Hub',
+      '• SHA-256: 564ee3425027 (2880×1620 Retina)',
     ],
-    file1: 'core-cymbal-agent/runtime_pipeline.py',
-    badge1: 'PROGRAM VERIFICATION 01 • LIVE GCP (#248990048888 / #48439189383) & 10-SAAS AWS AGENTCORE LEDGER',
-    cap1: 'Unified 5-Hop ADK runtime certified across Pattern A Pool, Pattern B Sovereign Silo & Pattern C Hybrid PSC',
-    file2: 'scripts/capture_real_gcp_and_saas_screenshots.mjs',
-    badge2: 'PROGRAM VERIFICATION 02 • COMMERCIAL SAAS RETINA & MCP PROOFS',
-    cap2: 'Live 2880×1620 ThoughtSpot Cloud UIs + 9 F-13 Commercial SaaS Verification Slots Across All 10 AWS AgentCore MCP Targets',
+    file1: 'screenshots/verified-cloud-console/ws1_after_model_armor_blocked.png',
+    img1: 'screenshots/verified-cloud-console/ws1_after_model_armor_blocked.png',
+    badge1: 'PROGRAM PROOF 01 • LIVE HOP 4 MODEL ARMOR BLOCKING (WS1–WS2)',
+    cap1: 'Zero-trust prompt-injection firewall flagging cross-tenant SSN attack live in Console',
+    file2: 'screenshots/verified-cloud-console/ws3_after_cmek_revoked_killswitch_denied.png',
+    img2: 'screenshots/verified-cloud-console/ws3_after_cmek_revoked_killswitch_denied.png',
+    badge2: 'PROGRAM PROOF 02 • LIVE SOVEREIGN CMEK KILL-SWITCH (WS3–WS5)',
+    cap2: 'BigQuery failing closed immediately with Cloud KMS Error: current state is DISABLED',
     callouts: [
       {
         badge: 'PROGRAM 01 • WS1–WS2 POOLED & EDGE',
-        title: 'OBO/DPoP Identity, 90% Cache & 10/10 Breach PASS',
-        body: 'Verifies <0.15ms JWKS, AlloyDB FORCE RLS, live ThoughtSpot Cloud BI captures, and Databricks/ServiceNow AWS AgentCore MCP targets.',
+        title: 'Model Armor, Cloud Armor WAF & BigQuery RLS Live',
+        body: 'Verifies <0.15ms JWKS, Model Armor (93471e0d7b17), Cloud Armor WAF (37fcc76e0f37), BigQuery RLS (5ec0675a5ba0), and 10/10 breach tests.',
       },
       {
         badge: 'PROGRAM 02 • WS3 SOVEREIGN SILOS',
-        title: 'VPC-SC, <60s CMEK Kill-Switch & Gemma 3 27B',
-        body: 'Verifies 6/6 sovereign perimeter tests plus Veeva Vault RIM 21 CFR Part 11 & Okta/CrowdStrike XDR <60s HTTP 423 CMEK MCP targets.',
+        title: 'VPC-SC, <60s CMEK Kill-Switch & Cloud KMS Live',
+        body: 'Verifies 6/6 sovereign perimeter tests, live BigQuery CMEK lockout (564ee3425027), and Cloud KMS Keyring state (7e9e616dee88).',
       },
       {
         badge: 'PROGRAM 03 • WS4 HYBRID PSC UPGRADE',
-        title: 'Unidirectional /28 PSC NAT & 0ms Tier Cutover',
-        body: 'Verifies 4/4 live promotion tests (0 dropped turns, 74% lower TCO) plus Sigma Computing Cloud BI & Atlassian Jira/Salesforce Hybrid PSC MCP targets.',
+        title: 'Hub → Spoke VPC, Jira \'3LO\' UI & 0ms Cutover',
+        body: 'Verifies 4/4 live promotion tests, Hub/Spoke VPCs (bf9df07c95e9 → 6f021bbd273c) & Jira \'3LO\' filter pair (95ce12f87f12 → 45e833e4909f; MCP enforces 3LO OAuth).',
       },
       {
-        badge: 'PROGRAM 04 • WS5 CAPSTONE & 13/13 GATES',
-        title: '27-File Workbench, 15 Decks & 60/60 SaaS Assertions',
-        body: 'Unifies Terraform 2.6/3.6/4.6, zero-PII BigQuery OTel FinOps, Workday HCM + Datadog SRE proofs, and 13/13 forensic gates.',
+        badge: 'PROGRAM 04 • WS5 CAPSTONE & 17/17 PROOFS',
+        title: '13 GCP + 4 SaaS Retina Proofs & 13/13 Gates PASS',
+        body: 'Unifies ThoughtSpot BI (fd5cb15c0902 → 3fcab795d1e5), Cloud Run A2A Hub (49cfff9cfcaf), 30/30 AWS AgentCore MCP flows & 54/54 unit tests.',
       },
     ],
   },
@@ -7608,7 +7619,7 @@ export function addLiveScreenshotCalloutSlide(pptx: Pptx, spec: DeckSpec): { sha
     pptx,
     slide,
     spec.key,
-    `${spec.key} • ACT III FORENSIC VERIFICATION AUDIT: GROUNDED GCP TELEMETRY & 20/20 LOGS`,
+    `${spec.key} • ACT III FORENSIC VERIFICATION AUDIT: LIVE GOOGLE CLOUD CONSOLE PROOFS`,
     'LIVE-SCREENSHOT-CALLOUT'
   );
 
@@ -7618,17 +7629,19 @@ export function addLiveScreenshotCalloutSlide(pptx: Pptx, spec: DeckSpec): { sha
     {
       y: 0.82,
       fileName: cfg.file1,
+      imgRel: cfg.img1,
       badge: cfg.badge1,
       caption: cfg.cap1,
-      accent: GOOGLE_CARD_ACCENTS[0],
+      accent: GOOGLE_CARD_ACCENTS[1], // Red for BEFORE / Problem or Primary Guard
       verifyLines: cfg.verify1,
     },
     {
       y: 3.84,
       fileName: cfg.file2,
+      imgRel: cfg.img2,
       badge: cfg.badge2,
       caption: cfg.cap2,
-      accent: GOOGLE_CARD_ACCENTS[1],
+      accent: GOOGLE_CARD_ACCENTS[3], // Green for AFTER / Resolved
       verifyLines: cfg.verify2,
     },
   ];
@@ -7655,52 +7668,96 @@ export function addLiveScreenshotCalloutSlide(pptx: Pptx, spec: DeckSpec): { sha
       y: sh.y + 0.08,
       w: 7.18,
       h: 0.24,
-      fontSize: 8.2,
+      fontSize: 8.0,
       bold: true,
       color: sh.accent.text,
       fontFace: FONT_TITLE,
     });
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: 0.54,
-      y: sh.y + 0.38,
-      w: 7.18,
-      h: 2.24,
-      rectRadius: 0.05,
-      fill: { color: WHITE },
-      line: { color: BORDER_GREY, width: 0.8 },
-    });
-    slide.addText(sh.caption, {
-      x: 0.68,
-      y: sh.y + 0.46,
-      w: 6.90,
-      h: 0.56,
-      fontSize: 9.2,
-      bold: true,
-      color: TEXT_DARK,
-      fontFace: FONT_TITLE,
-      valign: 'top',
-      wrap: true,
-    });
-    slide.addText(sh.verifyLines.join('\n'), {
-      x: 0.68,
-      y: sh.y + 1.06,
-      w: 6.90,
-      h: 1.16,
-      fontSize: 8.4,
-      color: TEXT_BODY,
-      fontFace: FONT_BODY,
-      valign: 'top',
-      wrap: true,
-    });
-    slide.addText(`Source Module: ${sh.fileName}`, {
-      x: 0.68,
-      y: sh.y + 2.30,
-      w: 6.90,
-      h: 0.22,
-      fontSize: 7.2,
-      color: TEXT_MUTED,
-      fontFace: 'Courier New',
-    });
+    const absImg = sh.imgRel ? path.join(FDE_BLOGS_ROOT, sh.imgRel) : '';
+    if (absImg && fs.existsSync(absImg)) {
+      // Exact 16:9 Retina PNG framed cleanly on the left (3.92 x 2.205 in) + verification details on the right
+      slide.addShape(pptx.ShapeType.rect, {
+        x: 0.52,
+        y: sh.y + 0.38,
+        w: 3.96,
+        h: 2.245,
+        fill: { color: WHITE },
+        line: { color: sh.accent.bar, width: 0.9 },
+      });
+      slide.addImage({
+        data: fileToDataUri(absImg),
+        altText: sh.caption,
+        x: 0.54,
+        y: sh.y + 0.40,
+        w: 3.92,
+        h: 2.205,
+      });
+      slide.addShape(pptx.ShapeType.roundRect, {
+        x: 4.58,
+        y: sh.y + 0.38,
+        w: 3.14,
+        h: 2.245,
+        rectRadius: 0.05,
+        fill: { color: WHITE },
+        line: { color: BORDER_GREY, width: 0.8 },
+      });
+      slide.addText(sh.caption, {
+        x: 4.68,
+        y: sh.y + 0.44,
+        w: 2.94,
+        h: 0.72,
+        fontSize: 8.6,
+        bold: true,
+        color: TEXT_DARK,
+        fontFace: FONT_TITLE,
+        valign: 'top',
+        wrap: true,
+      });
+      slide.addText(sh.verifyLines.join('\n'), {
+        x: 4.68,
+        y: sh.y + 1.18,
+        w: 2.94,
+        h: 1.38,
+        fontSize: 7.7,
+        color: TEXT_BODY,
+        fontFace: FONT_BODY,
+        valign: 'top',
+        wrap: true,
+      });
+    } else {
+      slide.addShape(pptx.ShapeType.roundRect, {
+        x: 0.54,
+        y: sh.y + 0.38,
+        w: 7.18,
+        h: 2.24,
+        rectRadius: 0.05,
+        fill: { color: WHITE },
+        line: { color: BORDER_GREY, width: 0.8 },
+      });
+      slide.addText(sh.caption, {
+        x: 0.68,
+        y: sh.y + 0.46,
+        w: 6.90,
+        h: 0.56,
+        fontSize: 9.2,
+        bold: true,
+        color: TEXT_DARK,
+        fontFace: FONT_TITLE,
+        valign: 'top',
+        wrap: true,
+      });
+      slide.addText(sh.verifyLines.join('\n'), {
+        x: 0.68,
+        y: sh.y + 1.06,
+        w: 6.90,
+        h: 1.16,
+        fontSize: 8.4,
+        color: TEXT_BODY,
+        fontFace: FONT_BODY,
+        valign: 'top',
+        wrap: true,
+      });
+    }
   });
 
   cfg.callouts.forEach((c, idx) => {
@@ -8177,14 +8234,14 @@ function addWs1BeforeAfterSaasProofSlide(pptx: Pptx, spec: DeckSpec): { shapes: 
   addHeaderBar(
     pptx,
     slide,
-    'VERIFIED COMMERCIAL PROOF',
-    'Proof 2: Live 2880x1620 ThoughtSpot Cloud Captures & Commercial SaaS Isolation',
+    'LIVE GOOGLE CLOUD CONSOLE PROOF',
+    'Proof 2: Live 2880x1620 Google Cloud Model Armor & Cloud Armor WAF Pairs',
     'ACT III • VISUAL PROOF'
   );
   shapes += 4;
 
   slide.addText(
-    'Live 2880x1620 Retina ThoughtSpot Cloud captures (team2.thoughtspot.cloud) paired with Databricks Unity Catalog pending commercial trial slot.',
+    'Four genuine 2880x1620 Retina captures from console.cloud.google.com (cymbal-ge-hub-2026) proving Hop 4 Model Armor and Hop 1 Cloud Armor WAF enforcement live.',
     { x: 0.45, y: 0.68, w: 12.43, h: 0.34, fontSize: 10.2, color: TEXT_BODY, fontFace: FONT_BODY }
   );
   shapes += 1;
@@ -8192,19 +8249,19 @@ function addWs1BeforeAfterSaasProofSlide(pptx: Pptx, spec: DeckSpec): { shapes: 
   const pairs = [
     {
       x: 0.45,
-      header: 'ThoughtSpot Cloud Spotter BI — Tenant Analytics Isolation',
-      beforeImg: path.join(FDE_BLOGS_ROOT, 'screenshots/verified-cloud-console/'),
-      afterImg: path.join(FDE_BLOGS_ROOT, 'screenshots/verified-cloud-console/'),
-      beforeLabel: 'BEFORE: Unscoped Multi-Tenant Query (All Tenants Exposed)',
-      afterLabel: 'AFTER: 5-Hop AlloyDB RLS + TenantContext JWT (FinVault Only)',
+      header: 'WS1-BA-01: Vertex AI Model Armor — Unprotected vs. Zero-Trust Firewall',
+      beforeImg: path.join(FDE_BLOGS_ROOT, 'screenshots/verified-cloud-console/ws1_before_model_armor_unprotected.png'),
+      afterImg: path.join(FDE_BLOGS_ROOT, 'screenshots/verified-cloud-console/ws1_after_model_armor_blocked.png'),
+      beforeLabel: 'BEFORE (2bda7e68993a): ge-ws1-before-unprotected-baseline — "No violations detected"',
+      afterLabel: 'AFTER (93471e0d7b17): ge-zero-trust-ai-firewall — "Template violations detected"',
     },
     {
       x: 6.83,
-      header: 'Databricks Unity Catalog SQL — Federated Catalog & Query Scoping',
-      beforeImg: path.join(FDE_BLOGS_ROOT, 'screenshots/verified-cloud-console/'),
-      afterImg: path.join(FDE_BLOGS_ROOT, 'screenshots/verified-cloud-console/'),
-      beforeLabel: 'BEFORE: Cross-Tenant Schema & Catalog Enumeration',
-      afterLabel: 'AFTER: ARD + MCP + RLS Scoped Execution (0 Leaked Rows)',
+      header: 'WS1-BA-02: Cloud Armor Hop 1 Edge WAF — Open Edge vs. P1000/P1100 Deny-403',
+      beforeImg: path.join(FDE_BLOGS_ROOT, 'screenshots/verified-cloud-console/ws1_before_open_edge_baseline.png'),
+      afterImg: path.join(FDE_BLOGS_ROOT, 'screenshots/verified-cloud-console/ws1_after_cloud_armor_hop1_waf.png'),
+      beforeLabel: 'BEFORE (f721577a1e05): cymbal-ws1-before-open-edge — 1 Rule (Allow *)',
+      afterLabel: 'AFTER (37fcc76e0f37): cymbal-pooled-edge-waf — P1000 & P1100 Deny (403)',
     },
   ];
 
@@ -8214,18 +8271,19 @@ function addWs1BeforeAfterSaasProofSlide(pptx: Pptx, spec: DeckSpec): { shapes: 
       fill: { color: CARD_BG }, line: { color: BORDER_GREY, width: 1 },
     });
     slide.addText(pair.header, {
-      x: pair.x + 0.15, y: 1.2, w: 5.75, h: 0.28, fontSize: 9.6, bold: true, color: G_BLUE_DEEP, fontFace: FONT_TITLE,
+      x: pair.x + 0.15, y: 1.18, w: 5.75, h: 0.28, fontSize: 9.0, bold: true, color: G_BLUE_DEEP, fontFace: FONT_TITLE,
     });
     shapes += 2;
 
     slide.addShape(pptx.ShapeType.rect, {
-      x: pair.x + 0.15, y: 1.54, w: 5.75, h: 0.26, fill: { color: G_RED_TINT },
+      x: pair.x + 0.15, y: 1.50, w: 5.75, h: 0.26, fill: { color: G_RED_TINT },
     });
     slide.addText(pair.beforeLabel, {
-      x: pair.x + 0.22, y: 1.54, w: 5.6, h: 0.26, fontSize: 8.0, bold: true, color: G_RED_DEEP, valign: 'middle', fontFace: FONT_BODY,
+      x: pair.x + 0.22, y: 1.50, w: 5.6, h: 0.26, fontSize: 7.4, bold: true, color: G_RED_DEEP, valign: 'middle', fontFace: FONT_BODY,
     });
     if (fs.existsSync(pair.beforeImg)) {
-      slide.addImage({ path: pair.beforeImg, x: pair.x + 0.15, y: 1.82, w: 5.75, h: 2.22 });
+      // Exact 16:9 Retina framing centered cleanly inside the 6.05" card (4.00 x 2.25 in)
+      slide.addImage({ data: fileToDataUri(pair.beforeImg), altText: pair.beforeLabel, x: pair.x + 1.025, y: 1.80, w: 4.00, h: 2.25 });
     }
     shapes += 3;
 
@@ -8233,15 +8291,15 @@ function addWs1BeforeAfterSaasProofSlide(pptx: Pptx, spec: DeckSpec): { shapes: 
       x: pair.x + 0.15, y: 4.14, w: 5.75, h: 0.26, fill: { color: G_GREEN_TINT },
     });
     slide.addText(pair.afterLabel, {
-      x: pair.x + 0.22, y: 4.14, w: 5.6, h: 0.26, fontSize: 8.0, bold: true, color: G_GREEN_DEEP, valign: 'middle', fontFace: FONT_BODY,
+      x: pair.x + 0.22, y: 4.14, w: 5.6, h: 0.26, fontSize: 7.4, bold: true, color: G_GREEN_DEEP, valign: 'middle', fontFace: FONT_BODY,
     });
     if (fs.existsSync(pair.afterImg)) {
-      slide.addImage({ path: pair.afterImg, x: pair.x + 0.15, y: 4.42, w: 5.75, h: 2.22 });
+      slide.addImage({ data: fileToDataUri(pair.afterImg), altText: pair.afterLabel, x: pair.x + 1.025, y: 4.44, w: 4.00, h: 2.25 });
     }
     shapes += 3;
   }
 
-  addFooter(pptx, slide, `${spec.label}  •  Live 2880x1620 Retina ThoughtSpot Cloud Proof & Commercial SaaS Isolation Slots (ThoughtSpot Live • 10 MCP Targets)`);
+  addFooter(pptx, slide, `${spec.label}  •  Verified Live 2880x1620 Google Cloud Console BEFORE → AFTER Proofs (Model Armor & Cloud Armor WAF)`);
   return { shapes, connectors: 0 };
 }
 

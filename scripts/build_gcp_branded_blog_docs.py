@@ -49,7 +49,7 @@ DOC_SPECS: List[Dict[str, Any]] = [
         "docx_rel": "docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx",
         "series_badge": "Workstream 1 of 5 • Foundation",
         "slides_id": "1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w",
-        "slides_label": "24 Slides",
+        "slides_label": "9 Slides",
     },
     {
         "key": "WS2",
@@ -60,7 +60,7 @@ DOC_SPECS: List[Dict[str, Any]] = [
         "docx_rel": "docs/word/ws2-pattern-a-pooled-architecture.docx",
         "series_badge": "Workstream 2 of 5 • Pattern A (Pooled)",
         "slides_id": "1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ",
-        "slides_label": "24 Slides",
+        "slides_label": "8 Slides",
     },
     {
         "key": "WS3",
@@ -71,7 +71,7 @@ DOC_SPECS: List[Dict[str, Any]] = [
         "docx_rel": "docs/word/ws3-pattern-b-sovereign-silos.docx",
         "series_badge": "Workstream 3 of 5 • Pattern B (Silos)",
         "slides_id": "1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac",
-        "slides_label": "24 Slides",
+        "slides_label": "7 Slides",
     },
     {
         "key": "WS4",
@@ -82,7 +82,7 @@ DOC_SPECS: List[Dict[str, Any]] = [
         "docx_rel": "docs/word/ws4-pattern-c-hybrid-dynamic-tiering.docx",
         "series_badge": "Workstream 4 of 5 • Pattern C (Hybrid)",
         "slides_id": "1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c",
-        "slides_label": "24 Slides",
+        "slides_label": "9 Slides",
     },
     {
         "key": "WS5",
@@ -93,7 +93,7 @@ DOC_SPECS: List[Dict[str, Any]] = [
         "docx_rel": "docs/word/ws5-decision-guide-and-agentic-triad.docx",
         "series_badge": "Workstream 5 of 5 • Capstone Guide",
         "slides_id": "1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A",
-        "slides_label": "24 Slides",
+        "slides_label": "9 Slides",
     },
     {
         "key": "ALL",
@@ -110,10 +110,10 @@ DOC_SPECS: List[Dict[str, Any]] = [
         "key": "ATLAS",
         "doc_id": "1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY",
         "drive_title": "ATLAS — GEAP 10-SaaS Multi-Cloud Verified Commercial Visual Verification & Red-Team Atlas — Editable Google Docs",
-        "manifest_title": "ATLAS — GEAP 10-SaaS Multi-Cloud Verified Commercial Visual Verification & Red-Team Atlas (3 Verified Figures • 15 GCP/GE Pending SSO)",
+        "manifest_title": "ATLAS — GEAP 10-SaaS Multi-Cloud Verified Visual Verification & Red-Team Atlas (17/17 Verified Retina UI Proofs • 8/8 Pairs)",
         "md_rel": "blogs/saas-10-visual-verification-and-redteam-atlas.md",
         "docx_rel": "docs/word/saas-10-visual-verification-and-redteam-atlas.docx",
-        "series_badge": "Companion Visual Atlas • 10 Commercial SaaS Targets (ThoughtSpot Live + 9 F-13 Slots)",
+        "series_badge": "Companion Visual Atlas • 17/17 Live Verified Retina Proofs (13 GCP + 4 SaaS)",
         "slides_id": "1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs",
         "slides_label": "16 Slides",
     },

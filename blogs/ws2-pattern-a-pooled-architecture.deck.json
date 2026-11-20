@@ -121,7 +121,7 @@
           "Ingress & identity binding",
           "Trusts client-supplied `X-Tenant-Id` HTTP header or shared API key in application code",
           "Cloud Armor strips `X-Tenant-Id`; IAP + STS mints RFC 8693 OBO & RFC 9449 DPoP context",
-          "Google Cloud IAP mTLS cert pinning + per-project IAM Principal Access Boundary (PAB)"
+          "Chrome Enterprise Premium mTLS cert pinning + per-project IAM Principal Access Boundary (PAB)"
         ],
         [
           "Tool catalog & memory state",
@@ -436,11 +436,11 @@
     {
       "slide": 10,
       "totalSlides": 12,
-      "title": "Act III — Runtime & Commercial SaaS Verification Proof (GCP Console Pending 1-Tap SSO)",
-      "whyHere": "Following the test matrix on Slide 9, this slide turns those architectural claims into automated runtime verification receipts and commercial SaaS proofs (GCP Console captures pending 1-tap SSO).",
+      "title": "Act III — Live Google Cloud Console & Commercial SaaS BEFORE vs. AFTER Verification Proof",
+      "whyHere": "Following the test matrix on Slide 9, this slide turns those architectural claims into live 2880x1620 Retina Google Cloud Console BEFORE-to-AFTER captures and verified multi-cloud telemetry receipts.",
       "whatIsHappening": "Here are the live Dual-Plane receipts backing up that ten-out-of-ten scorecard. On the left, you can see our deployed pooled Cloud Run service and BigQuery Row-Level Security policies in Google Cloud Console; on the right, the verification cards confirm ninety percent shared prompt cache efficiency, 10/10 Intra-Cloud breach simulations blocked, and 10/10 Inter-Cloud Pattern A 10-SaaS MCP RLS assertions passed.",
       "whatComesNext": "With the architecture explained in Act II and proven live in Google Cloud here in Act III, let's turn to Slide 11 to distill everything we have covered into three executive takeaways.",
-      "fullText": "Following the test matrix on Slide 9, this slide turns those architectural claims into automated runtime verification receipts and commercial SaaS proofs (GCP Console captures pending 1-tap SSO).\n\nHere are the live Dual-Plane receipts backing up that ten-out-of-ten scorecard. On the left, you can see our deployed pooled Cloud Run service and BigQuery Row-Level Security policies in Google Cloud Console; on the right, the verification cards confirm ninety percent shared prompt cache efficiency, 10/10 Intra-Cloud breach simulations blocked, and 10/10 Inter-Cloud Pattern A 10-SaaS MCP RLS assertions passed.\n\nWith the architecture explained in Act II and proven live in Google Cloud here in Act III, let's turn to Slide 11 to distill everything we have covered into three executive takeaways."
+      "fullText": "Following the test matrix on Slide 9, this slide turns those architectural claims into live 2880x1620 Retina Google Cloud Console BEFORE-to-AFTER captures and verified multi-cloud telemetry receipts.\n\nHere are the live Dual-Plane receipts backing up that ten-out-of-ten scorecard. On the left, you can see our deployed pooled Cloud Run service and BigQuery Row-Level Security policies in Google Cloud Console; on the right, the verification cards confirm ninety percent shared prompt cache efficiency, 10/10 Intra-Cloud breach simulations blocked, and 10/10 Inter-Cloud Pattern A 10-SaaS MCP RLS assertions passed.\n\nWith the architecture explained in Act II and proven live in Google Cloud here in Act III, let's turn to Slide 11 to distill everything we have covered into three executive takeaways."
     },
     {
       "slide": 11,

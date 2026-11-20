@@ -361,21 +361,29 @@ def upload_pptx_to_google_slides(
     elif preferred_id and gdrive_cli.is_file():
         import subprocess
 
-        subprocess.run(
-            [str(gdrive_cli), "mutate", "update", preferred_id, str(pptx_path)],
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-        for sec_id in SECONDARY_WORKSTREAM_SLIDES_IDS.get(cache_key, []):
-            if sec_id != preferred_id:
+        def _gdrive_update_with_retry(target_id: str, local_path: Path, attempts: int = 3) -> None:
+            last_exc: Optional[Exception] = None
+            for attempt in range(1, attempts + 1):
                 try:
                     subprocess.run(
-                        [str(gdrive_cli), "mutate", "update", sec_id, str(pptx_path)],
+                        [str(gdrive_cli), "mutate", "update", target_id, str(local_path)],
                         check=True,
                         capture_output=True,
                         text=True,
                     )
+                    return
+                except subprocess.CalledProcessError as exc:
+                    last_exc = exc
+                    if attempt < attempts:
+                        time.sleep(2.0 * attempt)
+            assert last_exc is not None
+            raise last_exc
+
+        _gdrive_update_with_retry(preferred_id, pptx_path)
+        for sec_id in SECONDARY_WORKSTREAM_SLIDES_IDS.get(cache_key, []):
+            if sec_id != preferred_id:
+                try:
+                    _gdrive_update_with_retry(sec_id, pptx_path)
                     print(f"   ✓ [Patched Secondary ID via gdrive] {cache_key} -> {sec_id} ({slide_count} slides)")
                 except Exception as exc:
                     print(f"   ⚠️ [Secondary gdrive Patch Warning] {cache_key} ({sec_id}): {exc}")
