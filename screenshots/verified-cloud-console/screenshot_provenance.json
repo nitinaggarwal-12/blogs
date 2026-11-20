@@ -3,7 +3,7 @@
   "generator": "real-slide-screenshot-guard/capture_verified_ui.mjs",
   "generatorSha256": "219f369b885be83d4622c6c0685a747dddcca4cdad17355928ac916bbc2f8d8b",
   "audience": "external",
-  "updatedAt": "2026-11-20T04:19:41.786Z",
+  "updatedAt": "2026-11-20T15:57:04.185Z",
   "entries": [
     {
       "relFile": "saas_01_thoughtspot_liveboard.png",
@@ -99,6 +99,37 @@
       "dHash64": "4d625555517000e3",
       "meanLuma": 247.73,
       "note": "Real commercial Atlassian Jira Cloud Scrum Board workspace on gcp-team-sbiarllr.atlassian.net"
+    },
+    {
+      "relFile": "ws4_after_jira_3lo_scoped_issue.png",
+      "absPath": "/usr/local/google/home/nitinagga/Documents/blogs/screenshots/verified-cloud-console/ws4_after_jira_3lo_scoped_issue.png",
+      "capturedAt": "2026-11-20T15:57:04.184Z",
+      "captureMethod": "cdp_live",
+      "audience": "external",
+      "canonicalOriginUrl": "https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1?filter=textfields+%7E+%223LO*%22&groupBy=none",
+      "hostname": "gcp-team-sbiarllr.atlassian.net",
+      "originTier": "canonical_external",
+      "allowOriginsUsed": [],
+      "pageTitle": "Board - SCRUM board - Jira",
+      "browserProduct": "Chrome/158.0.8127.36",
+      "resolvedAddresses": [
+        "13.227.180.4"
+      ],
+      "securityState": "secure",
+      "isSecureContext": true,
+      "nextHopProtocol": "h2",
+      "suspiciousBrowserFlags": [],
+      "visibleBlockers": [],
+      "viewportCss": "1440x810",
+      "deviceScaleFactor": 2,
+      "width": 2880,
+      "height": 1620,
+      "bytes": 172891,
+      "sha256": "45e833e4909f5abb3d216820bbf4ade650035375b7b250e8373510e0f4d7d062",
+      "rawPixelsSha256": "d5950e21713deac843502f740e38c8d2f71ecb0c160c6fb56a9c6fac93226b16",
+      "dHash64": "0d8650c0c0c00001",
+      "meanLuma": 251.2,
+      "note": "WS4 Pattern C AFTER: Live Atlassian Jira Cloud Scrum board with live '3LO' scope query filter active (textfields ~ \"3LO*\"), displaying strictly the 2 OAuth/3LO issues (SCRUM-5 & SCRUM-6 under In Progress 2) while filtering out 4 non-matching tickets (To Do 0, In Review 0, Done 0) on gcp-team-sbiarllr.atlassian.net"
     }
   ]
 }

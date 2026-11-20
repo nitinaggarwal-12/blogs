@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-11-19T05:46:10Z",
+  "updated_at": "2026-11-20T16:00:25Z",
   "workspace_root": ".",
   "replay_orchestrator_script": "scripts/run_all_repeatable_e2e_verifications.py",
   "standing_mandates": [
@@ -119,11 +119,11 @@
       "description": "Capture & verify live Google Cloud Console, Gemini Enterprise & Marketplace Commercial SaaS 16:9 Retina screenshots via capture_verified_ui.mjs + verify_slide_screenshots.mjs --audience external (zero open-source stand-ins).",
       "cloud_provider": "GCP+SAAS",
       "script_path": "scripts/capture_real_gcp_and_saas_screenshots.mjs",
-      "script_sha256": "3feac77f145d8f0072463e04c19e4f7f6a7b927b52320f2f85ca649f448c8777",
+      "script_sha256": "ed72075460299d28578b95b421926213e677c592d77f213bed23fad96df41cb9",
       "command": "node scripts/capture_real_gcp_and_saas_screenshots.mjs",
       "receipt_path": "docs/cloud_console_verification_receipt.json",
       "receipt_sha256": "c1bcf26d3b80007fb77cde16e6faca572562e997b11f027fd97001576a7834f1",
-      "last_executed_at": "2026-11-17T04:48:21Z",
+      "last_executed_at": "2026-11-20T16:00:25Z",
       "last_exit_code": 0,
       "repeat_in_next_run": true,
       "superseded_by_user": false
@@ -137,7 +137,7 @@
       "command": "python3 -B scripts/run_deep_forensic_audit.py",
       "receipt_path": "docs/cloud_console_verification_receipt.json",
       "receipt_sha256": "c1bcf26d3b80007fb77cde16e6faca572562e997b11f027fd97001576a7834f1",
-      "last_executed_at": "2026-11-20T05:24:49Z",
+      "last_executed_at": "2026-11-20T15:46:56Z",
       "last_exit_code": 0,
       "repeat_in_next_run": true,
       "superseded_by_user": false

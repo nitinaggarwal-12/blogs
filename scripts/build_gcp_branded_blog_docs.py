@@ -788,20 +788,20 @@ def prepend_gcp_executive_header_banner(
 
 def restore_lossless_verified_proof_pngs_in_docx(docx_path: Path) -> int:
     """Google Docs export downscales PNGs to 1999x1125, altering their SHA-256.
-    Restore bit-exact verified 2880x1620 ThoughtSpot Retina PNG bytes in word/media/
-    for paragraphs explicitly referencing ThoughtSpot Liveboard / Saved Answer."""
+    Restore bit-exact verified 2880x1620 Retina PNG bytes in word/media/ for all
+    cryptographically attested screenshots (ThoughtSpot BEFORE/AFTER, Jira BEFORE/AFTER, etc.)."""
     import html as _html
     import zipfile as _zipfile
 
     vdir = ROOT_DIR / "screenshots" / "verified-cloud-console"
-    ts_liveboard = vdir / "saas_01_thoughtspot_liveboard.png"
-    ts_saved = vdir / "saas_02_thoughtspot_saved_answer.png"
-    if not docx_path.is_file() or not ts_liveboard.is_file() or not ts_saved.is_file():
+    if not docx_path.is_file() or not vdir.is_dir():
         return 0
-    live_bytes = ts_liveboard.read_bytes()
-    saved_bytes = ts_saved.read_bytes()
-    jira_png = ROOT_DIR / "screenshots/verified-cloud-console/saas_06_atlassian_jira_confluence.png"
-    jira_bytes = jira_png.read_bytes() if jira_png.is_file() else None
+    bytes_by_name: Dict[str, bytes] = {}
+    for p in vdir.glob("*.png"):
+        if p.is_file():
+            bytes_by_name[p.name] = p.read_bytes()
+    if not bytes_by_name:
+        return 0
 
     replacements: Dict[str, bytes] = {}
     with _zipfile.ZipFile(docx_path, "r") as zin:
@@ -821,11 +821,24 @@ def restore_lossless_verified_proof_pngs_in_docx(docx_path: Path) -> int:
             if "<w:drawing" not in para:
                 continue
             ctx = " ".join(texts[max(0, idx - 2) : min(len(texts), idx + 3)]).lower()
+            target_bytes: Optional[bytes] = None
             if "thoughtspot" in ctx:
-                target_bytes = saved_bytes if ("saved answer" in ctx or "saas_02" in ctx) else live_bytes
-            elif jira_bytes is not None and ("atlassian jira" in ctx or "saas-jira-01" in ctx or "gcp-team-sbiarllr" in ctx):
-                target_bytes = jira_bytes
+                if ("saved answer" in ctx or "saas_02" in ctx or "3fcab795d1e5" in ctx or "after" in ctx) and "saas_02_thoughtspot_saved_answer.png" in bytes_by_name:
+                    target_bytes = bytes_by_name["saas_02_thoughtspot_saved_answer.png"]
+                elif "saas_01_thoughtspot_liveboard.png" in bytes_by_name:
+                    target_bytes = bytes_by_name["saas_01_thoughtspot_liveboard.png"]
+            elif "atlassian jira" in ctx or "jira cloud" in ctx or "gcp-team-sbiarllr" in ctx or "ws4-ba-01" in ctx:
+                if ("45e833e4909f" in ctx or "ws4_after_jira" in ctx or "scrum-5 & scrum-6" in ctx or "4 out-of-scope" in ctx or "ws4 after" in ctx or "after (" in ctx) and "ws4_after_jira_3lo_scoped_issue.png" in bytes_by_name:
+                    target_bytes = bytes_by_name["ws4_after_jira_3lo_scoped_issue.png"]
+                elif "saas_06_atlassian_jira_confluence.png" in bytes_by_name:
+                    target_bytes = bytes_by_name["saas_06_atlassian_jira_confluence.png"]
             else:
+                # Generic fallback: match any verified PNG stem appearing directly in surrounding caption text
+                for fname, fbytes in bytes_by_name.items():
+                    if fname.lower() in ctx or Path(fname).stem.lower() in ctx:
+                        target_bytes = fbytes
+                        break
+            if target_bytes is None:
                 continue
             for rid_e in re.findall(r'r:embed="(rId\d+)"', para):
                 mp = rid_to_media.get(rid_e, "")

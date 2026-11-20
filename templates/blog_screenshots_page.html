@@ -740,23 +740,35 @@
         return card;
       }
 
-      function buildShotPanel(shot) {
+      function buildShotPanel(shot, phaseSummary, cliProof) {
         const panel = makeEl('div', 'shot-panel');
         panel.setAttribute('data-testid', 'shot-panel-' + shot.fileName);
+        panel.style.borderColor = shot.phase === 'AFTER' ? '#a7f3d0' : '#fecdd3';
 
         const hdr = makeEl('div', 'shot-panel-hdr');
+        hdr.style.background = shot.phase === 'AFTER' ? '#ecfdf5' : '#fff1f2';
         const left = makeEl('div', 'control-group');
-        left.appendChild(makeEl('span', shot.phase === 'AFTER' ? 'pill pill-green' : 'pill pill-red', shot.phase === 'AFTER' ? '✅ AFTER (Hop 5)' : '⏳ BEFORE'));
-        left.appendChild(makeEl('span', 'pill', (shot.resolution || '16:9 Retina') + ' · ' + Math.round((shot.sizeBytes || 0) / 1024) + ' KB'));
+        left.appendChild(makeEl('span', shot.phase === 'AFTER' ? 'pill pill-green' : 'pill pill-red', shot.phase === 'AFTER' ? '🟢 AFTER — Resolved With Pattern' : '🔴 BEFORE — Issue Exposed'));
+        if (shot.verifiedProvenance && shot.sha256Short) {
+          left.appendChild(makeEl('span', 'pill pill-green', '✅ SHA-256 ' + shot.sha256Short));
+        }
+        left.appendChild(makeEl('span', 'pill', (shot.resolution || '2880×1620 Retina') + ' · ' + Math.round((shot.sizeBytes || 0) / 1024) + ' KB'));
 
         const right = makeEl('div', 'control-group');
+        if (shot.liveConsoleUrl) {
+          const aLive = makeEl('a', 'btn btn-xs btn-primary', '🌐 Live UI ↗');
+          aLive.setAttribute('href', safeHref(shot.liveConsoleUrl));
+          aLive.setAttribute('target', '_blank');
+          aLive.setAttribute('rel', 'noopener noreferrer');
+          right.appendChild(aLive);
+        }
         const btnZoom = makeEl('button', 'btn btn-xs', '🔍 Zoom');
         btnZoom.setAttribute('type', 'button');
         btnZoom.addEventListener('click', function () {
           const i = flatShots.findIndex(function (x) { return x.imageUrl === shot.imageUrl; });
           openLightboxAt(i >= 0 ? i : 0);
         });
-        const aOpen = makeEl('a', 'btn btn-xs', '↗ URL');
+        const aOpen = makeEl('a', 'btn btn-xs', '↗ PNG');
         aOpen.setAttribute('href', safeHref(shot.imageUrl));
         aOpen.setAttribute('target', '_blank');
         aOpen.setAttribute('rel', 'noopener noreferrer');
@@ -778,6 +790,15 @@
         hdr.appendChild(right);
         panel.appendChild(hdr);
 
+        if (phaseSummary) {
+          const note = makeEl('div', 'shot-caption', phaseSummary);
+          note.style.borderTop = 'none';
+          note.style.borderBottom = '1px solid var(--border)';
+          note.style.color = '#0f172a';
+          note.style.fontWeight = '600';
+          panel.appendChild(note);
+        }
+
         const wrap = makeEl('div', 'shot-img-wrap');
         const img = document.createElement('img');
         img.className = 'shot-img';
@@ -790,8 +811,116 @@
         wrap.appendChild(img);
         panel.appendChild(wrap);
 
-        panel.appendChild(makeEl('div', 'shot-caption', shot.caption || shot.alt || shot.fileName));
+        const capText = cliProof ? (shot.caption + ' — ' + cliProof) : (shot.caption || shot.alt || shot.fileName);
+        panel.appendChild(makeEl('div', 'shot-caption', capText));
         return panel;
+      }
+
+      function buildPendingPhasePanel(phase, meta, phaseSummary, cliProof) {
+        const panel = makeEl('div', 'shot-panel');
+        panel.setAttribute('data-testid', 'pending-phase-' + (meta.proofId || phase));
+        panel.style.borderColor = phase === 'AFTER' ? '#a7f3d0' : '#fecdd3';
+
+        const hdr = makeEl('div', 'shot-panel-hdr');
+        hdr.style.background = phase === 'AFTER' ? '#ecfdf5' : '#fff1f2';
+        const left = makeEl('div', 'control-group');
+        left.appendChild(makeEl('span', phase === 'AFTER' ? 'pill pill-green' : 'pill pill-red', phase === 'AFTER' ? '🟢 AFTER — Resolved With Pattern' : '🔴 BEFORE — Issue Exposed'));
+        left.appendChild(makeEl('span', 'pill pill-amber', '⏳ Live GCP Resource · Pending 1-Tap SSO Capture'));
+        hdr.appendChild(left);
+
+        if (meta.liveConsoleUrl) {
+          const aLive = makeEl('a', 'btn btn-xs btn-primary', '🌐 Open Live Console ↗');
+          aLive.setAttribute('href', safeHref(meta.liveConsoleUrl));
+          aLive.setAttribute('target', '_blank');
+          aLive.setAttribute('rel', 'noopener noreferrer');
+          hdr.appendChild(aLive);
+        }
+        panel.appendChild(hdr);
+
+        const body = makeEl('div', '');
+        body.style.padding = '14px';
+        body.style.display = 'flex';
+        body.style.flexDirection = 'column';
+        body.style.gap = '10px';
+        body.style.background = '#ffffff';
+        body.style.flex = '1';
+
+        const h3 = makeEl('div', '', meta.product || meta.fileName || phase);
+        h3.style.fontWeight = '800';
+        h3.style.fontSize = '14px';
+        h3.style.color = '#0f172a';
+        body.appendChild(h3);
+
+        const metaRow = makeEl('div', 'console-meta-row');
+        if (meta.projectOrAccount) metaRow.appendChild(makeEl('span', 'pill', '☁ ' + meta.projectOrAccount));
+        if (meta.resourceLabel) metaRow.appendChild(makeEl('span', 'pill', '🔹 ' + meta.resourceLabel));
+        body.appendChild(metaRow);
+
+        if (phaseSummary) {
+          const p = makeEl('p', '', phaseSummary);
+          p.style.fontSize = '12.5px';
+          p.style.color = '#334155';
+          body.appendChild(p);
+        }
+
+        if (cliProof) {
+          const pre = makeEl('pre', '', cliProof);
+          pre.style.background = '#0f172a';
+          pre.style.color = phase === 'AFTER' ? '#6ee7b7' : '#fda4af';
+          pre.style.padding = '10px 12px';
+          pre.style.borderRadius = '8px';
+          pre.style.fontSize = '11.5px';
+          pre.style.whiteSpace = 'pre-wrap';
+          pre.style.overflowWrap = 'anywhere';
+          pre.style.fontFamily = 'ui-monospace, SFMono-Regular, Menlo, monospace';
+          body.appendChild(pre);
+        }
+
+        const foot = makeEl('div', '', 'Target Retina PNG: ' + (meta.fileName || '') + ' (captured via capture_verified_ui.mjs immediately after 1-tap Google SSO — zero mockups).');
+        foot.style.fontSize = '11.5px';
+        foot.style.color = '#64748b';
+        body.appendChild(foot);
+
+        panel.appendChild(body);
+        return panel;
+      }
+
+      function buildBeforeAfterPairCard(pair) {
+        const card = makeEl('article', 'pair-card');
+        card.setAttribute('data-testid', 'before-after-pair-' + pair.pairId);
+
+        const hdr = makeEl('div', 'pair-header');
+        const left = makeEl('div', 'control-group');
+        left.appendChild(makeEl('span', 'pill pill-blue', pair.pairId));
+        left.appendChild(makeEl('span', 'pill pill-purple', pair.workstream));
+        left.appendChild(makeEl('h2', 'pair-title', pair.title));
+        const right = makeEl('div', 'control-group');
+        if (pair.status === 'CAPTURED_VERIFIED_PAIR') {
+          right.appendChild(makeEl('span', 'pill pill-green', '✅ Live Verified BEFORE → AFTER Retina Pair'));
+        } else {
+          right.appendChild(makeEl('span', 'pill pill-amber', '⏳ Live GCP CLI-Verified · Pending 1-Tap Browser SSO'));
+        }
+        hdr.appendChild(left);
+        hdr.appendChild(right);
+        card.appendChild(hdr);
+
+        if (displayMode === 'slider' && pair.before && pair.after) {
+          card.appendChild(buildSplitSlider(pair));
+        } else {
+          const grid = makeEl('div', displayMode === 'single' ? 'pair-grid single-col' : 'pair-grid');
+          if (pair.before) {
+            grid.appendChild(buildShotPanel(pair.before, pair.issueBefore, pair.cliProofBefore));
+          } else {
+            grid.appendChild(buildPendingPhasePanel('BEFORE', pair.beforeMeta || {}, pair.issueBefore, pair.cliProofBefore));
+          }
+          if (pair.after) {
+            grid.appendChild(buildShotPanel(pair.after, pair.resolutionAfter, pair.cliProofAfter));
+          } else {
+            grid.appendChild(buildPendingPhasePanel('AFTER', pair.afterMeta || {}, pair.resolutionAfter, pair.cliProofAfter));
+          }
+          card.appendChild(grid);
+        }
+        return card;
       }
 
       function buildSplitSlider(pair) {
@@ -870,36 +999,29 @@
         const stats = payloadData.stats || {};
         const q = (elFilter.value || '').trim().toLowerCase();
         const allShots = payloadData.screenshots || [];
-        const allPairs = payloadData.screenshotPairs || [];
+        const beforeAfterPairs = payloadData.beforeAfterPairs || [];
         const standaloneShots = allShots.filter(function (s) { return !s.isPairMember; });
-        const hasPairs = allPairs.length > 0;
+        const hasCapturedPair = beforeAfterPairs.some(function (p) { return p.before && p.after; });
 
-        document.title = blog.wsKey + ' Screenshots — ' + blog.title;
+        document.title = blog.wsKey + ' Before/After Screenshots — ' + blog.title;
         elBack.setAttribute('href', safeHref(blog.blogPortalUrl));
         elBack.textContent = '← Back to ' + blog.wsKey + ' Blog';
-        elBadge.textContent = blog.wsKey + ' · VERIFIED LIVE CLOUD & SAAS PROOFS';
-        elTitle.textContent = 'All Screenshots Used — ' + blog.title;
+        elBadge.textContent = blog.wsKey + ' · LIVE BEFORE vs. AFTER RESOLUTION PROOFS';
+        elTitle.textContent = 'Before vs. After Proof Gallery — ' + blog.title;
         elSub.textContent = blog.subtitle;
         elLinkDiag.setAttribute('href', safeHref(blog.diagramsPageUrl));
         elLinkDiag.textContent = '📐 All Diagrams Used (' + (stats.activeDiagramCount || 0) + ') ↗';
 
-        elStatShots.textContent = (stats.screenshotCount || 0) + ' Retina Screenshots';
-        if (hasPairs && standaloneShots.length === 0) {
-          elStatVerified.textContent = (stats.screenshotPairCount || 0) + ' Before/After Pairs';
-          elModeSide.textContent = 'Side-by-Side (Before vs. After)';
+        elStatShots.textContent = (stats.screenshotCount || 0) + ' Live Retina Screenshots';
+        const capPairs = stats.capturedBeforeAfterPairCount || 0;
+        const totPairs = stats.beforeAfterPairCount || beforeAfterPairs.length;
+        elStatVerified.textContent = '✅ ' + capPairs + '/' + totPairs + ' Live BEFORE → AFTER Pairs Captured';
+        elModeSide.textContent = 'Side-by-Side (Before vs. After)';
+        if (hasCapturedPair) {
           elModeSlider.classList.remove('hidden');
         } else {
-          const verCnt = stats.verifiedScreenshotCount || 0;
-          elStatVerified.textContent = verCnt > 0
-            ? ('✅ ' + verCnt + ' Cryptographically Attested (SHA-256)')
-            : (allShots.length + ' Live Cloud Console Proofs');
-          elModeSide.textContent = '2-Column Grid';
-          if (hasPairs) {
-            elModeSlider.classList.remove('hidden');
-          } else {
-            elModeSlider.classList.add('hidden');
-            if (displayMode === 'slider') displayMode = 'side';
-          }
+          elModeSlider.classList.add('hidden');
+          if (displayMode === 'slider') displayMode = 'side';
         }
         const dCount = stats.activeDiagramCount || 0;
         elStatDiags.textContent = dCount + (dCount === 1 ? ' Blog Diagram' : ' Blog Diagrams');
@@ -913,7 +1035,7 @@
           elSwitcher.appendChild(a);
         });
 
-        renderProviderPills(standaloneShots);
+        renderProviderPills(allShots);
 
         elModeSide.classList.toggle('active', displayMode === 'side');
         elModeSlider.classList.toggle('active', displayMode === 'slider');
@@ -924,7 +1046,30 @@
 
         let renderedAny = false;
 
-        // 1. Standalone Verified Live Cloud & SaaS Console Cards
+        // 1. Primary Side-by-Side BEFORE -> AFTER Issue-Resolution Pairs (Captured + Live CLI-Verified GCP Console)
+        if (beforeAfterPairs.length > 0) {
+          const filteredPairs = beforeAfterPairs.filter(function (p) {
+            if (activeProvider !== 'all') {
+              const p1 = (p.before && p.before.provider) || (p.beforeMeta && p.beforeMeta.provider) || '';
+              const p2 = (p.after && p.after.provider) || (p.afterMeta && p.afterMeta.provider) || '';
+              if (p1 !== activeProvider && p2 !== activeProvider) return false;
+            }
+            if (!q) return true;
+            const hay = [
+              p.pairId, p.workstream, p.title, p.issueBefore, p.resolutionAfter,
+              p.cliProofBefore, p.cliProofAfter,
+              (p.before && p.before.fileName) || (p.beforeMeta && p.beforeMeta.fileName) || '',
+              (p.after && p.after.fileName) || (p.afterMeta && p.afterMeta.fileName) || '',
+            ].join(' ').toLowerCase();
+            return hay.includes(q);
+          });
+          filteredPairs.forEach(function (pair) {
+            renderedAny = true;
+            elContainer.appendChild(buildBeforeAfterPairCard(pair));
+          });
+        }
+
+        // 2. Any Standalone Verified Live Cloud & SaaS Console Cards (not already inside a Before/After pair)
         if (standaloneShots.length > 0) {
           const filteredStandalone = standaloneShots.filter(function (s) {
             if (activeProvider !== 'all' && (s.provider || '') !== activeProvider) return false;
@@ -944,109 +1089,6 @@
             });
             elContainer.appendChild(grid);
           }
-        }
-
-        // 2. Before/After Pair Cards (only if present in markdown)
-        if (hasPairs) {
-          const pairs = allPairs.filter(function (p) {
-            if (!q) return true;
-            const hay = (p.saasId + ' ' + p.product + ' ' + p.targetId + ' ' + p.category + ' ' + p.pattern + ' ' + ((p.before && p.before.caption) || '') + ' ' + ((p.after && p.after.caption) || '')).toLowerCase();
-            return hay.includes(q);
-          });
-          pairs.forEach(function (pair) {
-            renderedAny = true;
-            const card = makeEl('article', 'pair-card');
-            card.setAttribute('data-testid', 'screenshot-pair-' + pair.saasId);
-
-            const hdr = makeEl('div', 'pair-header');
-            const left = makeEl('div', 'control-group');
-            left.appendChild(makeEl('span', 'pill pill-blue', pair.saasId));
-            left.appendChild(makeEl('h2', 'pair-title', pair.product));
-            if (pair.targetId) {
-              left.appendChild(makeEl('span', 'pill pill-amber', 'AWS AgentCore Target: ' + pair.targetId));
-            }
-            left.appendChild(makeEl('span', 'pill', pair.category));
-
-            const right = makeEl('div', 'control-group');
-            if (pair.s3LedgerUrl) {
-              const aS3 = makeEl('a', 'btn btn-xs', '🧾 S3 Audit Ledger (?format=json) ↗');
-              aS3.setAttribute('href', safeHref(pair.s3LedgerUrl));
-              aS3.setAttribute('target', '_blank');
-              aS3.setAttribute('rel', 'noopener noreferrer');
-              right.appendChild(aS3);
-            }
-
-            hdr.appendChild(left);
-            hdr.appendChild(right);
-            card.appendChild(hdr);
-
-            if (displayMode === 'slider' && pair.before && pair.after) {
-              card.appendChild(buildSplitSlider(pair));
-            } else {
-              const grid = makeEl('div', displayMode === 'single' ? 'pair-grid single-col' : 'pair-grid');
-              if (pair.before) grid.appendChild(buildShotPanel(pair.before));
-              if (pair.after) grid.appendChild(buildShotPanel(pair.after));
-              card.appendChild(grid);
-            }
-            elContainer.appendChild(card);
-          });
-        }
-
-        // 3. Provisioned GCP Console Proofs Pending 1-Tap SSO Capture (strictly scoped to this blog)
-        const pendingConsole = (payloadData.pendingConsoleProofs || []).filter(function (item) {
-          if (!q) return true;
-          const hay = [item.proofId, item.product, item.provider, item.resourceLabel, item.projectOrAccount, item.category, item.pattern].join(' ').toLowerCase();
-          return hay.includes(q);
-        });
-        if (pendingConsole.length > 0) {
-          renderedAny = true;
-          const sec = makeEl('section', '');
-          sec.style.display = 'flex';
-          sec.style.flexDirection = 'column';
-          sec.style.gap = '12px';
-
-          const banner = makeEl('div', 'controls-strip');
-          banner.style.borderColor = '#bfdbfe';
-          banner.style.background = '#eff6ff';
-          const bLeft = makeEl('div', 'control-group');
-          bLeft.appendChild(makeEl('span', 'pill pill-blue', '☁ ' + pendingConsole.length + ' Provisioned GCP Console Proofs (Pending 1-Tap SSO Capture)'));
-          bLeft.appendChild(makeEl('span', '', 'Strictly scoped to ' + blog.wsKey + ' — zero unrelated 3P SaaS stand-ins displayed.'));
-          banner.appendChild(bLeft);
-          sec.appendChild(banner);
-
-          const pGrid = makeEl('div', 'console-grid');
-          pGrid.setAttribute('data-testid', 'pending-gcp-console-proofs-grid');
-          pendingConsole.forEach(function (item) {
-            const card = makeEl('article', 'console-card');
-            card.setAttribute('data-testid', 'pending-gcp-' + item.proofId);
-            const hdr = makeEl('div', 'console-card-hdr');
-            const badgeRow = makeEl('div', 'console-meta-row');
-            badgeRow.appendChild(makeEl('span', providerPillClass(item.providerTag), item.provider || 'Google Cloud Console'));
-            badgeRow.appendChild(makeEl('span', 'pill', item.proofId));
-            badgeRow.appendChild(makeEl('span', 'pill pill-amber', '⏳ Live Resource · Pending 1-Tap SSO Capture'));
-            hdr.appendChild(badgeRow);
-            const h2 = makeEl('h2', 'console-card-title', item.product);
-            h2.style.marginTop = '6px';
-            hdr.appendChild(h2);
-            const metaRow = makeEl('div', 'console-meta-row');
-            if (item.projectOrAccount) metaRow.appendChild(makeEl('span', 'pill', '☁ ' + item.projectOrAccount));
-            if (item.resourceLabel) metaRow.appendChild(makeEl('span', 'pill', '🔹 ' + item.resourceLabel));
-            if (item.category) metaRow.appendChild(makeEl('span', 'pill', item.category));
-            hdr.appendChild(metaRow);
-            card.appendChild(hdr);
-
-            const actBar = makeEl('div', 'console-actions-bar');
-            const aLive = makeEl('a', 'btn btn-xs btn-primary', '🌐 Open Live GCP Console ↗');
-            aLive.setAttribute('href', safeHref(item.liveConsoleUrl));
-            aLive.setAttribute('target', '_blank');
-            aLive.setAttribute('rel', 'noopener noreferrer');
-            actBar.appendChild(aLive);
-            actBar.appendChild(makeEl('span', 'pill', 'Target file: ' + item.fileName));
-            card.appendChild(actBar);
-            pGrid.appendChild(card);
-          });
-          sec.appendChild(pGrid);
-          elContainer.appendChild(sec);
         }
 
         if (!renderedAny) {

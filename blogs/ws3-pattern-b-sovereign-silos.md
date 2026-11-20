@@ -141,16 +141,15 @@ Across all 10 AWS Bedrock AgentCore MCP targets (`cymbal-a2a-mcp-gateway-suyxm3c
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-## Live Google Cloud Console Proofs for WS3 (3 Provisioned Pattern B Sovereign Resources • Pending 1-Tap SSO Capture)
+## Live Before-vs-After Resolution Proof for WS3 (Pattern B Sovereign CMEK Kill-Switch • CLI-Verified Live, Pending 1-Tap Browser SSO Capture)
 
 > [!IMPORTANT]
-> **Strict Per-Workstream Proof Scoping (Zero Irrelevant 3P Stand-Ins):** WS3 verifies **Pattern B Sovereign Silos, Cloud KMS CMEK Kill-Switch (`HTTP 423`), CMEK Data Vaults, and Sovereign Model Armor Templates**. Commercial 3P SaaS Retina screenshots live strictly in **WS4**, **WS5**, and the **[Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md)**. The three live provisioned WS3 Google Cloud Console resources below are active and ready for 1-tap SSO Retina capture via `scripts/capture_real_gcp_and_saas_screenshots.mjs` (open `/blogs/ws3/screenshots` for live console links):
+> **Concrete Problem → Resolution Proof (Zero Irrelevant 3P Stand-Ins):** WS3 proves mathematical tenant key custody via Cloud KMS CMEK revocation. Both live **BEFORE (`ENABLED` key decrypting sovereign data)** and **AFTER (`DISABLED` key failing closed with a live Cloud KMS error)** states are empirically verified in `bbar-138hf0` (`us-west1`). Open `/blogs/ws3/screenshots` for side-by-side Before/After cards and live console deep-links.
 
-| Proof ID | Google Cloud Service | Provisioned Resource | Project | Live Console |
+| Pair ID | Google Cloud Service | 🔴 BEFORE (Active Sovereign Vault — Key ENABLED) | 🟢 AFTER (Kill-Switch Activated — Key DISABLED Fails Closed) | Live Console |
 | :--- | :--- | :--- | :--- | :--- |
-| **`GCP-WS3-01`** | **Cloud KMS (CMEK Kill-Switch)** | `cymbal-multi-tenant-kr` (`medcore-revoked-cmek DISABLED`) | `bbar-138hf0` (`us-west1`) | [Open KMS Keyring ↗](https://console.cloud.google.com/security/kms/keyring/manage/us-west1/cymbal-multi-tenant-kr/key?project=bbar-138hf0) |
-| **`GCP-WS3-02`** | **BigQuery (Sovereign Vault)** | `cymbal_silo_finvault_usw1` | `bbar-138hf0` (`us-west1`) | [Open CMEK Vault ↗](https://console.cloud.google.com/bigquery?project=bbar-138hf0&ws=!1m4!1m3!3m2!1sbbar-138hf0!2scymbal_silo_finvault_usw1) |
-| **`GCP-WS3-03`** | **Vertex AI Model Armor (Silo)** | `mcp-oauth21-obo-armor` | `bbar-138hf0` (`us-central1`) | [Open Silo Template ↗](https://console.cloud.google.com/security/model-armor/templates?project=bbar-138hf0) |
+| **`WS3-BA-01`** | **BigQuery Sovereign CMEK Vault**<br>`bbar-138hf0.cymbal_silo_finvault_usw1` | Querying `pattern_b_silo_finvault_cmek_vault` (protected by `finvault-silo-cmek = ENABLED`) succeeds and returns decrypted sovereign records **`VAULT-FV-9001` (`OCC_TIER1_REGULATORY_LEDGER`)** and **`VAULT-FV-9002` (`FEDWIRE_SETTLEMENT_AUDIT_TRAIL`)**. | Querying `pattern_b_silo_medcore_revoked_vault` (protected by `medcore-revoked-cmek = DISABLED`) **fails closed immediately**: `Cloud KMS Error: projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED.` | [Open BigQuery CMEK Vault ↗](https://console.cloud.google.com/bigquery?project=bbar-138hf0&ws=!1m4!1m3!3m2!1sbbar-138hf0!2scymbal_silo_finvault_usw1) |
+| **`WS3-CTRL-02`** | **Cloud KMS Sovereign Keyring**<br>`cymbal-multi-tenant-kr` (`us-west1`) | `finvault-silo-cmek`: **`ENABLED`** (`ENCRYPT_DECRYPT`) • `adk-agent-signing-key`: `ASYMMETRIC_SIGN`. | `medcore-revoked-cmek`: **`DISABLED`** — live cryptographic revocation state proving zero residual access. | [Open Cloud KMS Keyring ↗](https://console.cloud.google.com/security/kms/keyring/manage/us-west1/cymbal-multi-tenant-kr/key?project=bbar-138hf0) |
 
 <!-- GENUINE_3P_BEFORE_AFTER_END -->
 

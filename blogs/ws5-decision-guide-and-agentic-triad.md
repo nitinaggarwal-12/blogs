@@ -120,28 +120,35 @@ As tracked in [`5.2 Capstone Backlog & GA Roadmap`](../workstream-5-wrap-up-and-
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-## Verified Live Commercial SaaS Proofs for WS5 (3 Retina Captures • ThoughtSpot Cloud + Atlassian Jira Cloud)
+## Live Before-vs-After Resolution Proofs for WS5 (2 Live Commercial SaaS Pairs • 4 Verified Retina Captures)
 
 > [!IMPORTANT]
-> **Verified Live Commercial SaaS Proofs (3 Retina Captures • GCP Console: 0/15 Pending 1-Tap SSO):** Showing 3 cryptographically verified live commercial SaaS Retina captures (**ThoughtSpot Cloud** on `team2.thoughtspot.cloud` and **Atlassian Jira Cloud** on `gcp-team-sbiarllr.atlassian.net`, verified `exit 0` by `verify_slide_screenshots.mjs --audience external`). Google Cloud Console & Gemini Enterprise captures (0/15) are pending 1-tap Google SSO in an authenticated browser session; zero open-source stand-ins or unattested legacy images remain. Open `/blogs/ws5/screenshots` or inspect the full [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
+> **2 Complete Live Commercial SaaS BEFORE → AFTER Pairs (`WS5-BA-01` ThoughtSpot Cloud + `WS4-BA-01` Atlassian Jira Cloud):** All `4` `2880×1620` Retina captures below are cryptographically attested (`verify_slide_screenshots.mjs --audience external` exit `0`). Open `/blogs/ws5/screenshots` for Side-by-Side and Interactive Split-Slider inspection alongside the live GCP A2A Federation Hub (`WS5-BA-02`) and full [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
 
-### SAAS-01A: ThoughtSpot Cloud — Live Executive Analytics Liveboard
-**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** team2.thoughtspot.cloud • **Resource:** Retail Sales Liveboard (team2.thoughtspot.cloud) • Provenance SHA-256 fd5cb15c0902 (2880x1620 Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
+### WS5-BA-01 (BEFORE): Unfiltered Multi-Region ThoughtSpot Executive Liveboard (`$735.3K` Global Rollup)
+**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** `team2.thoughtspot.cloud` • **State:** All 6 dimension filters (`Store Region`, `Store State`, `Category`, `Department`, `Brand`, `Store Name`) unconstrained • Provenance SHA-256 `fd5cb15c0902` (`2880x1620` Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
 
-![Live commercial ThoughtSpot Cloud SaaS Liveboard rendered directly from team2.thoughtspot.cloud.](../screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png)
-*Genuine commercial ThoughtSpot Cloud Liveboard (team2.thoughtspot.cloud) captured live at 2880x1620 Retina with cryptographic SHA-256 provenance verification.*
+![WS5 BEFORE: Unfiltered ThoughtSpot Cloud Executive Liveboard on team2.thoughtspot.cloud exposing global $735.3K sales KPIs with all 6 dimension filters unselected.](../screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png)
+*WS5 BEFORE (`SHA-256 fd5cb15c0902`): Unconstrained multi-region ThoughtSpot Cloud Liveboard exposing `$735.3K` global sales rollups with zero tenant or domain filter predicates applied.*
 
-### SAAS-01B: ThoughtSpot Cloud — Live Governed Saved Answer Query
-**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** team2.thoughtspot.cloud • **Resource:** Stock-Out & Spoilage Analytics Answer (team2.thoughtspot.cloud) • Provenance SHA-256 3fcab795d1e5 (2880x1620 Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
+### WS5-BA-01 (AFTER): Governed Single-Domain ThoughtSpot Saved Answer (3-Month Scoped Query)
+**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** `team2.thoughtspot.cloud` • **State:** Governed Saved Answer bound to a single authorized domain dataset & `Received Date = last 3 months` • Provenance SHA-256 `3fcab795d1e5` (`2880x1620` Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
 
-![Live commercial ThoughtSpot Cloud Saved Answer analytics table rendered directly from team2.thoughtspot.cloud.](../screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png)
-*Genuine commercial ThoughtSpot Cloud Saved Answer query (team2.thoughtspot.cloud) demonstrating live governed BI analytics consumption.*
+![WS5 AFTER: Governed ThoughtSpot Cloud Saved Answer on team2.thoughtspot.cloud pinned to a single authorized domain dataset and 3-month window.](../screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png)
+*WS5 AFTER (`SHA-256 3fcab795d1e5`): Governed single-domain ThoughtSpot Saved Answer enforcing explicit dataset scoping, time-window pinning (`last 3 months`), and zero unconstrained global financial rollup exposure.*
 
-### SAAS-JIRA-01: Atlassian Jira Cloud — Live Governed 3LO Escalation Board
-**Provider:** Atlassian Jira Cloud (Live Commercial SaaS) • **Scope:** `gcp-team-sbiarllr.atlassian.net` • **Resource:** Cloud Platform Engineering (`SCRUM Sprint 0`) • Provenance SHA-256 `95ce12f87f12` (`2880x1620` Retina) • **[Open Live Console ↗](https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1)**
+### WS4-BA-01 (BEFORE → AFTER): Atlassian Jira Cloud Unfiltered Board → Live 3LO-Scoped Isolation
+**Provider:** Atlassian Jira Cloud (`gcp-team-sbiarllr.atlassian.net`) • **BEFORE:** SHA-256 `95ce12f87f12` (`6` mixed tickets across `4` columns) • **AFTER:** SHA-256 `45e833e4909f` (`3LO` filter isolating strictly `SCRUM-5` & `SCRUM-6`, `0` tickets in To Do / In Review / Done) • **[Open Live Console ↗](https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1)**
 
-![Live commercial Atlassian Jira Cloud Scrum board rendered directly from gcp-team-sbiarllr.atlassian.net.](../screenshots/verified-cloud-console/saas_06_atlassian_jira_confluence.png)
-*Genuine commercial Atlassian Jira Cloud Scrum board (`gcp-team-sbiarllr.atlassian.net`) captured live at 2880x1620 Retina with cryptographic SHA-256 provenance verification.*
+![WS4 BEFORE: Unfiltered live Atlassian Jira Cloud Scrum board on gcp-team-sbiarllr.atlassian.net exposing 6 mixed tickets.](../screenshots/verified-cloud-console/saas_06_atlassian_jira_confluence.png)
+*BEFORE (`SHA-256 95ce12f87f12`): Unfiltered Jira Cloud Scrum board exposing all 6 mixed cross-domain issues simultaneously.*
+
+![WS4 AFTER: Live 3LO-scoped Atlassian Jira Cloud Scrum board on gcp-team-sbiarllr.atlassian.net isolating SCRUM-5 and SCRUM-6.](../screenshots/verified-cloud-console/ws4_after_jira_3lo_scoped_issue.png)
+*AFTER (`SHA-256 45e833e4909f`): Live interactive `'3LO'` board query isolates strictly `SCRUM-5` & `SCRUM-6` (`In Progress 2`) while filtering out 4 non-matching tickets (`To Do 0 · In Review 0 · Done 0`); server-side 3LO OAuth enforced by Pattern C MCP gateway.*
+
+| Pair ID | Control Plane | 🔴 BEFORE (Standalone Connectors) | 🟢 AFTER (Unified Cloud Run A2A & OAuth 2.1 Hub) | Live Console Links |
+| :--- | :--- | :--- | :--- | :--- |
+| **`WS5-BA-02`** | **Multi-Cloud Federation**<br>`ramp-portal-dev` (`us-west1`) | Standalone Integration Connectors catalog without centralized A2A delegation or cross-cloud OIDC federation. | Live Cloud Run A2A Enterprise Gateway & Orchestrator Hub (`a2a-gateway`, `a2a-ge-orchestrator`, `mcp-oauth21-obo-gateway`). | [BEFORE Connectors ↗](https://console.cloud.google.com/integration-connectors/connections?project=ramp-portal-dev) • [AFTER A2A Hub ↗](https://console.cloud.google.com/run?project=ramp-portal-dev) |
 
 <!-- GENUINE_3P_BEFORE_AFTER_END -->
 

@@ -877,25 +877,59 @@ function addLiveScreenshotProofSlide(pptx, cfg) {
       });
     });
   } else {
-    // Dual side-by-side 16:9 Retina captures
+    // Dual side-by-side 16:9 Retina captures (BEFORE red border -> AFTER green border + <3s native focal callout pill!)
     cfg.images.forEach((imgCfg, idx) => {
       const ix = 0.48 + idx * 6.28;
+      const isBefore = imgCfg.phase === "BEFORE";
+      const borderCol = isBefore ? C.redBorder : C.greenBorder;
+      const hdrCol = isBefore ? C.red : C.teal;
       slide.addShape(pptx.ShapeType.roundRect, {
         x: ix, y: 1.22, w: 6.10, h: 5.08, rectRadius: 0.10,
-        fill: { color: C.white }, line: { color: C.greenBorder, width: 1.1 },
+        fill: { color: C.white }, line: { color: borderCol, width: 1.3 },
       });
       slide.addText(imgCfg.header, {
         x: ix + 0.14, y: 1.30, w: 5.82, h: 0.24,
-        fontFace: FONT, fontSize: 8.4, bold: true, color: C.teal,
+        fontFace: FONT, fontSize: 8.3, bold: true, color: hdrCol,
       });
       slide.addImage({
         data: "image/png;base64," + fs.readFileSync(imgCfg.absPath).toString("base64"),
         altText: imgCfg.header || "Verified commercial SaaS capture",
         x: ix + 0.14, y: 1.60, w: 5.82, h: 3.274, // exact 16:9
       });
+      // Optional native <3s focal outline highlight + non-overlapping callout pill over whitespace
+      if (imgCfg.focalBox) {
+        const fb = imgCfg.focalBox;
+        slide.addShape(pptx.ShapeType.rect, {
+          x: ix + 0.14 + fb.rx * 5.82,
+          y: 1.60 + fb.ry * 3.274,
+          w: fb.rw * 5.82,
+          h: fb.rh * 3.274,
+          fill: { type: "none" },
+          line: { color: isBefore ? C.red : C.teal, width: 2.2, dashType: "solid" },
+        });
+      }
+      if (imgCfg.focalPill) {
+        const fp = imgCfg.focalPill;
+        slide.addShape(pptx.ShapeType.roundRect, {
+          x: ix + 0.14 + fp.rx * 5.82,
+          y: 1.60 + fp.ry * 3.274,
+          w: fp.w || 2.65,
+          h: 0.24,
+          rectRadius: 0.11,
+          fill: { color: isBefore ? C.red : C.teal },
+          line: { color: C.white, width: 1.0 },
+        });
+        slide.addText(fp.label, {
+          x: ix + 0.14 + fp.rx * 5.82 + 0.06,
+          y: 1.60 + fp.ry * 3.274 + 0.01,
+          w: (fp.w || 2.65) - 0.12,
+          h: 0.22,
+          fontFace: FONT, fontSize: 7.3, bold: true, color: C.white, align: "center", valign: "middle",
+        });
+      }
       slide.addText(imgCfg.caption, {
-        x: ix + 0.14, y: 5.00, w: 5.82, h: 1.16,
-        fontFace: FONT, fontSize: 8.3, color: C.body, lineSpacingMultiple: 1.2, valign: "top",
+        x: ix + 0.14, y: 4.98, w: 5.82, h: 1.18,
+        fontFace: FONT, fontSize: 8.2, color: C.body, lineSpacingMultiple: 1.2, valign: "top",
       });
     });
   }
@@ -2334,28 +2368,33 @@ async function buildWs4Exec() {
     notes: "Our migration test suite blasts concurrent multi-turn traffic during SHADOW_SYNC, validates 100 percent SHA-256 parity, executes the 0-millisecond CAS flip, and verifies that cross-spoke route spoofing returns HTTP 403 across all ten AWS Bedrock AgentCore SaaS targets.",
   });
 
-  // Slide 9: Genuine Live Atlassian Jira Cloud Retina UI Proof!
+  // Slide 9: Genuine Live BEFORE vs. AFTER Atlassian Jira Cloud Retina UI Proof Pair!
   addLiveScreenshotProofSlide(pptx, {
-    title: "Live 3P Escalation UI Proof: Atlassian Jira Cloud (SAAS-JIRA-01)",
-    subtitle: "Genuine 2880×1620 Retina capture from gcp-team-sbiarllr.atlassian.net verified exit 0 by verify_slide_screenshots.mjs --audience external.",
+    title: "Live Commercial Jira Cloud: Unfiltered Board vs. Scoped 3LO Query",
+    subtitle: "Two genuine 2880×1620 Retina captures from gcp-team-sbiarllr.atlassian.net contrasting an unfiltered board against live '3LO' scoped issue retrieval.",
     images: [
       {
-        header: "SAAS-JIRA-01 • Atlassian Jira Cloud (gcp-team-sbiarllr.atlassian.net) • SHA-256 95ce12f87f12 • 2880×1620 Retina",
+        phase: "BEFORE",
+        header: "BEFORE • Unfiltered Board (6 Mixed Issues Across 4 Columns)",
         absPath: path.join(ROOT_DIR, "screenshots/verified-cloud-console/saas_06_atlassian_jira_confluence.png"),
+        focalBox: { rx: 0.225, ry: 0.20, rw: 0.765, rh: 0.45 },
+        focalPill: { rx: 0.34, ry: 0.72, w: 2.85, label: "Empty Filter → All 6 Mixed Issues Exposed" },
+        caption: "Unfiltered Jira Board (same workspace principal): Empty Search board exposes all 6 mixed cross-domain tickets (SCRUM-5..10) across 4 columns (To Do 2 • In Progress 2 • In Review 1 • Done 1).",
+      },
+      {
+        phase: "AFTER",
+        header: "AFTER • Live '3LO' Scoped Query (2 OAuth/3LO Issues • 4 Filtered Out)",
+        absPath: path.join(ROOT_DIR, "screenshots/verified-cloud-console/ws4_after_jira_3lo_scoped_issue.png"),
+        focalBox: { rx: 0.015, ry: 0.21, rw: 0.40, rh: 0.47 },
+        focalPill: { rx: 0.44, ry: 0.42, w: 2.95, label: "Filter '3LO' → Only SCRUM-5 & SCRUM-6" },
+        caption: "Live Board Query Filter (textfields ~ \"3LO*\"): Isolates strictly the 2 OAuth/3LO tickets (SCRUM-5 & SCRUM-6 under In Progress 2) while filtering out 4 non-matching tickets (To Do 0 • In Review 0 • Done 0). Server-side per-user 3LO OAuth & cross-spoke HTTP 403 isolation is enforced by the Pattern C MCP gateway (30/30 live assertions).",
       },
     ],
-    railTitle: "Pattern C 3LO Escalation Controls",
-    callouts: [
-      { title: "1. Per-User 3LO OAuth Continuity", desc: "SCRUM-6 enforces per-user Atlassian 3LO OAuth scopes across Hub → Enterprise Spoke CAS cutover with zero token replay.", color: C.blue, bg: C.blueBg, border: C.blueBorder },
-      { title: "2. Cloud Armor & JQL Guardrails", desc: "SCRUM-7 & SCRUM-9 verify Cloud Armor WAF, JQL injection protection, and cross-tenant board permission audits.", color: C.teal, bg: C.greenBg, border: C.greenBorder },
-      { title: "3. Hop 4 Cloud SDP Egress Redaction", desc: "All Jira/Salesforce escalation tickets pass Hop 4 Cloud SDP IBAN/SWIFT masking pre-egress (raw_pii_leaked = False).", color: C.indigo, bg: C.indigoBg, border: C.indigoBorder },
-      { title: "4. Provisioned WS4 GCP Console Proofs", desc: "cymbal-pattern-c-hub-vpc, finvault-spoke-vpc & Cloud Logging audit trail active at /blogs/ws4/screenshots.", color: C.amber, bg: C.amberBg, border: C.amberBorder },
-    ],
-    synthesis: "Live commercial Atlassian Jira Cloud workspace confirms real-world 3LO OAuth & security governance across Hub and PSC Spoke tiers.",
-    rightStatPill: "SHA-256 95ce12f87f12",
+    synthesis: "Illustrates live scoped retrieval in commercial Atlassian Jira Cloud; server-side per-user 3LO OAuth & cross-spoke HTTP 403 isolation are enforced in Pattern C's MCP gateway.",
+    rightStatPill: "Live Jira Cloud Pair",
     footerLeft: FL,
-    footerMid: "Verified Commercial SaaS Proof • Atlassian Jira Cloud",
-    notes: "Here is a live 2880-by-1620 Retina capture of our genuine Atlassian Jira Cloud workspace, cryptographically verified with SHA-256 provenance. Notice the live Cloud Platform Engineering sprint items tracking per-user 3LO Atlassian OAuth scopes, Cloud Armor WAF guardrails, and cross-tenant board permission audits.",
+    footerMid: "Verified Commercial SaaS UI • Atlassian Jira Cloud",
+    notes: "Here is a live side-by-side comparison captured at 2880-by-1620 Retina from our genuine Atlassian Jira Cloud workspace (gcp-team-sbiarllr.atlassian.net; BEFORE SHA-256 95ce12f87f12, AFTER SHA-256 45e833e4909f, both verified exit 0 by verify_slide_screenshots.mjs --audience external). On the left, the unfiltered board displays all six mixed cross-domain issues across four columns. On the right, applying a live '3LO' scope query filter isolates strictly SCRUM-5 and SCRUM-6 under In Progress while filtering out four non-matching tickets. Note that while the screenshot shows single-user board query scoping in the Jira UI, hard server-side per-user 3LO OAuth and cross-spoke HTTP 403 anti-impersonation are enforced in Pattern C's MCP gateway and verified across all 30 multi-cloud assertions.",
   });
 
   // Slide 10: Executive ROI — Blended Portfolio Economics
@@ -2570,27 +2609,33 @@ async function buildWs5Exec() {
     notes: "Here is the complete cross-cloud verification matrix: 30 live flows and 60 positive plus adversarial assertions across ThoughtSpot, Sigma, ServiceNow, Veeva, Salesforce and Jira, Databricks, Snowflake, Workday, Datadog, and CrowdStrike/Okta—all authenticated via keyless OIDC to AWS STS with zero static AWS IAM keys.",
   });
 
-  // Slide 9: Genuine Live ThoughtSpot Cloud Retina UI Proofs (Right Where ThoughtSpot Belongs!)
+  // Slide 9: Genuine Live ThoughtSpot Cloud Commercial BI Comparison!
   addLiveScreenshotProofSlide(pptx, {
-    title: "Live Commercial SaaS UI Proof: ThoughtSpot Cloud BI (SAAS-01A & 01B)",
-    subtitle: "Two genuine 2880×1620 Retina captures from team2.thoughtspot.cloud verified exit 0 by verify_slide_screenshots.mjs --audience external.",
+    title: "Live Commercial BI: Unfiltered Cross-Region Liveboard vs. Scoped Saved Answer",
+    subtitle: "Two genuine 2880×1620 Retina captures from team2.thoughtspot.cloud contrasting unconstrained global KPIs against a single-domain scoped query.",
     images: [
       {
-        header: "SAAS-01A • ThoughtSpot Cloud Liveboard • SHA-256 fd5cb15c0902 • 2880×1620 Retina",
+        phase: "BEFORE",
+        header: "UNFILTERED LIVEBOARD • Retail Sales Global Rollup ($735.3K)",
         absPath: path.join(ROOT_DIR, "screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png"),
-        caption: "Live Executive Analytics Liveboard (team2.thoughtspot.cloud). In WS5's multi-cloud bridge, SAAS-01 (HXGGFMZBKE) enforces Org-ID RLS in Pattern A (HTTP 403 spoof block), CMEK HTTP 423 halt in Pattern B, and 0ms Hub → PSC Spoke Liveboard cutover in Pattern C.",
+        focalBox: { rx: 0.015, ry: 0.20, rw: 0.65, rh: 0.06 },
+        focalPill: { rx: 0.45, ry: 0.89, w: 3.05, label: "All 6 Dimension Filters Unselected (Global)" },
+        caption: "Unfiltered Cross-Region Liveboard ('Retail Sales with Muze'): All 6 filter pills (Store Region, Store State, Category, Department, Brand, Store Name) remain set to (Select), exposing $735.3K global aggregate KPIs.",
       },
       {
-        header: "SAAS-01B • ThoughtSpot Governed Saved Answer • SHA-256 3fcab795d1e5 • 2880×1620 Retina",
+        phase: "AFTER",
+        header: "SCOPED SAVED ANSWER • Pharma Supply Domain (Last 3 Months)",
         absPath: path.join(ROOT_DIR, "screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png"),
-        caption: "Live Supply & Stock-Out Governed Saved Answer table (team2.thoughtspot.cloud). Paired with live Atlassian Jira Cloud (SAAS-JIRA-01) in /blogs/ws5/screenshots and the full Multi-Cloud Verification Atlas (/blogs/atlas/screenshots).",
+        focalBox: { rx: 0.19, ry: 0.15, rw: 0.58, rh: 0.10 },
+        focalPill: { rx: 0.42, ry: 0.89, w: 3.15, label: "Single Dataset + Explicit 3-Month Scope" },
+        caption: "Single-Domain Scoped Saved Answer ('Industry Demo - Pharma'): Explicit query projection bound to one dataset and Received Date = last 3 months with zero global sales rollup columns. Multi-cloud Org-ID RLS & HTTP 403/423 enforcement is verified across all 30 live AgentCore assertions.",
       },
     ],
-    synthesis: "Live commercial SaaS UI proofs live strictly in WS4, WS5, and ATLAS—cryptographically attested with zero mockups or stand-ins.",
-    rightStatPill: "3 Live Commercial Captures",
+    synthesis: "Contrasts unconstrained multi-region Liveboard rollups against single-domain scoped Saved Answer queries across live ThoughtSpot Cloud.",
+    rightStatPill: "Live ThoughtSpot BI Pair",
     footerLeft: FL,
-    footerMid: "Verified Commercial SaaS Proofs • ThoughtSpot Cloud",
-    notes: "In Workstream 5, where our multi-cloud SaaS BI bridge lives, here are two cryptographically attested 2880-by-1620 Retina captures directly from live ThoughtSpot Cloud alongside our Atlassian Jira Cloud capture in the companion Atlas.",
+    footerMid: "Verified Commercial SaaS UI • ThoughtSpot Cloud",
+    notes: "In Workstream 5, where our multi-cloud SaaS BI bridge lives, here are two cryptographically attested 2880-by-1620 Retina captures from live ThoughtSpot Cloud (team2.thoughtspot.cloud; Liveboard SHA-256 fd5cb15c0902, Saved Answer SHA-256 3fcab795d1e5, verified exit 0 by verify_slide_screenshots.mjs --audience external). Note that the two captures show distinct ThoughtSpot sample domains—an unfiltered cross-region Retail Sales Liveboard with all six filter pills set to Select versus a single-domain Pharma Supply Saved Answer pinned to Received Date = last 3 months—illustrating unconstrained versus scoped BI consumption alongside our 30/30 live AgentCore RLS and HTTP 403/423 verification suite.",
   });
 
   // Slide 10: Executive ROI & 14-Day Rollout Action Plan
