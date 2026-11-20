@@ -1737,9 +1737,9 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                 if not h_name:
                     raw_u = str(ent.get("canonicalOriginUrl") or ent.get("url") or "")
                     h_name = (_f13_urlparse(raw_u).hostname or "").lower()
-                if rf.startswith("gcp_"):
+                if rf.startswith("gcp_") or h_name == "console.cloud.google.com" or h_name.endswith(".cloud.google.com"):
                     verified_gcp_count += 1
-                elif rf.startswith("saas_"):
+                elif rf.startswith("saas_") or any(h_name.endswith(dom) for dom in _vendor_host_labels):
                     verified_saas_count += 1
                     v_lbl = next((lbl for dom, lbl in _vendor_host_labels.items() if h_name.endswith(dom)), h_name or rf)
                     if v_lbl not in verified_saas_vendors:

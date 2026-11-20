@@ -120,24 +120,36 @@ As tracked in [`5.2 Capstone Backlog & GA Roadmap`](../workstream-5-wrap-up-and-
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-## Live Before-vs-After Resolution Proofs for WS5 (2 Live Commercial SaaS Pairs • 4 Verified Retina Captures)
+## Live Before-vs-After Resolution Proofs for WS5 (3 Complete Live Pairs • 6 Verified 2880×1620 Retina Captures)
 
 > [!IMPORTANT]
-> **2 Complete Live Commercial SaaS BEFORE → AFTER Pairs (`WS5-BA-01` ThoughtSpot Cloud + `WS4-BA-01` Atlassian Jira Cloud):** All `4` `2880×1620` Retina captures below are cryptographically attested (`verify_slide_screenshots.mjs --audience external` exit `0`). Open `/blogs/ws5/screenshots` for Side-by-Side and Interactive Split-Slider inspection alongside the live GCP A2A Federation Hub (`WS5-BA-02`) and full [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
+> **3 Complete Live BEFORE → AFTER Pairs (`WS5-BA-01` ThoughtSpot Cloud BI + `WS5-BA-02` GCP Connectors → Cloud Run A2A/MCP Federation Hub + `WS4-BA-01` Atlassian Jira Cloud):** All `6` `2880×1620` Retina captures below are cryptographically attested (`verify_slide_screenshots.mjs --audience external` exit `0`). Open **`/blogs/ws5/screenshots`** for Side-by-Side and Interactive Split-Slider inspection alongside the full [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
 
 ### WS5-BA-01 (BEFORE): Unfiltered Multi-Region ThoughtSpot Executive Liveboard (`$735.3K` Global Rollup)
-**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** `team2.thoughtspot.cloud` • **State:** All 6 dimension filters (`Store Region`, `Store State`, `Category`, `Department`, `Brand`, `Store Name`) unconstrained • Provenance SHA-256 `fd5cb15c0902` (`2880x1620` Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
+**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** `team2.thoughtspot.cloud` • **State:** All 6 dimension filters (`Store Region`, `Store State`, `Category`, `Department`, `Brand`, `Store Name`) unconstrained • Provenance SHA-256 `fd5cb15c0902` (`2880×1620` Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
 
 ![WS5 BEFORE: Unfiltered ThoughtSpot Cloud Executive Liveboard on team2.thoughtspot.cloud exposing global $735.3K sales KPIs with all 6 dimension filters unselected.](../screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png)
 *WS5 BEFORE (`SHA-256 fd5cb15c0902`): Unconstrained multi-region ThoughtSpot Cloud Liveboard exposing `$735.3K` global sales rollups with zero tenant or domain filter predicates applied.*
 
 ### WS5-BA-01 (AFTER): Governed Single-Domain ThoughtSpot Saved Answer (3-Month Scoped Query)
-**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** `team2.thoughtspot.cloud` • **State:** Governed Saved Answer bound to a single authorized domain dataset & `Received Date = last 3 months` • Provenance SHA-256 `3fcab795d1e5` (`2880x1620` Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
+**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** `team2.thoughtspot.cloud` • **State:** Governed Saved Answer bound to a single authorized domain dataset & `Received Date = last 3 months` • Provenance SHA-256 `3fcab795d1e5` (`2880×1620` Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
 
 ![WS5 AFTER: Governed ThoughtSpot Cloud Saved Answer on team2.thoughtspot.cloud pinned to a single authorized domain dataset and 3-month window.](../screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png)
 *WS5 AFTER (`SHA-256 3fcab795d1e5`): Governed single-domain ThoughtSpot Saved Answer enforcing explicit dataset scoping, time-window pinning (`last 3 months`), and zero unconstrained global financial rollup exposure.*
 
-### WS4-BA-01 (BEFORE → AFTER): Atlassian Jira Cloud Unfiltered Board → Live 3LO-Scoped Isolation
+### WS5-BA-02 (BEFORE): Standalone Point-to-Point Integration Connectors Setup (Pre-A2A Federation)
+**Provider:** Google Cloud Console (`Integration Connectors`) • **Project:** `cymbal-ge-hub-2026` (`#252968359259`) • **State:** Manual per-connection credential setup (`Location → Connection Details → Authentication`) without centralized A2A delegation or OAuth 2.1 OBO • Provenance SHA-256 `b2dd4e6bebf4` (`2880×1620` Retina) • **[Open Live Integration Connectors ↗](https://console.cloud.google.com/connectors/connections?project=cymbal-ge-hub-2026)**
+
+![WS5 BEFORE: Live Google Cloud Integration Connectors Create Connection wizard requiring point-to-point manual connection and static authentication setup in cymbal-ge-hub-2026.](../screenshots/verified-cloud-console/ws5_before_connectors_baseline.png)
+*WS5 BEFORE (`SHA-256 b2dd4e6bebf4`): Standalone Integration Connectors require manual per-connector setup and static credentials per endpoint without centralized A2A skill delegation or unified OAuth 2.1 OBO enforcement.*
+
+### WS5-BA-02 (AFTER): Unified Cloud Run A2A Enterprise Gateway & OAuth 2.1 OBO Federation Hub
+**Provider:** Google Cloud Console (`Cloud Run Services`) • **Project:** `cymbal-ge-hub-2026` (`us-west1`) • **Services:** `a2a-gateway`, `a2a-ge-orchestrator`, `cymbal-multi-tenant-patterns`, `mcp-oauth21-obo-gateway` (all `Require authentication`) • Provenance SHA-256 `49cfff9cfcaf` (`2880×1620` Retina) • **[Open Live Cloud Run Services ↗](https://console.cloud.google.com/run/services?project=cymbal-ge-hub-2026)**
+
+![WS5 AFTER: Live Google Cloud Run Services table in cymbal-ge-hub-2026 showing a2a-gateway, a2a-ge-orchestrator, cymbal-multi-tenant-patterns, and mcp-oauth21-obo-gateway all running with Require authentication.](../screenshots/verified-cloud-console/ws5_after_a2a_gateway_federation.png)
+*WS5 AFTER (`SHA-256 49cfff9cfcaf`): Deploying the WS5 Agentic Triad consolidates cross-cloud delegation behind 4 authenticated Cloud Run Gen2 services (`a2a-gateway`, `a2a-ge-orchestrator`, `cymbal-multi-tenant-patterns`, `mcp-oauth21-obo-gateway`), enforcing unified 5-Hop identity and keyless OIDC federation across clouds.*
+
+### WS4-BA-01 (BEFORE → AFTER): Atlassian Jira Cloud Unfiltered Board → Live `'3LO'` Scoped Query View
 **Provider:** Atlassian Jira Cloud (`gcp-team-sbiarllr.atlassian.net`) • **BEFORE:** SHA-256 `95ce12f87f12` (`6` mixed tickets across `4` columns) • **AFTER:** SHA-256 `45e833e4909f` (`3LO` filter isolating strictly `SCRUM-5` & `SCRUM-6`, `0` tickets in To Do / In Review / Done) • **[Open Live Console ↗](https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1)**
 
 ![WS4 BEFORE: Unfiltered live Atlassian Jira Cloud Scrum board on gcp-team-sbiarllr.atlassian.net exposing 6 mixed tickets.](../screenshots/verified-cloud-console/saas_06_atlassian_jira_confluence.png)
@@ -145,10 +157,6 @@ As tracked in [`5.2 Capstone Backlog & GA Roadmap`](../workstream-5-wrap-up-and-
 
 ![WS4 AFTER: Live 3LO-scoped Atlassian Jira Cloud Scrum board on gcp-team-sbiarllr.atlassian.net isolating SCRUM-5 and SCRUM-6.](../screenshots/verified-cloud-console/ws4_after_jira_3lo_scoped_issue.png)
 *AFTER (`SHA-256 45e833e4909f`): Live interactive `'3LO'` board query isolates strictly `SCRUM-5` & `SCRUM-6` (`In Progress 2`) while filtering out 4 non-matching tickets (`To Do 0 · In Review 0 · Done 0`); server-side 3LO OAuth enforced by Pattern C MCP gateway.*
-
-| Pair ID | Control Plane | 🔴 BEFORE (Standalone Connectors) | 🟢 AFTER (Unified Cloud Run A2A & OAuth 2.1 Hub) | Live Console Links |
-| :--- | :--- | :--- | :--- | :--- |
-| **`WS5-BA-02`** | **Multi-Cloud Federation**<br>`ramp-portal-dev` (`us-west1`) | Standalone Integration Connectors catalog without centralized A2A delegation or cross-cloud OIDC federation. | Live Cloud Run A2A Enterprise Gateway & Orchestrator Hub (`a2a-gateway`, `a2a-ge-orchestrator`, `mcp-oauth21-obo-gateway`). | [BEFORE Connectors ↗](https://console.cloud.google.com/integration-connectors/connections?project=ramp-portal-dev) • [AFTER A2A Hub ↗](https://console.cloud.google.com/run?project=ramp-portal-dev) |
 
 <!-- GENUINE_3P_BEFORE_AFTER_END -->
 

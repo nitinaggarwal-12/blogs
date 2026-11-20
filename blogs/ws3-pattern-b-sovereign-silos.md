@@ -141,15 +141,28 @@ Across all 10 AWS Bedrock AgentCore MCP targets (`cymbal-a2a-mcp-gateway-suyxm3c
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-## Live Before-vs-After Resolution Proof for WS3 (Pattern B Sovereign CMEK Kill-Switch • CLI-Verified Live, Pending 1-Tap Browser SSO Capture)
+## Live Before-vs-After Resolution Proof for WS3 (Pattern B Sovereign CMEK Kill-Switch • 3 Verified 2880×1620 Retina Captures)
 
 > [!IMPORTANT]
-> **Concrete Problem → Resolution Proof (Zero Irrelevant 3P Stand-Ins):** WS3 proves mathematical tenant key custody via Cloud KMS CMEK revocation. Both live **BEFORE (`ENABLED` key decrypting sovereign data)** and **AFTER (`DISABLED` key failing closed with a live Cloud KMS error)** states are empirically verified in `bbar-138hf0` (`us-west1`). Open `/blogs/ws3/screenshots` for side-by-side Before/After cards and live console deep-links.
+> **Live Cryptographically Attested BEFORE → AFTER Pair + KMS Control Plane (`WS3-BA-01` + `WS3-CTRL-02`):** All `3` `2880×1620` Retina screenshots below were captured live from **`https://console.cloud.google.com/`** (`cymbal-ge-silo-2026`, `#495457819919`, `us-west1`) via `capture_verified_ui.mjs` and passed `verify_slide_screenshots.mjs --audience external` (`exit 0`). Open **`/blogs/ws3/screenshots`** for the interactive Side-by-Side & Split-Slider comparison viewer.
 
-| Pair ID | Google Cloud Service | 🔴 BEFORE (Active Sovereign Vault — Key ENABLED) | 🟢 AFTER (Kill-Switch Activated — Key DISABLED Fails Closed) | Live Console |
-| :--- | :--- | :--- | :--- | :--- |
-| **`WS3-BA-01`** | **BigQuery Sovereign CMEK Vault**<br>`bbar-138hf0.cymbal_silo_finvault_usw1` | Querying `pattern_b_silo_finvault_cmek_vault` (protected by `finvault-silo-cmek = ENABLED`) succeeds and returns decrypted sovereign records **`VAULT-FV-9001` (`OCC_TIER1_REGULATORY_LEDGER`)** and **`VAULT-FV-9002` (`FEDWIRE_SETTLEMENT_AUDIT_TRAIL`)**. | Querying `pattern_b_silo_medcore_revoked_vault` (protected by `medcore-revoked-cmek = DISABLED`) **fails closed immediately**: `Cloud KMS Error: projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED.` | [Open BigQuery CMEK Vault ↗](https://console.cloud.google.com/bigquery?project=bbar-138hf0&ws=!1m4!1m3!3m2!1sbbar-138hf0!2scymbal_silo_finvault_usw1) |
-| **`WS3-CTRL-02`** | **Cloud KMS Sovereign Keyring**<br>`cymbal-multi-tenant-kr` (`us-west1`) | `finvault-silo-cmek`: **`ENABLED`** (`ENCRYPT_DECRYPT`) • `adk-agent-signing-key`: `ASYMMETRIC_SIGN`. | `medcore-revoked-cmek`: **`DISABLED`** — live cryptographic revocation state proving zero residual access. | [Open Cloud KMS Keyring ↗](https://console.cloud.google.com/security/kms/keyring/manage/us-west1/cymbal-multi-tenant-kr/key?project=bbar-138hf0) |
+### WS3-BA-01 (BEFORE): Sovereign CMEK Vault Accessible While Tenant Key `finvault-silo-cmek` Is `ENABLED`
+**Provider:** Google Cloud Console (`BigQuery Studio`) • **Project:** `cymbal-ge-silo-2026` (`us-west1`) • **Table:** `cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault` • **Result:** `1 – 2 of 2` decrypted sovereign records (`VAULT-FV-9001`, `VAULT-FV-9002`) • Provenance SHA-256 `5acc84f6897e` (`2880×1620` Retina) • **[Open Live BigQuery Sovereign Vault ↗](https://console.cloud.google.com/bigquery?project=cymbal-ge-silo-2026&ws=!1m4!1m3!3m2!1scymbal-ge-silo-2026!2scymbal_silo_finvault_usw1)**
+
+![WS3 BEFORE: Live BigQuery Studio in sovereign project cymbal-ge-silo-2026 decrypting VAULT-FV-9001 and VAULT-FV-9002 while Cloud KMS key finvault-silo-cmek is enabled.](../screenshots/verified-cloud-console/ws3_before_cmek_enabled_vault_access.png)
+*WS3 BEFORE (`SHA-256 5acc84f6897e`): While tenant CMEK key `finvault-silo-cmek` is active (`Available`) in `cymbal-ge-silo-2026`, BigQuery decrypts sovereign vault records `VAULT-FV-9001` (`OCC_TIER1_REGULATORY_LEDGER`) and `VAULT-FV-9002` (`FEDWIRE_SETTLEMENT_AUDIT_TRAIL`).*
+
+### WS3-BA-01 (AFTER): Instant Fail-Closed Cryptographic Kill-Switch Once `medcore-revoked-cmek` Is `DISABLED`
+**Provider:** Google Cloud Console (`BigQuery Studio`) • **Project:** `cymbal-ge-silo-2026` (`us-west1`) • **Table:** `cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault` • **Result:** **`Cloud KMS Error: .../medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED.`** • Provenance SHA-256 `564ee3425027` (`2880×1620` Retina) • **[Open Live BigQuery Sovereign Vault ↗](https://console.cloud.google.com/bigquery?project=cymbal-ge-silo-2026&ws=!1m4!1m3!3m2!1scymbal-ge-silo-2026!2scymbal_silo_finvault_usw1)**
+
+![WS3 AFTER: Live BigQuery Studio failing closed with red Cloud KMS Error medcore-revoked-cmek cryptoKeyVersions 1 is not enabled current state is DISABLED in cymbal-ge-silo-2026.](../screenshots/verified-cloud-console/ws3_after_cmek_revoked_killswitch_denied.png)
+*WS3 AFTER (`SHA-256 564ee3425027`): Once the customer CISO disables their Cloud KMS key version (`medcore-revoked-cmek = DISABLED`), BigQuery immediately fails closed with `Cloud KMS Error: projects/cymbal-ge-silo-2026/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED.`*
+
+### WS3-CTRL-02 (Control Plane): Live Cloud KMS Sovereign Keyring (`finvault-silo-cmek` Available vs. `medcore-revoked-cmek` Not Available)
+**Provider:** Google Cloud Console (`Cloud Key Management Service`) • **Keyring:** `cymbal-multi-tenant-kr` (`us-west1`, `cymbal-ge-silo-2026`) • Provenance SHA-256 `7e9e616dee88` (`2880×1620` Retina) • **[Open Live Cloud KMS Keyring ↗](https://console.cloud.google.com/security/kms/keyring/manage/us-west1/cymbal-multi-tenant-kr/key?project=cymbal-ge-silo-2026)**
+
+![WS3 Control Plane: Live Google Cloud KMS keyring cymbal-multi-tenant-kr showing finvault-silo-cmek Available, medcore-revoked-cmek Not available, and adk-agent-signing-key Asymmetric sign.](../screenshots/verified-cloud-console/ws3_after_kms_cmek_keyring_state.png)
+*WS3 Control Plane (`SHA-256 7e9e616dee88`): Live Cloud KMS keyring `cymbal-multi-tenant-kr` proving side-by-side cryptographic state isolation: `finvault-silo-cmek` (`Available`) vs. `medcore-revoked-cmek` (`Not available` / revoked kill-switch) alongside `adk-agent-signing-key` (`Asymmetric sign`).*
 
 <!-- GENUINE_3P_BEFORE_AFTER_END -->
 

@@ -112,26 +112,34 @@ Across all 10 AWS Bedrock AgentCore MCP targets (`cymbal-a2a-mcp-gateway-suyxm3c
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-## Live Before-vs-After Resolution Proofs for WS4 (Live Atlassian Jira Cloud 3LO Pair Captured • Plus Pattern C Hub → Spoke VPC Pair)
+## Live Before-vs-After Resolution Proofs for WS4 (2 Complete Live Pairs: Atlassian Jira Cloud 3LO + Pattern C Hub → Spoke VPC • 4 Verified 2880×1620 Retina Captures)
 
 > [!IMPORTANT]
-> **Live Cryptographically Attested BEFORE → AFTER Pair (`WS4-BA-01` • Atlassian Jira Cloud):** Both `2880×1620` Retina screenshots below were captured live from `gcp-team-sbiarllr.atlassian.net` via `capture_verified_ui.mjs` and passed `verify_slide_screenshots.mjs --audience external` (`exit 0`). They demonstrate concretely how Pattern C per-user 3LO OAuth & JQL scoping isolates authorized issues and suppresses unrelated tickets. Open `/blogs/ws4/screenshots` for the interactive Side-by-Side & Split-Slider viewer alongside Pattern C Hub/Spoke VPC console links (`WS4-BA-02`).
+> **2 Complete Cryptographically Attested BEFORE → AFTER Pairs (`WS4-BA-01` Atlassian Jira Cloud + `WS4-BA-02` Google Cloud Pattern C Hub → Spoke VPC):** All `4` `2880×1620` Retina screenshots below were captured live via `capture_verified_ui.mjs` and passed `verify_slide_screenshots.mjs --audience external` (`exit 0`). Open **`/blogs/ws4/screenshots`** for the interactive Side-by-Side & Split-Slider comparison viewer.
 
 ### WS4-BA-01 (BEFORE): Unfiltered Atlassian Jira Board Exposing All 6 Mixed Cross-Domain Issues (`SCRUM-5`..`SCRUM-10`)
-**Provider:** Atlassian Jira Cloud (Live Commercial SaaS) • **Scope:** `gcp-team-sbiarllr.atlassian.net` • **State:** Empty board filter — all `6` mixed tickets exposed across `4` columns (`To Do 2 · In Progress 2 · In Review 1 · Done 1`) • Provenance SHA-256 `95ce12f87f12` (`2880x1620` Retina) • **[Open Live Console ↗](https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1)**
+**Provider:** Atlassian Jira Cloud (Live Commercial SaaS) • **Scope:** `gcp-team-sbiarllr.atlassian.net` • **State:** Empty board filter — all `6` mixed tickets exposed across `4` columns (`To Do 2 · In Progress 2 · In Review 1 · Done 1`) • Provenance SHA-256 `95ce12f87f12` (`2880×1620` Retina) • **[Open Live Console ↗](https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1)**
 
 ![WS4 BEFORE: Unfiltered live Atlassian Jira Cloud Scrum board on gcp-team-sbiarllr.atlassian.net exposing all 6 mixed tickets SCRUM-5 through SCRUM-10 across 4 columns.](../screenshots/verified-cloud-console/saas_06_atlassian_jira_confluence.png)
 *WS4 BEFORE (`SHA-256 95ce12f87f12`): Without Pattern C per-user 3LO OAuth & scope enforcement, all 6 mixed cross-domain issues (`SCRUM-5` through `SCRUM-10`) are exposed simultaneously across all 4 columns.*
 
 ### WS4-BA-01 (AFTER): Live `'3LO'` Scoped Query View (`SCRUM-5` & `SCRUM-6` Visible • 4 Non-Matching Tickets Filtered Out)
-**Provider:** Atlassian Jira Cloud (Live Commercial SaaS) • **Scope:** `gcp-team-sbiarllr.atlassian.net` • **State:** Live board query filter (`textfields ~ "3LO*"`: `In Progress 2 · To Do 0 · In Review 0 · Done 0`) • Provenance SHA-256 `45e833e4909f` (`2880x1620` Retina) • **[Open Live Console ↗](https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1)**
+**Provider:** Atlassian Jira Cloud (Live Commercial SaaS) • **Scope:** `gcp-team-sbiarllr.atlassian.net` • **State:** Live board query filter (`textfields ~ "3LO*"`: `In Progress 2 · To Do 0 · In Review 0 · Done 0`) • Provenance SHA-256 `45e833e4909f` (`2880×1620` Retina) • **[Open Live Console ↗](https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1)**
 
 ![WS4 AFTER: Live Atlassian Jira Cloud board on gcp-team-sbiarllr.atlassian.net after applying 3LO scope filtering, showing strictly SCRUM-5 and SCRUM-6 while To Do, In Review, and Done show 0 issues.](../screenshots/verified-cloud-console/ws4_after_jira_3lo_scoped_issue.png)
 *WS4 AFTER (`SHA-256 45e833e4909f`): Live interactive `'3LO'` board query isolates strictly the 2 OAuth/3LO issues (`SCRUM-5` MCP OAuth 2.1 refresh & `SCRUM-6` per-user 3LO Atlassian OAuth scopes) while filtering out 4 non-matching tickets (`To Do 0`, `In Review 0`, `Done 0`). Hard server-side per-user 3LO OAuth and cross-spoke `HTTP 403` isolation are enforced by Pattern C's MCP gateway (`30/30` live assertions).*
 
-| Pair ID | Network Plane | 🔴 BEFORE (Shared Commercial Hub VPC) | 🟢 AFTER (Dedicated Sovereign `/28` PSC Spoke VPC) | Live Console Links |
-| :--- | :--- | :--- | :--- | :--- |
-| **`WS4-BA-02`** | **Google Cloud VPC & PSC**<br>`ramp-portal-dev` → `bbar-138hf0` | Shared Pattern C Hub VPC `cymbal-pattern-c-hub-vpc` (`10.240.0.0/24` + `/28` PSC NAT subnet `10.240.10.0/28`) before Enterprise tier promotion. | Dedicated sovereign Spoke VPC `cymbal-pattern-c-finvault-spoke-vpc` (`10.140.0.0/24`) isolated via Private Service Connect with zero VPC peering sprawl. | [BEFORE Hub VPC ↗](https://console.cloud.google.com/networking/networks/details/cymbal-pattern-c-hub-vpc?project=ramp-portal-dev) • [AFTER Spoke VPC ↗](https://console.cloud.google.com/networking/networks/details/cymbal-pattern-c-finvault-spoke-vpc?project=bbar-138hf0) |
+### WS4-BA-02 (BEFORE): Shared Pattern C Commercial Hub VPC & `/28` PSC NAT Subnet (`cymbal-ge-hub-2026`)
+**Provider:** Google Cloud Console (`VPC Network`) • **Project:** `cymbal-ge-hub-2026` (`#252968359259`) • **Subnets:** `cymbal-hub-app-us-west1` (`10.240.0.0/24`) + `cymbal-psc-nat-us-west1` (`10.240.10.0/28` PSC NAT) • Provenance SHA-256 `bf9df07c95e9` (`2880×1620` Retina) • **[Open Live Hub VPC Subnets ↗](https://console.cloud.google.com/networking/networks/details/cymbal-pattern-c-hub-vpc?project=cymbal-ge-hub-2026)**
+
+![WS4 BEFORE: Live Google Cloud VPC Subnets tab for cymbal-pattern-c-hub-vpc in cymbal-ge-hub-2026 showing cymbal-hub-app-us-west1 10.240.0.0/24 and cymbal-psc-nat-us-west1 10.240.10.0/28.](../screenshots/verified-cloud-console/ws4_before_shared_hub_vpc.png)
+*WS4 BEFORE (`SHA-256 bf9df07c95e9`): Commercial accounts begin in the shared Pattern C Hub VPC (`cymbal-pattern-c-hub-vpc` in `cymbal-ge-hub-2026`), provisioned with `cymbal-hub-app-us-west1` (`10.240.0.0/24`) and the `/28` Private Service Connect NAT subnet `cymbal-psc-nat-us-west1` (`10.240.10.0/28`).*
+
+### WS4-BA-02 (AFTER): Dedicated Sovereign FinVault PSC Spoke VPC (`cymbal-ge-silo-2026`)
+**Provider:** Google Cloud Console (`VPC Network`) • **Project:** `cymbal-ge-silo-2026` (`#495457819919`) • **Subnet:** `cymbal-finvault-spoke-us-west1` (`10.140.0.0/24`, isolated separate GCP project) • Provenance SHA-256 `6f021bbd273c` (`2880×1620` Retina) • **[Open Live Spoke VPC Subnets ↗](https://console.cloud.google.com/networking/networks/details/cymbal-pattern-c-finvault-spoke-vpc?project=cymbal-ge-silo-2026)**
+
+![WS4 AFTER: Live Google Cloud VPC Subnets tab for cymbal-pattern-c-finvault-spoke-vpc in sovereign project cymbal-ge-silo-2026 showing isolated subnet cymbal-finvault-spoke-us-west1 10.140.0.0/24.](../screenshots/verified-cloud-console/ws4_after_dedicated_finvault_spoke_vpc.png)
+*WS4 AFTER (`SHA-256 6f021bbd273c`): After Pattern C's zero-downtime live tier promotion, Enterprise accounts route over unidirectional `/28` Private Service Connect into their dedicated sovereign Spoke VPC (`cymbal-pattern-c-finvault-spoke-vpc`, `10.140.0.0/24` in separate project `cymbal-ge-silo-2026`) with zero VPC peering sprawl.*
 
 <!-- GENUINE_3P_BEFORE_AFTER_END -->
 

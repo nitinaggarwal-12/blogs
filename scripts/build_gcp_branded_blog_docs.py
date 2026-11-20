@@ -222,9 +222,9 @@ def build_curated_master_compendium_markdown() -> str:
     saas_section = re.split(r"\n## (?:Verified Live Commercial|What's next)\b", saas_section)[0].strip()
 
     verified_ui_section = "\n".join([
-        "## Verified Live Commercial SaaS Retina Proofs (16:9 2880x1620)",
+        "## Verified Live Google Cloud Console & Commercial SaaS Retina Proofs (17/17 Verified `2880x1620`)",
         "",
-        "Cryptographically attested live commercial SaaS captures verified via `verify_slide_screenshots.mjs --audience external` (zero OSS stand-ins; Google Cloud Console & Gemini Enterprise captures remain 0/15 pending 1-tap security-key SSO):",
+        "Cryptographically attested live Google Cloud Console (`13/13` across `cymbal-ge-hub-2026` & `cymbal-ge-silo-2026`) and Commercial SaaS (`4/4` across Atlassian Jira Cloud & ThoughtSpot Cloud) `2880x1620` Retina captures verified via `verify_slide_screenshots.mjs --audience external` (`verifiedCount: 17`, `8/8` live BEFORE → AFTER pairs, zero OSS stand-ins):",
         "",
         "- **`SAAS-01` — ThoughtSpot Cloud Spotter BI (`team2.thoughtspot.cloud` • Target `HXGGFMZBKE`):** Live commercial enterprise analytics liveboard enforcing Hop 5 row-level security isolation.",
         "",
@@ -242,7 +242,7 @@ def build_curated_master_compendium_markdown() -> str:
 
     combined = "\n\n".join([
         "# GEAP Multi-Tenancy Program — Master Executive & Engineering Compendium (Workstreams 1–5)",
-        "> **Key point:** This master compendium unifies the restored 5-part Google Cloud Multi-Tenant Agentic AI Architecture Series, executive one-page summaries, all **12 Approved Simplified-Header Architecture & Sequence Diagrams**, the **30/30 Multi-Cloud AWS Bedrock AgentCore 10-SaaS Matrix**, and cryptographically verified **2880x1620 Retina ThoughtSpot Cloud Commercial SaaS Proofs** in one Google Cloud branded document.",
+        "> **Key point:** This master compendium unifies the restored 5-part Google Cloud Multi-Tenant Agentic AI Architecture Series, executive one-page summaries, all **12 Approved Simplified-Header Architecture & Sequence Diagrams**, the **30/30 Multi-Cloud AWS Bedrock AgentCore 10-SaaS Matrix**, and **17/17 cryptographically verified `2880x1620` Retina Google Cloud Console & Commercial SaaS BEFORE → AFTER Proofs** in one Google Cloud branded document.",
         exec_body,
         sec0_text,
         "\n".join(gallery_lines),
@@ -787,9 +787,9 @@ def prepend_gcp_executive_header_banner(
 
 
 def restore_lossless_verified_proof_pngs_in_docx(docx_path: Path) -> int:
-    """Google Docs export downscales PNGs to 1999x1125, altering their SHA-256.
-    Restore bit-exact verified 2880x1620 Retina PNG bytes in word/media/ for all
-    cryptographically attested screenshots (ThoughtSpot BEFORE/AFTER, Jira BEFORE/AFTER, etc.)."""
+    """Google Docs export downscales PNGs to 1999x1125 / 1440x810, altering their SHA-256.
+    Restore bit-exact verified 2880x1620 Retina PNG bytes in word/media/ for ALL
+    cryptographically attested Google Cloud Console & Commercial SaaS screenshots."""
     import html as _html
     import zipfile as _zipfile
 
@@ -797,9 +797,12 @@ def restore_lossless_verified_proof_pngs_in_docx(docx_path: Path) -> int:
     if not docx_path.is_file() or not vdir.is_dir():
         return 0
     bytes_by_name: Dict[str, bytes] = {}
-    for p in vdir.glob("*.png"):
+    sha12_to_bytes: Dict[str, bytes] = {}
+    for p in sorted(vdir.glob("*.png")):
         if p.is_file():
-            bytes_by_name[p.name] = p.read_bytes()
+            raw = p.read_bytes()
+            bytes_by_name[p.name] = raw
+            sha12_to_bytes[hashlib.sha256(raw).hexdigest()[:12].lower()] = raw
     if not bytes_by_name:
         return 0
 
@@ -820,24 +823,49 @@ def restore_lossless_verified_proof_pngs_in_docx(docx_path: Path) -> int:
         for idx, para in enumerate(paras):
             if "<w:drawing" not in para:
                 continue
+            docpr_text = _html.unescape(
+                " ".join(v for _an, v in re.findall(r'\b(descr|name|title)="([^"]*)"', para))
+            ).lower()
+            next_texts = [t.strip() for t in texts[idx + 1 : min(len(texts), idx + 4)] if t.strip()]
+            immediate_cap = (next_texts[0] if next_texts else "").lower()
+            near_after = " ".join(next_texts[:2]).lower()
             ctx = " ".join(texts[max(0, idx - 2) : min(len(texts), idx + 3)]).lower()
+
             target_bytes: Optional[bytes] = None
-            if "thoughtspot" in ctx:
-                if ("saved answer" in ctx or "saas_02" in ctx or "3fcab795d1e5" in ctx or "after" in ctx) and "saas_02_thoughtspot_saved_answer.png" in bytes_by_name:
-                    target_bytes = bytes_by_name["saas_02_thoughtspot_saved_answer.png"]
-                elif "saas_01_thoughtspot_liveboard.png" in bytes_by_name:
-                    target_bytes = bytes_by_name["saas_01_thoughtspot_liveboard.png"]
-            elif "atlassian jira" in ctx or "jira cloud" in ctx or "gcp-team-sbiarllr" in ctx or "ws4-ba-01" in ctx:
-                if ("45e833e4909f" in ctx or "ws4_after_jira" in ctx or "scrum-5 & scrum-6" in ctx or "4 out-of-scope" in ctx or "ws4 after" in ctx or "after (" in ctx) and "ws4_after_jira_3lo_scoped_issue.png" in bytes_by_name:
-                    target_bytes = bytes_by_name["ws4_after_jira_3lo_scoped_issue.png"]
-                elif "saas_06_atlassian_jira_confluence.png" in bytes_by_name:
-                    target_bytes = bytes_by_name["saas_06_atlassian_jira_confluence.png"]
-            else:
-                # Generic fallback: match any verified PNG stem appearing directly in surrounding caption text
-                for fname, fbytes in bytes_by_name.items():
-                    if fname.lower() in ctx or Path(fname).stem.lower() in ctx:
+            # 1. Exact 12-char SHA-256 prefix match in immediate caption or docPr (most unambiguous binding)
+            for scope in (immediate_cap, docpr_text, near_after):
+                if target_bytes is not None:
+                    break
+                for sha12, fbytes in sha12_to_bytes.items():
+                    if sha12 in scope:
                         target_bytes = fbytes
                         break
+            # 2. Exact filename or stem match in docPr or immediate caption
+            if target_bytes is None:
+                for scope in (docpr_text, immediate_cap, near_after):
+                    if target_bytes is not None:
+                        break
+                    for fname, fbytes in bytes_by_name.items():
+                        if fname.lower() in scope or Path(fname).stem.lower() in scope:
+                            target_bytes = fbytes
+                            break
+            # 3. ThoughtSpot / Atlassian Jira semantic fallback
+            if target_bytes is None:
+                if "thoughtspot" in ctx:
+                    if ("saved answer" in ctx or "saas_02" in ctx or "3fcab795d1e5" in ctx or "after" in ctx) and "saas_02_thoughtspot_saved_answer.png" in bytes_by_name:
+                        target_bytes = bytes_by_name["saas_02_thoughtspot_saved_answer.png"]
+                    elif "saas_01_thoughtspot_liveboard.png" in bytes_by_name:
+                        target_bytes = bytes_by_name["saas_01_thoughtspot_liveboard.png"]
+                elif "atlassian jira" in ctx or "jira cloud" in ctx or "gcp-team-sbiarllr" in ctx or "ws4-ba-01" in ctx:
+                    if ("45e833e4909f" in ctx or "ws4_after_jira" in ctx or "scrum-5 & scrum-6" in ctx or "4 out-of-scope" in ctx or "ws4 after" in ctx or "after (" in ctx) and "ws4_after_jira_3lo_scoped_issue.png" in bytes_by_name:
+                        target_bytes = bytes_by_name["ws4_after_jira_3lo_scoped_issue.png"]
+                    elif "saas_06_atlassian_jira_confluence.png" in bytes_by_name:
+                        target_bytes = bytes_by_name["saas_06_atlassian_jira_confluence.png"]
+                else:
+                    for fname, fbytes in bytes_by_name.items():
+                        if fname.lower() in ctx or Path(fname).stem.lower() in ctx:
+                            target_bytes = fbytes
+                            break
             if target_bytes is None:
                 continue
             for rid_e in re.findall(r'r:embed="(rId\d+)"', para):
@@ -970,7 +998,7 @@ def sync_single_doc(spec: Dict[str, Any], export_pdf_dir: Optional[Path] = None)
             raise
     restored_n = restore_lossless_verified_proof_pngs_in_docx(docx_out)
     if restored_n:
-        print(f"   🔐 [{key}] Restored {restored_n} lossless 2880x1620 verified ThoughtSpot Retina PNG(s) in {docx_out.name}")
+        print(f"   🔐 [{key}] Restored {restored_n} lossless 2880x1620 verified Retina PNG(s) in {docx_out.name}")
 
     # Optional PDF export to scratch for visual inspection
     if export_pdf_dir is not None:

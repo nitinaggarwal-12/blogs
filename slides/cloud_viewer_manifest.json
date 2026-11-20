@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-20T16:13:13Z",
+  "updatedAt": "2026-11-20T19:20:46Z",
   "accountEmail": "anonymous-workspace-sync@cloud-architecture-center.internal",
   "oauthClientId": "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com",
   "slides": {
@@ -16,7 +16,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/embed?start=false&loop=false&delayms=5000&resourcekey=0-77zXQOQhM63BNHXHkhxpjA",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/export/pdf?resourcekey=0-77zXQOQhM63BNHXHkhxpjA",
       "webViewLink": "https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit?usp=drivesdk&resourcekey=0-77zXQOQhM63BNHXHkhxpjA",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "WS2": {
       "key": "WS2",
@@ -31,7 +31,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "WS3": {
       "key": "WS3",
@@ -46,7 +46,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "WS4": {
       "key": "WS4",
@@ -61,7 +61,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/embed?start=false&loop=false&delayms=5000&resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/export/pdf?resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ",
       "webViewLink": "https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/edit?usp=drivesdk&resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "WS5": {
       "key": "WS5",
@@ -76,7 +76,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "ALL": {
       "key": "ALL",
@@ -91,7 +91,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "BP-78": {
       "key": "BP-78",
@@ -106,7 +106,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw/embed?start=false&loop=false&delayms=5000&resourcekey=0-EfBs2SS9bacbgKH-9Nj3AQ",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw/export/pdf?resourcekey=0-EfBs2SS9bacbgKH-9Nj3AQ",
       "webViewLink": "https://docs.google.com/presentation/d/1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw/edit?usp=drivesdk&resourcekey=0-EfBs2SS9bacbgKH-9Nj3AQ",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "DOC-MT-01": {
       "key": "DOC-MT-01",
@@ -121,7 +121,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1T2vGGXJe_HD-eq25Hrua2nvndkzIKDyL7DUwUDdtvaU/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1T2vGGXJe_HD-eq25Hrua2nvndkzIKDyL7DUwUDdtvaU/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1T2vGGXJe_HD-eq25Hrua2nvndkzIKDyL7DUwUDdtvaU/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "DOC-MT-02": {
       "key": "DOC-MT-02",
@@ -136,7 +136,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1CTQ2EtyaX6JMOok1ra5jW3GEFXPzWZ4L4paIfKpmKOs/embed?start=false&loop=false&delayms=5000&resourcekey=0-FJsQvNizq6si65LQ0laiEQ",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1CTQ2EtyaX6JMOok1ra5jW3GEFXPzWZ4L4paIfKpmKOs/export/pdf?resourcekey=0-FJsQvNizq6si65LQ0laiEQ",
       "webViewLink": "https://docs.google.com/presentation/d/1CTQ2EtyaX6JMOok1ra5jW3GEFXPzWZ4L4paIfKpmKOs/edit?usp=drivesdk&resourcekey=0-FJsQvNizq6si65LQ0laiEQ",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "DOC-MT-03": {
       "key": "DOC-MT-03",
@@ -151,7 +151,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/15uqspZ_Sck5yaR5W4sDFPHQ_7GKsf6UQy94oCcKEb3M/embed?start=false&loop=false&delayms=5000&resourcekey=0-yTeXFx_k4J8mDo4Uw1UOBQ",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/15uqspZ_Sck5yaR5W4sDFPHQ_7GKsf6UQy94oCcKEb3M/export/pdf?resourcekey=0-yTeXFx_k4J8mDo4Uw1UOBQ",
       "webViewLink": "https://docs.google.com/presentation/d/15uqspZ_Sck5yaR5W4sDFPHQ_7GKsf6UQy94oCcKEb3M/edit?usp=drivesdk&resourcekey=0-yTeXFx_k4J8mDo4Uw1UOBQ",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "DOC-MT-04": {
       "key": "DOC-MT-04",
@@ -166,7 +166,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1BBJYWllV606yVoGXfO8OyDCxTMt_oQpYUyszaibWeTY/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1BBJYWllV606yVoGXfO8OyDCxTMt_oQpYUyszaibWeTY/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1BBJYWllV606yVoGXfO8OyDCxTMt_oQpYUyszaibWeTY/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "DOC-MT-05": {
       "key": "DOC-MT-05",
@@ -181,7 +181,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1sFabWmeLM2EntoGkwaaidqytF05tX5HPGILhEYcn9sM/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1sFabWmeLM2EntoGkwaaidqytF05tX5HPGILhEYcn9sM/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1sFabWmeLM2EntoGkwaaidqytF05tX5HPGILhEYcn9sM/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "DOC-MT-06": {
       "key": "DOC-MT-06",
@@ -196,7 +196,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1Zr7Hj_tFGvfL1x_WNTvwmZ6mpZlcNyIIFhIZy6k41ys/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1Zr7Hj_tFGvfL1x_WNTvwmZ6mpZlcNyIIFhIZy6k41ys/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1Zr7Hj_tFGvfL1x_WNTvwmZ6mpZlcNyIIFhIZy6k41ys/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "DOC-REF-07": {
       "key": "DOC-REF-07",
@@ -211,7 +211,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1gHV5hVNCB8phgq_JYQiNfoOGYOt7VFW5MuZOzKd4jLU/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1gHV5hVNCB8phgq_JYQiNfoOGYOt7VFW5MuZOzKd4jLU/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1gHV5hVNCB8phgq_JYQiNfoOGYOt7VFW5MuZOzKd4jLU/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "DOC-REF-08": {
       "key": "DOC-REF-08",
@@ -226,7 +226,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1fHwVkECJFr1HQvkYHYuMOraerpxO-0C6guF8PFHLlTw/embed?start=false&loop=false&delayms=5000&resourcekey=0-UeV9EiKe8CZohiaI_3GE4A",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1fHwVkECJFr1HQvkYHYuMOraerpxO-0C6guF8PFHLlTw/export/pdf?resourcekey=0-UeV9EiKe8CZohiaI_3GE4A",
       "webViewLink": "https://docs.google.com/presentation/d/1fHwVkECJFr1HQvkYHYuMOraerpxO-0C6guF8PFHLlTw/edit?usp=drivesdk&resourcekey=0-UeV9EiKe8CZohiaI_3GE4A",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "DOC-REF-09": {
       "key": "DOC-REF-09",
@@ -241,7 +241,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/10TpWnWIho8kXmN4866HXz34CI3lKxmh-NWSAd6QYiMM/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/10TpWnWIho8kXmN4866HXz34CI3lKxmh-NWSAd6QYiMM/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/10TpWnWIho8kXmN4866HXz34CI3lKxmh-NWSAd6QYiMM/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "BP-78-A": {
       "key": "BP-78-A",
@@ -256,7 +256,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "BP-78-B": {
       "key": "BP-78-B",
@@ -271,7 +271,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "BP-78-C": {
       "key": "BP-78-C",
@@ -286,7 +286,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/embed?start=false&loop=false&delayms=5000&resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/export/pdf?resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ",
       "webViewLink": "https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/edit?usp=drivesdk&resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "BP-78-E": {
       "key": "BP-78-E",
@@ -301,14 +301,14 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "WS1_EXEC": {
       "key": "WS1_EXEC",
       "title": "WS1 Executive Architecture (10-Slide Lean Narrative Deck)",
       "pptxPath": "slides/ws1-executive-architecture-23slide-deck.pptx",
-      "sha256": "0d4c9a063e621301deb8e243719a845dfada3ccf6962f617c70e3b60b33148df",
-      "sizeBytes": 96932,
+      "sha256": "e8af460841a08ea525d601edc72c0b4cb62eaab627724f67374092e82d10b832",
+      "sizeBytes": 944734,
       "slideCount": 10,
       "googleSlidesId": "1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit",
@@ -316,7 +316,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "ATLAS": {
       "key": "ATLAS",
@@ -331,7 +331,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/embed?start=false&loop=false&delayms=5000&resourcekey=0-bnGKTSSW6T6EoXChSqzgKw",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/export/pdf?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw",
       "webViewLink": "https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?usp=drivesdk&resourcekey=0-bnGKTSSW6T6EoXChSqzgKw",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "PLUGIN-GSLIDES-WS1": {
       "key": "PLUGIN-GSLIDES-WS1",
@@ -346,7 +346,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/embed?start=false&loop=false&delayms=5000&resourcekey=0-77zXQOQhM63BNHXHkhxpjA",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/export/pdf?resourcekey=0-77zXQOQhM63BNHXHkhxpjA",
       "webViewLink": "https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit?usp=drivesdk&resourcekey=0-77zXQOQhM63BNHXHkhxpjA",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "BARE_MIN_12": {
       "key": "BARE_MIN_12",
@@ -361,14 +361,14 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "WS2_EXEC": {
       "key": "WS2_EXEC",
       "title": "WS2 Executive Architecture (10-Slide Lean Narrative Deck)",
       "pptxPath": "slides/ws2-executive-architecture-10slide-deck.pptx",
-      "sha256": "d4e92614e39ab4cfa538c573c3f8f7c03d35cd5b9ad3abe895347565765287e1",
-      "sizeBytes": 99526,
+      "sha256": "6a2188d087fa8c2c417108136687e06513ef0e93e3fd19ae11bfba13c35bd934",
+      "sizeBytes": 647566,
       "slideCount": 10,
       "googleSlidesId": "1OjWG78L8T8JGTxsJid6vzU5wcacJNIYxO2qVGlNPMNI",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1OjWG78L8T8JGTxsJid6vzU5wcacJNIYxO2qVGlNPMNI/edit",
@@ -376,14 +376,14 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1OjWG78L8T8JGTxsJid6vzU5wcacJNIYxO2qVGlNPMNI/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1OjWG78L8T8JGTxsJid6vzU5wcacJNIYxO2qVGlNPMNI/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1OjWG78L8T8JGTxsJid6vzU5wcacJNIYxO2qVGlNPMNI/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "WS3_EXEC": {
       "key": "WS3_EXEC",
       "title": "WS3 Executive Architecture (10-Slide Lean Narrative Deck)",
       "pptxPath": "slides/ws3-executive-architecture-10slide-deck.pptx",
-      "sha256": "d114124e48252ad681214a65e3a687a0ac4e47c7896169ba149f14613f875c30",
-      "sizeBytes": 90934,
+      "sha256": "6063161e59ee2ec5990a35ee04397cd1e30f27a2808b04f4f08fceedfc20c6a6",
+      "sizeBytes": 615371,
       "slideCount": 10,
       "googleSlidesId": "1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/edit",
@@ -391,14 +391,14 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "WS4_EXEC": {
       "key": "WS4_EXEC",
       "title": "WS4 Executive Architecture (10-Slide Lean Narrative Deck)",
       "pptxPath": "slides/ws4-executive-architecture-10slide-deck.pptx",
-      "sha256": "c97246787947f74e117a6a667e7a6e7fa30fcf160f708bae241ae52cf5592a9c",
-      "sizeBytes": 530501,
+      "sha256": "8ea42e615ea8a58240ed27b901ef685b01f954b92958e76435be60b50d6c1da1",
+      "sizeBytes": 530502,
       "slideCount": 10,
       "googleSlidesId": "1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s/edit",
@@ -406,13 +406,13 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     },
     "WS5_EXEC": {
       "key": "WS5_EXEC",
       "title": "WS5 Executive Architecture (10-Slide Lean Narrative Deck)",
       "pptxPath": "slides/ws5-executive-architecture-10slide-deck.pptx",
-      "sha256": "b4e0f3868cfe1575ec96f63f5c1563c7e9e982287c601953e1b3cae38f7be65d",
+      "sha256": "97d3b27f24bcc89b60f5d81875a634cab9608b025ae44d441e07cadc52da4348",
       "sizeBytes": 735605,
       "slideCount": 10,
       "googleSlidesId": "19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA",
@@ -421,7 +421,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T16:13:13Z"
+      "syncedAt": "2026-11-20T18:52:17Z"
     }
   },
   "docs": {
@@ -429,108 +429,108 @@
       "key": "WS1",
       "title": "WS1 \u2014 Reference Architecture, Taxonomy & 5-Hop Baseline",
       "mdPath": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
-      "sha256": "0c8be15b77089c641601bfe1bef383ea3609caafb82808253affc87a07d0c683",
-      "sizeBytes": 41396,
+      "sha256": "c9658c32764a3b330db4715b94eaabee6ccb682801a299f874c467025a99029a",
+      "sizeBytes": 44330,
       "googleDocsId": "1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA",
       "googleDocsEditUrl": "https://docs.google.com/document/d/1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA/edit",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA/preview",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA/export?format=pdf",
       "webViewLink": "https://docs.google.com/document/d/1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA/edit",
-      "syncedAt": "2026-11-20T16:13:13Z",
+      "syncedAt": "2026-11-20T19:20:46Z",
       "googleDocsDocxUrl": "https://docs.google.com/document/d/1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA/export?format=docx",
       "wordDocxPath": "docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx",
-      "wordDocxSizeBytes": 3205722,
-      "bytes": 41396
+      "wordDocxSizeBytes": 4706175,
+      "bytes": 44330
     },
     "WS2": {
       "key": "WS2",
       "title": "WS2 \u2014 Pattern A: High-Density Pooled Architecture",
       "mdPath": "blogs/ws2-pattern-a-pooled-architecture.md",
-      "sha256": "372a58b667a93cc32fa6abd9c9146d36c51123ff0b0b64deb6ad0c720b514547",
-      "sizeBytes": 28609,
+      "sha256": "1f5b9b240aceb9eea9b80ea6f316555433a6d2760ea5f66193674efda5f9c383",
+      "sizeBytes": 30723,
       "googleDocsId": "15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0",
       "googleDocsEditUrl": "https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/edit?resourcekey=0-lLM1d36y60xMkgO678CtSA",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/preview?resourcekey=0-lLM1d36y60xMkgO678CtSA",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/export?format=pdf&resourcekey=0-lLM1d36y60xMkgO678CtSA",
       "webViewLink": "https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/edit?resourcekey=0-lLM1d36y60xMkgO678CtSA",
-      "syncedAt": "2026-11-20T16:13:13Z",
+      "syncedAt": "2026-11-20T19:20:46Z",
       "googleDocsDocxUrl": "https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/export?format=docx&resourcekey=0-lLM1d36y60xMkgO678CtSA",
       "wordDocxPath": "docs/word/ws2-pattern-a-pooled-architecture.docx",
-      "wordDocxSizeBytes": 3407903,
+      "wordDocxSizeBytes": 4165065,
       "resourceKey": "0-lLM1d36y60xMkgO678CtSA",
-      "bytes": 28609
+      "bytes": 30723
     },
     "WS3": {
       "key": "WS3",
       "title": "WS3 \u2014 Pattern B: Zero-Trust Sovereign Silos",
       "mdPath": "blogs/ws3-pattern-b-sovereign-silos.md",
-      "sha256": "2f4d0ac9a9e0078d5f6efaeffc72c9f0d8b3e43d985e12c54ae7b4ea924acf08",
-      "sizeBytes": 22616,
+      "sha256": "d83c7e61d8a3d0a1eda0c4b997c3bc75076b4ecdfbf3a12a382a5a984c432f48",
+      "sizeBytes": 24696,
       "googleDocsId": "1l34-lgyjuF9KtqWmshOUzdxXSEoLBkovwmPtdpPSPM0",
       "googleDocsEditUrl": "https://docs.google.com/document/d/1l34-lgyjuF9KtqWmshOUzdxXSEoLBkovwmPtdpPSPM0/edit?resourcekey=0-sbdt9Z1LSBbEWQRk8JHYOA",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1l34-lgyjuF9KtqWmshOUzdxXSEoLBkovwmPtdpPSPM0/preview?resourcekey=0-sbdt9Z1LSBbEWQRk8JHYOA",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/1l34-lgyjuF9KtqWmshOUzdxXSEoLBkovwmPtdpPSPM0/export?format=pdf&resourcekey=0-sbdt9Z1LSBbEWQRk8JHYOA",
       "webViewLink": "https://docs.google.com/document/d/1l34-lgyjuF9KtqWmshOUzdxXSEoLBkovwmPtdpPSPM0/edit?resourcekey=0-sbdt9Z1LSBbEWQRk8JHYOA",
-      "syncedAt": "2026-11-20T16:13:13Z",
+      "syncedAt": "2026-11-20T19:20:46Z",
       "googleDocsDocxUrl": "https://docs.google.com/document/d/1l34-lgyjuF9KtqWmshOUzdxXSEoLBkovwmPtdpPSPM0/export?format=docx&resourcekey=0-sbdt9Z1LSBbEWQRk8JHYOA",
       "wordDocxPath": "docs/word/ws3-pattern-b-sovereign-silos.docx",
-      "wordDocxSizeBytes": 3048987,
+      "wordDocxSizeBytes": 3913854,
       "resourceKey": "0-sbdt9Z1LSBbEWQRk8JHYOA",
-      "bytes": 22616
+      "bytes": 24696
     },
     "WS4": {
       "key": "WS4",
       "title": "WS4 \u2014 Pattern C: Dynamic Hybrid Hub-and-Spoke & Tier Upgrade",
       "mdPath": "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md",
-      "sha256": "2f7be4a52ea259211a721f6c1752054dcb61a418cad3bac1238f51b0a574cfe8",
-      "sizeBytes": 23718,
+      "sha256": "f082db71a41d98515f527403b6f83c3b1c3ff68c97807f186a6b419e4540cae5",
+      "sizeBytes": 24997,
       "googleDocsId": "1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I",
       "googleDocsEditUrl": "https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/edit?resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/preview?resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/export?format=pdf&resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw",
       "webViewLink": "https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/edit?resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw",
-      "syncedAt": "2026-11-20T16:13:13Z",
+      "syncedAt": "2026-11-20T19:20:46Z",
       "googleDocsDocxUrl": "https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/export?format=docx&resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw",
       "wordDocxPath": "docs/word/ws4-pattern-c-hybrid-dynamic-tiering.docx",
-      "wordDocxSizeBytes": 3609467,
+      "wordDocxSizeBytes": 4150015,
       "resourceKey": "0-I2qSR0LlhnB9ul1V-gZwPw",
-      "bytes": 23718
+      "bytes": 24997
     },
     "WS5": {
       "key": "WS5",
       "title": "WS5 \u2014 Executive Decision Guide & Multi-Tenant Agentic Triad",
       "mdPath": "blogs/ws5-decision-guide-and-agentic-triad.md",
-      "sha256": "dbb8ca4ffe91abeb98213c4b6487270a286174d2372b7657bd0a0ce988e66378",
-      "sizeBytes": 23804,
+      "sha256": "54f7ee87d61285491d9998e475f2ccc6d02d1adfd75dcd85e3478f14844a8ee5",
+      "sizeBytes": 25317,
       "googleDocsId": "1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU",
       "googleDocsEditUrl": "https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/edit?resourcekey=0-XWkODR5elYC9-fuGO6aBaQ",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/preview?resourcekey=0-XWkODR5elYC9-fuGO6aBaQ",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/export?format=pdf&resourcekey=0-XWkODR5elYC9-fuGO6aBaQ",
       "webViewLink": "https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/edit?resourcekey=0-XWkODR5elYC9-fuGO6aBaQ",
-      "syncedAt": "2026-11-20T16:13:13Z",
+      "syncedAt": "2026-11-20T19:20:46Z",
       "googleDocsDocxUrl": "https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/export?format=docx&resourcekey=0-XWkODR5elYC9-fuGO6aBaQ",
       "wordDocxPath": "docs/word/ws5-decision-guide-and-agentic-triad.docx",
-      "wordDocxSizeBytes": 4261658,
+      "wordDocxSizeBytes": 4933268,
       "resourceKey": "0-XWkODR5elYC9-fuGO6aBaQ",
-      "bytes": 23804
+      "bytes": 25317
     },
     "ALL": {
       "key": "ALL",
       "title": "ALL Workstreams 1\u20135 End-to-End Architecture & Verification Compendium (25 Slides \u2022 12 Approved Diagrams)",
       "mdPath": "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md",
-      "sha256": "98ac8a4b5d30076d169afa0d0c1a5122688a67c64014f9d52e58734428198c58",
-      "sizeBytes": 71490,
+      "sha256": "c8cd30a0e2405a98db8d393332d88e136f020375262f222b62b9b5e7a1cc8573",
+      "sizeBytes": 74377,
       "googleDocsId": "150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM",
       "googleDocsEditUrl": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/edit?resourcekey=0-hSujxBUvoiHkoIFajcWeQg",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/preview?resourcekey=0-hSujxBUvoiHkoIFajcWeQg",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/export?format=pdf&resourcekey=0-hSujxBUvoiHkoIFajcWeQg",
       "webViewLink": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/edit?resourcekey=0-hSujxBUvoiHkoIFajcWeQg",
-      "syncedAt": "2026-11-20T16:13:13Z",
+      "syncedAt": "2026-11-20T19:20:46Z",
       "googleDocsDocxUrl": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/export?format=docx&resourcekey=0-hSujxBUvoiHkoIFajcWeQg",
       "wordDocxPath": "docs/word/all-end-to-end-workstream-and-diagram-guide.docx",
-      "wordDocxSizeBytes": 7304508,
+      "wordDocxSizeBytes": 8812766,
       "resourceKey": "0-hSujxBUvoiHkoIFajcWeQg",
-      "bytes": 71490
+      "bytes": 74377
     },
     "ATLAS": {
       "key": "ATLAS",
@@ -543,12 +543,12 @@
       "googleDocsPdfUrl": "https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/export?format=pdf&resourcekey=0-klzhSI2SvWYPCvpPwwMSUw",
       "googleDocsDocxUrl": "https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/export?format=docx&resourcekey=0-klzhSI2SvWYPCvpPwwMSUw",
       "webViewLink": "https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/edit?resourcekey=0-klzhSI2SvWYPCvpPwwMSUw",
-      "syncedAt": "2026-11-20T16:13:13Z",
+      "syncedAt": "2026-11-20T19:20:46Z",
       "resourceKey": "0-klzhSI2SvWYPCvpPwwMSUw",
-      "sha256": "ab5e0727f753ad6c739b17c77445dc9ea9c3e9b4ffaf3455f80e307f849dee0a",
-      "sizeBytes": 12426,
-      "wordDocxSizeBytes": 3781798,
-      "bytes": 12426
+      "sha256": "7a0b3c04a779611d4280dc783d3663cb6f6729123dce22ffda38b2125d2a2ba6",
+      "sizeBytes": 18614,
+      "wordDocxSizeBytes": 7782341,
+      "bytes": 18614
     }
   }
 }

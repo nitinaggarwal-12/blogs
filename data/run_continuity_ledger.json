@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-11-20T16:00:25Z",
+  "updated_at": "2026-11-20T19:05:01Z",
   "workspace_root": ".",
   "replay_orchestrator_script": "scripts/run_all_repeatable_e2e_verifications.py",
   "standing_mandates": [
@@ -67,7 +67,7 @@
       "command": "python3 -B scripts/deploy_10_saas_aws_agentcore_targets.py",
       "receipt_path": "docs/aws_agentcore_10_saas_targets_manifest.json",
       "receipt_sha256": "1fefd1ef910d38779cc6e788a1f99902cd37332ba0d92db01b84eee757b6c51d",
-      "last_executed_at": "2026-11-17T04:48:21Z",
+      "last_executed_at": "2026-11-20T19:05:01Z",
       "last_exit_code": 0,
       "repeat_in_next_run": true,
       "superseded_by_user": false
@@ -81,7 +81,7 @@
       "command": "python3 -B scripts/verify_5_third_party_saas_products.py",
       "receipt_path": "docs/third_party_5_saas_verification_receipt.json",
       "receipt_sha256": "fbcb22e2a9c5cfdf8e931be99055c7db56864c61f3aa57c48d94333e50b088c4",
-      "last_executed_at": "2026-11-17T04:48:21Z",
+      "last_executed_at": "2026-11-20T19:05:01Z",
       "last_exit_code": 0,
       "repeat_in_next_run": true,
       "superseded_by_user": false
@@ -119,11 +119,11 @@
       "description": "Capture & verify live Google Cloud Console, Gemini Enterprise & Marketplace Commercial SaaS 16:9 Retina screenshots via capture_verified_ui.mjs + verify_slide_screenshots.mjs --audience external (zero open-source stand-ins).",
       "cloud_provider": "GCP+SAAS",
       "script_path": "scripts/capture_real_gcp_and_saas_screenshots.mjs",
-      "script_sha256": "ed72075460299d28578b95b421926213e677c592d77f213bed23fad96df41cb9",
+      "script_sha256": "5a4db40d98b3f007a32591b1ff13e9185a0d491d881baa1312d3cae0bce2e42d",
       "command": "node scripts/capture_real_gcp_and_saas_screenshots.mjs",
       "receipt_path": "docs/cloud_console_verification_receipt.json",
       "receipt_sha256": "c1bcf26d3b80007fb77cde16e6faca572562e997b11f027fd97001576a7834f1",
-      "last_executed_at": "2026-11-20T16:00:25Z",
+      "last_executed_at": "2026-11-20T19:05:01Z",
       "last_exit_code": 0,
       "repeat_in_next_run": true,
       "superseded_by_user": false
@@ -133,11 +133,11 @@
       "description": "Execute Deep Forensic Audit (F-01..F-13) and Provenance Guard verifying 100% receipt SHA-256 parity, zero synthetic screenshots, and 15/15 Google Slides + 6/6 Google Docs synchronization.",
       "cloud_provider": "GCP+AWS",
       "script_path": "scripts/run_deep_forensic_audit.py",
-      "script_sha256": "c2652016e92b463fc5ffd670ca9f5adbc5488fd6774e2005bde42e142392603b",
+      "script_sha256": "7e95c5d8ce11a34b23da74bf98cc7af0fcbd478f805dd0ad52dfe302fb884328",
       "command": "python3 -B scripts/run_deep_forensic_audit.py",
       "receipt_path": "docs/cloud_console_verification_receipt.json",
       "receipt_sha256": "c1bcf26d3b80007fb77cde16e6faca572562e997b11f027fd97001576a7834f1",
-      "last_executed_at": "2026-11-20T15:46:56Z",
+      "last_executed_at": "2026-11-20T19:05:01Z",
       "last_exit_code": 0,
       "repeat_in_next_run": true,
       "superseded_by_user": false

@@ -698,7 +698,13 @@ class TestBlogAssetsPagesAndCrud(unittest.TestCase):
         m_doc = json.loads(manifest_path.read_text(encoding="utf-8"))
         entries = m_doc.get("entries", [])
         self.assertGreaterEqual(len(entries), 2, "Expected >=2 cryptographically verified entries")
-        verified_gcp_count = sum(1 for e in entries if Path(str(e.get("relFile", ""))).name.startswith("gcp_"))
+        verified_gcp_count = sum(
+            1
+            for e in entries
+            if Path(str(e.get("relFile", ""))).name.startswith("gcp_")
+            or str(e.get("hostname") or "").strip().lower() == "console.cloud.google.com"
+            or (urlparse(str(e.get("canonicalOriginUrl") or e.get("url") or "")).hostname or "").lower() == "console.cloud.google.com"
+        )
         manifest_sha_by_name = {
             Path(str(e.get("relFile", ""))).name: str(e.get("sha256", ""))
             for e in entries
