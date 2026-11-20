@@ -27,34 +27,25 @@ import {
   extractStructuredNodeLayout,
   CIRCLED_STEP_DIGITS,
   ParsedMxCell,
-} from '../../PromptCanvas/src/lib/export/editablePptxCompiler';
+} from './lib/editablePptxParser';
 // @ts-ignore
 import { getDeckSlideNotesList, getSlideSpeakerNoteText } from './human_readable_speaker_notes.mjs';
 
-const localReq = createRequire(import.meta.url);
-const promptCanvasPkg = fs.existsSync(path.resolve(__dirname, '../../PromptCanvas/package.json'))
-  ? path.resolve(__dirname, '../../PromptCanvas/package.json')
-  : path.join(process.env.HOME || '', 'Documents', 'PromptCanvas', 'package.json');
-const requireFromPromptCanvas = fs.existsSync(promptCanvasPkg) ? createRequire(promptCanvasPkg) : localReq;
+const localReq = createRequire(
+  typeof __filename !== 'undefined' ? __filename : path.join(process.cwd(), 'scripts', 'build_editable_slide_decks.ts')
+);
 function resolveOptionalPkg(pkgName: string): any {
-  for (const reqFn of [localReq, requireFromPromptCanvas]) {
-    try {
-      return reqFn(pkgName);
-    } catch {
-      // try next resolver
-    }
+  try {
+    return localReq(pkgName);
+  } catch {
+    // try blogs/package.json
   }
-  const siblingCandidates = [
-    path.resolve(__dirname, '../../zyvoriq/package.json'),
-    path.resolve(__dirname, '../../trainex/package.json'),
-  ];
-  for (const cand of siblingCandidates) {
-    if (fs.existsSync(cand)) {
-      try {
-        return createRequire(cand)(pkgName);
-      } catch {
-        // continue
-      }
+  const blogPkg = path.resolve(__dirname, '../package.json');
+  if (fs.existsSync(blogPkg)) {
+    try {
+      return createRequire(blogPkg)(pkgName);
+    } catch {
+      // continue
     }
   }
   throw new Error(`Unable to resolve package: ${pkgName}`);
@@ -102,6 +93,7 @@ const TEXT_DARK = '3C4043'; // Slide Titles & Display Numbers: Google Sans / Goo
 const TEXT_BODY = '5F6368'; // Body Copy & Captions: Roboto / Google Sans Text (Medium Gray #5F6368)
 const TEXT_MUTED = '5F6368'; // Medium Gray #5F6368
 const BORDER_GREY = 'DADCE0'; // Subtle container borders (#DADCE0)
+const BORDER_LIGHT = BORDER_GREY; // Shared border constant exported for WS builders
 const CARD_BG = 'F8F9FA'; // Content card container fill (#F8F9FA)
 const SURFACE_BG = 'FFFFFF'; // Crisp white widescreen 16:9 slide canvas
 const SPEC_BOX_BG = 'FFFFFF'; // Clean inner specification pill surface
@@ -618,9 +610,9 @@ function parseBulletIntoCard(raw: string, index: number, explicitSpec?: CardTech
     },
     {
       label: '90% Prefix Cache FinOps',
-      stack: 'Gemini 2.5 Pro ContextCacheConfig • Memorystore for Valkey',
-      sla: '84.7% Net Token Savings • 120 vs. 600 RPM Quota Bulkheads',
-      match: (s) => s.includes('90%') || s.includes('cache') || s.includes('84.7%') || s.includes('quota'),
+      stack: 'Gemini 3.8 Flash ContextCacheConfig • Memorystore for Valkey',
+      sla: '89.1% Net Token Savings • 120 vs. 600 RPM Quota Bulkheads',
+      match: (s) => s.includes('90%') || s.includes('cache') || s.includes('89.1%') || s.includes('quota'),
     },
   ];
 
@@ -813,14 +805,14 @@ const TITLE_ACTS_BY_DECK: Record<string, TitleActSpec[]> = {
     {
       badge: 'PARTS 4–5 • SLIDES 13–15',
       title: 'Dual-Plane Proofs, Retina UIs & SLAs',
-      sub: 'Presents grounded GCP/AWS CLI telemetry (Slide 13), live 2880x1800 Retina Before/After 3P SaaS UIs (Slide 14), and Well-Architected SLAs + 5 GitHub milestones (Slide 15).',
+      sub: 'Presents grounded GCP/AWS CLI telemetry (Slide 13), live 2880x1620 ThoughtSpot Cloud UIs & F-13 slot (Slide 14), and Well-Architected SLAs + 5 GitHub milestones (Slide 15).',
     },
   ]),
   WS2: quadColorActs([
     {
       badge: 'ACT I • SLIDES 1–3',
       title: 'Shared Incident Agent, 32k Cache & Pool Options',
-      sub: 'Shows FinVault and RetailStream co-hosted on one Incident Diagnostic Agent with a shared 32,000-token prefix cache and 8k vs. 4k thinking budgets (Slide 2), then weighs the governed 5-Hop pool against naive single-DB and project-per-tenant designs (Slide 3).',
+      sub: 'Shows FinVault and RetailStream co-hosted on one Incident Diagnostic Agent with a shared 32,768-token prefix cache and HIGH/8k vs. MEDIUM/4k reasoning caps (Slide 2), then weighs the governed 5-Hop pool against naive single-DB and project-per-tenant designs (Slide 3).',
     },
     {
       badge: 'ACT II • SLIDES 4–7',
@@ -891,7 +883,7 @@ const TITLE_ACTS_BY_DECK: Record<string, TitleActSpec[]> = {
     {
       badge: 'ACT II • SLIDES 4–7',
       title: 'L1 80/20 Reuse → L2 Figure 1 → L3 Triad → L4 FinOps',
-      sub: 'Zooms from the 80/20 code-reuse architecture (Slide 4) into the capstone Figure 1 blueprint (Slide 5), the Agentic Triad sequence of shared, private and GCS-skill agents (Slide 6) and the 84.7% net-savings zero-PII OTel span on the wire (Slide 7).',
+      sub: 'Zooms from the 80/20 code-reuse architecture (Slide 4) into the capstone Figure 1 blueprint (Slide 5), the Agentic Triad sequence of shared, private and GCS-skill agents (Slide 6) and the 89.1% net-savings zero-PII OTel span on the wire (Slide 7).',
     },
     {
       badge: 'ACT III • SLIDES 8–10',
@@ -931,7 +923,7 @@ const TITLE_ACTS_BY_DECK: Record<string, TitleActSpec[]> = {
 // Per-workstream one-line subtitles for the Slide 2 (use cases) and Slide 12 (next steps) bento layouts.
 const USE_CASE_SUBTITLE_BY_WS: Record<string, string> = {
   WS1: 'FinVault Bank (600 RPM: Managed Vertex AI Dedicated PT vs. Air-Gapped GKE Gemma 3) & RetailStream Corp (120 RPM: Entra + ServiceNow 3LO Confused-Deputy Defense).',
-  WS2: 'Two commercial tenants co-hosted on one shared Incident Diagnostic Agent, one 32,000-token prefix cache and separate 8k vs. 4k thinking budgets.',
+  WS2: 'Two commercial tenants co-hosted on one shared Incident Diagnostic Agent, one 32,768-token prefix cache and separate HIGH/8k vs. MEDIUM/4k reasoning caps.',
   WS3: 'Regulated banking, healthcare and public-sector buyers who require a dedicated project, VPC-SC perimeter and a customer-held Cloud KMS kill-switch.',
   WS4: 'A Standard tenant that grows into an Enterprise tier and must be promoted to a sovereign spoke behind the same URL with zero downtime.',
   WS5: 'A portfolio of pooled, siloed and hybrid tenants selected with two architectural questions and served from one 80% shared codebase.',
@@ -939,7 +931,7 @@ const USE_CASE_SUBTITLE_BY_WS: Record<string, string> = {
 };
 
 const NEXT_STEPS_SUBTITLE_BY_WS: Record<string, string> = {
-  WS1: 'Well-Architected SLAs (~42ms 5-Hop • ~1.8s cold / ~420ms warm TTFT • <60s CMEK / <5s L1 purge • <30s cross-region RTO • 84.7% token & 74% TCO savings) + 5 Runnable Milestones.',
+  WS1: 'Well-Architected SLAs (~42ms 5-Hop • ~1.8s cold / ~420ms warm TTFT • <60s CMEK / <5s L1 purge • <30s cross-region RTO • 89.1% token & 74% TCO savings) + 5 Runnable Milestones.',
   WS2: 'Terraform 2.6 pooled starter, AlloyDB FORCE RLS policies and run_breach_simulations.py (10/10) before the series moves to Pattern B.',
   WS3: 'Terraform 3.6 silo blueprint, VPC-SC perimeter, Cloud KMS CMEK keys and run_silo_security_tests.py (6/6) before WS4 unifies both tiers.',
   WS4: 'Terraform 4.6 hybrid blueprint, /28 PSC NAT subnet, ServiceAttachment allowlists and run_tier_migration_suite.py (4/4) before the WS5 capstone.',
@@ -1355,10 +1347,10 @@ function addQuadMetricsSlide(pptx: Pptx, spec: DeckSpec | null) {
         pill: 'Hops 1–5 • Fail-Closed Guardrails',
       },
       {
-        num: '84.7%',
+        num: '89.1%',
         caption: 'Net Per-Turn Token Cost Reduction',
-        detail: 'Gemini 2.5 Pro ContextCacheConfig caches the 32,000-token SRE system prefix once at a 90% discount across pooled commercial tenants.',
-        pill: 'Gemini 2.5 Pro • ContextCacheConfig',
+        detail: 'Gemini 3.8 Flash ContextCacheConfig caches the 32,768-token SRE system prefix once at a 90% discount across pooled commercial tenants.',
+        pill: 'Gemini 3.8 Flash • ContextCacheConfig',
       },
       {
         num: '20/20',
@@ -1962,7 +1954,7 @@ function buildComparisonTableSynthesisCards(
       },
       {
         title: '4. Dual-Plane Proofs & SLAs (Slides 13–15)',
-        body: 'Pairs grounded GCP/AWS CLI telemetry (Slide 13) & 2880x1800 Retina 3P SaaS UIs (Slide 14) with Well-Architected SLAs & 5 milestones (Slide 15).',
+        body: 'Pairs grounded GCP/AWS CLI telemetry (Slide 13) & 2880x1620 Retina 3P SaaS UIs (Slide 14) with Well-Architected SLAs & 5 milestones (Slide 15).',
       },
     ];
   }
@@ -2021,7 +2013,7 @@ function buildComparisonTableSynthesisCards(
         },
         {
           title: '2. Option B1: Vertex AI PT + VPC-SC + CMEK',
-          body: 'Zero GPU operational overhead with Gemini 2.5 Pro Provisioned Throughput locked inside the tenant VPC-SC perimeter and Cloud KMS key ring.',
+          body: 'Zero GPU operational overhead with Gemini 3.8 Flash Provisioned Throughput locked inside the tenant VPC-SC perimeter and Cloud KMS key ring.',
         },
         {
           title: '3. Option B2: Air-Gapped Gemma 3 (27B) on GKE',
@@ -2085,7 +2077,7 @@ function buildComparisonTableSynthesisCards(
       },
       {
         title: '3. Fair-Share Rate & Budget Caps (Tests 6–7)',
-        body: 'Memorystore for Valkey throttles 500-RPM floods at 120 RPM (HTTP 429) while clamping Standard thinking budgets to 4,000 tokens.',
+        body: 'Memorystore for Valkey throttles 500-RPM floods at 120 RPM (HTTP 429) while clamping Standard thinkingLevel to MEDIUM (4,000 maxOutputTokens).',
       },
       {
         title: '4. Data RLS & 3LO Step-Up (Tests 9–10)',
@@ -2140,7 +2132,7 @@ function buildComparisonTableSynthesisCards(
     },
     {
       title: '2. Hop 3: Compute, Cache & CMEK Verification',
-      body: 'Valkey enforces 120/600 RPM bulkheads (429), clamps 4k/8k thinking budgets, isolates 90% prefix caches, and halts revoked CMEK keys in <60s (423).',
+      body: 'Valkey enforces 120/600 RPM bulkheads (429), clamps 4k/8k reasoning caps (MEDIUM/HIGH), isolates 90% prefix caches, and halts revoked CMEK keys in <60s (423).',
     },
     {
       title: '3. Hop 4–5: Guardrails, RLS & FinOps Proof',
@@ -2765,8 +2757,8 @@ function addAssetsSlide(pptx: Pptx, spec: DeckSpec | null, deck: DeckJson, manif
     },
     {
       title: '4. Grounded Multi-Cloud & 3P SaaS Proof',
-      body: 'Pairs 100% native editable vector shapes with authentic Google Cloud Console, AWS AgentCore, and Before/After 3rd-Party SaaS UI captures.',
-      tag: '23 Multi-Cloud Retina Captures • 27 Workbench Files',
+      body: 'Pairs 100% native editable vector shapes with authentic Google Cloud Console, AWS AgentCore, and Verified Commercial 3rd-Party SaaS UI captures.',
+      tag: 'VERIFIED MULTI-CLOUD Retina Captures • 27 Workbench Files',
       accent: GOOGLE_CARD_ACCENTS[3],
     },
   ];
@@ -3496,7 +3488,7 @@ async function appendGoogleBrandedDiagramSlides(
           const lx = Number((bx + 0.045).toFixed(3));
           const ly = Number((by + (bh - iconSq) / 2).toFixed(3));
           slide2.addImage({ data: leftDataUrl, x: lx, y: ly, w: iconSq, h: iconSq });
-          padLeft = iconSq + 0.07;
+          padLeft = Number((0.045 + iconSq + 0.038).toFixed(3));
         }
       }
 
@@ -3522,7 +3514,7 @@ async function appendGoogleBrandedDiagramSlides(
         const primaryTextLen = consolidatedLines[0]?.text.length || 0;
         const secondaryTextLen = consolidatedLines[1]?.text.length || 0;
         const isDenseCard = primaryTextLen >= 18 || secondaryTextLen >= 18;
-        const availCardW = Number(Math.max(0.22, bw - padLeft - 0.03).toFixed(3));
+        const availCardW = Number(Math.max(0.22, bw - padLeft - 0.020).toFixed(3));
         const badgeExtraChars = structured.stepBadge ? 3 : 0;
         const baseTitlePt = isDenseCard ? 4.9 : bh < 0.42 ? 5.4 : 5.7;
         const baseSubPt = isDenseCard ? 4.2 : bh < 0.42 ? 4.6 : 4.8;
@@ -3535,8 +3527,12 @@ async function appendGoogleBrandedDiagramSlides(
         const cardTitlePt = Number(
           Math.min(baseTitlePt, Math.max(3.5, (availCardW * 72) / (longestTitleToken * 0.60))).toFixed(2)
         );
+        const hasLongCapsSubToken = (consolidatedLines[1]?.text || '')
+          .split(/\s+/)
+          .some((t) => /^[A-Z0-9_]{8,}$/.test(t));
+        const subWidthFactor = hasLongCapsSubToken ? 0.70 : 0.60;
         const cardSubPt = Number(
-          Math.min(baseSubPt, Math.max(2.75, (availCardW * 72) / (longestSubToken * 0.59))).toFixed(2)
+          Math.min(baseSubPt, Math.max(2.4, (availCardW * 72) / (longestSubToken * subWidthFactor))).toFixed(2)
         );
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -3605,7 +3601,7 @@ async function appendGoogleBrandedDiagramSlides(
           ? Number((by + 0.028).toFixed(3))
           : Number((by + (bh - iconSq) / 2).toFixed(3));
         slide2.addImage({ data: iconDataUrl, x: ix, y: iy, w: iconSq, h: iconSq });
-        textOffsetLeft = Number((iconSq + 0.06).toFixed(3));
+        textOffsetLeft = Number((0.045 + iconSq + 0.038).toFixed(3));
       }
     }
 
@@ -4451,12 +4447,12 @@ async function appendGoogleBrandedDiagramSlides(
     },
     {
       title: 'Well-Architected Pillar 2: Reliability & Isolation',
-      body: `Enforces Valkey RPM bulkheads, thinking budget caps (4k/8k) & fail-closed HTTP 401/403/422/423/429 gates.`,
+      body: `Enforces Valkey RPM bulkheads, thinkingLevel / maxOutputTokens caps (4k/8k) & fail-closed HTTP 401/403/422/423/429 gates.`,
       accent: GOOGLE_CARD_ACCENTS[1],
     },
     {
       title: 'Well-Architected Pillar 3: Cost Optimization (FinOps)',
-      body: `Captures 90% Gemini 2.5 Pro prefix cache discount and streams zero-PII OTel spans to BigQuery chargeback.`,
+      body: `Captures 90% Gemini 3.8 Flash prefix cache discount and streams zero-PII OTel spans to BigQuery chargeback.`,
       accent: GOOGLE_CARD_ACCENTS[2],
     },
   ];
@@ -4520,7 +4516,7 @@ async function appendGoogleBrandedDiagramSlides(
 // Cohesive 3-Act Workstream-Specific Native Editable Visual Archetypes
 // (skills/slide-design/SKILL.md & rules/AGENTS.md — Zero Copy-Pasted Unrelated Example Text!)
 //   1. architecture-zone-topology (Workstream-Specific 3-Zone Boundary & Control-to-Data Plane)
-//   2. payload-transformation-triptych (Workstream-Specific 3-Stage Before/After Wire Payload)
+//   2. payload-transformation-triptych (Workstream-Specific 3-Stage Verified Commercial Wire Payload)
 //   3. uml-sequence-swimlane (Workstream-Specific 5-Actor Chronological UML Lifeline Steps 1..6)
 //   4. async-state-flow-pipeline (Workstream-Specific 4-Node State & Closed-Loop Pipeline 1..5)
 //   5. phased-roadmap-timeline (Workstream-Specific 3-Phase Connected Rollout & Migration Timeline)
@@ -4692,7 +4688,7 @@ const ZONE_TOPOLOGY_BY_WS: Record<string, ZoneTopologySpec> = {
     zone2SubContainer: 'Unified Multi-Tenant Agentic Triad',
     gwCards: [
       { icon: 'ADK', title: 'Shared Diagnostic &\nTenant Private Agents' },
-      { icon: '90%', title: 'Gemini 2.5 Pro 90%\nShared Prefix Cache' },
+      { icon: '90%', title: 'Gemini 3.8 Flash 90%\nShared Prefix Cache' },
       { icon: 'MCP', title: '2LO Telemetry & 3LO\nWorkspace MCP Hub' },
     ],
     arrow2Top: '20% Terraform\nTopology Adapter',
@@ -5286,7 +5282,7 @@ interface PayloadTriptychSpec {
 const PAYLOAD_TRIPTYCH_BY_WS: Record<string, PayloadTriptychSpec> = {
   WS1: {
     slideTitle: 'WS1 • ACT II (L4 WIRE): Hop 1 Spoofed Header Stripping & Signed STS JWT Context',
-    subtitle: 'Wire-level protocol normalization: untrusted headers stripped at Hop 1. Cloud KMS asymmetricSign (~8–14ms) mints STS JWT; downstream Hops 2–5 verify via in-memory cached JWKS in <0.15ms (0 KMS network RPCs).',
+    subtitle: 'Wire-level protocol normalization: untrusted headers stripped at Hop 1; Cloud KMS asymmetricSign (~8–14ms) mints STS JWT; downstream Hops 2–5 verify via in-memory cached JWKS in <0.15ms (0 KMS network RPCs).',
     leftVerdict: '✕ Unverified Client Claims • Blocked at Edge',
     rightVerdict: '✓ <0.15ms Cached-JWKS Verify • 0 KMS Network Calls',
     leftHeader: 'Untrusted Caller\nIngress Request',
@@ -5391,11 +5387,11 @@ const PAYLOAD_TRIPTYCH_BY_WS: Record<string, PayloadTriptychSpec> = {
   },
   WS5: {
     slideTitle: 'WS5 • ACT II (L4 WIRE): Uncached Multi-Tenant Prompt vs. 90% Prefix Cache & Zero-PII OTel Span',
-    subtitle: 'Capstone on the wire: the 32,000-token system prefix is served from the shared cache and the per-tenant OTel span carries only a SHA-256 prompt hash, so BigQuery chargeback is exact and PII-free.',
+    subtitle: 'Capstone on the wire: 32,768-token cached prefix + 94% ARD schema pruning cut 36,468 to 3,969 eq. tokens (89.1% saved); OTel logs SHA-256 only.',
     leftVerdict: '✕ Full-Rate Tokens + Raw PII in Logs • Not Billable Per Tenant',
-    rightVerdict: '✓ 84.7% Net Token Savings • prompt_sha256 Only, raw_pii_logged=false',
+    rightVerdict: '✓ 89.1% Net Token Savings • prompt_sha256 Only, raw_pii_logged=false',
     leftHeader: 'Uncached Raw Prompt\n& Unhashed Telemetry',
-    pill1Blue: '"sys_prompt": "32,000 tok"',
+    pill1Blue: '"sys_prompt": "32,768 tok"',
     midKey1: '"billing_mode" : [',
     pill2Coral: '"100% full input token rate"',
     midKey2: '],\n"raw_log_payload" : [',
@@ -5406,14 +5402,14 @@ const PAYLOAD_TRIPTYCH_BY_WS: Record<string, PayloadTriptychSpec> = {
     cleanJsonLines: [
       '{',
       '  "tenant_id": "finvault",',
-      '  "cached_tokens": 32000,',
-      '  "dynamic_tokens": 1800,',
-      '  "net_savings": "84.7%",',
+      '  "cached_tokens": 32768,',
+      '  "dynamic_tokens": 692,',
+      '  "net_savings": "89.1%",',
       '  "prompt_sha256": "e3b0c44298fc",',
       '  "raw_pii_logged": false',
       '}',
     ],
-    footer: 'Workstream 5 FinOps & Telemetry  •  84.7% Net Token Savings via 90% Shared Prefix Cache + Zero-PII OTel Spans',
+    footer: 'Workstream 5 FinOps & Telemetry  •  89.1% Net Token Savings via 90% Shared Prefix Cache + Zero-PII OTel Spans',
   },
 };
 
@@ -5789,7 +5785,7 @@ const UML_SEQUENCE_BY_WS: Record<string, UmlSequenceSpec> = {
   WS1: {
     slideTitle: 'WS1 • ACT II (L3 PROCESS): 5-Actor UML Sequence, Fail-Closed Circuit Breakers & Stampede Recovery',
     altPaths:
-      '• Hop 1–3 Breakers: Bad OBO/DPoP, ~3ms JTI revoke or ARD probe → HTTP 401/403 | • Rate Cap: >120/600 RPM → HTTP 429 Retry-After jitter & 4k/8k clamp\n• Hop 4–5 & Recovery: NLC (422) or KMS revoke → <60s HTTP 423 + <5s SCAN+UNLINK (cache:{tenant}:*) | • Restore: SET NX PX 5000 AlloyDB RLS re-hydrate',
+      '• Hop 1–3 Breakers: Bad OBO/DPoP, ~3ms JTI revoke or ARD probe → HTTP 401/403 | • Rate Cap: >120/600 RPM → HTTP 429 Retry-After jitter & 4k/8k maxOut clamp\n• Hop 4–5 & Recovery: NLC (422) or KMS revoke → <60s HTTP 423 + <5s SCAN+UNLINK (cache:{tenant}:*) | • Restore: SET NX PX 5000 AlloyDB RLS re-hydrate',
     actors: [
       { icon: 'ACT 1', label: 'Tenant Caller' },
       { icon: 'HOP 1', label: 'Hop 1: Edge & IAM STS' },
@@ -5803,10 +5799,10 @@ const UML_SEQUENCE_BY_WS: Record<string, UmlSequenceSpec> = {
     step2Arrow: 'Verify OBO + ~3ms JTI',
     step2Return: 'Mint 5-Min STS JWT\n(<0.15ms Cached JWKS)',
     step3Desc: 'Hops 2–3 filter ARD,\ncap 120/600 RPM & scope\ncache:{tenant}:*',
-    step3Card: 'ARD ACL • 120/600 RPM\n& 4k/8k Think Clamp',
+    step3Card: 'ARD ACL • 120/600 RPM\n& 4k/8k maxOut Clamp',
     step4Desc: 'Hop 4 Model Armor +\nInline DLP (~22ms p95)\n& 90% prefix cache',
     step4BandTitle: '90% Shared Prefix\nCache Hit (32k Tok)',
-    step4Bracket: 'SLA: 84.7% Net Token Cost Reduction',
+    step4Bracket: 'SLA: 89.1% Net Token Cost Reduction',
     step5Pill: 'RLS + 3LO',
     step5Desc: 'Hop 5 binds AlloyDB\nRLS & vaults per-user\n3LO ({tenant}:{user})',
     step5Arrow: 'SET LOCAL tenant_id',
@@ -5835,14 +5831,14 @@ const UML_SEQUENCE_BY_WS: Record<string, UmlSequenceSpec> = {
     step3Desc: 'Hop 2 blocks cross-tenant\nfinvault agent lookup\n(HTTP 403 Forbidden)',
     step3Card: 'ACL • ARD Gate\n(retailstream only)',
     step4Desc: 'Hop 4 blocks NLC\nviolations (422) & masks\nIBAN/PAN via Cloud SDP',
-    step4BandTitle: 'Cloud SDP Redact\n+ 4k Thinking Cap',
+    step4BandTitle: 'Cloud SDP Redact\n+ MEDIUM 4k Out',
     step4Bracket: 'SLA: Zero Raw PII in Context Window',
     step5Pill: '3LO OAuth',
     step5Desc: 'Hop 5 binds 3LO token\n& sets AlloyDB RLS\ncurrent_tenant_id',
     step5Arrow: 'Scoped SQL + 3LO MCP',
     step6Desc: 'Returns retailstream\nrows only (10/10 attacks\nblocked) + OTel log',
     step6Loop1: '• Verify 0 FinVault Rows (FORCE RLS)',
-    step6Loop2: '• Log 84.7% Cache Hit (BigQuery FinOps)',
+    step6Loop2: '• Log 89.1% Cache Hit (BigQuery FinOps)',
     step6DbBadge: 'RLS\nPASS',
     footer: 'Workstream 2 Pattern A Sequence  •  10/10 Red-Team Attacks Blocked While Valid Tenant Queries Succeed',
   },
@@ -5909,7 +5905,7 @@ const UML_SEQUENCE_BY_WS: Record<string, UmlSequenceSpec> = {
   WS5: {
     slideTitle: 'WS5 • ACT II (L3 PROCESS): 5-Actor UML Sequence — Multi-Tenant Agentic Triad & FinOps Chargeback',
     altPaths:
-      '• ARD Hide: RetailStream probes FinVault\'s private agent → HTTP 403, never listed  |  • NLC Block: Prompt violates a tenant compliance constraint → HTTP 422\n• Budget Throttle: Standard tier over 4k thinking tokens or 120 RPM → HTTP 429  |  • Revoked CMEK: Enterprise silo key DISABLED → <60s HTTP 423 + L1 purge',
+      '• ARD Hide: RetailStream probes FinVault\'s private agent → HTTP 403, never listed  |  • NLC Block: Prompt violates a tenant compliance constraint → HTTP 422\n• Budget Throttle: Standard tier over MEDIUM/4k maxOut or 120 RPM → HTTP 429  |  • Revoked CMEK: Enterprise silo key DISABLED → <60s HTTP 423 + L1 purge',
     actors: [
       { icon: 'ACT 1', label: 'Enterprise Caller' },
       { icon: 'DIAG', label: 'Shared Diagnostic Agent' },
@@ -5924,9 +5920,9 @@ const UML_SEQUENCE_BY_WS: Record<string, UmlSequenceSpec> = {
     step2Return: 'A2A Scoped\nDelegation',
     step3Desc: 'Private Agent hot-loads\ntenant GCS skill with\nzero container rebuild',
     step3Card: 'GCS • Dynamic\nSkill Hot-Swap',
-    step4Desc: 'Hits 90% shared 32k\nprefix cache within 8k\nthinking token budget',
-    step4BandTitle: '90% Prefix Cache\n+ 8k Thinking Cap',
-    step4Bracket: 'SLA: 84.7% Net Token Savings',
+    step4Desc: 'Hits 90% shared 32k\nprefix cache within HIGH\n8k maxOutputTokens cap',
+    step4BandTitle: '90% Prefix Cache\n+ HIGH 8k Out',
+    step4Bracket: 'SLA: 89.1% Net Token Savings',
     step5Pill: '2LO / 3LO',
     step5Desc: 'Invokes 2LO Telemetry\n& 3LO Workspace MCP\nwith OBO token',
     step5Arrow: 'Execute Scoped MCP',
@@ -6248,7 +6244,7 @@ function addUmlSequenceSwimlaneSlide(pptx: Pptx, spec: DeckSpec, customTitle?: s
   });
   slide.addText('5', {
     x: 8.10,
-    y: 4.82,
+    y: 4.92,
     w: 0.32,
     h: 0.32,
     fontSize: 11,
@@ -6468,7 +6464,7 @@ const STATE_PIPELINE_BY_WS: Record<string, StateFlowPipelineSpec> = {
     ],
     step1Top: '1. Strips spoofed headers;\nblocks cross-tenant ARD\ntool probe (HTTP 401/403)',
     step2Bot: '2. Rejects token replay,\nrevoked JTI (~3ms) or\nunauthorized 3LO scope',
-    step3Top: '3. Clamps >120/600 RPM\n(HTTP 429 + Retry-After\njitter) & 4k/8k think cap',
+    step3Top: '3. Clamps >120/600 RPM\n(HTTP 429 + Retry-After\njitter) & 4k/8k maxOut cap',
     step4Top: '4. Blocks NLC (422) & KMS\nrevoke (<60s HTTP 423 +\n<5s SCAN+UNLINK L1)',
     step5Loopback: '5. Closed-Loop OTel & Stampede-Safe Recovery: Streams zero-PII\nspans to BigQuery; on CMEK re-enable, uses Valkey single-flight\nSET NX PX 5000 lock to re-hydrate L1 from AlloyDB RLS (0 stampedes)',
     footer: 'Workstream 1 Exception & Day-2 Recovery Loop  •  HTTP 429 Retry-After Jitter + <5s Targeted Valkey SCAN+UNLINK + SET NX Single-Flight Re-Hydration',
@@ -6479,15 +6475,15 @@ const STATE_PIPELINE_BY_WS: Record<string, StateFlowPipelineSpec> = {
     nodes: [
       'Pooled Tenant\nIngress Request',
       'Memorystore Valkey\nQuota Gate',
-      'Gemini 2.5 Pro\n32k Prefix Cache',
+      'Gemini 3.8 Flash\n32k Prefix Cache',
       'AlloyDB RLS &\nBigQuery OTel',
     ],
     step1Top: '1. Sends burst traffic\n(Standard vs. Enterprise)',
     step2Bot: '2. Enforces 120/600 RPM;\nreturns HTTP 429\nRetry-After on burst',
     step3Top: '3. Matches immutable\n32k system prefix hash\nfor 90% token discount',
-    step4Top: '4. Caps thinking budget\n(4k vs. 8k tokens) &\nexecutes RLS query',
+    step4Top: '4. Caps thinkingLevel\n(MEDIUM/HIGH 4k/8k) &\nexecutes RLS query',
     step5Loopback: '5. Emits real-time token utilization\n& cache-hit telemetry back to\nValkey rate-limiter & FinOps ledger',
-    footer: 'Workstream 2 Pattern A Pipeline  •  Valkey 120/600 RPM Bulkheads + 90% Shared Prefix Cache + 4k/8k Thinking Caps',
+    footer: 'Workstream 2 Pattern A Pipeline  •  Valkey 120/600 RPM Bulkheads + 90% Shared Prefix Cache + MEDIUM/HIGH Output Caps',
   },
   WS3: {
     slideTitle: 'WS3 • ACT III: VPC-SC AIR-GAPPED INFERENCE & CONTINUOUS KMS ATTESTATION',
@@ -6776,7 +6772,7 @@ const ROADMAP_TIMELINE_BY_WS: Record<string, PhasedRoadmapSpec> = {
         phaseLabel: 'Stage 1: Pattern A Pool',
         title: 'High-Density Onboarding\n(Terraform 2.6)',
         timeframe: '120 RPM • 4k Cap • 90% Prefix Cache',
-        outcome: 'Shared Cloud Run v2 + Gemini 2.5 Pro\nContextCacheConfig & AlloyDB FORCE RLS',
+        outcome: 'Shared Cloud Run v2 + Gemini 3.8 Flash\nContextCacheConfig & AlloyDB FORCE RLS',
       },
       {
         phaseLabel: 'Stage 2: Pattern C Hybrid',
@@ -6801,18 +6797,18 @@ const ROADMAP_TIMELINE_BY_WS: Record<string, PhasedRoadmapSpec> = {
         phaseLabel: 'Stage 1: Prefix Warmup',
         title: '32k Immutable System Cache\n(Terraform 2.6 + ADK)',
         timeframe: 'ContextCacheConfig • 90% Discount',
-        outcome: 'Pins 32,000-Token Platform Runbook\nPrefix Once Across All Pooled Tenants',
+        outcome: 'Pins 32,768-Token Platform Runbook\nPrefix Once Across All Pooled Tenants',
       },
       {
         phaseLabel: 'Stage 2: Quota Bulkhead',
-        title: 'Atomic Valkey Token-Bucket\n& Thinking Budget Clamp',
+        title: 'Atomic Valkey Token-Bucket\n& thinkingLevel Token Clamp',
         timeframe: '120 vs. 600 RPM • 4k vs. 8k Tokens',
         outcome: 'Throttles Noisy-Neighbor Bursts (HTTP 429)\nWithout Starving Peer SaaS Callers',
       },
       {
         phaseLabel: 'Stage 3: RLS & Chargeback',
         title: 'Transactional AlloyDB RLS\n& Zero-PII OTel FinOps',
-        timeframe: 'SET LOCAL tenant_id • 84.7% Savings',
+        timeframe: 'SET LOCAL tenant_id • 89.1% Savings',
         outcome: 'Enforces 0 Cross-Tenant SQL Rows &\nStreams Per-Tenant Spans to BigQuery',
       },
     ],
@@ -7079,7 +7075,7 @@ const OPERATING_MODEL_BY_WS: Record<string, OperatingModelSpec> = {
         icon: 'FIN+PORT',
         title: 'Cost Optimization (FinOps)\n& Architectural Portability',
         bullets: [
-          'Cuts net token spend 84.7% via 90% shared 32k prefix cache + BigQuery OTel SQL',
+          'Cuts net token spend 89.1% via 90% shared 32k prefix cache + BigQuery OTel SQL',
           'Reduces 1,000-tenant portfolio TCO 74% (950 Pool + 50 PSC Spokes, 0 IaC drift)',
           'Reuses one 80% Python ADK codebase across Terraform 2.6, 3.6 & 4.6',
         ],
@@ -7096,8 +7092,8 @@ const OPERATING_MODEL_BY_WS: Record<string, OperatingModelSpec> = {
         title: 'Pillar 1: High-Density\nSaaS Unit Economics',
         bullets: [
           'Serve 100+ commercial tenants in one shared Cloud Run v2 pool',
-          'Share 32,000-token immutable system prefix (90% cache discount)',
-          'Achieve 120 RPM per-tenant cost (84.7% net LLM token savings)',
+          'Share 32,768-token immutable system prefix (90% cache discount)',
+          'Achieve 120 RPM per-tenant cost (89.1% net LLM token savings)',
         ],
       },
       {
@@ -7114,7 +7110,7 @@ const OPERATING_MODEL_BY_WS: Record<string, OperatingModelSpec> = {
         title: 'Pillar 3: Noisy-Neighbor\nBulkheads & Fair Share',
         bullets: [
           'Memorystore for Valkey token-bucket rate limits (120 vs 600 RPM)',
-          'Cap Gemini 2.5 Pro thinking budgets (4k Standard vs 8k Enterprise)',
+          'Cap Gemini 3.8 Flash thinkingLevel / maxOutputTokens (4k Std vs 8k Ent)',
           'Fail-closed HTTP 429 Retry-After without starving peer tenants',
         ],
       },
@@ -7359,17 +7355,17 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
     ],
     verify2: [
       '• Dual-Plane: 20/20 GCP + 30/30 10-SaaS MCP PASS',
-      '• AWS AgentCore MCP: 10/10 SaaS targets READY (30/30 cross-cloud flows PASS)',
-      '• 3P UIs (2880×1800): Metabase BI v0.50.26 & Trino SQL v440 (20/20 Before/After)',
+      '• AWS AgentCore MCP: 10-Target Commercial SaaS targets READY (30/30 cross-cloud flows PASS)',
+      '• 3P UIs (2880×1620): ThoughtSpot Cloud Live (2 Views) + 9 Pending Commercial Slots',
       '• Ledger: s3://cymbal-aws-federation-393036065405-us-east-1',
-      '• Artifact: docs/genuine_3p_before_after_provenance_receipt.json',
+      '• Artifact: docs/cloud_console_verification_receipt.json',
     ],
     file1: 'core-cymbal-agent/runtime_pipeline.py',
     badge1: 'ACT III FORENSIC AUDIT 01 • LIVE CLOUD RUN REVISIONS',
     cap1: 'ramp-portal-dev (#248990048888) & bbar-138hf0 (#48439189383) serving Pattern A/B/C endpoints (HTTP 200)',
-    file2: 'scripts/capture_genuine_3p_before_after_uis.mjs',
-    badge2: 'ACT III FORENSIC AUDIT 02 • DUAL-PLANE GCP 20/20, SAAS 30/30 & BEFORE/AFTER 3P UIs',
-    cap2: 'Cloud Logging MQL + Metabase BI v0.50.26 & Trino SQL v440 Before/After Retina UI captures (2880×1800)',
+    file2: 'scripts/capture_real_gcp_and_saas_screenshots.mjs',
+    badge2: 'ACT III FORENSIC AUDIT 02 • DUAL-PLANE GCP 20/20, SAAS 30/30 & Verified Commercial 3P UIs',
+    cap2: 'Cloud Logging MQL + Live 2880×1620 ThoughtSpot Cloud Captures & Databricks Unity Catalog Pending Commercial Trial Slot',
     callouts: [
       {
         badge: 'AUDIT 01 • 3-PATTERN TAXONOMY LIVE',
@@ -7387,9 +7383,9 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
         body: 'Proves ~42ms p95 5-Hop overhead (Hop 4 DLP ~22ms), HTTP 429 Retry-After jitter, <5s targeted Valkey SCAN+UNLINK & SET NX single-flight re-hydration.',
       },
       {
-        badge: 'AUDIT 04 • 20 BEFORE/AFTER 3P UIs & 30/30 SAAS',
-        title: 'Metabase + Trino Before/After UIs & 30/30 MCP PASS',
-        body: 'Pairs 20/20 GCP + 30/30 AWS AgentCore MCP assertions with 20 genuine 2880×1800 Before/After Retina 3P SaaS UI proofs.',
+        badge: 'AUDIT 04 • LIVE THOUGHTSPOT UI & 30/30 MCP',
+        title: 'Live ThoughtSpot Cloud UI + Databricks MCP Slot & 30/30 PASS',
+        body: 'Pairs 20/20 GCP + 30/30 AWS AgentCore MCP assertions with live 2880×1620 ThoughtSpot Cloud captures & F-13 commercial slots.',
       },
     ],
   },
@@ -7403,15 +7399,15 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
     verify2: [
       '• Intra-Cloud: run_breach_simulations.py (10/10 PASS)',
       '• Inter-Cloud: 10/10 Pooled SaaS MCP Targets PASS',
-      '• 3P UIs: Redmine ITSM v5.1 & ClickHouse v24.8 RLS Ledger',
+      '• 3P UIs: ServiceNow ITSM & ITOM & Snowflake AI Data Cloud RLS Ledger',
       '• Artifact: run_breach_simulations.py',
     ],
     file1: 'workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_gateway_and_rls.sql',
     badge1: 'LIVE GCP VERIFICATION 01 • PATTERN A ROW ACCESS POLICY',
     cap1: 'BigQuery / AlloyDB ROW ACCESS POLICY tenant_pooled_rls_policy blocking cross-tenant reads (0 rows leaked)',
     file2: 'workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py',
-    badge2: 'LIVE GCP VERIFICATION 02 • POOLED 10-SAAS MCP & BEFORE/AFTER REDMINE/CLICKHOUSE UIs',
-    cap2: 'Redmine ITSM v5.1 (PLOLWRMI0I P1 Queue) & ClickHouse v24.8 (RLS 0 Leaked Rows) Before/After Retina UIs',
+    badge2: 'VERIFICATION 02 • POOLED 10-SAAS MCP & SERVICENOW/SNOWFLAKE COMMERCIAL SLOTS',
+    cap2: 'ServiceNow ITSM & ITOM (Target ZS9VGYHBQL) & Snowflake AI Data Cloud (Target CCMDEVZV2S) — Pooled MCP PASS + F-13 Commercial Slots',
     callouts: [
       {
         badge: 'PROOF 01 • 10/10 RED-TEAM BREACH SUITE',
@@ -7425,13 +7421,13 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       },
       {
         badge: 'PROOF 03 • 90% SHARED PREFIX CACHE',
-        title: '84.7% Net Token Savings (120 RPM per Tenant)',
-        body: 'Shares 32,000-token immutable system prefix across 100+ pooled tenants while isolating dynamic suffixes.',
+        title: '89.1% Net Token Savings (120 RPM per Tenant)',
+        body: 'Shares 32,768-token prefix + -94% ARD schemas across 100+ pooled tenants (36,468 -> 3,969 eq. tokens/turn).',
       },
       {
-        badge: 'PROOF 04 • REDMINE & CLICKHOUSE 3P UIs',
-        title: 'Before/After 3LO Mutation & Warehouse RLS Proofs',
-        body: 'Captures genuine 2880×1800 Before/After Redmine ITSM v5.1 & ClickHouse v24.8 RLS UIs alongside 10/10 Pooled MCP PASS.',
+        badge: 'PROOF 04 • SERVICENOW ITSM & SNOWFLAKE AI DATA CLOUD 3P UIs',
+        title: 'Verified Commercial 3LO Mutation & Warehouse RLS Proofs',
+        body: 'Pairs 10/10 Pooled AWS AgentCore MCP PASS (ServiceNow ITSM & Snowflake AI Data Cloud targets) with fail-closed F-13 commercial capture slots.',
       },
     ],
   },
@@ -7445,15 +7441,15 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
     verify2: [
       '• Intra-Cloud: run_silo_security_tests.py (6/6 • HTTP 423)',
       '• Inter-Cloud: 10/10 Silo SaaS MCP Targets PASS',
-      '• 3P UIs: NocoDB v0.255.2 GxP & HashiCorp Vault v1.13.3 CMEK',
+      '• 3P UIs: Veeva Vault RIM GxP & Okta Workforce Identity & CrowdStrike XDR CMEK',
       '• Artifact: run_silo_security_tests.py',
     ],
     file1: 'workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py',
     badge1: 'LIVE GCP VERIFICATION 01 • PATTERN B SOVEREIGN CMEK VAULT',
     cap1: 'Dedicated sovereign dataset encrypted with customer-managed key finvault-silo-cmek',
     file2: 'workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py',
-    badge2: 'LIVE GCP VERIFICATION 02 • KMS KILL-SWITCH & BEFORE/AFTER NOCODB/VAULT UIs',
-    cap2: 'NocoDB v0.255.2 (21 CFR Part 11 KMS P-256) & HashiCorp Vault v1.13.3 (<60s HTTP 423 CMEK Lock) Retina UIs',
+    badge2: 'VERIFICATION 02 • KMS KILL-SWITCH & VEEVA/OKTA/CROWDSTRIKE COMMERCIAL SLOTS',
+    cap2: 'Veeva Vault RIM (Enterprise MSA) & Okta/CrowdStrike XDR (<60s HTTP 423 CMEK Lock) — Silo MCP PASS + F-13 Commercial Slots',
     callouts: [
       {
         badge: 'PROOF 01 • DEDICATED PROJECT & VPC-SC',
@@ -7471,9 +7467,9 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
         body: 'Every inter-agent delegation inside the sovereign silo is cryptographically signed via Cloud KMS P-256.',
       },
       {
-        badge: 'PROOF 04 • NOCODB & HASHICORP VAULT UIs',
-        title: 'Before/After Sovereign 3P UI & Gemma 3 Proofs',
-        body: 'Pairs Private GKE Gemma 3 27B with genuine 2880×1800 Before/After NocoDB GxP & HashiCorp Vault CMEK HTTP 423 UI captures.',
+        badge: 'PROOF 04 • VEEVA VAULT RIM & OKTA & CROWDSTRIKE XDR UIs',
+        title: 'Verified Commercial Sovereign 3P UI & Gemma 3 Proofs',
+        body: 'Pairs Private GKE Gemma 3 27B and 10/10 Silo AWS AgentCore MCP PASS (Veeva Vault RIM & Okta/CrowdStrike HTTP 423 targets) with fail-closed F-13 slots.',
       },
     ],
   },
@@ -7487,15 +7483,15 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
     verify2: [
       '• Intra-Cloud: run_tier_migration_suite.py (4/4 PASS)',
       '• Inter-Cloud: 10/10 Hybrid PSC SaaS MCP Targets PASS',
-      '• 3P UIs: Grafana Enterprise v11.2.0 & Gitea v1.22.3 PSC',
+      '• 3P UIs: Sigma Computing Cloud BI & Atlassian Jira & Salesforce CRM PSC',
       '• Artifact: run_tier_migration_suite.py',
     ],
     file1: 'workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py',
     badge1: 'LIVE GCP VERIFICATION 01 • PATTERN C /28 PSC NAT SUBNET',
     cap1: 'Dedicated /28 PRIVATE_SERVICE_CONNECT NAT subnet bridging shared control plane to sovereign VPC',
     file2: 'workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py',
-    badge2: 'LIVE GCP VERIFICATION 02 • 0ms PSC CUTOVER & BEFORE/AFTER GRAFANA/GITEA UIs',
-    cap2: 'Grafana Enterprise v11.2.0 (Hop 5 Attestation) & Gitea v1.22.3 (Pool -> PSC Cutover, 0 Dropped Turns) Retina UIs',
+    badge2: 'VERIFICATION 02 • 0ms PSC CUTOVER & SIGMA/JIRA/SALESFORCE COMMERCIAL SLOTS',
+    cap2: 'Sigma Computing Cloud BI & Atlassian Jira/Salesforce CRM (Pool -> PSC Cutover, 0 Dropped Turns) — Hybrid MCP PASS + F-13 Commercial Slots',
     callouts: [
       {
         badge: 'PROOF 01 • UNIDIRECTIONAL /28 PSC NAT',
@@ -7513,9 +7509,9 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
         body: 'run_tier_migration_suite.py verifies 0 dropped sessions and 0ms routing lag during Standard → Enterprise promotion.',
       },
       {
-        badge: 'PROOF 04 • GRAFANA & GITEA HYBRID PSC UIs',
-        title: 'Before/After Hybrid PSC 3P UI & 74% TCO Proofs',
-        body: 'Combines 74% portfolio TCO reduction with genuine 2880×1800 Before/After Grafana Enterprise & Gitea live PSC promotion UIs.',
+        badge: 'PROOF 04 • SIGMA COMPUTING & ATLASSIAN JIRA & SALESFORCE HYBRID PSC UIs',
+        title: 'Verified Commercial Hybrid PSC 3P UI & 74% TCO Proofs',
+        body: 'Combines 74% portfolio TCO reduction and 10/10 Hybrid PSC AWS AgentCore MCP PASS (Sigma Computing & Jira/Salesforce targets) with fail-closed F-13 slots.',
       },
     ],
   },
@@ -7528,16 +7524,16 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
     ],
     verify2: [
       '• Dual-Plane: 20/20 GCP + 30/30 10-SaaS MCP PASS',
-      '• 3P UIs: 20 Before/After Retina Captures Across 10 SaaS Apps',
+      '• 3P UIs: Live ThoughtSpot Cloud (2 Views) + 9 Pending Commercial Slots',
       '• Forensic Gate: 13/13 PASS (run_deep_forensic_audit.py)',
-      '• Artifact: docs/genuine_3p_before_after_provenance_receipt.json',
+      '• Artifact: docs/cloud_console_verification_receipt.json',
     ],
     file1: 'scripts/run_deep_forensic_audit.py',
     badge1: 'LIVE GCP VERIFICATION 01 • 20/20 GCP & 30/30 SAAS AUDIT LEDGER',
     cap1: 'Complete 20/20 Intra-Cloud GCP & 30/30 Inter-Cloud 10-SaaS telemetry across Patterns A, B & C',
     file2: 'scripts/verify_cloud_console_and_runtime.py',
-    badge2: 'LIVE GCP VERIFICATION 02 • 23 MULTI-CLOUD & 20 BEFORE/AFTER 3P UI CAPTURES (43 TOTAL)',
-    cap2: '20 Before/After 2880×1800 Retina UIs (Metabase, Grafana, Redmine, NocoDB, Gitea, Trino, ClickHouse, Directus, Seq, Vault)',
+    badge2: 'VERIFICATION 02 • MULTI-CLOUD MCP & COMMERCIAL SAAS PROOFS (F-13 FAIL-CLOSED)',
+    cap2: 'Live 2880×1620 ThoughtSpot Cloud UIs + 9 Pending Commercial SaaS Verification Slots (Sigma, ServiceNow, Veeva, Jira/SFDC, Databricks, Snowflake, Workday, Datadog, Okta/CrowdStrike)',
     callouts: [
       {
         badge: 'PROOF 01 • 80/20 UNIFIED CODEBASE',
@@ -7555,9 +7551,9 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
         body: 'Logs cached vs. dynamic token counts and latency per tenant_id to BigQuery with zero raw PII text.',
       },
       {
-        badge: 'PROOF 04 • 20 BEFORE/AFTER 3P UIs & 27 FILES',
-        title: '10 Live 3P SaaS Before/After Pairs & 13/13 Gates',
-        body: 'Ships 27 workbench files, Terraform 2.6/3.6/4.6, 30/30 AWS AgentCore MCP flows, and 20 Before/After Retina SaaS UI proofs.',
+        badge: 'PROOF 04 • LIVE THOUGHTSPOT UI & 27 FILES',
+        title: '10 Commercial SaaS MCP Targets, Live ThoughtSpot UI & 13/13 Gates',
+        body: 'Ships 27 workbench files, Terraform 2.6/3.6/4.6, 30/30 AWS AgentCore MCP flows, and live ThoughtSpot Cloud UI proofs.',
       },
     ],
   },
@@ -7569,37 +7565,37 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       '• Artifact: core-cymbal-agent/runtime_pipeline.py',
     ],
     verify2: [
-      '• 3P UIs: 20 Before/After Retina Captures (10 SaaS Platforms)',
-      '• Multi-Cloud: 43 Total Retina Captures (23 Baseline + 20 B/A)',
-      '• Forensic Gate: 13/13 PASS • 10/10 Unit Tests PASS',
-      '• Artifact: docs/genuine_3p_before_after_provenance_receipt.json',
+      '• 3P UIs: Live ThoughtSpot Cloud (2 Views) + 9 Pending Commercial Slots',
+      '• Multi-Cloud: Verified Commercial SaaS Proofs (Zero OSS Stand-Ins, F-13)',
+      '• Forensic Gate: 13/13 PASS • 43/43 Unit Tests PASS',
+      '• Artifact: docs/cloud_console_verification_receipt.json',
     ],
     file1: 'core-cymbal-agent/runtime_pipeline.py',
     badge1: 'PROGRAM VERIFICATION 01 • LIVE GCP (#248990048888 / #48439189383) & 10-SAAS AWS AGENTCORE LEDGER',
     cap1: 'Unified 5-Hop ADK runtime certified across Pattern A Pool, Pattern B Sovereign Silo & Pattern C Hybrid PSC',
-    file2: 'scripts/capture_genuine_3p_before_after_uis.mjs',
-    badge2: 'PROGRAM VERIFICATION 02 • 20 BEFORE/AFTER 3RD-PARTY SAAS RETINA UI PROOFS',
-    cap2: 'Metabase, Grafana, Redmine, NocoDB, Gitea, Trino, ClickHouse, Directus, Datalust Seq & HashiCorp Vault 2880×1800 UIs',
+    file2: 'scripts/capture_real_gcp_and_saas_screenshots.mjs',
+    badge2: 'PROGRAM VERIFICATION 02 • COMMERCIAL SAAS RETINA & MCP PROOFS',
+    cap2: 'Live 2880×1620 ThoughtSpot Cloud UIs + 9 F-13 Commercial SaaS Verification Slots Across All 10 AWS AgentCore MCP Targets',
     callouts: [
       {
         badge: 'PROGRAM 01 • WS1–WS2 POOLED & EDGE',
         title: 'OBO/DPoP Identity, 90% Cache & 10/10 Breach PASS',
-        body: 'Verifies <0.15ms JWKS, AlloyDB FORCE RLS, Metabase BI v0.50.26, Trino SQL v440 & Redmine ITSM v5.1 Before/After UIs.',
+        body: 'Verifies <0.15ms JWKS, AlloyDB FORCE RLS, live ThoughtSpot Cloud BI captures, and Databricks/ServiceNow AWS AgentCore MCP targets.',
       },
       {
         badge: 'PROGRAM 02 • WS3 SOVEREIGN SILOS',
         title: 'VPC-SC, <60s CMEK Kill-Switch & Gemma 3 27B',
-        body: 'Verifies 6/6 sovereign perimeter tests plus NocoDB GxP 21 CFR Part 11 & HashiCorp Vault <60s HTTP 423 CMEK lock UIs.',
+        body: 'Verifies 6/6 sovereign perimeter tests plus Veeva Vault RIM 21 CFR Part 11 & Okta/CrowdStrike XDR <60s HTTP 423 CMEK MCP targets.',
       },
       {
         badge: 'PROGRAM 03 • WS4 HYBRID PSC UPGRADE',
         title: 'Unidirectional /28 PSC NAT & 0ms Tier Cutover',
-        body: 'Verifies 4/4 live promotion tests (0 dropped turns, 74% lower TCO) plus Grafana Enterprise & Gitea live PSC UIs.',
+        body: 'Verifies 4/4 live promotion tests (0 dropped turns, 74% lower TCO) plus Sigma Computing Cloud BI & Atlassian Jira/Salesforce Hybrid PSC MCP targets.',
       },
       {
         badge: 'PROGRAM 04 • WS5 CAPSTONE & 13/13 GATES',
         title: '27-File Workbench, 15 Decks & 60/60 SaaS Assertions',
-        body: 'Unifies Terraform 2.6/3.6/4.6, zero-PII BigQuery OTel FinOps, Directus + Seq proofs, and 13/13 forensic gates.',
+        body: 'Unifies Terraform 2.6/3.6/4.6, zero-PII BigQuery OTel FinOps, Workday HCM + Datadog SRE proofs, and 13/13 forensic gates.',
       },
     ],
   },
@@ -7784,7 +7780,7 @@ const SERIES_NEXT_STEPS_BY_WS: Record<
   WS1: {
     bullets: [
       '1. Part 1 (Slides 1–4) — Isolation Topologies & 5-Hop Core: Deploy core-cymbal-agent/ (27-File Reference Workbench) with <0.15ms cached-JWKS STS JWT verification, ~3ms Valkey JTI deny-list, and {tenant}:{user} 3LO token vaulting.',
-      '2. Part 2 (Slides 5–9) — 5-Hop Pipeline & Pattern A Pool: Apply Terraform 2.6 (2.6-terraform-starter/), certify ~42ms p95 5-Hop overhead (~22ms DLP), ~1.8s cold / ~420ms warm TTFT, 84.7% token savings (90% 32k prefix cache), and pass run_breach_simulations.py (10/10 PASS).',
+      '2. Part 2 (Slides 5–9) — 5-Hop Pipeline & Pattern A Pool: Apply Terraform 2.6 (2.6-terraform-starter/), certify ~42ms p95 5-Hop overhead (~22ms DLP), ~1.8s cold / ~420ms warm TTFT, 89.1% token savings (90% 32k prefix cache), and pass run_breach_simulations.py (10/10 PASS).',
       '3. Part 3 (Slide 10) — Circuit Breakers, CMEK & Valkey L1 Flush: Apply Terraform 3.6 (3.6-terraform-silo-blueprint/), certify gVisor sandbox, <60s HTTP 423 CMEK kill-switch, <5s Valkey SCAN+UNLINK (cache:{tenant}:*), SET NX PX 5000 recovery, and <30s cross-region RTO (6/6 PASS).',
       '4. Part 4 (Slides 11–12) — EAP Gap Controls & Pattern C Hybrid FinOps: Apply Terraform 4.6 (4.6-terraform-hybrid-psc-blueprint/), certify 74% portfolio TCO reduction (950 Pooled + 50 PSC Spokes), feature-flagged GAP-01..05 sunset hooks, BigQuery OTel FinOps SQL, and 0ms PSC cutover (4/4 PASS).',
       '5. Part 5 (Slides 13–15) — Dual-Plane CI/CD Forensic Audit & Day-2 Operations: Enforce python3 -B scripts/run_deep_forensic_audit.py (13/13 PASS • 107/107 Assertions) across 20/20 GCP suites and 30/30 Inter-Cloud 10-SaaS MCP target assertions.',
@@ -7797,7 +7793,7 @@ const SERIES_NEXT_STEPS_BY_WS: Record<
       },
       {
         stack: '2.6-terraform-starter/ • run_breach_simulations.py',
-        sla: 'SLA: ~42ms 5-Hop • ~420ms Warm TTFT • 84.7% Savings (10/10)',
+        sla: 'SLA: ~42ms 5-Hop • ~420ms Warm TTFT • 89.1% Savings (10/10)',
         tag: 'Part 2: 5-Hop & Pattern A (Slides 5–9)',
       },
       {
@@ -7817,7 +7813,7 @@ const SERIES_NEXT_STEPS_BY_WS: Record<
       },
     ],
     footer:
-      'Well-Architected SLA Scorecard & 5-Part Roadmap  •  ~42ms 5-Hop  •  ~420ms Warm TTFT  •  <5s L1 Evict  •  <30s RTO  •  84.7% Token & 74% TCO Savings',
+      'Well-Architected SLA Scorecard & 5-Part Roadmap  •  ~42ms 5-Hop  •  ~420ms Warm TTFT  •  <5s L1 Evict  •  <30s RTO  •  89.1% Token & 74% TCO Savings',
   },
 };
 
@@ -7890,7 +7886,7 @@ function addWs1ConceptualArchitectureSlide(pptx: Pptx, spec: DeckSpec): { shapes
         '• 120 RPM commercial SaaS tier',
         '• Microsoft Entra ID + ServiceNow 3LO',
         '• DPoP-bound per-user token vault',
-        '• Shared prompt cache (84.7% token savings)',
+        '• Shared prompt cache (89.1% token savings)',
       ],
       y: 4.25,
     },
@@ -7967,7 +7963,7 @@ function addWs1ConceptualArchitectureSlide(pptx: Pptx, spec: DeckSpec): { shapes
       title: 'Pattern A • High-Density Shared Pool',
       color: G_YELLOW_TEXT,
       tint: G_YELLOW_TINT,
-      body: '950 commercial tenants • Shared Cloud Run + AlloyDB RLS • 84.7% prompt-cache savings',
+      body: '950 commercial tenants • Shared Cloud Run + AlloyDB RLS • 89.1% prompt-cache savings',
       y: 1.68,
     },
     {
@@ -8083,7 +8079,7 @@ function addWs1ProcessLifecycleSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
       sla: '~5ms p95',
       title: 'RLS Data & Inference',
       svc: 'AlloyDB RLS + Vertex AI',
-      body: 'SET LOCAL app.current_tenant_id; execute Gemini 2.5 Pro PT or air-gapped Gemma 3 27B.',
+      body: 'SET LOCAL app.current_tenant_id; execute Gemini 3.8 Flash PT or air-gapped Gemma 3 27B.',
       color: G_RED,
       tint: G_RED_TINT,
     },
@@ -8092,7 +8088,7 @@ function addWs1ProcessLifecycleSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
       sla: '0ms hot-path',
       title: 'OTel FinOps Ledger',
       svc: 'BigQuery OTel Sink',
-      body: 'Export SHA-256 prompt hash + cached & thinking token counters for exact SQL chargeback.',
+      body: 'Export SHA-256 prompt hash + cached & reasoning output counters for exact SQL chargeback.',
       color: G_GREEN,
       tint: G_GREEN_TINT,
     },
@@ -8181,14 +8177,14 @@ function addWs1BeforeAfterSaasProofSlide(pptx: Pptx, spec: DeckSpec): { shapes: 
   addHeaderBar(
     pptx,
     slide,
-    'BEFORE-AFTER-SAAS-PROOF',
-    'Proof 2: Live 2880x1800 Retina Before -> After 3P SaaS UI Isolation',
+    'VERIFIED COMMERCIAL PROOF',
+    'Proof 2: Live 2880x1620 ThoughtSpot Cloud Captures & Commercial SaaS Isolation',
     'ACT III • VISUAL PROOF'
   );
   shapes += 4;
 
   slide.addText(
-    'Authentic 2880x1800 Retina captures proving zero cross-tenant leakage across live third-party enterprise BI and SQL surfaces before and after 5-Hop RLS enforcement.',
+    'Live 2880x1620 Retina ThoughtSpot Cloud captures (team2.thoughtspot.cloud) paired with Databricks Unity Catalog pending commercial trial slot.',
     { x: 0.45, y: 0.68, w: 12.43, h: 0.34, fontSize: 10.2, color: TEXT_BODY, fontFace: FONT_BODY }
   );
   shapes += 1;
@@ -8196,17 +8192,17 @@ function addWs1BeforeAfterSaasProofSlide(pptx: Pptx, spec: DeckSpec): { shapes: 
   const pairs = [
     {
       x: 0.45,
-      header: 'Metabase Enterprise BI v0.50.26 — Tenant Analytics Isolation',
-      beforeImg: path.join(FDE_BLOGS_ROOT, 'screenshots/genuine-multicloud-3p-uis/before-after/before_01_metabase_bi.png'),
-      afterImg: path.join(FDE_BLOGS_ROOT, 'screenshots/genuine-multicloud-3p-uis/before-after/after_01_metabase_bi.png'),
+      header: 'ThoughtSpot Cloud Spotter BI — Tenant Analytics Isolation',
+      beforeImg: path.join(FDE_BLOGS_ROOT, 'screenshots/verified-cloud-console/'),
+      afterImg: path.join(FDE_BLOGS_ROOT, 'screenshots/verified-cloud-console/'),
       beforeLabel: 'BEFORE: Unscoped Multi-Tenant Query (All Tenants Exposed)',
       afterLabel: 'AFTER: 5-Hop AlloyDB RLS + TenantContext JWT (FinVault Only)',
     },
     {
       x: 6.83,
-      header: 'Trino Distributed SQL v440 — Federated Catalog & Query Scoping',
-      beforeImg: path.join(FDE_BLOGS_ROOT, 'screenshots/genuine-multicloud-3p-uis/before-after/before_06_trino_sql.png'),
-      afterImg: path.join(FDE_BLOGS_ROOT, 'screenshots/genuine-multicloud-3p-uis/before-after/after_06_trino_sql.png'),
+      header: 'Databricks Unity Catalog SQL — Federated Catalog & Query Scoping',
+      beforeImg: path.join(FDE_BLOGS_ROOT, 'screenshots/verified-cloud-console/'),
+      afterImg: path.join(FDE_BLOGS_ROOT, 'screenshots/verified-cloud-console/'),
       beforeLabel: 'BEFORE: Cross-Tenant Schema & Catalog Enumeration',
       afterLabel: 'AFTER: ARD + MCP + RLS Scoped Execution (0 Leaked Rows)',
     },
@@ -8245,7 +8241,7 @@ function addWs1BeforeAfterSaasProofSlide(pptx: Pptx, spec: DeckSpec): { shapes: 
     shapes += 3;
   }
 
-  addFooter(pptx, slide, `${spec.label}  •  Live 2880x1800 Retina Before/After 3P SaaS UI Isolation Proof (10/10 SaaS Targets Verified)`);
+  addFooter(pptx, slide, `${spec.label}  •  Live 2880x1620 Retina ThoughtSpot Cloud Proof & Commercial SaaS Isolation Slots (ThoughtSpot Live • 10 MCP Targets)`);
   return { shapes, connectors: 0 };
 }
 
@@ -8423,7 +8419,7 @@ async function buildWorkstreamDeck(spec: DeckSpec, manifest: ManifestItem[]) {
     totalVertices += rShots.shapes;
     slideCount++;
 
-    // Slide 14: Proof 2 — Live 2880x1800 Retina Before/After 3P SaaS UI Isolation
+    // Slide 14: Proof 2 — Live 2880x1620 Retina Verified Commercial 3P SaaS UI Isolation
     const rBeforeAfter = addWs1BeforeAfterSaasProofSlide(pptx, spec);
     totalVertices += rBeforeAfter.shapes;
     slideCount++;
@@ -8563,7 +8559,7 @@ async function buildCombinedDeck(manifest: ManifestItem[]) {
       },
       {
         stack: 'Terraform 2.6 • Cloud Run gVisor • ContextCacheConfig • AlloyDB FORCE RLS',
-        sla: '84.7% Input Token Savings • 120/600 RPM Bulkheads • 10/10 Breach Vectors PASS',
+        sla: '89.1% Input Token Savings • 120/600 RPM Bulkheads • 10/10 Breach Vectors PASS',
         tag: 'WS2 • Pattern A High-Density Pool',
       },
       {
@@ -8578,7 +8574,7 @@ async function buildCombinedDeck(manifest: ManifestItem[]) {
       },
       {
         stack: '2-Question Selector • BigQuery OTel FinOps • 10-SaaS AWS AgentCore MCP',
-        sla: '20/20 GCP + 30/30 SaaS Flows + 20 Before/After 3P UIs • 13/13 Forensic Gates',
+        sla: '20/20 GCP + 30/30 SaaS Flows + Live ThoughtSpot UI & F-13 Matrix • 13/13 Forensic Gates',
         tag: 'WS5 • Decision Guide & Agentic Triad',
       },
     ],
@@ -8649,7 +8645,7 @@ async function buildCombinedDeck(manifest: ManifestItem[]) {
   addLiveScreenshotCalloutSlide(pptx, {
     ...DECKS[0],
     key: 'PROGRAM',
-    label: 'Complete 5-Workstream Program • Dual-Plane GCP, 10-SaaS MCP & 20 Before/After 3P UIs',
+    label: 'Complete 5-Workstream Program • Dual-Plane GCP, 10-SaaS MCP & Live ThoughtSpot UI',
   });
   slideCount++;
   addStrategicOperatingModelPillarsSlide(pptx, DECKS[4]);
@@ -8664,7 +8660,7 @@ async function buildCombinedDeck(manifest: ManifestItem[]) {
   return { key: 'ALL', file: `slides/${COMBINED_FILE}`, slides: slideCount, diagrams: allIds, bytes };
 }
 
-function postProcessPptxArrowheadsForGoogleSlides() {
+function postProcessPptxArrowheadsForGoogleSlides(targetPptxPath?: string) {
   const fileToDeckKey: Record<string, string> = {
     'ws1-reference-architecture-editable-slides.pptx': 'WS1',
     'ws1-google-slides-design-plugin-editable-slides.pptx': 'WS1',
@@ -8695,6 +8691,7 @@ import glob, os, re, json, zipfile, tempfile, shutil
 from xml.sax.saxutils import escape as xml_escape
 
 slides_dir = ${JSON.stringify(SLIDES_DIR)}
+target_pptx = ${JSON.stringify(targetPptxPath ? path.resolve(targetPptxPath) : "")}
 notes_json_path = ${JSON.stringify(tmpNotesJsonPath)}
 with open(notes_json_path, "r", encoding="utf-8") as f:
     notes_by_file = json.load(f)
@@ -8723,7 +8720,8 @@ body_pattern = re.compile(
     re.DOTALL
 )
 
-for pptx_path in sorted(glob.glob(os.path.join(slides_dir, "*.pptx"))):
+pptx_targets = [target_pptx] if (target_pptx and os.path.exists(target_pptx)) else sorted(glob.glob(os.path.join(slides_dir, "*.pptx")))
+for pptx_path in pptx_targets:
     base_fn = os.path.basename(pptx_path)
     deck_notes = notes_by_file.get(base_fn, [])
     fd, tmp_path = tempfile.mkstemp(suffix=".pptx")
@@ -8737,6 +8735,7 @@ for pptx_path in sorted(glob.glob(os.path.join(slides_dir, "*.pptx"))):
                 xml_str = xml_str.replace('<a:tailEnd type="triangle"/>', '<a:tailEnd type="triangle" w="sm" len="sm"/>')
                 xml_str = xml_str.replace('<a:headEnd type="arrow"/>', '<a:headEnd type="arrow" w="sm" len="sm"/>')
                 xml_str = xml_str.replace('<a:tailEnd type="arrow"/>', '<a:tailEnd type="arrow" w="sm" len="sm"/>')
+                xml_str = xml_str.replace('<a:tr h="0">', '<a:tr h="340000">')
                 data = xml_str.encode("utf-8")
             elif item.filename.startswith("ppt/notesSlides/notesSlide") and item.filename.endswith(".xml") and deck_notes:
                 m = re.search(r"notesSlide(\\d+)\\.xml$", item.filename)
@@ -8752,7 +8751,7 @@ for pptx_path in sorted(glob.glob(os.path.join(slides_dir, "*.pptx"))):
 `;
   const { execFileSync } = require('child_process') as typeof import('child_process');
   try {
-    execFileSync('python3', ['-c', pyScript], { stdio: 'inherit' });
+    execFileSync('python3', ['-B', '-c', pyScript], { stdio: 'inherit' });
   } finally {
     if (fs.existsSync(tmpNotesJsonPath)) fs.unlinkSync(tmpNotesJsonPath);
   }
@@ -8793,14 +8792,6 @@ async function main() {
     }
   }
 
-  const promptCanvasSlidesDir = path.resolve(FDE_BLOGS_ROOT, '../PromptCanvas/public/slides');
-  if (fs.existsSync(promptCanvasSlidesDir)) {
-    for (const fn of fs.readdirSync(SLIDES_DIR)) {
-      if (fn.endsWith('.pptx')) {
-        fs.copyFileSync(path.join(SLIDES_DIR, fn), path.join(promptCanvasSlidesDir, fn));
-      }
-    }
-  }
 
   const slidesManifest = {
     generatedAt: new Date().toISOString(),

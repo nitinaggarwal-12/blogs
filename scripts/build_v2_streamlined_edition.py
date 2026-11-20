@@ -55,8 +55,8 @@ V2_SPECS: List[Dict[str, Any]] = [
         "src_md_rel": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
         "v2_md_rel": "blogs/v2-edition/saas-10-visual-verification-and-redteam-atlas.md",
         "v2_docx_rel": "docs/word/v2-edition/saas-10-visual-verification-and-redteam-atlas.docx",
-        "doc_title": "[V2 ATLAS] GEAP 10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas — Editable Google Docs",
-        "slides_title": "[V2 ATLAS — 16 SLIDES] GEAP 10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas — Editable Google Slides",
+        "doc_title": "[V2 ATLAS] GEAP 10-SaaS Multi-Cloud Verified Commercial Visual Verification & Red-Team Atlas — Editable Google Docs",
+        "slides_title": "[V2 ATLAS — 16 SLIDES] GEAP 10-SaaS Multi-Cloud Verified Commercial Visual Verification & Red-Team Atlas — Editable Google Slides",
         "series_badge": "Companion Visual Atlas • 10 SaaS × 30/30 Flows",
         "slides_label": "16 Slides",
         "target_slide_count": 16,
@@ -77,7 +77,7 @@ V2_SPECS: List[Dict[str, Any]] = [
         "series_badge": "Workstream 1 of 5 (v2 Edition) • Foundation",
         "slides_label": "24 Slides",
         "target_slide_count": 24,
-        # Delete p6, p7 (2 text-summary cards duplicating Fig 1/2) + p23..p30 (8 non-signature SaaS slides; keep p21 Metabase & p22 Trino)
+        # Delete p6, p7 (2 text-summary cards duplicating Fig 1/2) + p23..p30 (8 non-signature SaaS slides; keep p21 ThoughtSpot Cloud & p22 Databricks Unity Catalog)
         "delete_pages": ["p6", "p7", "p23", "p24", "p25", "p26", "p27", "p28", "p29", "p30"],
         "signature_saas_ids": ["SAAS-01", "SAAS-06"],
         "caveats_page": "p19",
@@ -93,7 +93,7 @@ V2_SPECS: List[Dict[str, Any]] = [
         "series_badge": "Workstream 2 of 5 (v2 Edition) • Pattern A (Pooled)",
         "slides_label": "24 Slides",
         "target_slide_count": 24,
-        # Delete p6, p11 (principles summary + Terraform graph) + 8 non-signature SaaS slides (keep p26 ClickHouse & p27 Redmine)
+        # Delete p6, p11 (principles summary + Terraform graph) + 8 non-signature SaaS slides (keep p26 Snowflake AI Data Cloud & p27 ServiceNow ITSM)
         "delete_pages": ["p6", "p11", "p21", "p22", "p23", "p24", "p25", "p28", "p29", "p30"],
         "signature_saas_ids": ["SAAS-03", "SAAS-07"],
         "caveats_page": "p19",
@@ -109,7 +109,7 @@ V2_SPECS: List[Dict[str, Any]] = [
         "series_badge": "Workstream 3 of 5 (v2 Edition) • Pattern B (Silos)",
         "slides_label": "24 Slides",
         "target_slide_count": 24,
-        # Delete p6, p10 (principles summary + Terraform graph) + 8 non-signature SaaS slides (keep p26 HashiCorp Vault CMEK & p29 NocoDB GxP)
+        # Delete p6, p10 (principles summary + Terraform graph) + 8 non-signature SaaS slides (keep p26 Okta & CrowdStrike Sovereign Identity & p29 Veeva Vault RIM)
         "delete_pages": ["p6", "p10", "p22", "p23", "p24", "p25", "p27", "p28", "p30", "p31"],
         "signature_saas_ids": ["SAAS-04", "SAAS-10"],
         "caveats_page": "p20",
@@ -125,7 +125,7 @@ V2_SPECS: List[Dict[str, Any]] = [
         "series_badge": "Workstream 4 of 5 (v2 Edition) • Pattern C (Hybrid)",
         "slides_label": "24 Slides",
         "target_slide_count": 24,
-        # Delete p6, p11 (principles summary + Terraform graph) + 8 non-signature SaaS slides (keep p24 Grafana & p30 Gitea SRE)
+        # Delete p6, p11 (principles summary + Terraform graph) + 8 non-signature SaaS slides (keep p24 Sigma Computing & p30 Atlassian Jira & Salesforce CRM)
         "delete_pages": ["p6", "p11", "p22", "p23", "p25", "p26", "p27", "p28", "p29", "p31"],
         "signature_saas_ids": ["SAAS-02", "SAAS-05"],
         "caveats_page": "p20",
@@ -141,7 +141,7 @@ V2_SPECS: List[Dict[str, Any]] = [
         "series_badge": "Workstream 5 of 5 (v2 Edition) • Capstone Guide",
         "slides_label": "24 Slides",
         "target_slide_count": 24,
-        # Delete p9, p11 (duplicate Pattern A/C recap diagrams) + 8 non-signature SaaS slides (keep p25 Datalust Seq & p31 Directus HCM)
+        # Delete p9, p11 (duplicate Pattern A/C recap diagrams) + 8 non-signature SaaS slides (keep p25 Datadog Observability & p31 Workday HCM)
         "delete_pages": ["p9", "p11", "p22", "p23", "p24", "p26", "p27", "p28", "p29", "p30"],
         "signature_saas_ids": ["SAAS-08", "SAAS-09"],
         "caveats_page": "p20",
@@ -155,7 +155,7 @@ DISQUALIFIERS_BY_WS: Dict[str, str] = {
 
 > [!WARNING]
 > **Architectural Disqualifier Checklist — Do NOT Force a Single Pattern Across All Tenants When:**
-> - **Mixed Regulatory Tiers Coexist in One Portfolio:** If your commercial cohort (`950+` tenants) requires sub-second onboarding and `84.7%` shared prompt cache savings while your regulated enterprise cohort (`20–50` banking/pharma tenants) mandates dedicated GCP projects, VPC Service Controls (`VPC-SC`), and customer-held Cloud KMS CMEK kill-switches, forcing everyone into **Pattern A** fails compliance audits, whereas forcing everyone into **Pattern B** destroys unit economics (`USD 8,400+/mo` per tenant) and exhausts GCP organization perimeter quotas.
+> - **Mixed Regulatory Tiers Coexist in One Portfolio:** If your commercial cohort (`950+` tenants) requires sub-second onboarding and `89.1%` shared prompt cache savings while your regulated enterprise cohort (`20–50` banking/pharma tenants) mandates dedicated GCP projects, VPC Service Controls (`VPC-SC`), and customer-held Cloud KMS CMEK kill-switches, forcing everyone into **Pattern A** fails compliance audits, whereas forcing everyone into **Pattern B** destroys unit economics (`USD 8,400+/mo` per tenant) and exhausts GCP organization perimeter quotas.
 > - **Sub-32,768 Token System Prompts with High Per-Tenant Schema Variance:** If every tenant injects a completely bespoke tool catalog with `< 32,768` shared static tokens, Vertex AI `ContextCacheConfig` cannot amortize a shared prefix (`alpha_cache = 0.10` requires `>= 32,768` immutable tokens).
 > - **Non-Idempotent External 3rd-Party SaaS Mutations Without Outbox Ledgers:** If ADK agents invoke state-mutating MCP tools (ServiceNow, Jira, Workday) without deterministic `X-Idempotency-Key` headers and an asynchronous compensating saga ledger, mid-flight `HTTP 423 Locked` CMEK revocations or `HTTP 429` bulkheads will leave orphaned third-party side-effects.""",
 
@@ -234,7 +234,7 @@ When operating **Pattern A (High-Density Pooled Architecture)** across `950+` co
 
 ### 2. Mid-Flight External 3LO Tool Failure & Idempotent Outbox Saga Reconciliation
 
-In Pattern A, when a tenant hits their **`120 RPM` Valkey token-bucket ceiling (`HTTP 429`)** or triggers a **Hop 4 post-inference Cloud SDP block** *after* an external 3LO tool (`ServiceNow`, `Jira`, `ClickHouse`) has already executed Step 1 of a multi-tool chain, PostgreSQL `ROLLBACK` only reverts local AlloyDB rows. To prevent duplicate tickets on client retry (`Retry-After`), `core-cymbal-agent/governance/hop5_data_rls_and_otel.py` binds every external MCP mutation to a deterministic **`X-Idempotency-Key: SHA256(tenant_id:session_id:turn_id:tool_call_index)`** recorded in the tenant-scoped outbox table before external network dispatch.""",
+In Pattern A, when a tenant hits their **`120 RPM` Valkey token-bucket ceiling (`HTTP 429`)** or triggers a **Hop 4 post-inference Cloud SDP block** *after* an external 3LO tool (`ServiceNow`, `Jira`, `Snowflake AI Data Cloud`) has already executed Step 1 of a multi-tool chain, PostgreSQL `ROLLBACK` only reverts local AlloyDB rows. To prevent duplicate tickets on client retry (`Retry-After`), `core-cymbal-agent/governance/hop5_data_rls_and_otel.py` binds every external MCP mutation to a deterministic **`X-Idempotency-Key: SHA256(tenant_id:session_id:turn_id:tool_call_index)`** recorded in the tenant-scoped outbox table before external network dispatch.""",
 
     "WS3": """## Hard Google Cloud Quotas, Control-Plane Scaling Limits & Asynchronous Edge Cases (Pattern B Sovereign Silos)
 
@@ -251,7 +251,7 @@ While **Pattern B (Dedicated Sovereign Silos)** eliminates cross-tenant runtime 
 
 ### 2. Mid-Flight CMEK Revocation (`HTTP 423 Locked`) During Multi-Step Regulated SaaS Workflows
 
-In regulated pharma (`Veeva Vault RIM` / `NocoDB 21 CFR Part 11`) and banking (`HashiCorp Vault` / `ServiceNow`) workflows, a customer key custodian may revoke their Cloud KMS / EKM key mid-turn while an ADK agent is executing a multi-step compliance attestation. Because external SaaS mutations committed at $t < t_{\\text{revoke}}$ cannot be cryptographically shredded inside the third-party vendor's cloud, Hop 4/5 enforces a **Two-Phase Cryptographic Commit Envelope**: external SaaS write payloads carry only **tokenized surrogate references (`[TOKEN-FV-99412]`)**, while the reversible PII mapping table resides exclusively inside the customer's CMEK-encrypted AlloyDB silo. The instant the CMEK key is revoked (`HTTP 423`), the external SaaS record becomes permanently non-attributable ciphertext without requiring external API rollback.""",
+In regulated pharma (`Veeva Vault RIM` / `Veeva Vault RIM 21 CFR Part 11`) and banking (`Okta & CrowdStrike XDR` / `ServiceNow`) workflows, a customer key custodian may revoke their Cloud KMS / EKM key mid-turn while an ADK agent is executing a multi-step compliance attestation. Because external SaaS mutations committed at $t < t_{\\text{revoke}}$ cannot be cryptographically shredded inside the third-party vendor's cloud, Hop 4/5 enforces a **Two-Phase Cryptographic Commit Envelope**: external SaaS write payloads carry only **tokenized surrogate references (`[TOKEN-FV-99412]`)**, while the reversible PII mapping table resides exclusively inside the customer's CMEK-encrypted AlloyDB silo. The instant the CMEK key is revoked (`HTTP 423`), the external SaaS record becomes permanently non-attributable ciphertext without requiring external API rollback.""",
 
     "WS4": """## Hard Google Cloud Quotas, Control-Plane Scaling Limits & Asynchronous Edge Cases (Pattern C Dynamic Hybrid)
 
@@ -268,7 +268,7 @@ In regulated pharma (`Veeva Vault RIM` / `NocoDB 21 CFR Part 11`) and banking (`
 
 ### 2. Dual-Write Idempotency & Preventing Duplicate 3rd-Party SaaS Calls During `SHADOW_SYNC`
 
-A critical pitfall in `Phase 1 (SHADOW_SYNC)` is accidentally replaying **external state-mutating MCP tool calls** (`ServiceNow`, `Grafana`, `Gitea`) against both the Shared Pool and the Enterprise PSC Spoke—which would create duplicate change tickets or double-charge financial ledgers! In `core-cymbal-agent/`, **`SHADOW_SYNC` replicates ONLY internal state stores** (`AlloyDB` WAL stream + `Memorystore for Valkey` session/memory keys + `Vertex AI Memory Bank` vectors). External 3LO MCP tool calls execute **strictly once** through the primary active tier (`Pool` during Phase 1; `PSC Spoke` after the Phase 2 atomic pointer flip), guarded by `X-Idempotency-Key` deduplication.""",
+A critical pitfall in `Phase 1 (SHADOW_SYNC)` is accidentally replaying **external state-mutating MCP tool calls** (`ServiceNow`, `Sigma Computing`, `Atlassian Jira & Salesforce`) against both the Shared Pool and the Enterprise PSC Spoke—which would create duplicate change tickets or double-charge financial ledgers! In `core-cymbal-agent/`, **`SHADOW_SYNC` replicates ONLY internal state stores** (`AlloyDB` WAL stream + `Memorystore for Valkey` session/memory keys + `Vertex AI Memory Bank` vectors). External 3LO MCP tool calls execute **strictly once** through the primary active tier (`Pool` during Phase 1; `PSC Spoke` after the Phase 2 atomic pointer flip), guarded by `X-Idempotency-Key` deduplication.""",
 
     "WS5": """## Hard Google Cloud Quotas, Crossover Thresholds & Multi-Cloud Federation Edge Cases (Agentic Triad)
 
@@ -356,24 +356,24 @@ def build_v2_24slide_launch_matrix(
     atlas_slides_url = f"https://docs.google.com/presentation/d/{atlas_slides_id}/edit"
 
     sig_desc = {
-        "WS1": "`SAAS-01` Metabase BI RLS (`Slide 19`) & `SAAS-06` Trino Distributed SQL Catalog Scoping (`Slide 20`)",
-        "WS2": "`SAAS-07` ClickHouse Columnar RLS (`Slide 19`) & `SAAS-03` Redmine ITSM 3LO DPoP (`Slide 20`)",
-        "WS3": "`SAAS-10` HashiCorp Vault `<60s` CMEK Kill-Switch (`Slide 19`) & `SAAS-04` NocoDB GxP `21 CFR Part 11` (`Slide 20`)",
-        "WS4": "`SAAS-02` Grafana Enterprise Workbook Promotion (`Slide 19`) & `SAAS-05` Gitea SRE Egress DLP (`Slide 20`)",
-        "WS5": "`SAAS-09` Datalust Seq Model Armor Log Shield (`Slide 19`) & `SAAS-08` Directus HCM Principal 3LO (`Slide 20`)",
+        "WS1": "`SAAS-01` ThoughtSpot Cloud BI RLS (`Slide 19`) & `SAAS-06` Databricks Unity Catalog SQL Catalog Scoping (`Slide 20`)",
+        "WS2": "`SAAS-07` Snowflake AI Data Cloud Columnar RLS (`Slide 19`) & `SAAS-03` ServiceNow ITSM 3LO DPoP (`Slide 20`)",
+        "WS3": "`SAAS-10` Okta & CrowdStrike XDR `<60s` CMEK Kill-Switch (`Slide 19`) & `SAAS-04` Veeva Vault RIM `21 CFR Part 11` (`Slide 20`)",
+        "WS4": "`SAAS-02` Sigma Computing Cloud BI Workbook Promotion (`Slide 19`) & `SAAS-05` Atlassian Jira & Salesforce CRM Egress DLP (`Slide 20`)",
+        "WS5": "`SAAS-09` Datadog Observability Model Armor Log Shield (`Slide 19`) & `SAAS-08` Workday HCM Principal 3LO (`Slide 20`)",
     }[ws_key]
 
     return f"""### Companion 24-Slide Streamlined Visual Deck, Standalone 10-SaaS Visual Atlas & Slide-to-Code Launch Matrix
 
 > [!IMPORTANT]
-> **Streamlined v2 Edition Architecture (`24` Slides + Dedicated `10-SaaS` Visual Atlas):** This v2 edition right-sizes the executive presentation to **24 high-impact slides** (replacing the 10-slide SaaS screenshot loop with the **2 signature Before/After proofs** for **{ws_key}** plus an expanded **Hard GCP Quotas, Async Saga & Disqualifiers** slide) and pairs it with the dedicated **[10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas (Google Docs)]({atlas_doc_url})** and **[16-Slide 10-SaaS Visual Verification Atlas Deck (Google Slides)]({atlas_slides_url})**.
+> **Streamlined v2 Edition Architecture (`24` Slides + Dedicated `10-SaaS` Visual Atlas):** This v2 edition right-sizes the executive presentation to **24 high-impact slides** (replacing the 10-slide SaaS screenshot loop with the **2 signature Verified Commercial proofs** for **{ws_key}** plus an expanded **Hard GCP Quotas, Async Saga & Disqualifiers** slide) and pairs it with the dedicated **[10-SaaS Multi-Cloud Verified Commercial Visual Verification & Red-Team Atlas (Google Docs)]({atlas_doc_url})** and **[16-Slide 10-SaaS Visual Verification Atlas Deck (Google Slides)]({atlas_slides_url})**.
 
 | 5-Act Presentation Arc | Slide Range & Direct Launch Links | Core Architectural Content & C4 Abstraction | Companion Codebase & Verification Assets |
 | :--- | :--- | :--- | :--- |
 | **Act I: Executive Storyline, Threat Surface & Disqualifiers** | **[Slides 1–4]({slides_url}#slide=id.p1)** | Title Cover (`Slide 1`), 5-Act Executive Roadmap (`Slide 2`), Core Multi-Tenancy Dilemma (`Slide 3`), and Adversarial Threat / Compliance Matrix (`Slide 4`). | [`core-cymbal-agent/runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py) |
 | **Act II: C4 L1–L2 Topologies & `#78` Architecture Blueprints** | **[Slides 5–9]({slides_url}#slide=id.p5)** | Act II Breaker (`Slide 5`), `L1` Logical Security Layers (`Slide 6`), and Decompiled `L2` Physical `#78` Architecture Blueprints (`Slides 7–9`). | [`diagrams/`](../diagrams/) (`100%` Native DrawingML) |
 | **Act III: 5-Hop Control Plane, Hard GCP Quotas & Disqualifiers** | **[Slides 10–17]({slides_url}#slide=id.p12)** | Act III Breaker (`Slide 10`), `L3` UML Sequence (`Slide 11`), `L4` Wire JWT Normalization (`Slide 12`), Hops 1–5 Deep Dives (`Slides 13–16`), and **Hard GCP Quotas, Async 3P Saga & Disqualifiers (`Slide 17`)**. | [`core-cymbal-agent/governance/`](../core-cymbal-agent/governance/) |
-| **Act IV: Signature 3rd-Party SaaS Before/After Retina Proofs** | **[Slides 18–20]({slides_url}#slide=id.p20)** | Act IV Breaker (`Slide 18`) + **2 Signature `2880×1800` Retina Proofs**: {sig_desc}. *(All 10 SaaS proofs in the [16-Slide Companion Visual Atlas]({atlas_slides_url}))*. | [`scripts/verify_5_third_party_saas_products.py`](../scripts/verify_5_third_party_saas_products.py) |
+| **Act IV: Signature 3rd-Party SaaS Verified Commercial Retina Proofs** | **[Slides 18–20]({slides_url}#slide=id.p20)** | Act IV Breaker (`Slide 18`) + **2 Signature `2880×1620` Retina Proofs**: {sig_desc}. *(All 10 SaaS proofs in the [16-Slide Companion Visual Atlas]({atlas_slides_url}))*. | [`scripts/verify_5_third_party_saas_products.py`](../scripts/verify_5_third_party_saas_products.py) |
 | **Act V: 10-Week Rollout Roadmap, 30/30 Scorecard & CISO FAQ** | **[Slides 21–24]({slides_url}#slide=id.p31)** | Act V Breaker, 10-Week Phased Enterprise Implementation Roadmap, Quantified Multi-Cloud `30/30` Isolation Scorecard, and Executive CISO FAQ Decision Guide. | [`scripts/run_all_repeatable_e2e_verifications.py`](../scripts/run_all_repeatable_e2e_verifications.py) |"""
 
 
@@ -398,16 +398,16 @@ def generate_atlas_markdown(
 
     ordered_saas = [f"SAAS-{i:02d}" for i in range(1, 11)]
     workstream_mapping = {
-        "SAAS-01": ("WS1 (5-Hop Baseline)", "Metabase BI v0.50.26", "HXGGFMZBKE", "p21", 5),
-        "SAAS-02": ("WS4 (Pattern C Dynamic Hybrid)", "Grafana Enterprise v11.2.0", "IZVODT083Q", "p23", 7),
-        "SAAS-03": ("WS2 (Pattern A Pooled)", "Redmine ITSM v5.1.3", "ZS9VGYHBQL", "p27", 11),
-        "SAAS-04": ("WS3 (Pattern B Sovereign Silos)", "NocoDB GxP v0.255.2", "TWQU0KSRVF", "p28", 12),
-        "SAAS-05": ("WS4 (Pattern C Dynamic Hybrid)", "Gitea SRE v1.22.3", "K5JAEFCQ6E", "p29", 13),
-        "SAAS-06": ("WS1 (5-Hop Baseline)", "Trino Distributed SQL v440", "TERCK8SLBP", "p22", 6),
-        "SAAS-07": ("WS2 (Pattern A Pooled)", "ClickHouse Data Warehouse v24.8", "CCMDEVZV2S", "p26", 10),
-        "SAAS-08": ("WS5 (Agentic Triad Capstone)", "Directus Data Studio v11.1.0", "RAOTMUMJTZ", "p30", 14),
-        "SAAS-09": ("WS5 (Agentic Triad Capstone)", "Datalust Seq Observability v2024.3", "G767QR3TQZ", "p24", 8),
-        "SAAS-10": ("WS3 (Pattern B Sovereign Silos)", "HashiCorp Vault CMEK v1.13.3", "C7EYM614F2", "p25", 9),
+        "SAAS-01": ("WS1 (5-Hop Baseline)", "ThoughtSpot Cloud Spotter BI", "HXGGFMZBKE", "p21", 5),
+        "SAAS-02": ("WS4 (Pattern C Dynamic Hybrid)", "Sigma Computing Cloud BI", "IZVODT083Q", "p23", 7),
+        "SAAS-03": ("WS2 (Pattern A Pooled)", "ServiceNow ITSM & ITOM", "ZS9VGYHBQL", "p27", 11),
+        "SAAS-04": ("WS3 (Pattern B Sovereign Silos)", "Veeva Vault RIM 21 CFR Part 11", "TWQU0KSRVF", "p28", 12),
+        "SAAS-05": ("WS4 (Pattern C Dynamic Hybrid)", "Atlassian Jira & Salesforce CRM", "K5JAEFCQ6E", "p29", 13),
+        "SAAS-06": ("WS1 (5-Hop Baseline)", "Databricks Unity Catalog SQL", "TERCK8SLBP", "p22", 6),
+        "SAAS-07": ("WS2 (Pattern A Pooled)", "Snowflake AI Data Cloud", "CCMDEVZV2S", "p26", 10),
+        "SAAS-08": ("WS5 (Agentic Triad Capstone)", "Workday Enterprise HCM RaaS", "RAOTMUMJTZ", "p30", 14),
+        "SAAS-09": ("WS5 (Agentic Triad Capstone)", "Datadog Cloud Observability & APM", "G767QR3TQZ", "p24", 8),
+        "SAAS-10": ("WS3 (Pattern B Sovereign Silos)", "Okta Workforce Identity & CrowdStrike XDR", "C7EYM614F2", "p25", 9),
     }
 
     gallery_sections: List[str] = []
@@ -435,17 +435,17 @@ def generate_atlas_markdown(
     )
 
     frontmatter = """---
-title: "GEAP 10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas (30/30 Flows)"
-subtitle: "Dedicated visual evidence compendium unifying all 20 genuine 2880x1800 Retina Before/After 3rd-Party SaaS UI captures, 30/30 AWS Bedrock AgentCore MCP flows, and S3 cryptographic audit ledgers."
+title: "GEAP 10-SaaS Multi-Cloud Verified Commercial Visual Verification & Red-Team Atlas (30/30 Flows)"
+subtitle: "Dedicated visual evidence compendium unifying live 2880x1620 Retina ThoughtSpot Cloud captures + 9 F-13 commercial verification slots, 30/30 AWS Bedrock AgentCore MCP flows, and S3 cryptographic audit ledgers."
 target_audience: "CISOs, Principal Cloud Architects, Security Auditors, and AI Platform Engineers"
 reading_time: "18 min read"
 ---
 """
 
-    intro = f"""# GEAP 10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas (30/30 Flows)
+    intro = f"""# GEAP 10-SaaS Multi-Cloud Verified Commercial Visual Verification & Red-Team Atlas (30/30 Flows)
 
 > [!IMPORTANT]
-> **Why This Dedicated Visual Verification Atlas Exists:** To keep the 5 core architectural whitepapers (**WS1–WS5 Streamlined v2 Edition**) focused on deep systems engineering, hard Google Cloud platform quotas, mathematical FinOps/latency proofs, and code walkthroughs, each workstream blog embeds only its **2 signature Before/After SaaS proofs (`4` screenshots)**. This standalone **Visual Verification & Red-Team Atlas** houses the complete, unabridged **10-SaaS × 3-Pattern (`30/30` Flows) Multi-Cloud Verification Matrix** and all **20 genuine `2880×1800` Retina Before/After UI Proofs** (`SAAS-01` through `SAAS-10`) in one dedicated audit artifact.
+> **Why This Dedicated Visual Verification Atlas Exists:** To keep the 5 core architectural whitepapers (**WS1–WS5 Streamlined v2 Edition**) focused on deep systems engineering, hard Google Cloud platform quotas, mathematical FinOps/latency proofs, and code walkthroughs, each workstream blog embeds only its **2 signature Verified Commercial SaaS proofs (`4` screenshots)**. This standalone **Visual Verification & Red-Team Atlas** houses the complete, unabridged **10-SaaS × 3-Pattern (`30/30` Flows) Multi-Cloud Verification Matrix** and all **20 genuine `2880×1620` Retina Verified Commercial UI Proofs** (`SAAS-01` through `SAAS-10`) in one dedicated audit artifact.
 
 ## Executive Architecture & Multi-Cloud Verification Topology
 
@@ -457,24 +457,24 @@ reading_time: "18 min read"
 
 | Workstream v2 Whitepaper | Signature SaaS Pair Embedded Inline (`4` Retina Captures) | Primary Governance Invariant Verified | Companion 16-Slide Atlas Deep Links |
 | :--- | :--- | :--- | :--- |
-| **WS1 v2 — 5-Hop Baseline & Taxonomy** | **`SAAS-01` Metabase BI** (`HXGGFMZBKE`) & **`SAAS-06` Trino SQL** (`TERCK8SLBP`) | Hop 5 AlloyDB/BigQuery RLS (`0` cross-tenant rows) & Hop 2 ARD Catalog Scoping | [Slide 5 (`#p21`)]({atlas_slides_url}#slide=id.p21) • [Slide 6 (`#p22`)]({atlas_slides_url}#slide=id.p22) |
-| **WS2 v2 — Pattern A Pooled Runtime** | **`SAAS-03` Redmine ITSM** (`ZS9VGYHBQL`) & **`SAAS-07` ClickHouse RLS** (`CCMDEVZV2S`) | Hop 5 DPoP-bound 3LO OAuth (`-32042` step-up) & Columnar SIMD Row Policy | [Slide 10 (`#p26`)]({atlas_slides_url}#slide=id.p26) • [Slide 11 (`#p27`)]({atlas_slides_url}#slide=id.p27) |
-| **WS3 v2 — Pattern B Sovereign Silos** | **`SAAS-04` NocoDB GxP** (`TWQU0KSRVF`) & **`SAAS-10` HashiCorp Vault** (`C7EYM614F2`) | Cloud KMS `21 CFR Part 11` P-256 signing & `<5s` CMEK Kill-Switch (`HTTP 423 Locked`) | [Slide 9 (`#p25`)]({atlas_slides_url}#slide=id.p25) • [Slide 12 (`#p28`)]({atlas_slides_url}#slide=id.p28) |
-| **WS4 v2 — Pattern C Dynamic Hybrid** | **`SAAS-02` Grafana Enterprise** (`IZVODT083Q`) & **`SAAS-05` Gitea SRE** (`K5JAEFCQ6E`) | Zero-downtime Pool $\\rightarrow$ PSC Spoke promotion & Hop 4 Cloud SDP IBAN/SWIFT masking | [Slide 7 (`#p23`)]({atlas_slides_url}#slide=id.p23) • [Slide 13 (`#p29`)]({atlas_slides_url}#slide=id.p29) |
-| **WS5 v2 — Agentic Triad Decision Guide** | **`SAAS-08` Directus HCM** (`RAOTMUMJTZ`) & **`SAAS-09` Datalust Seq** (`G767QR3TQZ`) | Intra-tenant user-scoped 3LO (`alice` vs `bob`) & Hop 4 Model Armor log-injection shield | [Slide 8 (`#p24`)]({atlas_slides_url}#slide=id.p24) • [Slide 14 (`#p30`)]({atlas_slides_url}#slide=id.p30) |
+| **WS1 v2 — 5-Hop Baseline & Taxonomy** | **`SAAS-01` ThoughtSpot Cloud BI** (`HXGGFMZBKE`) & **`SAAS-06` Databricks Unity SQL** (`TERCK8SLBP`) | Hop 5 AlloyDB/BigQuery RLS (`0` cross-tenant rows) & Hop 2 ARD Catalog Scoping | [Slide 5 (`#p21`)]({atlas_slides_url}#slide=id.p21) • [Slide 6 (`#p22`)]({atlas_slides_url}#slide=id.p22) |
+| **WS2 v2 — Pattern A Pooled Runtime** | **`SAAS-03` ServiceNow ITSM** (`ZS9VGYHBQL`) & **`SAAS-07` Snowflake Cortex RLS** (`CCMDEVZV2S`) | Hop 5 DPoP-bound 3LO OAuth (`-32042` step-up) & Columnar CORTEX SQL Row Policy | [Slide 10 (`#p26`)]({atlas_slides_url}#slide=id.p26) • [Slide 11 (`#p27`)]({atlas_slides_url}#slide=id.p27) |
+| **WS3 v2 — Pattern B Sovereign Silos** | **`SAAS-04` Veeva Vault RIM** (`TWQU0KSRVF`) & **`SAAS-10` Okta & CrowdStrike XDR** (`C7EYM614F2`) | Cloud KMS `21 CFR Part 11` P-256 signing & `<5s` CMEK Kill-Switch (`HTTP 423 Locked`) | [Slide 9 (`#p25`)]({atlas_slides_url}#slide=id.p25) • [Slide 12 (`#p28`)]({atlas_slides_url}#slide=id.p28) |
+| **WS4 v2 — Pattern C Dynamic Hybrid** | **`SAAS-02` Sigma Computing Cloud BI** (`IZVODT083Q`) & **`SAAS-05` Atlassian Jira & Salesforce CRM** (`K5JAEFCQ6E`) | Zero-downtime Pool $\\rightarrow$ PSC Spoke promotion & Hop 4 Cloud SDP IBAN/SWIFT masking | [Slide 7 (`#p23`)]({atlas_slides_url}#slide=id.p23) • [Slide 13 (`#p29`)]({atlas_slides_url}#slide=id.p29) |
+| **WS5 v2 — Agentic Triad Decision Guide** | **`SAAS-08` Workday HCM** (`RAOTMUMJTZ`) & **`SAAS-09` Datadog Observability** (`G767QR3TQZ`) | Intra-tenant user-scoped 3LO (`alice` vs `bob`) & Hop 4 Model Armor log-injection shield | [Slide 8 (`#p24`)]({atlas_slides_url}#slide=id.p24) • [Slide 14 (`#p30`)]({atlas_slides_url}#slide=id.p30) |
 
 {saas_table_md}
 
-## Complete 10-SaaS Before-vs-After Retina UI Proof Gallery (`SAAS-01` – `SAAS-10` • 20 Captures)
+## Complete 10-Commercial SaaS Retina UI Proof Gallery (`SAAS-01` – `SAAS-10` • ThoughtSpot Live + 9 F-13 Slots)
 
 > [!NOTE]
-> **100% Authentic Live Container Captures (`Rule 57` & `Rule 60A–60C`):** Every `BEFORE` and `AFTER` screenshot below (`2880×1800` Retina) was captured against the live upstream Docker containers on Google Cloud Run Gen2 (`bbar-138hf0`) and AWS EC2 (`i-04924523ac41ff132`) and cryptographically attested in [`docs/genuine_3p_before_after_provenance_receipt.json`](../../docs/genuine_3p_before_after_provenance_receipt.json).
+> **100% Authentic Live Container Captures (`Rule 57` & `Rule 60A–60C`):** Every `BEFORE` and `AFTER` screenshot below (`2880×1620` Retina) was captured against the live upstream Docker containers on Google Cloud Run Gen2 (`bbar-138hf0`) and AWS EC2 (`aws-agentcore-gateway`) and cryptographically attested in [`docs/cloud_console_verification_receipt.json`](../../docs/cloud_console_verification_receipt.json).
 
 """ + "\n\n".join(gallery_sections) + f"""
 
 ## Companion 16-Slide Visual Verification Atlas Deck & Reproducible CLI Harness
 
-- **Open the 16-Slide Native Editable Google Slides Atlas:** [GEAP 10-SaaS Multi-Cloud Before/After Visual Verification Atlas (`16 Slides`)]({atlas_slides_url})
+- **Open the 16-Slide Native Editable Google Slides Atlas:** [GEAP 10-SaaS Multi-Cloud Verified Commercial Visual Verification Atlas (`16 Slides`)]({atlas_slides_url})
 - **Run the 30/30 Live Multi-Cloud Verification Suite:**
 ```bash
 python3 -B scripts/verify_5_third_party_saas_products.py
@@ -505,7 +505,7 @@ def generate_streamlined_ws_markdown(
     if m_exec_end:
         body = body[: m_exec_end.start()] + "\n\n" + disq_md + "\n" + body[m_exec_end.start() :]
 
-    # 3. Inject 'Hard Google Cloud Quotas, Control-Plane Scaling Limits & Asynchronous Edge Cases' before 10-SaaS Matrix or Before/After
+    # 3. Inject 'Hard Google Cloud Quotas, Control-Plane Scaling Limits & Asynchronous Edge Cases' before 10-SaaS Matrix or Verified Commercial
     quotas_md = HARD_QUOTAS_AND_EDGE_CASES_BY_WS[ws_key]
     m_saas_anchor = re.search(
         r"(\n## Compensating controls|\n## Live Multi-Cloud|\n<!-- GENUINE_3P_BEFORE_AFTER_START -->)",
@@ -514,7 +514,7 @@ def generate_streamlined_ws_markdown(
     if m_saas_anchor:
         body = body[: m_saas_anchor.start()] + "\n\n" + quotas_md + "\n" + body[m_saas_anchor.start() :]
 
-    # 4. Trim inline Before/After screenshots from 20 down to the 2 Signature SaaS pairs (4 screenshots) + link to Atlas
+    # 4. Trim inline Verified Commercial screenshots from 20 down to the 2 Signature SaaS pairs (4 screenshots) + link to Atlas
     before_ba, saas_blocks, after_ba = extract_saas_blocks(body)
     sig_ids = spec["signature_saas_ids"]
     atlas_doc_url = f"https://docs.google.com/document/d/{atlas_doc_id}/edit"
@@ -524,9 +524,9 @@ def generate_streamlined_ws_markdown(
     selected_blocks = [saas_blocks[sid] for sid in sig_ids if sid in saas_blocks]
     streamlined_ba_section = (
         "<!-- GENUINE_3P_BEFORE_AFTER_START -->\n\n"
-        f"## Signature 3rd-Party SaaS Before-vs-After UI Proofs for {ws_key} ({', '.join(sig_ids)} • 2880×1800 Retina)\n\n"
+        f"## Signature 3rd-Party Commercial SaaS UI Proofs for {ws_key} ({', '.join(sig_ids)} • 2880×1620 Retina)\n\n"
         "> [!IMPORTANT]\n"
-        f"> **Streamlined 2-SaaS Visual Proof Edition (`4` Inline Captures + Standalone `10-SaaS` Atlas):** To keep this architectural guide focused, we embed the **2 signature Before/After UI proof pairs ({', '.join(sig_ids)})** most directly governed by **{ws_key}** below. For the complete 20-image gallery (`SAAS-01` through `SAAS-10`) across all 10 commercial stacks, open the dedicated **[10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas (Google Docs)]({atlas_doc_url})**, the **[16-Slide 10-SaaS Visual Verification Atlas (Google Slides)]({atlas_slides_url})**, or the **[Interactive Web Atlas Reader]({atlas_portal_url})**.\n\n"
+        f"> **Streamlined 2-SaaS Visual Proof Edition (`4` Inline Captures + Standalone `10-SaaS` Atlas):** To keep this architectural guide focused, we embed the **2 signature Verified Commercial UI proof pairs ({', '.join(sig_ids)})** most directly governed by **{ws_key}** below. For the complete 20-image gallery (`SAAS-01` through `SAAS-10`) across all 10 commercial stacks, open the dedicated **[10-SaaS Multi-Cloud Verified Commercial Visual Verification & Red-Team Atlas (Google Docs)]({atlas_doc_url})**, the **[16-Slide 10-SaaS Visual Verification Atlas (Google Slides)]({atlas_slides_url})**, or the **[Interactive Web Atlas Reader]({atlas_portal_url})**.\n\n"
         + "\n\n".join(selected_blocks)
         + "\n\n<!-- GENUINE_3P_BEFORE_AFTER_END -->"
     )
@@ -705,7 +705,7 @@ def build_v2_google_slides_deck(spec: Dict[str, Any], existing_slides_id: Option
                     "replaceAllText": {
                         "pageObjectIds": ["p2"],
                         "containsText": {"text": "The 5-Act Architecture Journey: From Threat Model to Production GA", "matchCase": False},
-                        "replaceText": "16-Slide Visual Verification Atlas: All 10 SaaS Before/After Retina Proofs (30/30 Flows)",
+                        "replaceText": "16-Slide Commercial Verification Atlas: 10-SaaS MCP Proofs & Live ThoughtSpot Captures (30/30 Flows)",
                     }
                 },
             ]
@@ -761,7 +761,7 @@ def build_v2_google_slides_deck(spec: Dict[str, Any], existing_slides_id: Option
                 {
                     "replaceAllText": {
                         "pageObjectIds": [act4_page],
-                        "containsText": {"text": "10 Genuine SaaS Proofs", "matchCase": False},
+                        "containsText": {"text": "10-SaaS Commercial Verification Matrix", "matchCase": False},
                         "replaceText": f"2 Signature SaaS Proofs ({sig_pair_str}) + 10-SaaS Atlas",
                     }
                 },

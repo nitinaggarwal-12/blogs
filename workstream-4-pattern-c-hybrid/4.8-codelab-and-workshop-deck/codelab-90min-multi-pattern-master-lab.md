@@ -16,7 +16,7 @@ In this capstone 90-minute master codelab, you will operate Cymbal's **Pattern C
 | **Module 1** | `00:00–00:20` | Configure the Tenant-Aware Intelligent Ingress Router | Verify `STANDARD` $\rightarrow$ Pool (`4k` cap) & `ENTERPRISE` $\rightarrow$ PSC Spoke (`8k` cap) |
 | **Module 2** | `00:20–00:45` | Wire Producer PSC Service Attachments & Consumer Endpoints | Inspect [`main.tf`](../4.6-terraform-hybrid-psc-blueprint/main.tf) NAT subnets & forwarding rules |
 | **Module 3** | `00:45–01:10` | Execute Phase 1 (`SHADOW_SYNC`) & Phase 2 (`ATOMIC_CUTOVER`) Live Tier Upgrade | Verify `replication_lag_ms == 0` & atomic Firestore route flip |
-| **Module 4** | `01:10–01:30` | Verify Post-Upgrade Session Continuity (`DRAIN_AND_VERIFY`) | Confirm `sess-rs-live-upgrade-01` continues on PSC Spoke with `8,000` thinking budget & CMEK |
+| **Module 4** | `01:10–01:30` | Verify Post-Upgrade Session Continuity (`DRAIN_AND_VERIFY`) | Confirm `sess-rs-live-upgrade-01` continues on PSC Spoke with `HIGH` thinkingLevel (`8,000` maxOutputTokens) & CMEK |
 
 ---
 

@@ -41,14 +41,14 @@
       "heading": "Products used — Google Cloud Agentic AI, Security & Data Stack",
       "layout": "cards",
       "bullets": [
-        "Agentic AI & Foundation Models: Vertex AI Agent Engine (ADK runtime, Agent Registry & L1–L5 Memory Bank), Gemini 2.5 Pro with ContextCacheConfig (90% shared prefix discount), Vertex AI Model Garden (Dedicated PT), and Gemma 3 (27B) on private GKE.",
+        "Agentic AI & Foundation Models: Vertex AI Agent Engine (ADK runtime, Agent Registry & L1–L5 Memory Bank), Gemini 3.8 Flash with ContextCacheConfig (90% shared prefix discount), Vertex AI Model Garden (Dedicated PT), and Gemma 3 (27B) on private GKE.",
         "Ingress, Identity & AI Safety Guardrails: Global External Application Load Balancer, Google Cloud Armor L7 WAF, Identity-Aware Proxy (IAP) & IAM Security Token Service (RFC 8693 OBO + RFC 9449 DPoP), Vertex AI Model Armor, and Cloud Sensitive Data Protection (DLP).",
         "Data, Storage, Networking & Governance: AlloyDB for PostgreSQL (FORCE ROW LEVEL SECURITY), Memorystore for Valkey (per-tenant RPM bulkheads & JTI deny-list) & Firestore, VPC Service Controls (VPC-SC) & Private Service Connect (PSC), Cloud KMS CMEK, and BigQuery OTel.",
         "Shared 80% Reusable Application Core: All three isolation patterns execute the exact same Python ADK 5-hop security pipeline (`core-cymbal-agent/runtime_pipeline.py`), parameterizing only the surrounding 20% Google Cloud project and network boundary."
       ],
       "specs": [
         {
-          "stack": "Vertex AI Agent Engine (ADK) • Gemini 2.5 Pro (ContextCacheConfig) • Dedicated PT • Gemma 3 27B",
+          "stack": "Vertex AI Agent Engine (ADK) • Gemini 3.8 Flash (ContextCacheConfig) • Dedicated PT • Gemma 3 27B",
           "sla": "90% Shared System Prefix Cache Discount + Managed SaaS PT vs. Air-Gapped GKE GPU Hosting",
           "tag": "1. Agentic AI & Models"
         },
@@ -73,25 +73,25 @@
       "heading": "Use cases — Competing Enterprise Tenants (FinVault vs. RetailStream) & Google Cloud Stack",
       "layout": "cards",
       "bullets": [
-        "Cymbal SaaS Control Plane (Shared 32k Prefix Cache): Operates a shared Incident Diagnostic Agent on Vertex AI Agent Engine (ADK, ARD Registry & L1–L5 Memory Bank), caching a 32,000-token SRE runbook prefix once (90% discount -> 84.7% net per-turn token cost reduction).",
-        "FinVault Bank (Dedicated PT vs. Private GKE Gemma 3): Regulated bank (600 RPM / 8k thinking, VPC-SC, CMEK) choosing between Vertex AI Dedicated Provisioned Throughput (managed SaaS Gemini 2.5 Pro, 0 K8s ops) or Self-Managed Gemma 3 27B on Private GKE (air-gapped GPU nodes, 0 internet egress).",
-        "RetailStream Corp (3LO Token Vault & Anti-Confused-Deputy): Pooled tenant (120 RPM / 4k thinking, Entra ID) invoking ServiceNow ITOM via 3LO step-up consent; per-user OAuth tokens are isolated in {tenant}:{user} DPoP-bound vaults (dpop_jkt verified) so pooled agents never act as a Confused Deputy.",
+        "Cymbal SaaS Control Plane (Shared 32k Prefix Cache): Operates a shared Incident Diagnostic Agent on Vertex AI Agent Engine (ADK, ARD Registry & L1–L5 Memory Bank), caching a 32,768-token SRE runbook prefix once (90% discount -> 89.1% net per-turn token cost reduction).",
+        "FinVault Bank (Dedicated PT vs. Private GKE Gemma 3): Regulated bank (600 RPM / HIGH/8k maxOut, VPC-SC, CMEK) choosing between Vertex AI Dedicated Provisioned Throughput (managed SaaS Gemini 3.8 Flash, 0 K8s ops) or Self-Managed Gemma 3 27B on Private GKE (air-gapped GPU nodes, 0 internet egress).",
+        "RetailStream Corp (3LO Token Vault & Anti-Confused-Deputy): Pooled tenant (120 RPM / MEDIUM/4k maxOut, Entra ID) invoking ServiceNow ITOM via 3LO step-up consent; per-user OAuth tokens are isolated in {tenant}:{user} DPoP-bound vaults (dpop_jkt verified) so pooled agents never act as a Confused Deputy.",
         "Cryptographic Mutual Invisibility & ~42ms 5-Hop Budget: Cloud Armor WAF, IAP OBO/DPoP, Valkey token buckets, streaming Model Armor/DLP (~22ms), and AlloyDB FORCE RLS run one 80% reusable ADK codebase—blocking cross-tenant probes (HTTP 403) with 0 cross-tenant rows."
       ],
       "specs": [
         {
-          "stack": "Vertex AI Agent Engine (ADK, ARD, L1–L5 Memory) • Gemini 2.5 Pro (32k ContextCacheConfig)",
-          "sla": "Immutable 32k System Prefix Cache • 84.7% Net Per-Turn Token Cost Reduction • ~42ms 5-Hop Overhead",
+          "stack": "Vertex AI Agent Engine (ADK, ARD, L1–L5 Memory) • Gemini 3.8 Flash (32k ContextCacheConfig)",
+          "sla": "Immutable 32k System Prefix Cache • 89.1% Net Per-Turn Token Cost Reduction • ~42ms 5-Hop Overhead",
           "tag": "1. Platform Control Plane: Cymbal SaaS"
         },
         {
           "stack": "Managed Vertex AI Dedicated PT (SaaS SLA, 0 GPU Ops) vs. Air-Gapped GKE Gemma 3 27B (Customer GPU Nodes)",
-          "sla": "Tier: ENTERPRISE (600 RPM Silo) • 8,000 Thinking Budget • VPC-SC • Cloud KMS CMEK (finvault-silo-cmek)",
+          "sla": "Tier: ENTERPRISE (600 RPM Silo) • HIGH / 8k Token Cap • VPC-SC • Cloud KMS CMEK (finvault-silo-cmek)",
           "tag": "2. Regulated Silo: FinVault Hosting Trade-Off"
         },
         {
           "stack": "Entra ID OIDC • Per-User DPoP-Bound 3LO Vault ({tenant}:{user}) • ServiceNow & SharePoint MCP",
-          "sla": "Tier: STANDARD (120 RPM Pool) • 4,000 Thinking Cap • Eliminates Pooled Confused-Deputy Token Replay",
+          "sla": "Tier: STANDARD (120 RPM Pool) • 4,000 Output Cap • Eliminates Pooled Confused-Deputy Token Replay",
           "tag": "3. Pooled Tenant: RetailStream & 3LO Security"
         },
         {
@@ -102,7 +102,7 @@
       ]
     },
     {
-      "heading": "Agenda & 5-Part Series Navigation — 15-Slide Architecture Roadmap",
+      "heading": "Agenda & 5-Part Series Navigation — 15-Slide Executive Architecture Roadmap",
       "layout": "table",
       "tableHeaders": [
         "Series Part & Slides",
@@ -118,34 +118,34 @@
       ],
       "tableRows": [
         [
-          "Part 1 • Slides 1–4\nIsolation Topologies & Concepts",
+          "Part 1 • Slides 1–4\nIsolation Topologies",
           "The SaaS AI Architect's Dilemma: High-Density Pooled (A) vs. Sovereign Silos (B) vs. Dynamic Hybrid (C)",
           "How do we serve 950 commercial tenants and 50 regulated banks without margin erosion or 500-silo IaC sprawl?",
           "12-Dimension Decision Matrix • 80/20 ADK Code Reuse • {tenant}:{user} DPoP 3LO Vault"
         ],
         [
-          "Part 2 • Slides 5–9\n5-Hop Lifecycle & L1/L2 Blueprints",
+          "Part 2 • Slides 5, 6 & 8\n5-Hop Pipeline (L1/L2/L4)",
           "Securing the Agent Loop: L1 3 Logical Security Layers → L2 4 Physical VPC-SC Perimeters → L4 Wire STS JWT",
           "How do we enforce cryptographic tenant identity from edge ingress down to wire packets without per-hop KMS latency?",
           "<0.15ms Cached-JWKS STS JWT • ~3ms Valkey JTI Deny-List • ~42ms p95 5-Hop Control Plane"
         ],
         [
-          "Part 3 • Slide 10\nL3 Sequence & Breakers",
+          "Part 3 • Slide 7\nL3 Sequence & Breakers",
           "Operational Resilience: Merged L3 5-Actor UML Sequence, Fail-Closed Circuit Breakers & Valkey L1 Flushes",
           "What happens chronologically during a live turn—and how do we fail closed on RPM floods or CMEK key revocation?",
           "HTTP 401/403/429/422/423 Breakers • <5s Valkey SCAN+UNLINK (cache:{tenant}:*) • SET NX PX 5000 Recovery"
         ],
         [
-          "Part 4 • Slides 11–12\nL4 Wire Protocol & EAP Gap Controls",
+          "Part 4 • Slide 9\nMind the Gap (GAP-01..05)",
           "Compensating Controls for Vertex AI EAP: Custom Token Buckets, Envelope CMEK & Zero-PII BigQuery OTel FinOps",
           "How do we close current preview platform gaps today while guaranteeing clean retirement at native GCP GA?",
           "Feature-Flagged GAP-01..05 Sunset Hooks (feature-flagged native adapter) • BigQuery OTel Chargeback SQL"
         ],
         [
-          "Part 5 • Slides 13–15\nRetina UI Proofs & Well-Architected SLAs",
-          "Automating Compliance & Well-Architected SLAs: Live GCP Console Receipts, 5 Milestones & Forensic CI/CD Gate",
+          "Part 5 • Slides 10–11\nCI/CD Audit & SLAs",
+          "Automating Compliance & Well-Architected SLAs: Runtime & Commercial SaaS Receipts (GCP Console Pending 1-Tap SSO), 5 Milestones & Forensic CI/CD Gate",
           "How do we prove zero cross-tenant data bleed continuously in CI/CD and map every Well-Architected SLA to code?",
-          "13/13 Forensic + 107/107 Runtime Assertions PASS • 84.7% Token & 74% TCO Savings • <30s HA RTO"
+          "13/13 Forensic + 107/107 Runtime Assertions PASS • 89.1% Token & 74% TCO Savings • <30s HA RTO"
         ]
       ],
       "bullets": [],
@@ -182,7 +182,7 @@
         [
           "Network & perimeter isolation",
           "Shared VPC protected by Cloud Armor L7 WAF header stripping",
-          "Per-tenant VPC Service Controls (VPC-SC) perimeter + BeyondCorp mTLS pinning",
+          "Per-tenant VPC Service Controls (VPC-SC) perimeter + Google Cloud IAP mTLS pinning",
           "Unidirectional Private Service Connect (PSC) endpoints (`10.10.0.50` -> `/28` NAT subnet)"
         ],
         [
@@ -199,7 +199,7 @@
         ],
         [
           "Model hosting & FinOps COGS",
-          "Shared 32k prefix cache (`90%` discount -> `84.7%` net per-turn token savings)",
+          "Shared 32k prefix cache (`90%` discount -> `89.1%` net per-turn token savings)",
           "Managed Vertex AI Dedicated PT (0 K8s ops) or self-hosted GKE GPU node pool",
           "Blended portfolio (`74%` lower total cloud spend across 950 Std + 50 Ent tenants)"
         ],
@@ -244,7 +244,7 @@
         [
           "GAP-03 (Hop 3)\nPer-Tenant Rate Quotas",
           "Vertex AI quota system enforces regional project-level RPM/TPM limits rather than native per-tenant sub-quotas.",
-          "`Hop3ComputeFinOpsBulkhead` enforces atomic Lua token-bucket RPM limits in Valkey (`120` vs. `600` RPM, `HTTP 429 Retry-After`) + `4k/8k` thinking clamps.",
+          "`Hop3ComputeFinOpsBulkhead` enforces atomic Lua token-bucket RPM limits in Valkey (`120` vs. `600` RPM, `HTTP 429 Retry-After`) + `MEDIUM/4k` & `HIGH/8k` `thinkingLevel`/`maxOutputTokens` clamps.",
           "WS2 Test 6 PASS (`HTTP 429` on 500-RPM flood; budget clamped to 4k) • Sunset at GA: Feature-Flagged Native Hook"
         ],
         [
@@ -316,7 +316,7 @@
       "bullets": [
         "Hop 1 — Edge WAF & Cached JWKS Identity (~8ms p95): Cloud Armor strips spoofed X-Tenant-Id headers while IAP and IAM STS mint a KMS-signed OBO + DPoP TenantSecurityContext verified locally in <0.15ms.",
         "Hop 2 — Registry Discovery Filtering (~4ms p95): Vertex AI Agent Engine Registry evaluates tenant visibility metadata prior to tool binding, returning HTTP 403 on unauthorized private agents.",
-        "Hop 3 — gVisor Runtime, Valkey Bulkheads & Targeted Eviction (~3ms p95): Isolates L1–L5 Memory Bank namespaces, clamps RPM (120/600) and thinking budgets (4k/8k), and evicts only cache:{tenant_id}:* on CMEK revoke.",
+        "Hop 3 — gVisor Runtime, Valkey Bulkheads & Targeted Eviction (~3ms p95): Isolates L1–L5 Memory Bank namespaces, clamps RPM (120/600) and thinkingLevel / maxOutputTokens (4k/8k), and evicts only cache:{tenant_id}:* on CMEK revoke.",
         "Hop 4 — Streaming Model Armor & DLP (~22ms p95): Regional gRPC Model Armor + Sensitive Data Protection blocks prompt injection (HTTP 400) and semantic NLC violations (HTTP 422) with <2.5% impact on turn TTFT.",
         "Hop 5 — Transactional RLS, CMEK & BigQuery OTel SQL (~5ms p95): AlloyDB enforces SET LOCAL app.current_tenant_id Row-Level Security, Cloud KMS validates CMEK liveness (HTTP 423), and BigQuery aggregates zero-PII OTel spans."
       ]
@@ -327,7 +327,7 @@
       "bullets": [
         "1. Security, Privacy & Compliance: Enforces zero-trust defense-in-depth across all 5 hops—combining <0.15ms cached-JWKS DPoP verification, per-user 3LO vaults against Confused Deputy attacks, AlloyDB RLS, and revocable Cloud KMS CMEK.",
         "2. Reliability & Anti-Stampede Resilience: Prevents noisy-neighbor outages via Valkey token-bucket bulkheads, targeted SCAN+UNLINK cache:{tenant_id}:* eviction (0 peer cache misses), and Valkey SET NX single-flight lazy re-hydration.",
-        "3. Cost Optimization (FinOps): Shares a 32,000-token immutable system prefix in Gemini 2.5 Pro ContextCacheConfig (90% discount, 84.7% net token savings) and attributes COGS via BigQuery OTel SQL chargeback views.",
+        "3. Cost Optimization (FinOps): Shares a 32,768-token immutable system prefix in Gemini 3.8 Flash ContextCacheConfig (90% discount, 89.1% net token savings) and attributes COGS via BigQuery OTel SQL chargeback views.",
         "4. Operational Excellence & 5. Performance (~42ms p95): Reuses 80% of the Python ADK codebase across Terraform 2.6/3.6/4.6, bounds total 5-Hop control-plane overhead to ~42ms p95 (<2.5% TTFT), and gates CI/CD on 13/13 + 107/107 tests."
       ],
       "specs": [
@@ -342,8 +342,8 @@
           "tag": "Pillar 2: Reliability & Bulkheads"
         },
         {
-          "stack": "Gemini 2.5 Pro ContextCacheConfig (32k Prefix) • BigQuery OTel SQL Chargeback (GROUP BY tenant_id)",
-          "sla": "84.7% Net Per-Turn Token Savings • 74% Portfolio TCO Reduction (950 Pooled + 50 PSC Spokes)",
+          "stack": "Gemini 3.8 Flash ContextCacheConfig (32k Prefix) • BigQuery OTel SQL Chargeback (GROUP BY tenant_id)",
+          "sla": "89.1% Net Per-Turn Token Savings • 74% Portfolio TCO Reduction (950 Pooled + 50 PSC Spokes)",
           "tag": "Pillar 3: Cost Optimization"
         },
         {
@@ -362,7 +362,7 @@
       "talkingPoints": [
         "Blue Perimeter 1 (Routing Hub — Steps 1–3 / Hop 1): Global ALB, Cloud Armor header strip, and IAP OIDC/DPoP exchange (~8ms p95) mint the KMS-signed STS JWT and route by tenant tier.",
         "Green Perimeter 2 (Governance Hub — Hops 2 & 5): Discovery Engine ARD catalog filter (~4ms), Cloud KMS CMEK liveness, Security Command Center, and async BigQuery OTel FinOps (~5ms).",
-        "Yellow Perimeter 3 (Pattern A Pool — Steps 4–7 / Hops 3–5): gVisor (runsc) sandbox, Valkey RPM bulkheads (~3ms), Model Armor/DLP screening (Steps 4 & 6, ~22ms), Gemini 2.5 Pro 90% cache (Step 5) & AlloyDB RLS.",
+        "Yellow Perimeter 3 (Pattern A Pool — Steps 4–7 / Hops 3–5): gVisor (runsc) sandbox, Valkey RPM bulkheads (~3ms), Model Armor/DLP screening (Steps 4 & 6, ~22ms), Gemini 3.8 Flash 90% cache (Step 5) & AlloyDB RLS.",
         "Red Perimeter 4 (Pattern B Silos & Pattern C PSC Spokes): Per-tenant VPC-SC perimeters, IAM PAB, Managed Vertex Dedicated PT vs. Private GKE Gemma 3 27B GPUs, <60s CMEK kill-switch & /28 PSC NAT.",
         "Unified L1-to-L2 Taxonomy: Slide 5's 3 Logical Security Layers map cleanly onto these 4 Physical VPC-SC Network Perimeters with ~42ms total p95 control-plane overhead (<2.5% of turn TTFT)."
       ]
@@ -375,14 +375,14 @@
         "Extends the canonical Google Cloud Architecture Center hub-and-spoke diagram with 5 mandatory cryptographic tenant isolation hops.",
         "Zone 1 (Hops 1 & 2): Cloud Armor, IAP OBO/DPoP (<0.15ms cached JWKS verify), and Agent Engine Registry authenticate callers and prune unauthorized tools before model invocation.",
         "Zone 2 (Hop 5 FinOps & 3LO Vault): DPoP-bound {tenant}:{user} 3LO Auth Broker prevents Confused Deputy calls while BigQuery OTel SQL attributes per-tenant token COGS.",
-        "Zone 3 (FinVault Enterprise Workload): Executes with an 8,000-token thinking budget, Managed Dedicated PT or GKE Gemma 3, OCC semantic NLCs, IBAN/SWIFT SDP masking, and Workspace/Jira 3LO.",
-        "Zone 4 (RetailStream Standard Workload): Executes with a 4,000-token thinking cap, PCI-DSS PAN masking, Entra ID/ServiceNow 3LO step-up consent, and AlloyDB FORCE RLS."
+        "Zone 3 (FinVault Enterprise Workload): Executes with HIGH thinkingLevel (8,000 maxOutputTokens), Managed Dedicated PT or GKE Gemma 3, OCC semantic NLCs, IBAN/SWIFT SDP masking, and Workspace/Jira 3LO.",
+        "Zone 4 (RetailStream Standard Workload): Executes with a MEDIUM thinkingLevel (4,000 maxOutputTokens) cap, PCI-DSS PAN masking, Entra ID/ServiceNow 3LO step-up consent, and AlloyDB FORCE RLS."
       ]
     }
   ],
   "takeaways": [
     "1. Part 1 (Slides 1–4) — Isolation Topologies & 5-Hop Core: Clone core-cymbal-agent/ (27-File Workbench) and deploy core-cymbal-agent/ with <0.15ms cached-JWKS STS JWT verification, ~3ms Valkey JTI deny-list, and {tenant}:{user} 3LO token vaulting.",
-    "2. Part 2 (Slides 5, 6 & 8) — 5-Hop Pipeline & Pattern A Pool: Apply Terraform 2.6 (2.6-terraform-starter/), certify ~42ms p95 5-Hop overhead (~22ms DLP), ~1.8s cold / ~420ms warm TTFT, 84.7% token savings (90% 32k prefix cache), and pass run_breach_simulations.py (10/10 PASS).",
+    "2. Part 2 (Slides 5, 6 & 8) — 5-Hop Pipeline & Pattern A Pool: Apply Terraform 2.6 (2.6-terraform-starter/), certify ~42ms p95 5-Hop overhead (~22ms DLP), ~1.8s cold / ~420ms warm TTFT, 89.1% token savings (90% 32k prefix cache), and pass run_breach_simulations.py (10/10 PASS).",
     "3. Part 3 (Slide 7) — Circuit Breakers, CMEK & Valkey L1 Flush: Apply Terraform 3.6 (3.6-terraform-silo-blueprint/), certify gVisor sandbox, <60s HTTP 423 CMEK kill-switch, <5s Valkey SCAN+UNLINK (cache:{tenant}:*), SET NX PX 5000 recovery, and <30s cross-region RTO (6/6 PASS).",
     "4. Part 4 (Slide 9) — EAP Gap Controls & Pattern C Hybrid FinOps: Apply Terraform 4.6 (4.6-terraform-hybrid-psc-blueprint/), certify 74% portfolio TCO reduction (950 Pooled + 50 PSC Spokes), feature-flagged GAP-01..05 sunset hooks, BigQuery OTel FinOps SQL, and 0ms PSC cutover (4/4 PASS).",
     "5. Part 5 (Slides 10–11) — CI/CD Forensic Audit & Day-2 Operations: Enforce python3 -B scripts/run_deep_forensic_audit.py (13/13 PASS • 107/107 Assertions) and Cloud Logging gate (jsonPayload.rls_cross_tenant_rows=0) across WS1–WS5 in CI/CD."
@@ -395,7 +395,7 @@
     },
     {
       "stack": "workstream-2-pattern-a-pooled/2.6-terraform-starter/ • run_breach_simulations.py",
-      "sla": "SLA: ~42ms p95 5-Hop • ~1.8s Cold / ~420ms Warm TTFT • 84.7% Token Savings • 10/10 PASS (Slides 5, 6, 8)",
+      "sla": "SLA: ~42ms p95 5-Hop • ~1.8s Cold / ~420ms Warm TTFT • 89.1% Token Savings • 10/10 PASS (Slides 5, 6, 8)",
       "tag": "Part 2: 5-Hop & Pattern A (Slides 5, 6, 8)"
     },
     {
@@ -418,102 +418,138 @@
   "slideSpeakerNotes": [
     {
       "slide": 1,
-      "totalSlides": 11,
-      "title": "Part 1 (Slide 1) — Executive Cover & 5-Part Deep-Dive Map",
-      "whyHere": "Welcome everyone. We have structured this streamlined eleven-slide reference architecture briefing into a cohesive five-part engineering series roadmap so you can trace the SaaS AI Dilemma from isolation topologies all the way to automated CI/CD forensic compliance.",
+      "totalSlides": 15,
+      "title": "Act I (Slide 1) — Executive Title Cover & 4-Act Briefing Map",
+      "whyHere": "Welcome everyone. We have structured this fifteen-slide flagship briefing for Blog 1 into a clear four-act progression—moving from the real multi-tenant problem and conceptual model, through our process and L1-to-L4 technical diagrams, to live dual-plane proofs, quantified benefits, and your 30-60-90 day call to action.",
       "whatIsHappening": "In this session, we are walking through our foundational reference architecture for running multi-tenant AI agents on Google Cloud. Right upfront, we define our three core building blocks using operating-system primitives—Google’s Agent Development Kit (ADK) as our OS syscall scheduler, the Model Context Protocol (MCP) as our POSIX tool driver ABI, and Agent Registry and Discovery (ARD) as our chrooted virtual filesystem catalog—and show how we solve the SaaS AI Architect’s Dilemma: avoiding the margin erosion of spinning up dedicated cloud projects for every small customer while preventing tool-schema data leaks and noisy-neighbor rate starvation in a shared pool.",
-      "whatComesNext": "With our thesis defined on Slide 1, let's turn to Slide 2 for our Agenda and 5-Part Series Navigation table so you can see the exact macro-to-micro flow of the deck.",
-      "fullText": "Welcome everyone. We have structured this streamlined eleven-slide reference architecture briefing into a cohesive five-part engineering series roadmap so you can trace the SaaS AI Dilemma from isolation topologies all the way to automated CI/CD forensic compliance.\n\nIn this session, we are walking through our foundational reference architecture for running multi-tenant AI agents on Google Cloud. Right upfront, we define our three core building blocks using operating-system primitives—Google’s Agent Development Kit (ADK) as our OS syscall scheduler, the Model Context Protocol (MCP) as our POSIX tool driver ABI, and Agent Registry and Discovery (ARD) as our chrooted virtual filesystem catalog—and show how we solve the SaaS AI Architect’s Dilemma: avoiding the margin erosion of spinning up dedicated cloud projects for every small customer while preventing tool-schema data leaks and noisy-neighbor rate starvation in a shared pool.\n\nWith our thesis defined on Slide 1, let's turn to Slide 2 for our Agenda and 5-Part Series Navigation table so you can see the exact macro-to-micro flow of the deck."
+      "whatComesNext": "With that roadmap in mind, let's turn to Slide 2 to review our agenda and how this deck maps directly to the five-part engineering series.",
+      "fullText": "Welcome everyone. We have structured this fifteen-slide flagship briefing for Blog 1 into a clear four-act progression—moving from the real multi-tenant problem and conceptual model, through our process and L1-to-L4 technical diagrams, to live dual-plane proofs, quantified benefits, and your 30-60-90 day call to action.\n\nIn this session, we are walking through our foundational reference architecture for running multi-tenant AI agents on Google Cloud. Right upfront, we define our three core building blocks using operating-system primitives—Google’s Agent Development Kit (ADK) as our OS syscall scheduler, the Model Context Protocol (MCP) as our POSIX tool driver ABI, and Agent Registry and Discovery (ARD) as our chrooted virtual filesystem catalog—and show how we solve the SaaS AI Architect’s Dilemma: avoiding the margin erosion of spinning up dedicated cloud projects for every small customer while preventing tool-schema data leaks and noisy-neighbor rate starvation in a shared pool.\n\nWith that roadmap in mind, let's turn to Slide 2 to review our agenda and how this deck maps directly to the five-part engineering series."
     },
     {
       "slide": 2,
-      "totalSlides": 11,
-      "title": "Part 1 (Slide 2) — Agenda & 5-Part Series Navigation (Table of Contents)",
-      "whyHere": "Following our executive cover on Slide 1, Slide 2 provides an explicit Table of Contents mapping all eleven slides across the five-part blog series and our L1-to-L4 architectural hierarchy.",
+      "totalSlides": 15,
+      "title": "Act I (Slide 2) — Agenda & 5-Part Series Navigation",
+      "whyHere": "Slide 2 serves as our table of contents, connecting every section of our reference architecture to the corresponding deep-dive workstream.",
       "whatIsHappening": "This Table of Contents maps our streamlined eleven-slide deck directly to the five-part engineering blog series and follows a strict macro-to-micro hierarchy. Part 1 covers the SaaS AI Architect’s Dilemma and isolation topologies across Slides 1 through 4. Part 2 establishes the five-hop cryptographic pipeline from L1 Logical Security Layers on Slide 5 to L2 Physical Network Perimeters on Slide 6 and L4 Wire Packet transformation on Slide 8. Part 3 on Slide 7 merges our L3 chronological UML sequence with fail-closed circuit breakers, sub-five-second Valkey L1 cache eviction, and single-flight recovery. Part 4 on Slide 9 documents our five EAP product gap controls, and Part 5 across Slides 10 and 11 pairs live Google Cloud Console proof with our merged Well-Architected SLA scorecard and runnable GitHub milestones.",
-      "whatComesNext": "Now that we have the full eleven-slide roadmap in front of us, let's turn to Slide 3 to meet the competing customer personas whose business and regulatory constraints drive this architecture.",
-      "fullText": "Following our executive cover on Slide 1, Slide 2 provides an explicit Table of Contents mapping all eleven slides across the five-part blog series and our L1-to-L4 architectural hierarchy.\n\nThis Table of Contents maps our streamlined eleven-slide deck directly to the five-part engineering blog series and follows a strict macro-to-micro hierarchy. Part 1 covers the SaaS AI Architect’s Dilemma and isolation topologies across Slides 1 through 4. Part 2 establishes the five-hop cryptographic pipeline from L1 Logical Security Layers on Slide 5 to L2 Physical Network Perimeters on Slide 6 and L4 Wire Packet transformation on Slide 8. Part 3 on Slide 7 merges our L3 chronological UML sequence with fail-closed circuit breakers, sub-five-second Valkey L1 cache eviction, and single-flight recovery. Part 4 on Slide 9 documents our five EAP product gap controls, and Part 5 across Slides 10 and 11 pairs live Google Cloud Console proof with our merged Well-Architected SLA scorecard and runnable GitHub milestones.\n\nNow that we have the full eleven-slide roadmap in front of us, let's turn to Slide 3 to meet the competing customer personas whose business and regulatory constraints drive this architecture."
+      "whatComesNext": "Now let's turn to Slide 3 to examine the real customer problem and competing tenant profiles that drive every architectural decision.",
+      "fullText": "Slide 2 serves as our table of contents, connecting every section of our reference architecture to the corresponding deep-dive workstream.\n\nThis Table of Contents maps our streamlined eleven-slide deck directly to the five-part engineering blog series and follows a strict macro-to-micro hierarchy. Part 1 covers the SaaS AI Architect’s Dilemma and isolation topologies across Slides 1 through 4. Part 2 establishes the five-hop cryptographic pipeline from L1 Logical Security Layers on Slide 5 to L2 Physical Network Perimeters on Slide 6 and L4 Wire Packet transformation on Slide 8. Part 3 on Slide 7 merges our L3 chronological UML sequence with fail-closed circuit breakers, sub-five-second Valkey L1 cache eviction, and single-flight recovery. Part 4 on Slide 9 documents our five EAP product gap controls, and Part 5 across Slides 10 and 11 pairs live Google Cloud Console proof with our merged Well-Architected SLA scorecard and runnable GitHub milestones.\n\nNow let's turn to Slide 3 to examine the real customer problem and competing tenant profiles that drive every architectural decision."
     },
     {
       "slide": 3,
-      "totalSlides": 11,
-      "title": "Part 1 (Slide 3) — Competing Enterprise Tenants & Workload Personas",
-      "whyHere": "Stepping into Part 1 from our Agenda on Slide 2, we start with the customer personas first—contrasting regulated banking workloads against high-density commercial SaaS workloads.",
-      "whatIsHappening": "Here you can see that SaaS AI tension illustrated through two competing tenant personas on our Cymbal platform. On one side, FinVault Bank is a regulated financial institution at six hundred requests per minute that requires customer-controlled encryption keys and chooses between Managed Vertex AI Dedicated Provisioned Throughput for zero-ops Gemini 2.5 Pro capacity or self-managed, air-gapped Gemma 3 27B on Private GKE with zero internet egress. On the other side, RetailStream Corp runs on Microsoft Entra ID and ServiceNow at one hundred twenty requests per minute, where we isolate per-user Three-Legged OAuth tokens inside tenant-and-user DPoP-bound vaults to eliminate the Confused Deputy vulnerability across pooled workers.",
-      "whatComesNext": "Now that we see what FinVault Bank and RetailStream Corp require on Slide 3, let's turn to Slide 4 to compare our three isolation topologies across twelve architectural and operational dimensions.",
-      "fullText": "Stepping into Part 1 from our Agenda on Slide 2, we start with the customer personas first—contrasting regulated banking workloads against high-density commercial SaaS workloads.\n\nHere you can see that SaaS AI tension illustrated through two competing tenant personas on our Cymbal platform. On one side, FinVault Bank is a regulated financial institution at six hundred requests per minute that requires customer-controlled encryption keys and chooses between Managed Vertex AI Dedicated Provisioned Throughput for zero-ops Gemini 2.5 Pro capacity or self-managed, air-gapped Gemma 3 27B on Private GKE with zero internet egress. On the other side, RetailStream Corp runs on Microsoft Entra ID and ServiceNow at one hundred twenty requests per minute, where we isolate per-user Three-Legged OAuth tokens inside tenant-and-user DPoP-bound vaults to eliminate the Confused Deputy vulnerability across pooled workers.\n\nNow that we see what FinVault Bank and RetailStream Corp require on Slide 3, let's turn to Slide 4 to compare our three isolation topologies across twelve architectural and operational dimensions."
+      "totalSlides": 15,
+      "title": "Act I (Slide 3) — The Real Problem: Customer Use Cases & Tenant Tension",
+      "whyHere": "We always start with the customer problem first: why naive SaaS multi-tenancy fails for stateful AI agents, and why single-tenant silos destroy unit economics.",
+      "whatIsHappening": "Here you can see that SaaS AI tension illustrated through two competing tenant personas on our Cymbal platform. On one side, FinVault Bank is a regulated financial institution at six hundred requests per minute that requires customer-controlled encryption keys and chooses between Managed Vertex AI Dedicated Provisioned Throughput for zero-ops Gemini 3.8 Flash capacity or self-managed, air-gapped Gemma 3 27B on Private GKE with zero internet egress. On the other side, RetailStream Corp runs on Microsoft Entra ID and ServiceNow at one hundred twenty requests per minute, where we isolate per-user Three-Legged OAuth tokens inside tenant-and-user DPoP-bound vaults to eliminate the Confused Deputy vulnerability across pooled workers.",
+      "whatComesNext": "To resolve that tension without maintaining two separate codebases, let's look at our Conceptual Diagram on Slide 4.",
+      "fullText": "We always start with the customer problem first: why naive SaaS multi-tenancy fails for stateful AI agents, and why single-tenant silos destroy unit economics.\n\nHere you can see that SaaS AI tension illustrated through two competing tenant personas on our Cymbal platform. On one side, FinVault Bank is a regulated financial institution at six hundred requests per minute that requires customer-controlled encryption keys and chooses between Managed Vertex AI Dedicated Provisioned Throughput for zero-ops Gemini 3.8 Flash capacity or self-managed, air-gapped Gemma 3 27B on Private GKE with zero internet egress. On the other side, RetailStream Corp runs on Microsoft Entra ID and ServiceNow at one hundred twenty requests per minute, where we isolate per-user Three-Legged OAuth tokens inside tenant-and-user DPoP-bound vaults to eliminate the Confused Deputy vulnerability across pooled workers.\n\nTo resolve that tension without maintaining two separate codebases, let's look at our Conceptual Diagram on Slide 4."
     },
     {
       "slide": 4,
-      "totalSlides": 11,
-      "title": "Part 1 (Slide 4) — 12-Dimension Multi-Tenant Isolation Decision Matrix",
-      "whyHere": "Building directly on the customer personas from Slide 3, this matrix closes Part 1 by comparing Pooled (Pattern A), Sovereign Silos (Pattern B), and Dynamic Hybrid (Pattern C).",
-      "whatIsHappening": "To serve both ends of that customer spectrum, this twelve-dimension matrix compares Pattern A, our High-Density Shared Pool; Pattern B, our Zero-Trust Sovereign Silos; and Pattern C, our Dynamic Hybrid Bridge. Notice the operational fleet-scale trade-off in the table: managing five hundred enterprise customers in Pattern B means maintaining five hundred separate VPC Service Controls perimeters, KMS keys, and AlloyDB instances—which is why Pattern C hosts nine hundred fifty standard tenants in the shared pool and reserves fifty Private Service Connect spokes for regulated contracts. Also note our kill-switch distinction: while Google Cloud KMS key state propagation can take up to sixty seconds across storage, Hop 3 runs a targeted Valkey SCAN and UNLINK of the tenant’s cache prefix in under five seconds to enforce our HTTP 423 lock SLA.",
-      "whatComesNext": "With our three isolation topologies defined in Part 1, let's enter Part 2 on Slide 5 at Level 1 Logical—examining our three logical security layers before zooming into the four physical VPC-SC network perimeters on Slide 6.",
-      "fullText": "Building directly on the customer personas from Slide 3, this matrix closes Part 1 by comparing Pooled (Pattern A), Sovereign Silos (Pattern B), and Dynamic Hybrid (Pattern C).\n\nTo serve both ends of that customer spectrum, this twelve-dimension matrix compares Pattern A, our High-Density Shared Pool; Pattern B, our Zero-Trust Sovereign Silos; and Pattern C, our Dynamic Hybrid Bridge. Notice the operational fleet-scale trade-off in the table: managing five hundred enterprise customers in Pattern B means maintaining five hundred separate VPC Service Controls perimeters, KMS keys, and AlloyDB instances—which is why Pattern C hosts nine hundred fifty standard tenants in the shared pool and reserves fifty Private Service Connect spokes for regulated contracts. Also note our kill-switch distinction: while Google Cloud KMS key state propagation can take up to sixty seconds across storage, Hop 3 runs a targeted Valkey SCAN and UNLINK of the tenant’s cache prefix in under five seconds to enforce our HTTP 423 lock SLA.\n\nWith our three isolation topologies defined in Part 1, let's enter Part 2 on Slide 5 at Level 1 Logical—examining our three logical security layers before zooming into the four physical VPC-SC network perimeters on Slide 6."
+      "totalSlides": 15,
+      "title": "Act I (Slide 4) — Conceptual Diagram: 80% Reusable 5-Hop Core vs. 20% Perimeter Delta",
+      "whyHere": "This conceptual diagram illustrates our core architectural thesis: decoupling the eighty-percent reusable five-hop agentic core from the twenty-percent per-tenant infrastructure perimeter.",
+      "whatIsHappening": "On the left, competing commercial and regulated tenants enter the same core-cymbal-agent codebase in the center. Every request traverses the exact same five governance hops—Edge STS, ARD Catalog, Valkey Bulkhead, Model Armor, and AlloyDB RLS—while feature-flagged native adapters future-proof EAP capabilities. On the right, per-tenant infrastructure configuration deploys each customer into Pattern A Shared Pool, Pattern B Sovereign Silos, or Pattern C Dynamic Hybrid PSC.",
+      "whatComesNext": "Now that we see the conceptual separation of concerns, let's trace the end-to-end runtime process lifecycle on Slide 5.",
+      "fullText": "This conceptual diagram illustrates our core architectural thesis: decoupling the eighty-percent reusable five-hop agentic core from the twenty-percent per-tenant infrastructure perimeter.\n\nOn the left, competing commercial and regulated tenants enter the same core-cymbal-agent codebase in the center. Every request traverses the exact same five governance hops—Edge STS, ARD Catalog, Valkey Bulkhead, Model Armor, and AlloyDB RLS—while feature-flagged native adapters future-proof EAP capabilities. On the right, per-tenant infrastructure configuration deploys each customer into Pattern A Shared Pool, Pattern B Sovereign Silos, or Pattern C Dynamic Hybrid PSC.\n\nNow that we see the conceptual separation of concerns, let's trace the end-to-end runtime process lifecycle on Slide 5."
     },
     {
       "slide": 5,
-      "totalSlides": 11,
-      "title": "Part 2 (Slide 5) — L1 Logical: Reference Taxonomy — 3 Logical Security Layers & Signed STS JWT",
-      "whyHere": "Opening Part 2 on securing the agent loop, Slide 5 establishes the Level 1 Logical view—organizing our architecture into three logical security layers so it maps cleanly onto the four physical VPC-SC perimeters on Slide 6.",
-      "whatIsHappening": "Before we inspect individual cloud services, this Level 1 diagram organizes our entire architecture into three logical security layers from left to right—preventing any terminology clash with the four physical VPC-SC network perimeters on the next slide. Layer 1 on the left verifies federated identity and DPoP proofs at the Cloud Armor and IAP edge. Layer 2 in the center runs our Five-Hop ADK Control Plane, where regional gRPC callouts keep Hop 4 inline Model Armor and Cloud DLP inspection to roughly twenty-two milliseconds and total five-hop control-plane overhead to about forty-two milliseconds at p95. And to prevent security drift during a five-minute STS JWT window, every hop checks a three-millisecond Valkey JTI and CMEK revocation deny-list before routing into Layer 3 on the right.",
-      "whatComesNext": "Now that we have the three logical security layers in mind, let's zoom directly into Level 2 Physical on Slide 6 to see how those layers map onto our fifty-six-shape Google Cloud blueprint across four physical VPC-SC network perimeters.",
-      "fullText": "Opening Part 2 on securing the agent loop, Slide 5 establishes the Level 1 Logical view—organizing our architecture into three logical security layers so it maps cleanly onto the four physical VPC-SC perimeters on Slide 6.\n\nBefore we inspect individual cloud services, this Level 1 diagram organizes our entire architecture into three logical security layers from left to right—preventing any terminology clash with the four physical VPC-SC network perimeters on the next slide. Layer 1 on the left verifies federated identity and DPoP proofs at the Cloud Armor and IAP edge. Layer 2 in the center runs our Five-Hop ADK Control Plane, where regional gRPC callouts keep Hop 4 inline Model Armor and Cloud DLP inspection to roughly twenty-two milliseconds and total five-hop control-plane overhead to about forty-two milliseconds at p95. And to prevent security drift during a five-minute STS JWT window, every hop checks a three-millisecond Valkey JTI and CMEK revocation deny-list before routing into Layer 3 on the right.\n\nNow that we have the three logical security layers in mind, let's zoom directly into Level 2 Physical on Slide 6 to see how those layers map onto our fifty-six-shape Google Cloud blueprint across four physical VPC-SC network perimeters."
+      "totalSlides": 15,
+      "title": "Act I (Slide 5) — Process Diagram: End-to-End 5-Hop Governance & FinOps Lifecycle",
+      "whyHere": "Slide 5 translates our conceptual model into a deterministic six-stage process diagram with explicit latency budgets and fail-closed circuit breakers.",
+      "whatIsHappening": "Across Stages 1 through 5, a customer turn completes in roughly forty-two milliseconds of control-plane overhead: eight milliseconds at Hop 1 Edge STS, four milliseconds at Hop 2 ARD scoping, three milliseconds at Hop 3 Valkey revocation check, twenty-two milliseconds at Hop 4 regional Model Armor and Cloud DLP, and five milliseconds at Hop 5 AlloyDB RLS—followed by asynchronous Stage 6 OpenTelemetry export to BigQuery. Below, four red circuit breakers guarantee fail-closed HTTP 401, 403, 429, 422, and 423 enforcement.",
+      "whatComesNext": "With the conceptual and process flows clear, let's enter Act II on Slide 6 to examine our Level 1 Logical Security Layers.",
+      "fullText": "Slide 5 translates our conceptual model into a deterministic six-stage process diagram with explicit latency budgets and fail-closed circuit breakers.\n\nAcross Stages 1 through 5, a customer turn completes in roughly forty-two milliseconds of control-plane overhead: eight milliseconds at Hop 1 Edge STS, four milliseconds at Hop 2 ARD scoping, three milliseconds at Hop 3 Valkey revocation check, twenty-two milliseconds at Hop 4 regional Model Armor and Cloud DLP, and five milliseconds at Hop 5 AlloyDB RLS—followed by asynchronous Stage 6 OpenTelemetry export to BigQuery. Below, four red circuit breakers guarantee fail-closed HTTP 401, 403, 429, 422, and 423 enforcement.\n\nWith the conceptual and process flows clear, let's enter Act II on Slide 6 to examine our Level 1 Logical Security Layers."
     },
     {
       "slide": 6,
-      "totalSlides": 11,
-      "title": "Part 2 (Slide 6) — L2 Physical: 4 Physical Network Perimeters (VPC-SC Boundaries) — Figure 1 Blueprint",
-      "whyHere": "Following our strict macro-to-micro L1-to-L2 progression from Slide 5, Slide 6 maps the three logical security layers onto concrete Google Cloud services across four color-coded physical VPC Service Controls perimeters.",
-      "whatIsHappening": "Zooming directly from those three logical security layers into the Level 2 physical topology, Figure 1 maps our fifty-six-shape Google Cloud blueprint across four physical VPC Service Controls network perimeters. Requests enter Blue Perimeter 1 (the Routing Hub for Steps 1 through 3 and Hop 1) at the top, traverse Green Perimeter 2 (the Five-Hop Governance Hub for Hops 2 and 5) in the center, and execute inside either Yellow Perimeter 3 (the Pattern A Shared Pool Spoke for Steps 4 through 7 and Hops 3 through 5) on the left or Red Perimeter 4 (the Pattern B Sovereign Silo and Pattern C PSC Spoke) on the right—with gVisor kernel sandboxing and composite tenant-user-session keys isolating every worker.",
-      "whatComesNext": "With both the L1 logical layers and L2 physical perimeters established, let's step into Level 3 Process on Slide 7 to trace a live request chronologically across all five actors alongside our merged fail-closed circuit breakers and Valkey L1 cache recovery.",
-      "fullText": "Following our strict macro-to-micro L1-to-L2 progression from Slide 5, Slide 6 maps the three logical security layers onto concrete Google Cloud services across four color-coded physical VPC Service Controls perimeters.\n\nZooming directly from those three logical security layers into the Level 2 physical topology, Figure 1 maps our fifty-six-shape Google Cloud blueprint across four physical VPC Service Controls network perimeters. Requests enter Blue Perimeter 1 (the Routing Hub for Steps 1 through 3 and Hop 1) at the top, traverse Green Perimeter 2 (the Five-Hop Governance Hub for Hops 2 and 5) in the center, and execute inside either Yellow Perimeter 3 (the Pattern A Shared Pool Spoke for Steps 4 through 7 and Hops 3 through 5) on the left or Red Perimeter 4 (the Pattern B Sovereign Silo and Pattern C PSC Spoke) on the right—with gVisor kernel sandboxing and composite tenant-user-session keys isolating every worker.\n\nWith both the L1 logical layers and L2 physical perimeters established, let's step into Level 3 Process on Slide 7 to trace a live request chronologically across all five actors alongside our merged fail-closed circuit breakers and Valkey L1 cache recovery."
+      "totalSlides": 15,
+      "title": "Act II (Slide 6) — Logical Diagram (L1): 3 Logical Security Layers",
+      "whyHere": "Opening Act II at Level 1 of our macro-to-micro zoom, Slide 6 organizes the platform into three logical security layers before we map physical VPC Service Controls perimeters.",
+      "whatIsHappening": "Before we inspect individual cloud services, this Level 1 diagram organizes our entire architecture into three logical security layers from left to right—preventing any terminology clash with the four physical VPC-SC network perimeters on the next slide. Layer 1 on the left verifies federated identity and DPoP proofs at the Cloud Armor and IAP edge. Layer 2 in the center runs our Five-Hop ADK Control Plane, where regional gRPC callouts keep Hop 4 inline Model Armor and Cloud DLP inspection to roughly twenty-two milliseconds and total five-hop control-plane overhead to about forty-two milliseconds at p95. And to prevent security drift during a five-minute STS JWT window, every hop checks a three-millisecond Valkey JTI and CMEK revocation deny-list before routing into Layer 3 on the right.",
+      "whatComesNext": "Before we inspect the physical blueprints, let's review our twelve-dimension Pattern A, B, and C decision matrix on Slide 7.",
+      "fullText": "Opening Act II at Level 1 of our macro-to-micro zoom, Slide 6 organizes the platform into three logical security layers before we map physical VPC Service Controls perimeters.\n\nBefore we inspect individual cloud services, this Level 1 diagram organizes our entire architecture into three logical security layers from left to right—preventing any terminology clash with the four physical VPC-SC network perimeters on the next slide. Layer 1 on the left verifies federated identity and DPoP proofs at the Cloud Armor and IAP edge. Layer 2 in the center runs our Five-Hop ADK Control Plane, where regional gRPC callouts keep Hop 4 inline Model Armor and Cloud DLP inspection to roughly twenty-two milliseconds and total five-hop control-plane overhead to about forty-two milliseconds at p95. And to prevent security drift during a five-minute STS JWT window, every hop checks a three-millisecond Valkey JTI and CMEK revocation deny-list before routing into Layer 3 on the right.\n\nBefore we inspect the physical blueprints, let's review our twelve-dimension Pattern A, B, and C decision matrix on Slide 7."
     },
     {
       "slide": 7,
-      "totalSlides": 11,
-      "title": "Part 3 (Slide 7) — L3 Process: 5-Actor UML Sequence, Fail-Closed Circuit Breakers & Stampede Recovery",
-      "whyHere": "Moving from L2 Physical on Slide 6 to L3 Process on Slide 7, this unified diagram combines our chronological five-actor request sequence with our fail-closed circuit breakers, sub-five-second Valkey SCAN+UNLINK eviction, and SET NX PX 5000 single-flight recovery.",
-      "whatIsHappening": "Now that we have the L1 logical layers and L2 physical perimeters in place, this merged Level 3 process and operational resilience slide traces both the chronological happy path across five actors and every fail-closed circuit breaker in one unified view. Steps 1 through 6 trace a live customer turn in roughly forty-two milliseconds of control-plane overhead. And in the red fail-closed frame at the bottom, spoofed headers or ~3ms JTI revocations return HTTP 401 or 403, rate bursts over 120 or 600 RPM return HTTP 429 with Retry-After jitter, and a revoked Cloud KMS key triggers an HTTP 423 lock with a sub-five-second targeted Valkey SCAN and UNLINK of cache:{tenant}:*—followed by single-flight SET NX PX 5000 lazy re-hydration from AlloyDB RLS when the key is restored.",
-      "whatComesNext": "Having watched the request and its circuit breakers execute across Hops 1 through 5 on Slide 7, let's zoom all the way down to Level 4 Wire on Slide 8 to inspect the exact JSON packet and KMS-signed STS JWT on the wire.",
-      "fullText": "Moving from L2 Physical on Slide 6 to L3 Process on Slide 7, this unified diagram combines our chronological five-actor request sequence with our fail-closed circuit breakers, sub-five-second Valkey SCAN+UNLINK eviction, and SET NX PX 5000 single-flight recovery.\n\nNow that we have the L1 logical layers and L2 physical perimeters in place, this merged Level 3 process and operational resilience slide traces both the chronological happy path across five actors and every fail-closed circuit breaker in one unified view. Steps 1 through 6 trace a live customer turn in roughly forty-two milliseconds of control-plane overhead. And in the red fail-closed frame at the bottom, spoofed headers or ~3ms JTI revocations return HTTP 401 or 403, rate bursts over 120 or 600 RPM return HTTP 429 with Retry-After jitter, and a revoked Cloud KMS key triggers an HTTP 423 lock with a sub-five-second targeted Valkey SCAN and UNLINK of cache:{tenant}:*—followed by single-flight SET NX PX 5000 lazy re-hydration from AlloyDB RLS when the key is restored.\n\nHaving watched the request and its circuit breakers execute across Hops 1 through 5 on Slide 7, let's zoom all the way down to Level 4 Wire on Slide 8 to inspect the exact JSON packet and KMS-signed STS JWT on the wire."
+      "totalSlides": 15,
+      "title": "Act II (Slide 7) — 12-Dimension Pattern A / B / C Architectural Decision Matrix",
+      "whyHere": "Slide 7 gives architects and FinOps leads a concrete twelve-dimension rubric to assign each tenant to Pattern A, Pattern B, or Pattern C.",
+      "whatIsHappening": "To serve both ends of that customer spectrum, this twelve-dimension matrix compares Pattern A, our High-Density Shared Pool; Pattern B, our Zero-Trust Sovereign Silos; and Pattern C, our Dynamic Hybrid Bridge. Notice the operational fleet-scale trade-off in the table: managing five hundred enterprise customers in Pattern B means maintaining five hundred separate VPC Service Controls perimeters, KMS keys, and AlloyDB instances—which is why Pattern C hosts nine hundred fifty standard tenants in the shared pool and reserves fifty Private Service Connect spokes for regulated contracts. Also note our kill-switch distinction: while Google Cloud KMS key state propagation can take up to sixty seconds across storage, Hop 3 runs a targeted Valkey SCAN and UNLINK of the tenant’s cache prefix in under five seconds to enforce our HTTP 423 lock SLA.",
+      "whatComesNext": "Now let's zoom into Level 2 physical topology on Slide 8 with Figure 1: our four-zone Hub-and-Spoke VPC-SC taxonomy blueprint.",
+      "fullText": "Slide 7 gives architects and FinOps leads a concrete twelve-dimension rubric to assign each tenant to Pattern A, Pattern B, or Pattern C.\n\nTo serve both ends of that customer spectrum, this twelve-dimension matrix compares Pattern A, our High-Density Shared Pool; Pattern B, our Zero-Trust Sovereign Silos; and Pattern C, our Dynamic Hybrid Bridge. Notice the operational fleet-scale trade-off in the table: managing five hundred enterprise customers in Pattern B means maintaining five hundred separate VPC Service Controls perimeters, KMS keys, and AlloyDB instances—which is why Pattern C hosts nine hundred fifty standard tenants in the shared pool and reserves fifty Private Service Connect spokes for regulated contracts. Also note our kill-switch distinction: while Google Cloud KMS key state propagation can take up to sixty seconds across storage, Hop 3 runs a targeted Valkey SCAN and UNLINK of the tenant’s cache prefix in under five seconds to enforce our HTTP 423 lock SLA.\n\nNow let's zoom into Level 2 physical topology on Slide 8 with Figure 1: our four-zone Hub-and-Spoke VPC-SC taxonomy blueprint."
     },
     {
       "slide": 8,
-      "totalSlides": 11,
-      "title": "Part 2 (Slide 8) — L4 Wire: Spoofed Header Stripping & <0.15ms Cached-JWKS STS JWT",
-      "whyHere": "Completing our L1 → L2 → L3 → L4 macro-to-micro hierarchy, Slide 8 inspects the raw JSON payload on the wire before and after Hop 1 token exchange.",
-      "whatIsHappening": "Zooming all the way down to Level 4, here we open up the wire packet traveling across those hops. On the left, an untrusted client attempts to inject a spoofed X-Tenant-Id header claiming to be FinVault Bank. In the center, Cloud Armor and our Hop 1 Security Token Service strip that header, verify the caller’s OIDC and DPoP proof, and mint a KMS ECDSA P-256 signed STS JWT. On the right, downstream microservices verify that asymmetric signature locally in under 0.15 milliseconds using an in-memory cached JWKS public key—achieving mathematical non-repudiation with zero per-hop KMS network calls.",
-      "whatComesNext": "With the five-hop architecture proven from logical layers down to the wire packet, let's move into Part 4 on Slide 9 to inspect the five EAP product gaps we encountered and the feature-flagged compensating controls we built to close them.",
-      "fullText": "Completing our L1 → L2 → L3 → L4 macro-to-micro hierarchy, Slide 8 inspects the raw JSON payload on the wire before and after Hop 1 token exchange.\n\nZooming all the way down to Level 4, here we open up the wire packet traveling across those hops. On the left, an untrusted client attempts to inject a spoofed X-Tenant-Id header claiming to be FinVault Bank. In the center, Cloud Armor and our Hop 1 Security Token Service strip that header, verify the caller’s OIDC and DPoP proof, and mint a KMS ECDSA P-256 signed STS JWT. On the right, downstream microservices verify that asymmetric signature locally in under 0.15 milliseconds using an in-memory cached JWKS public key—achieving mathematical non-repudiation with zero per-hop KMS network calls.\n\nWith the five-hop architecture proven from logical layers down to the wire packet, let's move into Part 4 on Slide 9 to inspect the five EAP product gaps we encountered and the feature-flagged compensating controls we built to close them."
+      "totalSlides": 15,
+      "title": "Act II (Slide 8) — Technical Diagram 1 (L2): Figure 1 Multi-Tenant Taxonomy Blueprint",
+      "whyHere": "Figure 1 maps our fifty-six-component Google Cloud reference topology across four physical VPC Service Controls network perimeters.",
+      "whatIsHappening": "Zooming directly from those three logical security layers into the Level 2 physical topology, Figure 1 maps our fifty-six-shape Google Cloud blueprint across four physical VPC Service Controls network perimeters. Requests enter Blue Perimeter 1 (the Routing Hub for Steps 1 through 3 and Hop 1) at the top, traverse Green Perimeter 2 (the Five-Hop Governance Hub for Hops 2 and 5) in the center, and execute inside either Yellow Perimeter 3 (the Pattern A Shared Pool Spoke for Steps 4 through 7 and Hops 3 through 5) on the left or Red Perimeter 4 (the Pattern B Sovereign Silo and Pattern C PSC Spoke) on the right—with gVisor kernel sandboxing and composite tenant-user-session keys isolating every worker.",
+      "whatComesNext": "Next, let's examine Figure 2 on Slide 9: the official Cloud Architecture Center 5-Hop Cryptographic Context Chain baseline.",
+      "fullText": "Figure 1 maps our fifty-six-component Google Cloud reference topology across four physical VPC Service Controls network perimeters.\n\nZooming directly from those three logical security layers into the Level 2 physical topology, Figure 1 maps our fifty-six-shape Google Cloud blueprint across four physical VPC Service Controls network perimeters. Requests enter Blue Perimeter 1 (the Routing Hub for Steps 1 through 3 and Hop 1) at the top, traverse Green Perimeter 2 (the Five-Hop Governance Hub for Hops 2 and 5) in the center, and execute inside either Yellow Perimeter 3 (the Pattern A Shared Pool Spoke for Steps 4 through 7 and Hops 3 through 5) on the left or Red Perimeter 4 (the Pattern B Sovereign Silo and Pattern C PSC Spoke) on the right—with gVisor kernel sandboxing and composite tenant-user-session keys isolating every worker.\n\nNext, let's examine Figure 2 on Slide 9: the official Cloud Architecture Center 5-Hop Cryptographic Context Chain baseline."
     },
     {
       "slide": 9,
-      "totalSlides": 11,
-      "title": "Part 4 (Slide 9) — Mind the Gap: GAP-01..05 Compensating Controls & BigQuery OTel SQL",
-      "whyHere": "Part 4 on Slide 9 provides our transparent engineering ledger of five current platform gaps, our codebase compensating controls, and our feature-flagged native adapter sunset hooks.",
-      "whatIsHappening": "This register maps our five compensating production controls—GAP-01 through GAP-05—to the early-access platform boundaries engineering teams face today. Every custom Python, Valkey, or SQL control in core-cymbal-agent is wrapped in a feature-flagged native adapter hook (CYMBAL_NATIVE_ARD_GA, CYMBAL_NATIVE_KMS_PROBE_GA, CYMBAL_NATIVE_MEM_TTL_GA, CYMBAL_NATIVE_PSC_CUTOVER_GA, and CYMBAL_NATIVE_OTEL_FINOPS_GA) so teams can switch cleanly to native GCP primitives via configuration as they reach general availability. And in row five, our OpenTelemetry FinOps exporter streams SHA-256 prompt hashes and token counters directly into BigQuery so finance teams can run exact SQL chargeback queries across cached and thinking tokens with zero raw PII.",
-      "whatComesNext": "With our compensating controls documented on Slide 9, let's enter Part 5 on Slide 10 to inspect the live Google Cloud Console and Cloud Logging Explorer proof from our deployed projects.",
-      "fullText": "Part 4 on Slide 9 provides our transparent engineering ledger of five current platform gaps, our codebase compensating controls, and our feature-flagged native adapter sunset hooks.\n\nThis register maps our five compensating production controls—GAP-01 through GAP-05—to the early-access platform boundaries engineering teams face today. Every custom Python, Valkey, or SQL control in core-cymbal-agent is wrapped in a feature-flagged native adapter hook (CYMBAL_NATIVE_ARD_GA, CYMBAL_NATIVE_KMS_PROBE_GA, CYMBAL_NATIVE_MEM_TTL_GA, CYMBAL_NATIVE_PSC_CUTOVER_GA, and CYMBAL_NATIVE_OTEL_FINOPS_GA) so teams can switch cleanly to native GCP primitives via configuration as they reach general availability. And in row five, our OpenTelemetry FinOps exporter streams SHA-256 prompt hashes and token counters directly into BigQuery so finance teams can run exact SQL chargeback queries across cached and thinking tokens with zero raw PII.\n\nWith our compensating controls documented on Slide 9, let's enter Part 5 on Slide 10 to inspect the live Google Cloud Console and Cloud Logging Explorer proof from our deployed projects."
+      "totalSlides": 15,
+      "title": "Act II (Slide 9) — Technical Diagram 2 (L2): Figure 2 Official 5-Hop Baseline Blueprint",
+      "whyHere": "Complementing Figure 1, Figure 2 details the official Cloud Architecture Center 5-Hop Cryptographic Context Chain across routing, governance, and execution spokes.",
+      "whatIsHappening": "Notice how every hop in Figure 2 enforces asymmetric KMS ECDSA P-256 verification, composite tenant-user-session key scoping, and gVisor kernel sandboxing so no compromised tool or prompt can pivot laterally across spokes.",
+      "whatComesNext": "Now let's zoom into Level 3 on Slide 10 to trace the five-actor UML sequence swimlane over time.",
+      "fullText": "Complementing Figure 1, Figure 2 details the official Cloud Architecture Center 5-Hop Cryptographic Context Chain across routing, governance, and execution spokes.\n\nNotice how every hop in Figure 2 enforces asymmetric KMS ECDSA P-256 verification, composite tenant-user-session key scoping, and gVisor kernel sandboxing so no compromised tool or prompt can pivot laterally across spokes.\n\nNow let's zoom into Level 3 on Slide 10 to trace the five-actor UML sequence swimlane over time."
     },
     {
       "slide": 10,
-      "totalSlides": 11,
-      "title": "Part 5 (Slide 10) — Automating Compliance: Live GCP Console & Cloud Logging Audit Proof",
-      "whyHere": "Opening Part 5 on automated compliance, Slide 10 presents live evidence captured from our running Google Cloud projects along with the exact Cloud Logging Explorer queries used by SRE and CISO auditors.",
-      "whatIsHappening": "To prove this architecture is running live rather than just on slides, here are authentic captures from our deployed Cloud Run revisions in ramp-portal-dev and bbar-138hf0, Cloud Logging Explorer, Dual-Plane verification harness, and twenty before-versus-after 2880-by-1800 Retina third-party SaaS UIs including Metabase BI v0.50.26 and Trino Distributed SQL v440. On the Intra-Cloud plane, our 20/20 Google Cloud runtime suites verify zero cross-tenant RLS rows across HTTP 200, 403, 423, and 429 responses; on the Inter-Cloud plane, our 30/30 AWS Bedrock AgentCore MCP and 10-SaaS cross-cloud target harness passes all sixty assertions and all thirteen automated forensic gates.",
-      "whatComesNext": "With the live cloud verification complete, let's move to our final slide—Slide 11—where we merge our Google Cloud Well-Architected SLA scorecard directly into the five runnable engineering milestones and five-part blog series roadmap.",
-      "fullText": "Opening Part 5 on automated compliance, Slide 10 presents live evidence captured from our running Google Cloud projects along with the exact Cloud Logging Explorer queries used by SRE and CISO auditors.\n\nTo prove this architecture is running live rather than just on slides, here are authentic captures from our deployed Cloud Run revisions in ramp-portal-dev and bbar-138hf0, Cloud Logging Explorer, Dual-Plane verification harness, and twenty before-versus-after 2880-by-1800 Retina third-party SaaS UIs including Metabase BI v0.50.26 and Trino Distributed SQL v440. On the Intra-Cloud plane, our 20/20 Google Cloud runtime suites verify zero cross-tenant RLS rows across HTTP 200, 403, 423, and 429 responses; on the Inter-Cloud plane, our 30/30 AWS Bedrock AgentCore MCP and 10-SaaS cross-cloud target harness passes all sixty assertions and all thirteen automated forensic gates.\n\nWith the live cloud verification complete, let's move to our final slide—Slide 11—where we merge our Google Cloud Well-Architected SLA scorecard directly into the five runnable engineering milestones and five-part blog series roadmap."
+      "totalSlides": 15,
+      "title": "Act II (Slide 10) — Technical Diagram 3 (L3): 5-Actor UML Sequence & Circuit Breakers",
+      "whyHere": "Slide 10 traces the exact chronological message sequence across five system actors alongside our sub-five-second Valkey cache eviction and single-flight recovery.",
+      "whatIsHappening": "Now that we have the L1 logical layers and L2 physical perimeters in place, this merged Level 3 process and operational resilience slide traces both the chronological happy path across five actors and every fail-closed circuit breaker in one unified view. Steps 1 through 6 trace a live customer turn in roughly forty-two milliseconds of control-plane overhead. And in the red fail-closed frame at the bottom, spoofed headers or ~3ms JTI revocations return HTTP 401 or 403, rate bursts over 120 or 600 RPM return HTTP 429 with Retry-After jitter, and a revoked Cloud KMS key triggers an HTTP 423 lock with a sub-five-second targeted Valkey SCAN and UNLINK of cache:{tenant}:*—followed by single-flight SET NX PX 5000 lazy re-hydration from AlloyDB RLS when the key is restored.",
+      "whatComesNext": "Completing our L1-to-L4 technical zoom, let's inspect the raw wire packet on Slide 11.",
+      "fullText": "Slide 10 traces the exact chronological message sequence across five system actors alongside our sub-five-second Valkey cache eviction and single-flight recovery.\n\nNow that we have the L1 logical layers and L2 physical perimeters in place, this merged Level 3 process and operational resilience slide traces both the chronological happy path across five actors and every fail-closed circuit breaker in one unified view. Steps 1 through 6 trace a live customer turn in roughly forty-two milliseconds of control-plane overhead. And in the red fail-closed frame at the bottom, spoofed headers or ~3ms JTI revocations return HTTP 401 or 403, rate bursts over 120 or 600 RPM return HTTP 429 with Retry-After jitter, and a revoked Cloud KMS key triggers an HTTP 423 lock with a sub-five-second targeted Valkey SCAN and UNLINK of cache:{tenant}:*—followed by single-flight SET NX PX 5000 lazy re-hydration from AlloyDB RLS when the key is restored.\n\nCompleting our L1-to-L4 technical zoom, let's inspect the raw wire packet on Slide 11."
     },
     {
       "slide": 11,
-      "totalSlides": 11,
-      "title": "Part 5 (Slide 11) — Well-Architected SLA Scorecard & 5-Part Engineering Roadmap",
-      "whyHere": "Rounding out Part 5, our final slide consolidates our Well-Architected SLA scorecard directly into the five executable GitHub milestones and five-part blog series roadmap.",
-      "whatIsHappening": "Finally, our closing slide consolidates the Google Cloud Well-Architected SLA scorecard directly into our five runnable GitHub milestones and five-part blog series launch plan. Every milestone card pairs its exact repository file path with its production SLA target: under 150-microsecond cached-JWKS verification and ~3ms JTI deny-lists in Part 1; ~42ms p95 five-hop overhead, ~420ms warm TTFT, and 84.7 percent token savings in Part 2; <60s CMEK revocation, <5s Valkey SCAN+UNLINK eviction, SET NX PX 5000 recovery, and <30s cross-region failover RTO in Part 3; 74 percent portfolio TCO reduction and 0ms PSC cutover in Part 4; and 13/13 forensic plus 107/107 runtime assertions in Part 5.",
-      "whatComesNext": "That completes our streamlined eleven-slide walkthrough—I would love to open the floor for your questions, or we can jump straight into the live codebase and Terraform modules.",
-      "fullText": "Rounding out Part 5, our final slide consolidates our Well-Architected SLA scorecard directly into the five executable GitHub milestones and five-part blog series roadmap.\n\nFinally, our closing slide consolidates the Google Cloud Well-Architected SLA scorecard directly into our five runnable GitHub milestones and five-part blog series launch plan. Every milestone card pairs its exact repository file path with its production SLA target: under 150-microsecond cached-JWKS verification and ~3ms JTI deny-lists in Part 1; ~42ms p95 five-hop overhead, ~420ms warm TTFT, and 84.7 percent token savings in Part 2; <60s CMEK revocation, <5s Valkey SCAN+UNLINK eviction, SET NX PX 5000 recovery, and <30s cross-region failover RTO in Part 3; 74 percent portfolio TCO reduction and 0ms PSC cutover in Part 4; and 13/13 forensic plus 107/107 runtime assertions in Part 5.\n\nThat completes our streamlined eleven-slide walkthrough—I would love to open the floor for your questions, or we can jump straight into the live codebase and Terraform modules."
+      "totalSlides": 15,
+      "title": "Act II (Slide 11) — Technical Diagram 4 (L4): Wire-Packet Transformation & Signed STS JWT",
+      "whyHere": "Slide 11 opens the HTTP and gRPC wire payload before and after Hop 1 token exchange to show how spoofed tenant headers are neutralized.",
+      "whatIsHappening": "Zooming all the way down to Level 4, here we open up the wire packet traveling across those hops. On the left, an untrusted client attempts to inject a spoofed X-Tenant-Id header claiming to be FinVault Bank. In the center, Cloud Armor and our Hop 1 Security Token Service strip that header, verify the caller’s OIDC and DPoP proof, and mint a KMS ECDSA P-256 signed STS JWT. On the right, downstream microservices verify that asymmetric signature locally in under 0.15 milliseconds using an in-memory cached JWKS public key—achieving mathematical non-repudiation with zero per-hop KMS network calls.",
+      "whatComesNext": "With the technical architecture proven from conceptual model down to wire packet, let's enter Act III on Slide 12 to review our genuine solution approach and EAP compensating controls.",
+      "fullText": "Slide 11 opens the HTTP and gRPC wire payload before and after Hop 1 token exchange to show how spoofed tenant headers are neutralized.\n\nZooming all the way down to Level 4, here we open up the wire packet traveling across those hops. On the left, an untrusted client attempts to inject a spoofed X-Tenant-Id header claiming to be FinVault Bank. In the center, Cloud Armor and our Hop 1 Security Token Service strip that header, verify the caller’s OIDC and DPoP proof, and mint a KMS ECDSA P-256 signed STS JWT. On the right, downstream microservices verify that asymmetric signature locally in under 0.15 milliseconds using an in-memory cached JWKS public key—achieving mathematical non-repudiation with zero per-hop KMS network calls.\n\nWith the technical architecture proven from conceptual model down to wire packet, let's enter Act III on Slide 12 to review our genuine solution approach and EAP compensating controls."
+    },
+    {
+      "slide": 12,
+      "totalSlides": 15,
+      "title": "Act III (Slide 12) — Genuine Solution Approach & EAP Compensating Controls (GAP-01..05)",
+      "whyHere": "Slide 12 documents our transparent engineering ledger of five early-access platform boundaries and the feature-flagged compensating controls in core-cymbal-agent.",
+      "whatIsHappening": "This register maps our five compensating production controls—GAP-01 through GAP-05—to the early-access platform boundaries engineering teams face today. Every custom Python, Valkey, or SQL control in core-cymbal-agent is wrapped in a feature-flagged native adapter hook (CYMBAL_NATIVE_ARD_GA, CYMBAL_NATIVE_KMS_PROBE_GA, CYMBAL_NATIVE_MEM_TTL_GA, CYMBAL_NATIVE_PSC_CUTOVER_GA, and CYMBAL_NATIVE_OTEL_FINOPS_GA) so teams can switch cleanly to native GCP primitives via configuration as they reach general availability. And in row five, our OpenTelemetry FinOps exporter streams SHA-256 prompt hashes and token counters directly into BigQuery so finance teams can run exact SQL chargeback queries across cached and reasoning output tokens with zero raw PII.",
+      "whatComesNext": "Now let's inspect our live dual-plane verification proofs, starting with grounded GCP and AWS CLI telemetry on Slide 13.",
+      "fullText": "Slide 12 documents our transparent engineering ledger of five early-access platform boundaries and the feature-flagged compensating controls in core-cymbal-agent.\n\nThis register maps our five compensating production controls—GAP-01 through GAP-05—to the early-access platform boundaries engineering teams face today. Every custom Python, Valkey, or SQL control in core-cymbal-agent is wrapped in a feature-flagged native adapter hook (CYMBAL_NATIVE_ARD_GA, CYMBAL_NATIVE_KMS_PROBE_GA, CYMBAL_NATIVE_MEM_TTL_GA, CYMBAL_NATIVE_PSC_CUTOVER_GA, and CYMBAL_NATIVE_OTEL_FINOPS_GA) so teams can switch cleanly to native GCP primitives via configuration as they reach general availability. And in row five, our OpenTelemetry FinOps exporter streams SHA-256 prompt hashes and token counters directly into BigQuery so finance teams can run exact SQL chargeback queries across cached and reasoning output tokens with zero raw PII.\n\nNow let's inspect our live dual-plane verification proofs, starting with grounded GCP and AWS CLI telemetry on Slide 13."
+    },
+    {
+      "slide": 13,
+      "totalSlides": 15,
+      "title": "Act III (Slide 13) — Proof 1: Grounded GCP & AWS CLI Telemetry Receipt",
+      "whyHere": "Slide 13 presents verifiable runtime receipts from our deployed Cloud Run services, AlloyDB RLS policies, and cross-cloud AWS Bedrock AgentCore MCP harness.",
+      "whatIsHappening": "To prove this architecture is running live rather than just on slides, here are authentic captures from our deployed Cloud Run revisions in ramp-portal-dev and bbar-138hf0, Cloud Logging Explorer, Dual-Plane verification harness, and live 2880x1620 commercial ThoughtSpot Cloud Retina captures alongside pending commercial verification slots for the remaining nine enterprise SaaS targets (zero open-source stand-ins). On the Intra-Cloud plane, our 20/20 Google Cloud runtime suites verify zero cross-tenant RLS rows across HTTP 200, 403, 423, and 429 responses; on the Inter-Cloud plane, our 30/30 AWS Bedrock AgentCore MCP and 10-SaaS cross-cloud target harness passes all sixty assertions and all thirteen automated forensic gates.",
+      "whatComesNext": "Complementing our CLI telemetry, Slide 14 pairs live 2880x1620 Retina commercial ThoughtSpot Cloud captures with the fail-closed F-13 Databricks Unity Catalog verification slot.",
+      "fullText": "Slide 13 presents verifiable runtime receipts from our deployed Cloud Run services, AlloyDB RLS policies, and cross-cloud AWS Bedrock AgentCore MCP harness.\n\nTo prove this architecture is running live rather than just on slides, here are authentic captures from our deployed Cloud Run revisions in ramp-portal-dev and bbar-138hf0, Cloud Logging Explorer, Dual-Plane verification harness, and live 2880x1620 commercial ThoughtSpot Cloud Retina captures alongside pending commercial verification slots for the remaining nine enterprise SaaS targets (zero open-source stand-ins). On the Intra-Cloud plane, our 20/20 Google Cloud runtime suites verify zero cross-tenant RLS rows across HTTP 200, 403, 423, and 429 responses; on the Inter-Cloud plane, our 30/30 AWS Bedrock AgentCore MCP and 10-SaaS cross-cloud target harness passes all sixty assertions and all thirteen automated forensic gates.\n\nComplementing our CLI telemetry, Slide 14 pairs live 2880x1620 Retina commercial ThoughtSpot Cloud captures with the fail-closed F-13 Databricks Unity Catalog verification slot."
+    },
+    {
+      "slide": 14,
+      "totalSlides": 15,
+      "title": "Act III (Slide 14) — Proof 2: Live 2880x1620 Retina Verified Commercial 3P SaaS UI Isolation",
+      "whyHere": "Slide 14 pairs live 2880x1620 Retina captures from commercial ThoughtSpot Cloud (team2.thoughtspot.cloud) with the fail-closed F-13 Databricks Unity Catalog verification slot and 5-Hop AlloyDB RLS isolation architecture.",
+      "whatIsHappening": "On the left, ThoughtSpot Cloud BI shows live 2880x1620 Retina captures from commercial ThoughtSpot Cloud (team2.thoughtspot.cloud) paired with Hop 5 AlloyDB RLS architecture design. On the right, Databricks Unity Catalog SQL displays the fail-closed F-13 pending Google Cloud Marketplace Free Trial verification slot backed by Hop 2 ARD catalog scoping and AWS Bedrock AgentCore MCP target TERCK8SLBP.",
+      "whatComesNext": "Finally, let's turn to Slide 15 to summarize our quantified business benefits and your 30-60-90 day call to action.",
+      "fullText": "Slide 14 pairs live 2880x1620 Retina captures from commercial ThoughtSpot Cloud (team2.thoughtspot.cloud) with the fail-closed F-13 Databricks Unity Catalog verification slot and 5-Hop AlloyDB RLS isolation architecture.\n\nOn the left, ThoughtSpot Cloud BI shows live 2880x1620 Retina captures from commercial ThoughtSpot Cloud (team2.thoughtspot.cloud) paired with Hop 5 AlloyDB RLS architecture design. On the right, Databricks Unity Catalog SQL displays the fail-closed F-13 pending Google Cloud Marketplace Free Trial verification slot backed by Hop 2 ARD catalog scoping and AWS Bedrock AgentCore MCP target TERCK8SLBP.\n\nFinally, let's turn to Slide 15 to summarize our quantified business benefits and your 30-60-90 day call to action."
+    },
+    {
+      "slide": 15,
+      "totalSlides": 15,
+      "title": "Act IV (Slide 15) — Quantified Benefits, Call to Action & 30-60-90 Day Roadmap",
+      "whyHere": "Closing our briefing in Act IV, Slide 15 consolidates our quantified security, latency, and FinOps benefits alongside concrete next steps for your engineering team.",
+      "whatIsHappening": "Finally, our closing slide consolidates the Google Cloud Well-Architected SLA scorecard directly into our five runnable GitHub milestones and five-part blog series launch plan. Every milestone card pairs its exact repository file path with its production SLA target: under 150-microsecond cached-JWKS verification and ~3ms JTI deny-lists in Part 1; ~42ms p95 five-hop overhead, ~420ms warm TTFT, and 89.1 percent token savings in Part 2; <60s CMEK revocation, <5s Valkey SCAN+UNLINK eviction, SET NX PX 5000 recovery, and <30s cross-region failover RTO in Part 3; 74 percent portfolio TCO reduction and 0ms PSC cutover in Part 4; and 13/13 forensic plus 107/107 runtime assertions in Part 5.",
+      "whatComesNext": "Thank you—let's open the floor for your architecture questions or launch the interactive codebase workbench to inspect the Terraform and Python modules directly.",
+      "fullText": "Closing our briefing in Act IV, Slide 15 consolidates our quantified security, latency, and FinOps benefits alongside concrete next steps for your engineering team.\n\nFinally, our closing slide consolidates the Google Cloud Well-Architected SLA scorecard directly into our five runnable GitHub milestones and five-part blog series launch plan. Every milestone card pairs its exact repository file path with its production SLA target: under 150-microsecond cached-JWKS verification and ~3ms JTI deny-lists in Part 1; ~42ms p95 five-hop overhead, ~420ms warm TTFT, and 89.1 percent token savings in Part 2; <60s CMEK revocation, <5s Valkey SCAN+UNLINK eviction, SET NX PX 5000 recovery, and <30s cross-region failover RTO in Part 3; 74 percent portfolio TCO reduction and 0ms PSC cutover in Part 4; and 13/13 forensic plus 107/107 runtime assertions in Part 5.\n\nThank you—let's open the floor for your architecture questions or launch the interactive codebase workbench to inspect the Terraform and Python modules directly."
     }
   ]
 }

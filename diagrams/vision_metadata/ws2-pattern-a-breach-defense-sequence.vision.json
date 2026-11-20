@@ -23,9 +23,9 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "GE Blogs Self-Contained Vision Decompiler (scripts/lib/visionIconEnricher.ts)",
   "healerLog": [
-    "Protected master/canonical blueprint passed through without geometric mutation."
+    "Protected canonical blueprint passed through without geometric mutation."
   ],
   "validationReport": {
     "valid": false,
@@ -58,9 +58,9 @@
       "plainTitle": "Red-Team Attacker",
       "zone": "Header & Value Pillars",
       "x": 465,
-      "y": 52,
+      "y": 54,
       "width": 250,
-      "height": 86,
+      "height": 84,
       "isContainer": false
     },
     {
@@ -221,9 +221,9 @@
     },
     {
       "id": "card_gc_top",
-      "urlSlug": "OBJ-16-VECTOR-6-VALKEY-429-4K-T",
-      "label": "Vector 6: Valkey 429 & 4k Token Clamp",
-      "plainTitle": "Vector 6: Valkey 429 & 4k Token Clamp",
+      "urlSlug": "OBJ-16-VECTOR-6-VALKEY-429-4K-M",
+      "label": "Vector 6: Valkey 429 & 4k maxOutput Clamp",
+      "plainTitle": "Vector 6: Valkey 429 & 4k maxOutput Clamp",
       "zone": "Apps & Solutions Tier",
       "x": 824,
       "y": 406,
@@ -366,8 +366,8 @@
     {
       "id": "card_sc_db",
       "urlSlug": "OBJ-28-VECTOR-7C-ALLOYDB-BQ-RLS",
-      "label": "Vector 7C: AlloyDB/BQ RLS",
-      "plainTitle": "Vector 7C: AlloyDB/BQ RLS",
+      "label": "Vector 7C: AlloyDB/BQ RLS tenant_pooled_rls_policy",
+      "plainTitle": "Vector 7C: AlloyDB/BQ RLS tenant_pooled_rls_policy",
       "zone": "Governance & Footer",
       "x": 886,
       "y": 1218,

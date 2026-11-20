@@ -1,12 +1,5 @@
 # 10 Third-Party SaaS Products × 3 Multi-Tenant Agentic Patterns — Complete Manual Testing Playbook
 
-> [!IMPORTANT]
-> **Companion 10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas (`20 Retina Captures` + `16 Slides` + `Google Doc`):**
-> - **Interactive Portal Visual Atlas (`20` Before/After Screenshots):** [`blogs/saas-10-visual-verification-and-redteam-atlas.md`](../blogs/saas-10-visual-verification-and-redteam-atlas.md)
-> - **Editable Google Docs Visual Atlas (`21` Native Figures):** [Open 10-SaaS Visual Verification Atlas in Google Docs ↗](https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/edit?resourcekey=0-klzhSI2SvWYPCvpPwwMSUw)
-> - **Editable Google Slides Visual Atlas (`16` Native Slides):** [Open 10-SaaS Visual Verification Atlas in Google Slides ↗](https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw)
-> - **Offline Exports:** [Download Word `.docx`](word/saas-10-visual-verification-and-redteam-atlas.docx) • [Download 16-Slide `.pptx`](../slides/saas-10-visual-verification-atlas-16slide-deck.pptx)
-
 > **100% Reproducible Operator Runbook (`30/30 Pattern × SaaS End-to-End Flows • 60/60 Test Cases PASS`)**
 > This playbook provides complete documentation, connector configuration, environment setup, copy-pasteable `curl` and Python CLI scripts, and exact **Test Case Inputs & Expected JSON Outputs** so you can manually test each of the **10 Third-Party SaaS Products** across **Pattern A (Pooled 5-Hop)**, **Pattern B (Sovereign Silos)**, and **Pattern C (Dynamic Hybrid PSC & Zero-Downtime Tier Migration)**.
 
@@ -93,78 +86,6 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   9. **SAAS-09 — Datadog Observability & Bits AI SRE (`G767QR3TQZ`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json)
   10. **SAAS-10 — CrowdStrike Falcon XDR & Okta (`C7EYM614F2`)**: [Validate Live S3 Ledger JSON](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json)
 
-
-
-
----
-
-<!-- GENUINE_3P_BEFORE_AFTER_START -->
-## 2B. Live 3rd-Party SaaS Before-vs-After UI Proof (`10/10` Upstream Stacks • `20` Retina PNGs)
-
-> **Zero Synthetic Mockups (`Rule 57` & `Rule 60A–60C`):** Every `BEFORE` and `AFTER` screenshot below was captured via real HTTP/HTTPS browser navigation against the live upstream 3rd-party Docker containers (`2880×1800` Retina, distinct SHA-256 verified in [`docs/genuine_3p_before_after_provenance_receipt.json`](../docs/genuine_3p_before_after_provenance_receipt.json)). Use the **Interactive Split Slider** or **Show All 10 SaaS Stacks Inline** buttons directly below, inspect the [10-SaaS Manual Testing Playbook (`docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`)](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md), or open Portal Tab 3.
-
-- **`SAAS-01` — ThoughtSpot Cloud (Spotter Agentic BI v2.0) (`Metabase BI v0.50.26` • Target `HXGGFMZBKE` • `query_thoughtspot_liveboard_rls`):** GEAP MCP tool query_thoughtspot_liveboard_rls (Target HXGGFMZBKE) enforces session predicate WHERE tenant_id = 'finvault' and executes Saved Liveboard Question #27.
-
-![BEFORE SAAS-01 (Metabase BI v0.50.26): Unfiltered multi-tenant settlement table exposing 3 rows across tenants (FV-TX-901 finvault, FV-TX-902 finvault, plus cross-tenant RS-ORD-401 retailstream) prior to GEAP Hop 5 RLS binding.](../screenshots/genuine-multicloud-3p-uis/before-after/before_01_metabase_bi.png)
-
-![AFTER SAAS-01 (Metabase BI v0.50.26 — Target HXGGFMZBKE): Metabase Liveboard Question #27 returns strictly the 2 authorized FinVault rows ($527.0M total: FV-TX-901 $312.5M + FV-TX-902 $214.5M) with 0 cross-tenant RetailStream rows.](../screenshots/genuine-multicloud-3p-uis/before-after/after_01_metabase_bi.png)
-
-- **`SAAS-02` — Sigma Computing (Cloud BI Workbooks REST API v2) (`Grafana Enterprise v11.2.0` • Target `IZVODT083Q` • `eval_sigma_workbook_rls`):** GEAP MCP tool eval_sigma_workbook_rls (Target IZVODT083Q) evaluates tenant RLS session GUC and updates Grafana dashboard finvault-sre-wb via POST /api/dashboards/db with the live Hop 5 execution & HTTP 403 spoof-block attestation panel.
-
-![BEFORE SAAS-02 (Grafana Enterprise v11.2.0): Grafana Enterprise workbook finvault-sre-wb (orgId=1) in single-panel pre-audit baseline before GEAP Hop 5 workbook evaluation and live S3 attestation write-back.](../screenshots/genuine-multicloud-3p-uis/before-after/before_02_grafana_enterprise.png)
-
-![AFTER SAAS-02 (Grafana Enterprise v11.2.0 — Target IZVODT083Q): Grafana Enterprise renders the newly appended Panel #2 (GEAP Hop 5 Live Agentic Execution Attestation & Cross-Org Spoof Audit) alongside the verified $527.0M FinVault summary.](../screenshots/genuine-multicloud-3p-uis/before-after/after_02_grafana_enterprise.png)
-
-- **`SAAS-03` — ServiceNow ITSM & ITOM Change Control (`Redmine ITSM v5.1` • Target `ZS9VGYHBQL` • `query_servicenow_change_records`):** GEAP MCP tool query_servicenow_change_records (Target ZS9VGYHBQL) validates CMEK & Valkey single-flight readiness and creates P1 Change Ticket CHG0049299 via POST /issues.json.
-
-![BEFORE SAAS-03 (Redmine ITSM v5.1): Redmine ITSM project finvault-itsm queue showing 2 baseline tickets (#1 CHG0049218 and #2 INC0948211 — 1-2/2) prior to automated GEAP change-attestation ticket creation.](../screenshots/genuine-multicloud-3p-uis/before-after/before_03_redmine_itsm.png)
-
-![AFTER SAAS-03 (Redmine ITSM v5.1 — Target ZS9VGYHBQL): Redmine ITSM queue updates live to 3 tickets (1-3/3) displaying newly created CHG0049299 ((GEAP-MCP ZS9VGYHBQL) Automated Hop 5 Valkey Single-Flight & KMS CMEK Attestation) assigned to FinVault SRE Lead.](../screenshots/genuine-multicloud-3p-uis/before-after/after_03_redmine_itsm.png)
-
-- **`SAAS-04` — Veeva Vault RIM & Muse Clinical EDC (21 CFR Part 11) (`NocoDB v0.255.2` • Target `TWQU0KSRVF` • `query_muse_study_biomarkers`):** GEAP MCP tool query_muse_study_biomarkers (Target TWQU0KSRVF) signs the Hop 5 audit digest with Cloud KMS HSM and inserts record AWS-GXP-104 via POST /api/v2/tables/.../records.
-
-![BEFORE SAAS-04 (NocoDB v0.255.2): NocoDB FinVault KMS 21 CFR 11 Full Ledger showing 3 seeded compliance rows (AWS-GXP-101..103 — 3 records in footer) prior to live Cloud KMS ECDSA-P256 electronic signature insertion.](../screenshots/genuine-multicloud-3p-uis/before-after/before_04_nocodb_gxp.png)
-
-![AFTER SAAS-04 (NocoDB v0.255.2 — Target TWQU0KSRVF): NocoDB grid updates live to 4 records, displaying row #4 AWS-GXP-104 (finvault • Pattern C Hybrid PSC + Hop 5 KMS Sign • ECDSA_P256_LIVE_AGENT_SIGNED).](../screenshots/genuine-multicloud-3p-uis/before-after/after_04_nocodb_gxp.png)
-
-- **`SAAS-05` — Salesforce CRM (NA224) & Atlassian Jira Cloud Escalations (`Gitea v1.22.3` • Target `K5JAEFCQ6E` • `create_redacted_sfdc_jira_escalation`):** GEAP MCP tool create_redacted_sfdc_jira_escalation (Target K5JAEFCQ6E) strips IBAN/SWIFT PII via Cloud SDP and posts a structured Markdown RCA comment via POST /api/v1/repos/finvault/sre-escalations/issues/1/comments.
-
-![BEFORE SAAS-05 (Gitea v1.22.3): Gitea repository finvault/sre-escalations Issue #1 ((SFDC-CASE-00984120 / FINVAULT-SRE-1402)) open with 0 comments prior to GEAP Hop 4 SDP-redacted RCA triage.](../screenshots/genuine-multicloud-3p-uis/before-after/before_05_gitea_sre.png)
-
-![AFTER SAAS-05 (Gitea v1.22.3 — Target K5JAEFCQ6E): Gitea Issue #1 updates live to 1 comment, rendering the authenticated sre-lead Hop 4 SDP-redacted automated RCA & Valkey mitigation receipt directly in the issue timeline.](../screenshots/genuine-multicloud-3p-uis/before-after/after_05_gitea_sre.png)
-
-- **`SAAS-06` — Databricks Data Intelligence Platform (Unity Catalog SQL) (`Trino Distributed SQL v440` • Target `TERCK8SLBP` • `execute_uc_genie_federated_sql`):** GEAP MCP tool execute_uc_genie_federated_sql (Target TERCK8SLBP) dispatches federated SQL via POST /v1/statement with X-Trino-User: geap-hop5-agent@finvault.com and X-Trino-Source: geap-agentcore-TERCK8SLBP.
-
-![BEFORE SAAS-06 (Trino Distributed SQL v440): Trino v440 Cluster Overview (/ui/) query ledger prior to GEAP Target TERCK8SLBP tenant-scoped federated SQL dispatch.](../screenshots/genuine-multicloud-3p-uis/before-after/before_06_trino_sql.png)
-
-![AFTER SAAS-06 (Trino Distributed SQL v440 — Target TERCK8SLBP): Trino Cluster Overview (/ui/) displays the newly completed FINISHED query at top of Query Details attributed to geap-hop5-agent@finvault.com (source: geap-agentcore-TERCK8SLBP).](../screenshots/genuine-multicloud-3p-uis/before-after/after_06_trino_sql.png)
-
-- **`SAAS-07` — Snowflake AI Data Cloud (Cortex Analyst & SQL v2) (`ClickHouse Data Warehouse v24.8` • Target `CCMDEVZV2S` • `execute_cortex_analyst_sql`):** GEAP MCP tool execute_cortex_analyst_sql (Target CCMDEVZV2S) executes the tenant-aligned query (WHERE tenant_id = 'finvault') under finvault_user RLS policy.
-
-![BEFORE SAAS-07 (ClickHouse Data Warehouse v24.8): ClickHouse v24.8 /play SQL console authenticated as finvault_user attempting a cross-tenant query (WHERE tenant_id = 'retailstream') — database Row-Level Security blocks cross-tenant exposure and returns 0 rows.](../screenshots/genuine-multicloud-3p-uis/before-after/before_07_clickhouse_rls.png)
-
-![AFTER SAAS-07 (ClickHouse Data Warehouse v24.8 — Target CCMDEVZV2S): ClickHouse /play console returns the 2 CMEK-protected FinVault wire settlement rows (FV-TX-901 $312.5M and FV-TX-902 $214.5M, gcp-kms://finvault-cmek-hsm) in <5ms.](../screenshots/genuine-multicloud-3p-uis/before-after/after_07_clickhouse_rls.png)
-
-- **`SAAS-08` — Workday Enterprise HCM & Financial Management RaaS (`Directus Data Studio v11.1.0` • Target `RAOTMUMJTZ` • `fetch_compensation_raas_report`):** GEAP MCP tool fetch_compensation_raas_report (Target RAOTMUMJTZ) masks SSN/IBAN fields via Hop 4 Cloud SDP and inserts audited FinVault executive record via POST /items/hcm_compensation.
-
-![BEFORE SAAS-08 (Directus Data Studio v11.1.0): Directus v11.1.0 Hcm Compensation collection showing 2 baseline executive records (Clara Vance & Marcus Thorne — 2 Items) prior to GEAP RaaS compensation audit sync.](../screenshots/genuine-multicloud-3p-uis/before-after/before_08_directus_hcm.png)
-
-![AFTER SAAS-08 (Directus Data Studio v11.1.0 — Target RAOTMUMJTZ): Directus Hcm Compensation collection updates live to 3 Items, adding Elena Rostova (MD Quantitative Risk — GEAP Audited, $395,000.00, (REDACTED_US_SSN)).](../screenshots/genuine-multicloud-3p-uis/before-after/after_08_directus_hcm.png)
-
-- **`SAAS-09` — Datadog Cloud Observability & Bits AI SRE (`Datalust Seq Observability v2024.3` • Target `G767QR3TQZ` • `query_tenant_apm_logs`):** GEAP MCP tool query_tenant_apm_logs (Target G767QR3TQZ) ingests a structured Serilog CLEF span via POST /api/events/raw?clef and expands the live event inspector in Seq UI.
-
-![BEFORE SAAS-09 (Datalust Seq Observability v2024.3): Datalust Seq v2024.3 /#/events telemetry view in compact collapsed stream baseline prior to live GEAP Hop 4 Model Armor + Hop 5 RLS structured OTel span ingestion.](../screenshots/genuine-multicloud-3p-uis/before-after/before_09_datalust_seq.png)
-
-![AFTER SAAS-09 (Datalust Seq Observability v2024.3 — Target G767QR3TQZ): Datalust Seq displays the newly ingested GEAP Hop 5 APM trace expanded in-place with structured properties (AgentCoreTarget=G767QR3TQZ, Hop4ModelArmor=PASS_ZERO_PROMPT_INJECTION, TenantId=finvault, ZeroPiiAttested=true).](../screenshots/genuine-multicloud-3p-uis/before-after/after_09_datalust_seq.png)
-
-- **`SAAS-10` — CrowdStrike Falcon XDR & Okta Workforce Identity (`HashiCorp Vault v1.13.3` • Target `C7EYM614F2` • `contain_xdr_host_with_dpop`):** GEAP MCP tool contain_xdr_host_with_dpop (Target C7EYM614F2) verifies RFC 9449 DPoP proof thumbprint and rotates tenants/finvault to Version 2 via POST /v1/secret/data/tenants/finvault.
-
-![BEFORE SAAS-10 (HashiCorp Vault v1.13.3): HashiCorp Vault v1.13.3 secret tenants/finvault at Version 1 (JSON view enabled) showing pre-containment state (xdr_containment_status: PENDING_HOP5_DPOP_CONTAINMENT).](../screenshots/genuine-multicloud-3p-uis/before-after/before_10_hashicorp_vault.png)
-
-![AFTER SAAS-10 (HashiCorp Vault v1.13.3 — Target C7EYM614F2): HashiCorp Vault UI displays Version 2 of tenants/finvault in live JSON mode with xdr_containment_status: HOST_CONTAINED_DPOP_VERIFIED_200 and S3 audit binding crowdstrike-okta/finvault.json.](../screenshots/genuine-multicloud-3p-uis/before-after/after_10_hashicorp_vault.png)
-
-<!-- GENUINE_3P_BEFORE_AFTER_END -->
-
 ---
 
 ## 1.2 SAAS-01: ThoughtSpot Cloud (Spotter Agentic BI & Liveboards REST API v2.0)
@@ -174,7 +95,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 - **Live AWS AgentCore Target ID**: `HXGGFMZBKE`
 - **Verification Tier**: `TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN`
 - **Authentication & Zero-Trust Protocol**: AWS Cognito RS256 OBO + Bedrock AgentCore MCP (`thoughtspot-spotter`, target `HXGGFMZBKE`) + ThoughtSpot REST v2.0 (`org_identifier` + `runtime_filter`)
-- **Live Probed Cloud Endpoint**: `https://try-everywhere.thoughtspot.cloud/api/rest/2.0/auth/token/custom`
+- **Live Probed Cloud Endpoint**: `https://team2.thoughtspot.cloud/api/rest/2.0/auth/token/custom`
 - **Cross-Cloud Execution Surface**: AWS Bedrock AgentCore Target `HXGGFMZBKE` -> Lambda `cymbal-a2a-mcp-remote-peer` + BigQuery RLS (`bbar-138hf0`)
 - **Principal & Isolation Policy Summary**: Principal `sre-lead@finvault.com` (`org_identifier=finvault-org-01`; Cross-tenant `ops-eng@retailstream.com` -> HTTP 403)
 - **Live S3 Audit Ledger JSON Endpoint**: [https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json)
@@ -187,7 +108,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "mcp_target_id": "HXGGFMZBKE",
   "mcp_tool_name": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
-  "thoughtspot_host": "https://try-everywhere.thoughtspot.cloud",
+  "thoughtspot_host": "https://team2.thoughtspot.cloud",
   "api_version": "2.0",
   "org_mapping": {
     "finvault": "finvault-org-01",
@@ -212,7 +133,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
 
 **Setup Steps:**
 - 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://cymbal/thoughtspot-spotter-bi-3lo`.
-- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
+- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `MEDIUM` / `4,000 maxOutputTokens`) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://cymbal/thoughtspot-spotter-bi-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
 **Manual CLI Test Command:**
@@ -233,7 +154,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
   "dpop_jkt_thumbprint": "dpop_jkt_fv_001",
   "connector_uri": "mcp://cymbal/thoughtspot-spotter-bi-3lo",
   "hop3_valkey_rpm_cap": 120,
-  "hop3_thinking_budget_cap": 4000,
+  "hop3_thinking_level": "MEDIUM",
+  "hop3_max_output_token_cap": 4000,
   "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
   "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
 }
@@ -255,6 +177,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -263,7 +187,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_pe9NELLmQ5EfT4UflumEKeVqsfed",
+      "job_id": "job_UoaTN4FPB-RWnm1V1AygaEbKI8HH",
       "row_count": 2,
       "rows": [
         {
@@ -295,7 +219,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "f5e99875d4b3d3da97e6a822a0f33a00",
+      "s3_etag": "88d3ba5c0f1b0ed962f60ec44df06470",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/PATTERN_A_POOLED/finvault.json"
     }
   },
@@ -322,6 +246,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
   "pattern": "PATTERN_A_POOLED",
   "saas_id": "SAAS-01",
   "connector_uri": "mcp://cymbal/thoughtspot-spotter-bi-3lo",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reason": "403 Forbidden: Tenant 'retailstream' (retailstream-org-02) cannot query ThoughtSpot Org 'finvault-org-01'.",
   "enforced_by_governance_module": "core-cymbal-agent/governance/hop5_data_rls_and_otel.py"
 }
@@ -355,7 +280,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://cymbal/thoughtspot-spotter-bi-3lo",
   "hop3_valkey_rpm_cap": 600,
-  "hop3_thinking_budget_cap": 8000
+  "hop3_thinking_level": "HIGH",
+  "hop3_max_output_token_cap": 8000
 }
 ```
 
@@ -375,6 +301,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -383,7 +311,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_pe9NELLmQ5EfT4UflumEKeVqsfed",
+      "job_id": "job_UoaTN4FPB-RWnm1V1AygaEbKI8HH",
       "row_count": 2,
       "rows": [
         {
@@ -421,7 +349,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "22812a9a0a91d5b7b3043e2b6cb74014",
+      "s3_etag": "b84929704177d73f47bee3db0a74f049",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
@@ -452,6 +380,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-01",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "valkey_cache_unlinked_in_under_5s": true,
   "gvisor_worker_recycled": true,
   "live_cmek_lockout_evidence": {
@@ -489,9 +418,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
   "psc_nat_subnet_cidr": "10.240.0.0/28",
   "psc_internal_ip": "10.10.0.50",
   "migration_phases_executed": [
-    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, 4k thinking)",
+    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, MEDIUM/4k maxOut)",
     "PHASE_2_DUAL_WRITE_SHADOW (DMS CDC + 3LO Token Vault sync, 0 dropped SSE/3LO turns)",
-    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, 8k thinking)"
+    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, HIGH/8k maxOut)"
   ]
 }
 ```
@@ -509,10 +438,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
   "shadow_sync_checksum_verified": true,
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
-  "post_upgrade_thinking_budget": 8000,
+  "post_upgrade_thinking_level": "HIGH",
+  "post_upgrade_max_output_tokens": 8000,
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -521,7 +453,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_pe9NELLmQ5EfT4UflumEKeVqsfed",
+      "job_id": "job_UoaTN4FPB-RWnm1V1AygaEbKI8HH",
       "row_count": 2,
       "rows": [
         {
@@ -559,7 +491,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "e1e5299132a6072c7c6a1824e3238177",
+      "s3_etag": "6480074494d7e9a1cf1f5c78450de64b",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/thoughtspot-spotter/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
@@ -587,6 +519,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas thoughtspot --pa
   "decision": "DENY_UNIDIRECTIONAL_PSC_AND_ABORT_ON_CHECKSUM_MISMATCH",
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "saas_id": "SAAS-01",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reverse_spoke_to_hub_blocked": true,
   "rollback_to_route_epoch_1_preserved": true,
   "reason": "403 Forbidden: Private Service Connect ServiceAttachment is strictly unidirectional (Hub -> Spoke 10.10.0.50 only); reverse spoke initiation for 'mcp://cymbal/thoughtspot-spotter-bi-3lo' rejected."
@@ -639,7 +572,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
 
 **Setup Steps:**
 - 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://cymbal/sigma-computing-workbooks-3lo`.
-- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
+- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `MEDIUM` / `4,000 maxOutputTokens`) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://cymbal/sigma-computing-workbooks-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
 **Manual CLI Test Command:**
@@ -660,7 +593,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
   "dpop_jkt_thumbprint": "dpop_jkt_fv_001",
   "connector_uri": "mcp://cymbal/sigma-computing-workbooks-3lo",
   "hop3_valkey_rpm_cap": 120,
-  "hop3_thinking_budget_cap": 4000,
+  "hop3_thinking_level": "MEDIUM",
+  "hop3_max_output_token_cap": 4000,
   "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
   "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
 }
@@ -682,6 +616,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -690,7 +626,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_Iv_mpMYXNfopR9VFitbhWK8ivEUZ",
+      "job_id": "job_m9ZKpKGzw0rCNJm7OdqWz-BW_rsy",
       "row_count": 2,
       "rows": [
         {
@@ -722,7 +658,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "b08d79bc9d930e89b643dc28d9091a1d",
+      "s3_etag": "0e01304150891ef02701f404816419e4",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/PATTERN_A_POOLED/finvault.json"
     }
   },
@@ -750,6 +686,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
   "pattern": "PATTERN_A_POOLED",
   "saas_id": "SAAS-02",
   "connector_uri": "mcp://cymbal/sigma-computing-workbooks-3lo",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reason": "403 Forbidden: Hop 5 blocked client-supplied Sigma User-Attribute override (caller tenant='retailstream', attempted ua_tenant_id='finvault').",
   "enforced_by_governance_module": "core-cymbal-agent/governance/hop5_data_rls_and_otel.py"
 }
@@ -783,7 +720,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://cymbal/sigma-computing-workbooks-3lo",
   "hop3_valkey_rpm_cap": 600,
-  "hop3_thinking_budget_cap": 8000
+  "hop3_thinking_level": "HIGH",
+  "hop3_max_output_token_cap": 8000
 }
 ```
 
@@ -803,6 +741,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -811,7 +751,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_Iv_mpMYXNfopR9VFitbhWK8ivEUZ",
+      "job_id": "job_m9ZKpKGzw0rCNJm7OdqWz-BW_rsy",
       "row_count": 2,
       "rows": [
         {
@@ -849,7 +789,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "f94774fd001b76623cba9558eff6e91b",
+      "s3_etag": "5de6c56ab36c09ed4b975d0ba3658bf4",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
@@ -880,6 +820,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-02",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "valkey_cache_unlinked_in_under_5s": true,
   "gvisor_worker_recycled": true,
   "live_cmek_lockout_evidence": {
@@ -917,9 +858,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
   "psc_nat_subnet_cidr": "10.240.0.0/28",
   "psc_internal_ip": "10.10.0.50",
   "migration_phases_executed": [
-    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, 4k thinking)",
+    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, MEDIUM/4k maxOut)",
     "PHASE_2_DUAL_WRITE_SHADOW (DMS CDC + 3LO Token Vault sync, 0 dropped SSE/3LO turns)",
-    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, 8k thinking)"
+    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, HIGH/8k maxOut)"
   ]
 }
 ```
@@ -937,10 +878,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
   "shadow_sync_checksum_verified": true,
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
-  "post_upgrade_thinking_budget": 8000,
+  "post_upgrade_thinking_level": "HIGH",
+  "post_upgrade_max_output_tokens": 8000,
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -949,7 +893,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_Iv_mpMYXNfopR9VFitbhWK8ivEUZ",
+      "job_id": "job_m9ZKpKGzw0rCNJm7OdqWz-BW_rsy",
       "row_count": 2,
       "rows": [
         {
@@ -987,7 +931,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "9a1f879553851b2482cdf47c1c9255a2",
+      "s3_etag": "1bd287de3cc8e60075071f8f05c6dbac",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/sigma-computing/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
@@ -1015,6 +959,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas sigma --pattern 
   "decision": "DENY_UNIDIRECTIONAL_PSC_AND_ABORT_ON_CHECKSUM_MISMATCH",
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "saas_id": "SAAS-02",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reverse_spoke_to_hub_blocked": true,
   "rollback_to_route_epoch_1_preserved": true,
   "reason": "403 Forbidden: Private Service Connect ServiceAttachment is strictly unidirectional (Hub -> Spoke 10.10.0.50 only); reverse spoke initiation for 'mcp://cymbal/sigma-computing-workbooks-3lo' rejected."
@@ -1058,7 +1003,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
 
 **Setup Steps:**
 - 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://retailstream/servicenow-itom-3lo`.
-- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
+- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `MEDIUM` / `4,000 maxOutputTokens`) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://retailstream/servicenow-itom-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
 **Manual CLI Test Command:**
@@ -1079,7 +1024,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "dpop_jkt_thumbprint": "dpop_jkt_rs_002",
   "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
   "hop3_valkey_rpm_cap": 120,
-  "hop3_thinking_budget_cap": 4000,
+  "hop3_thinking_level": "MEDIUM",
+  "hop3_max_output_token_cap": 4000,
   "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
   "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'retailstream'"
 }
@@ -1101,6 +1047,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "2b6b245454e3bceea62cd327",
@@ -1109,7 +1057,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_B8JRkSFIrGRjQrtPBJD3Fn2_DgSn",
+      "job_id": "job_syBKjkwc7hYLzybSAIXWX7lRGw1M",
       "row_count": 1,
       "rows": [
         {
@@ -1132,7 +1080,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "e24b2df1d8d5919b618ed058e2835279",
+      "s3_etag": "ffc78a846442bb26a752043796bc25a3",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_A_POOLED/retailstream.json"
     }
   },
@@ -1159,6 +1107,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "pattern": "PATTERN_A_POOLED",
   "saas_id": "SAAS-03",
   "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reason": "401 Unauthorized (MCP -32042 CHALLENGE_3LO_OAUTH): Interactive step-up consent required.",
   "enforced_by_governance_module": "core-cymbal-agent/governance/hop5_data_rls_and_otel.py"
 }
@@ -1192,7 +1141,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://retailstream/servicenow-itom-3lo",
   "hop3_valkey_rpm_cap": 600,
-  "hop3_thinking_budget_cap": 8000
+  "hop3_thinking_level": "HIGH",
+  "hop3_max_output_token_cap": 8000
 }
 ```
 
@@ -1212,6 +1162,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "2b6b245454e3bceea62cd327",
@@ -1232,7 +1184,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "ef9153bbafd65d49e0b1c66d467345e9",
+      "s3_etag": "4f20bbe719a17d15d61f876713801654",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_B_SOVEREIGN_SILO/retailstream.json"
     }
   }
@@ -1263,6 +1215,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-03",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "valkey_cache_unlinked_in_under_5s": true,
   "gvisor_worker_recycled": true,
   "live_cmek_lockout_evidence": {
@@ -1300,9 +1253,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "psc_nat_subnet_cidr": "10.240.0.0/28",
   "psc_internal_ip": "10.10.0.50",
   "migration_phases_executed": [
-    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, 4k thinking)",
+    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, MEDIUM/4k maxOut)",
     "PHASE_2_DUAL_WRITE_SHADOW (DMS CDC + 3LO Token Vault sync, 0 dropped SSE/3LO turns)",
-    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, 8k thinking)"
+    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, HIGH/8k maxOut)"
   ]
 }
 ```
@@ -1320,10 +1273,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "shadow_sync_checksum_verified": true,
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
-  "post_upgrade_thinking_budget": 8000,
+  "post_upgrade_thinking_level": "HIGH",
+  "post_upgrade_max_output_tokens": 8000,
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_BEDROCK_AGENTCORE_MCP_EXECUTION",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "2b6b245454e3bceea62cd327",
@@ -1344,7 +1300,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "1f249ff4f4d8b57c1956113ddd0fb352",
+      "s3_etag": "b724f5b09d4e04a5f0a8e48feebe11b0",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/servicenow-itsm/PATTERN_C_HYBRID_PSC_SPOKE/retailstream.json"
     }
   }
@@ -1372,6 +1328,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas servicenow --pat
   "decision": "DENY_UNIDIRECTIONAL_PSC_AND_ABORT_ON_CHECKSUM_MISMATCH",
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "saas_id": "SAAS-03",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reverse_spoke_to_hub_blocked": true,
   "rollback_to_route_epoch_1_preserved": true,
   "reason": "403 Forbidden: Private Service Connect ServiceAttachment is strictly unidirectional (Hub -> Spoke 10.10.0.50 only); reverse spoke initiation for 'mcp://retailstream/servicenow-itom-3lo' rejected."
@@ -1415,7 +1372,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
 
 **Setup Steps:**
 - 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://finvault/veeva-muse-clinical-3lo`.
-- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
+- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `MEDIUM` / `4,000 maxOutputTokens`) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://finvault/veeva-muse-clinical-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
 **Manual CLI Test Command:**
@@ -1436,7 +1393,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
   "dpop_jkt_thumbprint": "dpop_jkt_fv_001",
   "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
   "hop3_valkey_rpm_cap": 120,
-  "hop3_thinking_budget_cap": 4000,
+  "hop3_thinking_level": "MEDIUM",
+  "hop3_max_output_token_cap": 4000,
   "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
   "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
 }
@@ -1458,6 +1416,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -1466,7 +1426,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_c0i81YXVGoiuVawaNvkTYwwJN15G",
+      "job_id": "job_e7Z_ywIwzlDPcZswPORvyF8zczZl",
       "row_count": 2,
       "rows": [
         {
@@ -1498,7 +1458,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "3cdb41b341bdb7f7e54ae6d09accb585",
+      "s3_etag": "d3ffad9bcf559e09fb88053f7e55b7f9",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_A_POOLED/finvault.json"
     },
     "cloud_kms_21cfr11_signature": {
@@ -1509,8 +1469,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
       "cfr11_live_kms_signed": true,
       "cfr11_kms_key_version": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
       "cfr11_payload_sha256": "ef0e3734ec18390ea72eb040aa3d677aff92a7906d9f3d88b4017fed9d4b07cf",
-      "cfr11_kms_ecdsa_p256_signature_b64": "MEQCICz6Jh1wJHtNqWHBWciRvQPJz4znxCMlpTr/NHo8QQ43AiBBxuhntNqIuH0pb98XwGAq6QQjq6+gxLSXH/xRosPy3Q==",
-      "cfr11_hmac_sha256_signature": "3b9163128466945bb031979af7246e1d21bf94329651ac54649b31fc98d82fea"
+      "cfr11_kms_ecdsa_p256_signature_b64": "MEUCICIlcDKCERlGu3zjq3s3G3yb2gcX4MCyX558LwD5YZa3AiEA79om58q6Xshgj9tPsbYf5fcVz40LaJCXnTpdLMPL8is=",
+      "cfr11_hmac_sha256_signature": "4b078a9563f8ee2dc039411dbeff1c1380dd8c6cf1e3b559fd189028640eaaba"
     }
   },
   "cross_tenant_rows_leaked": 0
@@ -1535,6 +1495,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
   "pattern": "PATTERN_A_POOLED",
   "saas_id": "SAAS-04",
   "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reason": "403 Forbidden: Tenant 'retailstream' is not entitled to regulated GxP connector 'mcp://finvault/veeva-muse-clinical-3lo'.",
   "enforced_by_governance_module": "core-cymbal-agent/governance/hop5_data_rls_and_otel.py"
 }
@@ -1568,7 +1529,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://finvault/veeva-muse-clinical-3lo",
   "hop3_valkey_rpm_cap": 600,
-  "hop3_thinking_budget_cap": 8000
+  "hop3_thinking_level": "HIGH",
+  "hop3_max_output_token_cap": 8000
 }
 ```
 
@@ -1588,6 +1550,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -1608,7 +1572,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "a1d5f99d386b725064b9dca894173945",
+      "s3_etag": "3ed59558278cb7a112f6f8b1732579c4",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     },
     "cloud_kms_21cfr11_signature": {
@@ -1619,8 +1583,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
       "cfr11_live_kms_signed": true,
       "cfr11_kms_key_version": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
       "cfr11_payload_sha256": "ef0e3734ec18390ea72eb040aa3d677aff92a7906d9f3d88b4017fed9d4b07cf",
-      "cfr11_kms_ecdsa_p256_signature_b64": "MEQCICz6Jh1wJHtNqWHBWciRvQPJz4znxCMlpTr/NHo8QQ43AiBBxuhntNqIuH0pb98XwGAq6QQjq6+gxLSXH/xRosPy3Q==",
-      "cfr11_hmac_sha256_signature": "3b9163128466945bb031979af7246e1d21bf94329651ac54649b31fc98d82fea"
+      "cfr11_kms_ecdsa_p256_signature_b64": "MEUCICIlcDKCERlGu3zjq3s3G3yb2gcX4MCyX558LwD5YZa3AiEA79om58q6Xshgj9tPsbYf5fcVz40LaJCXnTpdLMPL8is=",
+      "cfr11_hmac_sha256_signature": "4b078a9563f8ee2dc039411dbeff1c1380dd8c6cf1e3b559fd189028640eaaba"
     }
   }
 }
@@ -1650,6 +1614,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-04",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "valkey_cache_unlinked_in_under_5s": true,
   "gvisor_worker_recycled": true,
   "live_cmek_lockout_evidence": {
@@ -1687,9 +1652,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
   "psc_nat_subnet_cidr": "10.240.0.0/28",
   "psc_internal_ip": "10.10.0.50",
   "migration_phases_executed": [
-    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, 4k thinking)",
+    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, MEDIUM/4k maxOut)",
     "PHASE_2_DUAL_WRITE_SHADOW (DMS CDC + 3LO Token Vault sync, 0 dropped SSE/3LO turns)",
-    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, 8k thinking)"
+    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, HIGH/8k maxOut)"
   ]
 }
 ```
@@ -1707,10 +1672,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
   "shadow_sync_checksum_verified": true,
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
-  "post_upgrade_thinking_budget": 8000,
+  "post_upgrade_thinking_level": "HIGH",
+  "post_upgrade_max_output_tokens": 8000,
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AWS_BEDROCK_AGENTCORE_MCP_PLUS_LIVE_CLOUD_KMS_21CFR11_SIGNATURE",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -1731,7 +1699,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "27b914e470fd2ee05a76c2dd55e12639",
+      "s3_etag": "4e5b04136ea1d994b523b5b63477bd49",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/muse-poc/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     },
     "cloud_kms_21cfr11_signature": {
@@ -1742,8 +1710,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
       "cfr11_live_kms_signed": true,
       "cfr11_kms_key_version": "projects/bbar-138hf0/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/adk-agent-signing-key/cryptoKeyVersions/1",
       "cfr11_payload_sha256": "ef0e3734ec18390ea72eb040aa3d677aff92a7906d9f3d88b4017fed9d4b07cf",
-      "cfr11_kms_ecdsa_p256_signature_b64": "MEQCICz6Jh1wJHtNqWHBWciRvQPJz4znxCMlpTr/NHo8QQ43AiBBxuhntNqIuH0pb98XwGAq6QQjq6+gxLSXH/xRosPy3Q==",
-      "cfr11_hmac_sha256_signature": "3b9163128466945bb031979af7246e1d21bf94329651ac54649b31fc98d82fea"
+      "cfr11_kms_ecdsa_p256_signature_b64": "MEUCICIlcDKCERlGu3zjq3s3G3yb2gcX4MCyX558LwD5YZa3AiEA79om58q6Xshgj9tPsbYf5fcVz40LaJCXnTpdLMPL8is=",
+      "cfr11_hmac_sha256_signature": "4b078a9563f8ee2dc039411dbeff1c1380dd8c6cf1e3b559fd189028640eaaba"
     }
   }
 }
@@ -1770,6 +1738,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas veeva --pattern 
   "decision": "DENY_UNIDIRECTIONAL_PSC_AND_ABORT_ON_CHECKSUM_MISMATCH",
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "saas_id": "SAAS-04",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reverse_spoke_to_hub_blocked": true,
   "rollback_to_route_epoch_1_preserved": true,
   "reason": "403 Forbidden: Private Service Connect ServiceAttachment is strictly unidirectional (Hub -> Spoke 10.10.0.50 only); reverse spoke initiation for 'mcp://finvault/veeva-muse-clinical-3lo' rejected."
@@ -1818,7 +1787,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
 
 **Setup Steps:**
 - 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://finvault/salesforce-jira-escalation-3lo`.
-- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
+- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `MEDIUM` / `4,000 maxOutputTokens`) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://finvault/salesforce-jira-escalation-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
 **Manual CLI Test Command:**
@@ -1839,7 +1808,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
   "dpop_jkt_thumbprint": "dpop_jkt_fv_001",
   "connector_uri": "mcp://finvault/salesforce-jira-escalation-3lo",
   "hop3_valkey_rpm_cap": 120,
-  "hop3_thinking_budget_cap": 4000,
+  "hop3_thinking_level": "MEDIUM",
+  "hop3_max_output_token_cap": 4000,
   "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
   "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
 }
@@ -1861,6 +1831,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -1869,7 +1841,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_c0i81YXVGoiuVawaNvkTYwwJN15G",
+      "job_id": "job_e7Z_ywIwzlDPcZswPORvyF8zczZl",
       "row_count": 2,
       "rows": [
         {
@@ -1901,7 +1873,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "c8178acac1708ec5f88493ffc7a7b4af",
+      "s3_etag": "3d4df223d0f5697051b6a55b8825f7b5",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/PATTERN_A_POOLED/finvault.json"
     }
   },
@@ -1927,6 +1899,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
   "pattern": "PATTERN_A_POOLED",
   "saas_id": "SAAS-05",
   "connector_uri": "mcp://finvault/salesforce-jira-escalation-3lo",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reason": "400 Bad Request / Redacted at Hop 4: Raw IBAN_CODE and SWIFT_CODE deterministically masked before external SaaS egress.",
   "enforced_by_governance_module": "core-cymbal-agent/governance/hop4_model_armor_guardrails.py"
 }
@@ -1960,7 +1933,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://finvault/salesforce-jira-escalation-3lo",
   "hop3_valkey_rpm_cap": 600,
-  "hop3_thinking_budget_cap": 8000
+  "hop3_thinking_level": "HIGH",
+  "hop3_max_output_token_cap": 8000
 }
 ```
 
@@ -1980,6 +1954,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -2000,7 +1976,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "4dd46c756554af676401da2e83600957",
+      "s3_etag": "cd4fc265af93d0d8813735a6a1610cc2",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
@@ -2031,6 +2007,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-05",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "valkey_cache_unlinked_in_under_5s": true,
   "gvisor_worker_recycled": true,
   "live_cmek_lockout_evidence": {
@@ -2068,9 +2045,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
   "psc_nat_subnet_cidr": "10.240.0.0/28",
   "psc_internal_ip": "10.10.0.50",
   "migration_phases_executed": [
-    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, 4k thinking)",
+    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, MEDIUM/4k maxOut)",
     "PHASE_2_DUAL_WRITE_SHADOW (DMS CDC + 3LO Token Vault sync, 0 dropped SSE/3LO turns)",
-    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, 8k thinking)"
+    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, HIGH/8k maxOut)"
   ]
 }
 ```
@@ -2088,10 +2065,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
   "shadow_sync_checksum_verified": true,
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
-  "post_upgrade_thinking_budget": 8000,
+  "post_upgrade_thinking_level": "HIGH",
+  "post_upgrade_max_output_tokens": 8000,
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -2112,7 +2092,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "fc437c80798a7bb7ae207245a1202190",
+      "s3_etag": "0cceebf4e4e6d789ec1f71fc84de79e8",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/salesforce-jira/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
@@ -2140,6 +2120,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas salesforce --pat
   "decision": "DENY_UNIDIRECTIONAL_PSC_AND_ABORT_ON_CHECKSUM_MISMATCH",
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "saas_id": "SAAS-05",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reverse_spoke_to_hub_blocked": true,
   "rollback_to_route_epoch_1_preserved": true,
   "reason": "403 Forbidden: Private Service Connect ServiceAttachment is strictly unidirectional (Hub -> Spoke 10.10.0.50 only); reverse spoke initiation for 'mcp://finvault/salesforce-jira-escalation-3lo' rejected."
@@ -2191,7 +2172,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
 
 **Setup Steps:**
 - 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://cymbal/databricks-unity-catalog-genie-3lo`.
-- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
+- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `MEDIUM` / `4,000 maxOutputTokens`) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://cymbal/databricks-unity-catalog-genie-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
 **Manual CLI Test Command:**
@@ -2212,7 +2193,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
   "dpop_jkt_thumbprint": "dpop_jkt_fv_001",
   "connector_uri": "mcp://cymbal/databricks-unity-catalog-genie-3lo",
   "hop3_valkey_rpm_cap": 120,
-  "hop3_thinking_budget_cap": 4000,
+  "hop3_thinking_level": "MEDIUM",
+  "hop3_max_output_token_cap": 4000,
   "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
   "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
 }
@@ -2234,6 +2216,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -2242,7 +2226,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_RK3jDGkGsYQ_4u-x3NXCsigCFqJg",
+      "job_id": "job_DsJ-WfuJJyuObMOfVTBkrR6xMtXi",
       "row_count": 2,
       "rows": [
         {
@@ -2274,7 +2258,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "b916fec15499934670f691902f87e070",
+      "s3_etag": "08d23a0ce987fed6d68cdea12b7f74c2",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/PATTERN_A_POOLED/finvault.json"
     }
   },
@@ -2301,6 +2285,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
   "pattern": "PATTERN_A_POOLED",
   "saas_id": "SAAS-06",
   "connector_uri": "mcp://cymbal/databricks-unity-catalog-genie-3lo",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reason": "403 Forbidden: Tenant 'retailstream' blocked from Unity Catalog schema 'cymbal_uc_prod.finvault_gold' and EXECUTE IMMEDIATE.",
   "enforced_by_governance_module": "core-cymbal-agent/governance/hop5_data_rls_and_otel.py"
 }
@@ -2334,7 +2319,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://cymbal/databricks-unity-catalog-genie-3lo",
   "hop3_valkey_rpm_cap": 600,
-  "hop3_thinking_budget_cap": 8000
+  "hop3_thinking_level": "HIGH",
+  "hop3_max_output_token_cap": 8000
 }
 ```
 
@@ -2354,6 +2340,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -2362,7 +2350,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_RK3jDGkGsYQ_4u-x3NXCsigCFqJg",
+      "job_id": "job_DsJ-WfuJJyuObMOfVTBkrR6xMtXi",
       "row_count": 2,
       "rows": [
         {
@@ -2400,7 +2388,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "bf0060e7c52b2aa0a322eae9dbba4c05",
+      "s3_etag": "8b8a65deec3101b898a709d75c53b8a7",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
@@ -2431,6 +2419,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-06",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "valkey_cache_unlinked_in_under_5s": true,
   "gvisor_worker_recycled": true,
   "live_cmek_lockout_evidence": {
@@ -2468,9 +2457,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
   "psc_nat_subnet_cidr": "10.240.0.0/28",
   "psc_internal_ip": "10.10.0.50",
   "migration_phases_executed": [
-    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, 4k thinking)",
+    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, MEDIUM/4k maxOut)",
     "PHASE_2_DUAL_WRITE_SHADOW (DMS CDC + 3LO Token Vault sync, 0 dropped SSE/3LO turns)",
-    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, 8k thinking)"
+    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, HIGH/8k maxOut)"
   ]
 }
 ```
@@ -2488,10 +2477,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
   "shadow_sync_checksum_verified": true,
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
-  "post_upgrade_thinking_budget": 8000,
+  "post_upgrade_thinking_level": "HIGH",
+  "post_upgrade_max_output_tokens": 8000,
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -2500,7 +2492,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_RK3jDGkGsYQ_4u-x3NXCsigCFqJg",
+      "job_id": "job_DsJ-WfuJJyuObMOfVTBkrR6xMtXi",
       "row_count": 2,
       "rows": [
         {
@@ -2538,7 +2530,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "0d8331d1734e8a82ae5e31b4a85b877f",
+      "s3_etag": "8796e0c2bfe359403b2b177f322229ab",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/databricks-unity/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
@@ -2566,6 +2558,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas databricks --pat
   "decision": "DENY_UNIDIRECTIONAL_PSC_AND_ABORT_ON_CHECKSUM_MISMATCH",
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "saas_id": "SAAS-06",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reverse_spoke_to_hub_blocked": true,
   "rollback_to_route_epoch_1_preserved": true,
   "reason": "403 Forbidden: Private Service Connect ServiceAttachment is strictly unidirectional (Hub -> Spoke 10.10.0.50 only); reverse spoke initiation for 'mcp://cymbal/databricks-unity-catalog-genie-3lo' rejected."
@@ -2611,7 +2604,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
 
 **Setup Steps:**
 - 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://cymbal/snowflake-cortex-analyst-sql-3lo`.
-- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
+- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `MEDIUM` / `4,000 maxOutputTokens`) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://cymbal/snowflake-cortex-analyst-sql-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
 **Manual CLI Test Command:**
@@ -2632,7 +2625,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
   "dpop_jkt_thumbprint": "dpop_jkt_rs_002",
   "connector_uri": "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
   "hop3_valkey_rpm_cap": 120,
-  "hop3_thinking_budget_cap": 4000,
+  "hop3_thinking_level": "MEDIUM",
+  "hop3_max_output_token_cap": 4000,
   "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
   "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'retailstream'"
 }
@@ -2654,6 +2648,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "2b6b245454e3bceea62cd327",
@@ -2662,7 +2658,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_-wpR-tTijVwTV99hyqlS_YQqy3y-",
+      "job_id": "job_OuR8_ZpcVTIxxJO_3bhLY4QevMuu",
       "row_count": 1,
       "rows": [
         {
@@ -2685,7 +2681,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "2afa7a6c09ec5ef47277ada33a557905",
+      "s3_etag": "c5a9d8d5eec4b5ada90ed5fdfc3470a1",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/PATTERN_A_POOLED/retailstream.json"
     }
   },
@@ -2712,6 +2708,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
   "pattern": "PATTERN_A_POOLED",
   "saas_id": "SAAS-07",
   "connector_uri": "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reason": "403 Forbidden: Hop 5 enforced 'USE SECONDARY ROLES NONE' and blocked escalation to ROLE_CYMBAL_FINVAULT.",
   "enforced_by_governance_module": "core-cymbal-agent/governance/hop5_data_rls_and_otel.py"
 }
@@ -2745,7 +2742,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://cymbal/snowflake-cortex-analyst-sql-3lo",
   "hop3_valkey_rpm_cap": 600,
-  "hop3_thinking_budget_cap": 8000
+  "hop3_thinking_level": "HIGH",
+  "hop3_max_output_token_cap": 8000
 }
 ```
 
@@ -2765,6 +2763,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "2b6b245454e3bceea62cd327",
@@ -2773,7 +2773,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_-wpR-tTijVwTV99hyqlS_YQqy3y-",
+      "job_id": "job_OuR8_ZpcVTIxxJO_3bhLY4QevMuu",
       "row_count": 1,
       "rows": [
         {
@@ -2802,7 +2802,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "2c800465dd7fb7bec442b589e0b6d678",
+      "s3_etag": "9b092ac43389cdbbfb5380ef5b5ce480",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/PATTERN_B_SOVEREIGN_SILO/retailstream.json"
     }
   }
@@ -2833,6 +2833,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-07",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "valkey_cache_unlinked_in_under_5s": true,
   "gvisor_worker_recycled": true,
   "live_cmek_lockout_evidence": {
@@ -2870,9 +2871,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
   "psc_nat_subnet_cidr": "10.240.0.0/28",
   "psc_internal_ip": "10.10.0.50",
   "migration_phases_executed": [
-    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, 4k thinking)",
+    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, MEDIUM/4k maxOut)",
     "PHASE_2_DUAL_WRITE_SHADOW (DMS CDC + 3LO Token Vault sync, 0 dropped SSE/3LO turns)",
-    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, 8k thinking)"
+    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, HIGH/8k maxOut)"
   ]
 }
 ```
@@ -2890,10 +2891,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
   "shadow_sync_checksum_verified": true,
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
-  "post_upgrade_thinking_budget": 8000,
+  "post_upgrade_thinking_level": "HIGH",
+  "post_upgrade_max_output_tokens": 8000,
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_LIVE_BIGQUERY_RLS_PUSHDOWN",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "2b6b245454e3bceea62cd327",
@@ -2902,7 +2906,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_-wpR-tTijVwTV99hyqlS_YQqy3y-",
+      "job_id": "job_OuR8_ZpcVTIxxJO_3bhLY4QevMuu",
       "row_count": 1,
       "rows": [
         {
@@ -2931,7 +2935,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "8f887a02b8c64a3083c91eb72ea10379",
+      "s3_etag": "5cf1cd8f8d80170adecf7078721e799e",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/snowflake-cortex/PATTERN_C_HYBRID_PSC_SPOKE/retailstream.json"
     }
   }
@@ -2959,6 +2963,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas snowflake --patt
   "decision": "DENY_UNIDIRECTIONAL_PSC_AND_ABORT_ON_CHECKSUM_MISMATCH",
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "saas_id": "SAAS-07",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reverse_spoke_to_hub_blocked": true,
   "rollback_to_route_epoch_1_preserved": true,
   "reason": "403 Forbidden: Private Service Connect ServiceAttachment is strictly unidirectional (Hub -> Spoke 10.10.0.50 only); reverse spoke initiation for 'mcp://cymbal/snowflake-cortex-analyst-sql-3lo' rejected."
@@ -3006,7 +3011,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
 
 **Setup Steps:**
 - 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://finvault/workday-hcm-financials-raas-3lo`.
-- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
+- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `MEDIUM` / `4,000 maxOutputTokens`) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://finvault/workday-hcm-financials-raas-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
 **Manual CLI Test Command:**
@@ -3027,7 +3032,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "dpop_jkt_thumbprint": "dpop_jkt_fv_001",
   "connector_uri": "mcp://finvault/workday-hcm-financials-raas-3lo",
   "hop3_valkey_rpm_cap": 120,
-  "hop3_thinking_budget_cap": 4000,
+  "hop3_thinking_level": "MEDIUM",
+  "hop3_max_output_token_cap": 4000,
   "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
   "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
 }
@@ -3049,6 +3055,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -3057,7 +3065,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_c0i81YXVGoiuVawaNvkTYwwJN15G",
+      "job_id": "job_e7Z_ywIwzlDPcZswPORvyF8zczZl",
       "row_count": 2,
       "rows": [
         {
@@ -3089,7 +3097,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "feb55620f042f8b0d677d8e1b8efdf8e",
+      "s3_etag": "367b7a6bf6eec5d2812c17262b65991f",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/PATTERN_A_POOLED/finvault.json"
     }
   },
@@ -3116,6 +3124,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "pattern": "PATTERN_A_POOLED",
   "saas_id": "SAAS-08",
   "connector_uri": "mcp://finvault/workday-hcm-financials-raas-3lo",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reason": "401 Unauthorized (MCP -32042): Intra-tenant 3LO token reuse blocked across distinct user principals.",
   "enforced_by_governance_module": "core-cymbal-agent/governance/hop5_data_rls_and_otel.py"
 }
@@ -3149,7 +3158,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://finvault/workday-hcm-financials-raas-3lo",
   "hop3_valkey_rpm_cap": 600,
-  "hop3_thinking_budget_cap": 8000
+  "hop3_thinking_level": "HIGH",
+  "hop3_max_output_token_cap": 8000
 }
 ```
 
@@ -3169,6 +3179,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -3189,7 +3201,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "47bab0643e616254b17ee4f67845f32a",
+      "s3_etag": "04305faffb6d43063d8d8b24e937a2c2",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
@@ -3220,6 +3232,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-08",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "valkey_cache_unlinked_in_under_5s": true,
   "gvisor_worker_recycled": true,
   "live_cmek_lockout_evidence": {
@@ -3257,9 +3270,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "psc_nat_subnet_cidr": "10.240.0.0/28",
   "psc_internal_ip": "10.10.0.50",
   "migration_phases_executed": [
-    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, 4k thinking)",
+    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, MEDIUM/4k maxOut)",
     "PHASE_2_DUAL_WRITE_SHADOW (DMS CDC + 3LO Token Vault sync, 0 dropped SSE/3LO turns)",
-    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, 8k thinking)"
+    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, HIGH/8k maxOut)"
   ]
 }
 ```
@@ -3277,10 +3290,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "shadow_sync_checksum_verified": true,
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
-  "post_upgrade_thinking_budget": 8000,
+  "post_upgrade_thinking_level": "HIGH",
+  "post_upgrade_max_output_tokens": 8000,
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_SDP_REDACTION",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -3301,7 +3317,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "7235f88bd0d5f7d8259735ff5940bbc1",
+      "s3_etag": "bdda3b635f9a71f8ebb03a3cc5982b14",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/workday-raas/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
@@ -3329,6 +3345,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "decision": "DENY_UNIDIRECTIONAL_PSC_AND_ABORT_ON_CHECKSUM_MISMATCH",
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "saas_id": "SAAS-08",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reverse_spoke_to_hub_blocked": true,
   "rollback_to_route_epoch_1_preserved": true,
   "reason": "403 Forbidden: Private Service Connect ServiceAttachment is strictly unidirectional (Hub -> Spoke 10.10.0.50 only); reverse spoke initiation for 'mcp://finvault/workday-hcm-financials-raas-3lo' rejected."
@@ -3358,7 +3375,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas workday --patter
   "mcp_target_id": "G767QR3TQZ",
   "mcp_tool_name": "datadog-sre___query_tenant_apm_logs",
   "datadog_api_validate_url": "https://api.datadoghq.com/api/v1/validate",
-  "datadog_status_url": "https://status.datadoghq.com/api/v2/status.json",
+  "datadog_status_url": "https://datadog.statuspage.io/api/v2/status.json",
   "mandatory_log_query_prefix": "index:cymbal-prod @tenant_id:${ctx.tenant_id}",
   "hop4_indirect_log_injection_guard": true
 }
@@ -3374,7 +3391,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
 
 **Setup Steps:**
 - 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://cymbal/datadog-observability-sre-3lo`.
-- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
+- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `MEDIUM` / `4,000 maxOutputTokens`) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://cymbal/datadog-observability-sre-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
 **Manual CLI Test Command:**
@@ -3395,7 +3412,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
   "dpop_jkt_thumbprint": "dpop_jkt_fv_001",
   "connector_uri": "mcp://cymbal/datadog-observability-sre-3lo",
   "hop3_valkey_rpm_cap": 120,
-  "hop3_thinking_budget_cap": 4000,
+  "hop3_thinking_level": "MEDIUM",
+  "hop3_max_output_token_cap": 4000,
   "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
   "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
 }
@@ -3417,6 +3435,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -3425,7 +3445,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_c0i81YXVGoiuVawaNvkTYwwJN15G",
+      "job_id": "job_e7Z_ywIwzlDPcZswPORvyF8zczZl",
       "row_count": 2,
       "rows": [
         {
@@ -3457,7 +3477,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "d606f02706c7299c4b6274868f7d8c87",
+      "s3_etag": "811f0174fa58793c2a5859b0b8c8114f",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/PATTERN_A_POOLED/finvault.json"
     }
   },
@@ -3483,6 +3503,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
   "pattern": "PATTERN_A_POOLED",
   "saas_id": "SAAS-09",
   "connector_uri": "mcp://cymbal/datadog-observability-sre-3lo",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reason": "400 Bad Request: Hop 4 Model Armor intercepted indirect prompt injection inside ingested Datadog log line.",
   "enforced_by_governance_module": "core-cymbal-agent/governance/hop4_model_armor_guardrails.py"
 }
@@ -3516,7 +3537,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://cymbal/datadog-observability-sre-3lo",
   "hop3_valkey_rpm_cap": 600,
-  "hop3_thinking_budget_cap": 8000
+  "hop3_thinking_level": "HIGH",
+  "hop3_max_output_token_cap": 8000
 }
 ```
 
@@ -3536,6 +3558,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -3556,7 +3580,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "fd268acc4fe10f0128d2ffc0fa98aced",
+      "s3_etag": "57a4ab3511248e72367196f456e3eeb7",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
@@ -3587,6 +3611,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-09",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "valkey_cache_unlinked_in_under_5s": true,
   "gvisor_worker_recycled": true,
   "live_cmek_lockout_evidence": {
@@ -3624,9 +3649,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
   "psc_nat_subnet_cidr": "10.240.0.0/28",
   "psc_internal_ip": "10.10.0.50",
   "migration_phases_executed": [
-    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, 4k thinking)",
+    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, MEDIUM/4k maxOut)",
     "PHASE_2_DUAL_WRITE_SHADOW (DMS CDC + 3LO Token Vault sync, 0 dropped SSE/3LO turns)",
-    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, 8k thinking)"
+    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, HIGH/8k maxOut)"
   ]
 }
 ```
@@ -3644,10 +3669,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
   "shadow_sync_checksum_verified": true,
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
-  "post_upgrade_thinking_budget": 8000,
+  "post_upgrade_thinking_level": "HIGH",
+  "post_upgrade_max_output_tokens": 8000,
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_CANONICAL_HOP4_MODEL_ARMOR_SCREEN",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -3668,7 +3696,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "21dccfef1eec2da2ab5ab9fdc0e420d9",
+      "s3_etag": "7159ebe6e9e591e4a74702c9a043c0d4",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/datadog-sre/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
@@ -3696,6 +3724,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas datadog --patter
   "decision": "DENY_UNIDIRECTIONAL_PSC_AND_ABORT_ON_CHECKSUM_MISMATCH",
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "saas_id": "SAAS-09",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reverse_spoke_to_hub_blocked": true,
   "rollback_to_route_epoch_1_preserved": true,
   "reason": "403 Forbidden: Private Service Connect ServiceAttachment is strictly unidirectional (Hub -> Spoke 10.10.0.50 only); reverse spoke initiation for 'mcp://cymbal/datadog-observability-sre-3lo' rejected."
@@ -3741,7 +3770,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 
 **Setup Steps:**
 - 1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`bbar-138hf0`) for `mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo`.
-- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).
+- 2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `MEDIUM` / `4,000 maxOutputTokens`) and shared `ContextCacheConfig` (`90%` discount).
 - 3. Store composite 3LO token under `{tenant_id}:{user_principal}:mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).
 
 **Manual CLI Test Command:**
@@ -3762,7 +3791,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "dpop_jkt_thumbprint": "dpop_jkt_fv_001",
   "connector_uri": "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
   "hop3_valkey_rpm_cap": 120,
-  "hop3_thinking_budget_cap": 4000,
+  "hop3_thinking_level": "MEDIUM",
+  "hop3_max_output_token_cap": 4000,
   "hop3_context_cache_key": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
   "hop5_rls_guc": "SET LOCAL app.current_tenant_id = 'finvault'"
 }
@@ -3784,6 +3814,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_HOP1_DPOP_AND_CMEK_GUARD",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -3792,7 +3824,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
     "hop4_ingress_decision": "ALLOW",
     "live_bigquery_rls": {
       "billing_project": "ramp-portal-dev",
-      "job_id": "job_c0i81YXVGoiuVawaNvkTYwwJN15G",
+      "job_id": "job_e7Z_ywIwzlDPcZswPORvyF8zczZl",
       "row_count": 2,
       "rows": [
         {
@@ -3824,7 +3856,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "2d841260b29ffff0b59c285bdcda7c74",
+      "s3_etag": "d42427368e6049655d91d01bd99d7edf",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/PATTERN_A_POOLED/finvault.json"
     }
   },
@@ -3851,6 +3883,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "pattern": "PATTERN_A_POOLED",
   "saas_id": "SAAS-10",
   "connector_uri": "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reason": "401 Unauthorized: Hop 1 RFC 9449 DPoP sender-constrained token binding failed (jkt mismatch).",
   "enforced_by_governance_module": "core-cymbal-agent/governance/hop1_edge_identity_pep.py"
 }
@@ -3884,7 +3917,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "cmek_key_state": "ENABLED",
   "connector_uri": "mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo",
   "hop3_valkey_rpm_cap": 600,
-  "hop3_thinking_budget_cap": 8000
+  "hop3_thinking_level": "HIGH",
+  "hop3_max_output_token_cap": 8000
 }
 ```
 
@@ -3904,6 +3938,8 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_HOP1_DPOP_AND_CMEK_GUARD",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -3924,7 +3960,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "6179f0ee0c0bec55df7e0498d32fa193",
+      "s3_etag": "52f1aa20b793c65c36f423acecf0a039",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/PATTERN_B_SOVEREIGN_SILO/finvault.json"
     }
   }
@@ -3955,6 +3991,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "pattern": "PATTERN_B_SOVEREIGN_SILO",
   "saas_id": "SAAS-10",
   "silo_project_id": "cymbal-medcore-silo-prod",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "valkey_cache_unlinked_in_under_5s": true,
   "gvisor_worker_recycled": true,
   "live_cmek_lockout_evidence": {
@@ -3992,9 +4029,9 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "psc_nat_subnet_cidr": "10.240.0.0/28",
   "psc_internal_ip": "10.10.0.50",
   "migration_phases_executed": [
-    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, 4k thinking)",
+    "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, MEDIUM/4k maxOut)",
     "PHASE_2_DUAL_WRITE_SHADOW (DMS CDC + 3LO Token Vault sync, 0 dropped SSE/3LO turns)",
-    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, 8k thinking)"
+    "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, HIGH/8k maxOut)"
   ]
 }
 ```
@@ -4012,10 +4049,13 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "shadow_sync_checksum_verified": true,
   "dropped_inflight_3lo_or_sse_turns": 0,
   "post_upgrade_rpm_limit": 600,
-  "post_upgrade_thinking_budget": 8000,
+  "post_upgrade_thinking_level": "HIGH",
+  "post_upgrade_max_output_tokens": 8000,
   "live_cloud_endpoint_probed": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "live_verification_evidence": {
     "verification_tier": "TIER_1_LIVE_AUTHENTICATED_AWS_AGENTCORE_MCP_PLUS_HOP1_DPOP_AND_CMEK_GUARD",
+    "include_live_probes": true,
+    "isLiveLlmCall": false,
     "probe_status_code": 200,
     "probe_decision": "ALLOW",
     "hop1_obo_token_hash": "463ddfcaf2bbf5afce16e9d5",
@@ -4036,7 +4076,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
       "http_status": 200,
       "is_error": false,
       "s3_persisted": true,
-      "s3_etag": "1d3fe468587e9dd18424bb4e5110259d",
+      "s3_etag": "d1350a4a22cacc15c8036964f76fffcd",
       "s3_audit_ledger_uri": "s3://cymbal-aws-federation-393036065405-us-east-1/cymbal-10saas-ledger/crowdstrike-okta/PATTERN_C_HYBRID_PSC_SPOKE/finvault.json"
     }
   }
@@ -4064,6 +4104,7 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
   "decision": "DENY_UNIDIRECTIONAL_PSC_AND_ABORT_ON_CHECKSUM_MISMATCH",
   "pattern": "PATTERN_C_HYBRID_PSC_SPOKE",
   "saas_id": "SAAS-10",
+  "execution_mode": "deterministic_in_memory_policy_assertion",
   "reverse_spoke_to_hub_blocked": true,
   "rollback_to_route_epoch_1_preserved": true,
   "reason": "403 Forbidden: Private Service Connect ServiceAttachment is strictly unidirectional (Hub -> Spoke 10.10.0.50 only); reverse spoke initiation for 'mcp://cymbal/crowdstrike-falcon-okta-xdr-3lo' rejected."
@@ -4071,3 +4112,34 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 ```
 
 ---
+
+## 11. Multi-Cloud Federation Architecture Diagram (`Slide 11/12`)
+
+> Every `BEFORE -> AFTER` execution trace below traverses the **Google Cloud 5-Hop ADK Control Plane** (`ramp-portal-dev` / `bbar-138hf0`) via keyless OIDC federation to **AWS Bedrock AgentCore MCP Gateway** (`cymbal-a2a-mcp-gateway-suyxm3caof`) and immutable Amazon S3 audit ledgers (`?format=json`).
+
+![Figure 1 (Approved Slide 11/12) — WS5 - PART 5 - Multi-Cloud Federation: Google Cloud Plane ↔ AWS & 10 SaaS](../diagrams/saas10-multicloud-a2a-mcp-bridge.svg)
+
+*Figure 1. Multi-Cloud Federation topology bridging the Google Cloud 5-Hop Control & Runtime Plane with AWS Bedrock AgentCore MCP Gateway, all 10 third-party SaaS targets, and immutable Amazon S3 cryptographic audit ledgers.*
+
+---
+
+<!-- GENUINE_3P_BEFORE_AFTER_START -->
+
+## 12. Verified Live Commercial SaaS Proofs (GCP Console Pending 1-Tap SSO)
+
+> [!IMPORTANT]
+> **Verified Live Commercial SaaS Proofs (2 Retina Captures • GCP Console: 0/15 Pending 1-Tap SSO):** Currently showing 2 cryptographically verified live commercial SaaS Retina captures (ThoughtSpot Cloud on team2.thoughtspot.cloud, verified exit 0 by verify_slide_screenshots.mjs --audience external). Google Cloud Console & Gemini Enterprise captures (0/15) are pending 1-tap Google SSO in an authenticated browser session; zero open-source stand-ins or unattested legacy images remain. Open the dedicated gallery at `/blogs/atlas/screenshots` or inspect the full [Multi-Cloud Console & Live SaaS Verification Atlas](../blogs/saas-10-visual-verification-and-redteam-atlas.md).
+
+### SAAS-01A: ThoughtSpot Cloud — Live Executive Analytics Liveboard
+**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** team2.thoughtspot.cloud • **Resource:** Retail Sales Liveboard (team2.thoughtspot.cloud) • Provenance SHA-256 991fad856c6e (2880x1620 Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
+
+![Live commercial ThoughtSpot Cloud SaaS Liveboard rendered directly from team2.thoughtspot.cloud.](../screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png)
+*Genuine commercial ThoughtSpot Cloud Liveboard (team2.thoughtspot.cloud) captured live at 2880x1620 Retina with cryptographic SHA-256 provenance verification.*
+
+### SAAS-01B: ThoughtSpot Cloud — Live Governed Saved Answer Query
+**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** team2.thoughtspot.cloud • **Resource:** Stock-Out & Spoilage Analytics Answer (team2.thoughtspot.cloud) • Provenance SHA-256 3590f8609f88 (2880x1620 Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
+
+![Live commercial ThoughtSpot Cloud Saved Answer analytics table rendered directly from team2.thoughtspot.cloud.](../screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png)
+*Genuine commercial ThoughtSpot Cloud Saved Answer query (team2.thoughtspot.cloud) demonstrating live governed BI analytics consumption.*
+
+<!-- GENUINE_3P_BEFORE_AFTER_END -->

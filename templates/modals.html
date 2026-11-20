@@ -51,15 +51,15 @@
             <button type="button" class="sim-btn primary" style="font-size:10.5px; padding:3px 8px;" onclick="copySaaSModalField('proxy', this)">📋 Copy CLI Command</button>
           </div>
           <p style="margin:0 0 6px 0; font-size:11.5px; color:#1e3a8a;">Runs a local proxy on your Mac with auto-refreshed Google IAM OIDC tokens, rewrites session cookies, and opens your browser directly to the authenticated page:</p>
-          <pre style="margin:0; background:#ffffff; color:#0f172a; border:1px solid #cbd5e1; padding:8px 12px; border-radius:6px; font-size:11.5px; overflow-x:auto;"><code id="saas-modal-proxy-cmd">python3 scripts/saas_cloudrun_proxy.py metabase</code></pre>
+          <pre style="margin:0; background:#ffffff; color:#0f172a; border:1px solid #cbd5e1; padding:8px 12px; border-radius:6px; font-size:11.5px; overflow-x:auto;"><code id="saas-modal-proxy-cmd">gcloud auth print-identity-token # Commercial SaaS via GCP IAP / Marketplace</code></pre>
         </div>
 
         <!-- Quick Links & Live Gateway Access -->
         <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; padding-top:6px; border-top:1px solid #e2e8f0;">
           <div class="flex-wrap-center">
-            <a id="saas-modal-live-gateway-link" href="#" target="_blank" rel="noopener noreferrer" class="sim-btn primary" style="font-size:11px; padding:5px 10px; text-decoration:none; background:#16a34a; border-color:#15803d;">&#128640; 1-Click Live Web UI (via Portal Gateway) &nearr;</a>
-            <a id="saas-modal-cloudrun-link" href="#" target="_blank" rel="noopener noreferrer" class="sim-btn" style="font-size:11px; padding:5px 9px; text-decoration:none;">Cloud Run (IAM Protected) &nearr;</a>
-            <a id="saas-modal-s3-link" href="#" target="_blank" rel="noopener noreferrer" class="sim-btn" style="font-size:11px; padding:5px 9px; text-decoration:none;">S3 Attestation JSON &nearr;</a>
+            <a id="saas-modal-live-gateway-link" href="/saas-ui/thoughtspot-spotter" target="_blank" rel="noopener noreferrer" class="sim-btn primary" style="font-size:11px; padding:5px 10px; text-decoration:none; background:#16a34a; border-color:#15803d;">&#128640; 1-Click Live Web UI (via Portal Gateway) &nearr;</a>
+            <a id="saas-modal-cloudrun-link" href="https://console.cloud.google.com/run?project=bbar-138hf0" target="_blank" rel="noopener noreferrer" class="sim-btn" style="font-size:11px; padding:5px 9px; text-decoration:none;">Cloud Run (IAM Protected) &nearr;</a>
+            <a id="saas-modal-s3-link" href="/docs/third_party_5_saas_verification_receipt.json" target="_blank" rel="noopener noreferrer" class="sim-btn" style="font-size:11px; padding:5px 9px; text-decoration:none;">S3 Attestation JSON &nearr;</a>
           </div>
           <button type="button" class="sim-btn" id="saas-modal-zoom-btn" style="font-size:11px; padding:5px 10px;" onclick="zoomSaaSModalAfterImg()">&#128065; Zoom Before/After Proof</button>
         </div>
@@ -67,18 +67,18 @@
     </div>
   </div>
 
-<!-- LIGHT-THEME 2880x1800 RETINA GENUINE UI SCREENSHOT LIGHTBOX MODAL -->
+<!-- LIGHT-THEME 16:9 RETINA VERIFIED UI SCREENSHOT LIGHTBOX MODAL -->
   <div id="genuine-ui-lightbox-modal" class="genuine-ui-lightbox" role="dialog" aria-modal="true" aria-label="Genuine Multi-Cloud UI Screenshot Zoom" onclick="if (event.target === this) closeGenuineScreenshotLightbox();">
     <div class="genuine-ui-lightbox-card">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 16px; background:#f8fafc; border-bottom:1px solid #e2e8f0;">
-        <strong id="genuine-ui-lightbox-title" style="font-size:13.5px; color:#0f172a;">Live 2880&times;1800 Retina UI Capture</strong>
+        <strong id="genuine-ui-lightbox-title" style="font-size:13.5px; color:#0f172a;">Verified Live 16:9 Retina UI Capture</strong>
         <div style="display:flex; gap:8px; align-items:center;">
-          <a id="genuine-ui-lightbox-raw" href="#" target="_blank" rel="noopener" class="sim-btn" style="font-size:12px; padding:5px 10px; text-decoration:none;">Open Raw 2880&times;1800 PNG &nearr;</a>
+          <a id="genuine-ui-lightbox-raw" href="screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png" target="_blank" rel="noopener" class="sim-btn" style="font-size:12px; padding:5px 10px; text-decoration:none;">Open Raw Retina PNG &nearr;</a>
           <button type="button" class="sim-btn primary" style="font-size:12px; padding:5px 12px;" onclick="closeGenuineScreenshotLightbox()">&#10005; Close</button>
         </div>
       </div>
       <div style="overflow:auto; background:#f1f5f9; padding:12px; display:flex; justify-content:center; align-items:flex-start;">
-        <img id="genuine-ui-lightbox-img" src="screenshots/genuine-multicloud-3p-uis/gcp_cloudrun_01_metabase_v050_bi_rls_ledger.png" alt="Live Multi-Cloud UI Capture" style="max-width:100%; max-height:calc(92vh - 76px); height:auto; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff;" />
+        <img id="genuine-ui-lightbox-img" src="screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png" alt="Live Multi-Cloud UI Capture" style="max-width:100%; max-height:calc(92vh - 76px); height:auto; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff;" />
       </div>
     </div>
   </div>
@@ -109,7 +109,7 @@
               <span class="faq-chevron">&#9660;</span>
             </button>
             <div class="faq-answer" id="faq-a-1" role="region" aria-labelledby="faq-q-1">
-              <p><strong>Cymbal</strong> is <strong>Google Cloud&#39;s official fictitious demo brand and enterprise holding company</strong> (documented internally at <a href="http://go/cymbalgroup" target="_blank" rel="noopener noreferrer">go/cymbalgroup</a>).</p>
+              <p><strong>Cymbal</strong> is <strong>Google Cloud&#39;s official fictitious demo brand and enterprise holding company</strong>.</p>
               <p>Google Cloud created Cymbal so that Solutions Architects, Product Managers, and engineers can build and demonstrate realistic, production-grade enterprise architectures&mdash;such as <strong>multi-tenant AI platforms, cross-cloud federation, and regulatory compliance (PCI-DSS, SOC 2, HIPAA)</strong>&mdash;without using real customer names or exposing confidential customer IP.</p>
               <p>Cymbal has its own official design system, corporate backstories, compliance requirements, and realistic dataset schemas used across Google Cloud Next keynotes, Architecture Center whitepapers, and Codelabs.</p>
             </div>
@@ -133,12 +133,12 @@
           <!-- FAQ Item 3 -->
           <div class="faq-item">
             <button type="button" class="faq-question" id="faq-q-3" aria-expanded="false" aria-controls="faq-a-3" onclick="toggleFAQ(this)">
-              <span>3. How does Authentication &amp; BeyondCorp / IAP work for Google users?</span>
+              <span>3. How does Authentication &amp; Google Cloud IAP work?</span>
               <span class="faq-chevron">&#9660;</span>
             </button>
             <div class="faq-answer" id="faq-a-3" role="region" aria-labelledby="faq-q-3">
-              <p>The production portal is fronted by Google Cloud Load Balancing with <strong>BeyondCorp Enterprise (<code>login.corp.google.com</code>)</strong> at <code>https://ge-blogs-248990048888.cr.gclb.goog</code>.</p>
-              <p>When any Googler browses on their work laptop, Google SSO transparently authenticates their active <code>@google.com</code> corporate session without requiring manual CLI tokens or VPNs. The embedded reverse-proxy gateway (<code>/api/saas-live/&lt;app&gt;</code>) in <code>server.py</code> automatically handles downstream token injection, cookie rewriting, and upstream container routing.</p>
+              <p>The production portal is fronted by Google Cloud Load Balancing with <strong>Google Cloud Identity-Aware Proxy (IAP) &amp; Enterprise SSO</strong>.</p>
+              <p>When authenticated enterprise users browse on managed endpoints, corporate SSO transparently authenticates their session without requiring manual CLI tokens or VPNs. The embedded reverse-proxy gateway (<code>/api/saas-live/&lt;app&gt;</code>) in <code>server.py</code> automatically handles downstream token injection, cookie rewriting, and upstream container routing.</p>
             </div>
           </div>
 
@@ -151,16 +151,16 @@
             <div class="faq-answer" id="faq-a-4" role="region" aria-labelledby="faq-q-4">
               <p>The platform integrates 10 genuine multi-cloud third-party enterprise tools to verify all 5 hops and cross-cloud MCP federation:</p>
               <ul>
-                <li><strong>SAAS-01 &bull; Metabase Enterprise BI v0.50.26</strong>: Saved Question #27 liveboard &amp; financial RLS.</li>
-                <li><strong>SAAS-02 &bull; Grafana Enterprise v11.2.0</strong>: SRE operations workbench &amp; HTTP 403 spoof-block attestation panel.</li>
-                <li><strong>SAAS-03 &bull; Redmine ITSM v5.1</strong>: P1 change ticket CHG0049299 &amp; customer case escalation.</li>
-                <li><strong>SAAS-04 &bull; NocoDB EDC / GxP v0.255.2</strong>: Clinical trial electronic data capture &amp; FDA 21 CFR Part 11 audit trails.</li>
-                <li><strong>SAAS-05 &bull; Gitea Enterprise Git v1.22.3</strong>: SRE escalation runbooks &amp; issue #1 single-flight remediation.</li>
-                <li><strong>SAAS-06 &bull; Trino Distributed SQL v440</strong>: Federated query coordinator across cross-cloud data lakes.</li>
-                <li><strong>SAAS-07 &bull; ClickHouse Data Warehouse v24.8</strong>: High-throughput financial ledger SQL console.</li>
-                <li><strong>SAAS-08 &bull; Directus Data Studio v11.1.0</strong>: HCM compensation row-level security &amp; PII redaction.</li>
-                <li><strong>SAAS-09 &bull; Datalust Seq v2024.3</strong>: APM OpenTelemetry span ingestion &amp; prompt injection audit log.</li>
-                <li><strong>SAAS-10 &bull; HashiCorp Vault v1.13.3</strong>: CMEK tenant key namespace &amp; secret revocation kill-switch.</li>
+                <li><strong>SAAS-01 &bull; ThoughtSpot Cloud (Spotter Agentic BI)</strong>: Google Cloud Marketplace / Commercial Free Trial (Free Trial (Active)) &bull; Target <code>HXGGFMZBKE</code>.</li>
+                <li><strong>SAAS-02 &bull; Sigma Computing (Cloud BI Workbooks)</strong>: Direct Commercial Free Trial (14-Day) (Free Trial) &bull; Target <code>IZVODT083Q</code>.</li>
+                <li><strong>SAAS-03 &bull; ServiceNow ITSM &amp; ITOM</strong>: ServiceNow Personal Developer Instance (PDI) (Free Developer Plan) &bull; Target <code>ZS9VGYHBQL</code>.</li>
+                <li><strong>SAAS-04 &bull; Veeva Vault RIM (21 CFR Part 11 GxP)</strong>: Enterprise Sales-Assisted Only (No Self-Service Marketplace Trial) — Backed by GCP Integration Connectors (Enterprise MSA Only) &bull; Target <code>TWQU0KSRVF</code>.</li>
+                <li><strong>SAAS-05 &bull; Atlassian Jira Cloud &amp; Salesforce Developer Edition</strong>: Atlassian Free Cloud Plan + Salesforce Developer Edition (Free Plan / Dev Edition) &bull; Target <code>K5JAEFCQ6E</code>.</li>
+                <li><strong>SAAS-06 &bull; Databricks Data Intelligence (Unity Catalog)</strong>: Google Cloud Marketplace (ramp-portal-dev) (14-Day Free Trial / PAYG) &bull; Target <code>TERCK8SLBP</code>.</li>
+                <li><strong>SAAS-07 &bull; Snowflake AI Data Cloud (Cortex SQL)</strong>: Google Cloud Marketplace (ramp-portal-dev) (30-Day Free Trial / PAYG) &bull; Target <code>CCMDEVZV2S</code>.</li>
+                <li><strong>SAAS-08 &bull; Workday Enterprise HCM &amp; RaaS</strong>: Enterprise Sales-Assisted Only (No Self-Service Marketplace Trial) — Backed by GCP Integration Connectors (Enterprise MSA Only) &bull; Target <code>RAOTMUMJTZ</code>.</li>
+                <li><strong>SAAS-09 &bull; Datadog Cloud Observability &amp; Bits AI SRE</strong>: Google Cloud Marketplace (ramp-portal-dev) (14-Day Free Trial / PAYG) &bull; Target <code>G767QR3TQZ</code>.</li>
+                <li><strong>SAAS-10 &bull; Okta Workforce Identity &amp; CrowdStrike Falcon XDR</strong>: Okta Integrator Free Plan / CrowdStrike Free Trial (Free Developer / Trial) &bull; Target <code>C7EYM614F2</code>.</li>
               </ul>
             </div>
           </div>

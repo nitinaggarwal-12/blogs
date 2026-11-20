@@ -1,0 +1,22 @@
+{
+  "name": "ge-blogs-multi-tenant-portal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Google Cloud Multi-Tenant Agentic AI Architecture Series, 5-Hop Control Plane, Draw.io Studio & Slide Compilers",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test:e2e": "node scripts/e2e_puppeteer_functional_test.mjs"
+  },
+  "dependencies": {
+    "fast-xml-parser": "5.10.1",
+    "jszip": "3.10.1",
+    "pptxgenjs": "4.0.1",
+    "sharp": "0.34.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "puppeteer-core": "^24.43.1",
+    "tsx": "^4.23.12",
+    "typescript": "^5.9.3"
+  }
+}

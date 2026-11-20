@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" style="width:100%;height:auto;display:block;background:#FFFFFF;font-family:Arial,sans-serif;">
+<defs><marker id="arrowEnd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#475569"/></marker></defs>
+<rect x="0" y="0" width="1600" height="900" fill="#FFFFFF"/>
+<rect x="72.0" y="42.0" width="276.0" height="36.0" rx="5" fill="#E8F0FE" stroke="#4285F4" stroke-width="1.0"/>
+<text x="210.0" y="63.0" text-anchor="middle" fill="#0D47A1" font-size="11.7" font-weight="bold">PART 1 (WS1) • HOP 3B FINOPS</text>
+<text x="384.0" y="66.3" text-anchor="start" fill="#3C4043" font-size="22.1" font-weight="bold">Hop 3 Sandbox &amp; Valkey Rate Limiter: FinOps Bulkhead &amp; Prefix Caching</text>
+<rect x="72.0" y="90.0" width="1456.0" height="2.4" rx="0" fill="#DADCE0" stroke="none" stroke-width="0"/>
+<text x="84.0" y="872.9" text-anchor="start" fill="#5F6368" font-size="11.1" font-weight="bold">[Compendium S12/54 • PART 1 (WS1)]  •  ▶ 4-State Hybrid &amp; Draw.io ↗</text>
+<text x="84.0" y="129.7" text-anchor="start" fill="#5F6368" font-size="14.3" font-weight="bold">How shared memory bulkheads and prefix prompt caching deliver 89.1% net input token reduction across 950 tenants.</text>
+<rect x="72.0" y="162.0" width="696.0" height="660.0" rx="18" fill="#FFFFFF" stroke="#4285F4" stroke-width="1.5"/>
+<text x="120.0" y="211.0" text-anchor="start" fill="#0D47A1" font-size="15.6" font-weight="bold">VALKEY TOKEN-BUCKET TOKEN BULKHEAD</text>
+<text x="120.0" y="255.2" text-anchor="start" fill="#5F6368" font-size="12.4" font-weight="bold">Guaranteed Per-Tenant RPM &amp; TPM Capacity Allocation</text>
+<rect x="108.0" y="288.0" width="624.0" height="138.0" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="144.0" y="321.4" text-anchor="start" fill="#3C4043" font-size="13.0" font-weight="bold">Standard Commercial Tier</text>
+<text x="696.0" y="321.0" text-anchor="end" fill="#4285F4" font-size="11.7" font-weight="bold">120 RPM  •  40,000 TPM</text>
+<text x="144.0" y="380.9" text-anchor="start" fill="#5F6368" font-size="11.1" font-weight="bold">Enforces hard limits via Redis atomic scripts to prevent noisy-neighbor quota exhaustion.</text>
+<rect x="108.0" y="450.0" width="624.0" height="138.0" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="144.0" y="483.4" text-anchor="start" fill="#3C4043" font-size="13.0" font-weight="bold">Enterprise Sovereign Tier</text>
+<text x="696.0" y="483.0" text-anchor="end" fill="#4285F4" font-size="11.7" font-weight="bold">600 RPM  •  200,000 TPM</text>
+<text x="144.0" y="542.9" text-anchor="start" fill="#5F6368" font-size="11.1" font-weight="bold">Dedicated token bucket allocation with priority queueing and automatic burst capacity.</text>
+<rect x="108.0" y="612.0" width="624.0" height="138.0" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="144.0" y="645.4" text-anchor="start" fill="#3C4043" font-size="13.0" font-weight="bold">Deterministic Rejection</text>
+<text x="696.0" y="645.0" text-anchor="end" fill="#4285F4" font-size="11.7" font-weight="bold">HTTP 429 Retry-After</text>
+<text x="144.0" y="698.0" text-anchor="start" fill="#5F6368" font-size="11.0" font-weight="bold"><tspan x="144.0" dy="0">Clients receive HTTP 429 backoff hints. Single-flight SET NX PX 5000 and</tspan><tspan x="144.0" dy="16.0">&lt;5s SCAN+UNLINK prevent cache stampedes.</tspan></text>
+<rect x="828.0" y="162.0" width="696.0" height="660.0" rx="18" fill="#FFFFFF" stroke="#34A853" stroke-width="1.5"/>
+<text x="876.0" y="211.0" text-anchor="start" fill="#137333" font-size="15.6" font-weight="bold">VERTEX AI PREFIX PROMPT CACHING</text>
+<text x="876.0" y="255.2" text-anchor="start" fill="#5F6368" font-size="12.4" font-weight="bold">89.1% Net Input Token Reduction Across 950 Tenants</text>
+<rect x="864.0" y="288.0" width="624.0" height="138.0" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="900.0" y="321.4" text-anchor="start" fill="#3C4043" font-size="13.0" font-weight="bold">Deterministic System Prefix</text>
+<text x="1452.0" y="321.0" text-anchor="end" fill="#137333" font-size="11.7" font-weight="bold">32,768 Shared Tokens</text>
+<text x="900.0" y="374.0" text-anchor="start" fill="#5F6368" font-size="11.0" font-weight="bold"><tspan x="900.0" dy="0">Core agent system instructions, tool definitions, and schemas cached</tspan><tspan x="900.0" dy="16.0">globally (Vertex AI requires &gt;=32,768 token floor).</tspan></text>
+<rect x="864.0" y="450.0" width="624.0" height="138.0" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="900.0" y="483.4" text-anchor="start" fill="#3C4043" font-size="13.0" font-weight="bold">Per-Tenant Dynamic Suffix</text>
+<text x="1452.0" y="483.0" text-anchor="end" fill="#137333" font-size="11.7" font-weight="bold">4,000 Unique Tokens</text>
+<text x="900.0" y="542.9" text-anchor="start" fill="#5F6368" font-size="11.1" font-weight="bold">Tenant-specific memories and user context appended to cached prefix at inference time.</text>
+<rect x="864.0" y="612.0" width="624.0" height="138.0" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="900.0" y="645.4" text-anchor="start" fill="#3C4043" font-size="13.0" font-weight="bold">Cached Token Pricing</text>
+<text x="1452.0" y="645.0" text-anchor="end" fill="#137333" font-size="11.7" font-weight="bold">0.10x Cached Token Multiplier</text>
+<text x="900.0" y="704.9" text-anchor="start" fill="#5F6368" font-size="11.1" font-weight="bold">Dramatic inference token reduction enables sustainable 1x pooled baseline SaaS unit economics.</text>
+<g id="plane_layer" width="1600" font-family="Arial, Helvetica, sans-serif"><rect x="68.9" y="158.9" width="702.2" height="666.2" rx="17.3" fill="none" stroke="#93C5FD" stroke-width="1.2" stroke-dasharray="6,4"/><rect x="824.9" y="158.9" width="702.2" height="666.2" rx="17.3" fill="none" stroke="#6EE7B7" stroke-width="1.2" stroke-dasharray="6,4"/><rect x="75.1" y="148.5" width="339.9" height="15.2" rx="7.6" fill="#EFF6FF" stroke="#93C5FD" stroke-width="0.9"/><text x="245.1" y="159.3" text-anchor="middle" xml:space="preserve"><tspan font-size="10.0" font-weight="700" fill="#1D4ED8">CONTROL · per-tenant rate + token limits (counters in Valkey)</tspan></text><rect x="831.1" y="148.5" width="193.8" height="15.2" rx="7.6" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="0.9"/><text x="928.0" y="159.3" text-anchor="middle" xml:space="preserve"><tspan font-size="10.0" font-weight="700" fill="#047857">COMPUTE · inference prefix cache</tspan></text><rect x="72.0" y="829.8" width="478.7" height="15.0" rx="2.7" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.1"/><text x="78.2" y="840.4" text-anchor="start" xml:space="preserve"><tspan font-size="10.2" font-weight="700" fill="#1D4ED8">CONTROL  </tspan><tspan font-size="10.2" font-weight="400" fill="#1F2937">left panel: per-tenant RPM / TPM buckets in Valkey; overflow gets HTTP 429</tspan></text><rect x="560.7" y="829.8" width="478.7" height="15.0" rx="2.7" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.1"/><text x="566.9" y="840.4" text-anchor="start" xml:space="preserve"><tspan font-size="10.2" font-weight="700" fill="#047857">COMPUTE  </tspan><tspan font-size="10.2" font-weight="400" fill="#1F2937">right panel: Vertex AI prefix caching, 32,768 shared tokens at a 0.10x rate</tspan></text><rect x="1049.3" y="829.8" width="478.7" height="15.0" rx="2.7" fill="#FFFBEB" stroke="#FDBA74" stroke-width="1.1"/><text x="1055.6" y="840.4" text-anchor="start" xml:space="preserve"><tspan font-size="10.2" font-weight="700" fill="#B45309">DATA  </tspan><tspan font-size="10.2" font-weight="400" fill="#1F2937">no store drawn: the suffix card shows tenant memories entering the prompt</tspan></text></g>
+</svg>

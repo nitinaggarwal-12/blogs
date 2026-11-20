@@ -7,7 +7,7 @@
     "Cryptographic Tier Routing: Cloud Armor, IAP, and the Hybrid Router verify OBO/DPoP tokens and query Firestore to dispatch per tenant tier.",
     "Unidirectional PSC Bridges: Enterprise turns traverse NAT PSC endpoints (`10.10.0.50`) into dedicated spoke projects with zero VPC peering.",
     "Zero-Downtime Tier Promotion: `SHADOW_SYNC -> ATOMIC_CUTOVER -> DRAIN_AND_VERIFY` promotes live tenants to Enterprise spokes with 0 dropped turns.",
-    "4/4 Automated Migration & Isolation Assertions Verified: Proves 0ms replication lag at cutover, 0 dropped active sessions, immediate 4,000 → 8,000 thinking budget unlock, and zero global state bleed across instances."
+    "4/4 Automated Migration & Isolation Assertions Verified: Proves 0ms replication lag at cutover, 0 dropped active sessions, immediate MEDIUM/4k → HIGH/8k thinkingLevel & maxOutputTokens unlock, and zero global state bleed across instances."
   ],
   "tldrSpecs": [
     {
@@ -91,7 +91,7 @@
         },
         {
           "stack": "Route: psc://10.10.0.50 -> finvault-agent-spoke-psc (ACCEPT_MANUAL) • VPC-SC & CMEK",
-          "sla": "Tier: ENTERPRISE (600 RPM Silo) • 600 RPM • 8,000 Thinking Budget • Reuses 10.40.0.0/20 CIDR",
+          "sla": "Tier: ENTERPRISE (600 RPM Silo) • 600 RPM • HIGH / 8k Token Cap • Reuses 10.40.0.0/20 CIDR",
           "tag": "3. Sovereign Spoke Tenant (FinVault)"
         },
         {
@@ -184,7 +184,7 @@
           "stage": "Tiered Dispatch",
           "title": "Pooled Runtime (4k Cap) vs. Unidirectional PSC Spoke (8k Cap)",
           "service": "Shared Cloud Run vs. PSC Spoke",
-          "mechanism": "Dispatches Standard turns to the shared pool (120 RPM, 4k thinking cap) and tunnels Enterprise turns across `10.10.0.50` into the dedicated PSC spoke (600 RPM, 8k cap).",
+          "mechanism": "Dispatches Standard turns to the shared pool (120 RPM, MEDIUM/4k maxOut) and tunnels Enterprise turns across `10.10.0.50` into the dedicated PSC spoke (600 RPM, HIGH/8k maxOut).",
           "invariant": "Standard: 4k/120 RPM Pool • Enterprise: 8k/600 RPM PSC Spoke",
           "gate": "Unidirectional PSC NAT Prevents Spoke-to-Hub Lateral Movement"
         },
@@ -246,14 +246,14 @@
         [
           "Phase 2: ATOMIC_CUTOVER\nTest 3: Firestore Route Flip",
           "Single atomic transaction in Firestore updates RetailStream’s profile from `POOLED` to `HYBRID_PSC_SPOKE`.",
-          "Atomically binds `psc://retailstream-agent-spoke-psc`, `agent-memory-cmek`, 600 RPM, and 8,000 thinking budget.",
+          "Atomically binds `psc://retailstream-agent-spoke-psc`, `agent-memory-cmek`, 600 RPM, and HIGH thinkingLevel (8,000 token cap).",
           "Test 3 PASS: Sub-10ms atomic route flip with instance-scoped isolation (0 global state bleed)"
         ],
         [
           "Phase 3: DRAIN_AND_VERIFY\nTest 4: Mid-Session Continuity",
           "In-flight pooled turn completes gracefully while the next turn on the same `session_id` hits the Hub Router.",
           "Active conversation `sess-live-upgrade-99` seamlessly routes across PSC into the new CMEK spoke.",
-          "Test 4 PASS: `dropped_sessions == 0`, 8,000 thinking budget active, CMEK encryption verified"
+          "Test 4 PASS: `dropped_sessions == 0`, HIGH thinkingLevel / 8,000 cap active, CMEK encryption verified"
         ]
       ],
       "bullets": [],
@@ -294,7 +294,7 @@
         "Zone 1 (Pre- & Post-Cutover Router): Routes `sess-live-upgrade-99` to the shared pool before cutover and seamlessly to the PSC spoke on the next turn.",
         "Zone 2 (3-Phase Migration Coordinator): Verifies `replication_lag_ms == 0` in Phase 1, flips Firestore atomically in Phase 2, and confirms `0` dropped sessions in Phase 3.",
         "Zone 3 (Source Pooled Runtime): Drains RetailStream’s in-flight 4,000-token turn cleanly while streaming L1–L5 memory and AlloyDB RLS rows.",
-        "Zone 4 (Target Enterprise PSC Spoke): Takes over `sess-live-upgrade-99` immediately with an 8,000-token thinking budget, 600 RPM, and dedicated KMS CMEK."
+        "Zone 4 (Target Enterprise PSC Spoke): Takes over `sess-live-upgrade-99` immediately with HIGH thinkingLevel (8,000 maxOutputTokens), 600 RPM, and dedicated KMS CMEK."
       ]
     },
     {
@@ -430,11 +430,11 @@
     {
       "slide": 10,
       "totalSlides": 12,
-      "title": "Act III — Live Google Cloud Console & Runtime Verification Proof",
-      "whyHere": "Following the test matrix on Slide 9, this slide turns those architectural claims into concrete visual proof captured from our running Google Cloud projects.",
+      "title": "Act III — Runtime & Commercial SaaS Verification Proof (GCP Console Pending 1-Tap SSO)",
+      "whyHere": "Following the test matrix on Slide 9, this slide turns those architectural claims into automated runtime verification receipts and commercial SaaS proofs (GCP Console captures pending 1-tap SSO).",
       "whatIsHappening": "Here are the live Dual-Plane receipts from our hybrid environment. On the left, you can see our provisioned Private Service Connect NAT subnet and Vertex AI Agent Engine endpoints in Google Cloud Console; on the right, the runtime telemetry cards verify 4/4 Intra-Cloud zero-downtime tier upgrades plus 10/10 Inter-Cloud Pattern C Hybrid PSC 10-SaaS MCP cutovers with 100% memory parity and zero dropped requests.",
       "whatComesNext": "With the architecture explained in Act II and proven live in Google Cloud here in Act III, let's turn to Slide 11 to distill everything we have covered into three executive takeaways.",
-      "fullText": "Following the test matrix on Slide 9, this slide turns those architectural claims into concrete visual proof captured from our running Google Cloud projects.\n\nHere are the live Dual-Plane receipts from our hybrid environment. On the left, you can see our provisioned Private Service Connect NAT subnet and Vertex AI Agent Engine endpoints in Google Cloud Console; on the right, the runtime telemetry cards verify 4/4 Intra-Cloud zero-downtime tier upgrades plus 10/10 Inter-Cloud Pattern C Hybrid PSC 10-SaaS MCP cutovers with 100% memory parity and zero dropped requests.\n\nWith the architecture explained in Act II and proven live in Google Cloud here in Act III, let's turn to Slide 11 to distill everything we have covered into three executive takeaways."
+      "fullText": "Following the test matrix on Slide 9, this slide turns those architectural claims into automated runtime verification receipts and commercial SaaS proofs (GCP Console captures pending 1-tap SSO).\n\nHere are the live Dual-Plane receipts from our hybrid environment. On the left, you can see our provisioned Private Service Connect NAT subnet and Vertex AI Agent Engine endpoints in Google Cloud Console; on the right, the runtime telemetry cards verify 4/4 Intra-Cloud zero-downtime tier upgrades plus 10/10 Inter-Cloud Pattern C Hybrid PSC 10-SaaS MCP cutovers with 100% memory parity and zero dropped requests.\n\nWith the architecture explained in Act II and proven live in Google Cloud here in Act III, let's turn to Slide 11 to distill everything we have covered into three executive takeaways."
     },
     {
       "slide": 11,

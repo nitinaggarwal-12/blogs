@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="blog-slug" content="__BLOG_SLUG__" />
+  <meta name="csrf-token" content="__CSRF_TOKEN__" />
+  <title>__PAGE_TITLE__</title>
+  <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'&gt;&lt;rect width='32' height='32' rx='6' fill='%231a73e8'/&gt;&lt;text x='16' y='22' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold' font-size='18'&gt;D&lt;/text&gt;&lt;/svg&gt;" />
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-alt: #f1f5f9;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --blue: #1a73e8;
+      --blue-hover: #1557b0;
+      --blue-soft: #eff6ff;
+      --blue-border: #bfdbfe;
+      --green: #059669;
+      --green-soft: #ecfdf5;
+      --green-border: #a7f3d0;
+      --amber: #b45309;
+      --amber-soft: #fffbeb;
+      --amber-border: #fde68a;
+      --red: #dc2626;
+      --red-soft: #fef2f2;
+      --red-border: #fecaca;
+      --purple: #6d28d9;
+      --purple-soft: #f5f3ff;
+      --purple-border: #ddd6fe;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border-strong);
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+      padding: 12px clamp(16px, 2vw, 28px);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .topbar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+    .page-title {
+      font-size: clamp(17px, 1.5vw, 21px);
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-alt);
+      color: var(--text);
+    }
+    .pill-blue { background: var(--blue-soft); color: #1d4ed8; border-color: var(--blue-border); }
+    .pill-green { background: var(--green-soft); color: #047857; border-color: var(--green-border); }
+    .pill-amber { background: var(--amber-soft); color: var(--amber); border-color: var(--amber-border); }
+    .pill-purple { background: var(--purple-soft); color: var(--purple); border-color: var(--purple-border); }
+    .pill-red { background: var(--red-soft); color: var(--red); border-color: var(--red-border); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+    }
+    .btn:hover { background: var(--surface-alt); border-color: #94a3b8; }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 7px; }
+    .btn-xs { padding: 4px 8px; font-size: 11.5px; border-radius: 6px; }
+    .btn-primary { background: var(--blue); color: #ffffff; border-color: var(--blue); }
+    .btn-primary:hover { background: var(--blue-hover); border-color: var(--blue-hover); }
+    .btn-success { background: var(--green); color: #ffffff; border-color: var(--green); }
+    .btn-success:hover { background: #047857; border-color: #047857; }
+    .btn-slides { background: var(--amber-soft); color: var(--amber); border-color: var(--amber-border); }
+    .btn-slides:hover { background: #fef3c7; }
+    .btn-drawio { background: var(--blue-soft); color: #1d4ed8; border-color: var(--blue-border); }
+    .btn-drawio:hover { background: #dbeafe; }
+    .btn-clone { background: var(--purple-soft); color: var(--purple); border-color: var(--purple-border); }
+    .btn-clone:hover { background: #ede9fe; }
+    .btn-danger { background: var(--red-soft); color: var(--red); border-color: var(--red-border); }
+    .btn-danger:hover { background: #fee2e2; border-color: #f87171; }
+    .btn-danger-solid { background: var(--red); color: #ffffff; border-color: var(--red); }
+    .btn-danger-solid:hover { background: #b91c1c; }
+
+    .blog-switcher {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .switcher-link {
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.14s ease;
+    }
+    .switcher-link:hover { background: var(--surface-alt); color: var(--text); }
+    .switcher-link.active {
+      background: var(--blue);
+      color: #ffffff;
+      border-color: var(--blue);
+      box-shadow: 0 2px 6px rgba(26, 115, 232, 0.25);
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 100%;
+      padding: 18px clamp(16px, 2vw, 28px) 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .kpi-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+    }
+    .kpi-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .search-input {
+      padding: 7px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 13px;
+      min-width: 240px;
+    }
+
+    .trash-banner {
+      background: var(--amber-soft);
+      border: 1px solid var(--amber-border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .trash-banner.visible { display: flex; }
+    .trash-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .diagrams-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .diagram-card {
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
+      box-shadow: 0 3px 12px rgba(15, 23, 42, 0.05);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .diagram-card.maximized {
+      position: fixed;
+      inset: 12px;
+      z-index: 200;
+      border: 2px solid var(--blue);
+      box-shadow: 0 24px 64px rgba(15, 23, 42, 0.28);
+      overflow-y: auto;
+    }
+
+    .card-header {
+      padding: 14px 18px 12px;
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .card-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .card-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+      flex: 1;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.35;
+    }
+    .card-caption {
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+    .card-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .action-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 18px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+    }
+    .action-group {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .url-strip {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 8px 18px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .url-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #f8fafc;
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      padding: 4px 8px;
+      max-width: 100%;
+    }
+    .url-chip-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .url-chip-link {
+      color: var(--blue);
+      font-weight: 700;
+      text-decoration: none;
+      max-width: 280px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .url-chip-link:hover { text-decoration: underline; }
+
+    .preview-stage {
+      padding: 18px;
+      background: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 220px;
+    }
+    .preview-stage.hidden { display: none; }
+    .preview-img {
+      max-width: 100%;
+      width: auto;
+      max-height: 760px;
+      height: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #ffffff;
+      cursor: zoom-in;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+    }
+
+    .editor-panel {
+      display: none;
+      flex-direction: column;
+      background: #ffffff;
+      border-top: 2px solid var(--blue);
+    }
+    .editor-panel.open { display: flex; }
+    .editor-subbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 18px;
+      background: var(--blue-soft);
+      border-bottom: 1px solid var(--blue-border);
+    }
+    .editor-tabs {
+      display: inline-flex;
+      background: #ffffff;
+      border: 1px solid var(--blue-border);
+      border-radius: 8px;
+      padding: 2px;
+      gap: 3px;
+    }
+    .editor-tab-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 11px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .editor-tab-btn.active {
+      background: var(--blue);
+      color: #ffffff;
+    }
+    .drawio-iframe {
+      width: 100%;
+      height: 680px;
+      border: 0;
+      display: block;
+      background: #ffffff;
+    }
+    .diagram-card.maximized .drawio-iframe {
+      height: calc(100vh - 250px);
+    }
+    .xml-editor-box {
+      display: none;
+      padding: 16px 18px;
+      flex-direction: column;
+      gap: 12px;
+      background: #f8fafc;
+    }
+    .xml-editor-box.active { display: flex; }
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    .field-label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .text-input, .xml-textarea, .select-input {
+      width: 100%;
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: #ffffff;
+      color: var(--text);
+      font-size: 13px;
+      font-family: inherit;
+    }
+    .xml-textarea {
+      font-family: 'Google Sans Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      min-height: 360px;
+      resize: vertical;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(15, 23, 42, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-dialog {
+      background: #ffffff;
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 560px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title { font-size: 16px; font-weight: 800; color: var(--text); }
+    .modal-body {
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .modal-footer {
+      padding: 12px 18px;
+      border-top: 1px solid var(--border);
+      background: #f8fafc;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .lightbox-dialog {
+      background: #ffffff;
+      border-radius: 14px;
+      max-width: 96vw;
+      max-height: 94vh;
+      width: 1280px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .lightbox-body {
+      padding: 16px;
+      overflow: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f8fafc;
+    }
+    .lightbox-img {
+      max-width: 100%;
+      max-height: 80vh;
+      height: auto;
+      border-radius: 8px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+    }
+
+    .toast-stack {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 400;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 420px;
+    }
+    .toast-item {
+      background: #ffffff;
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+      border-left: 4px solid var(--blue);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.16);
+    }
+    .toast-item.success { border-left-color: var(--green); }
+    .toast-item.error { border-left-color: var(--red); }
+    .toast-item.warn { border-left-color: var(--amber); }
+
+    .empty-state {
+      background: var(--surface);
+      border: 1px dashed var(--border-strong);
+      border-radius: 12px;
+      padding: 36px 24px;
+      text-align: center;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-row">
+      <div class="brand-block">
+        <a id="btn-back-to-blog" class="btn btn-sm" href="/?tab=patterns">&#8592; Back to Blog</a>
+        <div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span id="hdr-badge" class="pill pill-blue">DIAGRAMS STUDIO</span>
+            <h1 id="hdr-title" class="page-title">Loading Blog Diagrams...</h1>
+          </div>
+          <p id="hdr-subtitle" class="page-subtitle">Full interactive Draw.io editing, save, clone, delete, 2-way Google Slides sync, and direct URLs.</p>
+        </div>
+      </div>
+      <div class="action-group">
+        <a id="link-screenshots-page" class="btn btn-sm" href="/blogs/ws1/screenshots">&#128248; Blog Screenshots Page &#8599;</a>
+        <button type="button" id="btn-new-blank-diagram" class="btn btn-sm btn-primary">&#10133; New Blank Diagram</button>
+      </div>
+    </div>
+    <div class="topbar-row">
+      <nav id="blog-switcher" class="blog-switcher" aria-label="Switch Blog Diagrams Page"></nav>
+      <div class="action-group">
+        <input type="search" id="diagram-filter-input" class="search-input" placeholder="Filter diagrams by ID, title, or slide..." aria-label="Filter diagrams" />
+      </div>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="kpi-strip" aria-label="Blog Diagram Inventory Summary">
+      <div class="kpi-group">
+        <span id="stat-active" class="pill pill-blue">0 Active Diagrams</span>
+        <span id="stat-custom" class="pill pill-purple">0 Cloned / Custom</span>
+        <span id="stat-shots" class="pill pill-green">0 Blog Screenshots</span>
+        <span id="stat-deck" class="pill pill-amber">Approved 12-Slide Deck Linked</span>
+      </div>
+      <div class="action-group">
+        <a id="btn-open-full-deck" class="btn btn-xs btn-slides" href="https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p1" target="_blank" rel="noopener noreferrer">&#128202; Open 12-Slide Master Deck &#8599;</a>
+        <button type="button" id="btn-reload-assets" class="btn btn-xs">&#8635; Refresh</button>
+      </div>
+    </section>
+
+    <section id="trash-banner" class="trash-banner" aria-label="Deleted Diagrams Recovery">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <strong style="font-size:13px; color:#92400e;">&#9851;&#65039; Deleted Diagrams (Backed up safely — 1-Click Restore):</strong>
+      </div>
+      <div id="trash-items" class="trash-items"></div>
+    </section>
+
+    <section id="diagrams-list" class="diagrams-list" aria-label="Blog Diagrams"></section>
+  </main>
+
+  <!-- Clone Diagram Modal -->
+  <div id="clone-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="clone-modal-title">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="clone-modal-title" class="modal-title">&#129516; Clone Architecture Diagram</h2>
+        <button type="button" class="btn btn-xs" id="clone-modal-close">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <label class="field-label" for="clone-source-id">Source Diagram</label>
+          <input type="text" id="clone-source-id" class="text-input" readonly />
+        </div>
+        <div>
+          <label class="field-label" for="clone-new-id">New Unique Diagram ID (letters, numbers, -, _)</label>
+          <input type="text" id="clone-new-id" class="text-input" placeholder="e.g., ws2-pattern-a-pooled-v2" />
+        </div>
+        <div>
+          <label class="field-label" for="clone-new-title">New Diagram Title</label>
+          <input type="text" id="clone-new-title" class="text-input" placeholder="Custom Architecture Variant Title" />
+        </div>
+        <div>
+          <label class="field-label" for="clone-target-blog">Target Blog Page</label>
+          <select id="clone-target-blog" class="select-input"></select>
+        </div>
+        <div>
+          <label class="field-label" for="clone-new-caption">Caption / Notes</label>
+          <input type="text" id="clone-new-caption" class="text-input" placeholder="Optional caption for the cloned diagram" />
+        </div>
+        <div id="clone-error" style="display:none; color:#dc2626; font-size:12.5px; font-weight:700;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm" id="clone-modal-cancel">Cancel</button>
+        <button type="button" class="btn btn-sm btn-primary" id="clone-modal-submit">&#129516; Create Clone</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Blank Diagram Modal -->
+  <div id="blank-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="blank-modal-title">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="blank-modal-title" class="modal-title">&#10133; Create New Editable Diagram</h2>
+        <button type="button" class="btn btn-xs" id="blank-modal-close">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <label class="field-label" for="blank-new-id">Diagram ID</label>
+          <input type="text" id="blank-new-id" class="text-input" placeholder="e.g., ws2-custom-flow-01" />
+        </div>
+        <div>
+          <label class="field-label" for="blank-new-title">Diagram Title</label>
+          <input type="text" id="blank-new-title" class="text-input" placeholder="e.g., Custom Multi-Tenant Topology" />
+        </div>
+        <div>
+          <label class="field-label" for="blank-new-caption">Caption / Notes</label>
+          <input type="text" id="blank-new-caption" class="text-input" placeholder="Describe this architecture diagram..." />
+        </div>
+        <div id="blank-error" style="display:none; color:#dc2626; font-size:12.5px; font-weight:700;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm" id="blank-modal-cancel">Cancel</button>
+        <button type="button" class="btn btn-sm btn-primary" id="blank-modal-submit">&#10133; Create &amp; Open Editor</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="delete-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="delete-modal-title" class="modal-title">&#128465;&#65039; Delete Diagram?</h2>
+        <button type="button" class="btn btn-xs" id="delete-modal-close">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <p id="delete-modal-desc" style="font-size:13.5px; color:#334155;"></p>
+        <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:10px 12px; font-size:12px; color:#92400e;">
+          A full backup of the <code>.drawio</code> XML and <code>.svg</code> is saved automatically to trash, and you can restore this diagram with 1 click at any time.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm" id="delete-modal-cancel">Cancel</button>
+        <button type="button" class="btn btn-sm btn-danger-solid" id="delete-modal-confirm">&#128465;&#65039; Confirm Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lightbox Modal -->
+  <div id="lightbox-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="lightbox-title">
+    <div class="lightbox-dialog">
+      <div class="modal-header">
+        <h2 id="lightbox-title" class="modal-title">Diagram Preview</h2>
+        <div class="action-group">
+          <a id="lightbox-open-raw" class="btn btn-xs" href="#" target="_blank" rel="noopener">Open Full SVG &#8599;</a>
+          <button type="button" class="btn btn-xs" id="lightbox-close">&#10005; Close</button>
+        </div>
+      </div>
+      <div class="lightbox-body">
+        <img id="lightbox-img" class="lightbox-img" src="" alt="Expanded diagram preview" />
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const slugMeta = document.querySelector('meta[name="blog-slug"]');
+      const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+      const activeSlug = (slugMeta && slugMeta.getAttribute('content')) || 'ws1';
+      const csrfToken = (csrfMeta && csrfMeta.getAttribute('content')) || '';
+
+      let payloadData = null;
+      let pendingDeleteDiagram = null;
+      let pendingCloneDiagram = null;
+
+      // Per-card live editor state keyed by diagId
+      const editorStates = new Map();
+
+      const elBackBlog = document.getElementById('btn-back-to-blog');
+      const elHdrBadge = document.getElementById('hdr-badge');
+      const elHdrTitle = document.getElementById('hdr-title');
+      const elHdrSubtitle = document.getElementById('hdr-subtitle');
+      const elLinkShots = document.getElementById('link-screenshots-page');
+      const elSwitcher = document.getElementById('blog-switcher');
+      const elFilterInput = document.getElementById('diagram-filter-input');
+      const elStatActive = document.getElementById('stat-active');
+      const elStatCustom = document.getElementById('stat-custom');
+      const elStatShots = document.getElementById('stat-shots');
+      const elTrashBanner = document.getElementById('trash-banner');
+      const elTrashItems = document.getElementById('trash-items');
+      const elDiagramsList = document.getElementById('diagrams-list');
+      const elToastStack = document.getElementById('toast-stack');
+
+      function showToast(message, kind) {
+        const div = document.createElement('div');
+        div.className = 'toast-item ' + (kind || 'info');
+        div.textContent = message;
+        elToastStack.appendChild(div);
+        setTimeout(function () {
+          if (div.parentNode) div.parentNode.removeChild(div);
+        }, 4200);
+      }
+
+      async function copyText(text, label) {
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(text);
+          } else {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', 'readonly');
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+          }
+          showToast('Copied ' + label + ' to clipboard.', 'success');
+        } catch (err) {
+          showToast('Could not copy automatically. Use the direct link.', 'warn');
+        }
+      }
+
+      async function apiPost(url, bodyObj) {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Portal-CSRF': csrfToken
+          },
+          body: JSON.stringify(bodyObj)
+        });
+        const data = await res.json().catch(function () { return {}; });
+        if (!res.ok || data.ok === false || data.status === 'error') {
+          throw new Error(data.error || ('Request failed (HTTP ' + res.status + ')'));
+        }
+        return data;
+      }
+
+      async function fetchDiagramXml(diag) {
+        const qs = diag.slideNumber ? ('?compSlide=' + encodeURIComponent(String(diag.slideNumber))) : '';
+        const res = await fetch('/api/drawio/item/' + encodeURIComponent(diag.id) + qs);
+        const data = await res.json();
+        if (!res.ok || data.status !== 'ok') {
+          throw new Error(data.error || 'Failed to load diagram XML');
+        }
+        return data.xml || '';
+      }
+
+      function makeEl(tag, className, text) {
+        const el = document.createElement(tag);
+        if (className) el.className = className;
+        if (text !== undefined && text !== null) el.textContent = String(text);
+        return el;
+      }
+
+      function safeHref(raw) {
+        const s = String(raw || '').trim();
+        if (s.startsWith('https://') || s.startsWith('http://') || s.startsWith('/')) return s;
+        return '#';
+      }
+
+      function makeLinkBtn(className, label, href, newTab) {
+        const a = document.createElement('a');
+        a.className = className;
+        a.textContent = label;
+        a.setAttribute('href', safeHref(href));
+        if (newTab) {
+          a.setAttribute('target', '_blank');
+          a.setAttribute('rel', 'noopener noreferrer');
+        }
+        return a;
+      }
+
+      function makeActionBtn(className, label, onClick, testId) {
+        const b = document.createElement('button');
+        b.setAttribute('type', 'button');
+        b.className = className;
+        b.textContent = label;
+        if (testId) b.setAttribute('data-testid', testId);
+        b.addEventListener('click', onClick);
+        return b;
+      }
+
+      function buildUrlChip(label, href, copyLabel, testIdPrefix) {
+        const safeUrl = safeHref(href);
+        const chip = makeEl('div', 'url-chip');
+        chip.appendChild(makeEl('span', 'url-chip-label', label));
+        const a = document.createElement('a');
+        a.className = 'url-chip-link';
+        a.setAttribute('href', safeUrl);
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+        a.setAttribute('title', safeUrl);
+        if (testIdPrefix) a.setAttribute('data-testid', testIdPrefix + '-link');
+        a.textContent = safeUrl.length > 62 ? (safeUrl.slice(0, 59) + '...') : safeUrl;
+        chip.appendChild(a);
+        const copyBtn = makeActionBtn('btn btn-xs', 'Copy', function () {
+          copyText(safeUrl, copyLabel);
+        }, testIdPrefix ? (testIdPrefix + '-copy') : '');
+        chip.appendChild(copyBtn);
+        return chip;
+      }
+
+      function openLightbox(imgUrl, title) {
+        const lb = document.getElementById('lightbox-modal');
+        document.getElementById('lightbox-title').textContent = title || 'Diagram Preview';
+        const img = document.getElementById('lightbox-img');
+        img.setAttribute('src', imgUrl);
+        img.setAttribute('alt', title || 'Diagram Preview');
+        document.getElementById('lightbox-open-raw').setAttribute('href', imgUrl);
+        lb.classList.add('open');
+      }
+
+      function closeAllModals() {
+        ['clone-modal', 'blank-modal', 'delete-modal', 'lightbox-modal'].forEach(function (mid) {
+          const m = document.getElementById(mid);
+          if (m) m.classList.remove('open');
+        });
+      }
+
+      function openCloneModal(diag) {
+        pendingCloneDiagram = diag;
+        document.getElementById('clone-source-id').value = diag.id;
+        const suffix = '-copy-' + String(Math.floor(Date.now() / 1000) % 10000);
+        document.getElementById('clone-new-id').value = (diag.id + suffix).slice(0, 90);
+        document.getElementById('clone-new-title').value = 'Copy of ' + diag.title;
+        document.getElementById('clone-new-caption').value = diag.caption || '';
+        const errEl = document.getElementById('clone-error');
+        errEl.style.display = 'none';
+        errEl.textContent = '';
+
+        const sel = document.getElementById('clone-target-blog');
+        sel.replaceChildren();
+        (payloadData.allBlogs || []).forEach(function (b) {
+          if (b.slug === 'all') return;
+          const opt = document.createElement('option');
+          opt.value = b.slug;
+          opt.textContent = b.shortLabel + ' — ' + b.title;
+          if (b.slug === (activeSlug === 'all' ? 'ws1' : activeSlug)) opt.selected = true;
+          sel.appendChild(opt);
+        });
+        document.getElementById('clone-modal').classList.add('open');
+      }
+
+      function openDeleteModal(diag) {
+        pendingDeleteDiagram = diag;
+        const modeMsg = diag.isCustom
+          ? ('Move custom cloned diagram "' + diag.title + '" (' + diag.id + ') to trash?')
+          : ('Remove "' + diag.title + '" (' + diag.id + ') from this blog\'s Diagrams Gallery?');
+        document.getElementById('delete-modal-desc').textContent = modeMsg;
+        document.getElementById('delete-modal').classList.add('open');
+      }
+
+      const ALLOWED_EDITOR_ORIGINS = new Set([
+        window.location.origin,
+        'https://embed.diagrams.net',
+        'https://app.diagrams.net'
+      ]);
+
+      function getEditorTargetOrigin(iframeEl) {
+        const src = (iframeEl && iframeEl.getAttribute('src')) || '';
+        if (src.startsWith('https://embed.diagrams.net')) return 'https://embed.diagrams.net';
+        if (src.startsWith('https://app.diagrams.net')) return 'https://app.diagrams.net';
+        return window.location.origin;
+      }
+
+      // Global Draw.io postMessage listener for inline embedded editors (strict origin validation)
+      window.addEventListener('message', function (evt) {
+        if (!ALLOWED_EDITOR_ORIGINS.has(evt.origin)) return;
+        if (!evt.data || typeof evt.data !== 'string') return;
+        let msg;
+        try { msg = JSON.parse(evt.data); } catch (_) { return; }
+        for (const [diagId, st] of editorStates.entries()) {
+          if (!st.iframeEl || evt.source !== st.iframeEl.contentWindow) continue;
+          const targetOrigin = getEditorTargetOrigin(st.iframeEl);
+          if (msg.event === 'configure') {
+            st.iframeEl.contentWindow.postMessage(JSON.stringify({
+              action: 'configure',
+              config: { defaultFonts: ['Google Sans', 'Roboto', 'Arial'] }
+            }), targetOrigin);
+          } else if (msg.event === 'init') {
+            st.iframeReady = true;
+            if (st.cloudTimeout) {
+              clearTimeout(st.cloudTimeout);
+              st.cloudTimeout = null;
+            }
+            if (st.xml) {
+              st.iframeEl.contentWindow.postMessage(JSON.stringify({
+                action: 'load',
+                xml: st.xml,
+                autosave: 1
+              }), targetOrigin);
+            }
+            st.setStatus('Visual Draw.io Editor Live', 'pill-green');
+          } else if (msg.event === 'autosave' && msg.xml) {
+            st.xml = msg.xml;
+            if (st.xmlTextarea) st.xmlTextarea.value = msg.xml;
+            st.dirty = true;
+            st.setStatus('Unsaved Changes', 'pill-amber');
+          } else if (msg.event === 'save' && msg.xml) {
+            st.xml = msg.xml;
+            if (st.xmlTextarea) st.xmlTextarea.value = msg.xml;
+            st.triggerSave(false);
+          } else if (msg.event === 'export' && msg.data) {
+            if (st.pendingExportResolve) {
+              const resolver = st.pendingExportResolve;
+              st.pendingExportResolve = null;
+              resolver(msg.data);
+            }
+          }
+          break;
+        }
+      });
+
+      function decodeDataUriSvg(dataUri) {
+        if (!dataUri || typeof dataUri !== 'string') return '';
+        if (dataUri.startsWith('<svg')) return dataUri;
+        const idx = dataUri.indexOf(',');
+        if (idx === -1) return '';
+        const meta = dataUri.slice(0, idx);
+        const body = dataUri.slice(idx + 1);
+        try {
+          if (meta.includes('base64')) {
+            return decodeURIComponent(escape(atob(body)));
+          }
+          return decodeURIComponent(body);
+        } catch (_) {
+          return '';
+        }
+      }
+
+      function renderDiagramCard(diag, idx) {
+        const card = makeEl('article', 'diagram-card');
+        card.setAttribute('data-diagram-id', diag.id);
+        card.setAttribute('data-testid', 'diagram-card-' + diag.id);
+
+        // Header
+        const header = makeEl('div', 'card-header');
+        const titleRow = makeEl('div', 'card-title-row');
+        const titleGroup = makeEl('div', 'card-title-group');
+        const titleEl = makeEl('h2', 'card-title', (idx + 1) + '. ' + diag.title);
+        const captionEl = makeEl('p', 'card-caption', diag.caption || ('ID: ' + diag.id));
+        titleGroup.appendChild(titleEl);
+        titleGroup.appendChild(captionEl);
+
+        const badges = makeEl('div', 'card-badges');
+        if (diag.slideNumber) {
+          badges.appendChild(makeEl('span', 'pill pill-amber', 'Slide #' + String(diag.slideNumber).padStart(2, '0') + ' / 12'));
+        }
+        badges.appendChild(makeEl('span', diag.isCustom ? 'pill pill-purple' : 'pill pill-blue', diag.isCustom ? 'Cloned / Custom' : 'Blog Canonical'));
+        const statusPill = makeEl('span', 'pill pill-green', 'Saved');
+        statusPill.setAttribute('data-testid', 'status-pill-' + diag.id);
+        badges.appendChild(statusPill);
+
+        titleRow.appendChild(titleGroup);
+        titleRow.appendChild(badges);
+        header.appendChild(titleRow);
+        card.appendChild(header);
+
+        // Editor state object for this card
+        const st = {
+          diag: diag,
+          xml: '',
+          dirty: false,
+          editorOpen: false,
+          editorMode: 'visual',
+          iframeReady: false,
+          iframeEl: null,
+          xmlTextarea: null,
+          titleInput: null,
+          captionInput: null,
+          cloudTimeout: null,
+          pendingExportResolve: null,
+          setStatus: function (text, pillClass) {
+            statusPill.className = 'pill ' + (pillClass || 'pill-blue');
+            statusPill.textContent = text;
+          },
+          requestExportSvg: function () {
+            return new Promise(function (resolve) {
+              if (!st.iframeReady || !st.iframeEl || !st.iframeEl.contentWindow) {
+                resolve('');
+                return;
+              }
+              st.pendingExportResolve = resolve;
+              st.iframeEl.contentWindow.postMessage(JSON.stringify({
+                action: 'export',
+                format: 'xmlsvg',
+                spin: 'Exporting SVG...'
+              }), getEditorTargetOrigin(st.iframeEl));
+              setTimeout(function () {
+                if (st.pendingExportResolve) {
+                  st.pendingExportResolve = null;
+                  resolve('');
+                }
+              }, 3500);
+            });
+          },
+          triggerSave: async function (syncToSlide) {
+            st.setStatus(syncToSlide ? 'Saving + Syncing Slide...' : 'Saving...', 'pill-amber');
+            try {
+              if (!st.xml) {
+                st.xml = await fetchDiagramXml(st.diag);
+              }
+              if (st.xmlTextarea && st.editorMode === 'xml' && st.xmlTextarea.value.trim()) {
+                st.xml = st.xmlTextarea.value.trim();
+              }
+              let exportedSvg = '';
+              if (st.editorOpen && st.editorMode === 'visual' && st.iframeReady) {
+                const rawExp = await st.requestExportSvg();
+                exportedSvg = decodeDataUriSvg(rawExp);
+              }
+              const newTitle = st.titleInput ? st.titleInput.value.trim() : st.diag.title;
+              const newCaption = st.captionInput ? st.captionInput.value.trim() : st.diag.caption;
+              const out = await apiPost('/api/blog-diagrams/save', {
+                slug: activeSlug === 'all' ? (st.diag.slug || 'ws1') : activeSlug,
+                id: st.diag.id,
+                title: newTitle,
+                caption: newCaption,
+                xml: st.xml,
+                svg: exportedSvg,
+                compSlide: st.diag.slideNumber || '',
+                syncGoogleSlides: Boolean(syncToSlide)
+              });
+              st.dirty = false;
+              if (out.diagram) {
+                st.diag = out.diagram;
+                titleEl.textContent = (idx + 1) + '. ' + out.diagram.title;
+                captionEl.textContent = out.diagram.caption || ('ID: ' + out.diagram.id);
+                previewImg.setAttribute('src', out.diagram.svgUrl + (out.diagram.svgUrl.includes('?') ? '&' : '?') + 't=' + Date.now());
+              }
+              const suffix = syncToSlide
+                ? (out.googleSlidesSynced ? ' & Synced to Google Slides' : ' locally (Slides unchanged)')
+                : '';
+              st.setStatus('Saved' + (out.googleSlidesSynced ? ' + Slide Synced' : ''), 'pill-green');
+              showToast('Saved "' + st.diag.id + '"' + suffix + '.', 'success');
+            } catch (err) {
+              st.setStatus('Save Error', 'pill-red');
+              showToast('Save failed: ' + err.message, 'error');
+            }
+          }
+        };
+        editorStates.set(diag.id, st);
+
+        // Action Toolbar (ALL Requested Diagram Controls)
+        const actionBar = makeEl('div', 'action-bar');
+        const leftActions = makeEl('div', 'action-group');
+        const rightActions = makeEl('div', 'action-group');
+
+        const btnFullEdit = makeActionBtn('btn btn-sm btn-primary', '✏️ Full Edit Here', async function () {
+          st.editorOpen = !st.editorOpen;
+          editorPanel.classList.toggle('open', st.editorOpen);
+          previewStage.classList.toggle('hidden', st.editorOpen);
+          btnFullEdit.textContent = st.editorOpen ? '👁️ Preview Mode' : '✏️ Full Edit Here';
+          if (st.editorOpen) {
+            st.setStatus('Loading XML...', 'pill-amber');
+            try {
+              if (!st.xml) {
+                st.xml = await fetchDiagramXml(st.diag);
+              }
+              st.xmlTextarea.value = st.xml;
+              if (st.editorMode === 'visual' && !st.iframeEl.getAttribute('data-loaded')) {
+                st.iframeEl.setAttribute('data-loaded', '1');
+                st.iframeEl.setAttribute('src', 'https://embed.diagrams.net/?embed=1&proto=json&spin=1&ui=kennedy&libraries=1&saveAndExit=0&noExitBtn=1&configure=1');
+                st.cloudTimeout = setTimeout(function () {
+                  if (!st.iframeReady) {
+                    st.iframeEl.setAttribute('src', '/drawio-editor?id=' + encodeURIComponent(st.diag.id) + '&inline=1&engine=native');
+                    st.setStatus('Local Offline mxGraph Editor Active', 'pill-blue');
+                  }
+                }, 5000);
+              } else if (st.iframeReady && st.iframeEl.contentWindow) {
+                st.iframeEl.contentWindow.postMessage(JSON.stringify({ action: 'load', xml: st.xml, autosave: 1 }), getEditorTargetOrigin(st.iframeEl));
+                st.setStatus('Visual Draw.io Editor Live', 'pill-green');
+              } else {
+                st.setStatus('XML & Metadata Editor Active', 'pill-blue');
+              }
+            } catch (err) {
+              st.setStatus('Load Error', 'pill-red');
+              showToast('Failed to load XML: ' + err.message, 'error');
+            }
+          }
+        }, 'btn-full-edit-' + diag.id);
+
+        const btnSave = makeActionBtn('btn btn-sm btn-success', '💾 Save', function () {
+          st.triggerSave(false);
+        }, 'btn-save-' + diag.id);
+
+        const btnClone = makeActionBtn('btn btn-sm btn-clone', '🧬 Clone', function () {
+          openCloneModal(st.diag);
+        }, 'btn-clone-' + diag.id);
+
+        const btnDelete = makeActionBtn('btn btn-sm btn-danger', '🗑️ Delete', function () {
+          openDeleteModal(st.diag);
+        }, 'btn-delete-' + diag.id);
+
+        leftActions.appendChild(btnFullEdit);
+        leftActions.appendChild(btnSave);
+        leftActions.appendChild(btnClone);
+        leftActions.appendChild(btnDelete);
+
+        // External Draw.io + Google Slides Editing & 2-Way Sync
+        const btnEditDrawio = makeLinkBtn('btn btn-sm btn-drawio', '📐 Edit in Draw.io ↗', diag.drawioStudioUrl, true);
+        btnEditDrawio.setAttribute('data-testid', 'btn-edit-drawio-' + diag.id);
+
+        const btnEditSlide = makeLinkBtn('btn btn-sm btn-slides', '📊 Edit on Slide ↗', diag.slideEditUrl, true);
+        btnEditSlide.setAttribute('data-testid', 'btn-edit-slide-' + diag.id);
+
+        rightActions.appendChild(btnEditDrawio);
+        rightActions.appendChild(btnEditSlide);
+
+        if (diag.can2WaySlideSync) {
+          const btnPushSlide = makeActionBtn('btn btn-sm', '⬆️ Push to Slide', function () {
+            st.triggerSave(true);
+          }, 'btn-push-slide-' + diag.id);
+          const btnPullSlide = makeActionBtn('btn btn-sm', '⬇️ Pull from Slide', async function () {
+            st.setStatus('Pulling from Google Slides...', 'pill-amber');
+            try {
+              const out = await apiPost('/api/drawio/pull-unique', {
+                id: st.diag.id,
+                compSlide: st.diag.slideNumber || ''
+              });
+              st.xml = await fetchDiagramXml(st.diag);
+              if (st.xmlTextarea) st.xmlTextarea.value = st.xml;
+              previewImg.setAttribute('src', st.diag.svgUrl + (st.diag.svgUrl.includes('?') ? '&' : '?') + 't=' + Date.now());
+              const cnt = out.changesCount || out.changedCount || 0;
+              st.setStatus(cnt > 0 ? ('Pulled ' + cnt + ' Edit(s)') : 'In Sync with Slide', 'pill-green');
+              showToast(cnt > 0 ? ('Pulled ' + cnt + ' live edit(s) from Google Slides.') : 'Already up to date with Google Slides.', 'success');
+            } catch (err) {
+              st.setStatus('Pull Error', 'pill-red');
+              showToast('Pull from Slide failed: ' + err.message, 'error');
+            }
+          }, 'btn-pull-slide-' + diag.id);
+          rightActions.appendChild(btnPushSlide);
+          rightActions.appendChild(btnPullSlide);
+        }
+
+        const btnMaximize = makeActionBtn('btn btn-sm', '⛶ Maximize', function () {
+          const isMax = card.classList.toggle('maximized');
+          btnMaximize.textContent = isMax ? '🗗 Restore' : '⛶ Maximize';
+        }, 'btn-max-' + diag.id);
+        rightActions.appendChild(btnMaximize);
+
+        actionBar.appendChild(leftActions);
+        actionBar.appendChild(rightActions);
+        card.appendChild(actionBar);
+
+        // Direct Open-As-URL Strip (Slide URL + Draw.io URL + Studio URL + Download .drawio/.svg)
+        const urlStrip = makeEl('div', 'url-strip');
+        urlStrip.appendChild(buildUrlChip('Slide URL', diag.slideEditUrl, 'Google Slides URL', 'slide-url-' + diag.id));
+        urlStrip.appendChild(buildUrlChip('Draw.io URL', diag.drawioAppUrl, 'Draw.io App URL', 'drawio-app-url-' + diag.id));
+        urlStrip.appendChild(buildUrlChip('Studio URL', diag.drawioStudioFullUrl || (window.location.origin + diag.drawioStudioUrl), '2-Way Studio URL', 'drawio-studio-url-' + diag.id));
+
+        const dlDrawio = makeLinkBtn('btn btn-xs', '⬇ .drawio', diag.drawioXmlUrl, false);
+        dlDrawio.setAttribute('download', diag.id + '.drawio');
+        const dlSvg = makeLinkBtn('btn btn-xs', '⬇ .svg', diag.svgUrl, true);
+        urlStrip.appendChild(dlDrawio);
+        urlStrip.appendChild(dlSvg);
+
+        if (diag.compendiumSlideUrl) {
+          urlStrip.appendChild(makeLinkBtn('btn btn-xs', '38-Slide Compendium #' + (diag.compendiumSlideNumber || '') + ' ↗', diag.compendiumSlideUrl, true));
+        }
+        card.appendChild(urlStrip);
+
+        // Preview Stage
+        const previewStage = makeEl('div', 'preview-stage');
+        const previewImg = document.createElement('img');
+        previewImg.className = 'preview-img';
+        previewImg.setAttribute('src', diag.svgUrl);
+        previewImg.setAttribute('alt', diag.title);
+        previewImg.setAttribute('title', 'Click to expand high-res diagram');
+        previewImg.addEventListener('click', function () {
+          openLightbox(previewImg.getAttribute('src'), st.diag.title);
+        });
+        previewStage.appendChild(previewImg);
+        card.appendChild(previewStage);
+
+        // Inline Full Interactive Editor Panel
+        const editorPanel = makeEl('div', 'editor-panel');
+        editorPanel.setAttribute('data-testid', 'editor-panel-' + diag.id);
+
+        const subbar = makeEl('div', 'editor-subbar');
+        const tabWrap = makeEl('div', 'editor-tabs');
+        const tabVisual = makeEl('button', 'editor-tab-btn active', '🎨 Visual Draw.io Canvas');
+        tabVisual.setAttribute('type', 'button');
+        const tabXml = makeEl('button', 'editor-tab-btn', '📝 Title, Caption & Raw .drawio XML');
+        tabXml.setAttribute('type', 'button');
+        tabXml.setAttribute('data-testid', 'tab-xml-' + diag.id);
+
+        tabVisual.addEventListener('click', function () {
+          st.editorMode = 'visual';
+          tabVisual.classList.add('active');
+          tabXml.classList.remove('active');
+          iframeEl.style.display = 'block';
+          xmlBox.classList.remove('active');
+          if (st.xmlTextarea && st.xmlTextarea.value.trim()) {
+            st.xml = st.xmlTextarea.value.trim();
+            if (st.iframeReady && st.iframeEl.contentWindow) {
+              st.iframeEl.contentWindow.postMessage(JSON.stringify({ action: 'load', xml: st.xml, autosave: 1 }), getEditorTargetOrigin(st.iframeEl));
+            }
+          }
+        });
+        tabXml.addEventListener('click', function () {
+          st.editorMode = 'xml';
+          tabXml.classList.add('active');
+          tabVisual.classList.remove('active');
+          iframeEl.style.display = 'none';
+          xmlBox.classList.add('active');
+          if (st.xml && st.xmlTextarea) st.xmlTextarea.value = st.xml;
+        });
+
+        tabWrap.appendChild(tabVisual);
+        tabWrap.appendChild(tabXml);
+
+        const editorRight = makeEl('div', 'action-group');
+        editorRight.appendChild(makeActionBtn('btn btn-xs btn-success', '💾 Save Changes Now', function () {
+          st.triggerSave(false);
+        }, 'btn-editor-save-' + diag.id));
+        if (diag.can2WaySlideSync) {
+          editorRight.appendChild(makeActionBtn('btn btn-xs btn-slides', '☁️ Save & Push to Slide', function () {
+            st.triggerSave(true);
+          }));
+        }
+        editorRight.appendChild(makeActionBtn('btn btn-xs', '✕ Close Editor', function () {
+          st.editorOpen = false;
+          editorPanel.classList.remove('open');
+          previewStage.classList.remove('hidden');
+          btnFullEdit.textContent = '✏️ Full Edit Here';
+        }));
+
+        subbar.appendChild(tabWrap);
+        subbar.appendChild(editorRight);
+        editorPanel.appendChild(subbar);
+
+        const iframeEl = document.createElement('iframe');
+        iframeEl.className = 'drawio-iframe';
+        iframeEl.setAttribute('src', 'about:blank');
+        iframeEl.setAttribute('allow', 'clipboard-read; clipboard-write');
+        iframeEl.setAttribute('title', 'Interactive Draw.io Editor — ' + diag.id);
+        st.iframeEl = iframeEl;
+        editorPanel.appendChild(iframeEl);
+
+        const xmlBox = makeEl('div', 'xml-editor-box');
+        const metaGrid = makeEl('div', 'field-grid');
+        const titleField = makeEl('div');
+        titleField.appendChild(makeEl('label', 'field-label', 'Diagram Title'));
+        const titleInput = document.createElement('input');
+        titleInput.setAttribute('type', 'text');
+        titleInput.className = 'text-input';
+        titleInput.setAttribute('data-testid', 'input-title-' + diag.id);
+        titleInput.value = diag.title;
+        titleInput.addEventListener('input', function () {
+          st.dirty = true;
+          st.setStatus('Unsaved Changes', 'pill-amber');
+        });
+        st.titleInput = titleInput;
+        titleField.appendChild(titleInput);
+
+        const capField = makeEl('div');
+        capField.appendChild(makeEl('label', 'field-label', 'Caption / Description'));
+        const capInput = document.createElement('input');
+        capInput.setAttribute('type', 'text');
+        capInput.className = 'text-input';
+        capInput.setAttribute('data-testid', 'input-caption-' + diag.id);
+        capInput.value = diag.caption || '';
+        capInput.addEventListener('input', function () {
+          st.dirty = true;
+          st.setStatus('Unsaved Changes', 'pill-amber');
+        });
+        st.captionInput = capInput;
+        capField.appendChild(capInput);
+        metaGrid.appendChild(titleField);
+        metaGrid.appendChild(capField);
+        xmlBox.appendChild(metaGrid);
+
+        const xmlField = makeEl('div');
+        xmlField.appendChild(makeEl('label', 'field-label', 'Editable Draw.io mxfile XML Source'));
+        const xmlTa = document.createElement('textarea');
+        xmlTa.className = 'xml-textarea';
+        xmlTa.setAttribute('spellcheck', 'false');
+        xmlTa.setAttribute('data-testid', 'textarea-xml-' + diag.id);
+        xmlTa.addEventListener('input', function () {
+          st.xml = xmlTa.value;
+          st.dirty = true;
+          st.setStatus('Unsaved Changes', 'pill-amber');
+        });
+        st.xmlTextarea = xmlTa;
+        xmlField.appendChild(xmlTa);
+        xmlBox.appendChild(xmlField);
+        editorPanel.appendChild(xmlBox);
+
+        card.appendChild(editorPanel);
+        return card;
+      }
+
+      function renderPage() {
+        if (!payloadData) return;
+        const blog = payloadData.blog;
+        const stats = payloadData.stats || {};
+        const query = (elFilterInput.value || '').trim().toLowerCase();
+
+        document.title = blog.wsKey + ' Diagrams — ' + blog.title;
+        elBackBlog.setAttribute('href', blog.blogPortalUrl);
+        elBackBlog.textContent = '← Back to ' + blog.wsKey + ' Blog';
+        elHdrBadge.textContent = blog.badge || (blog.wsKey + ' DIAGRAMS');
+        elHdrTitle.textContent = 'All Diagrams Used — ' + blog.title;
+        elHdrSubtitle.textContent = blog.subtitle;
+        elLinkShots.setAttribute('href', blog.screenshotsPageUrl);
+        elLinkShots.textContent = '📸 All Screenshots Used (' + (stats.screenshotCount || 0) + ') ↗';
+
+        elStatActive.textContent = (stats.activeDiagramCount || 0) + ' Active Diagram(s)';
+        elStatCustom.textContent = (stats.customDiagramCount || 0) + ' Cloned / Custom';
+        elStatShots.textContent = (stats.screenshotCount || 0) + ' Retina Screenshots';
+
+        // Switcher
+        elSwitcher.replaceChildren();
+        (payloadData.allBlogs || []).forEach(function (b) {
+          const a = document.createElement('a');
+          a.className = 'switcher-link' + (b.slug === blog.slug ? ' active' : '');
+          a.setAttribute('href', b.diagramsPageUrl);
+          a.textContent = b.shortLabel;
+          elSwitcher.appendChild(a);
+        });
+
+        // Deleted trash banner
+        const deleted = payloadData.deletedDiagrams || [];
+        elTrashItems.replaceChildren();
+        if (deleted.length > 0) {
+          elTrashBanner.classList.add('visible');
+          deleted.forEach(function (d) {
+            const chip = makeEl('div', 'url-chip');
+            chip.appendChild(makeEl('span', '', d.title + ' (' + d.id + ')'));
+            chip.appendChild(makeActionBtn('btn btn-xs btn-success', '♻️ Restore', async function () {
+              try {
+                await apiPost('/api/blog-diagrams/restore', {
+                  slug: activeSlug === 'all' ? (d.slug || 'ws1') : activeSlug,
+                  id: d.id
+                });
+                showToast('Restored "' + d.id + '".', 'success');
+                await loadAssets();
+              } catch (err) {
+                showToast('Restore failed: ' + err.message, 'error');
+              }
+            }, 'btn-restore-' + d.id));
+            elTrashItems.appendChild(chip);
+          });
+        } else {
+          elTrashBanner.classList.remove('visible');
+        }
+
+        // Active diagrams
+        editorStates.clear();
+        elDiagramsList.replaceChildren();
+        const filtered = (payloadData.diagrams || []).filter(function (d) {
+          if (!query) return true;
+          const hay = (d.id + ' ' + d.title + ' ' + (d.caption || '') + ' slide ' + (d.slideNumber || '')).toLowerCase();
+          return hay.includes(query);
+        });
+
+        if (filtered.length === 0) {
+          const empty = makeEl('div', 'empty-state');
+          empty.appendChild(makeEl('p', '', query ? 'No diagrams match your filter.' : 'No active diagrams in this blog gallery. Use "New Blank Diagram" or restore from trash above.'));
+          elDiagramsList.appendChild(empty);
+          return;
+        }
+
+        filtered.forEach(function (diag, idx) {
+          elDiagramsList.appendChild(renderDiagramCard(diag, idx));
+        });
+      }
+
+      async function loadAssets() {
+        try {
+          const res = await fetch('/api/blog-assets/' + encodeURIComponent(activeSlug));
+          const data = await res.json();
+          if (!res.ok || !data.ok) {
+            throw new Error(data.error || ('HTTP ' + res.status));
+          }
+          payloadData = data;
+          renderPage();
+        } catch (err) {
+          showToast('Failed to load blog diagrams: ' + err.message, 'error');
+        }
+      }
+
+      // Wire modals & controls
+      elFilterInput.addEventListener('input', renderPage);
+      document.getElementById('btn-reload-assets').addEventListener('click', loadAssets);
+
+      document.getElementById('clone-modal-close').addEventListener('click', closeAllModals);
+      document.getElementById('clone-modal-cancel').addEventListener('click', closeAllModals);
+      document.getElementById('clone-modal-submit').addEventListener('click', async function () {
+        if (!pendingCloneDiagram) return;
+        const newId = document.getElementById('clone-new-id').value.trim();
+        const newTitle = document.getElementById('clone-new-title').value.trim();
+        const targetSlug = document.getElementById('clone-target-blog').value;
+        const newCaption = document.getElementById('clone-new-caption').value.trim();
+        const errEl = document.getElementById('clone-error');
+        errEl.style.display = 'none';
+        try {
+          await apiPost('/api/blog-diagrams/clone', {
+            sourceId: pendingCloneDiagram.id,
+            newId: newId,
+            targetSlug: targetSlug,
+            title: newTitle,
+            caption: newCaption,
+            slideNumber: pendingCloneDiagram.slideNumber
+          });
+          closeAllModals();
+          showToast('Cloned "' + pendingCloneDiagram.id + '" → "' + newId + '" (' + targetSlug.toUpperCase() + ').', 'success');
+          if (targetSlug === activeSlug || activeSlug === 'all') {
+            await loadAssets();
+          }
+        } catch (err) {
+          errEl.textContent = err.message;
+          errEl.style.display = 'block';
+        }
+      });
+
+      document.getElementById('btn-new-blank-diagram').addEventListener('click', function () {
+        const ts = String(Math.floor(Date.now() / 1000) % 100000);
+        document.getElementById('blank-new-id').value = (activeSlug === 'all' ? 'ws1' : activeSlug) + '-custom-diagram-' + ts;
+        document.getElementById('blank-new-title').value = 'New ' + activeSlug.toUpperCase() + ' Architecture Diagram';
+        document.getElementById('blank-new-caption').value = '';
+        const errEl = document.getElementById('blank-error');
+        errEl.style.display = 'none';
+        document.getElementById('blank-modal').classList.add('open');
+      });
+      document.getElementById('blank-modal-close').addEventListener('click', closeAllModals);
+      document.getElementById('blank-modal-cancel').addEventListener('click', closeAllModals);
+      document.getElementById('blank-modal-submit').addEventListener('click', async function () {
+        const newId = document.getElementById('blank-new-id').value.trim();
+        const title = document.getElementById('blank-new-title').value.trim();
+        const caption = document.getElementById('blank-new-caption').value.trim();
+        const errEl = document.getElementById('blank-error');
+        errEl.style.display = 'none';
+        try {
+          await apiPost('/api/blog-diagrams/create', {
+            newId: newId,
+            targetSlug: activeSlug === 'all' ? 'ws1' : activeSlug,
+            title: title,
+            caption: caption
+          });
+          closeAllModals();
+          showToast('Created blank editable diagram "' + newId + '".', 'success');
+          await loadAssets();
+        } catch (err) {
+          errEl.textContent = err.message;
+          errEl.style.display = 'block';
+        }
+      });
+
+      document.getElementById('delete-modal-close').addEventListener('click', closeAllModals);
+      document.getElementById('delete-modal-cancel').addEventListener('click', closeAllModals);
+      document.getElementById('delete-modal-confirm').addEventListener('click', async function () {
+        if (!pendingDeleteDiagram) return;
+        const diag = pendingDeleteDiagram;
+        try {
+          await apiPost('/api/blog-diagrams/delete', {
+            slug: activeSlug === 'all' ? (diag.slug || 'ws1') : activeSlug,
+            id: diag.id
+          });
+          closeAllModals();
+          showToast('Deleted "' + diag.id + '" (backed up — click Restore above to undo).', 'warn');
+          await loadAssets();
+        } catch (err) {
+          showToast('Delete failed: ' + err.message, 'error');
+        }
+      });
+
+      document.getElementById('lightbox-close').addEventListener('click', closeAllModals);
+      ['clone-modal', 'blank-modal', 'delete-modal', 'lightbox-modal'].forEach(function (mid) {
+        document.getElementById(mid).addEventListener('click', function (ev) {
+          if (ev.target && ev.target.id === mid) closeAllModals();
+        });
+      });
+      window.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Escape') closeAllModals();
+      });
+
+      loadAssets();
+    })();
+  </script>
+</body>
+</html>

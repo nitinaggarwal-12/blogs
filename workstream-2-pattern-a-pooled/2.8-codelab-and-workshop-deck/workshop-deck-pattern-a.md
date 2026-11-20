@@ -19,9 +19,9 @@
 
 ## Slide 3: Anchor Case Study — The "Cymbal" SaaS Scenario
 * **Columns**:
-  * **Platform Operator (Cymbal)**: Publishes Shared Incident Diagnostic Agent (Gemini 2.5 Pro + `ContextCacheConfig` 90% COGS savings) + 2LO Core Telemetry API.
-  * **Tenant Alpha (FinVault Bank • Enterprise)**: Google Workspace + Jira stack, 8,000 thinking budget, builds private `Agent Alpha` (Gemini 2.5 Pro (Dedicated PT) on Model Garden), CMEK memory.
-  * **Tenant Beta (RetailStream Corp • Standard)**: 100% Microsoft Entra ID + SharePoint/ServiceNow stack, 4,000 thinking cap, Redis bulkhead, inline 3LO OAuth consent.
+  * **Platform Operator (Cymbal)**: Publishes Shared Incident Diagnostic Agent (Gemini 3.8 Flash + `ContextCacheConfig` 90% COGS savings) + 2LO Core Telemetry API.
+  * **Tenant Alpha (FinVault Bank • Enterprise)**: Google Workspace + Jira stack, `HIGH` thinkingLevel (`8,000` maxOutputTokens), builds private `Agent Alpha` (Gemini 3.8 Flash (Dedicated PT) on Model Garden), CMEK memory.
+  * **Tenant Beta (RetailStream Corp • Standard)**: 100% Microsoft Entra ID + SharePoint/ServiceNow stack, `MEDIUM` (`4,000 maxOutputTokens`) cap, Redis bulkhead, inline 3LO OAuth consent.
 
 ## Slide 4: Why Legacy Multi-Tenancy Breaks in Agentic AI
 * **4 Failure Modes**:
@@ -48,7 +48,7 @@
 * **Key Controls**:
   * gVisor sandbox + immutable `temp:tenant_id`.
   * `ContextCacheConfig` (`READ_ONLY_IMMUTABLE_PREFIX`) saves 90% on shared system prompt tokens.
-  * Memorystore for Redis enforces `4,000` vs `8,000` thinking-token caps and RPM rate bulkheads.
+  * Memorystore for Redis enforces `4,000` vs `8,000` `thinkingLevel`/`maxOutputTokens` caps and RPM rate bulkheads.
 
 ## Slide 9: Deep Dive — Hop 4 (Vertex AI Model Armor & Semantic NLCs)
 * **Key Controls**:

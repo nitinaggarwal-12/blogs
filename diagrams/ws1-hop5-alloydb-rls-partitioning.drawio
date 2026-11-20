@@ -1,0 +1,197 @@
+<mxfile host="app.diagrams.net" modified="2026-11-09T05:55:00Z" agent="PolymorphicStudio-2WaySync" version="24.7.8" type="device">
+  <diagram id="ws1-hop5-alloydb-rls-partitioning" name="Slide 13/56 • WS1 • Hop 5 Data Partitioning: AlloyDB FORCE ROW LEVEL SECURITY Engine">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="sp_1167" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#E8F0FE;strokeColor=#4285F4;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="42.0" width="276.0" height="36.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1168" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.7px;color:#0D47A1;&quot;&gt;&lt;b&gt;PART 1 (WS1) • HOP 5B RLS&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#0D47A1;fontSize=11.7;align=center;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="42.0" width="276.0" height="36.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1169" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:22.1px;color:#3C4043;&quot;&gt;&lt;b&gt;Hop 5 Data Partitioning: AlloyDB Row-Level Security Architecture&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=22.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="372.0" y="33.6" width="1140.0" height="54.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1170" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#DADCE0;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="90.0" width="1456.0" height="2.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1171" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#5F6368;&quot;&gt;[Compendium S13/54 • PART 1 (WS1)]  •  &lt;/span&gt;&lt;span style=&quot;font-size:8.8px;color:#1D4ED8;&quot;&gt;&lt;b&gt;▶ 4-State Hybrid &amp;amp; Draw.io ↗&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="852.0" width="1260.0" height="36.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1173" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:14.3px;color:#5F6368;&quot;&gt;How Row-Level Security mathematically prevents cross-tenant data leaks at the database engine layer.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=14.3;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="102.0" width="1456.0" height="48.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_0_0" value="&lt;b&gt;Row ID&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="162.0" width="96.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_0_1" value="&lt;b&gt;Tenant ID&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="168.0" y="162.0" width="144.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_0_2" value="&lt;b&gt;Account Owner&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="312.0" y="162.0" width="264.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_0_3" value="&lt;b&gt;Ledger Balance&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="576.0" y="162.0" width="180.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_0_4" value="&lt;b&gt;RLS Evaluation Rule&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="756.0" y="162.0" width="412.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_0_5" value="&lt;b&gt;Tenant A Visibility&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="1168.0" y="162.0" width="180.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_0_6" value="&lt;b&gt;Tenant B Visibility&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="1348.0" y="162.0" width="180.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_1_0" value="101" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="214.8" width="96.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_1_1" value="tenant-a" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="168.0" y="214.8" width="144.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_1_2" value="Tenant A Treasury Ops" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="312.0" y="214.8" width="264.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_1_3" value="USD 14,250,000" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="576.0" y="214.8" width="180.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_1_4" value="current_setting(&amp;#x27;app.current_tenant_id&amp;#x27;) = &amp;#x27;tenant-a&amp;#x27;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="756.0" y="214.8" width="412.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_1_5" value="✔ VISIBLE (PERMITTED)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="1168.0" y="214.8" width="180.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_1_6" value="✖ HIDDEN (RLS FILTERED)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FCE8E6;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="1348.0" y="214.8" width="180.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_2_0" value="102" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="267.6" width="96.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_2_1" value="tenant-a" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="168.0" y="267.6" width="144.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_2_2" value="Tenant A Wire Clearing" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="312.0" y="267.6" width="264.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_2_3" value="USD 312,500,000" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="576.0" y="267.6" width="180.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_2_4" value="current_setting(&amp;#x27;app.current_tenant_id&amp;#x27;) = &amp;#x27;tenant-a&amp;#x27;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="756.0" y="267.6" width="412.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_2_5" value="✔ VISIBLE (PERMITTED)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="1168.0" y="267.6" width="180.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_2_6" value="✖ HIDDEN (RLS FILTERED)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FCE8E6;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="1348.0" y="267.6" width="180.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_3_0" value="103" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="320.4" width="96.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_3_1" value="tenant-b" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="168.0" y="320.4" width="144.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_3_2" value="Tenant B Merchant Ops" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="312.0" y="320.4" width="264.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_3_3" value="USD 1,850,200" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="576.0" y="320.4" width="180.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_3_4" value="current_setting(&amp;#x27;app.current_tenant_id&amp;#x27;) = &amp;#x27;tenant-b&amp;#x27;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="756.0" y="320.4" width="412.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_3_5" value="✖ HIDDEN (RLS FILTERED)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FCE8E6;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="1168.0" y="320.4" width="180.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_3_6" value="✔ VISIBLE (PERMITTED)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="1348.0" y="320.4" width="180.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_4_0" value="104" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="373.2" width="96.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_4_1" value="tenant-b" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="168.0" y="373.2" width="144.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_4_2" value="Tenant B Escrow" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="312.0" y="373.2" width="264.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_4_3" value="USD 4,320,000" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="576.0" y="373.2" width="180.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_4_4" value="current_setting(&amp;#x27;app.current_tenant_id&amp;#x27;) = &amp;#x27;tenant-b&amp;#x27;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="756.0" y="373.2" width="412.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_4_5" value="✖ HIDDEN (RLS FILTERED)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FCE8E6;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="1168.0" y="373.2" width="180.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="tc_0_4_6" value="✔ VISIBLE (PERMITTED)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=9;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="1348.0" y="373.2" width="180.0" height="52.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1175" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#F8F9FA;strokeColor=#4285F4;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="462.0" width="1456.0" height="354.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1176" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:14.3px;color:#0D47A1;&quot;&gt;&lt;b&gt;HOW ALLOYDB POSTGRESQL ROW-LEVEL SECURITY ENFORCES ZERO-TRUST PRIVACY&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#0D47A1;fontSize=14.3;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="108.0" y="486.0" width="1380.0" height="42.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1177" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="108.0" y="534.0" width="318.0" height="252.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1178" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#0D47A1;&quot;&gt;&lt;b&gt;STEP 1: CONNECTION CHECKOUT&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#0D47A1;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="120.0" y="552.0" width="294.0" height="54.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1179" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#5F6368;&quot;&gt;When the agent checks out a connection from the pool, the session state is pristine. No tenant context exists.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="120.0" y="618.0" width="294.0" height="150.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1180" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="453.6" y="534.0" width="318.0" height="252.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1181" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#0D47A1;&quot;&gt;&lt;b&gt;STEP 2: SET LOCAL APP.CURRENT_TENANT_ID&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#0D47A1;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="465.6" y="552.0" width="294.0" height="54.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1182" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#5F6368;&quot;&gt;Middleware extracts verified tenant_id from JWT and issues SET LOCAL. Caveat: Auto-resets on COMMIT; with PgBouncer session mode, pool hooks must issue DISCARD ALL.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="465.6" y="618.0" width="294.0" height="150.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1183" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="799.2" y="534.0" width="318.0" height="252.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1184" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#0D47A1;&quot;&gt;&lt;b&gt;STEP 3: AUTOMATIC PREDICATE ENFORCEMENT&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#0D47A1;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="811.2" y="552.0" width="294.0" height="54.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1185" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#5F6368;&quot;&gt;AlloyDB rewrites all queries internally: SELECT * FROM ledger WHERE tenant_id = current_setting(&amp;#x27;app.current_tenant_id&amp;#x27;).&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="811.2" y="618.0" width="294.0" height="150.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1186" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="1144.8" y="534.0" width="318.0" height="252.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1187" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#0D47A1;&quot;&gt;&lt;b&gt;STEP 4: SUB-15MS ENGINE FILTERING&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#0D47A1;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="1156.8" y="552.0" width="294.0" height="54.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1188" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#5F6368;&quot;&gt;Competitor records are filtered by the PostgreSQL engine before disk pages enter memory. 0 leaked rows guaranteed.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="1156.8" y="618.0" width="294.0" height="150.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_layer" value="Planes: control / compute / data (generated, locked)" style="locked=1;" parent="0"/>
+        <mxCell id="plane_bdr_00_DATA" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=14;fillColor=none;strokeColor=#FDBA74;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="67.0" y="159.0" width="1466.0" height="272.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_01_DATA" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=14;fillColor=none;strokeColor=#FDBA74;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="103.0" y="529.0" width="1364.8" height="262.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b00_DATA" value="DATA · tenant rows &amp;amp; ADK / Memory Bank sessions in one shared table" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#B45309;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="67.0" y="138.0" width="395.0" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b01_DATA" value="DATA · session bound to tenant (1–2), engine RLS (3–4)" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#B45309;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1154.8" y="507.0" width="313.0" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_CONTROL" value="&lt;b&gt;CONTROL  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;not drawn: verified tenant_id from Hop 1 JWT + STS CAB token&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#1D4ED8;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="72.0" y="437.5" width="478.7" height="16.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_COMPUTE" value="&lt;b&gt;COMPUTE  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;not drawn: ADK / Memory Bank middleware issuing SET LOCAL in Step 2&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#047857;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="560.7" y="437.5" width="478.7" height="16.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_DATA" value="&lt;b&gt;DATA  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;Steps 1–4 + table: AlloyDB FORCE RLS isolates ADK / Memory Bank sessions&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#B45309;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1049.3" y="437.5" width="478.7" height="16.2" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

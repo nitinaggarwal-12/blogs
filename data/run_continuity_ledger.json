@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-11-01T10:18:21Z",
+  "updated_at": "2026-11-19T05:46:10Z",
   "workspace_root": ".",
   "replay_orchestrator_script": "scripts/run_all_repeatable_e2e_verifications.py",
   "standing_mandates": [
@@ -39,10 +39,10 @@
       "command": "python3 -B scripts/provision_aws_ec2_third_party_apps.py",
       "receipt_path": "docs/aws_ec2_3p_apps_live_receipt.json",
       "receipt_sha256": "01c1192023fb7f0cda5d9d9328bb0eee7e4bb8c7c727eedb3656d1ed3b0ad230",
-      "last_executed_at": "2026-11-01T10:18:21Z",
+      "last_executed_at": "2026-11-16T07:00:56Z",
       "last_exit_code": 0,
-      "repeat_in_next_run": true,
-      "superseded_by_user": false
+      "repeat_in_next_run": false,
+      "superseded_by_user": true
     },
     {
       "step_id": "STEP-02-GCP-CLOUDRUN-10-3P-STACKS",
@@ -53,10 +53,10 @@
       "command": "python3 -B scripts/provision_gcp_cloudrun_third_party_apps.py --reseed-only",
       "receipt_path": "docs/gcp_cloudrun_3p_apps_live_receipt.json",
       "receipt_sha256": "b17f10ed32c7d75d8ae1312b26f74d4aec825832891d6921671e1b3500b3f812",
-      "last_executed_at": "2026-11-01T10:18:21Z",
+      "last_executed_at": "2026-11-16T07:00:56Z",
       "last_exit_code": 0,
-      "repeat_in_next_run": true,
-      "superseded_by_user": false
+      "repeat_in_next_run": false,
+      "superseded_by_user": true
     },
     {
       "step_id": "STEP-03-AWS-AGENTCORE-10-SAAS-MCP-TARGETS",
@@ -67,7 +67,7 @@
       "command": "python3 -B scripts/deploy_10_saas_aws_agentcore_targets.py",
       "receipt_path": "docs/aws_agentcore_10_saas_targets_manifest.json",
       "receipt_sha256": "1fefd1ef910d38779cc6e788a1f99902cd37332ba0d92db01b84eee757b6c51d",
-      "last_executed_at": "2026-11-01T10:18:21Z",
+      "last_executed_at": "2026-11-17T04:48:21Z",
       "last_exit_code": 0,
       "repeat_in_next_run": true,
       "superseded_by_user": false
@@ -77,11 +77,11 @@
       "description": "Execute 10-SaaS x 3-Pattern (30 cross-cloud E2E flows, 60/60 positive + negative isolation assertions) across Google Cloud KMS/DLP and AWS Bedrock AgentCore MCP + S3.",
       "cloud_provider": "GCP+AWS",
       "script_path": "scripts/verify_5_third_party_saas_products.py",
-      "script_sha256": "d95084d4cc75fd51bb973ef8df0b45be9127b85defd64399f2810ccebf8ac307",
+      "script_sha256": "98e7011693a1a430730ea7cebf505bda1f3c1a8e8b6dc8886a49603e1415a5df",
       "command": "python3 -B scripts/verify_5_third_party_saas_products.py",
       "receipt_path": "docs/third_party_5_saas_verification_receipt.json",
-      "receipt_sha256": "a296dc812382f570d720fd5f12241df5626dd5328eb18a67a38ff6886f0c3fe6",
-      "last_executed_at": "2026-11-01T10:18:21Z",
+      "receipt_sha256": "fbcb22e2a9c5cfdf8e931be99055c7db56864c61f3aa57c48d94333e50b088c4",
+      "last_executed_at": "2026-11-17T04:48:21Z",
       "last_exit_code": 0,
       "repeat_in_next_run": true,
       "superseded_by_user": false
@@ -95,21 +95,35 @@
       "command": "node scripts/capture_genuine_multicloud_3p_uis.mjs",
       "receipt_path": "docs/genuine_ui_screenshot_provenance_receipt.json",
       "receipt_sha256": "7196547b4eba64452791b33c1a81e2169229e29c1faab837209f0e80510c8972",
-      "last_executed_at": "2026-11-01T10:18:21Z",
+      "last_executed_at": "2026-11-16T07:00:56Z",
       "last_exit_code": 0,
-      "repeat_in_next_run": true,
-      "superseded_by_user": false
+      "repeat_in_next_run": false,
+      "superseded_by_user": true
     },
     {
       "step_id": "STEP-05B-GENUINE-20-BEFORE-AFTER-3P-UI-SCREENSHOTS",
       "description": "Capture 20 genuine live Before-vs-After 2x Retina (2880x1800) 3P SaaS UI screenshots across all 10 upstream enterprise software stacks via real HTTP/SQL/REST state transitions with distinct SHA-256 digests.",
       "cloud_provider": "GCP+AWS",
       "script_path": "scripts/capture_genuine_3p_before_after_uis.mjs",
-      "script_sha256": "853ed9591aa6d271cf1a86c897ed9a6a88c69bb96338ad6528dce642909cf3a1",
+      "script_sha256": "68e3749ee69a5fde00662f3d448518b3583874441c81b116c5f928988093f6e2",
       "command": "node scripts/capture_genuine_3p_before_after_uis.mjs",
       "receipt_path": "docs/genuine_3p_before_after_provenance_receipt.json",
-      "receipt_sha256": "a73e3e8a729c25d33e09140f9b7e973badcd10282cdf3b65ac8745c310545561",
-      "last_executed_at": "2026-11-01T10:18:21Z",
+      "receipt_sha256": "853e7438c24a3475e879be48fa14b224441ebec10ea2b2389ac95dc103e42283",
+      "last_executed_at": "2026-11-16T07:00:56Z",
+      "last_exit_code": 0,
+      "repeat_in_next_run": false,
+      "superseded_by_user": true
+    },
+    {
+      "step_id": "STEP-05-VERIFIED-CLOUD-AND-COMMERCIAL-SAAS-UIS",
+      "description": "Capture & verify live Google Cloud Console, Gemini Enterprise & Marketplace Commercial SaaS 16:9 Retina screenshots via capture_verified_ui.mjs + verify_slide_screenshots.mjs --audience external (zero open-source stand-ins).",
+      "cloud_provider": "GCP+SAAS",
+      "script_path": "scripts/capture_real_gcp_and_saas_screenshots.mjs",
+      "script_sha256": "3feac77f145d8f0072463e04c19e4f7f6a7b927b52320f2f85ca649f448c8777",
+      "command": "node scripts/capture_real_gcp_and_saas_screenshots.mjs",
+      "receipt_path": "docs/cloud_console_verification_receipt.json",
+      "receipt_sha256": "c1bcf26d3b80007fb77cde16e6faca572562e997b11f027fd97001576a7834f1",
+      "last_executed_at": "2026-11-17T04:48:21Z",
       "last_exit_code": 0,
       "repeat_in_next_run": true,
       "superseded_by_user": false
@@ -119,11 +133,11 @@
       "description": "Execute Deep Forensic Audit (F-01..F-13) and Provenance Guard verifying 100% receipt SHA-256 parity, zero synthetic screenshots, and 15/15 Google Slides + 6/6 Google Docs synchronization.",
       "cloud_provider": "GCP+AWS",
       "script_path": "scripts/run_deep_forensic_audit.py",
-      "script_sha256": "65da3bf674efa1fedf73f921a920c489d99998cbfd80b190c916b4db1dbd197a",
+      "script_sha256": "ce189aebd4e16dee59355762b35ffbb87f9389e3dd4e8fff392478308d75332a",
       "command": "python3 -B scripts/run_deep_forensic_audit.py",
       "receipt_path": "docs/cloud_console_verification_receipt.json",
       "receipt_sha256": "c1bcf26d3b80007fb77cde16e6faca572562e997b11f027fd97001576a7834f1",
-      "last_executed_at": "2026-11-01T10:18:21Z",
+      "last_executed_at": "2026-11-19T05:46:10Z",
       "last_exit_code": 0,
       "repeat_in_next_run": true,
       "superseded_by_user": false

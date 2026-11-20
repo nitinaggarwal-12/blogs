@@ -13,7 +13,7 @@
 
   <!-- TOP EXTERNAL USER / TENANT BOX -->
   <g>
-    <rect x="465" y="52" width="250" height="86" rx="8" ry="8" fill="#ffffff" stroke="#202124" stroke-width="2"/>
+    <rect x="465" y="54" width="250" height="84" rx="8" ry="8" fill="#ffffff" stroke="#202124" stroke-width="2"/>
     <circle cx="590" cy="76" r="9.5" fill="#000000"/>
     <path d="M 573 101 C 573 91 607 91 607 101 Z" fill="#000000"/>
     <text x="590" y="117" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">Platform Operator (IaC)</text>
@@ -343,10 +343,10 @@
   <text x="68" y="327" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round">Resource Dependency Graph • Hop 1 Edge → Hop 3 Runtime &amp; Bulkhead → Hop 5 Audit (cymbal_agentic_finops_otel)</text>
   <text x="84" y="363" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#aecbfa" stroke-width="8" stroke-linejoin="round">Provider, project &amp; ingress hub</text>
   <text x="84" y="381" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#aecbfa" stroke-width="8" stroke-linejoin="round">required_providers + Hop 1 Google Cloud Armor WAF front door</text>
-  <text x="86" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" textLength="488" lengthAdjust="spacingAndGlyphs">Runtime &amp; Services Graph: google_cloud_run_v2_service.cymbal_pooled_gateway (cymbal-multi-tenant-patterns)</text>
+  <text x="86" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" textLength="342" lengthAdjust="spacingAndGlyphs">Runtime &amp; Services Graph: google_cloud_run_v2_service.cymbal_pooled_gateway (cymbal-multi-tenant-patterns)</text>
   <text x="104" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#feefc3" stroke-width="8" stroke-linejoin="round">Cloud Run v2 Agent Gateway</text>
   <text x="104" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#feefc3" stroke-width="8" stroke-linejoin="round">cymbal-multi-tenant-patterns • EXECUTION_ENVIRONMENT_GEN2</text>
-  <text x="630" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" textLength="488" lengthAdjust="spacingAndGlyphs">Data Graph: Memorystore Valkey + AlloyDB/BQ RLS (pattern_a_pooled_rls_entities) &amp; Firestore</text>
+  <text x="630" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" textLength="342" lengthAdjust="spacingAndGlyphs">Data Graph: Memorystore Valkey + AlloyDB/BQ RLS (pattern_a_pooled_rls_entities) &amp; Firestore</text>
   <text x="648" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#fad2cf" stroke-width="8" stroke-linejoin="round">Tenant Data &amp; Bulkhead Stores</text>
   <text x="648" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#fad2cf" stroke-width="8" stroke-linejoin="round">Memorystore Valkey STANDARD_HA 5GB (Hop 3 FinOps)</text>
 

@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" style="width:100%;height:auto;display:block;background:#FFFFFF;font-family:Arial,sans-serif;">
+<defs><marker id="arrowEnd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#475569"/></marker></defs>
+<rect x="0" y="0" width="1600" height="900" fill="#FFFFFF"/>
+<rect x="0.0" y="7.8" width="1600.0" height="59.4" rx="0" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1.0"/>
+<rect x="0.0" y="0.0" width="400.0" height="7.8" rx="0" fill="#4285F4" stroke="none" stroke-width="0"/>
+<rect x="400.0" y="0.0" width="400.0" height="7.8" rx="0" fill="#EA4335" stroke="none" stroke-width="0"/>
+<rect x="799.9" y="0.0" width="400.0" height="7.8" rx="0" fill="#FBBC04" stroke="none" stroke-width="0"/>
+<rect x="1199.9" y="0.0" width="400.1" height="7.8" rx="0" fill="#34A853" stroke="none" stroke-width="0"/>
+<text x="80.0" y="41.9" text-anchor="start" fill="#202124" font-size="20.2" font-weight="bold">WS4 - PART 4 - Pattern C /28 PSC &amp; 0ms Live Tier Promotion</text>
+<line x1="126.0" y1="199.2" x2="1500.0" y2="199.2" stroke="#CBD5E1" stroke-width="1.5" marker-end="url(#arrowEnd)"/>
+<rect x="75.6" y="86.4" width="100.8" height="43.2" rx="10" fill="#F8F9FA" stroke="#0F2942" stroke-width="1.2"/>
+<text x="126.0" y="110.9" text-anchor="middle" fill="#0F2942" font-size="11.2" font-weight="bold">ADMIN</text>
+<text x="126.0" y="156.8" text-anchor="middle" fill="#3C4043" font-size="12.2" font-weight="bold">Tenant Admin / SRE</text>
+<rect x="114.0" y="186.0" width="24.0" height="24.0" rx="50%" fill="#0F2942" stroke="none" stroke-width="0"/>
+<line x1="126.0" y1="210.0" x2="126.0" y2="800.4" stroke="#CBD5E1" stroke-width="1.2"/>
+<rect x="351.6" y="86.4" width="100.8" height="43.2" rx="10" fill="#F8F9FA" stroke="#0D7A75" stroke-width="1.2"/>
+<text x="402.0" y="110.9" text-anchor="middle" fill="#0D7A75" font-size="11.2" font-weight="bold">ROUTER</text>
+<text x="402.0" y="156.8" text-anchor="middle" fill="#3C4043" font-size="12.2" font-weight="bold">Hub Tier Router</text>
+<rect x="390.0" y="186.0" width="24.0" height="24.0" rx="50%" fill="#0D7A75" stroke="none" stroke-width="0"/>
+<line x1="402.0" y1="210.0" x2="402.0" y2="800.4" stroke="#CBD5E1" stroke-width="1.2"/>
+<rect x="627.6" y="86.4" width="100.8" height="43.2" rx="10" fill="#F8F9FA" stroke="#54728C" stroke-width="1.2"/>
+<text x="678.0" y="110.9" text-anchor="middle" fill="#54728C" font-size="11.2" font-weight="bold">MIGRATOR</text>
+<text x="678.0" y="156.8" text-anchor="middle" fill="#3C4043" font-size="12.2" font-weight="bold">Migration Coordinator</text>
+<rect x="666.0" y="186.0" width="24.0" height="24.0" rx="50%" fill="#54728C" stroke="none" stroke-width="0"/>
+<line x1="678.0" y1="210.0" x2="678.0" y2="800.4" stroke="#CBD5E1" stroke-width="1.2"/>
+<rect x="903.6" y="86.4" width="100.8" height="43.2" rx="10" fill="#F8F9FA" stroke="#38988E" stroke-width="1.2"/>
+<text x="954.0" y="110.9" text-anchor="middle" fill="#38988E" font-size="11.2" font-weight="bold">POOL</text>
+<text x="954.0" y="156.8" text-anchor="middle" fill="#3C4043" font-size="12.2" font-weight="bold">Shared Pool (Pattern A)</text>
+<rect x="942.0" y="186.0" width="24.0" height="24.0" rx="50%" fill="#38988E" stroke="none" stroke-width="0"/>
+<line x1="954.0" y1="210.0" x2="954.0" y2="800.4" stroke="#CBD5E1" stroke-width="1.2"/>
+<rect x="1203.6" y="86.4" width="100.8" height="43.2" rx="10" fill="#F8F9FA" stroke="#0F2942" stroke-width="1.2"/>
+<text x="1254.0" y="110.9" text-anchor="middle" fill="#0F2942" font-size="11.2" font-weight="bold">SPOKE</text>
+<text x="1254.0" y="156.8" text-anchor="middle" fill="#3C4043" font-size="12.2" font-weight="bold">PSC Spoke (Pattern C)</text>
+<rect x="1242.0" y="186.0" width="24.0" height="24.0" rx="50%" fill="#0F2942" stroke="none" stroke-width="0"/>
+<line x1="1254.0" y1="210.0" x2="1254.0" y2="800.4" stroke="#CBD5E1" stroke-width="1.2"/>
+<rect x="116.4" y="228.0" width="19.2" height="90.0" rx="5" fill="#0F2942" stroke="none" stroke-width="0"/>
+<rect x="392.4" y="246.0" width="19.2" height="162.0" rx="5" fill="#0D7A75" stroke="none" stroke-width="0"/>
+<rect x="668.4" y="330.0" width="19.2" height="162.0" rx="5" fill="#54728C" stroke="none" stroke-width="0"/>
+<rect x="944.4" y="414.0" width="19.2" height="234.0" rx="5" fill="#38988E" stroke="none" stroke-width="0"/>
+<rect x="1244.4" y="588.0" width="19.2" height="199.2" rx="5" fill="#0F2942" stroke="none" stroke-width="0"/>
+<rect x="141.6" y="223.2" width="38.4" height="38.4" rx="50%" fill="#0F2942" stroke="none" stroke-width="0"/>
+<text x="160.8" y="246.1" text-anchor="middle" fill="#FFFFFF" font-size="14.3" font-weight="bold">1</text>
+<rect x="187.2" y="213.6" width="201.6" height="50.4" rx="10" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.0"/>
+<text x="196.2" y="235.3" text-anchor="start" fill="#0F172A" font-size="11.4" font-weight="bold">Promote Tenant Tier</text>
+<text x="196.2" y="248.1" text-anchor="start" fill="#0F172A" font-size="11.4" font-weight="normal">Standard Pool → PSC Spoke</text>
+<line x1="135.6" y1="295.2" x2="392.4" y2="295.2" stroke="#0F2942" stroke-width="1.5" marker-end="url(#arrowEnd)"/>
+<text x="264.0" y="282.2" text-anchor="middle" fill="#0F2942" font-size="10.1" font-weight="bold">Promote Tier → Spoke</text>
+<rect x="417.6" y="297.6" width="38.4" height="38.4" rx="50%" fill="#0D7A75" stroke="none" stroke-width="0"/>
+<text x="436.8" y="320.5" text-anchor="middle" fill="#FFFFFF" font-size="14.3" font-weight="bold">2</text>
+<rect x="463.2" y="292.8" width="201.6" height="52.8" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.0"/>
+<text x="472.2" y="315.7" text-anchor="start" fill="#B45309" font-size="11.4" font-weight="bold">Start SHADOW_SYNC</text>
+<text x="472.2" y="328.5" text-anchor="start" fill="#B45309" font-size="11.4" font-weight="normal">Dual-Write Pool → Spoke</text>
+<line x1="411.6" y1="381.6" x2="668.4" y2="381.6" stroke="#0D7A75" stroke-width="1.5" marker-end="url(#arrowEnd)"/>
+<text x="540.0" y="367.8" text-anchor="middle" fill="#0D7A75" font-size="9.1" font-weight="bold">Enable SHADOW_SYNC</text>
+<rect x="693.6" y="384.0" width="38.4" height="38.4" rx="50%" fill="#54728C" stroke="none" stroke-width="0"/>
+<text x="712.8" y="406.9" text-anchor="middle" fill="#FFFFFF" font-size="14.3" font-weight="bold">3</text>
+<rect x="739.2" y="379.2" width="201.6" height="52.8" rx="10" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.0"/>
+<text x="748.2" y="402.1" text-anchor="start" fill="#1D4ED8" font-size="11.4" font-weight="bold">CMEK Re-Key + SHA-256</text>
+<text x="748.2" y="414.9" text-anchor="start" fill="#1D4ED8" font-size="11.4" font-weight="normal">100% Row &amp; Vector Parity</text>
+<line x1="687.6" y1="465.6" x2="944.4" y2="465.6" stroke="#54728C" stroke-width="1.5" marker-end="url(#arrowEnd)"/>
+<text x="816.0" y="451.9" text-anchor="middle" fill="#54728C" font-size="9.4" font-weight="bold">Backfill + CMEK Re-Key</text>
+<rect x="972.0" y="420.0" width="38.4" height="38.4" rx="50%" fill="#38988E" stroke="none" stroke-width="0"/>
+<text x="991.2" y="442.9" text-anchor="middle" fill="#FFFFFF" font-size="14.3" font-weight="bold">4</text>
+<rect x="1017.6" y="415.2" width="225.6" height="57.6" rx="10" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.0"/>
+<text x="1026.6" y="440.5" text-anchor="start" fill="#047857" font-size="11.4" font-weight="bold">Zero Pause In-Flight</text>
+<text x="1026.6" y="453.3" text-anchor="start" fill="#047857" font-size="11.4" font-weight="normal">0 Dropped Active Turns</text>
+<rect x="969.6" y="482.4" width="268.8" height="86.4" rx="10" fill="#E6F4EA" stroke="#1E8E3E" stroke-width="1.0"/>
+<text x="1104.0" y="514.3" text-anchor="middle" fill="#047857" font-size="12.0" font-weight="bold">🔄 Atomic CAS Pointer Flip (0ms)</text>
+<text x="1104.0" y="552.1" text-anchor="middle" fill="#3C4043" font-size="9.6" font-weight="bold">Guarantee: 0ms Cutover • 0 Dropped Active Turns</text>
+<rect x="972.0" y="590.4" width="38.4" height="38.4" rx="50%" fill="#0D7A75" stroke="none" stroke-width="0"/>
+<text x="991.2" y="613.3" text-anchor="middle" fill="#FFFFFF" font-size="14.3" font-weight="bold">5</text>
+<rect x="823.2" y="580.8" width="112.8" height="33.6" rx="5" fill="#54728C" stroke="none" stroke-width="0"/>
+<text x="879.6" y="600.2" text-anchor="middle" fill="#FFFFFF" font-size="10.1" font-weight="bold">CAS Flip</text>
+<rect x="688.8" y="619.2" width="254.4" height="54.0" rx="10" fill="#FFF1F2" stroke="#FDA4AF" stroke-width="1.0"/>
+<text x="697.8" y="642.7" text-anchor="start" fill="#BE123C" font-size="11.4" font-weight="bold">0ms Firestore Pointer Flip</text>
+<text x="697.8" y="655.5" text-anchor="start" fill="#BE123C" font-size="11.4" font-weight="normal">pool:// → psc:// ServiceAttachment</text>
+<line x1="963.6" y1="631.2" x2="1244.4" y2="631.2" stroke="#0F2942" stroke-width="1.5" marker-end="url(#arrowEnd)"/>
+<text x="1125.6" y="617.0" text-anchor="middle" fill="#0F2942" font-size="10.1" font-weight="bold">/28 PSC + Drain</text>
+<rect x="1272.0" y="600.0" width="38.4" height="38.4" rx="50%" fill="#0F2942" stroke="none" stroke-width="0"/>
+<text x="1291.2" y="622.9" text-anchor="middle" fill="#FFFFFF" font-size="14.3" font-weight="bold">6</text>
+<rect x="1317.6" y="595.2" width="232.8" height="62.4" rx="10" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.0"/>
+<text x="1326.6" y="622.9" text-anchor="start" fill="#047857" font-size="11.4" font-weight="bold">Serve via /28 PSC + Drain</text>
+<text x="1326.6" y="635.7" text-anchor="start" fill="#047857" font-size="11.4" font-weight="normal">10.10.0.50:443 • Purge Old Pool</text>
+<rect x="1272.0" y="669.6" width="278.4" height="115.2" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="1293.6" y="723.9" text-anchor="start" fill="#0F172A" font-size="11.2" font-weight="bold">• 0ms CAS Pointer Swap</text>
+<text x="1293.6" y="736.4" text-anchor="start" fill="#0F172A" font-size="11.2" font-weight="normal">• 0 Dropped Active Turns</text>
+<rect x="1468.8" y="693.6" width="72.0" height="67.2" rx="10" fill="#0F2942" stroke="none" stroke-width="0"/>
+<text x="1504.8" y="723.6" text-anchor="middle" fill="#FFFFFF" font-size="12.0" font-weight="bold">0ms</text>
+<text x="1504.8" y="737.0" text-anchor="middle" fill="#FFFFFF" font-size="12.0" font-weight="normal">SWAP</text>
+<rect x="57.5" y="700.0" width="352.5" height="95.0" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="1.2"/>
+<text x="233.8" y="737.4" text-anchor="middle" fill="#B45309" font-size="11.7" font-weight="bold">🔄 1. Phase 1: SHADOW_SYNC</text>
+<text x="233.8" y="750.5" text-anchor="middle" fill="#B45309" font-size="11.7" font-weight="normal">Dual-Write Pool → Dedicated Spoke</text>
+<text x="233.8" y="763.6" text-anchor="middle" fill="#B45309" font-size="11.7" font-weight="normal">Zero Pause on In-Flight Turns</text>
+<rect x="450.0" y="700.0" width="352.5" height="95.0" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.2"/>
+<text x="626.2" y="737.4" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="bold">🔐 2. Phase 2: CMEK + Parity</text>
+<text x="626.2" y="750.5" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="normal">Re-Encrypt Under Tenant KMS Key</text>
+<text x="626.2" y="763.6" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="normal">SHA-256 Checksum &amp; Vector Parity</text>
+<rect x="842.5" y="700.0" width="352.5" height="95.0" rx="10" fill="#ECFDF5" stroke="#059669" stroke-width="1.2"/>
+<text x="1018.8" y="737.4" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="bold">⚡ 3. Phase 3: 0ms CAS Cutover</text>
+<text x="1018.8" y="750.5" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="normal">Firestore Pointer → /28 PSC Spoke</text>
+<text x="1018.8" y="763.6" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="normal">Async Drain &amp; Purge Old Pool Rows</text>
+<line x1="412.5" y1="747.5" x2="447.5" y2="747.5" stroke="#2563EB" stroke-width="1.8" marker-end="url(#arrowEnd)"/>
+<line x1="805.0" y1="747.5" x2="840.0" y2="747.5" stroke="#059669" stroke-width="1.8" marker-end="url(#arrowEnd)"/>
+<g id="plane_layer" width="1600" font-family="Arial, Helvetica, sans-serif"><rect x="349.1" y="83.9" width="105.8" height="48.2" rx="1.3" fill="none" stroke="#93C5FD" stroke-width="1.2" stroke-dasharray="6,4"/><rect x="625.1" y="83.9" width="105.8" height="48.2" rx="1.3" fill="none" stroke="#93C5FD" stroke-width="1.2" stroke-dasharray="6,4"/><rect x="901.1" y="83.9" width="105.8" height="48.2" rx="1.3" fill="none" stroke="#CBD5E1" stroke-width="1.2" stroke-dasharray="6,4"/><rect x="1201.1" y="83.9" width="105.8" height="48.2" rx="1.3" fill="none" stroke="#CBD5E1" stroke-width="1.2" stroke-dasharray="6,4"/><rect x="459.9" y="100.4" width="61.5" height="15.2" rx="7.6" fill="#EFF6FF" stroke="#93C5FD" stroke-width="0.9"/><text x="490.7" y="111.1" text-anchor="middle" xml:space="preserve"><tspan font-size="10.0" font-weight="700" fill="#1D4ED8">CONTROL</tspan></text><rect x="735.9" y="100.4" width="61.5" height="15.2" rx="7.6" fill="#EFF6FF" stroke="#93C5FD" stroke-width="0.9"/><text x="766.7" y="111.1" text-anchor="middle" xml:space="preserve"><tspan font-size="10.0" font-weight="700" fill="#1D4ED8">CONTROL</tspan></text><rect x="1011.9" y="100.4" width="63.8" height="15.2" rx="7.6" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="0.9"/><text x="1043.8" y="111.1" text-anchor="middle" xml:space="preserve"><tspan font-size="10.0" font-weight="700" fill="#047857">COMPUTE</tspan></text><rect x="1078.2" y="100.4" width="39.2" height="15.2" rx="7.6" fill="#FFFBEB" stroke="#FDBA74" stroke-width="0.9"/><text x="1097.7" y="111.1" text-anchor="middle" xml:space="preserve"><tspan font-size="10.0" font-weight="700" fill="#B45309">DATA</tspan></text><rect x="1311.9" y="100.4" width="63.8" height="15.2" rx="7.6" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="0.9"/><text x="1343.8" y="111.1" text-anchor="middle" xml:space="preserve"><tspan font-size="10.0" font-weight="700" fill="#047857">COMPUTE</tspan></text><rect x="1378.2" y="100.4" width="39.2" height="15.2" rx="7.6" fill="#FFFBEB" stroke="#FDBA74" stroke-width="0.9"/><text x="1397.7" y="111.1" text-anchor="middle" xml:space="preserve"><tspan font-size="10.0" font-weight="700" fill="#B45309">DATA</tspan></text><rect x="57.6" y="820.0" width="490.9" height="18.8" rx="3.4" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.1"/><text x="63.9" y="832.6" text-anchor="start" xml:space="preserve"><tspan font-size="10.2" font-weight="700" fill="#1D4ED8">CONTROL  </tspan><tspan font-size="10.2" font-weight="400" fill="#1F2937">Hub Tier Router + Migration Coordinator: SHADOW_SYNC &amp; 0ms CAS flip</tspan></text><rect x="558.5" y="820.0" width="490.9" height="18.8" rx="3.4" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.1"/><text x="564.8" y="832.6" text-anchor="start" xml:space="preserve"><tspan font-size="10.2" font-weight="700" fill="#047857">COMPUTE  </tspan><tspan font-size="10.2" font-weight="400" fill="#1F2937">Shared Pool (Pattern A) -&gt; PSC Spoke (Pattern C) via /28 ServiceAttachment</tspan></text><rect x="1059.5" y="820.0" width="490.9" height="18.8" rx="3.4" fill="#FFFBEB" stroke="#FDBA74" stroke-width="1.1"/><text x="1065.7" y="832.6" text-anchor="start" xml:space="preserve"><tspan font-size="10.2" font-weight="700" fill="#B45309">DATA  </tspan><tspan font-size="10.2" font-weight="400" fill="#1F2937">Dual-write &amp; CMEK re-key into Spoke DB (10.10.0.50:443) + async pool purge</tspan></text></g>
+</svg>

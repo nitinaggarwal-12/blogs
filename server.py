@@ -11,7 +11,7 @@ Exposes:
 - POST /api/simulate/scenario   -> Runs preset scenarios (sim1..sim6) or full suites (suite_a/b/c)
                                    against the real Python 5-Hop runtime classes
 - POST /api/runtime/invoke      -> Interactive Custom 5-Hop Sandbox (custom JWT, forged headers,
-                                   agent URI, MCP tool, prompt, thinking tokens, RPM, CMEK, PSC upgrade)
+                                   agent URI, MCP tool, prompt, thinkingLevel/maxOutputTokens, RPM, CMEK, PSC upgrade)
 - POST /api/audit/run           -> Runs scripts/run_deep_forensic_audit.py (13/13 checks + 107/107 sims) live
 """
 
@@ -27,6 +27,7 @@ import json
 import os
 import signal
 import sys
+sys.dont_write_bytecode = True
 import threading
 import time
 from html import escape as html_escape
@@ -44,6 +45,8 @@ import urllib.parse
 import urllib.request
 import urllib.error
 import re
+import secrets
+from collections import deque
 from zoneinfo import ZoneInfo
 
 sys.dont_write_bytecode = True
@@ -98,6 +101,15 @@ bridge_mod = load_module_from_path(
     "sync_google_workspace_bridge",
     ROOT_DIR / "scripts/sync_google_workspace_bridge.py",
 )
+blog_assets_mod = load_module_from_path(
+    "blog_assets_manager",
+    ROOT_DIR / "scripts/blog_assets_manager.py",
+)
+_PORTAL_CSRF_TOKEN = secrets.token_hex(32)
+_BLOG_MUTATION_RATE_LOCK = threading.Lock()
+_BLOG_MUTATION_RATE_HITS: Dict[str, deque] = {}
+_BLOG_MUTATION_RATE_LIMIT_PER_MIN = 120
+_AEF_EVAL_RUN_LOCK = threading.Lock()
 saas_mcp_mod = importlib.import_module("core-cymbal-agent.mcp_servers.enterprise_5_saas_bi_mcp")
 
 JWT_CLAIMS_BY_TENANT = {
@@ -208,7 +220,8 @@ def execute_preset_scenario(scenario_id: str) -> Dict[str, Any]:
             session_id="live-sim-04a",
             requested_agent_uri="agent://cymbal/shared-incident-diagnostic-v2",
             user_prompt="Run deep root-cause analysis on checkout spike.",
-            requested_thinking_tokens=16000,
+            requested_output_tokens=16000,
+            requested_thinking_level="HIGH",
             simulated_current_rpm=45,
         )
         res_burst = svc.invoke_pooled_agent(
@@ -218,15 +231,15 @@ def execute_preset_scenario(scenario_id: str) -> Dict[str, Any]:
             session_id="live-sim-04b",
             requested_agent_uri="agent://cymbal/shared-incident-diagnostic-v2",
             user_prompt="Flood shared runtime pool.",
-            requested_thinking_tokens=4000,
+            requested_output_tokens=4000,
             simulated_current_rpm=250,
         )
         return {
             "scenario_id": "sim4",
-            "title": "Sim 4: Noisy Neighbor 16k Thinking Token Clamp (4,000 Cap) & Redis 429 Bulkhead (Hop 3)",
+            "title": "Sim 4: Noisy Neighbor 16k maxOutput Clamp (MEDIUM / 4,000) & Redis 429 Bulkhead (Hop 3)",
             "execution_ms": round((time.perf_counter() - t0) * 1000, 2),
         **get_runtime_execution_posture(),
-            "turn_4a_thinking_budget_clamped": to_jsonable(res_clamp),
+            "turn_4a_thinking_level_clamped": to_jsonable(res_clamp),
             "turn_4b_redis_bulkhead_429": to_jsonable(res_burst),
         }
 
@@ -286,7 +299,8 @@ def execute_preset_scenario(scenario_id: str) -> Dict[str, Any]:
             session_id="sess-rs-live-upgrade-01",
             requested_agent_uri="agent://cymbal/shared-incident-diagnostic-v2",
             user_prompt="Pre-upgrade diagnostic on Standard Pool.",
-            requested_thinking_tokens=8000,
+            requested_output_tokens=8000,
+            requested_thinking_level="HIGH",
         )
         migration_receipt = engine.execute_zero_downtime_tier_upgrade(
             tenant_id="retailstream",
@@ -301,7 +315,8 @@ def execute_preset_scenario(scenario_id: str) -> Dict[str, Any]:
             session_id="sess-rs-live-upgrade-01",
             requested_agent_uri="agent://cymbal/shared-incident-diagnostic-v2",
             user_prompt="Post-upgrade diagnostic on Dedicated PSC Spoke.",
-            requested_thinking_tokens=8000,
+            requested_output_tokens=8000,
+            requested_thinking_level="HIGH",
         )
         return {
             "scenario_id": "sim6",
@@ -309,10 +324,12 @@ def execute_preset_scenario(scenario_id: str) -> Dict[str, Any]:
             "execution_ms": round((time.perf_counter() - t0) * 1000, 2),
         **get_runtime_execution_posture(),
             "pre_upgrade_route": pre_turn.get("hybrid_route"),
-            "pre_upgrade_effective_thinking_budget": pre_turn.get("runtime_config", {}).get("effective_thinking_budget"),
+            "pre_upgrade_effective_thinking_level": pre_turn.get("runtime_config", {}).get("effective_thinking_level"),
+            "pre_upgrade_effective_output_cap": pre_turn.get("runtime_config", {}).get("effective_output_token_cap"),
             "migration_receipt": to_jsonable(migration_receipt),
             "post_upgrade_route": post_turn.get("hybrid_route"),
-            "post_upgrade_effective_thinking_budget": post_turn.get("runtime_config", {}).get("effective_thinking_budget"),
+            "post_upgrade_effective_thinking_level": post_turn.get("runtime_config", {}).get("effective_thinking_level"),
+            "post_upgrade_effective_output_cap": post_turn.get("runtime_config", {}).get("effective_output_token_cap"),
             "post_upgrade_turn_result": to_jsonable(post_turn),
         }
 
@@ -353,7 +370,8 @@ def execute_custom_sandbox_turn(payload: Dict[str, Any]) -> Dict[str, Any]:
     user_prompt = str(
         payload.get("user_prompt", "Analyze active latency anomalies and summarize root cause.")
     )
-    requested_thinking_tokens = int(payload.get("requested_thinking_tokens", 6000))
+    requested_output_tokens = int(payload.get("requested_output_tokens", 6000))
+    requested_thinking_level = payload.get("requested_thinking_level")
     simulated_current_rpm = int(payload.get("simulated_current_rpm", 15))
     cmek_revoked = bool(payload.get("cmek_revoked", False))
     attempted_egress_project = str(payload.get("attempted_egress_project", "")).strip() or None
@@ -381,7 +399,8 @@ def execute_custom_sandbox_turn(payload: Dict[str, Any]) -> Dict[str, Any]:
             user_prompt=user_prompt,
             attempted_egress_project=attempted_egress_project,
             use_airgapped_gemma3_on_gke=True,
-            requested_thinking_tokens=requested_thinking_tokens,
+            requested_output_tokens=requested_output_tokens,
+            requested_thinking_level=requested_thinking_level,
             simulated_current_rpm=simulated_current_rpm,
             requested_mcp_connector=requested_mcp_connector,
         )
@@ -409,7 +428,8 @@ def execute_custom_sandbox_turn(payload: Dict[str, Any]) -> Dict[str, Any]:
             session_id="custom-sandbox-hybrid",
             requested_agent_uri=requested_agent_uri,
             user_prompt=user_prompt,
-            requested_thinking_tokens=requested_thinking_tokens,
+            requested_output_tokens=requested_output_tokens,
+            requested_thinking_level=requested_thinking_level,
             simulated_current_rpm=simulated_current_rpm,
             requested_mcp_connector=requested_mcp_connector,
         )
@@ -431,7 +451,8 @@ def execute_custom_sandbox_turn(payload: Dict[str, Any]) -> Dict[str, Any]:
             session_id="custom-sandbox-pool",
             requested_agent_uri=requested_agent_uri,
             user_prompt=user_prompt,
-            requested_thinking_tokens=requested_thinking_tokens,
+            requested_output_tokens=requested_output_tokens,
+            requested_thinking_level=requested_thinking_level,
             simulated_current_rpm=simulated_current_rpm,
             requested_mcp_connector=requested_mcp_connector,
         )
@@ -1094,65 +1115,65 @@ def record_clickstream_event(
 
 
 SAAS_LIVE_TARGETS: Dict[str, Dict[str, Any]] = {
-    "metabase": {
+    "thoughtspot": {
         "saas_id": "SAAS-01",
-        "title": "Metabase Enterprise BI v0.50.26",
-        "cloud_run": "https://cymbal-gcp-metabase-bi-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/question/27",
+        "title": "ThoughtSpot Cloud (Spotter Agentic BI)",
+        "cloud_run": "https://cymbal-saas-thoughtspot-proxy-fm3mts5x3a-uw.a.run.app",
+        "entry_path": "/liveboards",
     },
-    "grafana": {
+    "sigma": {
         "saas_id": "SAAS-02",
-        "title": "Grafana Enterprise v11.2.0",
-        "cloud_run": "https://cymbal-gcp-grafana-ent-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/d/finvault-sre-wb?orgId=1",
+        "title": "Sigma Computing (Cloud BI Workbooks)",
+        "cloud_run": "https://cymbal-saas-sigma-proxy-fm3mts5x3a-uw.a.run.app",
+        "entry_path": "/workbooks",
     },
-    "redmine": {
+    "servicenow": {
         "saas_id": "SAAS-03",
-        "title": "Redmine ITSM v5.1",
-        "cloud_run": "https://cymbal-gcp-redmine-itsm-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/projects/finvault-itsm/issues?set_filter=1&status_id=*",
+        "title": "ServiceNow ITSM & ITOM",
+        "cloud_run": "https://cymbal-saas-servicenow-proxy-fm3mts5x3a-uw.a.run.app",
+        "entry_path": "/nav_to.do",
     },
-    "nocodb": {
+    "veeva": {
         "saas_id": "SAAS-04",
-        "title": "NocoDB EDC / GxP v0.255.2",
-        "cloud_run": "https://cymbal-gcp-nocodb-edc-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/dashboard",
+        "title": "Veeva Vault RIM (21 CFR Part 11 GxP)",
+        "cloud_run": "https://cymbal-saas-veeva-proxy-fm3mts5x3a-uw.a.run.app",
+        "entry_path": "/ui/",
     },
-    "gitea": {
+    "salesforce-jira": {
         "saas_id": "SAAS-05",
-        "title": "Gitea Enterprise Git v1.22.3",
-        "cloud_run": "https://cymbal-gcp-gitea-sre-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/finvault/agentic-runbooks",
+        "title": "Atlassian Jira Cloud & Salesforce CRM",
+        "cloud_run": "https://cymbal-saas-jira-sfdc-proxy-fm3mts5x3a-uw.a.run.app",
+        "entry_path": "/jira/projects",
     },
-    "trino": {
+    "databricks": {
         "saas_id": "SAAS-06",
-        "title": "Trino Distributed SQL v440",
-        "cloud_run": "https://cymbal-gcp-trino-sql-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/ui/",
+        "title": "Databricks Data Intelligence (Unity Catalog)",
+        "cloud_run": "https://cymbal-saas-databricks-proxy-fm3mts5x3a-uw.a.run.app",
+        "entry_path": "/sql/warehouses",
     },
-    "clickhouse": {
+    "snowflake": {
         "saas_id": "SAAS-07",
-        "title": "ClickHouse Data Warehouse v24.8",
-        "cloud_run": "https://cymbal-gcp-clickhouse-dw-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/play",
+        "title": "Snowflake AI Data Cloud (Cortex SQL)",
+        "cloud_run": "https://cymbal-saas-snowflake-proxy-fm3mts5x3a-uw.a.run.app",
+        "entry_path": "/snowsight/",
     },
-    "directus": {
+    "workday": {
         "saas_id": "SAAS-08",
-        "title": "Directus Data Studio v11.1.0",
-        "cloud_run": "https://cymbal-gcp-directus-hcm-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/admin/content/hcm_compensation",
+        "title": "Workday Enterprise HCM & RaaS",
+        "cloud_run": "https://cymbal-saas-workday-proxy-fm3mts5x3a-uw.a.run.app",
+        "entry_path": "/raas/",
     },
-    "seq": {
+    "datadog": {
         "saas_id": "SAAS-09",
-        "title": "Datalust Seq Observability v2024.3",
-        "cloud_run": "https://cymbal-gcp-seq-apm-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/#/events",
+        "title": "Datadog Cloud Observability & APM",
+        "cloud_run": "https://cymbal-saas-datadog-proxy-fm3mts5x3a-uw.a.run.app",
+        "entry_path": "/logs",
     },
-    "vault": {
+    "okta-crowdstrike": {
         "saas_id": "SAAS-10",
-        "title": "HashiCorp Vault v1.13.3",
-        "cloud_run": "https://cymbal-gcp-vault-cmek-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/ui/",
+        "title": "Okta Workforce Identity & CrowdStrike XDR",
+        "cloud_run": "https://cymbal-saas-okta-xdr-proxy-fm3mts5x3a-uw.a.run.app",
+        "entry_path": "/admin/dashboard",
     },
 }
 
@@ -1876,6 +1897,53 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             )
         return (True, iap_email, "verified_iap_admin")
 
+    def _get_request_origin(self) -> str:
+        host = str(self.headers.get("Host") or "").strip()
+        if not host:
+            return ""
+        proto = str(self.headers.get("X-Forwarded-Proto") or "").strip().lower()
+        if proto not in ("http", "https"):
+            proto = "https" if os.environ.get("K_SERVICE") else "http"
+        return f"{proto}://{host}"
+
+    def _authorize_blog_diagram_mutation(self) -> tuple[bool, int, str, str]:
+        # Per-IP sliding-window rate limit (120 mutating requests / 60s)
+        client_ip = str(self.client_address[0] if self.client_address else "unknown")
+        now_ts = time.time()
+        with _BLOG_MUTATION_RATE_LOCK:
+            bucket = _BLOG_MUTATION_RATE_HITS.setdefault(client_ip, deque())
+            while bucket and (now_ts - bucket[0]) > 60.0:
+                bucket.popleft()
+            if len(bucket) >= _BLOG_MUTATION_RATE_LIMIT_PER_MIN:
+                return (False, 429, "RATE_LIMITED", "Too many diagram mutation requests; retry in a moment.")
+            bucket.append(now_ts)
+
+        # Cloud Run production enforces strict verified Admin IAP JWT ([FA-09]).
+        if os.environ.get("K_SERVICE"):
+            ok_iap, _, iap_err = self._verify_verified_admin_iap()
+            if not ok_iap:
+                return (False, 403, "ADMIN_IAP_REQUIRED", iap_err)
+            return (True, 200, "OK", "")
+
+        # TODO(security): Local workstation mode (non-Cloud-Run) authorizes blog diagram mutations
+        # via per-process cryptographic CSRF token + Same-Origin validation; Cloud Run (K_SERVICE)
+        # requires verified Admin IAP ES256 JWT above.
+        provided_csrf = str(self.headers.get("X-Portal-CSRF") or "").strip()
+        if not provided_csrf or not secrets.compare_digest(provided_csrf, _PORTAL_CSRF_TOKEN):
+            return (False, 403, "CSRF_INVALID", "Missing or invalid X-Portal-CSRF token.")
+
+        req_origin = str(self.headers.get("Origin") or "").strip()
+        if req_origin:
+            parsed_orig = urlparse(req_origin)
+            req_host = str(self.headers.get("Host") or "").strip().lower()
+            orig_netloc = (parsed_orig.netloc or "").strip().lower()
+            orig_host = (parsed_orig.hostname or "").strip().lower()
+            req_hostname = req_host.split(":")[0] if req_host else ""
+            allowed_local_hosts = {req_hostname, "localhost", "127.0.0.1", "::1"}
+            if orig_netloc != req_host and orig_host not in allowed_local_hosts:
+                return (False, 403, "ORIGIN_FORBIDDEN", f"Cross-origin mutation blocked ({req_origin}).")
+        return (True, 200, "OK", "")
+
     def _detect_iap_actor(self, body: Dict[str, Any] | None = None) -> tuple[str, str, str]:
         iap_email = self._extract_verified_iap_email()
         if iap_email:
@@ -1988,26 +2056,17 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
         raw_key = parts[2].lower()
         saas_live_aliases = {
-            "thoughtspot-spotter": "metabase",
-            "thoughtspot": "metabase",
-            "sigma-computing": "grafana",
-            "sigma": "grafana",
-            "servicenow-itsm": "redmine",
-            "servicenow": "redmine",
-            "muse-poc": "nocodb",
-            "veeva": "nocodb",
-            "salesforce-jira": "gitea",
-            "salesforce": "gitea",
-            "databricks-unity": "trino",
-            "databricks": "trino",
-            "snowflake-cortex": "clickhouse",
-            "snowflake": "clickhouse",
-            "workday-raas": "directus",
-            "workday": "directus",
-            "datadog-sre": "seq",
-            "datadog": "seq",
-            "crowdstrike-okta": "vault",
-            "crowdstrike": "vault",
+            "thoughtspot-spotter": "thoughtspot",
+            "sigma-computing": "sigma",
+            "servicenow-itsm": "servicenow",
+            "muse-poc": "veeva",
+            "salesforce": "salesforce-jira",
+            "databricks-unity": "databricks",
+            "snowflake-cortex": "snowflake",
+            "workday-raas": "workday",
+            "datadog-sre": "datadog",
+            "crowdstrike-okta": "okta-crowdstrike",
+            "crowdstrike": "okta-crowdstrike",
         }
         app_key = saas_live_aliases.get(raw_key, raw_key)
         spec = SAAS_LIVE_TARGETS.get(app_key)
@@ -2031,7 +2090,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
         # Token resolution: Layer 1 owner-verified local cache, Layer 2 GCP compute metadata
         token = ""
-        oidc_cache_file = Path("/tmp/cymbal_gcp_cloudrun_oidc_cache.json")
+        oidc_cache_file = Path("/tmp/cymbal_saas_oidc_cache.json")
         if not oidc_cache_file.is_symlink() and oidc_cache_file.is_file():
             try:
                 st = oidc_cache_file.stat()
@@ -2284,6 +2343,219 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             self._send_html(200, html_text.encode("utf-8"))
             return
 
+        if (
+            path in ("/diagrams-atlas", "/slide-diagrams", "/diagrams.html")
+            or path.startswith("/diagrams-atlas/")
+            or path.startswith("/slide-diagrams/")
+        ):
+            sub_target = ""
+            if path.startswith("/diagrams-atlas/"):
+                sub_target = path.split("/diagrams-atlas/", 1)[1].strip("/")
+            elif path.startswith("/slide-diagrams/"):
+                sub_target = path.split("/slide-diagrams/", 1)[1].strip("/")
+            safe_sub = re.sub(r"[^a-zA-Z0-9_-]", "", sub_target)[:96]
+            html_text = render_assembled_portal_html()
+            inject_script = (
+                f"<script>window.__STANDALONE_DIAGRAMS_PAGE = true; "
+                f"window.__INITIAL_ATLAS_SLIDE_TARGET = {json.dumps(safe_sub)};</script></head>"
+            )
+            html_text = html_text.replace("</head>", inject_script, 1)
+            if "universal_feedback_widget.js" not in html_text and "</body>" in html_text:
+                head_part, sep, tail_part = html_text.rpartition("</body>")
+                widget_tag = (
+                    '<script src="/universal_feedback_widget.js" '
+                    'data-app-id="ge-blogs" '
+                    'data-app-name="Google Cloud Architecture Guides (ge-blogs)"></script></body>'
+                )
+                html_text = head_part + widget_tag + tail_part
+            self._send_html(200, html_text.encode("utf-8"))
+            return
+
+        m_blog_page = re.fullmatch(r"/(?:blogs|blog-assets)/([^/]+)/(diagrams|screenshots)/?", path)
+        if m_blog_page:
+            raw_slug, page_kind = m_blog_page.group(1), m_blog_page.group(2)
+            try:
+                clean_slug = blog_assets_mod.validate_safe_slug(raw_slug)
+            except ValueError as exc:
+                self._send_json(404, {"ok": False, "error": str(exc)})
+                return
+            tpl_name = "blog_diagrams_page.html" if page_kind == "diagrams" else "blog_screenshots_page.html"
+            tpl_path = ROOT_DIR / "templates" / tpl_name
+            if not tpl_path.is_file():
+                self._send_json(404, {"ok": False, "error": f"Template missing: {tpl_name}"})
+                return
+            blog_meta = blog_assets_mod.BLOG_BY_SLUG[clean_slug]
+            page_title = (
+                f"{blog_meta['wsKey']} Diagrams — {blog_meta['title']}"
+                if page_kind == "diagrams"
+                else f"{blog_meta['wsKey']} Screenshots — {blog_meta['title']}"
+            )
+            html_out = tpl_path.read_text(encoding="utf-8")
+            html_out = html_out.replace("__BLOG_SLUG__", html_escape(clean_slug, quote=True))
+            html_out = html_out.replace("__CSRF_TOKEN__", _PORTAL_CSRF_TOKEN)
+            html_out = html_out.replace("__PAGE_TITLE__", html_escape(page_title, quote=True))
+            self._send_html(200, html_out.encode("utf-8"))
+            return
+
+        if path.startswith("/api/blog-assets/"):
+            raw_slug = urllib.parse.unquote(path.split("/api/blog-assets/", 1)[1]).strip("/")
+            try:
+                payload = blog_assets_mod.get_blog_assets(raw_slug, host_origin=self._get_request_origin())
+                self._send_json(200, payload)
+            except ValueError as exc:
+                self._send_json(400, {"ok": False, "error": str(exc)})
+            except Exception as exc:
+                self._send_json(500, {"ok": False, "error": f"Failed to load blog assets: {exc}"})
+            return
+
+        if path.startswith("/api/blog-diagrams/asset/"):
+            raw_fname = urllib.parse.unquote(path.split("/api/blog-diagrams/asset/", 1)[1]).strip("/")
+            if "." not in raw_fname or "/" in raw_fname or "\\" in raw_fname:
+                self._send_json(400, {"ok": False, "error": "Invalid diagram asset path."})
+                return
+            diag_id, ext = raw_fname.rsplit(".", 1)
+            try:
+                asset_bytes, mime = blog_assets_mod.get_custom_diagram_asset(diag_id, ext)
+                self.send_response(200)
+                self.send_header("Content-Type", mime)
+                self.send_header("Content-Length", str(len(asset_bytes)))
+                self.send_header("Cache-Control", "no-store")
+                self._send_security_headers()
+                self.end_headers()
+                self.wfile.write(asset_bytes)
+            except ValueError as exc:
+                self._send_json(400, {"ok": False, "error": str(exc)})
+            except FileNotFoundError as exc:
+                self._send_json(404, {"ok": False, "error": str(exc)})
+            return
+
+        if path == "/drawio" or path.startswith("/drawio/"):
+            editor_file = ROOT_DIR / "templates" / "drawio_live_editor.html"
+            if editor_file.is_file():
+                self._send_html(200, editor_file.read_bytes())
+                return
+
+        if path in ("/api/diagrams-atlas", "/api/drawio/registry"):
+            atlas_file = ROOT_DIR / "data" / "slide_diagrams_atlas.json"
+            if atlas_file.is_file():
+                self._send_json(200, json.loads(atlas_file.read_text(encoding="utf-8")))
+            else:
+                self._send_json(404, {"status": "error", "error": "Slide diagrams atlas not found"})
+            return
+
+        if path.startswith("/api/drawio/item/"):
+            import zlib
+            from urllib.parse import quote, unquote
+            diag_id = unquote(path.split("/api/drawio/item/", 1)[1]).strip("/")
+            custom_rec = blog_assets_mod.get_custom_diagram_record_for_studio(diag_id)
+            if custom_rec is not None:
+                self._send_json(
+                    200,
+                    {
+                        "status": "ok",
+                        "item": custom_rec["item"],
+                        "xml": custom_rec["xml"],
+                        "svg": custom_rec["svg"],
+                        "selfContainedHash": custom_rec["selfContainedHash"],
+                        "manifestVersion": int(time.time()),
+                        "compendiumPresId": blog_assets_mod.BARE_MIN_12_PRES_ID,
+                        "animatedCompendiumPresId": "",
+                        "allDiagrams": [],
+                    },
+                )
+                return
+            prefer_comp = "compSlide=" in self.path or bool(qs.get("compSlide"))
+            atlas_file = ROOT_DIR / "data" / "slide_diagrams_atlas.json"
+            if not atlas_file.is_file():
+                self._send_json(404, {"status": "error", "error": "Slide diagrams atlas not found"})
+                return
+            atlas = json.loads(atlas_file.read_text(encoding="utf-8"))
+            items = atlas.get("items", [])
+            item = next((d for d in items if d.get("diagramId") == diag_id or d.get("id") == diag_id), None)
+            comp_drawio = ROOT_DIR / "diagrams" / "compendium" / "drawio" / f"{diag_id}.drawio"
+            root_drawio = ROOT_DIR / "diagrams" / f"{diag_id}.drawio"
+            comp_svg = ROOT_DIR / "diagrams" / "compendium" / "drawio" / f"{diag_id}.svg"
+            root_svg = ROOT_DIR / "diagrams" / f"{diag_id}.svg"
+            if not item and not comp_drawio.is_file() and not root_drawio.is_file():
+                self._send_json(404, {"status": "error", "error": f"Unknown diagram id: {diag_id}"})
+                return
+            if not item:
+                item = {"diagramId": diag_id, "id": diag_id, "title": diag_id, "slideNumber": 1}
+            if prefer_comp or not root_drawio.is_file():
+                drawio_path = comp_drawio if comp_drawio.is_file() else root_drawio
+                svg_path = comp_svg if comp_svg.is_file() else root_svg
+            else:
+                drawio_path = root_drawio if root_drawio.is_file() else comp_drawio
+                svg_path = root_svg if root_svg.is_file() else comp_svg
+            xml_str = drawio_path.read_text(encoding="utf-8") if drawio_path.is_file() else ""
+            svg_str = svg_path.read_text(encoding="utf-8") if svg_path.is_file() else ""
+            # Check durable overlay first
+            try:
+                ov_store = durable_storage_mod.load_drawio_overlays(DRAWIO_OVERLAYS_FILE)
+                diag_ov = ov_store.get("diagrams", {}).get(diag_id)
+                if diag_ov and diag_ov.get("xml"):
+                    xml_str = diag_ov["xml"]
+                if diag_ov and diag_ov.get("svg"):
+                    svg_str = diag_ov["svg"]
+            except Exception:
+                pass
+            sc_hash = ""
+            if xml_str:
+                raw_bytes = urllib.parse.quote(xml_str, safe="~()*!.'").encode("utf-8")
+                comp = zlib.compressobj(9, zlib.DEFLATED, -15)
+                deflated = comp.compress(raw_bytes) + comp.flush()
+                sc_hash = "R" + base64.b64encode(deflated).decode("ascii")
+            bm_slide = blog_assets_mod.BARE_MIN_12_SLIDE_MAP.get(diag_id)
+            if bm_slide:
+                item = dict(item)
+                links_copy = dict(item.get("linkages") or {})
+                links_copy["deck1SlideUrl"] = (
+                    f"https://docs.google.com/presentation/d/{blog_assets_mod.BARE_MIN_12_PRES_ID}"
+                    f"/edit#slide=id.p{bm_slide}"
+                )
+                item["linkages"] = links_copy
+                item["bareMinSlideNum"] = bm_slide
+            self._send_json(
+                200,
+                {
+                    "status": "ok",
+                    "item": item,
+                    "xml": xml_str,
+                    "svg": svg_str,
+                    "selfContainedHash": sc_hash,
+                    "manifestVersion": int(time.time()),
+                    "compendiumPresId": atlas.get("deck1Editable2WayId", "1-WwbZsdEFPylp9MtfF-nuifeVps0uuu3bSCfzCCYjjI"),
+                    "animatedCompendiumPresId": atlas.get("deck2AnimatedMasterId", "1PjnEpYZY4mY9RvB6wNxMGCl84RwIyupNG7gKmpPxlKk"),
+                    "allDiagrams": items,
+                },
+            )
+            return
+
+        if path == "/api/evals/latest":
+            report_file = ROOT_DIR / "docs" / "agentic_eval_report.json"
+            if report_file.is_file():
+                try:
+                    self._send_json(200, json.loads(report_file.read_text(encoding="utf-8")))
+                except Exception as exc:
+                    self._send_json(500, {"ok": False, "error": f"Corrupt eval report: {exc}"})
+            else:
+                self._send_json(
+                    200,
+                    {
+                        "framework_version": "AEF v2.0",
+                        "executed_at": None,
+                        "mode": "not_yet_run",
+                        "release_gate": {
+                            "decision": "PENDING",
+                            "passed_pillars": 0,
+                            "total_pillars": 8,
+                            "failed_pillars": [],
+                        },
+                        "pillars": [],
+                    },
+                )
+            return
+
         if path == "/api/changelog":
             store = load_portal_changelog()
             actor_name, actor_email, actor_role = self._detect_iap_actor()
@@ -2381,6 +2653,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                         else ("local_adc_credentials" if token else "offline_or_local")
                     ),
                     "project_id": "ramp-portal-dev",
+                    "argolis_validation_project_number": "638420508320",
                     "supported_modes": [
                         {
                             "id": "IN_MEMORY",
@@ -2645,18 +2918,37 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
         if path == "/drawio-editor":
             qs = parse_qs(parsed.query)
-            diag_id = (qs.get("id") or ["ws1-multi-tenant-taxonomy-overview"])[0].strip()
+            diag_id = (qs.get("id") or ["ws1-5hop-governance-baseline"])[0].strip()
             is_inline = (qs.get("inline") or ["0"])[0].strip() == "1"
-            engine_mode = (qs.get("engine") or ["cloud"])[0].strip()
+            engine_mode = (qs.get("engine") or ["native"])[0].strip()
             if engine_mode not in ("cloud", "native"):
                 engine_mode = "cloud"
             safe_id = "".join(ch for ch in diag_id if ch.isalnum() or ch in ("-", "_")) or "ws1-multi-tenant-taxonomy-overview"
             if re.match(r"^ws[1-5]-l[134]-", safe_id, re.IGNORECASE):
-                safe_id = "ws1-multi-tenant-taxonomy-overview"
-            initial_zoom = "0.56" if is_inline else "0.88"
+                has_local_diag = (ROOT_DIR / "diagrams" / f"{safe_id}.drawio").is_file() or (
+                    ROOT_DIR / "diagrams" / "compendium" / "drawio" / f"{safe_id}.drawio"
+                ).is_file()
+                if not has_local_diag:
+                    safe_id = "ws1-multi-tenant-taxonomy-overview"
+            initial_zoom = "0.56" if is_inline else "0.65"
             inspector_w = "260px" if is_inline else "320px"
             select_html = "" if is_inline else f"""
       <select id="studio-diag-select" class="studio-select" onchange="switchStudioDiagram(this.value)">
+        <optgroup label="Approved 16:9 Unified Diagrams (WS1–WS5 &amp; 10-SaaS)">
+          <option value="ws1-5hop-governance-baseline">Slide 01 • WS1: 5-Hop Governance Baseline (16:9)</option>
+          <option value="ws1-c4-l3-process-sequence-swimlane">Slide 02 • WS1: 5-Hop Sequence Swimlane (16:9)</option>
+          <option value="ws2-pattern-a-pooled">Slide 03 • WS2: Pattern A Pooled Platform (16:9)</option>
+          <option value="ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane">Slide 04 • WS2: Mode A Stateless CoW Pre-Fork (16:9)</option>
+          <option value="ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane">Slide 05 • WS2: Mode B Stateful Session WarmPool (16:9)</option>
+          <option value="ws3-pattern-b-silo">Slide 06 • WS3: Pattern B Sovereign Silo (16:9)</option>
+          <option value="ws3-c4-l3-cmek-killswitch-swimlane">Slide 07 • WS3: Pattern B CMEK Kill-Switch Swimlane (16:9)</option>
+          <option value="ws4-pattern-c-hybrid">Slide 08 • WS4: Pattern C Governed Hybrid PSC (16:9)</option>
+          <option value="ws4-c4-l3-live-tier-promotion-swimlane">Slide 09 • WS4: Pattern C Live Tier Promotion (16:9)</option>
+          <option value="ws5-decision-tree-and-triad">Slide 10 • WS5: Architecture Pattern Selector (16:9)</option>
+          <option value="saas10-multicloud-a2a-mcp-bridge">Slide 11 • WS5: Multi-Cloud AWS &amp; 10-SaaS Bridge (16:9)</option>
+          <option value="ws5-c4-l3-dynamic-skill-delegation-swimlane">Slide 12 • WS5: Shared+Private Agents &amp; Dynamic Skills (16:9)</option>
+        </optgroup>
+        <optgroup label="Official #78 Full Technical Blueprints (1200x1410)">
         <option value="ws1-multi-tenant-taxonomy-overview">1. WS 1.1: Multi-Tenant Taxonomy (Pattern A, B &amp; C)</option>
         <option value="ws1-cloud-arch-center-5hop-baseline">2. WS 1.3: 5-Hop Cryptographic Context Chain</option>
         <option value="ws2-pattern-a-pooled-5hop-architecture">3. WS 2.1: Pattern A Pooled Shared Runtime Architecture</option>
@@ -2671,6 +2963,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         <option value="ws4-zero-downtime-tier-upgrade-sequence">12. WS 4.5: Pattern C Zero-Downtime Upgrade Sequence</option>
         <option value="ws4-terraform-hybrid-psc-blueprint-resource-graph">13. WS 4.6: Pattern C Dual-Provider Terraform PSC DAG</option>
         <option value="ws5-decision-tree-and-agentic-triad">14. WS 5.1/5.2: Executive Decision Tree &amp; Agentic Triad</option>
+        </optgroup>
       </select>"""
             back_btn_html = '<button type="button" id="btn-exit-inline" class="studio-btn" style="background:#dc2626;border-color:#b91c1c;color:#ffffff;" onclick="exitInlineStudio()">&#10005; Exit Inline</button>' if is_inline else '<a class="studio-btn" href="/">&#8592; Back to Portal</a>'
             html_doc = f"""<!DOCTYPE html>
@@ -2722,8 +3015,9 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       <span id="tb-topology-badge" class="studio-badge">#78 • 56 SHAPES • 23 EDGES</span>{select_html}
       <button type="button" id="btn-mode-cloud" class="studio-btn {'active' if engine_mode == 'cloud' else ''}" onclick="setStudioEngine('cloud')">&#128208; Cloud Architecture Studio</button>
       <button type="button" id="btn-mode-native" class="studio-btn {'active' if engine_mode == 'native' else ''}" onclick="setStudioEngine('native')">&#9889; Interactive mxGraph Canvas</button>
-      <button type="button" class="studio-btn" onclick="adjustCanvasZoom(-0.1)" title="Zoom Out">&#8722;</button>
-      <button type="button" class="studio-btn" onclick="adjustCanvasZoom(0.1)" title="Zoom In">&#43;</button>
+      <button type="button" id="btn-zoom-out" class="studio-btn" onclick="adjustCanvasZoom(-0.1)" title="Zoom Out">&#8722;</button>
+      <button type="button" id="btn-zoom-fit" class="studio-btn" onclick="fitCanvasToViewport()" title="Fit Diagram to Viewport">Fit (<span id="zoom-pct-label">{int(round(float(initial_zoom) * 100))}%</span>)</button>
+      <button type="button" id="btn-zoom-in" class="studio-btn" onclick="adjustCanvasZoom(0.1)" title="Zoom In">&#43;</button>
     </div>
     <div class="studio-right">
       <span id="studio-status" class="studio-status">&#128994; 56 Shapes &amp; 23 Connectors Ready</span>
@@ -2798,6 +3092,9 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     let iframeReady = false;
     let activeEngine = {json.dumps(engine_mode)};
     let currentZoom = parseFloat({json.dumps(initial_zoom)});
+    let currentStageWidth = 1200;
+    let currentStageHeight = 1410;
+    let manualZoomOverride = false;
 
     function escHtml(s) {{
       return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -2862,11 +3159,49 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       }}
     }});
 
-    function adjustCanvasZoom(delta) {{
-      currentZoom = Math.max(0.35, Math.min(1.5, Math.round((currentZoom + delta) * 100) / 100));
-      const stg = document.getElementById('drawio-stage');
-      if (stg) stg.style.zoom = String(currentZoom);
+    function computeFitZoom(pw, ph) {{
+      const scroller = document.querySelector('.canvas-scroll');
+      const availW = Math.max(
+        320,
+        ((scroller && scroller.clientWidth) ? scroller.clientWidth : (window.innerWidth - (isInlineStudio ? 40 : 380))) - 32
+      );
+      const widthFit = availW / Math.max(400, pw || currentStageWidth || 1200);
+      const minZoom = isInlineStudio ? 0.30 : 0.35;
+      const maxZoom = 1.25;
+      return Math.max(minZoom, Math.min(maxZoom, Math.round(widthFit * 100) / 100));
     }}
+
+    function applyCanvasZoom(z, isManual) {{
+      const clamped = Math.max(0.25, Math.min(1.5, Math.round(z * 100) / 100));
+      currentZoom = clamped;
+      if (typeof isManual === 'boolean') manualZoomOverride = isManual;
+      const stg = document.getElementById('drawio-stage');
+      if (stg) {{
+        stg.style.zoom = String(currentZoom);
+        stg.dataset.zoom = String(currentZoom);
+        stg.dataset.zoomMode = manualZoomOverride ? 'manual' : 'fit';
+      }}
+      const pctEl = document.getElementById('zoom-pct-label');
+      if (pctEl) pctEl.textContent = Math.round(currentZoom * 100) + '%';
+    }}
+
+    function fitCanvasToViewport() {{
+      manualZoomOverride = false;
+      applyCanvasZoom(computeFitZoom(currentStageWidth, currentStageHeight), false);
+    }}
+
+    function adjustCanvasZoom(delta) {{
+      applyCanvasZoom(currentZoom + delta, true);
+    }}
+
+    let resizeFitTimer = null;
+    window.addEventListener('resize', () => {{
+      if (manualZoomOverride || activeEngine !== 'native') return;
+      clearTimeout(resizeFitTimer);
+      resizeFitTimer = setTimeout(() => {{
+        applyCanvasZoom(computeFitZoom(currentStageWidth, currentStageHeight), false);
+      }}, 80);
+    }});
 
     const selectEl = document.getElementById('studio-diag-select');
     if (selectEl) selectEl.value = currentDiagramId;
@@ -2940,6 +3275,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         }}
       }} else {{
         if (cloudWatchdogTimer) clearTimeout(cloudWatchdogTimer);
+        if (!manualZoomOverride) setTimeout(() => fitCanvasToViewport(), 0);
       }}
     }}
 
@@ -2973,6 +3309,25 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       verticesMap.clear();
       edgesList = [];
 
+      const modelEl = xmlDoc.querySelector('mxGraphModel');
+      const pw = Math.max(400, parseInt((modelEl && modelEl.getAttribute('pageWidth')) || '1200', 10) || 1200);
+      const ph = Math.max(400, parseInt((modelEl && modelEl.getAttribute('pageHeight')) || '1410', 10) || 1410);
+      currentStageWidth = pw;
+      currentStageHeight = ph;
+      const stgEl = document.getElementById('drawio-stage');
+      if (stgEl) {{ stgEl.style.width = pw + 'px'; stgEl.style.height = ph + 'px'; }}
+      const edgesSvgEl = document.getElementById('drawio-edge-svg') || document.getElementById('drawio-edges-svg');
+      if (edgesSvgEl) {{
+        edgesSvgEl.setAttribute('width', String(pw));
+        edgesSvgEl.setAttribute('height', String(ph));
+        edgesSvgEl.setAttribute('viewBox', '0 0 ' + pw + ' ' + ph);
+      }}
+      if (!manualZoomOverride) {{
+        applyCanvasZoom(computeFitZoom(pw, ph), false);
+      }} else {{
+        applyCanvasZoom(currentZoom, true);
+      }}
+      const tbBadgeEl = document.getElementById('tb-topology-badge');
       const bgLayer = document.getElementById('drawio-bg-layer');
       const fgLayer = document.getElementById('drawio-fg-layer');
       bgLayer.innerHTML = '';
@@ -3007,7 +3362,15 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
           el.style.height = h + 'px';
           el.style.pointerEvents = 'auto';
           el.style.boxSizing = 'border-box';
-          el.style.overflow = 'hidden';
+          const isCompactBadge = h <= 28;
+          if (isCompactBadge) {{
+            el.style.overflowX = 'visible';
+            el.style.overflowY = 'visible';
+          }} else {{
+            el.style.overflowX = 'hidden';
+            el.style.overflowY = 'auto';
+          }}
+          el.style.lineHeight = isCompactBadge ? '1.05' : '1.25';
 
           const fill = styleMap.fillColor && styleMap.fillColor !== 'none' ? styleMap.fillColor : 'transparent';
           const stroke = styleMap.strokeColor && styleMap.strokeColor !== 'none' ? styleMap.strokeColor : 'transparent';
@@ -3024,15 +3387,18 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
           el.style.display = 'flex';
           el.style.flexDirection = 'column';
-          el.style.justifyContent = 'flex-start';
+          el.style.justifyContent = isCompactBadge ? 'center' : 'flex-start';
           el.style.alignItems = styleMap.align === 'center' ? 'center' : (styleMap.align === 'right' ? 'flex-end' : 'flex-start');
           el.style.textAlign = styleMap.align === 'center' ? 'center' : (styleMap.align === 'right' ? 'right' : 'left');
-          el.style.paddingLeft = (styleMap.spacingLeft || 10) + 'px';
-          el.style.paddingTop = (styleMap.spacingTop || 8) + 'px';
-          el.style.paddingRight = (styleMap.spacingRight || 10) + 'px';
-          el.style.paddingBottom = '6px';
+          if (styleMap.fontSize) el.style.fontSize = styleMap.fontSize + 'px';
+          if (styleMap.fontColor) el.style.color = styleMap.fontColor;
+          if (String(styleMap.fontStyle || '') === '1') el.style.fontWeight = '700';
+          el.style.paddingLeft = (styleMap.spacingLeft || (isCompactBadge ? 2 : 10)) + 'px';
+          el.style.paddingTop = (styleMap.spacingTop || (isCompactBadge ? 0 : 6)) + 'px';
+          el.style.paddingRight = (styleMap.spacingRight || (isCompactBadge ? 2 : 10)) + 'px';
+          el.style.paddingBottom = (styleMap.spacingBottom || (isCompactBadge ? 0 : 6)) + 'px';
 
-          el.innerHTML = sanitizeCellHtml(val) + '<span class="mx-handle tl"></span><span class="mx-handle tr"></span><span class="mx-handle bl"></span><span class="mx-handle br"></span>';
+          el.innerHTML = '<div style="width:100%;">' + sanitizeCellHtml(val) + '</div><span class="mx-handle tl"></span><span class="mx-handle tr"></span><span class="mx-handle bl"></span><span class="mx-handle br"></span>';
           el.addEventListener('mousedown', (e) => onVertexMouseDown(e, id));
           vObj.el = el;
 
@@ -3246,8 +3612,9 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       if (!dragState) return;
       const v = verticesMap.get(dragState.id);
       if (!v) return;
-      const dx = Math.round((e.clientX - dragState.startX) / 2) * 2;
-      const dy = Math.round((e.clientY - dragState.startY) / 2) * 2;
+      const zoomScale = currentZoom || 1;
+      const dx = Math.round(((e.clientX - dragState.startX) / zoomScale) / 2) * 2;
+      const dy = Math.round(((e.clientY - dragState.startY) / zoomScale) / 2) * 2;
       v.x = dragState.origX + dx;
       v.y = dragState.origY + dy;
       v.el.style.left = v.x + 'px';
@@ -3325,6 +3692,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     }}
 
     function switchStudioDiagram(newId) {{
+      manualZoomOverride = false;
       currentDiagramId = newId;
       const url = new URL(window.location.href);
       url.searchParams.set('id', newId);
@@ -3532,6 +3900,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         # Serve every other repo file as a static asset (diagrams, editable decks, IaC, code, docs)
         STATIC_MIME = {
             ".png": "image/png",
+            ".gif": "image/gif",
             ".jpg": "image/jpeg",
             ".jpeg": "image/jpeg",
             ".webp": "image/webp",
@@ -4101,6 +4470,292 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 )
                 return
 
+            if path in (
+                "/api/blog-diagrams/save",
+                "/api/blog-diagrams/clone",
+                "/api/blog-diagrams/create",
+                "/api/blog-diagrams/delete",
+                "/api/blog-diagrams/restore",
+            ):
+                ok_auth, auth_code, auth_err_code, auth_err_msg = self._authorize_blog_diagram_mutation()
+                if not ok_auth:
+                    self._send_json(auth_code, {"ok": False, "code": auth_err_code, "error": auth_err_msg})
+                    return
+                origin_str = self._get_request_origin()
+                try:
+                    if path == "/api/blog-diagrams/save":
+                        save_res = blog_assets_mod.save_blog_diagram(
+                            slug=str(body.get("slug") or "ws1"),
+                            diag_id=str(body.get("id") or ""),
+                            xml_str=str(body.get("xml") or ""),
+                            title=body.get("title"),
+                            caption=body.get("caption"),
+                            svg_str=body.get("svg") or None,
+                            comp_slide=body.get("compSlide"),
+                            sync_google_slides=bool(body.get("syncGoogleSlides", False)),
+                            host_origin=origin_str,
+                        )
+                        if not save_res.get("isCustom"):
+                            iso_now, _ = _now_iso_and_est()
+                            try:
+                                ov_data = durable_storage_mod.remove_drawio_overlay(
+                                    DRAWIO_OVERLAYS_FILE, save_res["id"], updated_at=iso_now
+                                )
+                                DurableGcsStore.persist_async("drawio_overlays.json", ov_data, DRAWIO_OVERLAYS_FILE)
+                            except Exception:
+                                pass
+                        self._send_json(200, save_res)
+                        return
+
+                    if path == "/api/blog-diagrams/clone":
+                        clone_res = blog_assets_mod.clone_blog_diagram(
+                            source_id=str(body.get("sourceId") or ""),
+                            new_id=str(body.get("newId") or ""),
+                            target_slug=str(body.get("targetSlug") or "ws1"),
+                            new_title=body.get("title"),
+                            new_caption=body.get("caption"),
+                            slide_num=body.get("slideNumber"),
+                            host_origin=origin_str,
+                        )
+                        self._send_json(200, clone_res)
+                        return
+
+                    if path == "/api/blog-diagrams/create":
+                        create_res = blog_assets_mod.create_blank_diagram(
+                            new_id=str(body.get("newId") or ""),
+                            target_slug=str(body.get("targetSlug") or "ws1"),
+                            title=body.get("title"),
+                            caption=body.get("caption"),
+                            host_origin=origin_str,
+                        )
+                        self._send_json(200, create_res)
+                        return
+
+                    if path == "/api/blog-diagrams/delete":
+                        del_res = blog_assets_mod.delete_blog_diagram(
+                            slug=str(body.get("slug") or "ws1"),
+                            diag_id=str(body.get("id") or ""),
+                        )
+                        self._send_json(200, del_res)
+                        return
+
+                    if path == "/api/blog-diagrams/restore":
+                        res_out = blog_assets_mod.restore_blog_diagram(
+                            slug=str(body.get("slug") or "ws1"),
+                            diag_id=str(body.get("id") or ""),
+                            host_origin=origin_str,
+                        )
+                        self._send_json(200, res_out)
+                        return
+                except ValueError as exc:
+                    self._send_json(400, {"ok": False, "error": str(exc)})
+                    return
+                except FileExistsError as exc:
+                    self._send_json(409, {"ok": False, "error": str(exc)})
+                    return
+                except FileNotFoundError as exc:
+                    self._send_json(404, {"ok": False, "error": str(exc)})
+                    return
+                except Exception as exc:
+                    print(f"[BlogAssetsCRUD] error on {path}: {exc}", file=sys.stderr)
+                    self._send_json(500, {"ok": False, "error": f"Diagram operation failed: {exc}"})
+                    return
+
+            if path == "/api/drawio/sync-unique":
+                raw_id = str(body.get("id") or "").strip()
+                xml_str = str(body.get("xml") or "").strip()
+                if not raw_id or not xml_str:
+                    self._send_json(400, {"status": "error", "error": "Both 'id' and 'xml' are required"})
+                    return
+                if not re.fullmatch(r"[A-Za-z0-9_-]{1,120}", raw_id):
+                    self._send_json(400, {"status": "error", "error": "Invalid diagram 'id'"})
+                    return
+                xml_lower = xml_str.lower()
+                if "<!doctype" in xml_lower or "<!entity" in xml_lower or len(xml_str.encode("utf-8")) > 2_000_000:
+                    self._send_json(400, {"status": "error", "error": "Disallowed XML payload"})
+                    return
+                if blog_assets_mod.get_custom_diagram_record_for_studio(raw_id) is not None:
+                    try:
+                        saved_custom = blog_assets_mod.save_blog_diagram(
+                            slug="all",
+                            diag_id=raw_id,
+                            xml_str=xml_str,
+                            sync_google_slides=False,
+                            host_origin=self._get_request_origin(),
+                        )
+                        self._send_json(
+                            200,
+                            {
+                                "status": "ok",
+                                "syncedId": raw_id,
+                                "selfContainedHash": blog_assets_mod.encode_drawio_hash(xml_str),
+                                "manifestVersion": int(time.time() * 1000),
+                                "updatedFiles": [f"custom/{raw_id}.drawio", f"custom/{raw_id}.svg"],
+                                "googleSlidesSynced": False,
+                                "updatedCount": 0,
+                                "googleSlidesTargets": [],
+                                "warnings": ["Custom cloned diagram saved to runtime workspace."],
+                            },
+                        )
+                        return
+                    except Exception as exc:
+                        self._send_json(400, {"status": "error", "error": str(exc)})
+                        return
+                try:
+                    from scripts import slide_drawio_2way_registry as sdr
+                    comp_slide = body.get("compSlide")
+                    sync_slides = bool(body.get("syncGoogleSlides", True))
+                    sync_res = sdr.apply_drawio_xml_edit_to_unique_diagram(
+                        raw_id,
+                        xml_str,
+                        comp_slide=comp_slide,
+                        sync_google_slides=sync_slides,
+                    )
+                except ValueError as exc:
+                    self._send_json(400, {"status": "error", "error": str(exc)})
+                    return
+                except Exception as exc:
+                    print(f"[2WaySync] sync-unique error ({raw_id}): {exc}", file=sys.stderr)
+                    self._send_json(500, {"status": "error", "error": f"2-Way sync failed: {exc}"})
+                    return
+                iso_now, _ = _now_iso_and_est()
+                try:
+                    ov_data = durable_storage_mod.remove_drawio_overlay(
+                        DRAWIO_OVERLAYS_FILE, raw_id, updated_at=iso_now
+                    )
+                    DurableGcsStore.persist_async("drawio_overlays.json", ov_data, DRAWIO_OVERLAYS_FILE)
+                except Exception as exc:
+                    print(f"[2WaySync] overlay clear warning ({raw_id}): {exc}", file=sys.stderr)
+                self._send_json(
+                    200,
+                    {
+                        "status": "ok",
+                        "syncedId": raw_id,
+                        "selfContainedHash": sync_res.get("selfContainedHash", ""),
+                        "manifestVersion": sync_res.get("manifestVersion") or int(time.time() * 1000),
+                        "updatedFiles": sync_res.get("updatedFiles") or [],
+                        "googleSlidesSynced": bool(sync_res.get("googleSlidesSynced", False)),
+                        "updatedCount": int(sync_res.get("updatedCount") or 0),
+                        "googleSlidesTargets": sync_res.get("googleSlidesTargets") or [],
+                        "warnings": sync_res.get("warnings") or [],
+                    },
+                )
+                return
+
+            if path == "/api/drawio/pull-unique":
+                raw_id = str(body.get("id") or "").strip()
+                if not raw_id or not re.fullmatch(r"[A-Za-z0-9_-]{1,120}", raw_id):
+                    self._send_json(400, {"status": "error", "error": "Valid diagram 'id' is required"})
+                    return
+                raw_pres_id = str(body.get("presentationId") or "").strip()
+                if raw_pres_id and not re.fullmatch(r"[A-Za-z0-9_-]{1,120}", raw_pres_id):
+                    self._send_json(400, {"status": "error", "error": "Invalid 'presentationId'"})
+                    return
+                comp_slide = body.get("compSlide")
+                try:
+                    from scripts import slide_drawio_2way_registry as sdr
+                    res_pull = sdr.pull_slide_changes_from_google_slides_any_diagram(
+                        raw_id,
+                        presentation_id=raw_pres_id or None,
+                        comp_slide=comp_slide,
+                    )
+                except ValueError as exc:
+                    self._send_json(400, {"status": "error", "error": str(exc)})
+                    return
+                except Exception as exc:
+                    print(f"[2WaySync] pull-unique error ({raw_id}): {exc}", file=sys.stderr)
+                    self._send_json(500, {"status": "error", "error": f"Pull from Google Slides failed: {exc}"})
+                    return
+                changes_count = int(res_pull.get("changesCount") or 0)
+                if changes_count > 0:
+                    iso_now, _ = _now_iso_and_est()
+                    try:
+                        ov_data = durable_storage_mod.remove_drawio_overlay(
+                            DRAWIO_OVERLAYS_FILE, raw_id, updated_at=iso_now
+                        )
+                        DurableGcsStore.persist_async("drawio_overlays.json", ov_data, DRAWIO_OVERLAYS_FILE)
+                    except Exception as exc:
+                        print(f"[2WaySync] overlay clear warning ({raw_id}): {exc}", file=sys.stderr)
+                self._send_json(
+                    200,
+                    {
+                        "status": "ok",
+                        "id": raw_id,
+                        "presentationId": res_pull.get("presentationId", ""),
+                        "compendiumSlideNum": res_pull.get("compendiumSlideNum"),
+                        "changesCount": changes_count,
+                        "changedCount": changes_count,
+                        "changesApplied": res_pull.get("changesApplied") or [],
+                        "updatedFiles": res_pull.get("updatedFiles") or [],
+                        "manifestVersion": int(time.time() * 1000),
+                    },
+                )
+                return
+
+            if path == "/api/blog-cards/mutate":
+                actor_name, actor_email, actor_role = self._detect_iap_actor(body)
+                action = re.sub(r"[^A-Z0-9_]", "", str(body.get("action") or "SAVE").strip().upper())[:32] or "SAVE"
+                target_type = re.sub(r"[^a-zA-Z0-9_-]", "", str(body.get("targetType") or "blog_section").strip())[:64]
+                card_id = re.sub(r"[^a-zA-Z0-9_.:-]", "", str(body.get("cardId") or body.get("targetId") or "card-custom").strip())[:160]
+                card_title = str(body.get("cardTitle") or body.get("targetTitle") or card_id).strip()[:240]
+                workstream = re.sub(r"[^a-zA-Z0-9_-]", "", str(body.get("workstream") or "WS1").strip())[:32]
+                doc_path = str(body.get("docPath") or "").strip()[:240]
+                summary = str(body.get("summary") or f"{action} on {card_title}").strip()[:1000]
+                before_text = str(body.get("beforeText") if body.get("beforeText") is not None else (body.get("beforeSnippet") or ""))[:4000]
+                after_text = str(body.get("afterText") if body.get("afterText") is not None else (body.get("afterSnippet") or ""))[:4000]
+                restorable = bool(body.get("restorable", True))
+                card_override = None
+                if isinstance(body.get("cardOverride"), dict):
+                    raw_ov = body["cardOverride"]
+                    card_override = {
+                        "htmlContent": sanitize_html_fragment_allowlist(str(raw_ov.get("htmlContent") or "")),
+                        "hidden": bool(raw_ov.get("hidden", False)),
+                        "deleted": bool(raw_ov.get("deleted", False)),
+                        "cardTitle": str(raw_ov.get("cardTitle") or card_title)[:240],
+                    }
+                    if raw_ov.get("status"):
+                        card_override["status"] = re.sub(r"[^a-z0-9_-]", "", str(raw_ov.get("status")).lower())[:32]
+                    if raw_ov.get("parentCardId"):
+                        card_override["parentCardId"] = re.sub(r"[^a-zA-Z0-9_.:-]", "", str(raw_ov.get("parentCardId")))[:160]
+                elif card_id:
+                    html_content = sanitize_html_fragment_allowlist(str(body.get("htmlContent") or ""))
+                    if action in ("SAVE", "ADD", "CLONE", "INSERT_DIAGRAM") and html_content:
+                        card_override = {
+                            "htmlContent": html_content,
+                            "hidden": False,
+                            "deleted": False,
+                            "cardTitle": card_title,
+                        }
+                    elif action == "DELETE":
+                        card_override = {"deleted": True, "hidden": False, "cardTitle": card_title}
+                entry = append_changelog_entry(
+                    actor_name=actor_name,
+                    actor_email=actor_email,
+                    actor_role=actor_role,
+                    action=action,
+                    target_type=target_type,
+                    card_id=card_id,
+                    card_title=card_title,
+                    workstream=workstream,
+                    doc_path=doc_path,
+                    summary=summary,
+                    before_text=before_text,
+                    after_text=after_text,
+                    restorable=restorable,
+                    card_override=card_override,
+                )
+                store = load_portal_changelog()
+                self._send_json(
+                    200,
+                    {
+                        "ok": True,
+                        "entry": entry,
+                        "totalEntries": len(store.get("entries", [])),
+                        "cardOverrides": store.get("cardOverrides", {}),
+                    },
+                )
+                return
+
             if path == "/api/changelog":
                 is_admin, verified_email, deny_reason = self._verify_verified_admin_iap()
                 if not is_admin:
@@ -4623,6 +5278,30 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 self._send_json(200, data)
                 return
 
+            if path == "/api/evals/run":
+                ok_auth, auth_status, auth_code, auth_msg = self._authorize_blog_diagram_mutation()
+                if not ok_auth:
+                    self._send_json(auth_status, {"ok": False, "code": auth_code, "error": auth_msg})
+                    return
+                req_mode = str(body.get("mode") or "fast").strip().lower()
+                if req_mode not in ("fast", "full"):
+                    self._send_json(400, {"ok": False, "error": "Invalid mode; must be 'fast' or 'full'."})
+                    return
+                if not _AEF_EVAL_RUN_LOCK.acquire(blocking=False):
+                    self._send_json(409, {"ok": False, "error": "An Agentic Evaluation run is already in progress."})
+                    return
+                try:
+                    aef_mod = load_module_from_path(
+                        "run_agentic_eval_framework",
+                        ROOT_DIR / "scripts/run_agentic_eval_framework.py",
+                    )
+                    origin = f"http://127.0.0.1:{self.server.server_port}"
+                    report = aef_mod.run_full_framework(base_url=origin, mode=req_mode)
+                    self._send_json(200, report)
+                finally:
+                    _AEF_EVAL_RUN_LOCK.release()
+                return
+
             if path == "/api/audit/run":
                 t0 = time.perf_counter()
                 checks = forensic_mod.run_all_forensic_checks()
@@ -4685,7 +5364,14 @@ def render_assembled_portal_html() -> str:
             return tpl_file.read_text(encoding="utf-8")
         return ""
 
-    return re.sub(r"<!--\s*TEMPLATE:([A-Za-z0-9_.-]+\.html)\s*-->", _repl, html_text)
+    assembled = re.sub(r"<!--\s*TEMPLATE:([A-Za-z0-9_.-]+\.html)\s*-->", _repl, html_text)
+    if '<meta name="csrf-token"' not in assembled and "</head>" in assembled:
+        assembled = assembled.replace(
+            "</head>",
+            f'  <meta name="csrf-token" content="{_PORTAL_CSRF_TOKEN}" />\n</head>',
+            1,
+        )
+    return assembled
 
 
 def run_server(port: int = 8095, host: Optional[str] = None) -> None:

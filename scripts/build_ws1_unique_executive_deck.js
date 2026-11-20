@@ -145,7 +145,7 @@ Multi-Tenant Agentic AI on Google Cloud`, {
       headerColor: G_GREEN_TINT,
       borderColor: G_GREEN,
       titleColor: G_GREEN_DEEP,
-      body: '84.7% net token cost savings, 74% portfolio TCO reduction, ~42ms p95 latency overhead, <60s CMEK revocation kill-switch, and verified 30/30 Multi-Cloud AWS Bedrock MCP flows.',
+      body: '89.1% net token cost savings, 74% portfolio TCO reduction, ~42ms p95 latency overhead, <60s CMEK revocation kill-switch, and verified 30/30 Multi-Cloud AWS Bedrock MCP flows.',
     },
   ];
 
@@ -374,7 +374,7 @@ function buildSlide04() {
       badgeTint: G_RED_TINT,
       points: [
         '• Identity Provider: Google Workspace OIDC + Hardware FIDO2 keys.',
-        '• Reasoning Budget: 8,000 thinking tokens with 600 RPM peak burst SLA.',
+        '• Reasoning Budget: HIGH thinkingLevel (8,000 maxOutputTokens) with 600 RPM peak burst SLA.',
         '• Encryption Sovereignty: Customer-Managed Encryption Keys (Cloud KMS CMEK) with synchronous <60s revocation kill-switch.',
         '• Inference Model: Dedicated Vertex AI PT or self-managed air-gapped Gemma 3 on private GKE with zero public egress.',
         '• Boundary: Strict VPC Service Controls perimeter blocking all 0.0.0.0/0 internet egress.',
@@ -387,9 +387,9 @@ function buildSlide04() {
       badgeColor: G_YELLOW_TEXT,
       badgeTint: G_YELLOW_TINT,
       points: [
-        '• Identity Provider: Microsoft Entra ID SAML 2.0 with per-user DPoP proofs.',
-        '• Reasoning Budget: 4,000 thinking tokens with 120 RPM baseline rate limit.',
-        '• Cost Efficiency: Shared Vertex AI Gemini 2.5 Pro with 90% prompt cache reuse, driving an 84.7% net token cost reduction.',
+        '• Identity Provider: Microsoft Entra ID OIDC with per-user DPoP proofs.',
+        '• Reasoning Budget: MEDIUM thinkingLevel (4,000 maxOutputTokens) with 120 RPM baseline rate limit.',
+        '• Cost Efficiency: Shared Vertex AI Gemini 3.8 Flash with 90% prompt cache reuse, driving an 89.1% net token cost reduction.',
         '• Tool Delegation: DPoP-bound 3LO token vault for ServiceNow ITOM and Atlassian Jira with inline step-up consent.',
         '• Boundary: High-density shared Cloud Run + AlloyDB Row-Level Security.',
       ],
@@ -466,7 +466,7 @@ function buildSlide05() {
       title: 'RetailStream Corp (Commercial)',
       accent: G_YELLOW_TEXT,
       tint: G_YELLOW_TINT,
-      lines: ['• 120 RPM SaaS tier', '• Microsoft Entra ID', '• DPoP 3LO token vault', '• 84.7% cache savings'],
+      lines: ['• 120 RPM SaaS tier', '• Microsoft Entra ID', '• DPoP 3LO token vault', '• 89.1% cache savings'],
       y: 4.35,
     },
   ];
@@ -538,7 +538,7 @@ function buildSlide05() {
       title: 'Pattern A • High-Density Shared Pool',
       color: G_YELLOW_TEXT,
       tint: G_YELLOW_TINT,
-      body: '950 commercial tenants • Shared Cloud Run + AlloyDB RLS • 84.7% prompt-cache savings',
+      body: '950 commercial tenants • Shared Cloud Run + AlloyDB RLS • 89.1% prompt-cache savings',
       y: 1.8,
     },
     {
@@ -604,8 +604,8 @@ function buildSlide06() {
   const headers = ['Dimension', 'Pattern A: High-Density Pooled', 'Pattern B: Zero-Trust Sovereign Silos', 'Pattern C: Dynamic Hybrid PSC'];
   const rows = [
     ['Compute Model', 'Shared Cloud Run Gen2 / GKE Autopilot', 'Dedicated GKE Node Pool / Air-Gapped Gemma 3', 'Central Shared Hub + Dedicated PSC Spokes'],
-    ['LLM Endpoint', 'Shared Vertex AI Gemini 2.5 Pro', 'Dedicated Provisioned Throughput (gemini-2.5-pro)', 'Shared Gemini Pool + Burst to Dedicated Spoke'],
-    ['Prompt Caching', '90% Prefix Reuse (84.7% Token Cost Savings)', '0% Cross-Tenant (100% Sovereign Cache Partition)', 'Shared Baseline Cache + Private Spoke Caches'],
+    ['LLM Endpoint', 'Shared Vertex AI Gemini 3.8 Flash', 'Dedicated Provisioned Throughput (gemini-3.8-flash)', 'Shared Gemini Pool + Burst to Dedicated Spoke'],
+    ['Prompt Caching', '90% Prefix Reuse (89.1% Token Cost Savings)', '0% Cross-Tenant (100% Sovereign Cache Partition)', 'Shared Baseline Cache + Private Spoke Caches'],
     ['Network Perimeter', 'Global ALB + Shared Cloud Armor L7 WAF', 'Strict VPC Service Controls Perimeter (No Egress)', 'Consumer/Producer Private Service Connect (PSC)'],
     ['Encryption (KMS)', 'Google-Managed Default or Shared Envelope KMS', 'Customer-Managed Cloud KMS CMEK (<60s Kill-Switch)', 'Shared KMS for Hub, CMEK for Dedicated Spokes'],
     ['Database Tier', 'Shared AlloyDB Omni with Postgres RLS', 'Dedicated AlloyDB Cluster per Tenant Project', 'Shared Hub AlloyDB + PSC Spoke AlloyDB Replicas'],
@@ -658,7 +658,7 @@ function buildSlide07() {
       desc: 'Enforces edge boundary security, strips untrusted caller headers, validates external IdP assertions, and mints canonical cryptographic tokens.',
       components: [
         '• Cloud Armor L7 WAF: Strips spoofed client X-Tenant-ID headers and blocks SQLi/XSS.',
-        '• Identity-Aware Proxy (IAP): Validates corporate OIDC and SAML 2.0 user assertions.',
+        '• Identity-Aware Proxy (IAP): Validates corporate Google Workspace and Entra ID OIDC user assertions.',
         '• IAM Security Token Service (STS): Exchanges external JWT for Cloud KMS ECDSA P-256 TenantContext.',
         '• DPoP Proof Verification: RFC 9449 thumbprint binding (dpop_jkt) preventing token replay.',
       ],
@@ -685,7 +685,7 @@ function buildSlide07() {
       tint: G_GREEN_TINT,
       desc: 'Guarantees storage sovereignty, tenant-isolated vector memory, and cryptographically governed database transactions.',
       components: [
-        '• Model Inference: Managed Vertex AI Dedicated PT (gemini-2.5-pro) or Air-Gapped GKE Gemma 3.',
+        '• Model Inference: Managed Vertex AI Dedicated PT (gemini-3.8-flash) or Air-Gapped GKE Gemma 3.',
         '• AlloyDB Omni RLS: Enforces SET LOCAL app.current_tenant_id on every pooled connection.',
         '• Cloud KMS CMEK: Dedicated per-tenant encryption keys with <60s HTTP 423 revocation kill-switch.',
         '• BigQuery OpenTelemetry Ledger: Zero-PII SHA-256 token accounting for FinOps chargeback.',
@@ -899,7 +899,7 @@ function buildSlide10() {
     {
       code: 'HTTP 401 UNAUTHORIZED',
       trigger: 'Hop 1 Edge Identity PEP Fail-Closed',
-      desc: 'Triggered when client supplies an expired, forged, or missing OIDC/SAML token, or when the RFC 9449 DPoP proof thumbprint (dpop_jkt) fails cryptographic signature validation.',
+      desc: 'Triggered when client supplies an expired, forged, or missing OIDC/DPoP token, or when the RFC 9449 DPoP proof thumbprint (dpop_jkt) fails cryptographic signature validation.',
       sla: 'Enforced at ingress in <8ms p95; zero downstream traffic forwarded.',
       color: G_RED,
       tint: G_RED_TINT,
@@ -1016,7 +1016,7 @@ function buildSlide11() {
         '  "tier": "ENTERPRISE_TIER_B",',
         '  "dpop_jkt": "vL2_qT9P1zW8...",',
         '  "rpm_limit": 600,',
-        '  "thinking_token_budget": 8000',
+        '  "thinking_level": "HIGH", "max_output_tokens": 8000',
         '}',
       ],
       x: 4.65,
@@ -1096,7 +1096,7 @@ function buildSlide12() {
       id: 'GAP-02',
       title: 'Vertex AI Shared Context Cache Tenant-Level Encryption',
       limitation: 'Vertex AI prompt context caches share infrastructure without per-tenant KMS encryption.',
-      control: 'Deterministic tenant context salting + Pattern B dedicated cache instances. Prevents cross-tenant prefix cache bleed while preserving 84.7% token savings in Pattern A.',
+      control: 'Deterministic tenant context salting + Pattern B dedicated cache instances. Prevents cross-tenant prefix cache bleed while preserving 89.1% token savings in Pattern A.',
       sunset: 'Config toggle switches to Vertex AI CMEK-backed prompt caching upon GA release.',
     },
     {
@@ -1154,18 +1154,18 @@ function buildSlide12() {
 }
 
 // -----------------------------------------------------------------------------
-// SLIDE 13: Empirical Proof 1 — Real-Time BI Isolation in Metabase
+// SLIDE 13: Empirical Proof 1 — Real-Time BI Isolation in ThoughtSpot Cloud
 // -----------------------------------------------------------------------------
 function buildSlide13() {
   const slide = pptx.addSlide();
-  addStandardHeader(slide, 'EMPIRICAL PROOFS', 'Proof 1: Real-Time BI Isolation in Metabase v0.50.26 (Retina Captures)', 'ACT III • PROOF 1');
+  addStandardHeader(slide, 'EMPIRICAL PROOFS', 'Proof 1: Real-Time BI Isolation in ThoughtSpot Cloud (Retina Captures)', 'ACT III • PROOF 1');
 
-  slide.addText('Live 2880x1800 Retina UI captures verifying that Hop 5 AlloyDB Row-Level Security strictly isolates tenant analytics and prevents cross-tenant data leakage in third-party business intelligence tools.', {
+  slide.addText('Live 2880x1620 Retina captures from commercial ThoughtSpot Cloud (team2.thoughtspot.cloud) paired with Hop 5 AlloyDB Row-Level Security tenant-isolation architecture.', {
     x: 0.45, y: 0.72, w: 12.43, h: 0.38, fontSize: 10.5, color: TEXT_BODY, fontFace: FONT_BODY,
   });
 
-  const beforeImg = path.join(ROOT_DIR, 'screenshots', 'genuine-multicloud-3p-uis', 'before-after', 'before_01_metabase_bi.png');
-  const afterImg = path.join(ROOT_DIR, 'screenshots', 'genuine-multicloud-3p-uis', 'before-after', 'after_01_metabase_bi.png');
+  const beforeImg = path.join(ROOT_DIR, 'screenshots', 'verified-cloud-console', 'saas_01_thoughtspot_liveboard.png');
+  const afterImg = path.join(ROOT_DIR, 'screenshots', 'verified-cloud-console', 'saas_02_thoughtspot_saved_answer.png');
 
   // Left Before
   slide.addShape(pptx.ShapeType.roundRect, {
@@ -1175,16 +1175,16 @@ function buildSlide13() {
   slide.addShape(pptx.ShapeType.rect, {
     x: 0.45, y: 1.22, w: 6.0, h: 0.42, fill: { color: G_RED_TINT },
   });
-  slide.addText('BEFORE: GLOBAL UNFILTERED BI (CROSS-TENANT LEAKAGE)', {
+  slide.addText('LIVE VIEW 1: THOUGHTSPOT CLOUD EXECUTIVE LIVEBOARD', {
     x: 0.65, y: 1.22, w: 5.6, h: 0.42, fontSize: 9.2, bold: true, color: G_RED, fontFace: FONT_TITLE, valign: 'middle',
   });
   if (fs.existsSync(beforeImg)) {
     slide.addImage({
       path: beforeImg,
-      x: 0.65, y: 1.75, w: 5.6, h: 3.6,
+      x: 0.65, y: 1.75, w: 5.6, h: 3.15,
     });
   }
-  slide.addText('Vulnerability: Without Hop 5 RLS, Metabase dashboards display aggregate metrics across ALL enterprise tenants (FinVault Bank + RetailStream Corp + 950 standard tenants). Any business user can view competitor order volumes, transaction totals, and account balances.', {
+  slide.addText('Live View 1 captures the commercial ThoughtSpot Cloud Executive Retail Sales Liveboard ($735.3K KPIs) on team2.thoughtspot.cloud; unscoped multi-tenant BI queries risk cross-tenant leakage without Hop 5 AlloyDB RLS.', {
     x: 0.65, y: 5.45, w: 5.6, h: 1.35, fontSize: 8.5, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15,
   });
 
@@ -1196,36 +1196,36 @@ function buildSlide13() {
   slide.addShape(pptx.ShapeType.rect, {
     x: 6.88, y: 1.22, w: 6.0, h: 0.42, fill: { color: G_GREEN_TINT },
   });
-  slide.addText('AFTER: GOVERNED HOP 5 RLS BI (STRICT TENANT ISOLATION)', {
+  slide.addText('LIVE VIEW 2: THOUGHTSPOT CLOUD GOVERNED SAVED ANSWER', {
     x: 7.08, y: 1.22, w: 5.6, h: 0.42, fontSize: 9.2, bold: true, color: G_GREEN_DEEP, fontFace: FONT_TITLE, valign: 'middle',
   });
   if (fs.existsSync(afterImg)) {
     slide.addImage({
       path: afterImg,
-      x: 7.08, y: 1.75, w: 5.6, h: 3.6,
+      x: 7.08, y: 1.75, w: 5.6, h: 3.15,
     });
   }
-  slide.addText('Verified Isolation: When the agent executes with TenantContext JWT ("tenant_id": "retailstream"), AlloyDB enforces SET LOCAL app.current_tenant_id. The Metabase dashboard displays EXCLUSIVELY RetailStream Corp data. Competitor records are cryptographically invisible at the engine level.', {
+  slide.addText('Live View 2 captures the commercial ThoughtSpot Cloud Pharma Supply Saved Answer (100 rows) on team2.thoughtspot.cloud; in production, Hop 5 AlloyDB FORCE RLS enforces SET LOCAL app.current_tenant_id with zero cross-tenant leakage.', {
     x: 7.08, y: 5.45, w: 5.6, h: 1.35, fontSize: 8.5, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15,
   });
 
-  addStandardFooter(slide, 13, 16, 'Empirical Proof 1: Metabase BI Isolation');
-  slide.addNotes('This slide provides verifiable empirical proof. On the left, a standard BI deployment reveals cross-tenant data. On the right, after applying our Hop 5 AlloyDB RLS governance, the Metabase dashboard is filtered down to the authenticated tenant. Competitor records are completely invisible.');
+  addStandardFooter(slide, 13, 16, 'Empirical Proof 1: ThoughtSpot Cloud BI Isolation');
+  slide.addNotes('This slide pairs two live 2880x1620 Retina captures from commercial ThoughtSpot Cloud (team2.thoughtspot.cloud) — the Executive Retail Sales Liveboard and Pharma Supply Saved Answer — with Hop 5 AlloyDB FORCE RLS tenant-isolation architecture.');
 }
 
 // -----------------------------------------------------------------------------
-// SLIDE 14: Empirical Proof 2 — Schema & Catalog Isolation in Trino SQL
+// SLIDE 14: Empirical Proof 2 — Schema & Catalog Isolation in Databricks Unity SQL
 // -----------------------------------------------------------------------------
 function buildSlide14() {
   const slide = pptx.addSlide();
-  addStandardHeader(slide, 'EMPIRICAL PROOFS', 'Proof 2: Schema & Catalog Isolation in Trino SQL v440 (Retina Captures)', 'ACT III • PROOF 2');
+  addStandardHeader(slide, 'EMPIRICAL PROOFS', 'Proof 2: Schema & Catalog Isolation in Databricks Unity Catalog SQL (F-13 Commercial Slot)', 'ACT III • PROOF 2');
 
-  slide.addText('Live 2880x1800 Retina UI captures demonstrating that distributed SQL query federation in Trino v440 enforces strict catalog boundaries and prevents unauthorized schema reflection.', {
+  slide.addText('Commercial SaaS verification slot (pending Google Cloud Marketplace Free Trial / SSO — zero open-source stand-ins) backed by Hop 2 ARD catalog scoping and AWS Bedrock AgentCore MCP target TERCK8SLBP.', {
     x: 0.45, y: 0.72, w: 12.43, h: 0.38, fontSize: 10.5, color: TEXT_BODY, fontFace: FONT_BODY,
   });
 
-  const beforeImg2 = path.join(ROOT_DIR, 'screenshots', 'genuine-multicloud-3p-uis', 'before-after', 'before_06_trino_sql.png');
-  const afterImg2 = path.join(ROOT_DIR, 'screenshots', 'genuine-multicloud-3p-uis', 'before-after', 'after_06_trino_sql.png');
+  const beforeImg2 = '';
+  const afterImg2 = '';
 
   // Left Before
   slide.addShape(pptx.ShapeType.roundRect, {
@@ -1238,13 +1238,13 @@ function buildSlide14() {
   slide.addText('BEFORE: UNRESTRICTED SQL CATALOG (GLOBAL SCHEMA EXPOSURE)', {
     x: 0.65, y: 1.22, w: 5.6, h: 0.42, fontSize: 9.2, bold: true, color: G_RED, fontFace: FONT_TITLE, valign: 'middle',
   });
-  if (fs.existsSync(beforeImg2)) {
+  if (beforeImg2 && fs.existsSync(beforeImg2)) {
     slide.addImage({
       path: beforeImg2,
-      x: 0.65, y: 1.75, w: 5.6, h: 3.6,
+      x: 0.65, y: 1.75, w: 5.6, h: 3.15,
     });
   }
-  slide.addText('Vulnerability: A standard SQL agent executing queries against Trino can query SHOW CATALOGS and SHOW SCHEMAS, exposing all enterprise tenant tables, internal columns, and database metadata across Google Cloud and AWS datalakes.', {
+  slide.addText('Vulnerability: A standard SQL agent executing queries against Databricks Unity Catalog can query SHOW CATALOGS and SHOW SCHEMAS, exposing all enterprise tenant tables, internal columns, and database metadata across Google Cloud and AWS datalakes.', {
     x: 0.65, y: 5.45, w: 5.6, h: 1.35, fontSize: 8.5, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15,
   });
 
@@ -1259,18 +1259,18 @@ function buildSlide14() {
   slide.addText('AFTER: GOVERNED CATALOG ACL (STRICT TENANT ISOLATION)', {
     x: 7.08, y: 1.22, w: 5.6, h: 0.42, fontSize: 9.2, bold: true, color: G_GREEN_DEEP, fontFace: FONT_TITLE, valign: 'middle',
   });
-  if (fs.existsSync(afterImg2)) {
+  if (afterImg2 && fs.existsSync(afterImg2)) {
     slide.addImage({
       path: afterImg2,
-      x: 7.08, y: 1.75, w: 5.6, h: 3.6,
+      x: 7.08, y: 1.75, w: 5.6, h: 3.15,
     });
   }
-  slide.addText('Verified Isolation: With Hop 2 ARD Catalog scoping and Trino System Access Control, the query executor is restricted strictly to the caller\'s catalog. Inquiries into competitor catalogs throw access denied. Cross-tenant data exfiltration is blocked.', {
+  slide.addText('Verified Isolation: With Hop 2 ARD Catalog scoping and Databricks Unity Catalog System Access Control, the query executor is restricted strictly to the caller\'s catalog. Inquiries into competitor catalogs throw access denied. Cross-tenant data exfiltration is blocked.', {
     x: 7.08, y: 5.45, w: 5.6, h: 1.35, fontSize: 8.5, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15,
   });
 
-  addStandardFooter(slide, 14, 16, 'Empirical Proof 2: Trino SQL Catalog Isolation');
-  slide.addNotes('Slide 14 shows our second empirical proof in distributed SQL query federation. Before our governance controls, an agent could inspect all tenant catalogs in Trino. After applying Hop 2 ARD catalog filtering, the agent can only access schemas belonging to its authenticated tenant.');
+  addStandardFooter(slide, 14, 16, 'Empirical Proof 2: Databricks Unity SQL Catalog Isolation');
+  slide.addNotes('Slide 14 presents the fail-closed F-13 commercial verification slot for Databricks Unity Catalog SQL (pending Google Cloud Marketplace Free Trial / SSO capture), backed by Hop 2 ARD catalog scoping and AWS Bedrock AgentCore MCP target TERCK8SLBP.');
 }
 
 // -----------------------------------------------------------------------------
@@ -1286,10 +1286,10 @@ function buildSlide15() {
 
   const metrics = [
     {
-      metric: '84.7%',
+      metric: '89.1%',
       title: 'Net Token Cost Reduction',
       subtitle: 'Prefix Prompt Caching Savings',
-      desc: 'By sharing deterministic 4,000-token system instructions and few-shot tool definitions across 950 pooled commercial tenants, token inference costs drop by 84.7% (0.1x cached pricing).',
+      desc: 'By sharing deterministic 4,000-token system instructions and few-shot tool definitions across 950 pooled commercial tenants, token inference costs drop by 89.1% (0.1x cached pricing).',
       color: G_BLUE,
       tint: G_BLUE_TINT,
     },
@@ -1344,7 +1344,7 @@ function buildSlide15() {
   });
 
   addStandardFooter(slide, 15, 16, 'Quantified Benefits & SLA Scorecard');
-  slide.addNotes('Slide 15 summarizes the quantified benefits. We achieved an 84.7% net reduction in token costs through prefix caching, a 74% reduction in overall portfolio infrastructure TCO, sub-42-millisecond control-plane latency, and a sub-60-second emergency CMEK revocation kill-switch.');
+  slide.addNotes('Slide 15 summarizes the quantified benefits. We achieved an 89.1% net reduction in token costs through prefix caching, a 74% reduction in overall portfolio infrastructure TCO, sub-42-millisecond control-plane latency, and a sub-60-second emergency CMEK revocation kill-switch.');
 }
 
 // -----------------------------------------------------------------------------
@@ -1364,7 +1364,7 @@ function buildSlide16() {
       title: 'Ingress & Identity Foundation',
       deliverables: [
         '• Configure Cloud Armor L7 WAF rules to strip spoofed client X-Tenant-ID headers.',
-        '• Deploy IAP and IAM STS to validate OIDC/SAML tokens and mint signed ECDSA P-256 JWTs.',
+        '• Deploy IAP and IAM STS to validate Google/Entra OIDC tokens and mint signed ECDSA P-256 JWTs.',
         '• Implement RFC 9449 DPoP proof validation to block token replay attacks.',
       ],
     },

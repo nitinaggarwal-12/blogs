@@ -267,7 +267,7 @@ class TestPortalSecurityP0(unittest.TestCase):
                 path,
                 payload,
                 headers={
-                    "X-Goog-Authenticated-User-Email": "accounts.google.com:nitinagga@google.com",
+                    "X-Goog-Authenticated-User-Email": "accounts.google.com:spoof-admin@google.com",
                     "X-Goog-IAP-JWT-Assertion": _make_iap_jwt("nitinagga@google.com", exp_offset_sec=-60),
                 },
             )
@@ -317,8 +317,8 @@ class TestPortalSecurityP0(unittest.TestCase):
                 "op": "add_thread",
                 "cardId": "sec-card-1",
                 "text": "Review note",
-                "userName": "Nitin Aggarwal",
-                "userEmail": "nitinagga@google.com",
+                "userName": "Platform Admin",
+                "userEmail": "spoof-admin@google.com",
                 "avatarColor": "#000;position:fixed;inset:0;z-index:999999",
             },
         )
@@ -388,7 +388,7 @@ class TestPortalSecurityP0(unittest.TestCase):
         orig_is_file = Path.is_file
 
         def _hide_oidc_cache(p: Path) -> bool:
-            if str(p) == "/tmp/cymbal_gcp_cloudrun_oidc_cache.json":
+            if str(p) == "/tmp/cymbal_saas_oidc_cache.json":
                 return False
             return orig_is_file(p)
 
@@ -398,7 +398,7 @@ class TestPortalSecurityP0(unittest.TestCase):
         ):
             st, body, _ = self._http_json(
                 "GET",
-                "/api/saas-live/metabase/question/27",
+                "/api/saas-live/thoughtspot/liveboards",
                 headers={"Cookie": "SACSID=secret-session-cookie; other=1"},
             )
         self.assertEqual(st, 503)
@@ -443,16 +443,16 @@ class TestPortalSecurityP0(unittest.TestCase):
         ):
             st_ok, body_ok, _ = self._http_json(
                 "GET",
-                "/api/saas-live/metabase/question/27",
+                "/api/saas-live/thoughtspot/liveboards",
                 headers={
                     "Cookie": "SACSID=corp-cookie-do-not-forward",
                     "Authorization": "Bearer caller-secret",
-                    "X-Goog-Authenticated-User-Email": "accounts.google.com:nitinagga@google.com",
+                    "X-Goog-Authenticated-User-Email": "accounts.google.com:spoof-admin@google.com",
                 },
             )
         self.assertEqual(st_ok, 200)
         self.assertTrue(body_ok.get("proxied"))
-        self.assertTrue(captured_req["url"].startswith("https://cymbal-gcp-metabase-bi-"))
+        self.assertTrue(captured_req["url"].startswith("https://cymbal-saas-thoughtspot-proxy-"))
         self.assertNotIn("cookie", captured_req["headers"])
         self.assertNotIn("authorization", captured_req["headers"])
         self.assertNotIn("x-goog-authenticated-user-email", captured_req["headers"])
@@ -467,7 +467,7 @@ class TestPortalSecurityP0(unittest.TestCase):
         proxy_mod = importlib.util.module_from_spec(spec_p)
         spec_p.loader.exec_module(proxy_mod)
 
-        svc_spec = proxy_mod.SERVICES["metabase"]
+        svc_spec = proxy_mod.SERVICES["thoughtspot"]
         parsed_t = urllib.parse.urlparse(svc_spec["url"])
 
         class _BoundProxyHandler(proxy_mod.CloudRunProxyHandler):
@@ -530,10 +530,7 @@ class TestPortalSecurityP0(unittest.TestCase):
         targets = [
             ROOT_DIR / "index.html",
             ROOT_DIR / "scripts/saas_cloudrun_proxy.py",
-            ROOT_DIR / "scripts/provision_gcp_cloudrun_third_party_apps.py",
-            ROOT_DIR / "scripts/provision_aws_ec2_third_party_apps.py",
-            ROOT_DIR / "scripts/capture_genuine_3p_before_after_uis.mjs",
-            ROOT_DIR / "scripts/capture_genuine_multicloud_3p_uis.mjs",
+            ROOT_DIR / "scripts/capture_real_gcp_and_saas_screenshots.mjs",
         ]
         for path in targets:
             txt = path.read_text(encoding="utf-8")

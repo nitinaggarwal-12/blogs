@@ -125,11 +125,14 @@ PREFERRED_WORKSTREAM_SLIDES_IDS: Dict[str, str] = {
     "DOC-REF-07": "1gHV5hVNCB8phgq_JYQiNfoOGYOt7VFW5MuZOzKd4jLU",
     "DOC-REF-08": "1fHwVkECJFr1HQvkYHYuMOraerpxO-0C6guF8PFHLlTw",
     "DOC-REF-09": "10TpWnWIho8kXmN4866HXz34CI3lKxmh-NWSAd6QYiMM",
+    "BP-78": "1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw",
+    "WS1_EXEC": "1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg",
+    "ATLAS": "1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs",
+    "BARE_MIN_12": "1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk",
 }
 
 SECONDARY_WORKSTREAM_SLIDES_IDS: Dict[str, list[str]] = {
     "WS1": [
-        "1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw",
         "1zbmx5k6_i4yy2NuMO9d4g8r73_ZOOGuyI1J_DI2nLkA",
     ],
     "WS2": ["1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc"],
@@ -139,7 +142,6 @@ SECONDARY_WORKSTREAM_SLIDES_IDS: Dict[str, list[str]] = {
         "1Lcsf1gQRyt8eNgaeLGvq8kuALFrecx82S8dHpBFldwc",
         "18ntSD7plHarlsERB93n8vLUL2ctaoKuNXMoRptK7lmw",
     ],
-    "ALL": ["1FyHevA50i5TeseuH33caW31Xr5Wsjjt87xmWvi__rHw"],
     "DOC-MT-01": [
         "1RUkSWKaufU1PgLhI7-ufJ_Y7DPlZeLp8REHoXsHc-cI",
         "1rBHt-al8JDO9UZY6IIJpOdAR76zZQvvoNhPnX-ae9NY",
@@ -148,12 +150,12 @@ SECONDARY_WORKSTREAM_SLIDES_IDS: Dict[str, list[str]] = {
     "DOC-REF-07": ["1WBXxlnExatYy_A1S3Lnv-TM1tt6MNq5RTp3JFGQb_u8"],
     "DOC-REF-08": ["1sHSR73_osu8Z6UpklKtsa71Y9Z97JVCt_9g6TFlVUfI"],
     "DOC-REF-09": ["1OPrnB1L0iZhVX3bD05vrnvsEEznsSLccdag6Wq_CEd8"],
+    "BARE_MIN_12": ["1K7XrzuhVxGDuuj33a3qK4onYXnSHr3Povzuj5LnEEnc"],
 }
 
 WORKSTREAM_ALIAS_SLIDES_KEYS: Dict[str, list[tuple[str, str]]] = {
     "WS1": [
-        ("BP-78", "slides/ws1-reference-architecture-editable-slides.pptx"),
-        ("PLUGIN-GSLIDES-WS1", "slides/ws1-google-slides-design-plugin-editable-slides.pptx"),
+        ("PLUGIN-GSLIDES-WS1", "slides/ws1-12slide-visual-deck.pptx"),
     ],
     "WS2": [
         ("BP-78-A", "slides/ws2-pattern-a-pooled-editable-slides.pptx"),
@@ -247,6 +249,55 @@ def _upload_or_patch_pptx_bytes(
         return json.loads(resp.read().decode("utf-8"))
 
 
+def _with_resourcekey(base_url: str, webview_link: str) -> str:
+    m = re.search(r"[?&](resourcekey=[^&#]+)", webview_link or "")
+    if not m or "resourcekey=" in base_url:
+        return base_url
+    sep = "&" if "?" in base_url else "?"
+    return f"{base_url}{sep}{m.group(1)}"
+
+
+def _fetch_gdrive_webview_link(fid: str, default_url: str) -> str:
+    gdrive_cli = Path("/google/bin/releases/gemini-agents-gdrive/gdrive")
+    if gdrive_cli.is_file():
+        import subprocess
+        try:
+            res = subprocess.run(
+                [str(gdrive_cli), "readonly", "info", fid],
+                check=True,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            for line in res.stdout.splitlines():
+                if line.startswith("Link:"):
+                    return line.split("Link:", 1)[1].strip()
+        except Exception:
+            pass
+    return default_url
+
+
+def _build_alias_slide_entry(
+    base_entry: Dict[str, Any],
+    alias_key: str,
+    alias_pptx_rel: str,
+    fallback_title: str,
+    prev_alias: Dict[str, Any],
+) -> Dict[str, Any]:
+    alias_entry = {
+        **base_entry,
+        "key": alias_key,
+        "title": prev_alias.get("title") or fallback_title,
+        "pptxPath": alias_pptx_rel,
+    }
+    alias_file = ROOT_DIR / alias_pptx_rel
+    if alias_file.is_file():
+        alias_entry["sha256"] = file_sha256(alias_file)
+        alias_entry["sizeBytes"] = len(alias_file.read_bytes())
+        alias_entry["slideCount"] = count_pptx_slides(alias_file)
+    return alias_entry
+
+
 def upload_pptx_to_google_slides(
     pptx_path: Path,
     title: str,
@@ -270,21 +321,30 @@ def upload_pptx_to_google_slides(
         and existing.get("googleSlidesId") == preferred_id
         and preferred_id is not None
     ):
+        wv = existing.get("webViewLink") or f"https://docs.google.com/presentation/d/{preferred_id}/edit"
+        if "resourcekey=" not in wv:
+            wv = _fetch_gdrive_webview_link(preferred_id, wv)
+            existing["webViewLink"] = wv
+        existing["googleSlidesEditUrl"] = _with_resourcekey(f"https://docs.google.com/presentation/d/{preferred_id}/edit", wv)
+        existing["googleSlidesPreviewUrl"] = _with_resourcekey(f"https://docs.google.com/presentation/d/{preferred_id}/preview", wv)
+        existing["googleSlidesEmbedUrl"] = _with_resourcekey(f"https://docs.google.com/presentation/d/{preferred_id}/embed?start=false&loop=false&delayms=5000", wv)
+        existing["googleSlidesPdfUrl"] = _with_resourcekey(f"https://docs.google.com/presentation/d/{preferred_id}/export/pdf", wv)
         for alias_key, alias_pptx_rel in WORKSTREAM_ALIAS_SLIDES_KEYS.get(cache_key, []):
             prev_alias = manifest.get("slides", {}).get(alias_key, {})
-            manifest["slides"][alias_key] = {
-                **existing,
-                "key": alias_key,
-                "title": prev_alias.get("title") or title,
-                "pptxPath": alias_pptx_rel,
-            }
+            manifest["slides"][alias_key] = _build_alias_slide_entry(
+                existing, alias_key, alias_pptx_rel, title, prev_alias
+            )
         save_cloud_manifest(manifest)
         return existing
 
     tok = access_token_override or get_drive_access_token()
     pptx_bytes = pptx_path.read_bytes()
     gdrive_cli = Path("/google/bin/releases/gemini-agents-gdrive/gdrive")
-    if tok:
+    if cache_key == "BARE_MIN_12" and preferred_id and os.environ.get("ALLOW_OVERWRITE_NATIVE_BARE_MIN_12") != "1":
+        # Preserve native 2-way Google Slides object IDs; register metadata & URLs in manifest
+        fid = preferred_id
+        res = {"id": fid, "webViewLink": _fetch_gdrive_webview_link(fid, f"https://docs.google.com/presentation/d/{fid}/edit")}
+    elif tok:
         res = _upload_or_patch_pptx_bytes(pptx_bytes, title, tok, preferred_id=preferred_id)
         for sec_id in SECONDARY_WORKSTREAM_SLIDES_IDS.get(cache_key, []):
             if sec_id != res["id"]:
@@ -316,14 +376,19 @@ def upload_pptx_to_google_slides(
                 except Exception as exc:
                     print(f"   ⚠️ [Secondary gdrive Patch Warning] {cache_key} ({sec_id}): {exc}")
         fid = preferred_id
-        res = {"id": fid, "webViewLink": f"https://docs.google.com/presentation/d/{fid}/edit"}
+        res = {"id": fid, "webViewLink": _fetch_gdrive_webview_link(fid, f"https://docs.google.com/presentation/d/{fid}/edit")}
     else:
         raise RuntimeError("No Google Drive OAuth token or gdrive CLI available to sync .pptx to Google Slides.")
     now_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    res_webview = res.get("webViewLink", "")
     preserved_webview = (
-        existing.get("webViewLink")
-        if existing and existing.get("googleSlidesId") == fid and existing.get("webViewLink")
-        else res.get("webViewLink", f"https://docs.google.com/presentation/d/{fid}/edit")
+        res_webview
+        if "resourcekey=" in res_webview
+        else (
+            existing.get("webViewLink")
+            if existing and existing.get("googleSlidesId") == fid and existing.get("webViewLink")
+            else (res_webview or f"https://docs.google.com/presentation/d/{fid}/edit")
+        )
     )
     entry = {
         "key": cache_key,
@@ -333,22 +398,19 @@ def upload_pptx_to_google_slides(
         "sizeBytes": len(pptx_bytes),
         "slideCount": slide_count,
         "googleSlidesId": fid,
-        "googleSlidesEditUrl": f"https://docs.google.com/presentation/d/{fid}/edit?authuser={urllib.parse.quote(DEFAULT_USER_EMAIL)}",
-        "googleSlidesPreviewUrl": f"https://docs.google.com/presentation/d/{fid}/preview",
-        "googleSlidesEmbedUrl": f"https://docs.google.com/presentation/d/{fid}/embed?start=false&loop=false&delayms=5000",
-        "googleSlidesPdfUrl": f"https://docs.google.com/presentation/d/{fid}/export/pdf",
+        "googleSlidesEditUrl": _with_resourcekey(f"https://docs.google.com/presentation/d/{fid}/edit", preserved_webview),
+        "googleSlidesPreviewUrl": _with_resourcekey(f"https://docs.google.com/presentation/d/{fid}/preview", preserved_webview),
+        "googleSlidesEmbedUrl": _with_resourcekey(f"https://docs.google.com/presentation/d/{fid}/embed?start=false&loop=false&delayms=5000", preserved_webview),
+        "googleSlidesPdfUrl": _with_resourcekey(f"https://docs.google.com/presentation/d/{fid}/export/pdf", preserved_webview),
         "webViewLink": preserved_webview,
         "syncedAt": now_iso,
     }
     manifest.setdefault("slides", {})[cache_key] = entry
     for alias_key, alias_pptx_rel in WORKSTREAM_ALIAS_SLIDES_KEYS.get(cache_key, []):
         prev_alias = manifest.get("slides", {}).get(alias_key, {})
-        manifest["slides"][alias_key] = {
-            **entry,
-            "key": alias_key,
-            "title": prev_alias.get("title") or title,
-            "pptxPath": alias_pptx_rel,
-        }
+        manifest["slides"][alias_key] = _build_alias_slide_entry(
+            entry, alias_key, alias_pptx_rel, title, prev_alias
+        )
     save_cloud_manifest(manifest)
     return entry
 
@@ -499,7 +561,7 @@ def _sync_markdown_into_existing_google_doc(fid: str, md_path: Path, title: str,
     if len(raw_md) > 280_000:
         raw_md = (
             raw_md[:280_000]
-            + "\n\n---\n[Full 596 KB End-to-End Compendium & 14 Blueprints available in docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md on ge-blogs-248990048888.cr.gclb.goog]\n"
+            + "\n\n---\n[Full 596 KB End-to-End Compendium & 14 Blueprints available in docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md on ge-blogs.cymbal-demo.example]\n"
         )
     full_text, style_requests = _compile_markdown_for_native_docs_batch(raw_md, title)
 
@@ -556,35 +618,35 @@ def upload_md_to_google_docs(
     ):
         return existing
 
+    rel_path = str(md_path.relative_to(ROOT_DIR))
+    gdocs_cli = Path("/google/bin/releases/gemini-agents-gdocs/gdocs")
+    if existing and existing.get("googleDocsId") and gdocs_cli.is_file() and cache_key in {"WS1", "WS2", "WS3", "WS4", "WS5", "ALL"}:
+        import subprocess
+        subprocess.run(
+            [
+                "python3",
+                "-B",
+                str(ROOT_DIR / "scripts" / "build_gcp_branded_blog_docs.py"),
+                "--only",
+                cache_key,
+                "--refresh-manifest",
+            ],
+            cwd=ROOT_DIR,
+            check=True,
+        )
+        refreshed = load_cloud_manifest().get("docs", {}).get(cache_key)
+        if refreshed:
+            return refreshed
+
     tok = access_token_override or get_drive_access_token()
     if not tok:
         if existing and existing.get("googleDocsId"):
             return existing
         raise RuntimeError("No Google Drive OAuth token available to sync native Google Doc.")
 
-    rel_path = str(md_path.relative_to(ROOT_DIR))
-
     if existing and existing.get("googleDocsId"):
         fid = existing["googleDocsId"]
-        gdocs_cli = Path("/google/bin/releases/gemini-agents-gdocs/gdocs")
-        if gdocs_cli.is_file() and cache_key in {"WS1", "WS2", "WS3", "WS4", "WS5", "ALL"}:
-            import subprocess
-            subprocess.run(
-                [
-                    "python3",
-                    "-B",
-                    str(ROOT_DIR / "scripts" / "build_gcp_branded_blog_docs.py"),
-                    "--only",
-                    cache_key,
-                    "--refresh-manifest",
-                ],
-                cwd=ROOT_DIR,
-                check=True,
-            )
-            refreshed = load_cloud_manifest().get("docs", {}).get(cache_key)
-            if refreshed:
-                return refreshed
-        elif os.environ.get("ALLOW_PLAIN_TEXT_DOCS_FALLBACK") != "1":
+        if os.environ.get("ALLOW_PLAIN_TEXT_DOCS_FALLBACK") != "1":
             # Protect formatted bluedoc Google Docs (tables, Chroma code blocks, inline figures) from plain-text overwrite
             existing["sha256"] = sha
             existing["sizeBytes"] = len(md_bytes)
@@ -620,9 +682,9 @@ def upload_md_to_google_docs(
         "sha256": sha,
         "sizeBytes": len(md_bytes),
         "googleDocsId": fid,
-        "googleDocsEditUrl": f"https://docs.google.com/document/d/{fid}/edit?authuser={urllib.parse.quote(DEFAULT_USER_EMAIL)}",
-        "googleDocsPreviewUrl": f"https://docs.google.com/document/d/{fid}/preview",
-        "googleDocsPdfUrl": f"https://docs.google.com/document/d/{fid}/export?format=pdf",
+        "googleDocsEditUrl": _with_resourcekey(f"https://docs.google.com/document/d/{fid}/edit", webview),
+        "googleDocsPreviewUrl": _with_resourcekey(f"https://docs.google.com/document/d/{fid}/preview", webview),
+        "googleDocsPdfUrl": _with_resourcekey(f"https://docs.google.com/document/d/{fid}/export?format=pdf", webview),
         "webViewLink": webview,
         "syncedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
     }
@@ -664,7 +726,7 @@ WORKSTREAM_DECK_SPECS = [
     ("WS3", "WS3 — Pattern B: Zero-Trust Sovereign Silos", "slides/ws3-12slide-visual-deck.pptx", "blogs/ws3-pattern-b-sovereign-silos.md"),
     ("WS4", "WS4 — Pattern C: Dynamic Hybrid Hub-and-Spoke & Tier Upgrade", "slides/ws4-12slide-visual-deck.pptx", "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md"),
     ("WS5", "WS5 — Executive Decision Guide & Multi-Tenant Agentic Triad", "slides/ws5-12slide-visual-deck.pptx", "blogs/ws5-decision-guide-and-agentic-triad.md"),
-    ("ALL", "ALL Workstreams 1–5 Master Deck (25 Slides • 14 Diagrams)", "slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx", "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md"),
+    ("ALL", "ALL Workstreams 1–5 Master Deck (25 Slides • 12 Approved Diagrams)", "slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx", "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md"),
     ("DOC-MT-01", "DOC-MT-01 — Building Multi-Tenant Agents: Core Challenges, Cryptographic Identity & Token Propagation (Editable Diagram #78 + Blog Guide)", "slides/doc-mt-01-editable-slides.pptx", ""),
     ("DOC-MT-02", "DOC-MT-02 — Agent Deployment Models: Navigating the Agentic Trilemma Across Pool, Bridge & Silo (Editable Diagram #78 + Blog Guide)", "slides/doc-mt-02-editable-slides.pptx", ""),
     ("DOC-MT-03", "DOC-MT-03 — Building the High-Density Pool Tier: An End-to-End Implementation Blueprint (Editable Diagram #78 + Blog Guide)", "slides/doc-mt-03-editable-slides.pptx", ""),
@@ -674,6 +736,10 @@ WORKSTREAM_DECK_SPECS = [
     ("DOC-REF-07", "Ref Arch 1: Enterprise Multimodal GraphRAG with Spanner Graph & Vertex AI", "slides/doc-ref-07-editable-slides.pptx", ""),
     ("DOC-REF-08", "Ref Arch 2: Zero-Trust Enterprise Agent Mesh with Model Armor & VPC-SC", "slides/doc-ref-08-editable-slides.pptx", ""),
     ("DOC-REF-09", "Ref Arch 3: Scalable MCP Tool Server & A2A Ecosystem on Cloud Run", "slides/doc-ref-09-editable-slides.pptx", ""),
+    ("BP-78", "BP-78 — WS1 Reference Architecture, Taxonomy & 5-Hop Baseline (15-Slide Editable Deck)", "slides/ws1-reference-architecture-editable-slides.pptx", ""),
+    ("WS1_EXEC", "WS1 Executive Architecture (10-Slide Narrative Deck)", "slides/ws1-executive-architecture-23slide-deck.pptx", ""),
+    ("ATLAS", "10-SaaS Multi-Cloud Visual Verification Atlas (16-Slide Editable Deck)", "slides/saas-10-visual-verification-atlas-16slide-deck.pptx", ""),
+    ("BARE_MIN_12", "[12-Slide Bare-Minimum Architecture Deck] Enterprise Multi-Tenancy, Governance & Isolation (WS1–WS5)", "slides/geap-bare-minimum-12slide-architecture-deck.pptx", ""),
 ]
 
 
@@ -681,9 +747,13 @@ def sync_all_workstreams(
     force_slides: bool = False,
     force_docs: bool = False,
     docs_only: bool = False,
+    slides_only: bool = False,
+    only_keys: Optional[set[str]] = None,
 ) -> Dict[str, Any]:
-    print("☁️  Syncing Editable .pptx Slide Decks (15 Decks) & Native Google Docs (6 Docs) to Google Workspace...")
+    print("☁️  Syncing Editable .pptx Slide Decks (19 Entries / 15 Core Keys) & Native Google Docs (6 Docs) to Google Workspace...")
     for key, title, pptx_rel, md_rel in WORKSTREAM_DECK_SPECS:
+        if only_keys and key.upper() not in only_keys:
+            continue
         if not docs_only:
             pptx_file = ROOT_DIR / pptx_rel
             if pptx_file.is_file():
@@ -691,7 +761,7 @@ def sync_all_workstreams(
                 print(
                     f"   ✅ [Google Slides] {key} ({s_entry.get('slideCount', '?')} slides, {s_entry.get('sizeBytes', 0):,} B): {s_entry['googleSlidesEditUrl']}"
                 )
-        if not md_rel:
+        if slides_only or not md_rel:
             continue
         md_file = ROOT_DIR / md_rel
         if md_file.is_file():
@@ -708,9 +778,18 @@ if __name__ == "__main__":
     force_flag = "--force" in sys.argv
     force_docs_flag = force_flag or "--force-docs" in sys.argv
     docs_only_flag = "--docs-only" in sys.argv
+    slides_only_flag = "--slides-only" in sys.argv
+    only_keys = None
+    for idx, arg in enumerate(sys.argv[1:], 1):
+        if arg.startswith("--only="):
+            only_keys = {k.strip().upper() for k in arg.split("=", 1)[1].split(",") if k.strip()}
+        elif arg == "--only" and idx + 1 < len(sys.argv):
+            only_keys = {k.strip().upper() for k in sys.argv[idx + 1].split(",") if k.strip()}
     sync_all_workstreams(
         force_slides=force_flag,
         force_docs=force_docs_flag,
         docs_only=docs_only_flag,
+        slides_only=slides_only_flag,
+        only_keys=only_keys,
     )
 

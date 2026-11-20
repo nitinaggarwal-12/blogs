@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" style="width:100%;height:auto;display:block;background:#FFFFFF;font-family:Arial,sans-serif;">
+<defs><marker id="arrowEnd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#475569"/></marker></defs>
+<rect x="0" y="0" width="1600" height="900" fill="#FFFFFF"/>
+<rect x="0.0" y="7.8" width="1600.0" height="59.4" rx="0" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1.0"/>
+<rect x="0.0" y="0.0" width="400.0" height="7.8" rx="0" fill="#4285F4" stroke="none" stroke-width="0"/>
+<rect x="400.0" y="0.0" width="400.0" height="7.8" rx="0" fill="#EA4335" stroke="none" stroke-width="0"/>
+<rect x="799.9" y="0.0" width="400.0" height="7.8" rx="0" fill="#FBBC04" stroke="none" stroke-width="0"/>
+<rect x="1199.9" y="0.0" width="400.1" height="7.8" rx="0" fill="#34A853" stroke="none" stroke-width="0"/>
+<rect x="45.6" y="31.8" width="11.4" height="11.4" rx="50%" fill="#4285F4" stroke="none" stroke-width="0"/>
+<rect x="60.6" y="31.8" width="11.4" height="11.4" rx="50%" fill="#EA4335" stroke="none" stroke-width="0"/>
+<rect x="75.6" y="31.8" width="11.4" height="11.4" rx="50%" fill="#FBBC04" stroke="none" stroke-width="0"/>
+<rect x="90.6" y="31.8" width="11.4" height="11.4" rx="50%" fill="#34A853" stroke="none" stroke-width="0"/>
+<text x="122.4" y="40.2" text-anchor="start" fill="#3C4043" font-size="13.7" font-weight="bold">Google Cloud  Architecture Center</text>
+<rect x="453.6" y="21.0" width="102.0" height="32.4" rx="5" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="504.6" y="40.1" text-anchor="middle" fill="#4285F4" font-size="11.1" font-weight="bold">WS5</text>
+<text x="589.2" y="40.1" text-anchor="start" fill="#3C4043" font-size="13.3" font-weight="bold">WS5 • PART 5 (L4 WIRE): 32k Shared Prefix Cache &amp; SHA-256 Zero-PII FinOps Chargeback Span</text>
+<rect x="1248.4" y="21.0" width="306.0" height="32.4" rx="5" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="1401.4" y="39.7" text-anchor="middle" fill="#5F6368" font-size="9.8" font-weight="bold">PAYLOAD-TRANSFORMATION</text>
+<text x="81.6" y="100.7" text-anchor="start" fill="#5F6368" font-size="11.5" font-weight="bold">Capstone on the wire: the 32,768-token system prefix is served from the shared cache and the per-tenant OTel span carries only a SHA-256 prompt hash, so BigQuery chargeback is exact and PII-free.</text>
+<rect x="69.6" y="124.8" width="434.4" height="650.4" rx="18" fill="#FFFFFF" stroke="#D93025" stroke-width="1.8"/>
+<text x="286.8" y="189.4" text-anchor="middle" fill="#3C4043" font-size="20.8" font-weight="bold">Uncached Raw Prompt</text>
+<text x="286.8" y="212.7" text-anchor="middle" fill="#3C4043" font-size="20.8" font-weight="normal">&amp; Unhashed Telemetry</text>
+<line x1="105.6" y1="256.8" x2="468.0" y2="256.8" stroke="#D93025" stroke-width="1.5"/>
+<text x="117.6" y="298.4" text-anchor="start" fill="#3C4043" font-size="16.9" font-weight="bold">{</text>
+<rect x="122.4" y="319.2" width="343.2" height="50.4" rx="10" fill="#D2E3FC" stroke="none" stroke-width="0"/>
+<text x="141.6" y="347.9" text-anchor="start" fill="#3C4043" font-size="13.5" font-weight="bold">&quot;sys_prompt&quot;: &quot;32,768 tok&quot;</text>
+<text x="134.4" y="402.1" text-anchor="start" fill="#3C4043" font-size="14.3" font-weight="bold">&quot;billing_mode&quot; : [</text>
+<rect x="122.4" y="424.8" width="343.2" height="50.4" rx="10" fill="#FAD2CF" stroke="none" stroke-width="0"/>
+<text x="141.6" y="453.5" text-anchor="start" fill="#3C4043" font-size="13.3" font-weight="bold">&quot;100% full input token rate&quot;</text>
+<text x="134.4" y="511.7" text-anchor="start" fill="#3C4043" font-size="14.3" font-weight="bold">],</text>
+<text x="134.4" y="527.7" text-anchor="start" fill="#3C4043" font-size="14.3" font-weight="normal">&quot;raw_log_payload&quot; : [</text>
+<rect x="122.4" y="559.2" width="343.2" height="50.4" rx="10" fill="#EA4335" stroke="none" stroke-width="0"/>
+<text x="141.6" y="587.9" text-anchor="start" fill="#FFFFFF" font-size="13.3" font-weight="bold">&lt;unredacted tenant PII&gt;</text>
+<text x="117.6" y="652.9" text-anchor="start" fill="#3C4043" font-size="15.6" font-weight="bold">]</text>
+<text x="117.6" y="670.4" text-anchor="start" fill="#3C4043" font-size="15.6" font-weight="normal">}</text>
+<rect x="105.6" y="708.0" width="362.4" height="45.6" rx="10" fill="#FCE8E6" stroke="#D93025" stroke-width="1.0"/>
+<text x="286.8" y="733.7" text-anchor="middle" fill="#A50E0E" font-size="11.2" font-weight="bold">✕ Full-Rate Tokens + Raw PII in Logs • Not Billable Per Tenant</text>
+<line x1="520.8" y1="448.8" x2="592.8" y2="448.8" stroke="#EA4335" stroke-width="2.2" marker-end="url(#arrowEnd)"/>
+<rect x="609.6" y="124.8" width="417.6" height="650.4" rx="18" fill="#1B5E7B" stroke="#0D7A75" stroke-width="1.5"/>
+<text x="818.4" y="189.4" text-anchor="middle" fill="#FFFFFF" font-size="20.8" font-weight="bold">Prefix Cache &amp; OTel</text>
+<text x="818.4" y="212.7" text-anchor="middle" fill="#FFFFFF" font-size="20.8" font-weight="normal">FinOps Normalizer</text>
+<rect x="640.8" y="266.4" width="355.2" height="458.4" rx="18" fill="#367591" stroke="none" stroke-width="0"/>
+<rect x="657.6" y="295.2" width="321.6" height="103.2" rx="10" fill="#0B2545" stroke="#FFFFFF" stroke-width="1.0"/>
+<text x="818.4" y="342.4" text-anchor="middle" fill="#FFFFFF" font-size="14.6" font-weight="bold">STAGE 01</text>
+<text x="818.4" y="358.8" text-anchor="middle" fill="#FFFFFF" font-size="14.6" font-weight="normal">32k Immutable Prefix Cache</text>
+<rect x="657.6" y="434.4" width="321.6" height="103.2" rx="10" fill="#0B2545" stroke="#FFFFFF" stroke-width="1.0"/>
+<text x="818.4" y="481.6" text-anchor="middle" fill="#FFFFFF" font-size="14.6" font-weight="bold">STAGE 02</text>
+<text x="818.4" y="498.0" text-anchor="middle" fill="#FFFFFF" font-size="14.6" font-weight="normal">Valkey RPM &amp; Think Cap</text>
+<rect x="657.6" y="573.6" width="321.6" height="103.2" rx="10" fill="#0B2545" stroke="#FFFFFF" stroke-width="1.0"/>
+<text x="818.4" y="620.8" text-anchor="middle" fill="#FFFFFF" font-size="14.6" font-weight="bold">STAGE 03</text>
+<text x="818.4" y="637.2" text-anchor="middle" fill="#FFFFFF" font-size="14.6" font-weight="normal">SHA-256 Prompt Hasher</text>
+<line x1="1044.0" y1="448.8" x2="1116.0" y2="448.8" stroke="#1B5E7B" stroke-width="2.2" marker-end="url(#arrowEnd)"/>
+<rect x="1132.8" y="124.8" width="398.4" height="650.4" rx="18" fill="#FFFFFF" stroke="#1E8E3E" stroke-width="1.8"/>
+<text x="1332.0" y="189.4" text-anchor="middle" fill="#3C4043" font-size="20.8" font-weight="bold">FinOps Chargeback</text>
+<text x="1332.0" y="212.7" text-anchor="middle" fill="#3C4043" font-size="20.8" font-weight="normal">BigQuery OTel Span</text>
+<line x1="1166.4" y1="256.8" x2="1497.6" y2="256.8" stroke="#1E8E3E" stroke-width="1.5"/>
+<text x="1168.8" y="291.0" text-anchor="start" fill="#3C4043" font-size="16.3" font-weight="bold">{</text>
+<rect x="1161.6" y="304.8" width="343.2" height="48.0" rx="10" fill="#E6F4EA" stroke="#1E8E3E" stroke-width="1.0"/>
+<text x="1183.2" y="332.1" text-anchor="start" fill="#0D652D" font-size="12.5" font-weight="bold">&quot;tenant_id&quot;: &quot;tenant-a&quot;,</text>
+<text x="1183.2" y="389.6" text-anchor="start" fill="#3C4043" font-size="12.5" font-weight="bold">&quot;cached_tokens&quot;: 32768,</text>
+<rect x="1161.6" y="420.0" width="343.2" height="48.0" rx="10" fill="#E6F4EA" stroke="#1E8E3E" stroke-width="1.0"/>
+<text x="1183.2" y="447.2" text-anchor="start" fill="#0D652D" font-size="12.5" font-weight="bold">&quot;dynamic_tokens&quot;: 692,</text>
+<text x="1183.2" y="504.9" text-anchor="start" fill="#3C4043" font-size="12.5" font-weight="bold">&quot;net_savings&quot;: &quot;89.1%&quot;,</text>
+<rect x="1161.6" y="535.2" width="343.2" height="48.0" rx="10" fill="#E6F4EA" stroke="#1E8E3E" stroke-width="1.0"/>
+<text x="1183.2" y="562.5" text-anchor="start" fill="#0D652D" font-size="12.5" font-weight="bold">&quot;prompt_sha256&quot;: &quot;e3b0c44298fc&quot;,</text>
+<rect x="1161.6" y="592.8" width="343.2" height="48.0" rx="10" fill="#CEEAD6" stroke="#1E8E3E" stroke-width="1.0"/>
+<text x="1183.2" y="620.0" text-anchor="start" fill="#0D652D" font-size="12.5" font-weight="bold">&quot;raw_pii_logged&quot;: false</text>
+<text x="1168.8" y="678.6" text-anchor="start" fill="#3C4043" font-size="16.3" font-weight="bold">}</text>
+<rect x="1150.8" y="708.0" width="362.4" height="45.6" rx="10" fill="#E6F4EA" stroke="#1E8E3E" stroke-width="1.0"/>
+<text x="1332.0" y="733.6" text-anchor="middle" fill="#0D652D" font-size="9.5" font-weight="bold">✓ 89.1% Net Token Savings • prompt_sha256 Only, raw_pii_logged=false</text>
+<text x="50.0" y="882.2" text-anchor="start" fill="#4285F4" font-size="10.1" font-weight="bold">[Slide 59/62 • PART 5 (WS5)]  •  ▶ 4-State Hybrid &amp; Draw.io ↗</text>
+</svg>

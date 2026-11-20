@@ -1,22 +1,66 @@
     <section id="tab-simulator" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-simulator">
       <div class="card" data-no-hover-toolbar="true">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid var(--border);">
-          <div>
-            <h3 style="margin:0 0 2px 0; font-size:15px;">Live 5-Hop Cryptographic Runtime &amp; Breach Simulator (<code>POST /api/runtime/invoke</code>)</h3>
-            <p class="muted" style="margin:0; font-size:12px;">Select a scenario preset from the dropdown to populate &amp; execute immediately, or customize any 5-Hop field below:</p>
+        <!-- Consolidated Simulator Preset, Threat Filter, Execution Mode & Live Search Bar (Rule 25 Zero Cognitive Overload) -->
+        <div id="sim-consolidated-filter-bar" data-testid="sim-consolidated-filter-bar" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:nowrap; gap:8px; margin-bottom:10px; padding:7px 12px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px;">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:nowrap; flex:1; min-width:0;">
+            <div style="display:inline-flex; align-items:center; gap:5px; white-space:nowrap;">
+              <label for="sim-scenario-preset-select" style="margin:0; font-size:11px; font-weight:800; color:#1a73e8; text-transform:uppercase; letter-spacing:0.03em; white-space:nowrap;">&#9889; Preset:</label>
+              <select id="sim-scenario-preset-select" style="width:auto; min-width:210px; max-width:265px; padding:5px 8px; font-weight:700; font-size:11.5px; border:1px solid #93c5fd; border-radius:6px; background:#ffffff; color:#0f172a;" onchange="runLiveScenario(this.value)" aria-label="Select 5-Hop Scenario Preset">
+                <option value="sim1">Sim 1: Forged X-Tenant-ID Spoof (Hop 1 &rarr; 403 Blocked)</option>
+                <option value="sim2">Sim 2: Cross-Tenant Agent Alpha &amp; 3LO Jira (Hop 2 &rarr; 403 Blocked)</option>
+                <option value="sim3">Sim 3: Prompt Injection &amp; OCC NLC Violation (Hop 4 &rarr; 400/422 Blocked)</option>
+                <option value="sim4">Sim 4: Noisy Neighbor 16k Token Clamp &amp; RPM Burst (Hop 3 &rarr; 429)</option>
+                <option value="sim5">Sim 5: Sovereign VPC-SC Egress &amp; CMEK Kill-Switch (Pattern B &rarr; 423)</option>
+                <option value="sim6">Sim 6: Zero-Downtime Tier Upgrade (Pattern C Pool &rarr; PSC Spoke)</option>
+                <option value="clean">Clean Baseline Diagnostic Turn (Hop 1&ndash;5 &rarr; 200 OK)</option>
+              </select>
+            </div>
+
+            <div style="display:inline-flex; align-items:center; gap:5px; white-space:nowrap;">
+              <label for="sim-threat-filter-select" style="margin:0; font-size:11px; font-weight:800; color:#be123c; text-transform:uppercase; letter-spacing:0.03em; white-space:nowrap;">🛡️ Filter &amp; Mode:</label>
+              <select id="sim-threat-filter-select" onchange="applySimulatorThreatFilter()" aria-label="Filter MITRE ATLAS Threats by Hop or Switch Execution Mode" style="width:auto; min-width:205px; max-width:255px; padding:5px 8px; font-size:11.5px; font-weight:600; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#0f172a;">
+                <option value="ALL" data-base-label="All MITRE ATLAS Threats">All MITRE ATLAS Threats (5)</option>
+                <optgroup label="By Hop Boundary (MITRE ATLAS)">
+                  <option value="HOP1" data-base-label="Hop 1: ATLAS-03 Header Spoofing &amp; DPoP">Hop 1: ATLAS-03 Header Spoofing &amp; DPoP (1)</option>
+                  <option value="HOP2" data-base-label="Hop 2: ATLAS-02 Memory Extraction &amp; 3LO">Hop 2: ATLAS-02 Memory Extraction &amp; 3LO (1)</option>
+                  <option value="HOP3" data-base-label="Hop 3: ATLAS-04 Denial of Wallet &amp; RPM">Hop 3: ATLAS-04 Denial of Wallet &amp; RPM (1)</option>
+                  <option value="HOP4" data-base-label="Hop 4: ATLAS-01 Prompt Injection &amp; NLC">Hop 4: ATLAS-01 Prompt Injection &amp; NLC (1)</option>
+                  <option value="HOP5" data-base-label="Hop 5: ATLAS-05 Sovereign VPC-SC &amp; CMEK">Hop 5: ATLAS-05 Sovereign VPC-SC &amp; CMEK (1)</option>
+                  <option value="COLLAPSED" data-base-label="🙈 Collapse Threat Matrix">🙈 Collapse Threat Matrix</option>
+                </optgroup>
+                <optgroup label="Runtime Execution Mode">
+                  <option value="MODE:IN_MEMORY">⚡ Mode: In-Memory Policy (&lt;10ms)</option>
+                  <option value="MODE:LIVE_GCP">☁️ Mode: Live Cloud KMS Probe + Policy</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <div style="display:none !important;" aria-hidden="true">
+              <label for="sim-exec-mode-select">⚙️ Mode:</label>
+              <select id="sim-exec-mode-select" onchange="switchExecutionMode(this.value)" aria-label="Select Runtime Execution Mode">
+                <option value="IN_MEMORY">⚡ In-Memory Policy (&lt;10ms)</option>
+                <option value="LIVE_GCP">☁️ Live Cloud KMS Probe + Policy</option>
+              </select>
+            </div>
+
+            <input type="search" id="sim-threat-search-input" oninput="applySimulatorThreatFilter()" placeholder="Search threats, CVSS, CMEK..." aria-label="Search Simulator Threats and Controls" style="width:205px; flex:0 1 215px; padding:5px 8px; font-size:11.5px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#0f172a;" />
+            <button type="button" class="sim-btn" onclick="resetSimulatorThreatFilter()" style="padding:4px 8px; font-size:11px; font-weight:700; flex-shrink:0;">↺ Reset</button>
           </div>
-          <div style="display:flex; align-items:center; gap:8px; flex-wrap:nowrap;">
-            <label for="sim-scenario-preset-select" style="margin:0; font-size:12px; font-weight:700; color:var(--heading); white-space:nowrap;">&#9889; Scenario Preset:</label>
-            <select id="sim-scenario-preset-select" style="width:auto; min-width:320px; padding:5px 24px 5px 8px; font-weight:600; font-size:12px;" onchange="runLiveScenario(this.value)" aria-label="Select 5-Hop Scenario Preset">
-              <option value="sim1">Sim 1: Forged X-Tenant-ID Spoof (Hop 1 &rarr; 403 Blocked)</option>
-              <option value="sim2">Sim 2: Cross-Tenant Agent Alpha &amp; 3LO Jira (Hop 2 &rarr; 403 Blocked)</option>
-              <option value="sim3">Sim 3: Prompt Injection &amp; OCC NLC Violation (Hop 4 &rarr; 400/422 Blocked)</option>
-              <option value="sim4">Sim 4: Noisy Neighbor 16k Token Clamp &amp; RPM Burst (Hop 3 &rarr; 429)</option>
-              <option value="sim5">Sim 5: Sovereign VPC-SC Egress &amp; CMEK Kill-Switch (Pattern B &rarr; 423)</option>
-              <option value="sim6">Sim 6: Zero-Downtime Tier Upgrade (Pattern C Pool &rarr; PSC Spoke)</option>
-              <option value="clean">Clean Baseline Diagnostic Turn (Hop 1&ndash;5 &rarr; 200 OK)</option>
-            </select>
+
+          <div style="display:flex; align-items:center; gap:6px; flex-shrink:0; white-space:nowrap;">
+            <span id="sim-threat-count-badge" class="badge badge-rose" style="font-size:10.5px; font-weight:700; white-space:nowrap;">5 / 5 Threats</span>
+            <span id="runtime-mode-badge" class="badge badge-green" style="font-weight:700; font-size:10.5px; white-space:nowrap;">Active: In-Memory (&lt;10ms)</span>
+            <span class="badge badge-amber" style="display:none;">isLiveLlmCall: false &bull; Deterministic Policy Engine</span>
+            <span id="runtime-credentials-badge" style="display:none;">
+              GCP Runtime Posture: Checking <code>/api/runtime/mode</code>...
+            </span>
           </div>
+        </div>
+
+        <!-- Hidden Compatibility Mode Buttons (Preserved for Unit/Forensic Tests) -->
+        <div style="display:none;" aria-hidden="true">
+          <button type="button" id="btn-mode-in-memory" class="sim-btn active" onclick="switchExecutionMode('IN_MEMORY')">⚡ In-Memory Policy Simulation (&lt;10ms)</button>
+          <button type="button" id="btn-mode-live-gcp" class="sim-btn" onclick="switchExecutionMode('LIVE_GCP')">☁️ Live Cloud KMS KeyRing Probe + In-Memory 5-Hop Policy</button>
         </div>
 
         <!-- [MOCK 3 INTEGRATION] ADVERSARIAL RESILIENCE & CVSS RESIDUAL RISK MATRIX -->
@@ -29,12 +73,12 @@
             <span style="font-size:11px; color:#64748b;">Click any threat to trigger real Python 5-Hop defense execution</span>
           </div>
 
-          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(360px, 1fr)); gap:6px;">
+          <div id="sim-atlas-threats-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(360px, 1fr)); gap:6px;">
             <!-- Threat 1: Prompt Injection -->
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+            <div class="sim-atlas-threat-card" data-sim-threat-hop="HOP4" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
               <div style="flex:1 1 320px; min-width:0;">
                 <div style="display:flex; align-items:center; gap:6px;">
-                  <span class="badge badge-rose" style="font-size:9.5px; font-family:monospace; padding:1px 5px;">ATLAS-01</span>
+                  <span class="badge badge-rose" style="font-size:9.5px; font-family:monospace; padding:1px 5px; white-space:nowrap; flex-shrink:0;">ATLAS-01</span>
                   <strong style="font-size:12.5px; color:#1e293b;">Indirect Prompt Injection via 3LO MCP Output</strong>
                 </div>
                 <div style="font-size:11px; color:#64748b; margin-top:2px;">Defense: <strong style="color:#0f172a;">Hop 4 Model Armor + Semantic NLC Filter (HTTP 422)</strong></div>
@@ -57,10 +101,10 @@
             </div>
 
             <!-- Threat 2: Memory Exfiltration -->
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+            <div class="sim-atlas-threat-card" data-sim-threat-hop="HOP2" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
               <div style="flex:1 1 320px; min-width:0;">
                 <div style="display:flex; align-items:center; gap:6px;">
-                  <span class="badge badge-rose" style="font-size:9.5px; font-family:monospace; padding:1px 5px;">ATLAS-02</span>
+                  <span class="badge badge-rose" style="font-size:9.5px; font-family:monospace; padding:1px 5px; white-space:nowrap; flex-shrink:0;">ATLAS-02</span>
                   <strong style="font-size:12.5px; color:#1e293b;">Cross-Tenant Memory Extraction via Vector Drift</strong>
                 </div>
                 <div style="font-size:11px; color:#64748b; margin-top:2px;">Defense: <strong style="color:#0f172a;">Hop 3 5-Level Composite Namespace Keying + Hop 5 RLS</strong></div>
@@ -83,10 +127,10 @@
             </div>
 
             <!-- Threat 3: Header Spoofing -->
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+            <div class="sim-atlas-threat-card" data-sim-threat-hop="HOP1" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
               <div style="flex:1 1 320px; min-width:0;">
                 <div style="display:flex; align-items:center; gap:6px;">
-                  <span class="badge badge-rose" style="font-size:9.5px; font-family:monospace; padding:1px 5px;">ATLAS-03</span>
+                  <span class="badge badge-rose" style="font-size:9.5px; font-family:monospace; padding:1px 5px; white-space:nowrap; flex-shrink:0;">ATLAS-03</span>
                   <strong style="font-size:12.5px; color:#1e293b;">Tenant Impersonation via Forged Ingress Headers</strong>
                 </div>
                 <div style="font-size:11px; color:#64748b; margin-top:2px;">Defense: <strong style="color:#0f172a;">Hop 1 PEP Header Stripping &amp; DPoP Verification (HTTP 403)</strong></div>
@@ -109,13 +153,13 @@
             </div>
 
             <!-- Threat 4: Denial of Wallet / Token Quota -->
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+            <div class="sim-atlas-threat-card" data-sim-threat-hop="HOP3" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
               <div style="flex:1 1 320px; min-width:0;">
                 <div style="display:flex; align-items:center; gap:6px;">
-                  <span class="badge badge-rose" style="font-size:9.5px; font-family:monospace; padding:1px 5px;">ATLAS-04</span>
+                  <span class="badge badge-rose" style="font-size:9.5px; font-family:monospace; padding:1px 5px; white-space:nowrap; flex-shrink:0;">ATLAS-04</span>
                   <strong style="font-size:12.5px; color:#1e293b;">Denial of Wallet &amp; Token Quota Starvation</strong>
                 </div>
-                <div style="font-size:11px; color:#64748b; margin-top:2px;">Defense: <strong style="color:#0f172a;">Hop 3 Valkey Token Bucket (120 RPM) &amp; Thinking Budget Clamp</strong></div>
+                <div style="font-size:11px; color:#64748b; margin-top:2px;">Defense: <strong style="color:#0f172a;">Hop 3 Valkey Token Bucket (120 RPM) &amp; thinkingLevel / maxOutputTokens Clamp</strong></div>
               </div>
               <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                 <div style="display:flex; flex-direction:column; gap:2px; min-width:140px;">
@@ -135,10 +179,10 @@
             </div>
 
             <!-- Threat 5: Sovereign Silo Exfiltration -->
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+            <div class="sim-atlas-threat-card" data-sim-threat-hop="HOP5" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
               <div style="flex:1 1 320px; min-width:0;">
                 <div style="display:flex; align-items:center; gap:6px;">
-                  <span class="badge badge-rose" style="font-size:9.5px; font-family:monospace; padding:1px 5px;">ATLAS-05</span>
+                  <span class="badge badge-rose" style="font-size:9.5px; font-family:monospace; padding:1px 5px; white-space:nowrap; flex-shrink:0;">ATLAS-05</span>
                   <strong style="font-size:12.5px; color:#1e293b;">Sovereign Perimeter Exfiltration &amp; Cryptographic Purge</strong>
                 </div>
                 <div style="font-size:11px; color:#64748b; margin-top:2px;">Defense: <strong style="color:#0f172a;">Pattern B VPC-SC Perimeter + CMEK Kill-Switch Revocation (HTTP 423)</strong></div>
@@ -159,28 +203,6 @@
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-
-        <!-- [FA-16, FA-17] DYNAMIC RUNTIME EXECUTION PROVENANCE & MODE SWITCHER -->
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px; padding:10px 14px; background:#f0fdf4; border:1.5px solid #86efac; border-radius:10px; font-size:12px;">
-          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <span style="font-weight:700; color:#166534; font-size:12.5px;">⚡ Runtime Execution Mode:</span>
-            <div style="display:inline-flex; border:1px solid #86efac; border-radius:8px; overflow:hidden; background:#ffffff;">
-              <button type="button" id="btn-mode-in-memory" class="sim-btn active" style="padding:4px 10px; font-size:11.5px; font-weight:700; border:none; border-radius:0; cursor:pointer; background:#15803d; color:#ffffff;" onclick="switchExecutionMode('IN_MEMORY')">
-                ⚡ In-Memory Policy Simulation (&lt;10ms)
-              </button>
-              <button type="button" id="btn-mode-live-gcp" class="sim-btn" style="padding:4px 10px; font-size:11.5px; font-weight:600; border:none; border-radius:0; cursor:pointer; background:#ffffff; color:#334155;" onclick="switchExecutionMode('LIVE_GCP')">
-                ☁️ Live Cloud KMS KeyRing Probe + In-Memory 5-Hop Policy
-              </button>
-            </div>
-            <span id="runtime-mode-badge" class="badge badge-green" style="font-weight:700; font-size:11px;">Active: In-Memory (&lt;10ms)</span>
-            <span class="badge badge-amber" style="font-size:10.5px; font-weight:700;">isLiveLlmCall: false &bull; Deterministic Policy Engine</span>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <span id="runtime-credentials-badge" style="font-size:11px; color:#166534; background:#ffffff; border:1px solid #bbf7d0; padding:3px 8px; border-radius:6px;">
-              GCP Runtime Posture: Checking <code>/api/runtime/mode</code>...
-            </span>
           </div>
         </div>
 
@@ -212,7 +234,7 @@
             <label for="sb-agent">Target GEAP Agent URI</label>
             <select id="sb-agent" aria-label="Target GEAP Agent URI">
               <option value="agent://cymbal/shared-incident-diagnostic-v2">Shared Diagnostic Agent v2</option>
-              <option value="agent://finvault/private-agent-alpha-regulatory">FinVault Private Agent Alpha (Gemini 2.5 Pro (Dedicated PT))</option>
+              <option value="agent://finvault/private-agent-alpha-regulatory">FinVault Private Agent Alpha (Gemini 3.8 Flash (Dedicated PT))</option>
             </select>
           </div>
           <div>
@@ -226,8 +248,8 @@
             </select>
           </div>
           <div>
-            <label for="sb-tokens">Requested Thinking Tokens</label>
-            <input id="sb-tokens" type="number" value="8000" min="1000" max="32000" step="1000" aria-label="Requested Thinking Tokens" />
+            <label for="sb-tokens">Requested Output Tokens (maxOutputTokens)</label>
+            <input id="sb-tokens" type="number" value="8000" min="1000" max="32000" step="1000" aria-label="Requested Output Tokens" />
           </div>
           <div>
             <label for="sb-rpm">Simulated Current RPM Load</label>

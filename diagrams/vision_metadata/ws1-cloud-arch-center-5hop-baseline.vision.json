@@ -23,9 +23,9 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "GE Blogs Self-Contained Vision Decompiler (scripts/lib/visionIconEnricher.ts)",
   "healerLog": [
-    "Protected master/canonical blueprint passed through without geometric mutation."
+    "Protected canonical blueprint passed through without geometric mutation."
   ],
   "validationReport": {
     "valid": false,
@@ -58,9 +58,9 @@
       "plainTitle": "User OIDC / Entra JWT",
       "zone": "Header & Value Pillars",
       "x": 465,
-      "y": 52,
+      "y": 54,
       "width": 250,
-      "height": 86,
+      "height": 84,
       "isContainer": false
     },
     {
@@ -173,9 +173,9 @@
     },
     {
       "id": "card_rc_midleft",
-      "urlSlug": "OBJ-12-MODEL-ARMOR-EDGE-PROMPT",
-      "label": "Model Armor Edge Prompt Injection Gate",
-      "plainTitle": "Model Armor Edge Prompt Injection Gate",
+      "urlSlug": "OBJ-12-MODEL-ARMOR-PROMPT-SCREE",
+      "label": "Model Armor Prompt Screen (",
+      "plainTitle": "Model Armor Prompt Screen (",
       "zone": "Apps & Solutions Tier",
       "x": 88,
       "y": 482,
@@ -269,9 +269,9 @@
     },
     {
       "id": "card_lc_llm",
-      "urlSlug": "OBJ-20-GEMINI-2-5-PRO-AGENT-ENG",
-      "label": "Gemini 2.5 Pro Agent Engine (8k Budget)",
-      "plainTitle": "Gemini 2.5 Pro Agent Engine (8k Budget)",
+      "urlSlug": "OBJ-20-GEMINI-3-8-FLASH",
+      "label": "Gemini 3.8 Flash",
+      "plainTitle": "Gemini 3.8 Flash",
       "zone": "Governance & Footer",
       "x": 96,
       "y": 1110,
@@ -281,9 +281,9 @@
     },
     {
       "id": "card_lc_run",
-      "urlSlug": "OBJ-21-VERTEX-AI-AGENT-ENGINE",
-      "label": "Vertex AI Agent Engine",
-      "plainTitle": "Vertex AI Agent Engine",
+      "urlSlug": "OBJ-21-VERTEX-AI-AGENT-ENGINE-H",
+      "label": "Vertex AI Agent Engine Hop 3: Silo gVisor + CMEK",
+      "plainTitle": "Vertex AI Agent Engine Hop 3: Silo gVisor + CMEK",
       "zone": "Governance & Footer",
       "x": 342,
       "y": 924,
@@ -329,9 +329,9 @@
     },
     {
       "id": "card_sc_llm",
-      "urlSlug": "OBJ-25-GEMINI-AGENT-ENGINE-4K-C",
-      "label": "Gemini Agent Engine (4k Cap)",
-      "plainTitle": "Gemini Agent Engine (4k Cap)",
+      "urlSlug": "OBJ-25-GEMINI-3-8-FLASH",
+      "label": "Gemini 3.8 Flash",
+      "plainTitle": "Gemini 3.8 Flash",
       "zone": "Governance & Footer",
       "x": 640,
       "y": 976,
@@ -341,9 +341,9 @@
     },
     {
       "id": "card_sc_run",
-      "urlSlug": "OBJ-26-VERTEX-AI-AGENT-ENGINE-H",
-      "label": "Vertex AI Agent Engine Hop 3: Shared Diagnostic",
-      "plainTitle": "Vertex AI Agent Engine Hop 3: Shared Diagnostic",
+      "urlSlug": "OBJ-26-VERTEX-AI-AGENT-ENGINE",
+      "label": "Vertex AI Agent Engine",
+      "plainTitle": "Vertex AI Agent Engine",
       "zone": "Governance & Footer",
       "x": 886,
       "y": 924,

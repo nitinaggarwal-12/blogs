@@ -18,7 +18,7 @@
       const multiTurnPhases = [
         { key: 'attack_3a_prompt_injection', label: 'Turn 3A • Prompt Injection (400)' },
         { key: 'attack_3b_semantic_nlc_violation', label: 'Turn 3B • Semantic NLC (422)' },
-        { key: 'turn_4a_thinking_budget_clamped', label: 'Turn 4A • 4k Budget Clamp' },
+        { key: 'turn_4a_thinking_level_clamped', label: 'Turn 4A • MEDIUM / 4k Token Cap' },
         { key: 'turn_4b_redis_bulkhead_429', label: 'Turn 4B • Redis 429 Bulkhead' },
         { key: 'step_1_vpc_sc_exfil_blocked', label: 'Turn 5A • VPC-SC 403 Block' },
         { key: 'step_2_cmek_killswitch_423', label: 'Turn 5B • CMEK 423 Kill-Switch' },
@@ -194,6 +194,8 @@
 
     async function switchExecutionMode(newMode) {
       window.__currentExecutionMode = newMode;
+      const execSel = document.getElementById('sim-exec-mode-select');
+      if (execSel && execSel.value !== newMode) execSel.value = newMode;
       const btnInMem = document.getElementById('btn-mode-in-memory');
       const btnLiveGcp = document.getElementById('btn-mode-live-gcp');
       const modeBadge = document.getElementById('runtime-mode-badge');
@@ -230,7 +232,7 @@
         forged_header_tenant: document.getElementById('sb-forged').value,
         requested_agent_uri: document.getElementById('sb-agent').value,
         requested_mcp_connector: document.getElementById('sb-mcp').value,
-        requested_thinking_tokens: Number(document.getElementById('sb-tokens').value || 6000),
+        requested_output_tokens: Number(document.getElementById('sb-tokens').value || 6000),
         simulated_current_rpm: Number(document.getElementById('sb-rpm').value || 15),
         attempted_egress_project: document.getElementById('sb-egress').value,
         cmek_revoked: document.getElementById('sb-cmek').checked,

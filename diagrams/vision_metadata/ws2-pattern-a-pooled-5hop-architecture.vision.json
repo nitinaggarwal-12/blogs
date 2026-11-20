@@ -23,9 +23,9 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "GE Blogs Self-Contained Vision Decompiler (scripts/lib/visionIconEnricher.ts)",
   "healerLog": [
-    "Protected master/canonical blueprint passed through without geometric mutation."
+    "Protected canonical blueprint passed through without geometric mutation."
   ],
   "validationReport": {
     "valid": false,
@@ -65,7 +65,7 @@
     },
     {
       "id": "wrapper_shared_hubs",
-      "urlSlug": "OBJ-03-SHARED-GCP-PROJECT-NITIN",
+      "urlSlug": "OBJ-03-SHARED-GCP-PROJECT-CYMBA",
       "label": "Shared GCP Project: cymbal-build-sandbox / cymbal-pooled-saas-prod (Maximum Density Pooled SaaS)",
       "plainTitle": "Shared GCP Project: cymbal-build-sandbox / cymbal-pooled-saas-prod (Maximum Density Pooled SaaS)",
       "zone": "Apps & Solutions Tier",
@@ -382,7 +382,7 @@
       "plainTitle": "Model Armor (shared)",
       "zone": "Agentic Capabilities Platform",
       "x": 100,
-      "y": 874,
+      "y": 868,
       "width": 206,
       "height": 72,
       "isContainer": false
@@ -394,19 +394,19 @@
       "plainTitle": "Vertex AI Agent Engine",
       "zone": "Agentic Capabilities Platform",
       "x": 366,
-      "y": 874,
+      "y": 868,
       "width": 218,
       "height": 74,
       "isContainer": false
     },
     {
       "id": "card_pool_llm",
-      "urlSlug": "OBJ-31-GEMINI-2-5-PRO",
-      "label": "Gemini 2.5 Pro",
-      "plainTitle": "Gemini 2.5 Pro",
+      "urlSlug": "OBJ-31-GEMINI-3-8-FLASH",
+      "label": "Gemini 3.8 Flash",
+      "plainTitle": "Gemini 3.8 Flash",
       "zone": "Governance & Footer",
       "x": 100,
-      "y": 990,
+      "y": 980,
       "width": 206,
       "height": 72,
       "isContainer": false
@@ -418,7 +418,7 @@
       "plainTitle": "Memorystore Valkey",
       "zone": "Governance & Footer",
       "x": 366,
-      "y": 990,
+      "y": 980,
       "width": 218,
       "height": 74,
       "isContainer": false
@@ -430,9 +430,9 @@
       "plainTitle": "5-Level Memory Bank (ONE bank)",
       "zone": "Governance & Footer",
       "x": 100,
-      "y": 1118,
+      "y": 1102,
       "width": 484,
-      "height": 168,
+      "height": 192,
       "isContainer": false
     },
     {
@@ -442,7 +442,7 @@
       "plainTitle": "finvault:{user}:{session}",
       "zone": "Governance & Footer",
       "x": 114,
-      "y": 1186,
+      "y": 1170,
       "width": 146,
       "height": 30,
       "isContainer": false
@@ -454,7 +454,7 @@
       "plainTitle": "retailstream:{user}:{session}",
       "zone": "Governance & Footer",
       "x": 269,
-      "y": 1186,
+      "y": 1170,
       "width": 146,
       "height": 30,
       "isContainer": false
@@ -466,7 +466,7 @@
       "plainTitle": "L1 shared prefix (read-only)",
       "zone": "Governance & Footer",
       "x": 424,
-      "y": 1186,
+      "y": 1170,
       "width": 146,
       "height": 30,
       "isContainer": false
@@ -478,7 +478,7 @@
       "plainTitle": "Cross-namespace read → PermissionError (Hop 3 ACL) • 0 cross-tenant cached tokens",
       "zone": "Governance & Footer",
       "x": 112,
-      "y": 1224,
+      "y": 1208,
       "width": 460,
       "height": 54,
       "isContainer": false
@@ -622,7 +622,7 @@
       "plainTitle": "4",
       "zone": "Governance & Footer",
       "x": 103,
-      "y": 951,
+      "y": 943,
       "width": 34,
       "height": 34,
       "isContainer": false
@@ -634,7 +634,7 @@
       "plainTitle": "Screen prompt with tenant's Armor template",
       "zone": "Governance & Footer",
       "x": 144,
-      "y": 954,
+      "y": 946,
       "width": 158,
       "height": 34,
       "isContainer": false
@@ -646,7 +646,7 @@
       "plainTitle": "5",
       "zone": "Governance & Footer",
       "x": 103,
-      "y": 1073,
+      "y": 1059,
       "width": 34,
       "height": 34,
       "isContainer": false
@@ -658,7 +658,7 @@
       "plainTitle": "90% cached prefix + namespaced memory",
       "zone": "Governance & Footer",
       "x": 144,
-      "y": 1076,
+      "y": 1062,
       "width": 158,
       "height": 34,
       "isContainer": false
@@ -670,7 +670,7 @@
       "plainTitle": "namespace",
       "zone": "Governance & Footer",
       "x": 494,
-      "y": 1080,
+      "y": 1068,
       "width": 96,
       "height": 26,
       "isContainer": false

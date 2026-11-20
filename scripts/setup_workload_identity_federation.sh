@@ -59,13 +59,15 @@ fi
 
 # 6. Bind Workload Identity User permissions to GitHub Repositories
 PROJECT_NUMBER=$(gcloud projects describe "${PROJECT_ID}" --format="value(projectNumber)")
-echo "==> [6/6] Authorizing GitHub repositories (cloud-ai-fde/ge-blogs & nitinaggarwal-12/blogs)..."
+echo "==> [6/6] Authorizing GitHub repositories (cloud-ai-fde/ge-blogs${MIRROR_GITHUB_REPO:+ & ${MIRROR_GITHUB_REPO}})..."
 
 # Allow cloud-ai-fde/ge-blogs
 gcloud iam service-accounts add-iam-policy-binding "${SA_EMAIL}"     --project="${PROJECT_ID}"     --role="roles/iam.workloadIdentityUser"     --member="principalSet://iam.googleapis.com/projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/${POOL_NAME}/attribute.repository/cloud-ai-fde/ge-blogs"     --quiet >/dev/null
 
-# Allow nitinaggarwal-12/blogs
-gcloud iam service-accounts add-iam-policy-binding "${SA_EMAIL}"     --project="${PROJECT_ID}"     --role="roles/iam.workloadIdentityUser"     --member="principalSet://iam.googleapis.com/projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/${POOL_NAME}/attribute.repository/nitinaggarwal-12/blogs"     --quiet >/dev/null
+# Optional mirror repository binding (pass MIRROR_GITHUB_REPO="org/repo" when configured)
+if [[ -n "${MIRROR_GITHUB_REPO:-}" ]]; then
+  gcloud iam service-accounts add-iam-policy-binding "${SA_EMAIL}"     --project="${PROJECT_ID}"     --role="roles/iam.workloadIdentityUser"     --member="principalSet://iam.googleapis.com/projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/${POOL_NAME}/attribute.repository/${MIRROR_GITHUB_REPO}"     --quiet >/dev/null
+fi
 
 echo "================================================================================"
 echo " ✅ WORKLOAD IDENTITY FEDERATION CONFIGURATION COMPLETE!"

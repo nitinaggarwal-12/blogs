@@ -4,7 +4,7 @@ Cymbal Shared Incident Diagnostic Agent (`agent://cymbal/shared-incident-diagnos
 Published by Cymbal SaaS Platform (ISV Operator):
 - Correlates outage telemetry, queries tenant runbooks, and proposes remediation.
 - Runs Gemini 2.5 Pro with shared Prompt Prefix Caching (`ContextCacheConfig` — up to 90% COGS savings).
-- Loads per-tenant prompts, thinking budgets & GCS Skills via Firestore + Memorystore.
+- Loads per-tenant prompts, thinkingLevel / maxOutputTokens caps & GCS Skills via Firestore + Memorystore.
 """
 
 from typing import Dict, List, Optional
@@ -23,17 +23,20 @@ class SharedIncidentDiagnosticAgent:
         user_prompt: str,
         bound_tools: List[str],
         rls_incidents: List[Dict[str, str]],
-        effective_thinking_budget: int,
+        effective_thinking_level: str,
+        effective_output_token_cap: int,
+        active_model_override: str = "",
     ) -> str:
         profile = self.tenant_profiles[ctx.tenant_id]
         incident_summaries = "; ".join(
             f"[{row['incident_id']}] {row['service']}: {row['summary']}"
             for row in rls_incidents
         )
+        model_used = active_model_override or profile.primary_model
         skills_loaded = ",".join(profile.gcs_skills_uris)
         return (
-            f"[SharedDiagnosticAgent • Model={profile.primary_model} • "
-            f"ThinkingBudget={effective_thinking_budget} • "
+            f"[SharedDiagnosticAgent • Model={model_used} • "
+            f"ThinkingLevel={effective_thinking_level} • MaxOutputTokens={effective_output_token_cap} • "
             f"Memory={ctx.memory_bank_namespace} • "
             f"GCSSkills={skills_loaded} • "
             f"BoundTools={','.join(bound_tools)}] "

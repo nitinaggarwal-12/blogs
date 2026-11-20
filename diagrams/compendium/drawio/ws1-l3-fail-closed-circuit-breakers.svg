@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" style="width:100%;height:auto;display:block;background:#FFFFFF;font-family:Arial,sans-serif;">
+<defs><marker id="arrowEnd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#475569"/></marker></defs>
+<rect x="0" y="0" width="1600" height="900" fill="#FFFFFF"/>
+<rect x="72.0" y="42.0" width="276.0" height="36.0" rx="5" fill="#E8F0FE" stroke="#4285F4" stroke-width="1.0"/>
+<text x="210.0" y="63.0" text-anchor="middle" fill="#0D47A1" font-size="11.7" font-weight="bold">PART 1 • CIRCUIT BREAKERS</text>
+<text x="384.0" y="66.3" text-anchor="start" fill="#3C4043" font-size="22.1" font-weight="bold">L3 Process Architecture: Explicit Fail-Closed Security Circuit Breakers</text>
+<rect x="72.0" y="90.0" width="1456.0" height="2.4" rx="0" fill="#DADCE0" stroke="none" stroke-width="0"/>
+<text x="84.0" y="872.9" text-anchor="start" fill="#5F6368" font-size="11.1" font-weight="bold">[Compendium S14/54 • PART 1 (WS1)]  •  ▶ 4-State Hybrid &amp; Draw.io ↗</text>
+<text x="84.0" y="129.7" text-anchor="start" fill="#5F6368" font-size="14.3" font-weight="bold">Zero-trust systems must fail closed. Five distinct HTTP circuit breakers guarantee deterministic rejection without data leaks.</text>
+<rect x="72.0" y="162.0" width="1456.0" height="114.0" rx="10" fill="#FFFFFF" stroke="#EA4335" stroke-width="1.0"/>
+<rect x="96.0" y="180.0" width="216.0" height="78.0" rx="10" fill="#FCE8E6" stroke="#EA4335" stroke-width="1.0"/>
+<text x="204.0" y="223.4" text-anchor="middle" fill="#EA4335" font-size="16.9" font-weight="bold">HTTP 401</text>
+<text x="348.0" y="200.4" text-anchor="start" fill="#3C4043" font-size="13.7" font-weight="bold">UNAUTHORIZED IDENTITY</text>
+<text x="348.0" y="242.9" text-anchor="start" fill="#5F6368" font-size="11.1" font-weight="bold">Trigger: Caller provides invalid OIDC/SAML token or forged X-Tenant-ID header</text>
+<rect x="936.0" y="180.0" width="564.0" height="78.0" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="966.0" y="221.9" text-anchor="start" fill="#3C4043" font-size="11.1" font-weight="bold">Fail-Closed Action: Cloud Armor immediately drops TCP session at Edge PEP (Hop 1)</text>
+<rect x="72.0" y="294.0" width="1456.0" height="114.0" rx="10" fill="#FFFFFF" stroke="#EA4335" stroke-width="1.0"/>
+<rect x="96.0" y="312.0" width="216.0" height="78.0" rx="10" fill="#FCE8E6" stroke="#EA4335" stroke-width="1.0"/>
+<text x="204.0" y="355.4" text-anchor="middle" fill="#EA4335" font-size="16.9" font-weight="bold">HTTP 403</text>
+<text x="348.0" y="332.4" text-anchor="start" fill="#3C4043" font-size="13.7" font-weight="bold">FORBIDDEN TOOL RESOLUTION</text>
+<text x="348.0" y="374.9" text-anchor="start" fill="#5F6368" font-size="11.1" font-weight="bold">Trigger: Agent attempts to invoke an unauthorized MCP tool or cross-tenant private agent</text>
+<rect x="936.0" y="312.0" width="564.0" height="78.0" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="966.0" y="353.9" text-anchor="start" fill="#3C4043" font-size="11.1" font-weight="bold">Fail-Closed Action: ARD Catalog PDP aborts tool execution via before_agent_callback (Hop 2)</text>
+<rect x="72.0" y="426.0" width="1456.0" height="114.0" rx="10" fill="#FFFFFF" stroke="#EA4335" stroke-width="1.0"/>
+<rect x="96.0" y="444.0" width="216.0" height="78.0" rx="10" fill="#FCE8E6" stroke="#EA4335" stroke-width="1.0"/>
+<text x="204.0" y="487.4" text-anchor="middle" fill="#EA4335" font-size="16.9" font-weight="bold">HTTP 429</text>
+<text x="348.0" y="464.4" text-anchor="start" fill="#3C4043" font-size="13.7" font-weight="bold">RATE LIMIT BULKHEAD BREACH</text>
+<text x="348.0" y="506.9" text-anchor="start" fill="#5F6368" font-size="11.1" font-weight="bold">Trigger: Runaway reasoning loop or noisy neighbor exceeds per-tenant RPM/TPM quota</text>
+<rect x="936.0" y="444.0" width="564.0" height="78.0" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="966.0" y="479.0" text-anchor="start" fill="#3C4043" font-size="11.0" font-weight="bold"><tspan x="966.0" dy="0">Fail-Closed Action: Valkey token-bucket rate limiter rejects request</tspan><tspan x="966.0" dy="15.5">to preserve platform stability (Hop 3)</tspan></text>
+<rect x="72.0" y="558.0" width="1456.0" height="114.0" rx="10" fill="#FFFFFF" stroke="#EA4335" stroke-width="1.0"/>
+<rect x="96.0" y="576.0" width="216.0" height="78.0" rx="10" fill="#FCE8E6" stroke="#EA4335" stroke-width="1.0"/>
+<text x="204.0" y="619.4" text-anchor="middle" fill="#EA4335" font-size="16.9" font-weight="bold">HTTP 422</text>
+<text x="348.0" y="596.4" text-anchor="start" fill="#3C4043" font-size="13.7" font-weight="bold">PROMPT INJECTION DETECTED</text>
+<text x="348.0" y="638.9" text-anchor="start" fill="#5F6368" font-size="11.1" font-weight="bold">Trigger: Model Armor detects jailbreak, semantic NLC violation, or PII exfiltration attempt</text>
+<rect x="936.0" y="576.0" width="564.0" height="78.0" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="966.0" y="617.9" text-anchor="start" fill="#3C4043" font-size="11.1" font-weight="bold">Fail-Closed Action: Inference gateway blocks LLM call and logs incident to Cloud Audit Logs (Hop 4)</text>
+<rect x="72.0" y="690.0" width="1456.0" height="114.0" rx="10" fill="#FFFFFF" stroke="#EA4335" stroke-width="1.0"/>
+<rect x="96.0" y="708.0" width="216.0" height="78.0" rx="10" fill="#FCE8E6" stroke="#EA4335" stroke-width="1.0"/>
+<text x="204.0" y="751.4" text-anchor="middle" fill="#EA4335" font-size="16.9" font-weight="bold">HTTP 423</text>
+<text x="348.0" y="728.4" text-anchor="start" fill="#3C4043" font-size="13.7" font-weight="bold">CMEK REVOCATION (CMEK_DENIED)</text>
+<text x="348.0" y="770.9" text-anchor="start" fill="#5F6368" font-size="11.1" font-weight="bold">Trigger: Regulated enterprise revokes Cloud KMS key ring during security incident</text>
+<rect x="936.0" y="708.0" width="564.0" height="78.0" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="966.0" y="749.9" text-anchor="start" fill="#3C4043" font-size="11.1" font-weight="bold">Fail-Closed Action: HTTP 423 locks DB (&lt;60s) &amp; Valkey SCAN+UNLINK purges tokens (&lt;5s)</text>
+<g id="plane_layer" width="1600" font-family="Arial, Helvetica, sans-serif"><rect x="68.2" y="158.2" width="1463.5" height="517.5" rx="13.5" fill="none" stroke="#93C5FD" stroke-width="1.2" stroke-dasharray="6,4"/><rect x="68.2" y="686.2" width="1463.5" height="119.5" rx="3.2" fill="none" stroke="#CBD5E1" stroke-width="1.2" stroke-dasharray="6,4"/><rect x="74.5" y="147.9" width="377.8" height="15.2" rx="7.6" fill="#EFF6FF" stroke="#93C5FD" stroke-width="0.9"/><text x="263.4" y="158.6" text-anchor="middle" xml:space="preserve"><tspan font-size="10.0" font-weight="700" fill="#1D4ED8">CONTROL · Hops 1–4: identity, tool policy, rate limit, prompt screen</tspan></text><rect x="74.5" y="809.5" width="136.0" height="15.2" rx="7.6" fill="#EFF6FF" stroke="#93C5FD" stroke-width="0.9"/><text x="142.5" y="820.2" text-anchor="middle" xml:space="preserve"><tspan font-size="10.0" font-weight="700" fill="#1D4ED8">CONTROL · key revoke</tspan></text><rect x="228.5" y="809.5" width="110.0" height="15.2" rx="7.6" fill="#FFFBEB" stroke="#FDBA74" stroke-width="0.9"/><text x="283.5" y="820.2" text-anchor="middle" xml:space="preserve"><tspan font-size="10.0" font-weight="700" fill="#B45309">DATA · store lock</tspan></text><rect x="72.0" y="832.0" width="478.7" height="16.2" rx="2.9" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.1"/><text x="78.2" y="839.4" text-anchor="start" xml:space="preserve"><tspan font-size="10.2" font-weight="700" fill="#1D4ED8">CONTROL  </tspan><tspan font-size="10.2" font-weight="400" fill="#1F2937">401 edge PEP, 403 ARD Catalog PDP, 429 Valkey limiter, 422 gateway</tspan></text><rect x="560.7" y="832.0" width="478.7" height="16.2" rx="2.9" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.1"/><text x="566.9" y="839.4" text-anchor="start" xml:space="preserve"><tspan font-size="10.2" font-weight="700" fill="#047857">COMPUTE  </tspan><tspan font-size="10.2" font-weight="400" fill="#1F2937">no row of its own: Cloud Run takes part in the Hop 5 lock (last row)</tspan></text><rect x="1049.3" y="832.0" width="478.7" height="16.2" rx="2.9" fill="#FFFBEB" stroke="#FDBA74" stroke-width="1.1"/><text x="1055.6" y="839.4" text-anchor="start" xml:space="preserve"><tspan font-size="10.2" font-weight="700" fill="#B45309">DATA  </tspan><tspan font-size="10.2" font-weight="400" fill="#1F2937">last row: KMS key revoked -&gt; HTTP 423, Valkey purges &lt;5s, DB locks &lt;60s</tspan></text></g>
+</svg>

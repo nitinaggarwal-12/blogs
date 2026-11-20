@@ -2,7 +2,7 @@
   "id": "VIS-WS5-DECISION-TREE-AND-AGENTIC-TRIAD",
   "blueprintId": "ws5-decision-tree-and-agentic-triad",
   "title": "Workstream 5 Capstone: Executive Topology Decision Guide & The Multi-Tenant Agentic Triad",
-  "subtitle": "Verified 20/20 Suites PASS Across cymbal-build-sandbox & ramp-portal-dev (Security • FinOps -84.7% • Zero-PII OTel)",
+  "subtitle": "Verified 20/20 Suites PASS Across cymbal-build-sandbox & ramp-portal-dev (Security • FinOps 89.1% Savings • Zero-PII OTel)",
   "badge": "WORKSTREAM 5.1 & 5.2 • CAPSTONE BLUEPRINT",
   "sourceImage": "diagrams/ws5-decision-tree-and-agentic-triad.drawio.png",
   "drawioFile": "diagrams/ws5-decision-tree-and-agentic-triad.drawio",
@@ -23,13 +23,13 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "GE Blogs Self-Contained Vision Decompiler (scripts/lib/visionIconEnricher.ts)",
   "healerLog": [
-    "Protected master/canonical blueprint passed through without geometric mutation."
+    "Protected canonical blueprint passed through without geometric mutation."
   ],
   "validationReport": {
     "valid": false,
-    "errorCount": 56,
+    "errorCount": 55,
     "warningCount": 0
   },
   "drawioViewerMetrics": {
@@ -106,9 +106,9 @@
       "plainTitle": "Pattern B — Sovereign Silos • Tier 3 • Terraform module 3.6",
       "zone": "Agentic Capabilities Platform",
       "x": 70,
-      "y": 790,
+      "y": 798,
       "width": 340,
-      "height": 542,
+      "height": 534,
       "isContainer": false
     },
     {
@@ -118,21 +118,21 @@
       "plainTitle": "One dedicated project per tenant",
       "zone": "Agentic Capabilities Platform",
       "x": 86,
-      "y": 824,
+      "y": 832,
       "width": 308,
-      "height": 492,
+      "height": 484,
       "isContainer": false
     },
     {
       "id": "outcome_a_wrapper",
-      "urlSlug": "OBJ-08-PATTERN-A-POOLED-TERRAFO",
+      "urlSlug": "OBJ-08-PATTERN-A-POOLED-TIER-1",
       "label": "Pattern A — Pooled • Tier 1 • Terraform module 2.6",
       "plainTitle": "Pattern A — Pooled • Tier 1 • Terraform module 2.6",
       "zone": "Agentic Capabilities Platform",
       "x": 430,
-      "y": 790,
+      "y": 798,
       "width": 340,
-      "height": 542,
+      "height": 534,
       "isContainer": false
     },
     {
@@ -142,21 +142,21 @@
       "plainTitle": "One shared plane for all tenants",
       "zone": "Agentic Capabilities Platform",
       "x": 446,
-      "y": 824,
+      "y": 832,
       "width": 308,
-      "height": 492,
+      "height": 484,
       "isContainer": false
     },
     {
       "id": "outcome_c_wrapper",
-      "urlSlug": "OBJ-10-PATTERN-C-HYBRID-PSC-TER",
+      "urlSlug": "OBJ-10-PATTERN-C-HYBRID-PSC-TIE",
       "label": "Pattern C — Hybrid PSC • Tier 2 • Terraform module 4.6",
       "plainTitle": "Pattern C — Hybrid PSC • Tier 2 • Terraform module 4.6",
       "zone": "Agentic Capabilities Platform",
       "x": 790,
-      "y": 790,
+      "y": 798,
       "width": 340,
-      "height": 542,
+      "height": 534,
       "isContainer": false
     },
     {
@@ -166,9 +166,9 @@
       "plainTitle": "Shared pool + private spokes",
       "zone": "Agentic Capabilities Platform",
       "x": 806,
-      "y": 824,
+      "y": 832,
       "width": 308,
-      "height": 492,
+      "height": 484,
       "isContainer": false
     },
     {
@@ -189,9 +189,9 @@
       "label": "Q1 · Compliance gate",
       "plainTitle": "Q1 · Compliance gate",
       "zone": "Apps & Solutions Tier",
-      "x": 108,
+      "x": 112,
       "y": 474,
-      "width": 272,
+      "width": 258,
       "height": 100,
       "isContainer": false
     },
@@ -201,9 +201,9 @@
       "label": "Q2 · Tier gate",
       "plainTitle": "Q2 · Tier gate",
       "zone": "Apps & Solutions Tier",
-      "x": 420,
+      "x": 426,
       "y": 474,
-      "width": 280,
+      "width": 260,
       "height": 100,
       "isContainer": false
     },
@@ -250,9 +250,9 @@
       "plainTitle": "AGENTIC TRIAD CORE — identical Hops 1–5, FinOps controls & zero-PII telemetry in every outcome (only the 20% topology delta below changes)",
       "zone": "Agentic Capabilities Platform",
       "x": 70,
-      "y": 736,
+      "y": 724,
       "width": 1060,
-      "height": 30,
+      "height": 28,
       "isContainer": false
     },
     {
@@ -260,11 +260,11 @@
       "urlSlug": "OBJ-19-VPC-SC-PERIMETER-IAM-PAB",
       "label": "VPC-SC Perimeter + IAM PAB",
       "plainTitle": "VPC-SC Perimeter + IAM PAB",
-      "zone": "Agentic Capabilities Platform",
+      "zone": "Governance & Footer",
       "x": 90,
-      "y": 876,
+      "y": 880,
       "width": 300,
-      "height": 70,
+      "height": 68,
       "isContainer": false
     },
     {
@@ -274,9 +274,9 @@
       "plainTitle": "Customer CMEK Kill-Switch Key DISABLED → HTTP 423 in",
       "zone": "Governance & Footer",
       "x": 90,
-      "y": 960,
+      "y": 962,
       "width": 300,
-      "height": 70,
+      "height": 68,
       "isContainer": false
     },
     {
@@ -288,7 +288,7 @@
       "x": 90,
       "y": 1044,
       "width": 300,
-      "height": 70,
+      "height": 68,
       "isContainer": false
     },
     {
@@ -298,9 +298,9 @@
       "plainTitle": "Local Silo MCP + AlloyDB CMEK",
       "zone": "Governance & Footer",
       "x": 90,
-      "y": 1128,
+      "y": 1126,
       "width": 300,
-      "height": 70,
+      "height": 68,
       "isContainer": false
     },
     {
@@ -310,7 +310,7 @@
       "plainTitle": "Choose when regulators mandate isolation",
       "zone": "Governance & Footer",
       "x": 90,
-      "y": 1222,
+      "y": 1216,
       "width": 300,
       "height": 64,
       "isContainer": false
@@ -322,7 +322,7 @@
       "plainTitle": "4",
       "zone": "Agentic Capabilities Platform",
       "x": 223,
-      "y": 761,
+      "y": 754,
       "width": 34,
       "height": 34,
       "isContainer": false
@@ -332,11 +332,11 @@
       "urlSlug": "OBJ-25-SHARED-AGENT-ENGINE-GVIS",
       "label": "Shared Agent Engine gVisor Pool",
       "plainTitle": "Shared Agent Engine gVisor Pool",
-      "zone": "Agentic Capabilities Platform",
+      "zone": "Governance & Footer",
       "x": 450,
-      "y": 876,
+      "y": 880,
       "width": 300,
-      "height": 70,
+      "height": 68,
       "isContainer": false
     },
     {
@@ -346,9 +346,9 @@
       "plainTitle": "Shared AlloyDB + BigQuery FORCE RLS",
       "zone": "Governance & Footer",
       "x": 450,
-      "y": 960,
+      "y": 962,
       "width": 300,
-      "height": 70,
+      "height": 68,
       "isContainer": false
     },
     {
@@ -360,19 +360,19 @@
       "x": 450,
       "y": 1044,
       "width": 300,
-      "height": 70,
+      "height": 68,
       "isContainer": false
     },
     {
       "id": "card_a_4",
-      "urlSlug": "OBJ-28-VALKEY-BULKHEADS-THINKIN",
-      "label": "Valkey Bulkheads + Thinking Caps",
-      "plainTitle": "Valkey Bulkheads + Thinking Caps",
+      "urlSlug": "OBJ-28-VALKEY-BULKHEADS-OUTPUT",
+      "label": "Valkey Bulkheads + Output Caps",
+      "plainTitle": "Valkey Bulkheads + Output Caps",
       "zone": "Governance & Footer",
       "x": 450,
-      "y": 1128,
+      "y": 1126,
       "width": 300,
-      "height": 70,
+      "height": 68,
       "isContainer": false
     },
     {
@@ -382,7 +382,7 @@
       "plainTitle": "Choose when one commercial tier is enough",
       "zone": "Governance & Footer",
       "x": 450,
-      "y": 1222,
+      "y": 1216,
       "width": 300,
       "height": 64,
       "isContainer": false
@@ -394,7 +394,7 @@
       "plainTitle": "5",
       "zone": "Agentic Capabilities Platform",
       "x": 583,
-      "y": 761,
+      "y": 754,
       "width": 34,
       "height": 34,
       "isContainer": false
@@ -404,11 +404,11 @@
       "urlSlug": "OBJ-31-HUB-TIER-ROUTER-FIRESTOR",
       "label": "Hub Tier Router + Firestore Route Table",
       "plainTitle": "Hub Tier Router + Firestore Route Table",
-      "zone": "Agentic Capabilities Platform",
+      "zone": "Governance & Footer",
       "x": 810,
-      "y": 876,
+      "y": 880,
       "width": 300,
-      "height": 70,
+      "height": 68,
       "isContainer": false
     },
     {
@@ -418,9 +418,9 @@
       "plainTitle": "Standard → Shared Pool (Pattern A plane)",
       "zone": "Governance & Footer",
       "x": 810,
-      "y": 960,
+      "y": 962,
       "width": 300,
-      "height": 70,
+      "height": 68,
       "isContainer": false
     },
     {
@@ -432,7 +432,7 @@
       "x": 810,
       "y": 1044,
       "width": 300,
-      "height": 70,
+      "height": 68,
       "isContainer": false
     },
     {
@@ -442,9 +442,9 @@
       "plainTitle": "Zero-Downtime Promotion",
       "zone": "Governance & Footer",
       "x": 810,
-      "y": 1128,
+      "y": 1126,
       "width": 300,
-      "height": 70,
+      "height": 68,
       "isContainer": false
     },
     {
@@ -454,7 +454,7 @@
       "plainTitle": "Choose when tiers must coexist and promote live",
       "zone": "Governance & Footer",
       "x": 810,
-      "y": 1222,
+      "y": 1216,
       "width": 300,
       "height": 64,
       "isContainer": false
@@ -466,7 +466,7 @@
       "plainTitle": "6",
       "zone": "Agentic Capabilities Platform",
       "x": 943,
-      "y": 761,
+      "y": 754,
       "width": 34,
       "height": 34,
       "isContainer": false
@@ -477,7 +477,7 @@
       "label": "1",
       "plainTitle": "1",
       "zone": "Header & Value Pillars",
-      "x": 573,
+      "x": 545,
       "y": 163,
       "width": 34,
       "height": 34,
@@ -489,9 +489,9 @@
       "label": "Decision inputs",
       "plainTitle": "Decision inputs",
       "zone": "Header & Value Pillars",
-      "x": 612,
+      "x": 602,
       "y": 166,
-      "width": 120,
+      "width": 128,
       "height": 28,
       "isContainer": false
     },
@@ -501,7 +501,7 @@
       "label": "2",
       "plainTitle": "2",
       "zone": "Apps & Solutions Tier",
-      "x": 71,
+      "x": 72,
       "y": 507,
       "width": 34,
       "height": 34,
@@ -513,7 +513,7 @@
       "label": "3",
       "plainTitle": "3",
       "zone": "Apps & Solutions Tier",
-      "x": 699,
+      "x": 693,
       "y": 507,
       "width": 34,
       "height": 34,
@@ -525,7 +525,7 @@
       "label": "NO",
       "plainTitle": "NO",
       "zone": "Apps & Solutions Tier",
-      "x": 384,
+      "x": 382,
       "y": 496,
       "width": 32,
       "height": 22,
@@ -562,9 +562,9 @@
       "plainTitle": "Standard + Enterprise → Pattern C (hybrid)",
       "zone": "Agentic Capabilities Platform",
       "x": 800,
-      "y": 670,
+      "y": 674,
       "width": 192,
-      "height": 32,
+      "height": 30,
       "isContainer": false
     }
   ]

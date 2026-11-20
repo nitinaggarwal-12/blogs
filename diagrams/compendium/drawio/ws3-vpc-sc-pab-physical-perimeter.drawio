@@ -1,0 +1,172 @@
+<mxfile host="app.diagrams.net" modified="2026-11-09T05:55:00Z" agent="PolymorphicStudio-2WaySync" version="24.7.8" type="device">
+  <diagram id="ws3-vpc-sc-pab-physical-perimeter" name="Slide 33/56 • WS3 • Physical Perimeter Topology: VPC Service Controls &amp; IAM PAB Bulkheads">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="sp_857" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#E8F0FE;strokeColor=#4285F4;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="42.0" width="300.0" height="36.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_858" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.7px;color:#0D47A1;&quot;&gt;&lt;b&gt;PART 3 • PHYSICAL PERIMETER&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#0D47A1;fontSize=11.7;align=center;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="42.0" width="300.0" height="36.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_859" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:22.1px;color:#3C4043;&quot;&gt;&lt;b&gt;Physical Perimeter Topology: VPC Service Controls &amp;amp; Principal Access Boundaries (PAB)&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=22.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="396.0" y="33.6" width="1116.0" height="54.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_860" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#DADCE0;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="90.0" width="1456.0" height="2.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_861" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#5F6368;&quot;&gt;[Slide 33/62 • PART 3 (WS3)]  •  &lt;/span&gt;&lt;span style=&quot;font-size:8.8px;color:#1D4ED8;&quot;&gt;&lt;b&gt;▶ 4-State Hybrid &amp;amp; Draw.io ↗&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="852.0" width="1260.0" height="36.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_863" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:14.3px;color:#5F6368;&quot;&gt;How Google Cloud VPC-SC perimeters and IAM PAB policies create impenetrable network and identity bulkheads around tenant silos.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=14.3;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="102.0" width="1456.0" height="48.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_864" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#FFFFFF;strokeColor=#0D47A1;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="162.0" width="350.4" height="660.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_865" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#E8F0FE;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="162.0" width="350.4" height="72.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_866" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:13.7px;color:#0D47A1;&quot;&gt;&lt;b&gt;1. VPC-SC Service Perimeter&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#0D47A1;fontSize=13.7;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="90.0" y="170.4" width="314.4" height="54.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_867" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#5F6368;&quot;&gt;Restricting API access to authorized VPC networks&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="90.0" y="246.0" width="314.4" height="42.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_868" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="86.4" y="300.0" width="321.6" height="117.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_869" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#3C4043;&quot;&gt;• Enclosed Services: Vertex AI, Cloud Run, AlloyDB, Cloud KMS, and Cloud Storage.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="93.6" y="307.2" width="307.2" height="103.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_870" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="86.4" y="426.0" width="321.6" height="117.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_871" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#3C4043;&quot;&gt;• Access Levels: Restricts ingress exclusively to corporate corporate VPN IP CIDRs and mTLS-authenticated gateways.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="93.6" y="433.2" width="307.2" height="103.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_872" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="86.4" y="552.0" width="321.6" height="117.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_873" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#3C4043;&quot;&gt;• Hardware Network Filtering: Google production network drops any API call originating outside the perimeter.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="93.6" y="559.2" width="307.2" height="103.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_874" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="86.4" y="678.0" width="321.6" height="117.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_875" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#3C4043;&quot;&gt;• Zero Exfiltration: Even if an adversary compromises service account credentials, data cannot be extracted.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="93.6" y="685.2" width="307.2" height="103.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_876" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#FFFFFF;strokeColor=#C5221F;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="441.6" y="162.0" width="350.4" height="660.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_877" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#FCE8E6;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="441.6" y="162.0" width="350.4" height="72.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_878" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:13.7px;color:#C5221F;&quot;&gt;&lt;b&gt;2. IAM Principal Access Boundaries&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#C5221F;fontSize=13.7;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="459.6" y="170.4" width="314.4" height="54.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_879" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#5F6368;&quot;&gt;Organization-level blast radius containment&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="459.6" y="246.0" width="314.4" height="42.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_880" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="456.0" y="300.0" width="321.6" height="117.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_881" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#3C4043;&quot;&gt;• PAB Enforcement: Constrains what IAM permissions principals can use inside specific project folders.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="463.2" y="307.2" width="307.2" height="103.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_882" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="456.0" y="426.0" width="321.6" height="117.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_883" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#3C4043;&quot;&gt;• Deny Rules: Explicitly blocks service accounts in Tenant A silo from accessing Tenant B resources.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="463.2" y="433.2" width="307.2" height="103.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_884" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="456.0" y="552.0" width="321.6" height="117.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_885" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#3C4043;&quot;&gt;• Privilege Escalation Block: Prevents compromised admin roles from granting cross-project permissions.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="463.2" y="559.2" width="307.2" height="103.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_886" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="456.0" y="678.0" width="321.6" height="117.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_887" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#3C4043;&quot;&gt;• Continuous Audit: Cloud Asset Inventory continuously scans for non-compliant IAM role grants.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="463.2" y="685.2" width="307.2" height="103.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_888" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#FFFFFF;strokeColor=#B45309;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="811.2" y="162.0" width="350.4" height="660.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_889" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#FEF7E0;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="811.2" y="162.0" width="350.4" height="72.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_890" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:13.7px;color:#B45309;&quot;&gt;&lt;b&gt;3. Ingress &amp;amp; Egress Rules&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#B45309;fontSize=13.7;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="829.2" y="170.4" width="314.4" height="54.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_891" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#5F6368;&quot;&gt;Granular bridge policies for external SaaS tools&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="829.2" y="246.0" width="314.4" height="42.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_892" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="825.6" y="300.0" width="321.6" height="117.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_893" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#3C4043;&quot;&gt;• Directional Egress: Only allows outbound HTTPS connections to pre-approved external SaaS endpoints (Salesforce/Jira).&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="832.8" y="307.2" width="307.2" height="103.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_894" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="825.6" y="426.0" width="321.6" height="117.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_895" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#3C4043;&quot;&gt;• Identity Filtering: Egress rules bind specifically to tenant agent service accounts, not arbitrary workloads.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="832.8" y="433.2" width="307.2" height="103.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_896" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="825.6" y="552.0" width="321.6" height="117.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_897" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#3C4043;&quot;&gt;• Dry-Run Mode: Security teams can audit traffic patterns in Dry-Run logs before enforcing hard blocking.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="832.8" y="559.2" width="307.2" height="103.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_898" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="825.6" y="678.0" width="321.6" height="117.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_899" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#3C4043;&quot;&gt;• Audit Logging: Every allowed and denied cross-perimeter request generates a structured Cloud Audit Log.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="832.8" y="685.2" width="307.2" height="103.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_900" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#FFFFFF;strokeColor=#137333;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="1180.8" y="162.0" width="350.4" height="660.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_901" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#E6F4EA;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="1180.8" y="162.0" width="350.4" height="72.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_902" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:13.7px;color:#137333;&quot;&gt;&lt;b&gt;4. Dedicated Project Lifecycle&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#137333;fontSize=13.7;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="1198.8" y="170.4" width="314.4" height="54.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_903" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#5F6368;&quot;&gt;Automated onboarding &amp;amp; decommissioning&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="1198.8" y="246.0" width="314.4" height="42.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_904" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="1195.2" y="300.0" width="321.6" height="117.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_905" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#3C4043;&quot;&gt;• Automated Inception: Terraform Cloud / Google Cloud Deploy provisions new silos in ~4 minutes.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="1202.4" y="307.2" width="307.2" height="103.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_906" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="1195.2" y="426.0" width="321.6" height="117.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_907" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#3C4043;&quot;&gt;• Isolated Billing: Project billing accounts allow direct cost pass-through without complex allocation formulas.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="1202.4" y="433.2" width="307.2" height="103.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_908" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="1195.2" y="552.0" width="321.6" height="117.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_909" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#3C4043;&quot;&gt;• Clean Decommissioning: Deleting project cryptographically destroys all compute, networking, and storage in 1 step.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="1202.4" y="559.2" width="307.2" height="103.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_910" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="1195.2" y="678.0" width="321.6" height="117.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_911" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#3C4043;&quot;&gt;• Compliance Receipts: Generates immutable deletion receipts for regulatory audit verification.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=10.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="1202.4" y="685.2" width="307.2" height="103.2" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

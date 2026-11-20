@@ -16,7 +16,7 @@ Tests all 4 Legacy Multi-Tenancy Failure Modes & 5-Hop Cryptographic Governance 
    - 5-Level Memory Bank cross-tenant read attempt (`retailstream` reading `finvault:*`) blocked.
    - AlloyDB RLS cross-tenant SQL filter returns 0 rows.
 4. SIM 4A/B/C (Hop 3 FinOps Bulkheads & Hop 5 Inline 3LO Consent):
-   - RetailStream 16,000 thinking-token request clamped to 4,000 Standard cap.
+   - RetailStream 16,000 maxOutputTokens request clamped to MEDIUM / 4,000 Standard cap.
    - RetailStream 250 RPM burst throttled (429) while FinVault unaffected.
    - Mid-session Microsoft Entra ID 3LO OAuth consent challenge & resume for ServiceNow & SharePoint.
 """
@@ -71,7 +71,7 @@ def run_all_breach_simulations() -> None:
         session_id="sess-rs-101",
         requested_agent_uri="agent://cymbal/shared-incident-diagnostic-v2",
         user_prompt="Diagnose checkout payment gateway latency.",
-        requested_thinking_tokens=3500,
+        requested_output_tokens=3500,
     )
     ctx1 = res1["context"]
     assert ctx1.tenant_id == "retailstream", "Forged X-Tenant-ID was not stripped!"
@@ -106,7 +106,8 @@ def run_all_breach_simulations() -> None:
         session_id="sess-fv-201",
         requested_agent_uri="agent://finvault/private-agent-alpha-regulatory",
         user_prompt="Generate OCC/FDIC regulatory escalation brief for wire settlement outage.",
-        requested_thinking_tokens=8000,
+        requested_output_tokens=8000,
+        requested_thinking_level="HIGH",
         requested_mcp_connector="mcp://finvault/google-workspace-3lo",
     )
     ctx_fv = res2b["context"]
@@ -172,7 +173,7 @@ def run_all_breach_simulations() -> None:
             caller_ctx=ctx1,
             target_namespace=ctx_fv.memory_bank_namespace,
             level=core_models.MemoryBankLevel.L2_SESSION_SHORT_TERM,
-            key="last_thinking_budget",
+            key="last_thinking_level",
         )
         raise AssertionError("Cross-tenant 5-Level Memory Bank read should have been blocked!")
     except PermissionError:
@@ -193,7 +194,7 @@ def run_all_breach_simulations() -> None:
     print("[PASS] SIM 3D (Hop 5 AlloyDB RLS): Cross-tenant SQL filter returned 0 FinVault rows to RetailStream.")
 
     # -------------------------------------------------------------------------
-    # SIM 4: Noisy Neighbor Thinking Cap Clamping, Redis Bulkhead & Inline 3LO Consent
+    # SIM 4: Noisy Neighbor Output Cap Clamping, Redis Bulkhead & Inline 3LO Consent
     # -------------------------------------------------------------------------
     res4a = svc.invoke_pooled_agent(
         raw_headers={},
@@ -202,12 +203,14 @@ def run_all_breach_simulations() -> None:
         session_id="sess-rs-105",
         requested_agent_uri="agent://cymbal/shared-incident-diagnostic-v2",
         user_prompt="Deep dependency trace.",
-        requested_thinking_tokens=16000,
+        requested_output_tokens=16000,
+        requested_thinking_level="HIGH",
         simulated_current_rpm=50,
     )
-    assert res4a["runtime_config"]["effective_thinking_budget"] == 4000
-    assert res4a["runtime_config"]["thinking_budget_clamped"] is True
-    print("[PASS] SIM 4A (Hop 3 FinOps): RetailStream 16,000 thinking-token request clamped to 4,000 Standard cap.")
+    assert res4a["runtime_config"]["effective_thinking_level"] == "MEDIUM"
+    assert res4a["runtime_config"]["effective_output_token_cap"] == 4000
+    assert res4a["runtime_config"]["hop3_finops_clamped"] is True
+    print("[PASS] SIM 4A (Hop 3 FinOps): RetailStream 16,000 maxOutputTokens request clamped to MEDIUM / 4,000 Standard cap.")
 
     res4b = svc.invoke_pooled_agent(
         raw_headers={},

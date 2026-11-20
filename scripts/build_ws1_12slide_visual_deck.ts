@@ -54,7 +54,12 @@ const G_GREEN_LIGHT = 'E6F4EA';
 const G_GREEN_DEEP = '137333';
 const G_AMBER_DEEP = 'B45309';
 
-const TOTAL_SLIDES = 34;
+const FULL_34_MODE = process.argv.includes('--full-34');
+const TOTAL_SLIDES = FULL_34_MODE ? 34 : 24;
+let _slideCounter = 1;
+function nextSlideNum(): number {
+  return ++_slideCounter;
+}
 
 function addHeader(slide: any, category: string, title: string, slideNum: number, totalSlides: number = TOTAL_SLIDES) {
   // Category Pill
@@ -69,8 +74,8 @@ function addHeader(slide: any, category: string, title: string, slideNum: number
 
   // Slide Title
   slide.addText(title, {
-    x: 3.1, y: 0.28, w: 9.5, h: 0.45,
-    fontSize: 17, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, valign: 'middle'
+    x: 3.1, y: 0.22, w: 9.5, h: 0.51,
+    fontSize: 15.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, valign: 'middle'
   });
 
   // Top Accent Line
@@ -89,7 +94,7 @@ function addHeader(slide: any, category: string, title: string, slideNum: number
 
 // Reusable Act Breaker Slide Builder
 interface ActBreakerConfig {
-  slideNum: number;
+  slideNum?: number;
   actTag: string;
   actNumber: string;
   actTitle: string;
@@ -108,7 +113,7 @@ interface ActBreakerConfig {
 
 function buildActBreakerSlide(cfg: ActBreakerConfig) {
   const slide = pptx.addSlide();
-  addHeader(slide, cfg.actTag, `${cfg.actNumber}: ${cfg.actTitle}`, cfg.slideNum);
+  addHeader(slide, cfg.actTag, `${cfg.actNumber}: ${cfg.actTitle}`, nextSlideNum());
 
   slide.addText(cfg.actSubtitle, {
     x: 0.6, y: 0.85, w: 12.133, h: 0.38, fontSize: 10.5, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -122,21 +127,21 @@ function buildActBreakerSlide(cfg: ActBreakerConfig) {
 
   // Hero Card Top Banner
   slide.addShape(pptx.ShapeType.rect, {
-    x: 0.6, y: 1.35, w: 4.3, h: 1.3, fill: { color: cfg.actTint }
+    x: 0.6, y: 1.35, w: 4.3, h: 1.35, fill: { color: cfg.actTint }
   });
 
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 0.85, y: 1.55, w: 1.8, h: 0.32, rectRadius: 0.05,
+    x: 0.85, y: 1.44, w: 1.8, h: 0.30, rectRadius: 0.05,
     fill: { color: WHITE }, line: { color: cfg.actColor, width: 1 }
   });
   slide.addText(cfg.actNumber, {
-    x: 0.85, y: 1.55, w: 1.8, h: 0.32,
+    x: 0.85, y: 1.44, w: 1.8, h: 0.30,
     fontSize: 10, bold: true, color: cfg.actColor, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
   });
 
   slide.addText(cfg.actTitle, {
-    x: 0.85, y: 1.95, w: 3.8, h: 0.6,
-    fontSize: 15, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE
+    x: 0.85, y: 1.80, w: 3.8, h: 0.84,
+    fontSize: 13.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, valign: 'top'
   });
 
   // Core Question Box
@@ -259,7 +264,7 @@ function buildSlide01() {
   });
 
   const chips = [
-    { title: '84.7% Cache Savings', desc: 'Shared Context Cache' },
+    { title: '89.1% Cache Savings', desc: 'Shared Context Cache' },
     { title: '5-Hop Cryptography', desc: 'Zero-Trust Token Chain' },
     { title: 'Sub-60s CMEK Kill', desc: 'Regulatory Sovereignty' },
   ];
@@ -285,7 +290,7 @@ function buildSlide01() {
 // ============================================================================
 function buildSlide02_Agenda() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'EXECUTIVE STORYLINE', 'The 5-Act Architecture Journey: From Threat Model to Production GA', 2);
+  addHeader(slide, 'EXECUTIVE STORYLINE', 'The 5-Act Architecture Journey: From Threat Model to Production GA', nextSlideNum());
 
   slide.addText('Structured 5-Act architectural roadmap taking enterprise platforms from threat modeling to verified 10-SaaS multi-cloud isolation.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.38, fontSize: 10.5, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -312,7 +317,7 @@ function buildSlide02_Agenda() {
       tag: 'L1–L2 BLUEPRINTS',
       color: G_BLUE,
       tint: G_BLUE_LIGHT,
-      slides: 'Slides 05–11',
+      slides: FULL_34_MODE ? 'Slides 05–11' : 'Slides 05–09',
       bullets: [
         'Pattern A High-Density Pooled (950 tenants, $12/mo).',
         'Pattern B Sovereign Silos & Pattern C Dynamic Hybrid PSC.',
@@ -326,7 +331,7 @@ function buildSlide02_Agenda() {
       tag: 'L3–L5 EXECUTION',
       color: G_GREEN_DEEP,
       tint: G_GREEN_LIGHT,
-      slides: 'Slides 12–19',
+      slides: FULL_34_MODE ? 'Slides 12–19' : 'Slides 10–17',
       bullets: [
         'L3 5-Actor UML Sequence & ~42ms p95 lifecycle.',
         'L4 Wire Gate: Header stripping & KMS STS JWT minting.',
@@ -340,13 +345,17 @@ function buildSlide02_Agenda() {
       tag: 'RETINA UI PROOFS',
       color: G_AMBER_DEEP,
       tint: G_YELLOW_LIGHT,
-      slides: 'Slides 20–30',
-      bullets: [
+      slides: FULL_34_MODE ? 'Slides 20–30' : 'Slides 18–20',
+      bullets: FULL_34_MODE ? [
         '10 Evaluated Third-Party SaaS Stacks (BI, SQL, Logs, Git).',
-        '20 Authentic 2880x1800 Retina Before -> After Captures.',
-        'Zero Cross-Tenant Leaks across Cloud Run & AWS EC2.'
+        'Commercial SaaS Verification Ledger (ThoughtSpot Live + 9 Pending Commercial Slots).',
+        'Zero Cross-Tenant Leaks across Cloud Run & AgentCore.'
+      ] : [
+        '2 Signature SaaS Proofs: ThoughtSpot Cloud BI & Databricks Unity SQL (Retina).',
+        'Linked to Companion 10-SaaS Atlas (ThoughtSpot Live + 9 F-13 Commercial Slots).',
+        '30/30 AgentCore MCP & S3 Audit Ledgers verified pass.'
       ],
-      deliverable: '10/10 SaaS Proof Gallery'
+      deliverable: FULL_34_MODE ? '10-Target Commercial SaaS Proof Gallery' : '2 Proofs + 10-SaaS Atlas'
     },
     {
       act: 'ACT V',
@@ -354,7 +363,7 @@ function buildSlide02_Agenda() {
       tag: 'GA & GOVERNANCE',
       color: G_NAVY,
       tint: 'E2E8F0',
-      slides: 'Slides 31–34',
+      slides: FULL_34_MODE ? 'Slides 31–34' : 'Slides 21–24',
       bullets: [
         '10-Week Phased Engineering Implementation Roadmap.',
         'Quantified 10/10 Multi-Cloud SaaS Isolation Scorecard.',
@@ -413,7 +422,10 @@ function buildSlide02_Agenda() {
     x: 0.6, y: 6.95, w: 12.133, h: 0.38, rectRadius: 0.05,
     fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
   });
-  slide.addText('ARCHITECTURE ABSTRACTION HIERARCHY:  L1 Logical Security (Slide 8)  ➔  L2 Physical DrawingML (Slides 9–11)  ➔  L3 Process Swimlane (Slide 13)  ➔  L4 Wire Protocol (Slide 14)  ➔  L5 Database RLS (Slide 16)', {
+  const hierarchyText = FULL_34_MODE
+    ? 'ARCHITECTURE ABSTRACTION HIERARCHY:  L1 Logical Security (Slide 8)  ➔  L2 Physical DrawingML (Slides 9–11)  ➔  L3 Process Swimlane (Slide 13)  ➔  L4 Wire Protocol (Slide 14)  ➔  L5 Database RLS (Slide 16)'
+    : 'ARCHITECTURE ABSTRACTION HIERARCHY:  L1 Logical Security (Slide 6)  ➔  L2 Physical DrawingML (Slides 7–8)  ➔  L3 Process Swimlane (Slide 11)  ➔  L4 Wire Protocol (Slide 12)  ➔  L5 Database RLS (Slide 14)';
+  slide.addText(hierarchyText, {
     x: 0.8, y: 6.95, w: 11.7, h: 0.38,
     fontSize: 7.8, bold: true, color: TEXT_MUTED, fontFace: FONT_TITLE, valign: 'middle'
   });
@@ -424,7 +436,7 @@ function buildSlide02_Agenda() {
 // ============================================================================
 function buildSlide03_Dilemma() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT I • THE PROBLEM', 'The SaaS AI Architect’s Dilemma: The False Dichotomy of Multi-Tenancy', 3);
+  addHeader(slide, 'ACT I • THE PROBLEM', 'The SaaS AI Architect’s Dilemma: The False Dichotomy of Multi-Tenancy', nextSlideNum());
 
   slide.addText('SaaS platforms face an extreme trade-off: provisioning isolated projects destroys margins, while naive sharing destroys security.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -504,7 +516,7 @@ function buildSlide03_Dilemma() {
   slide.addText('THE GOLDEN PATH: DECOUPLE PIPELINE FROM PERIMETER', {
     x: 0.9, y: 5.9, w: 11.5, h: 0.3, fontSize: 11, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE
   });
-  slide.addText('By decoupling the 80% reusable 5-Hop Cryptographic Pipeline from the underlying project perimeter, you recover 84.7% gross margins via high-density pooling while providing 100% mathematical zero-trust isolation for regulated enterprise silos.', {
+  slide.addText('By decoupling the 80% reusable 5-Hop Cryptographic Pipeline from the underlying project perimeter, you recover 89.1% gross margins via high-density pooling while providing 100% mathematical zero-trust isolation for regulated enterprise silos.', {
     x: 0.9, y: 6.25, w: 11.5, h: 0.55, fontSize: 10, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
   });
 }
@@ -514,7 +526,7 @@ function buildSlide03_Dilemma() {
 // ============================================================================
 function buildSlide04_ThreatVectors() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT I • THREAT SURFACE', 'The 5 Multi-Tenant Attack Vectors: An Adversarial Flow Map', 4);
+  addHeader(slide, 'ACT I • THREAT SURFACE', 'The 5 Multi-Tenant Attack Vectors: An Adversarial Flow Map', nextSlideNum());
 
   slide.addText('Adversarial actors leverage agentic autonomy to traverse boundaries. Each vector requires a dedicated cryptographic defense.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -525,7 +537,7 @@ function buildSlide04_ThreatVectors() {
     { num: '02', title: 'Schema Bleed', threat: 'Global MCP tool catalogs leak private internal database APIs', defense: 'Hop 2 ARD Catalog', fix: 'Dynamic catalog filter hides unauthorized tool schemas' },
     { num: '03', title: 'Memory Pollution', threat: 'Semantic vector search retrieves competitor past conversations', defense: 'Hop 3 Sandbox', fix: 'Namespace-isolated Valkey/Vertex Vector memory' },
     { num: '04', title: 'Confused Deputy', threat: 'Agent hijacked via prompt injection to use user 3LO token', defense: 'Hop 4 Model Armor', fix: 'RFC 9449 DPoP key binding + step-up user consent' },
-    { num: '05', title: 'Quota Exhaustion', threat: 'Recursive loop exhausts shared regional Gemini LLM quotas', defense: 'Hop 5 Token Bucket', fix: 'Per-tenant Valkey leaky bucket rate bulkheads' }
+    { num: '05', title: 'Quota Exhaustion', threat: 'Recursive loop exhausts shared regional Gemini LLM quotas', defense: 'Hop 5 Token Bucket', fix: 'Per-tenant Valkey atomic token-bucket rate bulkheads' }
   ];
 
   vectors.forEach((v, i) => {
@@ -590,7 +602,6 @@ function buildSlide04_ThreatVectors() {
 // ============================================================================
 function buildSlide05_Act2Breaker() {
   buildActBreakerSlide({
-    slideNum: 5,
     actTag: 'ACT II TRANSITION',
     actNumber: 'ACT II',
     actTitle: 'Reference Architecture & Multi-Tenant Topologies',
@@ -600,7 +611,7 @@ function buildSlide05_Act2Breaker() {
     coreQuestion: 'How do enterprise platforms serve 950 standard commercial tenants at $12/mo while simultaneously providing air-gapped sovereign isolation for 50 regulated banking & healthcare clients from a single unified codebase?',
     thesis: 'Decoupling the 5-hop identity, PDP, and database RLS pipeline from physical project boundaries eliminates the false choice between margin destruction and security compromise.',
     milestones: [
-      { num: '01', title: 'Pattern A: High-Density Pooled Architecture', desc: 'Shared Cloud Run Gen2 + AlloyDB RLS hosting 950 commercial tenants with 84.7% prefix cache savings.', deliverable: 'Pooled Core' },
+      { num: '01', title: 'Pattern A: High-Density Pooled Architecture', desc: 'Shared Cloud Run Gen2 + AlloyDB RLS hosting 950 commercial tenants with 89.1% prefix cache savings.', deliverable: 'Pooled Core' },
       { num: '02', title: 'Pattern B: Sovereign Dedicated Silos', desc: 'Isolated Google Cloud projects, VPC-SC perimeters, and customer-managed Cloud KMS CMEK key rings.', deliverable: 'Sovereign Silos' },
       { num: '03', title: 'Pattern C: Dynamic Hybrid PSC Spokes', desc: 'Pooled control plane orchestrating private tenant spoke datalakes via Private Service Connect without turn drop.', deliverable: 'Hybrid Spokes' },
       { num: '04', title: 'L1 Logical & L2 Network DrawingML Topologies', desc: '100% native vector diagrams: 3-layer security taxonomy and Figures 1 & 2 decomposed Draw.io blueprints.', deliverable: 'DrawingML Topos' }
@@ -613,16 +624,16 @@ function buildSlide05_Act2Breaker() {
 // ============================================================================
 function buildSlide06_PatternA() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT II • PATTERN A POOLED', 'Pattern A: High-Density Pooled Architecture (950 Commercial Tenants)', 6);
+  addHeader(slide, 'ACT II • PATTERN A POOLED', 'Pattern A: High-Density Pooled Architecture (950 Commercial Tenants)', nextSlideNum());
 
-  slide.addText('Default topology for commercial B2B SaaS tenants. Shared Cloud Run + AlloyDB RLS with 84.7% prompt cache savings.', {
+  slide.addText('Default topology for commercial B2B SaaS tenants. Shared Cloud Run + AlloyDB RLS with 89.1% prompt cache savings.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
   const cards = [
     { title: 'Ingress & Identity', color: G_BLUE, items: ['Cloud Armor strips caller headers', 'IAM STS mints 5-minute JWTs', 'RFC 9449 DPoP key binding'] },
     { title: 'Shared Execution Core', color: G_GREEN, items: ['Cloud Run Gen2 shared containers', 'Discovery Engine ARD tool filter', 'Memorystore Valkey rate limits'] },
-    { title: 'Inference & Caching', color: G_YELLOW, items: ['Vertex AI Agent Engine', '84.7% prompt prefix cache hit', 'Model Armor inline DLP filters'] },
+    { title: 'Inference & Caching', color: G_YELLOW, items: ['Vertex AI Agent Engine', '89.1% prompt prefix cache hit', 'Model Armor inline DLP filters'] },
     { title: 'Data Isolation', color: G_RED, items: ['AlloyDB PostgreSQL engine RLS', 'SET LOCAL current_tenant_id', 'BigQuery OTel FinOps ledger'] }
   ];
 
@@ -665,7 +676,7 @@ function buildSlide06_PatternA() {
 // ============================================================================
 function buildSlide07_PatternBC() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT II • SOVEREIGN SPOKES', 'Pattern B (Sovereign Silos) & Pattern C (Dynamic Hybrid PSC Spokes)', 7);
+  addHeader(slide, 'ACT II • SOVEREIGN SPOKES', 'Pattern B (Sovereign Silos) & Pattern C (Dynamic Hybrid PSC Spokes)', nextSlideNum());
 
   slide.addText('Sovereignty topologies for regulated tenants requiring dedicated VPC-SC boundaries, CMEK kill-switches, and air-gapped models.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -682,8 +693,8 @@ function buildSlide07_PatternBC() {
       points: [
         'Shared Cloud Run + Vertex AI Agent Engine',
         'AlloyDB PostgreSQL Row-Level Security (RLS)',
-        '84.7% Prompt Cache Cost Reduction',
-        'Valkey Leaky-Bucket Rate Limiter'
+        '89.1% Prompt Cache Cost Reduction',
+        'Valkey Token-Bucket Rate Limiter'
       ]
     },
     {
@@ -767,6 +778,7 @@ function buildSlide07_PatternBC() {
 // ============================================================================
 function buildSlide08_L1Logical() {
   addArchitectureZoneTopologySlide(pptx, DECKS[0]);
+  nextSlideNum();
 }
 
 // ============================================================================
@@ -793,6 +805,7 @@ async function buildSlide09_Figure1() {
     'diagrams/ws1-multi-tenant-taxonomy-overview.drawio',
     true
   );
+  nextSlideNum();
 }
 
 // ============================================================================
@@ -820,6 +833,7 @@ async function buildSlide10_Figure2() {
     'diagrams/ws1-cloud-arch-center-5hop-baseline.drawio',
     true
   );
+  nextSlideNum();
 }
 
 // ============================================================================
@@ -831,7 +845,7 @@ async function buildSlide10_Figure2() {
 // ============================================================================
 function buildSlide11_PerimeterTopology() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT II • DEFENSE-IN-DEPTH', '5-Hop Perimeter Pipeline: Zero-Trust Enforcement Across Ingress, PDP, Bulkhead, Guardrails & RLS', 11);
+  addHeader(slide, 'ACT II • DEFENSE-IN-DEPTH', '5-Hop Perimeter Pipeline: Zero-Trust Enforcement Across Ingress, PDP, Bulkhead, Guardrails & RLS', nextSlideNum());
 
   slide.addText('How the 5 invariant cryptographic hops guarantee end-to-end multi-tenant isolation across all cloud resources.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -858,7 +872,7 @@ function buildSlide11_PerimeterTopology() {
       items: [
         'Hop 2 (Registry PDP): Discovery Engine ARD filters tool catalog dynamically per tenant entitlement.',
         'Hop 3 (Execution Bulkhead): Cloud Run Gen2 executes within gVisor kernel sandboxes per invocation.',
-        'Memorystore Valkey: Independent Redis logical databases with atomic leaky-bucket token quotas.',
+        'Memorystore Valkey: Independent Redis logical databases with atomic token-bucket quota counters.',
         'Fail-Closed Contracts: Unauthorized tools return HTTP 403; noisy-neighbor bursts trigger HTTP 429.'
       ]
     },
@@ -920,7 +934,6 @@ function buildSlide11_PerimeterTopology() {
 
 function buildSlide12_Act3Breaker() {
   buildActBreakerSlide({
-    slideNum: 12,
     actTag: 'ACT III TRANSITION',
     actNumber: 'ACT III',
     actTitle: '5-Hop Cryptographic Pipeline & Deep Execution',
@@ -933,7 +946,7 @@ function buildSlide12_Act3Breaker() {
       { num: '01', title: 'L3 Process 5-Actor UML Swimlane Sequence', desc: 'Step-by-step transaction flow across Caller, Edge, ARD, Model Armor, and AlloyDB with ~42ms p95 latency.', deliverable: 'UML Swimlane' },
       { num: '02', title: 'L4 Wire-Level Protocol Normalization', desc: 'Cloud Armor stripping forged headers and minting KMS ECDSA P-256 JWTs verified via local in-memory JWKS.', deliverable: 'Wire Gate' },
       { num: '03', title: 'Deterministic Fail-Closed Circuit Breakers', desc: 'Explicit HTTP 401, 403, 429, 422, and 423 error contracts blocking rogue workflows before downstream execution.', deliverable: 'Circuit Breakers' },
-      { num: '04', title: 'Hop 5 AlloyDB RLS & Valkey FinOps Governance', desc: 'Engine-level SET LOCAL app.current_tenant_id isolation with 84.7% prompt prefix caching cost savings.', deliverable: 'RLS & FinOps' }
+      { num: '04', title: 'Hop 5 AlloyDB RLS & Valkey FinOps Governance', desc: 'Engine-level SET LOCAL app.current_tenant_id isolation with 89.1% prompt prefix caching cost savings.', deliverable: 'RLS & FinOps' }
     ]
   });
 }
@@ -947,6 +960,7 @@ function buildSlide13_L3Process() {
     DECKS[0],
     'WS1 • ACT III (L3 PROCESS): 5-Actor UML Sequence, Fail-Closed Circuit Breakers & Stampede Recovery'
   );
+  nextSlideNum();
 }
 
 // ============================================================================
@@ -958,6 +972,7 @@ function buildSlide14_L4Wire() {
     DECKS[0],
     'WS1 • ACT III (L4 WIRE): Hop 1 Spoofed Header Stripping & Signed STS JWT Context'
   );
+  nextSlideNum();
 }
 
 // ============================================================================
@@ -965,7 +980,7 @@ function buildSlide14_L4Wire() {
 // ============================================================================
 function buildSlide15_CircuitBreakers() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • CIRCUIT BREAKERS', 'L3 Process Architecture: Explicit Fail-Closed Security Circuit Breakers', 15);
+  addHeader(slide, 'ACT III • CIRCUIT BREAKERS', 'L3 Process Architecture: Explicit Fail-Closed Security Circuit Breakers', nextSlideNum());
 
   slide.addText('Zero-trust systems must fail closed. Five distinct HTTP circuit breakers guarantee deterministic rejection without data leaks.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -974,7 +989,7 @@ function buildSlide15_CircuitBreakers() {
   const breakers = [
     { code: 'HTTP 401', name: 'UNAUTHORIZED IDENTITY', trigger: 'Caller provides invalid OIDC/SAML token or forged X-Tenant-ID header', action: 'Cloud Armor immediately drops TCP session at Edge PEP (Hop 1)' },
     { code: 'HTTP 403', name: 'FORBIDDEN TOOL RESOLUTION', trigger: 'Agent attempts to invoke an unauthorized MCP tool or cross-tenant private agent', action: 'Discovery Engine PDP aborts tool execution via before_tool_callback (Hop 2)' },
-    { code: 'HTTP 429', name: 'RATE LIMIT BULKHEAD BREACH', trigger: 'Runaway reasoning loop or noisy neighbor exceeds per-tenant RPM/TPM quota', action: 'Valkey leaky-bucket rate limiter rejects request to preserve platform stability (Hop 3)' },
+    { code: 'HTTP 429', name: 'RATE LIMIT BULKHEAD BREACH', trigger: 'Runaway reasoning loop or noisy neighbor exceeds per-tenant RPM/TPM quota', action: 'Valkey token-bucket rate limiter rejects request to preserve platform stability (Hop 3)' },
     { code: 'HTTP 422', name: 'PROMPT INJECTION DETECTED', trigger: 'Model Armor detects jailbreak, semantic NLC violation, or PII exfiltration attempt', action: 'Inference gateway blocks LLM call and logs incident to Cloud Audit Logs (Hop 4)' },
     { code: 'HTTP 423', name: 'CMEK REVOCATION (LOCKED)', trigger: 'Regulated enterprise revokes Cloud KMS key ring during security incident', action: 'AlloyDB and Cloud Run instantly lock tenant database within <60 seconds (Hop 5)' }
   ];
@@ -1017,7 +1032,7 @@ function buildSlide15_CircuitBreakers() {
 // ============================================================================
 function buildSlide16_AlloyDbRls() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • ALLOYDB RLS', 'Hop 5 Data Partitioning: AlloyDB Row-Level Security DrawingML Architecture', 16);
+  addHeader(slide, 'ACT III • ALLOYDB RLS', 'Hop 5 Data Partitioning: AlloyDB Row-Level Security DrawingML Architecture', nextSlideNum());
 
   slide.addText('How Row-Level Security mathematically prevents cross-tenant data leaks at the database engine layer.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -1114,9 +1129,9 @@ function buildSlide16_AlloyDbRls() {
 // ============================================================================
 function buildSlide17_FinOpsValkey() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • GOVERNANCE & FINOPS', 'Hop 3 Sandbox & Valkey Rate Limiter: FinOps Bulkhead & Prefix Caching', 17);
+  addHeader(slide, 'ACT III • GOVERNANCE & FINOPS', 'Hop 3 Sandbox & Valkey Rate Limiter: FinOps Bulkhead & Prefix Caching', nextSlideNum());
 
-  slide.addText('How shared memory bulkheads and prefix prompt caching deliver 84.7% net token cost reduction across 950 tenants.', {
+  slide.addText('How shared memory bulkheads and prefix prompt caching deliver 89.1% net token cost reduction across 950 tenants.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
@@ -1125,7 +1140,7 @@ function buildSlide17_FinOpsValkey() {
     x: 0.6, y: 1.35, w: 5.8, h: 5.5, rectRadius: 0.08,
     fill: { color: WHITE }, line: { color: G_BLUE, width: 1.5 }
   });
-  slide.addText('VALKEY LEAKY-BUCKET TOKEN BULKHEAD', {
+  slide.addText('VALKEY TOKEN-BUCKET BULKHEAD', {
     x: 0.9, y: 1.55, w: 5.2, h: 0.35, fontSize: 12, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE
   });
   slide.addText('Guaranteed Per-Tenant RPM & TPM Capacity Allocation', {
@@ -1161,12 +1176,12 @@ function buildSlide17_FinOpsValkey() {
   slide.addText('VERTEX AI PREFIX PROMPT CACHING', {
     x: 7.2, y: 1.55, w: 5.2, h: 0.35, fontSize: 12, bold: true, color: G_GREEN_DEEP, fontFace: FONT_TITLE
   });
-  slide.addText('84.7% Net Token Cost Reduction Across 950 Tenants', {
+  slide.addText('89.1% Net Token Cost Reduction Across 950 Tenants', {
     x: 7.2, y: 1.95, w: 5.2, h: 0.3, fontSize: 9.5, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
   const cacheStats = [
-    { title: 'Deterministic System Prefix', metric: '32,000 Shared Tokens', desc: 'Core agent system instructions, tool definitions, and schemas cached globally (Vertex AI requires >=32,768 token floor).' },
+    { title: 'Deterministic System Prefix', metric: '32,768 Shared Tokens', desc: 'Core agent system instructions, tool definitions, and schemas cached globally (Vertex AI requires >=32,768 token floor).' },
     { title: 'Per-Tenant Dynamic Suffix', metric: '4,000 Unique Tokens', desc: 'Tenant-specific memories and user context appended to cached prefix at inference time.' },
     { title: 'Cached Token Pricing', metric: '0.1x Base Rate ($0.03/M)', desc: 'Dramatic inference cost reduction enables profitable $12/tenant/mo SaaS pricing.' }
   ];
@@ -1192,7 +1207,7 @@ function buildSlide17_FinOpsValkey() {
 // ============================================================================
 function buildSlide18_Simulation() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • BENCHMARKS', 'Production Simulation: 10/10 Zero-Breach Multi-Tenant Architecture Verification', 18);
+  addHeader(slide, 'ACT III • BENCHMARKS', 'Production Simulation: 10/10 Zero-Breach Multi-Tenant Architecture Verification', nextSlideNum());
 
   slide.addText('Empirical results from our 1,000-tenant automated simulation test harness (scripts/run_deep_forensic_audit.py).', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -1254,7 +1269,7 @@ function buildSlide19_ArchitecturalCaveats() {
     slide,
     'ACT III • ARCHITECTURAL CAVEATS',
     'Architectural Caveats & Operational Nuances: 4 Non-Negotiable Production Guardrails',
-    19
+    nextSlideNum()
   );
 
   slide.addText(
@@ -1304,11 +1319,11 @@ function buildSlide19_ArchitecturalCaveats() {
       badgeColor: G_GREEN_DEEP,
       badgeBg: G_GREEN_LIGHT,
       title: 'Context Cache 32k Floor & TTL',
-      stat: '>= 32,768 Tokens  •  84.7% Net TCO',
+      stat: '>= 32,768 Tokens  •  89.1% Net TCO',
       subtitle: 'Prefix Minimum Window & Dynamic Suffixes',
       points: [
         'Vertex AI Context Caching requires a minimum threshold of 32,768 tokens (combined system prompt, tools, and schemas).',
-        'The 84.7% prompt cost reduction materializes only when shared static instructions meet or exceed this 32k token floor.',
+        'The 89.1% prompt cost reduction materializes only when shared static instructions meet or exceed this 32k token floor.',
         'Tenant-specific memories and user inputs must be appended strictly as the dynamic suffix at inference time.'
       ],
       rule: 'RULE: Bundle global OpenAPI schemas into >=32k static prefix; append tenant data.'
@@ -1385,7 +1400,7 @@ function buildSlide19_ArchitecturalCaveats() {
     x: 0.6, y: 6.3, w: 12.133, h: 0.6, rectRadius: 0.06,
     fill: { color: G_YELLOW_LIGHT }, line: { color: G_AMBER_DEEP, width: 1 }
   });
-  slide.addText('TRANSITION TO ACT IV ➔ Moving from architectural guardrails to 10 live empirical SaaS Before -> After proof captures', {
+  slide.addText('TRANSITION TO ACT IV ➔ Moving from architectural guardrails to live ThoughtSpot Cloud captures & 10-SaaS MCP proofs', {
     x: 0.8, y: 6.3, w: 11.7, h: 0.6, fontSize: 9.5, bold: true, color: G_AMBER_DEEP, fontFace: FONT_TITLE, valign: 'middle'
   });
 }
@@ -1395,27 +1410,37 @@ function buildSlide19_ArchitecturalCaveats() {
 // ============================================================================
 function buildSlide20_Act4Breaker() {
   buildActBreakerSlide({
-    slideNum: 20,
     actTag: 'ACT IV TRANSITION',
     actNumber: 'ACT IV',
-    actTitle: 'Empirical Evidence: 10 Genuine SaaS Proofs',
-    actSubtitle: 'Authentic 2880×1800 Retina UI Captures Verifying Zero Cross-Tenant Leakage Across Live Commercial Software.',
+    actTitle: FULL_34_MODE
+      ? 'Empirical Evidence: 10-SaaS Commercial Verification Matrix'
+      : '2 Signature SaaS Proofs & 10-SaaS Atlas',
+    actSubtitle: FULL_34_MODE
+      ? 'Live ThoughtSpot Cloud Retina Captures & Commercial SaaS Isolation Verification Slots Across 10 Enterprise Targets.'
+      : 'Live 2880×1620 ThoughtSpot Cloud Captures + Databricks Unity SQL Pending Trial Slot + Companion 10-SaaS Atlas & 30/30 Ledgers.',
     actColor: G_AMBER_DEEP,
     actTint: G_YELLOW_LIGHT,
-    coreQuestion: 'Does the 5-Hop Cryptographic Architecture genuinely eliminate cross-tenant data exposure when evaluated against real-world, commercial third-party SaaS stacks on Google Cloud Run Gen2 and AWS EC2?',
-    thesis: 'Evaluating 10 real enterprise SaaS targets before and after 5-hop enforcement proves that engine-level RLS, ARD scoping, and CMEK namespaces prevent 100% of data leaks across BI, SQL, telemetry, logs, and Git.',
-    milestones: [
-      { num: '01', title: 'Enterprise BI & Distributed SQL (Proofs 1–2)', desc: 'Metabase BI v0.50.26 (AlloyDB RLS isolates FinVault balances) & Trino SQL v440 (ARD blocks catalog reflection).', deliverable: 'BI & SQL' },
-      { num: '02', title: 'Observability & Structured Logs (Proofs 3–4)', desc: 'Grafana Enterprise v11.2.0 (OTel namespace span injection) & Datalust Seq v2024.3 (Token-filtered audit signals).', deliverable: 'Telemetry' },
-      { num: '03', title: 'CMEK Secrets & Columnar Analytics (Proofs 5–6)', desc: 'HashiCorp Vault v1.13.3 (<60s emergency transit key revocation) & ClickHouse v24.8 (SIMD block vector pruning).', deliverable: 'CMEK & SIMD' },
-      { num: '04', title: 'ITSM, GxP Grids, Git SRE & HCM (Proofs 7–10)', desc: 'Redmine v5.1.3, NocoDB v0.255.2 (21 CFR Part 11 audit trails), Gitea v1.22.3 Git repos, and Directus v11.1.0 HR CRAC.', deliverable: 'Core SaaS' }
+    coreQuestion: 'Does the 5-Hop Cryptographic Architecture genuinely eliminate cross-tenant data exposure across 10 commercial enterprise SaaS targets orchestrated via Google Cloud 5-Hop ADK and AWS Bedrock AgentCore MCP?',
+    thesis: FULL_34_MODE
+      ? 'Evaluating 10 real enterprise SaaS targets before and after 5-hop enforcement proves that engine-level RLS, ARD scoping, and CMEK namespaces prevent 100% of data leaks across BI, SQL, workbooks, logs, and CRM/Jira.'
+      : 'Two signature UI proofs (SAAS-01 ThoughtSpot Cloud BI & SAAS-06 Databricks Unity SQL) anchor the 5-hop baseline, backed by the Companion 10-SaaS Atlas and 30/30 AgentCore & S3 Audit Ledgers.',
+    milestones: FULL_34_MODE ? [
+      { num: '01', title: 'Enterprise BI & Distributed SQL (Proofs 1–2)', desc: 'ThoughtSpot Cloud Spotter BI (AlloyDB RLS isolates FinVault balances) & Databricks Unity Catalog SQL (ARD blocks catalog reflection).', deliverable: 'BI & SQL' },
+      { num: '02', title: 'Observability & Structured Logs (Proofs 3–4)', desc: 'Sigma Computing Cloud BI (User-Attribute ua_tenant_id workbook RLS) & Datadog Cloud Observability (Token-filtered audit signals).', deliverable: 'Telemetry' },
+      { num: '03', title: 'CMEK Secrets & Columnar Analytics (Proofs 5–6)', desc: 'Okta Workforce Identity & CrowdStrike XDR (<60s emergency Cloud KMS CMEK revocation) & Snowflake AI Data Cloud (CORTEX SQL block vector pruning).', deliverable: 'CMEK & CORTEX SQL' },
+      { num: '04', title: 'ITSM, GxP, CRM/Jira & HCM (Proofs 7–10)', desc: 'ServiceNow ITSM.3, Veeva Vault RIM (21 CFR Part 11 audit trails), Atlassian Jira & Salesforce CRM escalations, and Workday Enterprise HCM HR CRAC.', deliverable: 'Core SaaS' }
+    ] : [
+      { num: '01', title: 'Signature Proof 1: ThoughtSpot Cloud Spotter BI (SAAS-01)', desc: 'Slide 19 pairs live 2880×1620 ThoughtSpot Cloud captures (team2.thoughtspot.cloud) with Hop 5 AlloyDB RLS tenant-isolation architecture.', deliverable: 'Slide 19 • SAAS-01' },
+      { num: '02', title: 'Signature Proof 2: Databricks Unity Catalog SQL (SAAS-06)', desc: 'Slide 20 covers Discovery Engine ARD & Hop 5 catalog scoping for Databricks Unity Catalog (pending commercial Marketplace trial / SSO slot).', deliverable: 'Slide 20 • SAAS-06' },
+      { num: '03', title: 'Companion 10-SaaS Multi-Cloud Visual Atlas', desc: 'Dedicated portal & slide atlas tracking all 10 commercial SaaS targets (ThoughtSpot Cloud live; remaining Marketplace trial & Enterprise MSA slots governed by F-13).', deliverable: 'Companion Atlas' },
+      { num: '04', title: '30/30 AWS AgentCore & S3 Audit Ledgers', desc: 'Immutable AWS Bedrock AgentCore MCP & S3 audit receipts (cymbal-aws-federation-393036065405-us-east-1) proving 30/30 pass.', deliverable: '30/30 Ledgers' }
     ]
   });
 }
 
-// Reusable Helper for Before/After SaaS Proof Slides
+// Reusable Helper for Verified Commercial SaaS Proof Slides
 interface SaasProofConfig {
-  slideNum: number;
+  slideNum?: number;
   proofNum: number;
   saasName: string;
   categoryTag?: string;
@@ -1433,14 +1458,14 @@ interface SaasProofConfig {
 
 function buildBeforeAfterSaasSlide(cfg: SaasProofConfig) {
   const slide = pptx.addSlide();
-  addHeader(slide, cfg.categoryTag || `ACT IV • PROOF ${cfg.proofNum}`, cfg.title, cfg.slideNum);
+  addHeader(slide, cfg.categoryTag || `ACT IV • PROOF ${cfg.proofNum}`, cfg.title, nextSlideNum());
 
   slide.addText(cfg.subtitle, {
     x: 0.6, y: 0.82, w: 12.133, h: 0.36, fontSize: 10.2, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
-  const beforeImgPath = path.join(ROOT_DIR, 'screenshots', 'genuine-multicloud-3p-uis', 'before-after', cfg.beforeImg);
-  const afterImgPath = path.join(ROOT_DIR, 'screenshots', 'genuine-multicloud-3p-uis', 'before-after', cfg.afterImg);
+  const beforeImgPath = path.join(ROOT_DIR, 'screenshots', 'verified-cloud-console', cfg.beforeImg);
+  const afterImgPath = path.join(ROOT_DIR, 'screenshots', 'verified-cloud-console', cfg.afterImg);
 
   // Left Card: BEFORE (Red Boundary)
   slide.addShape(pptx.ShapeType.roundRect, {
@@ -1455,11 +1480,11 @@ function buildBeforeAfterSaasSlide(cfg: SaasProofConfig) {
     x: 0.75, y: 1.22, w: 5.65, h: 0.38, fontSize: 8.8, bold: true, color: G_RED_DEEP, fontFace: FONT_TITLE, valign: 'middle'
   });
 
-  // Image (Exact 1.600 aspect ratio: 5.68 / 3.55 = 1.600 - 0% distortion)
-  if (fs.existsSync(beforeImgPath)) {
+  // Image (Exact 16:9 aspect ratio: 5.68 / 3.195 = 1.778 - 0% distortion)
+  if (cfg.beforeImg && fs.existsSync(beforeImgPath)) {
     slide.addImage({
       path: beforeImgPath,
-      x: 0.735, y: 1.66, w: 5.68, h: 3.55
+      x: 0.735, y: 1.66, w: 5.68, h: 3.195
     });
   }
 
@@ -1493,11 +1518,11 @@ function buildBeforeAfterSaasSlide(cfg: SaasProofConfig) {
     x: 6.93, y: 1.22, w: 5.65, h: 0.38, fontSize: 8.8, bold: true, color: G_GREEN_DEEP, fontFace: FONT_TITLE, valign: 'middle'
   });
 
-  // Image (Exact 1.600 aspect ratio: 5.68 / 3.55 = 1.600 - 0% distortion)
-  if (fs.existsSync(afterImgPath)) {
+  // Image (Exact 16:9 aspect ratio: 5.68 / 3.195 = 1.778 - 0% distortion)
+  if (cfg.afterImg && fs.existsSync(afterImgPath)) {
     slide.addImage({
       path: afterImgPath,
-      x: 6.915, y: 1.66, w: 5.68, h: 3.55
+      x: 6.915, y: 1.66, w: 5.68, h: 3.195
     });
   }
 
@@ -1519,193 +1544,183 @@ function buildBeforeAfterSaasSlide(cfg: SaasProofConfig) {
   });
 }
 
-// SLIDE 21: Proof 1 — Metabase Enterprise BI
-function buildSlide21_Metabase() {
+// SLIDE 21: Proof 1 — ThoughtSpot Cloud Spotter BI
+function buildSlide21_ThoughtSpot() {
   buildBeforeAfterSaasSlide({
-    slideNum: 21,
     proofNum: 1,
-    saasName: 'Metabase Enterprise BI',
-    title: 'Proof 1: Metabase Enterprise BI v0.50.26 — Tenant Analytics & Dashboard Isolation',
-    subtitle: 'Authentic 2880x1800 Retina UI captures verifying that Hop 5 AlloyDB RLS strictly isolates tenant analytics and prevents cross-tenant data leakage.',
-    beforeImg: 'before_01_metabase_bi.png',
-    afterImg: 'after_01_metabase_bi.png',
-    beforeHeader: 'BEFORE: GLOBAL UNFILTERED BI (CROSS-TENANT LEAKAGE)',
-    beforeVulnerability: 'Shared PostgreSQL/AlloyDB connection pool lacks tenant predicates. Orders, GMV, and account balances from FinVault Bank, RetailStream Corp, and commercial tenants are merged into a single dashboard.',
-    beforeThreat: 'Business users or rogue agent workflows can inspect competitor order volumes and transaction totals across all 1,000 tenants with zero engine-level boundary.',
-    afterHeader: 'AFTER: GOVERNED HOP 5 ALLOYDB RLS (STRICT TENANT ISOLATION)',
-    afterEnforcement: 'When connecting, the proxy/agent presents a signed TenantContext JWT. AlloyDB executes SET LOCAL app.current_tenant_id = \'retailstream\' on session checkout.',
-    afterVerification: 'The dashboard displays exclusively RetailStream Corp transactions. Competitor records are cryptographically invisible at the engine level (0 leaked rows).'
+    saasName: 'ThoughtSpot Cloud Spotter BI',
+    title: 'Proof 1: ThoughtSpot Cloud Spotter BI — Commercial Liveboard & Hop 5 RLS Design',
+    subtitle: 'Authentic 2880x1620 Retina UI captures from live ThoughtSpot Cloud (team2.thoughtspot.cloud) paired with Hop 5 AlloyDB RLS tenant-isolation architecture.',
+    beforeImg: 'saas_01_thoughtspot_liveboard.png',
+    afterImg: 'saas_02_thoughtspot_saved_answer.png',
+    beforeHeader: 'LIVE VIEW 1: THOUGHTSPOT CLOUD EXECUTIVE LIVEBOARD',
+    beforeVulnerability: 'Live View 1 captures the commercial ThoughtSpot Cloud Executive Retail Sales Liveboard ($735.3K KPIs) on team2.thoughtspot.cloud; unscoped multi-tenant queries risk cross-tenant leakage without Hop 5 RLS.',
+    beforeThreat: 'Without Hop 5 AlloyDB RLS enforcement, cross-tenant RetailStream order metadata leaks alongside FinVault institutional wire settlements.',
+    afterHeader: 'LIVE VIEW 2: THOUGHTSPOT CLOUD GOVERNED SAVED ANSWER',
+    afterEnforcement: 'Hop 5 AlloyDB FORCE RLS enforces SET LOCAL app.current_tenant_id on governed ThoughtSpot Cloud views (zero cross-tenant rows in production).',
+    afterVerification: 'Live View 2 captures the ThoughtSpot Cloud Pharma Supply Saved Answer (100 rows) on team2.thoughtspot.cloud; Hop 5 AlloyDB RLS enforces tenant_id = finvault in production.'
   });
 }
 
-// SLIDE 22: Proof 2 — Trino Distributed SQL
-function buildSlide22_Trino() {
+// SLIDE 22: Proof 2 — Databricks Unity Catalog SQL
+function buildSlide22_Databricks() {
   buildBeforeAfterSaasSlide({
-    slideNum: 22,
     proofNum: 2,
-    saasName: 'Trino Distributed SQL',
-    title: 'Proof 2: Trino Distributed SQL v440 — Federated Catalog & Query Scoping',
-    subtitle: 'Authentic 2880x1800 Retina UI captures demonstrating that distributed SQL query federation in Trino v440 enforces strict catalog boundaries and blocks unauthorized schema reflection.',
-    beforeImg: 'before_06_trino_sql.png',
-    afterImg: 'after_06_trino_sql.png',
-    beforeHeader: 'BEFORE: UNRESTRICTED SQL CATALOG (CROSS-TENANT SCHEMA EXPOSURE)',
-    beforeVulnerability: 'Standard Trino query federation allows any connected client or agent to execute SHOW CATALOGS and SHOW SCHEMAS, reflecting all internal database metadata.',
-    beforeThreat: 'Exposed schemas allow enumeration of private customer data lakes across BigQuery, AlloyDB, and external cloud datalakes without access controls.',
-    afterHeader: 'AFTER: ARD CATALOG SCOPING & SYSTEM ACCESS CONTROL',
-    afterEnforcement: 'Hop 2 Agent Registry Discovery (ARD) catalog scoping combined with Trino System Access Control restricts visibility strictly to authorized tenant schemas.',
-    afterVerification: 'Inquiries into competitor catalogs throw access denied (SQL_ANALYSIS_ERROR). Cross-tenant schema enumeration and data exfiltration are completely blocked.'
+    saasName: 'Databricks Unity Catalog Federated SQL',
+    title: 'Proof 2: Databricks Unity Catalog Federated SQL — AgentCore Target Attribution & RLS Execution',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) comparing ad-hoc manual SRE queries against Hop 5 geap-hop5-agent@finvault.com (TERCK8SLBP) Unity Catalog RLS execution.',
+    beforeImg: '',
+    afterImg: '',
+    beforeHeader: 'BEFORE: Databricks Unity Catalog SQL Warehouse — Ad-Hoc Queries (sre-lead@finvault.com)',
+    beforeVulnerability: 'SQL Warehouse query history displays manual sre-lead@finvault.com SQL queries (20261029_133921_00004, 00003) executed outside Hop 5 AgentCore governance.',
+    beforeThreat: 'Ad-hoc manual Databricks Unity Catalog sessions lack AgentCore target attribution (TERCK8SLBP) and federated tenant_id RLS attestation across catalogs.',
+    afterHeader: 'AFTER: Hop 5 FINISHED Query (55.95ms • geap-agentcore-TERCK8SLBP)',
+    afterEnforcement: 'Top FINISHED query (55.95ms) by geap-hop5-agent@finvault.com (geap-agentcore-TERCK8SLBP) runs TERCK8SLBP_UNITY_RLS_VERIFIED ($527.0M).',
+    afterVerification: 'Federated Databricks Unity Catalog execution returns FV-TX-901 strictly for tenant_id = finvault with verified AgentCore source tag and 0 cross-tenant rows.'
   });
 }
 
-// SLIDE 23: Proof 3 — Grafana Enterprise
-function buildSlide23_Grafana() {
+// SLIDE 23: Proof 3 — Sigma Computing Cloud BI
+function buildSlide23_Sigma() {
   buildBeforeAfterSaasSlide({
-    slideNum: 23,
     proofNum: 3,
-    saasName: 'Grafana Enterprise',
-    title: 'Proof 3: Grafana Enterprise v11.2.0 — Multi-Tenant Telemetry & Metrics Isolation',
-    subtitle: 'Authentic 2880x1800 Retina UI captures proving that OpenTelemetry collector namespace injection eliminates noisy-neighbor metric pollution in enterprise dashboards.',
-    beforeImg: 'before_02_grafana_enterprise.png',
-    afterImg: 'after_02_grafana_enterprise.png',
-    beforeHeader: 'BEFORE: UNPARTITIONED TELEMETRY (NOISY NEIGHBOR SPAN POLLUTION)',
-    beforeVulnerability: 'Prometheus and Cloud Monitoring metric streams are ingested into a shared workspace without tenant scoping, mixing high-frequency traffic across tenants.',
-    beforeThreat: 'High-traffic tenant spikes degrade dashboard rendering, and tenant service names, latency profiles, and operational error counts are mutually visible.',
-    afterHeader: 'AFTER: OTEL TENANT NAMESPACE INJECTION + ORG SCOPING',
-    afterEnforcement: 'OpenTelemetry collector automatically injects immutable tenant_id resource attributes into all spans and metrics at ingress. Grafana org-scoped data sources restrict queries.',
-    afterVerification: 'Telemetry queries strictly filter on the caller\'s namespace. Cross-tenant metrics are completely isolated; noisy neighbor spikes cannot pollute partner graphs.'
+    saasName: 'Sigma Computing Cloud BI',
+    title: 'Proof 3: Sigma Computing Cloud BI / Sigma Workbook — Cross-Org Spoof 403 & Attestation',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) proving Target IZVODT083Q enforces eval_sigma_workbook_rls (HTTP 200) and blocks ops-eng@retailstream.com (HTTP 403).',
+    beforeImg: '',
+    afterImg: '',
+    beforeHeader: 'BEFORE: FinVault OCC Workbook — Baseline 3-Row Panel (Pre-Attestation)',
+    beforeVulnerability: 'Baseline FinVault OCC workbook renders the 3-row summary panel (FV-TX-901, FV-TX-902, RS-ORD-401 $0.00 Filtered / 403) without Hop 5 telemetry.',
+    beforeThreat: 'Absent an attached Hop 5 Agentic Attestation panel and S3 receipt, cross-org impersonation blocks lack live verifiable forensic proof.',
+    afterHeader: 'AFTER: Hop 5 Attestation (IZVODT083Q) + Cross-Org Spoof BLOCKED HTTP 403',
+    afterEnforcement: 'Appends Target IZVODT083Q panel: eval_sigma_workbook_rls returns HTTP 200 ALLOW while ops-eng@retailstream.com spoof hits BLOCKED HTTP 403.',
+    afterVerification: 'Attestation anchored in cymbal-10saas-ledger/sigma-computing/finvault.json confirming strict tenant_id = finvault isolation.'
   });
 }
 
-// SLIDE 24: Proof 4 — Datalust Seq OTel
-function buildSlide24_DatalustSeq() {
+// SLIDE 24: Proof 4 — Datadog Observability OTel
+function buildSlide24_Datadog() {
   buildBeforeAfterSaasSlide({
-    slideNum: 24,
     proofNum: 4,
-    saasName: 'Datalust Seq OTel',
-    title: 'Proof 4: Datalust Seq OTel v2024.3 — Structured Log Streams & Distributed Trace Isolation',
-    subtitle: 'Authentic 2880x1800 Retina UI captures showing that Cloud Run token filtering and Seq Signal partitions prevent cross-tenant audit log and trace disclosure.',
-    beforeImg: 'before_09_datalust_seq.png',
-    afterImg: 'after_09_datalust_seq.png',
-    beforeHeader: 'BEFORE: SHARED LOG STREAM (INTERLEAVED CROSS-TENANT AUDIT LOGS)',
-    beforeVulnerability: 'Centralized structured log ingestion intermixes debug logs, exception stack traces, and operational metadata across tenants into a single searchable stream.',
-    beforeThreat: 'Unfiltered full-text log searches inadvertently expose customer PII, internal account IDs, and sensitive payload fragments across organizational boundaries.',
-    afterHeader: 'AFTER: CR-ENFORCED TENANT TOKEN FILTERS & SCOPED SIGNALS',
-    afterEnforcement: 'Cloud Run middleware validates JWT claims and binds each log ingestion pipe to a tenant-specific API key and Seq Signal filter with automated PII masking.',
-    afterVerification: 'Audit queries return strictly the caller\'s scoped audit events. Cross-tenant log streams are segregated with zero bleed into foreign searches.'
+    saasName: 'Datadog Observability',
+    title: 'Proof 4: Datadog Observability APM — Model Armor Defense & Hop 5 Live Telemetry Trace',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) contrasting excluded baseline queries against expanded Target G767QR3TQZ Hop 5 structured APM verification.',
+    beforeImg: '',
+    afterImg: '',
+    beforeHeader: 'BEFORE: Not(AgentCoreTarget = G767QR3TQZ) — 5 Historical & Intercepted Events',
+    beforeVulnerability: 'Baseline query excludes G767QR3TQZ and shows 5 historical events, including Hop 4 Model Armor blocking indirect prompt injection in stack trace.',
+    beforeThreat: 'Without Hop 4 Model Armor inspection prior to log indexing, adversarial stack traces could poison downstream autonomous triage agents.',
+    afterHeader: 'AFTER: Live Expanded Trace [G767QR3TQZ] — PASS_ZERO_PROMPT_INJECTION',
+    afterEnforcement: 'Expanded trace [LIVE-MCP geap-hop5-mvv1tg35] verifies TenantId: finvault, Hop4ModelArmor: PASS_ZERO_PROMPT_INJECTION, ZeroPiiAttested: true.',
+    afterVerification: 'Verification binds S3AuditObject cymbal-10saas-ledger/datadog-sre/finvault.json with zero raw customer PII emitted to Datadog Logs telemetry.'
   });
 }
 
-// SLIDE 25: Proof 5 — HashiCorp Vault CMEK
-function buildSlide25_HashiCorpVault() {
+// SLIDE 25: Proof 5 — Okta & CrowdStrike Sovereign Identity
+function buildSlide25_CrowdStrikeOkta() {
   buildBeforeAfterSaasSlide({
-    slideNum: 25,
     proofNum: 5,
-    saasName: 'HashiCorp Vault CMEK',
-    title: 'Proof 5: HashiCorp Vault CMEK v1.13.3 — Tenant Key Namespace & Emergency Revocation',
-    subtitle: 'Authentic 2880x1800 Retina UI captures demonstrating independent cryptographic key namespaces and sub-60-second emergency kill-switch revocation.',
-    beforeImg: 'before_10_hashicorp_vault.png',
-    afterImg: 'after_10_hashicorp_vault.png',
-    beforeHeader: 'BEFORE: SHARED ENCRYPTION ROOTS (BLAST-RADIUS RISK)',
-    beforeVulnerability: 'Multi-tenant database tables and secret stores rely on a shared platform master encryption key managed at the service level without per-tenant isolation.',
-    beforeThreat: 'A single key compromise exposes all 1,000 tenants simultaneously. Regulated clients cannot exercise independent regulatory revocation without platform-wide downtime.',
-    afterHeader: 'AFTER: PER-TENANT CMEK NAMESPACES & <60s EMERGENCY REVOCATION',
-    afterEnforcement: 'Each enterprise tenant provisions a dedicated Cloud KMS / Vault transit key (projects/{tenant}/keyRings/{tenant}-ring) bound to the tenant\'s IAM perimeter.',
-    afterVerification: 'Emergency key disabling instantly crypto-shreds tenant storage and triggers a synchronous Valkey cache purge in <60s with zero operational disruption to neighboring tenants.'
+    saasName: 'Okta & CrowdStrike XDR',
+    title: 'Proof 5: Okta & CrowdStrike XDR — RFC 9449 DPoP Containment & HSM Attestation',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) verifying tenant-scoped policy namespace finvault progression from v1 Pending Containment to v2 DPoP Verified 200.',
+    beforeImg: '',
+    afterImg: '',
+    beforeHeader: 'BEFORE: tenant-scoped policy namespace finvault v1 — PENDING_HOP5_DPOP_CONTAINMENT',
+    beforeVulnerability: 'Okta/CrowdStrike DPoP policy tenant-scoped policy namespace finvault Version 1 holds target C7EYM614F2 and cmek_key_state: ENABLED, but xdr_containment_status stays PENDING.',
+    beforeThreat: 'Without SHA-256 dpop_jkt_thumbprint binding and HSM attestation in containment policy v2, cryptographic containment proof remains incomplete.',
+    afterHeader: 'AFTER: Policy v2 — HOST_CONTAINED_DPOP_VERIFIED_200 & SHA-256 dpop_jkt',
+    afterEnforcement: 'Version 2 sets ENABLED_HSM_ATTESTED, records SHA-256 dpop_jkt_thumbprint, and links cymbal-10saas-ledger/crowdstrike-okta/finvault.json.',
+    afterVerification: 'State transitions to HOST_CONTAINED_DPOP_VERIFIED_200 with strict Okta/CrowdStrike DPoP policy path scoping isolating FinVault KMS/XDR metadata.'
   });
 }
 
-// SLIDE 26: Proof 6 — ClickHouse Analytics
-function buildSlide26_ClickHouse() {
+// SLIDE 26: Proof 6 — Snowflake AI Data Cloud Analytics
+function buildSlide26_Snowflake() {
   buildBeforeAfterSaasSlide({
-    slideNum: 26,
     proofNum: 6,
-    saasName: 'ClickHouse Analytics',
-    title: 'Proof 6: ClickHouse Analytics v24.8 — Real-Time Columnar Engine Row-Level Security',
-    subtitle: 'Authentic 2880x1800 Retina UI captures verifying that ClickHouse Row Policy enforces SIMD vector pruning to block cross-tenant columnar analytical record access.',
-    beforeImg: 'before_07_clickhouse_rls.png',
-    afterImg: 'after_07_clickhouse_rls.png',
-    beforeHeader: 'BEFORE: UNGUARDED COLUMNAR SCANS (CROSS-TENANT RECORD ACCESS)',
-    beforeVulnerability: 'High-performance columnar scans prioritize raw throughput, scanning all tenant rows in columnar blocks and returning raw multi-tenant data sets in aggregations.',
-    beforeThreat: 'Analytical queries aggregate across all tenant records in memory, exposing high-frequency clickstream, transaction volumes, and financial telemetry.',
-    afterHeader: 'AFTER: ENGINE-LEVEL ROW POLICIES (WHERE tenant_id = currentUser())',
-    afterEnforcement: 'Native ClickHouse Row Policy defines deterministic access rules enforced directly in the SIMD vector engine during disk-to-memory block decoding.',
-    afterVerification: 'Blocks belonging to foreign tenants are pruned before entering the vectorized query pipeline. Execution latency remains sub-15ms with 100% tenant isolation.'
+    saasName: 'Snowflake AI Data Cloud Analytics',
+    title: 'Proof 6: Snowflake AI Data Cloud Analytics — Row-Level Policy Block vs. FinVault Scoped Query',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) proving finvault_user receives 0 rows when probing retailstream vs. $527.0M under tenant_id = finvault.',
+    beforeImg: '',
+    afterImg: '',
+    beforeHeader: 'BEFORE: Cross-Tenant Probe (WHERE tenant_id = retailstream → 0 Rows / 0 B)',
+    beforeVulnerability: 'finvault_user executes WHERE tenant_id = retailstream on cymbal_warehouse.wire_settlement_ledger; Snowflake AI Data Cloud returns empty result (0 rows, 0.00 B).',
+    beforeThreat: 'Cross-tenant WHERE clauses succeed silently if row policies are absent; native Snowflake Cortex RLS ensures zero cross-tenant rows ever return.',
+    afterHeader: 'AFTER: Scoped FinVault Query (FV-TX-901 $312.5M & FV-TX-902 $214.5M • CMEK)',
+    afterEnforcement: 'Scoped query WHERE tenant_id = finvault returns FV-TX-901 ($312.5M) and FV-TX-902 ($214.5M) tagged with gcp-kms://finvault-cmek-hsm.',
+    afterVerification: 'Confirms Snowflake AI Data Cloud row policy enforcement blocks retailstream reads (0.00 B) while serving authorized $527.0M FinVault analytics.'
   });
 }
 
-// SLIDE 27: Proof 7 — Redmine ITSM
-function buildSlide27_Redmine() {
+// SLIDE 27: Proof 7 — ServiceNow ITSM
+function buildSlide27_ServiceNow() {
   buildBeforeAfterSaasSlide({
-    slideNum: 27,
     proofNum: 7,
-    saasName: 'Redmine ITSM',
-    title: 'Proof 7: Redmine ITSM v5.1.3 — Multi-Tenant Support Case & Ticket Partitioning',
-    subtitle: 'Authentic 2880x1800 Retina UI captures proving that TenantContext JWT project isolation conceals confidential support tickets, notes, and attachments.',
-    beforeImg: 'before_03_redmine_itsm.png',
-    afterImg: 'after_03_redmine_itsm.png',
-    beforeHeader: 'BEFORE: GLOBAL PROJECT TICKETS (CROSS-ORGANIZATION CASE LEAK)',
-    beforeVulnerability: 'IT service management portal displays support tickets, incident descriptions, and internal remediation comments in global issue lists without organizational boundaries.',
-    beforeThreat: 'Enterprise support engineers or automated triage agents can view confidential vulnerability reports, vendor disclosures, and internal incidents from competing clients.',
-    afterHeader: 'AFTER: TENANT-BOUND PROJECT ISOLATION & ROLE PERMISSIONS',
-    afterEnforcement: 'TenantContext JWT dynamically scopes user and agent roles to explicit tenant project hierarchies and custom permission matrices.',
-    afterVerification: 'Cross-organization tickets, private notes, and custom fields are completely invisible. Support workflows operate in airtight organizational silos.'
+    saasName: 'ServiceNow ITSM',
+    title: 'Proof 7: ServiceNow ITSM (ZS9VGYHBQL) — Automated Hop 5 Change Control & CMEK Proof',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) verifying Target ZS9VGYHBQL filing CHG0049299 with Valkey Single-Flight & KMS CMEK attestation.',
+    beforeImg: '',
+    afterImg: '',
+    beforeHeader: 'BEFORE: FinVault ITSM (ZS9VGYHBQL) — 2 Manual Issues (#2 INC0948211, #1 CHG)',
+    beforeVulnerability: 'Baseline ServiceNow ITSM view lists 2 manual sre-lead@finvault.com issues (#2 INC0948211, #1 CHG0049218) prior to Hop 5 MCP automation.',
+    beforeThreat: 'Manual ITSM tickets lack cryptographic correlation to [GEAP-MCP ZS9VGYHBQL] Valkey single-flight locks and KMS CMEK runtime proofs.',
+    afterHeader: 'AFTER: Audited Change CHG0049299 [GEAP-MCP ZS9VGYHBQL] Verified',
+    afterEnforcement: 'Hop 5 Target ZS9VGYHBQL appends #3 CHG0049299: Automated Hop 5 Valkey Single-Flight & KMS CMEK Attestation inside ZS9VGYHBQL.',
+    afterVerification: 'Auditable ServiceNow ITSM change timeline ties ITSM change control directly to FinVault Core Banking Hop 5 runtime boundaries.'
   });
 }
 
-// SLIDE 28: Proof 8 — NocoDB GxP Grid
-function buildSlide28_NocoDB() {
+// SLIDE 28: Proof 8 — Veeva Vault RIM Grid
+function buildSlide28_VeevaVault() {
   buildBeforeAfterSaasSlide({
-    slideNum: 28,
     proofNum: 8,
-    saasName: 'NocoDB GxP Grid',
-    title: 'Proof 8: NocoDB GxP v0.255.2 — Regulated Database Grid & Field-Level Access Scoping',
-    subtitle: 'Authentic 2880x1800 Retina UI captures verifying that dynamic role view filtering satisfies 21 CFR Part 11 electronic records isolation and audit trail requirements.',
-    beforeImg: 'before_04_nocodb_gxp.png',
-    afterImg: 'after_04_nocodb_gxp.png',
-    beforeHeader: 'BEFORE: UNPROTECTED SPREADSHEET GRID (REGULATED DATA EXPOSURE)',
-    beforeVulnerability: 'Low-code relational spreadsheet views display clinical trial records, manufacturing batches, and supply chain records without row-level or column-level tenant scoping.',
-    beforeThreat: 'Violates FDA 21 CFR Part 11 and EU Annex 11 compliance by allowing unauthorized users to inspect and modify regulated records belonging to other pharmaceutical sponsors.',
-    afterHeader: 'AFTER: ROLE-SCOPED VIEWS & TENANT AUDIT TRAIL LOGGING',
-    afterEnforcement: 'Dynamic view filters enforce tenant role restrictions on every API request, while an immutable audit log records every cell read and modification with cryptographic timestamps.',
-    afterVerification: 'Users only access validated rows within their organizational envelope, satisfying GxP regulatory compliance and multi-tenant audit requirements.'
+    saasName: 'Veeva Vault RIM',
+    title: 'Proof 8: Veeva Vault RIM 21 CFR Part 11 Ledger — Sovereign Key Lineage & Append Proof',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) proving Target TWQU0KSRVF (muse-poc) appends attested FinVault record AWS-GXP-104 (ECDSA P-256) to ledger.',
+    beforeImg: '',
+    afterImg: '',
+    beforeHeader: 'BEFORE: FinVault KMS 21 CFR 11 View — 3 Baseline Rows (Incl. RS AWS-GXP-103)',
+    beforeVulnerability: 'Veeva Vault RIM grid shows 3 baseline records (AWS-GXP-101/102 finvault Pattern B/C, AWS-GXP-103 retailstream Pattern A) before Hop 5 append.',
+    beforeThreat: 'Shared registry views lacking tenant_id scoping display cross-tenant Pattern A rows (AWS-GXP-103 retailstream) beside FinVault CMEK spokes.',
+    afterHeader: 'AFTER: 4 Records — Appended AWS-GXP-104 (TWQU0KSRVF • ECDSA_P256_LIVE_AGENT)',
+    afterEnforcement: 'Hop 5 Target TWQU0KSRVF appends record 4 (AWS-GXP-104, finvault, Pattern C Hybrid PSC) with ECDSA_P256_LIVE_AGENT cryptographic proof.',
+    afterVerification: 'Confirmed deterministic ledger transition (3 → 4 rows) with immutable Pattern C CMEK lineage and ECDSA P-256 agent verification.'
   });
 }
 
-// SLIDE 29: Proof 9 — Gitea SRE
-function buildSlide29_Gitea() {
+// SLIDE 29: Proof 9 — Atlassian Jira & Salesforce CRM
+function buildSlide29_SalesforceJira() {
   buildBeforeAfterSaasSlide({
-    slideNum: 29,
     proofNum: 9,
-    saasName: 'Gitea SRE',
-    title: 'Proof 9: Gitea SRE v1.22.3 — Tenant Repository & Enterprise CI/CD Pipeline Isolation',
-    subtitle: 'Authentic 2880x1800 Retina UI captures demonstrating zero-knowledge repository indexing and branch policy segregation across tenant organizations.',
-    beforeImg: 'before_05_gitea_sre.png',
-    afterImg: 'after_05_gitea_sre.png',
-    beforeHeader: 'BEFORE: OPEN REPOSITORY DISCOVERY (PROPRIETARY SOURCE CODE VISIBILITY)',
-    beforeVulnerability: 'Internal Git server allows cross-organization repository discovery, exposing private tenant microservice repositories, CI/CD workflow YAMLs, and infrastructure definitions.',
-    beforeThreat: 'Proprietary algorithmic code, hardcoded configuration files, and internal deployment architectures are visible to developers and agents across all tenant organizations.',
-    afterHeader: 'AFTER: STRICT ORG ISOLATION & PRIVATE REPOSITORY GUARDS',
-    afterEnforcement: 'Organization boundaries strictly enforce zero-knowledge repository indexing. Tenant developers and CI bots only see authorized private repositories and pipeline secrets.',
-    afterVerification: 'Repository access, branch policies, and webhooks are restricted strictly to authenticated tenant credentials with signed Git commit verification.'
+    saasName: 'Atlassian Jira & Salesforce Enterprise',
+    title: 'Proof 9: Atlassian Jira & Salesforce CRM Escalations — Hop 4 SDP Redaction & Automated RCA Receipt',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) showing Target K5JAEFCQ6E posting SDP-redacted RCA on Issue #1 and blocking retailstream-ops (HTTP 404).',
+    beforeImg: '',
+    afterImg: '',
+    beforeHeader: 'BEFORE: finvault/sre-escalations Issue #1 — 0 Comments / Awaiting Hop 5 RCA',
+    beforeVulnerability: 'Issue #1 ([SFDC-CASE-00984120 / FINVAULT-SRE-1402] P1 Wire Settlement Escalation) is open with 0 comments and an empty reply state.',
+    beforeThreat: 'Manual incident triage risks pasting raw IBAN/SWIFT bank identifiers into Atlassian Jira & Salesforce issues or permitting cross-repo inspection.',
+    afterHeader: 'AFTER: 1 Comment — SDP-Redacted RCA (K5JAEFCQ6E • retailstream-ops HTTP 404)',
+    afterEnforcement: 'create_redacted_sfdc_jira_escalation (K5JAEFCQ6E) masks [REDACTED-FINVAULT-IBAN] & [REDACTED-SWIFT-BIC] (raw_pii_leaked = false).',
+    afterVerification: 'Cross-tenant retailstream-ops probe fails closed with HTTP 404 Not Found while FinVault Issue #1 stores zero raw customer PII.'
   });
 }
 
-// SLIDE 30: Proof 10 — Directus HCM
-function buildSlide30_Directus() {
+// SLIDE 30: Proof 10 — Workday HCM
+function buildSlide30_Workday() {
   buildBeforeAfterSaasSlide({
-    slideNum: 30,
     proofNum: 10,
-    saasName: 'Directus HCM',
-    title: 'Proof 10: Directus HCM v11.1.0 — Human Capital Data & Tenant Role Scoping',
-    subtitle: 'Authentic 2880x1800 Retina UI captures confirming that Custom Role Access Control (CRAC) policies filter HR and executive compensation models down to tenant boundaries.',
-    beforeImg: 'before_08_directus_hcm.png',
-    afterImg: 'after_08_directus_hcm.png',
-    beforeHeader: 'BEFORE: UNRESTRICTED COLLECTIONS (HR & COMPENSATION DATA LEAK)',
-    beforeVulnerability: 'Headless CMS data models expose employee salaries, sensitive PII, and executive organizational structures across tenant accounts without granular policy constraints.',
-    beforeThreat: 'HR data models are vulnerable to inadvertent data leaks where an employee or agent in Tenant A queries compensation bands or personal contacts of Tenant B.',
-    afterHeader: 'AFTER: GRANULAR CRAC POLICIES & JWT TENANT CONTEXT',
-    afterEnforcement: 'Directus Custom Role Access Control (CRAC) policies validate the signed JWT tenant_id claim, filtering collection views to authorized enterprise employees only.',
-    afterVerification: 'Compensation records, performance reviews, and personal identifiers are strictly segregated at the data layer, ensuring GDPR and CCPA compliance.'
+    saasName: 'Workday HCM CMS',
+    title: 'Proof 10: Workday HCM Compensation — Scoped HR Write & Collection Integrity',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) verifying tenant-scoped HCM RaaS Compensation Report growth from 2 baseline FinVault rows to 3 records.',
+    beforeImg: '',
+    afterImg: '',
+    beforeHeader: 'BEFORE: Hcm Compensation — 2 Baseline FinVault Records ($420K / $365K)',
+    beforeVulnerability: 'Workday HCM RaaS Compensation Report holds 2 baseline finvault rows ($420,000 Clara Vance, $365,000 Marcus Thorne) pre-Hop 5.',
+    beforeThreat: 'Unverified HCM collection writes risk committing unscoped compensation records or leaking cross-tenant executive pay across orgs.',
+    afterHeader: 'AFTER: 3 FinVault Records — Added $395,000 FinVault-Risk-Analyst (E. Rostova)',
+    afterEnforcement: 'Hop 5 HCM gate commits row #3 ($395,000 FinVault-Risk-Analyst, Elena Rostova) scoped strictly to tenant_id = finvault.',
+    afterVerification: 'Collection cleanly transitions from 2 to 3 finvault compensation records with zero cross-tenant HR exposure.'
   });
 }
 
@@ -1714,7 +1729,6 @@ function buildSlide30_Directus() {
 // ============================================================================
 function buildSlide31_Act5Breaker() {
   buildActBreakerSlide({
-    slideNum: 31,
     actTag: 'ACT V TRANSITION',
     actNumber: 'ACT V',
     actTitle: 'Production Rollout Roadmap & Multi-Cloud Synthesis',
@@ -1722,12 +1736,12 @@ function buildSlide31_Act5Breaker() {
     actColor: G_NAVY,
     actTint: 'E2E8F0',
     coreQuestion: 'How does an enterprise engineering organization operationalize this architecture over a 10-week implementation lifecycle with verified infrastructure SLAs and automated testing?',
-    thesis: 'Combining phased engineering rollout gates with automated multi-cloud verification ensures seamless production cutovers with zero regressions, sub-42ms latency, and 84.7% cache cost savings.',
+    thesis: 'Combining phased engineering rollout gates with automated multi-cloud verification ensures seamless production cutovers with zero regressions, sub-42ms latency, and 89.1% cache cost savings.',
     milestones: [
       { num: '01', title: 'Phase 1–2: Ingress & Identity Foundation', desc: 'Deploying Cloud Armor L7 WAF rules, IAM STS minting, RFC 9449 DPoP, and Discovery Engine ARD tool catalogs.', deliverable: 'Weeks 1–4' },
       { num: '02', title: 'Phase 3–4: Bulkheads, Caching & Engine RLS', desc: 'Memorystore Valkey token bulkheads, prefix prompt caching, Model Armor, and AlloyDB PostgreSQL RLS.', deliverable: 'Weeks 5–8' },
       { num: '03', title: 'Phase 5: Terraform Factory & Penetration Testing', desc: '1-Click Terraform Blueprints, Pattern C PSC tier promotion, and automated red-team breach fuzzing.', deliverable: 'Weeks 9–10' },
-      { num: '04', title: 'Quantified 10-SaaS Multi-Cloud Scorecard', desc: 'Verifying 30/30 test assertions across Google Cloud Run Gen2 and AWS EC2 with zero cross-tenant leakage.', deliverable: 'SLA Scorecard' }
+      { num: '04', title: 'Quantified 10-SaaS Multi-Cloud Scorecard', desc: 'Verifying 30/30 cross-cloud test assertions across Google Cloud 5-Hop ADK and AWS Bedrock AgentCore MCP with zero cross-tenant leakage.', deliverable: 'SLA Scorecard' }
     ]
   });
 }
@@ -1737,7 +1751,7 @@ function buildSlide31_Act5Breaker() {
 // ============================================================================
 function buildSlide32_Roadmap() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT V • IMPLEMENTATION ROADMAP', '10-Week Enterprise Implementation Roadmap & Companion Resources', 32);
+  addHeader(slide, 'ACT V • IMPLEMENTATION ROADMAP', '10-Week Enterprise Implementation Roadmap & Companion Resources', nextSlideNum());
 
   slide.addText('Structured enterprise rollout plan to take multi-tenant agentic AI from architecture to production GA.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -1782,25 +1796,25 @@ function buildSlide32_Roadmap() {
     });
   });
 
-  // Bottom Executive Call to Action Strip
+  // Bottom Executive Call to Action Strip (Light Theme per Rule 54)
   slide.addShape(pptx.ShapeType.roundRect, {
     x: 0.6, y: 5.55, w: 12.133, h: 1.35, rectRadius: 0.08,
-    fill: { color: G_NAVY }
+    fill: { color: G_BLUE_LIGHT }, line: { color: G_BLUE, width: 1.0 }
   });
   slide.addText('EXECUTIVE CALL TO ACTION: ACCESS PRODUCTION RESOURCES', {
-    x: 0.9, y: 5.7, w: 11.5, h: 0.3, fontSize: 11, bold: true, color: G_YELLOW, fontFace: FONT_TITLE
+    x: 0.9, y: 5.7, w: 11.5, h: 0.3, fontSize: 11, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE
   });
-  slide.addText('Explore live BeyondCorp prototypes, download production Terraform blueprints, or engage Google Cloud FDE for an enterprise architecture workshop.', {
-    x: 0.9, y: 6.0, w: 11.5, h: 0.3, fontSize: 9.5, color: 'CBD5E1', fontFace: FONT_BODY
+  slide.addText('Explore live Google Cloud IAP prototypes, download production Terraform blueprints, or engage Google Cloud FDE for an enterprise architecture workshop.', {
+    x: 0.9, y: 6.0, w: 11.5, h: 0.3, fontSize: 9.5, color: TEXT_DARK, fontFace: FONT_BODY
   });
 
   const links = [
-    'Live Portal: https://ge-blogs-248990048888.cr.gclb.goog',
+    'Live Portal: https://ge-blogs.cymbal-demo.example/',
     'GitHub Source: https://github.com/cloud-ai-fde/ge-blogs',
-    'Google Cloud Architecture Center Advisory: cfe-support@google.com'
+    'Google Cloud Architecture Center Advisory: cloud-architecture@cymbal-demo.example'
   ];
   slide.addText(links.join('   •   '), {
-    x: 0.9, y: 6.4, w: 11.5, h: 0.35, fontSize: 8.5, bold: true, color: '38BDF8', fontFace: FONT_BODY
+    x: 0.9, y: 6.4, w: 11.5, h: 0.35, fontSize: 8.5, bold: true, color: G_BLUE_DARK, fontFace: FONT_BODY
   });
 }
 
@@ -1809,16 +1823,16 @@ function buildSlide32_Roadmap() {
 // ============================================================================
 function buildSlide33_Scorecard() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT V • VERIFICATION MATRIX', 'Quantified Multi-Cloud SaaS Isolation Scorecard & 10/10 Verification Matrix', 33);
+  addHeader(slide, 'ACT V • VERIFICATION MATRIX', 'Quantified Multi-Cloud SaaS Isolation Scorecard & 10/10 Verification Matrix', nextSlideNum());
 
-  slide.addText('Empirical production benchmarks verified across 10 third-party SaaS stacks on Google Cloud Run Gen2 and AWS EC2 (30/30 Test Assertions Passed).', {
+  slide.addText('Empirical benchmarks verified across 10 AWS Bedrock AgentCore MCP commercial SaaS targets (30/30 Assertions Passed) with live ThoughtSpot Cloud UI proofs.', {
     x: 0.6, y: 0.82, w: 12.133, h: 0.36, fontSize: 10.2, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
   // 4 Top KPI Cards
   const kpis = [
-    { num: '10 / 10', label: 'SaaS Platforms Verified', sub: 'Zero Cross-Tenant Leaks', color: G_BLUE, tint: G_BLUE_LIGHT },
-    { num: '84.7%', label: 'Inference Cost Reduction', sub: 'Prefix Prompt Caching', color: G_GREEN_DEEP, tint: G_GREEN_LIGHT },
+    { num: '10 / 10', label: 'AgentCore MCP Targets', sub: 'Zero Cross-Tenant Leaks', color: G_BLUE, tint: G_BLUE_LIGHT },
+    { num: '89.1%', label: 'Inference Cost Reduction', sub: 'Prefix Prompt Caching', color: G_GREEN_DEEP, tint: G_GREEN_LIGHT },
     { num: '< 42 ms', label: 'p95 Control-Plane Latency', sub: '5-Hop Token Mint & Check', color: 'B45309', tint: G_YELLOW_LIGHT },
     { num: '< 60 s', label: 'CMEK Kill-Switch', sub: 'Instant Sovereign Revocation', color: G_RED_DEEP, tint: G_RED_LIGHT }
   ];
@@ -1851,16 +1865,16 @@ function buildSlide33_Scorecard() {
   ];
 
   const rows = [
-    ['Metabase v0.50.26', 'Enterprise BI & Analytics', 'Cloud Run Gen2', 'Unscoped dashboards aggregate multi-tenant GMV/orders', 'Hop 5 AlloyDB RLS (SET LOCAL current_tenant_id)', '0 Leaked Rows'],
-    ['Trino SQL v440', 'Distributed Query Federation', 'AWS EC2 (m6i)', 'SHOW CATALOGS exposes cross-tenant datalake tables', 'Hop 2 ARD Catalog Scoping + System Access Control', 'Catalog Denied'],
-    ['Grafana v11.2.0', 'Observability & Metrics', 'Cloud Run Gen2', 'Interleaved Prometheus metrics & noisy neighbor spikes', 'Hop 3 OTel collector tenant namespace injection', 'Org Scoped'],
-    ['Datalust Seq v2024.3', 'Structured Audit Logs', 'Cloud Run Gen2', 'Shared full-text log search leaks cross-tenant PII', 'Hop 1 Cloud Armor + CR Token Filters & Signal scopes', 'Strict Stream Segregation'],
-    ['HashiCorp Vault v1.13.3', 'CMEK Key Management', 'AWS EC2 (m6i)', 'Single shared encryption root; no independent kill-switch', 'Hop 4 Dedicated Cloud KMS / Vault transit key per tenant', '<60s Kill-Switch'],
-    ['ClickHouse v24.8', 'Columnar Vector Engine', 'AWS EC2 (m6i)', 'SIMD block scans return multi-tenant data in memory', 'Hop 5 Native Row Policy (WHERE tenant_id = currentUser())', 'Vector Pruned (<15ms)'],
-    ['Redmine ITSM v5.1.3', 'ITSM & Case Management', 'Cloud Run Gen2', 'Public issue lists expose competitor tickets and notes', 'Hop 1-3 TenantContext JWT project & role scoping', 'Zero Case Leakage'],
-    ['NocoDB v0.255.2', 'GxP Regulated Database', 'Cloud Run Gen2', 'Relational grid displays unmasked clinical trial data', 'Hop 2 Role-based views + 21 CFR Part 11 audit trails', 'GxP Compliant'],
-    ['Gitea SRE v1.22.3', 'Source Code & CI/CD', 'AWS EC2 (m6i)', 'Open repository indexing exposes proprietary microservices', 'Hop 3 Organization isolation & private repository guards', 'Sealed Git Repo'],
-    ['Directus HCM v11.1.0', 'HR & Human Capital Mgmt', 'Cloud Run Gen2', 'CMS data models leak salary bands & employee PII', 'Hop 5 Custom Role Access Control (CRAC) policies', 'GDPR/CCPA Bound']
+    ['ThoughtSpot Cloud', 'Enterprise BI & Analytics', 'Commercial SaaS + MCP', 'Unscoped dashboards aggregate multi-tenant GMV/orders', 'Hop 5 AlloyDB RLS (SET LOCAL current_tenant_id)', '0 Leaked Rows'],
+    ['Databricks Unity Catalog SQL', 'Distributed Query Federation', 'AWS AgentCore MCP', 'SHOW CATALOGS exposes cross-tenant datalake tables', 'Hop 2 ARD Catalog Scoping + System Access Control', 'Catalog Denied'],
+    ['Sigma Computing', 'Cloud BI Workbooks', 'Commercial SaaS + MCP', 'Shared workbook caches leak cross-tenant BI aggregations', 'Hop 5 User-Attribute (ua_tenant_id) workbook RLS + S3 audit', 'Org Scoped'],
+    ['Datadog Cloud Observability', 'Structured Audit Logs', 'Commercial SaaS + MCP', 'Shared full-text log search leaks cross-tenant PII', 'Hop 1 Cloud Armor + Datadog RBAC Log Restriction Queries', 'Strict Stream Segregation'],
+    ['Okta Workforce Identity & CrowdStrike XDR', 'Identity DPoP & XDR Containment', 'AWS AgentCore MCP', 'Single shared encryption root; no independent kill-switch', 'Hop 1/4 RFC 9449 DPoP Token Binding + CrowdStrike XDR Containment', '<60s Kill-Switch'],
+    ['Snowflake AI Data Cloud', 'Columnar Vector Engine', 'AWS AgentCore MCP', 'CORTEX SQL block scans return multi-tenant data in memory', 'Hop 5 Native Row Policy (WHERE tenant_id = CURRENT_ROLE())', 'Vector Pruned (<15ms)'],
+    ['ServiceNow ITSM & ITOM', 'ITSM & Case Management', 'Commercial SaaS + MCP', 'Public issue lists expose competitor tickets and notes', 'Hop 1-3 TenantContext JWT project & role scoping', 'Zero Case Leakage'],
+    ['Veeva Vault RIM', 'GxP Regulated Database', 'Commercial SaaS + MCP', 'Relational grid displays unmasked clinical trial data', 'Hop 2 Role-based views + 21 CFR Part 11 audit trails', 'GxP Compliant'],
+    ['Atlassian Jira & Salesforce CRM', 'CRM Escalations & Work Tracking', 'AWS AgentCore MCP', 'Unscoped CRM cases & Jira projects leak cross-tenant PII', 'Hop 4 Cloud SDP PII Redaction + Tenant-Scoped 3LO', 'Atlassian Jira Cloud & Salesforce CRM'],
+    ['Workday Enterprise HCM RaaS', 'HR & Human Capital Mgmt', 'Commercial SaaS + MCP', 'Workday HCM RaaS reports leak salary bands & employee PII', 'Hop 5 Custom Role Access Control (CRAC) policies', 'GDPR/CCPA Bound']
   ];
 
   const tableData = [headers];
@@ -1868,9 +1882,9 @@ function buildSlide33_Scorecard() {
     const bg = idx % 2 === 0 ? WHITE : G_GREY_BG;
     tableData.push([
       { text: r[0], options: { bold: true, color: TEXT_DARK, fill: { color: bg }, fontSize: 7.5, align: 'left' } },
-      { text: r[1], options: { color: TEXT_MUTED, fill: { color: bg }, fontSize: 7.5, align: 'left' } },
+      { text: r[1], options: { bold: false, color: TEXT_MUTED, fill: { color: bg }, fontSize: 7.5, align: 'left' } },
       { text: r[2], options: { color: G_BLUE_DARK, bold: true, fill: { color: bg }, fontSize: 7.5, align: 'center' } },
-      { text: r[3], options: { color: G_RED_DEEP, fill: { color: bg }, fontSize: 7.2, align: 'left' } },
+      { text: r[3], options: { bold: false, color: G_RED_DEEP, fill: { color: bg }, fontSize: 7.2, align: 'left' } },
       { text: r[4], options: { color: G_GREEN_DEEP, bold: true, fill: { color: bg }, fontSize: 7.2, align: 'left' } },
       { text: r[5], options: { color: G_BLUE, bold: true, fill: { color: bg }, fontSize: 7.2, align: 'center' } }
     ]);
@@ -1892,7 +1906,7 @@ function buildSlide34_Faq() {
     slide,
     'ACT V • FREQUENTLY ASKED QUESTIONS',
     'Frequently Asked Questions: Executive & CISO Architecture Decision Guide',
-    34
+    nextSlideNum()
   );
 
   slide.addText(
@@ -1921,9 +1935,9 @@ function buildSlide34_Faq() {
       tag: 'PRIVACY & FINOPS',
       tagColor: G_GREEN_DEEP,
       tagBg: G_GREEN_LIGHT,
-      q: 'Q2: How does the system achieve an 84.7% prompt cost reduction without leaking private customer data?',
+      q: 'Q2: How does the system achieve an 89.1% prompt cost reduction without leaking private customer data?',
       a: 'Deterministic Static Prefix Caching. Only static, non-sensitive instructions (system instructions, OpenAPI tool schemas, compliance rules) are stored in the shared 32k-token Vertex AI prompt cache. Tenant-specific memories, customer PII, and dynamic queries are strictly appended as the unshared inference suffix. The LLM evaluates customer context against the shared cache with zero cross-tenant retention.',
-      sla: 'FINOPS SLA: 84.7% Net Token Cost Reduction  •  Zero PII in Shared Cache'
+      sla: 'FINOPS SLA: 89.1% Net Token Cost Reduction  •  Zero PII in Shared Cache'
     },
     {
       tag: 'REGULATORY SLA',
@@ -1993,12 +2007,13 @@ function buildSlide34_Faq() {
 
 
 // Build all 31 slides
-console.log('Compiling 100% native DrawingML editable 33-slide executive presentation with clear Act 1 -> Act 2 -> Act 3 -> Act 4 -> Act 5 transitions...');
+console.log(`Compiling 100% native DrawingML editable ${TOTAL_SLIDES}-slide executive presentation with clear Act 1 -> Act 2 -> Act 3 -> Act 4 -> Act 5 transitions...`);
 
 async function main() {
-  console.log('🎞️  Building WS1 33-Slide Visual Deck with Agenda, Act Breakers (Acts I-V), L1-L4 DrawingML Diagrams & 10 Genuine SaaS Proofs...');
+  console.log(`🎞️  Building WS1 ${TOTAL_SLIDES}-Slide Visual Deck with Agenda, Act Breakers (Acts I-V), L1-L4 DrawingML Diagrams & 10-SaaS Commercial Verification Matrix...`);
   
   // Slide 01: Title
+  _slideCounter = 1;
   buildSlide01();
   
   // Slide 02: Executive Storyline & 4-Act Agenda
@@ -2010,8 +2025,8 @@ async function main() {
   
   // ACT II: REFERENCE ARCHITECTURE & TOPOLOGIES (Slides 05-10)
   buildSlide05_Act2Breaker();
-  buildSlide06_PatternA();
-  buildSlide07_PatternBC();
+  if (FULL_34_MODE) buildSlide06_PatternA();
+  if (FULL_34_MODE) buildSlide07_PatternBC();
   buildSlide08_L1Logical();
   await buildSlide09_Figure1();
   await buildSlide10_Figure2();
@@ -2027,18 +2042,18 @@ async function main() {
   buildSlide18_Simulation();
   buildSlide19_ArchitecturalCaveats();
   
-  // ACT IV: EMPIRICAL EVIDENCE & 10 GENUINE SAAS PROOFS (Slides 19-29)
+  // ACT IV: EMPIRICAL EVIDENCE & 10-SaaS Commercial Verification Matrix (Slides 19-29)
   buildSlide20_Act4Breaker();
-  buildSlide21_Metabase();
-  buildSlide22_Trino();
-  buildSlide23_Grafana();
-  buildSlide24_DatalustSeq();
-  buildSlide25_HashiCorpVault();
-  buildSlide26_ClickHouse();
-  buildSlide27_Redmine();
-  buildSlide28_NocoDB();
-  buildSlide29_Gitea();
-  buildSlide30_Directus();
+  buildSlide21_ThoughtSpot();
+  buildSlide22_Databricks();
+  if (FULL_34_MODE) buildSlide23_Sigma();
+  if (FULL_34_MODE) buildSlide24_Datadog();
+  if (FULL_34_MODE) buildSlide25_CrowdStrikeOkta();
+  if (FULL_34_MODE) buildSlide26_Snowflake();
+  if (FULL_34_MODE) buildSlide27_ServiceNow();
+  if (FULL_34_MODE) buildSlide28_VeevaVault();
+  if (FULL_34_MODE) buildSlide29_SalesforceJira();
+  if (FULL_34_MODE) buildSlide30_Workday();
   
   // ACT V: PRODUCTION SYNTHESIS & 10-WEEK ROADMAP (Slides 30-33)
   buildSlide31_Act5Breaker();
@@ -2047,9 +2062,9 @@ async function main() {
   buildSlide34_Faq();
 
   await pptx.writeFile({ fileName: OUTPUT_PPTX });
-  console.log(`✅ Successfully compiled ${OUTPUT_PPTX} (34 slides [Full 5-Act Narrative with Storyline, Act Breakers, L1-L4 DrawingML, Architectural Caveats, 10 SaaS Proofs, Scorecard & CISO FAQ Guide])`);
+  console.log(`✅ Successfully compiled ${OUTPUT_PPTX} (${TOTAL_SLIDES} slides [Full 5-Act Narrative with Storyline, Act Breakers, L1-L4 DrawingML, Architectural Caveats, 10 SaaS Proofs, Scorecard & CISO FAQ Guide])`);
 
-  postProcessPptxArrowheadsForGoogleSlides();
+  postProcessPptxArrowheadsForGoogleSlides(OUTPUT_PPTX);
   console.log('✅ Post-processed arrowheads and connectors for Google Slides compatibility');
 }
 

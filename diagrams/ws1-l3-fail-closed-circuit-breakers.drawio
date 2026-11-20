@@ -1,0 +1,158 @@
+<mxfile host="app.diagrams.net" modified="2026-11-09T05:55:00Z" agent="PolymorphicStudio-2WaySync" version="24.7.8" type="device">
+  <diagram id="ws1-l3-fail-closed-circuit-breakers" name="Slide 14/56 • WS1 • L3 Deterministic Fail-Closed Circuit Breakers (HTTP 401/403/429/422)">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="sp_1120" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#E8F0FE;strokeColor=#4285F4;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="42.0" width="276.0" height="36.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1121" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.7px;color:#0D47A1;&quot;&gt;&lt;b&gt;PART 1 • CIRCUIT BREAKERS&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#0D47A1;fontSize=11.7;align=center;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="42.0" width="276.0" height="36.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1122" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:22.1px;color:#3C4043;&quot;&gt;&lt;b&gt;L3 Process Architecture: Explicit Fail-Closed Security Circuit Breakers&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=22.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="372.0" y="33.6" width="1140.0" height="54.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1123" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#DADCE0;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="90.0" width="1456.0" height="2.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1124" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#5F6368;&quot;&gt;[Compendium S14/54 • PART 1 (WS1)]  •  &lt;/span&gt;&lt;span style=&quot;font-size:8.8px;color:#1D4ED8;&quot;&gt;&lt;b&gt;▶ 4-State Hybrid &amp;amp; Draw.io ↗&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="856.0" width="1260.0" height="36.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1126" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:14.3px;color:#5F6368;&quot;&gt;Zero-trust systems must fail closed. Five distinct HTTP circuit breakers guarantee deterministic rejection without data leaks.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=14.3;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="102.0" width="1456.0" height="48.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1127" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#EA4335;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="162.0" width="1456.0" height="114.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1128" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FCE8E6;strokeColor=#EA4335;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="96.0" y="180.0" width="216.0" height="78.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1129" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:16.9px;color:#EA4335;&quot;&gt;&lt;b&gt;HTTP 401&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#EA4335;fontSize=16.9;align=center;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="96.0" y="192.0" width="216.0" height="54.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1130" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:13.7px;color:#3C4043;&quot;&gt;&lt;b&gt;UNAUTHORIZED IDENTITY&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=13.7;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="336.0" y="180.0" width="384.0" height="33.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1131" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#5F6368;&quot;&gt;Trigger: Caller provides invalid OIDC/SAML token or forged X-Tenant-ID header&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="336.0" y="216.0" width="576.0" height="48.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1132" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="936.0" y="180.0" width="564.0" height="78.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1133" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#3C4043;&quot;&gt;Fail-Closed Action: Cloud Armor immediately drops TCP session at Edge PEP (Hop 1)&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="954.0" y="186.0" width="528.0" height="66.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1134" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#EA4335;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="294.0" width="1456.0" height="114.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1135" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FCE8E6;strokeColor=#EA4335;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="96.0" y="312.0" width="216.0" height="78.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1136" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:16.9px;color:#EA4335;&quot;&gt;&lt;b&gt;HTTP 403&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#EA4335;fontSize=16.9;align=center;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="96.0" y="324.0" width="216.0" height="54.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1137" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:13.7px;color:#3C4043;&quot;&gt;&lt;b&gt;FORBIDDEN TOOL RESOLUTION&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=13.7;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="336.0" y="312.0" width="384.0" height="33.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1138" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#5F6368;&quot;&gt;Trigger: Agent attempts to invoke an unauthorized MCP tool or cross-tenant private agent&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="336.0" y="348.0" width="576.0" height="48.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1139" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="936.0" y="312.0" width="564.0" height="78.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1140" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#3C4043;&quot;&gt;Fail-Closed Action: ARD Catalog PDP aborts tool execution via before_agent_callback (Hop 2)&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="954.0" y="318.0" width="528.0" height="66.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1141" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#EA4335;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="426.0" width="1456.0" height="114.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1142" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FCE8E6;strokeColor=#EA4335;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="96.0" y="444.0" width="216.0" height="78.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1143" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:16.9px;color:#EA4335;&quot;&gt;&lt;b&gt;HTTP 429&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#EA4335;fontSize=16.9;align=center;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="96.0" y="456.0" width="216.0" height="54.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1144" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:13.7px;color:#3C4043;&quot;&gt;&lt;b&gt;RATE LIMIT BULKHEAD BREACH&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=13.7;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="336.0" y="444.0" width="384.0" height="33.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1145" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#5F6368;&quot;&gt;Trigger: Runaway reasoning loop or noisy neighbor exceeds per-tenant RPM/TPM quota&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="336.0" y="480.0" width="576.0" height="48.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1146" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="936.0" y="444.0" width="564.0" height="78.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1147" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#3C4043;&quot;&gt;Fail-Closed Action: Valkey token-bucket rate limiter rejects request to preserve platform stability (Hop 3)&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="954.0" y="450.0" width="528.0" height="66.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1148" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#EA4335;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="558.0" width="1456.0" height="114.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1149" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FCE8E6;strokeColor=#EA4335;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="96.0" y="576.0" width="216.0" height="78.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1150" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:16.9px;color:#EA4335;&quot;&gt;&lt;b&gt;HTTP 422&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#EA4335;fontSize=16.9;align=center;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="96.0" y="588.0" width="216.0" height="54.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1151" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:13.7px;color:#3C4043;&quot;&gt;&lt;b&gt;PROMPT INJECTION DETECTED&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=13.7;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="336.0" y="576.0" width="384.0" height="33.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1152" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#5F6368;&quot;&gt;Trigger: Model Armor detects jailbreak, semantic NLC violation, or PII exfiltration attempt&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="336.0" y="612.0" width="576.0" height="48.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1153" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="936.0" y="576.0" width="564.0" height="78.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1154" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#3C4043;&quot;&gt;Fail-Closed Action: Inference gateway blocks LLM call and logs incident to Cloud Audit Logs (Hop 4)&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="954.0" y="582.0" width="528.0" height="66.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1155" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#EA4335;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="72.0" y="690.0" width="1456.0" height="114.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1156" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FCE8E6;strokeColor=#EA4335;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="96.0" y="708.0" width="216.0" height="78.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1157" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:16.9px;color:#EA4335;&quot;&gt;&lt;b&gt;HTTP 423&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#EA4335;fontSize=16.9;align=center;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="96.0" y="720.0" width="216.0" height="54.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1158" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:13.7px;color:#3C4043;&quot;&gt;&lt;b&gt;CMEK REVOCATION (CMEK_DENIED)&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=13.7;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="336.0" y="708.0" width="384.0" height="33.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1159" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#5F6368;&quot;&gt;Trigger: Regulated enterprise revokes Cloud KMS key ring during security incident&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="336.0" y="744.0" width="576.0" height="48.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1160" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
+          <mxGeometry x="936.0" y="708.0" width="564.0" height="78.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_1161" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#3C4043;&quot;&gt;Fail-Closed Action: HTTP 423 locks DB (&amp;lt;60s) &amp;amp; Valkey SCAN+UNLINK purges tokens (&amp;lt;5s)&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=11.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="954.0" y="714.0" width="528.0" height="66.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_layer" value="Planes: control / compute / data (generated, locked)" style="locked=1;" parent="0"/>
+        <mxCell id="plane_bdr_00_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=27;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="68.2" y="158.2" width="1463.5" height="517.5" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_01_CONTROL+DATA" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=none;strokeColor=#CBD5E1;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="68.2" y="686.2" width="1463.5" height="119.5" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b00_CONTROL" value="CONTROL · Hops 1–4: identity, tool policy, rate limit, prompt screen" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="74.5" y="147.9" width="377.8" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b01_CONTROL" value="CONTROL · key revoke" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="74.5" y="809.5" width="136.0" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b01_DATA" value="DATA · store lock" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#B45309;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="228.5" y="809.5" width="110.0" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_CONTROL" value="&lt;b&gt;CONTROL  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;401 edge PEP, 403 ARD Catalog PDP, 429 Valkey limiter, 422 gateway&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#1D4ED8;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="72.0" y="832.0" width="478.7" height="16.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_COMPUTE" value="&lt;b&gt;COMPUTE  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;no row of its own: Cloud Run takes part in the Hop 5 lock (last row)&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#047857;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="560.7" y="832.0" width="478.7" height="16.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_DATA" value="&lt;b&gt;DATA  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;last row: KMS key revoked -&amp;gt; HTTP 423, Valkey purges &amp;lt;5s, DB locks &amp;lt;60s&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#B45309;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1049.3" y="832.0" width="478.7" height="16.2" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

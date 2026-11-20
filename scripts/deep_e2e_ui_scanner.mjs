@@ -20,20 +20,15 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const homeDir = os.homedir();
 const pkgCandidates = [
-  path.resolve(__dirname, "../../PromptCanvas/package.json"),
-  path.join(homeDir, "Documents/PromptCanvas/package.json"),
-  path.resolve(__dirname, "../../trainex/package.json"),
-  path.join(homeDir, "Documents/trainex/package.json"),
+  path.resolve(__dirname, "../package.json"),
 ];
-const pkgPath = pkgCandidates.find((p) => fs.existsSync(p)) || pkgCandidates[0];
+const pkgPath = pkgCandidates.find((p) => fs.existsSync(p) && fs.existsSync(path.join(path.dirname(p), "node_modules", "puppeteer-core"))) || pkgCandidates.find((p) => fs.existsSync(p)) || pkgCandidates[0];
 
 const reqPaths = [
   path.dirname(pkgPath),
   ...(process.env.NODE_PATH || "").split(path.delimiter).filter(Boolean),
-  path.resolve(__dirname, "../../trainex"),
-  path.join(homeDir, "Documents/trainex"),
 ];
-const require = createRequire(import.meta.url);
+const require = createRequire(fs.existsSync(pkgPath) ? pkgPath : import.meta.url);
 let puppeteer;
 try {
   puppeteer = require("puppeteer-core");

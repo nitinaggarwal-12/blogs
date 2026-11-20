@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="PromptCanvas-Drawio-Compiler" version="24.7.17" type="device">
+  <diagram id="ws1-5hop-governance-baseline" name="WS1: 5-Hop Governance Baseline">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" background="#FFFFFF" math="0" shadow="1">
+      <root>
+      <mxCell id="0"/>
+      <mxCell id="1" parent="0"/>
+      <mxCell id="mc_div_line" value="" style="rounded=0;arcSize=0;whiteSpace=wrap;html=1;fillColor=#DADCE0;strokeColor=none;fontColor=#5F6368;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="80" width="1464" height="2" as="geometry"/>
+      </mxCell>
+      <mxCell id="cp_zone" value="" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="520" y="114" width="1028" height="122" as="geometry"/>
+      </mxCell>
+      <mxCell id="cp_auth" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;🛡️ Hop 1–2 · Auth Manager &amp;amp; STS&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;RFC 8693 OBO + RFC 9449 DPoP (&amp;lt;0.15ms JWKS)&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Mints ECDSA P-256 STS JWT &amp;amp; 2LO/3LO CAB&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="538" y="146" width="316" height="78" as="geometry"/>
+      </mxCell>
+      <mxCell id="cp_reg" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;⚙️ Hop 2 · Agent Registry (ARD)&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Tenant-scoped catalog • Approved destination check&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Dynamic MCP schema pruning (-94% token overhead)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="874" y="146" width="316" height="78" as="geometry"/>
+      </mxCell>
+      <mxCell id="cp_sec" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;🛡️ Hop 4 · Model Armor &amp;amp; DLP&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Inline Model Armor &amp;amp; Cloud DLP screen (&amp;lt;8ms)&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Blocks indirect RAG injection &amp;amp; PII/PHI egress&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1210" y="146" width="320" height="78" as="geometry"/>
+      </mxCell>
+      <mxCell id="u_a" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1E3A8A;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;Tier 1: Pool&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;950+ SaaS Tenants&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#93C5FD;strokeWidth=1.5;fontColor=#1E3A8A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="44" y="272" width="140" height="76" as="geometry"/>
+      </mxCell>
+      <mxCell id="u_b" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#78350F;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;Tier 2: Hybrid&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B45309;'&gt;/28 PSC Spokes&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=#FCD34D;strokeWidth=1.5;fontColor=#78350F;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="44" y="366" width="140" height="76" as="geometry"/>
+      </mxCell>
+      <mxCell id="u_c" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#4C1D95;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;Tier 3: Silo&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#6D28D9;'&gt;Dedicated Project&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#F3E8FD;strokeColor=#C4B5FD;strokeWidth=1.5;fontColor=#4C1D95;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="44" y="460" width="140" height="76" as="geometry"/>
+      </mxCell>
+      <mxCell id="idp" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;🛡️ Hop 1A · Identity&lt;/div&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;&amp;amp; Workforce WIF&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Short-lived OIDC&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Verified tenant_id&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• OIDC / SAML Federation&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Zero dir sync&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="214" y="272" width="154" height="264" as="geometry"/>
+      </mxCell>
+      <mxCell id="ingress" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;🌐 Hop 1B · Edge&lt;/div&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;PEP &amp;amp; External&lt;/div&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;ALB&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Strips X-Tenant-ID&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Cloud Armor WAF&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• In-memory JWKS&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;  (&amp;lt;0.15ms) + JTI&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Mints P-256 STS&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;  JWT&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="392" y="272" width="162" height="264" as="geometry"/>
+      </mxCell>
+      <mxCell id="app_layer" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Front End&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;80% Shared App&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=13;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=top;align=center;spacingTop=12;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="578" y="272" width="126" height="264" as="geometry"/>
+      </mxCell>
+      <mxCell id="fe_c1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1A73E8;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;✦&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=2.0;fontColor=#1A73E8;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="592" y="354" width="44" height="44" as="geometry"/>
+      </mxCell>
+      <mxCell id="fe_c2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;ADK&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1A73E8;strokeColor=#1A73E8;strokeWidth=2.0;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="646" y="354" width="44" height="44" as="geometry"/>
+      </mxCell>
+      <mxCell id="fe_c3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#137333;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;GKE&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1E8E3E;strokeWidth=2.0;fontColor=#137333;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="592" y="412" width="44" height="44" as="geometry"/>
+      </mxCell>
+      <mxCell id="fe_c4" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1A73E8;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;Run&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=2.0;fontColor=#1A73E8;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="646" y="412" width="44" height="44" as="geometry"/>
+      </mxCell>
+      <mxCell id="gw_in_box" value="" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="728" y="272" width="180" height="264" as="geometry"/>
+      </mxCell>
+      <mxCell id="gw_in_hdr" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;      Agent Gateway&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=29;whiteSpace=wrap;html=1;fillColor=#1A73E8;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="728" y="272" width="180" height="48" as="geometry"/>
+      </mxCell>
+      <mxCell id="gw_in_ico" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#D93025;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;❖&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F28B82;strokeWidth=1.8;fontColor=#D93025;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="736" y="282" width="28" height="28" as="geometry"/>
+      </mxCell>
+      <mxCell id="gw_in_body" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1E3A8A;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Hop 2 · Client-to-Agent&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#334155;'&gt;• Verifies STS JWT &amp;amp;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#334155;'&gt;  DPoP (&amp;lt;0.15ms JWKS)&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#334155;'&gt;• ARD Catalog PDP&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#334155;'&gt;  (-94% tool tokens)&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#334155;'&gt;• Model Armor Input&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#334155;'&gt;  Screen (&amp;lt;8ms)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F8FAFC;gradientColor=#EFF6FF;gradientDirection=south;strokeColor=#BFDBFE;strokeWidth=1.2;fontColor=#1E3A8A;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="736" y="326" width="164" height="202" as="geometry"/>
+      </mxCell>
+      <mxCell id="runtime" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Hop 3 · ADK Runtime&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Cloud Run Gen2 gVisor&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=top;align=left;spacingTop=12;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="932" y="272" width="218" height="264" as="geometry"/>
+      </mxCell>
+      <mxCell id="adk_orch" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;ADK Agent Orchestrator&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Warm gVisor (concurrency=1)&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• CoW --max-requests=1&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;  (1-Turn Heap Wipe)&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Immutable 32k context&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;  prefix (89.1% net)&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Locks (tenant_id, sub)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="944" y="344" width="194" height="180" as="geometry"/>
+      </mxCell>
+      <mxCell id="gw_out_box" value="" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1174" y="272" width="180" height="264" as="geometry"/>
+      </mxCell>
+      <mxCell id="gw_out_hdr" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;      Agent Gateway&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=29;whiteSpace=wrap;html=1;fillColor=#1A73E8;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1174" y="272" width="180" height="48" as="geometry"/>
+      </mxCell>
+      <mxCell id="gw_out_ico" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#D93025;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;❖&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F28B82;strokeWidth=1.8;fontColor=#D93025;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1182" y="282" width="28" height="28" as="geometry"/>
+      </mxCell>
+      <mxCell id="gw_out_body" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1E3A8A;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;Hop 4 · Agent-to-Target&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#334155;'&gt;• Outbound Agent&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#334155;'&gt;  Gateway &amp;amp; DLP&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#334155;'&gt;• User-Scoped 2LO/3LO&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#334155;'&gt;  OBO Token Binding&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#334155;'&gt;• Tier Router: Pool /&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#334155;'&gt;  /28 PSC / Silo&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F8FAFC;gradientColor=#EFF6FF;gradientDirection=south;strokeColor=#BFDBFE;strokeWidth=1.2;fontColor=#1E3A8A;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1182" y="326" width="164" height="202" as="geometry"/>
+      </mxCell>
+      <mxCell id="tgts_zone" value="" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1378" y="250" width="178" height="454" as="geometry"/>
+      </mxCell>
+      <mxCell id="mcp_srv" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#065F46;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Hop 5A · Shared Pool&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#047857;'&gt;AlloyDB FORCE RLS&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#34D399;strokeWidth=1.5;fontColor=#065F46;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1390" y="286" width="154" height="74" as="geometry"/>
+      </mxCell>
+      <mxCell id="a2a_srv" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1E3A8A;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Hop 5C · Hybrid PSC&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;/28 PSC Spoke VPCs&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#60A5FA;strokeWidth=1.5;fontColor=#1E3A8A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1390" y="370" width="154" height="74" as="geometry"/>
+      </mxCell>
+      <mxCell id="llm_srv" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#7627BB;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Hop 5B · Sovereign Silo&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;Dedicated GCP Project&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#F3E8FD;strokeColor=none;fontColor=#7627BB;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1390" y="454" width="154" height="74" as="geometry"/>
+      </mxCell>
+      <mxCell id="ent_api" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#78350F;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;HSM CMEK &amp;amp; APIs&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B45309;'&gt;VPC-SC &amp;amp; &amp;lt;60s Halt&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#FBBF24;strokeWidth=1.5;fontColor=#78350F;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1390" y="538" width="154" height="76" as="geometry"/>
+      </mxCell>
+      <mxCell id="tg_c1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1A73E8;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;G&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1A73E8;strokeWidth=2.0;fontColor=#1A73E8;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1396" y="628" width="40" height="40" as="geometry"/>
+      </mxCell>
+      <mxCell id="tg_c2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#B06000;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;GCP&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=2.0;fontColor=#B06000;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1447" y="628" width="40" height="40" as="geometry"/>
+      </mxCell>
+      <mxCell id="tg_c3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:10px;font-weight:700;line-height:1.18;'&gt;SaaS&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1A73E8;strokeColor=#1A73E8;strokeWidth=2.0;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1498" y="628" width="40" height="40" as="geometry"/>
+      </mxCell>
+      <mxCell id="sessions" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Sessions&lt;/div&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;(Hop 3 Valkey)&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Valkey 0.4ms state&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Key: {tenant}:{user}&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Singleflight lock&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Scoped UNLINK &amp;lt;5s&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=9;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="554" y="560" width="184" height="190" as="geometry"/>
+      </mxCell>
+      <mxCell id="mem_bank" value="" style="rounded=1;arcSize=9;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="762" y="560" width="380" height="190" as="geometry"/>
+      </mxCell>
+      <mxCell id="mb_1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1E3A8A;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Hop 5A (Pool): FORCE ROW LEVEL SECURITY&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=25;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#93C5FD;strokeWidth=1.5;fontColor=#1E3A8A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="780" y="598" width="344" height="40" as="geometry"/>
+      </mxCell>
+      <mxCell id="mb_2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#78350F;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Hop 5C (Hybrid): /28 PSC Spoke VPCs (0ms)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=25;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=#FCD34D;strokeWidth=1.5;fontColor=#78350F;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="780" y="646" width="344" height="40" as="geometry"/>
+      </mxCell>
+      <mxCell id="mb_3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#4C1D95;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Hop 5B (Silo): Dedicated GCP Project + HSM CMEK&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=25;whiteSpace=wrap;html=1;fillColor=#F3E8FD;strokeColor=#C4B5FD;strokeWidth=1.5;fontColor=#4C1D95;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="780" y="694" width="344" height="40" as="geometry"/>
+      </mxCell>
+      <mxCell id="finops_bulkhead" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#137333;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;✦ Hop 3 FinOps &amp;amp;&lt;/div&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Rate Bulkhead&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• 120/600 RPM Cap&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• 32k Prefix Cache&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• 0.10x Cached Rate&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• 89.1% Net Input Savings&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=9;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=none;fontColor=#137333;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1174" y="560" width="180" height="190" as="geometry"/>
+      </mxCell>
+      <mxCell id="obs_bar" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;📊 AI Observability &amp;amp; Fail-Closed Circuit Breakers — HTTP 401 / 403 / 429 / 422&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Zero-PII SHA-256 prompt hashing • BigQuery FinOps chargeback • &amp;lt;60s (41.2s) HSM CMEK kill-switch audit&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="554" y="768" width="814" height="70" as="geometry"/>
+      </mxCell>
+      <mxCell id="e1" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.424;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="u_a" target="idp">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="184" y="310" as="sourcePoint"/>
+          <mxPoint x="214" y="384" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="199" y="310"/>
+            <mxPoint x="199" y="384"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e2" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="u_b" target="idp">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="184" y="404" as="sourcePoint"/>
+          <mxPoint x="214" y="404" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e3" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.576;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="u_c" target="idp">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="184" y="498" as="sourcePoint"/>
+          <mxPoint x="214" y="424" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="199" y="498"/>
+            <mxPoint x="199" y="424"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e4" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="idp" target="ingress">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="368" y="404" as="sourcePoint"/>
+          <mxPoint x="392" y="404" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e5" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="ingress" target="app_layer">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="554" y="404" as="sourcePoint"/>
+          <mxPoint x="578" y="404" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e6" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="app_layer" target="gw_in_box">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="704" y="404" as="sourcePoint"/>
+          <mxPoint x="728" y="404" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e7" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="gw_in_box" target="runtime">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="908" y="404" as="sourcePoint"/>
+          <mxPoint x="932" y="404" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e8" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="runtime" target="gw_out_box">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1150" y="404" as="sourcePoint"/>
+          <mxPoint x="1174" y="404" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e9" value="" style="rounded=1;html=1;exitX=0.886;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#1A73E8;strokeWidth=1.5;dashed=1;dashPattern=5 4;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="cp_auth" target="gw_in_box">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="818" y="224" as="sourcePoint"/>
+          <mxPoint x="818" y="272" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e9b" value="" style="rounded=1;html=1;exitX=0.956;exitY=1.0;exitDx=0;exitDy=0;entryX=0.22;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#5F6368;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="cp_auth" target="runtime">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="840" y="224" as="sourcePoint"/>
+          <mxPoint x="980" y="272" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="840" y="250"/>
+            <mxPoint x="980" y="250"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e10" value="" style="rounded=1;html=1;exitX=0.557;exitY=1.0;exitDx=0;exitDy=0;entryX=0.541;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#5F6368;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="cp_reg" target="runtime">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1050" y="224" as="sourcePoint"/>
+          <mxPoint x="1050" y="272" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e11" value="" style="rounded=1;html=1;exitX=0.169;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#1A73E8;strokeWidth=1.5;dashed=1;dashPattern=5 4;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="cp_sec" target="gw_out_box">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1264" y="224" as="sourcePoint"/>
+          <mxPoint x="1264" y="272" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e12" value="" style="rounded=1;html=1;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.473;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="app_layer" target="sessions">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="641" y="536" as="sourcePoint"/>
+          <mxPoint x="641" y="560" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e13" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.453;exitDx=0;exitDy=0;entryX=0.0;entryY=0.453;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="sessions" target="mem_bank">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="738" y="646" as="sourcePoint"/>
+          <mxPoint x="762" y="646" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e14" value="" style="rounded=1;html=1;exitX=0.312;exitY=1.0;exitDx=0;exitDy=0;entryX=0.626;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=classic;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="runtime" target="mem_bank">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1000" y="536" as="sourcePoint"/>
+          <mxPoint x="1000" y="560" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e15" value="" style="rounded=1;html=1;exitX=0.862;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="runtime" target="finops_bulkhead">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1120" y="536" as="sourcePoint"/>
+          <mxPoint x="1264" y="560" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1120" y="548"/>
+            <mxPoint x="1264" y="548"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e16a" value="" style="rounded=1;html=1;exitX=0.122;exitY=1.0;exitDx=0;exitDy=0;entryX=0.241;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;dashed=1;dashPattern=5 4;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="gw_in_box" target="obs_bar">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="750" y="536" as="sourcePoint"/>
+          <mxPoint x="750" y="768" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e16" value="" style="rounded=1;html=1;exitX=1.0;exitY=1.0;exitDx=0;exitDy=0;entryX=0.742;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;dashed=1;dashPattern=5 4;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="runtime" target="obs_bar">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1150" y="536" as="sourcePoint"/>
+          <mxPoint x="1158" y="768" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1158" y="536"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e16b" value="" style="rounded=1;html=1;exitX=1.0;exitY=1.0;exitDx=0;exitDy=0;entryX=0.993;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;dashed=1;dashPattern=5 4;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="gw_out_box" target="obs_bar">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1354" y="536" as="sourcePoint"/>
+          <mxPoint x="1362" y="768" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1362" y="536"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e17" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.193;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="gw_out_box" target="mcp_srv">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1354" y="323" as="sourcePoint"/>
+          <mxPoint x="1390" y="323" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e18" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.511;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="gw_out_box" target="a2a_srv">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1354" y="407" as="sourcePoint"/>
+          <mxPoint x="1390" y="407" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e19" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.693;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="gw_out_box" target="llm_srv">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1354" y="455" as="sourcePoint"/>
+          <mxPoint x="1390" y="491" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1366" y="455"/>
+            <mxPoint x="1366" y="491"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e20" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.864;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="gw_out_box" target="ent_api">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1354" y="500" as="sourcePoint"/>
+          <mxPoint x="1390" y="576" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1366" y="500"/>
+            <mxPoint x="1366" y="576"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="t_main" value="WS1 - PART 1 - Shared 5-Hop Multi-Tenant Agent Platform Architecture" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=22;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="68" y="24" width="951" height="34" as="geometry"/>
+      </mxCell>
+      <mxCell id="t_users" value="Caller Tiers" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=14;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="62" y="237" width="128" height="21" as="geometry"/>
+      </mxCell>
+      <mxCell id="t_cp" value="Google Cloud — Shared 80% 5-Hop Governance &amp; Control Plane (&lt; 42ms p95 Overhead)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#1967D2;fontSize=13;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="538" y="123" width="668" height="20" as="geometry"/>
+      </mxCell>
+      <mxCell id="t_mem_hdr" value="Hop 5 Memory Bank &amp; Data (Pool / PSC / Silo)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=12;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="776" y="564" width="351" height="18" as="geometry"/>
+      </mxCell>
+      <mxCell id="t_tgts_hdr" value="Hop 5 Targets" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=13;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="1420" y="261" width="128" height="20" as="geometry"/>
+      </mxCell>
+      <mxCell id="t_tgts_sub" value="Google • Google Cloud • SaaS" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=10;fontStyle=0;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="1396" y="678" width="197" height="15" as="geometry"/>
+      </mxCell>
+        <mxCell id="plane_layer" value="Planes: control / compute / data (generated, locked)" style="locked=1;" parent="0"/>
+        <mxCell id="plane_bdr_00_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=7;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="515.0" y="109.0" width="1038.0" height="132.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_01_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=14;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="209.0" y="267.0" width="350.0" height="274.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_02_COMPUTE" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=7;fillColor=none;strokeColor=#6EE7B7;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="573.0" y="267.0" width="136.0" height="274.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_03_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="723.0" y="267.0" width="190.0" height="274.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_04_COMPUTE" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=none;strokeColor=#6EE7B7;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="927.0" y="267.0" width="228.0" height="274.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_05_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1169.0" y="267.0" width="190.0" height="274.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_06_DATA+CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=8;fillColor=none;strokeColor=#CBD5E1;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1386.0" y="282.0" width="162.0" height="249.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_07_CONTROL+DATA" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=8;fillColor=none;strokeColor=#CBD5E1;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1387.0" y="535.4" width="160.0" height="157.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_08_DATA+CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=none;strokeColor=#CBD5E1;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="550.0" y="556.0" width="596.0" height="198.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_09_CONTROL+COMPUTE" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=none;strokeColor=#CBD5E1;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1170.0" y="556.0" width="188.0" height="198.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_10_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=4;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="550.2" y="764.2" width="821.5" height="77.5" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b00_CONTROL" value="CONTROL · governance" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="521.2" y="236.1" width="130.8" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b01_CONTROL" value="CONTROL · Hop 1 identity + ingress" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="215.2" y="256.6" width="196.9" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b02_COMPUTE" value="COMPUTE" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#047857;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="579.2" y="256.6" width="63.8" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b03_CONTROL" value="CONTROL · Hop 2 PEP" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="781.5" y="536.1" width="125.3" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b04_COMPUTE" value="COMPUTE" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#047857;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1085.0" y="256.6" width="63.8" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b05_CONTROL" value="CONTROL · Hop 4 PEP" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1172.8" y="522.8" width="125.3" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b06_DATA" value="DATA" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#B45309;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1441.1" y="285.0" width="39.2" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b06_CONTROL" value="CONTROL" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1482.7" y="285.0" width="61.5" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b07_CONTROL" value="CONTROL · CMEK" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1387.0" y="694.8" width="103.0" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b07_DATA" value="DATA · APIs" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#B45309;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1492.5" y="694.8" width="77.0" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b08_DATA" value="DATA · sessions + Hop 5 stores" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#B45309;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="834.0" y="735.8" width="173.8" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b08_CONTROL" value="CONTROL · perimeters" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1010.3" y="735.8" width="131.9" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b09_CONTROL" value="CONTROL" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1226.5" y="735.8" width="61.5" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b09_COMPUTE" value="COMPUTE" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#047857;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1290.5" y="735.8" width="63.8" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b10_CONTROL" value="CONTROL · audit + breakers" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1209.8" y="823.5" width="158.2" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_guide_bg" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=22;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.7;" vertex="1" parent="plane_layer">
+          <mxGeometry x="44.0" y="558.0" width="495.0" height="280.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_guide_hdr" value="WHO RUNS WHAT IN WS1 (5-HOP CONTROL PLANE)" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=7;fillColor=none;strokeColor=none;align=left;verticalAlign=middle;fontSize=12.3;fontColor=#0F172A;fontStyle=1;spacing=0;spacingLeft=2;spacingRight=2;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="54.0" y="563.0" width="475.0" height="20.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_guide_row_CONTROL" value="&lt;b&gt;CONTROL PLANE&lt;/b&gt;&lt;font color=&quot;#0F172A&quot;&gt;&lt;b&gt;  Hops 1, 2 &amp;amp; 4 + Hop 3 rate cap + Hop 5 perimeters &amp;amp; audit&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#334155&quot;&gt;80% shared across all tiers: Edge PEP, STS DPoP broker, both Agent Gateways, ARD catalog PDP, Model Armor DLP, Valkey 120/600 RPM cap, and OTel audit.&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=7;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=11.6;fontColor=#1D4ED8;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=2;spacingBottom=2;" vertex="1" parent="plane_layer">
+          <mxGeometry x="54.0" y="585.5" width="475.0" height="71.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_guide_row_COMPUTE" value="&lt;b&gt;COMPUTE PLANE&lt;/b&gt;&lt;font color=&quot;#0F172A&quot;&gt;&lt;b&gt;  front end, Hop 3 ADK runtime (Cloud Run Gen2 gVisor) &amp;amp; 32k prefix&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#334155&quot;&gt;Runs identical core ADK Python code across every tier; pooled in Patterns A and C or dedicated per project in Pattern B.&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=7;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=11.6;fontColor=#047857;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=2;spacingBottom=2;" vertex="1" parent="plane_layer">
+          <mxGeometry x="54.0" y="661.8" width="475.0" height="71.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_guide_row_DATA" value="&lt;b&gt;DATA PLANE&lt;/b&gt;&lt;font color=&quot;#0F172A&quot;&gt;&lt;b&gt;  Hop 3 Valkey sessions + Hop 5 20% per-pattern tenant stores&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#334155&quot;&gt;Only the 20% Hop 5 perimeter changes by tier: FORCE ROW LEVEL SECURITY pool (A), /28 PSC spoke VPCs (C), or dedicated GCP project + HSM CMEK (B).&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=7;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=1.1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=11.6;fontColor=#B45309;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=2;spacingBottom=2;" vertex="1" parent="plane_layer">
+          <mxGeometry x="54.0" y="738.0" width="475.0" height="71.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_guide_note" value="Caller tiers (left) are not a plane. The 80% 5-Hop pipeline stays identical while Hop 5 routes each turn to Pool, PSC Spoke, or Silo." style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=none;strokeColor=none;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#475569;spacing=0;spacingLeft=2;spacingRight=2;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="54.0" y="815.5" width="475.0" height="18.8" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

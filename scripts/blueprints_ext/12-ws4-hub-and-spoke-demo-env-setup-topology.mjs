@@ -43,7 +43,7 @@ export default {
   leftZoneSub: 'pool://cymbal-shared-pooled-runtime-v2',
   leftCards: {
     modelArmor: { icon: 'model_armor', title: 'Shared Model Armor', sub: 'Multi-Tenant Prompt Screen' },
-    llm: { icon: 'gemini_agent_platform', title: 'Pooled Agent Engine', sub: '4,000 Thinking Cap' },
+    llm: { icon: 'gemini_agent_platform', title: 'Pooled Agent Engine', sub: 'MEDIUM / 4k maxOut' },
     runtime: { icon: 'gemini_agent_platform', title: 'ContextCacheConfig', sub: 'Shared Prefix Cache (90%)' },
     mcp: { icon: 'mcp_servers', title: 'Pooled MCP Hub', sub: 'Shared Incident Agent v2' },
     datastore: { icon: 'datastore_alloydb_bq', title: 'AlloyDB & BQ RLS', sub: 'pattern_a_pooled_rls_entities' },

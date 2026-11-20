@@ -1,12 +1,47 @@
     <section id="tab-payg" class="tab-pane" data-testid="portal-payg-saas-marketplace-hub" role="tabpanel" aria-labelledby="tab-btn-payg">
-      <div style="margin-bottom:12px; padding:12px 16px; background:linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); border:1px solid #cbd5e1; border-radius:12px; box-shadow:0 1px 4px rgba(15,23,42,0.04);">
+      <!-- Consolidated Dynamic PAYG Tier/Platform Filter Dropdown & Live Search Bar at Top of Tab 4 (Rule 25 Zero Cognitive Overload) -->
+      <div class="card" id="payg-consolidated-filter-bar" data-testid="payg-consolidated-filter-bar" data-no-hover-toolbar="true" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; padding:8px 14px; background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; position:sticky; top:44px; z-index:80; box-shadow:0 2px 6px rgba(15,23,42,0.05);">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:1; min-width:300px;">
+          <label for="payg-filter-select" style="margin:0; font-size:11px; font-weight:800; color:#1a73e8; text-transform:uppercase; letter-spacing:0.03em; white-space:nowrap;">🎯 Filter Platform / Tier:</label>
+          <select id="payg-filter-select" onchange="applyPaygMatrixFilter()" aria-label="Filter Commercial PAYG SaaS Platforms by Section, Billing Tier, or Platform" style="width:auto; min-width:265px; max-width:350px; padding:5px 9px; font-size:12px; font-weight:700; border:1px solid #93c5fd; border-radius:6px; background:#f8fafc; color:#0f172a;">
+            <option value="ALL" data-base-label="All Sections &amp; 8 Production SaaS Platforms">All Sections &amp; 8 Production SaaS Platforms (8)</option>
+            <optgroup label="By PAYG Hub Section">
+              <option value="SEC:matrix" data-base-label="📋 8 Production SaaS Governance Matrix Only">📋 8 Production SaaS Governance Matrix Only (8)</option>
+              <option value="SEC:finops" data-base-label="💰 FinOps Unit Economics &amp; Amortization Dial">💰 FinOps Unit Economics &amp; Amortization Dial</option>
+              <option value="SEC:verifier" data-base-label="⚡ Live PAYG Connection &amp; Latency Verifier">⚡ Live PAYG Connection &amp; Latency Verifier</option>
+            </optgroup>
+            <optgroup label="By Commercial Billing Tier">
+              <option value="TIER:marketplace" data-base-label="Google Cloud Marketplace PAYG">Google Cloud Marketplace PAYG (6)</option>
+              <option value="TIER:direct" data-base-label="Direct Vendor Developer Tiers">Direct Vendor Developer Tiers (2)</option>
+            </optgroup>
+            <optgroup label="By Individual SaaS Platform (8)">
+              <option value="PLAT:snowflake" data-base-label="1. Snowflake AI Data Cloud (Marketplace)">1. Snowflake AI Data Cloud (Marketplace) (1)</option>
+              <option value="PLAT:datadog" data-base-label="2. Datadog Cloud Observability (Marketplace)">2. Datadog Cloud Observability (Marketplace) (1)</option>
+              <option value="PLAT:databricks" data-base-label="3. Databricks Data Intelligence (Marketplace)">3. Databricks Data Intelligence (Marketplace) (1)</option>
+              <option value="PLAT:clickhouse" data-base-label="4. ClickHouse Cloud Serverless (Marketplace)">4. ClickHouse Cloud Serverless (Marketplace) (1)</option>
+              <option value="PLAT:mongodb" data-base-label="5. MongoDB Atlas Serverless (Marketplace)">5. MongoDB Atlas Serverless (Marketplace) (1)</option>
+              <option value="PLAT:confluent" data-base-label="6. Confluent Cloud Kafka (Marketplace)">6. Confluent Cloud Kafka (Marketplace) (1)</option>
+              <option value="PLAT:servicenow" data-base-label="7. ServiceNow PDI (Direct Vendor)">7. ServiceNow PDI (Direct Vendor) (1)</option>
+              <option value="PLAT:salesforce" data-base-label="8. Salesforce Developer Org (Direct Vendor)">8. Salesforce Developer Org (Direct Vendor) (1)</option>
+            </optgroup>
+          </select>
+
+          <input type="search" id="payg-search-input" oninput="applyPaygMatrixFilter()" placeholder="Search 8 PAYG platforms, RLS, CMEK, cost..." aria-label="Search Production PAYG SaaS Governance Matrix" style="width:260px; flex:0 1 280px; padding:5px 10px; font-size:11.5px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#0f172a;" />
+          <button type="button" class="sim-btn" onclick="resetPaygMatrixFilter()" style="padding:4px 9px; font-size:11px; font-weight:700;">↺ Reset</button>
+          <span class="badge badge-blue" id="payg-filter-count-badge" style="font-size:11px; font-weight:700;">Showing 8 / 8 Platforms</span>
+        </div>
+
+        <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+          <button type="button" class="sim-btn primary" style="font-size:11px; padding:4px 9px; font-weight:700;" onclick="scrollToPAYGConfigurator('snowflake')">&#9889; Connection Tester</button>
+          <a href="https://console.cloud.google.com/marketplace" target="_blank" rel="noopener noreferrer" class="sim-btn" style="font-size:11px; padding:4px 9px; text-decoration:none;">&#8599; GCP Marketplace</a>
+        </div>
+      </div>
+
+      <div id="payg-overview-hero-card" style="margin-bottom:12px; padding:12px 16px; background:linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); border:1px solid #cbd5e1; border-radius:12px; box-shadow:0 1px 4px rgba(15,23,42,0.04);">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
           <div>
             <div style="display:flex; gap:6px; align-items:center; margin-bottom:4px; flex-wrap:wrap;">
-              <span class="badge badge-green font-bold">TIER 2 &bull; PRODUCTION DEPLOYMENT TARGETS</span>
-              <span class="badge badge-blue font-bold">6 GCP MARKETPLACE PAYG + 2 DIRECT VENDOR DEV TIERS</span>
-              <span class="badge badge-purple font-bold">&#128179; CONSOLIDATED GOOGLE CLOUD BILLING</span>
-              <span class="badge badge-amber font-bold">&#9201; SCALE-TO-ZERO (&lt; $15/MO IDLE)</span>
+              <span class="badge badge-blue font-bold">TIER 2 &bull; 6 GCP MARKETPLACE PAYG + 2 DIRECT VENDOR DEV TIERS &bull; SCALE-TO-ZERO (&lt; $15/MO IDLE)</span>
             </div>
             <h1 style="margin:0 0 4px 0; font-size:17px; color:#0f172a; font-weight:800; letter-spacing:-0.02em;">
               &#128640; Production Deployment Targets: 6 Google Cloud Marketplace PAYG &amp; 2 Direct Vendor Dev Tiers
@@ -19,10 +54,6 @@
               Eliminate self-hosted VM maintenance overhead while leveraging authentic vendor-managed AI features (Snowflake Cortex, Databricks Unity Catalog, Datadog Cloud APM) 
               with automatic scale-to-zero and consolidated billing.
             </p>
-          </div>
-          <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-            <button type="button" class="sim-btn primary" onclick="scrollToPAYGConfigurator('snowflake')">&#9889; Launch Connection Tester</button>
-            <a href="https://console.cloud.google.com/marketplace" target="_blank" rel="noopener noreferrer" class="sim-btn" style="text-decoration:none;">&#8599; Open GCP Marketplace</a>
           </div>
         </div>
 
@@ -41,10 +72,10 @@
                 <div style="background:#ffffff; padding:8px 12px; border-radius:6px; border:1px solid #e0f2fe;">
                   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:3px;">
                     <strong style="color:#1d4ed8; font-size:12px;">&#128736;&#65039; Tier 1: Automated Security &amp; Regression Testbed (Tab 3)</strong>
-                    <span class="badge badge-blue" style="font-size:9.5px; padding:1px 5px;">10 OSS Containers</span>
+                    <span class="badge badge-blue" style="font-size:9.5px; padding:1px 5px;">10 Commercial SaaS Targets</span>
                   </div>
                   <ul style="margin:2px 0 0 0; padding-left:16px;">
-                    <li><strong>Reproducible CI/CD Security Fuzzing:</strong> Hermetic open-source containers (Metabase, Grafana, Redmine, Trino, ClickHouse, Vault) running in Cloud Run and EC2.</li>
+                    <li><strong>Reproducible CI/CD Security Fuzzing:</strong> Commercial SaaS targets &amp; Google Cloud Marketplace Free Trial / PAYG deployments verified via fail-closed SHA-256 provenance.</li>
                     <li><strong>Zero Vendor Blast Radius:</strong> Allows automated tests to simulate cross-tenant prompt injection attacks, tenant isolation failures, and CMEK destruction without risking external vendor SaaS data corruption.</li>
                     <li><strong>Zero Variable Egress Cost:</strong> 100% deterministic local/in-VPC execution with no per-query third-party API fees or rate limits.</li>
                   </ul>
@@ -169,11 +200,7 @@
               Verify live network reachability, TLS handshake, and latency via <code>POST /api/payg-saas/test-connection</code>.
             </p>
           </div>
-          <div style="display:flex; gap:8px;">
-            <button type="button" class="sim-btn" onclick="populatePAYGSampleEndpoint('snowflake')">&#128196; Pre-fill Snowflake</button>
-            <button type="button" class="sim-btn" onclick="populatePAYGSampleEndpoint('datadog')">&#128196; Pre-fill Datadog</button>
-            <button type="button" class="sim-btn" onclick="populatePAYGSampleEndpoint('clickhouse')">&#128196; Pre-fill ClickHouse</button>
-          </div>
+          <span class="badge badge-green" style="font-size:11px; font-weight:700;">🔒 SSRF Allowlist Enforced [FA-08]</span>
         </div>
 
         <div class="payg-tester-grid" style="display:grid; grid-template-columns:220px 1fr 1fr auto; gap:10px; align-items:flex-end;">
@@ -222,9 +249,7 @@
         <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:18px; border-bottom:1px solid #f1f5f9; padding-bottom:14px;">
           <div>
             <div style="display:flex; gap:8px; align-items:center; margin-bottom:4px; flex-wrap:wrap;">
-              <span class="badge badge-green font-bold">TIER 2 &bull; PRODUCTION DEPLOYMENT TARGETS</span>
-              <span class="badge badge-purple font-bold">6 GCP MARKETPLACE PAYG + 2 DIRECT VENDOR DEV TIERS</span>
-              <span class="badge badge-blue font-bold">&#128274; 100% HONEST PROVENANCE (ZERO SYNTHETIC MOCKUPS)</span>
+              <span class="badge badge-blue font-bold">TIER 2 &bull; 6 GCP MARKETPLACE PAYG + 2 DIRECT VENDOR DEV TIERS &bull; 100% HONEST PROVENANCE (ZERO SYNTHETIC MOCKUPS)</span>
             </div>
             <h2 style="margin:0 0 4px 0; font-size:19px; color:#0f172a; font-weight:800;">
               &#128203; Production Deployment Targets: 6 Google Cloud Marketplace PAYG &amp; 2 Direct Vendor Dev Tiers Governance Matrix
@@ -234,16 +259,6 @@
               against <strong>Cymbal 5-Hop Cryptographically Secured &amp; Scale-to-Zero Architecture</strong> across all 8 commercial cloud platforms.
               <strong>Honest Provenance &amp; Testbed Alignment [FA-15, FA-48]:</strong> Zero duplicate mockup galleries. All production endpoints are verified via the live connection tester above (with SSRF guard [FA-08]) and map 1:1 to their corresponding reproducible automated security testbed containers in Tab 3.
             </p>
-          </div>
-          <div class="flex-wrap-gap6">
-            <button type="button" class="sim-btn" style="font-size:11px; padding:3px 8px;" onclick="document.getElementById('payg-mat-snowflake')?.scrollIntoView({behavior:'smooth', block:'center'})">1. Snowflake</button>
-            <button type="button" class="sim-btn" style="font-size:11px; padding:3px 8px;" onclick="document.getElementById('payg-mat-datadog')?.scrollIntoView({behavior:'smooth', block:'center'})">2. Datadog</button>
-            <button type="button" class="sim-btn" style="font-size:11px; padding:3px 8px;" onclick="document.getElementById('payg-mat-databricks')?.scrollIntoView({behavior:'smooth', block:'center'})">3. Databricks</button>
-            <button type="button" class="sim-btn" style="font-size:11px; padding:3px 8px;" onclick="document.getElementById('payg-mat-clickhouse')?.scrollIntoView({behavior:'smooth', block:'center'})">4. ClickHouse</button>
-            <button type="button" class="sim-btn" style="font-size:11px; padding:3px 8px;" onclick="document.getElementById('payg-mat-mongodb')?.scrollIntoView({behavior:'smooth', block:'center'})">5. MongoDB</button>
-            <button type="button" class="sim-btn" style="font-size:11px; padding:3px 8px;" onclick="document.getElementById('payg-mat-confluent')?.scrollIntoView({behavior:'smooth', block:'center'})">6. Confluent</button>
-            <button type="button" class="sim-btn" style="font-size:11px; padding:3px 8px;" onclick="document.getElementById('payg-mat-servicenow')?.scrollIntoView({behavior:'smooth', block:'center'})">7. ServiceNow</button>
-            <button type="button" class="sim-btn" style="font-size:11px; padding:3px 8px;" onclick="document.getElementById('payg-mat-salesforce')?.scrollIntoView({behavior:'smooth', block:'center'})">8. Salesforce</button>
           </div>
         </div>
 
@@ -258,7 +273,7 @@
               </div>
               <div style="display:flex; gap:6px;">
                 <button type="button" class="sim-btn primary text-xs" onclick="scrollToPAYGConfigurator('snowflake')">&#9889; Test Connection in Live Runner</button>
-                <button type="button" class="sim-btn text-xs" onclick="jumpToTab3ReferenceContainer('clickhouse')">&#127970; View Tab 3 Reference Container</button>
+                <button type="button" class="sim-btn text-xs" onclick="jumpToTab3ReferenceContainer('snowflake')">&#127970; View Tab 3 Verification Card</button>
               </div>
             </div>
             <div class="payg-compare-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
@@ -296,7 +311,7 @@
               </div>
               <div style="display:flex; gap:6px;">
                 <button type="button" class="sim-btn primary text-xs" onclick="scrollToPAYGConfigurator('datadog')">&#9889; Test Connection in Live Runner</button>
-                <button type="button" class="sim-btn text-xs" onclick="jumpToTab3ReferenceContainer('seq')">&#127970; View Tab 3 Reference Container</button>
+                <button type="button" class="sim-btn text-xs" onclick="jumpToTab3ReferenceContainer('datadog')">&#127970; View Tab 3 Verification Card</button>
               </div>
             </div>
             <div class="payg-compare-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
@@ -334,7 +349,7 @@
               </div>
               <div style="display:flex; gap:6px;">
                 <button type="button" class="sim-btn primary text-xs" onclick="scrollToPAYGConfigurator('databricks')">&#9889; Test Connection in Live Runner</button>
-                <button type="button" class="sim-btn text-xs" onclick="jumpToTab3ReferenceContainer('trino')">&#127970; View Tab 3 Reference Container</button>
+                <button type="button" class="sim-btn text-xs" onclick="jumpToTab3ReferenceContainer('databricks')">&#127970; View Tab 3 Verification Card</button>
               </div>
             </div>
             <div class="payg-compare-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
@@ -372,7 +387,7 @@
               </div>
               <div style="display:flex; gap:6px;">
                 <button type="button" class="sim-btn primary text-xs" onclick="scrollToPAYGConfigurator('clickhouse')">&#9889; Test Connection in Live Runner</button>
-                <button type="button" class="sim-btn text-xs" onclick="jumpToTab3ReferenceContainer('clickhouse')">&#127970; View Tab 3 Reference Container</button>
+                <button type="button" class="sim-btn text-xs" onclick="jumpToTab3ReferenceContainer('snowflake')">&#127970; View Tab 3 Verification Card</button>
               </div>
             </div>
             <div class="payg-compare-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
@@ -392,7 +407,7 @@
                   <span style="font-size:11px; color:#059669; font-weight:700;">Per-Tenant Quota &amp; RLS</span>
                 </div>
                 <ul style="margin:0; padding-left:18px; color:#065f46;">
-                  <li><strong>SQL Row Policies:</strong> <code>CREATE ROW POLICY tenant_rls ON metrics FOR SELECT USING tenant_id = current_user()</code>.</li>
+                  <li><strong>SQL Row-Level Policies:</strong> Per-tenant RBAC row filters bound to verified OIDC JWT claims (<code>USING tenant_id = getSetting('SQL_tenant_id')</code>).</li>
                   <li><strong>Strict Memory Bulkheads:</strong> Maximum memory usage capped at 4GB per tenant query session (Hop 3 FinOps limit).</li>
                 </ul>
               </div>
@@ -408,7 +423,7 @@
               </div>
               <div style="display:flex; gap:6px;">
                 <button type="button" class="sim-btn primary text-xs" onclick="scrollToPAYGConfigurator('mongodb')">&#9889; Test Connection in Live Runner</button>
-                <button type="button" class="sim-btn text-xs" onclick="jumpToTab3ReferenceContainer('nocodb')">&#127970; View Tab 3 Reference Container</button>
+                <button type="button" class="sim-btn text-xs" onclick="jumpToTab3ReferenceContainer('veeva')">&#127970; View Tab 3 Verification Card</button>
               </div>
             </div>
             <div class="payg-compare-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
@@ -444,7 +459,7 @@
               </div>
               <div style="display:flex; gap:6px;">
                 <button type="button" class="sim-btn primary text-xs" onclick="scrollToPAYGConfigurator('confluent')">&#9889; Test Connection in Live Runner</button>
-                <button type="button" class="sim-btn text-xs" onclick="jumpToTab3ReferenceContainer('seq')" title="Jump to SAAS-09 Structured Event &amp; Telemetry Stream Container">&#127970; View Tab 3 Reference Container</button>
+                <button type="button" class="sim-btn text-xs" onclick="jumpToTab3ReferenceContainer('datadog')" title="Jump to SAAS-09 Structured Event &amp; Telemetry Stream Container">&#127970; View Tab 3 Verification Card</button>
               </div>
             </div>
             <div class="payg-compare-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
@@ -481,7 +496,7 @@
               </div>
               <div style="display:flex; gap:6px;">
                 <button type="button" class="sim-btn primary text-xs" onclick="scrollToPAYGConfigurator('servicenow')">&#9889; Test Connection in Live Runner</button>
-                <button type="button" class="sim-btn text-xs" onclick="jumpToTab3ReferenceContainer('redmine')">&#127970; View Tab 3 Reference Container</button>
+                <button type="button" class="sim-btn text-xs" onclick="jumpToTab3ReferenceContainer('servicenow')">&#127970; View Tab 3 Verification Card</button>
               </div>
             </div>
             <div class="payg-compare-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
@@ -518,7 +533,7 @@
               </div>
               <div style="display:flex; gap:6px;">
                 <button type="button" class="sim-btn primary text-xs" onclick="scrollToPAYGConfigurator('salesforce')">&#9889; Test Connection in Live Runner</button>
-                <button type="button" class="sim-btn text-xs" onclick="jumpToTab3ReferenceContainer('gitea')" title="Jump to SAAS-05 Salesforce CRM / Jira SRE Escalation Container">&#127970; View Tab 3 Reference Container</button>
+                <button type="button" class="sim-btn text-xs" onclick="jumpToTab3ReferenceContainer('salesforce-jira')" title="Jump to SAAS-05 Salesforce CRM / Jira SRE Escalation Container">&#127970; View Tab 3 Verification Card</button>
               </div>
             </div>
             <div class="payg-compare-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">

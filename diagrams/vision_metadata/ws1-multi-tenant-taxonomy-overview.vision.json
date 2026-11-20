@@ -23,9 +23,9 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "GE Blogs Self-Contained Vision Decompiler (scripts/lib/visionIconEnricher.ts)",
   "healerLog": [
-    "Protected master/canonical blueprint passed through without geometric mutation."
+    "Protected canonical blueprint passed through without geometric mutation."
   ],
   "validationReport": {
     "valid": false,
@@ -58,9 +58,9 @@
       "plainTitle": "Competing B2B Tenants",
       "zone": "Header & Value Pillars",
       "x": 465,
-      "y": 52,
+      "y": 54,
       "width": 250,
-      "height": 86,
+      "height": 84,
       "isContainer": false
     },
     {
@@ -137,9 +137,9 @@
     },
     {
       "id": "wrapper_right_pab",
-      "urlSlug": "OBJ-09-DEDICATED-SPOKE-ARCHETYP",
-      "label": "Dedicated Spoke archetype — Pattern B silo project OR Pattern C PSC spoke (see WS3 / WS4 for each)",
-      "plainTitle": "Dedicated Spoke archetype — Pattern B silo project OR Pattern C PSC spoke (see WS3 / WS4 for each)",
+      "urlSlug": "OBJ-09-DEDICATED-SPOKE-PATTERN",
+      "label": "Dedicated Spoke: Pattern B Silo or Pattern C PSC Spoke (WS3 / WS4)",
+      "plainTitle": "Dedicated Spoke: Pattern B Silo or Pattern C PSC Spoke (WS3 / WS4)",
       "zone": "Agentic Capabilities Platform",
       "x": 614,
       "y": 772,
@@ -173,9 +173,9 @@
     },
     {
       "id": "card_rc_midleft",
-      "urlSlug": "OBJ-12-MODEL-ARMOR-INGRESS-PROM",
-      "label": "Model Armor Ingress Prompt Screen",
-      "plainTitle": "Model Armor Ingress Prompt Screen",
+      "urlSlug": "OBJ-12-MODEL-ARMOR-INGRESS-SCRE",
+      "label": "Model Armor Ingress Screen (",
+      "plainTitle": "Model Armor Ingress Screen (",
       "zone": "Apps & Solutions Tier",
       "x": 88,
       "y": 482,
@@ -269,9 +269,9 @@
     },
     {
       "id": "card_lc_llm",
-      "urlSlug": "OBJ-20-GEMINI-2-5-PRO-90-PREFIX",
-      "label": "Gemini 2.5 Pro 90% Prefix Cache Savings",
-      "plainTitle": "Gemini 2.5 Pro 90% Prefix Cache Savings",
+      "urlSlug": "OBJ-20-GEMINI-3-8-FLASH",
+      "label": "Gemini 3.8 Flash",
+      "plainTitle": "Gemini 3.8 Flash",
       "zone": "Governance & Footer",
       "x": 96,
       "y": 1110,
@@ -281,9 +281,9 @@
     },
     {
       "id": "card_lc_run",
-      "urlSlug": "OBJ-21-VERTEX-AI-AGENT-ENGINE-G",
-      "label": "Vertex AI Agent Engine gVisor + temp:tenant_id",
-      "plainTitle": "Vertex AI Agent Engine gVisor + temp:tenant_id",
+      "urlSlug": "OBJ-21-VERTEX-AI-AGENT-ENGINE",
+      "label": "Vertex AI Agent Engine",
+      "plainTitle": "Vertex AI Agent Engine",
       "zone": "Governance & Footer",
       "x": 342,
       "y": 924,

@@ -1,12 +1,12 @@
 {
   "workstream": "WS2",
   "deckTitle": "Pattern A — High-Density Pooled Multi-Tenant Architecture on Google Cloud (Workstream 2)",
-  "deckSubtitle": "Serving hundreds of commercial B2B SaaS tenants on a single shared Cloud Run v2, Vertex AI Agent Engine, and AlloyDB RLS footprint with 84.7% lower inference cost and 10/10 red-team attacks blocked",
+  "deckSubtitle": "Serving hundreds of commercial B2B SaaS tenants on a single shared Cloud Run v2, Vertex AI Agent Engine, and AlloyDB RLS footprint with 89.1% lower inference cost and 10/10 red-team attacks blocked",
   "tldr": [
     "Commercial SaaS Margin Equation: Pattern A co-hosts hundreds of commercial tenants in one shared project (`cymbal-control-plane`) at a 120 RPM floor.",
     "Cryptographic Logical Isolation: Rather than spinning up per-tenant VPCs, Pattern A enforces non-bypassable tenant boundaries across all 5 hops.",
     "10/10 Red-Team Attacks Blocked: FinVault Bank and RetailStream Corp share Cloud Run v2 workers and AlloyDB with zero cross-tenant bleed.",
-    "84.7% Net Inference Savings: A 32k-token immutable system runbook is cached once in ContextCacheConfig at 90% off (34,000 -> 5,200 tokens).",
+    "89.1% Net Inference Savings: A 32,768-token immutable system runbook is cached at 90% off plus -94% ARD pruning (36,468 -> 3,969 eq. tokens).",
     "Turnkey Milestone 1 Production Kit: Includes the 80% reusable ADK runtime pipeline, a 1-click Terraform starter (`2.6-terraform-starter`), a 90-minute hands-on codelab, and the 10-point breach simulation suite."
   ],
   "tldrSpecs": [
@@ -26,8 +26,8 @@
       "tag": "Adversarial Red-Team Certified"
     },
     {
-      "stack": "Gemini 2.5 Pro ContextCacheConfig (32,000 Shared Platform System Tokens)",
-      "sla": "90% Cached Input Token Discount • 84.7% Total Per-Turn Inference Cost Savings",
+      "stack": "Gemini 3.8 Flash ContextCacheConfig (32,768 Shared Platform System Tokens)",
+      "sla": "90% Cached Input Token Discount • 89.1% Total Per-Turn Inference Cost Savings",
       "tag": "Shared Immutable Prefix Cache"
     },
     {
@@ -41,15 +41,15 @@
       "heading": "Products used — Shared Cloud Run v2, Vertex AI, Valkey & AlloyDB RLS",
       "layout": "cards",
       "bullets": [
-        "Agentic AI & Shared Prefix Caching: Vertex AI Agent Engine (ADK runtime, Agent Registry & L1–L5 Memory Bank) and Gemini 2.5 Pro with ContextCacheConfig caching a 32,000-token immutable system prefix at a 90% discount (84.7% net token savings).",
+        "Agentic AI & Shared Prefix Caching: Vertex AI Agent Engine (ADK runtime, Agent Registry & L1–L5 Memory Bank) and Gemini 3.8 Flash with ContextCacheConfig caching a 32,768-token immutable system prefix at a 90% discount (89.1% net token savings).",
         "Ingress, Identity & Bidirectional AI Safety: Global External Application Load Balancer, Google Cloud Armor L7 WAF (stripping spoofed X-Tenant-Id headers), IAP + IAM STS (RFC 8693 OBO + RFC 9449 DPoP), Vertex AI Model Armor, and Cloud Sensitive Data Protection.",
         "Rate Bulkheads, Relational RLS & FinOps Telemetry: Memorystore for Valkey (120 vs. 600 RPM token buckets), Firestore tenant profile registry, AlloyDB for PostgreSQL (`FORCE ROW LEVEL SECURITY`), Cloud KMS CMEK, and BigQuery zero-PII OTel chargeback.",
         "High-Density Unit Economics (120 RPM Shared Pool): Co-hosts hundreds of commercial B2B SaaS tenants inside one shared Google Cloud project (`cymbal-control-plane`) while guaranteeing 10/10 red-team breach isolation."
       ],
       "specs": [
         {
-          "stack": "Vertex AI Agent Engine (ADK) • Gemini 2.5 Pro ContextCacheConfig (32k Shared System Prefix)",
-          "sla": "90% Cached Input Token Discount • Cuts Billable Input Tokens from 34,000 to 5,200/Turn (84.7% Savings)",
+          "stack": "Vertex AI Agent Engine (ADK) • Gemini 3.8 Flash ContextCacheConfig (32k Shared System Prefix)",
+          "sla": "90% Cached Prefix + -94% ARD Pruning • Cuts Billable Input Tokens from 36,468 to 3,969/Turn (89.1% Savings)",
           "tag": "1. Agentic AI & Prefix Cache"
         },
         {
@@ -59,7 +59,7 @@
         },
         {
           "stack": "Memorystore for Valkey (RPM) • Firestore • AlloyDB PostgreSQL RLS • Cloud KMS • BigQuery OTel",
-          "sla": "Enforces 120/600 RPM & 4k/8k Thinking Caps • 0 Cross-Tenant SQL Rows • Per-Tenant Token Billing",
+          "sla": "Enforces 120/600 RPM & 4k/8k Output Caps • 0 Cross-Tenant SQL Rows • Per-Tenant Token Billing",
           "tag": "3. Bulkheads, RLS & FinOps"
         },
         {
@@ -73,25 +73,25 @@
       "heading": "Use cases — Co-Hosting FinVault & RetailStream Safely on One Pooled Google Cloud Stack",
       "layout": "cards",
       "bullets": [
-        "Dynamic Per-Turn Runtime Hydration: A single pooled Diagnostic Agent on Cloud Run v2 & Vertex AI Agent Engine dynamically loads each caller’s Firestore profile, GCS Skills (`gs://cymbal-skills-{tenant}/`), and 32k Gemini 2.5 Pro ContextCacheConfig prefix.",
-        "FinVault Bank (Enterprise Slice in Pool): Authenticates via Google Workspace OIDC, unlocks an 8,000-token thinking budget and 600 RPM Valkey quota, and accesses private Agent Alpha (Gemini 2.5 Pro Dedicated PT) plus Workspace/Jira 3LO.",
-        "RetailStream Corp (Standard Slice in Pool): Authenticates via Microsoft Entra ID OIDC, runs within a 4,000-token thinking cap and 120 RPM Valkey quota (120 RPM Pool floor), and invokes SharePoint/ServiceNow 3LO with `-32042` step-up consent.",
+        "Dynamic Per-Turn Runtime Hydration: A single pooled Diagnostic Agent on Cloud Run v2 & Vertex AI Agent Engine dynamically loads each caller’s Firestore profile, GCS Skills (`gs://cymbal-skills-{tenant}/`), and 32k Gemini 3.8 Flash ContextCacheConfig prefix.",
+        "FinVault Bank (Enterprise Slice in Pool): Authenticates via Google Workspace OIDC, unlocks HIGH thinkingLevel (8,000 maxOutputTokens) and 600 RPM Valkey quota, and accesses private Agent Alpha (Gemini 3.8 Flash Dedicated PT) plus Workspace/Jira 3LO.",
+        "RetailStream Corp (Standard Slice in Pool): Authenticates via Microsoft Entra ID OIDC, runs within a `MEDIUM` (`4,000 maxOutputTokens`) cap and 120 RPM Valkey quota (120 RPM Pool floor), and invokes SharePoint/ServiceNow 3LO with `-32042` step-up consent.",
         "Cryptographic Catalog, Memory & AlloyDB RLS Firewall: Cloud Armor, IAP OBO/DPoP, Hop 2 ARD Filter (HTTP 403), Hop 3 L1–L5 Memory Bank namespaces, Hop 4 Model Armor/DLP, and Hop 5 AlloyDB FORCE RLS guarantee 100% mutual invisibility."
       ],
       "specs": [
         {
-          "stack": "Cloud Run v2 • Vertex AI Agent Engine • Gemini 2.5 Pro ContextCacheConfig (32k Prefix)",
-          "sla": "Injects Tenant-Specific Prompt & GCS Skills per Turn • 84.7% Net Input Token Cost Reduction",
+          "stack": "Cloud Run v2 • Vertex AI Agent Engine • Gemini 3.8 Flash ContextCacheConfig (32k Prefix)",
+          "sla": "Injects Tenant-Specific Prompt & GCS Skills per Turn • 89.1% Net Input Token Cost Reduction",
           "tag": "1. Shared Pooled Control Plane"
         },
         {
-          "stack": "Google Workspace OIDC • Agent Alpha (Gemini 2.5 Pro Dedicated PT) • 3LO Drive/Gmail/Jira",
-          "sla": "8,000 Thinking Tokens • 600 RPM Valkey Bucket • OCC NLC (HTTP 422) + IBAN/SWIFT Masking",
+          "stack": "Google Workspace OIDC • Agent Alpha (Gemini 3.8 Flash Dedicated PT) • 3LO Drive/Gmail/Jira",
+          "sla": "8,000 Output Budget • 600 RPM Valkey Bucket • OCC NLC (HTTP 422) + IBAN/SWIFT Masking",
           "tag": "2. FinVault Pooled Enterprise Slice"
         },
         {
           "stack": "Microsoft Entra ID OIDC • Shared Diagnostic Agent • 3LO SharePoint & ServiceNow ITOM",
-          "sla": "4,000 Thinking Tokens • 120 RPM Valkey Bucket • PCI-DSS PAN/SSN Masking • 120 RPM Pool Floor",
+          "sla": "4,000 Output Budget • 120 RPM Valkey Bucket • PCI-DSS PAN/SSN Masking • 120 RPM Pool Floor",
           "tag": "3. RetailStream Pooled Standard Slice"
         },
         {
@@ -121,7 +121,7 @@
           "Ingress & identity binding",
           "Trusts client-supplied `X-Tenant-Id` HTTP header or shared API key in application code",
           "Cloud Armor strips `X-Tenant-Id`; IAP + STS mints RFC 8693 OBO & RFC 9449 DPoP context",
-          "BeyondCorp mTLS cert pinning + per-project IAM Principal Access Boundary (PAB)"
+          "Google Cloud IAP mTLS cert pinning + per-project IAM Principal Access Boundary (PAB)"
         ],
         [
           "Tool catalog & memory state",
@@ -138,7 +138,7 @@
         [
           "Prompt caching & FinOps COGS",
           "34k prompt billed in full every turn (`32k Uncached/turn`) or unsafe cross-tenant cache bleed",
-          "32k immutable prefix in Gemini 2.5 Pro `ContextCacheConfig` (`90%` discount -> `84.7%` savings)",
+          "32k immutable prefix in Gemini 3.8 Flash `ContextCacheConfig` (`90%` discount -> `89.1%` savings)",
           "Per-silo prefix cache or dedicated air-gapped GKE Gemma 3 (27B) node pool"
         ],
         [
@@ -184,7 +184,7 @@
           "stage": "Runtime & Memory",
           "title": "Sandboxed ADK Execution, L1–L5 Memory & Quota Bulkheads",
           "service": "Agent Engine • Memorystore Valkey",
-          "mechanism": "Executes agent reasoning inside gVisor-isolated Cloud Run v2 / Agent Engine sandboxes, partitions L1–L5 Memory Bank namespaces, and enforces per-tenant RPM and thinking budgets.",
+          "mechanism": "Executes agent reasoning inside gVisor-isolated Cloud Run v2 / Agent Engine sandboxes, partitions L1–L5 Memory Bank namespaces, and enforces per-tenant RPM and thinkingLevel / maxOutputTokens caps.",
           "invariant": "Namespace: mem://{tenant_id}/L1..L5 • Cap: 4k (Std) / 8k (Ent)",
           "gate": "HTTP 429 on RPM Burst • HTTP 403 on Cross-Namespace Read"
         },
@@ -210,7 +210,7 @@
       "bullets": [
         "Hop 1 — Edge Header Stripping & OBO/DPoP Minting: Cloud Armor strips client X-Tenant-Id headers and IAP/STS mints a DPoP-bound TenantSecurityContext.",
         "Hop 2 — Agent Registry Discovery (ARD) Filter: Filters visible agents and MCP servers by tenant_id, blocking unauthorized private agent invocations with HTTP 403.",
-        "Hop 3 — L1–L5 Memory Bank & Valkey Bulkheads: Scopes episodic memory to mem://{tenant_id}/L1..L5, enforces 120/600 RPM in Valkey, and clamps thinking_budget (4k/8k).",
+        "Hop 3 — L1–L5 Memory Bank & Valkey Bulkheads: Scopes episodic memory to mem://{tenant_id}/L1..L5, enforces 120/600 RPM in Valkey, and clamps thinkingLevel / maxOutputTokens (MEDIUM/4k vs HIGH/8k).",
         "Hop 4 — Bidirectional Model Armor & Sensitive Data Protection: Screens prompts for jailbreaks (HTTP 400), enforces semantic NLCs (HTTP 422), and masks egress IBAN/SWIFT/PAN PII.",
         "Hop 5 — AlloyDB Row-Level Security & BigQuery OTel: Binds SET LOCAL app.current_tenant_id in PostgreSQL RLS and streams zero-PII token attribution spans to BigQuery."
       ]
@@ -252,7 +252,7 @@
         [
           "Test 6: Token & RPM Flood\nTest 7: Cross-Tenant Memory",
           "Hop 3: Valkey Token Bucket +\nL1–L5 Memory Bank Namespace",
-          "RetailStream requests 16k thinking budget & floods 500 RPM (Test 6) or reads `mem://finvault/L4` (Test 7).",
+          "RetailStream requests 16k output tokens (HIGH) & floods 500 RPM (Test 6) or reads `mem://finvault/L4` (Test 7).",
           "Test 6: Clamped to 4k & throttled (`HTTP 429`) • Test 7: Memory read blocked (`PermissionError`)"
         ],
         [
@@ -286,7 +286,7 @@
       "talkingPoints": [
         "Maps all 10 automated red-team adversarial tests directly onto the 4 Hub-and-Spoke architecture zones to prove defense-in-depth.",
         "Zone 1 Edge & Catalog Defenses (Tests 1–3): Neutralizes X-Tenant-Id header spoofing (401), private Agent Alpha probing (403), and cross-tenant MCP calls (403).",
-        "Zone 2 Rate & Consent Governance (Tests 6 & 10): Clamps oversized thinking budgets, throttles 500-RPM bursts (429), and enforces 3LO step-up consent (401).",
+        "Zone 2 Rate & Consent Governance (Tests 6 & 10): Clamps oversized thinkingLevel / output caps, throttles 500-RPM bursts (429), and enforces 3LO step-up consent (401).",
         "Zone 3 Safety & DLP Defenses (Tests 4, 5 & 8): Blocks prompt injection (400), enforces OCC semantic NLCs (422), and masks egress IBAN/SWIFT/PAN PII.",
         "Zone 4 Memory & RLS Defenses (Tests 7 & 9): Blocks cross-tenant L4 Memory Bank reads (PermissionError) and restricts AlloyDB queries to 0 unauthorized rows."
       ]
@@ -300,7 +300,7 @@
         "Zone 1 (Identity Ingress): Cloud Armor WAF and IAP validate external OIDC JWTs and exchange them via IAM STS for DPoP-bound session tokens.",
         "Zone 3 (FinVault 3LO Sandbox): Brokers Google OAuth 2.0 3LO access to Google Drive runbooks, Calendar, Gmail, and Atlassian Jira.",
         "Zone 4 (RetailStream 3LO Sandbox): Brokers Microsoft Entra ID OIDC 3LO access to SharePoint Online and ServiceNow ITOM with step-up elicitation.",
-        "Zone 2 (Shared State & Rate Store): Firestore stores per-tenant tier metadata (8k vs. 4k budget) while Memorystore for Valkey tracks live RPM counters."
+        "Zone 2 (Shared State & Rate Store): Firestore stores per-tenant tier metadata (HIGH/8k vs MEDIUM/4k) while Memorystore for Valkey tracks live RPM counters."
       ]
     },
     {
@@ -318,8 +318,8 @@
   ],
   "takeaways": [
     "High-Density Multi-Tenancy Without Compromising Security: Hundreds of commercial tenants can safely share one Cloud Run and AlloyDB footprint when cryptographic tenant context is verified across all 5 hops.",
-    "Capture 84.7% Net Inference Savings via Immutable Prefix Caching: Cache shared platform instructions once in Gemini 2.5 Pro ContextCacheConfig (90% discount) while isolating tenant memory in L1–L5 namespaces.",
-    "Eliminate Noisy Neighbors with Dual Quota Bulkheads: Pair Memorystore for Valkey token-bucket rate limiters (120 vs. 600 RPM) with per-tier Gemini thinking_budget clamps (4,000 vs. 8,000 tokens).",
+    "Capture 89.1% Net Inference Savings via Immutable Prefix Caching: Cache shared platform instructions once in Gemini 3.8 Flash ContextCacheConfig (90% discount) while isolating tenant memory in L1–L5 namespaces.",
+    "Eliminate Noisy Neighbors with Dual Quota Bulkheads: Pair Memorystore for Valkey token-bucket rate limiters (120 vs. 600 RPM) with per-tier Gemini thinkingLevel / maxOutputTokens clamps (MEDIUM/4k vs. HIGH/8k).",
     "Prove Isolation Continuously with the 10-Point Breach Suite: Run `run_breach_simulations.py` in CI/CD to verify deterministic HTTP 400/401/403/422/429 enforcement and zero cross-tenant SQL rows.",
     "Graduate Regulated Tenants to Pattern B/C Without Code Rewrites: Keep commercial tenants on Pattern A for maximum gross margin and promote regulated enterprises to dedicated silos via configuration."
   ],
@@ -330,12 +330,12 @@
       "tag": "Takeaway 1: High-Density Zero Trust"
     },
     {
-      "stack": "Gemini 2.5 Pro ContextCacheConfig (32,000 Shared Platform Tokens)",
-      "sla": "Reduces Billable Input Tokens from 34,000 to 5,200 per Agent Turn (84.7% Savings)",
+      "stack": "Gemini 3.8 Flash ContextCacheConfig (32,768 Shared Platform Tokens)",
+      "sla": "Reduces Billable Input Tokens from 36,468 to 3,969 per Agent Turn (89.1% Savings)",
       "tag": "Takeaway 2: Prefix Cache FinOps"
     },
     {
-      "stack": "Memorystore for Valkey (RPM) + Vertex AI thinking_budget (Token Clamp)",
+      "stack": "Memorystore for Valkey (RPM) + Vertex AI thinkingLevel / maxOutputTokens Clamp",
       "sla": "Guarantees Predictable p99 Latency Across Standard & Enterprise Tenants",
       "tag": "Takeaway 3: Dual Quota Bulkheads"
     },
@@ -366,9 +366,9 @@
       "totalSlides": 12,
       "title": "Act I — Customer Use Cases, Competing Tenant Profiles & Cloud Stack",
       "whyHere": "Following our opening roadmap on Slide 1, we always start with the customer first—because an architecture only creates business value when it solves real customer constraints.",
-      "whatIsHappening": "Look at the business challenge on this slide: FinVault Bank and RetailStream Corp are both using our shared Incident Diagnostic Agent at the exact same time. From a financial perspective, running one shared agent runtime and sharing a single thirty-two-thousand-token system prompt cache reduces our inference cost of goods sold by up to ninety percent. At the same time, FinVault uses Google Workspace and Jira with an eight-thousand thinking-token budget, while RetailStream uses Microsoft Entra and ServiceNow with a four-thousand token cap—and neither company can ever discover or query the other’s private tools or incident history.",
+      "whatIsHappening": "Look at the business challenge on this slide: FinVault Bank and RetailStream Corp are both using our shared Incident Diagnostic Agent at the exact same time. From a financial perspective, running one shared agent runtime and sharing a single thirty-two-thousand-token system prompt cache reduces our inference cost of goods sold by up to ninety percent. At the same time, FinVault uses Google Workspace and Jira with a HIGH thinking level and an eight-thousand output-token cap, while RetailStream uses Microsoft Entra and ServiceNow with a MEDIUM thinking level and a four-thousand output cap—and neither company can ever discover or query the other’s private tools or incident history.",
       "whatComesNext": "Now that we see what our customers require on Slide 2, the natural question for both business and technical leaders is: what are our architectural options to deliver this, and how do we choose the right one? Let's look at Slide 3.",
-      "fullText": "Following our opening roadmap on Slide 1, we always start with the customer first—because an architecture only creates business value when it solves real customer constraints.\n\nLook at the business challenge on this slide: FinVault Bank and RetailStream Corp are both using our shared Incident Diagnostic Agent at the exact same time. From a financial perspective, running one shared agent runtime and sharing a single thirty-two-thousand-token system prompt cache reduces our inference cost of goods sold by up to ninety percent. At the same time, FinVault uses Google Workspace and Jira with an eight-thousand thinking-token budget, while RetailStream uses Microsoft Entra and ServiceNow with a four-thousand token cap—and neither company can ever discover or query the other’s private tools or incident history.\n\nNow that we see what our customers require on Slide 2, the natural question for both business and technical leaders is: what are our architectural options to deliver this, and how do we choose the right one? Let's look at Slide 3."
+      "fullText": "Following our opening roadmap on Slide 1, we always start with the customer first—because an architecture only creates business value when it solves real customer constraints.\n\nLook at the business challenge on this slide: FinVault Bank and RetailStream Corp are both using our shared Incident Diagnostic Agent at the exact same time. From a financial perspective, running one shared agent runtime and sharing a single thirty-two-thousand-token system prompt cache reduces our inference cost of goods sold by up to ninety percent. At the same time, FinVault uses Google Workspace and Jira with a HIGH thinking level and an eight-thousand output-token cap, while RetailStream uses Microsoft Entra and ServiceNow with a MEDIUM thinking level and a four-thousand output cap—and neither company can ever discover or query the other’s private tools or incident history.\n\nNow that we see what our customers require on Slide 2, the natural question for both business and technical leaders is: what are our architectural options to deliver this, and how do we choose the right one? Let's look at Slide 3."
     },
     {
       "slide": 3,
@@ -436,11 +436,11 @@
     {
       "slide": 10,
       "totalSlides": 12,
-      "title": "Act III — Live Google Cloud Console & Runtime Verification Proof",
-      "whyHere": "Following the test matrix on Slide 9, this slide turns those architectural claims into concrete visual proof captured from our running Google Cloud projects.",
+      "title": "Act III — Runtime & Commercial SaaS Verification Proof (GCP Console Pending 1-Tap SSO)",
+      "whyHere": "Following the test matrix on Slide 9, this slide turns those architectural claims into automated runtime verification receipts and commercial SaaS proofs (GCP Console captures pending 1-tap SSO).",
       "whatIsHappening": "Here are the live Dual-Plane receipts backing up that ten-out-of-ten scorecard. On the left, you can see our deployed pooled Cloud Run service and BigQuery Row-Level Security policies in Google Cloud Console; on the right, the verification cards confirm ninety percent shared prompt cache efficiency, 10/10 Intra-Cloud breach simulations blocked, and 10/10 Inter-Cloud Pattern A 10-SaaS MCP RLS assertions passed.",
       "whatComesNext": "With the architecture explained in Act II and proven live in Google Cloud here in Act III, let's turn to Slide 11 to distill everything we have covered into three executive takeaways.",
-      "fullText": "Following the test matrix on Slide 9, this slide turns those architectural claims into concrete visual proof captured from our running Google Cloud projects.\n\nHere are the live Dual-Plane receipts backing up that ten-out-of-ten scorecard. On the left, you can see our deployed pooled Cloud Run service and BigQuery Row-Level Security policies in Google Cloud Console; on the right, the verification cards confirm ninety percent shared prompt cache efficiency, 10/10 Intra-Cloud breach simulations blocked, and 10/10 Inter-Cloud Pattern A 10-SaaS MCP RLS assertions passed.\n\nWith the architecture explained in Act II and proven live in Google Cloud here in Act III, let's turn to Slide 11 to distill everything we have covered into three executive takeaways."
+      "fullText": "Following the test matrix on Slide 9, this slide turns those architectural claims into automated runtime verification receipts and commercial SaaS proofs (GCP Console captures pending 1-tap SSO).\n\nHere are the live Dual-Plane receipts backing up that ten-out-of-ten scorecard. On the left, you can see our deployed pooled Cloud Run service and BigQuery Row-Level Security policies in Google Cloud Console; on the right, the verification cards confirm ninety percent shared prompt cache efficiency, 10/10 Intra-Cloud breach simulations blocked, and 10/10 Inter-Cloud Pattern A 10-SaaS MCP RLS assertions passed.\n\nWith the architecture explained in Act II and proven live in Google Cloud here in Act III, let's turn to Slide 11 to distill everything we have covered into three executive takeaways."
     },
     {
       "slide": 11,

@@ -111,13 +111,13 @@ class TestFiveHopPipeline(unittest.TestCase):
         self.runtime.hop3.disable_cmek_key(cmek_uri)
         _, h3_audit = self.runtime.hop3.enforce_compute_and_finops(
             ctx=fv_ctx,
-            requested_thinking_tokens=6000,
+            requested_output_tokens=6000,
             simulated_current_rpm=10,
         )
         self.assertEqual(h3_audit.status_code, 423)
         self.runtime.hop3.enable_cmek_key(cmek_uri)
 
-    def test_04_hop3_valkey_rate_limit_bulkhead_and_thinking_budget_clamping(self) -> None:
+    def test_04_hop3_valkey_rate_limit_bulkhead_and_thinking_level_clamping(self) -> None:
         throttled = self.runtime.handle_agent_turn(
             raw_headers={},
             jwt_claims={
@@ -128,7 +128,7 @@ class TestFiveHopPipeline(unittest.TestCase):
             session_id="unit-sess-04",
             requested_agent_uri="agent://cymbal/shared-incident-diagnostic-v2",
             user_prompt="Analyze checkout latency spike",
-            requested_thinking_tokens=32000,
+            requested_output_tokens=32000,
             simulated_current_rpm=250,
         )
         self.assertEqual(throttled["status_code"], 429)
@@ -172,11 +172,12 @@ class TestFiveHopPipeline(unittest.TestCase):
             session_id="unit-sess-07",
             requested_agent_uri="agent://finvault/private-agent-alpha-regulatory",
             user_prompt="Inspect wire settlement latency",
-            requested_thinking_tokens=16000,
+            requested_output_tokens=16000,
             requested_mcp_connector="mcp://cymbal/core-telemetry-2lo",
         )
         self.assertEqual(res["status_code"], 200)
-        self.assertEqual(res["runtime_config"]["effective_thinking_budget"], 8000)
+        self.assertEqual(res["runtime_config"]["effective_thinking_level"], "HIGH")
+        self.assertEqual(res["runtime_config"]["effective_output_token_cap"], 8000)
 
     def test_08_pattern_b_sovereign_silo_vpc_sc_and_pab_enforcement(self) -> None:
         silo = pattern_b_mod.PatternBSiloedService()

@@ -19,3 +19,6 @@ crash.log
 # PPTX preview renders (regenerate via scripts/render_pptx_preview.py)
 .local_backup/
 
+# Dedicated local Node dependencies (never track node_modules or package-lock.json)
+node_modules/
+package-lock.json

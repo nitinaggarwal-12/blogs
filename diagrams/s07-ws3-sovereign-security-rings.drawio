@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="PromptCanvas-Drawio-Compiler" version="24.7.17" type="device">
+  <diagram id="s07-ws3-sovereign-security-rings" name="S07: WS3 Defense Rings (Sketch)">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" background="#FFFFFF" math="0" shadow="1">
+      <root>
+      <mxCell id="0"/>
+      <mxCell id="1" parent="0"/>
+      <mxCell id="ring1_env" value="" style="rounded=0;arcSize=0;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;fillColor=#F8FAFC;strokeColor=#60A5FA;dashed=1;dashPattern=6 5;strokeWidth=1.5;fontColor=#1E3A8A;verticalAlign=top;align=center;spacingTop=12;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="45" y="138" width="1015" height="670" as="geometry"/>
+      </mxCell>
+      <mxCell id="ring2_cmek" value="&lt;div style='font-family:Comic Sans MS,Arial,sans-serif;color:#1E3A8A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Ring 2 • Crypto&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Cloud KMS CMEK&lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Kill-Switch&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Tenant-owned KMS key&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• 1-click key revoke&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Halts Silo in &amp;lt; 60s SLA&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;fillColor=#E8F0FE;strokeColor=#93C5FD;strokeWidth=1.5;fontColor=#1E3A8A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="75" y="225" width="290" height="225" as="geometry"/>
+      </mxCell>
+      <mxCell id="ring3_armor" value="&lt;div style='font-family:Comic Sans MS,Arial,sans-serif;color:#0F172A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Ring 3 • Inline&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Model Armor &amp;amp;&lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Cloud DLP&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Prompt injection shield&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Paranoia Level 2&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Redacts PII / PHI / PCI&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;fontColor=#0F172A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="405" y="225" width="290" height="225" as="geometry"/>
+      </mxCell>
+      <mxCell id="ring4_trust" value="&lt;div style='font-family:Comic Sans MS,Arial,sans-serif;color:#0F172A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Ring 4 • Behavioral&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Agent Trust&lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Drift Transformer&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#334155;'&gt;• event_trust_score&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#334155;'&gt;• session_trust_score&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#334155;'&gt;• Catches Turn-5 Hijack&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.5;fontColor=#0F172A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="735" y="225" width="290" height="225" as="geometry"/>
+      </mxCell>
+      <mxCell id="cel_gate" value="&lt;div style='font-family:Comic Sans MS,Arial,sans-serif;color:#1E3A8A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Policy Enforcement Point&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Agent Gateway Fail-Closed CEL Policy Engine&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;allow = (session_trust &amp;gt;= 0.35) &amp;amp;&amp;amp; (cmek_state == ENABLED) &amp;amp;&amp;amp; (dlp_verdict == CLEAN)&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Revokes session token immediately before any MCP or cross-cloud egress&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;fontColor=#1E3A8A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="200" y="545" width="705" height="195" as="geometry"/>
+      </mxCell>
+      <mxCell id="rt_1" value="&lt;div style='font-family:Comic Sans MS,Arial,sans-serif;color:#78350F;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Exploit 1 Blocked&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Multi-Turn Goal Hijack&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#B45309;'&gt;• Turn 1–4 benign → Turn 5 bulk dump&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#B45309;'&gt;• session_trust drops to 0.14&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#B45309;'&gt;• QUARANTINED AT GATEWAY&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.5;fontColor=#78350F;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1155" y="165" width="395" height="185" as="geometry"/>
+      </mxCell>
+      <mxCell id="rt_2" value="&lt;div style='font-family:Comic Sans MS,Arial,sans-serif;color:#4C1D95;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Exploit 2 Blocked&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Indirect RAG Poisoning&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#6D28D9;'&gt;• Hidden prompt in Confluence page&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#6D28D9;'&gt;• Model Armor strips instruction&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#6D28D9;'&gt;• 0 unauthorized tool calls&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;fillColor=#F3E8FD;strokeColor=#C4B5FD;strokeWidth=1.5;fontColor=#4C1D95;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1155" y="395" width="395" height="185" as="geometry"/>
+      </mxCell>
+      <mxCell id="rt_3" value="&lt;div style='font-family:Comic Sans MS,Arial,sans-serif;color:#065F46;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Sovereign Guarantee&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Tenant CMEK Revocation&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#047857;'&gt;• Customer revokes KMS grant&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#047857;'&gt;• Memory Bank &amp;amp; Logs unreadable&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#047857;'&gt;• 100% cryptographic erasure&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;fillColor=#ECFDF5;strokeColor=#34D399;strokeWidth=1.5;fontColor=#065F46;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1155" y="625" width="395" height="185" as="geometry"/>
+      </mxCell>
+      <mxCell id="e1" value="" style="rounded=1;sketch=1;curveFitting=1;jiggle=2;html=1;exitX=1.0;exitY=0.498;exitDx=0;exitDy=0;entryX=0.0;entryY=0.498;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" edge="1" parent="1" source="ring2_cmek" target="ring3_armor">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="365" y="337" as="sourcePoint"/>
+          <mxPoint x="405" y="337" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e2" value="" style="rounded=1;sketch=1;curveFitting=1;jiggle=2;html=1;exitX=1.0;exitY=0.498;exitDx=0;exitDy=0;entryX=0.0;entryY=0.498;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" edge="1" parent="1" source="ring3_armor" target="ring4_trust">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="695" y="337" as="sourcePoint"/>
+          <mxPoint x="735" y="337" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e3" value="" style="curved=1;sketch=1;curveFitting=1;jiggle=2;html=1;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.199;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" edge="1" parent="1" source="ring2_cmek" target="cel_gate">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="220" y="450" as="sourcePoint"/>
+          <mxPoint x="340" y="545" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="250" y="495"/>
+            <mxPoint x="300" y="520"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e4" value="" style="rounded=1;sketch=1;curveFitting=1;jiggle=2;html=1;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.496;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" edge="1" parent="1" source="ring3_armor" target="cel_gate">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="550" y="450" as="sourcePoint"/>
+          <mxPoint x="550" y="545" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e5" value="" style="curved=1;sketch=1;curveFitting=1;jiggle=2;html=1;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.801;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" edge="1" parent="1" source="ring4_trust" target="cel_gate">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="880" y="450" as="sourcePoint"/>
+          <mxPoint x="765" y="545" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="850" y="495"/>
+            <mxPoint x="800" y="520"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e6" value="" style="curved=1;sketch=1;curveFitting=1;jiggle=2;html=1;exitX=1.0;exitY=0.267;exitDx=0;exitDy=0;entryX=0.0;entryY=0.503;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" edge="1" parent="1" source="ring4_trust" target="rt_1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1025" y="285" as="sourcePoint"/>
+          <mxPoint x="1155" y="258" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1080" y="265"/>
+            <mxPoint x="1115" y="258"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e7" value="" style="curved=1;sketch=1;curveFitting=1;jiggle=2;html=1;exitX=1.0;exitY=0.282;exitDx=0;exitDy=0;entryX=0.0;entryY=0.503;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" edge="1" parent="1" source="cel_gate" target="rt_2">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="905" y="600" as="sourcePoint"/>
+          <mxPoint x="1155" y="488" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1010" y="550"/>
+            <mxPoint x="1085" y="495"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e8" value="" style="curved=1;sketch=1;curveFitting=1;jiggle=2;html=1;exitX=1.0;exitY=0.692;exitDx=0;exitDy=0;entryX=0.0;entryY=0.503;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" edge="1" parent="1" source="cel_gate" target="rt_3">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="905" y="680" as="sourcePoint"/>
+          <mxPoint x="1155" y="718" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1010" y="700"/>
+            <mxPoint x="1085" y="715"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="t_main" value="WS3 + MC5 Sovereign Defense (Hand-Drawn Sketch): VPC-SC, CMEK &amp; Agent Trust Rings" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=22;fontStyle=0;fontFamily=Comic Sans MS,Arial,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="48" y="24" width="1128" height="34" as="geometry"/>
+      </mxCell>
+      <mxCell id="t_sub" value="Slide 07 of 12 • Concentric Zero-Trust Defense Rings &amp; 1-Click CMEK Kill-Switch Inside Pattern B (Silo)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=17;fontStyle=0;fontFamily=Comic Sans MS,Arial,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="48" y="72" width="1109" height="26" as="geometry"/>
+      </mxCell>
+      <mxCell id="t_enclave" value="Ring 1: Per-Tenant GCP Project &amp; VPC Service Controls (VPC-SC) Perimeter" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=18;fontStyle=0;fontFamily=Comic Sans MS,Arial,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="72" y="160" width="827" height="27" as="geometry"/>
+      </mxCell>
+      <mxCell id="e3_lbl" value="cmek_state" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="168" y="498" width="64" height="15" as="geometry"/>
+      </mxCell>
+      <mxCell id="e4_lbl" value="dlp_verdict" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="458" y="491" width="69" height="15" as="geometry"/>
+      </mxCell>
+      <mxCell id="e5_lbl" value="trust_score" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="871" y="498" width="69" height="15" as="geometry"/>
+      </mxCell>
+      <mxCell id="e6_lbl" value="Drift &amp;lt; 0.35" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="1071" y="215" width="75" height="15" as="geometry"/>
+      </mxCell>
+      <mxCell id="e7_lbl" value="Armor block" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="961" y="478" width="69" height="15" as="geometry"/>
+      </mxCell>
+      <mxCell id="e8_lbl" value="KMS revoke" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="963" y="738" width="64" height="15" as="geometry"/>
+      </mxCell>
+        <mxCell id="plane_layer" value="Planes: control / compute / data (generated, locked)" style="locked=1;" parent="0"/>
+        <mxCell id="plane_bdr_00_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=12;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="70.0" y="220.0" width="960.0" height="235.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_01_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=11;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="195.0" y="540.0" width="715.0" height="205.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b00_CONTROL" value="CONTROL · rings 2–4, inside the Ring 1 perimeter" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="76.2" y="209.6" width="276.4" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b01_CONTROL" value="CONTROL · CEL policy gate (PEP)" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="201.2" y="740.1" width="186.2" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_CONTROL" value="&lt;b&gt;CONTROL  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;All drawn: Ring 1 VPC-SC perimeter, Ring 2 tenant-owned KMS key, Ring 3 Model Armor + DLP, Ring 4 trust score, CEL gate (quarantine if session_trust &amp;lt; 0.35).&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=10.3;fontColor=#1D4ED8;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="45.0" y="815.0" width="495.0" height="29.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_COMPUTE" value="&lt;b&gt;COMPUTE  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;Not drawn. The rings and the gate act on the agent&amp;#x27;s session before any MCP or cross-cloud egress.&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=10.3;fontColor=#047857;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="550.0" y="815.0" width="495.0" height="29.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_DATA" value="&lt;b&gt;DATA  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;Not drawn: when the customer revokes the KMS grant (bottom right), the silo&amp;#x27;s Memory Bank and logs become unreadable.&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=1.1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=10.3;fontColor=#B45309;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1055.0" y="815.0" width="495.0" height="29.4" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

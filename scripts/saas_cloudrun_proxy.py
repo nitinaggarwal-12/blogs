@@ -6,7 +6,7 @@ Solves the Google Cloud Organization DRS (Domain Restricted Sharing) constraint:
 - Services are deployed with `--no-allow-unauthenticated` in project `bbar-138hf0`.
 - Standard browsers cannot directly open `.run.app` URLs because Chrome does not attach IAM Identity Tokens.
 - `gcloud run services proxy` fails because it injects `Authorization: Bearer <ID_TOKEN>`,
-  overwriting the downstream application's own Authorization headers (breaking Directus, Metabase, etc.).
+  overwriting the downstream application's own Authorization headers (preserving downstream commercial SaaS Bearer/OIDC tokens).
 
 This proxy solves both:
 1. Listens on `http://localhost:<port>`
@@ -34,91 +34,91 @@ from typing import Any
 from pathlib import Path
 
 SERVICES = {
-    "directus": {
-        "service_name": "cymbal-gcp-directus-hcm",
-        "url": "https://cymbal-gcp-directus-hcm-fm3mts5x3a-uw.a.run.app",
-        "default_port": 8090,
-        "entry_path": "/admin/content/hcm_compensation",
-        "title": "Directus Data Studio v11.1.0 (HCM Compensation RLS)",
-        "credentials": "Auth: Cloud Run IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
-    },
-    "seq": {
-        "service_name": "cymbal-gcp-seq-apm",
-        "url": "https://cymbal-gcp-seq-apm-fm3mts5x3a-uw.a.run.app",
+    "thoughtspot": {
+        "service_name": "cymbal-saas-thoughtspot-proxy",
+        "url": "https://cymbal-saas-thoughtspot-proxy-fm3mts5x3a-uw.a.run.app",
         "default_port": 8081,
-        "entry_path": "/#/events",
-        "title": "Datalust Seq Observability v2024.3 (OpenTelemetry Spans)",
-        "credentials": "No authentication required (Open access)",
+        "entry_path": "/liveboards",
+        "title": "ThoughtSpot Cloud (Spotter Agentic BI) (SAAS-01)",
+        "credentials": "Auth: Google Cloud Marketplace / IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
     },
-    "metabase": {
-        "service_name": "cymbal-gcp-metabase-bi",
-        "url": "https://cymbal-gcp-metabase-bi-fm3mts5x3a-uw.a.run.app",
+    "sigma": {
+        "service_name": "cymbal-saas-sigma-proxy",
+        "url": "https://cymbal-saas-sigma-proxy-fm3mts5x3a-uw.a.run.app",
         "default_port": 8082,
-        "entry_path": "/question/27",
-        "title": "Metabase Enterprise BI v0.50.26 (Saved Question #27 Liveboard)",
-        "credentials": "Auth: Cloud Run IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
+        "entry_path": "/workbooks",
+        "title": "Sigma Computing (Cloud BI Workbooks) (SAAS-02)",
+        "credentials": "Auth: Google Cloud Marketplace / IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
     },
-    "grafana": {
-        "service_name": "cymbal-gcp-grafana-ent",
-        "url": "https://cymbal-gcp-grafana-ent-fm3mts5x3a-uw.a.run.app",
+    "servicenow": {
+        "service_name": "cymbal-saas-servicenow-proxy",
+        "url": "https://cymbal-saas-servicenow-proxy-fm3mts5x3a-uw.a.run.app",
         "default_port": 8083,
-        "entry_path": "/d/finvault-sre-wb",
-        "title": "Grafana Enterprise v11.2.0 (FinVault SRE Workbench)",
-        "credentials": "Auth: Cloud Run IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
+        "entry_path": "/nav_to.do",
+        "title": "ServiceNow ITSM & ITOM (SAAS-03)",
+        "credentials": "Auth: Google Cloud Marketplace / IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
     },
-    "redmine": {
-        "service_name": "cymbal-gcp-redmine-itsm",
-        "url": "https://cymbal-gcp-redmine-itsm-fm3mts5x3a-uw.a.run.app",
+    "veeva": {
+        "service_name": "cymbal-saas-veeva-proxy",
+        "url": "https://cymbal-saas-veeva-proxy-fm3mts5x3a-uw.a.run.app",
         "default_port": 8084,
-        "entry_path": "/projects/finvault-itsm/issues",
-        "title": "Redmine ITSM v5.1 (FinVault Bank Support Cases)",
-        "credentials": "Auth: Cloud Run IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
-    },
-    "nocodb": {
-        "service_name": "cymbal-gcp-nocodb-edc",
-        "url": "https://cymbal-gcp-nocodb-edc-fm3mts5x3a-uw.a.run.app",
-        "default_port": 8085,
-        "entry_path": "/dashboard",
-        "title": "NocoDB EDC / GxP v0.255.2 (Clinical Trial Records)",
-        "credentials": "Auth: Cloud Run IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
-    },
-    "gitea": {
-        "service_name": "cymbal-gcp-gitea-sre",
-        "url": "https://cymbal-gcp-gitea-sre-fm3mts5x3a-uw.a.run.app",
-        "default_port": 8086,
-        "entry_path": "/finvault/agentic-runbooks",
-        "title": "Gitea Enterprise Git v1.22.3 (SRE Escalation Repo)",
-        "credentials": "Auth: Cloud Run IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
-    },
-    "trino": {
-        "service_name": "cymbal-gcp-trino-sql",
-        "url": "https://cymbal-gcp-trino-sql-fm3mts5x3a-uw.a.run.app",
-        "default_port": 8087,
         "entry_path": "/ui/",
-        "title": "Trino Distributed SQL v440 (Query Coordinator)",
-        "credentials": "Username: sre-lead@finvault.com (No password)",
+        "title": "Veeva Vault RIM (21 CFR Part 11 GxP) (SAAS-04)",
+        "credentials": "Auth: Google Cloud Marketplace / IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
     },
-    "clickhouse": {
-        "service_name": "cymbal-gcp-clickhouse-dw",
-        "url": "https://cymbal-gcp-clickhouse-dw-fm3mts5x3a-uw.a.run.app",
+    "salesforce-jira": {
+        "service_name": "cymbal-saas-jira-sfdc-proxy",
+        "url": "https://cymbal-saas-jira-sfdc-proxy-fm3mts5x3a-uw.a.run.app",
+        "default_port": 8085,
+        "entry_path": "/jira/projects",
+        "title": "Atlassian Jira Cloud & Salesforce CRM (SAAS-05)",
+        "credentials": "Auth: Google Cloud Marketplace / IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
+    },
+    "databricks": {
+        "service_name": "cymbal-saas-databricks-proxy",
+        "url": "https://cymbal-saas-databricks-proxy-fm3mts5x3a-uw.a.run.app",
+        "default_port": 8086,
+        "entry_path": "/sql/warehouses",
+        "title": "Databricks Data Intelligence (Unity Catalog) (SAAS-06)",
+        "credentials": "Auth: Google Cloud Marketplace / IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
+    },
+    "snowflake": {
+        "service_name": "cymbal-saas-snowflake-proxy",
+        "url": "https://cymbal-saas-snowflake-proxy-fm3mts5x3a-uw.a.run.app",
+        "default_port": 8087,
+        "entry_path": "/snowsight/",
+        "title": "Snowflake AI Data Cloud (Cortex SQL) (SAAS-07)",
+        "credentials": "Auth: Google Cloud Marketplace / IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
+    },
+    "workday": {
+        "service_name": "cymbal-saas-workday-proxy",
+        "url": "https://cymbal-saas-workday-proxy-fm3mts5x3a-uw.a.run.app",
         "default_port": 8088,
-        "entry_path": "/play",
-        "title": "ClickHouse Data Warehouse v24.8 (SQL Console)",
-        "credentials": "Auth: Cloud Run IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
+        "entry_path": "/raas/",
+        "title": "Workday Enterprise HCM & RaaS (SAAS-08)",
+        "credentials": "Auth: Google Cloud Marketplace / IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
     },
-    "vault": {
-        "service_name": "cymbal-gcp-vault-cmek",
-        "url": "https://cymbal-gcp-vault-cmek-fm3mts5x3a-uw.a.run.app",
+    "datadog": {
+        "service_name": "cymbal-saas-datadog-proxy",
+        "url": "https://cymbal-saas-datadog-proxy-fm3mts5x3a-uw.a.run.app",
         "default_port": 8089,
-        "entry_path": "/ui/vault/secrets/secret/show/tenants/finvault",
-        "title": "HashiCorp Vault v1.13.3 (CMEK Key Namespace)",
-        "credentials": "Auth: Cloud Run IAM OIDC + Vault Token in Secret Manager (cymbal-saas-demo-credentials)",
+        "entry_path": "/logs",
+        "title": "Datadog Cloud Observability & APM (SAAS-09)",
+        "credentials": "Auth: Google Cloud Marketplace / IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
+    },
+    "okta-crowdstrike": {
+        "service_name": "cymbal-saas-okta-xdr-proxy",
+        "url": "https://cymbal-saas-okta-xdr-proxy-fm3mts5x3a-uw.a.run.app",
+        "default_port": 8090,
+        "entry_path": "/admin/dashboard",
+        "title": "Okta Workforce Identity & CrowdStrike XDR (SAAS-10)",
+        "credentials": "Auth: Google Cloud Marketplace / IAM OIDC + Secret Manager (cymbal-saas-demo-credentials)",
     },
 }
 _TOKEN_CACHE: dict[str, tuple[str, float]] = {}
 
 
-OIDC_CACHE_FILE = Path("/tmp/cymbal_gcp_cloudrun_oidc_cache.json")
+OIDC_CACHE_FILE = Path("/tmp/cymbal_saas_oidc_cache.json")
 COMPUTE_SA = "48439189383-compute@developer.gserviceaccount.com"
 
 
@@ -142,7 +142,7 @@ def get_oidc_token(audience: str) -> str:
     if cached and cached[1] > now:
         return cached[0]
 
-    # 2. Check owner-verified /tmp/cymbal_gcp_cloudrun_oidc_cache.json
+    # 2. Check owner-verified /tmp/cymbal_saas_oidc_cache.json
     cache_data = _read_safe_oidc_cache()
     if cache_data and float(cache_data.get("expires_at", 0)) > now:
         tokens = cache_data.get("tokens", {})
@@ -182,28 +182,7 @@ def get_oidc_token(audience: str) -> str:
         except Exception:
             pass
 
-    # 4. Fallback: Trigger Cloud Run oidc-minter batch job
-    print(f"\n==> [OIDC Minter] Minting audience token via Cloud Run minter job for {clean_aud}...")
-    minter_script = Path(__file__).resolve().parent / "provision_gcp_cloudrun_third_party_apps.py"
-    if minter_script.is_file():
-        try:
-            subprocess.run(
-                [sys.executable, "-B", str(minter_script), "--mint-tokens-only"],
-                check=True,
-                timeout=30,
-            )
-            cache_data = _read_safe_oidc_cache()
-            if cache_data:
-                tokens = cache_data.get("tokens", {})
-                exp_ts = float(cache_data.get("expires_at", now + 1800))
-                for k, v in tokens.items():
-                    if isinstance(k, str) and isinstance(v, str) and v.startswith("ey"):
-                        _TOKEN_CACHE[k.rstrip("/")] = (v, exp_ts)
-                if clean_aud in _TOKEN_CACHE:
-                    return _TOKEN_CACHE[clean_aud][0]
-        except Exception as exc:
-            print(f"[WARN] Cloud Run minter job invocation returned: {exc}")
-
+    # 4. Fail closed cleanly if no live IAM/OIDC token is available (retired OSS minter removed)
     return ""
 
 
@@ -447,9 +426,9 @@ def main() -> None:
     parser.add_argument(
         "service",
         nargs="?",
-        default="directus",
+        default="thoughtspot",
         choices=list(SERVICES.keys()) + ["all"],
-        help="SaaS service to proxy (default: directus, or 'all')",
+        help="SaaS service to proxy (default: thoughtspot, or 'all')",
     )
     parser.add_argument("--port", type=int, help="Override local listening port")
     parser.add_argument("--no-browser", action="store_true", help="Do not automatically open browser")

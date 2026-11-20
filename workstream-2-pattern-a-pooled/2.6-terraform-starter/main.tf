@@ -47,7 +47,7 @@ resource "google_compute_security_policy" "cymbal_pooled_waf" {
   }
 }
 
-# 2. Memorystore for Redis — Hop 3 Per-Tenant Rate & Thinking-Token Bulkhead
+# 2. Memorystore for Redis — Hop 3 Per-Tenant Rate & Output-Budget Bulkhead
 resource "google_redis_instance" "tenant_token_bulkhead" {
   name           = "cymbal-tenant-bulkhead-redis"
   tier           = "STANDARD_HA"

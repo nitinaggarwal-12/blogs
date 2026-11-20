@@ -9,8 +9,8 @@ from typing import Dict, List, Optional
 
 
 class TenantTier(str, Enum):
-    STANDARD = "STANDARD"       # e.g., RetailStream Corp (Pooled, 4,000 thinking cap)
-    ENTERPRISE = "ENTERPRISE"   # e.g., FinVault Bank (8,000 thinking cap, custom agents, CMEK)
+    STANDARD = "STANDARD"       # e.g., RetailStream Corp (Pooled, thinkingLevel="MEDIUM", 4,000 maxOutputTokens cap)
+    ENTERPRISE = "ENTERPRISE"   # e.g., FinVault Bank (thinkingLevel="HIGH", 8,000 maxOutputTokens, custom agents, CMEK)
 
 
 class IdentityProvider(str, Enum):
@@ -39,7 +39,8 @@ class TenantProfile:
     display_name: str
     tier: TenantTier
     idp: IdentityProvider
-    thinking_token_budget: int
+    thinking_level: str
+    max_output_tokens: int
     redis_rpm_limit: int
     allowed_agents: List[str]
     allowed_mcp_connectors: List[str]
@@ -64,7 +65,8 @@ TENANT_PROFILES: Dict[str, TenantProfile] = {
         display_name="FinVault Bank",
         tier=TenantTier.ENTERPRISE,
         idp=IdentityProvider.GOOGLE_WORKSPACE_OIDC,
-        thinking_token_budget=8000,
+        thinking_level="HIGH",
+        max_output_tokens=8000,
         redis_rpm_limit=600,
         allowed_agents=[
             "agent://cymbal/shared-incident-diagnostic-v2",
@@ -112,7 +114,8 @@ TENANT_PROFILES: Dict[str, TenantProfile] = {
         display_name="RetailStream Corp",
         tier=TenantTier.STANDARD,
         idp=IdentityProvider.MICROSOFT_ENTRA_ID,
-        thinking_token_budget=4000,
+        thinking_level="MEDIUM",
+        max_output_tokens=4000,
         redis_rpm_limit=120,
         allowed_agents=[
             "agent://cymbal/shared-incident-diagnostic-v2",

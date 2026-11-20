@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
+    "paths": {
+      "pptxgenjs": [
+        "./node_modules/pptxgenjs"
+      ],
+      "jszip": [
+        "./node_modules/jszip"
+      ],
+      "fast-xml-parser": [
+        "./node_modules/fast-xml-parser"
+      ],
+      "sharp": [
+        "./node_modules/sharp"
+      ]
+    },
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "scripts/**/*.ts"
+  ]
+}

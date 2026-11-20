@@ -75,7 +75,8 @@ class PatternBSiloedService:
         user_prompt: str,
         attempted_egress_project: Optional[str] = None,
         use_airgapped_gemma3_on_gke: bool = False,
-        requested_thinking_tokens: int = 6000,
+        requested_output_tokens: int = 6000,
+        requested_thinking_level: Optional[str] = None,
         simulated_current_rpm: int = 10,
         requested_mcp_connector: str = "mcp://cymbal/core-telemetry-2lo",
     ) -> Dict[str, object]:
@@ -140,10 +141,12 @@ class PatternBSiloedService:
             session_id=session_id,
             requested_agent_uri=requested_agent_uri,
             user_prompt=user_prompt,
-            requested_thinking_tokens=requested_thinking_tokens,
+            requested_output_tokens=requested_output_tokens,
+            requested_thinking_level=requested_thinking_level,
             simulated_current_rpm=simulated_current_rpm,
             requested_mcp_connector=requested_mcp_connector,
             topology=core_models.IsolationTopology.PATTERN_B_SILOED,
+            active_model_override=silo_cfg["airgapped_model_id"] if use_airgapped_gemma3_on_gke else "",
         )
 
         if result["status_code"] == 200 and use_airgapped_gemma3_on_gke:

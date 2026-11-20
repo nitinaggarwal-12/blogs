@@ -26,6 +26,14 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Set up Node.js & Install Tooling (tsc / puppeteer-core)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Node dependencies for TS & /drawio-editor parity tests
+        run: npm install --no-audit --no-fund
+
       - name: Run Pattern A Pooled Breach Simulation Suite
         run: python3 -B workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py
 
@@ -90,9 +98,20 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
       - name: Set up Python 3.11
+        if: steps.auth.outcome == 'success'
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
+      - name: Set up Node.js & Install Tooling (tsc / puppeteer-core)
+        if: steps.auth.outcome == 'success'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Node dependencies for TS & /drawio-editor parity tests
+        if: steps.auth.outcome == 'success'
+        run: npm install --no-audit --no-fund
 
       - name: Build OCI Container & Deploy to Cloud Run
         if: steps.auth.outcome == 'success'

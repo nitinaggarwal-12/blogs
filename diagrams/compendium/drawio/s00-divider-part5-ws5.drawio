@@ -1,0 +1,22 @@
+<mxfile host="app.diagrams.net" modified="2026-11-12T20:00:00.000Z" agent="GE-Blogs-2Way-Sync" version="24.7.8" type="device">
+  <diagram id="s00-divider-part5-ws5" name="Slide 31 — Slide 31 • Part 5 (WS5) Framing: Decision Guide, Multi-Cloud Federation, Lakehouse FGAC &amp; GA">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="sp_101" value="&lt;b&gt;Slide 31 • Part 5 (WS5) Framing: Decision Guide, Multi-Cloud Federation, Lakehouse FGAC &amp; GA&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#1a73e8;fontColor=#0f172a;fontSize=16;align=left;spacingLeft=16;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="24" width="1520" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="sp_102" value="&lt;b&gt;Executive Purpose &amp; Architectural Guarantee:&lt;/b&gt;&lt;br&gt;Introduces Part 5 (WS5, Slides 32–38), uniting the 60-second binary pattern selector, Google Cloud &lt;-&gt; AWS Bedrock AgentCore 10-SaaS federation, zero-copy Lakehouse FGAC, dynamic GCS skill hot-swapping, and the ARB GA sign-off scorecard." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e1;fontColor=#1e293b;fontSize=13;align=left;spacingLeft=16;spacingRight=16;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="92" width="1520" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="sp_103" value="&lt;b&gt;2-Way Sync Canvas (Slide #31/38 • ID: s00-divider-part5-ws5)&lt;/b&gt;&lt;br&gt;Edit shapes, annotations, or callouts here and click Push to Slide to sync with Google Slides Deck 1 (1-WwbZsdEFPylp9MtfF-nuifeVps0uuu3bSCfzCCYjjI)." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#94a3b8;dashed=1;fontColor=#334155;fontSize=13;align=center;verticalAlign=middle;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="192" width="1520" height="620" as="geometry" />
+        </mxCell>
+        <mxCell id="sp_104" value="Verified Multi-Tenant Architecture Blueprint • 2-Way Sync Active" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#065f46;fontSize=12;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="828" width="1520" height="42" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

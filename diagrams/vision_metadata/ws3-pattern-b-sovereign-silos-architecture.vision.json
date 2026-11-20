@@ -23,9 +23,9 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "GE Blogs Self-Contained Vision Decompiler (scripts/lib/visionIconEnricher.ts)",
   "healerLog": [
-    "Protected master/canonical blueprint passed through without geometric mutation."
+    "Protected canonical blueprint passed through without geometric mutation."
   ],
   "validationReport": {
     "valid": false,
@@ -58,9 +58,9 @@
       "plainTitle": "mTLS SPIFFE Clients FinVault & RetailStream",
       "zone": "Header & Value Pillars",
       "x": 465,
-      "y": 52,
+      "y": 54,
       "width": 250,
-      "height": 86,
+      "height": 84,
       "isContainer": false
     },
     {
@@ -329,9 +329,9 @@
     },
     {
       "id": "card_sc_llm",
-      "urlSlug": "OBJ-25-GEMINI-2-5-PRO-PT",
-      "label": "Gemini 2.5 Pro PT",
-      "plainTitle": "Gemini 2.5 Pro PT",
+      "urlSlug": "OBJ-25-GEMINI-3-8-FLASH-PT",
+      "label": "Gemini 3.8 Flash PT",
+      "plainTitle": "Gemini 3.8 Flash PT",
       "zone": "Governance & Footer",
       "x": 640,
       "y": 976,

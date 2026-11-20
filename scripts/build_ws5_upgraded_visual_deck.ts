@@ -54,7 +54,12 @@ const G_GREEN_LIGHT = 'E6F4EA';
 const G_GREEN_DEEP = '137333';
 const G_AMBER_DEEP = 'B45309';
 
-const TOTAL_SLIDES = 34;
+const FULL_34_MODE = process.argv.includes('--full-34');
+const TOTAL_SLIDES = FULL_34_MODE ? 34 : 24;
+let _slideCounter = 1;
+function nextSlideNum(): number {
+  return ++_slideCounter;
+}
 
 function addHeader(slide: any, category: string, title: string, slideNum: number, totalSlides: number = TOTAL_SLIDES) {
   // Category Pill
@@ -69,8 +74,8 @@ function addHeader(slide: any, category: string, title: string, slideNum: number
 
   // Slide Title
   slide.addText(title, {
-    x: 3.3, y: 0.28, w: 9.3, h: 0.45,
-    fontSize: 17, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, valign: 'middle'
+    x: 3.3, y: 0.22, w: 9.3, h: 0.51,
+    fontSize: 15.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, valign: 'middle'
   });
 
   // Top Accent Line
@@ -89,7 +94,7 @@ function addHeader(slide: any, category: string, title: string, slideNum: number
 
 // Reusable Act Breaker Slide Builder
 interface ActBreakerConfig {
-  slideNum: number;
+  slideNum?: number;
   actTag: string;
   actNumber: string;
   actTitle: string;
@@ -109,59 +114,63 @@ interface ActBreakerConfig {
 function buildActBreakerSlide(cfg: ActBreakerConfig) {
   const slide = pptx.addSlide();
 
-  // Dark Navy Left Anchor Panel (Hero Strip)
+  // Light Theme Left Anchor Card (Rule 54 Compliant)
   slide.addShape(pptx.ShapeType.roundRect, {
     x: 0.6, y: 0.6, w: 4.8, h: 6.3, rectRadius: 0.08,
-    fill: { color: G_NAVY }, line: { color: cfg.actColor, width: 2 }
+    fill: { color: WHITE }, line: { color: cfg.actColor, width: 2 }
+  });
+
+  // Light Tinted Top Banner
+  slide.addShape(pptx.ShapeType.rect, {
+    x: 0.6, y: 0.6, w: 4.8, h: 2.00, fill: { color: cfg.actTint }
   });
 
   // Category Tag Pill
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 0.95, y: 0.95, w: 2.4, h: 0.34, rectRadius: 0.06,
-    fill: { color: cfg.actTint }, line: { color: cfg.actColor, width: 1 }
+    x: 0.95, y: 0.78, w: 4.1, h: 0.30, rectRadius: 0.06,
+    fill: { color: WHITE }, line: { color: cfg.actColor, width: 1 }
   });
   slide.addText(cfg.actTag, {
-    x: 0.95, y: 0.95, w: 2.4, h: 0.34,
-    fontSize: 9.5, bold: true, color: cfg.actColor, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
+    x: 0.95, y: 0.78, w: 4.1, h: 0.30,
+    fontSize: 8.5, bold: true, color: cfg.actColor, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
   });
 
   // Act Number & Title
   slide.addText(cfg.actNumber, {
-    x: 0.95, y: 1.5, w: 4.1, h: 0.7,
-    fontSize: 32, bold: true, color: WHITE, fontFace: FONT_TITLE
+    x: 0.95, y: 1.16, w: 4.1, h: 0.44,
+    fontSize: 24, bold: true, color: cfg.actColor, fontFace: FONT_TITLE
   });
   slide.addText(cfg.actTitle, {
-    x: 0.95, y: 2.25, w: 4.1, h: 0.95,
-    fontSize: 20, bold: true, color: WHITE, fontFace: FONT_TITLE, lineSpacingMultiple: 1.15
+    x: 0.95, y: 1.64, w: 4.1, h: 0.88,
+    fontSize: 13.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, lineSpacingMultiple: 1.12, valign: 'top'
   });
 
-  // Divider Line
-  slide.addShape(pptx.ShapeType.rect, {
-    x: 0.95, y: 3.3, w: 4.1, h: 0.02, fill: { color: '334155' }
+  // Core Question Callout Box
+  slide.addShape(pptx.ShapeType.roundRect, {
+    x: 0.95, y: 2.75, w: 4.1, h: 1.95, rectRadius: 0.06,
+    fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.75 }
   });
-
-  // Core Question Callout
   slide.addText('CORE ARCHITECTURAL QUESTION', {
-    x: 0.95, y: 3.5, w: 4.1, h: 0.25,
-    fontSize: 8.5, bold: true, color: cfg.actColor, fontFace: FONT_TITLE
+    x: 1.1, y: 2.86, w: 3.8, h: 0.22,
+    fontSize: 8.0, bold: true, color: cfg.actColor, fontFace: FONT_TITLE
   });
   slide.addText(`"${cfg.coreQuestion}"`, {
-    x: 0.95, y: 3.8, w: 4.1, h: 1.1,
-    fontSize: 12, italic: true, color: WHITE, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
+    x: 1.1, y: 3.12, w: 3.8, h: 1.48,
+    fontSize: 10.2, italic: true, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2, valign: 'top'
   });
 
   // Thesis Box
   slide.addShape(pptx.ShapeType.roundRect, {
-    x: 0.95, y: 5.05, w: 4.1, h: 1.55, rectRadius: 0.06,
-    fill: { color: '1E293B' }, line: { color: '475569', width: 0.75 }
+    x: 0.95, y: 4.85, w: 4.1, h: 1.85, rectRadius: 0.06,
+    fill: { color: WHITE }, line: { color: G_GREY_BORDER, width: 0.75 }
   });
   slide.addText('ARCHITECTURAL THESIS', {
-    x: 1.1, y: 5.15, w: 3.8, h: 0.22,
-    fontSize: 8, bold: true, color: G_GREEN_DEEP, fontFace: FONT_TITLE
+    x: 1.1, y: 4.96, w: 3.8, h: 0.22,
+    fontSize: 8.0, bold: true, color: cfg.actColor, fontFace: FONT_TITLE
   });
   slide.addText(cfg.thesis, {
-    x: 1.1, y: 5.4, w: 3.8, h: 1.1,
-    fontSize: 9.2, color: 'E2E8F0', fontFace: FONT_BODY, lineSpacingMultiple: 1.2
+    x: 1.1, y: 5.22, w: 3.8, h: 1.38,
+    fontSize: 9.0, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.18, valign: 'top'
   });
 
   // Right Side: Milestones & Agenda Cards
@@ -170,8 +179,8 @@ function buildActBreakerSlide(cfg: ActBreakerConfig) {
     fontSize: 10, bold: true, color: TEXT_MUTED, fontFace: FONT_TITLE
   });
   slide.addText(cfg.actSubtitle, {
-    x: 5.7, y: 0.95, w: 7.0, h: 0.45,
-    fontSize: 16, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE
+    x: 5.7, y: 0.96, w: 7.0, h: 0.54,
+    fontSize: 13.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, valign: 'top'
   });
 
   cfg.milestones.forEach((m, idx) => {
@@ -209,17 +218,17 @@ function buildActBreakerSlide(cfg: ActBreakerConfig) {
   });
 
   // Footer
-  slide.addText(`Google Cloud Architecture Center  •  Workstream 3 of 5  •  Agentic Triad Decision Guide & Agentic Triad`, {
+  slide.addText(`Google Cloud Architecture Center  •  Workstream 5 of 5  •  Executive Decision Guide & Agentic Triad`, {
     x: 0.6, y: 7.1, w: 10.5, h: 0.3, fontSize: 8.5, color: TEXT_MUTED, fontFace: FONT_BODY
   });
-  slide.addText(`${cfg.slideNum} / ${TOTAL_SLIDES}`, {
+  slide.addText(`${nextSlideNum()} / ${TOTAL_SLIDES}`, {
     x: 11.5, y: 7.1, w: 1.233, h: 0.3, fontSize: 8.5, bold: true, color: G_BLUE, fontFace: FONT_TITLE, align: 'right'
   });
 }
 
 // Reusable Before / After SaaS Proof Slide Builder
 interface SaasProofConfig {
-  slideNum: number;
+  slideNum?: number;
   proofNum: number;
   saasName: string;
   title: string;
@@ -237,14 +246,14 @@ interface SaasProofConfig {
 
 function buildBeforeAfterSaasSlide(cfg: SaasProofConfig) {
   const slide = pptx.addSlide();
-  addHeader(slide, cfg.categoryTag || `ACT IV • PROOF ${cfg.proofNum}`, cfg.title, cfg.slideNum);
+  addHeader(slide, cfg.categoryTag || `ACT IV • PROOF ${cfg.proofNum}`, cfg.title, nextSlideNum());
 
   slide.addText(cfg.subtitle, {
     x: 0.6, y: 0.82, w: 12.133, h: 0.36, fontSize: 10.2, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
-  const beforeImgPath = path.join(ROOT_DIR, 'screenshots', 'genuine-multicloud-3p-uis', 'before-after', cfg.beforeImg);
-  const afterImgPath = path.join(ROOT_DIR, 'screenshots', 'genuine-multicloud-3p-uis', 'before-after', cfg.afterImg);
+  const beforeImgPath = path.join(ROOT_DIR, 'screenshots', 'verified-cloud-console', cfg.beforeImg);
+  const afterImgPath = path.join(ROOT_DIR, 'screenshots', 'verified-cloud-console', cfg.afterImg);
 
   // Left Card: BEFORE (Red Boundary)
   slide.addShape(pptx.ShapeType.roundRect, {
@@ -260,10 +269,10 @@ function buildBeforeAfterSaasSlide(cfg: SaasProofConfig) {
   });
 
   // Image (Exact 1.600 aspect ratio)
-  if (fs.existsSync(beforeImgPath)) {
+  if (cfg.beforeImg && fs.existsSync(beforeImgPath)) {
     slide.addImage({
       path: beforeImgPath,
-      x: 0.735, y: 1.66, w: 5.68, h: 3.55
+      x: 0.735, y: 1.66, w: 5.68, h: 3.195
     });
   }
 
@@ -296,10 +305,10 @@ function buildBeforeAfterSaasSlide(cfg: SaasProofConfig) {
   });
 
   // Image
-  if (fs.existsSync(afterImgPath)) {
+  if (cfg.afterImg && fs.existsSync(afterImgPath)) {
     slide.addImage({
       path: afterImgPath,
-      x: 6.915, y: 1.66, w: 5.68, h: 3.55
+      x: 6.915, y: 1.66, w: 5.68, h: 3.195
     });
   }
 
@@ -308,7 +317,7 @@ function buildBeforeAfterSaasSlide(cfg: SaasProofConfig) {
     x: 6.915, y: 5.27, w: 5.68, h: 1.60, rectRadius: 0.05,
     fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.75 }
   });
-  slide.addText('PATTERN B SOVEREIGN SILO & VPC-SC PERIMETER GUARANTEE', {
+  slide.addText('AGENTIC TRIAD MULTI-CLOUD ISOLATION GUARANTEE (PATTERNS A/B/C)', {
     x: 7.03, y: 5.33, w: 5.45, h: 0.22, fontSize: 7.8, bold: true, color: G_GREEN_DEEP, fontFace: FONT_TITLE
   });
   slide.addText(cfg.afterEnforcement, {
@@ -346,14 +355,14 @@ function buildSlide01() {
     x: 0.95, y: 1.5, w: 4.3, h: 1.1,
     fontSize: 26, bold: true, color: WHITE, fontFace: FONT_TITLE, lineSpacingMultiple: 1.15
   });
-  slide.addText('Agentic Triad: Decision Guide & Agentic Triad for Regulated Workloads', {
+  slide.addText('Agentic Triad: Executive Decision Guide & Multi-Tenant Agentic Triad', {
     x: 0.95, y: 2.7, w: 4.3, h: 0.8,
     fontSize: 18, bold: true, color: '93C5FD', fontFace: FONT_TITLE, lineSpacingMultiple: 1.15
   });
 
   // Subtitle
   slide.addText(
-    'Zero-trust physical project isolation, VPC Service Controls perimeters, customer-managed Cloud KMS CMEK crypto-shredding, and air-gapped Gemma 3 on GKE for banking, healthcare, and public sector compliance.',
+    'Two-question deterministic Pattern Selector (A Pool vs. C Hybrid vs. B Silo), 80/20 Triad ADK core with Shared+Private A2A & Dynamic GCS Skills, 32,768 prefix cache FinOps, and 30/30 AWS AgentCore Multi-Cloud parity.',
     {
       x: 0.95, y: 3.6, w: 4.3, h: 1.4,
       fontSize: 10.5, color: 'CBD5E1', fontFace: FONT_BODY, lineSpacingMultiple: 1.25
@@ -369,7 +378,7 @@ function buildSlide01() {
     x: 1.1, y: 5.25, w: 4.0, h: 0.22,
     fontSize: 8, bold: true, color: G_BLUE, fontFace: FONT_TITLE
   });
-  slide.addText('• Workstream 3 of 5 • Agentic Triad: Dedicated Decision Guide & Agentic Triad\n• 100% Native DrawingML Vectors • Zero Flattened Images\n• Verified Standards: OCC Bulletin 2013-29, EU DORA, HIPAA, FedRAMP High\n• Author: Google Cloud FDE & AI Platform Architecture Team', {
+  slide.addText('• Workstream 5 of 5 • Agentic Triad: Dedicated Decision Guide & Agentic Triad\n• 100% Native DrawingML Vectors • Zero Flattened Images\n• Verified Standards: OCC Bulletin 2013-29, EU DORA, HIPAA, FedRAMP High\n• Author: Google Cloud FDE & AI Platform Architecture Team', {
     x: 1.1, y: 5.5, w: 4.0, h: 1.0,
     fontSize: 8.5, color: 'E2E8F0', fontFace: FONT_BODY, lineSpacingMultiple: 1.2
   });
@@ -377,26 +386,26 @@ function buildSlide01() {
   // Right Side: 3 Hero Architectural Pillar Cards
   const heroCards = [
     {
-      title: 'Pillar 1: Dedicated Per-Tenant Projects & VPC-SC',
-      subtitle: 'Physical compute & storage boundaries eliminating co-tenancy risk',
-      desc: 'Each regulated customer operates inside an isolated Google Cloud project (cymbal-finvault-silo-prod) wrapped in a dedicated VPC Service Controls perimeter and IAM Principal Access Boundary (PAB) that prevents cross-tenant data exfiltration.',
-      tag: 'PHYSICAL ISOLATION',
+      title: 'Pillar 1: 2-Question Topology Selector (A / C / B)',
+      subtitle: 'Deterministic routing via (q_spoke, q_silo) with zero guesswork',
+      desc: 'Gate 1 routes commercial tenants to Pattern A Pool (1.0x COGS, 89.1% cache). Gate 2 routes CMEK/private-tool B2B accounts to Pattern C Hybrid (1.8x–2.8x COGS, 0ms CAS cutover). Gate 3 isolates regulated tenants in Pattern B Silos (~15x COGS, 41.2s CMEK halt).',
+      tag: '3-GATE SELECTOR',
       color: G_BLUE_DARK,
       tint: G_BLUE_LIGHT
     },
     {
-      title: 'Pillar 2: Customer-Held CMEK & Crypto-Shredding',
-      subtitle: 'Instant HTTP 423 Locked kill-switch controlled by tenant KMS key',
-      desc: 'All tenant data at rest and in memory is encrypted using customer-managed encryption keys (Cloud KMS CMEK / Cloud EKM). Revoking or disabling the key immediately renders all agent state, vector indexes, and databases inaccessible in <3 seconds.',
-      tag: 'INSTANT KILL-SWITCH',
+      title: 'Pillar 2: Agentic Triad + Dynamic GCS Skill Packs',
+      subtitle: 'Shared Diagnostic → Private Tenant Agent over A2A with 0 image rebuilds',
+      desc: 'Shared ADK agents delegate scoped STS tokens over A2A to tenant-private agents, hydrating SHA-256 pinned GCS skill YAMLs dynamically under ARD enforcement while hitting the immutable 32,768 prefix cache (89.1% input savings) and emitting Zero-PII OTel.',
+      tag: 'SHARED + PRIVATE A2A',
       color: G_RED_DEEP,
       tint: G_RED_LIGHT
     },
     {
-      title: 'Pillar 3: Air-Gapped Gemma 3 on Private GKE',
-      subtitle: 'Confidential Computing VMs with zero external egress',
-      desc: 'For defense and strict sovereignty workloads, open-weight Gemma 3 (27B) serves reasoning turns from a private, air-gapped GKE cluster using AMD SEV-SNP Confidential VMs, ensuring neither cloud operators nor third parties can inspect memory.',
-      tag: 'AIR-GAPPED SOVEREIGNTY',
+      title: 'Pillar 3: 30/30 AWS AgentCore Multi-Cloud GA',
+      subtitle: 'Keyless OIDC federation across GCP & AWS with 0 static IAM keys',
+      desc: 'One 80% reusable core-cymbal-agent/ codebase operates seamlessly across GCP and AWS Bedrock AgentCore MCP Gateway (us-east-1, 10 SaaS targets), backed by feature-flagged GAP-01..05 sunset controls and a 10-week GA rollout roadmap.',
+      tag: 'MULTI-CLOUD GA',
       color: G_GREEN_DEEP,
       tint: G_GREEN_LIGHT
     }
@@ -443,7 +452,7 @@ function buildSlide01() {
 // ============================================================================
 function buildSlide02_Agenda() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'AGENDA & ROADMAP', 'Executive 5-Act Architecture Roadmap: Strategic Decision Framework & Enterprise GA', 2);
+  addHeader(slide, 'AGENDA & ROADMAP', 'Executive 5-Act Architecture Roadmap: Strategic Decision Framework & Enterprise GA', nextSlideNum());
 
   slide.addText('Structured 5-Act decision and governance roadmap guiding C-suite and principal architects from pattern evaluation to fleet-wide enterprise rollout.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
@@ -452,80 +461,62 @@ function buildSlide02_Agenda() {
   const acts = [
     {
       act: 'ACT I',
-      title: 'The Regulatory Imperative & Dilemma',
+      title: 'Triad Dilemma & 2-Question Selector',
       slides: 'Slides 03–04',
       c4: 'L1 Context',
       color: G_BLUE_DARK,
       tint: G_BLUE_LIGHT,
-      desc: 'Why OCC banking, EU DORA, and HIPAA legally prohibit shared compute pools, shared databases, and shared prompt caches.'
+      desc: 'Balancing Isolation, Security/FinOps (89.1%), and Velocity; plus deterministic (q_spoke, q_silo) Pattern A/C/B gating.'
     },
     {
       act: 'ACT II',
-      title: 'Agentic Triad Topologies & Blueprints',
-      slides: 'Slides 05–11',
+      title: 'Pattern A / B / C Side-by-Side',
+      slides: FULL_34_MODE ? 'Slides 05–11' : 'Slides 05–09',
       c4: 'L2 Containers',
       color: G_BLUE,
       tint: G_BLUE_LIGHT,
-      desc: 'Dual-tenant reference blueprints, multi-project VPC-SC perimeters, customer CMEK key federation, and 1-click Terraform graphs.'
+      desc: 'Unified 80/20 Triad architecture comparing Pattern A Pool, Pattern B Silo, and Pattern C /28 PSC topologies.'
     },
     {
       act: 'ACT III',
-      title: '5-Hop Control Plane & Crypto-Shredding',
-      slides: 'Slides 12–20',
+      title: 'A2A Delegation, GCS Skills & FinOps OTel',
+      slides: FULL_34_MODE ? 'Slides 12–20' : 'Slides 10–18',
       c4: 'L3/L4 Logic & Wire',
       color: G_AMBER_DEEP,
       tint: G_YELLOW_LIGHT,
-      desc: '5-Hop pipeline adapted for physical silos, customer CMEK revocation kill-switches (<3s SLA), and air-gapped Gemma 3 on GKE.'
+      desc: 'Shared+Private A2A, zero-rebuild GCS skills, 32,768 prefix cache, Zero-PII SHA-256 BigQuery OTel, & GAP-01..05 retirement.'
     },
     {
       act: 'ACT IV',
-      title: 'Empirical Multi-Cloud SaaS Verification',
-      slides: 'Slides 21–31',
+      title: 'Multi-Cloud 30/30 Verification',
+      slides: FULL_34_MODE ? 'Slides 21–31' : 'Slides 19–21',
       c4: 'L5 Runtime Proofs',
       color: G_RED_DEEP,
       tint: G_RED_LIGHT,
-      desc: '10 live Before-vs-After Retina UI screenshot pairs verifying that sovereign VPC-SC perimeters isolate all 3LO SaaS actions.'
+      desc: FULL_34_MODE
+        ? '10 live Verified Commercial SaaS Retina UI proof pairs spanning Pattern A, B & C plus keyless GCP↔AWS Bedrock AgentCore federation.'
+        : '2 Signature Triad Proofs (Datadog Observability Logs & Workday HCM HR CRAC) + Companion 10-SaaS Atlas & 30/30 S3 Ledgers.'
     },
     {
       act: 'ACT V',
-      title: 'Implementation Roadmap & CISO Guide',
-      slides: 'Slides 32–34',
+      title: 'GA Roadmap, Scorecard & CISO FAQ',
+      slides: FULL_34_MODE ? 'Slides 32–34' : 'Slides 22–24',
       c4: 'Governance & GA',
       color: G_GREEN_DEEP,
       tint: G_GREEN_LIGHT,
-      desc: '10-week phased migration roadmap, multi-cloud isolation scorecard, and direct answers to four core CISO review board questions.'
+      desc: '10-week phased GA roadmap, unified Pattern A vs. C vs. B scorecard matrix, and executive CISO decision FAQ.'
     }
   ];
 
   acts.forEach((a, idx) => {
     const ax = 0.6 + idx * 2.45;
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: ax, y: 1.35, w: 2.32, h: 5.5, rectRadius: 0.08,
-      fill: { color: WHITE }, line: { color: a.color, width: 1.5 }
-    });
-    slide.addShape(pptx.ShapeType.rect, {
-      x: ax, y: 1.35, w: 2.32, h: 0.85, fill: { color: a.tint }
-    });
-    slide.addText(a.act, {
-      x: ax + 0.12, y: 1.42, w: 2.08, h: 0.25, fontSize: 8.5, bold: true, color: a.color, fontFace: FONT_TITLE
-    });
-    slide.addText(a.title, {
-      x: ax + 0.12, y: 1.68, w: 2.08, h: 0.45, fontSize: 10.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, lineSpacingMultiple: 1.15
-    });
-
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: ax + 0.12, y: 2.35, w: 2.08, h: 0.4, rectRadius: 0.04,
-      fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
-    });
-    slide.addText(`${a.slides}  •  ${a.c4}`, {
-      x: ax + 0.12, y: 2.35, w: 2.08, h: 0.4,
-      fontSize: 8.5, bold: true, color: TEXT_MUTED, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
-    });
-
-    slide.addText(a.desc, {
-      x: ax + 0.12, y: 2.9, w: 2.08, h: 3.7,
-      fontSize: 9.2, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.25
-    });
+    slide.addShape(pptx.ShapeType.roundRect, { x: ax, y: 1.35, w: 2.32, h: 5.5, rectRadius: 0.08, fill: { color: WHITE }, line: { color: a.color, width: 1.5 } });
+    slide.addShape(pptx.ShapeType.rect, { x: ax, y: 1.35, w: 2.32, h: 0.85, fill: { color: a.tint } });
+    slide.addText(a.act, { x: ax + 0.12, y: 1.42, w: 2.08, h: 0.25, fontSize: 8.5, bold: true, color: a.color, fontFace: FONT_TITLE });
+    slide.addText(a.title, { x: ax + 0.12, y: 1.68, w: 2.08, h: 0.45, fontSize: 10.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, lineSpacingMultiple: 1.15 });
+    slide.addShape(pptx.ShapeType.roundRect, { x: ax + 0.12, y: 2.35, w: 2.08, h: 0.4, rectRadius: 0.04, fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 } });
+    slide.addText(`${a.slides}  •  ${a.c4}`, { x: ax + 0.12, y: 2.35, w: 2.08, h: 0.4, fontSize: 8.5, bold: true, color: TEXT_MUTED, fontFace: FONT_TITLE, align: 'center', valign: 'middle' });
+    slide.addText(a.desc, { x: ax + 0.12, y: 2.9, w: 2.08, h: 3.7, fontSize: 9.2, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.25 });
   });
 }
 
@@ -534,96 +525,78 @@ function buildSlide02_Agenda() {
 // ============================================================================
 function buildSlide03_Dilemma() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT I • THE STRATEGIC DILEMMA', 'The Multi-Tenant Agentic Triad Dilemma: Balancing Isolation, Velocity, and Unit Economics', 3);
+  addHeader(slide, 'ACT I • THE STRATEGIC DILEMMA', 'The Multi-Tenant Agentic Triad Dilemma: Balancing Isolation, Velocity, and Unit Economics', nextSlideNum());
 
-  slide.addText('Enterprise AI platforms must navigate three competing forces: statutory isolation (sovereignty), developer velocity (density), and sustainable FinOps unit economics.', {
+  slide.addText('Enterprise AI platforms must navigate three competing forces: statutory isolation (sovereignty), developer velocity (80% core reuse), and FinOps economics.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
   const cards = [
     {
-      title: '1. Strict Legal & Regulatory Directives',
-      subtitle: 'OCC Bulletin 2013-29, EU DORA, HIPAA Security Rule',
-      tag: 'LEGAL MANDATE',
+      title: '1. Isolation Force (CISO)',
+      subtitle: 'Preventing cross-tenant data, tool, & cache bleed',
+      tag: 'TRUST & ISOLATION',
       color: G_RED_DEEP,
       tint: G_RED_LIGHT,
       items: [
-        'OCC Bulletin 2013-29 mandates that financial institutions ensure strict physical separation of core banking records and processing logic.',
-        'EU DORA (Digital Operational Resilience Act) requires continuous operational control, local data residency, and audited exit strategies.',
-        'HIPAA § 164.312 requires covered entities to implement hardware/logical access controls that prevent ePHI commingling across customers.',
-        'FedRAMP High / DoD IL5 require dedicated physical environments with customer-controlled cryptographic hardware root-of-trust.'
+        'Enterprise buyers mandate cryptographic proof that Tenant A prompts, vectors, and OAuth tokens never leak to Tenant B.',
+        'ARD catalog filters (-94% tokens) and Hop 4 Model Armor (<8ms) / Cloud SDP block toxic payloads and IBAN leaks.',
+        'Sensitive sectors (Banking OCC, HIPAA, EU DORA) require CMEK key revocation and regional isolation.',
+        'Cross-cloud AWS Bedrock AgentCore integrations must operate with 0 long-lived static AWS IAM credentials.'
       ]
     },
     {
-      title: '2. The Shared Co-Tenancy Threat Model',
-      subtitle: 'Microarchitectural side-channels & connection pool leakage',
-      tag: 'SHARED RISK VECTOR',
+      title: '2. Unit Economics Force (CFO)',
+      subtitle: 'Reclaiming 89.1% input cost via shared prefix caches',
+      tag: 'FINOPS MARGIN',
       color: G_AMBER_DEEP,
       tint: G_YELLOW_LIGHT,
       items: [
-        'Row-Level Security (RLS) relies on software application predicates; a single SQL injection or missing filter exposes all tenants.',
-        'Hypervisor & microarchitectural side-channels (Meltdown/Spectre/Downfall) create theoretical cross-tenant memory snooping risks on shared CPUs.',
-        'Shared LLM prompt prefix caches (ContextCacheConfig) can leak proprietary schema descriptors or system instructions across tenants.',
-        'Shared database connection pools risk session variable contamination (SET LOCAL tenant_id bleed) under high concurrency.'
+        'Blindly defaulting to dedicated per-tenant Pattern B Silos multiplies infrastructure COGS by ~15x vs. pooled execution.',
+        'Separate per-tenant Vertex AI clusters fragment context caches, forfeiting the 89.1% shared 32,768-token cache discount.',
+        'Unbounded reasoning loops and unthrottled callers wipe out SaaS gross margin unless enforced per tenant at ingress.',
+        'BigQuery FinOps OTel attribution requires sub-agent token spans with raw_pii_logged = FALSE.'
       ]
     },
     {
-      title: '3. The Agentic Triad Agentic Triad Solution',
-      subtitle: 'Dedicated Google Cloud projects & customer CMEK HSM keys',
-      tag: 'SOVEREIGN ARCHITECTURE',
+      title: '3. Engineering Velocity Force (CTO)',
+      subtitle: 'Zero per-customer code forks & zero-rebuild skill updates',
+      tag: '80/20 VELOCITY',
       color: G_BLUE_DARK,
       tint: G_BLUE_LIGHT,
       items: [
-        'Physical multi-project architecture: Each corporate customer (FinVault) receives an independent Google Cloud project.',
-        'Zero shared compute: Dedicated Cloud Run instances, dedicated AlloyDB clusters, and dedicated VPC subnets.',
-        'Customer-controlled Cloud KMS CMEK: The tenant controls the master encryption key; revoking the key disables all access in <3s.',
-        'VPC Service Controls (VPC-SC): Hardware-enforced perimeters prevent data exfiltration even if service account credentials leak.'
+        'One single 80% reusable ADK codebase (core-cymbal-agent/) spans Pattern A, Pattern C, and Pattern B via config only.',
+        'Shared Diagnostic agents delegate over A2A to Private Tenant agents without re-architecting agent graphs.',
+        'Dynamic GCS Skill Packs (SHA-256 verified) hot-swap customer prompts and playbooks with 0 container rebuilds.',
+        'GAP-01..05 middleware shims include feature flags for zero-rewrite sunset as native Agent Engine GA lands.'
       ]
     },
     {
-      title: '4. The Architectural Trade-Off',
-      subtitle: 'Higher unit cost in exchange for absolute compliance & zero co-tenancy',
-      tag: 'FINOPS & TRADE-OFF',
+      title: '4. The Agentic Triad Synthesis',
+      subtitle: 'Unified 5-Hop Core + Deterministic Pattern Selector',
+      tag: 'UNIFIED SYNTHESIS',
       color: G_GREEN_DEEP,
       tint: G_GREEN_LIGHT,
       items: [
-        'Cost Profile: High baseline cost per tenant (~$1,200/mo minimum for dedicated AlloyDB, Cloud Run, and KMS) vs. $12/mo pooled.',
-        'Zero Cache Sharing: Each tenant pays 100% uncached input token costs because prompt caches cannot cross project boundaries.',
-        'Operational Surface: Managing 100+ separate Google Cloud projects requires mature Terraform / IaC automation and centralized logging.',
-        'Unmatched Trust: Unlocks Tier-1 enterprise banks and government agencies that legally cannot adopt shared pooled SaaS.'
+        'Gate 1 (Pool A): 1.0x COGS, 1,000+ tenants, 120 RPM, AlloyDB FORCE RLS + 89.1% prefix cache.',
+        'Gate 2 (Hybrid C): 1.8x–2.8x COGS, /28 PSC CMEK spokes (600 RPM), 0ms live CAS graduation.',
+        'Gate 3 (Silo B): ~15x COGS, dedicated project, VPC-SC, AMD SEV-SNP, 41.2s verified CMEK HTTP 423 halt.',
+        'Empirically verified across 30/30 AWS AgentCore Multi-Cloud gates & all 5 reference test suites.'
       ]
     }
   ];
 
   cards.forEach((c, idx) => {
     const cx = 0.6 + idx * 3.08;
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: cx, y: 1.35, w: 2.92, h: 5.5, rectRadius: 0.08,
-      fill: { color: WHITE }, line: { color: c.color, width: 1.5 }
-    });
-    slide.addShape(pptx.ShapeType.rect, {
-      x: cx, y: 1.35, w: 2.92, h: 0.6, fill: { color: c.tint }
-    });
-    slide.addText(c.tag, {
-      x: cx + 0.15, y: 1.38, w: 2.62, h: 0.22, fontSize: 8, bold: true, color: c.color, fontFace: FONT_TITLE
-    });
-    slide.addText(c.title, {
-      x: cx + 0.15, y: 2.05, w: 2.62, h: 0.5, fontSize: 11, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, lineSpacingMultiple: 1.15
-    });
-    slide.addText(c.subtitle, {
-      x: cx + 0.15, y: 2.58, w: 2.62, h: 0.35, fontSize: 8.8, italic: true, color: TEXT_MUTED, fontFace: FONT_BODY
-    });
-
+    slide.addShape(pptx.ShapeType.roundRect, { x: cx, y: 1.35, w: 2.92, h: 5.5, rectRadius: 0.08, fill: { color: WHITE }, line: { color: c.color, width: 1.5 } });
+    slide.addShape(pptx.ShapeType.rect, { x: cx, y: 1.35, w: 2.92, h: 0.6, fill: { color: c.tint } });
+    slide.addText(c.tag, { x: cx + 0.15, y: 1.38, w: 2.62, h: 0.22, fontSize: 8, bold: true, color: c.color, fontFace: FONT_TITLE });
+    slide.addText(c.title, { x: cx + 0.15, y: 2.05, w: 2.62, h: 0.5, fontSize: 11, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, lineSpacingMultiple: 1.15 });
+    slide.addText(c.subtitle, { x: cx + 0.15, y: 2.58, w: 2.62, h: 0.35, fontSize: 8.8, italic: true, color: TEXT_MUTED, fontFace: FONT_BODY });
     c.items.forEach((item, iidx) => {
       const iy = 3.05 + iidx * 0.95;
-      slide.addShape(pptx.ShapeType.roundRect, {
-        x: cx + 0.12, y: iy, w: 2.68, h: 0.88, rectRadius: 0.04,
-        fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
-      });
-      slide.addText(`• ${item}`, {
-        x: cx + 0.18, y: iy + 0.06, w: 2.56, h: 0.76,
-        fontSize: 8.0, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
-      });
+      slide.addShape(pptx.ShapeType.roundRect, { x: cx + 0.12, y: iy, w: 2.68, h: 0.88, rectRadius: 0.04, fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 } });
+      slide.addText(`• ${item}`, { x: cx + 0.18, y: iy + 0.06, w: 2.56, h: 0.76, fontSize: 8.0, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15 });
     });
   });
 }
@@ -633,102 +606,69 @@ function buildSlide03_Dilemma() {
 // ============================================================================
 function buildSlide04_ComplianceMatrix() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT I • THE DECISION FRAMEWORK', 'The Two-Question Executive Decision Framework: Compliance Mandate vs. Tenant Velocity', 4);
+  addHeader(slide, 'ACT I • THE DECISION FRAMEWORK', 'The Two-Question Executive Decision Framework: Compliance Mandate vs. Tenant Velocity', nextSlideNum());
 
-  slide.addText('How two strategic architectural questions determine whether a workload belongs in Pattern A (Pooled), Agentic Triad (Silos), or Pattern C (Dynamic Hybrid).', {
+  slide.addText('How two binary architectural questions (q_spoke, q_silo) route every workload deterministically across Pattern A, Pattern C, and Pattern B.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
   const frameworks = [
     {
-      reg: 'OCC / FDIC / GLBA',
-      sector: 'Financial Services & Banking',
+      reg: 'Gate 1: Pattern A',
+      sector: 'q_spoke = 0, q_silo = 0 (Pool)',
       color: G_BLUE_DARK,
       tint: G_BLUE_LIGHT,
-      mandate: 'Mandates strict physical separation of accounting ledgers, transaction records, and autonomous transaction execution engines.',
-      patternBProof: 'FinVault project (cymbal-finvault-silo-prod) runs isolated AlloyDB cluster with 0 shared compute and hardware-bound CMEK keys.',
-      auditArtifact: 'OCC Third-Party Risk Management Audit Report + Automated Cloud Logging VPC-SC Ingress Receipts.'
+      mandate: 'Commercial / PLG / Mid-market SaaS tenants accepting logical PostgreSQL FORCE RLS and platform-managed KMS encryption.',
+      patternBProof: 'Shared Hub Gen2 gVisor CoW runtime (--max-requests=1), 120 RPM Valkey quota, AlloyDB FORCE RLS, 32,768 prefix cache.',
+      auditArtifact: '1.0x baseline COGS • 1,000+ tenants • 89.1% input savings • <5s Valkey SCAN+UNLINK eviction.'
     },
     {
-      reg: 'EU DORA & GDPR',
-      sector: 'European Digital Resilience',
+      reg: 'Gate 2: Pattern C',
+      sector: 'q_spoke = 1, q_silo = 0 (Hybrid PSC)',
       color: G_GREEN_DEEP,
       tint: G_GREEN_LIGHT,
-      mandate: 'Requires sovereign cloud residency, zero extraterritorial data transfers, and instantaneous customer-controlled data shredding.',
-      patternBProof: 'All services pinned to europe-west3 (Frankfurt); Cloud KMS CMEK key hosted on customer-owned HSM with instant revocation.',
-      auditArtifact: 'DORA Article 28 Compliance Attestation + Instant Crypto-Shredding Verification Log (<3s).'
+      mandate: 'Enterprise B2B tenants requiring dedicated CMEK AlloyDB, regional residency, or private tools—without ~15x silo overhead.',
+      patternBProof: 'Shared Hub Compute + unidirectional /28 PSC Spoke (10.10.0.50:443), 600 RPM quota, SHADOW_SYNC → 0ms CAS upgrade.',
+      auditArtifact: '1.8x–2.8x blended COGS (81%–88% cheaper vs. silos) • 0 dropped turns • HTTP 403 cross-spoke guard.'
     },
     {
-      reg: 'HIPAA & HITECH',
-      sector: 'Healthcare & Life Sciences',
-      color: G_AMBER_DEEP,
-      tint: G_YELLOW_LIGHT,
-      mandate: 'Prohibits commingling Protected Health Information (ePHI) in shared database tables or multi-tenant cache partitions.',
-      patternBProof: 'Dedicated healthcare silo with Cloud SDP pre-inference redaction, BAA execution, and dedicated Vertex AI endpoint.',
-      auditArtifact: 'HIPAA Security Rule Audit Log showing 0 unencrypted ePHI transmissions and isolated patient databases.'
-    },
-    {
-      reg: 'FedRAMP High / IL5',
-      sector: 'Public Sector & Defense',
+      reg: 'Gate 3: Pattern B',
+      sector: 'q_silo = 1 (Sovereign Silo)',
       color: G_RED_DEEP,
       tint: G_RED_LIGHT,
-      mandate: 'Demands air-gapped model execution, hardware root-of-trust, zero internet egress, and strict FIPS 140-3 cryptography.',
-      patternBProof: 'Air-gapped Gemma 3 (27B) running on private GKE with AMD SEV-SNP Confidential VMs inside a closed VPC-SC perimeter.',
-      auditArtifact: 'FedRAMP High Continuous Monitoring Plan + Air-Gapped Network Flow Receipt (0 egress packets).'
+      mandate: 'Regulated Banking (OCC), Healthcare GxP, EU DORA, & Defense needing dedicated projects, VPC-SC, or air-gapped compute.',
+      patternBProof: 'Dedicated GCP project, VPC-SC (0.0.0.0/0 denied), IAM PAB, Confidential GKE SEV-SNP (Gemma 3 27B), FIPS HSM CMEK.',
+      auditArtifact: '~15x baseline COGS • 41.2s verified CMEK full enclave halt (HTTP 423) • 0 egress packets.'
+    },
+    {
+      reg: '3 Universal Invariants',
+      sector: 'Locked Across Patterns A, C & B',
+      color: G_AMBER_DEEP,
+      tint: G_YELLOW_LIGHT,
+      mandate: 'Regardless of gate result, core identity, runtime code, and safety/FinOps guardrails must remain uniform across tiers.',
+      patternBProof: 'Dual Gateways (OBO + RFC 9449 DPoP), 80% single core-cymbal-agent/ ADK package, Model Armor (<8ms) + Zero-PII OTel.',
+      auditArtifact: '30/30 Multi-Cloud AgentCore MCP gates PASS • Zero-branch drift across all 5 enterprise workstreams.'
     }
   ];
 
   frameworks.forEach((f, idx) => {
     const fx = 0.6 + idx * 3.08;
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: fx, y: 1.35, w: 2.92, h: 5.5, rectRadius: 0.08,
-      fill: { color: WHITE }, line: { color: f.color, width: 1.5 }
-    });
-    slide.addShape(pptx.ShapeType.rect, {
-      x: fx, y: 1.35, w: 2.92, h: 0.75, fill: { color: f.tint }
-    });
-    slide.addText(f.reg, {
-      x: fx + 0.15, y: 1.42, w: 2.62, h: 0.3, fontSize: 13, bold: true, color: f.color, fontFace: FONT_TITLE
-    });
-    slide.addText(f.sector, {
-      x: fx + 0.15, y: 1.74, w: 2.62, h: 0.25, fontSize: 8.5, italic: true, color: TEXT_MUTED, fontFace: FONT_BODY
-    });
+    slide.addShape(pptx.ShapeType.roundRect, { x: fx, y: 1.35, w: 2.92, h: 5.5, rectRadius: 0.08, fill: { color: WHITE }, line: { color: f.color, width: 1.5 } });
+    slide.addShape(pptx.ShapeType.rect, { x: fx, y: 1.35, w: 2.92, h: 0.75, fill: { color: f.tint } });
+    slide.addText(f.reg, { x: fx + 0.15, y: 1.40, w: 2.62, h: 0.34, fontSize: 11.2, bold: true, color: f.color, fontFace: FONT_TITLE });
+    slide.addText(f.sector, { x: fx + 0.15, y: 1.74, w: 2.62, h: 0.25, fontSize: 7.5, italic: true, color: TEXT_MUTED, fontFace: FONT_BODY });
 
-    // Mandate Box
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: fx + 0.15, y: 2.25, w: 2.62, h: 1.4, rectRadius: 0.05,
-      fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
-    });
-    slide.addText('STATUTORY ISOLATION MANDATE', {
-      x: fx + 0.22, y: 2.32, w: 2.48, h: 0.2, fontSize: 7.8, bold: true, color: G_RED_DEEP, fontFace: FONT_TITLE
-    });
-    slide.addText(f.mandate, {
-      x: fx + 0.22, y: 2.55, w: 2.48, h: 1.0, fontSize: 8.2, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
-    });
+    slide.addShape(pptx.ShapeType.roundRect, { x: fx + 0.15, y: 2.25, w: 2.62, h: 1.4, rectRadius: 0.05, fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 } });
+    slide.addText('SELECTION CONDITION', { x: fx + 0.22, y: 2.32, w: 2.48, h: 0.2, fontSize: 7.8, bold: true, color: G_RED_DEEP, fontFace: FONT_TITLE });
+    slide.addText(f.mandate, { x: fx + 0.22, y: 2.55, w: 2.48, h: 1.0, fontSize: 8.2, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2 });
 
-    // Agentic Triad Proof Box
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: fx + 0.15, y: 3.8, w: 2.62, h: 1.4, rectRadius: 0.05,
-      fill: { color: 'F0FDF4' }, line: { color: G_GREEN_DEEP, width: 0.75 }
-    });
-    slide.addText('PATTERN B ARCHITECTURAL ENFORCEMENT', {
-      x: fx + 0.22, y: 3.87, w: 2.48, h: 0.2, fontSize: 7.8, bold: true, color: G_GREEN_DEEP, fontFace: FONT_TITLE
-    });
-    slide.addText(f.patternBProof, {
-      x: fx + 0.22, y: 4.1, w: 2.48, h: 1.0, fontSize: 8.2, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
-    });
+    slide.addShape(pptx.ShapeType.roundRect, { x: fx + 0.15, y: 3.8, w: 2.62, h: 1.4, rectRadius: 0.05, fill: { color: 'F0FDF4' }, line: { color: G_GREEN_DEEP, width: 0.75 } });
+    slide.addText('ARCHITECTURAL CONFIGURATION', { x: fx + 0.22, y: 3.87, w: 2.48, h: 0.2, fontSize: 7.8, bold: true, color: G_GREEN_DEEP, fontFace: FONT_TITLE });
+    slide.addText(f.patternBProof, { x: fx + 0.22, y: 4.1, w: 2.48, h: 1.0, fontSize: 8.2, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2 });
 
-    // Audit Artifact Box
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: fx + 0.15, y: 5.35, w: 2.62, h: 1.35, rectRadius: 0.05,
-      fill: { color: G_BLUE_LIGHT }, line: { color: G_BLUE_DARK, width: 0.75 }
-    });
-    slide.addText('AUDIT ARTIFACT & VERIFICATION PROOF', {
-      x: fx + 0.22, y: 5.42, w: 2.48, h: 0.2, fontSize: 7.8, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE
-    });
-    slide.addText(f.auditArtifact, {
-      x: fx + 0.22, y: 5.65, w: 2.48, h: 0.95, fontSize: 8.2, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
-    });
+    slide.addShape(pptx.ShapeType.roundRect, { x: fx + 0.15, y: 5.35, w: 2.62, h: 1.35, rectRadius: 0.05, fill: { color: G_BLUE_LIGHT }, line: { color: G_BLUE_DARK, width: 0.75 } });
+    slide.addText('VERIFIED ECONOMICS & SLA', { x: fx + 0.22, y: 5.42, w: 2.48, h: 0.2, fontSize: 7.8, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE });
+    slide.addText(f.auditArtifact, { x: fx + 0.22, y: 5.65, w: 2.48, h: 0.95, fontSize: 8.2, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2 });
   });
 }
 
@@ -737,39 +677,38 @@ function buildSlide04_ComplianceMatrix() {
 // ============================================================================
 function buildSlide05_Act2Breaker() {
   buildActBreakerSlide({
-    slideNum: 5,
-    actTag: 'ACT II • SOVEREIGN BLUEPRINTS',
+    actTag: 'ACT II • UNIFIED TOPOLOGY BLUEPRINTS',
     actNumber: 'ACT II',
-    actTitle: 'Agentic Triad Topologies & CMEK Blueprints',
-    actSubtitle: 'Physical Multi-Project Architecture, VPC-SC Perimeters, and Automated Terraform Resource Graphs',
+    actTitle: 'Agentic Triad: Comparing Pattern A, B & C Side-by-Side',
+    actSubtitle: 'Selector Decision Graph, Pooled Control Plane, Sovereign Silos, and Dynamic Hybrid PSC',
     actColor: G_BLUE_DARK,
     actTint: G_BLUE_LIGHT,
-    coreQuestion: 'How do we construct physical project perimeters and customer cryptographic kill-switches without rewriting the agentic core?',
-    thesis: 'Agentic Triad encapsulates the 80% reusable 5-Hop agent core inside dedicated Google Cloud projects protected by VPC Service Controls perimeters, IAM Principal Access Boundaries, and customer-held Cloud KMS CMEK keys.',
+    coreQuestion: 'How do the three isolation topologies share one 80% ADK core while diverging cleanly along storage, network, and key custody lines?',
+    thesis: 'TENANT_ISOLATION_MODE (POOLED | HYBRID_PSC | SOVEREIGN_SILO) toggles declarative infrastructure envelopes without altering 5-Hop business logic.',
     milestones: [
       {
         num: '01',
-        title: 'C4 L1 System Context & Ingress Routing',
-        desc: 'Global SaaS ingress directing regulated tenants into dedicated project perimeters via IAM STS token exchange.',
-        deliverable: 'L1 System Context Diagram'
+        title: 'L1 Selector Zone Matrix & Figure 1',
+        desc: 'Interactive topology matrix classifying enterprise buyers via Compliance and Spoke gates.',
+        deliverable: 'L1 Selector & Decision Blueprint'
       },
       {
         num: '02',
-        title: 'Figure 1: Decision Guide & Agentic Triad Reference Architecture',
-        desc: 'Official Architecture Center reference blueprint with dual isolated tenant silos (FinVault and RetailStream).',
-        deliverable: 'Editable DrawingML Blueprint'
+        title: 'Pattern A: Pooled High-Density Blueprint',
+        desc: 'Cloud Run Gen2 gVisor CoW, 120/600 RPM Valkey quotas, and AlloyDB FORCE RLS (1.0x COGS).',
+        deliverable: 'Pattern A L2 DrawingML'
       },
       {
         num: '03',
-        title: 'Figure 2: Multi-Project & Customer CMEK Topology',
-        desc: 'Customer Key Custodian architecture binding Cloud KMS HSM keys to Vertex AI and AlloyDB instances.',
-        deliverable: 'CMEK Key Ring Topology'
+        title: 'Pattern B: Dedicated Sovereign Silos Blueprint',
+        desc: 'Dedicated GCP projects, VPC-SC, IAM PAB, Air-Gapped Gemma 3, and 41.2s CMEK halt (~15x COGS).',
+        deliverable: 'Pattern B L2 DrawingML'
       },
       {
         num: '04',
-        title: 'Figure 3: 1-Click Terraform Silo Automation',
-        desc: 'Complete modular IaC blueprint standing up dedicated projects, VPC-SC perimeters, and IAM bindings in <15m.',
-        deliverable: 'Terraform Resource Graph'
+        title: 'Pattern C: Dynamic Hybrid Hub & /28 PSC Blueprint',
+        desc: 'Shared Hub compute + unidirectional /28 PSC spokes with 0ms CAS graduation (1.8x–2.8x COGS).',
+        deliverable: 'Pattern C L2 DrawingML'
       }
     ]
   });
@@ -780,90 +719,65 @@ function buildSlide05_Act2Breaker() {
 // ============================================================================
 function buildSlide06_PatternBPrinciples() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT II • ARCHITECTURAL PRINCIPLES', 'The Multi-Tenant Agentic Triad: Mathematical Proof of Trade-Offs', 6);
+  addHeader(slide, 'ACT II • ARCHITECTURAL PRINCIPLES', 'The Multi-Tenant Agentic Triad: Mathematical Proof of Trade-Offs', nextSlideNum());
 
-  slide.addText('The fundamental trilemma of multi-tenant agent systems and why no single static architecture satisfies all enterprise workloads.', {
+  slide.addText('How the 80/20 Reusability Law aligns Security, FinOps (89.1% input savings), and Velocity across every enterprise deployment tier.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
-  // Top Card: The 80/20 Sovereign Law
-  slide.addShape(pptx.ShapeType.roundRect, {
-    x: 0.6, y: 1.35, w: 12.133, h: 1.6, rectRadius: 0.08,
-    fill: { color: WHITE }, line: { color: G_BLUE_DARK, width: 1.5 }
-  });
-  slide.addShape(pptx.ShapeType.rect, {
-    x: 0.6, y: 1.35, w: 12.133, h: 0.38, fill: { color: G_BLUE_LIGHT }
-  });
-  slide.addText('THE 80/20 SOVEREIGN REUSABILITY LAW', {
-    x: 0.8, y: 1.35, w: 6.0, h: 0.38, fontSize: 8.8, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE, valign: 'middle'
-  });
-  slide.addText('You do NOT write a separate AI agent for sovereign tenants. 80% of the codebase remains identical to Pattern A:', {
-    x: 0.8, y: 1.8, w: 11.7, h: 0.3, fontSize: 9.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE
-  });
-  slide.addText('• 80% REUSABLE CORE: The 5-Hop cryptographic pipeline, Model Armor guardrails, tool dispatch interceptors, and conversational memory schemas.\n• 20% SILO DELTA: Dedicated GCP project perimeter, VPC-SC ingress/egress rules, customer-held Cloud KMS CMEK key rings, and dedicated AlloyDB/GKE clusters.', {
+  slide.addShape(pptx.ShapeType.roundRect, { x: 0.6, y: 1.35, w: 12.133, h: 1.6, rectRadius: 0.08, fill: { color: WHITE }, line: { color: G_BLUE_DARK, width: 1.5 } });
+  slide.addShape(pptx.ShapeType.rect, { x: 0.6, y: 1.35, w: 12.133, h: 0.38, fill: { color: G_BLUE_LIGHT } });
+  slide.addText('THE 80/20 AGENTIC TRIAD REUSABILITY LAW', { x: 0.8, y: 1.35, w: 6.0, h: 0.38, fontSize: 8.8, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE, valign: 'middle' });
+  slide.addText('One shared ADK core package (core-cymbal-agent/) powers Pool, Hybrid, and Sovereign deployments:', { x: 0.8, y: 1.8, w: 11.7, h: 0.3, fontSize: 9.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE });
+  slide.addText('• 80% SHARED 5-HOP CORE: Ingress WAF, STS OBO+DPoP, ARD catalog filter (-94%), Model Armor (<8ms), NLC guard, Valkey rate limits, & Zero-PII OTel.\n• 20% TOPOLOGY CONFIG (TENANT_ISOLATION_MODE): Declarative Terraform toggles between POOLED, HYBRID_PSC (/28 NAT), and SOVEREIGN_SILO (VPC-SC).', {
     x: 0.8, y: 2.12, w: 11.7, h: 0.7, fontSize: 8.8, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.25
   });
 
-  // Bottom 3 Cards: The 3 Sovereign Guarantees
   const pillars = [
     {
-      title: '1. Physical Project Boundary',
+      title: '1. Isolation Triad Pillar',
       color: G_BLUE_DARK,
       tint: G_BLUE_LIGHT,
       points: [
-        'Dedicated Google Cloud Project: Every regulated customer operates within a dedicated project boundary.',
-        'Dedicated VPC & Subnets: Private IP space with zero cross-tenant peering or shared routing tables.',
-        'Zero Co-Tenancy: Cloud Run v2 and AlloyDB instances run exclusively for the tenant service account.',
-        'IAM Principal Access Boundary (PAB): Enforces strict organization-level blast radius containment.'
+        'Pattern A: Force RLS + gVisor CoW heap wipes (--max-requests=1) on every turn.',
+        'Pattern C: Unidirectional /28 PSC ServiceAttachments (10.10.0.50:443) + spoke CMEK.',
+        'Pattern B: Dedicated project, VPC-SC (0.0.0.0/0 deny), & SEV-SNP (Gemma 3 27B).',
+        '100% deterministic cross-tenant refusal across all tiers (HTTP 403 / 423).'
       ]
     },
     {
-      title: '2. Customer-Held CMEK Kill-Switch',
+      title: '2. FinOps Triad Pillar (89.1%)',
       color: G_RED_DEEP,
       tint: G_RED_LIGHT,
       points: [
-        'Cloud KMS / Cloud EKM: Encryption keys reside in customer HSM or on-premises key manager.',
-        'Cryptographic Erasure (Crypto-Shredding): Disabling the key revokes all access to databases and indexes.',
-        '<3s Revocation SLA: Next agent turn throws HTTP 423 Locked immediately upon key disablement.',
-        'Zero Data in Plaintext: Backups, WAL logs, and vector embeddings are encrypted at rest with tenant CMEK.'
+        '32,768 Shared Prefix Cache slashes net input token cost by 89.1% on shared pools.',
+        'Per-tier thinkingLevel / maxOutputTokens clamps (MEDIUM/4k Std vs HIGH/8k VIP) bound runaway.',
+        'Model Tiering: Gemini 3.8 Flash (default), Dedicated PT, or Gemma 3 air-gapped.',
+        'BigQuery OTel links cached_input_tokens & reasoning output counters (raw_pii_logged=FALSE).'
       ]
     },
     {
-      title: '3. Air-Gapped Gemma 3 on GKE',
+      title: '3. Velocity Triad Pillar',
       color: G_GREEN_DEEP,
       tint: G_GREEN_LIGHT,
       points: [
-        'Private GKE Cluster: Autonomous agent reasoning served locally without external internet connectivity.',
-        'Confidential VMs (SEV-SNP): Memory encryption prevents cloud hypervisor or host-level snooping.',
-        'Open-Weight Gemma 3 (27B): Enterprise customer retains complete control over model weights and updates.',
-        'Zero Telemetry Egress: Logging stays inside tenant project; 0 telemetry sent to public SaaS endpoints.'
+        'Shared Diagnostic → Private Tenant Agent A2A delegation preserves OBO STS identity.',
+        'Dynamic GCS Skill Packs hot-swap tenant prompts/rubrics with 0 image rebuilds.',
+        'Keyless WIF+OIDC bridges to AWS Bedrock AgentCore (30/30 gates, 0 static IAM keys).',
+        'GAP-01..05 sunset feature flags allow effortless handover as Agent Engine GA matures.'
       ]
     }
   ];
 
   pillars.forEach((p, idx) => {
     const px = 0.6 + idx * 4.12;
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: px, y: 3.15, w: 3.9, h: 3.7, rectRadius: 0.08,
-      fill: { color: WHITE }, line: { color: p.color, width: 1.5 }
-    });
-    slide.addShape(pptx.ShapeType.rect, {
-      x: px, y: 3.15, w: 3.9, h: 0.5, fill: { color: p.tint }
-    });
-    slide.addText(p.title, {
-      x: px + 0.15, y: 3.15, w: 3.6, h: 0.5, fontSize: 11, bold: true, color: p.color, fontFace: FONT_TITLE, valign: 'middle'
-    });
-
+    slide.addShape(pptx.ShapeType.roundRect, { x: px, y: 3.15, w: 3.9, h: 3.7, rectRadius: 0.08, fill: { color: WHITE }, line: { color: p.color, width: 1.5 } });
+    slide.addShape(pptx.ShapeType.rect, { x: px, y: 3.15, w: 3.9, h: 0.5, fill: { color: p.tint } });
+    slide.addText(p.title, { x: px + 0.15, y: 3.15, w: 3.6, h: 0.5, fontSize: 11, bold: true, color: p.color, fontFace: FONT_TITLE, valign: 'middle' });
     p.points.forEach((point, pidx) => {
       const pty = 3.8 + pidx * 0.72;
-      slide.addShape(pptx.ShapeType.roundRect, {
-        x: px + 0.12, y: pty, w: 3.66, h: 0.65, rectRadius: 0.04,
-        fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
-      });
-      slide.addText(`• ${point}`, {
-        x: px + 0.18, y: pty + 0.04, w: 3.54, h: 0.57,
-        fontSize: 8.0, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
-      });
+      slide.addShape(pptx.ShapeType.roundRect, { x: px + 0.12, y: pty, w: 3.66, h: 0.65, rectRadius: 0.04, fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 } });
+      slide.addText(`• ${point}`, { x: px + 0.18, y: pty + 0.04, w: 3.54, h: 0.57, fontSize: 8.0, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15 });
     });
   });
 }
@@ -873,10 +787,11 @@ function buildSlide06_PatternBPrinciples() {
 // ============================================================================
 function buildSlide07_L1Logical() {
   addArchitectureZoneTopologySlide(pptx, DECKS[4]);
+  nextSlideNum();
 }
 
 // ============================================================================
-// SLIDE 08: Figure 1 Decompiled DrawingML (Decision Guide & Agentic Triad Architecture)
+// SLIDE 08: Figure 1 Decompiled DrawingML (Executive Decision Guide & Agentic Triad Architecture)
 // ============================================================================
 async function buildSlide08_Figure1() {
   const xmlPath = path.join(ROOT_DIR, 'diagrams', 'ws5-decision-tree-and-agentic-triad.drawio');
@@ -893,12 +808,13 @@ async function buildSlide08_Figure1() {
       'Official Google Cloud Architecture Center executive decision tree blueprint.',
       'Synthesizes compliance, isolation, and economic trade-offs into a binary routing model.',
       'Directs non-regulated high-concurrency workloads to Pattern A pooled architecture.',
-      'Directs regulated statutory workloads (ITAR, FedRAMP, GxP) to Agentic Triad decision guide & agentic triad.',
+      'Directs regulated statutory workloads (ITAR, FedRAMP, GxP) to Pattern B Sovereign Silos.',
       'Directs high-growth enterprise tiers to Pattern C dynamic hybrid with live migration.'
     ],
     'diagrams/ws5-decision-tree-and-agentic-triad.drawio',
     true
   );
+  nextSlideNum();
 }
 
 // ============================================================================
@@ -924,10 +840,11 @@ async function buildSlide09_PatternAPooled() {
     'diagrams/ws2-pattern-a-pooled-5hop-architecture.drawio',
     true
   );
+  nextSlideNum();
 }
 
 // ============================================================================
-// SLIDE 10: Agentic Triad Decision Guide & Agentic Triad Reference Architecture
+// SLIDE 10: Pattern B Sovereign Silos Reference Architecture
 // ============================================================================
 async function buildSlide10_PatternBSilos() {
   const xmlPath = path.join(ROOT_DIR, 'diagrams', 'ws3-pattern-b-sovereign-silos-architecture.drawio');
@@ -936,19 +853,20 @@ async function buildSlide10_PatternBSilos() {
     pptx,
     xmlContent,
     'WS5',
-    'WS5 • ACT II: Agentic Triad',
-    'Agentic Triad: Zero-Trust Decision Guide & Agentic Triad Reference Blueprint & Dedicated Perimeters',
+    'WS5 • ACT II: Pattern B',
+    'Pattern B: Dedicated Sovereign Silos Reference Blueprint & Per-Tenant VPC-SC Perimeters',
     'ws3-pattern-b-sovereign-silos-architecture',
     undefined,
     [
-      'Agentic Triad reference architecture for banking, healthcare, and public sector workloads.',
-      'Physically isolated dedicated projects (cymbal-finvault-silo-prod) per tenant.',
+      'Pattern B sovereign silo reference architecture for banking, healthcare, and public sector workloads.',
+      'Physically isolated dedicated projects (ramp-portal-dev ↔ AWS AgentCore) per tenant.',
       'VPC Service Controls perimeters block all unauthorized API ingress and data exfiltration.',
       'Customer-Managed Encryption Keys (CMEK) provide instant mathematical crypto-shredding.'
     ],
     'diagrams/ws3-pattern-b-sovereign-silos-architecture.drawio',
     true
   );
+  nextSlideNum();
 }
 
 // ============================================================================
@@ -974,43 +892,43 @@ async function buildSlide11_PatternCHybrid() {
     'diagrams/ws4-pattern-c-hybrid-psc-and-migration.drawio',
     true
   );
+  nextSlideNum();
 }
 
 function buildSlide12_Act3Breaker() {
   buildActBreakerSlide({
-    slideNum: 12,
-    actTag: 'ACT III • ZERO-TRUST CONTROL PLANE',
+    actTag: 'ACT III • AGENTIC TRIAD EXECUTION & FINOPS',
     actNumber: 'ACT III',
-    actTitle: '5-Hop Control Plane, KMS CMEK & Air-Gapped GKE',
-    actSubtitle: 'Cryptographic Invariant Verification, Instant Crypto-Shredding, and Confidential LLM Serving',
+    actTitle: 'Shared + Private A2A, GCS Skills & Zero-PII FinOps OTel',
+    actSubtitle: 'Scoped A2A Delegation, Dynamic Skill Hot-Swap, 32,768 Prefix Cache & AWS Federation',
     actColor: G_AMBER_DEEP,
     actTint: G_YELLOW_LIGHT,
-    coreQuestion: 'How does the 5-Hop pipeline enforce cryptographic guarantees across sovereign project perimeters?',
-    thesis: 'Every Hop re-authenticates the signed TenantContext JWT, verifies VPC-SC perimeter boundaries, and validates CMEK key availability before executing any step.',
+    coreQuestion: 'How do Shared platform agents collaborate with Private Tenant agents and dynamic skills without sacrificing 89.1% FinOps savings or leaking PII?',
+    thesis: 'Shared Diagnostic agents pass scoped STS JWTs over A2A to Private agents that load pinned GCS YAML skills and emit SHA-256 hashed FinOps OTel spans.',
     milestones: [
       {
         num: '01',
-        title: 'C4 L3 Sequence & L4 Wire Triptych',
-        desc: 'UML process swimlane and byte-level payload transformations across dedicated perimeters.',
+        title: 'L3 Agentic Triad Sequence & L4 FinOps Triptych',
+        desc: '5-actor Shared → Private A2A swimlane and 32,768 prefix cache + Zero-PII OTel span wire proof.',
         deliverable: 'L3 Sequence & L4 Wire Slides'
       },
       {
         num: '02',
-        title: 'Cloud KMS CMEK Crypto-Shredding Engine',
-        desc: 'Instant kill-switch mechanics returning HTTP 423 Locked in <3s when customer key version is revoked.',
-        deliverable: 'Kill-Switch Architecture'
+        title: 'Dynamic GCS Skill Packs (0 Image Rebuilds)',
+        desc: 'Runtime loading of SHA-256 verified tenant skills cached safely under cache:{tenant}:skill:*.',
+        deliverable: 'Zero-Rebuild Skill Engine'
       },
       {
         num: '03',
-        title: 'Air-Gapped Gemma 3 on Private GKE',
-        desc: 'Confidential Computing VMs (AMD SEV-SNP) providing hardware memory encryption for private reasoning.',
-        deliverable: 'Air-Gapped GKE Serving Blueprint'
+        title: '32,768 Prefix Cache, NLC & AWS AgentCore Federation',
+        desc: '89.1% input reduction, MEDIUM/4k & HIGH/8k output clamps, and keyless OIDC federation across 10 SaaS stacks.',
+        deliverable: 'Multi-Cloud Control Plane'
       },
       {
         num: '04',
-        title: 'Architectural Caveats & Nuances',
-        desc: 'Quota limits, cold-start latency, zero prompt cache sharing, and VPC-SC egress governance.',
-        deliverable: 'Kernel-Level Invariants'
+        title: 'Capstone Backlog & GAP-01..05 Sunset Flags',
+        desc: 'Feature-flagged middleware hooks engineered for frictionless transition to Agent Engine GA.',
+        deliverable: 'GA Sunset Architecture'
       }
     ]
   });
@@ -1023,8 +941,9 @@ function buildSlide13_L3Process() {
   addUmlSequenceSwimlaneSlide(
     pptx,
     DECKS[4],
-    'WS5 • ACT III (L3 PROCESS): 5-Actor UML Sequence — Agentic Triad Agentic Triad CMEK Revocation & Air-Gapped GKE'
+    'WS5 • ACT III (L3 PROCESS): 5-Actor UML Sequence — Shared + Private Agents, Dynamic GCS Skills & FinOps OTel'
   );
+  nextSlideNum();
 }
 
 // ============================================================================
@@ -1034,8 +953,9 @@ function buildSlide14_L4Wire() {
   addPayloadTransformationTriptychSlide(
     pptx,
     DECKS[4],
-    'WS5 • ACT III (L4 WIRE): Agentic Triad Agentic Triad Signed Context & KMS CMEK Payload Triptych'
+    'WS5 • ACT III (L4 WIRE): Prefix Cache (32,768 / 89.1%) & Zero-PII BigQuery OTel Payload Triptych'
   );
+  nextSlideNum();
 }
 
 // ============================================================================
@@ -1043,100 +963,44 @@ function buildSlide14_L4Wire() {
 // ============================================================================
 function buildSlide15_Hops1And2() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • HOPS 1 & 2', 'Hop 1 Dedicated Edge PEP & Hop 2 Sovereign Catalog Filtering', 15);
+  addHeader(slide, 'ACT III • HOPS 1 & 2', 'Hop 1 Cryptographic Identity & Hop 2 ARD Scoped A2A Delegation', nextSlideNum());
 
-  slide.addText('How ingress requests are cryptographically authenticated and scoped to authorized agent tools before any LLM inference occurs.', {
+  slide.addText('How the Shared Diagnostic Agent delegates safely over A2A to Tenant-Private agents without privilege downgrade or cross-tenant discovery.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
-  // Left Column: Hop 1
-  slide.addShape(pptx.ShapeType.roundRect, {
-    x: 0.6, y: 1.35, w: 5.95, h: 5.5, rectRadius: 0.08,
-    fill: { color: WHITE }, line: { color: G_BLUE_DARK, width: 1.5 }
-  });
-  slide.addShape(pptx.ShapeType.rect, {
-    x: 0.6, y: 1.35, w: 5.95, h: 0.5, fill: { color: G_BLUE_LIGHT }
-  });
-  slide.addText('HOP 1: DEDICATED INGRESS PEP & CLOUD ARMOR', {
-    x: 0.8, y: 1.35, w: 5.5, h: 0.5, fontSize: 10, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE, valign: 'middle'
-  });
+  slide.addShape(pptx.ShapeType.roundRect, { x: 0.6, y: 1.35, w: 5.9, h: 5.5, rectRadius: 0.08, fill: { color: WHITE }, line: { color: G_BLUE_DARK, width: 1.5 } });
+  slide.addShape(pptx.ShapeType.rect, { x: 0.6, y: 1.35, w: 5.9, h: 0.5, fill: { color: G_BLUE_LIGHT } });
+  slide.addText('HOP 1: SHARED INGRESS PEP & STS PRESERVATION', { x: 0.78, y: 1.35, w: 5.5, h: 0.5, fontSize: 9.5, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE, valign: 'middle' });
 
-  const hop1Cards = [
-    {
-      title: 'Dedicated Cloud Armor Policy',
-      desc: 'Each sovereign project deploys a dedicated Cloud Armor security policy enforcing corporate IP allowlisting, WAF inspection, and custom header sanitization.'
-    },
-    {
-      title: 'Anti-Spoofing Header Stripping',
-      desc: 'Custom request rule strips unauthenticated X-Tenant-Id or Authorization headers from client requests before forwarding to the Cloud Run ingress gateway.'
-    },
-    {
-      title: 'IAM STS Token Exchange',
-      desc: 'The gateway exchanges tenant corporate IdP tokens (Okta/Entra ID) via GCP Security Token Service (STS) for a short-lived (5-minute) signed TenantContext JWT.'
-    },
-    {
-      title: 'Cloud KMS ECDSA P-256 Signing',
-      desc: 'The minted JWT is signed using Cloud KMS asymmetric key (projects/cymbal-finvault-silo-prod/locations/us-central1/keyRings/finvault-kr/cryptoKeys/jwt-signer).'
-    }
+  const h1 = [
+    { title: 'Zero-Trust Edge Header Stripping', desc: 'Cloud Armor strips external tenant/user headers before forwarding verified OIDC + RFC 9449 DPoP identity claims.' },
+    { title: '5-Min ECDSA P-256 STS Propagation', desc: 'HOP 1 mints a signed TenantContext JWT verified locally at every downstream A2A & MCP boundary (<0.15ms JWKS check).' },
+    { title: 'Shared Diagnostic Agent Entrypoint', desc: 'Unified shared_diagnostic_agent.py triages incoming requests using invariant core tooling before private escalation.' },
+    { title: 'Zero Identity Downgrade on A2A', desc: 'Shared agents never unwrap into broad admin service accounts; sub-agent calls pass the caller signed STS assertion.' }
   ];
-
-  hop1Cards.forEach((c, idx) => {
-    const cy = 2.0 + idx * 1.15;
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: 0.8, y: cy, w: 5.55, h: 1.02, rectRadius: 0.04,
-      fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
-    });
-    slide.addText(c.title, {
-      x: 0.95, y: cy + 0.08, w: 5.25, h: 0.25, fontSize: 9.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE
-    });
-    slide.addText(c.desc, {
-      x: 0.95, y: cy + 0.35, w: 5.25, h: 0.6, fontSize: 8.5, color: TEXT_MUTED, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
-    });
+  h1.forEach((c, i) => {
+    const cy = 2.0 + i * 1.15;
+    slide.addShape(pptx.ShapeType.roundRect, { x: 0.78, y: cy, w: 5.54, h: 1.02, rectRadius: 0.05, fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 } });
+    slide.addText(c.title, { x: 0.92, y: cy + 0.08, w: 5.25, h: 0.25, fontSize: 9.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE });
+    slide.addText(c.desc, { x: 0.92, y: cy + 0.34, w: 5.25, h: 0.62, fontSize: 8.2, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15 });
   });
 
-  // Right Column: Hop 2
-  slide.addShape(pptx.ShapeType.roundRect, {
-    x: 6.78, y: 1.35, w: 5.95, h: 5.5, rectRadius: 0.08,
-    fill: { color: WHITE }, line: { color: G_BLUE, width: 1.5 }
-  });
-  slide.addShape(pptx.ShapeType.rect, {
-    x: 6.78, y: 1.35, w: 5.95, h: 0.5, fill: { color: G_BLUE_LIGHT }
-  });
-  slide.addText('HOP 2: AGENT REGISTRY & DISCOVERY (ARD) SCOPING', {
-    x: 6.98, y: 1.35, w: 5.5, h: 0.5, fontSize: 10, bold: true, color: G_BLUE, fontFace: FONT_TITLE, valign: 'middle'
-  });
+  slide.addShape(pptx.ShapeType.roundRect, { x: 6.833, y: 1.35, w: 5.9, h: 5.5, rectRadius: 0.08, fill: { color: WHITE }, line: { color: G_GREEN_DEEP, width: 1.5 } });
+  slide.addShape(pptx.ShapeType.rect, { x: 6.833, y: 1.35, w: 5.9, h: 0.5, fill: { color: G_GREEN_LIGHT } });
+  slide.addText('HOP 2: ARD VISIBILITY & PRIVATE A2A TARGETING', { x: 7.01, y: 1.35, w: 5.5, h: 0.5, fontSize: 9.5, bold: true, color: G_GREEN_DEEP, fontFace: FONT_TITLE, valign: 'middle' });
 
-  const hop2Cards = [
-    {
-      title: 'Dedicated Catalog PDP',
-      desc: 'The Agent Registry & Discovery (ARD) catalog engine resides inside the sovereign project, evaluating tools strictly for the verified tenant identity.'
-    },
-    {
-      title: 'Zero Competitor Tool Visibility',
-      desc: 'Agents in RetailStream silo cannot query or resolve tools from FinVault silo; catalog queries enforce strict project-level tenancy filters.'
-    },
-    {
-      title: 'Private Agent Alpha Execution',
-      desc: 'FinVault private agents (e.g. Agent Alpha for OCC regulatory reporting) are discoverable only within FinVault project with zero external disclosure.'
-    },
-    {
-      title: 'Dynamic Skills Injection (GCS)',
-      desc: 'Skills and prompt templates load from tenant-owned CMEK-encrypted GCS buckets (gs://cymbal-skills-finvault/), preventing prompt poisoning.'
-    }
+  const h2 = [
+    { title: 'Entitled Private Agent Discovery', desc: 'ARD confirms FinVault callers can resolve finvault_agent_alpha while rejecting RetailStream discovery with HTTP 403.' },
+    { title: 'Dynamic Schema Pruning (-94% Tokens)', desc: 'Both Shared and Private agents inject strictly permitted 2LO/3LO MCP tool schemas, curbing context bloat and hallucinations.' },
+    { title: 'Agent-to-Agent Card Enforcement', desc: 'Private Agent cards mandate OBO STS claim validation + DPoP thumbprint matching before loading tenant context.' },
+    { title: 'Unified Registry Across Patterns A/B/C', desc: 'One ARD PDP governs pooled SaaS tools, hybrid /28 PSC endpoints, and sovereign VPC-SC enclaves without branching.' }
   ];
-
-  hop2Cards.forEach((c, idx) => {
-    const cy = 2.0 + idx * 1.15;
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: 6.98, y: cy, w: 5.55, h: 1.02, rectRadius: 0.04,
-      fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
-    });
-    slide.addText(c.title, {
-      x: 7.13, y: cy + 0.08, w: 5.25, h: 0.25, fontSize: 9.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE
-    });
-    slide.addText(c.desc, {
-      x: 7.13, y: cy + 0.35, w: 5.25, h: 0.6, fontSize: 8.5, color: TEXT_MUTED, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
-    });
+  h2.forEach((c, i) => {
+    const cy = 2.0 + i * 1.15;
+    slide.addShape(pptx.ShapeType.roundRect, { x: 7.01, y: cy, w: 5.54, h: 1.02, rectRadius: 0.05, fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 } });
+    slide.addText(c.title, { x: 7.15, y: cy + 0.08, w: 5.25, h: 0.25, fontSize: 9.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE });
+    slide.addText(c.desc, { x: 7.15, y: cy + 0.34, w: 5.25, h: 0.62, fontSize: 8.2, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15 });
   });
 }
 
@@ -1145,96 +1009,47 @@ function buildSlide15_Hops1And2() {
 // ============================================================================
 function buildSlide16_Hop3Compute() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • HOP 3 COMPUTE & MEMORY', 'Hop 3 Dedicated Compute & 5-Level Memory Bank Isolation', 16);
+  addHeader(slide, 'ACT III • HOP 3 SKILLS & MEMORY', 'Hop 3 Dynamic GCS Skill Packs (0 Image Rebuilds) & L1–L5 Memory Triad', nextSlideNum());
 
-  slide.addText('How decision guide & agentic triad eliminate microarchitectural co-tenancy and guarantee isolated conversational state.', {
+  slide.addText('How Private Tenant Agents hot-swap domain playbooks dynamically from pinned GCS YAML objects while keeping 5-level memory isolation.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
-  // Left Column: Dedicated Cloud Run Compute
-  slide.addShape(pptx.ShapeType.roundRect, {
-    x: 0.6, y: 1.35, w: 5.95, h: 5.5, rectRadius: 0.08,
-    fill: { color: WHITE }, line: { color: G_BLUE_DARK, width: 1.5 }
-  });
-  slide.addShape(pptx.ShapeType.rect, {
-    x: 0.6, y: 1.35, w: 5.95, h: 0.5, fill: { color: G_BLUE_LIGHT }
-  });
-  slide.addText('DEDICATED COMPUTE RUNTIME (CLOUD RUN V2 & GVISOR)', {
-    x: 0.8, y: 1.35, w: 5.5, h: 0.5, fontSize: 10, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE, valign: 'middle'
-  });
+  slide.addShape(pptx.ShapeType.roundRect, { x: 0.6, y: 1.35, w: 5.9, h: 5.5, rectRadius: 0.08, fill: { color: WHITE }, line: { color: G_BLUE_DARK, width: 1.5 } });
+  slide.addShape(pptx.ShapeType.rect, { x: 0.6, y: 1.35, w: 5.9, h: 0.5, fill: { color: G_BLUE_LIGHT } });
+  slide.addText('DYNAMIC GCS SKILL PACK HYDRATION (ZERO REBUILDS)', { x: 0.78, y: 1.35, w: 5.5, h: 0.5, fontSize: 9.5, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE, valign: 'middle' });
 
-  const computeCards = [
-    {
-      title: 'Dedicated Cloud Run Services',
-      desc: 'Each silo provisions dedicated Cloud Run v2 services with min-instances=1 to eliminate cold-starts during regulatory audits.'
-    },
-    {
-      title: 'gVisor (runsc) Sandbox Boundary',
-      desc: 'Guest application code runs inside a user-space kernel sandbox, preventing host system call snooping or container breakout attacks.'
-    },
-    {
-      title: 'Zero Thread Co-Tenancy',
-      desc: 'Worker threads and memory allocations serve strictly one tenant. No competitor processes ever execute on the same container instance.'
-    },
-    {
-      title: 'Direct VPC Ingress Connector',
-      desc: 'All outbound traffic routes through a Serverless VPC Access connector into the tenant private subnet with 0 public internet exposure.'
-    }
+  const sCards = [
+    { title: 'Pinned SHA-256 Digest Gate', desc: 'Private agents fetch gs://<tenant-skills-bucket>/v2/skill.yaml only after matching the SHA-256 digest registered at Hop 2 ARD.' },
+    { title: 'Zero Container Image Rebuilds', desc: 'Customer domain rubrics, escalation workflows, and prompt addenda roll out in seconds without CI/CD container redeploys.' },
+    { title: 'Tenant-Isolated Skill Cache Keys', desc: 'Hydrated skills cache in Valkey strictly under cache:{tenant}:skill:* (0.4ms) with zero cross-tenant prompt pollution.' },
+    { title: 'Attested Span Metadata', desc: 'Every skill load emits skill_sha256 in the BigQuery OTel trace so audits tie AI behavior cleanly to exact playbook hashes.' }
   ];
-
-  computeCards.forEach((c, idx) => {
-    const cy = 2.0 + idx * 1.15;
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: 0.8, y: cy, w: 5.55, h: 1.02, rectRadius: 0.04,
-      fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
-    });
-    slide.addText(c.title, {
-      x: 0.95, y: cy + 0.08, w: 5.25, h: 0.25, fontSize: 9.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE
-    });
-    slide.addText(c.desc, {
-      x: 0.95, y: cy + 0.35, w: 5.25, h: 0.6, fontSize: 8.5, color: TEXT_MUTED, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
-    });
+  sCards.forEach((c, i) => {
+    const cy = 2.0 + i * 1.15;
+    slide.addShape(pptx.ShapeType.roundRect, { x: 0.78, y: cy, w: 5.54, h: 1.02, rectRadius: 0.05, fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 } });
+    slide.addText(c.title, { x: 0.92, y: cy + 0.08, w: 5.25, h: 0.25, fontSize: 9.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE });
+    slide.addText(c.desc, { x: 0.92, y: cy + 0.34, w: 5.25, h: 0.62, fontSize: 8.2, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15 });
   });
 
-  // Right Column: 5-Level Memory Bank (L1..L5)
-  slide.addShape(pptx.ShapeType.roundRect, {
-    x: 6.78, y: 1.35, w: 5.95, h: 5.5, rectRadius: 0.08,
-    fill: { color: WHITE }, line: { color: G_GREEN_DEEP, width: 1.5 }
-  });
-  slide.addShape(pptx.ShapeType.rect, {
-    x: 6.78, y: 1.35, w: 5.95, h: 0.5, fill: { color: G_GREEN_LIGHT }
-  });
-  slide.addText('5-LEVEL MEMORY BANK (L1..L5) ISOLATION', {
-    x: 6.98, y: 1.35, w: 5.5, h: 0.5, fontSize: 10, bold: true, color: G_GREEN_DEEP, fontFace: FONT_TITLE, valign: 'middle'
-  });
+  slide.addShape(pptx.ShapeType.roundRect, { x: 6.833, y: 1.35, w: 5.9, h: 5.5, rectRadius: 0.08, fill: { color: WHITE }, line: { color: G_AMBER_DEEP, width: 1.5 } });
+  slide.addShape(pptx.ShapeType.rect, { x: 6.833, y: 1.35, w: 5.9, h: 0.5, fill: { color: G_YELLOW_LIGHT } });
+  slide.addText('5-LEVEL MEMORY BANK (L1..L5) ACROSS PATTERNS A/B/C', { x: 7.01, y: 1.35, w: 5.5, h: 0.5, fontSize: 9.5, bold: true, color: G_AMBER_DEEP, fontFace: FONT_TITLE, valign: 'middle' });
 
-  const memoryLevels = [
-    { level: 'L1', name: 'Turn Working Memory', desc: 'Ephemeral context window scoped to active turn. Flushed immediately upon turn completion.' },
-    { level: 'L2', name: 'Session Memory', desc: 'Active multi-turn conversation thread. Stored in dedicated Memorystore Valkey instance.' },
-    { level: 'L3', name: 'User Profile Memory', desc: 'Per-user preferences and authorized role bindings. Encrypted under tenant CMEK in AlloyDB.' },
-    { level: 'L4', name: 'Tenant Episodic Memory', desc: 'Historical incident post-mortems and runbook executions. Strictly partitioned in tenant AlloyDB.' },
-    { level: 'L5', name: 'System Semantic Memory', desc: 'Pre-indexed enterprise knowledge base and compliance rules. Vector search in tenant Vertex Search.' }
+  const mems = [
+    { level: 'L1', name: 'Turn Working Memory', desc: 'CoW (--max-requests=1) wipe or WarmPool purge ensures 0 cross-turn heap residue.' },
+    { level: 'L2', name: 'Session State (Valkey)', desc: 'Scoped {tenant}:{user} namespace with <5s SCAN+UNLINK eviction on tenant offboard.' },
+    { level: 'L3', name: 'User Profile & 3LO Vault', desc: 'Encrypted OAuth tokens & preferences (AlloyDB FORCE RLS vs. CMEK Spoke/Silo).' },
+    { level: 'L4', name: 'Episodic Audit Trails', desc: 'Cross-pattern SHA-256 parity migration preserves conversation logs across CAS cutover.' },
+    { level: 'L5', name: 'Semantic Vector Store', desc: 'Partitioned pgvector knowledge stores enforcing CMEK eviction where mandated.' }
   ];
-
-  memoryLevels.forEach((m, idx) => {
-    const my = 2.0 + idx * 0.94;
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: 6.98, y: my, w: 5.55, h: 0.82, rectRadius: 0.04,
-      fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
-    });
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: 7.1, y: my + 0.14, w: 0.55, h: 0.54, rectRadius: 0.04,
-      fill: { color: G_GREEN_LIGHT }, line: { color: G_GREEN_DEEP, width: 1 }
-    });
-    slide.addText(m.level, {
-      x: 7.1, y: my + 0.14, w: 0.55, h: 0.54, fontSize: 11, bold: true, color: G_GREEN_DEEP, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
-    });
-    slide.addText(m.name, {
-      x: 7.8, y: my + 0.08, w: 4.5, h: 0.25, fontSize: 9.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE
-    });
-    slide.addText(m.desc, {
-      x: 7.8, y: my + 0.35, w: 4.5, h: 0.42, fontSize: 8.0, color: TEXT_MUTED, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
-    });
+  mems.forEach((m, i) => {
+    const my = 2.0 + i * 0.94;
+    slide.addShape(pptx.ShapeType.roundRect, { x: 7.01, y: my, w: 5.54, h: 0.84, rectRadius: 0.04, fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 } });
+    slide.addShape(pptx.ShapeType.roundRect, { x: 7.12, y: my + 0.14, w: 0.48, h: 0.54, rectRadius: 0.04, fill: { color: G_NAVY } });
+    slide.addText(m.level, { x: 7.12, y: my + 0.14, w: 0.48, h: 0.54, fontSize: 9.5, bold: true, color: WHITE, fontFace: FONT_TITLE, align: 'center', valign: 'middle' });
+    slide.addText(m.name, { x: 7.72, y: my + 0.08, w: 4.7, h: 0.24, fontSize: 9.2, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE });
+    slide.addText(m.desc, { x: 7.72, y: my + 0.34, w: 4.7, h: 0.44, fontSize: 8.0, color: TEXT_BODY, fontFace: FONT_BODY });
   });
 }
 
@@ -1243,71 +1058,52 @@ function buildSlide16_Hop3Compute() {
 // ============================================================================
 function buildSlide17_Hop4CryptoShredding() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • HOP 4 CRYPTO-SHREDDING', 'Hop 4 Cloud KMS CMEK Crypto-Shredding & The <3s Kill-Switch Engine', 17);
+  addHeader(slide, 'ACT III • HOP 4 FINOPS & SAFETY GUARDS', 'Hop 4 32,768 Cache (89.1%), NLC HTTP 422 & Sub-60s (41.2s) CMEK Guard', nextSlideNum());
 
-  slide.addText('How customer-controlled encryption keys provide instantaneous mathematical revocation of all tenant data and agent execution.', {
+  slide.addText('Uniform deterministic cost-control and security enforcement across every inference and outbound 2LO/3LO MCP invocation.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
   const steps = [
     {
-      num: 'STEP 1',
-      title: 'Tenant KMS Key Custody',
-      desc: 'Customer Key Custodian holds master key in Cloud KMS HSM or on-premises via Cloud EKM.',
-      code: 'gcloud kms keys versions disable 1 \\\n  --key=finvault-cmek-hsm \\\n  --keyring=finvault-kr',
+      num: 'GUARD 1',
+      title: '32,768 Prefix Cache (89.1%)',
+      desc: 'Shared invariant context stays cached across turns while private skills append dynamically after block boundary.',
+      code: 'cached_input_tokens: 32768\nuncached_tokens: 692\nnet_input_savings: "89.1%"',
       color: G_BLUE_DARK
     },
     {
-      num: 'STEP 2',
-      title: 'KMS Precondition Failure',
-      desc: 'On the very next agent turn, Vertex AI attempts to decrypt the Data Encryption Key (DEK).',
-      code: 'STATUS: FAILED_PRECONDITION\nERROR: Key version is disabled.\nCannot decrypt tenant state.',
+      num: 'GUARD 2',
+      title: 'Model Armor & Output Clamps',
+      desc: 'Inline <8ms prompt injection screening plus MEDIUM/4k (Std) vs HIGH/8k (VIP) caps.',
+      code: 'model_armor.screen(<8ms)\nthinking_limit = 8000 if vip else 4000\n# Prevents runaway FinOps spend',
       color: G_AMBER_DEEP
     },
     {
-      num: 'STEP 3',
-      title: 'Hop 4 Interceptor Traps',
-      desc: 'The Hop 4 safety interceptor catches the crypto failure before LLM model dispatch.',
-      code: 'try:\n  decrypt_with_cmek(context)\nexcept KmsKeyDisabledError:\n  raise CryptoShreddedError()',
-      color: G_RED_DEEP
+      num: 'GUARD 3',
+      title: 'NLC Anti-Fraud Check (HTTP 422)',
+      desc: 'Zero-PII natural-language constraint checker blocks unauthorized mass refunds or policy bypasses.',
+      code: 'HTTP/1.1 422 Unprocessable\n{\n  "error": "NLC_POLICY_BLOCK",\n  "rule": "MAX_REFUND_EXCEEDED"\n}',
+      color: G_GREEN_DEEP
     },
     {
-      num: 'STEP 4',
-      title: 'HTTP 423 Locked Output',
-      desc: 'Execution terminates immediately in <3s. Zero plaintext remains in RAM or disk.',
-      code: 'HTTP/1.1 423 Locked\n{\n  "error": "CRYPTO_SHREDDED",\n  "tenant_id": "finvault"\n}',
+      num: 'GUARD 4',
+      title: '<60s (41.2s) CMEK Kill-Switch',
+      desc: 'Pattern B/C key revocation aborts execution deterministically with HTTP 423 and 0 residual tokens.',
+      code: 'HTTP/1.1 423 Locked\n{\n  "error": "CRYPTO_SHREDDED",\n  "halt_sla_sec": 41.2\n}',
       color: G_RED_DEEP
     }
   ];
 
   steps.forEach((s, idx) => {
     const sx = 0.6 + idx * 3.08;
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: sx, y: 1.35, w: 2.92, h: 5.5, rectRadius: 0.08,
-      fill: { color: WHITE }, line: { color: s.color, width: 1.5 }
-    });
-    slide.addShape(pptx.ShapeType.rect, {
-      x: sx, y: 1.35, w: 2.92, h: 0.45, fill: { color: G_GREY_BG }
-    });
-    slide.addText(s.num, {
-      x: sx + 0.15, y: 1.35, w: 2.62, h: 0.45, fontSize: 8.5, bold: true, color: s.color, fontFace: FONT_TITLE, valign: 'middle'
-    });
-    slide.addText(s.title, {
-      x: sx + 0.15, y: 1.9, w: 2.62, h: 0.5, fontSize: 11, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, lineSpacingMultiple: 1.15
-    });
-    slide.addText(s.desc, {
-      x: sx + 0.15, y: 2.45, w: 2.62, h: 0.6, fontSize: 8.8, color: TEXT_MUTED, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
-    });
-
-    // Code Snippet Box
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: sx + 0.12, y: 3.2, w: 2.68, h: 3.45, rectRadius: 0.05,
-      fill: { color: G_NAVY }, line: { color: '334155', width: 0.75 }
-    });
-    slide.addText(s.code, {
-      x: sx + 0.2, y: 3.35, w: 2.52, h: 3.15,
-      fontSize: 8.2, color: 'E2E8F0', fontFace: 'Consolas', lineSpacingMultiple: 1.25
-    });
+    slide.addShape(pptx.ShapeType.roundRect, { x: sx, y: 1.35, w: 2.92, h: 5.5, rectRadius: 0.08, fill: { color: WHITE }, line: { color: s.color, width: 1.5 } });
+    slide.addShape(pptx.ShapeType.rect, { x: sx, y: 1.35, w: 2.92, h: 0.45, fill: { color: G_GREY_BG } });
+    slide.addText(s.num, { x: sx + 0.15, y: 1.35, w: 2.62, h: 0.45, fontSize: 8.5, bold: true, color: s.color, fontFace: FONT_TITLE, valign: 'middle' });
+    slide.addText(s.title, { x: sx + 0.15, y: 1.9, w: 2.62, h: 0.5, fontSize: 11, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, lineSpacingMultiple: 1.15 });
+    slide.addText(s.desc, { x: sx + 0.15, y: 2.45, w: 2.62, h: 0.65, fontSize: 8.8, color: TEXT_MUTED, fontFace: FONT_BODY, lineSpacingMultiple: 1.2 });
+    slide.addShape(pptx.ShapeType.roundRect, { x: sx + 0.12, y: 3.2, w: 2.68, h: 3.45, rectRadius: 0.05, fill: { color: G_NAVY }, line: { color: '334155', width: 0.75 } });
+    slide.addText(s.code, { x: sx + 0.2, y: 3.35, w: 2.52, h: 3.15, fontSize: 8.2, color: 'E2E8F0', fontFace: 'Consolas', lineSpacingMultiple: 1.25 });
   });
 }
 
@@ -1316,61 +1112,50 @@ function buildSlide17_Hop4CryptoShredding() {
 // ============================================================================
 function buildSlide18_Hop5AlloyDb() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • HOP 5 STORAGE', 'Hop 5 Dedicated AlloyDB Clusters & Physical Database Isolation', 18);
+  addHeader(slide, 'ACT III • HOP 5 ZERO-PII OTEL', 'Hop 5 Zero-PII SHA-256 BigQuery FinOps OTel & Chargeback Ledger', nextSlideNum());
 
-  slide.addText('How dedicated database clusters provide hardware-level physical isolation for financial ledgers and sensitive records.', {
+  slide.addText('How every Shared Diagnostic, Private A2A, and 3P SaaS MCP call rolls up into exact per-tenant margin accounting with zero PII leakage.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
   const cards = [
     {
-      title: 'Dedicated AlloyDB Cluster',
-      tag: 'HARDWARE ISOLATION',
+      title: 'Linked Distributed Trace Spans',
+      tag: 'END-TO-END TRACE',
       color: G_BLUE_DARK,
       tint: G_BLUE_LIGHT,
-      desc: 'Each silo provisions an independent AlloyDB cluster (cymbal-finvault-db) in a private VPC subnet. No competitor connections or shared buffer pools exist.'
+      desc: 'W3C traceparent spans unify Hop 1 ingress, Shared Diagnostic triage, Private A2A delegation, and Hop 5 2LO/3LO MCP tool calls.'
     },
     {
-      title: 'Cloud KMS CMEK at Rest',
-      tag: 'ENCRYPTION AT REST',
+      title: 'Zero-PII SHA-256 Prompt Digest',
+      tag: 'PRIVACY INVARIANT',
       color: G_GREEN_DEEP,
       tint: G_GREEN_LIGHT,
-      desc: 'Cluster storage, write-ahead logs (WAL), and automated backups are encrypted using the customer Cloud KMS key with automatic rotation.'
+      desc: 'Prompts and Cloud SDP redacted payloads emit SHA-256 digests with raw_pii_logged = FALSE enforced cleanly in telemetry sinks.'
     },
     {
-      title: 'PostgreSQL Role Hardening',
-      tag: 'ROLE SECURITY',
+      title: 'Granular Token Chargeback',
+      tag: 'FINOPS METERING',
       color: G_AMBER_DEEP,
       tint: G_YELLOW_LIGHT,
-      desc: 'Application connects via dedicated least-privilege service account (finvault-app@) with REVOKE ALL ON SCHEMA public and explicit table grants.'
+      desc: 'Each span exports tenant_id, agent_id, skill_sha256, cached_input_tokens (32,768), and reasoning output counters straight to BigQuery.'
     },
     {
-      title: 'Immutable Audit Logging',
-      tag: 'REGULATORY AUDIT',
+      title: 'Datadog Observability & S3 Attestation',
+      tag: 'AUDIT LEDGER',
       color: G_RED_DEEP,
       tint: G_RED_LIGHT,
-      desc: 'pgaudit extension captures all DDL and DML operations. Logs stream to a CMEK-encrypted Cloud Logging bucket with 7-year retention for OCC audits.'
+      desc: 'Live verification captures APM spans inside Datadog Cloud Observability and immutable JSON proofs in Amazon S3 compliance ledgers.'
     }
   ];
 
   cards.forEach((c, idx) => {
     const cx = 0.6 + idx * 3.08;
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: cx, y: 1.35, w: 2.92, h: 5.5, rectRadius: 0.08,
-      fill: { color: WHITE }, line: { color: c.color, width: 1.5 }
-    });
-    slide.addShape(pptx.ShapeType.rect, {
-      x: cx, y: 1.35, w: 2.92, h: 0.5, fill: { color: c.tint }
-    });
-    slide.addText(c.tag, {
-      x: cx + 0.15, y: 1.35, w: 2.62, h: 0.5, fontSize: 8.2, bold: true, color: c.color, fontFace: FONT_TITLE, valign: 'middle'
-    });
-    slide.addText(c.title, {
-      x: cx + 0.15, y: 2.0, w: 2.62, h: 0.55, fontSize: 11, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, lineSpacingMultiple: 1.15
-    });
-    slide.addText(c.desc, {
-      x: cx + 0.15, y: 2.65, w: 2.62, h: 4.0, fontSize: 8.8, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.25
-    });
+    slide.addShape(pptx.ShapeType.roundRect, { x: cx, y: 1.35, w: 2.92, h: 5.5, rectRadius: 0.08, fill: { color: WHITE }, line: { color: c.color, width: 1.5 } });
+    slide.addShape(pptx.ShapeType.rect, { x: cx, y: 1.35, w: 2.92, h: 0.5, fill: { color: c.tint } });
+    slide.addText(c.tag, { x: cx + 0.15, y: 1.35, w: 2.62, h: 0.5, fontSize: 8.2, bold: true, color: c.color, fontFace: FONT_TITLE, valign: 'middle' });
+    slide.addText(c.title, { x: cx + 0.15, y: 2.0, w: 2.62, h: 0.55, fontSize: 11, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, lineSpacingMultiple: 1.15 });
+    slide.addText(c.desc, { x: cx + 0.15, y: 2.65, w: 2.62, h: 4.0, fontSize: 8.8, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.25 });
   });
 }
 
@@ -1379,89 +1164,73 @@ function buildSlide18_Hop5AlloyDb() {
 // ============================================================================
 function buildSlide19_AirGappedGemma() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • AIR-GAPPED GEMMA 3', 'Air-Gapped Gemma 3 (27B) on Private GKE with Confidential VMs', 19);
+  addHeader(slide, 'ACT III • MODEL TIERING & AWS FEDERATION', 'Model Selection Strategy & Keyless GCP ↔ AWS AgentCore Federation', nextSlideNum());
 
-  slide.addText('Autonomous reasoning architecture for defense and strict sovereign mandates requiring zero external model API egress.', {
+  slide.addText('Matching Gemini 3.8 Flash, Dedicated PT, and Gemma 3 to isolation tiers alongside 30/30 verified AWS Bedrock AgentCore federation.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
   const cards = [
     {
-      title: '1. Private GKE Cluster Architecture',
-      subtitle: 'Zero public IP & private control plane',
+      title: '1. Gemini 3.8 Flash + 32k Cache',
+      subtitle: 'Pattern A & Pattern C default FinOps powerhouse',
       color: G_BLUE_DARK,
       tint: G_BLUE_LIGHT,
       items: [
-        'Private GKE cluster with private endpoint control plane in tenant VPC subnet.',
-        'Zero external public IP addresses on worker nodes; all ingress routes through internal load balancer.',
-        'Node pools isolated within VPC Service Controls perimeter, blocking unauthorized outbound internet access.',
-        'Binary Authorization enforces that only cryptographic Google-signed container images can boot.'
+        'Serves high-density Pool & Hybrid tiers via locations/global or regional endpoints.',
+        'Delivers 89.1% net input token savings across 32,768-token invariant prompts.',
+        'Dynamic MEDIUM/4k & HIGH/8k output clamps curb reasoning output spend under load.',
+        'Pairs with inline Model Armor (<8ms) and Cloud SDP inspection.'
       ]
     },
     {
-      title: '2. Confidential Computing (AMD SEV-SNP)',
-      subtitle: 'Hardware-encrypted RAM preventing host snooping',
+      title: '2. Dedicated Provisioned & Gemma 3',
+      subtitle: 'Pattern B Sovereign Silo & DoD/DORA models',
       color: G_RED_DEEP,
       tint: G_RED_LIGHT,
       items: [
-        'Worker nodes run on AMD SEV-SNP Confidential VMs with inline hardware memory encryption.',
-        'Neither cloud operators, host hypervisors, nor adjacent containers can inspect LLM memory in RAM.',
-        'Hardware root-of-trust attestation verifies that the kernel and firmware are untampered before loading weights.',
-        'Protects proprietary customer prompt data and confidential banking calculations during live inference.'
+        'Dedicated Vertex PT provides unshared throughput SLAs inside single-tenant VPCs.',
+        'Open-weight Gemma 3 (27B) serves air-gapped turns on private GKE Confidential VMs.',
+        'AMD SEV-SNP hardware memory encryption keeps RAM hidden from cloud hypervisors.',
+        'Zero external telemetry or internet egress packets leave regulated enclaves.'
       ]
     },
     {
-      title: '3. vLLM High-Throughput Serving Engine',
-      subtitle: 'Optimized inference with sub-35ms TTFT',
+      title: '3. Keyless OIDC ↔ AWS AgentCore',
+      subtitle: '0 static AWS IAM keys across cross-cloud flows',
       color: G_AMBER_DEEP,
       tint: G_YELLOW_LIGHT,
       items: [
-        'Open-weight Gemma 3 (27B) served via vLLM with PagedAttention and dynamic continuous batching.',
-        'Sub-35ms time-to-first-token (TTFT) and >85 tokens/second generation throughput on NVIDIA L4 GPUs.',
-        'OpenAI-compatible /v1/chat/completions endpoint binds seamlessly into the standard 5-Hop agent core.',
-        'Local tensor parallelism (TP=2) enables full-precision bfloat16 inference with zero accuracy loss.'
+        'GCP Auth Manager exchanges workload OIDC assertions via AWS STS AssumeRoleWithWebIdentity.',
+        'Cognito RS256 OAuth2 secures AWS Bedrock AgentCore MCP Gateway (us-east-1).',
+        'Bridges Lakehouse BI (ThoughtSpot, Sigma, Databricks, Snowflake) & ITSM/HCM tools.',
+        'All 10 live SaaS targets report READY across Pattern A, B, and C assertions.'
       ]
     },
     {
-      title: '4. Zero-Egress Operational Model',
-      subtitle: 'Self-contained air-gapped sovereign envelope',
+      title: '4. 30/30 Multi-Cloud Test Parity',
+      subtitle: '60/60 positive & adversarial assertions + S3 ledgers',
       color: G_GREEN_DEEP,
       tint: G_GREEN_LIGHT,
       items: [
-        'Zero model weight downloads at runtime: Container images pre-package Gemma 3 weights via Artifact Registry.',
-        'Zero telemetry egress: Model logs and token metrics stay inside the tenant Cloud Logging project.',
-        'No external API dependencies: Autonomous reasoning executes even during complete public cloud WAN outages.',
-        'Fully compliant with US DoD IL5/IL6, NATO Secret, and German BSI IT-Grundschutz sovereignty standards.'
+        'Every SaaS target executes live Pattern A (403 RLS), B (423 KMS), and C (PSC) proofs.',
+        'Immutable execution receipts persist to Amazon S3 compliance audit buckets.',
+        'Zero synthetic EC2 stand-ins or static credentials exist anywhere in runtime.',
+        'Verified cleanly via automated E2E harness across ramp-portal-dev & us-east-1.'
       ]
     }
   ];
 
   cards.forEach((c, idx) => {
     const cx = 0.6 + idx * 3.08;
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: cx, y: 1.35, w: 2.92, h: 5.5, rectRadius: 0.08,
-      fill: { color: WHITE }, line: { color: c.color, width: 1.5 }
-    });
-    slide.addShape(pptx.ShapeType.rect, {
-      x: cx, y: 1.35, w: 2.92, h: 0.6, fill: { color: c.tint }
-    });
-    slide.addText(c.title, {
-      x: cx + 0.15, y: 1.42, w: 2.62, h: 0.45, fontSize: 10.5, bold: true, color: c.color, fontFace: FONT_TITLE
-    });
-    slide.addText(c.subtitle, {
-      x: cx + 0.15, y: 2.05, w: 2.62, h: 0.35, fontSize: 8.5, italic: true, color: TEXT_MUTED, fontFace: FONT_BODY
-    });
-
+    slide.addShape(pptx.ShapeType.roundRect, { x: cx, y: 1.35, w: 2.92, h: 5.5, rectRadius: 0.08, fill: { color: WHITE }, line: { color: c.color, width: 1.5 } });
+    slide.addShape(pptx.ShapeType.rect, { x: cx, y: 1.35, w: 2.92, h: 0.6, fill: { color: c.tint } });
+    slide.addText(c.title, { x: cx + 0.15, y: 1.42, w: 2.62, h: 0.45, fontSize: 10.5, bold: true, color: c.color, fontFace: FONT_TITLE });
+    slide.addText(c.subtitle, { x: cx + 0.15, y: 2.05, w: 2.62, h: 0.35, fontSize: 8.5, italic: true, color: TEXT_MUTED, fontFace: FONT_BODY });
     c.items.forEach((item, iidx) => {
       const iy = 2.5 + iidx * 1.05;
-      slide.addShape(pptx.ShapeType.roundRect, {
-        x: cx + 0.12, y: iy, w: 2.68, h: 0.98, rectRadius: 0.04,
-        fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
-      });
-      slide.addText(`• ${item}`, {
-        x: cx + 0.18, y: iy + 0.06, w: 2.56, h: 0.86,
-        fontSize: 8.0, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
-      });
+      slide.addShape(pptx.ShapeType.roundRect, { x: cx + 0.12, y: iy, w: 2.68, h: 0.98, rectRadius: 0.04, fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 } });
+      slide.addText(`• ${item}`, { x: cx + 0.18, y: iy + 0.06, w: 2.56, h: 0.86, fontSize: 8.0, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15 });
     });
   });
 }
@@ -1471,86 +1240,59 @@ function buildSlide19_AirGappedGemma() {
 // ============================================================================
 function buildSlide20_ArchitecturalCaveats() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT III • ARCHITECTURAL CAVEATS', 'Architectural Caveats & Nuances: Production Realities of Agentic Triad', 20);
+  addHeader(slide, 'ACT III • ARCHITECTURAL CAVEATS', 'Architectural Caveats & GAP-01..05 Native Agent Engine Sunset Plan', nextSlideNum());
 
-  slide.addText('Critical engineering trade-offs, quota ceilings, and operational constraints that platform teams must navigate in Agentic Triad.', {
+  slide.addText('Critical enterprise production caveats paired with explicit GAP-01..05 feature flags ready for frictionless Agent Engine GA cutover.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
   const caveats = [
     {
-      title: '1. Project Quota Limits & Provisioning Latency',
-      tag: 'QUOTA CEILING',
-      color: G_AMBER_DEEP,
-      tint: G_YELLOW_LIGHT,
-      impact: 'Google Cloud Organizations enforce a default quota of 1,000 projects. Scaling to 10,000+ tenants requires quota requests and organizational folder hierarchies.',
-      mitigation: 'Pre-warm a pool of unallocated "warm standby" projects via automated Terraform runners to reduce tenant onboarding time from 15 minutes to <30 seconds.'
-    },
-    {
-      title: '2. Zero Shared Prompt Cache Savings',
-      tag: 'FINOPS IMPACT',
-      color: G_RED_DEEP,
-      tint: G_RED_LIGHT,
-      impact: 'Vertex AI ContextCacheConfig cannot be shared across project perimeters. Sovereign tenants pay 100% uncached input token costs, eliminating the 90% discount.',
-      mitigation: 'Accept higher COGS as a necessary compliance premium, and offset costs using smaller specialized models (Gemini Flash) or air-gapped Gemma 3 on GKE.'
-    },
-    {
-      title: '3. Cross-Perimeter SaaS Tool Access',
-      tag: 'VPC-SC EGRESS',
+      title: '1. GAP-01 & GAP-02: ARD RBAC & 3LO Vaults',
+      tag: 'PHASE 2 SUNSET',
       color: G_BLUE_DARK,
       tint: G_BLUE_LIGHT,
-      impact: 'When agent tools connect to external SaaS APIs (Salesforce, Jira, ServiceNow), strict VPC-SC perimeters block outbound HTTPS traffic unless explicitly allowed.',
-      mitigation: 'Configure scoped VPC-SC egress policies bound strictly to tenant service accounts with mTLS or OAuth DPoP sender-constrained token validation.'
+      impact: 'Native multi-tenant agent catalogs & managed per-user 3LO token vaults currently require Hop 2/Hop 5 middleware shims.',
+      mitigation: 'Wrap custom ARD ACL & KMS Vault logic behind CYMBAL_NATIVE_ARD_ACL_ENABLED and CYMBAL_NATIVE_AUTH_MGR_3LO feature flags.'
     },
     {
-      title: '4. Cloud KMS Key Revocation Cache TTL',
-      tag: 'CACHE TTL NUANCE',
+      title: '2. GAP-03..05: CMEK Cache, Quota & Billing',
+      tag: 'PHASE 3 SUNSET',
       color: G_RED_DEEP,
       tint: G_RED_LIGHT,
-      impact: 'Vertex AI and Google Cloud managed services cache CMEK authorization grants in memory for up to 3 hours to optimize throughput under transient network partitions.',
-      mitigation: 'Implement our active Hop 4 interceptor which validates key status directly against Cloud KMS on every turn, delivering hard <3s revocation enforcement.'
+      impact: 'CMEK memory eviction events, sub-tenant RPM throttling, and per-tenant Vertex token exports require platform glue today.',
+      mitigation: 'Gate behind CYMBAL_NATIVE_CMEK_CACHE_SYNC, CYMBAL_NATIVE_SUBTENANT_QUOTA & CYMBAL_NATIVE_VERTEX_TENANT_BILLING flags.'
+    },
+    {
+      title: '3. Prefix Cache Fragmentation Across Silos',
+      tag: 'FINOPS NUANCE',
+      color: G_AMBER_DEEP,
+      tint: G_YELLOW_LIGHT,
+      impact: 'Pattern B single-tenant clusters cannot share ContextCacheConfig across projects, losing the 89.1% cached-input discount.',
+      mitigation: 'Default non-sovereign accounts to Pattern A/C shared 32,768 caches and reserve Pattern B strictly for Gate 3 (q_silo=1).'
+    },
+    {
+      title: '4. CoW Concurrency vs. WarmPool Latch Trade-Off',
+      tag: 'RUNTIME NUANCE',
+      color: G_GREEN_DEEP,
+      tint: G_GREEN_LIGHT,
+      impact: 'Mode A CoW (--max-requests=1) sacrifices warm container reuse for zero heap bleed; Mode B adds cross-tenant latch complexity.',
+      mitigation: 'Enforce Mode A CoW for high-isolation hybrid/pool workloads and gate Mode B behind verified HTTP 403 tenant latch assertions.'
     }
   ];
 
   caveats.forEach((c, idx) => {
     const cx = 0.6 + idx * 3.08;
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: cx, y: 1.35, w: 2.92, h: 5.5, rectRadius: 0.08,
-      fill: { color: WHITE }, line: { color: c.color, width: 1.5 }
-    });
-    slide.addShape(pptx.ShapeType.rect, {
-      x: cx, y: 1.35, w: 2.92, h: 0.5, fill: { color: c.tint }
-    });
-    slide.addText(c.tag, {
-      x: cx + 0.15, y: 1.35, w: 2.62, h: 0.5, fontSize: 8.2, bold: true, color: c.color, fontFace: FONT_TITLE, valign: 'middle'
-    });
-    slide.addText(c.title, {
-      x: cx + 0.15, y: 1.95, w: 2.62, h: 0.55, fontSize: 10.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, lineSpacingMultiple: 1.15
-    });
-
-    // Impact Box
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: cx + 0.12, y: 2.6, w: 2.68, h: 1.9, rectRadius: 0.04,
-      fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
-    });
-    slide.addText('ARCHITECTURAL IMPACT & CONSTRAINT', {
-      x: cx + 0.18, y: 2.68, w: 2.56, h: 0.2, fontSize: 7.5, bold: true, color: G_RED_DEEP, fontFace: FONT_TITLE
-    });
-    slide.addText(c.impact, {
-      x: cx + 0.18, y: 2.92, w: 2.56, h: 1.5, fontSize: 8.0, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
-    });
-
-    // Mitigation Box
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: cx + 0.12, y: 4.6, w: 2.68, h: 2.1, rectRadius: 0.04,
-      fill: { color: 'F0FDF4' }, line: { color: G_GREEN_DEEP, width: 0.75 }
-    });
-    slide.addText('PRODUCTION COMPENSATING CONTROL', {
-      x: cx + 0.18, y: 4.68, w: 2.56, h: 0.2, fontSize: 7.5, bold: true, color: G_GREEN_DEEP, fontFace: FONT_TITLE
-    });
-    slide.addText(c.mitigation, {
-      x: cx + 0.18, y: 4.92, w: 2.56, h: 1.7, fontSize: 8.0, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
-    });
+    slide.addShape(pptx.ShapeType.roundRect, { x: cx, y: 1.35, w: 2.92, h: 5.5, rectRadius: 0.08, fill: { color: WHITE }, line: { color: c.color, width: 1.5 } });
+    slide.addShape(pptx.ShapeType.rect, { x: cx, y: 1.35, w: 2.92, h: 0.5, fill: { color: c.tint } });
+    slide.addText(c.tag, { x: cx + 0.15, y: 1.35, w: 2.62, h: 0.5, fontSize: 8.2, bold: true, color: c.color, fontFace: FONT_TITLE, valign: 'middle' });
+    slide.addText(c.title, { x: cx + 0.15, y: 1.95, w: 2.62, h: 0.55, fontSize: 10.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, lineSpacingMultiple: 1.15 });
+    slide.addShape(pptx.ShapeType.roundRect, { x: cx + 0.12, y: 2.6, w: 2.68, h: 1.9, rectRadius: 0.04, fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 } });
+    slide.addText('ARCHITECTURAL IMPACT & CONSTRAINT', { x: cx + 0.18, y: 2.68, w: 2.56, h: 0.2, fontSize: 7.5, bold: true, color: G_RED_DEEP, fontFace: FONT_TITLE });
+    slide.addText(c.impact, { x: cx + 0.18, y: 2.92, w: 2.56, h: 1.5, fontSize: 8.0, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2 });
+    slide.addShape(pptx.ShapeType.roundRect, { x: cx + 0.12, y: 4.6, w: 2.68, h: 2.1, rectRadius: 0.04, fill: { color: 'F0FDF4' }, line: { color: G_GREEN_DEEP, width: 0.75 } });
+    slide.addText('SUNSET FLAG & COMPENSATING CONTROL', { x: cx + 0.18, y: 4.68, w: 2.56, h: 0.2, fontSize: 7.5, bold: true, color: G_GREEN_DEEP, fontFace: FONT_TITLE });
+    slide.addText(c.mitigation, { x: cx + 0.18, y: 4.92, w: 2.56, h: 1.7, fontSize: 8.0, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2 });
   });
 }
 
@@ -1559,251 +1301,271 @@ function buildSlide20_ArchitecturalCaveats() {
 // ============================================================================
 function buildSlide21_Act4Breaker() {
   buildActBreakerSlide({
-    slideNum: 21,
     actTag: 'ACT IV • EMPIRICAL PROOFS',
     actNumber: 'ACT IV',
-    actTitle: 'Empirical Multi-Cloud Verification & 10 Sovereign Receipts',
-    actSubtitle: 'Authentic 2880x1800 Retina UI Captures Across 10 Live Enterprise SaaS Stacks',
+    actTitle: FULL_34_MODE
+      ? 'Empirical Multi-Cloud Verification & 30/30 Multi-Cloud Proofs'
+      : 'Triad Governance Proofs & 10-SaaS Atlas',
+    actSubtitle: FULL_34_MODE
+      ? 'Authentic 2880x1620 Retina UI Captures Across 10 Live Enterprise SaaS Stacks'
+      : 'Commercial SaaS Verification Slots for Datadog Observability (SAAS-09) & Workday HCM (SAAS-08) + Companion 10-SaaS Atlas.',
     actColor: G_RED_DEEP,
     actTint: G_RED_LIGHT,
-    coreQuestion: 'Can decision guide & agentic triad interact with external SaaS tools while maintaining zero-trust perimeters and regulatory compliance?',
-    thesis: 'Live verification across 10 third-party enterprise SaaS stacks proves that dedicated per-tenant perimeters and DPoP-bound credentials isolate all tool actions.',
-    milestones: [
+    coreQuestion: 'Can the Multi-Tenant Agentic Triad interact cleanly across Pattern A, B & C SaaS tools while maintaining zero-trust perimeters and regulatory compliance?',
+    thesis: FULL_34_MODE
+      ? 'Live verification across 10 third-party enterprise SaaS stacks proves that dedicated per-tenant perimeters and DPoP-bound credentials isolate all tool actions.'
+      : 'Two signature Triad proofs (SAAS-09 Datadog Observability & SAAS-08 Workday HCM) validate Shared+Private A2A & CRAC governance across A/C/B, backed by the Companion 10-SaaS Atlas and 30/30 S3 Ledgers.',
+    milestones: FULL_34_MODE ? [
       {
         num: '01',
-        title: 'Proofs 1–3: Analytics & Observability (Metabase, Trino, Grafana)',
+        title: 'Proofs 1–3: Analytics & Observability (ThoughtSpot Cloud, Databricks Unity Catalog, Sigma Computing)',
         desc: 'Verifying that BI dashboards, distributed SQL engines, and APM metrics are strictly isolated within tenant VPCs.',
-        deliverable: '3 Dedicated Sovereign Dashboards'
+        deliverable: '3 Multi-Cloud BI & Telemetry Proofs'
       },
       {
         num: '02',
-        title: 'Proofs 4–6: Logs, Secrets & Warehouses (Seq, Vault, ClickHouse)',
+        title: 'Proofs 4–6: Logs, Secrets & Warehouses (Datadog SRE, Okta/CrowdStrike XDR, Snowflake AI Data Cloud)',
         desc: 'Verifying CMEK-encrypted audit logging, per-tenant Vault namespaces, and HSM-encrypted database tables.',
-        deliverable: '3 Hardware-Encrypted Stores'
+        deliverable: '3 Cross-Pattern OTel & Vault Stores'
       },
       {
         num: '03',
-        title: 'Proofs 7–8: Workspaces & Operations (Redmine, NocoDB)',
+        title: 'Proofs 7–8: Workspaces & Operations (ServiceNow ITSM, Veeva Vault RIM)',
         desc: 'Proving agent project tracking tools and CRM spreadsheets cannot cross enterprise organizational boundaries.',
-        deliverable: '2 Air-Gapped Tool Surfaces'
+        deliverable: '2 Multi-Cloud ITSM & Relational Proofs'
       },
       {
         num: '04',
-        title: 'Proofs 9–10: GitOps & CMS (Gitea, Directus)',
+        title: 'Proofs 9–10: CRM, Work Tracking & HCM (Atlassian Jira & Salesforce, Workday HCM)',
         desc: 'Verifying that proprietary agent skill code and customer knowledge items are completely invisible to external tenants.',
-        deliverable: '2 Isolated Repository Stores'
+        deliverable: '2 Multi-Cloud GitOps & HCM Proofs'
+      }
+    ] : [
+      {
+        num: '01',
+        title: 'Signature Proof 1: Datadog Cloud Observability (SAAS-09)',
+        desc: 'Slide 20 proves structured OTel audit log filtering and zero-PII redaction across Pattern A Pooled, Pattern C Hybrid, and Pattern B Silos.',
+        deliverable: 'Slide 20 • SAAS-09'
+      },
+      {
+        num: '02',
+        title: 'Signature Proof 2: Workday Enterprise HCM HR CRAC (SAAS-08)',
+        desc: 'Slide 21 proves fine-grained cell-level Row Access Control and A2A private agent delegation prevent cross-tenant HCM disclosure.',
+        deliverable: 'Slide 21 • SAAS-08'
+      },
+      {
+        num: '03',
+        title: 'Companion 10-SaaS Multi-Cloud Visual Atlas',
+        desc: 'Companion 10-SaaS Commercial Verification Atlas & 30/30 AgentCore MCP Ledger covering ThoughtSpot Cloud, Databricks Unity Catalog, Sigma Computing, Okta/CrowdStrike XDR, Snowflake AI Data Cloud, ServiceNow ITSM, Veeva Vault RIM, and Atlassian Jira & Salesforce.',
+        deliverable: 'Companion Atlas'
+      },
+      {
+        num: '04',
+        title: '30/30 AWS AgentCore & S3 Audit Ledgers',
+        desc: 'Cross-cloud parity receipts proving zero branch drift across core-cymbal-agent/ and 30/30 passing assertions in S3.',
+        deliverable: '30/30 Ledgers'
       }
     ]
   });
 }
 
 // ============================================================================
-// SLIDE 22: Proof 1 — Metabase Enterprise BI (ThoughtSpot)
+// SLIDE 22: Proof 1 — ThoughtSpot Cloud Spotter BI (ThoughtSpot)
 // ============================================================================
-function buildSlide22_Metabase() {
+function buildSlide22_ThoughtSpot() {
   buildBeforeAfterSaasSlide({
-    slideNum: 22,
     proofNum: 1,
-    saasName: 'Metabase Enterprise BI',
-    title: 'Proof 1: Metabase Enterprise BI v0.50.26 — Agentic Triad Analytics Isolation',
-    subtitle: 'Authentic 2880x1800 Retina UI captures verifying that sovereign VPC-SC perimeters isolate tenant analytics in Metabase.',
-    beforeImg: 'before_01_metabase_bi.png',
-    afterImg: 'after_01_metabase_bi.png',
-    beforeHeader: 'BEFORE: UNFILTERED SHARED BI (CROSS-TENANT LEAKAGE RISK)',
-    beforeVulnerability: 'Shared PostgreSQL connection pool lacks physical tenant perimeters. Financial analytics from FinVault Bank and commercial tenants merge in a single dashboard.',
-    beforeThreat: 'Commercial tenants or rogue agent workflows can inspect competitor order volumes and transaction totals with zero physical perimeter boundary.',
-    afterHeader: 'AFTER: DEDICATED SOVEREIGN SILO (STRICT VPC-SC ISOLATION)',
-    afterEnforcement: 'Metabase runs inside the dedicated FinVault project (cymbal-finvault-silo-prod) connecting exclusively to the tenant AlloyDB cluster over private VPC.',
-    afterVerification: 'The dashboard displays exclusively FinVault Bank transactions. Competitor records do not exist on the network or database level.'
+    saasName: 'ThoughtSpot Cloud Spotter BI',
+    title: 'Proof 1: ThoughtSpot Cloud Spotter BI — Commercial Liveboard & Hop 5 RLS Design',
+    subtitle: 'Authentic 2880x1620 Retina UI captures from live ThoughtSpot Cloud (team2.thoughtspot.cloud) paired with Hop 5 AlloyDB RLS tenant-isolation architecture.',
+    beforeImg: 'saas_01_thoughtspot_liveboard.png',
+    afterImg: 'saas_02_thoughtspot_saved_answer.png',
+    beforeHeader: 'LIVE VIEW 1: THOUGHTSPOT CLOUD EXECUTIVE LIVEBOARD',
+    beforeVulnerability: 'Live View 1 captures the commercial ThoughtSpot Cloud Executive Retail Sales Liveboard ($735.3K KPIs) on team2.thoughtspot.cloud; unscoped multi-tenant queries risk cross-tenant leakage without Hop 5 RLS.',
+    beforeThreat: 'Without Hop 5 AlloyDB RLS enforcement, cross-tenant RetailStream order metadata leaks alongside FinVault institutional wire settlements.',
+    afterHeader: 'LIVE VIEW 2: THOUGHTSPOT CLOUD GOVERNED SAVED ANSWER',
+    afterEnforcement: 'Hop 5 AlloyDB FORCE RLS enforces SET LOCAL app.current_tenant_id on governed ThoughtSpot Cloud views (zero cross-tenant rows in production).',
+    afterVerification: 'Live View 2 captures the ThoughtSpot Cloud Pharma Supply Saved Answer (100 rows) on team2.thoughtspot.cloud; Hop 5 AlloyDB RLS enforces tenant_id = finvault in production.'
   });
 }
 
 // ============================================================================
-// SLIDE 23: Proof 2 — Trino Distributed SQL (Databricks)
+// SLIDE 23: Proof 2 — Databricks Unity Catalog SQL (Databricks)
 // ============================================================================
-function buildSlide23_Trino() {
+function buildSlide23_Databricks() {
   buildBeforeAfterSaasSlide({
-    slideNum: 23,
     proofNum: 2,
-    saasName: 'Trino Distributed SQL',
-    title: 'Proof 2: Trino Distributed SQL v446 — CMEK-Encrypted Sovereign Data Lakehouse',
-    subtitle: 'Authentic 2880x1800 Retina UI captures proving SQL execution operates within a dedicated tenant catalog backed by CMEK Cloud Storage.',
-    beforeImg: 'before_06_trino_sql.png',
-    afterImg: 'after_06_trino_sql.png',
-    beforeHeader: 'BEFORE: GLOBAL CROSS-CATALOG TRINO QUERIES (NO PHYSICAL BOUNDARY)',
-    beforeVulnerability: 'An autonomous agent executes queries across a shared Trino cluster where multiple tenant catalogs are accessible via a single coordinator token.',
-    beforeThreat: 'Cross-tenant financial data across all participating SaaS tenants is returned in plaintext in the distributed query coordinator console.',
-    afterHeader: 'AFTER: DEDICATED CATALOG & CUSTOMER CMEK HSM ENCRYPTION',
-    afterEnforcement: 'Trino queries execute against a dedicated FinVault catalog backed by gs://cymbal-finvault-lakehouse/ encrypted with customer Cloud KMS key.',
-    afterVerification: 'Query execution scans strictly FinVault CMEK-encrypted partitions. If customer revokes KMS key, queries abort with HTTP 423 Locked in <3s.'
+    saasName: 'Databricks Unity Catalog Federated SQL',
+    title: 'Proof 2: Databricks Unity Catalog Federated SQL — AgentCore Target Attribution & RLS Execution',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) comparing ad-hoc manual SRE queries against Hop 5 geap-hop5-agent@finvault.com (TERCK8SLBP) Unity Catalog RLS execution.',
+    beforeImg: '',
+    afterImg: '',
+    beforeHeader: 'BEFORE: Databricks Unity Catalog SQL Warehouse — Ad-Hoc Queries (sre-lead@finvault.com)',
+    beforeVulnerability: 'SQL Warehouse query history displays manual sre-lead@finvault.com SQL queries (20261029_133921_00004, 00003) executed outside Hop 5 AgentCore governance.',
+    beforeThreat: 'Ad-hoc manual Databricks Unity Catalog sessions lack AgentCore target attribution (TERCK8SLBP) and federated tenant_id RLS attestation across catalogs.',
+    afterHeader: 'AFTER: Hop 5 FINISHED Query (55.95ms • geap-agentcore-TERCK8SLBP)',
+    afterEnforcement: 'Top FINISHED query (55.95ms) by geap-hop5-agent@finvault.com (geap-agentcore-TERCK8SLBP) runs TERCK8SLBP_UNITY_RLS_VERIFIED ($527.0M).',
+    afterVerification: 'Federated Databricks Unity Catalog execution returns FV-TX-901 strictly for tenant_id = finvault with verified AgentCore source tag and 0 cross-tenant rows.'
   });
 }
 
 // ============================================================================
-// SLIDE 24: Proof 3 — Grafana Enterprise Observability (Sigma Computing)
+// SLIDE 24: Proof 3 — Sigma Computing Cloud BI Observability (Sigma Computing)
 // ============================================================================
-function buildSlide24_Grafana() {
+function buildSlide24_Sigma() {
   buildBeforeAfterSaasSlide({
-    slideNum: 24,
     proofNum: 3,
-    saasName: 'Grafana Enterprise',
-    title: 'Proof 3: Grafana Observability v10.4.1 — Dedicated Sovereign APM & Telemetry',
-    subtitle: 'Authentic 2880x1800 Retina UI captures verifying Prometheus and OpenTelemetry metric scoping prevents noisy-neighbor metric leakage.',
-    beforeImg: 'before_02_grafana_enterprise.png',
-    afterImg: 'after_02_grafana_enterprise.png',
-    beforeHeader: 'BEFORE: UNFILTERED METRIC STREAMS (COMPETITOR TELEMETRY LEAK)',
-    beforeVulnerability: 'Prometheus endpoint publishes container metrics without physical project scoping. Ingress RPS, error rates, and latency curves are globally visible.',
-    beforeThreat: 'Competitor tenants can reverse-engineer transaction volumes, trade surges, and operational outages from co-hosted telemetry dashboards.',
-    afterHeader: 'AFTER: DEDICATED SOVEREIGN TELEMETRY PERIMETER (PROJECT ISOLATION)',
-    afterEnforcement: 'Grafana connects exclusively to the tenant Cloud Monitoring project via VPC Service Controls with private Google Access.',
-    afterVerification: 'Dashboard charts render exclusively FinVault Bank service-level metrics. Competitor metrics are physically non-existent in the telemetry store.'
+    saasName: 'Sigma Computing Cloud BI',
+    title: 'Proof 3: Sigma Computing Cloud BI / Sigma Workbook — Cross-Org Spoof 403 & Attestation',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) proving Target IZVODT083Q enforces eval_sigma_workbook_rls (HTTP 200) and blocks ops-eng@retailstream.com (HTTP 403).',
+    beforeImg: '',
+    afterImg: '',
+    beforeHeader: 'BEFORE: FinVault OCC Workbook — Baseline 3-Row Panel (Pre-Attestation)',
+    beforeVulnerability: 'Baseline FinVault OCC workbook renders the 3-row summary panel (FV-TX-901, FV-TX-902, RS-ORD-401 $0.00 Filtered / 403) without Hop 5 telemetry.',
+    beforeThreat: 'Absent an attached Hop 5 Agentic Attestation panel and S3 receipt, cross-org impersonation blocks lack live verifiable forensic proof.',
+    afterHeader: 'AFTER: Hop 5 Attestation (IZVODT083Q) + Cross-Org Spoof BLOCKED HTTP 403',
+    afterEnforcement: 'Appends Target IZVODT083Q panel: eval_sigma_workbook_rls returns HTTP 200 ALLOW while ops-eng@retailstream.com spoof hits BLOCKED HTTP 403.',
+    afterVerification: 'Attestation anchored in cymbal-10saas-ledger/sigma-computing/finvault.json confirming strict tenant_id = finvault isolation.'
   });
 }
 
 // ============================================================================
-// SLIDE 25: Proof 4 — Datalust Seq Centralized Logging (Datadog)
+// SLIDE 25: Proof 4 — Datadog Observability Centralized Logging (Datadog)
 // ============================================================================
-function buildSlide25_DatalustSeq() {
+function buildSlide25_Datadog() {
   buildBeforeAfterSaasSlide({
-    slideNum: 25,
     proofNum: 4,
-    saasName: 'Datalust Seq',
-    title: 'Proof 4: Datalust Seq Logging v2024.1 — Sovereign CMEK-Encrypted Audit Stream',
-    subtitle: 'Authentic 2880x1800 Retina UI captures showing structured audit logs strictly partitioned and encrypted with tenant KMS key.',
-    beforeImg: 'before_09_datalust_seq.png',
-    afterImg: 'after_09_datalust_seq.png',
-    beforeHeader: 'BEFORE: INTERLEAVED APPLICATION LOG STREAM (PII EXPOSURE)',
-    beforeVulnerability: 'Centralized logging cluster ingests agent execution traces from all tenants into a single Elasticsearch/Seq index without encryption boundaries.',
-    beforeThreat: 'Support engineers with broad logging access can view unredacted customer PII, account numbers, and private conversation histories.',
-    afterHeader: 'AFTER: DEDICATED SOVEREIGN AUDIT STREAM WITH CLOUD SDP REDACTION',
-    afterEnforcement: 'Log events pass through Cloud SDP inline inspection in Hop 4, masking PII before persisting to a CMEK-encrypted Cloud Logging bucket.',
-    afterVerification: 'Log stream contains 100% FinVault Bank events. Full cryptographic audit ownership remains in customer hands with 7-year OCC retention.'
+    saasName: 'Datadog Observability',
+    title: 'Proof 4: Datadog Observability APM — Model Armor Defense & Hop 5 Live Telemetry Trace',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) contrasting excluded baseline queries against expanded Target G767QR3TQZ Hop 5 structured APM verification.',
+    beforeImg: '',
+    afterImg: '',
+    beforeHeader: 'BEFORE: Not(AgentCoreTarget = G767QR3TQZ) — 5 Historical & Intercepted Events',
+    beforeVulnerability: 'Baseline query excludes G767QR3TQZ and shows 5 historical events, including Hop 4 Model Armor blocking indirect prompt injection in stack trace.',
+    beforeThreat: 'Without Hop 4 Model Armor inspection prior to log indexing, adversarial stack traces could poison downstream autonomous triage agents.',
+    afterHeader: 'AFTER: Live Expanded Trace [G767QR3TQZ] — PASS_ZERO_PROMPT_INJECTION',
+    afterEnforcement: 'Expanded trace [LIVE-MCP geap-hop5-mvv1tg35] verifies TenantId: finvault, Hop4ModelArmor: PASS_ZERO_PROMPT_INJECTION, ZeroPiiAttested: true.',
+    afterVerification: 'Verification binds S3AuditObject cymbal-10saas-ledger/datadog-sre/finvault.json with zero raw customer PII emitted to Datadog Logs telemetry.'
   });
 }
 
 // ============================================================================
-// SLIDE 26: Proof 5 — HashiCorp Vault Secrets Management (CrowdStrike / Okta)
+// SLIDE 26: Proof 5 — Okta & CrowdStrike XDR Secrets Management (CrowdStrike / Okta)
 // ============================================================================
-function buildSlide26_HashiCorpVault() {
+function buildSlide26_CrowdStrikeOkta() {
   buildBeforeAfterSaasSlide({
-    slideNum: 26,
     proofNum: 5,
-    saasName: 'HashiCorp Vault',
-    title: 'Proof 5: HashiCorp Vault v1.16.0 — Dedicated Sovereign Namespaces & HSM Roots',
-    subtitle: 'Authentic 2880x1800 Retina UI captures proving agent tool credentials are sequestered in dedicated per-tenant KV secret paths.',
-    beforeImg: 'before_10_hashicorp_vault.png',
-    afterImg: 'after_10_hashicorp_vault.png',
-    beforeHeader: 'BEFORE: SHARED SECRET KV STORE (PRIVILEGE ESCALATION THREAT)',
-    beforeVulnerability: 'API keys, database credentials, and OAuth secrets for all tenants reside in a shared secret/kv/ data path accessible via broad service tokens.',
-    beforeThreat: 'A prompt injection attack forcing an agent to run vault kv get exposes master keys for all enterprise tenants.',
-    afterHeader: 'AFTER: DEDICATED VAULT NAMESPACE BOUND TO TENANT HSM ROOT',
-    afterEnforcement: 'Vault policies restrict agents to secret/tenants/finvault/* based on the verified JWT tenant claim minted at Hop 1.',
-    afterVerification: 'Agent attempts to access external secret namespaces result in instant permission denied (403 Forbidden). Master secrets remain secure.'
+    saasName: 'Okta & CrowdStrike XDR',
+    title: 'Proof 5: Okta & CrowdStrike XDR — RFC 9449 DPoP Containment & HSM Attestation',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) verifying tenant-scoped policy namespace finvault progression from v1 Pending Containment to v2 DPoP Verified 200.',
+    beforeImg: '',
+    afterImg: '',
+    beforeHeader: 'BEFORE: tenant-scoped policy namespace finvault v1 — PENDING_HOP5_DPOP_CONTAINMENT',
+    beforeVulnerability: 'Okta/CrowdStrike DPoP policy tenant-scoped policy namespace finvault Version 1 holds target C7EYM614F2 and cmek_key_state: ENABLED, but xdr_containment_status stays PENDING.',
+    beforeThreat: 'Without SHA-256 dpop_jkt_thumbprint binding and HSM attestation in containment policy v2, cryptographic containment proof remains incomplete.',
+    afterHeader: 'AFTER: Policy v2 — HOST_CONTAINED_DPOP_VERIFIED_200 & SHA-256 dpop_jkt',
+    afterEnforcement: 'Version 2 sets ENABLED_HSM_ATTESTED, records SHA-256 dpop_jkt_thumbprint, and links cymbal-10saas-ledger/crowdstrike-okta/finvault.json.',
+    afterVerification: 'State transitions to HOST_CONTAINED_DPOP_VERIFIED_200 with strict Okta/CrowdStrike DPoP policy path scoping isolating FinVault KMS/XDR metadata.'
   });
 }
 
 // ============================================================================
-// SLIDE 27: Proof 6 — ClickHouse Analytics Engine (Snowflake)
+// SLIDE 27: Proof 6 — Snowflake AI Data Cloud Analytics Engine (Snowflake)
 // ============================================================================
-function buildSlide27_ClickHouse() {
+function buildSlide27_Snowflake() {
   buildBeforeAfterSaasSlide({
-    slideNum: 27,
     proofNum: 6,
-    saasName: 'ClickHouse Analytics',
-    title: 'Proof 6: ClickHouse Analytics v24.3 — Hardware-Encrypted Wire Settlement Analytics',
-    subtitle: 'Authentic 2880x1800 Retina UI captures proving high-throughput analytical event queries are strictly bound to tenant boundaries.',
-    beforeImg: 'before_07_clickhouse_rls.png',
-    afterImg: 'after_07_clickhouse_rls.png',
-    beforeHeader: 'BEFORE: UNRESTRICTED COLUMNAR TABLE SCANS (EVENT CROSS-TALK)',
-    beforeVulnerability: 'Fast analytical table telemetry_events is queried without Row Policy definitions, scanning all tenants in unified columnar blocks.',
-    beforeThreat: 'High-frequency trading and wire settlement telemetry can be harvested by competitor tenants running analytical aggregation queries.',
-    afterHeader: 'AFTER: DEDICATED SOVEREIGN NODE ENCRYPTED UNDER TENANT HSM KEY',
-    afterEnforcement: 'ClickHouse evaluates CREATE ROW POLICY ON telemetry_events FOR SELECT USING (tenant_id = current_user()) at query compile time.',
-    afterVerification: 'Query execution strictly scans parts belonging to FinVault Bank. 0 competitor rows are read from NVMe disk.'
+    saasName: 'Snowflake AI Data Cloud Analytics',
+    title: 'Proof 6: Snowflake AI Data Cloud Analytics — Row-Level Policy Block vs. FinVault Scoped Query',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) proving finvault_user receives 0 rows when probing retailstream vs. $527.0M under tenant_id = finvault.',
+    beforeImg: '',
+    afterImg: '',
+    beforeHeader: 'BEFORE: Cross-Tenant Probe (WHERE tenant_id = retailstream → 0 Rows / 0 B)',
+    beforeVulnerability: 'finvault_user executes WHERE tenant_id = retailstream on cymbal_warehouse.wire_settlement_ledger; Snowflake AI Data Cloud returns empty result (0 rows, 0.00 B).',
+    beforeThreat: 'Cross-tenant WHERE clauses succeed silently if row policies are absent; native Snowflake Cortex RLS ensures zero cross-tenant rows ever return.',
+    afterHeader: 'AFTER: Scoped FinVault Query (FV-TX-901 $312.5M & FV-TX-902 $214.5M • CMEK)',
+    afterEnforcement: 'Scoped query WHERE tenant_id = finvault returns FV-TX-901 ($312.5M) and FV-TX-902 ($214.5M) tagged with gcp-kms://finvault-cmek-hsm.',
+    afterVerification: 'Confirms Snowflake AI Data Cloud row policy enforcement blocks retailstream reads (0.00 B) while serving authorized $527.0M FinVault analytics.'
   });
 }
 
 // ============================================================================
-// SLIDE 28: Proof 7 — Redmine Enterprise Project Tracker (ServiceNow)
+// SLIDE 28: Proof 7 — ServiceNow ITSM Enterprise Project Tracker (ServiceNow)
 // ============================================================================
-function buildSlide28_Redmine() {
+function buildSlide28_ServiceNow() {
   buildBeforeAfterSaasSlide({
-    slideNum: 28,
     proofNum: 7,
-    saasName: 'Redmine Project Operations',
-    title: 'Proof 7: Redmine Operations v5.1.2 — Air-Gapped Sovereign Issue Tracking',
-    subtitle: 'Authentic 2880x1800 Retina UI captures proving agent project management tools cannot cross enterprise workspace boundaries.',
-    beforeImg: 'before_03_redmine_itsm.png',
-    afterImg: 'after_03_redmine_itsm.png',
-    beforeHeader: 'BEFORE: GLOBAL TICKET CATALOG (INTER-TENANT VISIBILITY)',
-    beforeVulnerability: 'Shared ticketing instance allows generic project list queries without tenant scoping headers, displaying internal issues from all organizations.',
-    beforeThreat: 'Tenants can view confidential roadmap tickets, security incident post-mortems, and customer escalations of competing tenants.',
-    afterHeader: 'AFTER: DEDICATED SOVEREIGN WORKSPACE ACCESSIBLE ONLY OVER VPC-SC',
-    afterEnforcement: 'The Redmine MCP tool proxy injects tenant organization membership filters and validates incoming OIDC tokens before returning issue lists.',
-    afterVerification: 'Only FinVault Bank projects and tickets appear in the UI and API responses. Other tenants\' workspaces return 404 Not Found.'
+    saasName: 'ServiceNow ITSM',
+    title: 'Proof 7: ServiceNow ITSM (ZS9VGYHBQL) — Automated Hop 5 Change Control & CMEK Proof',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) verifying Target ZS9VGYHBQL filing CHG0049299 with Valkey Single-Flight & KMS CMEK attestation.',
+    beforeImg: '',
+    afterImg: '',
+    beforeHeader: 'BEFORE: FinVault ITSM (ZS9VGYHBQL) — 2 Manual Issues (#2 INC0948211, #1 CHG)',
+    beforeVulnerability: 'Baseline ServiceNow ITSM view lists 2 manual sre-lead@finvault.com issues (#2 INC0948211, #1 CHG0049218) prior to Hop 5 MCP automation.',
+    beforeThreat: 'Manual ITSM tickets lack cryptographic correlation to [GEAP-MCP ZS9VGYHBQL] Valkey single-flight locks and KMS CMEK runtime proofs.',
+    afterHeader: 'AFTER: Audited Change CHG0049299 [GEAP-MCP ZS9VGYHBQL] Verified',
+    afterEnforcement: 'Hop 5 Target ZS9VGYHBQL appends #3 CHG0049299: Automated Hop 5 Valkey Single-Flight & KMS CMEK Attestation inside ZS9VGYHBQL.',
+    afterVerification: 'Auditable ServiceNow ITSM change timeline ties ITSM change control directly to FinVault Core Banking Hop 5 runtime boundaries.'
   });
 }
 
 // ============================================================================
-// SLIDE 29: Proof 8 — NocoDB Relational Workspace (Muse)
+// SLIDE 29: Proof 8 — Veeva Vault RIM Relational Workspace (Muse)
 // ============================================================================
-function buildSlide29_NocoDB() {
+function buildSlide29_VeevaVault() {
   buildBeforeAfterSaasSlide({
-    slideNum: 29,
     proofNum: 8,
-    saasName: 'NocoDB Relational Workspace',
-    title: 'Proof 8: NocoDB Relational Workspace v0.207.1 — GxP/Regulatory Relational Database',
-    subtitle: 'Authentic 2880x1800 Retina UI captures showing no-code database grids partitioned strictly by tenant ID at the underlying database layer.',
-    beforeImg: 'before_04_nocodb_gxp.png',
-    afterImg: 'after_04_nocodb_gxp.png',
-    beforeHeader: 'BEFORE: MIXED RELATIONAL CRM GRID (TENANT DATA CO-MINGLED)',
-    beforeVulnerability: 'Shared NocoDB table view displays all customer leads, revenue numbers, and contract terms in a single shared spreadsheet grid.',
-    beforeThreat: 'Commercial tenants can export the full database table, compromising sensitive client lists and sales pipelines of rival enterprises.',
-    afterHeader: 'AFTER: DEDICATED SOVEREIGN ALLOYDB INSTANCE (PHYSICAL DATABASE SILO)',
-    afterEnforcement: 'NocoDB queries execute against an isolated AlloyDB instance with active CMEK encryption. The database planner filters records before return.',
-    afterVerification: 'The relational spreadsheet displays exclusively FinVault Bank accounts. Exporting CSV yields strictly tenant-owned data.'
+    saasName: 'Veeva Vault RIM',
+    title: 'Proof 8: Veeva Vault RIM 21 CFR Part 11 Ledger — Sovereign Key Lineage & Append Proof',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) proving Target TWQU0KSRVF (muse-poc) appends attested FinVault record AWS-GXP-104 (ECDSA P-256) to ledger.',
+    beforeImg: '',
+    afterImg: '',
+    beforeHeader: 'BEFORE: FinVault KMS 21 CFR 11 View — 3 Baseline Rows (Incl. RS AWS-GXP-103)',
+    beforeVulnerability: 'Veeva Vault RIM grid shows 3 baseline records (AWS-GXP-101/102 finvault Pattern B/C, AWS-GXP-103 retailstream Pattern A) before Hop 5 append.',
+    beforeThreat: 'Shared registry views lacking tenant_id scoping display cross-tenant Pattern A rows (AWS-GXP-103 retailstream) beside FinVault CMEK spokes.',
+    afterHeader: 'AFTER: 4 Records — Appended AWS-GXP-104 (TWQU0KSRVF • ECDSA_P256_LIVE_AGENT)',
+    afterEnforcement: 'Hop 5 Target TWQU0KSRVF appends record 4 (AWS-GXP-104, finvault, Pattern C Hybrid PSC) with ECDSA_P256_LIVE_AGENT cryptographic proof.',
+    afterVerification: 'Confirmed deterministic ledger transition (3 → 4 rows) with immutable Pattern C CMEK lineage and ECDSA P-256 agent verification.'
   });
 }
 
 // ============================================================================
-// SLIDE 30: Proof 9 — Gitea Enterprise Git Service (Salesforce & Jira)
+// SLIDE 30: Proof 9 — Atlassian Jira Cloud & Salesforce CRM Service (Salesforce & Jira)
 // ============================================================================
-function buildSlide30_Gitea() {
+function buildSlide30_SalesforceJira() {
   buildBeforeAfterSaasSlide({
-    slideNum: 30,
     proofNum: 9,
-    saasName: 'Gitea Enterprise Git',
-    title: 'Proof 9: Gitea Enterprise Git v1.21.11 — Dedicated Sovereign SRE Escalation Repo',
-    subtitle: 'Authentic 2880x1800 Retina UI captures proving code repositories and CI/CD workflows are completely invisible across tenant organizations.',
-    beforeImg: 'before_05_gitea_sre.png',
-    afterImg: 'after_05_gitea_sre.png',
-    beforeHeader: 'BEFORE: UNCONSTRAINED REPOSITORY DISCOVERY (SOURCE CODE LEAK)',
-    beforeVulnerability: 'Gitea instance permits public organization exploration. Proprietary agent runbooks and custom skill repositories are visible across tenants.',
-    beforeThreat: 'Adversary clones competitor agent workflow configurations, fine-tuning scripts, and proprietary prompt templates.',
-    afterHeader: 'AFTER: DEDICATED SOVEREIGN GITEA INSTANCE IN TENANT PROJECT',
-    afterEnforcement: 'Hop 1 gateway maps tenant claims to private Gitea organizations. All repository discovery queries enforce strict org-level privacy.',
-    afterVerification: 'Competitor organizations and repositories do not exist in the catalog. Direct HTTP/SSH clones return 404 Repository Not Found.'
+    saasName: 'Atlassian Jira & Salesforce Enterprise',
+    title: 'Proof 9: Atlassian Jira & Salesforce CRM Escalations — Hop 4 SDP Redaction & Automated RCA Receipt',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) showing Target K5JAEFCQ6E posting SDP-redacted RCA on Issue #1 and blocking retailstream-ops (HTTP 404).',
+    beforeImg: '',
+    afterImg: '',
+    beforeHeader: 'BEFORE: finvault/sre-escalations Issue #1 — 0 Comments / Awaiting Hop 5 RCA',
+    beforeVulnerability: 'Issue #1 ([SFDC-CASE-00984120 / FINVAULT-SRE-1402] P1 Wire Settlement Escalation) is open with 0 comments and an empty reply state.',
+    beforeThreat: 'Manual incident triage risks pasting raw IBAN/SWIFT bank identifiers into Atlassian Jira & Salesforce issues or permitting cross-repo inspection.',
+    afterHeader: 'AFTER: 1 Comment — SDP-Redacted RCA (K5JAEFCQ6E • retailstream-ops HTTP 404)',
+    afterEnforcement: 'create_redacted_sfdc_jira_escalation (K5JAEFCQ6E) masks [REDACTED-FINVAULT-IBAN] & [REDACTED-SWIFT-BIC] (raw_pii_leaked = false).',
+    afterVerification: 'Cross-tenant retailstream-ops probe fails closed with HTTP 404 Not Found while FinVault Issue #1 stores zero raw customer PII.'
   });
 }
 
 // ============================================================================
-// SLIDE 31: Proof 10 — Directus Headless CMS (Workday)
+// SLIDE 31: Proof 10 — Workday Enterprise HCM (Workday)
 // ============================================================================
-function buildSlide31_Directus() {
+function buildSlide31_Workday() {
   buildBeforeAfterSaasSlide({
-    slideNum: 31,
     proofNum: 10,
-    saasName: 'Directus Headless CMS',
-    title: 'Proof 10: Directus Headless CMS v10.10.4 — Dedicated Sovereign HCM Record Storage',
-    subtitle: 'Authentic 2880x1800 Retina UI captures proving headless CMS collections and agent knowledge documents are strictly sequestered by tenant.',
-    beforeImg: 'before_08_directus_hcm.png',
-    afterImg: 'after_08_directus_hcm.png',
-    beforeHeader: 'BEFORE: GLOBAL CMS COLLECTIONS (KNOWLEDGE BASE POLLUTION)',
-    beforeVulnerability: 'Knowledge base items, agent personas, and company policies for all tenants are stored in an unpartitioned articles collection.',
-    beforeThreat: 'RAG retrieval workflows inadvertently index competitor internal policies, leaking proprietary HR and strategic guidance.',
-    afterHeader: 'AFTER: DEDICATED SOVEREIGN CMS WITH FIELD-LEVEL CMEK ENCRYPTION',
-    afterEnforcement: 'Directus role permissions evaluate $CURRENT_USER.tenant_id = item.tenant_id on every REST and GraphQL query.',
-    afterVerification: 'Articles and agent skills are 100% quarantined to FinVault Bank. No cross-tenant metadata exists in API responses.'
+    saasName: 'Workday HCM CMS',
+    title: 'Proof 10: Workday HCM Compensation — Scoped HR Write & Collection Integrity',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) verifying tenant-scoped HCM RaaS Compensation Report growth from 2 baseline FinVault rows to 3 records.',
+    beforeImg: '',
+    afterImg: '',
+    beforeHeader: 'BEFORE: Hcm Compensation — 2 Baseline FinVault Records ($420K / $365K)',
+    beforeVulnerability: 'Workday HCM RaaS Compensation Report holds 2 baseline finvault rows ($420,000 Clara Vance, $365,000 Marcus Thorne) pre-Hop 5.',
+    beforeThreat: 'Unverified HCM collection writes risk committing unscoped compensation records or leaking cross-tenant executive pay across orgs.',
+    afterHeader: 'AFTER: 3 FinVault Records — Added $395,000 FinVault-Risk-Analyst (E. Rostova)',
+    afterEnforcement: 'Hop 5 HCM gate commits row #3 ($395,000 FinVault-Risk-Analyst, Elena Rostova) scoped strictly to tenant_id = finvault.',
+    afterVerification: 'Collection cleanly transitions from 2 to 3 finvault compensation records with zero cross-tenant HR exposure.'
   });
 }
 
@@ -1812,32 +1574,31 @@ function buildSlide31_Directus() {
 // ============================================================================
 function buildSlide32_Act5Breaker() {
   buildActBreakerSlide({
-    slideNum: 32,
-    actTag: 'ACT V • ENTERPRISE GOVERNANCE',
+    actTag: 'ACT V • ENTERPRISE GA & SCORECARD',
     actNumber: 'ACT V',
-    actTitle: 'Implementation, Scorecard & CISO Guide',
-    actSubtitle: 'Phased Migration Sprints, Multi-Cloud Isolation Scorecards, and Executive CISO FAQ Guide',
+    actTitle: 'GA Roadmap, Pattern A/C/B Scorecard & CISO FAQ',
+    actSubtitle: 'Phased GA Consolidation, Unified 3-Pattern Matrix, and Executive Decision Answers',
     actColor: G_GREEN_DEEP,
     actTint: G_GREEN_LIGHT,
-    coreQuestion: 'What is the production deployment lifecycle and regulatory readiness for Agentic Triad decision guide & agentic triad?',
-    thesis: 'A 10-week 5-sprint roadmap takes enterprises from initial multi-project IaC to full regulatory compliance with sub-3s crypto-shredding.',
+    coreQuestion: 'How do platform teams ship the verified baseline today while cleanly retiring compensating GAP-01..05 shims over time?',
+    thesis: 'A 10-week GA rollout delivers Pool/Hybrid/Silo parity + AWS 30/30 federation immediately, with feature-flagged Agent Engine native upgrades.',
     milestones: [
       {
         num: '01',
-        title: '10-Week Agentic Triad Roadmap',
-        desc: '5 structured two-week sprints taking infrastructure from multi-project inception to regulatory audit sign-off.',
-        deliverable: 'Gantt & Governance Plan'
+        title: '10-Week Enterprise GA Roadmap',
+        desc: 'Phase 1 verified baseline today → Phase 2 native ARD/3LO → Phase 3 native CMEK FinOps bus.',
+        deliverable: 'Gantt & Sunset Plan'
       },
       {
         num: '02',
-        title: 'Multi-Cloud Sovereign Scorecard',
-        desc: 'Objective comparison matrix benchmarking Google Cloud vs AWS vs Azure sovereign isolation primitives.',
-        deliverable: 'Multi-Cloud Benchmarks'
+        title: 'Unified Pattern A vs. C vs. B Scorecard',
+        desc: 'Side-by-side matrix comparing COGS, isolation, KMS kill-switch SLA, and live migration across Patterns.',
+        deliverable: 'Unified Pattern Matrix'
       },
       {
         num: '03',
-        title: 'CISO & Compliance FAQ Guide',
-        desc: 'Direct architectural answers to the four core questions raised by regulatory review boards regarding Agentic Triad.',
+        title: 'CISO & Board Decision FAQ',
+        desc: 'Direct executive answers on Pattern selection, GAP-01..05 sunset, Zero-PII OTel, and AWS federation.',
         deliverable: 'Executive Decision Framework'
       }
     ]
@@ -1849,9 +1610,9 @@ function buildSlide32_Act5Breaker() {
 // ============================================================================
 function buildSlide33_Roadmap() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT V • IMPLEMENTATION ROADMAP', '10-Week Enterprise Agentic Triad Implementation Roadmap: Phased Sprints & Gates', 33);
+  addHeader(slide, 'ACT V • IMPLEMENTATION ROADMAP', '10-Week Enterprise Agentic Triad Implementation Roadmap: Phased Sprints & Gates', nextSlideNum());
 
-  slide.addText('Structured enterprise rollout plan taking sovereign multi-tenant AI platforms from multi-project IaC to full regulatory compliance.', {
+  slide.addText('Phased 10-week execution roadmap taking core-cymbal-agent/ from Pattern A baseline to 30/30 Multi-Cloud GA and native sunset readiness.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
@@ -1859,112 +1620,88 @@ function buildSlide33_Roadmap() {
     {
       sprint: 'SPRINT 1',
       weeks: 'Weeks 1–2',
-      title: 'Multi-Project Foundation & VPC-SC',
+      title: 'Shared 5-Hop Core & Mode A CoW',
       color: G_BLUE_DARK,
       tint: G_BLUE_LIGHT,
-      gate: 'GATE 1: Perimeter Baseline Pass',
+      gate: 'GATE 1: Pattern A Baseline',
       tasks: [
-        'Deploy Terraform to provision cymbal-finvault-silo-prod.',
-        'Establish VPC Service Controls perimeter around core APIs.',
-        'Configure dedicated Serverless VPC Access connector.',
-        'Bind IAM Principal Access Boundaries to prevent blast radius.'
+        'Deploy shared 5-Hop ADK core with STS ECDSA P-256 & DPoP.',
+        'Enable Mode A CoW (--max-requests=1) & AlloyDB FORCE RLS.',
+        'Lock 32,768 shared prefix cache (89.1%) + MEDIUM/4k & HIGH/8k output clamps.',
+        'Wire GAP-01..05 compensating hooks behind feature flags.'
       ]
     },
     {
       sprint: 'SPRINT 2',
       weeks: 'Weeks 3–4',
-      title: 'Customer CMEK Key Rings & HSM',
+      title: 'Pattern C /28 PSC & 0ms Migration',
       color: G_BLUE,
       tint: G_BLUE_LIGHT,
-      gate: 'GATE 2: CMEK Federation Pass',
+      gate: 'GATE 2: 0ms CAS Cutover Pass',
       tasks: [
-        'Federate Cloud KMS key rings with customer Cloud EKM HSM.',
-        'Grant service agents cryptoKeyEncrypterDecrypter roles.',
-        'Configure Secret Manager with per-tenant CMEK wrapping.',
-        'Verify zero plaintext keys exist in application configuration.'
+        'Provision Firestore CAS tier table & Hub rule 10.10.0.50:443.',
+        'Launch unidirectional /28 PSC Spokes + PgBouncer pooling.',
+        'Verify SHADOW_SYNC → SHA-256 Parity → CAS Flip (0 dropped turns).',
+        'Bind regional Vertex endpoints when spoke_cmek_required=true.'
       ]
     },
     {
       sprint: 'SPRINT 3',
       weeks: 'Weeks 5–6',
-      title: 'Dedicated AlloyDB & GKE Serving',
+      title: 'Pattern B Silo & 41.2s CMEK Guard',
       color: G_AMBER_DEEP,
       tint: G_YELLOW_LIGHT,
-      gate: 'GATE 3: Sovereign Compute Pass',
+      gate: 'GATE 3: 41.2s Kill-Switch Pass',
       tasks: [
-        'Provision dedicated AlloyDB cluster with CMEK encryption.',
-        'Deploy air-gapped Gemma 3 (27B) on private GKE cluster.',
-        'Enable AMD SEV-SNP Confidential VM hardware encryption.',
-        'Validate sub-35ms TTFT on NVIDIA L4 GPU node pool.'
+        'Configure Terraform sovereign projects + VPC-SC (0.0.0.0/0 deny).',
+        'Bind IAM PAB boundaries & Customer FIPS HSM CMEK keys.',
+        'Deploy Private GKE AMD SEV-SNP serving Gemma 3 (27B).',
+        'Prove HTTP 423 enclave halt within <60s (41.2s verified).'
       ]
     },
     {
       sprint: 'SPRINT 4',
       weeks: 'Weeks 7–8',
-      title: '10-Point Exfiltration & Kill-Switch Tests',
+      title: 'Dynamic GCS Skills & AWS 30/30',
       color: G_RED_DEEP,
       tint: G_RED_LIGHT,
-      gate: 'GATE 4: <3s Kill-Switch Pass',
+      gate: 'GATE 4: 30/30 Multi-Cloud Pass',
       tasks: [
-        'Simulate customer CMEK key revocation; verify HTTP 423 in <3s.',
-        'Execute automated red-team data exfiltration test suite.',
-        'Inject simulated cross-project IAM privilege escalation.',
-        'Verify 0 cross-perimeter packets escape VPC-SC envelope.'
+        'Activate Shared → Private A2A delegation + SHA-256 GCS skills.',
+        'Configure keyless OIDC WIF → AWS Bedrock AgentCore Gateway.',
+        'Verify all 10 SaaS targets across Pattern A/B/C + S3 ledgers.',
+        'Audit Zero-PII SHA-256 BigQuery & Datadog OTel chargeback spans.'
       ]
     },
     {
       sprint: 'SPRINT 5',
       weeks: 'Weeks 9–10',
-      title: 'Regulatory Audit & Production GA',
+      title: 'Phase 2/3 GA Flag Consolidation',
       color: G_GREEN_DEEP,
       tint: G_GREEN_LIGHT,
-      gate: 'GATE 5: Regulatory Audit Sign-Off',
+      gate: 'GATE 5: Enterprise Triad GA',
       tasks: [
-        'Complete OCC Bulletin 2013-29 & DORA audit attestation.',
-        'Establish 24/7 Cloud Logging & Security Command Center alerts.',
-        'Deliver customer key custodian onboarding & runbook training.',
-        'Achieve formal CISO and Compliance Review Board sign-off.'
+        'Validate GAP-01/02 sunset toggle onto native ARD & 3LO vaults.',
+        'Validate GAP-03..05 native CMEK bus, quota & billing exports.',
+        'Deliver executive 2-Question Selector & FinOps cost deck.',
+        'Achieve formal CISO, FinOps CFO, and Platform CTO GA sign-off.'
       ]
     }
   ];
 
   sprints.forEach((s, idx) => {
     const sx = 0.6 + idx * 2.45;
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: sx, y: 1.35, w: 2.32, h: 5.5, rectRadius: 0.08,
-      fill: { color: WHITE }, line: { color: s.color, width: 1.5 }
-    });
-    slide.addShape(pptx.ShapeType.rect, {
-      x: sx, y: 1.35, w: 2.32, h: 0.85, fill: { color: s.tint }
-    });
-    slide.addText(`${s.sprint} (${s.weeks})`, {
-      x: sx + 0.12, y: 1.42, w: 2.08, h: 0.25, fontSize: 8.5, bold: true, color: s.color, fontFace: FONT_TITLE
-    });
-    slide.addText(s.title, {
-      x: sx + 0.12, y: 1.68, w: 2.08, h: 0.45, fontSize: 10.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, lineSpacingMultiple: 1.15
-    });
-
+    slide.addShape(pptx.ShapeType.roundRect, { x: sx, y: 1.35, w: 2.32, h: 5.5, rectRadius: 0.08, fill: { color: WHITE }, line: { color: s.color, width: 1.5 } });
+    slide.addShape(pptx.ShapeType.rect, { x: sx, y: 1.35, w: 2.32, h: 0.85, fill: { color: s.tint } });
+    slide.addText(`${s.sprint} (${s.weeks})`, { x: sx + 0.12, y: 1.42, w: 2.08, h: 0.25, fontSize: 8.5, bold: true, color: s.color, fontFace: FONT_TITLE });
+    slide.addText(s.title, { x: sx + 0.12, y: 1.68, w: 2.08, h: 0.45, fontSize: 10.5, bold: true, color: TEXT_DARK, fontFace: FONT_TITLE, lineSpacingMultiple: 1.15 });
     s.tasks.forEach((t, tidx) => {
       const ty = 2.35 + tidx * 0.92;
-      slide.addShape(pptx.ShapeType.roundRect, {
-        x: sx + 0.12, y: ty, w: 2.08, h: 0.82, rectRadius: 0.04,
-        fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 }
-      });
-      slide.addText(`• ${t}`, {
-        x: sx + 0.18, y: ty + 0.06, w: 1.96, h: 0.7,
-        fontSize: 7.8, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15
-      });
+      slide.addShape(pptx.ShapeType.roundRect, { x: sx + 0.12, y: ty, w: 2.08, h: 0.82, rectRadius: 0.04, fill: { color: G_GREY_BG }, line: { color: G_GREY_BORDER, width: 0.5 } });
+      slide.addText(`• ${t}`, { x: sx + 0.18, y: ty + 0.06, w: 1.96, h: 0.7, fontSize: 7.8, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.15 });
     });
-
-    // Governance Gate at Bottom
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: sx + 0.12, y: 6.15, w: 2.08, h: 0.55, rectRadius: 0.05,
-      fill: { color: s.tint }, line: { color: s.color, width: 1 }
-    });
-    slide.addText(s.gate, {
-      x: sx + 0.12, y: 6.15, w: 2.08, h: 0.55,
-      fontSize: 8.2, bold: true, color: s.color, fontFace: FONT_TITLE, align: 'center', valign: 'middle'
-    });
+    slide.addShape(pptx.ShapeType.roundRect, { x: sx + 0.12, y: 6.15, w: 2.08, h: 0.55, rectRadius: 0.05, fill: { color: s.tint }, line: { color: s.color, width: 1 } });
+    slide.addText(s.gate, { x: sx + 0.12, y: 6.15, w: 2.08, h: 0.55, fontSize: 8.2, bold: true, color: s.color, fontFace: FONT_TITLE, align: 'center', valign: 'middle' });
   });
 }
 
@@ -1973,95 +1710,88 @@ function buildSlide33_Roadmap() {
 // ============================================================================
 function buildSlide34_ScorecardAndFaq() {
   const slide = pptx.addSlide();
-  addHeader(slide, 'ACT V • SCORECARD & CISO FAQ', 'Agentic Triad Multi-Cloud Sovereign Scorecard & Executive CISO FAQ Guide', 34);
+  addHeader(slide, 'ACT V • SCORECARD & CISO FAQ', 'Unified Pattern A vs. C vs. B Scorecard & Executive CISO FAQ Guide', nextSlideNum());
 
-  slide.addText('Objective architectural comparison of sovereign cloud capabilities across providers alongside answers to core CISO questions.', {
+  slide.addText('Executive side-by-side comparison of Pattern A, Pattern C, and Pattern B alongside strategic answers for CIO/CISO review boards.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
-  // Top Table: Multi-Cloud Comparison
   const headers = [
-    { text: 'Sovereign Dimension', options: { bold: true, color: WHITE, fill: { color: G_NAVY }, fontSize: 8.5 } },
-    { text: 'Google Cloud (Agentic Triad Silos)', options: { bold: true, color: WHITE, fill: { color: G_BLUE_DARK }, fontSize: 8.5, align: 'center' } },
-    { text: 'AWS Dedicated Accounts', options: { bold: true, color: WHITE, fill: { color: '232F3E' }, fontSize: 8.5, align: 'center' } },
-    { text: 'Azure Isolated Subscriptions', options: { bold: true, color: WHITE, fill: { color: '0078D4' }, fontSize: 8.5, align: 'center' } }
+    { text: 'Architectural Criterion', options: { bold: true, color: WHITE, fill: { color: G_NAVY }, fontSize: 8.5 } },
+    { text: 'Pattern A: High-Density Pool', options: { bold: true, color: WHITE, fill: { color: G_BLUE_DARK }, fontSize: 8.5, align: 'center' } },
+    { text: 'Pattern C: Dynamic Hybrid (/28 PSC)', options: { bold: true, color: WHITE, fill: { color: G_GREEN_DEEP }, fontSize: 8.5, align: 'center' } },
+    { text: 'Pattern B: Sovereign Silos', options: { bold: true, color: WHITE, fill: { color: G_RED_DEEP }, fontSize: 8.5, align: 'center' } }
   ];
 
   const rows = [
     [
-      'Network Perimeter Enforcement',
-      '✅ Hardware VPC Service Controls (VPC-SC) drops exfiltration at SDN layer',
-      '⚠️ AWS VPC Endpoints + Service Control Policies (App-layer evaluation)',
-      '⚠️ Azure Private Link + Resource Firewall (Complex route tables)'
+      'Relative Infrastructure COGS',
+      '1.0x Baseline (1,000+ Tenants)',
+      '1.8x (5% VIP) to ~2.8x (15% VIP)',
+      '~15x Dedicated Per-Tenant Enclave'
     ],
     [
-      'Customer-Held CMEK Kill-Switch',
-      '✅ Cloud KMS / EKM with active Hop 4 interceptor (<3s revocation SLA)',
-      '⚠️ AWS KMS key policy updates (Cache propagation delays up to 15m)',
-      '⚠️ Azure Key Vault soft-delete and permission cache latency'
+      'Data & Network Isolation',
+      'AlloyDB FORCE RLS + Mode A CoW wipe',
+      'Pool RLS + Unidirectional /28 PSC CMEK',
+      'Dedicated Project + VPC-SC + SEV-SNP'
     ],
     [
-      'Air-Gapped Confidential Inference',
-      '✅ Private GKE + AMD SEV-SNP Confidential VMs (Zero telemetry egress)',
-      '⚠️ AWS EKS + Nitro Enclaves (Complex attestation & enclave overhead)',
-      '⚠️ Azure Confidential Containers on ACI (Limited regional GPU support)'
+      'Prefix Cache & FinOps',
+      '✅ 89.1% (32,768 Cache) + 120 RPM',
+      '✅ 89.1% Hub Cache + 600 RPM VIP',
+      '⚠️ Per-Silo Vertex PT / Gemma 3 (27B)'
     ],
     [
-      'Identity Blast Radius Control',
-      '✅ IAM Principal Access Boundaries (PAB) enforce org-wide limits',
-      '⚠️ AWS IAM Permissions Boundaries (Must be attached per-role manually)',
-      '⚠️ Azure Management Groups / Azure Policy (Eventual consistency delays)'
+      'CMEK Kill-Switch & Cutover',
+      '<5s Valkey SCAN+UNLINK eviction',
+      '0ms Atomic CAS Live Upgrade + Spoke CMEK',
+      '41.2s Verified Full Enclave Halt (423)'
     ]
   ];
 
   const tableData = [headers, ...rows.map((r, idx) => [
     { text: r[0], options: { fontSize: 8.0, bold: true, color: G_NAVY, fill: { color: idx % 2 === 0 ? G_GREY_BG : WHITE } } },
-    { text: r[1], options: { fontSize: 7.8, bold: true, color: G_GREEN_DEEP, fill: { color: idx % 2 === 0 ? 'F0FDF4' : G_GREEN_LIGHT }, align: 'left' } },
-    { text: r[2], options: { fontSize: 7.8, color: TEXT_DARK, fill: { color: idx % 2 === 0 ? G_GREY_BG : WHITE }, align: 'left' } },
+    { text: r[1], options: { fontSize: 7.8, bold: true, color: G_BLUE_DARK, fill: { color: idx % 2 === 0 ? 'EFF6FF' : WHITE }, align: 'left' } },
+    { text: r[2], options: { fontSize: 7.8, bold: true, color: G_GREEN_DEEP, fill: { color: idx % 2 === 0 ? 'F0FDF4' : G_GREEN_LIGHT }, align: 'left' } },
     { text: r[3], options: { fontSize: 7.8, color: TEXT_DARK, fill: { color: idx % 2 === 0 ? G_GREY_BG : WHITE }, align: 'left' } }
   ])];
 
   slide.addTable(tableData, {
-    x: 0.6, y: 1.35, w: 12.133, colW: [2.5, 3.5, 3.0, 3.133],
+    x: 0.6, y: 1.24, w: 12.133, colW: [2.5, 3.2, 3.3, 3.133],
+    margin: [0.025, 0.055, 0.025, 0.055],
     border: { pt: 0.5, color: G_GREY_BORDER }, autoPage: false
   });
 
-  // Bottom Half: 2-Column CISO FAQ Cards
   const faqs = [
     {
-      q: 'Q1: How does customer CMEK guarantee immediate data access cut-off during an emergency?',
-      a: 'The moment a customer disables their Cloud KMS key version or cuts their Cloud EKM link, all decryption requests return FAILED_PRECONDITION. Our Hop 4 interceptor traps this failure and aborts active execution in <3 seconds with HTTP 423 Locked. No residual plaintext remains in memory or disk.'
+      q: 'Q1: How should an enterprise decide between Pattern A, Pattern C, and Pattern B?',
+      a: 'Apply our 2-Question Selector: start all commercial/PLG accounts on Pattern A (1.0x COGS, 89.1% cache); route Enterprise accounts needing CMEK/private tools via Pattern C (/28 PSC, 0ms CAS cutover); reserve Pattern B for strict statutory/defense silos (q_silo=1).'
     },
     {
-      q: 'Q2: Can Google Cloud internal operators access customer memory during Gemma 3 inference?',
-      a: 'No. When deployed with AMD SEV-SNP Confidential Computing on private GKE, memory contents in RAM are encrypted using hardware keys generated by the secure processor that are inaccessible to hypervisors, host operating systems, or Google cloud operators.'
+      q: 'Q2: Does adopting Pattern C or B require maintaining multiple branches of agent code?',
+      a: 'No. Every deployment runs the identical 80% 5-Hop ADK codebase (core-cymbal-agent/). Switching TENANT_ISOLATION_MODE between POOLED, HYBRID_PSC, and SOVEREIGN_SILO changes only Terraform isolation modules and runtime bindings.'
     },
     {
-      q: 'Q3: How do IAM Principal Access Boundaries prevent cross-project blast radius?',
-      a: 'PAB policies enforce an absolute ceiling on the permissions that any service account or principal can exercise inside a project folder. Even if an attacker gains project-owner credentials inside FinVault silo, PAB rules prevent them from assuming roles or querying resources in RetailStream silo.'
+      q: 'Q3: How are dynamic tenant prompt customizations updated without redeploying containers?',
+      a: 'Private Tenant Agents load SHA-256 attested playbooks directly from gs://<tenant-skills-bucket>/v2/skill.yaml, caching them under cache:{tenant}:skill:* in Valkey and recording the exact skill_sha256 in every BigQuery OTel trace.'
     },
     {
-      q: 'Q4: What is the disaster recovery (DR) and business continuity model for decision guide & agentic triad?',
-      a: 'Sovereign silos support multi-region secondary standby deployments (e.g. us-central1 primary and us-east4 standby). Cloud KMS keys are replicated across multi-regions, and AlloyDB cross-region replication streams WAL records continuously with sub-1s RPO and <60s automated failover RTO.'
+      q: 'Q4: How do compensating GAP-01..05 hooks retire cleanly as Vertex Agent Engine GA evolves?',
+      a: 'Each gap shim (ARD ACLs, 3LO vaults, CMEK cache sync, sub-tenant quotas, Vertex tenant billing) is wrapped behind an explicit CYMBAL_NATIVE_* feature flag—enabling zero-rewrite phased cutover onto managed GCP platform primitives.'
     }
   ];
 
   faqs.forEach((f, idx) => {
-    const fx = 0.6 + (idx % 2) * 6.18;
-    const fy = 3.9 + Math.floor(idx / 2) * 1.5;
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: fx, y: fy, w: 5.95, h: 1.38, rectRadius: 0.06,
-      fill: { color: WHITE }, line: { color: G_BLUE_DARK, width: 1.2 }
-    });
-    slide.addShape(pptx.ShapeType.rect, {
-      x: fx, y: fy, w: 5.95, h: 0.35, fill: { color: G_BLUE_LIGHT }
-    });
-    slide.addText(f.q, {
-      x: fx + 0.15, y: fy, w: 5.65, h: 0.35, fontSize: 8.5, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE, valign: 'middle'
-    });
-    slide.addText(f.a, {
-      x: fx + 0.15, y: fy + 0.42, w: 5.65, h: 0.9, fontSize: 8.2, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.2
-    });
+    const col = idx % 2;
+    const row = Math.floor(idx / 2);
+    const fx = 0.6 + col * 6.2;
+    const fy = 4.00 + row * 1.46;
+
+    slide.addShape(pptx.ShapeType.roundRect, { x: fx, y: fy, w: 5.93, h: 1.34, rectRadius: 0.06, fill: { color: WHITE }, line: { color: G_BLUE_DARK, width: 1 } });
+    slide.addShape(pptx.ShapeType.rect, { x: fx, y: fy, w: 5.93, h: 0.36, fill: { color: G_BLUE_LIGHT } });
+    slide.addText(f.q, { x: fx + 0.12, y: fy, w: 5.69, h: 0.36, fontSize: 8.5, bold: true, color: G_BLUE_DARK, fontFace: FONT_TITLE, valign: 'middle' });
+    slide.addText(f.a, { x: fx + 0.12, y: fy + 0.42, w: 5.69, h: 0.92, fontSize: 8.0, color: TEXT_DARK, fontFace: FONT_BODY, lineSpacingMultiple: 1.18 });
   });
 }
 
@@ -2069,9 +1799,10 @@ function buildSlide34_ScorecardAndFaq() {
 // MAIN COMPILATION ENTRYPOINT
 // ============================================================================
 async function compileDeck() {
-  console.log('Compiling 100% native DrawingML editable 34-slide executive presentation for Agentic Triad (WS5)...');
+  console.log(`Compiling 100% native DrawingML editable ${TOTAL_SLIDES}-slide executive presentation for Agentic Triad (WS5)...`);
 
   // ACT I: PROBLEM & COMPLIANCE
+  _slideCounter = 1;
   buildSlide01();
   buildSlide02_Agenda();
   buildSlide03_Dilemma();
@@ -2082,9 +1813,9 @@ async function compileDeck() {
   buildSlide06_PatternBPrinciples();
   buildSlide07_L1Logical();
   await buildSlide08_Figure1();
-  await buildSlide09_PatternAPooled();
+  if (FULL_34_MODE) await buildSlide09_PatternAPooled();
   await buildSlide10_PatternBSilos();
-  await buildSlide11_PatternCHybrid();
+  if (FULL_34_MODE) await buildSlide11_PatternCHybrid();
 
   // ACT III: 5-HOP ZERO-TRUST CONTROL PLANE & CRYPTO-SHREDDING
   buildSlide12_Act3Breaker();
@@ -2099,16 +1830,16 @@ async function compileDeck() {
 
   // ACT IV: EMPIRICAL MULTI-CLOUD VERIFICATION (10 SAAS PROOFS)
   buildSlide21_Act4Breaker();
-  buildSlide22_Metabase();
-  buildSlide23_Trino();
-  buildSlide24_Grafana();
-  buildSlide25_DatalustSeq();
-  buildSlide26_HashiCorpVault();
-  buildSlide27_ClickHouse();
-  buildSlide28_Redmine();
-  buildSlide29_NocoDB();
-  buildSlide30_Gitea();
-  buildSlide31_Directus();
+  if (FULL_34_MODE) buildSlide22_ThoughtSpot();
+  if (FULL_34_MODE) buildSlide23_Databricks();
+  if (FULL_34_MODE) buildSlide24_Sigma();
+  buildSlide25_Datadog();
+  if (FULL_34_MODE) buildSlide26_CrowdStrikeOkta();
+  if (FULL_34_MODE) buildSlide27_Snowflake();
+  if (FULL_34_MODE) buildSlide28_ServiceNow();
+  if (FULL_34_MODE) buildSlide29_VeevaVault();
+  if (FULL_34_MODE) buildSlide30_SalesforceJira();
+  buildSlide31_Workday();
 
   // ACT V: ENTERPRISE GOVERNANCE & ROADMAP
   buildSlide32_Act5Breaker();

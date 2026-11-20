@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" style="width:100%;height:auto;display:block;background:#FFFFFF;font-family:Arial,sans-serif;">
+<defs><marker id="arrowEnd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#475569"/></marker></defs>
+<rect x="0" y="0" width="1600" height="900" fill="#FFFFFF"/>
+<rect x="1212.0" y="26.0" width="320.0" height="34.0" rx="5" fill="#EBF2FE" stroke="none" stroke-width="0"/>
+<text x="1372.0" y="45.8" text-anchor="middle" fill="#1967D2" font-size="10.9" font-weight="bold">6 WORKSTREAMS • 54 COMPENDIUM</text>
+<rect x="68.0" y="102.0" width="1464.0" height="2.0" rx="0" fill="#DADCE0" stroke="none" stroke-width="0"/>
+<rect x="68.0" y="126.0" width="332.0" height="712.0" rx="18" fill="#EBF2FE" stroke="none" stroke-width="0"/>
+<rect x="88.0" y="144.0" width="36.0" height="36.0" rx="5" fill="#1A73E8" stroke="none" stroke-width="0"/>
+<text x="106.0" y="164.6" text-anchor="middle" fill="#FFFFFF" font-size="9.9" font-weight="bold">1</text>
+<rect x="88.0" y="220.0" width="292.0" height="276.0" rx="18" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="100.0" y="325.6" text-anchor="start" fill="#202124" font-size="12.8" font-weight="bold">5-Hop Governance Baseline</text>
+<text x="100.0" y="339.9" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• Blog 1 &amp; Blog 2 (Protocol Anatomy)</text>
+<text x="100.0" y="354.2" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• Hop 1: Workforce OIDC + DPoP (&lt;0.15ms)</text>
+<text x="100.0" y="368.5" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• Hop 2: ARD Catalog PDP (-94% tool tokens)</text>
+<text x="100.0" y="382.8" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• Hop 3: gVisor + Valkey 120/600 RPM (0.4ms)</text>
+<text x="100.0" y="397.1" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• Hop 4–5: Model Armor (&lt;8ms) + AlloyDB RLS</text>
+<rect x="88.0" y="516.0" width="292.0" height="298.0" rx="18" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="100.0" y="639.7" text-anchor="start" fill="#202124" font-size="12.8" font-weight="bold">6 Control-Plane Diagrams (S09–S14)</text>
+<text x="100.0" y="654.0" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• S09: Official #78 4-Zone Hub &amp; Spoke</text>
+<text x="100.0" y="668.3" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• S10: Shared 5-Hop Governance Pipeline</text>
+<text x="100.0" y="682.6" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• S11–S13: L4 STS Wire, Valkey &amp; Force RLS</text>
+<text x="100.0" y="696.9" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• S14: Fail-Closed 401/403/429/422 Breakers</text>
+<rect x="428.0" y="126.0" width="388.0" height="222.0" rx="18" fill="#E6F4EA" stroke="none" stroke-width="0"/>
+<text x="440.0" y="211.7" text-anchor="start" fill="#137333" font-size="12.8" font-weight="bold">Part 2 (WS2) · Pattern A: Pool (1.0x COGS)</text>
+<text x="440.0" y="226.0" text-anchor="start" fill="#137333" font-size="12.8" font-weight="normal">• Blog 2 • Slides 15–20 (5 Visual Diagrams)</text>
+<text x="440.0" y="240.3" text-anchor="start" fill="#137333" font-size="12.8" font-weight="normal">• 950 commercial SaaS tenants in 1 shared project</text>
+<text x="440.0" y="254.6" text-anchor="start" fill="#137333" font-size="12.8" font-weight="normal">• 89.1% net token savings via 32k prefix cache</text>
+<text x="440.0" y="268.9" text-anchor="start" fill="#137333" font-size="12.8" font-weight="normal">• #78 (S16), Twin (S17), Guardrails (S18) &amp; 2 UML Seq (S19–S20)</text>
+<rect x="428.0" y="371.0" width="388.0" height="222.0" rx="18" fill="#F3E8FD" stroke="none" stroke-width="0"/>
+<text x="440.0" y="456.7" text-anchor="start" fill="#7627BB" font-size="12.8" font-weight="bold">Part 3 (WS3) · Pattern B: Silo (15.0x COGS)</text>
+<text x="440.0" y="471.0" text-anchor="start" fill="#7627BB" font-size="12.8" font-weight="normal">• Blogs 3 &amp; 5 • Slides 21–26 (5 Visual Diagrams)</text>
+<text x="440.0" y="485.3" text-anchor="start" fill="#7627BB" font-size="12.8" font-weight="normal">• Per-tenant GCP project, VPC-SC &amp; IAM PAB</text>
+<text x="440.0" y="499.6" text-anchor="start" fill="#7627BB" font-size="12.8" font-weight="normal">• &lt;60s HSM CMEK kill-switch &amp; Confidential GKE</text>
+<text x="440.0" y="513.9" text-anchor="start" fill="#7627BB" font-size="12.8" font-weight="normal">• #78 Silo (S22), Twin (S23), 4-Ring (S24) &amp; GKE (S25)</text>
+<rect x="428.0" y="616.0" width="388.0" height="222.0" rx="18" fill="#FEF7E0" stroke="none" stroke-width="0"/>
+<text x="440.0" y="701.7" text-anchor="start" fill="#B06000" font-size="12.8" font-weight="bold">Part 4 (WS4) · Pattern C: Hybrid (1.8x COGS)</text>
+<text x="440.0" y="716.0" text-anchor="start" fill="#B06000" font-size="12.8" font-weight="normal">• Blogs 3 &amp; 4 • Slides 27–30 (3 Visual Diagrams)</text>
+<text x="440.0" y="730.3" text-anchor="start" fill="#B06000" font-size="12.8" font-weight="normal">• Shared 5-Hop Hub + /28 PSC enterprise spokes</text>
+<text x="440.0" y="744.6" text-anchor="start" fill="#B06000" font-size="12.8" font-weight="normal">• Zero-downtime live promotion (&lt;5ms cutover)</text>
+<text x="440.0" y="758.9" text-anchor="start" fill="#B06000" font-size="12.8" font-weight="normal">• #78 Hybrid (S28), Twin (S29) &amp; Cutover Diff (S30)</text>
+<rect x="844.0" y="126.0" width="332.0" height="712.0" rx="18" fill="#FBF6E9" stroke="none" stroke-width="0"/>
+<rect x="864.0" y="144.0" width="36.0" height="36.0" rx="5" fill="#E37400" stroke="none" stroke-width="0"/>
+<text x="882.0" y="164.6" text-anchor="middle" fill="#FFFFFF" font-size="9.9" font-weight="bold">3</text>
+<rect x="864.0" y="220.0" width="292.0" height="276.0" rx="18" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="876.0" y="325.6" text-anchor="start" fill="#202124" font-size="12.8" font-weight="bold">60-Second Topology Selector</text>
+<text x="876.0" y="339.9" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• Blog 6 • Slide 32 (60s Selector &amp; 80/20 Triad)</text>
+<text x="876.0" y="354.2" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• Q1: Statutory CMEK / Zero Shared? → Pat B</text>
+<text x="876.0" y="368.5" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• Q2: Private DB Spoke / &gt;1.5k IAM? → Pat C</text>
+<text x="876.0" y="382.8" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• Q3: High-Density Commercial SaaS? → Pat A</text>
+<text x="876.0" y="397.1" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• 80% ADK Python code reused across A/B/C</text>
+<rect x="864.0" y="516.0" width="292.0" height="298.0" rx="18" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="876.0" y="639.7" text-anchor="start" fill="#202124" font-size="12.8" font-weight="bold">Delegation, Quotas &amp; 10-Wk GA</text>
+<text x="876.0" y="654.0" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• Slides 35–37 (3 Production GA Diagrams)</text>
+<text x="876.0" y="668.3" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• S35: L3 Dynamic Skill Swap &amp; Zero-PII OTel</text>
+<text x="876.0" y="682.6" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• S36: 3 Runtime Guardrails &amp; 4 Cloud Quotas</text>
+<text x="876.0" y="696.9" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• S37: 4-Step 10-Week Adoption Ladder</text>
+<rect x="1204.0" y="126.0" width="328.0" height="712.0" rx="18" fill="#F1F3F4" stroke="none" stroke-width="0"/>
+<rect x="1224.0" y="144.0" width="36.0" height="36.0" rx="5" fill="#1E8E3E" stroke="none" stroke-width="0"/>
+<text x="1242.0" y="164.6" text-anchor="middle" fill="#FFFFFF" font-size="9.9" font-weight="bold">4</text>
+<rect x="1224.0" y="220.0" width="288.0" height="276.0" rx="18" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1236.0" y="325.6" text-anchor="start" fill="#202124" font-size="12.8" font-weight="bold">Cross-Cloud &amp; Lakehouse FGAC</text>
+<text x="1236.0" y="339.9" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• Blog 7 • Slides 33–34 (2 Federation Diagrams)</text>
+<text x="1236.0" y="354.2" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• S33: Cloud Run ↔ AWS AgentCore Bridge (10 SaaS)</text>
+<text x="1236.0" y="368.5" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• S34: 2–5ms RTT &amp; Unity FGAC</text>
+<text x="1236.0" y="382.8" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• Keyless OIDC → AWS STS (0 static keys)</text>
+<text x="1236.0" y="397.1" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• Keep 192+ PB in place; move &lt;5 KB context</text>
+<rect x="1224.0" y="516.0" width="288.0" height="298.0" rx="18" fill="#FEF7E0" stroke="#E37400" stroke-width="1.5"/>
+<text x="1236.0" y="639.7" text-anchor="start" fill="#202124" font-size="12.8" font-weight="bold">30/30 Live Matrix &amp; ARB Sign-Off</text>
+<text x="1236.0" y="654.0" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• Slide 38 (Final ARB Capstone Diagram)</text>
+<text x="1236.0" y="668.3" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• S33: 10 SaaS × 3 Patterns = 30/30 Live Bridge</text>
+<text x="1236.0" y="682.6" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• S38: 6/6 ARB Sign-Off (CISO, CFO, GC, SRE)</text>
+<text x="1236.0" y="696.9" text-anchor="start" fill="#202124" font-size="12.8" font-weight="normal">• 100% Native Diagrams with 2-Way Draw.io Sync</text>
+<text x="70.0" y="48.8" text-anchor="start" fill="#202124" font-size="22.5" font-weight="bold">Multi-tenant &amp; multi-cloud agent architecture series</text>
+<text x="70.0" y="81.4" text-anchor="start" fill="#5F6368" font-size="13.1" font-weight="bold">OPENING • Master visual navigation map across 6 Workstreams (WS1–WS5 + SaaS-10), 6 Core + 3 Ref Guides &amp; 54 Compendium Slides</text>
+<text x="140.0" y="153.9" text-anchor="start" fill="#1967D2" font-size="15.0" font-weight="bold">Part 1 (WS1 + MC2)</text>
+<text x="90.0" y="192.9" text-anchor="start" fill="#3C4043" font-size="11.2" font-weight="bold">Shared 5-Hop Control Plane • Slides 08–14</text>
+<text x="916.0" y="153.9" text-anchor="start" fill="#B06000" font-size="15.0" font-weight="bold">Part 5 (WS5 Decision &amp; GA)</text>
+<text x="866.0" y="192.9" text-anchor="start" fill="#3C4043" font-size="11.2" font-weight="bold">Selector, Quotas &amp; Ladder • S32, S35–S37</text>
+<text x="1276.0" y="153.9" text-anchor="start" fill="#137333" font-size="15.0" font-weight="bold">Multi-Cloud &amp; ARB Sign-Off</text>
+<text x="1226.0" y="192.9" text-anchor="start" fill="#3C4043" font-size="11.2" font-weight="bold">SaaS-10, Lakehouse &amp; ARB • S33–S34, S38</text>
+<line x1="400.0" y1="243.0" x2="426.0" y2="243.0" stroke="#1A73E8" stroke-width="2.2" marker-end="url(#arrowEnd)"/>
+<line x1="400.0" y1="488.0" x2="426.0" y2="488.0" stroke="#8430CE" stroke-width="2.2" marker-end="url(#arrowEnd)"/>
+<line x1="400.0" y1="733.0" x2="426.0" y2="733.0" stroke="#E37400" stroke-width="2.2" marker-end="url(#arrowEnd)"/>
+<line x1="816.0" y1="243.0" x2="842.0" y2="243.0" stroke="#1E8E3E" stroke-width="2.2" marker-end="url(#arrowEnd)"/>
+<line x1="816.0" y1="488.0" x2="842.0" y2="488.0" stroke="#8430CE" stroke-width="2.2" marker-end="url(#arrowEnd)"/>
+<line x1="816.0" y1="733.0" x2="842.0" y2="733.0" stroke="#E37400" stroke-width="2.2" marker-end="url(#arrowEnd)"/>
+<line x1="1176.0" y1="488.0" x2="1202.0" y2="488.0" stroke="#137333" stroke-width="2.2" marker-end="url(#arrowEnd)"/>
+<text x="70.0" y="880.8" text-anchor="start" fill="#5F6368" font-size="9.1" font-weight="bold">[Compendium S04/54 • OPENING]  •  🔗 Edit in Draw.io ↗</text>
+<g id="plane_layer" width="1600" font-family="Arial, Helvetica, sans-serif"><rect x="68.0" y="846.2" width="481.3" height="16.2" rx="2.9" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.1"/><text x="74.2" y="857.6" text-anchor="start" xml:space="preserve"><tspan font-size="10.2" font-weight="700" fill="#1D4ED8">CONTROL  </tspan><tspan font-size="10.2" font-weight="400" fill="#1F2937">decides + enforces: identity, gateways, registry, rate limits, keys, audit</tspan></text><rect x="559.3" y="846.2" width="481.3" height="16.2" rx="2.9" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.1"/><text x="565.6" y="857.6" text-anchor="start" xml:space="preserve"><tspan font-size="10.2" font-weight="700" fill="#047857">COMPUTE  </tspan><tspan font-size="10.2" font-weight="400" fill="#1F2937">runs each turn: front end, ADK runtime, models + prefix cache, MCP tools</tspan></text><rect x="1050.7" y="846.2" width="481.3" height="16.2" rx="2.9" fill="#FFFBEB" stroke="#FDBA74" stroke-width="1.1"/><text x="1056.9" y="857.6" text-anchor="start" xml:space="preserve"><tspan font-size="10.2" font-weight="700" fill="#B45309">DATA  </tspan><tspan font-size="10.2" font-weight="400" fill="#1F2937">holds state: sessions, memory, vectors, DB rows, CMEK stores, data kept in SaaS</tspan></text></g>
+</svg>

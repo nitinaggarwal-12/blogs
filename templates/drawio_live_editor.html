@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2-Way Draw.io ↔ Google Slides Sync Studio &amp; Interactive Flow Player</title>
+  <style>
+    :root {
+      --bg-root: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border-light: #e2e8f0;
+      --blue-primary: #1a73e8;
+      --blue-soft: #eff6ff;
+      --blue-border: #bfdbfe;
+      --green-soft: #ecfdf5;
+      --green-text: #047857;
+      --green-border: #a7f3d0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, sans-serif;
+      background: var(--bg-root);
+      color: var(--text-main);
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .topbar {
+      height: 52px;
+      min-height: 52px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      gap: 8px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      z-index: 10;
+    }
+    .left-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+    }
+    .right-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .mode-switch {
+      display: inline-flex;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 2px;
+      gap: 2px;
+    }
+    .mode-btn {
+      border: none;
+      background: transparent;
+      color: #475569;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .mode-btn.active {
+      background: #1a73e8;
+      color: #ffffff;
+      box-shadow: 0 1px 4px rgba(26, 115, 232, 0.25);
+    }
+    .id-badge {
+      display: none;
+    }
+    .slide-pill {
+      display: inline-flex;
+      align-items: center;
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .diag-select {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: var(--text-main);
+      font-size: 11.5px;
+      font-weight: 600;
+      max-width: 340px;
+      min-width: 180px;
+      flex: 1 1 240px;
+      cursor: pointer;
+    }
+    .sync-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--green-soft);
+      color: var(--green-text);
+      border: 1px solid var(--green-border);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .sync-status.syncing {
+      background: #fef3c7;
+      color: #92400e;
+      border-color: #fcd34d;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: var(--text-main);
+      font-size: 11.5px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .btn:hover { background: #f1f5f9; border-color: #94a3b8; }
+    .btn-primary {
+      background: var(--blue-primary);
+      color: #ffffff;
+      border-color: var(--blue-primary);
+    }
+    .btn-primary:hover { background: #1557b0; color: #ffffff; }
+    .btn-slides {
+      background: #fffbeb;
+      color: #b45309;
+      border-color: #fde68a;
+    }
+    .btn-slides:hover { background: #fef3c7; }
+
+    /* Option 4 Hybrid Bar */
+    .hybrid-bar {
+      height: 44px;
+      min-height: 44px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      gap: 8px;
+    }
+    .hybrid-bar.hidden { display: none; }
+    .state-tabs { display: flex; align-items: center; gap: 6px; }
+    .st-btn {
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #334155;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .st-btn:hover { background: #f1f5f9; }
+    .st-btn.active-0 { background: #1a73e8; color: #fff; border-color: #1a73e8; }
+    .st-btn.active-1 { background: #d97706; color: #fff; border-color: #d97706; }
+    .st-btn.active-2 { background: #e11d48; color: #fff; border-color: #e11d48; }
+    .st-btn.active-3 { background: #0f172a; color: #fff; border-color: #0f172a; }
+
+    .workspace {
+      flex: 1;
+      width: 100%;
+      position: relative;
+      background: #ffffff;
+      overflow: hidden;
+    }
+    #hybridStage, #animStage {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      background: #ffffff;
+    }
+    #hybridStage.hidden, #animStage.hidden { display: none; }
+    #hybridStage svg, #animStage img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+      background: #ffffff;
+    }
+    .h-dimmed { opacity: 0.22 !important; transition: opacity 0.35s ease; }
+    .h-focused { opacity: 1.0 !important; transition: opacity 0.35s ease; }
+    iframe#drawioFrame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+    iframe#drawioFrame.hidden { display: none; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="left-group">
+      <div class="mode-switch">
+        <button class="mode-btn" id="modeEditorBtn">✏️ 2-Way Draw.io Editor</button>
+        <button class="mode-btn active" id="modeHybridBtn">✨ Interactive Flow Player</button>
+        <button class="mode-btn" id="modeAnimBtn">🎬 Animated GIF Flow</button>
+      </div>
+      <span class="id-badge" id="uniqueIdBadge">🆔 loading...</span>
+      <span class="slide-pill" id="slideBoundBadge">Slide --/38</span>
+      <select class="diag-select" id="all50Select" aria-label="Select diagram from 66-Diagram Atlas" title="Jump to any slide diagram in the 38-Slide Architecture Compendium or 28 Extended Blueprints (66 Total)"></select>
+      <span class="sync-status" id="syncStatusPill">🟢 2-Way Sync Ready</span>
+    </div>
+    <div class="right-group">
+      <button class="btn" id="btnPullFromSlides">⬇️ Pull from Slide</button>
+      <button class="btn btn-primary" id="btnPushToSlides">⬆️ Push to Slide</button>
+      <a class="btn btn-slides" id="linkOpenGoogleSlides" href="https://docs.google.com/presentation/d/1-WwbZsdEFPylp9MtfF-nuifeVps0uuu3bSCfzCCYjjI/edit#slide=id.p1" target="_blank" rel="noopener" title="Open 100% Native Editable + 2-Way Sync Google Slides Deck 1">✏️ Editable Slides ↗</a>
+      <a class="btn" id="linkOpenAnimatedSlides" href="https://docs.google.com/presentation/d/1PjnEpYZY4mY9RvB6wNxMGCl84RwIyupNG7gKmpPxlKk/edit#slide=id.p1" target="_blank" rel="noopener" title="Open Animated GIF Google Slides Deck 2">🎬 Animated Deck ↗</a>
+      <a class="btn" id="linkStandaloneHash" href="https://viewer.diagrams.net/?highlight=1a73e8&amp;edit=_blank&amp;layers=1&amp;nav=1" target="_blank" rel="noopener">🌐 #R URI ↗</a>
+      <button class="btn" id="btnMaximizeStudio" onclick="window.toggleStudioCanvasMaximize()" title="Maximize or Restore Draw.io &amp; Format Canvas">⛶ Maximize</button>
+    </div>
+  </header>
+
+  <div class="hybrid-bar" id="hybridToolbar">
+    <div class="state-tabs">
+      <button class="st-btn" id="hSt0" onclick="window.setHybridState(0, true)">State 1 · Edge &amp; Identity Spotlight</button>
+      <button class="st-btn" id="hSt1" onclick="window.setHybridState(1, true)">State 2 · Core Runtime Spotlight</button>
+      <button class="st-btn" id="hSt2" onclick="window.setHybridState(2, true)">State 3 · Kill-Switch / Isolation Proof (403/200)</button>
+      <button class="st-btn active-3" id="hSt3" onclick="window.setHybridState(3, true)">State 4 · Full Ambient Flow View</button>
+    </div>
+    <div class="right-group">
+      <button class="btn" id="btnToggleFault" onclick="window.toggleFaultMode()" style="display:none;color:#be123c;border-color:#fda4af;background:#fff1f2;">⊘ Fault / Denied (403)</button>
+      <button class="btn" id="btnAutoWalk" onclick="window.toggleHybridAuto()">▶ Auto (1→4)</button>
+    </div>
+  </div>
+
+  <main class="workspace">
+    <div id="hybridStage"></div>
+    <div id="animStage" class="hidden">
+      <img id="animStageImg" src="" alt="Animated Slide Flow" />
+    </div>
+    <iframe
+      id="drawioFrame"
+      class="hidden"
+      src="about:blank"
+      data-embed-src="https://embed.diagrams.net/?embed=1&proto=json&spin=1&ui=kennedy&libraries=1&saveAndExit=0&noExitBtn=1"
+      allow="clipboard-read; clipboard-write"
+      title="Draw.io 2-Way Sync Canvas"
+    ></iframe>
+  </main>
+
+  <script>
+    (function () {
+      const pathParts = window.location.pathname.split("/").filter(Boolean);
+      const urlParams = new URLSearchParams(window.location.search);
+      let currentDiagramId = (pathParts[0] === "drawio" && pathParts[1]) ? decodeURIComponent(pathParts[1]) : (urlParams.get("diagram") || "ws3-pattern-b-silo");
+      const reqMode = urlParams.get("mode");
+      let activeMode = (reqMode === "edit" || reqMode === "anim" || reqMode === "hybrid") ? reqMode : "edit";
+      let hybridState = 3;
+      let faultDenied = true;
+      let hybridTimer = null;
+
+      const modeHybridBtn = document.getElementById("modeHybridBtn");
+      const modeEditorBtn = document.getElementById("modeEditorBtn");
+      const modeAnimBtn = document.getElementById("modeAnimBtn");
+      const hybridToolbar = document.getElementById("hybridToolbar");
+      const hybridStage = document.getElementById("hybridStage");
+      const animStage = document.getElementById("animStage");
+      const animStageImg = document.getElementById("animStageImg");
+      const iframe = document.getElementById("drawioFrame");
+      const uniqueIdBadge = document.getElementById("uniqueIdBadge");
+      const slideBoundBadge = document.getElementById("slideBoundBadge");
+      const all50Select = document.getElementById("all50Select");
+      const syncStatusPill = document.getElementById("syncStatusPill");
+      const btnPullFromSlides = document.getElementById("btnPullFromSlides");
+      const btnPushToSlides = document.getElementById("btnPushToSlides");
+      const linkOpenGoogleSlides = document.getElementById("linkOpenGoogleSlides");
+      const linkOpenAnimatedSlides = document.getElementById("linkOpenAnimatedSlides");
+      const linkStandaloneHash = document.getElementById("linkStandaloneHash");
+      const btnToggleFault = document.getElementById("btnToggleFault");
+      const btnAutoWalk = document.getElementById("btnAutoWalk");
+      const btnMaximizeStudio = document.getElementById("btnMaximizeStudio");
+
+      try {
+        if (window.parent && window.parent !== window) {
+          if (all50Select) all50Select.style.display = "none";
+          if (uniqueIdBadge) uniqueIdBadge.style.display = "none";
+          if (slideBoundBadge) slideBoundBadge.style.display = "none";
+          if (linkStandaloneHash) linkStandaloneHash.style.display = "none";
+          if (btnMaximizeStudio) btnMaximizeStudio.style.display = "none";
+        }
+      } catch (_) {}
+
+      let currentXml = "";
+      let currentSvg = "";
+      let currentAnimGifUrl = "";
+      let iframeReady = false;
+      let lastKnownVersion = 0;
+      let autosaveTimer = null;
+      let isPushing = false;
+
+      function setMode(m) {
+        activeMode = m;
+        modeHybridBtn.classList.toggle("active", m === "hybrid");
+        modeEditorBtn.classList.toggle("active", m === "edit");
+        modeAnimBtn.classList.toggle("active", m === "anim");
+        hybridToolbar.classList.toggle("hidden", m !== "hybrid");
+        hybridStage.classList.toggle("hidden", !(m === "hybrid" || (m === "edit" && !iframeReady)));
+        animStage.classList.toggle("hidden", m !== "anim");
+        iframe.classList.toggle("hidden", !(m === "edit" && iframeReady));
+        if (m === "hybrid" || (m === "edit" && !iframeReady)) {
+          renderHybridStage();
+        } else if (m === "anim") {
+          if (currentAnimGifUrl) animStageImg.src = currentAnimGifUrl;
+        }
+        if (m === "edit" && iframeReady && currentXml) {
+          iframe.contentWindow.postMessage(JSON.stringify({ action: "load", xml: currentXml, autosave: 1 }), "*");
+        }
+      }
+
+      modeHybridBtn.addEventListener("click", function () { setMode("hybrid"); });
+      modeEditorBtn.addEventListener("click", function () { setMode("edit"); });
+      modeAnimBtn.addEventListener("click", function () { setMode("anim"); });
+
+      function renderHybridStage() {
+        if (!currentSvg) return;
+        hybridStage.innerHTML = currentSvg;
+        const svgEl = hybridStage.querySelector("svg");
+        if (!svgEl) return;
+
+        [0, 1, 2, 3].forEach(function (i) {
+          const b = document.getElementById("hSt" + i);
+          b.className = (i === hybridState) ? ("st-btn active-" + i) : "st-btn";
+        });
+        btnToggleFault.style.display = (hybridState === 2) ? "inline-flex" : "none";
+        btnToggleFault.textContent = faultDenied ? "⊘ Fault / Denied (403)" : "● Nominal (200 OK)";
+        btnToggleFault.style.color = faultDenied ? "#be123c" : "#047857";
+        btnToggleFault.style.background = faultDenied ? "#fff1f2" : "#ecfdf5";
+        btnToggleFault.style.borderColor = faultDenied ? "#fda4af" : "#6ee7b7";
+
+        const children = Array.from(svgEl.children);
+        children.forEach(function (el, idx) {
+          if (el.tagName === "defs" || idx === 1) return;
+          const x = parseFloat(el.getAttribute("x") || el.getAttribute("x1") || el.getAttribute("cx") || "0");
+          const y = parseFloat(el.getAttribute("y") || el.getAttribute("y1") || el.getAttribute("cy") || "0");
+          const w = parseFloat(el.getAttribute("width") || "0");
+          if (w > 680) return;
+          let keep = true;
+          if (hybridState === 0) {
+            keep = (x < 780) ? (y < 430) : (y < 445 && x < 1310);
+          } else if (hybridState === 1) {
+            keep = (x < 780) ? (y >= 420 && y < 585) : (y >= 445 && x < 1200);
+          } else if (hybridState === 2) {
+            keep = (x < 780) ? (y >= 565) : (x >= 1185 || y >= 445);
+          }
+          el.classList.add(keep ? "h-focused" : "h-dimmed");
+        });
+
+        const ns = "http://www.w3.org/2000/svg";
+        const overlay = document.createElementNS(ns, "g");
+        svgEl.querySelectorAll("line").forEach(function (ln, lIdx) {
+          if (ln.classList.contains("h-dimmed")) return;
+          const x1 = parseFloat(ln.getAttribute("x1") || "0");
+          const y1 = parseFloat(ln.getAttribute("y1") || "0");
+          const x2 = parseFloat(ln.getAttribute("x2") || "0");
+          const y2 = parseFloat(ln.getAttribute("y2") || "0");
+          const dist = Math.hypot(x2 - x1, y2 - y1);
+          if (dist < 42) return;
+          const stroke = ln.getAttribute("stroke") || "#1A73E8";
+          const dot = document.createElementNS(ns, "circle");
+          dot.setAttribute("r", "3.8");
+          dot.setAttribute("fill", (hybridState === 2 && !faultDenied && stroke.toUpperCase() === "#E11D48") ? "#059669" : stroke);
+          dot.setAttribute("opacity", "0.92");
+          const anim = document.createElementNS(ns, "animateMotion");
+          anim.setAttribute("dur", (1.8 + (lIdx % 4) * 0.35) + "s");
+          anim.setAttribute("repeatCount", "indefinite");
+          anim.setAttribute("path", "M " + x1 + " " + y1 + " L " + x2 + " " + y2);
+          dot.appendChild(anim);
+          overlay.appendChild(dot);
+        });
+        svgEl.appendChild(overlay);
+      }
+
+      window.setHybridState = function (st, stopAuto) {
+        if (stopAuto && hybridTimer) {
+          clearInterval(hybridTimer);
+          hybridTimer = null;
+          btnAutoWalk.textContent = "▶ Auto (1→4)";
+        }
+        hybridState = st;
+        renderHybridStage();
+      };
+
+      window.toggleFaultMode = function () {
+        faultDenied = !faultDenied;
+        renderHybridStage();
+      };
+
+      window.toggleHybridAuto = function () {
+        if (hybridTimer) {
+          clearInterval(hybridTimer);
+          hybridTimer = null;
+          btnAutoWalk.textContent = "▶ Auto (1→4)";
+        } else {
+          btnAutoWalk.textContent = "⏸ Pause Auto";
+          hybridTimer = setInterval(function () {
+            hybridState = (hybridState + 1) % 4;
+            renderHybridStage();
+          }, 3000);
+        }
+      };
+
+      function setStatus(text, syncing) {
+        syncStatusPill.textContent = text;
+        if (syncing) syncStatusPill.classList.add("syncing");
+        else syncStatusPill.classList.remove("syncing");
+      }
+
+      let activeCompSlide = urlParams.get("compSlide") || "";
+
+      async function loadDiagramData(diagId, pushToIframe, optCompSlide) {
+        if (typeof optCompSlide === "string") activeCompSlide = optCompSlide;
+        setStatus("⏳ Loading " + diagId + "...", true);
+        const qsSuffix = activeCompSlide ? ("?compSlide=" + encodeURIComponent(activeCompSlide)) : "";
+        const res = await fetch("/api/drawio/item/" + encodeURIComponent(diagId) + qsSuffix);
+        const data = await res.json();
+        if (data.status !== "ok") {
+          setStatus("⚠️ " + (data.error || "Failed to load"), true);
+          return;
+        }
+        currentDiagramId = data.item.id || data.item.diagramId;
+        currentXml = data.xml || "";
+        currentSvg = data.svg || "";
+        currentAnimGifUrl = (data.item.assets && data.item.assets.animatedGifUrl) || ("/diagrams/compendium/animated/anim-slide-" + String(data.item.slideNumber || data.item.compendiumSlideNum || 1).padStart(2, "0") + ".gif");
+        lastKnownVersion = data.manifestVersion || 0;
+
+        const slideNum = data.item.slideNumber || data.item.compendiumSlideNum || 1;
+        const pageId = data.item.pageId || ("p" + slideNum);
+        const isExt = slideNum > 54;
+        const badgeLabel = isExt
+          ? ("Ext #" + String(slideNum - 54).padStart(2, "0") + "/28")
+          : ("Slide #" + String(slideNum).padStart(2, "0") + "/38");
+        uniqueIdBadge.textContent = "🆔 " + currentDiagramId;
+        slideBoundBadge.textContent = badgeLabel;
+        linkOpenGoogleSlides.href = (data.item.linkages && data.item.linkages.deck1SlideUrl) || ("https://docs.google.com/presentation/d/1-WwbZsdEFPylp9MtfF-nuifeVps0uuu3bSCfzCCYjjI/edit#slide=id." + pageId);
+        linkOpenAnimatedSlides.href = (data.item.linkages && data.item.linkages.deck2SlideUrl) || ("https://docs.google.com/presentation/d/1PjnEpYZY4mY9RvB6wNxMGCl84RwIyupNG7gKmpPxlKk/edit#slide=id." + pageId);
+        linkStandaloneHash.href = (data.item.assets && data.item.assets.drawioStandaloneHashUrl) || data.item.standaloneAppDiagramsNetUrl || ("#" + (data.selfContainedHash || ""));
+
+        if (data.selfContainedHash) {
+          const slidePart = activeCompSlide ? ("compSlide=" + encodeURIComponent(activeCompSlide || slideNum) + "&") : "";
+          history.replaceState(null, "", "/drawio/" + encodeURIComponent(currentDiagramId) + "?" + slidePart + "mode=" + activeMode + "#" + data.selfContainedHash);
+        }
+
+        if (all50Select.options.length === 0 && Array.isArray(data.allDiagrams)) {
+          data.allDiagrams.forEach(function (d) {
+            const dId = d.id || d.diagramId;
+            const sNum = d.slideNumber || d.compendiumSlideNum || 1;
+            const opt = document.createElement("option");
+            opt.value = dId;
+            const prefix = (sNum > 54)
+              ? ("[Ext #" + String(sNum - 54).padStart(2, "0") + "/28] ")
+              : ("[Slide " + String(sNum).padStart(2, "0") + "/38] ");
+            opt.textContent = prefix + dId + " — " + (d.shortTitle || d.title);
+            all50Select.appendChild(opt);
+          });
+        }
+        all50Select.value = currentDiagramId;
+
+        if (activeMode === "hybrid" || (activeMode === "edit" && !iframeReady)) {
+          renderHybridStage();
+        } else if (activeMode === "anim") {
+          animStageImg.src = currentAnimGifUrl;
+        }
+        if (pushToIframe && iframeReady && currentXml) {
+          iframe.contentWindow.postMessage(JSON.stringify({
+            action: "load",
+            xml: currentXml,
+            autosave: 1
+          }), "*");
+        }
+        setStatus("🟢 2-Way Sync Ready", false);
+      }
+
+      async function pushXmlToBackend(xmlToSave, reason) {
+        if (!xmlToSave || isPushing) return;
+        isPushing = true;
+        currentXml = xmlToSave;
+        setStatus("☁️ Syncing " + currentDiagramId + " → Google Slides (" + reason + ")...", true);
+        try {
+          const res = await fetch("/api/drawio/sync-unique", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: currentDiagramId,
+              compSlide: activeCompSlide || "",
+              xml: xmlToSave,
+              syncGoogleSlides: true
+            })
+          });
+          const out = await res.json();
+          if (!res.ok || out.status === "error") {
+            throw new Error(out.error || ("HTTP " + res.status));
+          }
+          if (out.manifestVersion) lastKnownVersion = out.manifestVersion;
+          setStatus(
+            out.googleSlidesSynced
+              ? ("✅ Synced " + currentDiagramId + " → Google Slides")
+              : ("✅ Saved " + currentDiagramId + " locally" + (out.warnings && out.warnings.length ? (" (" + out.warnings[0] + ")") : "")),
+            false
+          );
+        } catch (err) {
+          setStatus("⚠️ Sync error: " + err.message, true);
+        } finally {
+          isPushing = false;
+        }
+      }
+
+      window.addEventListener("message", function (evt) {
+        if (!evt.data || typeof evt.data !== "string") return;
+        let msg;
+        try { msg = JSON.parse(evt.data); } catch (e) { return; }
+        if (msg.event === "init") {
+          iframeReady = true;
+          if (activeMode === "edit") {
+            hybridStage.classList.add("hidden");
+            iframe.classList.remove("hidden");
+          }
+          if (currentXml) {
+            iframe.contentWindow.postMessage(JSON.stringify({
+              action: "load",
+              xml: currentXml,
+              autosave: 1
+            }), "*");
+          }
+        } else if (msg.event === "autosave" && msg.xml) {
+          currentXml = msg.xml;
+          if (autosaveTimer) clearTimeout(autosaveTimer);
+          autosaveTimer = setTimeout(function () {
+            pushXmlToBackend(msg.xml, "auto-save");
+          }, 1200);
+        } else if (msg.event === "save" && msg.xml) {
+          if (autosaveTimer) clearTimeout(autosaveTimer);
+          pushXmlToBackend(msg.xml, "manual save");
+        }
+      });
+
+      all50Select.addEventListener("change", function () {
+        const nextId = all50Select.value;
+        if (nextId && nextId !== currentDiagramId) {
+          loadDiagramData(nextId, true, "");
+        }
+      });
+
+      btnPushToSlides.addEventListener("click", function () {
+        if (currentXml) pushXmlToBackend(currentXml, "1-click push");
+      });
+
+      btnPullFromSlides.addEventListener("click", async function () {
+        setStatus("⬇️ Pulling live edits from Google Slides for " + currentDiagramId + "...", true);
+        try {
+          const res = await fetch("/api/drawio/pull-unique", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: currentDiagramId, compSlide: activeCompSlide || "" })
+          });
+          const out = await res.json();
+          if (!res.ok || out.status === "error") {
+            throw new Error(out.error || ("HTTP " + res.status));
+          }
+          await loadDiagramData(currentDiagramId, true);
+          const count = out.changesCount || out.changedCount || 0;
+          setStatus(count > 0 ? ("✅ Pulled " + count + " edit(s) from Google Slides") : "✅ Up to date (0 diffs)", false);
+        } catch (err) {
+          setStatus("⚠️ Pull error: " + err.message, true);
+        }
+      });
+
+      let studioMaximized = false;
+      window.toggleStudioCanvasMaximize = function () {
+        studioMaximized = !studioMaximized;
+        const btn = document.getElementById("btnMaximizeStudio");
+        if (btn) {
+          btn.textContent = studioMaximized ? "🗗 Restore" : "⛶ Maximize";
+          btn.classList.toggle("btn-primary", studioMaximized);
+        }
+        try {
+          if (window.parent && window.parent !== window && typeof window.parent.toggleStudioMaximizeFromIframe === "function") {
+            window.parent.toggleStudioMaximizeFromIframe(studioMaximized);
+            return;
+          }
+          if (studioMaximized && document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen().catch(function () {});
+          } else if (!studioMaximized && document.fullscreenElement && document.exitFullscreen) {
+            document.exitFullscreen().catch(function () {});
+          }
+        } catch (_) {}
+      };
+
+      setMode(activeMode);
+      loadDiagramData(currentDiagramId, true);
+    })();
+  </script>
+</body>
+</html>

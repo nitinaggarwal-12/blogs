@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" style="width:100%;height:auto;display:block;background:#FFFFFF;font-family:Arial,sans-serif;">
+<defs><marker id="arrowEnd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#475569"/></marker></defs>
+<rect x="0" y="0" width="1600" height="900" fill="#FFFFFF"/>
+<rect x="0.0" y="7.8" width="1600.0" height="59.4" rx="0" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1.0"/>
+<rect x="0.0" y="0.0" width="400.0" height="7.8" rx="0" fill="#4285F4" stroke="none" stroke-width="0"/>
+<rect x="400.0" y="0.0" width="400.0" height="7.8" rx="0" fill="#EA4335" stroke="none" stroke-width="0"/>
+<rect x="799.9" y="0.0" width="400.0" height="7.8" rx="0" fill="#FBBC04" stroke="none" stroke-width="0"/>
+<rect x="1199.9" y="0.0" width="400.1" height="7.8" rx="0" fill="#34A853" stroke="none" stroke-width="0"/>
+<rect x="45.6" y="31.8" width="11.4" height="11.4" rx="50%" fill="#4285F4" stroke="none" stroke-width="0"/>
+<rect x="60.6" y="31.8" width="11.4" height="11.4" rx="50%" fill="#EA4335" stroke="none" stroke-width="0"/>
+<rect x="75.6" y="31.8" width="11.4" height="11.4" rx="50%" fill="#FBBC04" stroke="none" stroke-width="0"/>
+<rect x="90.6" y="31.8" width="11.4" height="11.4" rx="50%" fill="#34A853" stroke="none" stroke-width="0"/>
+<text x="114.4" y="40.2" text-anchor="start" fill="#3C4043" font-size="13.7" font-weight="bold">Google Cloud  Architecture Center</text>
+<rect x="453.6" y="21.0" width="102.0" height="32.4" rx="5" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="504.6" y="40.1" text-anchor="middle" fill="#4285F4" font-size="11.1" font-weight="bold">WS4</text>
+<text x="581.2" y="40.1" text-anchor="start" fill="#3C4043" font-size="13.3" font-weight="bold">WS4 • PART 4: UNIDIRECTIONAL PRIVATE SERVICE CONNECT &amp; LIVE CUTOVER LOOP</text>
+<rect x="1248.4" y="21.0" width="306.0" height="32.4" rx="5" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="1401.4" y="39.7" text-anchor="middle" fill="#5F6368" font-size="9.8" font-weight="bold">ASYNC-STATE-FLOW-PIPELINE</text>
+<text x="70.0" y="137.7" text-anchor="start" fill="#3C4043" font-size="26.7" font-weight="bold">Hub-and-Spoke PSC Traversal (/28 NAT) &amp; Zero-Downtime State Synchronization</text>
+<rect x="64.8" y="374.4" width="256.8" height="172.8" rx="18" fill="#12355B" stroke="none" stroke-width="0"/>
+<text x="193.2" y="455.8" text-anchor="middle" fill="#FFFFFF" font-size="16.9" font-weight="bold">Shared Hub ALB</text>
+<text x="193.2" y="474.7" text-anchor="middle" fill="#FFFFFF" font-size="16.9" font-weight="normal">&amp; Tier Router</text>
+<rect x="504.0" y="374.4" width="256.8" height="172.8" rx="18" fill="#CA8A04" stroke="none" stroke-width="0"/>
+<text x="632.4" y="455.8" text-anchor="middle" fill="#FFFFFF" font-size="16.9" font-weight="bold">Consumer PSC</text>
+<text x="632.4" y="474.7" text-anchor="middle" fill="#FFFFFF" font-size="16.9" font-weight="normal">Endpoint (/28 NAT)</text>
+<rect x="890.4" y="374.4" width="256.8" height="172.8" rx="18" fill="#0D7A75" stroke="none" stroke-width="0"/>
+<text x="1018.8" y="455.8" text-anchor="middle" fill="#FFFFFF" font-size="16.9" font-weight="bold">Spoke Producer</text>
+<text x="1018.8" y="474.7" text-anchor="middle" fill="#FFFFFF" font-size="16.9" font-weight="normal">ServiceAttachment</text>
+<rect x="1274.4" y="374.4" width="256.8" height="172.8" rx="18" fill="#0F766E" stroke="none" stroke-width="0"/>
+<text x="1402.8" y="455.8" text-anchor="middle" fill="#FFFFFF" font-size="16.9" font-weight="bold">Sovereign Spoke</text>
+<text x="1402.8" y="474.7" text-anchor="middle" fill="#FFFFFF" font-size="16.9" font-weight="normal">Agent &amp; AlloyDB</text>
+<rect x="330.0" y="206.4" width="165.6" height="134.4" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="412.8" y="270.3" text-anchor="middle" fill="#3C4043" font-size="11.2" font-weight="bold">1. Looks up tenant tier</text>
+<text x="412.8" y="282.8" text-anchor="middle" fill="#3C4043" font-size="11.2" font-weight="normal">in Firestore (0ms)</text>
+<line x1="321.6" y1="417.6" x2="504.0" y2="417.6" stroke="#12355B" stroke-width="1.8" marker-end="url(#arrowEnd)"/>
+<line x1="321.6" y1="489.6" x2="504.0" y2="489.6" stroke="#D93025" stroke-width="1.8" marker-start="url(#arrowEnd)"/>
+<rect x="330.0" y="508.8" width="165.6" height="112.8" rx="10" fill="#FCE8E6" stroke="#D93025" stroke-width="1.0"/>
+<text x="412.8" y="556.3" text-anchor="middle" fill="#A50E0E" font-size="10.4" font-weight="bold">2. Standard tenants route</text>
+<text x="412.8" y="567.9" text-anchor="middle" fill="#A50E0E" font-size="10.4" font-weight="normal">directly to shared pool</text>
+<text x="412.8" y="579.5" text-anchor="middle" fill="#A50E0E" font-size="10.4" font-weight="normal">(120 RPM fast-path)</text>
+<rect x="708.0" y="206.4" width="225.6" height="134.4" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="820.8" y="264.0" text-anchor="middle" fill="#3C4043" font-size="11.2" font-weight="bold">3. Enterprise tenants</text>
+<text x="820.8" y="276.5" text-anchor="middle" fill="#3C4043" font-size="11.2" font-weight="normal">traverse unidirectional</text>
+<text x="820.8" y="289.0" text-anchor="middle" fill="#3C4043" font-size="11.2" font-weight="normal">PSC endpoint (10.10.0.50)</text>
+<line x1="751.2" y1="460.8" x2="890.4" y2="460.8" stroke="#12355B" stroke-width="1.8" marker-end="url(#arrowEnd)"/>
+<rect x="1092.0" y="206.4" width="225.6" height="134.4" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="1204.8" y="264.0" text-anchor="middle" fill="#3C4043" font-size="11.2" font-weight="bold">4. Spoke ServiceAttachment</text>
+<text x="1204.8" y="276.5" text-anchor="middle" fill="#3C4043" font-size="11.2" font-weight="normal">forwards to dedicated</text>
+<text x="1204.8" y="289.0" text-anchor="middle" fill="#3C4043" font-size="11.2" font-weight="normal">Agent Engine &amp; CMEK DB</text>
+<line x1="1149.6" y1="460.8" x2="1274.4" y2="460.8" stroke="#12355B" stroke-width="1.8" marker-end="url(#arrowEnd)"/>
+<line x1="1404.0" y1="547.2" x2="1404.0" y2="696.0" stroke="#0D7A75" stroke-width="2.0"/>
+<line x1="199.2" y1="696.0" x2="1404.0" y2="696.0" stroke="#0D7A75" stroke-width="2.0"/>
+<line x1="199.2" y1="547.2" x2="199.2" y2="696.0" stroke="#0D7A75" stroke-width="2.0" marker-start="url(#arrowEnd)"/>
+<rect x="535.2" y="643.2" width="537.6" height="105.6" rx="10" fill="#E6F4EA" stroke="#0D7A75" stroke-width="1.2"/>
+<text x="804.0" y="686.1" text-anchor="middle" fill="#0D652D" font-size="11.4" font-weight="bold">5. Live migration coordinator syncs</text>
+<text x="804.0" y="698.9" text-anchor="middle" fill="#0D652D" font-size="11.4" font-weight="normal">dual-write checksums &amp; flips Firestore</text>
+<text x="804.0" y="711.7" text-anchor="middle" fill="#0D652D" font-size="11.4" font-weight="normal">pointer back at the Hub with 0ms lag</text>
+<text x="50.0" y="882.2" text-anchor="start" fill="#4285F4" font-size="10.1" font-weight="bold">[Slide 47/62 • PART 4 (WS4)]  •  ▶ 4-State Hybrid &amp; Draw.io ↗</text>
+</svg>

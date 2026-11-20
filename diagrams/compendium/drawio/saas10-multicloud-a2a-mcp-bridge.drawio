@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="PromptCanvas-Drawio-Compiler" version="24.7.17" type="device">
+  <diagram id="saas10-multicloud-a2a-mcp-bridge" name="SaaS-10: Multi-Cloud &amp; SaaS Bridge">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" background="#FFFFFF" math="0" shadow="1">
+      <root>
+      <mxCell id="0"/>
+      <mxCell id="1" parent="0"/>
+      <mxCell id="mc_div_line" value="" style="rounded=0;arcSize=0;whiteSpace=wrap;html=1;fillColor=#DADCE0;strokeColor=none;fontColor=#5F6368;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="80" width="1464" height="2" as="geometry"/>
+      </mxCell>
+      <mxCell id="gcp_plane" value="" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#EBF2FE;strokeColor=none;fontColor=#1967D2;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="40" y="114" width="1084" height="724" as="geometry"/>
+      </mxCell>
+      <mxCell id="aws_plane" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FBF6E9;strokeColor=none;fontColor=#D56E0C;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1176" y="114" width="380" height="724" as="geometry"/>
+      </mxCell>
+      <mxCell id="u_a" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1E3A8A;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Tenant A&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;IdP: OIDC&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#93C5FD;strokeWidth=1.5;fontColor=#1E3A8A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="58" y="256" width="138" height="76" as="geometry"/>
+      </mxCell>
+      <mxCell id="u_b" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#78350F;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Tenant B&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B45309;'&gt;IdP: Google&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=#FCD34D;strokeWidth=1.5;fontColor=#78350F;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="58" y="356" width="138" height="76" as="geometry"/>
+      </mxCell>
+      <mxCell id="u_c" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#4C1D95;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Tenant C&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#6D28D9;'&gt;IdP: Entra ID&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#F3E8FD;strokeColor=#C4B5FD;strokeWidth=1.5;fontColor=#4C1D95;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="58" y="456" width="138" height="76" as="geometry"/>
+      </mxCell>
+      <mxCell id="idp" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;🛡️ Google Identity&lt;/div&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Platform &amp;amp; WIF&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Short-lived OIDC&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Verified tenant_id&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Workforce WIF&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• OIDC / SAML Federation&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=9;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="220" y="256" width="152" height="276" as="geometry"/>
+      </mxCell>
+      <mxCell id="ingress" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;🌐 Inbound Agent&lt;/div&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Gateway (PEP)&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Client-to-Agent&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Strips X-Tenant-ID&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Model Armor input&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• 120/600 RPM cap&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=9;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="394" y="256" width="156" height="276" as="geometry"/>
+      </mxCell>
+      <mxCell id="auth_mgr" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;🛡️ Auth Manager &amp;amp; AWS STS&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Keyless OIDC -&amp;gt; AWS STS + 3LO DPoP&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="576" y="154" width="252" height="82" as="geometry"/>
+      </mxCell>
+      <mxCell id="registry" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;⚙️ Agent Registry (ARD)&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;10-SaaS MCP schemas &amp;amp; ABAC policy&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="850" y="154" width="252" height="82" as="geometry"/>
+      </mxCell>
+      <mxCell id="runtime" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;ADK Agent Runtime&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Agent Identity (SPIFFE)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=top;align=left;spacingTop=12;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="576" y="256" width="252" height="276" as="geometry"/>
+      </mxCell>
+      <mxCell id="adk_orch_s10" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;ADK Agent Orchestrator&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Cloud Run Gen2 gVisor&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Dynamic MCP Tool Pruning&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Async Contextvars Isolation&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• 32k Shared Prefix Cache&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="588" y="326" width="228" height="194" as="geometry"/>
+      </mxCell>
+      <mxCell id="egress_gw_box" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="850" y="256" width="252" height="276" as="geometry"/>
+      </mxCell>
+      <mxCell id="egress_gw_hdr" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;      Outbound Agent Gateway&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=25;whiteSpace=wrap;html=1;fillColor=#1A73E8;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="850" y="256" width="252" height="48" as="geometry"/>
+      </mxCell>
+      <mxCell id="egress_gw_ico" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#D93025;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;❖&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F28B82;strokeWidth=1.8;fontColor=#D93025;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="858" y="266" width="28" height="28" as="geometry"/>
+      </mxCell>
+      <mxCell id="egress_gw_body" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1E3A8A;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Agent-to-MultiCloud / SaaS&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#334155;'&gt;• Keyless OIDC -&amp;gt; AWS STS&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#334155;'&gt;• User-Scoped 3LO OBO Token&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#334155;'&gt;• Cloud DLP Output Redaction&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#334155;'&gt;• Cross-Cloud Token Metering&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=5;whiteSpace=wrap;html=1;fillColor=#F8FAFC;gradientColor=#EFF6FF;gradientDirection=south;strokeColor=#BFDBFE;strokeWidth=1.2;fontColor=#1E3A8A;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="860" y="312" width="232" height="208" as="geometry"/>
+      </mxCell>
+      <mxCell id="sessions" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Sessions &amp;amp; Valkey&lt;/div&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Rate Bulkhead&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• 0.4ms state lookup&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Scoped {tenant}:{user}&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Singleflight lock&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Scoped UNLINK &amp;lt;5s&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="394" y="558" width="184" height="256" as="geometry"/>
+      </mxCell>
+      <mxCell id="mem_bank" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="604" y="558" width="498" height="256" as="geometry"/>
+      </mxCell>
+      <mxCell id="mb_1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1E3A8A;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Tenant A Partition (AlloyDB FORCE RLS + Cross-Cloud Audit)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=22;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#93C5FD;strokeWidth=1.5;fontColor=#1E3A8A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="624" y="588" width="458" height="46" as="geometry"/>
+      </mxCell>
+      <mxCell id="mb_2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#78350F;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Tenant B Partition (AlloyDB FORCE RLS + Cross-Cloud Audit)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=22;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=#FCD34D;strokeWidth=1.5;fontColor=#78350F;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="624" y="646" width="458" height="46" as="geometry"/>
+      </mxCell>
+      <mxCell id="mb_3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#4C1D95;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Tenant C Partition (AlloyDB FORCE RLS + Cross-Cloud Audit)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=22;whiteSpace=wrap;html=1;fillColor=#F3E8FD;strokeColor=#C4B5FD;strokeWidth=1.5;fontColor=#4C1D95;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="624" y="704" width="458" height="46" as="geometry"/>
+      </mxCell>
+      <mxCell id="mb_4" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#137333;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;30 / 30 Multi-Cloud Verification Gates PASS (10 SaaS × 3 Patterns)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=21;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=none;fontColor=#137333;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="624" y="762" width="458" height="38" as="geometry"/>
+      </mxCell>
+      <mxCell id="aws_agentcore" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#065F46;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;AWS Bedrock AgentCore Gateway&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#047857;'&gt;cymbal-a2a-mcp-gateway -&amp;gt; remote-peer&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#047857;'&gt;• S3 Federation Bucket &amp;amp; CrowdStrike&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#047857;'&gt;• Keyless OIDC-to-AWS STS (0 static keys)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#34D399;strokeWidth=1.5;fontColor=#065F46;verticalAlign=middle;align=left;spacingLeft=16;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1200" y="176" width="332" height="188" as="geometry"/>
+      </mxCell>
+      <mxCell id="lakehouse_saas" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1E3A8A;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Lakehouse &amp;amp; Agentic BI MCP&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Databricks Unity Catalog &amp;amp; Snowflake&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• ThoughtSpot Spotter &amp;amp; Sigma Workbooks&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Tenant row filters &amp;amp; column masking&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#60A5FA;strokeWidth=1.5;fontColor=#1E3A8A;verticalAlign=middle;align=left;spacingLeft=16;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1200" y="396" width="332" height="188" as="geometry"/>
+      </mxCell>
+      <mxCell id="ent_saas" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#78350F;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Enterprise ITSM, CRM, HR &amp;amp; Clinical&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B45309;'&gt;• ServiceNow ITSM, Salesforce &amp;amp; Jira&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B45309;'&gt;• Workday RaaS, Datadog SRE &amp;amp; Muse GxP&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B45309;'&gt;• Per-tenant 3LO OBO + DPoP sender-bound&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#FBBF24;strokeWidth=1.5;fontColor=#78350F;verticalAlign=middle;align=left;spacingLeft=16;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1200" y="616" width="332" height="198" as="geometry"/>
+      </mxCell>
+      <mxCell id="e1" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.428;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="u_a" target="idp">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="196" y="294" as="sourcePoint"/>
+          <mxPoint x="220" y="374" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="208" y="294"/>
+            <mxPoint x="208" y="374"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e2" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="u_b" target="idp">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="196" y="394" as="sourcePoint"/>
+          <mxPoint x="220" y="394" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e3" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.572;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="u_c" target="idp">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="196" y="494" as="sourcePoint"/>
+          <mxPoint x="220" y="414" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="208" y="494"/>
+            <mxPoint x="208" y="414"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e4" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="idp" target="ingress">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="372" y="394" as="sourcePoint"/>
+          <mxPoint x="394" y="394" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e5" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="ingress" target="runtime">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="550" y="394" as="sourcePoint"/>
+          <mxPoint x="576" y="394" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e6" value="" style="rounded=1;html=1;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#1A73E8;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="auth_mgr" target="runtime">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="702" y="236" as="sourcePoint"/>
+          <mxPoint x="702" y="256" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e7" value="" style="rounded=1;html=1;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#1A73E8;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="registry" target="egress_gw_box">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="976" y="236" as="sourcePoint"/>
+          <mxPoint x="976" y="256" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e8" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="runtime" target="egress_gw_box">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="828" y="394" as="sourcePoint"/>
+          <mxPoint x="850" y="394" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e9" value="" style="rounded=1;html=1;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.424;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="ingress" target="sessions">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="472" y="532" as="sourcePoint"/>
+          <mxPoint x="472" y="558" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e10" value="" style="rounded=1;html=1;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.197;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=classic;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="runtime" target="mem_bank">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="702" y="532" as="sourcePoint"/>
+          <mxPoint x="702" y="558" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e11" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.232;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#1E8E3E;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="egress_gw_box" target="aws_agentcore">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1102" y="320" as="sourcePoint"/>
+          <mxPoint x="1200" y="270" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1150" y="320"/>
+            <mxPoint x="1150" y="270"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e12" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#1A73E8;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="egress_gw_box" target="lakehouse_saas">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1102" y="394" as="sourcePoint"/>
+          <mxPoint x="1200" y="490" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1150" y="394"/>
+            <mxPoint x="1150" y="490"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e13" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.775;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#D97706;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="egress_gw_box" target="ent_saas">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1102" y="470" as="sourcePoint"/>
+          <mxPoint x="1200" y="715" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1150" y="470"/>
+            <mxPoint x="1150" y="715"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="t_main" value="WS5 - PART 5 - Multi-Cloud Federation: Google Cloud Plane ↔ AWS &amp; 10 SaaS" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=22;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="68" y="24" width="1019" height="34" as="geometry"/>
+      </mxCell>
+      <mxCell id="t_gcp_lbl" value="Google Cloud Control &amp; Runtime Plane (ramp-portal-dev / bbar-138hf0)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#1967D2;fontSize=13;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="64" y="123" width="572" height="20" as="geometry"/>
+      </mxCell>
+      <mxCell id="t_aws_lbl" value="AWS &amp; 10-SaaS Plane (us-east-1)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#B06000;fontSize=13;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="1196" y="123" width="273" height="20" as="geometry"/>
+      </mxCell>
+        <mxCell id="plane_layer" value="Planes: control / compute / data (generated, locked)" style="locked=1;" parent="0"/>
+        <mxCell id="plane_bdr_00_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="215.0" y="251.0" width="340.0" height="286.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_01_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="571.0" y="149.0" width="536.0" height="92.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_02_COMPUTE" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=14;fillColor=none;strokeColor=#6EE7B7;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="571.0" y="251.0" width="262.0" height="286.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_03_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=14;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="845.0" y="251.0" width="262.0" height="286.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_04_DATA+CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=none;strokeColor=#CBD5E1;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="390.0" y="554.0" width="192.0" height="264.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_05_DATA" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=9;fillColor=none;strokeColor=#FDBA74;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="620.0" y="584.0" width="466.0" height="170.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_06_COMPUTE+CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=none;strokeColor=#CBD5E1;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1195.0" y="171.0" width="342.0" height="198.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_07_DATA" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=none;strokeColor=#FDBA74;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1195.0" y="391.0" width="342.0" height="428.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b00_CONTROL" value="CONTROL · identity + inbound PEP" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="221.2" y="240.6" width="190.4" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b01_CONTROL" value="CONTROL · keyless federation + registry" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="872.9" y="138.6" width="227.8" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b02_COMPUTE" value="COMPUTE" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#047857;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="577.2" y="532.1" width="63.8" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b03_CONTROL" value="CONTROL · outbound PEP" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="851.2" y="532.1" width="144.2" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b04_DATA" value="DATA" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#B45309;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="396.2" y="813.1" width="39.2" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b04_CONTROL" value="CONTROL" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="437.9" y="813.1" width="61.5" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b05_DATA" value="DATA · tenant partitions (FORCE RLS)" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#B45309;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="626.2" y="573.6" width="214.6" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b06_COMPUTE" value="COMPUTE · remote MCP gateway" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#047857;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1201.2" y="160.6" width="189.1" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b06_CONTROL" value="CONTROL · OIDC to AWS STS" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1392.9" y="160.6" width="168.8" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b07_DATA" value="DATA · stays in SaaS / lakehouse" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#B45309;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1201.2" y="380.6" width="181.6" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_guide_bg" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=20;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.7;" vertex="1" parent="plane_layer">
+          <mxGeometry x="58.0" y="558.0" width="317.5" height="256.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_guide_hdr" value="WHO RUNS WHAT ACROSS 2 CLOUDS" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=7;fillColor=none;strokeColor=none;align=left;verticalAlign=middle;fontSize=12.3;fontColor=#0F172A;fontStyle=1;spacing=0;spacingLeft=2;spacingRight=2;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="68.0" y="563.0" width="297.5" height="20.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_guide_row_CONTROL" value="&lt;b&gt;CONTROL PLANE&lt;/b&gt;&lt;font color=&quot;#0F172A&quot;&gt;&lt;b&gt;  anchored on Google Cloud&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#334155&quot;&gt;IdP/WIF, both gateways, Auth Manager and registry. AWS STS and each SaaS&amp;#x27;s own row filters enforce on their side.&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=11.0;fontColor=#1D4ED8;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=2;spacingBottom=2;" vertex="1" parent="plane_layer">
+          <mxGeometry x="68.0" y="585.5" width="297.5" height="63.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_guide_row_COMPUTE" value="&lt;b&gt;COMPUTE PLANE&lt;/b&gt;&lt;font color=&quot;#0F172A&quot;&gt;&lt;b&gt;  Google Cloud + AWS&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#334155&quot;&gt;The ADK runtime on Google Cloud; remote MCP tools behind the AWS Bedrock AgentCore gateway.&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=11.0;fontColor=#047857;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=2;spacingBottom=2;" vertex="1" parent="plane_layer">
+          <mxGeometry x="68.0" y="653.8" width="297.5" height="63.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_guide_row_DATA" value="&lt;b&gt;DATA PLANE&lt;/b&gt;&lt;font color=&quot;#0F172A&quot;&gt;&lt;b&gt;  stays where it is&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#334155&quot;&gt;AlloyDB FORCE RLS partitions on Google Cloud; SaaS and lakehouse data stays in place.&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=1.1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=11.0;fontColor=#B45309;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=2;spacingBottom=2;" vertex="1" parent="plane_layer">
+          <mxGeometry x="68.0" y="722.0" width="297.5" height="63.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_guide_note" value="Zone titles use &amp;#x27;Plane&amp;#x27; for a cloud; the chips mark planes by role." style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=none;strokeColor=none;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#475569;spacing=0;spacingLeft=2;spacingRight=2;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="68.0" y="791.5" width="297.5" height="18.8" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

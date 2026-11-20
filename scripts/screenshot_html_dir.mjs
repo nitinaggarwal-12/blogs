@@ -12,10 +12,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const pkgCandidates = [
   path.resolve(__dirname, '../package.json'),
-  path.resolve(__dirname, '../../PromptCanvas/package.json'),
   process.env.NODE_PATH ? path.resolve(process.env.NODE_PATH, '../package.json') : '',
-  path.join(os.homedir(), 'Documents', '_legacy_cloudtop_backups_20261029', 'PromptCanvas_oct02_backup', 'package.json'),
-  path.join(os.homedir(), 'Documents', 'PromptCanvas', 'package.json'),
 ].filter(Boolean);
 const resolvedPkg =
   pkgCandidates.find((p) => fs.existsSync(p) && fs.existsSync(path.join(path.dirname(p), 'node_modules', 'puppeteer-core'))) ||

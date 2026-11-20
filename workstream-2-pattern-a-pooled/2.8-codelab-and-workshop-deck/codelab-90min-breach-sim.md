@@ -16,7 +16,7 @@ In this 90-minute hands-on codelab, you act as both the **Red Team Attacker** an
 | **Module 1** | `00:00–00:15` | Bootstrap Cymbal Pooled Runtime & 3P Auth Sandbox | Verify `finvault` (Google OIDC) & `retailstream` (Entra ID) profiles |
 | **Module 2** | `00:15–00:35` | **Breach Sim 1 & 2**: Forged `X-Tenant-ID` Spoofing & Private `Agent Alpha` Discovery (`Hop 1 & Hop 2`) | Confirm forged headers stripped & `403 Forbidden` on `Agent Alpha` |
 | **Module 3** | `00:35–00:55` | **Breach Sim 3**: Prompt Injection, Context Cache Bleed & Egress PII Redaction (`Hop 3 & Hop 4`) | Confirm Model Armor `400` block & tenant-specific SDP PII masking |
-| **Module 4** | `00:55–01:15` | **Breach Sim 4**: Noisy Neighbor Runaway Loop, Inline 3LO Consent & AlloyDB RLS (`Hop 3 & Hop 5`) | Confirm `4,000` thinking cap clamp, `429` bulkhead, & `0` cross-tenant DB rows |
+| **Module 4** | `00:55–01:15` | **Breach Sim 4**: Noisy Neighbor Runaway Loop, Inline 3LO Consent & AlloyDB RLS (`Hop 3 & Hop 5`) | Confirm `MEDIUM` / `4,000 maxOutputTokens` cap clamp, `429` bulkhead, & `0` cross-tenant DB rows |
 | **Module 5** | `01:15–01:30` | FinOps Chargeback Audit in BigQuery OpenTelemetry | Query per-tenant token consumption & `ContextCacheConfig` 90% savings |
 
 ---
@@ -24,8 +24,8 @@ In this 90-minute hands-on codelab, you act as both the **Red Team Attacker** an
 ## Module 1: Bootstrap the Cymbal Pooled Environment (15 Mins)
 
 1. Inspect the shared tenant profiles in [`core-cymbal-agent/models.py`](../../core-cymbal-agent/models.py):
-   * **FinVault Bank (`finvault`)**: `ENTERPRISE` tier, `8,000` thinking tokens, access to `SharedIncidentDiagnosticAgent` + private `Agent Alpha` (Gemini 2.5 Pro (Dedicated PT)), Google Workspace & Jira 3LO MCP connectors.
-   * **RetailStream Corp (`retailstream`)**: `STANDARD` tier, `4,000` thinking tokens, access to `SharedIncidentDiagnosticAgent` only, Microsoft Entra ID SharePoint & ServiceNow 3LO MCP connectors.
+   * **FinVault Bank (`finvault`)**: `ENTERPRISE` tier, `8,000` reasoning output tokens, access to `SharedIncidentDiagnosticAgent` + private `Agent Alpha` (Gemini 3.8 Flash (Dedicated PT)), Google Workspace & Jira 3LO MCP connectors.
+   * **RetailStream Corp (`retailstream`)**: `STANDARD` tier, `4,000` reasoning output tokens, access to `SharedIncidentDiagnosticAgent` only, Microsoft Entra ID SharePoint & ServiceNow 3LO MCP connectors.
 2. Apply the AlloyDB Row-Level Security schema in [`pooled_gateway_and_rls.sql`](../2.3-solution-implementation/pooled_gateway_and_rls.sql).
 
 ---
@@ -57,8 +57,8 @@ As RetailStream, invoke `agent://finvault/private-agent-alpha-regulatory`.
 
 ## Module 4: Execute Breach Simulation 4 — Noisy Neighbor Bulkhead & Inline 3LO Consent (20 Mins)
 
-1. Request `16,000` thinking tokens as RetailStream:
-   * **Expected Defense (`Hop 3`)**: [`hop3_compute_finops_bulkhead.py`](../../core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py) clamps `effective_thinking_budget` to `4,000`.
+1. Request `16,000` reasoning output tokens as RetailStream:
+   * **Expected Defense (`Hop 3`)**: [`hop3_compute_finops_bulkhead.py`](../../core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py) clamps `effective_thinking_level` to `"MEDIUM"` and `effective_output_token_cap` to `4,000`.
 2. Simulate a `250 RPM` burst from RetailStream (exceeding its `120 RPM` Redis bulkhead):
    * **Expected Defense (`Hop 3`)**: Returns HTTP `429 Too Many Requests` while FinVault's `600 RPM` Enterprise lane continues with zero degradation.
 3. Trigger a ServiceNow ITOM tool call as RetailStream before consenting:

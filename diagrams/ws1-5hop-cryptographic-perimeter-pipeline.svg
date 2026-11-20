@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" style="width:100%;height:auto;display:block;background:#FFFFFF;font-family:Arial,sans-serif;">
+<defs><marker id="arrowEnd_p5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#475569"/></marker></defs>
+<rect width="1600" height="900" fill="#FFFFFF"/>
+<rect x="0" y="8" width="1600" height="58" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+<rect x="0" y="0" width="400" height="8" fill="#4285F4"/>
+<rect x="400" y="0" width="400" height="8" fill="#EA4335"/>
+<rect x="800" y="0" width="400" height="8" fill="#FBBC04"/>
+<rect x="1200" y="0" width="400" height="8" fill="#34A853"/>
+<circle cx="49.5" cy="36.5" r="5.5" fill="#4285F4"/>
+<circle cx="64.5" cy="36.5" r="5.5" fill="#EA4335"/>
+<circle cx="79.5" cy="36.5" r="5.5" fill="#FBBC04"/>
+<circle cx="94.5" cy="36.5" r="5.5" fill="#34A853"/>
+<text x="110" y="42" font-size="15" font-family="Arial,sans-serif" fill="#3C4043"><tspan font-weight="bold">Google Cloud</tspan> <tspan fill="#5F6368">Architecture Center</tspan></text>
+<rect x="415" y="21" width="108" height="32" rx="7" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.2"/><text x="469" y="41" text-anchor="middle" font-size="12" font-weight="bold" font-family="Arial,sans-serif" fill="#1E293B">WS1 • PART 1</text>
+<text x="544" y="42" font-size="15" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">5-Hop Cryptographic Perimeter Pipeline &amp; Deterministic Contracts</text>
+<rect x="1315" y="21" width="245" height="32" rx="7" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.2"/><text x="1437.5" y="41" text-anchor="middle" font-size="11" font-weight="bold" font-family="Arial,sans-serif" fill="#475569">EXT BLUEPRINT #03 • PERIMETER</text>
+<text x="44" y="95" font-size="13" font-family="Arial,sans-serif" fill="#475569">End-to-end zero-trust defense across Ingress PEP (Hop 1), ARD PDP &amp; Valkey Bulkheads (Hops 2–3), Model Armor DLP (Hop 4) &amp; AlloyDB RLS / CMEK (Hop 5).</text>
+<rect x="44" y="122" width="356" height="670" rx="12" fill="#F8FAFC" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+<rect x="58" y="111" width="215" height="22" rx="11" fill="#E8F0FE" stroke="#93C5FD" stroke-width="1"/><text x="165.5" y="126" text-anchor="middle" font-size="10.5" font-weight="bold" font-family="Arial,sans-serif" fill="#1D4ED8">CONTROL · Hops 1–2</text>
+<rect x="56" y="144" width="332" height="62" rx="8" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.2"/><text x="68" y="170" font-size="15" font-weight="bold" font-family="Arial,sans-serif" fill="#1D4ED8">1. Ingress &amp; Edge PEP</text><text x="68" y="191" font-size="11.5" font-family="Arial,sans-serif" fill="#475569">Header stripping &amp; STS token exchange</text>
+<rect x="56" y="220" width="332" height="122" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/><text x="68" y="246" font-size="12.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">Hop 1 Edge PEP Strip</text>
+<text x="68" y="268" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">External ALB + Cloud Armor WAF strip caller</text>
+<text x="68" y="286" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">X-Tenant-Id before app code runs.</text>
+<rect x="56" y="358" width="332" height="122" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/><text x="68" y="384" font-size="12.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">IAM STS Token Broker</text>
+<text x="68" y="406" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">RFC 8693 OBO + RFC 9449 DPoP mint 5-min ECDSA</text>
+<text x="68" y="424" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">P-256 TenantContext JWT.</text>
+<rect x="56" y="496" width="332" height="122" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/><text x="68" y="522" font-size="12.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">In-Memory JWKS + JTI</text>
+<text x="68" y="544" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">&lt;0.15ms ECDSA verify via hot JWKS; 0.4ms</text>
+<text x="68" y="562" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">Valkey JTI single-use replay guard.</text>
+<rect x="56" y="634" width="332" height="122" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/><text x="68" y="660" font-size="12.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">Fail-Closed HTTP 401</text>
+<text x="68" y="682" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">Missing, forged, expired, or replayed</text>
+<text x="68" y="700" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">OIDC/DPoP tokens terminate at edge.</text>
+<line x1="400" y1="460" x2="422" y2="460" stroke="#3B82F6" stroke-width="2.2" marker-end="url(#arrowEnd_p5)"/>
+<rect x="424" y="122" width="356" height="670" rx="12" fill="#F8FAFC" stroke="#D97706" stroke-width="1.5" stroke-dasharray="6,4"/>
+<rect x="438" y="111" width="215" height="22" rx="11" fill="#FEF7E0" stroke="#FCD34D" stroke-width="1"/><text x="545.5" y="126" text-anchor="middle" font-size="10.5" font-weight="bold" font-family="Arial,sans-serif" fill="#B06000">CONTROL + COMPUTE · Hops 2–3</text>
+<rect x="436" y="144" width="332" height="62" rx="8" fill="#FFFBEB" stroke="#FCD34D" stroke-width="1.2"/><text x="448" y="170" font-size="15" font-weight="bold" font-family="Arial,sans-serif" fill="#B06000">2. ARD PDP &amp; Bulkhead</text><text x="448" y="191" font-size="11.5" font-family="Arial,sans-serif" fill="#475569">Tool catalog pruning &amp; Valkey rate caps</text>
+<rect x="436" y="220" width="332" height="122" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/><text x="448" y="246" font-size="12.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">ARD Catalog Policy (Hop 2)</text>
+<text x="448" y="268" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">Agent Registry filters MCP tool schemas per</text>
+<text x="448" y="286" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">tenant; blocks cross-tenant calls.</text>
+<rect x="436" y="358" width="332" height="122" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/><text x="448" y="384" font-size="12.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">gVisor 1-Turn Heap Wipe</text>
+<text x="448" y="406" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">Cloud Run Gen2 CoW concurrency=1 + gVisor</text>
+<text x="448" y="424" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">syscall isolation; no /tmp leaks.</text>
+<rect x="436" y="496" width="332" height="122" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/><text x="448" y="522" font-size="12.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">Memorystore Valkey 0.4ms</text>
+<text x="448" y="544" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">Atomic token-bucket Lua quota: 120 RPM</text>
+<text x="448" y="562" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">standard / 600 RPM enterprise burst.</text>
+<rect x="436" y="634" width="332" height="122" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/><text x="448" y="660" font-size="12.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">Deterministic 403 &amp; 429</text>
+<text x="448" y="682" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">Disallowed MCP tools return HTTP 403;</text>
+<text x="448" y="700" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">noisy-neighbor spikes return HTTP 429.</text>
+<line x1="780" y1="460" x2="802" y2="460" stroke="#D97706" stroke-width="2.2" marker-end="url(#arrowEnd_p5)"/>
+<rect x="804" y="122" width="356" height="670" rx="12" fill="#F8FAFC" stroke="#DC2626" stroke-width="1.5" stroke-dasharray="6,4"/>
+<rect x="818" y="111" width="215" height="22" rx="11" fill="#FCE8E6" stroke="#FCA5A5" stroke-width="1"/><text x="925.5" y="126" text-anchor="middle" font-size="10.5" font-weight="bold" font-family="Arial,sans-serif" fill="#B91C1C">CONTROL + COMPUTE · Hop 4</text>
+<rect x="816" y="144" width="332" height="62" rx="8" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1.2"/><text x="828" y="170" font-size="15" font-weight="bold" font-family="Arial,sans-serif" fill="#B91C1C">3. Model Armor &amp; 32k Cache</text><text x="828" y="191" font-size="11.5" font-family="Arial,sans-serif" fill="#475569">Dual-path DLP &amp; 89.1% prefix cache reuse</text>
+<rect x="816" y="220" width="332" height="122" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/><text x="828" y="246" font-size="12.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">Inline Prompt Screen (&lt;8ms)</text>
+<text x="828" y="268" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">Model Armor scans every user prompt, RAG chunk</text>
+<text x="828" y="286" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">&amp; MCP response inline.</text>
+<rect x="816" y="358" width="332" height="122" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/><text x="828" y="384" font-size="12.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">Dual-Path PII / PHI DLP</text>
+<text x="828" y="406" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">Detects cross-tenant secrets, PCI PANs, and</text>
+<text x="828" y="424" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">sensitive entities pre-egress.</text>
+<rect x="816" y="496" width="332" height="122" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/><text x="828" y="522" font-size="12.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">32k Shared Prefix Cache</text>
+<text x="828" y="544" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">32,768 system tokens cached globally at 0.10x</text>
+<text x="828" y="562" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">rate -&gt; 89.1% net input savings.</text>
+<rect x="816" y="634" width="332" height="122" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/><text x="828" y="660" font-size="12.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">Jailbreak Halt HTTP 422</text>
+<text x="828" y="682" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">Indirect prompt injection or unauthorized tool</text>
+<text x="828" y="700" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">coercion aborts with HTTP 422.</text>
+<line x1="1160" y1="460" x2="1182" y2="460" stroke="#DC2626" stroke-width="2.2" marker-end="url(#arrowEnd_p5)"/>
+<rect x="1184" y="122" width="356" height="670" rx="12" fill="#F8FAFC" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+<rect x="1198" y="111" width="215" height="22" rx="11" fill="#E6F4EA" stroke="#86EFAC" stroke-width="1"/><text x="1305.5" y="126" text-anchor="middle" font-size="10.5" font-weight="bold" font-family="Arial,sans-serif" fill="#137333">DATA + CONTROL · Hop 5</text>
+<rect x="1196" y="144" width="332" height="62" rx="8" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1.2"/><text x="1208" y="170" font-size="15" font-weight="bold" font-family="Arial,sans-serif" fill="#137333">4. Database RLS &amp; CMEK</text><text x="1208" y="191" font-size="11.5" font-family="Arial,sans-serif" fill="#475569">Engine-enforced SQL isolation &amp; crypto kill</text>
+<rect x="1196" y="220" width="332" height="122" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/><text x="1208" y="246" font-size="12.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">AlloyDB FORCE RLS (Pool)</text>
+<text x="1208" y="268" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">Middleware sets SET LOCAL</text>
+<text x="1208" y="286" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">app.current_tenant_id; PgBouncer issues</text>
+<text x="1208" y="304" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">DISCARD ALL.</text>
+<rect x="1196" y="358" width="332" height="122" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/><text x="1208" y="384" font-size="12.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">Pre-Filtered HNSW RAG</text>
+<text x="1208" y="406" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">Inline SQL RLS predicates prune foreign</text>
+<text x="1208" y="424" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">vectors before distance scoring.</text>
+<rect x="1196" y="496" width="332" height="122" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/><text x="1208" y="522" font-size="12.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">Per-Tenant HSM CMEK</text>
+<text x="1208" y="544" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">Dedicated Cloud KMS FIPS 140-3 Level 3 rings</text>
+<text x="1208" y="562" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">isolate sovereign tenant storage.</text>
+<rect x="1196" y="634" width="332" height="122" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/><text x="1208" y="660" font-size="12.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">Sub-60s HTTP 423 Halt</text>
+<text x="1208" y="682" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">Disabling tenant CMEK triggers &lt;60s (41.2s</text>
+<text x="1208" y="700" font-size="11.2" font-family="Arial,sans-serif" fill="#334155">measured) lock &amp; &lt;5s Valkey purge.</text>
+<rect x="44" y="818" width="492" height="32" rx="6" fill="#E8F0FE" stroke="#93C5FD" stroke-width="1.1"/><text x="54" y="838" font-size="10.5" font-family="Arial,sans-serif"><tspan font-weight="bold" fill="#1D4ED8">CONTROL</tspan> <tspan fill="#334155">Hops 1, 2, 4 + Valkey &amp; CMEK enforce 401/403/429/422/423 fail-closed</tspan></text>
+<rect x="554" y="818" width="492" height="32" rx="6" fill="#ECFDF5" stroke="#86EFAC" stroke-width="1.1"/><text x="564" y="838" font-size="10.5" font-family="Arial,sans-serif"><tspan font-weight="bold" fill="#047857">COMPUTE</tspan> <tspan fill="#334155">Cloud Run gVisor 1-turn + 32k Vertex prefix cache (0.10x rate)</tspan></text>
+<rect x="1064" y="818" width="492" height="32" rx="6" fill="#FFF7ED" stroke="#FDBA74" stroke-width="1.1"/><text x="1074" y="838" font-size="10.5" font-family="Arial,sans-serif"><tspan font-weight="bold" fill="#C2410C">DATA</tspan> <tspan fill="#334155">AlloyDB FORCE RLS + PgBouncer DISCARD ALL (Pool) &amp; HSM CMEK (Silo)</tspan></text>
+<text x="44" y="874" font-size="11" font-family="Arial,sans-serif" fill="#475569">[WS1 • PART 1 • Ext Blueprint #03 (5-Hop Cryptographic Perimeter)] • ▸ 2-Way Draw.io ↗</text>
+</svg>

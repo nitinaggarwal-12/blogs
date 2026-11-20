@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="100%" height="100%">
+  <rect width="1600" height="900" fill="#f8fafc" rx="12"/>
+  <image href="/diagrams/compendium/static/slide-31.png" x="0" y="0" width="1600" height="900" preserveAspectRatio="xMidYMid meet"/>
+  <line x1="60" y1="84" x2="1540" y2="84" stroke="#1a73e8" stroke-width="2" opacity="0.6"/>
+  <line x1="60" y1="820" x2="1540" y2="820" stroke="#059669" stroke-width="2" opacity="0.6"/>
+</svg>

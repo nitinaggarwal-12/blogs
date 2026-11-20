@@ -13,7 +13,7 @@
 
   <!-- TOP EXTERNAL USER / TENANT BOX -->
   <g>
-    <rect x="465" y="52" width="250" height="86" rx="8" ry="8" fill="#ffffff" stroke="#202124" stroke-width="2"/>
+    <rect x="465" y="54" width="250" height="84" rx="8" ry="8" fill="#ffffff" stroke="#202124" stroke-width="2"/>
     <circle cx="590" cy="76" r="9.5" fill="#000000"/>
     <path d="M 573 101 C 573 91 607 91 607 101 Z" fill="#000000"/>
     <text x="590" y="117" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">Terraform Operator</text>
@@ -343,10 +343,10 @@
   <text x="68" y="327" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round">provider &quot;google&quot; • project = var.tenant_silo_project_id • region = var.region (us-west1)</text>
   <text x="84" y="363" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#aecbfa" stroke-width="8" stroke-linejoin="round">Provider &amp; Input Variables</text>
   <text x="84" y="381" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#aecbfa" stroke-width="8" stroke-linejoin="round">terraform.tfvars.example → variables.tf → provider &quot;google&quot;</text>
-  <text x="86" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" textLength="488" lengthAdjust="spacingAndGlyphs">google_access_context_manager_service_perimeter.tenant_sovereign_perimeter</text>
+  <text x="86" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" textLength="342" lengthAdjust="spacingAndGlyphs">google_access_context_manager_service_perimeter.tenant_sovereign_perimeter</text>
   <text x="104" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#feefc3" stroke-width="8" stroke-linejoin="round">VPC-SC Perimeter Resources</text>
   <text x="104" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#feefc3" stroke-width="8" stroke-linejoin="round">perimeter_${tenant_id}_sovereign</text>
-  <text x="630" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round">google_compute_network / subnetwork / google_container_cluster</text>
+  <text x="630" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" textLength="342" lengthAdjust="spacingAndGlyphs">google_compute_network / subnetwork / google_container_cluster</text>
   <text x="648" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#fad2cf" stroke-width="8" stroke-linejoin="round">Sovereign VPC &amp; Private GKE</text>
   <text x="648" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#fad2cf" stroke-width="8" stroke-linejoin="round">${tenant_id}-airgapped-gemma3-gke</text>
 

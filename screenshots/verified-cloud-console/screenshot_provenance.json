@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "3.0",
+  "generator": "real-slide-screenshot-guard/capture_verified_ui.mjs",
+  "generatorSha256": "219f369b885be83d4622c6c0685a747dddcca4cdad17355928ac916bbc2f8d8b",
+  "audience": "external",
+  "updatedAt": "2026-11-17T04:26:53.907Z",
+  "entries": [
+    {
+      "relFile": "saas_01_thoughtspot_liveboard.png",
+      "absPath": "/usr/local/google/home/nitinagga/Documents/blogs/screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png",
+      "capturedAt": "2026-11-17T04:26:51.361Z",
+      "captureMethod": "cdp_live",
+      "audience": "external",
+      "canonicalOriginUrl": "https://team2.thoughtspot.cloud/",
+      "hostname": "team2.thoughtspot.cloud",
+      "originTier": "canonical_external",
+      "allowOriginsUsed": [],
+      "pageTitle": "Retail Sales with Muze - copy - TSE | ThoughtSpot",
+      "browserProduct": "Chrome/157.0.8103.78",
+      "resolvedAddresses": [
+        "3.224.106.3",
+        "52.20.72.16"
+      ],
+      "securityState": "secure",
+      "isSecureContext": true,
+      "nextHopProtocol": "h2",
+      "suspiciousBrowserFlags": [],
+      "visibleBlockers": [],
+      "viewportCss": "1440x810",
+      "deviceScaleFactor": 2,
+      "width": 2880,
+      "height": 1620,
+      "bytes": 344412,
+      "sha256": "fd5cb15c0902760a01998f5147ccbb209523c98c86d91556208389b0a4d922f4",
+      "rawPixelsSha256": "6acaccb7a15bc4922753c62b8b69b86ce58c816d0a27132a8f17c8ff85ecd2f3",
+      "dHash64": "e8ae0111803911cb",
+      "meanLuma": 225.47,
+      "note": "Real ThoughtSpot Cloud Liveboard on team2.thoughtspot.cloud"
+    },
+    {
+      "relFile": "saas_02_thoughtspot_saved_answer.png",
+      "absPath": "/usr/local/google/home/nitinagga/Documents/blogs/screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png",
+      "capturedAt": "2026-11-17T04:26:53.905Z",
+      "captureMethod": "cdp_live",
+      "audience": "external",
+      "canonicalOriginUrl": "https://team2.thoughtspot.cloud/",
+      "hostname": "team2.thoughtspot.cloud",
+      "originTier": "canonical_external",
+      "allowOriginsUsed": [],
+      "pageTitle": "Total Quantity Spoiled, Total Quantity Received, Total Quantity On Hand, Stock Out Risk, Spoilage Rate by Drug Name | ThoughtSpot",
+      "browserProduct": "Chrome/157.0.8103.78",
+      "resolvedAddresses": [
+        "52.20.72.16",
+        "3.224.106.3"
+      ],
+      "securityState": "secure",
+      "isSecureContext": true,
+      "nextHopProtocol": "h2",
+      "suspiciousBrowserFlags": [],
+      "visibleBlockers": [],
+      "viewportCss": "1440x810",
+      "deviceScaleFactor": 2,
+      "width": 2880,
+      "height": 1620,
+      "bytes": 336598,
+      "sha256": "3fcab795d1e561a326fdf33e308a5d25e7e2db65539949e32bce25dd96447fdb",
+      "rawPixelsSha256": "c6a3d3074da5bb04dd663b0853053046fe497986804590e89e1b50934833e0d5",
+      "dHash64": "6842236519591111",
+      "meanLuma": 226.97,
+      "note": "Real ThoughtSpot Cloud Saved Answer analytics query on team2.thoughtspot.cloud"
+    }
+  ]
+}

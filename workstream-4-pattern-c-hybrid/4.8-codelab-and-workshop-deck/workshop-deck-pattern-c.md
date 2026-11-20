@@ -28,7 +28,7 @@
 
 ## Slide 6: The Silent Tenant Tier Upgrade Challenge (`Standard -> Enterprise`)
 * **Scenario**: RetailStream upgrades to Enterprise mid-business-day.
-* **Requirement**: Zero dropped multi-turn conversations, zero lost Memory Bank context, instant promotion from `4,000` to `8,000` thinking tokens and CMEK encryption.
+* **Requirement**: Zero dropped multi-turn conversations, zero lost Memory Bank context, instant promotion from `4,000` to `8,000` reasoning output tokens and CMEK encryption.
 
 ## Slide 7: 3-Phase Zero-Downtime Migration State Machine
 * **Phase 1 (`SHADOW_SYNC`)**: Provision spoke via Terraform; replicate AlloyDB RLS rows & Memory Bank namespaces (`lag == 0ms`).

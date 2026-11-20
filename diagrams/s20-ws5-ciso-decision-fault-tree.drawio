@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="PromptCanvas-Drawio-Compiler" version="24.7.17" type="device">
+  <diagram id="s20-ws5-ciso-decision-fault-tree" name="S20: Executive ARB Sign-Off">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" background="#FFFFFF" math="0" shadow="1">
+      <root>
+      <mxCell id="0"/>
+      <mxCell id="1" parent="0"/>
+      <mxCell id="mc_topo_pill" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#137333;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;ARB PRODUCTION SIGN-OFF • 6/6 PASS&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=none;fontColor=#137333;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1212" y="26" width="320" height="34" as="geometry"/>
+      </mxCell>
+      <mxCell id="mc_div_line" value="" style="rounded=0;arcSize=0;whiteSpace=wrap;html=1;fillColor=#DADCE0;strokeColor=none;fontColor=#5F6368;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="102" width="1464" height="2" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_c1" value="" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="126" width="464" height="338" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_ico1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;01&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D93025;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="94" y="148" width="42" height="42" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_tag1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#C5221F;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;CISO SIGN-OFF&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FCE8E6;strokeColor=none;fontColor=#C5221F;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="316" y="152" width="190" height="32" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_body1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Kernel RLS defeats zero-day prompt jailbreaks&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Challenge: What if an indirect RAG injection bypasses Model Armor and runs SELECT * WHERE 1=1?&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Mechanism: AlloyDB ENABLE &amp;amp; FORCE ROW LEVEL SECURITY binds current_setting('app.current_tenant_id') from the KMS JWT.&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Proof: 0 foreign disk pages scanned across 10/10 red-team vectors.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="94" y="206" width="412" height="236" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_c2" value="" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="568" y="126" width="464" height="338" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_ico2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;02&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1E8E3E;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="594" y="148" width="42" height="42" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_tag2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#137333;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;CFO SIGN-OFF&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=none;fontColor=#137333;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="816" y="152" width="190" height="32" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_body2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;89.1% token savings with 0 PII in cache&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Challenge: How do 950 tenants share Vertex Context Caching without leaking customer PII across turns?&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Mechanism: Immutable &amp;gt;= 32,768-token static prefix holds only system policy &amp;amp; schemas; ARD prunes 94% of unused tools.&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Proof: 0.10x cached prefix rate (3,969 eq vs 36,468 raw).&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="594" y="206" width="412" height="236" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_c3" value="" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1068" y="126" width="464" height="338" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_ico3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;03&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#8430CE;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1094" y="148" width="42" height="42" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_tag3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#7627BB;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;CLO / DPO SIGN-OFF&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#F3E8FD;strokeColor=none;fontColor=#7627BB;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1316" y="152" width="190" height="32" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_body3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;0.4 ms token revoke &amp;amp; &amp;lt; 60s CMEK enclave halt&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Challenge: How fast can a bank or hospital terminate every active session and lock encrypted storage?&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Mechanism: Valkey JTI denylist revokes tokens in 0.4 ms; FIPS 140-3 L3 Cloud HSM key disable halts DEK heartbeats.&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Proof: Live chaos drill halted Cloud Run, AlloyDB &amp;amp; GKE in 41.2s.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1094" y="206" width="412" height="236" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_c4" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="494" width="464" height="344" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_ico4" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;04&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1A73E8;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="94" y="516" width="42" height="42" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_tag4" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1967D2;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;VP ENG SIGN-OFF&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#EBF2FE;strokeColor=none;fontColor=#1967D2;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="316" y="520" width="190" height="32" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_body4" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;&amp;lt; 5 ms live tier graduation (A → C → B)&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Challenge: Can a commercial tenant graduate to a HIPAA /28 PSC spoke or Sovereign Silo without code rewrites?&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Mechanism: SHADOW_SYNC dual-writes and verifies SHA-256 vector parity before flipping the Firestore routing pointer.&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Proof: 0 dropped in-flight turns and 0 client URL/SDK changes.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="94" y="574" width="412" height="242" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_c5" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="568" y="494" width="464" height="344" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_ico5" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;05&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="594" y="516" width="42" height="42" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_tag5" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#B06000;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;MULTI-CLOUD READY&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=none;fontColor=#B06000;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="816" y="520" width="190" height="32" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_body5" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;30 / 30 keyless AWS &amp;amp; SaaS MCP federation&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Challenge: How do agents query AWS Bedrock AgentCore and 10 SaaS targets without long-lived IAM keys?&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Mechanism: GCP OIDC exchanges for AWS STS WebIdentity + 3LO OBO tokens over 2–5 ms Cross-Cloud Interconnect.&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;• Proof: 10 SaaS × 3 Patterns = 30/30 READY with 0 static keys.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="594" y="574" width="412" height="242" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_c6" value="" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1068" y="494" width="464" height="344" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_ico6" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;06&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1E8E3E;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1094" y="516" width="42" height="42" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_tag6" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#137333;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;SRE GA CERTIFIED&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=none;fontColor=#137333;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1316" y="520" width="190" height="32" as="geometry"/>
+      </mxCell>
+      <mxCell id="s20_body6" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;99.4% sibling p99 stability under 10k RPM flood&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B06000;'&gt;• Challenge: Can one runaway tenant loop exhaust Vertex TPM quotas or starve 949 sibling tenants?&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B06000;'&gt;• Mechanism: Atomic Valkey Lua token buckets cap traffic at 120 RPM/user and 600 RPM/tenant in 0.4 ms.&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B06000;'&gt;• Proof: Flooded tenant gets HTTP 429; 949 siblings keep 99.4% SLO.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=7;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=#E37400;strokeWidth=2;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1094" y="574" width="412" height="242" as="geometry"/>
+      </mxCell>
+      <mxCell id="t_main" value="Architecture Review Board (ARB) sign-off" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=24;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="68" y="26" width="619" height="37" as="geometry"/>
+      </mxCell>
+      <mxCell id="t_sub" value="Slide 38 of 54 • 6 executive sign-off proofs across CISO, CFO, General Counsel, VP Engineering, Multi-Cloud &amp; SRE" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=14;fontStyle=0;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="68" y="69" width="1004" height="21" as="geometry"/>
+      </mxCell>
+        <mxCell id="plane_layer" value="Planes: control / compute / data (generated, locked)" style="locked=1;" parent="0"/>
+        <mxCell id="plane_chip_c00_DATA" value="DATA · kernel RLS" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#B45309;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="203.7" y="160.4" width="107.3" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_c01_COMPUTE" value="COMPUTE · prefix cache" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#047857;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="671.5" y="160.4" width="139.5" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_c02_CONTROL" value="CONTROL · revoke + key" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1174.1" y="160.4" width="136.9" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_c03_CONTROL" value="CONTROL · graduation" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="182.8" y="528.4" width="128.2" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_c04_CONTROL" value="CONTROL · federation" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="682.8" y="528.4" width="128.2" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_c05_CONTROL" value="CONTROL · rate limit" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1187.2" y="528.4" width="123.8" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_CONTROL" value="&lt;b&gt;CONTROL  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;03 revoke + CMEK halt; 04 graduation; 05 keyless AWS STS; 06 Valkey buckets&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#1D4ED8;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="68.0" y="846.2" width="481.3" height="16.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_COMPUTE" value="&lt;b&gt;COMPUTE  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;02 shared 32,768-token static prefix with 0 PII in cache&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#047857;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="559.3" y="846.2" width="481.3" height="16.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_DATA" value="&lt;b&gt;DATA  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;01 AlloyDB FORCE RLS in the kernel (04 moves data via SHADOW_SYNC dual-writes)&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#B45309;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1050.7" y="846.2" width="481.3" height="16.2" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

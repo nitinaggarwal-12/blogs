@@ -165,24 +165,20 @@ python3 -B scripts/verify_5_third_party_saas_products.py --pattern all --verbose
 
 ---
 
-### Stage 10 — Multi-Cloud 10 Upstream 3P Enterprise Software Stacks on Google Cloud Run Gen2 (`bbar-138hf0`) & AWS EC2 (`393036065405`) + 23 Genuine Retina UI Captures
+### Stage 10 — Verified Google Cloud Console, Marketplace & Commercial 3P SaaS Retina Capture & Fail-Closed `F-13` Verification
 
 ```bash
-# 1. Provision & seed all 10 upstream 3P software containers on AWS EC2 (393036065405 / us-east-1 / i-04924523ac41ff132)
-python3 -B scripts/provision_aws_ec2_third_party_apps.py
+# 1. Open Google Cloud Marketplace / Commercial Free Trial tabs in an authenticated browser session
+node scripts/capture_real_gcp_and_saas_screenshots.mjs --open-marketplace-tabs
 
-# 2. Mirror OCI images, deploy on Google Cloud Run Gen2 (bbar-138hf0 / us-west1), mint OIDC tokens & seed all 10 3P services
-python3 -B scripts/provision_gcp_cloudrun_third_party_apps.py --reseed-only
+# 2. Capture genuine 16:9 Retina UIs via capture_verified_ui.mjs (zero open-source stand-in containers)
+node scripts/capture_real_gcp_and_saas_screenshots.mjs
 
-# 3. Capture all 23 genuine live 2880x1800 Retina UI screenshots (10 GCP Cloud Run + 10 AWS EC2 + 3 AWS Management Console)
-node scripts/capture_genuine_multicloud_3p_uis.mjs
-
-# 4. Verify SHA-256 provenance & sync Cross-Run Continuity Ledgers
-python3 -B scripts/run_all_repeatable_e2e_verifications.py --sync-ledger-only
+# 3. Run fail-closed 13/13 Deep Forensic Audit (including F-13 verify_slide_screenshots.mjs --audience external)
+python3 -B scripts/run_deep_forensic_audit.py
 ```
 
-* **GCP Cloud Run Gen2 Live Receipt (`10/10` Services)**: [`docs/gcp_cloudrun_3p_apps_live_receipt.json`](gcp_cloudrun_3p_apps_live_receipt.json) (`cymbal-gcp-metabase-bi`, `cymbal-gcp-grafana-ent`, `cymbal-gcp-redmine-itsm`, `cymbal-gcp-nocodb-edc`, `cymbal-gcp-gitea-sre`, `cymbal-gcp-trino-sql`, `cymbal-gcp-clickhouse-dw`, `cymbal-gcp-directus-hcm`, `cymbal-gcp-seq-apm`, `cymbal-gcp-vault-cmek`)
-* **AWS EC2 Live Receipt (`10/10` Containers on `i-04924523ac41ff132`)**: [`docs/aws_ec2_3p_apps_live_receipt.json`](aws_ec2_3p_apps_live_receipt.json)
-* **23 Genuine Retina UI Screenshot Provenance Receipt**: [`docs/genuine_ui_screenshot_provenance_receipt.json`](genuine_ui_screenshot_provenance_receipt.json)
-* **Cross-Run Continuity Ledger (`6` Repeatable Steps)**: [`data/run_continuity_ledger.json`](../data/run_continuity_ledger.json)
-
+* **Verified Retina Inventory (`screenshots/verified-cloud-console/`)**: 2 Live Commercial SaaS Retina captures (ThoughtSpot Cloud); Google Cloud Console & Gemini Enterprise: 0/15 pending 1-tap SSO
+* **Cloud Console & Runtime Verification Receipt**: [`docs/cloud_console_verification_receipt.json`](cloud_console_verification_receipt.json)
+* **Cross-Cloud 10-SaaS MCP Receipt**: [`docs/third_party_5_saas_verification_receipt.json`](third_party_5_saas_verification_receipt.json)
+* **Cross-Run Continuity Ledger (`4` Active Repeatable Steps)**: [`data/run_continuity_ledger.json`](../data/run_continuity_ledger.json)

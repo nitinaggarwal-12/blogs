@@ -3,9 +3,9 @@ Hop 3 — Compute Plane, Dynamic Firestore/Memorystore Config, 5-Level Memory Ba
 
 Enforces Governance Pillar 3 (Model, Memory & FinOps):
 1. Binds immutable `temp:tenant_id` inside the GEAP Agent Runtime gVisor sandbox.
-2. Dynamically loads per-tenant prompts, thinking budgets & GCS Skills (`gs://...`)
+2. Dynamically loads per-tenant prompts, thinkingLevel / maxOutputTokens caps & GCS Skills (`gs://...`)
    via Firestore + Memorystore (Slide 7 Cymbal Platform Operator spec).
-3. Enforces per-tenant thinking-token budgets (8,000 for FinVault Enterprise vs.
+3. Enforces per-tenant thinkingLevel ("HIGH"/"MEDIUM") & maxOutputTokens (8,000 for FinVault Enterprise vs.
    4,000 for RetailStream Standard) and Memorystore for Redis RPM/token bulkheads.
 4. Implements the 5-Level Memory Bank (`L1_TURN_EPHEMERAL` .. `L5_PLATFORM_SHARED_SKILLS`)
    keyed by `{tenant}:{user}:{session}` and verifies Cloud KMS CMEK key state.
@@ -125,7 +125,7 @@ class ComputeFinOpsBulkhead:
 
     def load_dynamic_runtime_config(self, ctx: CryptographicContext) -> Dict[str, object]:
         """
-        Loads per-tenant prompts, thinking budgets & GCS Skills via Firestore + Memorystore (Slide 7).
+        Loads per-tenant prompts, thinkingLevel / maxOutputTokens caps & GCS Skills via Firestore + Memorystore (Slide 7).
         Validates that every loaded GCS Skill URI matches `gs://cymbal-skills-{ctx.tenant_id}/`.
         """
         profile = self.tenant_profiles[ctx.tenant_id]
@@ -139,7 +139,8 @@ class ComputeFinOpsBulkhead:
             "config_source": "Firestore+Memorystore",
             "tenant_id": ctx.tenant_id,
             "system_prompt_template": profile.system_prompt_template,
-            "thinking_token_budget": profile.thinking_token_budget,
+            "thinking_level": profile.thinking_level,
+            "max_output_tokens": profile.max_output_tokens,
             "gcs_skills_uris": list(profile.gcs_skills_uris),
         }
 
@@ -189,10 +190,13 @@ class ComputeFinOpsBulkhead:
         partition_key = f"{target_namespace}:{level.value}"
         return self._memory_bank_store.get(partition_key, {}).get(key, "")
 
+    _THINKING_LEVEL_RANK = {"LOW": 1, "MEDIUM": 2, "HIGH": 3}
+
     def enforce_compute_and_finops(
         self,
         ctx: CryptographicContext,
-        requested_thinking_tokens: int,
+        requested_output_tokens: int = 6000,
+        requested_thinking_level: Optional[str] = None,
         simulated_current_rpm: int = 1,
     ) -> Tuple[Dict[str, object], HopAuditRecord]:
         profile = self.tenant_profiles[ctx.tenant_id]
@@ -230,7 +234,7 @@ class ComputeFinOpsBulkhead:
         if active_cmek and os.environ.get("CYMBAL_LIVE_GCP") == "1":
             live_kms_receipt = kms_encrypt_decrypt_roundtrip(
                 ctx.tenant_id,
-                f"memory_bank:{ctx.memory_bank_namespace}:budget={requested_thinking_tokens}",
+                f"memory_bank:{ctx.memory_bank_namespace}:cap={requested_output_tokens}",
             )
             if not live_kms_receipt.get("live_kms_ok") and not live_kms_receipt.get("sandbox_billing_paused"):
                 return {}, HopAuditRecord(
@@ -265,19 +269,31 @@ class ComputeFinOpsBulkhead:
                 },
             )
 
-        # 3. Dynamically load per-tenant prompt, thinking budget & GCS Skills from Firestore + Memorystore
+        # 3. Dynamically load per-tenant prompt, thinkingLevel / maxOutputTokens & GCS Skills from Firestore + Memorystore
         dynamic_cfg = self.load_dynamic_runtime_config(ctx)
 
-        # 4. Clamp runaway thinking-token budget based on tenant tier
-        effective_thinking_budget = min(requested_thinking_tokens, profile.thinking_token_budget)
-        clamped = requested_thinking_tokens > profile.thinking_token_budget
+        # 4. Clamp runaway thinkingLevel & maxOutputTokens (<= 32,768) based on tenant tier
+        tier_max_tokens = min(32768, profile.max_output_tokens)
+        effective_output_token_cap = min(max(1, int(requested_output_tokens)), tier_max_tokens)
+        req_level = (
+            requested_thinking_level.upper()
+            if requested_thinking_level and requested_thinking_level.upper() in self._THINKING_LEVEL_RANK
+            else ("HIGH" if requested_output_tokens > 4000 else profile.thinking_level)
+        )
+        tier_rank = self._THINKING_LEVEL_RANK[profile.thinking_level]
+        effective_thinking_level = (
+            profile.thinking_level if self._THINKING_LEVEL_RANK[req_level] > tier_rank else req_level
+        )
+        output_tokens_clamped = int(requested_output_tokens) > tier_max_tokens
+        thinking_level_clamped = self._THINKING_LEVEL_RANK[req_level] > tier_rank
+        clamped = output_tokens_clamped or thinking_level_clamped
 
         # 5. Record active turn state in L2_SESSION_SHORT_TERM Memory Bank
         self.write_memory_bank(
             ctx=ctx,
             level=MemoryBankLevel.L2_SESSION_SHORT_TERM,
-            key="last_thinking_budget",
-            value=str(effective_thinking_budget),
+            key="last_thinking_level",
+            value=f"{effective_thinking_level}:{effective_output_token_cap}",
         )
 
         native_membank_cmek_enabled = (
@@ -293,9 +309,15 @@ class ComputeFinOpsBulkhead:
             "ga_sunset_flag": "CYMBAL_NATIVE_MEMBANK_CMEK_ENABLED",
             "native_membank_cmek_enabled": native_membank_cmek_enabled,
             "dynamic_firestore_config": dynamic_cfg,
-            "effective_thinking_budget": effective_thinking_budget,
-            "requested_thinking_tokens": requested_thinking_tokens,
-            "thinking_budget_clamped": clamped,
+            "thinking_level": effective_thinking_level,
+            "effective_thinking_level": effective_thinking_level,
+            "requested_thinking_level": req_level,
+            "thinking_level_clamped": thinking_level_clamped,
+            "max_output_tokens": effective_output_token_cap,
+            "effective_output_token_cap": effective_output_token_cap,
+            "requested_output_tokens": requested_output_tokens,
+            "output_tokens_clamped": output_tokens_clamped,
+            "hop3_finops_clamped": clamped,
             "context_cache_config": {
                 "cache_id": "cache://cymbal-operator/shared-diagnostic-system-prefix-v2",
                 "mode": "READ_ONLY_IMMUTABLE_PREFIX",
@@ -315,7 +337,7 @@ class ComputeFinOpsBulkhead:
             detail=(
                 f"Bound '{ctx.temp_tenant_id}', 5-Level Memory '{ctx.memory_bank_namespace}', "
                 f"& {len(dynamic_cfg['gcs_skills_uris'])} GCS Skill(s). "
-                f"Thinking budget={effective_thinking_budget} (clamped={clamped})."
+                f"thinkingLevel={effective_thinking_level}, maxOutputTokens={effective_output_token_cap} (clamped={clamped})."
             ),
             metadata=runtime_config,
         )

@@ -21,20 +21,15 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const homeDir = os.homedir();
 const pkgCandidates = [
-  path.resolve(__dirname, "../../PromptCanvas/package.json"),
-  path.join(homeDir, "Documents/PromptCanvas/package.json"),
-  path.resolve(__dirname, "../../trainex/package.json"),
-  path.join(homeDir, "Documents/trainex/package.json"),
+  path.resolve(__dirname, "../package.json"),
 ];
-const pkgPath = pkgCandidates.find((p) => fs.existsSync(p)) || pkgCandidates[0];
+const pkgPath = pkgCandidates.find((p) => fs.existsSync(p) && fs.existsSync(path.join(path.dirname(p), "node_modules", "puppeteer-core"))) || pkgCandidates.find((p) => fs.existsSync(p)) || pkgCandidates[0];
 
 const reqPaths = [
   path.dirname(pkgPath),
   ...(process.env.NODE_PATH || "").split(path.delimiter).filter(Boolean),
-  path.resolve(__dirname, "../../trainex"),
-  path.join(homeDir, "Documents/trainex"),
 ];
-const require = createRequire(import.meta.url);
+const require = createRequire(fs.existsSync(pkgPath) ? pkgPath : import.meta.url);
 let puppeteer;
 try {
   puppeteer = require("puppeteer-core");
@@ -43,7 +38,47 @@ try {
   puppeteer = require(resolved);
 }
 
-const BASE_URL = process.env.PORTAL_BASE_URL || "http://localhost:8080";
+import http from "http";
+
+async function probePortalUrl(url) {
+  return new Promise((resolve) => {
+    const req = http.get(`${url}/api/health`, { timeout: 1500 }, (res) => {
+      let body = "";
+      res.setEncoding("utf8");
+      res.on("data", (chunk) => {
+        if (body.length < 4096) body += chunk;
+      });
+      res.on("end", () => {
+        try {
+          const parsed = JSON.parse(body);
+          resolve(res.statusCode === 200 && parsed && parsed.status === "ok");
+        } catch {
+          resolve(false);
+        }
+      });
+    });
+    req.on("error", () => resolve(false));
+    req.on("timeout", () => {
+      req.destroy();
+      resolve(false);
+    });
+  });
+}
+
+async function resolveDefaultBaseUrl() {
+  if (process.env.PORTAL_BASE_URL) return process.env.PORTAL_BASE_URL;
+  for (const candidate of [
+    "http://127.0.0.1:8765",
+    "http://localhost:8765",
+    "http://127.0.0.1:8080",
+    "http://localhost:8080",
+  ]) {
+    if (await probePortalUrl(candidate)) return candidate;
+  }
+  return "http://127.0.0.1:8765";
+}
+
+const BASE_URL = await resolveDefaultBaseUrl();
 const chromeCandidates = [
   process.env.CHROME_BIN,
   "/usr/bin/google-chrome",
@@ -188,17 +223,17 @@ async function run() {
     assert(
       !audit.error &&
         audit.totalImgs >= minDiagrams &&
-        audit.brokenImgs.length === 0 &&
+        (audit.brokenImgs || []).length === 0 &&
         audit.intraCount === 0 &&
         audit.sideACount === 0 &&
         audit.sideBCount === 0 &&
         !audit.hasEc2Leak,
       `${item.ws} (${item.doc}) Canonical Diagrams & Zero Fake/Synthetic Screenshots`,
-      `total=${audit.totalImgs}, intra=${audit.intraCount}, sideA=${audit.sideACount}, sideB=${audit.sideBCount}, ec2Leak=${audit.hasEc2Leak}, height=${audit.readerHeightPx}px, broken=${audit.brokenImgs.length}`
+      `total=${audit.totalImgs}, intra=${audit.intraCount}, sideA=${audit.sideACount}, sideB=${audit.sideBCount}, ec2Leak=${audit.hasEc2Leak}, height=${audit.readerHeightPx}px, broken=${(audit.brokenImgs || []).length}`
     );
 
     assert(
-      audit.overflowingTables.length === 0 &&
+      (audit.overflowingTables || []).length === 0 &&
         !audit.hasBrLeak &&
         !audit.hasLegacyPrincipal &&
         !audit.hasDomainLeak &&
@@ -206,7 +241,7 @@ async function run() {
         audit.readerHeightPx < maxAllowedHeight &&
         (!(item.doc.startsWith("blogs/") || item.doc.startsWith("docs/")) || (audit.hasTocBaLink && audit.hasInlineBaToolbar)),
       `${item.ws} (${item.doc}) Table Containment, Zero Leaks & S3 Receipt Links`,
-      `overflowTables=${audit.overflowingTables.length}, brLeak=${audit.hasBrLeak}, domainLeak=${audit.hasDomainLeak}, height=${audit.readerHeightPx}px`
+      `overflowTables=${(audit.overflowingTables || []).length}, brLeak=${audit.hasBrLeak}, domainLeak=${audit.hasDomainLeak}, height=${audit.readerHeightPx}px`
     );
   }
 
@@ -236,13 +271,24 @@ async function run() {
     const docxBytes = docxBuf.byteLength;
     const docxContentType = docxResp.headers.get("content-type") || "";
     const headerHeightPx = document.querySelector(".portal-top-header")?.offsetHeight || 0;
+    const filterBarEl = document.getElementById("ov-consolidated-filter-bar");
     const shellEl = ovSec ? ovSec.querySelector(".stripe-shell, .ov-workspace-split") : null;
     const railEl = document.getElementById("ov-selector-rail");
     const stageEl = document.getElementById("ov-stage-canvas");
     const shellDisplay = shellEl ? window.getComputedStyle(shellEl).display : "";
+    const railDisplay = railEl ? window.getComputedStyle(railEl).display : "";
     const railW = railEl ? railEl.offsetWidth : 0;
-    const isSideBySide = Boolean(
-      railEl && stageEl && (railEl.getBoundingClientRect().right <= stageEl.getBoundingClientRect().left + 15)
+    const filterBarRect = filterBarEl ? filterBarEl.getBoundingClientRect() : null;
+    const stageRect = stageEl ? stageEl.getBoundingClientRect() : null;
+    const stageW = stageRect ? Math.round(stageRect.width) : 0;
+    const hasConsolidatedFilterLayout = Boolean(
+      filterBarRect &&
+        stageRect &&
+        filterBarRect.height >= 28 &&
+        filterBarRect.bottom <= stageRect.top + 12 &&
+        stageW >= 900 &&
+        railDisplay === "none" &&
+        railW === 0
     );
     const ovTbl = ovSec?.querySelector("table.ov-master-table");
     const ovTblOverflow = Boolean(ovTbl && ovTbl.parentElement && ovTbl.offsetWidth > ovTbl.parentElement.clientWidth + 4);
@@ -269,7 +315,7 @@ async function run() {
 
     const tabBtns = Array.from(document.querySelectorAll(".tab-btn"));
     // Click Tab 2 (Simulator) and execute a scenario
-    const tab2 = tabBtns.find((b) => b.textContent.includes("Live 5-Hop Simulator"));
+    const tab2 = document.getElementById("tab-btn-simulator") || tabBtns.find((b) => b.textContent.includes("5-Hop Simulator"));
     if (tab2) tab2.click();
     await new Promise((r) => setTimeout(r, 400));
     const simVisible = document.getElementById("tab-simulator")?.classList.contains("active");
@@ -280,7 +326,7 @@ async function run() {
     const simOut = document.getElementById("sim-output")?.innerText || "";
 
     // Click Tab 3 (GCP Console & Codebase)
-    const tab3 = tabBtns.find((b) => b.textContent.includes("GCP Console & Codebase"));
+    const tab3 = document.getElementById("tab-btn-screenshots") || tabBtns.find((b) => b.textContent.includes("Security Testbed"));
     if (tab3) tab3.click();
     await new Promise((r) => setTimeout(r, 400));
     const cloudVisible = document.getElementById("tab-screenshots")?.classList.contains("active");
@@ -405,8 +451,10 @@ async function run() {
       ovImgsCount: ovImgs.length,
       brokenOvImgs,
       shellDisplay,
+      railDisplay,
       railW,
-      isSideBySide,
+      stageW,
+      hasConsolidatedFilterLayout,
       simVisible,
       simRan: simOut.length > 20,
       cloudVisible,
@@ -464,12 +512,13 @@ async function run() {
       tabsResult.brokenOvImgs.length === 0 &&
       !tabsResult.ovTblOverflow &&
       tabsResult.headerHeightPx <= 60 &&
-      tabsResult.shellDisplay === "grid" &&
-      tabsResult.railW <= 360 &&
-      tabsResult.railW >= 300 &&
-      tabsResult.isSideBySide,
-    "Default `/` Executive Landing Page (#tab-overview: 2-Column Master-Detail Grid Geometry, 6 One-Pagers, 6-Row Master Matrix, 20/20 Retina Previews & Zero Overflow)",
-    `active=${tabsResult.overviewLandingActive}, grid=${tabsResult.shellDisplay}, railW=${tabsResult.railW}px, sideBySide=${tabsResult.isSideBySide}, pages=${tabsResult.overviewOnePagerCount}, rows=${tabsResult.overviewMatrixRows}, imgs=${tabsResult.ovImgsCount}, broken=${tabsResult.brokenOvImgs.length}, hdrH=${tabsResult.headerHeightPx}px`
+      tabsResult.shellDisplay === "block" &&
+      tabsResult.railDisplay === "none" &&
+      tabsResult.railW === 0 &&
+      tabsResult.stageW >= 900 &&
+      tabsResult.hasConsolidatedFilterLayout,
+    "Default `/` Executive Landing Page (#tab-overview: Consolidated Filter Bar + Full-Width Stage, 6 One-Pagers, 6-Row Master Matrix, 20/20 Retina Previews & Zero Overflow)",
+    `active=${tabsResult.overviewLandingActive}, layout=${tabsResult.shellDisplay}, railW=${tabsResult.railW}px, stageW=${tabsResult.stageW}px, filterLayout=${tabsResult.hasConsolidatedFilterLayout}, pages=${tabsResult.overviewOnePagerCount}, rows=${tabsResult.overviewMatrixRows}, imgs=${tabsResult.ovImgsCount}, broken=${tabsResult.brokenOvImgs.length}, hdrH=${tabsResult.headerHeightPx}px`
   );
   assert(
     tabsResult.overviewDocxLinks === 6 &&

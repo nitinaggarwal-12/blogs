@@ -13,7 +13,7 @@
 
   <!-- TOP EXTERNAL USER / TENANT BOX -->
   <g>
-    <rect x="465" y="52" width="250" height="86" rx="8" ry="8" fill="#ffffff" stroke="#202124" stroke-width="2"/>
+    <rect x="465" y="54" width="250" height="84" rx="8" ry="8" fill="#ffffff" stroke="#202124" stroke-width="2"/>
     <circle cx="590" cy="76" r="9.5" fill="#000000"/>
     <path d="M 573 101 C 573 91 607 91 607 101 Z" fill="#000000"/>
     <text x="590" y="117" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">Platform Operator (FDE)</text>
@@ -189,7 +189,7 @@
       <image x="106" y="1130" width="32" height="32" preserveAspectRatio="xMidYMid meet" xlink:href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%222%22%20y%3D%222%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22%23e8f0fe%22%20stroke%3D%22%231a73e8%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2220%2C6.5%2031%2C13%2031%2C27%2020%2C33.5%209%2C27%209%2C13%22%20fill%3D%22%23d2e3fc%22%20stroke%3D%22%231967d2%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2220%22%20cy%3D%2220%22%20r%3D%224.2%22%20fill%3D%22%231a73e8%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%2220%22%20y1%3D%226.5%22%20x2%3D%2220%22%20y2%3D%2215.8%22%20stroke%3D%22%231967d2%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%2231%22%20y1%3D%2227%22%20x2%3D%2223.6%22%20y2%3D%2222.1%22%20stroke%3D%22%2334a853%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%229%22%20y1%3D%2227%22%20x2%3D%2216.4%22%20y2%3D%2222.1%22%20stroke%3D%22%23ea4335%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%3C%2Fsvg%3E"/>
       
       <text x="148" y="1142" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" textLength="128" lengthAdjust="spacingAndGlyphs">Pooled Agent Engine</text>
-      <text x="148" y="1161" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#3c4043">4,000 Thinking Cap</text>
+      <text x="148" y="1161" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#3c4043">MEDIUM / 4k maxOut</text>
     
     </g>
   
@@ -344,10 +344,10 @@
   <text x="68" y="327" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round">cymbal-hub-router-us-west1 (10.128.0.0/24) • NAT-Based PSC Consumer Endpoints (No CIDR Overlap)</text>
   <text x="84" y="363" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#aecbfa" stroke-width="8" stroke-linejoin="round">Central Ingress Hub (Consumer Side)</text>
   <text x="84" y="381" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#aecbfa" stroke-width="8" stroke-linejoin="round">Firestore live routing table + pattern_c_psc_endpoints_registry</text>
-  <text x="86" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" textLength="488" lengthAdjust="spacingAndGlyphs">Standard Tier: Shared Pooled Compute &amp; RLS Plane (RetailStream Initial Route)</text>
+  <text x="86" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" textLength="342" lengthAdjust="spacingAndGlyphs">Standard Tier: Shared Pooled Compute &amp; RLS Plane (RetailStream Initial Route)</text>
   <text x="104" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#feefc3" stroke-width="8" stroke-linejoin="round">Shared Pooled Runtime</text>
   <text x="104" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#feefc3" stroke-width="8" stroke-linejoin="round">pool://cymbal-shared-pooled-runtime-v2</text>
-  <text x="630" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" textLength="488" lengthAdjust="spacingAndGlyphs">Enterprise Tier: PSC Producer Spoke (cymbal-pattern-c-finvault-spoke-vpc • 10.140.0.0/24 • VPC-SC)</text>
+  <text x="630" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" textLength="342" lengthAdjust="spacingAndGlyphs">Enterprise Tier: PSC Producer Spoke (cymbal-pattern-c-finvault-spoke-vpc • 10.140.0.0/24 • VPC-SC)</text>
   <text x="648" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#fad2cf" stroke-width="8" stroke-linejoin="round">Dedicated Tenant Spoke (Producer)</text>
   <text x="648" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#fad2cf" stroke-width="8" stroke-linejoin="round">cymbal-psc-nat-us-west1 (10.240.0.0/28) • ACCEPT_MANUAL</text>
 

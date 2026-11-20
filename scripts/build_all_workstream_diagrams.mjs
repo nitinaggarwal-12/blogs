@@ -43,8 +43,7 @@ import {
 } from './arch_center_layouts.mjs';
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const PROMPTCANVAS_PKG = path.resolve(ROOT_DIR, '..', 'PromptCanvas', 'package.json');
-const require = createRequire(fs.existsSync(PROMPTCANVAS_PKG) ? PROMPTCANVAS_PKG : path.join(ROOT_DIR, 'package.json'));
+const require = createRequire(path.join(ROOT_DIR, 'package.json'));
 const puppeteer = require('puppeteer-core');
 const CENTRAL_DIAGRAMS_DIR = path.join(ROOT_DIR, 'diagrams');
 const ASSETS_PATH = path.join(ROOT_DIR, 'scripts', 'official_arch_center_assets.json');
@@ -383,10 +382,10 @@ const WORKSTREAM_BLUEPRINTS = [
     outerWrapperLabel: 'Shared Control Plane (ramp-portal-dev / cymbal-build-sandbox • 80% Core + 20% Topology Delta)',
     innerWrapperLabel: 'VPC & 5-Hop Cryptographic Context Chain (KMS ECDSA P-256 Signed)',
     routingHubTitle: 'Routing hub (Hop 1 & Hop 2 PEP/PDP)',
-    routingHubSub: 'Central ingress, OBO+DPoP KMS Sign & Discovery Engine Catalog filter',
+    routingHubSub: 'Central ingress, OBO+DPoP KMS Sign & ARD Catalog filter',
     routingCards: {
       topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF & DDoS • Strips X-Tenant-ID' },
-      midLeft: { icon: 'model_armor', title: 'Model Armor', sub: 'Ingress Prompt Screen' },
+      midLeft: { icon: 'model_armor', title: 'Model Armor', sub: 'Ingress Screen (<8ms SLA)' },
       botLeft: { icon: 'iap_iam_shield', title: 'RFC 8693 OBO + DPoP', sub: 'KMS ECDSA P-256 Sign' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Cloud Load Balancing' },
       botRight: { icon: 'cloud_run', title: 'Cloud Run', sub: 'cymbal-multi-tenant-patterns' },
@@ -408,11 +407,11 @@ const WORKSTREAM_BLUEPRINTS = [
     midGovLabel: ['Security, OTel & FinOps', 'chargeback telemetry'],
     leftBoundaryLabel: 'Pattern A: Pooled Shared Runtime (pattern_a_pooled_rls_entities)',
     leftZoneTitle: 'Tenant Pool (Shared Runtime)',
-    leftZoneSub: 'FinVault (8k Cap) & RetailStream (4k Cap)',
+    leftZoneSub: 'FinVault (HIGH/8k) & RetailStream (MEDIUM/4k maxOut)',
     leftCards: {
-      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Tenant Rai Filters & SDP PII' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: '90% Prefix Cache Savings' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'gVisor + temp:tenant_id' },
+      modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Tenant Guardrails & SDP PII' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 3.8 Flash', sub: '89.1% Net Input Cache Savings' },
+      runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'gVisor + Valkey 0.4ms State' },
       mcp: { icon: 'mcp_servers', title: 'MCP servers', sub: '2LO + 3LO OIDC/Entra' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'AlloyDB & BQ RLS', sub: 'tenant_pooled_rls_policy' },
       step4Label: 'Sanitize request',
@@ -451,10 +450,10 @@ const WORKSTREAM_BLUEPRINTS = [
     outerWrapperLabel: 'Shared hubs (VPC Service Controls Organization Perimeter • ramp-portal-dev)',
     innerWrapperLabel: 'VPC • 5-Hop Cryptographic Context Chain (cymbal-build-sandbox)',
     routingHubTitle: 'Routing hub (Hop 1 & Hop 2)',
-    routingHubSub: 'Central ingress & cryptographic token exchange',
+    routingHubSub: 'Central ingress, ARD Catalog & KMS token exchange',
     routingCards: {
       topLeft: { icon: 'cloud_armor', title: 'Google Cloud Armor', sub: 'WAF & DDoS • Strips X-Tenant-ID' },
-      midLeft: { icon: 'model_armor', title: 'Model Armor', sub: 'Edge Prompt Injection Gate' },
+      midLeft: { icon: 'model_armor', title: 'Model Armor', sub: 'Prompt Screen (<8ms SLA)' },
       botLeft: { icon: 'iap_iam_shield', title: 'IAP', sub: 'OBO + DPoP + KMS ECDSA Sign' },
       topRight: { icon: 'load_balancer_cloud_armor', title: 'External Application', title2: 'Load Balancer', sub: 'Cloud Load Balancing' },
       botRight: { icon: 'cloud_run', title: 'Cloud Run', sub: 'cymbal-multi-tenant-patterns' },
@@ -479,8 +478,8 @@ const WORKSTREAM_BLUEPRINTS = [
     leftZoneSub: 'Tenant project • Enterprise Tier (Google OIDC)',
     leftCards: {
       modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Hop 4: Bank SDP & FINRA Filter' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: 'Agent Engine (8k Budget)' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Hop 3: Shared + Agent Alpha' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 3.8 Flash', sub: 'Agent Engine (8k Cap • 0.10x)' },
+      runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Hop 3: Silo gVisor + CMEK' },
       mcp: { icon: 'mcp_servers', title: 'MCP servers', sub: 'Hop 5: Workspace & Jira 3LO' },
       datastore: { icon: 'alloydb', title: 'Datastore', sub: 'BQ RLS, AlloyDB & CMEK' },
       step4Label: 'Sanitize request',
@@ -494,8 +493,8 @@ const WORKSTREAM_BLUEPRINTS = [
     rightZoneSub: 'Tenant project • Standard Tier (Entra ID)',
     rightCards: {
       modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Hop 4: PCI PAN SDP & Filter' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini', sub: 'Agent Engine (4k Cap)' },
-      runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Hop 3: Shared Diagnostic' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 3.8 Flash', sub: 'Agent Engine (4k Cap • 0.10x)' },
+      runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Hop 3: gVisor + Valkey 0.4ms' },
       mcp: { icon: 'mcp_servers', title: 'MCP servers', sub: 'Hop 5: SharePoint & SNOW' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'Datastore', sub: 'BQ RLS, AlloyDB & Valkey' },
       ragLabel: ['Secure', 'RAG'],
@@ -549,7 +548,7 @@ const WORKSTREAM_BLUEPRINTS = [
     runtimeCards: {
       modelArmor: { icon: 'model_armor', title: 'Model Armor (shared)', sub: 'Per-tenant templates: FINRA / PCI' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'ONE gVisor pool • temp:tenant_id' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: 'Shared 32k prefix • 4k / 8k caps' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 3.8 Flash', sub: 'Shared 32k prefix • 4k / 8k caps' },
       valkey: { icon: 'valkey_cache', title: 'Memorystore Valkey', sub: 'RPM bulkheads 120 Std / 600 Ent' },
       memory: {
         icon: 'gemini_agent_platform',
@@ -625,7 +624,7 @@ const WORKSTREAM_BLUEPRINTS = [
     govHubTitle: 'Hop 3 & 5 FinOps &',
     govHubTitle2: 'Audit Gates (Vectors 6 & 9)',
     govCards: {
-      top: { icon: 'valkey_cache', title: 'Vector 6: Valkey 429', title2: '& 4k Token Clamp', sub: 'Blocks 250 RPM Flood & 16k' },
+      top: { icon: 'valkey_cache', title: 'Vector 6: Valkey 429', title2: '& 4k maxOutput Clamp', sub: 'Blocks 250 RPM & 16k Out' },
       mid: { icon: 'iap_iam_shield', title: 'Vector 10: Inline 3LO', sub: 'HTTP 401 Entra OAuth Challenge' },
       bot: { icon: 'bigquery_analytics', title: 'BigQuery OTel Audit', sub: 'security_breach_audit_log' },
     },
@@ -655,7 +654,7 @@ const WORKSTREAM_BLUEPRINTS = [
       llm: { icon: 'cloud_storage', title: 'Vector 7B: GCS Skills', sub: 'Blocks gs://cymbal-skills-fv' },
       runtime: { icon: 'valkey_cache', title: 'Vector 9: Prefix Cache', sub: 'READ_ONLY_IMMUTABLE_PREFIX' },
       mcp: { icon: 'iap_iam_shield', title: 'Auth Manager Vault', sub: 'Tenant-Scoped OAuth Tokens' },
-      datastore: { icon: 'datastore_alloydb_bq', title: 'Vector 7C: AlloyDB/BQ RLS', sub: 'tenant_pooled_rls_policy (0 Bleed)' },
+      datastore: { icon: 'datastore_alloydb_bq', title: 'Vector 7C: AlloyDB/BQ RLS', sub: 'tenant_pooled_rls_policy' },
       ragLabel: ['Isolated', 'Prefix Cache'],
       toolLabel: ['SET LOCAL', 'current_tenant'],
     },
@@ -720,7 +719,7 @@ const WORKSTREAM_BLUEPRINTS = [
     rightZoneSub: 'Dedicated Silo • CMEK: retailstream-silo-cmek',
     rightCards: {
       modelArmor: { icon: 'vpc_sc', title: 'VPC-SC & Model Armor', sub: 'Dedicated Retail PCI Perimeter' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro PT', sub: 'Dedicated Provisioned Quota' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 3.8 Flash PT', sub: 'Dedicated Provisioned Quota' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Dedicated RetailStream Silo' },
       mcp: { icon: 'mcp_servers', title: 'Local Silo MCP', sub: 'Entra SharePoint & SNOW' },
       datastore: { icon: 'cloud_kms', title: 'CMEK Silo Datastore', sub: 'Key DISABLED → HTTP 423 (medcore test)' },
@@ -773,7 +772,7 @@ const WORKSTREAM_BLUEPRINTS = [
     leftZoneSub: 'pool://cymbal-shared-pooled-v2 (90% Cache Savings)',
     leftCards: {
       modelArmor: { icon: 'model_armor', title: 'Shared Model Armor', sub: 'Multi-Tenant Prompt & SDP' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro', sub: '4,000 Thinking Cap + Cache' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 3.8 Flash', sub: 'MEDIUM / 4k Out + Cache' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Serves Standard SaaS Tier' },
       mcp: { icon: 'mcp_servers', title: 'Pooled MCP Hub', sub: '2LO + Delegated 3LO Tools' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'Shared AlloyDB & BQ RLS', sub: 'pattern_a_pooled_rls_entities' },
@@ -788,7 +787,7 @@ const WORKSTREAM_BLUEPRINTS = [
     rightZoneSub: 'cymbal-psc-nat-us-west1 (/28) -> psc://10.10.0.50 & .51',
     rightCards: {
       modelArmor: { icon: 'model_armor', title: 'Model Armor (spoke)', sub: 'Enterprise prompt screen + SDP' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Pro PT', sub: 'Upgraded 8,000 Thinking Cap' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 3.8 Flash PT', sub: 'Upgraded HIGH / 8k Out' },
       runtime: { icon: 'psc_bridge', title: 'Spoke Agent Engine via PSC', sub: 'ServiceAttachment ← /28 consumer endpoint' },
       mcp: { icon: 'mcp_servers', title: 'Dedicated Spoke MCP', sub: 'Isolated Inside VPC-SC Spoke' },
       datastore: { icon: 'cloud_kms', title: 'CMEK Spoke Datastore', sub: 'finvault-silo-cmek & KMS Lock' },
@@ -804,7 +803,7 @@ const WORKSTREAM_BLUEPRINTS = [
     id: 'ws5-decision-tree-and-agentic-triad',
     badge: 'WORKSTREAM 5.1 & 5.2 • CAPSTONE BLUEPRINT',
     title: 'Workstream 5 Capstone: Executive Topology Decision Guide & The Multi-Tenant Agentic Triad',
-    subtitle: 'Verified 20/20 Suites PASS Across cymbal-build-sandbox & ramp-portal-dev (Security • FinOps 84.7% Savings • Zero-PII OTel)',
+    subtitle: 'Verified 20/20 Suites PASS Across cymbal-build-sandbox & ramp-portal-dev (Security • FinOps 89.1% Savings • Zero-PII OTel)',
     workstreamDir: 'workstream-5-synthesis-and-publishing/diagrams',
     // ---- Rule 53G: a decision guide is a decision tree, not a request/response hub ----
     layout: LAYOUT_DECISION_TREE_3_OUTCOME,
@@ -836,7 +835,7 @@ const WORKSTREAM_BLUEPRINTS = [
     triadTitle2: '(80% reusable core)',
     triadCards: [
       { icon: 'iap_iam_shield', title: 'Pillar 1 • Zero-Trust 5-Hop', sub: 'Hops 1, 2 & 4: OBO/DPoP • Catalog PDP • Model Armor' },
-      { icon: 'context_cache', title: 'Pillar 2 • Predictable FinOps', sub: 'Hop 3: ContextCache 90% • Valkey • thinking caps' },
+      { icon: 'context_cache', title: 'Pillar 2 • Predictable FinOps', sub: 'Hop 3: ContextCache 90% • Valkey • Output Caps' },
       { icon: 'bigquery_analytics', title: 'Pillar 3 • Zero-PII OTel Chargeback', sub: 'tenant_telemetry_spans • Even / Proportional / Tiered' },
     ],
     coreBar: {
@@ -870,8 +869,8 @@ const WORKSTREAM_BLUEPRINTS = [
         cards: [
           { icon: 'gemini_agent_platform', title: 'Shared Agent Engine gVisor Pool', sub: 'temp:tenant_id bound per request' },
           { icon: 'datastore_alloydb_bq', title: 'Shared AlloyDB + BigQuery FORCE RLS', sub: 'tenant_id rows • 0 cross-tenant rows' },
-          { icon: 'context_cache', title: 'Namespaced Memory + 90% ContextCache', sub: '32k shared prefix • 84.7% input token savings' },
-          { icon: 'valkey_cache', title: 'Valkey Bulkheads + Thinking Caps', sub: '120 / 600 RPM • 4k / 8k tokens' },
+          { icon: 'context_cache', title: 'Namespaced Memory + 90% ContextCache', sub: '32k shared prefix • 89.1% input token savings' },
+          { icon: 'valkey_cache', title: 'Valkey Bulkheads + Output Caps', sub: '120 / 600 RPM • MEDIUM/HIGH maxOut' },
         ],
         verdict: ['Choose when one commercial tier is enough', '10/10 breach vectors blocked • lowest unit cost'],
       },
@@ -996,7 +995,7 @@ function compileOfficialArchCenterSvg(bp) {
 
   <!-- TOP EXTERNAL USER / TENANT BOX -->
   <g>
-    <rect x="465" y="52" width="250" height="86" rx="8" ry="8" fill="#ffffff" stroke="#202124" stroke-width="2"/>
+    <rect x="465" y="54" width="250" height="84" rx="8" ry="8" fill="#ffffff" stroke="#202124" stroke-width="2"/>
     <circle cx="590" cy="76" r="9.5" fill="#000000"/>
     <path d="M 573 101 C 573 91 607 91 607 101 Z" fill="#000000"/>
     <text x="590" y="117" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">${escXml(bp.topUserTitle)}</text>
@@ -1128,10 +1127,10 @@ function compileOfficialArchCenterSvg(bp) {
   <text x="68" y="327" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round"${fitAttr(bp.innerWrapperLabel, 1060, 7.6)}>${escXml(bp.innerWrapperLabel)}</text>
   <text x="84" y="363" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#aecbfa" stroke-width="8" stroke-linejoin="round">${escXml(bp.routingHubTitle)}</text>
   <text x="84" y="381" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#aecbfa" stroke-width="8" stroke-linejoin="round">${escXml(bp.routingHubSub)}</text>
-  <text x="86" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round"${fitAttr(bp.leftBoundaryLabel, 488, 7.3)}>${escXml(bp.leftBoundaryLabel)}</text>
+  <text x="86" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round"${fitAttr(bp.leftBoundaryLabel, 342, 7.3)}>${escXml(bp.leftBoundaryLabel)}</text>
   <text x="104" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#feefc3" stroke-width="8" stroke-linejoin="round">${escXml(bp.leftZoneTitle)}</text>
   <text x="104" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#feefc3" stroke-width="8" stroke-linejoin="round"${fitAttr(bp.leftZoneSub, 456, 7.0)}>${escXml(bp.leftZoneSub)}</text>
-  <text x="630" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round"${fitAttr(bp.rightBoundaryLabel, 488, 7.3)}>${escXml(bp.rightBoundaryLabel)}</text>
+  <text x="630" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round"${fitAttr(bp.rightBoundaryLabel, 342, 7.3)}>${escXml(bp.rightBoundaryLabel)}</text>
   <text x="648" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#fad2cf" stroke-width="8" stroke-linejoin="round">${escXml(bp.rightZoneTitle)}</text>
   <text x="648" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#fad2cf" stroke-width="8" stroke-linejoin="round"${fitAttr(bp.rightZoneSub, 456, 7.0)}>${escXml(bp.rightZoneSub)}</text>
 
@@ -1225,9 +1224,9 @@ function compileOfficialDrawioXml(bp) {
   addVertex(
     'actor_top_user',
     465,
-    52,
+    54,
     250,
-    86,
+    84,
     `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-family:'Google Sans',Roboto,Arial,sans-serif;text-align:center;"><img src="${USER_SILHOUETTE_DATA_URI}" width="36" height="28"/><b style="font-size:13px;color:#202124;">${bp.topUserTitle}</b><br/><span style="font-size:10.5px;color:#3c4043;">${bp.topUserSub}</span></div>`,
     'rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=2;align=center;verticalAlign=middle;',
     true
@@ -1315,7 +1314,7 @@ function compileOfficialDrawioXml(bp) {
     772,
     516,
     560,
-    fitHtmlLabel(bp.leftBoundaryLabel, 488, 12),
+    fitHtmlLabel(bp.leftBoundaryLabel, 342, 12),
     'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;',
     true
   );
@@ -1336,7 +1335,7 @@ function compileOfficialDrawioXml(bp) {
     772,
     516,
     560,
-    fitHtmlLabel(bp.rightBoundaryLabel, 488, 12),
+    fitHtmlLabel(bp.rightBoundaryLabel, 342, 12),
     'rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#202124;strokeWidth=1.2;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;',
     true
   );

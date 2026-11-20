@@ -1,0 +1,196 @@
+    <!-- TAB DIAGRAMS: EXECUTIVE ONE-SLIDE-AT-A-TIME DIAGRAMS ATLAS & 2-WAY DRAW.IO SYNC -->
+    <section id="tab-diagrams" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-diagrams">
+      <!-- Unified Single-Row Executive Slide Navigator, Consolidated Filter, Live Search & Format Bar (Rule 25 Zero Cognitive Overload) -->
+      <div class="card" id="diagrams-atlas-hero-card" data-card-id="diagrams-atlas-hero-card" data-card-type="atlas_hero" data-card-title="Slide Diagrams Atlas — Executive One-Slide Navigator" data-no-hover-toolbar="true" style="border:1px solid #cbd5e1; background:#ffffff; margin-bottom:8px; padding:7px 12px; position:sticky; top:42px; z-index:85; box-shadow:0 2px 6px rgba(15,23,42,0.05);">
+        <div class="card-editable-body">
+          <div id="diagrams-atlas-filter-bar" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:nowrap; gap:6px;">
+            <!-- Left: Slide Picker + 1 Consolidated Filter Dropdown + Live Search Box -->
+            <div style="display:flex; align-items:center; flex-wrap:nowrap; gap:5px; flex:1; min-width:0;">
+              <button type="button" class="sim-btn" id="atlas-prev-slide-btn" onclick="prevAtlasSlide()" style="padding:4px 8px; font-size:11px; font-weight:700; flex-shrink:0;" title="Previous Slide">◀</button>
+              <select id="atlas-slide-select" onchange="selectAtlasSlideByIndex(Number(this.value))" aria-label="Select Slide Diagram" style="width:auto; flex:1 1 230px; min-width:195px; max-width:340px; padding:5px 8px; font-size:11.5px; font-weight:700; border:1px solid #93c5fd; border-radius:6px; background:#f8fafc; color:#0f172a;">
+                <option value="0">[Slide 01/38] Executive Master Cover</option>
+              </select>
+              <button type="button" class="sim-btn" id="atlas-next-slide-btn" onclick="nextAtlasSlide()" style="padding:4px 8px; font-size:11px; font-weight:700; flex-shrink:0;" title="Next Slide">▶</button>
+
+              <select id="atlas-filter-consolidated" onchange="handleAtlasConsolidatedFacetChange(this.value)" aria-label="Consolidated Dynamic Filter by Scope, Pattern, Blocker, or Topology" style="width:auto; flex:0 1 235px; min-width:185px; max-width:255px; padding:5px 8px; font-size:11.5px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#0f172a; font-weight:600;">
+                <option value="ALL" data-base-label="🎯 Filter: All 38 Slides">🎯 Filter: All 38 Slides (38)</option>
+                <optgroup label="By Section &amp; Scope">
+                  <option value="SCOPE:BARE_MIN_12" data-base-label="⚡ Bare-Minimum Core Deck">⚡ Bare-Minimum Core Deck (12)</option>
+                  <option value="SCOPE:COMPENDIUM_54" data-base-label="Scope: All 38 Architecture Slides">Scope: All 38 Architecture Slides (38)</option>
+                  <option value="SCOPE:ARCH_DIAGRAM" data-base-label="📐 Architecture Diagrams">📐 Architecture Diagrams (30)</option>
+                  <option value="SCOPE:SECTION_FRAMING" data-base-label="📑 Section Framing Slides">📑 Section Framing Slides (8)</option>
+                  <option value="SCOPE:OPENING" data-base-label="Sec 0: Opening &amp; Framing (01–07)">Sec 0: Opening &amp; Framing (01–07) (7)</option>
+                  <option value="SCOPE:WS1" data-base-label="WS1: 5-Hop Control Plane (08–14)">WS1: 5-Hop Control Plane (08–14) (7)</option>
+                  <option value="SCOPE:WS2" data-base-label="WS2: Pattern A Pooled (15–20)">WS2: Pattern A Pooled (15–20) (6)</option>
+                  <option value="SCOPE:WS3" data-base-label="WS3: Pattern B Sovereign Silo (21–26)">WS3: Pattern B Sovereign Silo (21–26) (6)</option>
+                  <option value="SCOPE:WS4" data-base-label="WS4: Pattern C Hybrid PSC (27–30)">WS4: Pattern C Hybrid PSC (27–30) (4)</option>
+                  <option value="SCOPE:WS5" data-base-label="WS5: Decision &amp; Multi-Cloud (31–38)">WS5: Decision &amp; Multi-Cloud (31–38) (8)</option>
+                  <option value="SCOPE:ALL_82" data-base-label="All 66 (+28 Extended Blueprints)">All 66 (+28 Extended Blueprints) (66)</option>
+                </optgroup>
+                <optgroup label="By Isolation Pattern">
+                  <option value="PAT:All Patterns (5-Hop Baseline)" data-base-label="Pattern: 5-Hop Baseline">Pattern: 5-Hop Baseline</option>
+                  <option value="PAT:Pattern A (Pooled)" data-base-label="Pattern A (Pooled)">Pattern A (Pooled)</option>
+                  <option value="PAT:Pattern B (Sovereign Silo)" data-base-label="Pattern B (Sovereign Silo)">Pattern B (Sovereign Silo)</option>
+                  <option value="PAT:Pattern C (Hybrid PSC)" data-base-label="Pattern C (Hybrid PSC)">Pattern C (Hybrid PSC)</option>
+                  <option value="PAT:Multi-Cloud Federation (GCP + AWS + Azure)" data-base-label="Pattern: Multi-Cloud Federation">Pattern: Multi-Cloud Federation</option>
+                </optgroup>
+                <optgroup label="By Blocker ID (Solutions Matrix)">
+                  <option value="BLK:BLK-01" data-base-label="BLK-01 • Identity &amp; STS">BLK-01 • Identity &amp; STS</option>
+                  <option value="BLK:BLK-02" data-base-label="BLK-02 • Tool &amp; Storage">BLK-02 • Tool &amp; Storage</option>
+                  <option value="BLK:BLK-03" data-base-label="BLK-03 • FinOps &amp; Quota">BLK-03 • FinOps &amp; Quota</option>
+                  <option value="BLK:BLK-04" data-base-label="BLK-04 • VPC-SC &amp; CMEK">BLK-04 • VPC-SC &amp; CMEK</option>
+                  <option value="BLK:BLK-05" data-base-label="BLK-05 • Hybrid PSC">BLK-05 • Hybrid PSC</option>
+                  <option value="BLK:BLK-06" data-base-label="BLK-06 • WORM &amp; Audit">BLK-06 • WORM &amp; Audit</option>
+                  <option value="BLK:ALL-BLK" data-base-label="ALL-BLK • Cross-Blocker">ALL-BLK • Cross-Blocker</option>
+                </optgroup>
+                <optgroup label="By Topology Family">
+                  <option value="TOPO:Official #78 Hub-and-Spoke" data-base-label="Topology: Official #78 Hub &amp; Spoke">Topology: Official #78 Hub &amp; Spoke</option>
+                  <option value="TOPO:1:1 Reference Twin" data-base-label="Topology: 1:1 Reference Twin">Topology: 1:1 Reference Twin</option>
+                  <option value="TOPO:C4 L3/L4 Sequence &amp; Wire" data-base-label="Topology: C4 Sequence &amp; Wire">Topology: C4 Sequence &amp; Wire</option>
+                  <option value="TOPO:Native DrawingML &amp; Guardrails" data-base-label="Topology: Native Guardrails">Topology: Native Guardrails</option>
+                  <option value="TOPO:FinOps, Threat &amp; Decision Matrix" data-base-label="Topology: FinOps &amp; Decision">Topology: FinOps &amp; Decision</option>
+                  <option value="TOPO:Executive Section Framing" data-base-label="Topology: Section Framing">Topology: Section Framing</option>
+                </optgroup>
+              </select>
+
+              <!-- Hidden Legacy Facet Selects (Synchronized for Compatibility) -->
+              <select id="atlas-filter-scope" onchange="setAtlasScopeFilter(this.value)" aria-label="Filter by Section or Scope" style="display:none !important;" aria-hidden="true">
+                <option value="COMPENDIUM_54">All 38 Architecture Slides (38)</option>
+                <option value="BARE_MIN_12">Bare-Minimum Core Deck (12)</option>
+                <option value="ARCH_DIAGRAM">Architecture Diagrams (30)</option>
+                <option value="SECTION_FRAMING">Section Framing Slides (8)</option>
+                <option value="OPENING">Sec 0: Opening &amp; Framing (01–07)</option>
+                <option value="WS1">WS1: 5-Hop Control Plane (08–14)</option>
+                <option value="WS2">WS2: Pattern A Pooled (15–20)</option>
+                <option value="WS3">WS3: Pattern B Sovereign Silo (21–26)</option>
+                <option value="WS4">WS4: Pattern C Hybrid PSC (27–30)</option>
+                <option value="WS5">WS5: Decision &amp; Multi-Cloud (31–38)</option>
+                <option value="ALL_82">All 66 (+28 Extended Blueprints)</option>
+              </select>
+              <select id="atlas-filter-topology" onchange="applyAtlasFilters()" aria-label="Filter by Topology Family" style="display:none !important;" aria-hidden="true">
+                <option value="ALL">Topology: All</option>
+                <option value="Official #78 Hub-and-Spoke">Official #78 Hub &amp; Spoke</option>
+                <option value="1:1 Reference Twin">1:1 Reference Twin</option>
+                <option value="C4 L3/L4 Sequence &amp; Wire">C4 Sequence &amp; Wire</option>
+                <option value="Native DrawingML &amp; Guardrails">Native Guardrails</option>
+                <option value="FinOps, Threat &amp; Decision Matrix">FinOps &amp; Decision</option>
+                <option value="Executive Section Framing">Section Framing</option>
+              </select>
+              <select id="atlas-filter-pattern" onchange="applyAtlasFilters()" aria-label="Filter by Isolation Pattern" style="display:none !important;" aria-hidden="true">
+                <option value="ALL">Pattern: All</option>
+                <option value="All Patterns (5-Hop Baseline)">5-Hop Baseline</option>
+                <option value="Pattern A (Pooled)">Pattern A (Pooled)</option>
+                <option value="Pattern B (Sovereign Silo)">Pattern B (Sovereign Silo)</option>
+                <option value="Pattern C (Hybrid PSC)">Pattern C (Hybrid PSC)</option>
+                <option value="Multi-Cloud Federation (GCP + AWS + Azure)">Multi-Cloud Federation</option>
+              </select>
+              <select id="atlas-filter-blocker" onchange="applyAtlasFilters()" aria-label="Filter by Blocker ID" style="display:none !important;" aria-hidden="true">
+                <option value="ALL">Blocker: All (BLK-01..06)</option>
+                <option value="BLK-01">BLK-01 • Identity &amp; STS</option>
+                <option value="BLK-02">BLK-02 • Tool &amp; Storage</option>
+                <option value="BLK-03">BLK-03 • FinOps &amp; Quota</option>
+                <option value="BLK-04">BLK-04 • VPC-SC &amp; CMEK</option>
+                <option value="BLK-05">BLK-05 • Hybrid PSC</option>
+                <option value="BLK-06">BLK-06 • WORM &amp; Audit</option>
+                <option value="ALL-BLK">ALL-BLK • Cross-Blocker</option>
+              </select>
+
+              <input type="search" id="atlas-filter-search" oninput="applyAtlasFilters()" placeholder="Search slide #, title, CMEK..." aria-label="Search Slide Diagrams" style="width:190px; flex:0 1 205px; padding:5px 9px; font-size:11.5px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#0f172a;" />
+              <button type="button" class="sim-btn" onclick="resetAtlasFilters()" style="padding:4px 8px; font-size:11px; font-weight:700; flex-shrink:0;">↺ Reset</button>
+              <span id="atlas-results-count-label" class="badge badge-blue" style="display:none;">Slide 1 of 38</span>
+            </div>
+
+            <!-- Right: Format Switcher + Maximize + Consolidated Decks & Links Dropdown -->
+            <div style="display:flex; align-items:center; gap:5px; flex-wrap:nowrap; flex-shrink:0;">
+              <select id="atlas-format-select" onchange="setAtlasCardViewMode(window.getCurrentAtlasDiagramId ? window.getCurrentAtlasDiagramId() : 's00-compendium-master-cover', this.value, 'atlas')" aria-label="Select Slide Diagram Format" style="width:auto; max-width:210px; padding:4px 8px; font-size:11.5px; font-weight:700; border:1px solid #cbd5e1; border-radius:6px; background:#f8fafc; color:#0f172a;">
+                <option value="static">🖼️ Static Slide (Deck 1 • 2-Way)</option>
+                <option value="animated">🎬 Animated Flow (Deck 2 • GIF)</option>
+                <option value="inline-drawio">✏️ Draw.io 2-Way Inline Editor</option>
+                <option value="svg">📐 Vector SVG Blueprint</option>
+                <option value="side-by-side">⚡ Compare Side-by-Side</option>
+              </select>
+              <button type="button" class="sim-btn" id="atlas-btn-maximize-restore" onclick="toggleAtlasStageMaximize()" style="padding:4px 9px; font-size:11px; font-weight:800; border-color:#1a73e8; color:#1a73e8; white-space:nowrap;" title="Maximize or Restore active slide / Draw.io view">⛶ Maximize</button>
+              <details class="export-dropdown" id="atlas-master-decks-dropdown">
+                <summary class="sim-btn" style="padding:4px 9px; font-size:11px; font-weight:700; cursor:pointer; white-space:nowrap;">📂 Decks &amp; Links ▾</summary>
+                <div class="export-dropdown-menu" style="right:0; left:auto; min-width:265px;">
+                  <button type="button" class="sim-btn" id="atlas-top-copy-link-btn" onclick="copyCurrentAtlasSlideUrl(this)" style="font-size:11.5px; padding:6px 10px; text-align:left; font-weight:700;">🔗 Copy Direct URL to Active Slide</button>
+                  <a class="sim-btn" href="https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p1" target="_blank" rel="noopener noreferrer" style="text-decoration:none; font-size:11.5px; padding:6px 10px; text-align:left; font-weight:700; color:#1d4ed8; background:#eff6ff;">⚡ Bare-Minimum 12-Slide Deck (WS1–WS5) ↗</a>
+                  <a class="sim-btn" href="https://docs.google.com/presentation/d/1-WwbZsdEFPylp9MtfF-nuifeVps0uuu3bSCfzCCYjjI/edit#slide=id.p1" target="_blank" rel="noopener noreferrer" style="text-decoration:none; font-size:11.5px; padding:6px 10px; text-align:left; font-weight:700;">📊 Deck 1: 38-Slide Native Editable ↗</a>
+                  <a class="sim-btn" href="https://docs.google.com/presentation/d/1PjnEpYZY4mY9RvB6wNxMGCl84RwIyupNG7gKmpPxlKk/edit#slide=id.p1" target="_blank" rel="noopener noreferrer" style="text-decoration:none; font-size:11.5px; padding:6px 10px; text-align:left; font-weight:700;">🎬 Deck 2: 38-Slide Animated Master ↗</a>
+                  <a class="sim-btn" href="https://docs.google.com/spreadsheets/d/14me0XW4HD9dyYjnGcYWcNhZZJKgw_aSC3Ek0Yi3Thw0/edit?usp=sharing#gid=0" target="_blank" rel="noopener noreferrer" style="text-decoration:none; font-size:11.5px; padding:6px 10px; text-align:left; font-weight:700;">📋 Multi-Tenant Blockers &amp; Solutions Matrix ↗</a>
+                </div>
+              </details>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- One-Slide-at-a-Time Executive Stage Container -->
+      <div id="diagrams-atlas-grid" style="display:block;"></div>
+
+      <!-- In-App 2-Way Draw.io Sync & Interactive Flow Studio Modal (with Maximize / Restore) -->
+      <div id="atlas-drawio-2way-modal" class="portal-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="atlas-2way-modal-title" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.62); z-index:10030; align-items:center; justify-content:center; padding:16px;">
+        <div id="atlas-2way-modal-dialog" style="background:#ffffff; border:1.5px solid #cbd5e1; border-radius:12px; width:min(94vw, 1440px); height:min(88vh, 880px); display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 50px rgba(15,23,42,0.35); transition:all 0.16s ease;">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 14px; background:#f8fafc; border-bottom:1px solid #e2e8f0; gap:10px; flex-wrap:wrap;">
+            <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+              <span class="badge badge-blue" id="atlas-2way-modal-slide-badge">Slide #01/38</span>
+              <strong id="atlas-2way-modal-title" style="font-size:13.5px; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">2-Way Draw.io ↔ Google Slides Sync Studio</strong>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+              <a id="atlas-2way-modal-slides1-link" href="https://docs.google.com/presentation/d/1-WwbZsdEFPylp9MtfF-nuifeVps0uuu3bSCfzCCYjjI/edit#slide=id.p1" target="_blank" rel="noopener noreferrer" class="sim-btn" style="text-decoration:none; font-size:11px; padding:4px 9px; font-weight:700;">📊 Editable Slide (Deck 1) ↗</a>
+              <a id="atlas-2way-modal-slides2-link" href="https://docs.google.com/presentation/d/1PjnEpYZY4mY9RvB6wNxMGCl84RwIyupNG7gKmpPxlKk/edit#slide=id.p1" target="_blank" rel="noopener noreferrer" class="sim-btn" style="text-decoration:none; font-size:11px; padding:4px 9px; font-weight:700;">🎬 Animated Slide (Deck 2) ↗</a>
+              <button type="button" class="sim-btn" id="atlas-2way-modal-maximize-btn" onclick="toggleAtlas2WayModalMaximize()" style="font-size:11px; padding:4px 9px; font-weight:700;" title="Maximize or Restore Studio Window">⛶ Maximize</button>
+              <a id="atlas-2way-modal-fulltab-link" href="/drawio/s00-compendium-master-cover?compSlide=1&amp;mode=edit" target="_blank" rel="noopener noreferrer" class="sim-btn" style="text-decoration:none; font-size:11px; padding:4px 9px;">↗ New Tab</a>
+              <button type="button" class="sim-btn" onclick="closeAtlas2WayStudioModal()" style="background:#fff1f2; color:#be123c; border-color:#fda4af; font-weight:700; padding:4px 9px; font-size:11px;">✕ Close</button>
+            </div>
+          </div>
+          <iframe id="atlas-2way-modal-iframe" style="flex:1; width:100%; border:0; background:#ffffff;" title="2-Way Draw.io and Google Slides Sync Studio"></iframe>
+        </div>
+      </div>
+
+      <!-- Insert Diagram into Blog Target Picker Modal -->
+      <div id="atlas-insert-blog-modal" class="portal-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="atlas-insert-blog-modal-title" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.55); z-index:10025; align-items:center; justify-content:center; padding:16px;">
+        <div style="background:#ffffff; border:1.5px solid #cbd5e1; border-radius:12px; width:min(92vw, 600px); padding:18px 20px; box-shadow:0 16px 40px rgba(15,23,42,0.28);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid #e2e8f0;">
+            <div>
+              <span class="badge badge-blue">INSERT INTO BLOG</span>
+              <h3 id="atlas-insert-blog-modal-title" style="margin:4px 0 0 0; font-size:15.5px; color:#0f172a;">Insert Diagram into Blog Placeholder Canvas</h3>
+            </div>
+            <button type="button" class="sim-btn" onclick="closeAtlasInsertBlogModal()" style="padding:4px 9px; font-size:11.5px;">✕</button>
+          </div>
+          <div style="margin-bottom:12px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:10px 12px;">
+            <div style="font-size:11px; font-weight:700; color:#1a73e8;" id="atlas-insert-selected-diag-badge">Slide #01</div>
+            <div style="font-size:13px; font-weight:700; color:#0f172a; margin-top:2px;" id="atlas-insert-selected-diag-title">Diagram Title</div>
+            <div style="font-size:11.5px; color:#475569; margin-top:4px;" id="atlas-insert-selected-diag-purpose"></div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:14px;">
+            <div>
+              <label for="atlas-insert-target-ws" style="display:block; font-size:11px; font-weight:700; color:#334155; margin-bottom:4px;">1. Target Workstream Blog</label>
+              <select id="atlas-insert-target-ws" style="width:100%; padding:7px 10px; font-size:12px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#0f172a; font-weight:600;">
+                <option value="CURRENT">Current Active Blog in Reader</option>
+                <option value="WS1">Part 1 (WS1): Reference Architecture, Taxonomy &amp; 5-Hop Baseline</option>
+                <option value="WS2">Part 2 (WS2): Pattern A — Shared Multi-Tenant Pool &amp; Compute Guardrails</option>
+                <option value="WS3">Part 3 (WS3): Pattern B — Dedicated Sovereign Silos, VPC-SC &amp; CMEK</option>
+                <option value="WS4">Part 4 (WS4): Pattern C — Smart Hybrid Router &amp; Zero-Downtime Upgrade</option>
+                <option value="WS5">Part 5 (WS5): Executive Decision Guide, Agentic Triad &amp; Multi-Cloud GA</option>
+                <option value="ALL">Master Synthesis: All-in-One End-to-End Architecture Guide</option>
+              </select>
+            </div>
+            <div>
+              <label for="atlas-insert-display-mode" style="display:block; font-size:11px; font-weight:700; color:#334155; margin-bottom:4px;">2. Initial Format in Blog</label>
+              <select id="atlas-insert-display-mode" style="width:100%; padding:7px 10px; font-size:12px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#0f172a; font-weight:600;">
+                <option value="static">🖼️ Static 2-Way Sync Slide</option>
+                <option value="animated">🎬 Animated GIF Flow</option>
+                <option value="inline-drawio">✏️ Live Inline 2-Way Draw.io Editor</option>
+                <option value="svg">📐 Vector SVG Blueprint</option>
+                <option value="side-by-side">⚡ Side-by-Side (Static + Animated)</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:8px;">
+            <button type="button" class="sim-btn" onclick="closeAtlasInsertBlogModal()">Cancel</button>
+            <button type="button" class="sim-btn primary" onclick="confirmInsertDiagramIntoBlogFromModal()" style="font-weight:700;">➕ Insert into Blog &rarr;</button>
+          </div>
+        </div>
+      </div>
+    </section>

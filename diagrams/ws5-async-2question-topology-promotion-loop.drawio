@@ -1,0 +1,157 @@
+<mxfile host="app.diagrams.net" modified="2026-11-09T05:55:00Z" agent="PolymorphicStudio-2WaySync" version="24.7.8" type="device">
+  <diagram id="ws5-async-2question-topology-promotion-loop" name="Slide 53/56 • WS5 • Async State-Flow Pipeline: 2-Question Selector &amp; Lifecycle Promotion Loop">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="sp_2" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=top;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="0.0" y="7.8" width="1600.0" height="59.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_3" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#4285F4;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="0.0" y="0.0" width="400.0" height="7.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_4" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#EA4335;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="400.0" y="0.0" width="400.0" height="7.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_5" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#FBBC04;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="799.9" y="0.0" width="400.0" height="7.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_6" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#34A853;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="1199.9" y="0.0" width="400.1" height="7.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_7" value="" style="html=1;whiteSpace=wrap;ellipse;fillColor=#4285F4;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="45.6" y="31.8" width="11.4" height="11.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_8" value="" style="html=1;whiteSpace=wrap;ellipse;fillColor=#EA4335;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="60.6" y="31.8" width="11.4" height="11.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_9" value="" style="html=1;whiteSpace=wrap;ellipse;fillColor=#FBBC04;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="75.6" y="31.8" width="11.4" height="11.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_10" value="" style="html=1;whiteSpace=wrap;ellipse;fillColor=#34A853;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="90.6" y="31.8" width="11.4" height="11.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_11" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:13.7px;color:#3C4043;&quot;&gt;&lt;b&gt;Google Cloud  &lt;/b&gt;&lt;/span&gt;&lt;span style=&quot;font-size:13.0px;color:#5F6368;&quot;&gt;Architecture Center&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=13.7;align=left;verticalAlign=middle;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="110.4" y="16.2" width="342.0" height="40.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_12" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=top;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="453.6" y="21.0" width="102.0" height="32.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_13" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.1px;color:#4285F4;&quot;&gt;&lt;b&gt;WS5&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#4285F4;fontSize=11.1;align=center;verticalAlign=middle;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="453.6" y="21.0" width="102.0" height="32.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_14" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:13.3px;color:#3C4043;&quot;&gt;&lt;b&gt;WS5 • PART 5: EXECUTIVE 2-QUESTION TOPOLOGY SELECTOR &amp;amp; LIVE PROMOTION LOOP&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=13.3;align=left;verticalAlign=middle;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="577.2" y="17.4" width="656.8" height="38.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_15" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=top;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="1248.4" y="21.0" width="306.0" height="32.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_16" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:9.8px;color:#5F6368;&quot;&gt;&lt;b&gt;ASYNC-STATE-FLOW-PIPELINE&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=9.8;align=center;verticalAlign=middle;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="1248.4" y="21.0" width="306.0" height="32.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_17" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:26.7px;color:#3C4043;&quot;&gt;&lt;b&gt;Dynamic Architecture Selection &amp;amp; Lifecycle Promotion Across Patterns A, B &amp;amp; C&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=26.7;align=left;verticalAlign=middle;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="66.0" y="98.4" width="1452.0" height="64.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_18" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#12355B;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=top;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="64.8" y="374.4" width="256.8" height="172.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_19" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:16.9px;color:#FFFFFF;&quot;&gt;&lt;b&gt;Q1: Contractual&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:16.9px;color:#FFFFFF;&quot;&gt;&lt;b&gt;Silo / CMEK?&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#FFFFFF;fontSize=16.9;align=center;verticalAlign=middle;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="74.4" y="374.4" width="237.6" height="172.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_20" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#CA8A04;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=top;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="504.0" y="374.4" width="256.8" height="172.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_21" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:16.9px;color:#FFFFFF;&quot;&gt;&lt;b&gt;Q2: Single Hub +&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:16.9px;color:#FFFFFF;&quot;&gt;&lt;b&gt;Live Upgrades?&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#FFFFFF;fontSize=16.9;align=center;verticalAlign=middle;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="513.6" y="374.4" width="237.6" height="172.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_22" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#0D7A75;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=top;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="890.4" y="374.4" width="256.8" height="172.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_23" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:16.9px;color:#FFFFFF;&quot;&gt;&lt;b&gt;Terraform Module&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:16.9px;color:#FFFFFF;&quot;&gt;&lt;b&gt;(2.6 / 3.6 / 4.6)&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#FFFFFF;fontSize=16.9;align=center;verticalAlign=middle;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="900.0" y="374.4" width="237.6" height="172.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_24" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#0F766E;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=top;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="1274.4" y="374.4" width="256.8" height="172.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_25" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:16.9px;color:#FFFFFF;&quot;&gt;&lt;b&gt;20/20 Certified&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:16.9px;color:#FFFFFF;&quot;&gt;&lt;b&gt;Production Runtime&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#FFFFFF;fontSize=16.9;align=center;verticalAlign=middle;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="1284.0" y="374.4" width="237.6" height="172.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_26" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=top;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="330.0" y="206.4" width="165.6" height="134.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_27" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.2px;color:#3C4043;&quot;&gt;&lt;b&gt;1. Evaluates regulatory&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.2px;color:#3C4043;&quot;&gt;&lt;b&gt;&amp;amp; blast-radius mandate&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=11.2;align=center;verticalAlign=middle;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="334.8" y="213.6" width="156.0" height="120.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="cxn_28" value="" style="edgeStyle=none;html=1;flowAnimation=1;strokeColor=#12355B;strokeWidth=1.8;startArrow=none;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="321.6" y="417.6" as="sourcePoint"/>
+            <mxPoint x="504.0" y="417.6" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cxn_29" value="" style="edgeStyle=none;html=1;flowAnimation=1;strokeColor=#D93025;strokeWidth=1.8;startArrow=block;startFill=1;startSize=5;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="321.6" y="489.6" as="sourcePoint"/>
+            <mxPoint x="504.0" y="489.6" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sp_30" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FCE8E6;strokeColor=#D93025;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=top;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="330.0" y="508.8" width="165.6" height="112.8" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_31" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#A50E0E;&quot;&gt;&lt;b&gt;2. If Q1=Yes &amp;amp; single-org,&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#A50E0E;&quot;&gt;&lt;b&gt;deploys Pattern B&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#A50E0E;&quot;&gt;&lt;b&gt;Sovereign Silo&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#A50E0E;fontSize=10.4;align=center;verticalAlign=middle;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="334.8" y="513.6" width="156.0" height="103.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_32" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=top;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="708.0" y="206.4" width="225.6" height="134.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_33" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.2px;color:#3C4043;&quot;&gt;&lt;b&gt;3. Evaluates portfolio&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.2px;color:#3C4043;&quot;&gt;&lt;b&gt;mix: Pattern A&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.2px;color:#3C4043;&quot;&gt;&lt;b&gt;vs. Pattern C Hybrid&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=11.2;align=center;verticalAlign=middle;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="715.2" y="213.6" width="211.2" height="120.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="cxn_34" value="" style="edgeStyle=none;html=1;flowAnimation=1;strokeColor=#12355B;strokeWidth=1.8;startArrow=none;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="751.2" y="460.8" as="sourcePoint"/>
+            <mxPoint x="890.4" y="460.8" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sp_35" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=top;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="1092.0" y="206.4" width="225.6" height="134.4" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_36" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.2px;color:#3C4043;&quot;&gt;&lt;b&gt;4. Provisions 80% shared&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.2px;color:#3C4043;&quot;&gt;&lt;b&gt;ADK core + 20%&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.2px;color:#3C4043;&quot;&gt;&lt;b&gt;Terraform infrastructure&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=11.2;align=center;verticalAlign=middle;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="1099.2" y="213.6" width="211.2" height="120.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="cxn_37" value="" style="edgeStyle=none;html=1;flowAnimation=1;strokeColor=#12355B;strokeWidth=1.8;startArrow=none;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1149.6" y="460.8" as="sourcePoint"/>
+            <mxPoint x="1274.4" y="460.8" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cxn_38" value="" style="edgeStyle=none;html=1;flowAnimation=1;strokeColor=#0D7A75;strokeWidth=2.0;startArrow=none;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1404.0" y="547.2" as="sourcePoint"/>
+            <mxPoint x="1404.0" y="696.0" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cxn_39" value="" style="edgeStyle=none;html=1;flowAnimation=1;strokeColor=#0D7A75;strokeWidth=2.0;startArrow=none;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="199.2" y="696.0" as="sourcePoint"/>
+            <mxPoint x="1404.0" y="696.0" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cxn_40" value="" style="edgeStyle=none;html=1;flowAnimation=1;strokeColor=#0D7A75;strokeWidth=2.0;startArrow=block;startFill=1;startSize=5;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="199.2" y="547.2" as="sourcePoint"/>
+            <mxPoint x="199.2" y="696.0" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sp_41" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#E6F4EA;strokeColor=#0D7A75;strokeWidth=1.2;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=top;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="535.2" y="643.2" width="537.6" height="105.6" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_42" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.4px;color:#0D652D;&quot;&gt;&lt;b&gt;5. Commercial tenants onboarded on&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.4px;color:#0D652D;&quot;&gt;&lt;b&gt;Pattern A seamlessly promote to Pattern C&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.4px;color:#0D652D;&quot;&gt;&lt;b&gt;PSC spokes as enterprise requirements grow&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#0D652D;fontSize=11.4;align=center;verticalAlign=middle;spacing=0;spacingLeft=4;spacingRight=4;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
+          <mxGeometry x="547.2" y="648.0" width="513.6" height="96.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="sp_43" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.1px;color:#4285F4;&quot;&gt;&lt;b&gt;[Slide 53/62 • PART 5 (WS5)]  •  &lt;/b&gt;&lt;/span&gt;&lt;span style=&quot;font-size:8.8px;color:#1D4ED8;&quot;&gt;&lt;b&gt;▶ 4-State Hybrid &amp;amp; Draw.io ↗&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#4285F4;fontSize=10.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
+          <mxGeometry x="48.0" y="866.4" width="1504.0" height="26.4" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

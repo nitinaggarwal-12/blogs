@@ -23,9 +23,9 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "GE Blogs Self-Contained Vision Decompiler (scripts/lib/visionIconEnricher.ts)",
   "healerLog": [
-    "Protected master/canonical blueprint passed through without geometric mutation."
+    "Protected canonical blueprint passed through without geometric mutation."
   ],
   "validationReport": {
     "valid": false,
@@ -58,14 +58,14 @@
       "plainTitle": "Cymbal Platform Operator",
       "zone": "Header & Value Pillars",
       "x": 465,
-      "y": 52,
+      "y": 54,
       "width": 250,
-      "height": 86,
+      "height": 84,
       "isContainer": false
     },
     {
       "id": "wrapper_shared_hubs",
-      "urlSlug": "OBJ-03-SHARED-DEMO-PROJECT-NITI",
+      "urlSlug": "OBJ-03-SHARED-DEMO-PROJECT-CYMB",
       "label": "Shared Demo Project cymbal-build-sandbox (cymbal-pooled-saas-prod) • 12 Enabled APIs (aiplatform, modelarmor, dlp, run, iap, alloydb, valkey, firestore, cloudkms, bigquery)",
       "plainTitle": "Shared Demo Project cymbal-build-sandbox (cymbal-pooled-saas-prod) • 12 Enabled APIs (aiplatform, modelarmor, dlp, run, iap, alloydb, valkey, firestore, cloudkms, bigquery)",
       "zone": "Apps & Solutions Tier",
@@ -113,9 +113,9 @@
     },
     {
       "id": "wrapper_left_pab",
-      "urlSlug": "OBJ-07-TENANT-ALPHA-SANDBOX-FIN",
-      "label": "Tenant Alpha Sandbox: FinVault Bank (ENTERPRISE • Google Workspace OIDC + Jira 3LO)",
-      "plainTitle": "Tenant Alpha Sandbox: FinVault Bank (ENTERPRISE • Google Workspace OIDC + Jira 3LO)",
+      "urlSlug": "OBJ-07-FINVAULT-SANDBOX-ENTERPR",
+      "label": "FinVault Sandbox (ENTERPRISE • Google OIDC + Jira)",
+      "plainTitle": "FinVault Sandbox (ENTERPRISE • Google OIDC + Jira)",
       "zone": "Agentic Capabilities Platform",
       "x": 70,
       "y": 772,
@@ -137,9 +137,9 @@
     },
     {
       "id": "wrapper_right_pab",
-      "urlSlug": "OBJ-09-TENANT-BETA-SANDBOX-RETA",
-      "label": "Tenant Beta Sandbox: RetailStream Corp (STANDARD • Microsoft Entra ID, Zero Google Footprint)",
-      "plainTitle": "Tenant Beta Sandbox: RetailStream Corp (STANDARD • Microsoft Entra ID, Zero Google Footprint)",
+      "urlSlug": "OBJ-09-RETAILSTREAM-SANDBOX-STA",
+      "label": "RetailStream Sandbox (STANDARD • Entra ID OIDC)",
+      "plainTitle": "RetailStream Sandbox (STANDARD • Entra ID OIDC)",
       "zone": "Agentic Capabilities Platform",
       "x": 614,
       "y": 772,
@@ -305,9 +305,9 @@
     },
     {
       "id": "card_lc_db",
-      "urlSlug": "OBJ-23-PRIVATE-AGENT-ALPHA-GEMI",
-      "label": "Private Agent Alpha gemini-2.5-pro (8k Budget)",
-      "plainTitle": "Private Agent Alpha gemini-2.5-pro (8k Budget)",
+      "urlSlug": "OBJ-23-PRIVATE-AGENT-ALPHA",
+      "label": "Private Agent Alpha",
+      "plainTitle": "Private Agent Alpha",
       "zone": "Governance & Footer",
       "x": 342,
       "y": 1218,

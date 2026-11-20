@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="PromptCanvas-Drawio-Compiler" version="24.7.17" type="device">
+  <diagram id="s16-ws3-confidential-gke-sev-snp-enclave" name="S16: Confidential GKE Enclave">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" background="#FFFFFF" math="0" shadow="1">
+      <root>
+      <mxCell id="0"/>
+      <mxCell id="1" parent="0"/>
+      <mxCell id="mc_topo_pill" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#7627BB;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;AMD SEV-SNP • vTPM 2.0 • HSM CMEK&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#F3E8FD;strokeColor=none;fontColor=#7627BB;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1212" y="26" width="320" height="34" as="geometry"/>
+      </mxCell>
+      <mxCell id="mc_div_line" value="" style="rounded=0;arcSize=0;whiteSpace=wrap;html=1;fillColor=#DADCE0;strokeColor=none;fontColor=#5F6368;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="102" width="1464" height="2" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_cust_zone" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#9AA0A6;dashed=0;dashPattern=6 5;strokeWidth=1;fontColor=#5F6368;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="124" width="264" height="522" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_hsm" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Cloud HSM CMEK&lt;/div&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;(FIPS 140-3 Level 3)&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Customer-held key ring&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Unwraps boot, DB &amp;amp; GCS DEKs&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;1-click &amp;lt;60s kill-switch&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Access Approval (CAA) gate&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="88" y="184" width="224" height="196" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_weights" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Air-Gapped GCS&lt;/div&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Model Registry&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;gemma-3-27b-it.safetensors&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Cosign SLSA L3 verified&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;CMEK-encrypted bucket&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;0 internet weight pulls&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="88" y="416" width="224" height="200" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_num1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;1&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="284" y="136" width="34" height="34" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_enclave_zone" value="" style="rounded=1;arcSize=5;whiteSpace=wrap;html=1;fillColor=#EBF2FE;strokeColor=none;fontColor=#1967D2;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="364" y="124" width="648" height="522" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_hero_gke" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;Confidential GKE Pod • Gemma 3 27B IT (vLLM PagedAttention)&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.22;color:#B06000;'&gt;Tensor-parallel L4 / H100 GPUs • ~38 ms/token ITL • 128k context window&lt;/div&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.22;color:#B06000;'&gt;100% in-perimeter inference — zero external API calls or weight egress&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=#E37400;strokeWidth=2;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="392" y="184" width="592" height="148" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_num2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;2&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="950" y="136" width="34" height="34" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_vtpm" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Remote vTPM 2.0 &amp;amp; Envoy PEP&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Signs PCR[0..7] boot quote&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Blocks unattested node joins&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;SPIFFE mTLS workload SVID&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=13;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="392" y="356" width="284" height="124" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_silo_db" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;In-Silo AlloyDB &amp;amp; Zero-PII Logs&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Dedicated CMEK pgvector DB&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Logs SHA-256(prompt) only&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;6/6 Silo controls verified&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=13;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="700" y="356" width="284" height="124" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_sev_band" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Silicon Root of Trust • AMD EPYC SEV-SNP / Intel TDX Memory Encryption&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Inline AES-256 memory controller with per-VM ephemeral key inside CPU die&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Plaintext exists ONLY inside CPU registers — host OS &amp;amp; hypervisor read ciphertext&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DADCE0;strokeWidth=1;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="438" y="504" width="546" height="118" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_num3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;3&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="392" y="545" width="36" height="36" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_bot_strip" value="" style="rounded=1;arcSize=13;whiteSpace=wrap;html=1;fillColor=#F1F3F4;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="668" width="944" height="170" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_kpi1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;41.2s Verified CMEK Halt&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;&amp;lt; 60s SLA on key disable&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Returns HTTP 403 CMEK_DENIED&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="92" y="692" width="284" height="122" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_kpi2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;0 Bytes Operator Exposure&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;RAM + Disk + Bus encrypted&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Defeats cold-boot &amp;amp; hypervisor&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="398" y="692" width="284" height="122" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_kpi3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#137333;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;6 / 6 Sovereign Silo Audit PASS&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;OCC/FDIC • EU DORA • HIPAA&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;100% automated Terraform IaC&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=none;fontColor=#137333;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="704" y="692" width="284" height="122" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_r_card1" value="" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#FBF6E9;strokeColor=none;fontColor=#D56E0C;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1044" y="124" width="488" height="220" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_r_n1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;1&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1068" y="146" width="36" height="36" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_r_txt1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#D56E0C;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Customer-controlled HSM root of trust&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• Tenant holds the FIPS 140-3 Level 3 Cloud HSM key ring and approves admin access via Cloud Access Approval.&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• Signed Gemma 3 27B weights load from an air-gapped CMEK bucket with zero external internet pulls.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FBF6E9;strokeColor=none;fontColor=#D56E0C;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1118" y="140" width="392" height="190" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_r_card2" value="" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#FBF6E9;strokeColor=none;fontColor=#D56E0C;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1044" y="366" width="488" height="220" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_r_n2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;2&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1068" y="388" width="36" height="36" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_r_txt2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#D56E0C;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;In-enclave open-weight inference &amp;amp; attestation&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• vLLM serves Gemma 3 27B IT at ~38 ms/token inside a per-tenant VPC Service Controls perimeter.&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• Envoy verifies the vTPM 2.0 PCR[0..7] quote before routing any tenant prompt or tool call.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FBF6E9;strokeColor=none;fontColor=#D56E0C;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1118" y="382" width="392" height="190" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_r_card3" value="" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FBF6E9;strokeColor=none;fontColor=#D56E0C;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1044" y="608" width="488" height="230" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_r_n3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;3&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1068" y="630" width="36" height="36" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_r_txt3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#D56E0C;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Silicon memory encryption &amp;amp; &amp;lt; 60s kill-switch&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• AMD EPYC SEV-SNP encrypts model weights, KV-cache, and prompts in DRAM so plaintext never leaves CPU registers.&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• Disabling the customer CMEK halts every pod and DB connection in 41.2s (&amp;lt; 60s SLA).&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FBF6E9;strokeColor=none;fontColor=#D56E0C;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1118" y="624" width="392" height="198" as="geometry"/>
+      </mxCell>
+      <mxCell id="e1" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.378;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#E37400;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="s16_hsm" target="s16_hero_gke">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="312" y="258" as="sourcePoint"/>
+          <mxPoint x="392" y="258" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e2" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.22;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#1A73E8;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="s16_weights" target="s16_vtpm">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="312" y="460" as="sourcePoint"/>
+          <mxPoint x="392" y="418" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e3" value="" style="rounded=1;html=1;exitX=0.24;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#1A73E8;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="s16_hero_gke" target="s16_vtpm">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="534" y="332" as="sourcePoint"/>
+          <mxPoint x="534" y="356" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e4" value="" style="rounded=1;html=1;exitX=0.76;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#1A73E8;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="s16_hero_gke" target="s16_silo_db">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="842" y="332" as="sourcePoint"/>
+          <mxPoint x="842" y="356" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="t_main" value="Sovereign hardware enclave and key custody" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=24;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="68" y="26" width="648" height="37" as="geometry"/>
+      </mxCell>
+      <mxCell id="t_sub" value="Slide 36 of 54 • How Pattern B runs open-weight Gemma 3 27B inside AMD SEV-SNP encrypted RAM with customer-held HSM keys" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=14;fontStyle=0;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="68" y="69" width="1065" height="21" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_z1_lbl" value="Key &amp; Weight Custody" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=14;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="88" y="143" width="197" height="21" as="geometry"/>
+      </mxCell>
+      <mxCell id="s16_z2_lbl" value="Per-Tenant VPC-SC Air-Gapped Enclave (0.0.0.0/0 Denied)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#1967D2;fontSize=15;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="388" y="142" width="535" height="23" as="geometry"/>
+      </mxCell>
+        <mxCell id="plane_layer" value="Planes: control / compute / data (generated, locked)" style="locked=1;" parent="0"/>
+        <mxCell id="plane_bdr_00_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=11;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="83.0" y="179.0" width="234.0" height="206.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_01_DATA" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=11;fillColor=none;strokeColor=#FDBA74;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="83.0" y="411.0" width="234.0" height="210.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_02_COMPUTE" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=8;fillColor=none;strokeColor=#6EE7B7;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="387.0" y="179.0" width="602.0" height="158.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_03_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=7;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="387.0" y="351.0" width="294.0" height="134.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_04_DATA+CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=7;fillColor=none;strokeColor=#CBD5E1;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="695.0" y="351.0" width="294.0" height="134.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_05_COMPUTE" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=7;fillColor=none;strokeColor=#6EE7B7;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="433.0" y="499.0" width="556.0" height="128.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b00_CONTROL" value="CONTROL · customer-held key" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="89.2" y="168.6" width="168.3" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b01_DATA" value="DATA · CMEK-encrypted bucket" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#B45309;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="89.2" y="400.6" width="176.8" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b02_COMPUTE" value="COMPUTE · Confidential GKE pod" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#047857;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="393.2" y="168.6" width="185.1" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b03_CONTROL" value="CONTROL · attestation + PEP" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="393.2" y="480.1" width="168.6" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b04_DATA" value="DATA · in-silo DB" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#B45309;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="701.2" y="480.1" width="98.1" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b04_CONTROL" value="CONTROL · logs" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="801.8" y="480.1" width="92.3" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b05_COMPUTE" value="COMPUTE · memory-encrypted node" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#047857;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="439.2" y="622.1" width="200.8" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_CONTROL" value="&lt;b&gt;CONTROL  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;customer-held Cloud HSM key, vTPM attestation gate, SHA-256(prompt) logs&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#1D4ED8;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="68.0" y="846.2" width="481.3" height="16.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_COMPUTE" value="&lt;b&gt;COMPUTE  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;Confidential GKE pod (Gemma 3 27B) on SEV-SNP / TDX nodes: one per tenant&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#047857;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="559.3" y="846.2" width="481.3" height="16.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_DATA" value="&lt;b&gt;DATA  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;in-silo AlloyDB (CMEK pgvector DB) and the CMEK-encrypted GCS model registry&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#B45309;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1050.7" y="846.2" width="481.3" height="16.2" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -7,7 +7,7 @@ Implements:
    on tab `t.0` (preserving Google Docs IDs, sharing permissions, and `?resourcekey=...`),
    applying `--preset bluedoc`, `--pageless=false` (468pt US Letter auto-fitted tables),
    syntax-highlighted Chroma code blocks, crisp equations, inline `#78` Architecture
-   Diagrams, and genuine 2880x1800 Retina Before-vs-After 3rd-Party SaaS UI screenshots.
+   Diagrams, and genuine 2880x1620 Retina Verified Commercial SaaS 3rd-Party SaaS UI screenshots.
 2. Prepends the Google Cloud Architecture Center 1-Row, 2-Column Executive Header Banner
    (`3.0pt` `#1A73E8` solid top accent bar, `148pt` + `320pt` columns, active `#1155CC`
    companion links, `0pt` vertical borders, `#FFFFFF` background).
@@ -36,7 +36,7 @@ SCRATCH_OPS_DIR = Path(os.environ.get("GDOCS_SCRATCH_OPS_DIR", "/tmp/ge_blogs_gd
 GDOCS_BIN = "/google/bin/releases/gemini-agents-gdocs/gdocs"
 GDRIVE_BIN = "/google/bin/releases/gemini-agents-gdrive/gdrive"
 
-PORTAL_BASE = "https://ge-blogs-248990048888.cr.gclb.goog"
+PORTAL_BASE = "https://ge-blogs.cymbal-demo.example/"
 GITHUB_BLOB_BASE = "https://github.com/cloud-ai-fde/ge-blogs/blob/main"
 
 DOC_SPECS: List[Dict[str, Any]] = [
@@ -99,12 +99,23 @@ DOC_SPECS: List[Dict[str, Any]] = [
         "key": "ALL",
         "doc_id": "150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM",
         "drive_title": "ALL Workstreams 1–5 End-to-End Architecture & Verification Compendium — Editable Google Docs",
-        "manifest_title": "ALL Workstreams 1–5 End-to-End Architecture & Verification Compendium (25 Slides • 14 Diagrams)",
+        "manifest_title": "ALL Workstreams 1–5 End-to-End Architecture & Verification Compendium (25 Slides • 12 Approved Diagrams)",
         "md_rel": "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md",
         "docx_rel": "docs/word/all-end-to-end-workstream-and-diagram-guide.docx",
         "series_badge": "Master Compendium • Workstreams 1–5",
         "slides_id": "111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc",
         "slides_label": "25 Slides",
+    },
+    {
+        "key": "ATLAS",
+        "doc_id": "1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY",
+        "drive_title": "ATLAS — GEAP 10-SaaS Multi-Cloud Verified Commercial Visual Verification & Red-Team Atlas — Editable Google Docs",
+        "manifest_title": "ATLAS — GEAP 10-SaaS Multi-Cloud Verified Commercial Visual Verification & Red-Team Atlas (3 Verified Figures • 15 GCP/GE Pending SSO)",
+        "md_rel": "blogs/saas-10-visual-verification-and-redteam-atlas.md",
+        "docx_rel": "docs/word/saas-10-visual-verification-and-redteam-atlas.docx",
+        "series_badge": "Companion Visual Atlas • 10 Commercial SaaS Targets (ThoughtSpot Live + 9 F-13 Slots)",
+        "slides_id": "1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs",
+        "slides_label": "16 Slides",
     },
 ]
 
@@ -156,12 +167,12 @@ def parse_frontmatter(raw_md: str) -> Tuple[Dict[str, str], str]:
 
 
 def build_curated_master_compendium_markdown() -> str:
-    """Builds a comprehensive, fast-rendering ~80KB Master Compendium for ALL (14 diagrams + 5 blogs + 10-SaaS + Before/After 3P UIs)."""
+    """Builds a comprehensive, fast-rendering Master Compendium for ALL (12 approved simplified-header diagrams + 5 restored v2 blogs + 10-SaaS Matrix + Verified Commercial SaaS Retina proofs)."""
     exec_summary_path = ROOT_DIR / "docs" / "EXECUTIVE-BLOG-SUMMARIES-AND-CONTENT-DIRECTORY.md"
     exec_md = exec_summary_path.read_text(encoding="utf-8") if exec_summary_path.is_file() else ""
     _, exec_body = parse_frontmatter(exec_md)
 
-    # Also pull Section 0 Foundations from END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md
+    # Pull Section 0 Foundations from modernized END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md
     e2e_raw = (ROOT_DIR / "docs" / "END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md").read_text(encoding="utf-8")
     _, e2e_body = parse_frontmatter(e2e_raw)
     sec0_match = re.search(
@@ -171,30 +182,28 @@ def build_curated_master_compendium_markdown() -> str:
     )
     sec0_text = sec0_match.group(1).strip() if sec0_match else ""
 
-    blueprint_gallery = [
-        ("ws1-multi-tenant-taxonomy-overview.drawio.png", "Blueprint 1 (WS1 Figure 1) — Multi-Tenant Agentic AI Taxonomy: Pooled (Pattern A), Sovereign Silos (Pattern B) & Dynamic Hybrid (Pattern C)"),
-        ("ws1-cloud-arch-center-5hop-baseline.drawio.png", "Blueprint 2 (WS1 Figure 2) — Official Cloud Architecture Center 5-Hop Cryptographic Context Chain Baseline"),
-        ("ws2-pattern-a-pooled-5hop-architecture.drawio.png", "Blueprint 3 (WS2 Figure 1) — Pattern A High-Density Pooled Multi-Tenant Architecture & Shared Runtime Governance (60v / 20e)"),
-        ("ws2-demo-env-and-3p-auth-sandbox-topology.drawio.png", "Blueprint 4 (WS2) — Pattern A Demo Environment, Federated IdPs & 2LO/3LO Auth Sandbox Topology"),
-        ("ws2-pattern-a-breach-defense-sequence.drawio.png", "Blueprint 5 (WS2) — Pattern A 10-Point Cross-Tenant Red-Team Breach Simulation & Defense Matrix"),
-        ("ws2-terraform-starter-resource-graph.drawio.png", "Blueprint 6 (WS2.6) — Pattern A 1-Click Terraform Starter Resource Graph"),
-        ("ws3-pattern-b-sovereign-silos-architecture.drawio.png", "Blueprint 7 (WS3 Figure 1) — Pattern B Zero-Trust Sovereign Silos (VPC-SC, IAM PAB, CMEK Kill-Switch & Air-Gapped Gemma 3 on GKE)"),
-        ("ws3-multi-project-silo-and-cmek-setup-topology.drawio.png", "Blueprint 8 (WS3) — Pattern B Multi-Project Silo Provisioning, VPC-SC Perimeters & Cloud KMS CMEK Topology"),
-        ("ws3-terraform-silo-blueprint-resource-graph.drawio.png", "Blueprint 9 (WS3.6) — Pattern B Terraform Sovereign Silo & Private GKE Gemma 3 Resource Graph"),
-        ("ws4-pattern-c-hybrid-psc-and-migration.drawio.png", "Blueprint 10 (WS4 Figure 1) — Pattern C Dynamic Hybrid Hub-and-Spoke, Private Service Connect (PSC) & Live Tier Migration"),
-        ("ws4-hub-and-spoke-demo-env-setup-topology.drawio.png", "Blueprint 11 (WS4) — Pattern C Central Ingress Hub, Shared Pool & PSC ServiceAttachment Spokes"),
-        ("ws4-zero-downtime-tier-upgrade-sequence.drawio.png", "Blueprint 12 (WS4) — Zero-Downtime 3-Phase Tier Upgrade Sequence: SHADOW_SYNC -> ATOMIC_CUTOVER -> DRAIN_AND_VERIFY"),
-        ("ws4-terraform-hybrid-psc-blueprint-resource-graph.drawio.png", "Blueprint 13 (WS4.6) — Pattern C Terraform Hybrid PSC Consumer-to-Producer Resource Graph"),
-        ("ws5-decision-tree-and-agentic-triad.drawio.png", "Blueprint 14 (WS5 Figure 1) — Capstone 2-Question Executive Topology Selector & Multi-Tenant Agentic Triad (46v / 19e)"),
+    approved_gallery = [
+        ("ws1-5hop-governance-baseline.drawio.png", "Slide 01/12 (WS1 Figure 1) — Shared 5-Hop Multi-Tenant Agent Platform Architecture"),
+        ("ws1-c4-l3-process-sequence-swimlane.drawio.png", "Slide 02/12 (WS1 Figure 2) — 5-Hop Cryptographic Request & Token Exchange Swimlane"),
+        ("ws2-pattern-a-pooled.drawio.png", "Slide 03/12 (WS2 Figure 1) — Pattern A: High-Density Pooled Multi-Tenant Architecture"),
+        ("ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane.drawio.png", "Slide 04/12 (WS2 Figure 2) — Pattern A Mode A: Stateless CoW Pre-Fork & 1-Turn Heap Wipe"),
+        ("ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane.drawio.png", "Slide 05/12 (WS2 Figure 3) — Pattern A Mode B: Session-Sticky Sandbox & Tenant Latch"),
+        ("ws3-pattern-b-silo.drawio.png", "Slide 06/12 (WS3 Figure 1) — Pattern B: Zero-Trust Sovereign Silos (VPC-SC, IAM PAB, CMEK & Air-Gapped Gemma 3)"),
+        ("ws3-c4-l3-cmek-killswitch-swimlane.drawio.png", "Slide 07/12 (WS3 Figure 2) — Pattern B CMEK Kill-Switch & Immediate HTTP 423 Enforcement"),
+        ("ws4-pattern-c-hybrid.drawio.png", "Slide 08/12 (WS4 Figure 1) — Pattern C: Dynamic Hybrid Hub-and-Spoke & Cross-Project /28 PSC"),
+        ("ws4-c4-l3-live-tier-promotion-swimlane.drawio.png", "Slide 09/12 (WS4 Figure 2) — Pattern C 3-Phase Zero-Downtime Live Tier Promotion (SHADOW_SYNC -> ATOMIC_CUTOVER -> DRAIN_AND_VERIFY)"),
+        ("ws5-decision-tree-and-triad.drawio.png", "Slide 10/12 (WS5 Figure 1) — Executive Architecture Pattern Selector & Multi-Tenant Agentic Triad"),
+        ("saas10-multicloud-a2a-mcp-bridge.drawio.png", "Slide 11/12 (WS5 Figure 3) — Multi-Cloud Federation: Google Cloud Plane <-> AWS Bedrock AgentCore & 10 SaaS"),
+        ("ws5-c4-l3-dynamic-skill-delegation-swimlane.drawio.png", "Slide 12/12 (WS5 Figure 2) — Shared + Private Agents, Dynamic GCS Skills & Zero-PII FinOps OTel"),
     ]
 
     gallery_lines = [
-        "## Complete 14-Blueprint Official Google Cloud Architecture Center Visual Atlas (WS1–WS5)",
+        "## Complete 12-Slide Approved Simplified-Header Visual Atlas (Workstreams 1–5)",
         "",
-        "Every blueprint below is compiled under Rule 53G in `diagrams/*.drawio` with 100% native editable shapes in the companion 25-slide Master Google Slides deck (`slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx`).",
+        "Every architecture topology and L3 swimlane below is rendered from the canonical simplified-header `diagrams/*.svg` / `diagrams/*.drawio` sources with clear `CONTROL`, `COMPUTE`, and `DATA` plane demarcation.",
         "",
     ]
-    for idx, (png_name, caption) in enumerate(blueprint_gallery, 1):
+    for idx, (png_name, caption) in enumerate(approved_gallery, 1):
         gallery_lines.append(f"### {idx}. {caption}")
         gallery_lines.append("")
         gallery_lines.append(f"![{caption}](../diagrams/{png_name})")
@@ -202,44 +211,45 @@ def build_curated_master_compendium_markdown() -> str:
         gallery_lines.append(f"*Figure {idx}. {caption}.*")
         gallery_lines.append("")
 
-    # Pull WS1 10-SaaS Matrix + Representative Before/After 3P Retina UI proofs
+    # Pull restored WS1 10-SaaS Matrix (case-insensitive, backtick-tolerant)
     ws1_raw = (ROOT_DIR / "blogs" / "ws1-reference-architecture-taxonomy-and-5hop-baseline.md").read_text(encoding="utf-8")
     saas_match = re.search(
-        r"(## Live Multi-Cloud \(Google Cloud \+ AWS Bedrock AgentCore MCP\) 10-SaaS Verification Matrix.*)",
+        r"(## Live [Mm]ulti-[Cc]loud.*?10-SaaS [Vv]erification [Mm]atrix.*)",
         ws1_raw,
         flags=re.DOTALL,
     )
     saas_section = saas_match.group(1).strip() if saas_match else ""
-    # Trim trailing What's next from ws1 slice so we don't duplicate
-    saas_section = re.split(r"\n## What's next\b", saas_section)[0].strip()
+    saas_section = re.split(r"\n## (?:Verified Live Commercial|What's next)\b", saas_section)[0].strip()
 
-    extra_ba = "\n".join([
+    verified_ui_section = "\n".join([
+        "## Verified Live Commercial SaaS Retina Proofs (16:9 2880x1620)",
         "",
-        "- **`SAAS-03` — ServiceNow ITSM & ITOM (`Redmine ITSM v5.1` • Target `ZS9VGYHBQL`):** Enforces Hop 5 DPoP-bound 3LO OAuth vault (`3lo_token_sn_rs_valid`) and writes governed change audit records.",
+        "Cryptographically attested live commercial SaaS captures verified via `verify_slide_screenshots.mjs --audience external` (zero OSS stand-ins; Google Cloud Console & Gemini Enterprise captures remain 0/15 pending 1-tap security-key SSO):",
         "",
-        "![BEFORE SAAS-03 (Redmine ITSM v5.1): Change queue prior to governed GEAP Target ZS9VGYHBQL 3LO execution.](../screenshots/genuine-multicloud-3p-uis/before-after/before_03_redmine_itsm.png)",
+        "- **`SAAS-01` — ThoughtSpot Cloud Spotter BI (`team2.thoughtspot.cloud` • Target `HXGGFMZBKE`):** Live commercial enterprise analytics liveboard enforcing Hop 5 row-level security isolation.",
         "",
-        "![AFTER SAAS-03 (Redmine ITSM v5.1 — Target ZS9VGYHBQL): Verified governed ITSM ticket state mutation committed after Hop 5 3LO DPoP verification.](../screenshots/genuine-multicloud-3p-uis/before-after/after_03_redmine_itsm.png)",
+        "![Verified Live Commercial ThoughtSpot Cloud Liveboard (2880x1620 Retina)](../screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png)",
         "",
-        "- **`SAAS-10` — CrowdStrike Falcon & Okta Identity (`HashiCorp Vault v1.13.3` • Target `C7EYM614F2`):** Enforces Cloud KMS CMEK & sub-5-second Valkey `SCAN + UNLINK` revocation kill-switch (`HTTP 423 Locked`).",
+        "*Figure 13. Verified Live Commercial ThoughtSpot Cloud Liveboard (team2.thoughtspot.cloud, 2880x1620 Retina • SHA-256 `fd5cb15c0902`).*",
         "",
-        "![BEFORE SAAS-10 (HashiCorp Vault v1.13.3): Active tenant key lease state prior to CMEK revocation signal.](../screenshots/genuine-multicloud-3p-uis/before-after/before_10_hashicorp_vault.png)",
+        "- **`SAAS-01` — ThoughtSpot Cloud Saved Answer (`team2.thoughtspot.cloud` • Target `HXGGFMZBKE`):** Live commercial saved query view verifying deterministic tenant-scoped query results.",
         "",
-        "![AFTER SAAS-10 (HashiCorp Vault v1.13.3 — Target C7EYM614F2): Tenant secret engine & L1 session cache cryptographically locked (HTTP 423) with zero peer-tenant impact.](../screenshots/genuine-multicloud-3p-uis/before-after/after_10_hashicorp_vault.png)",
+        "![Verified Live Commercial ThoughtSpot Cloud Saved Answer (2880x1620 Retina)](../screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png)",
+        "",
+        "*Figure 14. Verified Live Commercial ThoughtSpot Cloud Saved Answer (team2.thoughtspot.cloud, 2880x1620 Retina • SHA-256 `3fcab795d1e5`).*",
         "",
     ])
 
     combined = "\n\n".join([
         "# GEAP Multi-Tenancy Program — Master Executive & Engineering Compendium (Workstreams 1–5)",
-        "> **Key point:** This master compendium unifies the 5-part Google Cloud Multi-Tenant Agentic AI Architecture Series, executive one-page summaries, all **14 Official `#78` Architecture Blueprints**, the **30/30 Multi-Cloud AWS Bedrock AgentCore 10-SaaS Matrix**, and genuine **2880×1800 Retina Before-vs-After 3rd-Party SaaS UI Proofs** in one Google Cloud branded document.",
-        exec_body.strip(),
+        "> **Key point:** This master compendium unifies the restored 5-part Google Cloud Multi-Tenant Agentic AI Architecture Series, executive one-page summaries, all **12 Approved Simplified-Header Architecture & Sequence Diagrams**, the **30/30 Multi-Cloud AWS Bedrock AgentCore 10-SaaS Matrix**, and cryptographically verified **2880x1620 Retina ThoughtSpot Cloud Commercial SaaS Proofs** in one Google Cloud branded document.",
+        exec_body,
         sec0_text,
         "\n".join(gallery_lines),
         saas_section,
-        extra_ba,
+        verified_ui_section,
     ])
     return combined
-
 
 def sanitize_currency_outside_math(line: str) -> str:
     """Replaces cost-tier ($)/($$)/($$$) and currency $527.0M outside LaTeX math spans."""
@@ -400,11 +410,20 @@ def preprocess_markdown_for_gdocs(
                 src_img = (ROOT_DIR / raw_target.lstrip("/")).resolve()
 
             if src_img.is_file():
+                if src_img.suffix.lower() == ".svg":
+                    for cand in (
+                        src_img.with_suffix(".drawio.png"),
+                        src_img.with_suffix(".png"),
+                        ROOT_DIR / "diagrams" / f"{src_img.stem}.drawio.png",
+                    ):
+                        if cand.is_file():
+                            src_img = cand
+                            break
                 img_counter += 1
                 slug = re.sub(r"[^a-zA-Z0-9]+", "-", src_img.stem.replace(".drawio", "")).strip("-").lower()
                 staged_name = f"fig-{img_counter:02d}-{slug[:48].strip('-')}.png"
                 staged_path = assets_dir / staged_name
-                if spec_md_rel == "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md" and src_img.stat().st_size > 180_000 and shutil.which("convert"):
+                if spec_md_rel in ("docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md", "blogs/saas-10-visual-verification-and-redteam-atlas.md") and src_img.stat().st_size > 180_000 and shutil.which("convert"):
                     subprocess.run(
                         [
                             "convert",
@@ -766,6 +785,59 @@ def prepend_gcp_executive_header_banner(
         )
 
 
+
+def restore_lossless_verified_proof_pngs_in_docx(docx_path: Path) -> int:
+    """Google Docs export downscales PNGs to 1999x1125, altering their SHA-256.
+    Restore bit-exact verified 2880x1620 ThoughtSpot Retina PNG bytes in word/media/
+    for paragraphs explicitly referencing ThoughtSpot Liveboard / Saved Answer."""
+    import html as _html
+    import zipfile as _zipfile
+
+    vdir = ROOT_DIR / "screenshots" / "verified-cloud-console"
+    ts_liveboard = vdir / "saas_01_thoughtspot_liveboard.png"
+    ts_saved = vdir / "saas_02_thoughtspot_saved_answer.png"
+    if not docx_path.is_file() or not ts_liveboard.is_file() or not ts_saved.is_file():
+        return 0
+    live_bytes = ts_liveboard.read_bytes()
+    saved_bytes = ts_saved.read_bytes()
+
+    replacements: Dict[str, bytes] = {}
+    with _zipfile.ZipFile(docx_path, "r") as zin:
+        if "word/document.xml" not in zin.namelist() or "word/_rels/document.xml.rels" not in zin.namelist():
+            return 0
+        rels_xml = zin.read("word/_rels/document.xml.rels").decode("utf-8", errors="ignore")
+        rid_to_media: Dict[str, str] = {}
+        for rid_m, tgt_m in re.findall(r'<Relationship\b[^>]*Id="([^"]+)"[^>]*Target="([^"]+)"', rels_xml):
+            rid_to_media[rid_m] = "word/" + tgt_m.lstrip("/") if not tgt_m.startswith("word/") else tgt_m
+        doc_xml = zin.read("word/document.xml").decode("utf-8", errors="ignore")
+        paras = re.findall(r"<w:p\b.*?</w:p>", doc_xml, flags=re.S)
+        texts = [
+            _html.unescape("".join(re.findall(r"<w:t(?:\s+[^/>]*)?>(.*?)</w:t>", para, flags=re.S)))
+            for para in paras
+        ]
+        for idx, para in enumerate(paras):
+            if "<w:drawing" not in para:
+                continue
+            ctx = " ".join(texts[max(0, idx - 2) : min(len(texts), idx + 3)]).lower()
+            if "thoughtspot" not in ctx:
+                continue
+            target_bytes = saved_bytes if ("saved answer" in ctx or "saas_02" in ctx) else live_bytes
+            for rid_e in re.findall(r'r:embed="(rId\d+)"', para):
+                mp = rid_to_media.get(rid_e, "")
+                if mp.startswith("word/media/") and mp.lower().endswith(".png"):
+                    replacements[mp] = target_bytes
+
+    if not replacements:
+        return 0
+    tmp_path = docx_path.with_suffix(".docx.tmp")
+    with _zipfile.ZipFile(docx_path, "r") as zin, _zipfile.ZipFile(tmp_path, "w", compression=_zipfile.ZIP_DEFLATED) as zout:
+        for info in zin.infolist():
+            data = replacements.get(info.filename, zin.read(info.filename))
+            zout.writestr(info, data)
+    shutil.move(str(tmp_path), str(docx_path))
+    return len(replacements)
+
+
 def sync_single_doc(spec: Dict[str, Any], export_pdf_dir: Optional[Path] = None) -> Dict[str, Any]:
     key = spec["key"]
     doc_id = spec["doc_id"]
@@ -778,7 +850,7 @@ def sync_single_doc(spec: Dict[str, Any], export_pdf_dir: Optional[Path] = None)
         raw_body = build_curated_master_compendium_markdown()
         meta.setdefault(
             "subtitle",
-            "Complete 5-Workstream Reference Architecture, Executive One-Pagers, 14 Official #78 Blueprints, 30/30 Multi-Cloud SaaS Matrix & Retina 3P UI Proofs.",
+            "Complete 5-Workstream Reference Architecture, Executive One-Pagers, 12 Approved Simplified-Header Diagrams, 30/30 Multi-Cloud SaaS Matrix & Retina 3P UI Proofs.",
         )
         meta.setdefault("reading_time", "35 min read")
 
@@ -878,6 +950,9 @@ def sync_single_doc(spec: Dict[str, Any], export_pdf_dir: Optional[Path] = None)
             print(f"   ⚠️  [{key}] Google Drive export limit reached for massive doc ({doc_id}). Retaining existing verified {docx_out.name} ({docx_out.stat().st_size:,} B).")
         else:
             raise
+    restored_n = restore_lossless_verified_proof_pngs_in_docx(docx_out)
+    if restored_n:
+        print(f"   🔐 [{key}] Restored {restored_n} lossless 2880x1620 verified ThoughtSpot Retina PNG(s) in {docx_out.name}")
 
     # Optional PDF export to scratch for visual inspection
     if export_pdf_dir is not None:
@@ -924,9 +999,22 @@ def refresh_cloud_viewer_manifest() -> None:
                 sentry["sizeBytes"] = len(b)
                 sentry["syncedAt"] = now_iso
                 if sentry.get("googleSlidesId"):
-                    s_url = get_shareable_drive_url(sentry["googleSlidesId"])
+                    fid = sentry["googleSlidesId"]
+                    s_url = get_shareable_drive_url(fid)
                     if "resourcekey=" in s_url or not sentry.get("webViewLink"):
                         sentry["webViewLink"] = s_url
+                    wv = sentry.get("webViewLink", "")
+                    m_rk = re.search(r"[?&](resourcekey=[^&#]+)", wv)
+                    if m_rk:
+                        rk = m_rk.group(1)
+                        for uk, base in (
+                            ("googleSlidesEditUrl", f"https://docs.google.com/presentation/d/{fid}/edit"),
+                            ("googleSlidesPreviewUrl", f"https://docs.google.com/presentation/d/{fid}/preview"),
+                            ("googleSlidesEmbedUrl", f"https://docs.google.com/presentation/d/{fid}/embed?start=false&loop=false&delayms=5000"),
+                            ("googleSlidesPdfUrl", f"https://docs.google.com/presentation/d/{fid}/export/pdf"),
+                        ):
+                            sep = "&" if "?" in base else "?"
+                            sentry[uk] = f"{base}{sep}{rk}"
 
     # Refresh all docs entries
     spec_by_key = {s["key"]: s for s in DOC_SPECS}
@@ -940,6 +1028,11 @@ def refresh_cloud_viewer_manifest() -> None:
         existing_view_url = d_entry.get("webViewLink") or ""
         final_doc_url = share_url if ("resourcekey=" in share_url or not existing_doc_url) else existing_doc_url
         final_view_url = share_url if ("resourcekey=" in share_url or not existing_view_url) else existing_view_url
+        m_doc_rk = re.search(r"[?&](resourcekey=[^&#]+)", final_doc_url)
+        doc_rk = m_doc_rk.group(1) if m_doc_rk else ""
+        preview_url = f"https://docs.google.com/document/d/{spec['doc_id']}/preview" + (f"?{doc_rk}" if doc_rk else "")
+        pdf_url = f"https://docs.google.com/document/d/{spec['doc_id']}/export?format=pdf" + (f"&{doc_rk}" if doc_rk else "")
+        docx_url = f"https://docs.google.com/document/d/{spec['doc_id']}/export?format=docx" + (f"&{doc_rk}" if doc_rk else "")
         d_entry.update(
             {
                 "key": dkey,
@@ -947,11 +1040,12 @@ def refresh_cloud_viewer_manifest() -> None:
                 "mdPath": spec["md_rel"],
                 "sha256": hashlib.sha256(md_b).hexdigest(),
                 "sizeBytes": len(md_b),
+                "bytes": len(md_b),
                 "googleDocsId": spec["doc_id"],
                 "googleDocsEditUrl": final_doc_url,
-                "googleDocsPreviewUrl": f"https://docs.google.com/document/d/{spec['doc_id']}/preview",
-                "googleDocsPdfUrl": f"https://docs.google.com/document/d/{spec['doc_id']}/export?format=pdf",
-                "googleDocsDocxUrl": f"https://docs.google.com/document/d/{spec['doc_id']}/export?format=docx",
+                "googleDocsPreviewUrl": preview_url,
+                "googleDocsPdfUrl": pdf_url,
+                "googleDocsDocxUrl": docx_url,
                 "wordDocxPath": spec["docx_rel"],
                 "wordDocxSizeBytes": docx_p.stat().st_size if docx_p.is_file() else 0,
                 "webViewLink": final_view_url,
@@ -960,6 +1054,10 @@ def refresh_cloud_viewer_manifest() -> None:
         )
         manifest["docs"][dkey] = d_entry
 
+    if "ALL" in manifest.get("slides", {}):
+        all_stitle = manifest["slides"]["ALL"].get("title", "")
+        if "14 Diagrams" in all_stitle:
+            manifest["slides"]["ALL"]["title"] = all_stitle.replace("14 Diagrams", "12 Approved Diagrams")
     manifest["updatedAt"] = now_iso
     serialized = json.dumps(manifest, indent=2) + "\n"
     MANIFEST_PATH.write_text(serialized, encoding="utf-8")

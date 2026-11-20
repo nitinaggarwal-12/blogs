@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="PromptCanvas-Drawio-Compiler" version="24.7.17" type="device">
+  <diagram id="s15-opening-compliance-radar-matrix" name="S15: Architecture Patterns Matrix">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" background="#FFFFFF" math="0" shadow="1">
+      <root>
+      <mxCell id="0"/>
+      <mxCell id="1" parent="0"/>
+      <mxCell id="mc_topo_pill" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1967D2;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;SOC 2 • HIPAA • DORA • OCC/FDIC&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#EBF2FE;strokeColor=none;fontColor=#1967D2;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1212" y="26" width="320" height="34" as="geometry"/>
+      </mxCell>
+      <mxCell id="mc_div_line" value="" style="rounded=0;arcSize=0;whiteSpace=wrap;html=1;fillColor=#DADCE0;strokeColor=none;fontColor=#5F6368;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="102" width="1464" height="2" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_h0" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;ARCHITECTURAL LAYER&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=26;whiteSpace=wrap;html=1;fillColor=#202124;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="120" width="256" height="46" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_h1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;Pattern A · High-Density Pool (1.0x COGS)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=26;whiteSpace=wrap;html=1;fillColor=#1E8E3E;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="344" y="120" width="380" height="46" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_h2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;Pattern C · Dynamic Hybrid PSC (1.8x COGS)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=26;whiteSpace=wrap;html=1;fillColor=#1A73E8;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="744" y="120" width="380" height="46" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_h3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;Pattern B · Sovereign Silo (15.0x COGS)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=26;whiteSpace=wrap;html=1;fillColor=#8430CE;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1144" y="120" width="388" height="46" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_strip1" value="" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#F1F3F4;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="178" width="1464" height="118" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l1_lbl" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;1 · Regulatory Regime&lt;/div&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;&amp;amp; Tenant Fit&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt; Statutory mandate&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=13;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="82" y="192" width="232" height="90" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l1_c1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#137333;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;SOC 2 Type II &amp;amp; ISO/IEC 27001&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;950 commercial B2B SaaS &amp;amp; PLG tenants&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=none;fontColor=#137333;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="344" y="192" width="380" height="90" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l1_c2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1967D2;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;HIPAA BAA, FDA 21 CFR 11 &amp;amp; Regional GDPR&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;Healthcare PHI &amp;amp; enterprise data-spoke mandates&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#EBF2FE;strokeColor=none;fontColor=#1967D2;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="744" y="192" width="380" height="90" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l1_c3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#7627BB;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;OCC / FDIC Banking, EU DORA &amp;amp; Sovereign&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;Zero shared compute + customer HSM kill-switch&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#F3E8FD;strokeColor=none;fontColor=#7627BB;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1144" y="192" width="374" height="90" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_strip2" value="" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#F1F3F4;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="310" width="1464" height="118" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l2_lbl" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;2 · Ingress &amp;amp; Identity&lt;/div&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;(Hops 1–2)&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt; Edge authentication&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=13;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="82" y="324" width="232" height="90" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l2_c1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Shared External ALB + STS OBO + DPoP&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Strips X-Tenant-Id • &amp;lt;0.15ms JWKS • ARD -94%&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="344" y="324" width="380" height="90" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l2_c2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Shared External ALB + STS OBO + DPoP&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;100% identical ingress URL &amp;amp; token broker as Pool&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="744" y="324" width="380" height="90" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l2_c3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Dedicated Silo Ingress + IAM PAB Boundary&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B06000;'&gt;Per-tenant VPC-SC perimeter (0.0.0.0/0 denied)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=#E37400;strokeWidth=2;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1144" y="324" width="374" height="90" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_strip3" value="" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#F1F3F4;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="442" width="1464" height="118" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l3_lbl" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;3 · Agent Runtime&lt;/div&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;&amp;amp; Compute (Hop 3)&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt; Cognitive execution&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=13;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="82" y="456" width="232" height="90" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l3_c1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#137333;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Pooled Cloud Run + Vertex ADK Runtime&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;Valkey {tenant}:{user} 120 RPM • &amp;gt;=32k Prefix Cache&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=none;fontColor=#137333;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="344" y="456" width="380" height="90" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l3_c2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1967D2;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Pooled Cloud Run Hub + Unidirectional /28 PSC&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;Reuses pooled AI compute; bridges to private spoke&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#EBF2FE;strokeColor=none;fontColor=#1967D2;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="744" y="456" width="380" height="90" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l3_c3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#7627BB;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Dedicated Silo Cloud Run or Confidential GKE&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;AMD SEV-SNP encrypted RAM • Gemma 3 27B / PT&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#F3E8FD;strokeColor=none;fontColor=#7627BB;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1144" y="456" width="374" height="90" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_strip4" value="" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#F1F3F4;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="574" width="1464" height="118" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l4_lbl" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;4 · Memory, Data &amp;amp;&lt;/div&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Inline DLP (Hops 4–5)&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt; Vector &amp;amp; state store&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=13;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="82" y="588" width="232" height="90" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l4_c1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Shared AlloyDB with Kernel FORCE RLS&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;SET LOCAL app.tenant_id • PgBouncer DISCARD ALL&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="344" y="588" width="380" height="90" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l4_c2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Dedicated Spoke AlloyDB via /28 PSC Endpoint&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B06000;'&gt;100% physical DB &amp;amp; vector isolation in tenant spoke&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=#E37400;strokeWidth=2;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="744" y="588" width="380" height="90" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l4_c3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#7627BB;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Air-Gapped In-Silo AlloyDB + Local MCP&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;Zero cross-tenant tables • In-perimeter weights&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#F3E8FD;strokeColor=none;fontColor=#7627BB;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1144" y="588" width="374" height="90" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_strip5" value="" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#F1F3F4;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="706" width="1464" height="132" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l5_lbl" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;5 · Cryptography &amp;amp;&lt;/div&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Live Graduation&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt; Key custody &amp;amp; SLA&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="82" y="722" width="232" height="100" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l5_c1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#137333;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Google-Managed Encryption + 0.4ms JTI Revoke&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;Instant Valkey token revoke &amp;amp; &amp;lt;5s cache UNLINK&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;Graduates live to Pattern C via SHADOW_SYNC&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=none;fontColor=#137333;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="344" y="722" width="380" height="100" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l5_c2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1967D2;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Spoke Customer CMEK + &amp;lt; 5ms Pointer Cutover&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;Dual-write backfill + SHA-256 parity check&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;0ms client downtime • 0 SDK or URL changes&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#EBF2FE;strokeColor=none;fontColor=#1967D2;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="744" y="722" width="380" height="100" as="geometry"/>
+      </mxCell>
+      <mxCell id="s15_l5_c3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Cloud HSM FIPS 140-3 L3 + &amp;lt; 60s Kill-Switch&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B06000;'&gt;Customer-held HSM key ring + Access Approval&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B06000;'&gt;Verified 41.2s total enclave halt on key disable&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=#E37400;strokeWidth=2;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1144" y="722" width="374" height="100" as="geometry"/>
+      </mxCell>
+      <mxCell id="e1" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#1A73E8;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="s15_l5_c1" target="s15_l5_c2">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="724" y="772" as="sourcePoint"/>
+          <mxPoint x="744" y="772" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e2" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#8430CE;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="s15_l5_c2" target="s15_l5_c3">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1124" y="772" as="sourcePoint"/>
+          <mxPoint x="1144" y="772" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="t_main" value="Multi-tenant agent architecture patterns" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=24;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="68" y="26" width="619" height="37" as="geometry"/>
+      </mxCell>
+      <mxCell id="t_sub" value="Slide 06 of 54 • Match every regulatory regime (SOC 2, HIPAA, DORA, OCC/FDIC) to the right isolation pattern across 5 architectural layers" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=14;fontStyle=0;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="68" y="69" width="1221" height="21" as="geometry"/>
+      </mxCell>
+        <mxCell id="plane_layer" value="Planes: control / compute / data (generated, locked)" style="locked=1;" parent="0"/>
+        <mxCell id="plane_bdr_00_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="65.0" y="307.0" width="1470.0" height="124.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_01_COMPUTE" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=none;strokeColor=#6EE7B7;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="65.0" y="439.0" width="1470.0" height="124.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_02_DATA" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=none;strokeColor=#FDBA74;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="65.0" y="571.0" width="1470.0" height="124.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_03_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=7;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="65.0" y="703.0" width="1470.0" height="138.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b00_CONTROL" value="CONTROL · ingress + identity" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="68.8" y="310.0" width="165.0" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b01_COMPUTE" value="COMPUTE · agent runtime" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#047857;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="68.8" y="442.0" width="149.2" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b02_DATA" value="DATA · Hop 5 stores" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#B45309;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="68.8" y="574.0" width="116.5" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b03_CONTROL" value="CONTROL · keys + graduation" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="68.8" y="706.0" width="164.2" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_CONTROL" value="&lt;b&gt;CONTROL  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;shared ALB + STS in A and C; dedicated ingress + IAM PAB per silo in B&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#1D4ED8;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="68.0" y="846.2" width="481.3" height="16.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_COMPUTE" value="&lt;b&gt;COMPUTE  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;pooled Cloud Run in A and C; dedicated Cloud Run or Confidential GKE in B&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#047857;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="559.3" y="846.2" width="481.3" height="16.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_DATA" value="&lt;b&gt;DATA  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;shared AlloyDB + RLS in A; spoke AlloyDB via /28 PSC in C; in-silo in B&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#B45309;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1050.7" y="846.2" width="481.3" height="16.2" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

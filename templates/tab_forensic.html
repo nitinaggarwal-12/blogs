@@ -1,11 +1,37 @@
     <section id="tab-forensic" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-forensic">
-      <div class="card" data-no-hover-toolbar="true">
+      <!-- Consolidated Dynamic Forensic Section/Domain Dropdown & Live Search Bar (Rule 25 Zero Cognitive Overload) -->
+      <div class="card" id="forensic-consolidated-filter-bar" data-testid="forensic-consolidated-filter-bar" data-no-hover-toolbar="true" style="margin-bottom:12px; padding:8px 14px; background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:1; min-width:300px;">
+          <label for="forensic-filter-select" style="margin:0; font-size:11px; font-weight:800; color:#1a73e8; text-transform:uppercase; letter-spacing:0.03em; white-space:nowrap;">🔍 Forensic View / Domain:</label>
+          <select id="forensic-filter-select" onchange="applyForensicConsolidatedFilter()" aria-label="Filter Forensic Audit Sections or Domains" style="width:auto; min-width:265px; max-width:350px; padding:5px 9px; font-size:12px; font-weight:700; border:1px solid #93c5fd; border-radius:6px; background:#f8fafc; color:#0f172a;">
+            <option value="ALL" data-base-label="All 4 Forensic Verification Views">All 4 Forensic Verification Views (4)</option>
+            <optgroup label="By Verification Section">
+              <option value="SEC:ledger" data-base-label="1. 13-Point Deep Forensic Audit Ledger">1. 13-Point Deep Forensic Audit Ledger (13)</option>
+              <option value="SEC:maturity" data-base-label="2. Google Cloud 4-Tier Maturity Index">2. Google Cloud 4-Tier Maturity Index (4)</option>
+              <option value="SEC:judge" data-base-label="3. Dual-Model Gemini 2.5 Judge Matrix">3. Dual-Model Gemini 2.5 Judge Matrix (6)</option>
+              <option value="SEC:aef" data-base-label="4. 8-Pillar Agentic Eval Framework (AEF v2.0)">4. 8-Pillar Agentic Eval Framework (AEF v2.0) (8)</option>
+            </optgroup>
+            <optgroup label="By Audit Check Domain (F-01..F-13)">
+              <option value="DOM:links-hygiene" data-base-label="Repository Hygiene, Links &amp; Portal (F-01, F-11, F-12)">Repository Hygiene, Links &amp; Portal (F-01, F-11, F-12) (3)</option>
+              <option value="DOM:control-plane" data-base-label="5-Hop Control Plane, Agent Alpha &amp; MCP (F-02..F-07)">5-Hop Control Plane, Agent Alpha &amp; MCP (F-02..F-07) (6)</option>
+              <option value="DOM:silos-tf-uis" data-base-label="Sovereign Silos, Terraform &amp; Verified Live UIs (F-08..F-10, F-13)">Sovereign Silos, Terraform &amp; Verified Live UIs (F-08..F-10, F-13) (4)</option>
+            </optgroup>
+          </select>
+
+          <input type="search" id="forensic-search-input" oninput="applyForensicConsolidatedFilter()" placeholder="Search F-01..F-13 checks, maturity, judge rows..." aria-label="Search Forensic Audit Ledger and Judge Matrix" style="width:270px; flex:0 1 290px; padding:5px 10px; font-size:11.5px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#0f172a;" />
+          <button type="button" class="sim-btn" onclick="resetForensicConsolidatedFilter()" style="padding:4px 9px; font-size:11px; font-weight:700;">↺ Reset</button>
+          <span class="badge badge-green" id="forensic-filter-count-badge" style="font-size:11px; font-weight:700;">13 / 13 Checks &bull; 6 / 6 Judge</span>
+        </div>
+
+        <button type="button" class="sim-btn primary" style="padding:5px 11px; font-size:11.5px; font-weight:700;" onclick="runLiveForensicAudit()">&#9889; Re-Run Live 13-Point Audit</button>
+      </div>
+
+      <div class="card" id="forensic-audit-ledger-card" data-no-hover-toolbar="true">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
           <div>
             <h3>13-Point Deep Forensic Audit &amp; Remediation Ledger (<code>scripts/run_deep_forensic_audit.py</code>)</h3>
-            <p class="muted m-0">Verifies all markdown links, UI artifact pills, publish-ready frontmatter across the 5 canonical blogs, 8 modular agent/MCP files, 14 Official Hub-and-Spoke blueprints, 5-Hop cryptographic controls, Terraform blueprints, 107/107 multi-cloud simulations, and 23 genuine live 2880&times;1800 Retina 3P UIs + continuity ledger.</p>
+            <p class="muted m-0">Verifies all markdown links, UI artifact pills, publish-ready frontmatter across the 5 canonical blogs, 8 modular agent/MCP files, 12 approved simplified-header SVG diagrams (+ 14 legacy Draw.io archive), 5-Hop cryptographic controls, Terraform blueprints, 107/107 multi-cloud simulations, and verified live Cloud Console &amp; Commercial SaaS Retina captures (2 Live Commercial SaaS Retina captures (ThoughtSpot Cloud); Google Cloud Console &amp; Gemini Enterprise: 0/15 pending 1-tap SSO) + continuity ledger.</p>
           </div>
-          <button type="button" class="sim-btn primary" onclick="runLiveForensicAudit()">&#9889; Re-Run Live 13-Point Forensic Audit Now</button>
         </div>
         <div id="forensic-run-banner" style="margin-top:12px; font-size:13px; color:var(--ok-text);"></div>
         <div style="overflow-x:auto;">
@@ -30,8 +56,8 @@
             <tr><td><code>F-09</code></td><td>Zero Global State Mutation Across Test Suites</td><td>Isolated <code>self.tenant_profiles</code> per runtime instance so Pattern C live tier upgrades never mutate global state.</td><td><span class="badge badge-green">PASS</span></td></tr>
             <tr><td><code>F-10</code></td><td>Complete Terraform Starter &amp; Blueprint Documentation</td><td>Verified <code>main.tf</code>, <code>variables.tf</code>, <code>README.md</code>, and <code>terraform.tfvars.example</code> across Workstreams <code>2.6</code>, <code>3.6</code>, and <code>4.6</code>.</td><td><span class="badge badge-green">PASS</span></td></tr>
             <tr><td><code>F-11</code></td><td>Sanitized Repository Hygiene &amp; Canonical Purge</td><td>Verified <code>.gitignore</code>, 0 <code>__pycache__/*.pyc</code> artifacts, and 0 legacy/duplicate diagram or blog files.</td><td><span class="badge badge-green">PASS</span></td></tr>
-            <tr><td><code>F-12</code></td><td>Interactive HTML5 Architecture, 5-Part Blog Series Reader, 14-Blueprint Gallery &amp; Simulator Portal</td><td>Verified self-contained interactive portal at <code>index.html</code> with 100% valid artifact, diagram &amp; publication paths.</td><td><span class="badge badge-green">PASS</span></td></tr>
-            <tr><td><code>F-13</code></td><td>Genuine Multi-Cloud 3P UI Screenshot Provenance (23 Live Retina UIs) &amp; Cross-Run Continuity Ledger (<code>Rule 60A&ndash;60C</code>)</td><td>Verified 10/10 Google Cloud Run Gen2 (<code>bbar-138hf0</code>) + 10/10 AWS EC2 (<code>393036065405 &bull; i-04924523ac41ff132</code>) upstream 3P software stacks, 23/23 live 2880&times;1800 Retina UI PNGs (SHA-256 matched, 0 <code>page.setContent</code>), and 6/6 repeatable steps in <code>data/run_continuity_ledger.json</code>.</td><td><span class="badge badge-green">PASS</span></td></tr>
+            <tr><td><code>F-12</code></td><td>Interactive HTML5 Architecture, 5-Part Blog Series Reader, 12-Diagram Approved Gallery &amp; Simulator Portal</td><td>Verified self-contained interactive portal at <code>index.html</code> with 100% valid artifact, diagram &amp; publication paths.</td><td><span class="badge badge-green">PASS</span></td></tr>
+            <tr><td><code>F-13</code></td><td>Verified Live Cloud Console &amp; Commercial SaaS Screenshot Provenance + Zero Legacy Stand-Ins (<code>Rule 60A&ndash;60C</code>)</td><td>Verified 2 Live Commercial SaaS Retina captures (ThoughtSpot Cloud); Google Cloud Console &amp; Gemini Enterprise: 0/15 pending 1-tap SSO via <code>verify_slide_screenshots.mjs --audience external</code> (exit 0), 0 legacy open-source stand-ins or unattested images on disk/HTML/Markdown, and 4/4 active repeatable steps in <code>data/run_continuity_ledger.json</code>.</td><td><span class="badge badge-green">PASS</span></td></tr>
           </tbody>
         </table>
         </div>
@@ -104,12 +130,12 @@
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:14px; border-bottom:1px solid #e2e8f0; padding-bottom:10px;">
           <div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <span class="badge badge-blue" style="font-size:10.5px; font-weight:800; text-transform:uppercase;">Dual-Model Gemini 2.5 Evaluation</span>
-              <h3 style="margin:0; font-size:16px; color:#0f172a;">Dual-Model Vertex AI Gemini 2.5 Judge Matrix (Same-Family Pro + Flash)</h3>
+              <span class="badge badge-blue" style="font-size:10.5px; font-weight:800; text-transform:uppercase;">Historical Same-Family Baseline (Gemini 2.5)</span>
+              <h3 style="margin:0; font-size:16px; color:#0f172a;">Historical Dual-Model Vertex AI Gemini 2.5 Baseline (Same-Family Pro + Flash)</h3>
             </div>
-            <p class="muted m-0" style="font-size:12px; margin-top:3px;">Same-family dual-tier evaluation across 6 weighted dimensions independently scored across WS1&ndash;WS5 by Vertex AI <code>gemini-2.5-flash</code> (99.94) vs <code>gemini-2.5-pro</code> (99.94) &bull; Receipt: <code>docs/multi_model_llm_judge_evaluation_receipt.json</code>.</p>
+            <p class="muted m-0" style="font-size:12px; margin-top:3px;">Same-family dual-tier evaluation across 6 weighted dimensions independently scored across WS1&ndash;WS5 by Vertex AI <code>gemini-2.5-flash</code> (99.94) vs <code>gemini-2.5-pro</code> (99.94) &bull; Historical baseline receipt: <code>docs/multi_model_llm_judge_evaluation_receipt.json</code>. <strong>Live orthogonal dual-model Vertex AI scores (<code>gemini-3.1-pro-preview</code> vs <code>gemini-2.5-flash</code>) are evaluated dynamically in Section 4 (AEF v2.0 Pillar 8) directly below.</strong></p>
           </div>
-          <span class="badge badge-green" style="font-size:11px; font-weight:700;">Overall Consensus: 99.94 / 100 (&Delta; &le; 0.4%) &bull; 10/10 PASS</span>
+          <span class="badge badge-blue" style="font-size:11px; font-weight:700;">Historical Baseline: 99.94 / 100 (&Delta; 0.00%) &bull; See Live AEF v2.0 Below</span>
         </div>
 
         <div style="overflow-x:auto;">
@@ -124,7 +150,7 @@
                 <th>Certification Finding</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="forensic-judge-tbody">
               <tr>
                 <td><strong>1. Terminology &amp; Systems Primitives</strong></td>
                 <td><span style="font-family:monospace; color:#475569;">20%</span></td>
@@ -171,10 +197,10 @@
                 <td><span style="font-family:monospace; color:#1a73e8; font-weight:700;">100.0 / 100</span></td>
                 <td><span style="font-family:monospace; color:#4338ca; font-weight:700;">100.0 / 100</span></td>
                 <td><span class="badge badge-green" style="font-size:10.5px;">0.0%</span></td>
-                <td style="font-size:11.5px; color:#166534;">5/5 Google Cloud Well-Architected pillars, 1-click deploy, 15/15 Google Slides + 21/21 .pptx decks</td>
+                <td style="font-size:11.5px; color:#166534;">5/5 Google Cloud Well-Architected pillars, 1-click deploy, 15/15 Google Slides + 25/25 .pptx decks</td>
               </tr>
               <tr style="background:#f8fafc; font-weight:700;">
-                <td><strong>Weighted Mean Across All 5 Series Guides (10 Live Evaluations)</strong></td>
+                <td><strong>Historical Same-Family Mean Across WS1&ndash;WS5 (Superseded by Live AEF v2.0 P8 Below)</strong></td>
                 <td><span style="font-family:monospace; color:#0f172a;">100%</span></td>
                 <td><span style="font-family:monospace; color:#1a73e8; font-weight:800;">99.94 / 100</span></td>
                 <td><span style="font-family:monospace; color:#4338ca; font-weight:800;">99.94 / 100</span></td>
@@ -185,6 +211,47 @@
           </table>
         </div>
       </div>
+
+      <!-- [AEF v2.0] 8-PILLAR AGENTIC EVALUATION FRAMEWORK SCORECARD -->
+      <div class="card" id="forensic-aef-scorecard-card" style="margin-top:20px; padding:18px; background:#ffffff; border:1px solid #cbd5e1; border-radius:10px;" data-no-hover-toolbar="true">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid #e2e8f0; padding-bottom:10px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <span class="badge badge-blue" style="font-size:10.5px; font-weight:800; text-transform:uppercase;">AEF v2.0 Fail-Closed Gate</span>
+              <h3 style="margin:0; font-size:16px; color:#0f172a;">8-Pillar Agentic Evaluation Framework Scorecard</h3>
+            </div>
+            <p class="muted m-0" style="font-size:12px; margin-top:3px;">End-to-end verification across 120 multi-turn trajectory runs, 22 MITRE ATLAS/OWASP red-team probes, live API CRUD SLOs, Draw.io/SVG XML graphs, build/tests/PPTX/DOCX, cryptographic provenance, headless cross-viewport UX, and live orthogonal Vertex AI dual-model LLM-as-a-Judge &bull; Spec: <code>evals/README.md</code> &bull; Report: <code>docs/AGENTIC-EVALUATION-REPORT.md</code>.</p>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span class="badge badge-blue" id="aef-release-gate-badge" style="font-size:11px; font-weight:800;">PENDING CERTIFICATION</span>
+            <button type="button" id="btn-run-aef-eval" class="sim-btn primary" style="padding:5px 11px; font-size:11.5px; font-weight:700;" onclick="runLiveAefEvaluation('fast')">&#9889; Re-Run 8-Pillar Eval</button>
+          </div>
+        </div>
+        <div id="aef-run-banner" style="margin-bottom:10px; font-size:12px; color:#475569;">Loading latest AEF v2.0 evaluation receipt from <code>GET /api/evals/latest</code>...</div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Pillar ID</th>
+                <th>Evaluation Domain</th>
+                <th>Status</th>
+                <th>Duration</th>
+                <th>Empirical Verification Summary</th>
+              </tr>
+            </thead>
+            <tbody id="aef-pillar-tbody">
+              <tr><td><code>EVAL-P1-TRAJECTORY</code></td><td>Multi-Turn Agentic Trajectory, Isolation &amp; Determinism</td><td><span class="badge badge-blue">PENDING</span></td><td><code>--</code></td><td>24 golden &amp; adversarial trajectories &times; k=5 trials (120 executions; pass@1, pass^5, 0% leakage).</td></tr>
+              <tr><td><code>EVAL-P2-REDTEAM</code></td><td>Adversarial Security &amp; Red-Team Suite (MITRE ATLAS + OWASP)</td><td><span class="badge badge-blue">PENDING</span></td><td><code>--</code></td><td>22 runtime + HTTP probes (prompt injection, RLS escape, CSRF, XXE, SVG XSS, path traversal).</td></tr>
+              <tr><td><code>EVAL-P3-API-CRUD</code></td><td>Live Portal API Contract, Stateful CRUD &amp; Latency SLOs</td><td><span class="badge badge-blue">PENDING</span></td><td><code>--</code></td><td>All portal &amp; 14 per-blog routes, sim1..sim6, full Clone&rarr;Save&rarr;Delete&rarr;Restore round-trip &amp; p95 &le; 500ms.</td></tr>
+              <tr><td><code>EVAL-P4-DIAGRAMS</code></td><td>Draw.io XML &amp; SVG Structural Graph Integrity (<code>ai-prompt-evals</code>)</td><td><span class="badge badge-blue">PENDING</span></td><td><code>--</code></td><td>Validates all Draw.io XML topologies (0 dangling edges), SVG XSS hygiene &amp; 67-entry atlas parity.</td></tr>
+              <tr><td><code>EVAL-P5-ARTIFACTS</code></td><td>Build, Unit Tests, Forensic Audit, PPTX, DOCX &amp; Blog Integrity</td><td><span class="badge badge-blue">PENDING</span></td><td><code>--</code></td><td>Full unittest discovery, TypeScript <code>tsc --noEmit</code>, 13/13 Deep Forensic Audit, PPTX, DOCX, Rebuilt v2 Blogs &amp; 12-Slide Diagrams.</td></tr>
+              <tr><td><code>EVAL-P6-PROVENANCE</code></td><td>Cryptographic Screenshot Provenance &amp; Zero-Stand-In Gate</td><td><span class="badge badge-blue">PENDING</span></td><td><code>--</code></td><td>Fail-closed <code>verify_slide_screenshots.mjs --audience external</code>, SHA-256 &amp; 16:9 Retina check, 0 legacy images.</td></tr>
+              <tr><td><code>EVAL-P7-VISUAL-UX</code></td><td>Cross-Viewport Headless Chrome Visual, Geometry, A11y &amp; Edge-Case Suite</td><td><span class="badge badge-blue">PENDING</span></td><td><code>--</code></td><td>12 grounded Puppeteer test cases across 1600&times;950, 1280&times;800, 834&times;1194 &amp; 390&times;844 viewports.</td></tr>
+              <tr><td><code>EVAL-P8-LLM-JUDGE</code></td><td>Live Orthogonal Dual-Model Vertex AI LLM-as-a-Judge</td><td><span class="badge badge-blue">PENDING</span></td><td><code>--</code></td><td>Live Vertex AI <code>gemini-3.1-pro-preview</code> vs <code>gemini-2.5-flash</code> scoring across 6 blogs &amp; 4 agent turns.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </section>
 
-    <!-- TAB 3: LIVE GOOGLE CLOUD CONSOLE, 27-FILE CODEBASE, 8-STAGE SSH RUNBOOK & DELIVERABLES -->
+    <!-- TAB 3: VERIFIED CLOUD CONSOLE & COMMERCIAL SAAS WORKBENCH, 27-FILE CODEBASE & DELIVERABLES -->

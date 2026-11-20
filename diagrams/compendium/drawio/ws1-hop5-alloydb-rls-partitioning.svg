@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" style="width:100%;height:auto;display:block;background:#FFFFFF;font-family:Arial,sans-serif;">
+<defs><marker id="arrowEnd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#475569"/></marker></defs>
+<rect x="0" y="0" width="1600" height="900" fill="#FFFFFF"/>
+<rect x="72.0" y="42.0" width="276.0" height="36.0" rx="5" fill="#E8F0FE" stroke="#4285F4" stroke-width="1.0"/>
+<text x="210.0" y="63.0" text-anchor="middle" fill="#0D47A1" font-size="11.7" font-weight="bold">PART 1 (WS1) • HOP 5B RLS</text>
+<text x="384.0" y="66.3" text-anchor="start" fill="#3C4043" font-size="22.1" font-weight="bold">Hop 5 Data Partitioning: AlloyDB Row-Level Security Architecture</text>
+<rect x="72.0" y="90.0" width="1456.0" height="2.4" rx="0" fill="#DADCE0" stroke="none" stroke-width="0"/>
+<text x="84.0" y="872.9" text-anchor="start" fill="#5F6368" font-size="11.1" font-weight="bold">[Compendium S13/54 • PART 1 (WS1)]  •  ▶ 4-State Hybrid &amp; Draw.io ↗</text>
+<text x="84.0" y="129.7" text-anchor="start" fill="#5F6368" font-size="14.3" font-weight="bold">How Row-Level Security mathematically prevents cross-tenant data leaks at the database engine layer.</text>
+<rect x="72.0" y="162.0" width="96.0" height="52.8" fill="#EFF6FF" stroke="#CBD5E1" stroke-width="1"/>
+<text x="77.0" y="191.4" fill="#0F172A" font-size="9">Row ID</text>
+<rect x="168.0" y="162.0" width="144.0" height="52.8" fill="#EFF6FF" stroke="#CBD5E1" stroke-width="1"/>
+<text x="173.0" y="191.4" fill="#0F172A" font-size="9">Tenant ID</text>
+<rect x="312.0" y="162.0" width="264.0" height="52.8" fill="#EFF6FF" stroke="#CBD5E1" stroke-width="1"/>
+<text x="317.0" y="191.4" fill="#0F172A" font-size="9">Account Owner</text>
+<rect x="576.0" y="162.0" width="180.0" height="52.8" fill="#EFF6FF" stroke="#CBD5E1" stroke-width="1"/>
+<text x="581.0" y="191.4" fill="#0F172A" font-size="9">Ledger Balance</text>
+<rect x="756.0" y="162.0" width="412.0" height="52.8" fill="#EFF6FF" stroke="#CBD5E1" stroke-width="1"/>
+<text x="761.0" y="191.4" fill="#0F172A" font-size="9">RLS Evaluation Rule</text>
+<rect x="1168.0" y="162.0" width="180.0" height="52.8" fill="#EFF6FF" stroke="#CBD5E1" stroke-width="1"/>
+<text x="1173.0" y="191.4" fill="#0F172A" font-size="9">Tenant A Visibility</text>
+<rect x="1348.0" y="162.0" width="180.0" height="52.8" fill="#EFF6FF" stroke="#CBD5E1" stroke-width="1"/>
+<text x="1353.0" y="191.4" fill="#0F172A" font-size="9">Tenant B Visibility</text>
+<rect x="72.0" y="214.8" width="96.0" height="52.8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+<text x="77.0" y="244.2" fill="#0F172A" font-size="9">101</text>
+<rect x="168.0" y="214.8" width="144.0" height="52.8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+<text x="173.0" y="244.2" fill="#0F172A" font-size="9">tenant-a</text>
+<rect x="312.0" y="214.8" width="264.0" height="52.8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+<text x="317.0" y="244.2" fill="#0F172A" font-size="9">Tenant A Treasury Ops</text>
+<rect x="576.0" y="214.8" width="180.0" height="52.8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+<text x="581.0" y="244.2" fill="#0F172A" font-size="9">USD 14,250,000</text>
+<rect x="756.0" y="214.8" width="412.0" height="52.8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+<text x="761.0" y="244.2" fill="#0F172A" font-size="9">current_setting(&#x27;app.current_tenant_id&#x27;) = &#x27;tenant-a&#x27;</text>
+<rect x="1168.0" y="214.8" width="180.0" height="52.8" fill="#E6F4EA" stroke="#CBD5E1" stroke-width="1"/>
+<text x="1173.0" y="244.2" fill="#0F172A" font-size="9">✔ VISIBLE (PERMITTED)</text>
+<rect x="1348.0" y="214.8" width="180.0" height="52.8" fill="#FCE8E6" stroke="#CBD5E1" stroke-width="1"/>
+<text x="1353.0" y="244.2" fill="#0F172A" font-size="9">✖ HIDDEN (RLS FILTERED)</text>
+<rect x="72.0" y="267.6" width="96.0" height="52.8" fill="#F8F9FA" stroke="#CBD5E1" stroke-width="1"/>
+<text x="77.0" y="297.0" fill="#0F172A" font-size="9">102</text>
+<rect x="168.0" y="267.6" width="144.0" height="52.8" fill="#F8F9FA" stroke="#CBD5E1" stroke-width="1"/>
+<text x="173.0" y="297.0" fill="#0F172A" font-size="9">tenant-a</text>
+<rect x="312.0" y="267.6" width="264.0" height="52.8" fill="#F8F9FA" stroke="#CBD5E1" stroke-width="1"/>
+<text x="317.0" y="297.0" fill="#0F172A" font-size="9">Tenant A Wire Clearing</text>
+<rect x="576.0" y="267.6" width="180.0" height="52.8" fill="#F8F9FA" stroke="#CBD5E1" stroke-width="1"/>
+<text x="581.0" y="297.0" fill="#0F172A" font-size="9">USD 312,500,000</text>
+<rect x="756.0" y="267.6" width="412.0" height="52.8" fill="#F8F9FA" stroke="#CBD5E1" stroke-width="1"/>
+<text x="761.0" y="297.0" fill="#0F172A" font-size="9">current_setting(&#x27;app.current_tenant_id&#x27;) = &#x27;tenant-a&#x27;</text>
+<rect x="1168.0" y="267.6" width="180.0" height="52.8" fill="#E6F4EA" stroke="#CBD5E1" stroke-width="1"/>
+<text x="1173.0" y="297.0" fill="#0F172A" font-size="9">✔ VISIBLE (PERMITTED)</text>
+<rect x="1348.0" y="267.6" width="180.0" height="52.8" fill="#FCE8E6" stroke="#CBD5E1" stroke-width="1"/>
+<text x="1353.0" y="297.0" fill="#0F172A" font-size="9">✖ HIDDEN (RLS FILTERED)</text>
+<rect x="72.0" y="320.4" width="96.0" height="52.8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+<text x="77.0" y="349.8" fill="#0F172A" font-size="9">103</text>
+<rect x="168.0" y="320.4" width="144.0" height="52.8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+<text x="173.0" y="349.8" fill="#0F172A" font-size="9">tenant-b</text>
+<rect x="312.0" y="320.4" width="264.0" height="52.8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+<text x="317.0" y="349.8" fill="#0F172A" font-size="9">Tenant B Merchant Ops</text>
+<rect x="576.0" y="320.4" width="180.0" height="52.8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+<text x="581.0" y="349.8" fill="#0F172A" font-size="9">USD 1,850,200</text>
+<rect x="756.0" y="320.4" width="412.0" height="52.8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+<text x="761.0" y="349.8" fill="#0F172A" font-size="9">current_setting(&#x27;app.current_tenant_id&#x27;) = &#x27;tenant-b&#x27;</text>
+<rect x="1168.0" y="320.4" width="180.0" height="52.8" fill="#FCE8E6" stroke="#CBD5E1" stroke-width="1"/>
+<text x="1173.0" y="349.8" fill="#0F172A" font-size="9">✖ HIDDEN (RLS FILTERED)</text>
+<rect x="1348.0" y="320.4" width="180.0" height="52.8" fill="#E6F4EA" stroke="#CBD5E1" stroke-width="1"/>
+<text x="1353.0" y="349.8" fill="#0F172A" font-size="9">✔ VISIBLE (PERMITTED)</text>
+<rect x="72.0" y="373.2" width="96.0" height="52.8" fill="#F8F9FA" stroke="#CBD5E1" stroke-width="1"/>
+<text x="77.0" y="402.6" fill="#0F172A" font-size="9">104</text>
+<rect x="168.0" y="373.2" width="144.0" height="52.8" fill="#F8F9FA" stroke="#CBD5E1" stroke-width="1"/>
+<text x="173.0" y="402.6" fill="#0F172A" font-size="9">tenant-b</text>
+<rect x="312.0" y="373.2" width="264.0" height="52.8" fill="#F8F9FA" stroke="#CBD5E1" stroke-width="1"/>
+<text x="317.0" y="402.6" fill="#0F172A" font-size="9">Tenant B Escrow</text>
+<rect x="576.0" y="373.2" width="180.0" height="52.8" fill="#F8F9FA" stroke="#CBD5E1" stroke-width="1"/>
+<text x="581.0" y="402.6" fill="#0F172A" font-size="9">USD 4,320,000</text>
+<rect x="756.0" y="373.2" width="412.0" height="52.8" fill="#F8F9FA" stroke="#CBD5E1" stroke-width="1"/>
+<text x="761.0" y="402.6" fill="#0F172A" font-size="9">current_setting(&#x27;app.current_tenant_id&#x27;) = &#x27;tenant-b&#x27;</text>
+<rect x="1168.0" y="373.2" width="180.0" height="52.8" fill="#FCE8E6" stroke="#CBD5E1" stroke-width="1"/>
+<text x="1173.0" y="402.6" fill="#0F172A" font-size="9">✖ HIDDEN (RLS FILTERED)</text>
+<rect x="1348.0" y="373.2" width="180.0" height="52.8" fill="#E6F4EA" stroke="#CBD5E1" stroke-width="1"/>
+<text x="1353.0" y="402.6" fill="#0F172A" font-size="9">✔ VISIBLE (PERMITTED)</text>
+<rect x="72.0" y="462.0" width="1456.0" height="354.0" rx="18" fill="#F8F9FA" stroke="#4285F4" stroke-width="1.5"/>
+<text x="120.0" y="510.7" text-anchor="start" fill="#0D47A1" font-size="14.3" font-weight="bold">HOW ALLOYDB POSTGRESQL ROW-LEVEL SECURITY ENFORCES ZERO-TRUST PRIVACY</text>
+<rect x="108.0" y="534.0" width="318.0" height="252.0" rx="18" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="132.0" y="581.9" text-anchor="start" fill="#0D47A1" font-size="11.1" font-weight="bold">STEP 1: CONNECTION CHECKOUT</text>
+<text x="132.0" y="648.0" text-anchor="start" fill="#5F6368" font-size="10.4" font-weight="bold"><tspan x="132.0" dy="0">When the agent checks out a connection</tspan><tspan x="132.0" dy="15.5">from the pool, the session state is</tspan><tspan x="132.0" dy="15.5">pristine. No tenant context exists.</tspan></text>
+<rect x="453.6" y="534.0" width="318.0" height="252.0" rx="18" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="477.6" y="581.9" text-anchor="start" fill="#0D47A1" font-size="11.1" font-weight="bold">STEP 2: SET LOCAL APP.CURRENT_TENANT_ID</text>
+<text x="477.6" y="648.0" text-anchor="start" fill="#5F6368" font-size="10.4" font-weight="bold"><tspan x="477.6" dy="0">Middleware extracts verified tenant_id</tspan><tspan x="477.6" dy="15.5">from JWT and issues SET LOCAL. Caveat:</tspan><tspan x="477.6" dy="15.5">Auto-resets on COMMIT; with PgBouncer</tspan><tspan x="477.6" dy="15.5">session mode, pool hooks must issue</tspan><tspan x="477.6" dy="15.5">DISCARD ALL.</tspan></text>
+<rect x="799.2" y="534.0" width="318.0" height="252.0" rx="18" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="823.2" y="581.9" text-anchor="start" fill="#0D47A1" font-size="11.1" font-weight="bold">STEP 3: AUTOMATIC PREDICATE ENFORCEMENT</text>
+<text x="823.2" y="648.0" text-anchor="start" fill="#5F6368" font-size="10.4" font-weight="bold"><tspan x="823.2" dy="0">AlloyDB rewrites all queries internally:</tspan><tspan x="823.2" dy="15.5">SELECT * FROM ledger WHERE tenant_id =</tspan><tspan x="823.2" dy="15.5">current_setting(&#x27;app.current_tenant_id&#x27;).</tspan></text>
+<rect x="1144.8" y="534.0" width="318.0" height="252.0" rx="18" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="1168.8" y="581.9" text-anchor="start" fill="#0D47A1" font-size="11.1" font-weight="bold">STEP 4: SUB-15MS ENGINE FILTERING</text>
+<text x="1168.8" y="648.0" text-anchor="start" fill="#5F6368" font-size="10.4" font-weight="bold"><tspan x="1168.8" dy="0">Competitor records are filtered by the</tspan><tspan x="1168.8" dy="15.5">PostgreSQL engine before disk pages enter</tspan><tspan x="1168.8" dy="15.5">memory. 0 leaked rows guaranteed.</tspan></text>
+<g id="plane_layer" width="1600" font-family="Arial, Helvetica, sans-serif"><rect x="67.0" y="159.0" width="1466.0" height="272.0" rx="7.1" fill="none" stroke="#FDBA74" stroke-width="1.2" stroke-dasharray="6,4"/><rect x="103.0" y="529.0" width="1364.8" height="262.0" rx="6.8" fill="none" stroke="#FDBA74" stroke-width="1.2" stroke-dasharray="6,4"/><rect x="67.0" y="138.0" width="395.0" height="15.2" rx="7.6" fill="#FFFBEB" stroke="#FDBA74" stroke-width="0.9"/><text x="264.5" y="148.7" text-anchor="middle" xml:space="preserve"><tspan font-size="10.0" font-weight="700" fill="#B45309">DATA · tenant rows &amp; ADK / Memory Bank sessions in one shared table</tspan></text><rect x="1154.8" y="507.0" width="313.0" height="15.2" rx="7.6" fill="#FFFBEB" stroke="#FDBA74" stroke-width="0.9"/><text x="1311.3" y="517.8" text-anchor="middle" xml:space="preserve"><tspan font-size="10.0" font-weight="700" fill="#B45309">DATA · session bound to tenant (1–2), engine RLS (3–4)</tspan></text><rect x="72.0" y="437.5" width="478.7" height="16.2" rx="2.9" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.1"/><text x="78.2" y="448.8" text-anchor="start" xml:space="preserve"><tspan font-size="10.2" font-weight="700" fill="#1D4ED8">CONTROL  </tspan><tspan font-size="10.2" font-weight="400" fill="#1F2937">not drawn: verified tenant_id from Hop 1 JWT + STS CAB token</tspan></text><rect x="560.7" y="437.5" width="478.7" height="16.2" rx="2.9" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.1"/><text x="566.9" y="448.8" text-anchor="start" xml:space="preserve"><tspan font-size="10.2" font-weight="700" fill="#047857">COMPUTE  </tspan><tspan font-size="10.2" font-weight="400" fill="#1F2937">not drawn: ADK / Memory Bank middleware issuing SET LOCAL in Step 2</tspan></text><rect x="1049.3" y="437.5" width="478.7" height="16.2" rx="2.9" fill="#FFFBEB" stroke="#FDBA74" stroke-width="1.1"/><text x="1055.6" y="448.8" text-anchor="start" xml:space="preserve"><tspan font-size="10.2" font-weight="700" fill="#B45309">DATA  </tspan><tspan font-size="10.2" font-weight="400" fill="#1F2937">Steps 1–4 + table: AlloyDB FORCE RLS isolates ADK / Memory Bank sessions</tspan></text></g>
+</svg>

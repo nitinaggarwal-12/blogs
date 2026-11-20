@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" style="width:100%;height:auto;display:block;background:#FFFFFF;font-family:Arial,sans-serif;">
+<defs><marker id="arrowEnd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#475569"/></marker></defs>
+<rect x="0" y="0" width="1600" height="900" fill="#FFFFFF"/>
+<rect x="72.0" y="42.0" width="300.0" height="36.0" rx="5" fill="#E8F0FE" stroke="#4285F4" stroke-width="1.0"/>
+<text x="222.0" y="63.0" text-anchor="middle" fill="#0D47A1" font-size="11.7" font-weight="bold">PART 3 • PHYSICAL PERIMETER</text>
+<text x="408.0" y="66.3" text-anchor="start" fill="#3C4043" font-size="22.1" font-weight="bold">Physical Perimeter Topology: VPC Service Controls &amp; Principal Access Boundaries (PAB)</text>
+<rect x="72.0" y="90.0" width="1456.0" height="2.4" rx="0" fill="#DADCE0" stroke="none" stroke-width="0"/>
+<text x="84.0" y="872.9" text-anchor="start" fill="#5F6368" font-size="11.1" font-weight="bold">[Slide 33/62 • PART 3 (WS3)]  •  ▶ 4-State Hybrid &amp; Draw.io ↗</text>
+<text x="84.0" y="129.7" text-anchor="start" fill="#5F6368" font-size="14.3" font-weight="bold">How Google Cloud VPC-SC perimeters and IAM PAB policies create impenetrable network and identity bulkheads around t</text>
+<rect x="72.0" y="162.0" width="350.4" height="660.0" rx="18" fill="#FFFFFF" stroke="#0D47A1" stroke-width="1.5"/>
+<rect x="72.0" y="162.0" width="350.4" height="72.0" rx="0" fill="#E8F0FE" stroke="none" stroke-width="0"/>
+<text x="102.0" y="201.0" text-anchor="start" fill="#0D47A1" font-size="13.7" font-weight="bold">1. VPC-SC Service Perimeter</text>
+<text x="102.0" y="269.9" text-anchor="start" fill="#5F6368" font-size="11.1" font-weight="bold">Restricting API access to authorized VPC networks</text>
+<rect x="86.4" y="300.0" width="321.6" height="117.6" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="105.6" y="361.5" text-anchor="start" fill="#3C4043" font-size="10.4" font-weight="bold">• Enclosed Services: Vertex AI, Cloud Run, AlloyDB, Cloud KMS, and Cloud Storage.</text>
+<rect x="86.4" y="426.0" width="321.6" height="117.6" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="105.6" y="487.5" text-anchor="start" fill="#3C4043" font-size="10.4" font-weight="bold">• Access Levels: Restricts ingress exclusively to corporate corporate VPN IP CIDRs and mTLS-authenticated gateways.</text>
+<rect x="86.4" y="552.0" width="321.6" height="117.6" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="105.6" y="613.5" text-anchor="start" fill="#3C4043" font-size="10.4" font-weight="bold">• Hardware Network Filtering: Google production network drops any API call originating outside the perimeter.</text>
+<rect x="86.4" y="678.0" width="321.6" height="117.6" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="105.6" y="739.5" text-anchor="start" fill="#3C4043" font-size="10.4" font-weight="bold">• Zero Exfiltration: Even if an adversary compromises service account credentials, data cannot be extracted.</text>
+<rect x="441.6" y="162.0" width="350.4" height="660.0" rx="18" fill="#FFFFFF" stroke="#C5221F" stroke-width="1.5"/>
+<rect x="441.6" y="162.0" width="350.4" height="72.0" rx="0" fill="#FCE8E6" stroke="none" stroke-width="0"/>
+<text x="471.6" y="201.0" text-anchor="start" fill="#C5221F" font-size="13.7" font-weight="bold">2. IAM Principal Access Boundaries</text>
+<text x="471.6" y="269.9" text-anchor="start" fill="#5F6368" font-size="11.1" font-weight="bold">Organization-level blast radius containment</text>
+<rect x="456.0" y="300.0" width="321.6" height="117.6" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="475.2" y="361.5" text-anchor="start" fill="#3C4043" font-size="10.4" font-weight="bold">• PAB Enforcement: Constrains what IAM permissions principals can use inside specific project folders.</text>
+<rect x="456.0" y="426.0" width="321.6" height="117.6" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="475.2" y="487.5" text-anchor="start" fill="#3C4043" font-size="10.4" font-weight="bold">• Deny Rules: Explicitly blocks service accounts in Tenant A silo from accessing Tenant B resources.</text>
+<rect x="456.0" y="552.0" width="321.6" height="117.6" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="475.2" y="613.5" text-anchor="start" fill="#3C4043" font-size="10.4" font-weight="bold">• Privilege Escalation Block: Prevents compromised admin roles from granting cross-project permissions.</text>
+<rect x="456.0" y="678.0" width="321.6" height="117.6" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="475.2" y="739.5" text-anchor="start" fill="#3C4043" font-size="10.4" font-weight="bold">• Continuous Audit: Cloud Asset Inventory continuously scans for non-compliant IAM role grants.</text>
+<rect x="811.2" y="162.0" width="350.4" height="660.0" rx="18" fill="#FFFFFF" stroke="#B45309" stroke-width="1.5"/>
+<rect x="811.2" y="162.0" width="350.4" height="72.0" rx="0" fill="#FEF7E0" stroke="none" stroke-width="0"/>
+<text x="841.2" y="201.0" text-anchor="start" fill="#B45309" font-size="13.7" font-weight="bold">3. Ingress &amp; Egress Rules</text>
+<text x="841.2" y="269.9" text-anchor="start" fill="#5F6368" font-size="11.1" font-weight="bold">Granular bridge policies for external SaaS tools</text>
+<rect x="825.6" y="300.0" width="321.6" height="117.6" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="844.8" y="361.5" text-anchor="start" fill="#3C4043" font-size="10.4" font-weight="bold">• Directional Egress: Only allows outbound HTTPS connections to pre-approved external SaaS endpoints (Salesforce/Ji</text>
+<rect x="825.6" y="426.0" width="321.6" height="117.6" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="844.8" y="487.5" text-anchor="start" fill="#3C4043" font-size="10.4" font-weight="bold">• Identity Filtering: Egress rules bind specifically to tenant agent service accounts, not arbitrary workloads.</text>
+<rect x="825.6" y="552.0" width="321.6" height="117.6" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="844.8" y="613.5" text-anchor="start" fill="#3C4043" font-size="10.4" font-weight="bold">• Dry-Run Mode: Security teams can audit traffic patterns in Dry-Run logs before enforcing hard blocking.</text>
+<rect x="825.6" y="678.0" width="321.6" height="117.6" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="844.8" y="739.5" text-anchor="start" fill="#3C4043" font-size="10.4" font-weight="bold">• Audit Logging: Every allowed and denied cross-perimeter request generates a structured Cloud Audit Log.</text>
+<rect x="1180.8" y="162.0" width="350.4" height="660.0" rx="18" fill="#FFFFFF" stroke="#137333" stroke-width="1.5"/>
+<rect x="1180.8" y="162.0" width="350.4" height="72.0" rx="0" fill="#E6F4EA" stroke="none" stroke-width="0"/>
+<text x="1210.8" y="201.0" text-anchor="start" fill="#137333" font-size="13.7" font-weight="bold">4. Dedicated Project Lifecycle</text>
+<text x="1210.8" y="269.9" text-anchor="start" fill="#5F6368" font-size="11.1" font-weight="bold">Automated onboarding &amp; decommissioning</text>
+<rect x="1195.2" y="300.0" width="321.6" height="117.6" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="1214.4" y="361.5" text-anchor="start" fill="#3C4043" font-size="10.4" font-weight="bold">• Automated Inception: Terraform Cloud / Google Cloud Deploy provisions new silos in ~4 minutes.</text>
+<rect x="1195.2" y="426.0" width="321.6" height="117.6" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="1214.4" y="487.5" text-anchor="start" fill="#3C4043" font-size="10.4" font-weight="bold">• Isolated Billing: Project billing accounts allow direct cost pass-through without complex allocation formulas.</text>
+<rect x="1195.2" y="552.0" width="321.6" height="117.6" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="1214.4" y="613.5" text-anchor="start" fill="#3C4043" font-size="10.4" font-weight="bold">• Clean Decommissioning: Deleting project cryptographically destroys all compute, networking, and storage in 1 step</text>
+<rect x="1195.2" y="678.0" width="321.6" height="117.6" rx="10" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="1214.4" y="739.5" text-anchor="start" fill="#3C4043" font-size="10.4" font-weight="bold">• Compliance Receipts: Generates immutable deletion receipts for regulatory audit verification.</text>
+</svg>

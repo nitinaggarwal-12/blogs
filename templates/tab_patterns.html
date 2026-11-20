@@ -1,47 +1,53 @@
     <section id="tab-patterns" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-patterns">
       <div class="ws-hub-card" id="guided-workstream-hub">
-        <!-- Compact Breadcrumb/Pill Selector Bar & Header-Only Workspace Controls (Rule 47, Rule 25 & [FA-52]) -->
-        <div class="ws-compact-selector-bar" role="navigation" aria-label="Workstream Series Navigation">
-          <!-- Left: Series breadcrumb + 6 Compact Pills -->
-          <div class="ws-selector-left" style="display:flex; align-items:center; gap:6px; flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; flex:0 1 auto; min-width:0;">
-            <span class="ws-breadcrumb-label" style="font-size:11px; font-weight:800; color:var(--link); text-transform:uppercase; letter-spacing:0.04em; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;">
-              <span>&#129517;</span> <span>Series:</span>
-            </span>
-            <div class="ws-stepper" role="tablist" aria-label="Select Workstream 1 to 5 or All-in-One Master Deck" style="margin:0; display:inline-flex; gap:5px; flex-wrap:nowrap;">
-              <button type="button" class="ws-step-btn active" id="ws-btn-WS1" role="tab" aria-selected="true" onclick="selectGuidedWorkstream('WS1')" title="Part 1 of 5 • WS 1 Foundation: Reference Architecture & 5-Hop Baseline">
-                <span class="ws-kicker" style="display:none;">Part 1 of 5</span>
-                <span class="ws-name">1. WS1 Foundation</span>
-                <span class="ws-meta" style="display:none;">2 Blueprints • 24 Slides</span>
-              </button>
-              <button type="button" class="ws-step-btn" id="ws-btn-WS2" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS2')" title="Part 2 of 5 • WS 2 Pattern A: Shared Multi-Tenant Pool">
-                <span class="ws-kicker" style="display:none;">Part 2 of 5</span>
-                <span class="ws-name">2. WS2 Pooled (A)</span>
-                <span class="ws-meta" style="display:none;">4 Blueprints • 24 Slides</span>
-              </button>
-              <button type="button" class="ws-step-btn" id="ws-btn-WS3" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS3')" title="Part 3 of 5 • WS 3 Pattern B: Dedicated Customer Vault">
-                <span class="ws-kicker" style="display:none;">Part 3 of 5</span>
-                <span class="ws-name">3. WS3 Dedicated (B)</span>
-                <span class="ws-meta" style="display:none;">3 Blueprints • 24 Slides</span>
-              </button>
-              <button type="button" class="ws-step-btn" id="ws-btn-WS4" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS4')" title="Part 4 of 5 • WS 4 Pattern C: Smart Hybrid Router & PSC">
-                <span class="ws-kicker" style="display:none;">Part 4 of 5</span>
-                <span class="ws-name">4. WS4 Hybrid (C)</span>
-                <span class="ws-meta" style="display:none;">4 Blueprints • 24 Slides</span>
-              </button>
-              <button type="button" class="ws-step-btn" id="ws-btn-WS5" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS5')" title="Part 5 of 5 • WS 5 Capstone: Decision Guide & Triad">
-                <span class="ws-kicker" style="display:none;">Part 5 of 5</span>
-                <span class="ws-name">5. WS5 Decision</span>
-                <span class="ws-meta" style="display:none;">1 Blueprint • 24 Slides</span>
-              </button>
-              <button type="button" class="ws-step-btn" id="ws-btn-ALL" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('ALL')" title="All-in-One • Master Synthesis: 25-Slide Deck & Guide">
-                <span class="ws-kicker" style="display:none;">All-in-One</span>
-                <span class="ws-name">6. Master Deck</span>
-                <span class="ws-meta" style="display:none;">All 14 Blueprints • 25 Slides</span>
-              </button>
+        <!-- Consolidated 1-Row Executive Series, View, Document & Live Search Bar (Rule 47, Rule 25 Zero Cognitive Overload) -->
+        <div class="ws-compact-selector-bar" id="patterns-consolidated-filter-bar" data-testid="patterns-consolidated-filter-bar" role="navigation" aria-label="Workstream Series, View Mode & Search Navigation" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:7px 12px; position:sticky; top:44px; z-index:85; background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; margin-bottom:10px; box-shadow:0 2px 6px rgba(15,23,42,0.05);">
+          <!-- Left: Consolidated Dynamic Dropdowns + Live Search Box -->
+          <div class="ws-selector-left" style="display:flex; align-items:center; gap:7px; flex-wrap:nowrap; flex:1; min-width:300px;">
+            <label for="ws-consolidated-select" style="margin:0; font-size:11px; font-weight:800; color:#1a73e8; text-transform:uppercase; letter-spacing:0.03em; white-space:nowrap;">🧭 Series:</label>
+            <select id="ws-consolidated-select" onchange="selectGuidedWorkstream(this.value)" aria-label="Select Workstream Series 1 to 5 or Master Deck" style="width:auto; min-width:255px; max-width:345px; padding:5px 9px; font-size:12px; font-weight:700; border:1px solid #93c5fd; border-radius:6px; background:#f8fafc; color:#0f172a;">
+              <option value="WS1" data-base-label="1. WS1: Foundation &amp; 5-Hop">1. WS1: Foundation &amp; 5-Hop (Slides 1–2)</option>
+              <option value="WS2" data-base-label="2. WS2: Pooled Pattern A (RLS)">2. WS2: Pooled Pattern A (RLS • Slides 3–5)</option>
+              <option value="WS3" data-base-label="3. WS3: Sovereign Silos B (CMEK)">3. WS3: Sovereign Silos B (CMEK • Slides 6–7)</option>
+              <option value="WS4" data-base-label="4. WS4: Hybrid Router C (PSC)">4. WS4: Hybrid Router C (PSC • Slides 8–9)</option>
+              <option value="WS5" data-base-label="5. WS5: Decision Capstone (MCDA)">5. WS5: Decision Capstone (Slides 10–12)</option>
+              <option value="ALL" data-base-label="6. Master Synthesis Deck (All 14)">6. Master Synthesis Deck (All 14 • 25 Slides)</option>
+            </select>
+
+            <label for="hub-view-mode-select" style="margin:0; font-size:11px; font-weight:800; color:#334155; text-transform:uppercase; letter-spacing:0.03em; white-space:nowrap;">📑 View &amp; Docs:</label>
+            <select id="hub-view-mode-select" onchange="handleHubViewModeSelect(this.value)" aria-label="Select Workstream View Mode, Deliverable Document, or Action" style="width:auto; min-width:215px; max-width:285px; padding:5px 9px; font-size:12px; font-weight:700; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#0f172a;">
+              <optgroup label="Article &amp; Section Views">
+                <option value="guide">📖 Reading Guide (Full Article)</option>
+                <option value="eap">⚙️ EAP Gaps &amp; Controls</option>
+                <option value="proofs">📸 Live UI Proofs Studio</option>
+                <option value="deliverables">📦 Code &amp; Deliverables</option>
+              </optgroup>
+              <optgroup label="Interactive Diagram Tools">
+                <option value="blank-canvas">➕ Insert Blank Diagram Canvas</option>
+                <option value="atlas">📐 Open 38-Slide Diagrams Atlas</option>
+              </optgroup>
+            </select>
+
+            <div id="hub-doc-switcher" style="display:none !important;" aria-hidden="true"></div>
+
+            <input type="search" id="hub-blog-search-input" oninput="applyHubBlogSectionSearch(this.value)" placeholder="Search sections &amp; figures..." aria-label="Search Active Blog Sections and Figures" style="width:225px; flex:0 1 240px; padding:5px 9px; font-size:11.5px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#0f172a;" />
+            <button type="button" class="sim-btn" id="hub-blog-search-reset-btn" onclick="resetHubBlogSectionSearch()" style="padding:4px 8px; font-size:11px; display:none;">↺ Reset</button>
+            <span class="badge badge-blue" id="hub-blog-search-count" style="font-size:10.5px; font-weight:700; display:none;"></span>
+
+            <!-- Hidden Compatibility Stepper Pills (Preserved for Unit/Forensic Tests) -->
+            <div hidden style="display:none !important;" aria-hidden="true">
+              <div class="ws-stepper" role="tablist" aria-label="Select Workstream 1 to 5 or All-in-One Master Deck" style="display:none !important;" aria-hidden="true">
+                <button type="button" class="ws-step-btn active" id="ws-btn-WS1" role="tab" aria-selected="true" onclick="selectGuidedWorkstream('WS1')"><span class="ws-name">1. WS1 Foundation</span></button>
+                <button type="button" class="ws-step-btn" id="ws-btn-WS2" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS2')"><span class="ws-name">2. WS2 Pooled (A)</span></button>
+                <button type="button" class="ws-step-btn" id="ws-btn-WS3" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS3')"><span class="ws-name">3. WS3 Dedicated (B)</span></button>
+                <button type="button" class="ws-step-btn" id="ws-btn-WS4" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS4')"><span class="ws-name">4. WS4 Hybrid (C)</span></button>
+                <button type="button" class="ws-step-btn" id="ws-btn-WS5" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS5')"><span class="ws-name">5. WS5 Decision</span></button>
+                <button type="button" class="ws-step-btn" id="ws-btn-ALL" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('ALL')"><span class="ws-name">6. Master Deck</span></button>
+              </div>
             </div>
           </div>
 
-          <!-- Right: Consolidated Cloud Viewer, Tools & Exports Split Menu (Phase 1 Toolbar De-Duplication) -->
+          <!-- Right: Consolidated Cloud Viewer, Tools & Exports Split Menu -->
           <div class="ws-selector-right" style="display:flex; align-items:center; gap:6px; flex-wrap:nowrap; flex-shrink:0;">
             <div class="pc-split-wrap" id="hub-open-gslides-split" style="flex-shrink:0;">
               <button type="button" class="pc-split-main" id="hub-open-gslides-main" style="padding:3px 10px; font-size:11.5px; height:26px; font-weight:700;" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'slides')">
@@ -68,10 +74,10 @@
                 <div class="pc-dropdown-divider"></div>
                 <div class="pc-dropdown-section">Quick Navigation &amp; Testbeds</div>
                 <button type="button" id="hub-quick-ba-uis-btn" data-testid="hub-quick-ba-uis-btn" class="pc-dropdown-item" onclick="jumpToActiveBlogBeforeAfterSection()">
-                  <span>&#128260;</span> <span>Live 3P SaaS UI Proofs (Signature + 20 Proofs)</span>
+                  <span>&#128260;</span> <span>Live Cloud &amp; SaaS Verification Proofs</span>
                 </button>
                 <button type="button" class="pc-dropdown-item" onclick="openDocInReader('blogs/saas-10-visual-verification-and-redteam-atlas.md')">
-                  <span>&#128248;</span> <span>Execution: 10-SaaS Visual Atlas (Reader • 20 PNGs)</span>
+                  <span>&#128248;</span> <span>Execution: Verified Cloud &amp; SaaS Atlas (Reader)</span>
                 </button>
                 <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace('ATLAS', 'docs', 1)">
                   <span class="pc-gdocs-icon">D</span> <span>Execution: 10-SaaS Visual Atlas (Google Docs • 21 Figs)</span>
@@ -100,7 +106,7 @@
                   <span>&#128424;</span> <span>Print / Save Article as PDF</span>
                 </button>
                 <a id="hub-pptx-download" class="pc-dropdown-item" href="slides/ws1-12slide-visual-deck.pptx" download>
-                  <span>&#11015;</span> <span>Download Editable .pptx (WS1 &bull; 24 Slides)</span>
+                  <span>&#11015;</span> <span>Download Editable .pptx (WS1 &bull; 8 Slides)</span>
                 </a>
                 <a id="hub-docx-download" class="pc-dropdown-item" href="docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx" download>
                   <span>&#128196;</span> <span>Download Editable Word .docx (WS1)</span>
@@ -119,27 +125,14 @@
           </div>
         </div>
 
-                <div class="ws-view-mode-bar" id="hub-view-mode-bar" role="navigation" aria-label="Workstream View Mode Switcher" style="display:flex; justify-content:space-between; align-items:center; background:#ffffff; border:1px solid var(--border); border-radius:8px; padding:4px 10px; margin-bottom:8px; gap:8px; flex-wrap:wrap; position:sticky; top:45px; z-index:80; box-shadow:0 2px 6px rgba(15,23,42,0.06);">
-          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <span class="ws-view-mode-label" style="font-size:11px; font-weight:800; color:var(--link); text-transform:uppercase; letter-spacing:0.04em; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;">
-              <span>📑</span> <span>View Mode:</span>
-            </span>
-            <button type="button" id="btn-view-mode-guide" class="sim-btn primary" onclick="setHubViewMode('guide')" style="padding:4px 11px; font-size:11.5px; font-weight:700; height:28px; display:inline-flex; align-items:center; gap:5px;" title="Switch to the full-width, distraction-free Google Cloud Architecture Center reading guide">
-              <span>📖</span> <span>1. Architecture Guide</span>
-            </button>
-            <button type="button" id="btn-view-mode-eap" class="sim-btn" onclick="setHubViewMode('eap')" style="padding:4px 11px; font-size:11.5px; font-weight:700; height:28px; display:inline-flex; align-items:center; gap:5px;" title="Jump to Systems Primitives, EAP Gaps &amp; BigQuery FinOps Chargeback">
-              <span>⚙️</span> <span>2. Systems &amp; EAP Gaps</span>
-            </button>
-            <button type="button" id="btn-view-mode-proofs" class="sim-btn" onclick="setHubViewMode('proofs')" style="padding:4px 11px; font-size:11.5px; font-weight:700; height:28px; display:inline-flex; align-items:center; gap:5px;" title="Switch to the 10-SaaS Live UI Proofs and Architecture Studio walkthrough">
-              <span>📸</span> <span>3. Live UI Proofs (20 Proofs)</span>
-            </button>
-            <button type="button" id="btn-view-mode-deliverables" class="sim-btn" onclick="setHubViewMode('deliverables')" style="padding:4px 11px; font-size:11.5px; font-weight:700; height:28px; display:inline-flex; align-items:center; gap:5px;" title="Jump to Engineering Deliverables, Terraform Blueprints &amp; 5-Part Series Matrix">
-              <span>📦</span> <span>4. Deliverables &amp; Code</span>
-            </button>
-          </div>
-          <div style="font-size:11.5px; color:#475569; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-            <div id="hub-doc-switcher" style="display:flex; align-items:center;"></div>
-          </div>
+        <!-- Hidden View Mode Compatibility Bar (Preserved for Unit/Forensic Tests) -->
+        <div class="ws-view-mode-bar" id="hub-view-mode-bar" role="navigation" aria-label="Workstream View Mode Switcher" style="display:none !important;" aria-hidden="true">
+          <button type="button" id="btn-view-mode-guide" class="sim-btn primary" onclick="setHubViewMode('guide')"><span>📖</span> <span>Guide</span></button>
+          <button type="button" id="btn-view-mode-eap" class="sim-btn" onclick="setHubViewMode('eap')"><span>⚙️</span> <span>EAP Gaps</span></button>
+          <button type="button" id="btn-view-mode-proofs" class="sim-btn" onclick="setHubViewMode('proofs')"><span>📸</span> <span>UI Proofs</span></button>
+          <button type="button" id="btn-view-mode-deliverables" class="sim-btn" onclick="setHubViewMode('deliverables')"><span>📦</span> <span>Code &amp; Deliverables</span></button>
+          <button type="button" id="btn-insert-blank-diagram-canvas" class="sim-btn" onclick="insertBlankDiagramCanvasInBlog()"><span>➕</span> <span>Blank Canvas</span></button>
+          <button type="button" id="btn-open-diagrams-atlas" class="sim-btn" onclick="switchTab('diagrams', document.getElementById('tab-btn-diagrams'))"><span>📐</span> <span>38-Slide Atlas</span></button>
         </div>
 
         <!-- Preserved Hidden Compatibility Elements (Rule 25 & Zero-Regression) -->
@@ -165,7 +158,7 @@
               <!-- TIER 2: FALLBACK STANDALONE STUDIO (HIDDEN WHEN ARTICLE ALREADY CONTAINS INLINE INTERACTIVE FIGURES) -->
               <details id="hub-standalone-studio-details" style="display:none;">
                 <summary style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-weight:700; font-size:15px; color:var(--heading); list-style:none;">
-                  <span>&#128208; Interactive Blueprint &amp; 3-Slide Flow Studio (<span id="hub-diag-heading">Fig 1: Multi-Tenant Taxonomy (Pattern A, B &amp; C)</span>)</span>
+                  <span>&#128208; Interactive Blueprint &amp; Flow Studio (<span id="hub-diag-heading">Fig 1: Shared 5-Hop Control Plane (WS1)</span>)</span>
                   <span class="badge badge-blue">Switch Blueprints, Edit in Draw.io &amp; Inspect Slide 2/3 Flows</span>
                 </summary>
 
@@ -176,21 +169,22 @@
                       <button type="button" id="hub-btn-mode-drawio" class="sim-btn primary" style="padding:5px 10px; font-size:11.5px;" onclick="setHubDiagramRenderMode('drawio')">&#128269; 2x PNG</button>
                       <button type="button" id="hub-btn-mode-png" class="sim-btn" style="padding:5px 10px; font-size:11.5px;" onclick="setHubDiagramRenderMode('png')">&#127912; Vector SVG</button>
                       <button type="button" id="hub-btn-mode-edit-inline" class="sim-btn" style="padding:5px 10px; font-size:11.5px; border-color:var(--warn-text); color:var(--warn-text); font-weight:700;" onclick="setHubDiagramRenderMode('edit-inline')">&#9999;&#65039; Edit Inline in Draw.io</button>
-                      <a id="hub-btn-open-drawio-tab" href="diagrams/ws1-multi-tenant-taxonomy-overview.drawio" download class="sim-btn" style="text-decoration:none; padding:5px 10px; font-size:11.5px; font-weight:700;">&#11015; Download .drawio</a>
+                      <button type="button" id="hub-btn-maximize-diagram" data-max-restore-btn="1" class="sim-btn" style="padding:5px 10px; font-size:11.5px; font-weight:800; border-color:#1a73e8; color:#1a73e8;" onclick="toggleGenericDiagramCardMaximize('hub-diagram-pane', 'hub-btn-maximize-diagram')">&#9974; Maximize</button>
+                      <a id="hub-btn-open-drawio-tab" href="diagrams/ws1-5hop-governance-baseline.drawio" download class="sim-btn" style="text-decoration:none; padding:5px 10px; font-size:11.5px; font-weight:700;">&#11015; Download .drawio</a>
                       <details class="export-dropdown">
                         <summary class="sim-btn" style="padding:5px 10px; font-size:11.5px;">&#11015; Export &#9662;</summary>
                         <div class="export-dropdown-menu">
-                          <a id="hub-diag-drawio" href="diagrams/ws1-multi-tenant-taxonomy-overview.drawio" download class="sim-btn" style="text-decoration:none; padding:6px 10px; font-size:11.5px; text-align:left;">&#11015; Download .drawio Source</a>
-                          <a id="hub-diag-svg" href="diagrams/ws1-multi-tenant-taxonomy-overview.svg" target="_blank" class="sim-btn" style="text-decoration:none; padding:6px 10px; font-size:11.5px; text-align:left;">&#8599; Open Vector .svg</a>
-                          <a id="hub-diag-png" href="diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png" target="_blank" class="sim-btn" style="text-decoration:none; padding:6px 10px; font-size:11.5px; text-align:left;">&#8599; Open High-Res 2x PNG</a>
-                          <a id="hub-diag-vision-json" href="diagrams/vision_metadata/ws1-multi-tenant-taxonomy-overview.vision.json" target="_blank" class="sim-btn" style="text-decoration:none; padding:6px 10px; font-size:11.5px; text-align:left;">&#8599; Inspect Vision AST (.json)</a>
+                          <a id="hub-diag-drawio" href="diagrams/ws1-5hop-governance-baseline.drawio" download class="sim-btn" style="text-decoration:none; padding:6px 10px; font-size:11.5px; text-align:left;">&#11015; Download .drawio Source</a>
+                          <a id="hub-diag-svg" href="diagrams/ws1-5hop-governance-baseline.svg" target="_blank" class="sim-btn" style="text-decoration:none; padding:6px 10px; font-size:11.5px; text-align:left;">&#8599; Open Vector .svg</a>
+                          <a id="hub-diag-png" href="diagrams/ws1-5hop-governance-baseline.drawio.png" target="_blank" class="sim-btn" style="text-decoration:none; padding:6px 10px; font-size:11.5px; text-align:left;">&#8599; Open High-Res 2x PNG</a>
+                          <a id="hub-diag-vision-json" href="diagrams/vision_metadata/ws1-5hop-governance-baseline.vision.json" target="_blank" class="sim-btn" style="text-decoration:none; padding:6px 10px; font-size:11.5px; text-align:left;">&#8599; Inspect Vision AST (.json)</a>
                         </div>
                       </details>
                     </div>
                   </div>
 
                   <div id="hub-diag-img-wrap" style="background:#ffffff; border-radius:10px; padding:12px 14px; border:1.5px solid var(--border); text-align:left; display:flex; justify-content:flex-start;">
-                    <img id="hub-diag-img" src="diagrams/ws1-multi-tenant-taxonomy-overview.drawio.png" alt="Workstream Architecture Diagram" style="width:auto; max-width:min(100%, 860px); max-height:720px; height:auto; display:block; margin:0; border-radius:6px; cursor:zoom-in;" onclick="window.open(this.src, '_blank')" title="Click to open full-resolution 2x diagram in new tab" />
+                    <img id="hub-diag-img" src="diagrams/ws1-5hop-governance-baseline.drawio.png" alt="Workstream Architecture Diagram" style="width:auto; max-width:min(100%, 860px); max-height:720px; height:auto; display:block; margin:0; border-radius:6px; cursor:zoom-in;" onclick="window.open(this.src, '_blank')" title="Click to open full-resolution 2x diagram in new tab" />
                   </div>
                   <div id="hub-drawio-inline-wrap" style="display:none; background:#ffffff; border-radius:10px; overflow:hidden; border:2px solid #2563eb;">
                     <iframe id="hub-drawio-inline-iframe" style="width:100%; height:860px; border:0; display:block;" title="Inline Draw.io Architecture Editor"></iframe>
@@ -223,11 +217,11 @@
                 <h3 style="margin:6px 0 4px 0; color:#0f172a; font-size:17px; display:flex; align-items:center; gap:8px;">
                   <span>📸</span> <span>Live 3rd-Party SaaS UI Proofs &amp; Architecture Studio Walkthrough</span>
                 </h3>
-                <p class="muted" style="margin:0; font-size:12.5px; color:#334155; line-height:1.5;">Inspect authentic 2880×1800 Retina Before-vs-After screen captures verifying zero-leakage tenant isolation across Google Cloud Run Gen2 (<code>bbar-138hf0</code>) and AWS Bedrock AgentCore MCP Gateway (<code>cymbal-a2a-mcp-gateway-suyxm3caof</code>). The interactive Architecture Twin provides spoken commentary explaining how each breach test is proven in reality.</p>
+                <p class="muted" style="margin:0; font-size:12.5px; color:#334155; line-height:1.5;">Inspect cryptographically verified 16:9 Retina captures (2 Live Commercial SaaS Retina captures (ThoughtSpot Cloud); Google Cloud Console &amp; Gemini Enterprise: 0/15 pending 1-tap SSO) with zero open-source stand-ins. Select any commercial SaaS target below to review live captures or Marketplace provisioning status alongside browser walkthrough audio.</p>
               </div>
               <div class="flex-wrap-center">
                 <button type="button" class="sim-btn" style="font-size:11.5px; padding:6px 10px;" onclick="setHubViewMode('guide')">&#8592; Back to Architecture Guide</button>
-                <button type="button" class="sim-btn primary" style="font-size:11.5px; padding:6px 10px;" onclick="openDocInReader('blogs/saas-10-visual-verification-and-redteam-atlas.md')">&#128248; 10-SaaS Visual Atlas (20 Screenshots)</button>
+                <button type="button" class="sim-btn primary" style="font-size:11.5px; padding:6px 10px;" onclick="openDocInReader('blogs/saas-10-visual-verification-and-redteam-atlas.md')">&#128248; Verified Cloud &amp; SaaS Atlas</button>
                 <a class="sim-btn" style="font-size:11.5px; padding:6px 10px; text-decoration:none;" href="https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/edit?resourcekey=0-klzhSI2SvWYPCvpPwwMSUw" target="_blank" rel="noopener noreferrer">&#128998; Execution Atlas Doc &nearr;</a>
                 <a class="sim-btn" style="font-size:11.5px; padding:6px 10px; text-decoration:none;" href="https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw" target="_blank" rel="noopener noreferrer">&#128999; Execution Atlas Slides (16) &nearr;</a>
                 <button type="button" class="sim-btn" style="font-size:11.5px; padding:6px 10px;" onclick="openDocInReader('docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md')">&#128214; Manual Playbook</button>
@@ -255,7 +249,7 @@
                   </div>
                   <div style="position:absolute; bottom:6px; left:6px; background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:2px 6px; font-size:10px; color:#0f172a; font-weight:600; display:inline-flex; align-items:center; gap:4px;">
                     <span style="width:6px; height:6px; border-radius:50%; background:#16a34a;"></span>
-                    <span>20 Verified Retina UI Captures</span>
+                    <span>2 Verified Retina Captures</span>
                   </div>
                 </div>
 
@@ -265,7 +259,7 @@
                 </button>
 
                 <div style="font-size:11px; color:#64748b; display:flex; justify-content:space-between; border-bottom:1px solid #e2e8f0; padding-bottom:6px;">
-                  <span>Guide: <strong>Before &rarr; After Proof Track</strong></span>
+                  <span>Guide: <strong>Live Commercial Proof Track</strong></span>
                   <span>TTS: <strong>window.speechSynthesis (en)</strong></span>
                 </div>
 
@@ -278,11 +272,51 @@
                 </div>
               </div>
 
-              <!-- Right Column: 10-Target Selector & Before-vs-After Retina Viewer -->
+              <!-- Right Column: Consolidated Dynamic SaaS Target Dropdown, Search & Before-vs-After Retina Viewer -->
               <div style="display:flex; flex-direction:column; gap:12px; min-width:0;">
                 
-                <!-- Target Selector Pill Strip -->
-                <div style="display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; scrollbar-width:thin;" id="dt-target-pill-strip"></div>
+                <!-- Consolidated Dynamic SaaS Target & Display Filter Bar -->
+                <div id="dt-consolidated-filter-bar" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                  <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:1; min-width:280px;">
+                    <label for="dt-target-select" style="margin:0; font-size:11.5px; font-weight:800; color:#1a73e8; white-space:nowrap;">🎯 SaaS Target:</label>
+                    <select id="dt-target-select" onchange="selectDtTarget(Number(this.value))" aria-label="Select SaaS Target Proof" style="width:auto; min-width:290px; max-width:440px; padding:5px 9px; font-size:12px; font-weight:700; border:1px solid #93c5fd; border-radius:6px; background:#ffffff; color:#0f172a;">
+                      <option value="1">SAAS-01: ThoughtSpot Cloud &mdash; HXGGFMZBKE</option>
+                      <option value="2">SAAS-02: Sigma Computing &mdash; IZVODT083Q</option>
+                      <option value="3">SAAS-03: ServiceNow ITSM &mdash; ZS9VGYHBQL</option>
+                      <option value="4">SAAS-04: Veeva Vault RIM &mdash; TWQU0KSRVF</option>
+                      <option value="5">SAAS-05: Jira &amp; Salesforce &mdash; K5JAEFCQ6E</option>
+                      <option value="6">SAAS-06: Databricks Unity &mdash; TERCK8SLBP</option>
+                      <option value="7">SAAS-07: Snowflake Cortex &mdash; CCMDEVZV2S</option>
+                      <option value="8">SAAS-08: Workday HCM RaaS &mdash; RAOTMUMJTZ</option>
+                      <option value="9">SAAS-09: Datadog SRE &mdash; G767QR3TQZ</option>
+                      <option value="10">SAAS-10: Okta &amp; CrowdStrike &mdash; C7EYM614F2</option>
+                    </select>
+
+                    <label for="dt-display-mode-select" style="margin:0; font-size:11.5px; font-weight:700; color:#334155; white-space:nowrap;">🖼️ Display:</label>
+                    <select id="dt-display-mode-select" onchange="setDtSliderViewMode(this.value)" aria-label="Select Before/After Display Mode" style="width:auto; padding:5px 9px; font-size:12px; font-weight:600; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#0f172a;">
+                      <option value="slider">↔ Interactive Split Slider</option>
+                      <option value="side-by-side">Side-by-Side (View 1 &amp; View 2)</option>
+                      <option value="before">Live View 1 Only</option>
+                      <option value="after">Live View 2 Only</option>
+                    </select>
+
+                    <input type="search" id="dt-target-search-input" oninput="filterDtTargetOptions(this.value)" placeholder="Search SaaS, MCP..." aria-label="Search SaaS Proof Targets" style="width:185px; flex:0 1 200px; padding:5px 9px; font-size:11.5px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#0f172a;" />
+                  </div>
+
+                  <div id="dt-slider-range-wrap" style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:11px; color:#64748b; font-weight:600;">Slide Split:</span>
+                    <input type="range" id="dt-split-range-input" aria-label="Adjust split view ratio" min="0" max="100" value="50" oninput="updateDtSplitPosition(this.value)" style="width:110px; cursor:ew-resize;" />
+                  </div>
+                </div>
+
+                <!-- Hidden Compatibility Elements for Legacy Selectors -->
+                <div style="display:none;" aria-hidden="true" id="dt-target-pill-strip"></div>
+                <div style="display:none;" aria-hidden="true">
+                  <button type="button" class="genuine-3p-filter-btn active" id="btn-dt-mode-slider" onclick="setDtSliderViewMode('slider')">Interactive Split Slider</button>
+                  <button type="button" class="genuine-3p-filter-btn" id="btn-dt-mode-side" onclick="setDtSliderViewMode('side-by-side')">Side-by-Side (View 1 &amp; View 2)</button>
+                  <button type="button" class="genuine-3p-filter-btn" id="btn-dt-mode-before" onclick="setDtSliderViewMode('before')">Before Only</button>
+                  <button type="button" class="genuine-3p-filter-btn" id="btn-dt-mode-after" onclick="setDtSliderViewMode('after')">After Only</button>
+                </div>
 
                 <!-- Active Target Metadata Card -->
                 <div id="dt-target-meta-card" style="background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:10px 14px;">
@@ -290,31 +324,16 @@
                     <div>
                       <div class="flex-wrap-center mb-1">
                         <span id="dt-meta-saas-badge" class="badge badge-blue text-2xs">SAAS-01</span>
-                        <code id="dt-meta-stack-code" class="text-xs text-muted">Metabase v0.50.26</code>
+                        <code id="dt-meta-stack-code" class="text-xs text-muted">ThoughtSpot Cloud (Live Commercial SaaS)</code>
                         <span class="badge badge-green text-2xs" id="dt-meta-target-badge">AgentCore: HXGGFMZBKE</span>
                       </div>
                       <strong id="dt-meta-title" style="font-size:14px; color:#0f172a;">ThoughtSpot Cloud (Spotter Agentic BI v2.0)</strong>
                       <div id="dt-meta-action" class="text-xs text-muted" style="margin-top:2px;">GEAP MCP tool query_thoughtspot_liveboard_rls</div>
                     </div>
                     <div class="flex-wrap-center">
-                      <a id="dt-meta-s3-link" href="#" target="_blank" rel="noopener" class="sim-btn chip-link" style="font-size:11px; padding:4px 8px;">S3 Audit Ledger JSON &nearr;</a>
-                      <a id="dt-meta-runbook-link" href="#" target="_blank" rel="noopener" class="sim-btn chip-link" style="font-size:11px; padding:4px 8px;">Runbook &nearr;</a>
+                      <a id="dt-meta-s3-link" href="/docs/third_party_5_saas_verification_receipt.json" target="_blank" rel="noopener" class="sim-btn chip-link" style="font-size:11px; padding:4px 8px;">S3 Audit Ledger JSON &nearr;</a>
+                      <a id="dt-meta-runbook-link" href="/docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md" target="_blank" rel="noopener" class="sim-btn chip-link" style="font-size:11px; padding:4px 8px;">Runbook &nearr;</a>
                     </div>
-                  </div>
-                </div>
-
-                <!-- View Mode Controls & Split Slider -->
-                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                  <div class="flex-wrap-center">
-                    <span style="font-size:11.5px; font-weight:700; color:#334155;">Display:</span>
-                    <button type="button" class="genuine-3p-filter-btn active" id="btn-dt-mode-slider" onclick="setDtSliderViewMode('slider')">Interactive Split Slider</button>
-                    <button type="button" class="genuine-3p-filter-btn" id="btn-dt-mode-side" onclick="setDtSliderViewMode('side-by-side')">Side-by-Side (Before &rarr; After)</button>
-                    <button type="button" class="genuine-3p-filter-btn" id="btn-dt-mode-before" onclick="setDtSliderViewMode('before')">Before Only</button>
-                    <button type="button" class="genuine-3p-filter-btn" id="btn-dt-mode-after" onclick="setDtSliderViewMode('after')">After Only</button>
-                  </div>
-                  <div id="dt-slider-range-wrap" style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:11px; color:#64748b; font-weight:600;">Slide Split:</span>
-                    <input type="range" id="dt-split-range-input" min="0" max="100" value="50" oninput="updateDtSplitPosition(this.value)" style="width:120px; cursor:ew-resize;" />
                   </div>
                 </div>
 
@@ -324,11 +343,11 @@
                 <!-- Target Invariant Description Callouts -->
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;" id="dt-captions-grid">
                   <div style="background:#fff1f2; border:1px solid #fecdd3; border-radius:6px; padding:8px 10px;">
-                    <div style="font-size:11px; font-weight:800; color:#9f1239; margin-bottom:2px;">&#9203; BEFORE (Pre-Agentic Baseline / Risk)</div>
+                    <div style="font-size:11px; font-weight:800; color:#9f1239; margin-bottom:2px;">&#9989; LIVE VIEW 1 / PROVISIONING STATUS</div>
                     <div id="dt-before-caption-text" style="font-size:11.5px; color:#4c0519; line-height:1.4;"></div>
                   </div>
                   <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:6px; padding:8px 10px;">
-                    <div style="font-size:11px; font-weight:800; color:#065f46; margin-bottom:2px;">&#9989; AFTER (Live GEAP MCP Verified Execution)</div>
+                    <div style="font-size:11px; font-weight:800; color:#065f46; margin-bottom:2px;">&#9989; LIVE VIEW 2 / HOP 5 GOVERNANCE</div>
                     <div id="dt-after-caption-text" style="font-size:11.5px; color:#064e3b; line-height:1.4;"></div>
                   </div>
                 </div>

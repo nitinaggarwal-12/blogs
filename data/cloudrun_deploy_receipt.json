@@ -6,22 +6,36 @@
   "buildProject": "ramp-portal-dev",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "ge-blogs-00108-qmv",
-  "latestCreatedRevisionName": "ge-blogs-00108-qmv",
+  "latestReadyRevisionName": "ge-blogs-00111-pv6",
+  "latestCreatedRevisionName": "ge-blogs-00111-pv6",
   "readyStatus": "True",
   "trafficPercent": 100,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261104-183142-light-clean",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261120-035329-light-clean",
   "entrypointCmd": [
     "python3",
     "-B",
     "server.py"
   ],
   "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
-  "verifiedAt": "2026-11-04T18:32:28Z",
-  "certifiedDiagramsCount": 14,
+  "verifiedAt": "2026-11-20T03:55:08Z",
+  "approvedSimplifiedHeaderDiagramsCount": 12,
+  "certifiedDiagramsCount": 12,
   "workstreamsCount": 5,
-  "multiCloudGenuineScreenshotsCount": 23,
-  "beforeAfterScreenshotsCount": 20,
+  "verifiedLiveCommercialSaasRetinaCount": 2,
+  "gcpConsoleCapturesPendingSsoCount": 15,
+  "currentRevisionVerification": {
+    "revision": "ge-blogs-00111-pv6",
+    "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261120-035329-light-clean",
+    "verifiedAt": "2026-11-20T03:55:08Z",
+    "controlPlaneReady": true,
+    "startupProbeSucceeded": true,
+    "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
+    "beyondCorpEdgeUrl": "https://ge-blogs-248990048888.cr.gclb.goog",
+    "beyondCorpEdgeStatus": 302,
+    "preDeployGate": "13/13 Deep Forensic Audit + Full Unit Test Suite executed before OCI layer packaging",
+    "inVpcOidcJobStatus": "PERMISSION_DENIED_RUN_JOBS_RUN_WITHHELD",
+    "inVpcOidcJobNote": "CLI account lacks run.jobs.run on ramp-portal-dev/jobs/cloudrun-live-e2e-verifier; live HTTP 200 DOM inspection behind BeyondCorp IAP requires interactive browser sign-in to https://ge-blogs-248990048888.cr.gclb.goog/ or roles/run.jobsExecutorWithOverrides on cloudrun-live-e2e-verifier."
+  },
   "liveHttpVerification": {
     "verifiedAt": "2026-10-30T13:20:00Z",
     "verificationMode": "cloud_run_revision_live_http_dom_probe",
@@ -75,6 +89,8 @@
         "passed": true,
         "error": ""
       }
-    ]
+    ],
+    "historicalRevision": true,
+    "note": "Historical probe from ge-blogs-00038-f99 (2026-10-30T13:20:00Z); see currentRevisionVerification for ge-blogs-00111-pv6."
   }
 }

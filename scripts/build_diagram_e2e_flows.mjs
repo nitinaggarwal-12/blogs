@@ -25,6 +25,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ALL_BLUEPRINTS } from './build_all_workstream_diagrams.mjs';
+import { EXTRA_BAREMIN_AND_EXTENDED_FLOWS } from './baremin_e2e_flows.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -134,8 +135,8 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Yellow & Red Zones (Hops 5a & 3b Data, Tools & Reasoning)',
         title: 'Scoped 2LO/3LO MCP, AlloyDB RLS & Prefix-Cached Reasoning (Generates Response)',
         logicalNarrative:
-          'The authorized ADK agent (`5 Generates response`) executes DPoP-scoped 2LO/3LO `MCP servers` (`Scoped MCP & RAG`), queries AlloyDB under transactional `SET LOCAL app.current_tenant_id` Row-Level Security (`Hop 5a`, ~1.8 ms), and synthesizes the completion with Gemini 2.5 Pro / Gemma 3 using `ContextCacheConfig` (90% prefix discount) and `{tenant}:{user}:{session}` 5-Level Memory Bank (`Hop 3b`).',
-        components: 'MCP Servers (2LO/3LO) • AlloyDB RLS • Gemini 2.5 Pro • ContextCacheConfig',
+          'The authorized ADK agent (`5 Generates response`) executes DPoP-scoped 2LO/3LO `MCP servers` (`Scoped MCP & RAG`), queries AlloyDB under transactional `SET LOCAL app.current_tenant_id` Row-Level Security (`Hop 5a`, ~1.8 ms), and synthesizes the completion with Gemini 3.8 Flash / Gemma 3 using `ContextCacheConfig` (90% prefix discount) and `{tenant}:{user}:{session}` 5-Level Memory Bank (`Hop 3b`).',
+        components: 'MCP Servers (2LO/3LO) • AlloyDB RLS • Gemini 3.8 Flash • ContextCacheConfig',
       },
       {
         step: 'Step ⑥',
@@ -196,11 +197,11 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       {
         step: 'Step ⑤',
         hopName: 'Hops 5a & 3b: Scoped MCP, RLS & Reasoning (Generates Response)',
-        route: 'MCP Servers, AlloyDB RLS & Gemini 2.5 Pro (Yellow & Red Zones)',
+        route: 'MCP Servers, AlloyDB RLS & Gemini 3.8 Flash (Yellow & Red Zones)',
         protocolAndMechanism:
-          'Executes DPoP-bound 2LO/3LO MCP tools, enforces `SET LOCAL app.current_tenant_id` AlloyDB Row-Level Security (~1.8 ms), and runs prefix-cached Gemini 2.5 Pro reasoning (`ContextCacheConfig` 90% discount + 5-Level Memory Bank).',
+          'Executes DPoP-bound 2LO/3LO MCP tools, enforces `SET LOCAL app.current_tenant_id` AlloyDB Row-Level Security (~1.8 ms), and runs prefix-cached Gemini 3.8 Flash reasoning (`ContextCacheConfig` 90% discount + 5-Level Memory Bank).',
         codeAndResource: 'hop5_data_rls_and_otel.py & shared_diagnostic_agent.py',
-        verifiedOutcome: '84.7% lower token COGS with zero cross-tenant SQL or memory bleed',
+        verifiedOutcome: '89.1% lower token COGS with zero cross-tenant SQL or memory bleed',
       },
       {
         step: 'Step ⑥',
@@ -269,14 +270,14 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         colorHex: '#feefc3',
         borderHex: '#b06000',
         name: '3. Hops 3–5 (Tenant A): FinVault Bank Spoke',
-        role: 'Enforces gVisor sandbox isolation, 8,000-token thinking cap, OCC/FINRA Model Armor NLCs, Workspace/Jira 3LO MCP, and AlloyDB RLS.',
+        role: 'Enforces gVisor sandbox isolation, HIGH thinkingLevel (8,000 maxOutputTokens) cap, OCC/FINRA Model Armor NLCs, Workspace/Jira 3LO MCP, and AlloyDB RLS.',
       },
       {
         zoneId: 'Red Zone',
         colorHex: '#fad2cf',
         borderHex: '#c5221f',
         name: '4. Hops 3–5 (Tenant B): RetailStream Corp Spoke',
-        role: 'Enforces gVisor sandbox isolation, 4,000-token thinking cap, PCI PAN Model Armor NLCs, SharePoint/ServiceNow 3LO MCP, and AlloyDB RLS.',
+        role: 'Enforces gVisor sandbox isolation, MEDIUM thinkingLevel (4,000 maxOutputTokens) cap, PCI PAN Model Armor NLCs, SharePoint/ServiceNow 3LO MCP, and AlloyDB RLS.',
       },
     ],
     plainSteps: [
@@ -322,8 +323,8 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Yellow / Red Zone (Hops 5a & 3b Tools, RLS & Inference)',
         title: 'Scoped 2LO/3LO MCP, AlloyDB RLS & Prefix-Cached Reasoning (Generates Response)',
         logicalNarrative:
-          'During agent execution (`5 Generates response`), Hop 5 brokers DPoP-scoped 2LO/3LO OAuth tokens for `MCP servers` (`Secure RAG`) and executes `SET LOCAL app.current_tenant_id` on AlloyDB (`Agent-tool interaction`, ~1.8 ms), while Gemini 2.5 Pro synthesizes the response using `ContextCacheConfig` (90% prefix discount) and `{tenant}:{user}:{session}` 5-Level Memory Bank.',
-        components: 'Hop 5 (`hop5_data_rls_and_otel.py`) • AlloyDB RLS • Gemini 2.5 Pro',
+          'During agent execution (`5 Generates response`), Hop 5 brokers DPoP-scoped 2LO/3LO OAuth tokens for `MCP servers` (`Secure RAG`) and executes `SET LOCAL app.current_tenant_id` on AlloyDB (`Agent-tool interaction`, ~1.8 ms), while Gemini 3.8 Flash synthesizes the response using `ContextCacheConfig` (90% prefix discount) and `{tenant}:{user}:{session}` 5-Level Memory Bank.',
+        components: 'Hop 5 (`hop5_data_rls_and_otel.py`) • AlloyDB RLS • Gemini 3.8 Flash',
       },
       {
         step: 'Step ⑥',
@@ -384,9 +385,9 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       {
         step: 'Step ⑤',
         hopName: 'Hops 5a & 3b: Scoped MCP, RLS & Cache (Generates Response)',
-        route: 'MCP Hub, AlloyDB RLS, Gemini 2.5 Pro & 5-Level Memory Bank',
+        route: 'MCP Hub, AlloyDB RLS, Gemini 3.8 Flash & 5-Level Memory Bank',
         protocolAndMechanism:
-          'Dispatches DPoP-bound 2LO/3LO MCP tools, binds `SET LOCAL app.current_tenant_id` on AlloyDB connections (~1.8 ms), and executes Gemini 2.5 Pro with `ContextCacheConfig` (90% prefix discount) and `{tenant}:{user}:{session}` memory.',
+          'Dispatches DPoP-bound 2LO/3LO MCP tools, binds `SET LOCAL app.current_tenant_id` on AlloyDB connections (~1.8 ms), and executes Gemini 3.8 Flash with `ContextCacheConfig` (90% prefix discount) and `{tenant}:{user}:{session}` memory.',
         codeAndResource: 'hop5_data_rls_and_otel.py & MemoryBankLevel L1..L5',
         verifiedOutcome: 'SQL RLS-bypass returns 0 foreign rows; unconsented 3LO returns HTTP 401',
       },
@@ -430,12 +431,12 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     runtimeTarget: 'cymbal-multi-tenant-patterns-00003-wfh • BigQuery pattern_a_pooled_rls_entities',
     codeModules: 'workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md • runtime/main.py (/v1/patterns/a/execute)',
     execCloudServices:
-      'External ALB • Cloud Armor • Identity-Aware Proxy • Cloud Run Gen2 • Memorystore for Valkey • Vertex AI Model Armor • Gemini 2.5 Pro • AlloyDB & BigQuery RLS',
+      'External ALB • Cloud Armor • Identity-Aware Proxy • Cloud Run Gen2 • Memorystore for Valkey • Vertex AI Model Armor • Gemini 3.8 Flash • AlloyDB & BigQuery RLS',
     execTechSummary:
       'Consolidates multi-tenant compute onto one auto-scaling Cloud Run / Vertex AI Agent Engine pool and one shared AlloyDB/BigQuery schema, enforcing isolation via KMS-signed tokens, Memorystore rate bulkheads, and Row-Level Security.',
     outcomeTitle: 'High-Density SaaS Unit Economics (120 RPM Pool) with Cryptographic 5-Hop Isolation',
     outcomeBody:
-      'Competing tenants (FinVault Bank and RetailStream Corp) share the same serverless runtime pool and database tables to achieve an 84.7% token COGS reduction, while cryptographic context binding guarantees zero cross-tenant visibility.',
+      'Competing tenants (FinVault Bank and RetailStream Corp) share the same serverless runtime pool and database tables to achieve an 89.1% token COGS reduction, while cryptographic context binding guarantees zero cross-tenant visibility.',
     outcomeTech: 'Verified live on Google Cloud: tenant queries return strictly their authorized rows in BigQuery RLS (2 FinVault rows ENT-FV-001..002 or 1 RetailStream row ENT-RS-001) with 0 foreign rows leaked',
     plainZones: [
       {
@@ -492,7 +493,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Blue → Yellow & Green Zones',
         title: 'gVisor Sandbox Allocation & Valkey Quota Check',
         logicalNarrative:
-          'The request enters the shared Cloud Run Gen2 gVisor sandbox pool. Memorystore for Valkey verifies the tenant’s RPM bulkhead (`600` RPM Enterprise vs `120` RPM Standard) and clamps the thinking budget.',
+          'The request enters the shared Cloud Run Gen2 gVisor sandbox pool. Memorystore for Valkey verifies the tenant’s RPM bulkhead (`600` RPM Enterprise vs `120` RPM Standard) and clamps thinkingLevel / maxOutputTokens.',
         components: 'Cloud Run Gen2 gVisor • Memorystore for Valkey',
       },
       {
@@ -507,11 +508,11 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       {
         step: 'Step ⑤',
         badgeNum: '05',
-        zone: 'Yellow Zone (Gemini 2.5 Pro)',
+        zone: 'Yellow Zone (Gemini 3.8 Flash)',
         title: 'Shared Prefix Cache + Isolated Session Memory',
         logicalNarrative:
-          'Gemini 2.5 Pro reuses the 32,000-token read-only shared system instruction cache (90% input token discount) while reading and writing episodic conversation state strictly under `{tenant}:{user}:{session}`.',
-        components: 'Gemini 2.5 Pro • ContextCacheConfig • 5-Level Memory Bank',
+          'Gemini 3.8 Flash reuses the 32,000-token read-only shared system instruction cache (90% input token discount) while reading and writing episodic conversation state strictly under `{tenant}:{user}:{session}`.',
+        components: 'Gemini 3.8 Flash • ContextCacheConfig • 5-Level Memory Bank',
       },
       {
         step: 'Step ⑥',
@@ -556,7 +557,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'Valkey Rate & Budget Cap',
         route: 'Cloud Run Gen2 & Memorystore for Valkey (Green & Yellow Zones)',
         protocolAndMechanism:
-          'Enforces per-tenant token-bucket rate limits in Memorystore for Valkey and clamps `thinking_budget` (`4,000` Standard vs `8,000` Enterprise) inside the gVisor container.',
+          'Enforces per-tenant token-bucket rate limits in Memorystore for Valkey and clamps `thinkingLevel` (`"MEDIUM"`/`4,000` Standard vs `"HIGH"`/`8,000` Enterprise) inside the gVisor container.',
         codeAndResource: 'Valkey Sliding-Window Rate Limiter & Budget Clamp',
         verifiedOutcome: 'Eliminates noisy-neighbor TPM exhaustion at 120 RPM Pool unit cost',
       },
@@ -572,11 +573,11 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       {
         step: 'Step ⑤',
         hopName: '90% Shared Context Cache',
-        route: 'Vertex AI Gemini 2.5 Pro (Yellow Zone)',
+        route: 'Vertex AI Gemini 3.8 Flash (Yellow Zone)',
         protocolAndMechanism:
           'Attaches read-only `ContextCacheConfig` to the 32k-token shared system prompt and tool schemas while isolating dynamic conversation turns in `{tenant}:{user}:{session}`.',
         codeAndResource: 'Shared Read-Only Prefix Cache + Isolated Memory Bank',
-        verifiedOutcome: 'Reduces billable input tokens from 34,000 to ~5,200 per turn (-84.7% COGS)',
+        verifiedOutcome: 'Reduces billable input tokens from 36,468 to 3,969 equivalent tokens per turn (-89.1% COGS)',
       },
       {
         step: 'Step ⑥',
@@ -638,7 +639,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         colorHex: '#ceead6',
         borderHex: '#137333',
         name: '2. Hop 3 FinOps & 3LO Gates (Vectors 6 & 10)',
-        role: 'Clamps thinking budgets, throttles noisy-neighbor RPM floods with HTTP 429 (Vector 6), and enforces 3LO OAuth consent challenges (Vector 10).',
+        role: 'Clamps thinkingLevel / maxOutputTokens, throttles noisy-neighbor RPM floods with HTTP 429 (Vector 6), and enforces 3LO OAuth consent challenges (Vector 10).',
       },
       {
         zoneId: 'Yellow Zone',
@@ -678,9 +679,9 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         step: 'Step ③',
         badgeNum: '03',
         zone: 'Green & Yellow Zones (Vector 6)',
-        title: 'Clamping Thinking Budgets & Throttling Floods',
+        title: 'Clamping thinkingLevel / Token Caps & Throttling Floods',
         logicalNarrative:
-          'Vector 6 requests 32,000 thinking tokens on a Standard tier account and floods the API above 120 RPM. Hop 3 clamps the budget to 4,000 tokens and throttles excess requests in Memorystore with `HTTP 429`.',
+          'Vector 6 requests 32,000 reasoning output tokens on a Standard tier account and floods the API above 120 RPM. Hop 3 clamps the budget to 4,000 tokens and throttles excess requests in Memorystore with `HTTP 429`.',
         components: 'Vector 6 Blocked • Hop 3 Valkey Bulkhead (`HTTP 429`)',
       },
       {
@@ -744,7 +745,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'Vector 6: Quota & Budget',
         route: 'Memorystore for Valkey & Cloud Run (Green & Yellow Zones)',
         protocolAndMechanism:
-          'Enforces atomic sliding-window RPM counters in Memorystore for Valkey and caps `GenerateContentConfig.thinking_config.thinking_budget` by tier.',
+          'Enforces atomic sliding-window RPM counters in Memorystore for Valkey and caps `GenerateContentConfig.thinking_config.thinking_level` & `max_output_tokens` by tier.',
         codeAndResource: 'hop3_compute_finops_bulkhead.py • Rate & Token Cap',
         verifiedOutcome: '32k token request clamped to 4k; burst flood throttled with HTTP 429',
       },
@@ -826,7 +827,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         colorHex: '#ceead6',
         borderHex: '#137333',
         name: '2. Firestore Tenant Config & Secret Manager',
-        role: 'Stores per-tenant prompts, thinking budgets, and rate limits in Firestore/Memorystore and isolates 3P OAuth secrets by tenant prefix.',
+        role: 'Stores per-tenant prompts, thinkingLevel / output caps, and rate limits in Firestore/Memorystore and isolates 3P OAuth secrets by tenant prefix.',
       },
       {
         zoneId: 'Yellow Zone',
@@ -859,7 +860,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Blue & Green Zones (Config Lookup)',
         title: 'Dynamic Tenant Profile & GCS Skill Hydration',
         logicalNarrative:
-          'Hop 1 mints the KMS-signed `CryptographicContext`. Hop 3 loads the tenant’s dynamic system prompt, thinking budget (`8,000` vs `4,000`), and `gs://cymbal-skills-{tenant}/` URIs from Firestore.',
+          'Hop 1 mints the KMS-signed `CryptographicContext`. Hop 3 loads the tenant’s dynamic system prompt, `thinkingLevel` / `maxOutputTokens` (`HIGH`/`8,000` vs `MEDIUM`/`4,000`), and `gs://cymbal-skills-{tenant}/` URIs from Firestore.',
         components: 'Firestore Tenant Profile • GCS Skills Bucket Isolation',
       },
       {
@@ -886,7 +887,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Yellow Zone (FinVault 3LO Execution)',
         title: 'FinVault Workspace, Jira & Private Agent Alpha',
         logicalNarrative:
-          'For FinVault, the runtime invokes `google_workspace_jira_3lo_mcp.py` (fetching Drive runbooks and Jira tickets) and permits model hot-swapping on private `Agent Alpha` (`gemini-2.5-pro` (`X-Vertex-AI-LLM-Request-Type: dedicated`) Provisioned Throughput ↔ shared Pay-As-You-Go `gemini-2.5-pro`).',
+          'For FinVault, the runtime invokes `google_workspace_jira_3lo_mcp.py` (fetching Drive runbooks and Jira tickets) and permits model hot-swapping on private `Agent Alpha` (`gemini-3.8-flash` (`X-Vertex-AI-LLM-Request-Type: dedicated`) Provisioned Throughput ↔ shared Pay-As-You-Go `gemini-3.8-flash`).',
         components: 'FinVault 3LO MCP • Private Agent Alpha Model Hot-Swap',
       },
       {
@@ -923,7 +924,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'Dynamic Runtime Config',
         route: 'Firestore & Cloud Storage Skills (Green Zone)',
         protocolAndMechanism:
-          'Hydrates per-tenant `system_prompt_template`, `thinking_budget`, and `gs://cymbal-skills-{tenant}/` URIs at runtime without redeploying container images.',
+          'Hydrates per-tenant `system_prompt_template`, `thinking_level` / `max_output_tokens`, and `gs://cymbal-skills-{tenant}/` URIs at runtime without redeploying container images.',
         codeAndResource: 'load_dynamic_runtime_config() in hop3_compute_finops_bulkhead.py',
         verifiedOutcome: 'Verified F-02: FinVault prompt template and 2 GCS Skill URIs loaded dynamically',
       },
@@ -959,7 +960,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'Private Agent Alpha CLI',
         route: 'Vertex AI Agent Engine & Model Garden (Yellow Zone)',
         protocolAndMechanism:
-          'Allows FinVault to provision `FinVaultPrivateAgentAlpha` via `gcloud alpha agents` CLI and hot-swap between `gemini-2.5-pro` (`X-Vertex-AI-LLM-Request-Type: dedicated`) and shared PayGo `gemini-2.5-pro`.',
+          'Allows FinVault to provision `FinVaultPrivateAgentAlpha` via `gcloud alpha agents` CLI and hot-swap between `gemini-3.8-flash` (`X-Vertex-AI-LLM-Request-Type: dedicated`) and shared PayGo `gemini-3.8-flash`.',
         codeAndResource: 'core-cymbal-agent/agents/finvault_agent_alpha.py',
         verifiedOutcome: 'Verified F-03: FinVault hot-swap succeeds; RetailStream attempt raises PermissionError',
       },
@@ -1065,7 +1066,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Red Zone (Rate Bulkhead)',
         title: 'Provisioning HA Memorystore for Valkey Cluster',
         logicalNarrative:
-          'Terraform provisions the high-availability Memorystore for Valkey cluster used by Hop 3 to track sliding-window RPM quotas (`600` RPM FinVault vs `120` RPM RetailStream) and thinking token caps.',
+          'Terraform provisions the high-availability Memorystore for Valkey cluster used by Hop 3 to track sliding-window RPM quotas (`600` RPM FinVault vs `120` RPM RetailStream) and `thinkingLevel`/`maxOutputTokens` caps.',
         components: 'Memorystore for Valkey (`HIGH_AVAILABILITY`) • Hop 3 Bulkhead',
       },
       {
@@ -1129,7 +1130,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'Tier 3: Valkey Rate Bulkhead',
         route: 'Memorystore for Valkey (Red Zone)',
         protocolAndMechanism:
-          'Provisions a multi-zone Memorystore instance for sub-millisecond evaluation of per-tenant RPM quotas and thinking-token budgets.',
+          'Provisions a multi-zone Memorystore instance for sub-millisecond evaluation of per-tenant RPM quotas and thinkingLevel/maxOutputTokens budgets.',
         codeAndResource: 'main.tf • Memorystore High-Availability Bulkhead',
         verifiedOutcome: 'Sub-2ms quota enforcement protecting shared model TPM pools',
       },
@@ -1209,7 +1210,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         colorHex: '#feefc3',
         borderHex: '#b06000',
         name: '3. FinVault Sovereign Silo Project (CMEK ENABLED)',
-        role: 'Dedicated project running air-gapped Gemma 3 (27B) on private GKE + Gemini 2.5 Pro (Dedicated PT) and CMEK-encrypted AlloyDB/BigQuery vault (`2 rows` returned).',
+        role: 'Dedicated project running air-gapped Gemma 3 (27B) on private GKE + Gemini 3.8 Flash (Dedicated PT) and CMEK-encrypted AlloyDB/BigQuery vault (`2 rows` returned).',
       },
       {
         zoneId: 'Red Zone',
@@ -1262,7 +1263,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Yellow Zone (Dedicated Inference)',
         title: 'Air-Gapped Gemma 3 on GKE or Provisioned Gemini',
         logicalNarrative:
-          'FinVault runs inference inside its perimeter using either air-gapped Gemma 3 (27B) on private GKE (`--internal-ip`, CMEK boot disks) or dedicated Provisioned Throughput Gemini 2.5 Pro (`gemini-2.5-pro` (`X-Vertex-AI-LLM-Request-Type: dedicated`)).',
+          'FinVault runs inference inside its perimeter using either air-gapped Gemma 3 (27B) on private GKE (`--internal-ip`, CMEK boot disks) or dedicated Provisioned Throughput Gemini 3.8 Flash (`gemini-3.8-flash` (`X-Vertex-AI-LLM-Request-Type: dedicated`)).',
         components: 'Air-Gapped Gemma 3 27B on Private GKE • Provisioned Throughput',
       },
       {
@@ -1773,14 +1774,14 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         colorHex: '#feefc3',
         borderHex: '#b06000',
         name: '3. Left Spoke: Shared Pooled Runtime (Standard)',
-        role: 'Executes Standard-tier workloads (`pool://`, 4,000 thinking cap, 90% shared cache, AlloyDB RLS) and streams state during live tier upgrades.',
+        role: 'Executes Standard-tier workloads (`pool://`, MEDIUM / 4,000 maxOutputTokens cap, 90% shared cache, AlloyDB RLS) and streams state during live tier upgrades.',
       },
       {
         zoneId: 'Red Zone',
         colorHex: '#fad2cf',
         borderHex: '#c5221f',
         name: '4. Right Spoke: Dedicated Enterprise PSC Spokes',
-        role: 'Connects via unidirectional Private Service Connect (`psc://`, `/28` NAT subnet) to dedicated CMEK-encrypted Enterprise spokes (8,000 thinking budget).',
+        role: 'Connects via unidirectional Private Service Connect (`psc://`, `/28` NAT subnet) to dedicated CMEK-encrypted Enterprise spokes (HIGH thinkingLevel / 8k cap).',
       },
     ],
     plainSteps: [
@@ -1815,7 +1816,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         step: 'Step ④',
         badgeNum: '04',
         zone: 'Yellow & Red Zones (Tiered Guardrails)',
-        title: 'Tier-Scoped Model Armor & Thinking Budget Enforcement',
+        title: 'Tier-Scoped Model Armor & thinkingLevel Cap Enforcement',
         logicalNarrative:
           'In the Pooled Spoke, shared Model Armor enforces Standard policies and clamps reasoning to 4,000 tokens. In the Enterprise PSC Spoke, dedicated Model Armor templates run with an 8,000-token budget.',
         components: 'Tiered Model Armor Templates • 4,000 vs. 8,000 Token Budget',
@@ -1872,7 +1873,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'Standard Pool Dispatch',
         route: 'Shared Cloud Run Gen2 & AlloyDB RLS (Yellow Zone)',
         protocolAndMechanism:
-          'Routes Standard-tier tenants to the shared pooled runtime with 90% shared `ContextCacheConfig` caching, 120 RPM quota, and 4,000 thinking token cap.',
+          'Routes Standard-tier tenants to the shared pooled runtime with 90% shared `ContextCacheConfig` caching, 120 RPM quota, and MEDIUM / 4,000 maxOutputTokens cap.',
         codeAndResource: 'pool://cymbal-shared-pooled-runtime-v2',
         verifiedOutcome: 'Preserves 85–90% COGS savings for high-volume commercial tenants',
       },
@@ -1899,7 +1900,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'Phase 2: ATOMIC_CUTOVER',
         route: 'Firestore Atomic Pointer Flip (Blue & Green Zones)',
         protocolAndMechanism:
-          'Atomically updates the tenant’s instance-scoped profile (`tier: STANDARD → ENTERPRISE`, `thinking_budget: 4000 → 8000`, `target: pool:// → psc://`).',
+          'Atomically updates the tenant’s instance-scoped profile (`tier: STANDARD → ENTERPRISE`, `thinking_level: MEDIUM → HIGH`, `max_output_tokens: 4000 → 8000`, `target: pool:// → psc://`).',
         codeAndResource: 'Phase 2 ATOMIC_CUTOVER • Instance-Scoped Profile Mutation',
         verifiedOutcome: 'Verified F-09: Sub-50ms cutover with zero global state bleed across instances',
       },
@@ -2096,7 +2097,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'In-Spoke CMEK Execution',
         route: 'Spoke Agent Runtime & CMEK AlloyDB (Red Zone)',
         protocolAndMechanism:
-          'Executes the agent inside the spoke’s VPC-SC perimeter with 8,000 thinking tokens and CMEK-encrypted AlloyDB/Memory Bank.',
+          'Executes the agent inside the spoke’s VPC-SC perimeter with 8,000 reasoning output tokens and CMEK-encrypted AlloyDB/Memory Bank.',
         codeAndResource: 'Dedicated Spoke Runtime & KMS CMEK Binding',
         verifiedOutcome: 'Combines SaaS control-plane simplicity with Pattern B data sovereignty',
       },
@@ -2156,7 +2157,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         colorHex: '#fad2cf',
         borderHex: '#c5221f',
         name: '4. Target Plane: RetailStream Dedicated PSC Spoke',
-        role: 'Test 4 Post-Cutover: serves the next turn of `sess-live-upgrade-99` in `cymbal-retailstream-silo-prod` with `8,000` thinking tokens and dedicated CMEK.',
+        role: 'Test 4 Post-Cutover: serves the next turn of `sess-live-upgrade-99` in `cymbal-retailstream-silo-prod` with `8,000` reasoning output tokens and dedicated CMEK.',
       },
     ],
     plainSteps: [
@@ -2193,7 +2194,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Blue & Green Zones (Phase 2 Cutover)',
         title: 'Atomic Firestore Routing & Entitlement Flip',
         logicalNarrative:
-          'In Phase 2 (`ATOMIC_CUTOVER`), a single atomic update flips RetailStream’s instance-scoped routing record: `tier: STANDARD → ENTERPRISE`, `thinking_budget_cap: 4000 → 8000`, and `target_uri: pool:// → psc://retailstream-agent-spoke-psc`.',
+          'In Phase 2 (`ATOMIC_CUTOVER`), a single atomic update flips RetailStream’s instance-scoped routing record: `tier: STANDARD → ENTERPRISE`, `thinking_level: MEDIUM → HIGH`, `max_output_token_cap: 4000 → 8000`, and `target_uri: pool:// → psc://retailstream-agent-spoke-psc`.',
         components: 'Phase 2 (`ATOMIC_CUTOVER`) • Atomic Pointer & Quota Flip',
       },
       {
@@ -2211,7 +2212,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Red Zone (Test 4 Post-Cutover)',
         title: 'Seamless Next Turn in Dedicated PSC Spoke',
         logicalNarrative:
-          'In Test 4, the very next message on the exact same live session (`sess-live-upgrade-99`) routes automatically over `DEDICATED_PSC_SPOKE` to `cymbal-retailstream-silo-prod` with `6,000` unclamped thinking tokens and active CMEK.',
+          'In Test 4, the very next message on the exact same live session (`sess-live-upgrade-99`) routes automatically over `DEDICATED_PSC_SPOKE` to `cymbal-retailstream-silo-prod` with `6,000` unclamped reasoning output tokens and active CMEK.',
         components: 'Test 4 PASS • Same `session_id` Served by New PSC Spoke',
       },
       {
@@ -2248,7 +2249,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'Phase 2: ATOMIC_CUTOVER',
         route: 'Firestore Routing Table (`tenant_routing_table`) (Blue Zone)',
         protocolAndMechanism:
-          'Atomically commits the new `TenantRoutingRecord` (`tier=ENTERPRISE`, `routing_plane=DEDICATED_PSC_SPOKE`, `thinking_budget_cap=8000`, `cmek_key_uri`).',
+          'Atomically commits the new `TenantRoutingRecord` (`tier=ENTERPRISE`, `routing_plane=DEDICATED_PSC_SPOKE`, `thinking_level="HIGH"`, `max_output_token_cap=8000`, `cmek_key_uri`).',
         codeAndResource: 'execute_zero_downtime_tier_upgrade() • ATOMIC_CUTOVER',
         verifiedOutcome: 'Verified TEST 3 PASS: Atomic pointer flip with zero half-migrated state',
       },
@@ -2266,7 +2267,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'Test 4: Live Session Continuity',
         route: 'Promoted PSC Spoke (`cymbal-retailstream-silo-prod`) (Red Zone)',
         protocolAndMechanism:
-          'Reuses active `session_id="sess-live-upgrade-99"` immediately post-cutover, routing over `retailstream-agent-spoke-psc` with `6,000` unclamped thinking tokens.',
+          'Reuses active `session_id="sess-live-upgrade-99"` immediately post-cutover, routing over `retailstream-agent-spoke-psc` with `6,000` unclamped reasoning output tokens.',
         codeAndResource: 'run_tier_migration_suite.py • TEST 4 Post-Cutover Check',
         verifiedOutcome: 'Verified TEST 4 PASS: Active chat continues seamlessly in dedicated spoke',
       },
@@ -2498,9 +2499,9 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     runtimeTarget: 'enterprise-s2p-global • cymbal_agentic_finops_otel.tenant_telemetry_spans',
     codeModules: 'workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md • workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md • blogs/ws5-decision-guide-and-agentic-triad.md',
     execCloudServices:
-      'Vertex AI Agent Engine • Google ADK • Gemini 2.5 Pro & Gemma 3 • Cloud Armor & IAP • Model Armor & SDP • Memorystore for Valkey • AlloyDB RLS & Cloud KMS CMEK • BigQuery OTel',
+      'Vertex AI Agent Engine • Google ADK • Gemini 3.8 Flash & Gemma 3 • Cloud Armor & IAP • Model Armor & SDP • Memorystore for Valkey • AlloyDB RLS & Cloud KMS CMEK • BigQuery OTel',
     execTechSummary:
-      'Synthesizes the 2-Question Executive Topology Decision Tree (Pattern A vs. B vs. C) and the 3-Pillar Multi-Tenant Agentic Triad: (1) 5-Hop Cryptographic Governance, (2) Predictable FinOps Unit Economics (-84.7% COGS), and (3) Zero-PII OpenTelemetry Chargeback.',
+      'Synthesizes the 2-Question Executive Topology Decision Tree (Pattern A vs. B vs. C) and the 3-Pillar Multi-Tenant Agentic Triad: (1) 5-Hop Cryptographic Governance, (2) Predictable FinOps Unit Economics (-89.1% COGS), and (3) Zero-PII OpenTelemetry Chargeback.',
     outcomeTitle: '2-Question Topology Selector + 74% Total Cloud COGS Reduction Across 1,000 Tenants',
     outcomeBody:
       'Across a 1,000-tenant B2B SaaS portfolio (950 Standard + 50 Enterprise), Pattern C guided by the Agentic Triad reduces shared prompt token costs by 90%, cuts total monthly infrastructure COGS by 74% (via 90% shared ContextCacheConfig), and maintains 99.99% SLA with 0 cross-tenant leaks.',
@@ -2525,7 +2526,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         colorHex: '#fad2cf',
         borderHex: '#c5221f',
         name: 'Pattern B — Sovereign Silos • Tier 3 • Terraform module 3.6',
-        role: 'Triggered by `Q1 = YES (100% regulated)`: provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`).',
+        role: 'Triggered by `Q1 = YES (100% regulated)`: provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • HIGH/8k Cap • 6/6 tests`).',
       },
       {
         zoneId: 'Amber & Slate Outcome Columns (Center & Right)',
@@ -2569,7 +2570,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Coral Outcome Column (Pattern B)',
         title: 'Pattern B — Sovereign Silos (Tier 3 • Terraform Module 3.6)',
         logicalNarrative:
-          'Triggered by `Q1 = YES`: provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • 8k budget • 6/6 tests`).',
+          'Triggered by `Q1 = YES`: provisions `Per-Tenant Project & VPC-SC` (`IAM PAB + KMS CMEK 423`) and `Dedicated Agent & Gemma 3` (`600 RPM • HIGH/8k Cap • 6/6 tests`).',
         components: 'Per-Tenant Project & VPC-SC • Dedicated Agent & Gemma 3',
       },
       {
@@ -2624,9 +2625,9 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         hopName: 'Pillar 2: FinOps Levers',
         route: 'Vertex AI ContextCacheConfig & Memorystore (Green Zone Triad Core)',
         protocolAndMechanism:
-          'Caches the 32k-token shared system prompt once at a 90% discount while enforcing per-tier thinking budgets (`4k` vs `8k`) and Valkey RPM bulkheads.',
+          'Caches the 32k-token shared system prompt once at a 90% discount while enforcing per-tier `thinkingLevel` / `maxOutputTokens` caps (`MEDIUM`/`4k` vs `HIGH`/`8k`) and Valkey RPM bulkheads.',
         codeAndResource: 'Shared Read-Only Prefix Cache + Tiered Token Caps',
-        verifiedOutcome: '84.7% per-turn token COGS reduction; 74% total 1,000-tenant cloud savings',
+        verifiedOutcome: '89.1% per-turn token COGS reduction; 74% total 1,000-tenant cloud savings',
       },
       {
         step: 'Step ④',
@@ -2694,13 +2695,13 @@ export function synthesizeDynamicFlowSpecForBlueprint(bp) {
   const gcBot = [gc.bot?.title, gc.bot?.title2].filter(Boolean).join(' ') || 'Cloud Logging & BQ';
 
   const lcArmor = [lc.modelArmor?.title, lc.modelArmor?.title2].filter(Boolean).join(' ') || 'Cloud DLP & Guardrails';
-  const lcLlm = [lc.llm?.title, lc.llm?.title2].filter(Boolean).join(' ') || 'Gemini 2.5 Pro';
+  const lcLlm = [lc.llm?.title, lc.llm?.title2].filter(Boolean).join(' ') || 'Gemini 3.8 Flash';
   const lcRuntime = [lc.runtime?.title, lc.runtime?.title2].filter(Boolean).join(' ') || 'Vertex AI Agent Engine';
   const lcMcp = [lc.mcp?.title, lc.mcp?.title2].filter(Boolean).join(' ') || 'MCP Retrieval Tools';
   const lcStore = [lc.datastore?.title, lc.datastore?.title2].filter(Boolean).join(' ') || 'Cloud Spanner Graph';
 
   const scArmor = [sc.modelArmor?.title, sc.modelArmor?.title2].filter(Boolean).join(' ') || 'VPC-SC & Action Gate';
-  const scLlm = [sc.llm?.title, sc.llm?.title2].filter(Boolean).join(' ') || 'Gemini 2.5 Flash';
+  const scLlm = [sc.llm?.title, sc.llm?.title2].filter(Boolean).join(' ') || 'Gemini 3.8 Flash';
   const scRuntime = [sc.runtime?.title, sc.runtime?.title2].filter(Boolean).join(' ') || 'Governed Action Agent';
   const scMcp = [sc.mcp?.title, sc.mcp?.title2].filter(Boolean).join(' ') || 'MCP Action Connectors';
   const scStore = [sc.datastore?.title, sc.datastore?.title2].filter(Boolean).join(' ') || 'AlloyDB & BigQuery';
@@ -2984,7 +2985,10 @@ function main() {
   const orderedBlueprints = [...ALL_BLUEPRINTS].sort(
     (a, b) => canonicalOrder.indexOf(a.id) - canonicalOrder.indexOf(b.id)
   );
-  const flows = orderedBlueprints.map((bp, idx) => buildDiagramFlowEntry(bp, idx));
+  const baseFlows = orderedBlueprints.map((bp, idx) => buildDiagramFlowEntry(bp, idx));
+  const seenIds = new Set(baseFlows.map((f) => f.id));
+  const extraFlows = EXTRA_BAREMIN_AND_EXTENDED_FLOWS.filter((f) => !seenIds.has(f.id)).map((f, i) => ({ ...f, index: baseFlows.length + i + 1 }));
+  const flows = [...baseFlows, ...extraFlows];
   const outPath = path.join(ROOT_DIR, 'diagrams', 'diagram_e2e_flows.json');
   fs.writeFileSync(
     outPath,

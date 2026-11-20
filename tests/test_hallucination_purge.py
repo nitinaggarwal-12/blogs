@@ -257,7 +257,7 @@ class HallucinationPurgeRegressionTests(unittest.TestCase):
             "server.py",
             "scripts/unified_feedback_engine.py",
             "scripts/sync_google_workspace_bridge.py",
-            "scripts/provision_gcp_cloudrun_third_party_apps.py",
+            "scripts/capture_real_gcp_and_saas_screenshots.mjs",
             "scripts/provision_ramp_portal_dev_multi_tenant_infra.py",
         ):
             src = (ROOT_DIR / rel).read_text(encoding="utf-8")

@@ -13,7 +13,7 @@
 
   <!-- TOP EXTERNAL USER / TENANT BOX -->
   <g>
-    <rect x="465" y="52" width="250" height="86" rx="8" ry="8" fill="#ffffff" stroke="#202124" stroke-width="2"/>
+    <rect x="465" y="54" width="250" height="84" rx="8" ry="8" fill="#ffffff" stroke="#202124" stroke-width="2"/>
     <circle cx="590" cy="76" r="9.5" fill="#000000"/>
     <path d="M 573 101 C 573 91 607 91 607 101 Z" fill="#000000"/>
     <text x="590" y="117" text-anchor="middle" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124">Test Harness Operator</text>
@@ -345,10 +345,10 @@
   <text x="68" y="327" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13.5" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round">Same session_id (sess-rs-live-upgrade-01) Before &amp; After Cutover • Continuous Synthetic Traffic</text>
   <text x="84" y="363" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#aecbfa" stroke-width="8" stroke-linejoin="round">Test Runner &amp; Router Under Test</text>
   <text x="84" y="381" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#aecbfa" stroke-width="8" stroke-linejoin="round">route_and_invoke() + execute_zero_downtime_tier_upgrade()</text>
-  <text x="86" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" textLength="488" lengthAdjust="spacingAndGlyphs">BEFORE: retailstream = STANDARD • PATTERN_C_HYBRID_POOL • STEADY_STATE_POOL (Shadow Sync Source)</text>
+  <text x="86" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" textLength="342" lengthAdjust="spacingAndGlyphs">BEFORE: retailstream = STANDARD • PATTERN_C_HYBRID_POOL • STEADY_STATE_POOL (Shadow Sync Source)</text>
   <text x="104" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#feefc3" stroke-width="8" stroke-linejoin="round">Pooled Source (Pre-Upgrade)</text>
   <text x="104" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#feefc3" stroke-width="8" stroke-linejoin="round">pool://cymbal-shared-pooled-runtime-v2</text>
-  <text x="630" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" textLength="488" lengthAdjust="spacingAndGlyphs">AFTER: retailstream = ENTERPRISE • PATTERN_C_HYBRID_PSC_SPOKE • UPGRADED_ZERO_DOWNTIME_SPOKE</text>
+  <text x="630" y="795" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" textLength="342" lengthAdjust="spacingAndGlyphs">AFTER: retailstream = ENTERPRISE • PATTERN_C_HYBRID_PSC_SPOKE • UPGRADED_ZERO_DOWNTIME_SPOKE</text>
   <text x="648" y="834" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="15" font-weight="700" fill="#202124" paint-order="stroke fill" stroke="#fad2cf" stroke-width="8" stroke-linejoin="round">PSC Target (Post-Upgrade)</text>
   <text x="648" y="852" font-family="'Google Sans', 'Roboto', Arial, sans-serif" font-size="13" font-weight="400" fill="#202124" paint-order="stroke fill" stroke="#fad2cf" stroke-width="8" stroke-linejoin="round">psc://10.10.0.51/.../retailstream-agent-spoke-psc</text>
 

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="PromptCanvas-Drawio-Compiler" version="24.7.17" type="device">
+  <diagram id="s18-ws5-10week-ga-gantt-roadmap" name="S18: 10-Week Adoption Ladder">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" background="#FFFFFF" math="0" shadow="1">
+      <root>
+      <mxCell id="0"/>
+      <mxCell id="1" parent="0"/>
+      <mxCell id="mc_topo_pill" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#137333;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;4 STEPS • 10 WEEKS → GA&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#E6F4EA;strokeColor=none;fontColor=#137333;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1212" y="26" width="320" height="34" as="geometry"/>
+      </mxCell>
+      <mxCell id="mc_div_line" value="" style="rounded=0;arcSize=0;whiteSpace=wrap;html=1;fillColor=#DADCE0;strokeColor=none;fontColor=#5F6368;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="102" width="1464" height="2" as="geometry"/>
+      </mxCell>
+      <mxCell id="s18_intro_card" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#D56E0C;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Progressive 4-step rollout with zero agent code forks&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• Every step builds on the same 5-Hop cryptographic identity and AlloyDB FORCE RLS foundation.&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• Each phase ends with an automated fail-closed CI/CD exit gate before promoting production traffic.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#FBF6E9;strokeColor=none;fontColor=#D56E0C;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="130" width="688" height="146" as="geometry"/>
+      </mxCell>
+      <mxCell id="s18_step1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Step 1 · Weeks 01–02&lt;/div&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;5-Hop Edge &amp;amp; IaC&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#E8F0FE;'&gt;• Strip X-Tenant-Id at L7 ALB&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#E8F0FE;'&gt;• OIDC + RFC 9449 DPoP broker&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#E8F0FE;'&gt;• 60m JWKS cache (&amp;lt; 0.15 ms)&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#E8F0FE;'&gt;• SPIFFE mTLS + Zero-PII OTel&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#E8F0FE;'&gt;• Modular Terraform IaC factory&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#E8F0FE;'&gt;Exit Gate: 100% spoof → HTTP 401&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#1A73E8;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="396" width="348" height="288" as="geometry"/>
+      </mxCell>
+      <mxCell id="s18_step2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Step 2 · Weeks 03–05&lt;/div&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Pattern A Pool &amp;amp; 32k Cache&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#FCE8E6;'&gt;• Shared Cloud Run + Vertex ADK&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#FCE8E6;'&gt;• &amp;gt;= 32,768 static prefix (0.10x)&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#FCE8E6;'&gt;• ARD filter (-94% tool schemas)&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#FCE8E6;'&gt;• Valkey Lua 120 RPM/user cap&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#FCE8E6;'&gt;• AlloyDB ENABLE &amp;amp; FORCE RLS&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#FCE8E6;'&gt;• PgBouncer DISCARD ALL reset&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#FCE8E6;'&gt;Exit Gate: 950 tenants @ 1.0x COGS&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#FCE8E6;'&gt;Exit Gate: 10/10 SQLi = 0 bleed&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#D93025;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="440" y="306" width="348" height="378" as="geometry"/>
+      </mxCell>
+      <mxCell id="s18_step3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Step 3 · Weeks 06–08&lt;/div&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Pattern C PSC &amp;amp; Pattern B Silo&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• Unidirectional /28 PSC spoke&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• SHADOW_SYNC dual-write backfill&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• &amp;lt; 5 ms Firestore pointer cutover&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• Folder-sharded VPC-SC (&amp;lt;=70)&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• Cloud HSM FIPS 140-3 L3 CMEK&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• Confidential GKE Gemma 3 27B&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• Remote vTPM 2.0 PCR quote gate&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;Exit Gate: 0 dropped turns A→C&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;Exit Gate: 41.2s CMEK halt PASS&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F9AB00;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="812" y="216" width="348" height="468" as="geometry"/>
+      </mxCell>
+      <mxCell id="s18_step4" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Step 4 · Weeks 09–10&lt;/div&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;30/30 Multi-Cloud &amp;amp; Chaos GA&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#E6F4EA;'&gt;• Keyless GCP OIDC → AWS STS WIF&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#E6F4EA;'&gt;• Bedrock AgentCore MCP Gateway&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#E6F4EA;'&gt;• 10 SaaS × 3 Patterns = 30/30&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#E6F4EA;'&gt;• 192+ PB Lakehouse 2–5 ms RTT&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#E6F4EA;'&gt;• 4-Persona Unity Catalog FGAC&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#E6F4EA;'&gt;• 1,000-tenant 10k RPM chaos drill&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#E6F4EA;'&gt;• 99.4% sibling p99 SLO stability&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#E6F4EA;'&gt;• S3 + BigQuery immutable audit&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#E6F4EA;'&gt;Exit Gate: 30/30 READY (0 bleed)&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#E6F4EA;'&gt;Exit Gate: ARB GA Sign-Off PASS&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#1E8E3E;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1184" y="126" width="348" height="558" as="geometry"/>
+      </mxCell>
+      <mxCell id="s18_bot_bar" value="" style="rounded=1;arcSize=17;whiteSpace=wrap;html=1;fillColor=#F1F3F4;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="706" width="1464" height="132" as="geometry"/>
+      </mxCell>
+      <mxCell id="s18_n1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;1&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="316" y="754" width="36" height="36" as="geometry"/>
+      </mxCell>
+      <mxCell id="s18_act1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Deploy 5-Hop Terraform Factory&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Provision ALB header strip, DPoP broker,&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;and AlloyDB FORCE RLS in ramp-portal-dev&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="364" y="724" width="344" height="96" as="geometry"/>
+      </mxCell>
+      <mxCell id="s18_n2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;2&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="728" y="754" width="36" height="36" as="geometry"/>
+      </mxCell>
+      <mxCell id="s18_act2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Enable &amp;gt;= 32k Prefix &amp;amp; ARD Filter&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Lock static system constitution prefix and&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;cut per-turn billed tokens by 89.1%&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="776" y="724" width="344" height="96" as="geometry"/>
+      </mxCell>
+      <mxCell id="s18_n3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;3&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1140" y="754" width="36" height="36" as="geometry"/>
+      </mxCell>
+      <mxCell id="s18_act3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:12px;font-weight:700;line-height:1.18;'&gt;Run 10-Vector Red-Team &amp;amp; Chaos CI&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Verify 0 cross-tenant rows and 41.2s&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;CMEK kill-switch halt before GA traffic&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1188" y="724" width="324" height="96" as="geometry"/>
+      </mxCell>
+      <mxCell id="e1" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.619;entryDx=0;entryDy=0;strokeColor=#5F6368;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="s18_step1" target="s18_step2">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="416" y="540" as="sourcePoint"/>
+          <mxPoint x="440" y="540" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e2" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.596;entryDx=0;entryDy=0;strokeColor=#5F6368;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="s18_step2" target="s18_step3">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="788" y="495" as="sourcePoint"/>
+          <mxPoint x="812" y="495" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e3" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.581;entryDx=0;entryDy=0;strokeColor=#5F6368;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="s18_step3" target="s18_step4">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1160" y="450" as="sourcePoint"/>
+          <mxPoint x="1184" y="450" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="t_main" value="The 10-week production adoption ladder" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=24;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="68" y="26" width="589" height="37" as="geometry"/>
+      </mxCell>
+      <mxCell id="t_sub" value="Slide 54 of 54 • Climb from 5-Hop identity foundation to 30/30 multi-cloud GA in 10 weeks with fail-closed exit gates at every step" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=14;fontStyle=0;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="68" y="69" width="1161" height="21" as="geometry"/>
+      </mxCell>
+      <mxCell id="s18_start_lbl" value="Start today" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=18;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="92" y="723" width="146" height="27" as="geometry"/>
+      </mxCell>
+      <mxCell id="s18_start_sub" value="3 immediate Day-1 actions:" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=13;fontStyle=0;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="92" y="753" width="233" height="20" as="geometry"/>
+      </mxCell>
+        <mxCell id="plane_layer" value="Planes: control / compute / data (generated, locked)" style="locked=1;" parent="0"/>
+        <mxCell id="plane_key_CONTROL" value="&lt;b&gt;CONTROL  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;Wk 1–2 edge, DPoP; 3–5 Valkey cap; 6–8 PSC, VPC-SC, CMEK; 9–10 WIF&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#1D4ED8;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="68.0" y="846.2" width="481.3" height="16.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_COMPUTE" value="&lt;b&gt;COMPUTE  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;Wk 3–5 shared Cloud Run + ADK, 32k prefix; 6–8 Confidential GKE; 9–10 MCP&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#047857;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="559.3" y="846.2" width="481.3" height="16.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_DATA" value="&lt;b&gt;DATA  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;Wk 3–5 AlloyDB FORCE RLS; 6–8 dual-write backfill; 9–10 lakehouse&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#B45309;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1050.7" y="846.2" width="481.3" height="16.2" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -295,7 +295,7 @@ class Enterprise5ThirdPartySaaSMCP:
         """
         Product 1: ThoughtSpot Cloud (Spotter Agentic BI & Liveboards REST API v2.0).
         1. Enforces Hop 2/Hop 5 cross-org guard: blocks attempted_org_override != caller's ThoughtSpot Org.
-        2. Probes live ThoughtSpot Cloud REST API v2.0 (`https://try-everywhere.thoughtspot.cloud/api/rest/2.0/auth/token/custom`).
+        2. Probes live ThoughtSpot Cloud REST API v2.0 (`https://team2.thoughtspot.cloud/api/rest/2.0/auth/token/custom`).
         3. Pushes down Spotter NL2SQL query with `runtime_filter` to live Google BigQuery RLS table.
         """
         ts_cfg = THOUGHTSPOT_ORG_MAP.get(ctx.tenant_id)
@@ -314,8 +314,8 @@ class Enterprise5ThirdPartySaaSMCP:
                 ),
             }
 
-        # 1. Live ThoughtSpot Cloud REST API v2.0 endpoint probe (`try-everywhere.thoughtspot.cloud`)
-        ts_url = "https://try-everywhere.thoughtspot.cloud/api/rest/2.0/auth/token/custom"
+        # 1. Live ThoughtSpot Cloud REST API v2.0 endpoint probe (`team2.thoughtspot.cloud`)
+        ts_url = "https://team2.thoughtspot.cloud/api/rest/2.0/auth/token/custom"
         ts_payload = json.dumps(
             {
                 "username": ctx.user_principal,
@@ -491,7 +491,8 @@ class Enterprise5ThirdPartySaaSMCP:
             "eval_connection_id": sigma_cfg["eval_connection_id"],
             "user_attributes_injected": {
                 "ua_tenant_id": safe_tid,
-                "ua_thinking_budget": str(8000 if ctx.tier.value == "ENTERPRISE" else 4000),
+                "ua_thinking_level": "HIGH" if ctx.tier.value == "ENTERPRISE" else "MEDIUM",
+                "ua_max_output_tokens": str(8000 if ctx.tier.value == "ENTERPRISE" else 4000),
                 "ua_rls_guc": f"app.current_tenant_id={safe_tid}",
             },
             "live_aws_agentcore_mcp_execution": live_mcp,
@@ -1008,7 +1009,7 @@ class Enterprise5ThirdPartySaaSMCP:
         """
         Product 9: Datadog Cloud Observability & Bits AI SRE (REST API v2 Logs/APM & Indirect Log Prompt-Injection Guard).
         1. Probes live Datadog US1 API (`https://api.datadoghq.com/api/v1/validate`) and live Datadog Status API
-           (`https://status.datadoghq.com/api/v2/status.json`).
+           (`https://datadog.statuspage.io/api/v2/status.json`).
         2. Enforces tenant-pinned log index filter (`index:cymbal-prod @tenant_id:{ctx.tenant_id}`).
         3. Screens ingested log lines through canonical Hop 4 `ModelArmorGuardrails.screen_ingress_prompt()` to block
            indirect prompt injections embedded inside application stack traces or HTTP User-Agent log fields.
@@ -1029,7 +1030,7 @@ class Enterprise5ThirdPartySaaSMCP:
             }
 
         dd_api_url = "https://api.datadoghq.com/api/v1/validate"
-        dd_status_url = "https://status.datadoghq.com/api/v2/status.json"
+        dd_status_url = "https://datadog.statuspage.io/api/v2/status.json"
         dd_api_status = 0
         dd_api_resp: Dict[str, Any] = {}
         dd_cloud_status: Dict[str, Any] = {}
@@ -1215,7 +1216,7 @@ class Enterprise5ThirdPartySaaSMCP:
                     "mcp_gateway_url": "https://cymbal-a2a-mcp-gateway-suyxm3caof.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
                     "mcp_target_id": "HXGGFMZBKE",
                     "mcp_tool_name": "thoughtspot-spotter___query_thoughtspot_liveboard_rls",
-                    "thoughtspot_host": "https://try-everywhere.thoughtspot.cloud",
+                    "thoughtspot_host": "https://team2.thoughtspot.cloud",
                     "api_version": "2.0",
                     "org_mapping": {"finvault": "finvault-org-01", "retailstream": "retailstream-org-02"},
                     "runtime_filter_pushdown": {"col1": "tenant_id", "op1": "EQ", "val1": "${ctx.tenant_id}"},
@@ -1450,7 +1451,7 @@ class Enterprise5ThirdPartySaaSMCP:
                     "mcp_target_id": "G767QR3TQZ",
                     "mcp_tool_name": "datadog-sre___query_tenant_apm_logs",
                     "datadog_api_validate_url": "https://api.datadoghq.com/api/v1/validate",
-                    "datadog_status_url": "https://status.datadoghq.com/api/v2/status.json",
+                    "datadog_status_url": "https://datadog.statuspage.io/api/v2/status.json",
                     "mandatory_log_query_prefix": "index:cymbal-prod @tenant_id:${ctx.tenant_id}",
                     "hop4_indirect_log_injection_guard": True,
                 },
@@ -1638,7 +1639,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 topology=topology_enum,
             )
             hop3_cfg, hop3_audit = self.hop3.enforce_compute_and_finops(
-                live_ctx, requested_thinking_tokens=3500
+                live_ctx, requested_output_tokens=3500, requested_thinking_level="LOW"
             )
             hop4_screen = self.hop4.screen_ingress_prompt(
                 live_ctx, f"Execute authorized {saas_name} workflow via {connector_uri}"
@@ -1746,7 +1747,8 @@ class Enterprise5ThirdPartySaaSMCP:
                     "dpop_jkt_thumbprint": auth_jkt,
                     "connector_uri": connector_uri,
                     "hop3_valkey_rpm_cap": 120,
-                    "hop3_thinking_budget_cap": 4000,
+                    "hop3_thinking_level": "MEDIUM",
+                    "hop3_max_output_token_cap": 4000,
                     "hop3_context_cache_key": cache_cfg.get("cache_id", "cache://cymbal-operator/shared-diagnostic-system-prefix-v2"),
                     "hop5_rls_guc": f"SET LOCAL app.current_tenant_id = '{auth_tenant}'",
                 }
@@ -1786,7 +1788,7 @@ class Enterprise5ThirdPartySaaSMCP:
                 }
                 setup_steps = [
                     f"1. Configure Pooled Hop 2 Catalog allowlist in `cymbal-pooled-saas-prod` (`{GCP_PROJECT_ID}`) for `{connector_uri}`.",
-                    f"2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `4,000` thinking tokens) and shared `ContextCacheConfig` (`90%` discount).",
+                    f"2. Bind Hop 3 Memorystore for Valkey quota (`120 RPM`, `MEDIUM` / `4,000 maxOutputTokens`) and shared `ContextCacheConfig` (`90%` discount).",
                     f"3. Store composite 3LO token under `{{tenant_id}}:{{user_principal}}:{connector_uri}` and enable AlloyDB/BigQuery RLS (`SET LOCAL app.current_tenant_id`).",
                 ]
                 cli_cmd = f"python3 -B scripts/verify_5_third_party_saas_products.py --saas {slug} --pattern pattern-a --verbose"
@@ -1804,7 +1806,8 @@ class Enterprise5ThirdPartySaaSMCP:
                     "cmek_key_state": "ENABLED",
                     "connector_uri": connector_uri,
                     "hop3_valkey_rpm_cap": 600,
-                    "hop3_thinking_budget_cap": 8000,
+                    "hop3_thinking_level": "HIGH",
+                    "hop3_max_output_token_cap": 8000,
                 }
                 pos_output = {
                     "status_code": 200,
@@ -1867,9 +1870,9 @@ class Enterprise5ThirdPartySaaSMCP:
                     "psc_nat_subnet_cidr": "10.240.0.0/28",
                     "psc_internal_ip": "10.10.0.50",
                     "migration_phases_executed": [
-                        "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, 4k thinking)",
+                        "PHASE_1_POOL_ONLY (route_epoch=1, 120 RPM, MEDIUM/4k maxOut)",
                         "PHASE_2_DUAL_WRITE_SHADOW (DMS CDC + 3LO Token Vault sync, 0 dropped SSE/3LO turns)",
-                        "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, 8k thinking)",
+                        "PHASE_3_ATOMIC_PSC_CUTOVER (route_epoch=2 -> psc://10.10.0.50:8443, 600 RPM, HIGH/8k maxOut)",
                     ],
                 }
                 pos_output = {
@@ -1883,7 +1886,8 @@ class Enterprise5ThirdPartySaaSMCP:
                     "shadow_sync_checksum_verified": True,
                     "dropped_inflight_3lo_or_sse_turns": 0,
                     "post_upgrade_rpm_limit": 600,
-                    "post_upgrade_thinking_budget": 8000,
+                    "post_upgrade_thinking_level": "HIGH",
+                    "post_upgrade_max_output_tokens": 8000,
                     "live_cloud_endpoint_probed": item["live_endpoint"] if include_live_probes else None,
                     "live_verification_evidence": live_evidence_summary,
                 }

@@ -1,7 +1,7 @@
 /**
  * 🏛️ PromptCanvas Vision Module — Multi-Tenant Architecture Draw.io Decompiler & Renderer
  *
- * Uses the PromptCanvas Vision Module (~/Documents/PromptCanvas/src/lib/...):
+ * Uses self-contained Vision helpers (scripts/lib/... & vendor/drawio/viewer-static.min.js):
  *  1. validateAndHealDrawioXml (xmlHealer.ts)
  *  2. enrichDrawioXmlWithVectorIcons & extractDiagramObjects (visionIconEnricher.ts)
  *  3. validateDrawioXml (validate/validator.ts)
@@ -16,23 +16,21 @@ import * as http from 'http';
 import * as path from 'path';
 import { createRequire } from 'module';
 
-import { validateAndHealDrawioXml } from '../../PromptCanvas/src/lib/xmlHealer';
+import { validateAndHealDrawioXml } from './lib/xmlHealer';
 import {
   enrichDrawioXmlWithVectorIcons,
   extractDiagramObjects,
-} from '../../PromptCanvas/src/lib/vectorIcons/visionIconEnricher';
-import { validateDrawioXml } from '../../PromptCanvas/src/lib/validate/validator';
+} from './lib/visionIconEnricher';
+import { validateDrawioXml } from './lib/drawioValidator';
 
-const promptCanvasRoot = fs.existsSync(path.resolve(__dirname, '../../PromptCanvas/package.json'))
-  ? path.resolve(__dirname, '../../PromptCanvas')
-  : path.join(process.env.HOME || '', 'Documents', 'PromptCanvas');
-const requireFromPromptCanvas = createRequire(path.join(promptCanvasRoot, 'package.json'));
-const puppeteer = requireFromPromptCanvas('puppeteer-core');
+const localPkgJson = path.resolve(__dirname, '../package.json');
+const requireFromBlogs = createRequire(localPkgJson);
+const puppeteer = requireFromBlogs('puppeteer-core');
 
 const FDE_BLOGS_ROOT = path.resolve(__dirname, '..');
 const CENTRAL_DIAGRAMS_DIR = path.join(FDE_BLOGS_ROOT, 'diagrams');
 const VISION_META_DIR = path.join(CENTRAL_DIAGRAMS_DIR, 'vision_metadata');
-const VIEWER_JS_PATH = path.join(promptCanvasRoot, 'public/viewer-static.min.js');
+const VIEWER_JS_PATH = path.join(FDE_BLOGS_ROOT, 'vendor/drawio/viewer-static.min.js');
 const ARTIFACTS_DIR = path.join(process.env.HOME || '/tmp', '.gemini', 'jetski', 'brain', 'b4ce71b8-a483-45d8-9e81-df976103c1eb');
 
 interface ManifestItem {
@@ -75,7 +73,7 @@ async function runVisionPipeline() {
   const manifest: ManifestItem[] = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 
   let currentHtml = '';
-  const server = http.createServer((_req, res) => {
+  const server = http.createServer((_req: http.IncomingMessage, res: http.ServerResponse) => {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(currentHtml);
   });
@@ -251,7 +249,7 @@ async function runVisionPipeline() {
         isFallback: false,
         isCertified: true,
         modelUsed: 'PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)',
-        attribution: 'PromptCanvas Vision Decompiler (~/Documents/PromptCanvas/src/lib/deepmindVisionDecompiler.ts)',
+        attribution: 'GE Blogs Self-Contained Vision Decompiler (scripts/lib/visionIconEnricher.ts)',
         healerLog: healedResult.healingLog,
         validationReport: {
           valid: validation.valid,

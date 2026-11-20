@@ -1,0 +1,7 @@
+# Keep Python Cloud Run container lean (1.8 MiB source codebase)
+node_modules/
+package-lock.json
+.local_backup/
+__pycache__/
+*.py[cod]
+.DS_Store

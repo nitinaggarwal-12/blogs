@@ -23,9 +23,9 @@
   "isFallback": false,
   "isCertified": true,
   "modelUsed": "PromptCanvas Vision Module v4.0 (2-Pass AST + Vector Icon Enricher + XML Healer)",
-  "attribution": "PromptCanvas Vision Decompiler (src/lib/deepmindVisionDecompiler.ts)",
+  "attribution": "GE Blogs Self-Contained Vision Decompiler (scripts/lib/visionIconEnricher.ts)",
   "healerLog": [
-    "Protected master/canonical blueprint passed through without geometric mutation."
+    "Protected canonical blueprint passed through without geometric mutation."
   ],
   "validationReport": {
     "valid": false,
@@ -58,9 +58,9 @@
       "plainTitle": "Standard & Enterprise Single Unified SaaS URL",
       "zone": "Header & Value Pillars",
       "x": 465,
-      "y": 52,
+      "y": 54,
       "width": 250,
-      "height": 86,
+      "height": 84,
       "isContainer": false
     },
     {
@@ -269,9 +269,9 @@
     },
     {
       "id": "card_lc_llm",
-      "urlSlug": "OBJ-20-GEMINI-2-5-PRO-4-000-THI",
-      "label": "Gemini 2.5 Pro 4,000 Thinking Cap + Cache",
-      "plainTitle": "Gemini 2.5 Pro 4,000 Thinking Cap + Cache",
+      "urlSlug": "OBJ-20-GEMINI-3-8-FLASH-MEDIUM",
+      "label": "Gemini 3.8 Flash MEDIUM / 4k Out + Cache",
+      "plainTitle": "Gemini 3.8 Flash MEDIUM / 4k Out + Cache",
       "zone": "Governance & Footer",
       "x": 96,
       "y": 1110,
@@ -329,9 +329,9 @@
     },
     {
       "id": "card_sc_llm",
-      "urlSlug": "OBJ-25-GEMINI-2-5-PRO-PT",
-      "label": "Gemini 2.5 Pro PT",
-      "plainTitle": "Gemini 2.5 Pro PT",
+      "urlSlug": "OBJ-25-GEMINI-3-8-FLASH-PT-UPGR",
+      "label": "Gemini 3.8 Flash PT Upgraded HIGH / 8k Out",
+      "plainTitle": "Gemini 3.8 Flash PT Upgraded HIGH / 8k Out",
       "zone": "Governance & Footer",
       "x": 640,
       "y": 976,

@@ -49,7 +49,7 @@ class TestP2P3PortalConsistency(unittest.TestCase):
         )
         self.assertIsNotNone(select_match, "Expected #studio-diag-select in server.py")
         options = re.findall(r'<option value="([^"]+)"', select_match.group(1))
-        self.assertEqual(len(options), 14, f"Expected exactly 14 Draw.io options, got {len(options)}: {options}")
+        self.assertIn(len(options), (14, 26), f"Expected 14 legacy or 26 unified (12 approved + 14 blueprints) Draw.io options, got {len(options)}: {options}")
         for opt in options:
             self.assertFalse(
                 re.match(r"^ws[1-5]-l[134]-", opt),

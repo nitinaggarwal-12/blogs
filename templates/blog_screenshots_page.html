@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="blog-slug" content="__BLOG_SLUG__" />
+  <title>__PAGE_TITLE__</title>
+  <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'&gt;&lt;rect width='32' height='32' rx='6' fill='%23059669'/&gt;&lt;text x='16' y='22' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold' font-size='18'&gt;S&lt;/text&gt;&lt;/svg&gt;" />
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-alt: #f1f5f9;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --blue: #1a73e8;
+      --blue-soft: #eff6ff;
+      --blue-border: #bfdbfe;
+      --green: #059669;
+      --green-soft: #ecfdf5;
+      --green-border: #a7f3d0;
+      --amber: #b45309;
+      --amber-soft: #fffbeb;
+      --amber-border: #fde68a;
+      --red: #be123c;
+      --red-soft: #fff1f2;
+      --red-border: #fecdd3;
+      --purple: #6d28d9;
+      --purple-soft: #f5f3ff;
+      --purple-border: #ddd6fe;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border-strong);
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+      padding: 12px clamp(16px, 2vw, 28px);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .topbar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+    }
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1 1 260px;
+      flex-wrap: wrap;
+      min-width: 0;
+      max-width: 100%;
+    }
+    .page-title {
+      font-size: clamp(17px, 1.5vw, 21px);
+      font-weight: 800;
+      color: var(--text);
+    }
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-alt);
+      color: var(--text);
+    }
+    .pill-blue { background: var(--blue-soft); color: #1d4ed8; border-color: var(--blue-border); }
+    .pill-green { background: var(--green-soft); color: #047857; border-color: var(--green-border); }
+    .pill-amber { background: var(--amber-soft); color: var(--amber); border-color: var(--amber-border); }
+    .pill-red { background: var(--red-soft); color: var(--red); border-color: var(--red-border); }
+    .pill-purple { background: var(--purple-soft); color: var(--purple); border-color: var(--purple-border); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn:hover { background: var(--surface-alt); border-color: #94a3b8; }
+    .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 7px; }
+    .btn-xs { padding: 4px 9px; font-size: 11.5px; border-radius: 6px; }
+    .btn-primary { background: var(--blue); color: #ffffff; border-color: var(--blue); }
+    .btn-primary:hover { background: #1557b0; }
+    .btn-green { background: var(--green); color: #ffffff; border-color: var(--green); }
+    .btn-green:hover { background: #047857; }
+    .btn.active { background: var(--blue); color: #ffffff; border-color: var(--blue); }
+
+    .blog-switcher {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .switcher-link {
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .switcher-link:hover { background: var(--surface-alt); color: var(--text); }
+    .switcher-link.active {
+      background: var(--green);
+      color: #ffffff;
+      border-color: var(--green);
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 100%;
+      padding: 18px clamp(16px, 2vw, 28px) 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .controls-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+    }
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .search-input {
+      padding: 7px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 13px;
+      min-width: 0;
+      width: min(100%, 280px);
+    }
+    .provider-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* Live Console Proof Grid */
+    .console-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr));
+      gap: 20px;
+    }
+    .console-grid.single-col {
+      grid-template-columns: 1fr;
+    }
+    .console-card {
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
+      box-shadow: 0 3px 12px rgba(15, 23, 42, 0.05);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .console-card-hdr {
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .console-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .console-card-title {
+      font-size: 15.5px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.35;
+    }
+    .console-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .console-actions-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 9px 16px;
+      border-bottom: 1px solid var(--border);
+      background: #f8fafc;
+    }
+    .console-img-wrap {
+      padding: 12px;
+      background: #f1f5f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+    }
+    .console-img {
+      width: 100%;
+      height: auto;
+      max-height: 540px;
+      object-fit: contain;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      cursor: zoom-in;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+    }
+    .console-grid.single-col .console-img {
+      max-height: 820px;
+    }
+    .console-caption {
+      padding: 11px 16px;
+      font-size: 12.5px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      background: #ffffff;
+      line-height: 1.55;
+    }
+
+    /* Before/After Pairs (preserved if present) */
+    .pairs-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .pair-card {
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
+      box-shadow: 0 3px 12px rgba(15, 23, 42, 0.05);
+      overflow: hidden;
+    }
+    .pair-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .pair-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .pair-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr));
+      gap: 16px;
+      padding: 16px 18px;
+      background: #f8fafc;
+    }
+    .pair-grid.single-col {
+      grid-template-columns: 1fr;
+    }
+    .shot-panel {
+      background: #ffffff;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .shot-panel-hdr {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      background: #ffffff;
+    }
+    .shot-img-wrap {
+      padding: 10px;
+      background: #f8fafc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .shot-img {
+      width: 100%;
+      height: auto;
+      max-height: 520px;
+      object-fit: contain;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      cursor: zoom-in;
+      background: #ffffff;
+    }
+    .shot-caption {
+      padding: 10px 12px;
+      font-size: 12.5px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      background: #ffffff;
+      line-height: 1.5;
+    }
+
+    /* Split Slider Comparison */
+    .split-stage {
+      padding: 16px 18px;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .split-viewport {
+      position: relative;
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border-strong);
+      background: #ffffff;
+    }
+    .split-base-img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .split-overlay-wrap {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      width: 50%;
+      border-right: 3px solid var(--blue);
+      box-shadow: 4px 0 14px rgba(15, 23, 42, 0.25);
+    }
+    .split-overlay-img {
+      display: block;
+      width: 100%;
+      max-width: none;
+      height: 100%;
+      object-fit: cover;
+      object-position: left top;
+    }
+    .split-range {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      display: block;
+      accent-color: var(--blue);
+      cursor: ew-resize;
+    }
+
+    /* Lightbox */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(15, 23, 42, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .lightbox-dialog {
+      background: #ffffff;
+      border-radius: 14px;
+      max-width: 96vw;
+      max-height: 94vh;
+      width: 1420px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .lightbox-hdr {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .lightbox-body {
+      padding: 14px;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      background: #f8fafc;
+    }
+    .lightbox-img {
+      max-width: 100%;
+      max-height: 78vh;
+      height: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+    }
+
+    .toast-stack {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 400;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .toast-item {
+      background: #ffffff;
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+      border-left: 4px solid var(--green);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.16);
+    }
+    .hidden { display: none !important; }
+  
+    @media (max-width: 640px) {
+      .brand-block > div { min-width: 0; max-width: 100%; }
+      .pill { white-space: normal; word-break: break-word; max-width: 100%; }
+      .page-title, .console-card-title { overflow-wrap: anywhere; }
+      .console-card { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-row">
+      <div class="brand-block">
+        <a id="btn-back-to-blog" class="btn btn-sm" href="/?tab=patterns">&#8592; Back to Blog</a>
+        <div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span id="hdr-badge" class="pill pill-green">VERIFIED LIVE CLOUD &amp; SAAS PROOFS</span>
+            <h1 id="hdr-title" class="page-title">Loading Blog Screenshots...</h1>
+          </div>
+          <p id="hdr-subtitle" class="page-subtitle">Genuine live captures across Google Cloud Console, Gemini Enterprise, and Commercial SaaS (ThoughtSpot Cloud live; additional Marketplace trials pending sign-in).</p>
+        </div>
+      </div>
+      <div class="control-group">
+        <a id="link-diagrams-page" class="btn btn-sm btn-primary" href="/blogs/ws1/diagrams">&#128208; Blog Diagrams Page &#8599;</a>
+      </div>
+    </div>
+    <div class="topbar-row">
+      <nav id="blog-switcher" class="blog-switcher" aria-label="Switch Blog Screenshots Page"></nav>
+      <div class="control-group">
+        <input type="search" id="shot-filter-input" class="search-input" placeholder="Filter provider, resource, SHA-256..." aria-label="Filter screenshots" />
+      </div>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="controls-strip" aria-label="Screenshot Display Controls">
+      <div class="control-group">
+        <span id="stat-shots" class="pill pill-green">0 Retina Screenshots</span>
+        <span id="stat-verified" class="pill pill-blue">0 Provenance Verified</span>
+        <span id="stat-diags" class="pill pill-amber">0 Blog Diagrams</span>
+      </div>
+      <div id="provider-filter-row" class="provider-filter-row" aria-label="Filter by Cloud or SaaS Provider"></div>
+      <div class="control-group">
+        <button type="button" id="mode-side" class="btn btn-xs active">2-Column Grid</button>
+        <button type="button" id="mode-slider" class="btn btn-xs hidden">Interactive Split Slider</button>
+        <button type="button" id="mode-single" class="btn btn-xs">Full-Width Stack</button>
+      </div>
+    </section>
+
+    <section id="pairs-container" class="pairs-container" aria-label="Blog Screenshots Gallery"></section>
+  </main>
+
+  <div id="lightbox-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="lightbox-title">
+    <div class="lightbox-dialog">
+      <div class="lightbox-hdr">
+        <strong id="lightbox-title" style="font-size:14.5px; color:#0f172a;">Screenshot Preview</strong>
+        <div class="control-group">
+          <button type="button" id="lb-prev" class="btn btn-xs">&#8592; Prev</button>
+          <button type="button" id="lb-next" class="btn btn-xs">Next &#8594;</button>
+          <a id="lb-console" class="btn btn-xs btn-primary hidden" href="#" target="_blank" rel="noopener noreferrer">&#127760; Open Live Console &#8599;</a>
+          <a id="lb-open" class="btn btn-xs" href="#" target="_blank" rel="noopener noreferrer">Open Full PNG &#8599;</a>
+          <a id="lb-dl" class="btn btn-xs" href="#" download>Download PNG</a>
+          <button type="button" id="lb-close" class="btn btn-xs">&#10005; Close</button>
+        </div>
+      </div>
+      <div class="lightbox-body">
+        <img id="lightbox-img" class="lightbox-img" alt="Expanded Retina screenshot" />
+        <p id="lightbox-caption" style="font-size:12.5px; color:#334155; max-width:1080px; text-align:center;"></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const slugMeta = document.querySelector('meta[name="blog-slug"]');
+      const activeSlug = (slugMeta && slugMeta.getAttribute('content')) || 'ws1';
+
+      let payloadData = null;
+      let displayMode = 'side';
+      let activeProvider = 'all';
+      let flatShots = [];
+      let lightboxIndex = 0;
+
+      const elBack = document.getElementById('btn-back-to-blog');
+      const elBadge = document.getElementById('hdr-badge');
+      const elTitle = document.getElementById('hdr-title');
+      const elSub = document.getElementById('hdr-subtitle');
+      const elLinkDiag = document.getElementById('link-diagrams-page');
+      const elSwitcher = document.getElementById('blog-switcher');
+      const elFilter = document.getElementById('shot-filter-input');
+      const elStatShots = document.getElementById('stat-shots');
+      const elStatVerified = document.getElementById('stat-verified');
+      const elStatDiags = document.getElementById('stat-diags');
+      const elProviderRow = document.getElementById('provider-filter-row');
+      const elModeSide = document.getElementById('mode-side');
+      const elModeSlider = document.getElementById('mode-slider');
+      const elModeSingle = document.getElementById('mode-single');
+      const elContainer = document.getElementById('pairs-container');
+      const elToast = document.getElementById('toast-stack');
+
+      function showToast(msg) {
+        const div = document.createElement('div');
+        div.className = 'toast-item';
+        div.textContent = msg;
+        elToast.appendChild(div);
+        setTimeout(function () {
+          if (div.parentNode) div.parentNode.removeChild(div);
+        }, 3600);
+      }
+
+      async function copyUrl(url, label) {
+        const absUrl = url.startsWith('http') ? url : (window.location.origin + url);
+        try {
+          await navigator.clipboard.writeText(absUrl);
+          showToast('Copied ' + label + ' URL to clipboard.');
+        } catch (_) {
+          showToast('Copy failed — use Open Full PNG link directly.');
+        }
+      }
+
+      function safeHref(raw) {
+        const s = String(raw || '').trim();
+        if (s.startsWith('https://') || s.startsWith('http://') || s.startsWith('/')) return s;
+        return '#';
+      }
+
+      function makeEl(tag, cls, text) {
+        const e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (text !== undefined && text !== null) e.textContent = String(text);
+        return e;
+      }
+
+      function providerPillClass(tag) {
+        if (tag === 'ge') return 'pill pill-purple';
+        if (tag === 'gcp') return 'pill pill-blue';
+        if (tag === 'thoughtspot') return 'pill pill-green';
+        if (tag === 'aws') return 'pill pill-amber';
+        return 'pill';
+      }
+
+      function openLightboxAt(idx) {
+        if (!flatShots.length) return;
+        lightboxIndex = (idx + flatShots.length) % flatShots.length;
+        const sh = flatShots[lightboxIndex];
+        const titlePrefix = sh.saasId ? (sh.saasId + ' · ') : '';
+        document.getElementById('lightbox-title').textContent = titlePrefix + (sh.product || sh.fileName);
+        const img = document.getElementById('lightbox-img');
+        img.setAttribute('src', safeHref(sh.imageUrl));
+        img.setAttribute('alt', sh.alt || sh.fileName);
+        document.getElementById('lightbox-caption').textContent = sh.caption || sh.alt || '';
+        document.getElementById('lb-open').setAttribute('href', safeHref(sh.imageUrl));
+        document.getElementById('lb-dl').setAttribute('href', safeHref(sh.imageUrl));
+        document.getElementById('lb-dl').setAttribute('download', sh.fileName);
+
+        const lbConsole = document.getElementById('lb-console');
+        if (sh.liveConsoleUrl) {
+          lbConsole.setAttribute('href', safeHref(sh.liveConsoleUrl));
+          lbConsole.classList.remove('hidden');
+        } else {
+          lbConsole.setAttribute('href', '#');
+          lbConsole.classList.add('hidden');
+        }
+        document.getElementById('lightbox-modal').classList.add('open');
+      }
+
+      function closeLightbox() {
+        document.getElementById('lightbox-modal').classList.remove('open');
+      }
+
+      function buildLiveConsoleCard(shot) {
+        const card = makeEl('article', 'console-card');
+        card.setAttribute('data-testid', 'console-shot-' + shot.fileName);
+
+        const hdr = makeEl('div', 'console-card-hdr');
+        const top = makeEl('div', 'console-card-top');
+
+        const titleWrap = makeEl('div', '');
+        const badgeRow = makeEl('div', 'console-meta-row');
+        badgeRow.appendChild(makeEl('span', providerPillClass(shot.providerTag), shot.provider || 'Live Cloud Console'));
+        badgeRow.appendChild(makeEl('span', 'pill', shot.saasId || 'LIVE'));
+        if (shot.verifiedProvenance) {
+          badgeRow.appendChild(makeEl('span', 'pill pill-green', '✅ Verified Provenance · SHA-256 ' + (shot.sha256Short || '')));
+        } else if (shot.sha256Short) {
+          badgeRow.appendChild(makeEl('span', 'pill pill-amber', '📸 Live Console Capture · ' + shot.sha256Short));
+        }
+        titleWrap.appendChild(badgeRow);
+
+        const h2 = makeEl('h2', 'console-card-title', shot.product || shot.fileName);
+        h2.style.marginTop = '6px';
+        titleWrap.appendChild(h2);
+        top.appendChild(titleWrap);
+        hdr.appendChild(top);
+
+        const metaRow = makeEl('div', 'console-meta-row');
+        if (shot.projectOrAccount) {
+          metaRow.appendChild(makeEl('span', 'pill', '☁ ' + shot.projectOrAccount));
+        }
+        if (shot.resourceLabel) {
+          metaRow.appendChild(makeEl('span', 'pill', '🔹 ' + shot.resourceLabel));
+        }
+        metaRow.appendChild(makeEl('span', 'pill', (shot.resolution || '2880×1620 Retina') + ' · ' + Math.round((shot.sizeBytes || 0) / 1024) + ' KB'));
+        hdr.appendChild(metaRow);
+        card.appendChild(hdr);
+
+        const actBar = makeEl('div', 'console-actions-bar');
+        const leftActs = makeEl('div', 'control-group');
+        if (shot.liveConsoleUrl) {
+          const aLive = makeEl('a', 'btn btn-xs btn-primary', '🌐 Open Live Console ↗');
+          aLive.setAttribute('href', safeHref(shot.liveConsoleUrl));
+          aLive.setAttribute('target', '_blank');
+          aLive.setAttribute('rel', 'noopener noreferrer');
+          aLive.setAttribute('data-testid', 'open-live-console-' + shot.saasId);
+          leftActs.appendChild(aLive);
+        }
+        leftActs.appendChild(makeEl('span', 'pill', shot.category || 'Live UI Proof'));
+
+        const rightActs = makeEl('div', 'control-group');
+        const btnZoom = makeEl('button', 'btn btn-xs', '🔍 Zoom');
+        btnZoom.setAttribute('type', 'button');
+        btnZoom.addEventListener('click', function () {
+          const i = flatShots.findIndex(function (x) { return x.imageUrl === shot.imageUrl; });
+          openLightboxAt(i >= 0 ? i : 0);
+        });
+        const aOpen = makeEl('a', 'btn btn-xs', '↗ PNG');
+        aOpen.setAttribute('href', safeHref(shot.imageUrl));
+        aOpen.setAttribute('target', '_blank');
+        aOpen.setAttribute('rel', 'noopener noreferrer');
+        const btnCopy = makeEl('button', 'btn btn-xs', '📋 Copy URL');
+        btnCopy.setAttribute('type', 'button');
+        btnCopy.addEventListener('click', function () {
+          copyUrl(shot.imageUrl, shot.fileName);
+        });
+        const aDl = makeEl('a', 'btn btn-xs', '⬇ Download');
+        aDl.setAttribute('href', safeHref(shot.imageUrl));
+        aDl.setAttribute('download', shot.fileName);
+
+        rightActs.appendChild(btnZoom);
+        rightActs.appendChild(aOpen);
+        rightActs.appendChild(btnCopy);
+        rightActs.appendChild(aDl);
+
+        actBar.appendChild(leftActs);
+        actBar.appendChild(rightActs);
+        card.appendChild(actBar);
+
+        const wrap = makeEl('div', 'console-img-wrap');
+        const img = document.createElement('img');
+        img.className = 'console-img';
+        img.setAttribute('src', safeHref(shot.imageUrl));
+        img.setAttribute('alt', shot.alt || shot.fileName);
+        img.setAttribute('loading', 'lazy');
+        img.addEventListener('click', function () {
+          const i = flatShots.findIndex(function (x) { return x.imageUrl === shot.imageUrl; });
+          openLightboxAt(i >= 0 ? i : 0);
+        });
+        wrap.appendChild(img);
+        card.appendChild(wrap);
+
+        card.appendChild(makeEl('div', 'console-caption', shot.caption || shot.alt || shot.fileName));
+        return card;
+      }
+
+      function buildShotPanel(shot) {
+        const panel = makeEl('div', 'shot-panel');
+        panel.setAttribute('data-testid', 'shot-panel-' + shot.fileName);
+
+        const hdr = makeEl('div', 'shot-panel-hdr');
+        const left = makeEl('div', 'control-group');
+        left.appendChild(makeEl('span', shot.phase === 'AFTER' ? 'pill pill-green' : 'pill pill-red', shot.phase === 'AFTER' ? '✅ AFTER (Hop 5)' : '⏳ BEFORE'));
+        left.appendChild(makeEl('span', 'pill', (shot.resolution || '16:9 Retina') + ' · ' + Math.round((shot.sizeBytes || 0) / 1024) + ' KB'));
+
+        const right = makeEl('div', 'control-group');
+        const btnZoom = makeEl('button', 'btn btn-xs', '🔍 Zoom');
+        btnZoom.setAttribute('type', 'button');
+        btnZoom.addEventListener('click', function () {
+          const i = flatShots.findIndex(function (x) { return x.imageUrl === shot.imageUrl; });
+          openLightboxAt(i >= 0 ? i : 0);
+        });
+        const aOpen = makeEl('a', 'btn btn-xs', '↗ URL');
+        aOpen.setAttribute('href', safeHref(shot.imageUrl));
+        aOpen.setAttribute('target', '_blank');
+        aOpen.setAttribute('rel', 'noopener noreferrer');
+        const btnCopy = makeEl('button', 'btn btn-xs', '📋 Copy');
+        btnCopy.setAttribute('type', 'button');
+        btnCopy.addEventListener('click', function () {
+          copyUrl(shot.imageUrl, shot.fileName);
+        });
+        const aDl = makeEl('a', 'btn btn-xs', '⬇ PNG');
+        aDl.setAttribute('href', safeHref(shot.imageUrl));
+        aDl.setAttribute('download', shot.fileName);
+
+        right.appendChild(btnZoom);
+        right.appendChild(aOpen);
+        right.appendChild(btnCopy);
+        right.appendChild(aDl);
+
+        hdr.appendChild(left);
+        hdr.appendChild(right);
+        panel.appendChild(hdr);
+
+        const wrap = makeEl('div', 'shot-img-wrap');
+        const img = document.createElement('img');
+        img.className = 'shot-img';
+        img.setAttribute('src', safeHref(shot.imageUrl));
+        img.setAttribute('alt', shot.alt || shot.fileName);
+        img.addEventListener('click', function () {
+          const i = flatShots.findIndex(function (x) { return x.imageUrl === shot.imageUrl; });
+          openLightboxAt(i >= 0 ? i : 0);
+        });
+        wrap.appendChild(img);
+        panel.appendChild(wrap);
+
+        panel.appendChild(makeEl('div', 'shot-caption', shot.caption || shot.alt || shot.fileName));
+        return panel;
+      }
+
+      function buildSplitSlider(pair) {
+        const stage = makeEl('div', 'split-stage');
+        const vp = makeEl('div', 'split-viewport');
+
+        const afterImg = document.createElement('img');
+        afterImg.className = 'split-base-img';
+        afterImg.setAttribute('src', safeHref(pair.after.imageUrl));
+        afterImg.setAttribute('alt', pair.after.alt || 'AFTER capture');
+
+        const ovWrap = makeEl('div', 'split-overlay-wrap');
+        const beforeImg = document.createElement('img');
+        beforeImg.className = 'split-overlay-img';
+        beforeImg.setAttribute('src', safeHref(pair.before.imageUrl));
+        beforeImg.setAttribute('alt', pair.before.alt || 'BEFORE capture');
+
+        function syncWidth() {
+          beforeImg.style.width = vp.clientWidth + 'px';
+        }
+        afterImg.addEventListener('load', syncWidth);
+        window.addEventListener('resize', syncWidth);
+
+        ovWrap.appendChild(beforeImg);
+        vp.appendChild(afterImg);
+        vp.appendChild(ovWrap);
+
+        const range = document.createElement('input');
+        range.setAttribute('type', 'range');
+        range.setAttribute('min', '0');
+        range.setAttribute('max', '100');
+        range.setAttribute('value', '50');
+        range.setAttribute('aria-label', 'Slide between BEFORE and AFTER');
+        range.className = 'split-range';
+        range.addEventListener('input', function () {
+          syncWidth();
+          ovWrap.style.width = range.value + '%';
+        });
+
+        const legend = makeEl('div', 'topbar-row');
+        legend.appendChild(makeEl('span', 'pill pill-red', '← Left: BEFORE (' + pair.before.fileName + ')'));
+        legend.appendChild(makeEl('span', 'pill pill-green', 'Right: AFTER (' + pair.after.fileName + ') →'));
+
+        stage.appendChild(legend);
+        stage.appendChild(vp);
+        stage.appendChild(range);
+        setTimeout(syncWidth, 60);
+        return stage;
+      }
+
+      function renderProviderPills(shots) {
+        elProviderRow.replaceChildren();
+        const counts = new Map();
+        shots.forEach(function (s) {
+          const p = s.provider || 'Live UI';
+          counts.set(p, (counts.get(p) || 0) + 1);
+        });
+        if (counts.size <= 1) return;
+
+        const allBtn = makeEl('button', 'btn btn-xs' + (activeProvider === 'all' ? ' active' : ''), 'All (' + shots.length + ')');
+        allBtn.setAttribute('type', 'button');
+        allBtn.addEventListener('click', function () { activeProvider = 'all'; renderPage(); });
+        elProviderRow.appendChild(allBtn);
+
+        counts.forEach(function (cnt, prov) {
+          const b = makeEl('button', 'btn btn-xs' + (activeProvider === prov ? ' active' : ''), prov + ' (' + cnt + ')');
+          b.setAttribute('type', 'button');
+          b.addEventListener('click', function () { activeProvider = prov; renderPage(); });
+          elProviderRow.appendChild(b);
+        });
+      }
+
+      function renderPage() {
+        if (!payloadData) return;
+        const blog = payloadData.blog;
+        const stats = payloadData.stats || {};
+        const q = (elFilter.value || '').trim().toLowerCase();
+        const allShots = payloadData.screenshots || [];
+        const allPairs = payloadData.screenshotPairs || [];
+        const standaloneShots = allShots.filter(function (s) { return !s.isPairMember; });
+        const hasPairs = allPairs.length > 0;
+
+        document.title = blog.wsKey + ' Screenshots — ' + blog.title;
+        elBack.setAttribute('href', safeHref(blog.blogPortalUrl));
+        elBack.textContent = '← Back to ' + blog.wsKey + ' Blog';
+        elBadge.textContent = blog.wsKey + ' · VERIFIED LIVE CLOUD & SAAS PROOFS';
+        elTitle.textContent = 'All Screenshots Used — ' + blog.title;
+        elSub.textContent = blog.subtitle;
+        elLinkDiag.setAttribute('href', safeHref(blog.diagramsPageUrl));
+        elLinkDiag.textContent = '📐 All Diagrams Used (' + (stats.activeDiagramCount || 0) + ') ↗';
+
+        elStatShots.textContent = (stats.screenshotCount || 0) + ' Retina Screenshots';
+        if (hasPairs && standaloneShots.length === 0) {
+          elStatVerified.textContent = (stats.screenshotPairCount || 0) + ' Before/After Pairs';
+          elModeSide.textContent = 'Side-by-Side (Before vs. After)';
+          elModeSlider.classList.remove('hidden');
+        } else {
+          const verCnt = stats.verifiedScreenshotCount || 0;
+          elStatVerified.textContent = verCnt > 0
+            ? ('✅ ' + verCnt + ' Cryptographically Attested (SHA-256)')
+            : (allShots.length + ' Live Cloud Console Proofs');
+          elModeSide.textContent = '2-Column Grid';
+          if (hasPairs) {
+            elModeSlider.classList.remove('hidden');
+          } else {
+            elModeSlider.classList.add('hidden');
+            if (displayMode === 'slider') displayMode = 'side';
+          }
+        }
+        const dCount = stats.activeDiagramCount || 0;
+        elStatDiags.textContent = dCount + (dCount === 1 ? ' Blog Diagram' : ' Blog Diagrams');
+
+        elSwitcher.replaceChildren();
+        (payloadData.allBlogs || []).forEach(function (b) {
+          const a = document.createElement('a');
+          a.className = 'switcher-link' + (b.slug === blog.slug ? ' active' : '');
+          a.setAttribute('href', safeHref(b.screenshotsPageUrl));
+          a.textContent = b.shortLabel;
+          elSwitcher.appendChild(a);
+        });
+
+        renderProviderPills(standaloneShots);
+
+        elModeSide.classList.toggle('active', displayMode === 'side');
+        elModeSlider.classList.toggle('active', displayMode === 'slider');
+        elModeSingle.classList.toggle('active', displayMode === 'single');
+
+        flatShots = allShots;
+        elContainer.replaceChildren();
+
+        let renderedAny = false;
+
+        // 1. Standalone Verified Live Cloud & SaaS Console Cards
+        if (standaloneShots.length > 0) {
+          const filteredStandalone = standaloneShots.filter(function (s) {
+            if (activeProvider !== 'all' && (s.provider || '') !== activeProvider) return false;
+            if (!q) return true;
+            const hay = [
+              s.saasId, s.product, s.provider, s.resourceLabel, s.projectOrAccount,
+              s.category, s.pattern, s.fileName, s.sha256, s.caption, s.alt
+            ].join(' ').toLowerCase();
+            return hay.includes(q);
+          });
+          if (filteredStandalone.length > 0) {
+            renderedAny = true;
+            const grid = makeEl('div', displayMode === 'single' ? 'console-grid single-col' : 'console-grid');
+            grid.setAttribute('data-testid', 'verified-console-screenshots-grid');
+            filteredStandalone.forEach(function (shot) {
+              grid.appendChild(buildLiveConsoleCard(shot));
+            });
+            elContainer.appendChild(grid);
+          }
+        }
+
+        // 2. Before/After Pair Cards (only if present in markdown)
+        if (hasPairs) {
+          const pairs = allPairs.filter(function (p) {
+            if (!q) return true;
+            const hay = (p.saasId + ' ' + p.product + ' ' + p.targetId + ' ' + p.category + ' ' + p.pattern + ' ' + ((p.before && p.before.caption) || '') + ' ' + ((p.after && p.after.caption) || '')).toLowerCase();
+            return hay.includes(q);
+          });
+          pairs.forEach(function (pair) {
+            renderedAny = true;
+            const card = makeEl('article', 'pair-card');
+            card.setAttribute('data-testid', 'screenshot-pair-' + pair.saasId);
+
+            const hdr = makeEl('div', 'pair-header');
+            const left = makeEl('div', 'control-group');
+            left.appendChild(makeEl('span', 'pill pill-blue', pair.saasId));
+            left.appendChild(makeEl('h2', 'pair-title', pair.product));
+            if (pair.targetId) {
+              left.appendChild(makeEl('span', 'pill pill-amber', 'AWS AgentCore Target: ' + pair.targetId));
+            }
+            left.appendChild(makeEl('span', 'pill', pair.category));
+
+            const right = makeEl('div', 'control-group');
+            if (pair.s3LedgerUrl) {
+              const aS3 = makeEl('a', 'btn btn-xs', '🧾 S3 Audit Ledger (?format=json) ↗');
+              aS3.setAttribute('href', safeHref(pair.s3LedgerUrl));
+              aS3.setAttribute('target', '_blank');
+              aS3.setAttribute('rel', 'noopener noreferrer');
+              right.appendChild(aS3);
+            }
+
+            hdr.appendChild(left);
+            hdr.appendChild(right);
+            card.appendChild(hdr);
+
+            if (displayMode === 'slider' && pair.before && pair.after) {
+              card.appendChild(buildSplitSlider(pair));
+            } else {
+              const grid = makeEl('div', displayMode === 'single' ? 'pair-grid single-col' : 'pair-grid');
+              if (pair.before) grid.appendChild(buildShotPanel(pair.before));
+              if (pair.after) grid.appendChild(buildShotPanel(pair.after));
+              card.appendChild(grid);
+            }
+            elContainer.appendChild(card);
+          });
+        }
+
+        if (!renderedAny) {
+          const empty = makeEl('div', 'pair-card');
+          empty.appendChild(makeEl('div', 'pair-header', 'No screenshots match this filter.'));
+          elContainer.appendChild(empty);
+        }
+      }
+
+      async function loadAssets() {
+        const res = await fetch('/api/blog-assets/' + encodeURIComponent(activeSlug));
+        const data = await res.json();
+        if (res.ok && data.ok) {
+          payloadData = data;
+          renderPage();
+        }
+      }
+
+      elModeSide.addEventListener('click', function () { displayMode = 'side'; renderPage(); });
+      elModeSlider.addEventListener('click', function () { displayMode = 'slider'; renderPage(); });
+      elModeSingle.addEventListener('click', function () { displayMode = 'single'; renderPage(); });
+      elFilter.addEventListener('input', renderPage);
+
+      document.getElementById('lb-prev').addEventListener('click', function () { openLightboxAt(lightboxIndex - 1); });
+      document.getElementById('lb-next').addEventListener('click', function () { openLightboxAt(lightboxIndex + 1); });
+      document.getElementById('lb-close').addEventListener('click', closeLightbox);
+      document.getElementById('lightbox-modal').addEventListener('click', function (ev) {
+        if (ev.target && ev.target.id === 'lightbox-modal') closeLightbox();
+      });
+      window.addEventListener('keydown', function (ev) {
+        const lb = document.getElementById('lightbox-modal');
+        if (!lb.classList.contains('open')) return;
+        if (ev.key === 'Escape') closeLightbox();
+        else if (ev.key === 'ArrowLeft') openLightboxAt(lightboxIndex - 1);
+        else if (ev.key === 'ArrowRight') openLightboxAt(lightboxIndex + 1);
+      });
+
+      loadAssets();
+    })();
+  </script>
+</body>
+</html>

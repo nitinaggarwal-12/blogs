@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" style="width:100%;height:auto;display:block;background:#FFFFFF;font-family:Arial,sans-serif;">
+<defs><marker id="arrowEnd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#475569"/></marker></defs>
+<rect x="0" y="0" width="1600" height="900" fill="#FFFFFF"/>
+<rect x="0.0" y="7.8" width="1600.0" height="59.4" rx="0" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1.0"/>
+<rect x="0.0" y="0.0" width="400.0" height="7.8" rx="0" fill="#4285F4" stroke="none" stroke-width="0"/>
+<rect x="400.0" y="0.0" width="400.0" height="7.8" rx="0" fill="#EA4335" stroke="none" stroke-width="0"/>
+<rect x="799.9" y="0.0" width="400.0" height="7.8" rx="0" fill="#FBBC04" stroke="none" stroke-width="0"/>
+<rect x="1199.9" y="0.0" width="400.1" height="7.8" rx="0" fill="#34A853" stroke="none" stroke-width="0"/>
+<rect x="45.6" y="31.8" width="11.4" height="11.4" rx="50%" fill="#4285F4" stroke="none" stroke-width="0"/>
+<rect x="60.6" y="31.8" width="11.4" height="11.4" rx="50%" fill="#EA4335" stroke="none" stroke-width="0"/>
+<rect x="75.6" y="31.8" width="11.4" height="11.4" rx="50%" fill="#FBBC04" stroke="none" stroke-width="0"/>
+<rect x="90.6" y="31.8" width="11.4" height="11.4" rx="50%" fill="#34A853" stroke="none" stroke-width="0"/>
+<text x="122.4" y="40.2" text-anchor="start" fill="#3C4043" font-size="13.7" font-weight="bold">Google Cloud  Architecture Center</text>
+<rect x="453.6" y="21.0" width="102.0" height="32.4" rx="5" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="504.6" y="40.1" text-anchor="middle" fill="#4285F4" font-size="11.1" font-weight="bold">WS2</text>
+<text x="589.2" y="40.1" text-anchor="start" fill="#3C4043" font-size="13.3" font-weight="bold">WS2 • PART 2 (L1 LOGICAL): Pattern A High-Density Pooled Runtime &amp; AlloyDB RLS Topology</text>
+<rect x="1248.4" y="21.0" width="306.0" height="32.4" rx="5" fill="#F8F9FA" stroke="#DADCE0" stroke-width="1.0"/>
+<text x="1401.4" y="39.7" text-anchor="middle" fill="#5F6368" font-size="9.8" font-weight="bold">ARCHITECTURE-ZONE-TOPOLOGY</text>
+<text x="62.4" y="98.3" text-anchor="start" fill="#5F6368" font-size="13.3" font-weight="bold">End-to-end 3-zone security &amp; runtime boundary: Zone 1 (Pooled SaaS Tenant Callers) → Zone 2 (Shared Vertex AI Agent</text>
+<rect x="50.4" y="117.6" width="427.2" height="691.2" rx="18" fill="#F8F9FA" stroke="#0F2942" stroke-width="1.8"/>
+<text x="264.0" y="158.8" text-anchor="middle" fill="#0F2942" font-size="14.6" font-weight="bold">POOLED SAAS TENANT CALLERS</text>
+<text x="264.0" y="175.2" text-anchor="middle" fill="#0F2942" font-size="14.6" font-weight="normal">(Co-Hosted Commercial &amp; Enterprise)</text>
+<rect x="122.4" y="223.2" width="141.6" height="81.6" rx="10" fill="#0F2942" stroke="#0F2942" stroke-width="1.0"/>
+<rect x="132.0" y="235.2" width="122.4" height="57.6" rx="10" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="193.2" y="267.0" text-anchor="middle" fill="#0D7A75" font-size="11.7" font-weight="bold">Tenant A</text>
+<text x="193.2" y="326.4" text-anchor="middle" fill="#3C4043" font-size="12.0" font-weight="bold">Tenant A (Sovereign)</text>
+<text x="193.2" y="339.8" text-anchor="middle" fill="#3C4043" font-size="12.0" font-weight="normal">(600 RPM / 8k Think)</text>
+<line x1="268.8" y1="264.0" x2="374.4" y2="264.0" stroke="#0F2942" stroke-width="1.2"/>
+<rect x="122.4" y="396.0" width="141.6" height="81.6" rx="10" fill="#475569" stroke="#0F2942" stroke-width="1.0"/>
+<rect x="132.0" y="408.0" width="122.4" height="57.6" rx="10" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="193.2" y="439.8" text-anchor="middle" fill="#0F2942" font-size="11.7" font-weight="bold">Retail</text>
+<text x="193.2" y="499.2" text-anchor="middle" fill="#3C4043" font-size="12.0" font-weight="bold">Tenant B (Commercial)</text>
+<text x="193.2" y="512.6" text-anchor="middle" fill="#3C4043" font-size="12.0" font-weight="normal">(120 RPM / 4k Think)</text>
+<line x1="268.8" y1="436.8" x2="374.4" y2="436.8" stroke="#0F2942" stroke-width="1.2"/>
+<rect x="122.4" y="568.8" width="141.6" height="81.6" rx="10" fill="#475569" stroke="#0F2942" stroke-width="1.0"/>
+<rect x="132.0" y="580.8" width="122.4" height="57.6" rx="10" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="193.2" y="612.6" text-anchor="middle" fill="#0F2942" font-size="11.7" font-weight="bold">RedTeam</text>
+<text x="193.2" y="672.0" text-anchor="middle" fill="#3C4043" font-size="12.0" font-weight="bold">Adversarial Probe</text>
+<text x="193.2" y="685.4" text-anchor="middle" fill="#3C4043" font-size="12.0" font-weight="normal">(Spoofed Headers)</text>
+<line x1="268.8" y1="609.6" x2="374.4" y2="609.6" stroke="#0F2942" stroke-width="1.2"/>
+<line x1="374.4" y1="264.0" x2="374.4" y2="609.6" stroke="#0F2942" stroke-width="1.2"/>
+<line x1="374.4" y1="436.8" x2="580.8" y2="436.8" stroke="#0F2942" stroke-width="1.5" marker-end="url(#arrowEnd)"/>
+<text x="531.6" y="390.4" text-anchor="middle" fill="#3C4043" font-size="10.7" font-weight="bold">HTTPS + OIDC</text>
+<text x="531.6" y="402.4" text-anchor="middle" fill="#3C4043" font-size="10.7" font-weight="normal">Bearer Token</text>
+<text x="531.6" y="476.9" text-anchor="middle" fill="#5F6368" font-size="10.4" font-weight="bold">Cloud Armor</text>
+<text x="531.6" y="488.5" text-anchor="middle" fill="#5F6368" font-size="10.4" font-weight="normal">WAF + ALB Header Strip</text>
+<rect x="585.6" y="117.6" width="388.8" height="691.2" rx="18" fill="#F8F9FA" stroke="#0D7A75" stroke-width="1.8"/>
+<text x="780.0" y="158.9" text-anchor="middle" fill="#0F2942" font-size="14.3" font-weight="bold">SHARED CLOUD RUN v2 POOL</text>
+<text x="780.0" y="174.9" text-anchor="middle" fill="#0F2942" font-size="14.3" font-weight="normal">(cymbal-pooled-prod)</text>
+<rect x="604.8" y="201.6" width="350.4" height="585.6" rx="18" fill="#EBEEF2" stroke="#DADCE0" stroke-width="1.0"/>
+<rect x="619.2" y="216.0" width="63.0" height="33.6" rx="5" fill="#4285F4" stroke="none" stroke-width="0"/>
+<text x="650.7" y="235.3" text-anchor="middle" fill="#FFFFFF" font-size="9.6" font-weight="bold">ADK</text>
+<text x="701.0" y="236.0" text-anchor="start" fill="#5F6368" font-size="12.2" font-weight="bold">Shared Vertex AI Agent Engine Pool</text>
+<rect x="652.8" y="266.4" width="254.4" height="132.0" rx="10" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1.0"/>
+<rect x="736.8" y="278.4" width="86.4" height="40.8" rx="5" fill="#E8F0FE" stroke="#4285F4" stroke-width="1.0"/>
+<text x="780.0" y="301.7" text-anchor="middle" fill="#174EA6" font-size="11.4" font-weight="bold">90%</text>
+<text x="780.0" y="354.0" text-anchor="middle" fill="#3C4043" font-size="12.0" font-weight="bold">90% Shared 32k</text>
+<text x="780.0" y="367.4" text-anchor="middle" fill="#3C4043" font-size="12.0" font-weight="normal">Prefix Cache Hit</text>
+<line x1="780.0" y1="398.4" x2="780.0" y2="432.0" stroke="#0F2942" stroke-width="1.2" marker-end="url(#arrowEnd)"/>
+<rect x="652.8" y="432.0" width="254.4" height="132.0" rx="10" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1.0"/>
+<rect x="736.8" y="444.0" width="86.4" height="40.8" rx="5" fill="#FCE8E6" stroke="#EA4335" stroke-width="1.0"/>
+<text x="780.0" y="467.3" text-anchor="middle" fill="#A50E0E" font-size="11.4" font-weight="bold">RPM</text>
+<text x="780.0" y="519.6" text-anchor="middle" fill="#3C4043" font-size="12.0" font-weight="bold">Memorystore Valkey</text>
+<text x="780.0" y="533.0" text-anchor="middle" fill="#3C4043" font-size="12.0" font-weight="normal">Token-Bucket Bulkhead</text>
+<line x1="780.0" y1="564.0" x2="780.0" y2="597.6" stroke="#0F2942" stroke-width="1.2" marker-end="url(#arrowEnd)"/>
+<rect x="652.8" y="597.6" width="254.4" height="132.0" rx="10" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1.0"/>
+<rect x="736.8" y="609.6" width="86.4" height="40.8" rx="5" fill="#FEF7E0" stroke="#FBBC04" stroke-width="1.0"/>
+<text x="780.0" y="632.9" text-anchor="middle" fill="#B06000" font-size="11.4" font-weight="bold">DLP</text>
+<text x="780.0" y="685.2" text-anchor="middle" fill="#3C4043" font-size="12.0" font-weight="bold">Model Armor + NLC</text>
+<text x="780.0" y="698.6" text-anchor="middle" fill="#3C4043" font-size="12.0" font-weight="normal">&amp; SDP PII Redaction</text>
+<line x1="628.8" y1="331.2" x2="628.8" y2="664.8" stroke="#0F2942" stroke-width="1.2"/>
+<line x1="628.8" y1="331.2" x2="652.8" y2="331.2" stroke="#0F2942" stroke-width="1.2" marker-end="url(#arrowEnd)"/>
+<line x1="628.8" y1="496.8" x2="652.8" y2="496.8" stroke="#0F2942" stroke-width="1.2" marker-end="url(#arrowEnd)"/>
+<line x1="628.8" y1="664.8" x2="652.8" y2="664.8" stroke="#0F2942" stroke-width="1.2" marker-end="url(#arrowEnd)"/>
+<line x1="907.2" y1="331.2" x2="933.6" y2="331.2" stroke="#0F2942" stroke-width="1.2"/>
+<line x1="907.2" y1="664.8" x2="933.6" y2="664.8" stroke="#0F2942" stroke-width="1.2"/>
+<line x1="933.6" y1="331.2" x2="933.6" y2="664.8" stroke="#0F2942" stroke-width="1.2"/>
+<line x1="933.6" y1="496.8" x2="1096.8" y2="496.8" stroke="#0F2942" stroke-width="1.5" marker-end="url(#arrowEnd)"/>
+<text x="1037.9" y="441.5" text-anchor="middle" fill="#3C4043" font-size="8.5" font-weight="bold">SET LOCAL</text>
+<text x="1037.9" y="451.0" text-anchor="middle" fill="#3C4043" font-size="8.5" font-weight="normal">app.current_tenant_id</text>
+<text x="1038.0" y="544.2" text-anchor="middle" fill="#5F6368" font-size="10.1" font-weight="bold">Scoped 2LO/3LO</text>
+<text x="1038.0" y="555.5" text-anchor="middle" fill="#5F6368" font-size="10.1" font-weight="normal">MCP Dispatch</text>
+<rect x="1101.6" y="117.6" width="448.8" height="691.2" rx="18" fill="#F8F9FA" stroke="#0D7A75" stroke-width="1.8"/>
+<text x="1326.0" y="158.9" text-anchor="middle" fill="#0F2942" font-size="14.3" font-weight="bold">SHARED MULTI-TENANT DATA PLANE</text>
+<text x="1326.0" y="174.9" text-anchor="middle" fill="#0F2942" font-size="14.3" font-weight="normal">(Cryptographic Logical Isolation)</text>
+<rect x="1123.2" y="201.6" width="405.6" height="585.6" rx="18" fill="#0B2545" stroke="#0F2942" stroke-width="1.0"/>
+<rect x="1144.8" y="225.6" width="362.4" height="141.6" rx="10" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="1272.0" y="237.6" width="108.0" height="48.0" rx="10" fill="#0D7A75" stroke="none" stroke-width="0"/>
+<text x="1326.0" y="264.9" text-anchor="middle" fill="#FFFFFF" font-size="12.7" font-weight="bold">RLS</text>
+<text x="1326.0" y="327.2" text-anchor="middle" fill="#3C4043" font-size="12.2" font-weight="bold">Shared AlloyDB Cluster (FORCE ROW LEVEL SECURITY)</text>
+<line x1="1326.0" y1="367.2" x2="1326.0" y2="400.8" stroke="#FFFFFF" stroke-width="1.5" marker-end="url(#arrowEnd)"/>
+<rect x="1144.8" y="400.8" width="362.4" height="156.0" rx="10" fill="#FFFFFF" stroke="#D93025" stroke-width="1.8" stroke-dasharray="5,4"/>
+<rect x="1164.0" y="415.2" width="151.2" height="48.0" rx="10" fill="#E8F0FE" stroke="#4285F4" stroke-width="1.0"/>
+<text x="1239.6" y="442.0" text-anchor="middle" fill="#174EA6" font-size="10.7" font-weight="bold">2LO • M2M</text>
+<rect x="1336.8" y="415.2" width="151.2" height="48.0" rx="10" fill="#E6F4EA" stroke="#34A853" stroke-width="1.0"/>
+<text x="1412.4" y="442.0" text-anchor="middle" fill="#0D652D" font-size="10.7" font-weight="bold">3LO • OAuth</text>
+<text x="1326.0" y="512.0" text-anchor="middle" fill="#3C4043" font-size="12.2" font-weight="bold">Tenant-Scoped Memory Bank (/tenants/{id}/*) &amp; MCP</text>
+<line x1="1242.0" y1="556.8" x2="1242.0" y2="595.2" stroke="#FFFFFF" stroke-width="1.3" marker-start="url(#arrowEnd)" marker-end="url(#arrowEnd)"/>
+<line x1="1326.0" y1="556.8" x2="1326.0" y2="595.2" stroke="#FFFFFF" stroke-width="1.3" marker-start="url(#arrowEnd)" marker-end="url(#arrowEnd)"/>
+<line x1="1410.0" y1="556.8" x2="1410.0" y2="595.2" stroke="#FFFFFF" stroke-width="1.3" marker-start="url(#arrowEnd)" marker-end="url(#arrowEnd)"/>
+<rect x="1144.8" y="595.2" width="362.4" height="163.2" rx="18" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="1272.0" y="609.6" width="108.0" height="48.0" rx="10" fill="#475569" stroke="none" stroke-width="0"/>
+<text x="1326.0" y="636.7" text-anchor="middle" fill="#FFFFFF" font-size="12.0" font-weight="bold">KMS</text>
+<text x="1326.0" y="707.6" text-anchor="middle" fill="#3C4043" font-size="12.2" font-weight="bold">Shared Cloud KMS CMEK &amp; BigQuery OTel Cost Attribution</text>
+<text x="50.0" y="882.2" text-anchor="start" fill="#4285F4" font-size="10.1" font-weight="bold">[Slide 19/62 • PART 2 (WS2)]  •  ▶ 4-State Hybrid &amp; Draw.io ↗</text>
+</svg>

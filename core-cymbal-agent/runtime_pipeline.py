@@ -44,11 +44,13 @@ class CymbalMultiTenantRuntime:
         session_id: str,
         requested_agent_uri: str,
         user_prompt: str,
-        requested_thinking_tokens: int = 6000,
+        requested_output_tokens: int = 6000,
+        requested_thinking_level: Optional[str] = None,
         simulated_current_rpm: int = 10,
         attempted_db_tenant_filter: Optional[str] = None,
         requested_mcp_connector: str = "mcp://cymbal/core-telemetry-2lo",
         topology: IsolationTopology = IsolationTopology.PATTERN_A_POOLED,
+        active_model_override: str = "",
     ) -> Dict[str, object]:
         hops: List[HopAuditRecord] = []
 
@@ -99,7 +101,8 @@ class CymbalMultiTenantRuntime:
         # Hop 3: Compute Plane, Firestore/Memorystore Config, 5-Level Memory Bank & FinOps Bulkhead
         runtime_cfg, h3_audit = self.hop3.enforce_compute_and_finops(
             ctx=ctx,
-            requested_thinking_tokens=requested_thinking_tokens,
+            requested_output_tokens=requested_output_tokens,
+            requested_thinking_level=requested_thinking_level,
             simulated_current_rpm=simulated_current_rpm,
         )
         hops.append(h3_audit)
@@ -165,20 +168,24 @@ class CymbalMultiTenantRuntime:
         hops.append(h5_rls_audit)
 
         # Execute Authorized Agent Reasoning
-        effective_budget = int(runtime_cfg["effective_thinking_budget"])
+        effective_thinking_level = str(runtime_cfg["effective_thinking_level"])
+        effective_output_cap = int(runtime_cfg["effective_output_token_cap"])
         if requested_agent_uri == SharedIncidentDiagnosticAgent.AGENT_URI:
             raw_output = self.shared_agent.execute_reasoning_turn(
                 ctx=ctx,
                 user_prompt=user_prompt,
                 bound_tools=bound_tools,
                 rls_incidents=rls_rows,
-                effective_thinking_budget=effective_budget,
+                effective_thinking_level=effective_thinking_level,
+                effective_output_token_cap=effective_output_cap,
+                active_model_override=active_model_override,
             )
         else:
             raw_output = self.agent_alpha.execute_regulatory_escalation(
                 ctx=ctx,
                 user_prompt=user_prompt,
                 rls_incidents=rls_rows,
+                active_model_override=active_model_override,
             )
 
         # Hop 4 (Egress): Vertex AI Model Armor Sensitive Data Protection (SDP) Redaction
@@ -191,7 +198,7 @@ class CymbalMultiTenantRuntime:
         otel_span = self.hop5.record_bigquery_otel_span(
             ctx=ctx,
             agent_uri=requested_agent_uri,
-            thinking_tokens_used=effective_budget,
+            thinking_tokens_used=effective_output_cap,
             cache_hit=True,
             hops=hops,
         )

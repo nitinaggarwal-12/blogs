@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" style="width:100%;height:auto;display:block;background:#FFFFFF;font-family:Arial,sans-serif;">
+<defs><marker id="arrowEnd_s03" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#475569"/></marker></defs>
+<rect width="1600" height="900" fill="#FFFFFF"/>
+<rect x="0" y="8" width="1600" height="58" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+<rect x="0" y="0" width="400" height="8" fill="#4285F4"/>
+<rect x="400" y="0" width="400" height="8" fill="#EA4335"/>
+<rect x="800" y="0" width="400" height="8" fill="#FBBC04"/>
+<rect x="1200" y="0" width="400" height="8" fill="#34A853"/>
+<circle cx="49.5" cy="36.5" r="5.5" fill="#4285F4"/>
+<circle cx="64.5" cy="36.5" r="5.5" fill="#EA4335"/>
+<circle cx="79.5" cy="36.5" r="5.5" fill="#FBBC04"/>
+<circle cx="94.5" cy="36.5" r="5.5" fill="#34A853"/>
+<text x="110" y="42" font-size="15" font-family="Arial,sans-serif" fill="#3C4043"><tspan font-weight="bold">Google Cloud</tspan> <tspan fill="#5F6368">Architecture Center</tspan></text>
+<rect x="415" y="21" width="108" height="32" rx="7" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.2"/><text x="469" y="41" text-anchor="middle" font-size="12" font-weight="bold" font-family="Arial,sans-serif" fill="#1E293B">WS1 + MC2</text>
+<text x="544" y="42" font-size="15" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">WS1 + MC2 Protocol Anatomy: 5-Hop Wire Packets &amp; Keyless Cross-Cloud WIF</text>
+<rect x="1315" y="21" width="245" height="32" rx="7" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.2"/><text x="1437.5" y="41" text-anchor="middle" font-size="11" font-weight="bold" font-family="Arial,sans-serif" fill="#475569">BARE-MIN 03/12 • PROTOCOL ANATOMY</text>
+<text x="44" y="95" font-size="13" font-family="Arial,sans-serif" fill="#475569">Bare-Min 03/12 • C4 L3 Temporal Swimlane: OIDC JWT1 -&gt; RFC 9449 DPoP Binding -&gt; RFC 8693 OBO -&gt; Downscoped 3LO -&gt; Keyless AWS STS WIF</text>
+<rect x="44" y="132" width="260" height="104" rx="12" fill="#E8F0FE" stroke="#3B82F6" stroke-width="1.5"/><text x="174.0" y="166" text-anchor="middle" font-size="13.5" font-weight="bold" font-family="Arial,sans-serif" fill="#1E3A8A">Hop 1: Workforce IdP</text>
+<text x="174.0" y="185" text-anchor="middle" font-size="13.5" font-weight="bold" font-family="Arial,sans-serif" fill="#1E3A8A">(Cloud Identity / Entra)</text>
+<text x="174.0" y="212" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#1D4ED8">Issues short-lived JWT1</text>
+<rect x="44" y="316" width="260" height="182" rx="12" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><text x="174.0" y="352" text-anchor="middle" font-size="12" font-style="italic" font-family="Arial,sans-serif" fill="#334155">Wire Packet 1</text><text x="174.0" y="376" text-anchor="middle" font-size="14" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">OIDC ID Token (JWT1)</text>
+<text x="174.0" y="406" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#0F172A">• sub: user-a@tenant-a.example</text>
+<text x="174.0" y="430" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#0F172A">• tenant_id: tenant-a-prod</text>
+<text x="174.0" y="454" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#0F172A">• aud: ingress-gateway</text>
+<rect x="44" y="582" width="260" height="174" rx="12" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1.5"/><text x="174.0" y="622" text-anchor="middle" font-size="13.5" font-weight="bold" font-family="Arial,sans-serif" fill="#991B1B">Zero Directory Sync</text>
+<text x="174.0" y="654" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#334155">• Verified OIDC claims</text>
+<text x="174.0" y="678" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#334155">• 0 static API keys</text>
+<text x="174.0" y="702" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#334155">• ALB strips X-Tenant-Id</text>
+<line x1="174.0" y1="236" x2="174.0" y2="314" stroke="#475569" stroke-width="1.6" marker-end="url(#arrowEnd_s03)"/><text x="164.0" y="280" text-anchor="end" font-size="11" font-family="Arial,sans-serif" fill="#334155">Mint JWT1</text>
+<line x1="174.0" y1="498" x2="174.0" y2="580" stroke="#475569" stroke-width="1.6" marker-end="url(#arrowEnd_s03)"/>
+<line x1="304" y1="407" x2="356" y2="407" stroke="#334155" stroke-width="1.8" marker-end="url(#arrowEnd_s03)"/><text x="331" y="395" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" fill="#334155">Hop 1→2</text>
+<rect x="358" y="132" width="260" height="104" rx="12" fill="#EFF6FF" stroke="#60A5FA" stroke-width="1.5"/><text x="488.0" y="166" text-anchor="middle" font-size="13.5" font-weight="bold" font-family="Arial,sans-serif" fill="#1D4ED8">Hop 2: Ingress GW &amp;</text>
+<text x="488.0" y="185" text-anchor="middle" font-size="13.5" font-weight="bold" font-family="Arial,sans-serif" fill="#1D4ED8">STS Token Broker</text>
+<text x="488.0" y="212" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#1D4ED8">RFC 8693 + RFC 9449 DPoP</text>
+<rect x="358" y="316" width="260" height="182" rx="12" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.5"/><text x="488.0" y="352" text-anchor="middle" font-size="12" font-style="italic" font-family="Arial,sans-serif" fill="#334155">Wire Packet 2</text><text x="488.0" y="376" text-anchor="middle" font-size="14" font-weight="bold" font-family="Arial,sans-serif" fill="#065F46">DPoP-Bound STS Token</text>
+<text x="488.0" y="406" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#065F46">• cnf.jkt thumbprint bound</text>
+<text x="488.0" y="430" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#065F46">• Raw user token stripped</text>
+<text x="488.0" y="454" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#065F46">• In-memory JWKS &lt;0.15ms</text>
+<rect x="358" y="582" width="260" height="174" rx="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/><text x="488.0" y="622" text-anchor="middle" font-size="13.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">Prompt-Injection Safe</text>
+<text x="488.0" y="654" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#334155">• LLM never sees raw secret</text>
+<text x="488.0" y="678" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#334155">• DPoP proof-of-possession</text>
+<text x="488.0" y="702" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#334155">• Valkey JTI &lt;0.4ms check</text>
+<line x1="488.0" y1="236" x2="488.0" y2="314" stroke="#475569" stroke-width="1.6" marker-end="url(#arrowEnd_s03)"/><text x="478.0" y="280" text-anchor="end" font-size="11" font-family="Arial,sans-serif" fill="#334155">Bind DPoP</text>
+<line x1="488.0" y1="498" x2="488.0" y2="580" stroke="#475569" stroke-width="1.6" marker-end="url(#arrowEnd_s03)"/>
+<line x1="618" y1="407" x2="670" y2="407" stroke="#334155" stroke-width="1.8" marker-end="url(#arrowEnd_s03)"/><text x="645" y="395" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" fill="#334155">Hop 2→3</text>
+<rect x="672" y="132" width="260" height="104" rx="12" fill="#ECFDF5" stroke="#34D399" stroke-width="1.5"/><text x="802.0" y="166" text-anchor="middle" font-size="13.5" font-weight="bold" font-family="Arial,sans-serif" fill="#065F46">Hop 3: ADK Runtime -&gt;</text>
+<text x="802.0" y="185" text-anchor="middle" font-size="13.5" font-weight="bold" font-family="Arial,sans-serif" fill="#065F46">Specialist Agent A2</text>
+<text x="802.0" y="212" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#1D4ED8">A2A over SPIFFE mTLS</text>
+<rect x="672" y="316" width="260" height="182" rx="12" fill="#FEF7E0" stroke="#FCD34D" stroke-width="1.5"/><text x="802.0" y="352" text-anchor="middle" font-size="12" font-style="italic" font-family="Arial,sans-serif" fill="#334155">Wire Packet 3</text><text x="802.0" y="376" text-anchor="middle" font-size="14" font-weight="bold" font-family="Arial,sans-serif" fill="#78350F">Delegated JWT3 (OBO)</text>
+<text x="802.0" y="406" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#78350F">• sub: user-a@tenant-a.example</text>
+<text x="802.0" y="430" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#78350F">• act: urn:agent:planner-a1</text>
+<text x="802.0" y="454" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#78350F">• CoW 1-turn gVisor wipe</text>
+<rect x="672" y="582" width="260" height="174" rx="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/><text x="802.0" y="622" text-anchor="middle" font-size="13.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">Mutual Attestation</text>
+<text x="802.0" y="654" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#334155">• SPIFFE x509-SVID mTLS</text>
+<text x="802.0" y="678" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#334155">• 120/600 RPM bulkhead</text>
+<text x="802.0" y="702" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#334155">• 32k prefix cache (0.10x)</text>
+<line x1="802.0" y1="236" x2="802.0" y2="314" stroke="#475569" stroke-width="1.6" marker-end="url(#arrowEnd_s03)"/><text x="792.0" y="280" text-anchor="end" font-size="11" font-family="Arial,sans-serif" fill="#334155">RFC 8693</text>
+<line x1="802.0" y1="498" x2="802.0" y2="580" stroke="#475569" stroke-width="1.6" marker-end="url(#arrowEnd_s03)"/>
+<line x1="932" y1="407" x2="984" y2="407" stroke="#334155" stroke-width="1.8" marker-end="url(#arrowEnd_s03)"/><text x="959" y="395" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" fill="#334155">Hop 3→4</text>
+<rect x="986" y="132" width="260" height="104" rx="12" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/><text x="1116.0" y="166" text-anchor="middle" font-size="13.5" font-weight="bold" font-family="Arial,sans-serif" fill="#1E40AF">Hop 4: Outbound GW -&gt;</text>
+<text x="1116.0" y="185" text-anchor="middle" font-size="13.5" font-weight="bold" font-family="Arial,sans-serif" fill="#1E40AF">SaaS MCP (ThoughtSpot/Jira)</text>
+<text x="1116.0" y="212" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#1D4ED8">Downscoped 3LO + IAM CAB</text>
+<rect x="986" y="316" width="260" height="182" rx="12" fill="#F3E8FD" stroke="#C4B5FD" stroke-width="1.5"/><text x="1116.0" y="352" text-anchor="middle" font-size="12" font-style="italic" font-family="Arial,sans-serif" fill="#334155">Wire Packet 4</text><text x="1116.0" y="376" text-anchor="middle" font-size="14" font-weight="bold" font-family="Arial,sans-serif" fill="#4C1D95">Scoped 3LO Access Token</text>
+<text x="1116.0" y="406" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#4C1D95">• typ: at+jwt (RFC 9068)</text>
+<text x="1116.0" y="430" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#4C1D95">• Model Armor &lt;8ms screen</text>
+<text x="1116.0" y="454" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#4C1D95">• 0 interactive popups</text>
+<rect x="986" y="582" width="260" height="174" rx="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/><text x="1116.0" y="622" text-anchor="middle" font-size="13.5" font-weight="bold" font-family="Arial,sans-serif" fill="#0F172A">Model Armor + DLP</text>
+<text x="1116.0" y="654" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#334155">• Redacts PII in tool output</text>
+<text x="1116.0" y="678" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#334155">• Semantic egress NLC</text>
+<text x="1116.0" y="702" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#334155">• ARD catalog PDP (-94%)</text>
+<line x1="1116.0" y1="236" x2="1116.0" y2="314" stroke="#475569" stroke-width="1.6" marker-end="url(#arrowEnd_s03)"/><text x="1106.0" y="280" text-anchor="end" font-size="11" font-family="Arial,sans-serif" fill="#334155">3LO CAB</text>
+<line x1="1116.0" y1="498" x2="1116.0" y2="580" stroke="#475569" stroke-width="1.6" marker-end="url(#arrowEnd_s03)"/>
+<line x1="1246" y1="407" x2="1298" y2="407" stroke="#334155" stroke-width="1.8" marker-end="url(#arrowEnd_s03)"/><text x="1273" y="395" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" fill="#334155">Hop 4→5</text>
+<rect x="1300" y="132" width="260" height="104" rx="12" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5"/><text x="1430.0" y="166" text-anchor="middle" font-size="13.5" font-weight="bold" font-family="Arial,sans-serif" fill="#065F46">Hop 5: Cross-Cloud</text>
+<text x="1430.0" y="185" text-anchor="middle" font-size="13.5" font-weight="bold" font-family="Arial,sans-serif" fill="#065F46">AWS STS AgentCore WIF</text>
+<text x="1430.0" y="212" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#1D4ED8">Keyless Workload Identity</text>
+<rect x="1300" y="316" width="260" height="182" rx="12" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1.5"/><text x="1430.0" y="352" text-anchor="middle" font-size="12" font-style="italic" font-family="Arial,sans-serif" fill="#334155">Wire Packet 5</text><text x="1430.0" y="376" text-anchor="middle" font-size="14" font-weight="bold" font-family="Arial,sans-serif" fill="#78350F">Cloud Run MDS -&gt; AWS STS</text>
+<text x="1430.0" y="406" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#78350F">• GCP OIDC assertion -&gt; WIF</text>
+<text x="1430.0" y="430" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#78350F">• STS AssumeRoleWithWebId</text>
+<text x="1430.0" y="454" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#78350F">• Databricks / Unity Catalog OBO</text>
+<rect x="1300" y="582" width="260" height="174" rx="12" fill="#E8F0FE" stroke="#60A5FA" stroke-width="1.5"/><text x="1430.0" y="622" text-anchor="middle" font-size="13.5" font-weight="bold" font-family="Arial,sans-serif" fill="#1E3A8A">Zero Stored Secrets</text>
+<text x="1430.0" y="654" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#334155">• 0 keys in Secret Manager</text>
+<text x="1430.0" y="678" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#334155">• 15-min ephemeral token</text>
+<text x="1430.0" y="702" text-anchor="middle" font-size="11.5" font-family="Arial,sans-serif" fill="#334155">• AlloyDB FORCE RLS</text>
+<line x1="1430.0" y1="236" x2="1430.0" y2="314" stroke="#475569" stroke-width="1.6" marker-end="url(#arrowEnd_s03)"/><text x="1420.0" y="280" text-anchor="end" font-size="11" font-family="Arial,sans-serif" fill="#334155">WIF STS</text>
+<line x1="1430.0" y1="498" x2="1430.0" y2="580" stroke="#475569" stroke-width="1.6" marker-end="url(#arrowEnd_s03)"/>
+<rect x="44" y="818" width="492" height="32" rx="6" fill="#E8F0FE" stroke="#93C5FD" stroke-width="1.1"/><text x="54" y="838" font-size="10.5" font-family="Arial,sans-serif"><tspan font-weight="bold" fill="#1D4ED8">CONTROL</tspan> <tspan fill="#334155">OIDC JWT1 + DPoP/OBO STS + ARD PDP + Model Armor (&lt;8ms) + WIF STS</tspan></text>
+<rect x="554" y="818" width="492" height="32" rx="6" fill="#ECFDF5" stroke="#86EFAC" stroke-width="1.1"/><text x="564" y="838" font-size="10.5" font-family="Arial,sans-serif"><tspan font-weight="bold" fill="#047857">COMPUTE</tspan> <tspan fill="#334155">Cloud Run gVisor CoW + 32k shared prefix cache (0.10x, 89.1% net)</tspan></text>
+<rect x="1064" y="818" width="492" height="32" rx="6" fill="#FFF7ED" stroke="#FDBA74" stroke-width="1.1"/><text x="1074" y="838" font-size="10.5" font-family="Arial,sans-serif"><tspan font-weight="bold" fill="#C2410C">DATA</tspan> <tspan fill="#334155">Valkey 0.4ms JTI deny-list + AlloyDB FORCE RLS + 3LO Databricks/Unity</tspan></text>
+<text x="44" y="874" font-size="11" font-family="Arial,sans-serif" fill="#475569">[Bare-Min 03/12 • WS1 + MC2 Protocol Anatomy] • ▸ 2-Way Draw.io ↗</text>
+</svg>

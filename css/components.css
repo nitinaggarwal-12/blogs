@@ -7,10 +7,23 @@
       grid-template-columns: 270px minmax(0, 1fr);
       gap: 24px;
       align-items: start;
-      margin-top: 14px;
+      max-width: 1430px;
+      margin: 14px auto 0 auto;
     }
     @media (max-width: 1024px) {
       .series-reader-grid { grid-template-columns: 1fr; }
+      .series-toc-rail {
+        position: static !important;
+        max-height: none !important;
+        width: 100% !important;
+        box-sizing: border-box;
+      }
+    }
+    @media (max-width: 768px) {
+      .ws-compact-selector-bar select {
+        padding-right: 28px !important;
+        text-overflow: ellipsis;
+      }
     }
     .series-toc-rail {
       position: sticky;
@@ -44,6 +57,9 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 36px 48px;
+      width: 100%;
+      max-width: 1136px;
+      box-sizing: border-box;
       max-height: none;
       overflow-y: visible;
       font-size: 15px;
@@ -126,23 +142,19 @@
       margin: 14px 0 20px 0;
     }
     .article-reader ul.gcp-def-cards > li.def-card-li {
-      margin-bottom: 0;
-      line-height: 1.68;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-left: 3px solid #1a73e8;
-      border-radius: 8px;
-      padding: 12px 16px;
-      font-size: 14.5px;
-      color: #1e293b;
-      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
-      transition: all 0.15s ease;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid #f1f5f9;
+      border-radius: 0;
+      padding: 8px 4px;
+      margin: 0 0 4px 0;
+      box-shadow: none;
+      transition: background 0.12s ease;
     }
     .article-reader ul.gcp-def-cards > li.def-card-li:hover {
-      border-color: #cbd5e1;
-      border-left-color: #1557b0;
-      background: #ffffff;
-      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.06);
+      background: #f8fafc;
+      transform: none;
+      box-shadow: none;
     }
     .article-reader th,
     .gcp-arch-table th {
@@ -244,21 +256,68 @@
       box-sizing: border-box;
       width: 100%;
     }
+    .gcp-figure-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-right: 0;
+    }
+    @media (min-width: 1025px) {
+      .review-mode-active .gcp-figure-card-header {
+        padding-right: 140px;
+      }
+    }
+    .gcp-figure-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    @media (max-width: 768px) {
+      .gcp-figure-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 4px 0 8px 0;
+        gap: 6px;
+      }
+      .gcp-figure-actions {
+        width: 100%;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 2px;
+      }
+      .gcp-figure-actions > * {
+        flex-shrink: 0;
+      }
+    }
     .article-reader .gcp-figure-card img,
     #hub-diag-img {
-      width: auto !important;
-      max-width: min(100%, 960px) !important;
-      max-height: 920px !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      max-height: 760px !important;
       height: auto !important;
       object-fit: contain;
       display: block;
-      margin: 0 !important;
+      margin: 0 auto !important;
       border-radius: 6px;
       cursor: zoom-in;
     }
+    .article-reader .gcp-figure-card.blog-diagram-card-maximized img,
+    .blog-diagram-card-maximized img {
+      width: auto !important;
+      max-width: 100% !important;
+      max-height: calc(100vh - 120px) !important;
+      margin: 0 auto !important;
+    }
     .series-reader-main-lane {
       min-width: 0;
-      max-width: 1080px;
+      max-width: 100%;
       width: 100%;
       display: flex;
       flex-direction: column;
@@ -288,14 +347,56 @@
       color: #334155;
     }
     .article-reader code {
-      background: var(--code-bg);
-      padding: 1.5px 4.5px;
+      font-family: 'Roboto Mono', ui-monospace, monospace;
+      font-size: 0.86em;
+      background: #f1f5f9;
+      color: #0f172a;
+      border: 1px solid #e2e8f0;
+      padding: 1px 5px;
       border-radius: 4px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 12px;
-      color: var(--warn-text);
-      overflow-wrap: anywhere;
-      word-break: break-word;
+      overflow-wrap: break-word;
+      word-break: normal;
+    }
+    .article-reader table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      font-size: 13.5px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .article-reader table th {
+      background: #f8fafc;
+      color: #0f172a;
+      font-weight: 700;
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1.5px solid #cbd5e1;
+      white-space: normal;
+      overflow-wrap: break-word;
+      word-break: normal;
+    }
+    .article-reader table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: top;
+      color: #1e293b;
+      line-height: 1.5;
+    }
+    .article-reader table tr:last-child td {
+      border-bottom: none;
+    }
+    .article-reader table code,
+    .article-reader td code,
+    .article-reader th code {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #0f172a;
+      font-size: 0.84em;
+      padding: 1px 4px;
+      word-break: normal;
+      overflow-wrap: break-word;
     }
     .article-reader pre code {
       background: transparent;
@@ -499,10 +600,50 @@
       font-size: 14.5px !important;
       line-height: 1.65 !important;
       border-radius: 8px !important;
-      background: #f8fafc !important;
-      border: 1px solid #e2e8f0 !important;
-      border-left: 5px solid var(--blue) !important;
-      max-width: 960px !important;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 5px solid var(--blue);
+      max-width: 100% !important;
+    }
+    .doc-section-card .gcp-arch-callout.callout-assets {
+      background: #f0fdf4 !important;
+      border-color: #bbf7d0 !important;
+      border-left: 5px solid #059669 !important;
+      color: #064e3b !important;
+    }
+    .doc-section-card .gcp-arch-callout.callout-warning {
+      background: #fffbeb !important;
+      border-color: #fde68a !important;
+      border-left: 5px solid #d97706 !important;
+      color: #78350f !important;
+    }
+    .doc-section-card .gcp-arch-callout.callout-success,
+    .doc-section-card .gcp-arch-callout.callout-important {
+      background: #eff6ff !important;
+      border-color: #bfdbfe !important;
+      border-left: 5px solid #1a73e8 !important;
+      color: #1e3a8a !important;
+    }
+    .callout-alert-label {
+      display: inline-block;
+      margin-right: 8px;
+      padding: 1px 7px;
+      border-radius: 999px;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: rgba(26, 115, 232, 0.12);
+      color: #1d4ed8;
+      vertical-align: 1px;
+    }
+    .callout-warning .callout-alert-label {
+      background: rgba(217, 119, 6, 0.14);
+      color: #92400e;
+    }
+    .callout-assets .callout-alert-label {
+      background: rgba(5, 150, 105, 0.14);
+      color: #065f46;
     }
     .doc-section-card .gcp-arch-callout p {
       margin: 6px 0 !important;
@@ -515,11 +656,11 @@
       font-size: 15px !important;
       line-height: 1.72 !important;
       color: var(--text) !important;
-      max-width: 960px !important;
+      max-width: 100% !important;
     }
     .doc-section-card ul.gcp-arch-list,
     .doc-section-card ol.gcp-arch-steps {
-      max-width: 960px !important;
+      max-width: 100% !important;
     }
     .doc-section-card ul.gcp-arch-list li,
     .doc-section-card ol.gcp-arch-steps li {
@@ -529,7 +670,7 @@
       color: var(--text) !important;
     }
     .ws-stepper {
-      display: flex !important;
+      display: none !important;
       flex-wrap: nowrap !important;
       overflow-x: auto !important;
       align-items: center !important;
@@ -919,7 +1060,7 @@
     .genuine-3p-thumb-wrap {
       background: #f8fafc;
       border-bottom: 1px solid #e2e8f0;
-      aspect-ratio: 16 / 10;
+      aspect-ratio: 16 / 9;
       overflow: hidden;
       position: relative;
       cursor: zoom-in;
@@ -927,8 +1068,9 @@
     .genuine-3p-thumb-wrap img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      object-position: top center;
+      object-fit: contain;
+      object-position: center;
+      background: #f8fafc;
       display: block;
     }
     .genuine-3p-card-body {
@@ -2601,74 +2743,78 @@
     }
 
     /* ---------- iOS & Android Mobile / Tablet Responsive Design ---------- */
-    #tab-patterns:not(.review-mode-active) .card-hover-toolbar,
-    #hub-blog-reader:not(.review-mode-active) .card-hover-toolbar,
-    .doc-section-card:not(.review-mode-active) .card-hover-toolbar {
-      display: none !important;
-      opacity: 0 !important;
-      pointer-events: none !important;
+    /* ---------- Blog Section & Card Hover-Over Toolbar (Edit, Save, Delete, Clone, +Diagram) ---------- */
+    .doc-section-card,
+    .gcp-exec-summary-card,
+    .gcp-exec-pillar-card,
+    .gcp-figure-card,
+    .blog-inserted-diagram-card,
+    .blog-blank-diagram-canvas,
+    .diagram-atlas-card {
+      position: relative;
     }
-    /* Opt-In Google-Docs-Style Comments in Review Mode with Verified IAP Identity [FA-12] */
+    .doc-section-card > .card-hover-toolbar,
+    .gcp-exec-summary-card > .card-hover-toolbar,
+    .gcp-exec-pillar-card > .card-hover-toolbar,
+    .gcp-figure-card > .card-hover-toolbar,
+    .blog-inserted-diagram-card > .card-hover-toolbar,
+    .blog-blank-diagram-canvas > .card-hover-toolbar,
+    .diagram-atlas-card > .card-hover-toolbar {
+      display: inline-flex;
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      z-index: 45;
+      align-items: center;
+      gap: 3px;
+      background: rgba(255, 255, 255, 0.98);
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 2px 6px;
+      box-shadow: 0 2px 10px rgba(26, 115, 232, 0.16);
+      transition: opacity 0.16s ease, transform 0.16s ease;
+    }
+    .card:hover > .card-hover-toolbar,
+    .card:focus-within > .card-hover-toolbar,
+    .card.card-is-editing > .card-hover-toolbar,
+    .card.force-hover-toolbar-visible > .card-hover-toolbar,
+    .doc-section-card:hover > .card-hover-toolbar,
+    .doc-section-card:focus-within > .card-hover-toolbar,
+    .doc-section-card.card-is-editing > .card-hover-toolbar,
+    .doc-section-card.force-hover-toolbar-visible > .card-hover-toolbar,
+    .gcp-exec-summary-card:hover > .card-hover-toolbar,
+    .gcp-exec-summary-card.card-is-editing > .card-hover-toolbar,
+    .gcp-exec-summary-card.force-hover-toolbar-visible > .card-hover-toolbar,
+    .gcp-exec-pillar-card:hover > .card-hover-toolbar,
+    .gcp-exec-pillar-card.card-is-editing > .card-hover-toolbar,
+    .gcp-exec-pillar-card.force-hover-toolbar-visible > .card-hover-toolbar,
+    .gcp-figure-card:hover > .card-hover-toolbar,
+    .gcp-figure-card.card-is-editing > .card-hover-toolbar,
+    .gcp-figure-card.force-hover-toolbar-visible > .card-hover-toolbar,
+    .blog-inserted-diagram-card:hover > .card-hover-toolbar,
+    .blog-inserted-diagram-card.card-is-editing > .card-hover-toolbar,
+    .blog-inserted-diagram-card.force-hover-toolbar-visible > .card-hover-toolbar,
+    .blog-blank-diagram-canvas:hover > .card-hover-toolbar,
+    .blog-blank-diagram-canvas.force-hover-toolbar-visible > .card-hover-toolbar,
+    .diagram-atlas-card:hover > .card-hover-toolbar,
+    .diagram-atlas-card.card-is-editing > .card-hover-toolbar,
+    .diagram-atlas-card.force-hover-toolbar-visible > .card-hover-toolbar,
     #tab-patterns.review-mode-active .card-hover-toolbar,
     #hub-blog-reader.review-mode-active .card-hover-toolbar,
     .review-mode-active .doc-section-card .card-hover-toolbar {
       display: inline-flex !important;
       opacity: 1 !important;
       pointer-events: auto !important;
-      position: absolute !important;
-      top: 8px !important;
-      right: 10px !important;
-      z-index: 40 !important;
-      align-items: center !important;
-      gap: 3px !important;
-      background: rgba(255, 255, 255, 0.98) !important;
-      border: 1px solid #bfdbfe !important;
-      border-radius: 8px !important;
-      padding: 2px 6px !important;
-      box-shadow: 0 2px 10px rgba(26, 115, 232, 0.16) !important;
-      transform: none !important;
+      transform: translateY(0) !important;
     }
-    /* Gate Google-Docs comments only: hide all 6 CMS authoring buttons for readers/reviewers */
-    #tab-patterns.review-mode-active .card-hover-toolbar .card-action-icon-btn:not(.comment-btn),
-    #hub-blog-reader.review-mode-active .card-hover-toolbar .card-action-icon-btn:not(.comment-btn),
-    .review-mode-active .doc-section-card .card-hover-toolbar .card-action-icon-btn:not(.comment-btn) {
-      display: none !important;
-    }
-    #tab-patterns.review-mode-active .card-hover-toolbar .comment-btn,
-    #hub-blog-reader.review-mode-active .card-hover-toolbar .comment-btn,
-    .review-mode-active .doc-section-card .card-hover-toolbar .comment-btn {
+    .card-hover-toolbar .card-action-icon-btn {
       display: inline-flex !important;
-      align-items: center !important;
-      gap: 4px !important;
-      width: auto !important;
-      height: 26px !important;
-      padding: 0 8px !important;
-      font-size: 11.5px !important;
-      font-weight: 700 !important;
-      color: #1a73e8 !important;
-      background: #eff6ff !important;
-      border: 1px solid #dbeafe !important;
-      border-radius: 6px !important;
-      cursor: pointer !important;
+      align-items: center;
+      justify-content: center;
     }
-    #tab-patterns.review-mode-active .card-hover-toolbar .comment-btn:hover,
-    #hub-blog-reader.review-mode-active .card-hover-toolbar .comment-btn:hover,
-    .review-mode-active .doc-section-card .card-hover-toolbar .comment-btn:hover {
-      background: #dbeafe !important;
-    }
-    #tab-patterns.review-mode-active .card-hover-toolbar .comment-btn::after,
-    #hub-blog-reader.review-mode-active .card-hover-toolbar .comment-btn::after,
-    .review-mode-active .doc-section-card .card-hover-toolbar .comment-btn::after {
-      content: " Comment";
-      font-size: 11px;
-      font-weight: 700;
-      font-family: 'Google Sans', sans-serif;
-    }
-    @media (hover: none), (max-width: 900px) {
-      .card-hover-toolbar,
-      #tab-patterns:not(.review-mode-active) .card-hover-toolbar {
-        display: none !important;
-      }
+    @media (max-width: 900px) {
       #tab-patterns.review-mode-active .card-hover-toolbar,
       #hub-blog-reader.review-mode-active .card-hover-toolbar,
       .review-mode-active .doc-section-card .card-hover-toolbar {
@@ -3066,4 +3212,12 @@
     .arch-nav-pill:focus-visible {
       outline: 2px solid #1a73e8;
       outline-offset: 2px;
+    }
+
+    /* Prevent sticky Tab 3 filter bar from occluding scrolled section anchors */
+    #ten-saas-live-access-hub,
+    #genuine-3p-before-after-hub,
+    #genuine-multicloud-3p-ui-gallery,
+    #blog-e2e-pattern-execution-and-codebase-workbench {
+      scroll-margin-top: 108px;
     }

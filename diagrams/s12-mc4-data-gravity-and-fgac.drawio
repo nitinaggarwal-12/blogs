@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="PromptCanvas-Drawio-Compiler" version="24.7.17" type="device">
+  <diagram id="s12-mc4-data-gravity-and-fgac" name="S12: Data Gravity &amp; FGAC (Sketch)">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" background="#FFFFFF" math="0" shadow="1">
+      <root>
+      <mxCell id="0"/>
+      <mxCell id="1" parent="0"/>
+      <mxCell id="dg_gemini" value="&lt;div style='font-family:Comic Sans MS,Arial,sans-serif;color:#0F172A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Google Cloud Cognitive Plane&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Gemini &amp;amp; ADK Planner&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#334155;'&gt;• LLM Inference Budget: ~950 ms&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#334155;'&gt;• Vertex Context Cache (-78% tokens)&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#334155;'&gt;• Callback prunes 94% verbose schema&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.5;fontColor=#0F172A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="48" y="160" width="412" height="190" as="geometry"/>
+      </mxCell>
+      <mxCell id="dg_hotswap" value="&lt;div style='font-family:Comic Sans MS,Arial,sans-serif;color:#0F172A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Zero-Trust Identity&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Dual-Token Hot-Swap Auth&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Startup: M2M SA lists tool schemas&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Query Time: Swaps in 3LO User OBO&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Missing user OBO = Fail-Closed 0 rows&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;fontColor=#0F172A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="48" y="395" width="412" height="190" as="geometry"/>
+      </mxCell>
+      <mxCell id="dg_pipe" value="&lt;div style='font-family:Comic Sans MS,Arial,sans-serif;color:#0F172A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;First-Principles Physics&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Cross-Cloud Interconnect&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#475569;'&gt;• Paired-Region Latency: 2–5 ms RTT&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#475569;'&gt;• Moves ONLY &amp;lt; 5 KB JSON-RPC payload&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#475569;'&gt;• 0 PB bulk lakehouse data duplicated&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontColor=#0F172A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="48" y="630" width="412" height="175" as="geometry"/>
+      </mxCell>
+      <mxCell id="dg_uc" value="&lt;div style='font-family:Comic Sans MS,Arial,sans-serif;color:#1E3A8A;'&gt;&lt;div style='font-size:16px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;3P Cloud Data Plane&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:16px;font-weight:700;line-height:1.18;'&gt;Databricks Unity Catalog&lt;/div&gt;&lt;div style='font-size:16px;font-weight:700;line-height:1.18;'&gt;(192+ PB Stays in Place)&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:13px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• TVF: query_intuit_financials_fgac()&lt;/div&gt;&lt;div style='font-size:13px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Native Row-Level Security (RLS)&lt;/div&gt;&lt;div style='font-size:13px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Native C1 / C2 Column Masking&lt;/div&gt;&lt;div style='font-size:13px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• IRS 7216 Tax Consent Filter&lt;/div&gt;&lt;div style='font-size:13px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Zero Policy Duplication in GCP&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;fillColor=#EFF6FF;strokeColor=#60A5FA;strokeWidth=1.5;fontColor=#1E3A8A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="590" y="245" width="395" height="445" as="geometry"/>
+      </mxCell>
+      <mxCell id="p1_cfo" value="&lt;div style='font-family:Comic Sans MS,Arial,sans-serif;color:#065F46;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;1. CFO (C1_EXECUTIVE • US)&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#047857;'&gt;• 6 / 6 BUs Returned • C1 &amp;amp; C2 UNMASKED&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#047857;'&gt;• event_trust: 0.99 | session_trust: 0.98 (ALLOW)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;fillColor=#ECFDF5;strokeColor=#34D399;strokeWidth=1.5;fontColor=#065F46;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1085" y="150" width="465" height="145" as="geometry"/>
+      </mxCell>
+      <mxCell id="p2_bu" value="&lt;div style='font-family:Comic Sans MS,Arial,sans-serif;color:#1E3A8A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;2. BU Analyst (No IRS 7216 Consent)&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• 2 / 6 Rows (7216 Filtered) • C1 MASKED&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• event_trust: 0.96 | session_trust: 0.95 (ALLOW)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;fillColor=#E8F0FE;strokeColor=#93C5FD;strokeWidth=1.5;fontColor=#1E3A8A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1085" y="328" width="465" height="145" as="geometry"/>
+      </mxCell>
+      <mxCell id="p3_eu" value="&lt;div style='font-family:Comic Sans MS,Arial,sans-serif;color:#78350F;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;3. Non-US Marketer (C3 • EU Geo)&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#B45309;'&gt;• 2 / 6 Rows (US-Only Blocked) • C1/C2 MASKED&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#B45309;'&gt;• event_trust: 0.94 | session_trust: 0.94 (ALLOW)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;fillColor=#FEF7E0;strokeColor=#FCD34D;strokeWidth=1.5;fontColor=#78350F;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1085" y="506" width="465" height="145" as="geometry"/>
+      </mxCell>
+      <mxCell id="p4_sa" value="&lt;div style='font-family:Comic Sans MS,Arial,sans-serif;color:#1E3A8A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;4. Bare SA / Turn-5 Goal Hijack&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• 0 Rows Returned • Blocked Before SQL Exec&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• session_trust: 0.14 (QUARANTINED)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;sketch=1;curveFitting=1;jiggle=2;fillColor=#EFF6FF;strokeColor=#60A5FA;strokeWidth=1.5;fontColor=#1E3A8A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1085" y="684" width="465" height="145" as="geometry"/>
+      </mxCell>
+      <mxCell id="e1" value="" style="rounded=1;sketch=1;curveFitting=1;jiggle=2;html=1;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" edge="1" parent="1" source="dg_gemini" target="dg_hotswap">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="254" y="350" as="sourcePoint"/>
+          <mxPoint x="254" y="395" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e2" value="" style="rounded=1;sketch=1;curveFitting=1;jiggle=2;html=1;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" edge="1" parent="1" source="dg_hotswap" target="dg_pipe">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="254" y="585" as="sourcePoint"/>
+          <mxPoint x="254" y="630" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e3" value="" style="curved=1;sketch=1;curveFitting=1;jiggle=2;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.247;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" edge="1" parent="1" source="dg_gemini" target="dg_uc">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="460" y="255" as="sourcePoint"/>
+          <mxPoint x="590" y="355" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="510" y="290"/>
+            <mxPoint x="550" y="325"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e4" value="" style="rounded=1;sketch=1;curveFitting=1;jiggle=2;html=1;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.551;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" edge="1" parent="1" source="dg_hotswap" target="dg_uc">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="460" y="490" as="sourcePoint"/>
+          <mxPoint x="590" y="490" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e5" value="" style="curved=1;sketch=1;curveFitting=1;jiggle=2;html=1;exitX=1.0;exitY=0.486;exitDx=0;exitDy=0;entryX=0.0;entryY=0.787;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" edge="1" parent="1" source="dg_pipe" target="dg_uc">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="460" y="715" as="sourcePoint"/>
+          <mxPoint x="590" y="595" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="510" y="670"/>
+            <mxPoint x="550" y="625"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e6" value="" style="curved=1;sketch=1;curveFitting=1;jiggle=2;html=1;exitX=1.0;exitY=0.18;exitDx=0;exitDy=0;entryX=0.0;entryY=0.497;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" edge="1" parent="1" source="dg_uc" target="p1_cfo">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="985" y="325" as="sourcePoint"/>
+          <mxPoint x="1085" y="222" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1025" y="275"/>
+            <mxPoint x="1055" y="235"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e7" value="" style="rounded=1;sketch=1;curveFitting=1;jiggle=2;html=1;exitX=1.0;exitY=0.382;exitDx=0;exitDy=0;entryX=0.0;entryY=0.497;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" edge="1" parent="1" source="dg_uc" target="p2_bu">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="985" y="415" as="sourcePoint"/>
+          <mxPoint x="1085" y="400" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e8" value="" style="rounded=1;sketch=1;curveFitting=1;jiggle=2;html=1;exitX=1.0;exitY=0.618;exitDx=0;exitDy=0;entryX=0.0;entryY=0.497;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" edge="1" parent="1" source="dg_uc" target="p3_eu">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="985" y="520" as="sourcePoint"/>
+          <mxPoint x="1085" y="578" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e9" value="" style="curved=1;sketch=1;curveFitting=1;jiggle=2;html=1;exitX=1.0;exitY=0.854;exitDx=0;exitDy=0;entryX=0.0;entryY=0.49;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" edge="1" parent="1" source="dg_uc" target="p4_sa">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="985" y="625" as="sourcePoint"/>
+          <mxPoint x="1085" y="755" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1025" y="675"/>
+            <mxPoint x="1055" y="725"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="t_main" value="MC4 + LAB (Hand-Drawn Sketch): Data Gravity (2–5 ms RTT) &amp; 4-Persona Lakehouse FGAC" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=22;fontStyle=0;fontFamily=Comic Sans MS,Arial,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="48" y="24" width="1156" height="34" as="geometry"/>
+      </mxCell>
+      <mxCell id="t_sub" value="Slide 12 of 12 • Keep 192+ PB in AWS/Azure/Databricks; Move &lt; 5 KB Context; Enforce Native Unity Catalog RLS &amp; Masking" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=17;fontStyle=0;fontFamily=Comic Sans MS,Arial,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="48" y="72" width="1267" height="26" as="geometry"/>
+      </mxCell>
+      <mxCell id="e3_lbl" value="&amp;lt; 5 KB MCP" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="493" y="238" width="64" height="15" as="geometry"/>
+      </mxCell>
+      <mxCell id="e4_lbl" value="3LO OBO JWT" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="491" y="458" width="69" height="15" as="geometry"/>
+      </mxCell>
+      <mxCell id="e5_lbl" value="2–5 ms RTT" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="493" y="718" width="64" height="15" as="geometry"/>
+      </mxCell>
+      <mxCell id="e6_lbl" value="C1_EXEC" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="1012" y="198" width="46" height="15" as="geometry"/>
+      </mxCell>
+      <mxCell id="e7_lbl" value="C2_INT" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="1015" y="368" width="40" height="15" as="geometry"/>
+      </mxCell>
+      <mxCell id="e8_lbl" value="C3_EU" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="1018" y="508" width="35" height="15" as="geometry"/>
+      </mxCell>
+      <mxCell id="e9_lbl" value="No OBO" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=11;fontFamily=Comic Sans MS,Arial,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="1015" y="758" width="40" height="15" as="geometry"/>
+      </mxCell>
+        <mxCell id="plane_layer" value="Planes: control / compute / data (generated, locked)" style="locked=1;" parent="0"/>
+        <mxCell id="plane_bdr_00_COMPUTE" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=none;strokeColor=#6EE7B7;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="43.0" y="155.0" width="422.0" height="200.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_01_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="43.0" y="390.0" width="422.0" height="200.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_bdr_02_DATA" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=21;fillColor=none;strokeColor=#FDBA74;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="585.0" y="240.0" width="405.0" height="455.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b00_COMPUTE" value="COMPUTE · Gemini + ADK planner (Google Cloud)" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#047857;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="49.2" y="144.6" width="262.2" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b01_CONTROL" value="CONTROL · dual-token identity" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="49.2" y="379.6" width="171.3" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_chip_b02_DATA" value="DATA · 3P cloud, stays in place" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#B45309;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="591.2" y="229.6" width="172.0" height="15.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_CONTROL" value="&lt;b&gt;CONTROL  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;dual-token hot-swap auth: a missing user OBO fails closed with 0 rows (outcome 4)&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#1D4ED8;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="48.0" y="846.2" width="494.0" height="16.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_COMPUTE" value="&lt;b&gt;COMPUTE  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;Gemini and the ADK planner on Google Cloud (LLM inference budget ~950 ms)&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#047857;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="552.0" y="846.2" width="494.0" height="16.2" as="geometry"/>
+        </mxCell>
+        <mxCell id="plane_key_DATA" value="&lt;b&gt;DATA  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;192+ PB stays in Unity Catalog (native RLS + column masking); only &amp;lt;5 KB moves&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=6;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#B45309;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1056.0" y="846.2" width="494.0" height="16.2" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
