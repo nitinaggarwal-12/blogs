@@ -61,7 +61,7 @@
         </mxCell>
 
         <!-- Step 4: Model Armor & LLM -->
-        <mxCell id="step_4_box" value="&lt;b style=&quot;font-size:11px;color:#a16207;&quot;&gt;4. Hop 4 Model Armor &amp;amp; Gemini 3.8 Flash&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Inline DLP (~22ms p95) • 90% Shared Prefix Cache Hit [32k Tok]&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#eab308;strokeWidth=1.2;" vertex="1" parent="1">
+        <mxCell id="step_4_box" value="&lt;b style=&quot;font-size:11px;color:#a16207;&quot;&gt;4. Hop 4 Model Armor &amp;amp; Gemini 2.5 Flash&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Inline DLP (~22ms p95) • 90% Shared Prefix Cache Hit [32k Tok]&lt;/span&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#eab308;strokeWidth=1.2;" vertex="1" parent="1">
           <mxGeometry x="860" y="410" width="210" height="55" as="geometry"/>
         </mxCell>
 

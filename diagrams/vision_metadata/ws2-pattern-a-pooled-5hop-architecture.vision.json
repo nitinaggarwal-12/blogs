@@ -402,8 +402,8 @@
     {
       "id": "card_pool_llm",
       "urlSlug": "OBJ-31-GEMINI-3-8-FLASH",
-      "label": "Gemini 3.8 Flash",
-      "plainTitle": "Gemini 3.8 Flash",
+      "label": "Gemini 2.5 Flash",
+      "plainTitle": "Gemini 2.5 Flash",
       "zone": "Governance & Footer",
       "x": 100,
       "y": 980,

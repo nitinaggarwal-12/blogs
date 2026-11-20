@@ -270,8 +270,8 @@
     {
       "id": "card_lc_llm",
       "urlSlug": "OBJ-20-GEMINI-3-8-FLASH-MEDIUM",
-      "label": "Gemini 3.8 Flash MEDIUM / 4k Out + Cache",
-      "plainTitle": "Gemini 3.8 Flash MEDIUM / 4k Out + Cache",
+      "label": "Gemini 2.5 Flash MEDIUM / 4k Out + Cache",
+      "plainTitle": "Gemini 2.5 Flash MEDIUM / 4k Out + Cache",
       "zone": "Governance & Footer",
       "x": 96,
       "y": 1110,
@@ -330,8 +330,8 @@
     {
       "id": "card_sc_llm",
       "urlSlug": "OBJ-25-GEMINI-3-8-FLASH-PT-UPGR",
-      "label": "Gemini 3.8 Flash PT Upgraded HIGH / 8k Out",
-      "plainTitle": "Gemini 3.8 Flash PT Upgraded HIGH / 8k Out",
+      "label": "Gemini 2.5 Flash PT Upgraded HIGH / 8k Out",
+      "plainTitle": "Gemini 2.5 Flash PT Upgraded HIGH / 8k Out",
       "zone": "Governance & Footer",
       "x": 640,
       "y": 976,

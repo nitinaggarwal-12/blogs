@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-20T05:21:06Z",
+  "updatedAt": "2026-11-20T05:46:37Z",
   "accountEmail": "anonymous-workspace-sync@cloud-architecture-center.internal",
   "oauthClientId": "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com",
   "slides": {
@@ -382,8 +382,8 @@
       "key": "WS3_EXEC",
       "title": "WS3 Executive Architecture (10-Slide Lean Narrative Deck)",
       "pptxPath": "slides/ws3-executive-architecture-10slide-deck.pptx",
-      "sha256": "bbea258e9de1819b53416848a0c7eeafed9436ce9d49b4a21bb591ab4766a3b7",
-      "sizeBytes": 90925,
+      "sha256": "3e1c0749b56751e5029f819a819be3ba6d1e6f0920a2bb97fb3707c5ccfbb654",
+      "sizeBytes": 90935,
       "slideCount": 10,
       "googleSlidesId": "1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/edit",
@@ -391,7 +391,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/edit?usp=drivesdk",
-      "syncedAt": "2026-11-20T05:21:06Z"
+      "syncedAt": "2026-11-20T05:46:37Z"
     },
     "WS4_EXEC": {
       "key": "WS4_EXEC",

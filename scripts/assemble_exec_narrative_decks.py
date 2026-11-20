@@ -109,6 +109,16 @@ def patch_slide_text(xml_bytes: bytes, new_idx: int, total: int, replacements: D
             if int(ext.get("cy", "0")) < 280000:
                 off.set("y", "1850000")
                 ext.set("cy", "330000")
+        elif joined == "SCC 403/423" and bpr is not None:
+            if off is not None and int(off.get("x", "0")) > 11250000:
+                off.set("x", "11192256")
+            bpr.set("lIns", "19050")
+            bpr.set("rIns", "19050")
+            for r in sp.findall(".//a:r", NS):
+                t_el = r.find("a:t", NS)
+                rpr = r.find("a:rPr", NS)
+                if t_el is not None and t_el.text == "403/423" and rpr is not None:
+                    rpr.set("sz", "680")
 
     # Sanitize cNvPr attributes so zero absolute local file paths or usernames leak into PPTX XML
     for cnv in root.findall(".//p:cNvPr", NS):

@@ -330,8 +330,8 @@
     {
       "id": "card_sc_llm",
       "urlSlug": "OBJ-25-GEMINI-3-8-FLASH-PT",
-      "label": "Gemini 3.8 Flash PT",
-      "plainTitle": "Gemini 3.8 Flash PT",
+      "label": "Gemini 2.5 Flash PT",
+      "plainTitle": "Gemini 2.5 Flash PT",
       "zone": "Governance & Footer",
       "x": 640,
       "y": 976,
