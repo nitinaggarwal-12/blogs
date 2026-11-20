@@ -992,6 +992,63 @@
           });
         }
 
+        // 3. Provisioned GCP Console Proofs Pending 1-Tap SSO Capture (strictly scoped to this blog)
+        const pendingConsole = (payloadData.pendingConsoleProofs || []).filter(function (item) {
+          if (!q) return true;
+          const hay = [item.proofId, item.product, item.provider, item.resourceLabel, item.projectOrAccount, item.category, item.pattern].join(' ').toLowerCase();
+          return hay.includes(q);
+        });
+        if (pendingConsole.length > 0) {
+          renderedAny = true;
+          const sec = makeEl('section', '');
+          sec.style.display = 'flex';
+          sec.style.flexDirection = 'column';
+          sec.style.gap = '12px';
+
+          const banner = makeEl('div', 'controls-strip');
+          banner.style.borderColor = '#bfdbfe';
+          banner.style.background = '#eff6ff';
+          const bLeft = makeEl('div', 'control-group');
+          bLeft.appendChild(makeEl('span', 'pill pill-blue', '☁ ' + pendingConsole.length + ' Provisioned GCP Console Proofs (Pending 1-Tap SSO Capture)'));
+          bLeft.appendChild(makeEl('span', '', 'Strictly scoped to ' + blog.wsKey + ' — zero unrelated 3P SaaS stand-ins displayed.'));
+          banner.appendChild(bLeft);
+          sec.appendChild(banner);
+
+          const pGrid = makeEl('div', 'console-grid');
+          pGrid.setAttribute('data-testid', 'pending-gcp-console-proofs-grid');
+          pendingConsole.forEach(function (item) {
+            const card = makeEl('article', 'console-card');
+            card.setAttribute('data-testid', 'pending-gcp-' + item.proofId);
+            const hdr = makeEl('div', 'console-card-hdr');
+            const badgeRow = makeEl('div', 'console-meta-row');
+            badgeRow.appendChild(makeEl('span', providerPillClass(item.providerTag), item.provider || 'Google Cloud Console'));
+            badgeRow.appendChild(makeEl('span', 'pill', item.proofId));
+            badgeRow.appendChild(makeEl('span', 'pill pill-amber', '⏳ Live Resource · Pending 1-Tap SSO Capture'));
+            hdr.appendChild(badgeRow);
+            const h2 = makeEl('h2', 'console-card-title', item.product);
+            h2.style.marginTop = '6px';
+            hdr.appendChild(h2);
+            const metaRow = makeEl('div', 'console-meta-row');
+            if (item.projectOrAccount) metaRow.appendChild(makeEl('span', 'pill', '☁ ' + item.projectOrAccount));
+            if (item.resourceLabel) metaRow.appendChild(makeEl('span', 'pill', '🔹 ' + item.resourceLabel));
+            if (item.category) metaRow.appendChild(makeEl('span', 'pill', item.category));
+            hdr.appendChild(metaRow);
+            card.appendChild(hdr);
+
+            const actBar = makeEl('div', 'console-actions-bar');
+            const aLive = makeEl('a', 'btn btn-xs btn-primary', '🌐 Open Live GCP Console ↗');
+            aLive.setAttribute('href', safeHref(item.liveConsoleUrl));
+            aLive.setAttribute('target', '_blank');
+            aLive.setAttribute('rel', 'noopener noreferrer');
+            actBar.appendChild(aLive);
+            actBar.appendChild(makeEl('span', 'pill', 'Target file: ' + item.fileName));
+            card.appendChild(actBar);
+            pGrid.appendChild(card);
+          });
+          sec.appendChild(pGrid);
+          elContainer.appendChild(sec);
+        }
+
         if (!renderedAny) {
           const empty = makeEl('div', 'pair-card');
           empty.appendChild(makeEl('div', 'pair-header', 'No screenshots match this filter.'));

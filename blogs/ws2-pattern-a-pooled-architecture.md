@@ -15,7 +15,7 @@ status: "PUBLISH_READY"
 
 This document is **Part 2** of the Multi-Tenant Agentic AI series on Google Cloud. It provides the complete production engineering blueprint for **Pattern A (High-Density Pooled Architecture)**—allowing Independent Software Vendors (ISVs) to serve **`1,000+` competing B2B SaaS customers** inside a single shared Google Cloud project at **`1.0x` baseline infrastructure COGS** while enforcing cryptographic identity binding, ephemeral compute heap wiping (**Mode A**), stateful session pod latching (**Mode B**), per-tenant noisy-neighbor bulkheads, and kernel-level PostgreSQL **`FORCE ROW LEVEL SECURITY`**.
 
-> **Approved 3-Diagram WS2 Baseline & Live 2-Way Draw.io Sync:** All three diagrams in this guide are synchronized 2-way with the **[Approved 12-Slide Architecture Deck (WS2 = Slides 3–5) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p3)** and backed by live `.drawio` XML + crisp vector `.svg` files. Review the [WS2 12-Slide Visual Deck (`.pptx`)](../slides/ws2-12slide-visual-deck.pptx), the [WS2 Google Docs Spec ↗](https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/edit?resourcekey=0-lLM1d36y60xMkgO678CtSA), the [Pattern A Pooled Service Codebase](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py), the [10-Point Breach Simulation Suite](../workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py), or the [1-Click Terraform Starter](../workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf).
+> **Approved 3-Diagram WS2 Baseline & Live 2-Way Draw.io Sync:** All three diagrams in this guide are synchronized 2-way with the **[WS2 Executive Architecture (10-Slide Lean Narrative Deck) ↗](https://docs.google.com/presentation/d/1OjWG78L8T8JGTxsJid6vzU5wcacJNIYxO2qVGlNPMNI/edit)** and the **[Approved 12-Slide Architecture Deck (WS2 = Slides 3–5) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p3)**, backed by live `.drawio` XML + crisp vector `.svg` files. Download the [WS2 10-Slide Executive Deck (`.pptx`)](../slides/ws2-executive-architecture-10slide-deck.pptx) or [WS2 Lean Visual Deck (`.pptx`)](../slides/ws2-12slide-visual-deck.pptx), or review the [WS2 Google Docs Spec ↗](https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/edit?resourcekey=0-lLM1d36y60xMkgO678CtSA), the [Pattern A Pooled Service Codebase](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py), the [10-Point Breach Simulation Suite](../workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py), or the [1-Click Terraform Starter](../workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf).
 
 ---
 
@@ -177,22 +177,16 @@ Every pooled Mode A/Mode B invocation across all 10 **AWS Bedrock AgentCore MCP*
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-## Verified Live Commercial SaaS Proofs for WS2 (Pattern A GCP Console Captures Pending 1-Tap SSO)
+## Live Google Cloud Console Proofs for WS2 (3 Provisioned Pattern A Resources • Pending 1-Tap SSO Capture)
 
 > [!IMPORTANT]
-> **Verified Live Commercial SaaS Proofs (2 Retina Captures • GCP Console: 0/15 Pending 1-Tap SSO):** Currently showing 2 cryptographically verified live commercial SaaS Retina captures (ThoughtSpot Cloud on team2.thoughtspot.cloud, verified exit 0 by verify_slide_screenshots.mjs --audience external). Google Cloud Console & Gemini Enterprise captures (0/15) are pending 1-tap Google SSO in an authenticated browser session; zero open-source stand-ins or unattested legacy images remain. Backend multi-cloud protocol verification receipts (AWS Bedrock AgentCore MCP gateway targets and S3 federation ledgers in `data/saas_10_live_3pattern_receipt.json`) are server-side cryptographic API proofs and are strictly distinct from live commercial browser UI screenshots. Open the dedicated gallery at `/blogs/ws2/screenshots` or inspect the full [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
+> **Strict Per-Workstream Proof Scoping (Zero Irrelevant 3P Stand-Ins):** WS2 verifies **Pattern A Pooled Runtime, AlloyDB/BigQuery RLS FinOps, and Hop 2 Secret Manager** controls. Commercial 3P SaaS Retina screenshots live strictly in **WS4**, **WS5**, and the **[Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md)**. The three live provisioned WS2 Google Cloud Console resources below are active and ready for 1-tap SSO Retina capture via `scripts/capture_real_gcp_and_saas_screenshots.mjs` (open `/blogs/ws2/screenshots` for live console links):
 
-### SAAS-01A: ThoughtSpot Cloud — Live Executive Analytics Liveboard
-**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** team2.thoughtspot.cloud • **Resource:** Retail Sales Liveboard (team2.thoughtspot.cloud) • Provenance SHA-256 fd5cb15c0902 (2880x1620 Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
-
-![Live commercial ThoughtSpot Cloud SaaS Liveboard rendered directly from team2.thoughtspot.cloud.](../screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png)
-*Genuine commercial ThoughtSpot Cloud Liveboard (team2.thoughtspot.cloud) captured live at 2880x1620 Retina with cryptographic SHA-256 provenance verification.*
-
-### SAAS-01B: ThoughtSpot Cloud — Live Governed Saved Answer Query
-**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** team2.thoughtspot.cloud • **Resource:** Stock-Out & Spoilage Analytics Answer (team2.thoughtspot.cloud) • Provenance SHA-256 3fcab795d1e5 (2880x1620 Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
-
-![Live commercial ThoughtSpot Cloud Saved Answer analytics table rendered directly from team2.thoughtspot.cloud.](../screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png)
-*Genuine commercial ThoughtSpot Cloud Saved Answer query (team2.thoughtspot.cloud) demonstrating live governed BI analytics consumption.*
+| Proof ID | Google Cloud Service | Provisioned Resource | Project | Live Console |
+| :--- | :--- | :--- | :--- | :--- |
+| **`GCP-WS2-01`** | **BigQuery (Hop 5 RLS & FinOps)** | `cymbal_agentic_finops_otel` | `bbar-138hf0` (`#48439189383`) | [Open BigQuery Dataset ↗](https://console.cloud.google.com/bigquery?project=bbar-138hf0&ws=!1m4!1m3!3m2!1sbbar-138hf0!2scymbal_agentic_finops_otel) |
+| **`GCP-WS2-02`** | **Cloud Run Gen2 (Hop 3 Pool)** | `cymbal-multi-tenant-patterns` / `mcp-oauth21-obo-gateway` | `bbar-138hf0` (`#48439189383`) | [Open Cloud Run ↗](https://console.cloud.google.com/run?project=bbar-138hf0) |
+| **`GCP-WS2-03`** | **Secret Manager (Hop 2 Vault)** | `mcp-oauth21-rsa-private-pem` / `aws-cognito-agentcore-config` | `bbar-138hf0` (`#48439189383`) | [Open Secret Manager ↗](https://console.cloud.google.com/security/secret-manager?project=bbar-138hf0) |
 
 <!-- GENUINE_3P_BEFORE_AFTER_END -->
 
@@ -201,7 +195,8 @@ Every pooled Mode A/Mode B invocation across all 10 **AWS Bedrock AgentCore MCP*
 ## What's next
 
 - **Approved Architecture Presentations & Editable Diagrams (WS2 = Slides 3–5):**
-  - [Open Approved 12-Slide Architecture Deck in Google Slides (WS2 = Slides 3–5) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p3) • [Download WS2 12-Slide Visual Deck (`.pptx`)](../slides/ws2-12slide-visual-deck.pptx)
+  - **[Open WS2 10-Slide Executive Narrative Deck in Google Slides ↗](https://docs.google.com/presentation/d/1OjWG78L8T8JGTxsJid6vzU5wcacJNIYxO2qVGlNPMNI/edit)** • [Download WS2 Executive Deck (`.pptx`)](../slides/ws2-executive-architecture-10slide-deck.pptx)
+  - [Open Approved 12-Slide Architecture Deck in Google Slides (WS2 = Slides 3–5) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p3) • [Download WS2 Lean Visual Deck (`.pptx`)](../slides/ws2-12slide-visual-deck.pptx)
   - [Figure 1 Pattern A Pool (`.drawio`)](../diagrams/ws2-pattern-a-pooled.drawio) • [Figure 2 Mode A CoW Pre-Fork (`.drawio`)](../diagrams/ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane.drawio) • [Figure 3 Mode B Session WarmPool (`.drawio`)](../diagrams/ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane.drawio)
 - **Workstream 2 Codebase, Red-Team Suite & Codelab:**
   - **Runtime & RLS SQL:** [`pattern_a_pooled_service.py`](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py) • [`pooled_gateway_and_rls.sql`](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_gateway_and_rls.sql)

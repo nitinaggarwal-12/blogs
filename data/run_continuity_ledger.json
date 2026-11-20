@@ -133,11 +133,11 @@
       "description": "Execute Deep Forensic Audit (F-01..F-13) and Provenance Guard verifying 100% receipt SHA-256 parity, zero synthetic screenshots, and 15/15 Google Slides + 6/6 Google Docs synchronization.",
       "cloud_provider": "GCP+AWS",
       "script_path": "scripts/run_deep_forensic_audit.py",
-      "script_sha256": "ce189aebd4e16dee59355762b35ffbb87f9389e3dd4e8fff392478308d75332a",
+      "script_sha256": "c2652016e92b463fc5ffd670ca9f5adbc5488fd6774e2005bde42e142392603b",
       "command": "python3 -B scripts/run_deep_forensic_audit.py",
       "receipt_path": "docs/cloud_console_verification_receipt.json",
       "receipt_sha256": "c1bcf26d3b80007fb77cde16e6faca572562e997b11f027fd97001576a7834f1",
-      "last_executed_at": "2026-11-19T05:46:10Z",
+      "last_executed_at": "2026-11-20T05:24:49Z",
       "last_exit_code": 0,
       "repeat_in_next_run": true,
       "superseded_by_user": false

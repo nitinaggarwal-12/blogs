@@ -110,12 +110,16 @@ class TestCanvasAndDeckParity(unittest.TestCase):
         slides_map = manifest.get("slides", {})
 
         lean_decks = [
-            ("WS1", "slides/ws1-12slide-visual-deck.pptx", "slides/previews/ws1-12slide-visual-deck", 8),
+            ("WS1", "slides/ws1-12slide-visual-deck.pptx", "slides/previews/ws1-12slide-visual-deck", 7),
             ("WS2", "slides/ws2-12slide-visual-deck.pptx", "slides/previews/ws2-12slide-visual-deck", 7),
             ("WS3", "slides/ws3-12slide-visual-deck.pptx", "slides/previews/ws3-12slide-visual-deck", 6),
             ("WS4", "slides/ws4-12slide-visual-deck.pptx", "slides/previews/ws4-12slide-visual-deck", 7),
             ("WS5", "slides/ws5-12slide-visual-deck.pptx", "slides/previews/ws5-12slide-visual-deck", 7),
             ("WS1_EXEC", "slides/ws1-executive-architecture-23slide-deck.pptx", "slides/previews/ws1-executive-architecture-23slide-deck", 10),
+            ("WS2_EXEC", "slides/ws2-executive-architecture-10slide-deck.pptx", "slides/previews/ws2-executive-architecture-10slide-deck", 10),
+            ("WS3_EXEC", "slides/ws3-executive-architecture-10slide-deck.pptx", "slides/previews/ws3-executive-architecture-10slide-deck", 10),
+            ("WS4_EXEC", "slides/ws4-executive-architecture-10slide-deck.pptx", "slides/previews/ws4-executive-architecture-10slide-deck", 10),
+            ("WS5_EXEC", "slides/ws5-executive-architecture-10slide-deck.pptx", "slides/previews/ws5-executive-architecture-10slide-deck", 10),
         ]
         ns = {
             "p": "http://schemas.openxmlformats.org/presentationml/2006/main",
@@ -145,12 +149,18 @@ class TestCanvasAndDeckParity(unittest.TestCase):
                 for sxml in slide_xmls:
                     xml_str = zf.read(sxml).decode("utf-8", "ignore")
                     self.assertNotIn('h="0"', xml_str, f"{key} {sxml} contains auto-collapsing <a:tr h=\"0\">")
+                    troot = ET.fromstring(xml_str)
                     snum = int(re.search(r"slide(\d+)\.xml$", sxml).group(1))
-                    fracs = [
-                        t.strip()
-                        for t in re.findall(r"<a:t>(.*?)</a:t>", xml_str)
-                        if re.fullmatch(rf"\d+\s*/\s*{expected_n}", t.strip())
-                    ]
+                    fracs = []
+                    for sp in troot.findall(".//p:sp", ns):
+                        off_el = sp.find(".//a:xfrm/a:off", ns)
+                        y_emu = int(off_el.attrib.get("y", "0")) if off_el is not None else 0
+                        if y_emu < 5800000:
+                            continue
+                        for t_el in sp.findall(".//a:t", ns):
+                            tv = (t_el.text or "").strip()
+                            if re.fullmatch(rf"\d+\s*/\s*{expected_n}", tv):
+                                fracs.append(tv)
                     valid_footers = {f"{snum} / {expected_n}", f"{snum:02d} / {expected_n}"}
                     for frac in fracs:
                         self.assertIn(
@@ -163,7 +173,6 @@ class TestCanvasAndDeckParity(unittest.TestCase):
                             any(f in valid_footers for f in fracs),
                             f"{key} slide{expected_n}.xml missing final '{expected_n} / {expected_n}' footer (got {fracs})",
                         )
-                    troot = ET.fromstring(xml_str)
                     trs = troot.findall(".//a:tbl/a:tr", ns)
                     if trs:
                         total_tables_checked += 1

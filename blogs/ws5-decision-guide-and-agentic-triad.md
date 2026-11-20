@@ -15,7 +15,7 @@ status: "PUBLISH_READY"
 
 This document is **Part 5 (Capstone)** of the Multi-Tenant Agentic AI series on Google Cloud. It brings together **Patterns A, B, and C** into a deterministic **3-Gate Architecture Pattern Selector**, demonstrates how **Shared Diagnostic Agents** securely delegate over **A2A** to **Tenant-Private Agents** with hot-swapped **Dynamic GCS Skills** (`0` container image rebuilds) and **Zero-PII BigQuery FinOps OTel** attribution, and details the live **Multi-Cloud Federation Plane** linking Google Cloud (`cymbal-pooled-saas-prod` / `cymbal-finvault-silo-prod` reference verification sandbox) to **AWS Bedrock AgentCore MCP Gateway** and **10 commercial enterprise SaaS stacks**.
 
-> **Approved 3-Diagram WS5 Baseline & Live 2-Way Draw.io Sync:** All three diagrams in this capstone are synchronized 2-way with the **[Approved 12-Slide Architecture Deck (WS5 = Slides 10–12) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p10)** and backed by live `.drawio` XML + crisp vector `.svg` files. Review the [WS5 12-Slide Visual Deck (`.pptx`)](../slides/ws5-12slide-visual-deck.pptx), the [WS5 Google Docs Spec ↗](https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/edit?resourcekey=0-XWkODR5elYC9-fuGO6aBaQ), [`5.1 Pattern Comparison & Decision Guide`](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md), [`5.2 Capstone Backlog & GA Roadmap`](../workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md), or the [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
+> **Approved 3-Diagram WS5 Baseline & Live 2-Way Draw.io Sync:** All three diagrams in this capstone are synchronized 2-way with the **[WS5 Executive Architecture (10-Slide Lean Narrative Deck) ↗](https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/edit)** and the **[Approved 12-Slide Architecture Deck (WS5 = Slides 10–12) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p10)**, backed by live `.drawio` XML + crisp vector `.svg` files. Download the [WS5 10-Slide Executive Deck (`.pptx`)](../slides/ws5-executive-architecture-10slide-deck.pptx) or [WS5 Lean Visual Deck (`.pptx`)](../slides/ws5-12slide-visual-deck.pptx), or review the [WS5 Google Docs Spec ↗](https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/edit?resourcekey=0-XWkODR5elYC9-fuGO6aBaQ), [`5.1 Pattern Comparison & Decision Guide`](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md), [`5.2 Capstone Backlog & GA Roadmap`](../workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md), or the [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
 
 ---
 
@@ -120,10 +120,10 @@ As tracked in [`5.2 Capstone Backlog & GA Roadmap`](../workstream-5-wrap-up-and-
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-## Verified Live Commercial SaaS Proofs for WS5 (GCP Console & Marketplace Captures Pending 1-Tap SSO)
+## Verified Live Commercial SaaS Proofs for WS5 (3 Retina Captures • ThoughtSpot Cloud + Atlassian Jira Cloud)
 
 > [!IMPORTANT]
-> **Verified Live Commercial SaaS Proofs (2 Retina Captures • GCP Console: 0/15 Pending 1-Tap SSO):** Currently showing 2 cryptographically verified live commercial SaaS Retina captures (ThoughtSpot Cloud on team2.thoughtspot.cloud, verified exit 0 by verify_slide_screenshots.mjs --audience external). Google Cloud Console & Gemini Enterprise captures (0/15) are pending 1-tap Google SSO in an authenticated browser session; zero open-source stand-ins or unattested legacy images remain. Backend multi-cloud protocol verification receipts (AWS Bedrock AgentCore MCP gateway targets and S3 federation ledgers in `data/saas_10_live_3pattern_receipt.json`) are server-side cryptographic API proofs and are strictly distinct from live commercial browser UI screenshots. Open the dedicated gallery at `/blogs/ws5/screenshots` or inspect the full [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
+> **Verified Live Commercial SaaS Proofs (3 Retina Captures • GCP Console: 0/15 Pending 1-Tap SSO):** Showing 3 cryptographically verified live commercial SaaS Retina captures (**ThoughtSpot Cloud** on `team2.thoughtspot.cloud` and **Atlassian Jira Cloud** on `gcp-team-sbiarllr.atlassian.net`, verified `exit 0` by `verify_slide_screenshots.mjs --audience external`). Google Cloud Console & Gemini Enterprise captures (0/15) are pending 1-tap Google SSO in an authenticated browser session; zero open-source stand-ins or unattested legacy images remain. Open `/blogs/ws5/screenshots` or inspect the full [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
 
 ### SAAS-01A: ThoughtSpot Cloud — Live Executive Analytics Liveboard
 **Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** team2.thoughtspot.cloud • **Resource:** Retail Sales Liveboard (team2.thoughtspot.cloud) • Provenance SHA-256 fd5cb15c0902 (2880x1620 Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
@@ -137,6 +137,12 @@ As tracked in [`5.2 Capstone Backlog & GA Roadmap`](../workstream-5-wrap-up-and-
 ![Live commercial ThoughtSpot Cloud Saved Answer analytics table rendered directly from team2.thoughtspot.cloud.](../screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png)
 *Genuine commercial ThoughtSpot Cloud Saved Answer query (team2.thoughtspot.cloud) demonstrating live governed BI analytics consumption.*
 
+### SAAS-JIRA-01: Atlassian Jira Cloud — Live Governed 3LO Escalation Board
+**Provider:** Atlassian Jira Cloud (Live Commercial SaaS) • **Scope:** `gcp-team-sbiarllr.atlassian.net` • **Resource:** Cloud Platform Engineering (`SCRUM Sprint 0`) • Provenance SHA-256 `95ce12f87f12` (`2880x1620` Retina) • **[Open Live Console ↗](https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1)**
+
+![Live commercial Atlassian Jira Cloud Scrum board rendered directly from gcp-team-sbiarllr.atlassian.net.](../screenshots/verified-cloud-console/saas_06_atlassian_jira_confluence.png)
+*Genuine commercial Atlassian Jira Cloud Scrum board (`gcp-team-sbiarllr.atlassian.net`) captured live at 2880x1620 Retina with cryptographic SHA-256 provenance verification.*
+
 <!-- GENUINE_3P_BEFORE_AFTER_END -->
 
 ---
@@ -144,7 +150,8 @@ As tracked in [`5.2 Capstone Backlog & GA Roadmap`](../workstream-5-wrap-up-and-
 ## What's next
 
 - **Approved Architecture Presentations & Editable Diagrams (WS5 = Slides 10–12):**
-  - [Open Approved 12-Slide Architecture Deck in Google Slides (WS5 = Slides 10–12) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p10) • [Download WS5 12-Slide Visual Deck (`.pptx`)](../slides/ws5-12slide-visual-deck.pptx)
+  - **[Open WS5 10-Slide Executive Narrative Deck in Google Slides ↗](https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/edit)** • [Download WS5 Executive Deck (`.pptx`)](../slides/ws5-executive-architecture-10slide-deck.pptx)
+  - [Open Approved 12-Slide Architecture Deck in Google Slides (WS5 = Slides 10–12) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p10) • [Download WS5 Lean Visual Deck (`.pptx`)](../slides/ws5-12slide-visual-deck.pptx)
   - [Figure 1 Pattern Selector (`.drawio`)](../diagrams/ws5-decision-tree-and-triad.drawio) • [Figure 2 Dynamic GCS Skills & OTel (`.drawio`)](../diagrams/ws5-c4-l3-dynamic-skill-delegation-swimlane.drawio) • [Figure 3 Multi-Cloud Federation Bridge (`.drawio`)](../diagrams/saas10-multicloud-a2a-mcp-bridge.drawio)
 - **Workstream 5 Capstone Deliverables & Agentic Triad Codebase:**
   - **Decision Guide & GA Roadmap:** [`5.1 Pattern Comparison & Decision Guide`](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md) • [`5.2 Capstone Backlog & GA Roadmap`](../workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md)

@@ -169,8 +169,21 @@ class TestBlogAssetsPagesAndCrud(unittest.TestCase):
                     expected_shots_full[slug],
                     f"{slug} verified screenshot count below expected minimum",
                 )
+            elif slug in ("ws1", "ws2", "ws3"):
+                # WS1-WS3 must never pad with unrelated ThoughtSpot screenshots; they show either live GCP captures or pending GCP console proof cards
+                for sh in data["screenshots"]:
+                    self.assertNotIn(
+                        "thoughtspot",
+                        sh["fileName"].lower(),
+                        f"Irrelevant ThoughtSpot screenshot leaked into {slug}: {sh['fileName']}",
+                    )
+                self.assertGreaterEqual(
+                    len(data["screenshots"]) + len(data.get("pendingConsoleProofs", [])),
+                    3,
+                    f"{slug} must expose >=3 live or pending GCP console proofs",
+                )
             else:
-                self.assertGreaterEqual(len(data["screenshots"]), 1, f"{slug} must have >=1 screenshot")
+                self.assertGreaterEqual(len(data["screenshots"]), 1, f"{slug} must have >=1 verified screenshot")
 
             # 100% of rendered screenshots must exist, serve valid PNG over HTTP 200, and carry verified v3.0 provenance + live HTTPS origin
             for sh in data["screenshots"]:

@@ -127,6 +127,10 @@ PREFERRED_WORKSTREAM_SLIDES_IDS: Dict[str, str] = {
     "DOC-REF-09": "10TpWnWIho8kXmN4866HXz34CI3lKxmh-NWSAd6QYiMM",
     "BP-78": "1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw",
     "WS1_EXEC": "1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg",
+    "WS2_EXEC": "1OjWG78L8T8JGTxsJid6vzU5wcacJNIYxO2qVGlNPMNI",
+    "WS3_EXEC": "1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A",
+    "WS4_EXEC": "1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s",
+    "WS5_EXEC": "19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA",
     "ATLAS": "1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs",
     "BARE_MIN_12": "1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk",
 }
@@ -737,7 +741,11 @@ WORKSTREAM_DECK_SPECS = [
     ("DOC-REF-08", "Ref Arch 2: Zero-Trust Enterprise Agent Mesh with Model Armor & VPC-SC", "slides/doc-ref-08-editable-slides.pptx", ""),
     ("DOC-REF-09", "Ref Arch 3: Scalable MCP Tool Server & A2A Ecosystem on Cloud Run", "slides/doc-ref-09-editable-slides.pptx", ""),
     ("BP-78", "BP-78 — WS1 Reference Architecture, Taxonomy & 5-Hop Baseline (15-Slide Editable Deck)", "slides/ws1-reference-architecture-editable-slides.pptx", ""),
-    ("WS1_EXEC", "WS1 Executive Architecture (10-Slide Narrative Deck)", "slides/ws1-executive-architecture-23slide-deck.pptx", ""),
+    ("WS1_EXEC", "WS1 Executive Architecture (10-Slide Lean Narrative Deck)", "slides/ws1-executive-architecture-23slide-deck.pptx", ""),
+    ("WS2_EXEC", "WS2 Executive Architecture (10-Slide Lean Narrative Deck)", "slides/ws2-executive-architecture-10slide-deck.pptx", ""),
+    ("WS3_EXEC", "WS3 Executive Architecture (10-Slide Lean Narrative Deck)", "slides/ws3-executive-architecture-10slide-deck.pptx", ""),
+    ("WS4_EXEC", "WS4 Executive Architecture (10-Slide Lean Narrative Deck)", "slides/ws4-executive-architecture-10slide-deck.pptx", ""),
+    ("WS5_EXEC", "WS5 Executive Architecture (10-Slide Lean Narrative Deck)", "slides/ws5-executive-architecture-10slide-deck.pptx", ""),
     ("ATLAS", "10-SaaS Multi-Cloud Visual Verification Atlas (16-Slide Editable Deck)", "slides/saas-10-visual-verification-atlas-16slide-deck.pptx", ""),
     ("BARE_MIN_12", "[12-Slide Bare-Minimum Architecture Deck] Enterprise Multi-Tenancy, Governance & Isolation (WS1–WS5)", "slides/geap-bare-minimum-12slide-architecture-deck.pptx", ""),
 ]

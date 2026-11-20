@@ -153,6 +153,67 @@ def runs_to_html(txbody):
     return paras, anchor
 
 
+def _cust_geom_svg(sppr, x, y, w, h, flip_h, flip_v, fill, ln):
+    cg = sppr.find("a:custGeom", NS)
+    if cg is None:
+        return None
+    plst = cg.find("a:pathLst", NS)
+    if plst is None:
+        return None
+    path_els = plst.findall("a:path", NS)
+    if not path_els:
+        return None
+    d_parts = []
+    for p_el in path_els:
+        pw = float(p_el.get("w") or "0")
+        ph = float(p_el.get("h") or "0")
+
+        def tx(pt_x):
+            u = (float(pt_x) / pw * w) if pw > 0 else emu_px(pt_x)
+            return (x + w - u) if flip_h else (x + u)
+
+        def ty(pt_y):
+            v = (float(pt_y) / ph * h) if ph > 0 else emu_px(pt_y)
+            return (y + h - v) if flip_v else (y + v)
+
+        for cmd in p_el:
+            ctag = cmd.tag
+            if ctag == q("a:moveTo"):
+                pt = cmd.find("a:pt", NS)
+                if pt is not None:
+                    d_parts.append(f"M {tx(pt.get('x', '0')):.1f} {ty(pt.get('y', '0')):.1f}")
+            elif ctag == q("a:lnTo"):
+                pt = cmd.find("a:pt", NS)
+                if pt is not None:
+                    d_parts.append(f"L {tx(pt.get('x', '0')):.1f} {ty(pt.get('y', '0')):.1f}")
+            elif ctag == q("a:cubicBezTo"):
+                pts = cmd.findall("a:pt", NS)
+                if len(pts) == 3:
+                    coords = " ".join(f"{tx(p.get('x', '0')):.1f} {ty(p.get('y', '0')):.1f}" for p in pts)
+                    d_parts.append(f"C {coords}")
+            elif ctag == q("a:quadBezTo"):
+                pts = cmd.findall("a:pt", NS)
+                if len(pts) == 2:
+                    coords = " ".join(f"{tx(p.get('x', '0')):.1f} {ty(p.get('y', '0')):.1f}" for p in pts)
+                    d_parts.append(f"Q {coords}")
+            elif ctag == q("a:close"):
+                d_parts.append("Z")
+    if not d_parts:
+        return None
+    d_str = " ".join(d_parts)
+    fill_attr = fill if fill else "none"
+    stroke_attr = ln["color"] if ln else "none"
+    sw_attr = f'{ln["w"]:.2f}' if ln else "0"
+    dash_attr = 'stroke-dasharray="4 3"' if (ln and ln["dashed"]) else ""
+    end_attr = 'marker-end="url(#arrow)"' if (ln and ln["tail"]) else ""
+    start_attr = 'marker-start="url(#arrowrev)"' if (ln and ln["head"]) else ""
+    return (
+        f'<path d="{d_str}" fill="{fill_attr}" stroke="{stroke_attr}" '
+        f'stroke-width="{sw_attr}" stroke-linejoin="round" stroke-linecap="round" '
+        f'{dash_attr} {end_attr} {start_attr}/>'
+    )
+
+
 def render_slide(zf, slide_path, rels, out_html):
     root = ET.fromstring(zf.read(slide_path))
     bg = root.find("p:cSld/p:bg", NS)
@@ -165,6 +226,38 @@ def render_slide(zf, slide_path, rels, out_html):
     tree = root.find("p:cSld/p:spTree", NS)
     for el in tree:
         tag = el.tag
+        if tag == q("p:cxnSp"):
+            sppr = el.find("p:spPr", NS)
+            xfrm = sppr.find("a:xfrm", NS) if sppr is not None else None
+            if xfrm is None:
+                continue
+            off = xfrm.find("a:off", NS)
+            ext = xfrm.find("a:ext", NS)
+            if off is None or ext is None:
+                continue
+            x, y = emu_px(off.get("x")), emu_px(off.get("y"))
+            w, h = emu_px(ext.get("cx")), emu_px(ext.get("cy"))
+            flip_h = xfrm.get("flipH") == "1"
+            flip_v = xfrm.get("flipV") == "1"
+            ln = line_props(sppr, is_line=True)
+            cg_svg = _cust_geom_svg(sppr, x, y, w, h, flip_h, flip_v, None, ln)
+            if cg_svg:
+                items.append(cg_svg)
+                continue
+            x1, y1, x2, y2 = x, y, x + w, y + h
+            if flip_h:
+                x1, x2 = x2, x1
+            if flip_v:
+                y1, y2 = y2, y1
+            if ln:
+                dash_attr = 'stroke-dasharray="4 3"' if ln["dashed"] else ""
+                end_attr = 'marker-end="url(#arrow)"' if ln["tail"] else ""
+                start_attr = 'marker-start="url(#arrowrev)"' if ln["head"] else ""
+                items.append(
+                    f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" stroke="{ln["color"]}" '
+                    f'stroke-width="{ln["w"]:.2f}" {dash_attr} {end_attr} {start_attr}/>'
+                )
+            continue
         if tag == q("p:sp"):
             sppr = el.find("p:spPr", NS)
             xfrm = sppr.find("a:xfrm", NS) if sppr is not None else None
@@ -182,6 +275,11 @@ def render_slide(zf, slide_path, rels, out_html):
             fill = solid_fill(sppr)
             ln = line_props(sppr, is_line=is_line_shape)
             txbody = el.find("p:txBody", NS)
+            if sppr.find("a:custGeom", NS) is not None and (txbody is None or not "".join((t.text or "") for t in txbody.findall(".//a:t", NS)).strip()):
+                cg_svg = _cust_geom_svg(sppr, x, y, w, h, flip_h, flip_v, fill, ln)
+                if cg_svg:
+                    items.append(cg_svg)
+                    continue
             if is_line_shape:
                 x1, y1, x2, y2 = x, y, x + w, y + h
                 if flip_h:
@@ -289,7 +387,7 @@ def render_slide(zf, slide_path, rels, out_html):
     # instead interleave by wrapping each line in its own absolutely positioned svg.
     ordered = []
     for i in items:
-        if i.startswith("<line"):
+        if i.startswith("<line") or i.startswith("<path"):
             ordered.append(
                 '<svg class="ln" width="1280" height="720" style="position:absolute;left:0;top:0;pointer-events:none;overflow:visible">'
                 '<defs><marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="6.5" markerHeight="6.5" refX="5.8" refY="3.25" orient="auto"><path d="M0,0.4 L6,3.25 L0,6.1" fill="none" stroke="context-stroke" stroke-width="1.35"/></marker>'

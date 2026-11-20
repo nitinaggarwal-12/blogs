@@ -1,6 +1,6 @@
 ---
 title: "10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas"
-subtitle: "Cryptographically Verified 16:9 Retina Evidence Gallery (2 Live Commercial SaaS Retina captures (ThoughtSpot Cloud); Google Cloud Console & Gemini Enterprise: 0/15 pending 1-tap SSO) Across 10 Commercial Enterprise SaaS Targets (SAAS-01 through SAAS-10)"
+subtitle: "Cryptographically Verified 16:9 Retina Evidence Gallery (3 Live Commercial SaaS Retina captures: ThoughtSpot Cloud + Atlassian Jira Cloud; Google Cloud Console & Gemini Enterprise: 0/15 pending 1-tap SSO) Across 10 Commercial Enterprise SaaS Targets (SAAS-01 through SAAS-10)"
 series: "Multi-Tenant Agentic AI on Google Cloud — Companion Visual Atlas"
 workstream: "Cross-Workstream Visual Verification & Multi-Cloud Proof Atlas (WS1–WS5)"
 authors: "Google Cloud Forward Deployed Engineering (FDE) & AI Platform Architecture Team"
@@ -13,11 +13,11 @@ editable_slides: "slides/saas-10-visual-verification-atlas-16slide-deck.pptx"
 status: "PUBLISH_READY"
 ---
 
-This standalone **Visual Verification Atlas** consolidates verified 16:9 Retina captures (2 Live Commercial SaaS Retina captures (ThoughtSpot Cloud); Google Cloud Console & Gemini Enterprise: 0/15 pending 1-tap SSO) alongside the approved **Multi-Cloud Federation Architecture diagram (`Slide 11/12`)** so each core architectural guide (`WS1–WS5`) stays laser-focused while CISOs and architects have one authoritative, zero-stand-in evidence ledger.
+This standalone **Visual Verification Atlas** consolidates verified 16:9 Retina captures (3 Live Commercial SaaS Retina captures: ThoughtSpot Cloud + Atlassian Jira Cloud; Google Cloud Console & Gemini Enterprise: 0/15 pending 1-tap SSO) alongside the approved **Multi-Cloud Federation Architecture diagram (`Slide 11/12`)** so each core architectural guide (`WS1–WS5`) stays laser-focused while CISOs and architects have one authoritative, zero-stand-in evidence ledger.
 
 > **Approved Multi-Cloud Bridge & Companion Atlas Assets:**
 > - **Approved 12-Slide Architecture Deck (Multi-Cloud Bridge = Slide 11):** [Open Slide 11 in Google Slides ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p11) • [Draw.io Source (`.drawio`)](../diagrams/saas10-multicloud-a2a-mcp-bridge.drawio)
-> - **Editable Google Docs Visual Atlas (`3` Verified Figures: 1 Multi-Cloud Bridge + 2 ThoughtSpot Retina Proofs • 15 GCP/GE Pending SSO):** [Open 10-SaaS Visual Atlas in Google Docs ↗](https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/edit?resourcekey=0-klzhSI2SvWYPCvpPwwMSUw) • [Download `.docx`](../docs/word/saas-10-visual-verification-and-redteam-atlas.docx)
+> - **Editable Google Docs Visual Atlas (`4` Verified Figures: 1 Multi-Cloud Bridge + 2 ThoughtSpot + 1 Atlassian Jira Retina Proofs • 15 GCP/GE Pending SSO):** [Open 10-SaaS Visual Atlas in Google Docs ↗](https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/edit?resourcekey=0-klzhSI2SvWYPCvpPwwMSUw) • [Download `.docx`](../docs/word/saas-10-visual-verification-and-redteam-atlas.docx)
 > - **Editable Google Slides Visual Atlas (`16` Native Slides):** [Open 16-Slide Visual Atlas in Google Slides ↗](https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw) • [Download `.pptx`](../slides/saas-10-visual-verification-atlas-16slide-deck.pptx)
 > - **Cryptographic Provenance Receipt:** [`docs/cloud_console_verification_receipt.json`](../docs/cloud_console_verification_receipt.json) • [`docs/cloudrun_to_aws_10_saas_live_receipt.json`](../docs/cloudrun_to_aws_10_saas_live_receipt.json)
 
@@ -47,10 +47,10 @@ To keep each architecture guide scannable, every workstream maps its primary com
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-## Verified Commercial SaaS Proof Inventory (GCP Console Captures Pending 1-Tap SSO)
+## Verified Commercial SaaS Proof Inventory (3 Live Retina Captures • GCP Console Captures Pending 1-Tap SSO)
 
 > [!IMPORTANT]
-> **Verified Live Commercial SaaS Proofs (2 Retina Captures • GCP Console: 0/15 Pending 1-Tap SSO):** Currently showing 2 cryptographically verified live commercial SaaS Retina captures (ThoughtSpot Cloud on team2.thoughtspot.cloud, verified exit 0 by verify_slide_screenshots.mjs --audience external). Google Cloud Console & Gemini Enterprise captures (0/15) are pending 1-tap Google SSO in an authenticated browser session; zero open-source stand-ins or unattested legacy images remain. Open the dedicated gallery at `/blogs/atlas/screenshots` or inspect the full [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
+> **Verified Live Commercial SaaS Proofs (3 Retina Captures • GCP Console: 0/15 Pending 1-Tap SSO):** Showing 3 cryptographically verified live commercial SaaS Retina captures (**ThoughtSpot Cloud** on `team2.thoughtspot.cloud` and **Atlassian Jira Cloud** on `gcp-team-sbiarllr.atlassian.net`, verified `exit 0` by `verify_slide_screenshots.mjs --audience external`). Google Cloud Console & Gemini Enterprise captures (0/15) are pending 1-tap Google SSO in an authenticated browser session; zero open-source stand-ins or unattested legacy images remain. Open the dedicated gallery at `/blogs/atlas/screenshots`.
 
 ### SAAS-01A: ThoughtSpot Cloud — Live Executive Analytics Liveboard
 **Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** team2.thoughtspot.cloud • **Resource:** Retail Sales Liveboard (team2.thoughtspot.cloud) • Provenance SHA-256 fd5cb15c0902 (2880x1620 Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
@@ -63,6 +63,12 @@ To keep each architecture guide scannable, every workstream maps its primary com
 
 ![Live commercial ThoughtSpot Cloud Saved Answer analytics table rendered directly from team2.thoughtspot.cloud.](../screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png)
 *Genuine commercial ThoughtSpot Cloud Saved Answer query (team2.thoughtspot.cloud) demonstrating live governed BI analytics consumption.*
+
+### SAAS-JIRA-01: Atlassian Jira Cloud — Live Governed 3LO Escalation Board
+**Provider:** Atlassian Jira Cloud (Live Commercial SaaS) • **Scope:** `gcp-team-sbiarllr.atlassian.net` • **Resource:** Cloud Platform Engineering (`SCRUM Sprint 0`) • Provenance SHA-256 `95ce12f87f12` (`2880x1620` Retina) • **[Open Live Console ↗](https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1)**
+
+![Live commercial Atlassian Jira Cloud Scrum board rendered directly from gcp-team-sbiarllr.atlassian.net.](../screenshots/verified-cloud-console/saas_06_atlassian_jira_confluence.png)
+*Genuine commercial Atlassian Jira Cloud Scrum board (`gcp-team-sbiarllr.atlassian.net`) captured live at 2880x1620 Retina with cryptographic SHA-256 provenance verification.*
 
 <!-- GENUINE_3P_BEFORE_AFTER_END -->
 

@@ -64,17 +64,11 @@ DECK_PLANS: Dict[str, Dict] = {
         "file": "slides/ws1-12slide-visual-deck.pptx",
         "part_tag": "PART 1 (WS1)",
         "pad_footer": False,
-        "keep": [1, 3, 4, 7, 8, 13, 19, 23],
+        "keep": [1, 3, 4, 7, 8, 13, 23],
         "text_replacements": {
             3: {
                 "TRANSITION TO ACT II ➔ Moving from the threat landscape to concrete architectural patterns and DrawingML topologies": (
                     "NEXT: REFERENCE ARCHITECTURE ➔ Mapping all 5 attack shields directly onto the Shared 5-Hop Control Plane & Token Sequence"
-                ),
-            },
-            7: {
-                "ACT IV • PROOF 1": "LIVE RETINA PROOF",
-                "Proof 1: ThoughtSpot Cloud Spotter BI — Commercial Liveboard & Hop 5 RLS Design": (
-                    "Live UI Proof: ThoughtSpot Cloud Spotter BI — Commercial Liveboard & Hop 5 RLS Design"
                 ),
             },
         },

@@ -15,7 +15,7 @@ status: "PUBLISH_READY"
 
 This document defines the foundational reference architecture taxonomy, security boundaries, and shared **5-Hop cryptographic governance baseline** for building external B2B SaaS multi-tenant agentic AI systems on Google Cloud. It extends the canonical Google Cloud Architecture Center guidance ([Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system))—which models internal enterprise business units—into a production blueprint for Independent Software Vendors (ISVs) serving competing enterprise tenants across pooled, sovereign silo, and dynamic hybrid tiers using **Vertex AI Agent Engine**, **Agent Development Kit (`ADK`)**, and **Gemini Enterprise**.
 
-> **Approved 2-Diagram WS1 Baseline & Live 2-Way Draw.io Sync:** Every architecture diagram in this guide is synchronized 2-way with the **[Approved 12-Slide Architecture Deck (WS1 = Slides 1–2) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p1)** and backed by live `.drawio` XML + crisp vector `.svg` files. Open **`✏️ Edit in Draw.io`** on either figure card to edit live topologies with 2-way Google Slides sync, or review the [WS1 12-Slide Visual Deck (`.pptx`)](../slides/ws1-12slide-visual-deck.pptx), the [WS1 Google Docs Spec ↗](https://docs.google.com/document/d/1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA/edit), the [5-Hop Reference Codebase](../core-cymbal-agent/runtime_pipeline.py), or the [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
+> **Approved 2-Diagram WS1 Baseline & Live 2-Way Draw.io Sync:** Every architecture diagram in this guide is synchronized 2-way with the **[WS1 Executive Architecture (10-Slide Lean Narrative Deck) ↗](https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit)** and the **[Approved 12-Slide Architecture Deck (WS1 = Slides 1–2) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p1)**, backed by live `.drawio` XML + crisp vector `.svg` files. Open **`✏️ Edit in Draw.io`** on either figure card to edit live topologies with 2-way Google Slides sync, download the [WS1 10-Slide Executive Deck (`.pptx`)](../slides/ws1-executive-architecture-23slide-deck.pptx) or [WS1 Lean Visual Deck (`.pptx`)](../slides/ws1-12slide-visual-deck.pptx), or review the [WS1 Google Docs Spec ↗](https://docs.google.com/document/d/1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA/edit), the [5-Hop Reference Codebase](../core-cymbal-agent/runtime_pipeline.py), or the [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
 
 ---
 
@@ -227,16 +227,16 @@ ORDER BY billable_equivalent_tokens DESC;
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-## Verified Live Commercial SaaS Proofs for WS1 (GCP Console Captures Pending 1-Tap SSO)
+## Live Google Cloud Console Proofs for WS1 (3 Provisioned Resources • Pending 1-Tap SSO Capture)
 
 > [!IMPORTANT]
-> **Verified Live Commercial SaaS Proofs (1 Retina Capture • GCP Console: 0/15 Pending 1-Tap SSO):** Currently showing 1 cryptographically verified live commercial SaaS Retina capture (ThoughtSpot Cloud on team2.thoughtspot.cloud, verified exit 0 by verify_slide_screenshots.mjs --audience external). Google Cloud Console & Gemini Enterprise captures (0/15) are pending 1-tap Google SSO in an authenticated browser session; zero open-source stand-ins or unattested legacy images remain. Backend multi-cloud protocol verification receipts (AWS Bedrock AgentCore MCP gateway targets and S3 federation ledgers in `data/saas_10_live_3pattern_receipt.json`) are server-side cryptographic API proofs and are strictly distinct from live commercial browser UI screenshots. Open the dedicated gallery at `/blogs/ws1/screenshots` or inspect the full [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
+> **Strict Per-Workstream Proof Scoping (Zero Irrelevant 3P Stand-Ins):** WS1 covers the shared 80/20 Google Cloud Control Plane and 5-Hop cryptographic baseline (`Gemini Enterprise`, `Cloud Armor WAF`, and `Vertex AI Model Armor`). Commercial 3P SaaS screenshots (ThoughtSpot Cloud & Atlassian Jira Cloud) are strictly scoped to **WS4**, **WS5**, and the **[Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md)** rather than duplicated here. The three live provisioned WS1 Google Cloud Console resources below are active and ready for 1-tap SSO Retina capture via `scripts/capture_real_gcp_and_saas_screenshots.mjs` (open `/blogs/ws1/screenshots` for live console links):
 
-### SAAS-01A: ThoughtSpot Cloud — Live Executive Analytics Liveboard
-**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** team2.thoughtspot.cloud • **Resource:** Retail Sales Liveboard (team2.thoughtspot.cloud) • Provenance SHA-256 fd5cb15c0902 (2880x1620 Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
-
-![Live commercial ThoughtSpot Cloud SaaS Liveboard rendered directly from team2.thoughtspot.cloud.](../screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png)
-*Genuine commercial ThoughtSpot Cloud Liveboard (team2.thoughtspot.cloud) captured live at 2880x1620 Retina with cryptographic SHA-256 provenance verification.*
+| Proof ID | Google Cloud Service | Provisioned Resource | Project | Live Console |
+| :--- | :--- | :--- | :--- | :--- |
+| **`GCP-WS1-01`** | **Gemini Enterprise** | `cymbal-multi-tenant-agent-hub` | `ramp-portal-dev` (`#248990048888`) | [Open Agent Hub ↗](https://console.cloud.google.com/gen-app-builder/engines?project=ramp-portal-dev) |
+| **`GCP-WS1-02`** | **Cloud Armor (Hop 1 PEP)** | `cymbal-pooled-edge-waf` | `bbar-138hf0` (`#48439189383`) | [Open WAF Policy ↗](https://console.cloud.google.com/net-security/securitypolicies/details/cymbal-pooled-edge-waf?project=bbar-138hf0) |
+| **`GCP-WS1-03`** | **Vertex AI Model Armor (Hop 4)** | `ge-zero-trust-ai-firewall` | `ramp-portal-dev` (`#248990048888`) | [Open Firewall Templates ↗](https://console.cloud.google.com/security/model-armor/templates?project=ramp-portal-dev) |
 
 <!-- GENUINE_3P_BEFORE_AFTER_END -->
 
@@ -245,8 +245,9 @@ ORDER BY billable_equivalent_tokens DESC;
 ## What's next
 
 - **Approved Architecture Presentations & Editable Diagrams:**
+  - **[Open WS1 10-Slide Executive Narrative Deck in Google Slides ↗](https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit)** • [Download WS1 Executive Deck (`.pptx`)](../slides/ws1-executive-architecture-23slide-deck.pptx)
   - [Open Approved 12-Slide Architecture Deck in Google Slides (WS1 = Slides 1–2) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p1) • [Download Approved 12-Slide Deck (`.pptx`)](../slides/geap-bare-minimum-12slide-architecture-deck.pptx)
-  - [Download WS1 12-Slide Visual Deck (`.pptx`)](../slides/ws1-12slide-visual-deck.pptx) • [Figure 1 Draw.io Source](../diagrams/ws1-5hop-governance-baseline.drawio) • [Figure 2 Draw.io Source](../diagrams/ws1-c4-l3-process-sequence-swimlane.drawio)
+  - [Download WS1 7-Slide Lean Visual Deck (`.pptx`)](../slides/ws1-12slide-visual-deck.pptx) • [Figure 1 Draw.io Source](../diagrams/ws1-5hop-governance-baseline.drawio) • [Figure 2 Draw.io Source](../diagrams/ws1-c4-l3-process-sequence-swimlane.drawio)
 - **Workstream 1 Reference Codebase & Documentation:**
   - **Shared 5-Hop ADK Pipeline:** [`core-cymbal-agent/runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py) (`hop1`..`hop5` in [`core-cymbal-agent/governance/`](../core-cymbal-agent/governance/)) • **107-Assertion Security Suite:** [`core-cymbal-agent/tests/test_five_hop_pipeline.py`](../core-cymbal-agent/tests/test_five_hop_pipeline.py)
   - **WS1 Sub-Deliverables:** [`1.1 Architecture Taxonomy & Diagrams`](../workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md) • [`1.2 Product Team Review Pack`](../workstream-1-reference-architecture/1.2-product-team-review-pack.md) • [`1.3 Cloud Architecture Center PR`](../workstream-1-reference-architecture/1.3-cloud-architecture-center-doc-update-pr.md) • [`1.4 EAP & Product Gap Tracker`](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md)

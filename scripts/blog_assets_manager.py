@@ -366,14 +366,14 @@ VERIFIED_CONSOLE_META: Dict[str, Dict[str, str]] = {
     },
     "saas_06_atlassian_jira_confluence.png": {
         "proofId": "SAAS-JIRA-01",
-        "provider": "Atlassian Jira & Confluence Cloud",
+        "provider": "Atlassian Jira Cloud",
         "providerTag": "saas",
-        "product": "Atlassian Cloud — Live Jira & Confluence Escalation Workspace",
-        "resourceLabel": "Atlassian Cloud (*.atlassian.net)",
-        "projectOrAccount": "Atlassian Cloud Tenant (Live Commercial SaaS)",
+        "product": "Atlassian Jira Cloud — Live Governed 3LO Escalation & Security Board",
+        "resourceLabel": "Cloud Platform Engineering (SCRUM Sprint 0)",
+        "projectOrAccount": "gcp-team-sbiarllr.atlassian.net (Live Commercial SaaS)",
         "category": "Genuine 3P Commercial SRE/Issue UI",
         "pattern": "WS4 · Live SaaS Escalation UI",
-        "liveConsoleUrl": "https://www.atlassian.com/software/jira",
+        "liveConsoleUrl": "https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1",
     },
     "saas_07_salesforce_crm.png": {
         "proofId": "SAAS-SFDC-01",
@@ -1018,9 +1018,40 @@ def get_blog_assets(slug: str, host_origin: str = "", runtime_dir: Optional[Path
 
     shots_items, shot_pairs = _enrich_screenshots(raw_shots, host_origin=host_origin)
 
+    # Compute per-workstream provisioned GCP Console proofs still pending 1-tap SSO capture
+    captured_names = {s.get("fileName", "") for s in shots_items}
+    gcp_prefix_by_slug = {
+        "ws1": ("gcp_ws1_",),
+        "ws2": ("gcp_ws2_",),
+        "ws3": ("gcp_ws3_",),
+        "ws4": ("gcp_ws4_",),
+        "ws5": ("gcp_atlas_",),
+        "atlas": ("gcp_ws1_", "gcp_ws2_", "gcp_ws3_", "gcp_ws4_", "gcp_atlas_"),
+        "all": ("gcp_ws1_", "gcp_ws2_", "gcp_ws3_", "gcp_ws4_", "gcp_atlas_"),
+    }
+    pending_console_proofs: List[Dict[str, Any]] = []
+    for fname, meta in VERIFIED_CONSOLE_META.items():
+        if fname in captured_names:
+            continue
+        if any(fname.startswith(pfx) for pfx in gcp_prefix_by_slug.get(clean_slug, ())):
+            pending_console_proofs.append({
+                "fileName": fname,
+                "proofId": meta.get("proofId", ""),
+                "provider": meta.get("provider", "Google Cloud Console"),
+                "providerTag": meta.get("providerTag", "gcp"),
+                "product": meta.get("product", fname),
+                "resourceLabel": meta.get("resourceLabel", ""),
+                "projectOrAccount": meta.get("projectOrAccount", ""),
+                "category": meta.get("category", ""),
+                "pattern": meta.get("pattern", ""),
+                "liveConsoleUrl": meta.get("liveConsoleUrl", ""),
+                "status": "PROVISIONED_PENDING_SSO_CAPTURE",
+            })
+
     # Compute truthful dynamic subtitle reflecting strictly the planes actually captured on disk
     gcp_count = sum(1 for s in shots_items if s.get("providerTag") in ("gcp", "ge"))
     saas_count = sum(1 for s in shots_items if s.get("providerTag") in ("thoughtspot", "saas"))
+    saas_providers = list(dict.fromkeys(s.get("provider", "Commercial SaaS") for s in shots_items if s.get("providerTag") in ("thoughtspot", "saas")))
     if gcp_count > 0 and saas_count > 0:
         dynamic_subtitle = (
             f"{blog_meta['subtitle']} — {len(shots_items)} cryptographically attested 16:9 Retina captures "
@@ -1032,9 +1063,20 @@ def get_blog_assets(slug: str, host_origin: str = "", runtime_dir: Optional[Path
             "capture(s)."
         )
     elif saas_count > 0:
+        prov_label = " & ".join(saas_providers) if saas_providers else "Live Commercial SaaS"
+        pending_note = (
+            f"; {len(pending_console_proofs)} provisioned GCP Console proof(s) ready for 1-tap SSO capture"
+            if pending_console_proofs
+            else ""
+        )
         dynamic_subtitle = (
             f"{blog_meta['subtitle']} — {saas_count} cryptographically attested 16:9 Retina live commercial SaaS "
-            "capture(s) (ThoughtSpot Cloud; Google Cloud Console & Gemini Enterprise captures pending 1-tap SSO)."
+            f"capture(s) ({prov_label}{pending_note})."
+        )
+    elif pending_console_proofs:
+        dynamic_subtitle = (
+            f"{blog_meta['subtitle']} — {len(pending_console_proofs)} provisioned Google Cloud Console proof(s) "
+            "ready for 1-tap SSO Retina capture (zero irrelevant 3P SaaS stand-ins)."
         )
     else:
         dynamic_subtitle = blog_meta["subtitle"]
@@ -1066,12 +1108,14 @@ def get_blog_assets(slug: str, host_origin: str = "", runtime_dir: Optional[Path
         "deletedDiagrams": deleted_diagrams,
         "screenshots": shots_items,
         "screenshotPairs": shot_pairs,
+        "pendingConsoleProofs": pending_console_proofs,
         "stats": {
             "activeDiagramCount": len(active_diagrams),
             "deletedDiagramCount": len(deleted_diagrams),
             "customDiagramCount": sum(1 for d in active_diagrams if d["isCustom"]),
             "screenshotCount": len(shots_items),
             "verifiedScreenshotCount": sum(1 for s in shots_items if s.get("verifiedProvenance")),
+            "pendingConsoleProofCount": len(pending_console_proofs),
             "screenshotPairCount": len(shot_pairs),
         },
     }

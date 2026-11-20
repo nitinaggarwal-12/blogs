@@ -800,6 +800,8 @@ def restore_lossless_verified_proof_pngs_in_docx(docx_path: Path) -> int:
         return 0
     live_bytes = ts_liveboard.read_bytes()
     saved_bytes = ts_saved.read_bytes()
+    jira_png = ROOT_DIR / "screenshots/verified-cloud-console/saas_06_atlassian_jira_confluence.png"
+    jira_bytes = jira_png.read_bytes() if jira_png.is_file() else None
 
     replacements: Dict[str, bytes] = {}
     with _zipfile.ZipFile(docx_path, "r") as zin:
@@ -819,9 +821,12 @@ def restore_lossless_verified_proof_pngs_in_docx(docx_path: Path) -> int:
             if "<w:drawing" not in para:
                 continue
             ctx = " ".join(texts[max(0, idx - 2) : min(len(texts), idx + 3)]).lower()
-            if "thoughtspot" not in ctx:
+            if "thoughtspot" in ctx:
+                target_bytes = saved_bytes if ("saved answer" in ctx or "saas_02" in ctx) else live_bytes
+            elif jira_bytes is not None and ("atlassian jira" in ctx or "saas-jira-01" in ctx or "gcp-team-sbiarllr" in ctx):
+                target_bytes = jira_bytes
+            else:
                 continue
-            target_bytes = saved_bytes if ("saved answer" in ctx or "saas_02" in ctx) else live_bytes
             for rid_e in re.findall(r'r:embed="(rId\d+)"', para):
                 mp = rid_to_media.get(rid_e, "")
                 if mp.startswith("word/media/") and mp.lower().endswith(".png"):

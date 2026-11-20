@@ -15,7 +15,7 @@ status: "PUBLISH_READY"
 
 This document is **Part 3** of the Multi-Tenant Agentic AI series on Google Cloud. It details **Pattern B (Dedicated Sovereign Silo Architecture)** for regulated banking (OCC/FDIC, PCI-DSS), life sciences (HIPAA, FDA 21 CFR Part 11), EU DORA, and public-sector tenants whose compliance mandate forbids sharing projects, VPC networks, compute kernels, vector indexes, or encryption keys with any peer customer. Pattern B reuses the **identical 80% 5-Hop ADK Python core** from [Part 1 (WS1)](ws1-reference-architecture-taxonomy-and-5hop-baseline.md) while dedicating **100% of the GCP project, network perimeter, inference compute, storage, and HSM key lifecycle** (`~15x` relative COGS vs. Pattern A).
 
-> **Approved 2-Diagram WS3 Baseline & Live 2-Way Draw.io Sync:** Both diagrams in this guide are synchronized 2-way with the **[Approved 12-Slide Architecture Deck (WS3 = Slides 6–7) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p6)** and backed by live `.drawio` XML + crisp vector `.svg` files. Review the [WS3 12-Slide Visual Deck (`.pptx`)](../slides/ws3-12slide-visual-deck.pptx), the [WS3 Google Docs Spec ↗](https://docs.google.com/document/d/1l34-lgyjuF9KtqWmshOUzdxXSEoLBkovwmPtdpPSPM0/edit?resourcekey=0-sbdt9Z1LSBbEWQRk8JHYOA), the [Pattern B Silo Runtime](../workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py), the [Air-Gapped Gemma 3 GKE Manifest](../workstream-3-pattern-b-siloed/3.3-solution-implementation/gke_gemma3_airgapped_manifest.yaml), the [Exfiltration & CMEK Revocation Test Suite](../workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py), or the [Terraform Silo Blueprint](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf).
+> **Approved 2-Diagram WS3 Baseline & Live 2-Way Draw.io Sync:** Both diagrams in this guide are synchronized 2-way with the **[WS3 Executive Architecture (10-Slide Lean Narrative Deck) ↗](https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/edit)** and the **[Approved 12-Slide Architecture Deck (WS3 = Slides 6–7) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p6)**, backed by live `.drawio` XML + crisp vector `.svg` files. Download the [WS3 10-Slide Executive Deck (`.pptx`)](../slides/ws3-executive-architecture-10slide-deck.pptx) or [WS3 Lean Visual Deck (`.pptx`)](../slides/ws3-12slide-visual-deck.pptx), or review the [WS3 Google Docs Spec ↗](https://docs.google.com/document/d/1l34-lgyjuF9KtqWmshOUzdxXSEoLBkovwmPtdpPSPM0/edit?resourcekey=0-sbdt9Z1LSBbEWQRk8JHYOA), the [Pattern B Silo Runtime](../workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py), the [Air-Gapped Gemma 3 GKE Manifest](../workstream-3-pattern-b-siloed/3.3-solution-implementation/gke_gemma3_airgapped_manifest.yaml), the [Exfiltration & CMEK Revocation Test Suite](../workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py), or the [Terraform Silo Blueprint](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf).
 
 ---
 
@@ -141,22 +141,16 @@ Across all 10 AWS Bedrock AgentCore MCP targets (`cymbal-a2a-mcp-gateway-suyxm3c
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-## Verified Live Commercial SaaS Proofs for WS3 (Pattern B GCP Console Captures Pending 1-Tap SSO)
+## Live Google Cloud Console Proofs for WS3 (3 Provisioned Pattern B Sovereign Resources • Pending 1-Tap SSO Capture)
 
 > [!IMPORTANT]
-> **Verified Live Commercial SaaS Proofs (2 Retina Captures • GCP Console: 0/15 Pending 1-Tap SSO):** Currently showing 2 cryptographically verified live commercial SaaS Retina captures (ThoughtSpot Cloud on team2.thoughtspot.cloud, verified exit 0 by verify_slide_screenshots.mjs --audience external). Google Cloud Console & Gemini Enterprise captures (0/15) are pending 1-tap Google SSO in an authenticated browser session; zero open-source stand-ins or unattested legacy images remain. Backend multi-cloud protocol verification receipts (AWS Bedrock AgentCore MCP gateway targets and S3 federation ledgers in `data/saas_10_live_3pattern_receipt.json`) are server-side cryptographic API proofs and are strictly distinct from live commercial browser UI screenshots. Open the dedicated gallery at `/blogs/ws3/screenshots` or inspect the full [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
+> **Strict Per-Workstream Proof Scoping (Zero Irrelevant 3P Stand-Ins):** WS3 verifies **Pattern B Sovereign Silos, Cloud KMS CMEK Kill-Switch (`HTTP 423`), CMEK Data Vaults, and Sovereign Model Armor Templates**. Commercial 3P SaaS Retina screenshots live strictly in **WS4**, **WS5**, and the **[Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md)**. The three live provisioned WS3 Google Cloud Console resources below are active and ready for 1-tap SSO Retina capture via `scripts/capture_real_gcp_and_saas_screenshots.mjs` (open `/blogs/ws3/screenshots` for live console links):
 
-### SAAS-01A: ThoughtSpot Cloud — Live Executive Analytics Liveboard
-**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** team2.thoughtspot.cloud • **Resource:** Retail Sales Liveboard (team2.thoughtspot.cloud) • Provenance SHA-256 fd5cb15c0902 (2880x1620 Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
-
-![Live commercial ThoughtSpot Cloud SaaS Liveboard rendered directly from team2.thoughtspot.cloud.](../screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png)
-*Genuine commercial ThoughtSpot Cloud Liveboard (team2.thoughtspot.cloud) captured live at 2880x1620 Retina with cryptographic SHA-256 provenance verification.*
-
-### SAAS-01B: ThoughtSpot Cloud — Live Governed Saved Answer Query
-**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** team2.thoughtspot.cloud • **Resource:** Stock-Out & Spoilage Analytics Answer (team2.thoughtspot.cloud) • Provenance SHA-256 3fcab795d1e5 (2880x1620 Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
-
-![Live commercial ThoughtSpot Cloud Saved Answer analytics table rendered directly from team2.thoughtspot.cloud.](../screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png)
-*Genuine commercial ThoughtSpot Cloud Saved Answer query (team2.thoughtspot.cloud) demonstrating live governed BI analytics consumption.*
+| Proof ID | Google Cloud Service | Provisioned Resource | Project | Live Console |
+| :--- | :--- | :--- | :--- | :--- |
+| **`GCP-WS3-01`** | **Cloud KMS (CMEK Kill-Switch)** | `cymbal-multi-tenant-kr` (`medcore-revoked-cmek DISABLED`) | `bbar-138hf0` (`us-west1`) | [Open KMS Keyring ↗](https://console.cloud.google.com/security/kms/keyring/manage/us-west1/cymbal-multi-tenant-kr/key?project=bbar-138hf0) |
+| **`GCP-WS3-02`** | **BigQuery (Sovereign Vault)** | `cymbal_silo_finvault_usw1` | `bbar-138hf0` (`us-west1`) | [Open CMEK Vault ↗](https://console.cloud.google.com/bigquery?project=bbar-138hf0&ws=!1m4!1m3!3m2!1sbbar-138hf0!2scymbal_silo_finvault_usw1) |
+| **`GCP-WS3-03`** | **Vertex AI Model Armor (Silo)** | `mcp-oauth21-obo-armor` | `bbar-138hf0` (`us-central1`) | [Open Silo Template ↗](https://console.cloud.google.com/security/model-armor/templates?project=bbar-138hf0) |
 
 <!-- GENUINE_3P_BEFORE_AFTER_END -->
 
@@ -165,7 +159,8 @@ Across all 10 AWS Bedrock AgentCore MCP targets (`cymbal-a2a-mcp-gateway-suyxm3c
 ## What's next
 
 - **Approved Architecture Presentations & Editable Diagrams (WS3 = Slides 6–7):**
-  - [Open Approved 12-Slide Architecture Deck in Google Slides (WS3 = Slides 6–7) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p6) • [Download WS3 12-Slide Visual Deck (`.pptx`)](../slides/ws3-12slide-visual-deck.pptx)
+  - **[Open WS3 10-Slide Executive Narrative Deck in Google Slides ↗](https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/edit)** • [Download WS3 Executive Deck (`.pptx`)](../slides/ws3-executive-architecture-10slide-deck.pptx)
+  - [Open Approved 12-Slide Architecture Deck in Google Slides (WS3 = Slides 6–7) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p6) • [Download WS3 Lean Visual Deck (`.pptx`)](../slides/ws3-12slide-visual-deck.pptx)
   - [Figure 1 Pattern B Silo (`.drawio`)](../diagrams/ws3-pattern-b-silo.drawio) • [Figure 2 CMEK Revocation & Air-Gapped GKE (`.drawio`)](../diagrams/ws3-c4-l3-cmek-killswitch-swimlane.drawio)
 - **Workstream 3 Codebase, Sovereign Security Suite & Terraform:**
   - **Runtime & GKE Manifest:** [`pattern_b_siloed_service.py`](../workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py) • [`gke_gemma3_airgapped_manifest.yaml`](../workstream-3-pattern-b-siloed/3.3-solution-implementation/gke_gemma3_airgapped_manifest.yaml)

@@ -1691,6 +1691,26 @@
         dl.href = `${ws.pptxPath}?v=${PPTX_CACHE_VER}`;
         dl.innerHTML = `&#11015; Download .pptx (${ws.key} &bull; ${ws.slides.length} Slides)`;
       }
+      const execLink = document.getElementById('hub-exec-deck-link');
+      if (execLink) {
+        if (ws.execSlidesUrl) {
+          execLink.href = ws.execSlidesUrl;
+          execLink.style.display = 'flex';
+          execLink.innerHTML = `<span class="pc-gpdf-icon" style="background:#1a73e8;">10</span> <span>${ws.key} Executive Narrative Deck (10 Slides &nearr;)</span>`;
+        } else {
+          execLink.style.display = 'none';
+        }
+      }
+      const execPptx = document.getElementById('hub-exec-pptx-download');
+      if (execPptx) {
+        if (ws.execPptxPath) {
+          execPptx.href = `${ws.execPptxPath}?v=${PPTX_CACHE_VER}`;
+          execPptx.style.display = 'flex';
+          execPptx.innerHTML = `<span>&#11015;</span> <span>Download 10-Slide Executive .pptx (${ws.key})</span>`;
+        } else {
+          execPptx.style.display = 'none';
+        }
+      }
       const docxMap = {
         WS1: 'docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx',
         WS2: 'docs/word/ws2-pattern-a-pooled-architecture.docx',
@@ -1747,7 +1767,7 @@
     let cloudViewerManifest = {
       slides: {
         WS1: {
-          slideCount: 8,
+          slideCount: 7,
           googleSlidesId: '1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w',
           googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit?resourcekey=0-77zXQOQhM63BNHXHkhxpjA',
           googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/preview?resourcekey=0-77zXQOQhM63BNHXHkhxpjA',
@@ -1793,6 +1813,46 @@
           googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/preview?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw',
           googleSlidesEmbedUrl: 'https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/embed?start=false&loop=false&delayms=5000&resourcekey=0-bnGKTSSW6T6EoXChSqzgKw',
           googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/export/pdf?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw'
+        },
+        WS1_EXEC: {
+          slideCount: 10,
+          googleSlidesId: '1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg',
+          googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit',
+          googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/preview',
+          googleSlidesEmbedUrl: 'https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/embed?start=false&loop=false&delayms=5000',
+          googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/export/pdf'
+        },
+        WS2_EXEC: {
+          slideCount: 10,
+          googleSlidesId: '1OjWG78L8T8JGTxsJid6vzU5wcacJNIYxO2qVGlNPMNI',
+          googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1OjWG78L8T8JGTxsJid6vzU5wcacJNIYxO2qVGlNPMNI/edit',
+          googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1OjWG78L8T8JGTxsJid6vzU5wcacJNIYxO2qVGlNPMNI/preview',
+          googleSlidesEmbedUrl: 'https://docs.google.com/presentation/d/1OjWG78L8T8JGTxsJid6vzU5wcacJNIYxO2qVGlNPMNI/embed?start=false&loop=false&delayms=5000',
+          googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1OjWG78L8T8JGTxsJid6vzU5wcacJNIYxO2qVGlNPMNI/export/pdf'
+        },
+        WS3_EXEC: {
+          slideCount: 10,
+          googleSlidesId: '1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A',
+          googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/edit',
+          googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/preview',
+          googleSlidesEmbedUrl: 'https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/embed?start=false&loop=false&delayms=5000',
+          googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/export/pdf'
+        },
+        WS4_EXEC: {
+          slideCount: 10,
+          googleSlidesId: '1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s',
+          googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s/edit',
+          googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s/preview',
+          googleSlidesEmbedUrl: 'https://docs.google.com/presentation/d/1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s/embed?start=false&loop=false&delayms=5000',
+          googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s/export/pdf'
+        },
+        WS5_EXEC: {
+          slideCount: 10,
+          googleSlidesId: '19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA',
+          googleSlidesEditUrl: 'https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/edit',
+          googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/preview',
+          googleSlidesEmbedUrl: 'https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/embed?start=false&loop=false&delayms=5000',
+          googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/export/pdf'
         },
         ALL: {
           slideCount: 25,

@@ -54,7 +54,15 @@
                 <span id="hub-open-gslides-label">&#128202; Slides &amp; Specs (WS1)</span>
               </button>
               <button type="button" class="pc-split-caret" style="height:26px; padding:0 6px;" onclick="togglePcDropdown(event, 'hub-gslides-menu')" aria-label="Slides, specs, viewer, and exports menu">&#9660;</button>
-              <div id="hub-gslides-menu" class="pc-dropdown-menu" style="min-width:280px;">
+              <div id="hub-gslides-menu" class="pc-dropdown-menu" style="min-width:300px;">
+                <div class="pc-dropdown-section">10-Slide Executive Narrative Deck</div>
+                <a id="hub-exec-deck-link" class="pc-dropdown-item" href="https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit" target="_blank" rel="noopener noreferrer">
+                  <span class="pc-gpdf-icon" style="background:#1a73e8;">10</span> <span>WS1 Executive Narrative Deck (10 Slides &nearr;)</span>
+                </a>
+                <a id="hub-exec-pptx-download" class="pc-dropdown-item" href="slides/ws1-executive-architecture-23slide-deck.pptx" download>
+                  <span>&#11015;</span> <span>Download 10-Slide Executive .pptx (WS1)</span>
+                </a>
+                <div class="pc-dropdown-divider"></div>
                 <div class="pc-dropdown-section">Same-Screen Cloud Viewer &amp; Specs</div>
                 <button type="button" id="hub-cloud-viewer-btn" class="pc-dropdown-item" onclick="openCloudViewerModal(activeHubWsKey, activeHubSlideIdx + 1, 'slides')">
                   <span>&#128065;&#65039;</span> <span>Same-Screen Cloud Viewer (Studio + Docs)</span>
@@ -106,7 +114,7 @@
                   <span>&#128424;</span> <span>Print / Save Article as PDF</span>
                 </button>
                 <a id="hub-pptx-download" class="pc-dropdown-item" href="slides/ws1-12slide-visual-deck.pptx" download>
-                  <span>&#11015;</span> <span>Download Editable .pptx (WS1 &bull; 8 Slides)</span>
+                  <span>&#11015;</span> <span>Download Editable .pptx (WS1 &bull; 7 Slides)</span>
                 </a>
                 <a id="hub-docx-download" class="pc-dropdown-item" href="docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx" download>
                   <span>&#128196;</span> <span>Download Editable Word .docx (WS1)</span>
@@ -217,7 +225,7 @@
                 <h3 style="margin:6px 0 4px 0; color:#0f172a; font-size:17px; display:flex; align-items:center; gap:8px;">
                   <span>📸</span> <span>Live 3rd-Party SaaS UI Proofs &amp; Architecture Studio Walkthrough</span>
                 </h3>
-                <p class="muted" style="margin:0; font-size:12.5px; color:#334155; line-height:1.5;">Inspect cryptographically verified 16:9 Retina captures (2 Live Commercial SaaS Retina captures (ThoughtSpot Cloud); Google Cloud Console &amp; Gemini Enterprise: 0/15 pending 1-tap SSO) with zero open-source stand-ins. Select any commercial SaaS target below to review live captures or Marketplace provisioning status alongside browser walkthrough audio.</p>
+                <p class="muted" style="margin:0; font-size:12.5px; color:#334155; line-height:1.5;">Inspect cryptographically verified 16:9 Retina captures (3 Live Commercial SaaS Retina captures: ThoughtSpot Cloud &amp; Atlassian Jira Cloud; Google Cloud Console &amp; Gemini Enterprise: 0/15 pending 1-tap SSO) with zero open-source stand-ins. Select any commercial SaaS target below to review live captures or Marketplace provisioning status alongside browser walkthrough audio.</p>
               </div>
               <div class="flex-wrap-center">
                 <button type="button" class="sim-btn" style="font-size:11.5px; padding:6px 10px;" onclick="setHubViewMode('guide')">&#8592; Back to Architecture Guide</button>

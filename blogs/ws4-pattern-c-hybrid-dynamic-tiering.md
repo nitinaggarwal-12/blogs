@@ -15,7 +15,7 @@ status: "PUBLISH_READY"
 
 This document is **Part 4** of the Multi-Tenant Agentic AI series on Google Cloud. It presents **Pattern C (Governed Hub-and-Spoke Dynamic Hybrid Architecture)**—the commercial SaaS sweet spot for organizations serving hundreds of pooled commercial tenants alongside dozens of enterprise customers who require dedicated CMEK databases, regional data residency, or private MCP connectors without incurring `~15x` full-silo compute overhead. Pattern C keeps **`100%` of Hops 1–4 inside one shared Hub** while routing enterprise tenants over **unidirectional `/28` Private Service Connect (`PSC`) spokes**—and lets any tenant graduate live from Pattern A Pool to an Enterprise PSC Spoke with **`0 ms` downtime and `0` dropped active agent turns**.
 
-> **Approved 2-Diagram WS4 Baseline & Live 2-Way Draw.io Sync:** Both diagrams in this guide are synchronized 2-way with the **[Approved 12-Slide Architecture Deck (WS4 = Slides 8–9) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p8)** and backed by live `.drawio` XML + crisp vector `.svg` files. Review the [WS4 12-Slide Visual Deck (`.pptx`)](../slides/ws4-12slide-visual-deck.pptx), the [WS4 Google Docs Spec ↗](https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/edit?resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw), the [Hybrid Router & Migrator Codebase](../workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py), the [Zero-Downtime Tier Upgrade Suite](../workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py), or the [Terraform Hybrid PSC Blueprint](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf).
+> **Approved 2-Diagram WS4 Baseline & Live 2-Way Draw.io Sync:** Both diagrams in this guide are synchronized 2-way with the **[WS4 Executive Architecture (10-Slide Lean Narrative Deck) ↗](https://docs.google.com/presentation/d/1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s/edit)** and the **[Approved 12-Slide Architecture Deck (WS4 = Slides 8–9) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p8)**, backed by live `.drawio` XML + crisp vector `.svg` files. Download the [WS4 10-Slide Executive Deck (`.pptx`)](../slides/ws4-executive-architecture-10slide-deck.pptx) or [WS4 Lean Visual Deck (`.pptx`)](../slides/ws4-12slide-visual-deck.pptx), or review the [WS4 Google Docs Spec ↗](https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/edit?resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw), the [Hybrid Router & Migrator Codebase](../workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py), the [Zero-Downtime Tier Upgrade Suite](../workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py), or the [Terraform Hybrid PSC Blueprint](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf).
 
 ---
 
@@ -112,22 +112,16 @@ Across all 10 AWS Bedrock AgentCore MCP targets (`cymbal-a2a-mcp-gateway-suyxm3c
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-## Verified Live Commercial SaaS Proofs for WS4 (Pattern C GCP Console Captures Pending 1-Tap SSO)
+## Verified Live Commercial SaaS Escalation Proof for WS4 (Atlassian Jira Cloud • Plus 3 Pattern C GCP Console Resources Pending SSO)
 
 > [!IMPORTANT]
-> **Verified Live Commercial SaaS Proofs (2 Retina Captures • GCP Console: 0/15 Pending 1-Tap SSO):** Currently showing 2 cryptographically verified live commercial SaaS Retina captures (ThoughtSpot Cloud on team2.thoughtspot.cloud, verified exit 0 by verify_slide_screenshots.mjs --audience external). Google Cloud Console & Gemini Enterprise captures (0/15) are pending 1-tap Google SSO in an authenticated browser session; zero open-source stand-ins or unattested legacy images remain. Backend multi-cloud protocol verification receipts (AWS Bedrock AgentCore MCP gateway targets and S3 federation ledgers in `data/saas_10_live_3pattern_receipt.json`) are server-side cryptographic API proofs and are strictly distinct from live commercial browser UI screenshots. Open the dedicated gallery at `/blogs/ws4/screenshots` or inspect the full [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
+> **Verified Live Commercial SaaS Proof (`SAAS-JIRA-01` • Pattern C Hub-to-Spoke Escalation):** Showing the genuine live Atlassian Jira Cloud Scrum board (`gcp-team-sbiarllr.atlassian.net`, captured at `2880×1620` Retina and verified `exit 0` by `verify_slide_screenshots.mjs --audience external`) demonstrating governed 3LO OAuth & Cloud Armor FastMCP escalation tracking across Hub and Enterprise spokes. Pattern C VPC Hub/Spoke & Cloud Logging console proofs (`GCP-WS4-01..03`) are provisioned and ready for 1-tap SSO capture at `/blogs/ws4/screenshots` (see also the full [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md)).
 
-### SAAS-01A: ThoughtSpot Cloud — Live Executive Analytics Liveboard
-**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** team2.thoughtspot.cloud • **Resource:** Retail Sales Liveboard (team2.thoughtspot.cloud) • Provenance SHA-256 fd5cb15c0902 (2880x1620 Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
+### SAAS-JIRA-01: Atlassian Jira Cloud — Live Governed 3LO Escalation & Security Board
+**Provider:** Atlassian Jira Cloud (Live Commercial SaaS) • **Scope:** `gcp-team-sbiarllr.atlassian.net` • **Resource:** Cloud Platform Engineering (`SCRUM Sprint 0`) • Provenance SHA-256 `95ce12f87f12` (`2880x1620` Retina) • **[Open Live Console ↗](https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1)**
 
-![Live commercial ThoughtSpot Cloud SaaS Liveboard rendered directly from team2.thoughtspot.cloud.](../screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png)
-*Genuine commercial ThoughtSpot Cloud Liveboard (team2.thoughtspot.cloud) captured live at 2880x1620 Retina with cryptographic SHA-256 provenance verification.*
-
-### SAAS-01B: ThoughtSpot Cloud — Live Governed Saved Answer Query
-**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** team2.thoughtspot.cloud • **Resource:** Stock-Out & Spoilage Analytics Answer (team2.thoughtspot.cloud) • Provenance SHA-256 3fcab795d1e5 (2880x1620 Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
-
-![Live commercial ThoughtSpot Cloud Saved Answer analytics table rendered directly from team2.thoughtspot.cloud.](../screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png)
-*Genuine commercial ThoughtSpot Cloud Saved Answer query (team2.thoughtspot.cloud) demonstrating live governed BI analytics consumption.*
+![Live commercial Atlassian Jira Cloud Scrum board rendered directly from gcp-team-sbiarllr.atlassian.net showing governed 3LO OAuth and Cloud Armor security tasks.](../screenshots/verified-cloud-console/saas_06_atlassian_jira_confluence.png)
+*Genuine commercial Atlassian Jira Cloud Scrum board (`gcp-team-sbiarllr.atlassian.net`) captured live at 2880x1620 Retina with cryptographic SHA-256 provenance verification.*
 
 <!-- GENUINE_3P_BEFORE_AFTER_END -->
 
@@ -136,7 +130,8 @@ Across all 10 AWS Bedrock AgentCore MCP targets (`cymbal-a2a-mcp-gateway-suyxm3c
 ## What's next
 
 - **Approved Architecture Presentations & Editable Diagrams (WS4 = Slides 8–9):**
-  - [Open Approved 12-Slide Architecture Deck in Google Slides (WS4 = Slides 8–9) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p8) • [Download WS4 12-Slide Visual Deck (`.pptx`)](../slides/ws4-12slide-visual-deck.pptx)
+  - **[Open WS4 10-Slide Executive Narrative Deck in Google Slides ↗](https://docs.google.com/presentation/d/1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s/edit)** • [Download WS4 Executive Deck (`.pptx`)](../slides/ws4-executive-architecture-10slide-deck.pptx)
+  - [Open Approved 12-Slide Architecture Deck in Google Slides (WS4 = Slides 8–9) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p8) • [Download WS4 Lean Visual Deck (`.pptx`)](../slides/ws4-12slide-visual-deck.pptx)
   - [Figure 1 Pattern C Hybrid PSC (`.drawio`)](../diagrams/ws4-pattern-c-hybrid.drawio) • [Figure 2 0ms Live Tier Promotion (`.drawio`)](../diagrams/ws4-c4-l3-live-tier-promotion-swimlane.drawio)
 - **Workstream 4 Codebase, Migration Suite & Terraform:**
   - **Hybrid Router & Live Migrator:** [`pattern_c_hybrid_router_and_migrator.py`](../workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py) • [`run_tier_migration_suite.py`](../workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py)

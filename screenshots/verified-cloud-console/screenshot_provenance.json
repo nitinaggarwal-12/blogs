@@ -3,7 +3,7 @@
   "generator": "real-slide-screenshot-guard/capture_verified_ui.mjs",
   "generatorSha256": "219f369b885be83d4622c6c0685a747dddcca4cdad17355928ac916bbc2f8d8b",
   "audience": "external",
-  "updatedAt": "2026-11-17T04:26:53.907Z",
+  "updatedAt": "2026-11-20T04:19:41.786Z",
   "entries": [
     {
       "relFile": "saas_01_thoughtspot_liveboard.png",
@@ -68,6 +68,37 @@
       "dHash64": "6842236519591111",
       "meanLuma": 226.97,
       "note": "Real ThoughtSpot Cloud Saved Answer analytics query on team2.thoughtspot.cloud"
+    },
+    {
+      "relFile": "saas_06_atlassian_jira_confluence.png",
+      "absPath": "/usr/local/google/home/nitinagga/Documents/blogs/screenshots/verified-cloud-console/saas_06_atlassian_jira_confluence.png",
+      "capturedAt": "2026-11-20T04:19:41.785Z",
+      "captureMethod": "cdp_live",
+      "audience": "external",
+      "canonicalOriginUrl": "https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1?filter=&groupBy=none",
+      "hostname": "gcp-team-sbiarllr.atlassian.net",
+      "originTier": "canonical_external",
+      "allowOriginsUsed": [],
+      "pageTitle": "Board - SCRUM board - Jira",
+      "browserProduct": "Chrome/158.0.8127.36",
+      "resolvedAddresses": [
+        "13.227.180.4"
+      ],
+      "securityState": "secure",
+      "isSecureContext": true,
+      "nextHopProtocol": "h2",
+      "suspiciousBrowserFlags": [],
+      "visibleBlockers": [],
+      "viewportCss": "1440x810",
+      "deviceScaleFactor": 2,
+      "width": 2880,
+      "height": 1620,
+      "bytes": 301257,
+      "sha256": "95ce12f87f1203636099c5fb0772391bb654210466005688d2bc95a41cf53e24",
+      "rawPixelsSha256": "c22ff009390057665dd81c01b7b941c0a805d12e1388cf0654b1dd70fbe883e5",
+      "dHash64": "4d625555517000e3",
+      "meanLuma": 247.73,
+      "note": "Real commercial Atlassian Jira Cloud Scrum Board workspace on gcp-team-sbiarllr.atlassian.net"
     }
   ]
 }

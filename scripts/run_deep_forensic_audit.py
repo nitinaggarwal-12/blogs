@@ -1194,7 +1194,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             and "sanitize_html_fragment_allowlist" in server_src
         )
 
-        # Multi-Plane TS + Lean Visual OOXML (WS1=8, WS2=7, WS3=6, WS4=7, WS5=7, WS1_EXEC=10) + Manifest SHA-256 + Canvas Dynamic Zoom/Drag Parity
+        # Multi-Plane TS + Lean Visual OOXML (WS1=7, WS2=7, WS3=6, WS4=7, WS5=7, WS1_EXEC..WS5_EXEC=10) + Manifest SHA-256 + Canvas Dynamic Zoom/Drag Parity
         multi_plane_parity_errors: List[str] = []
         import hashlib as _mp_hashlib
         import json as _mp_json
@@ -1202,7 +1202,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
         import xml.etree.ElementTree as _mp_ET
         import zipfile as _mp_zipfile
 
-        _lean_slide_counts = {1: 8, 2: 7, 3: 6, 4: 7, 5: 7}
+        _lean_slide_counts = {1: 7, 2: 7, 3: 6, 4: 7, 5: 7}
         _mp_manifest_path = ROOT_DIR / "slides/cloud_viewer_manifest.json"
         if not _mp_manifest_path.exists():
             multi_plane_parity_errors.append("missing:slides/cloud_viewer_manifest.json")
@@ -1276,28 +1276,48 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                             multi_plane_parity_errors.append(f"approved12_missing_txt:{_ws_key}:S{_snum:02d}:{_req_txt}")
                         if f"[Slide {_snum:02d}/{_exp_slides:02d}" not in _s_raw:
                             multi_plane_parity_errors.append(f"approved12_bad_footer_num:{_ws_key}:S{_snum:02d}")
-            # Also verify WS1_EXEC 10-slide lean executive deck (0 pending slots, ThoughtSpot Retina S09, Approved Diagrams S05/S06)
-            _exec_p = ROOT_DIR / "slides/ws1-executive-architecture-23slide-deck.pptx"
-            if _exec_p.exists():
+            # Also verify all 5 10-slide Executive Narrative Decks (WS1_EXEC..WS5_EXEC: 0 pending slots, 0 Gemini 3.8, native BARE_MIN_12 diagrams)
+            _exec_specs = [
+                ("WS1_EXEC", "slides/ws1-executive-architecture-23slide-deck.pptx", ((5, "ws1-5hop-governance-baseline.drawio"), (6, "ws1-c4-l3-process-sequence-swimlane.drawio"))),
+                ("WS2_EXEC", "slides/ws2-executive-architecture-10slide-deck.pptx", ((4, "ws2-pattern-a-pooled.drawio"), (5, "ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane.drawio"), (6, "ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane.drawio"))),
+                ("WS3_EXEC", "slides/ws3-executive-architecture-10slide-deck.pptx", ((4, "ws3-pattern-b-silo.drawio"), (5, "ws3-c4-l3-cmek-killswitch-swimlane.drawio"))),
+                ("WS4_EXEC", "slides/ws4-executive-architecture-10slide-deck.pptx", ((4, "ws4-pattern-c-hybrid.drawio"), (5, "ws4-c4-l3-live-tier-promotion-swimlane.drawio"))),
+                ("WS5_EXEC", "slides/ws5-executive-architecture-10slide-deck.pptx", ((4, "ws5-decision-tree-and-triad.drawio"), (5, "saas10-multicloud-a2a-mcp-bridge.drawio"), (6, "ws5-c4-l3-dynamic-skill-delegation-swimlane.drawio"))),
+            ]
+            for _ekey, _erel_pptx, _ediags in _exec_specs:
+                _exec_p = ROOT_DIR / _erel_pptx
+                if not _exec_p.exists():
+                    multi_plane_parity_errors.append(f"missing:{_ekey}")
+                    continue
                 _exec_sha = _mp_hashlib.sha256(_exec_p.read_bytes()).hexdigest()
-                _exec_entry = _mp_manifest.get("WS1_EXEC", {})
+                _exec_entry = _mp_manifest.get(_ekey, {})
                 if _exec_entry.get("sha256") != _exec_sha:
-                    multi_plane_parity_errors.append("sha_mismatch:WS1_EXEC")
+                    multi_plane_parity_errors.append(f"sha_mismatch:{_ekey}")
                 if _exec_entry.get("slideCount") != 10:
-                    multi_plane_parity_errors.append(f"manifest_slideCount:WS1_EXEC={_exec_entry.get('slideCount')}!=10")
+                    multi_plane_parity_errors.append(f"manifest_slideCount:{_ekey}={_exec_entry.get('slideCount')}!=10")
+                _eprev_dir = ROOT_DIR / "slides/previews" / _exec_p.stem
+                if _eprev_dir.is_dir():
+                    _epng_cnt = len(list(_eprev_dir.glob("slide_*.png")))
+                    if _epng_cnt != 10:
+                        multi_plane_parity_errors.append(f"preview_png_count:{_ekey}={_epng_cnt}!=10")
                 with _mp_zipfile.ZipFile(_exec_p) as _ezf:
                     _es = [n for n in _ezf.namelist() if re.match(r"ppt/slides/slide\d+\.xml$", n)]
-                    if len(_es) != 10:
-                        multi_plane_parity_errors.append(f"slide_count:WS1_EXEC={len(_es)}!=10")
+                    _en = [n for n in _ezf.namelist() if re.match(r"ppt/notesSlides/notesSlide\d+\.xml$", n)]
+                    if len(_es) != 10 or len(_en) != 10:
+                        multi_plane_parity_errors.append(f"slide_note_count:{_ekey}={len(_es)}/{len(_en)}!=10")
                     for _esx in _es:
                         _eraw = _ezf.read(_esx).decode("utf-8", "ignore")
+                        if 'h="0"' in _eraw:
+                            multi_plane_parity_errors.append(f"zero_tr:{_ekey}:{_esx}")
                         if "pending interactive marketplace" in _eraw.lower():
-                            multi_plane_parity_errors.append(f"pending_slot_in_lean_deck:WS1_EXEC:{_esx}")
-                    for _esnum, _erel in ((5, "ws1-5hop-governance-baseline.drawio"), (6, "ws1-c4-l3-process-sequence-swimlane.drawio")):
+                            multi_plane_parity_errors.append(f"pending_slot_in_lean_deck:{_ekey}:{_esx}")
+                        if "gemini 3.8" in _eraw.lower():
+                            multi_plane_parity_errors.append(f"stale_gemini38:{_ekey}:{_esx}")
+                    for _esnum, _erel in _ediags:
                         if _erel not in _ezf.read(f"ppt/slides/_rels/slide{_esnum}.xml.rels").decode("utf-8", "ignore"):
-                            multi_plane_parity_errors.append(f"approved12_missing_rel:WS1_EXEC:S{_esnum:02d}:{_erel}")
+                            multi_plane_parity_errors.append(f"approved12_missing_rel:{_ekey}:S{_esnum:02d}:{_erel}")
                         if f"[Slide {_esnum:02d}/10" not in _ezf.read(f"ppt/slides/slide{_esnum}.xml").decode("utf-8", "ignore"):
-                            multi_plane_parity_errors.append(f"approved12_bad_footer_num:WS1_EXEC:S{_esnum:02d}")
+                            multi_plane_parity_errors.append(f"approved12_bad_footer_num:{_ekey}:S{_esnum:02d}")
 
         for _req_sym in (
             "computeFitZoom",
@@ -1340,7 +1360,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             and multi_plane_parity_ok
         )
         index_detail = (
-            f"index.html verified ({len(html):,} bytes, 0 nitinagga-ge-2 leaks), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI Series Reader links resolve on disk (0 broken), {certified_diagram_count}/14 Official Google Cloud Architecture Center & PromptCanvas Vision Draw.io blueprints CERTIFIED (Rule 53G Per-Pattern Geometry: 12 hub-2-spoke 56v/23e, WS2 pooled-shared-plane 60v/20e, WS5 decision-tree-3-outcome 46v/19e, .drawio/.drawio.png/.svg/.vision.json quartet, 0 collisions), 14/14 Executive-Friendly Plain-English Logical & Technical Flows verified (diagrams/diagram_e2e_flows.json + 3-Act 12-Slide Pure Technical Workstream Decks, 0 pricing slides), Cloud Console receipt + 27-file SHA-256 bundle + 10-SaaS × 3-Pattern receipt (30/30 flows, 60/60 assertions) CERTIFIED (0 fake/synthetic PNGs in screenshots/cloud-console/, 0 EC2 13.220.94.209 Execution Twin links), {deck_count}/6 Workstream/Master + 9/9 DevSite Guide editable .pptx slide decks (0 emojis, 0 pricing slides, 0 <a:tr h=\"0\"> auto-collapsing table rows, 0.14\"–0.16\" table-to-card vertical gap, 100% first-person spoken customer talk tracks, 100% native DrawingML CLI telemetry cards on Slide 10, 15/15 Google Slides + 6/6 Google Docs SHA-256 synced, 6/6 Lean Visual Decks [WS1=8, WS2=7, WS3=6, WS4=7, WS5=7, WS1_EXEC=10] TS/OOXML/Manifest + dynamic zoom parity VERIFIED) + Rule 53F/53G content & topology grounding (5/5 distinct per-WS Slide 4/6/7 fingerprints, 3 distinct Slide 5 diagram topologies, 0 ungrounded facts [18.4s/850-150/6-Pillar/220ms], 0 hex-code leaks, WS4 950+50 canonical split) + {ws_blog_count}/5 canonical 5-part series blogs verified (PUBLISH_READY)."
+            f"index.html verified ({len(html):,} bytes, 0 nitinagga-ge-2 leaks), {len(ui_doc_paths)}/{len(ui_doc_paths)} UI Series Reader links resolve on disk (0 broken), {certified_diagram_count}/14 Official Google Cloud Architecture Center & PromptCanvas Vision Draw.io blueprints CERTIFIED (Rule 53G Per-Pattern Geometry: 12 hub-2-spoke 56v/23e, WS2 pooled-shared-plane 60v/20e, WS5 decision-tree-3-outcome 46v/19e, .drawio/.drawio.png/.svg/.vision.json quartet, 0 collisions), 14/14 Executive-Friendly Plain-English Logical & Technical Flows verified (diagrams/diagram_e2e_flows.json + 3-Act 12-Slide Pure Technical Workstream Decks, 0 pricing slides), Cloud Console receipt + 27-file SHA-256 bundle + 10-SaaS × 3-Pattern receipt (30/30 flows, 60/60 assertions) CERTIFIED (0 fake/synthetic PNGs in screenshots/cloud-console/, 0 EC2 13.220.94.209 Execution Twin links), {deck_count}/6 Workstream/Master + 9/9 DevSite Guide editable .pptx slide decks (0 emojis, 0 pricing slides, 0 <a:tr h=\"0\"> auto-collapsing table rows, 0.14\"–0.16\" table-to-card vertical gap, 100% first-person spoken customer talk tracks, 100% native DrawingML CLI telemetry cards on Slide 10, 15/15 Google Slides + 6/6 Google Docs SHA-256 synced, 10/10 Lean & Executive Narrative Decks [WS1=7, WS2=7, WS3=6, WS4=7, WS5=7, WS1_EXEC..WS5_EXEC=10] TS/OOXML/Manifest + dynamic zoom parity VERIFIED) + Rule 53F/53G content & topology grounding (5/5 distinct per-WS Slide 4/6/7 fingerprints, 3 distinct Slide 5 diagram topologies, 0 ungrounded facts [18.4s/850-150/6-Pillar/220ms], 0 hex-code leaks, WS4 950+50 canonical split) + {ws_blog_count}/5 canonical 5-part series blogs verified (PUBLISH_READY)."
             if index_ok
             else f"missing_markers={missing_markers}, missing_ui_paths={missing_ui_paths}, unready_blogs={unready_blogs}, diagrams_ok={diagrams_ok}, cloud_receipt_ok={cloud_receipt_ok}, slides_ok={slides_ok}, e2e_flows_ok={e2e_flows_ok}, multi_plane_parity_errors={multi_plane_parity_errors}"
         )
