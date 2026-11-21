@@ -114,23 +114,7 @@ class HallucinationPurgeRegressionTests(unittest.TestCase):
         self.assertAlmostEqual(receipt["overall_consensus_mean_score"], 99.94, places=2)
         self.assertAlmostEqual(receipt["model_aggregates"]["gemini-2.5-pro"]["mean_overall_score"], 99.94, places=2)
         self.assertAlmostEqual(receipt["model_aggregates"]["gemini-2.5-flash"]["mean_overall_score"], 99.94, places=2)
-
-        mocks_html = (ROOT_DIR / "scoring_mocks.html").read_text(encoding="utf-8")
-        self.assertNotIn("Generator ≠ Judge", mocks_html)
-        self.assertIn("Same-Family Pro + Flash", mocks_html)
-        self.assertIn("99.94 / 100", mocks_html)
-
-        # Verify every proVerbatim and flashVerbatim in JUDGE_REASONING_DATA is a verbatim substring of its response_id receipt payload
-        m_arr = re.search(r"const\s+JUDGE_REASONING_DATA\s*=\s*(\[[\s\S]*?\]);", mocks_html)
-        self.assertIsNotNone(m_arr)
-        judge_rows = json.loads(m_arr.group(1))
-        self.assertEqual(len(judge_rows), 6)
-        by_resp_id = {ev["response_id"]: json.dumps(ev["evaluation"], ensure_ascii=False) for ev in receipt["evaluations"]}
-        for row in judge_rows:
-            self.assertIn(row["proResponseId"], by_resp_id)
-            self.assertIn(row["flashResponseId"], by_resp_id)
-            self.assertIn(row["proVerbatim"], by_resp_id[row["proResponseId"]])
-            self.assertIn(row["flashVerbatim"], by_resp_id[row["flashResponseId"]])
+        self.assertFalse((ROOT_DIR / "scoring_mocks.html").exists(), "Legacy scoring_mocks.html must remain purged")
 
     def test_ch03_live_bridge_honesty_and_vertex_receipt_response_id(self) -> None:
         receipt = json.loads((ROOT_DIR / "docs/cloud_console_verification_receipt.json").read_text(encoding="utf-8"))
@@ -149,14 +133,8 @@ class HallucinationPurgeRegressionTests(unittest.TestCase):
         self.assertNotIn("gantry-pulse", bridge_src)
         self.assertIn('"live_bq_inserted": False', bridge_src)
 
-    def test_ch04_simulator_latency_separation_and_cvss_residuals(self) -> None:
-        sim_html = (ROOT_DIR / "templates/tab_simulator.html").read_text(encoding="utf-8")
-        self.assertIn("Residual: 2.4", sim_html)
-        self.assertIn("Residual: 2.7", sim_html)
-        self.assertNotIn("Residual: 0.6", sim_html)
-        self.assertNotIn("Residual: 1.1", sim_html)
-        self.assertIn("isLiveLlmCall: false", sim_html)
-        self.assertIn("Live Cloud KMS KeyRing Probe + In-Memory 5-Hop Policy", sim_html)
+    def test_ch04_simulator_latency_separation_and_runtime_honesty(self) -> None:
+        self.assertFalse((ROOT_DIR / "templates/tab_simulator.html").exists(), "Legacy tab_simulator.html must remain purged")
 
         st_mode, mode_data = self._get_json("/api/runtime/mode")
         self.assertEqual(st_mode, 200)
@@ -222,37 +200,19 @@ class HallucinationPurgeRegressionTests(unittest.TestCase):
         self.assertIsNone(muse_rs["cohort_b_orr_pct"])
         self.assertNotIn("FV-GXP-2026-04", str(muse_rs["study"]))
 
-    def test_ch06_payg_marketplace_split_and_unauthenticated_probe_honesty(self) -> None:
-        payg_html = (ROOT_DIR / "templates/tab_payg.html").read_text(encoding="utf-8")
-        self.assertIn("6 GCP MARKETPLACE PAYG + 2 DIRECT VENDOR DEV TIERS", payg_html)
-        self.assertIn("All architecture slide decks focus strictly on technical", payg_html)
-        self.assertIn("$650 hub + 90% Pooled ($18) + 10% VIP Spoke ($850)", payg_html)
-
+    def test_ch06_legacy_payg_tab_and_endpoint_purged(self) -> None:
+        self.assertFalse((ROOT_DIR / "templates/tab_payg.html").exists(), "Legacy tab_payg.html must remain purged")
         modals_js = (ROOT_DIR / "js/modals.js").read_text(encoding="utf-8")
         self.assertNotIn("cymbal-itom.service-now.com", modals_js)
-        self.assertIn("https://developer.servicenow.com/", modals_js)
+        self.assertNotIn("/api/payg-saas/test-connection", modals_js)
 
-        # Mock an HTTP 401 upstream response and verify ok=False, tls_reachable=True, authenticated=False
-        class _FakeOpener401:
-            def open(self, req, timeout=5):
-                import io
-                import urllib.error
-                hdrs = {"Content-Type": "application/json"}
-                raise urllib.error.HTTPError(req.full_url, 401, "Unauthorized", hdrs, io.BytesIO(b"{}"))
+        st_p, _ = self._post_json(
+            "/api/payg-saas/test-connection",
+            {"service_id": "datadog", "endpoint_url": "https://api.datadoghq.com/api/v2/spans", "api_token": ""},
+        )
+        self.assertEqual(st_p, 404)
 
-        with patch.object(SERVER_MOD, "validate_payg_outbound_url", return_value=(True, 200, "ALLOWED", "https://api.datadoghq.com/api/v2/spans")):
-            with patch("urllib.request.build_opener", return_value=_FakeOpener401()):
-                st_p, payg_res = self._post_json(
-                    "/api/payg-saas/test-connection",
-                    {"service_id": "datadog", "endpoint_url": "https://api.datadoghq.com/api/v2/spans", "api_token": ""},
-                )
-        self.assertEqual(st_p, 200)
-        self.assertFalse(payg_res["ok"])
-        self.assertTrue(payg_res["tls_reachable"])
-        self.assertFalse(payg_res["authenticated"])
-        self.assertEqual(payg_res["status"], "TLS_HOST_REACHED_AUTH_REQUIRED")
-
-    def test_ch07_identity_scrub_mockup_math_and_light_toast(self) -> None:
+    def test_ch07_identity_scrub_and_light_toast(self) -> None:
         for rel in (
             "server.py",
             "scripts/unified_feedback_engine.py",
@@ -263,10 +223,6 @@ class HallucinationPurgeRegressionTests(unittest.TestCase):
             src = (ROOT_DIR / rel).read_text(encoding="utf-8")
             self.assertNotIn("nitinagga@google.com", src, f"Personal email leaked in {rel}")
             self.assertNotIn("gantry-pulse", src, f"Cross-repo path leaked in {rel}")
-
-        mocks_html = (ROOT_DIR / "scoring_mocks.html").read_text(encoding="utf-8")
-        self.assertIn("88 / 100 (Level 300 Certified)", mocks_html)
-        self.assertIn("&lt;60s KMS propagation SLA", mocks_html)
 
         layout_css = (ROOT_DIR / "css/layout.css").read_text(encoding="utf-8")
         m_toast = re.search(r"\.portal-toast\s*\{([^}]+)\}", layout_css)

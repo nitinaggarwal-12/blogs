@@ -275,35 +275,35 @@ async function run() {
       },
     });
 
-    // UI-03: Interactive 5-Hop Simulator Tab
+    // UI-03: Interactive Diagrams Atlas Tab
     await runCase({
       id: 'UI-03',
-      name: 'Interactive 5-Hop Simulator Live Execution',
-      inputs: `GET ${args.baseUrl}/?tab=simulator @ 1600x950`,
-      expected: 'Live Python 5-Hop simulator executes sim1 and displays structured trace with 0 errors',
+      name: 'Diagrams Atlas Tab (67 Interactive Blueprints)',
+      inputs: `GET ${args.baseUrl}/?tab=diagrams @ 1600x950`,
+      expected: 'Diagrams Atlas renders active grid with SVG/Draw.io cards and 0 errors',
       fn: async (page) => {
         await page.setViewport({ width: 1600, height: 950, deviceScaleFactor: 2 });
-        await page.goto(`${args.baseUrl}/?tab=simulator`, { waitUntil: 'networkidle2', timeout: 30000 });
-        await page.waitForSelector('#tab-simulator.active', { timeout: 10000 });
-        await new Promise((r) => setTimeout(r, 900));
+        await page.goto(`${args.baseUrl}/?tab=diagrams`, { waitUntil: 'networkidle2', timeout: 30000 });
+        await page.waitForSelector('#tab-diagrams.active', { timeout: 10000 });
+        await new Promise((r) => setTimeout(r, 600));
         const audit = await auditPageState(page);
-        const simOk = await page.evaluate(() => {
-          const txt = document.getElementById('tab-simulator')?.innerText || '';
-          return txt.includes('Hop 1') || txt.includes('REDACTED') || txt.includes('ALLOW');
+        const atlasOk = await page.evaluate(() => {
+          const cards = document.querySelectorAll('#tab-diagrams .diagram-atlas-card, #tab-diagrams img');
+          return cards.length >= 5;
         });
         const fails = [];
-        if (!simOk) fails.push('Simulator output did not render live 5-Hop trace');
+        if (!atlasOk) fails.push('Diagrams Atlas did not render diagram cards');
         if (!audit.overflowOk) fails.push(`Horizontal overflow ${audit.overflowPx}px`);
-        return { ...audit, simOk, _failReason: fails.join('; ') };
+        return { ...audit, atlasOk, _failReason: fails.join('; ') };
       },
     });
 
     // UI-04: Verified Cloud Console & Commercial SaaS Proofs Tab
     await runCase({
       id: 'UI-04',
-      name: 'Verified Live Proofs & Workbench Tab (16:9 Retina)',
+      name: 'Live Proofs & Code Tab (17 Live Captures)',
       inputs: `GET ${args.baseUrl}/?tab=screenshots @ 1600x950`,
-      expected: 'Verified ThoughtSpot Cloud Retina images load cleanly (naturalWidth >= 1280), 0 legacy OSS strings',
+      expected: 'All 17 live Google Cloud Console and Commercial SaaS captures load cleanly (naturalWidth >= 1280), 0 legacy OSS strings',
       fn: async (page) => {
         await page.setViewport({ width: 1600, height: 950, deviceScaleFactor: 2 });
         await page.goto(`${args.baseUrl}/?tab=screenshots`, { waitUntil: 'networkidle2', timeout: 30000 });
@@ -320,7 +320,7 @@ async function run() {
             .length;
         });
         const fails = [];
-        if (verifiedCount < 2) fails.push(`Expected >=2 verified Retina images on Tab 3, got ${verifiedCount}`);
+        if (verifiedCount < 2) fails.push(`Expected >=2 verified live images on Live Proofs tab, got ${verifiedCount}`);
         if (audit.brokenImgCount > 0) fails.push(`Broken images: ${audit.brokenImgs.join(', ')}`);
         if (!audit.overflowOk) fails.push(`Horizontal overflow ${audit.overflowPx}px`);
         if (audit.foundBanned.length > 0) fails.push(`Banned legacy DOM text: ${audit.foundBanned.join(', ')}`);
@@ -328,76 +328,55 @@ async function run() {
       },
     });
 
-    // UI-05: Forensic Tab + New 8-Pillar AEF v2.0 Scorecard + Consolidated Filter
+    // UI-05: 27-File Reference Codebase Explorer
     await runCase({
       id: 'UI-05',
-      name: 'Forensic Audit Ledger & 8-Pillar AEF v2.0 Scorecard UI',
-      inputs: `GET ${args.baseUrl}/?tab=forensic @ 1600x950 + select SEC:aef`,
-      expected: 'Renders 13-Point Ledger + 8-Pillar AEF v2.0 Scorecard card (#forensic-aef-scorecard-card) + filter works cleanly',
+      name: '27-File Reference Codebase Explorer & Filter',
+      inputs: `GET ${args.baseUrl}/?tab=screenshots @ 1600x950 + inspect #e2e-pane-codebase`,
+      expected: 'Renders 27 Python/Terraform source files in #e2e-codebase-file-list with live code preview',
       fn: async (page) => {
         await page.setViewport({ width: 1600, height: 950, deviceScaleFactor: 2 });
-        await page.goto(`${args.baseUrl}/?tab=forensic`, { waitUntil: 'networkidle2', timeout: 30000 });
-        await page.waitForSelector('#tab-forensic.active', { timeout: 10000 });
+        await page.goto(`${args.baseUrl}/?tab=screenshots`, { waitUntil: 'networkidle2', timeout: 30000 });
+        await page.waitForSelector('#e2e-pane-codebase', { timeout: 10000 });
         await new Promise((r) => setTimeout(r, 800));
-        const aefState = await page.evaluate(() => {
-          const card = document.getElementById('forensic-aef-scorecard-card');
-          const rows = document.querySelectorAll('#aef-pillar-tbody tr').length;
-          const badge = document.getElementById('aef-release-gate-badge')?.textContent?.trim() || '';
-          const btn = document.getElementById('btn-run-aef-eval');
-          const sel = document.getElementById('forensic-filter-select');
-          let secAefFilterWorks = false;
-          if (sel && card) {
-            sel.value = 'SEC:aef';
-            if (typeof window.applyForensicConsolidatedFilter === 'function') window.applyForensicConsolidatedFilter();
-            const ledgerHidden = document.getElementById('forensic-audit-ledger-card')?.style.display === 'none';
-            const aefVisible = card.style.display !== 'none';
-            secAefFilterWorks = ledgerHidden && aefVisible;
-            sel.value = 'ALL';
-            if (typeof window.applyForensicConsolidatedFilter === 'function') window.applyForensicConsolidatedFilter();
-          }
-          return { hasCard: Boolean(card), pillarRows: rows, gateBadge: badge, hasRunBtn: Boolean(btn), secAefFilterWorks };
+        const cbState = await page.evaluate(() => {
+          const pane = document.getElementById('e2e-pane-codebase');
+          const fileBtns = document.querySelectorAll('#e2e-codebase-file-list button').length;
+          const preLen = (document.getElementById('e2e-codebase-viewer-pre')?.textContent || '').trim().length;
+          return { hasPane: Boolean(pane), fileBtns, preLen };
         });
-        // Scroll to AEF scorecard and capture proof
-        await page.evaluate(() => {
-          const card = document.getElementById('forensic-aef-scorecard-card');
-          if (card) card.scrollIntoView({ behavior: 'instant', block: 'start' });
-        });
-        await new Promise((r) => setTimeout(r, 300));
-        const proof = await saveProof(page, 'ui_05_forensic_aef_scorecard_1600.png');
         const audit = await auditPageState(page);
         const fails = [];
-        if (!aefState.hasCard) fails.push('Missing #forensic-aef-scorecard-card on Forensic tab');
-        if (aefState.pillarRows < 8) fails.push(`Expected 8 AEF pillar rows, got ${aefState.pillarRows}`);
-        if (!aefState.hasRunBtn) fails.push('Missing #btn-run-aef-eval button');
-        if (!aefState.secAefFilterWorks) fails.push('SEC:aef filter did not isolate #forensic-aef-scorecard-card');
+        if (!cbState.hasPane) fails.push('Missing #e2e-pane-codebase');
+        if (cbState.fileBtns < 20) fails.push(`Expected >=20 codebase file entries, got ${cbState.fileBtns}`);
+        if (cbState.preLen < 50) fails.push('Codebase viewer pre did not render file source');
         if (!audit.overflowOk) fails.push(`Horizontal overflow ${audit.overflowPx}px`);
-        if (audit.foundBanned.length > 0) fails.push(`Banned legacy DOM text: ${audit.foundBanned.join(', ')}`);
-        return { ...audit, ...aefState, proof, _failReason: fails.join('; ') };
+        return { ...audit, ...cbState, _failReason: fails.join('; ') };
       },
     });
 
-    // UI-06: Adversarial UI Edge Cases (Malformed Regex + XSS Input in Forensic Search)
+    // UI-06: Adversarial UI Edge Cases (Malformed Regex + XSS Input in Gallery Search)
     await runCase({
       id: 'UI-06',
       name: 'Adversarial Search Input Edge Cases (Regex Crash & XSS Payload)',
-      inputs: 'Type "[a-z+(.*" then "<img src=x onerror=window.__xssFired=1>" into #forensic-search-input',
-      expected: 'Zero uncaught JS errors, window.__xssFired undefined, filter resets cleanly',
+      inputs: 'Type "[a-z+(.*" then "<img src=x onerror=window.__xssFired=1>" into #genuine-ui-search-input',
+      expected: 'Zero uncaught JS errors, window.__xssFired false, filter resets cleanly',
       fn: async (page) => {
         await page.setViewport({ width: 1600, height: 950, deviceScaleFactor: 2 });
-        await page.goto(`${args.baseUrl}/?tab=forensic`, { waitUntil: 'networkidle2', timeout: 30000 });
-        await page.waitForSelector('#forensic-search-input', { timeout: 10000 });
+        await page.goto(`${args.baseUrl}/?tab=screenshots`, { waitUntil: 'networkidle2', timeout: 30000 });
+        await page.waitForSelector('#genuine-ui-search-input', { timeout: 10000 });
         await page.evaluate(() => { window.__xssFired = false; });
-        await page.type('#forensic-search-input', '[a-z+(.*');
+        await page.type('#genuine-ui-search-input', '[a-z+(.*');
         await new Promise((r) => setTimeout(r, 150));
         await page.evaluate(() => {
-          const inp = document.getElementById('forensic-search-input');
+          const inp = document.getElementById('genuine-ui-search-input');
           inp.value = '';
         });
-        await page.type('#forensic-search-input', '<img src=x onerror=window.__xssFired=true>');
+        await page.type('#genuine-ui-search-input', '<img src=x onerror=window.__xssFired=true>');
         await new Promise((r) => setTimeout(r, 200));
         const xssFired = await page.evaluate(() => Boolean(window.__xssFired));
-        await page.click('button[onclick="resetForensicConsolidatedFilter()"]');
-        const afterReset = await page.evaluate(() => document.getElementById('forensic-search-input')?.value || '');
+        await page.click('button[onclick="resetGenuineUiConsolidatedFilter()"]');
+        const afterReset = await page.evaluate(() => document.getElementById('genuine-ui-search-input')?.value || '');
         const fails = [];
         if (xssFired) fails.push('XSS payload executed via search input!');
         if (afterReset !== '') fails.push(`Search input failed to reset (got "${afterReset}")`);

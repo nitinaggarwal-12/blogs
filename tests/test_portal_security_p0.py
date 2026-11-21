@@ -152,69 +152,28 @@ class TestPortalSecurityP0(unittest.TestCase):
             return he.code, parsed, resp_hdrs
 
     # -------------------------------------------------------------------------
-    # 1. [FA-08] SSRF Protection Tests
+    # 1. [FA-08] Legacy PAYG Outbound Proxy & Mocks Purge (Zero SSRF Surface)
     # -------------------------------------------------------------------------
-    def test_fa08_ssrf_blocks_loopback_private_metadata_and_untrusted_hosts(self) -> None:
-        blocked_vectors = [
-            f"{self.base_url}/api/health",
-            "http://api.datadoghq.com/api/v2/spans",
-            "https://127.0.0.1/api/health",
-            "https://localhost/api/health",
-            "https://169.254.169.254/computeMetadata/v1/",
-            "https://[fd00:ec2::254]/latest/meta-data/",
-            "https://metadata.google.internal/computeMetadata/v1/",
-            "https://10.0.0.5/internal",
-            "https://172.16.4.9/internal",
-            "https://192.168.1.1/admin",
-            "https://100.64.0.10/cgnat",
-            "https://[::1]/loopback",
-            "https://[::ffff:127.0.0.1]/mapped",
-            "https://evil-attacker.example.com/steal-token",
-            "https://api.datadoghq.com:8080/api/v2/spans",
-            "https://user:pass@api.datadoghq.com/api/v2/spans",
-        ]
-        for bad_url in blocked_vectors:
-            status, body, _ = self._http_json(
-                "POST",
-                "/api/payg-saas/test-connection",
-                {"service_id": "datadog", "endpoint_url": bad_url, "api_token": "secret-tok-123"},
-            )
-            self.assertIn(status, (400, 403), f"Expected 400/403 for {bad_url}, got {status}: {body}")
-            self.assertFalse(body.get("ok", True), f"Expected ok=False for {bad_url}")
-            self.assertNotIn("secret-tok-123", json.dumps(body))
-
-        # Cross-vendor mismatch must fail closed with 403 SSRF_SERVICE_DOMAIN_MISMATCH
-        st_mv, body_mv, _ = self._http_json(
+    def test_fa08_legacy_payg_outbound_proxy_and_mocks_purged(self) -> None:
+        status, _, _ = self._http_json(
             "POST",
             "/api/payg-saas/test-connection",
-            {"service_id": "snowflake", "endpoint_url": "https://acme.my.salesforce.com/services/data"},
+            {"service_id": "datadog", "endpoint_url": "https://169.254.169.254/computeMetadata/v1/", "api_token": "secret-tok-123"},
         )
-        self.assertEqual(st_mv, 403)
-        self.assertEqual(body_mv.get("status"), "SSRF_SERVICE_DOMAIN_MISMATCH")
+        self.assertEqual(status, 404, "Legacy outbound SSRF probe endpoint must remain permanently purged (404)")
 
-    def test_fa08_ssrf_allows_vendor_allowlist_and_blocks_dns_rebinding(self) -> None:
-        ok, code, status, _ = server.validate_payg_outbound_url(
-            "https://api.datadoghq.com/api/v2/spans", resolve_dns=False, service_id="datadog"
-        )
-        self.assertTrue(ok)
-        self.assertEqual(code, 200)
-        self.assertEqual(status, "ALLOWED")
+        for dead_path in ("/api/payg-saas/catalog", "/payg", "/payg-saas", "/mocks", "/scoring-mocks"):
+            st, _, _ = self._http_json("GET", dead_path)
+            self.assertEqual(st, 404, f"Legacy route {dead_path} must remain purged (404), got {st}")
 
-        ok_sf, _, _, _ = server.validate_payg_outbound_url(
-            "https://xy12345.us-east-1.snowflakecomputing.com/api/v2/statements",
-            resolve_dns=False,
-            service_id="snowflake",
-        )
-        self.assertTrue(ok_sf)
-
-        fake_records = [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("169.254.169.254", 443))]
-        with mock.patch("server.socket.getaddrinfo", return_value=fake_records):
-            reb_ok, reb_http, reb_code, _ = server.validate_payg_outbound_url(
-                "https://api.datadoghq.com/api/v2/spans", resolve_dns=True, service_id="datadog"
-            )
-        self.assertFalse(reb_ok)
-        self.assertEqual(reb_http, 403)
-        self.assertEqual(reb_code, "SSRF_PRIVATE_OR_LOOPBACK_IP_BLOCKED")
+        for removed_file in (
+            "templates/tab_payg.html",
+            "templates/tab_simulator.html",
+            "templates/tab_forensic.html",
+            "js/simulator.js",
+            "scoring_mocks.html",
+        ):
+            self.assertFalse((ROOT_DIR / removed_file).exists(), f"Legacy file {removed_file} must not exist")
 
     # -------------------------------------------------------------------------
     # 2. [FA-09] Admin IAP Gate, Anti-Spoofing JWT Check, Sanitizer & Headers

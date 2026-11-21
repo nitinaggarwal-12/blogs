@@ -161,19 +161,6 @@
           if (defaultBtn.hasAttribute('aria-selected')) defaultBtn.setAttribute('aria-selected', 'true');
         }
       }
-      const govSel = document.getElementById('header-governance-select');
-      if (govSel) {
-        const isGovActive = (name === 'forensic' || name === 'changelog');
-        govSel.value = isGovActive ? name : '';
-        govSel.classList.toggle('active', isGovActive);
-        govSel.style.borderColor = isGovActive ? '#1a73e8' : '';
-        govSel.style.backgroundColor = isGovActive ? '#e8f0fe' : '';
-        govSel.style.color = isGovActive ? '#174ea6' : '';
-      }
-      if (name === 'simulator' && !window.__simInitialRunDone) {
-        window.__simInitialRunDone = true;
-        runLiveScenario('sim1');
-      }
       if (name === 'changelog' && typeof renderChangeLogTable === 'function') {
         renderChangeLogTable();
       }

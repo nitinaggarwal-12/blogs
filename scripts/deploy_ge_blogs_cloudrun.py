@@ -548,7 +548,6 @@ def main() -> None:
     print("==================================================================")
     print("🌐 CANONICAL BEYONDCORP ACCESSIBLE URL:")
     print(f"   👉 https://ge-blogs-248990048888.cr.gclb.goog/")
-    print(f"   👉 https://ge-blogs-248990048888.cr.gclb.goog/mocks (Scoring Mocks Studio)")
     print("⚠️  NOTE ON *.run.app 404:")
     print("   Project ramp-portal-dev enforces GCP Org Policy constraints/run.allowedIngress")
     print("   = internal-and-cloud-load-balancing. Direct *.run.app URLs return 404 Page Not Found.")

@@ -58,10 +58,7 @@
     <!-- TEMPLATE:tab_overview.html -->
     <!-- TEMPLATE:tab_patterns.html -->
     <!-- TEMPLATE:tab_diagrams.html -->
-    <!-- TEMPLATE:tab_simulator.html -->
-    <!-- TEMPLATE:tab_forensic.html -->
     <!-- TEMPLATE:tab_screenshots.html -->
-    <!-- TEMPLATE:tab_payg.html -->
     <!-- TEMPLATE:tab_changelog.html -->
   </main>
 
@@ -76,7 +73,6 @@
   <script src="/js/navigation.js"></script>
   <script src="/js/diagrams_atlas_data.js?v=20261117-v104"></script>
   <script src="/js/diagrams_atlas.js?v=20261117-v104"></script>
-  <script src="/js/simulator.js"></script>
   <script src="/js/modals.js"></script>
   <script src="/js/telemetry.js"></script>
 
@@ -1001,48 +997,27 @@
 
     async function viewArtifact(relPath) {
       switchTab('screenshots', document.getElementById('tab-btn-screenshots'));
-      switchE2EWorkbenchTab('deliverables');
-      const titleEl = document.getElementById('artifact-viewer-title');
-      const metaEl = document.getElementById('artifact-viewer-meta');
-      const contentEl = document.getElementById('artifact-viewer-content');
-      if (!titleEl || !metaEl || !contentEl) return;
-      titleEl.textContent = `Deliverable: ${relPath}`;
-      metaEl.textContent = 'Loading...';
-      contentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (e2eBundleData && Array.isArray(e2eBundleData.codebaseFiles)) {
+        const idx = e2eBundleData.codebaseFiles.findIndex(f => f.path === relPath);
+        if (idx >= 0) {
+          selectE2ECodebaseFile(idx);
+          const pre = document.getElementById('e2e-codebase-viewer-pre');
+          if (pre) pre.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+      }
+      const pre = document.getElementById('e2e-codebase-viewer-pre');
+      const hdr = document.getElementById('e2e-codebase-viewer-header');
+      if (!pre) return;
+      if (hdr) hdr.textContent = relPath;
+      pre.textContent = 'Loading...';
+      pre.scrollIntoView({ behavior: 'smooth', block: 'center' });
       try {
         const resp = await fetch(`/api/artifact?path=${encodeURIComponent(relPath)}`);
         const data = await resp.json();
-        if (data.error) {
-          contentEl.textContent = `Error: ${data.error}`;
-          return;
-        }
-        metaEl.textContent = `${data.size_bytes.toLocaleString()} bytes`;
-        contentEl.textContent = data.content;
+        pre.textContent = data.error ? `Error: ${data.error}` : data.content;
       } catch (err) {
-        contentEl.textContent = `Unable to load artifact (${err.message}).`;
-      }
-    }
-
-    async function runLiveForensicAudit() {
-      const banner = document.getElementById('forensic-run-banner');
-      const tbody = document.getElementById('forensic-table-body');
-      banner.textContent = 'Running 13-point deep forensic audit + 107/107 multi-cloud simulations against live Python codebase...';
-      try {
-        const resp = await fetch('/api/audit/run', { method: 'POST' });
-        const data = await resp.json();
-        banner.textContent = `Verified ${data.passed_count}/${data.total_count} Forensic Checks & ${data.simulations_passed} Simulations in ${data.execution_ms} ms (Live Python Execution).`;
-        if (Array.isArray(data.checks)) {
-          tbody.innerHTML = data.checks.map(c => `
-            <tr>
-              <td><code>${escapeHtml(c.id)}</code></td>
-              <td>${escapeHtml(c.title)}</td>
-              <td>${escapeHtml(c.details)}</td>
-              <td><span class="badge ${c.status === 'PASS' ? 'badge-green' : 'badge-red'}">${escapeHtml(c.status)}</span></td>
-            </tr>
-          `).join('');
-        }
-      } catch (err) {
-        banner.textContent = `Live API unreachable (${err.message}).`;
+        pre.textContent = `Unable to load artifact (${err.message}).`;
       }
     }
 
@@ -1610,14 +1585,6 @@
           setTimeout(() => { btnEl.innerHTML = prev; }, 1800);
         }
       } catch (_) {}
-    }
-
-    function jumpToWorkstreamSim(scenarioId) {
-      const btn = Array.from(document.querySelectorAll('.tab-btn')).find((b) => (b.getAttribute('onclick') || '').includes("'simulator'"));
-      switchTab('simulator', btn);
-      runLiveScenario(scenarioId);
-      const simOut = document.getElementById('sim-output');
-      if (simOut) simOut.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     function applyHubBlogSectionSearch(rawQuery) {
@@ -2262,98 +2229,20 @@
       else if (ev.key === 'ArrowLeft' && cvMode === 'slides') stepCloudViewerSlide(-1);
     });
 
-    // ---------- 5-Sub-Tab E2E Pattern Execution, 12 Provisioned GCP Resources, 27-File Codebase, Runbook & Deliverables Workbench ----------
+    // ---------- 27-File Reference Codebase Explorer ----------
     let e2eBundleData = null;
     let e2eActiveCategory = 'ALL';
     let e2eActiveFileIdx = 0;
-
-    function switchE2EWorkbenchTab(tabName) {
-      const sel = document.getElementById('e2e-workbench-view-select');
-      if (sel && sel.value !== tabName) sel.value = tabName;
-      ['execution', 'resources', 'codebase', 'runbook', 'deliverables'].forEach(t => {
-        const pane = document.getElementById('e2e-pane-' + t);
-        const btn = document.getElementById('e2e-tab-btn-' + t);
-        if (pane) pane.style.display = (t === tabName) ? 'block' : 'none';
-        if (btn) btn.className = (t === tabName) ? 'sim-btn primary' : 'sim-btn';
-      });
-    }
 
     async function loadE2EPatternBundle() {
       try {
         const resp = await fetch('docs/gcp_pattern_codebase_and_execution_bundle.json');
         if (!resp.ok) return;
         e2eBundleData = await resp.json();
-        renderE2EExecutionSuites();
-        renderE2EProvisionedResources();
         renderE2ECodebaseExplorer();
       } catch (err) {
-        console.warn('Could not load E2E pattern bundle:', err);
+        console.warn('Could not load codebase bundle:', err);
       }
-    }
-
-    function renderE2EExecutionSuites() {
-      const container = document.getElementById('e2e-execution-suites-container');
-      if (!container || !e2eBundleData || !Array.isArray(e2eBundleData.executionSuites)) return;
-      container.innerHTML = e2eBundleData.executionSuites.map(s => {
-        const passed = s.assertionsPassed ?? s.passed ?? 0;
-        const total = s.assertionsTotal ?? s.total ?? 0;
-        const badgeLabel = s.workstream ? `${s.pattern} (${s.workstream})` : s.pattern;
-        return `
-        <div class="card" style="padding:14px; margin-bottom:0; background:var(--panel-alt);">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
-            <span class="badge badge-green">${escapeHtml(badgeLabel)} &bull; ${passed}/${total} PASS (Exit ${s.exitCode ?? 0})</span>
-            <code style="font-size:11px;">${escapeHtml(s.durationMs ? s.durationMs + ' ms' : 'Live Cloud Shell / SSH Verified')}</code>
-          </div>
-          <h4 style="margin:4px 0 6px 0; font-size:14px;">${escapeHtml(s.title)}</h4>
-          <div style="margin-bottom:8px; font-size:11.5px; color:var(--muted);">
-            <strong>Command:</strong> <code>${escapeHtml(s.command)}</code>
-          </div>
-          <pre style="margin:0; max-height:260px; overflow:auto; font-size:11.5px; line-height:1.45;"><code>${escapeHtml(s.stdout || '')}</code></pre>
-        </div>
-      `;
-      }).join('');
-    }
-
-    function renderE2EProvisionedResources() {
-      const tbody = document.getElementById('e2e-provisioned-resources-tbody');
-      if (!tbody || !e2eBundleData || !Array.isArray(e2eBundleData.provisionedResources)) return;
-      tbody.innerHTML = e2eBundleData.provisionedResources.map(r => {
-        const uri = r.resourceUri || r.fullUri || '';
-        const resName = r.resourceName || (uri.includes('/') ? uri.split('/').pop() : uri.split(':').pop()) || r.service;
-        const isAws = uri.includes('393036065405') || uri.includes('bedrock-agentcore') || (r.consoleUrl && r.consoleUrl.includes('console.aws.amazon.com'));
-        const is3PWorkspace = uri.includes('Google Slides') || (r.consoleUrl && r.consoleUrl.includes('docs.google.com'));
-        const proj = r.project || (is3PWorkspace
-          ? 'Google Workspace (Drive API v3)'
-          : isAws
-            ? 'AWS Account 393036065405 (ge-aws-mcp-admin)'
-            : (uri.includes('248990048888') || uri.includes('ramp-portal-dev')
-              ? 'ramp-portal-dev (#248990048888)'
-              : (uri.includes('48439189383') || uri.includes('bbar-138hf0') ? 'bbar-138hf0 (#48439189383)' : 'ramp-portal-dev (#248990048888)')));
-        const loc = r.region || r.location || 'us-west1';
-        const proof = r.proofDetail || (is3PWorkspace
-          ? 'Verified live via Google Drive API v3 & Slides/Docs v1'
-          : isAws
-            ? `Verified live in AWS Console & MCP JSON-RPC (${loc})`
-            : `Verified live in Google Cloud Console (${loc})`);
-        const linkLabel = is3PWorkspace
-          ? 'Open Live Google Slides Deck &#8599;'
-          : isAws
-            ? 'Open in AWS Console &#8599;'
-            : 'Open in GCP Console &#8599;';
-        return `
-        <tr>
-          <td><span class="badge badge-blue">${escapeHtml(r.pattern)}</span></td>
-          <td><strong>${escapeHtml(r.service)}</strong>${r.resourceType ? `<br/><span class="muted" style="font-size:11px;">${escapeHtml(r.resourceType)}</span>` : ''}</td>
-          <td><code>${escapeHtml(resName)}</code><br/><span class="muted" style="font-size:11px; word-break:break-all;">${escapeHtml(uri)}</span></td>
-          <td><code>${escapeHtml(proj)}</code><br/><span class="muted" style="font-size:11px;">${escapeHtml(loc)}</span></td>
-          <td style="font-size:12px;">
-            <div>${escapeHtml(proof)}</div>
-            ${r.consoleUrl ? `<a href="${escapeHtml(r.consoleUrl)}" target="_blank" rel="noopener" style="font-size:11.5px; font-weight:600;">${linkLabel}</a>` : ''}
-          </td>
-          <td><span class="badge badge-green">${escapeHtml(r.status)}</span></td>
-        </tr>
-      `;
-      }).join('');
     }
 
     function selectE2ECodebaseCategory(cat) {
@@ -2455,51 +2344,6 @@
           </div>
         `;
         preEl.innerHTML = `<code>${escapeHtml(fileCode)}</code>`;
-      }
-    }
-
-    async function runLiveE2ESimulationsInWorkbench() {
-      const btn = document.getElementById('e2e-rerun-live-btn');
-      if (btn) btn.textContent = '⏳ Verifying 20 In-Memory Policy + 87 Recorded Receipt Assertions...';
-      switchE2EWorkbenchTab('execution');
-      try {
-        const resp = await fetch('/api/simulate/all?refresh=1');
-        if (resp.ok) {
-          const data = await resp.json();
-          if (e2eBundleData && Array.isArray(e2eBundleData.executionSuites) && data.outputs) {
-            if (data.outputs.pattern_a && e2eBundleData.executionSuites[0]) {
-              e2eBundleData.executionSuites[0].stdout = data.outputs.pattern_a;
-            }
-            if (data.outputs.pattern_b && e2eBundleData.executionSuites[1]) {
-              e2eBundleData.executionSuites[1].stdout = data.outputs.pattern_b;
-            }
-            if (data.outputs.pattern_c && e2eBundleData.executionSuites[2]) {
-              e2eBundleData.executionSuites[2].stdout = data.outputs.pattern_c;
-            }
-            if (data.outputs.saas_10_matrix && e2eBundleData.executionSuites[5]) {
-              e2eBundleData.executionSuites[5].stdout = data.outputs.saas_10_matrix;
-            }
-            renderE2EExecutionSuites();
-          }
-          const total = data.total_assertions_passed || 107;
-          if (btn) {
-            btn.textContent = `✓ ${total} / ${total} Verified PASS (20 In-Memory + 87 Receipt)`;
-            btn.style.background = '';
-          }
-          return;
-        } else {
-          throw new Error(`Server returned HTTP ${resp.status}`);
-        }
-      } catch (err) {
-        console.error("Simulation run error:", err);
-        if (btn) {
-          btn.textContent = `❌ Simulation Run Failed: ${err.message || 'Network Error'}`;
-          btn.style.background = '#dc2626';
-          setTimeout(() => {
-            btn.textContent = '▶ Re-Verify 20 In-Memory + 87 Receipt Assertions (107 Total)';
-            btn.style.background = '';
-          }, 4500);
-        }
       }
     }
 
@@ -3490,11 +3334,6 @@
       if (navCnt) navCnt.textContent = String(total);
       const hdrCnt = document.getElementById('header-changelog-count');
       if (hdrCnt) hdrCnt.textContent = String(total);
-      const govSel = document.getElementById('header-governance-select');
-      if (govSel) {
-        const chgOpt = Array.from(govSel.options).find(o => o.value === 'changelog');
-        if (chgOpt) chgOpt.textContent = `📜 Change Log (${total})`;
-      }
       const kpiTotal = document.getElementById('chg-kpi-total');
       if (kpiTotal) kpiTotal.textContent = String(total);
 
@@ -3894,15 +3733,8 @@
           window.updatePatternSelectorUI();
         }
 
-        if (initialWbParam && ['execution', 'resources', 'codebase', 'runbook', 'deliverables'].includes(initialWbParam)) {
+        if (initialWbParam === 'codebase') {
           if (!initialTabParam) switchTab('screenshots', document.getElementById('tab-btn-screenshots'), true);
-          switchE2EWorkbenchTab(initialWbParam);
-        }
-
-        const initialSimParam = initialParams.get('sim');
-        if (initialSimParam && typeof window.runLiveScenario === 'function') {
-          if (!initialTabParam) switchTab('simulator', document.getElementById('tab-btn-simulator'), true);
-          window.runLiveScenario(initialSimParam);
         }
 
         const initialViewParam = initialParams.get('view');
@@ -4411,82 +4243,6 @@
       } catch (_) {}
     };
 
-    window.setBeforeAfterViewMode = function setBeforeAfterViewMode(mode, btn) {
-      const hub = document.getElementById('genuine-3p-before-after-hub');
-      if (!hub) return;
-      const modeSel = document.getElementById('ba-view-mode-select');
-      if (modeSel && modeSel.value !== mode) modeSel.value = mode;
-      hub.querySelectorAll('.ba-mode-btn').forEach(b => b.classList.toggle('active', b === btn || (!btn && b.getAttribute('data-ba-mode') === mode)));
-      hub.querySelectorAll('.ba-3p-ui-card').forEach(card => {
-        const pairGrid = card.querySelector('.ba-3p-pair-grid');
-        const beforePane = card.querySelector('.before-pane');
-        const afterPane = card.querySelector('.after-pane');
-        const sliderStage = card.querySelector('.ba-3p-slider-stage');
-        if (mode === 'slider') {
-          if (pairGrid) pairGrid.style.display = 'none';
-          if (sliderStage) {
-            sliderStage.style.display = 'block';
-            sliderStage.querySelectorAll('img[loading="lazy"]').forEach(im => im.removeAttribute('loading'));
-          }
-        } else {
-          if (sliderStage) sliderStage.style.display = 'none';
-          if (pairGrid) {
-            pairGrid.style.display = 'grid';
-            pairGrid.style.gridTemplateColumns = (mode === 'before' || mode === 'after') ? '1fr' : '';
-          }
-          if (beforePane) beforePane.style.display = (mode === 'after') ? 'none' : 'flex';
-          if (afterPane) afterPane.style.display = (mode === 'before') ? 'none' : 'flex';
-        }
-      });
-    };
-
-    window.filterBeforeAfterCategory = function filterBeforeAfterCategory(cat, btn) {
-      const hub = document.getElementById('genuine-3p-before-after-hub');
-      if (!hub) return;
-      const domSel = document.getElementById('ba-domain-select');
-      if (domSel && Array.from(domSel.options).some(o => o.value === cat)) domSel.value = cat;
-      hub.querySelectorAll('.ba-cat-btn').forEach(b => b.classList.toggle('active', b === btn || (!btn && b.getAttribute('data-ba-cat') === cat)));
-      window.applyBeforeAfterConsolidatedFilter();
-    };
-
-    window.applyBeforeAfterConsolidatedFilter = function applyBeforeAfterConsolidatedFilter() {
-      const hub = document.getElementById('genuine-3p-before-after-hub');
-      if (!hub) return;
-      const domVal = document.getElementById('ba-domain-select')?.value || 'all';
-      const q = String(document.getElementById('ba-search-input')?.value || '').trim().toLowerCase();
-      const cards = Array.from(hub.querySelectorAll('.ba-3p-ui-card'));
-      let shown = 0;
-      cards.forEach(card => {
-        const c = card.getAttribute('data-ba-category') || '';
-        const k = card.getAttribute('data-ba-key') || '';
-        let matchDom = true;
-        if (domVal !== 'all') {
-          if (domVal.startsWith('KEY:')) {
-            matchDom = (k === domVal.slice(4));
-          } else {
-            matchDom = (c === domVal);
-          }
-        }
-        const matchQ = !q || (card.textContent || '').toLowerCase().includes(q);
-        const visible = matchDom && matchQ;
-        card.style.display = visible ? '' : 'none';
-        if (visible) shown++;
-      });
-      const badge = document.getElementById('ba-results-count-badge');
-      if (badge) {
-        badge.textContent = `${shown} / ${cards.length} Enterprise SaaS Domains`;
-      }
-    };
-
-    window.resetBeforeAfterConsolidatedFilter = function resetBeforeAfterConsolidatedFilter() {
-      const domSel = document.getElementById('ba-domain-select');
-      if (domSel) domSel.value = 'all';
-      const qIn = document.getElementById('ba-search-input');
-      if (qIn) qIn.value = '';
-      window.setBeforeAfterViewMode('side-by-side');
-      window.applyBeforeAfterConsolidatedFilter();
-    };
-
     window.applyGenuineUiConsolidatedFilter = function applyGenuineUiConsolidatedFilter() {
       const gallery = document.getElementById('genuine-multicloud-3p-ui-gallery');
       if (!gallery) return;
@@ -4518,222 +4274,6 @@
       window.applyGenuineUiConsolidatedFilter();
     };
 
-    window.applyTab3SectionAndSearchFilter = function applyTab3SectionAndSearchFilter() {
-      const secVal = document.getElementById('tab3-section-filter-select')?.value || 'ALL';
-      const q = String(document.getElementById('tab3-global-search-input')?.value || '').trim().toLowerCase();
-      const secMap = {
-        BEFORE_AFTER: document.getElementById('genuine-3p-before-after-hub'),
-        RETINA_GALLERY: document.getElementById('genuine-multicloud-3p-ui-gallery'),
-        AWS_AGENTCORE: document.getElementById('aws-agentcore-10-saas-3-pattern-hub'),
-        WORKBENCH: document.getElementById('blog-e2e-pattern-execution-and-codebase-workbench')
-      };
-      let shownSecs = 0;
-      Object.entries(secMap).forEach(([key, el]) => {
-        if (!el) return;
-        const visible = (secVal === 'ALL' || secVal === key);
-        el.style.display = visible ? '' : 'none';
-        if (visible) shownSecs++;
-      });
-      if (q) {
-        const baIn = document.getElementById('ba-search-input');
-        if (baIn) { baIn.value = q; window.applyBeforeAfterConsolidatedFilter(); }
-        const uiIn = document.getElementById('genuine-ui-search-input');
-        if (uiIn) { uiIn.value = q; window.applyGenuineUiConsolidatedFilter(); }
-        const cbIn = document.getElementById('e2e-codebase-search-input');
-        if (cbIn) { cbIn.value = q; renderE2ECodebaseExplorer(); }
-      }
-      const badge = document.getElementById('tab3-filter-count-badge');
-      if (badge) {
-        badge.textContent = secVal === 'ALL' ? `All 4 Sections Active` : `Showing 1 / 4 Sections`;
-      }
-    };
-
-    window.resetTab3ConsolidatedFilter = function resetTab3ConsolidatedFilter() {
-      const secSel = document.getElementById('tab3-section-filter-select');
-      if (secSel) secSel.value = 'ALL';
-      const qIn = document.getElementById('tab3-global-search-input');
-      if (qIn) qIn.value = '';
-      window.resetBeforeAfterConsolidatedFilter();
-      window.resetGenuineUiConsolidatedFilter();
-      window.resetE2ECodebaseFilter();
-      window.applyTab3SectionAndSearchFilter();
-    };
-
-    window.applySimulatorThreatFilter = function applySimulatorThreatFilter() {
-      const hopVal = document.getElementById('sim-threat-filter-select')?.value || 'ALL';
-      if (hopVal === 'MODE:IN_MEMORY' || hopVal === 'MODE:LIVE_GCP') {
-        const mode = hopVal.slice(5);
-        if (typeof window.switchExecutionMode === 'function') {
-          window.switchExecutionMode(mode);
-        }
-        const hopSel = document.getElementById('sim-threat-filter-select');
-        if (hopSel) hopSel.value = 'ALL';
-        return;
-      }
-      const q = String(document.getElementById('sim-threat-search-input')?.value || '').trim().toLowerCase();
-      const matrixSec = document.getElementById('adversarial-resilience-matrix') || document.getElementById('sim-threat-matrix-section');
-      const cards = Array.from(document.querySelectorAll('#tab-simulator .sim-atlas-threat-card'));
-      if (hopVal === 'HIDE_THREATS' || hopVal === 'COLLAPSED') {
-        if (matrixSec) matrixSec.style.display = 'none';
-        const badge = document.getElementById('sim-threat-count-badge');
-        if (badge) badge.textContent = '0 / 5 Threats (Collapsed)';
-        return;
-      }
-      if (matrixSec) matrixSec.style.display = '';
-      let shown = 0;
-      cards.forEach(c => {
-        const h = c.getAttribute('data-sim-threat-hop') || '';
-        const matchHop = (hopVal === 'ALL' || h === hopVal);
-        const matchQ = !q || (c.textContent || '').toLowerCase().includes(q);
-        const ok = matchHop && matchQ;
-        c.style.display = ok ? '' : 'none';
-        if (ok) shown++;
-      });
-      const badge = document.getElementById('sim-threat-count-badge');
-      if (badge) badge.textContent = `${shown} / ${cards.length} Threats Visible`;
-    };
-
-    window.resetSimulatorThreatFilter = function resetSimulatorThreatFilter() {
-      const hopSel = document.getElementById('sim-threat-filter-select');
-      if (hopSel) hopSel.value = 'ALL';
-      const qIn = document.getElementById('sim-threat-search-input');
-      if (qIn) qIn.value = '';
-      window.applySimulatorThreatFilter();
-    };
-
-    window.applyPaygMatrixFilter = function applyPaygMatrixFilter() {
-      const fVal = document.getElementById('payg-filter-select')?.value || 'ALL';
-      const q = String(document.getElementById('payg-search-input')?.value || '').trim().toLowerCase();
-      const heroCard = document.getElementById('payg-overview-hero-card');
-      const finopsCard = document.getElementById('finops-amortization-card');
-      const testerCard = document.getElementById('payg-tester-card');
-      const matrixHub = document.getElementById('payg-before-after-hub');
-
-      if (fVal === 'SEC:finops') {
-        if (heroCard) heroCard.style.display = 'none';
-        if (finopsCard) finopsCard.style.display = '';
-        if (testerCard) testerCard.style.display = 'none';
-        if (matrixHub) matrixHub.style.display = 'none';
-      } else if (fVal === 'SEC:verifier') {
-        if (heroCard) heroCard.style.display = 'none';
-        if (finopsCard) finopsCard.style.display = 'none';
-        if (testerCard) testerCard.style.display = '';
-        if (matrixHub) matrixHub.style.display = 'none';
-      } else if (fVal === 'SEC:matrix' || fVal.startsWith('TIER:') || fVal.startsWith('PLAT:') || q) {
-        if (heroCard) heroCard.style.display = 'none';
-        if (finopsCard) finopsCard.style.display = 'none';
-        if (testerCard) testerCard.style.display = 'none';
-        if (matrixHub) matrixHub.style.display = '';
-      } else {
-        if (heroCard) heroCard.style.display = '';
-        if (finopsCard) finopsCard.style.display = '';
-        if (testerCard) testerCard.style.display = '';
-        if (matrixHub) matrixHub.style.display = '';
-      }
-
-      const cards = Array.from(document.querySelectorAll('[id^="payg-mat-"]'));
-      const marketplaceIds = new Set(['payg-mat-snowflake', 'payg-mat-datadog', 'payg-mat-databricks', 'payg-mat-clickhouse', 'payg-mat-mongodb', 'payg-mat-confluent']);
-      let shown = 0;
-      cards.forEach((card, idx) => {
-        const text = (card.textContent || '').toLowerCase();
-        let matchTier = true;
-        if (fVal === 'TIER:marketplace' || fVal === 'TIER_GCP_PAYG') {
-          matchTier = marketplaceIds.has(card.id) || idx < 6;
-        } else if (fVal === 'TIER:direct' || fVal === 'TIER_VENDOR_DEV') {
-          matchTier = !marketplaceIds.has(card.id) || idx >= 6;
-        } else if (fVal.startsWith('PLAT:')) {
-          const slug = fVal.slice(5);
-          matchTier = (card.id === 'payg-mat-' + slug);
-        } else if (fVal.startsWith('ROW:')) {
-          const slug = fVal.slice(4).replace('payg-ba-', '').replace('payg-mat-', '');
-          matchTier = card.id.includes(slug);
-        }
-        const matchQ = !q || text.includes(q);
-        const ok = matchTier && matchQ;
-        card.style.display = ok ? '' : 'none';
-        if (ok) shown++;
-      });
-      const badge = document.getElementById('payg-filter-count-badge');
-      if (badge) {
-        if (fVal === 'SEC:finops') badge.textContent = 'FinOps Amortization Dial';
-        else if (fVal === 'SEC:verifier') badge.textContent = 'Live Connection Verifier';
-        else badge.textContent = `Showing ${shown} / ${cards.length || 8} Platforms`;
-      }
-    };
-
-    window.resetPaygMatrixFilter = function resetPaygMatrixFilter() {
-      const sel = document.getElementById('payg-filter-select');
-      if (sel) sel.value = 'ALL';
-      const qIn = document.getElementById('payg-search-input');
-      if (qIn) qIn.value = '';
-      window.applyPaygMatrixFilter();
-    };
-
-    window.applyForensicConsolidatedFilter = function applyForensicConsolidatedFilter() {
-      const fVal = document.getElementById('forensic-filter-select')?.value || 'ALL';
-      const q = String(document.getElementById('forensic-search-input')?.value || '').trim().toLowerCase();
-      const ledgerCard = document.getElementById('forensic-audit-ledger-card');
-      const maturityCard = document.getElementById('forensic-maturity-index-card');
-      const judgeCard = document.getElementById('forensic-llm-judge-card') || document.getElementById('llm-as-a-judge-eval-card');
-      const aefCard = document.getElementById('forensic-aef-scorecard-card');
-      if (fVal.startsWith('SEC:')) {
-        const sec = fVal.slice(4).toLowerCase();
-        if (ledgerCard) ledgerCard.style.display = (sec === 'ledger' || sec === 'audit') ? '' : 'none';
-        if (maturityCard) maturityCard.style.display = (sec === 'maturity' || sec === 'rubric') ? '' : 'none';
-        if (judgeCard) judgeCard.style.display = (sec === 'judge') ? '' : 'none';
-        if (aefCard) aefCard.style.display = (sec === 'aef') ? '' : 'none';
-      } else if (fVal.startsWith('DOM:') || fVal.startsWith('CHECK:')) {
-        if (ledgerCard) ledgerCard.style.display = '';
-        if (maturityCard) maturityCard.style.display = 'none';
-        if (judgeCard) judgeCard.style.display = 'none';
-        if (aefCard) aefCard.style.display = 'none';
-      } else {
-        if (ledgerCard) ledgerCard.style.display = '';
-        if (maturityCard) maturityCard.style.display = '';
-        if (judgeCard) judgeCard.style.display = '';
-        if (aefCard) aefCard.style.display = '';
-      }
-      const domainChecks = {
-        'links-hygiene': ['f-01', 'f-11', 'f-12'],
-        'control-plane': ['f-02', 'f-03', 'f-04', 'f-05', 'f-06', 'f-07'],
-        'silos-tf-uis': ['f-08', 'f-09', 'f-10', 'f-13']
-      };
-      const domKey = fVal.startsWith('DOM:') ? fVal.slice(4) : '';
-      const allowedChecks = domKey && domainChecks[domKey] ? domainChecks[domKey] : null;
-      const checkFilter = fVal.startsWith('CHECK:') ? fVal.slice(6).toLowerCase() : '';
-      const auditRows = Array.from(document.querySelectorAll('#forensic-table-body tr'));
-      let shownChecks = 0;
-      auditRows.forEach(tr => {
-        const txt = (tr.textContent || '').toLowerCase();
-        const matchDom = !allowedChecks || allowedChecks.some(cid => txt.includes(cid));
-        const matchCheck = !checkFilter || txt.includes(checkFilter);
-        const matchQ = !q || txt.includes(q);
-        const ok = matchDom && matchCheck && matchQ;
-        tr.style.display = ok ? '' : 'none';
-        if (ok) shownChecks++;
-      });
-      const judgeRows = Array.from(document.querySelectorAll('#forensic-judge-tbody tr'));
-      let shownJudge = 0;
-      judgeRows.forEach(tr => {
-        const txt = (tr.textContent || '').toLowerCase();
-        const ok = (!q || txt.includes(q));
-        tr.style.display = ok ? '' : 'none';
-        if (ok) shownJudge++;
-      });
-      const badge = document.getElementById('forensic-filter-count-badge');
-      if (badge) {
-        badge.textContent = `${shownChecks} / ${auditRows.length || 13} Checks • ${Math.min(6, shownJudge)} / 6 Judge`;
-      }
-    };
-
-    window.resetForensicConsolidatedFilter = function resetForensicConsolidatedFilter() {
-      const sel = document.getElementById('forensic-filter-select');
-      if (sel) sel.value = 'ALL';
-      const qIn = document.getElementById('forensic-search-input');
-      if (qIn) qIn.value = '';
-      window.applyForensicConsolidatedFilter();
-    };
-
     window.updateBaSplitSlider = function updateBaSplitSlider(inputEl) {
       const pct = Math.max(5, Math.min(95, Number(inputEl.value || 50)));
       const stage = inputEl.closest('.ba-3p-slider-stage');
@@ -4757,34 +4297,6 @@
       const div = stage.querySelector('.ba-3p-slider-divider');
       if (clip) clip.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
       if (div) div.style.left = `${pct}%`;
-    };
-
-    window.jumpToTab3BeforeAfterHub = function jumpToTab3BeforeAfterHub() {
-      const tab3Btn = document.getElementById('tab-btn-screenshots');
-      if (typeof switchTab === 'function') switchTab('screenshots', tab3Btn);
-      if (typeof window.filterBeforeAfterCategory === 'function') window.filterBeforeAfterCategory('all');
-      setTimeout(() => {
-        const hub = document.getElementById('genuine-3p-before-after-hub');
-        if (hub) hub.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 80);
-    };
-
-    window.jumpToTab3ReferenceContainer = function jumpToTab3ReferenceContainer(baKey) {
-      const tab3Btn = document.getElementById('tab-btn-screenshots');
-      if (typeof switchTab === 'function') switchTab('screenshots', tab3Btn);
-      if (typeof window.filterBeforeAfterCategory === 'function') window.filterBeforeAfterCategory('all');
-      setTimeout(() => {
-        const card = document.querySelector(`[data-ba-key="${String(baKey || '').replace(/"/g, '')}"]`);
-        if (card) {
-          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          const prevOutline = card.style.outline;
-          card.style.outline = '3px solid #1a73e8';
-          setTimeout(() => { card.style.outline = prevOutline; }, 1600);
-        } else {
-          const hub = document.getElementById('genuine-3p-before-after-hub');
-          if (hub) hub.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 80);
     };
 
     window.jumpToActiveBlogBeforeAfterSection = function jumpToActiveBlogBeforeAfterSection() {
@@ -5432,84 +4944,6 @@ function openGenuineScreenshotLightbox(src, title) {
         }
       });
     })();
-
-    // === AEF v2.0 8-Pillar Agentic Evaluation Scorecard Hydration & Live Runner ===
-    window.renderAefScorecard = function renderAefScorecard(report) {
-      const badge = document.getElementById('aef-release-gate-badge');
-      const banner = document.getElementById('aef-run-banner');
-      const tbody = document.getElementById('aef-pillar-tbody');
-      if (!report || !badge || !banner || !tbody) return;
-      const gate = report.release_gate || {};
-      const decision = String(gate.decision || 'PENDING').toUpperCase();
-      const passed = Number(gate.passed_pillars || 0);
-      const total = Number(gate.total_pillars || 8);
-      badge.textContent = `${decision} (${passed}/${total} Pillars)`;
-      badge.className = 'badge ' + (decision === 'CERTIFIED' ? 'badge-green' : (decision === 'HOLD' ? 'badge-red' : 'badge-blue'));
-      if (report.executed_at) {
-        banner.innerHTML = `Last Run: <code>${escapeHtml(report.executed_at)}</code> &bull; Mode: <code>${escapeHtml(report.mode || 'full')}</code> &bull; Total Duration: <code>${escapeHtml(String(report.total_duration_ms || 0))} ms</code> &bull; Release Gate: <strong>${escapeHtml(decision)}</strong>`;
-      } else {
-        banner.textContent = 'Evaluation framework installed. Click Re-Run 8-Pillar Eval or run scripts/run_agentic_eval_framework.py.';
-      }
-      if (Array.isArray(report.pillars) && report.pillars.length > 0) {
-        tbody.innerHTML = report.pillars.map((p) => {
-          const st = String(p.status || 'FAIL').toUpperCase();
-          const cls = st === 'PASS' ? 'badge-green' : 'badge-red';
-          const dur = p.duration_ms !== undefined ? `${Number(p.duration_ms).toFixed(1)} ms` : '--';
-          return `
-            <tr>
-              <td><code>${escapeHtml(p.pillar_id || '')}</code></td>
-              <td>${escapeHtml(p.name || '')}</td>
-              <td><span class="badge ${cls}">${escapeHtml(st)}</span></td>
-              <td><code>${escapeHtml(dur)}</code></td>
-              <td style="font-size:12px;">${escapeHtml(p.summary || '')}</td>
-            </tr>
-          `;
-        }).join('');
-      }
-    };
-
-    window.loadLatestAefReport = async function loadLatestAefReport() {
-      try {
-        const resp = await fetch('/api/evals/latest', { cache: 'no-store' });
-        if (!resp.ok) return;
-        const data = await resp.json();
-        window.renderAefScorecard(data);
-      } catch (_) {}
-    };
-
-    window.runLiveAefEvaluation = async function runLiveAefEvaluation(mode) {
-      const btn = document.getElementById('btn-run-aef-eval');
-      const banner = document.getElementById('aef-run-banner');
-      const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-      const csrfToken = csrfMeta ? (csrfMeta.getAttribute('content') || '') : '';
-      if (btn) { btn.disabled = true; btn.textContent = 'Running 8-Pillar Eval...'; }
-      if (banner) { banner.textContent = 'Executing 8-Pillar Agentic Evaluation Framework against live runtime & portal...'; }
-      try {
-        const resp = await fetch('/api/evals/run', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Portal-CSRF': csrfToken
-          },
-          body: JSON.stringify({ mode: mode || 'fast' })
-        });
-        const data = await resp.json();
-        if (!resp.ok) {
-          if (banner) banner.textContent = `Eval run failed (HTTP ${resp.status}): ${data.error || 'Unknown error'}`;
-        } else {
-          window.renderAefScorecard(data);
-        }
-      } catch (err) {
-        if (banner) banner.textContent = `Live eval API unreachable (${err.message}).`;
-      } finally {
-        if (btn) { btn.disabled = false; btn.innerHTML = '&#9889; Re-Run 8-Pillar Eval'; }
-      }
-    };
-
-    document.addEventListener('DOMContentLoaded', () => {
-      window.loadLatestAefReport();
-    });
-
   </script>
 </body>
 </html>

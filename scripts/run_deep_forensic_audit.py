@@ -413,7 +413,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             "RetailStream Corp",
             "Google Cloud Multi-Tenant Agentic AI Architecture Portal",
             "Live Python API",
-            "Multi-Tenancy Architecture, 5-Part Blog Series &amp; Live 5-Hop Execution Portal",
+            "Multi-Tenancy Architecture, 5-Part Blog Series &amp; Live Console Proofs Portal",
             "openCloudViewerModal",
             "hub-btn-mode-edit-inline",
             "hub-btn-open-drawio-tab",
@@ -432,17 +432,16 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             "let activeHubFlowTab = 'logical';",
             "portal-executive-landing-page",
             "tab-btn-overview",
+            "tab-btn-patterns",
+            "tab-btn-diagrams",
+            "tab-btn-screenshots",
             "tab-screenshots",
-            "e2e-pane-deliverables",
+            "e2e-pane-codebase",
             "blog-visual-proof-screenshots-gallery",
             "genuine-multicloud-3p-ui-gallery",
             "blog-e2e-pattern-execution-and-codebase-workbench",
             "series-reader-main-lane",
-            "header-governance-select",
             "hub-doc-select",
-            "sim-scenario-preset-select",
-            "e2e-workbench-view-select",
-            "extractHopTrailFromResponse",
             "max-width: 100% !important",
             "max-height: 760px !important",
             ".card-toolbar-comment-badge",
@@ -625,7 +624,6 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                 "/saas-ui/crowdstrike-okta?format=json",
             )
             full_10_saas_docs = (
-                "index.html",
                 "README.md",
                 "docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md",
                 "docs/GOOGLE-CLOUD-CONSOLE-END-TO-END-RUNBOOK.md",
@@ -644,7 +642,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                 "workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md",
                 "workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md",
             )
-            bidirectional_docs_ok = len(cloud_pngs) == 0 and "ten-saas-live-access-hub" in html
+            bidirectional_docs_ok = len(cloud_pngs) == 0 and "genuine-multicloud-3p-ui-gallery" in html
             for rel_doc in full_10_saas_docs:
                 doc_p = ROOT_DIR / rel_doc
                 if not doc_p.is_file():
@@ -1191,7 +1189,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             and "merck-" not in bridge_src.lower()
             and "merck-" not in mcp_src.lower()
             and "AWS_SHARED_JWT_SECRET =" not in bridge_src
-            and "validate_payg_outbound_url" in server_src
+            and "/api/payg-saas/test-connection" not in server_src
             and "_verify_verified_admin_iap" in server_src
             and "sanitize_html_fragment_allowlist" in server_src
         )
@@ -2005,7 +2003,6 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
         if (
             "13.220.94.209" in html_txt
             or 'id="genuine-multicloud-3p-ui-gallery"' not in html_txt
-            or 'id="genuine-3p-before-after-hub"' not in html_txt
             or "screenshots/verified-cloud-console/" not in html_txt
         ):
             f13_errors.append("gallery_dom_or_ip_leak")
