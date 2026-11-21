@@ -610,7 +610,7 @@ function parseBulletIntoCard(raw: string, index: number, explicitSpec?: CardTech
     },
     {
       label: '90% Prefix Cache FinOps',
-      stack: 'Gemini 3.8 Flash ContextCacheConfig • Memorystore for Valkey',
+      stack: 'Gemini 2.5 Flash ContextCacheConfig • Memorystore for Valkey',
       sla: '89.1% Net Token Savings • 120 vs. 600 RPM Quota Bulkheads',
       match: (s) => s.includes('90%') || s.includes('cache') || s.includes('89.1%') || s.includes('quota'),
     },
@@ -1276,7 +1276,7 @@ function addTitleSlide(pptx: Pptx, deck: DeckJson, spec: DeckSpec | null) {
     fill: { color: WHITE },
     line: { color: BORDER_GREY, width: 0.85 },
   });
-  slide.addText('Verified on Live GCP (#248990048888 • #48439189383) & AWS (#393036065405) • 13/13 Forensic PASS', {
+  slide.addText('Verified on Live GCP (cymbal-ge-hub-2026 • cymbal-ge-silo-2026) & AWS (#393036065405) • 13/13 Forensic PASS', {
     x: 8.34,
     y: 6.32,
     w: 4.30,
@@ -1349,8 +1349,8 @@ function addQuadMetricsSlide(pptx: Pptx, spec: DeckSpec | null) {
       {
         num: '89.1%',
         caption: 'Net Per-Turn Token Cost Reduction',
-        detail: 'Gemini 3.8 Flash ContextCacheConfig caches the 32,768-token SRE system prefix once at a 90% discount across pooled commercial tenants.',
-        pill: 'Gemini 3.8 Flash • ContextCacheConfig',
+        detail: 'Gemini 2.5 Flash ContextCacheConfig caches the 32,768-token SRE system prefix once at a 90% discount across pooled commercial tenants.',
+        pill: 'Gemini 2.5 Flash • ContextCacheConfig',
       },
       {
         num: '20/20',
@@ -2013,7 +2013,7 @@ function buildComparisonTableSynthesisCards(
         },
         {
           title: '2. Option B1: Vertex AI PT + VPC-SC + CMEK',
-          body: 'Zero GPU operational overhead with Gemini 3.8 Flash Provisioned Throughput locked inside the tenant VPC-SC perimeter and Cloud KMS key ring.',
+          body: 'Zero GPU operational overhead with Gemini 2.5 Flash Provisioned Throughput locked inside the tenant VPC-SC perimeter and Cloud KMS key ring.',
         },
         {
           title: '3. Option B2: Air-Gapped Gemma 3 (27B) on GKE',
@@ -3164,10 +3164,10 @@ function renderArchitectureCenterDiagramSidebar(
     fill: { color: WHITE },
     line: { color: BORDER_GREY, width: 0.85 },
   });
-  const rawGcpProj = flowEntry?.gcpProject || 'ramp-portal-dev (#248990048888)';
-  const cleanGcpLabel = rawGcpProj.includes('248990048888')
-    ? 'ramp-portal-dev (#248990048888) & bbar-138hf0 (#48439189383)'
-    : 'bbar-138hf0 (#48439189383) • ramp-portal-dev (#248990048888)';
+  const rawGcpProj = flowEntry?.gcpProject || 'cymbal-ge-hub-2026 (#252968359259)';
+  const cleanGcpLabel = rawGcpProj.includes('495457819919') || rawGcpProj.includes('silo')
+    ? 'cymbal-ge-silo-2026 (#495457819919) • cymbal-ge-hub-2026 (#252968359259)'
+    : 'cymbal-ge-hub-2026 (#252968359259) & cymbal-ge-silo-2026 (#495457819919)';
   slide.addText(
     `VERIFIED • ${vertexCount} Shapes • ${edgeCount} Connectors • GCP: ${cleanGcpLabel}`,
     {
@@ -3206,7 +3206,7 @@ async function appendGoogleBrandedDiagramSlides(
 ): Promise<{ vertexCount: number; edgeCount: number; slides: number }> {
   const sanitizedXmlContent = xmlContent
     .replace(/ramp-portal-dev/gi, 'cymbal-control-plane')
-    .replace(/cymbal-build-sandbox/gi, 'cymbal-build-sandbox')
+    .replace(/cymbal-build-sandbox/gi, 'cymbal-ge-hub-2026')
     .replace(/cymbal-control-plane/gi, 'cymbal-pooled-prod');
   const { cells, minX, minY, maxX, maxY, isDarkDiagram, diagramBgHex } = parseDrawioXmlForPptx(sanitizedXmlContent);
 
@@ -4452,7 +4452,7 @@ async function appendGoogleBrandedDiagramSlides(
     },
     {
       title: 'Well-Architected Pillar 3: Cost Optimization (FinOps)',
-      body: `Captures 90% Gemini 3.8 Flash prefix cache discount and streams zero-PII OTel spans to BigQuery chargeback.`,
+      body: `Captures 90% Gemini 2.5 Flash prefix cache discount and streams zero-PII OTel spans to BigQuery chargeback.`,
       accent: GOOGLE_CARD_ACCENTS[2],
     },
   ];
@@ -4688,7 +4688,7 @@ const ZONE_TOPOLOGY_BY_WS: Record<string, ZoneTopologySpec> = {
     zone2SubContainer: 'Unified Multi-Tenant Agentic Triad',
     gwCards: [
       { icon: 'ADK', title: 'Shared Diagnostic &\nTenant Private Agents' },
-      { icon: '90%', title: 'Gemini 3.8 Flash 90%\nShared Prefix Cache' },
+      { icon: '90%', title: 'Gemini 2.5 Flash 90%\nShared Prefix Cache' },
       { icon: 'MCP', title: '2LO Telemetry & 3LO\nWorkspace MCP Hub' },
     ],
     arrow2Top: '20% Terraform\nTopology Adapter',
@@ -6475,7 +6475,7 @@ const STATE_PIPELINE_BY_WS: Record<string, StateFlowPipelineSpec> = {
     nodes: [
       'Pooled Tenant\nIngress Request',
       'Memorystore Valkey\nQuota Gate',
-      'Gemini 3.8 Flash\n32k Prefix Cache',
+      'Gemini 2.5 Flash\n32k Prefix Cache',
       'AlloyDB RLS &\nBigQuery OTel',
     ],
     step1Top: '1. Sends burst traffic\n(Standard vs. Enterprise)',
@@ -6772,7 +6772,7 @@ const ROADMAP_TIMELINE_BY_WS: Record<string, PhasedRoadmapSpec> = {
         phaseLabel: 'Stage 1: Pattern A Pool',
         title: 'High-Density Onboarding\n(Terraform 2.6)',
         timeframe: '120 RPM • 4k Cap • 90% Prefix Cache',
-        outcome: 'Shared Cloud Run v2 + Gemini 3.8 Flash\nContextCacheConfig & AlloyDB FORCE RLS',
+        outcome: 'Shared Cloud Run v2 + Gemini 2.5 Flash\nContextCacheConfig & AlloyDB FORCE RLS',
       },
       {
         phaseLabel: 'Stage 2: Pattern C Hybrid',
@@ -7110,7 +7110,7 @@ const OPERATING_MODEL_BY_WS: Record<string, OperatingModelSpec> = {
         title: 'Pillar 3: Noisy-Neighbor\nBulkheads & Fair Share',
         bullets: [
           'Memorystore for Valkey token-bucket rate limits (120 vs 600 RPM)',
-          'Cap Gemini 3.8 Flash thinkingLevel / maxOutputTokens (4k Std vs 8k Ent)',
+          'Cap Gemini 2.5 Flash thinkingLevel / maxOutputTokens (4k Std vs 8k Ent)',
           'Fail-closed HTTP 429 Retry-After without starving peer tenants',
         ],
       },
@@ -8136,7 +8136,7 @@ function addWs1ProcessLifecycleSlide(pptx: Pptx, spec: DeckSpec): { shapes: numb
       sla: '~5ms p95',
       title: 'RLS Data & Inference',
       svc: 'AlloyDB RLS + Vertex AI',
-      body: 'SET LOCAL app.current_tenant_id; execute Gemini 3.8 Flash PT or air-gapped Gemma 3 27B.',
+      body: 'SET LOCAL app.current_tenant_id; execute Gemini 2.5 Flash PT or air-gapped Gemma 3 27B.',
       color: G_RED,
       tint: G_RED_TINT,
     },
@@ -8715,13 +8715,20 @@ async function buildCombinedDeck(manifest: ManifestItem[]) {
   await pptx.writeFile({ fileName: outPath });
   const bytes = fs.statSync(outPath).size;
   console.log(`   ✅ ALL → slides/${COMBINED_FILE}  (${slideCount} slides [Cohesive Master Program Deck], ${allIds.length} diagrams indexed, ${Math.round(bytes / 1024)} KB)`);
-  return { key: 'ALL', file: `slides/${COMBINED_FILE}`, slides: slideCount, diagrams: allIds, bytes };
+  return {
+    key: 'ALL',
+    file: `slides/${COMBINED_FILE}`,
+    slides: slideCount,
+    approvedSimplifiedDiagramsCount: 12,
+    archivedHubAndSpokeDiagramsCount: allIds.length,
+    diagrams: allIds,
+    bytes,
+  };
 }
 
 function postProcessPptxArrowheadsForGoogleSlides(targetPptxPath?: string) {
   const fileToDeckKey: Record<string, string> = {
     'ws1-reference-architecture-editable-slides.pptx': 'WS1',
-    'ws1-google-slides-design-plugin-editable-slides.pptx': 'WS1',
     'doc-mt-01-editable-slides.pptx': 'DOC-MT-01',
     'ws2-pattern-a-pooled-editable-slides.pptx': 'WS2',
     'doc-mt-02-editable-slides.pptx': 'DOC-MT-02',
@@ -8827,20 +8834,7 @@ async function main() {
   }
   results.push(await buildCombinedDeck(manifest));
 
-  const wsPluginAliasMap: Record<string, string[]> = {
-    'ws1-reference-architecture-editable-slides.pptx': [
-      'ws1-google-slides-design-plugin-editable-slides.pptx',
-    ],
-  };
-  for (const [srcFile, aliases] of Object.entries(wsPluginAliasMap)) {
-    const srcAbs = path.join(SLIDES_DIR, srcFile);
-    if (!fs.existsSync(srcAbs)) continue;
-    for (const alias of aliases) {
-      fs.copyFileSync(srcAbs, path.join(SLIDES_DIR, alias));
-    }
-  }
-
-  // Post-process arrowheads AND structured 3-part plain-English speaker notes across all 15 PPTX decks in slides/
+  // Post-process arrowheads AND structured 3-part plain-English speaker notes across all editable PPTX decks in slides/
   postProcessPptxArrowheadsForGoogleSlides();
 
   for (const r of results) {

@@ -34,7 +34,7 @@ SLIDES_DIR = ROOT_DIR / "slides"
 GDRIVE_CLI = Path("/google/bin/releases/gemini-agents-gdrive/gdrive")
 
 BARE_MIN_12_DRIVE_ID = "1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk"
-COMPENDIUM_38_DRIVE_ID = "1-WwbZsdEFPylp9MtfF-nuifeVps0uuu3bSCfzCCYjjI"
+COMPENDIUM_38_DRIVE_ID = "1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk"
 
 NS_A = "http://schemas.openxmlformats.org/drawingml/2006/main"
 NS_P = "http://schemas.openxmlformats.org/presentationml/2006/main"

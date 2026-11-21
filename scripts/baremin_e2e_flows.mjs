@@ -10,7 +10,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "title": "Shared 5-Hop Cryptographic Governance Control Plane & Pattern A/B/C Matrix",
     "subtitle": "How one 80% reusable ADK/Cloud Run core enforces edge, catalog, bulkhead, guardrail, and RLS contracts across all three isolation patterns",
     "questionAnswered": "How can one multi-tenant agentic platform serve high-density pooled SaaS tenants, sovereign CMEK silos, and hybrid PSC customers from a single codebase?",
-    "gcpProject": "cymbal-pooled-saas-prod (#248990048888) & bbar-138hf0 (#48439189383)",
+    "gcpProject": "cymbal-pooled-saas-prod (#248990048888) & cymbal-ge-silo-2026 (#495457819919)",
     "runtimeTarget": "cymbal-multi-tenant-patterns (Cloud Run Gen2 / Agent Engine us-central1)",
     "codeModules": "workstream-1-reference-architecture/1.2-product-team-review-pack.md",
     "execCloudServices": "Cloud Armor • Cloud KMS • ARD Catalog • Memorystore Valkey • gVisor • Model Armor • AlloyDB FORCE RLS • BigQuery OTel",
@@ -106,7 +106,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "badgeNum": "06",
         "zone": "Red Zone",
         "title": "Bidirectional Model Armor & SDP",
-        "logicalNarrative": "Hop 4 screens prompts before Gemini 3.8 Flash (~<8ms) and redacts regulated PII/PCI tokens from egress text.",
+        "logicalNarrative": "Hop 4 screens prompts before Gemini 2.5 Flash (~<8ms) and redacts regulated PII/PCI tokens from egress text.",
         "components": "Model Armor • Cloud SDP"
       },
       {
@@ -163,7 +163,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "step": "Step ⑤",
         "hopName": "Hop 3: Bulkhead",
         "route": "Valkey 8.0 & gVisor Sandbox",
-        "protocolAndMechanism": "Token-bucket RPM/TPM limits + 32,768 prefix cache on Gemini 3.8 Flash.",
+        "protocolAndMechanism": "Token-bucket RPM/TPM limits + 32,768 prefix cache on Gemini 2.5 Flash.",
         "codeAndResource": "hop3_compute_finops_bulkhead.py",
         "verifiedOutcome": "89.1% net input token reduction"
       },
@@ -203,10 +203,10 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "title": "5-Part Multi-Tenant Architecture Series & Pattern A/B/C COGS Spectrum",
     "subtitle": "Mapping WS1 Reference Taxonomy, WS2 Pool, WS3 Silo, WS4 Hybrid PSC, and WS5 Cross-Cloud across density and compliance",
     "questionAnswered": "How do the 5 architectural workstreams map onto real B2B SaaS unit economics, tenant density targets, and regulatory isolation levels?",
-    "gcpProject": "cymbal-pooled-saas-prod (#248990048888) & bbar-138hf0 (#48439189383)",
+    "gcpProject": "cymbal-pooled-saas-prod (#248990048888) & cymbal-ge-silo-2026 (#495457819919)",
     "runtimeTarget": "cymbal-multi-tenant-patterns (Cloud Run Gen2 / Agent Engine us-central1)",
     "codeModules": "workstream-1-reference-architecture/1.2-product-team-review-pack.md",
-    "execCloudServices": "Cloud Run Gen2 • AlloyDB FORCE RLS • Private Service Connect • Cloud KMS CMEK • VPC-SC • Vertex AI Gemini 3.8 Flash",
+    "execCloudServices": "Cloud Run Gen2 • AlloyDB FORCE RLS • Private Service Connect • Cloud KMS CMEK • VPC-SC • Vertex AI Gemini 2.5 Flash",
     "execTechSummary": "Aligns unit economics (1.0x Pooled Baseline vs ~15x Silo vs 1.8x Hybrid PSC) with the five architectural deep-dives so executives pick the lowest-COGS compliant tier.",
     "outcomeTitle": "Prescriptive Multi-Workstream Blueprint Selection",
     "outcomeBody": "Architects avoid over-building sovereign silos for commercial accounts while maintaining a seamless upgrade path when deals close regulated enterprises.",
@@ -341,7 +341,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "hopName": "Pooled Tier",
         "route": "WS2 Shared Pool (950 Tenants)",
         "protocolAndMechanism": "Runs 32,768 shared prefix cache; 36,468 -> 3,969 tokens/turn (89.1%).",
-        "codeAndResource": "Gemini 3.8 Flash • Valkey 8.0",
+        "codeAndResource": "Gemini 2.5 Flash • Valkey 8.0",
         "verifiedOutcome": "1.0x baseline COGS"
       },
       {
@@ -396,7 +396,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "title": "5-Hop Cryptographic Perimeter Pipeline & Deterministic Circuit Breakers",
     "subtitle": "Hop-by-hop enforcement contracts across Edge PEP, ARD Catalog PDP, gVisor/Valkey Bulkhead, Model Armor, and AlloyDB RLS/CMEK",
     "questionAnswered": "What exact cryptographic checks, callback hooks, and fail-closed HTTP status codes isolate each microservice hop from caller to database?",
-    "gcpProject": "cymbal-pooled-saas-prod (#248990048888) & bbar-138hf0 (#48439189383)",
+    "gcpProject": "cymbal-pooled-saas-prod (#248990048888) & cymbal-ge-silo-2026 (#495457819919)",
     "runtimeTarget": "cymbal-multi-tenant-patterns (Cloud Run Gen2 / Agent Engine us-central1)",
     "codeModules": "workstream-1-reference-architecture/1.2-product-team-review-pack.md",
     "execCloudServices": "External ALB • Cloud Armor • Cloud KMS • ARD Catalog • gVisor • Memorystore Valkey • Model Armor • AlloyDB FORCE RLS",
@@ -485,7 +485,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "zone": "Hop 3 FinOps",
         "title": "32,768-Token Shared Prefix Hit",
         "logicalNarrative": "Static instructions and pruned tool schemas hit Vertex AI Context Cache for 89.1% net input savings.",
-        "components": "Gemini 3.8 Flash • Context Cache"
+        "components": "Gemini 2.5 Flash • Context Cache"
       },
       {
         "step": "Step ⑥",
@@ -550,7 +550,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "hopName": "Hop 3b: Prefix Cache",
         "route": "Vertex AI ContextCacheConfig",
         "protocolAndMechanism": "32,768 shared prefix + ARD pruning cuts 36,468 -> 3,969 billed tokens/turn.",
-        "codeAndResource": "Gemini 3.8 Flash",
+        "codeAndResource": "Gemini 2.5 Flash",
         "verifiedOutcome": "89.1% prod net reduction"
       },
       {
@@ -589,10 +589,10 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "title": "5-Actor UML Process Sequence: End-to-End Request, Circuit Breakers & Stampede Recovery",
     "subtitle": "Lifeline trace across Tenant Caller, Edge/KMS/ARD Control Plane, Cloud Run ADK Worker, Valkey/AlloyDB State, and Model Armor/Gemini",
     "questionAnswered": "In what exact chronological sequence do components exchange tokens, acquire stampede locks, enforce guardrails, and roll back on failure?",
-    "gcpProject": "cymbal-pooled-saas-prod (#248990048888) & bbar-138hf0 (#48439189383)",
+    "gcpProject": "cymbal-pooled-saas-prod (#248990048888) & cymbal-ge-silo-2026 (#495457819919)",
     "runtimeTarget": "cymbal-multi-tenant-patterns (Cloud Run Gen2 / Agent Engine us-central1)",
     "codeModules": "workstream-1-reference-architecture/1.2-product-team-review-pack.md",
-    "execCloudServices": "External ALB • Cloud KMS • ARD Catalog • Cloud Run ADK • Valkey SET NX PX • Model Armor • Gemini 3.8 Flash • AlloyDB RLS",
+    "execCloudServices": "External ALB • Cloud KMS • ARD Catalog • Cloud Run ADK • Valkey SET NX PX • Model Armor • Gemini 2.5 Flash • AlloyDB RLS",
     "execTechSummary": "Visualizes synchronous request lifelines, local <0.15ms JWKS verification, Valkey single-flight leader election, fail-closed circuit-breaker aborts, and post-inference SDP redaction.",
     "outcomeTitle": "Deterministic Chronological Isolation Across 5 Actors",
     "outcomeBody": "Eliminates race conditions, stale pooled DB connections, and cache-invalidation stampedes under concurrent multi-tenant bursts.",
@@ -633,9 +633,9 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "colorHex": "#fad2cf",
         "borderHex": "#c5221f",
         "name": "4. Model & Data Plane (Armor, Gemini, AlloyDB)",
-        "role": "Executes Model Armor screening, cached Gemini 3.8 Flash inference, and transaction-scoped RLS.",
+        "role": "Executes Model Armor screening, cached Gemini 2.5 Flash inference, and transaction-scoped RLS.",
         "nodes": [
-          "Executes Model Armor screening, cached Gemini 3.8 Flash inference, and transaction-scoped RLS."
+          "Executes Model Armor screening, cached Gemini 2.5 Flash inference, and transaction-scoped RLS."
         ]
       }
     ],
@@ -684,9 +684,9 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "step": "Step ⑥",
         "badgeNum": "06",
         "zone": "Actor 5 (Inference)",
-        "title": "Prefix-Cached Gemini 3.8 Flash Turn",
+        "title": "Prefix-Cached Gemini 2.5 Flash Turn",
         "logicalNarrative": "Gemini reads the 32,768-token cached prefix plus pruned tool subset and emits tool calls or text.",
-        "components": "Gemini 3.8 Flash"
+        "components": "Gemini 2.5 Flash"
       },
       {
         "step": "Step ⑦",
@@ -749,7 +749,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
       {
         "step": "Step ⑥",
         "hopName": "Lifeline 5 Tool/LLM",
-        "route": "Scoped Gemini 3.8 Flash + MCP",
+        "route": "Scoped Gemini 2.5 Flash + MCP",
         "protocolAndMechanism": "Executes turn against cached 32,768-token prefix and DPoP 2LO/3LO MCP.",
         "codeAndResource": "ContextCacheConfig",
         "verifiedOutcome": "89.1% net token savings"
@@ -782,7 +782,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "title": "5-Hop Cryptographic Request & Token Exchange (5-Actor UML Sequence)",
     "subtitle": "End-to-end chronological lifecycle across Tenant Caller, Hop 1 Cloud Armor/IAP, Hop 2 Gateway/ARD, Hop 3 ADK/Valkey, and Hops 4–5 Model Armor/AlloyDB RLS",
     "questionAnswered": "How do cryptographic tokens, catalog policies, cache locks, guardrails, and database RLS predicates hand off sequentially across Hops 1–5?",
-    "gcpProject": "cymbal-pooled-saas-prod (#248990048888) & bbar-138hf0 (#48439189383)",
+    "gcpProject": "cymbal-pooled-saas-prod (#248990048888) & cymbal-ge-silo-2026 (#495457819919)",
     "runtimeTarget": "cymbal-multi-tenant-patterns (Cloud Run Gen2 / Agent Engine us-central1)",
     "codeModules": "workstream-1-reference-architecture/1.2-product-team-review-pack.md",
     "execCloudServices": "External ALB • IAM STS (RFC 8693) • RFC 9449 DPoP • Workload Identity Federation • Valkey Lua • Model Armor • AlloyDB",
@@ -975,7 +975,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "title": "Hop 1 Spoofed Header Stripping & Signed STS JWT Context Transformation",
     "subtitle": "Side-by-side wire transformation from untrusted caller HTTP payload through Stage 01-03 Hop 1 Gate to verified TenantContext",
     "questionAnswered": "Exactly how does Hop 1 convert an untrusted caller payload carrying spoofed headers into a verified, memory-verifiable STS JWT?",
-    "gcpProject": "cymbal-pooled-saas-prod (#248990048888) & bbar-138hf0 (#48439189383)",
+    "gcpProject": "cymbal-pooled-saas-prod (#248990048888) & cymbal-ge-silo-2026 (#495457819919)",
     "runtimeTarget": "cymbal-multi-tenant-patterns (Cloud Run Gen2 / Agent Engine us-central1)",
     "codeModules": "workstream-1-reference-architecture/1.2-product-team-review-pack.md",
     "execCloudServices": "External ALB • Cloud Armor • Cloud KMS (ECDSA P-256) • RFC 8693 STS • RFC 9449 DPoP • In-Memory JWKS",
@@ -1168,10 +1168,10 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "title": "Hop 3 gVisor Sandbox, Valkey Token-Bucket Bulkhead & 32,768 Prefix Cache",
     "subtitle": "Combining CoW ephemeral sandboxing, atomic Valkey quotas, ARD schema pruning, and Vertex AI >=32,768 prefix caching",
     "questionAnswered": "How does Hop 3 prevent noisy neighbors and memory bleed while cutting pooled production input token costs by 89.1%?",
-    "gcpProject": "cymbal-pooled-saas-prod (#248990048888) & bbar-138hf0 (#48439189383)",
+    "gcpProject": "cymbal-pooled-saas-prod (#248990048888) & cymbal-ge-silo-2026 (#495457819919)",
     "runtimeTarget": "cymbal-multi-tenant-patterns (Cloud Run Gen2 / Agent Engine us-central1)",
     "codeModules": "workstream-1-reference-architecture/1.2-product-team-review-pack.md",
-    "execCloudServices": "Cloud Run Gen2 gVisor • Memorystore for Valkey 8.0 • ARD Catalog Pruning • Vertex AI Context Caching • Gemini 3.8 Flash",
+    "execCloudServices": "Cloud Run Gen2 gVisor • Memorystore for Valkey 8.0 • ARD Catalog Pruning • Vertex AI Context Caching • Gemini 2.5 Flash",
     "execTechSummary": "Demonstrates CoW --max-requests=1 heap wiping, Redis/Valkey atomic RPM/TPM bulkheads, SET NX PX 5000 single-flight lock, and exact math from 36,468 to 3,969 billed tokens per turn (89.1%).",
     "outcomeTitle": "89.1% Net Input Token Reduction With Zero Memory Bleed",
     "outcomeBody": "Meeting Vertex AI's >=32,768-token floor unlocks 0.10x cached prefix pricing while ARD catalog pruning cuts dynamic MCP schema bloat by 94%.",
@@ -1272,8 +1272,8 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "badgeNum": "07",
         "zone": "Blue Zone",
         "title": "Execute Reasoning Inside gVisor CoW",
-        "logicalNarrative": "Gemini 3.8 Flash runs inside ephemeral gVisor memory; --max-requests=1 wipes heap after turn.",
-        "components": "gVisor • Gemini 3.8 Flash"
+        "logicalNarrative": "Gemini 2.5 Flash runs inside ephemeral gVisor memory; --max-requests=1 wipes heap after turn.",
+        "components": "gVisor • Gemini 2.5 Flash"
       },
       {
         "step": "Outcome",
@@ -1330,7 +1330,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "hopName": "Context Cache",
         "route": "Vertex AI >=32,768 Token Floor",
         "protocolAndMechanism": "32,768 static prefix billed at 0.10x (3,277 eq) + 192 MCP + 500 user = 3,969.",
-        "codeAndResource": "Gemini 3.8 Flash Cache",
+        "codeAndResource": "Gemini 2.5 Flash Cache",
         "verifiedOutcome": "89.1% net token reduction"
       },
       {
@@ -1361,7 +1361,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "title": "Hop 5 Data Partitioning: AlloyDB PostgreSQL FORCE RLS, PgBouncer DISCARD ALL & BigQuery OTel",
     "subtitle": "Engine-enforced multi-tenant row filtering inside AlloyDB PostgreSQL, ADK/Memory Bank scoping, and zero-PII BigQuery OTel logging",
     "questionAnswered": "How does Hop 5 guarantee mathematically zero cross-tenant database reads—even under LLM SQL injection or connection pooling?",
-    "gcpProject": "cymbal-pooled-saas-prod (#248990048888) & bbar-138hf0 (#48439189383)",
+    "gcpProject": "cymbal-pooled-saas-prod (#248990048888) & cymbal-ge-silo-2026 (#495457819919)",
     "runtimeTarget": "cymbal-multi-tenant-patterns (Cloud Run Gen2 / Agent Engine us-central1)",
     "codeModules": "workstream-1-reference-architecture/1.2-product-team-review-pack.md",
     "execCloudServices": "AlloyDB for PostgreSQL (FORCE RLS) • PgBouncer (DISCARD ALL) • ADK / Memory Bank • Vertex Vector Search • BigQuery OTel",
@@ -1554,7 +1554,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "title": "L3 Fail-Closed Security Circuit Breakers (HTTP 401 / 403 / 429 / 422 / 423)",
     "subtitle": "Mapping all five deterministic security and compliance failure modes—from edge spoofing and rogue tools to CMEK key revocation",
     "questionAnswered": "How does every layer fail closed with a specific, testable HTTP code rather than failing open or leaking cross-tenant data during an attack or outage?",
-    "gcpProject": "cymbal-pooled-saas-prod (#248990048888) & bbar-138hf0 (#48439189383)",
+    "gcpProject": "cymbal-pooled-saas-prod (#248990048888) & cymbal-ge-silo-2026 (#495457819919)",
     "runtimeTarget": "cymbal-multi-tenant-patterns (Cloud Run Gen2 / Agent Engine us-central1)",
     "codeModules": "workstream-1-reference-architecture/1.2-product-team-review-pack.md",
     "execCloudServices": "Cloud Armor (401) • ARD Catalog PDP (403) • Valkey Token-Bucket (429) • Model Armor (422) • Cloud KMS CMEK (423) • SCC",
@@ -1774,7 +1774,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "colorHex": "#ECFDF5",
         "borderHex": "#047857",
         "name": "COMPUTE PLANE (Pooled Front End, ADK & Targets)",
-        "role": "Shared ADK Agent Orchestrator, gVisor CoW sandboxes, pooled MCP servers, pooled A2A agents, and Gemini 3.8 Flash.",
+        "role": "Shared ADK Agent Orchestrator, gVisor CoW sandboxes, pooled MCP servers, pooled A2A agents, and Gemini 2.5 Flash.",
         "nodes": [
           "Pooled Front End (Cloud Run / GKE)",
           "ADK Agent Orchestrator (gVisor CoW)",
@@ -1843,7 +1843,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "badgeNum": "05",
         "zone": "Red Zone",
         "title": "Model Armor Screening & 32k Cache",
-        "logicalNarrative": "Inline Model Armor inspects prompts (<8ms) before Gemini 3.8 Flash executes against the shared 32,768-token cached system prefix.",
+        "logicalNarrative": "Inline Model Armor inspects prompts (<8ms) before Gemini 2.5 Flash executes against the shared 32,768-token cached system prefix.",
         "components": "Model Armor • Vertex Prefix Cache"
       },
       {
@@ -1907,7 +1907,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
       {
         "step": "Step ⑤",
         "hopName": "Model Armor In/Out",
-        "route": "ADK -> Model Armor -> Gemini 3.8 Flash",
+        "route": "ADK -> Model Armor -> Gemini 2.5 Flash",
         "protocolAndMechanism": "Blocks jailbreaks pre-inference (<8ms); reuses 32k prefix cache (36,468 -> 3,969).",
         "codeAndResource": "hop4_model_armor_guardrails.py",
         "verifiedOutcome": "89.1% net token reduction"
@@ -1951,7 +1951,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "gcpProject": "cymbal-pooled-saas-prod (#248990048888)",
     "runtimeTarget": "Cloud Run Gen2 / Agent Engine (gVisor)",
     "codeModules": "workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py • core-cymbal-agent/runtime_pipeline.py",
-    "execCloudServices": "Client/Gateway • Cloud Run Warm Zygote • gVisor CoW Fork • Memorystore Valkey • Gemini 3.8 Flash • BigQuery OTel",
+    "execCloudServices": "Client/Gateway • Cloud Run Warm Zygote • gVisor CoW Fork • Memorystore Valkey • Gemini 2.5 Flash • BigQuery OTel",
     "execTechSummary": "Maintains pre-initialized CoW zygote workers, clones an isolated gVisor memory page per request, enforces single-request lifetime (--max-requests=1), wipes heap + unlinks tmpfs on exit, and persists zero secrets.",
     "outcomeTitle": "Zero-Residue Stateless Execution",
     "outcomeBody": "Memory pages modified by Tenant A are immediately destroyed by gVisor SIGKILL after the single turn, preventing dirty-page side channels without Python interpreter cold starts.",
@@ -1996,7 +1996,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "colorHex": "#FEF2F2",
         "borderHex": "#B91C1C",
         "name": "FAIL-CLOSED SANITIZATION & OTEL TEARDOWN",
-        "role": "Runs Model Armor screening pre/post Gemini 3.8 Flash and emits zero-PII BigQuery OTel spans before SIGKILL.",
+        "role": "Runs Model Armor screening pre/post Gemini 2.5 Flash and emits zero-PII BigQuery OTel spans before SIGKILL.",
         "nodes": [
           "Model Armor PEP",
           "Heap Wipe + SIGKILL",
@@ -2041,9 +2041,9 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "step": "Step ⑤",
         "badgeNum": "05",
         "zone": "Green Zone",
-        "title": "Single-Turn Gemini 3.8 Flash Call",
+        "title": "Single-Turn Gemini 2.5 Flash Call",
         "logicalNarrative": "Executes 1 turn (--max-requests=1) using the shared 32,768-token cached system prefix and scoped OBO tools.",
-        "components": "Gemini 3.8 Flash • 32k Cache"
+        "components": "Gemini 2.5 Flash • 32k Cache"
       },
       {
         "step": "Step ⑥",
@@ -2106,7 +2106,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
       {
         "step": "Step ⑤",
         "hopName": "Prefix Cached LLM",
-        "route": "gVisor Child -> Gemini 3.8 Flash",
+        "route": "gVisor Child -> Gemini 2.5 Flash",
         "protocolAndMechanism": "Binds 32k cached context; cuts effective turn tokens 36,468 -> 3,969.",
         "codeAndResource": "hop3_compute_finops_bulkhead.py",
         "verifiedOutcome": "89.1% net token saving"
@@ -2242,8 +2242,8 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "badgeNum": "05",
         "zone": "Green Zone",
         "title": "Multi-Turn Stateful Execution",
-        "logicalNarrative": "Latched pod runs Python interpreter/browser workspace with Gemini 3.8 Flash + Model Armor screening across Turn 2..N.",
-        "components": "ADK Sandbox • Gemini 3.8 Flash"
+        "logicalNarrative": "Latched pod runs Python interpreter/browser workspace with Gemini 2.5 Flash + Model Armor screening across Turn 2..N.",
+        "components": "ADK Sandbox • Gemini 2.5 Flash"
       },
       {
         "step": "Step ⑥",
@@ -2347,7 +2347,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "title": "Dedicated Silo Agent Platform Architecture (Pattern B: Silo)",
     "subtitle": "1:1 Reference Twin per regulated tenant with dedicated GCP project, VPC-SC, Air-Gapped GKE/PT, AlloyDB & Cloud HSM CMEK",
     "questionAnswered": "How do banking, defense, and healthcare tenants achieve physical blast-radius isolation and customer-held KMS kill-switches?",
-    "gcpProject": "bbar-138hf0 (#48439189383)",
+    "gcpProject": "cymbal-ge-silo-2026 (#495457819919)",
     "runtimeTarget": "Dedicated Single-Tenant Silo Projects (project-silo-tenant-a/b/c)",
     "codeModules": "workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md • workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/",
     "execCloudServices": "Dedicated Tenant IdP/WIF • Per-Silo Ingress Gateway • VPC-SC Perimeter • Confidential GKE / Dedicated ADK • Customer Cloud HSM CMEK • Dedicated AlloyDB & HNSW Vector Index",
@@ -2442,7 +2442,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "badgeNum": "05",
         "zone": "Green Zone",
         "title": "Confidential GKE & Air-Gapped PT",
-        "logicalNarrative": "ADK executes inside Confidential GKE (AMD SEV-SNP encrypted RAM) calling dedicated Provisioned Throughput Gemini 3.8 or Gemma.",
+        "logicalNarrative": "ADK executes inside Confidential GKE (AMD SEV-SNP encrypted RAM) calling dedicated Provisioned Throughput Gemini 2.5 or Gemma.",
         "components": "Confidential GKE • PT Endpoint"
       },
       {
@@ -2507,7 +2507,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "step": "Step ⑤",
         "hopName": "Confidential Compute",
         "route": "ADK -> Confidential GKE (AMD SEV-SNP)",
-        "protocolAndMechanism": "Hardware-encrypted node RAM; calls dedicated PT Gemini 3.8 or Gemma YAML.",
+        "protocolAndMechanism": "Hardware-encrypted node RAM; calls dedicated PT Gemini 2.5 or Gemma YAML.",
         "codeAndResource": "gke_gemma3_airgapped_manifest.yaml",
         "verifiedOutcome": "0 noisy neighbor contention"
       },
@@ -2547,7 +2547,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "title": "WS3 - PART 3 - Sovereign Silo CMEK Revocation & Air-Gapped GKE",
     "subtitle": "5-Actor temporal sequence proving <60s cryptographic lockout when a tenant CISO disables Cloud KMS / EKM",
     "questionAnswered": "If a regulated tenant CISO revokes their Cloud KMS key, how quickly do cached tokens, ADK pods, and storage fail closed?",
-    "gcpProject": "bbar-138hf0 (#48439189383)",
+    "gcpProject": "cymbal-ge-silo-2026 (#495457819919)",
     "runtimeTarget": "Confidential GKE + Sovereign Agent Engine",
     "codeModules": "core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py • workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py",
     "execCloudServices": "Tenant A CISO Admin • Cloud KMS (Tenant Key) • VPC-SC & Silo Gateway • Sovereign Agent Engine • Silo AlloyDB & SCC",
@@ -2746,7 +2746,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "title": "Governed Hub-and-Spoke Architecture (Pattern C: Hybrid PSC)",
     "subtitle": "Shared Governance Hub dynamically routing Standard tenants to Pool A and Regulated tenants to dedicated /28 Private Service Connect spokes",
     "questionAnswered": "How do platforms graduate growing enterprise tenants from Pooled SaaS to Dedicated VPC-SC spokes with 0ms live cutover?",
-    "gcpProject": "cymbal-control-plane (#248990048888) ↔ bbar-138hf0 (#48439189383)",
+    "gcpProject": "cymbal-control-plane (#248990048888) ↔ cymbal-ge-silo-2026 (#495457819919)",
     "runtimeTarget": "Hub Cloud Run + Dedicated Spoke /28 PSC",
     "codeModules": "workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md • workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/",
     "execCloudServices": "Shared Ingress & Hub Gateway • Firestore Tier Lookup (<1ms) • Pooled Spoke A • Private Service Connect /28 Spoke (Enterprise) • Hub OTel & IAM PAB",
@@ -2945,7 +2945,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "title": "WS4 - PART 4 - Pattern C /28 PSC & 0ms Live Tier Promotion",
     "subtitle": "5-Actor temporal sequence executing live tenant graduation from Pooled Spoke to Dedicated /28 PSC Spoke with 0 dropped turns",
     "questionAnswered": "How does an enterprise customer upgrade from Pattern A (Pooled) to Pattern B/C (Dedicated Spoke) live without maintenance windows?",
-    "gcpProject": "cymbal-control-plane ↔ bbar-138hf0",
+    "gcpProject": "cymbal-control-plane ↔ cymbal-ge-silo-2026",
     "runtimeTarget": "Zero-Downtime PSC Cutover Controller",
     "codeModules": "workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py • workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py",
     "execCloudServices": "Platform Admin CLI • Terraform Spoke Engine • Tenant Data Sync (CDC) • Firestore Atomic Pointer • Gateway Tier Router",
@@ -3145,7 +3145,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "title": "WS5 - PART 5 - Architecture Pattern Selector: Pool (A) vs. Hybrid (C) vs. Silo (B)",
     "subtitle": "CISO/Architect 2-Question Decision Tree mapping compliance, blast-radius, and COGS requirements to Pattern A, C, or B",
     "questionAnswered": "Which isolation pattern should an enterprise choose — and when do we graduate from Pooled A to Hybrid C or Sovereign Silo B?",
-    "gcpProject": "cymbal-control-plane & bbar-138hf0",
+    "gcpProject": "cymbal-control-plane & cymbal-ge-silo-2026",
     "runtimeTarget": "Platform Decision Governance Matrix",
     "codeModules": "workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md",
     "execCloudServices": "CISO Decision Matrix • Pattern A Pooled • Pattern C Hybrid PSC • Pattern B Sovereign Silo • 80% Reusable 5-Hop Core",
@@ -3341,7 +3341,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "title": "Multi-Cloud Federation: Google Cloud Plane ↔ AWS & 10 SaaS",
     "subtitle": "5-Hop Governed Hub bridging 3 enterprise authentication patterns across 10 live SaaS targets and AWS AgentCore MCP Gateway",
     "questionAnswered": "How does the GCP 5-Hop Control Plane enforce OBO/DPoP/Model Armor across AWS AgentCore MCP Gateways and 10 disparate SaaS systems?",
-    "gcpProject": "ramp-portal-dev (#248990048888) ↔ AWS 393036065405 (us-east-1)",
+    "gcpProject": "cymbal-ge-hub-2026 (#252968359259) ↔ AWS 393036065405 (us-east-1)",
     "runtimeTarget": "Cloud Run (ge-blogs) ↔ AWS AgentCore MCP + S3",
     "codeModules": "core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py • server.py (/api/saas-5-live-verify)",
     "execCloudServices": "Cloud Armor + IAP • ADK 5-Hop Gateway • Workforce WIF / Entra OBO / DPoP • Model Armor Egress SDP • AWS AgentCore MCP Gateway • 10 SaaS Targets",
@@ -3540,12 +3540,12 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "badge": "WORKSTREAM 5 • SLIDE 12 (WS5 DYNAMIC SKILLS)",
     "patternBadge": "GCS SKILL BUNDLES • ZERO REDEPLOY",
     "title": "WS5 - PART 5 - Shared+Private Agents, Dynamic GCS Skills & FinOps OTel",
-    "subtitle": "5-Actor temporal sequence demonstrating zero-redeploy runtime customization via Firestore config, GCS SKILL.md bundles, and Gemini 3.8 Flash",
+    "subtitle": "5-Actor temporal sequence demonstrating zero-redeploy runtime customization via Firestore config, GCS SKILL.md bundles, and Gemini 2.5 Flash",
     "questionAnswered": "How do 1,000+ tenants customize prompts, private agents, and GCS Skills on one shared ADK codebase without per-tenant container builds?",
     "gcpProject": "cymbal-pooled-saas-prod (#248990048888)",
     "runtimeTarget": "Shared ADK Orchestrator + Private Agent Alpha",
     "codeModules": "core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py • core-cymbal-agent/agents/finvault_agent_alpha.py",
-    "execCloudServices": "Tenant Caller • Firestore Runtime Config • Signed GCS Skill Bucket • Shared/Private ADK Agent • Vertex Gemini 3.8 Flash + OTel",
+    "execCloudServices": "Tenant Caller • Firestore Runtime Config • Signed GCS Skill Bucket • Shared/Private ADK Agent • Vertex Gemini 2.5 Flash + OTel",
     "execTechSummary": "Hydrates tenant prompt templates, thinkingConfig, and tenant-scoped `gs://cymbal-skills-{tenant}/SKILL.md` manifests at turn start via HMAC/IAM Condition checks, delegating seamlessly across Shared and Private Agent Alpha with zero image rebuilds.",
     "outcomeTitle": "Zero-Redeploy Enterprise Customization & Deterministic FinOps",
     "outcomeBody": "SaaS vendors ship one immutable container image globally while every customer configures isolated Skills, private models (`dedicated` PT vs PayGo), and OTel cost tags in seconds.",
@@ -3589,10 +3589,10 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "zoneId": "Red Zone",
         "colorHex": "#FEF2F2",
         "borderHex": "#B91C1C",
-        "name": "GEMINI 3.8 FLASH PREFIX CACHE & FINOPS OTEL",
+        "name": "GEMINI 2.5 FLASH PREFIX CACHE & FINOPS OTEL",
         "role": "Binds hydrated skill into 32k prefix cache (89.1% reduction) and logs `(tenant_id, skill_id, cached_tokens)` to BQ.",
         "nodes": [
-          "Gemini 3.8 Flash 32k Cache",
+          "Gemini 2.5 Flash 32k Cache",
           "BigQuery FinOps OTel"
         ]
       }
@@ -3642,9 +3642,9 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "step": "Step ⑥",
         "badgeNum": "06",
         "zone": "Red Zone",
-        "title": "Gemini 3.8 Flash 32k Prefix Execution",
+        "title": "Gemini 2.5 Flash 32k Prefix Execution",
         "logicalNarrative": "Model executes against shared 32,768-token prefix cache achieving 89.1% net input token reduction (36,468 -> 3,969).",
-        "components": "Gemini 3.8 Flash • 32k Cache"
+        "components": "Gemini 2.5 Flash • 32k Cache"
       },
       {
         "step": "Step ⑦",
@@ -3707,7 +3707,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
       {
         "step": "Step ⑥",
         "hopName": "32k Prefix Cache",
-        "route": "ADK -> Gemini 3.8 Flash",
+        "route": "ADK -> Gemini 2.5 Flash",
         "protocolAndMechanism": "Co-schedules shared static prefix with dynamic skill prompt overlay.",
         "codeAndResource": "hop3_compute_finops_bulkhead.py",
         "verifiedOutcome": "89.1% net token reduction"

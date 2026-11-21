@@ -238,14 +238,14 @@
       </div>
       <span class="id-badge" id="uniqueIdBadge">🆔 loading...</span>
       <span class="slide-pill" id="slideBoundBadge">Slide --/38</span>
-      <select class="diag-select" id="all50Select" aria-label="Select diagram from 66-Diagram Atlas" title="Jump to any slide diagram in the 38-Slide Architecture Compendium or 28 Extended Blueprints (66 Total)"></select>
+      <select class="diag-select" id="all50Select" aria-label="Select diagram from 67-Diagram Atlas" title="Jump to any slide diagram in the 67-Diagram Architecture Atlas (38 Core + 29 Extended Blueprints)"></select>
       <span class="sync-status" id="syncStatusPill">🟢 2-Way Sync Ready</span>
     </div>
     <div class="right-group">
       <button class="btn" id="btnPullFromSlides">⬇️ Pull from Slide</button>
       <button class="btn btn-primary" id="btnPushToSlides">⬆️ Push to Slide</button>
-      <a class="btn btn-slides" id="linkOpenGoogleSlides" href="https://docs.google.com/presentation/d/1-WwbZsdEFPylp9MtfF-nuifeVps0uuu3bSCfzCCYjjI/edit#slide=id.p1" target="_blank" rel="noopener" title="Open 100% Native Editable + 2-Way Sync Google Slides Deck 1">✏️ Editable Slides ↗</a>
-      <a class="btn" id="linkOpenAnimatedSlides" href="https://docs.google.com/presentation/d/1PjnEpYZY4mY9RvB6wNxMGCl84RwIyupNG7gKmpPxlKk/edit#slide=id.p1" target="_blank" rel="noopener" title="Open Animated GIF Google Slides Deck 2">🎬 Animated Deck ↗</a>
+      <a class="btn btn-slides" id="linkOpenGoogleSlides" href="https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p1" target="_blank" rel="noopener" title="Open Approved 12-Slide Native Editable Google Slides Deck">✏️ Approved 12-Slide Deck ↗</a>
+      <a class="btn" id="linkOpenAnimatedSlides" href="https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/edit#slide=id.p1" target="_blank" rel="noopener" title="Open Master 25-Slide Synthesis Google Slides Deck">📊 Master 25-Slide Deck ↗</a>
       <a class="btn" id="linkStandaloneHash" href="https://viewer.diagrams.net/?highlight=1a73e8&amp;edit=_blank&amp;layers=1&amp;nav=1" target="_blank" rel="noopener">🌐 #R URI ↗</a>
       <button class="btn" id="btnMaximizeStudio" onclick="window.toggleStudioCanvasMaximize()" title="Maximize or Restore Draw.io &amp; Format Canvas">⛶ Maximize</button>
     </div>
@@ -472,8 +472,8 @@
           : ("Slide #" + String(slideNum).padStart(2, "0") + "/38");
         uniqueIdBadge.textContent = "🆔 " + currentDiagramId;
         slideBoundBadge.textContent = badgeLabel;
-        linkOpenGoogleSlides.href = (data.item.linkages && data.item.linkages.deck1SlideUrl) || ("https://docs.google.com/presentation/d/1-WwbZsdEFPylp9MtfF-nuifeVps0uuu3bSCfzCCYjjI/edit#slide=id." + pageId);
-        linkOpenAnimatedSlides.href = (data.item.linkages && data.item.linkages.deck2SlideUrl) || ("https://docs.google.com/presentation/d/1PjnEpYZY4mY9RvB6wNxMGCl84RwIyupNG7gKmpPxlKk/edit#slide=id." + pageId);
+        linkOpenGoogleSlides.href = (data.item.linkages && data.item.linkages.deck1SlideUrl) || ("https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id." + pageId);
+        linkOpenAnimatedSlides.href = (data.item.linkages && data.item.linkages.deck2SlideUrl) || ("https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/edit#slide=id." + pageId);
         linkStandaloneHash.href = (data.item.assets && data.item.assets.drawioStandaloneHashUrl) || data.item.standaloneAppDiagramsNetUrl || ("#" + (data.selfContainedHash || ""));
 
         if (data.selfContainedHash) {

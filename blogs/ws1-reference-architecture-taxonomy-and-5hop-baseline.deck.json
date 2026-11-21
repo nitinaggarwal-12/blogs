@@ -41,14 +41,14 @@
       "heading": "Products used — Google Cloud Agentic AI, Security & Data Stack",
       "layout": "cards",
       "bullets": [
-        "Agentic AI & Foundation Models: Vertex AI Agent Engine (ADK runtime, Agent Registry & L1–L5 Memory Bank), Gemini 3.8 Flash with ContextCacheConfig (90% shared prefix discount), Vertex AI Model Garden (Dedicated PT), and Gemma 3 (27B) on private GKE.",
+        "Agentic AI & Foundation Models: Vertex AI Agent Engine (ADK runtime, Agent Registry & L1–L5 Memory Bank), Gemini 2.5 Flash with ContextCacheConfig (90% shared prefix discount), Vertex AI Model Garden (Dedicated PT), and Gemma 3 (27B) on private GKE.",
         "Ingress, Identity & AI Safety Guardrails: Global External Application Load Balancer, Google Cloud Armor L7 WAF, Identity-Aware Proxy (IAP) & IAM Security Token Service (RFC 8693 OBO + RFC 9449 DPoP), Vertex AI Model Armor, and Cloud Sensitive Data Protection (DLP).",
         "Data, Storage, Networking & Governance: AlloyDB for PostgreSQL (FORCE ROW LEVEL SECURITY), Memorystore for Valkey (per-tenant RPM bulkheads & JTI deny-list) & Firestore, VPC Service Controls (VPC-SC) & Private Service Connect (PSC), Cloud KMS CMEK, and BigQuery OTel.",
         "Shared 80% Reusable Application Core: All three isolation patterns execute the exact same Python ADK 5-hop security pipeline (`core-cymbal-agent/runtime_pipeline.py`), parameterizing only the surrounding 20% Google Cloud project and network boundary."
       ],
       "specs": [
         {
-          "stack": "Vertex AI Agent Engine (ADK) • Gemini 3.8 Flash (ContextCacheConfig) • Dedicated PT • Gemma 3 27B",
+          "stack": "Vertex AI Agent Engine (ADK) • Gemini 2.5 Flash (ContextCacheConfig) • Dedicated PT • Gemma 3 27B",
           "sla": "90% Shared System Prefix Cache Discount + Managed SaaS PT vs. Air-Gapped GKE GPU Hosting",
           "tag": "1. Agentic AI & Models"
         },
@@ -74,13 +74,13 @@
       "layout": "cards",
       "bullets": [
         "Cymbal SaaS Control Plane (Shared 32k Prefix Cache): Operates a shared Incident Diagnostic Agent on Vertex AI Agent Engine (ADK, ARD Registry & L1–L5 Memory Bank), caching a 32,768-token SRE runbook prefix once (90% discount -> 89.1% net per-turn token cost reduction).",
-        "FinVault Bank (Dedicated PT vs. Private GKE Gemma 3): Regulated bank (600 RPM / HIGH/8k maxOut, VPC-SC, CMEK) choosing between Vertex AI Dedicated Provisioned Throughput (managed SaaS Gemini 3.8 Flash, 0 K8s ops) or Self-Managed Gemma 3 27B on Private GKE (air-gapped GPU nodes, 0 internet egress).",
+        "FinVault Bank (Dedicated PT vs. Private GKE Gemma 3): Regulated bank (600 RPM / HIGH/8k maxOut, VPC-SC, CMEK) choosing between Vertex AI Dedicated Provisioned Throughput (managed SaaS Gemini 2.5 Flash, 0 K8s ops) or Self-Managed Gemma 3 27B on Private GKE (air-gapped GPU nodes, 0 internet egress).",
         "RetailStream Corp (3LO Token Vault & Anti-Confused-Deputy): Pooled tenant (120 RPM / MEDIUM/4k maxOut, Entra ID) invoking ServiceNow ITOM via 3LO step-up consent; per-user OAuth tokens are isolated in {tenant}:{user} DPoP-bound vaults (dpop_jkt verified) so pooled agents never act as a Confused Deputy.",
         "Cryptographic Mutual Invisibility & ~42ms 5-Hop Budget: Cloud Armor WAF, IAP OBO/DPoP, Valkey token buckets, streaming Model Armor/DLP (~22ms), and AlloyDB FORCE RLS run one 80% reusable ADK codebase—blocking cross-tenant probes (HTTP 403) with 0 cross-tenant rows."
       ],
       "specs": [
         {
-          "stack": "Vertex AI Agent Engine (ADK, ARD, L1–L5 Memory) • Gemini 3.8 Flash (32k ContextCacheConfig)",
+          "stack": "Vertex AI Agent Engine (ADK, ARD, L1–L5 Memory) • Gemini 2.5 Flash (32k ContextCacheConfig)",
           "sla": "Immutable 32k System Prefix Cache • 89.1% Net Per-Turn Token Cost Reduction • ~42ms 5-Hop Overhead",
           "tag": "1. Platform Control Plane: Cymbal SaaS"
         },
@@ -327,7 +327,7 @@
       "bullets": [
         "1. Security, Privacy & Compliance: Enforces zero-trust defense-in-depth across all 5 hops—combining <0.15ms cached-JWKS DPoP verification, per-user 3LO vaults against Confused Deputy attacks, AlloyDB RLS, and revocable Cloud KMS CMEK.",
         "2. Reliability & Anti-Stampede Resilience: Prevents noisy-neighbor outages via Valkey token-bucket bulkheads, targeted SCAN+UNLINK cache:{tenant_id}:* eviction (0 peer cache misses), and Valkey SET NX single-flight lazy re-hydration.",
-        "3. Cost Optimization (FinOps): Shares a 32,768-token immutable system prefix in Gemini 3.8 Flash ContextCacheConfig (90% discount, 89.1% net token savings) and attributes COGS via BigQuery OTel SQL chargeback views.",
+        "3. Cost Optimization (FinOps): Shares a 32,768-token immutable system prefix in Gemini 2.5 Flash ContextCacheConfig (90% discount, 89.1% net token savings) and attributes COGS via BigQuery OTel SQL chargeback views.",
         "4. Operational Excellence & 5. Performance (~42ms p95): Reuses 80% of the Python ADK codebase across Terraform 2.6/3.6/4.6, bounds total 5-Hop control-plane overhead to ~42ms p95 (<2.5% TTFT), and gates CI/CD on 13/13 + 107/107 tests."
       ],
       "specs": [
@@ -342,7 +342,7 @@
           "tag": "Pillar 2: Reliability & Bulkheads"
         },
         {
-          "stack": "Gemini 3.8 Flash ContextCacheConfig (32k Prefix) • BigQuery OTel SQL Chargeback (GROUP BY tenant_id)",
+          "stack": "Gemini 2.5 Flash ContextCacheConfig (32k Prefix) • BigQuery OTel SQL Chargeback (GROUP BY tenant_id)",
           "sla": "89.1% Net Per-Turn Token Savings • 74% Portfolio TCO Reduction (950 Pooled + 50 PSC Spokes)",
           "tag": "Pillar 3: Cost Optimization"
         },
@@ -362,7 +362,7 @@
       "talkingPoints": [
         "Blue Perimeter 1 (Routing Hub — Steps 1–3 / Hop 1): Global ALB, Cloud Armor header strip, and IAP OIDC/DPoP exchange (~8ms p95) mint the KMS-signed STS JWT and route by tenant tier.",
         "Green Perimeter 2 (Governance Hub — Hops 2 & 5): Discovery Engine ARD catalog filter (~4ms), Cloud KMS CMEK liveness, Security Command Center, and async BigQuery OTel FinOps (~5ms).",
-        "Yellow Perimeter 3 (Pattern A Pool — Steps 4–7 / Hops 3–5): gVisor (runsc) sandbox, Valkey RPM bulkheads (~3ms), Model Armor/DLP screening (Steps 4 & 6, ~22ms), Gemini 3.8 Flash 90% cache (Step 5) & AlloyDB RLS.",
+        "Yellow Perimeter 3 (Pattern A Pool — Steps 4–7 / Hops 3–5): gVisor (runsc) sandbox, Valkey RPM bulkheads (~3ms), Model Armor/DLP screening (Steps 4 & 6, ~22ms), Gemini 2.5 Flash 90% cache (Step 5) & AlloyDB RLS.",
         "Red Perimeter 4 (Pattern B Silos & Pattern C PSC Spokes): Per-tenant VPC-SC perimeters, IAM PAB, Managed Vertex Dedicated PT vs. Private GKE Gemma 3 27B GPUs, <60s CMEK kill-switch & /28 PSC NAT.",
         "Unified L1-to-L2 Taxonomy: Slide 5's 3 Logical Security Layers map cleanly onto these 4 Physical VPC-SC Network Perimeters with ~42ms total p95 control-plane overhead (<2.5% of turn TTFT)."
       ]
@@ -439,9 +439,9 @@
       "totalSlides": 15,
       "title": "Act I (Slide 3) — The Real Problem: Customer Use Cases & Tenant Tension",
       "whyHere": "We always start with the customer problem first: why naive SaaS multi-tenancy fails for stateful AI agents, and why single-tenant silos destroy unit economics.",
-      "whatIsHappening": "Here you can see that SaaS AI tension illustrated through two competing tenant personas on our Cymbal platform. On one side, FinVault Bank is a regulated financial institution at six hundred requests per minute that requires customer-controlled encryption keys and chooses between Managed Vertex AI Dedicated Provisioned Throughput for zero-ops Gemini 3.8 Flash capacity or self-managed, air-gapped Gemma 3 27B on Private GKE with zero internet egress. On the other side, RetailStream Corp runs on Microsoft Entra ID and ServiceNow at one hundred twenty requests per minute, where we isolate per-user Three-Legged OAuth tokens inside tenant-and-user DPoP-bound vaults to eliminate the Confused Deputy vulnerability across pooled workers.",
+      "whatIsHappening": "Here you can see that SaaS AI tension illustrated through two competing tenant personas on our Cymbal platform. On one side, FinVault Bank is a regulated financial institution at six hundred requests per minute that requires customer-controlled encryption keys and chooses between Managed Vertex AI Dedicated Provisioned Throughput for zero-ops Gemini 2.5 Flash capacity or self-managed, air-gapped Gemma 3 27B on Private GKE with zero internet egress. On the other side, RetailStream Corp runs on Microsoft Entra ID and ServiceNow at one hundred twenty requests per minute, where we isolate per-user Three-Legged OAuth tokens inside tenant-and-user DPoP-bound vaults to eliminate the Confused Deputy vulnerability across pooled workers.",
       "whatComesNext": "To resolve that tension without maintaining two separate codebases, let's look at our Conceptual Diagram on Slide 4.",
-      "fullText": "We always start with the customer problem first: why naive SaaS multi-tenancy fails for stateful AI agents, and why single-tenant silos destroy unit economics.\n\nHere you can see that SaaS AI tension illustrated through two competing tenant personas on our Cymbal platform. On one side, FinVault Bank is a regulated financial institution at six hundred requests per minute that requires customer-controlled encryption keys and chooses between Managed Vertex AI Dedicated Provisioned Throughput for zero-ops Gemini 3.8 Flash capacity or self-managed, air-gapped Gemma 3 27B on Private GKE with zero internet egress. On the other side, RetailStream Corp runs on Microsoft Entra ID and ServiceNow at one hundred twenty requests per minute, where we isolate per-user Three-Legged OAuth tokens inside tenant-and-user DPoP-bound vaults to eliminate the Confused Deputy vulnerability across pooled workers.\n\nTo resolve that tension without maintaining two separate codebases, let's look at our Conceptual Diagram on Slide 4."
+      "fullText": "We always start with the customer problem first: why naive SaaS multi-tenancy fails for stateful AI agents, and why single-tenant silos destroy unit economics.\n\nHere you can see that SaaS AI tension illustrated through two competing tenant personas on our Cymbal platform. On one side, FinVault Bank is a regulated financial institution at six hundred requests per minute that requires customer-controlled encryption keys and chooses between Managed Vertex AI Dedicated Provisioned Throughput for zero-ops Gemini 2.5 Flash capacity or self-managed, air-gapped Gemma 3 27B on Private GKE with zero internet egress. On the other side, RetailStream Corp runs on Microsoft Entra ID and ServiceNow at one hundred twenty requests per minute, where we isolate per-user Three-Legged OAuth tokens inside tenant-and-user DPoP-bound vaults to eliminate the Confused Deputy vulnerability across pooled workers.\n\nTo resolve that tension without maintaining two separate codebases, let's look at our Conceptual Diagram on Slide 4."
     },
     {
       "slide": 4,

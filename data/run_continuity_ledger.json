@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-11-20T21:13:03Z",
+  "updated_at": "2026-11-21T00:58:32Z",
   "workspace_root": ".",
   "replay_orchestrator_script": "scripts/run_all_repeatable_e2e_verifications.py",
   "standing_mandates": [
@@ -130,14 +130,14 @@
     },
     {
       "step_id": "STEP-06-DEEP-FORENSIC-AND-E2E-PUPPETEER-GATE",
-      "description": "Execute Deep Forensic Audit (F-01..F-13) and Provenance Guard verifying 100% receipt SHA-256 parity, zero synthetic screenshots, and 15/15 Google Slides + 6/6 Google Docs synchronization.",
+      "description": "Execute Deep Forensic Audit (F-01..F-13) and Provenance Guard verifying 100% receipt SHA-256 parity, zero synthetic screenshots, and 28/28 unique Google Slides + 7/7 Google Docs synchronization.",
       "cloud_provider": "GCP+AWS",
       "script_path": "scripts/run_deep_forensic_audit.py",
-      "script_sha256": "122cb73162d513edb0cab71732215649cb13f64eb22ad41a2a178ec761a4e1d1",
+      "script_sha256": "77f70b26e1ee8f1b3b4385769fa3cfc4faabcaddf4822afe45b88730041c5e6d",
       "command": "python3 -B scripts/run_deep_forensic_audit.py",
       "receipt_path": "docs/cloud_console_verification_receipt.json",
       "receipt_sha256": "c1bcf26d3b80007fb77cde16e6faca572562e997b11f027fd97001576a7834f1",
-      "last_executed_at": "2026-11-20T21:13:03Z",
+      "last_executed_at": "2026-11-21T00:58:32Z",
       "last_exit_code": 0,
       "repeat_in_next_run": true,
       "superseded_by_user": false

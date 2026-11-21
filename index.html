@@ -91,7 +91,7 @@
       let tagline = 'Production-grade reference architecture for multi-tenant agentic AI systems on Google Cloud, combining zero-trust security with optimal FinOps efficiency.';
       let p1Title = 'Compute & Ingress', p1Sub = 'Cloud Run Gen2 + Cloud Armor', p1Desc = 'Stateless auto-scaling with zero-trust PEP';
       let p2Title = 'Data & Memory', p2Sub = 'AlloyDB + 5-Level Memory', p2Desc = 'PostgreSQL RLS & isolated namespaces';
-      let p3Title = 'AI Foundation', p3Sub = 'Vertex AI Gemini 3.8 Flash', p3Desc = 'Prompt prefix caching & Model Armor';
+      let p3Title = 'AI Foundation', p3Sub = 'Vertex AI Gemini 2.5 Flash', p3Desc = 'Prompt prefix caching & Model Armor';
       let p4Title = 'Multi-Cloud Egress', p4Sub = 'AWS Bedrock AgentCore MCP', p4Desc = '10 upstream SaaS verification targets';
       let jumps = [
         ['architecture', 'Architecture'],
@@ -111,7 +111,7 @@
           ['compute-isolation-mode-a-stateless-cow-heap-wipe-vs-mode-b-stateful-session-latch', 'Mode A CoW vs. Mode B 403 Latch'],
           ['kernel-database-isolation-force-rls--10-point-red-team-breach-defense', 'FORCE RLS & 10-Point Red Team'],
           ['finops-bulkhead-math-hard-gcp-quotas--1-click-terraform-starter', 'FinOps Math, Quotas & Terraform'],
-          ['signature-3rd-party-saas-before-vs-after-ui-proofs-for-ws2-saas-03-saas-07--28801800-retina', 'WS2 Retina UI Proofs'],
+          ['live-before-vs-after-resolution-proof-for-ws2-pattern-a-pooled-rls--cloud-run-compute--3-verified-28801620-retina-captures', 'WS2 Retina UI Proofs'],
           ['whats-next', 'Next Steps & Slides']
         ];
       } else if (dp.includes('ws1')) {
@@ -141,7 +141,7 @@
           ['sovereign-cmek-kill-switch--air-gapped-gke-revocation-sequence-figure-2', 'CMEK Kill-Switch Sequence'],
           ['multi-project-sovereign-provisioning-air-gapped-gemma-3--security-suite', 'Sovereign Provisioning & Gemma 3'],
           ['revocation-sla-math-hard-gcp-quotas--pattern-b-saas-enforcement', 'SLA Math, Quotas & 10-SaaS'],
-          ['signature-3rd-party-saas-before-vs-after-ui-proofs-for-ws3-saas-04-saas-10--28801800-retina', 'WS3 Retina UI Proofs'],
+          ['live-before-vs-after-resolution-proof-for-ws3-pattern-b-sovereign-cmek-kill-switch--3-verified-28801620-retina-captures', 'WS3 Retina UI Proofs'],
           ['whats-next', 'Next Steps & Slides']
         ];
       } else if (dp.includes('ws4')) {
@@ -149,13 +149,13 @@
         tagline = 'Intelligent hybrid architecture that routes standard tenants to the pooled cluster and dynamically upgrades premium/regulated tenants to dedicated sovereign silos with zero downtime and state-preserving schema migration.';
         p1Title = 'Smart Ingress'; p1Sub = 'Hybrid Routing Proxy'; p1Desc = 'Dynamic tenant tier inspection & routing';
         p2Title = 'Live Migration'; p2Sub = 'Dual-Plane CDC Streaming'; p2Desc = 'Zero-downtime state replication & cutover';
-        p3Title = 'Tiered AI'; p3Sub = 'Tiered Vertex AI Routing'; p3Desc = 'Gemini 3.8 Flash shared vs. Dedicated PT';
+        p3Title = 'Tiered AI'; p3Sub = 'Tiered Vertex AI Routing'; p3Desc = 'Gemini 2.5 Flash shared vs. Dedicated PT';
         p4Title = 'Private Ingress'; p4Sub = 'Dynamic Private Service Connect'; p4Desc = 'Per-tenant PSC endpoints & firewalls';
         jumps = [
           ['executive-summary-pattern-c-governed-hub-and-spoke-hybrid-architecture', 'Pattern C Hybrid Summary'],
           ['3-phase-zero-downtime-live-tier-promotion-0-ms-cutover-0-dropped-turns', '0 ms Live Tier Promotion'],
           ['cross-project-28-psc-network-design-backfill-math--hard-gcp-quotas', '/28 PSC Design, Math & Quotas'],
-          ['signature-3rd-party-saas-before-vs-after-ui-proofs-for-ws4-saas-02-saas-05--28801800-retina', 'WS4 Retina UI Proofs'],
+          ['live-before-vs-after-resolution-proofs-for-ws4-2-complete-live-pairs-atlassian-jira-cloud-3lo--pattern-c-hub--spoke-vpc--4-verified-28801620-retina-captures', 'WS4 Retina UI Proofs'],
           ['whats-next', 'Next Steps & Slides']
         ];
       } else if (dp.includes('ws5')) {
@@ -283,13 +283,13 @@
         body = body.replace(/\bFigure 2A\b/g, 'Figure 4').replace(/\bFigure 2B\b/g, 'Figure 5');
       } else if (relLower.includes('ws4-pattern-c-hybrid-dynamic-tiering.md')) {
         body = body.replace(/\bFigure 2A\b/g, 'Figure 5').replace(/\bFigure 2B\b/g, 'Figure 6');
-        body = body.replace(/to review the 12 executive slides paired with this guide:/g, 'to review the 24 executive slides (and 12-slide core brief) paired with this guide:');
+        body = body.replace(/to review the 12 executive slides paired with this guide:/g, 'to review the 9-slide lean visual deck (and 10-slide executive brief) paired with this guide:');
       } else if (relLower.includes('ws5-decision-guide-and-agentic-triad.md')) {
         body = body.replace(/\bFigure 2A\b/g, 'Figure 2').replace(/\bFigure 2B\b/g, 'Figure 3');
       } else if (relLower.includes('ws2-pattern-a-pooled-architecture.md')) {
         body = body.replace(
           /\[24-slide editable visual deck \(`slides\/ws2-pattern-a-pooled-editable-slides\.pptx`\)\]\(\.\.\/slides\/ws2-pattern-a-pooled-editable-slides\.pptx\)/g,
-          '[7-slide lean visual deck (`slides/ws2-12slide-visual-deck.pptx`)](../slides/ws2-12slide-visual-deck.pptx)'
+          '[8-slide lean visual deck (`slides/ws2-12slide-visual-deck.pptx`)](../slides/ws2-12slide-visual-deck.pptx)'
         );
       }
 
@@ -1406,7 +1406,7 @@
       const pngLink = document.getElementById('hub-diag-png');
       if (pngLink) pngLink.href = `diagrams/${d.id}.drawio.png`;
       const visionLink = document.getElementById('hub-diag-vision-json');
-      if (visionLink) visionLink.href = `diagrams/vision_metadata/${d.id}.vision.json`;
+      if (visionLink) visionLink.href = `diagrams/diagram_e2e_flows.json`;
 
       const btns = document.getElementById('hub-diag-buttons');
       if (btns) {
@@ -3141,7 +3141,7 @@
           btn.style.borderColor = '#1a73e8';
         }
         const actorName = (portalActiveActor && portalActiveActor.name) || 'IAP Reviewer';
-        const actorEmail = (portalActiveActor && portalActiveActor.email) || 'architect@cymbal-demo.example';
+        const actorEmail = (portalActiveActor && portalActiveActor.email) || 'reviewer@cloud-architecture.local';
         const shortActor = (portalActiveActor && portalActiveActor.iapVerified)
           ? `🔒 IAP: ${actorName}`
           : (actorEmail.includes('@') ? actorEmail.split('@')[0] : 'Reviewer');

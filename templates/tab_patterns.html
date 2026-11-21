@@ -11,7 +11,7 @@
               <option value="WS3" data-base-label="3. WS3: Sovereign Silos B (CMEK)">3. WS3: Sovereign Silos B (CMEK • Slides 6–7)</option>
               <option value="WS4" data-base-label="4. WS4: Hybrid Router C (PSC)">4. WS4: Hybrid Router C (PSC • Slides 8–9)</option>
               <option value="WS5" data-base-label="5. WS5: Decision Capstone (MCDA)">5. WS5: Decision Capstone (Slides 10–12)</option>
-              <option value="ALL" data-base-label="6. Master Synthesis Deck (All 14)">6. Master Synthesis Deck (All 14 • 25 Slides)</option>
+              <option value="ALL" data-base-label="6. Master Synthesis Deck (All 12)">6. Master Synthesis Deck (All 12 • 25 Slides)</option>
             </select>
 
             <label for="hub-view-mode-select" style="margin:0; font-size:11px; font-weight:800; color:#334155; text-transform:uppercase; letter-spacing:0.03em; white-space:nowrap;">📑 View &amp; Docs:</label>
@@ -24,7 +24,7 @@
               </optgroup>
               <optgroup label="Interactive Diagram Tools">
                 <option value="blank-canvas">➕ Insert Blank Diagram Canvas</option>
-                <option value="atlas">📐 Open 38-Slide Diagrams Atlas</option>
+                <option value="atlas">📐 Open 67-Diagram Architecture Atlas</option>
               </optgroup>
             </select>
 
@@ -88,7 +88,7 @@
                   <span>&#128248;</span> <span>Execution: Verified Cloud &amp; SaaS Atlas (Reader)</span>
                 </button>
                 <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace('ATLAS', 'docs', 1)">
-                  <span class="pc-gdocs-icon">D</span> <span>Execution: 10-SaaS Visual Atlas (Google Docs • 21 Figs)</span>
+                  <span class="pc-gdocs-icon">D</span> <span>Execution: 10-SaaS Visual Atlas (Google Docs • 18 Figs)</span>
                 </button>
                 <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace('ATLAS', 'slides', 1)">
                   <span class="pc-gpdf-icon">S</span> <span>Execution: 10-SaaS Visual Atlas (Google Slides • 16 Slides)</span>
@@ -122,7 +122,7 @@
                 <a class="pc-dropdown-item" href="docs/word/all-end-to-end-workstream-and-diagram-guide.docx" download>
                   <span>&#128196;</span> <span>Download Master Word .docx (ALL)</span>
                 </a>
-                <a class="pc-dropdown-item" href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx?v=20261027-v33" download>
+                <a class="pc-dropdown-item" href="slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx?v=20261121-v44" download>
                   <span>&#11015;</span> <span>Download Master .pptx (25 Slides)</span>
                 </a>
                 <button type="button" class="pc-dropdown-item" onclick="openInGoogleWorkspace(activeHubWsKey, 'slides', activeHubSlideIdx + 1, '', true)">
@@ -140,12 +140,12 @@
           <button type="button" id="btn-view-mode-proofs" class="sim-btn" onclick="setHubViewMode('proofs')"><span>📸</span> <span>UI Proofs</span></button>
           <button type="button" id="btn-view-mode-deliverables" class="sim-btn" onclick="setHubViewMode('deliverables')"><span>📦</span> <span>Code &amp; Deliverables</span></button>
           <button type="button" id="btn-insert-blank-diagram-canvas" class="sim-btn" onclick="insertBlankDiagramCanvasInBlog()"><span>➕</span> <span>Blank Canvas</span></button>
-          <button type="button" id="btn-open-diagrams-atlas" class="sim-btn" onclick="switchTab('diagrams', document.getElementById('tab-btn-diagrams'))"><span>📐</span> <span>38-Slide Atlas</span></button>
+          <button type="button" id="btn-open-diagrams-atlas" class="sim-btn" onclick="switchTab('diagrams', document.getElementById('tab-btn-diagrams'))"><span>📐</span> <span>67-Diagram Atlas</span></button>
         </div>
 
         <!-- Preserved Hidden Compatibility Elements (Rule 25 & Zero-Regression) -->
         <div id="hub-ws-summary-bar" style="display:none;">
-          <span id="hub-ws-badge">WS1 • Part 1 of 5 • 24 Editable Slides</span>
+          <span id="hub-ws-badge">WS1 • Part 1 of 5 • 9 Lean Slides</span>
           <strong id="hub-ws-title">Workstream 1: Reference Architecture, Taxonomy &amp; 5-Hop Baseline</strong>
           <div id="hub-ws-sub">Pooled (Pattern A), Sovereign Silos (Pattern B) &amp; Dynamic Hybrid (Pattern C)</div>
         </div>
@@ -185,7 +185,7 @@
                           <a id="hub-diag-drawio" href="diagrams/ws1-5hop-governance-baseline.drawio" download class="sim-btn" style="text-decoration:none; padding:6px 10px; font-size:11.5px; text-align:left;">&#11015; Download .drawio Source</a>
                           <a id="hub-diag-svg" href="diagrams/ws1-5hop-governance-baseline.svg" target="_blank" class="sim-btn" style="text-decoration:none; padding:6px 10px; font-size:11.5px; text-align:left;">&#8599; Open Vector .svg</a>
                           <a id="hub-diag-png" href="diagrams/ws1-5hop-governance-baseline.drawio.png" target="_blank" class="sim-btn" style="text-decoration:none; padding:6px 10px; font-size:11.5px; text-align:left;">&#8599; Open High-Res 2x PNG</a>
-                          <a id="hub-diag-vision-json" href="diagrams/vision_metadata/ws1-5hop-governance-baseline.vision.json" target="_blank" class="sim-btn" style="text-decoration:none; padding:6px 10px; font-size:11.5px; text-align:left;">&#8599; Inspect Vision AST (.json)</a>
+                          <a id="hub-diag-vision-json" href="diagrams/diagram_e2e_flows.json" target="_blank" class="sim-btn" style="text-decoration:none; padding:6px 10px; font-size:11.5px; text-align:left;">&#8599; Inspect E2E Flow Metadata (.json)</a>
                         </div>
                       </details>
                     </div>
@@ -257,7 +257,7 @@
                   </div>
                   <div style="position:absolute; bottom:6px; left:6px; background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:2px 6px; font-size:10px; color:#0f172a; font-weight:600; display:inline-flex; align-items:center; gap:4px;">
                     <span style="width:6px; height:6px; border-radius:50%; background:#16a34a;"></span>
-                    <span>2 Verified Retina Captures</span>
+                    <span>17 Verified Retina Captures</span>
                   </div>
                 </div>
 

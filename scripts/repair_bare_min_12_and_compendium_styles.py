@@ -2,7 +2,7 @@
 """Idempotent Forensic Style Repair & Canonical 2-Way Sync across:
   1. `1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk` (`[12-Slide Bare-Minimum Architecture Deck]`)
   2. `1K7XrzuhVxGDuuj33a3qK4onYXnSHr3Povzuj5LnEEnc` (`WS1-5: All Patterns`)
-  3. `1-WwbZsdEFPylp9MtfF-nuifeVps0uuu3bSCfzCCYjjI` (`Consolidated 56-Slide Master Compendium`)
+  3. `1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk` (`Consolidated 56-Slide Master Compendium`)
 
 Restores per-run `fontFamily`, `fontSize`, `bold`, `foregroundColor`, inline badge splits, and `paragraphStyle`
 on any shape previously hit by `deleteText(ALL)` style-stripping (`14pt Arial` default) or `Calibri` drift,

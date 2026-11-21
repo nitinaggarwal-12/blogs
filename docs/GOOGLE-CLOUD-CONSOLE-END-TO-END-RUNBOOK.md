@@ -178,7 +178,7 @@ node scripts/capture_real_gcp_and_saas_screenshots.mjs
 python3 -B scripts/run_deep_forensic_audit.py
 ```
 
-* **Verified Retina Inventory (`screenshots/verified-cloud-console/`)**: 2 Live Commercial SaaS Retina captures (ThoughtSpot Cloud); Google Cloud Console & Gemini Enterprise: 0/15 pending 1-tap SSO
+* **Verified Retina Inventory (`screenshots/verified-cloud-console/`)**: 17/17 Verified Live `2880x1620` Retina captures (13 Live Google Cloud Console captures across `cymbal-ge-hub-2026` & `cymbal-ge-silo-2026` + 4 Live Commercial SaaS captures across Atlassian Jira Cloud & ThoughtSpot Cloud; 8 complete BEFORE → AFTER resolution pairs, 0 pending SSO)
 * **Cloud Console & Runtime Verification Receipt**: [`docs/cloud_console_verification_receipt.json`](cloud_console_verification_receipt.json)
 * **Cross-Cloud 10-SaaS MCP Receipt**: [`docs/third_party_5_saas_verification_receipt.json`](third_party_5_saas_verification_receipt.json)
 * **Cross-Run Continuity Ledger (`4` Active Repeatable Steps)**: [`data/run_continuity_ledger.json`](../data/run_continuity_ledger.json)

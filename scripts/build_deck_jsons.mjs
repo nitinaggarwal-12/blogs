@@ -118,14 +118,14 @@ const DECKS = {
         "heading": "Products used — Google Cloud Agentic AI, Security & Data Stack",
         "layout": "cards",
         "bullets": [
-          "Agentic AI & Foundation Models: Vertex AI Agent Engine (ADK runtime, Agent Registry & L1–L5 Memory Bank), Gemini 3.8 Flash with ContextCacheConfig (90% shared prefix discount), Vertex AI Model Garden (Dedicated PT), and Gemma 3 (27B) on private GKE.",
+          "Agentic AI & Foundation Models: Vertex AI Agent Engine (ADK runtime, Agent Registry & L1–L5 Memory Bank), Gemini 2.5 Flash with ContextCacheConfig (90% shared prefix discount), Vertex AI Model Garden (Dedicated PT), and Gemma 3 (27B) on private GKE.",
           "Ingress, Identity & AI Safety Guardrails: Global External Application Load Balancer, Google Cloud Armor L7 WAF, Identity-Aware Proxy (IAP) & IAM Security Token Service (RFC 8693 OBO + RFC 9449 DPoP), Vertex AI Model Armor, and Cloud Sensitive Data Protection (DLP).",
           "Data, Storage, Networking & Governance: AlloyDB for PostgreSQL (FORCE ROW LEVEL SECURITY), Memorystore for Valkey (per-tenant RPM bulkheads & JTI deny-list) & Firestore, VPC Service Controls (VPC-SC) & Private Service Connect (PSC), Cloud KMS CMEK, and BigQuery OTel.",
           "Shared 80% Reusable Application Core: All three isolation patterns execute the exact same Python ADK 5-hop security pipeline (`core-cymbal-agent/runtime_pipeline.py`), parameterizing only the surrounding 20% Google Cloud project and network boundary."
         ],
         "specs": [
           {
-            "stack": "Vertex AI Agent Engine (ADK) • Gemini 3.8 Flash (ContextCacheConfig) • Dedicated PT • Gemma 3 27B",
+            "stack": "Vertex AI Agent Engine (ADK) • Gemini 2.5 Flash (ContextCacheConfig) • Dedicated PT • Gemma 3 27B",
             "sla": "90% Shared System Prefix Cache Discount + Managed SaaS PT vs. Air-Gapped GKE GPU Hosting",
             "tag": "1. Agentic AI & Models"
           },
@@ -151,13 +151,13 @@ const DECKS = {
         "layout": "cards",
         "bullets": [
           "Cymbal SaaS Control Plane (Shared 32k Prefix Cache): Operates a shared Incident Diagnostic Agent on Vertex AI Agent Engine (ADK, ARD Registry & L1–L5 Memory Bank), caching a 32,768-token SRE runbook prefix once (90% discount -> 89.1% net per-turn token cost reduction).",
-          "FinVault Bank (Dedicated PT vs. Private GKE Gemma 3): Regulated bank (600 RPM / HIGH/8k maxOut, VPC-SC, CMEK) choosing between Vertex AI Dedicated Provisioned Throughput (managed SaaS Gemini 3.8 Flash, 0 K8s ops) or Self-Managed Gemma 3 27B on Private GKE (air-gapped GPU nodes, 0 internet egress).",
+          "FinVault Bank (Dedicated PT vs. Private GKE Gemma 3): Regulated bank (600 RPM / HIGH/8k maxOut, VPC-SC, CMEK) choosing between Vertex AI Dedicated Provisioned Throughput (managed SaaS Gemini 2.5 Flash, 0 K8s ops) or Self-Managed Gemma 3 27B on Private GKE (air-gapped GPU nodes, 0 internet egress).",
           "RetailStream Corp (3LO Token Vault & Anti-Confused-Deputy): Pooled tenant (120 RPM / MEDIUM/4k maxOut, Entra ID) invoking ServiceNow ITOM via 3LO step-up consent; per-user OAuth tokens are isolated in {tenant}:{user} DPoP-bound vaults (dpop_jkt verified) so pooled agents never act as a Confused Deputy.",
           "Cryptographic Mutual Invisibility & ~42ms 5-Hop Budget: Cloud Armor WAF, IAP OBO/DPoP, Valkey token buckets, streaming Model Armor/DLP (~22ms), and AlloyDB FORCE RLS run one 80% reusable ADK codebase—blocking cross-tenant probes (HTTP 403) with 0 cross-tenant rows."
         ],
         "specs": [
           {
-            "stack": "Vertex AI Agent Engine (ADK, ARD, L1–L5 Memory) • Gemini 3.8 Flash (32k ContextCacheConfig)",
+            "stack": "Vertex AI Agent Engine (ADK, ARD, L1–L5 Memory) • Gemini 2.5 Flash (32k ContextCacheConfig)",
             "sla": "Immutable 32k System Prefix Cache • 89.1% Net Per-Turn Token Cost Reduction • ~42ms 5-Hop Overhead",
             "tag": "1. Platform Control Plane: Cymbal SaaS"
           },
@@ -404,7 +404,7 @@ const DECKS = {
         "bullets": [
           "1. Security, Privacy & Compliance: Enforces zero-trust defense-in-depth across all 5 hops—combining <0.15ms cached-JWKS DPoP verification, per-user 3LO vaults against Confused Deputy attacks, AlloyDB RLS, and revocable Cloud KMS CMEK.",
           "2. Reliability & Anti-Stampede Resilience: Prevents noisy-neighbor outages via Valkey token-bucket bulkheads, targeted SCAN+UNLINK cache:{tenant_id}:* eviction (0 peer cache misses), and Valkey SET NX single-flight lazy re-hydration.",
-          "3. Cost Optimization (FinOps): Shares a 32,768-token immutable system prefix in Gemini 3.8 Flash ContextCacheConfig (90% discount, 89.1% net token savings) and attributes COGS via BigQuery OTel SQL chargeback views.",
+          "3. Cost Optimization (FinOps): Shares a 32,768-token immutable system prefix in Gemini 2.5 Flash ContextCacheConfig (90% discount, 89.1% net token savings) and attributes COGS via BigQuery OTel SQL chargeback views.",
           "4. Operational Excellence & 5. Performance (~42ms p95): Reuses 80% of the Python ADK codebase across Terraform 2.6/3.6/4.6, bounds total 5-Hop control-plane overhead to ~42ms p95 (<2.5% TTFT), and gates CI/CD on 13/13 + 107/107 tests."
         ],
         "specs": [
@@ -419,7 +419,7 @@ const DECKS = {
             "tag": "Pillar 2: Reliability & Bulkheads"
           },
           {
-            "stack": "Gemini 3.8 Flash ContextCacheConfig (32k Prefix) • BigQuery OTel SQL Chargeback (GROUP BY tenant_id)",
+            "stack": "Gemini 2.5 Flash ContextCacheConfig (32k Prefix) • BigQuery OTel SQL Chargeback (GROUP BY tenant_id)",
             "sla": "89.1% Net Per-Turn Token Savings • 74% Portfolio TCO Reduction (950 Pooled + 50 PSC Spokes)",
             "tag": "Pillar 3: Cost Optimization"
           },
@@ -439,7 +439,7 @@ const DECKS = {
         "talkingPoints": [
           "Blue Perimeter 1 (Routing Hub — Steps 1–3 / Hop 1): Global ALB, Cloud Armor header strip, and IAP OIDC/DPoP exchange (~8ms p95) mint the KMS-signed STS JWT and route by tenant tier.",
           "Green Perimeter 2 (Governance Hub — Hops 2 & 5): Discovery Engine ARD catalog filter (~4ms), Cloud KMS CMEK liveness, Security Command Center, and async BigQuery OTel FinOps (~5ms).",
-          "Yellow Perimeter 3 (Pattern A Pool — Steps 4–7 / Hops 3–5): gVisor (runsc) sandbox, Valkey RPM bulkheads (~3ms), Model Armor/DLP screening (Steps 4 & 6, ~22ms), Gemini 3.8 Flash 90% cache (Step 5) & AlloyDB RLS.",
+          "Yellow Perimeter 3 (Pattern A Pool — Steps 4–7 / Hops 3–5): gVisor (runsc) sandbox, Valkey RPM bulkheads (~3ms), Model Armor/DLP screening (Steps 4 & 6, ~22ms), Gemini 2.5 Flash 90% cache (Step 5) & AlloyDB RLS.",
           "Red Perimeter 4 (Pattern B Silos & Pattern C PSC Spokes): Per-tenant VPC-SC perimeters, IAM PAB, Managed Vertex Dedicated PT vs. Private GKE Gemma 3 27B GPUs, <60s CMEK kill-switch & /28 PSC NAT.",
           "Unified L1-to-L2 Taxonomy: Slide 5's 3 Logical Security Layers map cleanly onto these 4 Physical VPC-SC Network Perimeters with ~42ms total p95 control-plane overhead (<2.5% of turn TTFT)."
         ]
@@ -523,7 +523,7 @@ const DECKS = {
         tag: 'Adversarial Red-Team Certified',
       },
       {
-        stack: 'Gemini 3.8 Flash ContextCacheConfig (32,768 Shared Platform System Tokens)',
+        stack: 'Gemini 2.5 Flash ContextCacheConfig (32,768 Shared Platform System Tokens)',
         sla: '90% Cached Input Token Discount • 89.1% Total Per-Turn Inference Cost Savings',
         tag: 'Shared Immutable Prefix Cache',
       },
@@ -538,14 +538,14 @@ const DECKS = {
         heading: 'Products used — Shared Cloud Run v2, Vertex AI, Valkey & AlloyDB RLS',
         layout: 'cards',
         bullets: [
-          'Agentic AI & Shared Prefix Caching: Vertex AI Agent Engine (ADK runtime, Agent Registry & L1–L5 Memory Bank) and Gemini 3.8 Flash with ContextCacheConfig caching a 32,768-token immutable system prefix at a 90% discount (89.1% net token savings).',
+          'Agentic AI & Shared Prefix Caching: Vertex AI Agent Engine (ADK runtime, Agent Registry & L1–L5 Memory Bank) and Gemini 2.5 Flash with ContextCacheConfig caching a 32,768-token immutable system prefix at a 90% discount (89.1% net token savings).',
           'Ingress, Identity & Bidirectional AI Safety: Global External Application Load Balancer, Google Cloud Armor L7 WAF (stripping spoofed X-Tenant-Id headers), IAP + IAM STS (RFC 8693 OBO + RFC 9449 DPoP), Vertex AI Model Armor, and Cloud Sensitive Data Protection.',
           'Rate Bulkheads, Relational RLS & FinOps Telemetry: Memorystore for Valkey (120 vs. 600 RPM token buckets), Firestore tenant profile registry, AlloyDB for PostgreSQL (`FORCE ROW LEVEL SECURITY`), Cloud KMS CMEK, and BigQuery zero-PII OTel chargeback.',
           'High-Density Unit Economics (120 RPM Shared Pool): Co-hosts hundreds of commercial B2B SaaS tenants inside one shared Google Cloud project (`cymbal-control-plane`) while guaranteeing 10/10 red-team breach isolation.',
         ],
         specs: [
           {
-            stack: 'Vertex AI Agent Engine (ADK) • Gemini 3.8 Flash ContextCacheConfig (32k Shared System Prefix)',
+            stack: 'Vertex AI Agent Engine (ADK) • Gemini 2.5 Flash ContextCacheConfig (32k Shared System Prefix)',
             sla: '90% Cached Prefix + -94% ARD Pruning • Cuts Billable Input Tokens from 36,468 to 3,969/Turn (89.1% Savings)',
             tag: '1. Agentic AI & Prefix Cache',
           },
@@ -570,19 +570,19 @@ const DECKS = {
         heading: 'Use cases — Co-Hosting FinVault & RetailStream Safely on One Pooled Google Cloud Stack',
         layout: 'cards',
         bullets: [
-          'Dynamic Per-Turn Runtime Hydration: A single pooled Diagnostic Agent on Cloud Run v2 & Vertex AI Agent Engine dynamically loads each caller’s Firestore profile, GCS Skills (`gs://cymbal-skills-{tenant}/`), and 32k Gemini 3.8 Flash ContextCacheConfig prefix.',
-          'FinVault Bank (Enterprise Slice in Pool): Authenticates via Google Workspace OIDC, unlocks HIGH thinkingLevel (8,000 maxOutputTokens) and 600 RPM Valkey quota, and accesses private Agent Alpha (Gemini 3.8 Flash Dedicated PT) plus Workspace/Jira 3LO.',
+          'Dynamic Per-Turn Runtime Hydration: A single pooled Diagnostic Agent on Cloud Run v2 & Vertex AI Agent Engine dynamically loads each caller’s Firestore profile, GCS Skills (`gs://cymbal-skills-{tenant}/`), and 32k Gemini 2.5 Flash ContextCacheConfig prefix.',
+          'FinVault Bank (Enterprise Slice in Pool): Authenticates via Google Workspace OIDC, unlocks HIGH thinkingLevel (8,000 maxOutputTokens) and 600 RPM Valkey quota, and accesses private Agent Alpha (Gemini 2.5 Flash Dedicated PT) plus Workspace/Jira 3LO.',
           'RetailStream Corp (Standard Slice in Pool): Authenticates via Microsoft Entra ID OIDC, runs within a `MEDIUM` (`4,000 maxOutputTokens`) cap and 120 RPM Valkey quota (120 RPM Pool floor), and invokes SharePoint/ServiceNow 3LO with `-32042` step-up consent.',
           'Cryptographic Catalog, Memory & AlloyDB RLS Firewall: Cloud Armor, IAP OBO/DPoP, Hop 2 ARD Filter (HTTP 403), Hop 3 L1–L5 Memory Bank namespaces, Hop 4 Model Armor/DLP, and Hop 5 AlloyDB FORCE RLS guarantee 100% mutual invisibility.',
         ],
         specs: [
           {
-            stack: 'Cloud Run v2 • Vertex AI Agent Engine • Gemini 3.8 Flash ContextCacheConfig (32k Prefix)',
+            stack: 'Cloud Run v2 • Vertex AI Agent Engine • Gemini 2.5 Flash ContextCacheConfig (32k Prefix)',
             sla: 'Injects Tenant-Specific Prompt & GCS Skills per Turn • 89.1% Net Input Token Cost Reduction',
             tag: '1. Shared Pooled Control Plane',
           },
           {
-            stack: 'Google Workspace OIDC • Agent Alpha (Gemini 3.8 Flash Dedicated PT) • 3LO Drive/Gmail/Jira',
+            stack: 'Google Workspace OIDC • Agent Alpha (Gemini 2.5 Flash Dedicated PT) • 3LO Drive/Gmail/Jira',
             sla: '8,000 Output Budget • 600 RPM Valkey Bucket • OCC NLC (HTTP 422) + IBAN/SWIFT Masking',
             tag: '2. FinVault Pooled Enterprise Slice',
           },
@@ -630,7 +630,7 @@ const DECKS = {
           [
             'Prompt caching & FinOps COGS',
             '34k prompt billed in full every turn (`32k Uncached/turn`) or unsafe cross-tenant cache bleed',
-            '32k immutable prefix in Gemini 3.8 Flash `ContextCacheConfig` (`90%` discount -> `89.1%` savings)',
+            '32k immutable prefix in Gemini 2.5 Flash `ContextCacheConfig` (`90%` discount -> `89.1%` savings)',
             'Per-silo prefix cache or dedicated air-gapped GKE Gemma 3 (27B) node pool',
           ],
           [
@@ -759,7 +759,7 @@ const DECKS = {
     ],
     takeaways: [
       'High-Density Multi-Tenancy Without Compromising Security: Hundreds of commercial tenants can safely share one Cloud Run and AlloyDB footprint when cryptographic tenant context is verified across all 5 hops.',
-      'Capture 89.1% Net Inference Savings via Immutable Prefix Caching: Cache shared platform instructions once in Gemini 3.8 Flash ContextCacheConfig (90% discount) while isolating tenant memory in L1–L5 namespaces.',
+      'Capture 89.1% Net Inference Savings via Immutable Prefix Caching: Cache shared platform instructions once in Gemini 2.5 Flash ContextCacheConfig (90% discount) while isolating tenant memory in L1–L5 namespaces.',
       'Eliminate Noisy Neighbors with Dual Quota Bulkheads: Pair Memorystore for Valkey token-bucket rate limiters (120 vs. 600 RPM) with per-tier Gemini thinkingLevel / maxOutputTokens clamps (MEDIUM/4k vs. HIGH/8k).',
       'Prove Isolation Continuously with the 10-Point Breach Suite: Run `run_breach_simulations.py` in CI/CD to verify deterministic HTTP 400/401/403/422/429 enforcement and zero cross-tenant SQL rows.',
       'Graduate Regulated Tenants to Pattern B/C Without Code Rewrites: Keep commercial tenants on Pattern A for maximum gross margin and promote regulated enterprises to dedicated silos via configuration.',
@@ -771,7 +771,7 @@ const DECKS = {
         tag: 'Takeaway 1: High-Density Zero Trust',
       },
       {
-        stack: 'Gemini 3.8 Flash ContextCacheConfig (32,768 Shared Platform Tokens)',
+        stack: 'Gemini 2.5 Flash ContextCacheConfig (32,768 Shared Platform Tokens)',
         sla: 'Reduces Billable Input Tokens from 36,468 to 3,969 per Agent Turn (89.1% Savings)',
         tag: 'Takeaway 2: Prefix Cache FinOps',
       },
@@ -842,7 +842,7 @@ const DECKS = {
           'Wall 1 — mTLS & IAM Principal Access Boundaries (PAB): Every request must present a pinned Chrome Enterprise Premium mTLS client certificate (`cert_sha256`) and pass an IAM PAB rule binding the caller strictly to that tenant’s project.',
           'Wall 2 — VPC Service Controls (VPC-SC) Data Perimeter: Wraps Vertex AI, AlloyDB, Cloud Storage, GKE, and BigQuery inside a service perimeter that blocks unauthorized egress or cross-project copies (HTTP 403).',
           'Wall 3 — Ubiquitous Cloud KMS CMEK Binding: A single tenant-managed Cloud KMS key encrypts AlloyDB tables, Vertex AI Memory Bank state, GKE persistent disks, and BigQuery audit datasets.',
-          'Flexible Sovereign Model Hosting: Tenants can run Gemini 3.8 Flash on Provisioned Throughput inside VPC-SC or deploy air-gapped Gemma 3 (27B) on a private GKE GPU node pool (`172.16.0.2/28`, zero public IPs).',
+          'Flexible Sovereign Model Hosting: Tenants can run Gemini 2.5 Flash on Provisioned Throughput inside VPC-SC or deploy air-gapped Gemma 3 (27B) on a private GKE GPU node pool (`172.16.0.2/28`, zero public IPs).',
         ],
         specs: [
           {
@@ -872,7 +872,7 @@ const DECKS = {
         layout: 'cards',
         bullets: [
           'The Regulated CISO Threat Model (Zero Physical Blast Radius): Tier-1 banks (OCC/FFIEC, EU DORA) and healthcare systems (HIPAA) mandate physically separate GCP projects (`cymbal-{tenant}-silo-prod`) with zero shared compute or databases.',
-          'FinVault Bank Sovereign Vault (`cymbal-finvault-silo-prod`): Runs air-gapped Gemma 3 (27B IT) on private GKE GPU nodes (`172.16.0.2/28`, 0 public IPs) alongside private Agent Alpha (Gemini 3.8 Flash Dedicated PT) and CMEK AlloyDB.',
+          'FinVault Bank Sovereign Vault (`cymbal-finvault-silo-prod`): Runs air-gapped Gemma 3 (27B IT) on private GKE GPU nodes (`172.16.0.2/28`, 0 public IPs) alongside private Agent Alpha (Gemini 2.5 Flash Dedicated PT) and CMEK AlloyDB.',
           'RetailStream Sovereign Vault (`cymbal-retailstream-silo-prod`): Demonstrates dual-silo parity with its own VPC Service Controls perimeter, IAM Principal Access Boundary (PAB), Entra ID 3LO connectors, and independent Cloud KMS CMEK key ring.',
           '3-Wall Hardware Perimeter & <60s CMEK Kill-Switch Stack: Chrome Enterprise Premium mTLS, IAM PAB, VPC-SC, Cloud KMS CMEK (`HTTP 423 Locked`), Model Armor, Cloud DLP, AlloyDB, and BigQuery wrap the unchanged 80% reusable ADK core.',
         ],
@@ -883,7 +883,7 @@ const DECKS = {
             tag: '1. Regulated CISO Sovereignty Mandate',
           },
           {
-            stack: 'cymbal-finvault-silo-prod • Air-Gapped GKE Gemma 3 (27B) • Gemini 3.8 Flash PT • finvault-silo-cmek',
+            stack: 'cymbal-finvault-silo-prod • Air-Gapped GKE Gemma 3 (27B) • Gemini 2.5 Flash PT • finvault-silo-cmek',
             sla: 'Tier: SOVEREIGN (600 RPM Silo) • Zero Public Egress • <60s HTTP 423 CMEK Revocation + L1 Purge',
             tag: '2. FinVault Bank Sovereign Vault',
           },
@@ -924,8 +924,8 @@ const DECKS = {
           ],
           [
             'Foundation model hosting',
-            'Shared Gemini 3.8 Flash pay-as-you-go with 90% `ContextCacheConfig` prefix cache',
-            'Dedicated Gemini 3.8 Flash Provisioned Throughput inside tenant VPC-SC perimeter',
+            'Shared Gemini 2.5 Flash pay-as-you-go with 90% `ContextCacheConfig` prefix cache',
+            'Dedicated Gemini 2.5 Flash Provisioned Throughput inside tenant VPC-SC perimeter',
             'Self-hosted open-weight Gemma 3 (27B IT) on private GKE L4/A100 GPU node pool',
           ],
           [
@@ -1069,7 +1069,7 @@ const DECKS = {
           'Zone 1 (Silo Ingress & Identity): Validates mTLS device certificates, enforces IAM Principal Access Boundaries, and screens prompts with Model Armor.',
           'Zone 2 (Sovereign Governance Hub): Monitors VPC Service Controls perimeters, polls Cloud KMS CMEK liveness on every turn, and runs all 6 compliance assertions.',
           'Zone 3 (FinVault Sovereign Project): Dedicated GCP project running air-gapped Gemma 3 (27B) on private GKE and CMEK-encrypted AlloyDB/Memory Bank.',
-          'Zone 4 (RetailStream Sovereign Project): Dedicated GCP project running Provisioned Throughput Gemini 3.8 Flash and isolated Entra ID / ServiceNow 3LO.',
+          'Zone 4 (RetailStream Sovereign Project): Dedicated GCP project running Provisioned Throughput Gemini 2.5 Flash and isolated Entra ID / ServiceNow 3LO.',
         ],
       },
       {
@@ -1528,7 +1528,7 @@ const DECKS = {
           'Decision Gate 1 (Universal Regulatory Sovereignty Mandate): Do 100% of your customers legally require dedicated GCP projects, VPC Service Controls, IAM PAB, and customer-revocable CMEK kill-switches? If YES, standardize on Pattern B (600 RPM Silo).',
           'Decision Gate 2 (Single-Tier vs. Multi-Tier SaaS Packaging): If not all customers require physical silos, choose Pattern A (120 RPM Pool shared pool, 90% prefix cache) for one uniform commercial tier, or Pattern C (74% TCO savings) for multi-tier portfolios.',
           'Competing Tenant Profiles (FinVault Bank vs. RetailStream Corp): Co-host RetailStream in the 120 RPM Pool Standard pool (Entra ID, 4k cap, 120 RPM) and isolate FinVault in a 600 RPM Silo Enterprise spoke/silo (Workspace, 8k cap, 600 RPM, Agent Alpha, CMEK).',
-          'One 80% Reusable 5-Hop Google Cloud Stack: Cloud Armor, IAP OBO/DPoP, Agent Engine Registry, Memorystore Valkey, Gemini 3.8 Flash / Gemma 3, Model Armor, Cloud DLP, AlloyDB RLS/CMEK, and BigQuery OTel power all three patterns without code forks.',
+          'One 80% Reusable 5-Hop Google Cloud Stack: Cloud Armor, IAP OBO/DPoP, Agent Engine Registry, Memorystore Valkey, Gemini 2.5 Flash / Gemma 3, Model Armor, Cloud DLP, AlloyDB RLS/CMEK, and BigQuery OTel power all three patterns without code forks.',
         ],
         specs: [
           {
@@ -1547,7 +1547,7 @@ const DECKS = {
             tag: '3. Competing Enterprise Tenants',
           },
           {
-            stack: 'Cloud Armor • IAP • Agent Engine • Gemini 3.8 Flash • Valkey • Model Armor • AlloyDB • BigQuery',
+            stack: 'Cloud Armor • IAP • Agent Engine • Gemini 2.5 Flash • Valkey • Model Armor • AlloyDB • BigQuery',
             sla: '80% Identical Python ADK Codebase • 13/13 Forensic Gates & 20/20 Simulations PASS',
             tag: '4. Unified 5-Hop Google Cloud Stack',
           },
@@ -1572,8 +1572,8 @@ const DECKS = {
           ],
           [
             'Model Hosting & Prefix Caching',
-            'Shared Gemini 3.8 Flash with 90% ContextCacheConfig discount (4k/8k token caps)',
-            'Dedicated Gemini 3.8 Flash PT or air-gapped Gemma 3 (27B) on private GKE GPUs',
+            'Shared Gemini 2.5 Flash with 90% ContextCacheConfig discount (4k/8k token caps)',
+            'Dedicated Gemini 2.5 Flash PT or air-gapped Gemma 3 (27B) on private GKE GPUs',
             '90% shared prefix cache for Standard pool; dedicated PT / Gemma 3 in Enterprise spokes',
           ],
           [
@@ -1648,7 +1648,7 @@ const DECKS = {
         layout: 'cards',
         bullets: [
           'Triad Pillar 1 — Zero-Trust Cryptographic Tenant Security: Enforces non-bypassable identity, tool discovery, memory namespace, prompt safety, and SQL RLS boundaries so tenant assets never commingle.',
-          'Triad Pillar 2 — Predictable Unit Economics & Quota Bulkheads: Combines 90% Gemini 3.8 Flash shared prefix caching discounts with Memorystore for Valkey RPM rate limiters and per-tier thinkingLevel/maxOutputTokens caps.',
+          'Triad Pillar 2 — Predictable Unit Economics & Quota Bulkheads: Combines 90% Gemini 2.5 Flash shared prefix caching discounts with Memorystore for Valkey RPM rate limiters and per-tier thinkingLevel/maxOutputTokens caps.',
           'Triad Pillar 3 — Privacy-Safe FinOps Chargeback Telemetry: Streams zero-PII OpenTelemetry spans (`tenant_id`, `cached_tokens`, `thinking_tokens`, `silo_cmek_verify_ms`) into BigQuery for 3-model billing.',
           '1,000-Tenant Portfolio Financial Proof: Across 950 Standard and 50 Enterprise tenants, the Agentic Triad reduces 1,000-tenant cloud infrastructure TCO by 74% and per-turn LLM token costs by 89.1%.',
         ],
@@ -1659,7 +1659,7 @@ const DECKS = {
             tag: 'Pillar 1: Zero-Trust Security',
           },
           {
-            stack: 'Gemini 3.8 Flash ContextCacheConfig (90% Discount) • Valkey RPM • Output Caps',
+            stack: 'Gemini 2.5 Flash ContextCacheConfig (90% Discount) • Valkey RPM • Output Caps',
             sla: 'Caps Worst-Case Tenant Token Spend & Protects Shared Pool p99 Latency',
             tag: 'Pillar 2: Unit Economics',
           },

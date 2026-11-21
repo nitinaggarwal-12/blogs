@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-20T21:26:41.839Z",
+  "generatedAt": "2026-11-21T00:54:21.572Z",
   "engine": "PromptCanvas Vision Decompiler • Google Cloud Architecture Center 3-Act Cohesive Story Arc • pptxgenjs LAYOUT_WIDE 16:9",
   "decks": [
     {
@@ -13,7 +13,7 @@
       ],
       "shapes": 333,
       "connectors": 84,
-      "bytes": 3873908,
+      "bytes": 3873946,
       "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
@@ -29,7 +29,7 @@
       ],
       "shapes": 194,
       "connectors": 55,
-      "bytes": 1504780,
+      "bytes": 1504804,
       "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
@@ -44,7 +44,7 @@
       ],
       "shapes": 190,
       "connectors": 58,
-      "bytes": 1514573,
+      "bytes": 1514597,
       "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
@@ -60,7 +60,7 @@
       ],
       "shapes": 190,
       "connectors": 58,
-      "bytes": 1498998,
+      "bytes": 1499024,
       "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
@@ -73,13 +73,15 @@
       ],
       "shapes": 180,
       "connectors": 54,
-      "bytes": 1428193,
+      "bytes": 1428217,
       "narrative": "3-Act Cohesive Executive Story Arc (slide-design v3.0)"
     },
     {
       "key": "ALL",
       "file": "slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx",
       "slides": 25,
+      "approvedSimplifiedDiagramsCount": 12,
+      "archivedHubAndSpokeDiagramsCount": 14,
       "diagrams": [
         "ws1-multi-tenant-taxonomy-overview",
         "ws1-cloud-arch-center-5hop-baseline",
@@ -96,7 +98,7 @@
         "ws4-terraform-hybrid-psc-blueprint-resource-graph",
         "ws5-decision-tree-and-agentic-triad"
       ],
-      "bytes": 3149699
+      "bytes": 3149773
     }
   ]
 }

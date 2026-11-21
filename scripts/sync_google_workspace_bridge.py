@@ -126,6 +126,11 @@ PREFERRED_WORKSTREAM_SLIDES_IDS: Dict[str, str] = {
     "DOC-REF-08": "1fHwVkECJFr1HQvkYHYuMOraerpxO-0C6guF8PFHLlTw",
     "DOC-REF-09": "10TpWnWIho8kXmN4866HXz34CI3lKxmh-NWSAd6QYiMM",
     "BP-78": "1vfMRea19B2f5W54GLWw038YhJRwjnQaWTZYgdwOPjlw",
+    "BP-78-A": "1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc",
+    "BP-78-B": "1ZkfRhStnXBer8E1xT50hxclg4S3NMhGJDFd2EBlEX38",
+    "BP-78-C": "1nxRiawJOzhfjlBTmC21SSrrh9CzSUKEj843ZsOF5s1E",
+    "BP-78-E": "1Lcsf1gQRyt8eNgaeLGvq8kuALFrecx82S8dHpBFldwc",
+    "WS1_SOLUTION": "1zbmx5k6_i4yy2NuMO9d4g8r73_ZOOGuyI1J_DI2nLkA",
     "WS1_EXEC": "1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg",
     "WS2_EXEC": "1OjWG78L8T8JGTxsJid6vzU5wcacJNIYxO2qVGlNPMNI",
     "WS3_EXEC": "1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A",
@@ -136,14 +141,7 @@ PREFERRED_WORKSTREAM_SLIDES_IDS: Dict[str, str] = {
 }
 
 SECONDARY_WORKSTREAM_SLIDES_IDS: Dict[str, list[str]] = {
-    "WS1": [
-        "1zbmx5k6_i4yy2NuMO9d4g8r73_ZOOGuyI1J_DI2nLkA",
-    ],
-    "WS2": ["1HfjCi035HDOb74CO-P6J6GS7VKHT3zSfuwQx_KH15wc"],
-    "WS3": ["1ZkfRhStnXBer8E1xT50hxclg4S3NMhGJDFd2EBlEX38"],
-    "WS4": ["1nxRiawJOzhfjlBTmC21SSrrh9CzSUKEj843ZsOF5s1E"],
     "WS5": [
-        "1Lcsf1gQRyt8eNgaeLGvq8kuALFrecx82S8dHpBFldwc",
         "18ntSD7plHarlsERB93n8vLUL2ctaoKuNXMoRptK7lmw",
     ],
     "DOC-MT-01": [
@@ -157,23 +155,7 @@ SECONDARY_WORKSTREAM_SLIDES_IDS: Dict[str, list[str]] = {
     "BARE_MIN_12": ["1K7XrzuhVxGDuuj33a3qK4onYXnSHr3Povzuj5LnEEnc"],
 }
 
-WORKSTREAM_ALIAS_SLIDES_KEYS: Dict[str, list[tuple[str, str]]] = {
-    "WS1": [
-        ("PLUGIN-GSLIDES-WS1", "slides/ws1-12slide-visual-deck.pptx"),
-    ],
-    "WS2": [
-        ("BP-78-A", "slides/ws2-pattern-a-pooled-editable-slides.pptx"),
-    ],
-    "WS3": [
-        ("BP-78-B", "slides/ws3-pattern-b-siloed-editable-slides.pptx"),
-    ],
-    "WS4": [
-        ("BP-78-C", "slides/ws4-pattern-c-hybrid-editable-slides.pptx"),
-    ],
-    "WS5": [
-        ("BP-78-E", "slides/ws5-wrap-up-editable-slides.pptx"),
-    ],
-}
+WORKSTREAM_ALIAS_SLIDES_KEYS: Dict[str, list[tuple[str, str]]] = {}
 
 LEGACY_SHARED_WORKSTREAM_SLIDES_IDS = {
     "1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w",
@@ -573,7 +555,7 @@ def _sync_markdown_into_existing_google_doc(fid: str, md_path: Path, title: str,
     if len(raw_md) > 280_000:
         raw_md = (
             raw_md[:280_000]
-            + "\n\n---\n[Full 596 KB End-to-End Compendium & 14 Blueprints available in docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md on ge-blogs.cymbal-demo.example]\n"
+            + "\n\n---\n[Full End-to-End Compendium & 12 Approved Blueprints available in docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md on https://github.com/cloud-ai-fde/ge-blogs]\n"
         )
     full_text, style_requests = _compile_markdown_for_native_docs_batch(raw_md, title)
 
@@ -749,6 +731,11 @@ WORKSTREAM_DECK_SPECS = [
     ("DOC-REF-08", "Ref Arch 2: Zero-Trust Enterprise Agent Mesh with Model Armor & VPC-SC", "slides/doc-ref-08-editable-slides.pptx", ""),
     ("DOC-REF-09", "Ref Arch 3: Scalable MCP Tool Server & A2A Ecosystem on Cloud Run", "slides/doc-ref-09-editable-slides.pptx", ""),
     ("BP-78", "BP-78 — WS1 Reference Architecture, Taxonomy & 5-Hop Baseline (15-Slide Editable Deck)", "slides/ws1-reference-architecture-editable-slides.pptx", ""),
+    ("BP-78-A", "BP-78-A — WS2 Pattern A: High-Density Pooled Architecture (12-Slide Editable Deck)", "slides/ws2-pattern-a-pooled-editable-slides.pptx", ""),
+    ("BP-78-B", "BP-78-B — WS3 Pattern B: Zero-Trust Sovereign Silos (12-Slide Editable Deck)", "slides/ws3-pattern-b-siloed-editable-slides.pptx", ""),
+    ("BP-78-C", "BP-78-C — WS4 Pattern C: Dynamic Hybrid Hub-and-Spoke (12-Slide Editable Deck)", "slides/ws4-pattern-c-hybrid-editable-slides.pptx", ""),
+    ("BP-78-E", "BP-78-E — WS5 Executive Decision Guide & Agentic Triad (12-Slide Editable Deck)", "slides/ws5-wrap-up-editable-slides.pptx", ""),
+    ("WS1_SOLUTION", "WS1 — Executive Solution Architecture Deck (16-Slide Editable Deck)", "slides/ws1-executive-solution-deck.pptx", ""),
     ("WS1_EXEC", "WS1 Executive Architecture (10-Slide Lean Narrative Deck)", "slides/ws1-executive-architecture-23slide-deck.pptx", ""),
     ("WS2_EXEC", "WS2 Executive Architecture (10-Slide Lean Narrative Deck)", "slides/ws2-executive-architecture-10slide-deck.pptx", ""),
     ("WS3_EXEC", "WS3 Executive Architecture (10-Slide Lean Narrative Deck)", "slides/ws3-executive-architecture-10slide-deck.pptx", ""),

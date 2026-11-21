@@ -69,7 +69,7 @@ APPROVED_12_DIAGRAMS = [
         "kind": "L2 Physical Topology (Simplified Header)",
         "question": "How do 950+ competing B2B SaaS tenants safely share one GCP project while achieving 89.1% net input token savings?",
         "summary": "Unifies competing commercial tenants (FinVault Bank and RetailStream Corp) inside one shared Google Cloud project protected by gVisor sandboxes, Valkey token-bucket bulkheads, immutable 32k prefix caching, and AlloyDB FORCE ROW LEVEL SECURITY.",
-        "planes": "CONTROL (Edge PEP, Agent Gateways, ARD PDP, Model Armor) • COMPUTE (Shared Cloud Run Gen2 gVisor pool + Gemini 3.8 Flash) • DATA (Shared Valkey namespaced keys + Shared AlloyDB FORCE RLS)",
+        "planes": "CONTROL (Edge PEP, Agent Gateways, ARD PDP, Model Armor) • COMPUTE (Shared Cloud Run Gen2 gVisor pool + Gemini 2.5 Flash) • DATA (Shared Valkey namespaced keys + Shared AlloyDB FORCE RLS)",
         "code_refs": ["workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py", "workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_gateway_and_rls.sql", "workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py", "workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf"],
         "flow_steps": [
             ("1. Shared Ingress", "All pooled tenants share External ALB + Cloud Armor; caller X-Tenant-Id headers are stripped before STS verification."),
@@ -92,7 +92,7 @@ APPROVED_12_DIAGRAMS = [
         "flow_steps": [
             ("1. Pre-Fork Warm Pool", "Cloud Run Gen2 maintains warm CoW-initialized gVisor workers with read-only runtime imports."),
             ("2. Single-Turn Bind", "Dispatcher routes exactly 1 authenticated turn (concurrency=1) with signed TenantContext."),
-            ("3. Isolated Execution", "Turn reads tenant-scoped Valkey/AlloyDB state and invokes Model Armor + Gemini 3.8 Flash."),
+            ("3. Isolated Execution", "Turn reads tenant-scoped Valkey/AlloyDB state and invokes Model Armor + Gemini 2.5 Flash."),
             ("4. Deterministic Heap Wipe", "Upon HTTP 200 response, worker exits immediately (--max-requests=1), guaranteeing zero heap carry-over."),
         ],
     },
@@ -359,7 +359,7 @@ Every turn across Patterns A, B, and C executes the identical five governance mo
 
 ### 0.4 Anchor B2B SaaS Case Study: Cymbal SaaS Platform
 
-- **ISV Operator (`Cymbal SaaS Platform`)**: Publishes the *Shared Incident Diagnostic Agent* powered by Gemini 3.8 Flash with 32k shared prefix caching (`89.1%` net input savings), dynamic Firestore/Valkey tenant configuration, and 2LO core telemetry.
+- **ISV Operator (`Cymbal SaaS Platform`)**: Publishes the *Shared Incident Diagnostic Agent* powered by Gemini 2.5 Flash with 32k shared prefix caching (`89.1%` net input savings), dynamic Firestore/Valkey tenant configuration, and 2LO core telemetry.
 - **Enterprise Regulated Tenant (`FinVault Bank`)**: Google OIDC identity, Workspace + Jira 3LO tools, `HIGH` `thinkingLevel` (`8,000 maxOutputTokens`) / `600 RPM`, OCC/FDIC semantic NLCs, CMEK encryption, and private self-service `Agent Alpha` ([`finvault_agent_alpha.py`](../core-cymbal-agent/agents/finvault_agent_alpha.py)).
 - **Standard Commercial Tenant (`RetailStream Corp`)**: Microsoft Entra ID OIDC federation, SharePoint + ServiceNow 3LO tools, `MEDIUM` `thinkingLevel` (`4,000 maxOutputTokens`) / `120 RPM`, PCI PAN redaction, and strict isolation from FinVault's `Agent Alpha` (`HTTP 403`).
 

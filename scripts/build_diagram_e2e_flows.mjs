@@ -51,7 +51,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERNS A, B & C TAXONOMY',
     questionAnswered:
       'How do B2B SaaS platforms and large enterprises serve thousands of tenants across Pooled (Pattern A), Sovereign Silo (Pattern B), and Dynamic Hybrid (Pattern C) isolation models using one 80% reusable agentic codebase?',
-    gcpProject: 'cymbal-control-plane (#248990048888) & cymbal-build-sandbox (#887605034827)',
+    gcpProject: 'cymbal-control-plane (#248990048888) & cymbal-ge-hub-2026 (#887605034827)',
     runtimeTarget: 'cymbal-multi-tenant-patterns-00003-wfh (Cloud Run us-central1)',
     codeModules: 'workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md • core-cymbal-agent/runtime_pipeline.py',
     execCloudServices:
@@ -135,8 +135,8 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Yellow & Red Zones (Hops 5a & 3b Data, Tools & Reasoning)',
         title: 'Scoped 2LO/3LO MCP, AlloyDB RLS & Prefix-Cached Reasoning (Generates Response)',
         logicalNarrative:
-          'The authorized ADK agent (`5 Generates response`) executes DPoP-scoped 2LO/3LO `MCP servers` (`Scoped MCP & RAG`), queries AlloyDB under transactional `SET LOCAL app.current_tenant_id` Row-Level Security (`Hop 5a`, ~1.8 ms), and synthesizes the completion with Gemini 3.8 Flash / Gemma 3 using `ContextCacheConfig` (90% prefix discount) and `{tenant}:{user}:{session}` 5-Level Memory Bank (`Hop 3b`).',
-        components: 'MCP Servers (2LO/3LO) • AlloyDB RLS • Gemini 3.8 Flash • ContextCacheConfig',
+          'The authorized ADK agent (`5 Generates response`) executes DPoP-scoped 2LO/3LO `MCP servers` (`Scoped MCP & RAG`), queries AlloyDB under transactional `SET LOCAL app.current_tenant_id` Row-Level Security (`Hop 5a`, ~1.8 ms), and synthesizes the completion with Gemini 2.5 Flash / Gemma 3 using `ContextCacheConfig` (90% prefix discount) and `{tenant}:{user}:{session}` 5-Level Memory Bank (`Hop 3b`).',
+        components: 'MCP Servers (2LO/3LO) • AlloyDB RLS • Gemini 2.5 Flash • ContextCacheConfig',
       },
       {
         step: 'Step ⑥',
@@ -197,9 +197,9 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       {
         step: 'Step ⑤',
         hopName: 'Hops 5a & 3b: Scoped MCP, RLS & Reasoning (Generates Response)',
-        route: 'MCP Servers, AlloyDB RLS & Gemini 3.8 Flash (Yellow & Red Zones)',
+        route: 'MCP Servers, AlloyDB RLS & Gemini 2.5 Flash (Yellow & Red Zones)',
         protocolAndMechanism:
-          'Executes DPoP-bound 2LO/3LO MCP tools, enforces `SET LOCAL app.current_tenant_id` AlloyDB Row-Level Security (~1.8 ms), and runs prefix-cached Gemini 3.8 Flash reasoning (`ContextCacheConfig` 90% discount + 5-Level Memory Bank).',
+          'Executes DPoP-bound 2LO/3LO MCP tools, enforces `SET LOCAL app.current_tenant_id` AlloyDB Row-Level Security (~1.8 ms), and runs prefix-cached Gemini 2.5 Flash reasoning (`ContextCacheConfig` 90% discount + 5-Level Memory Bank).',
         codeAndResource: 'hop5_data_rls_and_otel.py & shared_diagnostic_agent.py',
         verifiedOutcome: '89.1% lower token COGS with zero cross-tenant SQL or memory bleed',
       },
@@ -239,7 +239,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: '5-HOP CRYPTOGRAPHIC BASELINE',
     questionAnswered:
       'How do we extend the official Google Cloud Architecture Center multi-tenant hub-and-spoke blueprint with a 5-Hop Cryptographic Context Chain that prevents confused-deputy tool calls, cache bleed, and noisy neighbors?',
-    gcpProject: 'cymbal-build-sandbox (#887605034827)',
+    gcpProject: 'cymbal-ge-hub-2026 (#887605034827)',
     runtimeTarget: 'cymbal-multi-tenant-patterns-00003-wfh • KMS adk-agent-signing-key',
     codeModules: 'hop1_edge_identity_pep.py → hop2_registry_pdp_callbacks.py → hop3_compute_finops_bulkhead.py → hop4_model_armor_guardrails.py → hop5_data_rls_and_otel.py',
     execCloudServices:
@@ -323,8 +323,8 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Yellow / Red Zone (Hops 5a & 3b Tools, RLS & Inference)',
         title: 'Scoped 2LO/3LO MCP, AlloyDB RLS & Prefix-Cached Reasoning (Generates Response)',
         logicalNarrative:
-          'During agent execution (`5 Generates response`), Hop 5 brokers DPoP-scoped 2LO/3LO OAuth tokens for `MCP servers` (`Secure RAG`) and executes `SET LOCAL app.current_tenant_id` on AlloyDB (`Agent-tool interaction`, ~1.8 ms), while Gemini 3.8 Flash synthesizes the response using `ContextCacheConfig` (90% prefix discount) and `{tenant}:{user}:{session}` 5-Level Memory Bank.',
-        components: 'Hop 5 (`hop5_data_rls_and_otel.py`) • AlloyDB RLS • Gemini 3.8 Flash',
+          'During agent execution (`5 Generates response`), Hop 5 brokers DPoP-scoped 2LO/3LO OAuth tokens for `MCP servers` (`Secure RAG`) and executes `SET LOCAL app.current_tenant_id` on AlloyDB (`Agent-tool interaction`, ~1.8 ms), while Gemini 2.5 Flash synthesizes the response using `ContextCacheConfig` (90% prefix discount) and `{tenant}:{user}:{session}` 5-Level Memory Bank.',
+        components: 'Hop 5 (`hop5_data_rls_and_otel.py`) • AlloyDB RLS • Gemini 2.5 Flash',
       },
       {
         step: 'Step ⑥',
@@ -385,9 +385,9 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       {
         step: 'Step ⑤',
         hopName: 'Hops 5a & 3b: Scoped MCP, RLS & Cache (Generates Response)',
-        route: 'MCP Hub, AlloyDB RLS, Gemini 3.8 Flash & 5-Level Memory Bank',
+        route: 'MCP Hub, AlloyDB RLS, Gemini 2.5 Flash & 5-Level Memory Bank',
         protocolAndMechanism:
-          'Dispatches DPoP-bound 2LO/3LO MCP tools, binds `SET LOCAL app.current_tenant_id` on AlloyDB connections (~1.8 ms), and executes Gemini 3.8 Flash with `ContextCacheConfig` (90% prefix discount) and `{tenant}:{user}:{session}` memory.',
+          'Dispatches DPoP-bound 2LO/3LO MCP tools, binds `SET LOCAL app.current_tenant_id` on AlloyDB connections (~1.8 ms), and executes Gemini 2.5 Flash with `ContextCacheConfig` (90% prefix discount) and `{tenant}:{user}:{session}` memory.',
         codeAndResource: 'hop5_data_rls_and_otel.py & MemoryBankLevel L1..L5',
         verifiedOutcome: 'SQL RLS-bypass returns 0 foreign rows; unconsented 3LO returns HTTP 401',
       },
@@ -427,11 +427,11 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN A • POOLED RUNTIME',
     questionAnswered:
       'How do we host thousands of Standard and commercial SaaS tenants inside a single shared Google Cloud project at a 120 RPM Pooled unit cost footprint while guaranteeing cryptographic and row-level isolation?',
-    gcpProject: 'cymbal-build-sandbox (#887605034827)',
+    gcpProject: 'cymbal-ge-hub-2026 (#887605034827)',
     runtimeTarget: 'cymbal-multi-tenant-patterns-00003-wfh • BigQuery pattern_a_pooled_rls_entities',
     codeModules: 'workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md • runtime/main.py (/v1/patterns/a/execute)',
     execCloudServices:
-      'External ALB • Cloud Armor • Identity-Aware Proxy • Cloud Run Gen2 • Memorystore for Valkey • Vertex AI Model Armor • Gemini 3.8 Flash • AlloyDB & BigQuery RLS',
+      'External ALB • Cloud Armor • Identity-Aware Proxy • Cloud Run Gen2 • Memorystore for Valkey • Vertex AI Model Armor • Gemini 2.5 Flash • AlloyDB & BigQuery RLS',
     execTechSummary:
       'Consolidates multi-tenant compute onto one auto-scaling Cloud Run / Vertex AI Agent Engine pool and one shared AlloyDB/BigQuery schema, enforcing isolation via KMS-signed tokens, Memorystore rate bulkheads, and Row-Level Security.',
     outcomeTitle: 'High-Density SaaS Unit Economics (120 RPM Pool) with Cryptographic 5-Hop Isolation',
@@ -508,11 +508,11 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       {
         step: 'Step ⑤',
         badgeNum: '05',
-        zone: 'Yellow Zone (Gemini 3.8 Flash)',
+        zone: 'Yellow Zone (Gemini 2.5 Flash)',
         title: 'Shared Prefix Cache + Isolated Session Memory',
         logicalNarrative:
-          'Gemini 3.8 Flash reuses the 32,000-token read-only shared system instruction cache (90% input token discount) while reading and writing episodic conversation state strictly under `{tenant}:{user}:{session}`.',
-        components: 'Gemini 3.8 Flash • ContextCacheConfig • 5-Level Memory Bank',
+          'Gemini 2.5 Flash reuses the 32,000-token read-only shared system instruction cache (90% input token discount) while reading and writing episodic conversation state strictly under `{tenant}:{user}:{session}`.',
+        components: 'Gemini 2.5 Flash • ContextCacheConfig • 5-Level Memory Bank',
       },
       {
         step: 'Step ⑥',
@@ -573,7 +573,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       {
         step: 'Step ⑤',
         hopName: '90% Shared Context Cache',
-        route: 'Vertex AI Gemini 3.8 Flash (Yellow Zone)',
+        route: 'Vertex AI Gemini 2.5 Flash (Yellow Zone)',
         protocolAndMechanism:
           'Attaches read-only `ContextCacheConfig` to the 32k-token shared system prompt and tool schemas while isolating dynamic conversation turns in `{tenant}:{user}:{session}`.',
         codeAndResource: 'Shared Read-Only Prefix Cache + Isolated Memory Bank',
@@ -615,7 +615,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN A • 10-VECTOR DEFENSE',
     questionAnswered:
       'How does the 5-Hop Cryptographic Context Chain deterministically block all 10 adversarial cross-tenant attack vectors—from forged headers and confused-deputy tool calls to SQL RLS bypasses and noisy-neighbor floods?',
-    gcpProject: 'cymbal-build-sandbox (#887605034827)',
+    gcpProject: 'cymbal-ge-hub-2026 (#887605034827)',
     runtimeTarget: 'cymbal-multi-tenant-patterns-00003-wfh (/v1/patterns/a/breach-suite)',
     codeModules: 'workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py',
     execCloudServices:
@@ -803,7 +803,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN A • 2LO/3LO AUTH SANDBOX',
     questionAnswered:
       'How does a single pooled Google Cloud project federate heterogeneous corporate identity providers (Google Workspace OIDC and Microsoft Entra ID) and broker tenant-scoped 2LO and 3LO OAuth tokens to external MCP tools without confused-deputy risks?',
-    gcpProject: 'cymbal-control-plane (#248990048888) & cymbal-build-sandbox (#887605034827)',
+    gcpProject: 'cymbal-control-plane (#248990048888) & cymbal-ge-hub-2026 (#887605034827)',
     runtimeTarget: 'enterprise-s2p-global • Secret Manager tenant-{id}-3p-oauth',
     codeModules: 'workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md • core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py',
     execCloudServices:
@@ -991,7 +991,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN A • TERRAFORM IaC GRAPH',
     questionAnswered:
       'How do platform engineering teams declaratively provision the entire Pattern A pooled multi-tenant stack—WAF, KMS signing keys, Valkey bulkheads, Cloud Run Gen2 runtime, and RLS-locked databases—with zero manual console drift?',
-    gcpProject: 'cymbal-build-sandbox (#887605034827)',
+    gcpProject: 'cymbal-ge-hub-2026 (#887605034827)',
     runtimeTarget: 'Cloud Run v2 + KMS + BigQuery RLS + Cloud Armor + Model Armor',
     codeModules: 'workstream-2-pattern-a-pooled/2.6-terraform-starter/{main.tf,variables.tf,README.md,terraform.tfvars.example}',
     execCloudServices:
@@ -1001,7 +1001,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     outcomeTitle: 'Declarative 1-Click Terraform DAG Provisions Pattern A in Under 4 Minutes',
     outcomeBody:
       'A single `terraform apply` provisions the Google provider, Cloud Armor WAF policy, Cloud KMS 90-day rotating key ring, Memorystore for Valkey bulkhead, Cloud Run v2 gateway, and BigQuery OTel sink in strict dependency order.',
-    outcomeTech: 'Verified F-10 & live GCP receipt: all Pattern A Terraform resources provisioned and certified in `cymbal-build-sandbox`',
+    outcomeTech: 'Verified F-10 & live GCP receipt: all Pattern A Terraform resources provisioned and certified in `cymbal-ge-hub-2026`',
     plainZones: [
       {
         zoneId: 'Blue Zone',
@@ -1179,7 +1179,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN B • SOVEREIGN SILOS',
     questionAnswered:
       'How do we satisfy strict banking (OCC/FDIC), healthcare (HIPAA), and public-sector regulators that prohibit shared compute, shared storage, or provider-owned keys—while reusing 80% of our core ADK agent codebase?',
-    gcpProject: 'cymbal-build-sandbox (#887605034827)',
+    gcpProject: 'cymbal-ge-hub-2026 (#887605034827)',
     runtimeTarget: 'KMS cymbal-multi-tenant-kr/{finvault-silo-cmek,medcore-revoked-cmek}',
     codeModules: 'workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md • runtime/main.py (/v1/patterns/b/execute)',
     execCloudServices:
@@ -1210,7 +1210,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         colorHex: '#feefc3',
         borderHex: '#b06000',
         name: '3. FinVault Sovereign Silo Project (CMEK ENABLED)',
-        role: 'Dedicated project running air-gapped Gemma 3 (27B) on private GKE + Gemini 3.8 Flash (Dedicated PT) and CMEK-encrypted AlloyDB/BigQuery vault (`2 rows` returned).',
+        role: 'Dedicated project running air-gapped Gemma 3 (27B) on private GKE + Gemini 2.5 Flash (Dedicated PT) and CMEK-encrypted AlloyDB/BigQuery vault (`2 rows` returned).',
       },
       {
         zoneId: 'Red Zone',
@@ -1263,7 +1263,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         zone: 'Yellow Zone (Dedicated Inference)',
         title: 'Air-Gapped Gemma 3 on GKE or Provisioned Gemini',
         logicalNarrative:
-          'FinVault runs inference inside its perimeter using either air-gapped Gemma 3 (27B) on private GKE (`--internal-ip`, CMEK boot disks) or dedicated Provisioned Throughput Gemini 3.8 Flash (`gemini-3.8-flash` (`X-Vertex-AI-LLM-Request-Type: dedicated`)).',
+          'FinVault runs inference inside its perimeter using either air-gapped Gemma 3 (27B) on private GKE (`--internal-ip`, CMEK boot disks) or dedicated Provisioned Throughput Gemini 2.5 Flash (`gemini-3.8-flash` (`X-Vertex-AI-LLM-Request-Type: dedicated`)).',
         components: 'Air-Gapped Gemma 3 27B on Private GKE • Provisioned Throughput',
       },
       {
@@ -1367,7 +1367,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN B • SILO FACTORY PIPELINE',
     questionAnswered:
       'How do we automate the 4-stage onboarding of regulated Pattern B customers—provisioning a dedicated GCP project, Cloud KMS CMEK key ring, IAM Principal Access Boundary, and VPC Service Controls perimeter—without manual toil?',
-    gcpProject: 'cymbal-build-sandbox (#887605034827)',
+    gcpProject: 'cymbal-ge-hub-2026 (#887605034827)',
     runtimeTarget: 'cymbal-multi-tenant-kr • pattern_b_silo_finvault_cmek_vault',
     codeModules: 'workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md • workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py',
     execCloudServices:
@@ -1377,7 +1377,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     outcomeTitle: 'Automated 4-Stage Silo Onboarding Factory with Built-In Kill-Switch Certification',
     outcomeBody:
       'When a regulated enterprise signs a Pattern B contract, the Silo Factory automatically creates their dedicated GCP project, provisions their 90-day rotating CMEK key, locks the VPC-SC perimeter, and runs the 6-point kill-switch drill.',
-    outcomeTech: 'Verified live in `cymbal-build-sandbox`: FinVault active CMEK vault and MedCore revoked CMEK vault provisioned and tested',
+    outcomeTech: 'Verified live in `cymbal-ge-hub-2026`: FinVault active CMEK vault and MedCore revoked CMEK vault provisioned and tested',
     plainZones: [
       {
         zoneId: 'Blue Zone',
@@ -1555,7 +1555,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN B • TERRAFORM SILO DAG',
     questionAnswered:
       'How do we codify the entire Pattern B Sovereign Silo—Cloud KMS CMEK, VPC Service Controls perimeter, isolated VPC, and private air-gapped GKE cluster running Gemma 3—into a single reusable Terraform module?',
-    gcpProject: 'cymbal-build-sandbox (#887605034827)',
+    gcpProject: 'cymbal-ge-hub-2026 (#887605034827)',
     runtimeTarget: 'google_kms_crypto_key • google_access_context_manager_service_perimeter • google_container_cluster',
     codeModules: 'workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/{main.tf,variables.tf,README.md,terraform.tfvars.example}',
     execCloudServices:
@@ -1565,7 +1565,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     outcomeTitle: 'Auditor-Certified Terraform DAG for Air-Gapped Sovereign Silos',
     outcomeBody:
       'Parameterized by just five input variables (`tenant_id`, `tenant_project_id`, `org_id`, `access_policy_id`, `region`), one `terraform apply` builds a complete CMEK-encrypted, VPC-SC-fenced sovereign silo with private GKE compute.',
-    outcomeTech: 'Verified F-10 & live GCP receipt: Pattern B Terraform module and CMEK vaults certified in `cymbal-build-sandbox`',
+    outcomeTech: 'Verified F-10 & live GCP receipt: Pattern B Terraform module and CMEK vaults certified in `cymbal-ge-hub-2026`',
     plainZones: [
       {
         zoneId: 'Blue Zone',
@@ -1743,7 +1743,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN C • HYBRID PSC & MIGRATION',
     questionAnswered:
       'How do we serve both high-density Standard tenants (Pooled) and regulated Enterprise tenants (Dedicated Spokes) behind a single unified SaaS URL—and upgrade a live tenant from Pooled to a Dedicated Spoke with zero dropped sessions?',
-    gcpProject: 'cymbal-build-sandbox (#887605034827)',
+    gcpProject: 'cymbal-ge-hub-2026 (#887605034827)',
     runtimeTarget: 'VPC cymbal-pattern-c-hub-vpc • Subnet cymbal-psc-nat-us-west1 (10.240.0.0/28)',
     codeModules: 'workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md • workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py',
     execCloudServices:
@@ -1931,7 +1931,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN C • PSC HUB & SPOKE',
     questionAnswered:
       'How do we wire a central multi-tenant Hub VPC to dozens of isolated Enterprise Spoke VPCs using Google Cloud Private Service Connect (PSC) Service Attachments so spokes can reuse overlapping CIDRs (`10.40.0.0/20`) and never initiate reverse traffic into the hub?',
-    gcpProject: 'cymbal-build-sandbox (#887605034827)',
+    gcpProject: 'cymbal-ge-hub-2026 (#887605034827)',
     runtimeTarget: 'cymbal-pattern-c-hub-vpc • cymbal-psc-nat-us-west1 (PURPOSE=PRIVATE_SERVICE_CONNECT)',
     codeModules: 'workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md • workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py',
     execCloudServices:
@@ -1941,7 +1941,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     outcomeTitle: 'Unidirectional Private Service Connect Bridging with Zero CIDR Overlap',
     outcomeBody:
       'Every Enterprise spoke can use the exact same internal IP CIDR (`10.40.0.0/20`) without VPC peering limits or IP collisions, and because PSC is NAT-based and unidirectional, a spoke can never initiate a reverse connection back into the central hub.',
-    outcomeTech: 'Verified live in `cymbal-build-sandbox`: `cymbal-pattern-c-hub-vpc` and `cymbal-psc-nat-us-west1` (`10.240.0.0/28`) ACTIVE',
+    outcomeTech: 'Verified live in `cymbal-ge-hub-2026`: `cymbal-pattern-c-hub-vpc` and `cymbal-psc-nat-us-west1` (`10.240.0.0/28`) ACTIVE',
     plainZones: [
       {
         zoneId: 'Blue Zone',
@@ -2045,7 +2045,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         protocolAndMechanism:
           'Provisions the central Hub VPC and `10.10.0.0/20` subnet (`Private Google Access` enabled) hosting Direct VPC Egress from the Cloud Run Hybrid Router.',
         codeAndResource: 'workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md',
-        verifiedOutcome: 'Verified live in `cymbal-build-sandbox`: `cymbal-pattern-c-hub-vpc`',
+        verifiedOutcome: 'Verified live in `cymbal-ge-hub-2026`: `cymbal-pattern-c-hub-vpc`',
       },
       {
         step: 'Step ②',
@@ -2119,7 +2119,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN C • ZERO-DOWNTIME UPGRADE',
     questionAnswered:
       'How do we promote a live customer (RetailStream Corp) from the Standard Pooled tier (`Pattern A`) into a dedicated Enterprise PSC Spoke (`Pattern B/C`) mid-conversation with 0ms replication lag, 0 dropped sessions, and zero global state bleed?',
-    gcpProject: 'cymbal-build-sandbox (#887605034827)',
+    gcpProject: 'cymbal-ge-hub-2026 (#887605034827)',
     runtimeTarget: 'cymbal-multi-tenant-patterns-00003-wfh (/v1/patterns/c/migrate)',
     codeModules: 'workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py • pattern_c_hybrid_router_and_migrator.py',
     execCloudServices:
@@ -2307,7 +2307,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'PATTERN C • TERRAFORM PSC DAG',
     questionAnswered:
       'How do we codify both sides of the Pattern C Hybrid Hub-and-Spoke network—the central `google.hub` consumer VPC/endpoint and the isolated `google.spoke` producer VPC, `/24` PSC NAT subnet, and `ServiceAttachment`—in a single Terraform blueprint?',
-    gcpProject: 'cymbal-build-sandbox (#887605034827)',
+    gcpProject: 'cymbal-ge-hub-2026 (#887605034827)',
     runtimeTarget: 'google_compute_service_attachment • google_compute_forwarding_rule • cymbal-psc-nat-us-west1',
     codeModules: 'workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/{main.tf,variables.tf,README.md,terraform.tfvars.example}',
     execCloudServices:
@@ -2430,7 +2430,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         protocolAndMechanism:
           'Provisions the central Hub VPC network and regional subnet with Private Google Access for the Cloud Run Hybrid Router.',
         codeAndResource: 'main.tf • google_compute_network.hub_vpc',
-        verifiedOutcome: 'Verified live in `cymbal-build-sandbox`: `cymbal-pattern-c-hub-vpc`',
+        verifiedOutcome: 'Verified live in `cymbal-ge-hub-2026`: `cymbal-pattern-c-hub-vpc`',
       },
       {
         step: 'Step ③',
@@ -2448,7 +2448,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
         protocolAndMechanism:
           'Creates the dedicated `PRIVATE_SERVICE_CONNECT` NAT subnet required by Google Cloud to translate consumer packets into the spoke VPC.',
         codeAndResource: 'main.tf • google_compute_subnetwork.spoke_psc_nat_subnet',
-        verifiedOutcome: 'Verified live in `cymbal-build-sandbox`: `cymbal-psc-nat-us-west1`',
+        verifiedOutcome: 'Verified live in `cymbal-ge-hub-2026`: `cymbal-psc-nat-us-west1`',
       },
       {
         step: 'Step ⑤',
@@ -2495,11 +2495,11 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     patternBadge: 'WORKSTREAM 5 • AGENTIC TRIAD',
     questionAnswered:
       'How do Chief Architects, CISOs, and CFOs select between Pattern A, Pattern B, and Pattern C—and how does the Multi-Tenant Agentic Triad balance Cryptographic Tenant Governance, Predictable FinOps COGS, and Zero-PII Observability across 1,000+ tenants?',
-    gcpProject: 'cymbal-control-plane (#248990048888) & cymbal-build-sandbox (#887605034827)',
+    gcpProject: 'cymbal-control-plane (#248990048888) & cymbal-ge-hub-2026 (#887605034827)',
     runtimeTarget: 'enterprise-s2p-global • cymbal_agentic_finops_otel.tenant_telemetry_spans',
     codeModules: 'workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md • workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md • blogs/ws5-decision-guide-and-agentic-triad.md',
     execCloudServices:
-      'Vertex AI Agent Engine • Google ADK • Gemini 3.8 Flash & Gemma 3 • Cloud Armor & IAP • Model Armor & SDP • Memorystore for Valkey • AlloyDB RLS & Cloud KMS CMEK • BigQuery OTel',
+      'Vertex AI Agent Engine • Google ADK • Gemini 2.5 Flash & Gemma 3 • Cloud Armor & IAP • Model Armor & SDP • Memorystore for Valkey • AlloyDB RLS & Cloud KMS CMEK • BigQuery OTel',
     execTechSummary:
       'Synthesizes the 2-Question Executive Topology Decision Tree (Pattern A vs. B vs. C) and the 3-Pillar Multi-Tenant Agentic Triad: (1) 5-Hop Cryptographic Governance, (2) Predictable FinOps Unit Economics (-89.1% COGS), and (3) Zero-PII OpenTelemetry Chargeback.',
     outcomeTitle: '2-Question Topology Selector + 74% Total Cloud COGS Reduction Across 1,000 Tenants',
@@ -2695,13 +2695,13 @@ export function synthesizeDynamicFlowSpecForBlueprint(bp) {
   const gcBot = [gc.bot?.title, gc.bot?.title2].filter(Boolean).join(' ') || 'Cloud Logging & BQ';
 
   const lcArmor = [lc.modelArmor?.title, lc.modelArmor?.title2].filter(Boolean).join(' ') || 'Cloud DLP & Guardrails';
-  const lcLlm = [lc.llm?.title, lc.llm?.title2].filter(Boolean).join(' ') || 'Gemini 3.8 Flash';
+  const lcLlm = [lc.llm?.title, lc.llm?.title2].filter(Boolean).join(' ') || 'Gemini 2.5 Flash';
   const lcRuntime = [lc.runtime?.title, lc.runtime?.title2].filter(Boolean).join(' ') || 'Vertex AI Agent Engine';
   const lcMcp = [lc.mcp?.title, lc.mcp?.title2].filter(Boolean).join(' ') || 'MCP Retrieval Tools';
   const lcStore = [lc.datastore?.title, lc.datastore?.title2].filter(Boolean).join(' ') || 'Cloud Spanner Graph';
 
   const scArmor = [sc.modelArmor?.title, sc.modelArmor?.title2].filter(Boolean).join(' ') || 'VPC-SC & Action Gate';
-  const scLlm = [sc.llm?.title, sc.llm?.title2].filter(Boolean).join(' ') || 'Gemini 3.8 Flash';
+  const scLlm = [sc.llm?.title, sc.llm?.title2].filter(Boolean).join(' ') || 'Gemini 2.5 Flash';
   const scRuntime = [sc.runtime?.title, sc.runtime?.title2].filter(Boolean).join(' ') || 'Governed Action Agent';
   const scMcp = [sc.mcp?.title, sc.mcp?.title2].filter(Boolean).join(' ') || 'MCP Action Connectors';
   const scStore = [sc.datastore?.title, sc.datastore?.title2].filter(Boolean).join(' ') || 'AlloyDB & BigQuery';

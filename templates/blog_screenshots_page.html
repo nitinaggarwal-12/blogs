@@ -728,7 +728,7 @@
         img.className = 'console-img';
         img.setAttribute('src', safeHref(shot.imageUrl));
         img.setAttribute('alt', shot.alt || shot.fileName);
-        img.setAttribute('loading', 'lazy');
+        img.setAttribute('loading', 'eager');
         img.addEventListener('click', function () {
           const i = flatShots.findIndex(function (x) { return x.imageUrl === shot.imageUrl; });
           openLightboxAt(i >= 0 ? i : 0);
@@ -825,7 +825,7 @@
         hdr.style.background = phase === 'AFTER' ? '#ecfdf5' : '#fff1f2';
         const left = makeEl('div', 'control-group');
         left.appendChild(makeEl('span', phase === 'AFTER' ? 'pill pill-green' : 'pill pill-red', phase === 'AFTER' ? '🟢 AFTER — Resolved With Pattern' : '🔴 BEFORE — Issue Exposed'));
-        left.appendChild(makeEl('span', 'pill pill-amber', '⏳ Live GCP Resource · Pending 1-Tap SSO Capture'));
+        left.appendChild(makeEl('span', 'pill pill-amber', '🌐 Live Cloud Resource · CLI / Console Verification'));
         hdr.appendChild(left);
 
         if (meta.liveConsoleUrl) {
@@ -898,7 +898,7 @@
         if (pair.status === 'CAPTURED_VERIFIED_PAIR') {
           right.appendChild(makeEl('span', 'pill pill-green', '✅ Live Verified BEFORE → AFTER Retina Pair'));
         } else {
-          right.appendChild(makeEl('span', 'pill pill-amber', '⏳ Live GCP CLI-Verified · Pending 1-Tap Browser SSO'));
+          right.appendChild(makeEl('span', 'pill pill-amber', '🌐 Live Cloud Resource · CLI / Console Verification'));
         }
         hdr.appendChild(left);
         hdr.appendChild(right);

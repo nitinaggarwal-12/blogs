@@ -2234,10 +2234,37 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             self._send_json(502, {"error": f"Failed to stream response: {exc}"})
 
 
+    @staticmethod
+    def _sanitize_provenance_bytes(file_path: Path) -> bytes:
+        """Strip local workstation absPath keys before serving screenshot_provenance.json over HTTP."""
+        raw_prov = json.loads(file_path.read_text(encoding="utf-8"))
+        if isinstance(raw_prov, dict) and isinstance(raw_prov.get("entries"), list):
+            raw_prov["entries"] = [
+                {k: v for k, v in ent.items() if k != "absPath"} if isinstance(ent, dict) else ent
+                for ent in raw_prov["entries"]
+            ]
+        return (json.dumps(raw_prov, indent=2) + "\n").encode("utf-8")
+
     def do_GET(self) -> None:
         parsed = urlparse(self.path)
         path = parsed.path
         qs = parse_qs(parsed.query)
+
+        if path.rstrip("/") == "/screenshots/verified-cloud-console/screenshot_provenance.json":
+            prov_file = ROOT_DIR / "screenshots" / "verified-cloud-console" / "screenshot_provenance.json"
+            if prov_file.is_file():
+                try:
+                    data = self._sanitize_provenance_bytes(prov_file)
+                    self.send_response(200)
+                    self.send_header("Content-Type", "application/json; charset=utf-8")
+                    self.send_header("Content-Length", str(len(data)))
+                    self.send_header("Cache-Control", "no-store")
+                    self._send_security_headers()
+                    self.end_headers()
+                    self.wfile.write(data)
+                except Exception as exc:
+                    self._send_json(500, {"ok": False, "error": f"Unable to read provenance manifest: {exc}"})
+                return
 
         if path == "/favicon.ico":
             svg_icon = (
@@ -2524,8 +2551,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                     "svg": svg_str,
                     "selfContainedHash": sc_hash,
                     "manifestVersion": int(time.time()),
-                    "compendiumPresId": atlas.get("deck1Editable2WayId", "1-WwbZsdEFPylp9MtfF-nuifeVps0uuu3bSCfzCCYjjI"),
-                    "animatedCompendiumPresId": atlas.get("deck2AnimatedMasterId", "1PjnEpYZY4mY9RvB6wNxMGCl84RwIyupNG7gKmpPxlKk"),
+                    "compendiumPresId": atlas.get("deck1Editable2WayId", "1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk"),
+                    "animatedCompendiumPresId": atlas.get("deck2AnimatedMasterId", "111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc"),
                     "allDiagrams": items,
                 },
             )
@@ -3793,8 +3820,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             "core-cymbal-agent/governance": "core-cymbal-agent/governance/hop1_edge_identity_pep.py",
             "core-cymbal-agent/agents": "core-cymbal-agent/agents/shared_diagnostic_agent.py",
             "core-cymbal-agent/mcp_servers": "core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py",
-            "diagrams": "diagrams/ws1-l1-logical-security-taxonomy.drawio",
-            "diagrams/vision_metadata": "diagrams/vision_metadata/ws1-l1-logical-security-taxonomy.vision.json",
+            "diagrams": "diagrams/ws1-5hop-governance-baseline.drawio",
+            "diagrams/vision_metadata": "diagrams/diagram_e2e_flows.json",
             "scripts/blueprints_ext": "scripts/blueprints_ext/arch_center_blueprints.py",
             "slides": "slides/slides_manifest.json",
             "workstream-2-pattern-a-pooled/2.3-solution-implementation": "workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_agent_service.py",
@@ -3845,12 +3872,19 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             ):
                 self._send_json(404, {"error": f"Artifact not found: {rel_path}"})
                 return
+            if candidate.name == "screenshot_provenance.json":
+                sanitized_bytes = self._sanitize_provenance_bytes(candidate)
+                content_text = sanitized_bytes.decode("utf-8")
+                size_bytes = len(sanitized_bytes)
+            else:
+                content_text = candidate.read_text(encoding="utf-8", errors="replace")
+                size_bytes = candidate.stat().st_size
             self._send_json(
                 200,
                 {
                     "path": rel_path,
-                    "size_bytes": candidate.stat().st_size,
-                    "content": candidate.read_text(encoding="utf-8", errors="replace"),
+                    "size_bytes": size_bytes,
+                    "content": content_text,
                 },
             )
             return
@@ -3970,7 +4004,10 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 and not any(part.startswith(".") for part in static_file.relative_to(ROOT_DIR).parts)
                 and not is_sensitive_repo_path(static_file)
             ):
-                data = static_file.read_bytes()
+                if static_file.name == "screenshot_provenance.json":
+                    data = self._sanitize_provenance_bytes(static_file)
+                else:
+                    data = static_file.read_bytes()
                 mime = STATIC_MIME.get(suffix, "text/plain; charset=utf-8")
                 self.send_response(200)
                 self.send_header("Content-Type", mime)

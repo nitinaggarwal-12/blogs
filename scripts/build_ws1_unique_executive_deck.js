@@ -389,7 +389,7 @@ function buildSlide04() {
       points: [
         '• Identity Provider: Microsoft Entra ID OIDC with per-user DPoP proofs.',
         '• Reasoning Budget: MEDIUM thinkingLevel (4,000 maxOutputTokens) with 120 RPM baseline rate limit.',
-        '• Cost Efficiency: Shared Vertex AI Gemini 3.8 Flash with 90% prompt cache reuse, driving an 89.1% net token cost reduction.',
+        '• Cost Efficiency: Shared Vertex AI Gemini 2.5 Flash with 90% prompt cache reuse, driving an 89.1% net token cost reduction.',
         '• Tool Delegation: DPoP-bound 3LO token vault for ServiceNow ITOM and Atlassian Jira with inline step-up consent.',
         '• Boundary: High-density shared Cloud Run + AlloyDB Row-Level Security.',
       ],
@@ -604,7 +604,7 @@ function buildSlide06() {
   const headers = ['Dimension', 'Pattern A: High-Density Pooled', 'Pattern B: Zero-Trust Sovereign Silos', 'Pattern C: Dynamic Hybrid PSC'];
   const rows = [
     ['Compute Model', 'Shared Cloud Run Gen2 / GKE Autopilot', 'Dedicated GKE Node Pool / Air-Gapped Gemma 3', 'Central Shared Hub + Dedicated PSC Spokes'],
-    ['LLM Endpoint', 'Shared Vertex AI Gemini 3.8 Flash', 'Dedicated Provisioned Throughput (gemini-3.8-flash)', 'Shared Gemini Pool + Burst to Dedicated Spoke'],
+    ['LLM Endpoint', 'Shared Vertex AI Gemini 2.5 Flash', 'Dedicated Provisioned Throughput (gemini-3.8-flash)', 'Shared Gemini Pool + Burst to Dedicated Spoke'],
     ['Prompt Caching', '90% Prefix Reuse (89.1% Token Cost Savings)', '0% Cross-Tenant (100% Sovereign Cache Partition)', 'Shared Baseline Cache + Private Spoke Caches'],
     ['Network Perimeter', 'Global ALB + Shared Cloud Armor L7 WAF', 'Strict VPC Service Controls Perimeter (No Egress)', 'Consumer/Producer Private Service Connect (PSC)'],
     ['Encryption (KMS)', 'Google-Managed Default or Shared Envelope KMS', 'Customer-Managed Cloud KMS CMEK (<60s Kill-Switch)', 'Shared KMS for Hub, CMEK for Dedicated Spokes'],

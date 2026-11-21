@@ -4,7 +4,7 @@
 Provides:
 1. Dynamic extraction of every diagram & Retina screenshot embedded in each blog
    (WS1, WS2, WS3, WS4, WS5, ATLAS, plus aggregated ALL view).
-2. Direct linkages to Approved 12-Slide Google Slides Deck, 38-Slide Architecture Compendium,
+2. Direct linkages to Approved 12-Slide Google Slides Deck, 12-Slide Approved Architecture Deck & 25-Slide Master,
    Interactive 2-Way Draw.io Sync Studio (`/drawio/<id>`), raw `.drawio`/`.svg` URLs,
    and self-contained `https://app.diagrams.net/#R...` URLs.
 3. Persistent runtime CRUD for diagrams:
@@ -44,7 +44,7 @@ COMP_DRAWIO_DIR = DIAGRAMS_DIR / "compendium" / "drawio"
 ATLAS_PATH = ROOT_DIR / "data" / "slide_diagrams_atlas.json"
 
 BARE_MIN_12_PRES_ID = "1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk"
-COMPENDIUM_54_PRES_ID = "1-WwbZsdEFPylp9MtfF-nuifeVps0uuu3bSCfzCCYjjI"
+COMPENDIUM_54_PRES_ID = "1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk"
 
 BARE_MIN_12_SLIDE_MAP: Dict[str, int] = {
     "ws1-5hop-governance-baseline": 1,

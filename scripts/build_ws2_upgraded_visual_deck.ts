@@ -1072,7 +1072,7 @@ function buildSlide16_Hop3Bulkhead() {
   const valkeyDetails = [
     { title: 'Atomic Token Bucket Algorithm', desc: 'A single atomic Lua script decrements the token bucket in Valkey SRAM without cross-process lock contention, executing in sub-3ms.' },
     { title: 'Multi-Tier Quota Enforcement', desc: 'Standard tenants (retailstream) are capped at 120 RPM; Enterprise tenants (finvault) receive 600 RPM. Quota bursts return HTTP 429 with jittered Retry-After.' },
-    { title: 'Output Budget Clamping', desc: 'Prevents output token hijacking: Gemini 3.8 Flash thinkingLevel/maxOutputTokens are clamped to MEDIUM/4,000 (Std) and HIGH/8,000 (Ent).' },
+    { title: 'Output Budget Clamping', desc: 'Prevents output token hijacking: Gemini 2.5 Flash thinkingLevel/maxOutputTokens are clamped to MEDIUM/4,000 (Std) and HIGH/8,000 (Ent).' },
     { title: 'Instant JTI Revocation (<3ms)', desc: 'When credentials are compromised, writing the JWT ID to revoked_jti:{tenant} terminates active sessions instantly across all Cloud Run instances.' }
   ];
 
@@ -2008,7 +2008,7 @@ function buildSlide34_Faq() {
       tagColor: G_AMBER_DEEP,
       tagBg: G_YELLOW_LIGHT,
       q: 'Q3: What prevents an aggressive tenant from consuming all shared Cloud Run v2 container instances or exhausting LLM quota?',
-      a: 'Triple-layer bulkheads. At the edge, Memorystore for Valkey enforces an atomic Lua token bucket capping Standard tenants at 120 RPM and Enterprise at 600 RPM. In the runtime, Gemini 3.8 Flash thinkingLevel/maxOutputTokens are clamped at MEDIUM/4,000 and HIGH/8,000. At the compute layer, Cloud Run v2 enforces max_instances_per_tenant limits, preventing container starvation.',
+      a: 'Triple-layer bulkheads. At the edge, Memorystore for Valkey enforces an atomic Lua token bucket capping Standard tenants at 120 RPM and Enterprise at 600 RPM. In the runtime, Gemini 2.5 Flash thinkingLevel/maxOutputTokens are clamped at MEDIUM/4,000 and HIGH/8,000. At the compute layer, Cloud Run v2 enforces max_instances_per_tenant limits, preventing container starvation.',
       sla: 'THROTTLING SLA: 120 / 600 RPM Atomic Hard Caps  •  4k / 8k Reasoning Budget Clamp'
     },
     {

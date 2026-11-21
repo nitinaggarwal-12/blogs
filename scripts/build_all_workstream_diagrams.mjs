@@ -410,7 +410,7 @@ const WORKSTREAM_BLUEPRINTS = [
     leftZoneSub: 'FinVault (HIGH/8k) & RetailStream (MEDIUM/4k maxOut)',
     leftCards: {
       modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Tenant Guardrails & SDP PII' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini 3.8 Flash', sub: '89.1% Net Input Cache Savings' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Flash', sub: '89.1% Net Input Cache Savings' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'gVisor + Valkey 0.4ms State' },
       mcp: { icon: 'mcp_servers', title: 'MCP servers', sub: '2LO + 3LO OIDC/Entra' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'AlloyDB & BQ RLS', sub: 'tenant_pooled_rls_policy' },
@@ -478,7 +478,7 @@ const WORKSTREAM_BLUEPRINTS = [
     leftZoneSub: 'Tenant project • Enterprise Tier (Google OIDC)',
     leftCards: {
       modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Hop 4: Bank SDP & FINRA Filter' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini 3.8 Flash', sub: 'Agent Engine (8k Cap • 0.10x)' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Flash', sub: 'Agent Engine (8k Cap • 0.10x)' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Hop 3: Silo gVisor + CMEK' },
       mcp: { icon: 'mcp_servers', title: 'MCP servers', sub: 'Hop 5: Workspace & Jira 3LO' },
       datastore: { icon: 'alloydb', title: 'Datastore', sub: 'BQ RLS, AlloyDB & CMEK' },
@@ -493,7 +493,7 @@ const WORKSTREAM_BLUEPRINTS = [
     rightZoneSub: 'Tenant project • Standard Tier (Entra ID)',
     rightCards: {
       modelArmor: { icon: 'model_armor', title: 'Model Armor', sub: 'Hop 4: PCI PAN SDP & Filter' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini 3.8 Flash', sub: 'Agent Engine (4k Cap • 0.10x)' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Flash', sub: 'Agent Engine (4k Cap • 0.10x)' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Hop 3: gVisor + Valkey 0.4ms' },
       mcp: { icon: 'mcp_servers', title: 'MCP servers', sub: 'Hop 5: SharePoint & SNOW' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'Datastore', sub: 'BQ RLS, AlloyDB & Valkey' },
@@ -548,7 +548,7 @@ const WORKSTREAM_BLUEPRINTS = [
     runtimeCards: {
       modelArmor: { icon: 'model_armor', title: 'Model Armor (shared)', sub: 'Per-tenant templates: FINRA / PCI' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'ONE gVisor pool • temp:tenant_id' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini 3.8 Flash', sub: 'Shared 32k prefix • 4k / 8k caps' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Flash', sub: 'Shared 32k prefix • 4k / 8k caps' },
       valkey: { icon: 'valkey_cache', title: 'Memorystore Valkey', sub: 'RPM bulkheads 120 Std / 600 Ent' },
       memory: {
         icon: 'gemini_agent_platform',
@@ -719,7 +719,7 @@ const WORKSTREAM_BLUEPRINTS = [
     rightZoneSub: 'Dedicated Silo • CMEK: retailstream-silo-cmek',
     rightCards: {
       modelArmor: { icon: 'vpc_sc', title: 'VPC-SC & Model Armor', sub: 'Dedicated Retail PCI Perimeter' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini 3.8 Flash PT', sub: 'Dedicated Provisioned Quota' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Flash PT', sub: 'Dedicated Provisioned Quota' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Dedicated RetailStream Silo' },
       mcp: { icon: 'mcp_servers', title: 'Local Silo MCP', sub: 'Entra SharePoint & SNOW' },
       datastore: { icon: 'cloud_kms', title: 'CMEK Silo Datastore', sub: 'Key DISABLED → HTTP 423 (medcore test)' },
@@ -772,7 +772,7 @@ const WORKSTREAM_BLUEPRINTS = [
     leftZoneSub: 'pool://cymbal-shared-pooled-v2 (90% Cache Savings)',
     leftCards: {
       modelArmor: { icon: 'model_armor', title: 'Shared Model Armor', sub: 'Multi-Tenant Prompt & SDP' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini 3.8 Flash', sub: 'MEDIUM / 4k Out + Cache' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Flash', sub: 'MEDIUM / 4k Out + Cache' },
       runtime: { icon: 'gemini_agent_platform', title: 'Vertex AI Agent Engine', sub: 'Serves Standard SaaS Tier' },
       mcp: { icon: 'mcp_servers', title: 'Pooled MCP Hub', sub: '2LO + Delegated 3LO Tools' },
       datastore: { icon: 'datastore_alloydb_bq', title: 'Shared AlloyDB & BQ RLS', sub: 'pattern_a_pooled_rls_entities' },
@@ -787,7 +787,7 @@ const WORKSTREAM_BLUEPRINTS = [
     rightZoneSub: 'cymbal-psc-nat-us-west1 (/28) -> psc://10.10.0.50 & .51',
     rightCards: {
       modelArmor: { icon: 'model_armor', title: 'Model Armor (spoke)', sub: 'Enterprise prompt screen + SDP' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini 3.8 Flash PT', sub: 'Upgraded HIGH / 8k Out' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Flash PT', sub: 'Upgraded HIGH / 8k Out' },
       runtime: { icon: 'psc_bridge', title: 'Spoke Agent Engine via PSC', sub: 'ServiceAttachment ← /28 consumer endpoint' },
       mcp: { icon: 'mcp_servers', title: 'Dedicated Spoke MCP', sub: 'Isolated Inside VPC-SC Spoke' },
       datastore: { icon: 'cloud_kms', title: 'CMEK Spoke Datastore', sub: 'finvault-silo-cmek & KMS Lock' },

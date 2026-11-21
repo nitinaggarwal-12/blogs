@@ -44,7 +44,7 @@
         "Wall 1 — mTLS & IAM Principal Access Boundaries (PAB): Every request must present a pinned Chrome Enterprise Premium mTLS client certificate (`cert_sha256`) and pass an IAM PAB rule binding the caller strictly to that tenant’s project.",
         "Wall 2 — VPC Service Controls (VPC-SC) Data Perimeter: Wraps Vertex AI, AlloyDB, Cloud Storage, GKE, and BigQuery inside a service perimeter that blocks unauthorized egress or cross-project copies (HTTP 403).",
         "Wall 3 — Ubiquitous Cloud KMS CMEK Binding: A single tenant-managed Cloud KMS key encrypts AlloyDB tables, Vertex AI Memory Bank state, GKE persistent disks, and BigQuery audit datasets.",
-        "Flexible Sovereign Model Hosting: Tenants can run Gemini 3.8 Flash on Provisioned Throughput inside VPC-SC or deploy air-gapped Gemma 3 (27B) on a private GKE GPU node pool (`172.16.0.2/28`, zero public IPs)."
+        "Flexible Sovereign Model Hosting: Tenants can run Gemini 2.5 Flash on Provisioned Throughput inside VPC-SC or deploy air-gapped Gemma 3 (27B) on a private GKE GPU node pool (`172.16.0.2/28`, zero public IPs)."
       ],
       "specs": [
         {
@@ -74,7 +74,7 @@
       "layout": "cards",
       "bullets": [
         "The Regulated CISO Threat Model (Zero Physical Blast Radius): Tier-1 banks (OCC/FFIEC, EU DORA) and healthcare systems (HIPAA) mandate physically separate GCP projects (`cymbal-{tenant}-silo-prod`) with zero shared compute or databases.",
-        "FinVault Bank Sovereign Vault (`cymbal-finvault-silo-prod`): Runs air-gapped Gemma 3 (27B IT) on private GKE GPU nodes (`172.16.0.2/28`, 0 public IPs) alongside private Agent Alpha (Gemini 3.8 Flash Dedicated PT) and CMEK AlloyDB.",
+        "FinVault Bank Sovereign Vault (`cymbal-finvault-silo-prod`): Runs air-gapped Gemma 3 (27B IT) on private GKE GPU nodes (`172.16.0.2/28`, 0 public IPs) alongside private Agent Alpha (Gemini 2.5 Flash Dedicated PT) and CMEK AlloyDB.",
         "RetailStream Sovereign Vault (`cymbal-retailstream-silo-prod`): Demonstrates dual-silo parity with its own VPC Service Controls perimeter, IAM Principal Access Boundary (PAB), Entra ID 3LO connectors, and independent Cloud KMS CMEK key ring.",
         "3-Wall Hardware Perimeter & <60s CMEK Kill-Switch Stack: Chrome Enterprise Premium mTLS, IAM PAB, VPC-SC, Cloud KMS CMEK (`HTTP 423 Locked`), Model Armor, Cloud DLP, AlloyDB, and BigQuery wrap the unchanged 80% reusable ADK core."
       ],
@@ -85,7 +85,7 @@
           "tag": "1. Regulated CISO Sovereignty Mandate"
         },
         {
-          "stack": "cymbal-finvault-silo-prod • Air-Gapped GKE Gemma 3 (27B) • Gemini 3.8 Flash PT • finvault-silo-cmek",
+          "stack": "cymbal-finvault-silo-prod • Air-Gapped GKE Gemma 3 (27B) • Gemini 2.5 Flash PT • finvault-silo-cmek",
           "sla": "Tier: SOVEREIGN (600 RPM Silo) • Zero Public Egress • <60s HTTP 423 CMEK Revocation + L1 Purge",
           "tag": "2. FinVault Bank Sovereign Vault"
         },
@@ -131,8 +131,8 @@
         ],
         [
           "Foundation model hosting",
-          "Shared Gemini 3.8 Flash pay-as-you-go with 90% `ContextCacheConfig` prefix cache",
-          "Dedicated Gemini 3.8 Flash Provisioned Throughput inside tenant VPC-SC perimeter",
+          "Shared Gemini 2.5 Flash pay-as-you-go with 90% `ContextCacheConfig` prefix cache",
+          "Dedicated Gemini 2.5 Flash Provisioned Throughput inside tenant VPC-SC perimeter",
           "Self-hosted open-weight Gemma 3 (27B IT) on private GKE L4/A100 GPU node pool"
         ],
         [
@@ -276,7 +276,7 @@
         "Zone 1 (Silo Ingress & Identity): Validates mTLS device certificates, enforces IAM Principal Access Boundaries, and screens prompts with Model Armor.",
         "Zone 2 (Sovereign Governance Hub): Monitors VPC Service Controls perimeters, polls Cloud KMS CMEK liveness on every turn, and runs all 6 compliance assertions.",
         "Zone 3 (FinVault Sovereign Project): Dedicated GCP project running air-gapped Gemma 3 (27B) on private GKE and CMEK-encrypted AlloyDB/Memory Bank.",
-        "Zone 4 (RetailStream Sovereign Project): Dedicated GCP project running Provisioned Throughput Gemini 3.8 Flash and isolated Entra ID / ServiceNow 3LO."
+        "Zone 4 (RetailStream Sovereign Project): Dedicated GCP project running Provisioned Throughput Gemini 2.5 Flash and isolated Entra ID / ServiceNow 3LO."
       ]
     },
     {

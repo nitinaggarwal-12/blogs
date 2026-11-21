@@ -1809,9 +1809,8 @@ function buildSlide32_Roadmap() {
   });
 
   const links = [
-    'Live Portal: https://ge-blogs.cymbal-demo.example/',
-    'GitHub Source: https://github.com/cloud-ai-fde/ge-blogs',
-    'Google Cloud Architecture Center Advisory: cloud-architecture@cymbal-demo.example'
+    'GitHub Portal: https://github.com/cloud-ai-fde/ge-blogs',
+    'Google Cloud Architecture Center Advisory: Cloud AI Field Engineering'
   ];
   slide.addText(links.join('   •   '), {
     x: 0.9, y: 6.4, w: 11.5, h: 0.35, fontSize: 8.5, bold: true, color: G_BLUE_DARK, fontFace: FONT_BODY

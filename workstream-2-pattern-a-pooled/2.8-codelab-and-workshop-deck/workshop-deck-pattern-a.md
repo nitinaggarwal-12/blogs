@@ -19,8 +19,8 @@
 
 ## Slide 3: Anchor Case Study — The "Cymbal" SaaS Scenario
 * **Columns**:
-  * **Platform Operator (Cymbal)**: Publishes Shared Incident Diagnostic Agent (Gemini 3.8 Flash + `ContextCacheConfig` 90% COGS savings) + 2LO Core Telemetry API.
-  * **Tenant Alpha (FinVault Bank • Enterprise)**: Google Workspace + Jira stack, `HIGH` thinkingLevel (`8,000` maxOutputTokens), builds private `Agent Alpha` (Gemini 3.8 Flash (Dedicated PT) on Model Garden), CMEK memory.
+  * **Platform Operator (Cymbal)**: Publishes Shared Incident Diagnostic Agent (Gemini 2.5 Flash + `ContextCacheConfig` 90% COGS savings) + 2LO Core Telemetry API.
+  * **Tenant Alpha (FinVault Bank • Enterprise)**: Google Workspace + Jira stack, `HIGH` thinkingLevel (`8,000` maxOutputTokens), builds private `Agent Alpha` (Gemini 2.5 Flash (Dedicated PT) on Model Garden), CMEK memory.
   * **Tenant Beta (RetailStream Corp • Standard)**: 100% Microsoft Entra ID + SharePoint/ServiceNow stack, `MEDIUM` (`4,000 maxOutputTokens`) cap, Redis bulkhead, inline 3LO OAuth consent.
 
 ## Slide 4: Why Legacy Multi-Tenancy Breaks in Agentic AI

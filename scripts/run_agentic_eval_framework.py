@@ -1360,7 +1360,7 @@ def evaluate_pillar_8_llm_judge(skip_live_llm: bool = False) -> Dict[str, Any]:
         rubric = (
             "Evaluate this technical architecture blog excerpt on 4 axes (0-100 each): "
             "1) architectural_accuracy (5-Hop, GCP services, multi-tenant isolation correctness), "
-            "2) factual_honesty (accurately distinguishes the live commercial ThoughtSpot Cloud Retina UI capture(s) — 1 inline on WS1 linking to the 2-capture Atlas, or 2 across WS2–WS5/Atlas — from pending 1-tap GCP Console SSO / pending commercial SaaS trial UI captures, while clearly stating that backend AWS Bedrock AgentCore MCP / S3 ledger receipts are protocol-level backend verifications distinct from UI screenshots, with ZERO claims of legacy open-source stand-in apps), "
+            "2) factual_honesty (accurately distinguishes the 17/17 cryptographically verified live 2880x1620 Retina UI captures — 13 Google Cloud Console captures across cymbal-ge-hub-2026 & cymbal-ge-silo-2026 plus 4 live commercial SaaS captures across Atlassian Jira Cloud & ThoughtSpot Cloud, 8 complete BEFORE->AFTER pairs — from remaining Marketplace trial SaaS targets whose verification is protocol-level via AWS Bedrock AgentCore MCP / S3 audit ledger receipts, with ZERO claims of legacy open-source stand-in apps), "
             "3) security_rigor (no leaked internal emails, secrets, or cross-tenant flaws), "
             "4) clarity_and_structure. "
             if is_blog

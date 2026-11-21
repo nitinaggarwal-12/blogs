@@ -25,11 +25,11 @@ This standalone **Visual Verification Atlas** consolidates all **17 cryptographi
 
 ## Multi-cloud federation plane: Google Cloud ↔ AWS Bedrock AgentCore & 10 SaaS (Figure 1)
 
-Every cross-cloud MCP verification trace below executes from the **Google Cloud 5-Hop ADK Runtime** (`ramp-portal-dev` `#248990048888`, `bbar-138hf0` `#48439189383`) using keyless OIDC STS federation (`0` static AWS keys) through **AWS Bedrock AgentCore MCP Gateway** (`cymbal-a2a-mcp-gateway-suyxm3caof`, AWS Account `393036065405`, `us-east-1`), writing immutable audit proofs into Amazon S3. All visual UI proofs below are live commercial SaaS or Cloud Console captures verified `exit 0` by `verify_slide_screenshots.mjs --audience external` (zero open-source stand-in containers).
+Every cross-cloud MCP verification trace below executes from the **Google Cloud 5-Hop ADK Runtime** (`ramp-portal-dev` `#248990048888` backend harness; clean customer demo console projects `cymbal-ge-hub-2026` `#252968359259` & `cymbal-ge-silo-2026` `#495457819919` for all 13 live GCP Console screenshots) using keyless OIDC STS federation (`0` static AWS keys) through **AWS Bedrock AgentCore MCP Gateway** (`cymbal-a2a-mcp-gateway-suyxm3caof`, AWS Account `393036065405`, `us-east-1`), writing immutable audit proofs into Amazon S3. All visual UI proofs below are live commercial SaaS or Cloud Console captures verified `exit 0` by `verify_slide_screenshots.mjs --audience external` (zero open-source stand-in containers).
 
 ![Figure 1 (Approved Slide 11/12) — WS5 - PART 5 - Multi-Cloud Federation: Google Cloud Plane ↔ AWS & 10 SaaS](../diagrams/saas10-multicloud-a2a-mcp-bridge.svg)
 
-*Figure 1 (Approved Slide 11/12). Multi-Cloud Federation topology bridging the Google Cloud 5-Hop Control & Runtime Plane (`ramp-portal-dev` / `bbar-138hf0`) with AWS Bedrock AgentCore MCP Gateway (`cymbal-a2a-mcp-gateway-suyxm3caof`), all 10 third-party SaaS targets (`READY`), and immutable Amazon S3 cryptographic audit ledgers.*
+*Figure 1 (Approved Slide 11/12). Multi-Cloud Federation topology bridging the Google Cloud 5-Hop Control & Runtime Plane (`cymbal-ge-hub-2026` / `cymbal-ge-silo-2026`) with AWS Bedrock AgentCore MCP Gateway (`cymbal-a2a-mcp-gateway-suyxm3caof`), all 10 third-party SaaS targets (`READY`), and immutable Amazon S3 cryptographic audit ledgers.*
 
 ---
 

@@ -23,7 +23,9 @@
 | **`gemini-2.5-pro`** | `us-central1` | `100.0` | `100.0` | `100.0` | `99.6` | `100.0` | `100.0` | **`99.94/100`** |
 | **`gemini-2.5-flash`** | `us-central1` | `100.0` | `99.6` | `100.0` | `100.0` | `100.0` | `100.0` | **`99.94/100`** |
 
-## 3. Deterministic Pre-Check Structural Telemetry (`WS1`–`WS5`)
+## 3. Historical Pre-Check Structural Telemetry (`WS1`–`WS5` • `2026-11-01` Baseline)
+
+> *Note: Byte counts below record the historical `2026-11-01` pre-streamlining snapshot (`73–88 KB`). Following the canonical v2 streamlined blog rewrite (`24–44 KB` per guide), live orthogonal evaluation is reported in [`docs/AGENTIC-EVALUATION-REPORT.md`](AGENTIC-EVALUATION-REPORT.md) (`AEF v2.0 Pillar 8`).*
 
 | Workstream | Size (Bytes) | SHA-256 Prefix | `## Core terminology` | Display LaTeX `$$...$$` | `Where:` Legends | Grounding Boundaries | `1`–`7` Callout Badges | `runtime_pipeline.py` Line Citations | `deploy_1click.sh` | 10-SaaS Matrix |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |

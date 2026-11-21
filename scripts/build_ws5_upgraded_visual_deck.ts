@@ -752,7 +752,7 @@ function buildSlide06_PatternBPrinciples() {
       points: [
         '32,768 Shared Prefix Cache slashes net input token cost by 89.1% on shared pools.',
         'Per-tier thinkingLevel / maxOutputTokens clamps (MEDIUM/4k Std vs HIGH/8k VIP) bound runaway.',
-        'Model Tiering: Gemini 3.8 Flash (default), Dedicated PT, or Gemma 3 air-gapped.',
+        'Model Tiering: Gemini 2.5 Flash (default), Dedicated PT, or Gemma 3 air-gapped.',
         'BigQuery OTel links cached_input_tokens & reasoning output counters (raw_pii_logged=FALSE).'
       ]
     },
@@ -1166,13 +1166,13 @@ function buildSlide19_AirGappedGemma() {
   const slide = pptx.addSlide();
   addHeader(slide, 'ACT III • MODEL TIERING & AWS FEDERATION', 'Model Selection Strategy & Keyless GCP ↔ AWS AgentCore Federation', nextSlideNum());
 
-  slide.addText('Matching Gemini 3.8 Flash, Dedicated PT, and Gemma 3 to isolation tiers alongside 30/30 verified AWS Bedrock AgentCore federation.', {
+  slide.addText('Matching Gemini 2.5 Flash, Dedicated PT, and Gemma 3 to isolation tiers alongside 30/30 verified AWS Bedrock AgentCore federation.', {
     x: 0.6, y: 0.85, w: 12.133, h: 0.4, fontSize: 11, color: TEXT_MUTED, fontFace: FONT_BODY
   });
 
   const cards = [
     {
-      title: '1. Gemini 3.8 Flash + 32k Cache',
+      title: '1. Gemini 2.5 Flash + 32k Cache',
       subtitle: 'Pattern A & Pattern C default FinOps powerhouse',
       color: G_BLUE_DARK,
       tint: G_BLUE_LIGHT,

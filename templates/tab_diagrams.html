@@ -25,7 +25,7 @@
                   <option value="SCOPE:WS3" data-base-label="WS3: Pattern B Sovereign Silo (21–26)">WS3: Pattern B Sovereign Silo (21–26) (6)</option>
                   <option value="SCOPE:WS4" data-base-label="WS4: Pattern C Hybrid PSC (27–30)">WS4: Pattern C Hybrid PSC (27–30) (4)</option>
                   <option value="SCOPE:WS5" data-base-label="WS5: Decision &amp; Multi-Cloud (31–38)">WS5: Decision &amp; Multi-Cloud (31–38) (8)</option>
-                  <option value="SCOPE:ALL_82" data-base-label="All 66 (+28 Extended Blueprints)">All 66 (+28 Extended Blueprints) (66)</option>
+                  <option value="SCOPE:ALL_82" data-base-label="All 67 (+29 Extended Blueprints)">All 67 (+29 Extended Blueprints) (67)</option>
                 </optgroup>
                 <optgroup label="By Isolation Pattern">
                   <option value="PAT:All Patterns (5-Hop Baseline)" data-base-label="Pattern: 5-Hop Baseline">Pattern: 5-Hop Baseline</option>
@@ -65,7 +65,7 @@
                 <option value="WS3">WS3: Pattern B Sovereign Silo (21–26)</option>
                 <option value="WS4">WS4: Pattern C Hybrid PSC (27–30)</option>
                 <option value="WS5">WS5: Decision &amp; Multi-Cloud (31–38)</option>
-                <option value="ALL_82">All 66 (+28 Extended Blueprints)</option>
+                <option value="ALL_82">All 67 (+29 Extended Blueprints)</option>
               </select>
               <select id="atlas-filter-topology" onchange="applyAtlasFilters()" aria-label="Filter by Topology Family" style="display:none !important;" aria-hidden="true">
                 <option value="ALL">Topology: All</option>
@@ -114,9 +114,9 @@
                 <summary class="sim-btn" style="padding:4px 9px; font-size:11px; font-weight:700; cursor:pointer; white-space:nowrap;">📂 Decks &amp; Links ▾</summary>
                 <div class="export-dropdown-menu" style="right:0; left:auto; min-width:265px;">
                   <button type="button" class="sim-btn" id="atlas-top-copy-link-btn" onclick="copyCurrentAtlasSlideUrl(this)" style="font-size:11.5px; padding:6px 10px; text-align:left; font-weight:700;">🔗 Copy Direct URL to Active Slide</button>
-                  <a class="sim-btn" href="https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p1" target="_blank" rel="noopener noreferrer" style="text-decoration:none; font-size:11.5px; padding:6px 10px; text-align:left; font-weight:700; color:#1d4ed8; background:#eff6ff;">⚡ Bare-Minimum 12-Slide Deck (WS1–WS5) ↗</a>
-                  <a class="sim-btn" href="https://docs.google.com/presentation/d/1-WwbZsdEFPylp9MtfF-nuifeVps0uuu3bSCfzCCYjjI/edit#slide=id.p1" target="_blank" rel="noopener noreferrer" style="text-decoration:none; font-size:11.5px; padding:6px 10px; text-align:left; font-weight:700;">📊 Deck 1: 38-Slide Native Editable ↗</a>
-                  <a class="sim-btn" href="https://docs.google.com/presentation/d/1PjnEpYZY4mY9RvB6wNxMGCl84RwIyupNG7gKmpPxlKk/edit#slide=id.p1" target="_blank" rel="noopener noreferrer" style="text-decoration:none; font-size:11.5px; padding:6px 10px; text-align:left; font-weight:700;">🎬 Deck 2: 38-Slide Animated Master ↗</a>
+                  <a class="sim-btn" href="https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p1" target="_blank" rel="noopener noreferrer" style="text-decoration:none; font-size:11.5px; padding:6px 10px; text-align:left; font-weight:700; color:#1d4ed8; background:#eff6ff;">⚡ Approved 12-Slide Core Deck (WS1–WS5) ↗</a>
+                  <a class="sim-btn" href="https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/edit#slide=id.p1" target="_blank" rel="noopener noreferrer" style="text-decoration:none; font-size:11.5px; padding:6px 10px; text-align:left; font-weight:700;">📊 Master 25-Slide Synthesis Deck (ALL) ↗</a>
+                  <a class="sim-btn" href="https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw" target="_blank" rel="noopener noreferrer" style="text-decoration:none; font-size:11.5px; padding:6px 10px; text-align:left; font-weight:700;">📸 16-Slide Multi-Cloud Verification Atlas ↗</a>
                   <a class="sim-btn" href="https://docs.google.com/spreadsheets/d/14me0XW4HD9dyYjnGcYWcNhZZJKgw_aSC3Ek0Yi3Thw0/edit?usp=sharing#gid=0" target="_blank" rel="noopener noreferrer" style="text-decoration:none; font-size:11.5px; padding:6px 10px; text-align:left; font-weight:700;">📋 Multi-Tenant Blockers &amp; Solutions Matrix ↗</a>
                 </div>
               </details>
@@ -137,8 +137,8 @@
               <strong id="atlas-2way-modal-title" style="font-size:13.5px; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">2-Way Draw.io ↔ Google Slides Sync Studio</strong>
             </div>
             <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-              <a id="atlas-2way-modal-slides1-link" href="https://docs.google.com/presentation/d/1-WwbZsdEFPylp9MtfF-nuifeVps0uuu3bSCfzCCYjjI/edit#slide=id.p1" target="_blank" rel="noopener noreferrer" class="sim-btn" style="text-decoration:none; font-size:11px; padding:4px 9px; font-weight:700;">📊 Editable Slide (Deck 1) ↗</a>
-              <a id="atlas-2way-modal-slides2-link" href="https://docs.google.com/presentation/d/1PjnEpYZY4mY9RvB6wNxMGCl84RwIyupNG7gKmpPxlKk/edit#slide=id.p1" target="_blank" rel="noopener noreferrer" class="sim-btn" style="text-decoration:none; font-size:11px; padding:4px 9px; font-weight:700;">🎬 Animated Slide (Deck 2) ↗</a>
+              <a id="atlas-2way-modal-slides1-link" href="https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p1" target="_blank" rel="noopener noreferrer" class="sim-btn" style="text-decoration:none; font-size:11px; padding:4px 9px; font-weight:700;">📊 Approved 12-Slide Deck ↗</a>
+              <a id="atlas-2way-modal-slides2-link" href="https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/edit#slide=id.p1" target="_blank" rel="noopener noreferrer" class="sim-btn" style="text-decoration:none; font-size:11px; padding:4px 9px; font-weight:700;">📐 Master 25-Slide Deck ↗</a>
               <button type="button" class="sim-btn" id="atlas-2way-modal-maximize-btn" onclick="toggleAtlas2WayModalMaximize()" style="font-size:11px; padding:4px 9px; font-weight:700;" title="Maximize or Restore Studio Window">⛶ Maximize</button>
               <a id="atlas-2way-modal-fulltab-link" href="/drawio/s00-compendium-master-cover?compSlide=1&amp;mode=edit" target="_blank" rel="noopener noreferrer" class="sim-btn" style="text-decoration:none; font-size:11px; padding:4px 9px;">↗ New Tab</a>
               <button type="button" class="sim-btn" onclick="closeAtlas2WayStudioModal()" style="background:#fff1f2; color:#be123c; border-color:#fda4af; font-weight:700; padding:4px 9px; font-size:11px;">✕ Close</button>

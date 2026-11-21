@@ -188,7 +188,7 @@ Pattern C (Dynamic Hybrid Hub-and-Spoke Architecture) uses the following Google 
 
 - [Vertex AI Agent Engine](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview) and [Agent Development Kit (ADK)](https://google.github.io/adk-docs/): Power both the shared Standard-tier runtime pool in the hub project and the isolated Enterprise-tier runtimes in each PSC spoke project.
 - [Discovery Engine Agent Catalog](https://cloud.google.com/generative-ai-app-builder/docs): Federates spoke-private agent descriptors (\`agent://finvault/private-agent-alpha-regulatory\`) into the central Hop 2 Policy Decision Point while enforcing \`HTTP 403 Forbidden\` against unauthorized callers.
-- [Gemini 3.8 Flash on Vertex AI](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models): Combines shared \`ContextCacheConfig\` (90% prefix discount) for Standard-tier pooled tenants with Dedicated Provisioned Throughput (\`gemini-3.8-flash\` + \`X-Vertex-AI-LLM-Request-Type: dedicated\`) in Enterprise spokes.
+- [Gemini 2.5 Flash on Vertex AI](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models): Combines shared \`ContextCacheConfig\` (90% prefix discount) for Standard-tier pooled tenants with Dedicated Provisioned Throughput (\`gemini-3.8-flash\` + \`X-Vertex-AI-LLM-Request-Type: dedicated\`) in Enterprise spokes.
 
 ### Perimeter security, CMEK data spokes, and unified FinOps telemetry
 
@@ -384,7 +384,7 @@ The following executive matrix summarizes all 20 verified runtime simulations an
 | **Network isolation** | Shared VPC + Cloud Armor + IAP | Per-project **VPC-SC perimeter** + **mTLS SPIFFE** | Hub VPC + unidirectional **Private Service Connect (PSC)** NAT |
 | **Database & memory isolation** | Shared AlloyDB **\`FORCE ROW LEVEL SECURITY\`** + composite memory keys | Dedicated **CMEK AlloyDB** & Memory Bank per project | Shared RLS for Standard + dedicated CMEK AlloyDB via PSC for Enterprise |
 | **Encryption kill-switch** | Logical key check in Hop 3 | Project-wide **Cloud KMS CMEK** (\`HTTP 423 Locked\`) | Per-spoke **Cloud KMS CMEK** (\`HTTP 423 Locked\`) for Enterprise tier |
-| **Model & caching strategy** | Shared Gemini 3.8 Flash + **90% \`ContextCacheConfig\` savings** | Dedicated Vertex AI PT or **air-gapped Gemma 3 (27B) on GKE** | Pooled caching for Standard + Dedicated Provisioned Throughput (\`gemini-3.8-flash\`) for Enterprise |
+| **Model & caching strategy** | Shared Gemini 2.5 Flash + **90% \`ContextCacheConfig\` savings** | Dedicated Vertex AI PT or **air-gapped Gemma 3 (27B) on GKE** | Pooled caching for Standard + Dedicated Provisioned Throughput (\`gemini-3.8-flash\`) for Enterprise |
 | **Live tier upgrade path** | Requires migration to Pattern C | Static sovereign project | **Built-in 3-phase live migration** (\`0\` dropped turns) |
 | **Baseline monthly cost floor** | **\`120 RPM Pool / mo\`** per tenant (\`$\`) | **\`600 RPM Silo / mo\`** per silo (\`$$$\`) | **\`Hybrid PSC / mo\`** blended across tiers (\`$$\`) |
 | **Automated verification suite** | \`10/10\` red-team breach tests PASS | \`6/6\` sovereign security tests PASS | \`4/4\` hybrid & live migration tests PASS |

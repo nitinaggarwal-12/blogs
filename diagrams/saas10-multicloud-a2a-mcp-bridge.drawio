@@ -181,7 +181,7 @@
       <mxCell id="t_main" value="WS5 - PART 5 - Multi-Cloud Federation: Google Cloud Plane ↔ AWS &amp; 10 SaaS" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=22;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
         <mxGeometry x="68" y="24" width="1019" height="34" as="geometry"/>
       </mxCell>
-      <mxCell id="t_gcp_lbl" value="Google Cloud Control &amp; Runtime Plane (ramp-portal-dev / bbar-138hf0)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#1967D2;fontSize=13;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+      <mxCell id="t_gcp_lbl" value="Google Cloud Control &amp; Runtime Plane (cymbal-ge-hub-2026 / cymbal-ge-silo-2026)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#1967D2;fontSize=13;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
         <mxGeometry x="64" y="123" width="572" height="20" as="geometry"/>
       </mxCell>
       <mxCell id="t_aws_lbl" value="AWS &amp; 10-SaaS Plane (us-east-1)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#B06000;fontSize=13;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">

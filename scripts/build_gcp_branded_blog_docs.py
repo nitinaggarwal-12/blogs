@@ -36,7 +36,7 @@ SCRATCH_OPS_DIR = Path(os.environ.get("GDOCS_SCRATCH_OPS_DIR", "/tmp/ge_blogs_gd
 GDOCS_BIN = "/google/bin/releases/gemini-agents-gdocs/gdocs"
 GDRIVE_BIN = "/google/bin/releases/gemini-agents-gdrive/gdrive"
 
-PORTAL_BASE = "https://ge-blogs.cymbal-demo.example/"
+PORTAL_BASE = "https://github.com/cloud-ai-fde/ge-blogs"
 GITHUB_BLOB_BASE = "https://github.com/cloud-ai-fde/ge-blogs/blob/main"
 
 DOC_SPECS: List[Dict[str, Any]] = [
@@ -222,21 +222,43 @@ def build_curated_master_compendium_markdown() -> str:
     saas_section = re.split(r"\n## (?:Verified Live Commercial|What's next)\b", saas_section)[0].strip()
 
     verified_ui_section = "\n".join([
-        "## Verified Live Google Cloud Console & Commercial SaaS Retina Proofs (17/17 Verified `2880x1620`)",
+        "## Verified Live Google Cloud Console & Commercial SaaS Retina Proofs (17/17 Verified `2880x1620` • 8/8 Pairs)",
         "",
         "Cryptographically attested live Google Cloud Console (`13/13` across `cymbal-ge-hub-2026` & `cymbal-ge-silo-2026`) and Commercial SaaS (`4/4` across Atlassian Jira Cloud & ThoughtSpot Cloud) `2880x1620` Retina captures verified via `verify_slide_screenshots.mjs --audience external` (`verifiedCount: 17`, `8/8` live BEFORE → AFTER pairs, zero OSS stand-ins):",
         "",
-        "- **`SAAS-01` — ThoughtSpot Cloud Spotter BI (`team2.thoughtspot.cloud` • Target `HXGGFMZBKE`):** Live commercial enterprise analytics liveboard enforcing Hop 5 row-level security isolation.",
+        "- **WS1 BEFORE → AFTER (Hop 4 Model Armor & Hop 1 Cloud Armor WAF in `cymbal-ge-hub-2026`):** `ws1_before_model_armor_unprotected.png` (`2bda7e68993a`) → `ws1_after_model_armor_blocked.png` (`93471e0d7b17`), plus `ws1_before_open_edge_baseline.png` (`f721577a1e05`) → `ws1_after_cloud_armor_hop1_waf.png` (`37fcc76e0f37`).",
+        "",
+        "![WS1 AFTER: Live GCP Model Armor ge-zero-trust-ai-firewall blocking prompt injection (2880x1620 Retina)](../screenshots/verified-cloud-console/ws1_after_model_armor_blocked.png)",
+        "",
+        "*Figure 13. WS1 AFTER — Live Google Cloud Model Armor `ge-zero-trust-ai-firewall` blocking cross-tenant prompt injection (2880x1620 Retina • SHA-256 `93471e0d7b17`).*",
+        "",
+        "- **WS2 BEFORE → AFTER (Pattern A BigQuery Kernel RLS in `cymbal-ge-hub-2026`):** `ws2_before_pooled_rls_cross_tenant_bleed.png` (`354c21024148`, 7 rows across 6 competing tenants) → `ws2_after_pooled_rls_tenant_isolated.png` (`5ec0675a5ba0`, strictly 2 FinVault rows, 0 leaked).",
+        "",
+        "![WS2 AFTER: Live BigQuery Console Pattern A JWT tenant RLS isolating FinVault rows (2880x1620 Retina)](../screenshots/verified-cloud-console/ws2_after_pooled_rls_tenant_isolated.png)",
+        "",
+        "*Figure 14. WS2 AFTER — Live BigQuery Studio Pattern A RLS returning strictly 2 FinVault rows (2880x1620 Retina • SHA-256 `5ec0675a5ba0`).*",
+        "",
+        "- **WS3 BEFORE → AFTER (Pattern B Sovereign CMEK Kill-Switch in `cymbal-ge-silo-2026`):** `ws3_before_cmek_enabled_vault_access.png` (`5acc84f6897e`) → `ws3_after_cmek_revoked_killswitch_denied.png` (`564ee3425027`, fails closed on `DISABLED` key) + `ws3_after_kms_cmek_keyring_state.png` (`7e9e616dee88`).",
+        "",
+        "![WS3 AFTER: Live BigQuery Console failing closed on DISABLED Cloud KMS CMEK kill-switch (2880x1620 Retina)](../screenshots/verified-cloud-console/ws3_after_cmek_revoked_killswitch_denied.png)",
+        "",
+        "*Figure 15. WS3 AFTER — Live Pattern B CMEK Kill-Switch failing closed after disabling `medcore-revoked-cmek` (2880x1620 Retina • SHA-256 `564ee3425027`).*",
+        "",
+        "- **WS4 BEFORE → AFTER (`SAAS-05` Atlassian Jira Cloud 3LO + Pattern C Hub → Spoke VPC):** `saas_06_atlassian_jira_confluence.png` (`95ce12f87f12`) → `ws4_after_jira_3lo_scoped_issue.png` (`45e833e4909f`), plus `ws4_before_shared_hub_vpc.png` (`bf9df07c95e9`) → `ws4_after_dedicated_finvault_spoke_vpc.png` (`6f021bbd273c`).",
+        "",
+        "![WS4 AFTER: Live Atlassian Jira Cloud Scrum board enforcing 3LO scope filter (2880x1620 Retina)](../screenshots/verified-cloud-console/ws4_after_jira_3lo_scoped_issue.png)",
+        "",
+        "*Figure 16. WS4 AFTER — Live Commercial Atlassian Jira Cloud Scrum Board enforcing 3LO scope isolation on `gcp-team-sbiarllr.atlassian.net` (2880x1620 Retina • SHA-256 `45e833e4909f`).*",
+        "",
+        "- **WS5 BEFORE → AFTER (`SAAS-01` ThoughtSpot Cloud + Integration Connectors → Cloud Run A2A/MCP Hub):** `saas_01_thoughtspot_liveboard.png` (`fd5cb15c0902`) → `saas_02_thoughtspot_saved_answer.png` (`3fcab795d1e5`), plus `ws5_before_connectors_baseline.png` (`b2dd4e6bebf4`) → `ws5_after_a2a_gateway_federation.png` (`49cfff9cfcaf`).",
         "",
         "![Verified Live Commercial ThoughtSpot Cloud Liveboard (2880x1620 Retina)](../screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png)",
         "",
-        "*Figure 13. Verified Live Commercial ThoughtSpot Cloud Liveboard (team2.thoughtspot.cloud, 2880x1620 Retina • SHA-256 `fd5cb15c0902`).*",
+        "*Figure 17. Verified Live Commercial ThoughtSpot Cloud Liveboard (team2.thoughtspot.cloud, 2880x1620 Retina • SHA-256 `fd5cb15c0902`).*",
         "",
-        "- **`SAAS-01` — ThoughtSpot Cloud Saved Answer (`team2.thoughtspot.cloud` • Target `HXGGFMZBKE`):** Live commercial saved query view verifying deterministic tenant-scoped query results.",
+        "![WS5 AFTER: Live GCP Cloud Run Multi-Cloud A2A & OAuth 2.1 OBO Federation Hub (2880x1620 Retina)](../screenshots/verified-cloud-console/ws5_after_a2a_gateway_federation.png)",
         "",
-        "![Verified Live Commercial ThoughtSpot Cloud Saved Answer (2880x1620 Retina)](../screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png)",
-        "",
-        "*Figure 14. Verified Live Commercial ThoughtSpot Cloud Saved Answer (team2.thoughtspot.cloud, 2880x1620 Retina • SHA-256 `3fcab795d1e5`).*",
+        "*Figure 18. WS5 AFTER — Live GCP Cloud Run A2A Enterprise Gateway & OAuth 2.1 OBO Federation Hub in `cymbal-ge-hub-2026` (2880x1620 Retina • SHA-256 `49cfff9cfcaf`).*",
         "",
     ])
 
@@ -273,17 +295,13 @@ def rewrite_relative_links(line: str, md_dir: Path, spec_md_rel: str) -> str:
         if target.startswith(("http://", "https://", "mailto:")):
             return match.group(0)
         if target.startswith("#"):
-            return f"[{label}]({PORTAL_BASE}/#blog/{spec_md_rel})"
+            return f"[{label}]({GITHUB_BLOB_BASE}/{spec_md_rel}{target})"
         clean_target = target.split("#")[0].split("?")[0]
         resolved = (md_dir / clean_target).resolve()
         try:
             repo_rel = resolved.relative_to(ROOT_DIR).as_posix()
         except ValueError:
             repo_rel = clean_target.lstrip("./")
-        if repo_rel.startswith("blogs/") and repo_rel.endswith(".md"):
-            return f"[{label}]({PORTAL_BASE}/#blog/{repo_rel})"
-        if repo_rel.startswith("docs/word/") and repo_rel.endswith(".docx"):
-            return f"[{label}]({PORTAL_BASE}/{repo_rel})"
         return f"[{label}]({GITHUB_BLOB_BASE}/{repo_rel})"
 
     return re.sub(r"(!?)\[([^\]]+)\]\(([^)]+)\)", _repl, line)
@@ -527,11 +545,11 @@ def prepend_gcp_executive_header_banner(
     )
     reading_time = meta.get("reading_time", "15 min read")
     portal_url = (
-        f"{PORTAL_BASE}/#blog/{spec['md_rel']}"
+        f"{GITHUB_BLOB_BASE}/{spec['md_rel']}"
         if spec["key"] != "ALL"
-        else f"{PORTAL_BASE}/"
+        else PORTAL_BASE
     )
-    word_url = f"{PORTAL_BASE}/{spec['docx_rel']}"
+    word_url = f"{GITHUB_BLOB_BASE}/{spec['docx_rel']}"
     github_url = f"{GITHUB_BLOB_BASE}/{spec['md_rel']}"
 
     insert_ops = [
@@ -961,22 +979,24 @@ def sync_single_doc(spec: Dict[str, Any], export_pdf_dir: Optional[Path] = None)
     slides_url = get_shareable_drive_url(spec["slides_id"])
     prepend_gcp_executive_header_banner(doc_id, spec, meta, slides_url)
 
+    def _run_with_retry(cmd: List[str], timeout_s: int = 90, attempts: int = 3) -> subprocess.CompletedProcess:
+        last_err: Optional[Exception] = None
+        for attempt in range(1, attempts + 1):
+            try:
+                return subprocess.run(cmd, check=True, capture_output=True, text=True, timeout=timeout_s)
+            except (subprocess.TimeoutExpired, subprocess.CalledProcessError) as exc:
+                last_err = exc
+                if attempt < attempts:
+                    time.sleep(2.0 * attempt)
+        assert last_err is not None
+        raise last_err
+
     # 4. Verify inline images & links
-    imgs_res = subprocess.run(
-        [GDOCS_BIN, "readonly", "list-images", doc_id, "--json"],
-        check=True,
-        capture_output=True,
-        text=True,
-    )
+    imgs_res = _run_with_retry([GDOCS_BIN, "readonly", "list-images", doc_id, "--json"], timeout_s=60)
     imgs_json = json.loads(imgs_res.stdout) if imgs_res.stdout.strip() else []
     img_count = len(imgs_json) if isinstance(imgs_json, list) else len(imgs_json.get("images", []))
 
-    links_res = subprocess.run(
-        [GDOCS_BIN, "readonly", "extract-links", doc_id, "--json"],
-        check=True,
-        capture_output=True,
-        text=True,
-    )
+    links_res = _run_with_retry([GDOCS_BIN, "readonly", "extract-links", doc_id, "--json"], timeout_s=60)
     links_data = json.loads(links_res.stdout) if links_res.stdout.strip() else []
     link_list = links_data if isinstance(links_data, list) else links_data.get("links", [])
     broken_escaped = [lk for lk in link_list if "\\_" in str(lk.get("url", ""))]
@@ -985,12 +1005,7 @@ def sync_single_doc(spec: Dict[str, Any], export_pdf_dir: Optional[Path] = None)
     WORD_OUT_DIR.mkdir(parents=True, exist_ok=True)
     docx_out = ROOT_DIR / spec["docx_rel"]
     try:
-        subprocess.run(
-            [GDRIVE_BIN, "readonly", "export", doc_id, str(docx_out), "--format", "docx"],
-            check=True,
-            capture_output=True,
-            text=True,
-        )
+        _run_with_retry([GDRIVE_BIN, "readonly", "export", doc_id, str(docx_out), "--format", "docx"], timeout_s=120)
     except subprocess.CalledProcessError as e:
         if ("exportSizeLimitExceeded" in str(e.stderr) or "too large" in str(e.stderr)) and docx_out.exists():
             print(f"   ⚠️  [{key}] Google Drive export limit reached for massive doc ({doc_id}). Retaining existing verified {docx_out.name} ({docx_out.stat().st_size:,} B).")

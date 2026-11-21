@@ -16,7 +16,7 @@ export const WORKSTREAM_THEMES = {
     slide2Spoken:
       'This Table of Contents maps our streamlined eleven-slide deck directly to the five-part engineering blog series and follows a strict macro-to-micro hierarchy. Part 1 covers the SaaS AI Architect’s Dilemma and isolation topologies across Slides 1 through 4. Part 2 establishes the five-hop cryptographic pipeline from L1 Logical Security Layers on Slide 5 to L2 Physical Network Perimeters on Slide 6 and L4 Wire Packet transformation on Slide 8. Part 3 on Slide 7 merges our L3 chronological UML sequence with fail-closed circuit breakers, sub-five-second Valkey L1 cache eviction, and single-flight recovery. Part 4 on Slide 9 documents our five EAP product gap controls, and Part 5 across Slides 10 and 11 pairs live Google Cloud Console proof with our merged Well-Architected SLA scorecard and runnable GitHub milestones.',
     slide3Spoken:
-      'Here you can see that SaaS AI tension illustrated through two competing tenant personas on our Cymbal platform. On one side, FinVault Bank is a regulated financial institution at six hundred requests per minute that requires customer-controlled encryption keys and chooses between Managed Vertex AI Dedicated Provisioned Throughput for zero-ops Gemini 3.8 Flash capacity or self-managed, air-gapped Gemma 3 27B on Private GKE with zero internet egress. On the other side, RetailStream Corp runs on Microsoft Entra ID and ServiceNow at one hundred twenty requests per minute, where we isolate per-user Three-Legged OAuth tokens inside tenant-and-user DPoP-bound vaults to eliminate the Confused Deputy vulnerability across pooled workers.',
+      'Here you can see that SaaS AI tension illustrated through two competing tenant personas on our Cymbal platform. On one side, FinVault Bank is a regulated financial institution at six hundred requests per minute that requires customer-controlled encryption keys and chooses between Managed Vertex AI Dedicated Provisioned Throughput for zero-ops Gemini 2.5 Flash capacity or self-managed, air-gapped Gemma 3 27B on Private GKE with zero internet egress. On the other side, RetailStream Corp runs on Microsoft Entra ID and ServiceNow at one hundred twenty requests per minute, where we isolate per-user Three-Legged OAuth tokens inside tenant-and-user DPoP-bound vaults to eliminate the Confused Deputy vulnerability across pooled workers.',
     slide4Spoken:
       'To serve both ends of that customer spectrum, this twelve-dimension matrix compares Pattern A, our High-Density Shared Pool; Pattern B, our Zero-Trust Sovereign Silos; and Pattern C, our Dynamic Hybrid Bridge. Notice the operational fleet-scale trade-off in the table: managing five hundred enterprise customers in Pattern B means maintaining five hundred separate VPC Service Controls perimeters, KMS keys, and AlloyDB instances—which is why Pattern C hosts nine hundred fifty standard tenants in the shared pool and reserves fifty Private Service Connect spokes for regulated contracts. Also note our kill-switch distinction: while Google Cloud KMS key state propagation can take up to sixty seconds across storage, Hop 3 runs a targeted Valkey SCAN and UNLINK of the tenant’s cache prefix in under five seconds to enforce our HTTP 423 lock SLA.',
     slide5Spoken:
@@ -709,7 +709,7 @@ export const DOC_REF_THEMES = {
     s3Spoken:
       'Walking through the pooled execution stages on this slide shows how ephemeral gVisor sandboxes bind composite tenant-user-session keys while isolating third-party ServiceNow and Salesforce MCP calls per authenticated principal.',
     s4Spoken:
-      'This slide details the Google Cloud services powering the pooled tier—pairing Vertex AI Agent Engine and Gemini 3.8 Flash prefix caching with Memorystore for Valkey token buckets and Cloud Sensitive Data Protection.',
+      'This slide details the Google Cloud services powering the pooled tier—pairing Vertex AI Agent Engine and Gemini 2.5 Flash prefix caching with Memorystore for Valkey token buckets and Cloud Sensitive Data Protection.',
     s5Spoken:
       'This trade-off matrix compares our five-hop governed shared pool against naive single-schema SaaS and premature project-per-tenant sprawl across gross margin, noisy-neighbor containment, and onboarding velocity.',
     s6Spoken:
@@ -891,7 +891,6 @@ export function getDeckSlideNotesList(deckKey) {
   }
   const mapAlias = {
     'BP-78': 'WS1',
-    'PLUGIN-GSLIDES-WS1': 'WS1',
   };
   const wsKey = mapAlias[cleanKey] || (WORKSTREAM_THEMES[cleanKey] ? cleanKey : 'WS1');
   return getWorkstream12SlideNotes(wsKey);

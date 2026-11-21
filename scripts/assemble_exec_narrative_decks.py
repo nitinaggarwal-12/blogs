@@ -3,7 +3,7 @@
 Lossless OOXML Assembler for the 5 10-Slide Executive Narrative Decks:
   - WS1_EXEC (`slides/ws1-executive-architecture-23slide-deck.pptx`): replaces misplaced
     ThoughtSpot S09 with native WS1 5-Hop Latency Waterfall + GCP Control Plane Proof,
-    fixes `Gemini 3.8 Flash` -> `Gemini 2.5 Flash`, and updates Cover Roadmap stop #5.
+    fixes `Gemini 2.5 Flash` -> `Gemini 2.5 Flash`, and updates Cover Roadmap stop #5.
   - WS2_EXEC (`slides/ws2-executive-architecture-10slide-deck.pptx`): splices BARE_MIN_12
     Slides 3, 4, 5 (100% native DrawingML) into Slides 4, 5, 6.
   - WS3_EXEC (`slides/ws3-executive-architecture-10slide-deck.pptx`): splices BARE_MIN_12
@@ -66,8 +66,8 @@ def patch_slide_text(xml_bytes: bytes, new_idx: int, total: int, replacements: D
                 if k in txt:
                     txt = txt.replace(k, v)
                     el.text = txt
-        if "Gemini 3.8" in txt:
-            txt = txt.replace("Gemini 3.8", "Gemini 2.5")
+        if "Gemini 2.5" in txt:
+            txt = txt.replace("Gemini 2.5", "Gemini 2.5")
             el.text = txt
         if "[Slide " in txt and re.search(r"\[Slide \d+/\d+", txt):
             txt = re.sub(r"\[Slide \d+/\d+", f"[Slide {new_idx:02d}/{total:02d}", txt)
@@ -360,7 +360,7 @@ def main() -> int:
         out_pptx=ws1_exec,
         donors={"WS1S9": ws1_donor},
         slot_plan=[("BASE", i) if i != 9 else ("WS1S9", 1) for i in range(1, 11)],
-        global_replacements={"Gemini 3.8 Flash": "Gemini 2.5 Flash"},
+        global_replacements={"Gemini 2.5 Flash": "Gemini 2.5 Flash"},
         per_slide_replacements={
             1: {
                 "Live ThoughtSpot UI Proof & Executive ROI": "Live Model Armor Console Proof & ROI",

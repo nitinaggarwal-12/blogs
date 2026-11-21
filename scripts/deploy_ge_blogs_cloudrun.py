@@ -473,8 +473,10 @@ def main() -> None:
         "approvedSimplifiedHeaderDiagramsCount": 12,
         "certifiedDiagramsCount": 12,
         "workstreamsCount": 5,
-        "verifiedLiveCommercialSaasRetinaCount": 2,
-        "gcpConsoleCapturesPendingSsoCount": 15,
+        "verifiedLiveGcpConsoleRetinaCount": 13,
+        "verifiedLiveCommercialSaasRetinaCount": 4,
+        "verifiedTotalRetinaCount": 17,
+        "gcpConsoleCapturesPendingSsoCount": 0,
     }
     # Check read-only IAM permission for in-VPC OIDC job (never fabricate live HTTP probes)
     in_vpc_status = "NOT_CHECKED"

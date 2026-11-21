@@ -711,8 +711,8 @@
 
     if (badge) badge.textContent = `${formatSlideOrExtBadge(item)} • ${item.diagramId}`;
     if (title) title.textContent = item.title;
-    if (link1 && item.linkages) link1.href = item.linkages.deck1SlideUrl || 'https://docs.google.com/presentation/d/1-WwbZsdEFPylp9MtfF-nuifeVps0uuu3bSCfzCCYjjI/edit#slide=id.p1';
-    if (link2 && item.linkages) link2.href = item.linkages.deck2SlideUrl || 'https://docs.google.com/presentation/d/1PjnEpYZY4mY9RvB6wNxMGCl84RwIyupNG7gKmpPxlKk/edit#slide=id.p1';
+    if (link1 && item.linkages) link1.href = item.linkages.deck1SlideUrl || 'https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p1';
+    if (link2 && item.linkages) link2.href = item.linkages.deck2SlideUrl || 'https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/edit#slide=id.p1';
     if (fullTab) fullTab.href = studioUrl;
     if (iframe) iframe.src = studioUrl;
     if (modal) {
@@ -873,7 +873,7 @@
         </div>
         <div style="background:#f8fafc; border:1.5px dashed #93c5fd; border-radius:8px; padding:10px 12px; display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
           <select id="picker-ws-${escHtml(canvasId)}" aria-label="Filter diagram category" onchange="filterBlankCanvasPicker('${escHtml(canvasId)}')" style="width:auto; flex:0 0 auto; padding:5px 8px; font-size:11.5px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#0f172a; font-weight:600;">
-            <option value="ALL">All 66 Available Diagrams</option>
+            <option value="ALL">All 67 Available Diagrams</option>
             <option value="ARCH_DIAGRAM">📐 30 Architecture Diagrams</option>
             <option value="OPENING">Opening &amp; Framing (01–07)</option>
             <option value="WS1">WS1: 5-Hop Control Plane (08–14)</option>

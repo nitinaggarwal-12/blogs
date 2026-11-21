@@ -297,8 +297,8 @@
         'core-cymbal-agent/governance': 'core-cymbal-agent/governance/hop1_edge_identity_pep.py',
         'core-cymbal-agent/agents': 'core-cymbal-agent/agents/shared_diagnostic_agent.py',
         'core-cymbal-agent/mcp_servers': 'core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py',
-        'diagrams': 'diagrams/ws1-l1-logical-security-taxonomy.drawio',
-        'diagrams/vision_metadata': 'diagrams/vision_metadata/ws1-l1-logical-security-taxonomy.vision.json',
+        'diagrams': 'diagrams/ws1-5hop-governance-baseline.drawio',
+        'diagrams/vision_metadata': 'diagrams/diagram_e2e_flows.json',
         'scripts/blueprints_ext': 'scripts/blueprints_ext/arch_center_blueprints.py',
         'slides': 'slides/slides_manifest.json',
         'workstream-2-pattern-a-pooled/2.3-solution-implementation': 'workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_agent_service.py',
@@ -410,7 +410,7 @@
       "page_title": "ThoughtSpot Cloud \u2014 Live Executive Analytics Liveboard",
       "width": 2880,
       "height": 1620,
-      "sha256": "991fad856c6e38b0f12854369c0251aed9ec5b50d2eff8b79eef89a8a0fd5489"
+      "sha256": "fd5cb15c0902760a01998f5147ccbb209523c98c86d91556208389b0a4d922f4"
     },
     "after": {
       "filename": "saas_02_thoughtspot_saved_answer.png",
@@ -419,7 +419,7 @@
       "page_title": "ThoughtSpot Cloud \u2014 Live Governed Saved Answer Query",
       "width": 2880,
       "height": 1620,
-      "sha256": "3590f8609f885929da9c7fdf1db2065a2f3a54e9dfa56d8db2ca715c631ed74a"
+      "sha256": "3fcab795d1e561a326fdf33e308a5d25e7e2db65539949e32bce25dd96447fdb"
     },
     "spoken_script": "In this commercial BI verification view, ThoughtSpot Cloud runs directly on team2.thoughtspot.cloud. Hop 1 propagates the verified tenant identity and Hop 5 enforces tenant row-level security across liveboard and saved answer queries via AgentCore target HXGGFMZBKE."
   },
@@ -477,7 +477,7 @@
     "s3_ledger_outcome_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json",
     "before_summary": "Veeva Vault RIM requires an enterprise MSA (no public self-service trial) and is governed via Google Cloud Integration Connectors.",
     "agentic_action_executed": "GEAP MCP tool sync_clinical_trial_edc_cohort (Target TWQU0KSRVF) enforces Hop 1-5 tenant isolation.",
-    "after_summary": "GCP Integration Connectors Console capture in ramp-portal-dev provides control-plane proof once GCP SSO completes.",
+    "after_summary": "Live GCP Integration Connectors Console capture (ws5_before_connectors_baseline.png, SHA-256: b2dd4e6bebf4) and AWS AgentCore 30/30 KMS ECDSA receipts provide live control-plane proof.",
     "has_live_capture": false,
     "before": null,
     "after": null,
@@ -490,18 +490,34 @@
     "agentcore_target_id": "K5JAEFCQ6E",
     "mcp_tool_name": "create_redacted_sfdc_jira_escalation",
     "true_product_name": "Atlassian Jira Cloud & Salesforce Developer Edition",
-    "product_version": "Free Cloud / Dev Edition",
-    "provisioning_channel": "Atlassian Free Cloud Plan + Salesforce Developer Edition",
-    "billing_mode": "Free Plan / Dev Edition",
-    "marketplace_url": "https://developer.salesforce.com/signup",
+    "product_version": "Atlassian Cloud (Live)",
+    "provisioning_channel": "Atlassian Free Cloud Plan (gcp-team-sbiarllr.atlassian.net) + Salesforce Developer Edition",
+    "billing_mode": "Free Plan (Active Live Capture)",
+    "marketplace_url": "https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1",
     "s3_ledger_outcome_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json",
-    "before_summary": "Commercial Atlassian Jira Cloud Free Plan and Salesforce Developer Edition orgs ready for interactive browser signup.",
-    "agentic_action_executed": "GEAP MCP tool create_redacted_sfdc_jira_escalation (Target K5JAEFCQ6E) enforces Hop 1-5 tenant isolation.",
-    "after_summary": "Verified Jira Cloud and Salesforce Lightning captures attach automatically after interactive signup.",
-    "has_live_capture": false,
-    "before": null,
-    "after": null,
-    "spoken_script": "Cross-system Salesforce and Jira escalations pass through Hop 4 Cloud SDP PII redaction before writing case context via AgentCore target K5JAEFCQ6E."
+    "before_summary": "Live Atlassian Jira Cloud Scrum Board (BEFORE) showing unfiltered cross-project backlog issues on gcp-team-sbiarllr.atlassian.net.",
+    "agentic_action_executed": "GEAP MCP tool create_redacted_sfdc_jira_escalation (Target K5JAEFCQ6E) enforces Hop 1-5 3LO OAuth scope filtering & Cloud SDP redaction.",
+    "after_summary": "Live Atlassian Jira Cloud Scrum Board (AFTER) enforcing live 3LO scope query filter (textfields ~ \"3LO*\"), strictly isolating SCRUM-5 & SCRUM-6.",
+    "has_live_capture": true,
+    "before": {
+      "filename": "saas_06_atlassian_jira_confluence.png",
+      "rel_path": "screenshots/verified-cloud-console/saas_06_atlassian_jira_confluence.png",
+      "http_status": 200,
+      "page_title": "Atlassian Jira Cloud \u2014 Unfiltered Scrum Board (BEFORE)",
+      "width": 2880,
+      "height": 1620,
+      "sha256": "95ce12f87f1203636099c5fb0772391bb654210466005688d2bc95a41cf53e24"
+    },
+    "after": {
+      "filename": "ws4_after_jira_3lo_scoped_issue.png",
+      "rel_path": "screenshots/verified-cloud-console/ws4_after_jira_3lo_scoped_issue.png",
+      "http_status": 200,
+      "page_title": "Atlassian Jira Cloud \u2014 3LO Scope Filtered Board (AFTER)",
+      "width": 2880,
+      "height": 1620,
+      "sha256": "45e833e4909f5abb3d216820bbf4ade650035375b7b250e8373510e0f4d7d062"
+    },
+    "spoken_script": "Cross-system Salesforce and Jira escalations run live on gcp-team-sbiarllr.atlassian.net, passing through Hop 4 Cloud SDP PII redaction and Pattern C 3LO scope filtering to isolate strictly SCRUM-5 and SCRUM-6 via AgentCore target K5JAEFCQ6E."
   },
   {
     "index": 6,
@@ -557,7 +573,7 @@
     "s3_ledger_outcome_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json",
     "before_summary": "Workday Enterprise HCM requires an enterprise MSA (no public self-service trial) and is governed via Google Cloud Integration Connectors.",
     "agentic_action_executed": "GEAP MCP tool fetch_compensation_raas_report (Target RAOTMUMJTZ) enforces Hop 1-5 tenant isolation.",
-    "after_summary": "GCP Integration Connectors Console capture in ramp-portal-dev provides control-plane proof once GCP SSO completes.",
+    "after_summary": "Live GCP Integration Connectors Console capture (ws5_before_connectors_baseline.png, SHA-256: b2dd4e6bebf4) and AWS AgentCore 30/30 S3 ledger provide live control-plane proof.",
     "has_live_capture": false,
     "before": null,
     "after": null,
@@ -936,17 +952,19 @@
         return;
       }
 
+      const beforeLabel = escapeHtml(data.before.page_title || 'Live View 1 (BEFORE)');
+      const afterLabel = escapeHtml(data.after.page_title || 'Live View 2 (AFTER)');
       if (dtSliderMode === 'slider') {
         container.innerHTML = `
           <div style="border:1px solid #cbd5e1; border-radius:6px; overflow:hidden; background:#f8fafc;">
             <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; padding:5px 10px; background:#f1f5f9; border-bottom:1px solid #cbd5e1; flex-wrap:wrap;">
-              <span style="background:#1d4ed8; color:#ffffff; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px;">&#9989; LIVE VIEW 1 (Commercial Liveboard)</span>
+              <span style="background:#1d4ed8; color:#ffffff; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px;">&#9989; BEFORE: ${beforeLabel}</span>
               <span style="font-size:10.5px; color:#475569; font-weight:600;">Click canvas to zoom &bull; Drag slider below to compare</span>
-              <span style="background:#059669; color:#ffffff; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px;">&#9989; LIVE VIEW 2 (Governed Saved Answer)</span>
+              <span style="background:#059669; color:#ffffff; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px;">&#9989; AFTER: ${afterLabel}</span>
             </div>
             <div style="position:relative; width:100%; aspect-ratio:16/9; max-height:560px; background:#f8fafc; overflow:hidden; cursor:ew-resize;" onclick="openGenuineScreenshotLightbox('${data.after.rel_path}', '${safeTitle}')">
-              <img src="${data.before.rel_path}" alt="${escapeHtml(data.before.page_title || 'Live View 1')}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:#f8fafc;" />
-              <img id="dt-split-after-img" src="${data.after.rel_path}" alt="${escapeHtml(data.after.page_title || 'Live View 2')}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:#f8fafc; clip-path:polygon(50% 0, 100% 0, 100% 100%, 50% 100%);" />
+              <img src="${data.before.rel_path}" alt="${beforeLabel}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:#f8fafc;" />
+              <img id="dt-split-after-img" src="${data.after.rel_path}" alt="${afterLabel}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:#f8fafc; clip-path:polygon(50% 0, 100% 0, 100% 100%, 50% 100%);" />
               <div id="dt-split-divider-line" style="position:absolute; top:0; bottom:0; left:50%; width:3px; background:#3b82f6; box-shadow:0 0 8px rgba(59,130,246,0.8); pointer-events:none;">
                 <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:28px; height:28px; border-radius:50%; background:#2563eb; color:#ffffff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; border:2px solid #ffffff; box-shadow:0 2px 6px rgba(0,0,0,0.3);">&#8596;</div>
               </div>
@@ -955,13 +973,13 @@
       } else if (dtSliderMode === 'side-by-side') {
         container.innerHTML = `
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; overflow:hidden; cursor:zoom-in;" onclick="openGenuineScreenshotLightbox('${data.before.rel_path}', 'LIVE VIEW 1: ${safeTitle}')">
-              <div style="padding:4px 8px; background:#eff6ff; font-size:10.5px; font-weight:700; color:#1d4ed8; border-bottom:1px solid #bfdbfe;">&#9989; LIVE VIEW 1 (Commercial Liveboard)</div>
-              <img src="${data.before.rel_path}" alt="Live View 1" style="width:100%; aspect-ratio:16/9; object-fit:contain; background:#f8fafc; display:block;" />
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; overflow:hidden; cursor:zoom-in;" onclick="openGenuineScreenshotLightbox('${data.before.rel_path}', 'BEFORE: ${safeTitle}')">
+              <div style="padding:4px 8px; background:#eff6ff; font-size:10.5px; font-weight:700; color:#1d4ed8; border-bottom:1px solid #bfdbfe;">&#9989; BEFORE: ${beforeLabel}</div>
+              <img src="${data.before.rel_path}" alt="${beforeLabel}" style="width:100%; aspect-ratio:16/9; object-fit:contain; background:#f8fafc; display:block;" />
             </div>
-            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; overflow:hidden; cursor:zoom-in;" onclick="openGenuineScreenshotLightbox('${data.after.rel_path}', 'LIVE VIEW 2: ${safeTitle}')">
-              <div style="padding:4px 8px; background:#ecfdf5; font-size:10.5px; font-weight:700; color:#065f46; border-bottom:1px solid #a7f3d0;">&#9989; LIVE VIEW 2 (Governed Saved Answer)</div>
-              <img src="${data.after.rel_path}" alt="Live View 2" style="width:100%; aspect-ratio:16/9; object-fit:contain; background:#f8fafc; display:block;" />
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; overflow:hidden; cursor:zoom-in;" onclick="openGenuineScreenshotLightbox('${data.after.rel_path}', 'AFTER: ${safeTitle}')">
+              <div style="padding:4px 8px; background:#ecfdf5; font-size:10.5px; font-weight:700; color:#065f46; border-bottom:1px solid #a7f3d0;">&#9989; AFTER: ${afterLabel}</div>
+              <img src="${data.after.rel_path}" alt="${afterLabel}" style="width:100%; aspect-ratio:16/9; object-fit:contain; background:#f8fafc; display:block;" />
             </div>
           </div>`;
       } else if (dtSliderMode === 'before') {

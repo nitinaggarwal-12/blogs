@@ -814,7 +814,6 @@ class TestBlogAssetsPagesAndCrud(unittest.TestCase):
                 ROOT_DIR / "scripts" / "setup_workload_identity_federation.sh",
                 ROOT_DIR / "scripts" / "build_editable_slide_decks.ts",
                 ROOT_DIR / "scripts" / "build_end_to_end_guide.py",
-                ROOT_DIR / "scripts" / "build_v2_streamlined_edition.py",
                 ROOT_DIR / "scripts" / "human_readable_speaker_notes.mjs",
                 ROOT_DIR / "scripts" / "build_ws1_12slide_visual_deck.ts",
                 ROOT_DIR / "scripts" / "build_ws1_unique_executive_deck.js",

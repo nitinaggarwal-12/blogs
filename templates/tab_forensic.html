@@ -30,7 +30,7 @@
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
           <div>
             <h3>13-Point Deep Forensic Audit &amp; Remediation Ledger (<code>scripts/run_deep_forensic_audit.py</code>)</h3>
-            <p class="muted m-0">Verifies all markdown links, UI artifact pills, publish-ready frontmatter across the 5 canonical blogs, 8 modular agent/MCP files, 12 approved simplified-header SVG diagrams (+ 14 legacy Draw.io archive), 5-Hop cryptographic controls, Terraform blueprints, 107/107 multi-cloud simulations, and verified live Cloud Console &amp; Commercial SaaS Retina captures (2 Live Commercial SaaS Retina captures (ThoughtSpot Cloud); Google Cloud Console &amp; Gemini Enterprise: 0/15 pending 1-tap SSO) + continuity ledger.</p>
+            <p class="muted m-0">Verifies all markdown links, UI artifact pills, publish-ready frontmatter across the 5 canonical blogs, 8 modular agent/MCP files, 12 approved simplified-header SVG diagrams (+ 14 legacy Draw.io archive), 5-Hop cryptographic controls, Terraform blueprints, 107/107 multi-cloud simulations, and verified live Cloud Console &amp; Commercial SaaS Retina captures (17/17 Verified Live Retina captures: 13 Google Cloud Console + 4 Commercial SaaS across Atlassian Jira Cloud &amp; ThoughtSpot Cloud) + continuity ledger.</p>
           </div>
         </div>
         <div id="forensic-run-banner" style="margin-top:12px; font-size:13px; color:var(--ok-text);"></div>
@@ -45,7 +45,7 @@
             </tr>
           </thead>
           <tbody id="forensic-table-body">
-            <tr><td><code>F-01</code></td><td>Zero Broken Links &amp; Modular File Parity</td><td>Verified all file links across 33 markdown files (0 broken) and 8 modular agent/MCP files.</td><td><span class="badge badge-green">PASS</span></td></tr>
+            <tr><td><code>F-01</code></td><td>Zero Broken Links &amp; Modular File Parity</td><td>Verified all file links across 42 markdown files (0 broken) and 8 modular agent/MCP files.</td><td><span class="badge badge-green">PASS</span></td></tr>
             <tr><td><code>F-02</code></td><td>Slide 7 Dynamic Firestore/Memorystore Config &amp; GCS Skills</td><td>Loaded FinVault <code>system_prompt_template</code> and 2 GCS Skills URIs (<code>gs://cymbal-skills-finvault/...</code>).</td><td><span class="badge badge-green">PASS</span></td></tr>
             <tr><td><code>F-03</code></td><td>Slide 7 Private <code>Agent Alpha</code> REST/CLI Provisioning &amp; Model Hot-Swap</td><td>Implemented <code>provision_via_agents_cli()</code> and <code>hot_swap_model()</code> on Vertex AI Model Garden with tenant ownership guard.</td><td><span class="badge badge-green">PASS</span></td></tr>
             <tr><td><code>F-04</code></td><td>Slide 7 Complete 2LO &amp; 3LO MCP Tool Dispatchers</td><td>Verified 2LO Telemetry, 3LO Google Workspace (Drive/Calendar/Gmail) &amp; Jira, and 3LO Entra ID (SharePoint/ServiceNow) MCP servers.</td><td><span class="badge badge-green">PASS</span></td></tr>
@@ -57,7 +57,7 @@
             <tr><td><code>F-10</code></td><td>Complete Terraform Starter &amp; Blueprint Documentation</td><td>Verified <code>main.tf</code>, <code>variables.tf</code>, <code>README.md</code>, and <code>terraform.tfvars.example</code> across Workstreams <code>2.6</code>, <code>3.6</code>, and <code>4.6</code>.</td><td><span class="badge badge-green">PASS</span></td></tr>
             <tr><td><code>F-11</code></td><td>Sanitized Repository Hygiene &amp; Canonical Purge</td><td>Verified <code>.gitignore</code>, 0 <code>__pycache__/*.pyc</code> artifacts, and 0 legacy/duplicate diagram or blog files.</td><td><span class="badge badge-green">PASS</span></td></tr>
             <tr><td><code>F-12</code></td><td>Interactive HTML5 Architecture, 5-Part Blog Series Reader, 12-Diagram Approved Gallery &amp; Simulator Portal</td><td>Verified self-contained interactive portal at <code>index.html</code> with 100% valid artifact, diagram &amp; publication paths.</td><td><span class="badge badge-green">PASS</span></td></tr>
-            <tr><td><code>F-13</code></td><td>Verified Live Cloud Console &amp; Commercial SaaS Screenshot Provenance + Zero Legacy Stand-Ins (<code>Rule 60A&ndash;60C</code>)</td><td>Verified 2 Live Commercial SaaS Retina captures (ThoughtSpot Cloud); Google Cloud Console &amp; Gemini Enterprise: 0/15 pending 1-tap SSO via <code>verify_slide_screenshots.mjs --audience external</code> (exit 0), 0 legacy open-source stand-ins or unattested images on disk/HTML/Markdown, and 4/4 active repeatable steps in <code>data/run_continuity_ledger.json</code>.</td><td><span class="badge badge-green">PASS</span></td></tr>
+            <tr><td><code>F-13</code></td><td>Verified Live Cloud Console &amp; Commercial SaaS Screenshot Provenance + Zero Legacy Stand-Ins (<code>Rule 60A&ndash;60C</code>)</td><td>Verified 17/17 Live Retina captures (13 Google Cloud Console + 4 Commercial SaaS across Atlassian Jira Cloud &amp; ThoughtSpot Cloud) via <code>verify_slide_screenshots.mjs --audience external</code> (exit 0), 0 legacy open-source stand-ins or unattested images on disk/HTML/Markdown, and 4/4 active repeatable steps in <code>data/run_continuity_ledger.json</code>.</td><td><span class="badge badge-green">PASS</span></td></tr>
           </tbody>
         </table>
         </div>
@@ -197,7 +197,7 @@
                 <td><span style="font-family:monospace; color:#1a73e8; font-weight:700;">100.0 / 100</span></td>
                 <td><span style="font-family:monospace; color:#4338ca; font-weight:700;">100.0 / 100</span></td>
                 <td><span class="badge badge-green" style="font-size:10.5px;">0.0%</span></td>
-                <td style="font-size:11.5px; color:#166534;">5/5 Google Cloud Well-Architected pillars, 1-click deploy, 15/15 Google Slides + 25/25 .pptx decks</td>
+                <td style="font-size:11.5px; color:#166534;">5/5 Google Cloud Well-Architected pillars, 1-click deploy, 28/28 synced Google Slides + 28/28 .pptx decks</td>
               </tr>
               <tr style="background:#f8fafc; font-weight:700;">
                 <td><strong>Historical Same-Family Mean Across WS1&ndash;WS5 (Superseded by Live AEF v2.0 P8 Below)</strong></td>

@@ -15,8 +15,6 @@ node_modules/
 *.mp4
 scripts/gcp_icons_bundle.mjs
 scripts/official_arch_center_assets.json
-slides/ws1-google-slides-design-plugin-editable-slides.pptx
-slides/previews/ws1-google-slides-design-plugin-editable-slides/
 AGENTS.md
 CLAUDE.md
 GEMINI.md

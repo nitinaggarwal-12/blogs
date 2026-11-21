@@ -1,9 +1,9 @@
 {
-  "schemaVersion": "1.1",
-  "updatedAt": "2026-11-14T05:40:00Z",
+  "schemaVersion": "1.2",
+  "updatedAt": "2026-11-21T00:45:00Z",
   "canonicalRepositoryUrl": "https://github.com/cloud-ai-fde/ge-blogs",
   "mirrorRepositoryUrl": "https://github.com/cloud-ai-fde/ge-blogs",
-  "productionPortalUrl": "https://ge-blogs.cymbal-demo.example/",
+  "productionPortalUrl": "https://github.com/cloud-ai-fde/ge-blogs",
   "liveGcpProjects": {
     "primaryHubAndRuntime": {
       "projectId": "ramp-portal-dev",
@@ -35,27 +35,27 @@
         "WS1": {
           "title": "Part 1 \u2014 Multi-Tenant Reference Architecture & 5-Hop Chain",
           "file": "slides/ws1-12slide-visual-deck.pptx",
-          "slides": 24
+          "slides": 9
         },
         "WS2": {
           "title": "Part 2 \u2014 Pattern A: Shared Multi-Tenant Pool",
           "file": "slides/ws2-12slide-visual-deck.pptx",
-          "slides": 24
+          "slides": 8
         },
         "WS3": {
           "title": "Part 3 \u2014 Pattern B: Dedicated Sovereign Silo Vaults",
           "file": "slides/ws3-12slide-visual-deck.pptx",
-          "slides": 24
+          "slides": 7
         },
         "WS4": {
           "title": "Part 4 \u2014 Pattern C: Hybrid PSC Router & Zero-Downtime Upgrade",
           "file": "slides/ws4-12slide-visual-deck.pptx",
-          "slides": 24
+          "slides": 9
         },
         "WS5": {
           "title": "Part 5 \u2014 Executive Decision Guide & Agentic Triad",
           "file": "slides/ws5-12slide-visual-deck.pptx",
-          "slides": 24
+          "slides": 9
         },
         "ALL": {
           "title": "Master Synthesis \u2014 End-to-End Multi-Tenancy & 5-Hop Guide",
@@ -63,7 +63,7 @@
           "slides": 25
         }
       },
-      "totalSlides": 145
+      "totalSlides": 67
     },
     "tier2_compactThreeActBriefingDecks": {
       "description": "Compact 3-act executive briefing decks (12-15 slides each) for rapid architecture review",
@@ -122,7 +122,32 @@
       "WS1_EXEC": {
         "title": "Part 1 \u2014 Executive Architecture Briefing",
         "file": "slides/ws1-executive-architecture-23slide-deck.pptx",
-        "slides": 23
+        "slides": 10
+      },
+      "WS2_EXEC": {
+        "title": "Part 2 \u2014 Pattern A Executive Architecture Briefing",
+        "file": "slides/ws2-executive-architecture-10slide-deck.pptx",
+        "slides": 10
+      },
+      "WS3_EXEC": {
+        "title": "Part 3 \u2014 Pattern B Executive Architecture Briefing",
+        "file": "slides/ws3-executive-architecture-10slide-deck.pptx",
+        "slides": 10
+      },
+      "WS4_EXEC": {
+        "title": "Part 4 \u2014 Pattern C Executive Architecture Briefing",
+        "file": "slides/ws4-executive-architecture-10slide-deck.pptx",
+        "slides": 10
+      },
+      "WS5_EXEC": {
+        "title": "Part 5 \u2014 Decision Capstone Executive Briefing",
+        "file": "slides/ws5-executive-architecture-10slide-deck.pptx",
+        "slides": 10
+      },
+      "WS1_SOLUTION": {
+        "title": "Part 1 \u2014 Executive Solution Architecture Deck",
+        "file": "slides/ws1-executive-solution-deck.pptx",
+        "slides": 16
       },
       "BARE_MIN_12": {
         "title": "Bare-Minimum 12-Slide Architecture & Pattern Summary",
@@ -136,16 +161,18 @@
       }
     },
     "totals": {
-      "distinctDeckTiers": 3,
-      "canonicalDecksCount": 15,
-      "canonicalDecksTotalSlides": 142,
-      "fullVisualDecksTotalSlides": 145,
-      "totalPptxFilesOnDisk": 23,
+      "distinctDeckTiers": 4,
+      "canonicalDecksCount": 28,
+      "canonicalDecksTotalSlides": 288,
+      "fullVisualDecksTotalSlides": 67,
+      "totalPptxFilesOnDisk": 28,
       "orphanPptxFilesOnDisk": 0,
       "deckPricingSlidesCount": 0
     }
   },
   "architectureBlueprints": {
+    "approvedSimplifiedHeaderDiagrams": 12,
+    "archivedHubAndSpokeDiagrams": 14,
     "workstreamSeriesDiagrams": 14,
     "c4SupplementaryViews": 3,
     "totalDrawioDiagramsInRepo": 17
@@ -157,7 +184,7 @@
     "totalWorkbenchAssertions": 107,
     "forensicAuditGatesPassed": "13/13",
     "puppeteerE2eChecksPassed": "36/36",
-    "pythonUnitTestsPassed": "21/21",
+    "pythonUnitTestsPassed": "54/54",
     "multiModelLlmJudge": {
       "status": "PASS",
       "timestampUtc": "2026-11-01T11:31:22Z",
@@ -176,7 +203,7 @@
   },
   "pricingDisclosure": {
     "resolution": "RESOLVED ([FA-24])",
-    "deckPricingSlides": "0 Deck Pricing Slides across all 23 editable .pptx / Google Slides decks (100% technical architecture).",
+    "deckPricingSlides": "0 Deck Pricing Slides across all 28 editable .pptx / Google Slides decks (100% technical architecture).",
     "tab4MarketplaceRates": "Tab 4 displays vendor-published Google Cloud Marketplace list rates solely for illustrative scale-to-zero unit-economics modeling."
   },
   "twoTierIntegrationsArchitecture": {
@@ -185,7 +212,7 @@
       "location": "Tab 3 (#tab-screenshots)",
       "purpose": "Verified Commercial SaaS & Cloud Console Multi-Tenant Isolation Proof Matrix (Zero Open-Source Stand-Ins)",
       "targetCount": 10,
-      "verifiedRetinaStatus": "2 Live Commercial SaaS Retina captures (ThoughtSpot Cloud); Google Cloud Console & Gemini Enterprise: 0/15 pending 1-tap SSO",
+      "verifiedRetinaStatus": "17/17 Verified Live 2880x1620 Retina captures (13 Live Google Cloud Console across cymbal-ge-hub-2026 & cymbal-ge-silo-2026 + 4 Live Commercial SaaS across Atlassian Jira Cloud & ThoughtSpot Cloud; 8 complete BEFORE->AFTER pairs, 0 pending SSO)",
       "runtimeHosts": [
         "Google Cloud Console & Gemini Enterprise (ramp-portal-dev, bbar-138hf0)",
         "AWS Bedrock AgentCore MCP Gateway (cymbal-a2a-mcp-gateway-suyxm3caof, Account 393036065405)"

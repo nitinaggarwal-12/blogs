@@ -108,7 +108,7 @@ export function buildCustomTopicBlueprintConfig({
     leftZoneSub: `${prefix}IngestAgent + ${prefix}ReasonerAgent`,
     leftCards: {
       modelArmor: { icon: 'cloud_sdp_dlp', title: 'Cloud DLP & Guardrails', sub: 'Domain Guardrails & PII Redaction' },
-      llm: { icon: 'gemini_agent_platform', title: 'Gemini 3.8 Flash', sub: '90% Context Prefix Caching' },
+      llm: { icon: 'gemini_agent_platform', title: 'Gemini 2.5 Flash', sub: '90% Context Prefix Caching' },
       runtime: { icon: 'vertex_agent_engine', title: `${prefix}Reasoner`.slice(0, 22), sub: 'Hybrid Knowledge Retrieval' },
       mcp: { icon: 'mcp_servers', title: 'MCP Retrieval Tools', sub: 'hybrid_graphrag_search' },
       datastore: { icon: 'cloud_spanner', title: store1Title, sub: 'Vector Search + Graph Index' },
@@ -123,7 +123,7 @@ export function buildCustomTopicBlueprintConfig({
     rightZoneSub: `VPC-SC + Cloud KMS CMEK + ${prefix}ActionAgent`,
     rightCards: {
       modelArmor: { icon: 'vpc_sc', title: 'VPC-SC & Action Gate', sub: 'Pre-Commit Policy Verification' },
-      llm: { icon: 'cloud_trace', title: 'Gemini 3.8 Flash', sub: 'Deterministic Schema Validator' },
+      llm: { icon: 'cloud_trace', title: 'Gemini 2.5 Flash', sub: 'Deterministic Schema Validator' },
       runtime: { icon: 'gke', title: `${prefix}ActionAgent`.slice(0, 22), sub: 'Governed Tool Execution' },
       mcp: { icon: 'discovery_engine', title: 'MCP Action Connectors', sub: 'execute_transactional_tool' },
       datastore: { icon: 'alloydb', title: store2Title, sub: 'ACID Ledger & Audit Trail' },
@@ -204,7 +204,7 @@ export function generateNewTopicBlogBundle({ title, prompt, domain = 'enterprise
     '',
     '## Products used',
     '',
-    '- **Agentic runtime & models:** Vertex AI Agent Engine, Google Agent Development Kit (ADK), Gemini 3.8 Flash, and Gemini 3.8 Flash.',
+    '- **Agentic runtime & models:** Vertex AI Agent Engine, Google Agent Development Kit (ADK), Gemini 2.5 Flash, and Gemini 2.5 Flash.',
     '- **Edge ingress & security:** External Application Load Balancer, Google Cloud Armor, Model Armor, Apigee X, Cloud DLP, Cloud KMS (CMEK/HSM), VPC Service Controls, and Security Command Center.',
     `- **Data & knowledge plane:** ${lc.datastore.title} and ${sc.datastore.title}.`,
     '- **Observability & FinOps:** Cloud Logging, Cloud Trace, and BigQuery Ops Ledger.',

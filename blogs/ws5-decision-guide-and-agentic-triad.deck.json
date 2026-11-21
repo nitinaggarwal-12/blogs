@@ -44,7 +44,7 @@
         "Decision Gate 1 (Universal Regulatory Sovereignty Mandate): Do 100% of your customers legally require dedicated GCP projects, VPC Service Controls, IAM PAB, and customer-revocable CMEK kill-switches? If YES, standardize on Pattern B (600 RPM Silo).",
         "Decision Gate 2 (Single-Tier vs. Multi-Tier SaaS Packaging): If not all customers require physical silos, choose Pattern A (120 RPM Pool shared pool, 90% prefix cache) for one uniform commercial tier, or Pattern C (74% TCO savings) for multi-tier portfolios.",
         "Competing Tenant Profiles (FinVault Bank vs. RetailStream Corp): Co-host RetailStream in the 120 RPM Pool Standard pool (Entra ID, 4k cap, 120 RPM) and isolate FinVault in a 600 RPM Silo Enterprise spoke/silo (Workspace, 8k cap, 600 RPM, Agent Alpha, CMEK).",
-        "One 80% Reusable 5-Hop Google Cloud Stack: Cloud Armor, IAP OBO/DPoP, Agent Engine Registry, Memorystore Valkey, Gemini 3.8 Flash / Gemma 3, Model Armor, Cloud DLP, AlloyDB RLS/CMEK, and BigQuery OTel power all three patterns without code forks."
+        "One 80% Reusable 5-Hop Google Cloud Stack: Cloud Armor, IAP OBO/DPoP, Agent Engine Registry, Memorystore Valkey, Gemini 2.5 Flash / Gemma 3, Model Armor, Cloud DLP, AlloyDB RLS/CMEK, and BigQuery OTel power all three patterns without code forks."
       ],
       "specs": [
         {
@@ -63,7 +63,7 @@
           "tag": "3. Competing Enterprise Tenants"
         },
         {
-          "stack": "Cloud Armor • IAP • Agent Engine • Gemini 3.8 Flash • Valkey • Model Armor • AlloyDB • BigQuery",
+          "stack": "Cloud Armor • IAP • Agent Engine • Gemini 2.5 Flash • Valkey • Model Armor • AlloyDB • BigQuery",
           "sla": "80% Identical Python ADK Codebase • 13/13 Forensic Gates & 20/20 Simulations PASS",
           "tag": "4. Unified 5-Hop Google Cloud Stack"
         }
@@ -93,8 +93,8 @@
         ],
         [
           "Model Hosting & Prefix Caching",
-          "Shared Gemini 3.8 Flash with 90% ContextCacheConfig discount (4k/8k token caps)",
-          "Dedicated Gemini 3.8 Flash PT or air-gapped Gemma 3 (27B) on private GKE GPUs",
+          "Shared Gemini 2.5 Flash with 90% ContextCacheConfig discount (4k/8k token caps)",
+          "Dedicated Gemini 2.5 Flash PT or air-gapped Gemma 3 (27B) on private GKE GPUs",
           "90% shared prefix cache for Standard pool; dedicated PT / Gemma 3 in Enterprise spokes"
         ],
         [
@@ -174,7 +174,7 @@
       "layout": "cards",
       "bullets": [
         "Triad Pillar 1 — Zero-Trust Cryptographic Tenant Security: Enforces non-bypassable identity, tool discovery, memory namespace, prompt safety, and SQL RLS boundaries so tenant assets never commingle.",
-        "Triad Pillar 2 — Predictable Unit Economics & Quota Bulkheads: Combines 90% Gemini 3.8 Flash shared prefix caching discounts with Memorystore for Valkey RPM rate limiters and per-tier thinkingLevel/maxOutputTokens caps.",
+        "Triad Pillar 2 — Predictable Unit Economics & Quota Bulkheads: Combines 90% Gemini 2.5 Flash shared prefix caching discounts with Memorystore for Valkey RPM rate limiters and per-tier thinkingLevel/maxOutputTokens caps.",
         "Triad Pillar 3 — Privacy-Safe FinOps Chargeback Telemetry: Streams zero-PII OpenTelemetry spans (`tenant_id`, `cached_tokens`, `thinking_tokens`, `silo_cmek_verify_ms`) into BigQuery for 3-model billing.",
         "1,000-Tenant Portfolio Financial Proof: Across 950 Standard and 50 Enterprise tenants, the Agentic Triad reduces 1,000-tenant cloud infrastructure TCO by 74% and per-turn LLM token costs by 89.1%."
       ],
@@ -185,7 +185,7 @@
           "tag": "Pillar 1: Zero-Trust Security"
         },
         {
-          "stack": "Gemini 3.8 Flash ContextCacheConfig (90% Discount) • Valkey RPM • Output Caps",
+          "stack": "Gemini 2.5 Flash ContextCacheConfig (90% Discount) • Valkey RPM • Output Caps",
           "sla": "Caps Worst-Case Tenant Token Spend & Protects Shared Pool p99 Latency",
           "tag": "Pillar 2: Unit Economics"
         },
