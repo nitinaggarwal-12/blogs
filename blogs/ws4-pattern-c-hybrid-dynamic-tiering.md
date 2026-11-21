@@ -145,6 +145,23 @@ Across all 10 AWS Bedrock AgentCore MCP targets (`cymbal-a2a-mcp-gateway-suyxm3c
 
 ---
 
+## Deploy in Your Own GCP Project (Zero Modifications)
+
+Run this blog's complete reference architecture directly in your own Google Cloud project with **zero code or `.tfvars` edits** ([blog-04-pattern-c-hybrid/README.md](../examples/blog-04-pattern-c-hybrid/README.md) · [Open in Cloud Shell](https://shell.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/cloud-ai-fde/ge-blogs&cloudshell_working_dir=examples/blog-04-pattern-c-hybrid)):
+
+- **What gets deployed:** Provisions 2 isolated VPCs (Hub `10.10.0.0/20` + Spoke `10.140.0.0/24`, zero VPC peering) in a single project by default (or 2 projects via `SPOKE_PROJECT_ID`), a real Regional Internal Application LB + `/28` Private Service Connect Service Attachment & Hub Consumer Endpoint, a named Firestore routing DB, and 3 authenticated Cloud Run services (`hub-router`, `shared-pool`, `enterprise-spoke`).
+- **Live verification:** Proves live BEFORE (`retailstream` routed to `shared_pool`) → live atomic Firestore CAS promotion → AFTER (exact same Hub URL seamlessly routes to `enterprise_spoke` with `0` dropped turns).
+
+```bash
+git clone https://github.com/cloud-ai-fde/ge-blogs.git
+cd ge-blogs/examples/blog-04-pattern-c-hybrid
+./deploy.sh    # Auto-detects active gcloud project & region, builds app via Cloud Build, applies Terraform
+./verify.sh    # Executes live BEFORE -> AFTER security & isolation proofs against your deployed resources
+./destroy.sh   # Tears down all billable resources cleanly
+```
+
+---
+
 ## What's next
 
 - **Approved Architecture Presentations & Editable Diagrams (WS4 = Slides 8–9):**

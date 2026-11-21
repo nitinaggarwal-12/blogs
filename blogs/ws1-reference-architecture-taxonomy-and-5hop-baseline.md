@@ -260,6 +260,23 @@ ORDER BY billable_equivalent_tokens DESC;
 
 ---
 
+## Deploy in Your Own GCP Project (Zero Modifications)
+
+Run this blog's complete reference architecture directly in your own Google Cloud project with **zero code or `.tfvars` edits** ([blog-01-5hop-baseline/README.md](../examples/blog-01-5hop-baseline/README.md) · [Open in Cloud Shell](https://shell.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/cloud-ai-fde/ge-blogs&cloudshell_working_dir=examples/blog-01-5hop-baseline)):
+
+- **What gets deployed:** Provisions 2 live Cloud Armor WAF policies (open edge vs. Priority 1000 `X-Tenant-ID` anti-spoofing `Deny-403`), 2 live Vertex AI Model Armor templates (unprotected vs. zero-trust firewall), a Cloud KMS `EC_SIGN_P256_SHA256` JWT signing key, and an authenticated Cloud Run Gen2 5-Hop Gateway calling Vertex AI Gemini 2.5 Flash.
+- **Live verification:** Proves live BEFORE (unprotected Model Armor passes SSN injection) → AFTER (hardened firewall blocks `HTTP 400`), Hop 1 spoof `HTTP 403`, and Cloud KMS EC-P256 + Vertex AI `HTTP 200`.
+
+```bash
+git clone https://github.com/cloud-ai-fde/ge-blogs.git
+cd ge-blogs/examples/blog-01-5hop-baseline
+./deploy.sh    # Auto-detects active gcloud project & region, builds app via Cloud Build, applies Terraform
+./verify.sh    # Executes live BEFORE -> AFTER security & isolation proofs against your deployed resources
+./destroy.sh   # Tears down all billable resources cleanly
+```
+
+---
+
 ## What's next
 
 - **Approved Architecture Presentations & Editable Diagrams:**

@@ -9,6 +9,7 @@
 
 ---
 
+- **Zero-Modification Runnable GCP Stacks (Blogs 1–5 — Cloud Shell + Terraform + FastAPI):** [`examples/README.md`](examples/README.md) (`./deploy.sh` · `./verify.sh` · `./destroy.sh`)
 - **Workstream 5.2 Capstone Backlog & 10-Week GA Roadmap**: [`workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md`](workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md)
 
 ## 1. Program Overview & Three Core Multi-Tenant Patterns

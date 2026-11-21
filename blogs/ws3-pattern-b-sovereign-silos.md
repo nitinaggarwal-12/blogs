@@ -168,6 +168,23 @@ Across all 10 AWS Bedrock AgentCore MCP targets (`cymbal-a2a-mcp-gateway-suyxm3c
 
 ---
 
+## Deploy in Your Own GCP Project (Zero Modifications)
+
+Run this blog's complete reference architecture directly in your own Google Cloud project with **zero code or `.tfvars` edits** ([blog-03-pattern-b-siloed/README.md](../examples/blog-03-pattern-b-siloed/README.md) · [Open in Cloud Shell](https://shell.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/cloud-ai-fde/ge-blogs&cloudshell_working_dir=examples/blog-03-pattern-b-siloed)):
+
+- **What gets deployed:** Provisions a Cloud KMS CMEK keyring + key with automatic BigQuery & Cloud Storage encryption service-agent IAM bindings, a CMEK-encrypted BigQuery vault + GCS bucket, a dedicated Sovereign VPC, an authenticated Cloud Run Gen2 sovereign agent, and an opt-in Org-level VPC-SC perimeter flag.
+- **Live verification:** Proves live BEFORE (`HTTP 200` vault decrypt) → live `gcloud kms keys versions disable` kill-switch → AFTER (`HTTP 423 LOCKED` + BigQuery `Cloud KMS Error: DISABLED`) → automatic re-enable.
+
+```bash
+git clone https://github.com/cloud-ai-fde/ge-blogs.git
+cd ge-blogs/examples/blog-03-pattern-b-siloed
+./deploy.sh    # Auto-detects active gcloud project & region, builds app via Cloud Build, applies Terraform
+./verify.sh    # Executes live BEFORE -> AFTER security & isolation proofs against your deployed resources
+./destroy.sh   # Tears down all billable resources cleanly
+```
+
+---
+
 ## What's next
 
 - **Approved Architecture Presentations & Editable Diagrams (WS3 = Slides 6–7):**

@@ -204,6 +204,23 @@ Every pooled Mode A/Mode B invocation across all 10 **AWS Bedrock AgentCore MCP*
 
 ---
 
+## Deploy in Your Own GCP Project (Zero Modifications)
+
+Run this blog's complete reference architecture directly in your own Google Cloud project with **zero code or `.tfvars` edits** ([blog-02-pattern-a-pooled/README.md](../examples/blog-02-pattern-a-pooled/README.md) · [Open in Cloud Shell](https://shell.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/cloud-ai-fde/ge-blogs&cloudshell_working_dir=examples/blog-02-pattern-a-pooled)):
+
+- **What gets deployed:** Provisions a shared multi-tenant BigQuery table seeded with 7 rows across 4 competing tenants (`finvault`, `retailstream`, `globex`, `medcore`) + native `google_bigquery_row_access_policy`, a named Firestore RPM limiter database, and an authenticated Cloud Run Gen2 pooled runtime (`concurrency=1` gVisor).
+- **Live verification:** Proves live BEFORE (unscoped query leaks 7 rows across 4 tenants) → AFTER (strictly 2 FinVault rows, `0` foreign rows) + noisy-neighbor `HTTP 429` bulkhead leaving other tenants unaffected.
+
+```bash
+git clone https://github.com/cloud-ai-fde/ge-blogs.git
+cd ge-blogs/examples/blog-02-pattern-a-pooled
+./deploy.sh    # Auto-detects active gcloud project & region, builds app via Cloud Build, applies Terraform
+./verify.sh    # Executes live BEFORE -> AFTER security & isolation proofs against your deployed resources
+./destroy.sh   # Tears down all billable resources cleanly
+```
+
+---
+
 ## What's next
 
 - **Approved Architecture Presentations & Editable Diagrams (WS2 = Slides 3–5):**

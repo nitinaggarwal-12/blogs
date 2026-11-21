@@ -162,6 +162,23 @@ As tracked in [`5.2 Capstone Backlog & GA Roadmap`](../workstream-5-wrap-up-and-
 
 ---
 
+## Deploy in Your Own GCP Project (Zero Modifications)
+
+Run this blog's complete reference architecture directly in your own Google Cloud project with **zero code or `.tfvars` edits** ([blog-05-agentic-triad/README.md](../examples/blog-05-agentic-triad/README.md) · [Open in Cloud Shell](https://shell.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/cloud-ai-fde/ge-blogs&cloudshell_working_dir=examples/blog-05-agentic-triad)):
+
+- **What gets deployed:** Provisions 3 least-privilege authenticated Cloud Run Gen2 services (`a2a-orchestrator` → `a2a-specialist` publishing `/.well-known/agent.json` → `mcp-tool-gateway` enforcing OAuth 2.1 OBO audience scoping) plus a zero-PII BigQuery `otel_finops_chargeback` table.
+- **Live verification:** Proves live A2A Agent Card discovery, authorized A2A → MCP OBO execution (`HTTP 200`), cross-tenant MCP tool rejection (`HTTP 403`), and live BigQuery FinOps rows with `prompt_sha256` and zero raw PII.
+
+```bash
+git clone https://github.com/cloud-ai-fde/ge-blogs.git
+cd ge-blogs/examples/blog-05-agentic-triad
+./deploy.sh    # Auto-detects active gcloud project & region, builds app via Cloud Build, applies Terraform
+./verify.sh    # Executes live BEFORE -> AFTER security & isolation proofs against your deployed resources
+./destroy.sh   # Tears down all billable resources cleanly
+```
+
+---
+
 ## What's next
 
 - **Approved Architecture Presentations & Editable Diagrams (WS5 = Slides 10–12):**
