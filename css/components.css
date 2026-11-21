@@ -2288,17 +2288,17 @@
       }
     }
 
-    /* Full-Width Before/After 3P SaaS Proof Section (Tier 2: Uniform 320px Height) */
+    /* Full-Width Before/After Proof Section (Auto Height — Never Clip Full 16:9 Retina Captures) */
     .ov-dossier-proof-section {
       width: 100%;
-      height: 320px;
-      min-height: 320px;
-      max-height: 320px;
+      height: auto;
+      min-height: 0;
+      max-height: none;
       box-sizing: border-box;
       margin-top: 12px;
     }
     .ov-dossier-proof-section > .ov-subbox {
-      height: 100%;
+      height: auto;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
@@ -2465,33 +2465,35 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 262px;
-      min-height: 262px;
-      max-height: 262px;
+      height: auto;
+      min-height: 0;
+      max-height: none;
       box-sizing: border-box;
     }
     .ov-ba-mini-thumbs {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      grid-template-rows: minmax(0, 1fr);
+      grid-template-rows: auto;
       gap: 2px;
-      background: #cbd5e1;
-      flex: 1 1 0;
+      background: #f8fafc;
+      flex: 0 0 auto;
       min-height: 0;
       overflow: hidden;
+      border-bottom: 1px solid #e2e8f0;
     }
     .ov-ba-mini-thumbs + div {
-      flex: 0 0 auto !important;
+      flex: 1 1 auto !important;
     }
     .ov-ba-mini-thumbs img {
       width: 100%;
-      height: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
       min-height: 0;
-      object-fit: cover;
-      object-position: top center;
+      object-fit: contain;
+      object-position: center;
       display: block;
       cursor: zoom-in;
-      background: #ffffff;
+      background: #f8fafc;
     }
     @media (max-width: 1160px) {
       .ov-onepager-hdr {
@@ -2516,7 +2518,8 @@
       }
       .ov-ba-mini-thumbs img {
         height: auto;
-        aspect-ratio: 16 / 10;
+        aspect-ratio: 16 / 9;
+        object-fit: contain;
       }
     }
     .ov-asset-directory {
@@ -2648,17 +2651,17 @@
       color: #14532d;
     }
     .ba-3p-img-wrap {
-      aspect-ratio: 16 / 10;
+      aspect-ratio: 16 / 9;
       overflow: hidden;
-      background: #ffffff;
+      background: #f8fafc;
       cursor: zoom-in;
       position: relative;
     }
     .ba-3p-img-wrap img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      object-position: top center;
+      object-fit: contain;
+      object-position: center;
       display: block;
     }
     .ba-3p-pane-caption {
@@ -2681,21 +2684,21 @@
     }
     .ba-3p-slider-viewport {
       position: relative;
-      aspect-ratio: 16 / 10;
+      aspect-ratio: 16 / 9;
       width: 100%;
       overflow: hidden;
       user-select: none;
       touch-action: none;
       cursor: ew-resize;
-      background: #ffffff;
+      background: #f8fafc;
     }
     .ba-3p-slider-viewport img {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      object-position: top center;
+      object-fit: contain;
+      object-position: center;
       display: block;
       pointer-events: none;
     }
