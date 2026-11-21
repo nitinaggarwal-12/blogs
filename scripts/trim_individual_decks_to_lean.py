@@ -134,8 +134,8 @@ DECK_PLANS: Dict[str, Dict] = {
                 ),
                 "SLIDES 16–23": "SLIDES 09–10",
                 "Live Proofs (ThoughtSpot + 10 MCP), ROI & CTA": "Live ThoughtSpot UI Proof & Executive ROI",
-                "GCP+AWS red-team telemetry, live ThoughtSpot Cloud UIs + 9 F-13 commercial slots, 89.1% token savings, and 14-day rollout.": (
-                    "Genuine 2880×1620 ThoughtSpot Cloud Retina captures, 89.1% token savings & ~74% lower infrastructure TCO."
+                "GCP+AWS red-team telemetry, live ThoughtSpot Cloud & Jira Cloud UI proofs, 89.1% token savings, and 14-day rollout.": (
+                    "Live ThoughtSpot Cloud captures, 89.1% token savings & ~74% lower infrastructure TCO."
                 ),
             },
             7: {

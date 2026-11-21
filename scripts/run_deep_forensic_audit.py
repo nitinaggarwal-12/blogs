@@ -411,8 +411,8 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             "Smart Hybrid Router &amp; Live Upgrade (Pattern C)",
             "FinVault Bank",
             "RetailStream Corp",
-            "Forensic Audit: 13/13 PASS",
-            "Simulations: 20/20 PASS",
+            "Google Cloud Multi-Tenant Agentic AI Architecture Portal",
+            "Live Python API",
             "Multi-Tenancy Architecture, 5-Part Blog Series &amp; Live 5-Hop Execution Portal",
             "openCloudViewerModal",
             "hub-btn-mode-edit-inline",
@@ -906,7 +906,9 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                                     decks_valid = False
                             if _shot_xml_name in zf.namelist():
                                 s10_xml = zf.read(_shot_xml_name).decode("utf-8", errors="ignore")
-                                if "LIVE-SCREENSHOT-CALLOUT" not in s10_xml or "SHA-256:" not in s10_xml or s10_xml.count("<p:pic>") < 2:
+                                # F-13 independently cryptographically hashes every embedded <p:pic> PNG against the provenance manifest;
+                                # do not require raw "SHA-256:" hashes in visible reader-facing slide copy.
+                                if "LIVE-SCREENSHOT-CALLOUT" not in s10_xml or s10_xml.count("<p:pic>") < 2:
                                     decks_valid = False
                             if _op_xml_name and _op_xml_name in zf.namelist():
                                 s11_xml = zf.read(_op_xml_name).decode("utf-8", errors="ignore")

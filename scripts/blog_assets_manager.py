@@ -68,7 +68,7 @@ BLOG_CATALOG: List[Dict[str, Any]] = [
         "shortLabel": "WS1 · Baseline",
         "badge": "PART 1 · SLIDES 01–02",
         "title": "WS1: Reference Architecture, Taxonomy & 5-Hop Baseline",
-        "subtitle": "Shared 80/20 control plane, 5-Hop cryptographic pipeline (<42ms p95), and verified live Retina captures.",
+        "subtitle": "Shared 80/20 control plane, 5-Hop cryptographic pipeline (<42ms p95), and live Before & After Console proofs.",
         "docPath": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
         "blogPortalUrl": "/?tab=patterns&ws=WS1&doc=blogs%2Fws1-reference-architecture-taxonomy-and-5hop-baseline.md",
         "slideRange": "Slides 01–02",
@@ -79,7 +79,7 @@ BLOG_CATALOG: List[Dict[str, Any]] = [
         "shortLabel": "WS2 · Pattern A Pool",
         "badge": "PART 2 · SLIDES 03–05",
         "title": "WS2: Pattern A — High-Density Pooled Architecture",
-        "subtitle": "Mode A CoW Pre-Fork Heap Wipe, Mode B WarmPool 403 Sticky Latch, AlloyDB FORCE RLS, and verified live Retina captures.",
+        "subtitle": "Mode A CoW Pre-Fork Heap Wipe, Mode B WarmPool 403 Sticky Latch, AlloyDB FORCE RLS, and live Before & After Console proofs.",
         "docPath": "blogs/ws2-pattern-a-pooled-architecture.md",
         "blogPortalUrl": "/?tab=patterns&ws=WS2&doc=blogs%2Fws2-pattern-a-pooled-architecture.md",
         "slideRange": "Slides 03–05",
@@ -90,7 +90,7 @@ BLOG_CATALOG: List[Dict[str, Any]] = [
         "shortLabel": "WS3 · Pattern B Silo",
         "badge": "PART 3 · SLIDES 06–07",
         "title": "WS3: Pattern B — Sovereign Silos & CMEK Kill-Switch",
-        "subtitle": "Dedicated per-tenant projects, VPC-SC perimeters, <60s Cloud KMS CMEK kill-switch, and verified live Retina captures.",
+        "subtitle": "Dedicated per-tenant projects, VPC-SC perimeters, <60s Cloud KMS CMEK kill-switch, and live Before & After Console proofs.",
         "docPath": "blogs/ws3-pattern-b-sovereign-silos.md",
         "blogPortalUrl": "/?tab=patterns&ws=WS3&doc=blogs%2Fws3-pattern-b-sovereign-silos.md",
         "slideRange": "Slides 06–07",
@@ -101,7 +101,7 @@ BLOG_CATALOG: List[Dict[str, Any]] = [
         "shortLabel": "WS4 · Pattern C Hybrid",
         "badge": "PART 4 · SLIDES 08–09",
         "title": "WS4: Pattern C — Governed Hybrid PSC & Live Tier Promotion",
-        "subtitle": "Hub-and-spoke /28 PSC routing, 3-phase zero-downtime live tenant migration, and verified live Retina captures.",
+        "subtitle": "Hub-and-spoke /28 PSC routing, 3-phase zero-downtime live tenant migration, and live Before & After Console proofs.",
         "docPath": "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md",
         "blogPortalUrl": "/?tab=patterns&ws=WS4&doc=blogs%2Fws4-pattern-c-hybrid-dynamic-tiering.md",
         "slideRange": "Slides 08–09",
@@ -112,7 +112,7 @@ BLOG_CATALOG: List[Dict[str, Any]] = [
         "shortLabel": "WS5 · Decision & Triad",
         "badge": "PART 5 · SLIDES 10–12",
         "title": "WS5: Decision Guide, Agentic Triad & Multi-Cloud SaaS Bridge",
-        "subtitle": "3-outcome architecture selector, dynamic GCS skills delegation, and verified live Retina captures.",
+        "subtitle": "3-outcome architecture selector, dynamic GCS skills delegation, and live Before & After Console & SaaS proofs.",
         "docPath": "blogs/ws5-decision-guide-and-agentic-triad.md",
         "blogPortalUrl": "/?tab=patterns&ws=WS5&doc=blogs%2Fws5-decision-guide-and-agentic-triad.md",
         "slideRange": "Slides 10–12",
@@ -123,7 +123,7 @@ BLOG_CATALOG: List[Dict[str, Any]] = [
         "shortLabel": "ATLAS · Cloud & SaaS Proofs",
         "badge": "EXECUTION ATLAS · SLIDE 11 + VERIFIED LIVE PROOFS",
         "title": "Verified Live Cloud Console & Commercial SaaS Proof Atlas",
-        "subtitle": "Cryptographically attested 16:9 Retina captures verified by verify_slide_screenshots.mjs --audience external.",
+        "subtitle": "Live Before & After console captures across Google Cloud Console, Atlassian Jira Cloud, and ThoughtSpot Cloud.",
         "docPath": "blogs/saas-10-visual-verification-and-redteam-atlas.md",
         "blogPortalUrl": "/?tab=patterns&ws=WS5&doc=blogs%2Fsaas-10-visual-verification-and-redteam-atlas.md",
         "slideRange": "Slide 11",
@@ -134,7 +134,7 @@ BLOG_CATALOG: List[Dict[str, Any]] = [
         "shortLabel": "ALL · Complete Series",
         "badge": "ALL 6 BLOGS · 12 SLIDES + VERIFIED LIVE PROOFS",
         "title": "Complete Series Master Asset Inventory (All 6 Blogs)",
-        "subtitle": "Unified view across all 12 Approved 16:9 architecture diagrams and all cryptographically verified Retina live captures.",
+        "subtitle": "Unified view across all architecture diagrams and live Before & After Console & SaaS proofs.",
         "docPath": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
         "blogPortalUrl": "/?tab=patterns&ws=WS1",
         "slideRange": "Slides 01–12",
@@ -523,8 +523,8 @@ BEFORE_AFTER_PAIR_SPECS: List[Dict[str, Any]] = [
         "resolutionAfter": "Applying a live '3LO' board query filter (textfields ~ \"3LO*\") isolates strictly the 2 OAuth/3LO issues (SCRUM-5 MCP OAuth 2.1 refresh & SCRUM-6 per-user 3LO Atlassian OAuth scopes in In Progress 2) while filtering out 4 non-matching tickets (To Do 0 · In Review 0 · Done 0). Server-side per-user 3LO OAuth & cross-spoke HTTP 403 enforcement is verified in Pattern C's MCP gateway (30/30 live assertions).",
         "beforeFile": "saas_06_atlassian_jira_confluence.png",
         "afterFile": "ws4_after_jira_3lo_scoped_issue.png",
-        "cliProofBefore": "Live Retina Capture Verified (SHA-256 95ce12f87f12): Unfiltered board exposing 6 mixed cross-domain issues across 4 columns.",
-        "cliProofAfter": "Live Retina Capture Verified (SHA-256 45e833e4909f): Live '3LO' board query isolates strictly SCRUM-5 & SCRUM-6; 4 tickets filtered out.",
+        "cliProofBefore": "Atlassian Jira Cloud: Unfiltered board exposing 6 mixed cross-domain issues across 4 columns.",
+        "cliProofAfter": "Atlassian Jira Cloud: Live '3LO' board query isolates strictly SCRUM-5 & SCRUM-6; 4 tickets filtered out.",
     },
     {
         "pairId": "WS4-BA-02",
@@ -547,8 +547,8 @@ BEFORE_AFTER_PAIR_SPECS: List[Dict[str, Any]] = [
         "resolutionAfter": "WS5's governed multi-cloud SaaS BI pattern binds execution to a single authorized domain dataset & explicit 3-month time window (Stock-Out & Spoilage Saved Answer) with strict column projection and zero unconstrained global sales rollup exposure.",
         "beforeFile": "saas_01_thoughtspot_liveboard.png",
         "afterFile": "saas_02_thoughtspot_saved_answer.png",
-        "cliProofBefore": "Live Retina Capture Verified (SHA-256 fd5cb15c0902): Unfiltered Executive Liveboard ($735.3K global rollup, 6 unconstrained filters).",
-        "cliProofAfter": "Live Retina Capture Verified (SHA-256 3fcab795d1e5): Governed Saved Answer scoped to single authorized domain & 3-month window.",
+        "cliProofBefore": "ThoughtSpot Cloud: Unfiltered Executive Liveboard ($735.3K global rollup, 6 unconstrained filters).",
+        "cliProofAfter": "ThoughtSpot Cloud: Governed Saved Answer scoped to single authorized domain & 3-month window.",
     },
     {
         "pairId": "WS5-BA-02",
@@ -946,7 +946,7 @@ def _enrich_screenshots(raw_shots: List[Dict[str, str]], host_origin: str = "") 
         size_bytes = len(raw_bytes)
         actual_sha = hashlib.sha256(raw_bytes).hexdigest() if raw_bytes else ""
         w, h = _read_png_dimensions(full_file)
-        res_label = f"{w}×{h} Retina" if (w > 0 and h > 0) else "2880×1620 Retina"
+        res_label = f"{w}×{h}" if (w > 0 and h > 0) else "16:9"
 
         url_path = "/" + rel_path.lstrip("/")
         full_url = f"{host_origin}{url_path}" if host_origin else url_path
@@ -1224,17 +1224,16 @@ def get_blog_assets(slug: str, host_origin: str = "", runtime_dir: Optional[Path
     pending_pair_cnt = sum(1 for p in before_after_pairs if p["status"] != "CAPTURED_VERIFIED_PAIR")
     if captured_pair_cnt > 0 and pending_pair_cnt > 0:
         dynamic_subtitle = (
-            f"{blog_meta['subtitle']} — {captured_pair_cnt} live verified BEFORE → AFTER Retina pair(s) captured; "
-            f"{pending_pair_cnt} live CLI-verified GCP Console BEFORE → AFTER pair(s) staged for 1-tap SSO capture."
+            f"{blog_meta['subtitle']} — {captured_pair_cnt} live Before → After console pair(s) captured; "
+            f"{pending_pair_cnt} additional cloud resource(s) provisioned."
         )
     elif captured_pair_cnt > 0:
         dynamic_subtitle = (
-            f"{blog_meta['subtitle']} — {captured_pair_cnt} live cryptographically attested 16:9 Retina BEFORE → AFTER pair(s)."
+            f"{blog_meta['subtitle']} — {captured_pair_cnt} live Before → After console proof pair(s)."
         )
     elif pending_pair_cnt > 0:
         dynamic_subtitle = (
-            f"{blog_meta['subtitle']} — {pending_pair_cnt} live CLI-verified Google Cloud Console BEFORE → AFTER pair(s) "
-            "ready for 1-tap SSO Retina capture (zero irrelevant 3P SaaS stand-ins)."
+            f"{blog_meta['subtitle']} — {pending_pair_cnt} live Google Cloud Console resource(s) provisioned."
         )
     else:
         dynamic_subtitle = blog_meta["subtitle"]

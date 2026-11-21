@@ -365,11 +365,11 @@ def main() -> int:
             1: {
                 "Live ThoughtSpot UI Proof & Executive ROI": "Live Model Armor Console Proof & ROI",
                 "5-Hop Latency Proof & Executive ROI": "Live Model Armor Console Proof & ROI",
-                "Genuine 2880×1620 ThoughtSpot Cloud Retina captures, 89.1% token savings & ~74% lower infrastructure TCO.": (
-                    "Live 2880×1620 Google Cloud Model Armor & Cloud Armor WAF proofs, 89.1% token savings & ~74% TCO."
+                "Genuine live ThoughtSpot Cloud live captures, 89.1% token savings & ~74% lower infrastructure TCO.": (
+                    "live Google Cloud Model Armor & Cloud Armor WAF proofs, 89.1% token savings & ~74% TCO."
                 ),
                 "<42ms p95 5-Hop waterfall, provisioned GCP Control Plane, 89.1% token savings & ~74% lower TCO.": (
-                    "Live 2880×1620 Google Cloud Model Armor & Cloud Armor WAF proofs, 89.1% token savings & ~74% TCO."
+                    "live Google Cloud Model Armor & Cloud Armor WAF proofs, 89.1% token savings & ~74% TCO."
                 ),
             }
         },

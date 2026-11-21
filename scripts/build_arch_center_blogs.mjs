@@ -312,7 +312,7 @@ Where:
 ### Operational excellence
 
 - **Maintain a single 80% reusable agent codebase:** Centralize identity verification, catalog pruning, memory namespacing, DLP redaction, and telemetry in [\`core-cymbal-agent/\`](../core-cymbal-agent/) so security patches apply simultaneously to Patterns A, B, and C.
-- **Reproduce the 13/13 CI/CD forensic gate and Cloud Logging audit query:** Run the automated forensic and simulation verification suite locally or in Cloud Build:
+- **Reproduce the CI/CD verification suite and Cloud Logging audit query:** Run the automated forensic and simulation verification suite locally or in Cloud Build:
 
 \`\`\`bash
 python3 -B scripts/run_deep_forensic_audit.py
@@ -484,9 +484,9 @@ function extractCanonicalBeforeAfterSection(filename) {
   return [
     '<!-- GENUINE_3P_BEFORE_AFTER_START -->',
     '',
-    `## Signature 3rd-Party Commercial SaaS Live UI Proofs (${meta.wsCode} — ${meta.pairTitle} • 2880×1620 Retina)`,
+    `## Signature 3rd-Party Commercial SaaS Live UI Proofs (${meta.wsCode} — ${meta.pairTitle} • Live Before & After)`,
     '',
-    '> All screenshots below are authentic `2880×1620` Retina Chrome captures of genuine live multi-cloud SaaS/upstream software UIs bound directly to the 5-Hop Governance Pipeline ([10-SaaS Visual Atlas](saas-10-visual-verification-and-redteam-atlas.md)).',
+    '> All screenshots below are live Chrome captures of genuine live multi-cloud SaaS/upstream software UIs bound directly to the 5-Hop Governance Pipeline ([10-SaaS Visual Atlas](saas-10-visual-verification-and-redteam-atlas.md)).',
     '',
     ...blocks.flatMap(b => [b, '']),
     '<!-- GENUINE_3P_BEFORE_AFTER_END -->',

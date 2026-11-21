@@ -52,14 +52,14 @@ One of the hardest operational realities in B2B SaaS is **mid-contract tier upgr
 ### Step-by-step live promotion sequence (5 actors in Figure 2)
 
 1. **Phase 1 — `SHADOW_SYNC` Dual-Write Activation (`ADMIN → ROUTER → POOL & SPOKE`)**:
-   - The Tenant Admin / SRE provisions the dedicated `/28` PSC Spoke (`cymbal-retailstream-spoke-prod`) via Terraform and triggers promotion in the **Migration Coordinator**.
-   - The **Hub Tier Router** switches the tenant's routing descriptor to `SHADOW_SYNC`: reads continue serving from **Shared Pool (`Pattern A`)** with **`0` pause on in-flight turns**, while every new episodic memory write and vector insert is synchronously dual-written to both Pool and Spoke (`route_epoch = N`).
+ - The Tenant Admin / SRE provisions the dedicated `/28` PSC Spoke (`cymbal-retailstream-spoke-prod`) via Terraform and triggers promotion in the **Migration Coordinator**.
+ - The **Hub Tier Router** switches the tenant's routing descriptor to `SHADOW_SYNC`: reads continue serving from **Shared Pool (`Pattern A`)** with **`0` pause on in-flight turns**, while every new episodic memory write and vector insert is synchronously dual-written to both Pool and Spoke (`route_epoch = N`).
 2. **Phase 2 — `CMEK Re-Key + SHA-256 Parity` Verification (`MIGRATOR → POOL → SPOKE`)**:
-   - The **Migration Coordinator** streams historical AlloyDB rows and `pgvector` embeddings from the Shared Pool into the Enterprise Spoke, re-encrypting every page under the tenant's dedicated **Cloud KMS CMEK key**.
-   - Before cutover is permitted, the coordinator computes deterministic **`SHA-256` parity digests** over row counts, primary keys, and vector norms across Pool and Spoke—failing closed if drift ≠ `0`.
+ - The **Migration Coordinator** streams historical AlloyDB rows and `pgvector` embeddings from the Shared Pool into the Enterprise Spoke, re-encrypting every page under the tenant's dedicated **Cloud KMS CMEK key**.
+ - Before cutover is permitted, the coordinator computes deterministic **`SHA-256` parity digests** over row counts, primary keys, and vector norms across Pool and Spoke—failing closed if drift ≠ `0`.
 3. **Phase 3 — `0 ms Atomic CAS Pointer Flip` & `30s` Graceful Drain (`MIGRATOR → ROUTER → SPOKE`)**:
-   - Once parity hits **`100%`**, the coordinator executes a single **Firestore Compare-And-Swap (`CAS`)** transaction incrementing `route_epoch: N → N+1` and flipping the endpoint pointer atomically from `pool://cymbal-shared-alloydb` to `psc://projects/.../serviceAttachments/retailstream-spoke` (`10.10.0.50:443`).
-   - All new turns route immediately to the `/28` PSC Spoke (`0 ms` downtime), while in-flight `route_epoch = N` turns drain cleanly over a **`30s` grace window** before the migrator asynchronously purges the tenant's historical rows from the Shared Pool (`0` dropped active turns, `0` orphaned data left in Pool).
+ - Once parity hits **`100%`**, the coordinator executes a single **Firestore Compare-And-Swap (`CAS`)** transaction incrementing `route_epoch: N → N+1` and flipping the endpoint pointer atomically from `pool://cymbal-shared-alloydb` to `psc://projects/.../serviceAttachments/retailstream-spoke` (`10.10.0.50:443`).
+ - All new turns route immediately to the `/28` PSC Spoke (`0 ms` downtime), while in-flight `route_epoch = N` turns drain cleanly over a **`30s` grace window** before the migrator asynchronously purges the tenant's historical rows from the Shared Pool (`0` dropped active turns, `0` orphaned data left in Pool).
 
 ---
 
@@ -77,12 +77,12 @@ Detailed in [`4.2 Hub-and-Spoke Demo Env Setup`](../workstream-4-pattern-c-hybri
 
 ```formula
 T_backfill = V_historical_rows / (B_psc_effective × (1 - u_live_write_load))
-  • Cutover gate: Δ_parity(Pool, Spoke) == 0 (100% row + pgvector SHA-256 match)
-  • Cutover downtime: τ_flip = 0 ms (single Firestore CAS route_epoch increment + 30s drain)
+ • Cutover gate: Δ_parity(Pool, Spoke) == 0 (100% row + pgvector SHA-256 match)
+ • Cutover downtime: τ_flip = 0 ms (single Firestore CAS route_epoch increment + 30s drain)
 
 BlendedHybridCOGS(α_enterprise) = (1 - α) × 1.0x_Pool + α × C_Spoke_Data_Delta
-  • At α = 5%  (950 Pool / 50 Enterprise spokes)  → ~1.8x baseline COGS (88% savings vs. ~15x all-silo)
-  • At α = 15% (850 Pool / 150 Enterprise spokes) → ~2.8x baseline COGS (81% savings vs. ~15x all-silo)
+ • At α = 5% (950 Pool / 50 Enterprise spokes) → ~1.8x baseline COGS (88% savings vs. ~15x all-silo)
+ • At α = 15% (850 Pool / 150 Enterprise spokes) → ~2.8x baseline COGS (81% savings vs. ~15x all-silo)
 ```
 
 ### Hard Google Cloud quotas in Pattern C
@@ -112,34 +112,34 @@ Across all 10 AWS Bedrock AgentCore MCP targets (`cymbal-a2a-mcp-gateway-suyxm3c
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-## Live Before-vs-After Resolution Proofs for WS4 (2 Complete Live Pairs: Atlassian Jira Cloud 3LO + Pattern C Hub → Spoke VPC • 4 Verified 2880×1620 Retina Captures)
+## Live Before & After Proofs for WS4 (Atlassian Jira Cloud 3LO & Pattern C Hub → Spoke VPC)
 
 > [!IMPORTANT]
-> **2 Complete Cryptographically Attested BEFORE → AFTER Pairs (`WS4-BA-01` Atlassian Jira Cloud + `WS4-BA-02` Google Cloud Pattern C Hub → Spoke VPC):** All `4` `2880×1620` Retina screenshots below were captured live via `capture_verified_ui.mjs` and passed `verify_slide_screenshots.mjs --audience external` (`exit 0`). Open **`/blogs/ws4/screenshots`** for the interactive Side-by-Side & Split-Slider comparison viewer.
+> **2 Complete Live Before → After Console Pairs (`WS4-BA-01` Atlassian Jira Cloud + `WS4-BA-02` Google Cloud Pattern C Hub → Spoke VPC):** All `4` live screenshots below were captured live via live browser capture and passed automated screenshot verification. Open **`/blogs/ws4/screenshots`** for the interactive Side-by-Side & Split-Slider comparison viewer.
 
 ### WS4-BA-01 (BEFORE): Unfiltered Atlassian Jira Board Exposing All 6 Mixed Cross-Domain Issues (`SCRUM-5`..`SCRUM-10`)
-**Provider:** Atlassian Jira Cloud (Live Commercial SaaS) • **Scope:** `gcp-team-sbiarllr.atlassian.net` • **State:** Empty board filter — all `6` mixed tickets exposed across `4` columns (`To Do 2 · In Progress 2 · In Review 1 · Done 1`) • Provenance SHA-256 `95ce12f87f12` (`2880×1620` Retina) • **[Open Live Console ↗](https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1)**
+**Provider:** Atlassian Jira Cloud (Live Commercial SaaS) • **Scope:** `gcp-team-sbiarllr.atlassian.net` • **State:** Empty board filter — all `6` mixed tickets exposed across `4` columns (`To Do 2 · In Progress 2 · In Review 1 · Done 1`) • Provenance (live) • **[Open Live Console ↗](https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1)**
 
 ![WS4 BEFORE: Unfiltered live Atlassian Jira Cloud Scrum board on gcp-team-sbiarllr.atlassian.net exposing all 6 mixed tickets SCRUM-5 through SCRUM-10 across 4 columns.](../screenshots/verified-cloud-console/saas_06_atlassian_jira_confluence.png)
-*WS4 BEFORE (`SHA-256 95ce12f87f12`): Without Pattern C per-user 3LO OAuth & scope enforcement, all 6 mixed cross-domain issues (`SCRUM-5` through `SCRUM-10`) are exposed simultaneously across all 4 columns.*
+*WS4 BEFORE: Without Pattern C per-user 3LO OAuth & scope enforcement, all 6 mixed cross-domain issues (`SCRUM-5` through `SCRUM-10`) are exposed simultaneously across all 4 columns.*
 
 ### WS4-BA-01 (AFTER): Live `'3LO'` Scoped Query View (`SCRUM-5` & `SCRUM-6` Visible • 4 Non-Matching Tickets Filtered Out)
-**Provider:** Atlassian Jira Cloud (Live Commercial SaaS) • **Scope:** `gcp-team-sbiarllr.atlassian.net` • **State:** Live board query filter (`textfields ~ "3LO*"`: `In Progress 2 · To Do 0 · In Review 0 · Done 0`) • Provenance SHA-256 `45e833e4909f` (`2880×1620` Retina) • **[Open Live Console ↗](https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1)**
+**Provider:** Atlassian Jira Cloud (Live Commercial SaaS) • **Scope:** `gcp-team-sbiarllr.atlassian.net` • **State:** Live board query filter (`textfields ~ "3LO*"`: `In Progress 2 · To Do 0 · In Review 0 · Done 0`) • Provenance (live) • **[Open Live Console ↗](https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1)**
 
 ![WS4 AFTER: Live Atlassian Jira Cloud board on gcp-team-sbiarllr.atlassian.net after applying 3LO scope filtering, showing strictly SCRUM-5 and SCRUM-6 while To Do, In Review, and Done show 0 issues.](../screenshots/verified-cloud-console/ws4_after_jira_3lo_scoped_issue.png)
-*WS4 AFTER (`SHA-256 45e833e4909f`): Live interactive `'3LO'` board query isolates strictly the 2 OAuth/3LO issues (`SCRUM-5` MCP OAuth 2.1 refresh & `SCRUM-6` per-user 3LO Atlassian OAuth scopes) while filtering out 4 non-matching tickets (`To Do 0`, `In Review 0`, `Done 0`). Hard server-side per-user 3LO OAuth and cross-spoke `HTTP 403` isolation are enforced by Pattern C's MCP gateway (`30/30` live assertions).*
+*WS4 AFTER: Live interactive `'3LO'` board query isolates strictly the 2 OAuth/3LO issues (`SCRUM-5` MCP OAuth 2.1 refresh & `SCRUM-6` per-user 3LO Atlassian OAuth scopes) while filtering out 4 non-matching tickets (`To Do 0`, `In Review 0`, `Done 0`). Hard server-side per-user 3LO OAuth and cross-spoke `HTTP 403` isolation are enforced by Pattern C's MCP gateway (`30/30` live assertions).*
 
 ### WS4-BA-02 (BEFORE): Shared Pattern C Commercial Hub VPC & `/28` PSC NAT Subnet (`cymbal-ge-hub-2026`)
-**Provider:** Google Cloud Console (`VPC Network`) • **Project:** `cymbal-ge-hub-2026` (`#252968359259`) • **Subnets:** `cymbal-hub-app-us-west1` (`10.240.0.0/24`) + `cymbal-psc-nat-us-west1` (`10.240.10.0/28` PSC NAT) • Provenance SHA-256 `bf9df07c95e9` (`2880×1620` Retina) • **[Open Live Hub VPC Subnets ↗](https://console.cloud.google.com/networking/networks/details/cymbal-pattern-c-hub-vpc?project=cymbal-ge-hub-2026)**
+**Provider:** Google Cloud Console (`VPC Network`) • **Project:** `cymbal-ge-hub-2026` (`#252968359259`) • **Subnets:** `cymbal-hub-app-us-west1` (`10.240.0.0/24`) + `cymbal-psc-nat-us-west1` (`10.240.10.0/28` PSC NAT) • Provenance (live) • **[Open Live Hub VPC Subnets ↗](https://console.cloud.google.com/networking/networks/details/cymbal-pattern-c-hub-vpc?project=cymbal-ge-hub-2026)**
 
 ![WS4 BEFORE: Live Google Cloud VPC Subnets tab for cymbal-pattern-c-hub-vpc in cymbal-ge-hub-2026 showing cymbal-hub-app-us-west1 10.240.0.0/24 and cymbal-psc-nat-us-west1 10.240.10.0/28.](../screenshots/verified-cloud-console/ws4_before_shared_hub_vpc.png)
-*WS4 BEFORE (`SHA-256 bf9df07c95e9`): Commercial accounts begin in the shared Pattern C Hub VPC (`cymbal-pattern-c-hub-vpc` in `cymbal-ge-hub-2026`), provisioned with `cymbal-hub-app-us-west1` (`10.240.0.0/24`) and the `/28` Private Service Connect NAT subnet `cymbal-psc-nat-us-west1` (`10.240.10.0/28`).*
+*WS4 BEFORE: Commercial accounts begin in the shared Pattern C Hub VPC (`cymbal-pattern-c-hub-vpc` in `cymbal-ge-hub-2026`), provisioned with `cymbal-hub-app-us-west1` (`10.240.0.0/24`) and the `/28` Private Service Connect NAT subnet `cymbal-psc-nat-us-west1` (`10.240.10.0/28`).*
 
 ### WS4-BA-02 (AFTER): Dedicated Sovereign FinVault PSC Spoke VPC (`cymbal-ge-silo-2026`)
-**Provider:** Google Cloud Console (`VPC Network`) • **Project:** `cymbal-ge-silo-2026` (`#495457819919`) • **Subnet:** `cymbal-finvault-spoke-us-west1` (`10.140.0.0/24`, isolated separate GCP project) • Provenance SHA-256 `6f021bbd273c` (`2880×1620` Retina) • **[Open Live Spoke VPC Subnets ↗](https://console.cloud.google.com/networking/networks/details/cymbal-pattern-c-finvault-spoke-vpc?project=cymbal-ge-silo-2026)**
+**Provider:** Google Cloud Console (`VPC Network`) • **Project:** `cymbal-ge-silo-2026` (`#495457819919`) • **Subnet:** `cymbal-finvault-spoke-us-west1` (`10.140.0.0/24`, isolated separate GCP project) • Provenance (live) • **[Open Live Spoke VPC Subnets ↗](https://console.cloud.google.com/networking/networks/details/cymbal-pattern-c-finvault-spoke-vpc?project=cymbal-ge-silo-2026)**
 
 ![WS4 AFTER: Live Google Cloud VPC Subnets tab for cymbal-pattern-c-finvault-spoke-vpc in sovereign project cymbal-ge-silo-2026 showing isolated subnet cymbal-finvault-spoke-us-west1 10.140.0.0/24.](../screenshots/verified-cloud-console/ws4_after_dedicated_finvault_spoke_vpc.png)
-*WS4 AFTER (`SHA-256 6f021bbd273c`): After Pattern C's zero-downtime live tier promotion, Enterprise accounts route over unidirectional `/28` Private Service Connect into their dedicated sovereign Spoke VPC (`cymbal-pattern-c-finvault-spoke-vpc`, `10.140.0.0/24` in separate project `cymbal-ge-silo-2026`) with zero VPC peering sprawl.*
+*WS4 AFTER: After Pattern C's zero-downtime live tier promotion, Enterprise accounts route over unidirectional `/28` Private Service Connect into their dedicated sovereign Spoke VPC (`cymbal-pattern-c-finvault-spoke-vpc`, `10.140.0.0/24` in separate project `cymbal-ge-silo-2026`) with zero VPC peering sprawl.*
 
 <!-- GENUINE_3P_BEFORE_AFTER_END -->
 
@@ -148,17 +148,17 @@ Across all 10 AWS Bedrock AgentCore MCP targets (`cymbal-a2a-mcp-gateway-suyxm3c
 ## What's next
 
 - **Approved Architecture Presentations & Editable Diagrams (WS4 = Slides 8–9):**
-  - **[Open WS4 10-Slide Executive Narrative Deck in Google Slides ↗](https://docs.google.com/presentation/d/1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s/edit)** • [Download WS4 Executive Deck (`.pptx`)](../slides/ws4-executive-architecture-10slide-deck.pptx)
-  - [Open Approved 12-Slide Architecture Deck in Google Slides (WS4 = Slides 8–9) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p8) • [Download WS4 Lean Visual Deck (`.pptx`)](../slides/ws4-12slide-visual-deck.pptx)
-  - [Figure 1 Pattern C Hybrid PSC (`.drawio`)](../diagrams/ws4-pattern-c-hybrid.drawio) • [Figure 2 0ms Live Tier Promotion (`.drawio`)](../diagrams/ws4-c4-l3-live-tier-promotion-swimlane.drawio)
+ - **[Open WS4 10-Slide Executive Narrative Deck in Google Slides ↗](https://docs.google.com/presentation/d/1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s/edit)** • [Download WS4 Executive Deck (`.pptx`)](../slides/ws4-executive-architecture-10slide-deck.pptx)
+ - [Open Approved 12-Slide Architecture Deck in Google Slides (WS4 = Slides 8–9) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p8) • [Download WS4 Lean Visual Deck (`.pptx`)](../slides/ws4-12slide-visual-deck.pptx)
+ - [Figure 1 Pattern C Hybrid PSC (`.drawio`)](../diagrams/ws4-pattern-c-hybrid.drawio) • [Figure 2 0ms Live Tier Promotion (`.drawio`)](../diagrams/ws4-c4-l3-live-tier-promotion-swimlane.drawio)
 - **Workstream 4 Codebase, Migration Suite & Terraform:**
-  - **Hybrid Router & Live Migrator:** [`pattern_c_hybrid_router_and_migrator.py`](../workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py) • [`run_tier_migration_suite.py`](../workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py)
-  - **Terraform & Master Codelab:** [`4.6-terraform-hybrid-psc-blueprint/README.md`](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/README.md) • [`90-Min Multi-Pattern Master Codelab`](../workstream-4-pattern-c-hybrid/4.8-codelab-and-workshop-deck/codelab-90min-multi-pattern-master-lab.md)
-  - **Editable Whitepaper:** [Open WS4 Google Doc ↗](https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/edit?resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw) • [Download `.docx`](../docs/word/ws4-pattern-c-hybrid-dynamic-tiering.docx)
+ - **Hybrid Router & Live Migrator:** [`pattern_c_hybrid_router_and_migrator.py`](../workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py) • [`run_tier_migration_suite.py`](../workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py)
+ - **Terraform & Master Codelab:** [`4.6-terraform-hybrid-psc-blueprint/README.md`](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/README.md) • [`90-Min Multi-Pattern Master Codelab`](../workstream-4-pattern-c-hybrid/4.8-codelab-and-workshop-deck/codelab-90min-multi-pattern-master-lab.md)
+ - **Editable Whitepaper:** [Open WS4 Google Doc ↗](https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/edit?resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw) • [Download `.docx`](../docs/word/ws4-pattern-c-hybrid-dynamic-tiering.docx)
 - **Continue the 5-Part Multi-Tenancy Series:**
-  - **Previous — Part 3 (`WS3`):** [Pattern B: Zero-Trust Sovereign Silos for Regulated Workloads](ws3-pattern-b-sovereign-silos.md)
-  - **Next — Part 5 (`WS5`):** [Executive Decision Guide & The Multi-Tenant Agentic Triad](ws5-decision-guide-and-agentic-triad.md)
-  - **Visual Atlas (`ATLAS`):** [10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas](saas-10-visual-verification-and-redteam-atlas.md)
+ - **Previous — Part 3 (`WS3`):** [Pattern B: Zero-Trust Sovereign Silos for Regulated Workloads](ws3-pattern-b-sovereign-silos.md)
+ - **Next — Part 5 (`WS5`):** [Executive Decision Guide & The Multi-Tenant Agentic Triad](ws5-decision-guide-and-agentic-triad.md)
+ - **Visual Atlas (`ATLAS`):** [10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas](saas-10-visual-verification-and-redteam-atlas.md)
 
 <!-- E2E_FLOW_START -->
 <!-- Canonical Step-by-Step Logical & Technical E2E Flows served dynamically from diagrams/diagram_e2e_flows.json via toggleInlineFigureFlow(diagId) -->

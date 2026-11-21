@@ -489,10 +489,10 @@
         <a id="btn-back-to-blog" class="btn btn-sm" href="/?tab=patterns">&#8592; Back to Blog</a>
         <div>
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <span id="hdr-badge" class="pill pill-green">VERIFIED LIVE CLOUD &amp; SAAS PROOFS</span>
+            <span id="hdr-badge" class="pill pill-green">LIVE CLOUD &amp; SAAS PROOFS</span>
             <h1 id="hdr-title" class="page-title">Loading Blog Screenshots...</h1>
           </div>
-          <p id="hdr-subtitle" class="page-subtitle">Genuine live 2880×1620 Retina BEFORE vs. AFTER captures across Google Cloud Console and Commercial SaaS — cryptographically attested via SHA-256 provenance.</p>
+          <p id="hdr-subtitle" class="page-subtitle">Live Before &amp; After captures across Google Cloud Console and commercial SaaS applications.</p>
         </div>
       </div>
       <div class="control-group">
@@ -502,7 +502,7 @@
     <div class="topbar-row">
       <nav id="blog-switcher" class="blog-switcher" aria-label="Switch Blog Screenshots Page"></nav>
       <div class="control-group">
-        <input type="search" id="shot-filter-input" class="search-input" placeholder="Filter provider, resource, SHA-256..." aria-label="Filter screenshots" />
+        <input type="search" id="shot-filter-input" class="search-input" placeholder="Filter provider, service, or resource..." aria-label="Filter screenshots" />
       </div>
     </div>
   </header>
@@ -510,8 +510,8 @@
   <main class="page-shell">
     <section class="controls-strip" aria-label="Screenshot Display Controls">
       <div class="control-group">
-        <span id="stat-shots" class="pill pill-green">0 Retina Screenshots</span>
-        <span id="stat-verified" class="pill pill-blue">0 Provenance Verified</span>
+        <span id="stat-shots" class="pill pill-green">0 Screenshots</span>
+        <span id="stat-verified" class="pill pill-blue">0 Before &rarr; After Pairs</span>
         <span id="stat-diags" class="pill pill-amber">0 Blog Diagrams</span>
       </div>
       <div id="provider-filter-row" class="provider-filter-row" aria-label="Filter by Cloud or SaaS Provider"></div>
@@ -533,13 +533,13 @@
           <button type="button" id="lb-prev" class="btn btn-xs">&#8592; Prev</button>
           <button type="button" id="lb-next" class="btn btn-xs">Next &#8594;</button>
           <a id="lb-console" class="btn btn-xs btn-primary hidden" href="#" target="_blank" rel="noopener noreferrer">&#127760; Open Live Console &#8599;</a>
-          <a id="lb-open" class="btn btn-xs" href="#" target="_blank" rel="noopener noreferrer">Open Full PNG &#8599;</a>
-          <a id="lb-dl" class="btn btn-xs" href="#" download>Download PNG</a>
+          <a id="lb-open" class="btn btn-xs" href="#" target="_blank" rel="noopener noreferrer">Open Full Size &#8599;</a>
+          <a id="lb-dl" class="btn btn-xs" href="#" download>Download</a>
           <button type="button" id="lb-close" class="btn btn-xs">&#10005; Close</button>
         </div>
       </div>
       <div class="lightbox-body">
-        <img id="lightbox-img" class="lightbox-img" alt="Expanded Retina screenshot" />
+        <img id="lightbox-img" class="lightbox-img" alt="Expanded screenshot preview" />
         <p id="lightbox-caption" style="font-size:12.5px; color:#334155; max-width:1080px; text-align:center;"></p>
       </div>
     </div>
@@ -658,11 +658,6 @@
         const badgeRow = makeEl('div', 'console-meta-row');
         badgeRow.appendChild(makeEl('span', providerPillClass(shot.providerTag), shot.provider || 'Live Cloud Console'));
         badgeRow.appendChild(makeEl('span', 'pill', shot.saasId || 'LIVE'));
-        if (shot.verifiedProvenance) {
-          badgeRow.appendChild(makeEl('span', 'pill pill-green', '✅ Verified Provenance · SHA-256 ' + (shot.sha256Short || '')));
-        } else if (shot.sha256Short) {
-          badgeRow.appendChild(makeEl('span', 'pill pill-amber', '📸 Live Console Capture · ' + shot.sha256Short));
-        }
         titleWrap.appendChild(badgeRow);
 
         const h2 = makeEl('h2', 'console-card-title', shot.product || shot.fileName);
@@ -678,7 +673,6 @@
         if (shot.resourceLabel) {
           metaRow.appendChild(makeEl('span', 'pill', '🔹 ' + shot.resourceLabel));
         }
-        metaRow.appendChild(makeEl('span', 'pill', (shot.resolution || '2880×1620 Retina') + ' · ' + Math.round((shot.sizeBytes || 0) / 1024) + ' KB'));
         hdr.appendChild(metaRow);
         card.appendChild(hdr);
 
@@ -701,7 +695,7 @@
           const i = flatShots.findIndex(function (x) { return x.imageUrl === shot.imageUrl; });
           openLightboxAt(i >= 0 ? i : 0);
         });
-        const aOpen = makeEl('a', 'btn btn-xs', '↗ PNG');
+        const aOpen = makeEl('a', 'btn btn-xs', '↗ Full Size');
         aOpen.setAttribute('href', safeHref(shot.imageUrl));
         aOpen.setAttribute('target', '_blank');
         aOpen.setAttribute('rel', 'noopener noreferrer');
@@ -749,10 +743,9 @@
         hdr.style.background = shot.phase === 'AFTER' ? '#ecfdf5' : '#fff1f2';
         const left = makeEl('div', 'control-group');
         left.appendChild(makeEl('span', shot.phase === 'AFTER' ? 'pill pill-green' : 'pill pill-red', shot.phase === 'AFTER' ? '🟢 AFTER — Resolved With Pattern' : '🔴 BEFORE — Issue Exposed'));
-        if (shot.verifiedProvenance && shot.sha256Short) {
-          left.appendChild(makeEl('span', 'pill pill-green', '✅ SHA-256 ' + shot.sha256Short));
+        if (shot.provider) {
+          left.appendChild(makeEl('span', 'pill', shot.provider));
         }
-        left.appendChild(makeEl('span', 'pill', (shot.resolution || '2880×1620 Retina') + ' · ' + Math.round((shot.sizeBytes || 0) / 1024) + ' KB'));
 
         const right = makeEl('div', 'control-group');
         if (shot.liveConsoleUrl) {
@@ -768,7 +761,7 @@
           const i = flatShots.findIndex(function (x) { return x.imageUrl === shot.imageUrl; });
           openLightboxAt(i >= 0 ? i : 0);
         });
-        const aOpen = makeEl('a', 'btn btn-xs', '↗ PNG');
+        const aOpen = makeEl('a', 'btn btn-xs', '↗ Full Size');
         aOpen.setAttribute('href', safeHref(shot.imageUrl));
         aOpen.setAttribute('target', '_blank');
         aOpen.setAttribute('rel', 'noopener noreferrer');
@@ -777,7 +770,7 @@
         btnCopy.addEventListener('click', function () {
           copyUrl(shot.imageUrl, shot.fileName);
         });
-        const aDl = makeEl('a', 'btn btn-xs', '⬇ PNG');
+        const aDl = makeEl('a', 'btn btn-xs', '⬇ Download');
         aDl.setAttribute('href', safeHref(shot.imageUrl));
         aDl.setAttribute('download', shot.fileName);
 
@@ -876,7 +869,7 @@
           body.appendChild(pre);
         }
 
-        const foot = makeEl('div', '', 'Target Retina PNG: ' + (meta.fileName || '') + ' (captured via capture_verified_ui.mjs immediately after 1-tap Google SSO — zero mockups).');
+        const foot = makeEl('div', '', 'Live console resource: ' + (meta.fileName || '') + '.');
         foot.style.fontSize = '11.5px';
         foot.style.color = '#64748b';
         body.appendChild(foot);
@@ -896,7 +889,7 @@
         left.appendChild(makeEl('h2', 'pair-title', pair.title));
         const right = makeEl('div', 'control-group');
         if (pair.status === 'CAPTURED_VERIFIED_PAIR') {
-          right.appendChild(makeEl('span', 'pill pill-green', '✅ Live Verified BEFORE → AFTER Retina Pair'));
+          right.appendChild(makeEl('span', 'pill pill-green', '✅ Before → After Console Proof'));
         } else {
           right.appendChild(makeEl('span', 'pill pill-amber', '🌐 Live Cloud Resource · CLI / Console Verification'));
         }
@@ -1012,10 +1005,10 @@
         elLinkDiag.setAttribute('href', safeHref(blog.diagramsPageUrl));
         elLinkDiag.textContent = '📐 All Diagrams Used (' + (stats.activeDiagramCount || 0) + ') ↗';
 
-        elStatShots.textContent = (stats.screenshotCount || 0) + ' Live Retina Screenshots';
+        elStatShots.textContent = (stats.screenshotCount || 0) + ' Live Screenshots';
         const capPairs = stats.capturedBeforeAfterPairCount || 0;
         const totPairs = stats.beforeAfterPairCount || beforeAfterPairs.length;
-        elStatVerified.textContent = '✅ ' + capPairs + '/' + totPairs + ' Live BEFORE → AFTER Pairs Captured';
+        elStatVerified.textContent = '✅ ' + capPairs + '/' + totPairs + ' Before → After Pairs';
         elModeSide.textContent = 'Side-by-Side (Before vs. After)';
         if (hasCapturedPair) {
           elModeSlider.classList.remove('hidden');

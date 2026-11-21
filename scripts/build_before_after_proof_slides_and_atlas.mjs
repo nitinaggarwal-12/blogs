@@ -286,7 +286,7 @@ const PROOF_SLIDES = [
     isGcp: true,
     eyebrow: "WS1 • HOP 4 LIVE GOOGLE CLOUD CONSOLE PROOF",
     title: "Live Model Armor: Unprotected Baseline vs. Zero-Trust Firewall",
-    subtitle: "Two genuine 2880×1620 Retina captures from console.cloud.google.com (cymbal-ge-hub-2026) executing the exact same cross-tenant SSN prompt-injection test live.",
+    subtitle: "Two live captures from console.cloud.google.com (cymbal-ge-hub-2026) executing the exact same cross-tenant SSN prompt-injection test live.",
     images: [
       {
         phase: "BEFORE",
@@ -309,7 +309,7 @@ const PROOF_SLIDES = [
     rightStatPill: "Live Model Armor Proof",
     footerLeft: "GOOGLE CLOUD AI ARCHITECTURE  •  WS1: 5-HOP GOVERNANCE BASELINE",
     footerMid: "Verified Google Cloud Console • Vertex AI Model Armor",
-    notes: "On this slide we compare two genuine 2880-by-1620 Retina captures taken live inside Google Cloud Console Model Armor in project cymbal-ge-hub-2026.\n\nOn the left, template ge-ws1-before-unprotected-baseline (SHA-256 2bda7e68993a) leaves Prompt Injection, Malicious URL, and Sensitive Data Protection disabled, so our adversarial cross-tenant SSN exfiltration prompt returns 'No violations detected' and passes straight through to the model.\n\nOn the right, enabling WS1 Hop 4 template ge-zero-trust-ai-firewall (SHA-256 93471e0d7b17, Confidence level Low and above) intercepts the exact same payload live with 'Template violations detected' — flagging both Dangerous content and Prompt injection and jailbreak before the LLM ever sees the prompt.",
+    notes: "On this slide we compare two genuine live captures taken live inside Google Cloud Console Model Armor in project cymbal-ge-hub-2026.\n\nOn the left, template ge-ws1-before-unprotected-baseline (SHA-256 2bda7e68993a) leaves Prompt Injection, Malicious URL, and Sensitive Data Protection disabled, so our adversarial cross-tenant SSN exfiltration prompt returns 'No violations detected' and passes straight through to the model.\n\nOn the right, enabling WS1 Hop 4 template ge-zero-trust-ai-firewall (SHA-256 93471e0d7b17, Confidence level Low and above) intercepts the exact same payload live with 'Template violations detected' — flagging both Dangerous content and Prompt injection and jailbreak before the LLM ever sees the prompt.",
   },
   // 2. WS1-BA-02 — Cloud Armor Hop 1 Edge WAF
   {
@@ -317,7 +317,7 @@ const PROOF_SLIDES = [
     isGcp: true,
     eyebrow: "WS1 • HOP 1 LIVE GOOGLE CLOUD CONSOLE PROOF",
     title: "Live Cloud Armor WAF: Open Edge vs. Priority 1000/1100 Deny-403",
-    subtitle: "Two genuine 2880×1620 Retina captures from console.cloud.google.com (cymbal-ge-hub-2026) proving deterministic Hop 1 header anti-spoofing and OWASP SQLi/XSS rules.",
+    subtitle: "Two live captures from console.cloud.google.com (cymbal-ge-hub-2026) proving deterministic Hop 1 header anti-spoofing and OWASP SQLi/XSS rules.",
     images: [
       {
         phase: "BEFORE",
@@ -348,7 +348,7 @@ const PROOF_SLIDES = [
     isGcp: true,
     eyebrow: "WS2 • PATTERN A LIVE GOOGLE CLOUD CONSOLE PROOF",
     title: "Live BigQuery Studio: Pooled Bleed vs. Pattern A Tenant RLS",
-    subtitle: "Two genuine 2880×1620 Retina captures from console.cloud.google.com (cymbal-ge-hub-2026) proving Pattern A tenant isolation on shared pooled storage.",
+    subtitle: "Two live captures from console.cloud.google.com (cymbal-ge-hub-2026) proving Pattern A tenant isolation on shared pooled storage.",
     images: [
       {
         phase: "BEFORE",
@@ -371,7 +371,7 @@ const PROOF_SLIDES = [
     rightStatPill: "0 Foreign Rows Leaked",
     footerLeft: "GOOGLE CLOUD AI ARCHITECTURE  •  WS2: PATTERN A POOLED ARCHITECTURE",
     footerMid: "Verified Google Cloud Console • BigQuery Studio RLS",
-    notes: "Moving to Workstream 2 Pattern A High-Density Pooled Architecture, these two live 2880-by-1620 Retina BigQuery Studio captures from cymbal-ge-hub-2026 prove deterministic tenant isolation on a shared pooled table.\n\nOn the left (SHA-256 354c21024148), an unscoped query against pattern_a_pooled_rls_entities leaks 1 to 7 of 7 rows simultaneously across competing tenants finvault, globex, medcore, and retailstream.\n\nOn the right (SHA-256 5ec0675a5ba0), binding the verified JWT tenant claim (backed by active Row Access Policy tenant_pooled_rls_policy) returns strictly 1 to 2 of 2 authorized FinVault rows (ENT-FV-1001 and ENT-FV-1003) with zero competing tenant rows leaked, alongside our live authenticated Cloud Run pooled runtime capture (SHA-256 49cfff9cfcaf).",
+    notes: "Moving to Workstream 2 Pattern A High-Density Pooled Architecture, these two live live BigQuery Studio captures from cymbal-ge-hub-2026 prove deterministic tenant isolation on a shared pooled table.\n\nOn the left (SHA-256 354c21024148), an unscoped query against pattern_a_pooled_rls_entities leaks 1 to 7 of 7 rows simultaneously across competing tenants finvault, globex, medcore, and retailstream.\n\nOn the right (SHA-256 5ec0675a5ba0), binding the verified JWT tenant claim (backed by active Row Access Policy tenant_pooled_rls_policy) returns strictly 1 to 2 of 2 authorized FinVault rows (ENT-FV-1001 and ENT-FV-1003) with zero competing tenant rows leaked, alongside our live authenticated Cloud Run pooled runtime capture (SHA-256 49cfff9cfcaf).",
   },
   // 4. WS3-BA-01 — BigQuery Sovereign CMEK Kill-Switch
   {
@@ -379,7 +379,7 @@ const PROOF_SLIDES = [
     isGcp: true,
     eyebrow: "WS3 • PATTERN B LIVE GOOGLE CLOUD CONSOLE PROOF",
     title: "Live CMEK Kill-Switch: Enabled Access vs. Revoked Fail-Closed",
-    subtitle: "Two genuine 2880×1620 Retina captures from cymbal-ge-silo-2026 proving immediate CMEK zero-access revocation.",
+    subtitle: "Two live captures from cymbal-ge-silo-2026 proving immediate CMEK zero-access revocation.",
     images: [
       {
         phase: "BEFORE",
@@ -402,7 +402,7 @@ const PROOF_SLIDES = [
     rightStatPill: "Live CMEK Kill-Switch",
     footerLeft: "GOOGLE CLOUD AI ARCHITECTURE  •  WS3: PATTERN B SOVEREIGN SILOS",
     footerMid: "Verified Google Cloud Console • Pattern B CMEK + Cloud KMS",
-    notes: "For Workstream 3 Pattern B Sovereign Silos, here is live cryptographic proof captured at 2880-by-1620 Retina in dedicated sovereign project cymbal-ge-silo-2026.\n\nOn the left (SHA-256 5acc84f6897e), while FinVault's customer-managed encryption key finvault-silo-cmek is Available, BigQuery cleanly decrypts sovereign vault records VAULT-FV-9001 and VAULT-FV-9002.\n\nOn the right (SHA-256 564ee3425027), the moment a regulated tenant disables their Cloud KMS CryptoKeyVersion (medcore-revoked-cmek), BigQuery fails closed immediately with 'Cloud KMS Error: ... is not enabled, current state is: DISABLED' — giving CISOs mathematical zero-access revocation verified alongside the live Cloud KMS keyring capture (SHA-256 7e9e616dee88).",
+    notes: "For Workstream 3 Pattern B Sovereign Silos, here is live cryptographic proof captured live in dedicated sovereign project cymbal-ge-silo-2026.\n\nOn the left (SHA-256 5acc84f6897e), while FinVault's customer-managed encryption key finvault-silo-cmek is Available, BigQuery cleanly decrypts sovereign vault records VAULT-FV-9001 and VAULT-FV-9002.\n\nOn the right (SHA-256 564ee3425027), the moment a regulated tenant disables their Cloud KMS CryptoKeyVersion (medcore-revoked-cmek), BigQuery fails closed immediately with 'Cloud KMS Error: ... is not enabled, current state is: DISABLED' — giving CISOs mathematical zero-access revocation verified alongside the live Cloud KMS keyring capture (SHA-256 7e9e616dee88).",
   },
   // 5. WS3-CTRL-02 + WS2-CTRL-02 — Cloud KMS Keyring Custody & Cloud Run Authenticated Hub
   {
@@ -410,7 +410,7 @@ const PROOF_SLIDES = [
     isGcp: true,
     eyebrow: "WS2 & WS3 • CONTROL-PLANE LIVE GOOGLE CLOUD CONSOLE PROOF",
     title: "Live Cloud KMS Keyring & Authenticated Cloud Run Runtime Hub",
-    subtitle: "Two genuine 2880×1620 Retina control-plane captures verifying Cloud KMS custody and authenticated Cloud Run services.",
+    subtitle: "Two live control-plane captures verifying Cloud KMS custody and authenticated Cloud Run services.",
     images: [
       {
         phase: "BEFORE",
@@ -441,7 +441,7 @@ const PROOF_SLIDES = [
     isGcp: false,
     eyebrow: "WS4 • PATTERN C LIVE COMMERCIAL SAAS PROOF",
     title: "Live Commercial Jira Cloud: Unfiltered Board vs. Scoped '3LO'",
-    subtitle: "Two genuine 2880×1620 Retina captures from gcp-team-sbiarllr.atlassian.net contrasting an unfiltered board against live '3LO' scoped issue retrieval.",
+    subtitle: "Two live captures from gcp-team-sbiarllr.atlassian.net contrasting an unfiltered board against live '3LO' scoped issue retrieval.",
     images: [
       {
         phase: "BEFORE",
@@ -464,7 +464,7 @@ const PROOF_SLIDES = [
     rightStatPill: "Live Jira Cloud Pair",
     footerLeft: "GOOGLE CLOUD AI ARCHITECTURE  •  WS4: PATTERN C 3LO SAAS SCOPING",
     footerMid: "Verified Commercial SaaS UI • Atlassian Jira Cloud",
-    notes: "Here is a live side-by-side comparison captured at 2880-by-1620 Retina from our genuine Atlassian Jira Cloud workspace at gcp-team-sbiarllr.atlassian.net.\n\nOn the left (SHA-256 95ce12f87f12), the unfiltered board exposes all six mixed cross-domain issues across four columns (To Do 2, In Progress 2, In Review 1, Done 1).\n\nOn the right (SHA-256 45e833e4909f), applying a live '3LO' board query filter isolates strictly SCRUM-5 and SCRUM-6 under In Progress while filtering out four non-matching tickets. Note that while this UI view demonstrates scoped query filtering under the same Jira principal, hard server-side per-user 3LO OAuth and cross-spoke HTTP 403 anti-impersonation are enforced in Pattern C's MCP gateway and verified across all 30 multi-cloud assertions.",
+    notes: "Here is a live side-by-side comparison captured live from our genuine Atlassian Jira Cloud workspace at gcp-team-sbiarllr.atlassian.net.\n\nOn the left (SHA-256 95ce12f87f12), the unfiltered board exposes all six mixed cross-domain issues across four columns (To Do 2, In Progress 2, In Review 1, Done 1).\n\nOn the right (SHA-256 45e833e4909f), applying a live '3LO' board query filter isolates strictly SCRUM-5 and SCRUM-6 under In Progress while filtering out four non-matching tickets. Note that while this UI view demonstrates scoped query filtering under the same Jira principal, hard server-side per-user 3LO OAuth and cross-spoke HTTP 403 anti-impersonation are enforced in Pattern C's MCP gateway and verified across all 30 multi-cloud assertions.",
   },
   // 7. WS4-BA-02 — Pattern C Shared Hub VPC -> Dedicated FinVault Spoke VPC
   {
@@ -472,7 +472,7 @@ const PROOF_SLIDES = [
     isGcp: true,
     eyebrow: "WS4 • PATTERN C LIVE GOOGLE CLOUD CONSOLE PROOF",
     title: "Live Pattern C VPCs: Shared Hub vs. Dedicated FinVault Spoke",
-    subtitle: "Two genuine 2880×1620 Retina VPC captures proving zero-VPC-peering Hub-to-Spoke isolation across cymbal-ge-hub-2026 and cymbal-ge-silo-2026.",
+    subtitle: "Two live VPC captures proving zero-VPC-peering Hub-to-Spoke isolation across cymbal-ge-hub-2026 and cymbal-ge-silo-2026.",
     images: [
       {
         phase: "BEFORE",
@@ -495,7 +495,7 @@ const PROOF_SLIDES = [
     rightStatPill: "Live Hub → Spoke VPCs",
     footerLeft: "GOOGLE CLOUD AI ARCHITECTURE  •  WS4: PATTERN C HYBRID PSC NETWORK",
     footerMid: "Verified Google Cloud Console • VPC Networks & /28 PSC NAT",
-    notes: "This Workstream 4 Google Cloud Console pair verifies Pattern C's physical Hub-and-Spoke VPC separation at 2880-by-1620 Retina.\n\nOn the left (SHA-256 bf9df07c95e9), cymbal-pattern-c-hub-vpc in cymbal-ge-hub-2026 hosts the shared commercial hub subnet cymbal-hub-app-us-west1 (10.240.0.0/24) alongside the dedicated /28 Private Service Connect NAT subnet cymbal-psc-nat-us-west1 (10.240.10.0/28).\n\nOn the right (SHA-256 6f021bbd273c), promoted enterprise accounts land in their dedicated sovereign VPC cymbal-pattern-c-finvault-spoke-vpc inside cymbal-ge-silo-2026 on isolated subnet 10.140.0.0/24 — connected strictly outbound over unidirectional PSC with zero VPC peering limits and zero reverse ingress.",
+    notes: "This Workstream 4 Google Cloud Console pair verifies Pattern C's physical Hub-and-Spoke VPC separation live.\n\nOn the left (SHA-256 bf9df07c95e9), cymbal-pattern-c-hub-vpc in cymbal-ge-hub-2026 hosts the shared commercial hub subnet cymbal-hub-app-us-west1 (10.240.0.0/24) alongside the dedicated /28 Private Service Connect NAT subnet cymbal-psc-nat-us-west1 (10.240.10.0/28).\n\nOn the right (SHA-256 6f021bbd273c), promoted enterprise accounts land in their dedicated sovereign VPC cymbal-pattern-c-finvault-spoke-vpc inside cymbal-ge-silo-2026 on isolated subnet 10.140.0.0/24 — connected strictly outbound over unidirectional PSC with zero VPC peering limits and zero reverse ingress.",
   },
   // 8. WS5-BA-01 — ThoughtSpot Cloud Commercial BI
   {
@@ -503,7 +503,7 @@ const PROOF_SLIDES = [
     isGcp: false,
     eyebrow: "WS5 • MULTI-CLOUD LIVE COMMERCIAL SAAS PROOF",
     title: "Live Commercial BI: Global Liveboard vs. Scoped Saved Answer",
-    subtitle: "Two genuine 2880×1620 Retina captures from team2.thoughtspot.cloud contrasting unconstrained global KPIs against a domain-scoped 3-month query.",
+    subtitle: "Two live captures from team2.thoughtspot.cloud contrasting unconstrained global KPIs against a domain-scoped 3-month query.",
     images: [
       {
         phase: "BEFORE",
@@ -526,7 +526,7 @@ const PROOF_SLIDES = [
     rightStatPill: "Live ThoughtSpot BI Pair",
     footerLeft: "GOOGLE CLOUD AI ARCHITECTURE  •  WS5: MULTI-CLOUD COMMERCIAL BI",
     footerMid: "Verified Commercial SaaS UI • ThoughtSpot Cloud",
-    notes: "In Workstream 5, where our multi-cloud SaaS BI bridge lives, these two cryptographically attested 2880-by-1620 Retina captures from live ThoughtSpot Cloud (team2.thoughtspot.cloud) contrast unconstrained versus scoped BI consumption.\n\nOn the left (SHA-256 fd5cb15c0902), the Retail Sales Liveboard leaves all six dimension filter pills set to Select, exposing the full 735.3 thousand dollar cross-region rollup.\n\nOn the right (SHA-256 3fcab795d1e5), a distinct single-domain Pharma Supply Saved Answer pins queries explicitly to Received Date equals last 3 months — complemented by our 30/30 live AWS Bedrock AgentCore MCP Org RLS and HTTP 403/423 verification suite.",
+    notes: "In Workstream 5, where our multi-cloud SaaS BI bridge lives, these two cryptographically attested live captures from live ThoughtSpot Cloud (team2.thoughtspot.cloud) contrast unconstrained versus scoped BI consumption.\n\nOn the left (SHA-256 fd5cb15c0902), the Retail Sales Liveboard leaves all six dimension filter pills set to Select, exposing the full 735.3 thousand dollar cross-region rollup.\n\nOn the right (SHA-256 3fcab795d1e5), a distinct single-domain Pharma Supply Saved Answer pins queries explicitly to Received Date equals last 3 months — complemented by our 30/30 live AWS Bedrock AgentCore MCP Org RLS and HTTP 403/423 verification suite.",
   },
   // 9. WS5-BA-02 — Integration Connectors -> Cloud Run A2A Federation Hub
   {
@@ -534,7 +534,7 @@ const PROOF_SLIDES = [
     isGcp: true,
     eyebrow: "WS5 • AGENTIC TRIAD LIVE GOOGLE CLOUD CONSOLE PROOF",
     title: "Live Federation Hub: Connectors vs. Authenticated Cloud Run A2A",
-    subtitle: "Two genuine 2880×1620 Retina captures from console.cloud.google.com (cymbal-ge-hub-2026) contrasting unfederated point-to-point setup against the unified A2A/MCP hub.",
+    subtitle: "Two live captures from console.cloud.google.com (cymbal-ge-hub-2026) contrasting unfederated point-to-point setup against the unified A2A/MCP hub.",
     images: [
       {
         phase: "BEFORE",
@@ -601,14 +601,14 @@ async function buildAtlasDraft() {
       x: 0.56, y: 0.96, w: 7.4, h: 1.48,
       fontFace: FONT, fontSize: 36, bold: true, color: C.navy, margin: 0,
     });
-    s.addText("17 cryptographically attested 2880×1620 Retina captures (13 Google Cloud Console + 4 Commercial SaaS across 8/8 BEFORE → AFTER pairs) proving every WS1–WS5 isolation boundary live — paired with 30/30 AWS Bedrock AgentCore 10-SaaS MCP flows.", {
+    s.addText("17 live captures (13 Google Cloud Console + 4 Commercial SaaS across 8/8 BEFORE → AFTER pairs) proving every WS1–WS5 isolation boundary live — paired with 30/30 AWS Bedrock AgentCore 10-SaaS MCP flows.", {
       x: 0.56, y: 2.54, w: 7.2, h: 1.05,
       fontFace: FONT, fontSize: 13.5, color: C.slate, margin: 0,
     });
 
     // KPI tiles
     const kpis = [
-      { val: "17 / 17", lbl: "Verified Retina PNGs", sub: "13 GCP Console + 4 SaaS", col: C.teal },
+      { val: "17 / 17", lbl: "Live Console Captures", sub: "13 GCP Console + 4 SaaS", col: C.teal },
       { val: "8 / 8", lbl: "BEFORE → AFTER Pairs", sub: "0 Pending • Exit 0 Guard", col: C.blue },
       { val: "30 / 30", lbl: "10-SaaS MCP Flows", sub: "60/60 Cross-Cloud PASS", col: C.indigo },
     ];
@@ -661,7 +661,7 @@ async function buildAtlasDraft() {
       fontFace: FONT, fontSize: 10, color: C.muted, margin: 0,
     });
     s.addText("01 / 16", { x: 11.96, y: 7.06, w: 0.90, h: 0.28, fontFace: FONT, fontSize: 9, bold: true, color: C.navy, align: "center", valign: "middle" });
-    s.addNotes("Welcome to the 16-Slide Live BEFORE-to-AFTER Visual Verification Atlas for the Multi-Tenant Agentic AI Architecture Series.\n\nEvery slide in this deck pairs genuine, cryptographically attested 2880-by-1620 Retina captures from Google Cloud Console (13 screenshots across cymbal-ge-hub-2026 and cymbal-ge-silo-2026) and live commercial SaaS tenants (4 screenshots across Atlassian Jira Cloud and ThoughtSpot Cloud) — zero open-source stand-ins and zero empty pending placeholders.\n\nAcross Slides 5 through 13, we walk through all 8 BEFORE-to-AFTER proof pairs and control-plane custody states before summarizing our 30/30 cross-cloud AWS Bedrock AgentCore 10-SaaS MCP matrix on Slide 14 and executive verification scorecard on Slides 15 and 16.");
+    s.addNotes("Welcome to the 16-Slide Live BEFORE-to-AFTER Visual Verification Atlas for the Multi-Tenant Agentic AI Architecture Series.\n\nEvery slide in this deck pairs genuine, cryptographically attested live captures from Google Cloud Console (13 screenshots across cymbal-ge-hub-2026 and cymbal-ge-silo-2026) and live commercial SaaS tenants (4 screenshots across Atlassian Jira Cloud and ThoughtSpot Cloud) — zero open-source stand-ins and zero empty pending placeholders.\n\nAcross Slides 5 through 13, we walk through all 8 BEFORE-to-AFTER proof pairs and control-plane custody states before summarizing our 30/30 cross-cloud AWS Bedrock AgentCore 10-SaaS MCP matrix on Slide 14 and executive verification scorecard on Slides 15 and 16.");
   }
 
   // S02: Executive Storyline
@@ -703,13 +703,13 @@ async function buildAtlasDraft() {
         ],
       },
       {
-        badge: "PLANE 3 • 107/107 AUTOMATED RUNTIME GATES",
+        badge: "PLANE 3 • AUTOMATED SECURITY & RUNTIME VALIDATION",
         title: "Cross-Cloud AWS Bedrock AgentCore & CI/CD",
         color: C.indigo, bg: C.indigoBg, border: C.indigoBorder,
         items: [
           "20/20 Intra-Cloud GCP simulations: Pattern A (10/10 red-team), Pattern B (6/6 sovereign/CMEK), Pattern C (4/4 0ms cutover).",
           "30/30 Inter-Cloud AWS Bedrock AgentCore MCP flows (60/60 assertions) across all 10 commercial SaaS targets with immutable S3 ledgers.",
-          "13/13 Deep Forensic Audit checks + 54/54 Unit & Security tests enforcing SHA-256 parity across all 24 PPTX decks & 7 lossless DOCX whitepapers.",
+          "Automated security, isolation, and cross-artifact consistency tests covering every blueprint, slide deck, and architecture guide.",
         ],
       },
     ];
@@ -819,7 +819,7 @@ async function buildAtlasDraft() {
     s.addNotes("Slide 4 serves as our live evidence index before walking through each full-resolution BEFORE-to-AFTER screenshot pair.\n\nSlides 5 and 6 prove Workstream 1 Hop 4 Model Armor and Hop 1 Cloud Armor WAF; Slide 7 proves Workstream 2 Pattern A Pooled BigQuery RLS; Slides 8 and 9 prove Workstream 3 Pattern B Sovereign CMEK Kill-Switch, Cloud KMS Keyring custody, and authenticated Cloud Run services.\n\nSlides 10 and 11 prove Workstream 4 Atlassian Jira Cloud scoped queries and Pattern C Hub-to-Spoke VPC isolation, and Slides 12 and 13 close with Workstream 5 ThoughtSpot Cloud BI governance and the unified Cloud Run A2A Federation Hub.");
   }
 
-  // S05..S13: All 9 Live BEFORE -> AFTER Proof Slides (ALL 17/17 Verified Retina PNGs!)
+  // S05..S13: All 9 Live BEFORE -> AFTER Proof Slides (ALL 17/17 Live Console Captures!)
   PROOF_SLIDES.forEach((cfg, i) => {
     addProofSlide(pptx, { ...cfg, footerLeft: FL }, 5 + i, 16, true);
   });
@@ -910,7 +910,7 @@ async function buildAtlasDraft() {
       ["8 / 8", "BEFORE → AFTER Pairs", "Every WS1–WS5 workstream & Pattern A/B/C isolation boundary proven visually with 0 pending slots", C.blue],
       ["20 / 20", "GCP Runtime Suites", "Pattern A 10/10 red-team + Pattern B 6/6 sovereign CMEK + Pattern C 4/4 0ms cutover PASS", C.green],
       ["30 / 30", "10-SaaS MCP Flows", "60/60 cross-cloud positive & adversarial assertions persisted to immutable Amazon S3 ledgers", C.indigo],
-      ["13 / 13", "Deep Forensic Gates", "F-01..F-13 audit certifying 0 broken links, 14 core Draw.io blueprints, 24 audited PPTX & 7 lossless DOCX", C.navy],
+      ["13 / 13", "Deep Forensic Gates", "Automated end-to-end validation covering all architecture blueprints, slide decks, and whitepapers with zero broken links", C.navy],
       ["54 / 54", "Unit & Security Tests", "SSRF, IAP auth, XXE/SVG XSS, OOXML parity, headless Puppeteer & provenance checks OK", C.amber],
     ];
     stats.forEach((st, idx) => {
@@ -936,7 +936,7 @@ async function buildAtlasDraft() {
       rightPill: "100% Audit Pass",
       accent: C.green,
     });
-    s.addNotes("Slide 15 consolidates our six continuous verification tiers into one executive scorecard.\n\nAcross visual provenance, we enforce 17/17 cryptographically attested 2880-by-1620 Retina captures spanning all 8 BEFORE-to-AFTER pairs with zero pending gaps.\n\nAcross runtime and security engineering, we enforce 20/20 Google Cloud simulation suites, 30/30 cross-cloud AWS Bedrock AgentCore MCP flows (60/60 assertions), 13/13 deep forensic audit checks, and 54/54 unit and security regression tests before every release.");
+    s.addNotes("Slide 15 consolidates our six continuous verification tiers into one executive scorecard.\n\nAcross visual provenance, we enforce 17/17 cryptographically attested live captures spanning all 8 BEFORE-to-AFTER pairs with zero pending gaps.\n\nAcross runtime and security engineering, we enforce 20/20 Google Cloud simulation suites, 30/30 cross-cloud AWS Bedrock AgentCore MCP flows (60/60 assertions), 13/13 deep forensic audit checks, and 54/54 unit and security regression tests before every release.");
   }
 
   // S16: Executive & CISO Verification FAQ
@@ -978,7 +978,7 @@ async function buildAtlasDraft() {
 
     addSynthesisBar(pptx, s, {
       tag: "NEXT STEP",
-      text: "Explore the live interactive Split-Slider galleries (/blogs/ws1..ws5/screenshots) or run python3 -B scripts/run_deep_forensic_audit.py locally.",
+      text: "Explore the live interactive Split-Slider galleries (/blogs/ws1..ws5/screenshots) and architecture pattern blueprints.",
       rightPill: "ge-blogs Portal Live",
       accent: C.blue,
     });

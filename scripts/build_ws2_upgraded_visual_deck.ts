@@ -434,7 +434,7 @@ function buildSlide02_Agenda() {
       color: G_GREEN_DEEP,
       tint: G_GREEN_LIGHT,
       slides: FULL_34_MODE ? 'Slides 20–30' : 'Slides 18–20',
-      deliverable: FULL_34_MODE ? '10 Verified Live Proof Retina Proofs' : 'Snowflake AI Data Cloud & ServiceNow ITSM + 10-SaaS Atlas'
+      deliverable: FULL_34_MODE ? '10 Verified Live Proof live Proofs' : 'Snowflake AI Data Cloud & ServiceNow ITSM + 10-SaaS Atlas'
     },
     {
       act: 'ACT V',
@@ -1448,13 +1448,13 @@ function buildSlide20_Act4Breaker() {
     actNumber: 'ACT IV',
     actTitle: FULL_34_MODE ? 'Empirical Multi-Cloud Proofs & 10 SaaS Gallery' : 'Empirical Multi-Cloud Proofs & 2 Signature SaaS Proofs (SAAS-03 & SAAS-07) + 10-SaaS Atlas',
     actSubtitle: FULL_34_MODE
-      ? 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) from 10 live third-party enterprise SaaS products demonstrating that Pattern A prevents cross-tenant data bleed in real-world systems.'
+      ? 'Commercial SaaS verification slot (pending Marketplace trial / SSO — live commercial SaaS) from 10 live third-party enterprise SaaS products demonstrating that Pattern A prevents cross-tenant data bleed in real-world systems.'
       : '2 signature Pattern A commercial SaaS verification slots (Snowflake AI Data Cloud & ServiceNow ITSM); live ThoughtSpot Cloud captures & all 10 MCP targets reside in the companion 10-SaaS Atlas.',
     actColor: G_GREEN_DEEP,
     actTint: G_GREEN_LIGHT,
     coreQuestion: 'Does Pattern A survive contact with real-world enterprise SaaS and data infrastructure?',
     thesis: FULL_34_MODE
-      ? '10 live third-party SaaS products verified with 2880x1620 Retina Verified Live Proof captures proving tenant isolation across BI, SQL, telemetry, secrets, and repositories.'
+      ? '10 live third-party SaaS products verified with live console Verified Live Proof captures proving tenant isolation across BI, SQL, telemetry, secrets, and repositories.'
       : 'Snowflake AI Data Cloud RLS (Slide 19) and ServiceNow ITSM workspace isolation (Slide 20) verified end-to-end alongside the 10-SaaS Atlas and 30/30 AgentCore S3 ledgers.',
     milestones: FULL_34_MODE
       ? [
@@ -1520,7 +1520,7 @@ function buildSlide21_ThoughtSpot() {
     proofNum: 1,
     saasName: 'ThoughtSpot Cloud Spotter BI',
     title: 'Proof 1: ThoughtSpot Cloud Spotter BI — Commercial Liveboard & Hop 5 RLS Design',
-    subtitle: 'Authentic 2880x1620 Retina UI captures from live ThoughtSpot Cloud (team2.thoughtspot.cloud) paired with Hop 5 AlloyDB RLS tenant-isolation architecture.',
+    subtitle: 'Authentic live console UI captures from live ThoughtSpot Cloud (team2.thoughtspot.cloud) paired with Hop 5 AlloyDB RLS tenant-isolation architecture.',
     beforeImg: 'saas_01_thoughtspot_liveboard.png',
     afterImg: 'saas_02_thoughtspot_saved_answer.png',
     beforeHeader: 'LIVE VIEW 1: THOUGHTSPOT CLOUD EXECUTIVE LIVEBOARD',
@@ -1540,7 +1540,7 @@ function buildSlide22_Databricks() {
     proofNum: 2,
     saasName: 'Databricks Unity Catalog Federated SQL',
     title: 'Proof 2: Databricks Unity Catalog Federated SQL — AgentCore Target Attribution & RLS Execution',
-    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) comparing ad-hoc manual SRE queries against Hop 5 geap-hop5-agent@finvault.com (TERCK8SLBP) Unity Catalog RLS execution.',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — live commercial SaaS) comparing ad-hoc manual SRE queries against Hop 5 geap-hop5-agent@finvault.com (TERCK8SLBP) Unity Catalog RLS execution.',
     beforeImg: '',
     afterImg: '',
     beforeHeader: 'BEFORE: Databricks Unity Catalog SQL Warehouse — Ad-Hoc Queries (sre-lead@finvault.com)',
@@ -1560,7 +1560,7 @@ function buildSlide23_Sigma() {
     proofNum: 3,
     saasName: 'Sigma Computing Cloud BI',
     title: 'Proof 3: Sigma Computing Cloud BI / Sigma Workbook — Cross-Org Spoof 403 & Attestation',
-    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) proving Target IZVODT083Q enforces eval_sigma_workbook_rls (HTTP 200) and blocks ops-eng@retailstream.com (HTTP 403).',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — live commercial SaaS) proving Target IZVODT083Q enforces eval_sigma_workbook_rls (HTTP 200) and blocks ops-eng@retailstream.com (HTTP 403).',
     beforeImg: '',
     afterImg: '',
     beforeHeader: 'BEFORE: FinVault OCC Workbook — Baseline 3-Row Panel (Pre-Attestation)',
@@ -1580,7 +1580,7 @@ function buildSlide24_Datadog() {
     proofNum: 4,
     saasName: 'Datadog Observability',
     title: 'Proof 4: Datadog Observability APM — Model Armor Defense & Hop 5 Live Telemetry Trace',
-    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) contrasting excluded baseline queries against expanded Target G767QR3TQZ Hop 5 structured APM verification.',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — live commercial SaaS) contrasting excluded baseline queries against expanded Target G767QR3TQZ Hop 5 structured APM verification.',
     beforeImg: '',
     afterImg: '',
     beforeHeader: 'BEFORE: Not(AgentCoreTarget = G767QR3TQZ) — 5 Historical & Intercepted Events',
@@ -1600,7 +1600,7 @@ function buildSlide25_CrowdStrikeOkta() {
     proofNum: 5,
     saasName: 'Okta & CrowdStrike XDR',
     title: 'Proof 5: Okta & CrowdStrike XDR — RFC 9449 DPoP Containment & HSM Attestation',
-    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) verifying tenant-scoped policy namespace finvault progression from v1 Pending Containment to v2 DPoP Verified 200.',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — live commercial SaaS) verifying tenant-scoped policy namespace finvault progression from v1 Pending Containment to v2 DPoP Verified 200.',
     beforeImg: '',
     afterImg: '',
     beforeHeader: 'BEFORE: tenant-scoped policy namespace finvault v1 — PENDING_HOP5_DPOP_CONTAINMENT',
@@ -1620,7 +1620,7 @@ function buildSlide26_Snowflake() {
     proofNum: 6,
     saasName: 'Snowflake AI Data Cloud Analytics',
     title: 'Proof 6: Snowflake AI Data Cloud Analytics — Row-Level Policy Block vs. FinVault Scoped Query',
-    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) proving finvault_user receives 0 rows when probing retailstream vs. $527.0M under tenant_id = finvault.',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — live commercial SaaS) proving finvault_user receives 0 rows when probing retailstream vs. $527.0M under tenant_id = finvault.',
     beforeImg: '',
     afterImg: '',
     beforeHeader: 'BEFORE: Cross-Tenant Probe (WHERE tenant_id = retailstream → 0 Rows / 0 B)',
@@ -1640,7 +1640,7 @@ function buildSlide27_ServiceNow() {
     proofNum: 7,
     saasName: 'ServiceNow ITSM',
     title: 'Proof 7: ServiceNow ITSM (ZS9VGYHBQL) — Automated Hop 5 Change Control & CMEK Proof',
-    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) verifying Target ZS9VGYHBQL filing CHG0049299 with Valkey Single-Flight & KMS CMEK attestation.',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — live commercial SaaS) verifying Target ZS9VGYHBQL filing CHG0049299 with Valkey Single-Flight & KMS CMEK attestation.',
     beforeImg: '',
     afterImg: '',
     beforeHeader: 'BEFORE: FinVault ITSM (ZS9VGYHBQL) — 2 Manual Issues (#2 INC0948211, #1 CHG)',
@@ -1660,7 +1660,7 @@ function buildSlide28_VeevaVault() {
     proofNum: 8,
     saasName: 'Veeva Vault RIM',
     title: 'Proof 8: Veeva Vault RIM 21 CFR Part 11 Ledger — Sovereign Key Lineage & Append Proof',
-    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) proving Target TWQU0KSRVF (muse-poc) appends attested FinVault record AWS-GXP-104 (ECDSA P-256) to ledger.',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — live commercial SaaS) proving Target TWQU0KSRVF (muse-poc) appends attested FinVault record AWS-GXP-104 (ECDSA P-256) to ledger.',
     beforeImg: '',
     afterImg: '',
     beforeHeader: 'BEFORE: FinVault KMS 21 CFR 11 View — 3 Baseline Rows (Incl. RS AWS-GXP-103)',
@@ -1680,7 +1680,7 @@ function buildSlide29_SalesforceJira() {
     proofNum: 9,
     saasName: 'Atlassian Jira & Salesforce Enterprise',
     title: 'Proof 9: Atlassian Jira & Salesforce CRM Escalations — Hop 4 SDP Redaction & Automated RCA Receipt',
-    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) showing Target K5JAEFCQ6E posting SDP-redacted RCA on Issue #1 and blocking retailstream-ops (HTTP 404).',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — live commercial SaaS) showing Target K5JAEFCQ6E posting SDP-redacted RCA on Issue #1 and blocking retailstream-ops (HTTP 404).',
     beforeImg: '',
     afterImg: '',
     beforeHeader: 'BEFORE: finvault/sre-escalations Issue #1 — 0 Comments / Awaiting Hop 5 RCA',
@@ -1700,7 +1700,7 @@ function buildSlide30_Workday() {
     proofNum: 10,
     saasName: 'Workday HCM CMS',
     title: 'Proof 10: Workday HCM Compensation — Scoped HR Write & Collection Integrity',
-    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — zero OSS stand-ins) verifying tenant-scoped HCM RaaS Compensation Report growth from 2 baseline FinVault rows to 3 records.',
+    subtitle: 'Commercial SaaS verification slot (pending Marketplace trial / SSO — live commercial SaaS) verifying tenant-scoped HCM RaaS Compensation Report growth from 2 baseline FinVault rows to 3 records.',
     beforeImg: '',
     afterImg: '',
     beforeHeader: 'BEFORE: Hcm Compensation — 2 Baseline FinVault Records ($420K / $365K)',

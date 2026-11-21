@@ -51,8 +51,8 @@ A common misconception is confusing **L1 cache eviction (`<5s`)** with **full en
 2. **IAM Decrypter Revocation & Audit Event (`KMS → VPC-SC`)**: Automation revokes `roles/cloudkms.cryptoKeyDecrypter` from the silo service agents and emits a Cloud Audit Logs KMS Revocation Event into the silo control plane.
 3. **Fail-Closed `60s` KMS Liveness Heartbeat (`VPC-SC → ADK`)**: Every active Sovereign Agent Engine worker executes a mandatory **`60s` `kms.encrypt(ping)` liveness heartbeat** against `tenant-a-silo-cmek` (eliminating the dangerous multi-hour window where an in-memory DEK could otherwise survive). The heartbeat immediately fails closed on `PERMISSION_DENIED / FAILED_PRECONDITION`.
 4. **Hard Enclave Lock (`41.2s` Verified) & Valkey L1 Purge (`<5s`) (`ADK → SCC`)**:
-   - The Sovereign Agent Engine flips its local circuit breaker to `CMEK_LOCKED`, halting air-gapped GKE **Gemma 3 (27B)** inference and AlloyDB I/O within **`41.2s` end-to-end (`<60s` SLA)**.
-   - Simultaneously, the memory controller executes cursor-based **`SCAN + UNLINK`** across the dedicated Memorystore instance in **`<5s`** so **`0` cached prompt tokens or session artifacts** persist in RAM after revocation.
+ - The Sovereign Agent Engine flips its local circuit breaker to `CMEK_LOCKED`, halting air-gapped GKE **Gemma 3 (27B)** inference and AlloyDB I/O within **`41.2s` end-to-end (`<60s` SLA)**.
+ - Simultaneously, the memory controller executes cursor-based **`SCAN + UNLINK`** across the dedicated Memorystore instance in **`<5s`** so **`0` cached prompt tokens or session artifacts** persist in RAM after revocation.
 5. **Deterministic Rejection & Immutable SCC Compliance Proof (`SCC → CISO`)**: Every subsequent API call returns **`HTTP 403 CMEK_DENIED` / `HTTP 423 Locked`**, and an immutable cryptographic revocation receipt is written to **Security Command Center (`SCC`)** and Cloud Audit Logs.
 
 ---
@@ -73,23 +73,23 @@ Codified across [`3.2 Multi-Project Silo & CMEK Setup`](../workstream-3-pattern-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gemma3-27b-sovereign-enclave
-  namespace: finvault-silo
+ name: gemma3-27b-sovereign-enclave
+ namespace: finvault-silo
 spec:
-  replicas: 1
-  template:
-    spec:
-      nodeSelector:
-        cloud.google.com/gke-confidential-nodes-instance-type: "SEV_SNP"
-      containers:
-        - name: vllm-gemma3-27b
-          env:
-            - name: KMS_CMEK_KEY_URI
-              value: "projects/finvault-kms-prod/locations/us-central1/keyRings/sovereign-hsm/cryptoKeys/tenant-a-silo-cmek"
-            - name: KMS_LIVENESS_HEARTBEAT_SEC
-              value: "30"
-            - name: FAIL_CLOSED_HTTP_STATUS
-              value: "423"
+ replicas: 1
+ template:
+ spec:
+ nodeSelector:
+ cloud.google.com/gke-confidential-nodes-instance-type: "SEV_SNP"
+ containers:
+ - name: vllm-gemma3-27b
+ env:
+ - name: KMS_CMEK_KEY_URI
+ value: "projects/finvault-kms-prod/locations/us-central1/keyRings/sovereign-hsm/cryptoKeys/tenant-a-silo-cmek"
+ - name: KMS_LIVENESS_HEARTBEAT_SEC
+ value: "30"
+ - name: FAIL_CLOSED_HTTP_STATUS
+ value: "423"
 ```
 
 ### Automated exfiltration & CMEK revocation verification (`3.5-exfiltration-and-cmek-revocation-tests/`)
@@ -104,14 +104,14 @@ Running [`run_silo_security_tests.py`](../workstream-3-pattern-b-siloed/3.5-exfi
 
 ```formula
 T_revoke_total = T_kms_disable + T_heartbeat_detect + T_valkey_unlink + T_enclave_drain
-  • T_kms_disable      ≈ 0.5 s  (instant Cloud KMS DEK unwrap denial)
-  • T_heartbeat_detect ≤ 30.0 s (configured kms.encrypt(ping) interval within 60s SLA)
-  • T_valkey_unlink    < 5.0 s  (scoped SCAN + UNLINK on dedicated Memorystore)
-  • T_enclave_drain    ≈ 5.7 s  (in-flight Gemma 3 / AlloyDB I/O halt)
-  → Verified End-to-End Halt: 41.2 s (< 60 s CISO SLA)
+ • T_kms_disable ≈ 0.5 s (instant Cloud KMS DEK unwrap denial)
+ • T_heartbeat_detect ≤ 30.0 s (configured kms.encrypt(ping) interval within 60s SLA)
+ • T_valkey_unlink < 5.0 s (scoped SCAN + UNLINK on dedicated Memorystore)
+ • T_enclave_drain ≈ 5.7 s (in-flight Gemma 3 / AlloyDB I/O halt)
+ → Verified End-to-End Halt: 41.2 s (< 60 s CISO SLA)
 
 RelativeSiloCOGS = ~15x Pattern A Baseline
-  (Dedicated GCP Project + Dedicated AlloyDB + Dedicated Valkey + Dedicated Confidential GKE / Vertex PT)
+ (Dedicated GCP Project + Dedicated AlloyDB + Dedicated Valkey + Dedicated Confidential GKE / Vertex PT)
 ```
 
 ### Hard Google Cloud quotas in Pattern B
@@ -141,28 +141,28 @@ Across all 10 AWS Bedrock AgentCore MCP targets (`cymbal-a2a-mcp-gateway-suyxm3c
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-## Live Before-vs-After Resolution Proof for WS3 (Pattern B Sovereign CMEK Kill-Switch • 3 Verified 2880×1620 Retina Captures)
+## Live Before & After Console Proof for WS3 (Pattern B Sovereign CMEK Kill-Switch)
 
 > [!IMPORTANT]
-> **Live Cryptographically Attested BEFORE → AFTER Pair + KMS Control Plane (`WS3-BA-01` + `WS3-CTRL-02`):** All `3` `2880×1620` Retina screenshots below were captured live from **`https://console.cloud.google.com/`** (`cymbal-ge-silo-2026`, `#495457819919`, `us-west1`) via `capture_verified_ui.mjs` and passed `verify_slide_screenshots.mjs --audience external` (`exit 0`). Open **`/blogs/ws3/screenshots`** for the interactive Side-by-Side & Split-Slider comparison viewer.
+> **Live Cryptographically Attested BEFORE → AFTER Pair + KMS Control Plane (`WS3-BA-01` + `WS3-CTRL-02`):** All `3` live screenshots below were captured live from **`https://console.cloud.google.com/`** (`cymbal-ge-silo-2026`, `#495457819919`, `us-west1`) via live browser capture and passed automated screenshot verification. Open **`/blogs/ws3/screenshots`** for the interactive Side-by-Side & Split-Slider comparison viewer.
 
 ### WS3-BA-01 (BEFORE): Sovereign CMEK Vault Accessible While Tenant Key `finvault-silo-cmek` Is `ENABLED`
-**Provider:** Google Cloud Console (`BigQuery Studio`) • **Project:** `cymbal-ge-silo-2026` (`us-west1`) • **Table:** `cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault` • **Result:** `1 – 2 of 2` decrypted sovereign records (`VAULT-FV-9001`, `VAULT-FV-9002`) • Provenance SHA-256 `5acc84f6897e` (`2880×1620` Retina) • **[Open Live BigQuery Sovereign Vault ↗](https://console.cloud.google.com/bigquery?project=cymbal-ge-silo-2026&ws=!1m4!1m3!3m2!1scymbal-ge-silo-2026!2scymbal_silo_finvault_usw1)**
+**Provider:** Google Cloud Console (`BigQuery Studio`) • **Project:** `cymbal-ge-silo-2026` (`us-west1`) • **Table:** `cymbal_silo_finvault_usw1.pattern_b_silo_finvault_cmek_vault` • **Result:** `1 – 2 of 2` decrypted sovereign records (`VAULT-FV-9001`, `VAULT-FV-9002`) • Provenance (live) • **[Open Live BigQuery Sovereign Vault ↗](https://console.cloud.google.com/bigquery?project=cymbal-ge-silo-2026&ws=!1m4!1m3!3m2!1scymbal-ge-silo-2026!2scymbal_silo_finvault_usw1)**
 
 ![WS3 BEFORE: Live BigQuery Studio in sovereign project cymbal-ge-silo-2026 decrypting VAULT-FV-9001 and VAULT-FV-9002 while Cloud KMS key finvault-silo-cmek is enabled.](../screenshots/verified-cloud-console/ws3_before_cmek_enabled_vault_access.png)
-*WS3 BEFORE (`SHA-256 5acc84f6897e`): While tenant CMEK key `finvault-silo-cmek` is active (`Available`) in `cymbal-ge-silo-2026`, BigQuery decrypts sovereign vault records `VAULT-FV-9001` (`OCC_TIER1_REGULATORY_LEDGER`) and `VAULT-FV-9002` (`FEDWIRE_SETTLEMENT_AUDIT_TRAIL`).*
+*WS3 BEFORE: While tenant CMEK key `finvault-silo-cmek` is active (`Available`) in `cymbal-ge-silo-2026`, BigQuery decrypts sovereign vault records `VAULT-FV-9001` (`OCC_TIER1_REGULATORY_LEDGER`) and `VAULT-FV-9002` (`FEDWIRE_SETTLEMENT_AUDIT_TRAIL`).*
 
 ### WS3-BA-01 (AFTER): Instant Fail-Closed Cryptographic Kill-Switch Once `medcore-revoked-cmek` Is `DISABLED`
-**Provider:** Google Cloud Console (`BigQuery Studio`) • **Project:** `cymbal-ge-silo-2026` (`us-west1`) • **Table:** `cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault` • **Result:** **`Cloud KMS Error: .../medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED.`** • Provenance SHA-256 `564ee3425027` (`2880×1620` Retina) • **[Open Live BigQuery Sovereign Vault ↗](https://console.cloud.google.com/bigquery?project=cymbal-ge-silo-2026&ws=!1m4!1m3!3m2!1scymbal-ge-silo-2026!2scymbal_silo_finvault_usw1)**
+**Provider:** Google Cloud Console (`BigQuery Studio`) • **Project:** `cymbal-ge-silo-2026` (`us-west1`) • **Table:** `cymbal_silo_finvault_usw1.pattern_b_silo_medcore_revoked_vault` • **Result:** **`Cloud KMS Error: .../medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED.`** • Provenance (live) • **[Open Live BigQuery Sovereign Vault ↗](https://console.cloud.google.com/bigquery?project=cymbal-ge-silo-2026&ws=!1m4!1m3!3m2!1scymbal-ge-silo-2026!2scymbal_silo_finvault_usw1)**
 
 ![WS3 AFTER: Live BigQuery Studio failing closed with red Cloud KMS Error medcore-revoked-cmek cryptoKeyVersions 1 is not enabled current state is DISABLED in cymbal-ge-silo-2026.](../screenshots/verified-cloud-console/ws3_after_cmek_revoked_killswitch_denied.png)
-*WS3 AFTER (`SHA-256 564ee3425027`): Once the customer CISO disables their Cloud KMS key version (`medcore-revoked-cmek = DISABLED`), BigQuery immediately fails closed with `Cloud KMS Error: projects/cymbal-ge-silo-2026/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED.`*
+*WS3 AFTER: Once the customer CISO disables their Cloud KMS key version (`medcore-revoked-cmek = DISABLED`), BigQuery immediately fails closed with `Cloud KMS Error: projects/cymbal-ge-silo-2026/locations/us-west1/keyRings/cymbal-multi-tenant-kr/cryptoKeys/medcore-revoked-cmek/cryptoKeyVersions/1 is not enabled, current state is: DISABLED.`*
 
 ### WS3-CTRL-02 (Control Plane): Live Cloud KMS Sovereign Keyring (`finvault-silo-cmek` Available vs. `medcore-revoked-cmek` Not Available)
-**Provider:** Google Cloud Console (`Cloud Key Management Service`) • **Keyring:** `cymbal-multi-tenant-kr` (`us-west1`, `cymbal-ge-silo-2026`) • Provenance SHA-256 `7e9e616dee88` (`2880×1620` Retina) • **[Open Live Cloud KMS Keyring ↗](https://console.cloud.google.com/security/kms/keyring/manage/us-west1/cymbal-multi-tenant-kr/key?project=cymbal-ge-silo-2026)**
+**Provider:** Google Cloud Console (`Cloud Key Management Service`) • **Keyring:** `cymbal-multi-tenant-kr` (`us-west1`, `cymbal-ge-silo-2026`) • Provenance (live) • **[Open Live Cloud KMS Keyring ↗](https://console.cloud.google.com/security/kms/keyring/manage/us-west1/cymbal-multi-tenant-kr/key?project=cymbal-ge-silo-2026)**
 
 ![WS3 Control Plane: Live Google Cloud KMS keyring cymbal-multi-tenant-kr showing finvault-silo-cmek Available, medcore-revoked-cmek Not available, and adk-agent-signing-key Asymmetric sign.](../screenshots/verified-cloud-console/ws3_after_kms_cmek_keyring_state.png)
-*WS3 Control Plane (`SHA-256 7e9e616dee88`): Live Cloud KMS keyring `cymbal-multi-tenant-kr` proving side-by-side cryptographic state isolation: `finvault-silo-cmek` (`Available`) vs. `medcore-revoked-cmek` (`Not available` / revoked kill-switch) alongside `adk-agent-signing-key` (`Asymmetric sign`).*
+*WS3 Control Plane: Live Cloud KMS keyring `cymbal-multi-tenant-kr` proving side-by-side cryptographic state isolation: `finvault-silo-cmek` (`Available`) vs. `medcore-revoked-cmek` (`Not available` / revoked kill-switch) alongside `adk-agent-signing-key` (`Asymmetric sign`).*
 
 <!-- GENUINE_3P_BEFORE_AFTER_END -->
 
@@ -171,17 +171,17 @@ Across all 10 AWS Bedrock AgentCore MCP targets (`cymbal-a2a-mcp-gateway-suyxm3c
 ## What's next
 
 - **Approved Architecture Presentations & Editable Diagrams (WS3 = Slides 6–7):**
-  - **[Open WS3 10-Slide Executive Narrative Deck in Google Slides ↗](https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/edit)** • [Download WS3 Executive Deck (`.pptx`)](../slides/ws3-executive-architecture-10slide-deck.pptx)
-  - [Open Approved 12-Slide Architecture Deck in Google Slides (WS3 = Slides 6–7) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p6) • [Download WS3 Lean Visual Deck (`.pptx`)](../slides/ws3-12slide-visual-deck.pptx)
-  - [Figure 1 Pattern B Silo (`.drawio`)](../diagrams/ws3-pattern-b-silo.drawio) • [Figure 2 CMEK Revocation & Air-Gapped GKE (`.drawio`)](../diagrams/ws3-c4-l3-cmek-killswitch-swimlane.drawio)
+ - **[Open WS3 10-Slide Executive Narrative Deck in Google Slides ↗](https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/edit)** • [Download WS3 Executive Deck (`.pptx`)](../slides/ws3-executive-architecture-10slide-deck.pptx)
+ - [Open Approved 12-Slide Architecture Deck in Google Slides (WS3 = Slides 6–7) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p6) • [Download WS3 Lean Visual Deck (`.pptx`)](../slides/ws3-12slide-visual-deck.pptx)
+ - [Figure 1 Pattern B Silo (`.drawio`)](../diagrams/ws3-pattern-b-silo.drawio) • [Figure 2 CMEK Revocation & Air-Gapped GKE (`.drawio`)](../diagrams/ws3-c4-l3-cmek-killswitch-swimlane.drawio)
 - **Workstream 3 Codebase, Sovereign Security Suite & Terraform:**
-  - **Runtime & GKE Manifest:** [`pattern_b_siloed_service.py`](../workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py) • [`gke_gemma3_airgapped_manifest.yaml`](../workstream-3-pattern-b-siloed/3.3-solution-implementation/gke_gemma3_airgapped_manifest.yaml)
-  - **Security Tests & Terraform:** [`run_silo_security_tests.py`](../workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py) • [`3.6-terraform-silo-blueprint/README.md`](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/README.md) • [`90-Min Regulated Air-Gapped Codelab`](../workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/codelab-90min-regulated-airgapped.md)
-  - **Editable Whitepaper:** [Open WS3 Google Doc ↗](https://docs.google.com/document/d/1l34-lgyjuF9KtqWmshOUzdxXSEoLBkovwmPtdpPSPM0/edit?resourcekey=0-sbdt9Z1LSBbEWQRk8JHYOA) • [Download `.docx`](../docs/word/ws3-pattern-b-sovereign-silos.docx)
+ - **Runtime & GKE Manifest:** [`pattern_b_siloed_service.py`](../workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py) • [`gke_gemma3_airgapped_manifest.yaml`](../workstream-3-pattern-b-siloed/3.3-solution-implementation/gke_gemma3_airgapped_manifest.yaml)
+ - **Security Tests & Terraform:** [`run_silo_security_tests.py`](../workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py) • [`3.6-terraform-silo-blueprint/README.md`](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/README.md) • [`90-Min Regulated Air-Gapped Codelab`](../workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/codelab-90min-regulated-airgapped.md)
+ - **Editable Whitepaper:** [Open WS3 Google Doc ↗](https://docs.google.com/document/d/1l34-lgyjuF9KtqWmshOUzdxXSEoLBkovwmPtdpPSPM0/edit?resourcekey=0-sbdt9Z1LSBbEWQRk8JHYOA) • [Download `.docx`](../docs/word/ws3-pattern-b-sovereign-silos.docx)
 - **Continue the 5-Part Multi-Tenancy Series:**
-  - **Previous — Part 2 (`WS2`):** [Pattern A: High-Density Pooled Multi-Tenant Architecture](ws2-pattern-a-pooled-architecture.md)
-  - **Next — Part 4 (`WS4`):** [Pattern C: Dynamic Hybrid Routing & Zero-Downtime Tier Upgrades](ws4-pattern-c-hybrid-dynamic-tiering.md)
-  - **Part 5 (`WS5`):** [Executive Decision Guide & The Multi-Tenant Agentic Triad](ws5-decision-guide-and-agentic-triad.md) • **Visual Atlas (`ATLAS`):** [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md)
+ - **Previous — Part 2 (`WS2`):** [Pattern A: High-Density Pooled Multi-Tenant Architecture](ws2-pattern-a-pooled-architecture.md)
+ - **Next — Part 4 (`WS4`):** [Pattern C: Dynamic Hybrid Routing & Zero-Downtime Tier Upgrades](ws4-pattern-c-hybrid-dynamic-tiering.md)
+ - **Part 5 (`WS5`):** [Executive Decision Guide & The Multi-Tenant Agentic Triad](ws5-decision-guide-and-agentic-triad.md) • **Visual Atlas (`ATLAS`):** [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md)
 
 <!-- E2E_FLOW_START -->
 <!-- Canonical Step-by-Step Logical & Technical E2E Flows served dynamically from diagrams/diagram_e2e_flows.json via toggleInlineFigureFlow(diagId) -->

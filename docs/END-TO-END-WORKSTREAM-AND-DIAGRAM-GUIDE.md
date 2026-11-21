@@ -29,29 +29,29 @@ status: "PUBLISH_READY"
 ## Table of contents
 
 - [0. Program Foundations (applies to all 12 approved diagrams & Workstreams 1–5)](#0-program-foundations-applies-to-all-12-approved-diagrams--workstreams-15)
-  - [0.1 Why multi-tenancy for autonomous agents differs from CRUD SaaS](#01-why-multi-tenancy-for-autonomous-agents-differs-from-crud-saas)
-  - [0.2 The three production isolation patterns](#02-the-three-production-isolation-patterns)
-  - [0.3 The 5-Hop Cryptographic Context Chain (the 80% reusable core)](#03-the-5-hop-cryptographic-context-chain-the-80-reusable-core)
-  - [0.4 Anchor B2B SaaS Case Study: Cymbal SaaS Platform](#04-anchor-b2b-saas-case-study-cymbal-saas-platform)
-  - [0.5 Master Map of All 12 Approved Simplified-Header Diagrams](#05-master-map-of-all-12-approved-simplified-header-diagrams)
-  - [0.6 Verification & Regeneration Pipeline](#06-verification--regeneration-pipeline)
+ - [0.1 Why multi-tenancy for autonomous agents differs from CRUD SaaS](#01-why-multi-tenancy-for-autonomous-agents-differs-from-crud-saas)
+ - [0.2 The three production isolation patterns](#02-the-three-production-isolation-patterns)
+ - [0.3 The 5-Hop Cryptographic Context Chain (the 80% reusable core)](#03-the-5-hop-cryptographic-context-chain-the-80-reusable-core)
+ - [0.4 Anchor B2B SaaS Case Study: Cymbal SaaS Platform](#04-anchor-b2b-saas-case-study-cymbal-saas-platform)
+ - [0.5 Master Map of All 12 Approved Simplified-Header Diagrams](#05-master-map-of-all-12-approved-simplified-header-diagrams)
+ - [0.6 Verification & Regeneration Pipeline](#06-verification--regeneration-pipeline)
 - [Workstream 1 — Reference Architecture Taxonomy & 5-Hop Governance Baseline (Milestone 0)](#workstream-1--reference-architecture-taxonomy--5-hop-governance-baseline-milestone-0)
-  - [Diagram 01 (Slide 01/12) — Shared 5-Hop Multi-Tenant Agent Platform Architecture](#diagram-01-slide-0112--shared-5-hop-multi-tenant-agent-platform-architecture)
-  - [Diagram 02 (Slide 02/12) — 5-Hop Cryptographic Request & Token Exchange Swimlane](#diagram-02-slide-0212--5-hop-cryptographic-request--token-exchange-swimlane)
+ - [Diagram 01 (Slide 01/12) — Shared 5-Hop Multi-Tenant Agent Platform Architecture](#diagram-01-slide-0112--shared-5-hop-multi-tenant-agent-platform-architecture)
+ - [Diagram 02 (Slide 02/12) — 5-Hop Cryptographic Request & Token Exchange Swimlane](#diagram-02-slide-0212--5-hop-cryptographic-request--token-exchange-swimlane)
 - [Workstream 2 — Pattern A: High-Density Pooled Architecture (Milestone 1, Week 4)](#workstream-2--pattern-a-high-density-pooled-architecture-milestone-1-week-4)
-  - [Diagram 03 (Slide 03/12) — Pattern A: High-Density Pooled Multi-Tenant Architecture](#diagram-03-slide-0312--pattern-a-high-density-pooled-multi-tenant-architecture)
-  - [Diagram 04 (Slide 04/12) — Pattern A Mode A — Stateless CoW Pre-Fork & 1-Turn Heap Wipe](#diagram-04-slide-0412--pattern-a-mode-a--stateless-cow-pre-fork--1-turn-heap-wipe)
-  - [Diagram 05 (Slide 05/12) — Pattern A Mode B — Session-Sticky Sandbox & Tenant Latch](#diagram-05-slide-0512--pattern-a-mode-b--session-sticky-sandbox--tenant-latch)
+ - [Diagram 03 (Slide 03/12) — Pattern A: High-Density Pooled Multi-Tenant Architecture](#diagram-03-slide-0312--pattern-a-high-density-pooled-multi-tenant-architecture)
+ - [Diagram 04 (Slide 04/12) — Pattern A Mode A — Stateless CoW Pre-Fork & 1-Turn Heap Wipe](#diagram-04-slide-0412--pattern-a-mode-a--stateless-cow-pre-fork--1-turn-heap-wipe)
+ - [Diagram 05 (Slide 05/12) — Pattern A Mode B — Session-Sticky Sandbox & Tenant Latch](#diagram-05-slide-0512--pattern-a-mode-b--session-sticky-sandbox--tenant-latch)
 - [Workstream 3 — Pattern B: Zero-Trust Sovereign Silos (Milestone 2, Week 7)](#workstream-3--pattern-b-zero-trust-sovereign-silos-milestone-2-week-7)
-  - [Diagram 06 (Slide 06/12) — Pattern B: Zero-Trust Sovereign Silos](#diagram-06-slide-0612--pattern-b-zero-trust-sovereign-silos)
-  - [Diagram 07 (Slide 07/12) — Pattern B CMEK Kill-Switch & Immediate HTTP 423 Enforcement](#diagram-07-slide-0712--pattern-b-cmek-kill-switch--immediate-http-423-enforcement)
+ - [Diagram 06 (Slide 06/12) — Pattern B: Zero-Trust Sovereign Silos](#diagram-06-slide-0612--pattern-b-zero-trust-sovereign-silos)
+ - [Diagram 07 (Slide 07/12) — Pattern B CMEK Kill-Switch & Immediate HTTP 423 Enforcement](#diagram-07-slide-0712--pattern-b-cmek-kill-switch--immediate-http-423-enforcement)
 - [Workstream 4 — Pattern C: Dynamic Hybrid Hub-and-Spoke & Zero-Downtime Tier Promotion (Milestone 3, Week 10)](#workstream-4--pattern-c-dynamic-hybrid-hub-and-spoke--zero-downtime-tier-promotion-milestone-3-week-10)
-  - [Diagram 08 (Slide 08/12) — Pattern C: Dynamic Hybrid Hub-and-Spoke & Cross-Project /28 PSC](#diagram-08-slide-0812--pattern-c-dynamic-hybrid-hub-and-spoke--cross-project-28-psc)
-  - [Diagram 09 (Slide 09/12) — Pattern C 3-Phase Zero-Downtime Tier Promotion & Cutover](#diagram-09-slide-0912--pattern-c-3-phase-zero-downtime-tier-promotion--cutover)
+ - [Diagram 08 (Slide 08/12) — Pattern C: Dynamic Hybrid Hub-and-Spoke & Cross-Project /28 PSC](#diagram-08-slide-0812--pattern-c-dynamic-hybrid-hub-and-spoke--cross-project-28-psc)
+ - [Diagram 09 (Slide 09/12) — Pattern C 3-Phase Zero-Downtime Tier Promotion & Cutover](#diagram-09-slide-0912--pattern-c-3-phase-zero-downtime-tier-promotion--cutover)
 - [Workstream 5 — Executive Decision Guide, Multi-Tenant Agentic Triad & Multi-Cloud Federation (Capstone)](#workstream-5--executive-decision-guide-multi-tenant-agentic-triad--multi-cloud-federation-capstone)
-  - [Diagram 10 (Slide 10/12) — Executive Architecture Pattern Selector & Multi-Tenant Agentic Triad](#diagram-10-slide-1012--executive-architecture-pattern-selector--multi-tenant-agentic-triad)
-  - [Diagram 11 (Slide 11/12) — Multi-Cloud Federation: Google Cloud Plane <-> AWS Bedrock AgentCore & 10 SaaS](#diagram-11-slide-1112--multi-cloud-federation-google-cloud-plane---aws-bedrock-agentcore--10-saas)
-  - [Diagram 12 (Slide 12/12) — Shared + Private Agents, Dynamic GCS Skills & Zero-PII FinOps OTel](#diagram-12-slide-1212--shared--private-agents-dynamic-gcs-skills--zero-pii-finops-otel)
+ - [Diagram 10 (Slide 10/12) — Executive Architecture Pattern Selector & Multi-Tenant Agentic Triad](#diagram-10-slide-1012--executive-architecture-pattern-selector--multi-tenant-agentic-triad)
+ - [Diagram 11 (Slide 11/12) — Multi-Cloud Federation: Google Cloud Plane <-> AWS Bedrock AgentCore & 10 SaaS](#diagram-11-slide-1112--multi-cloud-federation-google-cloud-plane---aws-bedrock-agentcore--10-saas)
+ - [Diagram 12 (Slide 12/12) — Shared + Private Agents, Dynamic GCS Skills & Zero-PII FinOps OTel](#diagram-12-slide-1212--shared--private-agents-dynamic-gcs-skills--zero-pii-finops-otel)
 - [Appendix A — Approved 12-Slide Simplified-Header Diagram Index](#appendix-a--approved-12-slide-simplified-header-diagram-index)
 - [Appendix B — Editable Slide Decks & Restored v2 Blogs](#appendix-b--editable-slide-decks--restored-v2-blogs)
 - [Appendix C — Glossary](#appendix-c--glossary)
@@ -115,8 +115,8 @@ Every turn across Patterns A, B, and C executes the identical five governance mo
 ### 0.6 Verification & Regeneration Pipeline
 
 ```bash
-python3 -B scripts/build_end_to_end_guide.py      # regenerate this compendium
-python3 -B scripts/run_deep_forensic_audit.py     # 13/13 Forensic Gates • 107/107 Assertions
+python3 -B scripts/build_end_to_end_guide.py # regenerate this compendium
+python3 -B scripts/run_deep_forensic_audit.py # 13/13 Forensic Gates • 107/107 Assertions
 python3 -B -m unittest discover -s tests -p "test_*.py" -v
 python3 -B scripts/run_agentic_eval_framework.py --mode full
 ```
@@ -128,11 +128,11 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 - **Canonical Restored Blog:** [`ws1-reference-architecture-taxonomy-and-5hop-baseline.md`](../blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md)
 - **Objective & Outcome:** Define the 80/20 architectural thesis decoupling the invariant 5-Hop Cryptographic Context Chain from per-tenant data-plane topology, align the Cloud Architecture Center reference update, and catalog compensating controls for `GAP-01`..`GAP-05`.
 - **Deliverables Map:**
-  - [`1.1-architecture-taxonomy-and-diagrams.md`](../workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md) — Pattern A / B / C taxonomy & boundary matrix
-  - [`1.2-product-team-review-pack.md`](../workstream-1-reference-architecture/1.2-product-team-review-pack.md) — GEAP / ADK product review pack
-  - [`1.3-cloud-architecture-center-doc-update-pr.md`](../workstream-1-reference-architecture/1.3-cloud-architecture-center-doc-update-pr.md) — Architecture Center canonical reference PR
-  - [`1.4-eap-and-product-gap-tracker.md`](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md) — EAP product gaps (`GAP-01`..`GAP-05`) & compensating controls
-  - [`core-cymbal-agent/runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py) — Shared 80% 5-Hop Python governance core
+ - [`1.1-architecture-taxonomy-and-diagrams.md`](../workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md) — Pattern A / B / C taxonomy & boundary matrix
+ - [`1.2-product-team-review-pack.md`](../workstream-1-reference-architecture/1.2-product-team-review-pack.md) — GEAP / ADK product review pack
+ - [`1.3-cloud-architecture-center-doc-update-pr.md`](../workstream-1-reference-architecture/1.3-cloud-architecture-center-doc-update-pr.md) — Architecture Center canonical reference PR
+ - [`1.4-eap-and-product-gap-tracker.md`](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md) — EAP product gaps (`GAP-01`..`GAP-05`) & compensating controls
+ - [`core-cymbal-agent/runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py) — Shared 80% 5-Hop Python governance core
 
 ### Diagram 01 (Slide 01/12) — Shared 5-Hop Multi-Tenant Agent Platform Architecture
 
@@ -196,13 +196,13 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 - **Canonical Restored Blog:** [`ws2-pattern-a-pooled-architecture.md`](../blogs/ws2-pattern-a-pooled-architecture.md)
 - **Objective & Outcome:** Run 950+ competing B2B SaaS tenants inside one shared Google Cloud project (`cymbal-pooled-prod`) with `89.1%` net input token savings via immutable 32k prefix caching, Mode A (CoW 1-turn heap wipe) & Mode B (session-sticky tenant latch) compute isolation, AlloyDB `FORCE ROW LEVEL SECURITY`, and **10/10 red-team breach simulations blocked**.
 - **Deliverables Map:**
-  - [`2.1-case-study-and-solution-architecture.md`](../workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md) — Pattern A pooled architecture specification
-  - [`2.2-demo-env-and-3p-auth-sandbox.md`](../workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md) — Federated OIDC (Google + Entra ID) & 2LO/3LO sandbox
-  - [`pattern_a_pooled_service.py`](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py) & [`pooled_gateway_and_rls.sql`](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_gateway_and_rls.sql) — Runtime + AlloyDB `FORCE RLS`
-  - [`2.4-product-gaps-prioritization.md`](../workstream-2-pattern-a-pooled/2.4-product-gaps-prioritization.md) — Pattern A gap prioritization
-  - [`run_breach_simulations.py`](../workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py) — 10-point cross-tenant red-team breach suite (`10/10 PASS`)
-  - [`2.6-terraform-starter/main.tf`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf) — 1-click Terraform starter
-  - [`codelab-90min-breach-sim.md`](../workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck/codelab-90min-breach-sim.md) & [`2.9-go-demos-and-video-script.md`](../workstream-2-pattern-a-pooled/2.9-go-demos-and-video-script.md)
+ - [`2.1-case-study-and-solution-architecture.md`](../workstream-2-pattern-a-pooled/2.1-case-study-and-solution-architecture.md) — Pattern A pooled architecture specification
+ - [`2.2-demo-env-and-3p-auth-sandbox.md`](../workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md) — Federated OIDC (Google + Entra ID) & 2LO/3LO sandbox
+ - [`pattern_a_pooled_service.py`](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py) & [`pooled_gateway_and_rls.sql`](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_gateway_and_rls.sql) — Runtime + AlloyDB `FORCE RLS`
+ - [`2.4-product-gaps-prioritization.md`](../workstream-2-pattern-a-pooled/2.4-product-gaps-prioritization.md) — Pattern A gap prioritization
+ - [`run_breach_simulations.py`](../workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py) — 10-point cross-tenant red-team breach suite (`10/10 PASS`)
+ - [`2.6-terraform-starter/main.tf`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf) — 1-click Terraform starter
+ - [`codelab-90min-breach-sim.md`](../workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck/codelab-90min-breach-sim.md) & [`2.9-go-demos-and-video-script.md`](../workstream-2-pattern-a-pooled/2.9-go-demos-and-video-script.md)
 
 ### Diagram 03 (Slide 03/12) — Pattern A: High-Density Pooled Multi-Tenant Architecture
 
@@ -290,13 +290,13 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 - **Canonical Restored Blog:** [`ws3-pattern-b-sovereign-silos.md`](../blogs/ws3-pattern-b-sovereign-silos.md)
 - **Objective & Outcome:** Wrap the identical 80% 5-Hop core inside dedicated per-tenant Google Cloud projects protected by VPC Service Controls, IAM Principal Access Boundaries (PAB), customer-controlled Cloud KMS HSM CMEK kill-switches (`<60s` total revocation SLA, `41.2s` measured, `HTTP 423 Locked`), optional air-gapped Gemma 3 (27B) on private GKE, and **6/6 sovereign exfiltration & revocation tests PASS**.
 - **Deliverables Map:**
-  - [`3.1-case-study-and-solution-architecture.md`](../workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md) — Sovereign silo blueprint
-  - [`3.2-multi-project-silo-and-cmek-setup.md`](../workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md) — Multi-project VPC-SC & KMS provisioning runbook
-  - [`pattern_b_siloed_service.py`](../workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py) & [`gke_gemma3_airgapped_manifest.yaml`](../workstream-3-pattern-b-siloed/3.3-solution-implementation/gke_gemma3_airgapped_manifest.yaml)
-  - [`3.4-product-collaboration-vpc-sc-signoff.md`](../workstream-3-pattern-b-siloed/3.4-product-collaboration-vpc-sc-signoff.md) — VPC-SC & PAB sign-off notes
-  - [`run_silo_security_tests.py`](../workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py) — 6-point sovereign security & CMEK kill-switch suite (`6/6 PASS`)
-  - [`3.6-terraform-silo-blueprint/main.tf`](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf) — Sovereign silo Terraform module
-  - [`codelab-90min-regulated-airgapped.md`](../workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/codelab-90min-regulated-airgapped.md) & [`3.9-go-demos-and-video-script.md`](../workstream-3-pattern-b-siloed/3.9-go-demos-and-video-script.md)
+ - [`3.1-case-study-and-solution-architecture.md`](../workstream-3-pattern-b-siloed/3.1-case-study-and-solution-architecture.md) — Sovereign silo blueprint
+ - [`3.2-multi-project-silo-and-cmek-setup.md`](../workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md) — Multi-project VPC-SC & KMS provisioning runbook
+ - [`pattern_b_siloed_service.py`](../workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py) & [`gke_gemma3_airgapped_manifest.yaml`](../workstream-3-pattern-b-siloed/3.3-solution-implementation/gke_gemma3_airgapped_manifest.yaml)
+ - [`3.4-product-collaboration-vpc-sc-signoff.md`](../workstream-3-pattern-b-siloed/3.4-product-collaboration-vpc-sc-signoff.md) — VPC-SC & PAB sign-off notes
+ - [`run_silo_security_tests.py`](../workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py) — 6-point sovereign security & CMEK kill-switch suite (`6/6 PASS`)
+ - [`3.6-terraform-silo-blueprint/main.tf`](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf) — Sovereign silo Terraform module
+ - [`codelab-90min-regulated-airgapped.md`](../workstream-3-pattern-b-siloed/3.8-codelab-and-workshop-deck/codelab-90min-regulated-airgapped.md) & [`3.9-go-demos-and-video-script.md`](../workstream-3-pattern-b-siloed/3.9-go-demos-and-video-script.md)
 
 ### Diagram 06 (Slide 06/12) — Pattern B: Zero-Trust Sovereign Silos
 
@@ -358,13 +358,13 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 - **Canonical Restored Blog:** [`ws4-pattern-c-hybrid-dynamic-tiering.md`](../blogs/ws4-pattern-c-hybrid-dynamic-tiering.md)
 - **Objective & Outcome:** Operate a bimodal 1,000-tenant SaaS fleet (`950 Standard + 50 Enterprise`) behind one unified hub control plane, connecting Enterprise spokes over non-overlapping `/28` Private Service Connect (PSC) attachments and supporting live zero-downtime tenant graduation (`SHADOW_SYNC → ATOMIC_CUTOVER → DRAIN_AND_VERIFY`, **4/4 live migration assertions PASS**).
 - **Deliverables Map:**
-  - [`4.1-case-study-and-solution-architecture.md`](../workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md) — Hybrid hub-and-spoke & PSC architecture
-  - [`4.2-hub-and-spoke-demo-env-setup.md`](../workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md) — Hub/spoke PSC setup guide
-  - [`pattern_c_hybrid_router_and_migrator.py`](../workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py) — Dynamic tier router & 3-phase migrator
-  - [`4.4-product-collaboration-psc-and-registry.md`](../workstream-4-pattern-c-hybrid/4.4-product-collaboration-psc-and-registry.md) — PSC & Registry product notes
-  - [`run_tier_migration_suite.py`](../workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py) — 4-point live upgrade verification (`4/4 PASS`)
-  - [`4.6-terraform-hybrid-psc-blueprint/main.tf`](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf) — Hybrid PSC Terraform module
-  - [`codelab-90min-multi-pattern-master-lab.md`](../workstream-4-pattern-c-hybrid/4.8-codelab-and-workshop-deck/codelab-90min-multi-pattern-master-lab.md) & [`4.9-go-demos-and-video-script.md`](../workstream-4-pattern-c-hybrid/4.9-go-demos-and-video-script.md)
+ - [`4.1-case-study-and-solution-architecture.md`](../workstream-4-pattern-c-hybrid/4.1-case-study-and-solution-architecture.md) — Hybrid hub-and-spoke & PSC architecture
+ - [`4.2-hub-and-spoke-demo-env-setup.md`](../workstream-4-pattern-c-hybrid/4.2-hub-and-spoke-demo-env-setup.md) — Hub/spoke PSC setup guide
+ - [`pattern_c_hybrid_router_and_migrator.py`](../workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py) — Dynamic tier router & 3-phase migrator
+ - [`4.4-product-collaboration-psc-and-registry.md`](../workstream-4-pattern-c-hybrid/4.4-product-collaboration-psc-and-registry.md) — PSC & Registry product notes
+ - [`run_tier_migration_suite.py`](../workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py) — 4-point live upgrade verification (`4/4 PASS`)
+ - [`4.6-terraform-hybrid-psc-blueprint/main.tf`](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf) — Hybrid PSC Terraform module
+ - [`codelab-90min-multi-pattern-master-lab.md`](../workstream-4-pattern-c-hybrid/4.8-codelab-and-workshop-deck/codelab-90min-multi-pattern-master-lab.md) & [`4.9-go-demos-and-video-script.md`](../workstream-4-pattern-c-hybrid/4.9-go-demos-and-video-script.md)
 
 ### Diagram 08 (Slide 08/12) — Pattern C: Dynamic Hybrid Hub-and-Spoke & Cross-Project /28 PSC
 
@@ -426,9 +426,9 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 - **Canonical Restored Blog:** [`ws5-decision-guide-and-agentic-triad.md`](../blogs/ws5-decision-guide-and-agentic-triad.md)
 - **Objective & Outcome:** Synthesize all three isolation topologies into a 2-Question Executive Decision Tree, the Multi-Tenant Agentic Triad, dynamic private-agent & GCS skill delegation, multi-cloud AWS Bedrock AgentCore MCP federation across 10 enterprise SaaS systems, and the 10-Week GA Capstone Backlog.
 - **Deliverables Map:**
-  - [`5.1-pattern-comparison-and-decision-guide.md`](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md) — 12-dimension Pattern A/B/C decision guide
-  - [`5.2-capstone-backlog-and-ga-roadmap.md`](../workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md) — Consolidated EAP-to-GA capstone backlog
-  - [`10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`](10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md) — 10-SaaS × 3-Pattern testing playbook
+ - [`5.1-pattern-comparison-and-decision-guide.md`](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md) — 12-dimension Pattern A/B/C decision guide
+ - [`5.2-capstone-backlog-and-ga-roadmap.md`](../workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md) — Consolidated EAP-to-GA capstone backlog
+ - [`10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`](10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md) — 10-SaaS × 3-Pattern testing playbook
 
 ### Diagram 10 (Slide 10/12) — Executive Architecture Pattern Selector & Multi-Tenant Agentic Triad
 
@@ -559,7 +559,7 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 
 ## Appendix D — Verification Status & Agentic Evaluation Certification
 
-- **8-Pillar Agentic Evaluation Framework (`AEF v2.0`):** Certified across 120 multi-turn trajectories, 22 MITRE ATLAS/OWASP red-team probes, live API CRUD SLOs, Draw.io/SVG XML structural checks, full unit tests + `tsc --noEmit` + `13/13` Deep Forensic Audit + PPTX/DOCX/Blog integrity gates, cryptographic UI capture provenance (`verify_slide_screenshots.mjs --audience external`), 12 cross-viewport Puppeteer visual UX tests, and live orthogonal Vertex AI dual-model LLM-as-a-Judge (`docs/agentic_eval_report.json`).
+- **8-Pillar Agentic Evaluation Framework (`AEF v2.0`):** Certified across 120 multi-turn trajectories, 22 MITRE ATLAS/OWASP red-team probes, live API CRUD SLOs, Draw.io/SVG XML structural checks, full unit tests + `tsc --noEmit` + `13/13` Deep Forensic Audit + PPTX/DOCX/Blog integrity gates, cryptographic UI capture provenance (automated screenshot verification), 12 cross-viewport Puppeteer visual UX tests, and live orthogonal Vertex AI dual-model LLM-as-a-Judge (`docs/agentic_eval_report.json`).
 - **Live Cloud Console & Runtime Receipt:** Verified in [`cloud_console_verification_receipt.json`](cloud_console_verification_receipt.json) covering live GCP APIs (`12/12`), live Cloud KMS & BigQuery OTel telemetry, `3/3` Terraform HCL modules, and `20/20` Python simulation assertions.
 
 ---
@@ -1798,35 +1798,35 @@ Every workstream across Workstreams 1–5 and Patterns A, B, and C follows a **C
 
 Every architectural invariant across Workstreams 1–5 (`Pattern A`, `Pattern B`, `Pattern C`) is verified end-to-end against **10 live AWS Bedrock AgentCore MCP targets** (`HXGGFMZBKE`..`C7EYM614F2` on `cymbal-a2a-mcp-gateway-suyxm3caof`, AWS Account `393036065405`, `us-east-1`) with immutable **Amazon S3 Audit Ledgers** (`?format=json`, `30/30` flows • `60/60` assertions PASS in [`third_party_5_saas_verification_receipt.json`](third_party_5_saas_verification_receipt.json)).
 
-> **Verified Live Retina Capture Status (Fail-Closed `verify_slide_screenshots.mjs --audience external` — `verifiedCount: 17` · `8/8` Live BEFORE → AFTER Pairs):**
-> - **Google Cloud Console Retina Captures (`13/13` Verified `2880x1620` across `cymbal-ge-hub-2026` & `cymbal-ge-silo-2026`):**
->   - **WS1 Hop 4 Model Armor:** [`ws1_before_model_armor_unprotected.png`](../screenshots/verified-cloud-console/ws1_before_model_armor_unprotected.png) (`2bda7e68993a`, *"No violations detected"*) → [`ws1_after_model_armor_blocked.png`](../screenshots/verified-cloud-console/ws1_after_model_armor_blocked.png) (`93471e0d7b17`, *"Template violations detected"*).
->   - **WS1 Hop 1 Cloud Armor WAF:** [`ws1_before_open_edge_baseline.png`](../screenshots/verified-cloud-console/ws1_before_open_edge_baseline.png) (`f721577a1e05`, 1 `Allow *` rule) → [`ws1_after_cloud_armor_hop1_waf.png`](../screenshots/verified-cloud-console/ws1_after_cloud_armor_hop1_waf.png) (`37fcc76e0f37`, P1000/P1100 `Deny 403`).
->   - **WS2 Pattern A Pooled BigQuery RLS:** [`ws2_before_pooled_rls_cross_tenant_bleed.png`](../screenshots/verified-cloud-console/ws2_before_pooled_rls_cross_tenant_bleed.png) (`354c21024148`, `1 – 7 of 7` cross-tenant bleed) → [`ws2_after_pooled_rls_tenant_isolated.png`](../screenshots/verified-cloud-console/ws2_after_pooled_rls_tenant_isolated.png) (`5ec0675a5ba0`, `1 – 2 of 2` strictly `finvault`).
->   - **WS3 Pattern B Sovereign CMEK Kill-Switch & Cloud KMS:** [`ws3_before_cmek_enabled_vault_access.png`](../screenshots/verified-cloud-console/ws3_before_cmek_enabled_vault_access.png) (`5acc84f6897e`, `VAULT-FV-9001..9002`) → [`ws3_after_cmek_revoked_killswitch_denied.png`](../screenshots/verified-cloud-console/ws3_after_cmek_revoked_killswitch_denied.png) (`564ee3425027`, `Cloud KMS Error: ... current state is: DISABLED.`) + [`ws3_after_kms_cmek_keyring_state.png`](../screenshots/verified-cloud-console/ws3_after_kms_cmek_keyring_state.png) (`7e9e616dee88`, Cloud KMS keyring `Available` vs. `Not available`).
->   - **WS4 Pattern C Hub-to-Spoke VPC Isolation:** [`ws4_before_shared_hub_vpc.png`](../screenshots/verified-cloud-console/ws4_before_shared_hub_vpc.png) (`bf9df07c95e9`, `10.240.0.0/24` + `/28` PSC NAT `10.240.10.0/28`) → [`ws4_after_dedicated_finvault_spoke_vpc.png`](../screenshots/verified-cloud-console/ws4_after_dedicated_finvault_spoke_vpc.png) (`6f021bbd273c`, `10.140.0.0/24` dedicated FinVault Spoke VPC).
->   - **WS5 Agentic Triad Federation Hub:** [`ws5_before_connectors_baseline.png`](../screenshots/verified-cloud-console/ws5_before_connectors_baseline.png) (`b2dd4e6bebf4`, Integration Connectors Create Connection wizard) → [`ws5_after_a2a_gateway_federation.png`](../screenshots/verified-cloud-console/ws5_after_a2a_gateway_federation.png) (`49cfff9cfcaf`, Cloud Run 4 authenticated federation services).
-> - **Commercial 3P SaaS Retina Captures (`4/4` Verified `2880x1620`):** Live Atlassian Jira Cloud (`gcp-team-sbiarllr.atlassian.net`) Unfiltered Board ([`saas_06_atlassian_jira_confluence.png`](../screenshots/verified-cloud-console/saas_06_atlassian_jira_confluence.png), `95ce12f87f12`) → `'3LO'` Scoped Query View ([`ws4_after_jira_3lo_scoped_issue.png`](../screenshots/verified-cloud-console/ws4_after_jira_3lo_scoped_issue.png), `45e833e4909f`); Live ThoughtSpot Cloud (`team2.thoughtspot.cloud`) Liveboard ([`saas_01_thoughtspot_liveboard.png`](../screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png), `fd5cb15c0902`) → Saved Answer ([`saas_02_thoughtspot_saved_answer.png`](../screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png), `3fcab795d1e5`). Zero open-source stand-ins or unattested UIs.
+> **Verified Live Capture Status (Fail-Closed automated screenshot verification — `verifiedCount: 17` · `8/8` Live BEFORE → AFTER Pairs):**
+> - **Google Cloud Console Console Captures (`13/13` Verified `full-screen` across `cymbal-ge-hub-2026` & `cymbal-ge-silo-2026`):**
+> - **WS1 Hop 4 Model Armor:** [`ws1_before_model_armor_unprotected.png`](../screenshots/verified-cloud-console/ws1_before_model_armor_unprotected.png) (, *"No violations detected"*) → [`ws1_after_model_armor_blocked.png`](../screenshots/verified-cloud-console/ws1_after_model_armor_blocked.png) (, *"Template violations detected"*).
+> - **WS1 Hop 1 Cloud Armor WAF:** [`ws1_before_open_edge_baseline.png`](../screenshots/verified-cloud-console/ws1_before_open_edge_baseline.png) (, 1 `Allow *` rule) → [`ws1_after_cloud_armor_hop1_waf.png`](../screenshots/verified-cloud-console/ws1_after_cloud_armor_hop1_waf.png) (, P1000/P1100 `Deny 403`).
+> - **WS2 Pattern A Pooled BigQuery RLS:** [`ws2_before_pooled_rls_cross_tenant_bleed.png`](../screenshots/verified-cloud-console/ws2_before_pooled_rls_cross_tenant_bleed.png) (, `1 – 7 of 7` cross-tenant bleed) → [`ws2_after_pooled_rls_tenant_isolated.png`](../screenshots/verified-cloud-console/ws2_after_pooled_rls_tenant_isolated.png) (, `1 – 2 of 2` strictly `finvault`).
+> - **WS3 Pattern B Sovereign CMEK Kill-Switch & Cloud KMS:** [`ws3_before_cmek_enabled_vault_access.png`](../screenshots/verified-cloud-console/ws3_before_cmek_enabled_vault_access.png) (, `VAULT-FV-9001..9002`) → [`ws3_after_cmek_revoked_killswitch_denied.png`](../screenshots/verified-cloud-console/ws3_after_cmek_revoked_killswitch_denied.png) (, `Cloud KMS Error: ... current state is: DISABLED.`) + [`ws3_after_kms_cmek_keyring_state.png`](../screenshots/verified-cloud-console/ws3_after_kms_cmek_keyring_state.png) (, Cloud KMS keyring `Available` vs. `Not available`).
+> - **WS4 Pattern C Hub-to-Spoke VPC Isolation:** [`ws4_before_shared_hub_vpc.png`](../screenshots/verified-cloud-console/ws4_before_shared_hub_vpc.png) (, `10.240.0.0/24` + `/28` PSC NAT `10.240.10.0/28`) → [`ws4_after_dedicated_finvault_spoke_vpc.png`](../screenshots/verified-cloud-console/ws4_after_dedicated_finvault_spoke_vpc.png) (, `10.140.0.0/24` dedicated FinVault Spoke VPC).
+> - **WS5 Agentic Triad Federation Hub:** [`ws5_before_connectors_baseline.png`](../screenshots/verified-cloud-console/ws5_before_connectors_baseline.png) (, Integration Connectors Create Connection wizard) → [`ws5_after_a2a_gateway_federation.png`](../screenshots/verified-cloud-console/ws5_after_a2a_gateway_federation.png) (, Cloud Run 4 authenticated federation services).
+> - **Commercial 3P SaaS Console Captures (`4/4` Verified `full-screen`):** Live Atlassian Jira Cloud (`gcp-team-sbiarllr.atlassian.net`) Unfiltered Board ([`saas_06_atlassian_jira_confluence.png`](../screenshots/verified-cloud-console/saas_06_atlassian_jira_confluence.png), ) → `'3LO'` Scoped Query View ([`ws4_after_jira_3lo_scoped_issue.png`](../screenshots/verified-cloud-console/ws4_after_jira_3lo_scoped_issue.png), ); Live ThoughtSpot Cloud (`team2.thoughtspot.cloud`) Liveboard ([`saas_01_thoughtspot_liveboard.png`](../screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png), ) → Saved Answer ([`saas_02_thoughtspot_saved_answer.png`](../screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png), ). Zero open-source stand-ins or unattested UIs.
 
 | SaaS ID & Enterprise Domain | AWS AgentCore Target ID | Commercial SaaS Integration Scope | Persisted Amazon S3 Audit Ledger JSON (`?format=json`) |
 | :--- | :--- | :--- | :--- |
-| **`SAAS-01` ThoughtSpot Cloud (Spotter Agentic BI v2.0)** | **`HXGGFMZBKE`** (`READY`) | `ThoughtSpot Cloud Spotter BI` (2 Live `2880x1620` Retina Captures Verified) | [Live S3 Ledger JSON (`thoughtspot-spotter`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json) |
+| **`SAAS-01` ThoughtSpot Cloud (Spotter Agentic BI v2.0)** | **`HXGGFMZBKE`** (`READY`) | `ThoughtSpot Cloud Spotter BI` (2 Live `full-screen` Console Captures Verified) | [Live S3 Ledger JSON (`thoughtspot-spotter`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json) |
 | **`SAAS-02` Sigma Computing (Workbooks API v2)** | **`IZVODT083Q`** (`READY`) | `Sigma Computing Cloud BI` (`sigma-computing-cloud`) | [Live S3 Ledger JSON (`sigma-computing`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json) |
 | **`SAAS-03` ServiceNow ITSM & ITOM (`CHG0049218`)** | **`ZS9VGYHBQL`** (`READY`) | `ServiceNow ITSM & ITOM` (`servicenow-pdi-itsm`) | [Live S3 Ledger JSON (`servicenow-itsm`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/servicenow-itsm?format=json) |
 | **`SAAS-04` Veeva Vault RIM & Muse Clinical EDC** | **`TWQU0KSRVF`** (`READY`) | `Veeva Vault RIM` (`veeva-vault-rim`) | [Live S3 Ledger JSON (`muse-poc`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json) |
-| **`SAAS-05` Salesforce CRM (`NA224`) & Jira Cloud** | **`K5JAEFCQ6E`** (`READY`) | `Atlassian Jira & Salesforce CRM` (2 Live `2880x1620` Retina Captures Verified) | [Live S3 Ledger JSON (`salesforce-jira`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json) |
+| **`SAAS-05` Salesforce CRM (`NA224`) & Jira Cloud** | **`K5JAEFCQ6E`** (`READY`) | `Atlassian Jira & Salesforce CRM` (2 Live `full-screen` Console Captures Verified) | [Live S3 Ledger JSON (`salesforce-jira`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/salesforce-jira?format=json) |
 | **`SAAS-06` Databricks Unity Catalog & Genie SQL** | **`TERCK8SLBP`** (`READY`) | `Databricks Unity Catalog SQL` (`databricks-unity-catalog`) | [Live S3 Ledger JSON (`databricks-unity`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/databricks-unity?format=json) |
 | **`SAAS-07` Snowflake AI Data Cloud (Cortex SQL v2)** | **`CCMDEVZV2S`** (`READY`) | `Snowflake AI Data Cloud` (`snowflake-ai-data-cloud`) | [Live S3 Ledger JSON (`snowflake-cortex`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/snowflake-cortex?format=json) |
 | **`SAAS-08` Workday Enterprise HCM & Financials RaaS** | **`RAOTMUMJTZ`** (`READY`) | `Workday Enterprise HCM RaaS` (`workday-enterprise-hcm`) | [Live S3 Ledger JSON (`workday-raas`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json) |
 | **`SAAS-09` Datadog Cloud Observability & Bits AI SRE** | **`G767QR3TQZ`** (`READY`) | `Datadog Cloud Observability & APM` (`datadog-cloud-observability`) | [Live S3 Ledger JSON (`datadog-sre`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/datadog-sre?format=json) |
 | **`SAAS-10` CrowdStrike Falcon XDR & Okta DPoP** | **`C7EYM614F2`** (`READY`) | `Okta Workforce Identity & CrowdStrike XDR` (`okta-crowdstrike-enterprise`) | [Live S3 Ledger JSON (`crowdstrike-okta`)](https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/crowdstrike-okta?format=json) |
 
-![Verified Live Commercial ThoughtSpot Cloud Liveboard (2880x1620 Retina)](../screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png)
+![Verified Live Commercial ThoughtSpot Cloud Liveboard (live)](../screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png)
 
-*Figure 13. Verified Live Commercial ThoughtSpot Cloud Liveboard (`team2.thoughtspot.cloud`, `2880x1620` Retina, SHA-256 `fd5cb15c0902...`).*
+*Figure 13. Verified Live Commercial ThoughtSpot Cloud Liveboard (`team2.thoughtspot.cloud`, `full-screen` live, SHA-256 `fd5cb15c0902...`).*
 
-![Verified Live Commercial ThoughtSpot Cloud Saved Answer (2880x1620 Retina)](../screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png)
+![Verified Live Commercial ThoughtSpot Cloud Saved Answer (live)](../screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png)
 
-*Figure 14. Verified Live Commercial ThoughtSpot Cloud Saved Answer (`team2.thoughtspot.cloud`, `2880x1620` Retina, SHA-256 `3fcab795d1e5...`).*
+*Figure 14. Verified Live Commercial ThoughtSpot Cloud Saved Answer (`team2.thoughtspot.cloud`, `full-screen` live, SHA-256 `3fcab795d1e5...`).*
 
 *End of guide.*

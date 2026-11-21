@@ -225,7 +225,7 @@ class HallucinationPurgeRegressionTests(unittest.TestCase):
     def test_ch06_payg_marketplace_split_and_unauthenticated_probe_honesty(self) -> None:
         payg_html = (ROOT_DIR / "templates/tab_payg.html").read_text(encoding="utf-8")
         self.assertIn("6 GCP MARKETPLACE PAYG + 2 DIRECT VENDOR DEV TIERS", payg_html)
-        self.assertIn("All 21 architecture slide decks", payg_html)
+        self.assertIn("All architecture slide decks focus strictly on technical", payg_html)
         self.assertIn("$650 hub + 90% Pooled ($18) + 10% VIP Spoke ($850)", payg_html)
 
         modals_js = (ROOT_DIR / "js/modals.js").read_text(encoding="utf-8")

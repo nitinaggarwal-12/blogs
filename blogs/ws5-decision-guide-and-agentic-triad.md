@@ -31,13 +31,13 @@ Choosing a multi-tenant isolation model should never rely on ad-hoc opinions. Fi
 
 ```formula
 Let (q_spoke, q_silo) ∈ {0, 1}² where:
-  • q_spoke = 1 if tenant requires dedicated CMEK data store, regional residency, or private MCP spoke
-  • q_silo  = 1 if tenant mandates dedicated GCP project, VPC-SC (0.0.0.0/0 denied), or air-gapped SEV-SNP compute
+ • q_spoke = 1 if tenant requires dedicated CMEK data store, regional residency, or private MCP spoke
+ • q_silo = 1 if tenant mandates dedicated GCP project, VPC-SC (0.0.0.0/0 denied), or air-gapped SEV-SNP compute
 
 TargetPattern(q_spoke, q_silo) =
-  • Gate 1 (q_spoke = 0, q_silo = 0) → Pattern A: Pool (WS2)                  [1.0x COGS • 1,000+ Tenants • ~85% Prefix Cache]
-  • Gate 2 (q_spoke = 1, q_silo = 0) → Pattern C: Governed Hub & Spoke (WS4)  [1.8x–2.8x COGS • 0ms Cutover • /28 PSC Spokes]
-  • Gate 3 (q_silo  = 1)             → Pattern B: Sovereign Silo (WS3)        [~15x COGS • 41.2s CMEK Halt • GKE SEV-SNP]
+ • Gate 1 (q_spoke = 0, q_silo = 0) → Pattern A: Pool (WS2) [1.0x COGS • 1,000+ Tenants • ~85% Prefix Cache]
+ • Gate 2 (q_spoke = 1, q_silo = 0) → Pattern C: Governed Hub & Spoke (WS4) [1.8x–2.8x COGS • 0ms Cutover • /28 PSC Spokes]
+ • Gate 3 (q_silo = 1) → Pattern B: Sovereign Silo (WS3) [~15x COGS • 41.2s CMEK Halt • GKE SEV-SNP]
 ```
 
 Regardless of which gate a tenant clears, **three non-negotiable architectural invariants** never change:
@@ -71,11 +71,11 @@ Real B2B SaaS platforms rarely deploy one monolithic prompt. Instead, they opera
 
 1. **Ingress Identity & ARD Visibility Scope (`CALLER → DIAG`)**: The Enterprise Caller authenticates via `OIDC + DPoP`. Hop 2 **ARD** verifies that `finvault` is entitled to invoke `Agent Alpha` (while deterministically rejecting `retailstream` attempts to discover or invoke `Agent Alpha` with **`HTTP 403`**).
 2. **Scoped A2A Delegation & Dynamic GCS Skill Hot-Swap (`DIAG → PRIV`)**:
-   - The **Shared Diagnostic Agent** delegates over **Agent-to-Agent (`A2A`)** passing the exact signed STS JWT (never downgrading to a generic service account).
-   - The **Private Tenant Agent** loads its tenant-signed playbooks and prompt rubrics dynamically from `gs://<tenant-skills-bucket>/v2/skill.yaml` (verified against a pinned SHA-256 digest and cached under `cache:{tenant}:skill:*`)—enabling **zero-downtime skill updates with `0` container image rebuilds**.
+ - The **Shared Diagnostic Agent** delegates over **Agent-to-Agent (`A2A`)** passing the exact signed STS JWT (never downgrading to a generic service account).
+ - The **Private Tenant Agent** loads its tenant-signed playbooks and prompt rubrics dynamically from `gs://<tenant-skills-bucket>/v2/skill.yaml` (verified against a pinned SHA-256 digest and cached under `cache:{tenant}:skill:*`)—enabling **zero-downtime skill updates with `0` container image rebuilds**.
 3. **Prefix Cache Hit, Thinking Clamp & `2LO/3LO` MCP Dispatch (`PRIV → MCP`)**:
-   - Inference hits the immutable **`32k` shared prefix cache (`~85%` turn token savings)** while enforcing the tenant's **`8,000`-token thinking clamp**.
-   - Outbound tool execution calls the **2LO/3LO MCP Hub** (`core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py`) with Hop 4 Cloud SDP redaction and per-user DPoP-bound `3LO` tokens.
+ - Inference hits the immutable **`32k` shared prefix cache (`~85%` turn token savings)** while enforcing the tenant's **`8,000`-token thinking clamp**.
+ - Outbound tool execution calls the **2LO/3LO MCP Hub** (`core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py`) with Hop 4 Cloud SDP redaction and per-user DPoP-bound `3LO` tokens.
 4. **Zero-PII BigQuery FinOps Chargeback (`MCP → OTel`)**: Every delegated sub-agent hop emits a linked **OpenTelemetry (`OTel`)** span containing `tenant_id`, `agent_id`, `skill_sha256`, `cached_input_tokens`, `thinking_tokens`, and `raw_pii_logged = FALSE` into BigQuery for accurate per-customer margin accounting.
 
 ---
@@ -120,43 +120,43 @@ As tracked in [`5.2 Capstone Backlog & GA Roadmap`](../workstream-5-wrap-up-and-
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-## Live Before-vs-After Resolution Proofs for WS5 (3 Complete Live Pairs • 6 Verified 2880×1620 Retina Captures)
+## Live Before & After Proofs for WS5 (ThoughtSpot BI, Cloud Run A2A Hub & Jira Cloud)
 
 > [!IMPORTANT]
-> **3 Complete Live BEFORE → AFTER Pairs (`WS5-BA-01` ThoughtSpot Cloud BI + `WS5-BA-02` GCP Connectors → Cloud Run A2A/MCP Federation Hub + `WS4-BA-01` Atlassian Jira Cloud):** All `6` `2880×1620` Retina captures below are cryptographically attested (`verify_slide_screenshots.mjs --audience external` exit `0`). Open **`/blogs/ws5/screenshots`** for Side-by-Side and Interactive Split-Slider inspection alongside the full [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
+> **3 Complete Live BEFORE → AFTER Pairs (`WS5-BA-01` ThoughtSpot Cloud BI + `WS5-BA-02` GCP Connectors → Cloud Run A2A/MCP Federation Hub + `WS4-BA-01` Atlassian Jira Cloud):** All `6` live console captures below are cryptographically attested (automated screenshot verification exit `0`). Open **`/blogs/ws5/screenshots`** for Side-by-Side and Interactive Split-Slider inspection alongside the full [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
 
 ### WS5-BA-01 (BEFORE): Unfiltered Multi-Region ThoughtSpot Executive Liveboard (`$735.3K` Global Rollup)
-**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** `team2.thoughtspot.cloud` • **State:** All 6 dimension filters (`Store Region`, `Store State`, `Category`, `Department`, `Brand`, `Store Name`) unconstrained • Provenance SHA-256 `fd5cb15c0902` (`2880×1620` Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
+**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** `team2.thoughtspot.cloud` • **State:** All 6 dimension filters (`Store Region`, `Store State`, `Category`, `Department`, `Brand`, `Store Name`) unconstrained • Provenance (live) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
 
 ![WS5 BEFORE: Unfiltered ThoughtSpot Cloud Executive Liveboard on team2.thoughtspot.cloud exposing global $735.3K sales KPIs with all 6 dimension filters unselected.](../screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png)
-*WS5 BEFORE (`SHA-256 fd5cb15c0902`): Unconstrained multi-region ThoughtSpot Cloud Liveboard exposing `$735.3K` global sales rollups with zero tenant or domain filter predicates applied.*
+*WS5 BEFORE: Unconstrained multi-region ThoughtSpot Cloud Liveboard exposing `$735.3K` global sales rollups with zero tenant or domain filter predicates applied.*
 
 ### WS5-BA-01 (AFTER): Governed Single-Domain ThoughtSpot Saved Answer (3-Month Scoped Query)
-**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** `team2.thoughtspot.cloud` • **State:** Governed Saved Answer bound to a single authorized domain dataset & `Received Date = last 3 months` • Provenance SHA-256 `3fcab795d1e5` (`2880×1620` Retina) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
+**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** `team2.thoughtspot.cloud` • **State:** Governed Saved Answer bound to a single authorized domain dataset & `Received Date = last 3 months` • Provenance (live) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
 
 ![WS5 AFTER: Governed ThoughtSpot Cloud Saved Answer on team2.thoughtspot.cloud pinned to a single authorized domain dataset and 3-month window.](../screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png)
-*WS5 AFTER (`SHA-256 3fcab795d1e5`): Governed single-domain ThoughtSpot Saved Answer enforcing explicit dataset scoping, time-window pinning (`last 3 months`), and zero unconstrained global financial rollup exposure.*
+*WS5 AFTER: Governed single-domain ThoughtSpot Saved Answer enforcing explicit dataset scoping, time-window pinning (`last 3 months`), and zero unconstrained global financial rollup exposure.*
 
 ### WS5-BA-02 (BEFORE): Standalone Point-to-Point Integration Connectors Setup (Pre-A2A Federation)
-**Provider:** Google Cloud Console (`Integration Connectors`) • **Project:** `cymbal-ge-hub-2026` (`#252968359259`) • **State:** Manual per-connection credential setup (`Location → Connection Details → Authentication`) without centralized A2A delegation or OAuth 2.1 OBO • Provenance SHA-256 `b2dd4e6bebf4` (`2880×1620` Retina) • **[Open Live Integration Connectors ↗](https://console.cloud.google.com/connectors/connections?project=cymbal-ge-hub-2026)**
+**Provider:** Google Cloud Console (`Integration Connectors`) • **Project:** `cymbal-ge-hub-2026` (`#252968359259`) • **State:** Manual per-connection credential setup (`Location → Connection Details → Authentication`) without centralized A2A delegation or OAuth 2.1 OBO • Provenance (live) • **[Open Live Integration Connectors ↗](https://console.cloud.google.com/connectors/connections?project=cymbal-ge-hub-2026)**
 
 ![WS5 BEFORE: Live Google Cloud Integration Connectors Create Connection wizard requiring point-to-point manual connection and static authentication setup in cymbal-ge-hub-2026.](../screenshots/verified-cloud-console/ws5_before_connectors_baseline.png)
-*WS5 BEFORE (`SHA-256 b2dd4e6bebf4`): Standalone Integration Connectors require manual per-connector setup and static credentials per endpoint without centralized A2A skill delegation or unified OAuth 2.1 OBO enforcement.*
+*WS5 BEFORE: Standalone Integration Connectors require manual per-connector setup and static credentials per endpoint without centralized A2A skill delegation or unified OAuth 2.1 OBO enforcement.*
 
 ### WS5-BA-02 (AFTER): Unified Cloud Run A2A Enterprise Gateway & OAuth 2.1 OBO Federation Hub
-**Provider:** Google Cloud Console (`Cloud Run Services`) • **Project:** `cymbal-ge-hub-2026` (`us-west1`) • **Services:** `a2a-gateway`, `a2a-ge-orchestrator`, `cymbal-multi-tenant-patterns`, `mcp-oauth21-obo-gateway` (all `Require authentication`) • Provenance SHA-256 `49cfff9cfcaf` (`2880×1620` Retina) • **[Open Live Cloud Run Services ↗](https://console.cloud.google.com/run/services?project=cymbal-ge-hub-2026)**
+**Provider:** Google Cloud Console (`Cloud Run Services`) • **Project:** `cymbal-ge-hub-2026` (`us-west1`) • **Services:** `a2a-gateway`, `a2a-ge-orchestrator`, `cymbal-multi-tenant-patterns`, `mcp-oauth21-obo-gateway` (all `Require authentication`) • Provenance (live) • **[Open Live Cloud Run Services ↗](https://console.cloud.google.com/run/services?project=cymbal-ge-hub-2026)**
 
 ![WS5 AFTER: Live Google Cloud Run Services table in cymbal-ge-hub-2026 showing a2a-gateway, a2a-ge-orchestrator, cymbal-multi-tenant-patterns, and mcp-oauth21-obo-gateway all running with Require authentication.](../screenshots/verified-cloud-console/ws5_after_a2a_gateway_federation.png)
-*WS5 AFTER (`SHA-256 49cfff9cfcaf`): Deploying the WS5 Agentic Triad consolidates cross-cloud delegation behind 4 authenticated Cloud Run Gen2 services (`a2a-gateway`, `a2a-ge-orchestrator`, `cymbal-multi-tenant-patterns`, `mcp-oauth21-obo-gateway`), enforcing unified 5-Hop identity and keyless OIDC federation across clouds.*
+*WS5 AFTER: Deploying the WS5 Agentic Triad consolidates cross-cloud delegation behind 4 authenticated Cloud Run Gen2 services (`a2a-gateway`, `a2a-ge-orchestrator`, `cymbal-multi-tenant-patterns`, `mcp-oauth21-obo-gateway`), enforcing unified 5-Hop identity and keyless OIDC federation across clouds.*
 
 ### WS4-BA-01 (BEFORE → AFTER): Atlassian Jira Cloud Unfiltered Board → Live `'3LO'` Scoped Query View
-**Provider:** Atlassian Jira Cloud (`gcp-team-sbiarllr.atlassian.net`) • **BEFORE:** SHA-256 `95ce12f87f12` (`6` mixed tickets across `4` columns) • **AFTER:** SHA-256 `45e833e4909f` (`3LO` filter isolating strictly `SCRUM-5` & `SCRUM-6`, `0` tickets in To Do / In Review / Done) • **[Open Live Console ↗](https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1)**
+**Provider:** Atlassian Jira Cloud (`gcp-team-sbiarllr.atlassian.net`) • **BEFORE:** (`6` mixed tickets across `4` columns) • **AFTER:** (`3LO` filter isolating strictly `SCRUM-5` & `SCRUM-6`, `0` tickets in To Do / In Review / Done) • **[Open Live Console ↗](https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1)**
 
 ![WS4 BEFORE: Unfiltered live Atlassian Jira Cloud Scrum board on gcp-team-sbiarllr.atlassian.net exposing 6 mixed tickets.](../screenshots/verified-cloud-console/saas_06_atlassian_jira_confluence.png)
-*BEFORE (`SHA-256 95ce12f87f12`): Unfiltered Jira Cloud Scrum board exposing all 6 mixed cross-domain issues simultaneously.*
+*BEFORE: Unfiltered Jira Cloud Scrum board exposing all 6 mixed cross-domain issues simultaneously.*
 
 ![WS4 AFTER: Live 3LO-scoped Atlassian Jira Cloud Scrum board on gcp-team-sbiarllr.atlassian.net isolating SCRUM-5 and SCRUM-6.](../screenshots/verified-cloud-console/ws4_after_jira_3lo_scoped_issue.png)
-*AFTER (`SHA-256 45e833e4909f`): Live interactive `'3LO'` board query isolates strictly `SCRUM-5` & `SCRUM-6` (`In Progress 2`) while filtering out 4 non-matching tickets (`To Do 0 · In Review 0 · Done 0`); server-side 3LO OAuth enforced by Pattern C MCP gateway.*
+*AFTER: Live interactive `'3LO'` board query isolates strictly `SCRUM-5` & `SCRUM-6` (`In Progress 2`) while filtering out 4 non-matching tickets (`To Do 0 · In Review 0 · Done 0`); server-side 3LO OAuth enforced by Pattern C MCP gateway.*
 
 <!-- GENUINE_3P_BEFORE_AFTER_END -->
 
@@ -165,16 +165,16 @@ As tracked in [`5.2 Capstone Backlog & GA Roadmap`](../workstream-5-wrap-up-and-
 ## What's next
 
 - **Approved Architecture Presentations & Editable Diagrams (WS5 = Slides 10–12):**
-  - **[Open WS5 10-Slide Executive Narrative Deck in Google Slides ↗](https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/edit)** • [Download WS5 Executive Deck (`.pptx`)](../slides/ws5-executive-architecture-10slide-deck.pptx)
-  - [Open Approved 12-Slide Architecture Deck in Google Slides (WS5 = Slides 10–12) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p10) • [Download WS5 Lean Visual Deck (`.pptx`)](../slides/ws5-12slide-visual-deck.pptx)
-  - [Figure 1 Pattern Selector (`.drawio`)](../diagrams/ws5-decision-tree-and-triad.drawio) • [Figure 2 Dynamic GCS Skills & OTel (`.drawio`)](../diagrams/ws5-c4-l3-dynamic-skill-delegation-swimlane.drawio) • [Figure 3 Multi-Cloud Federation Bridge (`.drawio`)](../diagrams/saas10-multicloud-a2a-mcp-bridge.drawio)
+ - **[Open WS5 10-Slide Executive Narrative Deck in Google Slides ↗](https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/edit)** • [Download WS5 Executive Deck (`.pptx`)](../slides/ws5-executive-architecture-10slide-deck.pptx)
+ - [Open Approved 12-Slide Architecture Deck in Google Slides (WS5 = Slides 10–12) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p10) • [Download WS5 Lean Visual Deck (`.pptx`)](../slides/ws5-12slide-visual-deck.pptx)
+ - [Figure 1 Pattern Selector (`.drawio`)](../diagrams/ws5-decision-tree-and-triad.drawio) • [Figure 2 Dynamic GCS Skills & OTel (`.drawio`)](../diagrams/ws5-c4-l3-dynamic-skill-delegation-swimlane.drawio) • [Figure 3 Multi-Cloud Federation Bridge (`.drawio`)](../diagrams/saas10-multicloud-a2a-mcp-bridge.drawio)
 - **Workstream 5 Capstone Deliverables & Agentic Triad Codebase:**
-  - **Decision Guide & GA Roadmap:** [`5.1 Pattern Comparison & Decision Guide`](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md) • [`5.2 Capstone Backlog & GA Roadmap`](../workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md)
-  - **Multi-Agent Codebase:** [`shared_diagnostic_agent.py`](../core-cymbal-agent/agents/shared_diagnostic_agent.py) • [`finvault_agent_alpha.py`](../core-cymbal-agent/agents/finvault_agent_alpha.py) • [`cymbal_mcp_hub.py`](../core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py)
-  - **Editable Whitepaper:** [Open WS5 Google Doc ↗](https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/edit?resourcekey=0-XWkODR5elYC9-fuGO6aBaQ) • [Download `.docx`](../docs/word/ws5-decision-guide-and-agentic-triad.docx)
+ - **Decision Guide & GA Roadmap:** [`5.1 Pattern Comparison & Decision Guide`](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md) • [`5.2 Capstone Backlog & GA Roadmap`](../workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md)
+ - **Multi-Agent Codebase:** [`shared_diagnostic_agent.py`](../core-cymbal-agent/agents/shared_diagnostic_agent.py) • [`finvault_agent_alpha.py`](../core-cymbal-agent/agents/finvault_agent_alpha.py) • [`cymbal_mcp_hub.py`](../core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py)
+ - **Editable Whitepaper:** [Open WS5 Google Doc ↗](https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/edit?resourcekey=0-XWkODR5elYC9-fuGO6aBaQ) • [Download `.docx`](../docs/word/ws5-decision-guide-and-agentic-triad.docx)
 - **Complete Series Navigation:**
-  - **Part 1 (`WS1`):** [Reference Architecture & 5-Hop Governance Baseline](ws1-reference-architecture-taxonomy-and-5hop-baseline.md) • **Part 2 (`WS2`):** [Pattern A: Pooled](ws2-pattern-a-pooled-architecture.md) • **Part 3 (`WS3`):** [Pattern B: Sovereign Silos](ws3-pattern-b-sovereign-silos.md) • **Part 4 (`WS4`):** [Pattern C: Dynamic Hybrid](ws4-pattern-c-hybrid-dynamic-tiering.md)
-  - **Companion Visual Atlas (`ATLAS`):** [10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas](saas-10-visual-verification-and-redteam-atlas.md)
+ - **Part 1 (`WS1`):** [Reference Architecture & 5-Hop Governance Baseline](ws1-reference-architecture-taxonomy-and-5hop-baseline.md) • **Part 2 (`WS2`):** [Pattern A: Pooled](ws2-pattern-a-pooled-architecture.md) • **Part 3 (`WS3`):** [Pattern B: Sovereign Silos](ws3-pattern-b-sovereign-silos.md) • **Part 4 (`WS4`):** [Pattern C: Dynamic Hybrid](ws4-pattern-c-hybrid-dynamic-tiering.md)
+ - **Companion Visual Atlas (`ATLAS`):** [10-SaaS Multi-Cloud Before/After Visual Verification & Red-Team Atlas](saas-10-visual-verification-and-redteam-atlas.md)
 
 <!-- E2E_FLOW_START -->
 <!-- Canonical Step-by-Step Logical & Technical E2E Flows served dynamically from diagrams/diagram_e2e_flows.json via toggleInlineFigureFlow(diagId) -->

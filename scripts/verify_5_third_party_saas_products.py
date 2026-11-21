@@ -828,9 +828,9 @@ def _write_manual_testing_playbook(playbook_path: Path, receipt: dict) -> None:
             "",
             "---",
             "",
-            "## 12. Verified Live Google Cloud Console & Commercial SaaS Proofs (16:9 Retina)",
+            "## 12. Live Google Cloud Console & Commercial SaaS Proofs",
             "",
-            "> **Cryptographic Provenance:** Every live screenshot below (`2880×1620` 16:9 Retina) is cryptographically attested in `screenshots/verified-cloud-console/` and verified exit 0 by `verify_slide_screenshots.mjs --audience external`. Also open the standalone **[Multi-Cloud Console & Live SaaS Verification Atlas](../blogs/saas-10-visual-verification-and-redteam-atlas.md)**.",
+            "> Every screenshot below was captured live from Google Cloud Console or commercial SaaS environments. Also open the standalone **[Multi-Cloud Console & Live SaaS Verification Atlas](../blogs/saas-10-visual-verification-and-redteam-atlas.md)**.",
             "",
         ]
     )
@@ -840,12 +840,11 @@ def _write_manual_testing_playbook(playbook_path: Path, receipt: dict) -> None:
         for idx, ent in enumerate(prov_doc.get("entries", []), 1):
             rel_file = str(ent.get("relFile", ""))
             host = str(ent.get("hostname", ""))
-            sha_short = str(ent.get("sha256", ""))[:12]
             lines.extend(
                 [
-                    f"### `PROOF-{idx:02d}`: Verified Live UI (`{host}` • `sha256:{sha_short}`)",
+                    f"### Capture {idx:02d}: Live UI (`{host}`)",
                     "",
-                    f"![Verified Live UI ({host})](../screenshots/verified-cloud-console/{Path(rel_file).name})",
+                    f"![Live UI ({host})](../screenshots/verified-cloud-console/{Path(rel_file).name})",
                     "",
                 ]
             )

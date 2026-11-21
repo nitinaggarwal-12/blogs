@@ -222,49 +222,49 @@ def build_curated_master_compendium_markdown() -> str:
     saas_section = re.split(r"\n## (?:Verified Live Commercial|What's next)\b", saas_section)[0].strip()
 
     verified_ui_section = "\n".join([
-        "## Verified Live Google Cloud Console & Commercial SaaS Retina Proofs (17/17 Verified `2880x1620` • 8/8 Pairs)",
+        "## Live Google Cloud Console & Commercial SaaS Before & After Proofs",
         "",
-        "Cryptographically attested live Google Cloud Console (`13/13` across `cymbal-ge-hub-2026` & `cymbal-ge-silo-2026`) and Commercial SaaS (`4/4` across Atlassian Jira Cloud & ThoughtSpot Cloud) `2880x1620` Retina captures verified via `verify_slide_screenshots.mjs --audience external` (`verifiedCount: 17`, `8/8` live BEFORE → AFTER pairs, zero OSS stand-ins):",
+        "Live Google Cloud Console (`cymbal-ge-hub-2026` & `cymbal-ge-silo-2026`) and commercial SaaS (Atlassian Jira Cloud & ThoughtSpot Cloud) screenshots proving every multi-tenant isolation boundary end-to-end:",
         "",
-        "- **WS1 BEFORE → AFTER (Hop 4 Model Armor & Hop 1 Cloud Armor WAF in `cymbal-ge-hub-2026`):** `ws1_before_model_armor_unprotected.png` (`2bda7e68993a`) → `ws1_after_model_armor_blocked.png` (`93471e0d7b17`), plus `ws1_before_open_edge_baseline.png` (`f721577a1e05`) → `ws1_after_cloud_armor_hop1_waf.png` (`37fcc76e0f37`).",
+        "- **WS1 BEFORE → AFTER (Hop 4 Model Armor & Hop 1 Cloud Armor WAF in `cymbal-ge-hub-2026`):** Unprotected baseline vs. active `ge-zero-trust-ai-firewall`, plus open default-allow edge vs. `cymbal-pooled-edge-waf` Priority 1000/1100 Deny-403.",
         "",
-        "![WS1 AFTER: Live GCP Model Armor ge-zero-trust-ai-firewall blocking prompt injection (2880x1620 Retina)](../screenshots/verified-cloud-console/ws1_after_model_armor_blocked.png)",
+        "![WS1 AFTER: Live GCP Model Armor ge-zero-trust-ai-firewall blocking prompt injection](../screenshots/verified-cloud-console/ws1_after_model_armor_blocked.png)",
         "",
-        "*Figure 13. WS1 AFTER — Live Google Cloud Model Armor `ge-zero-trust-ai-firewall` blocking cross-tenant prompt injection (2880x1620 Retina • SHA-256 `93471e0d7b17`).*",
+        "*Figure 13. WS1 AFTER — Live Google Cloud Model Armor `ge-zero-trust-ai-firewall` blocking cross-tenant prompt injection.*",
         "",
-        "- **WS2 BEFORE → AFTER (Pattern A BigQuery Kernel RLS in `cymbal-ge-hub-2026`):** `ws2_before_pooled_rls_cross_tenant_bleed.png` (`354c21024148`, 7 rows across 6 competing tenants) → `ws2_after_pooled_rls_tenant_isolated.png` (`5ec0675a5ba0`, strictly 2 FinVault rows, 0 leaked).",
+        "- **WS2 BEFORE → AFTER (Pattern A BigQuery Kernel RLS in `cymbal-ge-hub-2026`):** Unscoped pooled query (7 rows across 6 competing tenants) vs. JWT tenant-scoped RLS returning strictly 2 FinVault rows (`ENT-FV-1001`, `ENT-FV-1003`).",
         "",
-        "![WS2 AFTER: Live BigQuery Console Pattern A JWT tenant RLS isolating FinVault rows (2880x1620 Retina)](../screenshots/verified-cloud-console/ws2_after_pooled_rls_tenant_isolated.png)",
+        "![WS2 AFTER: Live BigQuery Console Pattern A JWT tenant RLS isolating FinVault rows](../screenshots/verified-cloud-console/ws2_after_pooled_rls_tenant_isolated.png)",
         "",
-        "*Figure 14. WS2 AFTER — Live BigQuery Studio Pattern A RLS returning strictly 2 FinVault rows (2880x1620 Retina • SHA-256 `5ec0675a5ba0`).*",
+        "*Figure 14. WS2 AFTER — Live BigQuery Studio Pattern A RLS returning strictly 2 FinVault rows (`ENT-FV-1001`, `ENT-FV-1003`).*",
         "",
-        "- **WS3 BEFORE → AFTER (Pattern B Sovereign CMEK Kill-Switch in `cymbal-ge-silo-2026`):** `ws3_before_cmek_enabled_vault_access.png` (`5acc84f6897e`) → `ws3_after_cmek_revoked_killswitch_denied.png` (`564ee3425027`, fails closed on `DISABLED` key) + `ws3_after_kms_cmek_keyring_state.png` (`7e9e616dee88`).",
+        "- **WS3 BEFORE → AFTER (Pattern B Sovereign CMEK Kill-Switch in `cymbal-ge-silo-2026`):** Active `finvault-silo-cmek` vault decryption vs. `medcore-revoked-cmek` (`DISABLED`) failing closed + Cloud KMS keyring state.",
         "",
-        "![WS3 AFTER: Live BigQuery Console failing closed on DISABLED Cloud KMS CMEK kill-switch (2880x1620 Retina)](../screenshots/verified-cloud-console/ws3_after_cmek_revoked_killswitch_denied.png)",
+        "![WS3 AFTER: Live BigQuery Console failing closed on DISABLED Cloud KMS CMEK kill-switch](../screenshots/verified-cloud-console/ws3_after_cmek_revoked_killswitch_denied.png)",
         "",
-        "*Figure 15. WS3 AFTER — Live Pattern B CMEK Kill-Switch failing closed after disabling `medcore-revoked-cmek` (2880x1620 Retina • SHA-256 `564ee3425027`).*",
+        "*Figure 15. WS3 AFTER — Live Pattern B CMEK Kill-Switch failing closed after disabling `medcore-revoked-cmek` (`Cloud KMS Error: DISABLED`).*",
         "",
-        "- **WS4 BEFORE → AFTER (`SAAS-05` Atlassian Jira Cloud 3LO + Pattern C Hub → Spoke VPC):** `saas_06_atlassian_jira_confluence.png` (`95ce12f87f12`) → `ws4_after_jira_3lo_scoped_issue.png` (`45e833e4909f`), plus `ws4_before_shared_hub_vpc.png` (`bf9df07c95e9`) → `ws4_after_dedicated_finvault_spoke_vpc.png` (`6f021bbd273c`).",
+        "- **WS4 BEFORE → AFTER (`SAAS-05` Atlassian Jira Cloud 3LO + Pattern C Hub → Spoke VPC):** Unfiltered Jira board (6 mixed issues) vs. `'3LO'` scoped query (`SCRUM-5` & `SCRUM-6`), plus shared Hub VPC vs. dedicated FinVault Spoke VPC.",
         "",
-        "![WS4 AFTER: Live Atlassian Jira Cloud Scrum board enforcing 3LO scope filter (2880x1620 Retina)](../screenshots/verified-cloud-console/ws4_after_jira_3lo_scoped_issue.png)",
+        "![WS4 AFTER: Live Atlassian Jira Cloud Scrum board enforcing 3LO scope filter](../screenshots/verified-cloud-console/ws4_after_jira_3lo_scoped_issue.png)",
         "",
-        "*Figure 16. WS4 AFTER — Live Commercial Atlassian Jira Cloud Scrum Board enforcing 3LO scope isolation on `gcp-team-sbiarllr.atlassian.net` (2880x1620 Retina • SHA-256 `45e833e4909f`).*",
+        "*Figure 16. WS4 AFTER — Live Commercial Atlassian Jira Cloud Scrum Board enforcing 3LO scope isolation on `gcp-team-sbiarllr.atlassian.net` (`SCRUM-5` & `SCRUM-6`).*",
         "",
-        "- **WS5 BEFORE → AFTER (`SAAS-01` ThoughtSpot Cloud + Integration Connectors → Cloud Run A2A/MCP Hub):** `saas_01_thoughtspot_liveboard.png` (`fd5cb15c0902`) → `saas_02_thoughtspot_saved_answer.png` (`3fcab795d1e5`), plus `ws5_before_connectors_baseline.png` (`b2dd4e6bebf4`) → `ws5_after_a2a_gateway_federation.png` (`49cfff9cfcaf`).",
+        "- **WS5 BEFORE → AFTER (`SAAS-01` ThoughtSpot Cloud + Integration Connectors → Cloud Run A2A/MCP Hub):** Unfiltered `$735.3K` Liveboard vs. governed single-domain Saved Answer, plus standalone Integration Connectors vs. Cloud Run A2A/MCP Federation Hub.",
         "",
-        "![Verified Live Commercial ThoughtSpot Cloud Liveboard (2880x1620 Retina)](../screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png)",
+        "![Live Commercial ThoughtSpot Cloud Liveboard](../screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png)",
         "",
-        "*Figure 17. Verified Live Commercial ThoughtSpot Cloud Liveboard (team2.thoughtspot.cloud, 2880x1620 Retina • SHA-256 `fd5cb15c0902`).*",
+        "*Figure 17. Live Commercial ThoughtSpot Cloud Liveboard (`team2.thoughtspot.cloud`).*",
         "",
-        "![WS5 AFTER: Live GCP Cloud Run Multi-Cloud A2A & OAuth 2.1 OBO Federation Hub (2880x1620 Retina)](../screenshots/verified-cloud-console/ws5_after_a2a_gateway_federation.png)",
+        "![WS5 AFTER: Live GCP Cloud Run Multi-Cloud A2A & OAuth 2.1 OBO Federation Hub](../screenshots/verified-cloud-console/ws5_after_a2a_gateway_federation.png)",
         "",
-        "*Figure 18. WS5 AFTER — Live GCP Cloud Run A2A Enterprise Gateway & OAuth 2.1 OBO Federation Hub in `cymbal-ge-hub-2026` (2880x1620 Retina • SHA-256 `49cfff9cfcaf`).*",
+        "*Figure 18. WS5 AFTER — Live GCP Cloud Run A2A Enterprise Gateway & OAuth 2.1 OBO Federation Hub in `cymbal-ge-hub-2026` (`a2a-gateway`, `mcp-oauth21-obo-gateway`).*",
         "",
     ])
 
     combined = "\n\n".join([
         "# GEAP Multi-Tenancy Program — Master Executive & Engineering Compendium (Workstreams 1–5)",
-        "> **Key point:** This master compendium unifies the restored 5-part Google Cloud Multi-Tenant Agentic AI Architecture Series, executive one-page summaries, all **12 Approved Simplified-Header Architecture & Sequence Diagrams**, the **30/30 Multi-Cloud AWS Bedrock AgentCore 10-SaaS Matrix**, and **17/17 cryptographically verified `2880x1620` Retina Google Cloud Console & Commercial SaaS BEFORE → AFTER Proofs** in one Google Cloud branded document.",
+        "> **Key point:** This master compendium unifies the 5-part Google Cloud Multi-Tenant Agentic AI Architecture Series, executive one-page summaries, all **12 Architecture & Sequence Diagrams**, the **Multi-Cloud AWS Bedrock AgentCore 10-SaaS Matrix**, and **live Google Cloud Console & commercial SaaS Before & After proofs** in one Google Cloud branded document.",
         exec_body,
         sec0_text,
         "\n".join(gallery_lines),
@@ -867,23 +867,61 @@ def restore_lossless_verified_proof_pngs_in_docx(docx_path: Path) -> int:
                         if fname.lower() in scope or Path(fname).stem.lower() in scope:
                             target_bytes = fbytes
                             break
-            # 3. ThoughtSpot / Atlassian Jira semantic fallback
+            # 3. Full semantic fallback across all 17 verified GCP Console & Commercial SaaS captures (zero reliance on SHA-256 prose!)
             if target_bytes is None:
-                if "thoughtspot" in ctx:
-                    if ("saved answer" in ctx or "saas_02" in ctx or "3fcab795d1e5" in ctx or "after" in ctx) and "saas_02_thoughtspot_saved_answer.png" in bytes_by_name:
-                        target_bytes = bytes_by_name["saas_02_thoughtspot_saved_answer.png"]
-                    elif "saas_01_thoughtspot_liveboard.png" in bytes_by_name:
-                        target_bytes = bytes_by_name["saas_01_thoughtspot_liveboard.png"]
-                elif "atlassian jira" in ctx or "jira cloud" in ctx or "gcp-team-sbiarllr" in ctx or "ws4-ba-01" in ctx:
-                    if ("45e833e4909f" in ctx or "ws4_after_jira" in ctx or "scrum-5 & scrum-6" in ctx or "4 out-of-scope" in ctx or "ws4 after" in ctx or "after (" in ctx) and "ws4_after_jira_3lo_scoped_issue.png" in bytes_by_name:
-                        target_bytes = bytes_by_name["ws4_after_jira_3lo_scoped_issue.png"]
-                    elif "saas_06_atlassian_jira_confluence.png" in bytes_by_name:
-                        target_bytes = bytes_by_name["saas_06_atlassian_jira_confluence.png"]
-                else:
-                    for fname, fbytes in bytes_by_name.items():
-                        if fname.lower() in ctx or Path(fname).stem.lower() in ctx:
-                            target_bytes = fbytes
-                            break
+                # Prefer immediate caption + docPr first, then wider surrounding context
+                for sem in (immediate_cap + " " + docpr_text, near_after + " " + docpr_text, ctx):
+                    if target_bytes is not None:
+                        break
+                    # WS1 Model Armor
+                    if "ge-ws1-before-unprotected-baseline" in sem or ("ws1-ba-01 before" in sem) or ("ws1 before" in sem and ("model armor" in sem or "unprotected" in sem or "no violations detected" in sem)):
+                        target_bytes = bytes_by_name.get("ws1_before_model_armor_unprotected.png")
+                    elif "ge-zero-trust-ai-firewall" in sem or ("ws1-ba-01 after" in sem) or ("ws1 after" in sem and ("model armor" in sem or "template violations detected" in sem or "prompt injection" in sem)):
+                        target_bytes = bytes_by_name.get("ws1_after_model_armor_blocked.png")
+                    # WS1 Cloud Armor WAF
+                    elif "cymbal-ws1-before-open-edge" in sem or ("ws1-ba-02 before" in sem) or ("open edge policy" in sem and "before" in sem):
+                        target_bytes = bytes_by_name.get("ws1_before_open_edge_baseline.png")
+                    elif "cymbal-pooled-edge-waf" in sem or ("ws1-ba-02 after" in sem) or ("cloud armor" in sem and "priority" in sem):
+                        target_bytes = bytes_by_name.get("ws1_after_cloud_armor_hop1_waf.png")
+                    # WS2 BigQuery RLS
+                    elif ("ws2-ba-01 before" in sem) or ("unscoped pooled query" in sem) or ("1 – 7 of 7" in sem) or ("1 - 7 of 7" in sem):
+                        target_bytes = bytes_by_name.get("ws2_before_pooled_rls_cross_tenant_bleed.png")
+                    elif ("ws2-ba-01 after" in sem) or ("ent-fv-1001" in sem) or ("1 – 2 of 2" in sem) or ("strictly 2 finvault" in sem) or ("pattern a rls" in sem and "after" in sem):
+                        target_bytes = bytes_by_name.get("ws2_after_pooled_rls_tenant_isolated.png")
+                    # WS3 CMEK Kill-Switch + KMS Keyring
+                    elif ("ws3-ctrl-02" in sem) or ("ws3 control plane" in sem) or ("cymbal-multi-tenant-kr" in sem and "keyring" in sem and "available" in sem):
+                        target_bytes = bytes_by_name.get("ws3_after_kms_cmek_keyring_state.png")
+                    elif ("ws3-ba-01 before" in sem) or ("vault-fv-9001" in sem) or ("finvault-silo-cmek" in sem and ("decrypts" in sem or "before" in sem)):
+                        target_bytes = bytes_by_name.get("ws3_before_cmek_enabled_vault_access.png")
+                    elif ("ws3-ba-01 after" in sem) or ("medcore-revoked-cmek" in sem and ("disabled" in sem or "fail" in sem or "after" in sem)):
+                        target_bytes = bytes_by_name.get("ws3_after_cmek_revoked_killswitch_denied.png")
+                    # WS4 Hub -> Spoke VPC
+                    elif "cymbal-pattern-c-hub-vpc" in sem or ("ws4-ba-02 before" in sem) or ("shared hub vpc" in sem) or ("10.240.0.0/24" in sem):
+                        target_bytes = bytes_by_name.get("ws4_before_shared_hub_vpc.png")
+                    elif "cymbal-pattern-c-finvault-spoke-vpc" in sem or ("ws4-ba-02 after" in sem) or ("finvault spoke vpc" in sem) or ("10.140.0.0/24" in sem):
+                        target_bytes = bytes_by_name.get("ws4_after_dedicated_finvault_spoke_vpc.png")
+                    # WS5 Connectors -> Cloud Run A2A Hub
+                    elif ("ws5-ba-02 before" in sem) or ("standalone integration connectors" in sem) or ("integration connectors" in sem and "before" in sem):
+                        target_bytes = bytes_by_name.get("ws5_before_connectors_baseline.png")
+                    elif ("ws5-ba-02 after" in sem) or ("a2a-gateway" in sem) or ("mcp-oauth21-obo-gateway" in sem) or ("cloud run a2a" in sem and "after" in sem):
+                        target_bytes = bytes_by_name.get("ws5_after_a2a_gateway_federation.png")
+                    # ThoughtSpot Cloud
+                    elif "thoughtspot" in sem:
+                        if "saved answer" in sem or "saas_02" in sem or "3fcab795d1e5" in sem or "ws5-ba-01 after" in sem or "ws5 after" in sem:
+                            target_bytes = bytes_by_name.get("saas_02_thoughtspot_saved_answer.png")
+                        else:
+                            target_bytes = bytes_by_name.get("saas_01_thoughtspot_liveboard.png")
+                    # Atlassian Jira Cloud
+                    elif "atlassian jira" in sem or "jira cloud" in sem or "gcp-team-sbiarllr" in sem or "ws4-ba-01" in sem or "scrum-5" in sem:
+                        if "45e833e4909f" in sem or "ws4_after_jira" in sem or "scrum-5 & scrum-6" in sem or "scrum-5` & `scrum-6" in sem or "to do 0" in sem or "ws4 after" in sem or "ws4-ba-01 after" in sem or "after:" in sem:
+                            target_bytes = bytes_by_name.get("ws4_after_jira_3lo_scoped_issue.png")
+                        else:
+                            target_bytes = bytes_by_name.get("saas_06_atlassian_jira_confluence.png")
+                    else:
+                        for fname, fbytes in bytes_by_name.items():
+                            if fname.lower() in sem or Path(fname).stem.lower() in sem:
+                                target_bytes = fbytes
+                                break
             if target_bytes is None:
                 continue
             for rid_e in re.findall(r'r:embed="(rId\d+)"', para):

@@ -1162,7 +1162,7 @@ function buildSlide13() {
   const slide = pptx.addSlide();
   addStandardHeader(slide, 'EMPIRICAL PROOFS', 'Proof 1: Live Vertex AI Model Armor — Unprotected vs. Zero-Trust Firewall', 'ACT III • PROOF 1');
 
-  slide.addText('Two genuine 2880x1620 Retina captures from console.cloud.google.com (cymbal-ge-hub-2026) testing the exact same cross-tenant SSN prompt-injection payload live.', {
+  slide.addText('Two genuine live console captures from console.cloud.google.com (cymbal-ge-hub-2026) testing the exact same cross-tenant SSN prompt-injection payload live.', {
     x: 0.45, y: 0.72, w: 12.43, h: 0.38, fontSize: 10.5, color: TEXT_BODY, fontFace: FONT_BODY,
   });
 
@@ -1187,7 +1187,7 @@ function buildSlide13() {
       x: 0.65, y: 1.75, w: 5.6, h: 3.15,
     });
   }
-  slide.addText('Live Console Capture (ge-ws1-before-unprotected-baseline • SHA-256 2bda7e68993a): With PI/Jailbreak, Malicious URL, and SDP disabled, the cross-tenant SSN exfiltration prompt returns "No violations detected" and passes unblocked.', {
+  slide.addText('Live Console Capture (ge-ws1-before-unprotected-baseline): With PI/Jailbreak, Malicious URL, and SDP disabled, the cross-tenant SSN exfiltration prompt returns "No violations detected" and passes unblocked.', {
     x: 0.65, y: 5.45, w: 5.6, h: 1.35, fontSize: 8.5, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15,
   });
 
@@ -1209,12 +1209,12 @@ function buildSlide13() {
       x: 7.08, y: 1.75, w: 5.6, h: 3.15,
     });
   }
-  slide.addText('Live Console Capture (ge-zero-trust-ai-firewall • SHA-256 93471e0d7b17): Enabling WS1 Hop 4 Model Armor (Confidence level: Low and above) flags "Template violations detected" — Dangerous content: Match found & Prompt injection and jailbreak: Match found.', {
+  slide.addText('Live Console Capture (ge-zero-trust-ai-firewall): Enabling WS1 Hop 4 Model Armor (Confidence level: Low and above) flags "Template violations detected" — Dangerous content: Match found & Prompt injection and jailbreak: Match found.', {
     x: 7.08, y: 5.45, w: 5.6, h: 1.35, fontSize: 8.5, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15,
   });
 
   addStandardFooter(slide, 13, 16, 'Empirical Proof 1: Live Google Cloud Model Armor (WS1-BA-01)');
-  slide.addNotes('Slide 13 pairs two live 2880x1620 Retina captures from Google Cloud Console Model Armor in cymbal-ge-hub-2026: on the left, ge-ws1-before-unprotected-baseline (SHA-256 2bda7e68993a) returns No violations detected; on the right, ge-zero-trust-ai-firewall (SHA-256 93471e0d7b17) blocks the exact same cross-tenant SSN prompt with Template violations detected.');
+  slide.addNotes('Slide 13 pairs two live console captures from Google Cloud Console Model Armor in cymbal-ge-hub-2026: on the left, ge-ws1-before-unprotected-baseline returns No violations detected; on the right, ge-zero-trust-ai-firewall blocks the exact same cross-tenant SSN prompt with Template violations detected.');
 }
 
 // -----------------------------------------------------------------------------
@@ -1224,7 +1224,7 @@ function buildSlide14() {
   const slide = pptx.addSlide();
   addStandardHeader(slide, 'EMPIRICAL PROOFS', 'Proof 2: Live Google Cloud Armor Hop 1 Edge WAF (WS1-BA-02)', 'ACT III • PROOF 2');
 
-  slide.addText('Two genuine 2880x1620 Retina captures from console.cloud.google.com (cymbal-ge-hub-2026) proving deterministic Hop 1 header anti-spoofing and OWASP SQLi/XSS protection.', {
+  slide.addText('Two genuine live console captures from console.cloud.google.com (cymbal-ge-hub-2026) proving deterministic Hop 1 header anti-spoofing and OWASP SQLi/XSS protection.', {
     x: 0.45, y: 0.72, w: 12.43, h: 0.38, fontSize: 10.5, color: TEXT_BODY, fontFace: FONT_BODY,
   });
 
@@ -1249,7 +1249,7 @@ function buildSlide14() {
       x: 0.65, y: 1.75, w: 5.6, h: 3.15,
     });
   }
-  slide.addText('Live Console Capture (cymbal-ws1-before-open-edge • SHA-256 f721577a1e05): A single default Allow * rule at priority 2,147,483,647 permits spoofed X-Tenant-ID headers and SQLi/XSS payloads straight into the shared agent tier.', {
+  slide.addText('Live Console Capture (cymbal-ws1-before-open-edge): A single default Allow * rule at priority 2,147,483,647 permits spoofed X-Tenant-ID headers and SQLi/XSS payloads straight into the shared agent tier.', {
     x: 0.65, y: 5.45, w: 5.6, h: 1.35, fontSize: 8.5, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15,
   });
 
@@ -1271,12 +1271,12 @@ function buildSlide14() {
       x: 7.08, y: 1.75, w: 5.6, h: 3.15,
     });
   }
-  slide.addText('Live Console Capture (cymbal-pooled-edge-waf • SHA-256 37fcc76e0f37): Enforces 3 rules — Priority 1000 Deny (403) blocking spoofed X-Tenant-ID smuggling and Priority 1100 Deny (403) blocking OWASP SQLi/XSS before compute is invoked.', {
+  slide.addText('Live Console Capture (cymbal-pooled-edge-waf): Enforces 3 rules — Priority 1000 Deny (403) blocking spoofed X-Tenant-ID smuggling and Priority 1100 Deny (403) blocking OWASP SQLi/XSS before compute is invoked.', {
     x: 7.08, y: 5.45, w: 5.6, h: 1.35, fontSize: 8.5, color: TEXT_BODY, fontFace: FONT_BODY, lineSpacingMultiple: 1.15,
   });
 
   addStandardFooter(slide, 14, 16, 'Empirical Proof 2: Live Google Cloud Armor Hop 1 WAF (WS1-BA-02)');
-  slide.addNotes('Slide 14 pairs two live 2880x1620 Retina captures from Google Cloud Armor in cymbal-ge-hub-2026: on the left, cymbal-ws1-before-open-edge (SHA-256 f721577a1e05) exposes an open Allow-all edge; on the right, cymbal-pooled-edge-waf (SHA-256 37fcc76e0f37) enforces Priority 1000 and 1100 Deny-403 WAF rules.');
+  slide.addNotes('Slide 14 pairs two live console captures from Google Cloud Armor in cymbal-ge-hub-2026: on the left, cymbal-ws1-before-open-edge exposes an open Allow-all edge; on the right, cymbal-pooled-edge-waf enforces Priority 1000 and 1100 Deny-403 WAF rules.');
 }
 
 // -----------------------------------------------------------------------------

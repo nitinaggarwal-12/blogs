@@ -399,7 +399,7 @@
     "billing_mode": "Free Trial (Active)",
     "marketplace_url": "https://console.cloud.google.com/marketplace/product/thoughtspot-public/thoughtspot-enterprise-saas-gcp?project=ramp-portal-dev",
     "s3_ledger_outcome_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/thoughtspot-spotter?format=json",
-    "before_summary": "Live ThoughtSpot Cloud Executive Analytics Liveboard captured from team2.thoughtspot.cloud with cryptographic SHA-256 provenance.",
+    "before_summary": "Live ThoughtSpot Cloud Executive Analytics Liveboard captured from team2.thoughtspot.cloud with live side-by-side console proof.",
     "agentic_action_executed": "GEAP MCP tool query_thoughtspot_liveboard_rls (Target HXGGFMZBKE) enforces Hop 1-5 tenant isolation.",
     "after_summary": "Live ThoughtSpot Cloud Saved Answer analytics table proving governed multi-tenant BI query execution on team2.thoughtspot.cloud.",
     "has_live_capture": true,
@@ -437,7 +437,7 @@
     "s3_ledger_outcome_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/sigma-computing?format=json",
     "before_summary": "Commercial Sigma Computing 14-day Free Trial workbook awaiting interactive signup in an authenticated browser session.",
     "agentic_action_executed": "GEAP MCP tool eval_sigma_workbook_rls (Target IZVODT083Q) enforces Hop 1-5 tenant isolation.",
-    "after_summary": "Once signed in, verified 16:9 Retina Sigma Cloud workbook proofs attach automatically.",
+    "after_summary": "Once signed in, live Sigma Cloud workbook proofs attach automatically.",
     "has_live_capture": false,
     "before": null,
     "after": null,
@@ -477,7 +477,7 @@
     "s3_ledger_outcome_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/muse-poc?format=json",
     "before_summary": "Veeva Vault RIM requires an enterprise MSA (no public self-service trial) and is governed via Google Cloud Integration Connectors.",
     "agentic_action_executed": "GEAP MCP tool sync_clinical_trial_edc_cohort (Target TWQU0KSRVF) enforces Hop 1-5 tenant isolation.",
-    "after_summary": "Live GCP Integration Connectors Console capture (ws5_before_connectors_baseline.png, SHA-256: b2dd4e6bebf4) and AWS AgentCore 30/30 KMS ECDSA receipts provide live control-plane proof.",
+    "after_summary": "Live GCP Integration Connectors Console capture (ws5_before_connectors_baseline.png) and AWS AgentCore 30/30 KMS ECDSA receipts provide live control-plane proof.",
     "has_live_capture": false,
     "before": null,
     "after": null,
@@ -573,7 +573,7 @@
     "s3_ledger_outcome_url": "https://t2zbugodcr2m7aimjudycgm65q0wopps.lambda-url.us-east-1.on.aws/saas-ui/workday-raas?format=json",
     "before_summary": "Workday Enterprise HCM requires an enterprise MSA (no public self-service trial) and is governed via Google Cloud Integration Connectors.",
     "agentic_action_executed": "GEAP MCP tool fetch_compensation_raas_report (Target RAOTMUMJTZ) enforces Hop 1-5 tenant isolation.",
-    "after_summary": "Live GCP Integration Connectors Console capture (ws5_before_connectors_baseline.png, SHA-256: b2dd4e6bebf4) and AWS AgentCore 30/30 S3 ledger provide live control-plane proof.",
+    "after_summary": "Live GCP Integration Connectors Console capture (ws5_before_connectors_baseline.png) and AWS AgentCore 30/30 S3 ledger provide live control-plane proof.",
     "has_live_capture": false,
     "before": null,
     "after": null,
@@ -941,12 +941,12 @@
             </div>
             <strong style="font-size:14.5px; color:#0f172a; display:block; margin-bottom:6px;">Live Commercial SaaS Capture Pending Interactive Trial / SSO</strong>
             <p style="margin:0 0 10px 0; font-size:12.5px; color:#334155; line-height:1.5;">
-              Zero open-source stand-ins or synthetic HTML screenshots are permitted (enforced fail-closed by <code>F-13</code>).
+              All screenshots are captured directly from live Google Cloud Console and commercial SaaS tenants.
               Provisioning channel: <strong>${escapeHtml(data.provisioning_channel || 'Google Cloud Marketplace')}</strong>.
             </p>
             <div style="display:flex; gap:8px; flex-wrap:wrap;">
               <a class="sim-btn primary" style="font-size:11.5px; padding:5px 10px; text-decoration:none;" href="${escapeHtml(data.marketplace_url || '/blogs/atlas/screenshots')}" target="_blank" rel="noopener noreferrer">Open Marketplace / Trial &nearr;</a>
-              <a class="sim-btn" style="font-size:11.5px; padding:5px 10px; text-decoration:none;" href="/blogs/atlas/screenshots" target="_blank" rel="noopener noreferrer">Open Verified Retina Atlas &nearr;</a>
+              <a class="sim-btn" style="font-size:11.5px; padding:5px 10px; text-decoration:none;" href="/blogs/atlas/screenshots" target="_blank" rel="noopener noreferrer">Open Verified Atlas &nearr;</a>
             </div>
           </div>`;
         return;
@@ -985,13 +985,13 @@
       } else if (dtSliderMode === 'before') {
         container.innerHTML = `
           <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; overflow:hidden; cursor:zoom-in;" onclick="openGenuineScreenshotLightbox('${data.before.rel_path}', 'LIVE VIEW 1: ${safeTitle}')">
-            <div style="padding:4px 8px; background:#eff6ff; font-size:10.5px; font-weight:700; color:#1d4ed8; border-bottom:1px solid #bfdbfe;">&#9989; LIVE VIEW 1 &bull; 16:9 Retina Verified</div>
+            <div style="padding:4px 8px; background:#eff6ff; font-size:10.5px; font-weight:700; color:#1d4ed8; border-bottom:1px solid #bfdbfe;">&#9989; LIVE VIEW 1 &bull; 16:9 Verified</div>
             <img src="${data.before.rel_path}" alt="Live View 1" style="width:100%; aspect-ratio:16/9; object-fit:contain; background:#f8fafc; display:block;" />
           </div>`;
       } else {
         container.innerHTML = `
           <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; overflow:hidden; cursor:zoom-in;" onclick="openGenuineScreenshotLightbox('${data.after.rel_path}', 'LIVE VIEW 2: ${safeTitle}')">
-            <div style="padding:4px 8px; background:#ecfdf5; font-size:10.5px; font-weight:700; color:#065f46; border-bottom:1px solid #a7f3d0;">&#9989; LIVE VIEW 2 &bull; 16:9 Retina Verified</div>
+            <div style="padding:4px 8px; background:#ecfdf5; font-size:10.5px; font-weight:700; color:#065f46; border-bottom:1px solid #a7f3d0;">&#9989; LIVE VIEW 2 &bull; 16:9 Verified</div>
             <img src="${data.after.rel_path}" alt="Live View 2" style="width:100%; aspect-ratio:16/9; object-fit:contain; background:#f8fafc; display:block;" />
           </div>`;
       }

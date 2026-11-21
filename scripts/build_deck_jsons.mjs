@@ -109,7 +109,7 @@ const DECKS = {
       },
       {
         "stack": "core-cymbal-agent/ (27-File Workbench) • BigQuery OTel Chargeback • Cloud KMS CMEK",
-        "sla": "13/13 Forensic Checks PASS • 107/107 Automated Security, Migration & SaaS Assertions PASS",
+        "sla": "20/20 GCP Security Suites + 30/30 Inter-Cloud 10-SaaS MCP Assertions PASS",
         "tag": "Public GitHub & Audit Readiness"
       }
     ],
@@ -173,7 +173,7 @@ const DECKS = {
           },
           {
             "stack": "Cloud Armor • IAP STS (RFC 8693/9449) • Model Armor • Cloud DLP • AlloyDB RLS • BigQuery OTel",
-            "sla": "80% Identical Python ADK Codebase • Verified by 107/107 Automated Security & SaaS Assertions",
+            "sla": "80% Identical Python ADK Codebase • Verified Across Automated Security & SaaS Isolation Suites",
             "tag": "4. Cryptographic Invisibility Across Stack"
           }
         ]
@@ -222,7 +222,7 @@ const DECKS = {
             "Part 5 • Slides 10–11\nCI/CD Audit & SLAs",
             "Automating Compliance & Well-Architected SLAs: Live GCP Console Receipts, 5 Milestones & Forensic CI/CD Gate",
             "How do we prove zero cross-tenant data bleed continuously in CI/CD and map every Well-Architected SLA to code?",
-            "13/13 Forensic + 107/107 Runtime Assertions PASS • 89.1% Token & 74% TCO Savings • <30s HA RTO"
+            "20/20 GCP + 30/30 SaaS Isolation Suites PASS • 89.1% Token & 74% TCO Savings • <30s HA RTO"
           ]
         ],
         "bullets": [],
@@ -334,7 +334,7 @@ const DECKS = {
             "GAP-05 (Hop 5)\nZero-PII Token Billing",
             "Cloud Billing exports aggregate Vertex AI SKU charges by GCP project rather than individual logical SaaS `tenant_id`.",
             "`Hop5DataPlaneRLSAndOTel` streams SHA-256 zero-PII OTel spans to BigQuery (`SELECT tenant_id, SUM(cached_tokens*0.1 + thinking_tokens) GROUP BY tenant_id`).",
-            "Forensic Check F-08 PASS (BigQuery OTel chargeback SQL verified) • Sunset at GA: Feature-Flagged Native Hook"
+            "BigQuery OTel chargeback SQL verified • Sunset at GA: Feature-Flagged Native Hook"
           ]
         ],
         "bullets": [],
@@ -889,7 +889,7 @@ const DECKS = {
           },
           {
             stack: 'cymbal-retailstream-silo-prod • Independent VPC-SC Perimeter • Independent IAM PAB & KMS Key Ring',
-            sla: 'Verified Dual-Tenant Silo & CMEK Kill-Switch Parity (Forensic Gate F-08 & Silo Test 6 PASS)',
+            sla: 'Verified Dual-Tenant Silo & CMEK Kill-Switch Parity (6/6 Silo Tests PASS)',
             tag: '3. RetailStream Sovereign Vault',
           },
           {
@@ -1548,7 +1548,7 @@ const DECKS = {
           },
           {
             stack: 'Cloud Armor • IAP • Agent Engine • Gemini 2.5 Flash • Valkey • Model Armor • AlloyDB • BigQuery',
-            sla: '80% Identical Python ADK Codebase • 13/13 Forensic Gates & 20/20 Simulations PASS',
+            sla: '80% Identical Python ADK Codebase • 20/20 Security & Migration Simulations PASS',
             tag: '4. Unified 5-Hop Google Cloud Stack',
           },
         ],

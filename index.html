@@ -111,7 +111,7 @@
           ['compute-isolation-mode-a-stateless-cow-heap-wipe-vs-mode-b-stateful-session-latch', 'Mode A CoW vs. Mode B 403 Latch'],
           ['kernel-database-isolation-force-rls--10-point-red-team-breach-defense', 'FORCE RLS & 10-Point Red Team'],
           ['finops-bulkhead-math-hard-gcp-quotas--1-click-terraform-starter', 'FinOps Math, Quotas & Terraform'],
-          ['live-before-vs-after-resolution-proof-for-ws2-pattern-a-pooled-rls--cloud-run-compute--3-verified-28801620-retina-captures', 'WS2 Retina UI Proofs'],
+          ['live-before--after-console-proof-for-ws2-pattern-a-pooled-bigquery-rls', 'WS2 Console Proofs'],
           ['whats-next', 'Next Steps & Slides']
         ];
       } else if (dp.includes('ws1')) {
@@ -141,7 +141,7 @@
           ['sovereign-cmek-kill-switch--air-gapped-gke-revocation-sequence-figure-2', 'CMEK Kill-Switch Sequence'],
           ['multi-project-sovereign-provisioning-air-gapped-gemma-3--security-suite', 'Sovereign Provisioning & Gemma 3'],
           ['revocation-sla-math-hard-gcp-quotas--pattern-b-saas-enforcement', 'SLA Math, Quotas & 10-SaaS'],
-          ['live-before-vs-after-resolution-proof-for-ws3-pattern-b-sovereign-cmek-kill-switch--3-verified-28801620-retina-captures', 'WS3 Retina UI Proofs'],
+          ['live-before--after-console-proof-for-ws3-pattern-b-sovereign-cmek-kill-switch', 'WS3 Console Proofs'],
           ['whats-next', 'Next Steps & Slides']
         ];
       } else if (dp.includes('ws4')) {
@@ -155,7 +155,7 @@
           ['executive-summary-pattern-c-governed-hub-and-spoke-hybrid-architecture', 'Pattern C Hybrid Summary'],
           ['3-phase-zero-downtime-live-tier-promotion-0-ms-cutover-0-dropped-turns', '0 ms Live Tier Promotion'],
           ['cross-project-28-psc-network-design-backfill-math--hard-gcp-quotas', '/28 PSC Design, Math & Quotas'],
-          ['live-before-vs-after-resolution-proofs-for-ws4-2-complete-live-pairs-atlassian-jira-cloud-3lo--pattern-c-hub--spoke-vpc--4-verified-28801620-retina-captures', 'WS4 Retina UI Proofs'],
+          ['live-before--after-proofs-for-ws4-atlassian-jira-cloud-3lo--pattern-c-hub--spoke-vpc', 'WS4 Console & Jira Proofs'],
           ['whats-next', 'Next Steps & Slides']
         ];
       } else if (dp.includes('ws5')) {
@@ -506,7 +506,7 @@
                        <a href="/drawio/${diagId}${studioQuery}" target="_blank" rel="noopener">&#128260; Open 2-Way Sync Studio</a>
                        <a href="diagrams/${diagId}.drawio" download>&#11015; Download .drawio XML</a>
                        <a href="diagrams/${diagId}.svg" id="inline-fig-btn-svg-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'svg'); this.closest('details').removeAttribute('open');">&#127912; Vector SVG View</a>
-                       <a href="diagrams/${diagId}.drawio.png" id="inline-fig-btn-png-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'png'); this.closest('details').removeAttribute('open');">&#128269; 2x PNG View</a>
+                       <a href="diagrams/${diagId}.drawio.png" id="inline-fig-btn-png-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'png'); this.closest('details').removeAttribute('open');">&#128269; High-Res Image</a>
                      </div>
                    </details>`
                 : `${bareMinDeckBtnHtml}${flowBtnHtml}
@@ -518,7 +518,7 @@
                        <a href="/drawio/${diagId}${studioQuery}" target="_blank" rel="noopener">&#128260; Open 2-Way Sync Studio</a>
                        <a href="diagrams/${diagId}.drawio" download>&#11015; Download .drawio XML</a>
                        <a href="diagrams/${diagId}.svg" id="inline-fig-btn-svg-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'svg'); this.closest('details').removeAttribute('open');">&#127912; Vector SVG View</a>
-                       <a href="diagrams/${diagId}.drawio.png" id="inline-fig-btn-png-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'png'); this.closest('details').removeAttribute('open');">&#128269; 2x PNG View</a>
+                       <a href="diagrams/${diagId}.drawio.png" id="inline-fig-btn-png-${diagId}" onclick="event.preventDefault(); setInlineFigureMode('${diagId}', 'png'); this.closest('details').removeAttribute('open');">&#128269; High-Res Image</a>
                      </div>
                    </details>`;
               return `
@@ -905,14 +905,14 @@
         <div id="blog-dedicated-assets-bar" data-testid="blog-dedicated-assets-bar" data-blog-slug="${blogSlugKey}" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; padding:10px 14px; margin:10px 0 14px 0; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; box-shadow:0 1px 4px rgba(15,23,42,0.04);">
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <span style="display:inline-flex; align-items:center; padding:3px 9px; border-radius:999px; font-size:11px; font-weight:800; background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe;">${escapeHtml(blogSlugBadge)} DEDICATED PAGES</span>
-            <span style="font-size:12.5px; color:#334155; font-weight:600;">Open standalone full-management pages for this blog&apos;s architecture diagrams &amp; Retina UI screenshots:</span>
+            <span style="font-size:12.5px; color:#334155; font-weight:600;">Open standalone full-management pages for this blog&apos;s architecture diagrams &amp; live console screenshots:</span>
           </div>
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <a href="/blogs/${blogSlugKey}/diagrams" target="_blank" rel="noopener noreferrer" data-testid="blog-top-diagrams-link" style="display:inline-flex; align-items:center; gap:6px; padding:7px 13px; border-radius:8px; background:#1a73e8; color:#ffffff; border:1px solid #1a73e8; font-size:12.5px; font-weight:700; text-decoration:none; white-space:normal; max-width:100%; box-sizing:border-box;">
               &#128208; All Diagrams Used (${blogDiagCount}) &mdash; Full Edit, Save, Clone, Delete, Draw.io &amp; Slide URLs &#8599;
             </a>
             <a href="/blogs/${blogSlugKey}/screenshots" target="_blank" rel="noopener noreferrer" data-testid="blog-top-screenshots-link" style="display:inline-flex; align-items:center; gap:6px; padding:7px 13px; border-radius:8px; background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; font-size:12.5px; font-weight:700; text-decoration:none; white-space:normal; max-width:100%; box-sizing:border-box;">
-              &#128248; All Screenshots Used (${blogShotCount}) &mdash; Verified Live Cloud &amp; SaaS Proofs &#8599;
+              &#128248; All Screenshots Used (${blogShotCount}) &mdash; Live Cloud &amp; SaaS Proofs &#8599;
             </a>
           </div>
         </div>
@@ -2527,7 +2527,7 @@
     }
 
     function sanitizeRichHtmlFragment(rawHtml) {
-      // Strict DOMParser allowlist sanitizer ([FA-09]): drops dangerous subtrees, strips all on*/style/srcdoc attrs & javascript:/data: URLs
+      // Strict DOMParser allowlist sanitizer (): drops dangerous subtrees, strips all on*/style/srcdoc attrs & javascript:/data: URLs
       const DROP_TAGS = new Set(['script', 'style', 'iframe', 'frame', 'frameset', 'object', 'embed', 'applet', 'svg', 'math', 'form', 'base', 'meta', 'link', 'noscript', 'template']);
       const ALLOW_TAGS = new Set(['p', 'div', 'span', 'strong', 'b', 'em', 'i', 'u', 's', 'code', 'pre', 'blockquote', 'ul', 'ol', 'li', 'br', 'hr', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'a', 'img', 'sup', 'sub', 'small', 'mark', 'dl', 'dt', 'dd']);
       const GLOBAL_ATTRS = new Set(['class', 'id', 'title', 'role', 'aria-label']);
@@ -2791,7 +2791,7 @@
             return fbData.entry;
           }
           const errBody = await resp.json().catch(() => ({}));
-          showPortalToast('🔒 Admin IAP Required (HTTP ' + resp.status + ')', errBody.error || 'Persistent portal mutations require verified Google Cloud IAP admin login [FA-09].');
+          showPortalToast('🔒 Admin IAP Required (HTTP ' + resp.status + ')', errBody.error || 'Persistent portal mutations require verified Google Cloud IAP admin login.');
         }
       } catch (err) {
         console.warn('Could not persist change log entry to backend:', err);
@@ -3147,7 +3147,7 @@
           : (actorEmail.includes('@') ? actorEmail.split('@')[0] : 'Reviewer');
         if (label) label.textContent = `Review Mode: ON (${shortActor})`;
         if (icon) icon.textContent = '💬';
-        showPortalToast('💬 Review Mode ON', `Collaborative Google-Docs comments enabled for ${actorName} (${actorEmail}) [FA-12].`);
+        showPortalToast('💬 Review Mode ON', `Collaborative Google-Docs comments enabled for ${actorName} (${actorEmail}).`);
       } else {
         if (tabPatterns) tabPatterns.classList.remove('review-mode-active');
         if (reader) reader.classList.remove('review-mode-active');
@@ -3472,7 +3472,7 @@
           showPortalToast('🗑️ Comment Thread Removed', `Deleted thread ${threadId}.`);
         } else if (resp.status === 401 || resp.status === 403) {
           const errBody = await resp.json().catch(() => ({}));
-          showPortalToast('🔒 Admin IAP Required (HTTP ' + resp.status + ')', errBody.error || 'Deleting comment threads requires verified Google Cloud IAP admin login [FA-09].');
+          showPortalToast('🔒 Admin IAP Required (HTTP ' + resp.status + ')', errBody.error || 'Deleting comment threads requires verified Google Cloud IAP admin login.');
         }
       } catch (err) {
         console.warn('Error deleting thread:', err);
@@ -3784,7 +3784,7 @@
           showPortalToast('↩️ Card Restored', `Restored "${cardId}" and recorded audit entry.`);
         } else if (resp.status === 401 || resp.status === 403) {
           const errBody = await resp.json().catch(() => ({}));
-          showPortalToast('🔒 Admin IAP Required (HTTP ' + resp.status + ')', errBody.error || 'Restoring card overrides requires verified Google Cloud IAP admin login [FA-09].');
+          showPortalToast('🔒 Admin IAP Required (HTTP ' + resp.status + ')', errBody.error || 'Restoring card overrides requires verified Google Cloud IAP admin login.');
         }
       } catch (err) {
         console.warn('Error restoring card:', err);
@@ -3825,7 +3825,7 @@
 
     document.addEventListener('DOMContentLoaded', function () {
       try {
-        // Purge any legacy client-side spoofed identity cache ([FA-09])
+        // Purge any legacy client-side spoofed identity cache ()
         localStorage.removeItem('ge_blogs_active_actor_v1');
       } catch (_) {}
       syncActorUiElements();
@@ -4007,7 +4007,7 @@
       });
       const countLbl = document.getElementById('genuine-3p-gallery-count-label');
       if (countLbl) {
-        countLbl.textContent = `Showing ${shown} / ${cards.length} SHA-256 verified Retina captures (click any screenshot to zoom)`;
+        countLbl.textContent = `Showing ${shown} / ${cards.length} live captures (click any screenshot to zoom)`;
       }
     };
 
@@ -4474,7 +4474,7 @@
       });
       const badge = document.getElementById('ba-results-count-badge');
       if (badge) {
-        badge.textContent = `${shown} / ${cards.length} SaaS Pairs (${shown * 2} PNGs)`;
+        badge.textContent = `${shown} / ${cards.length} Enterprise SaaS Domains`;
       }
     };
 
@@ -4506,7 +4506,7 @@
       });
       const countLbl = document.getElementById('genuine-3p-gallery-count-label');
       if (countLbl) {
-        countLbl.textContent = `Showing ${shown} / ${cards.length} SHA-256 verified Retina captures (click any screenshot to zoom)`;
+        countLbl.textContent = `Showing ${shown} / ${cards.length} live captures (click any screenshot to zoom)`;
       }
     };
 
@@ -5315,7 +5315,7 @@ function openGenuineScreenshotLightbox(src, title) {
     };
 
     // =========================================================================
-    // WCAG 2.2 AA/AAA ACCESSIBLE MODAL & DRAWER FOCUS TRAP AND ESCAPE MANAGER [FA-50]
+    // WCAG 2.2 AA/AAA ACCESSIBLE MODAL & DRAWER FOCUS TRAP AND ESCAPE MANAGER
     // =========================================================================
     (function initAccessibleModalManager() {
       let _lastActiveElement = null;

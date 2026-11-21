@@ -29,8 +29,8 @@
 
 ```bash
 gcloud beta run services ssh cymbal-multi-tenant-patterns \
-  --project=ramp-portal-dev \
-  --region=us-west1
+ --project=ramp-portal-dev \
+ --region=us-west1
 ```
 
 3. Once inside `root@localhost:/app#`, verify the container workspace:
@@ -49,7 +49,7 @@ pwd && ls -la
 
 ```bash
 find core-cymbal-agent workstream-2-pattern-a-pooled workstream-3-pattern-b-siloed workstream-4-pattern-c-hybrid \
-  -maxdepth 3 -type f \( -name "*.py" -o -name "*.tf" \) | sort
+ -maxdepth 3 -type f \( -name "*.py" -o -name "*.tf" \) | sort
 ```
 
 
@@ -91,10 +91,10 @@ import importlib
 bridge = importlib.import_module('core-cymbal-agent.gcp_live_bridge')
 sig = bridge.kms_asymmetric_sign_digest('cymbal-hop1-dpop-proof-finvault')
 enc = bridge.kms_encrypt_decrypt_roundtrip('finvault', 'L4-episodic-memory-vector-payload')
-bq  = bridge.bigquery_stream_audit_row('finvault', 'PATTERN_B_SILOED', 'ALLOW', 200, 'Live Cloud Run SSH Verification')
+bq = bridge.bigquery_stream_audit_row('finvault', 'PATTERN_B_SILOED', 'ALLOW', 200, 'Live Cloud Run SSH Verification')
 print('1. KMS ECDSA P-256 Sign :', sig)
-print('2. KMS CMEK Roundtrip   :', enc)
-print('3. BigQuery Audit Row   :', bq)
+print('2. KMS CMEK Roundtrip :', enc)
+print('3. BigQuery Audit Row :', bq)
 "
 ```
 
@@ -105,9 +105,9 @@ print('3. BigQuery Audit Row   :', bq)
 
 ```bash
 grep -rn "^resource " \
-  workstream-2-pattern-a-pooled/2.6-terraform-starter/ \
-  workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/ \
-  workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/ && \
+ workstream-2-pattern-a-pooled/2.6-terraform-starter/ \
+ workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/ \
+ workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/ && \
 python3 -c "import urllib.request; print(urllib.request.urlopen('http://127.0.0.1:8080/api/health').read().decode())"
 ```
 
@@ -118,20 +118,20 @@ python3 -c "import urllib.request; print(urllib.request.urlopen('http://127.0.0.
 
 ```bash
 gcloud storage cp -r \
-  core-cymbal-agent \
-  workstream-2-pattern-a-pooled \
-  workstream-3-pattern-b-siloed \
-  workstream-4-pattern-c-hybrid \
-  gs://cymbal-build-sandbox-cymbal-multi-tenant-artifacts/codebase/ \
-  --project=ramp-portal-dev
+ core-cymbal-agent \
+ workstream-2-pattern-a-pooled \
+ workstream-3-pattern-b-siloed \
+ workstream-4-pattern-c-hybrid \
+ gs://cymbal-build-sandbox-cymbal-multi-tenant-artifacts/codebase/ \
+ --project=ramp-portal-dev
 
 gcloud run deploy cymbal-multi-tenant-patterns \
-  --source=. \
-  --project=ramp-portal-dev \
-  --region=us-west1 \
-  --execution-environment=gen2 \
-  --allow-unauthenticated \
-  --set-env-vars="GOOGLE_CLOUD_PROJECT=cymbal-build-sandbox,CYMBAL_LIVE_GCP=1"
+ --source=. \
+ --project=ramp-portal-dev \
+ --region=us-west1 \
+ --execution-environment=gen2 \
+ --allow-unauthenticated \
+ --set-env-vars="GOOGLE_CLOUD_PROJECT=cymbal-build-sandbox,CYMBAL_LIVE_GCP=1"
 ```
 
 
@@ -165,20 +165,20 @@ python3 -B scripts/verify_5_third_party_saas_products.py --pattern all --verbose
 
 ---
 
-### Stage 10 — Verified Google Cloud Console, Marketplace & Commercial 3P SaaS Retina Capture & Fail-Closed `F-13` Verification
+### Stage 10 — Verified Google Cloud Console, Marketplace & Commercial 3P SaaS Capture & Fail-Closed `F-13` Verification
 
 ```bash
 # 1. Open Google Cloud Marketplace / Commercial Free Trial tabs in an authenticated browser session
 node scripts/capture_real_gcp_and_saas_screenshots.mjs --open-marketplace-tabs
 
-# 2. Capture genuine 16:9 Retina UIs via capture_verified_ui.mjs (zero open-source stand-in containers)
+# 2. Capture genuine live UIs via capture_verified_ui.mjs (zero open-source stand-in containers)
 node scripts/capture_real_gcp_and_saas_screenshots.mjs
 
 # 3. Run fail-closed 13/13 Deep Forensic Audit (including F-13 verify_slide_screenshots.mjs --audience external)
 python3 -B scripts/run_deep_forensic_audit.py
 ```
 
-* **Verified Retina Inventory (`screenshots/verified-cloud-console/`)**: 17/17 Verified Live `2880x1620` Retina captures (13 Live Google Cloud Console captures across `cymbal-ge-hub-2026` & `cymbal-ge-silo-2026` + 4 Live Commercial SaaS captures across Atlassian Jira Cloud & ThoughtSpot Cloud; 8 complete BEFORE → AFTER resolution pairs, 0 pending SSO)
+* **Verified Inventory (`screenshots/verified-cloud-console/`)**: 17/17 Verified Live `full-screen` console captures (13 Live Google Cloud Console captures across `cymbal-ge-hub-2026` & `cymbal-ge-silo-2026` + 4 Live Commercial SaaS captures across Atlassian Jira Cloud & ThoughtSpot Cloud; 8 complete BEFORE → AFTER resolution pairs, 0 pending SSO)
 * **Cloud Console & Runtime Verification Receipt**: [`docs/cloud_console_verification_receipt.json`](cloud_console_verification_receipt.json)
 * **Cross-Cloud 10-SaaS MCP Receipt**: [`docs/third_party_5_saas_verification_receipt.json`](third_party_5_saas_verification_receipt.json)
 * **Cross-Run Continuity Ledger (`4` Active Repeatable Steps)**: [`data/run_continuity_ledger.json`](../data/run_continuity_ledger.json)

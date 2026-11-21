@@ -804,8 +804,8 @@ const TITLE_ACTS_BY_DECK: Record<string, TitleActSpec[]> = {
     },
     {
       badge: 'PARTS 4–5 • SLIDES 13–15',
-      title: 'Dual-Plane Proofs, Retina UIs & SLAs',
-      sub: 'Presents grounded GCP/AWS CLI telemetry (Slide 13), live 2880x1620 ThoughtSpot Cloud UIs & F-13 slot (Slide 14), and Well-Architected SLAs + 5 GitHub milestones (Slide 15).',
+      title: 'Dual-Plane Proofs, live UIs & SLAs',
+      sub: 'Presents grounded GCP/AWS CLI telemetry (Slide 13), live ThoughtSpot Cloud UIs & F-13 slot (Slide 14), and Well-Architected SLAs + 5 GitHub milestones (Slide 15).',
     },
   ]),
   WS2: quadColorActs([
@@ -1954,7 +1954,7 @@ function buildComparisonTableSynthesisCards(
       },
       {
         title: '4. Dual-Plane Proofs & SLAs (Slides 13–15)',
-        body: 'Pairs grounded GCP/AWS CLI telemetry (Slide 13) & 2880x1620 Retina 3P SaaS UIs (Slide 14) with Well-Architected SLAs & 5 milestones (Slide 15).',
+        body: 'Pairs grounded GCP/AWS CLI telemetry (Slide 13) & live console 3P SaaS UIs (Slide 14) with Well-Architected SLAs & 5 milestones (Slide 15).',
       },
     ];
   }
@@ -2758,7 +2758,7 @@ function addAssetsSlide(pptx: Pptx, spec: DeckSpec | null, deck: DeckJson, manif
     {
       title: '4. Grounded Multi-Cloud & 3P SaaS Proof',
       body: 'Pairs 100% native editable vector shapes with authentic Google Cloud Console, AWS AgentCore, and Verified Commercial 3rd-Party SaaS UI captures.',
-      tag: 'VERIFIED MULTI-CLOUD Retina Captures • 27 Workbench Files',
+      tag: 'VERIFIED MULTI-CLOUD live Captures • 27 Workbench Files',
       accent: GOOGLE_CARD_ACCENTS[3],
     },
   ];
@@ -7351,13 +7351,13 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       '• Live Console: cymbal-ge-hub-2026 (us-central1)',
       '• Template: ge-ws1-before-unprotected-baseline',
       '• Result: "No violations detected" (attack passes)',
-      '• SHA-256: 2bda7e68993a (2880×1620 Retina)',
+      '• Live Console Capture',
     ],
     verify2: [
       '• Live Console: cymbal-ge-hub-2026 (us-central1)',
       '• Template: ge-zero-trust-ai-firewall (Low & above)',
       '• Result: "Template violations detected" (Blocked)',
-      '• SHA-256: 93471e0d7b17 (2880×1620 Retina)',
+      '• Live Console Capture',
     ],
     file1: 'screenshots/verified-cloud-console/ws1_before_model_armor_unprotected.png',
     img1: 'screenshots/verified-cloud-console/ws1_before_model_armor_unprotected.png',
@@ -7369,9 +7369,9 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
     cap2: 'Exact same prompt flagged live: Dangerous content & Prompt injection Match found',
     callouts: [
       {
-        badge: 'AUDIT 01 • 17/17 LIVE RETINA PROOFS',
+        badge: 'LIVE CONSOLE & SAAS PROOFS',
         title: '13 GCP Console + 4 Commercial SaaS Captures Verified',
-        body: 'All 8/8 BEFORE → AFTER pairs verified exit 0 by verify_slide_screenshots.mjs --audience external across cymbal-ge-hub-2026 & cymbal-ge-silo-2026.',
+        body: 'All 8/8 BEFORE → AFTER pairs verified exit 0 by automated screenshot verification across cymbal-ge-hub-2026 & cymbal-ge-silo-2026.',
       },
       {
         badge: 'AUDIT 02 • HOP 1 CLOUD ARMOR WAF LIVE',
@@ -7395,13 +7395,13 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       '• Live Console: BigQuery Studio (cymbal-ge-hub-2026)',
       '• Table: pattern_a_pooled_rls_entities (unscoped)',
       '• Result: 1 – 7 of 7 rows across competing tenants',
-      '• SHA-256: 354c21024148 (2880×1620 Retina)',
+      '• Live Console Capture',
     ],
     verify2: [
       '• Live Console: BigQuery Studio (cymbal-ge-hub-2026)',
       '• Policy: tenant_pooled_rls_policy + JWT CTE scope',
       '• Result: 1 – 2 of 2 FinVault rows (0 foreign rows)',
-      '• SHA-256: 5ec0675a5ba0 (2880×1620 Retina)',
+      '• Live Console Capture',
     ],
     file1: 'screenshots/verified-cloud-console/ws2_before_pooled_rls_cross_tenant_bleed.png',
     img1: 'screenshots/verified-cloud-console/ws2_before_pooled_rls_cross_tenant_bleed.png',
@@ -7430,7 +7430,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       {
         badge: 'PROOF 04 • 10/10 POOLED SAAS MCP PASS',
         title: 'Verified Cross-Cloud 3LO & Warehouse RLS Ledger',
-        body: 'Verifies 10/10 Pooled AWS AgentCore MCP targets (ServiceNow, Snowflake, ThoughtSpot, Jira) alongside live BigQuery RLS Retina captures.',
+        body: 'Verifies 10/10 Pooled AWS AgentCore MCP targets (ServiceNow, Snowflake, ThoughtSpot, Jira) alongside live BigQuery RLS live captures.',
       },
     ],
   },
@@ -7439,13 +7439,13 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       '• Live Console: BigQuery Studio (cymbal-ge-silo-2026)',
       '• Key: finvault-silo-cmek (State: ENABLED)',
       '• Result: Decrypts VAULT-FV-9001..9002 (1–2 of 2)',
-      '• SHA-256: 5acc84f6897e (2880×1620 Retina)',
+      '• Live Console Capture',
     ],
     verify2: [
       '• Live Console: BigQuery Studio (cymbal-ge-silo-2026)',
       '• Key: medcore-revoked-cmek (State: DISABLED)',
       '• Result: Cloud KMS Error: current state is DISABLED',
-      '• SHA-256: 564ee3425027 (2880×1620 Retina)',
+      '• Live Console Capture',
     ],
     file1: 'screenshots/verified-cloud-console/ws3_before_cmek_enabled_vault_access.png',
     img1: 'screenshots/verified-cloud-console/ws3_before_cmek_enabled_vault_access.png',
@@ -7483,13 +7483,13 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       '• Live Console: VPC Network (cymbal-ge-hub-2026)',
       '• VPC: cymbal-pattern-c-hub-vpc (10.240.0.0/24)',
       '• PSC NAT: cymbal-psc-nat-us-west1 (10.240.10.0/28)',
-      '• SHA-256: bf9df07c95e9 (2880×1620 Retina)',
+      '• Live Console Capture',
     ],
     verify2: [
       '• Live Console: VPC Network (cymbal-ge-silo-2026)',
       '• VPC: cymbal-pattern-c-finvault-spoke-vpc',
       '• Subnet: cymbal-finvault-spoke-us-west1 (10.140.0.0/24)',
-      '• SHA-256: 6f021bbd273c (2880×1620 Retina)',
+      '• Live Console Capture',
     ],
     file1: 'screenshots/verified-cloud-console/ws4_before_shared_hub_vpc.png',
     img1: 'screenshots/verified-cloud-console/ws4_before_shared_hub_vpc.png',
@@ -7527,13 +7527,13 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       '• Live Console: Integration Connectors (cymbal-ge-hub-2026)',
       '• View: Create Connection 4-step manual wizard',
       '• Scope: Point-to-point connectors pre-A2A federation',
-      '• SHA-256: b2dd4e6bebf4 (2880×1620 Retina)',
+      '• Live Console Capture',
     ],
     verify2: [
       '• Live Console: Cloud Run Services (cymbal-ge-hub-2026)',
       '• Services: a2a-gateway, a2a-ge-orchestrator, mcp-obo',
       '• Security: 4/4 green services Require authentication',
-      '• SHA-256: 49cfff9cfcaf (2880×1620 Retina)',
+      '• Live Console Capture',
     ],
     file1: 'screenshots/verified-cloud-console/ws5_before_connectors_baseline.png',
     img1: 'screenshots/verified-cloud-console/ws5_before_connectors_baseline.png',
@@ -7552,7 +7552,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       {
         badge: 'PROOF 02 • LIVE THOUGHTSPOT CLOUD BI',
         title: 'Unconstrained Liveboard → Governed Saved Answer',
-        body: 'Live ThoughtSpot Cloud Retina pair (fd5cb15c0902 → 3fcab795d1e5) verified alongside 30/30 AWS AgentCore 10-SaaS MCP flows.',
+        body: 'Live ThoughtSpot Cloud live pair (fd5cb15c0902 → 3fcab795d1e5) verified alongside 30/30 AWS AgentCore 10-SaaS MCP flows.',
       },
       {
         badge: 'PROOF 03 • ZERO-PII BIGQUERY FINOPS',
@@ -7560,9 +7560,9 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
         body: 'Logs cached vs. dynamic token counts and latency per tenant_id to BigQuery with zero raw PII text.',
       },
       {
-        badge: 'PROOF 04 • 17/17 RETINA PROOFS & 13/13 GATES',
+        badge: 'PROOF 04 • 17/17 live PROOFS & 13/13 GATES',
         title: '13 GCP Console + 4 SaaS Proofs, 54/54 Unit Tests',
-        body: 'Ships 27 workbench files, Terraform 2.6/3.6/4.6, 17/17 verified Retina proofs, and 13/13 forensic gates PASS.',
+        body: 'Ships 27 workbench files, Terraform 2.6/3.6/4.6, 17/17 Live Console proofs, and 13/13 forensic gates PASS.',
       },
     ],
   },
@@ -7571,13 +7571,13 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       '• Live Console: Model Armor (cymbal-ge-hub-2026)',
       '• Policy: ge-zero-trust-ai-firewall (Blocked live)',
       '• Scope: WS1–WS2 Edge WAF, Model Armor & BigQuery RLS',
-      '• SHA-256: 93471e0d7b17 (2880×1620 Retina)',
+      '• Live Console Capture',
     ],
     verify2: [
       '• Live Console: BigQuery CMEK (cymbal-ge-silo-2026)',
       '• Key: medcore-revoked-cmek (State: DISABLED)',
       '• Scope: WS3–WS5 Sovereign Kill-Switch, PSC & A2A Hub',
-      '• SHA-256: 564ee3425027 (2880×1620 Retina)',
+      '• Live Console Capture',
     ],
     file1: 'screenshots/verified-cloud-console/ws1_after_model_armor_blocked.png',
     img1: 'screenshots/verified-cloud-console/ws1_after_model_armor_blocked.png',
@@ -7605,7 +7605,7 @@ const SCREENSHOT_CALLOUT_BY_WS: Record<string, ScreenshotCalloutSpec> = {
       },
       {
         badge: 'PROGRAM 04 • WS5 CAPSTONE & 17/17 PROOFS',
-        title: '13 GCP + 4 SaaS Retina Proofs & 13/13 Gates PASS',
+        title: 'Live Google Cloud Console & Commercial SaaS Proofs',
         body: 'Unifies ThoughtSpot BI (fd5cb15c0902 → 3fcab795d1e5), Cloud Run A2A Hub (49cfff9cfcaf), 30/30 AWS AgentCore MCP flows & 54/54 unit tests.',
       },
     ],
@@ -7675,7 +7675,7 @@ export function addLiveScreenshotCalloutSlide(pptx: Pptx, spec: DeckSpec): { sha
     });
     const absImg = sh.imgRel ? path.join(FDE_BLOGS_ROOT, sh.imgRel) : '';
     if (absImg && fs.existsSync(absImg)) {
-      // Exact 16:9 Retina PNG framed cleanly on the left (3.92 x 2.205 in) + verification details on the right
+      // Exact live PNG framed cleanly on the left (3.92 x 2.205 in) + verification details on the right
       slide.addShape(pptx.ShapeType.rect, {
         x: 0.52,
         y: sh.y + 0.38,
@@ -8235,13 +8235,13 @@ function addWs1BeforeAfterSaasProofSlide(pptx: Pptx, spec: DeckSpec): { shapes: 
     pptx,
     slide,
     'LIVE GOOGLE CLOUD CONSOLE PROOF',
-    'Proof 2: Live 2880x1620 Google Cloud Model Armor & Cloud Armor WAF Pairs',
+    'Proof 2: live Google Cloud Model Armor & Cloud Armor WAF Pairs',
     'ACT III • VISUAL PROOF'
   );
   shapes += 4;
 
   slide.addText(
-    'Four genuine 2880x1620 Retina captures from console.cloud.google.com (cymbal-ge-hub-2026) proving Hop 4 Model Armor and Hop 1 Cloud Armor WAF enforcement live.',
+    'Four genuine live console captures from console.cloud.google.com (cymbal-ge-hub-2026) proving Hop 4 Model Armor and Hop 1 Cloud Armor WAF enforcement live.',
     { x: 0.45, y: 0.68, w: 12.43, h: 0.34, fontSize: 10.2, color: TEXT_BODY, fontFace: FONT_BODY }
   );
   shapes += 1;
@@ -8282,7 +8282,7 @@ function addWs1BeforeAfterSaasProofSlide(pptx: Pptx, spec: DeckSpec): { shapes: 
       x: pair.x + 0.22, y: 1.50, w: 5.6, h: 0.26, fontSize: 7.4, bold: true, color: G_RED_DEEP, valign: 'middle', fontFace: FONT_BODY,
     });
     if (fs.existsSync(pair.beforeImg)) {
-      // Exact 16:9 Retina framing centered cleanly inside the 6.05" card (4.00 x 2.25 in)
+      // Exact live framing centered cleanly inside the 6.05" card (4.00 x 2.25 in)
       slide.addImage({ data: fileToDataUri(pair.beforeImg), altText: pair.beforeLabel, x: pair.x + 1.025, y: 1.80, w: 4.00, h: 2.25 });
     }
     shapes += 3;
@@ -8299,7 +8299,7 @@ function addWs1BeforeAfterSaasProofSlide(pptx: Pptx, spec: DeckSpec): { shapes: 
     shapes += 3;
   }
 
-  addFooter(pptx, slide, `${spec.label}  •  Verified Live 2880x1620 Google Cloud Console BEFORE → AFTER Proofs (Model Armor & Cloud Armor WAF)`);
+  addFooter(pptx, slide, `${spec.label}  •  Verified live Google Cloud Console BEFORE → AFTER Proofs (Model Armor & Cloud Armor WAF)`);
   return { shapes, connectors: 0 };
 }
 
@@ -8477,7 +8477,7 @@ async function buildWorkstreamDeck(spec: DeckSpec, manifest: ManifestItem[]) {
     totalVertices += rShots.shapes;
     slideCount++;
 
-    // Slide 14: Proof 2 — Live 2880x1620 Retina Verified Commercial 3P SaaS UI Isolation
+    // Slide 14: Proof 2 — live console Verified Commercial 3P SaaS UI Isolation
     const rBeforeAfter = addWs1BeforeAfterSaasProofSlide(pptx, spec);
     totalVertices += rBeforeAfter.shapes;
     slideCount++;

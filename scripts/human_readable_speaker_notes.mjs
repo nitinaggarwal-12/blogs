@@ -30,9 +30,9 @@ export const WORKSTREAM_THEMES = {
     slide9Spoken:
       'This register maps our five compensating production controls—GAP-01 through GAP-05—to the early-access platform boundaries engineering teams face today. Every custom Python, Valkey, or SQL control in core-cymbal-agent is wrapped in a feature-flagged native adapter hook (CYMBAL_NATIVE_ARD_GA, CYMBAL_NATIVE_KMS_PROBE_GA, CYMBAL_NATIVE_MEM_TTL_GA, CYMBAL_NATIVE_PSC_CUTOVER_GA, and CYMBAL_NATIVE_OTEL_FINOPS_GA) so teams can switch cleanly to native GCP primitives via configuration as they reach general availability. And in row five, our OpenTelemetry FinOps exporter streams SHA-256 prompt hashes and token counters directly into BigQuery so finance teams can run exact SQL chargeback queries across cached and reasoning output tokens with zero raw PII.',
     slide10Spoken:
-      'To prove this architecture is running live rather than just on slides, here are authentic 2880x1620 Retina captures from Google Cloud Console across cymbal-ge-hub-2026 and cymbal-ge-silo-2026—including Hop 4 Vertex AI Model Armor blocking cross-tenant SSN prompt injection and Hop 1 Cloud Armor WAF enforcing Priority 1000/1100 Deny-403—paired with live commercial Atlassian Jira Cloud and ThoughtSpot Cloud captures (17/17 cryptographically verified proofs across 8/8 BEFORE-to-AFTER pairs). On the Intra-Cloud plane, our 20/20 Google Cloud runtime suites verify zero cross-tenant RLS rows across HTTP 200, 403, 423, and 429 responses; on the Inter-Cloud plane, our 30/30 AWS Bedrock AgentCore MCP and 10-SaaS cross-cloud target harness passes all sixty assertions and all thirteen automated forensic gates.',
+      'To prove this architecture is running live rather than just on slides, here are authentic live console captures from Google Cloud Console across cymbal-ge-hub-2026 and cymbal-ge-silo-2026—including Hop 4 Vertex AI Model Armor blocking cross-tenant SSN prompt injection and Hop 1 Cloud Armor WAF enforcing Priority 1000/1100 Deny-403—paired with live commercial Atlassian Jira Cloud and ThoughtSpot Cloud captures (17 live BEFORE-to-AFTER proofs across 8 pairs). On the Intra-Cloud plane, our 20/20 Google Cloud runtime suites verify zero cross-tenant RLS rows across HTTP 200, 403, 423, and 429 responses; on the Inter-Cloud plane, our 30/30 AWS Bedrock AgentCore MCP and 10-SaaS cross-cloud target harness passes all sixty assertions and our automated CI/CD verification suite.',
     slide11Spoken:
-      'Finally, our closing slide consolidates the Google Cloud Well-Architected SLA scorecard directly into our five runnable GitHub milestones and five-part blog series launch plan. Every milestone card pairs its exact repository file path with its production SLA target: under 150-microsecond cached-JWKS verification and ~3ms JTI deny-lists in Part 1; ~42ms p95 five-hop overhead, ~420ms warm TTFT, and 89.1 percent token savings in Part 2; <60s CMEK revocation, <5s Valkey SCAN+UNLINK eviction, SET NX PX 5000 recovery, and <30s cross-region failover RTO in Part 3; 74 percent portfolio TCO reduction and 0ms PSC cutover in Part 4; and 13/13 forensic plus 107/107 runtime assertions in Part 5.',
+      'Finally, our closing slide consolidates the Google Cloud Well-Architected SLA scorecard directly into our five runnable GitHub milestones and five-part blog series launch plan. Every milestone card pairs its exact repository file path with its production SLA target: under 150-microsecond cached-JWKS verification and ~3ms JTI deny-lists in Part 1; ~42ms p95 five-hop overhead, ~420ms warm TTFT, and 89.1 percent token savings in Part 2; <60s CMEK revocation, <5s Valkey SCAN+UNLINK eviction, SET NX PX 5000 recovery, and <30s cross-region failover RTO in Part 3; 74 percent portfolio TCO reduction and 0ms PSC cutover in Part 4; and automated multi-cloud security verification across GCP and AWS in Part 5.',
   },
   WS2: {
     name: 'Workstream 2 (Pattern A — High-Density Shared Pool)',
@@ -136,7 +136,7 @@ export const WORKSTREAM_THEMES = {
     slide9Spoken:
       'This master verification ledger consolidates all twenty automated simulation tests across the entire program—combining the ten Shared Pool breach tests from Workstream 2, the six Sovereign Silo and kill-switch tests from Workstream 3, and the four Hybrid Private Service Connect and live tier migration tests from Workstream 4 into one continuous integration gate.',
     slide10Spoken:
-      'Here are the capstone Dual-Plane receipts from our live Google Cloud Console captures (13/13 verified 2880x1620 Retina screenshots across Model Armor, Cloud Armor WAF, BigQuery Pattern A RLS, BigQuery Pattern B CMEK Kill-Switch, Cloud KMS Keyring, Pattern C Hub and Spoke VPCs, Integration Connectors, and Cloud Run Federation Hub) paired with 4/4 live commercial Atlassian Jira Cloud and ThoughtSpot Cloud captures (17/17 total verified proofs across 8/8 BEFORE-to-AFTER pairs) confirming that the entire 27-file codebase, all fourteen official architecture blueprints, all 20/20 Intra-Cloud GCP runtime simulations, all 30/30 Inter-Cloud 10-SaaS AWS AgentCore MCP flows (60/60 assertions), and all 13/13 forensic gates pass at 100%.',
+      'Here are the capstone Dual-Plane receipts from our live Google Cloud Console captures (13 live console screenshots across Model Armor, Cloud Armor WAF, BigQuery Pattern A RLS, BigQuery Pattern B CMEK Kill-Switch, Cloud KMS Keyring, Pattern C Hub and Spoke VPCs, Integration Connectors, and Cloud Run Federation Hub) paired with 4/4 live commercial Atlassian Jira Cloud and ThoughtSpot Cloud captures (17/17 total verified proofs across 8/8 BEFORE-to-AFTER pairs) confirming that the entire 27-file codebase, all fourteen official architecture blueprints, all 20/20 Intra-Cloud GCP runtime simulations, all 30/30 Inter-Cloud 10-SaaS AWS AgentCore MCP flows (60/60 assertions), and our automated verification suites pass at 100%.',
     slide11Spoken:
       'As we wrap up the series for our executive, business, and technical leaders, remember these three foundational takeaways. First, you never have to choose between SaaS gross margins and enterprise compliance—Patterns A, B, and C let you offer both from one platform. Second, the Agentic Triad lets every customer customize their AI agents and skills safely without forking your codebase. And third, our 80/20 architecture and automated twenty-test harness keep engineering velocity high and operational risk near zero.',
     slide12Spoken:
@@ -294,16 +294,16 @@ export function getWorkstream12SlideNotes(wsKey) {
           `Slide 13 presents verifiable runtime receipts from our deployed Cloud Run services, AlloyDB RLS policies, and cross-cloud AWS Bedrock AgentCore MCP harness.`,
         whatIsHappening: t.slide10Spoken,
         whatComesNext:
-          `Complementing our Hop 1 Cloud Armor and telemetry audit, Slide 14 pairs both WS1 live 2880x1620 Google Cloud Console BEFORE-to-AFTER proof sets—Vertex AI Model Armor and Cloud Armor Hop 1 WAF—side-by-side.`,
+          `Complementing our Hop 1 Cloud Armor and telemetry audit, Slide 14 pairs both WS1 live Google Cloud Console BEFORE-to-AFTER proof sets—Vertex AI Model Armor and Cloud Armor Hop 1 WAF—side-by-side.`,
       }),
       makeSpokenNote({
         slideNum: 14,
         totalSlides: total,
-        slideTitle: 'Act III (Slide 14) — Proof 2: Live 2880x1620 Google Cloud Console BEFORE vs. AFTER Security Proofs',
+        slideTitle: 'Act III (Slide 14) — Proof 2: live Google Cloud Console BEFORE vs. AFTER Security Proofs',
         whyHere:
-          `Slide 14 pairs both live 2880x1620 Retina Google Cloud Console BEFORE-to-AFTER proof sets from cymbal-ge-hub-2026: Hop 4 Vertex AI Model Armor and Hop 1 Cloud Armor Edge WAF.`,
+          `Slide 14 pairs both live Google Cloud Console BEFORE-to-AFTER proof sets from cymbal-ge-hub-2026: Hop 4 Vertex AI Model Armor and Hop 1 Cloud Armor Edge WAF.`,
         whatIsHappening:
-          `On the left, Vertex AI Model Armor compares ge-ws1-before-unprotected-baseline (SHA-256 2bda7e68993a, where the cross-tenant SSN prompt returns No violations detected) against ge-zero-trust-ai-firewall (SHA-256 93471e0d7b17, flagging Template violations detected with Dangerous content and Prompt injection Match found). On the right, Cloud Armor compares cymbal-ws1-before-open-edge (SHA-256 f721577a1e05, single Allow rule) against cymbal-pooled-edge-waf (SHA-256 37fcc76e0f37, enforcing Priority 1000 and 1100 Deny-403 rules).`,
+          `On the left, Vertex AI Model Armor compares ge-ws1-before-unprotected-baseline (where the cross-tenant SSN prompt returns No violations detected) against ge-zero-trust-ai-firewall (flagging Template violations detected with Dangerous content and Prompt injection Match found). On the right, Cloud Armor compares cymbal-ws1-before-open-edge (single Allow rule) against cymbal-pooled-edge-waf (enforcing Priority 1000 and 1100 Deny-403 rules).`,
         whatComesNext:
           `Finally, let's turn to Slide 15 to summarize our quantified business benefits and your 30-60-90 day call to action.`,
       }),
@@ -416,7 +416,7 @@ export function getWorkstream12SlideNotes(wsKey) {
       totalSlides: total,
       slideTitle: 'Act III — Live Google Cloud Console & Commercial SaaS BEFORE vs. AFTER Verification Proof',
       whyHere:
-        `Following the test matrix on Slide 9, this slide turns those architectural claims into live 2880x1620 Retina Google Cloud Console BEFORE-to-AFTER captures and verified multi-cloud telemetry receipts.`,
+        `Following the test matrix on Slide 9, this slide turns those architectural claims into live Google Cloud Console BEFORE-to-AFTER captures and verified multi-cloud telemetry receipts.`,
       whatIsHappening: t.slide10Spoken,
       whatComesNext:
         `With the architecture explained in Act II and proven live in Google Cloud here in Act III, let's turn to Slide 11 to distill everything we have covered into three executive takeaways.`,
@@ -751,7 +751,7 @@ export const DOC_REF_THEMES = {
     label: 'DOC-MT-06 (Part 6: 10-Point Red-Team Breach Simulation & Cloud Console Runbook)',
     title: 'Production Verification (Part 6): 10-Point Red-Team Breach Simulation & Cloud Console Runbook',
     s1Spoken:
-      'In Part 6—the verification capstone to our six-part series—we turn architectural claims into continuous CI/CD proof through our 10-vector adversarial red-team breach suite, 30/30 multi-cloud SaaS MCP checks, and 13/13 forensic gates.',
+      'In Part 6—the verification capstone to our six-part series—we turn architectural claims into continuous CI/CD proof through our 10-vector adversarial red-team breach suite, 30/30 multi-cloud SaaS MCP checks, and automated CI/CD verification gates.',
     s2Spoken:
       'Figure 1 maps every adversarial attack vector—from HTTP header spoofing and Agent Registry enumeration to prompt injection, noisy-neighbor floods, and SQL RLS bypass—directly onto the five-hop control that neutralizes it.',
     s3Spoken:

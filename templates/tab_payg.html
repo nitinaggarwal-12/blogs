@@ -47,7 +47,7 @@
               &#128640; Production Deployment Targets: 6 Google Cloud Marketplace PAYG &amp; 2 Direct Vendor Dev Tiers
             </h1>
             <div style="display:inline-block; margin-bottom:4px; padding:2px 8px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:5px; font-size:11px; color:#1e40af; font-weight:600;">
-              ℹ️ PRICING SCOPE DISCLOSURE ([FA-24]): All 21 architecture slide decks strictly contain 0 commercial pricing slides (pure technical &amp; security topology). Rates shown below reflect vendor-published Google Cloud Marketplace list rates (and free vendor developer tiers for ServiceNow PDI &amp; Salesforce Developer Edition) solely for illustrative scale-to-zero unit-economics modeling.
+              ℹ️ PRICING SCOPE NOTE: All architecture slide decks focus strictly on technical &amp; security topology without commercial pricing. Rates shown below reflect vendor-published Google Cloud Marketplace list rates (and free vendor developer tiers for ServiceNow PDI &amp; Salesforce Developer Edition) solely for illustrative scale-to-zero unit-economics modeling.
             </div>
             <p class="muted" style="margin:0; font-size:12.5px; line-height:1.45; max-width:980px;">
               Deploy and connect <strong>genuine commercial vendor SaaS endpoints</strong> via Google Cloud Marketplace and AWS Marketplace. 
@@ -75,7 +75,7 @@
                     <span class="badge badge-blue" style="font-size:9.5px; padding:1px 5px;">10 Commercial SaaS Targets</span>
                   </div>
                   <ul style="margin:2px 0 0 0; padding-left:16px;">
-                    <li><strong>Reproducible CI/CD Security Fuzzing:</strong> Commercial SaaS targets &amp; Google Cloud Marketplace Free Trial / PAYG deployments verified via fail-closed SHA-256 provenance.</li>
+                    <li><strong>Reproducible CI/CD Security Testing:</strong> Commercial SaaS targets &amp; Google Cloud Marketplace Free Trial / PAYG deployments with automated regression verification.</li>
                     <li><strong>Zero Vendor Blast Radius:</strong> Allows automated tests to simulate cross-tenant prompt injection attacks, tenant isolation failures, and CMEK destruction without risking external vendor SaaS data corruption.</li>
                     <li><strong>Zero Variable Egress Cost:</strong> 100% deterministic local/in-VPC execution with no per-query third-party API fees or rate limits.</li>
                   </ul>
@@ -200,7 +200,7 @@
               Verify live network reachability, TLS handshake, and latency via <code>POST /api/payg-saas/test-connection</code>.
             </p>
           </div>
-          <span class="badge badge-green" style="font-size:11px; font-weight:700;">🔒 SSRF Allowlist Enforced [FA-08]</span>
+          <span class="badge badge-green" style="font-size:11px; font-weight:700;">🔒 SSRF Allowlist Enforced</span>
         </div>
 
         <div class="payg-tester-grid" style="display:grid; grid-template-columns:220px 1fr 1fr auto; gap:10px; align-items:flex-end;">
@@ -236,7 +236,7 @@
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
             <span style="font-weight:700; color:#1d4ed8;" id="payg-telemetry-status-badge">STATUS: READY</span>
             <div style="display:flex; align-items:center; gap:10px;">
-              <span style="font-size:10.5px; font-weight:700; color:#065f46; background:#ecfdf5; border:1px solid #a7f3d0; padding:2px 7px; border-radius:999px;">&#128274; SSRF Guard [FA-08]: HTTPS Vendor Allowlist Only (Loopback / RFC1918 / Metadata Blocked)</span>
+              <span style="font-size:10.5px; font-weight:700; color:#065f46; background:#ecfdf5; border:1px solid #a7f3d0; padding:2px 7px; border-radius:999px;">&#128274; SSRF Guard: HTTPS Vendor Allowlist Only (Loopback / RFC1918 / Metadata Blocked)</span>
               <span style="color:#475569; font-size:11px; font-weight:600;" id="payg-telemetry-latency">Latency: -- ms</span>
             </div>
           </div>
@@ -249,7 +249,7 @@
         <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:18px; border-bottom:1px solid #f1f5f9; padding-bottom:14px;">
           <div>
             <div style="display:flex; gap:8px; align-items:center; margin-bottom:4px; flex-wrap:wrap;">
-              <span class="badge badge-blue font-bold">TIER 2 &bull; 6 GCP MARKETPLACE PAYG + 2 DIRECT VENDOR DEV TIERS &bull; 100% HONEST PROVENANCE (ZERO SYNTHETIC MOCKUPS)</span>
+              <span class="badge badge-blue font-bold">TIER 2 &bull; 6 GCP MARKETPLACE PAYG + 2 DIRECT VENDOR DEV TIERS</span>
             </div>
             <h2 style="margin:0 0 4px 0; font-size:19px; color:#0f172a; font-weight:800;">
               &#128203; Production Deployment Targets: 6 Google Cloud Marketplace PAYG &amp; 2 Direct Vendor Dev Tiers Governance Matrix
@@ -257,7 +257,7 @@
             <p class="muted" style="margin:0; font-size:13px; line-height:1.45; max-width:980px;">
               Architectural side-by-side analysis comparing <strong>Default Un-Governed SaaS Tenancy</strong> (plaintext PII leakage, continuous compute burn, unpartitioned streams) 
               against <strong>Cymbal 5-Hop Cryptographically Secured &amp; Scale-to-Zero Architecture</strong> across all 8 commercial cloud platforms.
-              <strong>Honest Provenance &amp; Testbed Alignment [FA-15, FA-48]:</strong> Zero duplicate mockup galleries. All production endpoints are verified via the live connection tester above (with SSRF guard [FA-08]) and map 1:1 to their corresponding reproducible automated security testbed containers in Tab 3.
+              All production endpoints can be probed directly via the live connection tester above (enforcing HTTPS vendor allowlist SSRF protection) and map 1:1 to their corresponding security testbed targets in Tab 3.
             </p>
           </div>
         </div>

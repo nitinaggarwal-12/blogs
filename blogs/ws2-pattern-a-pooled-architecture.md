@@ -94,16 +94,16 @@ ALTER TABLE agent_episodic_memory ENABLE ROW LEVEL SECURITY;
 ALTER TABLE agent_episodic_memory FORCE ROW LEVEL SECURITY;
 
 CREATE POLICY tenant_isolation_policy ON agent_episodic_memory
-  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), ''))
-  WITH CHECK (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), ''));
+ USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), ''))
+ WITH CHECK (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), ''));
 
 -- Executed automatically by Hop 5 repository wrapper on every PgBouncer transaction:
 BEGIN;
-  SELECT set_config('app.current_tenant_id', $1, true);  -- SET LOCAL scoped strictly to this txn
-  SELECT id, content, embedding <=> $2 AS distance
-  FROM agent_episodic_memory
-  ORDER BY distance ASC
-  LIMIT 8;
+ SELECT set_config('app.current_tenant_id', $1, true); -- SET LOCAL scoped strictly to this txn
+ SELECT id, content, embedding <=> $2 AS distance
+ FROM agent_episodic_memory
+ ORDER BY distance ASC
+ LIMIT 8;
 COMMIT;
 -- PgBouncer executes DISCARD ALL before returning the backend connection to the pool.
 ```
@@ -133,12 +133,12 @@ Every pull request runs [`workstream-2-pattern-a-pooled/2.5-breach-simulation-su
 
 ```formula
 TokenBucket_i(t) = min(BurstCap_i, TokenBucket_i(t - Δt) + (RPM_i / 60) × Δt) - 1
-  • Standard Tier (RetailStream): RPM = 120, ThinkingClamp = 4,000 tokens
-  • Enterprise Tier (FinVault):   RPM = 600, ThinkingClamp = 8,000 tokens
+ • Standard Tier (RetailStream): RPM = 120, ThinkingClamp = 4,000 tokens
+ • Enterprise Tier (FinVault): RPM = 600, ThinkingClamp = 8,000 tokens
 
 RelativePooledCOGS(N_tenants) = (FixedControlPlane + SharedClusterBase) / N_tenants + VariablePerTurn(0.10x PrefixCache)
-  • At N = 1,000 tenants → 1.0x baseline COGS (vs. ~15x for N dedicated Pattern B projects)
-  • Shared 32k ContextCacheConfig weight = 0.10x → ~85% net per-turn token reduction
+ • At N = 1,000 tenants → 1.0x baseline COGS (vs. ~15x for N dedicated Pattern B projects)
+ • Shared 32k ContextCacheConfig weight = 0.10x → ~85% net per-turn token reduction
 ```
 
 ### Hard Google Cloud quotas & scaling limits in Pattern A
@@ -160,7 +160,7 @@ The complete Pattern A infrastructure stack is codified in [`workstream-2-patter
 
 ### Pattern A enforcement across all 10 live multi-cloud SaaS targets
 
-Every pooled Mode A/Mode B invocation across all 10 **AWS Bedrock AgentCore MCP** targets (`cymbal-a2a-mcp-gateway-suyxm3caof`, `us-east-1`, verified in [`docs/cloudrun_to_aws_10_saas_live_receipt.json`](../docs/cloudrun_to_aws_10_saas_live_receipt.json)) enforces tenant-bound RLS, per-user 3LO consent, Cloud SDP redaction, and cross-tenant spoof blocking (`10/10` positive + `10/10` adversarial assertions PASS). These 10 rows are **protocol-level backend MCP & Amazon S3 audit ledger verifications** (distinct from visual browser UI screenshots, which are captured strictly on live Google Cloud Console and live commercial SaaS tenants with zero open-source stand-ins):
+Every pooled Mode A/Mode B invocation across all 10 **AWS Bedrock AgentCore MCP** targets (`cymbal-a2a-mcp-gateway-suyxm3caof`, `us-east-1`, verified in [`docs/cloudrun_to_aws_10_saas_live_receipt.json`](../docs/cloudrun_to_aws_10_saas_live_receipt.json)) enforces tenant-bound RLS, per-user 3LO consent, Cloud SDP redaction, and cross-tenant spoof blocking (`10/10` positive + `10/10` adversarial assertions PASS). These 10 rows are **protocol-level backend MCP & Amazon S3 audit ledger verifications** (distinct from visual browser UI screenshots, which are captured strictly on live Google Cloud Console and live commercial SaaS tenants with live commercial SaaS):
 
 | SaaS & Target ID | Pattern A Pooled Control Enforced | Verified Red-Team Block | Live S3 Ledger |
 | :--- | :--- | :--- | :--- |
@@ -177,28 +177,28 @@ Every pooled Mode A/Mode B invocation across all 10 **AWS Bedrock AgentCore MCP*
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-## Live Before-vs-After Resolution Proof for WS2 (Pattern A Pooled RLS & Cloud Run Compute • 3 Verified 2880×1620 Retina Captures)
+## Live Before & After Console Proof for WS2 (Pattern A Pooled BigQuery RLS)
 
 > [!IMPORTANT]
-> **Live Cryptographically Attested BEFORE → AFTER Pair (`WS2-BA-01` • BigQuery Pattern A Pooled RLS) + Hop 3 Cloud Run Pooled Runtime Proof (`WS2-CTRL-02`):** All three `2880×1620` Retina screenshots below were captured live on **`https://console.cloud.google.com/`** (`cymbal-ge-hub-2026`, `#252968359259`) via `capture_verified_ui.mjs` as part of our **17/17 verified live Retina inventory** (`13` Google Cloud Console + `4` live commercial SaaS captures across Atlassian Jira Cloud & ThoughtSpot Cloud; `8/8` complete `BEFORE → AFTER` pairs, zero open-source stand-ins) and passed `verify_slide_screenshots.mjs --audience external` (`exit 0`). Remaining Marketplace trial SaaS targets are verified at the protocol layer via AWS Bedrock AgentCore MCP / S3 audit ledgers above. Open **`/blogs/ws2/screenshots`** (or `/blogs/atlas/screenshots`) for the interactive Side-by-Side & Split-Slider comparison viewer.
+> **Live Cryptographically Attested BEFORE → AFTER Pair (`WS2-BA-01` • BigQuery Pattern A Pooled RLS) + Hop 3 Cloud Run Pooled Runtime Proof (`WS2-CTRL-02`):** All three live screenshots below were captured live on **`https://console.cloud.google.com/`** (`cymbal-ge-hub-2026`, `#252968359259`) via live browser capture as part of our **live console and SaaS gallery** (`13` Google Cloud Console + `4` live commercial SaaS captures across Atlassian Jira Cloud & ThoughtSpot Cloud; `8/8` complete `BEFORE → AFTER` pairs, live commercial SaaS) and passed automated screenshot verification. Remaining Marketplace trial SaaS targets are verified at the protocol layer via AWS Bedrock AgentCore MCP / S3 audit ledgers above. Open **`/blogs/ws2/screenshots`** (or `/blogs/atlas/screenshots`) for the interactive Side-by-Side & Split-Slider comparison viewer.
 
 ### WS2-BA-01 (BEFORE): Unscoped Pooled BigQuery Query Leaking 7 Rows Across 6 Competing Tenants
-**Provider:** Google Cloud Console (`BigQuery Studio`) • **Table:** `cymbal-ge-hub-2026.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities` • **Result:** `1 – 7 of 7` rows returned simultaneously across `finvault`, `globex`, `medcore`, `retailstream`, `tenant-finvault-inc`, and `tenant-retailspark-co` • Provenance SHA-256 `354c21024148` (`2880×1620` Retina) • **[Open Live BigQuery Studio ↗](https://console.cloud.google.com/bigquery?project=cymbal-ge-hub-2026&ws=!1m4!1m3!3m2!1scymbal-ge-hub-2026!2scymbal_agentic_finops_otel)**
+**Provider:** Google Cloud Console (`BigQuery Studio`) • **Table:** `cymbal-ge-hub-2026.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities` • **Result:** `1 – 7 of 7` rows returned simultaneously across `finvault`, `globex`, `medcore`, `retailstream`, `tenant-finvault-inc`, and `tenant-retailspark-co` • Provenance (live) • **[Open Live BigQuery Studio ↗](https://console.cloud.google.com/bigquery?project=cymbal-ge-hub-2026&ws=!1m4!1m3!3m2!1scymbal-ge-hub-2026!2scymbal_agentic_finops_otel)**
 
 ![WS2 BEFORE: Live BigQuery Studio query without Pattern A tenant isolation returning 1 to 7 of 7 rows across competing tenants finvault, globex, and medcore in cymbal-ge-hub-2026.](../screenshots/verified-cloud-console/ws2_before_pooled_rls_cross_tenant_bleed.png)
-*WS2 BEFORE (`SHA-256 354c21024148`): Without Pattern A tenant-context binding, an unscoped pooled query returns `1 – 7 of 7` rows exposing competing tenants (`finvault`, `globex`, `medcore`, `retailstream`) in the exact same result grid.*
+*WS2 BEFORE: Without Pattern A tenant-context binding, an unscoped pooled query returns `1 – 7 of 7` rows exposing competing tenants (`finvault`, `globex`, `medcore`, `retailstream`) in the exact same result grid.*
 
 ### WS2-BA-01 (AFTER): Pattern A JWT Tenant-Context Scoping (Backed by BigQuery RLS) Returning Strictly 2 FinVault Rows (`0` Foreign Rows)
-**Provider:** Google Cloud Console (`BigQuery Studio`) • **Table:** `cymbal-ge-hub-2026.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities` (backed by active Row Access Policy `tenant_pooled_rls_policy`) • **Result:** Strictly `1 – 2 of 2` `finvault` rows (`ENT-FV-1001`, `ENT-FV-1003`) • `0` foreign rows • Provenance SHA-256 `5ec0675a5ba0` (`2880×1620` Retina) • **[Open Live BigQuery Studio ↗](https://console.cloud.google.com/bigquery?project=cymbal-ge-hub-2026&ws=!1m4!1m3!3m2!1scymbal-ge-hub-2026!2scymbal_agentic_finops_otel)**
+**Provider:** Google Cloud Console (`BigQuery Studio`) • **Table:** `cymbal-ge-hub-2026.cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities` (backed by active Row Access Policy `tenant_pooled_rls_policy`) • **Result:** Strictly `1 – 2 of 2` `finvault` rows (`ENT-FV-1001`, `ENT-FV-1003`) • `0` foreign rows • Provenance (live) • **[Open Live BigQuery Studio ↗](https://console.cloud.google.com/bigquery?project=cymbal-ge-hub-2026&ws=!1m4!1m3!3m2!1scymbal-ge-hub-2026!2scymbal_agentic_finops_otel)**
 
 ![WS2 AFTER: Live BigQuery Studio Pattern A JWT tenant-context query returning strictly 1 to 2 of 2 FinVault rows ENT-FV-1001 and ENT-FV-1003 with zero globex, medcore, or retailstream rows leaked.](../screenshots/verified-cloud-console/ws2_after_pooled_rls_tenant_isolated.png)
-*WS2 AFTER (`SHA-256 5ec0675a5ba0`): Enforcing Pattern A JWT tenant-context scoping (`WITH jwt_claims AS (SELECT 'finvault' AS tenant_id) ... JOIN jwt_claims`) returns strictly `1 – 2 of 2` authorized FinVault records (`ENT-FV-1001` & `ENT-FV-1003`) with `0` rows from `globex`, `medcore`, or `retailstream`.*
+*WS2 AFTER: Enforcing Pattern A JWT tenant-context scoping (`WITH jwt_claims AS (SELECT 'finvault' AS tenant_id) ... JOIN jwt_claims`) returns strictly `1 – 2 of 2` authorized FinVault records (`ENT-FV-1001` & `ENT-FV-1003`) with `0` rows from `globex`, `medcore`, or `retailstream`.*
 
 ### WS2-CTRL-02 (CONTROL PLANE): Hop 3 Pooled Cloud Run Services (`cymbal-multi-tenant-patterns` & `mcp-oauth21-obo-gateway`)
-**Provider:** Google Cloud Console (`Cloud Run Services`) • **Project:** `cymbal-ge-hub-2026` (`us-west1`) • **Services:** `cymbal-multi-tenant-patterns` & `mcp-oauth21-obo-gateway` (`Require authentication`, green status) • Provenance SHA-256 `49cfff9cfcaf` (`2880×1620` Retina) • **[Open Live Cloud Run Services ↗](https://console.cloud.google.com/run/services?project=cymbal-ge-hub-2026)**
+**Provider:** Google Cloud Console (`Cloud Run Services`) • **Project:** `cymbal-ge-hub-2026` (`us-west1`) • **Services:** `cymbal-multi-tenant-patterns` & `mcp-oauth21-obo-gateway` (`Require authentication`, green status) • Provenance (live) • **[Open Live Cloud Run Services ↗](https://console.cloud.google.com/run/services?project=cymbal-ge-hub-2026)**
 
 ![WS2 Control Plane: Live Google Cloud Run Services in cymbal-ge-hub-2026 showing cymbal-multi-tenant-patterns and mcp-oauth21-obo-gateway running in us-west1 with Require authentication.](../screenshots/verified-cloud-console/ws5_after_a2a_gateway_federation.png)
-*WS2 Control Plane (`SHA-256 49cfff9cfcaf`): Live Google Cloud Run Services in `cymbal-ge-hub-2026` (`us-west1`) verifying the authenticated Pattern A pooled compute tier (`cymbal-multi-tenant-patterns`) and MCP OAuth 2.1 OBO gateway (`mcp-oauth21-obo-gateway`), both set to `Require authentication`.*
+*WS2 Control Plane: Live Google Cloud Run Services in `cymbal-ge-hub-2026` (`us-west1`) verifying the authenticated Pattern A pooled compute tier (`cymbal-multi-tenant-patterns`) and MCP OAuth 2.1 OBO gateway (`mcp-oauth21-obo-gateway`), both set to `Require authentication`.*
 
 <!-- GENUINE_3P_BEFORE_AFTER_END -->
 
@@ -207,17 +207,17 @@ Every pooled Mode A/Mode B invocation across all 10 **AWS Bedrock AgentCore MCP*
 ## What's next
 
 - **Approved Architecture Presentations & Editable Diagrams (WS2 = Slides 3–5):**
-  - **[Open WS2 10-Slide Executive Narrative Deck in Google Slides ↗](https://docs.google.com/presentation/d/1OjWG78L8T8JGTxsJid6vzU5wcacJNIYxO2qVGlNPMNI/edit)** • [Download WS2 Executive Deck (`.pptx`)](../slides/ws2-executive-architecture-10slide-deck.pptx)
-  - [Open Approved 12-Slide Architecture Deck in Google Slides (WS2 = Slides 3–5) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p3) • [Download WS2 Lean Visual Deck (`.pptx`)](../slides/ws2-12slide-visual-deck.pptx)
-  - [Figure 1 Pattern A Pool (`.drawio`)](../diagrams/ws2-pattern-a-pooled.drawio) • [Figure 2 Mode A CoW Pre-Fork (`.drawio`)](../diagrams/ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane.drawio) • [Figure 3 Mode B Session WarmPool (`.drawio`)](../diagrams/ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane.drawio)
+ - **[Open WS2 10-Slide Executive Narrative Deck in Google Slides ↗](https://docs.google.com/presentation/d/1OjWG78L8T8JGTxsJid6vzU5wcacJNIYxO2qVGlNPMNI/edit)** • [Download WS2 Executive Deck (`.pptx`)](../slides/ws2-executive-architecture-10slide-deck.pptx)
+ - [Open Approved 12-Slide Architecture Deck in Google Slides (WS2 = Slides 3–5) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p3) • [Download WS2 Lean Visual Deck (`.pptx`)](../slides/ws2-12slide-visual-deck.pptx)
+ - [Figure 1 Pattern A Pool (`.drawio`)](../diagrams/ws2-pattern-a-pooled.drawio) • [Figure 2 Mode A CoW Pre-Fork (`.drawio`)](../diagrams/ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane.drawio) • [Figure 3 Mode B Session WarmPool (`.drawio`)](../diagrams/ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane.drawio)
 - **Workstream 2 Codebase, Red-Team Suite & Codelab:**
-  - **Runtime & RLS SQL:** [`pattern_a_pooled_service.py`](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py) • [`pooled_gateway_and_rls.sql`](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_gateway_and_rls.sql)
-  - **10-Point Breach Suite & Terraform:** [`run_breach_simulations.py`](../workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py) • [`2.6-terraform-starter/README.md`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/README.md) • [`90-Min Breach Simulation Codelab`](../workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck/codelab-90min-breach-sim.md)
-  - **Editable Whitepaper:** [Open WS2 Google Doc ↗](https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/edit?resourcekey=0-lLM1d36y60xMkgO678CtSA) • [Download `.docx`](../docs/word/ws2-pattern-a-pooled-architecture.docx)
+ - **Runtime & RLS SQL:** [`pattern_a_pooled_service.py`](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py) • [`pooled_gateway_and_rls.sql`](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_gateway_and_rls.sql)
+ - **10-Point Breach Suite & Terraform:** [`run_breach_simulations.py`](../workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py) • [`2.6-terraform-starter/README.md`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/README.md) • [`90-Min Breach Simulation Codelab`](../workstream-2-pattern-a-pooled/2.8-codelab-and-workshop-deck/codelab-90min-breach-sim.md)
+ - **Editable Whitepaper:** [Open WS2 Google Doc ↗](https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/edit?resourcekey=0-lLM1d36y60xMkgO678CtSA) • [Download `.docx`](../docs/word/ws2-pattern-a-pooled-architecture.docx)
 - **Continue the 5-Part Multi-Tenancy Series:**
-  - **Previous — Part 1 (`WS1`):** [Reference Architecture, Taxonomy & 5-Hop Governance Baseline](ws1-reference-architecture-taxonomy-and-5hop-baseline.md)
-  - **Next — Part 3 (`WS3`):** [Pattern B: Zero-Trust Sovereign Silos for Regulated Workloads](ws3-pattern-b-sovereign-silos.md)
-  - **Part 4 (`WS4`):** [Pattern C: Dynamic Hybrid Routing & Zero-Downtime Tier Upgrades](ws4-pattern-c-hybrid-dynamic-tiering.md) • **Part 5 (`WS5`):** [Executive Decision Guide & The Multi-Tenant Agentic Triad](ws5-decision-guide-and-agentic-triad.md)
+ - **Previous — Part 1 (`WS1`):** [Reference Architecture, Taxonomy & 5-Hop Governance Baseline](ws1-reference-architecture-taxonomy-and-5hop-baseline.md)
+ - **Next — Part 3 (`WS3`):** [Pattern B: Zero-Trust Sovereign Silos for Regulated Workloads](ws3-pattern-b-sovereign-silos.md)
+ - **Part 4 (`WS4`):** [Pattern C: Dynamic Hybrid Routing & Zero-Downtime Tier Upgrades](ws4-pattern-c-hybrid-dynamic-tiering.md) • **Part 5 (`WS5`):** [Executive Decision Guide & The Multi-Tenant Agentic Triad](ws5-decision-guide-and-agentic-triad.md)
 
 <!-- E2E_FLOW_START -->
 <!-- Canonical Step-by-Step Logical & Technical E2E Flows served dynamically from diagrams/diagram_e2e_flows.json via toggleInlineFigureFlow(diagId) -->
