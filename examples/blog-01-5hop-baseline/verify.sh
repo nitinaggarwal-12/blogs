@@ -10,6 +10,11 @@ SERVICE_URL="$(terraform -chdir="${SCRIPT_DIR}/terraform" output -raw service_ur
 ID_TOKEN="$(gcloud auth print-identity-token)"
 
 echo "==> Target Cloud Run 5-Hop Gateway: ${SERVICE_URL}"
+for _attempt in $(seq 1 12); do
+  HC="$(curl -sS -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${ID_TOKEN}" "${SERVICE_URL}/healthz" || echo 000)"
+  [[ "${HC}" == "200" ]] && break
+  sleep 3
+done
 
 echo ""
 echo "==> [TEST 1 — BEFORE] Unprotected Model Armor baseline with cross-tenant SSN prompt injection"

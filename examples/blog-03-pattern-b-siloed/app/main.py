@@ -16,6 +16,7 @@ logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger("cymbal.blog03")
 
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "")
+REGION = os.environ.get("GCP_REGION", "us-central1")
 BQ_DATASET = os.environ.get("BQ_DATASET", "")
 BQ_TABLE = os.environ.get("BQ_TABLE", "sovereign_cmek_records")
 GCS_BUCKET = os.environ.get("GCS_BUCKET", "")
@@ -84,7 +85,7 @@ def read_sovereign_vault(
             FROM `{PROJECT_ID}.{BQ_DATASET}.{BQ_TABLE}`
             ORDER BY record_id
         """
-        rows = [dict(r.items()) for r in bq.query(sql).result()]
+        rows = [dict(r.items()) for r in bq.query(sql, location=REGION).result()]
 
         gcs_client = storage.Client(project=PROJECT_ID)
         blob = gcs_client.bucket(GCS_BUCKET).blob("vault_attestation.txt")

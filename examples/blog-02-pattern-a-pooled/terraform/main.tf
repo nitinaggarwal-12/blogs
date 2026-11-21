@@ -96,6 +96,16 @@ resource "google_bigquery_row_access_policy" "finvault_rls" {
   grantees         = ["serviceAccount:${google_service_account.pooled_sa.email}"]
 }
 
+# Unscoped operator baseline policy so deploy.sh can seed rows & verify.sh can prove BEFORE (7 rows) vs AFTER (2 rows)
+resource "google_bigquery_row_access_policy" "operator_unscoped_baseline" {
+  count            = var.operator_member != "" ? 1 : 0
+  dataset_id       = google_bigquery_dataset.pooled_dataset.dataset_id
+  table_id         = google_bigquery_table.pooled_entities.table_id
+  policy_id        = "operator_unscoped_baseline_policy"
+  filter_predicate = "TRUE"
+  grantees         = [var.operator_member]
+}
+
 # 3. Named Firestore Database for Per-Tenant RPM Noisy-Neighbor Bulkheads (Collision-Free)
 resource "google_firestore_database" "ratelimit_db" {
   project                 = var.project_id

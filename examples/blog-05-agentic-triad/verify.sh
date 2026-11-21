@@ -11,6 +11,14 @@ BQ_DATASET="$(terraform -chdir="${SCRIPT_DIR}/terraform" output -raw bq_dataset)
 BQ_TABLE="$(terraform -chdir="${SCRIPT_DIR}/terraform" output -raw bq_table)"
 ID_TOKEN="$(gcloud auth print-identity-token)"
 
+for _url in "${ORCH_URL}" "${SPEC_URL}"; do
+  for _attempt in $(seq 1 12); do
+    HC="$(curl -sS -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${ID_TOKEN}" "${_url}/healthz" || echo 000)"
+    [[ "${HC}" == "200" ]] && break
+    sleep 3
+  done
+done
+
 echo "==> [TEST 1 — A2A AGENT CARD] Discovering Specialist at ${SPEC_URL}/.well-known/agent.json:"
 curl -sS -H "Authorization: Bearer ${ID_TOKEN}" "${SPEC_URL}/.well-known/agent.json" | jq .
 
@@ -34,10 +42,11 @@ cat /tmp/blog05_deny.json | jq .
 
 echo ""
 echo "==> [TEST 4 — ZERO-PII BIGQUERY FINOPS LEDGER] Querying ${BQ_DATASET}.${BQ_TABLE} (SHA-256 prompt hash, 0 raw PII):"
+sleep 2
 bq query --project_id="${PROJECT_ID}" --use_legacy_sql=false --format=pretty \
   "SELECT trace_id, tenant_id, SUBSTR(prompt_sha256, 1, 16) AS prompt_hash_prefix, cached_tokens, dynamic_tokens, estimated_usd, mcp_tool, http_status
    FROM \`${PROJECT_ID}.${BQ_DATASET}.${BQ_TABLE}\`
    ORDER BY recorded_at DESC
-   LIMIT 10"
+   LIMIT 10" </dev/null
 
 echo "✅ ALL BLOG 5 (WS5 — AGENTIC TRIAD & ZERO-PII FINOPS) LIVE PROOFS PASSED!"

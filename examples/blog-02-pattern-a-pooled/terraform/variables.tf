@@ -19,3 +19,9 @@ variable "rpm_limit_per_tenant" {
   type        = number
   default     = 5
 }
+
+variable "operator_member" {
+  description = "Optional IAM member (user:<email> or serviceAccount:<email>) granted unscoped TRUE row-access policy to seed data and run BEFORE baseline comparison."
+  type        = string
+  default     = ""
+}

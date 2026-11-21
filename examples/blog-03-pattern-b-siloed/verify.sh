@@ -21,6 +21,12 @@ restore_key() {
 }
 trap restore_key EXIT
 
+for _attempt in $(seq 1 12); do
+  HC="$(curl -sS -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${ID_TOKEN}" "${SERVICE_URL}/healthz" || echo 000)"
+  [[ "${HC}" == "200" ]] && break
+  sleep 3
+done
+
 echo "==> [TEST 1 — BEFORE] CMEK key ENABLED: Sovereign BigQuery + GCS vault decrypts cleanly (expect HTTP 200)"
 BEFORE_CODE="$(curl -sS -o /tmp/blog03_before.json -w "%{http_code}" -X POST "${SERVICE_URL}/v1/silo/vault" \
   -H "Authorization: Bearer ${ID_TOKEN}" \
@@ -55,7 +61,7 @@ cat /tmp/blog03_after.json | jq .
 echo ""
 echo "==> [TEST 5 — DIRECT BIGQUERY PROOF] BigQuery independently rejects decryption while key is DISABLED:"
 if bq query --project_id="${PROJECT_ID}" --location="${REGION}" --use_legacy_sql=false --nouse_cache \
-  "SELECT * FROM \`${PROJECT_ID}.${BQ_DATASET}.${BQ_TABLE}\`" 2>&1; then
+  "SELECT * FROM \`${PROJECT_ID}.${BQ_DATASET}.${BQ_TABLE}\`" </dev/null 2>&1; then
   echo "NOTE: KMS revocation propagation can take up to ~60s on BigQuery cache; Cloud Run API already failed closed HTTP 423."
 else
   echo "PASS: BigQuery directly failed closed with Cloud KMS Error: DISABLED!"

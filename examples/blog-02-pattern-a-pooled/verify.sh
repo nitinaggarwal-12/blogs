@@ -10,9 +10,15 @@ BQ_DATASET="$(terraform -chdir="${SCRIPT_DIR}/terraform" output -raw bq_dataset)
 BQ_TABLE="$(terraform -chdir="${SCRIPT_DIR}/terraform" output -raw bq_table)"
 ID_TOKEN="$(gcloud auth print-identity-token)"
 
+for _attempt in $(seq 1 12); do
+  HC="$(curl -sS -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${ID_TOKEN}" "${SERVICE_URL}/healthz" || echo 000)"
+  [[ "${HC}" == "200" ]] && break
+  sleep 3
+done
+
 echo "==> [TEST 1 — BEFORE] Unscoped BigQuery read exposes all 7 rows across 4 competing tenants:"
 bq query --project_id="${PROJECT_ID}" --use_legacy_sql=false --format=pretty \
-  "SELECT entity_id, tenant_id, domain, classification FROM \`${PROJECT_ID}.${BQ_DATASET}.${BQ_TABLE}\` ORDER BY entity_id"
+  "SELECT entity_id, tenant_id, domain, classification FROM \`${PROJECT_ID}.${BQ_DATASET}.${BQ_TABLE}\` ORDER BY entity_id" </dev/null
 
 echo ""
 echo "==> [TEST 2 — AFTER] Pattern A JWT-scoped + Row Access Policy query returns strictly FinVault's 2 rows (0 foreign rows):"

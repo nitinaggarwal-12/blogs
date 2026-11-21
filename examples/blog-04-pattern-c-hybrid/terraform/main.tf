@@ -208,9 +208,7 @@ resource "google_compute_region_backend_service" "spoke_backend" {
   load_balancing_scheme = "INTERNAL_MANAGED"
 
   backend {
-    group           = google_compute_region_network_endpoint_group.spoke_neg.id
-    balancing_mode  = "UTILIZATION"
-    capacity_scaler = 1.0
+    group = google_compute_region_network_endpoint_group.spoke_neg.id
   }
 }
 

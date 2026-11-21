@@ -43,12 +43,23 @@ gcloud builds submit "${SCRIPT_DIR}/app" \
   --tag="${IMAGE_URI}" \
   --project="${PROJECT_ID}" --quiet
 
+ACTIVE_ACCOUNT="$(gcloud config get-value account 2>/dev/null || true)"
+CALLER_MEMBER=""
+if [[ -n "${ACTIVE_ACCOUNT}" && "${ACTIVE_ACCOUNT}" != "(unset)" ]]; then
+  if [[ "${ACTIVE_ACCOUNT}" == *"gserviceaccount.com" ]]; then
+    CALLER_MEMBER="serviceAccount:${ACTIVE_ACCOUNT}"
+  else
+    CALLER_MEMBER="user:${ACTIVE_ACCOUNT}"
+  fi
+fi
+
 echo "==> [4/5] Applying Terraform stack..."
 terraform -chdir="${SCRIPT_DIR}/terraform" init -input=false
 terraform -chdir="${SCRIPT_DIR}/terraform" apply -auto-approve -input=false \
   -var="project_id=${PROJECT_ID}" \
   -var="region=${REGION}" \
-  -var="image_uri=${IMAGE_URI}"
+  -var="image_uri=${IMAGE_URI}" \
+  -var="operator_member=${CALLER_MEMBER}"
 
 BQ_DATASET="$(terraform -chdir="${SCRIPT_DIR}/terraform" output -raw bq_dataset)"
 BQ_TABLE="$(terraform -chdir="${SCRIPT_DIR}/terraform" output -raw bq_table)"
@@ -63,17 +74,11 @@ bq query --project_id="${PROJECT_ID}" --use_legacy_sql=false --nouse_cache \
      ('ENT-RS-2002', 'retailstream', 'Retail', 'POS Inventory Replenishment Feed', 'INTERNAL'),
      ('ENT-GX-3001', 'globex', 'Logistics', 'EMEA Freight Routing Manifest', 'CONFIDENTIAL'),
      ('ENT-MC-4001', 'medcore', 'Healthcare', 'Phase-III Clinical Trial Biomarker Index', 'RESTRICTED'),
-     ('ENT-MC-4002', 'medcore', 'Healthcare', 'GxP Batch Release Signoff Log', 'RESTRICTED');"
+     ('ENT-MC-4002', 'medcore', 'Healthcare', 'GxP Batch Release Signoff Log', 'RESTRICTED');" </dev/null
 
-ACTIVE_ACCOUNT="$(gcloud config get-value account 2>/dev/null || true)"
-if [[ -n "${ACTIVE_ACCOUNT}" && "${ACTIVE_ACCOUNT}" != "(unset)" ]]; then
-  if [[ "${ACTIVE_ACCOUNT}" == *"gserviceaccount.com" ]]; then
-    CALLER_MEMBER="serviceAccount:${ACTIVE_ACCOUNT}"
-  else
-    CALLER_MEMBER="user:${ACTIVE_ACCOUNT}"
-  fi
+if [[ -n "${CALLER_MEMBER}" ]]; then
   for svc in $(gcloud run services list --project="${PROJECT_ID}" --region="${REGION}" --filter="metadata.name~^cymbal-ws2-" --format="value(metadata.name)"); do
-    gcloud run services add-iam-policy-binding "${svc}"       --project="${PROJECT_ID}" --region="${REGION}"       --member="${CALLER_MEMBER}" --role="roles/run.invoker" --quiet >/dev/null 2>&1 || true
+    gcloud run services add-iam-policy-binding "${svc}" --project="${PROJECT_ID}" --region="${REGION}" --member="${CALLER_MEMBER}" --role="roles/run.invoker" --quiet >/dev/null 2>&1 || true
   done
 fi
 

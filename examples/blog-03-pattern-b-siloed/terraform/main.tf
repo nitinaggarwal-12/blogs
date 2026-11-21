@@ -9,6 +9,10 @@ terraform {
       source  = "hashicorp/random"
       version = ">= 3.6.0"
     }
+    time = {
+      source  = "hashicorp/time"
+      version = ">= 0.11.0"
+    }
   }
 }
 
@@ -112,6 +116,15 @@ resource "google_kms_crypto_key_iam_member" "silo_sa_kms_viewer" {
   member        = "serviceAccount:${google_service_account.silo_sa.email}"
 }
 
+resource "time_sleep" "wait_for_cmek_iam" {
+  create_duration = "25s"
+  depends_on = [
+    google_kms_crypto_key_iam_member.bq_cmek_user,
+    google_kms_crypto_key_iam_member.gcs_cmek_user,
+    google_kms_crypto_key_iam_member.silo_sa_kms_viewer,
+  ]
+}
+
 # 4. CMEK-Encrypted BigQuery Sovereign Vault Dataset & Table
 resource "google_bigquery_dataset" "sovereign_vault" {
   dataset_id                 = "cymbal_silo_vault_${local.suffix}"
@@ -123,7 +136,7 @@ resource "google_bigquery_dataset" "sovereign_vault" {
     kms_key_name = google_kms_crypto_key.tenant_cmek.id
   }
 
-  depends_on = [google_kms_crypto_key_iam_member.bq_cmek_user]
+  depends_on = [time_sleep.wait_for_cmek_iam]
 }
 
 resource "google_bigquery_dataset_iam_member" "silo_sa_bq_viewer" {
@@ -161,7 +174,7 @@ resource "google_storage_bucket" "sovereign_gcs" {
     default_kms_key_name = google_kms_crypto_key.tenant_cmek.id
   }
 
-  depends_on = [google_kms_crypto_key_iam_member.gcs_cmek_user]
+  depends_on = [time_sleep.wait_for_cmek_iam]
 }
 
 resource "google_storage_bucket_iam_member" "silo_sa_gcs_viewer" {
@@ -207,6 +220,10 @@ resource "google_cloud_run_v2_service" "silo_service" {
       env {
         name  = "GCP_PROJECT_ID"
         value = var.project_id
+      }
+      env {
+        name  = "GCP_REGION"
+        value = var.region
       }
       env {
         name  = "BQ_DATASET"

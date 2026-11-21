@@ -29,7 +29,7 @@ gcloud services enable \
   --project="${PROJECT_ID}" --quiet
 
 # Ensure BigQuery encryption service account exists before Terraform binds KMS IAM
-bq show --encryption_service_account --project_id="${PROJECT_ID}" >/dev/null 2>&1 || true
+bq show --encryption_service_account --project_id="${PROJECT_ID}" </dev/null >/dev/null 2>&1 || true
 
 echo "==> [2/5] Ensuring Artifact Registry repository '${AR_REPO}' exists..."
 if ! gcloud artifacts repositories describe "${AR_REPO}" --location="${REGION}" --project="${PROJECT_ID}" >/dev/null 2>&1; then
@@ -64,7 +64,7 @@ bq query --project_id="${PROJECT_ID}" --location="${REGION}" --use_legacy_sql=fa
   "TRUNCATE TABLE \`${PROJECT_ID}.${BQ_DATASET}.${BQ_TABLE}\`;
    INSERT INTO \`${PROJECT_ID}.${BQ_DATASET}.${BQ_TABLE}\` (record_id, tenant_id, regulatory_scope, payload_summary) VALUES
      ('VAULT-FV-9001', 'finvault', 'OCC_TIER1_LEDGER', 'Sovereign Tier-1 Liquidity Attestation'),
-     ('VAULT-FV-9002', 'finvault', 'FEDWIRE_AUDIT', 'CMEK-Protected Fedwire Settlement Snapshot');"
+     ('VAULT-FV-9002', 'finvault', 'FEDWIRE_AUDIT', 'CMEK-Protected Fedwire Settlement Snapshot');" </dev/null
 
 printf 'Sovereign CMEK-encrypted artifact for Pattern B kill-switch verification.\n' \
   | gcloud storage cp - "gs://${GCS_BUCKET}/vault_attestation.txt" --project="${PROJECT_ID}" --quiet

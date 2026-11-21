@@ -12,6 +12,12 @@ echo "==> Hub Router URL     : ${HUB_URL}"
 echo "==> PSC Attachment     : ${PSC_ATTACHMENT}"
 echo "==> Hub PSC Endpoint IP: ${PSC_IP}"
 
+for _attempt in $(seq 1 12); do
+  HC="$(curl -sS -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${ID_TOKEN}" "${HUB_URL}/healthz" || echo 000)"
+  [[ "${HC}" == "200" ]] && break
+  sleep 3
+done
+
 echo ""
 echo "==> [TEST 1 — BEFORE] Standard tenant 'retailstream' hits single Hub URL -> routed to shared_pool:"
 BEFORE_JSON="$(curl -sS -X POST "${HUB_URL}/v1/hybrid/turn" \
