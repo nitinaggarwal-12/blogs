@@ -44,19 +44,36 @@ IMAGE_URI="${REGION}-docker.pkg.dev/${PROJECT_ID}/${AR_REPO}/blog-01-5hop-gw:${I
 
 echo "==> [3/4] Building container image: ${IMAGE_URI}"
 if ! gcloud builds submit "${SCRIPT_DIR}/app" --tag="${IMAGE_URI}" --project="${PROJECT_ID}" --quiet; then
-  echo "    Retrying Cloud Build once after API propagation (10s)..."
-  sleep 10
-  if ! gcloud builds submit "${SCRIPT_DIR}/app" --tag="${IMAGE_URI}" --project="${PROJECT_ID}" --quiet; then
-    if command -v docker >/dev/null 2>&1; then
-      echo "    Cloud Build unavailable; building and pushing directly to Artifact Registry via Docker..."
-      gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
-      docker build --platform linux/amd64 -t "${IMAGE_URI}" "${SCRIPT_DIR}/app"
-      docker push "${IMAGE_URI}"
-    else
-      echo "ERROR: Cloud Build failed and local docker is unavailable." >&2
-      exit 1
-    fi
+  if command -v docker >/dev/null 2>&1; then
+    echo "    Cloud Build unavailable; building and pushing directly to Artifact Registry via Docker..."
+    gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
+    docker build --platform linux/amd64 -t "${IMAGE_URI}" "${SCRIPT_DIR}/app"
+    docker push "${IMAGE_URI}"
+  else
+    echo "    Retrying Cloud Build once after API propagation (10s)..."
+    sleep 10
+    gcloud builds submit "${SCRIPT_DIR}/app" --tag="${IMAGE_URI}" --project="${PROJECT_ID}" --quiet
   fi
+fi
+
+export PATH="${HOME}/.local/bin:${PATH}"
+if ! terraform version 2>/dev/null | grep -q '^Terraform v'; then
+  echo "==> Installing official Terraform 1.9.8 into ${HOME}/.local/bin (Cloud Shell ships a stub)..."
+  mkdir -p "${HOME}/.local/bin"
+  ARCH="$(uname -m)"
+  if [[ "${ARCH}" == "aarch64" || "${ARCH}" == "arm64" ]]; then
+    TF_ARCH="arm64"
+    TF_SHA="f85868798834558239f6148834884008f2722548f84034c9b0f62934b2d73ebb"
+  else
+    TF_ARCH="amd64"
+    TF_SHA="186e0145f5e5f2eb97cbd785bc78f21bae4ef15119349f6ad4fa535b83b10df8"
+  fi
+  TF_ZIP="/tmp/terraform_1.9.8_linux_${TF_ARCH}.zip"
+  curl -fsSL "https://releases.hashicorp.com/terraform/1.9.8/terraform_1.9.8_linux_${TF_ARCH}.zip" -o "${TF_ZIP}"
+  echo "${TF_SHA}  ${TF_ZIP}" | sha256sum -c -
+  unzip -qo "${TF_ZIP}" -d "${HOME}/.local/bin"
+  rm -f "${TF_ZIP}"
+  chmod +x "${HOME}/.local/bin/terraform"
 fi
 
 export GOOGLE_OAUTH_ACCESS_TOKEN="${GOOGLE_OAUTH_ACCESS_TOKEN:-$(gcloud auth print-access-token)}"
@@ -75,7 +92,7 @@ if [[ -n "${ACTIVE_ACCOUNT}" && "${ACTIVE_ACCOUNT}" != "(unset)" ]]; then
   else
     CALLER_MEMBER="user:${ACTIVE_ACCOUNT}"
   fi
-  for svc in $(gcloud run services list --project="${PROJECT_ID}" --region="${REGION}" --filter="metadata.name~^cymbal-ws1-" --format="value(metadata.name)"); do
+  for svc in $(gcloud run services list --project="${PROJECT_ID}" --region="${REGION}" --format="value(metadata.name)" 2>/dev/null | grep -E '^cymbal-ws1-' || true); do
     gcloud run services add-iam-policy-binding "${svc}"       --project="${PROJECT_ID}" --region="${REGION}"       --member="${CALLER_MEMBER}" --role="roles/run.invoker" --quiet >/dev/null 2>&1 || true
   done
 fi

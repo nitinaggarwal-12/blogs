@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Live BEFORE -> AFTER verification for Blog 2 (WS2 — Pattern A Pooled RLS + RPM Bulkhead)
 set -euo pipefail
+export PATH="${HOME}/.local/bin:${PATH}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ID="${PROJECT_ID:-$(gcloud config get-value project 2>/dev/null || true)}"

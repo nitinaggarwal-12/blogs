@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Live BEFORE -> ATOMIC CUTOVER -> AFTER verification for Blog 4 (WS4 — Pattern C Dynamic Hybrid)
 set -euo pipefail
+export PATH="${HOME}/.local/bin:${PATH}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HUB_URL="$(terraform -chdir="${SCRIPT_DIR}/terraform" output -raw hub_router_url)"

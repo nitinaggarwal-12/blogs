@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Clean teardown for Blog 4 (WS4 — Pattern C Dynamic Hybrid)
 set -euo pipefail
+export PATH="${HOME}/.local/bin:${PATH}"
+export GOOGLE_OAUTH_ACCESS_TOKEN="${GOOGLE_OAUTH_ACCESS_TOKEN:-$(gcloud auth print-access-token 2>/dev/null || true)}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ID="${PROJECT_ID:-$(gcloud config get-value project 2>/dev/null || true)}"
