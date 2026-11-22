@@ -1,0 +1,37 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.027
+AI Digital Twin · Google Cloud: Welcome to Blog five, our executive decision guide and multi-tenant Agentic Triad uniting A2A federation, MCP gateways, and FinOps governance.
+
+2
+00:00:10.027 --> 00:00:20.054
+AI Digital Twin · Google Cloud: Two simple questions select the right pattern: check physical encryption mandates first, then match your commercial versus enterprise tenant mix.
+
+3
+00:00:20.054 --> 00:00:30.081
+AI Digital Twin · Google Cloud: Commercial tenants run efficiently in Pattern A pools, enterprise accounts adopt Pattern C hybrid spokes, and regulated tenants deploy sovereign silos.
+
+4
+00:00:30.081 --> 00:00:40.108
+AI Digital Twin · Google Cloud: Workload Identity Federation normalizes OIDC, Google, and Entra ID logins into short-lived tokens carrying a verified tenant identity.
+
+5
+00:00:40.108 --> 00:00:50.135
+AI Digital Twin · Google Cloud: In the Agentic Triad, shared orchestrators delegate safely to private specialist agents over A2A while MCP enforces tool authorization and cost logging.
+
+6
+00:00:50.135 --> 00:01:00.162
+AI Digital Twin · Google Cloud: Hop four combines eighty-nine percent context cache savings with deterministic safety blocks and rapid CMEK revocation to protect both budgets and data.
+
+7
+00:01:00.162 --> 00:01:10.189
+AI Digital Twin · Google Cloud: Live commercial BI captures contrast an unconstrained global liveboard against a domain-scoped saved answer enforcing strict multi-tenant data boundaries.
+
+8
+00:01:10.189 --> 00:01:20.216
+AI Digital Twin · Google Cloud: Live Google Cloud Console captures show how our authenticated Cloud Run A2A and MCP federation hub eliminates fragile point-to-point connector sprawl.
+
+9
+00:01:20.216 --> 00:01:30.243
+AI Digital Twin · Google Cloud: Together, all five blogs deliver one unified, verified multi-tenant agentic AI blueprint ready for production deployment on Google Cloud.

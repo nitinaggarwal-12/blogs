@@ -1,0 +1,166 @@
+{
+  "schemaVersion": "1.0.0",
+  "blogSlug": "ws3",
+  "wsKey": "WS3",
+  "videoType": "slide_deck_delivery",
+  "chromeVersion": "v2-clean-exec",
+  "title": "Blog 3 (WS3) — Pattern B Sovereign Silos for Regulated Workloads — Digital Twin Slide Presentation",
+  "subtitle": "7-Slide Architecture, VPC-SC, CMEK Crypto-Shredding & Live Kill-Switch Proof",
+  "audience": "external",
+  "externalReady": true,
+  "ready": true,
+  "qaPass": true,
+  "presenterName": "AI Digital Twin · Google Cloud",
+  "previewBadge": "AI-GENERATED DIGITAL TWIN",
+  "personaId": "cloud-ai-digital-twin",
+  "twinEngine": "models/omni_1p2",
+  "compositeLabel": "Narrated Slide Deck Presentation · Pure Omni 1.2 AI Digital Twin (ge-demos Side-by-Side Format)",
+  "captureMethod": "Verified 1920x1080 Google Cloud Architecture Slides (7 slides) + Pure Omni 1.2 AI Digital Twin (Narrated Slide Deck Delivery — not a live screen capture)",
+  "videoUrl": "/recordings/ws3/slide_deck_delivery_recording.mp4",
+  "posterUrl": "/recordings/ws3/slide_deck_delivery_poster.jpg",
+  "captionsUrl": "/recordings/ws3/slide_captions.vtt",
+  "googleSlidesUrl": "https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/edit",
+  "pptxUrl": "/slides/ws3-12slide-visual-deck.pptx",
+  "downloadFilename": "ws3_slide_deck_delivery.mp4",
+  "width": 1920,
+  "height": 1080,
+  "fps": 24,
+  "audioSampleRateHz": 48000,
+  "videoCodec": "h264",
+  "audioCodec": "aac",
+  "fileSizeBytes": 3469009,
+  "durationSec": 70.21,
+  "videoSha256": "258767a65a088983ef3d166bfc0495688394950336396ed35e12c50a45dca931",
+  "containerChapterCount": 7,
+  "mp4ArtistTag": "AI Digital Twin · Google Cloud",
+  "mp4CommentTag": "Narrated Slide Deck Delivery composited with AI-Generated Pure Omni 1.2 Digital Twin (ge-demos v2-clean-exec side-by-side layout  not a live screen capture)",
+  "generatedAt": "2026-11-22T19:40:30.115Z",
+  "chapters": [
+    {
+      "chapterNum": 1,
+      "shortTitle": "Pattern B Cover",
+      "title": "Pattern B: Sovereign Silos for Regulated Workloads",
+      "surface": "Slide 1 of 7 · Executive Cover",
+      "phaseBadge": "SLIDE 1/7",
+      "displayUrl": "WS3 Architecture Deck · Slide 1 of 7",
+      "thumbnailUrl": "/slides/previews/ws3-12slide-visual-deck/slide_01.png",
+      "script": "Welcome to Blog three, designing Pattern B sovereign silos for regulated banking, healthcare, and public sector workloads on Google Cloud.",
+      "metrics": [
+        "Dedicated Physical GCP Project",
+        "VPC Service Controls Perimeter",
+        "Customer-Managed Cloud KMS CMEK"
+      ],
+      "startSec": 0,
+      "endSec": 10.027,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 2,
+      "shortTitle": "Compliance Matrix",
+      "title": "Regulatory Compliance Matrix: Banking, Healthcare & EU DORA",
+      "surface": "Slide 2 of 7 · Compliance",
+      "phaseBadge": "SLIDE 2/7",
+      "displayUrl": "WS3 Architecture Deck · Slide 2 of 7",
+      "thumbnailUrl": "/slides/previews/ws3-12slide-visual-deck/slide_02.png",
+      "script": "Strict mandates like HIPAA, EU DORA, and banking rules demand physical project separation, regional residency, and customer-controlled encryption keys.",
+      "metrics": [
+        "OCC Banking & FedRAMP Boundaries",
+        "HIPAA & EU DORA Data Residency",
+        "Dedicated KMS Key Sovereignty"
+      ],
+      "startSec": 10.027,
+      "endSec": 20.054,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 3,
+      "shortTitle": "Sovereign Architecture",
+      "title": "Pattern B Dedicated Project, Identity & Silo Perimeter Blueprint",
+      "surface": "Slide 3 of 7 · Silo Topology",
+      "phaseBadge": "SLIDE 3/7",
+      "displayUrl": "WS3 Architecture Deck · Slide 3 of 7",
+      "thumbnailUrl": "/slides/previews/ws3-12slide-visual-deck/slide_03.png",
+      "script": "Every sovereign tenant receives a dedicated project, Principal Access Boundary, isolated tool catalog, and customer-managed Cloud KMS encryption perimeter.",
+      "metrics": [
+        "Dedicated Tenant IdP & PAB",
+        "Isolated Agent Registry Catalog",
+        "Dedicated CMEK Vault & Silo VPC"
+      ],
+      "startSec": 20.054,
+      "endSec": 30.081,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 4,
+      "shortTitle": "CMEK Revocation Flow",
+      "title": "Sovereign Silo CMEK Revocation & Air-Gapped Runtime Sequence",
+      "surface": "Slide 4 of 7 · Revocation Sequence",
+      "phaseBadge": "SLIDE 4/7",
+      "displayUrl": "WS3 Architecture Deck · Slide 4 of 7",
+      "thumbnailUrl": "/slides/previews/ws3-12slide-visual-deck/slide_04.png",
+      "script": "When a tenant security team disables their Cloud KMS key version, every storage read and agent query fails closed immediately.",
+      "metrics": [
+        "Tenant CISO Disables KMS Key Version",
+        "VPC-SC Blocks Unauthorized Egress",
+        "Immediate Fail-Closed Vault Lockout"
+      ],
+      "startSec": 30.081,
+      "endSec": 40.108,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 5,
+      "shortTitle": "Sub-60s Kill-Switch",
+      "title": "Hop 4 Cloud KMS CMEK Crypto-Shredding & Sub-60s Kill-Switch Engine",
+      "surface": "Slide 5 of 7 · Crypto-Shredding",
+      "phaseBadge": "SLIDE 5/7",
+      "displayUrl": "WS3 Architecture Deck · Slide 5 of 7",
+      "thumbnailUrl": "/slides/previews/ws3-12slide-visual-deck/slide_05.png",
+      "script": "Our kill-switch engine propagates cryptographic revocation in forty-one seconds, locking tenant vaults instantly without affecting other tenants.",
+      "metrics": [
+        "41.2s Verified End-to-End Revocation",
+        "Zero Plaintext Retained on Disk",
+        "Asymmetric KMS Signing Integrity"
+      ],
+      "startSec": 40.108,
+      "endSec": 50.135,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 6,
+      "shortTitle": "Live CMEK Console Proof",
+      "title": "Live CMEK Kill-Switch: Enabled Access vs. Revoked Fail-Closed",
+      "surface": "Slide 6 of 7 · Live Console Proof",
+      "phaseBadge": "SLIDE 6/7",
+      "displayUrl": "WS3 Architecture Deck · Slide 6 of 7",
+      "thumbnailUrl": "/slides/previews/ws3-12slide-visual-deck/slide_06.png",
+      "script": "These live BigQuery and Cloud KMS captures confirm enabled keys decrypt FinVault records cleanly while disabled keys fail closed instantly.",
+      "metrics": [
+        "BEFORE: finvault-silo-cmek Decrypts Rows",
+        "AFTER: medcore-revoked-cmek DISABLED",
+        "Live Project: cymbal-ge-silo-2026"
+      ],
+      "startSec": 50.135,
+      "endSec": 60.162,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 7,
+      "shortTitle": "Sovereign Scorecard",
+      "title": "Pattern B Multi-Cloud Sovereign Scorecard & CISO FAQ Guide",
+      "surface": "Slide 7 of 7 · CISO Scorecard",
+      "phaseBadge": "SLIDE 7/7",
+      "displayUrl": "WS3 Architecture Deck · Slide 7 of 7",
+      "thumbnailUrl": "/slides/previews/ws3-12slide-visual-deck/slide_07.png",
+      "script": "Pattern B delivers full physical blast-radius isolation for top-tier regulated tenants while reusing eighty percent of our unified ADK application code.",
+      "metrics": [
+        "100% Physical Blast-Radius Isolation",
+        "Same 80% Shared ADK Core Code",
+        "Audit-Ready CISO Evidence Package"
+      ],
+      "startSec": 60.162,
+      "endSec": 70.189,
+      "durationSec": 10.027
+    }
+  ]
+}

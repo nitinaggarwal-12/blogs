@@ -1,0 +1,29 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.027
+AI Digital Twin · Google Cloud: Welcome to Blog three, designing Pattern B sovereign silos for regulated banking, healthcare, and public sector workloads on Google Cloud.
+
+2
+00:00:10.027 --> 00:00:20.054
+AI Digital Twin · Google Cloud: Strict mandates like HIPAA, EU DORA, and banking rules demand physical project separation, regional residency, and customer-controlled encryption keys.
+
+3
+00:00:20.054 --> 00:00:30.081
+AI Digital Twin · Google Cloud: Every sovereign tenant receives a dedicated project, Principal Access Boundary, isolated tool catalog, and customer-managed Cloud KMS encryption perimeter.
+
+4
+00:00:30.081 --> 00:00:40.108
+AI Digital Twin · Google Cloud: When a tenant security team disables their Cloud KMS key version, every storage read and agent query fails closed immediately.
+
+5
+00:00:40.108 --> 00:00:50.135
+AI Digital Twin · Google Cloud: Our kill-switch engine propagates cryptographic revocation in forty-one seconds, locking tenant vaults instantly without affecting other tenants.
+
+6
+00:00:50.135 --> 00:01:00.162
+AI Digital Twin · Google Cloud: These live BigQuery and Cloud KMS captures confirm enabled keys decrypt FinVault records cleanly while disabled keys fail closed instantly.
+
+7
+00:01:00.162 --> 00:01:10.189
+AI Digital Twin · Google Cloud: Pattern B delivers full physical blast-radius isolation for top-tier regulated tenants while reusing eighty percent of our unified ADK application code.

@@ -1,0 +1,202 @@
+{
+  "schemaVersion": "1.0.0",
+  "blogSlug": "ws1",
+  "wsKey": "WS1",
+  "videoType": "slide_deck_delivery",
+  "chromeVersion": "v2-clean-exec",
+  "title": "Blog 1 (WS1) — Reference Architecture Taxonomy & 5-Hop Governance — Digital Twin Slide Presentation",
+  "subtitle": "9-Slide Executive Architecture & Live Google Cloud Console Proof Walkthrough",
+  "audience": "external",
+  "externalReady": true,
+  "ready": true,
+  "qaPass": true,
+  "presenterName": "AI Digital Twin · Google Cloud",
+  "previewBadge": "AI-GENERATED DIGITAL TWIN",
+  "personaId": "cloud-ai-digital-twin",
+  "twinEngine": "models/omni_1p2",
+  "compositeLabel": "Narrated Slide Deck Presentation · Pure Omni 1.2 AI Digital Twin (ge-demos Side-by-Side Format)",
+  "captureMethod": "Verified 1920x1080 Google Cloud Architecture Slides (9 slides) + Pure Omni 1.2 AI Digital Twin (Narrated Slide Deck Delivery — not a live screen capture)",
+  "videoUrl": "/recordings/ws1/slide_deck_delivery_recording.mp4",
+  "posterUrl": "/recordings/ws1/slide_deck_delivery_poster.jpg",
+  "captionsUrl": "/recordings/ws1/slide_captions.vtt",
+  "googleSlidesUrl": "https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit",
+  "pptxUrl": "/slides/ws1-12slide-visual-deck.pptx",
+  "downloadFilename": "ws1_slide_deck_delivery.mp4",
+  "width": 1920,
+  "height": 1080,
+  "fps": 24,
+  "audioSampleRateHz": 48000,
+  "videoCodec": "h264",
+  "audioCodec": "aac",
+  "fileSizeBytes": 4438794,
+  "durationSec": 90.26,
+  "videoSha256": "967e68cf00a93bd53d7c5c8cf6134cd5b3a73e0b76512eef9ffbb25d3158a4f7",
+  "containerChapterCount": 9,
+  "mp4ArtistTag": "AI Digital Twin · Google Cloud",
+  "mp4CommentTag": "Narrated Slide Deck Delivery composited with AI-Generated Pure Omni 1.2 Digital Twin (ge-demos v2-clean-exec side-by-side layout  not a live screen capture)",
+  "generatedAt": "2026-11-22T19:38:08.587Z",
+  "chapters": [
+    {
+      "chapterNum": 1,
+      "shortTitle": "Executive Cover",
+      "title": "Reference Architecture Taxonomy & 5-Hop Governance Baseline",
+      "surface": "Slide 1 of 9 · Executive Cover",
+      "phaseBadge": "SLIDE 1/9",
+      "displayUrl": "WS1 Architecture Deck · Slide 1 of 9",
+      "thumbnailUrl": "/slides/previews/ws1-12slide-visual-deck/slide_01.png",
+      "script": "Welcome to Blog one, our multi-tenant agentic AI reference architecture and five-hop cryptographic governance baseline on Google Cloud.",
+      "metrics": [
+        "89.1% Shared Context Cache Savings",
+        "5-Hop Cryptographic Token Chain",
+        "Sub-60s CMEK Kill-Switch"
+      ],
+      "startSec": 0,
+      "endSec": 10.027,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 2,
+      "shortTitle": "SaaS AI Dilemma",
+      "title": "The SaaS AI Architect's Dilemma: False Dichotomy of Multi-Tenancy",
+      "surface": "Slide 2 of 9 · The Problem",
+      "phaseBadge": "SLIDE 2/9",
+      "displayUrl": "WS1 Architecture Deck · Slide 2 of 9",
+      "thumbnailUrl": "/slides/previews/ws1-12slide-visual-deck/slide_02.png",
+      "script": "SaaS teams face a tough choice between fragile shared agents and expensive dedicated projects, which our three-pattern taxonomy solves.",
+      "metrics": [
+        "Naive Shared Pools Leak Tool Schemas",
+        "Dedicated Projects Erode SaaS Margins",
+        "80/20 Shared ADK Code Reuse"
+      ],
+      "startSec": 10.027,
+      "endSec": 20.054,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 3,
+      "shortTitle": "5 Attack Vectors",
+      "title": "The 5 Multi-Tenant Attack Vectors: Adversarial Flow Map",
+      "surface": "Slide 3 of 9 · Threat Surface",
+      "phaseBadge": "SLIDE 3/9",
+      "displayUrl": "WS1 Architecture Deck · Slide 3 of 9",
+      "thumbnailUrl": "/slides/previews/ws1-12slide-visual-deck/slide_03.png",
+      "script": "Adversaries exploit five cross-tenant vectors, from spoofed tenant headers and stolen tokens to noisy-neighbor exhaustion and prompt injection.",
+      "metrics": [
+        "Header Spoofing & Token Replay",
+        "MCP Tool Schema Cross-Bleed",
+        "Noisy-Neighbor Quota Starvation"
+      ],
+      "startSec": 20.054,
+      "endSec": 30.081,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 4,
+      "shortTitle": "5-Hop Architecture",
+      "title": "Control Plane, Compute & Data Plane Five-Hop Blueprint",
+      "surface": "Slide 4 of 9 · Logical Topology",
+      "phaseBadge": "SLIDE 4/9",
+      "displayUrl": "WS1 Architecture Deck · Slide 4 of 9",
+      "thumbnailUrl": "/slides/previews/ws1-12slide-visual-deck/slide_04.png",
+      "script": "Our five-hop pipeline separates control, compute, and data planes using signed tokens, scoped registries, rate bulkheads, and row-level security.",
+      "metrics": [
+        "Hop 1–2: STS OBO + DPoP & ARD",
+        "Hop 3–4: Valkey Bulkhead & Model Armor",
+        "Hop 5: Parameterized SQL & Force RLS"
+      ],
+      "startSec": 30.081,
+      "endSec": 40.108,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 5,
+      "shortTitle": "5-Hop Sequence",
+      "title": "Five-Hop Cryptographic Request & Token Exchange Flow",
+      "surface": "Slide 5 of 9 · Packet Sequence",
+      "phaseBadge": "SLIDE 5/9",
+      "displayUrl": "WS1 Architecture Deck · Slide 5 of 9",
+      "thumbnailUrl": "/slides/previews/ws1-12slide-visual-deck/slide_05.png",
+      "script": "Every request clears edge header stripping, short-lived ECDSA signing, registry filtering, Model Armor screening, and kernel-enforced database isolation.",
+      "metrics": [
+        "Hop 1: Strip Header + Mint ECDSA P-256",
+        "Hop 4: Model Armor <8ms + 32k Cache",
+        "Hop 5: SET LOCAL tenant_id + OTel"
+      ],
+      "startSec": 40.108,
+      "endSec": 50.135,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 6,
+      "shortTitle": "Circuit Breakers",
+      "title": "L3 Process Architecture: Fail-Closed Security Circuit Breakers",
+      "surface": "Slide 6 of 9 · Fail-Closed Controls",
+      "phaseBadge": "SLIDE 6/9",
+      "displayUrl": "WS1 Architecture Deck · Slide 6 of 9",
+      "thumbnailUrl": "/slides/previews/ws1-12slide-visual-deck/slide_06.png",
+      "script": "At runtime, deterministic circuit breakers fail closed on every policy mismatch, returning strict status codes while emitting zero-PII audit logs.",
+      "metrics": [
+        "Deterministic HTTP 403 Header Reject",
+        "HTTP 429 Per-Tenant Bulkhead",
+        "Zero-PII SHA-256 Telemetry Sinks"
+      ],
+      "startSec": 50.135,
+      "endSec": 60.162,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 7,
+      "shortTitle": "Live Model Armor Proof",
+      "title": "Live Model Armor Console Proof: Unprotected Baseline vs. Firewall",
+      "surface": "Slide 7 of 9 · Hop 4 Live Proof",
+      "phaseBadge": "SLIDE 7/9",
+      "displayUrl": "WS1 Architecture Deck · Slide 7 of 9",
+      "thumbnailUrl": "/slides/previews/ws1-12slide-visual-deck/slide_07.png",
+      "script": "These live Google Cloud Console captures prove Model Armor switches the exact same prompt injection from open pass to blocked violation.",
+      "metrics": [
+        "BEFORE: Unprotected Baseline Allows SSN",
+        "AFTER: Zero-Trust Firewall Blocks Payload",
+        "Live Project: cymbal-ge-hub-2026"
+      ],
+      "startSec": 60.162,
+      "endSec": 70.189,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 8,
+      "shortTitle": "Live Cloud Armor Proof",
+      "title": "Live Cloud Armor WAF: Open Edge vs. Priority 1000 Deny-403",
+      "surface": "Slide 8 of 9 · Hop 1 Live Proof",
+      "phaseBadge": "SLIDE 8/9",
+      "displayUrl": "WS1 Architecture Deck · Slide 8 of 9",
+      "thumbnailUrl": "/slides/previews/ws1-12slide-visual-deck/slide_08.png",
+      "script": "At Hop one, Cloud Armor replaces an open edge rule with deterministic deny rules that reject spoofed tenant headers immediately.",
+      "metrics": [
+        "BEFORE: Default Open Edge Policy",
+        "AFTER: Priority 1000/1100 Deny-403",
+        "Blocks Forged X-Tenant-ID Headers"
+      ],
+      "startSec": 70.189,
+      "endSec": 80.216,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 9,
+      "shortTitle": "Verification Scorecard",
+      "title": "Quantified Multi-Cloud Isolation Scorecard & Verification Matrix",
+      "surface": "Slide 9 of 9 · Scorecard",
+      "phaseBadge": "SLIDE 9/9",
+      "displayUrl": "WS1 Architecture Deck · Slide 9 of 9",
+      "thumbnailUrl": "/slides/previews/ws1-12slide-visual-deck/slide_09.png",
+      "script": "Our verified scorecard confirms forty-two millisecond overhead, eighty-nine percent cache savings, and ten-for-ten isolation across every control plane hop.",
+      "metrics": [
+        "~42ms p95 Five-Hop Overhead",
+        "89.1% Context Cache Input Savings",
+        "10/10 Automated Isolation Proofs"
+      ],
+      "startSec": 80.216,
+      "endSec": 90.243,
+      "durationSec": 10.027
+    }
+  ]
+}

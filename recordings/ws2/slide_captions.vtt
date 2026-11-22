@@ -1,0 +1,33 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.027
+AI Digital Twin · Google Cloud: Welcome to Blog two, building Pattern A high-density pooled multi-tenancy inside a single shared Google Cloud project with strict isolation.
+
+2
+00:00:10.027 --> 00:00:20.054
+AI Digital Twin · Google Cloud: Shared pools face ten breach vectors, including warm container memory residue, cache key collisions, noisy neighbors, and unscoped database queries.
+
+3
+00:00:20.054 --> 00:00:30.081
+AI Digital Twin · Google Cloud: Pattern A layers default-deny identity, dynamic registry tool pruning, and database row-level security so competing tenants safely share compute.
+
+4
+00:00:30.081 --> 00:00:40.108
+AI Digital Twin · Google Cloud: In stateless mode, Cloud Run Gen two pairs copy-on-write pre-forking with single-request concurrency so worker memory never leaks across tenants.
+
+5
+00:00:40.108 --> 00:00:50.135
+AI Digital Twin · Google Cloud: For long-running stateful sessions, each GKE warm pod latches cryptographically to one tenant and gets recycled automatically after session teardown.
+
+6
+00:00:50.135 --> 00:01:00.162
+AI Digital Twin · Google Cloud: At Hop five, database engines enforce row-level security natively inside the storage kernel while OpenTelemetry streams exact tenant cost attribution.
+
+7
+00:01:00.162 --> 00:01:10.189
+AI Digital Twin · Google Cloud: These live BigQuery Studio captures contrast seven mixed baseline rows against our active row access policy filtering strictly for FinVault.
+
+8
+00:01:10.189 --> 00:01:20.216
+AI Digital Twin · Google Cloud: Across multi-cloud benchmarks, Google Cloud Pattern A delivers the highest tenant density and strongest SaaS margins with strict isolation.

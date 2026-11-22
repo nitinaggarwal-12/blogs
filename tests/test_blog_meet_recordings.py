@@ -44,7 +44,7 @@ BANNED_RECORDING_TOKENS = (
 )
 
 MAX_SINGLE_MP4_BYTES = 18 * 1024 * 1024
-MAX_TOTAL_RECORDINGS_BYTES = 65 * 1024 * 1024
+MAX_TOTAL_RECORDINGS_BYTES = 95 * 1024 * 1024
 
 
 class TestBlogMeetRecordingsContract(unittest.TestCase):
@@ -204,7 +204,52 @@ class TestBlogMeetRecordingsContract(unittest.TestCase):
         ffprobe_bin = shutil.which("ffprobe")
         for slug_dir in sorted(p for p in rec_root.iterdir() if p.is_dir() and not p.name.startswith("_")):
             manifest_path = slug_dir / "meet_recording_manifest.json"
+            slide_manifest_path = slug_dir / "slide_deck_delivery_manifest.json"
+            if not manifest_path.is_file() and not slide_manifest_path.is_file():
+                continue
+
+            if slide_manifest_path.is_file():
+                raw_sm = slide_manifest_path.read_text(encoding="utf-8")
+                for tok in BANNED_RECORDING_TOKENS:
+                    self.assertNotIn(tok, raw_sm.lower(), f"Banned token '{tok}' in {slide_manifest_path}")
+                sm = json.loads(raw_sm)
+                self.assertEqual(sm.get("videoType"), "slide_deck_delivery")
+                s_mp4 = slug_dir / "slide_deck_delivery_recording.mp4"
+                s_poster = slug_dir / "slide_deck_delivery_poster.jpg"
+                s_vtt = slug_dir / "slide_captions.vtt"
+                for req_f in (s_mp4, s_poster, s_vtt):
+                    self.assertTrue(req_f.is_file(), f"Missing slide presentation artifact: {req_f}")
+                self.assertLessEqual(s_mp4.stat().st_size, MAX_SINGLE_MP4_BYTES)
+                self.assertEqual(hashlib.sha256(s_mp4.read_bytes()).hexdigest(), sm.get("videoSha256"))
+                s_vtt_text = s_vtt.read_text(encoding="utf-8")
+                self.assertTrue(s_vtt_text.startswith("WEBVTT"))
+                for tok in BANNED_RECORDING_TOKENS:
+                    self.assertNotIn(tok, s_vtt_text.lower(), f"Banned token '{tok}' in {s_vtt}")
+                s_chapters = sm.get("chapters", [])
+                self.assertGreaterEqual(len(s_chapters), 1)
+                for sch in s_chapters:
+                    thumb_rel = str(sch.get("thumbnailUrl") or "").lstrip("/")
+                    self.assertTrue((ROOT_DIR / thumb_rel).is_file(), f"Missing slide thumb {thumb_rel}")
+                if ffprobe_bin:
+                    fp_s = subprocess.run(
+                        [ffprobe_bin, "-v", "error", "-show_format", "-show_chapters", "-of", "json", str(s_mp4)],
+                        capture_output=True,
+                        text=True,
+                        check=True,
+                        timeout=15,
+                    )
+                    probe_s = json.loads(fp_s.stdout)
+                    tags_s = {k.lower(): str(v) for k, v in (probe_s.get("format", {}).get("tags") or {}).items()}
+                    self.assertEqual(tags_s.get("artist"), "AI Digital Twin · Google Cloud")
+                    self.assertIn("Pure Omni 1.2", tags_s.get("comment", ""))
+                    self.assertEqual(len(probe_s.get("chapters", [])), len(s_chapters))
+                    for tok in BANNED_RECORDING_TOKENS:
+                        self.assertNotIn(tok, json.dumps(tags_s).lower(), f"Banned token '{tok}' in MP4 tags of {s_mp4}")
+
             if not manifest_path.is_file():
+                for f in slug_dir.rglob("*"):
+                    if f.is_file():
+                        total_bytes += f.stat().st_size
                 continue
 
             raw_manifest = manifest_path.read_text(encoding="utf-8")

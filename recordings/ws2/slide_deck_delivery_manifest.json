@@ -1,0 +1,184 @@
+{
+  "schemaVersion": "1.0.0",
+  "blogSlug": "ws2",
+  "wsKey": "WS2",
+  "videoType": "slide_deck_delivery",
+  "chromeVersion": "v2-clean-exec",
+  "title": "Blog 2 (WS2) — Pattern A High-Density Pooled Multi-Tenancy — Digital Twin Slide Presentation",
+  "subtitle": "8-Slide Architecture, CoW Isolation, Kernel RLS & Live BigQuery Proof",
+  "audience": "external",
+  "externalReady": true,
+  "ready": true,
+  "qaPass": true,
+  "presenterName": "AI Digital Twin · Google Cloud",
+  "previewBadge": "AI-GENERATED DIGITAL TWIN",
+  "personaId": "cloud-ai-digital-twin",
+  "twinEngine": "models/omni_1p2",
+  "compositeLabel": "Narrated Slide Deck Presentation · Pure Omni 1.2 AI Digital Twin (ge-demos Side-by-Side Format)",
+  "captureMethod": "Verified 1920x1080 Google Cloud Architecture Slides (8 slides) + Pure Omni 1.2 AI Digital Twin (Narrated Slide Deck Delivery — not a live screen capture)",
+  "videoUrl": "/recordings/ws2/slide_deck_delivery_recording.mp4",
+  "posterUrl": "/recordings/ws2/slide_deck_delivery_poster.jpg",
+  "captionsUrl": "/recordings/ws2/slide_captions.vtt",
+  "googleSlidesUrl": "https://docs.google.com/presentation/d/1OjWG78L8T8JGTxsJid6vzU5wcacJNIYxO2qVGlNPMNI/edit",
+  "pptxUrl": "/slides/ws2-12slide-visual-deck.pptx",
+  "downloadFilename": "ws2_slide_deck_delivery.mp4",
+  "width": 1920,
+  "height": 1080,
+  "fps": 24,
+  "audioSampleRateHz": 48000,
+  "videoCodec": "h264",
+  "audioCodec": "aac",
+  "fileSizeBytes": 3978715,
+  "durationSec": 80.23,
+  "videoSha256": "95c79c1d943d9ffdf2f7fa8f3dcc946b099156abec9f45274faee98843923df9",
+  "containerChapterCount": 8,
+  "mp4ArtistTag": "AI Digital Twin · Google Cloud",
+  "mp4CommentTag": "Narrated Slide Deck Delivery composited with AI-Generated Pure Omni 1.2 Digital Twin (ge-demos v2-clean-exec side-by-side layout  not a live screen capture)",
+  "generatedAt": "2026-11-22T19:39:19.649Z",
+  "chapters": [
+    {
+      "chapterNum": 1,
+      "shortTitle": "Pattern A Cover",
+      "title": "Pattern A: High-Density Pooled Multi-Tenant Architecture",
+      "surface": "Slide 1 of 8 · Executive Cover",
+      "phaseBadge": "SLIDE 1/8",
+      "displayUrl": "WS2 Architecture Deck · Slide 1 of 8",
+      "thumbnailUrl": "/slides/previews/ws2-12slide-visual-deck/slide_01.png",
+      "script": "Welcome to Blog two, building Pattern A high-density pooled multi-tenancy inside a single shared Google Cloud project with strict isolation.",
+      "metrics": [
+        "Single Shared GCP Project",
+        "5-Hop Cryptographic Isolation",
+        "90% Prefix Cache Economics"
+      ],
+      "startSec": 0,
+      "endSec": 10.027,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 2,
+      "shortTitle": "10 Breach Vectors",
+      "title": "The 10 Cross-Tenant Breach Vectors in Pooled Agent Runtimes",
+      "surface": "Slide 2 of 8 · Threat Surface",
+      "phaseBadge": "SLIDE 2/8",
+      "displayUrl": "WS2 Architecture Deck · Slide 2 of 8",
+      "thumbnailUrl": "/slides/previews/ws2-12slide-visual-deck/slide_02.png",
+      "script": "Shared pools face ten breach vectors, including warm container memory residue, cache key collisions, noisy neighbors, and unscoped database queries.",
+      "metrics": [
+        "Memory & Prompt Cache Contamination",
+        "Shared Worker Pool Drift",
+        "Unscoped SQL & Vector Retrieval"
+      ],
+      "startSec": 10.027,
+      "endSec": 20.054,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 3,
+      "shortTitle": "Pooled Architecture",
+      "title": "Pattern A Shared Runtime, Registry & Data Plane Blueprint",
+      "surface": "Slide 3 of 8 · Pooled Topology",
+      "phaseBadge": "SLIDE 3/8",
+      "displayUrl": "WS2 Architecture Deck · Slide 3 of 8",
+      "thumbnailUrl": "/slides/previews/ws2-12slide-visual-deck/slide_03.png",
+      "script": "Pattern A layers default-deny identity, dynamic registry tool pruning, and database row-level security so competing tenants safely share compute.",
+      "metrics": [
+        "IAM Default-Deny + OBO/DPoP",
+        "ARD Dynamic MCP Pruning (-94% Tokens)",
+        "Shared BigQuery & AlloyDB Force RLS"
+      ],
+      "startSec": 20.054,
+      "endSec": 30.081,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 4,
+      "shortTitle": "Mode A: 1-Shot gVisor",
+      "title": "Stateless Pool Copy-on-Write Pre-Fork & One-Shot gVisor Isolation",
+      "surface": "Slide 4 of 8 · Stateless Compute",
+      "phaseBadge": "SLIDE 4/8",
+      "displayUrl": "WS2 Architecture Deck · Slide 4 of 8",
+      "thumbnailUrl": "/slides/previews/ws2-12slide-visual-deck/slide_04.png",
+      "script": "In stateless mode, Cloud Run Gen two pairs copy-on-write pre-forking with single-request concurrency so worker memory never leaks across tenants.",
+      "metrics": [
+        "Cloud Run Gen2 gVisor Sandbox",
+        "containerConcurrency = 1",
+        "Zero Cross-Request Memory Residue"
+      ],
+      "startSec": 30.081,
+      "endSec": 40.108,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 5,
+      "shortTitle": "Mode B: WarmPool Latch",
+      "title": "Stateful Session Pod WarmPool & Strict 403 Tenant Latch",
+      "surface": "Slide 5 of 8 · Stateful Compute",
+      "phaseBadge": "SLIDE 5/8",
+      "displayUrl": "WS2 Architecture Deck · Slide 5 of 8",
+      "thumbnailUrl": "/slides/previews/ws2-12slide-visual-deck/slide_05.png",
+      "script": "For long-running stateful sessions, each GKE warm pod latches cryptographically to one tenant and gets recycled automatically after session teardown.",
+      "metrics": [
+        "Valkey Sticky Session Lease",
+        "GKE WarmPool Claimed Pod",
+        "403 Tenant Latch + Automated Reaper"
+      ],
+      "startSec": 40.108,
+      "endSec": 50.135,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 6,
+      "shortTitle": "Hop 5 Kernel RLS",
+      "title": "Hop 5 AlloyDB Transactional RLS & BigQuery OpenTelemetry FinOps",
+      "surface": "Slide 6 of 8 · Data & FinOps",
+      "phaseBadge": "SLIDE 6/8",
+      "displayUrl": "WS2 Architecture Deck · Slide 6 of 8",
+      "thumbnailUrl": "/slides/previews/ws2-12slide-visual-deck/slide_06.png",
+      "script": "At Hop five, database engines enforce row-level security natively inside the storage kernel while OpenTelemetry streams exact tenant cost attribution.",
+      "metrics": [
+        "SET LOCAL app.current_tenant_id",
+        "BigQuery Native Row Access Policy",
+        "Per-Tenant OTel Cost Attribution"
+      ],
+      "startSec": 50.135,
+      "endSec": 60.162,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 7,
+      "shortTitle": "Live BigQuery RLS Proof",
+      "title": "Live BigQuery Studio: Pooled Bleed vs. Pattern A Tenant RLS",
+      "surface": "Slide 7 of 8 · Live Console Proof",
+      "phaseBadge": "SLIDE 7/8",
+      "displayUrl": "WS2 Architecture Deck · Slide 7 of 8",
+      "thumbnailUrl": "/slides/previews/ws2-12slide-visual-deck/slide_07.png",
+      "script": "These live BigQuery Studio captures contrast seven mixed baseline rows against our active row access policy filtering strictly for FinVault.",
+      "metrics": [
+        "BEFORE: 7 Mixed Rows Across 4 Tenants",
+        "AFTER: Native finvault_tenant_rls_policy",
+        "Live Project: cymbal-ge-hub-2026"
+      ],
+      "startSec": 60.162,
+      "endSec": 70.189,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 8,
+      "shortTitle": "Multi-Cloud Benchmarks",
+      "title": "Pattern A Multi-Cloud Scorecard: Google Cloud vs. AWS & Azure",
+      "surface": "Slide 8 of 8 · Benchmarks",
+      "phaseBadge": "SLIDE 8/8",
+      "displayUrl": "WS2 Architecture Deck · Slide 8 of 8",
+      "thumbnailUrl": "/slides/previews/ws2-12slide-visual-deck/slide_08.png",
+      "script": "Across multi-cloud benchmarks, Google Cloud Pattern A delivers the highest tenant density and strongest SaaS margins with strict isolation.",
+      "metrics": [
+        "Sub-Second Cold-Start CoW Density",
+        "Native BigQuery & AlloyDB RLS",
+        "Highest Gross Margin for Commercial SaaS"
+      ],
+      "startSec": 70.189,
+      "endSec": 80.216,
+      "durationSec": 10.027
+    }
+  ]
+}

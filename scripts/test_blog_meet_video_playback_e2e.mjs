@@ -45,7 +45,10 @@ function parseArgs(argv) {
     const recRoot = path.join(REPO_ROOT, "recordings");
     if (fs.existsSync(recRoot)) {
       for (const s of ["ws1", "ws2", "ws3", "ws4", "ws5"]) {
-        if (fs.existsSync(path.join(recRoot, s, "meet_recording_manifest.json"))) {
+        if (
+          fs.existsSync(path.join(recRoot, s, "meet_recording_manifest.json")) ||
+          fs.existsSync(path.join(recRoot, s, "slide_deck_delivery_manifest.json"))
+        ) {
           out.slugs.push(s);
         }
       }
@@ -116,116 +119,137 @@ async function verifySlugOnUrl(browser, baseUrl, slug, urlPath, label) {
     await page.goto(`${baseUrl}${urlPath}`, { waitUntil: "networkidle2", timeout: 30000 });
     await page.waitForSelector("#blog-meet-recording-card", { timeout: 15000 });
 
-    // Trigger metadata load + verify explicit Range 206 + WebVTT 200 directly in browser context
-    const state = await page.evaluate(async expectedSlug => {
-      const card = document.querySelector("#blog-meet-recording-card");
-      const video = card.querySelector("video[data-testid='blog-meet-video-player']");
-      const track = video.querySelector("track[kind='captions']");
-      const fsBtn = card.querySelector("[data-testid='blog-meet-fullscreen-btn']");
-      const dlLink = card.querySelector("[data-testid='blog-meet-download-link']");
-      const disclosure = card.querySelector("[data-testid='blog-meet-composite-disclosure']");
-      const chBtns = Array.from(card.querySelectorAll("[data-testid^='blog-meet-chapter-btn-']"));
+    const verifyCurrentTrack = async () => {
+      return page.evaluate(async () => {
+        const card = document.querySelector("#blog-meet-recording-card");
+        const activeTrack = card.getAttribute("data-active-track") || "live";
+        const video = card.querySelector("video[data-testid='blog-meet-video-player']");
+        const srcEl = video.querySelector("source");
+        const videoSrc = srcEl?.getAttribute("src") || "";
+        const track = video.querySelector("track[kind='captions']");
+        const fsBtn = card.querySelector("[data-testid='blog-meet-fullscreen-btn']");
+        const dlLink = card.querySelector("[data-testid='blog-meet-download-link']");
+        const disclosure = card.querySelector("[data-testid='blog-meet-composite-disclosure']");
+        const chBtns = Array.from(card.querySelectorAll("[data-testid^='blog-meet-chapter-btn-']"));
 
-      if (video.readyState < 1) {
-        await new Promise((resolve, reject) => {
-          const t = setTimeout(() => reject(new Error("video loadedmetadata timeout")), 12000);
-          video.addEventListener("loadedmetadata", () => { clearTimeout(t); resolve(); }, { once: true });
-          video.addEventListener("error", () => { clearTimeout(t); reject(new Error("video error event")); }, { once: true });
-          video.load();
-        });
-      }
+        if (video.readyState < 1) {
+          await new Promise((resolve, reject) => {
+            const t = setTimeout(() => reject(new Error("video loadedmetadata timeout")), 12000);
+            video.addEventListener("loadedmetadata", () => { clearTimeout(t); resolve(); }, { once: true });
+            video.addEventListener("error", () => { clearTimeout(t); reject(new Error("video error event")); }, { once: true });
+            video.load();
+          });
+        }
 
-      // Click last chapter button to trigger seek
-      const targetBtn = chBtns[chBtns.length - 1] || chBtns[0];
-      const expectedSeek = Number(targetBtn?.getAttribute("data-start-sec") || "0");
-      if (targetBtn) targetBtn.click();
-      await new Promise(r => setTimeout(r, 600));
+        const targetBtn = chBtns[chBtns.length - 1] || chBtns[0];
+        const expectedSeek = Number(targetBtn?.getAttribute("data-start-sec") || "0");
+        if (targetBtn) targetBtn.click();
+        await new Promise(r => setTimeout(r, 600));
 
-      // Verify VTT fetch + explicit Range 206 fetch from browser origin
-      const vttResp = await fetch(track.getAttribute("src"));
-      const vttText = await vttResp.text();
-      const rangeResp = await fetch(`/recordings/${expectedSlug}/meet_live_execution_recording.mp4`, {
-        headers: { Range: "bytes=0-1023" }
+        const vttResp = await fetch(track.getAttribute("src"));
+        const vttText = await vttResp.text();
+        const rangeResp = await fetch(videoSrc, { headers: { Range: "bytes=0-1023" } });
+
+        const thumbs = Array.from(card.querySelectorAll("img.blog-meet-ch-thumb"));
+        await Promise.all(
+          thumbs.map(img =>
+            img.complete
+              ? Promise.resolve()
+              : new Promise(resolve => {
+                  img.addEventListener("load", resolve, { once: true });
+                  img.addEventListener("error", resolve, { once: true });
+                  setTimeout(resolve, 4000);
+                })
+          )
+        );
+
+        const slidesTabEnabled = !document.querySelector("#btnVideoSlideDeck")?.disabled;
+        const liveTabEnabled = !document.querySelector("#btnVideoLiveDemo")?.disabled;
+
+        return {
+          slugAttr: card.getAttribute("data-blog-slug"),
+          activeTrack,
+          slidesTabEnabled,
+          liveTabEnabled,
+          videoWidth: video.videoWidth,
+          videoHeight: video.videoHeight,
+          readyState: video.readyState,
+          duration: video.duration,
+          currentTime: video.currentTime,
+          expectedSeek,
+          hasTrack: Boolean(track),
+          trackDefault: Boolean(track?.default || track?.hasAttribute("default")),
+          vttStatus: vttResp.status,
+          vttContentType: vttResp.headers.get("content-type") || "",
+          vttStartsWebvtt: vttText.startsWith("WEBVTT"),
+          rangeStatus: rangeResp.status,
+          rangeHeader: rangeResp.headers.get("content-range") || "",
+          hasFsBtn: Boolean(fsBtn),
+          hasDlLink: Boolean(dlLink),
+          disclosureText: disclosure?.textContent || "",
+          chapterCount: chBtns.length,
+          thumbsLoaded: thumbs.filter(i => i.naturalWidth > 0).length,
+          thumbsTotal: thumbs.length,
+          ttsAuditCalls: window.__ttsAuditCalls || []
+        };
       });
+    };
 
-      // Wait for chapter thumbnail images to finish decoding
-      const thumbs = Array.from(card.querySelectorAll("img.blog-meet-ch-thumb"));
-      await Promise.all(
-        thumbs.map(img =>
-          img.complete
-            ? Promise.resolve()
-            : new Promise(resolve => {
-                img.addEventListener("load", resolve, { once: true });
-                img.addEventListener("error", resolve, { once: true });
-                setTimeout(resolve, 4000);
-              })
-        )
+    const checkedTracks = [];
+    const firstState = await verifyCurrentTrack();
+    checkedTracks.push(firstState);
+
+    // If BOTH Video 1 (Slides) & Video 2 (Live Demo) are enabled, click the alternate tab and verify track switching!
+    if (firstState.slidesTabEnabled && firstState.liveTabEnabled) {
+      const altBtn = firstState.activeTrack === "live" ? "#btnVideoSlideDeck" : "#btnVideoLiveDemo";
+      await page.click(altBtn);
+      await new Promise(r => setTimeout(r, 400));
+      const secondState = await verifyCurrentTrack();
+      if (secondState.activeTrack === firstState.activeTrack) {
+        throw new Error(`[${slug} ${label}] Track toggle failed to switch from ${firstState.activeTrack}`);
+      }
+      checkedTracks.push(secondState);
+    }
+
+    for (const state of checkedTracks) {
+      ttsCalls.push(...(state.ttsAuditCalls || []));
+      const errs = [];
+      if (state.slugAttr !== slug) errs.push(`slug mismatch: ${state.slugAttr} !== ${slug}`);
+      if (state.videoWidth !== 1920 || state.videoHeight !== 1080) {
+        errs.push(`expected 1920x1080 video, got ${state.videoWidth}x${state.videoHeight}`);
+      }
+      if (state.readyState < 1 || !(state.duration > 5)) {
+        errs.push(`video metadata not loaded: readyState=${state.readyState}, duration=${state.duration}`);
+      }
+      if (Math.abs(state.currentTime - state.expectedSeek) > 1.5) {
+        errs.push(`chapter seek failed: currentTime=${state.currentTime}, expected=${state.expectedSeek}`);
+      }
+      if (!state.hasTrack) errs.push("missing <track kind='captions'>");
+      if (state.trackDefault) errs.push("<track> must be opt-in (must NOT have default attribute)");
+      if (state.vttStatus !== 200 || !state.vttContentType.includes("text/vtt") || !state.vttStartsWebvtt) {
+        errs.push(`invalid VTT response: status=${state.vttStatus}, type=${state.vttContentType}`);
+      }
+      if (state.rangeStatus !== 206 || !state.rangeHeader.startsWith("bytes 0-1023/")) {
+        errs.push(`Range 206 failed: status=${state.rangeStatus}, content-range=${state.rangeHeader}`);
+      }
+      if (!state.hasFsBtn || !state.hasDlLink) errs.push("missing fullscreen button or download MP4 link");
+      if (!state.disclosureText.includes("Pure Omni 1.2")) errs.push("missing composite disclosure label");
+      if (state.chapterCount < 1 || state.thumbsLoaded !== state.thumbsTotal) {
+        errs.push(`thumbnails incomplete: ${state.thumbsLoaded}/${state.thumbsTotal}`);
+      }
+      if (ttsCalls.length > 0 || narrateCalls.length > 0) {
+        errs.push(`TTS impersonation detected: tts=${JSON.stringify(ttsCalls)} narrate=${JSON.stringify(narrateCalls)}`);
+      }
+      if (pageErrors.length > 0) {
+        errs.push(`page errors: ${pageErrors.join("; ")}`);
+      }
+      if (errs.length > 0) {
+        throw new Error(`[${slug} ${label} track=${state.activeTrack}] Gate 6b FAIL:\n - ${errs.join("\n - ")}`);
+      }
+      console.log(
+        `✅ [Gate 6b PASS] ${slug} (${label} · track=${state.activeTrack}): ${state.videoWidth}x${state.videoHeight}, dur=${state.duration.toFixed(1)}s, seek=${state.currentTime.toFixed(1)}s (HTTP 206), VTT=200 opt-in, thumbs=${state.thumbsLoaded}/${state.thumbsTotal}, ttsCalls=0`
       );
-
-      return {
-        slugAttr: card.getAttribute("data-blog-slug"),
-        videoWidth: video.videoWidth,
-        videoHeight: video.videoHeight,
-        readyState: video.readyState,
-        duration: video.duration,
-        currentTime: video.currentTime,
-        expectedSeek,
-        hasTrack: Boolean(track),
-        trackDefault: Boolean(track?.default || track?.hasAttribute("default")),
-        vttStatus: vttResp.status,
-        vttContentType: vttResp.headers.get("content-type") || "",
-        vttStartsWebvtt: vttText.startsWith("WEBVTT"),
-        rangeStatus: rangeResp.status,
-        rangeHeader: rangeResp.headers.get("content-range") || "",
-        hasFsBtn: Boolean(fsBtn),
-        hasDlLink: Boolean(dlLink),
-        disclosureText: disclosure?.textContent || "",
-        chapterCount: chBtns.length,
-        thumbsLoaded: thumbs.filter(i => i.naturalWidth > 0).length,
-        thumbsTotal: thumbs.length,
-        ttsAuditCalls: window.__ttsAuditCalls || []
-      };
-    }, slug);
-
-    ttsCalls.push(...(state.ttsAuditCalls || []));
-
-    const errs = [];
-    if (state.slugAttr !== slug) errs.push(`slug mismatch: ${state.slugAttr} !== ${slug}`);
-    if (state.videoWidth !== 1920 || state.videoHeight !== 1080) {
-      errs.push(`expected 1920x1080 video, got ${state.videoWidth}x${state.videoHeight}`);
     }
-    if (state.readyState < 1 || !(state.duration > 5)) {
-      errs.push(`video metadata not loaded: readyState=${state.readyState}, duration=${state.duration}`);
-    }
-    if (Math.abs(state.currentTime - state.expectedSeek) > 1.5) {
-      errs.push(`chapter seek failed: currentTime=${state.currentTime}, expected=${state.expectedSeek}`);
-    }
-    if (!state.hasTrack) errs.push("missing <track kind='captions'>");
-    if (state.trackDefault) errs.push("<track> must be opt-in (must NOT have default attribute)");
-    if (state.vttStatus !== 200 || !state.vttContentType.includes("text/vtt") || !state.vttStartsWebvtt) {
-      errs.push(`invalid VTT response: status=${state.vttStatus}, type=${state.vttContentType}`);
-    }
-    if (state.rangeStatus !== 206 || !state.rangeHeader.startsWith("bytes 0-1023/")) {
-      errs.push(`Range 206 failed: status=${state.rangeStatus}, content-range=${state.rangeHeader}`);
-    }
-    if (!state.hasFsBtn || !state.hasDlLink) errs.push("missing fullscreen button or download MP4 link");
-    if (!state.disclosureText.includes("Pure Omni 1.2")) errs.push("missing composite disclosure label");
-    if (state.chapterCount < 1 || state.thumbsLoaded !== state.thumbsTotal) {
-      errs.push(`chapter thumbnails incomplete: ${state.thumbsLoaded}/${state.thumbsTotal}`);
-    }
-    if (ttsCalls.length > 0 || narrateCalls.length > 0) {
-      errs.push(`TTS impersonation detected: tts=${JSON.stringify(ttsCalls)} narrate=${JSON.stringify(narrateCalls)}`);
-    }
-    if (pageErrors.length > 0) {
-      errs.push(`page errors: ${pageErrors.join("; ")}`);
-    }
-
-    if (errs.length > 0) {
-      throw new Error(`[${slug} ${label}] Gate 6b FAIL:\n - ${errs.join("\n - ")}`);
-    }
-    console.log(
-      `✅ [Gate 6b PASS] ${slug} (${label}): ${state.videoWidth}x${state.videoHeight}, dur=${state.duration.toFixed(1)}s, seek=${state.currentTime.toFixed(1)}s (HTTP 206), VTT=200 opt-in, thumbs=${state.thumbsLoaded}/${state.thumbsTotal}, ttsCalls=0`
-    );
   } finally {
     await page.close();
   }

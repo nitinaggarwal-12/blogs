@@ -1,0 +1,37 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.027
+AI Digital Twin · Google Cloud: Welcome to Blog four, architecting Pattern C governed hub-and-spoke dynamic hybrid multi-tenancy with Private Service Connect on Google Cloud.
+
+2
+00:00:10.027 --> 00:00:20.054
+AI Digital Twin · Google Cloud: Pattern C enforces four strict invariants: private routing, deterministic tier lookup, checksum parity, and zero lost turns.
+
+3
+00:00:20.054 --> 00:00:30.081
+AI Digital Twin · Google Cloud: A centralized hub runs shared authentication, policy guardrails, and registry routing while enterprise spokes keep sensitive data strictly private.
+
+4
+00:00:30.081 --> 00:00:40.108
+AI Digital Twin · Google Cloud: New customers onboard into the shared pool in thirty seconds and graduate seamlessly to a dedicated private spoke when compliance demands.
+
+5
+00:00:40.108 --> 00:00:50.135
+AI Digital Twin · Google Cloud: Using Private Service Connect and an atomic compare-and-swap router flip, tenants migrate from pooled to dedicated spokes with zero downtime.
+
+6
+00:00:50.135 --> 00:01:00.162
+AI Digital Twin · Google Cloud: Live promotion follows three safe phases: continuous shadow synchronization, cryptographic hash verification, and an instant atomic routing pointer swap.
+
+7
+00:01:00.162 --> 00:01:10.189
+AI Digital Twin · Google Cloud: These live Atlassian Jira Cloud captures contrast an unfiltered six-card backlog against strict three-legged OAuth scoped access for enterprise agents.
+
+8
+00:01:10.189 --> 00:01:20.216
+AI Digital Twin · Google Cloud: Live Google Cloud VPC captures prove the commercial hub and sovereign spoke connect strictly via Private Service Connect with zero peering.
+
+9
+00:01:20.216 --> 00:01:30.243
+AI Digital Twin · Google Cloud: Pattern C gives B2B SaaS leaders the best economic balance, serving commercial and enterprise tiers dynamically from one governed codebase.

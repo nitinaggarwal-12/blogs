@@ -1,0 +1,202 @@
+{
+  "schemaVersion": "1.0.0",
+  "blogSlug": "ws4",
+  "wsKey": "WS4",
+  "videoType": "slide_deck_delivery",
+  "chromeVersion": "v2-clean-exec",
+  "title": "Blog 4 (WS4) — Pattern C Governed Hub-and-Spoke Dynamic Hybrid — Digital Twin Slide Presentation",
+  "subtitle": "9-Slide Architecture, Private Service Connect, Zero-Downtime CAS & Live Jira Proof",
+  "audience": "external",
+  "externalReady": true,
+  "ready": true,
+  "qaPass": true,
+  "presenterName": "AI Digital Twin · Google Cloud",
+  "previewBadge": "AI-GENERATED DIGITAL TWIN",
+  "personaId": "cloud-ai-digital-twin",
+  "twinEngine": "models/omni_1p2",
+  "compositeLabel": "Narrated Slide Deck Presentation · Pure Omni 1.2 AI Digital Twin (ge-demos Side-by-Side Format)",
+  "captureMethod": "Verified 1920x1080 Google Cloud Architecture Slides (9 slides) + Pure Omni 1.2 AI Digital Twin (Narrated Slide Deck Delivery — not a live screen capture)",
+  "videoUrl": "/recordings/ws4/slide_deck_delivery_recording.mp4",
+  "posterUrl": "/recordings/ws4/slide_deck_delivery_poster.jpg",
+  "captionsUrl": "/recordings/ws4/slide_captions.vtt",
+  "googleSlidesUrl": "https://docs.google.com/presentation/d/1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s/edit",
+  "pptxUrl": "/slides/ws4-12slide-visual-deck.pptx",
+  "downloadFilename": "ws4_slide_deck_delivery.mp4",
+  "width": 1920,
+  "height": 1080,
+  "fps": 24,
+  "audioSampleRateHz": 48000,
+  "videoCodec": "h264",
+  "audioCodec": "aac",
+  "fileSizeBytes": 4467443,
+  "durationSec": 90.26,
+  "videoSha256": "9e4fe2147c65fd8f054cbf8cce03546e272911435219a5ade8186502abcd801e",
+  "containerChapterCount": 9,
+  "mp4ArtistTag": "AI Digital Twin · Google Cloud",
+  "mp4CommentTag": "Narrated Slide Deck Delivery composited with AI-Generated Pure Omni 1.2 Digital Twin (ge-demos v2-clean-exec side-by-side layout  not a live screen capture)",
+  "generatedAt": "2026-11-22T19:44:36.770Z",
+  "chapters": [
+    {
+      "chapterNum": 1,
+      "shortTitle": "Pattern C Cover",
+      "title": "Pattern C: Governed Hub-and-Spoke Dynamic Hybrid Architecture",
+      "surface": "Slide 1 of 9 · Executive Cover",
+      "phaseBadge": "SLIDE 1/9",
+      "displayUrl": "WS4 Architecture Deck · Slide 1 of 9",
+      "thumbnailUrl": "/slides/previews/ws4-12slide-visual-deck/slide_01.png",
+      "script": "Welcome to Blog four, architecting Pattern C governed hub-and-spoke dynamic hybrid multi-tenancy with Private Service Connect on Google Cloud.",
+      "metrics": [
+        "Shared Hub Control & CoW Pool",
+        "Unidirectional /28 PSC Enterprise Spokes",
+        "Zero-Downtime Live Tier Promotion"
+      ],
+      "startSec": 0,
+      "endSec": 10.027,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 2,
+      "shortTitle": "Hybrid Invariants",
+      "title": "4-Point Dynamic Routing & Live Migration Zero-Turn-Loss Invariants",
+      "surface": "Slide 2 of 9 · Hybrid Invariants",
+      "phaseBadge": "SLIDE 2/9",
+      "displayUrl": "WS4 Architecture Deck · Slide 2 of 9",
+      "thumbnailUrl": "/slides/previews/ws4-12slide-visual-deck/slide_02.png",
+      "script": "Pattern C enforces four strict invariants: private routing, deterministic tier lookup, checksum parity, and zero lost turns.",
+      "metrics": [
+        "No VPC Peering Transitivity",
+        "Deterministic Tenant Tier Lookup",
+        "Zero-Turn-Loss Atomic Cutover"
+      ],
+      "startSec": 10.027,
+      "endSec": 20.054,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 3,
+      "shortTitle": "Hub-and-Spoke Topology",
+      "title": "Pattern C Shared Hub Control Plane & Private Spoke Data Plane",
+      "surface": "Slide 3 of 9 · Hub & Spoke",
+      "phaseBadge": "SLIDE 3/9",
+      "displayUrl": "WS4 Architecture Deck · Slide 3 of 9",
+      "thumbnailUrl": "/slides/previews/ws4-12slide-visual-deck/slide_03.png",
+      "script": "A centralized hub runs shared authentication, policy guardrails, and registry routing while enterprise spokes keep sensitive data strictly private.",
+      "metrics": [
+        "Central Auth Manager & ARD Hub",
+        "Per-Tenant OBO & DPoP Exchange",
+        "Approved PSC Destination Enforcement"
+      ],
+      "startSec": 20.054,
+      "endSec": 30.081,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 4,
+      "shortTitle": "Pool-to-Spoke Scaling",
+      "title": "Seamless Scaling From 30-Second Pooled Onboarding to Dedicated Spoke",
+      "surface": "Slide 4 of 9 · Tier Graduation",
+      "phaseBadge": "SLIDE 4/9",
+      "displayUrl": "WS4 Architecture Deck · Slide 4 of 9",
+      "thumbnailUrl": "/slides/previews/ws4-12slide-visual-deck/slide_04.png",
+      "script": "New customers onboard into the shared pool in thirty seconds and graduate seamlessly to a dedicated private spoke when compliance demands.",
+      "metrics": [
+        "Commercial Tenants Onboard in 30s",
+        "Avoids Shared Project IAM Limits",
+        "Promotes to Private Spoke On Demand"
+      ],
+      "startSec": 30.081,
+      "endSec": 40.108,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 5,
+      "shortTitle": "PSC & 0ms Cutover",
+      "title": "Pattern C /28 Private Service Connect & 0ms Live Tier Promotion",
+      "surface": "Slide 5 of 9 · Migration Sequence",
+      "phaseBadge": "SLIDE 5/9",
+      "displayUrl": "WS4 Architecture Deck · Slide 5 of 9",
+      "thumbnailUrl": "/slides/previews/ws4-12slide-visual-deck/slide_05.png",
+      "script": "Using Private Service Connect and an atomic compare-and-swap router flip, tenants migrate from pooled to dedicated spokes with zero downtime.",
+      "metrics": [
+        "Unidirectional /28 PSC Attachment",
+        "Shadow Sync + SHA-256 Verification",
+        "Atomic Firestore CAS Pointer Flip"
+      ],
+      "startSec": 40.108,
+      "endSec": 50.135,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 6,
+      "shortTitle": "3-Phase CAS Migration",
+      "title": "3-Phase Live Tier Graduation: Shadow Sync to Atomic CAS Flip",
+      "surface": "Slide 6 of 9 · CAS State Machine",
+      "phaseBadge": "SLIDE 6/9",
+      "displayUrl": "WS4 Architecture Deck · Slide 6 of 9",
+      "thumbnailUrl": "/slides/previews/ws4-12slide-visual-deck/slide_06.png",
+      "script": "Live promotion follows three safe phases: continuous shadow synchronization, cryptographic hash verification, and an instant atomic routing pointer swap.",
+      "metrics": [
+        "Phase 1: Continuous SHADOW_SYNC",
+        "Phase 2: SHA-256 State Parity Check",
+        "Phase 3: 0ms Atomic Cutover"
+      ],
+      "startSec": 50.135,
+      "endSec": 60.162,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 7,
+      "shortTitle": "Live Jira 3LO Proof",
+      "title": "Live Commercial Jira Cloud: Unfiltered Board vs. Scoped 3LO",
+      "surface": "Slide 7 of 9 · Live SaaS Proof",
+      "phaseBadge": "SLIDE 7/9",
+      "displayUrl": "WS4 Architecture Deck · Slide 7 of 9",
+      "thumbnailUrl": "/slides/previews/ws4-12slide-visual-deck/slide_07.png",
+      "script": "These live Atlassian Jira Cloud captures contrast an unfiltered six-card backlog against strict three-legged OAuth scoped access for enterprise agents.",
+      "metrics": [
+        "BEFORE: 6 Mixed Backlog Cards",
+        "AFTER: 3LO Scoped Governance View",
+        "Live Atlassian Jira & Confluence Cloud"
+      ],
+      "startSec": 60.162,
+      "endSec": 70.189,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 8,
+      "shortTitle": "Live Hub vs. Spoke VPC",
+      "title": "Live Pattern C VPCs: Shared Hub vs. Dedicated FinVault Spoke",
+      "surface": "Slide 8 of 9 · Live Console Proof",
+      "phaseBadge": "SLIDE 8/9",
+      "displayUrl": "WS4 Architecture Deck · Slide 8 of 9",
+      "thumbnailUrl": "/slides/previews/ws4-12slide-visual-deck/slide_08.png",
+      "script": "Live Google Cloud VPC captures prove the commercial hub and sovereign spoke connect strictly via Private Service Connect with zero peering.",
+      "metrics": [
+        "Shared Hub: cymbal-patc-hub-vpc",
+        "Private Spoke: cymbal-patc-spoke-vpc",
+        "Zero VPC Peering Transitivity"
+      ],
+      "startSec": 70.189,
+      "endSec": 80.216,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 9,
+      "shortTitle": "Hybrid Scorecard",
+      "title": "Pattern C Dynamic Hybrid Scorecard & Executive CISO FAQ Guide",
+      "surface": "Slide 9 of 9 · Scorecard",
+      "phaseBadge": "SLIDE 9/9",
+      "displayUrl": "WS4 Architecture Deck · Slide 9 of 9",
+      "thumbnailUrl": "/slides/previews/ws4-12slide-visual-deck/slide_09.png",
+      "script": "Pattern C gives B2B SaaS leaders the best economic balance, serving commercial and enterprise tiers dynamically from one governed codebase.",
+      "metrics": [
+        "Best Balance of Margin & Sovereignty",
+        "Zero Code Fork Between Tiers",
+        "Instant Pool-to-Spoke Upgrade Path"
+      ],
+      "startSec": 80.216,
+      "endSec": 90.243,
+      "durationSec": 10.027
+    }
+  ]
+}

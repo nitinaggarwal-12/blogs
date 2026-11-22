@@ -1,0 +1,202 @@
+{
+  "schemaVersion": "1.0.0",
+  "blogSlug": "ws5",
+  "wsKey": "WS5",
+  "videoType": "slide_deck_delivery",
+  "chromeVersion": "v2-clean-exec",
+  "title": "Blog 5 (WS5) — Executive Decision Guide & Multi-Tenant Agentic Triad — Digital Twin Slide Presentation",
+  "subtitle": "9-Slide Pattern Selector, A2A/MCP Federation, FinOps Guardrails & Live Proofs",
+  "audience": "external",
+  "externalReady": true,
+  "ready": true,
+  "qaPass": true,
+  "presenterName": "AI Digital Twin · Google Cloud",
+  "previewBadge": "AI-GENERATED DIGITAL TWIN",
+  "personaId": "cloud-ai-digital-twin",
+  "twinEngine": "models/omni_1p2",
+  "compositeLabel": "Narrated Slide Deck Presentation · Pure Omni 1.2 AI Digital Twin (ge-demos Side-by-Side Format)",
+  "captureMethod": "Verified 1920x1080 Google Cloud Architecture Slides (9 slides) + Pure Omni 1.2 AI Digital Twin (Narrated Slide Deck Delivery — not a live screen capture)",
+  "videoUrl": "/recordings/ws5/slide_deck_delivery_recording.mp4",
+  "posterUrl": "/recordings/ws5/slide_deck_delivery_poster.jpg",
+  "captionsUrl": "/recordings/ws5/slide_captions.vtt",
+  "googleSlidesUrl": "https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/edit",
+  "pptxUrl": "/slides/ws5-12slide-visual-deck.pptx",
+  "downloadFilename": "ws5_slide_deck_delivery.mp4",
+  "width": 1920,
+  "height": 1080,
+  "fps": 24,
+  "audioSampleRateHz": 48000,
+  "videoCodec": "h264",
+  "audioCodec": "aac",
+  "fileSizeBytes": 4459145,
+  "durationSec": 90.26,
+  "videoSha256": "1470396adcf7d30681e65358dcf451e1d96fcbd0c09ea3e0e3b10ad6c4c725f4",
+  "containerChapterCount": 9,
+  "mp4ArtistTag": "AI Digital Twin · Google Cloud",
+  "mp4CommentTag": "Narrated Slide Deck Delivery composited with AI-Generated Pure Omni 1.2 Digital Twin (ge-demos v2-clean-exec side-by-side layout  not a live screen capture)",
+  "generatedAt": "2026-11-22T19:46:21.149Z",
+  "chapters": [
+    {
+      "chapterNum": 1,
+      "shortTitle": "Agentic Triad Cover",
+      "title": "Executive Decision Guide & Multi-Tenant Agentic Triad",
+      "surface": "Slide 1 of 9 · Executive Cover",
+      "phaseBadge": "SLIDE 1/9",
+      "displayUrl": "WS5 Architecture Deck · Slide 1 of 9",
+      "thumbnailUrl": "/slides/previews/ws5-12slide-visual-deck/slide_01.png",
+      "script": "Welcome to Blog five, our executive decision guide and multi-tenant Agentic Triad uniting A2A federation, MCP gateways, and FinOps governance.",
+      "metrics": [
+        "Two-Question Pattern Selector",
+        "A2A + MCP + Zero-PII OTel Triad",
+        "80/20 Unified Multi-Tenant Codebase"
+      ],
+      "startSec": 0,
+      "endSec": 10.027,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 2,
+      "shortTitle": "Decision Framework",
+      "title": "Two-Question Executive Decision Framework: Compliance vs. Velocity",
+      "surface": "Slide 2 of 9 · Pattern Selector",
+      "phaseBadge": "SLIDE 2/9",
+      "displayUrl": "WS5 Architecture Deck · Slide 2 of 9",
+      "thumbnailUrl": "/slides/previews/ws5-12slide-visual-deck/slide_02.png",
+      "script": "Two simple questions select the right pattern: check physical encryption mandates first, then match your commercial versus enterprise tenant mix.",
+      "metrics": [
+        "Q1: Physical Project / CMEK Mandate?",
+        "Q2: Mixed Commercial & Regulated Tiers?",
+        "Deterministic A vs. C vs. B Choice"
+      ],
+      "startSec": 10.027,
+      "endSec": 20.054,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 3,
+      "shortTitle": "Three Tenant Tiers",
+      "title": "Mapping Commercial, Enterprise Hybrid & Regulated Sovereign Tenants",
+      "surface": "Slide 3 of 9 · Tier Mapping",
+      "phaseBadge": "SLIDE 3/9",
+      "displayUrl": "WS5 Architecture Deck · Slide 3 of 9",
+      "thumbnailUrl": "/slides/previews/ws5-12slide-visual-deck/slide_03.png",
+      "script": "Commercial tenants run efficiently in Pattern A pools, enterprise accounts adopt Pattern C hybrid spokes, and regulated tenants deploy sovereign silos.",
+      "metrics": [
+        "Commercial: Pattern A Pooled",
+        "Enterprise: Pattern C Hybrid PSC",
+        "Regulated: Pattern B Sovereign Silo"
+      ],
+      "startSec": 20.054,
+      "endSec": 30.081,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 4,
+      "shortTitle": "Federated Identity",
+      "title": "Multi-IdP Federation via Google Identity Platform & Workload Identity",
+      "surface": "Slide 4 of 9 · Multi-IdP Auth",
+      "phaseBadge": "SLIDE 4/9",
+      "displayUrl": "WS5 Architecture Deck · Slide 4 of 9",
+      "thumbnailUrl": "/slides/previews/ws5-12slide-visual-deck/slide_04.png",
+      "script": "Workload Identity Federation normalizes OIDC, Google, and Entra ID logins into short-lived tokens carrying a verified tenant identity.",
+      "metrics": [
+        "OIDC, Google & Microsoft Entra ID",
+        "Short-Lived Verified tenant_id Tokens",
+        "Zero Static Long-Lived API Keys"
+      ],
+      "startSec": 30.081,
+      "endSec": 40.108,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 5,
+      "shortTitle": "Agentic Triad Sequence",
+      "title": "Shared & Private Agents, Dynamic GCS Skills & FinOps OTel",
+      "surface": "Slide 5 of 9 · Triad Sequence",
+      "phaseBadge": "SLIDE 5/9",
+      "displayUrl": "WS5 Architecture Deck · Slide 5 of 9",
+      "thumbnailUrl": "/slides/previews/ws5-12slide-visual-deck/slide_05.png",
+      "script": "In the Agentic Triad, shared orchestrators delegate safely to private specialist agents over A2A while MCP enforces tool authorization and cost logging.",
+      "metrics": [
+        "Shared Orchestrator -> Private Specialist",
+        "2LO/3LO MCP Tool Gateway",
+        "Zero-PII BigQuery FinOps OTel Sink"
+      ],
+      "startSec": 40.108,
+      "endSec": 50.135,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 6,
+      "shortTitle": "FinOps & Safety Guards",
+      "title": "Hop 4 Context Cache Savings, NLC Guardrails & CMEK Protection",
+      "surface": "Slide 6 of 9 · FinOps & Safety",
+      "phaseBadge": "SLIDE 6/9",
+      "displayUrl": "WS5 Architecture Deck · Slide 6 of 9",
+      "thumbnailUrl": "/slides/previews/ws5-12slide-visual-deck/slide_06.png",
+      "script": "Hop four combines eighty-nine percent context cache savings with deterministic safety blocks and rapid CMEK revocation to protect both budgets and data.",
+      "metrics": [
+        "89.1% Shared 32k Context Cache Savings",
+        "Deterministic HTTP 422 Guardrail Block",
+        "Sub-60s Verified CMEK Revocation"
+      ],
+      "startSec": 50.135,
+      "endSec": 60.162,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 7,
+      "shortTitle": "Live Commercial BI Proof",
+      "title": "Live Commercial BI: Global Liveboard vs. Scoped Saved Answer",
+      "surface": "Slide 7 of 9 · Live SaaS Proof",
+      "phaseBadge": "SLIDE 7/9",
+      "displayUrl": "WS5 Architecture Deck · Slide 7 of 9",
+      "thumbnailUrl": "/slides/previews/ws5-12slide-visual-deck/slide_07.png",
+      "script": "Live commercial BI captures contrast an unconstrained global liveboard against a domain-scoped saved answer enforcing strict multi-tenant data boundaries.",
+      "metrics": [
+        "BEFORE: Unconstrained Global Liveboard",
+        "AFTER: Domain-Scoped Saved Answer",
+        "Live ThoughtSpot Cloud Integration"
+      ],
+      "startSec": 60.162,
+      "endSec": 70.189,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 8,
+      "shortTitle": "Live Federation Hub Proof",
+      "title": "Live Federation Hub: Connectors vs. Authenticated Cloud Run A2A",
+      "surface": "Slide 8 of 9 · Live Console Proof",
+      "phaseBadge": "SLIDE 8/9",
+      "displayUrl": "WS5 Architecture Deck · Slide 8 of 9",
+      "thumbnailUrl": "/slides/previews/ws5-12slide-visual-deck/slide_08.png",
+      "script": "Live Google Cloud Console captures show how our authenticated Cloud Run A2A and MCP federation hub eliminates fragile point-to-point connector sprawl.",
+      "metrics": [
+        "BEFORE: Unfederated Point-to-Point Sprawl",
+        "AFTER: Authenticated Cloud Run A2A Triad",
+        "Live Project: cymbal-ge-hub-2026"
+      ],
+      "startSec": 70.189,
+      "endSec": 80.216,
+      "durationSec": 10.027
+    },
+    {
+      "chapterNum": 9,
+      "shortTitle": "Unified Triad Scorecard",
+      "title": "Unified Pattern A vs. C vs. B Scorecard & CISO FAQ Guide",
+      "surface": "Slide 9 of 9 · Executive Wrap-Up",
+      "phaseBadge": "SLIDE 9/9",
+      "displayUrl": "WS5 Architecture Deck · Slide 9 of 9",
+      "thumbnailUrl": "/slides/previews/ws5-12slide-visual-deck/slide_09.png",
+      "script": "Together, all five blogs deliver one unified, verified multi-tenant agentic AI blueprint ready for production deployment on Google Cloud.",
+      "metrics": [
+        "Complete 5-Blog Reference Blueprint",
+        "Verified Live Terraform & ADK Stacks",
+        "Production-Ready Multi-Tenant Governance"
+      ],
+      "startSec": 80.216,
+      "endSec": 90.243,
+      "durationSec": 10.027
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.027
+AI Digital Twin · Google Cloud: Welcome to Blog one, our multi-tenant agentic AI reference architecture and five-hop cryptographic governance baseline on Google Cloud.
+
+2
+00:00:10.027 --> 00:00:20.054
+AI Digital Twin · Google Cloud: SaaS teams face a tough choice between fragile shared agents and expensive dedicated projects, which our three-pattern taxonomy solves.
+
+3
+00:00:20.054 --> 00:00:30.081
+AI Digital Twin · Google Cloud: Adversaries exploit five cross-tenant vectors, from spoofed tenant headers and stolen tokens to noisy-neighbor exhaustion and prompt injection.
+
+4
+00:00:30.081 --> 00:00:40.108
+AI Digital Twin · Google Cloud: Our five-hop pipeline separates control, compute, and data planes using signed tokens, scoped registries, rate bulkheads, and row-level security.
+
+5
+00:00:40.108 --> 00:00:50.135
+AI Digital Twin · Google Cloud: Every request clears edge header stripping, short-lived ECDSA signing, registry filtering, Model Armor screening, and kernel-enforced database isolation.
+
+6
+00:00:50.135 --> 00:01:00.162
+AI Digital Twin · Google Cloud: At runtime, deterministic circuit breakers fail closed on every policy mismatch, returning strict status codes while emitting zero-PII audit logs.
+
+7
+00:01:00.162 --> 00:01:10.189
+AI Digital Twin · Google Cloud: These live Google Cloud Console captures prove Model Armor switches the exact same prompt injection from open pass to blocked violation.
+
+8
+00:01:10.189 --> 00:01:20.216
+AI Digital Twin · Google Cloud: At Hop one, Cloud Armor replaces an open edge rule with deterministic deny rules that reject spoofed tenant headers immediately.
+
+9
+00:01:20.216 --> 00:01:30.243
+AI Digital Twin · Google Cloud: Our verified scorecard confirms forty-two millisecond overhead, eighty-nine percent cache savings, and ten-for-ten isolation across every control plane hop.
