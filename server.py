@@ -1586,6 +1586,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
     def do_HEAD(self) -> None:
         orig_wfile = self.wfile
+        self._is_head_request = True
 
         class _HeadWriter:
             def __init__(self, real_wfile):
@@ -1614,6 +1615,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         try:
             self.do_GET()
         finally:
+            self._is_head_request = False
             self.wfile = orig_wfile
 
     def _handle_saas_live_proxy(self, method: str) -> None:
@@ -3493,6 +3495,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             ".jpeg": "image/jpeg",
             ".webp": "image/webp",
             ".mp4": "video/mp4",
+            ".vtt": "text/vtt; charset=utf-8",
             ".svg": "image/svg+xml; charset=utf-8",
             ".xml": "application/xml; charset=utf-8",
             ".drawio": "application/xml; charset=utf-8",
@@ -3551,27 +3554,124 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             static_file = raw_static.resolve()
             suffix = static_file.suffix.lower()
             if (
-                not raw_static.is_symlink()
+                ".." not in Path(clean_rel).parts
+                and not raw_static.is_symlink()
                 and static_file.is_relative_to(ROOT_DIR)
                 and static_file.is_file()
                 and (suffix in STATIC_MIME or static_file.name == "Dockerfile")
                 and not any(part.startswith(".") for part in static_file.relative_to(ROOT_DIR).parts)
                 and not is_sensitive_repo_path(static_file)
             ):
+                mime = STATIC_MIME.get(suffix, "text/plain; charset=utf-8")
+                is_head = bool(getattr(self, "_is_head_request", False))
+                rel_posix = static_file.relative_to(ROOT_DIR).as_posix()
+                is_recording_media = rel_posix.startswith("recordings/") and suffix in (".mp4", ".jpg", ".vtt", ".png")
+
                 if static_file.name == "screenshot_provenance.json":
                     data = self._sanitize_provenance_bytes(static_file)
-                else:
-                    data = static_file.read_bytes()
-                mime = STATIC_MIME.get(suffix, "text/plain; charset=utf-8")
-                self.send_response(200)
+                    self.send_response(200)
+                    self.send_header("Content-Type", mime)
+                    self.send_header("Content-Length", str(len(data)))
+                    self.send_header("Cache-Control", "no-store")
+                    self._send_security_headers()
+                    self.end_headers()
+                    if not is_head:
+                        self.wfile.write(data)
+                    return
+
+                st = static_file.stat()
+                total_size = int(st.st_size)
+                cache_control = "public, max-age=3600" if is_recording_media else "no-store"
+                etag = f'W/"{st.st_mtime_ns:x}-{total_size:x}"'
+                from email.utils import formatdate as _fmt_http_date
+                last_mod = _fmt_http_date(st.st_mtime, usegmt=True)
+
+                range_hdr = str(self.headers.get("Range") or "").strip()
+                start_byte = 0
+                end_byte = total_size - 1
+                is_partial = False
+
+                if range_hdr:
+                    # RFC 7233 single byte-range parser (multi-range falls back to full 200 OK)
+                    m_rng = re.fullmatch(r"bytes=(\d*)-(\d*)", range_hdr, flags=re.IGNORECASE)
+                    if m_rng and (m_rng.group(1) or m_rng.group(2)):
+                        raw_start, raw_end = m_rng.group(1), m_rng.group(2)
+                        if total_size == 0:
+                            self.send_response(416)
+                            self.send_header("Content-Range", "bytes */0")
+                            self.send_header("Accept-Ranges", "bytes")
+                            self.send_header("Content-Length", "0")
+                            self._send_security_headers()
+                            self.end_headers()
+                            return
+                        if raw_start == "":
+                            suffix_len = int(raw_end)
+                            if suffix_len <= 0:
+                                self.send_response(416)
+                                self.send_header("Content-Range", f"bytes */{total_size}")
+                                self.send_header("Accept-Ranges", "bytes")
+                                self.send_header("Content-Length", "0")
+                                self._send_security_headers()
+                                self.end_headers()
+                                return
+                            start_byte = max(0, total_size - suffix_len)
+                            end_byte = total_size - 1
+                        else:
+                            start_byte = int(raw_start)
+                            end_byte = int(raw_end) if raw_end else (total_size - 1)
+                            if start_byte >= total_size or end_byte < start_byte:
+                                self.send_response(416)
+                                self.send_header("Content-Range", f"bytes */{total_size}")
+                                self.send_header("Accept-Ranges", "bytes")
+                                self.send_header("Content-Length", "0")
+                                self._send_security_headers()
+                                self.end_headers()
+                                return
+                            if end_byte >= total_size:
+                                end_byte = total_size - 1
+                        is_partial = True
+                    elif "," not in range_hdr:
+                        self.send_response(416)
+                        self.send_header("Content-Range", f"bytes */{total_size}")
+                        self.send_header("Accept-Ranges", "bytes")
+                        self.send_header("Content-Length", "0")
+                        self._send_security_headers()
+                        self.end_headers()
+                        return
+
+                content_len = (end_byte - start_byte + 1) if total_size > 0 else 0
+                self.send_response(206 if is_partial else 200)
                 self.send_header("Content-Type", mime)
-                self.send_header("Content-Length", str(len(data)))
-                self.send_header("Cache-Control", "no-store")
+                self.send_header("Accept-Ranges", "bytes")
+                if is_partial:
+                    self.send_header("Content-Range", f"bytes {start_byte}-{end_byte}/{total_size}")
+                self.send_header("Content-Length", str(content_len))
+                self.send_header("Cache-Control", cache_control)
+                if is_recording_media:
+                    self.send_header("ETag", etag)
+                    self.send_header("Last-Modified", last_mod)
                 self._send_security_headers()
                 if suffix in (".pptx", ".docx", ".drawio"):
                     self.send_header("Content-Disposition", f'attachment; filename="{static_file.name}"')
                 self.end_headers()
-                self.wfile.write(data)
+
+                if is_head or content_len == 0:
+                    return
+
+                chunk_size = 65536
+                remaining = content_len
+                try:
+                    with static_file.open("rb") as fh:
+                        if start_byte > 0:
+                            fh.seek(start_byte)
+                        while remaining > 0:
+                            buf = fh.read(min(chunk_size, remaining))
+                            if not buf:
+                                break
+                            self.wfile.write(buf)
+                            remaining -= len(buf)
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
                 return
 
             if (

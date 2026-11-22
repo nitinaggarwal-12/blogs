@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "1.0.0",
+  "compositeLabel": "Automated 24fps X11 Live Capture · Pure Omni 1.2 AI Digital Twin (Meet-Style Side-by-Side Composite)",
+  "presenterName": "AI Digital Twin · Google Cloud",
+  "previewBadge": "AI-GENERATED DIGITAL TWIN",
+  "personaId": "cloud-ai-digital-twin",
+  "blogs": {
+    "ws1": {
+      "slug": "ws1",
+      "wsKey": "WS1",
+      "blogMarkdown": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
+      "title": "Blog 1 (WS1) — 5-Hop Governance Baseline & ThoughtSpot Cloud Live Walkthrough",
+      "subtitle": "Live Cloud Run IAM, Cloud Armor WAF, Model Armor Before/After, Cloud KMS EC-P256 & ThoughtSpot Cloud Liveboard → Saved Answer",
+      "recordingDir": "recordings/ws1",
+      "videoUrl": "/recordings/ws1/meet_live_execution_recording.mp4",
+      "posterUrl": "/recordings/ws1/meet_recording_poster.jpg",
+      "captionsUrl": "/recordings/ws1/captions.vtt",
+      "manifestUrl": "/recordings/ws1/meet_recording_manifest.json",
+      "provenanceUrl": "/recordings/ws1/chapter_provenance.json",
+      "saasTarget": {
+        "saasId": "SAAS-01",
+        "name": "ThoughtSpot Cloud",
+        "origin": "https://team2.thoughtspot.cloud",
+        "mode": "LIVEBOARD → SAVED ANSWER"
+      }
+    },
+    "ws2": {
+      "slug": "ws2",
+      "wsKey": "WS2",
+      "blogMarkdown": "blogs/ws2-pattern-a-pooled-architecture.md",
+      "title": "Blog 2 (WS2) — Pattern A High-Density Pooled & Snowflake AI Data Cloud Live Walkthrough",
+      "subtitle": "Live Cloud Run Gen2, BigQuery Operator Baseline → Native RLS + SA Audit, Firestore RPM Bulkhead & Snowflake Role Picker RAP",
+      "recordingDir": "recordings/ws2",
+      "videoUrl": "/recordings/ws2/meet_live_execution_recording.mp4",
+      "posterUrl": "/recordings/ws2/meet_recording_poster.jpg",
+      "captionsUrl": "/recordings/ws2/captions.vtt",
+      "manifestUrl": "/recordings/ws2/meet_recording_manifest.json",
+      "provenanceUrl": "/recordings/ws2/chapter_provenance.json",
+      "saasTarget": {
+        "saasId": "SAAS-07",
+        "name": "Snowflake AI Data Cloud",
+        "origin": "https://app.snowflake.com",
+        "mode": "BEFORE → AFTER"
+      }
+    },
+    "ws3": {
+      "slug": "ws3",
+      "wsKey": "WS3",
+      "blogMarkdown": "blogs/ws3-pattern-b-sovereign-silos.md",
+      "title": "Blog 3 (WS3) — Pattern B Sovereign Silos & Okta Workforce Identity Live Walkthrough",
+      "subtitle": "Live Sovereign VPC & Cloud Run, Cloud KMS CMEK Side-by-Side, BigQuery CMEK Kill-Switch, CMEK GCS Vault & Okta DPoP System Log",
+      "recordingDir": "recordings/ws3",
+      "videoUrl": "/recordings/ws3/meet_live_execution_recording.mp4",
+      "posterUrl": "/recordings/ws3/meet_recording_poster.jpg",
+      "captionsUrl": "/recordings/ws3/captions.vtt",
+      "manifestUrl": "/recordings/ws3/meet_recording_manifest.json",
+      "provenanceUrl": "/recordings/ws3/chapter_provenance.json",
+      "saasTarget": {
+        "saasId": "SAAS-10a",
+        "name": "Okta Workforce Identity",
+        "origin": "https://developer.okta.com",
+        "mode": "BEFORE → AFTER"
+      }
+    },
+    "ws4": {
+      "slug": "ws4",
+      "wsKey": "WS4",
+      "blogMarkdown": "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md",
+      "title": "Blog 4 (WS4) — Pattern C Hybrid PSC & Atlassian Jira/Confluence Cloud Live Walkthrough",
+      "subtitle": "Live Hub Router & VPC, Private Service Connect Service Attachment, Sovereign Spoke VPC, Firestore Cutover & Atlassian Jira 3LO Scope",
+      "recordingDir": "recordings/ws4",
+      "videoUrl": "/recordings/ws4/meet_live_execution_recording.mp4",
+      "posterUrl": "/recordings/ws4/meet_recording_poster.jpg",
+      "captionsUrl": "/recordings/ws4/captions.vtt",
+      "manifestUrl": "/recordings/ws4/meet_recording_manifest.json",
+      "provenanceUrl": "/recordings/ws4/chapter_provenance.json",
+      "saasTarget": {
+        "saasId": "SAAS-05a",
+        "name": "Atlassian Jira & Confluence Cloud",
+        "origin": "https://gcp-team-sbiarllr.atlassian.net",
+        "mode": "BEFORE → AFTER"
+      }
+    },
+    "ws5": {
+      "slug": "ws5",
+      "wsKey": "WS5",
+      "blogMarkdown": "blogs/ws5-decision-guide-and-agentic-triad.md",
+      "title": "Blog 5 (WS5) — Multi-Tenant Agentic Triad & Datadog Cloud Observability Live Walkthrough",
+      "subtitle": "Live Integration Connectors Baseline → Cloud Run Triad, BigQuery Zero-PII FinOps Ledger & Datadog Exported FinOps Log Isolation",
+      "recordingDir": "recordings/ws5",
+      "videoUrl": "/recordings/ws5/meet_live_execution_recording.mp4",
+      "posterUrl": "/recordings/ws5/meet_recording_poster.jpg",
+      "captionsUrl": "/recordings/ws5/captions.vtt",
+      "manifestUrl": "/recordings/ws5/meet_recording_manifest.json",
+      "provenanceUrl": "/recordings/ws5/chapter_provenance.json",
+      "saasTarget": {
+        "saasId": "SAAS-09",
+        "name": "Datadog Cloud Observability",
+        "origin": "https://us5.datadoghq.com",
+        "mode": "BEFORE → AFTER"
+      }
+    }
+  }
+}

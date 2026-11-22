@@ -2024,6 +2024,41 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                     elif _f13_hashlib.sha256(fp.read_bytes()).hexdigest() != manifest_sha_by_name[fn]:
                         f13_errors.append(f"rendered_img_sha_mismatch:{c_src}")
 
+        # 4B. Recordings Hygiene Gate (Plan R3 F-13 Extension): scan recordings/**/*.json, filenames, and ffprobe tags
+        rec_root = ROOT_DIR / "recordings"
+        if rec_root.is_dir():
+            import shutil as _f13_shutil
+            _ffprobe_bin = _f13_shutil.which("ffprobe")
+            _rec_extra_banned = ("authuser=", "@google.com", "custom-nitin", "nitin_aggarwal")
+            for rf in sorted(rec_root.rglob("*")):
+                if not rf.is_file():
+                    continue
+                rel_rf = rf.relative_to(ROOT_DIR).as_posix()
+                rel_low = rel_rf.lower()
+                for tok in banned_text_tokens + _rec_extra_banned:
+                    if tok in rel_low:
+                        f13_errors.append(f"recording_banned_filename:{rel_rf}:{tok}")
+                if rf.suffix.lower() in (".json", ".vtt"):
+                    rtxt_low = rf.read_text(encoding="utf-8", errors="ignore").lower()
+                    for tok in banned_text_tokens + _rec_extra_banned:
+                        if tok in rtxt_low:
+                            f13_errors.append(f"recording_banned_text:{rel_rf}:{tok}")
+                elif rf.suffix.lower() == ".mp4" and _ffprobe_bin:
+                    try:
+                        _fp = _f13_subprocess.run(
+                            [_ffprobe_bin, "-v", "error", "-show_entries", "format_tags", "-of", "json", str(rf)],
+                            capture_output=True,
+                            text=True,
+                            timeout=15,
+                        )
+                        if _fp.returncode == 0:
+                            _tags_low = (_fp.stdout or "").lower()
+                            for tok in banned_text_tokens + _rec_extra_banned:
+                                if tok in _tags_low:
+                                    f13_errors.append(f"recording_banned_mp4_tag:{rel_rf}:{tok}")
+                    except Exception as _fperr:
+                        f13_errors.append(f"recording_ffprobe_err:{rel_rf}:{_fperr}")
+
         # 5. Continuity Ledger Verification (Rule 60B) — verify all 4 legacy steps retired & >= 4 active steps match SHA-256
         ledger_obj = _f13_json.loads(repo_ledger_path.read_text(encoding="utf-8"))
         mandates = ledger_obj.get("standing_mandates", [])

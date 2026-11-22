@@ -75,6 +75,7 @@
   <script src="/js/diagrams_atlas.js?v=20261117-v104"></script>
   <script src="/js/modals.js"></script>
   <script src="/js/telemetry.js"></script>
+  <script src="/js/blog_meet_player.js"></script>
 
   <!-- Portal Application & Interactive Workbench Script -->
   <script>
@@ -912,6 +913,7 @@
             </a>
           </div>
         </div>
+        ${['ws1', 'ws2', 'ws3', 'ws4', 'ws5'].includes(blogSlugKey) ? `<div id="blog-meet-recording-slot" data-blog-meet-slot="1" data-blog-slug="${blogSlugKey}"></div>` : ''}
       `;
 
       const rawParsedHtml = parseMarkdownChunk(body);
@@ -1558,6 +1560,9 @@
           if (typeof applyHubBlogSectionSearch === 'function') {
             applyHubBlogSectionSearch(document.getElementById('hub-blog-search-input')?.value || '');
           }
+        }
+        if (typeof window.hydrateBlogMeetRecordingCard === 'function') {
+          window.hydrateBlogMeetRecordingCard(readerEl);
         }
         const urlParams = new URLSearchParams(window.location.search);
         const activeView = urlParams.get('view');

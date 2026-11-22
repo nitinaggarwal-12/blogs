@@ -13,6 +13,10 @@ __pycache__/
 node_modules/
 *.pdf
 *.mp4
+!recordings/
+!recordings/**
+!recordings/**/*.mp4
+.local_backup/
 scripts/gcp_icons_bundle.mjs
 scripts/official_arch_center_assets.json
 AGENTS.md

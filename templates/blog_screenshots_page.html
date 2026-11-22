@@ -522,6 +522,8 @@
       </div>
     </section>
 
+    <section id="blog-meet-recording-slot" data-blog-meet-slot="1" data-blog-slug="__BLOG_SLUG__" aria-label="Live Technical Implementation Meet Recording"></section>
+
     <section id="pairs-container" class="pairs-container" aria-label="Blog Screenshots Gallery"></section>
   </main>
 
@@ -1120,7 +1122,16 @@
       });
 
       loadAssets();
+      if (typeof window.hydrateBlogMeetRecordingCard === 'function') {
+        window.hydrateBlogMeetRecordingCard(document);
+      }
     })();
+  </script>
+  <script src="/js/blog_meet_player.js"></script>
+  <script>
+    if (typeof window.hydrateBlogMeetRecordingCard === 'function') {
+      window.hydrateBlogMeetRecordingCard(document);
+    }
   </script>
 </body>
 </html>

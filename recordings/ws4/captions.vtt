@@ -1,0 +1,49 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.030
+AI Digital Twin · Google Cloud: Welcome to Blog four, demonstrating Pattern C hybrid routing and live tier upgrades on Google Cloud.
+
+2
+00:00:10.030 --> 00:00:20.053
+AI Digital Twin · Google Cloud: Commercial workloads enter through our authenticated Cloud Run hub router and Hub VPC consumer endpoint.
+
+3
+00:00:20.053 --> 00:00:30.083
+AI Digital Twin · Google Cloud: Instead of fragile VPC peering, our Private Service Connect attachment bridges Hub and Spoke unidirectionally.
+
+4
+00:00:30.083 --> 00:00:40.106
+AI Digital Twin · Google Cloud: Inspecting service attachment details confirms our active consumer forwarding rule with no CIDR collisions or transitive routing.
+
+5
+00:00:40.106 --> 00:00:50.136
+AI Digital Twin · Google Cloud: After promotion, enterprise workloads land inside an isolated Spoke VPC backed by dedicated Cloud Run compute.
+
+6
+00:00:50.136 --> 00:01:00.159
+AI Digital Twin · Google Cloud: Notice complete subnet isolation separates the commercial hub from this dedicated sovereign enterprise spoke project.
+
+7
+00:01:00.159 --> 00:01:10.189
+AI Digital Twin · Google Cloud: In Firestore, our dynamic routing control plane stores versioned tenant tier assignments read atomically by the router.
+
+8
+00:01:10.189 --> 00:01:20.212
+AI Digital Twin · Google Cloud: The Firestore routing document shows RetailStream updated to the enterprise spoke target under an incremented route version.
+
+9
+00:01:20.212 --> 00:01:30.242
+AI Digital Twin · Google Cloud: Moving to live Atlassian Jira Cloud, this unfiltered Scrum board initially exposes all six mixed engineering tickets together.
+
+10
+00:01:30.242 --> 00:01:40.265
+AI Digital Twin · Google Cloud: Opening SCRUM-five displays OAuth refresh work linked directly alongside our Confluence SRE runbook documentation.
+
+11
+00:01:40.265 --> 00:01:50.295
+AI Digital Twin · Google Cloud: Typing our live board search query isolates the matching OAuth tickets cleanly while hiding unrelated sprint items.
+
+12
+00:01:50.295 --> 00:02:00.318
+AI Digital Twin · Google Cloud: Switching to Jira Project Summary verifies active sprint health and real-time engineering issue progress across the workspace.

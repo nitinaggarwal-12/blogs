@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "1.0.0",
+  "slug": "ws4",
+  "generatedAt": "2026-11-22T06:27:56.900Z",
+  "poster": {
+    "pathRel": "recordings/ws4/meet_recording_poster.jpg",
+    "sha256": "cd9091eb8e7d50b0b306d26a55fa5fe8fd4cd29a5ee4654ee427605100e634a8",
+    "bytes": 247722,
+    "width": 1920,
+    "height": 1080
+  },
+  "chapters": [
+    {
+      "chapterNum": 1,
+      "id": "ch01_cloudrun_hub_router_and_vpc",
+      "pathRel": "recordings/ws4/chapters/ch-01.png",
+      "sha256": "50f750cb4cd3363e8994fbb3c6542a149ad252bcb3cb91a608fdea3a7211e7db",
+      "bytes": 230717,
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "chapterNum": 2,
+      "id": "ch02_psc_service_attachment",
+      "pathRel": "recordings/ws4/chapters/ch-02.png",
+      "sha256": "8c4d230fb3cfb748a68f0126d6a794410b547a3880290c7df07092c38506e038",
+      "bytes": 288382,
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "chapterNum": 3,
+      "id": "ch03_spoke_vpc_after_promotion",
+      "pathRel": "recordings/ws4/chapters/ch-03.png",
+      "sha256": "a8852c5c103c149ae277e3a0b1754f6e700cacc72ab83c371db88d5704235f6f",
+      "bytes": 295874,
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "chapterNum": 4,
+      "id": "ch04_firestore_atomic_cutover",
+      "pathRel": "recordings/ws4/chapters/ch-04.png",
+      "sha256": "7cd7373f80ed64851f0048cdcb62ff6f6c8661818e7ad9814ca662dc1bccd4b3",
+      "bytes": 196594,
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "chapterNum": 5,
+      "id": "ch05_jira_before_unfiltered_board",
+      "pathRel": "recordings/ws4/chapters/ch-05.png",
+      "sha256": "2b36498f75169178638edaaf3b2191aad87ec49927d4653166813190e0140f49",
+      "bytes": 211257,
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "chapterNum": 6,
+      "id": "ch06_jira_after_board_filter_and_summary",
+      "pathRel": "recordings/ws4/chapters/ch-06.png",
+      "sha256": "f1b5c54243cde4895b3764a5471d607ea0233521564301c20b207a20cd9e05ef",
+      "bytes": 164619,
+      "width": 1280,
+      "height": 800
+    }
+  ]
+}
