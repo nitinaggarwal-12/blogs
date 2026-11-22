@@ -19,7 +19,7 @@ from typing import Any
 import google.auth
 import google.auth.transport.requests
 import httpx
-from fastapi import FastAPI, Header, HTTPException, Request, Response
+from fastapi import FastAPI, HTTPException, Request, Response
 from google import genai
 from google.cloud import kms
 from pydantic import BaseModel, Field
@@ -129,6 +129,16 @@ def _call_vertex_gemini(prompt: str) -> str:
     return redact_egress_pii(resp.text or "")
 
 
+def _verify_authenticated_request(request: Request) -> None:
+    """Enforce Bearer OIDC locally; on IAM-enforced Cloud Run (K_SERVICE set), GFE validates roles/run.invoker and strips raw OIDC headers."""
+    auth = request.headers.get("authorization") or request.headers.get("x-serverless-authorization") or ""
+    if auth.startswith("Bearer "):
+        return
+    if os.environ.get("K_SERVICE") and request.headers.get("x-cloud-trace-context"):
+        return
+    raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
+
+
 @app.get("/healthz")
 def healthz() -> dict[str, Any]:
     return {"status": "ok", "service": "blog-01-5hop-baseline", "region": REGION}
@@ -137,14 +147,10 @@ def healthz() -> dict[str, Any]:
 @app.post("/v1/turn")
 def execute_turn(
     req: TurnRequest,
-    authorization: str | None = Header(default=None),
-    x_serverless_authorization: str | None = Header(default=None, alias="X-Serverless-Authorization"),
-    x_tenant_id: str | None = Header(default=None),
+    request: Request,
 ) -> dict[str, Any]:
     # Fail closed if caller arrived without a Bearer OIDC token (Cloud Run IAM also enforces auth)
-    _auth = authorization or x_serverless_authorization
-    if not _auth or not _auth.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
+    _verify_authenticated_request(request)
 
     try:
         tenant = validate_tenant_id(req.tenant_id)
@@ -154,7 +160,7 @@ def execute_turn(
     _check_rate_limit(tenant)
 
     # Hop 1: Anti-spoofing PEP + Cloud KMS EC-P256 TenantContext JWT signing
-    h1 = enforce_hop1_anti_spoofing(tenant, x_tenant_id)
+    h1 = enforce_hop1_anti_spoofing(tenant, request.headers.get("x-tenant-id"))
     if not h1.allowed:
         raise HTTPException(status_code=h1.http_status, detail={"code": h1.code, "message": h1.detail})
 

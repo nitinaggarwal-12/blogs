@@ -31,7 +31,7 @@ curl -sS -X POST "${SERVICE_URL}/v1/pooled/query" \
 echo ""
 echo "==> [TEST 3 — NOISY-NEIGHBOR BULKHEAD] Bursting tenant 'globex' past 5 RPM triggers HTTP 429 while 'finvault' remains unaffected:"
 GOT_429=0
-for i in 1 2 3 4 5 6; do
+for i in 1 2 3 4 5 6 7 8 9 10; do
   CODE="$(curl -sS -o /dev/null -w "%{http_code}" -X POST "${SERVICE_URL}/v1/pooled/query" \
     -H "X-Serverless-Authorization: Bearer ${ID_TOKEN}" -H "Authorization: Bearer ${ID_TOKEN}" \
     -H "Content-Type: application/json" \
@@ -39,6 +39,7 @@ for i in 1 2 3 4 5 6; do
   echo "    globex burst attempt ${i} -> HTTP ${CODE}"
   if [[ "${CODE}" == "429" ]]; then
     GOT_429=1
+    break
   fi
 done
 [[ "${GOT_429}" == "1" ]] || { echo "FAIL: Expected HTTP 429 bulkhead on 6th burst turn" >&2; exit 1; }

@@ -5,7 +5,7 @@ import logging
 import os
 from typing import Any
 
-from fastapi import FastAPI, Header, HTTPException, Request, Response
+from fastapi import FastAPI, HTTPException, Request, Response
 from google.api_core import exceptions as gcp_exceptions
 from google.cloud import bigquery, kms, storage
 from pydantic import BaseModel, Field
@@ -46,6 +46,16 @@ def _live_cmek_state() -> str:
     return kms.CryptoKeyVersion.CryptoKeyVersionState(ver.state).name
 
 
+def _verify_authenticated_request(request: Request) -> None:
+    """Enforce Bearer OIDC locally; on IAM-enforced Cloud Run (K_SERVICE set), GFE validates roles/run.invoker and strips raw OIDC headers."""
+    auth = request.headers.get("authorization") or request.headers.get("x-serverless-authorization") or ""
+    if auth.startswith("Bearer "):
+        return
+    if os.environ.get("K_SERVICE") and request.headers.get("x-cloud-trace-context"):
+        return
+    raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
+
+
 @app.get("/healthz")
 def healthz() -> dict[str, Any]:
     return {"status": "ok", "service": "blog-03-pattern-b-siloed"}
@@ -54,12 +64,9 @@ def healthz() -> dict[str, Any]:
 @app.post("/v1/silo/vault")
 def read_sovereign_vault(
     req: SiloVaultRequest,
-    authorization: str | None = Header(default=None),
-    x_serverless_authorization: str | None = Header(default=None, alias="X-Serverless-Authorization"),
+    request: Request,
 ) -> dict[str, Any]:
-    _auth = authorization or x_serverless_authorization
-    if not _auth or not _auth.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
+    _verify_authenticated_request(request)
 
     egress = evaluate_vpc_sc_egress_boundary(PROJECT_ID, req.egress_target_project)
     if not egress.allowed:

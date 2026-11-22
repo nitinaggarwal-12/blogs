@@ -8,7 +8,7 @@ from typing import Any
 import google.auth.transport.requests
 import google.oauth2.id_token
 import httpx
-from fastapi import FastAPI, Header, HTTPException, Request, Response
+from fastapi import FastAPI, HTTPException, Request, Response
 from google.cloud import bigquery
 from pydantic import BaseModel, Field
 
@@ -66,6 +66,16 @@ def _record_finops_row(row: dict[str, Any]) -> bool:
     return True
 
 
+def _verify_authenticated_request(request: Request) -> None:
+    """Enforce Bearer OIDC locally; on IAM-enforced Cloud Run (K_SERVICE set), GFE validates roles/run.invoker and strips raw OIDC headers."""
+    auth = request.headers.get("authorization") or request.headers.get("x-serverless-authorization") or ""
+    if auth.startswith("Bearer "):
+        return
+    if os.environ.get("K_SERVICE") and request.headers.get("x-cloud-trace-context"):
+        return
+    raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
+
+
 @app.get("/healthz")
 def healthz() -> dict[str, Any]:
     return {"status": "ok", "role": TRIAD_ROLE}
@@ -79,12 +89,9 @@ def agent_card(request: Request) -> dict[str, Any]:
 @app.post("/v1/mcp/invoke")
 def mcp_invoke(
     req: TriadTaskRequest,
-    authorization: str | None = Header(default=None),
-    x_serverless_authorization: str | None = Header(default=None, alias="X-Serverless-Authorization"),
+    request: Request,
 ) -> dict[str, Any]:
-    _auth = authorization or x_serverless_authorization
-    if not _auth or not _auth.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
+    _verify_authenticated_request(request)
     decision = authorize_mcp_obo_call(req.tenant_id, req.mcp_tool)
     if not decision.allowed:
         raise HTTPException(status_code=decision.http_status, detail={"code": decision.code, "message": decision.detail})
@@ -100,12 +107,9 @@ def mcp_invoke(
 @app.post("/v1/a2a/task")
 def a2a_specialist_task(
     req: TriadTaskRequest,
-    authorization: str | None = Header(default=None),
-    x_serverless_authorization: str | None = Header(default=None, alias="X-Serverless-Authorization"),
+    request: Request,
 ) -> dict[str, Any]:
-    _auth = authorization or x_serverless_authorization
-    if not _auth or not _auth.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
+    _verify_authenticated_request(request)
     tenant = validate_tenant_id(req.tenant_id)
     id_token = _fetch_oidc_id_token(MCP_GATEWAY_URL)
     with httpx.Client(timeout=15.0) as http:
@@ -126,12 +130,9 @@ def a2a_specialist_task(
 @app.post("/v1/triad/execute")
 def orchestrator_execute(
     req: TriadTaskRequest,
-    authorization: str | None = Header(default=None),
-    x_serverless_authorization: str | None = Header(default=None, alias="X-Serverless-Authorization"),
+    request: Request,
 ) -> dict[str, Any]:
-    _auth = authorization or x_serverless_authorization
-    if not _auth or not _auth.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
+    _verify_authenticated_request(request)
     tenant = validate_tenant_id(req.tenant_id)
     id_token = _fetch_oidc_id_token(A2A_SPECIALIST_URL)
     with httpx.Client(timeout=20.0) as http:

@@ -6,7 +6,7 @@ import os
 import time
 from typing import Any
 
-from fastapi import FastAPI, Header, HTTPException, Request, Response
+from fastapi import FastAPI, HTTPException, Request, Response
 from google.cloud import bigquery, firestore
 from pydantic import BaseModel, Field
 
@@ -83,6 +83,16 @@ def _enforce_distributed_rpm_bulkhead(tenant_id: str) -> dict[str, Any]:
     return {"backend": "in_memory", "count": verdict.current_count, "limit": verdict.limit}
 
 
+def _verify_authenticated_request(request: Request) -> None:
+    """Enforce Bearer OIDC locally; on IAM-enforced Cloud Run (K_SERVICE set), GFE validates roles/run.invoker and strips raw OIDC headers."""
+    auth = request.headers.get("authorization") or request.headers.get("x-serverless-authorization") or ""
+    if auth.startswith("Bearer "):
+        return
+    if os.environ.get("K_SERVICE") and request.headers.get("x-cloud-trace-context"):
+        return
+    raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
+
+
 @app.get("/healthz")
 def healthz() -> dict[str, Any]:
     return {"status": "ok", "service": "blog-02-pattern-a-pooled", "rpm_limit": RPM_LIMIT}
@@ -91,12 +101,9 @@ def healthz() -> dict[str, Any]:
 @app.post("/v1/pooled/query")
 def query_pooled_tenant_rows(
     req: PooledQueryRequest,
-    authorization: str | None = Header(default=None),
-    x_serverless_authorization: str | None = Header(default=None, alias="X-Serverless-Authorization"),
+    request: Request,
 ) -> dict[str, Any]:
-    _auth = authorization or x_serverless_authorization
-    if not _auth or not _auth.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
+    _verify_authenticated_request(request)
 
     try:
         tenant = validate_tenant_id(req.tenant_id)

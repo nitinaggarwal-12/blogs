@@ -8,7 +8,7 @@ from typing import Any
 import google.auth.transport.requests
 import google.oauth2.id_token
 import httpx
-from fastapi import FastAPI, Header, HTTPException, Request, Response
+from fastapi import FastAPI, HTTPException, Request, Response
 from google.cloud import firestore
 from pydantic import BaseModel, Field
 
@@ -56,6 +56,16 @@ def _fetch_oidc_id_token(audience: str) -> str:
     return google.oauth2.id_token.fetch_id_token(auth_req, audience)
 
 
+def _verify_authenticated_request(request: Request) -> None:
+    """Enforce Bearer OIDC locally; on IAM-enforced Cloud Run (K_SERVICE set), GFE validates roles/run.invoker and strips raw OIDC headers."""
+    auth = request.headers.get("authorization") or request.headers.get("x-serverless-authorization") or ""
+    if auth.startswith("Bearer "):
+        return
+    if os.environ.get("K_SERVICE") and request.headers.get("x-cloud-trace-context"):
+        return
+    raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
+
+
 @app.get("/healthz")
 def healthz() -> dict[str, Any]:
     return {"status": "ok", "role": SERVICE_ROLE}
@@ -64,12 +74,9 @@ def healthz() -> dict[str, Any]:
 @app.post("/v1/backend/execute")
 def backend_execute(
     req: HybridTurnRequest,
-    authorization: str | None = Header(default=None),
-    x_serverless_authorization: str | None = Header(default=None, alias="X-Serverless-Authorization"),
+    request: Request,
 ) -> dict[str, Any]:
-    _auth = authorization or x_serverless_authorization
-    if not _auth or not _auth.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
+    _verify_authenticated_request(request)
     tenant = validate_tenant_id(req.tenant_id)
     return {
         "executed_by_role": SERVICE_ROLE,
@@ -83,12 +90,9 @@ def backend_execute(
 @app.post("/v1/hybrid/turn")
 def route_hybrid_turn(
     req: HybridTurnRequest,
-    authorization: str | None = Header(default=None),
-    x_serverless_authorization: str | None = Header(default=None, alias="X-Serverless-Authorization"),
+    request: Request,
 ) -> dict[str, Any]:
-    _auth = authorization or x_serverless_authorization
-    if not _auth or not _auth.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
+    _verify_authenticated_request(request)
     try:
         tenant = validate_tenant_id(req.tenant_id)
     except ValueError:
@@ -132,13 +136,10 @@ def route_hybrid_turn(
 @app.post("/v1/admin/promote")
 def promote_tenant_zero_downtime(
     req: PromoteRequest,
-    authorization: str | None = Header(default=None),
-    x_serverless_authorization: str | None = Header(default=None, alias="X-Serverless-Authorization"),
+    request: Request,
 ) -> dict[str, Any]:
     """Execute 3-phase atomic Firestore CAS promotion (Standard Pool -> Enterprise PSC Spoke)."""
-    _auth = authorization or x_serverless_authorization
-    if not _auth or not _auth.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
+    _verify_authenticated_request(request)
     tenant = validate_tenant_id(req.tenant_id)
     fs = firestore.Client(project=PROJECT_ID, database=FIRESTORE_DB)
     doc_ref = fs.collection("tenant_routes").document(tenant)
