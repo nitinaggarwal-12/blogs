@@ -61,7 +61,7 @@ window.SLIDE_DIAGRAMS_ATLAS = {
       "diagramId": "s00-compendium-visual-agenda",
       "title": "Slide 02 • Consolidated Architecture & Verified Architecture Agenda",
       "shortTitle": "Consolidated Architecture & Verified Architecture Agenda",
-      "purpose": "Provides the structured 6-section roadmap across Executive Framing (Slides 03–07), WS1 5-Hop Control Plane (Slides 08–14), WS2 Pattern A Pooled (Slides 15–20), WS3 Pattern B Sovereign Silo (Slides 21–26), WS4 Pattern C Hybrid (Slides 27–30), WS5 Decision & Multi-Cloud GA (Slides 31–38), and Verified Multi-Tenant Proofs (17 live 2880×1620 Retina captures).",
+      "purpose": "Provides the structured 6-section roadmap across Executive Framing (Slides 03–07), WS1 5-Hop Control Plane (Slides 08–14), WS2 Pattern A Pooled (Slides 15–20), WS3 Pattern B Sovereign Silo (Slides 21–26), WS4 Pattern C Hybrid (Slides 27–30), WS5 Decision & Multi-Cloud GA (Slides 31–38), and Verified Multi-Tenant Proofs (23 verified live 2880×1620 Retina captures: 19 Google Cloud Console + 4 commercial SaaS).",
       "inCompendium54": true,
       "linkages": {
         "workstream": "ALL",

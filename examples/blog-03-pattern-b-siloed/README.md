@@ -17,3 +17,8 @@ Self-contained, **zero-modification** deployment for [Blog 3: Pattern B — Zero
 ./verify.sh    # Proves BEFORE (200 decrypt) -> live KMS disable -> AFTER (423 fail-closed) -> auto re-enable
 ./destroy.sh   # Cleanly removes billable resources
 ```
+
+## Live Google Cloud Console Execution Proof
+
+![Live Google Cloud KMS symmetric CMEK key provisioned by Blog 3 Terraform deployment](../../screenshots/verified-cloud-console/exec_blog03_kms_cmek_silo.png)
+*Live Google Cloud KMS Console verification after running `./deploy.sh && ./verify.sh`, showing the active `sovereign-vault-cmek` symmetric key (`Available`, 90-day automatic rotation) backing the CMEK BigQuery & GCS vault.*

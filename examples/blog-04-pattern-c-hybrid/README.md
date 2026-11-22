@@ -16,3 +16,8 @@ Self-contained, **zero-modification** deployment for [Blog 4: Pattern C — Dyna
 ./verify.sh    # Proves BEFORE (shared_pool) -> atomic Firestore CAS promotion -> AFTER (enterprise_spoke)
 ./destroy.sh   # Cleanly removes all billable resources
 ```
+
+## Live Google Cloud Console Execution Proof
+
+![Live Google Cloud Private Service Connect published service overview provisioned by Blog 4 Terraform deployment](../../screenshots/verified-cloud-console/exec_blog04_psc_service_attachment.png)
+*Live Google Cloud Network Services Console verification after running `./deploy.sh && ./verify.sh`, showing the Private Service Connect service attachment (`Connected forwarding rules: 1`, `NAT IP addresses in use: 1`, `Accept manually`, `/28` NAT subnet).*

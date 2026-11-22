@@ -219,6 +219,9 @@ cd ge-blogs/examples/blog-02-pattern-a-pooled
 ./destroy.sh   # Tears down all billable resources cleanly
 ```
 
+![WS2 Runnable Deployment Proof: Live BigQuery Studio INFORMATION_SCHEMA.ROW_ACCESS_POLICIES results showing finvault_tenant_rls_policy on cymbal_pattern_a_pooled_ab385c.pooled_rls_entities.](../screenshots/verified-cloud-console/exec_blog02_bigquery_rls_pooled.png)
+*Live Google Cloud Console BigQuery Studio execution proof after running `examples/blog-02-pattern-a-pooled` (`./deploy.sh && ./verify.sh`): native `finvault_tenant_rls_policy` (`tenant_id = 'finvault'`) and operator baseline policy verified on `cymbal_pattern_a_pooled_ab385c.pooled_rls_entities`.*
+
 ---
 
 ## What's next

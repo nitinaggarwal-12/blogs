@@ -873,8 +873,21 @@ def restore_lossless_verified_proof_pngs_in_docx(docx_path: Path) -> int:
                 for sem in (immediate_cap + " " + docpr_text, near_after + " " + docpr_text, ctx):
                     if target_bytes is not None:
                         break
+                    # Runnable Stack Live Execution Proofs (6 new exec_*.png captures — match BEFORE generic ws1..ws5 rules!)
+                    if ("cymbal-ws1-after-firewall-ba7ddd" in sem) or ("cymbal-ws1-before-unprotected-ba7ddd" in sem) or ("ws1 runnable deployment proof" in sem and "model armor" in sem):
+                        target_bytes = bytes_by_name.get("exec_blog01_model_armor_templates.png")
+                    elif ("all 5 runnable blog stacks deployed live" in sem) or ("all 9 runnable blog cloud run" in sem) or ("all 9 `cymbal-ws1..ws5" in sem) or ("cymbal-ws1..ws5-*" in sem):
+                        target_bytes = bytes_by_name.get("exec_all5_cloudrun_services.png")
+                    elif ("ws2 runnable deployment proof" in sem) or ("cymbal_pattern_a_pooled_ab385c" in sem) or ("finvault_tenant_rls_policy" in sem):
+                        target_bytes = bytes_by_name.get("exec_blog02_bigquery_rls_pooled.png")
+                    elif ("ws3 runnable deployment proof" in sem) or ("cymbal-silo-cmek-kr-629253" in sem) or ("sovereign-vault-cmek" in sem):
+                        target_bytes = bytes_by_name.get("exec_blog03_kms_cmek_silo.png")
+                    elif ("ws4 runnable deployment proof" in sem) or ("cymbal-patc-spoke-psc-686975" in sem) or ("connected forwarding rules 1" in sem) or ("connected forwarding rules: 1" in sem):
+                        target_bytes = bytes_by_name.get("exec_blog04_psc_service_attachment.png")
+                    elif ("ws5 runnable deployment proof" in sem) or ("cymbal_triad_finops_2590db" in sem) or ("otel_finops_chargeback" in sem):
+                        target_bytes = bytes_by_name.get("exec_blog05_bigquery_finops_ledger.png")
                     # WS1 Model Armor
-                    if "ge-ws1-before-unprotected-baseline" in sem or ("ws1-ba-01 before" in sem) or ("ws1 before" in sem and ("model armor" in sem or "unprotected" in sem or "no violations detected" in sem)):
+                    elif "ge-ws1-before-unprotected-baseline" in sem or ("ws1-ba-01 before" in sem) or ("ws1 before" in sem and ("model armor" in sem or "unprotected" in sem or "no violations detected" in sem)):
                         target_bytes = bytes_by_name.get("ws1_before_model_armor_unprotected.png")
                     elif "ge-zero-trust-ai-firewall" in sem or ("ws1-ba-01 after" in sem) or ("ws1 after" in sem and ("model armor" in sem or "template violations detected" in sem or "prompt injection" in sem)):
                         target_bytes = bytes_by_name.get("ws1_after_model_armor_blocked.png")

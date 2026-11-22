@@ -7,7 +7,7 @@ Self-contained, **zero-modification** deployment for [Blog 2: Pattern A — High
 ## What Gets Deployed
 - **Shared Multi-Tenant BigQuery Table + Native Row-Level Access Policy:** Seeded with 7 rows across 4 competing tenants (`finvault`, `retailstream`, `globex`, `medcore`) and guarded by `google_bigquery_row_access_policy` + parameterized queries.
 - **Distributed Per-Tenant Noisy-Neighbor Bulkhead:** Dedicated named Firestore database (`cymbal-pool-limiter-<id>`) enforcing atomic per-tenant RPM caps (`HTTP 429` with `Retry-After`) without colliding with any existing `(default)` database.
-- **gVisor Turn-Isolated Cloud Run Gen2 Pooled Runtime:** `max_instance_request_concurrency = 1` with deterministic `maxOutputTokens` clamping (`STANDARD -> 4,000`, `ENTERPRISE -> 16,000`).
+- **Turn-Isolated Cloud Run Gen2 Pooled Runtime:** `max_instance_request_concurrency = 1` with deterministic `maxOutputTokens` clamping (`STANDARD -> 4,000`, `ENTERPRISE -> 16,000`).
 
 ## Quickstart (Zero Code Edits)
 
@@ -16,3 +16,8 @@ Self-contained, **zero-modification** deployment for [Blog 2: Pattern A — High
 ./verify.sh    # Proves BEFORE (7-row bleed) -> AFTER (2 FinVault rows) + HTTP 429 bulkhead isolation
 ./destroy.sh   # Cleanly removes all billable resources
 ```
+
+## Live Google Cloud Console Execution Proof
+
+![Live Google Cloud BigQuery Studio Row-Level Access Policies provisioned by Blog 2 Terraform deployment](../../screenshots/verified-cloud-console/exec_blog02_bigquery_rls_pooled.png)
+*Live Google Cloud Console BigQuery Studio `INFORMATION_SCHEMA.ROW_ACCESS_POLICIES` verification after running `./deploy.sh && ./verify.sh`, confirming native tenant row-level access policies active on `pooled_rls_entities`.*

@@ -24,3 +24,8 @@ Each stack follows the exact same 3-command lifecycle:
 - **Zero hardcoded project IDs, org IDs, or pre-hosted container images** — builds directly inside your own Artifact Registry via Cloud Build.
 - **No `allUsers` public Cloud Run exposure** — every service uses least-privilege Service Accounts and requires Google Cloud IAM OIDC authentication (`gcloud auth print-identity-token`).
 - **Single-project compatible by default** — no Org Admin required; collision-proof `random_id` suffixes prevent `409 Already Exists` on undeletable Cloud KMS keyrings or Firestore databases.
+
+## Live Google Cloud Console Execution Proof (All 5 Stacks Deployed)
+
+![All 5 runnable blog stacks deployed live in Cloud Run Services with IAM authentication enforced](../screenshots/verified-cloud-console/exec_all5_cloudrun_services.png)
+*Live Google Cloud Console verification after executing `./deploy.sh && ./verify.sh` across all 5 runnable blog stacks (9 authenticated Cloud Run Gen2 services green with `Require authentication`).*

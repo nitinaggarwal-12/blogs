@@ -177,6 +177,9 @@ cd ge-blogs/examples/blog-05-agentic-triad
 ./destroy.sh   # Tears down all billable resources cleanly
 ```
 
+![WS5 Runnable Deployment Proof: Live BigQuery Zero-PII FinOps ledger table cymbal_triad_finops_2590db.otel_finops_chargeback showing prompt_sha256, token counters, estimated_usd, and http_status schema.](../screenshots/verified-cloud-console/exec_blog05_bigquery_finops_ledger.png)
+*Live Google Cloud Console BigQuery execution proof after running `examples/blog-05-agentic-triad` (`./deploy.sh && ./verify.sh`): Zero-PII `cymbal_triad_finops_2590db.otel_finops_chargeback` table capturing SHA-256 prompt hashes, cached vs. dynamic token counts, USD spend, and MCP OBO outcomes.*
+
 ---
 
 ## What's next

@@ -275,6 +275,12 @@ cd ge-blogs/examples/blog-01-5hop-baseline
 ./destroy.sh   # Tears down all billable resources cleanly
 ```
 
+![WS1 Runnable Deployment Proof: Live Google Cloud Model Armor templates cymbal-ws1-after-firewall-ba7ddd and cymbal-ws1-before-unprotected-ba7ddd deployed via Terraform in cymbal-ge-hub-2026.](../screenshots/verified-cloud-console/exec_blog01_model_armor_templates.png)
+*Live Google Cloud Console execution proof after running `examples/blog-01-5hop-baseline` (`./deploy.sh && ./verify.sh`): both Terraform-provisioned Model Armor templates (`cymbal-ws1-after-firewall-ba7ddd` & `cymbal-ws1-before-unprotected-ba7ddd`) active in `cymbal-ge-hub-2026` (`us-central1`).*
+
+![All 5 Runnable Blog Stacks Deployed Live in Cloud Run Services with IAM authentication enforced.](../screenshots/verified-cloud-console/exec_all5_cloudrun_services.png)
+*Cross-series Cloud Run Services execution verification in `cymbal-ge-hub-2026` showing all 9 deployed `cymbal-ws1..ws5-*` Cloud Run Gen2 services green with `Require authentication` enforced.*
+
 ---
 
 ## What's next

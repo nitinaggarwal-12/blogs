@@ -18,3 +18,8 @@ Self-contained, **zero-modification** deployment for [Blog 5: Executive Decision
 ./verify.sh    # Proves A2A discovery, MCP OBO 200/403 isolation, and live Zero-PII BigQuery FinOps rows
 ./destroy.sh   # Cleanly removes all billable resources
 ```
+
+## Live Google Cloud Console Execution Proof
+
+![Live Google Cloud BigQuery Zero-PII FinOps chargeback ledger provisioned by Blog 5 Terraform deployment](../../screenshots/verified-cloud-console/exec_blog05_bigquery_finops_ledger.png)
+*Live Google Cloud Console BigQuery verification after running `./deploy.sh && ./verify.sh`, confirming the Zero-PII `otel_finops_chargeback` table (`prompt_sha256`, `cached_tokens`, `dynamic_tokens`, `estimated_usd`, `mcp_tool`, `http_status`).*

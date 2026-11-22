@@ -160,6 +160,9 @@ cd ge-blogs/examples/blog-04-pattern-c-hybrid
 ./destroy.sh   # Tears down all billable resources cleanly
 ```
 
+![WS4 Runnable Deployment Proof: Live Google Cloud Private Service Connect service details for cymbal-patc-spoke-psc-686975 showing Connected forwarding rules 1 and NAT IP addresses in use 1.](../screenshots/verified-cloud-console/exec_blog04_psc_service_attachment.png)
+*Live Google Cloud Network Services Console execution proof after running `examples/blog-04-pattern-c-hybrid` (`./deploy.sh && ./verify.sh`): unidirectional `/28` PSC service attachment `cymbal-patc-spoke-psc-686975` (`Connected forwarding rules: 1`, `NAT IP addresses in use: 1`, `Accept manually`) bridging Hub and Spoke with zero VPC peering.*
+
 ---
 
 ## What's next

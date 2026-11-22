@@ -183,6 +183,9 @@ cd ge-blogs/examples/blog-03-pattern-b-siloed
 ./destroy.sh   # Tears down all billable resources cleanly
 ```
 
+![WS3 Runnable Deployment Proof: Live Google Cloud KMS keyring cymbal-silo-cmek-kr-629253 showing sovereign-vault-cmek Available with 90-day automatic rotation.](../screenshots/verified-cloud-console/exec_blog03_kms_cmek_silo.png)
+*Live Google Cloud KMS execution proof after running `examples/blog-03-pattern-b-siloed` (`./deploy.sh && ./verify.sh`): dedicated symmetric CMEK key `sovereign-vault-cmek` (`Available`, 90-day rotation) protecting the sovereign BigQuery & Cloud Storage vault.*
+
 ---
 
 ## What's next

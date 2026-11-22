@@ -17,3 +17,8 @@ Self-contained, **zero-modification** deployment for [Blog 1: Reference Architec
 ./verify.sh    # Runs live BEFORE -> AFTER Model Armor, Hop 1 spoof 403, and KMS + Vertex AI 200 proofs
 ./destroy.sh   # Cleanly removes billable resources
 ```
+
+## Live Google Cloud Console Execution Proof
+
+![Live Google Cloud Console Model Armor templates provisioned by Blog 1 Terraform deployment](../../screenshots/verified-cloud-console/exec_blog01_model_armor_templates.png)
+*Live Google Cloud Console verification after running `./deploy.sh && ./verify.sh`, showing both Terraform-provisioned Model Armor templates (unprotected BEFORE baseline vs. hardened AFTER zero-trust firewall).*
