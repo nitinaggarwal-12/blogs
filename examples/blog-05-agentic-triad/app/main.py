@@ -80,8 +80,10 @@ def agent_card(request: Request) -> dict[str, Any]:
 def mcp_invoke(
     req: TriadTaskRequest,
     authorization: str | None = Header(default=None),
+    x_serverless_authorization: str | None = Header(default=None, alias="X-Serverless-Authorization"),
 ) -> dict[str, Any]:
-    if not authorization or not authorization.startswith("Bearer "):
+    _auth = authorization or x_serverless_authorization
+    if not _auth or not _auth.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
     decision = authorize_mcp_obo_call(req.tenant_id, req.mcp_tool)
     if not decision.allowed:
@@ -99,15 +101,17 @@ def mcp_invoke(
 def a2a_specialist_task(
     req: TriadTaskRequest,
     authorization: str | None = Header(default=None),
+    x_serverless_authorization: str | None = Header(default=None, alias="X-Serverless-Authorization"),
 ) -> dict[str, Any]:
-    if not authorization or not authorization.startswith("Bearer "):
+    _auth = authorization or x_serverless_authorization
+    if not _auth or not _auth.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
     tenant = validate_tenant_id(req.tenant_id)
     id_token = _fetch_oidc_id_token(MCP_GATEWAY_URL)
     with httpx.Client(timeout=15.0) as http:
         mcp_res = http.post(
             f"{MCP_GATEWAY_URL}/v1/mcp/invoke",
-            headers={"Authorization": f"Bearer {id_token}", "Content-Type": "application/json"},
+            headers={"X-Serverless-Authorization": f"Bearer {id_token}", "Authorization": f"Bearer {id_token}", "Content-Type": "application/json"},
             json={"tenant_id": tenant, "mcp_tool": req.mcp_tool, "prompt": req.prompt},
         )
     if mcp_res.status_code != 200:
@@ -123,19 +127,21 @@ def a2a_specialist_task(
 def orchestrator_execute(
     req: TriadTaskRequest,
     authorization: str | None = Header(default=None),
+    x_serverless_authorization: str | None = Header(default=None, alias="X-Serverless-Authorization"),
 ) -> dict[str, Any]:
-    if not authorization or not authorization.startswith("Bearer "):
+    _auth = authorization or x_serverless_authorization
+    if not _auth or not _auth.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
     tenant = validate_tenant_id(req.tenant_id)
     id_token = _fetch_oidc_id_token(A2A_SPECIALIST_URL)
     with httpx.Client(timeout=20.0) as http:
         card_res = http.get(
             f"{A2A_SPECIALIST_URL}/.well-known/agent.json",
-            headers={"Authorization": f"Bearer {id_token}"},
+            headers={"X-Serverless-Authorization": f"Bearer {id_token}", "Authorization": f"Bearer {id_token}"},
         )
         task_res = http.post(
             f"{A2A_SPECIALIST_URL}/v1/a2a/task",
-            headers={"Authorization": f"Bearer {id_token}", "Content-Type": "application/json"},
+            headers={"X-Serverless-Authorization": f"Bearer {id_token}", "Authorization": f"Bearer {id_token}", "Content-Type": "application/json"},
             json={"tenant_id": tenant, "mcp_tool": req.mcp_tool, "prompt": req.prompt},
         )
 

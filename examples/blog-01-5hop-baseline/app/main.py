@@ -138,10 +138,12 @@ def healthz() -> dict[str, Any]:
 def execute_turn(
     req: TurnRequest,
     authorization: str | None = Header(default=None),
+    x_serverless_authorization: str | None = Header(default=None, alias="X-Serverless-Authorization"),
     x_tenant_id: str | None = Header(default=None),
 ) -> dict[str, Any]:
     # Fail closed if caller arrived without a Bearer OIDC token (Cloud Run IAM also enforces auth)
-    if not authorization or not authorization.startswith("Bearer "):
+    _auth = authorization or x_serverless_authorization
+    if not _auth or not _auth.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
 
     try:

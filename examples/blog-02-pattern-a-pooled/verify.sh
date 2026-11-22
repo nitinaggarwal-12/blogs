@@ -12,7 +12,7 @@ BQ_TABLE="$(terraform -chdir="${SCRIPT_DIR}/terraform" output -raw bq_table)"
 ID_TOKEN="$(gcloud auth print-identity-token)"
 
 for _attempt in $(seq 1 12); do
-  HC="$(curl -sS -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${ID_TOKEN}" "${SERVICE_URL}/healthz" || echo 000)"
+  HC="$(curl -sS -o /dev/null -w "%{http_code}" -H "X-Serverless-Authorization: Bearer ${ID_TOKEN}" -H "Authorization: Bearer ${ID_TOKEN}" "${SERVICE_URL}/healthz" || echo 000)"
   [[ "${HC}" == "200" ]] && break
   sleep 3
 done
@@ -24,7 +24,7 @@ bq query --project_id="${PROJECT_ID}" --use_legacy_sql=false --format=pretty \
 echo ""
 echo "==> [TEST 2 — AFTER] Pattern A JWT-scoped + Row Access Policy query returns strictly FinVault's 2 rows (0 foreign rows):"
 curl -sS -X POST "${SERVICE_URL}/v1/pooled/query" \
-  -H "Authorization: Bearer ${ID_TOKEN}" \
+  -H "X-Serverless-Authorization: Bearer ${ID_TOKEN}" -H "Authorization: Bearer ${ID_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"tenant_id":"finvault","tier":"STANDARD","requested_max_output_tokens":16000}' | jq .
 
@@ -33,7 +33,7 @@ echo "==> [TEST 3 — NOISY-NEIGHBOR BULKHEAD] Bursting tenant 'globex' past 5 R
 GOT_429=0
 for i in 1 2 3 4 5 6; do
   CODE="$(curl -sS -o /dev/null -w "%{http_code}" -X POST "${SERVICE_URL}/v1/pooled/query" \
-    -H "Authorization: Bearer ${ID_TOKEN}" \
+    -H "X-Serverless-Authorization: Bearer ${ID_TOKEN}" -H "Authorization: Bearer ${ID_TOKEN}" \
     -H "Content-Type: application/json" \
     -d '{"tenant_id":"globex","tier":"STANDARD","requested_max_output_tokens":8000}')"
   echo "    globex burst attempt ${i} -> HTTP ${CODE}"
@@ -44,7 +44,7 @@ done
 [[ "${GOT_429}" == "1" ]] || { echo "FAIL: Expected HTTP 429 bulkhead on 6th burst turn" >&2; exit 1; }
 
 FV_CODE="$(curl -sS -o /dev/null -w "%{http_code}" -X POST "${SERVICE_URL}/v1/pooled/query" \
-  -H "Authorization: Bearer ${ID_TOKEN}" \
+  -H "X-Serverless-Authorization: Bearer ${ID_TOKEN}" -H "Authorization: Bearer ${ID_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"tenant_id":"finvault","tier":"ENTERPRISE","requested_max_output_tokens":16000}')"
 echo "    finvault unaffected turn -> HTTP ${FV_CODE}"

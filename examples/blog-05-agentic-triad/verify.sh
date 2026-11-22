@@ -14,19 +14,19 @@ ID_TOKEN="$(gcloud auth print-identity-token)"
 
 for _url in "${ORCH_URL}" "${SPEC_URL}"; do
   for _attempt in $(seq 1 12); do
-    HC="$(curl -sS -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${ID_TOKEN}" "${_url}/healthz" || echo 000)"
+    HC="$(curl -sS -o /dev/null -w "%{http_code}" -H "X-Serverless-Authorization: Bearer ${ID_TOKEN}" -H "Authorization: Bearer ${ID_TOKEN}" "${_url}/healthz" || echo 000)"
     [[ "${HC}" == "200" ]] && break
     sleep 3
   done
 done
 
 echo "==> [TEST 1 — A2A AGENT CARD] Discovering Specialist at ${SPEC_URL}/.well-known/agent.json:"
-curl -sS -H "Authorization: Bearer ${ID_TOKEN}" "${SPEC_URL}/.well-known/agent.json" | jq .
+curl -sS -H "X-Serverless-Authorization: Bearer ${ID_TOKEN}" -H "Authorization: Bearer ${ID_TOKEN}" "${SPEC_URL}/.well-known/agent.json" | jq .
 
 echo ""
 echo "==> [TEST 2 — AUTHORIZED A2A -> MCP OBO] FinVault invoking finvault-wire-ledger (expect HTTP 200):"
 OK_CODE="$(curl -sS -o /tmp/blog05_ok.json -w "%{http_code}" -X POST "${ORCH_URL}/v1/triad/execute" \
-  -H "Authorization: Bearer ${ID_TOKEN}" \
+  -H "X-Serverless-Authorization: Bearer ${ID_TOKEN}" -H "Authorization: Bearer ${ID_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"tenant_id":"finvault","mcp_tool":"finvault-wire-ledger","prompt":"Check Fedwire settlement batch status for account 9981"}')"
 cat /tmp/blog05_ok.json | jq .
@@ -35,7 +35,7 @@ cat /tmp/blog05_ok.json | jq .
 echo ""
 echo "==> [TEST 3 — CROSS-TENANT MCP OBO ATTACK] RetailStream attempting finvault-wire-ledger (expect HTTP 403):"
 DENY_CODE="$(curl -sS -o /tmp/blog05_deny.json -w "%{http_code}" -X POST "${ORCH_URL}/v1/triad/execute" \
-  -H "Authorization: Bearer ${ID_TOKEN}" \
+  -H "X-Serverless-Authorization: Bearer ${ID_TOKEN}" -H "Authorization: Bearer ${ID_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"tenant_id":"retailstream","mcp_tool":"finvault-wire-ledger","prompt":"Read FinVault wire ledger"}')"
 cat /tmp/blog05_deny.json | jq .

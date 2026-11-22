@@ -65,8 +65,10 @@ def healthz() -> dict[str, Any]:
 def backend_execute(
     req: HybridTurnRequest,
     authorization: str | None = Header(default=None),
+    x_serverless_authorization: str | None = Header(default=None, alias="X-Serverless-Authorization"),
 ) -> dict[str, Any]:
-    if not authorization or not authorization.startswith("Bearer "):
+    _auth = authorization or x_serverless_authorization
+    if not _auth or not _auth.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
     tenant = validate_tenant_id(req.tenant_id)
     return {
@@ -82,8 +84,10 @@ def backend_execute(
 def route_hybrid_turn(
     req: HybridTurnRequest,
     authorization: str | None = Header(default=None),
+    x_serverless_authorization: str | None = Header(default=None, alias="X-Serverless-Authorization"),
 ) -> dict[str, Any]:
-    if not authorization or not authorization.startswith("Bearer "):
+    _auth = authorization or x_serverless_authorization
+    if not _auth or not _auth.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
     try:
         tenant = validate_tenant_id(req.tenant_id)
@@ -104,7 +108,7 @@ def route_hybrid_turn(
     with httpx.Client(timeout=15.0) as http:
         upstream = http.post(
             f"{target_url}/v1/backend/execute",
-            headers={"Authorization": f"Bearer {id_token}", "Content-Type": "application/json"},
+            headers={"X-Serverless-Authorization": f"Bearer {id_token}", "Authorization": f"Bearer {id_token}", "Content-Type": "application/json"},
             json={"tenant_id": tenant, "prompt": req.prompt},
         )
     if upstream.status_code != 200:
@@ -129,9 +133,11 @@ def route_hybrid_turn(
 def promote_tenant_zero_downtime(
     req: PromoteRequest,
     authorization: str | None = Header(default=None),
+    x_serverless_authorization: str | None = Header(default=None, alias="X-Serverless-Authorization"),
 ) -> dict[str, Any]:
     """Execute 3-phase atomic Firestore CAS promotion (Standard Pool -> Enterprise PSC Spoke)."""
-    if not authorization or not authorization.startswith("Bearer "):
+    _auth = authorization or x_serverless_authorization
+    if not _auth or not _auth.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
     tenant = validate_tenant_id(req.tenant_id)
     fs = firestore.Client(project=PROJECT_ID, database=FIRESTORE_DB)

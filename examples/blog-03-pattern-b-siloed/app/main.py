@@ -55,8 +55,10 @@ def healthz() -> dict[str, Any]:
 def read_sovereign_vault(
     req: SiloVaultRequest,
     authorization: str | None = Header(default=None),
+    x_serverless_authorization: str | None = Header(default=None, alias="X-Serverless-Authorization"),
 ) -> dict[str, Any]:
-    if not authorization or not authorization.startswith("Bearer "):
+    _auth = authorization or x_serverless_authorization
+    if not _auth or not _auth.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Authenticated Bearer OIDC token required.")
 
     egress = evaluate_vpc_sc_egress_boundary(PROJECT_ID, req.egress_target_project)

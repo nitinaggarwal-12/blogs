@@ -23,14 +23,14 @@ restore_key() {
 trap restore_key EXIT
 
 for _attempt in $(seq 1 12); do
-  HC="$(curl -sS -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${ID_TOKEN}" "${SERVICE_URL}/healthz" || echo 000)"
+  HC="$(curl -sS -o /dev/null -w "%{http_code}" -H "X-Serverless-Authorization: Bearer ${ID_TOKEN}" -H "Authorization: Bearer ${ID_TOKEN}" "${SERVICE_URL}/healthz" || echo 000)"
   [[ "${HC}" == "200" ]] && break
   sleep 3
 done
 
 echo "==> [TEST 1 — BEFORE] CMEK key ENABLED: Sovereign BigQuery + GCS vault decrypts cleanly (expect HTTP 200)"
 BEFORE_CODE="$(curl -sS -o /tmp/blog03_before.json -w "%{http_code}" -X POST "${SERVICE_URL}/v1/silo/vault" \
-  -H "Authorization: Bearer ${ID_TOKEN}" \
+  -H "X-Serverless-Authorization: Bearer ${ID_TOKEN}" -H "Authorization: Bearer ${ID_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{}')"
 cat /tmp/blog03_before.json | jq .
@@ -39,7 +39,7 @@ cat /tmp/blog03_before.json | jq .
 echo ""
 echo "==> [TEST 2 — PERIMETER EGRESS] Cross-project egress outside silo project denied (expect HTTP 403)"
 EGRESS_CODE="$(curl -sS -o /tmp/blog03_egress.json -w "%{http_code}" -X POST "${SERVICE_URL}/v1/silo/vault" \
-  -H "Authorization: Bearer ${ID_TOKEN}" \
+  -H "X-Serverless-Authorization: Bearer ${ID_TOKEN}" -H "Authorization: Bearer ${ID_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"egress_target_project":"external-attacker-proj"}')"
 cat /tmp/blog03_egress.json | jq .
@@ -53,7 +53,7 @@ gcloud kms keys versions disable 1 \
 echo ""
 echo "==> [TEST 4 — AFTER] Sovereign silo immediately fails closed with HTTP 423 LOCKED:"
 AFTER_CODE="$(curl -sS -o /tmp/blog03_after.json -w "%{http_code}" -X POST "${SERVICE_URL}/v1/silo/vault" \
-  -H "Authorization: Bearer ${ID_TOKEN}" \
+  -H "X-Serverless-Authorization: Bearer ${ID_TOKEN}" -H "Authorization: Bearer ${ID_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{}')"
 cat /tmp/blog03_after.json | jq .
