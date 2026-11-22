@@ -20,7 +20,6 @@ import google.auth
 import google.auth.transport.requests
 import httpx
 from fastapi import FastAPI, HTTPException, Request, Response
-from google import genai
 from google.cloud import kms
 from pydantic import BaseModel, Field
 
@@ -120,13 +119,58 @@ def _call_model_armor(template_name: str, prompt: str) -> dict[str, Any]:
     }
 
 
-def _call_vertex_gemini(prompt: str) -> str:
-    client = genai.Client(vertexai=True, project=PROJECT_ID, location=REGION)
-    resp = client.models.generate_content(
-        model=VERTEX_MODEL,
-        contents=f"Respond concisely in one sentence to this enterprise SRE diagnostic query: {prompt}",
+def _call_vertex_gemini(prompt: str) -> tuple[str, str]:
+    creds, _ = google.auth.default(scopes=["https://www.googleapis.com/auth/cloud-platform"])
+    auth_req = google.auth.transport.requests.Request()
+    creds.refresh(auth_req)
+
+    candidates = [
+        (REGION, VERTEX_MODEL),
+        ("global", VERTEX_MODEL),
+        ("global", "gemini-3-flash-preview"),
+        ("global", "gemini-3.1-pro-preview"),
+        (REGION, "gemini-2.5-pro"),
+    ]
+    seen: set[tuple[str, str]] = set()
+    last_err = "unknown"
+    payload = {
+        "contents": [
+            {
+                "role": "user",
+                "parts": [
+                    {
+                        "text": f"Respond concisely in one sentence to this enterprise SRE diagnostic query: {prompt}"
+                    }
+                ],
+            }
+        ]
+    }
+    headers = {"Authorization": f"Bearer {creds.token}", "Content-Type": "application/json"}
+
+    with httpx.Client(timeout=25.0) as http:
+        for loc, model in candidates:
+            if not model or (loc, model) in seen:
+                continue
+            seen.add((loc, model))
+            host = "aiplatform.googleapis.com" if loc == "global" else f"{loc}-aiplatform.googleapis.com"
+            url = f"https://{host}/v1/projects/{PROJECT_ID}/locations/{loc}/publishers/google/models/{model}:generateContent"
+            res = http.post(url, headers=headers, json=payload)
+            if res.status_code == 200:
+                body = res.json()
+                cands = body.get("candidates") or []
+                parts = (cands[0].get("content") or {}).get("parts") or [] if cands else []
+                text = " ".join(str(p.get("text", "")) for p in parts if isinstance(p, dict)).strip()
+                if not text:
+                    finish = cands[0].get("finishReason", "SAFETY_OR_EMPTY") if cands else "EMPTY"
+                    text = f"[Model returned no text candidate; finishReason={finish}]"
+                return redact_egress_pii(text), f"{loc}/{model}"
+            last_err = f"{loc}/{model}:HTTP_{res.status_code}"
+            LOGGER.warning("Vertex AI candidate %s/%s failed: %s %s", loc, model, res.status_code, res.text[:200])
+
+    raise HTTPException(
+        status_code=502,
+        detail={"code": "HOP3_VERTEX_AI_UNAVAILABLE", "last_error": last_err},
     )
-    return redact_egress_pii(resp.text or "")
 
 
 def _verify_authenticated_request(request: Request) -> None:
@@ -189,8 +233,8 @@ def execute_turn(
         if not nlc.allowed:
             raise HTTPException(status_code=nlc.http_status, detail={"code": nlc.code, "message": nlc.detail})
 
-    # Hop 3: Live Vertex AI Gemini 2.5 Flash inference
-    answer = _call_vertex_gemini(req.prompt)
+    # Hop 3: Live Vertex AI Gemini inference (with automatic regional -> global Gemini 3 Flash fallback)
+    answer, model_used = _call_vertex_gemini(req.prompt)
 
     return {
         "status": "ALLOW",
@@ -200,5 +244,6 @@ def execute_turn(
         "prompt_sha256": hash_prompt_zero_pii(req.prompt),
         "hop1_kms_jwt": kms_jwt,
         "hop4_model_armor": armor,
+        "hop3_model": model_used,
         "hop3_answer": answer,
     }
