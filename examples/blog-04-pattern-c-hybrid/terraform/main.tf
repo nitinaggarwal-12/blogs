@@ -38,6 +38,7 @@ locals {
     "cloudbuild.googleapis.com",
     "compute.googleapis.com",
     "firestore.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
     "iam.googleapis.com",
     "run.googleapis.com",
   ])

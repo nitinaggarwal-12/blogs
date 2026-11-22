@@ -29,6 +29,7 @@ locals {
     "cloudbuild.googleapis.com",
     "cloudkms.googleapis.com",
     "compute.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
     "iam.googleapis.com",
     "modelarmor.googleapis.com",
     "run.googleapis.com",

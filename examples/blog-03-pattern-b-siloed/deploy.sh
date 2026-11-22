@@ -23,6 +23,7 @@ gcloud services enable \
   cloudbuild.googleapis.com \
   cloudkms.googleapis.com \
   compute.googleapis.com \
+  cloudresourcemanager.googleapis.com \
   iam.googleapis.com \
   run.googleapis.com \
   serviceusage.googleapis.com \
