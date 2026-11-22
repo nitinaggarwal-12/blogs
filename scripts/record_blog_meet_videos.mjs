@@ -159,7 +159,7 @@ function getConfiguredSaasOrigins() {
 
 function buildBlogCatalog() {
   const origins = getConfiguredSaasOrigins();
-  const loggingWindowIso = new Date(Date.now() - 25 * 60 * 1000).toISOString();
+  const loggingWindowIso = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString();
 
   return {
     ws1: {
@@ -383,7 +383,7 @@ function buildBlogCatalog() {
           surface: "Google Cloud Console · Firestore & Logging",
           phaseBadge: "NOISY-NEIGHBOR BULKHEAD",
           primaryUrl: `https://console.cloud.google.com/firestore/databases/cymbal-pool-limiter-ab385c/data?project=${GCP_HUB_PROJECT}`,
-          secondaryUrl: `https://console.cloud.google.com/logs/query;query=resource.labels.service_name%3D%22cymbal-ws2-pooled-ab385c%22;startTime=${encodeURIComponent(loggingWindowIso)}?project=${GCP_HUB_PROJECT}`,
+          secondaryUrl: `https://console.cloud.google.com/logs/query;query=resource.labels.service_name%3D%22cymbal-ws2-pooled-ab385c%22%20AND%20%28%22429%22%20OR%20%22200%22%29;startTime=${encodeURIComponent(loggingWindowIso)}?project=${GCP_HUB_PROJECT}`,
           metrics: [
             "DB: cymbal-pool-limiter-ab385c (Firestore)",
             "Enforcement: Atomic per-tenant RPM counters",
@@ -735,7 +735,8 @@ function buildBlogCatalog() {
           title: "WS5 BEFORE — Standalone Integration Connectors Catalog Baseline",
           surface: "Google Cloud Console · Integration Connectors",
           phaseBadge: "BEFORE (POINT-TO-POINT)",
-          primaryUrl: `https://console.cloud.google.com/connectors/connections/create?project=${GCP_HUB_PROJECT}`,
+          primaryUrl: `https://console.cloud.google.com/connectors/marketplace?project=${GCP_HUB_PROJECT}`,
+          secondaryUrl: `https://console.cloud.google.com/connectors/connections/create?project=${GCP_HUB_PROJECT}`,
           metrics: [
             "Catalog: Standalone Integration Connectors",
             "Pattern: Point-to-point per-endpoint setup",
@@ -1083,7 +1084,15 @@ async function evalInSession(cdp, sessionId, fn, ...args) {
 async function navigateAndWaitSettled(cdp, sessionId, targetUrl, { minTextLen = 40, timeoutMs = 35000 } = {}) {
   const navUrl = withGcpAuthUser(targetUrl);
   engine.assertUrlAllowedForAudience(navUrl, { audience: "external" });
-  await cdp.send("Page.navigate", { url: navUrl }, sessionId);
+  await cdp
+    .send("Runtime.evaluate", { expression: "try { window.onbeforeunload = null; } catch {}" }, sessionId)
+    .catch(() => {});
+  await Promise.race([
+    cdp.send("Page.navigate", { url: navUrl }, sessionId),
+    engine.sleep(12000).then(async () => {
+      await cdp.send("Page.handleJavaScriptDialog", { accept: true }, sessionId).catch(() => {});
+    })
+  ]);
 
   const authBounceRe =
     /accounts\.google\.com\/(v3\/signin|ServiceLogin)|id\.atlassian\.com\/login|identity\.thoughtspotlogin\.cloud|\/account\/login\b|\/signin\b|\/login\b/i;
@@ -1190,7 +1199,14 @@ async function clickSelectorWithX11(cdp, sessionId, ptr, chromeTopPx, spec) {
           try {
             if (cand.matches(s.selector)) {
               const r = cand.getBoundingClientRect();
-              if (r.width >= 8 && r.height >= 8 && (!s.minY || r.top >= s.minY)) {
+              if (
+                r.width >= 8 &&
+                r.height >= 8 &&
+                (!s.minY || r.top >= s.minY) &&
+                (!s.maxY || r.top <= s.maxY) &&
+                (!s.minX || r.left >= s.minX) &&
+                (!s.selectorTextRegex || new RegExp(s.selectorTextRegex, "i").test((cand.innerText || cand.textContent || "").trim()))
+              ) {
                 el = cand;
                 break;
               }
@@ -1203,7 +1219,14 @@ async function clickSelectorWithX11(cdp, sessionId, ptr, chromeTopPx, spec) {
         el = all.find(c => {
           const al = (c.getAttribute("aria-label") || c.getAttribute("placeholder") || "").toLowerCase();
           const r = c.getBoundingClientRect();
-          return al.includes(needle) && r.width >= 8 && r.height >= 8 && (!s.minY || r.top >= s.minY);
+          return (
+            al.includes(needle) &&
+            r.width >= 8 &&
+            r.height >= 8 &&
+            (!s.minY || r.top >= s.minY) &&
+            (!s.maxY || r.top <= s.maxY) &&
+            (!s.minX || r.left >= s.minX)
+          );
         });
       }
       if (!el && s.textRegex) {
@@ -1212,6 +1235,8 @@ async function clickSelectorWithX11(cdp, sessionId, ptr, chromeTopPx, spec) {
           const r = c.getBoundingClientRect();
           if (r.width < 12 || r.height < 12 || r.width > 650 || r.height > 140) return false;
           if (s.minY && r.top < s.minY) return false;
+          if (s.maxY && r.top > s.maxY) return false;
+          if (s.minX && r.left < s.minX) return false;
           const t = (c.innerText || c.textContent || "").replace(/\s+/g, " ").trim();
           return t.length > 0 && t.length <= 100 && re.test(t);
         });
@@ -1425,85 +1450,161 @@ async function executeChapterChoreography({
     await scrollOn(tab1.sessionId, 640, 420, "down", 5);
     await engine.sleep(900);
     await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, {
-      textRegex: "^Rules$|^Subnets$|^Targets$|^Revisions$|^Details$|^Firewalls$"
+      textRegex: "^Rules$|^Subnets$|^Targets$|^Revisions$|^Details$|^Firewalls$",
+      minX: 260,
+      minY: 120
     });
     await engine.sleep(1000);
     await clock.waitUntilSec(beat1DurSec + 0.3, `${chapter.id}_b2_start`);
     await activateTab2WithCursor();
     await engine.sleep(700);
     await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, {
-      textRegex: "^Subnets$|^Rules$|^Targets$|^Permissions$"
+      textRegex: "^Subnets$|^Rules$|^Targets$|^Permissions$",
+      minX: 260,
+      minY: 120
     });
     await engine.sleep(900);
     await scrollOn(tab2.sessionId, 640, 420, "down", 5);
     await engine.sleep(800);
     await scrollOn(tab2.sessionId, 640, 420, "up", 3);
   } else if (kind === "model_armor_test_prompt") {
-    // Beat 1: Click Test template tab, click prompt textarea, type adversarial SSN prompt
-    await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, { textRegex: "^Test template$|^Test$" });
+    // Beat 1: Click Test template button (main pane), click prompt textarea, type adversarial SSN prompt
+    await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, { textRegex: "^Test template$|^Test$", minX: 260 });
     await engine.sleep(1400);
     const box = await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, {
-      selector: 'textarea, input[type="text"], [contenteditable="true"]'
+      selector: 'textarea, input[type="text"], [contenteditable="true"]',
+      minX: 640,
+      minY: 140
     });
     if (box && chapter.testPrompt) {
       await engine.dispatchCdpText(cdpSend, chapter.testPrompt, { delayMs: 22, sessionId: tab1.sessionId });
     }
-    await engine.sleep(800);
-    // Beat 2: Click Test / Run button and scroll live verdict panel
+    await engine.sleep(600);
+    // Beat 2: Click "Run test" button inside the Test template drawer & scroll live verdict panel!
     await clock.waitUntilSec(beat1DurSec + 0.3, `${chapter.id}_b2_start`);
-    await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, { textRegex: "^Test$|^Sanitize$|^Run$" });
-    await engine.sleep(2600);
-    await scrollOn(tab1.sessionId, 640, 460, "down", 5);
-  } else if (kind === "bigquery_run_query" || kind === "bigquery_query_then_logging_expand") {
-    // Beat 1: Click RUN on pre-staged BigQuery SQL tab & scroll result grid
-    await smoothGlide(ptr, 380, 250, 440, 210, 12);
-    await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, {
-      selector: 'button[aria-label*="Run" i], button[data-testid*="run" i]',
-      textRegex: "^Run$"
+    const runHit = await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, {
+      textRegex: "^Run test$|^Test$|^Sanitize$|^Run$",
+      minX: 640,
+      minY: 200
     });
-    await engine.sleep(3600);
-    await scrollOn(tab1.sessionId, 680, 560, "down", 5);
+    console.log(`    🖱️ [Model Armor] Clicked Run test: ${JSON.stringify(runHit)}`);
+    await engine.sleep(3200);
+    await scrollOn(tab1.sessionId, 960, 520, "down", 6);
+  } else if (kind === "bigquery_run_query" || kind === "bigquery_query_then_logging_expand") {
+    // Beat 1: Click blue primary "Run" pill strictly ABOVE menu bar (y≈109, maxY: 120 -> never hits y=139 File/Edit/Run menu!)
+    await smoothGlide(ptr, 380, 250, 340, 195, 12);
+    const runHit = await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, {
+      selector: "button",
+      selectorTextRegex: "^(?:play_arrow\\s*)?Run$",
+      minY: 85,
+      maxY: 120
+    });
+    console.log(`    🖱️ [BigQuery] Clicked blue Run pill: ${JSON.stringify(runHit)}`);
+    if (!runHit) {
+      // Fallback: open Run menu -> click "Run query" item, AND fire Ctrl+Enter
+      const menuHit = await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, {
+        selector: "button",
+        selectorTextRegex: "^Run$",
+        minY: 120,
+        maxY: 165
+      });
+      if (menuHit) {
+        await engine.sleep(350);
+        await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, { textRegex: "^Run query$", minY: 130, maxY: 250 });
+      }
+    }
+    await engine.sleep(4500);
+    await scrollOn(tab1.sessionId, 680, 660, "down", 5);
     await clock.waitUntilSec(beat1DurSec + 0.3, `${chapter.id}_b2_start`);
     if (kind === "bigquery_query_then_logging_expand" && tab2) {
       await activateTab2WithCursor();
-      await engine.sleep(900);
-      // Expand one InsertJob log row per R3 P2-4 so WHERE tenant_id=@tenant_id is visibly shown!
+      await engine.sleep(800);
+      // Dismiss any floating Logging feature tooltip first, then click the row EXPAND chevron on left of first log row
       await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, {
-        textRegex: "InsertJob|jobservice\\.insert|getqueryresults|pooled_rls_entities"
+        selector: 'button[aria-label*="Close" i]',
+        minX: 400,
+        minY: 360
       });
-      await engine.sleep(1400);
-      await scrollOn(tab2.sessionId, 640, 480, "down", 6);
+      await engine.sleep(400);
+      const expHit =
+        (await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, {
+          selector: 'button[aria-label*="Expand this log entry" i], [role="button"][aria-label*="Expand this log entry" i]',
+          minX: 380,
+          minY: 460
+        })) ||
+        (await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, {
+          selector: 'button[aria-label*="Expand" i], [role="button"][aria-label*="Expand" i]',
+          ariaLabel: "Expand this log entry",
+          minX: 380,
+          minY: 460
+        }));
+      console.log(`    🖱️ [Logging] Expanded row chevron: ${JSON.stringify(expHit)}`);
+      await smoothGlide(ptr, 420, 620, 820, 480, 10);
+      await engine.sleep(1600);
+      await scrollOn(tab2.sessionId, 720, 600, "down", 6);
     } else {
-      await scrollOn(tab1.sessionId, 680, 560, "down", 5);
-      await engine.sleep(900);
-      await scrollOn(tab1.sessionId, 680, 560, "up", 4);
+      // Single-tab BigQuery: briefly view Job information tab then return to Results grid for crisp Gate 4 motion!
+      await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, {
+        textRegex: "^Job information$",
+        minX: 220,
+        minY: 360
+      });
+      await engine.sleep(2600);
+      await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, {
+        textRegex: "^Results$",
+        minX: 220,
+        minY: 360
+      });
+      await engine.sleep(1000);
+      await scrollOn(tab1.sessionId, 680, 660, "down", 5);
     }
   } else if (kind === "bigquery_schema_to_details") {
     await smoothGlide(ptr, 360, 280, 580, 380, 12);
     await scrollOn(tab1.sessionId, 640, 440, "down", 5);
     await clock.waitUntilSec(beat1DurSec + 0.3, `${chapter.id}_b2_start`);
-    await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, { textRegex: "^Details$" });
+    await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, { textRegex: "^Details$", minX: 260 });
     await engine.sleep(1600);
     await scrollOn(tab1.sessionId, 640, 440, "down", 5);
   } else if (kind === "firestore_click_then_logging_expand") {
-    await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, { textRegex: "rate_limits|tenants|finvault|retailstream|globex" });
+    await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, { textRegex: "rate_limits|tenants|finvault|retailstream|globex", minX: 260 });
     await engine.sleep(1600);
     await smoothGlide(ptr, 400, 320, 740, 360, 12);
     await clock.waitUntilSec(beat1DurSec + 0.3, `${chapter.id}_b2_start`);
     await activateTab2WithCursor();
-    await engine.sleep(900);
-    await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, { textRegex: "429|WARNING|pooled/query" });
-    await engine.sleep(1200);
-    await scrollOn(tab2.sessionId, 640, 460, "down", 6);
+    await engine.sleep(800);
+    // Dismiss any floating tooltip & click the row expand chevron (never the text chip!)
+    await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, {
+      selector: 'button[aria-label*="Close" i]',
+      minX: 400,
+      minY: 360
+    });
+    await engine.sleep(400);
+    const expHit =
+      (await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, {
+        selector: 'button[aria-label*="Expand this log entry" i], [role="button"][aria-label*="Expand this log entry" i]',
+        minX: 380,
+        minY: 460
+      })) ||
+      (await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, {
+        selector: 'button[aria-label*="Expand" i], [role="button"][aria-label*="Expand" i]',
+        ariaLabel: "Expand this log entry",
+        minX: 380,
+        minY: 460
+      }));
+    console.log(`    🖱️ [Logging 429] Expanded row chevron: ${JSON.stringify(expHit)}`);
+    await smoothGlide(ptr, 420, 620, 820, 480, 10);
+    await engine.sleep(1400);
+    await scrollOn(tab2.sessionId, 720, 600, "down", 6);
   } else if (kind === "kms_then_gcs_config_to_permissions") {
     await smoothGlide(ptr, 360, 280, 620, 360, 12);
     await scrollOn(tab1.sessionId, 640, 420, "down", 5);
     await clock.waitUntilSec(beat1DurSec + 0.3, `${chapter.id}_b2_start`);
     await activateTab2WithCursor();
-    await engine.sleep(1200);
-    await scrollOn(tab2.sessionId, 640, 420, "down", 4);
-    // Switch from Configuration (CMEK) -> Permissions (UBLA + PAP) per Plan R3 P2-9
-    await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, { textRegex: "^Permissions$" });
+    await engine.sleep(1000);
+    // Keep GCS on Configuration (shows CMEK + Uniform Bucket-Level Access + Public Access Prevention without scrolling into inherited org IAM bindings!)
+    await scrollOn(tab2.sessionId, 640, 420, "down", 6);
+    await engine.sleep(1400);
+    await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, { textRegex: "^Protection$", minX: 260 });
     await engine.sleep(1400);
     await scrollOn(tab2.sessionId, 640, 420, "down", 4);
   } else if (kind === "thoughtspot_liveboard_to_answer") {
@@ -1516,18 +1617,18 @@ async function executeChapterChoreography({
     await engine.sleep(1600);
     await scrollOn(tab2.sessionId, 640, 440, "down", 5);
   } else if (kind === "connectors_browse_and_filter") {
-    await smoothGlide(ptr, 360, 280, 640, 400, 14);
+    // Beat 1: Browse & scroll live Marketplace Connectors catalog (point-to-point baseline)
+    await smoothGlide(ptr, 360, 280, 680, 420, 14);
     await scrollOn(tab1.sessionId, 640, 440, "down", 6);
-    await clock.waitUntilSec(beat1DurSec + 0.3, `${chapter.id}_b2_start`);
-    const f = await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, {
-      selector: 'cfc-filter [role="combobox"], div[id^="chip-list-input-"], input[placeholder*="Filter" i], input[aria-label*="Filter" i]',
-      minY: 120
-    });
-    if (f) {
-      await engine.dispatchCdpText(cdpSend, "BigQuery", { delayMs: 55, sessionId: tab1.sessionId });
-    }
-    await engine.sleep(1400);
+    await engine.sleep(1200);
     await scrollOn(tab1.sessionId, 640, 440, "down", 5);
+    // Beat 2: Switch to Create Connection 4-step point-to-point wizard & open Region dropdown live!
+    await clock.waitUntilSec(beat1DurSec + 0.3, `${chapter.id}_b2_start`);
+    await activateTab2WithCursor();
+    await engine.sleep(900);
+    await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, { textRegex: "Region \\*|^Region$", minX: 250, minY: 200 });
+    await engine.sleep(1400);
+    await scrollOn(tab2.sessionId, 520, 440, "down", 4);
   } else if (kind === "snowflake_admin_run") {
     await smoothGlide(ptr, 360, 260, 740, 320, 14);
     await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, {
@@ -2605,6 +2706,10 @@ async function main() {
   try {
     const modeA = await engine.verifyModeAPreflight({ display: ":99", cdpPort: 9222, viewerPort: 8080 });
     cdp = await engine.CdpWsConnection.connect(modeA.webSocketDebuggerUrl);
+    // Auto-accept Chrome beforeunload / JS dialogs (e.g. unsaved BigQuery Studio tabs) so Page.navigate never stalls!
+    cdp.on("Page.javascriptDialogOpening", (_params, sid) => {
+      cdp.send("Page.handleJavaScriptDialog", { accept: true }, sid).catch(() => {});
+    });
     ptr = new engine.X11Pointer(":99");
 
     if (opts.preflightOnly) {
