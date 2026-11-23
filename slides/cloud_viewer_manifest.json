@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-23T19:26:42Z",
+  "updatedAt": "2026-11-23T20:23:16Z",
   "accountEmail": "anonymous-workspace-sync@cloud-architecture-center.internal",
   "oauthClientId": "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com",
   "slides": {
@@ -7,8 +7,8 @@
       "key": "WS1",
       "title": "WS1 — Reference Architecture, Taxonomy & 5-Hop Baseline",
       "pptxPath": "slides/ws1-12slide-visual-deck.pptx",
-      "sha256": "eb45bfe2dd69a5688e9a11378c2d49d0db27b61fc55f7b9e549448c57ddc89a3",
-      "sizeBytes": 2162923,
+      "sha256": "eeaf4ee43463ef58403b5021afb4db656f83f5a78ce124f88beee0ce9df2c279",
+      "sizeBytes": 2162836,
       "slideCount": 10,
       "googleSlidesId": "1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit?resourcekey=0-77zXQOQhM63BNHXHkhxpjA",
@@ -16,14 +16,14 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/embed?start=false&loop=false&delayms=5000&resourcekey=0-77zXQOQhM63BNHXHkhxpjA",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/export/pdf?resourcekey=0-77zXQOQhM63BNHXHkhxpjA",
       "webViewLink": "https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit?usp=drivesdk&resourcekey=0-77zXQOQhM63BNHXHkhxpjA",
-      "syncedAt": "2026-11-23T19:26:42Z"
+      "syncedAt": "2026-11-23T20:23:16Z"
     },
     "WS2": {
       "key": "WS2",
       "title": "[LEAN VISUAL — 8 SLIDES] WS2 — Pattern A: High-Density Pooled Architecture — Editable Google Slides",
       "pptxPath": "slides/ws2-12slide-visual-deck.pptx",
-      "sha256": "42d802a4c3d43459718902772373c0ccf63f741192ccd7d3a0b311fc84337bd8",
-      "sizeBytes": 640521,
+      "sha256": "1f4fba9cf00d0f4ff059327fa290f6c79bd1c806d68904b52a980e27e193d353",
+      "sizeBytes": 640543,
       "slideCount": 8,
       "googleSlidesId": "1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit",
@@ -31,14 +31,14 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit?usp=drivesdk",
-      "syncedAt": "2026-11-23T19:26:42Z"
+      "syncedAt": "2026-11-23T20:23:16Z"
     },
     "WS3": {
       "key": "WS3",
       "title": "[LEAN VISUAL — 7 SLIDES] WS3 — Pattern B: Zero-Trust Sovereign Silos — Editable Google Slides",
       "pptxPath": "slides/ws3-12slide-visual-deck.pptx",
-      "sha256": "f472c99371c815f605459729fbbba41276081ec6dc3cae5e933603db4112ceca",
-      "sizeBytes": 611719,
+      "sha256": "62d12b3e8360a0e75d99e919c4fb61fe70bf43c4d10edf73a56c9af865d0300f",
+      "sizeBytes": 611706,
       "slideCount": 7,
       "googleSlidesId": "1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac/edit",
@@ -46,14 +46,14 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac/edit?usp=drivesdk",
-      "syncedAt": "2026-11-23T19:26:42Z"
+      "syncedAt": "2026-11-23T20:23:16Z"
     },
     "WS4": {
       "key": "WS4",
       "title": "[LEAN VISUAL — 9 SLIDES] WS4 — Pattern C: Governed Hybrid & Live Migration — Editable Google Slides",
       "pptxPath": "slides/ws4-12slide-visual-deck.pptx",
-      "sha256": "9e40862f90696fd9d3fe2829d423a6f187fce95262247d1662d768f1275666f8",
-      "sizeBytes": 1074128,
+      "sha256": "0336a38bf14fe58c26ecf58d1f258b111a8ae400fd8ea4d359ca8df62c511d0c",
+      "sizeBytes": 1074120,
       "slideCount": 9,
       "googleSlidesId": "1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/edit?resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ",
@@ -61,14 +61,14 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/embed?start=false&loop=false&delayms=5000&resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/export/pdf?resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ",
       "webViewLink": "https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/edit?usp=drivesdk&resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ",
-      "syncedAt": "2026-11-23T19:26:42Z"
+      "syncedAt": "2026-11-23T20:23:16Z"
     },
     "WS5": {
       "key": "WS5",
       "title": "[LEAN VISUAL — 9 SLIDES] WS5 — Executive Decision Guide & Agentic Triad — Editable Google Slides",
       "pptxPath": "slides/ws5-12slide-visual-deck.pptx",
-      "sha256": "8ed260baf7b0d8fa73fdffb5a3fe85c59c20d26ad1d1adf06e85a4aa81dd7be5",
-      "sizeBytes": 1267930,
+      "sha256": "be884457292a8e959dec8e1c2926010c8c8811140cc2f418887e01aae19b1d6e",
+      "sizeBytes": 1267929,
       "slideCount": 9,
       "googleSlidesId": "1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/edit",
@@ -76,7 +76,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/edit?usp=drivesdk",
-      "syncedAt": "2026-11-23T19:26:42Z"
+      "syncedAt": "2026-11-23T20:23:16Z"
     },
     "ALL": {
       "key": "ALL",
@@ -397,8 +397,8 @@
       "key": "WS5_EXEC",
       "title": "WS5 Executive Architecture (10-Slide Lean Narrative Deck)",
       "pptxPath": "slides/ws5-executive-architecture-10slide-deck.pptx",
-      "sha256": "8c00111f23489d8e26b28838f32454abfbd9aef4d4c5378bde31b2d1dcc911b8",
-      "sizeBytes": 739458,
+      "sha256": "fc73606f7b2d8b5c6c0f5521545daa161534f6b018c3def18489bb1c892e7d03",
+      "sizeBytes": 739443,
       "slideCount": 10,
       "googleSlidesId": "19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/edit",
@@ -406,7 +406,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/edit?usp=drivesdk",
-      "syncedAt": "2026-11-23T19:26:42Z"
+      "syncedAt": "2026-11-23T20:23:16Z"
     },
     "WS1_SOLUTION": {
       "key": "WS1_SOLUTION",
@@ -556,6 +556,77 @@
       "wordDocxSizeBytes": 8430962,
       "bytes": 18751,
       "mdSha256": "c6ac387fe265d6d1e2fc0e3000f0fa836a6da23b78cf4486d0fd0aacca582912"
+    }
+  },
+  "verifiedProofs": {
+    "folderId": "1N6aByavJf7S81AxZSpJ7ElMij8GQMFGK",
+    "folderName": "GEAP — Verified SaaS UI Proofs & Receipts",
+    "folderUrl": "https://drive.google.com/drive/folders/1N6aByavJf7S81AxZSpJ7ElMij8GQMFGK?resourcekey=0-LPDX-to2nUvwVkbYlC5SYw",
+    "files": {
+      "ws1_thoughtspot_before": {
+        "fileId": "1bG3QKsRUEpb3yuZFED2ChhRtJzJov3-q",
+        "localPath": "screenshots/verified-cloud-console/ws1_before_thoughtspot_spotter_unscoped.png",
+        "mimeType": "image/png",
+        "sha256": "1d708eefbb6fbb8ab8e0a88a86f1bf4a082c247df0418b88458c03ba9ec66b14",
+        "webViewLink": "https://drive.google.com/file/d/1bG3QKsRUEpb3yuZFED2ChhRtJzJov3-q/view?usp=drivesdk&resourcekey=0-Q8wYboAynVWdcTSJrrukKw",
+        "syncedAt": "2026-11-23T20:23:16Z"
+      },
+      "ws1_thoughtspot_after": {
+        "fileId": "10wDMiKPe8oSpu3WIJHZyLHnsAB431Qy8",
+        "localPath": "screenshots/verified-cloud-console/ws1_after_thoughtspot_spotter_scoped.png",
+        "mimeType": "image/png",
+        "sha256": "ed772e17f9f70b84081882cd5885b143f0343a37b34b7f25c835661844215c7d",
+        "webViewLink": "https://drive.google.com/file/d/10wDMiKPe8oSpu3WIJHZyLHnsAB431Qy8/view?usp=drivesdk&resourcekey=0-evMG8XrBs7L42iZw3B1EjA",
+        "syncedAt": "2026-11-23T20:23:16Z"
+      },
+      "ws5_thoughtspot_before": {
+        "fileId": "1IIcN85ao5cTNUNJJMwZ9MG1wF9k1Vv8F",
+        "localPath": "screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png",
+        "mimeType": "image/png",
+        "sha256": "fd5cb15c0902760a01998f5147ccbb209523c98c86d91556208389b0a4d922f4",
+        "webViewLink": "https://drive.google.com/file/d/1IIcN85ao5cTNUNJJMwZ9MG1wF9k1Vv8F/view?usp=drivesdk&resourcekey=0-SvxLm-fTUMvg3LAGwS2gmQ",
+        "syncedAt": "2026-11-23T20:23:16Z"
+      },
+      "ws5_thoughtspot_after": {
+        "fileId": "10irkWVP4yCEmnvoEcFu2D6gJO6wNlH_D",
+        "localPath": "screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png",
+        "mimeType": "image/png",
+        "sha256": "3fcab795d1e561a326fdf33e308a5d25e7e2db65539949e32bce25dd96447fdb",
+        "webViewLink": "https://drive.google.com/file/d/10irkWVP4yCEmnvoEcFu2D6gJO6wNlH_D/view?usp=drivesdk&resourcekey=0-gSKI8-iBay2Wg6N00Bg0NQ",
+        "syncedAt": "2026-11-23T20:23:16Z"
+      },
+      "ws4_jira_after": {
+        "fileId": "1Jn0jQCa9x8zcKx35NS22rdkdcxtD2iBp",
+        "localPath": "screenshots/verified-cloud-console/ws4_after_jira_3lo_scoped_issue.png",
+        "mimeType": "image/png",
+        "sha256": "45e833e4909f5abb3d216820bbf4ade650035375b7b250e8373510e0f4d7d062",
+        "webViewLink": "https://drive.google.com/file/d/1Jn0jQCa9x8zcKx35NS22rdkdcxtD2iBp/view?usp=drivesdk&resourcekey=0-yvyl1kB9HId4GYIaBqhzCw",
+        "syncedAt": "2026-11-23T20:23:16Z"
+      },
+      "ws4_jira_confluence": {
+        "fileId": "1p49NEk0wFLhZYw0zEbrD8Vqfg4Rm3Ezq",
+        "localPath": "screenshots/verified-cloud-console/saas_06_atlassian_jira_confluence.png",
+        "mimeType": "image/png",
+        "sha256": "95ce12f87f1203636099c5fb0772391bb654210466005688d2bc95a41cf53e24",
+        "webViewLink": "https://drive.google.com/file/d/1p49NEk0wFLhZYw0zEbrD8Vqfg4Rm3Ezq/view?usp=drivesdk&resourcekey=0-QXVN_uh1b1ehv72qohE7_A",
+        "syncedAt": "2026-11-23T20:23:16Z"
+      },
+      "receipt_30_mcp": {
+        "fileId": "1qcdRHa5mhShkbyPTAD9Xi-g72RMQhkJY",
+        "localPath": "docs/third_party_5_saas_verification_receipt.json",
+        "mimeType": "application/json",
+        "sha256": "fbcb22e2a9c5cfdf8e931be99055c7db56864c61f3aa57c48d94333e50b088c4",
+        "webViewLink": "https://drive.google.com/file/d/1qcdRHa5mhShkbyPTAD9Xi-g72RMQhkJY/view?usp=drivesdk&resourcekey=0-ezmwMlyy7JtCakiphRd-sQ",
+        "syncedAt": "2026-11-23T20:23:16Z"
+      },
+      "receipt_10_cloudrun": {
+        "fileId": "1ajBbj_Zft-xbWtNwh9xB2nMWkOnSb7qs",
+        "localPath": "docs/cloudrun_to_aws_10_saas_live_receipt.json",
+        "mimeType": "application/json",
+        "sha256": "da55a2c0158a6b2fe2e9b3c8a0044cd5e857cc5ca8cd23e16966c47ade5dbd9e",
+        "webViewLink": "https://drive.google.com/file/d/1ajBbj_Zft-xbWtNwh9xB2nMWkOnSb7qs/view?usp=drivesdk&resourcekey=0-W-9Yf3bXknJFKUnhZ8sjDQ",
+        "syncedAt": "2026-11-23T20:23:16Z"
+      }
     }
   }
 }

@@ -28,13 +28,13 @@
   "audioSampleRateHz": 48000,
   "videoCodec": "h264",
   "audioCodec": "aac",
-  "fileSizeBytes": 4465222,
+  "fileSizeBytes": 4465181,
   "durationSec": 90.26,
-  "videoSha256": "65c3f1f35f90e8d6f88db91fd24524885451f7344729a0239a4b3c2c8a56b231",
+  "videoSha256": "b23dc5b9f2c26346c7a7098e546768e0e30c0f53c59c28cc5c94c7ebd4876e22",
   "containerChapterCount": 9,
   "mp4ArtistTag": "AI Digital Twin · Google Cloud",
   "mp4CommentTag": "Narrated Slide Deck Delivery composited with AI-Generated Pure Omni 1.2 Digital Twin (ge-demos v2-clean-exec side-by-side layout  not a live screen capture)",
-  "generatedAt": "2026-11-23T19:34:14.208Z",
+  "generatedAt": "2026-11-23T20:26:54.219Z",
   "chapters": [
     {
       "chapterNum": 1,
