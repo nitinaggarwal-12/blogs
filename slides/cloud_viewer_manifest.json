@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-23T15:12:38Z",
+  "updatedAt": "2026-11-23T15:31:46Z",
   "accountEmail": "anonymous-workspace-sync@cloud-architecture-center.internal",
   "oauthClientId": "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com",
   "slides": {
@@ -67,8 +67,8 @@
       "key": "WS5",
       "title": "WS5 \u2014 Executive Decision Guide & Multi-Tenant Agentic Triad",
       "pptxPath": "slides/ws5-12slide-visual-deck.pptx",
-      "sha256": "fc915e41470a9488b75997ffc7b25601b69d94f381848d57a8b07425c648a821",
-      "sizeBytes": 1266445,
+      "sha256": "064f94ed3e38f1025207f467e4b6020bc6afe5730dc53b73db69841d7c98cda8",
+      "sizeBytes": 1266450,
       "slideCount": 9,
       "googleSlidesId": "1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/edit",
@@ -76,7 +76,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/edit?usp=drivesdk",
-      "syncedAt": "2026-11-23T15:11:57Z"
+      "syncedAt": "2026-11-23T15:31:31Z"
     },
     "ALL": {
       "key": "ALL",
@@ -337,8 +337,8 @@
       "key": "BARE_MIN_12",
       "title": "[12-Slide Bare-Minimum Architecture Deck] Enterprise Multi-Tenancy, Governance & Isolation (WS1\u2013WS5)",
       "pptxPath": "slides/geap-bare-minimum-12slide-architecture-deck.pptx",
-      "sha256": "fc5f7edad76cb05edbeb5dfa55eb8bf06dc6bd13c12a5e9ce495602930aa09e7",
-      "sizeBytes": 3200826,
+      "sha256": "e04f2bd10b237a86689876f7ac9fdf7bc6b5ffae68a5b64a62e553e3149a5c2c",
+      "sizeBytes": 3200834,
       "slideCount": 12,
       "googleSlidesId": "1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit",
@@ -346,7 +346,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit?usp=drivesdk",
-      "syncedAt": "2026-11-23T15:12:38Z"
+      "syncedAt": "2026-11-23T15:31:46Z"
     },
     "WS2_EXEC": {
       "key": "WS2_EXEC",
@@ -397,8 +397,8 @@
       "key": "WS5_EXEC",
       "title": "WS5 Executive Architecture (10-Slide Lean Narrative Deck)",
       "pptxPath": "slides/ws5-executive-architecture-10slide-deck.pptx",
-      "sha256": "55aa9081be5251d5fd7971f2f558f3adfad6e385d95d92495e6415efd72bfce6",
-      "sizeBytes": 737711,
+      "sha256": "8f952d8d4178a90e02597771658245e42719f3ba2c35c1179794b707254e4076",
+      "sizeBytes": 737716,
       "slideCount": 10,
       "googleSlidesId": "19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/edit",
@@ -406,7 +406,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/edit?usp=drivesdk",
-      "syncedAt": "2026-11-23T15:12:22Z"
+      "syncedAt": "2026-11-23T15:31:35Z"
     },
     "WS1_SOLUTION": {
       "key": "WS1_SOLUTION",

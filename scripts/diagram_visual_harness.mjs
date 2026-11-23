@@ -192,11 +192,13 @@ console.log(JSON.stringify(out));
 function checkPptxDecksAndAtlas(errors) {
   // Use python stdlib zipfile (always available, zero extra npm deps) to inspect all 12 PPTX decks
   const pyCode = `
-import json, re, urllib.parse, zipfile, zlib, base64, html
+import json, re, sys, urllib.parse, zipfile, zlib, base64, html
 from pathlib import Path
 
 ROOT = Path(${JSON.stringify(ROOT_DIR)})
 DIAGRAMS = ROOT / "diagrams"
+sys.path.insert(0, str(ROOT / "scripts"))
+import verify_live_gslides_icon_parity as icon_parity
 ALLOWED = set("↗→←↔•✓✕◷─·—–×≤≥≠≈±§°“”‘’…\\u00a0ατ∈²")
 
 def bad_chars(txt):
@@ -238,6 +240,12 @@ DECKS = [
 ]
 
 errs = []
+# Layer 1: Ban dead text-badge icon escape hatch in scripts/lib/
+for lib_f in sorted((ROOT / "scripts/lib").glob("*.mjs")):
+    if "DRAWINGML_ICON_BADGES" in lib_f.read_text(encoding="utf-8", errors="ignore"):
+        errs.append(f"banned_escape_hatch_symbol:{lib_f.name}:DRAWINGML_ICON_BADGES")
+
+drawio_icons_cache = {did: icon_parity.extract_drawio_pic_icons(DIAGRAMS / f"{did}.drawio") for did in PRIMARY_SET}
 canon_cache = {}
 for key, rel, total, slide_specs in DECKS:
     p = ROOT / rel
@@ -276,6 +284,18 @@ for key, rel, total, slide_specs in DECKS:
                     errs.append(f"pptx_missing_native_vector_icons:{key}:S{snum:02d}")
                 if sx.count('tailEnd type="triangle"') < 10:
                     errs.append(f"pptx_missing_tailEnd_arrows:{key}:S{snum:02d}")
+                # Layer 2B + 2C: Name-agnostic disguised text-box icon detector + exact 1:1 vector cluster count & pairing
+                _pairs, _ico_errs = icon_parity.audit_slide_xml_icons(sx, drawio_icons_cache[did])
+                for _ie in _ico_errs:
+                    errs.append(f"pptx_icon_ast:{key}:S{snum:02d}:{_ie}")
+                # Layer 2D: Automated Web SVG <-> Slide Preview per-icon RGB pixel parity (all 78 icons on BARE_MIN_12)
+                if key == "BARE_MIN_12":
+                    _prev_png = ROOT / f"slides/previews/geap-bare-minimum-12slide-architecture-deck/slide_{snum:02d}.png"
+                    if _prev_png.is_file():
+                        _st, _px_errs = icon_parity.verify_rendered_icon_pixel_parity(
+                            did, DIAGRAMS / f"{did}.drawio", DIAGRAMS / f"{did}.svg", sx, _prev_png
+                        )
+                        errs.extend(_px_errs)
             m = re.search(r'Target="(https://viewer\\.diagrams\\.net/[^"]+)"', rx)
             if not m:
                 errs.append(f"pptx_missing_rid3_url:{key}:S{snum:02d}")

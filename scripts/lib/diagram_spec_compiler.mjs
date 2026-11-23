@@ -787,7 +787,7 @@ function ooxmlOrthoConnectorShape(edge, pts, nextId) {
     const pB = pts[midIdx];
     const mx = (pA.x + pB.x) / 2;
     const my = (pA.y + pB.y) / 2;
-    const bw = Math.max(38, edge.label.length * 6.5 + 12);
+    const bw = Math.max(54, edge.label.length * 7.8 + 20);
     shapes.push(
       ooxmlRectShape({
         id: nextId(),
@@ -802,8 +802,9 @@ function ooxmlOrthoConnectorShape(edge, pts, nextId) {
         stroke: '#CBD5E1',
         strokePt: 0.75,
         anchor: 'ctr',
+        wrap: 'none',
         lIns: 15240, rIns: 15240, tIns: 7620, bIns: 7620,
-        paragraphs: [ooxmlParagraph([{ text: edge.label, pt: 6.8, bold: true, color: '#334155' }], 'ctr', 0, 100000)],
+        paragraphs: [ooxmlParagraph([{ text: edge.label, pt: 6.4, bold: true, color: '#334155' }], 'ctr', 0, 100000)],
       })
     );
   }

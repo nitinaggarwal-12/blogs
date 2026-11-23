@@ -225,6 +225,59 @@ const puppeteer = require({json.dumps(str(pptr_dir))});
             httpd.shutdown()
             httpd.server_close()
 
+    def test_04_anti_gaming_rejects_disguised_text_badge_icon_shortcut(self) -> None:
+        # Layer 1: Ensure dead text-badge escape hatch stays permanently deleted
+        icons_src = (ROOT_DIR / "scripts/lib/gcp_official_svg_icons.mjs").read_text(encoding="utf-8")
+        self.assertNotIn("DRAWINGML_ICON_BADGES", icons_src, "Dead text-badge icon fallback table must stay deleted")
+
+        # Layer 2: Import canonical OOXML icon auditor and verify it passes on live BM12 S01
+        sys.path.insert(0, str(ROOT_DIR / "scripts"))
+        import verify_live_gslides_icon_parity as icon_parity
+        import zipfile
+
+        drawio_icons = icon_parity.extract_drawio_pic_icons(ROOT_DIR / "diagrams/ws1-5hop-governance-baseline.drawio")
+        self.assertEqual(len(drawio_icons), 18)
+        with zipfile.ZipFile(ROOT_DIR / "slides/geap-bare-minimum-12slide-architecture-deck.pptx") as zf:
+            good_xml = zf.read("ppt/slides/slide1.xml").decode("utf-8", "ignore")
+        pairs, good_errs = icon_parity.audit_slide_xml_icons(good_xml, drawio_icons)
+        self.assertEqual(good_errs, [], f"Clean WS1 slide failed icon audit: {good_errs}")
+        self.assertEqual(len(pairs), 18)
+
+        # Anti-gaming negative test: replace Gemini/GKE vector icons with DISGUISED text-box
+        # shapes (NOT named icon_badge_*) holding "AI" and "GKE" — must FAIL CLOSED!
+        poisoned_xml = re.sub(
+            r'<p:sp><p:nvSpPr><p:cNvPr id="\d+" name="ico_gemini"/>.*?</p:sp>',
+            "",
+            good_xml,
+            flags=re.S,
+        )
+        sneaky_shape = (
+            '<p:sp><p:nvSpPr><p:cNvPr id="99991" name="totally_innocent_shape_1"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>'
+            '<p:spPr><a:xfrm><a:off x="4457700" y="2522220"/><a:ext cx="182880" cy="182880"/></a:xfrm>'
+            '<a:prstGeom prst="roundRect"><a:avLst/></a:prstGeom></p:spPr>'
+            '<p:txBody><a:bodyPr anchor="ctr"/><a:lstStyle/><a:p><a:r><a:t>AI</a:t></a:r></a:p></p:txBody></p:sp>'
+        )
+        poisoned_xml = poisoned_xml.replace("</p:spTree>", sneaky_shape + "</p:spTree>")
+        _, bad_errs = icon_parity.audit_slide_xml_icons(poisoned_xml, drawio_icons)
+        self.assertTrue(
+            any("disguised_text_icon_box" in e for e in bad_errs),
+            f"Name-agnostic detector FAILED to reject disguised AI text box! errs={bad_errs}",
+        )
+        self.assertTrue(
+            any("icon_cluster_count_mismatch" in e for e in bad_errs),
+            f"Cluster counter FAILED to detect missing Gemini vector icon! errs={bad_errs}",
+        )
+
+        # Offline 78-icon Web SVG <-> Slide preview pixel parity script must exit 0
+        proc = subprocess.run(
+            [sys.executable, "-B", str(ROOT_DIR / "scripts/verify_live_gslides_icon_parity.py")],
+            cwd=str(ROOT_DIR),
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+        self.assertEqual(proc.returncode, 0, f"Offline 78-icon parity failed:\n{proc.stdout}\n{proc.stderr}")
+
 
 if __name__ == "__main__":
     unittest.main()

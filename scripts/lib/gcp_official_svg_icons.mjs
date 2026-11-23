@@ -164,37 +164,3 @@ export function renderInlineSvgIcon(key, x, y, size) {
   return `<g transform="translate(${x.toFixed(2)},${y.toFixed(2)}) scale(${scale.toFixed(5)})">${rec.inner}</g>`;
 }
 
-/**
- * Simplified crisp native DrawingML icon badge (pic=0, zero grpSp/arcTo/schemeClr,
- * guaranteed >= 91440 EMU path box so F-12 h="0" check always passes).
- */
-export const DRAWINGML_ICON_BADGES = {
-  cloud_iam: { bg: 'E8F0FE', border: '4285F4', fg: '1A73E8', glyph: 'ID' },
-  cloud_armor: { bg: 'E8F0FE', border: '4285F4', fg: '1A73E8', glyph: 'WAF' },
-  cloud_load_balancing: { bg: 'E8F0FE', border: '4285F4', fg: '1A73E8', glyph: 'ALB' },
-  iap: { bg: 'E8F0FE', border: '4285F4', fg: '1A73E8', glyph: 'IAP' },
-  agent_registry: { bg: 'E8F0FE', border: '1A73E8', fg: '1A73E8', glyph: 'ARD' },
-  model_armor: { bg: 'E8F0FE', border: '1A73E8', fg: '174EA6', glyph: 'MA' },
-  agent_gateway: { bg: 'FFFFFF', border: 'F28B82', fg: 'D93025', glyph: 'GW' },
-  gemini: { bg: 'E8F0FE', border: '1A73E8', fg: '1A73E8', glyph: 'AI' },
-  adk: { bg: '1A73E8', border: '1A73E8', fg: 'FFFFFF', glyph: 'ADK' },
-  cloud_run: { bg: 'E8F0FE', border: '4285F4', fg: '1967D2', glyph: 'Run' },
-  gke: { bg: 'E6F4EA', border: '34A853', fg: '137333', glyph: 'GKE' },
-  api_gateway: { bg: 'E8F0FE', border: '1A73E8', fg: '1967D2', glyph: 'API' },
-  vertex_ai: { bg: 'F3E8FD', border: '8430CE', fg: '7627BB', glyph: 'VTX' },
-  memorystore: { bg: 'E8F0FE', border: '4285F4', fg: '1967D2', glyph: 'VK' },
-  alloydb: { bg: 'E6F4EA', border: '1E8E3E', fg: '137333', glyph: 'DB' },
-  cloud_kms: { bg: 'FEF7E0', border: 'D97706', fg: 'B06000', glyph: 'KMS' },
-  finops: { bg: 'E6F4EA', border: '1E8E3E', fg: '137333', glyph: 'FIN' },
-  cloud_monitoring: { bg: 'E8F0FE', border: '4285F4', fg: '174EA6', glyph: 'OTel' },
-  cloud_logging: { bg: 'E8F0FE', border: '4285F4', fg: '174EA6', glyph: 'LOG' },
-  bigquery: { bg: 'E8F0FE', border: '4285F4', fg: '1A73E8', glyph: 'BQ' },
-  scc: { bg: 'FEF2F2', border: 'EA4335', fg: 'C5221F', glyph: 'SCC' },
-  psc: { bg: 'FEF7E0', border: 'D97706', fg: 'B06000', glyph: 'PSC' },
-  vpc_sc: { bg: 'F5F3FF', border: '7C3AED', fg: '6D28D9', glyph: 'VPC' },
-  google_g: { bg: 'FFFFFF', border: '4285F4', fg: '1A73E8', glyph: 'G' },
-  gcp_cloud: { bg: 'FFFFFF', border: 'FBBC04', fg: 'B06000', glyph: 'GCP' },
-  saas_globe: { bg: '1A73E8', border: '1A73E8', fg: 'FFFFFF', glyph: 'SaaS' },
-  mcp_tools: { bg: 'E6F4EA', border: '1E8E3E', fg: '137333', glyph: 'MCP' },
-  a2a_agents: { bg: 'EFF6FF', border: '2563EB', fg: '1D4ED8', glyph: 'A2A' },
-};
