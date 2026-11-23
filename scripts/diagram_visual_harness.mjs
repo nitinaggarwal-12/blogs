@@ -127,8 +127,6 @@ function parseMxCells(xmlStr) {
 
 function encodeDrawioHash(xmlStr) {
   let s = xmlStr
-    .replace(/\s*<mxCell id="pic_[^"]*"[^>]*>[\s\S]*?<\/mxCell>/g, '')
-    .replace(/\s*<mxCell id="plane_rail_[^"]*"[^>]*>[\s\S]*?<\/mxCell>/g, '')
     .trim()
     .replace(/>\s+</g, '><');
   const uriEncoded = encodeURIComponent(s).replace(/%20/g, '%20');
@@ -210,10 +208,8 @@ def decode_hash(url):
     raw = zlib.decompress(base64.b64decode(url[i+2:]), -15).decode("utf-8", "ignore")
     return urllib.parse.unquote(raw)
 
-def canonical_stripped_xml(diag_id):
+def canonical_full_xml(diag_id):
     xml = (DIAGRAMS / f"{diag_id}.drawio").read_text(encoding="utf-8")
-    xml = re.sub(r'\\s*<mxCell id="pic_[^"]*"[^>]*>.*?</mxCell>', "", xml, flags=re.S)
-    xml = re.sub(r'\\s*<mxCell id="plane_rail_[^"]*"[^>]*>.*?</mxCell>', "", xml, flags=re.S)
     return re.sub(r">\\s+<", "><", xml.strip())
 
 PRIMARY_SET = set(${JSON.stringify(PRIMARY_IDS)})
@@ -255,7 +251,7 @@ for key, rel, total, slide_specs in DECKS:
     with zipfile.ZipFile(p) as zf:
         for snum, did in slide_specs:
             if did not in canon_cache:
-                canon_cache[did] = canonical_stripped_xml(did)
+                canon_cache[did] = canonical_full_xml(did)
             sx = zf.read(f"ppt/slides/slide{snum}.xml").decode("utf-8", "ignore")
             rx = zf.read(f"ppt/slides/_rels/slide{snum}.xml.rels").decode("utf-8", "ignore")
             runs = [html.unescape(t) for t in re.findall(r"<a:t[^>]*>(.*?)</a:t>", sx, flags=re.S)]
@@ -306,10 +302,15 @@ for key, rel, total, slide_specs in DECKS:
                 dec = decode_hash(url)
                 if dec != canon_cache[did]:
                     errs.append(f"pptx_rid3_hash_mismatch:{key}:S{snum:02d}:{did}")
+                if did in PRIMARY_SET:
+                    dec_pic_cnt = len(re.findall(r'id="pic_icon_[^"]*"', dec))
+                    exp_pic_cnt = len(drawio_icons_cache[did])
+                    if dec_pic_cnt != exp_pic_cnt:
+                        errs.append(f"pptx_rid3_missing_icons:{key}:S{snum:02d}:{did}:{dec_pic_cnt}!={exp_pic_cnt}")
                 if "gemini 3.8" in dec.lower():
                     errs.append(f"pptx_rid3_gemini38:{key}:S{snum:02d}")
 
-# Atlas JSON <-> JS #R parity for all 12 canonical IDs
+# Atlas JSON <-> JS #R parity for all 12 canonical IDs (both top-level AND nested assets.drawioStandaloneHashUrl)
 atlas_json_txt = (ROOT / "data/slide_diagrams_atlas.json").read_text(encoding="utf-8")
 atlas_js_txt = (ROOT / "js/diagrams_atlas_data.js").read_text(encoding="utf-8")
 expected_js = f"// Auto-synced from data/slide_diagrams_atlas.json\\nwindow.SLIDE_DIAGRAMS_ATLAS = {atlas_json_txt.rstrip()};\\n"
@@ -327,6 +328,14 @@ for item in atlas.get("items", []):
             errs.append(f"atlas_hash_mismatch:{did}")
         if "gemini 3.8" in dec.lower():
             errs.append(f"atlas_hash_gemini38:{did}")
+        au = (item.get("assets") or {}).get("drawioStandaloneHashUrl", "")
+        adec = decode_hash(au)
+        if adec != canon_cache[did]:
+            errs.append(f"atlas_assets_hash_mismatch:{did}")
+        if did in PRIMARY_SET:
+            apic_cnt = len(re.findall(r'id="pic_icon_[^"]*"', adec))
+            if apic_cnt != len(drawio_icons_cache[did]):
+                errs.append(f"atlas_assets_missing_icons:{did}:{apic_cnt}!={len(drawio_icons_cache[did])}")
 for did in canon_cache:
     if did not in seen_atlas:
         errs.append(f"atlas_missing_item:{did}")

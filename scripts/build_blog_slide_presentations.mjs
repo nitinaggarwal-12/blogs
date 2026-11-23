@@ -176,7 +176,7 @@ function buildSlideDeckCatalog() {
       wsKey: "WS1",
       deckTitle: "Blog 1 (WS1) — Reference Architecture Taxonomy & 5-Hop Governance",
       deckSubtitle: "10-Slide Executive Architecture, Live GCP Console & ThoughtSpot Spotter Proof Walkthrough",
-      googleSlidesUrl: "https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit",
+      googleSlidesUrl: "https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit",
       pptxUrl: "/slides/ws1-12slide-visual-deck.pptx",
       previewDirRel: "/slides/previews/ws1-12slide-visual-deck",
       slides: [
@@ -268,7 +268,7 @@ function buildSlideDeckCatalog() {
       wsKey: "WS2",
       deckTitle: "Blog 2 (WS2) — Pattern A High-Density Pooled Multi-Tenancy",
       deckSubtitle: "8-Slide Architecture, CoW Isolation, Kernel RLS & Live BigQuery Proof",
-      googleSlidesUrl: "https://docs.google.com/presentation/d/1OjWG78L8T8JGTxsJid6vzU5wcacJNIYxO2qVGlNPMNI/edit",
+      googleSlidesUrl: "https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit",
       pptxUrl: "/slides/ws2-12slide-visual-deck.pptx",
       previewDirRel: "/slides/previews/ws2-12slide-visual-deck",
       slides: [
@@ -344,7 +344,7 @@ function buildSlideDeckCatalog() {
       wsKey: "WS3",
       deckTitle: "Blog 3 (WS3) — Pattern B Sovereign Silos for Regulated Workloads",
       deckSubtitle: "7-Slide Architecture, VPC-SC, CMEK Crypto-Shredding & Live Kill-Switch Proof",
-      googleSlidesUrl: "https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/edit",
+      googleSlidesUrl: "https://docs.google.com/presentation/d/1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac/edit",
       pptxUrl: "/slides/ws3-12slide-visual-deck.pptx",
       previewDirRel: "/slides/previews/ws3-12slide-visual-deck",
       slides: [
@@ -412,7 +412,7 @@ function buildSlideDeckCatalog() {
       wsKey: "WS4",
       deckTitle: "Blog 4 (WS4) — Pattern C Governed Hub-and-Spoke Dynamic Hybrid",
       deckSubtitle: "9-Slide Architecture, Private Service Connect, Zero-Downtime CAS & Live Jira Proof",
-      googleSlidesUrl: "https://docs.google.com/presentation/d/1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s/edit",
+      googleSlidesUrl: "https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/edit",
       pptxUrl: "/slides/ws4-12slide-visual-deck.pptx",
       previewDirRel: "/slides/previews/ws4-12slide-visual-deck",
       slides: [
@@ -496,7 +496,7 @@ function buildSlideDeckCatalog() {
       wsKey: "WS5",
       deckTitle: "Blog 5 (WS5) — Executive Decision Guide & Multi-Tenant Agentic Triad",
       deckSubtitle: "9-Slide Pattern Selector, A2A/MCP Federation, FinOps Guardrails & Live Proofs",
-      googleSlidesUrl: "https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/edit",
+      googleSlidesUrl: "https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/edit",
       pptxUrl: "/slides/ws5-12slide-visual-deck.pptx",
       previewDirRel: "/slides/previews/ws5-12slide-visual-deck",
       slides: [

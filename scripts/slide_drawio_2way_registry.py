@@ -89,10 +89,13 @@ def validate_drawio_xml(xml_str: str) -> ET.Element:
 
 
 def encode_drawio_self_contained_hash(xml_str: str) -> str:
-    """Encodes a .drawio XML string into a compact diagrams.net #R<deflated_base64> hash."""
-    s = re.sub(r'\s*<mxCell id="pic_[^"]*"[^>]*>.*?</mxCell>', "", xml_str, flags=re.S)
-    s = re.sub(r'\s*<mxCell id="plane_rail_[^"]*"[^>]*>.*?</mxCell>', "", s, flags=re.S)
-    s = re.sub(r">\s+<", "><", s.strip())
+    """Encodes a .drawio XML string into a self-contained diagrams.net #R<deflated_base64> hash.
+
+    Preserves 100% of embedded SVG/image icon cells (`pic_*`) and all graph geometry so
+    opening `Edit in Draw.io ↗` in viewer.diagrams.net / app.diagrams.net renders identically
+    to the slide deck with zero missing icons.
+    """
+    s = re.sub(r">\s+<", "><", xml_str.strip())
     uri_encoded = urllib.parse.quote(s, safe="~()*!.'")
     compressor = zlib.compressobj(9, zlib.DEFLATED, -15)
     compressed = compressor.compress(uri_encoded.encode("utf-8")) + compressor.flush()

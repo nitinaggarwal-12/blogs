@@ -681,9 +681,7 @@ def sanitize_svg_safe(svg_str: str) -> str:
 def encode_drawio_hash(xml_str: str) -> str:
     if not xml_str:
         return ""
-    s = re.sub(r'\s*<mxCell id="pic_[^"]*"[^>]*>.*?</mxCell>', "", xml_str, flags=re.S)
-    s = re.sub(r'\s*<mxCell id="plane_rail_[^"]*"[^>]*>.*?</mxCell>', "", s, flags=re.S)
-    s = re.sub(r">\s+<", "><", s.strip())
+    s = re.sub(r">\s+<", "><", xml_str.strip())
     uri_encoded = urllib.parse.quote(s, safe="~()*!.'")
     compressor = zlib.compressobj(9, zlib.DEFLATED, -15)
     compressed = compressor.compress(uri_encoded.encode("utf-8")) + compressor.flush()

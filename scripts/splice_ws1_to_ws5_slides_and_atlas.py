@@ -265,10 +265,16 @@ def update_downstream_decks(final_bm_slides: Dict[int, Tuple[bytes, str]]) -> Li
                 rels_part = f"ppt/slides/_rels/slide{tgt_snum}.xml.rels"
                 replacements[slide_part] = patched_xml
                 replacements[rels_part] = update_slide_rels_drawio_link(zf.read(rels_part), v_url)
-            # Also clean 🔗 emoji on WS4 lean S04 (keeping viewer.diagrams.net, Pooled SaaS API Gateway, [Slide 04/09)
+            # Also clean 🔗 emoji and sync s09-ws4-tier-promotion-diff #R link on WS4 lean S04
             if key == "WS4":
                 s4_part = "ppt/slides/slide4.xml"
+                s4_rels = "ppt/slides/_rels/slide4.xml.rels"
                 replacements[s4_part] = clean_slide_xml_text(zf.read(s4_part))
+                if (DIAGRAMS_DIR / "s09-ws4-tier-promotion-diff.drawio").is_file():
+                    replacements[s4_rels] = update_slide_rels_drawio_link(
+                        zf.read(s4_rels),
+                        build_drawio_viewer_url("s09-ws4-tier-promotion-diff"),
+                    )
         rewrite_pptx_zip(pptx_path, replacements)
         touched.append(pptx_path)
         print(f"  Updated {key:8s} ({pptx_path.name}): spliced {len(splices)} slides")
@@ -276,24 +282,41 @@ def update_downstream_decks(final_bm_slides: Dict[int, Tuple[bytes, str]]) -> Li
 
 
 def update_atlas_json_and_js() -> None:
-    print("\n=== 3. Regenerating Atlas #R Payloads (JSON <-> JS Parity) ===")
+    print("\n=== 3. Regenerating Atlas #R Payloads (JSON <-> JS Parity, 100% Icons Preserved) ===")
     atlas_json_path = ROOT_DIR / "data" / "slide_diagrams_atlas.json"
     atlas_js_path = ROOT_DIR / "js" / "diagrams_atlas_data.js"
     atlas = json.loads(atlas_json_path.read_text(encoding="utf-8"))
-    app_urls = {diag_id: build_drawio_standalone_app_url(diag_id) for diag_id in BARE_MIN_12_SLIDE_MAP}
-    viewer_urls = {diag_id: build_drawio_viewer_url(diag_id) for diag_id in BARE_MIN_12_SLIDE_MAP}
-    updated = 0
+    comp_dir = DIAGRAMS_DIR / "compendium" / "drawio"
+    updated_all = 0
+    updated_bm12 = 0
     for item in atlas.get("items", []):
         did = item.get("diagramId") or item.get("id") or ""
-        if did in app_urls:
-            item["drawioStandaloneHashUrl"] = app_urls[did]
+        if not did:
+            continue
+        xml_path = DIAGRAMS_DIR / f"{did}.drawio"
+        if not xml_path.is_file():
+            xml_path = comp_dir / f"{did}.drawio"
+        if not xml_path.is_file():
+            continue
+        xml_str = xml_path.read_text(encoding="utf-8")
+        h = encode_drawio_self_contained_hash(xml_str)
+        viewer_url = (
+            f"https://viewer.diagrams.net/?highlight=1a73e8&edit=_blank&layers=1&nav=1"
+            f"&title={did}.drawio#{h}"
+        )
+        app_url = f"https://app.diagrams.net/?splash=0&ui=kennedy&title={did}.drawio#{h}"
+        assets = item.setdefault("assets", {})
+        assets["drawioStandaloneHashUrl"] = viewer_url
+        if did in BARE_MIN_12_SLIDE_MAP:
+            item["drawioStandaloneHashUrl"] = app_url
             if "drawioViewerHashUrl" in item:
-                item["drawioViewerHashUrl"] = viewer_urls[did]
-            updated += 1
+                item["drawioViewerHashUrl"] = viewer_url
+            updated_bm12 += 1
+        updated_all += 1
     serialized = json.dumps(atlas, indent=2, ensure_ascii=False) + "\n"
     atlas_json_path.write_text(serialized, encoding="utf-8")
     atlas_js_path.write_text(f"// Auto-synced from data/slide_diagrams_atlas.json\nwindow.SLIDE_DIAGRAMS_ATLAS = {serialized.rstrip()};\n", encoding="utf-8")
-    print(f"  Updated {updated} canonical diagram #R links in data/slide_diagrams_atlas.json & js/diagrams_atlas_data.js")
+    print(f"  Updated {updated_all} atlas items ({updated_bm12} BARE_MIN_12) #R links in data/slide_diagrams_atlas.json & js/diagrams_atlas_data.js")
 
 
 def rerender_all_previews_and_static(decks: List[Path]) -> None:
@@ -350,7 +373,7 @@ def main() -> None:
     bundle = json.loads(BUNDLE_PATH.read_text(encoding="utf-8"))
     viewer_urls = {diag_id: build_drawio_viewer_url(diag_id) for diag_id in BARE_MIN_12_SLIDE_MAP}
     for did, u in viewer_urls.items():
-        if len(u) > 20000:
+        if len(u) > 25000:
             raise RuntimeError(f"Viewer #R URL unexpectedly large for {did}: {len(u)} bytes")
     final_bm = update_bm12(bundle, viewer_urls)
     touched_decks = update_downstream_decks(final_bm)
