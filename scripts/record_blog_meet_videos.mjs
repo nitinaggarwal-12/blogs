@@ -1250,10 +1250,18 @@ async function clickSelectorWithX11(cdp, sessionId, ptr, chromeTopPx, spec) {
           : el;
       targetEl.scrollIntoView({ block: "center", inline: "center" });
       const r = targetEl.getBoundingClientRect();
+      const targetX =
+        typeof s.xOffsetFromLeft === "number"
+          ? Math.round(r.left + Math.max(2, Math.min(r.width - 2, s.xOffsetFromLeft)))
+          : Math.round(r.left + r.width / 2);
+      const targetY =
+        typeof s.yOffsetFromTop === "number"
+          ? Math.round(r.top + Math.max(2, Math.min(r.height - 2, s.yOffsetFromTop)))
+          : Math.round(r.top + r.height / 2);
       return {
         ok: r.width >= 4 && r.height >= 4,
-        x: Math.round(r.left + r.width / 2),
-        y: Math.round(r.top + r.height / 2),
+        x: targetX,
+        y: targetY,
         text: (targetEl.innerText || targetEl.getAttribute("aria-label") || targetEl.tagName).replace(/\s+/g, " ").trim().slice(0, 60)
       };
     },
@@ -1459,7 +1467,7 @@ async function executeChapterChoreography({
     await activateTab2WithCursor();
     await engine.sleep(700);
     await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, {
-      textRegex: "^Subnets$|^Rules$|^Targets$|^Permissions$",
+      textRegex: "^Subnets$|^Rules$|^Targets$|^Versions$|^Overview$",
       minX: 260,
       minY: 120
     });
@@ -1543,9 +1551,9 @@ async function executeChapterChoreography({
       await engine.sleep(1600);
       await scrollOn(tab2.sessionId, 720, 600, "down", 6);
     } else {
-      // Single-tab BigQuery: briefly view Job information tab then return to Results grid for crisp Gate 4 motion!
+      // Single-tab BigQuery: briefly view JSON or Execution details tab (NEVER Job information, which exposes User email!) then return to Results grid
       await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, {
-        textRegex: "^Job information$",
+        textRegex: "^JSON$|^Execution details$",
         minX: 220,
         minY: 360
       });
@@ -1608,14 +1616,27 @@ async function executeChapterChoreography({
     await engine.sleep(1400);
     await scrollOn(tab2.sessionId, 640, 420, "down", 4);
   } else if (kind === "thoughtspot_liveboard_to_answer") {
-    await smoothGlide(ptr, 320, 260, 680, 420, 14);
-    await scrollOn(tab1.sessionId, 640, 440, "down", 5);
+    // Beat 1: Keep all 6 hydrated Executive KPI cards framed at top through early (+1.5s), then smoothly scroll down to charts
+    await smoothGlide(ptr, 260, 290, 680, 290, 14);
+    await clock.waitUntilSec(2.6, `${chapter.id}_b1_scroll`);
+    await scrollOn(tab1.sessionId, 640, 440, "down", 6);
+    await engine.sleep(800);
+    await smoothGlide(ptr, 640, 440, 820, 520, 12);
+    // Beat 2: Switch to Saved Answer & click unobstructed left edge of ThoughtSpot's right-rail "query details" (</>) icon (18px left of Intercom!)
     await clock.waitUntilSec(beat1DurSec + 0.3, `${chapter.id}_b2_start`);
     await activateTab2WithCursor();
-    await engine.sleep(1000);
-    await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, { textRegex: "Query details|Query Details|Details" });
-    await engine.sleep(1600);
-    await scrollOn(tab2.sessionId, 640, 440, "down", 5);
+    await engine.sleep(1200);
+    const qdHit = await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, {
+      selector: '[aria-label="query details" i], [data-testid="query details" i], [title="query details" i]',
+      minX: 1100,
+      minY: 480,
+      xOffsetFromLeft: 10
+    });
+    console.log(`    🖱️ [ThoughtSpot] Clicked Query Details icon (left edge): ${JSON.stringify(qdHit)}`);
+    await engine.sleep(1400);
+    // Glide into the opened Query Details drawer (far away from filter chips so zero tooltip occlusion!) & scroll down to Filtered by
+    await smoothGlide(ptr, 1180, 620, 1040, 480, 12);
+    await scrollOn(tab2.sessionId, 1040, 480, "down", 6);
   } else if (kind === "connectors_browse_and_filter") {
     // Beat 1: Browse & scroll live Marketplace Connectors catalog (point-to-point baseline)
     await smoothGlide(ptr, 360, 280, 680, 420, 14);
@@ -1866,7 +1887,19 @@ async function captureChapterWithX11Grab({
   const tab1 = { targetId: demoWin.targetId, sessionId: demoWin.sessionId };
   await cdp.send("Target.activateTarget", { targetId: tab1.targetId });
   const snap1 = await navigateAndWaitSettled(cdp, tab1.sessionId, chapter.primaryUrl);
-  const chromeTopPx = snap1.chromeTopPx;
+  let chromeTopPx = snap1.chromeTopPx;
+  if (demoWin.profileDirectory === "Default" && chromeTopPx > 105) {
+    // Hide empty All Bookmarks bar cleanly via native Chrome Ctrl+Shift+B so viewport matches Profile 1 height
+    spawnSync("xdotool", ["windowfocus", "--sync", String(demoWin.xid), "key", "--clearmodifiers", "ctrl+shift+b"], {
+      env: { ...process.env, DISPLAY: display },
+      timeout: 4000
+    });
+    await engine.sleep(400);
+    const refreshedTop = await evalInSession(cdp, tab1.sessionId, () =>
+      Math.max(60, Math.min(140, (window.outerHeight || 800) - (window.innerHeight || 713)))
+    ).catch(() => chromeTopPx);
+    if (refreshedTop) chromeTopPx = refreshedTop;
+  }
 
   if (chapter.sql && (chapter.actionKind === "bigquery_run_query" || chapter.actionKind === "bigquery_query_then_logging_expand")) {
     await stageBigQuerySqlBeforeCapture(cdp, tab1.sessionId, ptr, chromeTopPx, chapter.sql);
@@ -1914,6 +1947,22 @@ async function captureChapterWithX11Grab({
     // Return to Tab 1 cleanly before starting x11grab
     await cdp.send("Target.activateTarget", { targetId: tab1.targetId });
     await engine.sleep(600);
+  }
+
+  // Wait for ThoughtSpot Liveboard KPI tiles to finish hydrating (zero "• • •" loading spinners before x11grab!)
+  if (chapter.actionKind === "thoughtspot_liveboard_to_answer") {
+    const kpiDeadline = Date.now() + 14000;
+    while (Date.now() < kpiDeadline) {
+      const kpiReady = await evalInSession(cdp, tab1.sessionId, () => {
+        const txt = document.body?.innerText || "";
+        const metricsLoaded = (txt.match(/\$[\d,.]+[KMB]?|\d+\.\d+%/g) || []).length;
+        const spinners = document.querySelectorAll('[class*="spinner" i], [class*="loader" i], [aria-busy="true"]').length;
+        return metricsLoaded >= 4 && spinners === 0;
+      }).catch(() => false);
+      if (kpiReady) break;
+      await engine.sleep(500);
+    }
+    await engine.sleep(1000);
   }
 
   // Enforce window topmost & exact 1280x800 geometry right before capture
@@ -2109,7 +2158,9 @@ async function remuxWithRequiredMetadataAndVerify({ concatMp4, finalMp4, title, 
       "-i",
       concatMp4,
       "-map",
-      "0",
+      "0:v:0",
+      "-map",
+      "0:a:0",
       "-map_metadata",
       "0",
       "-map_chapters",
@@ -2353,11 +2404,11 @@ async function processBlog({
     expectedChapters: chapterMeta.length
   });
 
-  // Poster frame
+  // Poster frame (post-filter settled view at 6.5s so search input isn't mid-typing)
   const posterJpg = path.join(recDir, "meet_recording_poster.jpg");
   await execFileAsync(
     "ffmpeg",
-    ["-y", "-hide_banner", "-loglevel", "error", "-ss", "2.0", "-i", finalMp4, "-frames:v", "1", "-q:v", "3", posterJpg],
+    ["-y", "-hide_banner", "-loglevel", "error", "-ss", "6.5", "-i", finalMp4, "-frames:v", "1", "-q:v", "3", posterJpg],
     { timeout: 15000 }
   );
   const posterProbe = probeMediaJson(posterJpg);
@@ -2699,6 +2750,7 @@ async function main() {
     return win;
   };
   const getWindowForChapter = async ch => {
+    // Only Jira (ws4) session lives in Default; GCP + ThoughtSpot + Marketplace Datadog/Snowflake/Okta use spotless Profile 1!
     const prof = ch?.requiresSaas === "jira" ? "Default" : ARGOLIS_PROFILE_DIR;
     return getWindowForProfile(prof);
   };
