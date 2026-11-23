@@ -15,7 +15,7 @@ status: "PUBLISH_READY"
 
 This document defines the foundational reference architecture taxonomy, security boundaries, and shared **5-Hop cryptographic governance baseline** for building external B2B SaaS multi-tenant agentic AI systems on Google Cloud. It extends the canonical Google Cloud Architecture Center guidance ([Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system))—which models internal enterprise business units—into a production blueprint for Independent Software Vendors (ISVs) serving competing enterprise tenants across pooled, sovereign silo, and dynamic hybrid tiers using **Vertex AI Agent Engine**, **Agent Development Kit (`ADK`)**, and **Gemini Enterprise**.
 
-> **Approved 2-Diagram WS1 Baseline & Live 2-Way Draw.io Sync:** Every architecture diagram in this guide is synchronized 2-way with the **[WS1 Executive Architecture (10-Slide Lean Narrative Deck) ↗](https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit)** and the **[Approved 12-Slide Architecture Deck (WS1 = Slides 1–2) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p1)**, backed by live `.drawio` XML + crisp vector `.svg` files. Open **`✏️ Edit in Draw.io`** on either figure card to edit live topologies with 2-way Google Slides sync, download the [WS1 10-Slide Executive Deck (`.pptx`)](../slides/ws1-executive-architecture-23slide-deck.pptx) or [WS1 Lean Visual Deck (`.pptx`)](../slides/ws1-12slide-visual-deck.pptx), or review the [WS1 Google Docs Spec ↗](https://docs.google.com/document/d/1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA/edit), the [5-Hop Reference Codebase](../core-cymbal-agent/runtime_pipeline.py), or the [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
+> **Approved 2-Diagram WS1 Baseline & Live 2-Way Draw.io Sync:** Every architecture diagram in this guide is synchronized 2-way with the **[WS1 Executive Architecture (11-Slide Narrative Deck) ↗](https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit)** and the **[Approved 12-Slide Architecture Deck (WS1 = Slides 1–2) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p1)**, backed by live `.drawio` XML + crisp vector `.svg` files. Open **`✏️ Edit in Draw.io`** on either figure card to edit live topologies with 2-way Google Slides sync, download the [WS1 11-Slide Executive Deck (`.pptx`)](../slides/ws1-executive-architecture-23slide-deck.pptx) or [WS1 10-Slide Lean Visual Deck (`.pptx`)](../slides/ws1-12slide-visual-deck.pptx), or review the [WS1 Google Docs Spec ↗](https://docs.google.com/document/d/1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA/edit), the [5-Hop Reference Codebase](../core-cymbal-agent/runtime_pipeline.py), or the [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
 
 ---
 
@@ -227,10 +227,10 @@ ORDER BY billable_equivalent_tokens DESC;
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-## Live Before & After Console Proofs for WS1 (Model Armor & Cloud Armor WAF)
+## Live Before & After Console Proofs for WS1 (Model Armor, Cloud Armor WAF & ThoughtSpot Cloud Spotter)
 
 > [!IMPORTANT]
-> **live Before → After Console Pairs (`WS1-BA-01` Hop 4 Model Armor + `WS1-BA-02` Hop 1 Cloud Armor WAF):** All `4` live screenshots below were captured live from **`https://console.cloud.google.com/`** (`cymbal-ge-hub-2026`, `#252968359259`) via live browser capture and passed automated screenshot verification. Open **`/blogs/ws1/screenshots`** for the interactive Side-by-Side & Split-Slider comparison viewer.
+> **Live Before → After Console Pairs (`WS1-BA-01` Hop 4 Model Armor + `WS1-BA-02` Hop 1 Cloud Armor WAF + `WS1-BA-03` ThoughtSpot Cloud Spotter BI):** All `6` live screenshots below were captured live from **`https://console.cloud.google.com/`** (`cymbal-ge-hub-2026`, `#252968359259`) and **`https://team2.thoughtspot.cloud/`** (`SAAS-01` ThoughtSpot Cloud Spotter) via verified live browser capture and passed automated screenshot verification. Open **`/blogs/ws1/screenshots`** for the interactive Side-by-Side & Split-Slider comparison viewer.
 
 ### WS1-BA-01 (BEFORE): Unprotected Model Armor Baseline — Cross-Tenant Prompt Injection Passes Unblocked
 **Provider:** Google Cloud Console (`Vertex AI Model Armor`) • **Project:** `cymbal-ge-hub-2026` (`us-central1`) • **Resource:** `ge-ws1-before-unprotected-baseline` • **Result:** `"No violations detected — Prompt passed all evaluated safety checks cleanly"` (`NO_MATCH_FOUND`) • Provenance (live) • **[Open Live Model Armor Console ↗](https://console.cloud.google.com/security/modelarmor/locations/us-central1/templates/ge-ws1-before-unprotected-baseline?project=cymbal-ge-hub-2026)**
@@ -255,6 +255,18 @@ ORDER BY billable_equivalent_tokens DESC;
 
 ![WS1 AFTER: Live Google Cloud Armor policy cymbal-pooled-edge-waf enforcing Priority 1000 Deny 403 for unauthenticated X-Tenant-ID header smuggling and Priority 1100 Deny 403 for OWASP SQLi and XSS injection.](../screenshots/verified-cloud-console/ws1_after_cloud_armor_hop1_waf.png)
 *WS1 AFTER: Enabling WS1 Hop 1 `cymbal-pooled-edge-waf` deterministically drops unauthenticated `X-Tenant-ID` header smuggling (`has(request.headers['x-tenant-id']) && !has(request.headers['authorization'])` → `Deny 403` at Priority `1,000`) and OWASP SQLi/XSS (`Priority 1,100`) at Google's edge before any agent container runs.*
+
+### WS1-BA-03 (BEFORE): ThoughtSpot Cloud Spotter (`SAAS-01`) — Unfiltered Query Exposes All 6 Product Lines
+**Provider:** ThoughtSpot Cloud (`Spotter Agentic BI`, `team2.thoughtspot.cloud`) • **Query:** `"Show average feature adoption rate and NPS score by product line"` • **Result:** **`12 of 12 data points`** across all 6 product lines (no tenant/product-line scope applied) • Provenance (live)
+
+![WS1 BEFORE: Live ThoughtSpot Cloud Spotter query on team2.thoughtspot.cloud returning all 6 product lines (12 of 12 data points) without tenant scoping.](../screenshots/verified-cloud-console/ws1_before_thoughtspot_spotter_unscoped.png)
+*WS1-BA-03 BEFORE: Without Hop 1 STS identity propagation and Hop 5 tenant-scoped predicate injection into ThoughtSpot Spotter, a natural-language BI query returns all 6 competing product lines (`12 of 12 data points`) in one response.*
+
+### WS1-BA-03 (AFTER): ThoughtSpot Cloud Spotter (`SAAS-01`) — Locked `Product Line = 'clinical analytics'` Tenant Scope
+**Provider:** ThoughtSpot Cloud (`Spotter Agentic BI`, `team2.thoughtspot.cloud`) • **Filter Enforced:** `Product Line = 'clinical analytics'` • **Result:** Strictly **`1` authorized row** (`44.38` feature adoption / `37.7` NPS; `0` foreign product lines) • Provenance (live)
+
+![WS1 AFTER: Live ThoughtSpot Cloud Spotter query on team2.thoughtspot.cloud locked to Product Line = 'clinical analytics' returning strictly 1 authorized row (44.38 / 37.7).](../screenshots/verified-cloud-console/ws1_after_thoughtspot_spotter_scoped.png)
+*WS1-BA-03 AFTER: Enforcing the WS1 Hop 5 tenant scope (`Product Line = 'clinical analytics'`) isolates Spotter's answer strictly to the single authorized product line (`44.38` feature adoption / `37.7` NPS) with zero cross-domain leakage.*
 
 <!-- GENUINE_3P_BEFORE_AFTER_END -->
 
@@ -286,9 +298,9 @@ cd ge-blogs/examples/blog-01-5hop-baseline
 ## What's next
 
 - **Approved Architecture Presentations & Editable Diagrams:**
- - **[Open WS1 10-Slide Executive Narrative Deck in Google Slides ↗](https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit)** • [Download WS1 Executive Deck (`.pptx`)](../slides/ws1-executive-architecture-23slide-deck.pptx)
+ - **[Open WS1 11-Slide Executive Narrative Deck in Google Slides ↗](https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit)** • [Download WS1 Executive Deck (`.pptx`)](../slides/ws1-executive-architecture-23slide-deck.pptx)
  - [Open Approved 12-Slide Architecture Deck in Google Slides (WS1 = Slides 1–2) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p1) • [Download Approved 12-Slide Deck (`.pptx`)](../slides/geap-bare-minimum-12slide-architecture-deck.pptx)
- - [Download WS1 9-Slide Lean Visual Deck (`.pptx`)](../slides/ws1-12slide-visual-deck.pptx) • [Figure 1 Draw.io Source](../diagrams/ws1-5hop-governance-baseline.drawio) • [Figure 2 Draw.io Source](../diagrams/ws1-c4-l3-process-sequence-swimlane.drawio)
+ - [Download WS1 10-Slide Lean Visual Deck (`.pptx`)](../slides/ws1-12slide-visual-deck.pptx) • [Figure 1 Draw.io Source](../diagrams/ws1-5hop-governance-baseline.drawio) • [Figure 2 Draw.io Source](../diagrams/ws1-c4-l3-process-sequence-swimlane.drawio)
 - **Workstream 1 Reference Codebase & Documentation:**
  - **Shared 5-Hop ADK Pipeline:** [`core-cymbal-agent/runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py) (`hop1`..`hop5` in [`core-cymbal-agent/governance/`](../core-cymbal-agent/governance/)) • **107-Assertion Security Suite:** [`core-cymbal-agent/tests/test_five_hop_pipeline.py`](../core-cymbal-agent/tests/test_five_hop_pipeline.py)
  - **WS1 Sub-Deliverables:** [`1.1 Architecture Taxonomy & Diagrams`](../workstream-1-reference-architecture/1.1-architecture-taxonomy-and-diagrams.md) • [`1.2 Product Team Review Pack`](../workstream-1-reference-architecture/1.2-product-team-review-pack.md) • [`1.3 Cloud Architecture Center PR`](../workstream-1-reference-architecture/1.3-cloud-architecture-center-doc-update-pr.md) • [`1.4 EAP & Product Gap Tracker`](../workstream-1-reference-architecture/1.4-eap-and-product-gap-tracker.md)

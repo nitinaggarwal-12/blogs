@@ -13,12 +13,12 @@ editable_slides: "slides/saas-10-visual-verification-atlas-16slide-deck.pptx"
 status: "PUBLISH_READY"
 ---
 
-This standalone **Visual Verification Atlas** consolidates all **live console captures** (**8 complete BEFORE → AFTER resolution pairs** + Cloud KMS keyring control plane across Google Cloud Console `cymbal-ge-hub-2026` / `cymbal-ge-silo-2026`, Atlassian Jira Cloud, and ThoughtSpot Cloud — every image verified from live Google Cloud Console and commercial SaaS sessions) alongside the approved **Multi-Cloud Federation Architecture diagram (`Slide 11/12`)** so each core architectural guide (`WS1–WS5`) stays laser-focused while CISOs and architects have one authoritative evidence gallery.
+This standalone **Visual Verification Atlas** consolidates all **live console captures** (**9 complete BEFORE → AFTER resolution pairs** + Cloud KMS keyring control plane across Google Cloud Console `cymbal-ge-hub-2026` / `cymbal-ge-silo-2026`, Atlassian Jira Cloud, and ThoughtSpot Cloud — every image verified from live Google Cloud Console and commercial SaaS sessions) alongside the approved **Multi-Cloud Federation Architecture diagram (`Slide 11/12`)** so each core architectural guide (`WS1–WS5`) stays laser-focused while CISOs and architects have one authoritative evidence gallery.
 
 > **Approved Multi-Cloud Bridge & Companion Atlas Assets:**
 > - **Approved 12-Slide Architecture Deck (Multi-Cloud Bridge = Slide 11):** [Open Slide 11 in Google Slides ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p11) • [Draw.io Source (`.drawio`)](../diagrams/saas10-multicloud-a2a-mcp-bridge.drawio)
-> - **Editable Google Docs Visual Atlas (`18` Verified Figures: 1 Multi-Cloud Bridge + 17 Live GCP Console & Commercial SaaS Console Proofs):** [Open 10-SaaS Visual Atlas in Google Docs ↗](https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/edit?resourcekey=0-klzhSI2SvWYPCvpPwwMSUw) • [Download `.docx`](../docs/word/saas-10-visual-verification-and-redteam-atlas.docx)
-> - **Editable Google Slides Visual Atlas (`16` Native Slides):** [Open 16-Slide Visual Atlas in Google Slides ↗](https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw) • [Download `.pptx`](../slides/saas-10-visual-verification-atlas-16slide-deck.pptx)
+> - **Editable Google Docs Visual Atlas (`20` Verified Figures: 1 Multi-Cloud Bridge + 19 Live GCP Console & Commercial SaaS Console Proofs):** [Open 10-SaaS Visual Atlas in Google Docs ↗](https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/edit?resourcekey=0-klzhSI2SvWYPCvpPwwMSUw) • [Download `.docx`](../docs/word/saas-10-visual-verification-and-redteam-atlas.docx)
+> - **Editable Google Slides Visual Atlas (`17` Native Slides):** [Open 17-Slide Visual Atlas in Google Slides ↗](https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw) • [Download `.pptx`](../slides/saas-10-visual-verification-atlas-16slide-deck.pptx)
 > - **Live Verification Receipts:** [`docs/cloud_console_verification_receipt.json`](../docs/cloud_console_verification_receipt.json) • [`docs/cloudrun_to_aws_10_saas_live_receipt.json`](../docs/cloudrun_to_aws_10_saas_live_receipt.json)
 
 ---
@@ -50,7 +50,7 @@ To keep each architecture guide scannable, every workstream maps its primary com
 ## Live Before & After Resolution Proof Gallery (Google Cloud Console & Commercial SaaS)
 
 > [!IMPORTANT]
-> **Live Before → After Console Proofs:** Every single screenshot below was captured live at live from genuine public Google Cloud Console (`console.cloud.google.com`, projects `cymbal-ge-hub-2026` & `cymbal-ge-silo-2026`), Atlassian Jira Cloud (`gcp-team-sbiarllr.atlassian.net`), and ThoughtSpot Cloud (`team2.thoughtspot.cloud`), and passed automated screenshot verification (`exit 0`, zero mock HTML, zero internal domains, zero overrides). Open the interactive Side-by-Side & Split-Slider gallery at **`/blogs/atlas/screenshots`**.
+> **Live Before → After Console Proofs:** Every single screenshot below was captured live from genuine public Google Cloud Console (`console.cloud.google.com`, projects `cymbal-ge-hub-2026` & `cymbal-ge-silo-2026`), Atlassian Jira Cloud (`gcp-team-sbiarllr.atlassian.net`), and ThoughtSpot Cloud (`team2.thoughtspot.cloud`), and passed automated screenshot verification (`exit 0`, zero mock HTML, zero internal domains, zero overrides). Open the interactive Side-by-Side & Split-Slider gallery at **`/blogs/atlas/screenshots`**.
 
 ### WS1-BA-01 (BEFORE → AFTER): Hop 4 Model Armor Unprotected Baseline → Live Prompt-Injection Block
 **Project:** `cymbal-ge-hub-2026` (`us-central1`) • **BEFORE:** (`No violations detected`) • **AFTER:** (`Template violations detected — Prompt injection & Dangerous Match found`)
@@ -70,6 +70,15 @@ To keep each architecture guide scannable, every workstream maps its primary com
 ![WS1 AFTER: Cloud Armor Hop 1 WAF cymbal-pooled-edge-waf enforcing Priority 1000 and 1100 Deny 403 rules.](../screenshots/verified-cloud-console/ws1_after_cloud_armor_hop1_waf.png)
 *WS1-BA-02 AFTER: `cymbal-pooled-edge-waf` blocks unauthenticated `X-Tenant-ID` smuggling at Priority `1,000` (`Deny 403`) and OWASP SQLi/XSS at Priority `1,100` (`Deny 403`).*
 
+### WS1-BA-03 (BEFORE → AFTER): ThoughtSpot Cloud Spotter (`SAAS-01`) Unfiltered 6-Product-Line Query → Tenant-Scoped Clinical Analytics Filter
+**Provider:** ThoughtSpot Cloud (`team2.thoughtspot.cloud`) • **BEFORE:** (`12 of 12 data points` across all 6 product lines) • **AFTER:** (Locked `Product Line = 'clinical analytics'` filter pill returning strictly `1` row `44.38 / 37.7`)
+
+![WS1 BEFORE: Live ThoughtSpot Cloud Spotter query on team2.thoughtspot.cloud returning all 6 product lines (12 of 12 data points).](../screenshots/verified-cloud-console/ws1_before_thoughtspot_spotter_unscoped.png)
+*WS1-BA-03 BEFORE: Unscoped Spotter BI query returns all 6 product lines (`12 of 12 data points`) across competing business units.*
+
+![WS1 AFTER: Live ThoughtSpot Cloud Spotter query on team2.thoughtspot.cloud locked to Product Line = 'clinical analytics' returning strictly 1 row (44.38 / 37.7).](../screenshots/verified-cloud-console/ws1_after_thoughtspot_spotter_scoped.png)
+*WS1-BA-03 AFTER: Locked `Product Line = 'clinical analytics'` tenant predicate isolates Spotter strictly to 1 authorized row (`44.38` feature adoption / `37.7` NPS) with `0` foreign product lines.*
+
 ### WS2-BA-01 (BEFORE → AFTER): Pattern A Pooled Cross-Tenant Bleed → Kernel RLS Tenant Isolation (BigQuery)
 **Project:** `cymbal-ge-hub-2026` (`cymbal_agentic_finops_otel.pattern_a_pooled_rls_entities`) • **BEFORE:** (`1 – 7 of 7` rows across 6 competing tenants) • **AFTER:** (`1 – 2 of 2` FinVault rows, `0` foreign rows)
 
@@ -80,7 +89,9 @@ To keep each architecture guide scannable, every workstream maps its primary com
 *WS2-BA-01 AFTER: Pattern A JWT tenant-context query returns strictly `1 – 2 of 2` authorized FinVault records (`ENT-FV-1001`, `ENT-FV-1003`) with `0` cross-tenant leakage.*
 
 ### WS3-BA-01 + WS3-CTRL-02 (BEFORE → AFTER): Pattern B Sovereign Vault CMEK Access → Instant Revocation Kill-Switch
-**Project:** `cymbal-ge-silo-2026` (`us-west1`) • **BEFORE:** (`VAULT-FV-9001..9002` decrypted) • **AFTER:** (`Cloud KMS Error: DISABLED`) + KMS Keyring ![WS3 BEFORE: BigQuery sovereign vault decrypting VAULT-FV-9001 and VAULT-FV-9002 while finvault-silo-cmek is enabled.](../screenshots/verified-cloud-console/ws3_before_cmek_enabled_vault_access.png)
+**Project:** `cymbal-ge-silo-2026` (`us-west1`) • **BEFORE:** (`VAULT-FV-9001..9002` decrypted) • **AFTER:** (`Cloud KMS Error: DISABLED`) + KMS Keyring
+
+![WS3 BEFORE: BigQuery sovereign vault decrypting VAULT-FV-9001 and VAULT-FV-9002 while finvault-silo-cmek is enabled.](../screenshots/verified-cloud-console/ws3_before_cmek_enabled_vault_access.png)
 *WS3-BA-01 BEFORE: Active `finvault-silo-cmek` decrypts `VAULT-FV-9001` and `VAULT-FV-9002` inside dedicated project `cymbal-ge-silo-2026`.*
 
 ![WS3 AFTER: BigQuery sovereign vault failing closed with Cloud KMS Error medcore-revoked-cmek state DISABLED.](../screenshots/verified-cloud-console/ws3_after_cmek_revoked_killswitch_denied.png)

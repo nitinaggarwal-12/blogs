@@ -1,123 +1,139 @@
-<mxfile host="app.diagrams.net" modified="2026-11-09T05:55:00Z" agent="PolymorphicStudio-2WaySync" version="24.7.8" type="device">
-  <diagram id="s14-opening-bowtie-threat-tree" name="Slide 06/56 • S14 • Opening Bow-Tie Adversarial Attack Tree &amp; 5-Hop Blast-Radius Shield">
-    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="PromptCanvas-Drawio-Compiler" version="24.7.17" type="device">
+  <diagram id="s14-opening-bowtie-threat-tree" name="S14: Cross-Tenant Agent Security">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" background="#FFFFFF" math="0" shadow="1">
       <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        <mxCell id="sp_260" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.9px;color:#B06000;&quot;&gt;&lt;b&gt;10/10 RED-TEAM VECTORS = 0 BLEED&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#FEF7E0;strokeColor=none;fontColor=#B06000;fontSize=10.9;align=center;verticalAlign=middle;spacing=0;spacingLeft=3;spacingRight=3;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="1212.0" y="26.0" width="320.0" height="34.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_261" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=#DADCE0;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="68.0" y="102.0" width="1464.0" height="2.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_262" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#F1F3F4;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=3;spacingRight=3;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="68.0" y="124.0" width="944.0" height="218.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_263" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:12.8px;color:#202124;&quot;&gt;&lt;b&gt;Untrusted Client Ingress&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#5F6368;&quot;&gt;Forged X-Tenant-Id header&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#5F6368;&quot;&gt;Stolen bearer token replay&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#5F6368;&quot;&gt;Cross-tenant tool probe&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;fontSize=12.8;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="92.0" y="176.0" width="260.0" height="146.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_264" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:12.8px;color:#202124;&quot;&gt;&lt;b&gt;L7 ALB + STS Token Broker&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#B06000;&quot;&gt;Strips X-Tenant-Id at edge&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#B06000;&quot;&gt;Verifies RFC 9449 DPoP cnf.jkt&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#B06000;&quot;&gt;60m in-memory JWKS (&amp;lt;0.15ms)&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FEF7E0;strokeColor=#E37400;strokeWidth=1.5;fontColor=#202124;fontSize=12.8;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="396.0" y="176.0" width="288.0" height="146.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_265" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:12.8px;color:#202124;&quot;&gt;&lt;b&gt;ARD + Scoped 3LO Broker&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#5F6368;&quot;&gt;Prunes 94% unentitled schemas&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#5F6368;&quot;&gt;IAM CAB downscoped token&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#5F6368;&quot;&gt;HTTP 401 / 403 on mismatch&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;fontSize=12.8;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="728.0" y="176.0" width="260.0" height="146.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_266" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:9.9px;color:#FFFFFF;&quot;&gt;&lt;b&gt;1&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;fontSize=9.9;align=center;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="648.0" y="134.0" width="34.0" height="34.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_267" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#EBF2FE;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=3;spacingRight=3;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="68.0" y="366.0" width="944.0" height="218.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_268" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:12.8px;color:#202124;&quot;&gt;&lt;b&gt;Valkey Lua Token Bucket&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#5F6368;&quot;&gt;120 RPM/user • 600 RPM/tenant&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#5F6368;&quot;&gt;0.4 ms atomic quota check&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#5F6368;&quot;&gt;HTTP 429 Retry-After: 4s&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;fontSize=12.8;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="92.0" y="418.0" width="260.0" height="146.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_269" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:12.8px;color:#202124;&quot;&gt;&lt;b&gt;Vertex AI ADK Runtime&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#5F6368;&quot;&gt;SPIFFE mTLS workload SVID&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#5F6368;&quot;&gt;&amp;gt;=32k static prefix (0 PII)&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#5F6368;&quot;&gt;99.4% sibling p99 stability&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;fontSize=12.8;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="396.0" y="418.0" width="288.0" height="146.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_270" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:12.8px;color:#202124;&quot;&gt;&lt;b&gt;Model Armor + Cloud DLP&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#B06000;&quot;&gt;Inline jailbreak shield (&amp;lt;8ms)&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#B06000;&quot;&gt;De-identifies SSN / PHI / PCI&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#B06000;&quot;&gt;HTTP 422 on policy violation&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FEF7E0;strokeColor=#E37400;strokeWidth=1.5;fontColor=#202124;fontSize=12.8;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="728.0" y="418.0" width="260.0" height="146.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_271" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:9.9px;color:#FFFFFF;&quot;&gt;&lt;b&gt;2&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;fontSize=9.9;align=center;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="954.0" y="376.0" width="34.0" height="34.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_272" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#F1F3F4;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=3;spacingRight=3;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="68.0" y="608.0" width="944.0" height="230.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_273" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:12.8px;color:#202124;&quot;&gt;&lt;b&gt;PgBouncer Transaction Pool&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#5F6368;&quot;&gt;SET LOCAL app.tenant_id&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#5F6368;&quot;&gt;DISCARD ALL on conn release&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#5F6368;&quot;&gt;0 session GUC state bleed&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;fontSize=12.8;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="92.0" y="660.0" width="260.0" height="152.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_274" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:12.8px;color:#202124;&quot;&gt;&lt;b&gt;AlloyDB Kernel FORCE RLS&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#B06000;&quot;&gt;Pre-filters prior to HNSW ANN&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#B06000;&quot;&gt;Blocks OR 1=1 SQLi in kernel&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#B06000;&quot;&gt;0 foreign disk pages scanned&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FEF7E0;strokeColor=#E37400;strokeWidth=1.5;fontColor=#202124;fontSize=12.8;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="396.0" y="660.0" width="288.0" height="152.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_275" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:12.8px;color:#202124;&quot;&gt;&lt;b&gt;VPC-SC &amp;amp; HSM CMEK Halt&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#5F6368;&quot;&gt;0.0.0.0/0 egress denied&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#5F6368;&quot;&gt;FIPS 140-3 L3 key destruction&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.6px;color:#5F6368;&quot;&gt;&amp;lt;60s total halt (41.2s verified)&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;fontSize=12.8;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="728.0" y="660.0" width="260.0" height="152.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_276" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:9.9px;color:#FFFFFF;&quot;&gt;&lt;b&gt;3&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;fontSize=9.9;align=center;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="648.0" y="618.0" width="34.0" height="34.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_277" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#FBF6E9;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=3;spacingRight=3;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="1044.0" y="124.0" width="488.0" height="218.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_278" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:9.9px;color:#FFFFFF;&quot;&gt;&lt;b&gt;1&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;fontSize=9.9;align=center;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="1068.0" y="146.0" width="36.0" height="36.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_279" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:12.8px;color:#D56E0C;&quot;&gt;&lt;b&gt;Cryptographic edge &amp;amp; confused-deputy gate&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:9.4px;color:#3C4043;&quot;&gt;• Untrusted X-Tenant-Id headers are stripped at L7 before reaching any compute pod.&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:9.4px;color:#3C4043;&quot;&gt;• OIDC + RFC 9449 DPoP proof binds every turn to a KMS-signed tenant_id and prunes 94% of unentitled MCP tools.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#FBF6E9;strokeColor=none;fontColor=#D56E0C;fontSize=12.8;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="1118.0" y="140.0" width="392.0" height="186.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_280" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#FBF6E9;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=3;spacingRight=3;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="1044.0" y="366.0" width="488.0" height="218.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_281" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:9.9px;color:#FFFFFF;&quot;&gt;&lt;b&gt;2&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;fontSize=9.9;align=center;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="1068.0" y="388.0" width="36.0" height="36.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_282" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:12.8px;color:#D56E0C;&quot;&gt;&lt;b&gt;Noisy-neighbor bulkhead &amp;amp; inline prompt shield&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:9.4px;color:#3C4043;&quot;&gt;• Two-tier Valkey Lua token buckets cap floods in 0.4 ms while preserving 99.4% sibling p99 latency.&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:9.4px;color:#3C4043;&quot;&gt;• Model Armor and Cloud DLP inspect prompts and redact SSN/PHI inline in &amp;lt; 8 ms before egress.&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#FBF6E9;strokeColor=none;fontColor=#D56E0C;fontSize=12.8;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="1118.0" y="382.0" width="392.0" height="186.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_283" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#FBF6E9;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=3;spacingRight=3;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="1044.0" y="608.0" width="488.0" height="230.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_284" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:9.9px;color:#FFFFFF;&quot;&gt;&lt;b&gt;3&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;fontSize=9.9;align=center;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="1068.0" y="630.0" width="36.0" height="36.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_285" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:12.8px;color:#D56E0C;&quot;&gt;&lt;b&gt;Kernel FORCE RLS &amp;amp; &amp;lt; 60s CMEK kill-switch&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:9.4px;color:#3C4043;&quot;&gt;• Even if an application bug bypasses Hops 1–4, PostgreSQL kernel FORCE RLS reads 0 foreign disk pages.&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:9.4px;color:#3C4043;&quot;&gt;• Customer HSM key revocation halts Cloud Run, AlloyDB, and Memory Bank in 41.2s (&amp;lt; 60s SLA).&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=18;fillColor=#FBF6E9;strokeColor=none;fontColor=#D56E0C;fontSize=12.8;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=2;spacingBottom=2;" vertex="1" parent="1">
-          <mxGeometry x="1118.0" y="624.0" width="392.0" height="198.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_286" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:22.5px;color:#202124;&quot;&gt;&lt;b&gt;Cross-tenant agent and data security&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=22.5;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="68.0" y="28.0" width="1120.0" height="30.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_287" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:13.1px;color:#5F6368;&quot;&gt;OPENING • Defense-in-depth across Edge Identity, Runtime Bulkheads, and Kernel Storage — 10/10 red-team vectors blocked&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=13.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="68.0" y="66.0" width="1528.0" height="24.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_288" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:14.0px;color:#202124;&quot;&gt;&lt;b&gt;Layer 1 · Edge &amp;amp; Identity Perimeter (Hops 1–2)&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=14.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="92.0" y="136.0" width="1504.0" height="24.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_289" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:14.0px;color:#1967D2;&quot;&gt;&lt;b&gt;Layer 2 · Fair-Share Bulkhead &amp;amp; Inline Safety (Hops 3–4)&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#1967D2;fontSize=14.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="92.0" y="378.0" width="1504.0" height="24.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_290" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:14.0px;color:#202124;&quot;&gt;&lt;b&gt;Layer 3 · Kernel RLS, CMEK &amp;amp; Egress Perimeter (Hop 5)&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=14.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="92.0" y="620.0" width="1504.0" height="24.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_291" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=#5F6368;strokeWidth=1.1;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="352.0" y="245.0" width="44.0" height="12.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_292" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=#E37400;strokeWidth=1.1;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="684.0" y="245.0" width="44.0" height="12.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_293" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=#1A73E8;strokeWidth=1.1;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="352.0" y="487.0" width="44.0" height="12.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_294" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=#E37400;strokeWidth=1.1;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="684.0" y="487.0" width="44.0" height="12.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_295" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=#E37400;strokeWidth=1.1;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="352.0" y="734.0" width="44.0" height="12.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_296" value="" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=#1E8E3E;strokeWidth=1.1;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="684.0" y="734.0" width="44.0" height="12.0" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_297" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:9.1px;color:#5F6368;&quot;&gt;[Slide 06/38 • OPENING]  •  &lt;/span&gt;&lt;span style=&quot;font-size:9.1px;color:#0F172A;&quot;&gt;&lt;b&gt;🔗 Edit in Draw.io ↗&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=9.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="68.0" y="864.4" width="1464.0" height="28.0" as="geometry"/>
-        </mxCell>
+      <mxCell id="0"/>
+      <mxCell id="1" parent="0"/>
+      <mxCell id="mc_topo_pill" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#B06000;'&gt;&lt;div style='font-size:11px;font-weight:700;line-height:1.18;'&gt;10/10 RED-TEAM VECTORS = 0 BLEED&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=none;fontColor=#B06000;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1212" y="26" width="320" height="34" as="geometry"/>
+      </mxCell>
+      <mxCell id="mc_div_line" value="" style="rounded=0;arcSize=0;whiteSpace=wrap;html=1;fillColor=#DADCE0;strokeColor=none;fontColor=#5F6368;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="102" width="1464" height="2" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_plane1" value="" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#F1F3F4;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="124" width="944" height="218" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_p1_in" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Untrusted Client Ingress&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Forged X-Tenant-Id header&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Stolen bearer token replay&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Cross-tenant tool probe&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="92" y="176" width="260" height="146" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_p1_pep" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;L7 ALB + STS Token Broker&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B06000;'&gt;Strips X-Tenant-Id at edge&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B06000;'&gt;Verifies RFC 9449 DPoP cnf.jkt&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B06000;'&gt;60m in-memory JWKS (&amp;lt;0.15ms)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=#E37400;strokeWidth=2;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="396" y="176" width="288" height="146" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_p1_ard" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;ARD + Scoped 3LO Broker&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;Prunes 94% unentitled schemas&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;IAM CAB downscoped token&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;HTTP 401 / 403 on mismatch&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="728" y="176" width="260" height="146" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_num1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;1&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="648" y="134" width="34" height="34" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_plane2" value="" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#EBF2FE;strokeColor=none;fontColor=#1967D2;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="366" width="944" height="218" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_p2_rl" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Valkey Lua Token Bucket&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;120 RPM/user • 600 RPM/tenant&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;0.4 ms atomic quota check&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;HTTP 429 Retry-After: 4s&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="92" y="418" width="260" height="146" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_p2_adk" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Vertex AI ADK Runtime&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;SPIFFE mTLS workload SVID&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;&amp;gt;=32k static prefix (0 PII)&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;99.4% sibling p99 stability&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="396" y="418" width="288" height="146" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_p2_ma" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Model Armor + Cloud DLP&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B06000;'&gt;Inline jailbreak shield (&amp;lt;8ms)&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B06000;'&gt;De-identifies SSN / PHI / PCI&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B06000;'&gt;HTTP 422 on policy violation&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=#E37400;strokeWidth=2;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="728" y="418" width="260" height="146" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_num2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;2&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="954" y="376" width="34" height="34" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_plane3" value="" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#F1F3F4;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="68" y="608" width="944" height="230" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_p3_pg" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;PgBouncer Transaction Pool&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;SET LOCAL app.tenant_id&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;DISCARD ALL on conn release&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;0 session GUC state bleed&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="92" y="660" width="260" height="152" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_p3_rls" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;AlloyDB Kernel FORCE RLS&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B06000;'&gt;Pre-filters prior to HNSW ANN&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B06000;'&gt;Blocks OR 1=1 SQLi in kernel&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#B06000;'&gt;0 foreign disk pages scanned&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=#E37400;strokeWidth=2;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="396" y="660" width="288" height="152" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_p3_kms" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#202124;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;VPC-SC &amp;amp; HSM CMEK Halt&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;0.0.0.0/0 egress denied&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;FIPS 140-3 L3 key destruction&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#5F6368;'&gt;&amp;lt;60s total halt (41.2s verified)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#202124;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="728" y="660" width="260" height="152" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_num3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;3&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="648" y="618" width="34" height="34" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_r_card1" value="" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#FBF6E9;strokeColor=none;fontColor=#D56E0C;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1044" y="124" width="488" height="218" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_r_n1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;1&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1068" y="146" width="36" height="36" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_r_txt1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#D56E0C;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Cryptographic edge &amp;amp; confused-deputy gate&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• Untrusted X-Tenant-Id headers are stripped at L7 before reaching any compute pod.&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• OIDC + RFC 9449 DPoP proof binds every turn to a KMS-signed tenant_id and prunes 94% of unentitled MCP tools.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FBF6E9;strokeColor=none;fontColor=#D56E0C;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1118" y="140" width="392" height="186" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_r_card2" value="" style="rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#FBF6E9;strokeColor=none;fontColor=#D56E0C;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1044" y="366" width="488" height="218" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_r_n2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;2&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1068" y="388" width="36" height="36" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_r_txt2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#D56E0C;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Noisy-neighbor bulkhead &amp;amp; inline prompt shield&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• Two-tier Valkey Lua token buckets cap floods in 0.4 ms while preserving 99.4% sibling p99 latency.&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• Model Armor and Cloud DLP inspect prompts and redact SSN/PHI inline in &amp;lt; 8 ms before egress.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FBF6E9;strokeColor=none;fontColor=#D56E0C;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1118" y="382" width="392" height="186" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_r_card3" value="" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FBF6E9;strokeColor=none;fontColor=#D56E0C;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1044" y="608" width="488" height="230" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_r_n3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:14px;font-weight:700;line-height:1.18;'&gt;3&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E37400;strokeColor=none;fontColor=#FFFFFF;verticalAlign=middle;align=center;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1068" y="630" width="36" height="36" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_r_txt3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#D56E0C;'&gt;&lt;div style='font-size:13px;font-weight:700;line-height:1.18;'&gt;Kernel FORCE RLS &amp;amp; &amp;lt; 60s CMEK kill-switch&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• Even if an application bug bypasses Hops 1–4, PostgreSQL kernel FORCE RLS reads 0 foreign disk pages.&lt;/div&gt;&lt;div style='font-size:11px;font-weight:400;line-height:1.22;color:#3C4043;'&gt;• Customer HSM key revocation halts Cloud Run, AlloyDB, and Memory Bank in 41.2s (&amp;lt; 60s SLA).&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FBF6E9;strokeColor=none;fontColor=#D56E0C;verticalAlign=middle;align=left;spacingLeft=16;shadow=0;" vertex="1" parent="1">
+        <mxGeometry x="1118" y="624" width="392" height="198" as="geometry"/>
+      </mxCell>
+      <mxCell id="e1" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.473;exitDx=0;exitDy=0;entryX=0.0;entryY=0.473;entryDx=0;entryDy=0;strokeColor=#5F6368;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="s14_p1_in" target="s14_p1_pep">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="352" y="245" as="sourcePoint"/>
+          <mxPoint x="396" y="245" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e2" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.473;exitDx=0;exitDy=0;entryX=0.0;entryY=0.473;entryDx=0;entryDy=0;strokeColor=#E37400;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="s14_p1_pep" target="s14_p1_ard">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="684" y="245" as="sourcePoint"/>
+          <mxPoint x="728" y="245" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e3" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.473;exitDx=0;exitDy=0;entryX=0.0;entryY=0.473;entryDx=0;entryDy=0;strokeColor=#1A73E8;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="s14_p2_rl" target="s14_p2_adk">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="352" y="487" as="sourcePoint"/>
+          <mxPoint x="396" y="487" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e4" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.473;exitDx=0;exitDy=0;entryX=0.0;entryY=0.473;entryDx=0;entryDy=0;strokeColor=#E37400;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="s14_p2_adk" target="s14_p2_ma">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="684" y="487" as="sourcePoint"/>
+          <mxPoint x="728" y="487" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e5" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.487;exitDx=0;exitDy=0;entryX=0.0;entryY=0.487;entryDx=0;entryDy=0;strokeColor=#E37400;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="s14_p3_pg" target="s14_p3_rls">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="352" y="734" as="sourcePoint"/>
+          <mxPoint x="396" y="734" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="e6" value="" style="rounded=1;html=1;exitX=1.0;exitY=0.487;exitDx=0;exitDy=0;entryX=0.0;entryY=0.487;entryDx=0;entryDy=0;strokeColor=#1E8E3E;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="s14_p3_rls" target="s14_p3_kms">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="684" y="734" as="sourcePoint"/>
+          <mxPoint x="728" y="734" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="t_main" value="Cross-tenant agent and data security" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=24;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="68" y="26" width="559" height="37" as="geometry"/>
+      </mxCell>
+      <mxCell id="t_sub" value="Slide 05 of 54 • Defense-in-depth across Edge Identity, Runtime Bulkheads, and Kernel Storage — 10/10 red-team vectors blocked" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#5F6368;fontSize=14;fontStyle=0;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="68" y="69" width="1117" height="21" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_p1_lbl" value="Layer 1 · Edge &amp; Identity Perimeter (Hops 1–2)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=15;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="92" y="138" width="451" height="23" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_p2_lbl" value="Layer 2 · Fair-Share Bulkhead &amp; Inline Safety (Hops 3–4)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#1967D2;fontSize=15;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="92" y="380" width="544" height="23" as="geometry"/>
+      </mxCell>
+      <mxCell id="s14_p3_lbl" value="Layer 3 · Kernel RLS, CMEK &amp; Egress Perimeter (Hop 5)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=15;fontStyle=1;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="92" y="622" width="516" height="23" as="geometry"/>
+      </mxCell>
         <mxCell id="plane_layer" value="Planes: control / compute / data (generated, locked)" style="locked=1;" parent="0"/>
         <mxCell id="plane_bdr_00_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=8;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
           <mxGeometry x="391.0" y="171.0" width="602.0" height="156.0" as="geometry"/>
