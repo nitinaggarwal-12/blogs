@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-23T20:23:16Z",
+  "updatedAt": "2026-11-23T21:00:25Z",
   "accountEmail": "anonymous-workspace-sync@cloud-architecture-center.internal",
   "oauthClientId": "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com",
   "slides": {
@@ -37,8 +37,8 @@
       "key": "WS3",
       "title": "[LEAN VISUAL — 7 SLIDES] WS3 — Pattern B: Zero-Trust Sovereign Silos — Editable Google Slides",
       "pptxPath": "slides/ws3-12slide-visual-deck.pptx",
-      "sha256": "62d12b3e8360a0e75d99e919c4fb61fe70bf43c4d10edf73a56c9af865d0300f",
-      "sizeBytes": 611706,
+      "sha256": "b669e5f854eb23b4f68e8371fee6544b938b5aa2cc24299c3f4404a54f51b26b",
+      "sizeBytes": 612543,
       "slideCount": 7,
       "googleSlidesId": "1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac/edit",
@@ -46,7 +46,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac/edit?usp=drivesdk",
-      "syncedAt": "2026-11-23T20:23:16Z"
+      "syncedAt": "2026-11-23T21:00:25Z"
     },
     "WS4": {
       "key": "WS4",
@@ -337,8 +337,8 @@
       "key": "BARE_MIN_12",
       "title": "[12-Slide Bare-Minimum Architecture Deck] Enterprise Multi-Tenancy, Governance & Isolation (WS1–WS5)",
       "pptxPath": "slides/geap-bare-minimum-12slide-architecture-deck.pptx",
-      "sha256": "59123a01755f317ba4a169cb344b2737bfa34ed88f7b499d9ef9ffc44ae45dd1",
-      "sizeBytes": 3225075,
+      "sha256": "12f13bc3d2f3ccd6d6acd86094402cb22b0214b8a11dd1af1ec5bc2744e75943",
+      "sizeBytes": 3224955,
       "slideCount": 12,
       "googleSlidesId": "1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit",
@@ -346,7 +346,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit?usp=drivesdk",
-      "syncedAt": "2026-11-23T19:19:40Z"
+      "syncedAt": "2026-11-23T20:56:41Z"
     },
     "WS2_EXEC": {
       "key": "WS2_EXEC",
@@ -367,8 +367,8 @@
       "key": "WS3_EXEC",
       "title": "WS3 Executive Architecture (10-Slide Lean Narrative Deck)",
       "pptxPath": "slides/ws3-executive-architecture-10slide-deck.pptx",
-      "sha256": "fbdba0df964e12896846f57f093027d07d86d9e1ce0822b89914261e76e4fcdb",
-      "sizeBytes": 635682,
+      "sha256": "f9852150b47d99a1dfc654a7c015a8bfe933ed6195d3d53072c88c126bb13c8b",
+      "sizeBytes": 635557,
       "slideCount": 10,
       "googleSlidesId": "1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/edit",
@@ -376,7 +376,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1rV6ZQzB9-lPIlZUJZZ7Pm4xDUeri0647vpLyigEWm0A/edit?usp=drivesdk",
-      "syncedAt": "2026-11-23T19:19:40Z"
+      "syncedAt": "2026-11-23T20:56:41Z"
     },
     "WS4_EXEC": {
       "key": "WS4_EXEC",
@@ -626,6 +626,38 @@
         "sha256": "da55a2c0158a6b2fe2e9b3c8a0044cd5e857cc5ca8cd23e16966c47ade5dbd9e",
         "webViewLink": "https://drive.google.com/file/d/1ajBbj_Zft-xbWtNwh9xB2nMWkOnSb7qs/view?usp=drivesdk&resourcekey=0-W-9Yf3bXknJFKUnhZ8sjDQ",
         "syncedAt": "2026-11-23T20:23:16Z"
+      },
+      "ws3_cmek_before_vault": {
+        "fileId": "1jRvYjhe3EHpVdPDgLDGcTHtkmg7p4w0s",
+        "localPath": "screenshots/verified-cloud-console/ws3_before_cmek_enabled_vault_access.png",
+        "mimeType": "image/png",
+        "sha256": "5acc84f6897e7035224ce264044b524a331bb35135e5cea451334f423a065cce",
+        "webViewLink": "https://drive.google.com/file/d/1jRvYjhe3EHpVdPDgLDGcTHtkmg7p4w0s/view?usp=drivesdk&resourcekey=0-OaDatgTXChXsfyEzz2-OMA",
+        "syncedAt": "2026-11-23T20:53:42Z"
+      },
+      "ws3_cmek_after_denied": {
+        "fileId": "1C65SX-XXcTTCUWVOAIygjQr3l_Mm7EpJ",
+        "localPath": "screenshots/verified-cloud-console/ws3_after_cmek_revoked_killswitch_denied.png",
+        "mimeType": "image/png",
+        "sha256": "564ee342502792d04cfc35cc4f0dd1d9e2981246f928e4da0f639de0e5fd58e6",
+        "webViewLink": "https://drive.google.com/file/d/1C65SX-XXcTTCUWVOAIygjQr3l_Mm7EpJ/view?usp=drivesdk&resourcekey=0-mPtAvuUXYuvOZefRpRq_lQ",
+        "syncedAt": "2026-11-23T20:53:42Z"
+      },
+      "ws3_kms_keyring_state": {
+        "fileId": "1wEosZZJ58dbY2pfOjNJh_7JKqomEWsUq",
+        "localPath": "screenshots/verified-cloud-console/ws3_after_kms_cmek_keyring_state.png",
+        "mimeType": "image/png",
+        "sha256": "7e9e616dee88b30cc4f11c094f67e6fa7438d61a52ec4bf35658c69c62801348",
+        "webViewLink": "https://drive.google.com/file/d/1wEosZZJ58dbY2pfOjNJh_7JKqomEWsUq/view?usp=drivesdk&resourcekey=0-JB57yMLoXRqShI7MOZVKow",
+        "syncedAt": "2026-11-23T20:53:42Z"
+      },
+      "ws3_exec_kms_silo": {
+        "fileId": "1WGNBc5F2oGKjdTsYeVcALqnDiT_QEZjL",
+        "localPath": "screenshots/verified-cloud-console/exec_blog03_kms_cmek_silo.png",
+        "mimeType": "image/png",
+        "sha256": "6b58b9ed33fe3ed5d8a77f602bf5e948f10f10d0e8ab62079370391daebab1ab",
+        "webViewLink": "https://drive.google.com/file/d/1WGNBc5F2oGKjdTsYeVcALqnDiT_QEZjL/view?usp=drivesdk&resourcekey=0-oc21cDpz5pEYqUsTBiLDAg",
+        "syncedAt": "2026-11-23T20:53:42Z"
       }
     }
   }

@@ -1,5 +1,5 @@
 <mxfile host="app.diagrams.net" modified="2026-11-09T05:55:00Z" agent="PolymorphicStudio-2WaySync" version="24.7.8" type="device">
-  <diagram id="ws3-c4-l3-cmek-killswitch-swimlane" name="Slide 26/56 • WS3 - PART 3 - Sovereign Silo CMEK Revocation &amp; Air-Gapped GKE">
+  <diagram id="ws3-c4-l3-cmek-killswitch-swimlane" name="WS3 - PART 3 - Sovereign Silo CMEK Revocation &amp; Air-Gapped GKE">
     <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
@@ -22,7 +22,7 @@
         <mxCell id="sp_973" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:20.2px;color:#202124;&quot;&gt;&lt;b&gt;WS3 - PART 3 - Sovereign Silo CMEK Revocation &amp;amp; Air-Gapped GKE&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#202124;fontSize=20.2;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
           <mxGeometry x="68.0" y="15.8" width="1464.0" height="41.7" as="geometry"/>
         </mxCell>
-        <mxCell id="cxn_976" value="" style="edgeStyle=none;html=1;flowAnimation=1;strokeColor=#CBD5E1;strokeWidth=1.5;startArrow=none;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1">
+        <mxCell id="cxn_976" value="" style="edgeStyle=none;html=1;strokeColor=#CBD5E1;strokeWidth=1.5;startArrow=none;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="126.0" y="199.2" as="sourcePoint"/>
             <mxPoint x="1500.0" y="199.2" as="targetPoint"/>
@@ -40,7 +40,7 @@
         <mxCell id="sp_980" value="" style="html=1;whiteSpace=wrap;ellipse;fillColor=#0F2942;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
           <mxGeometry x="114.0" y="186.0" width="24.0" height="24.0" as="geometry"/>
         </mxCell>
-        <mxCell id="cxn_981" value="" style="edgeStyle=none;html=1;flowAnimation=1;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=0;strokeColor=#CBD5E1;strokeWidth=1.2;startArrow=none;endArrow=none;" edge="1" parent="1" source="sp_980">
+        <mxCell id="cxn_981" value="" style="edgeStyle=none;html=1;dashed=1;dashPattern=6 4;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=0;strokeColor=#CBD5E1;strokeWidth=1.2;startArrow=none;endArrow=none;" edge="1" parent="1" source="sp_980">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="126.0" y="800.4" as="targetPoint"/>
           </mxGeometry>
@@ -57,7 +57,7 @@
         <mxCell id="sp_985" value="" style="html=1;whiteSpace=wrap;ellipse;fillColor=#0D7A75;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
           <mxGeometry x="390.0" y="186.0" width="24.0" height="24.0" as="geometry"/>
         </mxCell>
-        <mxCell id="cxn_986" value="" style="edgeStyle=none;html=1;flowAnimation=1;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=0;strokeColor=#CBD5E1;strokeWidth=1.2;startArrow=none;endArrow=none;" edge="1" parent="1" source="sp_985">
+        <mxCell id="cxn_986" value="" style="edgeStyle=none;html=1;dashed=1;dashPattern=6 4;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=0;strokeColor=#CBD5E1;strokeWidth=1.2;startArrow=none;endArrow=none;" edge="1" parent="1" source="sp_985">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="402.0" y="800.4" as="targetPoint"/>
           </mxGeometry>
@@ -74,7 +74,7 @@
         <mxCell id="sp_990" value="" style="html=1;whiteSpace=wrap;ellipse;fillColor=#54728C;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
           <mxGeometry x="666.0" y="186.0" width="24.0" height="24.0" as="geometry"/>
         </mxCell>
-        <mxCell id="cxn_991" value="" style="edgeStyle=none;html=1;flowAnimation=1;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=0;strokeColor=#CBD5E1;strokeWidth=1.2;startArrow=none;endArrow=none;" edge="1" parent="1" source="sp_990">
+        <mxCell id="cxn_991" value="" style="edgeStyle=none;html=1;dashed=1;dashPattern=6 4;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=0;strokeColor=#CBD5E1;strokeWidth=1.2;startArrow=none;endArrow=none;" edge="1" parent="1" source="sp_990">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="678.0" y="800.4" as="targetPoint"/>
           </mxGeometry>
@@ -91,7 +91,7 @@
         <mxCell id="sp_995" value="" style="html=1;whiteSpace=wrap;ellipse;fillColor=#38988E;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
           <mxGeometry x="942.0" y="186.0" width="24.0" height="24.0" as="geometry"/>
         </mxCell>
-        <mxCell id="cxn_996" value="" style="edgeStyle=none;html=1;flowAnimation=1;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=0;strokeColor=#CBD5E1;strokeWidth=1.2;startArrow=none;endArrow=none;" edge="1" parent="1" source="sp_995">
+        <mxCell id="cxn_996" value="" style="edgeStyle=none;html=1;dashed=1;dashPattern=6 4;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=0;strokeColor=#CBD5E1;strokeWidth=1.2;startArrow=none;endArrow=none;" edge="1" parent="1" source="sp_995">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="954.0" y="800.4" as="targetPoint"/>
           </mxGeometry>
@@ -108,7 +108,7 @@
         <mxCell id="sp_1000" value="" style="html=1;whiteSpace=wrap;ellipse;fillColor=#0F2942;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
           <mxGeometry x="1242.0" y="186.0" width="24.0" height="24.0" as="geometry"/>
         </mxCell>
-        <mxCell id="cxn_1001" value="" style="edgeStyle=none;html=1;flowAnimation=1;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=0;strokeColor=#CBD5E1;strokeWidth=1.2;startArrow=none;endArrow=none;" edge="1" parent="1" source="sp_1000">
+        <mxCell id="cxn_1001" value="" style="edgeStyle=none;html=1;dashed=1;dashPattern=6 4;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=0;strokeColor=#CBD5E1;strokeWidth=1.2;startArrow=none;endArrow=none;" edge="1" parent="1" source="sp_1000">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1254.0" y="800.4" as="targetPoint"/>
           </mxGeometry>
@@ -137,7 +137,7 @@
         <mxCell id="sp_1009" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.4px;color:#0F172A;&quot;&gt;&lt;b&gt;CISO Disables Key&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#334155;&quot;&gt;tenant-a-silo-cmek&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.0;fontColor=#0F172A;fontSize=11.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=9;spacingRight=8;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
           <mxGeometry x="187.2" y="213.6" width="201.6" height="50.4" as="geometry"/>
         </mxCell>
-        <mxCell id="cxn_1010" value="" style="edgeStyle=none;html=1;flowAnimation=1;exitX=1.0;exitY=0.747;exitDx=0;exitDy=0;exitPerimeter=0;strokeColor=#0F2942;strokeWidth=1.5;startArrow=none;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1" source="sp_1002">
+        <mxCell id="cxn_1010" value="" style="edgeStyle=none;html=1;exitX=1.0;exitY=0.747;exitDx=0;exitDy=0;exitPerimeter=0;strokeColor=#0F2942;strokeWidth=1.5;startArrow=none;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1" source="sp_1002">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="392.4" y="295.2" as="targetPoint"/>
           </mxGeometry>
@@ -154,13 +154,13 @@
         <mxCell id="sp_1014" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.4px;color:#B45309;&quot;&gt;&lt;b&gt;Revoke Key Grant&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#334155;&quot;&gt;cryptoKeyDecrypter IAM&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=1.0;fontColor=#B45309;fontSize=11.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=9;spacingRight=8;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
           <mxGeometry x="463.2" y="292.8" width="201.6" height="52.8" as="geometry"/>
         </mxCell>
-        <mxCell id="cxn_1015" value="" style="edgeStyle=none;html=1;flowAnimation=1;strokeColor=#0D7A75;strokeWidth=1.5;startArrow=none;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1">
+        <mxCell id="cxn_1015" value="" style="edgeStyle=none;html=1;strokeColor=#0D7A75;strokeWidth=1.5;startArrow=none;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="411.6" y="381.6" as="sourcePoint"/>
             <mxPoint x="668.4" y="381.6" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="sp_1016" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:9.1px;color:#0D7A75;&quot;&gt;&lt;b&gt;Revoke Key Binding → Emit KMS Audit Revocation Event&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#0D7A75;fontSize=9.1;align=center;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
+        <mxCell id="sp_1016" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:9.1px;color:#0D7A75;&quot;&gt;&lt;b&gt;Revoke Key Binding →&lt;br/&gt;Emit KMS Audit Revocation Event&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#0D7A75;fontSize=9.1;align=center;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
           <mxGeometry x="415.2" y="354.0" width="249.6" height="22.8" as="geometry"/>
         </mxCell>
         <mxCell id="sp_1017" value="" style="html=1;whiteSpace=wrap;ellipse;fillColor=#54728C;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
@@ -172,7 +172,7 @@
         <mxCell id="sp_1019" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.4px;color:#1D4ED8;&quot;&gt;&lt;b&gt;KMS Ping Fails&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#334155;&quot;&gt;60s Liveness Heartbeat&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.0;fontColor=#1D4ED8;fontSize=11.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=9;spacingRight=8;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
           <mxGeometry x="739.2" y="379.2" width="201.6" height="52.8" as="geometry"/>
         </mxCell>
-        <mxCell id="cxn_1020" value="" style="edgeStyle=none;html=1;flowAnimation=1;strokeColor=#54728C;strokeWidth=1.5;startArrow=none;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1">
+        <mxCell id="cxn_1020" value="" style="edgeStyle=none;html=1;strokeColor=#54728C;strokeWidth=1.5;startArrow=none;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="687.6" y="465.6" as="sourcePoint"/>
             <mxPoint x="944.4" y="465.6" as="targetPoint"/>
@@ -193,7 +193,7 @@
         <mxCell id="sp_1025" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#E6F4EA;strokeColor=#1E8E3E;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
           <mxGeometry x="969.6" y="482.4" width="268.8" height="86.4" as="geometry"/>
         </mxCell>
-        <mxCell id="sp_1026" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.7px;color:#0D652D;&quot;&gt;&lt;b&gt;HTTP 403 CMEK_DENIED&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.7px;color:#0D652D;&quot;&gt;&lt;b&gt;(CMEK Revoked)&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#0D652D;fontSize=10.7;align=center;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+        <mxCell id="sp_1026" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.7px;color:#0D652D;&quot;&gt;&lt;b&gt;HTTP 423 Locked&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.7px;color:#0D652D;&quot;&gt;&lt;b&gt;(CMEK Revoked)&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#0D652D;fontSize=10.7;align=center;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
           <mxGeometry x="976.8" y="487.2" width="254.4" height="48.0" as="geometry"/>
         </mxCell>
         <mxCell id="sp_1027" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:9.6px;color:#3C4043;&quot;&gt;&lt;b&gt;Guarantee: &amp;lt;60s Cryptographic Kill-Switch&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#3C4043;fontSize=9.6;align=center;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
@@ -214,7 +214,7 @@
         <mxCell id="sp_1032" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.4px;color:#BE123C;&quot;&gt;&lt;b&gt;Purge L1 &amp;amp; Halt I/O&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#334155;&quot;&gt;Zero Cached Tokens&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFF1F2;strokeColor=#FDA4AF;strokeWidth=1.0;fontColor=#BE123C;fontSize=11.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=9;spacingRight=8;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
           <mxGeometry x="688.8" y="619.2" width="254.4" height="54.0" as="geometry"/>
         </mxCell>
-        <mxCell id="cxn_1033" value="" style="edgeStyle=none;html=1;flowAnimation=1;strokeColor=#0F2942;strokeWidth=1.5;startArrow=none;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1">
+        <mxCell id="cxn_1033" value="" style="edgeStyle=none;html=1;strokeColor=#0F2942;strokeWidth=1.5;startArrow=none;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="963.6" y="631.2" as="sourcePoint"/>
             <mxPoint x="1244.4" y="631.2" as="targetPoint"/>
@@ -229,7 +229,7 @@
         <mxCell id="sp_1036" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:14.3px;color:#FFFFFF;&quot;&gt;&lt;b&gt;6&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#FFFFFF;fontSize=14.3;align=center;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
           <mxGeometry x="1272.0" y="600.0" width="38.4" height="38.4" as="geometry"/>
         </mxCell>
-        <mxCell id="sp_1037" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.4px;color:#047857;&quot;&gt;&lt;b&gt;HTTP 403 + SCC Log&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#334155;&quot;&gt;CMEK_DENIED Audit&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.0;fontColor=#047857;fontSize=11.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=9;spacingRight=8;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
+        <mxCell id="sp_1037" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.4px;color:#047857;&quot;&gt;&lt;b&gt;HTTP 423 + SCC Log&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.4px;color:#334155;&quot;&gt;CMEK_LOCKED Audit&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.0;fontColor=#047857;fontSize=11.4;align=left;verticalAlign=middle;spacing=0;spacingLeft=9;spacingRight=8;spacingTop=4;spacingBottom=4;" vertex="1" parent="1">
           <mxGeometry x="1317.6" y="595.2" width="232.8" height="62.4" as="geometry"/>
         </mxCell>
         <mxCell id="sp_1038" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#F8F9FA;strokeColor=#DADCE0;strokeWidth=1.0;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
@@ -241,11 +241,8 @@
         <mxCell id="sp_1040" value="" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#0F2942;strokeColor=none;fontColor=#0F172A;fontSize=10.0;align=left;verticalAlign=middle;spacing=0;spacingLeft=12;spacingRight=12;spacingTop=12;spacingBottom=12;" vertex="1" parent="1">
           <mxGeometry x="1484.0" y="693.6" width="56.0" height="67.2" as="geometry"/>
         </mxCell>
-        <mxCell id="sp_1041" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.1px;color:#FFFFFF;&quot;&gt;&lt;b&gt;SCC&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.1px;color:#FFFFFF;&quot;&gt;&lt;b&gt;403&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#FFFFFF;fontSize=10.1;align=center;verticalAlign=middle;spacing=0;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+        <mxCell id="sp_1041" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.1px;color:#FFFFFF;&quot;&gt;&lt;b&gt;SCC&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.1px;color:#FFFFFF;&quot;&gt;&lt;b&gt;423&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#FFFFFF;fontSize=10.1;align=center;verticalAlign=middle;spacing=0;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
           <mxGeometry x="1484.0" y="693.6" width="56.0" height="67.2" as="geometry"/>
-        </mxCell>
-        <mxCell id="sp_1047" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.1px;color:#4285F4;&quot;&gt;&lt;b&gt;[Slide 07/12 • PART 3 (WS3)]  •  &lt;/b&gt;&lt;/span&gt;&lt;span style=&quot;font-size:8.8px;color:#1D4ED8;&quot;&gt;&lt;b&gt;→ Edit in Draw.io ↗&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontColor=#4285F4;fontSize=10.1;align=left;verticalAlign=middle;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="1">
-          <mxGeometry x="48.0" y="866.4" width="1504.0" height="26.4" as="geometry"/>
         </mxCell>
         <mxCell id="sp_8600" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.7px;color:#BE123C;&quot;&gt;&lt;b&gt;1. Customer Key Revoke&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.9px;color:#0F172A;&quot;&gt;&lt;b&gt;CISO Disables Cloud KMS / EKM&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.1px;color:#475569;&quot;&gt;Instant DEK Unwrap Denial&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFF1F2;strokeColor=#E11D48;strokeWidth=1.2;fontColor=#BE123C;fontSize=11.7;align=center;verticalAlign=middle;spacing=0;spacingLeft=10;spacingRight=10;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
           <mxGeometry x="57.5" y="700.0" width="352.5" height="95.0" as="geometry"/>
@@ -253,16 +250,16 @@
         <mxCell id="sp_8601" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.7px;color:#1D4ED8;&quot;&gt;&lt;b&gt;2. KMS Audit + 60s Ping&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.9px;color:#0F172A;&quot;&gt;&lt;b&gt;IAM Grant Revoked Across Silo&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.1px;color:#475569;&quot;&gt;60s kms.encrypt(ping) Fails Closed&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.2;fontColor=#1D4ED8;fontSize=11.7;align=center;verticalAlign=middle;spacing=0;spacingLeft=10;spacingRight=10;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
           <mxGeometry x="450.0" y="700.0" width="352.5" height="95.0" as="geometry"/>
         </mxCell>
-        <mxCell id="sp_8602" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.7px;color:#047857;&quot;&gt;&lt;b&gt;3. &amp;lt;60s Lock + L1 Wipe&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.9px;color:#0F172A;&quot;&gt;&lt;b&gt;Purges L1 Cache &amp;amp; Halts AlloyDB&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.1px;color:#475569;&quot;&gt;HTTP 403 CMEK_DENIED + SCC Audit&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.2;fontColor=#047857;fontSize=11.7;align=center;verticalAlign=middle;spacing=0;spacingLeft=10;spacingRight=10;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+        <mxCell id="sp_8602" value="&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:11.7px;color:#047857;&quot;&gt;&lt;b&gt;3. &amp;lt;60s Lock + L1 Wipe&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.9px;color:#0F172A;&quot;&gt;&lt;b&gt;Purges L1 Cache &amp;amp; Halts AlloyDB&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height:1.06;margin:0;padding:0;&quot;&gt;&lt;span style=&quot;font-size:10.1px;color:#475569;&quot;&gt;HTTP 423 Locked + SCC Audit&lt;/span&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.2;fontColor=#047857;fontSize=11.7;align=center;verticalAlign=middle;spacing=0;spacingLeft=10;spacingRight=10;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
           <mxGeometry x="842.5" y="700.0" width="352.5" height="95.0" as="geometry"/>
         </mxCell>
-        <mxCell id="cxn_8610" value="" style="edgeStyle=none;html=1;flowAnimation=1;strokeColor=#2563EB;strokeWidth=1.8;startArrow=none;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1">
+        <mxCell id="cxn_8610" value="" style="edgeStyle=none;html=1;strokeColor=#2563EB;strokeWidth=1.8;startArrow=none;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="412.5" y="747.5" as="sourcePoint"/>
             <mxPoint x="447.5" y="747.5" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cxn_8611" value="" style="edgeStyle=none;html=1;flowAnimation=1;strokeColor=#059669;strokeWidth=1.8;startArrow=none;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1">
+        <mxCell id="cxn_8611" value="" style="edgeStyle=none;html=1;strokeColor=#059669;strokeWidth=1.8;startArrow=none;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="805.0" y="747.5" as="sourcePoint"/>
             <mxPoint x="840.0" y="747.5" as="targetPoint"/>
@@ -296,7 +293,7 @@
         <mxCell id="plane_chip_b03_CONTROL" value="CONTROL" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
           <mxGeometry x="1353.6" y="100.4" width="61.5" height="15.2" as="geometry"/>
         </mxCell>
-        <mxCell id="plane_key_CONTROL" value="&lt;b&gt;CONTROL  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;Cloud KMS + VPC-SC silo gateway: 60s probe &amp;amp; HTTP 403 CMEK_DENIED&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=7;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#1D4ED8;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+        <mxCell id="plane_key_CONTROL" value="&lt;b&gt;CONTROL  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;Cloud KMS + VPC-SC silo gateway: 60s probe &amp;amp; HTTP 423 Locked&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=7;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#1D4ED8;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
           <mxGeometry x="57.6" y="820.0" width="490.9" height="18.8" as="geometry"/>
         </mxCell>
         <mxCell id="plane_key_COMPUTE" value="&lt;b&gt;COMPUTE  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;Sovereign Agent Engine: &amp;lt;60s cryptographic lock + L1 cache purge&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=7;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.1;align=left;verticalAlign=middle;fontSize=10.2;fontColor=#047857;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">

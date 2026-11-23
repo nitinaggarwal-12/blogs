@@ -8,7 +8,7 @@
  *   - WS2: `Gemini 2.5 & 3P LLMs` (0 Gemini 3.8); 0 GKE on Front End (Gemini, ADK, Cloud Run, API);
  *          Pooled Agent Runtime explicitly shows Mode A (Cloud Run gVisor CoW) + Mode B (GKE WarmPool 403 Latch) per WS2 blog L24/35/79.
  *   - WS3: Confidential GKE (AMD SEV-SNP) + Gemma 3 (27B) on Dedicated Silo Runtime per WS3 blog L35/54/69/83;
- *          41.2s CMEK Halt, HTTP 403 CMEK_DENIED, FIPS 140-3 Level 3 Cloud HSM.
+ *          41.2s CMEK Halt, HTTP 423 Locked (CMEK), FIPS 140-3 Level 3 Cloud HSM.
  *   - WS4: `Gemini 2.5 & 3P LLMs` (0 Gemini 3.8); 0 GKE anywhere in WS4 (Cloud Run Gen2 gVisor hub only);
  *          950 Standard / 50 Enterprise, 1.8x–2.8x blended COGS, 0ms Atomic CAS Cutover.
  *   - WS5: Exact verbatim WS5 blog L38–40 3-Gate Selector (`~85% Prefix Cache`, `1.8x–2.8x COGS · 0ms Cutover`, `~15x COGS · 41.2s CMEK Halt`).
@@ -934,7 +934,7 @@ export function buildWs3Spec() {
           { text: 'Dedicated AI Observability & <60s Halt', bold: true, size: 11, color: '#202124' },
           { text: '• Dedicated Project Logging & OTel', size: 9.8, color: '#5F6368', gapTop: 5 },
           { text: '• 41.2s Verified CMEK Revocation', size: 9.8, color: '#5F6368', gapTop: 3 },
-          { text: '• Returns HTTP 403 CMEK_DENIED', size: 9.8, color: '#5F6368', gapTop: 3 },
+          { text: '• Returns HTTP 423 Locked (CMEK)', size: 9.8, color: '#5F6368', gapTop: 3 },
         ],
       },
       // 3 Datastore cards cleanly inside zone_store_a (with top-border pills — ZERO clipping!)
