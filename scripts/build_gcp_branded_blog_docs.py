@@ -727,13 +727,23 @@ def prepend_gcp_executive_header_banner(
         text=True,
     )
 
-    # Inspect body JSON to find exact startIndex of the newly inserted first table
-    dump_res = subprocess.run(
-        [GDOCS_BIN, "readonly", "dump-body", doc_id, "--tab", "t.0"],
-        check=True,
-        capture_output=True,
-        text=True,
-    )
+    # Inspect body JSON to find exact startIndex of the newly inserted first table (with timeout/retry)
+    dump_res = None
+    for _attempt in range(1, 4):
+        try:
+            dump_res = subprocess.run(
+                [GDOCS_BIN, "readonly", "dump-body", doc_id, "--tab", "t.0"],
+                check=True,
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
+            break
+        except (subprocess.TimeoutExpired, subprocess.CalledProcessError):
+            if _attempt == 3:
+                raise
+            time.sleep(2.5 * _attempt)
+    assert dump_res is not None
     body_json = json.loads(dump_res.stdout)
     first_table_start: Optional[int] = None
     for elem in body_json.get("content", []):

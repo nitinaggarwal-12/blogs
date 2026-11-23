@@ -53,7 +53,7 @@ A common misconception is confusing **L1 cache eviction (`<5s`)** with **full en
 4. **Hard Enclave Lock (`41.2s` Verified) & Valkey L1 Purge (`<5s`) (`ADK → SCC`)**:
  - The Sovereign Agent Engine flips its local circuit breaker to `CMEK_LOCKED`, halting air-gapped GKE **Gemma 3 (27B)** inference and AlloyDB I/O within **`41.2s` end-to-end (`<60s` SLA)**.
  - Simultaneously, the memory controller executes cursor-based **`SCAN + UNLINK`** across the dedicated Memorystore instance in **`<5s`** so **`0` cached prompt tokens or session artifacts** persist in RAM after revocation.
-5. **Deterministic Rejection & Immutable SCC Compliance Proof (`SCC → CISO`)**: Every subsequent API call returns **`HTTP 403 CMEK_DENIED` / `HTTP 423 Locked`**, and an immutable cryptographic revocation receipt is written to **Security Command Center (`SCC`)** and Cloud Audit Logs.
+5. **Deterministic Rejection & Immutable SCC Compliance Proof (`SCC → CISO`)**: Every subsequent API call returns **`HTTP 423 Locked` (`CMEK_LOCKED`)**, and an immutable cryptographic revocation receipt is written to **Security Command Center (`SCC`)** and Cloud Audit Logs.
 
 ---
 

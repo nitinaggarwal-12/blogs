@@ -1577,22 +1577,22 @@ Every workstream across Workstreams 1–5 and Patterns A, B, and C follows a **C
 * **Blue Zone — CONTROL (Tenant CISO, Cloud KMS & VPC-SC Gateway)**: Tenant CISO disables Cloud KMS / EKM cryptoKeyVersion and revokes cryptoKeyDecrypter IAM grant.
 * **Green Zone — COMPUTE (Sovereign Agent Engine 60s Heartbeat)**: 60s kms.encrypt(ping) liveness probe detects revocation, purges L1 RAM cache, and locks ADK workers.
 * **Amber Zone — DATA (Silo AlloyDB & HNSW I/O Halt)**: DEK unwrap denial halts disk, backup, and HNSW vector I/O across Silo AlloyDB.
-* **Red Zone — FAIL-CLOSED CIRCUIT BREAKER & IMMUTABLE SCC AUDIT**: Enforces HTTP 423 Locked (Runtime) / HTTP 403 CMEK_DENIED (Gateway/SCC) with 0 cached tokens served.
+* **Red Zone — FAIL-CLOSED CIRCUIT BREAKER & IMMUTABLE SCC AUDIT**: Enforces `HTTP 423 Locked` (`CMEK_LOCKED`) across the sovereign runtime and Security Command Center (`SCC`) with 0 cached tokens served.
 
 #### Part A — Agentic Flow: Step-by-Step Architectural Walkthrough (Steps ①–⑦)
 1. **Step ① — CISO Disables Cloud KMS / EKM Version** (*Blue Zone*): Tenant A CISO calls `Disable cryptoKeyVersion` (or External Key Manager revoke) on `tenant-a-silo-cmek`. **(Tenant A CISO • Cloud KMS)**
 1. **Step ② — IAM Grant Revoke & Audit Event** (*Blue Zone*): Control plane strips `roles/cloudkms.cryptoKeyDecrypter` and Cloud Audit emits an immediate KMS revocation event. **(Cloud KMS IAM • Cloud Audit)**
-1. **Step ③ — VPC-SC Silo Gateway Blocks New Calls** (*Blue Zone*): VPC-SC & Silo Gateway intercepts KMS revocation signal and denies new inbound DEK-backed sessions (`403 CMEK_DENIED`). **(VPC-SC • Silo Gateway)**
+1. **Step ③ — VPC-SC Silo Gateway Blocks New Calls** (*Blue Zone*): VPC-SC & Silo Gateway intercepts KMS revocation signal and denies new inbound DEK-backed sessions (`HTTP 423 Locked`). **(VPC-SC • Silo Gateway)**
 1. **Step ④ — 60s KMS Liveness Heartbeat Fails Closed** (*Green Zone*): Inside Sovereign Agent Engine, the 60-second `kms.encrypt(ping)` heartbeat fails closed (`41.2s` measured worst case). **(KMS Heartbeat Probe)**
 1. **Step ⑤ — Hard Enclave Lock & L1 Cache Wipe** (*Green Zone*): Sovereign Agent Engine enters hard cryptographic lock, flushing in-memory L1 token/session caches to 0 cached tokens. **(Sovereign ADK • L1 Purge)**
 1. **Step ⑥ — Silo AlloyDB & Vector I/O Halt** (*Amber Zone*): AlloyDB loses Cloud HSM DEK unwrap capability, immediately blocking new SQL/vector reads and writes. **(Silo AlloyDB • HNSW Halt)**
-1. **Step ⑦ — Deterministic HTTP 423 / 403 Response** (*Red Zone*): Subsequent user or agent probes fail closed deterministically with `HTTP 423 Locked` (runtime) / `HTTP 403 CMEK_DENIED` (SCC). **(Fail-Closed Breaker)**
+1. **Step ⑦ — Deterministic HTTP 423 Locked Response** (*Red Zone*): Subsequent user or agent probes fail closed deterministically with `HTTP 423 Locked` (`CMEK_LOCKED`) and emit an immutable SCC compliance receipt. **(Fail-Closed Breaker)**
 
 > **Verified Architectural & Business Outcome (Immutable SCC Compliance & Silo Isolation):** Security Command Center records immutable CMEK lockout telemetry while Peer Tenant B/C silos remain untouched. **(SCC Audit • 0 Cached Tokens)**
 
 #### Part B — Component Architecture & Technical Flow Specification
 * **Google Cloud Services Used**: Tenant A CISO Admin • Cloud KMS (Tenant Key) • VPC-SC & Silo Gateway • Sovereign Agent Engine • Silo AlloyDB & SCC
-* **Architecture Summary**: CISO disables `cryptoKeyVersion`, KMS Audit emits revocation event to VPC-SC Gateway, ADK 60s `kms.encrypt(ping)` heartbeat fails closed, L1 memory cache purges, AlloyDB halts I/O, and SCC logs immutable `CMEK_DENIED` (`HTTP 423/403`) audit.
+* **Architecture Summary**: CISO disables `cryptoKeyVersion`, KMS Audit emits revocation event to VPC-SC Gateway, ADK 60s `kms.encrypt(ping)` heartbeat fails closed, L1 memory cache purges, AlloyDB halts I/O, and SCC logs immutable `CMEK_LOCKED` (`HTTP 423`) audit.
 
 | Step & Stage | Google Cloud Service (Zone) | Architectural Mechanism & Protocol | Security & Isolation Control | Verified Production Outcome |
 | :--- | :--- | :--- | :--- | :--- |
@@ -1602,8 +1602,8 @@ Every workstream across Workstreams 1–5 and Patterns A, B, and C follows a **C
 | **Step ④** • 60s Ping Probe | Gateway -> Sovereign Agent Engine | Periodic `kms.encrypt(ping)` liveness check fails inside <60s SLA. | hop3_compute_finops_bulkhead.py | 41.2s measured propagation |
 | **Step ⑤** • L1 RAM Purge | Agent Engine -> L1 Token Cache | Invalidates cached DEKs and in-memory prompt/context caches immediately. | hop3_compute_finops_bulkhead.py | 0 cached tokens served |
 | **Step ⑥** • Storage Halt | Agent Engine -> Silo AlloyDB | Prevents cached buffer reuse and halts AlloyDB + BigQuery CMEK table I/O. | medcore_silo_vault (live GCP) | Zero post-revoke DB read |
-| **Step ⑦** • Breaker Code | Runtime -> Caller Client | Returns HTTP 423 Locked from ADK runtime / HTTP 403 CMEK_DENIED at gateway. | test_five_hop_pipeline.py | medcore_silo_locked_423: True |
-| **Audit** • SCC Compliance | Silo -> SCC + BigQuery Ledger | Records non-repudiable CMEK_DENIED evidence via `run_silo_security_tests.py`. | run_silo_security_tests.py | <60s SLA proven |
+| **Step ⑦** • Breaker Code | Runtime -> Caller Client | Returns `HTTP 423 Locked` (`CMEK_LOCKED`) deterministically across ADK runtime & gateway. | test_five_hop_pipeline.py | medcore_silo_locked_423: True |
+| **Audit** • SCC Compliance | Silo -> SCC + BigQuery Ledger | Records non-repudiable `CMEK_LOCKED` (`HTTP 423`) evidence via `run_silo_security_tests.py`. | run_silo_security_tests.py | <60s SLA proven |
 
 ### Diagram 29: Governed Hub-and-Spoke Architecture (Pattern C: Hybrid PSC) (`ws4-pattern-c-hybrid`)
 * **Workstream & Focus**: Workstream 4 • Approved 16:9 Unified Blueprint (`PATTERN C: HYBRID • 80% CODE REUSE + /28 PSC`)
