@@ -151,6 +151,15 @@ class TestWs1ToWs5DiagramHarness(unittest.TestCase):
         atlas_obj = json.loads(atlas_json)
         self.assertGreaterEqual(len(atlas_obj.get("items", [])), 12)
 
+        import zipfile
+        bm12_p = ROOT_DIR / "slides/geap-bare-minimum-12slide-architecture-deck.pptx"
+        with zipfile.ZipFile(bm12_p) as zf:
+            for snum in (1, 3, 6, 8, 10):
+                sxml = zf.read(f"ppt/slides/slide{snum}.xml").decode("utf-8", "ignore")
+                self.assertNotIn("<p:pic>", sxml, f"BM12 S{snum:02d} must stay pic=0 native DrawingML")
+                self.assertNotIn('name="icon_badge_', sxml, f"BM12 S{snum:02d} must not use text-abbreviation icon placeholders")
+                self.assertIn('name="ico_', sxml, f"BM12 S{snum:02d} must embed native <a:custGeom> GCP vector icons")
+
     def test_03_native_studio_renders_svg_icons_and_vertical_centering(self) -> None:
         node_bin, chrome_bin = _find_node_and_chrome()
         if not node_bin or not chrome_bin:

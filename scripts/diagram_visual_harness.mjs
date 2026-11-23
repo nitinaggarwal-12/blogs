@@ -270,6 +270,10 @@ for key, rel, total, slide_specs in DECKS:
                     errs.append(f"pptx_zero_wh:{key}:S{snum:02d}")
                 if "<p:grpSp>" in sx or "<a:arcTo" in sx or "<a:schemeClr" in sx:
                     errs.append(f"pptx_unsupported_preview_prim:{key}:S{snum:02d}")
+                if 'name="icon_badge_' in sx:
+                    errs.append(f"pptx_text_placeholder_icon:{key}:S{snum:02d}")
+                if 'name="ico_' not in sx:
+                    errs.append(f"pptx_missing_native_vector_icons:{key}:S{snum:02d}")
                 if sx.count('tailEnd type="triangle"') < 10:
                     errs.append(f"pptx_missing_tailEnd_arrows:{key}:S{snum:02d}")
             m = re.search(r'Target="(https://viewer\\.diagrams\\.net/[^"]+)"', rx)

@@ -14,10 +14,10 @@
  */
 
 import {
-  DRAWINGML_ICON_BADGES,
   getDrawioIconStyle,
   renderInlineSvgIcon,
 } from './gcp_official_svg_icons.mjs';
+import { compileIconToOoxmlShapes } from './svg_to_ooxml_vector.mjs';
 
 export const CANVAS_W = 1600;
 export const CANVAS_H = 900;
@@ -737,54 +737,10 @@ function ooxmlRectShape({ id, name, x, y, w, h, prst = 'roundRect', adj = 12000,
 }
 
 function ooxmlIconBadgeShapes(iconKey, x, y, size, nextId) {
-  const b = DRAWINGML_ICON_BADGES[iconKey] || DRAWINGML_ICON_BADGES.gcp_cloud;
-  const shapes = [];
-  if (iconKey === 'agent_gateway') {
-    shapes.push(
-      ooxmlRectShape({
-        id: nextId(),
-        name: `icon_bg_${iconKey}`,
-        x, y, w: size, h: size,
-        prst: 'ellipse',
-        fill: '#FFFFFF',
-        stroke: '#F28B82',
-        strokePt: 1.2,
-      })
-    );
-    const pad = Math.max(3, Math.round(size * 0.22));
-    shapes.push(
-      ooxmlRectShape({
-        id: nextId(),
-        name: `icon_fg_${iconKey}`,
-        x: x + pad, y: y + pad, w: size - pad * 2, h: size - pad * 2,
-        prst: 'diamond',
-        fill: '#D93025',
-        stroke: 'none',
-      })
-    );
-    return shapes;
-  }
-  const bSize = Math.max(22, size);
-  const bx = x - Math.round((bSize - size) / 2);
-  const by = y - Math.round((bSize - size) / 2);
-  const fontPt = b.glyph.length >= 4 ? 4.6 : (b.glyph.length === 3 ? 5.2 : 6.2);
-  shapes.push(
-    ooxmlRectShape({
-      id: nextId(),
-      name: `icon_badge_${iconKey}`,
-      x: bx, y: by, w: bSize, h: bSize,
-      prst: iconKey === 'google_g' || iconKey === 'gcp_cloud' || iconKey === 'saas_globe' ? 'ellipse' : 'roundRect',
-      adj: 24000,
-      fill: `#${b.bg}`,
-      stroke: `#${b.border}`,
-      strokePt: 1.1,
-      anchor: 'ctr',
-      wrap: 'none',
-      lIns: 0, rIns: 0, tIns: 0, bIns: 0,
-      paragraphs: [ooxmlParagraph([{ text: b.glyph, pt: fontPt, bold: true, color: `#${b.fg}` }], 'ctr', 0, 100000)],
-    })
-  );
-  return shapes;
+  // Compile the exact official multi-color GCP SVG icon into native DrawingML
+  // <a:custGeom> top-level <p:sp> shapes (pic=0, zero grpSp/arcTo/h="0") so
+  // Google Slides, PowerPoint, and previews match the web SVGs 1:1!
+  return compileIconToOoxmlShapes(iconKey, x, y, size, nextId);
 }
 
 /**
