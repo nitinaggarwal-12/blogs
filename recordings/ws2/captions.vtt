@@ -1,0 +1,49 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.030
+AI Digital Twin · Google Cloud: Welcome to Blog two, implementing Pattern A high-density pooled multi-tenancy on Cloud Run and BigQuery.
+
+2
+00:00:10.030 --> 00:00:20.053
+AI Digital Twin · Google Cloud: Our pooled Cloud Run runtime uses the second-generation execution environment with single-request concurrency per container instance.
+
+3
+00:00:20.053 --> 00:00:30.083
+AI Digital Twin · Google Cloud: In BigQuery Studio, querying the shared pooled table under the operator baseline displays records across competing tenants.
+
+4
+00:00:30.083 --> 00:00:40.106
+AI Digital Twin · Google Cloud: Notice seven combined rows from FinVault, Globex, MedCore, and RetailStream appearing together in the same grid.
+
+5
+00:00:40.106 --> 00:00:50.136
+AI Digital Twin · Google Cloud: Inspecting native row-level access policies displays our FinVault tenant filter predicate active directly inside BigQuery.
+
+6
+00:00:50.136 --> 00:01:00.159
+AI Digital Twin · Google Cloud: Cloud Logging records the pooled service account running parameterized tenant queries layered above our row access policy.
+
+7
+00:01:00.159 --> 00:01:10.189
+AI Digital Twin · Google Cloud: To stop noisy neighbors from exhausting shared quotas, Firestore tracks live per-tenant request budgets across the pool.
+
+8
+00:01:10.189 --> 00:01:20.212
+AI Digital Twin · Google Cloud: Exceeding a tenant threshold triggers deterministic rate-limit throttling while protecting latency for every other customer.
+
+9
+00:01:20.212 --> 00:01:30.242
+AI Digital Twin · Google Cloud: Extending Pattern A into Databricks Lakehouse, querying our unfiltered pooled table initially exposes all competing tenants together.
+
+10
+00:01:30.242 --> 00:01:40.265
+AI Digital Twin · Google Cloud: Without Unity Catalog row filters enabled, a shared SQL warehouse credential risks exposing unauthorized records across customer tenants.
+
+11
+00:01:40.265 --> 00:01:50.295
+AI Digital Twin · Google Cloud: Inspecting Databricks Catalog Explorer confirms our active Unity Catalog row filter policy bound directly onto the pooled table.
+
+12
+00:01:50.295 --> 00:02:00.318
+AI Digital Twin · Google Cloud: Re-running the identical query without any filter clause returns strictly authorized FinVault records with zero foreign tenant bleed.

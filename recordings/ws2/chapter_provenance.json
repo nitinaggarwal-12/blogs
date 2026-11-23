@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "1.0.0",
+  "slug": "ws2",
+  "generatedAt": "2026-11-23T04:58:03.562Z",
+  "poster": {
+    "pathRel": "recordings/ws2/meet_recording_poster.jpg",
+    "sha256": "0bfd41dad60d64bd721e7d72308b11a5878f6bc292416d5d8163b001b69c3a3d",
+    "bytes": 196611,
+    "width": 1920,
+    "height": 1080
+  },
+  "chapters": [
+    {
+      "chapterNum": 1,
+      "id": "ch01_cloudrun_pooled_gen2",
+      "pathRel": "recordings/ws2/chapters/ch-01.png",
+      "sha256": "aeef7f28b67ba5ccfbb55374d2fa7dc48ee7f2bc35a79853baccffd2ea37c46a",
+      "bytes": 260706,
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "chapterNum": 2,
+      "id": "ch02_bigquery_before_operator_baseline",
+      "pathRel": "recordings/ws2/chapters/ch-02.png",
+      "sha256": "2d9f34c3285774b975594b93163fa1715051fc214d206fbafbe43b1e5ec4ea65",
+      "bytes": 222830,
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "chapterNum": 3,
+      "id": "ch03_bigquery_after_rls_and_sa_audit",
+      "pathRel": "recordings/ws2/chapters/ch-03.png",
+      "sha256": "c8996d3cbe0cc834757cd039f85b3c0a4e8ad3f59a1f843e89d1d4b4fcd46f59",
+      "bytes": 225337,
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "chapterNum": 4,
+      "id": "ch04_firestore_rpm_bulkhead",
+      "pathRel": "recordings/ws2/chapters/ch-04.png",
+      "sha256": "ee0012b71fec8cdd3fed9919b166ca377af713b91d618efe9b81475c19bab6f6",
+      "bytes": 203953,
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "chapterNum": 5,
+      "id": "ch05_databricks_before_pooled_query",
+      "pathRel": "recordings/ws2/chapters/ch-05.png",
+      "sha256": "2a30836232e99a0dde47ffbb47abddf02f9ee248ab8bef8a1c2e1bcd3fcccc6f",
+      "bytes": 221105,
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "chapterNum": 6,
+      "id": "ch06_databricks_after_uc_row_filter",
+      "pathRel": "recordings/ws2/chapters/ch-06.png",
+      "sha256": "f1273f31c5621527d0a7581f6ad6246592fbc48941eb56f51951929435bf3f53",
+      "bytes": 263846,
+      "width": 1280,
+      "height": 800
+    }
+  ]
+}

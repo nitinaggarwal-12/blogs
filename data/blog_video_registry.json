@@ -39,8 +39,8 @@
       "slug": "ws2",
       "wsKey": "WS2",
       "blogMarkdown": "blogs/ws2-pattern-a-pooled-architecture.md",
-      "title": "Blog 2 (WS2) — Pattern A High-Density Pooled & Snowflake AI Data Cloud Live Walkthrough",
-      "subtitle": "Live Cloud Run Gen2, BigQuery Operator Baseline → Native RLS + SA Audit, Firestore RPM Bulkhead & Snowflake Role Picker RAP",
+      "title": "Blog 2 (WS2) — Pattern A High-Density Pooled & Databricks Unity Catalog Live Walkthrough",
+      "subtitle": "Live Cloud Run Gen2, BigQuery Operator Baseline → Native RLS + SA Audit, Firestore RPM Bulkhead & Databricks Unity Catalog Row Filters",
       "recordingDir": "recordings/ws2",
       "videoUrl": "/recordings/ws2/meet_live_execution_recording.mp4",
       "posterUrl": "/recordings/ws2/meet_recording_poster.jpg",
@@ -57,9 +57,9 @@
         "slidesCount": 8
       },
       "saasTarget": {
-        "saasId": "SAAS-07",
-        "name": "Snowflake AI Data Cloud",
-        "origin": "https://app.snowflake.com",
+        "saasId": "SAAS-06",
+        "name": "Databricks Data Intelligence Platform",
+        "origin": "https://dbc-20659e2f-ad51.cloud.databricks.com",
         "mode": "BEFORE → AFTER"
       }
     },
@@ -67,8 +67,8 @@
       "slug": "ws3",
       "wsKey": "WS3",
       "blogMarkdown": "blogs/ws3-pattern-b-sovereign-silos.md",
-      "title": "Blog 3 (WS3) — Pattern B Sovereign Silos & Okta Workforce Identity Live Walkthrough",
-      "subtitle": "Live Sovereign VPC & Cloud Run, Cloud KMS CMEK Side-by-Side, BigQuery CMEK Kill-Switch, CMEK GCS Vault & Okta DPoP System Log",
+      "title": "Blog 3 (WS3) — Pattern B Sovereign Silos & Cloud KMS CMEK Kill-Switch Live Walkthrough",
+      "subtitle": "Live Sovereign VPC & Cloud Run Silo, Cloud KMS CMEK States, BigQuery CMEK Revocation Kill-Switch & CMEK GCS Vault",
       "recordingDir": "recordings/ws3",
       "videoUrl": "/recordings/ws3/meet_live_execution_recording.mp4",
       "posterUrl": "/recordings/ws3/meet_recording_poster.jpg",
@@ -85,10 +85,10 @@
         "slidesCount": 7
       },
       "saasTarget": {
-        "saasId": "SAAS-10a",
-        "name": "Okta Workforce Identity",
-        "origin": "https://developer.okta.com",
-        "mode": "BEFORE → AFTER"
+        "saasId": "GCP-SILO-WS3",
+        "name": "Google Cloud Sovereign Silos (CMEK + VPC)",
+        "origin": "https://console.cloud.google.com",
+        "mode": "BEFORE → AFTER (CMEK KILL-SWITCH)"
       }
     },
     "ws4": {
@@ -123,8 +123,8 @@
       "slug": "ws5",
       "wsKey": "WS5",
       "blogMarkdown": "blogs/ws5-decision-guide-and-agentic-triad.md",
-      "title": "Blog 5 (WS5) — Multi-Tenant Agentic Triad & Datadog Cloud Observability Live Walkthrough",
-      "subtitle": "Live Integration Connectors Baseline → Cloud Run Triad, BigQuery Zero-PII FinOps Ledger & Datadog Exported FinOps Log Isolation",
+      "title": "Blog 5 (WS5) — Multi-Tenant Agentic Triad & BigQuery Zero-PII FinOps Live Walkthrough",
+      "subtitle": "Live Integration Connectors Baseline → Cloud Run Triad & BigQuery Zero-PII FinOps Ledger & Chargeback Schema",
       "recordingDir": "recordings/ws5",
       "videoUrl": "/recordings/ws5/meet_live_execution_recording.mp4",
       "posterUrl": "/recordings/ws5/meet_recording_poster.jpg",
@@ -141,10 +141,10 @@
         "slidesCount": 9
       },
       "saasTarget": {
-        "saasId": "SAAS-09",
-        "name": "Datadog Cloud Observability",
-        "origin": "https://us5.datadoghq.com",
-        "mode": "BEFORE → AFTER"
+        "saasId": "GCP-TRIAD-WS5",
+        "name": "Google Cloud Agentic Triad & BigQuery FinOps",
+        "origin": "https://console.cloud.google.com",
+        "mode": "BEFORE → AFTER (CONNECTORS → TRIAD)"
       }
     }
   }

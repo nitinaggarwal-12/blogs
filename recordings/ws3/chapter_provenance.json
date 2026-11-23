@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.0.0",
+  "slug": "ws3",
+  "generatedAt": "2026-11-23T05:00:45.438Z",
+  "poster": {
+    "pathRel": "recordings/ws3/meet_recording_poster.jpg",
+    "sha256": "bc1fe5a0b2112e6c35302a15e6285d1282f3569eae9be9993181b09c3bae63ad",
+    "bytes": 215198,
+    "width": 1920,
+    "height": 1080
+  },
+  "chapters": [
+    {
+      "chapterNum": 1,
+      "id": "ch01_sovereign_vpc_and_cloudrun",
+      "pathRel": "recordings/ws3/chapters/ch-01.png",
+      "sha256": "40afcd7ee05f9acef62e64e5ec48fe046d3541dac2b743353d6c58c781f143ff",
+      "bytes": 298530,
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "chapterNum": 2,
+      "id": "ch02_kms_cmek_side_by_side",
+      "pathRel": "recordings/ws3/chapters/ch-02.png",
+      "sha256": "2b1bd408ab836fb3add2bf888a9ac706c046852204eabf808c190790ceca5730",
+      "bytes": 245127,
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "chapterNum": 3,
+      "id": "ch03_bigquery_cmek_before_decrypted",
+      "pathRel": "recordings/ws3/chapters/ch-03.png",
+      "sha256": "e735e33e5e353104cf43d098ea4c65d36a6b47413e00c27f384b4775799cf096",
+      "bytes": 236575,
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "chapterNum": 4,
+      "id": "ch04_bigquery_cmek_after_revoked",
+      "pathRel": "recordings/ws3/chapters/ch-04.png",
+      "sha256": "47fe20fe405bb28cb3a44bfc4c374fe902630cd4b5a366c05c1feca821ae015a",
+      "bytes": 204638,
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "chapterNum": 5,
+      "id": "ch05_kms_signing_and_cmek_gcs",
+      "pathRel": "recordings/ws3/chapters/ch-05.png",
+      "sha256": "6879dff147364356cc1ea3e99c4953f82fa0582fd65009f1ff062be4a30f054c",
+      "bytes": 235195,
+      "width": 1280,
+      "height": 800
+    }
+  ]
+}

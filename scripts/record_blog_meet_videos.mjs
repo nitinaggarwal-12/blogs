@@ -147,9 +147,11 @@ function getConfiguredSaasOrigins() {
   const oktaAdmin = (process.env.OKTA_ADMIN_URL || (oktaOrg ? oktaOrg.replace(/\.okta\.com$/i, "-admin.okta.com") : "")).replace(/\/$/, "");
   const ddSite = (process.env.DD_SITE || "us5.datadoghq.com").replace(/^https?:\/\//, "").replace(/\/$/, "");
   const snowflakeUrl = (process.env.SNOWFLAKE_SNOWSIGHT_URL || "https://app.snowflake.com").replace(/\/$/, "");
+  const databricksUrl = (process.env.DATABRICKS_WORKSPACE_URL || "https://dbc-20659e2f-ad51.cloud.databricks.com").replace(/\/$/, "");
   return {
     thoughtspot: "https://team2.thoughtspot.cloud",
     snowflake: snowflakeUrl,
+    databricks: databricksUrl,
     oktaOrg,
     oktaAdmin,
     jira: "https://gcp-team-sbiarllr.atlassian.net",
@@ -304,13 +306,13 @@ function buildBlogCatalog() {
     ws2: {
       slug: "ws2",
       wsKey: "WS2",
-      demoTitle: "Blog 2 (WS2) — Pattern A Pooled & Snowflake AI Data Cloud",
-      demoSubtitle: "Live Cloud Run Gen2, BigQuery RLS, Firestore Bulkhead & Snowflake RAP",
+      demoTitle: "Blog 2 (WS2) — Pattern A Pooled & Databricks Unity Catalog",
+      demoSubtitle: "Live Cloud Run Gen2, BigQuery RLS, Firestore Bulkhead & Databricks Row Filters",
       meetCode: "ge-ws2-pooled",
       saasTarget: {
-        saasId: "SAAS-07",
-        name: "Snowflake AI Data Cloud",
-        origin: origins.snowflake,
+        saasId: "SAAS-06",
+        name: "Databricks Data Intelligence Platform",
+        origin: origins.databricks,
         mode: "BEFORE → AFTER"
       },
       chapters: [
@@ -321,8 +323,8 @@ function buildBlogCatalog() {
           title: "Pattern A Cloud Run Gen2 Pooled Runtime & Single-Request Concurrency",
           surface: "Google Cloud Console · Cloud Run",
           phaseBadge: "GCP POOLED COMPUTE",
-          primaryUrl: `https://console.cloud.google.com/run/detail/us-central1/cymbal-ws2-pooled-ab385c/revisions?project=${GCP_HUB_PROJECT}`,
-          secondaryUrl: `https://console.cloud.google.com/run/detail/us-central1/cymbal-ws2-pooled-ab385c/yaml?project=${GCP_HUB_PROJECT}`,
+          primaryUrl: `https://console.cloud.google.com/run/detail/us-central1/cymbal-ws2-pooled-ab385c/containers?project=${GCP_HUB_PROJECT}`,
+          secondaryUrl: `https://console.cloud.google.com/run/detail/us-central1/cymbal-ws2-pooled-ab385c/scaling?project=${GCP_HUB_PROJECT}`,
           metrics: [
             "Service: cymbal-ws2-pooled-ab385c",
             "Execution Environment: gen2",
@@ -332,7 +334,7 @@ function buildBlogCatalog() {
             "Welcome to Blog two, implementing Pattern A high-density pooled multi-tenancy on Cloud Run and BigQuery.",
             "Our pooled Cloud Run runtime uses the second-generation execution environment with single-request concurrency per container instance."
           ],
-          actionKind: "scroll_and_tab2_inspect"
+          actionKind: "cloudrun_gen2_then_concurrency"
         },
         {
           chapterNum: 2,
@@ -397,43 +399,48 @@ function buildBlogCatalog() {
         },
         {
           chapterNum: 5,
-          id: "ch05_snowflake_before_admin_query",
-          shortTitle: "Snowflake BEFORE (Admin)",
-          title: "SAAS-07 Snowflake BEFORE — Admin Role Exposes All Competing Tenants",
-          surface: "Snowflake AI Data Cloud (SAAS-07)",
-          phaseBadge: "BEFORE (SAAS ADMIN)",
-          requiresSaas: "snowflake",
-          primaryUrl: origins.snowflake,
+          id: "ch05_databricks_before_pooled_query",
+          shortTitle: "Databricks BEFORE (Unfiltered)",
+          title: "SAAS-06 Databricks BEFORE — Unfiltered Pooled Table Exposes All Competing Tenants",
+          surface: "Databricks Lakehouse · SQL Editor (SAAS-06)",
+          phaseBadge: "BEFORE (SAAS POOLED)",
+          requiresSaas: "databricks",
+          primaryUrl: `${origins.databricks}/editor/queries/3518561608446742?contextId=sql-editor&o=7474652483302524`,
+          thumbnailFracs: [0.55, 0.70, 0.85],
           metrics: [
-            "SaaS: SAAS-07 Snowflake AI Data Cloud",
-            "Role: ROLE_CYMBAL_ADMIN",
-            "Result: All 7 multi-tenant rows visible"
+            "SaaS: SAAS-06 Databricks Data Intelligence",
+            "Table: workspace.cymbal_pattern_a.pooled_entities",
+            "Result: 6 mixed rows across 4 competing tenants"
           ],
           beats: [
-            "Extending Pattern A into Snowflake AI Data Cloud, our admin worksheet query initially exposes all competing tenants together.",
-            "Without native row access enforcement, a shared warehouse credential risks exposing unauthorized business records across tenants."
+            "Extending Pattern A into Databricks Lakehouse, querying our unfiltered pooled table initially exposes all competing tenants together.",
+            "Without Unity Catalog row filters enabled, a shared SQL warehouse credential risks exposing unauthorized records across customer tenants."
           ],
-          actionKind: "snowflake_admin_run"
+          actionKind: "databricks_before_run",
+          sql: "-- Pattern A BEFORE: Unfiltered Pooled Table (All Competing Tenants Exposed)\nSELECT tenant_id, entity_id, classification, region\nFROM workspace.cymbal_pattern_a.pooled_entities\nORDER BY tenant_id, entity_id;"
         },
         {
           chapterNum: 6,
-          id: "ch06_snowflake_after_rap_isolation",
-          shortTitle: "Snowflake AFTER (RAP)",
-          title: "SAAS-07 Snowflake AFTER — Role Picker Activates Native Row Access Policy",
-          surface: "Snowflake AI Data Cloud (SAAS-07)",
-          phaseBadge: "AFTER (SAAS RAP)",
-          requiresSaas: "snowflake",
-          primaryUrl: origins.snowflake,
+          id: "ch06_databricks_after_uc_row_filter",
+          shortTitle: "Databricks AFTER (Row Filter)",
+          title: "SAAS-06 Databricks AFTER — Unity Catalog Row Filter Enforces Tenant Isolation",
+          surface: "Databricks Lakehouse · Unity Catalog (SAAS-06)",
+          phaseBadge: "AFTER (UC ROW FILTER)",
+          requiresSaas: "databricks",
+          primaryUrl: `${origins.databricks}/explore/data/workspace/cymbal_pattern_a/pooled_entities_rls?o=7474652483302524`,
+          secondaryUrl: `${origins.databricks}/editor/queries/3518561608446742?contextId=sql-editor&o=7474652483302524`,
+          thumbnailFracs: [0.16, 0.26, 0.36],
           metrics: [
-            "Role: ROLE_CYMBAL_RETAILSTREAM (Role Picker)",
-            "Policy: TENANT_ISOLATION_RAP via ROLE_TENANT_MAP",
-            "Result: Strictly 2 RetailStream rows (0 WHERE clause)"
+            "Policy: workspace.cymbal_pattern_a.tenant_rls_filter",
+            "Table: pooled_entities_rls (Row Filter bound)",
+            "Result: Strictly FinVault rows (0 WHERE clause)"
           ],
           beats: [
-            "Switching Snowsight to the scoped RetailStream role and re-running the identical query activates Snowflake row access policies.",
-            "Snowflake returns strictly RetailStream records without any manual filter clause, confirmed cleanly in Query History."
+            "Inspecting Databricks Catalog Explorer confirms our active Unity Catalog row filter policy bound directly onto the pooled table.",
+            "Re-running the identical query without any filter clause returns strictly authorized FinVault records with zero foreign tenant bleed."
           ],
-          actionKind: "snowflake_role_switch_and_run"
+          actionKind: "databricks_catalog_then_rls_run",
+          sql: "-- Pattern A AFTER: Unity Catalog Row Filter Active (Zero WHERE Clause)\nSELECT tenant_id, entity_id, classification, region\nFROM workspace.cymbal_pattern_a.pooled_entities_rls\nORDER BY entity_id;"
         }
       ]
     },
@@ -489,7 +496,7 @@ function buildBlogCatalog() {
             "Inside Cloud KMS, every sovereign vault binds to a dedicated symmetric encryption key controlled by the customer.",
             "Notice FinVault remains available while the revoked MedCore key is disabled, providing an instant cryptographic kill-switch."
           ],
-          actionKind: "scroll_and_tab2_inspect"
+          actionKind: "kms_keyring_drill_in"
         },
         {
           chapterNum: 3,
@@ -915,11 +922,11 @@ function verifyApprovedPlanToken() {
 }
 
 function assertGcertValid() {
-  try {
-    execFileSync("gcertstatus", ["-check_remaining=10m"], { stdio: "ignore", timeout: 8000 });
-  } catch {
-    throw new Error("gcertstatus failed or expires in <10m. Refresh LOAS credentials before invoking models/omni_1p2.");
-  }
+  const res = spawnSync("gcertstatus", ["-check_remaining=10m"], { encoding: "utf8", timeout: 8000 });
+  if (res.status === 0) return;
+  const combined = `${res.stdout || ""}\n${res.stderr || ""}`;
+  if (/LOAS2 expires in \d+[hd]/i.test(combined)) return;
+  throw new Error("gcertstatus failed or LOAS2 expires in <10m. Refresh LOAS credentials before invoking models/omni_1p2.");
 }
 
 // ============================================================================
@@ -1453,6 +1460,22 @@ async function executeChapterChoreography({
     });
     await engine.sleep(1400);
     await scrollOn(tab1.sessionId, 860, 420, "down", 4);
+  } else if (kind === "cloudrun_gen2_then_concurrency") {
+    // Beat 1: On Containers tab, scroll down to reveal Execution environment -> Second generation (gen2)
+    await smoothGlide(ptr, 360, 260, 620, 420, 12);
+    await engine.sleep(900);
+    await scrollOn(tab1.sessionId, 640, 460, "down", 9);
+    await engine.sleep(1000);
+    await scrollOn(tab1.sessionId, 640, 460, "down", 8);
+    await engine.sleep(1000);
+    // Beat 2: Switch to Scaling tab and scroll down to reveal Maximum concurrent requests per instance (1)
+    await clock.waitUntilSec(beat1DurSec + 0.3, `${chapter.id}_b2_start`);
+    await activateTab2WithCursor();
+    await engine.sleep(800);
+    await scrollOn(tab2.sessionId, 640, 460, "down", 7);
+    await engine.sleep(1200);
+    await scrollOn(tab2.sessionId, 640, 460, "down", 6);
+    await engine.sleep(900);
   } else if (kind === "scroll_and_click_rules_then_tab2" || kind === "scroll_and_tab2_inspect") {
     await smoothGlide(ptr, 340, 260, 620, 380, 14);
     await scrollOn(tab1.sessionId, 640, 420, "down", 5);
@@ -1563,8 +1586,8 @@ async function executeChapterChoreography({
         minX: 220,
         minY: 360
       });
-      await engine.sleep(1000);
-      await scrollOn(tab1.sessionId, 680, 660, "down", 5);
+      await engine.sleep(800);
+      await scrollOn(tab1.sessionId, 680, 660, "up", 6);
     }
   } else if (kind === "bigquery_schema_to_details") {
     await smoothGlide(ptr, 360, 280, 580, 380, 12);
@@ -1603,6 +1626,32 @@ async function executeChapterChoreography({
     await smoothGlide(ptr, 420, 620, 820, 480, 10);
     await engine.sleep(1400);
     await scrollOn(tab2.sessionId, 720, 600, "down", 6);
+  } else if (kind === "kms_keyring_drill_in") {
+    // Beat 1: Keep key ring overview framed through early (+1.5s), then click sovereign-vault-cmek live to show Enabled version
+    await smoothGlide(ptr, 360, 260, 320, 420, 12);
+    await clock.waitUntilSec(2.8, `${chapter.id}_b1_drill`);
+    const k1Hit = await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, {
+      selector: "a",
+      selectorTextRegex: "sovereign-vault-cmek",
+      minX: 200,
+      minY: 220
+    });
+    console.log(`    🖱️ [KMS Beat 1] Opened sovereign-vault-cmek: ${JSON.stringify(k1Hit)}`);
+    await engine.sleep(2400);
+    await smoothGlide(ptr, 320, 420, 560, 420, 12);
+    // Beat 2: Switch to Tab 2 (cymbal-multi-tenant-kr showing Available vs Not available), pause 3s, then open medcore-revoked-cmek (Disabled)!
+    await clock.waitUntilSec(beat1DurSec + 0.3, `${chapter.id}_b2_start`);
+    await activateTab2WithCursor();
+    await engine.sleep(3000);
+    const k2Hit = await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, {
+      selector: "a",
+      selectorTextRegex: "medcore-revoked-cmek",
+      minX: 200,
+      minY: 220
+    });
+    console.log(`    🖱️ [KMS Beat 2] Opened medcore-revoked-cmek: ${JSON.stringify(k2Hit)}`);
+    await engine.sleep(2600);
+    await smoothGlide(ptr, 320, 520, 580, 440, 12);
   } else if (kind === "kms_then_gcs_config_to_permissions") {
     await smoothGlide(ptr, 360, 280, 620, 360, 12);
     await scrollOn(tab1.sessionId, 640, 420, "down", 5);
@@ -1650,6 +1699,60 @@ async function executeChapterChoreography({
     await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, { textRegex: "Region \\*|^Region$", minX: 250, minY: 200 });
     await engine.sleep(1400);
     await scrollOn(tab2.sessionId, 520, 440, "down", 4);
+  } else if (kind === "databricks_before_run") {
+    // Beat 1: Click blue "Run all (1000)" button live on Databricks SQL Editor -> opens fresh Results panel with all 6 competing-tenant rows
+    await smoothGlide(ptr, 480, 240, 302, 190, 12);
+    const runHit = await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, {
+      selector: 'button[data-testid="notebook-query-run-button-idle"], button[aria-label="Run query"], button',
+      selectorTextRegex: "^Run all",
+      minY: 70,
+      maxY: 160
+    });
+    console.log(`    🖱️ [Databricks BEFORE] Clicked Run all: ${JSON.stringify(runHit)}`);
+    await engine.sleep(4500);
+    await smoothGlide(ptr, 320, 210, 560, 620, 14);
+    // Beat 2: Expand bottom Results panel live so all 6 rows (finvault, globex, medcore, retailstream) fill the viewport cleanly!
+    await clock.waitUntilSec(beat1DurSec + 0.3, `${chapter.id}_b2_start`);
+    const expHit = await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, {
+      selector: 'button[aria-label="Expand bottom panel" i]',
+      minX: 900,
+      minY: 300
+    });
+    console.log(`    🖱️ [Databricks BEFORE] Expanded Results panel: ${JSON.stringify(expHit)}`);
+    await engine.sleep(1600);
+    await smoothGlide(ptr, 920, 480, 460, 420, 14);
+    await scrollOn(tab1.sessionId, 520, 460, "down", 4);
+    await engine.sleep(1000);
+    await scrollOn(tab1.sessionId, 520, 460, "up", 4);
+  } else if (kind === "databricks_catalog_then_rls_run") {
+    // Beat 1: On Unity Catalog Explorer (NEVER filter Columns or scroll down into Owner email!), glide over pooled_entities_rls + fx tenant_rls_filter and filter the LEFT Catalog tree live!
+    await smoothGlide(ptr, 280, 360, 280, 485, 14);
+    await engine.sleep(1200);
+    const treeFilter = await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, {
+      selector: 'input[placeholder*="Type to search" i]',
+      minX: 160,
+      maxX: 480,
+      minY: 120,
+      maxY: 280
+    });
+    console.log(`    🖱️ [Databricks Catalog] Clicked left tree search: ${JSON.stringify(treeFilter)}`);
+    if (treeFilter) {
+      await engine.dispatchCdpText(cdpSend, "tenant_rls", { delayMs: 65, sessionId: tab1.sessionId });
+    }
+    await engine.sleep(1400);
+    // Beat 2: Switch to pre-staged SQL Editor tab (pooled_entities_rls, zero WHERE clause) and click Run all live!
+    await clock.waitUntilSec(beat1DurSec + 0.3, `${chapter.id}_b2_start`);
+    await activateTab2WithCursor();
+    await engine.sleep(600);
+    const runHit = await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, {
+      selector: 'button[data-testid="notebook-query-run-button-idle"], button[aria-label="Run query"], button',
+      selectorTextRegex: "^Run all",
+      minY: 70,
+      maxY: 160
+    });
+    console.log(`    🖱️ [Databricks AFTER RLS] Clicked Run all: ${JSON.stringify(runHit)}`);
+    await engine.sleep(4500);
+    await smoothGlide(ptr, 320, 210, 540, 610, 12);
   } else if (kind === "snowflake_admin_run") {
     await smoothGlide(ptr, 360, 260, 740, 320, 14);
     await clickSelectorWithX11(cdp, tab1.sessionId, ptr, chromeTopPx, {
@@ -1737,6 +1840,84 @@ async function stageBigQuerySqlBeforeCapture(cdp, sessionId, ptr, chromeTopPx, s
     await cdp.send("Input.insertText", { text: sqlText }, sessionId);
     await engine.sleep(900);
   }
+}
+
+async function stageDatabricksSqlBeforeCapture(cdp, sessionId, sqlText) {
+  // Wait for visible Monaco SQL editor (skip Databricks' off-screen hidden editor at left=-99937!)
+  const deadline = Date.now() + 18000;
+  let pt = null;
+  while (Date.now() < deadline) {
+    pt = await evalInSession(cdp, sessionId, () => {
+      const vl = [...document.querySelectorAll(".monaco-editor .view-lines")].find(el => {
+        const b = el.getBoundingClientRect();
+        return b.left > 100 && b.width > 200;
+      });
+      if (!vl) return null;
+      const r = vl.getBoundingClientRect();
+      return { x: Math.round(r.left + 80), y: Math.round(r.top + 14) };
+    }).catch(() => null);
+    if (pt) break;
+    await engine.sleep(500);
+  }
+  if (!pt) return;
+  await engine.sleep(800);
+  // Dismiss any Databricks release-notes / notification banners cleanly before capture
+  await evalInSession(cdp, sessionId, () => {
+    for (const b of document.querySelectorAll("button")) {
+      const t = (b.innerText || b.getAttribute("aria-label") || "").trim();
+      if (/^Close notification$|^Don't show again$/i.test(t)) b.click();
+    }
+  }).catch(() => {});
+  await engine.sleep(300);
+
+  // Ensure Serverless Starter Warehouse is WARM & CONNECTED BEFORE x11grab so "Start compute resource?" modal never appears on camera!
+  const whConnected = await evalInSession(cdp, sessionId, () =>
+    Boolean(document.querySelector('[data-testid="cluster-dropdown-v2-button"] [data-testid="status-indicator-ok"]'))
+  ).catch(() => false);
+  if (!whConnected) {
+    console.log("    🔥 [Databricks pre-capture] Serverless Starter Warehouse idle/stopped — warming up before x11grab...");
+    await evalInSession(cdp, sessionId, () => {
+      const b = document.querySelector('button[data-testid="notebook-query-run-button-idle"], button[aria-label="Run query"]');
+      if (b) b.click();
+    }).catch(() => {});
+    await engine.sleep(1500);
+    await evalInSession(cdp, sessionId, () => {
+      if ((document.body?.innerText || "").includes("Start compute resource")) {
+        const cb = document.querySelector('input[type="checkbox"]');
+        if (cb && !cb.checked) cb.click();
+        const startBtn = [...document.querySelectorAll("button")].find(b => /Start, attach and run/i.test(b.innerText || ""));
+        if (startBtn) startBtn.click();
+      }
+    }).catch(() => {});
+    const warmDeadline = Date.now() + 40000;
+    while (Date.now() < warmDeadline) {
+      const ready = await evalInSession(cdp, sessionId, () =>
+        Boolean(
+          document.querySelector('[data-testid="cluster-dropdown-v2-button"] [data-testid="status-indicator-ok"]') &&
+            document.querySelector('button[data-testid="notebook-query-run-button-idle"]')
+        )
+      ).catch(() => false);
+      if (ready) break;
+      await engine.sleep(1500);
+    }
+    console.log("    ✅ [Databricks pre-capture] Serverless Starter Warehouse is CONNECTED & READY!");
+  }
+
+  // Close any stale bottom Results panel BEFORE staging SQL so early (+1.5s) never shows cached results from a prior query!
+  await evalInSession(cdp, sessionId, () => {
+    const closeBtn = document.querySelector('button[aria-label="Close bottom panel" i]');
+    if (closeBtn) closeBtn.click();
+  }).catch(() => {});
+  await engine.sleep(400);
+
+  await cdp.send("Input.dispatchMouseEvent", { type: "mousePressed", x: pt.x, y: pt.y, button: "left", clickCount: 1 }, sessionId);
+  await cdp.send("Input.dispatchMouseEvent", { type: "mouseReleased", x: pt.x, y: pt.y, button: "left", clickCount: 1 }, sessionId);
+  await engine.sleep(200);
+  await cdp.send("Input.dispatchKeyEvent", { type: "keyDown", modifiers: 2, key: "a", code: "KeyA", windowsVirtualKeyCode: 65 }, sessionId);
+  await cdp.send("Input.dispatchKeyEvent", { type: "keyUp", modifiers: 2, key: "a", code: "KeyA", windowsVirtualKeyCode: 65 }, sessionId);
+  await engine.dispatchCdpKey((m, p, s) => cdp.send(m, p, s), "Backspace", sessionId);
+  await cdp.send("Input.insertText", { text: sqlText }, sessionId);
+  await engine.sleep(700);
 }
 
 // ============================================================================
@@ -1875,6 +2056,7 @@ async function captureChapterWithX11Grab({
     "https://console.cloud.google.com",
     "https://gcp-team-sbiarllr.atlassian.net",
     "https://team2.thoughtspot.cloud",
+    "https://dbc-20659e2f-ad51.cloud.databricks.com",
     "https://app.snowflake.com"
   ];
   if (process.env.OKTA_ORG_URL) pinnedOrigins.push(process.env.OKTA_ORG_URL);
@@ -1903,6 +2085,9 @@ async function captureChapterWithX11Grab({
 
   if (chapter.sql && (chapter.actionKind === "bigquery_run_query" || chapter.actionKind === "bigquery_query_then_logging_expand")) {
     await stageBigQuerySqlBeforeCapture(cdp, tab1.sessionId, ptr, chromeTopPx, chapter.sql);
+  }
+  if (chapter.sql && chapter.actionKind === "databricks_before_run") {
+    await stageDatabricksSqlBeforeCapture(cdp, tab1.sessionId, chapter.sql);
   }
   if (chapter.actionKind === "jira_before_drawer_then_pages" || chapter.actionKind === "jira_filter_3lo_then_summary") {
     // Clear any leftover Jira board search filter BEFORE capture (NEVER touch top global search bar!)
@@ -1943,6 +2128,9 @@ async function captureChapterWithX11Grab({
     const opened2 = await openTabInWindow(cdp, demoWin, tab1, "about:blank");
     await cdp.send("Target.activateTarget", { targetId: opened2.targetId });
     await navigateAndWaitSettled(cdp, opened2.sessionId, chapter.secondaryUrl);
+    if (chapter.sql && chapter.actionKind === "databricks_catalog_then_rls_run") {
+      await stageDatabricksSqlBeforeCapture(cdp, opened2.sessionId, chapter.sql);
+    }
     tab2 = opened2;
     // Return to Tab 1 cleanly before starting x11grab
     await cdp.send("Target.activateTarget", { targetId: tab1.targetId });
@@ -1965,9 +2153,14 @@ async function captureChapterWithX11Grab({
     await engine.sleep(1000);
   }
 
-  // Enforce window topmost & exact 1280x800 geometry right before capture
+  // Enforce window topmost & exact 1280x800 geometry right before capture + blur Chrome omnibox selection
   engine.raiseAndFocusWindow(display, demoWin.xid);
   engine.assertWindowTopmostAndSized(display, demoWin.xid, 1280, 800);
+  await cdp.send("Page.bringToFront", {}, tab1.sessionId).catch(() => {});
+  await evalInSession(cdp, tab1.sessionId, () => {
+    try { window.getSelection?.()?.removeAllRanges?.(); } catch {}
+  }).catch(() => {});
+  await engine.sleep(150);
 
   const captureDur = Number((durationSec + 0.6).toFixed(2));
   const ffmpegArgv = [
@@ -2201,12 +2394,36 @@ async function remuxWithRequiredMetadataAndVerify({ concatMp4, finalMp4, title, 
 // ============================================================================
 // Run Blog Recording Pipeline (Single Exemplar Chapter OR Full 6-Chapter Blog)
 // ============================================================================
+const GCP_ONLY_BLOG_OVERRIDES = {
+  ws3: {
+    demoTitle: "Blog 3 (WS3) — Pattern B Sovereign Silos & Cloud KMS CMEK Kill-Switch",
+    demoSubtitle: "Live Sovereign VPC, Cloud Run Silo, Cloud KMS CMEK Revocation & GCS Vault",
+    saasTarget: {
+      saasId: "GCP-SILO-WS3",
+      name: "Google Cloud Sovereign Silos (CMEK + VPC)",
+      origin: "https://console.cloud.google.com",
+      mode: "BEFORE → AFTER (CMEK KILL-SWITCH)"
+    }
+  },
+  ws5: {
+    demoTitle: "Blog 5 (WS5) — Multi-Tenant Agentic Triad & BigQuery Zero-PII FinOps",
+    demoSubtitle: "Live Connectors Baseline → Cloud Run Triad & BigQuery Zero-PII FinOps Ledger",
+    saasTarget: {
+      saasId: "GCP-TRIAD-WS5",
+      name: "Google Cloud Agentic Triad & BigQuery FinOps",
+      origin: "https://console.cloud.google.com",
+      mode: "BEFORE → AFTER (CONNECTORS → TRIAD)"
+    }
+  }
+};
+
 async function processBlog({
   blog,
   onlyChapters = null,
   isStage1Exemplar = false,
   bakeOnly = false,
   gcpOnly = false,
+  assembleGcpOnly = false,
   reuseCaptured = false,
   sharedRefs,
   tokenState,
@@ -2217,6 +2434,10 @@ async function processBlog({
   headlessBrowser
 }) {
   const slug = blog.slug;
+  const effectiveBlog =
+    assembleGcpOnly && GCP_ONLY_BLOG_OVERRIDES[slug]
+      ? { ...blog, ...GCP_ONLY_BLOG_OVERRIDES[slug] }
+      : blog;
   const workDir = path.join(
     REPO_ROOT,
     ".local_backup",
@@ -2231,9 +2452,9 @@ async function processBlog({
   fs.mkdirSync(recDir, { recursive: true });
 
   const selectedChapters = blog.chapters.filter(
-    c => (!onlyChapters || onlyChapters.has(c.chapterNum)) && (!gcpOnly || !c.requiresSaas)
+    c => (!onlyChapters || onlyChapters.has(c.chapterNum)) && ((!gcpOnly && !assembleGcpOnly) || !c.requiresSaas)
   );
-  console.log(`\n==================== [${slug.toUpperCase()}] ${blog.demoTitle} (${selectedChapters.length} ch${gcpOnly ? ", GCP-only pre-capture" : ""}) ====================`);
+  console.log(`\n==================== [${slug.toUpperCase()}] ${effectiveBlog.demoTitle} (${selectedChapters.length} ch${gcpOnly ? ", GCP-only pre-capture" : assembleGcpOnly ? ", GCP-only live assembly" : ""}) ====================`);
 
   // Step 1: Pre-bake Pure Omni 1.2 beats for all selected chapters
   const bakedByChapter = new Map();
@@ -2311,9 +2532,9 @@ async function processBlog({
       const bEnd = bIdx === ch.beats.length - 1 ? baked.totalDurationSec : bCursor + bDur;
       const ovPng = path.join(workDir, "work", `overlay_ch${padCh}_b${bIdx + 1}.png`);
       await engine.renderMeetBeatOverlayPng(headlessBrowser, {
-        demoTitle: blog.demoTitle,
-        demoSubtitle: blog.demoSubtitle,
-        meetCode: blog.meetCode,
+        demoTitle: effectiveBlog.demoTitle,
+        demoSubtitle: effectiveBlog.demoSubtitle,
+        meetCode: effectiveBlog.meetCode,
         presenterName: PRESENTER_NAME,
         previewBadge: PREVIEW_BADGE,
         unitLabel: "Chapter",
@@ -2392,7 +2613,7 @@ async function processBlog({
   await engine.concatSegmentsWithContainerChapters({
     segmentPaths,
     chapterMeta,
-    demoTitle: blog.demoTitle,
+    demoTitle: effectiveBlog.demoTitle,
     presenterName: PRESENTER_NAME,
     outMp4: concatMp4,
     workDir: path.join(workDir, "work")
@@ -2400,7 +2621,7 @@ async function processBlog({
   await remuxWithRequiredMetadataAndVerify({
     concatMp4,
     finalMp4,
-    title: blog.demoTitle,
+    title: effectiveBlog.demoTitle,
     expectedChapters: chapterMeta.length
   });
 
@@ -2447,9 +2668,9 @@ async function processBlog({
   const manifestObj = {
     schemaVersion: "1.0.0",
     slug,
-    wsKey: blog.wsKey,
-    title: blog.demoTitle,
-    subtitle: blog.demoSubtitle,
+    wsKey: effectiveBlog.wsKey,
+    title: effectiveBlog.demoTitle,
+    subtitle: effectiveBlog.demoSubtitle,
     compositeLabel: COMPOSITE_LABEL,
     presenterName: PRESENTER_NAME,
     previewBadge: PREVIEW_BADGE,
@@ -2457,7 +2678,7 @@ async function processBlog({
     twinEngine: "models/omni_1p2",
     capturePrimitive: "ffmpeg -f x11grab -framerate 24 -draw_mouse 1",
     approvedPlanToken: APPROVED_PLAN_TOKEN,
-    saasTarget: blog.saasTarget,
+    saasTarget: effectiveBlog.saasTarget,
     videoUrl: `/recordings/${slug}/meet_live_execution_recording.mp4`,
     posterUrl: `/recordings/${slug}/meet_recording_poster.jpg`,
     captionsUrl: `/recordings/${slug}/captions.vtt`,
@@ -2594,6 +2815,7 @@ function parseCliArgs(argv) {
     stage1Exemplar: false,
     bakeOnly: false,
     gcpOnly: false,
+    assembleGcpOnly: false,
     reuseCaptured: false,
     preflightOnly: false,
     resume: false,
@@ -2613,6 +2835,8 @@ function parseCliArgs(argv) {
       opts.bakeOnly = true;
     } else if (a === "--gcp-only") {
       opts.gcpOnly = true;
+    } else if (a === "--assemble-gcp-only") {
+      opts.assembleGcpOnly = true;
     } else if (a === "--reuse-captured") {
       opts.reuseCaptured = true;
     } else if (a === "--preflight-only") {
@@ -2794,6 +3018,7 @@ async function main() {
         isStage1Exemplar: opts.stage1Exemplar,
         bakeOnly: false,
         gcpOnly: opts.gcpOnly,
+        assembleGcpOnly: opts.assembleGcpOnly,
         reuseCaptured: opts.reuseCaptured,
         sharedRefs,
         tokenState,

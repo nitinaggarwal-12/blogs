@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0.0",
+  "slug": "ws5",
+  "generatedAt": "2026-11-23T05:02:04.580Z",
+  "poster": {
+    "pathRel": "recordings/ws5/meet_recording_poster.jpg",
+    "sha256": "e85b5bda3be3c71b1dbf92d75e6f094f1006cdd0ebf68ca51066ac5c7c620a41",
+    "bytes": 280687,
+    "width": 1920,
+    "height": 1080
+  },
+  "chapters": [
+    {
+      "chapterNum": 1,
+      "id": "ch01_connectors_before_baseline",
+      "pathRel": "recordings/ws5/chapters/ch-01.png",
+      "sha256": "99433fe52d1dadf3ba74889407fb12ed3fa8b256dd30754d444191e34e0a0b9c",
+      "bytes": 360736,
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "chapterNum": 2,
+      "id": "ch02_cloudrun_after_agentic_triad",
+      "pathRel": "recordings/ws5/chapters/ch-02.png",
+      "sha256": "f7fc29b935737a2f12b9724a707f77993f17c83164b307c1d7e2f1806f25eb9c",
+      "bytes": 234777,
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "chapterNum": 3,
+      "id": "ch03_bigquery_finops_live_rows",
+      "pathRel": "recordings/ws5/chapters/ch-03.png",
+      "sha256": "a062cb8828e21ed019e84732819b8988fdcbe3dc099c970e9522c1187aef2981",
+      "bytes": 242920,
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "chapterNum": 4,
+      "id": "ch04_bigquery_finops_schema",
+      "pathRel": "recordings/ws5/chapters/ch-04.png",
+      "sha256": "9fc3d974f416edf0ad258ac2234b9aefa3ec7cd3a88a64a1520f675e744fdaae",
+      "bytes": 255263,
+      "width": 1280,
+      "height": 800
+    }
+  ]
+}

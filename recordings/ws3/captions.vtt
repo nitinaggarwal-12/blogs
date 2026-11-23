@@ -1,0 +1,41 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.030
+AI Digital Twin · Google Cloud: Welcome to Blog three, building Pattern B sovereign silos for regulated workloads on Google Cloud.
+
+2
+00:00:10.030 --> 00:00:20.053
+AI Digital Twin · Google Cloud: Dedicated Cloud Run compute deploys alongside an isolated sovereign VPC network and customer-managed encryption key boundaries.
+
+3
+00:00:20.053 --> 00:00:30.083
+AI Digital Twin · Google Cloud: Inside Cloud KMS, every sovereign vault binds to a dedicated symmetric encryption key controlled by the customer.
+
+4
+00:00:30.083 --> 00:00:40.106
+AI Digital Twin · Google Cloud: Notice FinVault remains available while the revoked MedCore key is disabled, providing an instant cryptographic kill-switch.
+
+5
+00:00:40.106 --> 00:00:50.136
+AI Digital Twin · Google Cloud: While the FinVault encryption key stays enabled, querying the sovereign BigQuery vault decrypts regulatory records cleanly.
+
+6
+00:00:50.136 --> 00:01:00.159
+AI Digital Twin · Google Cloud: All storage ciphertext and query execution remain pinned inside the customer's dedicated regional sovereign project.
+
+7
+00:01:00.159 --> 00:01:10.189
+AI Digital Twin · Google Cloud: Now we query the sovereign vault backed by the disabled MedCore key to demonstrate live cryptographic revocation.
+
+8
+00:01:10.189 --> 00:01:20.212
+AI Digital Twin · Google Cloud: BigQuery immediately fails closed with a Cloud KMS disabled error, rendering encrypted tenant data unreadable immediately.
+
+9
+00:01:20.212 --> 00:01:30.242
+AI Digital Twin · Google Cloud: In the sovereign silo project, our asymmetric Cloud KMS signing key stands ready to sign high-trust agent actions.
+
+10
+00:01:30.242 --> 00:01:40.265
+AI Digital Twin · Google Cloud: Paired with our CMEK-encrypted Cloud Storage bucket, every persisted artifact inherits uniform bucket-level access and public access prevention.

@@ -1,0 +1,33 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.030
+AI Digital Twin · Google Cloud: Welcome to Blog five, unifying the Multi-Tenant Agentic Triad across A2A delegation, MCP tooling, and live telemetry.
+
+2
+00:00:10.030 --> 00:00:20.053
+AI Digital Twin · Google Cloud: Before A2A federation, teams managed standalone point-to-point connectors with fragmented credentials and limited cross-tenant visibility.
+
+3
+00:00:20.053 --> 00:00:30.083
+AI Digital Twin · Google Cloud: After deploying the Agentic Triad, our orchestrator, specialist agent, and MCP gateway run as authenticated Cloud Run services.
+
+4
+00:00:30.083 --> 00:00:40.106
+AI Digital Twin · Google Cloud: Every agent-to-agent handoff validates signed identity tokens before invoking downstream Model Context Protocol tools.
+
+5
+00:00:40.106 --> 00:00:50.136
+AI Digital Twin · Google Cloud: In BigQuery, our OpenTelemetry FinOps ledger stores cryptographic prompt hashes with no plaintext customer PII persisted.
+
+6
+00:00:50.136 --> 00:01:00.159
+AI Digital Twin · Google Cloud: Live rows prove authorized FinVault calls succeed cleanly while cross-tenant RetailStream probes fail with HTTP forbidden.
+
+7
+00:01:00.159 --> 00:01:10.189
+AI Digital Twin · Google Cloud: Inspecting the BigQuery schema confirms cached token counters, dynamic token usage, and per-tenant USD cost attribution.
+
+8
+00:01:10.189 --> 00:01:20.212
+AI Digital Twin · Google Cloud: Finance and security teams audit exact per-tenant AI spend alongside authorization outcomes in one governed table.
