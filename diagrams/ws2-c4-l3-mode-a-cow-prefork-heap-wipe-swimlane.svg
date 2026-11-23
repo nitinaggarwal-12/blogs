@@ -88,15 +88,15 @@
 <text x="1504.8" y="723.5" text-anchor="middle" fill="#FFFFFF" font-size="12.4" font-weight="bold">0%</text>
 <text x="1504.8" y="737.4" text-anchor="middle" fill="#FFFFFF" font-size="12.4" font-weight="normal">BLEED</text>
 <rect x="57.5" y="700.0" width="352.5" height="95.0" rx="10" fill="#FFF1F2" stroke="#E11D48" stroke-width="1.2"/>
-<text x="233.8" y="737.4" text-anchor="middle" fill="#BE123C" font-size="11.7" font-weight="bold">❌ Why --workers 1 Fails</text>
+<text x="233.8" y="737.4" text-anchor="middle" fill="#BE123C" font-size="11.7" font-weight="bold">✕ Why --workers 1 Fails</text>
 <text x="233.8" y="750.5" text-anchor="middle" fill="#BE123C" font-size="11.7" font-weight="normal">Shared Heap, /tmp &amp; Agent SA</text>
 <text x="233.8" y="763.6" text-anchor="middle" fill="#BE123C" font-size="11.7" font-weight="normal">Async Overlap + GC &amp; OOM Bleed</text>
 <rect x="450.0" y="700.0" width="352.5" height="95.0" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.2"/>
-<text x="626.2" y="737.4" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="bold">⚡ CoW Fork + Concurrency=1</text>
+<text x="626.2" y="737.4" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="bold">CoW Fork + Concurrency=1</text>
 <text x="626.2" y="750.5" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="normal">0 Co-Tenant OOM Overlap</text>
 <text x="626.2" y="763.6" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="normal">prctl(DUMPABLE=0) + Per-Turn WIF/CAB</text>
 <rect x="842.5" y="700.0" width="352.5" height="95.0" rx="10" fill="#ECFDF5" stroke="#059669" stroke-width="1.2"/>
-<text x="1018.8" y="737.4" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="bold">✅ 1-Shot gVisor + /tmp &amp; RAM Wipe</text>
+<text x="1018.8" y="737.4" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="bold">✓ 1-Shot gVisor + /tmp &amp; RAM Wipe</text>
 <text x="1018.8" y="750.5" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="normal">0 In-Process exec() (gVisor Tool VM)</text>
 <text x="1018.8" y="763.6" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="normal">--max-requests=1 → RAM &amp; /tmp Zeroed</text>
 <line x1="412.5" y1="747.5" x2="447.5" y2="747.5" stroke="#2563EB" stroke-width="1.8" marker-end="url(#arrowEnd)"/>

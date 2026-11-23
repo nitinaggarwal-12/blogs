@@ -2696,6 +2696,26 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
               const n = a.name.toLowerCase();
               if (n === 'color' && /^#[0-9a-fA-F]{{3,8}}$/.test(a.value.trim())) continue;
               if (n === 'class' || n === 'title') continue;
+              if (n === 'style') {{
+                const safeDecl = [];
+                String(a.value || '').split(';').forEach(decl => {{
+                  const idx = decl.indexOf(':');
+                  if (idx <= 0) return;
+                  const prop = decl.slice(0, idx).trim().toLowerCase();
+                  const val = decl.slice(idx + 1).trim();
+                  if (!val || /url\\s*\\(|expression\\s*\\(|javascript:/i.test(val)) return;
+                  if (prop === 'font-size' && /^\\d+(?:\\.\\d+)?(?:px|pt|em|rem|%)$/.test(val)) safeDecl.push(prop + ':' + val);
+                  else if (prop === 'font-weight' && /^(?:normal|bold|[1-9]00)$/.test(val)) safeDecl.push(prop + ':' + val);
+                  else if (prop === 'color' && /^(?:#[0-9a-fA-F]{{3,8}}|rgb\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*\\))$/.test(val)) safeDecl.push(prop + ':' + val);
+                  else if (prop === 'line-height' && /^\\d+(?:\\.\\d+)?(?:px|em|%)?$/.test(val)) safeDecl.push(prop + ':' + val);
+                  else if ((prop === 'margin-top' || prop === 'margin-bottom') && /^-?\\d+(?:\\.\\d+)?px$/.test(val)) safeDecl.push(prop + ':' + val);
+                  else if (prop === 'text-align' && /^(?:left|center|right)$/.test(val)) safeDecl.push(prop + ':' + val);
+                  else if (prop === 'font-family' && /^[A-Za-z0-9 ,'"\\-]+$/.test(val)) safeDecl.push(prop + ':' + val);
+                }});
+                if (safeDecl.length) ch.setAttribute('style', safeDecl.join(';'));
+                else ch.removeAttribute(a.name);
+                continue;
+              }}
               ch.removeAttribute(a.name);
             }}
             clean(ch);
@@ -2917,6 +2937,29 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       fgLayer.innerHTML = '';
 
       const cells = Array.from(xmlDoc.querySelectorAll('mxCell'));
+      const rawCellById = new Map();
+      cells.forEach(c => {{
+        const cid = c.getAttribute('id');
+        if (cid) rawCellById.set(cid, c);
+      }});
+      function resolveParentOffset(cell) {{
+        let offX = 0;
+        let offY = 0;
+        let pid = cell.getAttribute('parent');
+        const seen = new Set();
+        while (pid && pid !== '0' && pid !== '1' && !seen.has(pid)) {{
+          seen.add(pid);
+          const pCell = rawCellById.get(pid);
+          if (!pCell) break;
+          const pGeom = pCell.querySelector('mxGeometry');
+          if (pGeom) {{
+            offX += parseFloat(pGeom.getAttribute('x') || '0');
+            offY += parseFloat(pGeom.getAttribute('y') || '0');
+          }}
+          pid = pCell.getAttribute('parent');
+        }}
+        return {{ offX, offY }};
+      }}
       cells.forEach(cell => {{
         const id = cell.getAttribute('id');
         if (id === '0' || id === '1') return;
@@ -2927,15 +2970,20 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         const geom = cell.querySelector('mxGeometry');
 
         if (isVertex && geom) {{
-          const x = parseFloat(geom.getAttribute('x') || '0');
-          const y = parseFloat(geom.getAttribute('y') || '0');
+          const rawX = parseFloat(geom.getAttribute('x') || '0');
+          const rawY = parseFloat(geom.getAttribute('y') || '0');
+          const pOff = resolveParentOffset(cell);
+          const x = rawX + pOff.offX;
+          const y = rawY + pOff.offY;
           const w = parseFloat(geom.getAttribute('width') || '100');
           const h = parseFloat(geom.getAttribute('height') || '40');
           const val = cell.getAttribute('value') || '';
-          const vObj = {{ id, cell, geom, x, y, w, h, val, styleStr, styleMap, origX: x, origY: y }};
+          const vObj = {{ id, cell, geom, x, y, w, h, val, styleStr, styleMap, origX: x, origY: y, parentOffX: pOff.offX, parentOffY: pOff.offY }};
           verticesMap.set(id, vObj);
 
-          const isBgZone = id.startsWith('gcp_') || id.startsWith('wrapper_') || id.startsWith('zone_') || id.startsWith('layer_') || id === 'hdr_title_box';
+          const isContainerZone = styleMap.container === '1';
+          const isBgZone = isContainerZone || id.startsWith('gcp_') || id.startsWith('wrapper_') || id.startsWith('zone_') || id.startsWith('layer_') || id === 'hdr_title_box';
+          const isImageCell = styleMap.shape === 'image' && typeof styleMap.image === 'string';
           const el = document.createElement('div');
           el.className = 'mx-vertex' + (id === selectedCellId ? ' selected' : '');
           el.dataset.cellId = id;
@@ -2943,10 +2991,10 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
           el.style.top = y + 'px';
           el.style.width = w + 'px';
           el.style.height = h + 'px';
-          el.style.pointerEvents = 'auto';
+          el.style.pointerEvents = isImageCell ? 'none' : 'auto';
           el.style.boxSizing = 'border-box';
           const isCompactBadge = h <= 28;
-          if (isCompactBadge) {{
+          if (isCompactBadge || isImageCell) {{
             el.style.overflowX = 'visible';
             el.style.overflowY = 'visible';
           }} else {{
@@ -2960,7 +3008,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
           const sw = parseFloat(styleMap.strokeWidth || '1');
           el.style.backgroundColor = fill;
           if (stroke !== 'transparent') {{
-            el.style.border = sw + 'px solid ' + stroke;
+            const borderStyle = styleMap.dashed === '1' ? 'dashed' : 'solid';
+            el.style.border = sw + 'px ' + borderStyle + ' ' + stroke;
           }}
           if (styleMap.ellipse === '1') {{
             el.style.borderRadius = '50%';
@@ -2970,19 +3019,31 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
           el.style.display = 'flex';
           el.style.flexDirection = 'column';
-          el.style.justifyContent = isCompactBadge ? 'center' : 'flex-start';
+          const vAlign = styleMap.verticalAlign || '';
+          el.style.justifyContent = vAlign === 'middle' ? 'center' : (vAlign === 'bottom' ? 'flex-end' : (isCompactBadge ? 'center' : 'flex-start'));
           el.style.alignItems = styleMap.align === 'center' ? 'center' : (styleMap.align === 'right' ? 'flex-end' : 'flex-start');
           el.style.textAlign = styleMap.align === 'center' ? 'center' : (styleMap.align === 'right' ? 'right' : 'left');
           if (styleMap.fontSize) el.style.fontSize = styleMap.fontSize + 'px';
           if (styleMap.fontColor) el.style.color = styleMap.fontColor;
           if (String(styleMap.fontStyle || '') === '1') el.style.fontWeight = '700';
-          el.style.paddingLeft = (styleMap.spacingLeft || (isCompactBadge ? 2 : 10)) + 'px';
-          el.style.paddingTop = (styleMap.spacingTop || (isCompactBadge ? 0 : 6)) + 'px';
-          el.style.paddingRight = (styleMap.spacingRight || (isCompactBadge ? 2 : 10)) + 'px';
-          el.style.paddingBottom = (styleMap.spacingBottom || (isCompactBadge ? 0 : 6)) + 'px';
+          el.style.paddingLeft = (isImageCell ? 0 : (styleMap.spacingLeft || (isCompactBadge ? 2 : 10))) + 'px';
+          el.style.paddingTop = (isImageCell ? 0 : (styleMap.spacingTop || (isCompactBadge ? 0 : 6))) + 'px';
+          el.style.paddingRight = (isImageCell ? 0 : (styleMap.spacingRight || (isCompactBadge ? 2 : 10))) + 'px';
+          el.style.paddingBottom = (isImageCell ? 0 : (styleMap.spacingBottom || (isCompactBadge ? 0 : 6))) + 'px';
 
-          el.innerHTML = '<div style="width:100%;">' + sanitizeCellHtml(val) + '</div><span class="mx-handle tl"></span><span class="mx-handle tr"></span><span class="mx-handle bl"></span><span class="mx-handle br"></span>';
-          el.addEventListener('mousedown', (e) => onVertexMouseDown(e, id));
+          if (isImageCell) {{
+            const imgSpec = String(styleMap.image || '').trim();
+            const safeSvgMatch = /^data:image\\/svg\\+xml,(?:base64,)?([A-Za-z0-9+/=]+)$/.exec(imgSpec);
+            if (safeSvgMatch) {{
+              const safeSrc = 'data:image/svg+xml;base64,' + safeSvgMatch[1];
+              el.innerHTML = '<img src="' + safeSrc + '" alt="" style="width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;"/>';
+            }} else {{
+              el.innerHTML = '';
+            }}
+          }} else {{
+            el.innerHTML = '<div style="width:100%;">' + sanitizeCellHtml(val) + '</div><span class="mx-handle tl"></span><span class="mx-handle tr"></span><span class="mx-handle bl"></span><span class="mx-handle br"></span>';
+            el.addEventListener('mousedown', (e) => onVertexMouseDown(e, id));
+          }}
           vObj.el = el;
 
           if (isBgZone) {{
@@ -3202,8 +3263,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       v.y = dragState.origY + dy;
       v.el.style.left = v.x + 'px';
       v.el.style.top = v.y + 'px';
-      v.geom.setAttribute('x', String(v.x));
-      v.geom.setAttribute('y', String(v.y));
+      v.geom.setAttribute('x', String(v.x - (v.parentOffX || 0)));
+      v.geom.setAttribute('y', String(v.y - (v.parentOffY || 0)));
       redrawEdgesAndInspector();
       syncXmlDocToString();
     }});
@@ -3233,8 +3294,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       v.el.style.top = v.y + 'px';
       v.el.style.width = v.w + 'px';
       v.el.style.height = v.h + 'px';
-      v.geom.setAttribute('x', String(v.x));
-      v.geom.setAttribute('y', String(v.y));
+      v.geom.setAttribute('x', String(v.x - (v.parentOffX || 0)));
+      v.geom.setAttribute('y', String(v.y - (v.parentOffY || 0)));
       v.geom.setAttribute('width', String(v.w));
       v.geom.setAttribute('height', String(v.h));
       redrawEdgesAndInspector();

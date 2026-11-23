@@ -763,7 +763,25 @@ def _push_drawio_to_google_slides(
             "reason": f"{diagram_id} saved locally (.drawio + .svg); not embedded in Compendium/Bare-Min Slides",
         }
 
-    # Gather text-bearing vertices from Draw.io XML
+    # Gather text-bearing vertices from Draw.io XML (resolving ancestor container offsets defensively)
+    all_cells_by_id = {c.attrib.get("id", ""): c for c in root.findall(".//mxCell") if c.attrib.get("id")}
+
+    def _parent_offset(c_el: ET.Element) -> Tuple[float, float]:
+        ox, oy = 0.0, 0.0
+        pid = c_el.attrib.get("parent", "")
+        seen: set[str] = set()
+        while pid and pid not in ("0", "1") and pid not in seen:
+            seen.add(pid)
+            p_el = all_cells_by_id.get(pid)
+            if p_el is None:
+                break
+            p_geom = p_el.find("mxGeometry")
+            if p_geom is not None:
+                ox += float(p_geom.attrib.get("x", 0))
+                oy += float(p_geom.attrib.get("y", 0))
+            pid = p_el.attrib.get("parent", "")
+        return ox, oy
+
     xml_shapes: List[Tuple[str, float, float, float, float, List[str]]] = []
     for cell in root.findall(".//mxCell"):
         if cell.attrib.get("vertex") != "1":
@@ -774,11 +792,12 @@ def _push_drawio_to_google_slides(
         lines = strip_html_to_lines(cell.attrib.get("value", ""))
         if not lines:
             continue
+        pox, poy = _parent_offset(cell)
         xml_shapes.append(
             (
                 cell.attrib.get("id", ""),
-                float(geom.attrib.get("x", 0)),
-                float(geom.attrib.get("y", 0)),
+                float(geom.attrib.get("x", 0)) + pox,
+                float(geom.attrib.get("y", 0)) + poy,
                 float(geom.attrib.get("width", 0)),
                 float(geom.attrib.get("height", 0)),
                 lines,
@@ -990,6 +1009,24 @@ def pull_slide_changes_from_google_slides_any_diagram(
         raise RuntimeError(f"Missing .drawio file for {diag_id}")
 
     root = ET.parse(str(drawio_path)).getroot()
+    pull_cells_by_id = {c.attrib.get("id", ""): c for c in root.findall(".//mxCell") if c.attrib.get("id")}
+
+    def _pull_parent_offset(c_el: ET.Element) -> Tuple[float, float]:
+        ox, oy = 0.0, 0.0
+        pid = c_el.attrib.get("parent", "")
+        seen: set[str] = set()
+        while pid and pid not in ("0", "1") and pid not in seen:
+            seen.add(pid)
+            p_el = pull_cells_by_id.get(pid)
+            if p_el is None:
+                break
+            p_geom = p_el.find("mxGeometry")
+            if p_geom is not None:
+                ox += float(p_geom.attrib.get("x", 0))
+                oy += float(p_geom.attrib.get("y", 0))
+            pid = p_el.attrib.get("parent", "")
+        return ox, oy
+
     text_cells: List[Tuple[ET.Element, float, float, float, float, List[str]]] = []
     all_known_cells: List[Tuple[ET.Element, float, float, float, float, List[str]]] = []
     for cell in root.findall(".//mxCell"):
@@ -999,10 +1036,11 @@ def pull_slide_changes_from_google_slides_any_diagram(
         if geom is None or "x" not in geom.attrib or "y" not in geom.attrib:
             continue
         lines = strip_html_to_lines(cell.attrib.get("value", ""))
+        pox, poy = _pull_parent_offset(cell)
         tup = (
             cell,
-            float(geom.attrib.get("x", 0)),
-            float(geom.attrib.get("y", 0)),
+            float(geom.attrib.get("x", 0)) + pox,
+            float(geom.attrib.get("y", 0)) + poy,
             float(geom.attrib.get("width", 0)),
             float(geom.attrib.get("height", 0)),
             lines,
@@ -1073,8 +1111,9 @@ def pull_slide_changes_from_google_slides_any_diagram(
             cid = best_cell.attrib["id"]
             cur_lines = strip_html_to_lines(best_cell.attrib.get("value", ""))
             geom = best_cell.find("mxGeometry")
-            cur_x = float(geom.attrib.get("x", 0))
-            cur_y = float(geom.attrib.get("y", 0))
+            pox, poy = _pull_parent_offset(best_cell)
+            cur_x = float(geom.attrib.get("x", 0)) + pox
+            cur_y = float(geom.attrib.get("y", 0)) + poy
             text_changed = _norm_para_text(lines) != _norm_para_text(cur_lines)
             pos_changed = abs(cur_x - x_px) > 8.0 or abs(cur_y - y_px) > 8.0
             if text_changed or pos_changed:
@@ -1083,9 +1122,9 @@ def pull_slide_changes_from_google_slides_any_diagram(
                     cell_diffs.extend(_compute_safe_cell_diffs(cid, cur_lines, lines))
                     best_cell.attrib["value"] = "<br/>".join(html.escape(ln) for ln in lines)
                 if abs(cur_x - x_px) > 8.0:
-                    geom.attrib["x"] = str(x_px)
+                    geom.attrib["x"] = str(round(x_px - pox, 1))
                 if abs(cur_y - y_px) > 8.0:
-                    geom.attrib["y"] = str(y_px)
+                    geom.attrib["y"] = str(round(y_px - poy, 1))
                 changes_applied.append(f"{cid}: {' / '.join(lines)[:60]}")
 
     updated_files: List[str] = []

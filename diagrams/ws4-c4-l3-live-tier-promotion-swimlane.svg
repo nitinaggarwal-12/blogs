@@ -65,7 +65,7 @@
 <text x="1026.6" y="440.5" text-anchor="start" fill="#047857" font-size="11.4" font-weight="bold">Zero Pause In-Flight</text>
 <text x="1026.6" y="453.3" text-anchor="start" fill="#047857" font-size="11.4" font-weight="normal">0 Dropped Active Turns</text>
 <rect x="969.6" y="482.4" width="268.8" height="86.4" rx="10" fill="#E6F4EA" stroke="#1E8E3E" stroke-width="1.0"/>
-<text x="1104.0" y="514.3" text-anchor="middle" fill="#047857" font-size="12.0" font-weight="bold">🔄 Atomic CAS Pointer Flip (0ms)</text>
+<text x="1104.0" y="514.3" text-anchor="middle" fill="#047857" font-size="12.0" font-weight="bold">Atomic CAS Pointer Flip (0ms)</text>
 <text x="1104.0" y="552.1" text-anchor="middle" fill="#3C4043" font-size="9.6" font-weight="bold">Guarantee: 0ms Cutover • 0 Dropped Active Turns</text>
 <rect x="972.0" y="590.4" width="38.4" height="38.4" rx="50%" fill="#0D7A75" stroke="none" stroke-width="0"/>
 <text x="991.2" y="613.3" text-anchor="middle" fill="#FFFFFF" font-size="14.3" font-weight="bold">5</text>
@@ -88,15 +88,15 @@
 <text x="1504.8" y="723.6" text-anchor="middle" fill="#FFFFFF" font-size="12.0" font-weight="bold">0ms</text>
 <text x="1504.8" y="737.0" text-anchor="middle" fill="#FFFFFF" font-size="12.0" font-weight="normal">SWAP</text>
 <rect x="57.5" y="700.0" width="352.5" height="95.0" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="1.2"/>
-<text x="233.8" y="737.4" text-anchor="middle" fill="#B45309" font-size="11.7" font-weight="bold">🔄 1. Phase 1: SHADOW_SYNC</text>
+<text x="233.8" y="737.4" text-anchor="middle" fill="#B45309" font-size="11.7" font-weight="bold">1. Phase 1: SHADOW_SYNC</text>
 <text x="233.8" y="750.5" text-anchor="middle" fill="#B45309" font-size="11.7" font-weight="normal">Dual-Write Pool → Dedicated Spoke</text>
 <text x="233.8" y="763.6" text-anchor="middle" fill="#B45309" font-size="11.7" font-weight="normal">Zero Pause on In-Flight Turns</text>
 <rect x="450.0" y="700.0" width="352.5" height="95.0" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.2"/>
-<text x="626.2" y="737.4" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="bold">🔐 2. Phase 2: CMEK + Parity</text>
+<text x="626.2" y="737.4" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="bold">2. Phase 2: CMEK + Parity</text>
 <text x="626.2" y="750.5" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="normal">Re-Encrypt Under Tenant KMS Key</text>
 <text x="626.2" y="763.6" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="normal">SHA-256 Checksum &amp; Vector Parity</text>
 <rect x="842.5" y="700.0" width="352.5" height="95.0" rx="10" fill="#ECFDF5" stroke="#059669" stroke-width="1.2"/>
-<text x="1018.8" y="737.4" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="bold">⚡ 3. Phase 3: 0ms CAS Cutover</text>
+<text x="1018.8" y="737.4" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="bold">3. Phase 3: 0ms CAS Cutover</text>
 <text x="1018.8" y="750.5" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="normal">Firestore Pointer → /28 PSC Spoke</text>
 <text x="1018.8" y="763.6" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="normal">Async Drain &amp; Purge Old Pool Rows</text>
 <line x1="412.5" y1="747.5" x2="447.5" y2="747.5" stroke="#2563EB" stroke-width="1.8" marker-end="url(#arrowEnd)"/>

@@ -1326,9 +1326,95 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
             "isCompactBadge",
             "sanitizeCellHtml",
             "const zoomScale = currentZoom || 1;",
+            "resolveParentOffset",
+            "data:image/svg+xml",
         ):
             if _req_sym not in server_src:
                 multi_plane_parity_errors.append(f"server_missing:{_req_sym}")
+
+        # WS1–WS5 Canonical Diagram Visual, Vertical-Centering, Zero-Emoji, Per-WS GKE & Atlas #R Harness (Pure-Python + Node Gate)
+        import shutil as _mp_shutil
+        _ws_primary_ids = (
+            "ws1-5hop-governance-baseline",
+            "ws2-pattern-a-pooled",
+            "ws3-pattern-b-silo",
+            "ws4-pattern-c-hybrid",
+            "ws5-decision-tree-and-triad",
+        )
+        _ws_secondary_ids = (
+            "ws1-c4-l3-process-sequence-swimlane",
+            "ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane",
+            "ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane",
+            "ws3-c4-l3-cmek-killswitch-swimlane",
+            "ws4-c4-l3-live-tier-promotion-swimlane",
+            "ws5-c4-l3-dynamic-skill-delegation-swimlane",
+            "saas10-multicloud-a2a-mcp-bridge",
+        )
+        _banned_diag_emojis = (
+            "\U0001f6e1", "\U0001f310", "\U0001f916", "\u2699", "\U0001f512", "\U0001f4e6",
+            "\U0001f5c4", "\U0001f9e0", "\U0001f4ca", "\U0001f3e2", "\U0001f3db", "\U0001f517",
+            "\u26a1", "\U0001f50d", "\U0001f4b0", "\U0001f680", "\u2601", "\U0001f511",
+            "\U0001f4cb", "\U0001f3af", "\U0001f525", "\U0001f4bb", "\U0001f9ed", "\U0001f465",
+            "\U0001f464", "\U0001f4be", "\U0001f4e1", "\U0001f510", "\U0001f6e0",
+        )
+        for _did in _ws_primary_ids + _ws_secondary_ids:
+            _dp = ROOT_DIR / f"diagrams/{_did}.drawio"
+            _sp = ROOT_DIR / f"diagrams/{_did}.svg"
+            _pp = ROOT_DIR / f"diagrams/{_did}.drawio.png"
+            _cdp = ROOT_DIR / f"diagrams/compendium/drawio/{_did}.drawio"
+            _csp = ROOT_DIR / f"diagrams/compendium/drawio/{_did}.svg"
+            for _req_f in (_dp, _sp, _pp, _cdp, _csp):
+                if not _req_f.is_file():
+                    multi_plane_parity_errors.append(f"ws_diag_missing:{_req_f.relative_to(ROOT_DIR)}")
+            if _dp.is_file() and _cdp.is_file() and _dp.read_bytes() != _cdp.read_bytes():
+                multi_plane_parity_errors.append(f"ws_diag_compendium_drawio_drift:{_did}")
+            if _sp.is_file() and _csp.is_file() and _sp.read_bytes() != _csp.read_bytes():
+                multi_plane_parity_errors.append(f"ws_diag_compendium_svg_drift:{_did}")
+            if _dp.is_file():
+                _dtxt = _dp.read_text(encoding="utf-8", errors="ignore")
+                if any(em in _dtxt for em in _banned_diag_emojis):
+                    multi_plane_parity_errors.append(f"ws_diag_banned_emoji:{_did}.drawio")
+                if "gemini 3.8" in _dtxt.lower():
+                    multi_plane_parity_errors.append(f"ws_diag_gemini38:{_did}.drawio")
+                if "4-state hybrid" in _dtxt.lower():
+                    multi_plane_parity_errors.append(f"ws_diag_stale_4state:{_did}.drawio")
+            if _sp.is_file():
+                _stxt = _sp.read_text(encoding="utf-8", errors="ignore")
+                if any(em in _stxt for em in _banned_diag_emojis):
+                    multi_plane_parity_errors.append(f"ws_diag_banned_emoji:{_did}.svg")
+                if "gemini 3.8" in _stxt.lower():
+                    multi_plane_parity_errors.append(f"ws_diag_gemini38:{_did}.svg")
+        # Per-WS factual guardrails (pure-Python, always enforced)
+        _ws4_d = (ROOT_DIR / "diagrams/ws4-pattern-c-hybrid.drawio").read_text(encoding="utf-8", errors="ignore")
+        if re.search(r"\bGKE\b", _ws4_d):
+            multi_plane_parity_errors.append("ws4_forbidden_gke_reference")
+        _ws5_d = (ROOT_DIR / "diagrams/ws5-decision-tree-and-triad.drawio").read_text(encoding="utf-8", errors="ignore")
+        if "~85% Prefix Cache" not in _ws5_d or "89.1%" in _ws5_d:
+            multi_plane_parity_errors.append("ws5_prefix_cache_metric_drift")
+        # Atlas JSON <-> JS #R parity
+        _atlas_jp = ROOT_DIR / "data/slide_diagrams_atlas.json"
+        _atlas_jsp = ROOT_DIR / "js/diagrams_atlas_data.js"
+        if _atlas_jp.is_file() and _atlas_jsp.is_file():
+            _aj = _atlas_jp.read_text(encoding="utf-8", errors="ignore")
+            _ajs = _atlas_jsp.read_text(encoding="utf-8", errors="ignore")
+            if "4-state hybrid" in _aj.lower() or "gemini 3.8" in _aj.lower():
+                multi_plane_parity_errors.append("atlas_json_stale_tokens")
+            if _aj.strip() not in _ajs:
+                multi_plane_parity_errors.append("atlas_json_js_parity_drift")
+        # Full Node.js diagram visual harness (validates validateDrawioXml, elbows, leaf verticalAlign, 12 PPTX decks)
+        _node_bin = _mp_shutil.which("node")
+        _harness_js = ROOT_DIR / "scripts/diagram_visual_harness.mjs"
+        if _node_bin and _harness_js.is_file():
+            _dh_res = _mp_subprocess.run(
+                [_node_bin, str(_harness_js)],
+                cwd=str(ROOT_DIR),
+                capture_output=True,
+                text=True,
+                timeout=90,
+            )
+            if _dh_res.returncode != 0:
+                _dh_tail = (_dh_res.stderr or _dh_res.stdout or "").strip().splitlines()[-3:]
+                multi_plane_parity_errors.append(f"diagram_visual_harness_rc={_dh_res.returncode}:{' | '.join(_dh_tail)}")
 
         _tsconfig_p = ROOT_DIR / "tsconfig.json"
         _local_tsc = ROOT_DIR / "node_modules/.bin/tsc"

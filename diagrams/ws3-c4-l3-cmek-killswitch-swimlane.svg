@@ -91,15 +91,15 @@
 <text x="1512.0" y="724.2" text-anchor="middle" fill="#FFFFFF" font-size="10.1" font-weight="bold">SCC</text>
 <text x="1512.0" y="735.5" text-anchor="middle" fill="#FFFFFF" font-size="10.1" font-weight="normal">403</text>
 <rect x="57.5" y="700.0" width="352.5" height="95.0" rx="10" fill="#FFF1F2" stroke="#E11D48" stroke-width="1.2"/>
-<text x="233.8" y="737.4" text-anchor="middle" fill="#BE123C" font-size="11.7" font-weight="bold">🔑 1. Customer Key Revoke</text>
+<text x="233.8" y="737.4" text-anchor="middle" fill="#BE123C" font-size="11.7" font-weight="bold">1. Customer Key Revoke</text>
 <text x="233.8" y="750.5" text-anchor="middle" fill="#BE123C" font-size="11.7" font-weight="normal">CISO Disables Cloud KMS / EKM</text>
 <text x="233.8" y="763.6" text-anchor="middle" fill="#BE123C" font-size="11.7" font-weight="normal">Instant DEK Unwrap Denial</text>
 <rect x="450.0" y="700.0" width="352.5" height="95.0" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.2"/>
-<text x="626.2" y="737.4" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="bold">⚡ 2. KMS Audit + 60s Ping</text>
+<text x="626.2" y="737.4" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="bold">2. KMS Audit + 60s Ping</text>
 <text x="626.2" y="750.5" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="normal">IAM Grant Revoked Across Silo</text>
 <text x="626.2" y="763.6" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="normal">60s kms.encrypt(ping) Fails Closed</text>
 <rect x="842.5" y="700.0" width="352.5" height="95.0" rx="10" fill="#ECFDF5" stroke="#059669" stroke-width="1.2"/>
-<text x="1018.8" y="737.4" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="bold">🛡️ 3. &lt;60s Lock + L1 Wipe</text>
+<text x="1018.8" y="737.4" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="bold">3. &lt;60s Lock + L1 Wipe</text>
 <text x="1018.8" y="750.5" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="normal">Purges L1 Cache &amp; Halts AlloyDB</text>
 <text x="1018.8" y="763.6" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="normal">HTTP 403 CMEK_DENIED + SCC Audit</text>
 <line x1="412.5" y1="747.5" x2="447.5" y2="747.5" stroke="#2563EB" stroke-width="1.8" marker-end="url(#arrowEnd)"/>

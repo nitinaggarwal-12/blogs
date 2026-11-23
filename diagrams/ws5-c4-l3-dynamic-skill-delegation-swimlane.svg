@@ -89,15 +89,15 @@
 <text x="1504.8" y="724.2" text-anchor="middle" fill="#FFFFFF" font-size="10.1" font-weight="bold">FinOps</text>
 <text x="1504.8" y="735.5" text-anchor="middle" fill="#FFFFFF" font-size="10.1" font-weight="normal">BQ</text>
 <rect x="57.5" y="700.0" width="352.5" height="95.0" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.2"/>
-<text x="233.8" y="737.4" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="bold">🔍 1. Ingress + ARD Scope</text>
+<text x="233.8" y="737.4" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="bold">1. Ingress + ARD Scope</text>
 <text x="233.8" y="750.5" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="normal">OIDC/DPoP + ARD Visibility Gate</text>
 <text x="233.8" y="763.6" text-anchor="middle" fill="#1D4ED8" font-size="11.7" font-weight="normal">Blocks Cross-Tenant Agent Discovery</text>
 <rect x="450.0" y="700.0" width="352.5" height="95.0" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="1.2"/>
-<text x="626.2" y="737.4" text-anchor="middle" fill="#B45309" font-size="11.7" font-weight="bold">⚡ 2. A2A + GCS Hot-Swap</text>
+<text x="626.2" y="737.4" text-anchor="middle" fill="#B45309" font-size="11.7" font-weight="bold">2. A2A + GCS Hot-Swap</text>
 <text x="626.2" y="750.5" text-anchor="middle" fill="#B45309" font-size="11.7" font-weight="normal">Shared → Private Agent Delegation</text>
 <text x="626.2" y="763.6" text-anchor="middle" fill="#B45309" font-size="11.7" font-weight="normal">Dynamic GCS Skill (0 Image Rebuild)</text>
 <rect x="842.5" y="700.0" width="352.5" height="95.0" rx="10" fill="#ECFDF5" stroke="#059669" stroke-width="1.2"/>
-<text x="1018.8" y="737.4" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="bold">✅ 3. 32k Cache + BQ FinOps</text>
+<text x="1018.8" y="737.4" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="bold">✓ 3. 32k Cache + BQ FinOps</text>
 <text x="1018.8" y="750.5" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="normal">89.1% Prefix Cache + 2LO/3LO MCP</text>
 <text x="1018.8" y="763.6" text-anchor="middle" fill="#047857" font-size="11.7" font-weight="normal">SHA-256 Zero-PII BigQuery Ledger</text>
 <line x1="412.5" y1="747.5" x2="447.5" y2="747.5" stroke="#2563EB" stroke-width="1.8" marker-end="url(#arrowEnd)"/>
