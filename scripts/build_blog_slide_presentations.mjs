@@ -445,7 +445,7 @@ function buildSlideDeckCatalog() {
           shortTitle: "Pool-to-Spoke Scaling",
           title: "Seamless Scaling From 30-Second Pooled Onboarding to Dedicated Spoke",
           surface: "Slide 4 of 9 · Tier Graduation",
-          metrics: ["Commercial Tenants Onboard in 30s", "Avoids Shared Project IAM Limits", "Promotes to Private Spoke On Demand"],
+          metrics: ["Commercial Tenants Onboard in 30s", "Shared Hub CoW + 32k Cache Preserved", "Promotes to /28 PSC Spoke On Demand"],
           narration: "New customers onboard into the shared pool in thirty seconds and graduate seamlessly to a dedicated private spoke when compliance demands."
         },
         {
@@ -477,7 +477,7 @@ function buildSlideDeckCatalog() {
           shortTitle: "Live Hub vs. Spoke VPC",
           title: "Live Pattern C VPCs: Shared Hub vs. Dedicated FinVault Spoke",
           surface: "Slide 8 of 9 · Live Console Proof",
-          metrics: ["Shared Hub: cymbal-patc-hub-vpc", "Private Spoke: cymbal-patc-spoke-vpc", "Zero VPC Peering Transitivity"],
+          metrics: ["Shared Hub: cymbal-pattern-c-hub-vpc", "Spoke: cymbal-pattern-c-finvault-spoke-vpc", "Zero VPC Peering Transitivity"],
           narration: "Live Google Cloud VPC captures prove the commercial hub and sovereign spoke connect strictly via Private Service Connect with zero peering."
         },
         {

@@ -28,13 +28,13 @@
   "audioSampleRateHz": 48000,
   "videoCodec": "h264",
   "audioCodec": "aac",
-  "fileSizeBytes": 4454136,
+  "fileSizeBytes": 4479320,
   "durationSec": 90.26,
-  "videoSha256": "c18669aecda9729714df45bb5f86082fc04d8acd74e24656929b8a37be86e152",
+  "videoSha256": "f7376d8d7d0401da15876a5f81cb2aed086b5bc86f8a4d03ac5ec8c060693ac7",
   "containerChapterCount": 9,
   "mp4ArtistTag": "AI Digital Twin · Google Cloud",
   "mp4CommentTag": "Narrated Slide Deck Delivery composited with AI-Generated Pure Omni 1.2 Digital Twin (ge-demos v2-clean-exec side-by-side layout  not a live screen capture)",
-  "generatedAt": "2026-11-23T20:26:33.301Z",
+  "generatedAt": "2026-11-23T22:04:17.513Z",
   "chapters": [
     {
       "chapterNum": 1,
@@ -101,8 +101,8 @@
       "script": "New customers onboard into the shared pool in thirty seconds and graduate seamlessly to a dedicated private spoke when compliance demands.",
       "metrics": [
         "Commercial Tenants Onboard in 30s",
-        "Avoids Shared Project IAM Limits",
-        "Promotes to Private Spoke On Demand"
+        "Shared Hub CoW + 32k Cache Preserved",
+        "Promotes to /28 PSC Spoke On Demand"
       ],
       "startSec": 30.081,
       "endSec": 40.108,
@@ -172,8 +172,8 @@
       "thumbnailUrl": "/slides/previews/ws4-12slide-visual-deck/slide_08.png",
       "script": "Live Google Cloud VPC captures prove the commercial hub and sovereign spoke connect strictly via Private Service Connect with zero peering.",
       "metrics": [
-        "Shared Hub: cymbal-patc-hub-vpc",
-        "Private Spoke: cymbal-patc-spoke-vpc",
+        "Shared Hub: cymbal-pattern-c-hub-vpc",
+        "Spoke: cymbal-pattern-c-finvault-spoke-vpc",
         "Zero VPC Peering Transitivity"
       ],
       "startSec": 70.189,

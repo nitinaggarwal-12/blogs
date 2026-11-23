@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-11-23T21:00:25Z",
+  "updatedAt": "2026-11-23T22:09:26Z",
   "accountEmail": "anonymous-workspace-sync@cloud-architecture-center.internal",
   "oauthClientId": "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com",
   "slides": {
     "WS1": {
       "key": "WS1",
-      "title": "WS1 — Reference Architecture, Taxonomy & 5-Hop Baseline",
+      "title": "WS1 \u2014 Reference Architecture, Taxonomy & 5-Hop Baseline",
       "pptxPath": "slides/ws1-12slide-visual-deck.pptx",
       "sha256": "eeaf4ee43463ef58403b5021afb4db656f83f5a78ce124f88beee0ce9df2c279",
       "sizeBytes": 2162836,
@@ -20,7 +20,7 @@
     },
     "WS2": {
       "key": "WS2",
-      "title": "[LEAN VISUAL — 8 SLIDES] WS2 — Pattern A: High-Density Pooled Architecture — Editable Google Slides",
+      "title": "[LEAN VISUAL \u2014 8 SLIDES] WS2 \u2014 Pattern A: High-Density Pooled Architecture \u2014 Editable Google Slides",
       "pptxPath": "slides/ws2-12slide-visual-deck.pptx",
       "sha256": "1f4fba9cf00d0f4ff059327fa290f6c79bd1c806d68904b52a980e27e193d353",
       "sizeBytes": 640543,
@@ -35,7 +35,7 @@
     },
     "WS3": {
       "key": "WS3",
-      "title": "[LEAN VISUAL — 7 SLIDES] WS3 — Pattern B: Zero-Trust Sovereign Silos — Editable Google Slides",
+      "title": "[LEAN VISUAL \u2014 7 SLIDES] WS3 \u2014 Pattern B: Zero-Trust Sovereign Silos \u2014 Editable Google Slides",
       "pptxPath": "slides/ws3-12slide-visual-deck.pptx",
       "sha256": "b669e5f854eb23b4f68e8371fee6544b938b5aa2cc24299c3f4404a54f51b26b",
       "sizeBytes": 612543,
@@ -50,10 +50,10 @@
     },
     "WS4": {
       "key": "WS4",
-      "title": "[LEAN VISUAL — 9 SLIDES] WS4 — Pattern C: Governed Hybrid & Live Migration — Editable Google Slides",
+      "title": "[LEAN VISUAL \u2014 9 SLIDES] WS4 \u2014 Pattern C: Governed Hybrid & Live Migration \u2014 Editable Google Slides",
       "pptxPath": "slides/ws4-12slide-visual-deck.pptx",
-      "sha256": "0336a38bf14fe58c26ecf58d1f258b111a8ae400fd8ea4d359ca8df62c511d0c",
-      "sizeBytes": 1074120,
+      "sha256": "a2c7c3ee235221da30f15f4b4273fc901c1e41a7f9711a8efa94283b7bf1eaba",
+      "sizeBytes": 1075201,
       "slideCount": 9,
       "googleSlidesId": "1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/edit?resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ",
@@ -61,11 +61,11 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/embed?start=false&loop=false&delayms=5000&resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/export/pdf?resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ",
       "webViewLink": "https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/edit?usp=drivesdk&resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ",
-      "syncedAt": "2026-11-23T20:23:16Z"
+      "syncedAt": "2026-11-23T22:09:26Z"
     },
     "WS5": {
       "key": "WS5",
-      "title": "[LEAN VISUAL — 9 SLIDES] WS5 — Executive Decision Guide & Agentic Triad — Editable Google Slides",
+      "title": "[LEAN VISUAL \u2014 9 SLIDES] WS5 \u2014 Executive Decision Guide & Agentic Triad \u2014 Editable Google Slides",
       "pptxPath": "slides/ws5-12slide-visual-deck.pptx",
       "sha256": "be884457292a8e959dec8e1c2926010c8c8811140cc2f418887e01aae19b1d6e",
       "sizeBytes": 1267929,
@@ -80,7 +80,7 @@
     },
     "ALL": {
       "key": "ALL",
-      "title": "ALL Workstreams 1–5 Master Deck (25 Slides • 12 Approved Diagrams)",
+      "title": "ALL Workstreams 1\u20135 Master Deck (25 Slides \u2022 12 Approved Diagrams)",
       "pptxPath": "slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx",
       "sha256": "fe72d600e64de726f550d88f91e4978a2a3e4663d29cc0664815751434411340",
       "sizeBytes": 3149536,
@@ -95,7 +95,7 @@
     },
     "BP-78": {
       "key": "BP-78",
-      "title": "BP-78 — WS1 Reference Architecture, Taxonomy & 5-Hop Baseline (15-Slide Editable Deck)",
+      "title": "BP-78 \u2014 WS1 Reference Architecture, Taxonomy & 5-Hop Baseline (15-Slide Editable Deck)",
       "pptxPath": "slides/ws1-reference-architecture-editable-slides.pptx",
       "sha256": "907382a3c91df51ccf0006a40781b99ddcd690e2864dc6ab699e1b06a3872731",
       "sizeBytes": 3873425,
@@ -110,7 +110,7 @@
     },
     "DOC-MT-01": {
       "key": "DOC-MT-01",
-      "title": "DOC-MT-01 — Building Multi-Tenant Agents: Core Challenges, Cryptographic Identity & Token Propagation (Editable Diagram #78 + Blog Guide)",
+      "title": "DOC-MT-01 \u2014 Building Multi-Tenant Agents: Core Challenges, Cryptographic Identity & Token Propagation (Editable Diagram #78 + Blog Guide)",
       "pptxPath": "slides/doc-mt-01-editable-slides.pptx",
       "sha256": "e39f89230d9535f2552eb05500567e7ff3cf015a8630804ea6f6a4c887de6761",
       "sizeBytes": 185904,
@@ -125,7 +125,7 @@
     },
     "DOC-MT-02": {
       "key": "DOC-MT-02",
-      "title": "DOC-MT-02 — Agent Deployment Models: Navigating the Agentic Trilemma Across Pool, Bridge & Silo (Editable Diagram #78 + Blog Guide)",
+      "title": "DOC-MT-02 \u2014 Agent Deployment Models: Navigating the Agentic Trilemma Across Pool, Bridge & Silo (Editable Diagram #78 + Blog Guide)",
       "pptxPath": "slides/doc-mt-02-editable-slides.pptx",
       "sha256": "99b72f213f79ed1f1a19752d31f9bbca88160f0bf5253c2605afa354af6227f7",
       "sizeBytes": 170894,
@@ -140,7 +140,7 @@
     },
     "DOC-MT-03": {
       "key": "DOC-MT-03",
-      "title": "DOC-MT-03 — Building the High-Density Pool Tier: An End-to-End Implementation Blueprint (Editable Diagram #78 + Blog Guide)",
+      "title": "DOC-MT-03 \u2014 Building the High-Density Pool Tier: An End-to-End Implementation Blueprint (Editable Diagram #78 + Blog Guide)",
       "pptxPath": "slides/doc-mt-03-editable-slides.pptx",
       "sha256": "9944d1a9ecce61a12bcb8c09a34996c80b444e842be20f3a393dd7fdf0adfd9b",
       "sizeBytes": 171438,
@@ -155,7 +155,7 @@
     },
     "DOC-MT-04": {
       "key": "DOC-MT-04",
-      "title": "DOC-MT-04 — Building the Hybrid Bridge Tier: Private Service Connect (PSC) Spokes & Live Tier Graduation (Editable Diagram #78 + Blog Guide)",
+      "title": "DOC-MT-04 \u2014 Building the Hybrid Bridge Tier: Private Service Connect (PSC) Spokes & Live Tier Graduation (Editable Diagram #78 + Blog Guide)",
       "pptxPath": "slides/doc-mt-04-editable-slides.pptx",
       "sha256": "5da7e15694c35169dd4bc83d2282e25ce02af0897614069d676d39c177c939cd",
       "sizeBytes": 164084,
@@ -170,7 +170,7 @@
     },
     "DOC-MT-05": {
       "key": "DOC-MT-05",
-      "title": "DOC-MT-05 — Building the Sovereign Silo Tier: VPC Service Controls, Customer CMEK & Crypto-Shredding (Editable Diagram #78 + Blog Guide)",
+      "title": "DOC-MT-05 \u2014 Building the Sovereign Silo Tier: VPC Service Controls, Customer CMEK & Crypto-Shredding (Editable Diagram #78 + Blog Guide)",
       "pptxPath": "slides/doc-mt-05-editable-slides.pptx",
       "sha256": "14cdebddc904be967a089537ec420f55739525cd779fb000f76469c23568ba2c",
       "sizeBytes": 178032,
@@ -185,7 +185,7 @@
     },
     "DOC-MT-06": {
       "key": "DOC-MT-06",
-      "title": "DOC-MT-06 — Production Verification: 10-Point Red-Team Breach Simulation & Cloud Console Runbook (Editable Diagram #78 + Blog Guide)",
+      "title": "DOC-MT-06 \u2014 Production Verification: 10-Point Red-Team Breach Simulation & Cloud Console Runbook (Editable Diagram #78 + Blog Guide)",
       "pptxPath": "slides/doc-mt-06-editable-slides.pptx",
       "sha256": "fe6a832155e432fb902ba0333cf1e88ca02653f6a6c64a24cffffd1b167948f8",
       "sizeBytes": 174814,
@@ -245,7 +245,7 @@
     },
     "BP-78-A": {
       "key": "BP-78-A",
-      "title": "BP-78-A — WS2 Pattern A: High-Density Pooled Architecture (12-Slide Editable Deck)",
+      "title": "BP-78-A \u2014 WS2 Pattern A: High-Density Pooled Architecture (12-Slide Editable Deck)",
       "pptxPath": "slides/ws2-pattern-a-pooled-editable-slides.pptx",
       "sha256": "c2d0bed16bfc27e7c63ecdc1bcc66c02878d6788f1775a63266b4848558a36aa",
       "sizeBytes": 1504707,
@@ -260,7 +260,7 @@
     },
     "BP-78-B": {
       "key": "BP-78-B",
-      "title": "BP-78-B — WS3 Pattern B: Zero-Trust Sovereign Silos (12-Slide Editable Deck)",
+      "title": "BP-78-B \u2014 WS3 Pattern B: Zero-Trust Sovereign Silos (12-Slide Editable Deck)",
       "pptxPath": "slides/ws3-pattern-b-siloed-editable-slides.pptx",
       "sha256": "72b5da1d3d35e59ba60d468def88f9359ba1bb32b9ffec9a024a9f6ba7fb6cd9",
       "sizeBytes": 1514495,
@@ -275,7 +275,7 @@
     },
     "BP-78-C": {
       "key": "BP-78-C",
-      "title": "BP-78-C — WS4 Pattern C: Dynamic Hybrid Hub-and-Spoke (12-Slide Editable Deck)",
+      "title": "BP-78-C \u2014 WS4 Pattern C: Dynamic Hybrid Hub-and-Spoke (12-Slide Editable Deck)",
       "pptxPath": "slides/ws4-pattern-c-hybrid-editable-slides.pptx",
       "sha256": "2ecf213d9adba98a860e117910c3525e35bc92e3df54bd1a0c74292cb3912f85",
       "sizeBytes": 1498910,
@@ -290,7 +290,7 @@
     },
     "BP-78-E": {
       "key": "BP-78-E",
-      "title": "BP-78-E — WS5 Executive Decision Guide & Agentic Triad (12-Slide Editable Deck)",
+      "title": "BP-78-E \u2014 WS5 Executive Decision Guide & Agentic Triad (12-Slide Editable Deck)",
       "pptxPath": "slides/ws5-wrap-up-editable-slides.pptx",
       "sha256": "e958514ebb09560bd1a2c6b2d7cc2d73ba36b072129b709723103d7598e8a6a6",
       "sizeBytes": 1427956,
@@ -335,10 +335,10 @@
     },
     "BARE_MIN_12": {
       "key": "BARE_MIN_12",
-      "title": "[12-Slide Bare-Minimum Architecture Deck] Enterprise Multi-Tenancy, Governance & Isolation (WS1–WS5)",
+      "title": "[12-Slide Bare-Minimum Architecture Deck] Enterprise Multi-Tenancy, Governance & Isolation (WS1\u2013WS5)",
       "pptxPath": "slides/geap-bare-minimum-12slide-architecture-deck.pptx",
-      "sha256": "12f13bc3d2f3ccd6d6acd86094402cb22b0214b8a11dd1af1ec5bc2744e75943",
-      "sizeBytes": 3224955,
+      "sha256": "80eab1d60229f4b758784ebf78340f42c78ac2f69e00636e8daf7c8215e804e0",
+      "sizeBytes": 3224845,
       "slideCount": 12,
       "googleSlidesId": "1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit",
@@ -346,7 +346,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit?usp=drivesdk",
-      "syncedAt": "2026-11-23T20:56:41Z"
+      "syncedAt": "2026-11-23T22:09:26Z"
     },
     "WS2_EXEC": {
       "key": "WS2_EXEC",
@@ -382,8 +382,8 @@
       "key": "WS4_EXEC",
       "title": "WS4 Executive Architecture (10-Slide Lean Narrative Deck)",
       "pptxPath": "slides/ws4-executive-architecture-10slide-deck.pptx",
-      "sha256": "3ba2223b0e9840731a7eac990e1f230f6a1a6cc66b7f42d6790fb991fbec3668",
-      "sizeBytes": 541576,
+      "sha256": "294e75d8a0b5b62673f9801073b84fc6ecc9f9c7408b98fb97fe7d8feae4c822",
+      "sizeBytes": 541466,
       "slideCount": 10,
       "googleSlidesId": "1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s/edit",
@@ -391,7 +391,7 @@
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1ju5AEtNrAuhR8RojxN8pc71Vp9vse7PeTV0w7hP8G0s/edit?usp=drivesdk",
-      "syncedAt": "2026-11-23T19:19:40Z"
+      "syncedAt": "2026-11-23T22:09:26Z"
     },
     "WS5_EXEC": {
       "key": "WS5_EXEC",
@@ -410,7 +410,7 @@
     },
     "WS1_SOLUTION": {
       "key": "WS1_SOLUTION",
-      "title": "WS1 — Executive Solution Architecture Deck (16-Slide Editable Deck)",
+      "title": "WS1 \u2014 Executive Solution Architecture Deck (16-Slide Editable Deck)",
       "pptxPath": "slides/ws1-executive-solution-deck.pptx",
       "sha256": "53c9a8fa2a8621aba71bf560c64a9bd3a137faccb7bf5e45d7ad25cd469261c4",
       "sizeBytes": 3215375,
@@ -427,7 +427,7 @@
   "docs": {
     "WS1": {
       "key": "WS1",
-      "title": "WS1 — Reference Architecture, Taxonomy & 5-Hop Baseline",
+      "title": "WS1 \u2014 Reference Architecture, Taxonomy & 5-Hop Baseline",
       "mdPath": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
       "sha256": "e39bccf00eb679b362061c099019fe7d0143d58df166bd1b7ceaa98e1b9c5e4c",
       "sizeBytes": 48321,
@@ -445,7 +445,7 @@
     },
     "WS2": {
       "key": "WS2",
-      "title": "WS2 — Pattern A: High-Density Pooled Architecture",
+      "title": "WS2 \u2014 Pattern A: High-Density Pooled Architecture",
       "mdPath": "blogs/ws2-pattern-a-pooled-architecture.md",
       "sha256": "02dbf90b8ac70d849ce96a3d30791a6fd7d78430a539281d6625d2a2a21c1bb0",
       "sizeBytes": 33024,
@@ -464,7 +464,7 @@
     },
     "WS3": {
       "key": "WS3",
-      "title": "WS3 — Pattern B: Zero-Trust Sovereign Silos",
+      "title": "WS3 \u2014 Pattern B: Zero-Trust Sovereign Silos",
       "mdPath": "blogs/ws3-pattern-b-sovereign-silos.md",
       "sha256": "e206895905c05b307071c0af083809fd997573c3ee36ddd6ed2a049f8a1eda2c",
       "sizeBytes": 26159,
@@ -483,26 +483,26 @@
     },
     "WS4": {
       "key": "WS4",
-      "title": "WS4 — Pattern C: Dynamic Hybrid Hub-and-Spoke & Tier Upgrade",
+      "title": "WS4 \u2014 Pattern C: Dynamic Hybrid Hub-and-Spoke & Tier Upgrade",
       "mdPath": "blogs/ws4-pattern-c-hybrid-dynamic-tiering.md",
-      "sha256": "eba1144aaa7c4a7580104b0feeee4e919444cf3362c0402458315db461c78295",
-      "sizeBytes": 26701,
+      "sha256": "51763ddc7d8be231ca70f3f40dcd41d1271d5937994cbb0a2385515abcd97071",
+      "sizeBytes": 27201,
       "googleDocsId": "1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I",
       "googleDocsEditUrl": "https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/edit?resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw",
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/preview?resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/export?format=pdf&resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw",
       "webViewLink": "https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/edit?resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw",
-      "syncedAt": "2026-11-23T18:28:00Z",
+      "syncedAt": "2026-11-23T22:09:26Z",
       "googleDocsDocxUrl": "https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/export?format=docx&resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw",
       "wordDocxPath": "docs/word/ws4-pattern-c-hybrid-dynamic-tiering.docx",
-      "wordDocxSizeBytes": 4251048,
+      "wordDocxSizeBytes": 4249951,
       "resourceKey": "0-I2qSR0LlhnB9ul1V-gZwPw",
-      "bytes": 26701,
-      "mdSha256": "308d26ab6913ea2f1bbc3523fbbf6029f16f811a88259ae66d5ac5c754507ead"
+      "bytes": 27201,
+      "mdSha256": "51763ddc7d8be231ca70f3f40dcd41d1271d5937994cbb0a2385515abcd97071"
     },
     "WS5": {
       "key": "WS5",
-      "title": "WS5 — Executive Decision Guide & Multi-Tenant Agentic Triad",
+      "title": "WS5 \u2014 Executive Decision Guide & Multi-Tenant Agentic Triad",
       "mdPath": "blogs/ws5-decision-guide-and-agentic-triad.md",
       "sha256": "9ba092eb197ee89aa49349dadd727435e2ed751b3b608c53099ece2145926a21",
       "sizeBytes": 26808,
@@ -521,7 +521,7 @@
     },
     "ALL": {
       "key": "ALL",
-      "title": "ALL Workstreams 1–5 End-to-End Architecture & Verification Compendium (25 Slides • 12 Approved Diagrams)",
+      "title": "ALL Workstreams 1\u20135 End-to-End Architecture & Verification Compendium (25 Slides \u2022 12 Approved Diagrams)",
       "mdPath": "docs/END-TO-END-WORKSTREAM-AND-DIAGRAM-GUIDE.md",
       "sha256": "9f05814b2e51109e17fe20fd99de878b2c34125b454767b86386efac813c0cb7",
       "sizeBytes": 300946,
@@ -540,7 +540,7 @@
     },
     "ATLAS": {
       "key": "ATLAS",
-      "title": "ATLAS — GEAP 10-SaaS Multi-Cloud Verified Visual Verification & Red-Team Atlas (19/19 Verified Retina UI Proofs • 9/9 Pairs)",
+      "title": "ATLAS \u2014 GEAP 10-SaaS Multi-Cloud Verified Visual Verification & Red-Team Atlas (19/19 Verified Retina UI Proofs \u2022 9/9 Pairs)",
       "mdPath": "blogs/saas-10-visual-verification-and-redteam-atlas.md",
       "wordDocxPath": "docs/word/saas-10-visual-verification-and-redteam-atlas.docx",
       "googleDocsId": "1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY",
@@ -560,7 +560,7 @@
   },
   "verifiedProofs": {
     "folderId": "1N6aByavJf7S81AxZSpJ7ElMij8GQMFGK",
-    "folderName": "GEAP — Verified SaaS UI Proofs & Receipts",
+    "folderName": "GEAP \u2014 Verified SaaS UI Proofs & Receipts",
     "folderUrl": "https://drive.google.com/drive/folders/1N6aByavJf7S81AxZSpJ7ElMij8GQMFGK?resourcekey=0-LPDX-to2nUvwVkbYlC5SYw",
     "files": {
       "ws1_thoughtspot_before": {
@@ -658,6 +658,30 @@
         "sha256": "6b58b9ed33fe3ed5d8a77f602bf5e948f10f10d0e8ab62079370391daebab1ab",
         "webViewLink": "https://drive.google.com/file/d/1WGNBc5F2oGKjdTsYeVcALqnDiT_QEZjL/view?usp=drivesdk&resourcekey=0-oc21cDpz5pEYqUsTBiLDAg",
         "syncedAt": "2026-11-23T20:53:42Z"
+      },
+      "ws4_before_shared_hub_vpc": {
+        "fileId": "16RIpuqcGbqaGBwE76T0dFgvBmpL4-W-9",
+        "localPath": "screenshots/verified-cloud-console/ws4_before_shared_hub_vpc.png",
+        "mimeType": "image/png",
+        "sha256": "bf9df07c95e9a12b032bd3d14fe8ccd9ce84737cea4ba8ce1a44bd2730eefd4c",
+        "webViewLink": "https://drive.google.com/file/d/16RIpuqcGbqaGBwE76T0dFgvBmpL4-W-9/view?usp=drivesdk&resourcekey=0-Xd0vcBUOtUt74dZN0dm6yA",
+        "syncedAt": "2026-11-23T21:53:04Z"
+      },
+      "ws4_after_dedicated_finvault_spoke_vpc": {
+        "fileId": "1IswRqpWVapR0syvMFWB2VEJHHpWgBn_F",
+        "localPath": "screenshots/verified-cloud-console/ws4_after_dedicated_finvault_spoke_vpc.png",
+        "mimeType": "image/png",
+        "sha256": "6f021bbd273c75b19aeb6244897af0d97747abe5588f1f9064b93c62ff51c08d",
+        "webViewLink": "https://drive.google.com/file/d/1IswRqpWVapR0syvMFWB2VEJHHpWgBn_F/view?usp=drivesdk&resourcekey=0-44v8jROtSzYUj6MqqlFFMA",
+        "syncedAt": "2026-11-23T21:53:04Z"
+      },
+      "ws4_exec_psc_service_attachment": {
+        "fileId": "1RZc7yuaa8RqLay_wdWRmKv0aLf-yv_85",
+        "localPath": "screenshots/verified-cloud-console/exec_blog04_psc_service_attachment.png",
+        "mimeType": "image/png",
+        "sha256": "8a4282b17dd82b31fe3599e2afa4d1bfbc962c3315bfc9eb37d3820d895a8710",
+        "webViewLink": "https://drive.google.com/file/d/1RZc7yuaa8RqLay_wdWRmKv0aLf-yv_85/view?usp=drivesdk&resourcekey=0-CTzDuER8o7l8kKWVmhoz1g",
+        "syncedAt": "2026-11-23T21:53:04Z"
       }
     }
   }

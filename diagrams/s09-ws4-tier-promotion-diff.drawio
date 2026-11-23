@@ -1,197 +1,197 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net" agent="PromptCanvas-Drawio-Compiler" version="24.7.17" type="device">
-  <diagram id="s09-ws4-tier-promotion-diff" name="S09: Zero-Downtime Graduation Diff">
+  <diagram id="s09-ws4-tier-promotion-diff" name="WS4: Zero-Downtime Pool-to-PSC Spoke Graduation Diff">
     <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" background="#FFFFFF" math="0" shadow="1">
       <root>
-      <mxCell id="0"/>
-      <mxCell id="1" parent="0"/>
+      <mxCell id="0" />
+      <mxCell id="1" parent="0" />
       <mxCell id="before_box" value="" style="rounded=0;arcSize=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#94A3B8;dashed=0;dashPattern=6 5;strokeWidth=1;fontColor=#1E3A8A;verticalAlign=top;align=center;spacingTop=12;shadow=0;" vertex="1" parent="1">
-        <mxGeometry x="42" y="138" width="455" height="670" as="geometry"/>
+        <mxGeometry x="42" y="138" width="455" height="670" as="geometry" />
       </mxCell>
-      <mxCell id="b_ing" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#0F172A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Shared Ingress&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Pooled SaaS API Gateway&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#475569;'&gt;• Route: tenant_c → pool-runtime&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#475569;'&gt;• Provisioned in 30 seconds&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontColor=#0F172A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
-        <mxGeometry x="82" y="225" width="375" height="145" as="geometry"/>
+      <mxCell id="b_ing" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#0F172A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Shared Ingress&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Pooled SaaS API Gateway&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#475569;'&gt;• Route: tenant_c → pool://shared-db&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#475569;'&gt;• Provisioned in 30 seconds&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontColor=#0F172A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="82" y="225" width="375" height="145" as="geometry" />
       </mxCell>
-      <mxCell id="b_run" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#0F172A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Shared Compute&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Pooled Agent Runtime&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#334155;'&gt;• Shared Cloud Run worker pool&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#334155;'&gt;• Approaching 1,500 IAM limit&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.5;fontColor=#0F172A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
-        <mxGeometry x="82" y="420" width="375" height="145" as="geometry"/>
+      <mxCell id="b_run" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#0F172A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Shared Compute&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Pooled Agent Runtime&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#334155;'&gt;• Shared Hub Cloud Run Gen2 (gVisor)&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#334155;'&gt;• Standard Pool 120 RPM quota&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.5;fontColor=#0F172A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="82" y="420" width="375" height="145" as="geometry" />
       </mxCell>
-      <mxCell id="b_mem" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#0F172A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Logical Partition&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Pooled Memory Bank&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#475569;'&gt;• Namespace: (tenant_c, user_x)&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#475569;'&gt;• Shared platform encryption key&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontColor=#0F172A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
-        <mxGeometry x="82" y="615" width="375" height="145" as="geometry"/>
+      <mxCell id="b_mem" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#0F172A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Logical Partition&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Pooled Memory Bank&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#475569;'&gt;• Namespace: (tenant_c, user_x) + RLS&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#475569;'&gt;• Shared platform encryption key&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontColor=#0F172A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="82" y="615" width="375" height="145" as="geometry" />
       </mxCell>
       <mxCell id="grad_box" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#0F172A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Zero-Downtime Control Plane&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Live Graduation Engine&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontColor=#0F172A;verticalAlign=top;align=center;spacingTop=12;shadow=1;" vertex="1" parent="1">
-        <mxGeometry x="565" y="182" width="465" height="595" as="geometry"/>
+        <mxGeometry x="565" y="182" width="465" height="595" as="geometry" />
       </mxCell>
-      <mxCell id="g_step1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#78350F;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;1. Spawn Dedicated Silo Enclave&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#B45309;'&gt;• Terraform creates VPC-SC + CMEK&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#B45309;'&gt;• Registers Silo in Agent Registry&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=#FCD34D;strokeWidth=1.5;fontColor=#78350F;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
-        <mxGeometry x="600" y="270" width="395" height="125" as="geometry"/>
+      <mxCell id="g_step1" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#78350F;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;1. Provision /28 PSC Enterprise Spoke&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#B45309;'&gt;• Terraform creates /28 PSC + CMEK DB&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#B45309;'&gt;• Registers Spoke in Agent Registry&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FEF7E0;strokeColor=#FCD34D;strokeWidth=1.5;fontColor=#78350F;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="600" y="270" width="395" height="125" as="geometry" />
       </mxCell>
-      <mxCell id="g_step2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#0F172A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;2. Shadow Dual-Write Memory Sync&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Mirrors live Sessions to Silo Memory&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Backfills historical vectors (0 pause)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;fontColor=#0F172A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
-        <mxGeometry x="600" y="435" width="395" height="125" as="geometry"/>
+      <mxCell id="g_step2" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#0F172A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;2. Shadow Dual-Write Memory Sync&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Mirrors live Sessions to Spoke DB&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Backfills vectors + SHA-256 parity&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;fontColor=#0F172A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="600" y="435" width="395" height="125" as="geometry" />
       </mxCell>
-      <mxCell id="g_step3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1E3A8A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;3. Atomic Apigee &amp;amp; ARD Cutover&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Shifts tenant_c route 0% → 100% Silo&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Drains Pooled container gracefully&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;fontColor=#1E3A8A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
-        <mxGeometry x="600" y="600" width="395" height="125" as="geometry"/>
+      <mxCell id="g_step3" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1E3A8A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;3. Atomic Firestore CAS &amp;amp; ARD Cutover&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Shifts tenant_c route 0% → 100% Spoke&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Drains epoch-N turns gracefully (30s)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;fontColor=#1E3A8A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="600" y="600" width="395" height="125" as="geometry" />
       </mxCell>
       <mxCell id="after_box" value="" style="rounded=0;arcSize=0;whiteSpace=wrap;html=1;fillColor=#FFFDF7;strokeColor=#94A3B8;dashed=0;dashPattern=6 5;strokeWidth=1;fontColor=#78350F;verticalAlign=top;align=center;spacingTop=12;shadow=0;" vertex="1" parent="1">
-        <mxGeometry x="1095" y="138" width="465" height="670" as="geometry"/>
+        <mxGeometry x="1095" y="138" width="465" height="670" as="geometry" />
       </mxCell>
-      <mxCell id="a_ing" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1E3A8A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Seamless Routing&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Zero Client URL or SDK Change&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Route: tenant_c → silo-c-runtime&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• 0 dropped in-flight user turns&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#93C5FD;strokeWidth=1.5;fontColor=#1E3A8A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
-        <mxGeometry x="1135" y="225" width="385" height="145" as="geometry"/>
+      <mxCell id="a_ing" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#1E3A8A;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Seamless Routing&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Zero Client URL or SDK Change&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• Route: tenant_c → psc://spoke-c&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#1D4ED8;'&gt;• 0 dropped in-flight user turns&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#93C5FD;strokeWidth=1.5;fontColor=#1E3A8A;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1135" y="225" width="385" height="145" as="geometry" />
       </mxCell>
-      <mxCell id="a_run" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#065F46;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Dedicated Compute&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Silo [Tenant C] Runtime&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#047857;'&gt;• Dedicated VPC &amp;amp; Cloud Run service&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#047857;'&gt;• Fresh 1,500 IAM policy quota&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#34D399;strokeWidth=1.5;fontColor=#065F46;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
-        <mxGeometry x="1135" y="420" width="385" height="145" as="geometry"/>
+      <mxCell id="a_run" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#065F46;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Shared Hub + Spoke Tools&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Hybrid [Tenant C] Execution&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#047857;'&gt;• Shared Hub Cloud Run CoW + 32k cache&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#047857;'&gt;• Private /28 PSC MCP tools (600 RPM)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#34D399;strokeWidth=1.5;fontColor=#065F46;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1135" y="420" width="385" height="145" as="geometry" />
       </mxCell>
-      <mxCell id="a_mem" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#78350F;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Physical Isolation&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Silo [Tenant C] Memory Bank&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#B45309;'&gt;• Customer-Managed CMEK Key&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#B45309;'&gt;• HIPAA / FedRAMP Sovereign&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#FBBF24;strokeWidth=1.5;fontColor=#78350F;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
-        <mxGeometry x="1135" y="615" width="385" height="145" as="geometry"/>
+      <mxCell id="a_mem" value="&lt;div style='font-family:Arial,Helvetica,sans-serif;color:#78350F;'&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;&lt;i&gt;&lt;b&gt;Physical Isolation&lt;/b&gt;&lt;/i&gt; &lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;line-height:1.18;'&gt;Spoke [Tenant C] Memory Bank&lt;/div&gt;&lt;div style='height:3px;'&gt;&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#B45309;'&gt;• Customer-Managed CMEK Key (HTTP 423)&lt;/div&gt;&lt;div style='font-size:12px;font-weight:400;line-height:1.22;color:#B45309;'&gt;• Unidirectional /28 PSC (10.10.0.50:443)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#FBBF24;strokeWidth=1.5;fontColor=#78350F;verticalAlign=middle;align=center;shadow=1;" vertex="1" parent="1">
+        <mxGeometry x="1135" y="615" width="385" height="145" as="geometry" />
       </mxCell>
       <mxCell id="e1" value="" style="rounded=1;html=1;exitX=0.501;exitY=1.0;exitDx=0;exitDy=0;entryX=0.501;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="b_ing" target="b_run">
         <mxGeometry relative="1" as="geometry">
-          <mxPoint x="270" y="370" as="sourcePoint"/>
-          <mxPoint x="270" y="420" as="targetPoint"/>
+          <mxPoint x="270" y="370" as="sourcePoint" />
+          <mxPoint x="270" y="420" as="targetPoint" />
         </mxGeometry>
       </mxCell>
       <mxCell id="e2" value="" style="rounded=1;html=1;exitX=0.501;exitY=1.0;exitDx=0;exitDy=0;entryX=0.501;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="b_run" target="b_mem">
         <mxGeometry relative="1" as="geometry">
-          <mxPoint x="270" y="565" as="sourcePoint"/>
-          <mxPoint x="270" y="615" as="targetPoint"/>
+          <mxPoint x="270" y="565" as="sourcePoint" />
+          <mxPoint x="270" y="615" as="targetPoint" />
         </mxGeometry>
       </mxCell>
       <mxCell id="e3" value="" style="curved=1;html=1;exitX=1.0;exitY=0.503;exitDx=0;exitDy=0;entryX=0.0;entryY=0.496;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="b_ing" target="g_step1">
         <mxGeometry relative="1" as="geometry">
-          <mxPoint x="457" y="298" as="sourcePoint"/>
-          <mxPoint x="600" y="332" as="targetPoint"/>
+          <mxPoint x="457" y="298" as="sourcePoint" />
+          <mxPoint x="600" y="332" as="targetPoint" />
           <Array as="points">
-            <mxPoint x="510" y="298"/>
-            <mxPoint x="550" y="325"/>
+            <mxPoint x="510" y="298" />
+            <mxPoint x="550" y="325" />
           </Array>
         </mxGeometry>
       </mxCell>
       <mxCell id="e4" value="" style="curved=1;html=1;exitX=1.0;exitY=0.483;exitDx=0;exitDy=0;entryX=0.0;entryY=0.504;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="b_mem" target="g_step2">
         <mxGeometry relative="1" as="geometry">
-          <mxPoint x="457" y="685" as="sourcePoint"/>
-          <mxPoint x="600" y="498" as="targetPoint"/>
+          <mxPoint x="457" y="685" as="sourcePoint" />
+          <mxPoint x="600" y="498" as="targetPoint" />
           <Array as="points">
-            <mxPoint x="510" y="640"/>
-            <mxPoint x="550" y="540"/>
+            <mxPoint x="510" y="640" />
+            <mxPoint x="550" y="540" />
           </Array>
         </mxGeometry>
       </mxCell>
       <mxCell id="e5" value="" style="rounded=1;html=1;exitX=0.499;exitY=1.0;exitDx=0;exitDy=0;entryX=0.499;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="g_step1" target="g_step2">
         <mxGeometry relative="1" as="geometry">
-          <mxPoint x="797" y="395" as="sourcePoint"/>
-          <mxPoint x="797" y="435" as="targetPoint"/>
+          <mxPoint x="797" y="395" as="sourcePoint" />
+          <mxPoint x="797" y="435" as="targetPoint" />
         </mxGeometry>
       </mxCell>
       <mxCell id="e6" value="" style="rounded=1;html=1;exitX=0.499;exitY=1.0;exitDx=0;exitDy=0;entryX=0.499;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="g_step2" target="g_step3">
         <mxGeometry relative="1" as="geometry">
-          <mxPoint x="797" y="560" as="sourcePoint"/>
-          <mxPoint x="797" y="600" as="targetPoint"/>
+          <mxPoint x="797" y="560" as="sourcePoint" />
+          <mxPoint x="797" y="600" as="targetPoint" />
         </mxGeometry>
       </mxCell>
       <mxCell id="e7" value="" style="curved=1;html=1;exitX=1.0;exitY=0.36;exitDx=0;exitDy=0;entryX=0.0;entryY=0.503;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="g_step3" target="a_ing">
         <mxGeometry relative="1" as="geometry">
-          <mxPoint x="995" y="645" as="sourcePoint"/>
-          <mxPoint x="1135" y="298" as="targetPoint"/>
+          <mxPoint x="995" y="645" as="sourcePoint" />
+          <mxPoint x="1135" y="298" as="targetPoint" />
           <Array as="points">
-            <mxPoint x="1045" y="520"/>
-            <mxPoint x="1085" y="360"/>
+            <mxPoint x="1045" y="520" />
+            <mxPoint x="1085" y="360" />
           </Array>
         </mxGeometry>
       </mxCell>
       <mxCell id="e8" value="" style="curved=1;html=1;exitX=1.0;exitY=0.504;exitDx=0;exitDy=0;entryX=0.0;entryY=0.483;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="g_step2" target="a_mem">
         <mxGeometry relative="1" as="geometry">
-          <mxPoint x="995" y="498" as="sourcePoint"/>
-          <mxPoint x="1135" y="685" as="targetPoint"/>
+          <mxPoint x="995" y="498" as="sourcePoint" />
+          <mxPoint x="1135" y="685" as="targetPoint" />
           <Array as="points">
-            <mxPoint x="1045" y="560"/>
-            <mxPoint x="1085" y="640"/>
+            <mxPoint x="1045" y="560" />
+            <mxPoint x="1085" y="640" />
           </Array>
         </mxGeometry>
       </mxCell>
       <mxCell id="e9" value="" style="rounded=1;html=1;exitX=0.499;exitY=1.0;exitDx=0;exitDy=0;entryX=0.499;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="a_ing" target="a_run">
         <mxGeometry relative="1" as="geometry">
-          <mxPoint x="1327" y="370" as="sourcePoint"/>
-          <mxPoint x="1327" y="420" as="targetPoint"/>
+          <mxPoint x="1327" y="370" as="sourcePoint" />
+          <mxPoint x="1327" y="420" as="targetPoint" />
         </mxGeometry>
       </mxCell>
       <mxCell id="e10" value="" style="rounded=1;html=1;exitX=0.499;exitY=1.0;exitDx=0;exitDy=0;entryX=0.499;entryY=0.0;entryDx=0;entryDy=0;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;labelBackgroundColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" edge="1" parent="1" source="a_run" target="a_mem">
         <mxGeometry relative="1" as="geometry">
-          <mxPoint x="1327" y="565" as="sourcePoint"/>
-          <mxPoint x="1327" y="615" as="targetPoint"/>
+          <mxPoint x="1327" y="565" as="sourcePoint" />
+          <mxPoint x="1327" y="615" as="targetPoint" />
         </mxGeometry>
       </mxCell>
-      <mxCell id="t_main" value="WS4 + MC3 Migration Anatomy: Zero-Downtime Tenant Graduation (Pool → Silo)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=22;fontStyle=0;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
-        <mxGeometry x="48" y="24" width="1033" height="34" as="geometry"/>
+      <mxCell id="t_main" value="WS4 Migration Anatomy: Zero-Downtime Tenant Graduation (Pool → PSC Spoke)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=22;fontStyle=0;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="48" y="24" width="1033" height="34" as="geometry" />
       </mxCell>
-      <mxCell id="t_sub" value="Slide 09 of 12 • Split Before/After Architectural Diff: Promote a Tenant from Pattern A to Pattern C/B with 0 Dropped Turns" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=17;fontStyle=0;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
-        <mxGeometry x="48" y="72" width="1320" height="26" as="geometry"/>
+      <mxCell id="t_sub" value="PART 4 (WS4) • Split Before/After Architectural Diff: Promote a Tenant from Pattern A Pool to Pattern C PSC Spoke (0 Dropped Turns)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=17;fontStyle=0;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="48" y="72" width="1320" height="26" as="geometry" />
       </mxCell>
       <mxCell id="t_before" value="BEFORE: Day-1 Tenant in Pattern A (Pool)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=16;fontStyle=0;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
-        <mxGeometry x="62" y="162" width="420" height="24" as="geometry"/>
+        <mxGeometry x="62" y="162" width="420" height="24" as="geometry" />
       </mxCell>
-      <mxCell id="t_after" value="AFTER: Graduated Silo in Pattern C" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=16;fontStyle=0;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
-        <mxGeometry x="1115" y="162" width="361" height="24" as="geometry"/>
+      <mxCell id="t_after" value="AFTER: Graduated PSC Spoke in Pattern C" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=16;fontStyle=0;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
+        <mxGeometry x="1115" y="162" width="361" height="24" as="geometry" />
       </mxCell>
       <mxCell id="e3_lbl" value="Trigger" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
-        <mxGeometry x="505" y="258" width="46" height="15" as="geometry"/>
+        <mxGeometry x="505" y="258" width="46" height="15" as="geometry" />
       </mxCell>
       <mxCell id="e4_lbl" value="Dual-write" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
-        <mxGeometry x="493" y="708" width="64" height="15" as="geometry"/>
+        <mxGeometry x="493" y="708" width="64" height="15" as="geometry" />
       </mxCell>
       <mxCell id="e7_lbl" value="Cutover" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
-        <mxGeometry x="1032" y="243" width="46" height="15" as="geometry"/>
+        <mxGeometry x="1032" y="243" width="46" height="15" as="geometry" />
       </mxCell>
       <mxCell id="e8_lbl" value="Hydrated" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=nowrap;fillColor=none;strokeColor=none;fontColor=#595959;fontSize=11;fontFamily=Arial,Helvetica,sans-serif;" vertex="1" parent="1">
-        <mxGeometry x="1029" y="708" width="52" height="15" as="geometry"/>
+        <mxGeometry x="1029" y="708" width="52" height="15" as="geometry" />
       </mxCell>
-        <mxCell id="plane_layer" value="Planes: control / compute / data (generated, locked)" style="locked=1;" parent="0"/>
+        <mxCell id="plane_layer" value="Planes: control / compute / data (generated, locked)" style="locked=1;" parent="0" />
         <mxCell id="plane_bdr_00_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=8;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
-          <mxGeometry x="77.0" y="220.0" width="385.0" height="155.0" as="geometry"/>
+          <mxGeometry x="77.0" y="220.0" width="385.0" height="155.0" as="geometry" />
         </mxCell>
         <mxCell id="plane_bdr_01_COMPUTE" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=8;fillColor=none;strokeColor=#6EE7B7;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
-          <mxGeometry x="77.0" y="415.0" width="385.0" height="155.0" as="geometry"/>
+          <mxGeometry x="77.0" y="415.0" width="385.0" height="155.0" as="geometry" />
         </mxCell>
         <mxCell id="plane_bdr_02_DATA" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=8;fillColor=none;strokeColor=#FDBA74;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
-          <mxGeometry x="77.0" y="610.0" width="385.0" height="155.0" as="geometry"/>
+          <mxGeometry x="77.0" y="610.0" width="385.0" height="155.0" as="geometry" />
         </mxCell>
         <mxCell id="plane_bdr_03_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=21;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
-          <mxGeometry x="595.0" y="265.0" width="405.0" height="465.0" as="geometry"/>
+          <mxGeometry x="595.0" y="265.0" width="405.0" height="465.0" as="geometry" />
         </mxCell>
         <mxCell id="plane_bdr_04_CONTROL" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=8;fillColor=none;strokeColor=#93C5FD;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
-          <mxGeometry x="1130.0" y="220.0" width="395.0" height="155.0" as="geometry"/>
+          <mxGeometry x="1130.0" y="220.0" width="395.0" height="155.0" as="geometry" />
         </mxCell>
         <mxCell id="plane_bdr_05_COMPUTE" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=8;fillColor=none;strokeColor=#6EE7B7;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
-          <mxGeometry x="1130.0" y="415.0" width="395.0" height="155.0" as="geometry"/>
+          <mxGeometry x="1130.0" y="415.0" width="395.0" height="155.0" as="geometry" />
         </mxCell>
         <mxCell id="plane_bdr_06_DATA" value="" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=8;fillColor=none;strokeColor=#FDBA74;strokeWidth=1.2;dashed=1;dashPattern=6 4;pointerEvents=0;" vertex="1" parent="plane_layer">
-          <mxGeometry x="1130.0" y="610.0" width="395.0" height="155.0" as="geometry"/>
+          <mxGeometry x="1130.0" y="610.0" width="395.0" height="155.0" as="geometry" />
         </mxCell>
         <mxCell id="plane_chip_b00_CONTROL" value="CONTROL · shared ingress" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
-          <mxGeometry x="83.2" y="209.6" width="149.2" height="15.2" as="geometry"/>
+          <mxGeometry x="83.2" y="209.6" width="149.2" height="15.2" as="geometry" />
         </mxCell>
         <mxCell id="plane_chip_b01_COMPUTE" value="COMPUTE · shared pool" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#047857;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
-          <mxGeometry x="83.2" y="404.6" width="133.5" height="15.2" as="geometry"/>
+          <mxGeometry x="83.2" y="404.6" width="133.5" height="15.2" as="geometry" />
         </mxCell>
         <mxCell id="plane_chip_b02_DATA" value="DATA · pooled memory" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#B45309;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
-          <mxGeometry x="83.2" y="599.6" width="128.3" height="15.2" as="geometry"/>
+          <mxGeometry x="83.2" y="599.6" width="128.3" height="15.2" as="geometry" />
         </mxCell>
         <mxCell id="plane_chip_b03_CONTROL" value="CONTROL · migration engine, all 3 steps" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
-          <mxGeometry x="601.2" y="254.6" width="221.3" height="15.2" as="geometry"/>
+          <mxGeometry x="601.2" y="254.6" width="221.3" height="15.2" as="geometry" />
         </mxCell>
         <mxCell id="plane_chip_b04_CONTROL" value="CONTROL · same URL, new route" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#1D4ED8;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
-          <mxGeometry x="1136.2" y="209.6" width="185.1" height="15.2" as="geometry"/>
+          <mxGeometry x="1136.2" y="209.6" width="185.1" height="15.2" as="geometry" />
         </mxCell>
-        <mxCell id="plane_chip_b05_COMPUTE" value="COMPUTE · dedicated runtime" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#047857;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
-          <mxGeometry x="1136.2" y="404.6" width="170.5" height="15.2" as="geometry"/>
+        <mxCell id="plane_chip_b05_COMPUTE" value="COMPUTE · hub CoW + spoke MCP" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#047857;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1136.2" y="404.6" width="194.0" height="15.2" as="geometry" />
         </mxCell>
         <mxCell id="plane_chip_b06_DATA" value="DATA · dedicated memory + CMEK" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=0.9;align=center;verticalAlign=middle;fontSize=10.0;fontColor=#B45309;fontStyle=1;spacing=0;spacingLeft=0;spacingRight=0;spacingTop=0;spacingBottom=0;" vertex="1" parent="plane_layer">
-          <mxGeometry x="1136.2" y="760.1" width="190.4" height="15.2" as="geometry"/>
+          <mxGeometry x="1136.2" y="760.1" width="190.4" height="15.2" as="geometry" />
         </mxCell>
-        <mxCell id="plane_key_CONTROL" value="&lt;b&gt;CONTROL  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;Same URL before and after. The engine spawns the silo, runs the sync, then shifts tenant_c&amp;#x27;s route 0% to 100% with 0 dropped turns.&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=10.3;fontColor=#1D4ED8;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
-          <mxGeometry x="42.0" y="815.0" width="499.3" height="29.4" as="geometry"/>
+        <mxCell id="plane_key_CONTROL" value="&lt;b&gt;CONTROL  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;Same URL before and after. Engine provisions /28 PSC spoke, checks SHA-256 parity, then flips Firestore CAS 0% → 100% (0 drops).&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=10.3;fontColor=#1D4ED8;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="42.0" y="815.0" width="499.3" height="29.4" as="geometry" />
         </mxCell>
-        <mxCell id="plane_key_COMPUTE" value="&lt;b&gt;COMPUTE  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;Before: the shared Cloud Run worker pool. After: a dedicated VPC and Cloud Run service with a fresh 1,500 IAM policy quota.&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=10.3;fontColor=#047857;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
-          <mxGeometry x="551.3" y="815.0" width="499.3" height="29.4" as="geometry"/>
+        <mxCell id="plane_key_COMPUTE" value="&lt;b&gt;COMPUTE  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;Before: shared Hub Cloud Run pool (120 RPM). After: same CoW Hub + 32k cache dialing private /28 PSC spoke MCP tools (600 RPM).&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=10.3;fontColor=#047857;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="551.3" y="815.0" width="499.3" height="29.4" as="geometry" />
         </mxCell>
-        <mxCell id="plane_key_DATA" value="&lt;b&gt;DATA  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;Before: a (tenant_c, user_x) namespace under the platform key. After: the tenant&amp;#x27;s own Memory Bank under a customer-managed CMEK key.&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=1.1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=10.3;fontColor=#B45309;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
-          <mxGeometry x="1060.7" y="815.0" width="499.3" height="29.4" as="geometry"/>
+        <mxCell id="plane_key_DATA" value="&lt;b&gt;DATA  &lt;/b&gt;&lt;font color=&quot;#1F2937&quot;&gt;Before: (tenant_c, user_x) RLS namespace under platform key. After: dedicated Spoke CMEK Memory Bank behind /28 PSC NAT.&lt;/font&gt;" style="html=1;shadow=0;rounded=1;absoluteArcSize=1;arcSize=5;fillColor=#FFFBEB;strokeColor=#FDBA74;strokeWidth=1.1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=10.3;fontColor=#B45309;spacing=0;spacingLeft=6;spacingRight=6;spacingTop=1;spacingBottom=1;" vertex="1" parent="plane_layer">
+          <mxGeometry x="1060.7" y="815.0" width="499.3" height="29.4" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

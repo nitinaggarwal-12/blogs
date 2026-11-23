@@ -1020,7 +1020,7 @@ def sync_single_doc(spec: Dict[str, Any], export_pdf_dir: Optional[Path] = None)
 
     # 2. Ensure Drive document title matches cleanly (especially ALL removing '26 Slides')
     subprocess.run(
-        [GDRIVE_BIN, "mutate", "rename", doc_id, spec["drive_title"]],
+        [GDRIVE_BIN, "mutate", "rename", doc_id, spec["drive_title"], "--ignore-sharing-checks"],
         check=True,
         capture_output=True,
         text=True,
