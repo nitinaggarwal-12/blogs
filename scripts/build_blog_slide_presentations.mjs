@@ -175,7 +175,7 @@ function buildSlideDeckCatalog() {
       slug: "ws1",
       wsKey: "WS1",
       deckTitle: "Blog 1 (WS1) — Reference Architecture Taxonomy & 5-Hop Governance",
-      deckSubtitle: "9-Slide Executive Architecture & Live Google Cloud Console Proof Walkthrough",
+      deckSubtitle: "10-Slide Executive Architecture, Live GCP Console & ThoughtSpot Spotter Proof Walkthrough",
       googleSlidesUrl: "https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit",
       pptxUrl: "/slides/ws1-12slide-visual-deck.pptx",
       previewDirRel: "/slides/previews/ws1-12slide-visual-deck",
@@ -184,7 +184,7 @@ function buildSlideDeckCatalog() {
           num: 1,
           shortTitle: "Executive Cover",
           title: "Reference Architecture Taxonomy & 5-Hop Governance Baseline",
-          surface: "Slide 1 of 9 · Executive Cover",
+          surface: "Slide 1 of 10 · Executive Cover",
           metrics: ["89.1% Shared Context Cache Savings", "5-Hop Cryptographic Token Chain", "Sub-60s CMEK Kill-Switch"],
           narration: "Welcome to Blog one, our multi-tenant agentic AI reference architecture and five-hop cryptographic governance baseline on Google Cloud."
         },
@@ -192,7 +192,7 @@ function buildSlideDeckCatalog() {
           num: 2,
           shortTitle: "SaaS AI Dilemma",
           title: "The SaaS AI Architect's Dilemma: False Dichotomy of Multi-Tenancy",
-          surface: "Slide 2 of 9 · The Problem",
+          surface: "Slide 2 of 10 · The Problem",
           metrics: ["Naive Shared Pools Leak Tool Schemas", "Dedicated Projects Erode SaaS Margins", "80/20 Shared ADK Code Reuse"],
           narration: "SaaS teams face a tough choice between fragile shared agents and expensive dedicated projects, which our three-pattern taxonomy solves."
         },
@@ -200,7 +200,7 @@ function buildSlideDeckCatalog() {
           num: 3,
           shortTitle: "5 Attack Vectors",
           title: "The 5 Multi-Tenant Attack Vectors: Adversarial Flow Map",
-          surface: "Slide 3 of 9 · Threat Surface",
+          surface: "Slide 3 of 10 · Threat Surface",
           metrics: ["Header Spoofing & Token Replay", "MCP Tool Schema Cross-Bleed", "Noisy-Neighbor Quota Starvation"],
           narration: "Adversaries exploit five cross-tenant vectors, from spoofed tenant headers and stolen tokens to noisy-neighbor exhaustion and prompt injection."
         },
@@ -208,7 +208,7 @@ function buildSlideDeckCatalog() {
           num: 4,
           shortTitle: "5-Hop Architecture",
           title: "Control Plane, Compute & Data Plane Five-Hop Blueprint",
-          surface: "Slide 4 of 9 · Logical Topology",
+          surface: "Slide 4 of 10 · Logical Topology",
           metrics: ["Hop 1–2: STS OBO + DPoP & ARD", "Hop 3–4: Valkey Bulkhead & Model Armor", "Hop 5: Parameterized SQL & Force RLS"],
           narration: "Our five-hop pipeline separates control, compute, and data planes using signed tokens, scoped registries, rate bulkheads, and row-level security."
         },
@@ -216,7 +216,7 @@ function buildSlideDeckCatalog() {
           num: 5,
           shortTitle: "5-Hop Sequence",
           title: "Five-Hop Cryptographic Request & Token Exchange Flow",
-          surface: "Slide 5 of 9 · Packet Sequence",
+          surface: "Slide 5 of 10 · Packet Sequence",
           metrics: ["Hop 1: Strip Header + Mint ECDSA P-256", "Hop 4: Model Armor <8ms + 32k Cache", "Hop 5: SET LOCAL tenant_id + OTel"],
           narration: "Every request clears edge header stripping, short-lived ECDSA signing, registry filtering, Model Armor screening, and kernel-enforced database isolation."
         },
@@ -224,7 +224,7 @@ function buildSlideDeckCatalog() {
           num: 6,
           shortTitle: "Circuit Breakers",
           title: "L3 Process Architecture: Fail-Closed Security Circuit Breakers",
-          surface: "Slide 6 of 9 · Fail-Closed Controls",
+          surface: "Slide 6 of 10 · Fail-Closed Controls",
           metrics: ["Deterministic HTTP 403 Header Reject", "HTTP 429 Per-Tenant Bulkhead", "Zero-PII SHA-256 Telemetry Sinks"],
           narration: "At runtime, deterministic circuit breakers fail closed on every policy mismatch, returning strict status codes while emitting zero-PII audit logs."
         },
@@ -232,7 +232,7 @@ function buildSlideDeckCatalog() {
           num: 7,
           shortTitle: "Live Model Armor Proof",
           title: "Live Model Armor Console Proof: Unprotected Baseline vs. Firewall",
-          surface: "Slide 7 of 9 · Hop 4 Live Proof",
+          surface: "Slide 7 of 10 · Hop 4 Live Proof",
           metrics: ["BEFORE: Unprotected Baseline Allows SSN", "AFTER: Zero-Trust Firewall Blocks Payload", "Live Project: cymbal-ge-hub-2026"],
           narration: "These live Google Cloud Console captures prove Model Armor switches the exact same prompt injection from open pass to blocked violation."
         },
@@ -240,15 +240,23 @@ function buildSlideDeckCatalog() {
           num: 8,
           shortTitle: "Live Cloud Armor Proof",
           title: "Live Cloud Armor WAF: Open Edge vs. Priority 1000 Deny-403",
-          surface: "Slide 8 of 9 · Hop 1 Live Proof",
+          surface: "Slide 8 of 10 · Hop 1 Live Proof",
           metrics: ["BEFORE: Default Open Edge Policy", "AFTER: Priority 1000/1100 Deny-403", "Blocks Forged X-Tenant-ID Headers"],
           narration: "At Hop one, Cloud Armor replaces an open edge rule with deterministic deny rules that reject spoofed tenant headers immediately."
         },
         {
           num: 9,
+          shortTitle: "Live ThoughtSpot Spotter",
+          title: "Live ThoughtSpot Spotter: 6-Line Rollup vs. Single-Line Scope",
+          surface: "Slide 9 of 10 · SAAS-01 Live Proof",
+          metrics: ["BEFORE: 6 Competing Product Lines Exposed", "AFTER: Locked Single-Line Scope (1 Row)", "Live Cloud: team2.thoughtspot.cloud"],
+          narration: "In live ThoughtSpot Spotter, an unfiltered query exposes all six product lines, while our governed domain filter isolates one authorized row."
+        },
+        {
+          num: 10,
           shortTitle: "Verification Scorecard",
           title: "Quantified Multi-Cloud Isolation Scorecard & Verification Matrix",
-          surface: "Slide 9 of 9 · Scorecard",
+          surface: "Slide 10 of 10 · Scorecard",
           metrics: ["~42ms p95 Five-Hop Overhead", "89.1% Context Cache Input Savings", "10/10 Automated Isolation Proofs"],
           narration: "Our verified scorecard confirms forty-two millisecond overhead, eighty-nine percent cache savings, and ten-for-ten isolation across every control plane hop."
         }

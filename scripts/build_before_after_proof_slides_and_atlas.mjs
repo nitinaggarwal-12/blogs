@@ -342,6 +342,37 @@ const PROOF_SLIDES = [
     footerMid: "Verified Google Cloud Console • Google Cloud Armor",
     notes: "Here is our second live Workstream 1 Google Cloud Console proof from cymbal-ge-hub-2026 verifying Hop 1 edge perimeter enforcement in Google Cloud Armor.\n\nOn the left, baseline policy cymbal-ws1-before-open-edge (SHA-256 f721577a1e05) contains only the default Allow-all rule at priority 2,147,483,647, allowing spoofed X-Tenant-ID headers and SQL injection payloads straight into the shared backend.\n\nOn the right, cymbal-pooled-edge-waf (SHA-256 37fcc76e0f37) adds Priority 1,000 Deny-403 to block unauthenticated X-Tenant-ID header smuggling and Priority 1,100 Deny-403 to block OWASP SQLi and XSS at the edge — neutralizing attacks before container compute is billed or invoked.",
   },
+  // 3. WS1-BA-03 — Live Commercial ThoughtSpot Cloud Spotter (SAAS-01)
+  {
+    id: "WS1-BA-03",
+    isGcp: false,
+    eyebrow: "WS1 • SAAS-01 LIVE COMMERCIAL SAAS PROOF",
+    title: "Live ThoughtSpot Spotter: 6-Line Rollup vs. Single-Line Scope",
+    subtitle: "Two live captures from team2.thoughtspot.cloud (AWS us-east-1) contrasting an unfiltered Spotter query against a locked single-domain predicate.",
+    images: [
+      {
+        phase: "BEFORE",
+        header: "BEFORE • Unfiltered Spotter Query (All 6 Product Lines Exposed)",
+        absPath: S("ws1_before_thoughtspot_spotter_unscoped.png"),
+        focalBox: { rx: 0.33, ry: 0.45, rw: 0.51, rh: 0.34 },
+        focalPill: { rx: 0.48, ry: 0.275, w: 2.35, label: "12/12 Data Points • 6 Lines Exposed" },
+        caption: "Live ThoughtSpot Spotter (team2.thoughtspot.cloud • SHA-256 1d708eefbb6f): Unfiltered prompt ('average feature adoption rate and NPS score by product line') exposes all 6 competing product lines together.",
+      },
+      {
+        phase: "AFTER",
+        header: "AFTER • Governed Domain Predicate (Clinical Analytics Only)",
+        absPath: S("ws1_after_thoughtspot_spotter_scoped.png"),
+        focalBox: { rx: 0.33, ry: 0.38, rw: 0.45, rh: 0.22 },
+        focalPill: { rx: 0.48, ry: 0.65, w: 2.55, label: "Locked Scope: 1 Row • 5 Excluded" },
+        caption: "Live ThoughtSpot Spotter (team2.thoughtspot.cloud • SHA-256 ed772e17f9f7): Explicit filter token (Product Line = 'clinical analytics') returns strictly 1 row (44.38 adoption, 37.7 NPS); Hop 1–5 Org RLS verified 3/3 PASS via AWS AgentCore (HXGGFMZBKE).",
+      },
+    ],
+    synthesis: "Live commercial ThoughtSpot Cloud proof showing unconstrained multi-domain Spotter output versus single-domain scoped execution paired with 5-Hop Org RLS.",
+    rightStatPill: "Live ThoughtSpot SAAS-01",
+    footerLeft: "GOOGLE CLOUD AI ARCHITECTURE  •  WS1: SAAS-01 THOUGHTSPOT CLOUD",
+    footerMid: "Verified Commercial SaaS UI • ThoughtSpot Spotter (AWS us-east-1)",
+    notes: "Rounding out Workstream 1 with a live commercial SaaS proof, these two cryptographically attested Retina captures come straight from ThoughtSpot Cloud Spotter on team2.thoughtspot.cloud (hosted on AWS us-east-1).\n\nOn the left (SHA-256 1d708eefbb6f), running an unfiltered Spotter prompt returns all 12 data points across all six competing product lines — Clinical Analytics, EHR Core, Lab Management, Patient Engagement, Revenue Cycle, and Telehealth.\n\nOn the right (SHA-256 ed772e17f9f7), applying an explicit governed domain predicate locks Spotter to Product Line equals clinical analytics, returning strictly one authorized row (44.38 adoption rate and 37.7 NPS) while excluding all five competing product lines — backed end-to-end by our 5-Hop STS propagation and AWS Bedrock AgentCore Org RLS target HXGGFMZBKE.",
+  },
   // 3. WS2-BA-01 — BigQuery Pattern A Pooled RLS
   {
     id: "WS2-BA-01",
@@ -575,14 +606,15 @@ async function buildDonorDeck() {
 }
 
 // =============================================================================
-// 2. BUILD 16-SLIDE ATLAS DRAFT (ALL 17/17 VERIFIED LIVE RETINA SCREENSHOTS!)
+// 2. BUILD 17-SLIDE ATLAS DRAFT (ALL 19/19 VERIFIED LIVE RETINA SCREENSHOTS!)
 //    S01 Cover, S02 Storyline, S03 [Placeholder -> BARE_MIN_12 S11 Multi-Cloud Bridge],
-//    S04 Act IV Transition, S05..S13 All 9 Live Proof Slides (17/17 PNGs!),
-//    S14 10-SaaS AWS AgentCore 30/30 Backend Matrix, S15 Master Scorecard, S16 FAQ
+//    S04 Act IV Transition, S05..S14 All 10 Live Proof Slides (19/19 PNGs!),
+//    S15 10-SaaS AWS AgentCore 30/30 Backend Matrix, S16 Master Scorecard, S17 FAQ
 // =============================================================================
 async function buildAtlasDraft() {
-  const pptx = newDeck("Multi-Cloud & Google Cloud Console Live BEFORE->AFTER Visual Verification Atlas (16 Slides)");
-  const FL = "GOOGLE CLOUD AI ARCHITECTURE  •  16-SLIDE LIVE VISUAL VERIFICATION ATLAS";
+  const TOTAL_ATLAS = PROOF_SLIDES.length + 7; // 17
+  const pptx = newDeck(`Multi-Cloud & Google Cloud Console Live BEFORE->AFTER Visual Verification Atlas (${TOTAL_ATLAS} Slides)`);
+  const FL = `GOOGLE CLOUD AI ARCHITECTURE  •  ${TOTAL_ATLAS}-SLIDE LIVE VISUAL VERIFICATION ATLAS`;
 
   // S01: Executive Cover
   {
@@ -601,15 +633,15 @@ async function buildAtlasDraft() {
       x: 0.56, y: 0.96, w: 7.4, h: 1.48,
       fontFace: FONT, fontSize: 36, bold: true, color: C.navy, margin: 0,
     });
-    s.addText("17 live captures (13 Google Cloud Console + 4 Commercial SaaS across 8/8 BEFORE → AFTER pairs) proving every WS1–WS5 isolation boundary live — paired with 30/30 AWS Bedrock AgentCore 10-SaaS MCP flows.", {
+    s.addText("19 live captures (13 Google Cloud Console + 6 Commercial SaaS across 9/9 BEFORE → AFTER pairs) proving every WS1–WS5 isolation boundary live — paired with 30/30 AWS Bedrock AgentCore 10-SaaS MCP flows.", {
       x: 0.56, y: 2.54, w: 7.2, h: 1.05,
       fontFace: FONT, fontSize: 13.5, color: C.slate, margin: 0,
     });
 
     // KPI tiles
     const kpis = [
-      { val: "17 / 17", lbl: "Live Console Captures", sub: "13 GCP Console + 4 SaaS", col: C.teal },
-      { val: "8 / 8", lbl: "BEFORE → AFTER Pairs", sub: "0 Pending • Exit 0 Guard", col: C.blue },
+      { val: "19 / 19", lbl: "Live Console Captures", sub: "13 GCP Console + 6 SaaS", col: C.teal },
+      { val: "9 / 9", lbl: "BEFORE → AFTER Pairs", sub: "0 Pending • Exit 0 Guard", col: C.blue },
       { val: "30 / 30", lbl: "10-SaaS MCP Flows", sub: "60/60 Cross-Cloud PASS", col: C.indigo },
     ];
     kpis.forEach((k, i) => {
@@ -628,17 +660,17 @@ async function buildAtlasDraft() {
       x: 8.12, y: 0.44, w: 4.72, h: 6.32, rectRadius: 0.12,
       fill: { color: C.soft }, line: { color: C.border, width: 1.1 },
     });
-    s.addText("16-SLIDE ATLAS NAVIGATION MAP", {
+    s.addText(`${TOTAL_ATLAS}-SLIDE ATLAS NAVIGATION MAP`, {
       x: 8.36, y: 0.64, w: 4.24, h: 0.30,
       fontFace: FONT, fontSize: 10.5, bold: true, color: C.blueDark, margin: 0,
     });
     const stops = [
       ["S02–S04", "Storyline & Native Multi-Cloud Bridge", "Approved DrawingML A2A/MCP bridge & proof scope."],
-      ["S05–S06", "WS1 Edge & AI Firewall (4 PNGs)", "Live Model Armor & Cloud Armor WAF BEFORE→AFTER."],
-      ["S07–S09", "WS2 Pool RLS & WS3 Sovereign CMEK", "BigQuery RLS, CMEK Kill-Switch, Cloud KMS & Cloud Run."],
-      ["S10–S11", "WS4 Hybrid 3LO & Hub→Spoke VPC", "Atlassian Jira '3LO' & dedicated FinVault Spoke VPC."],
-      ["S12–S13", "WS5 BI Governance & A2A Hub", "ThoughtSpot BI & Connectors → Cloud Run Federation."],
-      ["S14–S16", "10-SaaS 30/30 Matrix, Scorecard & FAQ", "Backend AgentCore MCP proofs, CI gates & CISO FAQ."],
+      ["S05–S07", "WS1 Edge, AI Firewall & ThoughtSpot (6 PNGs)", "Model Armor, Cloud Armor WAF & ThoughtSpot Spotter."],
+      ["S08–S10", "WS2 Pool RLS & WS3 Sovereign CMEK", "BigQuery RLS, CMEK Kill-Switch, Cloud KMS & Cloud Run."],
+      ["S11–S12", "WS4 Hybrid 3LO & Hub→Spoke VPC", "Atlassian Jira '3LO' & dedicated FinVault Spoke VPC."],
+      ["S13–S14", "WS5 BI Governance & A2A Hub", "ThoughtSpot BI & Connectors → Cloud Run Federation."],
+      ["S15–S17", "10-SaaS 30/30 Matrix, Scorecard & FAQ", "Backend AgentCore MCP proofs, CI gates & CISO FAQ."],
     ];
     stops.forEach((st, i) => {
       const sy = 1.04 + i * 0.92;
@@ -656,12 +688,12 @@ async function buildAtlasDraft() {
       });
     });
 
-    s.addText("All 17 captures verified exit 0 via verify_slide_screenshots.mjs --audience external (zero synthetic HTML, zero OSS stand-ins, zero corp leaks).", {
+    s.addText("All 19 captures verified exit 0 via verify_slide_screenshots.mjs --audience external (zero synthetic HTML, zero OSS stand-ins, zero corp leaks).", {
       x: 0.56, y: 5.56, w: 7.2, h: 0.60,
       fontFace: FONT, fontSize: 10, color: C.muted, margin: 0,
     });
-    s.addText("01 / 16", { x: 11.96, y: 7.06, w: 0.90, h: 0.28, fontFace: FONT, fontSize: 9, bold: true, color: C.navy, align: "center", valign: "middle" });
-    s.addNotes("Welcome to the 16-Slide Live BEFORE-to-AFTER Visual Verification Atlas for the Multi-Tenant Agentic AI Architecture Series.\n\nEvery slide in this deck pairs genuine, cryptographically attested live captures from Google Cloud Console (13 screenshots across cymbal-ge-hub-2026 and cymbal-ge-silo-2026) and live commercial SaaS tenants (4 screenshots across Atlassian Jira Cloud and ThoughtSpot Cloud) — zero open-source stand-ins and zero empty pending placeholders.\n\nAcross Slides 5 through 13, we walk through all 8 BEFORE-to-AFTER proof pairs and control-plane custody states before summarizing our 30/30 cross-cloud AWS Bedrock AgentCore 10-SaaS MCP matrix on Slide 14 and executive verification scorecard on Slides 15 and 16.");
+    s.addText(`01 / ${TOTAL_ATLAS}`, { x: 11.96, y: 7.06, w: 0.90, h: 0.28, fontFace: FONT, fontSize: 9, bold: true, color: C.navy, align: "center", valign: "middle" });
+    s.addNotes("Welcome to the 17-Slide Live BEFORE-to-AFTER Visual Verification Atlas for the Multi-Tenant Agentic AI Architecture Series.\n\nEvery slide in this deck pairs genuine, cryptographically attested live captures from Google Cloud Console (13 screenshots across cymbal-ge-hub-2026 and cymbal-ge-silo-2026) and live commercial SaaS tenants (6 screenshots across ThoughtSpot Cloud Spotter/Liveboard and Atlassian Jira Cloud) — zero open-source stand-ins and zero empty pending placeholders.\n\nAcross Slides 5 through 14, we walk through all 9 BEFORE-to-AFTER proof pairs and control-plane custody states before summarizing our 30/30 cross-cloud AWS Bedrock AgentCore 10-SaaS MCP matrix on Slide 15 and executive verification scorecard on Slides 16 and 17.");
   }
 
   // S02: Executive Storyline
@@ -669,14 +701,14 @@ async function buildAtlasDraft() {
     const s = pptx.addSlide();
     addChrome(pptx, s, {
       eyebrow: "EXECUTIVE STORYLINE",
-      title: "Zero-Shortcut Verification: 17 Live Retina Captures + 30/30 Flows",
+      title: "Zero-Shortcut Verification: 19 Live Retina Captures + 30/30 Flows",
       subtitle: "How visual UI proofs (Google Cloud Console & Commercial SaaS) pair with automated protocol-level red-team suites across Workstreams 1–5.",
       accent: C.blue,
-      badgeText: "8/8 LIVE PAIRS",
+      badgeText: "9/9 LIVE PAIRS",
       footerLeft: FL,
       footerMid: "Verification Architecture & Provenance Contract",
       slideNum: 2,
-      totalSlides: 16,
+      totalSlides: TOTAL_ATLAS,
     });
 
     const pillars = [
@@ -693,13 +725,13 @@ async function buildAtlasDraft() {
         ],
       },
       {
-        badge: "PLANE 2 • 4 COMMERCIAL SAAS RETINA PROOFS",
+        badge: "PLANE 2 • 6 COMMERCIAL SAAS RETINA PROOFS",
         title: "Live Production Commercial SaaS UIs",
         color: C.teal, bg: C.tealBg, border: C.tealBorder,
         items: [
-          "WS4 Atlassian Jira Cloud (gcp-team-sbiarllr.atlassian.net): Unfiltered 6-issue board (95ce12f87f12) → live '3LO' scoped query isolating SCRUM-5 & SCRUM-6 (45e833e4909f).",
-          "WS5 ThoughtSpot Cloud (team2.thoughtspot.cloud): Unfiltered $735.3K global Retail Sales Liveboard (fd5cb15c0902) → single-domain 3-month Pharma Supply Saved Answer (3fcab795d1e5).",
-          "Zero open-source stand-ins, zero custom HTML mocks, zero DOM mutations — every PNG verified via verify_slide_screenshots.mjs --audience external (exit 0).",
+          "WS1 ThoughtSpot Spotter (team2.thoughtspot.cloud): Unfiltered 6-product-line query (1d708eefbb6f) → locked Clinical Analytics scope (ed772e17f9f7).",
+          "WS4 Atlassian Jira Cloud (gcp-team-sbiarllr.atlassian.net): Unfiltered 6-issue board (95ce12f87f12) → live '3LO' query isolating SCRUM-5 & SCRUM-6 (45e833e4909f).",
+          "WS5 ThoughtSpot Cloud BI (team2.thoughtspot.cloud): Global Retail Liveboard (fd5cb15c0902) → 3-month Pharma Saved Answer (3fcab795d1e5).",
         ],
       },
       {
@@ -739,11 +771,11 @@ async function buildAtlasDraft() {
 
     addSynthesisBar(pptx, s, {
       tag: "PROVENANCE LOCK",
-      text: "Every visual proof in Slides 5–13 is SHA-256 attested in screenshot_provenance.json and verified exit 0 under --audience external.",
-      rightPill: "17/17 Verified • 0 Pending",
+      text: "Every visual proof in Slides 5–14 is SHA-256 attested in screenshot_provenance.json and verified exit 0 under --audience external.",
+      rightPill: "19/19 Verified • 0 Pending",
       accent: C.blue,
     });
-    s.addNotes("Slide 2 outlines the three verification planes that anchor this Atlas.\n\nPlane 1 delivers 13 live Google Cloud Console Retina screenshots across Model Armor, Cloud Armor WAF, BigQuery Pattern A RLS, BigQuery Pattern B CMEK Kill-Switch, Cloud KMS Keyring, Hub and Spoke VPCs, Integration Connectors, and Cloud Run.\n\nPlane 2 delivers 4 live commercial SaaS Retina captures across Atlassian Jira Cloud and ThoughtSpot Cloud, and Plane 3 adds 107/107 automated GCP and AWS Bedrock AgentCore runtime assertions plus 13/13 deep forensic gates — giving auditors full end-to-end visual and programmatic evidence.");
+    s.addNotes("Slide 2 outlines the three verification planes that anchor this Atlas.\n\nPlane 1 delivers 13 live Google Cloud Console Retina screenshots across Model Armor, Cloud Armor WAF, BigQuery Pattern A RLS, BigQuery Pattern B CMEK Kill-Switch, Cloud KMS Keyring, Hub and Spoke VPCs, Integration Connectors, and Cloud Run.\n\nPlane 2 delivers 6 live commercial SaaS Retina captures across ThoughtSpot Cloud Spotter/Liveboard and Atlassian Jira Cloud, and Plane 3 adds 107/107 automated GCP and AWS Bedrock AgentCore runtime assertions plus 13/13 deep forensic gates — giving auditors full end-to-end visual and programmatic evidence.");
   }
 
   // S03: Placeholder (replaced with native DrawingML BARE_MIN_12 S11 Multi-Cloud Bridge by sync script!)
@@ -757,7 +789,7 @@ async function buildAtlasDraft() {
       footerLeft: FL,
       footerMid: "Approved Multi-Cloud Bridge",
       slideNum: 3,
-      totalSlides: 16,
+      totalSlides: TOTAL_ATLAS,
     });
     s.addNotes("Placeholder slide 3 replaced with native DrawingML BARE_MIN_12 Slide 11 during assembly.\n\nThis diagram illustrates keyless OIDC-to-AWS STS federation across Google Cloud and AWS Bedrock AgentCore.\n\nEvery tenant tool call preserves Hop 1–5 cryptographic isolation across all ten commercial SaaS integrations.");
   }
@@ -767,25 +799,25 @@ async function buildAtlasDraft() {
     const s = pptx.addSlide();
     addChrome(pptx, s, {
       eyebrow: "ACT IV • EMPIRICAL EVIDENCE TRANSITION",
-      title: "8/8 Live BEFORE → AFTER Security & Isolation Pairs Across WS1–WS5",
+      title: "9/9 Live BEFORE → AFTER Security & Isolation Pairs Across WS1–WS5",
       subtitle: "Every architectural claim is backed by real side-by-side 2880×1620 Retina captures from live Google Cloud Console and Commercial SaaS environments.",
       accent: C.teal,
-      badgeText: "8/8 PAIRS LIVE",
+      badgeText: "9/9 PAIRS LIVE",
       footerLeft: FL,
-      footerMid: "Empirical Evidence Index • Slides 05–13",
+      footerMid: "Empirical Evidence Index • Slides 05–14",
       slideNum: 4,
-      totalSlides: 16,
+      totalSlides: TOTAL_ATLAS,
     });
 
     const cards = [
-      ["S05 • WS1-BA-01", "Vertex AI Model Armor", "Unprotected ('No violations') → Zero-Trust Firewall ('Template violations detected')", C.red],
-      ["S06 • WS1-BA-02", "Cloud Armor Hop 1 WAF", "Open Edge (1 Allow * rule) → P1000 X-Tenant-ID & P1100 SQLi/XSS Deny-403", C.red],
-      ["S07 • WS2-BA-01", "BigQuery Pattern A RLS", "Unscoped Pool (1–7 of 7 cross-tenant rows) → Strictly 2 FinVault rows (0 leaked)", C.blue],
-      ["S08 • WS3-BA-01", "BigQuery CMEK Kill-Switch", "Enabled Key (VAULT-FV-9001..9002) → Revoked Key ('Cloud KMS Error: DISABLED')", C.amber],
-      ["S09 • CTRL-PLANE", "Cloud KMS & Cloud Run Hub", "KMS Keyring (Available vs. Not Available) + 4/4 Authenticated Cloud Run services", C.indigo],
-      ["S10 • WS4-BA-01", "Atlassian Jira Cloud 3LO", "Unfiltered Board (6 mixed issues) → Live '3LO' query isolating SCRUM-5 & SCRUM-6", C.teal],
-      ["S11 • WS4-BA-02", "Pattern C Hub → Spoke VPC", "Shared Hub VPC (10.240.0.0/24 + /28 PSC NAT) → Dedicated Spoke (10.140.0.0/24)", C.teal],
-      ["S12–S13 • WS5", "ThoughtSpot BI & A2A Hub", "Global Liveboard → 3-Month Saved Answer + Connectors Wizard → Cloud Run A2A Hub", C.green],
+      ["S05–S06 • WS1 GCP", "Model Armor & Cloud Armor WAF", "Unprotected → Firewall ('Match found') + Open Edge → P1000/P1100 Deny-403", C.red],
+      ["S07 • WS1-BA-03", "ThoughtSpot Spotter (SAAS-01)", "Unfiltered 6-Product-Line Rollup → Locked Clinical Analytics Predicate (1 Row)", C.teal],
+      ["S08 • WS2-BA-01", "BigQuery Pattern A RLS", "Unscoped Pool (1–7 of 7 cross-tenant rows) → Strictly 2 FinVault rows (0 leaked)", C.blue],
+      ["S09 • WS3-BA-01", "BigQuery CMEK Kill-Switch", "Enabled Key (VAULT-FV-9001..9002) → Revoked Key ('Cloud KMS Error: DISABLED')", C.amber],
+      ["S10 • CTRL-PLANE", "Cloud KMS & Cloud Run Hub", "KMS Keyring (Available vs. Not Available) + 4/4 Authenticated Cloud Run services", C.indigo],
+      ["S11 • WS4-BA-01", "Atlassian Jira Cloud 3LO", "Unfiltered Board (6 mixed issues) → Live '3LO' query isolating SCRUM-5 & SCRUM-6", C.teal],
+      ["S12 • WS4-BA-02", "Pattern C Hub → Spoke VPC", "Shared Hub VPC (10.240.0.0/24 + /28 PSC NAT) → Dedicated Spoke (10.140.0.0/24)", C.teal],
+      ["S13–S14 • WS5", "ThoughtSpot BI & A2A Hub", "Global Liveboard → 3-Month Saved Answer + Connectors Wizard → Cloud Run A2A Hub", C.green],
     ];
     cards.forEach((cd, idx) => {
       const col = idx % 2;
@@ -812,19 +844,19 @@ async function buildAtlasDraft() {
 
     addSynthesisBar(pptx, s, {
       tag: "ZERO SHORTCUTS",
-      text: "Next: Walk sequentially through all 9 full-canvas live Retina proof slides (Slides 05–13) covering every workstream and isolation pattern.",
-      rightPill: "Slides 05–13 Live",
+      text: "Next: Walk sequentially through all 10 full-canvas live Retina proof slides (Slides 05–14) covering every workstream and isolation pattern.",
+      rightPill: "Slides 05–14 Live",
       accent: C.teal,
     });
-    s.addNotes("Slide 4 serves as our live evidence index before walking through each full-resolution BEFORE-to-AFTER screenshot pair.\n\nSlides 5 and 6 prove Workstream 1 Hop 4 Model Armor and Hop 1 Cloud Armor WAF; Slide 7 proves Workstream 2 Pattern A Pooled BigQuery RLS; Slides 8 and 9 prove Workstream 3 Pattern B Sovereign CMEK Kill-Switch, Cloud KMS Keyring custody, and authenticated Cloud Run services.\n\nSlides 10 and 11 prove Workstream 4 Atlassian Jira Cloud scoped queries and Pattern C Hub-to-Spoke VPC isolation, and Slides 12 and 13 close with Workstream 5 ThoughtSpot Cloud BI governance and the unified Cloud Run A2A Federation Hub.");
+    s.addNotes("Slide 4 serves as our live evidence index before walking through each full-resolution BEFORE-to-AFTER screenshot pair.\n\nSlides 5 through 7 prove Workstream 1 Hop 4 Model Armor, Hop 1 Cloud Armor WAF, and commercial ThoughtSpot Spotter single-domain scoping; Slide 8 proves Workstream 2 Pattern A Pooled BigQuery RLS; Slides 9 and 10 prove Workstream 3 Pattern B Sovereign CMEK Kill-Switch, Cloud KMS Keyring custody, and authenticated Cloud Run services.\n\nSlides 11 and 12 prove Workstream 4 Atlassian Jira Cloud scoped queries and Pattern C Hub-to-Spoke VPC isolation, and Slides 13 and 14 close with Workstream 5 ThoughtSpot Cloud BI governance and the unified Cloud Run A2A Federation Hub.");
   }
 
-  // S05..S13: All 9 Live BEFORE -> AFTER Proof Slides (ALL 17/17 Live Console Captures!)
+  // S05..S14: All 10 Live BEFORE -> AFTER Proof Slides (ALL 19/19 Live Console Captures!)
   PROOF_SLIDES.forEach((cfg, i) => {
-    addProofSlide(pptx, { ...cfg, footerLeft: FL }, 5 + i, 16, true);
+    addProofSlide(pptx, { ...cfg, footerLeft: FL }, 5 + i, TOTAL_ATLAS, true);
   });
 
-  // S14: 10-SaaS x 3-Pattern AWS Bedrock AgentCore MCP Backend Matrix (30/30 Flows PASS)
+  // S15: 10-SaaS x 3-Pattern AWS Bedrock AgentCore MCP Backend Matrix (30/30 Flows PASS)
   {
     const s = pptx.addSlide();
     addChrome(pptx, s, {
@@ -835,17 +867,17 @@ async function buildAtlasDraft() {
       badgeText: "30/30 FLOWS PASS",
       footerLeft: FL,
       footerMid: "Inter-Cloud AWS Bedrock AgentCore MCP Matrix",
-      slideNum: 14,
-      totalSlides: 16,
+      slideNum: TOTAL_ATLAS - 2,
+      totalSlides: TOTAL_ATLAS,
     });
 
     const rows = [
-      ["SAAS-01", "ThoughtSpot Cloud BI", "HXGGFMZBKE", "LIVE UI (S12) + 3/3 MCP PASS", "Pool 403 Org RLS • Silo 423 • Hybrid 0ms"],
+      ["SAAS-01", "ThoughtSpot Cloud BI", "HXGGFMZBKE", "LIVE UI (S07/S13) + 3/3 MCP", "Pool 403 Org RLS • Silo 423 • Hybrid 0ms"],
       ["SAAS-02", "Sigma Computing Cloud BI", "IZVODT083Q", "Backend MCP + S3 Ledger PASS", "Workbook User-Attr RLS • Silo 423 • PSC"],
       ["SAAS-03", "ServiceNow ITSM & ITOM", "ZS9VGYHBQL", "Backend MCP + S3 Ledger PASS", "3LO OAuth Mutation • Silo 423 • Hybrid"],
       ["SAAS-04", "Veeva Vault RIM 21 CFR 11", "TWQU0KSRVF", "Backend MCP + S3 Ledger PASS", "GxP Vault Isolation • HSM 423 • PSC"],
-      ["SAAS-05", "Atlassian Jira & Salesforce", "K5JAEFCQ6E", "LIVE UI (S10) + 3/3 MCP PASS", "Cloud SDP Scrub • Per-User 3LO • Hybrid"],
-      ["SAAS-06", "Databricks Unity Catalog", "TERCK8SLBP", "Backend MCP + S3 Ledger PASS", "Catalog ACL Scope • Silo 423 • CMEK Pin"],
+      ["SAAS-05", "Atlassian Jira & Salesforce", "K5JAEFCQ6E", "LIVE UI (S11) + 3/3 MCP PASS", "Cloud SDP Scrub • Per-User 3LO • Hybrid"],
+      ["SAAS-06", "Databricks Unity Catalog", "TERCK8SLBP", "Video 2 LIVE + 3/3 MCP PASS", "Catalog ACL Scope • Silo 423 • CMEK Pin"],
       ["SAAS-07", "Snowflake AI Data Cloud", "CCMDEVZV2S", "Backend MCP + S3 Ledger PASS", "SECONDARY ROLES NONE • Tri-Secret 423"],
       ["SAAS-08", "Workday Enterprise HCM", "RAOTMUMJTZ", "Backend MCP + S3 Ledger PASS", "RaaS Role Scope • Zero PII Bleed • 423"],
       ["SAAS-09", "Datadog Cloud Observability", "G767QR3TQZ", "Backend MCP + S3 Ledger PASS", "Model Armor Log Screen • Silo 423 • OTel"],
@@ -857,7 +889,7 @@ async function buildAtlasDraft() {
       const row = i % 5;
       const cx = 0.48 + col * 6.26;
       const cy = 1.40 + row * 0.94;
-      const isLiveUi = r[3].startsWith("LIVE UI");
+      const isLiveUi = r[3].startsWith("LIVE UI") || r[3].startsWith("Video 2 LIVE");
       s.addShape(pptx.ShapeType.roundRect, {
         x: cx, y: cy, w: 6.10, h: 0.84, rectRadius: 0.08,
         fill: { color: isLiveUi ? C.tealBg : C.soft },
@@ -883,14 +915,14 @@ async function buildAtlasDraft() {
 
     addSynthesisBar(pptx, s, {
       tag: "RADICAL HONESTY",
-      text: "Transparently separates 2 live Commercial SaaS UI pairs (ThoughtSpot & Jira) from 8 backend protocol/S3-verified AgentCore MCP targets (0 synthetic UIs).",
+      text: "Transparently separates 3 live Commercial SaaS UI pairs (ThoughtSpot Spotter/BI & Jira + Databricks Video 2) from backend MCP targets.",
       rightPill: "60/60 Assertions PASS",
       accent: C.indigo,
     });
-    s.addNotes("Slide 14 presents the complete 10-SaaS cross-cloud verification matrix running on AWS Bedrock AgentCore MCP Gateway in us-east-1.\n\nFollowing our strict radical truthfulness protocol, we explicitly distinguish the two commercial SaaS platforms that carry both live 2880-by-1620 UI Retina captures and backend MCP verification — ThoughtSpot Cloud (Slide 12) and Atlassian Jira Cloud (Slide 10) — from the eight additional enterprise SaaS targets (Sigma, ServiceNow, Veeva, Databricks, Snowflake, Workday, Datadog, and Okta/CrowdStrike) whose cross-cloud Pattern A, B, and C isolation is verified at the protocol and S3 audit ledger layer.\n\nAll 30 cross-cloud flows and 60 positive plus adversarial assertions pass at 100 percent with zero static AWS credentials.");
+    s.addNotes("Slide 15 presents the complete 10-SaaS cross-cloud verification matrix running on AWS Bedrock AgentCore MCP Gateway in us-east-1.\n\nFollowing our strict radical truthfulness protocol, we explicitly distinguish the commercial SaaS platforms carrying live 2880-by-1620 UI Retina captures and video proofs — ThoughtSpot Cloud (Slides 7 and 13), Atlassian Jira Cloud (Slide 11), and Databricks Unity Catalog (WS2 Video 2) — from the additional enterprise SaaS targets verified at the protocol and S3 audit ledger layer.\n\nAll 30 cross-cloud flows and 60 positive plus adversarial assertions pass at 100 percent with zero static AWS credentials.");
   }
 
-  // S15: Master Verification Scorecard
+  // S16: Master Verification Scorecard
   {
     const s = pptx.addSlide();
     addChrome(pptx, s, {
@@ -901,17 +933,17 @@ async function buildAtlasDraft() {
       badgeText: "100% GATES PASS",
       footerLeft: FL,
       footerMid: "Master Verification Scorecard",
-      slideNum: 15,
-      totalSlides: 16,
+      slideNum: TOTAL_ATLAS - 1,
+      totalSlides: TOTAL_ATLAS,
     });
 
     const stats = [
-      ["17 / 17", "Retina UI Captures", "13 GCP Console + 4 Commercial SaaS • verify_slide_screenshots.mjs --audience external EXIT 0", C.teal],
-      ["8 / 8", "BEFORE → AFTER Pairs", "Every WS1–WS5 workstream & Pattern A/B/C isolation boundary proven visually with 0 pending slots", C.blue],
+      ["19 / 19", "Retina UI Captures", "13 GCP Console + 6 Commercial SaaS • verify_slide_screenshots.mjs --audience external EXIT 0", C.teal],
+      ["9 / 9", "BEFORE → AFTER Pairs", "Every WS1–WS5 workstream & Pattern A/B/C isolation boundary proven visually with 0 pending slots", C.blue],
       ["20 / 20", "GCP Runtime Suites", "Pattern A 10/10 red-team + Pattern B 6/6 sovereign CMEK + Pattern C 4/4 0ms cutover PASS", C.green],
       ["30 / 30", "10-SaaS MCP Flows", "60/60 cross-cloud positive & adversarial assertions persisted to immutable Amazon S3 ledgers", C.indigo],
       ["13 / 13", "Deep Forensic Gates", "Automated end-to-end validation covering all architecture blueprints, slide decks, and whitepapers with zero broken links", C.navy],
-      ["54 / 54", "Unit & Security Tests", "SSRF, IAP auth, XXE/SVG XSS, OOXML parity, headless Puppeteer & provenance checks OK", C.amber],
+      ["63 / 63", "Unit & Security Tests", "SSRF, IAP auth, XXE/SVG XSS, OOXML parity, headless Puppeteer & provenance checks OK", C.amber],
     ];
     stats.forEach((st, idx) => {
       const col = idx % 3;
@@ -936,10 +968,10 @@ async function buildAtlasDraft() {
       rightPill: "100% Audit Pass",
       accent: C.green,
     });
-    s.addNotes("Slide 15 consolidates our six continuous verification tiers into one executive scorecard.\n\nAcross visual provenance, we enforce 17/17 cryptographically attested live captures spanning all 8 BEFORE-to-AFTER pairs with zero pending gaps.\n\nAcross runtime and security engineering, we enforce 20/20 Google Cloud simulation suites, 30/30 cross-cloud AWS Bedrock AgentCore MCP flows (60/60 assertions), 13/13 deep forensic audit checks, and 54/54 unit and security regression tests before every release.");
+    s.addNotes("Slide 16 consolidates our six continuous verification tiers into one executive scorecard.\n\nAcross visual provenance, we enforce 19/19 cryptographically attested live captures spanning all 9 BEFORE-to-AFTER pairs with zero pending gaps.\n\nAcross runtime and security engineering, we enforce 20/20 Google Cloud simulation suites, 30/30 cross-cloud AWS Bedrock AgentCore MCP flows (60/60 assertions), 13/13 deep forensic audit checks, and 63/63 unit and security regression tests before every release.");
   }
 
-  // S16: Executive & CISO Verification FAQ
+  // S17: Executive & CISO Verification FAQ
   {
     const s = pptx.addSlide();
     addChrome(pptx, s, {
@@ -950,14 +982,14 @@ async function buildAtlasDraft() {
       badgeText: "CISO READY",
       footerLeft: FL,
       footerMid: "Executive & CISO FAQ",
-      slideNum: 16,
-      totalSlides: 16,
+      slideNum: TOTAL_ATLAS,
+      totalSlides: TOTAL_ATLAS,
     });
 
     const faqs = [
-      ["Q1: How do we know these 17 screenshots are real live UIs and not mockups?", "Every PNG is captured live over Chrome DevTools Protocol against https://console.cloud.google.com/, gcp-team-sbiarllr.atlassian.net, and team2.thoughtspot.cloud via capture_verified_ui.mjs, hashed (SHA-256 + rawPixelsSha256), and validated exit 0 by verify_slide_screenshots.mjs --audience external."],
+      ["Q1: How do we know these 19 screenshots are real live UIs and not mockups?", "Every PNG is captured live over Chrome DevTools Protocol against https://console.cloud.google.com/, gcp-team-sbiarllr.atlassian.net, and team2.thoughtspot.cloud via capture_verified_ui.mjs, hashed (SHA-256 + rawPixelsSha256), and validated exit 0 by verify_slide_screenshots.mjs --audience external."],
       ["Q2: Why do Pattern A, B, and C share 80% identical Python code?", "All five hops (Edge/STS, ARD, Valkey/Memory, Model Armor/DLP, OTel FinOps) run unchanged in core-cymbal-agent/runtime_pipeline.py. Only the 20% perimeter adapter swaps between pooled AlloyDB/BigQuery RLS, sovereign CMEK silos, and unidirectional /28 PSC spokes."],
-      ["Q3: How fast does the Pattern B CMEK kill-switch halt an active agent?", "Cloud KMS key revocation renders encrypted BigQuery/AlloyDB storage mathematically unreadable immediately (shown live on Slide 8), while our 30s KMS heartbeat and <5s targeted Valkey SCAN+UNLINK eviction meet the <60s CISO SLA (41.2s verified)."],
+      ["Q3: How fast does the Pattern B CMEK kill-switch halt an active agent?", "Cloud KMS key revocation renders encrypted BigQuery/AlloyDB storage mathematically unreadable immediately (shown live on Slide 9), while our 30s KMS heartbeat and <5s targeted Valkey SCAN+UNLINK eviction meet the <60s CISO SLA (41.2s verified)."],
       ["Q4: Where can teams inspect interactive BEFORE → AFTER split sliders & code?", "Open /blogs/ws1..ws5/screenshots and /blogs/atlas/screenshots on the live ge-blogs portal for Side-by-Side and Interactive Split-Slider viewers, plus Terraform starters (2.6, 3.6, 4.6) and all 27 runnable codebase files."],
     ];
     faqs.forEach((f, idx) => {
@@ -982,12 +1014,12 @@ async function buildAtlasDraft() {
       rightPill: "ge-blogs Portal Live",
       accent: C.blue,
     });
-    s.addNotes("To close our 16-slide Visual Verification Atlas, Slide 16 answers the four questions CISOs and enterprise architects raise most often during security review.\n\nFirst, every screenshot is cryptographically attested over live Chrome DevTools Protocol against canonical external origins with zero mock HTML. Second, Patterns A, B, and C share 80 percent identical Python code while swapping only the 20 percent cloud perimeter.\n\nThird, Pattern B's CMEK kill-switch fails closed immediately at the storage layer and purges active L1 memory inside our 60-second SLA. Fourth, every interactive split-slider viewer, Terraform blueprint, and forensic audit script is live in the ge-blogs portal.");
+    s.addNotes("To close our 17-slide Visual Verification Atlas, Slide 17 answers the four questions CISOs and enterprise architects raise most often during security review.\n\nFirst, every screenshot is cryptographically attested over live Chrome DevTools Protocol against canonical external origins with zero mock HTML. Second, Patterns A, B, and C share 80 percent identical Python code while swapping only the 20 percent cloud perimeter.\n\nThird, Pattern B's CMEK kill-switch fails closed immediately at the storage layer and purges active L1 memory inside our 60-second SLA. Fourth, every interactive split-slider viewer, Terraform blueprint, and forensic audit script is live in the ge-blogs portal.");
   }
 
   const out = path.join(DRAFTS_DIR, "atlas_16slide_draft.pptx");
   await pptx.writeFile({ fileName: out });
-  console.log(`✅ Wrote 16-slide Atlas draft -> ${out}`);
+  console.log(`✅ Wrote ${TOTAL_ATLAS}-slide Atlas draft -> ${out}`);
 }
 
 async function main() {

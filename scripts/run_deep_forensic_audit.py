@@ -1202,7 +1202,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
         import xml.etree.ElementTree as _mp_ET
         import zipfile as _mp_zipfile
 
-        _lean_slide_counts = {1: 9, 2: 8, 3: 7, 4: 9, 5: 9}
+        _lean_slide_counts = {1: 10, 2: 8, 3: 7, 4: 9, 5: 9}
         _mp_manifest_path = ROOT_DIR / "slides/cloud_viewer_manifest.json"
         if not _mp_manifest_path.exists():
             multi_plane_parity_errors.append("missing:slides/cloud_viewer_manifest.json")
@@ -1276,15 +1276,15 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                             multi_plane_parity_errors.append(f"approved12_missing_txt:{_ws_key}:S{_snum:02d}:{_req_txt}")
                         if f"[Slide {_snum:02d}/{_exp_slides:02d}" not in _s_raw:
                             multi_plane_parity_errors.append(f"approved12_bad_footer_num:{_ws_key}:S{_snum:02d}")
-            # Also verify all 5 10-slide Executive Narrative Decks (WS1_EXEC..WS5_EXEC: 0 pending slots, 0 Gemini 3.8, native BARE_MIN_12 diagrams)
+            # Also verify all 5 Executive Narrative Decks (WS1_EXEC=11 w/ ThoughtSpot Spotter, WS2..WS5_EXEC=10; 0 pending slots, 0 Gemini 3.8, native BARE_MIN_12 diagrams)
             _exec_specs = [
-                ("WS1_EXEC", "slides/ws1-executive-architecture-23slide-deck.pptx", ((5, "ws1-5hop-governance-baseline.drawio"), (6, "ws1-c4-l3-process-sequence-swimlane.drawio"))),
-                ("WS2_EXEC", "slides/ws2-executive-architecture-10slide-deck.pptx", ((4, "ws2-pattern-a-pooled.drawio"), (5, "ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane.drawio"), (6, "ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane.drawio"))),
-                ("WS3_EXEC", "slides/ws3-executive-architecture-10slide-deck.pptx", ((4, "ws3-pattern-b-silo.drawio"), (5, "ws3-c4-l3-cmek-killswitch-swimlane.drawio"))),
-                ("WS4_EXEC", "slides/ws4-executive-architecture-10slide-deck.pptx", ((4, "ws4-pattern-c-hybrid.drawio"), (5, "ws4-c4-l3-live-tier-promotion-swimlane.drawio"))),
-                ("WS5_EXEC", "slides/ws5-executive-architecture-10slide-deck.pptx", ((4, "ws5-decision-tree-and-triad.drawio"), (5, "saas10-multicloud-a2a-mcp-bridge.drawio"), (6, "ws5-c4-l3-dynamic-skill-delegation-swimlane.drawio"))),
+                ("WS1_EXEC", "slides/ws1-executive-architecture-23slide-deck.pptx", 11, ((5, "ws1-5hop-governance-baseline.drawio"), (6, "ws1-c4-l3-process-sequence-swimlane.drawio"))),
+                ("WS2_EXEC", "slides/ws2-executive-architecture-10slide-deck.pptx", 10, ((4, "ws2-pattern-a-pooled.drawio"), (5, "ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane.drawio"), (6, "ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane.drawio"))),
+                ("WS3_EXEC", "slides/ws3-executive-architecture-10slide-deck.pptx", 10, ((4, "ws3-pattern-b-silo.drawio"), (5, "ws3-c4-l3-cmek-killswitch-swimlane.drawio"))),
+                ("WS4_EXEC", "slides/ws4-executive-architecture-10slide-deck.pptx", 10, ((4, "ws4-pattern-c-hybrid.drawio"), (5, "ws4-c4-l3-live-tier-promotion-swimlane.drawio"))),
+                ("WS5_EXEC", "slides/ws5-executive-architecture-10slide-deck.pptx", 10, ((4, "ws5-decision-tree-and-triad.drawio"), (5, "saas10-multicloud-a2a-mcp-bridge.drawio"), (6, "ws5-c4-l3-dynamic-skill-delegation-swimlane.drawio"))),
             ]
-            for _ekey, _erel_pptx, _ediags in _exec_specs:
+            for _ekey, _erel_pptx, _e_exp, _ediags in _exec_specs:
                 _exec_p = ROOT_DIR / _erel_pptx
                 if not _exec_p.exists():
                     multi_plane_parity_errors.append(f"missing:{_ekey}")
@@ -1293,18 +1293,18 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                 _exec_entry = _mp_manifest.get(_ekey, {})
                 if _exec_entry.get("sha256") != _exec_sha:
                     multi_plane_parity_errors.append(f"sha_mismatch:{_ekey}")
-                if _exec_entry.get("slideCount") != 10:
-                    multi_plane_parity_errors.append(f"manifest_slideCount:{_ekey}={_exec_entry.get('slideCount')}!=10")
+                if _exec_entry.get("slideCount") != _e_exp:
+                    multi_plane_parity_errors.append(f"manifest_slideCount:{_ekey}={_exec_entry.get('slideCount')}!={_e_exp}")
                 _eprev_dir = ROOT_DIR / "slides/previews" / _exec_p.stem
                 if _eprev_dir.is_dir():
                     _epng_cnt = len(list(_eprev_dir.glob("slide_*.png")))
-                    if _epng_cnt != 10:
-                        multi_plane_parity_errors.append(f"preview_png_count:{_ekey}={_epng_cnt}!=10")
+                    if _epng_cnt != _e_exp:
+                        multi_plane_parity_errors.append(f"preview_png_count:{_ekey}={_epng_cnt}!={_e_exp}")
                 with _mp_zipfile.ZipFile(_exec_p) as _ezf:
                     _es = [n for n in _ezf.namelist() if re.match(r"ppt/slides/slide\d+\.xml$", n)]
                     _en = [n for n in _ezf.namelist() if re.match(r"ppt/notesSlides/notesSlide\d+\.xml$", n)]
-                    if len(_es) != 10 or len(_en) != 10:
-                        multi_plane_parity_errors.append(f"slide_note_count:{_ekey}={len(_es)}/{len(_en)}!=10")
+                    if len(_es) != _e_exp or len(_en) != _e_exp:
+                        multi_plane_parity_errors.append(f"slide_note_count:{_ekey}={len(_es)}/{len(_en)}!={_e_exp}")
                     for _esx in _es:
                         _eraw = _ezf.read(_esx).decode("utf-8", "ignore")
                         if 'h="0"' in _eraw:
@@ -1316,7 +1316,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                     for _esnum, _erel in _ediags:
                         if _erel not in _ezf.read(f"ppt/slides/_rels/slide{_esnum}.xml.rels").decode("utf-8", "ignore"):
                             multi_plane_parity_errors.append(f"approved12_missing_rel:{_ekey}:S{_esnum:02d}:{_erel}")
-                        if f"[Slide {_esnum:02d}/10" not in _ezf.read(f"ppt/slides/slide{_esnum}.xml").decode("utf-8", "ignore"):
+                        if f"[Slide {_esnum:02d}/{_e_exp:02d}" not in _ezf.read(f"ppt/slides/slide{_esnum}.xml").decode("utf-8", "ignore"):
                             multi_plane_parity_errors.append(f"approved12_bad_footer_num:{_ekey}:S{_esnum:02d}")
 
         for _req_sym in (

@@ -1,9 +1,9 @@
 {
   "schemaVersion": "3.0",
   "generator": "real-slide-screenshot-guard/capture_verified_ui.mjs",
-  "generatorSha256": "219f369b885be83d4622c6c0685a747dddcca4cdad17355928ac916bbc2f8d8b",
+  "generatorSha256": "a0959e103ab753a5dcb354d7d744329ca8150982fd2a421e3d0df595a452ce66",
   "audience": "external",
-  "updatedAt": "2026-11-22T03:51:30.722Z",
+  "updatedAt": "2026-11-23T16:07:51.753Z",
   "entries": [
     {
       "relFile": "exec_all5_cloudrun_services.png",
@@ -373,6 +373,38 @@
       "note": "WS1 AFTER: Live GCP Model Armor ge-zero-trust-ai-firewall actively enforcing PI/Jailbreak, RAI, Malicious URI & SDP detection and blocking cross-tenant prompt injection in cymbal-ge-hub-2026"
     },
     {
+      "relFile": "ws1_after_thoughtspot_spotter_scoped.png",
+      "absPath": "/usr/local/google/home/nitinagga/Documents/blogs/screenshots/verified-cloud-console/ws1_after_thoughtspot_spotter_scoped.png",
+      "capturedAt": "2026-11-23T16:07:51.751Z",
+      "captureMethod": "cdp_live",
+      "audience": "external",
+      "canonicalOriginUrl": "https://team2.thoughtspot.cloud/",
+      "hostname": "team2.thoughtspot.cloud",
+      "originTier": "canonical_external",
+      "allowOriginsUsed": [],
+      "pageTitle": "ThoughtSpot",
+      "browserProduct": "Chrome/158.0.8127.36",
+      "resolvedAddresses": [
+        "54.163.219.26",
+        "52.20.72.16"
+      ],
+      "securityState": "secure",
+      "isSecureContext": true,
+      "nextHopProtocol": "h2",
+      "suspiciousBrowserFlags": [],
+      "visibleBlockers": [],
+      "viewportCss": "1440x810",
+      "deviceScaleFactor": 2,
+      "width": 2880,
+      "height": 1620,
+      "bytes": 271489,
+      "sha256": "ed772e17f9f70b84081882cd5885b143f0343a37b34b7f25c835661844215c7d",
+      "rawPixelsSha256": "8dc26f2c332726de16bcab9f734c583ca927f9f79017554feb581adab913b533",
+      "dHash64": "e875212021232623",
+      "meanLuma": 227.51,
+      "note": "WS1 AFTER ThoughtSpot Spotter scoped strictly to Clinical Analytics"
+    },
+    {
       "relFile": "ws1_before_model_armor_unprotected.png",
       "absPath": "/usr/local/google/home/nitinagga/Documents/blogs/screenshots/verified-cloud-console/ws1_before_model_armor_unprotected.png",
       "capturedAt": "2026-11-20T17:43:48.858Z",
@@ -439,6 +471,38 @@
       "dHash64": "2501210909014901",
       "meanLuma": 247.18,
       "note": "WS1 BEFORE: Live GCP Cloud Armor open default-allow edge policy (cymbal-ws1-before-open-edge) with zero header-smuggling or OWASP WAF deny rules in cymbal-ge-hub-2026"
+    },
+    {
+      "relFile": "ws1_before_thoughtspot_spotter_unscoped.png",
+      "absPath": "/usr/local/google/home/nitinagga/Documents/blogs/screenshots/verified-cloud-console/ws1_before_thoughtspot_spotter_unscoped.png",
+      "capturedAt": "2026-11-23T16:03:37.819Z",
+      "captureMethod": "cdp_live",
+      "audience": "external",
+      "canonicalOriginUrl": "https://team2.thoughtspot.cloud/",
+      "hostname": "team2.thoughtspot.cloud",
+      "originTier": "canonical_external",
+      "allowOriginsUsed": [],
+      "pageTitle": "ThoughtSpot",
+      "browserProduct": "Chrome/158.0.8127.36",
+      "resolvedAddresses": [
+        "52.20.72.16",
+        "54.163.219.26"
+      ],
+      "securityState": "secure",
+      "isSecureContext": true,
+      "nextHopProtocol": "h2",
+      "suspiciousBrowserFlags": [],
+      "visibleBlockers": [],
+      "viewportCss": "1440x810",
+      "deviceScaleFactor": 2,
+      "width": 2880,
+      "height": 1620,
+      "bytes": 334183,
+      "sha256": "1d708eefbb6fbb8ab8e0a88a86f1bf4a082c247df0418b88458c03ba9ec66b14",
+      "rawPixelsSha256": "f39ef80776b14951da7dd79dc28c9553eaf9b6b071a41d90acefe1e23083b3bf",
+      "dHash64": "e809213238382b23",
+      "meanLuma": 220.48,
+      "note": "WS1 BEFORE (SAAS-01 ThoughtSpot Spotter): Live unfiltered ThoughtSpot Spotter AI query returning average feature adoption rate and NPS score across all 6 competing product lines together on team2.thoughtspot.cloud"
     },
     {
       "relFile": "ws2_after_pooled_rls_tenant_isolated.png",

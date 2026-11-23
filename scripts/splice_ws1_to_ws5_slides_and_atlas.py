@@ -89,7 +89,7 @@ TEXT_CLEANUPS: List[Tuple[re.Pattern, str]] = [
 # Exact verified downstream splice table across decks #2-#12:
 # (key, rel_pptx, total_slides, [(target_slide, bm12_slide, footer_section_label), ...])
 DOWNSTREAM_SPLICE_SPECS: List[Tuple[str, str, int, List[Tuple[int, int, str]]]] = [
-    ("WS1", "slides/ws1-12slide-visual-deck.pptx", 9, [
+    ("WS1", "slides/ws1-12slide-visual-deck.pptx", 10, [
         (4, 1, "PART 1 (WS1)"),
         (5, 2, "PART 1 (WS1)"),
     ]),
@@ -111,7 +111,7 @@ DOWNSTREAM_SPLICE_SPECS: List[Tuple[str, str, int, List[Tuple[int, int, str]]]] 
         (4, 11, "PART 5 (WS5)"),
         (5, 12, "PART 5 (WS5)"),
     ]),
-    ("WS1_EXEC", "slides/ws1-executive-architecture-23slide-deck.pptx", 10, [
+    ("WS1_EXEC", "slides/ws1-executive-architecture-23slide-deck.pptx", 11, [
         (5, 1, "PART 1 (WS1)"),
         (6, 2, "PART 1 (WS1)"),
     ]),
@@ -133,7 +133,7 @@ DOWNSTREAM_SPLICE_SPECS: List[Tuple[str, str, int, List[Tuple[int, int, str]]]] 
         (5, 11, "PART 5 (WS5)"),
         (6, 12, "PART 5 (WS5)"),
     ]),
-    ("ATLAS", "slides/saas-10-visual-verification-atlas-16slide-deck.pptx", 16, [
+    ("ATLAS", "slides/saas-10-visual-verification-atlas-16slide-deck.pptx", 17, [
         (3, 11, "10-SAAS ATLAS"),
     ]),
 ]

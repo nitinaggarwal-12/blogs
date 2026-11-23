@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-23T15:31:46Z",
+  "updatedAt": "2026-11-23T16:25:44Z",
   "accountEmail": "anonymous-workspace-sync@cloud-architecture-center.internal",
   "oauthClientId": "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com",
   "slides": {
@@ -7,16 +7,16 @@
       "key": "WS1",
       "title": "WS1 \u2014 Reference Architecture, Taxonomy & 5-Hop Baseline",
       "pptxPath": "slides/ws1-12slide-visual-deck.pptx",
-      "sha256": "0e9519c89bcdb643f79433bd66831e1e6a5e680e877fc76cb405f65998168cf3",
-      "sizeBytes": 1584129,
-      "slideCount": 9,
+      "sha256": "2b2a267332674575402a169a3376c02a03ad32a4b43fee86c22198dc2df7565a",
+      "sizeBytes": 2156279,
+      "slideCount": 10,
       "googleSlidesId": "1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit?resourcekey=0-77zXQOQhM63BNHXHkhxpjA",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/preview?resourcekey=0-77zXQOQhM63BNHXHkhxpjA",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/embed?start=false&loop=false&delayms=5000&resourcekey=0-77zXQOQhM63BNHXHkhxpjA",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/export/pdf?resourcekey=0-77zXQOQhM63BNHXHkhxpjA",
       "webViewLink": "https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit?usp=drivesdk&resourcekey=0-77zXQOQhM63BNHXHkhxpjA",
-      "syncedAt": "2026-11-23T15:11:30Z"
+      "syncedAt": "2026-11-23T16:25:44Z"
     },
     "WS2": {
       "key": "WS2",
@@ -305,33 +305,33 @@
     },
     "WS1_EXEC": {
       "key": "WS1_EXEC",
-      "title": "WS1 Executive Architecture (10-Slide Lean Narrative Deck)",
+      "title": "WS1 Executive Architecture (11-Slide Lean Narrative Deck)",
       "pptxPath": "slides/ws1-executive-architecture-23slide-deck.pptx",
-      "sha256": "fd0122cf21a39558fba5c528a94a2828641eb70764bac01004d38eee5c98f6c3",
-      "sizeBytes": 952948,
-      "slideCount": 10,
+      "sha256": "22949578dc27a702363d5488eb174de4df4e4bd33e2b473877775c5223466456",
+      "sizeBytes": 1525092,
+      "slideCount": 11,
       "googleSlidesId": "1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/preview",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/embed?start=false&loop=false&delayms=5000",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/export/pdf",
       "webViewLink": "https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit?usp=drivesdk",
-      "syncedAt": "2026-11-23T15:12:02Z"
+      "syncedAt": "2026-11-23T16:25:44Z"
     },
     "ATLAS": {
       "key": "ATLAS",
-      "title": "10-SaaS Multi-Cloud Visual Verification Atlas (16-Slide Editable Deck)",
+      "title": "10-SaaS Multi-Cloud Visual Verification Atlas (17-Slide Editable Deck)",
       "pptxPath": "slides/saas-10-visual-verification-atlas-16slide-deck.pptx",
-      "sha256": "ac502ff54098fcda113ff57e0d69e9fe27fff5791d9eae2def62e16d793f113c",
-      "sizeBytes": 5386740,
-      "slideCount": 16,
+      "sha256": "3d4d7420d2681331f057b0cead5b85243a8f5aa26a0bc70a094ddf254b3d2480",
+      "sizeBytes": 5959857,
+      "slideCount": 17,
       "googleSlidesId": "1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs",
       "googleSlidesEditUrl": "https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw",
       "googleSlidesPreviewUrl": "https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/preview?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw",
       "googleSlidesEmbedUrl": "https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/embed?start=false&loop=false&delayms=5000&resourcekey=0-bnGKTSSW6T6EoXChSqzgKw",
       "googleSlidesPdfUrl": "https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/export/pdf?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw",
       "webViewLink": "https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?usp=drivesdk&resourcekey=0-bnGKTSSW6T6EoXChSqzgKw",
-      "syncedAt": "2026-11-23T15:12:28Z"
+      "syncedAt": "2026-11-23T16:25:44Z"
     },
     "BARE_MIN_12": {
       "key": "BARE_MIN_12",
