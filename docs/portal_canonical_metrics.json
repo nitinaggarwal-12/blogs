@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.2",
-  "updatedAt": "2026-11-21T00:45:00Z",
+  "updatedAt": "2026-11-24T01:35:00Z",
   "canonicalRepositoryUrl": "https://github.com/cloud-ai-fde/ge-blogs",
   "mirrorRepositoryUrl": "https://github.com/cloud-ai-fde/ge-blogs",
   "productionPortalUrl": "https://github.com/cloud-ai-fde/ge-blogs",
@@ -35,7 +35,7 @@
         "WS1": {
           "title": "Part 1 \u2014 Multi-Tenant Reference Architecture & 5-Hop Chain",
           "file": "slides/ws1-12slide-visual-deck.pptx",
-          "slides": 9
+          "slides": 10
         },
         "WS2": {
           "title": "Part 2 \u2014 Pattern A: Shared Multi-Tenant Pool",
@@ -63,7 +63,7 @@
           "slides": 25
         }
       },
-      "totalSlides": 67
+      "totalSlides": 68
     },
     "tier2_compactThreeActBriefingDecks": {
       "description": "Compact 3-act executive briefing decks (12-15 slides each) for rapid architecture review",
@@ -122,7 +122,7 @@
       "WS1_EXEC": {
         "title": "Part 1 \u2014 Executive Architecture Briefing",
         "file": "slides/ws1-executive-architecture-23slide-deck.pptx",
-        "slides": 10
+        "slides": 11
       },
       "WS2_EXEC": {
         "title": "Part 2 \u2014 Pattern A Executive Architecture Briefing",
@@ -212,7 +212,7 @@
       "location": "Tab 3 (#tab-screenshots)",
       "purpose": "Verified Commercial SaaS & Cloud Console Multi-Tenant Isolation Proof Matrix (Zero Open-Source Stand-Ins)",
       "targetCount": 10,
-      "verifiedRetinaStatus": "17/17 Verified Live 2880x1620 Retina captures (13 Live Google Cloud Console across cymbal-ge-hub-2026 & cymbal-ge-silo-2026 + 4 Live Commercial SaaS across Atlassian Jira Cloud & ThoughtSpot Cloud; 8 complete BEFORE->AFTER pairs, 0 pending SSO)",
+      "verifiedRetinaStatus": "19/19 Verified Live 2880x1620 Retina captures (13 Live Google Cloud Console across cymbal-ge-hub-2026 & cymbal-ge-silo-2026 + 6 Live Commercial SaaS across Atlassian Jira Cloud & ThoughtSpot Cloud; 9 complete BEFORE->AFTER pairs, 0 pending SSO)",
       "runtimeHosts": [
         "Google Cloud Console & Gemini Enterprise (ramp-portal-dev, bbar-138hf0)",
         "AWS Bedrock AgentCore MCP Gateway (cymbal-a2a-mcp-gateway-suyxm3caof, Account 393036065405)"

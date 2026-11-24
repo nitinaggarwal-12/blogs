@@ -274,21 +274,7 @@
         }
       }
 
-      // Normalize out-of-order Figure 2A / Figure 2B numbering in WS3, WS4, and WS5 before caption cleanup (P2-01)
-      const relLower = String(docRelPath || '').toLowerCase();
-      if (relLower.includes('ws3-pattern-b-sovereign-silos.md')) {
-        body = body.replace(/\bFigure 2A\b/g, 'Figure 4').replace(/\bFigure 2B\b/g, 'Figure 5');
-      } else if (relLower.includes('ws4-pattern-c-hybrid-dynamic-tiering.md')) {
-        body = body.replace(/\bFigure 2A\b/g, 'Figure 5').replace(/\bFigure 2B\b/g, 'Figure 6');
-        body = body.replace(/to review the 12 executive slides paired with this guide:/g, 'to review the 9-slide lean visual deck (and 10-slide executive brief) paired with this guide:');
-      } else if (relLower.includes('ws5-decision-guide-and-agentic-triad.md')) {
-        body = body.replace(/\bFigure 2A\b/g, 'Figure 2').replace(/\bFigure 2B\b/g, 'Figure 3');
-      } else if (relLower.includes('ws2-pattern-a-pooled-architecture.md')) {
-        body = body.replace(
-          /\[24-slide editable visual deck \(`slides\/ws2-pattern-a-pooled-editable-slides\.pptx`\)\]\(\.\.\/slides\/ws2-pattern-a-pooled-editable-slides\.pptx\)/g,
-          '[8-slide lean visual deck (`slides/ws2-12slide-visual-deck.pptx`)](../slides/ws2-12slide-visual-deck.pptx)'
-        );
-      }
+      // Canonical WS1–WS5 markdown files use clean Figure 1..N numbering and current Lean/Exec deck links directly on disk.
 
       // Strip duplicate "Editable assets: ..." link sentences inside *Figure N.* captions (already provided by the figure card header toolbar)
       body = body.replace(/(\*Figure\s+\d+\.[^\n*]*?)\s*Editable assets:[^\n*]*(\*?)/g, '$1$2');
@@ -1663,12 +1649,17 @@
         dl.href = `${ws.pptxPath}?v=${PPTX_CACHE_VER}`;
         dl.innerHTML = `&#11015; Download .pptx (${ws.key} &bull; ${ws.slides.length} Slides)`;
       }
+      const execCnt = ws.execSlideCount || (ws.key === 'WS1' ? 11 : 10);
+      const execSectionLabel = document.getElementById('hub-exec-deck-section-label');
+      if (execSectionLabel) {
+        execSectionLabel.textContent = ws.execSlidesUrl ? `${execCnt}-Slide Executive Narrative Deck` : 'Master Program Deck';
+      }
       const execLink = document.getElementById('hub-exec-deck-link');
       if (execLink) {
         if (ws.execSlidesUrl) {
           execLink.href = ws.execSlidesUrl;
           execLink.style.display = 'flex';
-          execLink.innerHTML = `<span class="pc-gpdf-icon" style="background:#1a73e8;">10</span> <span>${ws.key} Executive Narrative Deck (10 Slides &nearr;)</span>`;
+          execLink.innerHTML = `<span class="pc-gpdf-icon" style="background:#1a73e8;">${execCnt}</span> <span>${ws.key} Executive Narrative Deck (${execCnt} Slides &nearr;)</span>`;
         } else {
           execLink.style.display = 'none';
         }
@@ -1678,7 +1669,7 @@
         if (ws.execPptxPath) {
           execPptx.href = `${ws.execPptxPath}?v=${PPTX_CACHE_VER}`;
           execPptx.style.display = 'flex';
-          execPptx.innerHTML = `<span>&#11015;</span> <span>Download 10-Slide Executive .pptx (${ws.key})</span>`;
+          execPptx.innerHTML = `<span>&#11015;</span> <span>Download ${execCnt}-Slide Executive .pptx (${ws.key})</span>`;
         } else {
           execPptx.style.display = 'none';
         }
@@ -1739,7 +1730,7 @@
     let cloudViewerManifest = {
       slides: {
         WS1: {
-          slideCount: 7,
+          slideCount: 10,
           googleSlidesId: '1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w',
           googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/edit?resourcekey=0-77zXQOQhM63BNHXHkhxpjA',
           googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/preview?resourcekey=0-77zXQOQhM63BNHXHkhxpjA',
@@ -1747,7 +1738,7 @@
           googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1kch_MwNoA4kDtISsepvzSn05erfki9II8oa1dU6I20w/export/pdf?resourcekey=0-77zXQOQhM63BNHXHkhxpjA'
         },
         WS2: {
-          slideCount: 7,
+          slideCount: 8,
           googleSlidesId: '1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ',
           googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/edit',
           googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/preview',
@@ -1755,7 +1746,7 @@
           googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1iDisKsFsqbgxX5lFh3KHd4vI7fWQlRDf8iph74kJdRQ/export/pdf'
         },
         WS3: {
-          slideCount: 6,
+          slideCount: 7,
           googleSlidesId: '1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac',
           googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac/edit',
           googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac/preview',
@@ -1763,7 +1754,7 @@
           googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1UKBJ1JNisUi0LRDyz7JXl_bJ4BJBWK1gaREdw5SDtac/export/pdf'
         },
         WS4: {
-          slideCount: 7,
+          slideCount: 9,
           googleSlidesId: '1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c',
           googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/edit?resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ',
           googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/preview?resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ',
@@ -1771,7 +1762,7 @@
           googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1pMbcBaIa3XajlphcWjif_4ylrmGoNBiCOqqUEJhz46c/export/pdf?resourcekey=0-nfE6x8lGqVjWoF7MRHA2IQ'
         },
         WS5: {
-          slideCount: 7,
+          slideCount: 9,
           googleSlidesId: '1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A',
           googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/edit',
           googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/preview',
@@ -1779,7 +1770,7 @@
           googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/export/pdf'
         },
         ATLAS: {
-          slideCount: 16,
+          slideCount: 17,
           googleSlidesId: '1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs',
           googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw',
           googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/preview?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw',
@@ -1787,7 +1778,7 @@
           googleSlidesPdfUrl: 'https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/export/pdf?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw'
         },
         WS1_EXEC: {
-          slideCount: 10,
+          slideCount: 11,
           googleSlidesId: '1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg',
           googleSlidesEditUrl: 'https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit',
           googleSlidesPreviewUrl: 'https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/preview',

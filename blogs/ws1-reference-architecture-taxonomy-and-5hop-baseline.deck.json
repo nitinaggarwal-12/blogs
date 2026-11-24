@@ -356,7 +356,7 @@
   ],
   "diagrams": [
     {
-      "id": "ws1-multi-tenant-taxonomy-overview",
+      "id": "ws1-5hop-governance-baseline",
       "figure": "Figure 1",
       "title": "Vertex AI Agent Engine Multi-Tenant Taxonomy: Pooled (A), Sovereign Silos (B) & Hybrid (C)",
       "talkingPoints": [
@@ -368,7 +368,7 @@
       ]
     },
     {
-      "id": "ws1-cloud-arch-center-5hop-baseline",
+      "id": "ws1-c4-l3-process-sequence-swimlane",
       "figure": "Figure 2",
       "title": "Google Cloud Architecture Center (#78): Multi-Tenant Agentic AI with 5-Hop Governance",
       "talkingPoints": [
