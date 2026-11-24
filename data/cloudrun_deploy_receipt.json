@@ -6,18 +6,18 @@
   "buildProject": "ramp-portal-dev",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "ge-blogs-00138-qp8",
-  "latestCreatedRevisionName": "ge-blogs-00138-qp8",
+  "latestReadyRevisionName": "ge-blogs-00140-rkq",
+  "latestCreatedRevisionName": "ge-blogs-00140-rkq",
   "readyStatus": "True",
   "trafficPercent": 100,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261124-053054-light-clean",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261124-053334-light-clean",
   "entrypointCmd": [
     "python3",
     "-B",
     "server.py"
   ],
-  "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00138-qp8",
-  "verifiedAt": "2026-11-24T05:33:11Z",
+  "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00140-rkq",
+  "verifiedAt": "2026-11-24T05:35:50Z",
   "approvedSimplifiedHeaderDiagramsCount": 12,
   "certifiedDiagramsCount": 12,
   "workstreamsCount": 5,
@@ -26,12 +26,12 @@
   "verifiedTotalRetinaCount": 17,
   "gcpConsoleCapturesPendingSsoCount": 0,
   "currentRevisionVerification": {
-    "revision": "ge-blogs-00138-qp8",
-    "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261124-053054-light-clean",
-    "verifiedAt": "2026-11-24T05:33:11Z",
+    "revision": "ge-blogs-00140-rkq",
+    "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261124-053334-light-clean",
+    "verifiedAt": "2026-11-24T05:35:50Z",
     "controlPlaneReady": true,
     "startupProbeSucceeded": true,
-    "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00138-qp8",
+    "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00140-rkq",
     "beyondCorpEdgeUrl": "https://ge-blogs-248990048888.cr.gclb.goog",
     "beyondCorpEdgeStatus": 302,
     "preDeployGate": "13/13 Deep Forensic Audit + Full Unit Test Suite executed before OCI layer packaging",
@@ -93,6 +93,6 @@
       }
     ],
     "historicalRevision": true,
-    "note": "Historical probe from ge-blogs-00038-f99 (2026-10-30T13:20:00Z); see currentRevisionVerification for ge-blogs-00138-qp8."
+    "note": "Historical probe from ge-blogs-00038-f99 (2026-10-30T13:20:00Z); see currentRevisionVerification for ge-blogs-00140-rkq."
   }
 }
