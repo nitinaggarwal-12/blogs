@@ -716,5 +716,41 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertIn("SH-SEC-01", ids)
 
 
+    def test_10_auto_revision_inplace_replacements_and_bluf_guard(self) -> None:
+        bp = {
+            "summary": "Design a strongly consistent bi-temporal knowledge graph using Spanner Graph.",
+            "sections": [{
+                "heading": "DDL Schema",
+                "paragraphs": ["Embeddings use VECTOR<FLOAT32, 768> today."],
+                "codeBlocks": [{"language": "sql", "caption": "Old DDL", "code": "embedding VECTOR<FLOAT32, 768>"}],
+                "table": {"headers": ["Col", "Type"], "rows": [["embedding", "VECTOR<FLOAT32, 768>"]]},
+            }],
+            "slides": [{"bullets": ["Column VECTOR<FLOAT32, 768>."], "speakerNotes": "Replace VECTOR<FLOAT32, 768>"}],
+            "codeStarter": {"schemaSql": "CREATE TABLE T (embedding VECTOR<FLOAT32, 768>);"},
+        }
+        patch = {
+            "summary": "Revised the architecture document to fix DDL bugs and claim numbers.",
+            "appliedFixes": ["Fixed vector column syntax across prose, DDL, slides, and schema.sql."],
+            "textReplacements": [
+                {"old": "VECTOR<FLOAT32, 768>", "new": "ARRAY<FLOAT32>(vector_length=>768)"},
+            ],
+            "schemaSql": "CREATE TABLE Policy (id STRING(36) NOT NULL, embedding ARRAY<FLOAT32>(vector_length=>768)) PRIMARY KEY (id);",
+        }
+        applied = cb1._pipe_v2.apply_revision_patch(
+            bp,
+            patch,
+            allowed_tags=cb1.ALLOWED_PROVENANCE_TAGS,
+            sanitize_fn=cb1._sanitize_for_public_output,
+            strip_emoji_fn=cb1.strip_inline_md,
+        )
+        self.assertEqual(len(applied), 1)
+        # Meta-changelog summary must NOT overwrite reader-facing BLUF
+        self.assertTrue(bp["summary"].startswith("Design a strongly consistent"))
+        self.assertIn("ARRAY<FLOAT32>(vector_length=>768)", bp["sections"][0]["paragraphs"][0])
+        self.assertIn("ARRAY<FLOAT32>(vector_length=>768)", bp["sections"][0]["codeBlocks"][0]["code"])
+        self.assertIn("ARRAY<FLOAT32>(vector_length=>768)", bp["sections"][0]["table"]["rows"][0][1])
+        self.assertIn("ARRAY<FLOAT32>(vector_length=>768)", bp["slides"][0]["bullets"][0])
+        self.assertIn("CREATE TABLE Policy", bp["codeStarter"]["schemaSql"])
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -88,30 +88,36 @@ def call_gemini_grounded_search(
         mode = "vertex_ai_google_search"
 
     t0 = time.perf_counter()
-    req = urllib.request.Request(endpoint, data=payload, headers=headers, method="POST")
-    try:
-        with urllib.request.urlopen(req, timeout=timeout_s) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-    except urllib.error.HTTPError as exc:
-        msg = ""
+    data = None
+    last_reason = ""
+    for attempt in range(2):
+        req = urllib.request.Request(endpoint, data=payload, headers=headers, method="POST")
         try:
-            msg = exc.read().decode("utf-8", errors="replace")[:260]
-        except Exception:
-            pass
+            with urllib.request.urlopen(req, timeout=max(float(timeout_s), 55.0)) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+                break
+        except urllib.error.HTTPError as exc:
+            msg = ""
+            try:
+                msg = exc.read().decode("utf-8", errors="replace")[:260]
+            except Exception:
+                pass
+            last_reason = f"Google Search grounding returned HTTP {exc.code}: {msg}"
+            if exc.code in (429, 500, 502, 503, 504) and attempt == 0:
+                time.sleep(2.0)
+                continue
+            break
+        except Exception as exc:
+            last_reason = str(exc)[:220]
+            if attempt == 0:
+                time.sleep(1.5)
+                continue
+            break
+    if data is None:
         return {
             "status": "UNAVAILABLE",
             "mode": mode,
-            "reason": f"Google Search grounding returned HTTP {exc.code}: {msg}",
-            "summary": "",
-            "queries": [],
-            "sources": [],
-            "latencyMs": round((time.perf_counter() - t0) * 1000.0, 1),
-        }
-    except Exception as exc:
-        return {
-            "status": "UNAVAILABLE",
-            "mode": mode,
-            "reason": str(exc)[:220],
+            "reason": last_reason,
             "summary": "",
             "queries": [],
             "sources": [],
@@ -428,28 +434,63 @@ def build_auto_revision_prompt(
 ) -> Tuple[str, str]:
     sys_p = (
         "You are a Principal Google Cloud Solutions Architect performing a surgical peer-review revision. "
-        "Apply targeted fixes for EVERY genuine P0/P1 DDL/SQL/security/clarity finding and Terraform security finding. NEVER remove or replace real Google Cloud products/features verified in the grounding dossier. "
+        "Apply IN-PLACE targeted fixes for EVERY genuine P0/P1 DDL/SQL/security/clarity finding and Terraform security finding. "
+        "NEVER remove or downgrade real current GA/Preview Google Cloud products or Gemini 2.5 models verified in the grounding dossier. "
+        "NEVER replace the customer-facing `summary` with a changelog note like 'Revised the architecture document...'. "
         "Do NOT invent fake claims, fake benchmarks, emojis, internal links, or `allUsers` bindings. "
-        "Output ONLY a JSON object with any subset of these keys to replace/update cleanly:\n"
-        '{"summary":"updated executive summary (optional)","appliedFixes":["short description of each fix"],'
-        '"sectionPatches":[{"headingMatch":"exact or substring heading","appendParagraph":"...","replaceTable":null,"addCodeBlock":{"language":"sql|yaml|bash|formula","caption":"...","code":"..."}}],'
+        "Output ONLY a JSON object with any subset of these keys:\n"
+        '{"summary":"optional updated READER-FACING executive BLUF (leave empty to keep existing)",'
+        '"appliedFixes":["short description of each actual in-place fix applied"],'
+        '"textReplacements":[{"old":"exact buggy substring inside prose/code/slides/DDL","new":"exact corrected replacement"}],'
+        '"sectionPatches":[{"headingMatch":"substring heading","appendParagraph":"...","replaceTable":null,"replaceCodeBlocks":[{"language":"sql","caption":"...","code":"..."}]}],'
+        '"schemaSql":"full corrected schema.sql DDL string (REQUIRED if any DDL/SQL/vector/graph syntax finding exists)",'
         '"claimLedger":[...full updated ledger array if fixing claims...],'
-        '"terraformMain":"...full hardened main.tf if fixing TF findings (MUST use google_cloud_run_v2_service, zero allUsers)..."}'
+        '"terraformMain":"full hardened main.tf if fixing TF/security findings (google_cloud_run_v2_service, zero allUsers)"}'
     )
     findings = judge_r1.get("findings") or []
+    code_excerpts = []
+    for s in (bp.get("sections") or [])[:10]:
+        for cb in (s.get("codeBlocks") or [])[:4]:
+            if isinstance(cb, dict) and cb.get("code"):
+                code_excerpts.append({
+                    "section": s.get("heading"),
+                    "language": cb.get("language"),
+                    "caption": cb.get("caption"),
+                    "code": str(cb.get("code") or "")[:1400],
+                })
+    starter = bp.get("codeStarter") or {}
+    schema_sql = str(starter.get("schemaSql") or "")[:3600]
     user_p = (
         f"TITLE: {bp.get('title')}\n"
         f"ROUND 1 JUDGE: verdict={judge_r1.get('verdict')} score={judge_r1.get('score')}\n"
         f"JUDGE SUMMARY: {judge_r1.get('summary')}\n\n"
-        f"JUDGE FINDINGS TO ADDRESS:\n{json.dumps(findings, indent=2)}\n\n"
+        f"JUDGE FINDINGS TO FIX IN PLACE:\n{json.dumps(findings, indent=2)}\n\n"
         f"DETERMINISTIC TERRAFORM SECURITY FINDINGS (D-11):\n{json.dumps(tf_findings, indent=2)}\n\n"
         f"LIVE GOOGLE SEARCH GROUNDING DOSSIER:\n{(grounding.get('summary') or 'N/A')[:2600]}\n\n"
         f"CURRENT SECTION HEADINGS:\n{json.dumps([s.get('heading') for s in (bp.get('sections') or [])])}\n\n"
-        f"CURRENT CLAIM LEDGER:\n{json.dumps(bp.get('claimLedger') or [], indent=2)[:2400]}\n\n"
-        + (f"CURRENT main.tf (FIX ALL D-11 ISSUES!):\n{(bp.get('codeStarter') or {}).get('terraformMain', '')[:5000]}\n" if tf_findings else "")
+        f"CURRENT INLINE CODE BLOCKS (fix any buggy SQL/DDL/ingress syntax using `textReplacements` or `sectionPatches[].replaceCodeBlocks`):\n"
+        f"{json.dumps(code_excerpts, indent=2)[:5500]}\n\n"
+        + (f"CURRENT schema.sql (return FULL corrected `schemaSql` if any DDL finding applies):\n{schema_sql}\n\n" if schema_sql else "")
+        + f"CURRENT CLAIM LEDGER:\n{json.dumps(bp.get('claimLedger') or [], indent=2)[:2400]}\n\n"
+        + (f"CURRENT main.tf (FIX ALL D-11 ISSUES!):\n{str(starter.get('terraformMain') or '')[:5000]}\n" if tf_findings else "")
         + "\nReturn ONLY the JSON patch object now."
     )
     return sys_p, user_p
+
+
+def _is_meta_changelog_summary(text: str) -> bool:
+    low = str(text or "").strip().lower()
+    prefixes = (
+        "revised the ",
+        "revised this ",
+        "updated the architecture document",
+        "updated the blog",
+        "addressed critical",
+        "applied fixes",
+        "changes made:",
+        "this revision ",
+    )
+    return any(low.startswith(p) for p in prefixes)
 
 
 def apply_revision_patch(
@@ -463,8 +504,47 @@ def apply_revision_patch(
     """Applies a surgical LLM auto-revision JSON patch in-place onto `bp`. Returns applied fix summary list."""
     applied: List[str] = [str(x)[:480] for x in (patch.get("appliedFixes") or []) if str(x).strip()][:10]
     new_sum = str(patch.get("summary") or "").strip()
-    if len(new_sum) >= 40:
+    if len(new_sum) >= 40 and not _is_meta_changelog_summary(new_sum):
         bp["summary"] = sanitize_fn(new_sum)[:1600]
+
+    # True in-place string replacements across prose, inline code blocks, starter code & slide bullets
+    repls = []
+    for rr in (patch.get("textReplacements") or [])[:24]:
+        if isinstance(rr, dict):
+            old_s = str(rr.get("old") or "")
+            new_s = str(rr.get("new") or "")
+            if len(old_s.strip()) >= 4 and old_s != new_s:
+                repls.append((old_s, sanitize_fn(new_s)))
+    if repls:
+        def _apply_repls(val: str) -> str:
+            out = val
+            for o, n in repls:
+                if o in out:
+                    out = out.replace(o, n)
+            return out
+        for s in bp.get("sections") or []:
+            if not isinstance(s, dict):
+                continue
+            s["paragraphs"] = [_apply_repls(str(p)) for p in (s.get("paragraphs") or [])]
+            for cb in s.get("codeBlocks") or []:
+                if isinstance(cb, dict) and cb.get("code"):
+                    cb["code"] = _apply_repls(str(cb["code"]))
+            tbl = s.get("table")
+            if isinstance(tbl, dict) and isinstance(tbl.get("rows"), list):
+                tbl["rows"] = [[_apply_repls(str(c)) for c in row] for row in tbl["rows"] if isinstance(row, list)]
+        for sl in bp.get("slides") or []:
+            if not isinstance(sl, dict):
+                continue
+            if isinstance(sl.get("bullets"), list):
+                sl["bullets"] = [_apply_repls(str(b)) for b in sl["bullets"]]
+            if isinstance(sl.get("speakerNotes"), str):
+                sl["speakerNotes"] = _apply_repls(sl["speakerNotes"])
+        cs = bp.get("codeStarter")
+        if isinstance(cs, dict):
+            for ck in ("schemaSql", "terraformMain", "pythonApp", "readmeSummary"):
+                if isinstance(cs.get(ck), str) and cs[ck]:
+                    cs[ck] = _apply_repls(cs[ck])
+
     for sp in (patch.get("sectionPatches") or [])[:8]:
         if not isinstance(sp, dict):
             continue
@@ -482,6 +562,18 @@ def apply_revision_patch(
         ap = str(sp.get("appendParagraph") or "").strip()
         if len(ap) >= 24:
             target.setdefault("paragraphs", []).append(sanitize_fn(ap))
+        rcb = sp.get("replaceCodeBlocks")
+        if isinstance(rcb, list) and rcb:
+            cleaned_cbs = []
+            for cb in rcb[:4]:
+                if isinstance(cb, dict) and str(cb.get("code") or "").strip():
+                    cleaned_cbs.append({
+                        "language": re.sub(r"[^a-zA-Z0-9_-]", "", str(cb.get("language") or "sql"))[:16] or "sql",
+                        "caption": strip_emoji_fn(sanitize_fn(str(cb.get("caption") or "Verified snippet")))[:100],
+                        "code": sanitize_fn(str(cb.get("code") or "").strip())[:3600],
+                    })
+            if cleaned_cbs:
+                target["codeBlocks"] = cleaned_cbs
         cb = sp.get("addCodeBlock")
         if isinstance(cb, dict) and str(cb.get("code") or "").strip():
             target.setdefault("codeBlocks", []).append({
@@ -501,6 +593,7 @@ def apply_revision_patch(
                     rows.append(row)
             if rows:
                 target["table"] = {"headers": hdrs, "rows": rows}
+
     if isinstance(patch.get("claimLedger"), list) and len(patch["claimLedger"]) >= 3:
         updated_claims = []
         for ci, rc in enumerate(patch["claimLedger"][:16], 1):
@@ -518,9 +611,12 @@ def apply_revision_patch(
             })
         if updated_claims:
             bp["claimLedger"] = updated_claims
+
+    new_schema = str(patch.get("schemaSql") or "").strip()
+    if len(new_schema) >= 60:
+        bp.setdefault("codeStarter", {})["schemaSql"] = sanitize_fn(new_schema)[:9000]
+
     new_tf = str(patch.get("terraformMain") or "").strip()
-    if len(new_tf) >= 100 and "resource " in new_tf:
-        bp.setdefault("codeStarter", {})["terraformMain"] = sanitize_fn(new_tf)
-        if not any("terraform" in a.lower() for a in applied):
-            applied.append("Updated main.tf with hardened Terraform v2 configuration.")
+    if len(new_tf) >= 120 and "resource " in new_tf:
+        bp.setdefault("codeStarter", {})["terraformMain"] = sanitize_fn(new_tf)[:12000]
     return applied
