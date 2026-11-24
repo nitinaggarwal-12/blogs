@@ -824,15 +824,24 @@ def call_gemini_json(
         )
 
     cleaned_json = _strip_json_fences(raw_text)
+    parsed = None
     try:
         parsed = json.loads(cleaned_json)
     except json.JSONDecodeError as exc:
-        fr = candidates[0].get("finishReason") if candidates else "unknown"
-        raise CreateBlog1Error(
-            f"Gemini ({clean_model}) returned invalid JSON ({exc.msg}; finishReason={fr}, chars={len(raw_text)}). Retry once or pick another model.",
-            502,
-            "MODEL_INVALID_JSON",
-        ) from None
+        if "Extra data" in str(exc.msg) and cleaned_json.lstrip().startswith("{"):
+            try:
+                candidate_obj, _ = json.JSONDecoder().raw_decode(cleaned_json.lstrip())
+                if isinstance(candidate_obj, dict):
+                    parsed = candidate_obj
+            except json.JSONDecodeError:
+                parsed = None
+        if parsed is None:
+            fr = candidates[0].get("finishReason") if candidates else "unknown"
+            raise CreateBlog1Error(
+                f"Gemini ({clean_model}) returned invalid JSON ({exc.msg}; finishReason={fr}, chars={len(raw_text)}). Retry once or pick another model.",
+                502,
+                "MODEL_INVALID_JSON",
+            ) from None
     if not isinstance(parsed, dict):
         raise CreateBlog1Error(f"Gemini ({clean_model}) returned non-object JSON.", 502, "MODEL_INVALID_JSON")
 
