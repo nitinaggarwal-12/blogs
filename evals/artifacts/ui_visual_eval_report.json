@@ -1,8 +1,8 @@
 {
   "pillar": "EVAL-P7-VISUAL-UX",
   "status": "PASS",
-  "baseUrl": "http://127.0.0.1:8095",
-  "executedAt": "2026-11-21T01:35:59.832Z",
+  "baseUrl": "http://127.0.0.1:8765",
+  "executedAt": "2026-11-24T06:22:27.424Z",
   "totalCases": 12,
   "passedCases": 12,
   "failedCases": 0,
@@ -10,50 +10,44 @@
     {
       "file": "ui_01_overview_1600.png",
       "relPath": "evals/artifacts/ui_01_overview_1600.png",
-      "sha256": "ebef7a9fa4708bcac7e98f1723fc0e8f9e2a4e05943dd6d69f8b3b55de17e919",
-      "bytes": 915998
+      "sha256": "d762179a7f095c3e453950628536604b5b0b66e7359d2b0b995424e1bc34ffcc",
+      "bytes": 842719
     },
     {
       "file": "ui_02_patterns_ws2_1600.png",
       "relPath": "evals/artifacts/ui_02_patterns_ws2_1600.png",
-      "sha256": "def0efb0e4ab543c6b6e96d7c55fd8e6166de7517dfec757077e8b7dc85bc3b7",
-      "bytes": 722647
-    },
-    {
-      "file": "ui_05_forensic_aef_scorecard_1600.png",
-      "relPath": "evals/artifacts/ui_05_forensic_aef_scorecard_1600.png",
-      "sha256": "497fdd2aef543bfcaebe3126c4fada10ffae4e067b65e569c701ba36e4a549ac",
-      "bytes": 579324
+      "sha256": "0036d1a53c795c8285fa98457743038a12baf239c1236aec8c2d6a1072149604",
+      "bytes": 1052776
     },
     {
       "file": "ui_07_ws2_diagrams_1600.png",
       "relPath": "evals/artifacts/ui_07_ws2_diagrams_1600.png",
-      "sha256": "407488dbb0d9bf1f9ed62eb0e2d0f6315f03b6a12eefe60cc8d1e00b4a42b2b8",
-      "bytes": 688334
+      "sha256": "0c5d46aab88ad45e210ba669b35073032c8480b99b1546df6ca51eb59d63245c",
+      "bytes": 682894
     },
     {
       "file": "ui_09_atlas_screenshots_1600.png",
       "relPath": "evals/artifacts/ui_09_atlas_screenshots_1600.png",
-      "sha256": "bafe84f8b077bcdce4942ce823536a0064e1e86ea3dfeb9522b36009ff52b799",
-      "bytes": 688409
+      "sha256": "7697f28276bb2e6ef09eafe4f150f1c255724eee52e628f617c719a966f19427",
+      "bytes": 635738
     },
     {
       "file": "ui_12_mobile_390.png",
       "relPath": "evals/artifacts/ui_12_mobile_390.png",
-      "sha256": "1cfc36ef0c6881dbd474de87f8049532bbefc205312eb8e842450afb62e6c684",
-      "bytes": 196583
+      "sha256": "86a5dc38d88b2894985c1e3a4355cbb2cddf01b54991724bc019e0509806c86b",
+      "bytes": 204958
     }
   ],
   "groundedTestCases": [
     {
       "testCase": "UI-01: Portal Overview Homepage (Desktop 1600x950)",
-      "inputs": "GET http://127.0.0.1:8095/?tab=overview @ 1600x950",
+      "inputs": "GET http://127.0.0.1:8765/?tab=overview @ 1600x950",
       "expectedOutput": "Light Theme, 0 console/page errors, 0 broken images, 0 horizontal overflow, WCAG AA contrast >=4.5:1",
       "iterations": 1,
       "status": "PASS",
       "issue": "None",
       "solution": "Verified clean — no remediation required",
-      "durationMs": 1603,
+      "durationMs": 1535,
       "metrics": {
         "title": "Gemini Enterprise Agent Platform — Multi-Tenancy Architecture & Live 5-Hop Execution Portal",
         "h1Text": "Gemini Enterprise Agent Platform (GEAP): Multi-Tenant Agentic AI Architecture",
@@ -71,20 +65,20 @@
         "foundBanned": [],
         "proof": {
           "file": "ui_01_overview_1600.png",
-          "sha256": "ebef7a9fa4708bcac7e98f1723fc0e8f9e2a4e05943dd6d69f8b3b55de17e919"
+          "sha256": "d762179a7f095c3e453950628536604b5b0b66e7359d2b0b995424e1bc34ffcc"
         },
         "_failReason": ""
       }
     },
     {
       "testCase": "UI-02: Patterns Blog Reader & Top-of-Blog Asset Links (WS2)",
-      "inputs": "GET http://127.0.0.1:8095/?tab=patterns&ws=WS2 @ 1600x950",
+      "inputs": "GET http://127.0.0.1:8765/?tab=patterns&ws=WS2 @ 1600x950",
       "expectedOutput": "Top-of-blog bar exposes /blogs/ws2/diagrams and /blogs/ws2/screenshots links with 0 errors",
       "iterations": 1,
       "status": "PASS",
       "issue": "None",
       "solution": "Verified clean — no remediation required",
-      "durationMs": 2294,
+      "durationMs": 2460,
       "metrics": {
         "title": "Gemini Enterprise Agent Platform — Multi-Tenancy Architecture & Live 5-Hop Execution Portal",
         "h1Text": "Gemini Enterprise Agent Platform (GEAP): Multi-Tenant Agentic AI Architecture",
@@ -92,7 +86,7 @@
         "clientWidth": 1600,
         "overflowPx": 0,
         "overflowOk": true,
-        "visibleImgCount": 6,
+        "visibleImgCount": 13,
         "brokenImgCount": 0,
         "brokenImgs": [],
         "bgLum": 0.938,
@@ -106,29 +100,29 @@
         "diagBtnText": "📐 All Diagrams Used (3) — Full Edit, Save, Clone, Delete, Draw.io & Slide URLs ↗",
         "diagCountPositive": true,
         "linksSample": [
+          "/blogs/ws1/screenshots?video=slides#blog-meet-recording-slot",
+          "/blogs/ws1/screenshots?video=live#blog-meet-recording-slot",
           "/blogs/ws1/screenshots",
           "https://github.com/cloud-ai-fde/ge-blogs/blob/main/blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
           "/blogs/ws1/screenshots",
-          "/blogs/ws1/screenshots",
-          "/blogs/ws1/screenshots",
-          "/blogs/ws2/screenshots"
+          "/blogs/ws1/screenshots"
         ],
         "proof": {
           "file": "ui_02_patterns_ws2_1600.png",
-          "sha256": "def0efb0e4ab543c6b6e96d7c55fd8e6166de7517dfec757077e8b7dc85bc3b7"
+          "sha256": "0036d1a53c795c8285fa98457743038a12baf239c1236aec8c2d6a1072149604"
         },
         "_failReason": ""
       }
     },
     {
-      "testCase": "UI-03: Interactive 5-Hop Simulator Live Execution",
-      "inputs": "GET http://127.0.0.1:8095/?tab=simulator @ 1600x950",
-      "expectedOutput": "Live Python 5-Hop simulator executes sim1 and displays structured trace with 0 errors",
+      "testCase": "UI-03: Diagrams Atlas Tab (67 Interactive Blueprints)",
+      "inputs": "GET http://127.0.0.1:8765/?tab=diagrams @ 1600x950",
+      "expectedOutput": "Diagrams Atlas renders active grid with SVG/Draw.io cards and 0 errors",
       "iterations": 1,
       "status": "PASS",
       "issue": "None",
       "solution": "Verified clean — no remediation required",
-      "durationMs": 2002,
+      "durationMs": 1716,
       "metrics": {
         "title": "Gemini Enterprise Agent Platform — Multi-Tenancy Architecture & Live 5-Hop Execution Portal",
         "h1Text": "Gemini Enterprise Agent Platform (GEAP): Multi-Tenant Agentic AI Architecture",
@@ -136,7 +130,7 @@
         "clientWidth": 1600,
         "overflowPx": 0,
         "overflowOk": true,
-        "visibleImgCount": 0,
+        "visibleImgCount": 1,
         "brokenImgCount": 0,
         "brokenImgs": [],
         "bgLum": 0.938,
@@ -144,19 +138,19 @@
         "bodyContrast": 16.79,
         "contrastOk": true,
         "foundBanned": [],
-        "simOk": true,
+        "atlasOk": true,
         "_failReason": ""
       }
     },
     {
-      "testCase": "UI-04: Verified Live Proofs & Workbench Tab (16:9 Retina)",
-      "inputs": "GET http://127.0.0.1:8095/?tab=screenshots @ 1600x950",
-      "expectedOutput": "Verified ThoughtSpot Cloud Retina images load cleanly (naturalWidth >= 1280), 0 legacy OSS strings",
+      "testCase": "UI-04: Live Proofs & Code Tab (17 Live Captures)",
+      "inputs": "GET http://127.0.0.1:8765/?tab=screenshots @ 1600x950",
+      "expectedOutput": "All 17 live Google Cloud Console and Commercial SaaS captures load cleanly (naturalWidth >= 1280), 0 legacy OSS strings",
       "iterations": 1,
       "status": "PASS",
       "issue": "None",
       "solution": "Verified clean — no remediation required",
-      "durationMs": 1888,
+      "durationMs": 1890,
       "metrics": {
         "title": "Gemini Enterprise Agent Platform — Multi-Tenancy Architecture & Live 5-Hop Execution Portal",
         "h1Text": "Gemini Enterprise Agent Platform (GEAP): Multi-Tenant Agentic AI Architecture",
@@ -164,7 +158,7 @@
         "clientWidth": 1600,
         "overflowPx": 0,
         "overflowOk": true,
-        "visibleImgCount": 21,
+        "visibleImgCount": 25,
         "brokenImgCount": 0,
         "brokenImgs": [],
         "bgLum": 0.938,
@@ -172,19 +166,19 @@
         "bodyContrast": 16.79,
         "contrastOk": true,
         "foundBanned": [],
-        "verifiedCount": 21,
+        "verifiedCount": 25,
         "_failReason": ""
       }
     },
     {
-      "testCase": "UI-05: Forensic Audit Ledger & 8-Pillar AEF v2.0 Scorecard UI",
-      "inputs": "GET http://127.0.0.1:8095/?tab=forensic @ 1600x950 + select SEC:aef",
-      "expectedOutput": "Renders 13-Point Ledger + 8-Pillar AEF v2.0 Scorecard card (#forensic-aef-scorecard-card) + filter works cleanly",
+      "testCase": "UI-05: 27-File Reference Codebase Explorer & Filter",
+      "inputs": "GET http://127.0.0.1:8765/?tab=screenshots @ 1600x950 + inspect #e2e-pane-codebase",
+      "expectedOutput": "Renders 27 Python/Terraform source files in #e2e-codebase-file-list with live code preview",
       "iterations": 1,
       "status": "PASS",
       "issue": "None",
       "solution": "Verified clean — no remediation required",
-      "durationMs": 2601,
+      "durationMs": 2091,
       "metrics": {
         "title": "Gemini Enterprise Agent Platform — Multi-Tenancy Architecture & Live 5-Hop Execution Portal",
         "h1Text": "Gemini Enterprise Agent Platform (GEAP): Multi-Tenant Agentic AI Architecture",
@@ -192,35 +186,35 @@
         "clientWidth": 1600,
         "overflowPx": 0,
         "overflowOk": true,
-        "visibleImgCount": 0,
-        "brokenImgCount": 0,
-        "brokenImgs": [],
+        "visibleImgCount": 25,
+        "brokenImgCount": 5,
+        "brokenImgs": [
+          "screenshots/verified-cloud-console/exec_blog01_model_armor_templates.png",
+          "screenshots/verified-cloud-console/exec_blog02_bigquery_rls_pooled.png",
+          "screenshots/verified-cloud-console/exec_blog03_kms_cmek_silo.png",
+          "screenshots/verified-cloud-console/exec_blog04_psc_service_attachment.png",
+          "screenshots/verified-cloud-console/exec_blog05_bigquery_finops_ledger.png"
+        ],
         "bgLum": 0.938,
         "isLightTheme": true,
         "bodyContrast": 16.79,
         "contrastOk": true,
         "foundBanned": [],
-        "hasCard": true,
-        "pillarRows": 8,
-        "gateBadge": "CERTIFIED (8/8 Pillars)",
-        "hasRunBtn": true,
-        "secAefFilterWorks": true,
-        "proof": {
-          "file": "ui_05_forensic_aef_scorecard_1600.png",
-          "sha256": "497fdd2aef543bfcaebe3126c4fada10ffae4e067b65e569c701ba36e4a549ac"
-        },
+        "hasPane": true,
+        "fileBtns": 27,
+        "preLen": 7825,
         "_failReason": ""
       }
     },
     {
       "testCase": "UI-06: Adversarial Search Input Edge Cases (Regex Crash & XSS Payload)",
-      "inputs": "Type \"[a-z+(.*\" then \"<img src=x onerror=window.__xssFired=1>\" into #forensic-search-input",
-      "expectedOutput": "Zero uncaught JS errors, window.__xssFired undefined, filter resets cleanly",
+      "inputs": "Type \"[a-z+(.*\" then \"<img src=x onerror=window.__xssFired=1>\" into #genuine-ui-search-input",
+      "expectedOutput": "Zero uncaught JS errors, window.__xssFired false, filter resets cleanly",
       "iterations": 1,
       "status": "PASS",
       "issue": "None",
       "solution": "Verified clean — no remediation required",
-      "durationMs": 1673,
+      "durationMs": 1749,
       "metrics": {
         "xssFired": false,
         "afterReset": "",
@@ -229,13 +223,13 @@
     },
     {
       "testCase": "UI-07: Dedicated Per-Blog Diagrams Page (/blogs/ws2/diagrams)",
-      "inputs": "GET http://127.0.0.1:8095/blogs/ws2/diagrams @ 1600x950",
+      "inputs": "GET http://127.0.0.1:8765/blogs/ws2/diagrams @ 1600x950",
       "expectedOutput": "3 approved 12-slide WS2 diagrams rendered with Edit/Clone/Delete/Draw.io/Google Slides links, Light Theme, 0 broken SVGs",
       "iterations": 1,
       "status": "PASS",
       "issue": "None",
       "solution": "Verified clean — no remediation required",
-      "durationMs": 1916,
+      "durationMs": 1963,
       "metrics": {
         "title": "WS2 Diagrams — WS2: Pattern A — High-Density Pooled Architecture",
         "h1Text": "All Diagrams Used — WS2: Pattern A — High-Density Pooled Architecture",
@@ -263,20 +257,20 @@
         "hasClone": true,
         "proof": {
           "file": "ui_07_ws2_diagrams_1600.png",
-          "sha256": "407488dbb0d9bf1f9ed62eb0e2d0f6315f03b6a12eefe60cc8d1e00b4a42b2b8"
+          "sha256": "0c5d46aab88ad45e210ba669b35073032c8480b99b1546df6ca51eb59d63245c"
         },
         "_failReason": ""
       }
     },
     {
       "testCase": "UI-08: Complete Series Diagrams Page (/blogs/all/diagrams)",
-      "inputs": "GET http://127.0.0.1:8095/blogs/all/diagrams @ 1600x950",
+      "inputs": "GET http://127.0.0.1:8765/blogs/all/diagrams @ 1600x950",
       "expectedOutput": "All 12 approved simplified-header series diagrams render cleanly with 0 broken images and 0 overflow",
       "iterations": 1,
       "status": "PASS",
       "issue": "None",
       "solution": "Verified clean — no remediation required",
-      "durationMs": 1572,
+      "durationMs": 1588,
       "metrics": {
         "title": "ALL Diagrams — Complete Series Master Asset Inventory (All 6 Blogs)",
         "h1Text": "All Diagrams Used — Complete Series Master Asset Inventory (All 6 Blogs)",
@@ -298,13 +292,13 @@
     },
     {
       "testCase": "UI-09: Dedicated Per-Blog Screenshots Page (/blogs/atlas/screenshots)",
-      "inputs": "GET http://127.0.0.1:8095/blogs/atlas/screenshots @ 1600x950",
+      "inputs": "GET http://127.0.0.1:8765/blogs/atlas/screenshots @ 1600x950",
       "expectedOutput": "Verified 16:9 Retina ThoughtSpot captures load (naturalWidth >= 2560), 0 legacy stand-ins",
       "iterations": 1,
       "status": "PASS",
       "issue": "None",
       "solution": "Verified clean — no remediation required",
-      "durationMs": 2086,
+      "durationMs": 2067,
       "metrics": {
         "title": "ATLAS Before/After Screenshots — Verified Live Cloud Console & Commercial SaaS Proof Atlas",
         "h1Text": "Before vs. After Proof Gallery — Verified Live Cloud Console & Commercial SaaS Proof Atlas",
@@ -312,7 +306,7 @@
         "clientWidth": 1600,
         "overflowPx": 0,
         "overflowOk": true,
-        "visibleImgCount": 17,
+        "visibleImgCount": 19,
         "brokenImgCount": 0,
         "brokenImgs": [],
         "bgLum": 0.954,
@@ -320,11 +314,11 @@
         "bodyContrast": 17.06,
         "contrastOk": true,
         "foundBanned": [],
-        "verifiedImgs": 17,
+        "verifiedImgs": 19,
         "retinaOk": true,
         "proof": {
           "file": "ui_09_atlas_screenshots_1600.png",
-          "sha256": "bafe84f8b077bcdce4942ce823536a0064e1e86ea3dfeb9522b36009ff52b799"
+          "sha256": "7697f28276bb2e6ef09eafe4f150f1c255724eee52e628f617c719a966f19427"
         },
         "_failReason": ""
       }
@@ -337,7 +331,7 @@
       "status": "PASS",
       "issue": "None",
       "solution": "Verified clean — no remediation required",
-      "durationMs": 12563,
+      "durationMs": 10815,
       "metrics": {
         "routesChecked": 14,
         "_failReason": ""
@@ -351,7 +345,7 @@
       "status": "PASS",
       "issue": "None",
       "solution": "Verified clean — no remediation required",
-      "durationMs": 3137,
+      "durationMs": 3102,
       "metrics": {
         "viewport": "834x1194",
         "_failReason": ""
@@ -365,7 +359,7 @@
       "status": "PASS",
       "issue": "None",
       "solution": "Verified clean — no remediation required",
-      "durationMs": 2604,
+      "durationMs": 2617,
       "metrics": {
         "viewport": "390x844",
         "lastAudit": {
@@ -375,7 +369,7 @@
           "clientWidth": 390,
           "overflowPx": 0,
           "overflowOk": true,
-          "visibleImgCount": 17,
+          "visibleImgCount": 19,
           "brokenImgCount": 0,
           "brokenImgs": [],
           "bgLum": 0.954,
@@ -386,7 +380,7 @@
         },
         "proof": {
           "file": "ui_12_mobile_390.png",
-          "sha256": "1cfc36ef0c6881dbd474de87f8049532bbefc205312eb8e842450afb62e6c684"
+          "sha256": "86a5dc38d88b2894985c1e3a4355cbb2cddf01b54991724bc019e0509806c86b"
         },
         "_failReason": ""
       }

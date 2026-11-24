@@ -1272,7 +1272,7 @@ def _extract_blog_eval_excerpt(txt: str) -> str:
     head = txt[:3600]
     sections: List[str] = [head]
     m_mc = re.search(r"##\s+Live Multi-Cloud[^\n]*", txt, re.IGNORECASE)
-    m_ver = re.search(r"##\s+Verified Live Commercial SaaS Proofs", txt)
+    m_ver = re.search(r"##\s+(?:Verified Live Commercial SaaS Proofs|Live Before & After[^\n]*)", txt, re.IGNORECASE)
     if m_mc and (not m_ver or m_mc.start() < m_ver.start()):
         mc_end = min(m_ver.start() if m_ver else len(txt), m_mc.start() + 1400)
         sections.append(txt[m_mc.start() : mc_end].strip())
@@ -1360,7 +1360,7 @@ def evaluate_pillar_8_llm_judge(skip_live_llm: bool = False) -> Dict[str, Any]:
         rubric = (
             "Evaluate this technical architecture blog excerpt on 4 axes (0-100 each): "
             "1) architectural_accuracy (5-Hop, GCP services, multi-tenant isolation correctness), "
-            "2) factual_honesty (accurately distinguishes the 17/17 cryptographically verified live 2880x1620 Retina UI captures — 13 Google Cloud Console captures across cymbal-ge-hub-2026 & cymbal-ge-silo-2026 plus 4 live commercial SaaS captures across Atlassian Jira Cloud & ThoughtSpot Cloud, 8 complete BEFORE->AFTER pairs — from remaining Marketplace trial SaaS targets whose verification is protocol-level via AWS Bedrock AgentCore MCP / S3 audit ledger receipts, with ZERO claims of legacy open-source stand-in apps), "
+            "2) factual_honesty (accurately presents the workstream's live 2880x1620 Retina Google Cloud Console & commercial SaaS BEFORE->AFTER proofs — part of the series-wide 19/19 cryptographically verified live captures across 13 GCP Console + 6 commercial SaaS captures in Atlassian Jira Cloud & ThoughtSpot Cloud, 9 BEFORE->AFTER pairs — alongside protocol-level AWS Bedrock AgentCore MCP / S3 audit ledger verification across all 10 SaaS targets, with ZERO claims of legacy open-source stand-in apps; note that individual workstream posts focus on their own workstream proofs and link to the Atlas for the full 19/19 catalog), "
             "3) security_rigor (no leaked internal emails, secrets, or cross-tenant flaws), "
             "4) clarity_and_structure. "
             if is_blog

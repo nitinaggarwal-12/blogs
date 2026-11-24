@@ -289,7 +289,10 @@ async function run() {
         const audit = await auditPageState(page);
         const atlasOk = await page.evaluate(() => {
           const cards = document.querySelectorAll('#tab-diagrams .diagram-atlas-card, #tab-diagrams img');
-          return cards.length >= 5;
+          const stageCard = document.querySelector('#tab-diagrams #atlas-single-slide-stage');
+          const stageImg = stageCard ? stageCard.querySelector('img') : null;
+          const opts = document.querySelectorAll('#tab-diagrams #atlas-slide-select option');
+          return cards.length >= 5 || (Boolean(stageCard) && (!stageImg || stageImg.naturalWidth > 0) && opts.length >= 30);
         });
         const fails = [];
         if (!atlasOk) fails.push('Diagrams Atlas did not render diagram cards');

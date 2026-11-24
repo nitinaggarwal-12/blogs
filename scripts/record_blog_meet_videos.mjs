@@ -1665,28 +1665,35 @@ async function executeChapterChoreography({
     await engine.sleep(1400);
     await scrollOn(tab2.sessionId, 640, 420, "down", 4);
   } else if (kind === "thoughtspot_spotter_before_after") {
-    // Beat 1: Glide across the 6 product-line bars in Spotter BEFORE conversation & scroll slightly
-    await smoothGlide(ptr, 460, 420, 860, 420, 14);
-    await clock.waitUntilSec(2.8, `${chapter.id}_b1_scroll`);
-    await scrollOn(tab1.sessionId, 680, 460, "down", 4);
-    await engine.sleep(900);
-    await smoothGlide(ptr, 860, 460, 560, 520, 12);
-    // Beat 2: Switch to governed Clinical Analytics Spotter tab, click "Show work" to reveal locked predicate token & scroll
-    await clock.waitUntilSec(beat1DurSec + 0.3, `${chapter.id}_b2_start`);
+    // Beat 1: Glide across the 6 product-line bars in Spotter BEFORE conversation (zero sticky-header overlap!)
+    await smoothGlide(ptr, 420, 430, 820, 430, 16);
+    await clock.waitUntilSec(3.8, `${chapter.id}_b1_scroll`);
+    await scrollOn(tab1.sessionId, 680, 460, "down", 3);
+    await engine.sleep(700);
+    await smoothGlide(ptr, 820, 460, 560, 520, 12);
+    // Beat 2: Switch to governed Clinical Analytics Spotter tab right before Beat 2 cue so mid frame is synced cleanly!
+    await clock.waitUntilSec(Math.max(7.2, beat1DurSec - 0.6), `${chapter.id}_b2_start`);
     await activateTab2WithCursor();
-    await engine.sleep(1200);
+    await engine.sleep(900);
     const swHit = await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, {
       selector: 'button, [role="button"], span',
       textMatch: /show work/i,
       minX: 300,
-      minY: 180
+      minY: 160
     }).catch(() => ({ clicked: false }));
     console.log(`    🖱️ [ThoughtSpot Spotter] Show work click: ${JSON.stringify(swHit)}`);
-    await engine.sleep(1000);
-    await smoothGlide(ptr, 520, 395, 760, 455, 14);
-    // Keep Tab 2 framed on the locked "Product Line = 'clinical analytics'" filter pill AND 1-row table (44.38 / 37.7) — zero over-scroll!
+    await engine.sleep(900);
+    // Smoothly scroll down ~145px inside chatItemsWrapperContainer so BOTH the locked "Product Line = 'clinical analytics'" pill AND the 1-row table (44.38 / 37.7) sit cleanly above the composer bar!
+    await scrollOn(tab2.sessionId, 680, 420, "down", 2);
     await engine.sleep(600);
-    await smoothGlide(ptr, 760, 455, 560, 500, 12);
+    await evalInSession(cdp, tab2.sessionId, () => {
+      const sc = document.querySelector('div[class*="chatItemsWrapperContainer"]');
+      if (sc && sc.scrollTop < 125) sc.scrollTop = 145;
+      if (sc && sc.scrollTop > 185) sc.scrollTop = 155;
+    }).catch(() => {});
+    await smoothGlide(ptr, 500, 420, 740, 470, 14);
+    await engine.sleep(600);
+    await smoothGlide(ptr, 740, 470, 580, 495, 12);
   } else if (kind === "thoughtspot_liveboard_to_answer") {
     // Beat 1: Keep all 6 hydrated Executive KPI cards framed at top through early (+1.5s), then smoothly scroll down to charts
     await smoothGlide(ptr, 260, 290, 680, 290, 14);
@@ -2168,14 +2175,9 @@ async function captureChapterWithX11Grab({
       await cdp.send("Target.activateTarget", { targetId: tabObj.targetId });
       await engine.sleep(900);
       await evalInSession(cdp, tabObj.sessionId, () => {
-        // Dismiss "This data may have changed" info banner
-        for (const el of document.querySelectorAll('button, [role="button"], svg')) {
-          const box = el.closest?.('div, section, [role="alert"], [role="status"]');
-          const bt = (box?.innerText || '').trim();
-          if (bt.length < 180 && /data may have changed/i.test(bt)) {
-            const al = (el.getAttribute?.('aria-label') || '').toLowerCase();
-            if (/close|dismiss/i.test(al) || el.tagName === 'BUTTON') { try { el.click(); } catch {} }
-          }
+        // Dismiss "This data may have changed" info banner via exact aria-label="Close Alert"
+        for (const btn of document.querySelectorAll('button[aria-label="Close Alert" i], button[aria-label*="Close" i]')) {
+          try { btn.click(); } catch {}
         }
         // Click "Reload" button so live chart renders instead of "Reload this Answer"
         for (const btn of document.querySelectorAll('button, [role="button"]')) {
@@ -2197,7 +2199,14 @@ async function captureChapterWithX11Grab({
         }
         await engine.sleep(600);
       }
-      await engine.sleep(1000);
+      await evalInSession(cdp, tabObj.sessionId, () => {
+        for (const btn of document.querySelectorAll('button[aria-label="Close Alert" i]')) {
+          try { btn.click(); } catch {}
+        }
+        const sc = document.querySelector('div[class*="chatItemsWrapperContainer"]');
+        if (sc) sc.scrollTop = 0;
+      }).catch(() => {});
+      await engine.sleep(700);
     };
     if (tab2) await hydrateSpotterTab(tab2, 'AFTER');
     await hydrateSpotterTab(tab1, 'BEFORE');

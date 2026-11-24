@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "slug": "ws1",
-  "generatedAt": "2026-11-24T05:25:52.929Z",
+  "generatedAt": "2026-11-24T06:09:56.081Z",
   "poster": {
     "pathRel": "recordings/ws1/meet_recording_poster.jpg",
     "sha256": "57d62a60458bfeb8f313eb699f90d743d3c8c361d7a43a327356e36b7e3e2566",
@@ -59,8 +59,8 @@
       "chapterNum": 6,
       "id": "ch06_saas_thoughtspot_spotter_before_after",
       "pathRel": "recordings/ws1/chapters/ch-06.png",
-      "sha256": "9c79d06d4b18e64f2ce3d84f0f9bff0ef0805401518d5d4e85cacda723eac708",
-      "bytes": 269315,
+      "sha256": "ae16de12f3b9493884819c43b33502ced4b5f0b77a2b18d02d8074d3092db45f",
+      "bytes": 230690,
       "width": 1280,
       "height": 800
     }
