@@ -6,18 +6,18 @@
   "buildProject": "ramp-portal-dev",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "ge-blogs-00135-tfg",
-  "latestCreatedRevisionName": "ge-blogs-00135-tfg",
+  "latestReadyRevisionName": "ge-blogs-00136-2sq",
+  "latestCreatedRevisionName": "ge-blogs-00136-2sq",
   "readyStatus": "True",
   "trafficPercent": 100,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261123-231504-light-clean",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261124-015236-light-clean",
   "entrypointCmd": [
     "python3",
     "-B",
     "server.py"
   ],
-  "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00135-tfg",
-  "verifiedAt": "2026-11-23T23:17:29Z",
+  "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
+  "verifiedAt": "2026-11-24T01:55:01Z",
   "approvedSimplifiedHeaderDiagramsCount": 12,
   "certifiedDiagramsCount": 12,
   "workstreamsCount": 5,
@@ -26,12 +26,12 @@
   "verifiedTotalRetinaCount": 17,
   "gcpConsoleCapturesPendingSsoCount": 0,
   "currentRevisionVerification": {
-    "revision": "ge-blogs-00135-tfg",
-    "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261123-231504-light-clean",
-    "verifiedAt": "2026-11-23T23:17:29Z",
+    "revision": "ge-blogs-00136-2sq",
+    "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261124-015236-light-clean",
+    "verifiedAt": "2026-11-24T01:55:01Z",
     "controlPlaneReady": true,
     "startupProbeSucceeded": true,
-    "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00135-tfg",
+    "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
     "beyondCorpEdgeUrl": "https://ge-blogs-248990048888.cr.gclb.goog",
     "beyondCorpEdgeStatus": 302,
     "preDeployGate": "13/13 Deep Forensic Audit + Full Unit Test Suite executed before OCI layer packaging",
@@ -93,6 +93,6 @@
       }
     ],
     "historicalRevision": true,
-    "note": "Historical probe from ge-blogs-00038-f99 (2026-10-30T13:20:00Z); see currentRevisionVerification for ge-blogs-00135-tfg."
+    "note": "Historical probe from ge-blogs-00038-f99 (2026-10-30T13:20:00Z); see currentRevisionVerification for ge-blogs-00136-2sq."
   }
 }
