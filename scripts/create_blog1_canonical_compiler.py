@@ -231,13 +231,23 @@ def fit_single_line_px(text: str, max_width_px: float, font_size: float, bold: b
 _ICON_ALIASES: List[Tuple[str, str]] = [
     ("spanner", "spanner"),
     ("alloydb", "alloydb"),
+    ("cloud sql", "cloud_sql"),
+    ("cloud_sql", "cloud_sql"),
+    ("bigtable", "bigtable"),
+    ("firestore", "firestore"),
     ("bigquery", "bigquery"),
     ("bq ", "bigquery"),
+    ("model armor", "model_armor"),
+    ("cloud armor", "cloud_armor"),
     ("armor", "cloud_armor"),
     ("waf", "cloud_armor"),
     ("ddos", "cloud_armor"),
-    ("model armor", "model_armor"),
-    ("dlp", "model_armor"),
+    ("sensitive data protection", "cloud_dlp"),
+    ("data loss prevention", "cloud_dlp"),
+    ("cloud dlp", "cloud_dlp"),
+    ("dlp", "cloud_dlp"),
+    ("secret manager", "secret_manager"),
+    ("secret_manager", "secret_manager"),
     ("iap", "iap"),
     ("identity-aware", "iap"),
     ("kms", "cloud_kms"),
@@ -246,22 +256,31 @@ _ICON_ALIASES: List[Tuple[str, str]] = [
     ("crypto", "cloud_kms"),
     ("iam", "cloud_iam"),
     ("wif", "cloud_iam"),
-    ("identity", "cloud_iam"),
     ("sts", "cloud_iam"),
     ("oauth", "cloud_iam"),
     ("oidc", "cloud_iam"),
-    ("auth", "cloud_iam"),
     ("load balanc", "cloud_load_balancing"),
     ("alb", "cloud_load_balancing"),
-    ("ingress", "cloud_load_balancing"),
+    ("cloud nat", "cloud_nat"),
+    ("nat gateway", "cloud_nat"),
+    ("apigee", "apigee"),
+    ("api gateway", "api_gateway"),
+    ("agent gateway", "agent_gateway"),
+    ("pep", "agent_gateway"),
     ("cloud run", "cloud_run"),
+    ("compute engine", "compute_engine"),
     ("gke", "gke"),
     ("kubernetes", "gke"),
+    ("dataflow", "dataflow"),
+    ("pub/sub", "pubsub"),
+    ("pubsub", "pubsub"),
+    ("eventarc", "eventarc"),
+    ("workflows", "workflows"),
+    ("cloud build", "cloud_build"),
+    ("looker", "looker"),
     ("memorystore", "memorystore"),
     ("valkey", "memorystore"),
     ("redis", "memorystore"),
-    ("cache", "memorystore"),
-    ("session", "memorystore"),
     ("vertex", "vertex_ai"),
     ("embedding", "vertex_ai"),
     ("gemini", "gemini"),
@@ -269,13 +288,10 @@ _ICON_ALIASES: List[Tuple[str, str]] = [
     ("adk", "adk"),
     ("agent engine", "adk"),
     ("orchestrat", "adk"),
-    ("agent gateway", "agent_gateway"),
-    ("gateway", "agent_gateway"),
-    ("pep", "agent_gateway"),
-    ("registry", "agent_registry"),
+    ("artifact registry", "artifact_registry"),
     ("artifact", "artifact_registry"),
-    ("container", "artifact_registry"),
-    ("storage", "cloud_storage"),
+    ("agent registry", "agent_registry"),
+    ("cloud storage", "cloud_storage"),
     ("gcs", "cloud_storage"),
     ("bucket", "cloud_storage"),
     ("logging", "cloud_logging"),
@@ -297,15 +313,9 @@ _ICON_ALIASES: List[Tuple[str, str]] = [
     ("bulkhead", "finops"),
     ("quota", "finops"),
     ("mcp", "mcp_tools"),
-    ("tool", "mcp_tools"),
     ("a2a", "a2a_agents"),
-    ("api gateway", "api_gateway"),
-    ("dataflow", "cloud_run"),
-    ("pub/sub", "api_gateway"),
-    ("pubsub", "api_gateway"),
     ("client", "saas_globe"),
     ("external", "saas_globe"),
-    ("user", "saas_globe"),
     ("browser", "saas_globe"),
     ("saas", "saas_globe"),
 ]
@@ -314,9 +324,15 @@ _ICON_ALIASES: List[Tuple[str, str]] = [
 def resolve_icon_key(*hints: str, default: str = "gcp_cloud") -> str:
     icons = load_gcp_icons()
     for h in hints:
-        k = str(h or "").strip().lower().replace("-", "_").replace(" ", "_")
+        raw_h = str(h or "").strip().lower()
+        k = re.sub(r"[^a-z0-9]+", "_", raw_h).strip("_")
         if k in icons:
             return k
+        k_noslash = raw_h.replace("/", "").replace("-", "_").replace(" ", "_")
+        if k_noslash in icons:
+            return k_noslash
+        if k.startswith("cloud_") and k[6:] in icons:
+            return k[6:]
     blob = " ".join(str(h or "").lower() for h in hints)
     for needle, key in _ICON_ALIASES:
         if needle in blob and key in icons:
