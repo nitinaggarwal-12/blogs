@@ -1176,7 +1176,8 @@
       el('div', { style: { display: 'flex', gap: '7px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '4px' } },
         el('h3', { style: { fontSize: '15px', fontWeight: '800' } }, '2. Orthogonal Gemini Judge Critic'),
         makePill(judge.verdict || 'UNRUN', judge.verdict === 'APPROVED' ? 'pill-green' : 'pill-amber', false),
-        judge.orthogonalPair ? makePill(judge.orthogonalPair, 'pill-purple', false) : null
+        judge.orthogonalPair ? makePill(judge.orthogonalPair, 'pill-purple', false) : null,
+        judge.searchGrounded ? makePill('Search-Grounded (' + (judge.searchQueries || []).length + ' queries)', 'pill-green', true) : null
       ),
       el('p', { style: { fontSize: '13px', color: '#334155' } }, judge.summary || 'Not executed.')
     );
@@ -1227,7 +1228,7 @@
       const r2s = rev.round2.score != null ? rev.round2.score : '?';
       const revBox = el('div', { className: 'card', style: { margin: '14px 0', padding: '14px', background: '#f0fdf4', border: '1px solid #86efac' } },
         el('div', { style: { display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', marginBottom: '6px' } },
-          el('strong', { style: { fontSize: '13.5px', color: '#0d652d' } }, 'Auto-Revision Peer-Review Pass Executed'),
+          el('strong', { style: { fontSize: '13.5px', color: '#0d652d' } }, (rev.rolledBack ? 'Auto-Revision Tested (Retained Higher-Scoring Round 1)' : 'Auto-Revision Peer-Review Pass Executed')),
           makePill('Round 1: ' + r1s + '/100 (' + (rev.round1.verdict || '') + ')', 'pill-amber', false),
           makePill('Round 2: ' + r2s + '/100 (' + (rev.round2.verdict || '') + ')', rev.round2.verdict === 'APPROVED' ? 'pill-green' : 'pill-blue', false)
         ),

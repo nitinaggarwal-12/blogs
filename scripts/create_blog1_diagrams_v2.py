@@ -1007,9 +1007,9 @@ def compile_security_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, i
             f'<rect x="{bx:.1f}" y="778" width="92" height="56" rx="8" fill="{bcol}"/>',
             f'<text x="{bx + 46:.1f}" y="810" text-anchor="middle" font-family="Roboto Mono, monospace" font-size="12" font-weight="800" fill="#FFFFFF">{xml_esc(code)}</text>',
         ])
-        for li, ln in enumerate(_wrap(trig, 33, 2)):
+        for li, ln in enumerate(_wrap(trig, 36, 3)):
             svg_parts.append(
-                f'<text x="{bx + 104:.1f}" y="{800 + li * 16:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11" font-weight="600" fill="#1E293B">{xml_esc(ln)}</text>'
+                f'<text x="{bx + 104:.1f}" y="{794 + li * 13:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="10" font-weight="600" fill="#1E293B">{xml_esc(ln)}</text>'
             )
 
     svg_parts.append(
@@ -1223,7 +1223,7 @@ def compile_async_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]
         st_lbl = strip_inline_md(st.get("stage") or f"{si+1}. STAGE")[:26]
         svc = strip_inline_md(st.get("service") or "")[:30]
         cad = strip_inline_md(st.get("cadence") or "Async")[:24]
-        det = strip_inline_md(st.get("detail") or "")[:160]
+        det = strip_inline_md(st.get("detail") or "")[:240]
         ik = infer_gcp_icon_key(svc, st_lbl, det, st.get("iconKey", ""))
 
         mx_cells.append(
@@ -1257,9 +1257,9 @@ def compile_async_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]
             f'<text x="{x + 22:.1f}" y="{sy0 + 114:.1f}" font-family="Roboto Mono, monospace" font-size="11" font-weight="800" fill="{bd}">{xml_esc(st_lbl)}</text>',
             f'<text x="{x + 22:.1f}" y="{sy0 + 140:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="16" font-weight="800" fill="#0F172A">{xml_esc(svc[:28])}</text>',
         ])
-        for li, ln in enumerate(_wrap(det, 38, 5)):
+        for li, ln in enumerate(_wrap(det, 42, 6)):
             svg_parts.append(
-                f'<text x="{x + 22:.1f}" y="{sy0 + 174 + li * 20:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12.5" fill="#334155">{xml_esc(ln)}</text>'
+                f'<text x="{x + 22:.1f}" y="{sy0 + 168 + li * 17:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11.5" fill="#334155">{xml_esc(ln)}</text>'
             )
 
     # Bottom Dead-Letter Queue / Verification / Feedback Return Corridor

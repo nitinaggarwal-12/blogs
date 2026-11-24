@@ -709,6 +709,7 @@ def call_gemini_json(
     thinking_budget: Optional[int] = 1024,
     temperature: float = 0.25,
     timeout_s: float = 110.0,
+    use_google_search: bool = False,
 ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     """
     Strictly live Gemini JSON call supporting:
@@ -718,20 +719,21 @@ def call_gemini_json(
     """
     clean_model = model if model in ALLOWED_MODELS else "gemini-2.5-flash"
     eff_key = (api_key_override or "").strip() or os.environ.get("GEMINI_API_KEY", "").strip()
-    body_obj = {
+    gen_cfg: Dict[str, Any] = {
+        "temperature": temperature,
+        "maxOutputTokens": max_output_tokens,
+    }
+    if not use_google_search:
+        gen_cfg["responseMimeType"] = "application/json"
+    if thinking_budget is not None:
+        gen_cfg["thinkingConfig"] = {"thinkingBudget": int(thinking_budget)}
+    body_obj: Dict[str, Any] = {
         "systemInstruction": {"parts": [{"text": system_prompt}]},
         "contents": [{"role": "user", "parts": [{"text": user_prompt}]}],
-        "generationConfig": {
-            "temperature": temperature,
-            "maxOutputTokens": max_output_tokens,
-            "responseMimeType": "application/json",
-            **(
-                {"thinkingConfig": {"thinkingBudget": int(thinking_budget)}}
-                if thinking_budget is not None
-                else {}
-            ),
-        },
+        "generationConfig": gen_cfg,
     }
+    if use_google_search:
+        body_obj["tools"] = [{"googleSearch": {}}]
     payload_bytes = json.dumps(body_obj).encode("utf-8")
 
     if eff_key:
@@ -834,11 +836,13 @@ def call_gemini_json(
     if not isinstance(parsed, dict):
         raise CreateBlog1Error(f"Gemini ({clean_model}) returned non-object JSON.", 502, "MODEL_INVALID_JSON")
 
+    gm_meta = (candidates[0].get("groundingMetadata") or {}) if candidates else {}
     meta = {
         "model": clean_model,
         "authMode": auth_mode,
         "latencyMs": round((time.perf_counter() - t0) * 1000.0, 1),
         "usageMetadata": raw_resp.get("usageMetadata") or {},
+        "webSearchQueries": [str(q)[:140] for q in (gm_meta.get("webSearchQueries") or [])[:12]],
         "generatedAt": _now_iso(),
     }
     return parsed, meta
@@ -3333,16 +3337,38 @@ def run_orthogonal_llm_judge(
         + f"BLOG_MARKDOWN_EXCERPT:\n{md_text[:14000]}\n"
     )
     try:
-        res, meta = call_gemini_json(
-            system_prompt=sys_p,
-            user_prompt=usr_p,
-            model=judge_model,
-            api_key_override=api_key_override,
-            max_output_tokens=8192,
-            thinking_budget=512,
-            temperature=0.1,
-            timeout_s=75.0,
+        search_sys = (
+            sys_p
+            + " Use your live Google Search tool BEFORE rejecting any Google Cloud product, feature, GA status, "
+              "DDL/SQL/GQL syntax, or Gemini model version (e.g., verify via cloud.google.com first!). "
+              "Output ONLY raw JSON matching the exact schema above (no prose before/after)."
         )
+        try:
+            res, meta = call_gemini_json(
+                system_prompt=search_sys,
+                user_prompt=usr_p,
+                model=judge_model,
+                api_key_override=api_key_override,
+                max_output_tokens=8192,
+                thinking_budget=512,
+                temperature=0.1,
+                timeout_s=95.0,
+                use_google_search=True,
+            )
+            judge_grounded = bool(meta.get("webSearchQueries"))
+        except Exception:
+            res, meta = call_gemini_json(
+                system_prompt=sys_p,
+                user_prompt=usr_p,
+                model=judge_model,
+                api_key_override=api_key_override,
+                max_output_tokens=8192,
+                thinking_budget=512,
+                temperature=0.1,
+                timeout_s=75.0,
+                use_google_search=False,
+            )
+            judge_grounded = False
         verdict = str(res.get("verdict") or "NEEDS_REVISION").upper()
         if verdict not in ("APPROVED", "NEEDS_REVISION"):
             verdict = "NEEDS_REVISION"
@@ -3365,6 +3391,8 @@ def run_orthogonal_llm_judge(
             "summary": _sanitize_for_public_output(str(res.get("summary") or ""))[:800],
             "strengths": [_sanitize_for_public_output(str(s))[:400] for s in (res.get("strengths") or [])[:5]],
             "findings": findings,
+            "searchGrounded": judge_grounded,
+            "searchQueries": meta.get("webSearchQueries") or [],
             "latencyMs": meta.get("latencyMs", 0),
             "checkedAt": _now_iso(),
         }
@@ -3560,6 +3588,9 @@ def compile_and_save_blog(
                     temperature=0.15,
                     timeout_s=95.0,
                 )
+                import copy as _copy
+                r1_bp_backup = _copy.deepcopy(blueprint)
+                r1_tf_cnt = len(det_report.get("tfFindings") or [])
                 applied = _pipe_v2.apply_revision_patch(
                     blueprint,
                     rev_patch,
@@ -3567,29 +3598,47 @@ def compile_and_save_blog(
                     sanitize_fn=_sanitize_for_public_output,
                     strip_emoji_fn=strip_inline_md,
                 )
-                art = _compile_artifacts(blueprint)
-                det_report = art["det"]
+                art_r2 = _compile_artifacts(blueprint)
+                det_r2 = art_r2["det"]
                 judge_r2 = run_orthogonal_llm_judge(
                     bp=blueprint,
-                    md_text=art["mdText"],
+                    md_text=art_r2["mdText"],
                     generator_model=model_used,
                     api_key_override=api_key_override,
                     grounding=g_info,
-                    tf_findings=det_report.get("tfFindings") or [],
+                    tf_findings=det_r2.get("tfFindings") or [],
                 )
+                r1_score = r1_snap.get("score") if isinstance(r1_snap.get("score"), int) else 0
+                r2_score = judge_r2.get("score") if isinstance(judge_r2.get("score"), int) else 0
+                r2_tf_cnt = len(det_r2.get("tfFindings") or [])
+                improved_or_equal = (
+                    judge_r2.get("status") == "COMPLETED"
+                    and (r2_tf_cnt < r1_tf_cnt or (r2_tf_cnt <= r1_tf_cnt and r2_score >= r1_score))
+                )
+                if improved_or_equal:
+                    art = art_r2
+                    det_report = det_r2
+                    judge_report = judge_r2
+                    rolled_back = False
+                else:
+                    # Keep the higher-scoring Round 1 artifact set cleanly (zero regression)
+                    blueprint.clear()
+                    blueprint.update(r1_bp_backup)
+                    art = _compile_artifacts(blueprint)
+                    det_report = art["det"]
+                    rolled_back = True
                 revision_meta = {
                     "executed": True,
+                    "rolledBack": rolled_back,
                     "appliedFixes": applied,
                     "round1": r1_snap,
                     "round2": {
                         "verdict": judge_r2.get("verdict"),
                         "score": judge_r2.get("score"),
                         "findingCount": len(judge_r2.get("findings") or []),
-                        "tfFindingsCount": len(det_report.get("tfFindings") or []),
+                        "tfFindingsCount": r2_tf_cnt,
                     },
                 }
-                if judge_r2.get("status") == "COMPLETED":
-                    judge_report = judge_r2
             except Exception as rev_exc:
                 revision_meta = {
                     "executed": False,

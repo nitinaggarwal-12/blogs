@@ -428,7 +428,7 @@ def build_auto_revision_prompt(
 ) -> Tuple[str, str]:
     sys_p = (
         "You are a Principal Google Cloud Solutions Architect performing a surgical peer-review revision. "
-        "Apply targeted fixes for EVERY listed P0/P1 finding and Terraform security finding. "
+        "Apply targeted fixes for EVERY genuine P0/P1 DDL/SQL/security/clarity finding and Terraform security finding. NEVER remove or replace real Google Cloud products/features verified in the grounding dossier. "
         "Do NOT invent fake claims, fake benchmarks, emojis, internal links, or `allUsers` bindings. "
         "Output ONLY a JSON object with any subset of these keys to replace/update cleanly:\n"
         '{"summary":"updated executive summary (optional)","appliedFixes":["short description of each fix"],'
@@ -461,7 +461,7 @@ def apply_revision_patch(
     strip_emoji_fn: Callable[[str], str],
 ) -> List[str]:
     """Applies a surgical LLM auto-revision JSON patch in-place onto `bp`. Returns applied fix summary list."""
-    applied: List[str] = [str(x)[:200] for x in (patch.get("appliedFixes") or []) if str(x).strip()][:10]
+    applied: List[str] = [str(x)[:480] for x in (patch.get("appliedFixes") or []) if str(x).strip()][:10]
     new_sum = str(patch.get("summary") or "").strip()
     if len(new_sum) >= 40:
         bp["summary"] = sanitize_fn(new_sum)[:1600]
