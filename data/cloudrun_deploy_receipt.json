@@ -6,18 +6,18 @@
   "buildProject": "ramp-portal-dev",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "ge-blogs-00144-rd7",
-  "latestCreatedRevisionName": "ge-blogs-00144-rd7",
+  "latestReadyRevisionName": "ge-blogs-00145-2tw",
+  "latestCreatedRevisionName": "ge-blogs-00145-2tw",
   "readyStatus": "True",
   "trafficPercent": 100,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261124-065811-light-clean",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261124-071600-light-clean",
   "entrypointCmd": [
     "python3",
     "-B",
     "server.py"
   ],
   "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
-  "verifiedAt": "2026-11-24T07:00:31Z",
+  "verifiedAt": "2026-11-24T07:18:21Z",
   "approvedSimplifiedHeaderDiagramsCount": 12,
   "certifiedDiagramsCount": 12,
   "workstreamsCount": 5,
@@ -26,9 +26,9 @@
   "verifiedTotalRetinaCount": 17,
   "gcpConsoleCapturesPendingSsoCount": 0,
   "currentRevisionVerification": {
-    "revision": "ge-blogs-00144-rd7",
-    "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261124-065811-light-clean",
-    "verifiedAt": "2026-11-24T07:00:31Z",
+    "revision": "ge-blogs-00145-2tw",
+    "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261124-071600-light-clean",
+    "verifiedAt": "2026-11-24T07:18:21Z",
     "controlPlaneReady": true,
     "startupProbeSucceeded": true,
     "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
@@ -93,6 +93,6 @@
       }
     ],
     "historicalRevision": true,
-    "note": "Historical probe from ge-blogs-00038-f99 (2026-10-30T13:20:00Z); see currentRevisionVerification for ge-blogs-00144-rd7."
+    "note": "Historical probe from ge-blogs-00038-f99 (2026-10-30T13:20:00Z); see currentRevisionVerification for ge-blogs-00145-2tw."
   }
 }
