@@ -34,6 +34,8 @@
     activeCodeFile: 'README.md',
     activeJobId: null,
     pollTimer: null,
+    pollInFlight: false,
+    pollErrorCount: 0,
     confirmDeleteSlug: null,
     confirmDeleteProofId: null,
     playerSlide: 1,
@@ -1216,8 +1218,11 @@
   }
 
   async function pollJob(jobId) {
+    if (state.pollInFlight) return;
+    state.pollInFlight = true;
     try {
       const res = await apiGet('/api/create-blog1/jobs/' + encodeURIComponent(jobId));
+      state.pollErrorCount = 0;
       const job = res.job || res;
       renderJobProgress(job);
       if (job.status === 'COMPLETED') {
@@ -1226,7 +1231,7 @@
         document.getElementById('btn-generate').disabled = false;
         document.getElementById('btn-generate').textContent = 'Generate Complete Blog & Asset Kit';
         setBanner(document.getElementById('composer-msg'), 'banner-ok', 'Generated "' + (job.title || job.slug) + '". Ready for review & download.');
-        await refreshLibrary(false);
+        await refreshLibrary(false, true);
         if (job.slug) await selectBlog(job.slug);
       } else if (job.status === 'FAILED') {
         clearInterval(state.pollTimer);
@@ -1236,11 +1241,18 @@
         setBanner(document.getElementById('composer-msg'), 'banner-err', (job.errorCode ? '[' + job.errorCode + '] ' : '') + (job.error || 'Generation failed.'));
       }
     } catch (err) {
+      state.pollErrorCount += 1;
+      const transient = !err.status || err.status === 404 || err.status >= 500;
+      if (transient && state.pollErrorCount <= 5) {
+        return;
+      }
       clearInterval(state.pollTimer);
       state.pollTimer = null;
       document.getElementById('btn-generate').disabled = false;
       document.getElementById('btn-generate').textContent = 'Generate Complete Blog & Asset Kit';
       setBanner(document.getElementById('composer-msg'), 'banner-err', 'Job polling error: ' + err.message);
+    } finally {
+      state.pollInFlight = false;
     }
   }
 
@@ -1298,6 +1310,8 @@
         if (apiKeyVal) document.getElementById('inp-apikey').value = '';
         const job = res.job || res;
         state.activeJobId = job.jobId;
+        state.pollErrorCount = 0;
+        state.pollInFlight = false;
         renderJobProgress(job);
         if (state.pollTimer) clearInterval(state.pollTimer);
         state.pollTimer = setInterval(() => pollJob(job.jobId), 1200);

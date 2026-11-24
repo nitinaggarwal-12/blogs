@@ -633,5 +633,27 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
                 else:
                     os.environ[key] = prev
 
+    def test_08_job_status_gcs_fallback_and_validation(self) -> None:
+        # Reject malformed job IDs (blocks path traversal to GCS _jobs/)
+        for bad_id in ("../index", "cb1-nothexzzzzzz", "cb1-123", ""):
+            with self.assertRaises(cb1.CreateBlog1Error) as ctx:
+                cb1.get_job_status(bad_id)
+            self.assertEqual(ctx.exception.status_code, 404)
+
+        # Cross-instance lookup falls back to GCS _jobs/<jobId>.json when absent from local _JOBS
+        fake_jid = "cb1-a1b2c3d4e5f6"
+        expected = {"jobId": fake_jid, "status": "RUNNING", "progress": 72, "stage": "SYNTHESIZE_TTS"}
+        orig_dl = cb1._gcs_download_bytes
+        try:
+            cb1._gcs_download_bytes = lambda rel: (
+                json.dumps(expected).encode("utf-8") if rel == f"_jobs/{fake_jid}.json" else None
+            )
+            got = cb1.get_job_status(fake_jid)
+            self.assertEqual(got["status"], "RUNNING")
+            self.assertEqual(got["progress"], 72)
+        finally:
+            cb1._gcs_download_bytes = orig_dl
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

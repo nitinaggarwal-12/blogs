@@ -371,10 +371,65 @@ def _gcs_delete_object(rel_obj: str) -> None:
         pass
 
 
-def _sync_blog_dir_to_gcs_async(slug: str, blog_dir: Path, index_bytes: bytes) -> None:
+def _gcs_list_prefix(prefix_rel: str) -> List[str]:
+    """List GCS object keys under DURABLE_GCS_PREFIX + prefix_rel (returns rel_obj strings)."""
+    if not _is_gcs_sync_enabled():
+        return []
+    token = _get_gcp_bearer_token()
+    if not token:
+        return []
+    full_prefix = f"{DURABLE_GCS_PREFIX}{prefix_rel.lstrip('/')}"
+    results: List[str] = []
+    page_token = ""
+    for _ in range(10):
+        qs = f"prefix={urllib.parse.quote(full_prefix, safe='')}&fields=items(name),nextPageToken"
+        if page_token:
+            qs += f"&pageToken={urllib.parse.quote(page_token, safe='')}"
+        url = (
+            f"https://storage.googleapis.com/storage/v1/b/"
+            f"{urllib.parse.quote(DURABLE_GCS_BUCKET, safe='')}/o?{qs}"
+        )
+        req = urllib.request.Request(url, headers={"Authorization": f"Bearer {token}"})
+        try:
+            with urllib.request.urlopen(req, timeout=10.0) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+        except Exception:
+            break
+        for item in data.get("items") or []:
+            nm = str(item.get("name") or "")
+            if nm.startswith(DURABLE_GCS_PREFIX):
+                results.append(nm[len(DURABLE_GCS_PREFIX):])
+        page_token = str(data.get("nextPageToken") or "")
+        if not page_token:
+            break
+    return results
+
+
+def _persist_job_state_to_gcs(job_rec: Dict[str, Any], *, sync: bool = False) -> None:
+    """Persist public-safe job progress JSON to GCS so any Cloud Run replica can serve poll requests."""
     if not _is_gcs_sync_enabled():
         return
-    files_to_push: List[Tuple[str, bytes, str]] = [("index.json", index_bytes, "application/json")]
+    jid = str(job_rec.get("jobId") or "").strip()
+    if not re.fullmatch(r"cb1-[a-f0-9]{12}", jid):
+        return
+    payload = json.dumps(job_rec, separators=(",", ":")).encode("utf-8")
+    obj_rel = f"_jobs/{jid}.json"
+    if sync:
+        _gcs_upload_bytes(obj_rel, payload, "application/json")
+    else:
+        threading.Thread(
+            target=_gcs_upload_bytes,
+            args=(obj_rel, payload, "application/json"),
+            daemon=True,
+        ).start()
+
+
+def _sync_blog_dir_to_gcs_async(slug: str, blog_dir: Path, index_bytes: bytes, *, sync: bool = True) -> None:
+    """Upload blog assets in parallel before publishing index.json for cross-replica read-after-write consistency."""
+    if not _is_gcs_sync_enabled():
+        return
+    files_to_push: List[Tuple[str, bytes, str]] = []
+    manifest_entry: Optional[Tuple[str, bytes, str]] = None
     for p in sorted(blog_dir.rglob("*")):
         if not p.is_file():
             continue
@@ -385,13 +440,24 @@ def _sync_blog_dir_to_gcs_async(slug: str, blog_dir: Path, index_bytes: bytes) -
             continue
         if len(b) > 25 * 1024 * 1024:
             continue
-        files_to_push.append((f"{slug}/{rel}", b, _guess_mime(rel)))
+        entry = (f"{slug}/{rel}", b, _guess_mime(rel))
+        if rel == "manifest.json":
+            manifest_entry = entry
+        else:
+            files_to_push.append(entry)
 
-    def _worker() -> None:
-        for obj_rel, payload, mime in files_to_push:
-            _gcs_upload_bytes(obj_rel, payload, mime)
+    def _upload_all() -> None:
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            list(pool.map(lambda item: _gcs_upload_bytes(item[0], item[1], item[2]), files_to_push))
+        if manifest_entry is not None:
+            _gcs_upload_bytes(manifest_entry[0], manifest_entry[1], manifest_entry[2])
+        _gcs_upload_bytes("index.json", index_bytes, "application/json")
 
-    threading.Thread(target=_worker, daemon=True).start()
+    if sync:
+        _upload_all()
+    else:
+        threading.Thread(target=_upload_all, daemon=True).start()
 
 
 def hydrate_index_from_gcs_once(force: bool = False) -> None:
@@ -419,21 +485,11 @@ def hydrate_index_from_gcs_once(force: bool = False) -> None:
         else:
             try:
                 local = json.loads(idx_file.read_text(encoding="utf-8"))
-                by_slug: Dict[str, Dict[str, Any]] = {}
-                for entry in local.get("blogs", []):
-                    if isinstance(entry, dict) and entry.get("slug"):
-                        by_slug[str(entry["slug"])] = entry
-                for entry in parsed.get("blogs", []):
-                    if isinstance(entry, dict) and entry.get("slug"):
-                        s_k = str(entry["slug"])
-                        cur = by_slug.get(s_k)
-                        if cur is None or str(entry.get("updatedAt", "")) >= str(cur.get("updatedAt", "")):
-                            by_slug[s_k] = entry
-                merged = sorted(by_slug.values(), key=lambda x: str(x.get("createdAt", "")), reverse=True)
-                idx_file.write_text(
-                    json.dumps({"schemaVersion": "1.0", "updatedAt": _now_iso(), "blogs": merged}, indent=2),
-                    encoding="utf-8",
-                )
+                local_ts = str(local.get("updatedAt") or "")
+                remote_ts = str(parsed.get("updatedAt") or "")
+                # GCS index.json is authoritative whenever it is at least as fresh as local (propagates deletes too).
+                if force or remote_ts >= local_ts:
+                    idx_file.write_bytes(raw)
             except Exception:
                 idx_file.write_bytes(raw)
 
@@ -3517,12 +3573,17 @@ def compile_and_save_blog(
 
 def _unique_slug(base: str) -> str:
     root = get_storage_root()
+    existing_slugs = {
+        str(b.get("slug") or "")
+        for b in (_load_index(refresh_gcs=True).get("blogs") or [])
+        if isinstance(b, dict)
+    }
     cand = sanitize_slug(base)
-    if not (root / cand).exists():
+    if cand not in existing_slugs and not (root / cand).exists():
         return cand
     for i in range(2, 50):
         c2 = f"{cand[:46]}-{i}"
-        if not (root / c2).exists():
+        if c2 not in existing_slugs and not (root / c2).exists():
             return c2
     return f"{cand[:42]}-{secrets.token_hex(3)}"
 
@@ -3597,8 +3658,11 @@ def start_generation_job(
                 if _JOBS[ok].get("status") in ("COMPLETED", "FAILED"):
                     _JOBS.pop(ok, None)
         _JOBS[job_id] = job_rec
+        initial_snap = json.loads(json.dumps(job_rec))
+    _persist_job_state_to_gcs(initial_snap, sync=True)
 
     def _update_step(pct: int, stage: str, msg: str) -> None:
+        snap = None
         with _JOBS_LOCK:
             jr = _JOBS.get(job_id)
             if not jr:
@@ -3620,6 +3684,9 @@ def start_generation_job(
                 for st in jr["steps"]:
                     if st["status"] != "skipped":
                         st["status"] = "done"
+            snap = json.loads(json.dumps(jr))
+        if snap is not None:
+            _persist_job_state_to_gcs(snap, sync=False)
 
     def _runner() -> None:
         try:
@@ -3662,6 +3729,8 @@ def start_generation_job(
                 jr["title"] = manifest["title"]
                 jr["message"] = f"Ready: '{manifest['title']}' ({slug})"
                 jr["updatedAt"] = _now_iso()
+                done_snap = json.loads(json.dumps(jr))
+            _persist_job_state_to_gcs(done_snap, sync=True)
         except Exception as exc:
             err_msg = _redact_secret(getattr(exc, "message", str(exc)), transient_key)
             err_code = getattr(exc, "code", "GENERATION_FAILED")
@@ -3675,6 +3744,8 @@ def start_generation_job(
                 for st in jr["steps"]:
                     if st["status"] == "running":
                         st["status"] = "error"
+                fail_snap = json.loads(json.dumps(jr))
+            _persist_job_state_to_gcs(fail_snap, sync=True)
 
     threading.Thread(target=_runner, daemon=True).start()
     return json.loads(json.dumps(job_rec))
@@ -3682,11 +3753,21 @@ def start_generation_job(
 
 def get_job_status(job_id: str) -> Dict[str, Any]:
     jid = str(job_id or "").strip()
+    if not re.fullmatch(r"cb1-[a-f0-9]{12}", jid):
+        raise CreateBlog1Error(f"Unknown job id '{jid}'.", 404, "JOB_NOT_FOUND")
     with _JOBS_LOCK:
         jr = _JOBS.get(jid)
-        if not jr:
-            raise CreateBlog1Error(f"Unknown job id '{jid}'.", 404, "JOB_NOT_FOUND")
-        return json.loads(json.dumps(jr))
+        if jr:
+            return json.loads(json.dumps(jr))
+    raw = _gcs_download_bytes(f"_jobs/{jid}.json")
+    if raw:
+        try:
+            parsed = json.loads(raw.decode("utf-8"))
+            if isinstance(parsed, dict) and parsed.get("jobId") == jid:
+                return parsed
+        except Exception:
+            pass
+    raise CreateBlog1Error(f"Unknown job id '{jid}'.", 404, "JOB_NOT_FOUND")
 
 
 def list_blogs(refresh_gcs: bool = False) -> List[Dict[str, Any]]:
@@ -3900,10 +3981,13 @@ def delete_blog(slug: str) -> Dict[str, Any]:
         idx["blogs"] = [b for b in idx.get("blogs", []) if b.get("slug") != clean]
         index_bytes = _save_index(idx)
         if _is_gcs_sync_enabled():
+            _gcs_upload_bytes("index.json", index_bytes, "application/json")
             def _bg_del() -> None:
-                _gcs_upload_bytes("index.json", index_bytes, "application/json")
-                for rf in rel_files:
-                    _gcs_delete_object(f"{clean}/{rf}")
+                to_remove = {f"{clean}/{rf}" for rf in rel_files}
+                for obj in _gcs_list_prefix(f"{clean}/"):
+                    to_remove.add(obj)
+                for obj_rel in sorted(to_remove):
+                    _gcs_delete_object(obj_rel)
             threading.Thread(target=_bg_del, daemon=True).start()
         return {"ok": True, "deletedSlug": clean}
 
