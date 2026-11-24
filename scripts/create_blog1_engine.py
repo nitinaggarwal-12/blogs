@@ -42,6 +42,30 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
+
+def _load_sibling_mod(mod_name: str, filename: str) -> Any:
+    import importlib.util
+    import sys as _sys
+    existing = _sys.modules.get(mod_name)
+    if existing is not None:
+        return existing
+    mp = Path(__file__).resolve().parent / filename
+    spec = importlib.util.spec_from_file_location(mod_name, str(mp))
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Unable to load sibling module {mp}")
+    mod = importlib.util.module_from_spec(spec)
+    _sys.modules[mod_name] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+_diag_v2 = _load_sibling_mod("create_blog1_diagrams_v2", "create_blog1_diagrams_v2.py")
+_pipe_v2 = _load_sibling_mod("create_blog1_pipeline_v2", "create_blog1_pipeline_v2.py")
+
+
+def strip_inline_md(text: str) -> str:
+    return _diag_v2.strip_inline_md(text)
+
 DEFAULT_GCP_PROJECT = os.environ.get("GOOGLE_CLOUD_PROJECT", "ramp-portal-dev")
 DEFAULT_VERTEX_LOCATION = os.environ.get("VERTEX_AI_LOCATION", "us-central1")
 DURABLE_GCS_BUCKET = os.environ.get("DURABLE_GCS_BUCKET", "scorex-durable-state-bbar-138hf0")
@@ -623,6 +647,12 @@ def get_capabilities() -> Dict[str, Any]:
             "gcsPrefix": DURABLE_GCS_PREFIX,
             "ooxmlCompilers": True,
             "drawioAndSvgCompilers": True,
+            "googleSearchGrounding": has_vertex or has_env_key,
+            "autoRevisionPass": has_vertex or has_env_key,
+            "officialGcpSvgIcons": len(_diag_v2.load_gcp_svg_icons()),
+            "diagramLayersPerBlog": 5,
+            "slidesPerDeck": 12,
+            "deterministicGateChecks": 12,
             "workspaceOauthSync": has_workspace,
             "hostMp4Compiler": has_ffmpeg and has_svg_raster,
             "browserWebmExporter": True,
@@ -931,20 +961,20 @@ def _blueprint_user_prompt(prompt: str, title_hint: str, domain: str, audience: 
     )
 
 
-def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience: str) -> Dict[str, Any]:
-    """Enforces clean bounded shapes and strips emojis/restricted tokens without inventing fake data."""
-    title = strip_emojis(_sanitize_for_public_output(str(raw.get("title") or "Cloud Architecture Reference Guide")))[:110].strip()
-    subtitle = strip_emojis(_sanitize_for_public_output(str(raw.get("subtitle") or "Grounded Google Cloud reference architecture generated via live Gemini API.")))[:200].strip()
+def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience: str, *, target_slides: Optional[int] = None) -> Dict[str, Any]:
+    """Enforces clean bounded shapes and strips emojis/inline markdown leaks without inventing fake data."""
+    title = strip_inline_md(_sanitize_for_public_output(str(raw.get("title") or "Cloud Architecture Reference Guide")))[:110].strip()
+    subtitle = strip_inline_md(_sanitize_for_public_output(str(raw.get("subtitle") or "Grounded Google Cloud reference architecture generated via live Gemini API.")))[:200].strip()
     slug_hint = str(raw.get("slugHint") or title)
-    summary = _sanitize_for_public_output(str(raw.get("summary") or ""))[:1400].strip()
-    est_min = 10
+    summary = _sanitize_for_public_output(str(raw.get("summary") or ""))[:1800].strip()
+    est_min = 14
     try:
-        est_min = max(3, min(45, int(raw.get("estimatedReadMinutes") or 10)))
+        est_min = max(3, min(45, int(raw.get("estimatedReadMinutes") or 14)))
     except Exception:
-        est_min = 10
+        est_min = 14
 
     takeaways = [
-        strip_emojis(_sanitize_for_public_output(str(t)))[:220].strip()
+        strip_inline_md(_sanitize_for_public_output(str(t)))[:220].strip()
         for t in (raw.get("keyTakeaways") or [])
         if str(t).strip()
     ][:6]
@@ -955,8 +985,8 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
     default_titles = ("Edge & Ingress", "Control & Security Plane", "Compute & Agent Plane", "Data & Governance Plane")
     for zi in range(4):
         rz = raw_zones[zi] if zi < len(raw_zones) and isinstance(raw_zones[zi], dict) else {}
-        z_title = strip_emojis(_sanitize_for_public_output(str(rz.get("title") or default_titles[zi])))[:40]
-        z_sub = strip_emojis(_sanitize_for_public_output(str(rz.get("subtitle") or "")))[:52]
+        z_title = strip_inline_md(_sanitize_for_public_output(str(rz.get("title") or default_titles[zi])))[:40]
+        z_sub = strip_inline_md(_sanitize_for_public_output(str(rz.get("subtitle") or "")))[:52]
         raw_comps = rz.get("components") if isinstance(rz.get("components"), list) else []
         comps: List[Dict[str, str]] = []
         for ci, rc in enumerate(raw_comps[:4]):
@@ -965,21 +995,22 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
             cid = re.sub(r"[^a-zA-Z0-9_-]", "", str(rc.get("id") or f"z{zi+1}c{ci+1}"))[:24] or f"z{zi+1}c{ci+1}"
             if cid in all_comp_ids:
                 cid = f"{cid}_{zi+1}_{ci+1}"
-            lbl = strip_emojis(_sanitize_for_public_output(str(rc.get("label") or f"Service {ci+1}")))[:34]
-            sub = strip_emojis(_sanitize_for_public_output(str(rc.get("sub") or "")))[:38]
-            role = strip_emojis(_sanitize_for_public_output(str(rc.get("role") or "")))[:80]
-            comps.append({"id": cid, "label": lbl, "sub": sub, "role": role})
+            lbl = strip_inline_md(_sanitize_for_public_output(str(rc.get("label") or f"Service {ci+1}")))[:34]
+            sub = strip_inline_md(_sanitize_for_public_output(str(rc.get("sub") or "")))[:38]
+            role = strip_inline_md(_sanitize_for_public_output(str(rc.get("role") or "")))[:88]
+            ik = _diag_v2.infer_gcp_icon_key(lbl, sub, role, str(rc.get("iconKey") or ""))
+            comps.append({"id": cid, "label": lbl, "sub": sub, "role": role, "iconKey": ik})
             all_comp_ids.append(cid)
         if not comps:
             cid = f"z{zi+1}c1"
-            comps.append({"id": cid, "label": z_title[:28], "sub": "Component", "role": ""})
+            comps.append({"id": cid, "label": z_title[:28], "sub": "Component", "role": "", "iconKey": "gcp_cloud"})
             all_comp_ids.append(cid)
         zones.append({"id": f"zone_{zi+1}", "title": z_title, "subtitle": z_sub, "components": comps})
 
     id_set = set(all_comp_ids)
     raw_edges = raw.get("architectureEdges") if isinstance(raw.get("architectureEdges"), list) else []
     edges: List[Dict[str, Any]] = []
-    for re_edge in raw_edges[:14]:
+    for re_edge in raw_edges[:16]:
         if not isinstance(re_edge, dict):
             continue
         frm = str(re_edge.get("from") or "").strip()
@@ -988,7 +1019,7 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
             edges.append({
                 "from": frm,
                 "to": to,
-                "label": strip_emojis(_sanitize_for_public_output(str(re_edge.get("label") or "HTTPS / TLS")))[:32],
+                "label": strip_inline_md(_sanitize_for_public_output(str(re_edge.get("label") or "HTTPS / TLS")))[:32],
                 "dashed": bool(re_edge.get("dashed", False)),
             })
     if not edges and len(zones) == 4:
@@ -1006,11 +1037,10 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
     for ai in range(5):
         ra = raw_actors[ai] if ai < len(raw_actors) and isinstance(raw_actors[ai], dict) else {}
         aid = re.sub(r"[^a-zA-Z0-9_-]", "", str(ra.get("id") or f"a{ai+1}"))[:20] or f"a{ai+1}"
-        actors.append({
-            "id": aid,
-            "label": strip_emojis(_sanitize_for_public_output(str(ra.get("label") or default_actors[ai])))[:26],
-            "sub": strip_emojis(_sanitize_for_public_output(str(ra.get("sub") or "")))[:30],
-        })
+        albl = strip_inline_md(_sanitize_for_public_output(str(ra.get("label") or default_actors[ai])))[:26]
+        asub = strip_inline_md(_sanitize_for_public_output(str(ra.get("sub") or "")))[:30]
+        aik = _diag_v2.infer_gcp_icon_key(albl, asub, "", str(ra.get("iconKey") or ""))
+        actors.append({"id": aid, "label": albl, "sub": asub, "iconKey": aik})
     actor_ids = {a["id"] for a in actors}
 
     raw_steps = raw.get("sequenceSteps") if isinstance(raw.get("sequenceSteps"), list) else []
@@ -1030,7 +1060,7 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
             "num": len(steps) + 1,
             "from": frm,
             "to": to,
-            "label": strip_emojis(_sanitize_for_public_output(str(rs.get("label") or f"Step {si}")))[:66],
+            "label": strip_inline_md(_sanitize_for_public_output(str(rs.get("label") or f"Step {si}")))[:66],
             "kind": kind,
         })
     if not steps:
@@ -1042,133 +1072,231 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
             {"num": 5, "from": actors[4]["id"], "to": actors[0]["id"], "label": "200 OK signed response", "kind": "response"},
         ]
 
+    # Supporting C4 diagram blueprints (security L1, wire L4, async loop)
+    sec_raw = raw.get("securityDiagram") if isinstance(raw.get("securityDiagram"), dict) else {}
+    sec_layers = []
+    for rl in (sec_raw.get("layers") or [])[:4]:
+        if isinstance(rl, dict):
+            sec_layers.append({
+                "zone": strip_inline_md(_sanitize_for_public_output(str(rl.get("zone") or "")))[:42],
+                "control": strip_inline_md(_sanitize_for_public_output(str(rl.get("control") or "")))[:66],
+                "iconKey": _diag_v2.infer_gcp_icon_key(str(rl.get("control") or ""), str(rl.get("zone") or ""), "", str(rl.get("iconKey") or "")),
+                "detail": strip_inline_md(_sanitize_for_public_output(str(rl.get("detail") or "")))[:160],
+            })
+    sec_threats = []
+    for rt in (sec_raw.get("threats") or [])[:4]:
+        if isinstance(rt, dict):
+            sec_threats.append({
+                "code": strip_inline_md(str(rt.get("code") or f"T-0{len(sec_threats)+1}"))[:8],
+                "vector": strip_inline_md(_sanitize_for_public_output(str(rt.get("vector") or "")))[:48],
+                "mitigation": strip_inline_md(_sanitize_for_public_output(str(rt.get("mitigation") or "")))[:160],
+            })
+    sec_breakers = []
+    for rb in (sec_raw.get("breakers") or [])[:4]:
+        if isinstance(rb, dict):
+            sec_breakers.append({
+                "code": strip_inline_md(str(rb.get("code") or "HTTP 403"))[:14],
+                "trigger": strip_inline_md(_sanitize_for_public_output(str(rb.get("trigger") or "")))[:78],
+            })
+    security_diag = {"layers": sec_layers, "threats": sec_threats, "breakers": sec_breakers} if (sec_layers or sec_threats) else {}
+
+    wire_raw = raw.get("wireDiagram") if isinstance(raw.get("wireDiagram"), dict) else {}
+    wire_hops = []
+    for rh in (wire_raw.get("hops") or [])[:4]:
+        if isinstance(rh, dict):
+            wire_hops.append({
+                "hop": strip_inline_md(_sanitize_for_public_output(str(rh.get("hop") or f"HOP {len(wire_hops)+1}")))[:30],
+                "title": strip_inline_md(_sanitize_for_public_output(str(rh.get("title") or "")))[:34],
+                "protocol": strip_inline_md(_sanitize_for_public_output(str(rh.get("protocol") or "HTTPS")))[:32],
+                "iconKey": _diag_v2.infer_gcp_icon_key(str(rh.get("title") or ""), str(rh.get("protocol") or ""), "", str(rh.get("iconKey") or "")),
+                "added": [strip_inline_md(_sanitize_for_public_output(str(x)))[:44] for x in (rh.get("added") or []) if str(x).strip()][:4],
+                "stripped": [strip_inline_md(_sanitize_for_public_output(str(x)))[:44] for x in (rh.get("stripped") or []) if str(x).strip()][:3],
+                "sample": strip_emojis(_sanitize_for_public_output(str(rh.get("sample") or "")))[:180],
+            })
+    wire_diag = {"hops": wire_hops} if len(wire_hops) >= 2 else {}
+
+    async_raw = raw.get("asyncDiagram") if isinstance(raw.get("asyncDiagram"), dict) else {}
+    async_stages = []
+    for rs_a in (async_raw.get("stages") or [])[:4]:
+        if isinstance(rs_a, dict):
+            async_stages.append({
+                "stage": strip_inline_md(_sanitize_for_public_output(str(rs_a.get("stage") or f"{len(async_stages)+1}. STAGE")))[:28],
+                "service": strip_inline_md(_sanitize_for_public_output(str(rs_a.get("service") or "")))[:34],
+                "iconKey": _diag_v2.infer_gcp_icon_key(str(rs_a.get("service") or ""), str(rs_a.get("stage") or ""), "", str(rs_a.get("iconKey") or "")),
+                "cadence": strip_inline_md(_sanitize_for_public_output(str(rs_a.get("cadence") or "Async")))[:24],
+                "detail": strip_inline_md(_sanitize_for_public_output(str(rs_a.get("detail") or "")))[:200],
+            })
+    async_diag = (
+        {
+            "stages": async_stages,
+            "feedbackNote": strip_inline_md(_sanitize_for_public_output(str(async_raw.get("feedbackNote") or "")))[:220],
+        }
+        if len(async_stages) >= 2
+        else {}
+    )
+
     sections: List[Dict[str, Any]] = []
     raw_secs = raw.get("sections") if isinstance(raw.get("sections"), list) else []
-    for rs in raw_secs[:10]:
+    for rs in raw_secs[:12]:
         if not isinstance(rs, dict):
             continue
-        heading = strip_emojis(_sanitize_for_public_output(str(rs.get("heading") or "Architecture Details")))[:120]
+        heading = strip_inline_md(_sanitize_for_public_output(str(rs.get("heading") or "Architecture Details")))[:120]
         paras = [
             _sanitize_for_public_output(str(p)).strip()
             for p in (rs.get("paragraphs") or [])
             if str(p).strip()
-        ][:8]
+        ][:10]
         bullets = [
             _sanitize_for_public_output(str(b)).strip()
             for b in (rs.get("bullets") or [])
             if str(b).strip()
-        ][:12]
+        ][:14]
+        code_blocks = []
+        for cb in (rs.get("codeBlocks") or [])[:4]:
+            if isinstance(cb, dict) and str(cb.get("code") or "").strip():
+                lang = re.sub(r"[^a-zA-Z0-9_-]", "", str(cb.get("language") or "sql").lower())[:16] or "text"
+                code_blocks.append({
+                    "language": lang,
+                    "caption": strip_inline_md(_sanitize_for_public_output(str(cb.get("caption") or "")))[:110],
+                    "code": _sanitize_for_public_output(str(cb.get("code") or "").rstrip())[:4500],
+                })
         tbl_out = None
         rt = rs.get("table")
         if isinstance(rt, dict) and isinstance(rt.get("headers"), list) and rt["headers"]:
-            hdrs = [strip_emojis(_sanitize_for_public_output(str(h)))[:60] for h in rt["headers"][:6]]
+            hdrs = [strip_inline_md(_sanitize_for_public_output(str(h)))[:60] for h in rt["headers"][:6]]
             rows = []
-            for rr in (rt.get("rows") or [])[:10]:
+            for rr in (rt.get("rows") or [])[:12]:
                 if isinstance(rr, list) and rr:
-                    row = [strip_emojis(_sanitize_for_public_output(str(c)))[:160] for c in rr[: len(hdrs)]]
+                    row = [strip_inline_md(_sanitize_for_public_output(str(c)))[:180] for c in rr[: len(hdrs)]]
                     while len(row) < len(hdrs):
                         row.append("")
                     rows.append(row)
             if rows:
                 tbl_out = {"headers": hdrs, "rows": rows}
-        sections.append({"heading": heading, "paragraphs": paras, "bullets": bullets, "table": tbl_out})
+        sections.append({"heading": heading, "paragraphs": paras, "bullets": bullets, "codeBlocks": code_blocks, "table": tbl_out})
 
     raw_slides = raw.get("slides") if isinstance(raw.get("slides"), list) else []
-    default_kickers = (
-        "EXECUTIVE BRIEF", "PROBLEM & TARGETS", "REFERENCE ARCHITECTURE",
-        "DESIGN MATRIX", "REQUEST LIFECYCLE", "IMPLEMENTATION & GUARDRAILS",
-        "LIVE PROOF VAULT", "TRADE-OFFS & COST", "PRODUCTION READINESS",
-    )
-    default_titles = (
-        title[:58],
-        "Architectural Challenge & Design Goals",
-        "End-to-End Reference Topology",
-        "Component & Security Design Matrix",
-        "End-to-End Request Lifecycle",
-        "Implementation Guardrails & Code",
-        "Verified Console & SaaS Proofs (Before / After)",
-        "Cost, Latency & Trade-off Comparison",
-        "Production Readiness Checklist & Next Steps",
-    )
+    n_slides = target_slides if target_slides in (9, 12) else (12 if len(raw_slides) >= 10 else 9)
+    if n_slides == 12:
+        default_kickers = (
+            "EXECUTIVE BRIEF", "PROBLEM & TARGETS", "REFERENCE ARCHITECTURE (C4 L2)",
+            "DESIGN MATRIX", "REQUEST LIFECYCLE (C4 L3)", "SECURITY BOUNDARY (C4 L1)",
+            "WIRE PAYLOAD (C4 L4)", "ASYNC LIFECYCLE LOOP", "IMPLEMENTATION & GUARDRAILS",
+            "LIVE PROOF VAULT", "TRADE-OFFS & FINOPS", "PRODUCTION READINESS",
+        )
+        default_titles = (
+            title[:58],
+            "Architectural Challenge & Design Goals",
+            "Master Reference Architecture Topology",
+            "Component & Security Design Matrix",
+            "End-to-End Request Lifecycle Sequence",
+            "Trust Perimeter & Fail-Closed Security Boundary",
+            "Wire-Protocol & Schema Transformation",
+            "Async Lifecycle, Export & Erasure Loop",
+            "Implementation Guardrails & Starter Code",
+            "Verified Console & SaaS Proofs (Before / After)",
+            "Cost, Latency & Architecture Trade-offs",
+            "Production Readiness Checklist & Next Steps",
+        )
+    else:
+        default_kickers = (
+            "EXECUTIVE BRIEF", "PROBLEM & TARGETS", "REFERENCE ARCHITECTURE",
+            "DESIGN MATRIX", "REQUEST LIFECYCLE", "IMPLEMENTATION & GUARDRAILS",
+            "LIVE PROOF VAULT", "TRADE-OFFS & COST", "PRODUCTION READINESS",
+        )
+        default_titles = (
+            title[:58],
+            "Architectural Challenge & Design Goals",
+            "End-to-End Reference Topology",
+            "Component & Security Design Matrix",
+            "End-to-End Request Lifecycle",
+            "Implementation Guardrails & Code",
+            "Verified Console & SaaS Proofs (Before / After)",
+            "Cost, Latency & Trade-off Comparison",
+            "Production Readiness Checklist & Next Steps",
+        )
     slides: List[Dict[str, Any]] = []
-    for i in range(9):
+    for i in range(n_slides):
         rs = raw_slides[i] if i < len(raw_slides) and isinstance(raw_slides[i], dict) else {}
         tbl_s = None
         rt = rs.get("table")
         if isinstance(rt, dict) and isinstance(rt.get("headers"), list) and rt["headers"]:
-            hdrs = [strip_emojis(_sanitize_for_public_output(str(h)))[:40] for h in rt["headers"][:5]]
+            hdrs = [strip_inline_md(_sanitize_for_public_output(str(h)))[:40] for h in rt["headers"][:5]]
             rows = []
             for rr in (rt.get("rows") or [])[:6]:
                 if isinstance(rr, list) and rr:
-                    row = [strip_emojis(_sanitize_for_public_output(str(c)))[:95] for c in rr[: len(hdrs)]]
+                    row = [strip_inline_md(_sanitize_for_public_output(str(c)))[:105] for c in rr[: len(hdrs)]]
                     while len(row) < len(hdrs):
                         row.append("")
                     rows.append(row)
             if rows:
                 tbl_s = {"headers": hdrs, "rows": rows}
         bullets = [
-            strip_emojis(_sanitize_for_public_output(str(b)))[:140]
+            strip_inline_md(_sanitize_for_public_output(str(b)))[:140]
             for b in (rs.get("bullets") or [])
             if str(b).strip()
         ][:6]
-        notes = strip_emojis(_sanitize_for_public_output(str(rs.get("speakerNotes") or "")))[:900].strip()
+        notes = strip_inline_md(_sanitize_for_public_output(str(rs.get("speakerNotes") or "")))[:950].strip()
         if not notes:
             notes = f"{default_titles[i]}. " + (" ".join(bullets[:3]) if bullets else summary[:240])
         slides.append({
             "number": i + 1,
-            "kicker": strip_emojis(_sanitize_for_public_output(str(rs.get("kicker") or default_kickers[i])))[:36].upper(),
-            "title": strip_emojis(_sanitize_for_public_output(str(rs.get("title") or default_titles[i])))[:72],
-            "subtitle": strip_emojis(_sanitize_for_public_output(str(rs.get("subtitle") or "")))[:128],
+            "kicker": strip_inline_md(_sanitize_for_public_output(str(rs.get("kicker") or default_kickers[i])))[:38].upper(),
+            "title": strip_inline_md(_sanitize_for_public_output(str(rs.get("title") or default_titles[i])))[:72],
+            "subtitle": strip_inline_md(_sanitize_for_public_output(str(rs.get("subtitle") or "")))[:128],
             "bullets": bullets,
-            "calloutLabel": strip_emojis(_sanitize_for_public_output(str(rs.get("calloutLabel") or "")))[:40],
-            "calloutValue": strip_emojis(_sanitize_for_public_output(str(rs.get("calloutValue") or "")))[:65],
+            "calloutLabel": strip_inline_md(_sanitize_for_public_output(str(rs.get("calloutLabel") or "")))[:40],
+            "calloutValue": strip_inline_md(_sanitize_for_public_output(str(rs.get("calloutValue") or "")))[:65],
             "table": tbl_s,
-            "codeSnippet": _sanitize_for_public_output(str(rs.get("codeSnippet") or ""))[:1400],
+            "codeSnippet": _sanitize_for_public_output(str(rs.get("codeSnippet") or ""))[:1600],
             "speakerNotes": notes,
         })
 
     raw_claims = raw.get("claimLedger") if isinstance(raw.get("claimLedger"), list) else []
     claims: List[Dict[str, str]] = []
-    for ci, rc in enumerate(raw_claims[:16], 1):
+    for ci, rc in enumerate(raw_claims[:18], 1):
         if not isinstance(rc, dict):
             continue
         prov = str(rc.get("provenance") or "EXAMPLE_TARGET").strip().upper()
         if prov not in ALLOWED_PROVENANCE_TAGS:
             prov = "EXAMPLE_TARGET"
         claims.append({
-            "id": strip_emojis(str(rc.get("id") or f"CLM-{ci:02d}"))[:16],
-            "claim": strip_emojis(_sanitize_for_public_output(str(rc.get("claim") or "")))[:160],
-            "value": strip_emojis(_sanitize_for_public_output(str(rc.get("value") or "")))[:80],
+            "id": strip_inline_md(str(rc.get("id") or f"CLM-{ci:02d}"))[:16],
+            "claim": strip_inline_md(_sanitize_for_public_output(str(rc.get("claim") or "")))[:180],
+            "value": strip_inline_md(_sanitize_for_public_output(str(rc.get("value") or "")))[:80],
             "provenance": prov,
-            "basis": strip_emojis(_sanitize_for_public_output(str(rc.get("basis") or "")))[:200],
+            "basis": strip_inline_md(_sanitize_for_public_output(str(rc.get("basis") or "")))[:240],
         })
 
     raw_faq = raw.get("faq") if isinstance(raw.get("faq"), list) else []
     faq: List[Dict[str, str]] = []
-    for rf in raw_faq[:8]:
+    for rf in raw_faq[:10]:
         if isinstance(rf, dict) and str(rf.get("question") or "").strip():
             faq.append({
-                "question": strip_emojis(_sanitize_for_public_output(str(rf.get("question"))))[:220],
-                "answer": _sanitize_for_public_output(str(rf.get("answer") or ""))[:800].strip(),
+                "question": strip_inline_md(_sanitize_for_public_output(str(rf.get("question"))))[:220],
+                "answer": _sanitize_for_public_output(str(rf.get("answer") or ""))[:1000].strip(),
             })
 
     raw_refs = raw.get("references") if isinstance(raw.get("references"), list) else []
     refs: List[Dict[str, str]] = []
-    for rr in raw_refs[:10]:
+    seen_urls = set()
+    for rr in raw_refs[:14]:
         if not isinstance(rr, dict):
             continue
         safe_url = validate_safe_https_url(str(rr.get("url") or ""))
-        if not safe_url:
+        if not safe_url or safe_url in seen_urls:
             continue
+        seen_urls.add(safe_url)
         refs.append({
-            "title": strip_emojis(_sanitize_for_public_output(str(rr.get("title") or safe_url)))[:120],
+            "title": strip_inline_md(_sanitize_for_public_output(str(rr.get("title") or safe_url)))[:120],
             "url": safe_url,
-            "note": strip_emojis(_sanitize_for_public_output(str(rr.get("note") or "")))[:180],
+            "note": strip_inline_md(_sanitize_for_public_output(str(rr.get("note") or "")))[:200],
         })
 
     rc = raw.get("codeStarter") if isinstance(raw.get("codeStarter"), dict) else {}
     code_starter = {
         "readmeSummary": _sanitize_for_public_output(str(rc.get("readmeSummary") or "Review variables and security controls before applying.")),
+        "schemaSql": _sanitize_for_public_output(str(rc.get("schemaSql") or "")),
         "terraformMain": _sanitize_for_public_output(str(rc.get("terraformMain") or "")),
         "terraformVars": _sanitize_for_public_output(str(rc.get("terraformVars") or "")),
         "pythonApp": _sanitize_for_public_output(str(rc.get("pythonApp") or "")),
@@ -1182,14 +1310,17 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
         "slugHint": slug_hint,
         "summary": summary,
         "prompt": _sanitize_for_public_output(prompt.strip())[:4000],
-        "domain": strip_emojis(_sanitize_for_public_output(str(raw.get("domain") or domain or "Google Cloud Architecture")))[:80],
-        "audience": strip_emojis(_sanitize_for_public_output(str(raw.get("audience") or audience or "Solutions Architects & Engineers")))[:80],
+        "domain": strip_inline_md(_sanitize_for_public_output(str(raw.get("domain") or domain or "Google Cloud Architecture")))[:80],
+        "audience": strip_inline_md(_sanitize_for_public_output(str(raw.get("audience") or audience or "Solutions Architects & Engineers")))[:80],
         "estimatedReadMinutes": est_min,
         "keyTakeaways": takeaways,
         "architectureZones": zones,
         "architectureEdges": edges,
         "sequenceActors": actors,
         "sequenceSteps": steps,
+        "securityDiagram": security_diag,
+        "wireDiagram": wire_diag,
+        "asyncDiagram": async_diag,
         "sections": sections,
         "slides": slides,
         "claimLedger": claims,
@@ -1261,361 +1392,49 @@ def encode_drawio_studio_hash(xml_str: str) -> str:
 
 
 def compile_architecture_drawio_and_svg(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str]:
-    zones = bp["architectureZones"]
-    edges = bp["architectureEdges"]
-    title = strip_emojis(bp["title"])[:74]
-    _raw_sub = strip_emojis(bp["subtitle"])
-    subtitle = _raw_sub if len(_raw_sub) <= 135 else (_raw_sub[:132].rsplit(" ", 1)[0] + "...")
-
-    W, H = 1600, 900
-    mx_cells: List[str] = [
-        '<mxCell id="0" />',
-        '<mxCell id="1" parent="0" />',
-        (
-            f'<mxCell id="hdr_title" value="{xml_esc(title)}" '
-            'style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;'
-            'fontFamily=Helvetica;fontSize=24;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">'
-            '<mxGeometry x="40" y="24" width="1180" height="36" as="geometry" /></mxCell>'
-        ),
-        (
-            f'<mxCell id="hdr_sub" value="{xml_esc(subtitle)}" '
-            'style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;'
-            'fontFamily=Helvetica;fontSize=13;fontColor=#475569;" vertex="1" parent="1">'
-            '<mxGeometry x="40" y="62" width="1360" height="24" as="geometry" /></mxCell>'
-        ),
-    ]
-
-    svg_parts: List[str] = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" aria-label="{xml_esc(title)}">',
-        "<defs>",
-        '<marker id="cb-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">'
-        '<path d="M 0 1 L 10 5 L 0 9 z" fill="#334155"/></marker>',
-        '<marker id="cb-arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">'
-        '<path d="M 0 1 L 10 5 L 0 9 z" fill="#1A73E8"/></marker>',
-        '<filter id="cb-shadow" x="-4%" y="-4%" width="108%" height="112%">'
-        '<feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0F172A" flood-opacity="0.06"/></filter>',
-        "</defs>",
-        f'<rect x="0" y="0" width="{W}" height="{H}" fill="#FFFFFF"/>',
-        '<rect x="0" y="0" width="400" height="6" fill="#1A73E8"/>',
-        '<rect x="400" y="0" width="400" height="6" fill="#EA4335"/>',
-        '<rect x="800" y="0" width="400" height="6" fill="#FBBC04"/>',
-        '<rect x="1200" y="0" width="400" height="6" fill="#34A853"/>',
-        f'<text x="44" y="48" font-family="Google Sans, Inter, Arial, sans-serif" font-size="25" font-weight="800" fill="#0F172A">{xml_esc(title)}</text>',
-        f'<text x="44" y="75" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.5" fill="#475569">{xml_esc(subtitle)}</text>',
-        '<rect x="1306" y="24" width="250" height="32" rx="16" fill="#E8F0FE" stroke="#BFDBFE" stroke-width="1"/>',
-        '<text x="1431" y="44" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#174EA6">4-ZONE HUB-AND-SPOKE TOPOLOGY</text>',
-        '<line x1="44" y1="94" x2="1556" y2="94" stroke="#E2E8F0" stroke-width="1.5"/>',
-    ]
-
-    col_w = 342
-    gap_x = 48
-    start_x = 44
-    zone_y = 122
-    zone_h = 720
-    comp_boxes: Dict[str, Tuple[float, float, float, float, int]] = {}
-
-    for zi, z in enumerate(zones[:4]):
-        theme = _ZONE_THEMES[zi % len(_ZONE_THEMES)]
-        zx = start_x + zi * (col_w + gap_x)
-        zid = f"zone_{zi+1}"
-        mx_cells.append(
-            f'<mxCell id="{zid}" value="{xml_esc(z["title"])}" '
-            f'style="rounded=1;whiteSpace=wrap;html=0;fillColor={theme["bg"]};strokeColor={theme["border"]};'
-            f'dashed=1;dashPattern=6 4;strokeWidth=2;verticalAlign=top;align=left;spacingLeft=12;spacingTop=10;'
-            f'fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor={theme["text"]};container=1;" vertex="1" parent="1">'
-            f'<mxGeometry x="{zx}" y="{zone_y}" width="{col_w}" height="{zone_h}" as="geometry" /></mxCell>'
-        )
-        svg_parts.append(
-            f'<rect x="{zx}" y="{zone_y}" width="{col_w}" height="{zone_h}" rx="14" '
-            f'fill="{theme["bg"]}" stroke="{theme["border"]}" stroke-width="2" stroke-dasharray="7,5"/>'
-        )
-        svg_parts.append(
-            f'<rect x="{zx + 14}" y="{zone_y + 14}" width="{col_w - 28}" height="46" rx="8" fill="{theme["badge"]}"/>'
-        )
-        svg_parts.append(
-            f'<text x="{zx + 28}" y="{zone_y + 34}" font-family="Google Sans, Inter, Arial, sans-serif" '
-            f'font-size="11" font-weight="700" fill="#FFFFFF" opacity="0.9">ZONE {zi+1}</text>'
-        )
-        svg_parts.append(
-            f'<text x="{zx + 28}" y="{zone_y + 51}" font-family="Google Sans, Inter, Arial, sans-serif" '
-            f'font-size="14.5" font-weight="800" fill="#FFFFFF">{xml_esc(z["title"][:30])}</text>'
-        )
-        if z.get("subtitle"):
-            svg_parts.append(
-                f'<text x="{zx + 18}" y="{zone_y + 80}" font-family="Google Sans, Inter, Arial, sans-serif" '
-                f'font-size="11.5" font-weight="600" fill="{theme["text"]}">{xml_esc(z["subtitle"][:42])}</text>'
-            )
-
-        comps = z["components"][:4]
-        n_c = max(1, len(comps))
-        usable_h = zone_h - 118
-        slot_h = usable_h / n_c
-        card_h = min(132.0, slot_h - 24.0)
-        card_w = col_w - 40
-        for ci, comp in enumerate(comps):
-            cx = zx + 20
-            cy = zone_y + 98 + ci * slot_h + (slot_h - card_h) / 2.0
-            cid = comp["id"]
-            comp_boxes[cid] = (cx, cy, card_w, card_h, zi)
-            label_val = comp["label"] + (f"\n{comp['sub']}" if comp.get("sub") else "")
-            mx_cells.append(
-                f'<mxCell id="{xml_esc(cid)}" value="{xml_esc(label_val)}" '
-                f'style="rounded=1;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor={theme["border"]};'
-                f'strokeWidth=2;fontFamily=Helvetica;fontSize=12;fontStyle=1;fontColor=#0F172A;" '
-                f'vertex="1" parent="1">'
-                f'<mxGeometry x="{cx:.0f}" y="{cy:.0f}" width="{card_w:.0f}" height="{card_h:.0f}" as="geometry" /></mxCell>'
-            )
-            svg_parts.append(
-                f'<rect x="{cx:.1f}" y="{cy:.1f}" width="{card_w:.1f}" height="{card_h:.1f}" rx="10" '
-                f'fill="#FFFFFF" stroke="{theme["border"]}" stroke-width="1.8" filter="url(#cb-shadow)"/>'
-            )
-            svg_parts.append(
-                f'<rect x="{cx:.1f}" y="{cy:.1f}" width="7" height="{card_h:.1f}" rx="3" fill="{theme["badge"]}"/>'
-            )
-            lbl_lines = _wrap_text(comp["label"], 26, 2)
-            base_ty = cy + 28
-            for li, ln in enumerate(lbl_lines):
-                svg_parts.append(
-                    f'<text x="{cx + 20:.1f}" y="{base_ty + li * 18:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" '
-                    f'font-size="14" font-weight="800" fill="#0F172A">{xml_esc(ln)}</text>'
-                )
-            sub_y = base_ty + len(lbl_lines) * 18 + 6
-            if comp.get("sub"):
-                svg_parts.append(
-                    f'<text x="{cx + 20:.1f}" y="{sub_y:.1f}" font-family="Roboto Mono, monospace" '
-                    f'font-size="11" font-weight="600" fill="{theme["text"]}">{xml_esc(comp["sub"][:34])}</text>'
-                )
-            if comp.get("role") and card_h >= 96:
-                role_lines = _wrap_text(comp["role"], 34, 2)
-                for ri, rln in enumerate(role_lines):
-                    svg_parts.append(
-                        f'<text x="{cx + 20:.1f}" y="{sub_y + 18 + ri * 14:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" '
-                        f'font-size="10.5" fill="#475569">{xml_esc(rln)}</text>'
-                    )
-
-    for ei, edge in enumerate(edges, 1):
-        sb = comp_boxes.get(edge["from"])
-        tb = comp_boxes.get(edge["to"])
-        if not sb or not tb:
-            continue
-        sx, sy, sw, sh, szi = sb
-        tx, ty, tw, th, tzi = tb
-        dashed = bool(edge.get("dashed"))
-        stroke_col = "#1A73E8" if not dashed else "#475569"
-        dash_style = "dashed=1;dashPattern=6 4;" if dashed else ""
-        mx_cells.append(
-            f'<mxCell id="edge_{ei}" value="{xml_esc(edge["label"])}" '
-            f'style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;'
-            f'strokeColor={stroke_col};strokeWidth=2;{dash_style}endArrow=block;endFill=1;'
-            f'labelBackgroundColor=#FFFFFF;fontFamily=Helvetica;fontSize=10;fontStyle=1;fontColor=#1E293B;" '
-            f'edge="1" parent="1" source="{xml_esc(edge["from"])}" target="{xml_esc(edge["to"])}">'
-            f'<mxGeometry relative="1" as="geometry" /></mxCell>'
-        )
-        offset = ((ei % 3) - 1) * 14.0
-        if szi < tzi:
-            x1, y1 = sx + sw, sy + sh / 2.0 + offset
-            x2, y2 = tx, ty + th / 2.0 + offset
-            mx_mid = (x1 + x2) / 2.0
-            d = f"M {x1:.1f} {y1:.1f} C {mx_mid:.1f} {y1:.1f}, {mx_mid:.1f} {y2:.1f}, {x2 - 4:.1f} {y2:.1f}"
-            lx, ly = mx_mid, (y1 + y2) / 2.0
-        elif szi > tzi:
-            x1, y1 = sx, sy + sh / 2.0 + 18
-            x2, y2 = tx + tw, ty + th / 2.0 + 18
-            mx_mid = (x1 + x2) / 2.0
-            d = f"M {x1:.1f} {y1:.1f} C {mx_mid:.1f} {y1:.1f}, {mx_mid:.1f} {y2:.1f}, {x2 + 4:.1f} {y2:.1f}"
-            lx, ly = mx_mid, (y1 + y2) / 2.0 + 14
-        else:
-            x1, y1 = sx + sw / 2.0, (sy + sh if sy < ty else sy)
-            x2, y2 = tx + tw / 2.0, (ty if sy < ty else ty + th)
-            d = f"M {x1:.1f} {y1:.1f} L {x2:.1f} {y2:.1f}"
-            lx, ly = (x1 + x2) / 2.0, (y1 + y2) / 2.0
-        dash_attr = ' stroke-dasharray="6,4"' if dashed else ""
-        mk = "url(#cb-arrow-blue)" if not dashed else "url(#cb-arrow)"
-        svg_parts.append(
-            f'<path d="{d}" fill="none" stroke="{stroke_col}" stroke-width="2.2"{dash_attr} marker-end="{mk}"/>'
-        )
-        lbl = edge["label"][:24]
-        if lbl:
-            pw = max(62, len(lbl) * 6.0 + 14)
-            svg_parts.append(
-                f'<rect x="{lx - pw/2:.1f}" y="{ly - 10:.1f}" width="{pw:.1f}" height="20" rx="4" '
-                f'fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>'
-            )
-            svg_parts.append(
-                f'<text x="{lx:.1f}" y="{ly + 4:.1f}" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" '
-                f'font-size="9.8" font-weight="700" fill="#1E293B">{xml_esc(lbl)}</text>'
-            )
-
-    svg_parts.append(
-        '<text x="44" y="878" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11" fill="#64748B">'
-        'Solid Blue = Primary Data/Control Flow  |  Dashed Slate = Async / Telemetry / Policy Return  |  Dashed Borders = Trust Plane Boundaries</text>'
-    )
-    svg_parts.append("</svg>")
-
-    drawio_xml = (
-        '<?xml version="1.0" encoding="UTF-8"?>\n'
-        f'<mxfile host="ge-blogs" modified="{_now_iso()}" agent="create-blog1-engine" version="24.0.0">\n'
-        f'  <diagram id="{xml_esc(slug)}-arch" name="Reference Architecture">\n'
-        '    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">\n'
-        '      <root>\n'
-        + "\n".join(f"        {c}" for c in mx_cells)
-        + "\n      </root>\n    </mxGraphModel>\n  </diagram>\n</mxfile>\n"
-    )
-    compact_xml = re.sub(r">\s+<", "><", drawio_xml.strip())
-    viewer_url = encode_drawio_viewer_url(compact_xml)
-    return drawio_xml, "\n".join(svg_parts), viewer_url
+    xml_s, svg_s, url_s, _ = _diag_v2.compile_architecture_v2(bp, slug)
+    return xml_s, svg_s, url_s
 
 
 def compile_sequence_drawio_and_svg(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str]:
-    actors = bp["sequenceActors"][:5]
-    steps = bp["sequenceSteps"][:10]
-    _raw_bt = strip_emojis(bp["title"])
-    base_t = _raw_bt if len(_raw_bt) <= 72 else (_raw_bt[:69].rsplit(" ", 1)[0] + "...")
-    title = f"{base_t} — Request Sequence"
+    xml_s, svg_s, url_s, _ = _diag_v2.compile_sequence_v2(bp, slug)
+    return xml_s, svg_s, url_s
 
-    W, H = 1600, 900
-    mx_cells: List[str] = [
-        '<mxCell id="0" />',
-        '<mxCell id="1" parent="0" />',
-        (
-            f'<mxCell id="seq_title" value="{xml_esc(title)}" '
-            'style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;'
-            'fontFamily=Helvetica;fontSize=22;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">'
-            '<mxGeometry x="44" y="24" width="1280" height="34" as="geometry" /></mxCell>'
-        ),
-    ]
 
-    svg_parts: List[str] = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" aria-label="{xml_esc(title)}">',
-        "<defs>",
-        '<marker id="sq-req" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">'
-        '<path d="M 0 1 L 10 5 L 0 9 z" fill="#1A73E8"/></marker>',
-        '<marker id="sq-resp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">'
-        '<path d="M 0 1 L 10 5 L 0 9 z" fill="#137333"/></marker>',
-        '<marker id="sq-guard" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">'
-        '<path d="M 0 1 L 10 5 L 0 9 z" fill="#B06000"/></marker>',
-        "</defs>",
-        f'<rect x="0" y="0" width="{W}" height="{H}" fill="#FFFFFF"/>',
-        '<rect x="0" y="0" width="1600" height="6" fill="#1A73E8"/>',
-        f'<text x="44" y="48" font-family="Google Sans, Inter, Arial, sans-serif" font-size="23" font-weight="800" fill="#0F172A">{xml_esc(title)}</text>',
-        '<text x="44" y="74" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13" fill="#475569">5-Actor UML Sequence Swimlane (Static Dashed Vertical Lifelines)</text>',
-        '<rect x="1310" y="24" width="246" height="32" rx="16" fill="#E6F4EA" stroke="#A7F3D0" stroke-width="1"/>',
-        '<text x="1433" y="44" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#0D652D">END-TO-END CALL SEQUENCE</text>',
-        '<line x1="44" y1="92" x2="1556" y2="92" stroke="#E2E8F0" stroke-width="1.5"/>',
-    ]
-
-    actor_w = 232
-    actor_h = 66
-    span_x = (1600 - 110 - actor_w) / 4.0
-    actor_cx: Dict[str, float] = {}
-    lifeline_top = 186
-    lifeline_bot = 824
-
-    for ai, actor in enumerate(actors):
-        stroke_c, fill_c = _ACTOR_THEMES[ai % len(_ACTOR_THEMES)]
-        ax = 55 + ai * span_x
-        cx = ax + actor_w / 2.0
-        actor_cx[actor["id"]] = cx
-        lbl_val = actor["label"] + (f"\n{actor['sub']}" if actor.get("sub") else "")
-        mx_cells.append(
-            f'<mxCell id="act_{ai+1}" value="{xml_esc(lbl_val)}" '
-            f'style="rounded=1;whiteSpace=wrap;html=0;fillColor={fill_c};strokeColor={stroke_c};'
-            f'strokeWidth=2;fontFamily=Helvetica;fontSize=12;fontStyle=1;fontColor=#0F172A;" '
-            f'vertex="1" parent="1">'
-            f'<mxGeometry x="{ax:.0f}" y="114" width="{actor_w}" height="{actor_h}" as="geometry" /></mxCell>'
-        )
-        mx_cells.append(
-            f'<mxCell id="life_{ai+1}" value="" '
-            f'style="endArrow=none;dashed=1;dashPattern=6 4;strokeWidth=2;strokeColor=#94A3B8;html=0;" '
-            f'edge="1" parent="1">'
-            f'<mxGeometry relative="1" as="geometry">'
-            f'<mxPoint x="{cx:.0f}" y="{lifeline_top}" as="sourcePoint"/>'
-            f'<mxPoint x="{cx:.0f}" y="{lifeline_bot}" as="targetPoint"/>'
-            f'</mxGeometry></mxCell>'
-        )
-        svg_parts.append(
-            f'<rect x="{ax:.1f}" y="114" width="{actor_w}" height="{actor_h}" rx="10" fill="{fill_c}" stroke="{stroke_c}" stroke-width="2"/>'
-        )
-        svg_parts.append(
-            f'<text x="{cx:.1f}" y="143" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" '
-            f'font-size="14" font-weight="800" fill="#0F172A">{xml_esc(actor["label"][:24])}</text>'
-        )
-        if actor.get("sub"):
-            svg_parts.append(
-                f'<text x="{cx:.1f}" y="162" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" '
-                f'font-size="11" font-weight="600" fill="#475569">{xml_esc(actor["sub"][:28])}</text>'
-            )
-        svg_parts.append(
-            f'<line x1="{cx:.1f}" y1="{lifeline_top}" x2="{cx:.1f}" y2="{lifeline_bot}" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6,4"/>'
-        )
-        svg_parts.append(
-            f'<rect x="{ax + 24:.1f}" y="{lifeline_bot}" width="{actor_w - 48}" height="28" rx="6" fill="#F8FAFC" stroke="{stroke_c}" stroke-width="1.2"/>'
-        )
-        svg_parts.append(
-            f'<text x="{cx:.1f}" y="{lifeline_bot + 18}" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" '
-            f'font-size="10.5" font-weight="700" fill="#334155">{xml_esc(actor["label"][:20])}</text>'
-        )
-
-    n_steps = max(1, len(steps))
-    row_gap = (lifeline_bot - lifeline_top - 60) / float(n_steps)
-    for si, st in enumerate(steps):
-        sy = lifeline_top + 42 + si * row_gap
-        x1 = actor_cx.get(st["from"], 170.0)
-        x2 = actor_cx.get(st["to"], 480.0)
-        if abs(x1 - x2) < 10:
-            x2 = x1 + 140
-        kind = st.get("kind", "request")
-        if kind == "response":
-            col, mk, dash_xml, dash_svg = "#137333", "url(#sq-resp)", "dashed=1;dashPattern=6 4;", ' stroke-dasharray="6,4"'
-        elif kind == "guard":
-            col, mk, dash_xml, dash_svg = "#B06000", "url(#sq-guard)", "", ""
-        else:
-            col, mk, dash_xml, dash_svg = "#1A73E8", "url(#sq-req)", "", ""
-        lbl = f"{st['num']}. {st['label']}"
-        mx_cells.append(
-            f'<mxCell id="step_{si+1}" value="{xml_esc(lbl)}" '
-            f'style="endArrow=block;endFill=1;strokeWidth=2.2;strokeColor={col};{dash_xml}'
-            f'labelBackgroundColor=#FFFFFF;fontFamily=Helvetica;fontSize=11;fontStyle=1;fontColor=#0F172A;html=0;" '
-            f'edge="1" parent="1">'
-            f'<mxGeometry relative="1" as="geometry">'
-            f'<mxPoint x="{x1:.0f}" y="{sy:.0f}" as="sourcePoint"/>'
-            f'<mxPoint x="{x2:.0f}" y="{sy:.0f}" as="targetPoint"/>'
-            f'</mxGeometry></mxCell>'
-        )
-        svg_parts.append(f'<circle cx="{x1:.1f}" cy="{sy:.1f}" r="4.5" fill="{col}"/>')
-        tx_end = x2 - 6 if x2 > x1 else x2 + 6
-        svg_parts.append(
-            f'<line x1="{x1:.1f}" y1="{sy:.1f}" x2="{tx_end:.1f}" y2="{sy:.1f}" stroke="{col}" stroke-width="2.4"{dash_svg} marker-end="{mk}"/>'
-        )
-        mid_x = (x1 + x2) / 2.0
-        lbl_trim = lbl[:58]
-        pill_w = max(120, min(520, len(lbl_trim) * 6.8 + 26))
-        svg_parts.append(
-            f'<rect x="{mid_x - pill_w/2:.1f}" y="{sy - 26:.1f}" width="{pill_w:.1f}" height="21" rx="5" fill="#FFFFFF" stroke="{col}" stroke-width="1"/>'
-        )
-        svg_parts.append(
-            f'<text x="{mid_x:.1f}" y="{sy - 11.5:.1f}" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" '
-            f'font-size="11.2" font-weight="700" fill="#0F172A">{xml_esc(lbl_trim)}</text>'
-        )
-
-    svg_parts.append(
-        '<text x="44" y="882" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11" fill="#64748B">'
-        'Solid Blue = Request / Invoke  |  Amber = Security / Policy Guard  |  Dashed Green = Response / Audit Emit</text>'
-    )
-    svg_parts.append("</svg>")
-
-    drawio_xml = (
-        '<?xml version="1.0" encoding="UTF-8"?>\n'
-        f'<mxfile host="ge-blogs" modified="{_now_iso()}" agent="create-blog1-engine" version="24.0.0">\n'
-        f'  <diagram id="{xml_esc(slug)}-seq" name="Request Sequence">\n'
-        '    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">\n'
-        '      <root>\n'
-        + "\n".join(f"        {c}" for c in mx_cells)
-        + "\n      </root>\n    </mxGraphModel>\n  </diagram>\n</mxfile>\n"
-    )
-    compact_xml = re.sub(r">\s+<", "><", drawio_xml.strip())
-    viewer_url = encode_drawio_viewer_url(compact_xml)
-    return drawio_xml, "\n".join(svg_parts), viewer_url
+def compile_all_diagrams_v2(bp: Dict[str, Any], slug: str) -> Dict[str, Dict[str, Any]]:
+    """Compiles all 5 C4-layered 1600x900 Draw.io + SVG diagrams with official multi-color GCP icons."""
+    ax, asvg, aurl, aic = _diag_v2.compile_architecture_v2(bp, slug)
+    sx, ssvg, surl, sic = _diag_v2.compile_sequence_v2(bp, slug)
+    kx, ksvg, kurl, kic = _diag_v2.compile_security_v2(bp, slug)
+    wx, wsvg, wurl, wic = _diag_v2.compile_wire_v2(bp, slug)
+    yx, ysvg, yurl, yic = _diag_v2.compile_async_v2(bp, slug)
+    return {
+        "architecture": {
+            "id": f"{slug}-architecture", "kind": "architecture", "layer": "C4 L2", "slide": 3,
+            "label": "Figure 1 — Master Reference Architecture (C4 L2)",
+            "xml": ax, "svg": asvg, "viewerUrl": aurl, "iconCount": aic,
+        },
+        "sequence": {
+            "id": f"{slug}-sequence", "kind": "sequence", "layer": "C4 L3", "slide": 5,
+            "label": "Figure 2 — End-to-End Request Lifecycle Sequence (C4 L3)",
+            "xml": sx, "svg": ssvg, "viewerUrl": surl, "iconCount": sic,
+        },
+        "security": {
+            "id": f"{slug}-security", "kind": "security", "layer": "C4 L1", "slide": 6,
+            "label": "Figure 3 — Trust Perimeter & Security Boundary (C4 L1)",
+            "xml": kx, "svg": ksvg, "viewerUrl": kurl, "iconCount": kic,
+        },
+        "wire": {
+            "id": f"{slug}-wire", "kind": "wire", "layer": "C4 L4", "slide": 7,
+            "label": "Figure 4 — Wire-Protocol & Schema Transformation (C4 L4)",
+            "xml": wx, "svg": wsvg, "viewerUrl": wurl, "iconCount": wic,
+        },
+        "async": {
+            "id": f"{slug}-async", "kind": "async", "layer": "ASYNC", "slide": 8,
+            "label": "Figure 5 — Async State, Export & Lifecycle Loop",
+            "xml": yx, "svg": ysvg, "viewerUrl": yurl, "iconCount": yic,
+        },
+    }
 
 
 def parse_image_header(data: bytes) -> Tuple[str, int, int, str]:
@@ -1714,18 +1533,42 @@ def compile_slide_preview_svgs(
     seq_svg: str,
     proofs: List[Dict[str, Any]],
     blog_dir: Path,
+    extra_svgs: Optional[Dict[str, str]] = None,
 ) -> List[str]:
     out_svgs: List[str] = []
     slides = bp["slides"]
+    total = 12 if len(slides) >= 12 else len(slides[:9])
+    if total == 0:
+        return []
+    is_v2 = total == 12
     arch_uri = _svg_data_uri(arch_svg.encode("utf-8"), "image/svg+xml")
     seq_uri = _svg_data_uri(seq_svg.encode("utf-8"), "image/svg+xml")
+    ex = extra_svgs or {}
+    sec_uri = _svg_data_uri(ex["security"].encode("utf-8"), "image/svg+xml") if ex.get("security") else None
+    wire_uri = _svg_data_uri(ex["wire"].encode("utf-8"), "image/svg+xml") if ex.get("wire") else None
+    async_uri = _svg_data_uri(ex["async"].encode("utf-8"), "image/svg+xml") if ex.get("async") else None
 
-    for i, sl in enumerate(slides[:9]):
+    code_slide_num = 9 if is_v2 else 6
+    proof_slide_num = 10 if is_v2 else 7
+    table_slide_nums = (4, 11) if is_v2 else (4, 8)
+    diag_slides: Dict[int, Tuple[Optional[str], str, str]] = {
+        3: (arch_uri, "ARCHITECTURE RAIL", "#1A73E8"),
+        5: (seq_uri, "SEQUENCE CHECKPOINTS", "#137333"),
+    }
+    if is_v2:
+        if sec_uri:
+            diag_slides[6] = (sec_uri, "PERIMETER CONTROLS", "#991B1B")
+        if wire_uri:
+            diag_slides[7] = (wire_uri, "WIRE TRANSFORM NOTES", "#5B21B6")
+        if async_uri:
+            diag_slides[8] = (async_uri, "ASYNC LOOP & REPLAY", "#8A4600")
+
+    for i, sl in enumerate(slides[:total]):
         num = i + 1
-        kicker = strip_emojis(sl.get("kicker") or f"SLIDE {num}")
-        title = strip_emojis(sl.get("title") or bp["title"])
-        subtitle = strip_emojis(sl.get("subtitle") or "")
-        bullets = [strip_emojis(b) for b in (sl.get("bullets") or [])]
+        kicker = strip_inline_md(sl.get("kicker") or f"SLIDE {num}").upper()
+        title = strip_inline_md(sl.get("title") or bp["title"])
+        subtitle = strip_inline_md(sl.get("subtitle") or "")
+        bullets = [strip_inline_md(b) for b in (sl.get("bullets") or []) if strip_inline_md(b)]
 
         parts: List[str] = [
             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">',
@@ -1741,23 +1584,23 @@ def compile_slide_preview_svgs(
                 '<rect x="0" y="8" width="1600" height="892" fill="#F8FAFC"/>',
                 '<rect x="76" y="130" width="10" height="390" rx="5" fill="#1A73E8"/>',
                 '<rect x="116" y="130" width="330" height="36" rx="18" fill="#E8F0FE" stroke="#BFDBFE" stroke-width="1"/>',
-                f'<text x="136" y="154" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13" font-weight="800" fill="#174EA6">{xml_esc(bp["domain"].upper()[:30])}</text>',
+                f'<text x="136" y="154" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13" font-weight="800" fill="#174EA6">{xml_esc(strip_inline_md(bp["domain"]).upper()[:30])}</text>',
             ])
-            tlines = _wrap_text(bp["title"], 38, 3)
+            tlines = _wrap_text(strip_inline_md(bp["title"]), 38, 3)
             for li, ln in enumerate(tlines):
                 parts.append(
                     f'<text x="116" y="{236 + li * 62}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="50" font-weight="800" fill="#0F172A">{xml_esc(ln)}</text>'
                 )
-            slines = _wrap_text(bp["subtitle"], 88, 3)
+            slines = _wrap_text(strip_inline_md(bp["subtitle"]), 88, 3)
             sub_y = 236 + len(tlines) * 62 + 18
             for li, ln in enumerate(slines):
                 parts.append(
                     f'<text x="116" y="{sub_y + li * 30}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="22" fill="#475569">{xml_esc(ln)}</text>'
                 )
-            cards = bp.get("keyTakeaways")[:3] or bullets[:3]
+            cards = [strip_inline_md(x) for x in (bp.get("keyTakeaways") or [])[:3]] or bullets[:3]
             for ci, ctxt in enumerate(cards):
                 cx = 116 + ci * 468
-                parts.append(f'<rect x="{cx}" y="585" width="440" height="155" rx="14" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>')
+                parts.append(f'<rect x="{cx}" y="585" width="440" height="165" rx="14" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>')
                 bar_c = ("#1A73E8", "#137333", "#EA8600")[ci % 3]
                 parts.append(f'<rect x="{cx}" y="585" width="440" height="7" rx="3" fill="{bar_c}"/>')
                 parts.append(f'<text x="{cx + 22}" y="622" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12" font-weight="800" fill="{bar_c}">KEY TAKEAWAY {ci+1}</text>')
@@ -1770,34 +1613,22 @@ def compile_slide_preview_svgs(
                 f'<text x="64" y="138" font-family="Google Sans, Inter, Arial, sans-serif" font-size="17" fill="#475569">{xml_esc(subtitle[:110])}</text>',
                 '<line x1="64" y1="158" x2="1536" y2="158" stroke="#E2E8F0" stroke-width="1.8"/>',
             ])
-            if num == 3:
+            if num in diag_slides and diag_slides[num][0]:
+                d_uri, rail_hdr, rail_col = diag_slides[num]
                 parts.extend([
                     '<rect x="64" y="178" width="1140" height="638" rx="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>',
-                    f'<image href="{arch_uri}" x="70" y="184" width="1128" height="626" preserveAspectRatio="xMidYMid meet"/>',
+                    f'<image href="{d_uri}" x="70" y="184" width="1128" height="626" preserveAspectRatio="xMidYMid meet"/>',
                     '<rect x="1228" y="178" width="308" height="638" rx="12" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>',
-                    '<text x="1250" y="214" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13" font-weight="800" fill="#1A73E8">ARCHITECTURE RAIL</text>',
+                    f'<text x="1250" y="214" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12.5" font-weight="800" fill="{rail_col}">{xml_esc(rail_hdr)}</text>',
                 ])
                 for bi, b in enumerate(bullets[:4]):
                     by = 238 + bi * 126
                     parts.append(f'<rect x="1248" y="{by}" width="268" height="108" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>')
                     for li, ln in enumerate(_wrap_text(b, 27, 4)):
-                        parts.append(f'<text x="1262" y="{by + 26 + li * 20}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#0F172A">{xml_esc(ln)}</text>')
-                parts.append('<text x="1250" y="794" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12.5" font-weight="700" text-decoration="underline" fill="#1A73E8">Edit in Draw.io (.pptx link)</text>')
-            elif num == 5:
-                parts.extend([
-                    '<rect x="64" y="178" width="1140" height="638" rx="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>',
-                    f'<image href="{seq_uri}" x="70" y="184" width="1128" height="626" preserveAspectRatio="xMidYMid meet"/>',
-                    '<rect x="1228" y="178" width="308" height="638" rx="12" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>',
-                    '<text x="1250" y="214" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13" font-weight="800" fill="#137333">SEQUENCE CHECKPOINTS</text>',
-                ])
-                for bi, b in enumerate(bullets[:4]):
-                    by = 238 + bi * 126
-                    parts.append(f'<rect x="1248" y="{by}" width="268" height="108" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>')
-                    for li, ln in enumerate(_wrap_text(b, 27, 4)):
-                        parts.append(f'<text x="1262" y="{by + 26 + li * 20}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#0F172A">{xml_esc(ln)}</text>')
-                parts.append('<text x="1250" y="794" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12.5" font-weight="700" text-decoration="underline" fill="#1A73E8">Edit in Draw.io (.pptx link)</text>')
-            elif num == 6:
-                code_raw = sl.get("codeSnippet") or bp["codeStarter"].get("pythonApp", "")
+                        parts.append(f'<text x="1262" y="{by + 26 + li * 20}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.2" font-weight="600" fill="#0F172A">{xml_esc(ln)}</text>')
+                parts.append(f'<text x="1250" y="794" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12" font-weight="700" text-decoration="underline" fill="{rail_col}">Edit in Draw.io (.pptx link)</text>')
+            elif num == code_slide_num:
+                code_raw = sl.get("codeSnippet") or bp["codeStarter"].get("schemaSql") or bp["codeStarter"].get("pythonApp", "")
                 code_lines = [ln[:82] for ln in code_raw.splitlines()][:20]
                 parts.extend([
                     '<rect x="64" y="186" width="960" height="618" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>',
@@ -1814,8 +1645,8 @@ def compile_slide_preview_svgs(
                     by = 252 + bi * 102
                     parts.append(f'<rect x="1076" y="{by}" width="434" height="86" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>')
                     for li, ln in enumerate(_wrap_text(b, 42, 3)):
-                        parts.append(f'<text x="1096" y="{by + 28 + li * 21}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="14.5" font-weight="600" fill="#0F172A">{xml_esc(ln)}</text>')
-            elif num == 7:
+                        parts.append(f'<text x="1096" y="{by + 28 + li * 21}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="14.2" font-weight="600" fill="#0F172A">{xml_esc(ln)}</text>')
+            elif num == proof_slide_num:
                 if proofs:
                     shown = proofs[:2]
                     cw = 716 if len(shown) == 2 else 1472
@@ -1825,7 +1656,7 @@ def compile_slide_preview_svgs(
                         parts.append(f'<rect x="{px}" y="188" width="{cw}" height="590" rx="12" fill="#F8FAFC" stroke="#137333" stroke-width="2"/>')
                         parts.append(f'<rect x="{px + 18}" y="204" width="142" height="28" rx="14" fill="#137333"/>')
                         parts.append(f'<text x="{px + 89}" y="223" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11.5" font-weight="800" fill="#FFFFFF">{xml_esc(pf["stage"])}</text>')
-                        parts.append(f'<text x="{px + 174}" y="223" font-family="Google Sans, Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#0F172A">{xml_esc(pf["caption"][:48])}</text>')
+                        parts.append(f'<text x="{px + 174}" y="223" font-family="Google Sans, Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#0F172A">{xml_esc(strip_inline_md(pf["caption"])[:48])}</text>')
                         if pfile.is_file():
                             uri = _svg_data_uri(pfile.read_bytes(), pf["mime"])
                             parts.append(f'<image href="{uri}" x="{px + 18}" y="246" width="{cw - 36}" height="480" preserveAspectRatio="xMidYMid meet"/>')
@@ -1838,12 +1669,12 @@ def compile_slide_preview_svgs(
                         px = 64 + pi * 756
                         parts.append(f'<rect x="{px}" y="200" width="716" height="530" rx="14" fill="#FFFBEB" stroke="#D97706" stroke-width="2.5" stroke-dasharray="10,7"/>')
                         parts.append(f'<text x="{px + 358}" y="388" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="22" font-weight="800" fill="#92400E">{xml_esc(slot)}</text>')
-                        parts.append(f'<text x="{px + 358}" y="428" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="15.5" font-weight="600" fill="#78350F">AUTHENTIC LIVE PROOF REQUIRED — ZERO FAKE SCREENSHOTS</text>')
-                        parts.append(f'<text x="{px + 358}" y="462" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.5" fill="#92400E">Upload genuine PNG/JPEG via Live Proofs tab to auto-embed into Slide 7 (.pptx/.docx).</text>')
+                        parts.append('<text x="{0}" y="428" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="15.5" font-weight="600" fill="#78350F">AUTHENTIC LIVE PROOF REQUIRED — ZERO FAKE SCREENSHOTS</text>'.format(px + 358))
+                        parts.append(f'<text x="{px + 358}" y="462" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.5" fill="#92400E">Upload genuine PNG/JPEG via Live Proofs tab to auto-embed into Slide {proof_slide_num} (.pptx/.docx).</text>')
                     guide = bullets[:2]
                     if guide:
                         parts.append(f'<text x="64" y="778" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#334155">Capture target: {xml_esc(" | ".join(guide)[:130])}</text>')
-            elif sl.get("table") and num in (4, 8):
+            elif sl.get("table") and num in table_slide_nums:
                 parts.append(_render_slide_table_svg(sl["table"], 64, 198, 1472, 470))
                 if bullets:
                     parts.append('<rect x="64" y="700" width="1472" height="106" rx="10" fill="#E8F0FE" stroke="#BFDBFE"/>')
@@ -1862,15 +1693,15 @@ def compile_slide_preview_svgs(
                         parts.append(f'<text x="140" y="{by + (42 if len(lines) == 2 else 54) + li * 25}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="18.5" font-weight="600" fill="#0F172A">{xml_esc(ln)}</text>')
                 if sl.get("calloutValue"):
                     parts.append('<rect x="1056" y="196" width="480" height="320" rx="16" fill="#E8F0FE" stroke="#1A73E8" stroke-width="2"/>')
-                    parts.append(f'<text x="1090" y="246" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.5" font-weight="800" fill="#174EA6">{xml_esc((sl.get("calloutLabel") or "GROUNDED METRIC").upper())}</text>')
-                    for li, ln in enumerate(_wrap_text(sl["calloutValue"], 22, 4)):
+                    parts.append(f'<text x="1090" y="246" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.5" font-weight="800" fill="#174EA6">{xml_esc(strip_inline_md(sl.get("calloutLabel") or "GROUNDED METRIC").upper())}</text>')
+                    for li, ln in enumerate(_wrap_text(strip_inline_md(sl["calloutValue"]), 22, 4)):
                         parts.append(f'<text x="1090" y="{310 + li * 42}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="30" font-weight="800" fill="#0F172A">{xml_esc(ln)}</text>')
                     parts.append('<text x="1090" y="486" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12" fill="#174EA6">See Claim Provenance Ledger for basis.</text>')
 
         parts.extend([
             '<line x1="64" y1="846" x2="1536" y2="846" stroke="#E2E8F0" stroke-width="1.2"/>',
             f'<text x="64" y="876" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#64748B">Create Blog1 Architecture Brief  |  {xml_esc(slug)}</text>',
-            f'<text x="1536" y="876" text-anchor="end" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13" font-weight="800" fill="#334155">{num} / 9</text>',
+            f'<text x="1536" y="876" text-anchor="end" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13" font-weight="800" fill="#334155">{num} / {total}</text>',
             "</svg>",
         ])
         out_svgs.append("\n".join(parts))
@@ -2007,16 +1838,23 @@ def compile_pptx_bytes(
     seq_url: str,
     proofs: List[Dict[str, Any]],
     blog_dir: Path,
+    extra_urls: Optional[Dict[str, str]] = None,
 ) -> bytes:
-    """Builds a valid 9-slide native editable OOXML .pptx ZIP with speaker notes & hyperlinks."""
+    """Builds a valid 9- or 12-slide native editable OOXML .pptx ZIP with speaker notes & Draw.io #R hyperlinks."""
     buf = io.BytesIO()
     media_entries: Dict[str, bytes] = {}
     has_png = False
     has_jpg = False
+    ex_urls = extra_urls or {}
 
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
-        slides_data = bp["slides"][:9]
-        slide_rels_extra: Dict[int, List[str]] = {i: [] for i in range(1, 10)}
+        total_slides = 12 if len(bp.get("slides") or []) >= 12 else len((bp.get("slides") or [])[:9])
+        is_v2 = total_slides == 12
+        code_idx = 9 if is_v2 else 6
+        proof_idx = 10 if is_v2 else 7
+        tbl_idxs = (4, 11) if is_v2 else (4, 8)
+        slides_data = bp["slides"][:total_slides]
+        slide_rels_extra: Dict[int, List[str]] = {i: [] for i in range(1, total_slides + 1)}
 
         for idx, sl in enumerate(slides_data, 1):
             shapes: List[str] = []
@@ -2025,10 +1863,10 @@ def compile_pptx_bytes(
                 shapes.append(_pptx_rect(sid, f"bar_{qi}", qi * 400, 0, 400, 8, fill_hex=hex_c))
                 sid += 1
 
-            kicker = strip_emojis(sl.get("kicker") or f"SECTION {idx}")
-            title = strip_emojis(sl.get("title") or bp["title"])
-            subtitle = strip_emojis(sl.get("subtitle") or "")
-            bullets = [strip_emojis(b) for b in (sl.get("bullets") or [])]
+            kicker = strip_inline_md(sl.get("kicker") or f"SECTION {idx}").upper()
+            title = strip_inline_md(sl.get("title") or bp["title"])
+            subtitle = strip_inline_md(sl.get("subtitle") or "")
+            bullets = [strip_inline_md(b) for b in (sl.get("bullets") or []) if strip_inline_md(b)]
 
             if idx == 1:
                 shapes.append(_pptx_rect(sid, "bg", 0, 8, 1600, 892, fill_hex="F8FAFC"))
@@ -2067,7 +1905,7 @@ def compile_pptx_bytes(
                             fill_hex="FFFFFF", line_hex=col_hex, line_pt=1.5, rounded=True,
                             text_runs=[
                                 {"text": f"KEY TAKEAWAY {ci+1}", "pt": 9.5, "bold": True, "color": col_hex, "spcAft": 80},
-                                {"text": str(ctxt)[:160], "pt": 12.5, "color": "0F172A"},
+                                {"text": strip_inline_md(str(ctxt))[:160], "pt": 12.5, "color": "0F172A"},
                             ],
                             pad_lr=160000, pad_tb=120000,
                         )
@@ -2209,7 +2047,89 @@ def compile_pptx_bytes(
                         )
                     )
                     sid += 1
-                elif idx == 6:
+                elif is_v2 and idx in (6, 7, 8):
+                    d_kind, d_title, d_col, d_bg = {
+                        6: ("security", "C4 L1 Trust Perimeter & Security Boundary", "991B1B", "FEF2F2"),
+                        7: ("wire", "C4 L4 Wire Payload & Schema Transformation", "5B21B6", "F3E8FD"),
+                        8: ("async", "Async Lifecycle, Export & Recovery Loop", "8A4600", "FEF7E0"),
+                    }[idx]
+                    d_url = ex_urls.get(d_kind) or arch_url
+                    r_id_link = "rId10"
+                    slide_rels_extra[idx].append(
+                        f'<Relationship Id="{r_id_link}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" '
+                        f'Target="{xml_esc(d_url)}" TargetMode="External"/>'
+                    )
+                    if d_kind == "security":
+                        lays = (bp.get("securityDiagram") or {}).get("layers") or []
+                        for li, lay in enumerate(lays[:4]):
+                            shapes.append(
+                                _pptx_rect(
+                                    sid, f"sec_l_{li}", 64 + li * 22, 182 + li * 130, 1110 - li * 44, 112,
+                                    fill_hex=d_bg if li % 2 == 0 else "FFFFFF", line_hex=d_col, line_pt=1.5, dash="dash", rounded=True,
+                                    text_runs=[
+                                        {"text": f"{strip_inline_md(lay.get('zone', f'Layer {li+1}'))[:38]}  —  {strip_inline_md(lay.get('control', ''))[:52]}", "pt": 11.5, "bold": True, "color": "0F172A", "spcAft": 40},
+                                        {"text": strip_inline_md(lay.get("detail", ""))[:110], "pt": 9.8, "color": "475569"},
+                                    ],
+                                    valign="ctr", pad_lr=140000,
+                                )
+                            )
+                            sid += 1
+                    elif d_kind == "wire":
+                        hops = (bp.get("wireDiagram") or {}).get("hops") or []
+                        for hi, hp in enumerate(hops[:4]):
+                            hx = 64 + hi * 282
+                            added = ", ".join(strip_inline_md(x) for x in (hp.get("added") or [])[:3])
+                            shapes.append(
+                                _pptx_rect(
+                                    sid, f"wire_h_{hi}", hx, 186, 264, 520,
+                                    fill_hex="FFFFFF", line_hex=d_col, line_pt=1.5, rounded=True,
+                                    text_runs=[
+                                        {"text": strip_inline_md(hp.get("hop", f"HOP {hi+1}"))[:24], "pt": 9.5, "bold": True, "color": d_col, "spcAft": 40},
+                                        {"text": strip_inline_md(hp.get("title", ""))[:28], "pt": 12, "bold": True, "color": "0F172A", "spcAft": 80},
+                                        {"text": f"+ {added[:120]}" if added else "Protocol framing", "pt": 9.5, "color": "137333", "spcAft": 100},
+                                        {"text": strip_inline_md(hp.get("sample", ""))[:110], "pt": 8.5, "font": "Courier New", "color": "334155"},
+                                    ],
+                                    pad_lr=100000, pad_tb=110000,
+                                )
+                            )
+                            sid += 1
+                    else:
+                        stages = (bp.get("asyncDiagram") or {}).get("stages") or []
+                        for ai_i, stg in enumerate(stages[:4]):
+                            ax = 64 + ai_i * 282
+                            shapes.append(
+                                _pptx_rect(
+                                    sid, f"async_s_{ai_i}", ax, 186, 264, 420,
+                                    fill_hex="FFFBEB" if ai_i % 2 == 0 else "FFFFFF", line_hex=d_col, line_pt=1.5, rounded=True,
+                                    text_runs=[
+                                        {"text": strip_inline_md(stg.get("stage", f"STAGE {ai_i+1}"))[:26], "pt": 9.5, "bold": True, "color": d_col, "spcAft": 40},
+                                        {"text": strip_inline_md(stg.get("service", ""))[:28], "pt": 12, "bold": True, "color": "0F172A", "spcAft": 60},
+                                        {"text": strip_inline_md(stg.get("cadence", "Async"))[:22], "pt": 9, "color": "475569", "spcAft": 80},
+                                        {"text": strip_inline_md(stg.get("detail", ""))[:140], "pt": 9.8, "color": "334155"},
+                                    ],
+                                    pad_lr=100000, pad_tb=100000,
+                                )
+                            )
+                            sid += 1
+                    shapes.append(
+                        _pptx_rect(
+                            sid, f"{d_kind}_rail", 1212, 182, 324, 540,
+                            fill_hex="F8FAFC", line_hex="CBD5E1", rounded=True,
+                            text_runs=[{"text": d_title.upper()[:30], "pt": 9.5, "bold": True, "color": d_col, "spcAft": 100}]
+                            + [{"text": f"- {b[:84]}", "pt": 10.5, "color": "0F172A", "spcAft": 120} for b in bullets[:4]],
+                            pad_lr=110000, pad_tb=100000,
+                        )
+                    )
+                    sid += 1
+                    shapes.append(
+                        _pptx_rect(
+                            sid, f"{d_kind}_drawio_link", 64, 756, 480, 44, fill_hex=d_bg, line_hex=d_col, rounded=True,
+                            text_runs=[{"text": f"Edit {d_kind.title()} Diagram in Draw.io ->", "pt": 11.5, "bold": True, "color": d_col, "linkRid": r_id_link, "align": "ctr"}],
+                            valign="ctr",
+                        )
+                    )
+                    sid += 1
+                elif idx == code_idx:
                     code_raw = sl.get("codeSnippet") or bp["codeStarter"].get("pythonApp", "")
                     runs = []
                     for ln in code_raw.splitlines()[:20]:
@@ -2243,7 +2163,7 @@ def compile_pptx_bytes(
                         )
                     )
                     sid += 1
-                elif idx == 7:
+                elif idx == proof_idx:
                     if proofs:
                         shown = proofs[:2]
                         box_w = 708 if len(shown) == 2 else 1450
@@ -2302,7 +2222,7 @@ def compile_pptx_bytes(
                                 )
                             )
                             sid += 1
-                elif sl.get("table") and idx in (4, 8):
+                elif sl.get("table") and idx in tbl_idxs:
                     tbl = sl["table"]
                     shapes.append(_pptx_table(sid, f"tbl_{idx}", 64, 194, 1472, 460, tbl["headers"], tbl["rows"]))
                     sid += 1
@@ -2356,7 +2276,7 @@ def compile_pptx_bytes(
             shapes.append(
                 _pptx_rect(
                     sid, "ftr_r", 1360, 854, 176, 32, fill_hex=None,
-                    text_runs=[{"text": f"{idx} / 9", "pt": 10, "bold": True, "color": "334155", "align": "r"}],
+                    text_runs=[{"text": f"{idx} / {total_slides}", "pt": 10, "bold": True, "color": "334155", "align": "r"}],
                 )
             )
 
@@ -2382,7 +2302,7 @@ def compile_pptx_bytes(
             )
             zf.writestr(f"ppt/slides/_rels/slide{idx}.xml.rels", rels_xml.encode("utf-8"))
 
-            note_text = strip_emojis(sl.get("speakerNotes") or "")
+            note_text = strip_inline_md(sl.get("speakerNotes") or "")
             notes_xml = (
                 '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
                 '<p:notes xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" '
@@ -2491,7 +2411,7 @@ def compile_pptx_bytes(
             '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="../theme/theme1.xml"/></Relationships>'.encode("utf-8"),
         )
 
-        sld_id_lst = "".join(f'<p:sldId id="{255 + i}" r:id="rId{i + 2}"/>' for i in range(1, 10))
+        sld_id_lst = "".join(f'<p:sldId id="{255 + i}" r:id="rId{i + 2}"/>' for i in range(1, total_slides + 1))
         zf.writestr(
             "ppt/presentation.xml",
             (
@@ -2510,7 +2430,7 @@ def compile_pptx_bytes(
             '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster" Target="slideMasters/slideMaster1.xml"/>',
             '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster" Target="notesMasters/notesMaster1.xml"/>',
         ]
-        for i in range(1, 10):
+        for i in range(1, total_slides + 1):
             pres_rels.append(f'<Relationship Id="rId{i+2}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide{i}.xml"/>')
         zf.writestr(
             "ppt/_rels/presentation.xml.rels",
@@ -2545,7 +2465,7 @@ def compile_pptx_bytes(
             '<Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>',
             '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>',
         ]
-        for i in range(1, 10):
+        for i in range(1, total_slides + 1):
             overrides.append(f'<Override PartName="/ppt/slides/slide{i}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>')
             overrides.append(f'<Override PartName="/ppt/notesSlides/notesSlide{i}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesSlide+xml"/>')
         defaults = [
@@ -2659,12 +2579,21 @@ def compile_docx_bytes(
     seq_url: str,
     proofs: List[Dict[str, Any]],
     blog_dir: Path,
+    extra_urls: Optional[Dict[str, str]] = None,
+    grounding: Optional[Dict[str, Any]] = None,
 ) -> bytes:
     buf = io.BytesIO()
+    ex_u = extra_urls or {}
     doc_rels: List[str] = [
         f'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="{xml_esc(arch_url)}" TargetMode="External"/>',
         f'<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="{xml_esc(seq_url)}" TargetMode="External"/>',
     ]
+    if ex_u.get("security"):
+        doc_rels.append(f'<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="{xml_esc(ex_u["security"])}" TargetMode="External"/>')
+    if ex_u.get("wire"):
+        doc_rels.append(f'<Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="{xml_esc(ex_u["wire"])}" TargetMode="External"/>')
+    if ex_u.get("async"):
+        doc_rels.append(f'<Relationship Id="rId5" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="{xml_esc(ex_u["async"])}" TargetMode="External"/>')
     media_files: Dict[str, bytes] = {}
     has_png = False
     has_jpg = False
@@ -2679,8 +2608,20 @@ def compile_docx_bytes(
         ),
         _docx_p("Executive Summary (BLUF)", bold=True, size_hp=26, color="1A73E8", sp_before=120, sp_after=60),
         _docx_p(bp["summary"] or bp["subtitle"], size_hp=21, shade="EFF6FF", sp_after=140),
-        _docx_link_p("Figure 1 (Interactive Architecture Diagram): ", "Open in viewer.diagrams.net ->", "rId1"),
-        _docx_link_p("Figure 2 (End-to-End Request Sequence): ", "Open in viewer.diagrams.net ->", "rId2"),
+        _docx_link_p("Figure 1 (C4 L2 Master Reference Architecture): ", "Open in viewer.diagrams.net ->", "rId1"),
+        _docx_link_p("Figure 2 (C4 L3 End-to-End Request Sequence): ", "Open in viewer.diagrams.net ->", "rId2"),
+        *(
+            [_docx_link_p("Figure 3 (C4 L1 Trust Perimeter & Security Boundary): ", "Open in viewer.diagrams.net ->", "rId3")]
+            if ex_u.get("security") else []
+        ),
+        *(
+            [_docx_link_p("Figure 4 (C4 L4 Wire Payload & Schema Transformation): ", "Open in viewer.diagrams.net ->", "rId4")]
+            if ex_u.get("wire") else []
+        ),
+        *(
+            [_docx_link_p("Figure 5 (Async Lifecycle, Export & Recovery Loop): ", "Open in viewer.diagrams.net ->", "rId5")]
+            if ex_u.get("async") else []
+        ),
     ]
 
     if bp.get("keyTakeaways"):
@@ -2694,6 +2635,12 @@ def compile_docx_bytes(
             body.append(_docx_p(p, size_hp=20, sp_after=90))
         for b in sec.get("bullets") or []:
             body.append(_docx_p(f"- {b}", size_hp=19, sp_before=15, sp_after=40))
+        for cb in (sec.get("codeBlocks") or []):
+            cap = cb.get("caption") or f"Code ({cb.get('language', 'text')})"
+            body.append(_docx_p(f"[{str(cb.get('language', 'code')).upper()}] {cap}", bold=True, size_hp=17, color="1E40AF", shade="EFF6FF", sp_before=60, sp_after=10))
+            for ln in str(cb.get("code") or "").splitlines()[:45]:
+                body.append(_docx_p(ln, size_hp=16, font="Courier New", color="0F172A", shade="F1F5F9", sp_before=0, sp_after=0))
+            body.append(_docx_p("", sp_after=40))
         if sec.get("table"):
             body.append(_docx_table(sec["table"]["headers"], sec["table"]["rows"]))
             body.append(_docx_p("", sp_after=80))
@@ -2816,15 +2763,20 @@ def compile_blog_markdown(
     seq_url: str,
     proofs: List[Dict[str, Any]],
     model_used: str,
+    extra_urls: Optional[Dict[str, str]] = None,
+    grounding: Optional[Dict[str, Any]] = None,
 ) -> str:
+    ex_u = extra_urls or {}
+    g_info = grounding or {}
     lines: List[str] = [
         f"# {bp['title']}",
         "",
         f"> **{bp['subtitle']}**",
         "",
         f"- **Slug:** `{slug}` | **Domain:** {bp['domain']} | **Audience:** {bp['audience']} | **Estimated Read:** {bp['estimatedReadMinutes']} min",
-        f"- **Authoring Model:** `{model_used}` (Live Gemini API call; fail-closed provenance policy)",
-        "- **Verification Status:** Automated deterministic checks + orthogonal LLM judge recorded in `quality_report.json`",
+        f"- **Authoring Model:** `{model_used}` (Multi-stage live Gemini API; fail-closed provenance policy)",
+        f"- **Live Grounding:** `{g_info.get('status', 'NOT_RUN')}` ({len(g_info.get('queries') or [])} live Google Search queries, {len(g_info.get('sources') or [])} web sources)",
+        "- **Verification Status:** 12-check deterministic quality gate (`D-01..D-12`) + grounded orthogonal LLM judge recorded in `quality_report.json`",
         "- **Starter Code Status:** `GENERATED_TEMPLATE_UNDEPLOYED` (review & run `terraform plan` before deploying)",
         "",
         "## Executive Summary (BLUF)",
@@ -2840,12 +2792,20 @@ def compile_blog_markdown(
         lines.append("")
 
     lines.extend([
-        "## Figures & Editable Diagrams",
+        "## Figures & Editable C4 Diagrams",
         "",
-        f"1. **Figure 1 — Reference Architecture (`diagrams/{slug}-architecture.drawio`):** [Open in viewer.diagrams.net]({arch_url})",
-        f"2. **Figure 2 — End-to-End Request Lifecycle Sequence (`diagrams/{slug}-sequence.drawio`):** [Open in viewer.diagrams.net]({seq_url})",
-        "",
+        "| Figure | C4 Layer | Draw.io File | Local Studio |",
+        "| --- | --- | --- | --- |",
+        f"| Figure 1 — Master Reference Architecture | `C4 L2` | `diagrams/{slug}-architecture.drawio` | [Edit in Studio](/drawio-editor?id={slug}-architecture) |",
+        f"| Figure 2 — Request Lifecycle Sequence | `C4 L3` | `diagrams/{slug}-sequence.drawio` | [Edit in Studio](/drawio-editor?id={slug}-sequence) |",
     ])
+    if ex_u.get("security"):
+        lines.append(f"| Figure 3 — Trust Perimeter & Security Boundary | `C4 L1` | `diagrams/{slug}-security.drawio` | [Edit in Studio](/drawio-editor?id={slug}-security) |")
+    if ex_u.get("wire"):
+        lines.append(f"| Figure 4 — Wire Payload & Schema Transformation | `C4 L4` | `diagrams/{slug}-wire.drawio` | [Edit in Studio](/drawio-editor?id={slug}-wire) |")
+    if ex_u.get("async"):
+        lines.append(f"| Figure 5 — Async Lifecycle, Export & Recovery Loop | `ASYNC` | `diagrams/{slug}-async.drawio` | [Edit in Studio](/drawio-editor?id={slug}-async) |")
+    lines.append("")
 
     for sec in bp["sections"]:
         lines.append(f"## {sec['heading']}")
@@ -2856,6 +2816,16 @@ def compile_blog_markdown(
         for b in sec.get("bullets") or []:
             lines.append(f"- {b}")
         if sec.get("bullets"):
+            lines.append("")
+        for cb in (sec.get("codeBlocks") or []):
+            lang = cb.get("language") or "text"
+            cap = cb.get("caption") or ""
+            if cap:
+                lines.append(f"**{cap}:**")
+                lines.append("")
+            lines.append(f"```{lang}")
+            lines.append(str(cb.get("code") or "").rstrip())
+            lines.append("```")
             lines.append("")
         tbl = sec.get("table")
         if tbl and tbl.get("headers") and tbl.get("rows"):
@@ -2886,7 +2856,7 @@ def compile_blog_markdown(
                 f"| `{pf['stage']}` | {pf['caption'].replace('|', '/')} | {pf['width']}x{pf['height']} | `{pf['sha256'][:16]}...` | {pf.get('sourceUrl') or 'Uploaded file'} |"
             )
     else:
-        lines.append("> **0 live proofs uploaded yet.** Per zero-fabrication policy, fake/mock HTML screenshots are never generated. Upload genuine console or SaaS BEFORE/AFTER PNG/JPEG proofs in the **Live Proofs & Recorder** tab to auto-embed them here, in `.pptx` Slide 7, and in `.docx`.")
+        lines.append("> **0 live proofs uploaded yet.** Per zero-fabrication policy, fake/mock HTML screenshots are never generated. Upload genuine console or SaaS BEFORE/AFTER PNG/JPEG proofs in the **Live Proofs & Recorder** tab to auto-embed them here, in the `.pptx` proof slide, and in `.docx`.")
     lines.append("")
 
     if bp["faq"]:
@@ -2904,6 +2874,13 @@ def compile_blog_markdown(
         for rf in bp["references"]:
             note = f" — {rf['note']}" if rf.get("note") else ""
             lines.append(f"- [{rf['title']}]({rf['url']}){note}")
+        lines.append("")
+
+    if g_info.get("queries"):
+        lines.append("## Live Google Search Grounding Log")
+        lines.append("")
+        lines.append(f"- **Status:** `{g_info.get('status')}` ({g_info.get('checkedAt', '')})")
+        lines.append("- **Queries executed:** " + ", ".join(f"`{q}`" for q in (g_info.get("queries") or [])[:8]))
         lines.append("")
 
     return "\n".join(lines).strip() + "\n"
@@ -2978,6 +2955,13 @@ def compile_starter_zip(bp: Dict[str, Any], slug: str) -> Tuple[bytes, Dict[str,
         "deploy.sh": deploy_sh,
         "verify.sh": verify_sh,
     }
+    schema_sql = (cs.get("schemaSql") or "").strip()
+    if schema_sql:
+        files["schema.sql"] = (
+            "-- STATUS: GENERATED_TEMPLATE_UNDEPLOYED\n"
+            f"-- Generated for slug '{slug}' at {_now_iso()}.\n\n"
+            + schema_sql + "\n"
+        )
     zbuf = io.BytesIO()
     with zipfile.ZipFile(zbuf, "w", zipfile.ZIP_DEFLATED) as zf:
         for fn, content in files.items():
@@ -3091,7 +3075,7 @@ def _fmt_vtt_ts(secs: float) -> str:
 def build_webvtt(slides: List[Dict[str, Any]], durations: List[float]) -> str:
     out = ["WEBVTT", ""]
     cursor = 0.0
-    for i, sl in enumerate(slides[:9]):
+    for i, sl in enumerate(slides[:12]):
         dur = durations[i] if i < len(durations) and durations[i] > 0 else 8.0
         text = strip_emojis(sl.get("speakerNotes") or sl.get("title") or "")
         out.append(f"{i+1}")
@@ -3158,16 +3142,27 @@ def run_deterministic_quality_gate(
     py_ast_ok: bool,
     py_ast_err: str,
     starter_files: Dict[str, str],
+    extra_diagrams: Optional[Dict[str, Dict[str, Any]]] = None,
+    arch_icon_count: Optional[int] = None,
 ) -> Dict[str, Any]:
     checks: List[Dict[str, Any]] = []
 
     def _add(cid: str, label: str, passed: bool, detail: str) -> None:
         checks.append({"id": cid, "label": label, "status": "PASS" if passed else "FAIL", "detail": detail})
 
-    words = len(re.findall(r"\S+", md_text))
-    _add("D-01", "Markdown Structure & Depth", words >= 180 and len(bp.get("sections", [])) >= 3, f"{words} words across {len(bp.get('sections', []))} structured sections.")
+    clean_md = re.sub(r"https://viewer\.diagrams\.net/[^\s)]+", "URL", md_text)
+    words = len(re.findall(r"\S+", clean_md))
+    cb_count = sum(len(s.get("codeBlocks") or []) for s in (bp.get("sections") or []))
+    tbl_count = sum(1 for s in (bp.get("sections") or []) if s.get("table"))
+    _add(
+        "D-01",
+        "Markdown Structure & Depth",
+        words >= 180 and len(bp.get("sections", [])) >= 3,
+        f"{words:,} clean prose words across {len(bp.get('sections', []))} sections, {tbl_count} tables, {cb_count} inline code/formula blocks.",
+    )
 
-    d2_ok, d2_msg = True, "Well-formed 4-zone mxfile; 0 flowAnimation=1; 0 baked footers."
+    ic_cnt = arch_icon_count if arch_icon_count is not None else arch_drawio.count("image=data:image/svg+xml,")
+    d2_ok, d2_msg = True, f"Well-formed orthogonal C4 L2 mxfile; {ic_cnt} embedded official GCP SVG icons; 0 flowAnimation=1; 0 baked footers."
     low_ad = arch_drawio.lower()
     if "<!doctype" in low_ad or "<!entity" in low_ad or "flowanimation=1" in low_ad or "edit in draw.io" in low_ad:
         d2_ok, d2_msg = False, "Disallowed DOCTYPE/ENTITY, flowAnimation=1, or baked footer in architecture .drawio."
@@ -3176,42 +3171,61 @@ def run_deterministic_quality_gate(
             ET.fromstring(arch_drawio)
         except ET.ParseError as exc:
             d2_ok, d2_msg = False, f"XML parse error: {exc}"
-    _add("D-02", "Architecture .drawio XML Hygiene", d2_ok, d2_msg)
+    _add("D-02", "Architecture .drawio & GCP SVG Icons", d2_ok and ic_cnt >= 2, d2_msg if d2_ok else d2_msg)
 
-    d3_ok, d3_msg = True, "Well-formed 5-actor UML sequence; static dashed vertical lifelines; 0 flowAnimation=1."
-    low_sq = seq_drawio.lower()
-    if "<!doctype" in low_sq or "<!entity" in low_sq or "flowanimation=1" in low_sq:
-        d3_ok, d3_msg = False, "Blocked DOCTYPE/ENTITY or flowAnimation=1 in sequence .drawio."
-    elif "dashed=1;dashpattern=6 4;" not in low_sq:
-        d3_ok, d3_msg = False, "Missing static dashed vertical lifelines in sequence .drawio."
-    else:
-        try:
-            ET.fromstring(seq_drawio)
-        except ET.ParseError as exc:
-            d3_ok, d3_msg = False, f"XML parse error: {exc}"
-    _add("D-03", "Sequence .drawio Lifelines & Hygiene", d3_ok, d3_msg)
+    d3_ok, d3_errs = True, []
+    extra_xml_list = [("sequence", seq_drawio)]
+    for k, dv in (extra_diagrams or {}).items():
+        if k in ("security", "wire", "async") and dv.get("xml"):
+            extra_xml_list.append((k, dv["xml"]))
+    for k, x_txt in extra_xml_list:
+        low_x = x_txt.lower()
+        if "<!doctype" in low_x or "<!entity" in low_x or "flowanimation=1" in low_x:
+            d3_ok = False
+            d3_errs.append(f"{k}: disallowed directive/animation")
+        elif k == "sequence" and "dashed=1;dashpattern=6 4;" not in low_x:
+            d3_ok = False
+            d3_errs.append("sequence: missing dashed lifelines")
+        else:
+            try:
+                ET.fromstring(x_txt)
+            except ET.ParseError as exc:
+                d3_ok = False
+                d3_errs.append(f"{k}: {exc}")
+    _add(
+        "D-03",
+        "Supporting C4 .drawio Lifelines & Hygiene",
+        d3_ok,
+        f"Validated {1 + len(extra_xml_list)}/{1 + len(extra_xml_list)} Draw.io diagrams (static dashed lifelines, 0 flowAnimation=1)." if d3_ok else "; ".join(d3_errs),
+    )
 
-    svg_combo = (arch_svg + "\n" + seq_svg).lower()
+    svg_blobs = [arch_svg, seq_svg] + [
+        dv.get("svg", "") for k, dv in (extra_diagrams or {}).items() if k in ("security", "wire", "async")
+    ]
+    svg_combo = "\n".join(svg_blobs).lower()
     xss_hit = bool(re.search(r"(<script|<foreignobject|javascript:|on[a-z]+\s*=)", svg_combo))
-    _add("D-04", "SVG XSS / Script Safety", not xss_hit, "0 <script>, <foreignObject>, javascript:, or inline on*= handlers." if not xss_hit else "Unsafe SVG markup found.")
+    _add("D-04", "SVG XSS / Script Safety", not xss_hit, f"0 unsafe handlers across {len(svg_blobs)} SVG diagrams." if not xss_hit else "Unsafe SVG markup found.")
 
+    expected_slides = 12 if len(bp.get("slides") or []) >= 12 else len((bp.get("slides") or [])[:9]) or 9
     d5_ok, d5_detail = True, ""
     try:
         with zipfile.ZipFile(io.BytesIO(pptx_bytes), "r") as zf:
             names = set(zf.namelist())
-            missing_s = [i for i in range(1, 10) if f"ppt/slides/slide{i}.xml" not in names]
-            missing_n = [i for i in range(1, 10) if f"ppt/notesSlides/notesSlide{i}.xml" not in names]
+            missing_s = [i for i in range(1, expected_slides + 1) if f"ppt/slides/slide{i}.xml" not in names]
+            missing_n = [i for i in range(1, expected_slides + 1) if f"ppt/notesSlides/notesSlide{i}.xml" not in names]
             zero_rows = 0
-            for i in range(1, 10):
+            for i in range(1, expected_slides + 1):
                 xml_b = zf.read(f"ppt/slides/slide{i}.xml")
                 ET.fromstring(xml_b)
                 if re.search(rb'<a:tr\s+h="0"', xml_b):
                     zero_rows += 1
-            r3 = zf.read("ppt/slides/_rels/slide3.xml.rels").decode("utf-8")
-            r5 = zf.read("ppt/slides/_rels/slide5.xml.rels").decode("utf-8")
-            links_ok = ("viewer.diagrams.net" in r3) and ("viewer.diagrams.net" in r5)
+            req_links = (3, 5, 6, 7, 8) if (expected_slides == 12 and extra_diagrams) else (3, 5)
+            links_ok = all(
+                "viewer.diagrams.net" in zf.read(f"ppt/slides/_rels/slide{si}.xml.rels").decode("utf-8")
+                for si in req_links
+            )
             d5_ok = (not missing_s) and (not missing_n) and (zero_rows == 0) and links_ok
-            d5_detail = f"9/9 slides, 9/9 notesSlides, 0 zero-height table rows, Draw.io #R links={'OK' if links_ok else 'MISSING'}."
+            d5_detail = f"{expected_slides}/{expected_slides} slides, {expected_slides}/{expected_slides} notesSlides, 0 zero-height rows, {len(req_links)} Draw.io #R links={'OK' if links_ok else 'MISSING'}."
     except Exception as exc:
         d5_ok, d5_detail = False, f"PPTX ZIP/XML error: {exc}"
     _add("D-05", "Editable OOXML .pptx Structure & #R Links", d5_ok, d5_detail)
@@ -3227,17 +3241,23 @@ def run_deterministic_quality_gate(
     _add("D-06", "GCP-Branded OOXML .docx Structure", d6_ok, d6_detail)
 
     emoji_hits = 0
+    raw_md_leaks = 0
     try:
         with zipfile.ZipFile(io.BytesIO(pptx_bytes), "r") as zf:
-            for i in range(1, 10):
+            for i in range(1, expected_slides + 1):
                 s_txt = zf.read(f"ppt/slides/slide{i}.xml").decode("utf-8")
                 if any(ch in s_txt for ch in _BANNED_STATUS_EMOJIS):
                     emoji_hits += 1
+                if "**" in s_txt and i != (9 if expected_slides == 12 else 6):
+                    raw_md_leaks += 1
     except Exception:
         pass
-    _add("D-07", "Zero Status Emojis inside Slide XML", emoji_hits == 0, "0 emoji glyphs detected across slides 1..9." if emoji_hits == 0 else f"{emoji_hits} slides contained disallowed status emojis.")
+    _add("D-07", "Zero Status Emojis inside Slide XML", emoji_hits == 0, f"0 emoji glyphs detected across slides 1..{expected_slides}." if emoji_hits == 0 else f"{emoji_hits} slides contained disallowed status emojis.")
 
-    leaks = scan_for_f13_leaks(md_text + "\n" + arch_drawio + "\n" + seq_drawio)
+    scan_blobs = [md_text, arch_drawio, seq_drawio] + [
+        dv.get("xml", "") for k, dv in (extra_diagrams or {}).items() if k in ("security", "wire", "async")
+    ]
+    leaks = scan_for_f13_leaks("\n".join(scan_blobs))
     _add("D-08", "Public-Repo F-13 Hygiene & Secret Scan", len(leaks) == 0, "0 internal domains, tokens, or unverified refs." if not leaks else f"Detected: {', '.join(leaks)}")
 
     ledger = bp.get("claimLedger") or []
@@ -3247,8 +3267,33 @@ def run_deterministic_quality_gate(
     has_label = all("GENERATED_TEMPLATE_UNDEPLOYED" in starter_files.get(k, "") for k in ("main.tf", "app.py", "README.md", "PROVENANCE.txt"))
     _add("D-10", "Starter Code AST & Undeployed Disclosure", py_ast_ok and has_label, "app.py parses via ast.parse() and starter artifacts bear GENERATED_TEMPLATE_UNDEPLOYED." if (py_ast_ok and has_label) else f"AST ok={py_ast_ok} ({py_ast_err}), label ok={has_label}")
 
+    tf_findings = _pipe_v2.scan_terraform_security(starter_files)
+    _add(
+        "D-11",
+        "Terraform & Script Zero-Trust Hygiene",
+        len(tf_findings) == 0,
+        "0 allUsers/allAuthenticatedUsers bindings, 0 deprecated v1 Cloud Run resources, 0 unauthenticated flags."
+        if not tf_findings
+        else " | ".join(f"[{x['id']}] {x['detail']}" for x in tf_findings[:4]),
+    )
+
+    _add(
+        "D-12",
+        "Zero Raw Markdown Leakage inside Slides",
+        raw_md_leaks == 0,
+        f"0 leaked literal '**' markdown markers inside slides 1..{expected_slides}."
+        if raw_md_leaks == 0
+        else f"{raw_md_leaks} slide XML parts contained raw '**' markdown markers.",
+    )
+
     passed_n = sum(1 for c in checks if c["status"] == "PASS")
-    return {"total": len(checks), "passed": passed_n, "allPassed": passed_n == len(checks), "checks": checks}
+    return {
+        "total": len(checks),
+        "passed": passed_n,
+        "allPassed": passed_n == len(checks),
+        "checks": checks,
+        "tfFindings": tf_findings,
+    }
 
 
 def run_orthogonal_llm_judge(
@@ -3257,12 +3302,15 @@ def run_orthogonal_llm_judge(
     md_text: str,
     generator_model: str,
     api_key_override: Optional[str] = None,
+    grounding: Optional[Dict[str, Any]] = None,
+    tf_findings: Optional[List[Dict[str, str]]] = None,
 ) -> Dict[str, Any]:
     judge_model = "gemini-2.5-flash" if generator_model == "gemini-2.5-pro" else "gemini-2.5-pro"
     sys_p = (
         f"Today is {datetime.now(timezone.utc).strftime('%Y-%m-%d')}. You are an independent adversarial Google Cloud architecture reviewer (strict orthogonal judge). "
-        "Review the generated blog for hallucinations, invented IDs/URLs, missing failure modes, "
-        "overstated claims lacking provenance tags, or diagram-vs-prose mismatches. Return ONLY JSON: "
+        "IMPORTANT: Treat the LIVE_GOOGLE_SEARCH_GROUNDING dossier below as current verified web facts (do NOT reject GA Google Cloud capabilities confirmed by Google Search due to model cutoff). "
+        "Critically review for genuine hallucinations, invented IDs/URLs, missing failure modes, Terraform/IAM security gaps (e.g. allUsers, deprecated v1 resources), "
+        "overstated claims lacking provenance tags, stale product names, or diagram-vs-prose mismatches. Return ONLY JSON: "
         '{"verdict":"APPROVED|NEEDS_REVISION","score":0-100,"summary":"1-2 crisp sentences",'
         '"strengths":["..."],"findings":[{"severity":"P0|P1|P2","category":"grounding|security|diagram|code|clarity","detail":"..."}]}'
     )
@@ -3271,12 +3319,18 @@ def run_orthogonal_llm_judge(
         "architectureEdges": bp.get("architectureEdges", []),
         "sequenceActors": [a.get("label") for a in bp.get("sequenceActors", [])],
         "sequenceSteps": bp.get("sequenceSteps", []),
+        "securityLayers": len((bp.get("securityDiagram") or {}).get("layers") or []),
+        "wireHops": len((bp.get("wireDiagram") or {}).get("hops") or []),
+        "asyncStages": len((bp.get("asyncDiagram") or {}).get("stages") or []),
     }
+    g_sum = ((grounding or {}).get("summary") or "").strip()
     usr_p = (
         f"TITLE: {bp['title']}\nDOMAIN: {bp['domain']}\nGENERATOR_MODEL: {generator_model}\n\n"
-        f"DIAGRAM_TOPOLOGY_JSON:\n{json.dumps(diag_summary, indent=2)[:3200]}\n\n"
-        f"CLAIM_LEDGER:\n{json.dumps(bp.get('claimLedger') or [], indent=2)[:2400]}\n\n"
-        f"BLOG_MARKDOWN_EXCERPT:\n{md_text[:9500]}\n"
+        + (f"LIVE_GOOGLE_SEARCH_GROUNDING (status={(grounding or {}).get('status')}):\n{g_sum[:3600]}\n\n" if g_sum else "")
+        + f"TERRAFORM_SECURITY_FINDINGS (D-11):\n{json.dumps(tf_findings or [], indent=2)}\n\n"
+        + f"DIAGRAM_TOPOLOGY_JSON:\n{json.dumps(diag_summary, indent=2)[:3400]}\n\n"
+        + f"CLAIM_LEDGER:\n{json.dumps(bp.get('claimLedger') or [], indent=2)[:2800]}\n\n"
+        + f"BLOG_MARKDOWN_EXCERPT:\n{md_text[:14000]}\n"
     )
     try:
         res, meta = call_gemini_json(
@@ -3358,7 +3412,9 @@ def _update_index_entry(manifest: Dict[str, Any]) -> bytes:
         "proofCount": len(manifest.get("proofs") or []),
         "audioTracks": manifest.get("audio", {}).get("tracksGenerated", 0),
         "qualityPassed": manifest.get("quality", {}).get("deterministic", {}).get("passed", 0),
-        "qualityTotal": manifest.get("quality", {}).get("deterministic", {}).get("total", 10),
+        "qualityTotal": manifest.get("quality", {}).get("deterministic", {}).get("total", 12),
+        "diagramCount": len(manifest.get("diagrams") or {}),
+        "slideCount": len((manifest.get("blueprint") or {}).get("slides") or []),
         "judgeVerdict": (manifest.get("quality", {}).get("orthogonalJudge") or {}).get("verdict", "UNRUN"),
         "judgeScore": (manifest.get("quality", {}).get("orthogonalJudge") or {}).get("score"),
         "workspaceSync": manifest.get("workspaceSync") or {},
@@ -3379,6 +3435,8 @@ def compile_and_save_blog(
     voice_name: str = "en-US-Chirp3-HD-Charon",
     enable_tts: bool = True,
     enable_judge: bool = True,
+    enable_auto_revise: bool = False,
+    grounding: Optional[Dict[str, Any]] = None,
     api_key_override: Optional[str] = None,
     progress_cb: Optional[Callable[[int, str, str], None]] = None,
     latency_ms: float = 0.0,
@@ -3392,46 +3450,179 @@ def compile_and_save_blog(
         (blog_dir / sub).mkdir(parents=True, exist_ok=True)
 
     proofs: List[Dict[str, Any]] = []
+    g_info = grounding or {"status": "NOT_RUN", "queries": [], "sources": [], "summary": ""}
 
-    _step(35, "COMPILE_DIAGRAMS", "Compiling 1600x900 Draw.io & SVG architecture + sequence diagrams...")
-    arch_drawio, arch_svg, arch_url = compile_architecture_drawio_and_svg(blueprint, slug)
-    seq_drawio, seq_svg, seq_url = compile_sequence_drawio_and_svg(blueprint, slug)
-    (blog_dir / "diagrams" / f"{slug}-architecture.drawio").write_text(arch_drawio, encoding="utf-8")
-    (blog_dir / "diagrams" / f"{slug}-architecture.svg").write_text(arch_svg, encoding="utf-8")
-    (blog_dir / "diagrams" / f"{slug}-sequence.drawio").write_text(seq_drawio, encoding="utf-8")
-    (blog_dir / "diagrams" / f"{slug}-sequence.svg").write_text(seq_svg, encoding="utf-8")
+    def _compile_artifacts(bp_cur: Dict[str, Any]) -> Dict[str, Any]:
+        diags = compile_all_diagrams_v2(bp_cur, slug)
+        for kind, dv in diags.items():
+            (blog_dir / "diagrams" / f"{slug}-{kind}.drawio").write_text(dv["xml"], encoding="utf-8")
+            (blog_dir / "diagrams" / f"{slug}-{kind}.svg").write_text(dv["svg"], encoding="utf-8")
+        extra_svgs = {k: diags[k]["svg"] for k in ("security", "wire", "async")}
+        extra_urls = {k: diags[k]["viewerUrl"] for k in ("security", "wire", "async")}
+        slide_svgs = compile_slide_preview_svgs(
+            bp_cur, slug, diags["architecture"]["svg"], diags["sequence"]["svg"], proofs, blog_dir, extra_svgs=extra_svgs
+        )
+        for i, s_svg in enumerate(slide_svgs, 1):
+            (blog_dir / "slides" / f"slide_{i:02d}.svg").write_text(s_svg, encoding="utf-8")
+        pptx_b = compile_pptx_bytes(
+            bp_cur, slug, diags["architecture"]["viewerUrl"], diags["sequence"]["viewerUrl"], proofs, blog_dir, extra_urls=extra_urls
+        )
+        (blog_dir / "slides" / f"{slug}-deck.pptx").write_bytes(pptx_b)
+        md_t = compile_blog_markdown(
+            bp_cur, slug, diags["architecture"]["viewerUrl"], diags["sequence"]["viewerUrl"],
+            proofs, model_used, extra_urls=extra_urls, grounding=g_info,
+        )
+        (blog_dir / "blog.md").write_text(md_t, encoding="utf-8")
+        docx_b = compile_docx_bytes(
+            bp_cur, slug, diags["architecture"]["viewerUrl"], diags["sequence"]["viewerUrl"],
+            proofs, blog_dir, extra_urls=extra_urls, grounding=g_info,
+        )
+        (blog_dir / "docs" / f"{slug}-whitepaper.docx").write_bytes(docx_b)
+        sz_b, s_files, ast_ok, ast_err = compile_starter_zip(bp_cur, slug)
+        (blog_dir / f"{slug}-starter.zip").write_bytes(sz_b)
+        det = run_deterministic_quality_gate(
+            bp=bp_cur,
+            md_text=md_t,
+            arch_drawio=diags["architecture"]["xml"],
+            arch_svg=diags["architecture"]["svg"],
+            seq_drawio=diags["sequence"]["xml"],
+            seq_svg=diags["sequence"]["svg"],
+            pptx_bytes=pptx_b,
+            docx_bytes=docx_b,
+            py_ast_ok=ast_ok,
+            py_ast_err=ast_err,
+            starter_files=s_files,
+            extra_diagrams=diags,
+            arch_icon_count=diags["architecture"]["iconCount"],
+        )
+        return {
+            "diags": diags,
+            "slideCount": len(slide_svgs),
+            "pptxBytes": pptx_b,
+            "mdText": md_t,
+            "docxBytes": docx_b,
+            "starterFiles": s_files,
+            "astOk": ast_ok,
+            "astErr": ast_err,
+            "det": det,
+        }
 
-    _step(48, "COMPILE_SLIDES", "Compiling 9-slide native editable OOXML .pptx deck & vector previews...")
-    slide_svgs = compile_slide_preview_svgs(blueprint, slug, arch_svg, seq_svg, proofs, blog_dir)
-    for i, s_svg in enumerate(slide_svgs, 1):
-        (blog_dir / "slides" / f"slide_{i:02d}.svg").write_text(s_svg, encoding="utf-8")
-    pptx_bytes = compile_pptx_bytes(blueprint, slug, arch_url, seq_url, proofs, blog_dir)
-    (blog_dir / "slides" / f"{slug}-deck.pptx").write_bytes(pptx_bytes)
+    _step(48, "COMPILE_DIAGRAMS", "Compiling 5 C4-layered Draw.io + SVG diagrams with official GCP SVG icons...")
+    _step(56, "COMPILE_SLIDES", "Building native OOXML .pptx deck & vector slide previews...")
+    _step(62, "COMPILE_DOCS", "Compiling Markdown blog (inline SQL/GQL/formulas) & .docx whitepaper...")
+    _step(66, "COMPILE_STARTER", "Building Terraform + Python starter.zip & running AST + D-11 security scan...")
+    art = _compile_artifacts(blueprint)
+    det_report = art["det"]
+    _step(70, "QUALITY_GATE", f"Deterministic gate complete: {det_report['passed']}/{det_report['total']} checks.")
 
-    _step(58, "COMPILE_DOCS", "Compiling Google Cloud Architecture Center Markdown & .docx whitepaper...")
-    md_text = compile_blog_markdown(blueprint, slug, arch_url, seq_url, proofs, model_used)
-    (blog_dir / "blog.md").write_text(md_text, encoding="utf-8")
-    docx_bytes = compile_docx_bytes(blueprint, slug, arch_url, seq_url, proofs, blog_dir)
-    (blog_dir / "docs" / f"{slug}-whitepaper.docx").write_bytes(docx_bytes)
+    revision_meta: Dict[str, Any] = {"executed": False, "appliedFixes": [], "round1": None, "round2": None}
+    if enable_judge:
+        _step(74, "ORTHOGONAL_JUDGE", "Running grounded independent orthogonal Gemini judge (Round 1)...")
+        judge_report = run_orthogonal_llm_judge(
+            bp=blueprint,
+            md_text=art["mdText"],
+            generator_model=model_used,
+            api_key_override=api_key_override,
+            grounding=g_info,
+            tf_findings=det_report.get("tfFindings") or [],
+        )
+        has_p0_p1 = any(
+            str(f.get("severity") or "").upper() in ("P0", "P1")
+            for f in (judge_report.get("findings") or [])
+        )
+        tf_fail = bool(det_report.get("tfFindings"))
+        need_rev = enable_auto_revise and (
+            tf_fail
+            or has_p0_p1
+            or (judge_report.get("verdict") == "NEEDS_REVISION")
+            or (isinstance(judge_report.get("score"), int) and judge_report["score"] < 85)
+        )
+        if need_rev and judge_report.get("status") == "COMPLETED":
+            _step(79, "AUTO_REVISE", "Applying surgical peer-review revision for Round 1 findings / Terraform D-11...")
+            r1_snap = {
+                "verdict": judge_report.get("verdict"),
+                "score": judge_report.get("score"),
+                "findingCount": len(judge_report.get("findings") or []),
+                "tfFindingsCount": len(det_report.get("tfFindings") or []),
+                "summary": judge_report.get("summary", ""),
+            }
+            try:
+                rsys, rusr = _pipe_v2.build_auto_revision_prompt(
+                    blueprint, judge_report, det_report.get("tfFindings") or [], g_info
+                )
+                rev_patch, _ = call_gemini_json(
+                    system_prompt=rsys,
+                    user_prompt=rusr,
+                    model=model_used,
+                    api_key_override=api_key_override,
+                    max_output_tokens=16384,
+                    thinking_budget=1024 if model_used == "gemini-2.5-flash" else 2048,
+                    temperature=0.15,
+                    timeout_s=95.0,
+                )
+                applied = _pipe_v2.apply_revision_patch(
+                    blueprint,
+                    rev_patch,
+                    allowed_tags=ALLOWED_PROVENANCE_TAGS,
+                    sanitize_fn=_sanitize_for_public_output,
+                    strip_emoji_fn=strip_inline_md,
+                )
+                art = _compile_artifacts(blueprint)
+                det_report = art["det"]
+                judge_r2 = run_orthogonal_llm_judge(
+                    bp=blueprint,
+                    md_text=art["mdText"],
+                    generator_model=model_used,
+                    api_key_override=api_key_override,
+                    grounding=g_info,
+                    tf_findings=det_report.get("tfFindings") or [],
+                )
+                revision_meta = {
+                    "executed": True,
+                    "appliedFixes": applied,
+                    "round1": r1_snap,
+                    "round2": {
+                        "verdict": judge_r2.get("verdict"),
+                        "score": judge_r2.get("score"),
+                        "findingCount": len(judge_r2.get("findings") or []),
+                        "tfFindingsCount": len(det_report.get("tfFindings") or []),
+                    },
+                }
+                if judge_r2.get("status") == "COMPLETED":
+                    judge_report = judge_r2
+            except Exception as rev_exc:
+                revision_meta = {
+                    "executed": False,
+                    "error": _redact_secret(str(rev_exc), api_key_override)[:240],
+                    "appliedFixes": [],
+                    "round1": r1_snap,
+                    "round2": None,
+                }
+    else:
+        judge_report = {
+            "status": "DISABLED_BY_REQUEST",
+            "verdict": "SKIPPED",
+            "score": None,
+            "summary": "Orthogonal LLM judge disabled by user option.",
+            "strengths": [],
+            "findings": [],
+        }
 
-    _step(66, "COMPILE_STARTER", "Building Terraform + Python starter.zip & running AST syntax verification...")
-    starter_zip_bytes, starter_files, py_ast_ok, py_ast_err = compile_starter_zip(blueprint, slug)
-    (blog_dir / f"{slug}-starter.zip").write_bytes(starter_zip_bytes)
-
+    slide_n = art["slideCount"]
     audio_tracks: List[Dict[str, Any]] = []
     audio_errors: List[str] = []
     durations: List[float] = []
     if enable_tts:
-        _step(72, "SYNTHESIZE_TTS", f"Synthesizing 9 spoken slide tracks via Cloud TTS ({voice_name})...")
+        _step(85, "SYNTHESIZE_TTS", f"Synthesizing {slide_n} live spoken slide tracks via Cloud TTS ({voice_name})...")
         from concurrent.futures import ThreadPoolExecutor
-        slides_9 = list(enumerate(blueprint["slides"][:9], 1))
+        slides_all = list(enumerate(blueprint["slides"][:slide_n], 1))
         def _tts_one(pair: Tuple[int, Dict[str, Any]]) -> Tuple[int, Dict[str, Any], Optional[bytes], Optional[str]]:
             idx_s, sl_s = pair
-            txt_s = sl_s.get("speakerNotes") or sl_s.get("title") or ""
+            txt_s = strip_inline_md(sl_s.get("speakerNotes") or sl_s.get("title") or "")
             b_out, e_out = synthesize_tts_mp3(txt_s, voice_name=voice_name)
             return idx_s, sl_s, b_out, e_out
-        with ThreadPoolExecutor(max_workers=4) as pool:
-            tts_results = list(pool.map(_tts_one, slides_9))
+        with ThreadPoolExecutor(max_workers=6) as pool:
+            tts_results = list(pool.map(_tts_one, slides_all))
         for i, sl, mp3_bytes, tts_err in sorted(tts_results, key=lambda x: x[0]):
             if mp3_bytes:
                 rel = f"audio/slide_{i:02d}.mp3"
@@ -3440,7 +3631,7 @@ def compile_and_save_blog(
                 durations.append(dur)
                 audio_tracks.append({
                     "slideNumber": i,
-                    "title": sl["title"],
+                    "title": strip_inline_md(sl["title"]),
                     "relPath": rel,
                     "bytes": len(mp3_bytes),
                     "durationSec": dur,
@@ -3452,52 +3643,51 @@ def compile_and_save_blog(
                 if tts_err and tts_err not in audio_errors:
                     audio_errors.append(tts_err)
     else:
-        durations = [8.0] * 9
+        durations = [8.0] * slide_n
 
-    vtt_text = build_webvtt(blueprint["slides"], durations)
+    vtt_text = build_webvtt(blueprint["slides"][:slide_n], durations)
     (blog_dir / "audio" / "captions.vtt").write_text(vtt_text, encoding="utf-8")
 
-    host_mp4_rel = _try_compile_host_mp4(blog_dir, slug, durations) if len(audio_tracks) == 9 else None
+    host_mp4_rel = _try_compile_host_mp4(blog_dir, slug, durations) if len(audio_tracks) == slide_n else None
 
-    _step(86, "QUALITY_GATE", "Running 10-check deterministic quality gate (XML/OOXML/XSS/AST/F-13)...")
-    det_report = run_deterministic_quality_gate(
-        bp=blueprint,
-        md_text=md_text,
-        arch_drawio=arch_drawio,
-        arch_svg=arch_svg,
-        seq_drawio=seq_drawio,
-        seq_svg=seq_svg,
-        pptx_bytes=pptx_bytes,
-        docx_bytes=docx_bytes,
-        py_ast_ok=py_ast_ok,
-        py_ast_err=py_ast_err,
-        starter_files=starter_files,
-    )
-
-    if enable_judge:
-        _step(91, "ORTHOGONAL_JUDGE", "Running independent orthogonal Gemini model critic...")
-        judge_report = run_orthogonal_llm_judge(
-            bp=blueprint,
-            md_text=md_text,
-            generator_model=model_used,
-            api_key_override=api_key_override,
-        )
-    else:
-        judge_report = {
-            "status": "DISABLED_BY_REQUEST",
-            "verdict": "SKIPPED",
-            "score": None,
-            "summary": "Orthogonal LLM judge disabled by user option.",
-            "strengths": [],
-            "findings": [],
-        }
-
-    quality_report = {"slug": slug, "checkedAt": _now_iso(), "deterministic": det_report, "orthogonalJudge": judge_report}
+    grounding_public = {
+        "status": g_info.get("status", "NOT_RUN"),
+        "mode": g_info.get("mode", ""),
+        "checkedAt": g_info.get("checkedAt", ""),
+        "latencyMs": g_info.get("latencyMs", 0),
+        "queries": g_info.get("queries") or [],
+        "sources": g_info.get("sources") or [],
+    }
+    quality_report = {
+        "slug": slug,
+        "checkedAt": _now_iso(),
+        "deterministic": det_report,
+        "orthogonalJudge": judge_report,
+        "grounding": grounding_public,
+        "autoRevision": revision_meta,
+    }
     (blog_dir / "quality_report.json").write_text(json.dumps(quality_report, indent=2), encoding="utf-8")
+
+    diags = art["diags"]
+    diagrams_manifest = {}
+    for k in ("architecture", "sequence", "security", "wire", "async"):
+        dv = diags[k]
+        diagrams_manifest[k] = {
+            "id": dv["id"],
+            "kind": k,
+            "layer": dv["layer"],
+            "slideNumber": dv["slide"],
+            "title": dv["label"],
+            "iconCount": dv["iconCount"],
+            "drawioPath": f"diagrams/{slug}-{k}.drawio",
+            "svgPath": f"diagrams/{slug}-{k}.svg",
+            "viewerUrl": dv["viewerUrl"],
+            "studioUrl": f"/drawio-editor?id={urllib.parse.quote(slug + '-' + k)}",
+        }
 
     created_at = _now_iso()
     manifest = {
-        "schemaVersion": "1.0",
+        "schemaVersion": "2.0",
         "slug": slug,
         "title": blueprint["title"],
         "subtitle": blueprint["subtitle"],
@@ -3509,25 +3699,17 @@ def compile_and_save_blog(
         "createdAt": created_at,
         "updatedAt": created_at,
         "actorEmail": actor_email or "local-operator",
-        "generation": {"model": model_used, "authMode": auth_mode, "latencyMs": latency_ms},
-        "diagrams": {
-            "architecture": {
-                "id": f"{slug}-architecture",
-                "title": f"{blueprint['title']} — Architecture",
-                "drawioPath": f"diagrams/{slug}-architecture.drawio",
-                "svgPath": f"diagrams/{slug}-architecture.svg",
-                "viewerUrl": arch_url,
-                "studioUrl": f"/drawio-editor?id={urllib.parse.quote(slug + '-architecture')}",
-            },
-            "sequence": {
-                "id": f"{slug}-sequence",
-                "title": f"{blueprint['title']} — Request Sequence",
-                "drawioPath": f"diagrams/{slug}-sequence.drawio",
-                "svgPath": f"diagrams/{slug}-sequence.svg",
-                "viewerUrl": seq_url,
-                "studioUrl": f"/drawio-editor?id={urllib.parse.quote(slug + '-sequence')}",
-            },
+        "generation": {
+            "model": model_used,
+            "authMode": auth_mode,
+            "latencyMs": latency_ms,
+            "pipelineVersion": "v2_ws_parity",
+            "slideCount": slide_n,
+            "diagramCount": len(diagrams_manifest),
+            "totalEmbeddedIcons": sum(d["iconCount"] for d in diagrams_manifest.values()),
+            "grounding": grounding_public,
         },
+        "diagrams": diagrams_manifest,
         "assets": {
             "markdown": "blog.md",
             "pptx": f"slides/{slug}-deck.pptx",
@@ -3537,7 +3719,7 @@ def compile_and_save_blog(
             "qualityReport": "quality_report.json",
             "captionsVtt": "audio/captions.vtt",
             "hostMp4": host_mp4_rel,
-            "slidePreviews": [f"slides/slide_{i:02d}.svg" for i in range(1, 10)],
+            "slidePreviews": [f"slides/slide_{i:02d}.svg" for i in range(1, slide_n + 1)],
         },
         "audio": {
             "enabled": enable_tts,
@@ -3552,9 +3734,10 @@ def compile_and_save_blog(
         },
         "starterMeta": {
             "status": "GENERATED_TEMPLATE_UNDEPLOYED",
-            "pythonAstValid": py_ast_ok,
-            "pythonAstError": py_ast_err,
-            "files": starter_files,
+            "pythonAstValid": art["astOk"],
+            "pythonAstError": art["astErr"],
+            "tfSecurityFindings": det_report.get("tfFindings") or [],
+            "files": art["starterFiles"],
         },
         "proofs": proofs,
         "workspaceSync": {"status": "NOT_SYNCED"},
@@ -3563,7 +3746,7 @@ def compile_and_save_blog(
     }
     (blog_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
-    _step(96, "BUNDLE_AND_SYNC", "Packaging complete archive bundle & syncing to durable GCS store...")
+    _step(95, "BUNDLE_AND_SYNC", "Packaging complete archive bundle & syncing to durable GCS store...")
     _rebuild_bundle_zip(blog_dir, slug)
     index_bytes = _update_index_entry(manifest)
     _sync_blog_dir_to_gcs_async(slug, blog_dir, index_bytes)
@@ -3611,6 +3794,8 @@ def start_generation_job(
         voice = "en-US-Chirp3-HD-Charon"
     enable_tts = bool(payload.get("enableTts", True))
     enable_judge = bool(payload.get("enableJudge", True))
+    enable_grounding = bool(payload.get("enableGrounding", True))
+    enable_auto_revise = bool(payload.get("enableAutoRevise", True)) and enable_judge
 
     has_key = bool((api_key_override or "").strip() or os.environ.get("GEMINI_API_KEY", "").strip())
     has_vertex = bool(_get_gcp_bearer_token())
@@ -3629,26 +3814,31 @@ def start_generation_job(
         "status": "QUEUED",
         "progress": 4,
         "stage": "QUEUED",
-        "message": f"Starting live {model} architecture synthesis...",
+        "message": f"Starting multi-stage live {model} parity pipeline...",
         "model": model,
         "voice": voice,
         "enableTts": enable_tts,
         "enableJudge": enable_judge,
+        "enableGrounding": enable_grounding,
+        "enableAutoRevise": enable_auto_revise,
         "slug": None,
         "error": None,
         "errorCode": None,
         "createdAt": _now_iso(),
         "updatedAt": _now_iso(),
         "steps": [
-            {"id": "LLM_SYNTHESIS", "label": f"Live Gemini Synthesis ({model})", "status": "pending"},
-            {"id": "COMPILE_DIAGRAMS", "label": "Compile Draw.io & SVG Diagrams", "status": "pending"},
-            {"id": "COMPILE_SLIDES", "label": "Build 9-Slide OOXML .pptx & Previews", "status": "pending"},
+            {"id": "GROUNDING_SEARCH", "label": "Live Google Search Grounding", "status": "pending" if enable_grounding else "skipped"},
+            {"id": "LLM_SYNTHESIS", "label": f"Stage 1: Deep Prose, SQL/GQL & Claims ({model})", "status": "pending"},
+            {"id": "TOPOLOGY_AND_DECK", "label": "Stage 2: 5 C4 Diagrams, 12 Slides & Hardened Code", "status": "pending"},
+            {"id": "COMPILE_DIAGRAMS", "label": "Compile 5 Draw.io & SVG Diagrams (Official Icons)", "status": "pending"},
+            {"id": "COMPILE_SLIDES", "label": "Build 12-Slide OOXML .pptx & Previews", "status": "pending"},
             {"id": "COMPILE_DOCS", "label": "Compile blog.md & .docx Whitepaper", "status": "pending"},
-            {"id": "COMPILE_STARTER", "label": "Package starter.zip + AST Check", "status": "pending"},
-            {"id": "SYNTHESIZE_TTS", "label": "Cloud TTS Chirp3-HD Audio", "status": "pending" if enable_tts else "skipped"},
-            {"id": "QUALITY_GATE", "label": "10-Check Deterministic Quality Gate", "status": "pending"},
-            {"id": "ORTHOGONAL_JUDGE", "label": "Orthogonal Gemini Judge Critic", "status": "pending" if enable_judge else "skipped"},
-            {"id": "BUNDLE_AND_SYNC", "label": "Bundle ZIP & GCS Sync", "status": "pending"},
+            {"id": "COMPILE_STARTER", "label": "Package starter.zip + AST & D-11 Check", "status": "pending"},
+            {"id": "QUALITY_GATE", "label": "12-Check Deterministic Gate (D-01..D-12)", "status": "pending"},
+            {"id": "ORTHOGONAL_JUDGE", "label": "Grounded Orthogonal Gemini Critic", "status": "pending" if enable_judge else "skipped"},
+            {"id": "AUTO_REVISE", "label": "Auto-Revision Pass (on P0/P1 or D-11)", "status": "pending" if enable_auto_revise else "skipped"},
+            {"id": "SYNTHESIZE_TTS", "label": "Cloud TTS Chirp3-HD Audio (12 Tracks)", "status": "pending" if enable_tts else "skipped"},
+            {"id": "BUNDLE_AND_SYNC", "label": "Bundle ZIP & Atomic GCS Sync", "status": "pending"},
         ],
     }
     with _JOBS_LOCK:
@@ -3690,36 +3880,77 @@ def start_generation_job(
 
     def _runner() -> None:
         try:
+            t_start = time.perf_counter()
             with _JOBS_LOCK:
                 _JOBS[job_id]["status"] = "RUNNING"
-            _update_step(12, "LLM_SYNTHESIS", f"Calling live {model} API with anti-hallucination schema...")
-            raw_bp, meta = call_gemini_json(
-                system_prompt=_blueprint_system_prompt(),
-                user_prompt=_blueprint_user_prompt(prompt, title_hint, domain, audience),
+
+            grounding: Dict[str, Any] = {"status": "DISABLED", "queries": [], "sources": [], "summary": ""}
+            if enable_grounding:
+                _update_step(10, "GROUNDING_SEARCH", "Verifying current Google Cloud GA docs & quotas via Google Search...")
+                grounding = _pipe_v2.call_gemini_grounded_search(
+                    topic_prompt=prompt,
+                    title_hint=title_hint,
+                    domain=domain,
+                    model="gemini-2.5-flash",
+                    vertex_project=DEFAULT_GCP_PROJECT,
+                    vertex_location=DEFAULT_VERTEX_LOCATION,
+                    get_bearer_token=_get_gcp_bearer_token,
+                    api_key_override=transient_key,
+                    timeout_s=45.0,
+                )
+
+            _update_step(20, "LLM_SYNTHESIS", f"Stage 1/2: Authoring deep 7-8 section blog, inline DDL/formulas & claims ({model})...")
+            prose_raw, meta_p = call_gemini_json(
+                system_prompt=_pipe_v2.prose_stage_system_prompt(),
+                user_prompt=_pipe_v2.prose_stage_user_prompt(prompt, title_hint, domain, audience, grounding),
                 model=model,
                 api_key_override=transient_key,
                 max_output_tokens=24576,
-                thinking_budget=1024 if model == 'gemini-2.5-flash' else 2048,
-                temperature=0.25,
-                timeout_s=120.0,
+                thinking_budget=1024 if model == "gemini-2.5-flash" else 2048,
+                temperature=0.22,
+                timeout_s=130.0,
             )
-            bp = normalize_blueprint(raw_bp, prompt, domain, audience)
+
+            _update_step(36, "TOPOLOGY_AND_DECK", f"Stage 2/2: Generating 5 C4 diagrams, 12-slide deck & hardened Terraform v2 starter ({model})...")
+            topo_raw, meta_t = call_gemini_json(
+                system_prompt=_pipe_v2.topology_stage_system_prompt(),
+                user_prompt=_pipe_v2.topology_stage_user_prompt(prose_raw, prompt, grounding),
+                model=model,
+                api_key_override=transient_key,
+                max_output_tokens=24576,
+                thinking_budget=1024 if model == "gemini-2.5-flash" else 2048,
+                temperature=0.2,
+                timeout_s=130.0,
+            )
+
+            merged_raw = dict(prose_raw)
+            for tk in (
+                "architectureZones", "architectureEdges", "sequenceActors", "sequenceSteps",
+                "securityDiagram", "wireDiagram", "asyncDiagram", "slides", "codeStarter",
+            ):
+                if topo_raw.get(tk) is not None:
+                    merged_raw[tk] = topo_raw[tk]
+
+            bp = normalize_blueprint(merged_raw, prompt, domain, audience, target_slides=12)
             slug = _unique_slug(bp.get("slugHint") or title_hint or bp["title"])
             with _JOBS_LOCK:
                 _JOBS[job_id]["slug"] = slug
 
+            total_llm_ms = round(float(meta_p.get("latencyMs") or 0.0) + float(meta_t.get("latencyMs") or 0.0), 1)
             manifest = compile_and_save_blog(
                 blueprint=bp,
                 slug=slug,
-                model_used=meta["model"],
-                auth_mode=meta["authMode"],
+                model_used=meta_p["model"],
+                auth_mode=meta_p["authMode"],
                 actor_email=actor_email,
                 voice_name=voice,
                 enable_tts=enable_tts,
                 enable_judge=enable_judge,
+                enable_auto_revise=enable_auto_revise,
+                grounding=grounding,
                 api_key_override=transient_key,
                 progress_cb=_update_step,
-                latency_ms=float(meta.get("latencyMs") or 0.0),
+                latency_ms=total_llm_ms,
             )
             with _JOBS_LOCK:
                 jr = _JOBS[job_id]
@@ -3727,6 +3958,7 @@ def start_generation_job(
                 jr["progress"] = 100
                 jr["slug"] = manifest["slug"]
                 jr["title"] = manifest["title"]
+                jr["elapsedSec"] = round(time.perf_counter() - t_start, 1)
                 jr["message"] = f"Ready: '{manifest['title']}' ({slug})"
                 jr["updatedAt"] = _now_iso()
                 done_snap = json.loads(json.dumps(jr))
@@ -3806,24 +4038,51 @@ def _recompile_after_proof_change(slug: str, manifest: Dict[str, Any]) -> Dict[s
     blog_dir = get_storage_root() / slug
     bp = manifest["blueprint"]
     proofs = manifest.get("proofs") or []
-    arch_url = manifest["diagrams"]["architecture"]["viewerUrl"]
-    seq_url = manifest["diagrams"]["sequence"]["viewerUrl"]
+    d_meta = manifest.get("diagrams") or {}
+    arch_url = d_meta["architecture"]["viewerUrl"]
+    seq_url = d_meta["sequence"]["viewerUrl"]
     arch_svg = (blog_dir / f"diagrams/{slug}-architecture.svg").read_text(encoding="utf-8")
     seq_svg = (blog_dir / f"diagrams/{slug}-sequence.svg").read_text(encoding="utf-8")
     arch_drawio = (blog_dir / f"diagrams/{slug}-architecture.drawio").read_text(encoding="utf-8")
     seq_drawio = (blog_dir / f"diagrams/{slug}-sequence.drawio").read_text(encoding="utf-8")
 
-    slide_svgs = compile_slide_preview_svgs(bp, slug, arch_svg, seq_svg, proofs, blog_dir)
+    extra_svgs: Dict[str, str] = {}
+    extra_urls: Dict[str, str] = {}
+    extra_diags: Dict[str, Dict[str, Any]] = {}
+    for kind in ("security", "wire", "async"):
+        if kind in d_meta:
+            sp = _ensure_rel_hydrated(slug, f"diagrams/{slug}-{kind}.svg")
+            xp = _ensure_rel_hydrated(slug, f"diagrams/{slug}-{kind}.drawio")
+            if sp and sp.is_file():
+                extra_svgs[kind] = sp.read_text(encoding="utf-8")
+            extra_urls[kind] = d_meta[kind].get("viewerUrl", "")
+            extra_diags[kind] = {
+                "svg": extra_svgs.get(kind, ""),
+                "xml": xp.read_text(encoding="utf-8") if (xp and xp.is_file()) else "",
+            }
+
+    slide_svgs = compile_slide_preview_svgs(
+        bp, slug, arch_svg, seq_svg, proofs, blog_dir, extra_svgs=extra_svgs or None
+    )
     for i, s_svg in enumerate(slide_svgs, 1):
         (blog_dir / "slides" / f"slide_{i:02d}.svg").write_text(s_svg, encoding="utf-8")
 
-    pptx_bytes = compile_pptx_bytes(bp, slug, arch_url, seq_url, proofs, blog_dir)
+    pptx_bytes = compile_pptx_bytes(
+        bp, slug, arch_url, seq_url, proofs, blog_dir, extra_urls=extra_urls or None
+    )
     (blog_dir / "slides" / f"{slug}-deck.pptx").write_bytes(pptx_bytes)
 
-    md_text = compile_blog_markdown(bp, slug, arch_url, seq_url, proofs, manifest["generation"]["model"])
+    grounding_info = (manifest.get("quality") or {}).get("grounding") or {}
+    md_text = compile_blog_markdown(
+        bp, slug, arch_url, seq_url, proofs, manifest["generation"]["model"],
+        extra_urls=extra_urls or None, grounding=grounding_info,
+    )
     (blog_dir / "blog.md").write_text(md_text, encoding="utf-8")
 
-    docx_bytes = compile_docx_bytes(bp, slug, arch_url, seq_url, proofs, blog_dir)
+    docx_bytes = compile_docx_bytes(
+        bp, slug, arch_url, seq_url, proofs, blog_dir,
+        extra_urls=extra_urls or None, grounding=grounding_info,
+    )
     (blog_dir / "docs" / f"{slug}-whitepaper.docx").write_bytes(docx_bytes)
 
     starter_meta = manifest.get("starterMeta") or {}
@@ -3839,6 +4098,7 @@ def _recompile_after_proof_change(slug: str, manifest: Dict[str, Any]) -> Dict[s
         py_ast_ok=bool(starter_meta.get("pythonAstValid", True)),
         py_ast_err=str(starter_meta.get("pythonAstError", "")),
         starter_files=starter_meta.get("files") or {},
+        extra_diagrams=extra_diags or None,
     )
     manifest["quality"]["deterministic"] = det
     manifest["quality"]["checkedAt"] = _now_iso()
@@ -3995,11 +4255,13 @@ def delete_blog(slug: str) -> Dict[str, Any]:
 def get_diagram_record_for_studio(diag_id: str) -> Optional[Dict[str, Any]]:
     """Allows /drawio-editor?id=<slug>-architecture|sequence to load created diagrams directly."""
     did = str(diag_id or "").strip()
-    if did.endswith("-architecture"):
-        kind, slug = "architecture", did[: -len("-architecture")]
-    elif did.endswith("-sequence"):
-        kind, slug = "sequence", did[: -len("-sequence")]
-    else:
+    kind, slug = "", ""
+    slide_map = {"architecture": 3, "sequence": 5, "security": 6, "wire": 7, "async": 8}
+    for sfx in ("architecture", "sequence", "security", "wire", "async"):
+        if did.endswith(f"-{sfx}"):
+            kind, slug = sfx, did[: -(len(sfx) + 1)]
+            break
+    if not kind:
         return None
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]{1,62}", slug):
         return None
@@ -4014,7 +4276,7 @@ def get_diagram_record_for_studio(diag_id: str) -> Optional[Dict[str, Any]]:
             "diagramId": did,
             "id": did,
             "title": f"{slug} ({kind.title()})",
-            "slideNumber": 3 if kind == "architecture" else 5,
+            "slideNumber": slide_map.get(kind, 3),
             "origin": "create-blog1",
             "standaloneAppDiagramsNetUrl": encode_drawio_viewer_url(re.sub(r">\s+<", "><", xml_str.strip())),
         },

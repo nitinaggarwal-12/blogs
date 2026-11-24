@@ -304,7 +304,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         )
         self.assertEqual(manifest["slug"], slug)
         self.assertTrue(manifest["quality"]["deterministic"]["allPassed"], manifest["quality"]["deterministic"])
-        self.assertEqual(manifest["quality"]["deterministic"]["passed"], 10)
+        self.assertEqual(manifest["quality"]["deterministic"]["passed"], 12)
 
         blog_dir = Path(self._tmpdir.name) / slug
         # Draw.io checks: zero flowAnimation=1, valid XML, sequence has dashed lifelines
@@ -653,6 +653,67 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
             self.assertEqual(got["progress"], 72)
         finally:
             cb1._gcs_download_bytes = orig_dl
+
+
+    def test_09_v2_five_c4_diagrams_12_slides_and_tf_d11_security_gate(self) -> None:
+        bp = _sample_blueprint()
+        # Expand to 12 slides & attach codeBlock + inline **markdown** bold to confirm zero leaks!
+        s_extra = [
+            {"number": n, "kicker": f"SLIDE {n}", "title": f"**Bold Title {n}**", "subtitle": "Check `sub`", "bullets": [f"**Check {n}:** clean plain text"], "speakerNotes": f"Natural narration for slide {n}."}
+            for n in range(10, 13)
+        ]
+        bp["slides"] = list(bp["slides"]) + s_extra
+        bp["slides"][2]["bullets"] = ["**Ingress:** IAP verified", "**Compute:** `Cloud Run` v2"]
+        bp["sections"][0]["codeBlocks"] = [{"language": "sql", "caption": "Bi-temporal graph check", "code": "SELECT * FROM GRAPH_TABLE(kg MATCH (a) RETURN a);"}]
+        bp["codeStarter"]["schemaSql"] = "CREATE PROPERTY GRAPH AgentGraph NODE TABLES (Entities);"
+        slug = "zt-mcp-v2-parity-test"
+        manifest = cb1.compile_and_save_blog(
+            blueprint=bp,
+            slug=slug,
+            model_used="gemini-2.5-flash",
+            auth_mode="unit_test_fixture",
+            actor_email="unit-test",
+            enable_tts=False,
+            enable_judge=False,
+        )
+        self.assertEqual(manifest["schemaVersion"], "2.0")
+        self.assertEqual(len(manifest["diagrams"]), 5)
+        self.assertGreaterEqual(manifest["diagrams"]["architecture"]["iconCount"], 4)
+        self.assertEqual(manifest["quality"]["deterministic"]["total"], 12)
+        self.assertEqual(manifest["quality"]["deterministic"]["passed"], 12, manifest["quality"]["deterministic"])
+
+        # All 5 diagrams available through /api/drawio/item/<slug>-<kind>
+        for k in ("architecture", "sequence", "security", "wire", "async"):
+            st, _, raw = self._req(f"/api/drawio/item/{slug}-{k}")
+            self.assertEqual(st, 200, f"studio missing {k}")
+            obj = json.loads(raw.decode("utf-8"))
+            self.assertIn("<mxfile", obj["xml"])
+
+        # PPTX has 12 slides, 12 notesSlides, 5 viewer.diagrams.net links, zero raw ** leakage
+        pptx_p = Path(self._tmpdir.name) / slug / "slides" / f"{slug}-deck.pptx"
+        with zipfile.ZipFile(pptx_p, "r") as zf:
+            names = set(zf.namelist())
+            for i in range(1, 13):
+                self.assertIn(f"ppt/slides/slide{i}.xml", names)
+                self.assertIn(f"ppt/notesSlides/notesSlide{i}.xml", names)
+                s_txt = zf.read(f"ppt/slides/slide{i}.xml").decode("utf-8")
+                if i != 9:
+                    self.assertNotIn("**", s_txt, f"Raw markdown asterisk leaked into slide {i}")
+            for di in (3, 5, 6, 7, 8):
+                rel = zf.read(f"ppt/slides/_rels/slide{di}.xml.rels").decode("utf-8")
+                self.assertIn("viewer.diagrams.net", rel)
+
+        # D-11 Terraform linter catches public allUsers & deprecated v1 Cloud Run
+        bad_tf = {
+            "main.tf": 'resource "google_cloud_run_service" "x" {}\nmember = "allUsers"\n',
+            "variables.tf": "",
+            "deploy.sh": "gcloud run deploy svc --allow-unauthenticated",
+        }
+        findings = cb1._pipe_v2.scan_terraform_security(bad_tf)
+        ids = {f["id"] for f in findings}
+        self.assertIn("TF-SEC-01", ids)
+        self.assertIn("TF-DEP-01", ids)
+        self.assertIn("SH-SEC-01", ids)
 
 
 if __name__ == "__main__":

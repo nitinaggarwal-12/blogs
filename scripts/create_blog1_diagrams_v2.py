@@ -282,15 +282,25 @@ def _draw_label_pill(svg_parts: List[str], lx: float, ly: float, text: str, stro
     lbl = strip_inline_md(text)[:max_len]
     if not lbl:
         return
-    pw = max(56.0, len(lbl) * 5.9 + 14.0)
+    pw = max(56.0, len(lbl) * 6.2 + 18.0)
+    clamped_x = max(pw / 2.0 + 18.0, min(1582.0 - pw / 2.0, lx))
     svg_parts.append(
-        f'<rect x="{lx - pw/2:.1f}" y="{ly - 9.5:.1f}" width="{pw:.1f}" height="19" rx="4.5" '
+        f'<rect x="{clamped_x - pw/2:.1f}" y="{ly - 9.5:.1f}" width="{pw:.1f}" height="19" rx="4.5" '
         f'fill="#FFFFFF" stroke="{stroke}" stroke-width="1"/>'
     )
     svg_parts.append(
-        f'<text x="{lx:.1f}" y="{ly + 3.6:.1f}" text-anchor="middle" '
+        f'<text x="{clamped_x:.1f}" y="{ly + 3.6:.1f}" text-anchor="middle" '
         f'font-family="Google Sans, Inter, Arial, sans-serif" font-size="9.6" font-weight="700" fill="{fg}">{xml_esc(lbl)}</text>'
     )
+
+
+def _fit_title_with_suffix(base: str, suffix: str, max_total: int = 74) -> str:
+    raw = strip_inline_md(base)
+    budget = max(20, max_total - len(suffix))
+    if len(raw) <= budget:
+        return f"{raw}{suffix}"
+    cut = raw[: max(16, budget - 3)].rsplit(" ", 1)[0].rstrip(" ,:-&")
+    return f"{cut}...{suffix}"
 
 
 def _ortho_svg_path(pts: List[Tuple[float, float]], r: float = 8.0) -> str:
@@ -617,15 +627,24 @@ def compile_architecture_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, st
                     pts = [(cx_m, sy), (cx_m, ty + th + 4)]
                 lx, ly = cx_m, (pts[0][1] + pts[-1][1]) / 2.0
             else:
-                # Detour along right edge gutter just outside the cards (inside dashed zone margin)
-                dx_rail = sx + sw + 13.0 + (side_detour_idx % 2) * 8.0
+                # Detour in clear gutter (left side for data column so labels stay inside canvas)
                 side_detour_idx += 1
-                pts = [
-                    (sx + sw, sy + sh * 0.65),
-                    (dx_rail, sy + sh * 0.65),
-                    (dx_rail, ty + th * 0.35),
-                    (tx + tw + 4, ty + th * 0.35),
-                ]
+                if sp == "data":
+                    dx_rail = sx - 64.0 - (side_detour_idx % 2) * 14.0
+                    pts = [
+                        (sx, sy + sh * 0.65),
+                        (dx_rail, sy + sh * 0.65),
+                        (dx_rail, ty + th * 0.35),
+                        (tx - 4, ty + th * 0.35),
+                    ]
+                else:
+                    dx_rail = sx + sw + 13.0 + (side_detour_idx % 2) * 8.0
+                    pts = [
+                        (sx + sw, sy + sh * 0.65),
+                        (dx_rail, sy + sh * 0.65),
+                        (dx_rail, ty + th * 0.35),
+                        (tx + tw + 4, ty + th * 0.35),
+                    ]
                 lx, ly = dx_rail, (sy + sh * 0.65 + ty + th * 0.35) / 2.0
         else:
             so, to = plane_order[sp], plane_order[tp]
@@ -700,9 +719,7 @@ def compile_architecture_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, st
 def compile_sequence_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
     actors = bp["sequenceActors"][:5]
     steps = bp["sequenceSteps"][:10]
-    bt = strip_inline_md(bp["title"])
-    base_t = bt if len(bt) <= 68 else (bt[:65].rsplit(" ", 1)[0] + "...")
-    title = f"{base_t} — Request Lifecycle Sequence"
+    title = _fit_title_with_suffix(bp["title"], " — Request Sequence", max_total=76)
 
     mx_cells: List[str] = [
         '<mxCell id="0" />',
@@ -846,9 +863,7 @@ def compile_sequence_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, i
 # 3. Trust Perimeter & Fail-Closed Security Boundary (C4 L1)
 # ---------------------------------------------------------------------------
 def compile_security_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
-    bt = strip_inline_md(bp["title"])
-    base_t = bt if len(bt) <= 64 else (bt[:61].rsplit(" ", 1)[0] + "...")
-    title = f"{base_t} — Trust Perimeter & Security Boundary"
+    title = _fit_title_with_suffix(bp["title"], " — Security Boundary", max_total=74)
     sec_spec = bp.get("securityDiagram") or {}
     layers = sec_spec.get("layers") or [
         {"zone": "L1 · Edge Ingress & WAF", "control": "Cloud Load Balancing + Cloud Armor + IAP", "iconKey": "iap", "detail": "Terminates TLS 1.3, validates OIDC/JWT & blocks unauthenticated calls (HTTP 401/403)."},
@@ -917,15 +932,19 @@ def compile_security_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, i
         if ik:
             mx_cells.append(drawio_icon_cell(f"pic_sec_l{li+1}", ik, base_x + pad_x + 14, ry + 20, 32))
             icon_count += 1
+        det_lines = _wrap(det, max(56, int((rw - 124) / 6.8)), 2)
         svg_parts.extend([
             f'<rect x="{base_x + pad_x:.1f}" y="{ry:.1f}" width="{rw:.1f}" height="{rh:.1f}" rx="14" fill="{bg}" stroke="{bd}" stroke-width="2" stroke-dasharray="8,5"/>',
             f'<rect x="{base_x + pad_x + 16:.1f}" y="{ry + 16:.1f}" width="{rw - 32:.1f}" height="96" rx="10" fill="#FFFFFF" stroke="{bd}" stroke-width="1.5" filter="url(#card-sh)"/>',
             f'<rect x="{base_x + pad_x + 16:.1f}" y="{ry + 16:.1f}" width="7" height="96" rx="3" fill="{bd}"/>',
             f'<rect x="{base_x + pad_x + 34:.1f}" y="{ry + 36:.1f}" width="54" height="54" rx="11" fill="{bg}" stroke="{bd}" stroke-opacity="0.35"/>',
             svg_inline_icon(ik, base_x + pad_x + 43, ry + 45, 36) if ik else "",
-            f'<text x="{base_x + pad_x + 104:.1f}" y="{ry + 42:.1f}" font-family="Roboto Mono, monospace" font-size="10.5" font-weight="700" fill="{fg}">{xml_esc(z_lbl.upper())}</text>',
-            f'<text x="{base_x + pad_x + 104:.1f}" y="{ry + 65:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="16" font-weight="800" fill="#0F172A">{xml_esc(ctrl)}</text>',
-            f'<text x="{base_x + pad_x + 104:.1f}" y="{ry + 89:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12" fill="#475569">{xml_esc(det[:92])}</text>',
+            f'<text x="{base_x + pad_x + 104:.1f}" y="{ry + 38:.1f}" font-family="Roboto Mono, monospace" font-size="10.2" font-weight="700" fill="{fg}">{xml_esc(z_lbl.upper())}</text>',
+            f'<text x="{base_x + pad_x + 104:.1f}" y="{ry + 60:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="15.5" font-weight="800" fill="#0F172A">{xml_esc(ctrl)}</text>',
+            *[
+                f'<text x="{base_x + pad_x + 104:.1f}" y="{ry + 79 + di * 15:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11.5" fill="#475569">{xml_esc(dln)}</text>'
+                for di, dln in enumerate(det_lines)
+            ],
         ])
         if li < 3:
             mid_x = base_x + base_w / 2.0
@@ -1007,9 +1026,7 @@ def compile_security_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, i
 # 4. Wire-Protocol & Data/Schema Transformation (C4 L4)
 # ---------------------------------------------------------------------------
 def compile_wire_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
-    bt = strip_inline_md(bp["title"])
-    base_t = bt if len(bt) <= 64 else (bt[:61].rsplit(" ", 1)[0] + "...")
-    title = f"{base_t} — Wire Payload & Schema Metamorphosis"
+    title = _fit_title_with_suffix(bp["title"], " — Wire Payload Transform", max_total=72)
     hops = (bp.get("wireDiagram") or {}).get("hops") or [
         {
             "hop": "HOP 1 · CLIENT INGRESS",
@@ -1115,7 +1132,7 @@ def compile_wire_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
             f'<rect x="{hx + 14:.1f}" y="{card_y + 18:.1f}" width="44" height="44" rx="10" fill="#FFFFFF"/>',
             svg_inline_icon(ik, hx + 21, card_y + 25, 30) if ik else "",
             f'<text x="{hx + 70:.1f}" y="{card_y + 32:.1f}" font-family="Roboto Mono, monospace" font-size="9.8" font-weight="700" fill="#FFFFFF" opacity="0.92">{xml_esc(h_lbl)}</text>',
-            f'<text x="{hx + 70:.1f}" y="{card_y + 53:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="14" font-weight="800" fill="#FFFFFF">{xml_esc(htitle[:24])}</text>',
+            f'<text x="{hx + 70:.1f}" y="{card_y + 53:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12.8" font-weight="800" fill="#FFFFFF">{xml_esc(htitle[:30])}</text>',
             f'<text x="{hx + 70:.1f}" y="{card_y + 70:.1f}" font-family="Roboto Mono, monospace" font-size="9.5" fill="#FFFFFF" opacity="0.88">{xml_esc(proto)}</text>',
             # Added / Bound box
             f'<rect x="{hx + 16:.1f}" y="{card_y + 104:.1f}" width="{cw - 32:.1f}" height="218" rx="10" fill="#FFFFFF" stroke="#86EFAC" stroke-width="1.4"/>',
@@ -1164,9 +1181,7 @@ def compile_wire_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
 # 5. Async Operations, CDC / Export & Erasure Loop
 # ---------------------------------------------------------------------------
 def compile_async_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
-    bt = strip_inline_md(bp["title"])
-    base_t = bt if len(bt) <= 64 else (bt[:61].rsplit(" ", 1)[0] + "...")
-    title = f"{base_t} — Async State, Export & Lifecycle Loop"
+    title = _fit_title_with_suffix(bp["title"], " — Async Lifecycle Loop", max_total=72)
     stages = (bp.get("asyncDiagram") or {}).get("stages") or [
         {"stage": "1. CHANGE CAPTURE", "service": "Primary Datastore Stream", "iconKey": "spanner", "cadence": "Continuous / CDC", "detail": "Captures committed mutation envelopes & temporal supersedes asynchronously without impacting p95 reads."},
         {"stage": "2. ENRICH & TRANSFORM", "service": "Serverless Worker / Dataflow", "iconKey": "cloud_run", "cadence": "Batch / Streaming", "detail": "Normalizes payloads, recomputes vector embeddings, validates schema versions and idempotency keys."},
@@ -1234,7 +1249,7 @@ def compile_async_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]
 
         svg_parts.extend([
             f'<rect x="{x:.1f}" y="{sy0:.1f}" width="{cw:.1f}" height="{ch:.1f}" rx="16" fill="{bg}" stroke="{bd}" stroke-width="2.2" filter="url(#card-sh)"/>',
-            f'<rect x="{x:.1f}" y="{sy0:.1f}" width="{cw:.1f}" height="10" rx="5" fill="{bd}"/>',
+            f'<rect x="{x + 12:.1f}" y="{sy0:.1f}" width="{cw - 24:.1f}" height="6" rx="3" fill="{bd}"/>',
             f'<rect x="{x + 22:.1f}" y="{sy0 + 28:.1f}" width="58" height="58" rx="12" fill="#FFFFFF" stroke="{bd}" stroke-width="1.3"/>',
             svg_inline_icon(ik, x + 31, sy0 + 37, 40) if ik else "",
             f'<rect x="{x + cw - 134:.1f}" y="{sy0 + 30:.1f}" width="114" height="24" rx="12" fill="#FFFFFF" stroke="{bd}" stroke-width="1"/>',
@@ -1267,8 +1282,11 @@ def compile_async_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]
         f'<rect x="260" y="{dlq_y:.1f}" width="1080" height="{dlq_h:.1f}" rx="16" fill="#F8FAFC" stroke="#475569" stroke-width="1.8" stroke-dasharray="7,5"/>',
         f'<rect x="292" y="{dlq_y + 36:.1f}" width="54" height="54" rx="12" fill="#FEF2F2" stroke="#FCA5A5"/>',
         svg_inline_icon("cloud_monitoring", 301, dlq_y + 45, 36),
-        f'<text x="366" y="{dlq_y + 58:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="16.5" font-weight="800" fill="#0F172A">Fault Handling, Dead-Letter Replay &amp; Audit Reconciliation</text>',
-        f'<text x="366" y="{dlq_y + 88:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13" fill="#334155">{xml_esc(dlq_note[:115])}</text>',
+        f'<text x="366" y="{dlq_y + 52:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="16" font-weight="800" fill="#0F172A">Fault Handling, Dead-Letter Replay &amp; Audit Reconciliation</text>',
+        *[
+            f'<text x="366" y="{dlq_y + 75 + di * 18:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12.2" fill="#334155">{xml_esc(ln)}</text>'
+            for di, ln in enumerate(_wrap(dlq_note, 96, 2))
+        ],
         # Three metric chips inside DLQ box
         f'<rect x="366" y="{dlq_y + 112:.1f}" width="290" height="40" rx="8" fill="#FFFFFF" stroke="#CBD5E1"/>',
         f'<text x="511" y="{dlq_y + 137:.1f}" text-anchor="middle" font-family="Roboto Mono, monospace" font-size="11" font-weight="700" fill="#1A73E8">Exponential Backoff + Jitter</text>',
@@ -1282,7 +1300,7 @@ def compile_async_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]
         '<line x1="601" y1="465" x2="601" y2="562" stroke="#DC2626" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#arr-slate)"/>',
         '<line x1="997" y1="465" x2="997" y2="562" stroke="#DC2626" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#arr-slate)"/>',
     ])
-    _draw_label_pill(svg_parts, 800, 812, "Periodic Verification & Idempotent Reconciliation Feedback", stroke="#137333", fg="#0D652D", max_len=56)
+    _draw_label_pill(svg_parts, 800, 812, "Periodic Verification & Idempotent Reconciliation Feedback", stroke="#137333", fg="#0D652D", max_len=66)
     _draw_label_pill(svg_parts, 601, 514, "Retry / DLQ", stroke="#DC2626", fg="#991B1B", max_len=16)
     _draw_label_pill(svg_parts, 997, 514, "Verify Error", stroke="#DC2626", fg="#991B1B", max_len=16)
 

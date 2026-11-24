@@ -201,7 +201,9 @@
       c.gcsDurableStorage ? 'pill-green' : 'pill-amber',
       true
     ));
-    items.push(makePill('OOXML .pptx / .docx: Pure Stdlib', 'pill-blue', false));
+    if (c.googleSearchGrounding) items.push(makePill('Search Grounding: LIVE', 'pill-green', true));
+    if (c.officialGcpSvgIcons) items.push(makePill(c.officialGcpSvgIcons + ' GCP SVG Icons', 'pill-blue', false));
+    items.push(makePill('5 C4 Diagrams + 12-Slide Deck', 'pill-blue', false));
     items.push(makePill(
       c.workspaceOauthSync ? 'Workspace Drive OAuth: Connected' : 'Workspace OAuth: Manual Import',
       c.workspaceOauthSync ? 'pill-green' : 'pill-amber',
@@ -273,6 +275,7 @@
       const ln = lines[i];
       if (!ln.trim()) { i += 1; continue; }
       if (ln.startsWith('```')) {
+        const langTag = ln.slice(3).trim().toUpperCase() || 'CODE';
         const codeLines = [];
         i += 1;
         while (i < lines.length && !lines[i].startsWith('```')) {
@@ -280,7 +283,11 @@
           i += 1;
         }
         i += 1;
-        root.appendChild(el('pre', { className: 'code-viewer', style: { margin: '10px 0' } }, codeLines.join('\n')));
+        const wrap = el('div', { style: { margin: '12px 0', borderRadius: '8px', overflow: 'hidden', border: '1px solid #334155' } },
+          el('div', { style: { background: '#1e293b', color: '#93c5fd', fontFamily: 'var(--mono)', fontSize: '10.5px', fontWeight: '700', padding: '5px 12px', letterSpacing: '0.04em' } }, langTag),
+          el('pre', { className: 'code-viewer', style: { margin: '0', borderRadius: '0', border: 'none' } }, codeLines.join('\n'))
+        );
+        root.appendChild(wrap);
         continue;
       }
       if (ln.startsWith('### ')) {
@@ -485,7 +492,7 @@
       makePill(blog.domain || 'Architecture', 'pill-blue', false),
       makePill('Model: ' + (blog.generation ? blog.generation.model : ''), 'pill-purple', false),
       makePill('Auth: ' + (blog.generation ? blog.generation.authMode : ''), 'pill-green', true),
-      makePill('Gate ' + (det.passed || 0) + '/' + (det.total || 10), det.allPassed ? 'pill-green' : 'pill-amber', false),
+      makePill('Gate ' + (det.passed || 0) + '/' + (det.total || 12), det.allPassed ? 'pill-green' : 'pill-amber', false),
     ];
     if (judge && judge.verdict && judge.verdict !== 'SKIPPED') {
       badges.push(makePill(
@@ -508,7 +515,7 @@
     const btns = [
       el('a', { className: 'btn btn-primary btn-sm', href: assetUrl(slug, a.bundleZip, true) }, 'Download Full Bundle (.zip)'),
       el('a', { className: 'btn btn-sm', href: assetUrl(slug, a.markdown, true) }, 'blog.md'),
-      el('a', { className: 'btn btn-sm', href: assetUrl(slug, a.pptx, true) }, '9-Slide Deck (.pptx)'),
+      el('a', { className: 'btn btn-sm', href: assetUrl(slug, a.pptx, true) }, (((blog.blueprint && blog.blueprint.slides) || []).length || 9) + '-Slide Deck (.pptx)'),
       el('a', { className: 'btn btn-sm', href: assetUrl(slug, a.docx, true) }, 'Whitepaper (.docx)'),
       el('a', { className: 'btn btn-sm', href: assetUrl(slug, a.starterZip, true) }, 'Starter Code (.zip)'),
       el('button', {
@@ -574,7 +581,30 @@
     });
   }
 
+  function getSlideCount(blog) {
+    const arr = (blog && blog.blueprint && blog.blueprint.slides) || [];
+    return arr.length >= 1 ? arr.length : 9;
+  }
+
+  function getDiagramEntries(blog) {
+    const dmap = (blog && blog.diagrams) || {};
+    const order = [
+      { key: 'architecture', defLabel: 'Figure 1 — Master Reference Architecture (C4 L2)' },
+      { key: 'sequence', defLabel: 'Figure 2 — End-to-End Request Lifecycle Sequence (C4 L3)' },
+      { key: 'security', defLabel: 'Figure 3 — Trust Perimeter & Security Boundary (C4 L1)' },
+      { key: 'wire', defLabel: 'Figure 4 — Wire-Protocol & Schema Transformation (C4 L4)' },
+      { key: 'async', defLabel: 'Figure 5 — Async State, Export & Lifecycle Loop' },
+    ];
+    return order.filter((o) => Boolean(dmap[o.key])).map((o) => ({ key: o.key, label: dmap[o.key].title || o.defLabel, diag: dmap[o.key] }));
+  }
+
   function renderAllTabs(blog) {
+    const dBtn = document.querySelector('#asset-tablist .wtab[data-tab="diagrams"]');
+    const sBtn = document.querySelector('#asset-tablist .wtab[data-tab="slides"]');
+    const dList = getDiagramEntries(blog);
+    const sCnt = getSlideCount(blog);
+    if (dBtn) dBtn.textContent = 'Diagrams (' + dList.length + ')';
+    if (sBtn) sBtn.textContent = 'Slides (' + sCnt + ')';
     renderReaderTab(blog);
     renderDiagramsTab(blog);
     renderSlidesTab(blog);
@@ -607,44 +637,31 @@
         el('a', { className: 'btn btn-sm', href: assetUrl(slug, 'blog.md', true) }, 'Download blog.md')
       )
     );
-    const figBox = el('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px', margin: '14px 0 22px' } });
-    if (arch) {
+    const diagEntries = getDiagramEntries(blog);
+    const figBox = el('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px', margin: '14px 0 22px' } });
+    diagEntries.forEach((ent) => {
       figBox.appendChild(el('div', { className: 'diagram-card', style: { marginBottom: '0' } },
         el('div', { className: 'diagram-hdr' },
-          el('strong', { style: { fontSize: '12px' } }, 'Figure 1 — Reference Architecture'),
-          el('a', { className: 'btn btn-sm', href: arch.viewerUrl, target: '_blank', rel: 'noopener noreferrer' }, 'viewer.diagrams.net ->')
+          el('strong', { style: { fontSize: '11.5px' } }, ent.label),
+          el('a', { className: 'btn btn-sm', href: ent.diag.viewerUrl, target: '_blank', rel: 'noopener noreferrer' }, 'viewer ->')
         ),
-        el('div', { className: 'diagram-stage' }, el('img', { src: assetUrl(slug, arch.svgPath), alt: arch.title }))
+        el('div', { className: 'diagram-stage' }, el('img', { src: assetUrl(slug, ent.diag.svgPath), alt: ent.diag.title }))
       ));
-    }
-    if (seq) {
-      figBox.appendChild(el('div', { className: 'diagram-card', style: { marginBottom: '0' } },
-        el('div', { className: 'diagram-hdr' },
-          el('strong', { style: { fontSize: '12px' } }, 'Figure 2 — Request Lifecycle Sequence'),
-          el('a', { className: 'btn btn-sm', href: seq.viewerUrl, target: '_blank', rel: 'noopener noreferrer' }, 'viewer.diagrams.net ->')
-        ),
-        el('div', { className: 'diagram-stage' }, el('img', { src: assetUrl(slug, seq.svgPath), alt: seq.title }))
-      ));
-    }
+    });
     panel.replaceChildren(topBar, figBox, buildMarkdownDom(blog.markdownText || ''));
   }
 
   function renderDiagramsTab(blog) {
     const panel = document.getElementById('panel-diagrams');
     const slug = blog.slug;
-    const cards = [];
-    const defs = [
-      { key: 'architecture', label: 'Figure 1 — 4-Zone Hub-and-Spoke Architecture (1600x900)' },
-      { key: 'sequence', label: 'Figure 2 — 5-Actor UML Sequence Swimlane (1600x900)' },
-    ];
-    defs.forEach((d) => {
-      const diag = blog.diagrams && blog.diagrams[d.key];
-      if (!diag) return;
-      cards.push(el('div', { className: 'diagram-card' },
+    const cards = getDiagramEntries(blog).map((ent) => {
+      const diag = ent.diag;
+      const icMeta = diag.iconCount ? (' | ' + diag.iconCount + ' official GCP SVG icons') : '';
+      return el('div', { className: 'diagram-card' },
         el('div', { className: 'diagram-hdr' },
           el('div', null,
-            el('strong', { style: { fontSize: '13.5px' } }, d.label),
-            el('div', { className: 'hint' }, '0 flowAnimation=1 | 0 baked footer | static dashed boundaries & lifelines')
+            el('strong', { style: { fontSize: '13.5px' } }, ent.label),
+            el('div', { className: 'hint' }, '0 flowAnimation=1 | 0 baked footer | orthogonal lane routing' + icMeta)
           ),
           el('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '6px' } },
             el('a', { className: 'btn btn-primary btn-sm', href: diag.viewerUrl, target: '_blank', rel: 'noopener noreferrer' }, 'Open in viewer.diagrams.net ->'),
@@ -656,7 +673,7 @@
         el('div', { className: 'diagram-stage' },
           el('img', { src: assetUrl(slug, diag.svgPath), alt: diag.title })
         )
-      ));
+      );
     });
     panel.replaceChildren(...cards);
   }
@@ -675,14 +692,14 @@
           type: 'button', className: 'btn btn-sm', disabled: n <= 1,
           onClick: () => { state.activeSlide = Math.max(1, n - 1); renderSlidesTab(blog); },
         }, '<- Prev'),
-        el('strong', { style: { fontSize: '13.5px' } }, 'Slide ' + n + ' / 9: ' + (cur.title || '')),
+        el('strong', { style: { fontSize: '13.5px' } }, 'Slide ' + n + ' / ' + getSlideCount(blog) + ': ' + (cur.title || '')),
         el('button', {
-          type: 'button', className: 'btn btn-sm', disabled: n >= 9,
-          onClick: () => { state.activeSlide = Math.min(9, n + 1); renderSlidesTab(blog); },
+          type: 'button', className: 'btn btn-sm', disabled: n >= getSlideCount(blog),
+          onClick: () => { state.activeSlide = Math.min(getSlideCount(blog), n + 1); renderSlidesTab(blog); },
         }, 'Next ->')
       ),
       el('div', { style: { display: 'flex', gap: '6px', flexWrap: 'wrap' } },
-        el('a', { className: 'btn btn-primary btn-sm', href: assetUrl(slug, 'slides/' + slug + '-deck.pptx', true) }, 'Download .pptx (9 Slides)'),
+        el('a', { className: 'btn btn-primary btn-sm', href: assetUrl(slug, 'slides/' + slug + '-deck.pptx', true) }, 'Download .pptx (' + getSlideCount(blog) + ' Slides)'),
         el('button', { type: 'button', className: 'btn btn-sm', onClick: () => triggerWorkspaceSync(slug) }, 'Sync to Google Slides')
       )
     );
@@ -692,7 +709,8 @@
     );
 
     const strip = el('div', { className: 'thumb-strip' });
-    for (let i = 1; i <= 9; i += 1) {
+    const sc = getSlideCount(blog);
+    for (let i = 1; i <= sc; i += 1) {
       const tRel = 'slides/slide_' + String(i).padStart(2, '0') + '.svg';
       strip.appendChild(el('button', {
         type: 'button',
@@ -730,7 +748,7 @@
     state.playerAudio = audio;
     state.playerPlaying = true;
     audio.addEventListener('ended', () => {
-      if (autoAdvance && state.playerPlaying && slideNum < 9) {
+      if (autoAdvance && state.playerPlaying && slideNum < getSlideCount(blog)) {
         playSlideTrack(blog, slideNum + 1, true);
       } else {
         state.playerPlaying = false;
@@ -756,8 +774,8 @@
     const n = state.playerSlide;
     const sl = ((blog.blueprint && blog.blueprint.slides) || [])[n - 1] || {};
     if (img) img.setAttribute('src', assetUrl(blog.slug, 'slides/slide_' + String(n).padStart(2, '0') + '.svg'));
-    if (cap) cap.textContent = '[Slide ' + n + '/9] ' + (sl.speakerNotes || sl.title || '');
-    if (lbl) lbl.textContent = 'Chapter ' + n + ' / 9: ' + (sl.title || '');
+    if (cap) cap.textContent = '[Slide ' + n + '/' + getSlideCount(blog) + '] ' + (sl.speakerNotes || sl.title || '');
+    if (lbl) lbl.textContent = 'Chapter ' + n + ' / ' + getSlideCount(blog) + ': ' + (sl.title || '');
     if (playBtn) playBtn.textContent = state.playerPlaying ? 'Pause Narration' : 'Play All Slides';
     document.querySelectorAll('#player-chapters button').forEach((b) => {
       b.classList.toggle('btn-primary', Number(b.dataset.slide) === n);
@@ -777,7 +795,7 @@
     }
     state.exportingWebm = true;
     stopAudioPlayer();
-    statusNode.textContent = 'Loading 9 SVG slides and live Chirp3-HD MP3 tracks for real-time WebM mastering...';
+    statusNode.textContent = 'Loading ' + getSlideCount(blog) + ' SVG slides and live Chirp3-HD MP3 tracks for real-time WebM mastering...';
     const canvas = document.createElement('canvas');
     canvas.width = 1280;
     canvas.height = 720;
@@ -794,8 +812,9 @@
     rec.start(250);
 
     try {
-      for (let i = 1; i <= 9; i += 1) {
-        statusNode.textContent = 'Recording Slide ' + i + ' / 9 in real time (canvas + Chirp3-HD audio)...';
+      const wCount = getSlideCount(blog);
+      for (let i = 1; i <= wCount; i += 1) {
+        statusNode.textContent = 'Recording Slide ' + i + ' / ' + wCount + ' in real time (canvas + Chirp3-HD audio)...';
         const img = new Image();
         img.crossOrigin = 'anonymous';
         await new Promise((res, rej) => {
@@ -853,7 +872,7 @@
     const disclosure = el('div', { className: 'banner banner-info' },
       el('strong', null, 'Audio Provenance: '),
       'SYNTHETIC_CLOUD_TTS_CHIRP3_HD (' + (audioMeta.voice || 'en-US-Chirp3-HD-Charon') + ') — ',
-      tracks.length + ' / 9 live MP3 tracks generated (' + formatTime(totalSec) + ' total). Explicitly labeled as narrated slide-deck playback (not a human digital twin or live screen recording).'
+      tracks.length + ' / ' + getSlideCount(blog) + ' live MP3 tracks generated (' + formatTime(totalSec) + ' total). Explicitly labeled as narrated slide-deck playback (not a human digital twin or live screen recording).'
     );
 
     const n = state.playerSlide;
@@ -861,7 +880,7 @@
     const stage = el('div', { className: 'slide-stage-wrap' },
       el('img', { id: 'player-slide-img', src: assetUrl(slug, 'slides/slide_' + String(n).padStart(2, '0') + '.svg'), alt: 'Narrated slide ' + n })
     );
-    const caption = el('div', { className: 'caption-bar', id: 'player-caption' }, '[Slide ' + n + '/9] ' + (sl.speakerNotes || ''));
+    const caption = el('div', { className: 'caption-bar', id: 'player-caption' }, '[Slide ' + n + '/' + getSlideCount(blog) + '] ' + (sl.speakerNotes || ''));
 
     const exportStatus = el('div', { className: 'hint', style: { marginTop: '6px' } }, '');
     const exportDl = el('div', { style: { display: 'inline-flex', gap: '8px', marginTop: '6px' } });
@@ -881,9 +900,9 @@
       }, '<- Prev'),
       el('button', {
         type: 'button', className: 'btn btn-sm',
-        onClick: () => { state.playerSlide = Math.min(9, state.playerSlide + 1); stopAudioPlayer(); updatePlayerUi(blog); },
+        onClick: () => { state.playerSlide = Math.min(getSlideCount(blog), state.playerSlide + 1); stopAudioPlayer(); updatePlayerUi(blog); },
       }, 'Next ->'),
-      el('span', { id: 'player-status', style: { fontSize: '12.5px', fontWeight: '700', marginRight: 'auto' } }, 'Chapter ' + n + ' / 9: ' + (sl.title || '')),
+      el('span', { id: 'player-status', style: { fontSize: '12.5px', fontWeight: '700', marginRight: 'auto' } }, 'Chapter ' + n + ' / ' + getSlideCount(blog) + ': ' + (sl.title || '')),
       el('a', { className: 'btn btn-sm', href: assetUrl(slug, 'audio/captions.vtt', true) }, 'captions.vtt'),
       audioMeta.hostMp4Available && blog.assets.hostMp4
         ? el('a', { className: 'btn btn-green btn-sm', href: assetUrl(slug, blog.assets.hostMp4, true) }, 'Download .mp4')
@@ -895,7 +914,8 @@
     );
 
     const chapRow = el('div', { id: 'player-chapters', style: { display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px' } });
-    for (let i = 1; i <= 9; i += 1) {
+    const pCount = getSlideCount(blog);
+    for (let i = 1; i <= pCount; i += 1) {
       const tr = tracks.find((x) => x.slideNumber === i);
       chapRow.appendChild(el('button', {
         type: 'button',
@@ -1200,7 +1220,38 @@
       )
     );
 
-    panel.replaceChildren(hdrRow, detTable, judgeCard, ledgerHdr, ledgerTbl);
+    const extraCards = [];
+    const rev = q.autoRevision || {};
+    if (rev.executed && rev.round1 && rev.round2) {
+      const r1s = rev.round1.score != null ? rev.round1.score : '?';
+      const r2s = rev.round2.score != null ? rev.round2.score : '?';
+      const revBox = el('div', { className: 'card', style: { margin: '14px 0', padding: '14px', background: '#f0fdf4', border: '1px solid #86efac' } },
+        el('div', { style: { display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', marginBottom: '6px' } },
+          el('strong', { style: { fontSize: '13.5px', color: '#0d652d' } }, 'Auto-Revision Peer-Review Pass Executed'),
+          makePill('Round 1: ' + r1s + '/100 (' + (rev.round1.verdict || '') + ')', 'pill-amber', false),
+          makePill('Round 2: ' + r2s + '/100 (' + (rev.round2.verdict || '') + ')', rev.round2.verdict === 'APPROVED' ? 'pill-green' : 'pill-blue', false)
+        ),
+        (rev.appliedFixes && rev.appliedFixes.length)
+          ? el('ul', { style: { margin: '4px 0 0 18px', fontSize: '12px', color: '#14532d' } }, rev.appliedFixes.map((fx) => el('li', null, fx)))
+          : null
+      );
+      extraCards.push(revBox);
+    }
+    const gr = q.grounding || (blog.generation && blog.generation.grounding) || {};
+    if (gr.status && gr.status !== 'NOT_RUN' && gr.status !== 'DISABLED') {
+      const gBox = el('div', { className: 'card', style: { margin: '14px 0', padding: '14px', background: '#eff6ff', border: '1px solid #bfdbfe' } },
+        el('div', { style: { display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', marginBottom: '6px' } },
+          el('strong', { style: { fontSize: '13.5px', color: '#174ea6' } }, 'Live Google Search Grounding Dossier'),
+          makePill(gr.status, gr.status === 'GROUNDED' ? 'pill-green' : 'pill-amber', true),
+          makePill((gr.queries || []).length + ' queries · ' + (gr.sources || []).length + ' sources', 'pill-blue', false)
+        ),
+        (gr.queries && gr.queries.length)
+          ? el('div', { style: { fontSize: '11.5px', color: '#1e3a8a', marginTop: '4px' } }, 'Queries: ' + gr.queries.join('  |  '))
+          : null
+      );
+      extraCards.push(gBox);
+    }
+    panel.replaceChildren(hdrRow, detTable, ...extraCards, judgeCard, ledgerHdr, ledgerTbl);
   }
 
   function renderJobProgress(job) {
@@ -1305,6 +1356,8 @@
           voice: document.getElementById('inp-voice').value,
           enableTts: document.getElementById('chk-tts').checked,
           enableJudge: document.getElementById('chk-judge').checked,
+          enableGrounding: (document.getElementById('chk-ground') ? document.getElementById('chk-ground').checked : true),
+          enableAutoRevise: (document.getElementById('chk-ground') ? document.getElementById('chk-ground').checked : true),
         }, extraHeaders);
         // Immediately wipe input field after transient header transmission so key does not sit in DOM
         if (apiKeyVal) document.getElementById('inp-apikey').value = '';
