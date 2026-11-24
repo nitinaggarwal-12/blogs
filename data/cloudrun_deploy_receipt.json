@@ -6,18 +6,18 @@
   "buildProject": "ramp-portal-dev",
   "runProject": "ramp-portal-dev",
   "region": "us-west1",
-  "latestReadyRevisionName": "ge-blogs-00147-6zd",
-  "latestCreatedRevisionName": "ge-blogs-00147-6zd",
+  "latestReadyRevisionName": "ge-blogs-00148-v4l",
+  "latestCreatedRevisionName": "ge-blogs-00148-v4l",
   "readyStatus": "True",
   "trafficPercent": 100,
-  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261124-141226-light-clean",
+  "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261124-150916-light-clean",
   "entrypointCmd": [
     "python3",
     "-B",
     "server.py"
   ],
   "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
-  "verifiedAt": "2026-11-24T14:14:55Z",
+  "verifiedAt": "2026-11-24T15:11:55Z",
   "approvedSimplifiedHeaderDiagramsCount": 12,
   "certifiedDiagramsCount": 12,
   "workstreamsCount": 5,
@@ -26,9 +26,9 @@
   "verifiedTotalRetinaCount": 17,
   "gcpConsoleCapturesPendingSsoCount": 0,
   "currentRevisionVerification": {
-    "revision": "ge-blogs-00147-6zd",
-    "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261124-141226-light-clean",
-    "verifiedAt": "2026-11-24T14:14:55Z",
+    "revision": "ge-blogs-00148-v4l",
+    "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261124-150916-light-clean",
+    "verifiedAt": "2026-11-24T15:11:55Z",
     "controlPlaneReady": true,
     "startupProbeSucceeded": true,
     "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
@@ -93,6 +93,6 @@
       }
     ],
     "historicalRevision": true,
-    "note": "Historical probe from ge-blogs-00038-f99 (2026-10-30T13:20:00Z); see currentRevisionVerification for ge-blogs-00147-6zd."
+    "note": "Historical probe from ge-blogs-00038-f99 (2026-10-30T13:20:00Z); see currentRevisionVerification for ge-blogs-00148-v4l."
   }
 }
