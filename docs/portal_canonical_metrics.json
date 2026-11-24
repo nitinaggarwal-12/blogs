@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.2",
-  "updatedAt": "2026-11-24T01:35:00Z",
+  "updatedAt": "2026-11-24T05:15:00Z",
   "canonicalRepositoryUrl": "https://github.com/cloud-ai-fde/ge-blogs",
   "mirrorRepositoryUrl": "https://github.com/cloud-ai-fde/ge-blogs",
   "productionPortalUrl": "https://github.com/cloud-ai-fde/ge-blogs",
@@ -158,6 +158,11 @@
         "title": "10-SaaS Commercial Visual Verification Atlas",
         "file": "slides/saas-10-visual-verification-atlas-16slide-deck.pptx",
         "slides": 16
+      },
+      "ATLAS": {
+        "title": "10-SaaS Multi-Cloud Visual Verification Atlas (19 Retina Captures \u2022 9/9 Pairs)",
+        "file": "slides/saas-10-visual-verification-atlas-16slide-deck.pptx",
+        "slides": 17
       }
     },
     "totals": {

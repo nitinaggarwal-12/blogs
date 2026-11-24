@@ -143,7 +143,7 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 | **Diagram Type** | L2 Physical Topology (Simplified Header) |
 | **Plane Demarcation** | CONTROL (Hops 1, 2, 4 + Valkey caps + OTel) • COMPUTE (Front End + Hop 3 ADK gVisor + 32k prefix cache) • DATA (Valkey sessions + Hop 5 Pool / PSC / Silo stores) |
 | **Editable Sources** | [`SVG`](../diagrams/ws1-5hop-governance-baseline.svg) • [`.drawio`](../diagrams/ws1-5hop-governance-baseline.drawio) (`78` vertices • `23` edges) |
-| **Companion Slide Deck** | [`ws1-reference-architecture-editable-slides.pptx`](../slides/ws1-reference-architecture-editable-slides.pptx) |
+| **Companion Slide Deck** | [`ws1-12slide-visual-deck.pptx`](../slides/ws1-12slide-visual-deck.pptx) • [`ws1-executive-architecture-23slide-deck.pptx`](../slides/ws1-executive-architecture-23slide-deck.pptx) |
 | **Grounded Implementation** | [`runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py) • [`hop1_edge_identity_pep.py`](../core-cymbal-agent/governance/hop1_edge_identity_pep.py) • [`hop2_registry_pdp_callbacks.py`](../core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py) • [`hop3_compute_finops_bulkhead.py`](../core-cymbal-agent/governance/hop3_compute_finops_bulkhead.py) • [`hop4_model_armor_guardrails.py`](../core-cymbal-agent/governance/hop4_model_armor_guardrails.py) • [`hop5_data_rls_and_otel.py`](../core-cymbal-agent/governance/hop5_data_rls_and_otel.py) |
 
 ![Diagram 01 (Slide 01/12) — Shared 5-Hop Multi-Tenant Agent Platform Architecture](../diagrams/ws1-5hop-governance-baseline.svg)
@@ -169,7 +169,7 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 | **Diagram Type** | L3 Chronological Sequence Swimlane |
 | **Plane Demarcation** | CONTROL (Hop 1 STS, Hop 2 ARD, Hop 3 RPM cap, Hop 4 Model Armor) • COMPUTE (LLM 32k prefix cache + MCP dispatch) • DATA (Valkey cache:{tenant}:* + AlloyDB FORCE RLS) |
 | **Editable Sources** | [`SVG`](../diagrams/ws1-c4-l3-process-sequence-swimlane.svg) • [`.drawio`](../diagrams/ws1-c4-l3-process-sequence-swimlane.drawio) (`80` vertices • `12` edges) |
-| **Companion Slide Deck** | [`ws1-reference-architecture-editable-slides.pptx`](../slides/ws1-reference-architecture-editable-slides.pptx) |
+| **Companion Slide Deck** | [`ws1-12slide-visual-deck.pptx`](../slides/ws1-12slide-visual-deck.pptx) • [`ws1-executive-architecture-23slide-deck.pptx`](../slides/ws1-executive-architecture-23slide-deck.pptx) |
 | **Grounded Implementation** | [`runtime_pipeline.py`](../core-cymbal-agent/runtime_pipeline.py) • [`hop1_edge_identity_pep.py`](../core-cymbal-agent/governance/hop1_edge_identity_pep.py) |
 
 ![Diagram 02 (Slide 02/12) — 5-Hop Cryptographic Request & Token Exchange Swimlane](../diagrams/ws1-c4-l3-process-sequence-swimlane.svg)
@@ -213,7 +213,7 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 | **Diagram Type** | L2 Physical Topology (Simplified Header) |
 | **Plane Demarcation** | CONTROL (Edge PEP, Agent Gateways, ARD PDP, Model Armor) • COMPUTE (Shared Cloud Run Gen2 gVisor pool + Gemini 2.5 Flash) • DATA (Shared Valkey namespaced keys + Shared AlloyDB FORCE RLS) |
 | **Editable Sources** | [`SVG`](../diagrams/ws2-pattern-a-pooled.svg) • [`.drawio`](../diagrams/ws2-pattern-a-pooled.drawio) (`75` vertices • `23` edges) |
-| **Companion Slide Deck** | [`ws2-pattern-a-pooled-editable-slides.pptx`](../slides/ws2-pattern-a-pooled-editable-slides.pptx) |
+| **Companion Slide Deck** | [`ws2-12slide-visual-deck.pptx`](../slides/ws2-12slide-visual-deck.pptx) • [`ws2-executive-architecture-10slide-deck.pptx`](../slides/ws2-executive-architecture-10slide-deck.pptx) |
 | **Grounded Implementation** | [`pattern_a_pooled_service.py`](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py) • [`pooled_gateway_and_rls.sql`](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_gateway_and_rls.sql) • [`run_breach_simulations.py`](../workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py) • [`main.tf`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf) |
 
 ![Diagram 03 (Slide 03/12) — Pattern A: High-Density Pooled Multi-Tenant Architecture](../diagrams/ws2-pattern-a-pooled.svg)
@@ -239,7 +239,7 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 | **Diagram Type** | L3 Chronological Sequence Swimlane |
 | **Plane Demarcation** | CONTROL (Edge STS + Cloud Run dispatcher) • COMPUTE (Warm gVisor CoW pre-fork worker, 1-turn lifecycle) • DATA (Ephemeral turn scratch wiped + Valkey/AlloyDB persisted state) |
 | **Editable Sources** | [`SVG`](../diagrams/ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane.svg) • [`.drawio`](../diagrams/ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane.drawio) (`78` vertices • `12` edges) |
-| **Companion Slide Deck** | [`ws2-pattern-a-pooled-editable-slides.pptx`](../slides/ws2-pattern-a-pooled-editable-slides.pptx) |
+| **Companion Slide Deck** | [`ws2-12slide-visual-deck.pptx`](../slides/ws2-12slide-visual-deck.pptx) • [`ws2-executive-architecture-10slide-deck.pptx`](../slides/ws2-executive-architecture-10slide-deck.pptx) |
 | **Grounded Implementation** | [`pattern_a_pooled_service.py`](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py) |
 
 ![Diagram 04 (Slide 04/12) — Pattern A Mode A — Stateless CoW Pre-Fork & 1-Turn Heap Wipe](../diagrams/ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane.svg)
@@ -265,7 +265,7 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 | **Diagram Type** | L3 Chronological Sequence Swimlane |
 | **Plane Demarcation** | CONTROL (Immutable tenant latch guard + STS verification) • COMPUTE (Session-sticky gVisor sandbox) • DATA (Tenant-latched ephemeral workspace + scoped Valkey checkpoints) |
 | **Editable Sources** | [`SVG`](../diagrams/ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane.svg) • [`.drawio`](../diagrams/ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane.drawio) (`79` vertices • `12` edges) |
-| **Companion Slide Deck** | [`ws2-pattern-a-pooled-editable-slides.pptx`](../slides/ws2-pattern-a-pooled-editable-slides.pptx) |
+| **Companion Slide Deck** | [`ws2-12slide-visual-deck.pptx`](../slides/ws2-12slide-visual-deck.pptx) • [`ws2-executive-architecture-10slide-deck.pptx`](../slides/ws2-executive-architecture-10slide-deck.pptx) |
 | **Grounded Implementation** | [`pattern_a_pooled_service.py`](../workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py) • [`run_breach_simulations.py`](../workstream-2-pattern-a-pooled/2.5-breach-simulation-suite/run_breach_simulations.py) |
 
 ![Diagram 05 (Slide 05/12) — Pattern A Mode B — Session-Sticky Sandbox & Tenant Latch](../diagrams/ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane.svg)
@@ -307,7 +307,7 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 | **Diagram Type** | L2 Physical Topology (Simplified Header) |
 | **Plane Demarcation** | CONTROL (Per-silo IAM PAB, VPC-SC perimeter, Cloud KMS HSM CMEK) • COMPUTE (Dedicated Cloud Run / Private GKE Gemma 3 27B) • DATA (Dedicated CMEK AlloyDB, Valkey & BigQuery per tenant) |
 | **Editable Sources** | [`SVG`](../diagrams/ws3-pattern-b-silo.svg) • [`.drawio`](../diagrams/ws3-pattern-b-silo.drawio) (`78` vertices • `19` edges) |
-| **Companion Slide Deck** | [`ws3-pattern-b-siloed-editable-slides.pptx`](../slides/ws3-pattern-b-siloed-editable-slides.pptx) |
+| **Companion Slide Deck** | [`ws3-12slide-visual-deck.pptx`](../slides/ws3-12slide-visual-deck.pptx) • [`ws3-executive-architecture-10slide-deck.pptx`](../slides/ws3-executive-architecture-10slide-deck.pptx) |
 | **Grounded Implementation** | [`pattern_b_siloed_service.py`](../workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py) • [`gke_gemma3_airgapped_manifest.yaml`](../workstream-3-pattern-b-siloed/3.3-solution-implementation/gke_gemma3_airgapped_manifest.yaml) • [`run_silo_security_tests.py`](../workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py) • [`main.tf`](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf) |
 
 ![Diagram 06 (Slide 06/12) — Pattern B: Zero-Trust Sovereign Silos](../diagrams/ws3-pattern-b-silo.svg)
@@ -333,7 +333,7 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 | **Diagram Type** | L3 Chronological Sequence Swimlane |
 | **Plane Demarcation** | CONTROL (Cloud KMS HSM + Audit Log / Eventarc kill-switch) • COMPUTE (Silo ADK Runtime fail-closed gate) • DATA (Valkey SCAN+UNLINK purge + CMEK-locked AlloyDB/GCS) |
 | **Editable Sources** | [`SVG`](../diagrams/ws3-c4-l3-cmek-killswitch-swimlane.svg) • [`.drawio`](../diagrams/ws3-c4-l3-cmek-killswitch-swimlane.drawio) (`78` vertices • `12` edges) |
-| **Companion Slide Deck** | [`ws3-pattern-b-siloed-editable-slides.pptx`](../slides/ws3-pattern-b-siloed-editable-slides.pptx) |
+| **Companion Slide Deck** | [`ws3-12slide-visual-deck.pptx`](../slides/ws3-12slide-visual-deck.pptx) • [`ws3-executive-architecture-10slide-deck.pptx`](../slides/ws3-executive-architecture-10slide-deck.pptx) |
 | **Grounded Implementation** | [`pattern_b_siloed_service.py`](../workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py) • [`run_silo_security_tests.py`](../workstream-3-pattern-b-siloed/3.5-exfiltration-and-cmek-revocation-tests/run_silo_security_tests.py) |
 
 ![Diagram 07 (Slide 07/12) — Pattern B CMEK Kill-Switch & Immediate HTTP 423 Enforcement](../diagrams/ws3-c4-l3-cmek-killswitch-swimlane.svg)
@@ -375,7 +375,7 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 | **Diagram Type** | L2 Physical Topology (Simplified Header) |
 | **Plane Demarcation** | CONTROL (Unified Hub Edge PEP, Dynamic Tier Router, ARD & Model Armor) • COMPUTE (Shared Hub Pool + PSC-bridged Enterprise Spoke Runtimes) • DATA (Shared RLS Pool + Dedicated CMEK Spoke DBs) |
 | **Editable Sources** | [`SVG`](../diagrams/ws4-pattern-c-hybrid.svg) • [`.drawio`](../diagrams/ws4-pattern-c-hybrid.drawio) (`80` vertices • `24` edges) |
-| **Companion Slide Deck** | [`ws4-pattern-c-hybrid-editable-slides.pptx`](../slides/ws4-pattern-c-hybrid-editable-slides.pptx) |
+| **Companion Slide Deck** | [`ws4-12slide-visual-deck.pptx`](../slides/ws4-12slide-visual-deck.pptx) • [`ws4-executive-architecture-10slide-deck.pptx`](../slides/ws4-executive-architecture-10slide-deck.pptx) |
 | **Grounded Implementation** | [`pattern_c_hybrid_router_and_migrator.py`](../workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py) • [`run_tier_migration_suite.py`](../workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py) • [`main.tf`](../workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint/main.tf) |
 
 ![Diagram 08 (Slide 08/12) — Pattern C: Dynamic Hybrid Hub-and-Spoke & Cross-Project /28 PSC](../diagrams/ws4-pattern-c-hybrid.svg)
@@ -401,7 +401,7 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 | **Diagram Type** | L3 Chronological Sequence Swimlane |
 | **Plane Demarcation** | CONTROL (Migration Orchestrator + Atomic Epoch Pointer) • COMPUTE (Dual-path Hub Router + Target Spoke Warmup) • DATA (CDC Shadow Backfill + Checksum Verification + Pool Tombstone) |
 | **Editable Sources** | [`SVG`](../diagrams/ws4-c4-l3-live-tier-promotion-swimlane.svg) • [`.drawio`](../diagrams/ws4-c4-l3-live-tier-promotion-swimlane.drawio) (`79` vertices • `12` edges) |
-| **Companion Slide Deck** | [`ws4-pattern-c-hybrid-editable-slides.pptx`](../slides/ws4-pattern-c-hybrid-editable-slides.pptx) |
+| **Companion Slide Deck** | [`ws4-12slide-visual-deck.pptx`](../slides/ws4-12slide-visual-deck.pptx) • [`ws4-executive-architecture-10slide-deck.pptx`](../slides/ws4-executive-architecture-10slide-deck.pptx) |
 | **Grounded Implementation** | [`pattern_c_hybrid_router_and_migrator.py`](../workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py) • [`run_tier_migration_suite.py`](../workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py) |
 
 ![Diagram 09 (Slide 09/12) — Pattern C 3-Phase Zero-Downtime Tier Promotion & Cutover](../diagrams/ws4-c4-l3-live-tier-promotion-swimlane.svg)
@@ -439,7 +439,7 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 | **Diagram Type** | Executive Decision Matrix (Simplified Header) |
 | **Plane Demarcation** | CONTROL (Agentic Triad Pillar 1: Cryptographic Identity) • COMPUTE (Pillar 2: Tiered Compute & Memory Bulkheads) • DATA (Pillar 3: Zero-PII FinOps & RLS/CMEK Persistence) |
 | **Editable Sources** | [`SVG`](../diagrams/ws5-decision-tree-and-triad.svg) • [`.drawio`](../diagrams/ws5-decision-tree-and-triad.drawio) (`27` vertices • `11` edges) |
-| **Companion Slide Deck** | [`ws5-wrap-up-editable-slides.pptx`](../slides/ws5-wrap-up-editable-slides.pptx) |
+| **Companion Slide Deck** | [`ws5-12slide-visual-deck.pptx`](../slides/ws5-12slide-visual-deck.pptx) • [`ws5-executive-architecture-10slide-deck.pptx`](../slides/ws5-executive-architecture-10slide-deck.pptx) |
 | **Grounded Implementation** | [`5.1-pattern-comparison-and-decision-guide.md`](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md) • [`5.2-capstone-backlog-and-ga-roadmap.md`](../workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md) |
 
 ![Diagram 10 (Slide 10/12) — Executive Architecture Pattern Selector & Multi-Tenant Agentic Triad](../diagrams/ws5-decision-tree-and-triad.svg)
@@ -465,7 +465,7 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 | **Diagram Type** | Multi-Cloud Cross-Plane Topology (Simplified Header) |
 | **Plane Demarcation** | CONTROL (GCP STS OBO/DPoP <-> AWS AgentCore Gateway IAM/SigV4) • COMPUTE (Cloud Run ADK + 10 AgentCore MCP Targets) • DATA (Tenant-scoped 10 Commercial SaaS APIs + S3 Audit Ledgers) |
 | **Editable Sources** | [`SVG`](../diagrams/saas10-multicloud-a2a-mcp-bridge.svg) • [`.drawio`](../diagrams/saas10-multicloud-a2a-mcp-bridge.drawio) (`52` vertices • `13` edges) |
-| **Companion Slide Deck** | [`ws5-wrap-up-editable-slides.pptx`](../slides/ws5-wrap-up-editable-slides.pptx) |
+| **Companion Slide Deck** | [`ws5-12slide-visual-deck.pptx`](../slides/ws5-12slide-visual-deck.pptx) • [`ws5-executive-architecture-10slide-deck.pptx`](../slides/ws5-executive-architecture-10slide-deck.pptx) |
 | **Grounded Implementation** | [`10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md`](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md) • [`third_party_5_saas_verification_receipt.json`](../docs/third_party_5_saas_verification_receipt.json) • [`enterprise_5_saas_bi_mcp.py`](../core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py) |
 
 ![Diagram 11 (Slide 11/12) — Multi-Cloud Federation: Google Cloud Plane <-> AWS Bedrock AgentCore & 10 SaaS](../diagrams/saas10-multicloud-a2a-mcp-bridge.svg)
@@ -491,7 +491,7 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 | **Diagram Type** | L3 Chronological Sequence Swimlane |
 | **Plane Demarcation** | CONTROL (Tenant ownership guard + ARD dynamic routing) • COMPUTE (Shared Diagnostic Agent -> Private Agent Alpha + GCS Skills) • DATA (Firestore tenant config + GCS skill buckets + BigQuery OTel) |
 | **Editable Sources** | [`SVG`](../diagrams/ws5-c4-l3-dynamic-skill-delegation-swimlane.svg) • [`.drawio`](../diagrams/ws5-c4-l3-dynamic-skill-delegation-swimlane.drawio) (`77` vertices • `12` edges) |
-| **Companion Slide Deck** | [`ws5-wrap-up-editable-slides.pptx`](../slides/ws5-wrap-up-editable-slides.pptx) |
+| **Companion Slide Deck** | [`ws5-12slide-visual-deck.pptx`](../slides/ws5-12slide-visual-deck.pptx) • [`ws5-executive-architecture-10slide-deck.pptx`](../slides/ws5-executive-architecture-10slide-deck.pptx) |
 | **Grounded Implementation** | [`finvault_agent_alpha.py`](../core-cymbal-agent/agents/finvault_agent_alpha.py) • [`hop2_registry_pdp_callbacks.py`](../core-cymbal-agent/governance/hop2_registry_pdp_callbacks.py) • [`hop5_data_rls_and_otel.py`](../core-cymbal-agent/governance/hop5_data_rls_and_otel.py) |
 
 ![Diagram 12 (Slide 12/12) — Shared + Private Agents, Dynamic GCS Skills & Zero-PII FinOps OTel](../diagrams/ws5-c4-l3-dynamic-skill-delegation-swimlane.svg)
@@ -515,28 +515,28 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 
 | Slide | Workstream | Title | Geometry (`Draw.io`) | Live Files | Companion Deck |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **01** | `WS1` `1.1 / 1.3` | Shared 5-Hop Multi-Tenant Agent Platform Architecture | `78v / 23e` | [`SVG`](../diagrams/ws1-5hop-governance-baseline.svg) • [`.drawio`](../diagrams/ws1-5hop-governance-baseline.drawio) | [`ws1-reference-architecture-editable-slides.pptx`](../slides/ws1-reference-architecture-editable-slides.pptx) |
-| **02** | `WS1` `1.3` | 5-Hop Cryptographic Request & Token Exchange Swimlane | `80v / 12e` | [`SVG`](../diagrams/ws1-c4-l3-process-sequence-swimlane.svg) • [`.drawio`](../diagrams/ws1-c4-l3-process-sequence-swimlane.drawio) | [`ws1-reference-architecture-editable-slides.pptx`](../slides/ws1-reference-architecture-editable-slides.pptx) |
-| **03** | `WS2` `2.1 / 2.6` | Pattern A: High-Density Pooled Multi-Tenant Architecture | `75v / 23e` | [`SVG`](../diagrams/ws2-pattern-a-pooled.svg) • [`.drawio`](../diagrams/ws2-pattern-a-pooled.drawio) | [`ws2-pattern-a-pooled-editable-slides.pptx`](../slides/ws2-pattern-a-pooled-editable-slides.pptx) |
-| **04** | `WS2` `2.3 / 2.5` | Pattern A Mode A — Stateless CoW Pre-Fork & 1-Turn Heap Wipe | `78v / 12e` | [`SVG`](../diagrams/ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane.svg) • [`.drawio`](../diagrams/ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane.drawio) | [`ws2-pattern-a-pooled-editable-slides.pptx`](../slides/ws2-pattern-a-pooled-editable-slides.pptx) |
-| **05** | `WS2` `2.3 / 2.5` | Pattern A Mode B — Session-Sticky Sandbox & Tenant Latch | `79v / 12e` | [`SVG`](../diagrams/ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane.svg) • [`.drawio`](../diagrams/ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane.drawio) | [`ws2-pattern-a-pooled-editable-slides.pptx`](../slides/ws2-pattern-a-pooled-editable-slides.pptx) |
-| **06** | `WS3` `3.1 / 3.2 / 3.6` | Pattern B: Zero-Trust Sovereign Silos | `78v / 19e` | [`SVG`](../diagrams/ws3-pattern-b-silo.svg) • [`.drawio`](../diagrams/ws3-pattern-b-silo.drawio) | [`ws3-pattern-b-siloed-editable-slides.pptx`](../slides/ws3-pattern-b-siloed-editable-slides.pptx) |
-| **07** | `WS3` `3.5` | Pattern B CMEK Kill-Switch & Immediate HTTP 423 Enforcement | `78v / 12e` | [`SVG`](../diagrams/ws3-c4-l3-cmek-killswitch-swimlane.svg) • [`.drawio`](../diagrams/ws3-c4-l3-cmek-killswitch-swimlane.drawio) | [`ws3-pattern-b-siloed-editable-slides.pptx`](../slides/ws3-pattern-b-siloed-editable-slides.pptx) |
-| **08** | `WS4` `4.1 / 4.2 / 4.6` | Pattern C: Dynamic Hybrid Hub-and-Spoke & Cross-Project /28 PSC | `80v / 24e` | [`SVG`](../diagrams/ws4-pattern-c-hybrid.svg) • [`.drawio`](../diagrams/ws4-pattern-c-hybrid.drawio) | [`ws4-pattern-c-hybrid-editable-slides.pptx`](../slides/ws4-pattern-c-hybrid-editable-slides.pptx) |
-| **09** | `WS4` `4.5` | Pattern C 3-Phase Zero-Downtime Tier Promotion & Cutover | `79v / 12e` | [`SVG`](../diagrams/ws4-c4-l3-live-tier-promotion-swimlane.svg) • [`.drawio`](../diagrams/ws4-c4-l3-live-tier-promotion-swimlane.drawio) | [`ws4-pattern-c-hybrid-editable-slides.pptx`](../slides/ws4-pattern-c-hybrid-editable-slides.pptx) |
-| **10** | `WS5` `5.1 / 5.2` | Executive Architecture Pattern Selector & Multi-Tenant Agentic Triad | `27v / 11e` | [`SVG`](../diagrams/ws5-decision-tree-and-triad.svg) • [`.drawio`](../diagrams/ws5-decision-tree-and-triad.drawio) | [`ws5-wrap-up-editable-slides.pptx`](../slides/ws5-wrap-up-editable-slides.pptx) |
-| **11** | `WS5` `Multi-Cloud` | Multi-Cloud Federation: Google Cloud Plane <-> AWS Bedrock AgentCore & 10 SaaS | `52v / 13e` | [`SVG`](../diagrams/saas10-multicloud-a2a-mcp-bridge.svg) • [`.drawio`](../diagrams/saas10-multicloud-a2a-mcp-bridge.drawio) | [`ws5-wrap-up-editable-slides.pptx`](../slides/ws5-wrap-up-editable-slides.pptx) |
-| **12** | `WS5` `5.2` | Shared + Private Agents, Dynamic GCS Skills & Zero-PII FinOps OTel | `77v / 12e` | [`SVG`](../diagrams/ws5-c4-l3-dynamic-skill-delegation-swimlane.svg) • [`.drawio`](../diagrams/ws5-c4-l3-dynamic-skill-delegation-swimlane.drawio) | [`ws5-wrap-up-editable-slides.pptx`](../slides/ws5-wrap-up-editable-slides.pptx) |
+| **01** | `WS1` `1.1 / 1.3` | Shared 5-Hop Multi-Tenant Agent Platform Architecture | `78v / 23e` | [`SVG`](../diagrams/ws1-5hop-governance-baseline.svg) • [`.drawio`](../diagrams/ws1-5hop-governance-baseline.drawio) | [`ws1-12slide-visual-deck.pptx`](../slides/ws1-12slide-visual-deck.pptx) • [`ws1-executive-architecture-23slide-deck.pptx`](../slides/ws1-executive-architecture-23slide-deck.pptx) |
+| **02** | `WS1` `1.3` | 5-Hop Cryptographic Request & Token Exchange Swimlane | `80v / 12e` | [`SVG`](../diagrams/ws1-c4-l3-process-sequence-swimlane.svg) • [`.drawio`](../diagrams/ws1-c4-l3-process-sequence-swimlane.drawio) | [`ws1-12slide-visual-deck.pptx`](../slides/ws1-12slide-visual-deck.pptx) • [`ws1-executive-architecture-23slide-deck.pptx`](../slides/ws1-executive-architecture-23slide-deck.pptx) |
+| **03** | `WS2` `2.1 / 2.6` | Pattern A: High-Density Pooled Multi-Tenant Architecture | `75v / 23e` | [`SVG`](../diagrams/ws2-pattern-a-pooled.svg) • [`.drawio`](../diagrams/ws2-pattern-a-pooled.drawio) | [`ws2-12slide-visual-deck.pptx`](../slides/ws2-12slide-visual-deck.pptx) • [`ws2-executive-architecture-10slide-deck.pptx`](../slides/ws2-executive-architecture-10slide-deck.pptx) |
+| **04** | `WS2` `2.3 / 2.5` | Pattern A Mode A — Stateless CoW Pre-Fork & 1-Turn Heap Wipe | `78v / 12e` | [`SVG`](../diagrams/ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane.svg) • [`.drawio`](../diagrams/ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane.drawio) | [`ws2-12slide-visual-deck.pptx`](../slides/ws2-12slide-visual-deck.pptx) • [`ws2-executive-architecture-10slide-deck.pptx`](../slides/ws2-executive-architecture-10slide-deck.pptx) |
+| **05** | `WS2` `2.3 / 2.5` | Pattern A Mode B — Session-Sticky Sandbox & Tenant Latch | `79v / 12e` | [`SVG`](../diagrams/ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane.svg) • [`.drawio`](../diagrams/ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane.drawio) | [`ws2-12slide-visual-deck.pptx`](../slides/ws2-12slide-visual-deck.pptx) • [`ws2-executive-architecture-10slide-deck.pptx`](../slides/ws2-executive-architecture-10slide-deck.pptx) |
+| **06** | `WS3` `3.1 / 3.2 / 3.6` | Pattern B: Zero-Trust Sovereign Silos | `78v / 19e` | [`SVG`](../diagrams/ws3-pattern-b-silo.svg) • [`.drawio`](../diagrams/ws3-pattern-b-silo.drawio) | [`ws3-12slide-visual-deck.pptx`](../slides/ws3-12slide-visual-deck.pptx) • [`ws3-executive-architecture-10slide-deck.pptx`](../slides/ws3-executive-architecture-10slide-deck.pptx) |
+| **07** | `WS3` `3.5` | Pattern B CMEK Kill-Switch & Immediate HTTP 423 Enforcement | `78v / 12e` | [`SVG`](../diagrams/ws3-c4-l3-cmek-killswitch-swimlane.svg) • [`.drawio`](../diagrams/ws3-c4-l3-cmek-killswitch-swimlane.drawio) | [`ws3-12slide-visual-deck.pptx`](../slides/ws3-12slide-visual-deck.pptx) • [`ws3-executive-architecture-10slide-deck.pptx`](../slides/ws3-executive-architecture-10slide-deck.pptx) |
+| **08** | `WS4` `4.1 / 4.2 / 4.6` | Pattern C: Dynamic Hybrid Hub-and-Spoke & Cross-Project /28 PSC | `80v / 24e` | [`SVG`](../diagrams/ws4-pattern-c-hybrid.svg) • [`.drawio`](../diagrams/ws4-pattern-c-hybrid.drawio) | [`ws4-12slide-visual-deck.pptx`](../slides/ws4-12slide-visual-deck.pptx) • [`ws4-executive-architecture-10slide-deck.pptx`](../slides/ws4-executive-architecture-10slide-deck.pptx) |
+| **09** | `WS4` `4.5` | Pattern C 3-Phase Zero-Downtime Tier Promotion & Cutover | `79v / 12e` | [`SVG`](../diagrams/ws4-c4-l3-live-tier-promotion-swimlane.svg) • [`.drawio`](../diagrams/ws4-c4-l3-live-tier-promotion-swimlane.drawio) | [`ws4-12slide-visual-deck.pptx`](../slides/ws4-12slide-visual-deck.pptx) • [`ws4-executive-architecture-10slide-deck.pptx`](../slides/ws4-executive-architecture-10slide-deck.pptx) |
+| **10** | `WS5` `5.1 / 5.2` | Executive Architecture Pattern Selector & Multi-Tenant Agentic Triad | `27v / 11e` | [`SVG`](../diagrams/ws5-decision-tree-and-triad.svg) • [`.drawio`](../diagrams/ws5-decision-tree-and-triad.drawio) | [`ws5-12slide-visual-deck.pptx`](../slides/ws5-12slide-visual-deck.pptx) • [`ws5-executive-architecture-10slide-deck.pptx`](../slides/ws5-executive-architecture-10slide-deck.pptx) |
+| **11** | `WS5` `Multi-Cloud` | Multi-Cloud Federation: Google Cloud Plane <-> AWS Bedrock AgentCore & 10 SaaS | `52v / 13e` | [`SVG`](../diagrams/saas10-multicloud-a2a-mcp-bridge.svg) • [`.drawio`](../diagrams/saas10-multicloud-a2a-mcp-bridge.drawio) | [`ws5-12slide-visual-deck.pptx`](../slides/ws5-12slide-visual-deck.pptx) • [`ws5-executive-architecture-10slide-deck.pptx`](../slides/ws5-executive-architecture-10slide-deck.pptx) |
+| **12** | `WS5` `5.2` | Shared + Private Agents, Dynamic GCS Skills & Zero-PII FinOps OTel | `77v / 12e` | [`SVG`](../diagrams/ws5-c4-l3-dynamic-skill-delegation-swimlane.svg) • [`.drawio`](../diagrams/ws5-c4-l3-dynamic-skill-delegation-swimlane.drawio) | [`ws5-12slide-visual-deck.pptx`](../slides/ws5-12slide-visual-deck.pptx) • [`ws5-executive-architecture-10slide-deck.pptx`](../slides/ws5-executive-architecture-10slide-deck.pptx) |
 
 ## Appendix B — Editable Slide Decks & Restored v2 Blogs
 
 | Key | Editable Deck (`.pptx`) | Slides | Restored v2 Companion Blog |
 | :--- | :--- | :--- | :--- |
-| **WS1** | [`ws1-reference-architecture-editable-slides.pptx`](../slides/ws1-reference-architecture-editable-slides.pptx) | 15 | [ws1-reference-architecture-taxonomy-and-5hop-baseline.md](../blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md) |
-| **WS2** | [`ws2-pattern-a-pooled-editable-slides.pptx`](../slides/ws2-pattern-a-pooled-editable-slides.pptx) | 12 | [ws2-pattern-a-pooled-architecture.md](../blogs/ws2-pattern-a-pooled-architecture.md) |
-| **WS3** | [`ws3-pattern-b-siloed-editable-slides.pptx`](../slides/ws3-pattern-b-siloed-editable-slides.pptx) | 12 | [ws3-pattern-b-sovereign-silos.md](../blogs/ws3-pattern-b-sovereign-silos.md) |
-| **WS4** | [`ws4-pattern-c-hybrid-editable-slides.pptx`](../slides/ws4-pattern-c-hybrid-editable-slides.pptx) | 12 | [ws4-pattern-c-hybrid-dynamic-tiering.md](../blogs/ws4-pattern-c-hybrid-dynamic-tiering.md) |
-| **WS5** | [`ws5-wrap-up-editable-slides.pptx`](../slides/ws5-wrap-up-editable-slides.pptx) | 12 | [ws5-decision-guide-and-agentic-triad.md](../blogs/ws5-decision-guide-and-agentic-triad.md) |
+| **WS1** | [`ws1-12slide-visual-deck.pptx`](../slides/ws1-12slide-visual-deck.pptx) • [`ws1-executive-architecture-23slide-deck.pptx`](../slides/ws1-executive-architecture-23slide-deck.pptx) | 10 Lean / 11 Exec | [ws1-reference-architecture-taxonomy-and-5hop-baseline.md](../blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md) |
+| **WS2** | [`ws2-12slide-visual-deck.pptx`](../slides/ws2-12slide-visual-deck.pptx) • [`ws2-executive-architecture-10slide-deck.pptx`](../slides/ws2-executive-architecture-10slide-deck.pptx) | 8 Lean / 10 Exec | [ws2-pattern-a-pooled-architecture.md](../blogs/ws2-pattern-a-pooled-architecture.md) |
+| **WS3** | [`ws3-12slide-visual-deck.pptx`](../slides/ws3-12slide-visual-deck.pptx) • [`ws3-executive-architecture-10slide-deck.pptx`](../slides/ws3-executive-architecture-10slide-deck.pptx) | 7 Lean / 10 Exec | [ws3-pattern-b-sovereign-silos.md](../blogs/ws3-pattern-b-sovereign-silos.md) |
+| **WS4** | [`ws4-12slide-visual-deck.pptx`](../slides/ws4-12slide-visual-deck.pptx) • [`ws4-executive-architecture-10slide-deck.pptx`](../slides/ws4-executive-architecture-10slide-deck.pptx) | 9 Lean / 10 Exec | [ws4-pattern-c-hybrid-dynamic-tiering.md](../blogs/ws4-pattern-c-hybrid-dynamic-tiering.md) |
+| **WS5** | [`ws5-12slide-visual-deck.pptx`](../slides/ws5-12slide-visual-deck.pptx) • [`ws5-executive-architecture-10slide-deck.pptx`](../slides/ws5-executive-architecture-10slide-deck.pptx) | 9 Lean / 10 Exec | [ws5-decision-guide-and-agentic-triad.md](../blogs/ws5-decision-guide-and-agentic-triad.md) |
 | **ALL** | [`geap-multi-tenancy-all-workstreams-editable-slides.pptx`](../slides/geap-multi-tenancy-all-workstreams-editable-slides.pptx) | 25 | All five workstreams |
 
 ## Appendix C — Glossary
@@ -569,7 +569,7 @@ python3 -B scripts/run_agentic_eval_framework.py --mode full
 
 Every workstream across Workstreams 1–5 and Patterns A, B, and C follows a **Customer-Centric 3-Act Top-Down 12-Slide Architecture progression** in the editable presentations: **Act I (Slides 1–3 Cover & Briefing Map, Customer Use Cases & Architectural Options Comparison Matrix)** → **Act II (Slide 4 L1 Logical Zones → Slide 5 L2 Native Editable `Figure 1` `#78` Physical Blueprint → Slide 6 L3 5-Actor Sequence → Slide 7 L4 Wire Payload Transformation)** → **Act III (Slides 8–12 Circuit Breakers, EAP Compensating Controls, Live GCP Proof, 3-Pillar Well-Architected Guarantees & Series Progression)**.
 
-### Diagram 1: Multi-Tenant Agentic AI Taxonomy: Pooled (Pattern A), Sovereign Silos (Pattern B) & Hybrid (Pattern C) (`ws1-multi-tenant-taxonomy-overview`)
+### Diagram 1: Multi-Tenant Agentic AI Taxonomy: Pooled (Pattern A), Sovereign Silos (Pattern B) & Hybrid (Pattern C) (`ws1-5hop-governance-baseline`)
 * **Workstream & Focus**: Workstream 1 • Multi-Tenant Reference Architecture Taxonomy (WS 1.1) (`PATTERNS A, B & C TAXONOMY`)
 * **Question Answered**: *How do B2B SaaS platforms and large enterprises serve thousands of tenants across Pooled (Pattern A), Sovereign Silo (Pattern B), and Dynamic Hybrid (Pattern C) isolation models using one 80% reusable agentic codebase?*
 * **Architectural & Business Outcome (Unified Hub-and-Spoke Control Plane Across Three Tenant Isolation Tiers)**: Platform teams maintain a single ADK and Vertex AI Agent Engine codebase while delivering 120 RPM Pooled (Pattern A), Blended Hybrid PSC (Pattern C), and 600 RPM Sovereign Silo (Pattern B) isolation tiers with zero cross-tenant data bleed.
@@ -606,7 +606,7 @@ Every workstream across Workstreams 1–5 and Patterns A, B, and C follows a **C
 | **Step ⑦** • Hop 5b: Sanitized Response & OTel FinOps | Cloud Run, External ALB & BigQuery OTel (Blue & Green Zones) | Returns the sanitized HTTP 200 completion to the caller while asynchronously streaming zero-PII OpenTelemetry FinOps and security audit spans into BigQuery and Security Command Center. | hop5_data_rls_and_otel.py (`record_bigquery_otel_span`) | Complete 5-Hop cryptographic lineage and per-tenant token chargeback |
 | **Cost & Audit** • SCC & FinOps Telemetry | Security Command Center & BigQuery OTel (Green Zone) | Streams zero-PII OpenTelemetry spans (`tenant_id`, `tier`, `thinking_tokens`, `cache_hit`) into BigQuery for proportional chargeback and Security Command Center audit. | BigQuery OTel Chargeback (`cymbal_agentic_finops_otel`) | Real-time per-tenant COGS attribution and continuous CISO compliance |
 
-### Diagram 2: Cloud Architecture Center: Multi-Tenant Agentic AI System with 5-Hop Cryptographic Governance (`ws1-cloud-arch-center-5hop-baseline`)
+### Diagram 2: Cloud Architecture Center: Multi-Tenant Agentic AI System with 5-Hop Cryptographic Governance (`ws1-c4-l3-process-sequence-swimlane`)
 * **Workstream & Focus**: Workstream 1 • Official Cloud Architecture Center 5-Hop Governance Baseline (WS 1.3) (`5-HOP CRYPTOGRAPHIC BASELINE`)
 * **Question Answered**: *How do we extend the official Google Cloud Architecture Center multi-tenant hub-and-spoke blueprint with a 5-Hop Cryptographic Context Chain that prevents confused-deputy tool calls, cache bleed, and noisy neighbors?*
 * **Architectural & Business Outcome (Five Sequential Policy Enforcement Points (Hops 1–5) Eliminate Cross-Tenant Bleed)**: Every request traverses five deterministic governance hops—Edge Identity PEP (Hop 1), Catalog PDP (Hop 2), Compute & Memory Bulkhead (Hop 3), Model Armor Guardrails (Hop 4), and Data RLS + OTel (Hop 5)—failing closed immediately on any violation.

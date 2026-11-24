@@ -1423,6 +1423,12 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     def _extract_verified_iap_email(self) -> str:
         raw_hdr = str(self.headers.get("X-Goog-Authenticated-User-Email") or "").strip()
         if not raw_hdr:
+            edge_hdr_name = os.environ.get("EDGE_AUTH_ASSERTION_HEADER", "").strip()
+            edge_hdr_val = str(self.headers.get(edge_hdr_name) or "").strip() if edge_hdr_name else ""
+            if edge_hdr_val:
+                ok_ea, ea_email, _ = create_blog1_mod.verify_signed_edge_assertion_header(edge_hdr_val)
+                if ok_ea and ea_email:
+                    return ea_email
             return ""
         candidate = raw_hdr.split(":")[-1].strip().lower()
         if not re.fullmatch(r"[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}", candidate):
@@ -1454,6 +1460,12 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             and remote_ip in ("127.0.0.1", "::1", "::ffff:127.0.0.1")
         ):
             return candidate
+        edge_hdr_name = os.environ.get("EDGE_AUTH_ASSERTION_HEADER", "").strip()
+        edge_hdr_val = str(self.headers.get(edge_hdr_name) or "").strip() if edge_hdr_name else ""
+        if edge_hdr_val:
+            ok_ea, ea_email, _ = create_blog1_mod.verify_signed_edge_assertion_header(edge_hdr_val)
+            if ok_ea and ea_email:
+                return ea_email
         return ""
 
     def _verify_verified_admin_iap(self) -> tuple[bool, str, str]:
@@ -1462,7 +1474,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             return (
                 False,
                 "",
-                "Missing verified Google Cloud IAP header (X-Goog-Authenticated-User-Email). Admin IAP authentication is required [FA-09].",
+                "Missing verified Google Cloud IAP header (X-Goog-Authenticated-User-Email) or signed edge-proxy assertion. Admin authentication is required [FA-09].",
             )
         if not _is_verified_admin_iap_email(iap_email):
             return (
@@ -1983,7 +1995,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/create-blog1/blogs":
-            self._send_json(200, {"ok": True, "blogs": create_blog1_mod.list_blogs()})
+            want_refresh = qs.get("refresh", [""])[0] == "1"
+            self._send_json(200, {"ok": True, "blogs": create_blog1_mod.list_blogs(refresh_gcs=want_refresh)})
             return
 
         if path.startswith("/api/create-blog1/jobs/"):
@@ -2612,13 +2625,13 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             engine_mode = (qs.get("engine") or ["native"])[0].strip()
             if engine_mode not in ("cloud", "native"):
                 engine_mode = "cloud"
-            safe_id = "".join(ch for ch in diag_id if ch.isalnum() or ch in ("-", "_")) or "ws1-multi-tenant-taxonomy-overview"
+            safe_id = "".join(ch for ch in diag_id if ch.isalnum() or ch in ("-", "_")) or "ws1-5hop-governance-baseline"
             if re.match(r"^ws[1-5]-l[134]-", safe_id, re.IGNORECASE):
                 has_local_diag = (ROOT_DIR / "diagrams" / f"{safe_id}.drawio").is_file() or (
                     ROOT_DIR / "diagrams" / "compendium" / "drawio" / f"{safe_id}.drawio"
                 ).is_file()
                 if not has_local_diag:
-                    safe_id = "ws1-multi-tenant-taxonomy-overview"
+                    safe_id = "ws1-5hop-governance-baseline"
             initial_zoom = "0.56" if is_inline else "0.65"
             inspector_w = "260px" if is_inline else "320px"
             select_html = "" if is_inline else f"""

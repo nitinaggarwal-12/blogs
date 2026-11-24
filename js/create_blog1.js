@@ -415,9 +415,9 @@
     container.replaceChildren(...items);
   }
 
-  async function refreshLibrary(selectFirst) {
+  async function refreshLibrary(selectFirst, forceGcs) {
     try {
-      const res = await apiGet('/api/create-blog1/blogs');
+      const res = await apiGet('/api/create-blog1/blogs' + (forceGcs ? '?refresh=1' : ''));
       state.blogs = Array.isArray(res.blogs) ? res.blogs : [];
       renderLibrary();
       if (selectFirst && !state.activeSlug && state.blogs.length) {
@@ -1263,7 +1263,7 @@
     });
 
     document.getElementById('btn-refresh-caps').addEventListener('click', refreshCapabilities);
-    document.getElementById('btn-refresh-lib').addEventListener('click', () => refreshLibrary(false));
+    document.getElementById('btn-refresh-lib').addEventListener('click', () => refreshLibrary(false, true));
 
     document.querySelectorAll('#asset-tablist .wtab').forEach((btn) => {
       btn.addEventListener('click', () => switchTab(btn.dataset.tab));

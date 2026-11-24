@@ -405,11 +405,11 @@ def main() -> int:
     ]
     ws3_per_slide = {
         4: {
-            "HTTP 403 CMEK_DENIED": "HTTP 403/423 CMEK_DENIED",
+            "HTTP 403 CMEK_DENIED": "HTTP 423 Locked (CMEK_LOCKED)",
             "(<60s HTTP 403 halt on revoke)": "(<60s HTTP 403/423 halt on revoke)",
         },
         5: {
-            "HTTP 403 CMEK_DENIED": "HTTP 403/423 CMEK_DENIED",
+            "HTTP 403 CMEK_DENIED": "HTTP 423 Locked (CMEK_LOCKED)",
             "HTTP 403 + SCC Log": "HTTP 403/423 + SCC",
             "60s Liveness Heartbeat": "30s Poll (<60s SLA) Heartbeat",
             "⚡ 2. KMS Audit + 60s Ping": "⚡ 2. KMS Audit + 30s Ping",

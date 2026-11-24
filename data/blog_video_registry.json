@@ -12,7 +12,7 @@
       "wsKey": "WS1",
       "blogMarkdown": "blogs/ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
       "title": "Blog 1 (WS1) — 5-Hop Governance Baseline & ThoughtSpot Cloud Live Walkthrough",
-      "subtitle": "Live Cloud Run IAM, Cloud Armor WAF, Model Armor Before/After, Cloud KMS EC-P256 & ThoughtSpot Cloud Liveboard → Saved Answer",
+      "subtitle": "Live Cloud Run IAM, Cloud Armor WAF, Model Armor Before/After, Cloud KMS EC-P256 & ThoughtSpot Spotter (6 Product Lines → Clinical Analytics)",
       "recordingDir": "recordings/ws1",
       "videoUrl": "/recordings/ws1/meet_live_execution_recording.mp4",
       "posterUrl": "/recordings/ws1/meet_recording_poster.jpg",
@@ -30,9 +30,9 @@
       },
       "saasTarget": {
         "saasId": "SAAS-01",
-        "name": "ThoughtSpot Cloud",
+        "name": "ThoughtSpot Cloud Spotter",
         "origin": "https://team2.thoughtspot.cloud",
-        "mode": "LIVEBOARD → SAVED ANSWER"
+        "mode": "SPOTTER (6 LINES → 1 SCOPE)"
       }
     },
     "ws2": {

@@ -4125,25 +4125,34 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 
 <!-- GENUINE_3P_BEFORE_AFTER_START -->
 
-## 12. Verified Live Google Cloud Console & Commercial SaaS Proofs (17/17 Console Captures • 8/8 BEFORE → AFTER Pairs)
+## 12. Verified Live Google Cloud Console & Commercial SaaS Proofs (19/19 Retina Captures • 9/9 BEFORE → AFTER Pairs)
 
 > [!IMPORTANT]
-> **Verified Live Multi-Cloud & Commercial SaaS Proofs (17/17 Verified `full-screen` Console Captures ):** All **17/17** cryptographically attested `full-screen` console captures (**13** live Google Cloud Console captures across `cymbal-ge-hub-2026` & `cymbal-ge-silo-2026` + **4** live Commercial SaaS captures across Atlassian Jira Cloud & ThoughtSpot Cloud, covering **8/8** complete `BEFORE → AFTER` resolution pairs) are verified from live Google Cloud Console and commercial SaaS sessions with live commercial SaaS or unattested legacy images. Open the dedicated gallery at `/blogs/atlas/screenshots` or inspect the full [Multi-Cloud Console & Live SaaS Verification Atlas](../blogs/saas-10-visual-verification-and-redteam-atlas.md).
+> **Verified Live Multi-Cloud & Commercial SaaS Proofs (`19/19` Verified `2880×1620` Retina Captures):** All **19/19** cryptographically attested Retina captures (**13** live Google Cloud Console captures across `cymbal-ge-hub-2026` & `cymbal-ge-silo-2026` + **6** live Commercial SaaS captures across ThoughtSpot Cloud Spotter/Liveboard & Atlassian Jira Cloud, covering **9/9** complete `BEFORE → AFTER` isolation pairs with zero open-source stand-ins or legacy images) are verified via `verify_slide_screenshots.mjs --audience external`. Open the dedicated gallery at `/blogs/atlas/screenshots` or inspect the full [Multi-Cloud Console & Live SaaS Verification Atlas](../blogs/saas-10-visual-verification-and-redteam-atlas.md).
+
+### SAAS-01C & SAAS-01D (`WS1-BA-03`): ThoughtSpot Cloud Spotter — Unfiltered 6-Product-Line Query → Locked Clinical Analytics Scope
+**Provider:** ThoughtSpot Cloud Spotter (Live Commercial SaaS) • **Scope:** `team2.thoughtspot.cloud` • **[Open Live Spotter Console ↗](https://team2.thoughtspot.cloud/)**
+
+![WS1 BEFORE: Live ThoughtSpot Cloud Spotter query exposing all 6 product lines (12 of 12 data points).](../screenshots/verified-cloud-console/ws1_before_thoughtspot_spotter_unscoped.png)
+*BEFORE (`WS1-BA-03`): Unfiltered Spotter AI query returns all 6 product lines (`12 of 12 data points`) across competing lines.*
+
+![WS1 AFTER: Live ThoughtSpot Cloud Spotter query locked to Product Line = 'clinical analytics' returning strictly 1 authorized row.](../screenshots/verified-cloud-console/ws1_after_thoughtspot_spotter_scoped.png)
+*AFTER (`WS1-BA-03`): Explicit governed predicate (`Product Line = 'clinical analytics'`) isolates Spotter strictly to 1 authorized row (`44.38` feature adoption / `37.7` NPS) while excluding all 5 competing lines.*
 
 ### SAAS-01A & SAAS-01B: ThoughtSpot Cloud — Live Executive Liveboard & Governed Saved Answer
-**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** `team2.thoughtspot.cloud` • **Provenance SHA-256:** (Liveboard) & (Saved Answer) (`full-screen` live) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
+**Provider:** ThoughtSpot Cloud (Live Commercial SaaS) • **Scope:** `team2.thoughtspot.cloud` • **Provenance SHA-256:** (Liveboard) & (Saved Answer) (`2880×1620` Retina live) • **[Open Live Console ↗](https://team2.thoughtspot.cloud/)**
 
 ![Live commercial ThoughtSpot Cloud SaaS Liveboard rendered directly from team2.thoughtspot.cloud.](../screenshots/verified-cloud-console/saas_01_thoughtspot_liveboard.png)
-*Genuine commercial ThoughtSpot Cloud Liveboard (`team2.thoughtspot.cloud`, ) captured live at `full-screen` live.*
+*Genuine commercial ThoughtSpot Cloud Liveboard (`team2.thoughtspot.cloud`) captured live at `full-screen` live.*
 
 ![Live commercial ThoughtSpot Cloud Saved Answer analytics table rendered directly from team2.thoughtspot.cloud.](../screenshots/verified-cloud-console/saas_02_thoughtspot_saved_answer.png)
-*Genuine commercial ThoughtSpot Cloud Saved Answer query (`team2.thoughtspot.cloud`, ) demonstrating live governed BI analytics consumption.*
+*Genuine commercial ThoughtSpot Cloud Saved Answer query (`team2.thoughtspot.cloud`) demonstrating live governed BI analytics consumption.*
 
 ### SAAS-05A & SAAS-05B: Atlassian Jira Cloud — Live BEFORE Unfiltered Board → AFTER 3LO Scope-Filtered Board
-**Provider:** Atlassian Jira Cloud (Live Commercial SaaS) • **Scope:** `gcp-team-sbiarllr.atlassian.net` • **Provenance SHA-256:** (BEFORE) → (AFTER 3LO Filter) (`full-screen` live) • **[Open Live Jira Cloud ↗](https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1)**
+**Provider:** Atlassian Jira Cloud (Live Commercial SaaS) • **Scope:** `gcp-team-sbiarllr.atlassian.net` • **Provenance SHA-256:** (BEFORE) → (AFTER 3LO Filter) (`2880×1620` Retina live) • **[Open Live Jira Cloud ↗](https://gcp-team-sbiarllr.atlassian.net/jira/software/projects/SCRUM/boards/1)**
 
 ![Live commercial Atlassian Jira Cloud Scrum Board BEFORE 3LO scoping.](../screenshots/verified-cloud-console/saas_06_atlassian_jira_confluence.png)
-*BEFORE: Unfiltered commercial Atlassian Jira Cloud Scrum Board (`gcp-team-sbiarllr.atlassian.net`, ).*
+*BEFORE: Unfiltered commercial Atlassian Jira Cloud Scrum Board (`gcp-team-sbiarllr.atlassian.net`).*
 
 ![Live commercial Atlassian Jira Cloud Scrum Board AFTER Pattern C 3LO scope filtering.](../screenshots/verified-cloud-console/ws4_after_jira_3lo_scoped_issue.png)
 *AFTER: Live Pattern C 3LO scope query filter (`textfields ~ "3LO*"`) isolating strictly `SCRUM-5` & `SCRUM-6`.*
@@ -4151,11 +4160,11 @@ python3 -B scripts/verify_5_third_party_saas_products.py --saas crowdstrike --pa
 ### GCP Console WS1–WS5 Live BEFORE → AFTER Proofs (13 Verified `full-screen` Console Captures)
 | Workstream | Pair / Control Plane | BEFORE Capture (`SHA-256`) | AFTER Capture (`SHA-256`) | Live GCP Project |
 | :--- | :--- | :--- | :--- | :--- |
-| **WS1** | Hop 4 Model Armor AI Firewall | `ws1_before_model_armor_unprotected.png` () | `ws1_after_model_armor_blocked.png` () | `cymbal-ge-hub-2026` |
-| **WS1** | Hop 1 Cloud Armor Edge WAF | `ws1_before_open_edge_baseline.png` () | `ws1_after_cloud_armor_hop1_waf.png` () | `cymbal-ge-hub-2026` |
-| **WS2** | Pattern A BigQuery Kernel RLS | `ws2_before_pooled_rls_cross_tenant_bleed.png` () | `ws2_after_pooled_rls_tenant_isolated.png` () | `cymbal-ge-hub-2026` |
-| **WS3** | Pattern B CMEK Kill-Switch & KMS | `ws3_before_cmek_enabled_vault_access.png` () | `ws3_after_cmek_revoked_killswitch_denied.png` () + `ws3_after_kms_cmek_keyring_state.png` () | `cymbal-ge-silo-2026` |
-| **WS4** | Pattern C Hub → Sovereign Spoke VPC | `ws4_before_shared_hub_vpc.png` () | `ws4_after_dedicated_finvault_spoke_vpc.png` () | `cymbal-ge-hub-2026` → `cymbal-ge-silo-2026` |
-| **WS5** | Connectors → Cloud Run A2A/MCP Hub | `ws5_before_connectors_baseline.png` () | `ws5_after_a2a_gateway_federation.png` () | `cymbal-ge-hub-2026` |
+| **WS1** | Hop 4 Model Armor AI Firewall | `ws1_before_model_armor_unprotected.png` | `ws1_after_model_armor_blocked.png` | `cymbal-ge-hub-2026` |
+| **WS1** | Hop 1 Cloud Armor Edge WAF | `ws1_before_open_edge_baseline.png` | `ws1_after_cloud_armor_hop1_waf.png` | `cymbal-ge-hub-2026` |
+| **WS2** | Pattern A BigQuery Kernel RLS | `ws2_before_pooled_rls_cross_tenant_bleed.png` | `ws2_after_pooled_rls_tenant_isolated.png` | `cymbal-ge-hub-2026` |
+| **WS3** | Pattern B CMEK Kill-Switch & KMS | `ws3_before_cmek_enabled_vault_access.png` | `ws3_after_cmek_revoked_killswitch_denied.png` + `ws3_after_kms_cmek_keyring_state.png` | `cymbal-ge-silo-2026` |
+| **WS4** | Pattern C Hub → Sovereign Spoke VPC | `ws4_before_shared_hub_vpc.png` | `ws4_after_dedicated_finvault_spoke_vpc.png` | `cymbal-ge-hub-2026` → `cymbal-ge-silo-2026` |
+| **WS5** | Connectors → Cloud Run A2A/MCP Hub | `ws5_before_connectors_baseline.png` | `ws5_after_a2a_gateway_federation.png` | `cymbal-ge-hub-2026` |
 
 <!-- GENUINE_3P_BEFORE_AFTER_END -->

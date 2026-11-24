@@ -86,6 +86,8 @@ _RATE_HITS: Dict[str, deque] = {}
 _TOKEN_LOCK = threading.Lock()
 _TOKEN_CACHE: Dict[str, Any] = {"token": None, "expiry": 0.0, "last_fail": 0.0}
 _GCS_INDEX_HYDRATED = False
+_GCS_INDEX_LAST_SYNC = 0.0
+_GCS_INDEX_TTL_SEC = 10.0
 
 # Public-repo F-13 leak patterns assembled dynamically so repository static self-scans never flag source code.
 _FORBIDDEN_TOKENS_FRAGMENTS = (
@@ -392,11 +394,15 @@ def _sync_blog_dir_to_gcs_async(slug: str, blog_dir: Path, index_bytes: bytes) -
     threading.Thread(target=_worker, daemon=True).start()
 
 
-def hydrate_index_from_gcs_once() -> None:
-    global _GCS_INDEX_HYDRATED
-    if _GCS_INDEX_HYDRATED or not _is_gcs_sync_enabled():
+def hydrate_index_from_gcs_once(force: bool = False) -> None:
+    global _GCS_INDEX_HYDRATED, _GCS_INDEX_LAST_SYNC
+    if not _is_gcs_sync_enabled():
+        return
+    now = time.time()
+    if not force and _GCS_INDEX_HYDRATED and (now - _GCS_INDEX_LAST_SYNC) < _GCS_INDEX_TTL_SEC:
         return
     _GCS_INDEX_HYDRATED = True
+    _GCS_INDEX_LAST_SYNC = now
     raw = _gcs_download_bytes("index.json")
     if not raw:
         return
@@ -413,11 +419,17 @@ def hydrate_index_from_gcs_once() -> None:
         else:
             try:
                 local = json.loads(idx_file.read_text(encoding="utf-8"))
-                local_slugs = {b.get("slug") for b in local.get("blogs", []) if isinstance(b, dict)}
-                merged = list(local.get("blogs", []))
+                by_slug: Dict[str, Dict[str, Any]] = {}
+                for entry in local.get("blogs", []):
+                    if isinstance(entry, dict) and entry.get("slug"):
+                        by_slug[str(entry["slug"])] = entry
                 for entry in parsed.get("blogs", []):
-                    if isinstance(entry, dict) and entry.get("slug") not in local_slugs:
-                        merged.append(entry)
+                    if isinstance(entry, dict) and entry.get("slug"):
+                        s_k = str(entry["slug"])
+                        cur = by_slug.get(s_k)
+                        if cur is None or str(entry.get("updatedAt", "")) >= str(cur.get("updatedAt", "")):
+                            by_slug[s_k] = entry
+                merged = sorted(by_slug.values(), key=lambda x: str(x.get("createdAt", "")), reverse=True)
                 idx_file.write_text(
                     json.dumps({"schemaVersion": "1.0", "updatedAt": _now_iso(), "blogs": merged}, indent=2),
                     encoding="utf-8",
@@ -426,11 +438,11 @@ def hydrate_index_from_gcs_once() -> None:
                 idx_file.write_bytes(raw)
 
 
-def _load_index() -> Dict[str, Any]:
+def _load_index(refresh_gcs: bool = False) -> Dict[str, Any]:
     with _STATE_LOCK:
         idx_file = get_storage_root() / "index.json"
-        if not idx_file.is_file():
-            hydrate_index_from_gcs_once()
+        if refresh_gcs or not idx_file.is_file() or (time.time() - _GCS_INDEX_LAST_SYNC) >= _GCS_INDEX_TTL_SEC:
+            hydrate_index_from_gcs_once(force=refresh_gcs)
         if idx_file.is_file():
             try:
                 data = json.loads(idx_file.read_text(encoding="utf-8"))
@@ -1196,7 +1208,8 @@ def compile_architecture_drawio_and_svg(bp: Dict[str, Any], slug: str) -> Tuple[
     zones = bp["architectureZones"]
     edges = bp["architectureEdges"]
     title = strip_emojis(bp["title"])[:74]
-    subtitle = strip_emojis(bp["subtitle"])[:108]
+    _raw_sub = strip_emojis(bp["subtitle"])
+    subtitle = _raw_sub if len(_raw_sub) <= 135 else (_raw_sub[:132].rsplit(" ", 1)[0] + "...")
 
     W, H = 1600, 900
     mx_cells: List[str] = [
@@ -1400,7 +1413,8 @@ def compile_architecture_drawio_and_svg(bp: Dict[str, Any], slug: str) -> Tuple[
 def compile_sequence_drawio_and_svg(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str]:
     actors = bp["sequenceActors"][:5]
     steps = bp["sequenceSteps"][:10]
-    base_t = strip_emojis(bp["title"])[:54].rstrip()
+    _raw_bt = strip_emojis(bp["title"])
+    base_t = _raw_bt if len(_raw_bt) <= 72 else (_raw_bt[:69].rsplit(" ", 1)[0] + "...")
     title = f"{base_t} — Request Sequence"
 
     W, H = 1600, 900
@@ -3190,7 +3204,7 @@ def run_orthogonal_llm_judge(
 ) -> Dict[str, Any]:
     judge_model = "gemini-2.5-flash" if generator_model == "gemini-2.5-pro" else "gemini-2.5-pro"
     sys_p = (
-        "You are an independent adversarial Google Cloud architecture reviewer (strict orthogonal judge). "
+        f"Today is {datetime.now(timezone.utc).strftime('%Y-%m-%d')}. You are an independent adversarial Google Cloud architecture reviewer (strict orthogonal judge). "
         "Review the generated blog for hallucinations, invented IDs/URLs, missing failure modes, "
         "overstated claims lacking provenance tags, or diagram-vs-prose mismatches. Return ONLY JSON: "
         '{"verdict":"APPROVED|NEEDS_REVISION","score":0-100,"summary":"1-2 crisp sentences",'
@@ -3229,7 +3243,7 @@ def run_orthogonal_llm_judge(
                 findings.append({
                     "severity": str(f.get("severity") or "P2").upper()[:4],
                     "category": str(f.get("category") or "clarity")[:24],
-                    "detail": _sanitize_for_public_output(str(f.get("detail") or ""))[:280],
+                    "detail": _sanitize_for_public_output(str(f.get("detail") or ""))[:900],
                 })
         return {
             "status": "COMPLETED",
@@ -3238,8 +3252,8 @@ def run_orthogonal_llm_judge(
             "orthogonalPair": f"{generator_model} -> {judge_model}",
             "verdict": verdict,
             "score": score,
-            "summary": _sanitize_for_public_output(str(res.get("summary") or ""))[:400],
-            "strengths": [_sanitize_for_public_output(str(s))[:180] for s in (res.get("strengths") or [])[:5]],
+            "summary": _sanitize_for_public_output(str(res.get("summary") or ""))[:800],
+            "strengths": [_sanitize_for_public_output(str(s))[:400] for s in (res.get("strengths") or [])[:5]],
             "findings": findings,
             "latencyMs": meta.get("latencyMs", 0),
             "checkedAt": _now_iso(),
@@ -3675,8 +3689,8 @@ def get_job_status(job_id: str) -> Dict[str, Any]:
         return json.loads(json.dumps(jr))
 
 
-def list_blogs() -> List[Dict[str, Any]]:
-    idx = _load_index()
+def list_blogs(refresh_gcs: bool = False) -> List[Dict[str, Any]]:
+    idx = _load_index(refresh_gcs=refresh_gcs)
     return list(idx.get("blogs", []))
 
 
@@ -4012,3 +4026,341 @@ def sync_to_google_workspace(slug: str, bridge_mod: Any = None) -> Dict[str, Any
         index_bytes = _update_index_entry(manifest)
         _sync_blog_dir_to_gcs_async(slug=clean, blog_dir=blog_dir, index_bytes=index_bytes)
     return {"ok": True, "statusCode": 200, "workspaceSync": sync_meta}
+
+
+# ---------------------------------------------------------------------------
+# Pure-Stdlib EdgeAuth ECDSA P-256 Verifier for configured edge proxy signed-assertion header
+# ---------------------------------------------------------------------------
+_P256_P = 0xFFFFFFFF00000001000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF
+_P256_A = _P256_P - 3
+_P256_B = 0x5AC635D8AA3A93E7B3EBBD55769886BC651D06B0CC53B0F63BCE3C3E27D2604B
+_P256_N = 0xFFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551
+_P256_G = (
+    0x6B17D1F2E12C4247F8BCE6E563A440F277037D812DEB33A0F4A13945D898C296,
+    0x4FE342E2FE1A7F9B8EE7EB4A7C0F9E162BCE33576B315ECECBB6406837BF51F5,
+)
+_EDGE_ASSERT_KEYMASTER_FORMAT = 0x00
+_EDGE_ASSERT_MAX_AGE_SEC = 10 * 60
+_EDGE_ASSERT_MAX_FUTURE_SEC = 2 * 60
+_EDGE_ASSERT_KEYS_CACHE: Dict[str, Any] = {"raw": None, "keys": []}
+
+
+def _p256_is_on_curve(pt: Optional[Tuple[int, int]]) -> bool:
+    if pt is None:
+        return False
+    x, y = pt
+    if not (0 < x < _P256_P and 0 < y < _P256_P):
+        return False
+    return (y * y - (x * x * x + _P256_A * x + _P256_B)) % _P256_P == 0
+
+
+def _p256_add(p1: Optional[Tuple[int, int]], p2: Optional[Tuple[int, int]]) -> Optional[Tuple[int, int]]:
+    if p1 is None:
+        return p2
+    if p2 is None:
+        return p1
+    x1, y1 = p1
+    x2, y2 = p2
+    if x1 == x2:
+        if (y1 + y2) % _P256_P == 0:
+            return None
+        lam = ((3 * x1 * x1 + _P256_A) * pow(2 * y1, -1, _P256_P)) % _P256_P
+    else:
+        lam = ((y2 - y1) * pow((x2 - x1) % _P256_P, -1, _P256_P)) % _P256_P
+    x3 = (lam * lam - x1 - x2) % _P256_P
+    y3 = (lam * (x1 - x3) - y1) % _P256_P
+    return (x3, y3)
+
+
+def _p256_mul(k: int, pt: Tuple[int, int]) -> Optional[Tuple[int, int]]:
+    k %= _P256_N
+    if k == 0:
+        return None
+    res: Optional[Tuple[int, int]] = None
+    addend: Optional[Tuple[int, int]] = pt
+    while k:
+        if k & 1:
+            res = _p256_add(res, addend)
+        addend = _p256_add(addend, addend)
+        k >>= 1
+    return res
+
+
+def _parse_asn1_der_ecdsa_sig(der: bytes) -> Optional[Tuple[int, int]]:
+    if len(der) < 8 or der[0] != 0x30:
+        return None
+    pos = 1
+    seq_len = der[pos]
+    pos += 1
+    if seq_len & 0x80:
+        n_oct = seq_len & 0x7F
+        if n_oct == 0 or n_oct > 2 or pos + n_oct > len(der):
+            return None
+        seq_len = int.from_bytes(der[pos : pos + n_oct], "big")
+        pos += n_oct
+    if pos + seq_len != len(der):
+        return None
+    if pos >= len(der) or der[pos] != 0x02:
+        return None
+    r_len = der[pos + 1]
+    pos += 2
+    if r_len == 0 or pos + r_len > len(der):
+        return None
+    r_bytes = der[pos : pos + r_len]
+    pos += r_len
+    if pos + 2 > len(der) or der[pos] != 0x02:
+        return None
+    s_len = der[pos + 1]
+    pos += 2
+    if s_len == 0 or pos + s_len != len(der):
+        return None
+    s_bytes = der[pos : pos + s_len]
+    r = int.from_bytes(r_bytes, "big")
+    s = int.from_bytes(s_bytes, "big")
+    if not (1 <= r < _P256_N and 1 <= s < _P256_N):
+        return None
+    return (r, s)
+
+
+def _ecdsa_p256_verify_der(pub_xy: Tuple[int, int], msg: bytes, der_sig: bytes) -> bool:
+    rs = _parse_asn1_der_ecdsa_sig(der_sig)
+    if rs is None or not _p256_is_on_curve(pub_xy):
+        return False
+    r, s = rs
+    z = int.from_bytes(hashlib.sha256(msg).digest(), "big")
+    w = pow(s, -1, _P256_N)
+    u1 = (z * w) % _P256_N
+    u2 = (r * w) % _P256_N
+    pt = _p256_add(_p256_mul(u1, _P256_G), _p256_mul(u2, pub_xy))
+    if pt is None:
+        return False
+    return (pt[0] % _P256_N) == r
+
+
+def _strip_leading_zero_bytes(b: bytes) -> bytes:
+    i = 0
+    while i < len(b) - 1 and b[i] == 0:
+        i += 1
+    return b[i:]
+
+
+def compute_edge_assertion_ec_key_hash(x_bytes: bytes, y_bytes: bytes) -> bytes:
+    """Computes 4-byte SHA-1 EC P-256 key hash for an EC P-256 public key (x, y)."""
+    h = hashlib.sha1()
+    for coord in (_strip_leading_zero_bytes(x_bytes), _strip_leading_zero_bytes(y_bytes)):
+        h.update(struct.pack(">I", len(coord)))
+        h.update(coord)
+    return h.digest()[:4]
+
+
+def _decode_b64url(s: str) -> bytes:
+    pad = "=" * ((4 - (len(s) % 4)) % 4)
+    return base64.urlsafe_b64decode(s + pad)
+
+
+def _decode_ec_coord(val: Any) -> Optional[bytes]:
+    if not isinstance(val, str):
+        return None
+    s = val.strip()
+    if not s:
+        return None
+    if re.fullmatch(r"[0-9a-fA-F]{64}", s):
+        return bytes.fromhex(s)
+    if re.fullmatch(r"[A-Za-z0-9_-]{40,46}=*", s):
+        try:
+            raw = _decode_b64url(s)
+            return raw if 0 < len(raw) <= 33 else None
+        except Exception:
+            return None
+    return None
+
+
+def _load_edge_assertion_public_keys(keys_override: Optional[Any] = None) -> List[Tuple[bytes, Tuple[int, int]]]:
+    def _parse(obj: Any) -> List[Tuple[bytes, Tuple[int, int]]]:
+        items = obj.get("keys", []) if isinstance(obj, dict) else (obj if isinstance(obj, list) else [])
+        out: List[Tuple[bytes, Tuple[int, int]]] = []
+        for entry in items:
+            if not isinstance(entry, dict):
+                continue
+            xb = _decode_ec_coord(entry.get("x"))
+            yb = _decode_ec_coord(entry.get("y"))
+            if not xb or not yb:
+                continue
+            xy = (int.from_bytes(xb, "big"), int.from_bytes(yb, "big"))
+            if not _p256_is_on_curve(xy):
+                continue
+            out.append((compute_edge_assertion_ec_key_hash(xb, yb), xy))
+        return out
+
+    if keys_override is not None:
+        return _parse(keys_override)
+    raw = os.environ.get("EDGE_AUTH_PUBLIC_KEYS_JSON", "").strip()
+    if not raw:
+        return []
+    if raw == _EDGE_ASSERT_KEYS_CACHE["raw"]:
+        return _EDGE_ASSERT_KEYS_CACHE["keys"]
+    try:
+        parsed = json.loads(raw)
+        keys = _parse(parsed)
+        _EDGE_ASSERT_KEYS_CACHE["raw"] = raw
+        _EDGE_ASSERT_KEYS_CACHE["keys"] = keys
+        return keys
+    except Exception:
+        return []
+
+
+def _read_proto_varint(buf: bytes, off: int) -> Tuple[int, int]:
+    res = 0
+    shift = 0
+    pos = off
+    while pos < len(buf):
+        b = buf[pos]
+        pos += 1
+        res |= (b & 0x7F) << shift
+        if (b & 0x80) == 0:
+            return res, pos
+        shift += 7
+        if shift > 70:
+            raise ValueError("malformed varint")
+    raise ValueError("truncated varint")
+
+
+def _skip_proto_field(buf: bytes, off: int, wire: int) -> int:
+    if wire == 0:
+        _, nxt = _read_proto_varint(buf, off)
+        return nxt
+    if wire == 1:
+        return off + 8
+    if wire == 5:
+        return off + 4
+    if wire == 2:
+        ln, nxt = _read_proto_varint(buf, off)
+        if nxt + ln > len(buf):
+            raise ValueError("truncated length-delimited field")
+        return nxt + ln
+    raise ValueError(f"unsupported wire type {wire}")
+
+
+def _parse_proto_timestamp_sec(buf: bytes) -> int:
+    off = 0
+    sec = 0
+    while off < len(buf):
+        tag, off = _read_proto_varint(buf, off)
+        field, wire = tag >> 3, tag & 7
+        if field == 1 and wire == 0:
+            sec, off = _read_proto_varint(buf, off)
+        else:
+            off = _skip_proto_field(buf, off, wire)
+    return int(sec)
+
+
+def parse_edge_assertion_proto(buf: bytes) -> Dict[str, Any]:
+    if not buf:
+        raise ValueError("empty EdgeAssertion payload")
+    out: Dict[str, Any] = {"tier": 0, "email": "", "host": "", "timestampSec": 0, "origin": "", "identityType": 0}
+    off = 0
+    while off < len(buf):
+        tag, off = _read_proto_varint(buf, off)
+        field, wire = tag >> 3, tag & 7
+        if wire == 0:
+            v, off = _read_proto_varint(buf, off)
+            if field == 1:
+                out["tier"] = int(v)
+            elif field == 8:
+                out["identityType"] = int(v)
+        elif wire == 2:
+            ln, off = _read_proto_varint(buf, off)
+            end = off + ln
+            if end > len(buf):
+                raise ValueError("truncated EdgeAssertion field")
+            sl = buf[off:end]
+            off = end
+            if field == 2:
+                out["email"] = sl.decode("utf-8", errors="strict")
+            elif field == 5:
+                out["host"] = sl.decode("utf-8", errors="strict")
+            elif field == 6:
+                out["timestampSec"] = _parse_proto_timestamp_sec(sl)
+            elif field == 7:
+                out["origin"] = sl.decode("utf-8", errors="strict")
+        else:
+            off = _skip_proto_field(buf, off, wire)
+            if off > len(buf):
+                raise ValueError("truncated EdgeAssertion field")
+    return out
+
+
+def verify_signed_edge_assertion_header(
+    raw_header: str,
+    *,
+    expected_hosts: Optional[str] = None,
+    public_keys_override: Optional[Any] = None,
+    now_sec: Optional[int] = None,
+) -> Tuple[bool, str, str]:
+    """
+    Fail-closed cryptographic verifier for configured edge proxy signed-assertion header attached by
+    managed HTTPS reverse-proxy gateway.
+    Returns `(ok, email_or_empty, reason_code)`.
+    """
+    hdr = str(raw_header or "").strip()
+    if not hdr:
+        return (False, "", "missing_header")
+    parts = hdr.split(".")
+    if len(parts) != 2 or not parts[0] or not parts[1]:
+        return (False, "", "malformed_edge_assertion")
+    payload_b64, sig_b64 = parts
+    if not re.fullmatch(r"[A-Za-z0-9_-]+=*", payload_b64) or not re.fullmatch(r"[A-Za-z0-9_-]+=*", sig_b64):
+        return (False, "", "malformed_encoding")
+
+    host_str = expected_hosts if expected_hosts is not None else os.environ.get("EDGE_AUTH_EXPECTED_HOSTS", "")
+    allowed_hosts = {
+        re.sub(r":443$", "", h.strip().lower())
+        for h in re.split(r"[\s,]+", str(host_str or ""))
+        if h.strip()
+    }
+    if not allowed_hosts:
+        return (False, "", "missing_expected_hosts")
+
+    keys = _load_edge_assertion_public_keys(public_keys_override)
+    if not keys:
+        return (False, "", "missing_edge_assertion_keys")
+
+    try:
+        sig_buf = _decode_b64url(sig_b64)
+    except Exception:
+        return (False, "", "bad_sig_b64")
+    if len(sig_buf) <= 5 or sig_buf[0] != _EDGE_ASSERT_KEYMASTER_FORMAT:
+        return (False, "", "bad_sig_header")
+    key_hash = sig_buf[1:5]
+    der_sig = sig_buf[5:]
+    candidates = [xy for kh, xy in keys if kh == key_hash]
+    if not candidates:
+        return (False, "", "unknown_key_hash")
+
+    signed_data = payload_b64.encode("ascii") + bytes([_EDGE_ASSERT_KEYMASTER_FORMAT])
+    if not any(_ecdsa_p256_verify_der(xy, signed_data, der_sig) for xy in candidates):
+        return (False, "", "bad_sig")
+
+    try:
+        up = parse_edge_assertion_proto(_decode_b64url(payload_b64))
+    except Exception:
+        return (False, "", "bad_proto")
+
+    email = str(up.get("email") or "").strip().lower()
+    unauth_sentinel = os.environ.get("EDGE_AUTH_UNAUTH_EMAIL", "").strip().lower()
+    if not email or (unauth_sentinel and email == unauth_sentinel) or email.startswith("unauthenticated-") or not re.fullmatch(r"[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}", email):
+        return (False, "", "unauthenticated")
+
+    if int(up.get("identityType", -1)) not in (0, 1, 2):
+        return (False, "", "bad_identity_type")
+
+    now_val = int(time.time()) if now_sec is None else int(now_sec)
+    ts = int(up.get("timestampSec") or 0)
+    if ts <= 0 or ts < (now_val - _EDGE_ASSERT_MAX_AGE_SEC) or ts > (now_val + _EDGE_ASSERT_MAX_FUTURE_SEC):
+        return (False, "", "stale_edge_assertion")
+
+    host = re.sub(r":443$", "", str(up.get("host") or "").strip().lower())
+    if not host or host not in allowed_hosts:
+        return (False, "", "bad_host")
+
+    return (True, email, "ok")

@@ -172,9 +172,9 @@ function buildBlogCatalog() {
       meetCode: "ge-ws1-5hop",
       saasTarget: {
         saasId: "SAAS-01",
-        name: "ThoughtSpot Cloud",
+        name: "ThoughtSpot Cloud Spotter",
         origin: origins.thoughtspot,
-        mode: "LIVEBOARD → SAVED ANSWER"
+        mode: "SPOTTER (6 LINES → 1 SCOPE)"
       },
       chapters: [
         {
@@ -281,24 +281,24 @@ function buildBlogCatalog() {
         },
         {
           chapterNum: 6,
-          id: "ch06_saas_thoughtspot_liveboard_to_answer",
-          shortTitle: "ThoughtSpot Liveboard → Answer",
-          title: "SAAS-01 ThoughtSpot Cloud — Open Liveboard → Governed Saved Answer",
-          surface: "ThoughtSpot Cloud (SAAS-01)",
-          phaseBadge: "LIVEBOARD → SAVED ANSWER",
+          id: "ch06_saas_thoughtspot_spotter_before_after",
+          shortTitle: "ThoughtSpot Spotter Scope",
+          title: "SAAS-01 ThoughtSpot Spotter — Unfiltered 6 Lines → Locked Clinical Analytics",
+          surface: "ThoughtSpot Cloud Spotter (SAAS-01)",
+          phaseBadge: "SPOTTER (6 LINES → 1 SCOPE)",
           requiresSaas: "thoughtspot",
-          primaryUrl: `${origins.thoughtspot}/#/pinboard/1a387932-6c25-4e3d-a61a-62803d40ed71`,
-          secondaryUrl: `${origins.thoughtspot}/#/saved-answer/9e91e76f-8c7f-4b48-9531-20b344afdddf`,
+          primaryUrl: `${origins.thoughtspot}/#/insights/conv-assist?conversationId=pnPwoA3GjUt6&dataSources=%5B%227da30f7e-688d-4ef3-920c-ed3ee2862b62%22%5D`,
+          secondaryUrl: `${origins.thoughtspot}/#/insights/conv-assist?dataSources=%5B%227da30f7e-688d-4ef3-920c-ed3ee2862b62%22%5D&conversationId=Q6-5Hhu1gpmL`,
           metrics: [
-            "SaaS: SAAS-01 ThoughtSpot Cloud",
-            "Liveboard: Retail Sales with Muze",
-            "Saved Answer: Pharma Supply Chain + Query Details"
+            "SaaS: SAAS-01 ThoughtSpot Spotter",
+            "Before: 12 of 12 Data Points (6 Lines)",
+            "After: 1 Row (Product Line = clinical analytics)"
           ],
           beats: [
-            "In live ThoughtSpot Cloud, this open executive Liveboard displays global multi-region retail sales with all filters unselected.",
-            "Switching to a governed Saved Answer scopes supply-chain analysis cleanly and exposes explicit filter rules in Query Details."
+            "In live ThoughtSpot Spotter, an unscoped analytics prompt exposes all six competing product lines together.",
+            "Switching to a tenant-scoped clinical analytics query isolates strictly one authorized row while excluding competing lines."
           ],
-          actionKind: "thoughtspot_liveboard_to_answer"
+          actionKind: "thoughtspot_spotter_before_after"
         }
       ]
     },
@@ -1664,6 +1664,29 @@ async function executeChapterChoreography({
     await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, { textRegex: "^Protection$", minX: 260 });
     await engine.sleep(1400);
     await scrollOn(tab2.sessionId, 640, 420, "down", 4);
+  } else if (kind === "thoughtspot_spotter_before_after") {
+    // Beat 1: Glide across the 6 product-line bars in Spotter BEFORE conversation & scroll slightly
+    await smoothGlide(ptr, 460, 420, 860, 420, 14);
+    await clock.waitUntilSec(2.8, `${chapter.id}_b1_scroll`);
+    await scrollOn(tab1.sessionId, 680, 460, "down", 4);
+    await engine.sleep(900);
+    await smoothGlide(ptr, 860, 460, 560, 520, 12);
+    // Beat 2: Switch to governed Clinical Analytics Spotter tab, click "Show work" to reveal locked predicate token & scroll
+    await clock.waitUntilSec(beat1DurSec + 0.3, `${chapter.id}_b2_start`);
+    await activateTab2WithCursor();
+    await engine.sleep(1200);
+    const swHit = await clickSelectorWithX11(cdp, tab2.sessionId, ptr, chromeTopPx, {
+      selector: 'button, [role="button"], span',
+      textMatch: /show work/i,
+      minX: 300,
+      minY: 180
+    }).catch(() => ({ clicked: false }));
+    console.log(`    🖱️ [ThoughtSpot Spotter] Show work click: ${JSON.stringify(swHit)}`);
+    await engine.sleep(1000);
+    await smoothGlide(ptr, 520, 395, 760, 455, 14);
+    // Keep Tab 2 framed on the locked "Product Line = 'clinical analytics'" filter pill AND 1-row table (44.38 / 37.7) — zero over-scroll!
+    await engine.sleep(600);
+    await smoothGlide(ptr, 760, 455, 560, 500, 12);
   } else if (kind === "thoughtspot_liveboard_to_answer") {
     // Beat 1: Keep all 6 hydrated Executive KPI cards framed at top through early (+1.5s), then smoothly scroll down to charts
     await smoothGlide(ptr, 260, 290, 680, 290, 14);
@@ -2138,6 +2161,49 @@ async function captureChapterWithX11Grab({
   }
 
   // Wait for ThoughtSpot Liveboard KPI tiles to finish hydrating (zero "• • •" loading spinners before x11grab!)
+  if (chapter.actionKind === "thoughtspot_spotter_before_after") {
+    // Dismiss any OS/Chrome desktop notification popup windows on X11 display before recording!
+    try { execFileSync("xdotool", ["search", "--name", "Notification|Buganizer|G3", "windowclose"], { env: { ...process.env, DISPLAY: display }, stdio: "ignore" }); } catch {}
+    const hydrateSpotterTab = async (tabObj, label) => {
+      await cdp.send("Target.activateTarget", { targetId: tabObj.targetId });
+      await engine.sleep(900);
+      await evalInSession(cdp, tabObj.sessionId, () => {
+        // Dismiss "This data may have changed" info banner
+        for (const el of document.querySelectorAll('button, [role="button"], svg')) {
+          const box = el.closest?.('div, section, [role="alert"], [role="status"]');
+          const bt = (box?.innerText || '').trim();
+          if (bt.length < 180 && /data may have changed/i.test(bt)) {
+            const al = (el.getAttribute?.('aria-label') || '').toLowerCase();
+            if (/close|dismiss/i.test(al) || el.tagName === 'BUTTON') { try { el.click(); } catch {} }
+          }
+        }
+        // Click "Reload" button so live chart renders instead of "Reload this Answer"
+        for (const btn of document.querySelectorAll('button, [role="button"]')) {
+          if (/^reload$/i.test((btn.innerText || '').trim())) { try { btn.click(); } catch {} }
+        }
+      }).catch(() => {});
+      const dl = Date.now() + 20000;
+      while (Date.now() < dl) {
+        const st = await evalInSession(cdp, tabObj.sessionId, () => {
+          const txt = document.body?.innerText || '';
+          const stillNeedsReload = /Reload this Answer/i.test(txt);
+          const spinners = document.querySelectorAll('[class*="spinner" i], [class*="loader" i], [aria-busy="true"]').length;
+          const charts = document.querySelectorAll('.highcharts-container, svg.highcharts-root, canvas, [data-testid*="chart" i]').length;
+          return { stillNeedsReload, spinners, charts, hasText: /Showing 12 of 12|Clinical Analytics|44\.38|37\.7/i.test(txt) };
+        }).catch(() => ({ stillNeedsReload: true, spinners: 1, charts: 0, hasText: false }));
+        if (!st.stillNeedsReload && st.spinners === 0 && (st.charts > 0 || st.hasText)) {
+          console.log(`    ✅ [ThoughtSpot Spotter ${label}] Hydrated chart:`, JSON.stringify(st));
+          break;
+        }
+        await engine.sleep(600);
+      }
+      await engine.sleep(1000);
+    };
+    if (tab2) await hydrateSpotterTab(tab2, 'AFTER');
+    await hydrateSpotterTab(tab1, 'BEFORE');
+    // Final sweep for any Chrome notification toast on :99
+    try { execFileSync("xdotool", ["search", "--name", "Notification|Buganizer|G3", "windowclose"], { env: { ...process.env, DISPLAY: display }, stdio: "ignore" }); } catch {}
+  }
   if (chapter.actionKind === "thoughtspot_liveboard_to_answer") {
     const kpiDeadline = Date.now() + 14000;
     while (Date.now() < kpiDeadline) {

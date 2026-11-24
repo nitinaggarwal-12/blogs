@@ -1027,7 +1027,7 @@
     if (!cardEl) return;
     const selEl = document.getElementById(`picker-select-${canvasId}`);
     const modeEl = document.getElementById(`picker-mode-${canvasId}`);
-    const chosenId = explicitDiagramId || (selEl ? selEl.value : 'ws1-cloud-arch-center-5hop-baseline');
+    const chosenId = explicitDiagramId || (selEl ? selEl.value : 'ws1-5hop-governance-baseline');
     const chosenMode = explicitMode || (modeEl ? modeEl.value : 'static');
     const item = getDiagramById(chosenId);
     if (!item) return;

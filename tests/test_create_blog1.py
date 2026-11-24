@@ -535,5 +535,103 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertEqual(st_g, 404)
 
 
+    def test_07_signed_edge_assertion_ecdsa_p256_gate(self) -> None:
+        import hashlib, time as _t
+
+        def _der_int(val: int) -> bytes:
+            b = val.to_bytes((val.bit_length() + 7) // 8 or 1, "big")
+            if b[0] & 0x80:
+                b = b"\x00" + b
+            return bytes([0x02, len(b)]) + b
+
+        def _varint(val: int) -> bytes:
+            out = bytearray()
+            while val >= 0x80:
+                out.append((val & 0x7F) | 0x80)
+                val >>= 7
+            out.append(val)
+            return bytes(out)
+
+        def _fb(fnum: int, b: bytes) -> bytes:
+            return _varint((fnum << 3) | 2) + _varint(len(b)) + b
+
+        def _fv(fnum: int, v: int) -> bytes:
+            return _varint((fnum << 3) | 0) + _varint(v)
+
+        priv_d = 0x123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF1
+        pub_xy = cb1._p256_mul(priv_d, cb1._P256_G)
+        assert pub_xy is not None
+        xb = pub_xy[0].to_bytes(32, "big")
+        yb = pub_xy[1].to_bytes(32, "big")
+        kh = cb1.compute_edge_assertion_ec_key_hash(xb, yb)
+        pub_keys_json = json.dumps({"keys": [{"kty": "EC", "crv": "P-256", "x": xb.hex(), "y": yb.hex()}]})
+
+        def _sign_assertion(email: str, host: str, ts: int) -> str:
+            payload = _fv(1, 2) + _fb(2, email.encode("utf-8")) + _fb(5, host.encode("utf-8")) + _fb(6, _fv(1, ts)) + _fv(8, 2)
+            pb64 = base64.urlsafe_b64encode(payload).decode("ascii").rstrip("=")
+            msg = pb64.encode("ascii") + b"\x00"
+            z = int.from_bytes(hashlib.sha256(msg).digest(), "big")
+            k = 0x0F0E0D0C0B0A0908070605040302010102030405060708090A0B0C0D0E0F1123
+            rp = cb1._p256_mul(k, cb1._P256_G)
+            assert rp is not None
+            r = rp[0] % cb1._P256_N
+            sig_s = (pow(k, -1, cb1._P256_N) * (z + r * priv_d)) % cb1._P256_N
+            ri, si = _der_int(r), _der_int(sig_s)
+            der = bytes([0x30, len(ri) + len(si)]) + ri + si
+            sb64 = base64.urlsafe_b64encode(b"\x00" + kh + der).decode("ascii").rstrip("=")
+            return f"{pb64}.{sb64}"
+
+        now = int(_t.time())
+        admin_email = "admin-test" + "@" + "google.com"
+        valid_hdr = _sign_assertion(admin_email, "portal.example.com:443", now)
+        stale_hdr = _sign_assertion(admin_email, "portal.example.com:443", now - 1200)
+        wrong_host = _sign_assertion(admin_email, "evil.example.com", now)
+        non_admin = _sign_assertion("ext@example.com", "portal.example.com", now)
+
+        old_k = os.environ.get("K_SERVICE")
+        old_hosts = os.environ.get("EDGE_AUTH_EXPECTED_HOSTS")
+        old_keys = os.environ.get("EDGE_AUTH_PUBLIC_KEYS_JSON")
+        old_dis = os.environ.get("GEAP_DISABLE_VERTEX_AUTH")
+        try:
+            os.environ["K_SERVICE"] = "ge-blogs"
+            os.environ["EDGE_AUTH_ASSERTION_HEADER"] = "X-Edge-Signed-Assertion"
+            os.environ["EDGE_AUTH_EXPECTED_HOSTS"] = "portal.example.com"
+            os.environ["EDGE_AUTH_PUBLIC_KEYS_JSON"] = pub_keys_json
+            os.environ["GEAP_DISABLE_VERTEX_AUTH"] = "1"
+
+            # Valid signed assertion passes admin gate and reaches fail-closed 503 MODEL_AUTH_UNAVAILABLE (not 403!)
+            st_ok, _, b_ok = self._req(
+                "/api/create-blog1/generate",
+                method="POST",
+                body={"prompt": "Build an enterprise bi-temporal Spanner Graph agent memory"},
+                headers={"X-Edge-Signed-Assertion": valid_hdr},
+            )
+            self.assertEqual(st_ok, 503, b_ok.decode("utf-8", errors="replace"))
+            self.assertEqual(json.loads(b_ok.decode("utf-8"))["code"], "MODEL_AUTH_UNAVAILABLE")
+
+            # Tampered, stale, wrong-host, and non-admin all fail closed with 403 ADMIN_IAP_REQUIRED
+            p_part, s_part = valid_hdr.split(".")
+            tampered = p_part[:-1] + ("A" if p_part[-1] != "A" else "B") + "." + s_part
+            for bad_label, bad_val in [("tampered", tampered), ("stale", stale_hdr), ("host", wrong_host), ("non_admin", non_admin)]:
+                st_b, _, bb = self._req(
+                    "/api/create-blog1/generate",
+                    method="POST",
+                    body={"prompt": "Build an enterprise bi-temporal Spanner Graph agent memory"},
+                    headers={"X-Edge-Signed-Assertion": bad_val},
+                )
+                self.assertEqual(st_b, 403, f"Expected 403 for {bad_label}, got {st_b}: {bb!r}")
+        finally:
+            for key, prev in [
+                ("K_SERVICE", old_k),
+                ("EDGE_AUTH_ASSERTION_HEADER", os.environ.get("_NONE_")),
+                ("EDGE_AUTH_EXPECTED_HOSTS", old_hosts),
+                ("EDGE_AUTH_PUBLIC_KEYS_JSON", old_keys),
+                ("GEAP_DISABLE_VERTEX_AUTH", old_dis),
+            ]:
+                if prev is None:
+                    os.environ.pop(key, None)
+                else:
+                    os.environ[key] = prev
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

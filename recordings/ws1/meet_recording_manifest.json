@@ -18,21 +18,21 @@
   },
   "saasTarget": {
     "saasId": "SAAS-01",
-    "name": "ThoughtSpot Cloud",
+    "name": "ThoughtSpot Cloud Spotter",
     "origin": "https://team2.thoughtspot.cloud",
-    "mode": "LIVEBOARD → SAVED ANSWER"
+    "mode": "SPOTTER (6 LINES → 1 SCOPE)"
   },
   "videoUrl": "/recordings/ws1/meet_live_execution_recording.mp4",
   "posterUrl": "/recordings/ws1/meet_recording_poster.jpg",
   "captionsUrl": "/recordings/ws1/captions.vtt",
-  "videoSha256": "3cf8ca8b8c323abfa6339981ae3af4b18096de405f85a8ca5cdcae60ab688643",
-  "videoBytes": 7490022,
+  "videoSha256": "c46406cf0b741924bca60300dc0dfd1e512873390cfec3747627acef1e0753e6",
+  "videoBytes": 7467073,
   "width": 1920,
   "height": 1080,
   "fps": 24,
   "durationSec": 120.32,
   "contentViewportCrop": "1267:706:94:158",
-  "generatedAt": "2026-11-23T03:41:55.265Z",
+  "generatedAt": "2026-11-24T05:25:52.937Z",
   "chapters": [
     {
       "chapterNum": 1,
@@ -372,17 +372,17 @@
     {
       "chapterNum": 6,
       "originalChapterNum": 6,
-      "id": "ch06_saas_thoughtspot_liveboard_to_answer",
-      "shortTitle": "ThoughtSpot Liveboard → Answer",
-      "title": "SAAS-01 ThoughtSpot Cloud — Open Liveboard → Governed Saved Answer",
-      "surface": "ThoughtSpot Cloud (SAAS-01)",
-      "phaseBadge": "LIVEBOARD → SAVED ANSWER",
-      "displayUrl": "https://team2.thoughtspot.cloud/#/pinboard/1a387932-6c25-4e3d-a61a-62803d40ed71",
+      "id": "ch06_saas_thoughtspot_spotter_before_after",
+      "shortTitle": "ThoughtSpot Spotter Scope",
+      "title": "SAAS-01 ThoughtSpot Spotter — Unfiltered 6 Lines → Locked Clinical Analytics",
+      "surface": "ThoughtSpot Cloud Spotter (SAAS-01)",
+      "phaseBadge": "SPOTTER (6 LINES → 1 SCOPE)",
+      "displayUrl": "https://team2.thoughtspot.cloud/#/insights/conv-assist?conversationId=pnPwoA3GjUt6&dataSources=%5B%227da30f7e-688d-4ef3-920c-ed3ee2862b62%22%5D",
       "thumbnailUrl": "/recordings/ws1/chapters/ch-06.png",
-      "script": "In live ThoughtSpot Cloud, this open executive Liveboard displays global multi-region retail sales with all filters unselected. Switching to a governed Saved Answer scopes supply-chain analysis cleanly and exposes explicit filter rules in Query Details.",
+      "script": "In live ThoughtSpot Spotter, an unscoped analytics prompt exposes all six competing product lines together. Switching to a tenant-scoped clinical analytics query isolates strictly one authorized row while excluding competing lines.",
       "beats": [
-        "In live ThoughtSpot Cloud, this open executive Liveboard displays global multi-region retail sales with all filters unselected.",
-        "Switching to a governed Saved Answer scopes supply-chain analysis cleanly and exposes explicit filter rules in Query Details."
+        "In live ThoughtSpot Spotter, an unscoped analytics prompt exposes all six competing product lines together.",
+        "Switching to a tenant-scoped clinical analytics query isolates strictly one authorized row while excluding competing lines."
       ],
       "beatDurations": [
         10.03,
@@ -420,12 +420,12 @@
           "yuv420p",
           ".local_backup/meet_work/ws1/work/screen_06.mp4"
         ],
-        "ffmpegPid": 735534,
-        "startedAtIso": "2026-11-23T03:41:28.883Z",
-        "stoppedAtIso": "2026-11-23T03:41:49.728Z",
+        "ffmpegPid": 844087,
+        "startedAtIso": "2026-11-24T05:25:26.323Z",
+        "stoppedAtIso": "2026-11-24T05:25:47.174Z",
         "rawScreenPathRel": ".local_backup/meet_work/ws1/work/screen_06.mp4",
-        "rawScreenSha256": "00ea7f1f827f85bed6c81a20edf2c05d4e8815b114e864ddba410229ad0bd0f8",
-        "rawScreenBytes": 516113,
+        "rawScreenSha256": "3c9dd6652b1184101ad4d1b1c77d80685f9b647ff2c10e77507e3238ae44bf71",
+        "rawScreenBytes": 406096,
         "chromeTopPx": 87,
         "contentViewportCrop": "1267:706:94:158",
         "rawFfprobe": {
