@@ -620,3 +620,128 @@ def apply_revision_patch(
     if len(new_tf) >= 120 and "resource " in new_tf:
         bp.setdefault("codeStarter", {})["terraformMain"] = sanitize_fn(new_tf)[:12000]
     return applied
+
+
+def diagram_architect_system_prompt() -> str:
+    return (
+        "You are a Principal Google Cloud Architecture Center Illustrator & Systems Architect. "
+        "Your ONLY job is to synthesize extraordinarily dense, quantified, WS1-grade technical blueprints for ALL 6 C4 diagrams "
+        "driving a deterministic 1600x900 parametric Draw.io / SVG / DrawingML compiler.\n\n"
+        "RULES — CRITICAL FOR TECHNICAL DEPTH:\n"
+        "- NEVER write vague marketing blurbs ('Hosts the API', 'Stores data', 'Secures traffic').\n"
+        "- EVERY card bullet MUST contain concrete engineering specifics: exact protocol, RPC/SQL/GQL/API verb, header name, HTTP status code, "
+        "latency/SLA/quota or exact key format (using grounded facts from the prompt and Google Search dossier; tag unverified budgets as `target`!).\n"
+        "- Keep strings concise so they fit neatly inside their boxes (headings <= 32 chars, short bullets <= 34 chars).\n"
+        "- Use ONLY valid icon keys from: " + ALLOWED_ICON_KEYS_LIST + ".\n"
+        "- Zero emojis. Zero markdown `**bold**` asterisks. Zero internal/corp URLs.\n\n"
+        "Output ONLY a single JSON object with EXACTLY these 6 top-level keys:\n"
+        "{\n"
+        '  "platformDiagram": {\n'
+        '    "controlPlaneTitle": "Google Cloud — Shared Governance & Control Plane (< XXms target)",\n'
+        '    "callerLabel": "Caller Tiers",\n'
+        '    "targetsLabel": "Targets & APIs",\n'
+        '    "controlCards": [\n'
+        '      {"title":"Stage 1 · Auth & OIDC","icon":"cloud_iam","bullets":["line 1 (<=42 chars)","line 2 (<=42 chars)"]}, ... 3 cards exact\n'
+        '    ],\n'
+        '    "callerTiers": [\n'
+        '      {"title":"Tier 1: ...","subtitle":"short metric/role"}, ... 3 tiers exact\n'
+        '    ],\n'
+        '    "identityStage": {"title":"Stage 1A · ...","icon":"cloud_iam","bullets":["b1","b2","b3","b4"]},\n'
+        '    "ingressStage": {"title":"Stage 1B · ...","icon":"cloud_load_balancing","bullets":["b1","b2","b3","b4"]},\n'
+        '    "frontEnd": {"title":"Front End","subtitle":"Entry stack","tiles":[{"icon":"gemini","label":"Gemini"},{"icon":"adk","label":"ADK"},{"icon":"cloud_run","label":"Run"},{"icon":"spanner","label":"Data"}]},\n'
+        '    "inboundGateway": {"header":"Ingress PEP","title":"Stage 2 · ...","icon":"agent_gateway","bullets":["b1","b2","b3","b4"]},\n'
+        '    "coreRuntime": {"title":"Stage 3 · ...","service":"Cloud Run v2 (Private)","subtitle":"Orchestrator Name","icon":"cloud_run","bullets":["b1","b2","b3","b4","b5"]},\n'
+        '    "outboundGateway": {"header":"Egress PEP","title":"Stage 4 · ...","icon":"agent_gateway","bullets":["b1","b2","b3","b4"]},\n'
+        '    "targets": [{"title":"...","subtitle":"..."}, ... 4 targets exact],\n'
+        '    "hotStateCard": {"title":"...","title2":"...","icon":"memorystore","bullets":["b1","b2","b3","b4"]},\n'
+        '    "dataBankCard": {"title":"Primary Data & Isolation Tiers","tiers":["Row 1 (<=48 chars)","Row 2 (<=48 chars)","Row 3 (<=48 chars)"]},\n'
+        '    "finopsCard": {"title":"FinOps &","title2":"Bulkhead","icon":"finops","bullets":["b1","b2","b3","b4"]},\n'
+        '    "observabilityBar": {"title":"Observability & Fail-Closed Breakers — HTTP 401 / 403 / 422 / 429","subtitle":"short pipe-separated summary <= 95 chars"},\n'
+        '    "planeGuide": {\n'
+        '      "title":"WHO RUNS WHAT — PLANE OWNERSHIP GUIDE",\n'
+        '      "rows":[\n'
+        '        {"plane":"CONTROL","headline":"short scope","detail":"1 concise sentence naming concrete components"},\n'
+        '        {"plane":"COMPUTE","headline":"short scope","detail":"1 concise sentence naming concrete components"},\n'
+        '        {"plane":"DATA","headline":"short scope","detail":"1 concise sentence naming concrete components"}\n'
+        '      ],\n'
+        '      "footnote":"1 crisp orientation sentence"\n'
+        '    }\n'
+        '  },\n'
+        '  "cloudArchDiagram": {\n'
+        '    "caller": {"title":"Authenticated Client / Agent","subtitle":"OIDC / mTLS JWT"},\n'
+        '    "perimeterLabel":"Shared hubs (VPC Service Controls Organization Perimeter)",\n'
+        '    "vpcLabel":"VPC • Zero-Trust Private Ingress & Private Service Connect",\n'
+        '    "routingHub": {\n'
+        '      "title":"Routing Hub (Ingress & Policy Enforcement)",\n'
+        '      "subtitle":"short description",\n'
+        '      "securityNodes":[{"title":"...","subtitle":"...","icon":"cloud_armor"}, ... 3 nodes],\n'
+        '      "alb":{"title":"External Application LB","subtitle":"...","icon":"cloud_load_balancing"},\n'
+        '      "runtime":{"title":"Cloud Run v2 API","subtitle":"...","icon":"cloud_run"}\n'
+        '    },\n'
+        '    "governanceHub": {\n'
+        '      "title":"Central Governance & Security Hub",\n'
+        '      "subtitle":"short description",\n'
+        '      "nodes":[{"title":"...","subtitle":"...","icon":"scc"}, ... 3 nodes]\n'
+        '    },\n'
+        '    "spokeA": {\n'
+        '      "outerLabel":"Isolation Boundary A • Primary Sync Path",\n'
+        '      "title":"...","subtitle":"...",\n'
+        '      "nodes":[{"title":"...","subtitle":"...","icon":"..."}, ... 4 nodes: guard, compute/engine, llm/tool, datastore]\n'
+        '    },\n'
+        '    "spokeB": {\n'
+        '      "outerLabel":"Isolation Boundary B • Secondary / Mutation Path",\n'
+        '      "title":"...","subtitle":"...",\n'
+        '      "nodes":[{"title":"...","subtitle":"...","icon":"..."}, ... 4 nodes]\n'
+        '    }\n'
+        '  },\n'
+        '  "sequenceDiagram": {\n'
+        '    "actors": [\n'
+        '      {"box":"CALLER","label":"...","planes":[]},\n'
+        '      {"box":"HOP 1","label":"...","planes":["CONTROL"]},\n'
+        '      {"box":"HOP 2-3","label":"...","planes":["CONTROL","COMPUTE"]},\n'
+        '      {"box":"HOP 4","label":"...","planes":["CONTROL","COMPUTE"]},\n'
+        '      {"box":"HOP 5","label":"...","planes":["COMPUTE","DATA"]}\n'
+        '    ],\n'
+        '    "steps": [{"title":"...","detail":"...","wire":"arrow label <=30 chars"}, ... 6 steps exact],\n'
+        '    "guardBadge":"short 2-word tag",\n'
+        '    "highlightBox":{"title":"...","subtitle":"...","metric":"..."},\n'
+        '    "otelBullets":["bullet 1 <=28 chars","bullet 2 <=28 chars"],\n'
+        '    "stageSummaries":[{"title":"1. ...","headline":"...","detail":"..."}, ... 3 stages],\n'
+        '    "legendStrip":{"control":"...","compute":"...","data":"..."}\n'
+        '  },\n'
+        '  "securityDiagram": {\n'
+        '    "layers":[{"layer":"L1 · ...","name":"...","detail":"...","iconKey":"..."}, ... 4 layers],\n'
+        '    "threats":[{"id":"T-01","vector":"...","control":"..."}, ... 4 threats],\n'
+        '    "breakers":[{"code":"HTTP 401","trigger":"..."}, {"code":"HTTP 403","trigger":"..."}, {"code":"HTTP 422","trigger":"..."}, {"code":"HTTP 429","trigger":"..."}]\n'
+        '  },\n'
+        '  "wireDiagram": {\n'
+        '    "hops":[{"hop":"HOP 1 · ...","name":"...","transport":"HTTPS / TLS 1.3","iconKey":"...","added":["+ field1","+ field2","+ field3"],"stripped":["- header1","- field2"],"payload":"4-6 realistic lines of HTTP/JSON/SQL/GQL"}, ... 4 hops]\n'
+        '  },\n'
+        '  "asyncDiagram": {\n'
+        '    "stages":[{"stage":"1. ...","service":"...","cadence":"Continuous","iconKey":"...","slo":"Stage 1 · ...","bullets":["b1","b2","b3","b4"]}, ... 4 stages],\n'
+        '    "dlqNote":"1-2 sentences on dead-letter queue, backoff & audit reconciliation",\n'
+        '    "feedbackLabel":"short cyclic return arrow label"\n'
+        '  }\n'
+        "}\n"
+    )
+
+
+def diagram_architect_user_prompt(
+    prose_raw: Dict[str, Any],
+    topic_prompt: str,
+    grounding: Dict[str, Any],
+) -> str:
+    sec_headings = [s.get("heading", "") for s in (prose_raw.get("sections") or [])[:10] if isinstance(s, dict)]
+    claims = (prose_raw.get("claimLedger") or [])[:8]
+    g_sum = str((grounding or {}).get("summary") or "").strip()[:2800]
+    return (
+        f"TITLE: {prose_raw.get('title', '')}\n"
+        f"SUBTITLE: {prose_raw.get('subtitle', '')}\n"
+        f"EXECUTIVE SUMMARY: {str(prose_raw.get('summary') or '')[:900]}\n"
+        f"SECTION HEADINGS: {json.dumps(sec_headings)}\n"
+        f"VERIFIED CLAIMS SAMPLE: {json.dumps(claims)[:1400]}\n\n"
+        f"ORIGINAL USER REQUEST:\n{topic_prompt[:2000]}\n\n"
+        + (f"LIVE GOOGLE SEARCH GROUNDING DOSSIER:\n{g_sum}\n\n" if g_sum else "")
+        + "Synthesize the ultra-crisp, domain-specific JSON specification for ALL 6 C4 diagrams now. Output ONLY valid raw JSON."
+    )
+

@@ -192,7 +192,7 @@
       margin: 18px auto 48px;
       padding: 0 clamp(12px, 2vw, 24px);
       display: grid;
-      grid-template-columns: 390px minmax(0, 1fr);
+      grid-template-columns: 390px minmax(0, 1fr); transition: grid-template-columns .18s ease;
       gap: 18px;
       align-items: start;
     }
@@ -636,6 +636,15 @@
     }
     .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
     .hidden { display: none !important; }
+
+    .shell.shell-collapsed { grid-template-columns: minmax(0, 1fr); }
+    .shell.shell-collapsed .sidebar { display: none; }
+    .diag-modal { position: fixed; inset: 0; background: rgba(15,23,42,.82); z-index: 9999; display: flex; flex-direction: column; padding: 18px 24px; backdrop-filter: blur(4px); }
+    .diag-modal.hidden { display: none; }
+    .diag-modal-hdr { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: #fff; padding-bottom: 10px; flex-wrap: wrap; }
+    .diag-modal-body { flex: 1; background: #fff; border-radius: 14px; overflow: auto; display: flex; align-items: center; justify-content: center; padding: 14px; box-shadow: 0 24px 60px rgba(0,0,0,.45); }
+    .diag-modal-body img { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; }
+    .diagram-stage img { cursor: zoom-in; }
   </style>
 </head>
 <body>
@@ -657,7 +666,8 @@
         </div>
         <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
           <a class="btn btn-sm" href="/">&larr; Back to Portal</a>
-          <button type="button" class="btn btn-sm" id="btn-refresh-caps">Refresh Live Status</button>
+          <button type="button" class="btn btn-sm" id="btn-toggle-sidebar" title="Toggle prompt composer sidebar for full-width diagrams">Full-Width Canvas</button>
+        <button type="button" class="btn btn-sm" id="btn-refresh-caps">Refresh Live Status</button>
         </div>
       </div>
       <div class="cap-strip" id="capability-strip" aria-live="polite">
@@ -806,7 +816,7 @@
               <p>Deep Google Cloud Architecture Center prose with Claim Provenance Ledger tagging every number.</p>
             </div>
             <div class="welcome-tile">
-              <h3>2. 5 C4 Draw.io + SVG Diagrams</h3>
+              <h3>2. 6 WS1-Parity C4 Diagrams</h3>
               <p>Official multi-color GCP SVG icons across L1 security, L2 arch, L3 sequence, L4 wire payload &amp; async lifecycle.</p>
             </div>
             <div class="welcome-tile">
@@ -872,6 +882,13 @@
     </section>
   </main>
 
+  <div id="diag-lightbox" class="diag-modal hidden" role="dialog" aria-modal="true" aria-label="Full-Size Diagram Viewer">
+    <div class="diag-modal-hdr">
+      <strong id="diag-lightbox-title" style="font-size:15px;">Diagram</strong>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;" id="diag-lightbox-actions"></div>
+    </div>
+    <div class="diag-modal-body" id="diag-lightbox-body"></div>
+  </div>
   <script src="/js/create_blog1.js" defer></script>
 </body>
 </html>

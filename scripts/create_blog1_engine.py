@@ -1331,6 +1331,9 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
         "architectureEdges": edges,
         "sequenceActors": actors,
         "sequenceSteps": steps,
+        "platformDiagram": raw.get("platformDiagram") if isinstance(raw.get("platformDiagram"), dict) else {},
+        "cloudArchDiagram": raw.get("cloudArchDiagram") if isinstance(raw.get("cloudArchDiagram"), dict) else {},
+        "sequenceDiagram": raw.get("sequenceDiagram") if isinstance(raw.get("sequenceDiagram"), dict) else {},
         "securityDiagram": security_diag,
         "wireDiagram": wire_diag,
         "asyncDiagram": async_diag,
@@ -1415,39 +1418,8 @@ def compile_sequence_drawio_and_svg(bp: Dict[str, Any], slug: str) -> Tuple[str,
 
 
 def compile_all_diagrams_v2(bp: Dict[str, Any], slug: str) -> Dict[str, Dict[str, Any]]:
-    """Compiles all 5 C4-layered 1600x900 Draw.io + SVG diagrams with official multi-color GCP icons."""
-    ax, asvg, aurl, aic = _diag_v2.compile_architecture_v2(bp, slug)
-    sx, ssvg, surl, sic = _diag_v2.compile_sequence_v2(bp, slug)
-    kx, ksvg, kurl, kic = _diag_v2.compile_security_v2(bp, slug)
-    wx, wsvg, wurl, wic = _diag_v2.compile_wire_v2(bp, slug)
-    yx, ysvg, yurl, yic = _diag_v2.compile_async_v2(bp, slug)
-    return {
-        "architecture": {
-            "id": f"{slug}-architecture", "kind": "architecture", "layer": "C4 L2", "slide": 3,
-            "label": "Figure 1 — Master Reference Architecture (C4 L2)",
-            "xml": ax, "svg": asvg, "viewerUrl": aurl, "iconCount": aic,
-        },
-        "sequence": {
-            "id": f"{slug}-sequence", "kind": "sequence", "layer": "C4 L3", "slide": 5,
-            "label": "Figure 2 — End-to-End Request Lifecycle Sequence (C4 L3)",
-            "xml": sx, "svg": ssvg, "viewerUrl": surl, "iconCount": sic,
-        },
-        "security": {
-            "id": f"{slug}-security", "kind": "security", "layer": "C4 L1", "slide": 6,
-            "label": "Figure 3 — Trust Perimeter & Security Boundary (C4 L1)",
-            "xml": kx, "svg": ksvg, "viewerUrl": kurl, "iconCount": kic,
-        },
-        "wire": {
-            "id": f"{slug}-wire", "kind": "wire", "layer": "C4 L4", "slide": 7,
-            "label": "Figure 4 — Wire-Protocol & Schema Transformation (C4 L4)",
-            "xml": wx, "svg": wsvg, "viewerUrl": wurl, "iconCount": wic,
-        },
-        "async": {
-            "id": f"{slug}-async", "kind": "async", "layer": "ASYNC", "slide": 8,
-            "label": "Figure 5 — Async State, Export & Lifecycle Loop",
-            "xml": yx, "svg": ysvg, "viewerUrl": yurl, "iconCount": yic,
-        },
-    }
+    """Compiles all 6 WS1-parity 1600x900 Draw.io + SVG + native DrawingML PPTX diagrams."""
+    return _diag_v2.compile_all_v2_diagrams(bp, slug)
 
 
 def parse_image_header(data: bytes) -> Tuple[str, int, int, str]:
@@ -1557,18 +1529,21 @@ def compile_slide_preview_svgs(
     arch_uri = _svg_data_uri(arch_svg.encode("utf-8"), "image/svg+xml")
     seq_uri = _svg_data_uri(seq_svg.encode("utf-8"), "image/svg+xml")
     ex = extra_svgs or {}
+    cloud_uri = _svg_data_uri(ex["cloudarch"].encode("utf-8"), "image/svg+xml") if ex.get("cloudarch") else None
     sec_uri = _svg_data_uri(ex["security"].encode("utf-8"), "image/svg+xml") if ex.get("security") else None
     wire_uri = _svg_data_uri(ex["wire"].encode("utf-8"), "image/svg+xml") if ex.get("wire") else None
     async_uri = _svg_data_uri(ex["async"].encode("utf-8"), "image/svg+xml") if ex.get("async") else None
 
     code_slide_num = 9 if is_v2 else 6
     proof_slide_num = 10 if is_v2 else 7
-    table_slide_nums = (4, 11) if is_v2 else (4, 8)
+    table_slide_nums = ((11,) if cloud_uri else (4, 11)) if is_v2 else (4, 8)
     diag_slides: Dict[int, Tuple[Optional[str], str, str]] = {
         3: (arch_uri, "ARCHITECTURE RAIL", "#1A73E8"),
         5: (seq_uri, "SEQUENCE CHECKPOINTS", "#137333"),
     }
     if is_v2:
+        if cloud_uri:
+            diag_slides[4] = (cloud_uri, "HUB-AND-SPOKE STEPS", "#174EA6")
         if sec_uri:
             diag_slides[6] = (sec_uri, "PERIMETER CONTROLS", "#991B1B")
         if wire_uri:
@@ -1852,6 +1827,7 @@ def compile_pptx_bytes(
     proofs: List[Dict[str, Any]],
     blog_dir: Path,
     extra_urls: Optional[Dict[str, str]] = None,
+    native_slide_xmls: Optional[Dict[int, Tuple[str, str]]] = None,
 ) -> bytes:
     """Builds a valid 9- or 12-slide native editable OOXML .pptx ZIP with speaker notes & Draw.io #R hyperlinks."""
     buf = io.BytesIO()
@@ -2293,17 +2269,26 @@ def compile_pptx_bytes(
                 )
             )
 
-            slide_xml = (
-                '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-                '<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" '
-                'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" '
-                'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">'
-                '<p:cSld><p:bg><p:bgPr><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:effectLst/></p:bgPr></p:bg>'
-                '<p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>'
-                '<p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>'
-                + "".join(shapes)
-                + "</p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>"
-            )
+            nat_pair = (native_slide_xmls or {}).get(idx)
+            if nat_pair and nat_pair[0]:
+                slide_xml = nat_pair[0]
+                nat_url = nat_pair[1] or arch_url
+                slide_rels_extra[idx] = [
+                    f'<Relationship Id="rId10" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" '
+                    f'Target="{xml_esc(nat_url)}" TargetMode="External"/>'
+                ]
+            else:
+                slide_xml = (
+                    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+                    '<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" '
+                    'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" '
+                    'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">'
+                    '<p:cSld><p:bg><p:bgPr><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:effectLst/></p:bgPr></p:bg>'
+                    '<p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>'
+                    '<p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>'
+                    + "".join(shapes)
+                    + "</p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>"
+                )
             zf.writestr(f"ppt/slides/slide{idx}.xml", slide_xml.encode("utf-8"))
             rels_xml = (
                 '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
@@ -2809,15 +2794,17 @@ def compile_blog_markdown(
         "",
         "| Figure | C4 Layer | Draw.io File | Local Studio |",
         "| --- | --- | --- | --- |",
-        f"| Figure 1 — Master Reference Architecture | `C4 L2` | `diagrams/{slug}-architecture.drawio` | [Edit in Studio](/drawio-editor?id={slug}-architecture) |",
-        f"| Figure 2 — Request Lifecycle Sequence | `C4 L3` | `diagrams/{slug}-sequence.drawio` | [Edit in Studio](/drawio-editor?id={slug}-sequence) |",
+        f"| Figure 1 — Master Platform Architecture | `C4 L2` | `diagrams/{slug}-architecture.drawio` | [Edit in Studio](/drawio-editor?id={slug}-architecture) |",
     ])
+    if ex_u.get("cloudarch"):
+        lines.append(f"| Figure 2 — Cloud Architecture Center Blueprint | `HUB-SPOKE` | `diagrams/{slug}-cloudarch.drawio` | [Edit in Studio](/drawio-editor?id={slug}-cloudarch) |")
+    lines.append(f"| Figure {'3' if ex_u.get('cloudarch') else '2'} — Request Lifecycle Sequence | `C4 L3` | `diagrams/{slug}-sequence.drawio` | [Edit in Studio](/drawio-editor?id={slug}-sequence) |")
     if ex_u.get("security"):
-        lines.append(f"| Figure 3 — Trust Perimeter & Security Boundary | `C4 L1` | `diagrams/{slug}-security.drawio` | [Edit in Studio](/drawio-editor?id={slug}-security) |")
+        lines.append(f"| Figure {'4' if ex_u.get('cloudarch') else '3'} — Trust Perimeter & Security Boundary | `C4 L1` | `diagrams/{slug}-security.drawio` | [Edit in Studio](/drawio-editor?id={slug}-security) |")
     if ex_u.get("wire"):
-        lines.append(f"| Figure 4 — Wire Payload & Schema Transformation | `C4 L4` | `diagrams/{slug}-wire.drawio` | [Edit in Studio](/drawio-editor?id={slug}-wire) |")
+        lines.append(f"| Figure {'5' if ex_u.get('cloudarch') else '4'} — Wire Payload & Schema Transformation | `C4 L4` | `diagrams/{slug}-wire.drawio` | [Edit in Studio](/drawio-editor?id={slug}-wire) |")
     if ex_u.get("async"):
-        lines.append(f"| Figure 5 — Async Lifecycle, Export & Recovery Loop | `ASYNC` | `diagrams/{slug}-async.drawio` | [Edit in Studio](/drawio-editor?id={slug}-async) |")
+        lines.append(f"| Figure {'6' if ex_u.get('cloudarch') else '5'} — Async Lifecycle, Export & Recovery Loop | `ASYNC` | `diagrams/{slug}-async.drawio` | [Edit in Studio](/drawio-editor?id={slug}-async) |")
     lines.append("")
 
     for sec in bp["sections"]:
@@ -3175,33 +3162,43 @@ def run_deterministic_quality_gate(
     )
 
     ic_cnt = arch_icon_count if arch_icon_count is not None else arch_drawio.count("image=data:image/svg+xml,")
-    d2_ok, d2_msg = True, f"Well-formed orthogonal C4 L2 mxfile; {ic_cnt} embedded official GCP SVG icons; 0 flowAnimation=1; 0 baked footers."
+    arch_v = arch_drawio.count('vertex="1"')
+    arch_e = arch_drawio.count('edge="1"')
+    arch_geom = ((extra_diagrams or {}).get("architecture") or {}).get("geometry") or {}
+    geom_errs = arch_geom.get("errors") or []
+    d2_ok, d2_msg = True, f"WS1-canonical 1600x900 C4 L2 ({arch_v}v / {arch_e}e); {ic_cnt} embedded GCP SVG icons; 0 overlaps; 0 flowAnimation=1."
     low_ad = arch_drawio.lower()
     if "<!doctype" in low_ad or "<!entity" in low_ad or "flowanimation=1" in low_ad or "edit in draw.io" in low_ad:
         d2_ok, d2_msg = False, "Disallowed DOCTYPE/ENTITY, flowAnimation=1, or baked footer in architecture .drawio."
+    elif geom_errs:
+        d2_ok, d2_msg = False, f"Geometry collision/bounds errors: {geom_errs[:3]}"
     else:
         try:
             ET.fromstring(arch_drawio)
         except ET.ParseError as exc:
             d2_ok, d2_msg = False, f"XML parse error: {exc}"
-    _add("D-02", "Architecture .drawio & GCP SVG Icons", d2_ok and ic_cnt >= 2, d2_msg if d2_ok else d2_msg)
+    _add("D-02", "Architecture .drawio & Geometry Gate", d2_ok and ic_cnt >= 2, d2_msg)
 
     d3_ok, d3_errs = True, []
     extra_xml_list = [("sequence", seq_drawio)]
     for k, dv in (extra_diagrams or {}).items():
-        if k in ("security", "wire", "async") and dv.get("xml"):
+        if k in ("cloudarch", "security", "wire", "async") and dv.get("xml"):
             extra_xml_list.append((k, dv["xml"]))
     for k, x_txt in extra_xml_list:
         low_x = x_txt.lower()
         if "<!doctype" in low_x or "<!entity" in low_x or "flowanimation=1" in low_x:
             d3_ok = False
             d3_errs.append(f"{k}: disallowed directive/animation")
-        elif k == "sequence" and "dashed=1;dashpattern=6 4;" not in low_x:
+        elif k == "sequence" and ("dashed=1;dashpattern=6 4;" not in low_x and "dashed=1;dashpattern=4 4;" not in low_x):
             d3_ok = False
             d3_errs.append("sequence: missing dashed lifelines")
         else:
             try:
                 ET.fromstring(x_txt)
+                g_sub = ((extra_diagrams or {}).get(k) or {}).get("geometry") or {}
+                if g_sub.get("errors"):
+                    d3_ok = False
+                    d3_errs.append(f"{k}: geom={g_sub['errors'][:2]}")
             except ET.ParseError as exc:
                 d3_ok = False
                 d3_errs.append(f"{k}: {exc}")
@@ -3213,7 +3210,7 @@ def run_deterministic_quality_gate(
     )
 
     svg_blobs = [arch_svg, seq_svg] + [
-        dv.get("svg", "") for k, dv in (extra_diagrams or {}).items() if k in ("security", "wire", "async")
+        dv.get("svg", "") for k, dv in (extra_diagrams or {}).items() if k in ("cloudarch", "security", "wire", "async")
     ]
     svg_combo = "\n".join(svg_blobs).lower()
     xss_hit = bool(re.search(r"(<script|<foreignobject|javascript:|on[a-z]+\s*=)", svg_combo))
@@ -3232,7 +3229,7 @@ def run_deterministic_quality_gate(
                 ET.fromstring(xml_b)
                 if re.search(rb'<a:tr\s+h="0"', xml_b):
                     zero_rows += 1
-            req_links = (3, 5, 6, 7, 8) if (expected_slides == 12 and extra_diagrams) else (3, 5)
+            req_links = ((3, 4, 5, 6, 7, 8) if (extra_diagrams and "cloudarch" in extra_diagrams) else (3, 5, 6, 7, 8)) if (expected_slides == 12 and extra_diagrams) else (3, 5)
             links_ok = all(
                 "viewer.diagrams.net" in zf.read(f"ppt/slides/_rels/slide{si}.xml.rels").decode("utf-8")
                 for si in req_links
@@ -3268,7 +3265,7 @@ def run_deterministic_quality_gate(
     _add("D-07", "Zero Status Emojis inside Slide XML", emoji_hits == 0, f"0 emoji glyphs detected across slides 1..{expected_slides}." if emoji_hits == 0 else f"{emoji_hits} slides contained disallowed status emojis.")
 
     scan_blobs = [md_text, arch_drawio, seq_drawio] + [
-        dv.get("xml", "") for k, dv in (extra_diagrams or {}).items() if k in ("security", "wire", "async")
+        dv.get("xml", "") for k, dv in (extra_diagrams or {}).items() if k in ("cloudarch", "security", "wire", "async")
     ]
     leaks = scan_for_f13_leaks("\n".join(scan_blobs))
     _add("D-08", "Public-Repo F-13 Hygiene & Secret Scan", len(leaks) == 0, "0 internal domains, tokens, or unverified refs." if not leaks else f"Detected: {', '.join(leaks)}")
@@ -3494,15 +3491,24 @@ def compile_and_save_blog(
         for kind, dv in diags.items():
             (blog_dir / "diagrams" / f"{slug}-{kind}.drawio").write_text(dv["xml"], encoding="utf-8")
             (blog_dir / "diagrams" / f"{slug}-{kind}.svg").write_text(dv["svg"], encoding="utf-8")
-        extra_svgs = {k: diags[k]["svg"] for k in ("security", "wire", "async")}
-        extra_urls = {k: diags[k]["viewerUrl"] for k in ("security", "wire", "async")}
+        extra_svgs = {k: diags[k]["svg"] for k in ("cloudarch", "security", "wire", "async") if k in diags}
+        extra_urls = {k: diags[k]["viewerUrl"] for k in ("cloudarch", "security", "wire", "async") if k in diags}
+        native_slides: Dict[int, Tuple[str, str]] = {}
+        for d_k, s_num in (("architecture", 3), ("cloudarch", 4), ("sequence", 5), ("security", 6), ("wire", 7), ("async", 8)):
+            dv_d = diags.get(d_k)
+            if dv_d and dv_d.get("ooxmlSlideXml"):
+                native_slides[s_num] = (dv_d["ooxmlSlideXml"], dv_d["viewerUrl"])
+        is_12_slide = len(bp_cur.get("slides") or []) >= 12
+        if not is_12_slide:
+            native_slides = {k: v for k, v in native_slides.items() if k in (3, 5)}
         slide_svgs = compile_slide_preview_svgs(
             bp_cur, slug, diags["architecture"]["svg"], diags["sequence"]["svg"], proofs, blog_dir, extra_svgs=extra_svgs
         )
         for i, s_svg in enumerate(slide_svgs, 1):
             (blog_dir / "slides" / f"slide_{i:02d}.svg").write_text(s_svg, encoding="utf-8")
         pptx_b = compile_pptx_bytes(
-            bp_cur, slug, diags["architecture"]["viewerUrl"], diags["sequence"]["viewerUrl"], proofs, blog_dir, extra_urls=extra_urls
+            bp_cur, slug, diags["architecture"]["viewerUrl"], diags["sequence"]["viewerUrl"], proofs, blog_dir,
+            extra_urls=extra_urls, native_slide_xmls=native_slides,
         )
         (blog_dir / "slides" / f"{slug}-deck.pptx").write_bytes(pptx_b)
         md_t = compile_blog_markdown(
@@ -3544,7 +3550,7 @@ def compile_and_save_blog(
             "det": det,
         }
 
-    _step(48, "COMPILE_DIAGRAMS", "Compiling 5 C4-layered Draw.io + SVG diagrams with official GCP SVG icons...")
+    _step(48, "COMPILE_DIAGRAMS", "Compiling 6 WS1-parity Draw.io + SVG + DrawingML vector diagrams...")
     _step(56, "COMPILE_SLIDES", "Building native OOXML .pptx deck & vector slide previews...")
     _step(62, "COMPILE_DOCS", "Compiling Markdown blog (inline SQL/GQL/formulas) & .docx whitepaper...")
     _step(66, "COMPILE_STARTER", "Building Terraform + Python starter.zip & running AST + D-11 security scan...")
@@ -3728,15 +3734,22 @@ def compile_and_save_blog(
 
     diags = art["diags"]
     diagrams_manifest = {}
-    for k in ("architecture", "sequence", "security", "wire", "async"):
+    for k in ("architecture", "cloudarch", "sequence", "security", "wire", "async"):
+        if k not in diags:
+            continue
         dv = diags[k]
+        geom = dv.get("geometry") or {}
         diagrams_manifest[k] = {
             "id": dv["id"],
             "kind": k,
             "layer": dv["layer"],
             "slideNumber": dv["slide"],
-            "title": dv["label"],
-            "iconCount": dv["iconCount"],
+            "title": dv.get("label") or dv.get("title") or k.title(),
+            "iconCount": dv.get("iconCount", 0),
+            "vertexCount": dv.get("vertexCount", 0),
+            "edgeCount": dv.get("edgeCount", 0),
+            "geometryValid": bool(geom.get("valid", True)),
+            "geometryErrors": geom.get("errors") or [],
             "drawioPath": f"diagrams/{slug}-{k}.drawio",
             "svgPath": f"diagrams/{slug}-{k}.svg",
             "viewerUrl": dv["viewerUrl"],
@@ -3745,7 +3758,7 @@ def compile_and_save_blog(
 
     created_at = _now_iso()
     manifest = {
-        "schemaVersion": "2.0",
+        "schemaVersion": "3.0",
         "slug": slug,
         "title": blueprint["title"],
         "subtitle": blueprint["subtitle"],
@@ -3887,8 +3900,8 @@ def start_generation_job(
         "steps": [
             {"id": "GROUNDING_SEARCH", "label": "Live Google Search Grounding", "status": "pending" if enable_grounding else "skipped"},
             {"id": "LLM_SYNTHESIS", "label": f"Stage 1: Deep Prose, SQL/GQL & Claims ({model})", "status": "pending"},
-            {"id": "TOPOLOGY_AND_DECK", "label": "Stage 2: 5 C4 Diagrams, 12 Slides & Hardened Code", "status": "pending"},
-            {"id": "COMPILE_DIAGRAMS", "label": "Compile 5 Draw.io & SVG Diagrams (Official Icons)", "status": "pending"},
+            {"id": "TOPOLOGY_AND_DECK", "label": "Stage 2: 6 WS1-Grade Diagrams (Pro) + Deck & Code", "status": "pending"},
+            {"id": "COMPILE_DIAGRAMS", "label": "Compile 6 WS1-Parity Draw.io + SVG + Vector PPTX", "status": "pending"},
             {"id": "COMPILE_SLIDES", "label": "Build 12-Slide OOXML .pptx & Previews", "status": "pending"},
             {"id": "COMPILE_DOCS", "label": "Compile blog.md & .docx Whitepaper", "status": "pending"},
             {"id": "COMPILE_STARTER", "label": "Package starter.zip + AST & D-11 Check", "status": "pending"},
@@ -3969,17 +3982,55 @@ def start_generation_job(
                 timeout_s=130.0,
             )
 
-            _update_step(36, "TOPOLOGY_AND_DECK", f"Stage 2/2: Generating 5 C4 diagrams, 12-slide deck & hardened Terraform v2 starter ({model})...")
-            topo_raw, meta_t = call_gemini_json(
-                system_prompt=_pipe_v2.topology_stage_system_prompt(),
-                user_prompt=_pipe_v2.topology_stage_user_prompt(prose_raw, prompt, grounding),
-                model=model,
-                api_key_override=transient_key,
-                max_output_tokens=24576,
-                thinking_budget=1024 if model == "gemini-2.5-flash" else 2048,
-                temperature=0.2,
-                timeout_s=130.0,
-            )
+            _update_step(36, "TOPOLOGY_AND_DECK", "Stage 2/2: Authoring WS1-parity 6 C4 diagrams (gemini-2.5-pro) & 12-slide deck + Terraform starter in parallel...")
+            from concurrent.futures import ThreadPoolExecutor as _TPE
+
+            def _run_diag_arch():
+                arch_model = "gemini-2.5-pro"
+                try:
+                    return call_gemini_json(
+                        system_prompt=_pipe_v2.diagram_architect_system_prompt(),
+                        user_prompt=_pipe_v2.diagram_architect_user_prompt(prose_raw, prompt, grounding),
+                        model=arch_model,
+                        api_key_override=transient_key,
+                        max_output_tokens=24576,
+                        thinking_budget=1024,
+                        temperature=0.18,
+                        timeout_s=140.0,
+                    )
+                except Exception:
+                    return call_gemini_json(
+                        system_prompt=_pipe_v2.diagram_architect_system_prompt(),
+                        user_prompt=_pipe_v2.diagram_architect_user_prompt(prose_raw, prompt, grounding),
+                        model=model,
+                        api_key_override=transient_key,
+                        max_output_tokens=20480,
+                        thinking_budget=1024,
+                        temperature=0.2,
+                        timeout_s=110.0,
+                    )
+
+            def _run_topo_deck():
+                return call_gemini_json(
+                    system_prompt=_pipe_v2.topology_stage_system_prompt(),
+                    user_prompt=_pipe_v2.topology_stage_user_prompt(prose_raw, prompt, grounding),
+                    model=model,
+                    api_key_override=transient_key,
+                    max_output_tokens=24576,
+                    thinking_budget=1024 if model == "gemini-2.5-flash" else 2048,
+                    temperature=0.2,
+                    timeout_s=130.0,
+                )
+
+            diag_raw, meta_d = {}, {}
+            with _TPE(max_workers=2) as _pool:
+                fut_t = _pool.submit(_run_topo_deck)
+                fut_d = _pool.submit(_run_diag_arch)
+                topo_raw, meta_t = fut_t.result()
+                try:
+                    diag_raw, meta_d = fut_d.result()
+                except Exception:
+                    diag_raw, meta_d = {}, {}
 
             merged_raw = dict(prose_raw)
             for tk in (
@@ -3988,6 +4039,12 @@ def start_generation_job(
             ):
                 if topo_raw.get(tk) is not None:
                     merged_raw[tk] = topo_raw[tk]
+            for dk in (
+                "platformDiagram", "cloudArchDiagram", "sequenceDiagram",
+                "securityDiagram", "wireDiagram", "asyncDiagram",
+            ):
+                if isinstance(diag_raw.get(dk), dict) and diag_raw[dk]:
+                    merged_raw[dk] = diag_raw[dk]
 
             bp = normalize_blueprint(merged_raw, prompt, domain, audience, target_slides=12)
             slug = _unique_slug(bp.get("slugHint") or title_hint or bp["title"])
@@ -4107,7 +4164,7 @@ def _recompile_after_proof_change(slug: str, manifest: Dict[str, Any]) -> Dict[s
     extra_svgs: Dict[str, str] = {}
     extra_urls: Dict[str, str] = {}
     extra_diags: Dict[str, Dict[str, Any]] = {}
-    for kind in ("security", "wire", "async"):
+    for kind in ("cloudarch", "security", "wire", "async"):
         if kind in d_meta:
             sp = _ensure_rel_hydrated(slug, f"diagrams/{slug}-{kind}.svg")
             xp = _ensure_rel_hydrated(slug, f"diagrams/{slug}-{kind}.drawio")
@@ -4125,8 +4182,16 @@ def _recompile_after_proof_change(slug: str, manifest: Dict[str, Any]) -> Dict[s
     for i, s_svg in enumerate(slide_svgs, 1):
         (blog_dir / "slides" / f"slide_{i:02d}.svg").write_text(s_svg, encoding="utf-8")
 
+    re_diags = compile_all_diagrams_v2(bp, slug)
+    re_native = {
+        s_num: (re_diags[dk]["ooxmlSlideXml"], re_diags[dk]["viewerUrl"])
+        for dk, s_num in (("architecture", 3), ("cloudarch", 4), ("sequence", 5), ("security", 6), ("wire", 7), ("async", 8))
+        if dk in re_diags and (dk in d_meta or dk in ("architecture", "sequence"))
+    }
+    if len(bp.get("slides") or []) < 12:
+        re_native = {k: v for k, v in re_native.items() if k in (3, 5)}
     pptx_bytes = compile_pptx_bytes(
-        bp, slug, arch_url, seq_url, proofs, blog_dir, extra_urls=extra_urls or None
+        bp, slug, arch_url, seq_url, proofs, blog_dir, extra_urls=extra_urls or None, native_slide_xmls=re_native
     )
     (blog_dir / "slides" / f"{slug}-deck.pptx").write_bytes(pptx_bytes)
 
@@ -4314,8 +4379,8 @@ def get_diagram_record_for_studio(diag_id: str) -> Optional[Dict[str, Any]]:
     """Allows /drawio-editor?id=<slug>-architecture|sequence to load created diagrams directly."""
     did = str(diag_id or "").strip()
     kind, slug = "", ""
-    slide_map = {"architecture": 3, "sequence": 5, "security": 6, "wire": 7, "async": 8}
-    for sfx in ("architecture", "sequence", "security", "wire", "async"):
+    slide_map = {"architecture": 3, "cloudarch": 4, "sequence": 5, "security": 6, "wire": 7, "async": 8}
+    for sfx in ("architecture", "cloudarch", "sequence", "security", "wire", "async"):
         if did.endswith(f"-{sfx}"):
             kind, slug = sfx, did[: -(len(sfx) + 1)]
             break

@@ -203,7 +203,7 @@
     ));
     if (c.googleSearchGrounding) items.push(makePill('Search Grounding: LIVE', 'pill-green', true));
     if (c.officialGcpSvgIcons) items.push(makePill(c.officialGcpSvgIcons + ' GCP SVG Icons', 'pill-blue', false));
-    items.push(makePill('5 C4 Diagrams + 12-Slide Deck', 'pill-blue', false));
+    items.push(makePill('6 WS1-Parity Diagrams + Vector PPTX', 'pill-blue', false));
     items.push(makePill(
       c.workspaceOauthSync ? 'Workspace Drive OAuth: Connected' : 'Workspace OAuth: Manual Import',
       c.workspaceOauthSync ? 'pill-green' : 'pill-amber',
@@ -589,11 +589,12 @@
   function getDiagramEntries(blog) {
     const dmap = (blog && blog.diagrams) || {};
     const order = [
-      { key: 'architecture', defLabel: 'Figure 1 — Master Reference Architecture (C4 L2)' },
-      { key: 'sequence', defLabel: 'Figure 2 — End-to-End Request Lifecycle Sequence (C4 L3)' },
-      { key: 'security', defLabel: 'Figure 3 — Trust Perimeter & Security Boundary (C4 L1)' },
-      { key: 'wire', defLabel: 'Figure 4 — Wire-Protocol & Schema Transformation (C4 L4)' },
-      { key: 'async', defLabel: 'Figure 5 — Async State, Export & Lifecycle Loop' },
+      { key: 'architecture', defLabel: 'Figure 1 — Master Platform Architecture (C4 L2)' },
+      { key: 'cloudarch', defLabel: 'Figure 2 — Cloud Architecture Center Blueprint (Hub-and-Spoke)' },
+      { key: 'sequence', defLabel: 'Figure 3 — Request Lifecycle Sequence (C4 L3)' },
+      { key: 'security', defLabel: 'Figure 4 — Trust Perimeter & Security Boundary (C4 L1)' },
+      { key: 'wire', defLabel: 'Figure 5 — Wire-Protocol & Schema Transformation (C4 L4)' },
+      { key: 'async', defLabel: 'Figure 6 — Async State, Export & Lifecycle Loop' },
     ];
     return order.filter((o) => Boolean(dmap[o.key])).map((o) => ({ key: o.key, label: dmap[o.key].title || o.defLabel, diag: dmap[o.key] }));
   }
@@ -651,19 +652,49 @@
     panel.replaceChildren(topBar, figBox, buildMarkdownDom(blog.markdownText || ''));
   }
 
+  function openDiagramLightbox(slug, label, diag) {
+    const modal = document.getElementById('diag-lightbox');
+    if (!modal) return;
+    const t = document.getElementById('diag-lightbox-title');
+    const acts = document.getElementById('diag-lightbox-actions');
+    const body = document.getElementById('diag-lightbox-body');
+    if (t) t.textContent = label;
+    if (acts) {
+      acts.replaceChildren(
+        el('a', { className: 'btn btn-primary btn-sm', href: diag.viewerUrl, target: '_blank', rel: 'noopener noreferrer' }, 'viewer.diagrams.net ->'),
+        el('a', { className: 'btn btn-sm', href: diag.studioUrl, target: '_blank', rel: 'noopener noreferrer' }, 'Edit in Studio'),
+        el('a', { className: 'btn btn-sm', href: assetUrl(slug, diag.drawioPath, true) }, 'Download .drawio'),
+        el('a', { className: 'btn btn-sm', href: assetUrl(slug, diag.svgPath, true) }, 'Download .svg'),
+        el('button', { type: 'button', className: 'btn btn-sm', onClick: closeDiagramLightbox }, 'Close (Esc)')
+      );
+    }
+    if (body) body.replaceChildren(el('img', { src: assetUrl(slug, diag.svgPath), alt: label }));
+    modal.classList.remove('hidden');
+  }
+
+  function closeDiagramLightbox() {
+    const modal = document.getElementById('diag-lightbox');
+    if (modal) modal.classList.add('hidden');
+  }
+
   function renderDiagramsTab(blog) {
     const panel = document.getElementById('panel-diagrams');
     const slug = blog.slug;
     const cards = getDiagramEntries(blog).map((ent) => {
       const diag = ent.diag;
-      const icMeta = diag.iconCount ? (' | ' + diag.iconCount + ' official GCP SVG icons') : '';
+      const parts = [];
+      if (diag.vertexCount) parts.push(diag.vertexCount + 'v / ' + (diag.edgeCount || 0) + 'e');
+      if (diag.iconCount) parts.push(diag.iconCount + ' official GCP SVG icons');
+      parts.push(diag.geometryValid === false ? 'geometry WARN' : '0 overlaps');
+      parts.push('0 flowAnimation=1');
       return el('div', { className: 'diagram-card' },
         el('div', { className: 'diagram-hdr' },
           el('div', null,
             el('strong', { style: { fontSize: '13.5px' } }, ent.label),
-            el('div', { className: 'hint' }, '0 flowAnimation=1 | 0 baked footer | orthogonal lane routing' + icMeta)
+            el('div', { className: 'hint' }, parts.join('  ·  '))
           ),
           el('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '6px' } },
+            el('button', { type: 'button', className: 'btn btn-sm', onClick: () => openDiagramLightbox(slug, ent.label, diag) }, 'Maximize'),
             el('a', { className: 'btn btn-primary btn-sm', href: diag.viewerUrl, target: '_blank', rel: 'noopener noreferrer' }, 'Open in viewer.diagrams.net ->'),
             el('a', { className: 'btn btn-sm', href: diag.studioUrl, target: '_blank', rel: 'noopener noreferrer' }, 'Edit in Local Studio'),
             el('a', { className: 'btn btn-sm', href: assetUrl(slug, diag.drawioPath, true) }, 'Download .drawio'),
@@ -671,7 +702,7 @@
           )
         ),
         el('div', { className: 'diagram-stage' },
-          el('img', { src: assetUrl(slug, diag.svgPath), alt: diag.title })
+          el('img', { src: assetUrl(slug, diag.svgPath), alt: diag.title, title: 'Click to maximize', onClick: () => openDiagramLightbox(slug, ent.label, diag) })
         )
       );
     });
@@ -1382,4 +1413,20 @@
   }
 
   document.addEventListener('DOMContentLoaded', init);
+
+    const sbBtn = document.getElementById('btn-toggle-sidebar');
+    if (sbBtn) {
+      sbBtn.addEventListener('click', () => {
+        const sh = document.querySelector('main.shell');
+        if (!sh) return;
+        const collapsed = sh.classList.toggle('shell-collapsed');
+        sbBtn.textContent = collapsed ? 'Show Composer' : 'Full-Width Canvas';
+      });
+    }
+    const lb = document.getElementById('diag-lightbox');
+    if (lb) {
+      lb.addEventListener('click', (ev) => { if (ev.target === lb) closeDiagramLightbox(); });
+    }
+    document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeDiagramLightbox(); });
+
 })();

@@ -1,1314 +1,1292 @@
 #!/usr/bin/env python3
 """
-Create Blog1 v2 Diagrams Engine — WS1–WS5 Parity Pure-Stdlib C4 Compiler.
+Create Blog1 v3 — Canonical WS1-Parity Diagram Suite (6 C4 Diagrams, 1600x900 @ 7620 EMU/px).
 
-Builds 5 domain-layered, 1600x900 editable Draw.io (.drawio) & pure-vector SVG (.svg)
-diagrams with official multi-color Google Cloud SVG icons (loaded from data/gcp_svg_icons.json),
-pure orthogonal edge routing (zero curved crossings across cards), zero flowAnimation=1,
-zero baked footers, zero <script>/<foreignObject> XSS vectors, and clean plain text
-(zero raw markdown **bold** leaks).
+Built directly on top of `scripts/create_blog1_canonical_compiler.py` (pure Python 3.11+
+stdlib port of `scripts/lib/diagram_spec_compiler.mjs`) so EVERY blog produced in
+Create Blog1 renders with the EXACT SAME visual language, airy Google Cloudstyle canvas,
+subtle shadows, plane pills, `WHO RUNS WHAT` guide, converging/diverging `#595959` elbows,
+multi-color official GCP SVG icons, activation-bar UML sequence swimlanes, Google Cloud
+Architecture Center hub-and-spoke bezels, AND native DrawingML editable PPTX slides as
+the flagship `WS1`–`WS5` series.
 
-Diagrams emitted per blog:
-  1. architecture  (C4 L2 — Master Reference Topology: top Control Plane + 3-column flow + bottom Observability strip)
-  2. sequence      (C4 L3 — End-to-End Request Lifecycle Swimlane with phase bands & static dashed lifelines)
-  3. security      (C4 L1 — Trust Perimeter, Fail-Closed Boundary & Threat Matrix)
-  4. wire          (C4 L4 — Wire-Protocol & Schema / Payload Transformation Pipeline)
-  5. async         (Async Operations Loop — Event/CDC, Export, Key Rotation/Erasure & DLQ)
+Figures emitted per blog (`v3`):
+  1. `architecture` — WS1-style 5-Hop Platform Architecture (C4 L2, ~90 cells, 23 edges)
+  2. `cloudarch`    — Official Google Cloud Architecture Center Hub-and-Spoke Blueprint (numbered 1..7)
+  3. `sequence`     — Activation-Bar Sequence Swimlane (C4 L3, numbered circles 1..6 + bottom summary)
+  4. `security`     — Concentric Defense-in-Depth Trust Perimeter & Threat Matrix (C4 L1)
+  5. `wire`         — Wire-Protocol Envelope & Schema Transformation (C4 L4)
+  6. `async`        — Asynchronous CDC / Export / DLQ & Reconciliation Loop
 """
 from __future__ import annotations
 
-import base64
-import html
-import json
 import re
-import urllib.parse
-import zlib
-from datetime import datetime, timezone
-from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-ROOT_DIR = Path(__file__).resolve().parent.parent
-_ICONS_PATH = ROOT_DIR / "data" / "gcp_svg_icons.json"
-_ICON_CACHE: Optional[Dict[str, Dict[str, str]]] = None
+try:
+    from scripts import create_blog1_canonical_compiler as _cc
+except ImportError:
+    import create_blog1_canonical_compiler as _cc  # type: ignore
 
-_BANNED_EMOJIS = (
-    "\u2705", "\u26a0", "\u274c", "\U0001f525", "\U0001f680",
-    "\u2728", "\U0001f4a1", "\U0001f6a8", "\U0001f512", "\U0001f3af",
-)
-
-_FALLBACK_ICON = {
-    "viewBox": "0 0 24 24",
-    "inner": (
-        '<circle cx="12" cy="12" r="9.5" fill="#E8F0FE" stroke="#1A73E8" stroke-width="1.6"/>'
-        '<path d="M8.5 12h7M12 8.5v7" stroke="#1A73E8" stroke-width="1.8" stroke-linecap="round"/>'
-    ),
-}
-
-_ICON_KEYWORD_RULES: Tuple[Tuple[str, Tuple[str, ...]], ...] = (
-    ("spanner", ("spanner", "gql", "graph db", "property graph", "bi-temporal db", "true time", "truetime")),
-    ("alloydb", ("alloydb", "postgres", "postgresql", "pgvector", "cloud sql", "rls", "sql db")),
-    ("bigquery", ("bigquery", "data warehouse", "analytics", "olap", "bq ", "chargeback")),
-    ("cloud_storage", ("cloud storage", "gcs", "bucket", "object store", "archival", "backup")),
-    ("memorystore", ("memorystore", "valkey", "redis", "cache", "prefix cache", "session store")),
-    ("model_armor", ("model armor", "dlp", "prompt shield", "sensitive data", "redact", "safety filter", "guardrail")),
-    ("cloud_armor", ("cloud armor", "waf", "ddos", "edge firewall", "rate limit")),
-    ("cloud_load_balancing", ("load balanc", "alb", "gclb", "https lb", "ingress lb", "neg")),
-    ("iap", ("identity-aware proxy", "iap", "zero trust proxy", "context-aware")),
-    ("cloud_iam", ("cloud iam", "iam", "wif", "workload identity", "oidc", "idp", "jwt", "auth manager", "oauth", "entra", "pab", "rbac", "fgac")),
-    ("cloud_kms", ("kms", "cmek", "hsm", "key ring", "encryption key", "crypto", "kill-switch", "erasure")),
-    ("vpc_sc", ("vpc-sc", "vpc service", "perimeter", "enclave", "sovereign", "air-gap", "firewall")),
-    ("psc", ("private service connect", "psc", "service attachment", "spoke", "peering", "hybrid link")),
-    ("cloud_run", ("cloud run", "memory api", "stateless api", "serverless", "run service", "fastapi", "flask")),
-    ("gke", ("gke", "kubernetes", "autopilot", "warmpool", "pod", "sandbox", "container", "gvisor")),
-    ("vertex_ai", ("vertex ai", "embedding", "vector search", "matching engine", "agent engine", "reasoning")),
-    ("gemini", ("gemini", "llm", "gemma", "foundation model", "model inference")),
-    ("adk", ("adk", "orchestrator", "agent runtime", "agent app", "coordinator")),
-    ("agent_gateway", ("agent gateway", "client-to-agent", "egress gateway", "gateway proxy", "pep")),
-    ("agent_registry", ("agent registry", "catalog", "tool registry", "discovery", "registry")),
-    ("mcp_tools", ("mcp", "model context protocol", "tool server", "connector")),
-    ("a2a_agents", ("a2a", "peer agent", "multi-agent", "federated agent")),
-    ("api_gateway", ("api gateway", "apigee", "endpoint", "dataflow", "cdc", "pub/sub", "pubsub", "eventarc", "pipeline", "etl", "dlq", "async")),
-    ("cloud_logging", ("logging", "audit log", "audit trail", "otel", "opentelemetry", "telemetry", "trace")),
-    ("cloud_monitoring", ("monitoring", "alert", "slo", "metric", "dashboard", "observability")),
-    ("scc", ("security command", "scc", "compliance", "gdpr", "hipaa", "soc 2", "dora", "policy check")),
-    ("artifact_registry", ("artifact registry", "container image", "docker", "terraform", "hcl")),
-    ("finops", ("finops", "cost", "budget", "billing", "quota", "metering")),
-    ("google_g", ("workspace", "google doc", "google slide", "gmail", "drive")),
-    ("saas_globe", ("client", "user", "browser", "web/mobile", "web / mobile", "tenant", "saas", "external", "end user", "caller", "jira", "servicenow", "salesforce", "snowflake", "databricks")),
-    ("gcp_cloud", ("google cloud", "gcp", "cloud", "control plane")),
-)
+CANVAS_W = _cc.CANVAS_W
+CANVAS_H = _cc.CANVAS_H
+PLANE_PALETTE = _cc.PLANE_PALETTE
 
 
-def _now_iso() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+def load_icon_atlas() -> Dict[str, Dict[str, str]]:
+    return _cc.load_gcp_icons()
 
 
-def xml_esc(text: str) -> str:
-    cleaned = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f]", " ", str(text or ""))
-    return html.escape(cleaned, quote=True)
+def strip_inline_md(text: Any) -> str:
+    return _cc.strip_md(text)
 
 
-def strip_emojis(text: str) -> str:
-    if not text:
-        return ""
-    s = str(text)
-    for ch in _BANNED_EMOJIS:
-        s = s.replace(ch, "")
-    s = s.replace("\ufe0f", "")
-    s = re.sub(r"[\U0001F300-\U0001FAFF\u2600-\u27BF]", "", s)
-    return re.sub(r" {2,}", " ", s).strip()
+def infer_gcp_icon_key(*hints: str) -> str:
+    return _cc.resolve_icon_key(*hints)
 
 
-def strip_inline_md(text: str) -> str:
-    """Removes inline markdown markers (**bold**, __bold__, `code`, [lbl](url)) for slide/diagram text."""
-    s = str(text or "")
-    if not s:
-        return ""
-    s = re.sub(r"\[([^\]]+)\]\((?:https?://|/)[^)]+\)", r"\1", s)
-    s = re.sub(r"\*\*([^*\n]+)\*\*", r"\1", s)
-    s = re.sub(r"__([^_\n]+)__", r"\1", s)
-    s = s.replace("**", "").replace("__", "")
-    s = re.sub(r"`([^`\n]+)`", r"\1", s)
-    s = re.sub(r"(?<!\w)\*([^*\n]+)\*(?!\w)", r"\1", s)
-    return strip_emojis(re.sub(r"\s+", " ", s)).strip()
+def build_viewer_url(drawio_xml: str, slug_tag: str = "diagram", title: str = "Diagram") -> str:
+    return _cc.build_viewer_url(drawio_xml, slug_tag, title)
 
 
-def _wrap(text: str, max_chars: int, max_lines: int = 3) -> List[str]:
-    words = strip_inline_md(text).split()
-    if not words:
-        return []
-    lines: List[str] = []
-    cur = ""
-    for w in words:
-        if len(w) > max_chars:
-            if cur:
-                lines.append(cur)
-                cur = ""
-            while len(w) > max_chars and len(lines) < max_lines:
-                lines.append(w[: max(1, max_chars - 1)] + "-")
-                w = w[max(1, max_chars - 1):]
-            cur = w
-            continue
-        cand = f"{cur} {w}".strip()
-        if len(cand) <= max_chars:
-            cur = cand
-        else:
-            lines.append(cur)
-            cur = w
-            if len(lines) >= max_lines:
-                break
-    if cur and len(lines) < max_lines:
-        lines.append(cur)
-    if len(lines) == max_lines and len(" ".join(words)) > len(" ".join(lines)) + 3:
-        last = lines[-1]
-        lines[-1] = (last[: max(1, max_chars - 3)].rstrip() + "...") if len(last) >= max_chars - 2 else last
-    return lines[:max_lines]
+def _norm_bullets(raw: Any, max_items: int, max_width_px: float, fs: float = 9.8, bullet: str = "• ") -> List[Dict[str, Any]]:
+    """Normalizes a list of bullets/lines or a sentence into cleanly pixel-wrapped line dicts (NO mid-word slicing!)."""
+    items: List[str] = []
+    if isinstance(raw, list):
+        for r in raw:
+            t = _cc.strip_md(r).lstrip("•-* ").strip()
+            if t:
+                items.append(t)
+    elif isinstance(raw, str) and raw.strip():
+        parts = [p.strip(" •-;") for p in re.split(r"[•;\n]+", _cc.strip_md(raw)) if p.strip(" •-;")]
+        items = parts
+    out: List[Dict[str, Any]] = []
+    for it in items[:max_items]:
+        wrapped = _cc.wrap_px(f"{bullet}{it}", max_width_px, fs, max_lines=2)
+        for wi, wln in enumerate(wrapped):
+            txt = wln if wi == 0 else f"  {wln}"
+            out.append({"text": txt, "size": fs, "color": "#5F6368", "gapTop": 4 if (wi == 0 and out) else 0})
+    return out
 
 
-def load_gcp_svg_icons() -> Dict[str, Dict[str, str]]:
-    global _ICON_CACHE
-    if _ICON_CACHE is not None:
-        return _ICON_CACHE
-    try:
-        if _ICONS_PATH.is_file():
-            raw = json.loads(_ICONS_PATH.read_text(encoding="utf-8"))
-            if isinstance(raw, dict) and raw:
-                _ICON_CACHE = raw
-                return _ICON_CACHE
-    except Exception:
-        pass
-    _ICON_CACHE = {}
-    return _ICON_CACHE
+def _pick_pill_w(text: str, min_w: int = 62, pad: int = 18) -> int:
+    return max(min_w, int(round(_cc.est_text_width_px(text, 8.5, bold=True) + pad)))
 
 
-def infer_gcp_icon_key(label: str, sub: str = "", role: str = "", hint: str = "") -> str:
-    icons = load_gcp_svg_icons()
-    h = re.sub(r"[^a-z0-9_]", "_", str(hint or "").strip().lower()).strip("_")
-    if h and h in icons:
-        return h
-    blob = f" {label} {sub} {role} ".lower()
-    for key, terms in _ICON_KEYWORD_RULES:
-        if key not in icons:
-            continue
-        for t in terms:
-            if t in blob:
-                return key
-    return "gcp_cloud" if "gcp_cloud" in icons else ""
+def _node_by_plane(bp: Dict[str, Any]) -> Dict[str, List[Dict[str, Any]]]:
+    """Legacy fallback mapper from `architectureZones` when `platformDiagram` is omitted (e.g., unit tests)."""
+    buckets: Dict[str, List[Dict[str, Any]]] = {"edge": [], "control": [], "compute": [], "data": []}
+    for z in bp.get("architectureZones") or []:
+        zid = str(z.get("id") or z.get("label") or "").lower()
+        key = "compute"
+        if any(k in zid for k in ("edge", "ingress", "client", "front")):
+            key = "edge"
+        elif any(k in zid for k in ("control", "gov", "iam", "sec", "kms")):
+            key = "control"
+        elif any(k in zid for k in ("data", "persist", "store", "db", "storage", "memory")):
+            key = "data"
+        for n in z.get("nodes") or []:
+            if isinstance(n, dict):
+                buckets[key].append(n)
+    return buckets
 
 
-def _icon_entry(key: str) -> Dict[str, str]:
-    icons = load_gcp_svg_icons()
-    return icons.get(key) or _FALLBACK_ICON
+# ===========================================================================
+# FIGURE 1: WS1-STYLE MASTER PLATFORM ARCHITECTURE (C4 L2, ~90 cells, 22 edges)
+# ===========================================================================
 
+def build_architecture_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
+    title = _cc.strip_md(bp.get("title") or "Cloud Reference Architecture")
+    pd = bp.get("platformDiagram") or {}
+    buckets = _node_by_plane(bp)
+    domain_lbl = _cc.strip_md(bp.get("domain") or "Google Cloud Architecture")
 
-def get_standalone_icon_svg(key: str) -> str:
-    ent = _icon_entry(key)
-    vb = ent.get("viewBox", "0 0 24 24")
-    inner = ent.get("inner", "")
-    return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vb}">{inner}</svg>'
-
-
-def drawio_icon_cell(cell_id: str, icon_key: str, x: float, y: float, size: float = 28.0) -> str:
-    raw_svg = get_standalone_icon_svg(icon_key).encode("utf-8")
-    b64 = base64.b64encode(raw_svg).decode("ascii")
-    return (
-        f'<mxCell id="{xml_esc(cell_id)}" value="" '
-        f'style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;'
-        f'imageAspect=0;aspect=fixed;image=data:image/svg+xml,{b64};" '
-        f'vertex="1" parent="1">'
-        f'<mxGeometry x="{x:.0f}" y="{y:.0f}" width="{size:.0f}" height="{size:.0f}" as="geometry" /></mxCell>'
-    )
-
-
-def svg_inline_icon(icon_key: str, x: float, y: float, size: float = 28.0) -> str:
-    ent = _icon_entry(icon_key)
-    vb = xml_esc(ent.get("viewBox", "0 0 24 24"))
-    inner = ent.get("inner", "")
-    return (
-        f'<svg x="{x:.1f}" y="{y:.1f}" width="{size:.1f}" height="{size:.1f}" '
-        f'viewBox="{vb}" overflow="visible">{inner}</svg>'
-    )
-
-
-def _compress_mxgraph_for_url(drawio_xml: str, diag_id: str, diag_name: str) -> str:
-    """Wrap raw mxGraphModel deflated+base64 inside <diagram> for compact viewer.diagrams.net URLs."""
-    m = re.search(r"(<mxGraphModel\b[\s\S]*?</mxGraphModel>)", drawio_xml)
-    if not m:
-        return re.sub(r">\s+<", "><", drawio_xml.strip())
-    inner = re.sub(r">\s+<", "><", m.group(1).strip())
-    encoded = urllib.parse.quote(inner, safe="~()*!.'").encode("utf-8")
-    comp = zlib.compressobj(9, zlib.DEFLATED, -15)
-    deflated = comp.compress(encoded) + comp.flush()
-    b64 = base64.b64encode(deflated).decode("ascii")
-    return (
-        f'<mxfile host="ge-blogs" agent="create-blog1-engine" version="24.0.0">'
-        f'<diagram id="{xml_esc(diag_id)}" name="{xml_esc(diag_name)}">{b64}</diagram></mxfile>'
-    )
-
-
-def build_viewer_url(drawio_xml: str, diag_id: str, diag_name: str) -> str:
-    compact = _compress_mxgraph_for_url(drawio_xml, diag_id, diag_name)
-    frag = urllib.parse.quote(compact, safe="")
-    return (
-        "https://viewer.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff"
-        f"&edit=_blank&layers=1&nav=1#R{frag}"
-    )
-
-
-def _wrap_mxfile(slug: str, suffix: str, tab_name: str, mx_cells: List[str], w: int = 1600, h: int = 900) -> str:
-    return (
-        '<?xml version="1.0" encoding="UTF-8"?>\n'
-        f'<mxfile host="ge-blogs" modified="{_now_iso()}" agent="create-blog1-engine" version="24.0.0">\n'
-        f'  <diagram id="{xml_esc(slug)}-{xml_esc(suffix)}" name="{xml_esc(tab_name)}">\n'
-        f'    <mxGraphModel dx="{w}" dy="{h}" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" '
-        f'page="1" pageScale="1" pageWidth="{w}" pageHeight="{h}" math="0" shadow="0">\n'
-        '      <root>\n'
-        + "\n".join(f"        {c}" for c in mx_cells)
-        + "\n      </root>\n    </mxGraphModel>\n  </diagram>\n</mxfile>\n"
-    )
-
-
-def _svg_header(title: str, subtitle: str, badge_text: str, badge_bg: str, badge_bd: str, badge_fg: str, w: int = 1600, h: int = 900) -> List[str]:
-    return [
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img" aria-label="{xml_esc(title)}">',
-        "<defs>",
-        '<marker id="arr-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">'
-        '<path d="M 0 1 L 10 5 L 0 9 z" fill="#1A73E8"/></marker>',
-        '<marker id="arr-slate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">'
-        '<path d="M 0 1 L 10 5 L 0 9 z" fill="#475569"/></marker>',
-        '<marker id="arr-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">'
-        '<path d="M 0 1 L 10 5 L 0 9 z" fill="#137333"/></marker>',
-        '<marker id="arr-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">'
-        '<path d="M 0 1 L 10 5 L 0 9 z" fill="#B06000"/></marker>',
-        '<marker id="arr-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">'
-        '<path d="M 0 1 L 10 5 L 0 9 z" fill="#6D28D9"/></marker>',
-        '<filter id="card-sh" x="-4%" y="-6%" width="108%" height="116%">'
-        '<feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#0F172A" flood-opacity="0.06"/></filter>',
-        "</defs>",
-        f'<rect x="0" y="0" width="{w}" height="{h}" fill="#FFFFFF"/>',
-        '<rect x="0" y="0" width="400" height="6" fill="#4285F4"/>',
-        '<rect x="400" y="0" width="400" height="6" fill="#EA4335"/>',
-        '<rect x="800" y="0" width="400" height="6" fill="#FBBC04"/>',
-        '<rect x="1200" y="0" width="400" height="6" fill="#34A853"/>',
-        f'<text x="40" y="45" font-family="Google Sans, Inter, Arial, sans-serif" font-size="23" font-weight="800" fill="#0F172A">{xml_esc(title)}</text>',
-        f'<text x="40" y="70" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13" fill="#475569">{xml_esc(subtitle)}</text>',
-        f'<rect x="1248" y="22" width="312" height="32" rx="16" fill="{badge_bg}" stroke="{badge_bd}" stroke-width="1.2"/>',
-        f'<text x="1404" y="42" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11" font-weight="800" fill="{badge_fg}">{xml_esc(badge_text)}</text>',
-        '<line x1="40" y1="88" x2="1560" y2="88" stroke="#E2E8F0" stroke-width="1.5"/>',
-    ]
-
-
-def _draw_label_pill(svg_parts: List[str], lx: float, ly: float, text: str, stroke: str = "#CBD5E1", fg: str = "#0F172A", max_len: int = 24) -> None:
-    lbl = strip_inline_md(text)[:max_len]
-    if not lbl:
-        return
-    pw = max(56.0, len(lbl) * 6.2 + 18.0)
-    clamped_x = max(pw / 2.0 + 18.0, min(1582.0 - pw / 2.0, lx))
-    svg_parts.append(
-        f'<rect x="{clamped_x - pw/2:.1f}" y="{ly - 9.5:.1f}" width="{pw:.1f}" height="19" rx="4.5" '
-        f'fill="#FFFFFF" stroke="{stroke}" stroke-width="1"/>'
-    )
-    svg_parts.append(
-        f'<text x="{clamped_x:.1f}" y="{ly + 3.6:.1f}" text-anchor="middle" '
-        f'font-family="Google Sans, Inter, Arial, sans-serif" font-size="9.6" font-weight="700" fill="{fg}">{xml_esc(lbl)}</text>'
-    )
-
-
-def _fit_title_with_suffix(base: str, suffix: str, max_total: int = 74) -> str:
-    raw = strip_inline_md(base)
-    budget = max(20, max_total - len(suffix))
-    if len(raw) <= budget:
-        return f"{raw}{suffix}"
-    cut = raw[: max(16, budget - 3)].rsplit(" ", 1)[0].rstrip(" ,:-&")
-    return f"{cut}...{suffix}"
-
-
-def _ortho_svg_path(pts: List[Tuple[float, float]], r: float = 8.0) -> str:
-    """Build crisp rounded orthogonal polyline path across waypoints."""
-    if len(pts) < 2:
-        return ""
-    if len(pts) == 2:
-        return f"M {pts[0][0]:.1f} {pts[0][1]:.1f} L {pts[1][0]:.1f} {pts[1][1]:.1f}"
-    parts = [f"M {pts[0][0]:.1f} {pts[0][1]:.1f}"]
-    for i in range(1, len(pts) - 1):
-        px, py = pts[i - 1]
-        cx, cy = pts[i]
-        nx, ny = pts[i + 1]
-        dx1, dy1 = cx - px, cy - py
-        dx2, dy2 = nx - cx, ny - cy
-        l1 = (dx1 * dx1 + dy1 * dy1) ** 0.5
-        l2 = (dx2 * dx2 + dy2 * dy2) ** 0.5
-        if l1 < 1.0 or l2 < 1.0:
-            parts.append(f"L {cx:.1f} {cy:.1f}")
-            continue
-        cr = min(r, l1 / 2.5, l2 / 2.5)
-        bx, by = cx - (dx1 / l1) * cr, cy - (dy1 / l1) * cr
-        ax, ay = cx + (dx2 / l2) * cr, cy + (dy2 / l2) * cr
-        parts.append(f"L {bx:.1f} {by:.1f} Q {cx:.1f} {cy:.1f} {ax:.1f} {ay:.1f}")
-    parts.append(f"L {pts[-1][0]:.1f} {pts[-1][1]:.1f}")
-    return " ".join(parts)
-
-
-# ---------------------------------------------------------------------------
-# 1. Architecture Master Topology (C4 L2 — WS1/WS2 plane layout + GCP SVG icons)
-# ---------------------------------------------------------------------------
-def compile_architecture_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
-    """Returns (drawio_xml, svg_xml, viewer_url, embedded_icon_count)."""
-    zones = bp["architectureZones"]
-    edges = bp["architectureEdges"]
-    title = strip_inline_md(bp["title"])[:74]
-    raw_sub = strip_inline_md(bp["subtitle"])
-    subtitle = raw_sub if len(raw_sub) <= 130 else (raw_sub[:127].rsplit(" ", 1)[0] + "...")
-
-    # Separate Zone 2 (Control Plane -> spans top banner, matching WS2 visual grammar)
-    z_edge = zones[0]
-    z_ctrl = zones[1] if len(zones) > 1 else {"title": "Control & Security Plane", "subtitle": "Governance", "components": []}
-    z_comp = zones[2] if len(zones) > 2 else {"title": "Compute & AI Plane", "subtitle": "Runtime", "components": []}
-    z_data = zones[3] if len(zones) > 3 else {"title": "Data & Persistence Plane", "subtitle": "Storage", "components": []}
-
-    mx_cells: List[str] = [
-        '<mxCell id="0" />',
-        '<mxCell id="1" parent="0" />',
-        (
-            f'<mxCell id="hdr_title" value="{xml_esc(title)}" '
-            'style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;'
-            'fontFamily=Helvetica;fontSize=22;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">'
-            '<mxGeometry x="40" y="18" width="1160" height="34" as="geometry" /></mxCell>'
-        ),
-        (
-            f'<mxCell id="hdr_sub" value="{xml_esc(subtitle)}" '
-            'style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;'
-            'fontFamily=Helvetica;fontSize=12;fontColor=#475569;" vertex="1" parent="1">'
-            '<mxGeometry x="40" y="54" width="1200" height="22" as="geometry" /></mxCell>'
-        ),
-    ]
-
-    svg_parts = _svg_header(
-        title, subtitle,
-        "C4 L2  |  CONTROL / COMPUTE / DATA PLANES",
-        "#E8F0FE", "#BFDBFE", "#174EA6",
-    )
-
-    icon_count = 0
-    # Box registry: cid -> (x, y, w, h, plane_key, order_idx)
-    boxes: Dict[str, Tuple[float, float, float, float, str, int]] = {}
-
-    # TOP SPANNING CONTROL PLANE (y=102..242)
-    ctrl_x, ctrl_y, ctrl_w, ctrl_h = 40.0, 102.0, 1520.0, 134.0
-    mx_cells.append(
-        f'<mxCell id="zone_ctrl" value="Google Cloud — {xml_esc(strip_inline_md(z_ctrl.get("title") or "Control & Security Plane"))}" '
-        'style="rounded=1;whiteSpace=wrap;html=0;fillColor=#F0FDF4;strokeColor=#137333;dashed=1;dashPattern=6 4;'
-        'strokeWidth=2;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontFamily=Helvetica;fontSize=12;'
-        'fontStyle=1;fontColor=#0D652D;container=1;" vertex="1" parent="1">'
-        f'<mxGeometry x="{ctrl_x:.0f}" y="{ctrl_y:.0f}" width="{ctrl_w:.0f}" height="{ctrl_h:.0f}" as="geometry" /></mxCell>'
-    )
-    svg_parts.extend([
-        f'<rect x="{ctrl_x:.0f}" y="{ctrl_y:.0f}" width="{ctrl_w:.0f}" height="{ctrl_h:.0f}" rx="14" fill="#F0FDF4" stroke="#137333" stroke-width="1.8" stroke-dasharray="7,5"/>',
-        f'<text x="{ctrl_x + 18:.0f}" y="{ctrl_y + 24:.0f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12.5" font-weight="800" fill="#0D652D">Google Cloud — {xml_esc(strip_inline_md(z_ctrl.get("title") or "Control & Governance Plane"))}</text>',
-        f'<rect x="{ctrl_x + ctrl_w - 196:.0f}" y="{ctrl_y + 8:.0f}" width="180" height="22" rx="11" fill="#DCFCE7" stroke="#86EFAC" stroke-width="1"/>',
-        f'<text x="{ctrl_x + ctrl_w - 106:.0f}" y="{ctrl_y + 22.5:.0f}" text-anchor="middle" font-family="Roboto Mono, monospace" font-size="9.5" font-weight="700" fill="#0D652D">CONTROL · governance</text>',
-    ])
-    c_comps = (z_ctrl.get("components") or [])[:4]
-    nc = max(1, len(c_comps))
-    c_gap = 20.0
-    cw = min(460.0, (ctrl_w - 40.0 - c_gap * (nc - 1)) / nc)
-    total_cw = nc * cw + (nc - 1) * c_gap
-    c_start_x = ctrl_x + (ctrl_w - total_cw) / 2.0
-    for ci, comp in enumerate(c_comps):
-        bx = c_start_x + ci * (cw + c_gap)
-        by = ctrl_y + 38.0
-        bh = 82.0
-        cid = comp["id"]
-        ik = infer_gcp_icon_key(comp.get("label", ""), comp.get("sub", ""), comp.get("role", ""), comp.get("iconKey", ""))
-        boxes[cid] = (bx, by, cw, bh, "control", ci)
-        lbl = strip_inline_md(comp.get("label", ""))[:32]
-        sub = strip_inline_md(comp.get("sub", ""))[:36]
-        role = strip_inline_md(comp.get("role", ""))[:58]
-        val_txt = lbl + (f"\n{sub}" if sub else "")
-        mx_cells.append(
-            f'<mxCell id="{xml_esc(cid)}" value="{xml_esc(val_txt)}" '
-            'style="rounded=1;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#137333;'
-            'strokeWidth=1.8;align=left;spacingLeft=46;fontFamily=Helvetica;fontSize=11;fontStyle=1;fontColor=#0F172A;" '
-            'vertex="1" parent="1">'
-            f'<mxGeometry x="{bx:.0f}" y="{by:.0f}" width="{cw:.0f}" height="{bh:.0f}" as="geometry" /></mxCell>'
-        )
-        if ik:
-            mx_cells.append(drawio_icon_cell(f"pic_icon_{cid}", ik, bx + 10, by + (bh - 30) / 2.0, 30))
-            icon_count += 1
-        svg_parts.extend([
-            f'<rect x="{bx:.1f}" y="{by:.1f}" width="{cw:.1f}" height="{bh:.1f}" rx="10" fill="#FFFFFF" stroke="#137333" stroke-width="1.6" filter="url(#card-sh)"/>',
-            f'<rect x="{bx:.1f}" y="{by:.1f}" width="5.5" height="{bh:.1f}" rx="2.5" fill="#137333"/>',
-            f'<rect x="{bx + 14:.1f}" y="{by + 20:.1f}" width="42" height="42" rx="9" fill="#E6F4EA" stroke="#BBF7D0" stroke-width="1"/>',
-            svg_inline_icon(ik, bx + 20, by + 26, 30) if ik else "",
-            f'<text x="{bx + 68:.1f}" y="{by + 30:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.5" font-weight="800" fill="#0F172A">{xml_esc(lbl)}</text>',
-            f'<text x="{bx + 68:.1f}" y="{by + 48:.1f}" font-family="Roboto Mono, monospace" font-size="10.5" font-weight="600" fill="#0D652D">{xml_esc(sub)}</text>',
-        ])
-        if role:
-            svg_parts.append(
-                f'<text x="{bx + 68:.1f}" y="{by + 66:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="10" fill="#475569">{xml_esc(role[:48])}</text>'
-            )
-
-    # THREE VERTICAL FLOW COLUMNS WITH WIDE 104px ROUTING CORRIDORS (y=282..736)
-    col_defs = [
-        ("edge", z_edge, 40.0, 408.0, "#EFF6FF", "#1A73E8", "#174EA6", "#DBEAFE", "EDGE · ingress"),
-        ("compute", z_comp, 572.0, 456.0, "#FFFBEB", "#B06000", "#8A4600", "#FEF3C7", "COMPUTE · runtime"),
-        ("data", z_data, 1152.0, 408.0, "#FAF5FF", "#6D28D9", "#4C1D95", "#EDE9FE", "DATA · persistence"),
-    ]
-    col_top, col_h = 282.0, 454.0
-
-    for pkey, zobj, zx, zw, bg, border, fg, chip_bg, pill in col_defs:
-        ztitle = strip_inline_md(zobj.get("title") or pkey.title())[:34]
-        zsub = strip_inline_md(zobj.get("subtitle") or "")[:44]
-        mx_cells.append(
-            f'<mxCell id="zone_{pkey}" value="{xml_esc(ztitle)}" '
-            f'style="rounded=1;whiteSpace=wrap;html=0;fillColor={bg};strokeColor={border};dashed=1;dashPattern=6 4;'
-            f'strokeWidth=2;verticalAlign=top;align=left;spacingLeft=12;spacingTop=8;fontFamily=Helvetica;fontSize=12;'
-            f'fontStyle=1;fontColor={fg};container=1;" vertex="1" parent="1">'
-            f'<mxGeometry x="{zx:.0f}" y="{col_top:.0f}" width="{zw:.0f}" height="{col_h:.0f}" as="geometry" /></mxCell>'
-        )
-        svg_parts.extend([
-            f'<rect x="{zx:.0f}" y="{col_top:.0f}" width="{zw:.0f}" height="{col_h:.0f}" rx="14" fill="{bg}" stroke="{border}" stroke-width="1.8" stroke-dasharray="7,5"/>',
-            f'<rect x="{zx + 14:.0f}" y="{col_top + 12:.0f}" width="{zw - 28:.0f}" height="44" rx="8" fill="{border}"/>',
-            f'<text x="{zx + 26:.0f}" y="{col_top + 38:.0f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="14" font-weight="800" fill="#FFFFFF">{xml_esc(ztitle)}</text>',
-            f'<rect x="{zx + zw - 156:.0f}" y="{col_top + 22:.0f}" width="132" height="22" rx="11" fill="#FFFFFF" fill-opacity="0.92"/>',
-            f'<text x="{zx + zw - 90:.0f}" y="{col_top + 36.5:.0f}" text-anchor="middle" font-family="Roboto Mono, monospace" font-size="9" font-weight="700" fill="{fg}">{xml_esc(pill)}</text>',
-        ])
-        if zsub:
-            svg_parts.append(
-                f'<text x="{zx + 18:.0f}" y="{col_top + 74:.0f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11" font-weight="600" fill="{fg}">{xml_esc(zsub)}</text>'
-            )
-
-        comps = (zobj.get("components") or [])[:4]
-        n_c = max(1, len(comps))
-        usable_h = col_h - 94.0
-        slot_h = usable_h / n_c
-        card_h = min(98.0, max(68.0, slot_h - 24.0))
-        card_w = zw - 52.0
-        for ci, comp in enumerate(comps):
-            cx = zx + 26.0
-            cy = col_top + 84.0 + ci * slot_h + (slot_h - card_h) / 2.0
-            cid = comp["id"]
-            ik = infer_gcp_icon_key(comp.get("label", ""), comp.get("sub", ""), comp.get("role", ""), comp.get("iconKey", ""))
-            boxes[cid] = (cx, cy, card_w, card_h, pkey, ci)
-            lbl = strip_inline_md(comp.get("label", ""))[:30]
-            sub = strip_inline_md(comp.get("sub", ""))[:36]
-            role = strip_inline_md(comp.get("role", ""))[:76]
-            val_txt = lbl + (f"\n{sub}" if sub else "")
-            mx_cells.append(
-                f'<mxCell id="{xml_esc(cid)}" value="{xml_esc(val_txt)}" '
-                f'style="rounded=1;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor={border};'
-                f'strokeWidth=1.8;align=left;spacingLeft=48;fontFamily=Helvetica;fontSize=11.5;fontStyle=1;fontColor=#0F172A;" '
-                'vertex="1" parent="1">'
-                f'<mxGeometry x="{cx:.0f}" y="{cy:.0f}" width="{card_w:.0f}" height="{card_h:.0f}" as="geometry" /></mxCell>'
-            )
-            if ik:
-                mx_cells.append(drawio_icon_cell(f"pic_icon_{cid}", ik, cx + 12, cy + (card_h - 32) / 2.0, 32))
-                icon_count += 1
-            svg_parts.extend([
-                f'<rect x="{cx:.1f}" y="{cy:.1f}" width="{card_w:.1f}" height="{card_h:.1f}" rx="10" fill="#FFFFFF" stroke="{border}" stroke-width="1.6" filter="url(#card-sh)"/>',
-                f'<rect x="{cx:.1f}" y="{cy:.1f}" width="6" height="{card_h:.1f}" rx="3" fill="{border}"/>',
-                f'<rect x="{cx + 15:.1f}" y="{cy + (card_h - 44)/2:.1f}" width="44" height="44" rx="9" fill="{chip_bg}" stroke="{border}" stroke-opacity="0.28" stroke-width="1"/>',
-                svg_inline_icon(ik, cx + 22, cy + (card_h - 30) / 2.0, 30) if ik else "",
-            ])
-            tx_x = cx + 70.0
-            lbl_lines = _wrap(lbl, 26, 2)
-            base_y = cy + (26.0 if card_h >= 84 else 22.0)
-            for li, ln in enumerate(lbl_lines):
-                svg_parts.append(
-                    f'<text x="{tx_x:.1f}" y="{base_y + li * 16:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" '
-                    f'font-size="13.5" font-weight="800" fill="#0F172A">{xml_esc(ln)}</text>'
-                )
-            sub_y = base_y + len(lbl_lines) * 16 + 2
-            if sub:
-                svg_parts.append(
-                    f'<text x="{tx_x:.1f}" y="{sub_y:.1f}" font-family="Roboto Mono, monospace" '
-                    f'font-size="10.2" font-weight="600" fill="{fg}">{xml_esc(sub[:34])}</text>'
-                )
-            if role and card_h >= 78:
-                for ri, rln in enumerate(_wrap(role, 38, 2)):
-                    ry = sub_y + 15.0 + ri * 12.5
-                    if ry <= cy + card_h - 6:
-                        svg_parts.append(
-                            f'<text x="{tx_x:.1f}" y="{ry:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" '
-                            f'font-size="9.8" fill="#475569">{xml_esc(rln)}</text>'
-                        )
-
-    # BOTTOM OBSERVABILITY & CIRCUIT BREAKER RAIL (y=778..856)
-    obs_y, obs_h = 778.0, 74.0
-    mx_cells.append(
-        '<mxCell id="zone_obs" value="AI Observability, Audit Telemetry &amp; Fail-Closed Circuit Breakers" '
-        'style="rounded=1;whiteSpace=wrap;html=0;fillColor=#F8FAFC;strokeColor=#475569;dashed=1;dashPattern=6 4;'
-        'strokeWidth=1.6;verticalAlign=middle;align=left;spacingLeft=54;fontFamily=Helvetica;fontSize=11.5;fontStyle=1;fontColor=#0F172A;" '
-        'vertex="1" parent="1">'
-        f'<mxGeometry x="40" y="{obs_y:.0f}" width="1520" height="{obs_h:.0f}" as="geometry" /></mxCell>'
-    )
-    mx_cells.append(drawio_icon_cell("pic_icon_obs_log", "cloud_logging", 56, obs_y + 23, 28))
-    mx_cells.append(drawio_icon_cell("pic_icon_obs_mon", "cloud_monitoring", 1516, obs_y + 23, 28))
-    icon_count += 2
-    svg_parts.extend([
-        f'<rect x="40" y="{obs_y:.0f}" width="1520" height="{obs_h:.0f}" rx="12" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/>',
-        f'<rect x="58" y="{obs_y + 17:.0f}" width="40" height="40" rx="8" fill="#E8F0FE" stroke="#BFDBFE"/>',
-        svg_inline_icon("cloud_logging", 64, obs_y + 23, 28),
-        f'<rect x="108" y="{obs_y + 17:.0f}" width="40" height="40" rx="8" fill="#E6F4EA" stroke="#BBF7D0"/>',
-        svg_inline_icon("cloud_monitoring", 114, obs_y + 23, 28),
-        f'<text x="164" y="{obs_y + 34:.0f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.5" font-weight="800" fill="#0F172A">AI Observability, Audit Telemetry &amp; FinOps Control Plane</text>',
-        f'<text x="164" y="{obs_y + 54:.0f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11.2" fill="#475569">OpenTelemetry spans · Cloud Logging &amp; Cloud Trace · Zero-PII payload hashing · BigQuery metering &amp; cost attribution</text>',
-        # Circuit-breaker pills on right
-        f'<rect x="1040" y="{obs_y + 22:.0f}" width="118" height="30" rx="7" fill="#FEF2F2" stroke="#FCA5A5"/>',
-        f'<text x="1099" y="{obs_y + 41:.0f}" text-anchor="middle" font-family="Roboto Mono, monospace" font-size="10" font-weight="700" fill="#991B1B">401 Unauth</text>',
-        f'<rect x="1168" y="{obs_y + 22:.0f}" width="122" height="30" rx="7" fill="#FEF2F2" stroke="#FCA5A5"/>',
-        f'<text x="1229" y="{obs_y + 41:.0f}" text-anchor="middle" font-family="Roboto Mono, monospace" font-size="10" font-weight="700" fill="#991B1B">403 Denied</text>',
-        f'<rect x="1300" y="{obs_y + 22:.0f}" width="118" height="30" rx="7" fill="#FEF7E0" stroke="#FCD34D"/>',
-        f'<text x="1359" y="{obs_y + 41:.0f}" text-anchor="middle" font-family="Roboto Mono, monospace" font-size="10" font-weight="700" fill="#92400E">429 Quota</text>',
-        f'<rect x="1428" y="{obs_y + 22:.0f}" width="118" height="30" rx="7" fill="#F3E8FD" stroke="#D8B4FE"/>',
-        f'<text x="1487" y="{obs_y + 41:.0f}" text-anchor="middle" font-family="Roboto Mono, monospace" font-size="10" font-weight="700" fill="#5B21B6">422 Policy</text>',
-        # Vertical dashed telemetry drops from bottom of columns into Observability bar
-        '<line x1="244" y1="736" x2="244" y2="778" stroke="#94A3B8" stroke-width="1.6" stroke-dasharray="5,4" marker-end="url(#arr-slate)"/>',
-        '<line x1="800" y1="736" x2="800" y2="778" stroke="#94A3B8" stroke-width="1.6" stroke-dasharray="5,4" marker-end="url(#arr-slate)"/>',
-        '<line x1="1356" y1="736" x2="1356" y2="778" stroke="#94A3B8" stroke-width="1.6" stroke-dasharray="5,4" marker-end="url(#arr-slate)"/>',
-    ])
-
-    # PURE ORTHOGONAL COLLISION-FREE EDGE ROUTER (dedicated corridor tracks)
-    plane_order = {"edge": 0, "compute": 1, "data": 2}
-    gutter_ec_idx = 0  # x=448..572 (between edge & compute)
-    gutter_cd_idx = 0  # x=1028..1152 (between compute & data)
-    top_lane_idx = 0   # y=244..278 (control plane drop corridor)
-    bot_lane_idx = 0   # y=742..772 (wide hop bypass corridor)
-    side_detour_idx = 0
-    edge_label_queue: List[Tuple[float, float, str, str, str]] = []
-
-    for ei, edge in enumerate(edges, 1):
-        sb = boxes.get(edge["from"])
-        tb = boxes.get(edge["to"])
-        if not sb or not tb:
-            continue
-        sx, sy, sw, sh, sp, s_ord = sb
-        tx, ty, tw, th, tp, t_ord = tb
-        dashed = bool(edge.get("dashed"))
-        lbl_raw = strip_inline_md(edge.get("label") or "")[:24]
-
-        pts: List[Tuple[float, float]] = []
-        lx, ly = 0.0, 0.0
-        col = "#1A73E8" if not dashed else "#475569"
-        mk = "url(#arr-blue)" if not dashed else "url(#arr-slate)"
-
-        if sp == "control" or tp == "control":
-            # Route cleanly between top Control Plane and flow columns using corridor y=248..276
-            dashed = True
-            col = "#137333"
-            mk = "url(#arr-green)"
-            lane_y = 250.0 + (top_lane_idx % 4) * 7.5
-            top_lane_idx += 1
-            if sp == "control" and tp == "control":
-                if sx < tx:
-                    pts = [(sx + sw, sy + sh / 2), (tx - 4, ty + th / 2)]
-                else:
-                    pts = [(sx, sy + sh / 2), (tx + tw + 4, ty + th / 2)]
-                lx, ly = (pts[0][0] + pts[-1][0]) / 2, pts[0][1] - 12
-            elif sp == "control":
-                cor_x = 468.0 + (top_lane_idx * 18) % 80 if tp == "edge" else (
-                    514.0 if tp == "compute" and tx < sx else (
-                        1056.0 + (top_lane_idx * 18) % 72 if tp == "data" else 1072.0
-                    )
-                )
-                sx_tap = sx + sw * (0.35 + (top_lane_idx % 3) * 0.15)
-                if tp == "edge":
-                    enter_x = tx + tw + 4
-                    cor_x = 458.0 + ((top_lane_idx % 3) * 14.0)
-                    pts = [(sx_tap, sy + sh), (sx_tap, lane_y), (cor_x, lane_y), (cor_x, ty + th * 0.35), (enter_x, ty + th * 0.35)]
-                elif tp == "compute":
-                    enter_x = tx - 4 if sx_tap < tx + tw / 2 else tx + tw + 4
-                    cor_x = (544.0 - (top_lane_idx % 3) * 14.0) if sx_tap < tx + tw / 2 else (1054.0 + (top_lane_idx % 3) * 14.0)
-                    pts = [(sx_tap, sy + sh), (sx_tap, lane_y), (cor_x, lane_y), (cor_x, ty + th * 0.35), (enter_x, ty + th * 0.35)]
-                else:  # data
-                    cor_x = 1126.0 - (top_lane_idx % 3) * 14.0
-                    pts = [(sx_tap, sy + sh), (sx_tap, lane_y), (cor_x, lane_y), (cor_x, ty + th * 0.35), (tx - 4, ty + th * 0.35)]
-                lx, ly = cor_x, lane_y
-            else:  # non-control -> control
-                tx_tap = tx + tw * (0.35 + (top_lane_idx % 3) * 0.15)
-                if sp == "edge":
-                    cor_x = 464.0 + (top_lane_idx % 3) * 14.0
-                    pts = [(sx + sw, sy + sh * 0.3), (cor_x, sy + sh * 0.3), (cor_x, lane_y), (tx_tap, lane_y), (tx_tap, ty + th + 4)]
-                elif sp == "compute":
-                    cor_x = (536.0 - (top_lane_idx % 3) * 14.0) if tx_tap < sx + sw / 2 else (1062.0 + (top_lane_idx % 3) * 14.0)
-                    ex_x = sx if tx_tap < sx + sw / 2 else sx + sw
-                    pts = [(ex_x, sy + sh * 0.3), (cor_x, sy + sh * 0.3), (cor_x, lane_y), (tx_tap, lane_y), (tx_tap, ty + th + 4)]
-                else:  # data -> control
-                    cor_x = 1118.0 - (top_lane_idx % 3) * 14.0
-                    pts = [(sx, sy + sh * 0.3), (cor_x, sy + sh * 0.3), (cor_x, lane_y), (tx_tap, lane_y), (tx_tap, ty + th + 4)]
-                lx, ly = (cor_x + tx_tap) / 2.0, lane_y
-        elif sp == tp:
-            # Same vertical column: direct straight drop if adjacent, side-rail detour if skipping a card
-            if abs(s_ord - t_ord) == 1:
-                cx_m = sx + sw / 2.0
-                if sy < ty:
-                    pts = [(cx_m, sy + sh), (cx_m, ty - 4)]
-                else:
-                    pts = [(cx_m, sy), (cx_m, ty + th + 4)]
-                lx, ly = cx_m, (pts[0][1] + pts[-1][1]) / 2.0
+    # Control Plane top strip (3 rich cards spanning x=504..1570)
+    cp_title = _cc.strip_md(pd.get("controlPlaneTitle") or f"Google Cloud — Shared Governance & Control Plane ({domain_lbl})")
+    raw_cp = pd.get("controlCards") or []
+    if len(raw_cp) < 3:
+        fb_ctrl = buckets["control"]
+        defaults_cp = [
+            {"title": "Stage 1 · Identity & Auth Broker", "icon": "cloud_iam", "bullets": ["OIDC / WIF short-lived federation", "Strict least-privilege IAM & IAP JWT"]},
+            {"title": "Stage 2 · Policy & Key Governance", "icon": "cloud_kms", "bullets": ["CMEK customer-managed encryption keys", "Artifact provenance & VPC-SC perimeter"]},
+            {"title": "Stage 4 · Guardrails & Audit DLP", "icon": "model_armor", "bullets": ["Inline prompt & PII/PHI egress screening", "Zero-PII audit logs & policy enforcement"]},
+        ]
+        raw_cp = list(raw_cp)
+        for i in range(3):
+            if i < len(raw_cp):
+                continue
+            if i < len(fb_ctrl):
+                n = fb_ctrl[i]
+                raw_cp.append({
+                    "title": _cc.strip_md(n.get("label") or defaults_cp[i]["title"]),
+                    "icon": _cc.resolve_icon_key(n.get("iconKey", ""), n.get("label", ""), n.get("service", "")),
+                    "bullets": [n.get("service") or "", n.get("description") or ""],
+                })
             else:
-                # Detour in clear gutter (left side for data column so labels stay inside canvas)
-                side_detour_idx += 1
-                if sp == "data":
-                    dx_rail = sx - 64.0 - (side_detour_idx % 2) * 14.0
-                    pts = [
-                        (sx, sy + sh * 0.65),
-                        (dx_rail, sy + sh * 0.65),
-                        (dx_rail, ty + th * 0.35),
-                        (tx - 4, ty + th * 0.35),
-                    ]
-                else:
-                    dx_rail = sx + sw + 13.0 + (side_detour_idx % 2) * 8.0
-                    pts = [
-                        (sx + sw, sy + sh * 0.65),
-                        (dx_rail, sy + sh * 0.65),
-                        (dx_rail, ty + th * 0.35),
-                        (tx + tw + 4, ty + th * 0.35),
-                    ]
-                lx, ly = dx_rail, (sy + sh * 0.65 + ty + th * 0.35) / 2.0
-        else:
-            so, to = plane_order[sp], plane_order[tp]
-            if abs(so - to) == 1:
-                if min(so, to) == 0:  # edge <-> compute corridor x=448..572
-                    gutter_ec_idx += 1
-                    lane_x = 478.0 + ((gutter_ec_idx - 1) % 4) * 20.0
-                    y_off = ((gutter_ec_idx % 3) - 1) * 10.0
-                else:  # compute <-> data corridor x=1028..1152
-                    gutter_cd_idx += 1
-                    lane_x = 1058.0 + ((gutter_cd_idx - 1) % 4) * 20.0
-                    y_off = ((gutter_cd_idx % 3) - 1) * 10.0
-                if so < to:
-                    pts = [(sx + sw, sy + sh / 2.0 + y_off), (lane_x, sy + sh / 2.0 + y_off), (lane_x, ty + th / 2.0 + y_off), (tx - 4, ty + th / 2.0 + y_off)]
-                else:
-                    pts = [(sx, sy + sh / 2.0 + y_off), (lane_x, sy + sh / 2.0 + y_off), (lane_x, ty + th / 2.0 + y_off), (tx + tw + 4, ty + th / 2.0 + y_off)]
-                lx, ly = lane_x, (sy + sh / 2.0 + ty + th / 2.0) / 2.0 + y_off
+                raw_cp.append(defaults_cp[i])
+
+    # Left 3 caller / workload tiers
+    raw_tiers = pd.get("callerTiers") or [
+        {"title": "Tier 1: Interactive", "subtitle": "Low-latency agents (sync)"},
+        {"title": "Tier 2: Service Mesh", "subtitle": "OIDC / mTLS backend callers"},
+        {"title": "Tier 3: Governance", "subtitle": "Audit, batch & compliance"},
+    ]
+    while len(raw_tiers) < 3:
+        raw_tiers.append({"title": f"Workload Tier {len(raw_tiers) + 1}", "subtitle": "Authenticated ingress"})
+
+    # Pipeline nodes along y=256..510
+    stage_1a = pd.get("identityStage") or {}
+    stage_1b = pd.get("ingressStage") or {}
+    if not stage_1a and buckets["edge"]:
+        n = buckets["edge"][0]
+        stage_1a = {"title": n.get("label", "Identity & Auth"), "icon": n.get("iconKey", "cloud_iam"), "bullets": [n.get("service", "OIDC / WIF"), n.get("description", "Short-lived federated token")]}
+    if not stage_1b and len(buckets["edge"]) > 1:
+        n = buckets["edge"][1]
+        stage_1b = {"title": n.get("label", "Edge PEP & ALB"), "icon": n.get("iconKey", "cloud_load_balancing"), "bullets": [n.get("service", "External ALB + Armor"), n.get("description", "TLS 1.3 + header stripping")]}
+
+    fe_cfg = pd.get("frontEnd") or {}
+    gw_in = pd.get("inboundGateway") or {}
+    runtime = pd.get("coreRuntime") or {}
+    gw_out = pd.get("outboundGateway") or {}
+
+    if not runtime and buckets["compute"]:
+        n = buckets["compute"][0]
+        runtime = {"title": n.get("label", "Core Runtime"), "service": n.get("service", "Cloud Run v2"), "subtitle": "Core Orchestrator", "icon": n.get("iconKey", "cloud_run"), "bullets": [n.get("description", "Stateless container runtime")]}
+
+    # Right target cards (4 stacked tinted boxes inside x=1384..1574)
+    raw_targets = pd.get("targets") or []
+    if len(raw_targets) < 4:
+        raw_targets = list(raw_targets)
+        fb_data = buckets["data"]
+        defaults_t = [
+            {"title": "Primary Data Plane", "subtitle": "Strongly consistent reads"},
+            {"title": "AI / Embedding Target", "subtitle": "Vertex AI Gemini 2.5"},
+            {"title": "Analytical Export", "subtitle": "BigQuery audit warehouse"},
+            {"title": "CMEK & Backup Vault", "subtitle": "Cloud KMS + GCS archival"},
+        ]
+        for i in range(4):
+            if i < len(raw_targets):
+                continue
+            if i < len(fb_data):
+                raw_targets.append({"title": fb_data[i].get("label", defaults_t[i]["title"]), "subtitle": fb_data[i].get("service", defaults_t[i]["subtitle"])})
             else:
-                # Wide skip (edge <-> data): route cleanly below compute plane inside bottom corridor (y=742..768)
-                by_lane = 744.0 + (bot_lane_idx % 3) * 10.0
-                bot_lane_idx += 1
-                if so < to:
-                    pts = [(sx + sw, sy + sh * 0.8), (460.0, sy + sh * 0.8), (460.0, by_lane), (1140.0, by_lane), (1140.0, ty + th * 0.8), (tx - 4, ty + th * 0.8)]
-                else:
-                    pts = [(sx, sy + sh * 0.8), (1140.0, sy + sh * 0.8), (1140.0, by_lane), (460.0, by_lane), (460.0, ty + th * 0.8), (tx + tw + 4, ty + th * 0.8)]
-                lx, ly = 800.0, by_lane
+                raw_targets.append(defaults_t[i])
 
-        dash_xml = "dashed=1;dashPattern=6 4;" if dashed else ""
-        mid_pts_xml = ""
-        if len(pts) > 2:
-            mxml = "".join(f'<mxPoint x="{px:.0f}" y="{py:.0f}" />' for px, py in pts[1:-1])
-            mid_pts_xml = f'<Array as="points">{mxml}</Array>'
-        mx_cells.append(
-            f'<mxCell id="edge_{ei}" value="{xml_esc(lbl_raw)}" '
-            f'style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;'
-            f'strokeColor={col};strokeWidth=2;{dash_xml}endArrow=block;endFill=1;'
-            f'labelBackgroundColor=#FFFFFF;fontFamily=Helvetica;fontSize=9.5;fontStyle=1;fontColor=#0F172A;" '
-            f'edge="1" parent="1" source="{xml_esc(edge["from"])}" target="{xml_esc(edge["to"])}">'
-            f'<mxGeometry relative="1" as="geometry">{mid_pts_xml}</mxGeometry></mxCell>'
-        )
-        d_str = _ortho_svg_path(pts, r=8.0)
-        dash_svg = ' stroke-dasharray="6,4"' if dashed else ""
-        svg_parts.append(
-            f'<path d="{d_str}" fill="none" stroke="{col}" stroke-width="2.1"{dash_svg} marker-end="{mk}"/>'
-        )
-        if lbl_raw:
-            edge_label_queue.append((lx, ly, lbl_raw, col, "#0F172A"))
-
-    # Stagger overlapping pill vertical centers slightly so two edge labels never touch
-    placed_lbls: List[Tuple[float, float]] = []
-    for lx, ly, ltxt, scol, fg in edge_label_queue:
-        for px, py in placed_lbls:
-            if abs(lx - px) < 95 and abs(ly - py) < 22:
-                ly = py + 23.0
-        placed_lbls.append((lx, ly))
-        _draw_label_pill(svg_parts, lx, ly, ltxt, stroke=scol, fg=fg, max_len=20)
-
-    svg_parts.append(
-        '<text x="40" y="882" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11" fill="#64748B">'
-        'Solid Blue = Primary Synchronous Flow  |  Dashed Green = Control / IAM / KMS Plane  |  Dashed Slate = Async / Telemetry Drop  |  Icons: Official Google Cloud SVG Vector Atlas</text>'
-    )
-    svg_parts.append("</svg>")
-
-    drawio_xml = _wrap_mxfile(slug, "arch", "C4 L2 Architecture", mx_cells)
-    viewer_url = build_viewer_url(drawio_xml, f"{slug}-arch", "C4 L2 Architecture")
-    return drawio_xml, "\n".join(svg_parts), viewer_url, icon_count
-
-
-# ---------------------------------------------------------------------------
-# 2. Request Sequence Swimlane (C4 L3 — Official GCP SVG icons + phase bands)
-# ---------------------------------------------------------------------------
-def compile_sequence_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
-    actors = bp["sequenceActors"][:5]
-    steps = bp["sequenceSteps"][:10]
-    title = _fit_title_with_suffix(bp["title"], " — Request Sequence", max_total=76)
-
-    mx_cells: List[str] = [
-        '<mxCell id="0" />',
-        '<mxCell id="1" parent="0" />',
-        (
-            f'<mxCell id="seq_title" value="{xml_esc(title)}" '
-            'style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;'
-            'fontFamily=Helvetica;fontSize=21;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">'
-            '<mxGeometry x="40" y="18" width="1280" height="34" as="geometry" /></mxCell>'
-        ),
+    # Bottom row 3 panels (Sessions/Hot State | Memory/Data Bank | FinOps/Bulkhead)
+    sess = pd.get("hotStateCard") or {"title": "Hot State &", "title2": "Session Cache", "icon": "memorystore", "bullets": ["Sub-ms tenant state cache", "Scoped key prefixes", "Rate token bucket lock", "Deterministic TTL flush"]}
+    dbank = pd.get("dataBankCard") or {}
+    db_tiers = dbank.get("tiers") or [
+        "Primary Store: Strongly consistent multi-region data plane",
+        "Access Control: Fine-grained row/tenant boundary enforcement",
+        "Key Isolation: CMEK KMS encryption & audit tombstoning",
     ]
-    svg_parts = _svg_header(
-        title,
-        "C4 L3 5-Actor UML Sequence Swimlane · Static Dashed Vertical Lifelines · Zero flowAnimation=1",
-        "C4 L3  |  END-TO-END CALL SEQUENCE",
-        "#E6F4EA", "#A7F3D0", "#0D652D",
-    )
+    while len(db_tiers) < 3:
+        db_tiers.append("Immutable backup & archival replication tier")
+    finops = pd.get("finopsCard") or {"title": "FinOps & Cost", "title2": "Guardrail Bulkhead", "icon": "finops", "bullets": ["Per-tenant RPM / TPM caps", "Prefix cache cost control", "Latency SLO p95 budgets", "Real-time OTel chargeback"]}
+    obs = pd.get("observabilityBar") or {
+        "title": "Observability, Audit Telemetry & Fail-Closed Breakers — HTTP 401 / 403 / 429 / 422",
+        "subtitle": "Zero-PII SHA-256 request logging  •  Cloud Monitoring SLO alerts  •  OpenTelemetry traces & billing attribution",
+    }
 
-    actor_themes = (
-        ("#1A73E8", "#EFF6FF"),
-        ("#137333", "#F0FDF4"),
-        ("#B06000", "#FFFBEB"),
-        ("#6D28D9", "#FAF5FF"),
-        ("#0F766E", "#F0FDFA"),
-    )
-    actor_w, actor_h = 236.0, 68.0
-    left_m = 92.0
-    span_x = (1600.0 - left_m - 44.0 - actor_w) / 4.0
-    actor_cx: Dict[str, float] = {}
-    lifeline_top, lifeline_bot = 186.0, 818.0
-    icon_count = 0
-
-    # Subtle phase lane backdrops
-    n_steps = max(1, len(steps))
-    row_gap = (lifeline_bot - lifeline_top - 48.0) / float(n_steps)
-    phase_defs = [
-        ("AUTH & INGRESS", "#EFF6FF", "#1A73E8", 0, max(1, n_steps // 3)),
-        ("POLICY & MEMORY", "#FFFBEB", "#B06000", max(1, n_steps // 3), max(2, (2 * n_steps) // 3)),
-        ("REASON & AUDIT", "#F0FDF4", "#137333", max(2, (2 * n_steps) // 3), n_steps),
-    ]
-    for pname, pbg, pcol, i0, i1 in phase_defs:
-        if i1 <= i0:
-            continue
-        py0 = lifeline_top + 12 + i0 * row_gap
-        py1 = lifeline_top + 12 + i1 * row_gap
-        ph = max(24.0, py1 - py0 - 6.0)
-        svg_parts.extend([
-            f'<rect x="34" y="{py0:.1f}" width="1528" height="{ph:.1f}" rx="8" fill="{pbg}" fill-opacity="0.45"/>',
-            f'<rect x="34" y="{py0:.1f}" width="5" height="{ph:.1f}" rx="2.5" fill="{pcol}"/>',
-            f'<text x="48" y="{py0 + 16:.1f}" font-family="Roboto Mono, monospace" font-size="8.5" font-weight="700" fill="{pcol}">{xml_esc(pname)}</text>',
-        ])
-
-    for ai, actor in enumerate(actors):
-        sc, fc = actor_themes[ai % len(actor_themes)]
-        ax = left_m + ai * span_x
-        cx = ax + actor_w / 2.0
-        actor_cx[actor["id"]] = cx
-        lbl = strip_inline_md(actor.get("label", ""))[:22]
-        sub = strip_inline_md(actor.get("sub", ""))[:26]
-        ik = infer_gcp_icon_key(lbl, sub, "", actor.get("iconKey", ""))
-        mx_cells.append(
-            f'<mxCell id="act_{ai+1}" value="{xml_esc(lbl + (chr(10)+sub if sub else ""))}" '
-            f'style="rounded=1;whiteSpace=wrap;html=0;fillColor={fc};strokeColor={sc};strokeWidth=2;'
-            f'align=left;spacingLeft=40;fontFamily=Helvetica;fontSize=11.5;fontStyle=1;fontColor=#0F172A;" '
-            'vertex="1" parent="1">'
-            f'<mxGeometry x="{ax:.0f}" y="110" width="{actor_w:.0f}" height="{actor_h:.0f}" as="geometry" /></mxCell>'
-        )
-        if ik:
-            mx_cells.append(drawio_icon_cell(f"pic_act_{ai+1}", ik, ax + 10, 129, 28))
-            icon_count += 1
-        mx_cells.append(
-            f'<mxCell id="life_{ai+1}" value="" '
-            'style="endArrow=none;dashed=1;dashPattern=6 4;strokeWidth=2;strokeColor=#94A3B8;html=0;" '
-            'edge="1" parent="1">'
-            '<mxGeometry relative="1" as="geometry">'
-            f'<mxPoint x="{cx:.0f}" y="{lifeline_top:.0f}" as="sourcePoint"/>'
-            f'<mxPoint x="{cx:.0f}" y="{lifeline_bot:.0f}" as="targetPoint"/>'
-            '</mxGeometry></mxCell>'
-        )
-        svg_parts.extend([
-            f'<rect x="{ax:.1f}" y="110" width="{actor_w:.1f}" height="{actor_h:.1f}" rx="10" fill="{fc}" stroke="{sc}" stroke-width="2" filter="url(#card-sh)"/>',
-            f'<rect x="{ax + 10:.1f}" y="126" width="36" height="36" rx="8" fill="#FFFFFF" stroke="{sc}" stroke-opacity="0.35"/>',
-            svg_inline_icon(ik, ax + 15, 131, 26) if ik else "",
-            f'<text x="{ax + 56:.1f}" y="140" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.2" font-weight="800" fill="#0F172A">{xml_esc(lbl)}</text>',
-            f'<text x="{ax + 56:.1f}" y="158" font-family="Roboto Mono, monospace" font-size="9.8" font-weight="600" fill="#475569">{xml_esc(sub)}</text>' if sub else "",
-            f'<line x1="{cx:.1f}" y1="{lifeline_top:.1f}" x2="{cx:.1f}" y2="{lifeline_bot:.1f}" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6,4"/>',
-            f'<rect x="{ax + 24:.1f}" y="{lifeline_bot:.1f}" width="{actor_w - 48:.1f}" height="28" rx="6" fill="#F8FAFC" stroke="{sc}" stroke-width="1.3"/>',
-            f'<text x="{cx:.1f}" y="{lifeline_bot + 18:.1f}" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="10.2" font-weight="700" fill="#334155">{xml_esc(lbl[:20])}</text>',
-        ])
-
-    for si, st in enumerate(steps):
-        sy = lifeline_top + 40.0 + si * row_gap
-        x1 = actor_cx.get(st["from"], 200.0)
-        x2 = actor_cx.get(st["to"], 520.0)
-        if abs(x1 - x2) < 10:
-            x2 = x1 + 140
-        kind = st.get("kind", "request")
-        if kind == "response":
-            col, mk, dash_xml, dash_svg, ktag = "#137333", "url(#arr-green)", "dashed=1;dashPattern=6 4;", ' stroke-dasharray="6,4"', "RETURN"
-        elif kind == "guard":
-            col, mk, dash_xml, dash_svg, ktag = "#B06000", "url(#arr-amber)", "", "", "GUARD"
-        else:
-            col, mk, dash_xml, dash_svg, ktag = "#1A73E8", "url(#arr-blue)", "", "", "CALL"
-        lbl = f"{st['num']}. {strip_inline_md(st['label'])}"
-        mx_cells.append(
-            f'<mxCell id="step_{si+1}" value="{xml_esc(lbl)}" '
-            f'style="endArrow=block;endFill=1;strokeWidth=2.2;strokeColor={col};{dash_xml}'
-            'labelBackgroundColor=#FFFFFF;fontFamily=Helvetica;fontSize=10.5;fontStyle=1;fontColor=#0F172A;html=0;" '
-            'edge="1" parent="1">'
-            '<mxGeometry relative="1" as="geometry">'
-            f'<mxPoint x="{x1:.0f}" y="{sy:.0f}" as="sourcePoint"/>'
-            f'<mxPoint x="{x2:.0f}" y="{sy:.0f}" as="targetPoint"/>'
-            '</mxGeometry></mxCell>'
-        )
-        svg_parts.append(f'<circle cx="{x1:.1f}" cy="{sy:.1f}" r="4.8" fill="{col}"/>')
-        tx_end = x2 - 6 if x2 > x1 else x2 + 6
-        svg_parts.append(
-            f'<line x1="{x1:.1f}" y1="{sy:.1f}" x2="{tx_end:.1f}" y2="{sy:.1f}" stroke="{col}" stroke-width="2.4"{dash_svg} marker-end="{mk}"/>'
-        )
-        mid_x = (x1 + x2) / 2.0
-        lbl_trim = lbl[:62]
-        pw = max(130.0, min(540.0, len(lbl_trim) * 6.5 + 64.0))
-        svg_parts.extend([
-            f'<rect x="{mid_x - pw/2:.1f}" y="{sy - 26:.1f}" width="{pw:.1f}" height="21" rx="5" fill="#FFFFFF" stroke="{col}" stroke-width="1.1"/>',
-            f'<rect x="{mid_x - pw/2 + 3:.1f}" y="{sy - 23.5:.1f}" width="44" height="16" rx="3.5" fill="{col}"/>',
-            f'<text x="{mid_x - pw/2 + 25:.1f}" y="{sy - 12.2:.1f}" text-anchor="middle" font-family="Roboto Mono, monospace" font-size="8.2" font-weight="800" fill="#FFFFFF">{ktag}</text>',
-            f'<text x="{mid_x + 22:.1f}" y="{sy - 11.5:.1f}" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="10.8" font-weight="700" fill="#0F172A">{xml_esc(lbl_trim)}</text>',
-        ])
-
-    svg_parts.append(
-        '<text x="40" y="882" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11" fill="#64748B">'
-        'CALL (Solid Blue) = Sync Request / Invoke  |  GUARD (Solid Amber) = Policy / Auth / Security Gate  |  RETURN (Dashed Green) = Signed Response / Audit Emit</text>'
-    )
-    svg_parts.append("</svg>")
-    drawio_xml = _wrap_mxfile(slug, "seq", "C4 L3 Sequence Swimlane", mx_cells)
-    viewer_url = build_viewer_url(drawio_xml, f"{slug}-seq", "C4 L3 Sequence Swimlane")
-    return drawio_xml, "\n".join(svg_parts), viewer_url, icon_count
-
-
-# ---------------------------------------------------------------------------
-# 3. Trust Perimeter & Fail-Closed Security Boundary (C4 L1)
-# ---------------------------------------------------------------------------
-def compile_security_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
-    title = _fit_title_with_suffix(bp["title"], " — Security Boundary", max_total=74)
-    sec_spec = bp.get("securityDiagram") or {}
-    layers = sec_spec.get("layers") or [
-        {"zone": "L1 · Edge Ingress & WAF", "control": "Cloud Load Balancing + Cloud Armor + IAP", "iconKey": "iap", "detail": "Terminates TLS 1.3, validates OIDC/JWT & blocks unauthenticated calls (HTTP 401/403)."},
-        {"zone": "L2 · Identity & Authorization", "control": "Cloud IAM / Workload Identity Federation", "iconKey": "cloud_iam", "detail": "Least-privilege service accounts, Principal Access Boundary & scoped role assertions."},
-        {"zone": "L3 · Network & Project Perimeter", "control": "VPC Service Controls + Private Service Connect", "iconKey": "vpc_sc", "detail": "Prevents data exfiltration; internal-and-cloud-load-balancing ingress only (zero public allUsers)."},
-        {"zone": "L4 · Encryption & Data Enclave", "control": "Cloud KMS CMEK + Fine-Grained Data Access", "iconKey": "cloud_kms", "detail": "Customer-managed encryption keys, crypto-erasure kill-switch & row-level/tenant filtering."},
-    ]
-    threats = sec_spec.get("threats") or [
-        {"code": "T-01", "vector": "Spoofed identity / header injection", "mitigation": "Strip client headers at ALB; verify signed IAP / JWT assertion."},
-        {"code": "T-02", "vector": "Cross-tenant data leakage", "mitigation": "Mandatory tenant scope predicate + IAM/FGAC view isolation."},
-        {"code": "T-03", "vector": "Prompt injection / PII egress", "mitigation": "Inline Model Armor & Cloud DLP screening pre/post inference."},
-        {"code": "T-04", "vector": "Key / right-to-be-forgotten audit gap", "mitigation": "CMEK version rotation / cryptographic erasure + immutable log."},
-    ]
-    breakers = sec_spec.get("breakers") or [
-        {"code": "HTTP 401", "trigger": "Missing/expired bearer token or invalid IAP assertion", "color": "#DC2626"},
-        {"code": "HTTP 403", "trigger": "IAM / FGAC deny, VPC-SC block, or disabled CMEK version", "color": "#B91C1C"},
-        {"code": "HTTP 422", "trigger": "Safety / DLP screening trigger or schema validation fault", "color": "#6D28D9"},
-        {"code": "HTTP 429", "trigger": "Cloud Armor rate limit or tenant token quota cap reached", "color": "#B06000"},
+    guide_in = pd.get("planeGuide") or {}
+    guide_rows = guide_in.get("rows") or [
+        {"plane": "CONTROL", "headline": "Identity, Edge WAF/IAP, Gateways, KMS & Telemetry", "detail": "Enforces authentication, least-privilege IAM, CMEK encryption, rate limits, and zero-PII audit spans across every request."},
+        {"plane": "COMPUTE", "headline": "Stateless API, Agent Orchestrator & Reasoning Runtime", "detail": "Runs deterministic ingress validation, context orchestration, embedding calls, and private internal egress with zero public IAM."},
+        {"plane": "DATA", "headline": "Strongly Consistent Primary Store, Cache & Audit Export", "detail": "Enforces tenant isolation, time-indexed/versioned persistence, change streams, and durable compliance archives."},
     ]
 
-    mx_cells: List[str] = [
-        '<mxCell id="0" />',
-        '<mxCell id="1" parent="0" />',
-        (
-            f'<mxCell id="sec_title" value="{xml_esc(title)}" '
-            'style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;'
-            'fontFamily=Helvetica;fontSize=21;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">'
-            '<mxGeometry x="40" y="18" width="1200" height="34" as="geometry" /></mxCell>'
-        ),
-    ]
-    svg_parts = _svg_header(
-        title,
-        "C4 L1 Nested Defense-in-Depth Perimeters · Threat Mitigations · Fail-Closed HTTP Circuit Breakers",
-        "C4 L1  |  TRUST & SECURITY BOUNDARY",
-        "#FEF2F2", "#FCA5A5", "#991B1B",
-    )
+    # Build cards dynamically with ZERO text clipping
+    cards: List[Dict[str, Any]] = []
 
-    palette = [
-        ("#EFF6FF", "#1A73E8", "#174EA6"),
-        ("#F0FDF4", "#137333", "#0D652D"),
-        ("#FAF5FF", "#6D28D9", "#4C1D95"),
-        ("#FFFBEB", "#B06000", "#8A4600"),
+    # 3 top Control Plane cards
+    cp_xs = [(518, 334), (868, 334), (1218, 338)]
+    for i, ((cx, cw), cd) in enumerate(zip(cp_xs, raw_cp[:3])):
+        cid = ("cp_auth", "cp_reg", "cp_sec")[i]
+        c_title, tfs = _cc.fit_single_line_px(cd.get("title") or f"Control Node {i+1}", cw - 58, 11.4, bold=True)
+        ic = _cc.resolve_icon_key(cd.get("icon", ""), cd.get("title", ""), default=("cloud_iam", "agent_registry", "model_armor")[i])
+        lines = [{"text": c_title, "bold": True, "size": tfs, "color": "#202124"}]
+        braw = cd.get("bullets") or [cd.get("subtitle", ""), cd.get("detail", "")]
+        for bi, bt in enumerate([_cc.strip_md(x) for x in braw if _cc.strip_md(x)][:2]):
+            ft, fsz = _cc.fit_single_line_px(bt, cw - 58, 9.7)
+            lines.append({"text": ft, "size": fsz, "color": "#5F6368", "gapTop": 3 if bi == 0 else 2})
+        cards.append({"id": cid, "x": cx, "y": 108, "w": cw, "h": 80, "fill": "#FFFFFF", "stroke": "#DADCE0", "icon": ic, "iconPos": "left", "iconSize": 22, "lines": lines})
+
+    # 3 Left caller tier cards (`u_a`, `u_b`, `u_c`)
+    tier_styles = [
+        ("#E8F0FE", "#93C5FD", "#1E3A8A", "#1D4ED8"),
+        ("#FEF7E0", "#FCD34D", "#78350F", "#B45309"),
+        ("#F3E8FD", "#C4B5FD", "#4C1D95", "#6D28D9"),
     ]
-    icon_count = 0
-    # Nested left-side defense-in-depth perimeter rings (x=40..1030, y=108..716)
-    base_x, base_y, base_w, base_h = 40.0, 108.0, 990.0, 608.0
-    for li, lay in enumerate(layers[:4]):
-        bg, bd, fg = palette[li % 4]
-        pad_x = li * 26.0
-        ry = base_y + li * 136.0
-        rw = base_w - pad_x * 2
-        rh = base_h - li * 136.0 - li * 8.0
-        if rh < 118.0:
-            rh = 118.0
-        z_lbl = strip_inline_md(lay.get("zone") or f"Layer {li+1}")[:40]
-        ctrl = strip_inline_md(lay.get("control") or "")[:64]
-        det = strip_inline_md(lay.get("detail") or "")[:120]
-        ik = infer_gcp_icon_key(ctrl, z_lbl, det, lay.get("iconKey", ""))
-        mx_cells.append(
-            f'<mxCell id="sec_l{li+1}" value="{xml_esc(z_lbl + chr(10) + ctrl)}" '
-            f'style="rounded=1;whiteSpace=wrap;html=0;fillColor={bg};strokeColor={bd};dashed=1;dashPattern=6 4;'
-            f'strokeWidth=2;verticalAlign=top;align=left;spacingLeft=56;spacingTop=12;fontFamily=Helvetica;'
-            f'fontSize=12;fontStyle=1;fontColor={fg};container=1;" vertex="1" parent="1">'
-            f'<mxGeometry x="{base_x + pad_x:.0f}" y="{ry:.0f}" width="{rw:.0f}" height="{rh:.0f}" as="geometry" /></mxCell>'
-        )
-        if ik:
-            mx_cells.append(drawio_icon_cell(f"pic_sec_l{li+1}", ik, base_x + pad_x + 14, ry + 20, 32))
-            icon_count += 1
-        det_lines = _wrap(det, max(56, int((rw - 124) / 6.8)), 2)
-        svg_parts.extend([
-            f'<rect x="{base_x + pad_x:.1f}" y="{ry:.1f}" width="{rw:.1f}" height="{rh:.1f}" rx="14" fill="{bg}" stroke="{bd}" stroke-width="2" stroke-dasharray="8,5"/>',
-            f'<rect x="{base_x + pad_x + 16:.1f}" y="{ry + 16:.1f}" width="{rw - 32:.1f}" height="96" rx="10" fill="#FFFFFF" stroke="{bd}" stroke-width="1.5" filter="url(#card-sh)"/>',
-            f'<rect x="{base_x + pad_x + 16:.1f}" y="{ry + 16:.1f}" width="7" height="96" rx="3" fill="{bd}"/>',
-            f'<rect x="{base_x + pad_x + 34:.1f}" y="{ry + 36:.1f}" width="54" height="54" rx="11" fill="{bg}" stroke="{bd}" stroke-opacity="0.35"/>',
-            svg_inline_icon(ik, base_x + pad_x + 43, ry + 45, 36) if ik else "",
-            f'<text x="{base_x + pad_x + 104:.1f}" y="{ry + 38:.1f}" font-family="Roboto Mono, monospace" font-size="10.2" font-weight="700" fill="{fg}">{xml_esc(z_lbl.upper())}</text>',
-            f'<text x="{base_x + pad_x + 104:.1f}" y="{ry + 60:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="15.5" font-weight="800" fill="#0F172A">{xml_esc(ctrl)}</text>',
-            *[
-                f'<text x="{base_x + pad_x + 104:.1f}" y="{ry + 79 + di * 15:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11.5" fill="#475569">{xml_esc(dln)}</text>'
-                for di, dln in enumerate(det_lines)
+    for i in range(3):
+        tr = raw_tiers[i]
+        bg, st, c1, c2 = tier_styles[i]
+        t1, f1 = _cc.fit_single_line_px(tr.get("title") or f"Tier {i+1}", 126, 12.2, bold=True)
+        t2, f2 = _cc.fit_single_line_px(tr.get("subtitle") or "", 126, 9.5)
+        cards.append({
+            "id": ("u_a", "u_b", "u_c")[i],
+            "x": 24, "y": 256 + i * 90, "w": 142, "h": 74,
+            "fill": bg, "stroke": st, "strokeWidth": 1.4, "shadow": True, "align": "center",
+            "lines": [
+                {"text": t1, "bold": True, "size": f1, "color": c1},
+                *([{"text": t2, "size": f2, "color": c2, "gapTop": 3}] if t2 else []),
             ],
-        ])
-        if li < 3:
-            mid_x = base_x + base_w / 2.0
-            svg_parts.append(
-                f'<line x1="{mid_x:.1f}" y1="{ry + 112:.1f}" x2="{mid_x:.1f}" y2="{ry + 134:.1f}" stroke="{bd}" stroke-width="2.4" marker-end="url(#arr-blue)"/>'
-            )
+        })
 
-    # Right panel: Threat-Defense Matrix (x=1066..1560)
-    mx_cells.append(
-        '<mxCell id="sec_threats_box" value="Red-Team Threat Mitigations" '
-        'style="rounded=1;whiteSpace=wrap;html=0;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.6;'
-        'verticalAlign=top;align=left;spacingLeft=14;spacingTop=10;fontFamily=Helvetica;fontSize=12;fontStyle=1;fontColor=#0F172A;" '
-        'vertex="1" parent="1"><mxGeometry x="1066" y="108" width="494" height="608" as="geometry" /></mxCell>'
-    )
-    svg_parts.extend([
-        '<rect x="1066" y="108" width="494" height="608" rx="14" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.6"/>',
-        '<rect x="1084" y="124" width="458" height="40" rx="8" fill="#0F172A"/>',
-        svg_inline_icon("scc", 1096, 131, 26),
-        '<text x="1132" y="149" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.5" font-weight="800" fill="#FFFFFF">Threat Vector → Active Control Matrix</text>',
-    ])
-    for ti, th in enumerate(threats[:4]):
-        ty = 182.0 + ti * 128.0
-        code = strip_inline_md(th.get("code") or f"T-0{ti+1}")[:8]
-        vec = strip_inline_md(th.get("vector") or "")[:44]
-        mit = strip_inline_md(th.get("mitigation") or "")[:120]
-        mx_cells.append(
-            f'<mxCell id="threat_{ti+1}" value="{xml_esc(code + ": " + vec + chr(10) + mit)}" '
-            'style="rounded=1;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.4;'
-            'align=left;spacingLeft=10;fontFamily=Helvetica;fontSize=10;fontColor=#0F172A;" vertex="1" parent="1">'
-            f'<mxGeometry x="1084" y="{ty:.0f}" width="458" height="110" as="geometry" /></mxCell>'
-        )
-        svg_parts.extend([
-            f'<rect x="1084" y="{ty:.1f}" width="458" height="112" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.4" filter="url(#card-sh)"/>',
-            f'<rect x="1098" y="{ty + 14:.1f}" width="54" height="22" rx="5" fill="#FEF2F2" stroke="#FCA5A5"/>',
-            f'<text x="1125" y="{ty + 29:.1f}" text-anchor="middle" font-family="Roboto Mono, monospace" font-size="10" font-weight="800" fill="#991B1B">{xml_esc(code)}</text>',
-            f'<text x="1162" y="{ty + 30:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13" font-weight="800" fill="#0F172A">{xml_esc(vec)}</text>',
-        ])
-        for ml_i, ln in enumerate(_wrap(f"Control: {mit}", 54, 3)):
-            svg_parts.append(
-                f'<text x="1100" y="{ty + 56 + ml_i * 17:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11.5" fill="#334155">{xml_esc(ln)}</text>'
-            )
+    # Stage 1A (`idp`) & Stage 1B (`ingress`)
+    for cid, cx, cw, st_obj, def_t, def_ic in (
+        ("idp", 202, 156, stage_1a, "Stage 1A · Identity", "cloud_iam"),
+        ("ingress", 378, 158, stage_1b, "Stage 1B · Edge PEP", "cloud_load_balancing"),
+    ):
+        hdr_lines = _cc.wrap_px(st_obj.get("title") or def_t, cw - 20, 11.2, bold=True, max_lines=2)
+        lines = [{"text": h, "bold": True, "size": 11.0, "color": "#202124"} for h in hdr_lines]
+        blts = _norm_bullets(st_obj.get("bullets") or st_obj.get("detail") or ["OIDC / WIF verification", "Zero-trust header check", "TLS 1.3 mutual auth", "JWKS cache + rotation"], 5, cw - 20, fs=9.4)
+        if blts:
+            blts[0]["gapTop"] = 7
+        lines.extend(blts[:7])
+        ic = _cc.resolve_icon_key(st_obj.get("icon", ""), st_obj.get("title", ""), default=def_ic)
+        cards.append({"id": cid, "x": cx, "y": 256, "w": cw, "h": 254, "fill": "#FFFFFF", "stroke": "#DADCE0", "icon": ic, "iconPos": "top", "iconSize": 24, "padL": 11, "padR": 10, "lines": lines})
 
-    # Bottom Fail-Closed Circuit-Breaker Strip (y=740..848)
-    svg_parts.append('<rect x="40" y="742" width="1520" height="106" rx="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>')
-    svg_parts.append('<text x="60" y="766" font-family="Roboto Mono, monospace" font-size="10.5" font-weight="800" fill="#991B1B">FAIL-CLOSED CIRCUIT BREAKERS (ZERO SILENT FALLBACK)</text>')
-    bw = 356.0
-    for bi, br in enumerate(breakers[:4]):
-        bx = 60.0 + bi * (bw + 16.0)
-        bcol = br.get("color") if str(br.get("color", "")).startswith("#") else ("#DC2626", "#B91C1C", "#6D28D9", "#B06000")[bi % 4]
-        code = strip_inline_md(br.get("code") or f"HTTP {401+bi}")[:14]
-        trig = strip_inline_md(br.get("trigger") or "")[:68]
-        mx_cells.append(
-            f'<mxCell id="brk_{bi+1}" value="{xml_esc(code + " | " + trig)}" '
-            f'style="rounded=1;whiteSpace=wrap;html=0;fillColor=#F8FAFC;strokeColor={bcol};strokeWidth=1.8;'
-            'fontFamily=Helvetica;fontSize=10;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">'
-            f'<mxGeometry x="{bx:.0f}" y="778" width="{bw:.0f}" height="56" as="geometry" /></mxCell>'
-        )
-        svg_parts.extend([
-            f'<rect x="{bx:.1f}" y="778" width="{bw:.1f}" height="56" rx="8" fill="#F8FAFC" stroke="{bcol}" stroke-width="1.6"/>',
-            f'<rect x="{bx:.1f}" y="778" width="92" height="56" rx="8" fill="{bcol}"/>',
-            f'<text x="{bx + 46:.1f}" y="810" text-anchor="middle" font-family="Roboto Mono, monospace" font-size="12" font-weight="800" fill="#FFFFFF">{xml_esc(code)}</text>',
-        ])
-        for li, ln in enumerate(_wrap(trig, 36, 3)):
-            svg_parts.append(
-                f'<text x="{bx + 104:.1f}" y="{794 + li * 13:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="10" font-weight="600" fill="#1E293B">{xml_esc(ln)}</text>'
-            )
+    # Front End / App Layer 2x2 GCP SVG Icon Tile Grid (`app_layer`)
+    fe_title, fe_fs = _cc.fit_single_line_px(fe_cfg.get("title") or "Front End", 108, 12.0, bold=True)
+    fe_sub, fe_sfs = _cc.fit_single_line_px(fe_cfg.get("subtitle") or "Shared Entry", 108, 9.6)
+    raw_tiles = fe_cfg.get("tiles") or [
+        {"icon": "gemini", "label": "Gemini"},
+        {"icon": "adk", "label": "ADK"},
+        {"icon": "cloud_run", "label": "Run"},
+        {"icon": "spanner", "label": "Data"},
+    ]
+    tile_pos = [(574, 326, "#EFF6FF", "#93C5FD"), (628, 326, "#EFF6FF", "#93C5FD"), (574, 392, "#ECFDF5", "#86EFAC"), (628, 392, "#EFF6FF", "#93C5FD")]
+    fe_tiles = []
+    for ti in range(4):
+        td = raw_tiles[ti] if ti < len(raw_tiles) else {"icon": "gcp_cloud", "label": "GCP"}
+        tx, ty, tf, ts = tile_pos[ti]
+        lbl_t, _ = _cc.fit_single_line_px(td.get("label") or "GCP", 42, 8.6, bold=True)
+        fe_tiles.append({"id": f"badge_fe_{ti+1}", "x": tx, "y": ty, "w": 46, "h": 52, "icon": _cc.resolve_icon_key(td.get("icon", ""), td.get("label", "")), "iconSize": 24, "label": lbl_t, "labelSize": 8.5, "fill": tf, "stroke": ts})
+    cards.append({
+        "id": "app_layer", "x": 564, "y": 256, "w": 120, "h": 254,
+        "fill": "#FFFFFF", "stroke": "#DADCE0", "isContainer": True, "align": "center", "padT": 14,
+        "lines": [{"text": fe_title, "bold": True, "size": fe_fs, "color": "#202124"}, {"text": fe_sub, "size": fe_sfs, "color": "#5F6368", "gapTop": 2}],
+        "tiles": fe_tiles,
+    })
 
-    svg_parts.append(
-        '<text x="40" y="882" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11" fill="#64748B">'
-        'Concentric trust rings show perimeter containment from Edge WAF/IAP down to encrypted data enclave. No public allUsers ingress permitted.</text>'
-    )
-    svg_parts.append("</svg>")
-    drawio_xml = _wrap_mxfile(slug, "security", "C4 L1 Security Boundary", mx_cells)
-    viewer_url = build_viewer_url(drawio_xml, f"{slug}-security", "C4 L1 Security Boundary")
-    return drawio_xml, "\n".join(svg_parts), viewer_url, icon_count
+    # Focal Blue Hero Card 1: Inbound Gateway / PEP (`gw_in_box`)
+    def _add_hero_gateway(prefix: str, gx: int, cfg: Dict[str, Any], def_hdr: str, def_sub: str, def_blts: List[str]) -> None:
+        hdr_txt, hfs = _cc.fit_single_line_px(cfg.get("header") or def_hdr, 122, 12.2, bold=True)
+        sub_txt, sfs = _cc.fit_single_line_px(cfg.get("title") or def_sub, 144, 10.6, bold=True)
+        ic = _cc.resolve_icon_key(cfg.get("icon", ""), def_hdr, default="agent_gateway")
+        body_lines = [{"text": sub_txt, "bold": True, "size": sfs, "color": "#1E3A8A"}]
+        blts = _norm_bullets(cfg.get("bullets") or def_blts, 5, 142, fs=9.4)
+        for bl in blts:
+            bl["color"] = "#334155"
+        if blts:
+            blts[0]["gapTop"] = 7
+        body_lines.extend(blts[:8])
+        cards.append({"id": f"{prefix}_box", "x": gx, "y": 256, "w": 178, "h": 254, "fill": "#FFFFFF", "stroke": "#DADCE0", "isContainer": True, "rx": 14, "lines": []})
+        cards.append({"id": f"{prefix}_hdr", "x": gx, "y": 256, "w": 178, "h": 42, "fill": "#1A73E8", "stroke": "none", "rx": 12, "icon": ic, "iconPos": "header-left", "iconSize": 22, "padL": 42, "allowOverlap": True, "lines": [{"text": hdr_txt, "bold": True, "size": hfs, "color": "#FFFFFF"}]})
+        cards.append({"id": f"{prefix}_body", "x": gx + 8, "y": 306, "w": 162, "h": 196, "fill": "#F8FAFC", "stroke": "#BFDBFE", "rx": 10, "padL": 10, "padR": 8, "allowOverlap": True, "lines": body_lines})
 
+    _add_hero_gateway("gw_in", 716, gw_in, "Ingress Gate / PEP", "Stage 2 · Policy Gate", ["Verify IAP / STS JWT", "Validate tenant & schema", "Enforce WAF / DLP screen", "Bind trace & quota key"])
 
-# ---------------------------------------------------------------------------
-# 4. Wire-Protocol & Data/Schema Transformation (C4 L4)
-# ---------------------------------------------------------------------------
-def compile_wire_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
-    title = _fit_title_with_suffix(bp["title"], " — Wire Payload Transform", max_total=72)
-    hops = (bp.get("wireDiagram") or {}).get("hops") or [
-        {
-            "hop": "HOP 1 · CLIENT INGRESS",
-            "title": "HTTPS Request Envelope",
-            "protocol": "TLS 1.3 · HTTP/2",
-            "iconKey": "saas_globe",
-            "added": ["query text & context window", "point-in-time parameter (as_of)", "Authorization: Bearer <OIDC>"],
-            "stripped": ["spoofed X-Tenant-ID headers", "raw debug cookie strings"],
-            "sample": '{"prompt":"policy Q1","as_of":"2026-03-31"}',
-        },
-        {
-            "hop": "HOP 2 · EDGE / AUTH GATE",
-            "title": "Verified Assertion Context",
-            "protocol": "Signed JWT · ECDSA P-256",
-            "iconKey": "iap",
-            "added": ["verified caller sub / email", "bound tenant_id claim", "request_id / traceparent"],
-            "stripped": ["untrusted caller-supplied role", "expired / mismatched aud tokens"],
-            "sample": '{"sub":"user@co","tenant":"t1","iat":17954}',
-        },
-        {
-            "hop": "HOP 3 · DATA / QUERY ENGINE",
-            "title": "Scoped Storage & Vector Tuple",
-            "protocol": "gRPC · Parameterized Query",
-            "iconKey": "spanner",
-            "added": ["bind @tenant_id, @valid_at", "bind @as_of_tx timestamp", "embedding vector[768]"],
-            "stripped": ["superseded / soft-deleted facts", "unscoped string-interpolated SQL"],
-            "sample": 'GRAPH_TABLE(kg MATCH ... WHERE valid_to > @t)',
-        },
-        {
-            "hop": "HOP 4 · RESPONSE & AUDIT",
-            "title": "Grounded Answer + OTel Span",
-            "protocol": "JSON · Zero-PII Telemetry",
-            "iconKey": "cloud_logging",
-            "added": ["grounded citations & fact IDs", "SHA-256(prompt) audit digest", "token_in / token_out / latency_ms"],
-            "stripped": ["raw PII / secrets (DLP mask)", "internal keys & auth headers"],
-            "sample": '{"answer":"...","sha256":"9f86d0...","ms":142}',
-        },
+    # Central Core Runtime (`runtime` + nested `adk_orch`)
+    rt_hdr, rt_fs = _cc.fit_single_line_px(runtime.get("title") or "Stage 3 · Core Runtime", 154, 11.6, bold=True)
+    rt_svc, rt_sfs = _cc.fit_single_line_px(runtime.get("service") or "Cloud Run v2 (Private)", 154, 9.6)
+    rt_ic = _cc.resolve_icon_key(runtime.get("icon", ""), runtime.get("service", ""), default="cloud_run")
+    cards.append({
+        "id": "runtime", "x": 926, "y": 256, "w": 208, "h": 254, "fill": "#FFFFFF", "stroke": "#DADCE0",
+        "isContainer": True, "rx": 14, "icon": rt_ic, "iconPos": "top-left", "iconSize": 22, "padL": 42, "padT": 12,
+        "lines": [{"text": rt_hdr, "bold": True, "size": rt_fs, "color": "#202124"}, {"text": rt_svc, "size": rt_sfs, "color": "#5F6368", "gapTop": 2}],
+    })
+    orch_title, ofs = _cc.fit_single_line_px(runtime.get("subtitle") or "Stateless Orchestrator", 168, 10.6, bold=True)
+    rt_lines = [{"text": orch_title, "bold": True, "size": ofs, "color": "#202124"}]
+    rblts = _norm_bullets(runtime.get("bullets") or ["Internal load-balancer ingress", "Vertex AI embedding & reason", "Parameterized read/write txns", "Zero public allUsers IAM"], 5, 168, fs=9.4)
+    if rblts:
+        rblts[0]["gapTop"] = 6
+    rt_lines.extend(rblts[:8])
+    cards.append({"id": "adk_orch", "x": 936, "y": 318, "w": 188, "h": 182, "fill": "#F8F9FA", "stroke": "#DADCE0", "rx": 10, "padL": 11, "padR": 9, "allowOverlap": True, "lines": rt_lines})
+
+    # Focal Blue Hero Card 2: Outbound Router / Egress Gate (`gw_out_box`)
+    _add_hero_gateway("gw_out", 1166, gw_out, "Data & Egress Gate", "Stage 4 · Downstream PEP", ["Fine-grained access check", "Route sync & async paths", "PII / DLP output screen", "Emit signed audit span"])
+
+    # Right 4 Target Cards inside x=1384..1574
+    tgt_styles = [
+        ("#ECFDF5", "#34D399", "#065F46", "#047857"),
+        ("#EFF6FF", "#60A5FA", "#1E3A8A", "#1D4ED8"),
+        ("#F3E8FD", "#C4B5FD", "#6B21A8", "#7E22CE"),
+        ("#FFFBEB", "#FBBF24", "#78350F", "#B45309"),
+    ]
+    tgt_ids = ("mcp_srv", "a2a_srv", "llm_srv", "ent_api")
+    eco_tiles = [
+        {"id": "badge_tg_1", "x": 1400, "y": 660, "w": 46, "h": 46, "icon": "google_g", "iconSize": 26, "fill": "#FFFFFF", "stroke": "#CBD5E1"},
+        {"id": "badge_tg_2", "x": 1456, "y": 660, "w": 46, "h": 46, "icon": "gcp_cloud", "iconSize": 26, "fill": "#FFFFFF", "stroke": "#CBD5E1"},
+        {"id": "badge_tg_3", "x": 1512, "y": 660, "w": 46, "h": 46, "icon": "saas_globe", "iconSize": 26, "fill": "#FFFFFF", "stroke": "#CBD5E1"},
+    ]
+    for i in range(4):
+        tg = raw_targets[i]
+        bg, st, c1, c2 = tgt_styles[i]
+        t1, f1 = _cc.fit_single_line_px(tg.get("title") or f"Target {i+1}", 150, 11.2, bold=True)
+        t2, f2 = _cc.fit_single_line_px(tg.get("subtitle") or "", 150, 9.4)
+        card = {
+            "id": tgt_ids[i], "x": 1396, "y": 288 + i * 90, "w": 166, "h": 78,
+            "fill": bg, "stroke": st, "strokeWidth": 1.4, "shadow": True, "align": "center",
+            "lines": [{"text": t1, "bold": True, "size": f1, "color": c1}, *([{"text": t2, "size": f2, "color": c2, "gapTop": 3}] if t2 else [])],
+        }
+        if i == 3:
+            card["tiles"] = eco_tiles
+        cards.append(card)
+
+    # Bottom 3-panel row: Hot State / Sessions (`sessions`)
+    s_hdr = _cc.wrap_px(sess.get("title") or "Hot State & Cache", 148, 11.2, bold=True, max_lines=2)
+    if sess.get("title2") and len(s_hdr) == 1:
+        s_hdr.append(_cc.strip_md(sess["title2"]))
+    s_lines = [{"text": x, "bold": True, "size": 11.0, "color": "#202124"} for x in s_hdr[:2]]
+    sblts = _norm_bullets(sess.get("bullets") or [], 4, 146, fs=9.3)
+    if sblts:
+        sblts[0]["gapTop"] = 6
+    s_lines.extend(sblts[:6])
+    cards.append({"id": "sessions", "x": 558, "y": 562, "w": 168, "h": 182, "fill": "#FFFFFF", "stroke": "#DADCE0", "rx": 14, "icon": _cc.resolve_icon_key(sess.get("icon", ""), default="memorystore"), "iconPos": "top", "iconSize": 24, "padL": 11, "padR": 9, "lines": s_lines})
+
+    # Bottom center: Memory Bank / Data Store Tiers (`mem_bank` + `mb_1..3`)
+    mb_hdr, mfs = _cc.fit_single_line_px(dbank.get("title") or "Primary Persistence & Isolation Tiers", 350, 11.2, bold=True)
+    cards.append({"id": "mem_bank", "x": 760, "y": 562, "w": 374, "h": 182, "fill": "#FFFFFF", "stroke": "#DADCE0", "isContainer": True, "rx": 14, "padT": 10, "lines": [{"text": mb_hdr, "bold": True, "size": mfs, "color": "#202124"}]})
+    mb_styles = [("#E8F0FE", "#93C5FD", "#1E3A8A"), ("#FEF7E0", "#FCD34D", "#78350F"), ("#F3E8FD", "#C4B5FD", "#4C1D95")]
+    for i in range(3):
+        bg, st, tc = mb_styles[i]
+        tt, tfs = _cc.fit_single_line_px(str(db_tiers[i]), 326, 10.8, bold=True)
+        cards.append({"id": f"mb_{i+1}", "x": 774, "y": 596 + i * 48, "w": 346, "h": 40, "fill": bg, "stroke": st, "strokeWidth": 1.3, "shadow": True, "align": "center", "rx": 10, "allowOverlap": True, "lines": [{"text": tt, "bold": True, "size": tfs, "color": tc}]})
+
+    # Bottom right: FinOps / Rate Bulkhead (`finops_bulkhead`)
+    f_hdr = _cc.wrap_px(finops.get("title") or "FinOps & Cost", 150, 11.2, bold=True, max_lines=2)
+    if finops.get("title2") and len(f_hdr) == 1:
+        f_hdr.append(_cc.strip_md(finops["title2"]))
+    f_lines = [{"text": x, "bold": True, "size": 11.0, "color": "#137333"} for x in f_hdr[:2]]
+    fblts = _norm_bullets(finops.get("bullets") or [], 4, 148, fs=9.3)
+    for bl in fblts:
+        bl["color"] = "#3C4043"
+    if fblts:
+        fblts[0]["gapTop"] = 6
+    f_lines.extend(fblts[:6])
+    cards.append({"id": "finops_bulkhead", "x": 1168, "y": 562, "w": 170, "h": 182, "fill": "#E6F4EA", "stroke": "#81C995", "rx": 14, "icon": _cc.resolve_icon_key(finops.get("icon", ""), default="finops"), "iconPos": "top", "iconSize": 24, "padL": 11, "padR": 9, "lines": f_lines})
+
+    # Bottom spanning telemetry & fail-closed breakers bar (`obs_bar`)
+    ot, ofs = _cc.fit_single_line_px(obs.get("title") or "Observability & Fail-Closed Breakers", 710, 11.6, bold=True)
+    osub, osfs = _cc.fit_single_line_px(obs.get("subtitle") or "", 710, 9.8)
+    cards.append({
+        "id": "obs_bar", "x": 558, "y": 780, "w": 780, "h": 58, "fill": "#FFFFFF", "stroke": "#DADCE0", "rx": 12,
+        "icon": "cloud_monitoring", "iconPos": "left", "iconSize": 22,
+        "lines": [{"text": ot, "bold": True, "size": ofs, "color": "#202124"}, *([{"text": osub, "size": osfs, "color": "#5F6368", "gapTop": 3}] if osub else [])],
+    })
+
+    # Target header & caller header pills
+    tgt_hdr = _cc.strip_md(pd.get("targetsLabel") or "Target Services")
+    caller_hdr = _cc.strip_md(pd.get("callerLabel") or "Caller Tiers")
+    zones = [
+        {"id": "zone_cp", "x": 504, "y": 74, "w": 1066, "h": 126, "rx": 16, "fill": "#F8F9FA", "stroke": PLANE_PALETTE["CONTROL"]["zoneStroke"], "dashed": True, "title": cp_title, "titleColor": "#1967D2", "titleSize": 11.8},
+        {"id": "zone_hop1", "x": 194, "y": 236, "w": 350, "h": 282, "rx": 14, "fill": "none", "stroke": PLANE_PALETTE["CONTROL"]["zoneStroke"], "dashed": True},
+        {"id": "zone_fe", "x": 556, "y": 236, "w": 136, "h": 282, "rx": 14, "fill": "none", "stroke": PLANE_PALETTE["COMPUTE"]["zoneStroke"], "dashed": True},
+        {"id": "zone_gw_in", "x": 708, "y": 236, "w": 194, "h": 282, "rx": 14, "fill": "none", "stroke": PLANE_PALETTE["CONTROL"]["zoneStroke"], "dashed": True},
+        {"id": "zone_rt", "x": 918, "y": 236, "w": 224, "h": 282, "rx": 14, "fill": "none", "stroke": PLANE_PALETTE["COMPUTE"]["zoneStroke"], "dashed": True},
+        {"id": "zone_gw_out", "x": 1158, "y": 236, "w": 194, "h": 282, "rx": 14, "fill": "none", "stroke": PLANE_PALETTE["CONTROL"]["zoneStroke"], "dashed": True},
+        {"id": "zone_tgts", "x": 1384, "y": 236, "w": 190, "h": 516, "rx": 16, "fill": "#F8F9FA", "stroke": "#DADCE0", "dashed": False, "title": tgt_hdr, "titleColor": "#202124", "titleSize": 12.0, "titleAlign": "center"},
+        {"id": "zone_sess", "x": 550, "y": 548, "w": 184, "h": 204, "rx": 14, "fill": "none", "stroke": PLANE_PALETTE["DATA"]["zoneStroke"], "dashed": True},
+        {"id": "zone_mem", "x": 752, "y": 548, "w": 390, "h": 204, "rx": 14, "fill": "none", "stroke": PLANE_PALETTE["DATA"]["zoneStroke"], "dashed": True},
+        {"id": "zone_finops", "x": 1160, "y": 548, "w": 186, "h": 204, "rx": 14, "fill": "none", "stroke": PLANE_PALETTE["CONTROL"]["zoneStroke"], "dashed": True},
+        {"id": "zone_obs", "x": 550, "y": 772, "w": 796, "h": 74, "rx": 14, "fill": "none", "stroke": PLANE_PALETTE["CONTROL"]["zoneStroke"], "dashed": True},
     ]
 
-    mx_cells: List[str] = [
-        '<mxCell id="0" />',
-        '<mxCell id="1" parent="0" />',
-        (
-            f'<mxCell id="wire_title" value="{xml_esc(title)}" '
-            'style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;'
-            'fontFamily=Helvetica;fontSize=21;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">'
-            '<mxGeometry x="40" y="18" width="1200" height="34" as="geometry" /></mxCell>'
-        ),
+    pills = [
+        {"id": "pill_cp", "plane": "CONTROL", "text": "CONTROL · governance", "x": 1412, "y": 65, "w": 146, "h": 18},
+        {"id": "pill_hop1", "plane": "CONTROL", "text": "CONTROL · identity + ingress", "x": 204, "y": 227, "w": 170, "h": 18},
+        {"id": "pill_fe", "plane": "COMPUTE", "text": "COMPUTE", "x": 590, "y": 227, "w": 68, "h": 18},
+        {"id": "pill_gwin", "plane": "CONTROL", "text": "CONTROL · Ingress PEP", "x": 768, "y": 227, "w": 128, "h": 18},
+        {"id": "pill_rt", "plane": "COMPUTE", "text": "COMPUTE", "x": 1064, "y": 227, "w": 68, "h": 18},
+        {"id": "pill_gwout", "plane": "CONTROL", "text": "CONTROL · Egress PEP", "x": 1220, "y": 227, "w": 126, "h": 18},
+        {"id": "pill_tgts_d", "plane": "DATA", "text": "DATA · targets", "x": 1396, "y": 266, "w": 84, "h": 16},
+        {"id": "pill_tgts_c", "plane": "CONTROL", "text": "CONTROL", "x": 1486, "y": 266, "w": 76, "h": 16},
+        {"id": "pill_tgts_cmek", "plane": "CONTROL", "text": "CONTROL · CMEK", "x": 1390, "y": 742, "w": 98, "h": 18},
+        {"id": "pill_tgts_api", "plane": "DATA", "text": "DATA · APIs", "x": 1494, "y": 742, "w": 74, "h": 18},
+        {"id": "pill_sess", "plane": "DATA", "text": "DATA · hot state", "x": 626, "y": 539, "w": 100, "h": 18},
+        {"id": "pill_mem_d", "plane": "DATA", "text": "DATA · primary stores", "x": 760, "y": 539, "w": 122, "h": 18},
+        {"id": "pill_mem_c", "plane": "CONTROL", "text": "CONTROL · isolation", "x": 888, "y": 539, "w": 120, "h": 18},
+        {"id": "pill_fin_c", "plane": "CONTROL", "text": "CONTROL", "x": 1212, "y": 539, "w": 62, "h": 18},
+        {"id": "pill_fin_m", "plane": "COMPUTE", "text": "COMPUTE", "x": 1278, "y": 539, "w": 64, "h": 18},
+        {"id": "pill_obs", "plane": "CONTROL", "text": "CONTROL · audit + breakers", "x": 1184, "y": 763, "w": 152, "h": 18},
     ]
-    svg_parts = _svg_header(
-        title,
-        "C4 L4 Field-Level Envelope Transformation · Added (+), Stripped (-), and Bound Payload Schemas per Hop",
-        "C4 L4  |  WIRE PAYLOAD TRANSFORM",
-        "#F3E8FD", "#D8B4FE", "#5B21B6",
-    )
 
-    cols = [
-        ("#1A73E8", "#EFF6FF"),
-        ("#137333", "#F0FDF4"),
-        ("#B06000", "#FFFBEB"),
-        ("#6D28D9", "#FAF5FF"),
+    # Exact WS1-verified orthogonal converging/diverging elbows (ZERO pill clipping!)
+    edges = [
+        {"id": "e1", "source": "u_a", "target": "idp", "exitX": 1, "exitY": 0.5, "entryX": 0, "entryY": 0.42, "points": [{"x": 184, "y": 293}, {"x": 184, "y": 363}]},
+        {"id": "e2", "source": "u_b", "target": "idp", "exitX": 1, "exitY": 0.5, "entryX": 0, "entryY": 0.5},
+        {"id": "e3", "source": "u_c", "target": "idp", "exitX": 1, "exitY": 0.5, "entryX": 0, "entryY": 0.58, "points": [{"x": 184, "y": 473}, {"x": 184, "y": 403}]},
+        {"id": "e4", "source": "idp", "target": "ingress", "exitX": 1, "exitY": 0.5, "entryX": 0, "entryY": 0.5},
+        {"id": "e5", "source": "ingress", "target": "app_layer", "exitX": 1, "exitY": 0.5, "entryX": 0, "entryY": 0.5},
+        {"id": "e6", "source": "app_layer", "target": "gw_in_box", "exitX": 1, "exitY": 0.5, "entryX": 0, "entryY": 0.5},
+        {"id": "e7", "source": "gw_in_box", "target": "runtime", "exitX": 1, "exitY": 0.5, "entryX": 0, "entryY": 0.5},
+        {"id": "e8", "source": "runtime", "target": "gw_out_box", "exitX": 1, "exitY": 0.5, "entryX": 0, "entryY": 0.5},
+        # Governance drops clearing every top-border pill
+        {"id": "e9", "source": "cp_auth", "target": "gw_in_box", "dashed": True, "stroke": "#1A73E8", "exitX": 0.70, "exitY": 1, "entryX": 0.20, "entryY": 0},
+        {"id": "e9b", "source": "cp_auth", "target": "runtime", "stroke": "#5F6368", "exitX": 0.88, "exitY": 1, "entryX": 0.22, "entryY": 0, "points": [{"x": 812, "y": 214}, {"x": 972, "y": 214}]},
+        {"id": "e10", "source": "cp_reg", "target": "runtime", "stroke": "#5F6368", "exitX": 0.50, "exitY": 1, "entryX": 0.524, "entryY": 0},
+        {"id": "e11", "source": "cp_sec", "target": "gw_out_box", "dashed": True, "stroke": "#1A73E8", "exitX": 0.14, "exitY": 1, "entryX": 0.20, "entryY": 0, "points": [{"x": 1265, "y": 212}, {"x": 1202, "y": 212}]},
+        # Bottom data & memory wires
+        {"id": "e12", "source": "app_layer", "target": "sessions", "exitX": 0.367, "exitY": 1, "entryX": 0.298, "entryY": 0},
+        {"id": "e13", "source": "sessions", "target": "mem_bank", "exitX": 1, "exitY": 0.5, "entryX": 0, "entryY": 0.5},
+        {"id": "e14", "source": "runtime", "target": "mem_bank", "bidirectional": True, "exitX": 0.606, "exitY": 1, "entryX": 0.781, "entryY": 0},
+        {"id": "e15", "source": "runtime", "target": "finops_bulkhead", "exitX": 0.80, "exitY": 1, "entryX": 0.141, "entryY": 0, "points": [{"x": 1092, "y": 528}, {"x": 1192, "y": 528}]},
+        # Observability telemetry drops inside dedicated vertical gutters
+        {"id": "e16a", "source": "gw_in_box", "target": "obs_bar", "dashed": True, "stroke": "#595959", "exitX": 0.15, "exitY": 1, "entryX": 0.237, "entryY": 0, "points": [{"x": 743, "y": 524}, {"x": 743, "y": 768}]},
+        {"id": "e16", "source": "runtime", "target": "obs_bar", "dashed": True, "stroke": "#595959", "exitX": 0.96, "exitY": 1, "entryX": 0.76, "entryY": 0, "points": [{"x": 1126, "y": 522}, {"x": 1151, "y": 522}, {"x": 1151, "y": 768}]},
+        {"id": "e16b", "source": "gw_out_box", "target": "obs_bar", "dashed": True, "stroke": "#595959", "exitX": 0.94, "exitY": 1, "entryX": 1, "entryY": 0.5, "points": [{"x": 1333, "y": 522}, {"x": 1356, "y": 522}, {"x": 1356, "y": 809}]},
+        # Right diverging fan-out
+        {"id": "e17", "source": "gw_out_box", "target": "mcp_srv", "exitX": 1, "exitY": 0.28, "entryX": 0, "entryY": 0.5},
+        {"id": "e18", "source": "gw_out_box", "target": "a2a_srv", "exitX": 1, "exitY": 0.56, "entryX": 0, "entryY": 0.5, "points": [{"x": 1370, "y": 398}, {"x": 1370, "y": 417}]},
+        {"id": "e19", "source": "gw_out_box", "target": "llm_srv", "exitX": 1, "exitY": 0.72, "entryX": 0, "entryY": 0.5, "points": [{"x": 1370, "y": 439}, {"x": 1370, "y": 507}]},
+        {"id": "e20", "source": "gw_out_box", "target": "ent_api", "exitX": 1, "exitY": 0.86, "entryX": 0, "entryY": 0.5, "points": [{"x": 1370, "y": 474}, {"x": 1370, "y": 597}]},
     ]
-    cw, gap = 342.0, 50.0
-    start_x = 40.0
-    card_y, card_h = 122.0, 704.0
-    icon_count = 0
 
-    for hi, hop in enumerate(hops[:4]):
-        bd, bg = cols[hi % 4]
-        hx = start_x + hi * (cw + gap)
-        h_lbl = strip_inline_md(hop.get("hop") or f"HOP {hi+1}")[:28]
-        htitle = strip_inline_md(hop.get("title") or "")[:32]
-        proto = strip_inline_md(hop.get("protocol") or "HTTPS")[:30]
-        ik = infer_gcp_icon_key(htitle, proto, h_lbl, hop.get("iconKey", ""))
-        added = [strip_inline_md(x)[:38] for x in (hop.get("added") or [])][:4]
-        stripped = [strip_inline_md(x)[:38] for x in (hop.get("stripped") or [])][:3]
-        sample = strip_inline_md(hop.get("sample") or "")[:160]
-
-        mx_cells.append(
-            f'<mxCell id="hop_{hi+1}" value="{xml_esc(h_lbl + chr(10) + htitle + chr(10) + proto)}" '
-            f'style="rounded=1;whiteSpace=wrap;html=0;fillColor={bg};strokeColor={bd};strokeWidth=2;'
-            'verticalAlign=top;spacingTop=12;fontFamily=Helvetica;fontSize=12;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">'
-            f'<mxGeometry x="{hx:.0f}" y="{card_y:.0f}" width="{cw:.0f}" height="{card_h:.0f}" as="geometry" /></mxCell>'
-        )
-        if ik:
-            mx_cells.append(drawio_icon_cell(f"pic_wire_{hi+1}", ik, hx + 16, card_y + 16, 30))
-            icon_count += 1
-        if hi < 3:
-            mx_cells.append(
-                f'<mxCell id="wedge_{hi+1}" value="" '
-                f'style="edgeStyle=orthogonalEdgeStyle;strokeColor={bd};strokeWidth=2.5;endArrow=block;endFill=1;" '
-                f'edge="1" parent="1" source="hop_{hi+1}" target="hop_{hi+2}">'
-                '<mxGeometry relative="1" as="geometry" /></mxCell>'
-            )
-            svg_parts.append(
-                f'<line x1="{hx + cw:.1f}" y1="440" x2="{hx + cw + gap - 6:.1f}" y2="440" stroke="{bd}" stroke-width="3" marker-end="url(#arr-blue)"/>'
-            )
-
-        svg_parts.extend([
-            f'<rect x="{hx:.1f}" y="{card_y:.1f}" width="{cw:.1f}" height="{card_h:.1f}" rx="14" fill="{bg}" stroke="{bd}" stroke-width="2" filter="url(#card-sh)"/>',
-            f'<rect x="{hx:.1f}" y="{card_y:.1f}" width="{cw:.1f}" height="82" rx="14" fill="{bd}"/>',
-            f'<rect x="{hx:.1f}" y="{card_y + 68:.1f}" width="{cw:.1f}" height="14" fill="{bd}"/>',
-            f'<rect x="{hx + 14:.1f}" y="{card_y + 18:.1f}" width="44" height="44" rx="10" fill="#FFFFFF"/>',
-            svg_inline_icon(ik, hx + 21, card_y + 25, 30) if ik else "",
-            f'<text x="{hx + 70:.1f}" y="{card_y + 32:.1f}" font-family="Roboto Mono, monospace" font-size="9.8" font-weight="700" fill="#FFFFFF" opacity="0.92">{xml_esc(h_lbl)}</text>',
-            f'<text x="{hx + 70:.1f}" y="{card_y + 53:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12.8" font-weight="800" fill="#FFFFFF">{xml_esc(htitle[:30])}</text>',
-            f'<text x="{hx + 70:.1f}" y="{card_y + 70:.1f}" font-family="Roboto Mono, monospace" font-size="9.5" fill="#FFFFFF" opacity="0.88">{xml_esc(proto)}</text>',
-            # Added / Bound box
-            f'<rect x="{hx + 16:.1f}" y="{card_y + 104:.1f}" width="{cw - 32:.1f}" height="218" rx="10" fill="#FFFFFF" stroke="#86EFAC" stroke-width="1.4"/>',
-            f'<text x="{hx + 28:.1f}" y="{card_y + 128:.1f}" font-family="Roboto Mono, monospace" font-size="10.2" font-weight="800" fill="#137333">+ ADDED / BOUND FIELDS</text>',
-        ])
-        for ai_i, item in enumerate(added):
-            iy = card_y + 150.0 + ai_i * 42.0
-            svg_parts.extend([
-                f'<rect x="{hx + 26:.1f}" y="{iy:.1f}" width="{cw - 52:.1f}" height="32" rx="6" fill="#F0FDF4" stroke="#BBF7D0"/>',
-                f'<text x="{hx + 36:.1f}" y="{iy + 20.5:.1f}" font-family="Roboto Mono, monospace" font-size="10.2" font-weight="600" fill="#0D652D">+ {xml_esc(item[:34])}</text>',
-            ])
-
-        # Stripped / Redacted box
-        svg_parts.extend([
-            f'<rect x="{hx + 16:.1f}" y="{card_y + 340:.1f}" width="{cw - 32:.1f}" height="176" rx="10" fill="#FFFFFF" stroke="#FCA5A5" stroke-width="1.4"/>',
-            f'<text x="{hx + 28:.1f}" y="{card_y + 364:.1f}" font-family="Roboto Mono, monospace" font-size="10.2" font-weight="800" fill="#B91C1C">- STRIPPED / REJECTED</text>',
-        ])
-        for si_i, item in enumerate(stripped):
-            iy = card_y + 384.0 + si_i * 40.0
-            svg_parts.extend([
-                f'<rect x="{hx + 26:.1f}" y="{iy:.1f}" width="{cw - 52:.1f}" height="30" rx="6" fill="#FEF2F2" stroke="#FECACA"/>',
-                f'<text x="{hx + 36:.1f}" y="{iy + 19.5:.1f}" font-family="Roboto Mono, monospace" font-size="10" font-weight="600" fill="#991B1B">- {xml_esc(item[:34])}</text>',
-            ])
-
-        # Dark wire snippet box
-        svg_parts.extend([
-            f'<rect x="{hx + 16:.1f}" y="{card_y + 534:.1f}" width="{cw - 32:.1f}" height="150" rx="10" fill="#0F172A" stroke="#334155"/>',
-            f'<text x="{hx + 28:.1f}" y="{card_y + 556:.1f}" font-family="Roboto Mono, monospace" font-size="9.5" font-weight="700" fill="#93C5FD">WIRE SAMPLE</text>',
-        ])
-        for wi, ln in enumerate(_wrap(sample, 36, 4)):
-            svg_parts.append(
-                f'<text x="{hx + 28:.1f}" y="{card_y + 580 + wi * 20:.1f}" font-family="Roboto Mono, monospace" font-size="10.2" fill="#E2E8F0">{xml_esc(ln)}</text>'
-            )
-
-    svg_parts.append(
-        '<text x="40" y="882" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11" fill="#64748B">'
-        'Green (+): Cryptographic claims / query bindings added  |  Red (-): Untrusted headers, stale versions, or PII removed prior to forwarding</text>'
-    )
-    svg_parts.append("</svg>")
-    drawio_xml = _wrap_mxfile(slug, "wire", "C4 L4 Wire Payload", mx_cells)
-    viewer_url = build_viewer_url(drawio_xml, f"{slug}-wire", "C4 L4 Wire Payload")
-    return drawio_xml, "\n".join(svg_parts), viewer_url, icon_count
-
-
-# ---------------------------------------------------------------------------
-# 5. Async Operations, CDC / Export & Erasure Loop
-# ---------------------------------------------------------------------------
-def compile_async_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
-    title = _fit_title_with_suffix(bp["title"], " — Async Lifecycle Loop", max_total=72)
-    stages = (bp.get("asyncDiagram") or {}).get("stages") or [
-        {"stage": "1. CHANGE CAPTURE", "service": "Primary Datastore Stream", "iconKey": "spanner", "cadence": "Continuous / CDC", "detail": "Captures committed mutation envelopes & temporal supersedes asynchronously without impacting p95 reads."},
-        {"stage": "2. ENRICH & TRANSFORM", "service": "Serverless Worker / Dataflow", "iconKey": "cloud_run", "cadence": "Batch / Streaming", "detail": "Normalizes payloads, recomputes vector embeddings, validates schema versions and idempotency keys."},
-        {"stage": "3. ARCHIVE & ANALYTICS", "service": "BigQuery & Cloud Storage", "iconKey": "bigquery", "cadence": "Hourly / Streaming", "detail": "Writes append-only audit snapshots & time-travel partitions for point-in-time compliance replay."},
-        {"stage": "4. ERASURE & ROTATION", "service": "Cloud KMS Key Lifecycle", "iconKey": "cloud_kms", "cadence": "On-Demand / 90d", "detail": "Executes cryptographic erasure tombstones & key rotation with deterministic verification logs."},
-    ]
-    dlq_note = strip_inline_md((bp.get("asyncDiagram") or {}).get("feedbackNote") or "Failed events route to dead-letter queue (DLQ) with exponential backoff, idempotent replay, and Cloud Monitoring alerting.")
-
-    mx_cells: List[str] = [
-        '<mxCell id="0" />',
-        '<mxCell id="1" parent="0" />',
-        (
-            f'<mxCell id="asy_title" value="{xml_esc(title)}" '
-            'style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;'
-            'fontFamily=Helvetica;fontSize=21;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">'
-            '<mxGeometry x="40" y="18" width="1200" height="34" as="geometry" /></mxCell>'
-        ),
-    ]
-    svg_parts = _svg_header(
-        title,
-        "Asynchronous Control Loop · Off-Critical-Path Export, Index Refresh, Key Rotation, & Dead-Letter Replay",
-        "ASYNC  |  LIFECYCLE & RECOVERY LOOP",
-        "#FEF7E0", "#FCD34D", "#8A4600",
-    )
-
-    themes = [
-        ("#1A73E8", "#EFF6FF"),
-        ("#0F766E", "#F0FDFA"),
-        ("#6D28D9", "#FAF5FF"),
-        ("#B06000", "#FFFBEB"),
-    ]
-    cw, ch, gap = 330.0, 290.0, 66.0
-    sx0, sy0 = 40.0, 175.0
-    icon_count = 0
-
-    for si, st in enumerate(stages[:4]):
-        bd, bg = themes[si % 4]
-        x = sx0 + si * (cw + gap)
-        st_lbl = strip_inline_md(st.get("stage") or f"{si+1}. STAGE")[:26]
-        svc = strip_inline_md(st.get("service") or "")[:30]
-        cad = strip_inline_md(st.get("cadence") or "Async")[:24]
-        det = strip_inline_md(st.get("detail") or "")[:240]
-        ik = infer_gcp_icon_key(svc, st_lbl, det, st.get("iconKey", ""))
-
-        mx_cells.append(
-            f'<mxCell id="ast_{si+1}" value="{xml_esc(st_lbl + chr(10) + svc + chr(10) + cad)}" '
-            f'style="rounded=1;whiteSpace=wrap;html=0;fillColor={bg};strokeColor={bd};strokeWidth=2;'
-            'verticalAlign=top;spacingTop=14;fontFamily=Helvetica;fontSize=12;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">'
-            f'<mxGeometry x="{x:.0f}" y="{sy0:.0f}" width="{cw:.0f}" height="{ch:.0f}" as="geometry" /></mxCell>'
-        )
-        if ik:
-            mx_cells.append(drawio_icon_cell(f"pic_ast_{si+1}", ik, x + 20, sy0 + 20, 32))
-            icon_count += 1
-        if si < 3:
-            mx_cells.append(
-                f'<mxCell id="ae_{si+1}" value="Async Event" '
-                f'style="edgeStyle=orthogonalEdgeStyle;strokeColor={bd};strokeWidth=2.4;dashed=1;dashPattern=6 4;endArrow=block;endFill=1;" '
-                f'edge="1" parent="1" source="ast_{si+1}" target="ast_{si+2}">'
-                '<mxGeometry relative="1" as="geometry" /></mxCell>'
-            )
-            svg_parts.append(
-                f'<line x1="{x + cw:.1f}" y1="{sy0 + ch/2:.1f}" x2="{x + cw + gap - 6:.1f}" y2="{sy0 + ch/2:.1f}" '
-                f'stroke="{bd}" stroke-width="2.8" stroke-dasharray="7,4" marker-end="url(#arr-blue)"/>'
-            )
-
-        svg_parts.extend([
-            f'<rect x="{x:.1f}" y="{sy0:.1f}" width="{cw:.1f}" height="{ch:.1f}" rx="16" fill="{bg}" stroke="{bd}" stroke-width="2.2" filter="url(#card-sh)"/>',
-            f'<rect x="{x + 12:.1f}" y="{sy0:.1f}" width="{cw - 24:.1f}" height="6" rx="3" fill="{bd}"/>',
-            f'<rect x="{x + 22:.1f}" y="{sy0 + 28:.1f}" width="58" height="58" rx="12" fill="#FFFFFF" stroke="{bd}" stroke-width="1.3"/>',
-            svg_inline_icon(ik, x + 31, sy0 + 37, 40) if ik else "",
-            f'<rect x="{x + cw - 134:.1f}" y="{sy0 + 30:.1f}" width="114" height="24" rx="12" fill="#FFFFFF" stroke="{bd}" stroke-width="1"/>',
-            f'<text x="{x + cw - 77:.1f}" y="{sy0 + 46:.1f}" text-anchor="middle" font-family="Roboto Mono, monospace" font-size="9.5" font-weight="700" fill="{bd}">{xml_esc(cad[:18])}</text>',
-            f'<text x="{x + 22:.1f}" y="{sy0 + 114:.1f}" font-family="Roboto Mono, monospace" font-size="11" font-weight="800" fill="{bd}">{xml_esc(st_lbl)}</text>',
-            f'<text x="{x + 22:.1f}" y="{sy0 + 140:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="16" font-weight="800" fill="#0F172A">{xml_esc(svc[:28])}</text>',
-        ])
-        for li, ln in enumerate(_wrap(det, 42, 6)):
-            svg_parts.append(
-                f'<text x="{x + 22:.1f}" y="{sy0 + 168 + li * 17:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11.5" fill="#334155">{xml_esc(ln)}</text>'
-            )
-
-    # Bottom Dead-Letter Queue / Verification / Feedback Return Corridor
-    dlq_y, dlq_h = 568.0, 178.0
-    mx_cells.append(
-        f'<mxCell id="dlq_box" value="Dead-Letter Queue (DLQ), Alerting &amp; Reconciliation Loop" '
-        'style="rounded=1;whiteSpace=wrap;html=0;fillColor=#F8FAFC;strokeColor=#475569;dashed=1;dashPattern=6 4;'
-        'strokeWidth=2;fontFamily=Helvetica;fontSize=12;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">'
-        f'<mxGeometry x="260" y="{dlq_y:.0f}" width="1080" height="{dlq_h:.0f}" as="geometry" /></mxCell>'
-    )
-    mx_cells.append(drawio_icon_cell("pic_dlq_mon", "cloud_monitoring", 286, dlq_y + 30, 32))
-    icon_count += 1
-    mx_cells.append(
-        '<mxCell id="loop_back" value="Idempotent Replay &amp; Attestation" '
-        'style="edgeStyle=orthogonalEdgeStyle;dashed=1;dashPattern=6 4;strokeColor=#137333;strokeWidth=2;endArrow=block;endFill=1;" '
-        'edge="1" parent="1" source="ast_4" target="ast_1"><mxGeometry relative="1" as="geometry">'
-        '<Array as="points"><mxPoint x="1395" y="792"/><mxPoint x="205" y="792"/></Array></mxGeometry></mxCell>'
-    )
-    svg_parts.extend([
-        f'<rect x="260" y="{dlq_y:.1f}" width="1080" height="{dlq_h:.1f}" rx="16" fill="#F8FAFC" stroke="#475569" stroke-width="1.8" stroke-dasharray="7,5"/>',
-        f'<rect x="292" y="{dlq_y + 36:.1f}" width="54" height="54" rx="12" fill="#FEF2F2" stroke="#FCA5A5"/>',
-        svg_inline_icon("cloud_monitoring", 301, dlq_y + 45, 36),
-        f'<text x="366" y="{dlq_y + 52:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="16" font-weight="800" fill="#0F172A">Fault Handling, Dead-Letter Replay &amp; Audit Reconciliation</text>',
-        *[
-            f'<text x="366" y="{dlq_y + 75 + di * 18:.1f}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12.2" fill="#334155">{xml_esc(ln)}</text>'
-            for di, ln in enumerate(_wrap(dlq_note, 96, 2))
+    return {
+        "id": f"{slug}-architecture",
+        "diagramName": "Figure 1 - Platform Architecture",
+        "title": f"Reference Platform Architecture — {title}",
+        "titleY": 14,
+        "dividerY": 54,
+        "zones": zones,
+        "labels": [
+            {"id": "lbl_users", "x": 24, "y": 228, "w": 142, "h": 20, "text": caller_hdr, "size": 12.5, "align": "center"},
+            {"id": "lbl_tgts_sub", "x": 1390, "y": 716, "w": 178, "h": 16, "text": "Google • Google Cloud • APIs", "size": 9.3, "bold": False, "color": "#5F6368", "align": "center"},
         ],
-        # Three metric chips inside DLQ box
-        f'<rect x="366" y="{dlq_y + 112:.1f}" width="290" height="40" rx="8" fill="#FFFFFF" stroke="#CBD5E1"/>',
-        f'<text x="511" y="{dlq_y + 137:.1f}" text-anchor="middle" font-family="Roboto Mono, monospace" font-size="11" font-weight="700" fill="#1A73E8">Exponential Backoff + Jitter</text>',
-        f'<rect x="676" y="{dlq_y + 112:.1f}" width="290" height="40" rx="8" fill="#FFFFFF" stroke="#CBD5E1"/>',
-        f'<text x="821" y="{dlq_y + 137:.1f}" text-anchor="middle" font-family="Roboto Mono, monospace" font-size="11" font-weight="700" fill="#137333">Idempotency Key Verified</text>',
-        f'<rect x="986" y="{dlq_y + 112:.1f}" width="318" height="40" rx="8" fill="#FFFFFF" stroke="#CBD5E1"/>',
-        f'<text x="1145" y="{dlq_y + 137:.1f}" text-anchor="middle" font-family="Roboto Mono, monospace" font-size="11" font-weight="700" fill="#991B1B">Alert on DLQ Depth &gt; 0</text>',
-        # Clean orthogonal return loop beneath cards
-        f'<path d="M 1395 465 L 1395 802 Q 1395 812 1385 812 L 215 812 Q 205 812 205 802 L 205 472" fill="none" stroke="#137333" stroke-width="2.4" stroke-dasharray="7,5" marker-end="url(#arr-green)"/>',
-        # Vertical failure taps from Stage 2 & 3 into DLQ box
-        '<line x1="601" y1="465" x2="601" y2="562" stroke="#DC2626" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#arr-slate)"/>',
-        '<line x1="997" y1="465" x2="997" y2="562" stroke="#DC2626" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#arr-slate)"/>',
-    ])
-    _draw_label_pill(svg_parts, 800, 812, "Periodic Verification & Idempotent Reconciliation Feedback", stroke="#137333", fg="#0D652D", max_len=66)
-    _draw_label_pill(svg_parts, 601, 514, "Retry / DLQ", stroke="#DC2626", fg="#991B1B", max_len=16)
-    _draw_label_pill(svg_parts, 997, 514, "Verify Error", stroke="#DC2626", fg="#991B1B", max_len=16)
+        "cards": cards,
+        "planeGuide": {
+            "id": "plane_guide", "x": 24, "y": 548, "w": 510, "h": 298,
+            "title": _cc.strip_md(guide_in.get("title") or "WHO RUNS WHAT — PLANE OWNERSHIP GUIDE"),
+            "rows": [
+                {"plane": str(r.get("plane") or "CONTROL").upper(), "headline": _cc.strip_md(r.get("headline") or ""), "detail": _cc.strip_md(r.get("detail") or "")}
+                for r in guide_rows[:3]
+            ],
+            "footnote": _cc.strip_md(guide_in.get("footnote") or "Caller tiers (left) are not a plane. Dashed green/blue control wires separate governance planes from synchronous request execution."),
+        },
+        "pills": pills,
+        "edges": edges,
+    }
 
-    svg_parts.append(
-        '<text x="40" y="882" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11" fill="#64748B">'
-        'All background lifecycle jobs execute outside the synchronous user request path to keep online read latency predictable.</text>'
+
+def compile_architecture_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
+    spec = build_architecture_spec_v3(bp, slug)
+    xml = _cc.compile_spec_to_drawio_xml(spec)
+    svg = _cc.compile_spec_to_svg(spec)
+    val = _cc.validate_spec_geometry(spec)
+    url = _cc.build_viewer_url(xml, f"{slug}-architecture", f"{bp.get('title', 'Architecture')} — Platform")
+    return xml, svg, url, val["iconCount"]
+
+
+# ===========================================================================
+# FIGURE 2: GOOGLE CLOUD ARCHITECTURE CENTER HUB-AND-SPOKE BLUEPRINT
+# (matching ws1-cloud-arch-center-5hop-baseline.drawio.png)
+# ===========================================================================
+
+def build_cloudarch_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
+    title = _cc.strip_md(bp.get("title") or "Cloud Architecture Center Blueprint")
+    ca = bp.get("cloudArchDiagram") or {}
+    caller = ca.get("caller") or {"title": "Authenticated Client / Agent", "subtitle": "OIDC / Bearer JWT"}
+    perim_lbl = _cc.strip_md(ca.get("perimeterLabel") or "Shared hubs (VPC Service Controls Organization Perimeter)")
+    vpc_lbl = _cc.strip_md(ca.get("vpcLabel") or "VPC • Zero-Trust Private Ingress & Private Service Connect")
+    rh = ca.get("routingHub") or {}
+    gh = ca.get("governanceHub") or {}
+    sp_a = ca.get("spokeA") or {}
+    sp_b = ca.get("spokeB") or {}
+
+    def _small_card(cid: str, x: int, y: int, w: int, h: int, title_t: str, sub_t: str, icon: str, fill: str = "#FFFFFF", stroke: str = "#1E293B") -> Dict[str, Any]:
+        tt, tfs = _cc.fit_single_line_px(title_t, w - 54, 11.2, bold=True)
+        st, sfs = _cc.fit_single_line_px(sub_t, w - 54, 9.2)
+        return {
+            "id": cid, "x": x, "y": y, "w": w, "h": h, "fill": fill, "stroke": stroke, "strokeWidth": 1.3, "rx": 10,
+            "icon": _cc.resolve_icon_key(icon, title_t, sub_t), "iconPos": "left", "iconSize": 22, "padL": 44,
+            "lines": [{"text": tt, "bold": True, "size": tfs, "color": "#0F172A"}, *([{"text": st, "size": sfs, "color": "#475569", "gapTop": 2}] if st else [])],
+        }
+
+    rh_nodes = rh.get("securityNodes") or [
+        {"title": "Cloud Armor WAF", "subtitle": "L7 DDoS & OWASP policy rules", "icon": "cloud_armor"},
+        {"title": "Model Armor / DLP", "subtitle": "Prompt & PII egress guard", "icon": "model_armor"},
+        {"title": "Identity-Aware Proxy", "subtitle": "OIDC / JWT ECDSA assertion", "icon": "iap"},
+    ]
+    gh_nodes = gh.get("nodes") or [
+        {"title": "Security Command Center", "subtitle": "Continuous posture & threat telemetry", "icon": "scc"},
+        {"title": "Central IAM & Cloud KMS", "subtitle": "Least-privilege SA & CMEK rotation", "icon": "cloud_kms"},
+        {"title": "Cloud Logging & BigQuery", "subtitle": "Immutable audit & analytics sink", "icon": "bigquery"},
+    ]
+    alb_d = rh.get("alb") or {"title": "External Application LB", "subtitle": "TLS 1.3 & header strip", "icon": "cloud_load_balancing"}
+    run_d = rh.get("runtime") or {"title": "Cloud Run v2 API", "subtitle": "Private ingress hub", "icon": "cloud_run"}
+
+    cards: List[Dict[str, Any]] = [
+        # External user box outside blue Google Cloud bezel
+        {
+            "id": "ca_user", "x": 620, "y": 54, "w": 360, "h": 54, "fill": "#FFFFFF", "stroke": "#1E293B", "strokeWidth": 1.6, "rx": 10, "align": "center",
+            "icon": "saas_globe", "iconPos": "left", "iconSize": 22, "padL": 42,
+            "lines": [
+                {"text": _cc.fit_single_line_px(caller.get("title", "Client / Agent"), 290, 12, bold=True)[0], "bold": True, "size": 11.8, "color": "#0F172A"},
+                {"text": _cc.fit_single_line_px(caller.get("subtitle", "OIDC / JWT"), 290, 9.5)[0], "size": 9.4, "color": "#475569", "gapTop": 2},
+            ],
+        },
+    ]
+    # Routing hub inner cards
+    for i in range(3):
+        nd = rh_nodes[i] if i < len(rh_nodes) else {"title": f"Security Control {i+1}", "subtitle": "Edge check", "icon": "cloud_armor"}
+        cards.append(_small_card(f"rh_s{i}", 96, 290 + i * 70, 290, 56, nd.get("title", ""), nd.get("subtitle", ""), nd.get("icon", "cloud_armor")))
+    cards.append(_small_card("rh_alb", 560, 316, 300, 62, alb_d.get("title", "External ALB"), alb_d.get("subtitle", "TLS 1.3 termination"), alb_d.get("icon", "cloud_load_balancing")))
+    cards.append(_small_card("rh_run", 560, 412, 300, 62, run_d.get("title", "Cloud Run v2"), run_d.get("subtitle", "Stateless API gateway"), run_d.get("icon", "cloud_run")))
+
+    # Governance hub inner cards
+    for i in range(3):
+        nd = gh_nodes[i] if i < len(gh_nodes) else {"title": f"Governance {i+1}", "subtitle": "Audit & IAM", "icon": "scc"}
+        cards.append(_small_card(f"gh_n{i}", 1042, 290 + i * 70, 426, 56, nd.get("title", ""), nd.get("subtitle", ""), nd.get("icon", "scc")))
+
+    # Dual bottom spokes (Spoke A gold #FEF7E0 vs Spoke B rose #FCE8E6)
+    def _build_spoke(prefix: str, bx: int, cfg: Dict[str, Any], def_title: str, def_sub: str, def_nodes: List[Dict[str, str]]) -> None:
+        ns = cfg.get("nodes") or def_nodes
+        while len(ns) < 4:
+            ns.append(def_nodes[len(ns)])
+        # Top-left safety / model card, top-right compute card, bottom-left LLM/tool card, bottom-right datastore card
+        cards.append(_small_card(f"{prefix}_guard", bx + 26, 628, 250, 56, ns[0].get("title", ""), ns[0].get("subtitle", ""), ns[0].get("icon", "model_armor")))
+        cards.append(_small_card(f"{prefix}_eng",   bx + 368, 628, 276, 56, ns[1].get("title", ""), ns[1].get("subtitle", ""), ns[1].get("icon", "vertex_ai")))
+        cards.append(_small_card(f"{prefix}_llm",   bx + 26, 742, 250, 56, ns[2].get("title", ""), ns[2].get("subtitle", ""), ns[2].get("icon", "gemini")))
+        cards.append(_small_card(f"{prefix}_store", bx + 368, 742, 276, 56, ns[3].get("title", ""), ns[3].get("subtitle", ""), ns[3].get("icon", "spanner")))
+
+    _build_spoke(
+        "spa", 84, sp_a,
+        "Spoke A · Online Sync & Tenant A Isolation", "Primary low-latency read / reasoning path",
+        [
+            {"title": "FGAC & Policy Filter", "subtitle": "Parameterized role check", "icon": "cloud_iam"},
+            {"title": "Sync Read Orchestrator", "subtitle": "Hybrid graph + vector", "icon": "adk"},
+            {"title": "Gemini 2.5 Reasoning", "subtitle": "Grounded response synth", "icon": "gemini"},
+            {"title": "Primary Data Store", "subtitle": "Bi-temporal read view", "icon": "spanner"},
+        ],
     )
-    svg_parts.append("</svg>")
-    drawio_xml = _wrap_mxfile(slug, "async", "Async Lifecycle Loop", mx_cells)
-    viewer_url = build_viewer_url(drawio_xml, f"{slug}-async", "Async Lifecycle Loop")
-    return drawio_xml, "\n".join(svg_parts), viewer_url, icon_count
+    _build_spoke(
+        "spb", 826, sp_b,
+        "Spoke B · Mutation, Audit & Tenant B Isolation", "Deterministic supersede & export path",
+        [
+            {"title": "CMEK & Crypto Guard", "subtitle": "Per-tenant KMS binding", "icon": "cloud_kms"},
+            {"title": "Write / Tombstone Engine", "subtitle": "Atomic commit & supersede", "icon": "cloud_run"},
+            {"title": "Change Stream Pipeline", "subtitle": "Async CDC & enrichment", "icon": "api_gateway"},
+            {"title": "Analytics & Archival", "subtitle": "BigQuery + GCS snapshot", "icon": "bigquery"},
+        ],
+    )
+
+    zones = [
+        {"id": "z_perim", "x": 46, "y": 194, "w": 1508, "h": 656, "rx": 12, "fill": "none", "stroke": "#334155", "strokeWidth": 1.1, "title": perim_lbl, "titleColor": "#0F172A", "titleSize": 10.5},
+        {"id": "z_vpc", "x": 62, "y": 222, "w": 1476, "h": 616, "rx": 10, "fill": "none", "stroke": "#475569", "strokeWidth": 1.0, "title": vpc_lbl, "titleColor": "#334155", "titleSize": 10.2},
+        # Routing Hub (soft Google Blue)
+        {"id": "z_rhub", "x": 82, "y": 250, "w": 814, "h": 244, "rx": 12, "fill": "#D2E3FC", "stroke": "#1A73E8", "strokeWidth": 1.3,
+         "title": _cc.strip_md(rh.get("title") or "Routing Hub (Ingress & Policy Enforcement)"),
+         "subtitle": _cc.strip_md(rh.get("subtitle") or "Central authentication, WAF enforcement & private service proxy"), "titleColor": "#0F172A", "titleSize": 11.8},
+        # Governance Hub (soft Google Green)
+        {"id": "z_ghub", "x": 1014, "y": 250, "w": 494, "h": 244, "rx": 12, "fill": "#CEEAD6", "stroke": "#188038", "strokeWidth": 1.3,
+         "title": _cc.strip_md(gh.get("title") or "Central Governance & Security Hub"),
+         "subtitle": _cc.strip_md(gh.get("subtitle") or "Shared posture monitoring, KMS rotation & audit logs"), "titleColor": "#0F172A", "titleSize": 11.8},
+        # Spoke A outer boundary & gold inner card
+        {"id": "z_sp_a_out", "x": 82, "y": 546, "w": 680, "h": 276, "rx": 12, "fill": "none", "stroke": "#475569", "strokeWidth": 1.1,
+         "title": _cc.strip_md(sp_a.get("outerLabel") or "Isolation Boundary A • Primary Request & Read Scope"), "titleColor": "#0F172A", "titleSize": 9.8},
+        {"id": "z_sp_a", "x": 96, "y": 572, "w": 652, "h": 240, "rx": 10, "fill": "#FEF7E0", "stroke": "#D97706", "strokeWidth": 1.2,
+         "title": _cc.strip_md(sp_a.get("title") or "Workload Path A (Enterprise Read / Sync)"),
+         "subtitle": _cc.strip_md(sp_a.get("subtitle") or "Fine-grained access control & grounded inference"), "titleColor": "#0F172A", "titleSize": 11.2},
+        # Spoke B outer boundary & rose inner card
+        {"id": "z_sp_b_out", "x": 824, "y": 546, "w": 680, "h": 276, "rx": 12, "fill": "none", "stroke": "#475569", "strokeWidth": 1.1,
+         "title": _cc.strip_md(sp_b.get("outerLabel") or "Isolation Boundary B • Mutation, Crypto-Erasure & Audit Scope"), "titleColor": "#0F172A", "titleSize": 9.8},
+        {"id": "z_sp_b", "x": 838, "y": 572, "w": 652, "h": 240, "rx": 10, "fill": "#FCE8E6", "stroke": "#C5221F", "strokeWidth": 1.2,
+         "title": _cc.strip_md(sp_b.get("title") or "Workload Path B (Write / Supersede / Export)"),
+         "subtitle": _cc.strip_md(sp_b.get("subtitle") or "Deterministic versioning, CMEK protection & BigQuery sink"), "titleColor": "#0F172A", "titleSize": 11.2},
+    ]
+
+    edges = [
+        # Top Request (1) / Response (7) pipes
+        {"id": "ca_e_req", "rawPoints": [(760, 108), (760, 316)], "stroke": "#0F172A", "strokeWidth": 1.8},
+        {"id": "ca_e_rsp", "rawPoints": [(826, 316), (826, 108)], "stroke": "#0F172A", "strokeWidth": 1.8},
+        # Routing hub internal security checks
+        {"id": "ca_e_waf", "rawPoints": [(386, 318), (528, 318), (528, 336), (560, 336)], "stroke": "#0F172A", "strokeWidth": 1.4, "bidirectional": True},
+        {"id": "ca_e_dlp", "rawPoints": [(386, 388), (528, 388), (528, 358), (560, 358)], "stroke": "#0F172A", "strokeWidth": 1.4, "bidirectional": True},
+        {"id": "ca_e_iap", "rawPoints": [(386, 458), (560, 458)], "stroke": "#0F172A", "strokeWidth": 1.4, "bidirectional": True},
+        # ALB <-> Run
+        {"id": "ca_e_alb_run", "rawPoints": [(668, 378), (668, 412)], "stroke": "#0F172A", "strokeWidth": 1.6},
+        {"id": "ca_e_run_alb", "rawPoints": [(750, 412), (750, 378)], "stroke": "#0F172A", "strokeWidth": 1.6},
+        # Run -> Spoke A / Spoke B split bus
+        {"id": "ca_e_bus_a", "rawPoints": [(690, 474), (690, 520), (420, 520), (420, 546)], "stroke": "#0F172A", "strokeWidth": 1.8},
+        {"id": "ca_e_bus_b", "rawPoints": [(728, 474), (728, 520), (1164, 520), (1164, 546)], "stroke": "#0F172A", "strokeWidth": 1.8},
+        # Telemetry dashed feed from both spokes to Governance Hub
+        {"id": "ca_e_gov_a", "rawPoints": [(600, 546), (600, 532), (1260, 532), (1260, 494)], "stroke": "#188038", "strokeWidth": 1.5, "dashed": True},
+        {"id": "ca_e_gov_b", "rawPoints": [(1260, 546), (1260, 494)], "stroke": "#188038", "strokeWidth": 1.5, "dashed": True},
+        # Inside Spoke A
+        {"id": "ca_a1", "rawPoints": [(360, 656), (452, 656)], "stroke": "#0F172A", "strokeWidth": 1.4, "bidirectional": True},
+        {"id": "ca_a2", "rawPoints": [(588, 684), (588, 742)], "stroke": "#0F172A", "strokeWidth": 1.4, "bidirectional": True},
+        {"id": "ca_a3", "rawPoints": [(360, 770), (452, 770)], "stroke": "#0F172A", "strokeWidth": 1.4, "bidirectional": True},
+        # Inside Spoke B
+        {"id": "ca_b1", "rawPoints": [(1102, 656), (1194, 656)], "stroke": "#0F172A", "strokeWidth": 1.4, "bidirectional": True},
+        {"id": "ca_b2", "rawPoints": [(1330, 684), (1330, 742)], "stroke": "#0F172A", "strokeWidth": 1.4, "bidirectional": True},
+        {"id": "ca_b3", "rawPoints": [(1102, 770), (1194, 770)], "stroke": "#0F172A", "strokeWidth": 1.4, "bidirectional": True},
+    ]
+
+    badges = [
+        {"id": "cb_1", "cx": 760, "cy": 134, "r": 12, "text": "1", "fill": "#1967D2"},
+        {"id": "cb_7t", "cx": 826, "cy": 134, "r": 12, "text": "7", "fill": "#1967D2"},
+        {"id": "cb_2", "cx": 668, "cy": 395, "r": 11, "text": "2", "fill": "#1967D2"},
+        {"id": "cb_7m", "cx": 750, "cy": 395, "r": 11, "text": "7", "fill": "#1967D2"},
+        {"id": "cb_3", "cx": 524, "cy": 520, "r": 11, "text": "3", "fill": "#1967D2"},
+        {"id": "cb_4", "cx": 406, "cy": 656, "r": 11, "text": "4", "fill": "#1967D2"},
+        {"id": "cb_5", "cx": 406, "cy": 770, "r": 11, "text": "5", "fill": "#1967D2"},
+        {"id": "cb_6", "cx": 588, "cy": 713, "r": 11, "text": "6", "fill": "#1967D2"},
+    ]
+
+    labels = [
+        {"id": "cl_req", "x": 676, "y": 124, "w": 68, "h": 20, "text": "Request", "size": 10.5, "color": "#0F172A", "align": "right", "bold": False},
+        {"id": "cl_rsp", "x": 844, "y": 124, "w": 76, "h": 20, "text": "Response", "size": 10.5, "color": "#0F172A", "align": "left", "bold": False},
+        {"id": "cl_waf", "x": 396, "y": 298, "w": 118, "h": 16, "text": "Security policies", "size": 9.2, "color": "#1E293B", "align": "center", "bold": False},
+        {"id": "cl_dlp", "x": 396, "y": 366, "w": 118, "h": 16, "text": "Sanitize & screen", "size": 9.2, "color": "#1E293B", "align": "center", "bold": False},
+        {"id": "cl_iap", "x": 404, "y": 438, "w": 134, "h": 16, "text": "User authentication", "size": 9.2, "color": "#1E293B", "align": "center", "bold": False},
+        {"id": "cl_bus", "x": 544, "y": 500, "w": 138, "h": 16, "text": "Route to boundary", "size": 9.2, "color": "#0F172A", "align": "center", "bold": False},
+        {"id": "cl_gov", "x": 1272, "y": 508, "w": 220, "h": 18, "text": "Security & telemetry audit spans", "size": 9.2, "color": "#137333", "align": "left", "bold": False},
+        {"id": "cl_a_rw", "x": 604, "y": 702, "w": 110, "h": 18, "text": "Scoped RAG / SQL", "size": 9.0, "color": "#78350F", "align": "left", "bold": False},
+        {"id": "cl_b_rw", "x": 1344, "y": 702, "w": 124, "h": 18, "text": "Atomic commit / CDC", "size": 9.0, "color": "#991B1B", "align": "left", "bold": False},
+    ]
+
+    return {
+        "id": f"{slug}-cloudarch",
+        "diagramName": "Figure 2 - Cloud Arch Center",
+        "title": f"Cloud Architecture Center Hub-and-Spoke Blueprint: {title}",
+        "subtitle": "Numbered flow steps (1..7) inside VPC Service Controls Organization Perimeter with dual workload isolation spokes",
+        "titleY": 8,
+        "titleSize": 16.5,
+        "titleColor": "#174EA6",
+        "gcpBezel": {"x": 28, "y": 146, "w": 1544, "h": 726, "label": "Google Cloud"},
+        "zones": zones,
+        "labels": labels,
+        "cards": cards,
+        "circleBadges": badges,
+        "edges": edges,
+    }
+
+
+def compile_cloudarch_v3(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
+    spec = build_cloudarch_spec_v3(bp, slug)
+    xml = _cc.compile_spec_to_drawio_xml(spec)
+    svg = _cc.compile_spec_to_svg(spec)
+    val = _cc.validate_spec_geometry(spec)
+    url = _cc.build_viewer_url(xml, f"{slug}-cloudarch", f"{bp.get('title', 'Architecture')} — Cloud Arch Center")
+    return xml, svg, url, val["iconCount"]
+
+
+# ===========================================================================
+# FIGURE 3: WS1 ACTIVATION-BAR SEQUENCE SWIMLANE (C4 L3)
+# (matching ws1-c4-l3-process-sequence-swimlane.drawio.png)
+# ===========================================================================
+
+def build_sequence_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
+    title = _cc.strip_md(bp.get("title") or "Request Lifecycle")
+    sq = bp.get("sequenceDiagram") or {}
+    raw_actors = sq.get("actors") or bp.get("sequenceActors") or []
+    default_actors = [
+        {"box": "CALLER", "label": "Client / Agent", "planes": []},
+        {"box": "HOP 1", "label": "Edge & Auth (ALB / IAP)", "planes": ["CONTROL"]},
+        {"box": "HOP 2–3", "label": "API & Orchestrator", "planes": ["CONTROL", "COMPUTE"]},
+        {"box": "HOP 4", "label": "AI Model & Guardrails", "planes": ["CONTROL", "COMPUTE"]},
+        {"box": "HOP 5", "label": "Data Store & Audit", "planes": ["COMPUTE", "DATA"]},
+    ]
+    actors: List[Dict[str, Any]] = []
+    for i in range(5):
+        if i < len(raw_actors) and isinstance(raw_actors[i], dict):
+            a = raw_actors[i]
+            actors.append({
+                "box": _cc.strip_md(a.get("box") or default_actors[i]["box"]),
+                "label": _cc.strip_md(a.get("label") or default_actors[i]["label"]),
+                "planes": a.get("planes") if isinstance(a.get("planes"), list) else default_actors[i]["planes"],
+            })
+        else:
+            actors.append(default_actors[i])
+
+    # X centers matching WS1 swimlane cadence
+    lane_x = [132, 404, 678, 952, 1252]
+    bar_colors = ["#0F172A", "#0D7377", "#475569", "#1E7E74", "#0B2545"]
+    cards: List[Dict[str, Any]] = []
+    pills: List[Dict[str, Any]] = []
+    labels: List[Dict[str, Any]] = []
+    lifelines: List[Dict[str, Any]] = []
+    circle_badges: List[Dict[str, Any]] = []
+
+    # Horizontal timeline guide arrow right under actor labels
+    lifelines.append({"id": "ll_top_guide", "x1": 132, "y1": 228, "x2": 1492, "y2": 228, "stroke": "#CBD5E1", "strokeWidth": 1.6, "dashed": False, "arrowEnd": True})
+
+    for i, a in enumerate(actors):
+        cx = lane_x[i]
+        btxt, bfs = _cc.fit_single_line_px(a["box"], 88, 10.5, bold=True)
+        cards.append({
+            "id": f"act_hdr_{i}", "x": cx - 50, "y": 116, "w": 100, "h": 40,
+            "fill": "#FFFFFF", "stroke": "#1E293B" if i == 0 else "#0D7377" if i in (1, 3) else "#475569",
+            "strokeWidth": 1.5, "dashed": i in (1, 3), "rx": 6, "align": "center",
+            "lines": [{"text": btxt, "bold": True, "size": bfs, "color": "#0F172A" if i == 0 else "#0F4C5C"}],
+        })
+        px_cur = cx + 58
+        for p_idx, pname in enumerate(a["planes"][:2]):
+            pn = str(pname).upper()
+            if pn not in PLANE_PALETTE:
+                pn = "CONTROL"
+            pw = _pick_pill_w(pn, min_w=54, pad=14)
+            pills.append({"id": f"apill_{i}_{p_idx}", "plane": pn, "text": pn, "x": px_cur, "y": 127, "w": pw, "h": 18})
+            px_cur += pw + 6
+        ltxt, lfs = _cc.fit_single_line_px(a["label"], 195, 11.2, bold=True)
+        labels.append({"id": f"act_lbl_{i}", "x": cx - 98, "y": 170, "w": 196, "h": 22, "text": ltxt, "size": lfs, "color": "#202124", "align": "center"})
+        # Dashed lifeline drop down to bottom
+        lifelines.append({"id": f"ll_v_{i}", "x1": cx, "y1": 240, "x2": cx, "y2": 782, "stroke": "#CBD5E1", "strokeWidth": 1.4, "dashed": True})
+        # Hub circle dot on top timeline
+        circle_badges.append({"id": f"hub_{i}", "cx": cx, "cy": 228, "r": 11, "fill": bar_colors[i], "text": ""})
+
+    # Thick stepped activation bars (exact WS1 choreography)
+    bars = [
+        {"id": "bar_0", "x": lane_x[0] - 9, "y": 262, "w": 18, "h": 92, "fill": bar_colors[0]},
+        {"id": "bar_1", "x": lane_x[1] - 9, "y": 274, "w": 18, "h": 162, "fill": bar_colors[1]},
+        {"id": "bar_2", "x": lane_x[2] - 9, "y": 362, "w": 18, "h": 152, "fill": bar_colors[2]},
+        {"id": "bar_3", "x": lane_x[3] - 9, "y": 442, "w": 18, "h": 222, "fill": bar_colors[3]},
+        {"id": "bar_4", "x": lane_x[4] - 9, "y": 608, "w": 18, "h": 188, "fill": bar_colors[4]},
+    ]
+
+    # Steps (extract from rich sequenceDiagram or fallback sequenceSteps)
+    raw_steps = sq.get("steps") or []
+    legacy_steps = bp.get("sequenceSteps") or []
+    def_steps = [
+        {"title": "OIDC / Bearer Token Proof", "detail": "Signed client request ingress", "wire": "HTTPS TLS 1.3 + JWT"},
+        {"title": "Edge Strip & Policy Verify", "detail": "Cloud Armor WAF + IAP assertion", "wire": "Internal mTLS + trace ID"},
+        {"title": "Parse & Authorize Context", "detail": "Validate tenant claims & quota", "wire": "gRPC / JSON-RPC dispatch"},
+        {"title": "Embeddings & Model Armor", "detail": "Vertex AI inference + DLP check", "wire": "Vector + GQL params"},
+        {"title": "Guardrail & Role Binding", "detail": "Bind tenant scope & valid_at", "wire": "GRAPH_TABLE / SQL txn"},
+        {"title": "0 Foreign Rows + OTel", "detail": "Audited result & trace span", "wire": "HTTP 200 JSON"},
+    ]
+    step_list: List[Dict[str, str]] = []
+    for i in range(6):
+        if i < len(raw_steps) and isinstance(raw_steps[i], dict):
+            s = raw_steps[i]
+            step_list.append({
+                "title": _cc.strip_md(s.get("title") or s.get("label") or def_steps[i]["title"]),
+                "detail": _cc.strip_md(s.get("detail") or s.get("protocol") or def_steps[i]["detail"]),
+                "wire": _cc.strip_md(s.get("wire") or s.get("arrowLabel") or def_steps[i]["wire"]),
+            })
+        elif i < len(legacy_steps) and isinstance(legacy_steps[i], dict):
+            s = legacy_steps[i]
+            step_list.append({
+                "title": _cc.strip_md(s.get("label") or def_steps[i]["title"]),
+                "detail": _cc.strip_md(s.get("protocol") or def_steps[i]["detail"]),
+                "wire": _cc.strip_md(f"{s.get('protocol', 'HTTPS')} -> {s.get('to', '')}"),
+            })
+        else:
+            step_list.append(def_steps[i])
+
+    # Stepped tinted step callouts + bold numbered circles
+    callout_cfg = [
+        (0, lane_x[0] + 58, 250, 194, 48, "#F8FAFC", "#CBD5E1", "#0F172A", lane_x[0] + 32, 274, bar_colors[0]),
+        (1, lane_x[1] + 58, 330, 194, 48, "#FEF7E0", "#FCD34D", "#92400E", lane_x[1] + 32, 354, bar_colors[1]),
+        (2, lane_x[2] + 58, 408, 194, 48, "#E8F0FE", "#93C5FD", "#174EA6", lane_x[2] + 32, 432, bar_colors[2]),
+        (3, lane_x[3] + 58, 444, 218, 52, "#ECFDF5", "#6EE7B7", "#065F46", lane_x[3] + 32, 470, bar_colors[3]),
+        (5, lane_x[4] + 58, 614, 240, 56, "#ECFDF5", "#6EE7B7", "#065F46", lane_x[4] + 32, 642, bar_colors[4]),
+    ]
+    for sidx, cx, cy, cw, ch, bg, bd, fg, bx, by, bcol in callout_cfg:
+        st = step_list[sidx]
+        t_s, f_s = _cc.fit_single_line_px(st["title"], cw - 20, 10.4, bold=True)
+        d_s, f_d = _cc.fit_single_line_px(st["detail"], cw - 20, 9.0)
+        badge_num = str(sidx + 1 if sidx < 4 else 6)
+        circle_badges.append({"id": f"sb_{sidx}", "cx": bx, "cy": by, "r": 15, "text": badge_num, "fill": bcol, "fontSize": 12.0})
+        cards.append({
+            "id": f"scard_{sidx}", "x": cx, "y": cy, "w": cw, "h": ch,
+            "fill": bg, "stroke": bd, "strokeWidth": 1.2, "rx": 8, "padL": 11, "padR": 10,
+            "lines": [{"text": t_s, "bold": True, "size": f_s, "color": fg}, {"text": d_s, "size": f_d, "color": "#334155", "gapTop": 2}],
+        })
+
+    # Step 5 badge + soft rose binding card + dark chip (matching WS1 RLS + 3LO motif)
+    s5 = step_list[4]
+    circle_badges.append({"id": "sb_4", "cx": lane_x[3] + 34, "cy": 640, "r": 16, "text": "5", "fill": bar_colors[3], "fontSize": 12.5})
+    cards.append({
+        "id": "scard_guard_tag", "x": lane_x[3] - 126, "y": 606, "w": 104, "h": 28,
+        "fill": "#475569", "stroke": "none", "rx": 6, "align": "center",
+        "lines": [{"text": _cc.fit_single_line_px(sq.get("guardBadge") or "FGAC + Bind", 90, 9.2, bold=True)[0], "bold": True, "size": 9.2, "color": "#FFFFFF"}],
+    })
+    cards.append({
+        "id": "scard_guard_box", "x": lane_x[2] + 14, "y": 644, "w": 238, "h": 50,
+        "fill": "#FEF2F2", "stroke": "#FCA5A5", "strokeWidth": 1.2, "rx": 8, "padL": 12,
+        "lines": [
+            {"text": _cc.fit_single_line_px(s5["title"], 228, 10.6, bold=True)[0], "bold": True, "size": 10.4, "color": "#991B1B"},
+            {"text": _cc.fit_single_line_px(s5["detail"], 228, 9.2)[0], "size": 9.2, "color": "#334155", "gapTop": 2},
+        ],
+    })
+
+    # Highlighted middle optimization / cache card between lane 3 & lane 4
+    hl = sq.get("highlightBox") or {
+        "title": "Strongly Consistent Read Snapshot",
+        "subtitle": "Combined vector + graph + temporal filter",
+        "metric": "Exact point-in-time isolation • Zero cross-store drift",
+    }
+    cards.append({
+        "id": "seq_hl_box", "x": lane_x[3] + 18, "y": 512, "w": 262, "h": 82,
+        "fill": "#E6F4EA", "stroke": "#188038", "strokeWidth": 1.3, "rx": 8, "align": "center",
+        "lines": [
+            {"text": _cc.fit_single_line_px(hl.get("title", ""), 238, 10.6, bold=True)[0], "bold": True, "size": 10.5, "color": "#065F46"},
+            {"text": _cc.fit_single_line_px(hl.get("subtitle", ""), 238, 9.4, bold=True)[0], "bold": True, "size": 9.3, "color": "#065F46", "gapTop": 2},
+            {"text": _cc.fit_single_line_px(hl.get("metric", ""), 238, 8.9)[0], "size": 8.9, "color": "#1E293B", "gapTop": 6},
+        ],
+    })
+
+    # OTel 200 dark telemetry confirmation chip beside final bar
+    otel_bullets = sq.get("otelBullets") or ["Enforce FGAC / zero leakage", "Zero-PII audit trace emit"]
+    cards.append({
+        "id": "seq_otel_panel", "x": lane_x[4] + 22, "y": 698, "w": 266, "h": 86,
+        "fill": "#F8FAFC", "stroke": "#CBD5E1", "strokeWidth": 1.1, "rx": 8, "padL": 14, "padR": 78,
+        "lines": [
+            {"text": "• " + _cc.fit_single_line_px(str(b), 160, 9.0)[0], "size": 8.9, "color": "#334155", "gapTop": 3 if i else 0}
+            for i, b in enumerate(otel_bullets[:3])
+        ],
+    })
+    cards.append({
+        "id": "seq_otel_chip", "x": lane_x[4] + 216, "y": 714, "w": 58, "h": 54,
+        "fill": "#0F172A", "stroke": "none", "rx": 6, "align": "center", "allowOverlap": True,
+        "lines": [{"text": "OTel", "bold": True, "size": 9.8, "color": "#FFFFFF"}, {"text": "200", "bold": True, "size": 9.8, "color": "#6EE7B7", "gapTop": 2}],
+    })
+
+    # Horizontal transfer arrows between activation bars
+    edges = [
+        {"id": "se_1", "rawPoints": [(lane_x[0] + 9, 322), (lane_x[1] - 11, 322)], "stroke": bar_colors[0], "strokeWidth": 1.8, "label": _cc.fit_single_line_px(step_list[0]["wire"], 210, 9.0, bold=True)[0], "labelX": (lane_x[0] + lane_x[1]) / 2, "labelY": 310, "labelBg": False},
+        {"id": "se_2", "rawPoints": [(lane_x[1] + 9, 412), (lane_x[2] - 11, 412)], "stroke": bar_colors[1], "strokeWidth": 1.8, "label": _cc.fit_single_line_px(step_list[1]["wire"], 210, 9.0, bold=True)[0], "labelX": (lane_x[1] + lane_x[2]) / 2, "labelY": 398, "labelBg": False, "labelColor": "#065F46"},
+        {"id": "se_3", "rawPoints": [(lane_x[2] + 9, 492), (lane_x[3] - 11, 492)], "stroke": bar_colors[2], "strokeWidth": 1.8, "label": _cc.fit_single_line_px(step_list[2]["wire"], 210, 9.0, bold=True)[0], "labelX": (lane_x[2] + lane_x[3]) / 2, "labelY": 478, "labelBg": False},
+        {"id": "se_4", "rawPoints": [(lane_x[3] + 9, 662), (lane_x[4] - 11, 662)], "stroke": bar_colors[4], "strokeWidth": 1.8, "label": _cc.fit_single_line_px(step_list[4]["wire"], 220, 9.0, bold=True)[0], "labelX": (lane_x[3] + lane_x[4]) / 2, "labelY": 648, "labelBg": False},
+    ]
+
+    # Bottom 3 connected summary milestone cards (`y=720..812`)
+    summaries = sq.get("stageSummaries") or [
+        {"title": "1. Ingress Strip & Verify", "headline": "External ALB + Cloud Armor + IAP", "detail": "Short-lived ECDSA / OIDC assertion"},
+        {"title": "2. Context, Filter & AI", "headline": "Stateless API + Model Guardrails", "detail": "DLP screening & bounded latency"},
+        {"title": "3. Enforced Store & Audit", "headline": "Fine-Grained Access + OTel Span", "detail": "0 cross-tenant rows • Immutable logs"},
+    ]
+    sum_styles = [("#FEF2F2", "#DC2626", "#991B1B"), ("#EFF6FF", "#2563EB", "#1D4ED8"), ("#ECFDF5", "#059669", "#047857")]
+    for i in range(3):
+        sm = summaries[i] if i < len(summaries) else summaries[-1]
+        sx = 64 + i * 388
+        bg, bd, tc = sum_styles[i]
+        cards.append({
+            "id": f"sum_{i}", "x": sx, "y": 726, "w": 348, "h": 92,
+            "fill": bg, "stroke": bd, "strokeWidth": 1.4, "rx": 10, "align": "center",
+            "lines": [
+                {"text": _cc.fit_single_line_px(sm.get("title", ""), 320, 11.4, bold=True)[0], "bold": True, "size": 11.4, "color": tc},
+                {"text": _cc.fit_single_line_px(sm.get("headline", ""), 320, 10.6, bold=True)[0], "bold": True, "size": 10.4, "color": "#0F172A", "gapTop": 4},
+                {"text": _cc.fit_single_line_px(sm.get("detail", ""), 320, 9.5)[0], "size": 9.4, "color": "#475569", "gapTop": 3},
+            ],
+        })
+        if i < 2:
+            edges.append({"id": f"se_sum_{i}", "rawPoints": [(sx + 348, 772), (sx + 388, 772)], "stroke": "#1A73E8" if i == 0 else "#059669", "strokeWidth": 1.8})
+
+    leg_in = sq.get("legendStrip") or {}
+    plane_legend = [
+        {"id": "pl_ctl", "plane": "CONTROL", "x": 64, "y": 844, "w": 476, "h": 24, "text": leg_in.get("control") or "Edge ALB/WAF, IAP auth verification, policy guard & telemetry"},
+        {"id": "pl_cmp", "plane": "COMPUTE", "x": 556, "y": 844, "w": 484, "h": 24, "text": leg_in.get("compute") or "Stateless API runtime, embedding call & grounded reasoning lane"},
+        {"id": "pl_dat", "plane": "DATA", "x": 1056, "y": 844, "w": 480, "h": 24, "text": leg_in.get("data") or "Cache / scoped keys, primary datastore isolation & audit logs"},
+    ]
+
+    return {
+        "id": f"{slug}-sequence",
+        "diagramName": "Figure 3 - Request Sequence",
+        "title": f"Request Lifecycle & Execution Sequence — {title}",
+        "quadTopBar": True,
+        "titleY": 30,
+        "titleSize": 19.5,
+        "dividerY": 80,
+        "lifelines": lifelines,
+        "labels": labels,
+        "bars": bars,
+        "cards": cards,
+        "pills": pills,
+        "circleBadges": circle_badges,
+        "edges": edges,
+        "planeLegend": plane_legend,
+    }
+
+
+def compile_sequence_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
+    spec = build_sequence_spec_v3(bp, slug)
+    xml = _cc.compile_spec_to_drawio_xml(spec)
+    svg = _cc.compile_spec_to_svg(spec)
+    return xml, svg, _cc.build_viewer_url(xml, f"{slug}-sequence", f"{bp.get('title', '')} — Sequence"), 5
+
+
+# ===========================================================================
+# FIGURE 4: DEFENSE-IN-DEPTH TRUST PERIMETER & THREAT MATRIX (C4 L1)
+# ===========================================================================
+
+def build_security_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
+    title = _cc.strip_md(bp.get("title") or "Security Boundary")
+    sd = bp.get("securityDiagram") or {}
+    layers = sd.get("layers") or [
+        {"layer": "L1 · EDGE INGRESS & WAF", "name": "Cloud Armor WAF & External ALB", "detail": "OWASP L7 rules, adaptive DDoS throttling & untrusted header stripping", "iconKey": "cloud_armor"},
+        {"layer": "L2 · IDENTITY & NETWORK PERIMETER", "name": "Identity-Aware Proxy & VPC-SC", "detail": "Zero-trust ECDSA JWT assertion, OIDC / WIF federation & egress perimeter", "iconKey": "iap"},
+        {"layer": "L3 · APPLICATION & DATA ACCESS", "name": "Least-Privilege IAM & FGAC", "detail": "Dedicated service account, internal-only Cloud Run ingress & scoped database roles", "iconKey": "cloud_iam"},
+        {"layer": "L4 · DATA AT REST & CRYPTOGRAPHIC BOUNDARY", "name": "Cloud KMS CMEK & TLS 1.3", "detail": "Customer-managed keys, rotation/kill-switch support & mTLS transit encryption", "iconKey": "cloud_kms"},
+    ]
+    threats = sd.get("threats") or [
+        {"id": "T-01", "vector": "Untrusted Header / Identity Spoof", "control": "ALB strips X-Tenant-ID; IAP signs verifiable ECDSA P-256 assertion"},
+        {"id": "T-02", "vector": "Cross-Tenant / Indirect Injection", "control": "Fine-grained DB roles + parameterized queries + inline Model Armor screening"},
+        {"id": "T-03", "vector": "Data Exfiltration via Egress", "control": "VPC Service Controls org perimeter & zero public allUsers IAM bindings"},
+        {"id": "T-04", "vector": "Stale Policy / Tampered Audit", "control": "Immutable versioned records, CMEK key revocation & zero-PII hashed logs"},
+    ]
+    breakers = sd.get("breakers") or [
+        {"code": "HTTP 401", "trigger": "Missing, expired, or unverified IAP / OIDC bearer token"},
+        {"code": "HTTP 403", "trigger": "IAM role denial, VPC-SC boundary drop, or cross-tenant scope violation"},
+        {"code": "HTTP 422", "trigger": "Malformed temporal query, schema failure, or guardrail reject"},
+        {"code": "HTTP 429", "trigger": "Per-tenant Cloud Armor rate limit or token bulkhead exceeded"},
+    ]
+
+    ring_styles = [
+        ("#EFF6FF", "#93C5FD", "#174EA6"),
+        ("#ECFDF5", "#6EE7B7", "#065F46"),
+        ("#F5F3FF", "#C4B5FD", "#5B21B6"),
+        ("#FFFBEB", "#FCD34D", "#92400E"),
+    ]
+    zones: List[Dict[str, Any]] = []
+    cards: List[Dict[str, Any]] = []
+    edges: List[Dict[str, Any]] = []
+    pills: List[Dict[str, Any]] = [
+        {"id": "sp_hdr", "plane": "CONTROL", "text": "C4 L1 · TRUST & SECURITY BOUNDARY", "x": 1358, "y": 19, "w": 210, "h": 22},
+    ]
+
+    # Concentric pastel defense rings (left x=38..1050, y=94..678)
+    for i in range(min(4, len(layers))):
+        ly = layers[i]
+        pad = i * 24
+        rx0, ry0 = 38 + pad, 94 + i * 116
+        rw, rh = 1002 - pad * 2, 580 - i * 116 - pad * 0.5
+        bg, st, tc = ring_styles[i]
+        zones.append({"id": f"sec_ring_{i}", "x": rx0, "y": ry0, "w": rw, "h": int(rh), "rx": 14, "fill": bg, "stroke": st, "strokeWidth": 1.6, "dashed": i % 2 == 0})
+        lname, _ = _cc.fit_single_line_px(ly.get("name") or f"Layer {i+1}", rw - 92, 13.5, bold=True)
+        ldet_lines = _cc.wrap_px(ly.get("detail") or "", rw - 92, 10.6, max_lines=2)
+        ic = _cc.resolve_icon_key(ly.get("iconKey", ""), ly.get("name", ""), ly.get("layer", ""))
+        cards.append({
+            "id": f"sec_card_{i}", "x": rx0 + 14, "y": ry0 + 14, "w": rw - 28, "h": 82,
+            "fill": "#FFFFFF", "stroke": st, "strokeWidth": 1.3, "rx": 10, "shadow": True,
+            "icon": ic, "iconPos": "left", "iconSize": 28, "padL": 54,
+            "lines": [
+                {"text": _cc.strip_md(ly.get("layer") or f"L{i+1}"), "bold": True, "size": 9.2, "color": tc},
+                {"text": lname, "bold": True, "size": 13.0, "color": "#202124", "gapTop": 2},
+                *[{"text": d, "size": 10.4, "color": "#5F6368", "gapTop": 2} for d in ldet_lines],
+            ],
+        })
+        if i < 3:
+            edges.append({"id": f"se_pierce_{i}", "rawPoints": [(rx0 + rw / 2, ry0 + 96), (rx0 + rw / 2, ry0 + 116)], "stroke": tc, "strokeWidth": 1.6})
+
+    # Airy Threat Matrix panel (right x=1066..1564, y=94..674)
+    zones.append({"id": "z_tmat", "x": 1068, "y": 94, "w": 496, "h": 580, "rx": 14, "fill": "#F8FAFC", "stroke": "#CBD5E1", "strokeWidth": 1.3, "title": "Threat Vector → Active Control Matrix", "titleColor": "#0F172A", "titleSize": 12.2})
+    for ti in range(min(4, len(threats))):
+        t = threats[ti]
+        ty = 138 + ti * 130
+        tid = _cc.strip_md(t.get("id") or f"T-0{ti+1}")
+        vec, vfs = _cc.fit_single_line_px(t.get("vector") or "Threat vector", 360, 11.4, bold=True)
+        ctl_lines = _cc.wrap_px(t.get("control") or "Mitigation control", 436, 10.2, max_lines=3)
+        cards.append({
+            "id": f"thr_{ti}", "x": 1086, "y": ty, "w": 460, "h": 114,
+            "fill": "#FFFFFF", "stroke": "#DADCE0", "strokeWidth": 1.2, "rx": 10, "shadow": True, "padL": 16, "padR": 16,
+            "lines": [
+                {"text": f"{tid}  ·  {vec}", "bold": True, "size": vfs, "color": "#991B1B"},
+                *[{"text": c, "size": 10.2, "color": "#334155", "gapTop": 5 if ci == 0 else 2} for ci, c in enumerate(ctl_lines)],
+            ],
+        })
+        # Subtle dashed linking arrow connecting concentric ring edge to matching threat row
+        mx_e = 1054
+        sy_e = 152 + ti * 116
+        ey_e = ty + 54
+        edges.append({"id": f"thr_lnk_{ti}", "rawPoints": [(1040 - ti * 24, sy_e), (mx_e, sy_e), (mx_e, ey_e), (1086, ey_e)], "stroke": "#94A3B8", "strokeWidth": 1.2, "dashed": True})
+
+    # Crisp cryptographic invariant badges inside L4 (eliminates empty belly)
+    inv_pills = [
+        ("CMEK Key Isolation", "Per-tenant Cloud KMS DEK"),
+        ("Zero Public allUsers", "Internal ALB + IAP ingress only"),
+        ("Immutable Audit Logs", "Zero-PII SHA-256 query trace"),
+    ]
+    for pi, (ih, isub) in enumerate(inv_pills):
+        px = 132 + pi * 270
+        cards.append({
+            "id": f"l4_inv_{pi}", "x": px, "y": 556, "w": 250, "h": 54,
+            "fill": "#FFFFFF", "stroke": "#FCD34D", "strokeWidth": 1.1, "rx": 8, "align": "center", "allowOverlap": True,
+            "lines": [{"text": ih, "bold": True, "size": 10.4, "color": "#92400E"}, {"text": isub, "size": 9.2, "color": "#5F6368", "gapTop": 2}],
+        })
+
+    # Bottom Fail-Closed Circuit Breakers (`y=708..820`)
+    zones.append({"id": "z_brk", "x": 38, "y": 706, "w": 1526, "h": 120, "rx": 12, "fill": "#F8FAFC", "stroke": "#CBD5E1", "strokeWidth": 1.2, "title": "FAIL-CLOSED HTTP CIRCUIT BREAKERS (ZERO SILENT FALLBACK)", "titleColor": "#991B1B", "titleSize": 10.6})
+    b_colors = ["#C5221F", "#B91C1C", "#6D28D9", "#B45309"]
+    for bi in range(4):
+        br = breakers[bi] if bi < len(breakers) else {"code": f"HTTP 40{bi}", "trigger": "Blocked"}
+        bx = 56 + bi * 376
+        cards.append({"id": f"brk_code_{bi}", "x": bx, "y": 742, "w": 92, "h": 64, "fill": b_colors[bi], "stroke": "none", "rx": 8, "align": "center", "lines": [{"text": _cc.strip_md(br.get("code") or "HTTP 403"), "bold": True, "size": 11.4, "mono": True, "color": "#FFFFFF"}]})
+        t_lines = _cc.wrap_px(br.get("trigger") or "", 242, 9.8, max_lines=3)
+        cards.append({
+            "id": f"brk_txt_{bi}", "x": bx + 100, "y": 742, "w": 262, "h": 64,
+            "fill": "#FFFFFF", "stroke": "#DADCE0", "strokeWidth": 1.1, "rx": 8, "padL": 10, "padR": 10,
+            "lines": [{"text": ln, "size": 9.8, "color": "#1E293B", "gapTop": 1 if li else 0} for li, ln in enumerate(t_lines)],
+        })
+
+    return {
+        "id": f"{slug}-security",
+        "diagramName": "Figure 4 - Security Boundary",
+        "title": f"Trust Perimeter & Defense-in-Depth Boundary — {title}",
+        "titleY": 14,
+        "dividerY": 54,
+        "zones": zones,
+        "cards": cards,
+        "edges": edges,
+        "pills": pills,
+        "planeLegend": [
+            {"id": "sl_1", "plane": "CONTROL", "x": 38, "y": 848, "w": 750, "h": 24, "text": "Concentric boundary enforcement: Edge WAF -> IAP JWT -> Private IAM/FGAC -> CMEK encryption"},
+            {"id": "sl_2", "plane": "SECURITY", "x": 810, "y": 848, "w": 754, "h": 24, "text": "Fail-closed default: zero public allUsers ingress, zero silent auth bypass"},
+        ],
+    }
+
+
+def compile_security_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
+    spec = build_security_spec_v3(bp, slug)
+    xml = _cc.compile_spec_to_drawio_xml(spec)
+    svg = _cc.compile_spec_to_svg(spec)
+    val = _cc.validate_spec_geometry(spec)
+    return xml, svg, _cc.build_viewer_url(xml, f"{slug}-security", f"{bp.get('title', '')} — Security Boundary"), val["iconCount"]
+
+
+# ===========================================================================
+# FIGURE 5: WIRE-PROTOCOL & PAYLOAD TRANSFORMATION (C4 L4)
+# ===========================================================================
+
+def build_wire_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
+    title = _cc.strip_md(bp.get("title") or "Wire Payload Transform")
+    wd = bp.get("wireDiagram") or {}
+    hops = wd.get("hops") or [
+        {"hop": "HOP 1 · CLIENT INGRESS", "name": "Signed HTTP Request", "transport": "HTTPS / TLS 1.3", "iconKey": "saas_globe", "added": ["+ Authorization: Bearer <OIDC>", "+ X-Request-ID / traceparent"], "stripped": ["- Any client-forged X-Tenant-ID"], "payload": "GET /v1/memory?at=2026-01-15T00:00Z\nAuthorization: Bearer eyJhbG..."},
+        {"hop": "HOP 2 · IAP AUTHZ", "name": "Verified Edge Assertion", "transport": "mTLS / HTTPS", "iconKey": "iap", "added": ["+ X-Goog-IAP-JWT-Assertion", "+ X-Cloud-Trace-Context"], "stripped": ["- Raw browser session cookie"], "payload": "sub: svc-agent@example.com\naud: /projects/248.../apps/mem-api"},
+        {"hop": "HOP 3 · RUNTIME API", "name": "Normalized Internal RPC", "transport": "gRPC / Proto", "iconKey": "cloud_run", "added": ["+ Embedding vector[768]", "+ Valid-time / assert-time params"], "stripped": ["- Inbound IAP JWT token"], "payload": "POST /v1/embeddings:embedText\n{\"valid_at\": \"2026-01-15T00:00Z\"}"},
+        {"hop": "HOP 4 · DATA QUERY", "name": "Scoped Graph/SQL Query", "transport": "gRPC / Session", "iconKey": "spanner", "added": ["+ FGAC database role binding", "+ Request priority & tag"], "stripped": ["- Plaintext prompt PII fields"], "payload": "SELECT T.policy_id, T.content\nFROM GRAPH_TABLE(AgentKnowledge...)"},
+    ]
+    while len(hops) < 4:
+        hops.append(hops[-1])
+
+    accents = [("#1A73E8", "#EFF6FF", "#93C5FD"), ("#188038", "#ECFDF5", "#81C995"), ("#B06000", "#FEF7E0", "#FCD34D"), ("#6B21A8", "#F3E8FD", "#C4B5FD")]
+    cards: List[Dict[str, Any]] = []
+    edges: List[Dict[str, Any]] = []
+    pills: List[Dict[str, Any]] = [{"id": "wp_pill", "plane": "ASYNC", "text": "C4 L4 · WIRE PAYLOAD TRANSFORMATION", "x": 1328, "y": 19, "w": 240, "h": 22}]
+
+    cw = 350
+    gap = 42
+    for i in range(4):
+        h = hops[i]
+        hx = 36 + i * (cw + gap)
+        ac, soft_bg, bd = accents[i]
+        ic = _cc.resolve_icon_key(h.get("iconKey", ""), h.get("name", ""), h.get("hop", ""))
+        h_lbl, _ = _cc.fit_single_line_px(h.get("hop") or f"HOP {i+1}", cw - 72, 9.4, bold=True)
+        h_name, hn_fs = _cc.fit_single_line_px(h.get("name") or f"Stage {i+1}", cw - 72, 13.5, bold=True)
+        h_tr, _ = _cc.fit_single_line_px(h.get("transport") or "HTTPS", cw - 72, 9.6)
+        # Outer white frame with delicate 5px colored top accent bar (NO heavy full-bleed box header!)
+        cards.append({"id": f"wh_{i}", "x": hx, "y": 98, "w": cw, "h": 722, "fill": "#FFFFFF", "stroke": "#CBD5E1", "strokeWidth": 1.3, "rx": 12, "isContainer": True, "topAccent": ac, "shadow": True, "lines": []})
+        # Subtle tinted header strip
+        cards.append({
+            "id": f"wh_hdr_{i}", "x": hx + 12, "y": 116, "w": cw - 24, "h": 74,
+            "fill": soft_bg, "stroke": bd, "strokeWidth": 1.0, "rx": 10, "allowOverlap": True,
+            "icon": ic, "iconPos": "left", "iconSize": 28, "padL": 52,
+            "lines": [
+                {"text": h_lbl, "bold": True, "size": 9.2, "color": ac},
+                {"text": h_name, "bold": True, "size": hn_fs, "color": "#0F172A", "gapTop": 2},
+                {"text": h_tr, "size": 9.4, "mono": True, "color": "#475569", "gapTop": 2},
+            ],
+        })
+        # + ADDED / BOUND section
+        added = [str(x) for x in (h.get("added") or []) if str(x).strip()][:4]
+        add_lines: List[Dict[str, Any]] = [{"text": "+ ADDED / BOUND FIELDS", "bold": True, "size": 9.2, "color": "#065F46"}]
+        for a in added:
+            at = a if a.lstrip().startswith("+") else f"+ {a}"
+            for wl in _cc.wrap_px(at, cw - 52, 9.5, mono=True, max_lines=2):
+                add_lines.append({"text": wl, "size": 9.5, "mono": True, "color": "#064E3B", "gapTop": 6 if wl.startswith("+") else 1})
+        cards.append({"id": f"wh_add_{i}", "x": hx + 12, "y": 208, "w": cw - 24, "h": 190, "fill": "#F0FDF4", "stroke": "#86EFAC", "strokeWidth": 1.0, "rx": 8, "isContainer": True, "padL": 12, "padR": 10, "padT": 12, "allowOverlap": True, "lines": add_lines})
+
+        # - STRIPPED / REJECTED section
+        stripped = [str(x) for x in (h.get("stripped") or []) if str(x).strip()][:3]
+        str_lines: List[Dict[str, Any]] = [{"text": "- STRIPPED / REJECTED", "bold": True, "size": 9.2, "color": "#991B1B"}]
+        for s in stripped:
+            st = s if s.lstrip().startswith("-") else f"- {s}"
+            for wl in _cc.wrap_px(st, cw - 52, 9.5, mono=True, max_lines=2):
+                str_lines.append({"text": wl, "size": 9.5, "mono": True, "color": "#7F1D1D", "gapTop": 6 if wl.startswith("-") else 1})
+        cards.append({"id": f"wh_str_{i}", "x": hx + 12, "y": 416, "w": cw - 24, "h": 144, "fill": "#FEF2F2", "stroke": "#FCA5A5", "strokeWidth": 1.0, "rx": 8, "isContainer": True, "padL": 12, "padR": 10, "padT": 12, "allowOverlap": True, "lines": str_lines})
+
+        # Dark WIRE SAMPLE excerpt (deterministic mono wrap!)
+        raw_pl = str(h.get("payload") or "").strip()
+        pl_lines: List[Dict[str, Any]] = [{"text": "WIRE SAMPLE", "bold": True, "size": 8.6, "mono": True, "color": "#93C5FD"}]
+        for raw_ln in raw_pl.splitlines()[:7]:
+            for wl in _cc.wrap_px(raw_ln, cw - 50, 8.7, mono=True, max_lines=3):
+                pl_lines.append({"text": wl, "size": 8.7, "mono": True, "color": "#E2E8F0", "gapTop": 2})
+        cards.append({"id": f"wh_pay_{i}", "x": hx + 12, "y": 578, "w": cw - 24, "h": 224, "fill": "#0F172A", "stroke": "#334155", "strokeWidth": 1.0, "rx": 8, "isContainer": True, "padL": 12, "padR": 10, "padT": 12, "allowOverlap": True, "lines": pl_lines[:14]})
+
+        if i < 3:
+            edges.append({"id": f"we_{i}", "rawPoints": [(hx + cw, 456), (hx + cw + gap, 456)], "stroke": "#595959", "strokeWidth": 2.2, "label": f"H{i+1}→{i+2}", "labelY": 436})
+
+    return {
+        "id": f"{slug}-wire",
+        "diagramName": "Figure 5 - Wire Payload Diff",
+        "title": f"Wire-Protocol & Envelope Transformation — {title}",
+        "titleY": 14,
+        "dividerY": 54,
+        "cards": cards,
+        "edges": edges,
+        "pills": pills,
+        "planeLegend": [
+            {"id": "wl_1", "plane": "COMPUTE", "x": 36, "y": 846, "w": 748, "h": 24, "text": "Green (+): verified identity claims, trace context & query parameters bound at hop"},
+            {"id": "wl_2", "plane": "SECURITY", "x": 808, "y": 846, "w": 756, "h": 24, "text": "Red (-): untrusted caller headers, raw tokens & PII fields stripped before forwarding"},
+        ],
+    }
+
+
+def compile_wire_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
+    spec = build_wire_spec_v3(bp, slug)
+    xml = _cc.compile_spec_to_drawio_xml(spec)
+    svg = _cc.compile_spec_to_svg(spec)
+    val = _cc.validate_spec_geometry(spec)
+    return xml, svg, _cc.build_viewer_url(xml, f"{slug}-wire", f"{bp.get('title', '')} — Wire Transform"), val["iconCount"]
+
+
+# ===========================================================================
+# FIGURE 6: ASYNC LIFECYCLE, CDC EXPORT & RECOVERY LOOP
+# ===========================================================================
+
+def build_async_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
+    title = _cc.strip_md(bp.get("title") or "Async Lifecycle Loop")
+    ad = bp.get("asyncDiagram") or {}
+    stages = ad.get("stages") or [
+        {"stage": "1. CHANGE CAPTURE", "service": "Change Streams", "cadence": "Continuous", "iconKey": "spanner", "bullets": ["Streams insert / update / delete ops", "Ordered per-partition mutations", "Zero impact on online read path", "Commit timestamp preserved"]},
+        {"stage": "2. STREAM TRANSFORM", "service": "Dataflow (Streaming)", "cadence": "Sub-second", "iconKey": "cloud_run", "bullets": ["Enriches metadata & tenant tags", "Scrubs PII via Cloud DLP", "Exactly-once window aggregation", "Routes poison pills to DLQ"]},
+        {"stage": "3. ANALYTICS LOAD", "service": "BigQuery Warehouse", "cadence": "Near real-time", "iconKey": "bigquery", "bullets": ["Partitioned by commit_date", "Point-in-time historical queries", "Cost & SLO attribution views", "Row-level policy alignment"]},
+        {"stage": "4. ARCHIVAL & DR", "service": "Cloud Storage (WORM)", "cadence": "Daily / Hourly", "iconKey": "cloud_storage", "bullets": ["Bucket-lock immutable audit snapshots", "CMEK-encrypted coldline exports", "Crypto-erasure verification log", "Multi-region RPO recovery"]},
+    ]
+    while len(stages) < 4:
+        stages.append(stages[-1])
+
+    pal_seq = [
+        ("CONTROL", "#93C5FD", "#174EA6"),
+        ("COMPUTE", "#6EE7B7", "#065F46"),
+        ("ASYNC", "#C4B5FD", "#6B21A8"),
+        ("DATA", "#FCD34D", "#B06000"),
+    ]
+    zones: List[Dict[str, Any]] = []
+    cards: List[Dict[str, Any]] = []
+    pills: List[Dict[str, Any]] = [{"id": "as_top_pill", "plane": "DATA", "text": "ASYNC · LIFECYCLE & RECOVERY LOOP", "x": 1344, "y": 19, "w": 224, "h": 22}]
+    edges: List[Dict[str, Any]] = []
+
+    sw, gap = 338, 56
+    for i in range(4):
+        st = stages[i]
+        x0 = 42 + i * (sw + gap)
+        pl, stroke, tc = pal_seq[i]
+        zones.append({"id": f"as_z_{i}", "x": x0, "y": 146, "w": sw, "h": 356, "rx": 14, "fill": "#F8F9FA", "stroke": stroke, "dashed": True, "strokeWidth": 1.4})
+        cad = _cc.strip_md(st.get("cadence") or "Async")
+        pw = _pick_pill_w(cad, min_w=76, pad=18)
+        pills.append({"id": f"as_p_{i}", "plane": pl, "text": cad, "x": x0 + sw - pw - 14, "y": 137, "w": pw, "h": 18})
+        ic = _cc.resolve_icon_key(st.get("iconKey", ""), st.get("service", ""), st.get("stage", ""))
+        svc_t, svc_fs = _cc.fit_single_line_px(st.get("service") or f"Stage {i+1}", sw - 40, 14.2, bold=True)
+        raw_b = st.get("bullets") or st.get("detail") or ""
+        blts = _norm_bullets(raw_b, 5, sw - 48, fs=10.4)
+        if blts:
+            blts[0]["gapTop"] = 10
+        lines = [
+            {"text": _cc.strip_md(st.get("stage") or f"{i+1}. STAGE"), "bold": True, "size": 9.8, "mono": True, "color": tc},
+            {"text": svc_t, "bold": True, "size": svc_fs, "color": "#202124", "gapTop": 4},
+        ] + blts[:9]
+        cards.append({"id": f"as_c_{i}", "x": x0 + 12, "y": 164, "w": sw - 24, "h": 324, "fill": "#FFFFFF", "stroke": "#DADCE0", "strokeWidth": 1.2, "rx": 12, "shadow": True, "icon": ic, "iconPos": "top", "iconSize": 38, "padL": 22, "padR": 18, "lines": lines})
+        badge_txt = _cc.strip_md(st.get("slo") or f"Stage {i+1} · {cad} · Off-Path")
+        cards.append({"id": f"as_foot_{i}", "x": x0 + 28, "y": 442, "w": sw - 56, "h": 28, "fill": PLANE_PALETTE.get(pl, PLANE_PALETTE["CONTROL"])["bg"], "stroke": stroke, "strokeWidth": 0.9, "rx": 6, "align": "center", "allowOverlap": True, "lines": [{"text": badge_txt, "bold": True, "size": 9.2, "mono": True, "color": tc}]})
+        if i < 3:
+            edges.append({"id": f"as_e_{i}", "rawPoints": [(x0 + sw, 324), (x0 + sw + gap, 324)], "stroke": "#1A73E8", "strokeWidth": 2.0, "dashed": True})
+
+    # Bottom Dead-Letter Queue, Replay & Reconciliation Hub
+    dlq_note = _cc.strip_md(ad.get("dlqNote") or "Dead-letter queue isolates malformed events without stalling live stream consumers. Alerts fire on DLQ depth > 0; exponential backoff + idempotency key ensures safe zero-duplicate replay.")
+    fb_lbl = _cc.strip_md(ad.get("feedbackLabel") or "Periodic Verification & Idempotent Reconciliation Feedback")
+    zones.append({"id": "as_dlq_z", "x": 318, "y": 584, "w": 964, "h": 176, "rx": 14, "fill": "#F8FAFC", "stroke": "#64748B", "dashed": True, "strokeWidth": 1.3})
+    cards.append({
+        "id": "as_dlq_c", "x": 334, "y": 598, "w": 932, "h": 148, "fill": "#FFFFFF", "stroke": "#DADCE0", "rx": 12, "shadow": True,
+        "isContainer": True, "icon": "cloud_monitoring", "iconPos": "top-left", "iconSize": 26, "padL": 52, "padT": 14,
+        "lines": [
+            {"text": "Fault Handling, Dead-Letter Replay & Audit Reconciliation", "bold": True, "size": 12.8, "color": "#0F172A"},
+            *[{"text": wl, "size": 10.2, "color": "#475569", "gapTop": 4 if wi == 0 else 1} for wi, wl in enumerate(_cc.wrap_px(dlq_note, 840, 10.2, max_lines=2))],
+        ],
+    })
+    chips = [
+        ("CONTROL", "Exponential Backoff + Jitter", 386, "#E8F0FE", "#8AB4F8", "#174EA6"),
+        ("COMPUTE", "Idempotency Key Verified", 674, "#E6F4EA", "#81C995", "#137333"),
+        ("SECURITY", "Alert on DLQ Depth > 0", 962, "#FCE8E6", "#F28B82", "#A50E0E"),
+    ]
+    for ci, (_, txt, cx, bg, bd, fg) in enumerate(chips):
+        cards.append({"id": f"as_chip_{ci}", "x": cx, "y": 692, "w": 252, "h": 34, "fill": bg, "stroke": bd, "strokeWidth": 1.0, "rx": 8, "align": "center", "allowOverlap": True, "lines": [{"text": txt, "bold": True, "size": 9.8, "mono": True, "color": fg}]})
+
+    edges.extend([
+        {"id": "as_err_1", "rawPoints": [(42 + 1 * (sw + gap) + sw / 2, 502), (42 + 1 * (sw + gap) + sw / 2, 584)], "stroke": "#DC2626", "strokeWidth": 1.6, "dashed": True, "label": "Retry / DLQ", "labelY": 544},
+        {"id": "as_err_2", "rawPoints": [(42 + 2 * (sw + gap) + sw / 2, 502), (42 + 2 * (sw + gap) + sw / 2, 584)], "stroke": "#DC2626", "strokeWidth": 1.6, "dashed": True, "label": "Verify Error", "labelY": 544},
+        {"id": "as_fb", "rawPoints": [(42 + 3 * (sw + gap) + sw / 2, 502), (42 + 3 * (sw + gap) + sw / 2, 814), (42 + sw / 2, 814), (42 + sw / 2, 502)], "stroke": "#137333", "strokeWidth": 1.8, "dashed": True, "label": fb_lbl, "labelX": 800, "labelY": 814},
+    ])
+
+    return {
+        "id": f"{slug}-async",
+        "diagramName": "Figure 6 - Async Lifecycle Loop",
+        "title": f"Async State, CDC Export & Reconciliation Loop — {title}",
+        "titleY": 14,
+        "dividerY": 54,
+        "zones": zones,
+        "cards": cards,
+        "pills": pills,
+        "edges": edges,
+        "planeLegend": [
+            {"id": "al_1", "plane": "DATA", "x": 42, "y": 850, "w": 1516, "h": 24, "text": "All asynchronous stream processing and DR snapshot loops run strictly off the synchronous user latency path."},
+        ],
+    }
+
+
+def compile_async_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
+    spec = build_async_spec_v3(bp, slug)
+    xml = _cc.compile_spec_to_drawio_xml(spec)
+    svg = _cc.compile_spec_to_svg(spec)
+    val = _cc.validate_spec_geometry(spec)
+    return xml, svg, _cc.build_viewer_url(xml, f"{slug}-async", f"{bp.get('title', '')} — Async Lifecycle"), val["iconCount"]
+
+
+# ===========================================================================
+# UNIFIED 6-DIAGRAM + NATIVE PPTX SLIDE XML COMPILER ENTRYPOINT
+# ===========================================================================
+
+def compile_all_v2_diagrams(bp: Dict[str, Any], slug: str) -> Dict[str, Dict[str, Any]]:
+    builders = [
+        ("architecture", build_architecture_spec_v3, "Figure 1 — Master Platform Architecture (C4 L2)", "C4 L2", 3),
+        ("cloudarch",    build_cloudarch_spec_v3,    "Figure 2 — Cloud Architecture Center Blueprint", "HUB-SPOKE", 4),
+        ("sequence",     build_sequence_spec_v3,     "Figure 3 — Request Lifecycle Sequence (C4 L3)", "C4 L3", 5),
+        ("security",     build_security_spec_v3,     "Figure 4 — Trust Perimeter & Security Boundary (C4 L1)", "C4 L1", 6),
+        ("wire",         build_wire_spec_v3,         "Figure 5 — Wire-Protocol & Schema Transformation (C4 L4)", "C4 L4", 7),
+        ("async",        build_async_spec_v3,        "Figure 6 — Async State, Export & Lifecycle Loop", "ASYNC", 8),
+    ]
+    out: Dict[str, Dict[str, Any]] = {}
+    for kind, builder, title_str, layer, slide_num in builders:
+        spec = builder(bp, slug)
+        xml = _cc.compile_spec_to_drawio_xml(spec)
+        svg = _cc.compile_spec_to_svg(spec)
+        geom = _cc.validate_spec_geometry(spec)
+        url = _cc.build_viewer_url(xml, f"{slug}-{kind}", title_str)
+        icons = geom["iconCount"] if kind != "sequence" else 5
+        slide_xml = _cc.compile_spec_to_ooxml_slide(
+            spec,
+            f"[Slide {slide_num:02d}/12 • {layer}]",
+            hlink_rid="rId10",
+        )
+        out[kind] = {
+            "id": f"{slug}-{kind}",
+            "kind": kind,
+            "layer": layer,
+            "slide": slide_num,
+            "title": title_str,
+            "label": title_str,
+            "vertexCount": xml.count('vertex="1"'),
+            "edgeCount": xml.count('edge="1"'),
+            "xml": xml,
+            "svg": svg,
+            "viewerUrl": url,
+            "iconCount": icons,
+            "geometry": geom,
+            "ooxmlSlideXml": slide_xml,
+            "drawioPath": f"diagrams/{slug}-{kind}.drawio",
+            "svgPath": f"diagrams/{slug}-{kind}.svg",
+        }
+    return out

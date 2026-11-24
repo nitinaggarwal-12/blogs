@@ -676,14 +676,14 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
             enable_tts=False,
             enable_judge=False,
         )
-        self.assertEqual(manifest["schemaVersion"], "2.0")
-        self.assertEqual(len(manifest["diagrams"]), 5)
+        self.assertEqual(manifest["schemaVersion"], "3.0")
+        self.assertEqual(len(manifest["diagrams"]), 6)
         self.assertGreaterEqual(manifest["diagrams"]["architecture"]["iconCount"], 4)
         self.assertEqual(manifest["quality"]["deterministic"]["total"], 12)
         self.assertEqual(manifest["quality"]["deterministic"]["passed"], 12, manifest["quality"]["deterministic"])
 
         # All 5 diagrams available through /api/drawio/item/<slug>-<kind>
-        for k in ("architecture", "sequence", "security", "wire", "async"):
+        for k in ("architecture", "cloudarch", "sequence", "security", "wire", "async"):
             st, _, raw = self._req(f"/api/drawio/item/{slug}-{k}")
             self.assertEqual(st, 200, f"studio missing {k}")
             obj = json.loads(raw.decode("utf-8"))
@@ -699,9 +699,21 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
                 s_txt = zf.read(f"ppt/slides/slide{i}.xml").decode("utf-8")
                 if i != 9:
                     self.assertNotIn("**", s_txt, f"Raw markdown asterisk leaked into slide {i}")
-            for di in (3, 5, 6, 7, 8):
+            for di in (3, 4, 5, 6, 7, 8):
                 rel = zf.read(f"ppt/slides/_rels/slide{di}.xml.rels").decode("utf-8")
                 self.assertIn("viewer.diagrams.net", rel)
+
+        # WS1-parity density & geometry validation on all 6 diagrams + native editable DrawingML PPTX slides
+        self.assertGreaterEqual(manifest["diagrams"]["architecture"].get("vertexCount", 0), 90)
+        self.assertGreaterEqual(manifest["diagrams"]["architecture"].get("edgeCount", 0), 20)
+        self.assertGreaterEqual(manifest["diagrams"]["architecture"].get("iconCount", 0), 18)
+        for kind in ("architecture", "cloudarch", "sequence", "security", "wire", "async"):
+            self.assertTrue(manifest["diagrams"][kind].get("geometryValid"), f"{kind} geometry errors: {manifest['diagrams'][kind].get('geometryErrors')}")
+        with zipfile.ZipFile(pptx_p, "r") as zf:
+            for di in (3, 4, 5, 6, 7, 8):
+                s_xml = zf.read(f"ppt/slides/slide{di}.xml").decode("utf-8")
+                self.assertGreaterEqual(s_xml.count("<p:sp>"), 20, f"slide{di}.xml should contain native DrawingML diagram vector shapes")
+                self.assertIn("Edit in Draw.io", s_xml)
 
         # D-11 Terraform linter catches public allUsers & deprecated v1 Cloud Run
         bad_tf = {
