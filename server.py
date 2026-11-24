@@ -105,6 +105,10 @@ blog_assets_mod = load_module_from_path(
     "blog_assets_manager",
     ROOT_DIR / "scripts/blog_assets_manager.py",
 )
+create_blog1_mod = load_module_from_path(
+    "create_blog1_engine",
+    ROOT_DIR / "scripts/create_blog1_engine.py",
+)
 _PORTAL_CSRF_TOKEN = secrets.token_hex(32)
 _BLOG_MUTATION_RATE_LOCK = threading.Lock()
 _BLOG_MUTATION_RATE_HITS: Dict[str, deque] = {}
@@ -1965,6 +1969,106 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             self._send_html(200, html_text.encode("utf-8"))
             return
 
+        if path in ("/create-blog1", "/create-blog1/"):
+            tpl_path = ROOT_DIR / "templates" / "create_blog1_page.html"
+            if not tpl_path.is_file():
+                self._send_json(404, {"ok": False, "error": "Template missing: create_blog1_page.html"})
+                return
+            html_out = tpl_path.read_text(encoding="utf-8").replace("__CSRF_TOKEN__", _PORTAL_CSRF_TOKEN)
+            self._send_html(200, html_out.encode("utf-8"))
+            return
+
+        if path == "/api/create-blog1/capabilities":
+            self._send_json(200, create_blog1_mod.get_capabilities())
+            return
+
+        if path == "/api/create-blog1/blogs":
+            self._send_json(200, {"ok": True, "blogs": create_blog1_mod.list_blogs()})
+            return
+
+        if path.startswith("/api/create-blog1/jobs/"):
+            job_id = urllib.parse.unquote(path.split("/api/create-blog1/jobs/", 1)[1]).strip("/")
+            try:
+                job_data = create_blog1_mod.get_job_status(job_id)
+                self._send_json(200, {"ok": True, "job": job_data})
+            except create_blog1_mod.CreateBlog1Error as exc:
+                self._send_json(exc.status_code, {"ok": False, "code": exc.code, "error": exc.message})
+            return
+
+        m_cb1_asset = re.fullmatch(r"/api/create-blog1/blogs/([^/]+)/asset/(.+)", path)
+        if m_cb1_asset:
+            raw_slug = urllib.parse.unquote(m_cb1_asset.group(1))
+            raw_rel = urllib.parse.unquote(m_cb1_asset.group(2))
+            try:
+                fp, mime = create_blog1_mod.get_blog_asset_file(raw_slug, raw_rel)
+            except create_blog1_mod.CreateBlog1Error as exc:
+                self._send_json(exc.status_code, {"ok": False, "code": exc.code, "error": exc.message})
+                return
+            total_size = int(fp.stat().st_size)
+            is_head = bool(getattr(self, "_is_head_request", False))
+            range_hdr = str(self.headers.get("Range") or "").strip()
+            start_b, end_b, is_partial = 0, max(0, total_size - 1), False
+            if range_hdr and total_size > 0:
+                mr = re.fullmatch(r"bytes=(\d*)-(\d*)", range_hdr, flags=re.IGNORECASE)
+                if mr and (mr.group(1) or mr.group(2)):
+                    if mr.group(1) == "":
+                        suf = int(mr.group(2))
+                        if suf <= 0:
+                            self.send_response(416)
+                            self.send_header("Content-Range", f"bytes */{total_size}")
+                            self.send_header("Content-Length", "0")
+                            self._send_security_headers()
+                            self.end_headers()
+                            return
+                        start_b = max(0, total_size - suf)
+                    else:
+                        start_b = int(mr.group(1))
+                        end_b = int(mr.group(2)) if mr.group(2) else (total_size - 1)
+                        if start_b >= total_size or end_b < start_b:
+                            self.send_response(416)
+                            self.send_header("Content-Range", f"bytes */{total_size}")
+                            self.send_header("Content-Length", "0")
+                            self._send_security_headers()
+                            self.end_headers()
+                            return
+                        end_b = min(end_b, total_size - 1)
+                    is_partial = True
+            clen = (end_b - start_b + 1) if total_size > 0 else 0
+            self.send_response(206 if is_partial else 200)
+            self.send_header("Content-Type", mime)
+            self.send_header("Accept-Ranges", "bytes")
+            if is_partial:
+                self.send_header("Content-Range", f"bytes {start_b}-{end_b}/{total_size}")
+            self.send_header("Content-Length", str(clen))
+            self.send_header("Cache-Control", "no-store")
+            self._send_security_headers()
+            want_dl = (qs.get("download", [""])[0] == "1") or fp.suffix.lower() in (".pptx", ".docx", ".zip", ".drawio")
+            if want_dl:
+                safe_fname = re.sub(r"[^A-Za-z0-9._-]", "_", fp.name)
+                self.send_header("Content-Disposition", f'attachment; filename="{safe_fname}"')
+            self.end_headers()
+            if not is_head and clen > 0:
+                with fp.open("rb") as fh:
+                    fh.seek(start_b)
+                    rem = clen
+                    while rem > 0:
+                        chunk = fh.read(min(65536, rem))
+                        if not chunk:
+                            break
+                        self.wfile.write(chunk)
+                        rem -= len(chunk)
+            return
+
+        m_cb1_detail = re.fullmatch(r"/api/create-blog1/blogs/([^/]+)/?", path)
+        if m_cb1_detail:
+            raw_slug = urllib.parse.unquote(m_cb1_detail.group(1))
+            try:
+                detail = create_blog1_mod.get_blog_detail(raw_slug)
+                self._send_json(200, detail)
+            except create_blog1_mod.CreateBlog1Error as exc:
+                self._send_json(exc.status_code, {"ok": False, "code": exc.code, "error": exc.message})
+            return
+
         m_blog_page = re.fullmatch(r"/(?:blogs|blog-assets)/([^/]+)/(diagrams|screenshots)/?", path)
         if m_blog_page:
             raw_slug, page_kind = m_blog_page.group(1), m_blog_page.group(2)
@@ -2042,6 +2146,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             from urllib.parse import quote, unquote
             diag_id = unquote(path.split("/api/drawio/item/", 1)[1]).strip("/")
             custom_rec = blog_assets_mod.get_custom_diagram_record_for_studio(diag_id)
+            if custom_rec is None:
+                custom_rec = create_blog1_mod.get_diagram_record_for_studio(diag_id)
             if custom_rec is not None:
                 self._send_json(
                     200,
@@ -4887,6 +4993,87 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                     self._send_json(400, {"ok": False, "error": f"Invalid mode '{new_mode}'. Must be 'IN_MEMORY' or 'LIVE_GCP'"})
                 return
 
+            if path == "/api/create-blog1/generate":
+                ok_auth, auth_status, auth_code, auth_msg = self._authorize_blog_diagram_mutation()
+                if not ok_auth:
+                    self._send_json(auth_status, {"ok": False, "code": auth_code, "error": auth_msg})
+                    return
+                _, actor_email, _ = self._detect_iap_actor(body if isinstance(body, dict) else {})
+                transient_api_key = str(self.headers.get("X-Gemini-Api-Key") or "").strip() or None
+                try:
+                    job = create_blog1_mod.start_generation_job(
+                        body if isinstance(body, dict) else {},
+                        api_key_override=transient_api_key,
+                        actor_email=actor_email or "local-operator",
+                    )
+                    self._send_json(202, {"ok": True, "job": job})
+                except create_blog1_mod.CreateBlog1Error as exc:
+                    self._send_json(exc.status_code, {"ok": False, "code": exc.code, "error": exc.message})
+                return
+
+            m_cb1_proofs = re.fullmatch(r"/api/create-blog1/blogs/([^/]+)/proofs/?", path)
+            if m_cb1_proofs:
+                ok_auth, auth_status, auth_code, auth_msg = self._authorize_blog_diagram_mutation()
+                if not ok_auth:
+                    self._send_json(auth_status, {"ok": False, "code": auth_code, "error": auth_msg})
+                    return
+                raw_slug = urllib.parse.unquote(m_cb1_proofs.group(1))
+                _, actor_email, _ = self._detect_iap_actor(body if isinstance(body, dict) else {})
+                try:
+                    res = create_blog1_mod.attach_proof_screenshot(
+                        raw_slug,
+                        body if isinstance(body, dict) else {},
+                        actor_email=actor_email or "local-operator",
+                    )
+                    self._send_json(201, res)
+                except create_blog1_mod.CreateBlog1Error as exc:
+                    self._send_json(exc.status_code, {"ok": False, "code": exc.code, "error": exc.message})
+                return
+
+            m_cb1_pdel = re.fullmatch(r"/api/create-blog1/blogs/([^/]+)/proofs/delete/?", path)
+            if m_cb1_pdel:
+                ok_auth, auth_status, auth_code, auth_msg = self._authorize_blog_diagram_mutation()
+                if not ok_auth:
+                    self._send_json(auth_status, {"ok": False, "code": auth_code, "error": auth_msg})
+                    return
+                raw_slug = urllib.parse.unquote(m_cb1_pdel.group(1))
+                _, actor_email, _ = self._detect_iap_actor(body if isinstance(body, dict) else {})
+                try:
+                    pid = str((body or {}).get("proofId") or "")
+                    res = create_blog1_mod.delete_proof_screenshot(raw_slug, pid, actor_email=actor_email or "local-operator")
+                    self._send_json(200, res)
+                except create_blog1_mod.CreateBlog1Error as exc:
+                    self._send_json(exc.status_code, {"ok": False, "code": exc.code, "error": exc.message})
+                return
+
+            m_cb1_sync = re.fullmatch(r"/api/create-blog1/blogs/([^/]+)/sync-workspace/?", path)
+            if m_cb1_sync:
+                ok_auth, auth_status, auth_code, auth_msg = self._authorize_blog_diagram_mutation()
+                if not ok_auth:
+                    self._send_json(auth_status, {"ok": False, "code": auth_code, "error": auth_msg})
+                    return
+                raw_slug = urllib.parse.unquote(m_cb1_sync.group(1))
+                try:
+                    res = create_blog1_mod.sync_to_google_workspace(raw_slug, bridge_mod=bridge_mod)
+                    self._send_json(int(res.get("statusCode", 200)), res)
+                except create_blog1_mod.CreateBlog1Error as exc:
+                    self._send_json(exc.status_code, {"ok": False, "code": exc.code, "error": exc.message})
+                return
+
+            m_cb1_del = re.fullmatch(r"/api/create-blog1/blogs/([^/]+)/delete/?", path)
+            if m_cb1_del:
+                ok_auth, auth_status, auth_code, auth_msg = self._authorize_blog_diagram_mutation()
+                if not ok_auth:
+                    self._send_json(auth_status, {"ok": False, "code": auth_code, "error": auth_msg})
+                    return
+                raw_slug = urllib.parse.unquote(m_cb1_del.group(1))
+                try:
+                    res = create_blog1_mod.delete_blog(raw_slug)
+                    self._send_json(200, res)
+                except create_blog1_mod.CreateBlog1Error as exc:
+                    self._send_json(exc.status_code, {"ok": False, "code": exc.code, "error": exc.message})
+                return
+
             if path == "/api/runtime/invoke":
                 data = execute_custom_sandbox_turn(body)
                 self._send_json(200, data)
@@ -5005,6 +5192,7 @@ def run_server(port: int = 8095, host: Optional[str] = None) -> None:
     try:
         if os.environ.get("GEAP_DISABLE_GCS_SYNC") != "1":
             threading.Thread(target=DurableGcsStore.hydrate_from_gcs_once, daemon=True).start()
+            threading.Thread(target=create_blog1_mod.hydrate_index_from_gcs_once, daemon=True).start()
     except Exception:
         pass
 
