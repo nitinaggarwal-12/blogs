@@ -263,7 +263,8 @@ def prose_stage_system_prompt() -> str:
         "(DDL/SQL/ISO GQL/YAML/bash/formula FinOps equations), comparative tables, failure modes, compensating controls, and math.\n"
         "5. Tag EVERY numeric claim/SLA/latency/cost assumption in `claimLedger` strictly as one of: "
         "GCP_DOCUMENTED | DERIVED_MODEL | EXAMPLE_TARGET | USER_SUPPLIED.\n"
-        "6. Zero emojis in headings, bullets, tables, or labels. Real public https://cloud.google.com/ URLs only."
+        "6. Use current live Vertex AI model names (Gemini 4: gemini-4-neon / carbon / argon / hydrogen; Gemini 3.x: gemini-3.8-flash; Gemini 2.5: gemini-2.5-pro / flash) matching the user's request — NEVER reference retired Gemini 1.0/1.5 checkpoints.\n"
+        "7. Zero emojis in headings, bullets, tables, or labels. Real public https://cloud.google.com/ URLs only."
     )
 
 
@@ -689,6 +690,7 @@ def diagram_architect_system_prompt() -> str:
         "latency/SLA/quota or exact key format (using grounded facts from the prompt and Google Search dossier; tag unverified budgets as `target`!).\n"
         "- Keep strings concise so they fit neatly inside their boxes (headings <= 32 chars, short bullets <= 34 chars).\n"
         "- Use ONLY valid icon keys from: " + ALLOWED_ICON_KEYS_LIST + ".\n"
+        "- Reference current Vertex AI models requested by the prompt (e.g., Gemini 4 Neon, Gemini 3.8 Flash, Gemini 2.5 Pro) — NEVER write retired 'Gemini 1.5 Pro' or 'Gemini 1.0'.\n"
         "- Zero emojis. Zero markdown `**bold**` asterisks. Zero internal/corp URLs.\n\n"
         "Output ONLY a single JSON object with EXACTLY these 6 top-level keys:\n"
         "{\n"

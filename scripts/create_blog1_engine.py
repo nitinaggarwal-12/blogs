@@ -841,6 +841,7 @@ def call_gemini_json(
     temperature: float = 0.25,
     timeout_s: float = 135.0,
     use_google_search: bool = False,
+    max_attempts: int = 2,
 ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     """
     Strictly live Gemini JSON call supporting:
@@ -891,7 +892,8 @@ def call_gemini_json(
     t0 = time.perf_counter()
     last_err = ""
     raw_resp: Optional[Dict[str, Any]] = None
-    for attempt in range(2):
+    attempts_n = max(1, min(3, int(max_attempts or 1)))
+    for attempt in range(attempts_n):
         req = urllib.request.Request(endpoint, data=payload_bytes, headers=headers, method="POST")
         try:
             with urllib.request.urlopen(req, timeout=timeout_s) as resp:
@@ -910,7 +912,7 @@ def call_gemini_json(
                     status_code=503,
                     code="MODEL_AUTH_REJECTED",
                 ) from None
-            if exc.code in (429, 500, 502, 503, 504) and attempt == 0:
+            if exc.code in (429, 500, 502, 503, 504) and attempt + 1 < attempts_n:
                 time.sleep(2.0)
                 continue
             raise CreateBlog1Error(
@@ -920,7 +922,7 @@ def call_gemini_json(
             ) from None
         except Exception as exc:
             last_err = _redact_secret(str(exc), eff_key)
-            if attempt == 0:
+            if attempt + 1 < attempts_n:
                 time.sleep(1.5)
                 continue
             raise CreateBlog1Error(
@@ -3359,7 +3361,8 @@ def run_deterministic_quality_gate(
         dv.get("svg", "") for k, dv in (extra_diagrams or {}).items() if k in ("cloudarch", "security", "wire", "async")
     ]
     svg_combo = "\n".join(svg_blobs).lower()
-    xss_hit = bool(re.search(r"(<script|<foreignobject|javascript:|on[a-z]+\s*=)", svg_combo))
+    # Only flag inline event handlers INSIDE an actual XML/SVG tag attribute (avoid false positives on prose text like `is_tombstoned = TRUE`).
+    xss_hit = bool(re.search(r"(<script|<foreignobject|javascript:|<[^>]+\son[a-z]+\s*=)", svg_combo))
     _add("D-04", "SVG XSS / Script Safety", not xss_hit, f"0 unsafe handlers across {len(svg_blobs)} SVG diagrams." if not xss_hit else "Unsafe SVG markup found.")
 
     expected_slides = 12 if len(bp.get("slides") or []) >= 12 else len((bp.get("slides") or [])[:9]) or 9
@@ -3512,46 +3515,44 @@ def run_orthogonal_llm_judge(
     try:
         search_sys = (
             sys_p
-            + " MANDATORY: Run at least one live Google Search query using your googleSearch tool to verify any Google Cloud "
-              "product name, GA status, DDL/SQL/GQL syntax, or index clause before flagging a finding. "
+            + " MANDATORY: Run 1 to 3 targeted live Google Search queries (keep search concise — do NOT run exhaustive sweeps) "
+              "using your googleSearch tool to verify any questionable Google Cloud product name, GA status, or DDL/SQL/GQL syntax before flagging a finding. "
               "Your final response MUST be a single valid JSON object inside `{...}` matching the schema above."
         )
         judge_fallback_err = ""
         res = None
         meta: Dict[str, Any] = {}
         judge_grounded = False
-        for g_try in range(2):
-            try:
-                res, meta = call_gemini_json(
-                    system_prompt=search_sys,
-                    user_prompt=usr_p,
-                    model=judge_model,
-                    api_key_override=api_key_override,
-                    max_output_tokens=16384 if is_global_vertex_model(judge_model) else 8192,
-                    thinking_budget=512 if g_try == 0 else 256,
-                    thinking_level="LOW",
-                    temperature=0.1,
-                    timeout_s=120.0,
-                    use_google_search=True,
-                )
-                judge_grounded = bool(meta.get("webSearchQueries"))
-                break
-            except Exception as g_exc:
-                judge_fallback_err = _redact_secret(str(g_exc), api_key_override)[:180]
-                if g_try == 0:
-                    time.sleep(1.0)
+        try:
+            res, meta = call_gemini_json(
+                system_prompt=search_sys,
+                user_prompt=usr_p,
+                model=judge_model,
+                api_key_override=api_key_override,
+                max_output_tokens=12288 if is_global_vertex_model(judge_model) else 8192,
+                thinking_budget=512,
+                thinking_level="LOW",
+                temperature=0.1,
+                timeout_s=85.0,
+                use_google_search=True,
+                max_attempts=1,
+            )
+            judge_grounded = bool(meta.get("webSearchQueries"))
+        except Exception as g_exc:
+            judge_fallback_err = _redact_secret(str(g_exc), api_key_override)[:180]
         if res is None:
             res, meta = call_gemini_json(
                 system_prompt=sys_p,
                 user_prompt=usr_p,
                 model=judge_model,
                 api_key_override=api_key_override,
-                max_output_tokens=16384 if is_global_vertex_model(judge_model) else 8192,
+                max_output_tokens=12288 if is_global_vertex_model(judge_model) else 8192,
                 thinking_budget=512,
                 thinking_level="LOW",
                 temperature=0.1,
-                timeout_s=105.0,
+                timeout_s=75.0,
                 use_google_search=False,
+                max_attempts=1,
             )
             judge_grounded = False
         verdict = str(res.get("verdict") or "NEEDS_REVISION").upper()
@@ -4208,7 +4209,7 @@ def start_generation_job(
                 api_key_override=transient_key,
                 max_output_tokens=32768 if is_global_vertex_model(model) else 24576,
                 thinking_budget=1024 if model == "gemini-2.5-flash" else 2048,
-                thinking_level="LOW" if model.startswith("gemini-4-carbon") else "MEDIUM",
+                thinking_level="LOW",
                 temperature=0.22,
                 timeout_s=160.0,
             )

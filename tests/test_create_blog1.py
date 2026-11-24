@@ -981,6 +981,14 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertIn("--no-allow-unauthenticated", bp_rev["codeStarter"]["deploySh"])
         self.assertNotIn("--allow-unauthenticated", bp_rev["codeStarter"]["deploySh"])
 
+        # 7. D-04 SVG XSS regex ignores benign SQL text like `is_tombstoned = TRUE` inside <text>,
+        #    while rejecting real inline event handlers inside SVG tags (<rect onclick=...>).
+        svg_ok = '<svg><text>Filter is_tombstoned = TRUE</text></svg>'
+        svg_bad = '<svg><rect onclick="alert(1)"/></svg>'
+        xss_pat = cb1.re.compile(r"(<script|<foreignobject|javascript:|<[^>]+\son[a-z]+\s*=)")
+        self.assertIsNone(xss_pat.search(svg_ok.lower()))
+        self.assertIsNotNone(xss_pat.search(svg_bad.lower()))
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
