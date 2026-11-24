@@ -52,9 +52,14 @@ _cc = _load_canonical_compiler()
 
 DEFAULT_CANVAS_W = 1600
 DEFAULT_CANVAS_H = 900
-IMAGE_MODEL_ID = "gemini-2.5-flash-image"
-PLAN_MODEL_ID = "gemini-2.5-pro"
-VISION_MODEL_ID = "gemini-2.5-pro"
+IMAGE_MODEL_ID = "gemini-3-pro-image"
+IMAGE_MODEL_FALLBACKS = ("gemini-3-pro-image", "gemini-3.1-flash-image", "gemini-2.5-flash-image")
+PLAN_MODEL_ID = "gemini-4-neon"
+VISION_MODEL_ID = "gemini-4-neon"
+
+
+def is_global_model(model: str) -> bool:
+    return model.startswith(("gemini-4", "gemini-3"))
 
 VIEW_GUIDANCE: Dict[str, Dict[str, str]] = {
     "architecture": {
@@ -213,11 +218,18 @@ def _vertex_or_dev_request(
         token = get_bearer_token()
         if not token:
             raise RuntimeError("No live Gemini/Vertex AI credentials available for PromptCanvas engine.")
-        url = (
-            f"https://{vertex_location}-aiplatform.googleapis.com/v1/projects/"
-            f"{urllib.parse.quote(vertex_project, safe='')}/locations/{urllib.parse.quote(vertex_location, safe='')}"
-            f"/publishers/google/models/{urllib.parse.quote(model, safe='')}:generateContent"
-        )
+        if is_global_model(model):
+            url = (
+                "https://aiplatform.googleapis.com/v1/projects/"
+                f"{urllib.parse.quote(vertex_project, safe='')}/locations/global"
+                f"/publishers/google/models/{urllib.parse.quote(model, safe='')}:generateContent"
+            )
+        else:
+            url = (
+                f"https://{vertex_location}-aiplatform.googleapis.com/v1/projects/"
+                f"{urllib.parse.quote(vertex_project, safe='')}/locations/{urllib.parse.quote(vertex_location, safe='')}"
+                f"/publishers/google/models/{urllib.parse.quote(model, safe='')}:generateContent"
+            )
         headers = {"Content-Type": "application/json", "Authorization": f"Bearer {token}"}
 
     last_err = ""
@@ -271,6 +283,7 @@ def plan_diagram_visual_prompt(
     vertex_project: str,
     vertex_location: str,
     api_key_override: Optional[str] = None,
+    plan_model: str = PLAN_MODEL_ID,
 ) -> Dict[str, Any]:
     vg = VIEW_GUIDANCE.get(kind, VIEW_GUIDANCE["architecture"])
     sys_p = (
@@ -293,7 +306,7 @@ def plan_diagram_visual_prompt(
         "3. EVERY container MUST have a real domain title AND explicit named white rounded component cards inside with crisp small cloud/service icons.\n"
         "4. Keep card labels concise (1-2 short bold lines + optional 1 short subtitle) so text is large, crisp, and 100% legible.\n"
         "5. Specify clean 90-degree orthogonal arrows with short legible labels placed on white space with zero overlaps.\n"
-        "6. Zero fake company names or placeholder labels like 'Zone 1' or 'Box A'. Every service must be spelled identically to Google Cloud docs."
+        "6. Zero fake company names or placeholder labels like 'Zone 1' or 'Box A'. Every service must be spelled identically to Google Cloud docs. NEVER put parenthetical color names like '(Blue)' or '(Green)' inside zone heading text."
     )
     usr_p = (
         f"BLOG TITLE: {title}\n"
@@ -304,24 +317,40 @@ def plan_diagram_visual_prompt(
         + (f"LIVE GOOGLE SEARCH GROUNDING BRIEF:\n{grounding_summary[:2400]}\n\n" if grounding_summary else "")
         + "Synthesize the exact Stage 2 JSON plan + `visualImagePrompt` now."
     )
-    body = {
-        "systemInstruction": {"parts": [{"text": sys_p}]},
-        "contents": [{"role": "user", "parts": [{"text": usr_p}]}],
-        "generationConfig": {
+    p_model = (plan_model or PLAN_MODEL_ID).strip()
+    if p_model.startswith("gemini-4"):
+        p_cfg: Dict[str, Any] = {
+            "maxOutputTokens": 8192,
+            "responseMimeType": "application/json",
+            "thinkingConfig": {"thinkingLevel": "LOW"},
+        }
+    elif p_model.startswith("gemini-3"):
+        p_cfg = {
+            "temperature": 0.2,
+            "maxOutputTokens": 8192,
+            "responseMimeType": "application/json",
+            "thinkingConfig": {"thinkingLevel": "LOW"},
+        }
+    else:
+        p_cfg = {
             "temperature": 0.2,
             "maxOutputTokens": 4096,
             "responseMimeType": "application/json",
             "thinkingConfig": {"thinkingBudget": 1024},
-        },
+        }
+    body = {
+        "systemInstruction": {"parts": [{"text": sys_p}]},
+        "contents": [{"role": "user", "parts": [{"text": usr_p}]}],
+        "generationConfig": p_cfg,
     }
     raw = _vertex_or_dev_request(
-        model=PLAN_MODEL_ID,
+        model=p_model,
         body_obj=body,
         get_bearer_token=get_bearer_token,
         vertex_project=vertex_project,
         vertex_location=vertex_location,
         api_key_override=api_key_override,
-        timeout_s=70.0,
+        timeout_s=85.0,
     )
     parsed = _parse_json_obj(_extract_response_text(raw), f"Stage 2 Plan ({kind})")
     vp = str(parsed.get("visualImagePrompt") or "").strip()
@@ -346,63 +375,73 @@ def generate_reference_image(
     vertex_project: str,
     vertex_location: str,
     api_key_override: Optional[str] = None,
+    image_model: str = IMAGE_MODEL_ID,
 ) -> Dict[str, Any]:
     prompt_text = (
         "Create a crisp, publication-grade Google Cloud Architecture Center style FLAT 2D technical diagram "
         "on a pure white (#FFFFFF) 16:9 widescreen canvas. Use crisp dark sans-serif typography, clean pastel "
         "rounded zone containers, sharp 90-degree orthogonal arrows with arrowheads, accurate spelling with ZERO "
-        "garbled text, ZERO 3D effects, ZERO drop-shadows clipping text, and balanced full-bleed margins.\n\n"
+        "garbled text, ZERO 3D effects, ZERO drop-shadows clipping text, and balanced full-bleed margins. "
+        "Do NOT render literal color words like '(Blue)' or '(Amber)' in container labels.\n\n"
         + visual_image_prompt
     )
-    body = {
-        "contents": [{"role": "user", "parts": [{"text": prompt_text}]}],
-        "generationConfig": {
-            "responseModalities": ["TEXT", "IMAGE"],
-            "imageConfig": {"aspectRatio": "16:9"},
-        },
-    }
-    try:
-        raw = _vertex_or_dev_request(
-            model=IMAGE_MODEL_ID,
-            body_obj=body,
-            get_bearer_token=get_bearer_token,
-            vertex_project=vertex_project,
-            vertex_location=vertex_location,
-            api_key_override=api_key_override,
-            timeout_s=65.0,
-        )
-    except RuntimeError as exc:
-        # Retry without imageConfig if an API surface rejects that parameter
-        if "imageConfig" in str(exc) or "HTTP 400" in str(exc):
-            body["generationConfig"] = {"responseModalities": ["TEXT", "IMAGE"]}
+    preferred = (image_model or IMAGE_MODEL_ID).strip()
+    candidates_models = [preferred] + [m for m in IMAGE_MODEL_FALLBACKS if m != preferred]
+    last_exc: Optional[Exception] = None
+    for candidate_m in candidates_models:
+        body: Dict[str, Any] = {
+            "contents": [{"role": "user", "parts": [{"text": prompt_text}]}],
+            "generationConfig": {
+                "responseModalities": ["TEXT", "IMAGE"],
+                "imageConfig": {"aspectRatio": "16:9"},
+            },
+        }
+        try:
             raw = _vertex_or_dev_request(
-                model=IMAGE_MODEL_ID,
+                model=candidate_m,
                 body_obj=body,
                 get_bearer_token=get_bearer_token,
                 vertex_project=vertex_project,
                 vertex_location=vertex_location,
                 api_key_override=api_key_override,
-                timeout_s=65.0,
+                timeout_s=95.0,
             )
-        else:
-            raise
-    for cand in (raw.get("candidates") or [])[:1]:
-        for pt in (cand.get("content") or {}).get("parts") or []:
-            inl = pt.get("inlineData") or {}
-            b64 = inl.get("data")
-            if isinstance(b64, str) and len(b64) > 200:
-                mime = str(inl.get("mimeType") or "image/png")
-                img_bytes = base64.b64decode(b64)
-                w, h = _read_image_dims(img_bytes)
-                return {
-                    "bytes": img_bytes,
-                    "base64": b64,
-                    "mime": mime,
-                    "width": w,
-                    "height": h,
-                    "modelUsed": IMAGE_MODEL_ID,
-                }
-    raise RuntimeError("Stage 3 gemini-2.5-flash-image returned no image payload.")
+        except RuntimeError as exc:
+            if "imageConfig" in str(exc) or "HTTP 400" in str(exc):
+                try:
+                    body["generationConfig"] = {"responseModalities": ["TEXT", "IMAGE"]}
+                    raw = _vertex_or_dev_request(
+                        model=candidate_m,
+                        body_obj=body,
+                        get_bearer_token=get_bearer_token,
+                        vertex_project=vertex_project,
+                        vertex_location=vertex_location,
+                        api_key_override=api_key_override,
+                        timeout_s=95.0,
+                    )
+                except Exception as exc2:
+                    last_exc = exc2
+                    continue
+            else:
+                last_exc = exc
+                continue
+        for cand in (raw.get("candidates") or [])[:1]:
+            for pt in (cand.get("content") or {}).get("parts") or []:
+                inl = pt.get("inlineData") or {}
+                b64 = inl.get("data")
+                if isinstance(b64, str) and len(b64) > 200:
+                    mime = str(inl.get("mimeType") or "image/png")
+                    img_bytes = base64.b64decode(b64)
+                    w, h = _read_image_dims(img_bytes)
+                    return {
+                        "bytes": img_bytes,
+                        "base64": b64,
+                        "mime": mime,
+                        "width": w,
+                        "height": h,
+                        "modelUsed": candidate_m,
+                    }
+    raise RuntimeError(f"Stage 3 image generation returned no payload across {candidates_models}: {last_exc}")
 
 
 # =============================================================================
@@ -417,6 +456,7 @@ def decompile_image_to_scene(
     vertex_project: str,
     vertex_location: str,
     api_key_override: Optional[str] = None,
+    vision_model: str = VISION_MODEL_ID,
 ) -> Dict[str, Any]:
     sys_p = (
         "You are a precision Multimodal Architecture Image-to-Draw.io Vector Decompiler (PromptCanvas Stage 4).\n"
@@ -469,21 +509,39 @@ def decompile_image_to_scene(
                 ],
             }
         ],
-        "generationConfig": {
-            "temperature": 0.1,
-            "maxOutputTokens": 24576,
-            "responseMimeType": "application/json",
-            "thinkingConfig": {"thinkingBudget": 1024},
-        },
+        "generationConfig": (
+            {
+                "maxOutputTokens": 32768,
+                "responseMimeType": "application/json",
+                "thinkingConfig": {"thinkingLevel": "MEDIUM"},
+            }
+            if (vision_model or VISION_MODEL_ID).startswith("gemini-4")
+            else (
+                {
+                    "temperature": 0.1,
+                    "maxOutputTokens": 24576,
+                    "responseMimeType": "application/json",
+                    "thinkingConfig": {"thinkingLevel": "MEDIUM"},
+                }
+                if (vision_model or VISION_MODEL_ID).startswith("gemini-3")
+                else {
+                    "temperature": 0.1,
+                    "maxOutputTokens": 24576,
+                    "responseMimeType": "application/json",
+                    "thinkingConfig": {"thinkingBudget": 1024},
+                }
+            )
+        ),
     }
+    v_model = (vision_model or VISION_MODEL_ID).strip()
     raw = _vertex_or_dev_request(
-        model=VISION_MODEL_ID,
+        model=v_model,
         body_obj=body,
         get_bearer_token=get_bearer_token,
         vertex_project=vertex_project,
         vertex_location=vertex_location,
         api_key_override=api_key_override,
-        timeout_s=95.0,
+        timeout_s=120.0,
     )
     scene = _parse_json_obj(_extract_response_text(raw), "Stage 4 Vision Decompiler")
     nodes = scene.get("nodes") if isinstance(scene.get("nodes"), list) else []
@@ -1248,6 +1306,9 @@ def run_promptcanvas_vision_diagram(
     vertex_project: str,
     vertex_location: str,
     api_key_override: Optional[str] = None,
+    plan_model: str = PLAN_MODEL_ID,
+    image_model: str = IMAGE_MODEL_ID,
+    vision_model: str = VISION_MODEL_ID,
 ) -> Dict[str, Any]:
     """Executes PromptCanvas's full 4-Stage Research -> Plan -> Image -> 1:1 Draw.io XML pipeline for one view."""
     t0 = time.perf_counter()
@@ -1263,6 +1324,7 @@ def run_promptcanvas_vision_diagram(
         vertex_project=vertex_project,
         vertex_location=vertex_location,
         api_key_override=api_key_override,
+        plan_model=plan_model,
     )
     ref_img = generate_reference_image(
         visual_image_prompt=plan["visualImagePrompt"],
@@ -1270,6 +1332,7 @@ def run_promptcanvas_vision_diagram(
         vertex_project=vertex_project,
         vertex_location=vertex_location,
         api_key_override=api_key_override,
+        image_model=image_model,
     )
     scene = decompile_image_to_scene(
         image_b64=ref_img["base64"],
@@ -1279,6 +1342,7 @@ def run_promptcanvas_vision_diagram(
         vertex_project=vertex_project,
         vertex_location=vertex_location,
         api_key_override=api_key_override,
+        vision_model=vision_model,
     )
     compiled = compile_vision_scene_to_outputs(
         scene=scene,
@@ -1314,9 +1378,9 @@ def run_promptcanvas_vision_diagram(
         "refImageHeight": ref_img["height"],
         "engineUsed": "promptcanvas_vision_v4",
         "pipelineStages": {
-            "planModel": PLAN_MODEL_ID,
-            "imageModel": IMAGE_MODEL_ID,
-            "visionToXmlModel": VISION_MODEL_ID,
+            "planModel": plan_model,
+            "imageModel": ref_img.get("modelUsed", image_model),
+            "visionToXmlModel": vision_model,
             "architecturalSummary": plan["architecturalSummary"],
             "visualImagePrompt": plan["visualImagePrompt"][:600],
             "glossaryCount": len(plan["canonicalGlossary"]),

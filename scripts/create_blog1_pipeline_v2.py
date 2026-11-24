@@ -58,18 +58,48 @@ def call_gemini_grounded_search(
         "4. Canonical https://cloud.google.com/... documentation URLs.\n"
         "Be strictly factual; if uncertain, explicitly state 'unverified'."
     )
-    body_obj = {
-        "contents": [{"role": "user", "parts": [{"text": q_prompt}]}],
-        "tools": [{"googleSearch": {}}],
-        "generationConfig": {
+    _supported_search_models = (
+        "gemini-4-neon",
+        "gemini-4-carbon",
+        "gemini-4-argon",
+        "gemini-4-hydrogen",
+        "gemini-3.8-flash",
+        "gemini-3.7-flash",
+        "gemini-3.5-flash",
+        "gemini-3.1-pro-preview",
+        "gemini-3-flash-preview",
+        "gemini-2.5-flash",
+        "gemini-2.5-pro",
+    )
+    clean_model = model if model in _supported_search_models else "gemini-3.8-flash"
+    is_g4 = clean_model.startswith("gemini-4")
+    is_g3 = clean_model.startswith("gemini-3")
+    if is_g4:
+        # Gemini 4 requires global endpoint, thinkingLevel (not thinkingBudget), omits temperature,
+        # and counts thinking tokens inside maxOutputTokens.
+        gen_cfg: Dict[str, Any] = {
+            "maxOutputTokens": 4096,
+            "thinkingConfig": {"thinkingLevel": "LOW"},
+        }
+    elif is_g3:
+        gen_cfg = {
+            "temperature": 0.1,
+            "maxOutputTokens": 4096,
+            "thinkingConfig": {"thinkingLevel": "LOW"},
+        }
+    else:
+        gen_cfg = {
             "temperature": 0.1,
             "maxOutputTokens": 2048,
             "thinkingConfig": {"thinkingBudget": 256},
-        },
+        }
+    body_obj = {
+        "contents": [{"role": "user", "parts": [{"text": q_prompt}]}],
+        "tools": [{"googleSearch": {}}],
+        "generationConfig": gen_cfg,
     }
     payload = json.dumps(body_obj).encode("utf-8")
     eff_key = (api_key_override or "").strip() or os.environ.get("GEMINI_API_KEY", "").strip()
-    clean_model = "gemini-2.5-flash" if model not in ("gemini-2.5-flash", "gemini-2.5-pro") else model
 
     if eff_key:
         endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/{urllib.parse.quote(clean_model, safe='')}:generateContent"
@@ -79,11 +109,18 @@ def call_gemini_grounded_search(
         token = get_bearer_token()
         if not token:
             return {"status": "UNAVAILABLE", "reason": "No bearer token available.", "summary": "", "queries": [], "sources": []}
-        endpoint = (
-            f"https://{vertex_location}-aiplatform.googleapis.com/v1/projects/"
-            f"{urllib.parse.quote(vertex_project, safe='')}/locations/{urllib.parse.quote(vertex_location, safe='')}"
-            f"/publishers/google/models/{urllib.parse.quote(clean_model, safe='')}:generateContent"
-        )
+        if is_g4 or is_g3:
+            endpoint = (
+                "https://aiplatform.googleapis.com/v1/projects/"
+                f"{urllib.parse.quote(vertex_project, safe='')}/locations/global"
+                f"/publishers/google/models/{urllib.parse.quote(clean_model, safe='')}:generateContent"
+            )
+        else:
+            endpoint = (
+                f"https://{vertex_location}-aiplatform.googleapis.com/v1/projects/"
+                f"{urllib.parse.quote(vertex_project, safe='')}/locations/{urllib.parse.quote(vertex_location, safe='')}"
+                f"/publishers/google/models/{urllib.parse.quote(clean_model, safe='')}:generateContent"
+            )
         headers = {"Content-Type": "application/json", "Authorization": f"Bearer {token}"}
         mode = "vertex_ai_google_search"
 
@@ -310,7 +347,7 @@ def topology_stage_system_prompt() -> str:
         "   - Set `ingress = \"INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER\"`\n"
         "   - NEVER grant `allUsers` or `allAuthenticatedUsers` on IAM bindings (zero public unauthenticated access!)\n"
         "   - Declare any `data` block referenced (e.g., `data \"google_project\" \"project\" {}`).\n"
-        "5. `deploySh` MUST NEVER pass `--allow-unauthenticated`.\n"
+        "5. `deploySh` MUST NEVER pass `--allow-unauthenticated` — always use `--no-allow-unauthenticated` behind IAM/IAP zero-trust ingress.\n"
         "6. `pythonApp` MUST be syntactically valid Python 3.11 implementing realistic, topic-specific handlers "
         "(no `...` or incomplete syntax stubs; verified with `ast.parse()`).\n"
         "7. Speaker notes for ALL 12 slides must be natural, humanized, conversational spoken narration "
@@ -413,7 +450,7 @@ def topology_stage_user_prompt(prose_bp: Dict[str, Any], prompt: str, grounding:
         "- `sequenceActors`: EXACTLY 5 actors (ids a1..a5) with `iconKey`.\n"
         "- `sequenceSteps`: 8 to 10 numbered steps across a1..a5 (`kind`: request | guard | response).\n"
         "- `securityDiagram`: EXACTLY 4 nested layers, 4 threats (`T-01`..`T-04`), 4 breakers (`HTTP 401`, `HTTP 403`, `HTTP 422`, `HTTP 429`).\n"
-        "- `wireDiagram.hops`: EXACTLY 4 progressive hops with `added`, `stripped`, and compact escaped single-quoted `payload` (<= 120 chars; NEVER emit raw unescaped double quotes or newlines inside JSON strings!).\n"
+        "- `wireDiagram.hops`: EXACTLY 4 progressive hops; EVERY hop MUST contain 2 to 3 NON-EMPTY `added` strings (`+ field/header/claim`), 1 to 2 NON-EMPTY `stripped` strings (`- untrusted field`), and compact escaped single-quoted `payload` (<= 120 chars; NEVER emit raw unescaped double quotes or newlines inside JSON strings!).\n"
         "- `asyncDiagram.stages`: EXACTLY 4 background stages with `bullets` + `slo` + `dlqNote` + `feedbackLabel`.\n"
         "- `slides`: EXACTLY 12 slides (matching WS1-WS5 12-slide executive deck cadence):\n"
         "  1=Cover & BLUF | 2=Challenge & Design Goals (with callout metric) | 3=Figure 1 Master Reference Architecture (C4 L2) | "
@@ -436,7 +473,7 @@ def build_auto_revision_prompt(
     sys_p = (
         "You are a Principal Google Cloud Solutions Architect performing a surgical peer-review revision. "
         "Apply IN-PLACE targeted fixes for EVERY genuine P0/P1 DDL/SQL/security/clarity finding and Terraform security finding. "
-        "NEVER remove or downgrade real current GA/Preview Google Cloud products or Gemini 2.5 models verified in the grounding dossier. "
+        "NEVER remove or downgrade real current GA/Preview Google Cloud products or Gemini 4 / Gemini 3.x / Gemini 2.5 models verified in the grounding dossier. "
         "NEVER replace the customer-facing `summary` with a changelog note like 'Revised the architecture document...'. "
         "Do NOT invent fake claims, fake benchmarks, emojis, internal links, or `allUsers` bindings. "
         "Output ONLY a JSON object with any subset of these keys:\n"
@@ -446,7 +483,8 @@ def build_auto_revision_prompt(
         '"sectionPatches":[{"headingMatch":"substring heading","appendParagraph":"...","replaceTable":null,"replaceCodeBlocks":[{"language":"sql","caption":"...","code":"..."}]}],'
         '"schemaSql":"full corrected schema.sql DDL string (REQUIRED if any DDL/SQL/vector/graph syntax finding exists)",'
         '"claimLedger":[...full updated ledger array if fixing claims...],'
-        '"terraformMain":"full hardened main.tf if fixing TF/security findings (google_cloud_run_v2_service, zero allUsers)"}'
+        '"terraformMain":"full hardened main.tf if fixing TF/security findings (google_cloud_run_v2_service, zero allUsers)",'
+        '"deploySh":"full hardened deploy.sh if SH-SEC-01 fires (use --no-allow-unauthenticated; NEVER --allow-unauthenticated)"}'
     )
     findings = judge_r1.get("findings") or []
     code_excerpts = []
@@ -474,6 +512,7 @@ def build_auto_revision_prompt(
         + (f"CURRENT schema.sql (return FULL corrected `schemaSql` if any DDL finding applies):\n{schema_sql}\n\n" if schema_sql else "")
         + f"CURRENT CLAIM LEDGER:\n{json.dumps(bp.get('claimLedger') or [], indent=2)[:2400]}\n\n"
         + (f"CURRENT main.tf (FIX ALL D-11 ISSUES!):\n{str(starter.get('terraformMain') or '')[:5000]}\n" if tf_findings else "")
+        + (f"CURRENT deploy.sh (FIX SH-SEC-01 — replace --allow-unauthenticated with --no-allow-unauthenticated!):\n{str(starter.get('deploySh') or '')[:2400]}\n" if any(f.get("id") == "SH-SEC-01" for f in tf_findings) else "")
         + "\nReturn ONLY the JSON patch object now."
     )
     return sys_p, user_p
@@ -509,8 +548,9 @@ def apply_revision_patch(
         bp["summary"] = sanitize_fn(new_sum)[:1600]
 
     # True in-place string replacements across prose, inline code blocks, starter code & slide bullets
-    _downgrade_old_re = re.compile(r"gemini[-\s]*2\.5", re.IGNORECASE)
-    _downgrade_new_re = re.compile(r"gemini[-\s]*(1\.0|1\.5)", re.IGNORECASE)
+    # Protect live GA/Preview models (Gemini 4 / Gemini 3.x / Gemini 2.5) from spurious downgrade to Gemini 1.0/1.5
+    _downgrade_old_re = re.compile(r"gemini[-\s]*(?:2\.5|3(?:\.\d+)?|4(?:[-\s]*(?:neon|carbon|argon|hydrogen))?)", re.IGNORECASE)
+    _downgrade_new_re = re.compile(r"gemini[-\s]*(?:1\.0|1\.5)", re.IGNORECASE)
     repls = []
     skipped_downgrade = False
     for rr in (patch.get("textReplacements") or [])[:24]:
@@ -525,7 +565,7 @@ def apply_revision_patch(
     if skipped_downgrade:
         applied = [
             x for x in applied
-            if not (re.search(r"gemini[-\s]*1\.[05]", x, re.IGNORECASE) and re.search(r"2\.5|deprecat|replac", x, re.IGNORECASE))
+            if not (re.search(r"gemini[-\s]*1\.[05]", x, re.IGNORECASE) and re.search(r"2\.5|3\.|4|neon|carbon|argon|hydrogen|deprecat|replac", x, re.IGNORECASE))
         ]
     if repls:
         def _apply_repls(val: str) -> str:
@@ -553,7 +593,7 @@ def apply_revision_patch(
                 sl["speakerNotes"] = _apply_repls(sl["speakerNotes"])
         cs = bp.get("codeStarter")
         if isinstance(cs, dict):
-            for ck in ("schemaSql", "terraformMain", "pythonApp", "readmeSummary"):
+            for ck in ("schemaSql", "terraformMain", "pythonApp", "deploySh", "verifySh", "readmeSummary"):
                 if isinstance(cs.get(ck), str) and cs[ck]:
                     cs[ck] = _apply_repls(cs[ck])
 
@@ -631,6 +671,10 @@ def apply_revision_patch(
     new_tf = str(patch.get("terraformMain") or "").strip()
     if len(new_tf) >= 120 and "resource " in new_tf:
         bp.setdefault("codeStarter", {})["terraformMain"] = sanitize_fn(new_tf)[:12000]
+
+    new_dep = str(patch.get("deploySh") or patch.get("deployScript") or "").strip()
+    if len(new_dep) >= 24:
+        bp.setdefault("codeStarter", {})["deploySh"] = sanitize_fn(new_dep)[:6000]
     return applied
 
 
@@ -727,7 +771,7 @@ def diagram_architect_system_prompt() -> str:
         '    "breakers":[{"code":"HTTP 401","trigger":"..."}, {"code":"HTTP 403","trigger":"..."}, {"code":"HTTP 422","trigger":"..."}, {"code":"HTTP 429","trigger":"..."}]\n'
         '  },\n'
         '  "wireDiagram": {\n'
-        '    "hops":[{"hop":"HOP 1 · ...","name":"concise envelope name","transport":"HTTPS / TLS 1.3","iconKey":"...","added":["+ field1","+ field2","+ field3"],"stripped":["- header1","- field2"],"payload":"3-4 short \\n-escaped lines of HTTP/SQL/GQL using single quotes (no unescaped quotes!)"}, ... 4 hops]\n'
+        '    "hops":[{"hop":"HOP 1 · ...","name":"concise envelope name","transport":"HTTPS / TLS 1.3","iconKey":"...","added":["+ REQUIRED field/header 1","+ REQUIRED field/header 2","+ REQUIRED field/header 3 (NEVER empty [])"],"stripped":["- header1","- field2"],"payload":"3-4 short \\n-escaped lines of HTTP/SQL/GQL using single quotes (no unescaped quotes!)"}, ... 4 hops EXACT, EVERY hop MUST have 2-3 non-empty `added` bullets]\n'
         '  },\n'
         '  "asyncDiagram": {\n'
         '    "stages":[{"stage":"1. ...","service":"...","cadence":"Continuous","iconKey":"...","slo":"Stage 1 · ...","bullets":["b1","b2","b3","b4"]}, ... 4 stages],\n'

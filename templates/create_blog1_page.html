@@ -728,8 +728,23 @@
               <div class="field">
                 <label for="inp-model">Gemini Model (Live)</label>
                 <select id="inp-model">
-                  <option value="gemini-2.5-flash">gemini-2.5-flash (Fast)</option>
-                  <option value="gemini-2.5-pro">gemini-2.5-pro (Deep)</option>
+                  <optgroup label="Gemini 4 Frontier (Global)">
+                    <option value="gemini-4-neon" selected>gemini-4-neon (Fast Frontier · Recommended)</option>
+                    <option value="gemini-4-carbon">gemini-4-carbon (Deepest Reasoning)</option>
+                    <option value="gemini-4-argon">gemini-4-argon (12-Mo Long GA)</option>
+                    <option value="gemini-4-hydrogen">gemini-4-hydrogen (Fast High-Volume)</option>
+                  </optgroup>
+                  <optgroup label="Gemini 3.x Series (Global)">
+                    <option value="gemini-3.8-flash">gemini-3.8-flash (Fast GA)</option>
+                    <option value="gemini-3.7-flash">gemini-3.7-flash (GA)</option>
+                    <option value="gemini-3.5-flash">gemini-3.5-flash (GA)</option>
+                    <option value="gemini-3.1-pro-preview">gemini-3.1-pro-preview (Pro Preview)</option>
+                    <option value="gemini-3-flash-preview">gemini-3-flash-preview (Flash Preview)</option>
+                  </optgroup>
+                  <optgroup label="Gemini 2.5 Stable (Regional)">
+                    <option value="gemini-2.5-pro">gemini-2.5-pro (Stable Deep)</option>
+                    <option value="gemini-2.5-flash">gemini-2.5-flash (Stable Fast)</option>
+                  </optgroup>
                 </select>
               </div>
               <div class="field">
@@ -743,13 +758,23 @@
               </div>
             </div>
 
-            <div class="field">
-              <label for="inp-diagram-engine">PromptCanvas Diagram Engine</label>
-              <select id="inp-diagram-engine">
-                <option value="canonical">PromptCanvas Canonical WS1 (6-View Editable .drawio + .pptx)</option>
-                <option value="hybrid">PromptCanvas Hybrid (4-Stage Vision Arch + 4 Canonical Views)</option>
-                <option value="promptcanvas_vision">PromptCanvas 4-Stage Vision (AI Image &rarr; 1:1 .drawio XML)</option>
-              </select>
+            <div class="two-col">
+              <div class="field">
+                <label for="inp-diagram-engine">PromptCanvas Diagram Engine</label>
+                <select id="inp-diagram-engine">
+                  <option value="canonical">Canonical WS1 (6-View .drawio + .pptx)</option>
+                  <option value="hybrid">Hybrid (Vision Arch + 4 Canonical)</option>
+                  <option value="promptcanvas_vision">4-Stage Vision (Image &rarr; .drawio)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="inp-image-model">Vision Image Model</label>
+                <select id="inp-image-model">
+                  <option value="gemini-3-pro-image" selected>gemini-3-pro-image (Crisp Text)</option>
+                  <option value="gemini-3.1-flash-image">gemini-3.1-flash-image (Fast)</option>
+                  <option value="gemini-2.5-flash-image">gemini-2.5-flash-image (Regional)</option>
+                </select>
+              </div>
             </div>
 
             <label class="check-row">
@@ -758,7 +783,7 @@
             </label>
             <label class="check-row">
               <input type="checkbox" id="chk-judge" checked />
-              <span>Run orthogonal Gemini Judge (Flash &harr; Pro critic)</span>
+              <span>Run orthogonal Gemini Judge (peer critic, e.g. Neon &harr; Carbon)</span>
             </label>
             <label class="check-row">
               <input type="checkbox" id="chk-ground" checked />
@@ -815,7 +840,7 @@
           <div class="pill pill-blue" style="margin-bottom:10px;">Fail-Closed Production Generator</div>
           <h1 style="font-size:24px; font-weight:800; margin-bottom:8px;">Build Any Architecture Blog End-to-End</h1>
           <p style="font-size:14px; color:var(--muted); max-width:740px;">
-            Every generation invokes a live <strong>Gemini 2.5</strong> model using Vertex AI IAM (or your optional transient
+            Every generation invokes a live <strong>Gemini 4 / 3.x / 2.5</strong> model (default <code>gemini-4-neon</code>, orthogonal critic <code>gemini-4-carbon</code>) using Vertex AI IAM (or your optional transient
             <code>X-Gemini-Api-Key</code> header) and compiles real, downloadable OOXML binaries, editable Draw.io files,
             Chirp3-HD narration tracks, and verified quality reports &mdash; with zero mock fallbacks.
           </p>

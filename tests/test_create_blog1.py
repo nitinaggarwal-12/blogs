@@ -887,5 +887,100 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertIn("<p:sp>", out["ooxmlSlideXml"])
         self.assertIn("rId10", out["ooxmlSlideXml"])
 
+    def test_13_gemini4_neon_routing_thinking_level_and_polish_fixes(self) -> None:
+        # 1. Global endpoint routing for Gemini 4 & 3.x vs regional us-central1 for Gemini 2.5
+        self.assertIn("gemini-4-neon", cb1.ALLOWED_MODELS)
+        self.assertIn("gemini-4-carbon", cb1.ALLOWED_MODELS)
+        self.assertIn("gemini-4-argon", cb1.ALLOWED_MODELS)
+        self.assertIn("gemini-4-hydrogen", cb1.ALLOWED_MODELS)
+        self.assertIn("gemini-3.8-flash", cb1.ALLOWED_MODELS)
+        self.assertEqual(cb1.DEFAULT_MODEL, "gemini-4-neon")
+        self.assertEqual(cb1.DEFAULT_IMAGE_MODEL, "gemini-3-pro-image")
+
+        neon_url = cb1.build_vertex_generate_url("gemini-4-neon", "demo-proj", "us-central1")
+        self.assertIn("https://aiplatform.googleapis.com/v1/projects/demo-proj/locations/global/publishers/google/models/gemini-4-neon:generateContent", neon_url)
+        g38_url = cb1.build_vertex_generate_url("gemini-3.8-flash", "demo-proj", "us-central1")
+        self.assertIn("/locations/global/", g38_url)
+        g25_url = cb1.build_vertex_generate_url("gemini-2.5-flash", "demo-proj", "us-central1")
+        self.assertIn("https://us-central1-aiplatform.googleapis.com/v1/projects/demo-proj/locations/us-central1/", g25_url)
+
+        # 2. thinkingLevel (no thinkingBudget/temperature) on Gemini 4; thinkingBudget on Gemini 2.5
+        cfg_neon = cb1.build_model_generation_config("gemini-4-neon", max_output_tokens=2048, temperature=0.2, thinking_budget=1024)
+        self.assertNotIn("temperature", cfg_neon)
+        self.assertEqual(cfg_neon["thinkingConfig"], {"thinkingLevel": "LOW"})
+        self.assertNotIn("thinkingBudget", cfg_neon["thinkingConfig"])
+        self.assertGreaterEqual(cfg_neon["maxOutputTokens"], 4096)
+
+        cfg_g3 = cb1.build_model_generation_config("gemini-3.8-flash", max_output_tokens=2048, temperature=0.2, thinking_level="MEDIUM")
+        self.assertEqual(cfg_g3["thinkingConfig"], {"thinkingLevel": "MEDIUM"})
+        self.assertIn("temperature", cfg_g3)
+
+        cfg_25 = cb1.build_model_generation_config("gemini-2.5-flash", max_output_tokens=2048, temperature=0.2, thinking_budget=512)
+        self.assertEqual(cfg_25["thinkingConfig"], {"thinkingBudget": 512})
+
+        # 3. Orthogonal peer critic pairing
+        self.assertEqual(cb1.select_orthogonal_judge_model("gemini-4-neon"), "gemini-4-carbon")
+        self.assertEqual(cb1.select_orthogonal_judge_model("gemini-4-carbon"), "gemini-4-neon")
+        self.assertEqual(cb1.select_orthogonal_judge_model("gemini-4-argon"), "gemini-4-neon")
+        self.assertEqual(cb1.select_orthogonal_judge_model("gemini-4-hydrogen"), "gemini-4-neon")
+        self.assertEqual(cb1.select_orthogonal_judge_model("gemini-3.8-flash"), "gemini-4-neon")
+        self.assertEqual(cb1.select_orthogonal_judge_model("gemini-2.5-flash"), "gemini-2.5-pro")
+        self.assertEqual(cb1.select_orthogonal_judge_model("gemini-2.5-pro"), "gemini-2.5-flash")
+
+        # 4. Wire diagram non-empty + ADDED fallback when model passes added=[]
+        bp_wire = {
+            "title": "Bi-Temporal Agent Memory",
+            "wireDiagram": {
+                "hops": [
+                    {"hop": f"HOP {i+1}", "name": f"Stage {i+1}", "transport": "HTTPS / TLS 1.3", "added": [], "stripped": [], "payload": "GET /v1/memory"}
+                    for i in range(4)
+                ]
+            },
+        }
+        w_spec = cb1._diag_v2.build_wire_spec_v3(bp_wire, "unit-wire")
+        for i in range(4):
+            card = next(c for c in w_spec["cards"] if c["id"] == f"wh_add_{i}")
+            self.assertGreaterEqual(len(card["lines"]), 3, f"hop {i+1} +ADDED box must never be blank")
+
+        # 5. Sequence bottom 3 milestone cards wrap long detail text across up to 2 lines
+        bp_seq = {
+            "title": "Bi-Temporal Agent Memory",
+            "sequenceDiagram": {
+                "stageSummaries": [
+                    {"title": "1. Ingress", "headline": "Cloud Armor + IAP", "detail": "Verifies ES256 IAP assertion, checks DPoP proof token, and rejects untrusted spoofed client tenant headers before forwarding"},
+                    {"title": "2. Engine", "headline": "Cloud Run + Neon", "detail": "Executes hybrid vector plus graph recall within strict budgeted latency windows"},
+                    {"title": "3. Audit", "headline": "Spanner + KMS", "detail": "Persists immutable assert-time rows protected by customer-managed encryption keys"},
+                ]
+            },
+        }
+        seq_spec = cb1._diag_v2.build_sequence_spec_v3(bp_seq, "unit-seq")
+        sum0 = next(c for c in seq_spec["cards"] if c["id"] == "sum_0")
+        self.assertGreaterEqual(len(sum0["lines"]), 4, "long milestone detail should wrap onto 2 balanced lines")
+
+        # 6. Auto-revision protects Gemini 4 Neon/3.8 from downgrade and supports deploySh patching
+        bp_rev = {
+            "summary": "Platform powered by gemini-4-neon and gemini-3.8-flash.",
+            "sections": [{"heading": "Arch", "paragraphs": ["Runs on Gemini 4 Neon and Gemini 3.8 Flash."], "codeBlocks": []}],
+            "slides": [{"bullets": ["Uses gemini-4-neon."], "speakerNotes": "Runs on Gemini 4 Neon."}],
+            "codeStarter": {"deploySh": "gcloud run deploy api --allow-unauthenticated"},
+        }
+        cb1._pipe_v2.apply_revision_patch(
+            bp_rev,
+            {
+                "appliedFixes": ["Downgraded Gemini 4 Neon to Gemini 1.5 Pro", "Hardened deploy.sh"],
+                "textReplacements": [
+                    {"old": "Gemini 4 Neon", "new": "Gemini 1.5 Pro"},
+                    {"old": "--allow-unauthenticated", "new": "--no-allow-unauthenticated"},
+                ],
+            },
+            allowed_tags=cb1.ALLOWED_PROVENANCE_TAGS,
+            sanitize_fn=cb1._sanitize_for_public_output,
+            strip_emoji_fn=cb1.strip_inline_md,
+        )
+        self.assertIn("Gemini 4 Neon", bp_rev["sections"][0]["paragraphs"][0])
+        self.assertIn("--no-allow-unauthenticated", bp_rev["codeStarter"]["deploySh"])
+        self.assertNotIn("--allow-unauthenticated", bp_rev["codeStarter"]["deploySh"])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

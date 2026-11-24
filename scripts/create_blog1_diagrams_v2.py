@@ -888,17 +888,21 @@ def build_sequence_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         sm = summaries[i] if i < len(summaries) else summaries[-1]
         sx = 64 + i * 388
         bg, bd, tc = sum_styles[i]
+        det_lines = _cc.wrap_px(str(sm.get("detail") or ""), 300, 9.0, max_lines=2)
+        sum_lines: List[Dict[str, Any]] = [
+            {"text": _cc.fit_single_line_px(sm.get("title", ""), 312, 11.4, bold=True)[0], "bold": True, "size": 11.4, "color": tc},
+            {"text": _cc.fit_single_line_px(sm.get("headline", ""), 312, 10.4, bold=True)[0], "bold": True, "size": 10.2, "color": "#0F172A", "gapTop": 4},
+        ]
+        for d_idx, dl in enumerate(det_lines):
+            sum_lines.append({"text": dl, "size": 9.0, "color": "#475569", "gapTop": 4 if d_idx == 0 else 1})
         cards.append({
-            "id": f"sum_{i}", "x": sx, "y": 726, "w": 348, "h": 92,
+            "id": f"sum_{i}", "x": sx, "y": 724, "w": 348, "h": 98,
             "fill": bg, "stroke": bd, "strokeWidth": 1.4, "rx": 10, "align": "center",
-            "lines": [
-                {"text": _cc.fit_single_line_px(sm.get("title", ""), 320, 11.4, bold=True)[0], "bold": True, "size": 11.4, "color": tc},
-                {"text": _cc.fit_single_line_px(sm.get("headline", ""), 320, 10.6, bold=True)[0], "bold": True, "size": 10.4, "color": "#0F172A", "gapTop": 4},
-                {"text": _cc.fit_single_line_px(sm.get("detail", ""), 320, 9.5)[0], "size": 9.4, "color": "#475569", "gapTop": 3},
-            ],
+            "padL": 16, "padR": 16, "padT": 10,
+            "lines": sum_lines,
         })
         if i < 2:
-            edges.append({"id": f"se_sum_{i}", "rawPoints": [(sx + 348, 772), (sx + 388, 772)], "stroke": "#1A73E8" if i == 0 else "#059669", "strokeWidth": 1.8})
+            edges.append({"id": f"se_sum_{i}", "rawPoints": [(sx + 348, 773), (sx + 388, 773)], "stroke": "#1A73E8" if i == 0 else "#059669", "strokeWidth": 1.8})
 
     leg_in = sq.get("legendStrip") or {}
     plane_legend = [
@@ -1115,8 +1119,16 @@ def build_wire_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
                 {"text": h_tr, "size": 9.4, "mono": True, "color": "#475569", "gapTop": 2},
             ],
         })
-        # + ADDED / BOUND section
+        # + ADDED / BOUND section (contextual hop defaults when model leaves `added` empty)
+        _default_added_by_hop = (
+            ("+ Authorization: Bearer <OIDC>", "+ traceparent / X-Request-ID", "+ TLS 1.3 ALPN client session"),
+            ("+ X-Goog-IAP-JWT-Assertion (ES256)", "+ Verified caller sub & aud claims", "+ X-Cloud-Trace-Context span ID"),
+            ("+ Validated request params & deadline", "+ Internal service IAM bearer token", "+ Model / embedding payload digest"),
+            ("+ Scoped DB role / FGAC binding", "+ Query parameter & read timestamp", "+ Transaction tag & priority class"),
+        )
         added = [str(x) for x in (h.get("added") or []) if str(x).strip()][:4]
+        if not added:
+            added = list(_default_added_by_hop[min(i, len(_default_added_by_hop) - 1)])
         add_lines: List[Dict[str, Any]] = [{"text": "+ ADDED / BOUND FIELDS", "bold": True, "size": 9.2, "color": "#065F46"}]
         for a in added:
             at = a if a.lstrip().startswith("+") else f"+ {a}"

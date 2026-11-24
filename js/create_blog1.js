@@ -182,10 +182,13 @@
     const c = cap.capabilities || {};
     const items = [];
     items.push(makePill(
-      auth.vertexAiIamReady ? 'Vertex AI IAM: LIVE (' + cap.vertexLocation + ')' : 'Vertex AI IAM: Offline',
+      auth.vertexAiIamReady ? 'Vertex AI IAM: LIVE (global + ' + cap.vertexLocation + ')' : 'Vertex AI IAM: Offline',
       auth.vertexAiIamReady ? 'pill-green' : 'pill-amber',
       true
     ));
+    if (cap.defaultModel) {
+      items.push(makePill('Default: ' + cap.defaultModel, 'pill-blue', false));
+    }
     items.push(makePill(
       auth.geminiApiKeyEnvReady ? 'Env API Key: Set' : 'Transient Header Key: Supported',
       auth.geminiApiKeyEnvReady ? 'pill-green' : 'pill-blue',
@@ -1445,6 +1448,7 @@
           model: document.getElementById('inp-model').value,
           voice: document.getElementById('inp-voice').value,
           diagramEngine: (document.getElementById('inp-diagram-engine') ? document.getElementById('inp-diagram-engine').value : 'canonical'),
+          imageModel: (document.getElementById('inp-image-model') ? document.getElementById('inp-image-model').value : 'gemini-3-pro-image'),
           enableTts: document.getElementById('chk-tts').checked,
           enableJudge: document.getElementById('chk-judge').checked,
           enableGrounding: (document.getElementById('chk-ground') ? document.getElementById('chk-ground').checked : true),

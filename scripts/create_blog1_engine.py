@@ -73,9 +73,132 @@ DURABLE_GCS_BUCKET = os.environ.get("DURABLE_GCS_BUCKET", "scorex-durable-state-
 DURABLE_GCS_PREFIX = "ge-blogs/create-blog1/"
 
 ALLOWED_MODELS = (
+    "gemini-4-neon",
+    "gemini-4-carbon",
+    "gemini-4-argon",
+    "gemini-4-hydrogen",
+    "gemini-3.8-flash",
+    "gemini-3.7-flash",
+    "gemini-3.5-flash",
+    "gemini-3.1-pro-preview",
+    "gemini-3-flash-preview",
     "gemini-2.5-pro",
     "gemini-2.5-flash",
 )
+DEFAULT_MODEL = "gemini-4-neon"
+ALLOWED_IMAGE_MODELS = (
+    "gemini-3-pro-image",
+    "gemini-3.1-flash-image",
+    "gemini-2.5-flash-image",
+)
+DEFAULT_IMAGE_MODEL = "gemini-3-pro-image"
+
+MODEL_CATALOG = (
+    {"id": "gemini-4-neon", "family": "Gemini 4", "label": "Gemini 4 Neon (Fast Frontier)", "endpoint": "global", "stage": "GA (Short)", "thinkingMode": "thinkingLevel", "recommended": True},
+    {"id": "gemini-4-carbon", "family": "Gemini 4", "label": "Gemini 4 Carbon (Deepest Reasoning)", "endpoint": "global", "stage": "GA (Short)", "thinkingMode": "thinkingLevel"},
+    {"id": "gemini-4-argon", "family": "Gemini 4", "label": "Gemini 4 Argon (12-Mo Long GA)", "endpoint": "global", "stage": "GA (Long)", "thinkingMode": "thinkingLevel"},
+    {"id": "gemini-4-hydrogen", "family": "Gemini 4", "label": "Gemini 4 Hydrogen (Fast High-Volume)", "endpoint": "global", "stage": "GA (Short)", "thinkingMode": "thinkingLevel"},
+    {"id": "gemini-3.8-flash", "family": "Gemini 3.x", "label": "Gemini 3.8 Flash (Fast GA)", "endpoint": "global", "stage": "GA", "thinkingMode": "thinkingLevel"},
+    {"id": "gemini-3.7-flash", "family": "Gemini 3.x", "label": "Gemini 3.7 Flash", "endpoint": "global", "stage": "GA", "thinkingMode": "thinkingLevel"},
+    {"id": "gemini-3.5-flash", "family": "Gemini 3.x", "label": "Gemini 3.5 Flash", "endpoint": "global", "stage": "GA", "thinkingMode": "thinkingLevel"},
+    {"id": "gemini-3.1-pro-preview", "family": "Gemini 3.x", "label": "Gemini 3.1 Pro (Preview)", "endpoint": "global", "stage": "Preview", "thinkingMode": "thinkingLevel"},
+    {"id": "gemini-3-flash-preview", "family": "Gemini 3.x", "label": "Gemini 3 Flash (Preview)", "endpoint": "global", "stage": "Preview", "thinkingMode": "thinkingLevel"},
+    {"id": "gemini-2.5-pro", "family": "Gemini 2.5", "label": "Gemini 2.5 Pro (Regional Stable)", "endpoint": "us-central1", "stage": "GA", "thinkingMode": "thinkingBudget"},
+    {"id": "gemini-2.5-flash", "family": "Gemini 2.5", "label": "Gemini 2.5 Flash (Regional Fast)", "endpoint": "us-central1", "stage": "GA", "thinkingMode": "thinkingBudget"},
+)
+
+
+def is_global_vertex_model(model: str) -> bool:
+    """Gemini 4 and Gemini 3.x publisher endpoints live on locations/global (404 on us-central1)."""
+    return str(model or "").startswith(("gemini-4", "gemini-3"))
+
+
+def build_vertex_generate_url(model: str, project: str = DEFAULT_GCP_PROJECT, default_location: str = DEFAULT_VERTEX_LOCATION) -> str:
+    if is_global_vertex_model(model):
+        return (
+            "https://aiplatform.googleapis.com/v1/projects/"
+            f"{urllib.parse.quote(project, safe='')}/locations/global"
+            f"/publishers/google/models/{urllib.parse.quote(model, safe='')}:generateContent"
+        )
+    return (
+        f"https://{default_location}-aiplatform.googleapis.com/v1/projects/"
+        f"{urllib.parse.quote(project, safe='')}/locations/{urllib.parse.quote(default_location, safe='')}"
+        f"/publishers/google/models/{urllib.parse.quote(model, safe='')}:generateContent"
+    )
+
+
+def build_model_generation_config(
+    model: str,
+    *,
+    max_output_tokens: int,
+    temperature: float = 0.25,
+    thinking_budget: Optional[int] = 1024,
+    thinking_level: Optional[str] = None,
+    use_google_search: bool = False,
+) -> Dict[str, Any]:
+    """Maps generationConfig cleanly across Gemini 4, Gemini 3.x (`thinkingLevel`), and Gemini 2.5 (`thinkingBudget`)."""
+    is_g4 = str(model or "").startswith("gemini-4")
+    is_g3 = str(model or "").startswith("gemini-3")
+    gen_cfg: Dict[str, Any] = {}
+    if is_g4:
+        # Gemini 4 ignores temperature/top_p/top_k and requires thinkingLevel (LOW/MEDIUM/HIGH/XHIGH).
+        # Output tokens share budget with thinking tokens, so keep a safe floor for sync calls (<=65536).
+        gen_cfg["maxOutputTokens"] = min(65536, max(int(max_output_tokens), 4096))
+        if thinking_level:
+            lvl = str(thinking_level).strip().upper()
+            if lvl not in ("LOW", "MEDIUM", "HIGH", "XHIGH"):
+                lvl = "LOW"
+            gen_cfg["thinkingConfig"] = {"thinkingLevel": lvl}
+        elif thinking_budget is not None:
+            lvl = "LOW" if int(thinking_budget) <= 1024 else ("MEDIUM" if int(thinking_budget) <= 2048 else "HIGH")
+            gen_cfg["thinkingConfig"] = {"thinkingLevel": lvl}
+    elif is_g3:
+        gen_cfg["temperature"] = temperature
+        gen_cfg["maxOutputTokens"] = min(65536, max(int(max_output_tokens), 4096))
+        if thinking_level:
+            lvl = str(thinking_level).strip().upper()
+            if lvl not in ("LOW", "MEDIUM", "HIGH"):
+                lvl = "LOW"
+            gen_cfg["thinkingConfig"] = {"thinkingLevel": lvl}
+        elif thinking_budget is not None:
+            lvl = "LOW" if int(thinking_budget) <= 1024 else ("MEDIUM" if int(thinking_budget) <= 2048 else "HIGH")
+            gen_cfg["thinkingConfig"] = {"thinkingLevel": lvl}
+    else:
+        gen_cfg["temperature"] = temperature
+        gen_cfg["maxOutputTokens"] = int(max_output_tokens)
+        if thinking_budget is not None:
+            gen_cfg["thinkingConfig"] = {"thinkingBudget": int(thinking_budget)}
+    if not use_google_search:
+        gen_cfg["responseMimeType"] = "application/json"
+    return gen_cfg
+
+
+def select_orthogonal_judge_model(generator_model: str) -> str:
+    """Pick an independent orthogonal peer model distinct from the generator model."""
+    m = str(generator_model or "").strip()
+    if m == "gemini-4-neon":
+        return "gemini-4-carbon"
+    if m in ("gemini-4-carbon", "gemini-4-argon", "gemini-4-hydrogen"):
+        return "gemini-4-neon"
+    if m.startswith("gemini-3"):
+        return "gemini-4-neon"
+    if m == "gemini-2.5-pro":
+        return "gemini-2.5-flash"
+    return "gemini-2.5-pro"
+
+
+def select_diagram_arch_model(generator_model: str) -> str:
+    m = str(generator_model or "").strip()
+    if m.startswith(("gemini-4", "gemini-3")):
+        return "gemini-4-neon"
+    return "gemini-2.5-pro"
+
+
+def select_grounding_model(generator_model: str) -> str:
+    m = str(generator_model or "").strip()
+    if m.startswith(("gemini-4", "gemini-3")):
+        return "gemini-3.8-flash"
+    return "gemini-2.5-flash"
 ALLOWED_VOICES = (
     "en-US-Chirp3-HD-Charon",
     "en-US-Chirp3-HD-Aoede",
@@ -624,7 +747,10 @@ def get_capabilities() -> Dict[str, Any]:
         "projectId": DEFAULT_GCP_PROJECT,
         "vertexLocation": DEFAULT_VERTEX_LOCATION,
         "models": list(ALLOWED_MODELS),
-        "defaultModel": "gemini-2.5-flash",
+        "modelCatalog": list(MODEL_CATALOG),
+        "defaultModel": DEFAULT_MODEL,
+        "imageModels": list(ALLOWED_IMAGE_MODELS),
+        "defaultImageModel": DEFAULT_IMAGE_MODEL,
         "voices": list(ALLOWED_VOICES),
         "defaultVoice": "en-US-Chirp3-HD-Charon",
         "auth": {
@@ -654,7 +780,7 @@ def get_capabilities() -> Dict[str, Any]:
             "diagramLayersPerBlog": 6,
             "promptCanvasEngine": True,
             "promptCanvasModes": ["canonical", "hybrid", "promptcanvas_vision"],
-            "promptCanvasImageModel": "gemini-2.5-flash-image",
+            "promptCanvasImageModel": DEFAULT_IMAGE_MODEL,
             "slidesPerDeck": 12,
             "deterministicGateChecks": 12,
             "workspaceOauthSync": has_workspace,
@@ -707,30 +833,31 @@ def call_gemini_json(
     *,
     system_prompt: str,
     user_prompt: str,
-    model: str = "gemini-2.5-flash",
+    model: str = DEFAULT_MODEL,
     api_key_override: Optional[str] = None,
     max_output_tokens: int = 24576,
     thinking_budget: Optional[int] = 1024,
+    thinking_level: Optional[str] = None,
     temperature: float = 0.25,
-    timeout_s: float = 110.0,
+    timeout_s: float = 135.0,
     use_google_search: bool = False,
 ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     """
     Strictly live Gemini JSON call supporting:
       1) Transient X-Gemini-Api-Key header or GEMINI_API_KEY env var -> Gemini Developer API v1beta
-      2) GCP Vertex AI IAM Bearer token -> us-central1 Vertex AI publisher endpoint
+      2) GCP Vertex AI IAM Bearer token -> global (Gemini 4 / 3.x) or regional (Gemini 2.5) Vertex AI endpoint
     Fails CLOSED with ModelAuthUnavailableError when no live credential is present.
     """
-    clean_model = model if model in ALLOWED_MODELS else "gemini-2.5-flash"
+    clean_model = model if model in ALLOWED_MODELS else DEFAULT_MODEL
     eff_key = (api_key_override or "").strip() or os.environ.get("GEMINI_API_KEY", "").strip()
-    gen_cfg: Dict[str, Any] = {
-        "temperature": temperature,
-        "maxOutputTokens": max_output_tokens,
-    }
-    if not use_google_search:
-        gen_cfg["responseMimeType"] = "application/json"
-    if thinking_budget is not None:
-        gen_cfg["thinkingConfig"] = {"thinkingBudget": int(thinking_budget)}
+    gen_cfg = build_model_generation_config(
+        clean_model,
+        max_output_tokens=max_output_tokens,
+        temperature=temperature,
+        thinking_budget=thinking_budget,
+        thinking_level=thinking_level,
+        use_google_search=use_google_search,
+    )
     body_obj: Dict[str, Any] = {
         "systemInstruction": {"parts": [{"text": system_prompt}]},
         "contents": [{"role": "user", "parts": [{"text": user_prompt}]}],
@@ -754,11 +881,7 @@ def call_gemini_json(
                 "No live Gemini credentials available (Vertex AI IAM bearer token unavailable and no GEMINI_API_KEY / X-Gemini-Api-Key supplied). "
                 "Fail-closed: Create Blog1 never generates placeholder or mock prose when model auth is offline."
             )
-        endpoint = (
-            f"https://{DEFAULT_VERTEX_LOCATION}-aiplatform.googleapis.com/v1/projects/"
-            f"{urllib.parse.quote(DEFAULT_GCP_PROJECT, safe='')}/locations/{urllib.parse.quote(DEFAULT_VERTEX_LOCATION, safe='')}"
-            f"/publishers/google/models/{urllib.parse.quote(clean_model, safe='')}:generateContent"
-        )
+        endpoint = build_vertex_generate_url(clean_model, DEFAULT_GCP_PROJECT, DEFAULT_VERTEX_LOCATION)
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {token}",
@@ -3338,11 +3461,14 @@ def run_orthogonal_llm_judge(
     grounding: Optional[Dict[str, Any]] = None,
     tf_findings: Optional[List[Dict[str, str]]] = None,
 ) -> Dict[str, Any]:
-    judge_model = "gemini-2.5-flash" if generator_model == "gemini-2.5-pro" else "gemini-2.5-pro"
+    judge_model = select_orthogonal_judge_model(generator_model)
     sys_p = (
         f"Today is {datetime.now(timezone.utc).strftime('%Y-%m-%d')}. You are an independent adversarial Google Cloud architecture reviewer (strict orthogonal judge running on {judge_model}). "
         "GROUNDING FACTS (mandatory): "
-        "1. Gemini 2.5 (`gemini-2.5-flash` and `gemini-2.5-pro`) ARE live current GA Vertex AI models — NEVER claim Gemini 2.5 is unconfirmed/deprecated or recommend downgrading to Gemini 1.5. "
+        "1. Gemini 4 (`gemini-4-neon`, `gemini-4-carbon`, `gemini-4-argon`, `gemini-4-hydrogen`), "
+        "Gemini 3.x (`gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.5-flash`, `gemini-3.1-pro-preview`, `gemini-3-flash-preview`, `gemini-3-pro-image`, `gemini-3.1-flash-image`), "
+        "AND Gemini 2.5 (`gemini-2.5-pro`, `gemini-2.5-flash`, `gemini-2.5-flash-image`) ARE ALL LIVE Google Cloud Vertex AI models — "
+        "NEVER claim these models are fake, unconfirmed, or deprecated, and NEVER recommend downgrading them to Gemini 1.5. "
         "2. Cloud Spanner Graph (`CREATE PROPERTY GRAPH`, ISO GQL `GRAPH_TABLE`), Spanner vector search, Spanner full-text search (`TOKENLIST`/`TOKENIZE_FULLTEXT`), and Cloud Run v2 (`google_cloud_run_v2_service`) are real Google Cloud capabilities — verify exact syntax against the LIVE_GOOGLE_SEARCH_GROUNDING dossier and Google Search before rejecting. "
         "3. Treat the LIVE_GOOGLE_SEARCH_GROUNDING dossier below as verified live web evidence. Never flag text truncated at the prompt excerpt boundary as an incomplete article or broken snippet. "
         "Critically review for genuine hallucinations, invented IDs/URLs, incorrect SQL/GQL/DDL parameters, missing failure modes, Terraform/IAM security gaps (e.g. allUsers, deprecated v1 resources), "
@@ -3401,10 +3527,11 @@ def run_orthogonal_llm_judge(
                     user_prompt=usr_p,
                     model=judge_model,
                     api_key_override=api_key_override,
-                    max_output_tokens=8192,
+                    max_output_tokens=16384 if is_global_vertex_model(judge_model) else 8192,
                     thinking_budget=512 if g_try == 0 else 256,
+                    thinking_level="LOW",
                     temperature=0.1,
-                    timeout_s=95.0,
+                    timeout_s=120.0,
                     use_google_search=True,
                 )
                 judge_grounded = bool(meta.get("webSearchQueries"))
@@ -3419,10 +3546,11 @@ def run_orthogonal_llm_judge(
                 user_prompt=usr_p,
                 model=judge_model,
                 api_key_override=api_key_override,
-                max_output_tokens=8192,
+                max_output_tokens=16384 if is_global_vertex_model(judge_model) else 8192,
                 thinking_budget=512,
+                thinking_level="LOW",
                 temperature=0.1,
-                timeout_s=75.0,
+                timeout_s=105.0,
                 use_google_search=False,
             )
             judge_grounded = False
@@ -3665,10 +3793,11 @@ def compile_and_save_blog(
                     user_prompt=rusr,
                     model=model_used,
                     api_key_override=api_key_override,
-                    max_output_tokens=16384,
+                    max_output_tokens=24576 if is_global_vertex_model(model_used) else 16384,
                     thinking_budget=1024 if model_used == "gemini-2.5-flash" else 2048,
+                    thinking_level="LOW",
                     temperature=0.15,
-                    timeout_s=95.0,
+                    timeout_s=125.0,
                 )
                 import copy as _copy
                 r1_bp_backup = _copy.deepcopy(blueprint)
@@ -3680,6 +3809,16 @@ def compile_and_save_blog(
                     sanitize_fn=_sanitize_for_public_output,
                     strip_emoji_fn=strip_inline_md,
                 )
+                # Deterministic D-11 fail-safe during auto-revision: if SH-SEC-01 was flagged and
+                # LLM patch did not remove `--allow-unauthenticated`, enforce `--no-allow-unauthenticated`.
+                _cs_rev = blueprint.get("codeStarter")
+                if isinstance(_cs_rev, dict) and "--allow-unauthenticated" in str(_cs_rev.get("deploySh") or ""):
+                    _cs_rev["deploySh"] = re.sub(
+                        r"--allow-unauthenticated\b",
+                        "--no-allow-unauthenticated",
+                        str(_cs_rev["deploySh"]),
+                    )
+                    applied.append("Hardened deploy.sh: replaced --allow-unauthenticated with --no-allow-unauthenticated (SH-SEC-01).")
                 art_r2 = _compile_artifacts(blueprint)
                 det_r2 = art_r2["det"]
                 judge_r2 = run_orthogonal_llm_judge(
@@ -3929,9 +4068,12 @@ def start_generation_job(
     title_hint = str(payload.get("titleHint") or "").strip()[:110]
     domain = str(payload.get("domain") or "Google Cloud Architecture").strip()[:80]
     audience = str(payload.get("audience") or "Solutions Architects & Platform Engineers").strip()[:80]
-    model = str(payload.get("model") or "gemini-2.5-flash").strip()
+    model = str(payload.get("model") or DEFAULT_MODEL).strip()
     if model not in ALLOWED_MODELS:
         raise CreateBlog1Error(f"Unsupported model '{model}'. Allowed: {', '.join(ALLOWED_MODELS)}.", 400, "INVALID_MODEL")
+    image_model = str(payload.get("imageModel") or DEFAULT_IMAGE_MODEL).strip()
+    if image_model not in ALLOWED_IMAGE_MODELS:
+        image_model = DEFAULT_IMAGE_MODEL
     voice = str(payload.get("voice") or "en-US-Chirp3-HD-Charon").strip()
     if voice not in ALLOWED_VOICES:
         voice = "en-US-Chirp3-HD-Charon"
@@ -3975,7 +4117,7 @@ def start_generation_job(
         "steps": [
             {"id": "GROUNDING_SEARCH", "label": "Live Google Search Grounding", "status": "pending" if enable_grounding else "skipped"},
             {"id": "LLM_SYNTHESIS", "label": f"Stage 1: Deep Prose, SQL/GQL & Claims ({model})", "status": "pending"},
-            {"id": "TOPOLOGY_AND_DECK", "label": "Stage 2: 6 WS1-Grade Diagrams (Pro) + Deck & Code", "status": "pending"},
+            {"id": "TOPOLOGY_AND_DECK", "label": f"Stage 2: 6 WS1-Grade Diagrams ({select_diagram_arch_model(model)}) + Deck & Code", "status": "pending"},
             {"id": "COMPILE_DIAGRAMS", "label": "Compile 6 WS1-Parity Draw.io + SVG + Vector PPTX", "status": "pending"},
             {"id": "COMPILE_SLIDES", "label": "Build 12-Slide OOXML .pptx & Previews", "status": "pending"},
             {"id": "COMPILE_DOCS", "label": "Compile blog.md & .docx Whitepaper", "status": "pending"},
@@ -4033,17 +4175,30 @@ def start_generation_job(
             grounding: Dict[str, Any] = {"status": "DISABLED", "queries": [], "sources": [], "summary": ""}
             if enable_grounding:
                 _update_step(10, "GROUNDING_SEARCH", "Verifying current Google Cloud GA docs & quotas via Google Search...")
+                g_model = select_grounding_model(model)
                 grounding = _pipe_v2.call_gemini_grounded_search(
                     topic_prompt=prompt,
                     title_hint=title_hint,
                     domain=domain,
-                    model="gemini-2.5-flash",
+                    model=g_model,
                     vertex_project=DEFAULT_GCP_PROJECT,
                     vertex_location=DEFAULT_VERTEX_LOCATION,
                     get_bearer_token=_get_gcp_bearer_token,
                     api_key_override=transient_key,
-                    timeout_s=45.0,
+                    timeout_s=50.0,
                 )
+                if grounding.get("status") == "UNAVAILABLE" and g_model != "gemini-2.5-flash":
+                    grounding = _pipe_v2.call_gemini_grounded_search(
+                        topic_prompt=prompt,
+                        title_hint=title_hint,
+                        domain=domain,
+                        model="gemini-2.5-flash",
+                        vertex_project=DEFAULT_GCP_PROJECT,
+                        vertex_location=DEFAULT_VERTEX_LOCATION,
+                        get_bearer_token=_get_gcp_bearer_token,
+                        api_key_override=transient_key,
+                        timeout_s=45.0,
+                    )
 
             _update_step(20, "LLM_SYNTHESIS", f"Stage 1/2: Authoring deep 7-8 section blog, inline DDL/formulas & claims ({model})...")
             prose_raw, meta_p = call_gemini_json(
@@ -4051,38 +4206,42 @@ def start_generation_job(
                 user_prompt=_pipe_v2.prose_stage_user_prompt(prompt, title_hint, domain, audience, grounding),
                 model=model,
                 api_key_override=transient_key,
-                max_output_tokens=24576,
+                max_output_tokens=32768 if is_global_vertex_model(model) else 24576,
                 thinking_budget=1024 if model == "gemini-2.5-flash" else 2048,
+                thinking_level="LOW" if model.startswith("gemini-4-carbon") else "MEDIUM",
                 temperature=0.22,
-                timeout_s=130.0,
+                timeout_s=160.0,
             )
 
-            _update_step(36, "TOPOLOGY_AND_DECK", "Stage 2/2: Authoring WS1-parity 6 C4 diagrams (gemini-2.5-pro) & 12-slide deck + Terraform starter in parallel...")
+            arch_model = select_diagram_arch_model(model)
+            _update_step(36, "TOPOLOGY_AND_DECK", f"Stage 2/2: Authoring WS1-parity 6 C4 diagrams ({arch_model}) & 12-slide deck + Terraform starter in parallel...")
             from concurrent.futures import ThreadPoolExecutor as _TPE
 
             def _run_diag_arch():
-                arch_model = "gemini-2.5-pro"
                 try:
                     return call_gemini_json(
                         system_prompt=_pipe_v2.diagram_architect_system_prompt(),
                         user_prompt=_pipe_v2.diagram_architect_user_prompt(prose_raw, prompt, grounding),
                         model=arch_model,
                         api_key_override=transient_key,
-                        max_output_tokens=24576,
+                        max_output_tokens=32768 if is_global_vertex_model(arch_model) else 24576,
                         thinking_budget=1024,
+                        thinking_level="LOW",
                         temperature=0.18,
-                        timeout_s=140.0,
+                        timeout_s=155.0,
                     )
                 except Exception:
+                    fb_arch = "gemini-2.5-pro" if arch_model != "gemini-2.5-pro" else model
                     return call_gemini_json(
                         system_prompt=_pipe_v2.diagram_architect_system_prompt(),
                         user_prompt=_pipe_v2.diagram_architect_user_prompt(prose_raw, prompt, grounding),
-                        model=model,
+                        model=fb_arch,
                         api_key_override=transient_key,
-                        max_output_tokens=20480,
+                        max_output_tokens=24576,
                         thinking_budget=1024,
+                        thinking_level="LOW",
                         temperature=0.2,
-                        timeout_s=110.0,
+                        timeout_s=125.0,
                     )
 
             def _run_topo_deck():
@@ -4092,25 +4251,27 @@ def start_generation_job(
                         user_prompt=_pipe_v2.topology_stage_user_prompt(prose_raw, prompt, grounding),
                         model=model,
                         api_key_override=transient_key,
-                        max_output_tokens=24576,
+                        max_output_tokens=32768 if is_global_vertex_model(model) else 24576,
                         thinking_budget=1024 if model == "gemini-2.5-flash" else 2048,
+                        thinking_level="LOW",
                         temperature=0.15,
-                        timeout_s=130.0,
+                        timeout_s=155.0,
                     )
                 except CreateBlog1Error as exc:
                     if exc.code not in ("MODEL_INVALID_JSON", "MODEL_EMPTY_CANDIDATE", "MODEL_EMPTY_RESPONSE"):
                         raise
-                    fallback_m = "gemini-2.5-pro" if model == "gemini-2.5-flash" else "gemini-2.5-flash"
+                    fallback_m = "gemini-3.8-flash" if model.startswith("gemini-4") else ("gemini-2.5-pro" if model == "gemini-2.5-flash" else "gemini-2.5-flash")
                     return call_gemini_json(
                         system_prompt=_pipe_v2.topology_stage_system_prompt(),
                         user_prompt=_pipe_v2.topology_stage_user_prompt(prose_raw, prompt, grounding)
                         + "\nIMPORTANT: Ensure 100% strictly valid RFC 8259 JSON with properly escaped quotes and concise code strings.",
                         model=fallback_m,
                         api_key_override=transient_key,
-                        max_output_tokens=24576,
+                        max_output_tokens=32768 if is_global_vertex_model(fallback_m) else 24576,
                         thinking_budget=1024,
+                        thinking_level="LOW",
                         temperature=0.08,
-                        timeout_s=140.0,
+                        timeout_s=145.0,
                     )
 
             diag_raw, meta_d = {}, {}
@@ -4162,6 +4323,9 @@ def start_generation_job(
                             vertex_project=DEFAULT_GCP_PROJECT,
                             vertex_location=DEFAULT_VERTEX_LOCATION,
                             api_key_override=transient_key,
+                            plan_model=select_diagram_arch_model(model),
+                            image_model=image_model,
+                            vision_model=select_diagram_arch_model(model),
                         )
                     except Exception:
                         return vk, None
