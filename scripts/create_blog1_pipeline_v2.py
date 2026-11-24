@@ -364,7 +364,7 @@ def topology_stage_user_prompt(prose_bp: Dict[str, Any], prompt: str, grounding:
                     "iconKey": "saas_globe",
                     "added": ["+ field added 1", "+ field added 2", "+ field added 3"],
                     "stripped": ["- stripped header/field 1", "- stripped field 2"],
-                    "payload": "4-5 realistic lines of HTTP/JSON/SQL/GQL wire payload (no markdown fences)",
+                    "payload": "compact realistic wire/query snippet (<= 110 chars; use escaped \\n and single quotes inside JSON!)",
                 }
             ]
         },
@@ -413,7 +413,7 @@ def topology_stage_user_prompt(prose_bp: Dict[str, Any], prompt: str, grounding:
         "- `sequenceActors`: EXACTLY 5 actors (ids a1..a5) with `iconKey`.\n"
         "- `sequenceSteps`: 8 to 10 numbered steps across a1..a5 (`kind`: request | guard | response).\n"
         "- `securityDiagram`: EXACTLY 4 nested layers, 4 threats (`T-01`..`T-04`), 4 breakers (`HTTP 401`, `HTTP 403`, `HTTP 422`, `HTTP 429`).\n"
-        "- `wireDiagram.hops`: EXACTLY 4 progressive hops showing field-level `added`, non-empty `stripped`, and realistic 4-5 line `payload` snippet.\n"
+        "- `wireDiagram.hops`: EXACTLY 4 progressive hops with `added`, `stripped`, and compact escaped single-quoted `payload` (<= 120 chars; NEVER emit raw unescaped double quotes or newlines inside JSON strings!).\n"
         "- `asyncDiagram.stages`: EXACTLY 4 background stages with `bullets` + `slo` + `dlqNote` + `feedbackLabel`.\n"
         "- `slides`: EXACTLY 12 slides (matching WS1-WS5 12-slide executive deck cadence):\n"
         "  1=Cover & BLUF | 2=Challenge & Design Goals (with callout metric) | 3=Figure 1 Master Reference Architecture (C4 L2) | "
@@ -727,7 +727,7 @@ def diagram_architect_system_prompt() -> str:
         '    "breakers":[{"code":"HTTP 401","trigger":"..."}, {"code":"HTTP 403","trigger":"..."}, {"code":"HTTP 422","trigger":"..."}, {"code":"HTTP 429","trigger":"..."}]\n'
         '  },\n'
         '  "wireDiagram": {\n'
-        '    "hops":[{"hop":"HOP 1 · ...","name":"concise envelope name","transport":"HTTPS / TLS 1.3","iconKey":"...","added":["+ field1","+ field2","+ field3"],"stripped":["- header1 (required on every hop)","- field2"],"payload":"4-6 realistic newline-separated lines of HTTP/JSON/SQL/GQL (REQUIRED, non-empty)"}, ... 4 hops]\n'
+        '    "hops":[{"hop":"HOP 1 · ...","name":"concise envelope name","transport":"HTTPS / TLS 1.3","iconKey":"...","added":["+ field1","+ field2","+ field3"],"stripped":["- header1","- field2"],"payload":"3-4 short \\n-escaped lines of HTTP/SQL/GQL using single quotes (no unescaped quotes!)"}, ... 4 hops]\n'
         '  },\n'
         '  "asyncDiagram": {\n'
         '    "stages":[{"stage":"1. ...","service":"...","cadence":"Continuous","iconKey":"...","slo":"Stage 1 · ...","bullets":["b1","b2","b3","b4"]}, ... 4 stages],\n'

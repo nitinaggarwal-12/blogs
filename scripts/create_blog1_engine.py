@@ -832,13 +832,19 @@ def call_gemini_json(
     try:
         parsed = json.loads(cleaned_json)
     except json.JSONDecodeError as exc:
-        if "Extra data" in str(exc.msg) and cleaned_json.lstrip().startswith("{"):
+        # Attempt safe stdlib recovery for minor control chars / trailing commas / trailing text
+        for _cand_fn in (
+            lambda s: json.loads(s, strict=False),
+            lambda s: json.loads(re.sub(r",(\s*[}\]])", r"\1", s), strict=False),
+            lambda s: json.JSONDecoder(strict=False).raw_decode(s.lstrip())[0] if s.lstrip().startswith("{") else None,
+        ):
             try:
-                candidate_obj, _ = json.JSONDecoder().raw_decode(cleaned_json.lstrip())
-                if isinstance(candidate_obj, dict):
-                    parsed = candidate_obj
-            except json.JSONDecodeError:
-                parsed = None
+                cand_obj = _cand_fn(cleaned_json)
+                if isinstance(cand_obj, dict):
+                    parsed = cand_obj
+                    break
+            except Exception:
+                pass
         if parsed is None:
             fr = candidates[0].get("finishReason") if candidates else "unknown"
             raise CreateBlog1Error(
@@ -4080,16 +4086,32 @@ def start_generation_job(
                     )
 
             def _run_topo_deck():
-                return call_gemini_json(
-                    system_prompt=_pipe_v2.topology_stage_system_prompt(),
-                    user_prompt=_pipe_v2.topology_stage_user_prompt(prose_raw, prompt, grounding),
-                    model=model,
-                    api_key_override=transient_key,
-                    max_output_tokens=24576,
-                    thinking_budget=1024 if model == "gemini-2.5-flash" else 2048,
-                    temperature=0.2,
-                    timeout_s=130.0,
-                )
+                try:
+                    return call_gemini_json(
+                        system_prompt=_pipe_v2.topology_stage_system_prompt(),
+                        user_prompt=_pipe_v2.topology_stage_user_prompt(prose_raw, prompt, grounding),
+                        model=model,
+                        api_key_override=transient_key,
+                        max_output_tokens=24576,
+                        thinking_budget=1024 if model == "gemini-2.5-flash" else 2048,
+                        temperature=0.15,
+                        timeout_s=130.0,
+                    )
+                except CreateBlog1Error as exc:
+                    if exc.code not in ("MODEL_INVALID_JSON", "MODEL_EMPTY_CANDIDATE", "MODEL_EMPTY_RESPONSE"):
+                        raise
+                    fallback_m = "gemini-2.5-pro" if model == "gemini-2.5-flash" else "gemini-2.5-flash"
+                    return call_gemini_json(
+                        system_prompt=_pipe_v2.topology_stage_system_prompt(),
+                        user_prompt=_pipe_v2.topology_stage_user_prompt(prose_raw, prompt, grounding)
+                        + "\nIMPORTANT: Ensure 100% strictly valid RFC 8259 JSON with properly escaped quotes and concise code strings.",
+                        model=fallback_m,
+                        api_key_override=transient_key,
+                        max_output_tokens=24576,
+                        thinking_budget=1024,
+                        temperature=0.08,
+                        timeout_s=140.0,
+                    )
 
             diag_raw, meta_d = {}, {}
             with _TPE(max_workers=2) as _pool:
