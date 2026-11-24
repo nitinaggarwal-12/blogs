@@ -61,6 +61,7 @@ def _load_sibling_mod(mod_name: str, filename: str) -> Any:
 
 _diag_v2 = _load_sibling_mod("create_blog1_diagrams_v2", "create_blog1_diagrams_v2.py")
 _pipe_v2 = _load_sibling_mod("create_blog1_pipeline_v2", "create_blog1_pipeline_v2.py")
+_pc_engine = _load_sibling_mod("create_blog1_promptcanvas_engine", "create_blog1_promptcanvas_engine.py")
 
 
 def strip_inline_md(text: str) -> str:
@@ -491,8 +492,6 @@ def hydrate_index_from_gcs_once(force: bool = False) -> None:
     now = time.time()
     if not force and _GCS_INDEX_HYDRATED and (now - _GCS_INDEX_LAST_SYNC) < _GCS_INDEX_TTL_SEC:
         return
-    _GCS_INDEX_HYDRATED = True
-    _GCS_INDEX_LAST_SYNC = now
     raw = _gcs_download_bytes("index.json")
     if not raw:
         return
@@ -502,6 +501,8 @@ def hydrate_index_from_gcs_once(force: bool = False) -> None:
             return
     except Exception:
         return
+    _GCS_INDEX_HYDRATED = True
+    _GCS_INDEX_LAST_SYNC = now
     with _STATE_LOCK:
         idx_file = get_storage_root() / "index.json"
         if not idx_file.is_file():
@@ -649,8 +650,11 @@ def get_capabilities() -> Dict[str, Any]:
             "drawioAndSvgCompilers": True,
             "googleSearchGrounding": has_vertex or has_env_key,
             "autoRevisionPass": has_vertex or has_env_key,
-            "officialGcpSvgIcons": len(_diag_v2.load_gcp_svg_icons()),
-            "diagramLayersPerBlog": 5,
+            "officialGcpSvgIcons": len(_diag_v2.load_icon_atlas()),
+            "diagramLayersPerBlog": 6,
+            "promptCanvasEngine": True,
+            "promptCanvasModes": ["canonical", "hybrid", "promptcanvas_vision"],
+            "promptCanvasImageModel": "gemini-2.5-flash-image",
             "slidesPerDeck": 12,
             "deterministicGateChecks": 12,
             "workspaceOauthSync": has_workspace,
@@ -1085,31 +1089,33 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
             {"num": 5, "from": actors[4]["id"], "to": actors[0]["id"], "label": "200 OK signed response", "kind": "response"},
         ]
 
-    # Supporting C4 diagram blueprints (security L1, wire L4, async loop)
+    # Supporting C4 diagram blueprints — canonical v3 schema (security L1, wire L4, async loop)
     sec_raw = raw.get("securityDiagram") if isinstance(raw.get("securityDiagram"), dict) else {}
     sec_layers = []
     for rl in (sec_raw.get("layers") or [])[:4]:
         if isinstance(rl, dict):
+            layer_lbl = strip_inline_md(_sanitize_for_public_output(str(rl.get("layer") or f"L{len(sec_layers)+1}")))[:48]
+            name_lbl = strip_inline_md(_sanitize_for_public_output(str(rl.get("name") or "")))[:66]
             sec_layers.append({
-                "zone": strip_inline_md(_sanitize_for_public_output(str(rl.get("zone") or "")))[:42],
-                "control": strip_inline_md(_sanitize_for_public_output(str(rl.get("control") or "")))[:66],
-                "iconKey": _diag_v2.infer_gcp_icon_key(str(rl.get("control") or ""), str(rl.get("zone") or ""), "", str(rl.get("iconKey") or "")),
-                "detail": strip_inline_md(_sanitize_for_public_output(str(rl.get("detail") or "")))[:160],
+                "layer": layer_lbl,
+                "name": name_lbl,
+                "iconKey": _diag_v2.infer_gcp_icon_key(name_lbl, layer_lbl, "", str(rl.get("iconKey") or "")),
+                "detail": strip_inline_md(_sanitize_for_public_output(str(rl.get("detail") or "")))[:180],
             })
     sec_threats = []
     for rt in (sec_raw.get("threats") or [])[:4]:
         if isinstance(rt, dict):
             sec_threats.append({
-                "code": strip_inline_md(str(rt.get("code") or f"T-0{len(sec_threats)+1}"))[:8],
-                "vector": strip_inline_md(_sanitize_for_public_output(str(rt.get("vector") or "")))[:48],
-                "mitigation": strip_inline_md(_sanitize_for_public_output(str(rt.get("mitigation") or "")))[:160],
+                "id": strip_inline_md(str(rt.get("id") or f"T-0{len(sec_threats)+1}"))[:10],
+                "vector": strip_inline_md(_sanitize_for_public_output(str(rt.get("vector") or "")))[:56],
+                "control": strip_inline_md(_sanitize_for_public_output(str(rt.get("control") or "")))[:190],
             })
     sec_breakers = []
     for rb in (sec_raw.get("breakers") or [])[:4]:
         if isinstance(rb, dict):
             sec_breakers.append({
                 "code": strip_inline_md(str(rb.get("code") or "HTTP 403"))[:14],
-                "trigger": strip_inline_md(_sanitize_for_public_output(str(rb.get("trigger") or "")))[:78],
+                "trigger": strip_inline_md(_sanitize_for_public_output(str(rb.get("trigger") or "")))[:110],
             })
     security_diag = {"layers": sec_layers, "threats": sec_threats, "breakers": sec_breakers} if (sec_layers or sec_threats) else {}
 
@@ -1117,14 +1123,17 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
     wire_hops = []
     for rh in (wire_raw.get("hops") or [])[:4]:
         if isinstance(rh, dict):
+            h_name = strip_inline_md(_sanitize_for_public_output(str(rh.get("name") or "")))[:40]
+            h_tr = strip_inline_md(_sanitize_for_public_output(str(rh.get("transport") or "HTTPS / TLS 1.3")))[:36]
+            h_payload = strip_emojis(_sanitize_for_public_output(str(rh.get("payload") or ""))).strip()[:520]
             wire_hops.append({
-                "hop": strip_inline_md(_sanitize_for_public_output(str(rh.get("hop") or f"HOP {len(wire_hops)+1}")))[:30],
-                "title": strip_inline_md(_sanitize_for_public_output(str(rh.get("title") or "")))[:34],
-                "protocol": strip_inline_md(_sanitize_for_public_output(str(rh.get("protocol") or "HTTPS")))[:32],
-                "iconKey": _diag_v2.infer_gcp_icon_key(str(rh.get("title") or ""), str(rh.get("protocol") or ""), "", str(rh.get("iconKey") or "")),
-                "added": [strip_inline_md(_sanitize_for_public_output(str(x)))[:44] for x in (rh.get("added") or []) if str(x).strip()][:4],
-                "stripped": [strip_inline_md(_sanitize_for_public_output(str(x)))[:44] for x in (rh.get("stripped") or []) if str(x).strip()][:3],
-                "sample": strip_emojis(_sanitize_for_public_output(str(rh.get("sample") or "")))[:180],
+                "hop": strip_inline_md(_sanitize_for_public_output(str(rh.get("hop") or f"HOP {len(wire_hops)+1}")))[:34],
+                "name": h_name,
+                "transport": h_tr,
+                "iconKey": _diag_v2.infer_gcp_icon_key(h_name, h_tr, str(rh.get("hop") or ""), str(rh.get("iconKey") or "")),
+                "added": [strip_inline_md(_sanitize_for_public_output(str(x)))[:68] for x in (rh.get("added") or []) if str(x).strip()][:4],
+                "stripped": [strip_inline_md(_sanitize_for_public_output(str(x)))[:68] for x in (rh.get("stripped") or []) if str(x).strip()][:3],
+                "payload": h_payload,
             })
     wire_diag = {"hops": wire_hops} if len(wire_hops) >= 2 else {}
 
@@ -1132,17 +1141,25 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
     async_stages = []
     for rs_a in (async_raw.get("stages") or [])[:4]:
         if isinstance(rs_a, dict):
+            raw_blts = rs_a.get("bullets")
+            norm_blts = [strip_inline_md(_sanitize_for_public_output(str(x)))[:72] for x in raw_blts if str(x).strip()][:5] if isinstance(raw_blts, list) else []
+            detail_s = strip_inline_md(_sanitize_for_public_output(str(rs_a.get("detail") or "")))[:200]
+            cad_s = strip_inline_md(_sanitize_for_public_output(str(rs_a.get("cadence") or "Async")))[:26]
+            slo_s = strip_inline_md(_sanitize_for_public_output(str(rs_a.get("slo") or f"Stage {len(async_stages)+1} · {cad_s} · Off-Path")))[:44]
             async_stages.append({
-                "stage": strip_inline_md(_sanitize_for_public_output(str(rs_a.get("stage") or f"{len(async_stages)+1}. STAGE")))[:28],
-                "service": strip_inline_md(_sanitize_for_public_output(str(rs_a.get("service") or "")))[:34],
+                "stage": strip_inline_md(_sanitize_for_public_output(str(rs_a.get("stage") or f"{len(async_stages)+1}. STAGE")))[:32],
+                "service": strip_inline_md(_sanitize_for_public_output(str(rs_a.get("service") or "")))[:38],
                 "iconKey": _diag_v2.infer_gcp_icon_key(str(rs_a.get("service") or ""), str(rs_a.get("stage") or ""), "", str(rs_a.get("iconKey") or "")),
-                "cadence": strip_inline_md(_sanitize_for_public_output(str(rs_a.get("cadence") or "Async")))[:24],
-                "detail": strip_inline_md(_sanitize_for_public_output(str(rs_a.get("detail") or "")))[:200],
+                "cadence": cad_s,
+                "slo": slo_s,
+                "bullets": norm_blts,
+                "detail": detail_s,
             })
     async_diag = (
         {
             "stages": async_stages,
-            "feedbackNote": strip_inline_md(_sanitize_for_public_output(str(async_raw.get("feedbackNote") or "")))[:220],
+            "dlqNote": strip_inline_md(_sanitize_for_public_output(str(async_raw.get("dlqNote") or "")))[:260],
+            "feedbackLabel": strip_inline_md(_sanitize_for_public_output(str(async_raw.get("feedbackLabel") or "")))[:90],
         }
         if len(async_stages) >= 2
         else {}
@@ -2056,7 +2073,7 @@ def compile_pptx_bytes(
                                     sid, f"sec_l_{li}", 64 + li * 22, 182 + li * 130, 1110 - li * 44, 112,
                                     fill_hex=d_bg if li % 2 == 0 else "FFFFFF", line_hex=d_col, line_pt=1.5, dash="dash", rounded=True,
                                     text_runs=[
-                                        {"text": f"{strip_inline_md(lay.get('zone', f'Layer {li+1}'))[:38]}  —  {strip_inline_md(lay.get('control', ''))[:52]}", "pt": 11.5, "bold": True, "color": "0F172A", "spcAft": 40},
+                                        {"text": f"{strip_inline_md(lay.get('layer', f'Layer {li+1}'))[:38]}  —  {strip_inline_md(lay.get('name', ''))[:52]}", "pt": 11.5, "bold": True, "color": "0F172A", "spcAft": 40},
                                         {"text": strip_inline_md(lay.get("detail", ""))[:110], "pt": 9.8, "color": "475569"},
                                     ],
                                     valign="ctr", pad_lr=140000,
@@ -2074,9 +2091,9 @@ def compile_pptx_bytes(
                                     fill_hex="FFFFFF", line_hex=d_col, line_pt=1.5, rounded=True,
                                     text_runs=[
                                         {"text": strip_inline_md(hp.get("hop", f"HOP {hi+1}"))[:24], "pt": 9.5, "bold": True, "color": d_col, "spcAft": 40},
-                                        {"text": strip_inline_md(hp.get("title", ""))[:28], "pt": 12, "bold": True, "color": "0F172A", "spcAft": 80},
+                                        {"text": strip_inline_md(hp.get("name", ""))[:28], "pt": 12, "bold": True, "color": "0F172A", "spcAft": 80},
                                         {"text": f"+ {added[:120]}" if added else "Protocol framing", "pt": 9.5, "color": "137333", "spcAft": 100},
-                                        {"text": strip_inline_md(hp.get("sample", ""))[:110], "pt": 8.5, "font": "Courier New", "color": "334155"},
+                                        {"text": strip_inline_md(hp.get("payload", ""))[:110], "pt": 8.5, "font": "Courier New", "color": "334155"},
                                     ],
                                     pad_lr=100000, pad_tb=110000,
                                 )
@@ -2094,7 +2111,7 @@ def compile_pptx_bytes(
                                         {"text": strip_inline_md(stg.get("stage", f"STAGE {ai_i+1}"))[:26], "pt": 9.5, "bold": True, "color": d_col, "spcAft": 40},
                                         {"text": strip_inline_md(stg.get("service", ""))[:28], "pt": 12, "bold": True, "color": "0F172A", "spcAft": 60},
                                         {"text": strip_inline_md(stg.get("cadence", "Async"))[:22], "pt": 9, "color": "475569", "spcAft": 80},
-                                        {"text": strip_inline_md(stg.get("detail", ""))[:140], "pt": 9.8, "color": "334155"},
+                                        {"text": strip_inline_md("; ".join(stg.get("bullets") or []) or stg.get("detail", ""))[:140], "pt": 9.8, "color": "334155"},
                                     ],
                                     pad_lr=100000, pad_tb=100000,
                                 )
@@ -3317,10 +3334,13 @@ def run_orthogonal_llm_judge(
 ) -> Dict[str, Any]:
     judge_model = "gemini-2.5-flash" if generator_model == "gemini-2.5-pro" else "gemini-2.5-pro"
     sys_p = (
-        f"Today is {datetime.now(timezone.utc).strftime('%Y-%m-%d')}. You are an independent adversarial Google Cloud architecture reviewer (strict orthogonal judge). "
-        "IMPORTANT: Treat the LIVE_GOOGLE_SEARCH_GROUNDING dossier below as current verified web facts (do NOT reject GA Google Cloud capabilities confirmed by Google Search due to model cutoff). "
-        "Critically review for genuine hallucinations, invented IDs/URLs, missing failure modes, Terraform/IAM security gaps (e.g. allUsers, deprecated v1 resources), "
-        "overstated claims lacking provenance tags, stale product names, or diagram-vs-prose mismatches. Return ONLY JSON: "
+        f"Today is {datetime.now(timezone.utc).strftime('%Y-%m-%d')}. You are an independent adversarial Google Cloud architecture reviewer (strict orthogonal judge running on {judge_model}). "
+        "GROUNDING FACTS (mandatory): "
+        "1. Gemini 2.5 (`gemini-2.5-flash` and `gemini-2.5-pro`) ARE live current GA Vertex AI models — NEVER claim Gemini 2.5 is unconfirmed/deprecated or recommend downgrading to Gemini 1.5. "
+        "2. Cloud Spanner Graph (`CREATE PROPERTY GRAPH`, ISO GQL `GRAPH_TABLE`), Spanner vector search, Spanner full-text search (`TOKENLIST`/`TOKENIZE_FULLTEXT`), and Cloud Run v2 (`google_cloud_run_v2_service`) are real Google Cloud capabilities — verify exact syntax against the LIVE_GOOGLE_SEARCH_GROUNDING dossier and Google Search before rejecting. "
+        "3. Treat the LIVE_GOOGLE_SEARCH_GROUNDING dossier below as verified live web evidence. Never flag text truncated at the prompt excerpt boundary as an incomplete article or broken snippet. "
+        "Critically review for genuine hallucinations, invented IDs/URLs, incorrect SQL/GQL/DDL parameters, missing failure modes, Terraform/IAM security gaps (e.g. allUsers, deprecated v1 resources), "
+        "overstated claims lacking provenance tags, stale product names, or diagram-vs-prose mismatches. Return ONLY raw JSON (no prose wrapper, no markdown headings): "
         '{"verdict":"APPROVED|NEEDS_REVISION","score":0-100,"summary":"1-2 crisp sentences",'
         '"strengths":["..."],"findings":[{"severity":"P0|P1|P2","category":"grounding|security|diagram|code|clarity","detail":"..."}]}'
     )
@@ -3334,35 +3354,60 @@ def run_orthogonal_llm_judge(
         "asyncStages": len((bp.get("asyncDiagram") or {}).get("stages") or []),
     }
     g_sum = ((grounding or {}).get("summary") or "").strip()
+    tf_block = (
+        json.dumps(tf_findings, indent=2)
+        if tf_findings
+        else "PASSED (0 findings — static D-11 zero-trust scan confirmed 0 allUsers/allAuthenticatedUsers IAM bindings, 0 deprecated v1 Cloud Run resources, and 0 unauthenticated flags)"
+    )
+    # Clean entry/line-boundary excerpts so the judge never mistakes a mid-line prompt slice for broken syntax
+    ledger_json = json.dumps((bp.get("claimLedger") or [])[:16], indent=2)
+    md_max = 26000
+    if len(md_text) > md_max:
+        cut_nl = md_text.rfind("\n", 0, md_max)
+        md_excerpt = md_text[: cut_nl if cut_nl > 16000 else md_max] + "\n\n[... remainder truncated cleanly at line boundary for review window ...]"
+    else:
+        md_excerpt = md_text
+    schema_sql = str((bp.get("codeStarter") or {}).get("schemaSql") or "").strip()
     usr_p = (
         f"TITLE: {bp['title']}\nDOMAIN: {bp['domain']}\nGENERATOR_MODEL: {generator_model}\n\n"
-        + (f"LIVE_GOOGLE_SEARCH_GROUNDING (status={(grounding or {}).get('status')}):\n{g_sum[:3600]}\n\n" if g_sum else "")
-        + f"TERRAFORM_SECURITY_FINDINGS (D-11):\n{json.dumps(tf_findings or [], indent=2)}\n\n"
-        + f"DIAGRAM_TOPOLOGY_JSON:\n{json.dumps(diag_summary, indent=2)[:3400]}\n\n"
-        + f"CLAIM_LEDGER:\n{json.dumps(bp.get('claimLedger') or [], indent=2)[:2800]}\n\n"
-        + f"BLOG_MARKDOWN_EXCERPT:\n{md_text[:14000]}\n"
+        + (f"LIVE_GOOGLE_SEARCH_GROUNDING (status={(grounding or {}).get('status')}):\n{g_sum[:4400]}\n\n" if g_sum else "")
+        + f"TERRAFORM_SECURITY_FINDINGS (D-11):\n{tf_block}\n\n"
+        + f"DIAGRAM_TOPOLOGY_JSON:\n{json.dumps(diag_summary, indent=2)}\n\n"
+        + f"COMPLETE_CLAIM_LEDGER ({len(bp.get('claimLedger') or [])} rows):\n{ledger_json}\n\n"
+        + (f"STARTER_SCHEMA_SQL:\n```sql\n{schema_sql[:4000]}\n```\n\n" if schema_sql else "")
+        + f"BLOG_MARKDOWN:\n{md_excerpt}\n"
     )
     try:
         search_sys = (
             sys_p
-            + " Use your live Google Search tool BEFORE rejecting any Google Cloud product, feature, GA status, "
-              "DDL/SQL/GQL syntax, or Gemini model version (e.g., verify via cloud.google.com first!). "
-              "Output ONLY raw JSON matching the exact schema above (no prose before/after)."
+            + " MANDATORY: Run at least one live Google Search query using your googleSearch tool to verify any Google Cloud "
+              "product name, GA status, DDL/SQL/GQL syntax, or index clause before flagging a finding. "
+              "Your final response MUST be a single valid JSON object inside `{...}` matching the schema above."
         )
-        try:
-            res, meta = call_gemini_json(
-                system_prompt=search_sys,
-                user_prompt=usr_p,
-                model=judge_model,
-                api_key_override=api_key_override,
-                max_output_tokens=8192,
-                thinking_budget=512,
-                temperature=0.1,
-                timeout_s=95.0,
-                use_google_search=True,
-            )
-            judge_grounded = bool(meta.get("webSearchQueries"))
-        except Exception:
+        judge_fallback_err = ""
+        res = None
+        meta: Dict[str, Any] = {}
+        judge_grounded = False
+        for g_try in range(2):
+            try:
+                res, meta = call_gemini_json(
+                    system_prompt=search_sys,
+                    user_prompt=usr_p,
+                    model=judge_model,
+                    api_key_override=api_key_override,
+                    max_output_tokens=8192,
+                    thinking_budget=512 if g_try == 0 else 256,
+                    temperature=0.1,
+                    timeout_s=95.0,
+                    use_google_search=True,
+                )
+                judge_grounded = bool(meta.get("webSearchQueries"))
+                break
+            except Exception as g_exc:
+                judge_fallback_err = _redact_secret(str(g_exc), api_key_override)[:180]
+                if g_try == 0:
+                    time.sleep(1.0)
+        if res is None:
             res, meta = call_gemini_json(
                 system_prompt=sys_p,
                 user_prompt=usr_p,
@@ -3399,6 +3444,7 @@ def run_orthogonal_llm_judge(
             "findings": findings,
             "searchGrounded": judge_grounded,
             "searchQueries": meta.get("webSearchQueries") or [],
+            "searchFallbackReason": judge_fallback_err if not judge_grounded and judge_fallback_err else "",
             "latencyMs": meta.get("latencyMs", 0),
             "checkedAt": _now_iso(),
         }
@@ -3474,6 +3520,8 @@ def compile_and_save_blog(
     api_key_override: Optional[str] = None,
     progress_cb: Optional[Callable[[int, str, str], None]] = None,
     latency_ms: float = 0.0,
+    vision_overrides: Optional[Dict[str, Dict[str, Any]]] = None,
+    diagram_engine: str = "canonical",
 ) -> Dict[str, Any]:
     def _step(pct: int, stage: str, msg: str) -> None:
         if progress_cb:
@@ -3488,6 +3536,19 @@ def compile_and_save_blog(
 
     def _compile_artifacts(bp_cur: Dict[str, Any]) -> Dict[str, Any]:
         diags = compile_all_diagrams_v2(bp_cur, slug)
+        if vision_overrides:
+            for vk, vv in vision_overrides.items():
+                if vk in diags and isinstance(vv, dict) and vv.get("xml") and vv.get("svg"):
+                    base_d = dict(diags[vk])
+                    for fk in ("xml", "svg", "viewerUrl", "ooxmlSlideXml", "iconCount", "vertexCount", "edgeCount", "geometry", "audit", "engineUsed", "pipelineStages", "refImageExt", "refImageWidth", "refImageHeight"):
+                        if fk in vv:
+                            base_d[fk] = vv[fk]
+                    if vv.get("refImageBytes"):
+                        ref_ext = str(vv.get("refImageExt") or "png")
+                        ref_rel = f"diagrams/{slug}-{vk}-ref.{ref_ext}"
+                        (blog_dir / ref_rel).write_bytes(vv["refImageBytes"])
+                        base_d["refImagePath"] = ref_rel
+                    diags[vk] = base_d
         for kind, dv in diags.items():
             (blog_dir / "diagrams" / f"{slug}-{kind}.drawio").write_text(dv["xml"], encoding="utf-8")
             (blog_dir / "diagrams" / f"{slug}-{kind}.svg").write_text(dv["svg"], encoding="utf-8")
@@ -3752,6 +3813,10 @@ def compile_and_save_blog(
             "geometryErrors": geom.get("errors") or [],
             "drawioPath": f"diagrams/{slug}-{k}.drawio",
             "svgPath": f"diagrams/{slug}-{k}.svg",
+            "refImagePath": dv.get("refImagePath") or "",
+            "engineUsed": dv.get("engineUsed") or "promptcanvas_canonical_ws1",
+            "audit": dv.get("audit") or None,
+            "pipelineStages": dv.get("pipelineStages") or None,
             "viewerUrl": dv["viewerUrl"],
             "studioUrl": f"/drawio-editor?id={urllib.parse.quote(slug + '-' + k)}",
         }
@@ -3774,7 +3839,8 @@ def compile_and_save_blog(
             "model": model_used,
             "authMode": auth_mode,
             "latencyMs": latency_ms,
-            "pipelineVersion": "v2_ws_parity",
+            "pipelineVersion": "v3_promptcanvas_ws1_parity",
+            "diagramEngine": diagram_engine,
             "slideCount": slide_n,
             "diagramCount": len(diagrams_manifest),
             "totalEmbeddedIcons": sum(d["iconCount"] for d in diagrams_manifest.values()),
@@ -3867,6 +3933,9 @@ def start_generation_job(
     enable_judge = bool(payload.get("enableJudge", True))
     enable_grounding = bool(payload.get("enableGrounding", True))
     enable_auto_revise = bool(payload.get("enableAutoRevise", True)) and enable_judge
+    diagram_engine = str(payload.get("diagramEngine") or "canonical").strip().lower()
+    if diagram_engine not in ("canonical", "hybrid", "promptcanvas_vision"):
+        diagram_engine = "canonical"
 
     has_key = bool((api_key_override or "").strip() or os.environ.get("GEMINI_API_KEY", "").strip())
     has_vertex = bool(_get_gcp_bearer_token())
@@ -4051,6 +4120,35 @@ def start_generation_job(
             with _JOBS_LOCK:
                 _JOBS[job_id]["slug"] = slug
 
+            vision_overrides: Dict[str, Dict[str, Any]] = {}
+            if diagram_engine in ("hybrid", "promptcanvas_vision"):
+                v_kinds = ("architecture", "cloudarch") if diagram_engine == "hybrid" else ("architecture", "cloudarch", "sequence", "security", "wire", "async")
+                _update_step(48, "TOPOLOGY_AND_DECK", f"Running PromptCanvas 4-Stage Vision-to-Draw.io engine on {len(v_kinds)} view(s) ({diagram_engine})...")
+                sec_heads = [str(s.get("heading") or "") for s in (bp.get("sections") or [])[:10] if isinstance(s, dict)]
+                g_brief = str((grounding or {}).get("summary") or "").strip()
+
+                def _run_pc_view(vk: str) -> Tuple[str, Optional[Dict[str, Any]]]:
+                    try:
+                        return vk, _pc_engine.run_promptcanvas_vision_diagram(
+                            kind=vk,
+                            slug=slug,
+                            blog_title=bp["title"],
+                            topic_prompt=prompt,
+                            grounding_summary=g_brief,
+                            section_headings=sec_heads,
+                            get_bearer_token=_get_gcp_bearer_token,
+                            vertex_project=DEFAULT_GCP_PROJECT,
+                            vertex_location=DEFAULT_VERTEX_LOCATION,
+                            api_key_override=transient_key,
+                        )
+                    except Exception:
+                        return vk, None
+
+                with _TPE(max_workers=min(3, len(v_kinds))) as _vpool:
+                    for vk_done, vres in _vpool.map(_run_pc_view, v_kinds):
+                        if vres is not None:
+                            vision_overrides[vk_done] = vres
+
             total_llm_ms = round(float(meta_p.get("latencyMs") or 0.0) + float(meta_t.get("latencyMs") or 0.0), 1)
             manifest = compile_and_save_blog(
                 blueprint=bp,
@@ -4066,6 +4164,8 @@ def start_generation_job(
                 api_key_override=transient_key,
                 progress_cb=_update_step,
                 latency_ms=total_llm_ms,
+                vision_overrides=vision_overrides or None,
+                diagram_engine=diagram_engine,
             )
             with _JOBS_LOCK:
                 jr = _JOBS[job_id]

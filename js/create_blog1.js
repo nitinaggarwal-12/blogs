@@ -227,14 +227,23 @@
     }
   }
 
-  async function refreshCapabilities() {
+  async function refreshCapabilities(attempt) {
+    const n = Number(attempt || 0);
     try {
       const cap = await apiGet('/api/create-blog1/capabilities');
       state.capabilities = cap;
       renderCapabilities(cap);
     } catch (err) {
+      const msg = String(err && err.message ? err.message : err || '');
+      const transient = /HTTP\s*50[234]|Failed to fetch|NetworkError/i.test(msg);
+      if (transient && n < 2) {
+        const strip = document.getElementById('capability-strip');
+        if (strip) strip.replaceChildren(makePill('Checking live backend status...', 'pill-amber', true));
+        setTimeout(() => { refreshCapabilities(n + 1); }, 1600 * (n + 1));
+        return;
+      }
       const strip = document.getElementById('capability-strip');
-      if (strip) strip.replaceChildren(makePill('Status check failed: ' + err.message, 'pill-red', true));
+      if (strip) strip.replaceChildren(makePill('Status check failed: ' + msg, 'pill-red', true));
     }
   }
 
@@ -394,7 +403,14 @@
         },
       });
       card.appendChild(el('div', { className: 'lib-title' }, b.title || b.slug));
+      const diagCnt = Number(b.diagramCount || 0) || (Number(b.slideCount || 9) >= 12 ? 5 : 2);
+      const slideCnt = Number(b.slideCount || 9);
+      const verTag = diagCnt >= 6 ? 'v3 · WS1-Parity' : (diagCnt >= 5 ? 'v2' : 'v1');
+      const createdShort = b.createdAt ? String(b.createdAt).slice(0, 16).replace('T', ' ') + 'Z' : '';
+      card.appendChild(el('div', { className: 'hint', style: 'font-family:monospace;font-size:10.5px;margin:2px 0 4px;word-break:break-all;' },
+        b.slug + (createdShort ? ' · ' + createdShort : '')));
       const meta = el('div', { className: 'lib-meta' },
+        makePill(verTag + ' (' + diagCnt + 'd/' + slideCnt + 's)', diagCnt >= 6 ? 'pill-green' : (diagCnt >= 5 ? 'pill-purple' : 'pill-amber'), false),
         makePill(b.modelUsed || 'gemini', 'pill-blue', false),
         makePill('Gate ' + (b.qualityPassed || 0) + '/' + (b.qualityTotal || 10), (b.qualityPassed === b.qualityTotal ? 'pill-green' : 'pill-amber'), false),
         makePill('Proofs: ' + (b.proofCount || 0), (b.proofCount > 0 ? 'pill-green' : 'pill-amber'), false)
@@ -424,7 +440,12 @@
     container.replaceChildren(...items);
   }
 
-  async function refreshLibrary(selectFirst, forceGcs) {
+  async function refreshLibrary(selectFirst, forceGcs, attempt) {
+    const n = Number(attempt || 0);
+    const box = document.getElementById('library-list');
+    if (n === 0 && !state.blogs.length && box) {
+      box.replaceChildren(el('div', { className: 'hint' }, 'Loading saved blogs from durable GCS storage...'));
+    }
     try {
       const res = await apiGet('/api/create-blog1/blogs' + (forceGcs ? '?refresh=1' : ''));
       state.blogs = Array.isArray(res.blogs) ? res.blogs : [];
@@ -435,8 +456,12 @@
         await selectBlog(target);
       }
     } catch (err) {
-      const box = document.getElementById('library-list');
-      if (box) box.replaceChildren(el('div', { className: 'banner banner-err' }, 'Failed to load library: ' + err.message));
+      const msg = String(err && err.message ? err.message : err || '');
+      if (/HTTP\s*50[234]|Failed to fetch|NetworkError/i.test(msg) && n < 2) {
+        setTimeout(() => { refreshLibrary(selectFirst, forceGcs, n + 1); }, 1600 * (n + 1));
+        return;
+      }
+      if (box) box.replaceChildren(el('div', { className: 'banner banner-err' }, 'Failed to load library: ' + msg));
     }
   }
 
@@ -680,30 +705,63 @@
   function renderDiagramsTab(blog) {
     const panel = document.getElementById('panel-diagrams');
     const slug = blog.slug;
+    const pcOrigin = (window.location.origin.indexOf('ge-blogs-') >= 0)
+      ? window.location.origin.replace('ge-blogs-', 'promptcanvas-')
+      : '';
     const cards = getDiagramEntries(blog).map((ent) => {
       const diag = ent.diag;
       const parts = [];
+      if (diag.engineUsed === 'promptcanvas_vision_v4') parts.push('PromptCanvas Vision 1:1');
+      else if (diag.vertexCount) parts.push('PromptCanvas Canonical WS1');
       if (diag.vertexCount) parts.push(diag.vertexCount + 'v / ' + (diag.edgeCount || 0) + 'e');
       if (diag.iconCount) parts.push(diag.iconCount + ' official GCP SVG icons');
       parts.push(diag.geometryValid === false ? 'geometry WARN' : '0 overlaps');
       parts.push('0 flowAnimation=1');
+      const imgEl = el('img', {
+        src: assetUrl(slug, diag.svgPath),
+        alt: diag.title,
+        title: 'Click to maximize',
+        onClick: () => openDiagramLightbox(slug, ent.label, diag),
+      });
+      const btns = [
+        el('button', { type: 'button', className: 'btn btn-sm', onClick: () => openDiagramLightbox(slug, ent.label, diag) }, 'Maximize'),
+      ];
+      if (diag.refImagePath) {
+        let showingRef = false;
+        const toggleBtn = el('button', {
+          type: 'button',
+          className: 'btn btn-sm',
+          onClick: () => {
+            showingRef = !showingRef;
+            imgEl.src = assetUrl(slug, showingRef ? diag.refImagePath : diag.svgPath);
+            toggleBtn.textContent = showingRef ? 'Show Editable Vector' : 'Show Stage 3 Blueprint';
+          },
+        }, 'Show Stage 3 Blueprint');
+        btns.push(toggleBtn);
+      }
+      btns.push(
+        el('a', { className: 'btn btn-primary btn-sm', href: diag.viewerUrl, target: '_blank', rel: 'noopener noreferrer' }, 'Open in viewer.diagrams.net ->'),
+        el('a', { className: 'btn btn-sm', href: diag.studioUrl, target: '_blank', rel: 'noopener noreferrer' }, 'Edit in Local Studio')
+      );
+      if (pcOrigin) {
+        btns.push(el('a', { className: 'btn btn-sm', href: pcOrigin + '/prompt-to-diagram', target: '_blank', rel: 'noopener noreferrer' }, 'PromptCanvas ->'));
+      }
+      btns.push(
+        el('a', { className: 'btn btn-sm', href: assetUrl(slug, diag.drawioPath, true) }, 'Download .drawio'),
+        el('a', { className: 'btn btn-sm', href: assetUrl(slug, diag.svgPath, true) }, 'Download .svg')
+      );
+      if (diag.refImagePath) {
+        btns.push(el('a', { className: 'btn btn-sm', href: assetUrl(slug, diag.refImagePath, true) }, 'Ref PNG'));
+      }
       return el('div', { className: 'diagram-card' },
         el('div', { className: 'diagram-hdr' },
           el('div', null,
             el('strong', { style: { fontSize: '13.5px' } }, ent.label),
             el('div', { className: 'hint' }, parts.join('  ·  '))
           ),
-          el('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '6px' } },
-            el('button', { type: 'button', className: 'btn btn-sm', onClick: () => openDiagramLightbox(slug, ent.label, diag) }, 'Maximize'),
-            el('a', { className: 'btn btn-primary btn-sm', href: diag.viewerUrl, target: '_blank', rel: 'noopener noreferrer' }, 'Open in viewer.diagrams.net ->'),
-            el('a', { className: 'btn btn-sm', href: diag.studioUrl, target: '_blank', rel: 'noopener noreferrer' }, 'Edit in Local Studio'),
-            el('a', { className: 'btn btn-sm', href: assetUrl(slug, diag.drawioPath, true) }, 'Download .drawio'),
-            el('a', { className: 'btn btn-sm', href: assetUrl(slug, diag.svgPath, true) }, 'Download .svg')
-          )
+          el('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '6px' } }, ...btns)
         ),
-        el('div', { className: 'diagram-stage' },
-          el('img', { src: assetUrl(slug, diag.svgPath), alt: diag.title, title: 'Click to maximize', onClick: () => openDiagramLightbox(slug, ent.label, diag) })
-        )
+        el('div', { className: 'diagram-stage' }, imgEl)
       );
     });
     panel.replaceChildren(...cards);
@@ -1386,6 +1444,7 @@
           audience: document.getElementById('inp-audience').value,
           model: document.getElementById('inp-model').value,
           voice: document.getElementById('inp-voice').value,
+          diagramEngine: (document.getElementById('inp-diagram-engine') ? document.getElementById('inp-diagram-engine').value : 'canonical'),
           enableTts: document.getElementById('chk-tts').checked,
           enableJudge: document.getElementById('chk-judge').checked,
           enableGrounding: (document.getElementById('chk-ground') ? document.getElementById('chk-ground').checked : true),

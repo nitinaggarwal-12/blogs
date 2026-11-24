@@ -49,8 +49,16 @@ def build_viewer_url(drawio_xml: str, slug_tag: str = "diagram", title: str = "D
     return _cc.build_viewer_url(drawio_xml, slug_tag, title)
 
 
-def _norm_bullets(raw: Any, max_items: int, max_width_px: float, fs: float = 9.8, bullet: str = "• ") -> List[Dict[str, Any]]:
-    """Normalizes a list of bullets/lines or a sentence into cleanly pixel-wrapped line dicts (NO mid-word slicing!)."""
+def _norm_bullets(
+    raw: Any,
+    max_items: int,
+    max_width_px: float,
+    fs: float = 9.8,
+    bullet: str = "• ",
+    max_total_lines: int = 12,
+    max_lines_per_item: int = 3,
+) -> List[Dict[str, Any]]:
+    """Normalizes bullets into pixel-wrapped line dicts without ever slicing mid-bullet or overflowing borders."""
     items: List[str] = []
     if isinstance(raw, list):
         for r in raw:
@@ -62,7 +70,16 @@ def _norm_bullets(raw: Any, max_items: int, max_width_px: float, fs: float = 9.8
         items = parts
     out: List[Dict[str, Any]] = []
     for it in items[:max_items]:
-        wrapped = _cc.wrap_px(f"{bullet}{it}", max_width_px, fs, max_lines=2)
+        # Indent continuation lines only by 6px visual margin by tightening inner wrap width slightly
+        wrapped = _cc.wrap_px(f"{bullet}{it}", max_width_px - 4, fs, max_lines=max_lines_per_item)
+        if not wrapped:
+            continue
+        if len(out) + len(wrapped) > max_total_lines:
+            # Never emit half a bullet (e.g. orphaned `• Header:` without its value)
+            if len(out) == 0:
+                wrapped = wrapped[:max_total_lines]
+            else:
+                break
         for wi, wln in enumerate(wrapped):
             txt = wln if wi == 0 else f"  {wln}"
             out.append({"text": txt, "size": fs, "color": "#5F6368", "gapTop": 4 if (wi == 0 and out) else 0})
@@ -239,10 +256,10 @@ def build_architecture_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
     ):
         hdr_lines = _cc.wrap_px(st_obj.get("title") or def_t, cw - 20, 11.2, bold=True, max_lines=2)
         lines = [{"text": h, "bold": True, "size": 11.0, "color": "#202124"} for h in hdr_lines]
-        blts = _norm_bullets(st_obj.get("bullets") or st_obj.get("detail") or ["OIDC / WIF verification", "Zero-trust header check", "TLS 1.3 mutual auth", "JWKS cache + rotation"], 5, cw - 20, fs=9.4)
+        blts = _norm_bullets(st_obj.get("bullets") or st_obj.get("detail") or ["OIDC / WIF verification", "Zero-trust header check", "TLS 1.3 mutual auth", "JWKS cache + rotation"], 5, cw - 24, fs=9.2, max_total_lines=10)
         if blts:
-            blts[0]["gapTop"] = 7
-        lines.extend(blts[:7])
+            blts[0]["gapTop"] = 6
+        lines.extend(blts)
         ic = _cc.resolve_icon_key(st_obj.get("icon", ""), st_obj.get("title", ""), default=def_ic)
         cards.append({"id": cid, "x": cx, "y": 256, "w": cw, "h": 254, "fill": "#FFFFFF", "stroke": "#DADCE0", "icon": ic, "iconPos": "top", "iconSize": 24, "padL": 11, "padR": 10, "lines": lines})
 
@@ -275,12 +292,12 @@ def build_architecture_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         sub_txt, sfs = _cc.fit_single_line_px(cfg.get("title") or def_sub, 144, 10.6, bold=True)
         ic = _cc.resolve_icon_key(cfg.get("icon", ""), def_hdr, default="agent_gateway")
         body_lines = [{"text": sub_txt, "bold": True, "size": sfs, "color": "#1E3A8A"}]
-        blts = _norm_bullets(cfg.get("bullets") or def_blts, 5, 142, fs=9.4)
+        blts = _norm_bullets(cfg.get("bullets") or def_blts, 5, 138, fs=9.1, max_total_lines=10)
         for bl in blts:
             bl["color"] = "#334155"
         if blts:
-            blts[0]["gapTop"] = 7
-        body_lines.extend(blts[:8])
+            blts[0]["gapTop"] = 6
+        body_lines.extend(blts)
         cards.append({"id": f"{prefix}_box", "x": gx, "y": 256, "w": 178, "h": 254, "fill": "#FFFFFF", "stroke": "#DADCE0", "isContainer": True, "rx": 14, "lines": []})
         cards.append({"id": f"{prefix}_hdr", "x": gx, "y": 256, "w": 178, "h": 42, "fill": "#1A73E8", "stroke": "none", "rx": 12, "icon": ic, "iconPos": "header-left", "iconSize": 22, "padL": 42, "allowOverlap": True, "lines": [{"text": hdr_txt, "bold": True, "size": hfs, "color": "#FFFFFF"}]})
         cards.append({"id": f"{prefix}_body", "x": gx + 8, "y": 306, "w": 162, "h": 196, "fill": "#F8FAFC", "stroke": "#BFDBFE", "rx": 10, "padL": 10, "padR": 8, "allowOverlap": True, "lines": body_lines})
@@ -298,10 +315,10 @@ def build_architecture_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
     })
     orch_title, ofs = _cc.fit_single_line_px(runtime.get("subtitle") or "Stateless Orchestrator", 168, 10.6, bold=True)
     rt_lines = [{"text": orch_title, "bold": True, "size": ofs, "color": "#202124"}]
-    rblts = _norm_bullets(runtime.get("bullets") or ["Internal load-balancer ingress", "Vertex AI embedding & reason", "Parameterized read/write txns", "Zero public allUsers IAM"], 5, 168, fs=9.4)
+    rblts = _norm_bullets(runtime.get("bullets") or ["Internal load-balancer ingress", "Vertex AI embedding & reason", "Parameterized read/write txns", "Zero public allUsers IAM"], 5, 164, fs=9.2, max_total_lines=10)
     if rblts:
         rblts[0]["gapTop"] = 6
-    rt_lines.extend(rblts[:8])
+    rt_lines.extend(rblts)
     cards.append({"id": "adk_orch", "x": 936, "y": 318, "w": 188, "h": 182, "fill": "#F8F9FA", "stroke": "#DADCE0", "rx": 10, "padL": 11, "padR": 9, "allowOverlap": True, "lines": rt_lines})
 
     # Focal Blue Hero Card 2: Outbound Router / Egress Gate (`gw_out_box`)
@@ -339,10 +356,10 @@ def build_architecture_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
     if sess.get("title2") and len(s_hdr) == 1:
         s_hdr.append(_cc.strip_md(sess["title2"]))
     s_lines = [{"text": x, "bold": True, "size": 11.0, "color": "#202124"} for x in s_hdr[:2]]
-    sblts = _norm_bullets(sess.get("bullets") or [], 4, 146, fs=9.3)
+    sblts = _norm_bullets(sess.get("bullets") or [], 4, 142, fs=9.1, max_total_lines=8)
     if sblts:
         sblts[0]["gapTop"] = 6
-    s_lines.extend(sblts[:6])
+    s_lines.extend(sblts)
     cards.append({"id": "sessions", "x": 558, "y": 562, "w": 168, "h": 182, "fill": "#FFFFFF", "stroke": "#DADCE0", "rx": 14, "icon": _cc.resolve_icon_key(sess.get("icon", ""), default="memorystore"), "iconPos": "top", "iconSize": 24, "padL": 11, "padR": 9, "lines": s_lines})
 
     # Bottom center: Memory Bank / Data Store Tiers (`mem_bank` + `mb_1..3`)
@@ -359,12 +376,12 @@ def build_architecture_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
     if finops.get("title2") and len(f_hdr) == 1:
         f_hdr.append(_cc.strip_md(finops["title2"]))
     f_lines = [{"text": x, "bold": True, "size": 11.0, "color": "#137333"} for x in f_hdr[:2]]
-    fblts = _norm_bullets(finops.get("bullets") or [], 4, 148, fs=9.3)
+    fblts = _norm_bullets(finops.get("bullets") or [], 4, 144, fs=9.1, max_total_lines=8)
     for bl in fblts:
         bl["color"] = "#3C4043"
     if fblts:
         fblts[0]["gapTop"] = 6
-    f_lines.extend(fblts[:6])
+    f_lines.extend(fblts)
     cards.append({"id": "finops_bulkhead", "x": 1168, "y": 562, "w": 170, "h": 182, "fill": "#E6F4EA", "stroke": "#81C995", "rx": 14, "icon": _cc.resolve_icon_key(finops.get("icon", ""), default="finops"), "iconPos": "top", "iconSize": 24, "padL": 11, "padR": 9, "lines": f_lines})
 
     # Bottom spanning telemetry & fail-closed breakers bar (`obs_bar`)
@@ -637,6 +654,8 @@ def build_cloudarch_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
     labels = [
         {"id": "cl_req", "x": 676, "y": 124, "w": 68, "h": 20, "text": "Request", "size": 10.5, "color": "#0F172A", "align": "right", "bold": False},
         {"id": "cl_rsp", "x": 844, "y": 124, "w": 76, "h": 20, "text": "Response", "size": 10.5, "color": "#0F172A", "align": "left", "bold": False},
+        {"id": "cl_req2", "x": 586, "y": 386, "w": 68, "h": 18, "text": "Request", "size": 9.4, "color": "#0F172A", "align": "right", "bold": False},
+        {"id": "cl_rsp2", "x": 768, "y": 386, "w": 72, "h": 18, "text": "Response", "size": 9.4, "color": "#0F172A", "align": "left", "bold": False},
         {"id": "cl_waf", "x": 396, "y": 298, "w": 118, "h": 16, "text": "Security policies", "size": 9.2, "color": "#1E293B", "align": "center", "bold": False},
         {"id": "cl_dlp", "x": 396, "y": 366, "w": 118, "h": 16, "text": "Sanitize & screen", "size": 9.2, "color": "#1E293B", "align": "center", "bold": False},
         {"id": "cl_iap", "x": 404, "y": 438, "w": 134, "h": 16, "text": "User authentication", "size": 9.2, "color": "#1E293B", "align": "center", "bold": False},
@@ -760,55 +779,61 @@ def build_sequence_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
     for i in range(6):
         if i < len(raw_steps) and isinstance(raw_steps[i], dict):
             s = raw_steps[i]
+            raw_t = _cc.strip_md(s.get("title") or s.get("label") or def_steps[i]["title"])
+            clean_t = re.sub(r"^(?:step\s*)?\d+[.):\-\s]+\s*", "", raw_t, flags=re.IGNORECASE).strip() or raw_t
             step_list.append({
-                "title": _cc.strip_md(s.get("title") or s.get("label") or def_steps[i]["title"]),
+                "title": clean_t,
                 "detail": _cc.strip_md(s.get("detail") or s.get("protocol") or def_steps[i]["detail"]),
                 "wire": _cc.strip_md(s.get("wire") or s.get("arrowLabel") or def_steps[i]["wire"]),
             })
         elif i < len(legacy_steps) and isinstance(legacy_steps[i], dict):
             s = legacy_steps[i]
+            raw_t = _cc.strip_md(s.get("label") or def_steps[i]["title"])
+            clean_t = re.sub(r"^(?:step\s*)?\d+[.):\-\s]+\s*", "", raw_t, flags=re.IGNORECASE).strip() or raw_t
             step_list.append({
-                "title": _cc.strip_md(s.get("label") or def_steps[i]["title"]),
+                "title": clean_t,
                 "detail": _cc.strip_md(s.get("protocol") or def_steps[i]["detail"]),
                 "wire": _cc.strip_md(f"{s.get('protocol', 'HTTPS')} -> {s.get('to', '')}"),
             })
         else:
             step_list.append(def_steps[i])
 
-    # Stepped tinted step callouts + bold numbered circles
+    # Stepped tinted step callouts + bold numbered circles (2-line wrapped detail prevents premature clipping)
     callout_cfg = [
-        (0, lane_x[0] + 58, 250, 194, 48, "#F8FAFC", "#CBD5E1", "#0F172A", lane_x[0] + 32, 274, bar_colors[0]),
-        (1, lane_x[1] + 58, 330, 194, 48, "#FEF7E0", "#FCD34D", "#92400E", lane_x[1] + 32, 354, bar_colors[1]),
-        (2, lane_x[2] + 58, 408, 194, 48, "#E8F0FE", "#93C5FD", "#174EA6", lane_x[2] + 32, 432, bar_colors[2]),
-        (3, lane_x[3] + 58, 444, 218, 52, "#ECFDF5", "#6EE7B7", "#065F46", lane_x[3] + 32, 470, bar_colors[3]),
-        (5, lane_x[4] + 58, 614, 240, 56, "#ECFDF5", "#6EE7B7", "#065F46", lane_x[4] + 32, 642, bar_colors[4]),
+        (0, lane_x[0] + 56, 246, 198, 56, "#F8FAFC", "#CBD5E1", "#0F172A", lane_x[0] + 32, 274, bar_colors[0]),
+        (1, lane_x[1] + 56, 326, 198, 56, "#FEF7E0", "#FCD34D", "#92400E", lane_x[1] + 32, 354, bar_colors[1]),
+        (2, lane_x[2] + 56, 404, 198, 56, "#E8F0FE", "#93C5FD", "#174EA6", lane_x[2] + 32, 432, bar_colors[2]),
+        (3, lane_x[3] + 56, 442, 224, 58, "#ECFDF5", "#6EE7B7", "#065F46", lane_x[3] + 32, 471, bar_colors[3]),
+        (5, lane_x[4] + 56, 610, 246, 62, "#ECFDF5", "#6EE7B7", "#065F46", lane_x[4] + 32, 641, bar_colors[4]),
     ]
     for sidx, cx, cy, cw, ch, bg, bd, fg, bx, by, bcol in callout_cfg:
         st = step_list[sidx]
         t_s, f_s = _cc.fit_single_line_px(st["title"], cw - 20, 10.4, bold=True)
-        d_s, f_d = _cc.fit_single_line_px(st["detail"], cw - 20, 9.0)
+        d_lines = _cc.wrap_px(st["detail"], cw - 20, 8.8, max_lines=2)
         badge_num = str(sidx + 1 if sidx < 4 else 6)
         circle_badges.append({"id": f"sb_{sidx}", "cx": bx, "cy": by, "r": 15, "text": badge_num, "fill": bcol, "fontSize": 12.0})
         cards.append({
             "id": f"scard_{sidx}", "x": cx, "y": cy, "w": cw, "h": ch,
-            "fill": bg, "stroke": bd, "strokeWidth": 1.2, "rx": 8, "padL": 11, "padR": 10,
-            "lines": [{"text": t_s, "bold": True, "size": f_s, "color": fg}, {"text": d_s, "size": f_d, "color": "#334155", "gapTop": 2}],
+            "fill": bg, "stroke": bd, "strokeWidth": 1.2, "rx": 8, "padL": 10, "padR": 10,
+            "lines": [{"text": t_s, "bold": True, "size": f_s, "color": fg}]
+            + [{"text": dl, "size": 8.8, "color": "#334155", "gapTop": 2 if di == 0 else 1} for di, dl in enumerate(d_lines)],
         })
 
     # Step 5 badge + soft rose binding card + dark chip (matching WS1 RLS + 3LO motif)
     s5 = step_list[4]
     circle_badges.append({"id": "sb_4", "cx": lane_x[3] + 34, "cy": 640, "r": 16, "text": "5", "fill": bar_colors[3], "fontSize": 12.5})
     cards.append({
-        "id": "scard_guard_tag", "x": lane_x[3] - 126, "y": 606, "w": 104, "h": 28,
+        "id": "scard_guard_tag", "x": lane_x[3] - 126, "y": 604, "w": 104, "h": 28,
         "fill": "#475569", "stroke": "none", "rx": 6, "align": "center",
         "lines": [{"text": _cc.fit_single_line_px(sq.get("guardBadge") or "FGAC + Bind", 90, 9.2, bold=True)[0], "bold": True, "size": 9.2, "color": "#FFFFFF"}],
     })
+    s5_det_lines = _cc.wrap_px(s5["detail"], 216, 8.9, max_lines=2)
     cards.append({
-        "id": "scard_guard_box", "x": lane_x[2] + 14, "y": 644, "w": 238, "h": 50,
-        "fill": "#FEF2F2", "stroke": "#FCA5A5", "strokeWidth": 1.2, "rx": 8, "padL": 12,
+        "id": "scard_guard_box", "x": lane_x[2] + 14, "y": 640, "w": 238, "h": 58,
+        "fill": "#FEF2F2", "stroke": "#FCA5A5", "strokeWidth": 1.2, "rx": 8, "padL": 11, "padR": 11,
         "lines": [
-            {"text": _cc.fit_single_line_px(s5["title"], 228, 10.6, bold=True)[0], "bold": True, "size": 10.4, "color": "#991B1B"},
-            {"text": _cc.fit_single_line_px(s5["detail"], 228, 9.2)[0], "size": 9.2, "color": "#334155", "gapTop": 2},
+            {"text": _cc.fit_single_line_px(s5["title"], 216, 10.4, bold=True)[0], "bold": True, "size": 10.4, "color": "#991B1B"},
+            *[{"text": dl, "size": 8.9, "color": "#334155", "gapTop": 2 if di == 0 else 1} for di, dl in enumerate(s5_det_lines)],
         ],
     })
 
@@ -1067,11 +1092,11 @@ def build_wire_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
     edges: List[Dict[str, Any]] = []
     pills: List[Dict[str, Any]] = [{"id": "wp_pill", "plane": "ASYNC", "text": "C4 L4 · WIRE PAYLOAD TRANSFORMATION", "x": 1328, "y": 19, "w": 240, "h": 22}]
 
-    cw = 350
-    gap = 42
+    cw = 340
+    gap = 54
     for i in range(4):
         h = hops[i]
-        hx = 36 + i * (cw + gap)
+        hx = 38 + i * (cw + gap)
         ac, soft_bg, bd = accents[i]
         ic = _cc.resolve_icon_key(h.get("iconKey", ""), h.get("name", ""), h.get("hop", ""))
         h_lbl, _ = _cc.fit_single_line_px(h.get("hop") or f"HOP {i+1}", cw - 72, 9.4, bold=True)
@@ -1102,18 +1127,26 @@ def build_wire_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         # - STRIPPED / REJECTED section
         stripped = [str(x) for x in (h.get("stripped") or []) if str(x).strip()][:3]
         str_lines: List[Dict[str, Any]] = [{"text": "- STRIPPED / REJECTED", "bold": True, "size": 9.2, "color": "#991B1B"}]
-        for s in stripped:
-            st = s if s.lstrip().startswith("-") else f"- {s}"
-            for wl in _cc.wrap_px(st, cw - 52, 9.5, mono=True, max_lines=2):
-                str_lines.append({"text": wl, "size": 9.5, "mono": True, "color": "#7F1D1D", "gapTop": 6 if wl.startswith("-") else 1})
+        if stripped:
+            for s in stripped:
+                st = s if s.lstrip().startswith("-") else f"- {s}"
+                for wl in _cc.wrap_px(st, cw - 52, 9.5, mono=True, max_lines=2):
+                    str_lines.append({"text": wl, "size": 9.5, "mono": True, "color": "#7F1D1D", "gapTop": 6 if wl.startswith("-") else 1})
+        else:
+            str_lines.append({"text": "- Untrusted X-Forwarded-* / client identity", "size": 9.1, "mono": True, "color": "#991B1B", "gapTop": 8})
         cards.append({"id": f"wh_str_{i}", "x": hx + 12, "y": 416, "w": cw - 24, "h": 144, "fill": "#FEF2F2", "stroke": "#FCA5A5", "strokeWidth": 1.0, "rx": 8, "isContainer": True, "padL": 12, "padR": 10, "padT": 12, "allowOverlap": True, "lines": str_lines})
 
         # Dark WIRE SAMPLE excerpt (deterministic mono wrap!)
         raw_pl = str(h.get("payload") or "").strip()
         pl_lines: List[Dict[str, Any]] = [{"text": "WIRE SAMPLE", "bold": True, "size": 8.6, "mono": True, "color": "#93C5FD"}]
-        for raw_ln in raw_pl.splitlines()[:7]:
-            for wl in _cc.wrap_px(raw_ln, cw - 50, 8.7, mono=True, max_lines=3):
-                pl_lines.append({"text": wl, "size": 8.7, "mono": True, "color": "#E2E8F0", "gapTop": 2})
+        if raw_pl:
+            for raw_ln in raw_pl.splitlines()[:8]:
+                if not raw_ln.strip():
+                    continue
+                for wl in _cc.wrap_px(raw_ln, cw - 50, 8.7, mono=True, max_lines=3):
+                    pl_lines.append({"text": wl, "size": 8.7, "mono": True, "color": "#E2E8F0", "gapTop": 2})
+        else:
+            pl_lines.append({"text": f"// {h_tr} wire frame ({h_lbl})", "size": 8.6, "mono": True, "color": "#94A3B8", "gapTop": 6})
         cards.append({"id": f"wh_pay_{i}", "x": hx + 12, "y": 578, "w": cw - 24, "h": 224, "fill": "#0F172A", "stroke": "#334155", "strokeWidth": 1.0, "rx": 8, "isContainer": True, "padL": 12, "padR": 10, "padT": 12, "allowOverlap": True, "lines": pl_lines[:14]})
 
         if i < 3:
@@ -1182,13 +1215,13 @@ def build_async_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         ic = _cc.resolve_icon_key(st.get("iconKey", ""), st.get("service", ""), st.get("stage", ""))
         svc_t, svc_fs = _cc.fit_single_line_px(st.get("service") or f"Stage {i+1}", sw - 40, 14.2, bold=True)
         raw_b = st.get("bullets") or st.get("detail") or ""
-        blts = _norm_bullets(raw_b, 5, sw - 48, fs=10.4)
+        blts = _norm_bullets(raw_b, 5, sw - 68, fs=10.2, max_total_lines=10)
         if blts:
             blts[0]["gapTop"] = 10
         lines = [
             {"text": _cc.strip_md(st.get("stage") or f"{i+1}. STAGE"), "bold": True, "size": 9.8, "mono": True, "color": tc},
             {"text": svc_t, "bold": True, "size": svc_fs, "color": "#202124", "gapTop": 4},
-        ] + blts[:9]
+        ] + blts
         cards.append({"id": f"as_c_{i}", "x": x0 + 12, "y": 164, "w": sw - 24, "h": 324, "fill": "#FFFFFF", "stroke": "#DADCE0", "strokeWidth": 1.2, "rx": 12, "shadow": True, "icon": ic, "iconPos": "top", "iconSize": 38, "padL": 22, "padR": 18, "lines": lines})
         badge_txt = _cc.strip_md(st.get("slo") or f"Stage {i+1} · {cad} · Off-Path")
         cards.append({"id": f"as_foot_{i}", "x": x0 + 28, "y": 442, "w": sw - 56, "h": 28, "fill": PLANE_PALETTE.get(pl, PLANE_PALETTE["CONTROL"])["bg"], "stroke": stroke, "strokeWidth": 0.9, "rx": 6, "align": "center", "allowOverlap": True, "lines": [{"text": badge_txt, "bold": True, "size": 9.2, "mono": True, "color": tc}]})

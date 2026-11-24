@@ -346,10 +346,10 @@ def topology_stage_user_prompt(prose_bp: Dict[str, Any], prompt: str, grounding:
         ],
         "securityDiagram": {
             "layers": [
-                {"zone": "L1 · Edge Ingress & WAF", "control": "Service + Feature", "iconKey": "iap", "detail": "Crisp 1-sentence enforcement check"}
+                {"layer": "L1 · EDGE INGRESS & WAF", "name": "Service + Feature", "iconKey": "cloud_armor", "detail": "Crisp 1-sentence enforcement check"}
             ],
             "threats": [
-                {"code": "T-01", "vector": "Specific attack/failure vector", "mitigation": "Active defense control"}
+                {"id": "T-01", "vector": "Specific attack/failure vector", "control": "Active defense control and cryptographic/IAM mechanism"}
             ],
             "breakers": [
                 {"code": "HTTP 401", "trigger": "Exact fail-closed trigger condition"}
@@ -359,20 +359,21 @@ def topology_stage_user_prompt(prose_bp: Dict[str, Any], prompt: str, grounding:
             "hops": [
                 {
                     "hop": "HOP 1 · CLIENT INGRESS",
-                    "title": "Envelope Name (<= 28 chars)",
-                    "protocol": "TLS 1.3 / gRPC / SQL",
+                    "name": "Envelope Name (<= 28 chars)",
+                    "transport": "HTTPS / TLS 1.3",
                     "iconKey": "saas_globe",
-                    "added": ["field added 1", "field added 2", "field added 3"],
-                    "stripped": ["stripped header/field 1", "stripped field 2"],
-                    "sample": "compact realistic wire/query/JSON payload line (<= 110 chars)",
+                    "added": ["+ field added 1", "+ field added 2", "+ field added 3"],
+                    "stripped": ["- stripped header/field 1", "- stripped field 2"],
+                    "payload": "4-5 realistic lines of HTTP/JSON/SQL/GQL wire payload (no markdown fences)",
                 }
             ]
         },
         "asyncDiagram": {
             "stages": [
-                {"stage": "1. STAGE NAME", "service": "GCP Service Name", "iconKey": "spanner", "cadence": "Continuous / Hourly", "detail": "Concise 2-sentence operational role"}
+                {"stage": "1. STAGE NAME", "service": "GCP Service Name", "iconKey": "spanner", "cadence": "Continuous / Hourly", "slo": "Stage 1 · Off-Path", "bullets": ["bullet 1", "bullet 2", "bullet 3", "bullet 4"]}
             ],
-            "feedbackNote": "Dead-letter queue, retry/backoff, and reconciliation alert note.",
+            "dlqNote": "Dead-letter queue, retry/backoff, and reconciliation alert note.",
+            "feedbackLabel": "Periodic Verification & Idempotent Reconciliation Feedback",
         },
         "slides": [
             {
@@ -412,8 +413,8 @@ def topology_stage_user_prompt(prose_bp: Dict[str, Any], prompt: str, grounding:
         "- `sequenceActors`: EXACTLY 5 actors (ids a1..a5) with `iconKey`.\n"
         "- `sequenceSteps`: 8 to 10 numbered steps across a1..a5 (`kind`: request | guard | response).\n"
         "- `securityDiagram`: EXACTLY 4 nested layers, 4 threats (`T-01`..`T-04`), 4 breakers (`HTTP 401`, `HTTP 403`, `HTTP 422`, `HTTP 429`).\n"
-        "- `wireDiagram.hops`: EXACTLY 4 progressive hops showing field-level `added`, `stripped`, and realistic `sample` payload/query.\n"
-        "- `asyncDiagram.stages`: EXACTLY 4 background stages + `feedbackNote`.\n"
+        "- `wireDiagram.hops`: EXACTLY 4 progressive hops showing field-level `added`, non-empty `stripped`, and realistic 4-5 line `payload` snippet.\n"
+        "- `asyncDiagram.stages`: EXACTLY 4 background stages with `bullets` + `slo` + `dlqNote` + `feedbackLabel`.\n"
         "- `slides`: EXACTLY 12 slides (matching WS1-WS5 12-slide executive deck cadence):\n"
         "  1=Cover & BLUF | 2=Challenge & Design Goals (with callout metric) | 3=Figure 1 Master Reference Architecture (C4 L2) | "
         "  4=Component & Security Design Matrix (include compact table) | 5=Figure 2 End-to-End Request Lifecycle Sequence (C4 L3) | "
@@ -508,13 +509,24 @@ def apply_revision_patch(
         bp["summary"] = sanitize_fn(new_sum)[:1600]
 
     # True in-place string replacements across prose, inline code blocks, starter code & slide bullets
+    _downgrade_old_re = re.compile(r"gemini[-\s]*2\.5", re.IGNORECASE)
+    _downgrade_new_re = re.compile(r"gemini[-\s]*(1\.0|1\.5)", re.IGNORECASE)
     repls = []
+    skipped_downgrade = False
     for rr in (patch.get("textReplacements") or [])[:24]:
         if isinstance(rr, dict):
             old_s = str(rr.get("old") or "")
             new_s = str(rr.get("new") or "")
+            if _downgrade_old_re.search(old_s) and _downgrade_new_re.search(new_s):
+                skipped_downgrade = True
+                continue
             if len(old_s.strip()) >= 4 and old_s != new_s:
                 repls.append((old_s, sanitize_fn(new_s)))
+    if skipped_downgrade:
+        applied = [
+            x for x in applied
+            if not (re.search(r"gemini[-\s]*1\.[05]", x, re.IGNORECASE) and re.search(r"2\.5|deprecat|replac", x, re.IGNORECASE))
+        ]
     if repls:
         def _apply_repls(val: str) -> str:
             out = val
@@ -702,7 +714,7 @@ def diagram_architect_system_prompt() -> str:
         '      {"box":"HOP 4","label":"...","planes":["CONTROL","COMPUTE"]},\n'
         '      {"box":"HOP 5","label":"...","planes":["COMPUTE","DATA"]}\n'
         '    ],\n'
-        '    "steps": [{"title":"...","detail":"...","wire":"arrow label <=30 chars"}, ... 6 steps exact],\n'
+        '    "steps": [{"title":"action name WITHOUT leading 1. / 2. number","detail":"concise 6-11 word action detail","wire":"arrow label <=30 chars"}, ... 6 steps exact],\n'
         '    "guardBadge":"short 2-word tag",\n'
         '    "highlightBox":{"title":"...","subtitle":"...","metric":"..."},\n'
         '    "otelBullets":["bullet 1 <=28 chars","bullet 2 <=28 chars"],\n'
@@ -715,7 +727,7 @@ def diagram_architect_system_prompt() -> str:
         '    "breakers":[{"code":"HTTP 401","trigger":"..."}, {"code":"HTTP 403","trigger":"..."}, {"code":"HTTP 422","trigger":"..."}, {"code":"HTTP 429","trigger":"..."}]\n'
         '  },\n'
         '  "wireDiagram": {\n'
-        '    "hops":[{"hop":"HOP 1 · ...","name":"...","transport":"HTTPS / TLS 1.3","iconKey":"...","added":["+ field1","+ field2","+ field3"],"stripped":["- header1","- field2"],"payload":"4-6 realistic lines of HTTP/JSON/SQL/GQL"}, ... 4 hops]\n'
+        '    "hops":[{"hop":"HOP 1 · ...","name":"concise envelope name","transport":"HTTPS / TLS 1.3","iconKey":"...","added":["+ field1","+ field2","+ field3"],"stripped":["- header1 (required on every hop)","- field2"],"payload":"4-6 realistic newline-separated lines of HTTP/JSON/SQL/GQL (REQUIRED, non-empty)"}, ... 4 hops]\n'
         '  },\n'
         '  "asyncDiagram": {\n'
         '    "stages":[{"stage":"1. ...","service":"...","cadence":"Continuous","iconKey":"...","slo":"Stage 1 · ...","bullets":["b1","b2","b3","b4"]}, ... 4 stages],\n'

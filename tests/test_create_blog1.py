@@ -764,5 +764,128 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertIn("ARRAY<FLOAT32>(vector_length=>768)", bp["slides"][0]["bullets"][0])
         self.assertIn("CREATE TABLE Policy", bp["codeStarter"]["schemaSql"])
 
+    def test_11_v3_capabilities_canonical_diagrams_wrap_and_anti_downgrade(self) -> None:
+        # 1. Live capabilities payload must never raise AttributeError (prevent HTTP 503 regression)
+        cap = cb1.get_capabilities()
+        self.assertIsInstance(cap, dict)
+        self.assertGreaterEqual(cap["capabilities"]["officialGcpSvgIcons"], 20)
+        self.assertEqual(cap["capabilities"]["diagramLayersPerBlog"], 6)
+
+        # 2. wrap_px splits ultra-long identifiers without orphaned leading bullets or border overflow
+        cc = cb1._diag_v2._cc
+        wrapped = cc.wrap_px("• INGRESS_TRAFFIC_INTERNAL_ONLY", 134, 9.1, max_lines=3)
+        self.assertGreaterEqual(len(wrapped), 2)
+        self.assertNotEqual(wrapped[0].strip(), "•")
+        for ln in wrapped:
+            self.assertLessEqual(cc.est_text_width_px(ln, 9.1), 136.0)
+
+        # 3. normalize_blueprint preserves canonical v3 security/wire/async diagram fields verbatim
+        bp_in = {
+            "title": "Spanner Graph Memory",
+            "subtitle": "Sub",
+            "summary": "Executive summary covering Spanner Graph architecture.",
+            "securityDiagram": {
+                "layers": [
+                    {"layer": "L1 · EDGE WAF", "name": "Cloud Armor & External ALB", "detail": "TLS 1.3 and OWASP WAF.", "iconKey": "cloud_armor"},
+                    {"layer": "L2 · IDENTITY", "name": "Identity-Aware Proxy", "detail": "ECDSA JWT assertion.", "iconKey": "iap"},
+                ],
+                "threats": [
+                    {"id": "T-01", "vector": "Token Replay", "control": "Short-lived ECDSA JWT verified against JWKS with aud check."},
+                ],
+                "breakers": [{"code": "HTTP 401", "trigger": "Expired bearer token"}],
+            },
+            "wireDiagram": {
+                "hops": [
+                    {"hop": "HOP 1 · CLIENT", "name": "Signed HTTPS Ingress", "transport": "HTTPS / TLS 1.3", "iconKey": "saas_globe", "added": ["+ Authorization: Bearer <JWT>"], "stripped": ["- X-Tenant-ID"], "payload": "GET /v1/memory HTTP/2\nHost: api.example.com"},
+                    {"hop": "HOP 2 · IAP", "name": "IAP Edge Assertion", "transport": "mTLS / HTTPS", "iconKey": "iap", "added": ["+ X-Goog-IAP-JWT-Assertion"], "stripped": ["- Raw cookie"], "payload": "sub: agent@example.com\naud: /projects/123"},
+                ],
+            },
+            "asyncDiagram": {
+                "stages": [
+                    {"stage": "1. CAPTURE", "service": "Spanner Change Streams", "cadence": "Continuous", "iconKey": "spanner", "slo": "Stage 1 · <2s lag", "bullets": ["Streams graph mutations", "Immutable commit timestamps"]},
+                    {"stage": "2. ANALYTICS", "service": "BigQuery Write API", "cadence": "Micro-batch", "iconKey": "bigquery", "slo": "Stage 2 · Off-Path", "bullets": ["Exactly-once append", "Partitioned by commit_date"]},
+                ],
+                "dlqNote": "Dead-letter replay handles malformed events cleanly.",
+                "feedbackLabel": "Periodic audit checksum",
+            },
+            "sequenceDiagram": {
+                "steps": [
+                    {"title": "1. GET /memory?t=2026-01-15", "detail": "Signed bi-temporal query with OIDC token.", "wire": "HTTPS TLS 1.3"},
+                ],
+            },
+        }
+        norm = cb1.normalize_blueprint(bp_in, prompt="Bi-temporal memory architecture", domain="Data & Analytics / RAG", audience="Architects")
+        self.assertEqual(norm["securityDiagram"]["layers"][0]["name"], "Cloud Armor & External ALB")
+        self.assertEqual(norm["securityDiagram"]["threats"][0]["control"], "Short-lived ECDSA JWT verified against JWKS with aud check.")
+        self.assertEqual(norm["wireDiagram"]["hops"][0]["name"], "Signed HTTPS Ingress")
+        self.assertIn("GET /v1/memory", norm["wireDiagram"]["hops"][0]["payload"])
+        self.assertEqual(norm["asyncDiagram"]["stages"][0]["bullets"][0], "Streams graph mutations")
+        self.assertIn("Dead-letter replay", norm["asyncDiagram"]["dlqNote"])
+
+        diags = cb1._diag_v2.compile_all_v2_diagrams(norm, "test-v3")
+        self.assertIn("Cloud Armor &amp; External ALB", diags["security"]["svg"])
+        self.assertNotIn("Mitigation control", diags["security"]["svg"])
+        self.assertIn("Signed HTTPS Ingress", diags["wire"]["svg"])
+        self.assertIn("GET /v1/memory", diags["wire"]["svg"])
+        self.assertIn("Streams graph mutations", diags["async"]["svg"])
+        # Sequence strips duplicate leading `1. ` prefix
+        self.assertIn("GET /memory?t=2026-01-15", diags["sequence"]["svg"])
+        self.assertNotIn("1. GET /memory?t=2026-01-15", diags["sequence"]["svg"])
+        for dk in ("architecture", "cloudarch", "sequence", "security", "wire", "async"):
+            self.assertTrue(diags[dk]["geometry"]["valid"], f"{dk} geometry errors: {diags[dk]['geometry']['errors']}")
+
+        # 4. Auto-revision rejects Gemini 2.5 -> Gemini 1.5 downgrade replacements
+        bp_rev = {
+            "summary": "Architecture using Vertex AI Gemini 2.5 Pro for graph reasoning.",
+            "sections": [{"heading": "Overview", "paragraphs": ["Powered by Vertex AI Gemini 2.5 Pro."], "codeBlocks": []}],
+            "slides": [{"bullets": ["Uses Gemini 2.5 Flash."], "speakerNotes": "Runs on Gemini 2.5 Pro."}],
+            "codeStarter": {"pythonApp": "MODEL = 'gemini-2.5-flash'"},
+        }
+        applied = cb1._pipe_v2.apply_revision_patch(
+            bp_rev,
+            {
+                "appliedFixes": ["Replaced deprecated Gemini 2.5 Pro with Gemini 1.5 Pro."],
+                "textReplacements": [{"old": "Gemini 2.5 Pro", "new": "Gemini 1.5 Pro"}],
+            },
+            allowed_tags=cb1.ALLOWED_PROVENANCE_TAGS,
+            sanitize_fn=cb1._sanitize_for_public_output,
+            strip_emoji_fn=cb1.strip_inline_md,
+        )
+        self.assertIn("Gemini 2.5 Pro", bp_rev["sections"][0]["paragraphs"][0])
+        self.assertEqual(applied, [])
+
+    def test_12_promptcanvas_vision_scene_compiler_offline(self) -> None:
+        scene = {
+            "titleBanner": {"text": "Spanner Graph Memory Hub", "subtext": "Zero-trust bi-temporal topology", "box_2d": [10, 20, 60, 960]},
+            "containers": [
+                {"id": "z_vpc", "label": "VPC-SC Perimeter", "box_2d": [110, 120, 880, 920], "fillHex": "#F8FAFC", "strokeHex": "#64748B", "dashed": True},
+                {"id": "z_run", "label": "Ingress & Compute", "box_2d": [180, 160, 520, 480], "fillHex": "#E8F0FE", "strokeHex": "#1A73E8", "dashed": False},
+            ],
+            "nodes": [
+                {"id": "n_user", "label": "AI Agent", "sublabel": "OIDC JWT", "box_2d": [280, 20, 380, 105], "fillHex": "#FFFFFF", "strokeHex": "#1A73E8", "iconKey": "client_user"},
+                {"id": "n_run", "label": "Cloud Run v2 API", "sublabel": "Internal ingress", "box_2d": [260, 190, 400, 440], "fillHex": "#FFFFFF", "strokeHex": "#1A73E8", "iconKey": "cloud_run"},
+                {"id": "n_spanner", "label": "Cloud Spanner Graph", "sublabel": "ISO GQL + Vector", "box_2d": [260, 560, 400, 850], "fillHex": "#FEF7E0", "strokeHex": "#EA8600", "iconKey": "spanner"},
+            ],
+            "edges": [
+                {"id": "e1", "sourceId": "n_user", "targetId": "n_run", "label": "HTTPS TLS 1.3", "strokeHex": "#1A73E8"},
+                {"id": "e2", "sourceId": "n_run", "targetId": "n_spanner", "label": "GRAPH_TABLE gRPC", "strokeHex": "#188038", "bidirectional": True},
+            ],
+        }
+        out = cb1._pc_engine.compile_vision_scene_to_outputs(
+            scene=scene,
+            diagram_id="unit-pc-arch",
+            diagram_name="Figure 1",
+            fallback_title="Spanner Graph",
+        )
+        self.assertIn("PromptCanvas-Vision1to1", out["xml"])
+        self.assertIn("data:image/svg+xml,", out["xml"])
+        self.assertNotIn("flowAnimation=1", out["xml"])
+        self.assertIn("edgeStyle=none;rounded=1;", out["xml"])
+        self.assertNotIn("<script", out["svg"].lower())
+        self.assertGreaterEqual(out["iconCount"], 2)
+        self.assertEqual(out["audit"]["siblingOverlaps"], 0)
+        self.assertIn("<p:sp>", out["ooxmlSlideXml"])
+        self.assertIn("rId10", out["ooxmlSlideXml"])
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

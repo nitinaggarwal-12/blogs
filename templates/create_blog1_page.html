@@ -743,6 +743,15 @@
               </div>
             </div>
 
+            <div class="field">
+              <label for="inp-diagram-engine">PromptCanvas Diagram Engine</label>
+              <select id="inp-diagram-engine">
+                <option value="canonical">PromptCanvas Canonical WS1 (6-View Editable .drawio + .pptx)</option>
+                <option value="hybrid">PromptCanvas Hybrid (4-Stage Vision Arch + 4 Canonical Views)</option>
+                <option value="promptcanvas_vision">PromptCanvas 4-Stage Vision (AI Image &rarr; 1:1 .drawio XML)</option>
+              </select>
+            </div>
+
             <label class="check-row">
               <input type="checkbox" id="chk-tts" checked />
               <span>Synthesize live Cloud TTS narration (12 Chirp3-HD MP3s + WebVTT)</span>

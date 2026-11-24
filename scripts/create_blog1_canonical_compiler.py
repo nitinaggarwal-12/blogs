@@ -110,8 +110,33 @@ def est_text_width_px(text: str, font_size: float, bold: bool = False, mono: boo
     wide = sum(1 for c in text if c in "MWmw@#%&")
     caps = sum(1 for c in text if c.isupper() and c not in "IJMW")
     other = len(text) - narrow - wide - caps
-    base = narrow * 0.30 + other * 0.52 + caps * 0.64 + wide * 0.80
+    base = narrow * 0.31 + other * 0.53 + caps * 0.69 + wide * 0.82
     return base * font_size * (1.07 if bold else 1.0)
+
+
+def _break_long_token_px(tok: str, max_width_px: float, font_size: float, *, bold: bool, mono: bool) -> List[str]:
+    """Splits an ultra-long identifier/URL at `_`, `/`, `-`, `.`, `:` so no line overflows its box."""
+    parts: List[str] = []
+    rem = tok
+    while rem and est_text_width_px(rem, font_size, bold=bold, mono=mono) > max_width_px and len(rem) > 4:
+        est = max(1.0, est_text_width_px(rem, font_size, bold=bold, mono=mono))
+        guess = max(3, min(len(rem) - 1, int(len(rem) * (max_width_px / est))))
+        while guess > 3 and est_text_width_px(rem[:guess], font_size, bold=bold, mono=mono) > max_width_px:
+            guess -= 1
+        while guess < len(rem) - 1 and est_text_width_px(rem[: guess + 1], font_size, bold=bold, mono=mono) <= max_width_px:
+            guess += 1
+        # Prefer natural identifier break near right margin (_, /, -, ., :, =)
+        best_sep = -1
+        for k in range(guess, max(2, int(guess * 0.45)), -1):
+            if rem[k - 1] in "_/-.:=,&?":
+                best_sep = k
+                break
+        cut = best_sep if best_sep > 0 else guess
+        parts.append(rem[:cut])
+        rem = rem[cut:]
+    if rem:
+        parts.append(rem)
+    return parts
 
 
 def wrap_px(
@@ -123,41 +148,58 @@ def wrap_px(
     max_lines: int = 8,
     ellipsis_last: bool = True,
 ) -> List[str]:
-    """Word-wrap text strictly to `max_width_px` without chopping mid-word."""
+    """Word-wrap text strictly to `max_width_px`, breaking long identifiers safely at delimiters."""
     clean = strip_md(text)
     if not clean:
         return []
-    words = clean.split()
+    raw_words = clean.split()
+    # Keep a leading bullet/sign attached to the following token so `•` is never orphaned alone on line 1
+    words: List[str] = []
+    i = 0
+    while i < len(raw_words):
+        if raw_words[i] in ("•", "-", "+") and i + 1 < len(raw_words) and i == 0:
+            words.append(f"{raw_words[i]} {raw_words[i + 1]}")
+            i += 2
+        else:
+            words.append(raw_words[i])
+            i += 1
+    # Expand any single word wider than max_width_px into clean delimiter-broken pieces
+    tokens: List[Tuple[str, bool]] = []
+    for w in words:
+        if est_text_width_px(w, font_size, bold=bold, mono=mono) > max_width_px:
+            for pi, piece in enumerate(_break_long_token_px(w, max_width_px, font_size, bold=bold, mono=mono)):
+                tokens.append((piece, pi > 0))
+        else:
+            tokens.append((w, False))
+
     out: List[str] = []
     cur = ""
-    for w in words:
-        trial = f"{cur} {w}".strip() if cur else w
+    overflowed = False
+    for tok, is_cont in tokens:
+        if not cur:
+            cur = tok
+            continue
+        sep = "" if is_cont else " "
+        trial = f"{cur}{sep}{tok}"
         if est_text_width_px(trial, font_size, bold=bold, mono=mono) <= max_width_px:
             cur = trial
         else:
-            if cur:
-                out.append(cur)
-                if len(out) >= max_lines:
-                    break
-                cur = w
-            else:
-                # Single ultra-long token (URL/identifier) — soft-break cleanly on `/` or `_` or hyphen
-                tok = w
-                while tok and est_text_width_px(tok, font_size, bold=bold, mono=mono) > max_width_px and len(tok) > 6:
-                    cut = max(4, int(len(tok) * (max_width_px / max(1.0, est_text_width_px(tok, font_size, bold=bold, mono=mono)))))
-                    out.append(tok[:cut])
-                    tok = tok[cut:]
-                    if len(out) >= max_lines:
-                        tok = ""
-                        break
-                cur = tok
-    if cur and len(out) < max_lines:
-        out.append(cur)
-    elif cur and out and ellipsis_last:
-        # Ensure we cleanly indicate overflow only if unprinted words remain
-        last = out[-1]
-        if not last.endswith("...") and est_text_width_px(last + "…", font_size, bold=bold, mono=mono) <= max_width_px + 6:
-            out[-1] = last.rstrip(".,;: ") + "…"
+            out.append(cur)
+            if len(out) >= max_lines:
+                cur = ""
+                overflowed = True
+                break
+            cur = tok
+    if cur:
+        if len(out) < max_lines:
+            out.append(cur)
+        else:
+            overflowed = True
+    if overflowed and out and ellipsis_last:
+        last = out[-1].rstrip(".,;: ")
+        while len(last) > 4 and est_text_width_px(last + "…", font_size, bold=bold, mono=mono) > max_width_px:
+            last = last[:-1].rstrip(".,;: ")
+        out[-1] = last + "…"
     return out[:max_lines]
 
 
@@ -648,6 +690,12 @@ def compile_spec_to_drawio_xml(spec: Dict[str, Any]) -> str:
             f'spacingLeft={pad_l};spacingRight={pad_r};spacingTop={pad_t};spacingBottom={pad_b};{cattr}{shadow}" '
             f'vertex="1" parent="1"><mxGeometry x="{c["x"]}" y="{c["y"]}" width="{c["w"]}" height="{c["h"]}" as="geometry"/></mxCell>'
         )
+        if c.get("topAccent"):
+            cells.append(
+                f'<mxCell id="{esc_xml(c["id"])}_topaccent" value="" '
+                f'style="rounded=1;absoluteArcSize=1;arcSize=3;strokeColor=none;fillColor={c["topAccent"]};" '
+                f'vertex="1" parent="1"><mxGeometry x="{c["x"] + 2}" y="{c["y"]}" width="{c["w"] - 4}" height="5" as="geometry"/></mxCell>'
+            )
         if c.get("icon"):
             ix = c["x"] + 12
             iy = c["y"] + round((c["h"] - isz) / 2)
@@ -657,6 +705,13 @@ def compile_spec_to_drawio_xml(spec: Dict[str, Any]) -> str:
                 iy = max(c["y"] + 10, round(c["y"] + (c["h"] - (isz + 8 + th)) / 2))
             elif il == "top-left":
                 iy = c["y"] + 10
+            if il == "header-left" and str(fill).upper() in ("#1A73E8", "#1967D2", "#174EA6", "#0F172A"):
+                hr = isz + 8
+                cells.append(
+                    f'<mxCell id="pic_halo_{esc_xml(c["id"])}" value="" '
+                    f'style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#FFFFFF;strokeColor=none;" '
+                    f'vertex="1" parent="1"><mxGeometry x="{ix - 4}" y="{iy - 4}" width="{hr}" height="{hr}" as="geometry"/></mxCell>'
+                )
             cells.append(
                 f'<mxCell id="pic_icon_{esc_xml(c["id"])}" value="" style="{get_drawio_icon_style(c["icon"])}" '
                 f'vertex="1" parent="1"><mxGeometry x="{ix}" y="{iy}" width="{isz}" height="{isz}" as="geometry"/></mxCell>'
@@ -739,11 +794,19 @@ def compile_spec_to_drawio_xml(spec: Dict[str, Any]) -> str:
         e_arr = "endArrow=none;" if e.get("noArrow") else "endArrow=classic;endFill=1;endSize=6;"
         if e.get("rawPoints"):
             rp = e["rawPoints"]
-            style = f"rounded=1;html=1;strokeColor={stroke};strokeWidth={sw};{dashed}{s_arr}{e_arr}"
+            lbl_txt = str(e.get("label") or "").strip()
+            lbl_css = (
+                "labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;fontFamily=Arial;fontColor=#0F172A;fontSize=9;fontStyle=1;spacing=2;"
+                if lbl_txt
+                else ""
+            )
+            style = f"edgeStyle=none;rounded=1;html=1;strokeColor={stroke};strokeWidth={sw};{dashed}{s_arr}{e_arr}{lbl_css}"
             pts_inner = f'<mxPoint x="{rp[0][0]}" y="{rp[0][1]}" as="sourcePoint"/><mxPoint x="{rp[-1][0]}" y="{rp[-1][1]}" as="targetPoint"/>'
             if len(rp) > 2:
                 pts_inner += '<Array as="points">' + "".join(f'<mxPoint x="{p[0]}" y="{p[1]}"/>' for p in rp[1:-1]) + "</Array>"
-            lbl_val = esc_xml(e.get("label") or "")
+            if lbl_txt and len(rp) == 2 and abs(float(rp[0][1]) - float(rp[1][1])) <= 6:
+                pts_inner += '<mxPoint y="-12" as="offset"/>'
+            lbl_val = esc_xml(lbl_txt)
             cells.append(
                 f'<mxCell id="{esc_xml(e["id"])}" value="{lbl_val}" style="{style}" edge="1" parent="1"><mxGeometry relative="1" as="geometry">{pts_inner}</mxGeometry></mxCell>'
             )

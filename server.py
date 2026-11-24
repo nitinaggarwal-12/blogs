@@ -1991,12 +1991,18 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/create-blog1/capabilities":
-            self._send_json(200, create_blog1_mod.get_capabilities())
+            try:
+                self._send_json(200, create_blog1_mod.get_capabilities())
+            except Exception as exc:
+                self._send_json(500, {"ok": False, "code": "CAPABILITIES_ERROR", "error": str(exc)[:220]})
             return
 
         if path == "/api/create-blog1/blogs":
             want_refresh = qs.get("refresh", [""])[0] == "1"
-            self._send_json(200, {"ok": True, "blogs": create_blog1_mod.list_blogs(refresh_gcs=want_refresh)})
+            try:
+                self._send_json(200, {"ok": True, "blogs": create_blog1_mod.list_blogs(refresh_gcs=want_refresh)})
+            except Exception as exc:
+                self._send_json(500, {"ok": False, "code": "LIBRARY_ERROR", "error": str(exc)[:220]})
             return
 
         if path.startswith("/api/create-blog1/jobs/"):
