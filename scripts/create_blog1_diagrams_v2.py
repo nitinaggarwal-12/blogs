@@ -441,17 +441,6 @@ def build_architecture_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
     }
 
 
-def compile_architecture_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
-    spec = build_architecture_spec_v3(bp, slug)
-    public_id = _cc.make_diagram_public_id(slug, "architecture")
-    spec["id"] = public_id
-    xml = _cc.compile_spec_to_drawio_xml(spec)
-    svg = _cc.compile_spec_to_svg(spec)
-    val = _cc.validate_spec_geometry(spec)
-    url = _cc.build_viewer_url(xml, public_id, f"{public_id}.drawio")
-    return xml, svg, url, val["iconCount"]
-
-
 # ===========================================================================
 # FIGURE 2: GOOGLE CLOUD ARCHITECTURE CENTER HUB-AND-SPOKE BLUEPRINT
 # (matching ws1-cloud-arch-center-5hop-baseline.drawio.png)
@@ -657,17 +646,6 @@ def build_cloudarch_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         "circleBadges": badges,
         "edges": edges,
     }
-
-
-def compile_cloudarch_v3(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
-    spec = build_cloudarch_spec_v3(bp, slug)
-    public_id = _cc.make_diagram_public_id(slug, "cloudarch")
-    spec["id"] = public_id
-    xml = _cc.compile_spec_to_drawio_xml(spec)
-    svg = _cc.compile_spec_to_svg(spec)
-    val = _cc.validate_spec_geometry(spec)
-    url = _cc.build_viewer_url(xml, public_id, f"{public_id}.drawio")
-    return xml, svg, url, val["iconCount"]
 
 
 # ===========================================================================
@@ -913,16 +891,6 @@ def build_sequence_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         "edges": edges,
         "planeLegend": plane_legend,
     }
-
-
-def compile_sequence_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
-    spec = build_sequence_spec_v3(bp, slug)
-    public_id = _cc.make_diagram_public_id(slug, "sequence")
-    spec["id"] = public_id
-    xml = _cc.compile_spec_to_drawio_xml(spec)
-    svg = _cc.compile_spec_to_svg(spec)
-    val = _cc.validate_spec_geometry(spec)
-    return xml, svg, _cc.build_viewer_url(xml, public_id, f"{public_id}.drawio"), val["iconCount"]
 
 
 # ===========================================================================
@@ -1174,16 +1142,6 @@ def build_security_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
             {"id": "sl_2", "plane": "SECURITY", "x": 810, "y": 838, "w": 756, "h": 24, "text": "Fail-closed default: zero public allUsers, zero raw header pass-through, HTTP 401/403/422/429"},
         ],
     }
-
-
-def compile_security_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
-    spec = build_security_spec_v3(bp, slug)
-    public_id = _cc.make_diagram_public_id(slug, "security")
-    spec["id"] = public_id
-    xml = _cc.compile_spec_to_drawio_xml(spec)
-    svg = _cc.compile_spec_to_svg(spec)
-    val = _cc.validate_spec_geometry(spec)
-    return xml, svg, _cc.build_viewer_url(xml, public_id, f"{public_id}.drawio"), val["iconCount"]
 
 
 # ===========================================================================
@@ -1441,16 +1399,6 @@ def build_wire_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
     }
 
 
-def compile_wire_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
-    spec = build_wire_spec_v3(bp, slug)
-    public_id = _cc.make_diagram_public_id(slug, "wire")
-    spec["id"] = public_id
-    xml = _cc.compile_spec_to_drawio_xml(spec)
-    svg = _cc.compile_spec_to_svg(spec)
-    val = _cc.validate_spec_geometry(spec)
-    return xml, svg, _cc.build_viewer_url(xml, public_id, f"{public_id}.drawio"), val["iconCount"]
-
-
 # ===========================================================================
 # FIGURE 6: OFF-PATH ASYNC CDC, ANALYTICS & RECOVERY ARCHITECTURE
 # ===========================================================================
@@ -1610,16 +1558,6 @@ def build_async_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
             {"id": "al_1", "plane": "DATA", "x": 34, "y": 838, "w": 1532, "h": 24, "text": "All Change Streams CDC, Dataflow transforms, BigQuery WORM loads, DLQ replay & KMS erasure audits run strictly off the synchronous read path."},
         ],
     }
-
-
-def compile_async_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
-    spec = build_async_spec_v3(bp, slug)
-    public_id = _cc.make_diagram_public_id(slug, "async")
-    spec["id"] = public_id
-    xml = _cc.compile_spec_to_drawio_xml(spec)
-    svg = _cc.compile_spec_to_svg(spec)
-    val = _cc.validate_spec_geometry(spec)
-    return xml, svg, _cc.build_viewer_url(xml, public_id, f"{public_id}.drawio"), val["iconCount"]
 
 
 # ===========================================================================

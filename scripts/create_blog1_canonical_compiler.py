@@ -96,10 +96,6 @@ def hex6(color: Optional[str], fallback: str = "202124") -> str:
     return fallback
 
 
-def px_to_emu(px: float) -> int:
-    return int(round(float(px) * EMU_PER_PX))
-
-
 def est_text_width_px(text: str, font_size: float, bold: bool = False, mono: bool = False) -> float:
     """Deterministic Arial / Roboto Mono average pixel-width estimator (zero silent slicing)."""
     if not text:

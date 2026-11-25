@@ -201,7 +201,7 @@
 
     .shell {
       max-width: 1580px;
-      margin: 18px auto 48px;
+      margin: 12px auto 24px;
       padding: 0 clamp(12px, 2vw, 24px);
       display: grid;
       grid-template-columns: 390px minmax(0, 1fr); transition: grid-template-columns .18s ease;
@@ -213,7 +213,7 @@
     }
     @media (max-width: 768px) {
       .topbar { position: static; padding: 10px 12px; }
-      .cap-strip { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 3px; scrollbar-width: thin; }
+      .cap-strip { flex-wrap: wrap; gap: 5px; }
       .quad-bar { position: static; }
     }
 
@@ -394,6 +394,7 @@
 
     .lib-list { display: flex; flex-direction: column; gap: 8px; max-height: 360px; overflow-y: auto; }
     .lib-item {
+      flex-shrink: 0;
       border: 1px solid var(--border-strong);
       border-radius: 9px;
       padding: 9px 11px;
@@ -407,7 +408,8 @@
     .lib-meta { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; font-size: 10.5px; color: var(--muted); }
     .lib-actions { display: flex; gap: 6px; margin-top: 7px; align-items: center; }
 
-    .workspace { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+    .workspace { display: flex; flex-direction: column; gap: 14px; min-width: 0; max-width: 100%; }
+    #active-blog-view, #active-blog-view > div { min-width: 0; max-width: 100%; }
     .hero-card {
       background: var(--surface);
       border: 1px solid var(--border-strong);
@@ -457,11 +459,13 @@
       padding: 20px;
       box-shadow: var(--shadow-sm);
       min-height: 460px;
+      min-width: 0;
+      max-width: 100%;
     }
     .panel.hidden { display: none; }
 
     /* Markdown article reader */
-    .article-body { max-width: 920px; font-size: 14.5px; line-height: 1.7; color: #1e293b; }
+    .article-body { max-width: min(920px, 100%); min-width: 0; overflow-wrap: anywhere; font-size: 14.5px; line-height: 1.7; color: #1e293b; }
     .article-body h1 { font-size: 26px; font-weight: 800; margin: 0 0 12px; color: var(--text); }
     .article-body h2 { font-size: 19px; font-weight: 800; margin: 26px 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--blue-border); color: var(--text); }
     .article-body h3 { font-size: 15.5px; font-weight: 800; margin: 18px 0 6px; color: #174ea6; }

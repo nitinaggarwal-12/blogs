@@ -11,9 +11,9 @@
   <title>Gemini Enterprise Agent Platform — Multi-Tenancy Architecture &amp; Live 5-Hop Execution Portal</title>
   <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'&gt;&lt;rect width='32' height='32' rx='6' fill='%231a73e8'/&gt;&lt;text x='16' y='22' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold' font-size='18'&gt;G&lt;/text&gt;&lt;/svg&gt;" />
   <!-- Modular CSS Tokens, Layout & Components (Item 10) -->
-  <link rel="stylesheet" href="/css/tokens.css?v=20261117-v105">
-  <link rel="stylesheet" href="/css/layout.css?v=20261117-v105">
-  <link rel="stylesheet" href="/css/components.css?v=20261121-v106">
+  <link rel="stylesheet" href="/css/tokens.css?v=20261125-v107">
+  <link rel="stylesheet" href="/css/layout.css?v=20261125-v107">
+  <link rel="stylesheet" href="/css/components.css?v=20261125-v107">
 </head>
 <body>
   <script>
@@ -70,7 +70,7 @@
 
   <!-- Modular ES Modules (Item 10) -->
   <script src="/js/data.js"></script>
-  <script src="/js/navigation.js"></script>
+  <script src="/js/navigation.js?v=20261125-v107"></script>
   <script src="/js/diagrams_atlas_data.js?v=20261117-v104"></script>
   <script src="/js/diagrams_atlas.js?v=20261117-v104"></script>
   <script src="/js/modals.js"></script>
@@ -1289,26 +1289,18 @@
 
     async function loadDiagramIntoInlineDrawio(diagId) {
       inlineDrawioActiveId = diagId;
-      const statusEl = document.getElementById('hub-drawio-inline-status');
       const frame = document.getElementById('hub-drawio-inline-iframe');
       if (!frame) return;
       const targetSrc = '/drawio-editor?id=' + encodeURIComponent(diagId) + '&inline=1&engine=cloud';
       if (frame.getAttribute('src') !== targetSrc) {
         frame.setAttribute('src', targetSrc);
       }
-      if (statusEl) {
-        statusEl.textContent = '🟢 Ready — 56 Editable Shapes & 23 Vertex-Bound Connectors (' + diagId + '.drawio)';
-      }
     }
 
     async function saveInlineDrawioXml() {
       const frame = document.getElementById('hub-drawio-inline-iframe');
-      const statusEl = document.getElementById('hub-drawio-inline-status');
       if (frame && frame.contentWindow && typeof frame.contentWindow.saveCurrentStudioXml === 'function') {
         await frame.contentWindow.saveCurrentStudioXml();
-        if (statusEl) {
-          statusEl.textContent = '✅ Saved edits directly to diagrams/' + inlineDrawioActiveId + '.drawio';
-        }
       }
     }
 
@@ -1689,11 +1681,6 @@
       }
       const gslidesLabel = document.getElementById('hub-open-gslides-label');
       if (gslidesLabel) gslidesLabel.innerHTML = `&#128202; Slides &amp; Specs (${ws.key})`;
-      const simBtn = document.getElementById('hub-sim-btn');
-      if (simBtn) {
-        simBtn.textContent = ws.simLabel;
-        simBtn.setAttribute('onclick', `jumpToWorkstreamSim('${ws.simScenario}')`);
-      }
 
       activeHubSlideIdx = 0;
       selectHubDiagram(0);
@@ -2456,18 +2443,6 @@
       showPortalToast('Updated Unverified Commenter Label', `${portalActiveActor.name} (${portalActiveActor.email}) • Admin edits still require IAP`);
     }
 
-    function applyCustomActorInputs() {
-      const n = document.getElementById('actor-input-name');
-      const e = document.getElementById('actor-input-email');
-      const r = document.getElementById('actor-input-role');
-      setPortalActorPreset(
-        n ? n.value.trim() : portalActiveActor.name,
-        e ? e.value.trim() : portalActiveActor.email,
-        r ? r.value.trim() : portalActiveActor.role,
-        portalActiveActor.avatarColor || '#1a73e8'
-      );
-    }
-
     function syncDrawerActorInputs() {
       const n = document.getElementById('drawer-actor-name');
       const e = document.getElementById('drawer-actor-email');
@@ -2480,8 +2455,6 @@
     }
 
     function syncActorUiElements() {
-      const hdrLabel = document.getElementById('header-active-user-label');
-      if (hdrLabel) hdrLabel.textContent = `${portalActiveActor.name} (${portalActiveActor.email.split('@')[0]})`;
       const hdrName = document.getElementById('header-user-name');
       if (hdrName) hdrName.textContent = (!portalActiveActor.iapVerified && portalActiveActor.name === 'Read-Only Viewer') ? 'Viewer' : portalActiveActor.name;
       const hdrAvatar = document.getElementById('header-user-avatar');
@@ -3870,30 +3843,6 @@
       }
     };
 
-    window.updateFinopsCost = function(n) {
-      const count = parseInt(n, 10);
-      const nEl = document.getElementById('finops-tenant-count');
-      if (nEl) nEl.innerText = count.toLocaleString();
-
-      const costA = 420 + count * 18;
-      const costB = count * 850;
-      const costC = Math.round((count * 0.9 * 18) + (count * 0.1 * 850) + 650);
-      const savings = costB - costA;
-      const annualSavings = savings * 12;
-
-      const elA = document.getElementById('cost-pat-a');
-      if (elA) elA.innerText = '$' + costA.toLocaleString() + ' /mo';
-      const elB = document.getElementById('cost-pat-b');
-      if (elB) elB.innerText = '$' + costB.toLocaleString() + ' /mo';
-      const elC = document.getElementById('cost-pat-c');
-      if (elC) elC.innerText = '$' + costC.toLocaleString() + ' /mo';
-
-      const elSav = document.getElementById('finops-cache-savings');
-      if (elSav) elSav.innerText = '$' + savings.toLocaleString() + ' /mo';
-      const elAnn = document.getElementById('finops-annual-savings');
-      if (elAnn) elAnn.innerText = '$' + annualSavings.toLocaleString() + ' /yr';
-    };
-
     window.updateMcdaScore = function(key, val) {
       if (key && val !== undefined) {
         window.mcdaWeights[key] = parseInt(val, 10);
@@ -4338,20 +4287,20 @@
 
     window.toggleInlineBlogAll10Pairs = function toggleInlineBlogAll10Pairs(btn) {
       const drawer = document.getElementById('blog-inline-all-10-ba-drawer');
-      const hubGrid = document.getElementById('ba-3p-hub-grid');
+      const hubGrid = document.getElementById('genuine-3p-gallery-grid');
       if (!drawer || !hubGrid) return;
-      const isOpen = drawer.style.display === 'block';
+      const isOpen = drawer.style.display === 'grid';
       if (isOpen) {
         drawer.style.display = 'none';
-        if (btn) btn.innerHTML = '&#128269; Show All 10 SaaS Stacks Inline';
+        if (btn) btn.innerHTML = '&#128269; Show All Live Captures Inline';
         return;
       }
       if (!drawer.dataset.hydrated) {
         drawer.innerHTML = hubGrid.innerHTML;
         drawer.dataset.hydrated = '1';
       }
-      drawer.style.display = 'block';
-      if (btn) btn.innerHTML = '&#9650; Collapse All-10 Inline View';
+      drawer.style.display = 'grid';
+      if (btn) btn.innerHTML = '&#9650; Collapse Live Captures Inline';
       drawer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     };
 
@@ -4427,33 +4376,11 @@
           ${leftModeControls}
         </div>
         <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
-          ${pairCount < 10 ? `<button type="button" class="sim-btn" style="font-size:11.5px; padding:5px 10px;" onclick="toggleInlineBlogAll10Pairs(this)">&#128269; Show All 10 SaaS Stacks Inline</button>` : ''}
-          <button type="button" class="sim-btn primary" style="font-size:11.5px; padding:5px 10px;" onclick="jumpToTab3BeforeAfterHub()">Open Full Tab 3 Verified Proofs Hub &nearr;</button>
+          ${pairCount < 10 ? `<button type="button" class="sim-btn" style="font-size:11.5px; padding:5px 10px;" onclick="toggleInlineBlogAll10Pairs(this)">&#128269; Show All Live Captures Inline</button>` : ''}
+          <button type="button" class="sim-btn primary" style="font-size:11.5px; padding:5px 10px;" onclick="switchTab('screenshots', document.getElementById('tab-btn-screenshots'))">Open Full Live Proofs &amp; Code Hub &nearr;</button>
         </div>
       `;
       baH2.insertAdjacentElement('afterend', bar);
-
-      const targetStrip = document.createElement('div');
-      targetStrip.id = 'blog-inline-ba-target-strip';
-      targetStrip.setAttribute('data-no-hover-toolbar', 'true');
-      targetStrip.style.cssText = 'display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:0 0 16px 0; padding:8px 14px; background:#ffffff; border:1px solid #cbd5e1; border-radius:8px;';
-      targetStrip.innerHTML = `
-        <label for="blog-inline-ba-target-select" style="margin:0; font-size:11.5px; font-weight:700; color:#334155; text-transform:uppercase; letter-spacing:0.03em;">Jump to SaaS Target (10):</label>
-        <select id="blog-inline-ba-target-select" aria-label="Jump to SaaS Target" onchange="if(this.value) scrollToSaasTarget(this.value)" style="width:auto; min-width:250px; height:30px; padding:3px 26px 3px 10px; font-size:12px; font-weight:600; border:1px solid #93c5fd; border-radius:6px; background:#f8fafc; color:#0f172a; cursor:pointer;">
-          <option value="">Select SaaS Target to Jump...</option>
-          <option value="saas-01">1. ThoughtSpot Cloud (HXGGFMZBKE)</option>
-          <option value="saas-02">2. Sigma Computing (IZVODT083Q)</option>
-          <option value="saas-03">3. ServiceNow ITSM (ZS9VGYHBQL)</option>
-          <option value="saas-04">4. Veeva / Muse Clinical (TWQU0KSRVF)</option>
-          <option value="saas-05">5. Salesforce / Jira (K5JAEFCQ6E)</option>
-          <option value="saas-06">6. Databricks Unity SQL (TERCK8SLBP)</option>
-          <option value="saas-07">7. Snowflake Cortex (CCMDEVZV2S)</option>
-          <option value="saas-08">8. Workday HCM RaaS (RAOTMUMJTZ)</option>
-          <option value="saas-09">9. Datadog SRE APM (G767QR3TQZ)</option>
-          <option value="saas-10">10. CrowdStrike / Okta (C7EYM614F2)</option>
-        </select>
-      `;
-      bar.insertAdjacentElement('afterend', targetStrip);
 
       const saasTargetIdByKey = {
         'saas01': 'HXGGFMZBKE',
@@ -4467,6 +4394,34 @@
         'saas09': 'G767QR3TQZ',
         'saas10': 'C7EYM614F2'
       };
+
+      const readerTxt = readerEl.textContent || '';
+      const hasSaasTargets = Object.values(saasTargetIdByKey).some(tid => readerTxt.includes(tid));
+      let afterAnchor = bar;
+      if (hasSaasTargets) {
+        const targetStrip = document.createElement('div');
+        targetStrip.id = 'blog-inline-ba-target-strip';
+        targetStrip.setAttribute('data-no-hover-toolbar', 'true');
+        targetStrip.style.cssText = 'display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:0 0 16px 0; padding:8px 14px; background:#ffffff; border:1px solid #cbd5e1; border-radius:8px;';
+        targetStrip.innerHTML = `
+          <label for="blog-inline-ba-target-select" style="margin:0; font-size:11.5px; font-weight:700; color:#334155; text-transform:uppercase; letter-spacing:0.03em;">Jump to SaaS Target (10):</label>
+          <select id="blog-inline-ba-target-select" aria-label="Jump to SaaS Target" onchange="if(this.value) scrollToSaasTarget(this.value)" style="width:auto; min-width:250px; height:30px; padding:3px 26px 3px 10px; font-size:12px; font-weight:600; border:1px solid #93c5fd; border-radius:6px; background:#f8fafc; color:#0f172a; cursor:pointer;">
+            <option value="">Select SaaS Target to Jump...</option>
+            <option value="saas-01">1. ThoughtSpot Cloud (HXGGFMZBKE)</option>
+            <option value="saas-02">2. Sigma Computing (IZVODT083Q)</option>
+            <option value="saas-03">3. ServiceNow ITSM (ZS9VGYHBQL)</option>
+            <option value="saas-04">4. Veeva / Muse Clinical (TWQU0KSRVF)</option>
+            <option value="saas-05">5. Salesforce / Jira (K5JAEFCQ6E)</option>
+            <option value="saas-06">6. Databricks Unity SQL (TERCK8SLBP)</option>
+            <option value="saas-07">7. Snowflake Cortex (CCMDEVZV2S)</option>
+            <option value="saas-08">8. Workday HCM RaaS (RAOTMUMJTZ)</option>
+            <option value="saas-09">9. Datadog SRE APM (G767QR3TQZ)</option>
+            <option value="saas-10">10. CrowdStrike / Okta (C7EYM614F2)</option>
+          </select>
+        `;
+        bar.insertAdjacentElement('afterend', targetStrip);
+        afterAnchor = targetStrip;
+      }
 
       window.scrollToSaasTarget = function(targetKey) {
         const reader = document.getElementById('hub-blog-reader');
@@ -4494,11 +4449,11 @@
       if (pairCount < 10) {
         const drawer = document.createElement('div');
         drawer.id = 'blog-inline-all-10-ba-drawer';
-        drawer.className = 'ba-3p-hub-grid';
+        drawer.className = 'genuine-3p-gallery-grid';
         drawer.setAttribute('data-no-hover-toolbar', 'true');
         drawer.style.cssText = 'display:none; margin:14px 0 18px 0; padding:12px; background:#f8fafc; border:1.5px dashed #94a3b8; border-radius:10px;';
-        const sectionParent = targetStrip.parentNode || readerEl;
-        let anchorBefore = targetStrip.nextElementSibling;
+        const sectionParent = afterAnchor.parentNode || readerEl;
+        let anchorBefore = afterAnchor.nextElementSibling;
         while (anchorBefore && anchorBefore.tagName !== 'H2') {
           anchorBefore = anchorBefore.nextElementSibling;
         }
@@ -4693,20 +4648,6 @@
     window.SAAS_CONNECT_REGISTRY['workday-raas'] = window.SAAS_CONNECT_REGISTRY['workday'];
     window.SAAS_CONNECT_REGISTRY['datadog-sre'] = window.SAAS_CONNECT_REGISTRY['datadog'];
     window.SAAS_CONNECT_REGISTRY['crowdstrike-okta'] = window.SAAS_CONNECT_REGISTRY['okta-crowdstrike'];
-
-
-
-
-
-
-
-    window.setPortalTheme = function setPortalTheme(theme) {
-      const normalized = 'light';
-      document.documentElement.setAttribute('data-theme', normalized);
-      const sel = document.getElementById('theme-select');
-      if (sel && sel.value !== normalized) sel.value = normalized;
-      try { localStorage.setItem('portal_theme', normalized); } catch (_) {}
-    };
 
     window.openSaaSConnectModal = function openSaaSConnectModal(key) {
       const data = window.SAAS_CONNECT_REGISTRY[key];

@@ -2864,11 +2864,11 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
   <title>Draw.io Interactive Architecture Studio — {safe_id}</title>
   <style>
     * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-    body {{ font-family: 'Google Sans', Roboto, -apple-system, BlinkMacSystemFont, sans-serif; background: #f8fafc; color: #0f172a; height: 100vh; width: 100vw; overflow: hidden; display: flex; flex-direction: column; }}
+    body {{ font-family: 'Google Sans', Roboto, -apple-system, BlinkMacSystemFont, sans-serif; background: #f8fafc; color: #0f172a; height: 100vh; width: 100%; overflow-x: clip; overflow-y: clip; display: flex; flex-direction: column; }}
     .studio-bar {{ min-height: 44px; background: #ffffff; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }}
-    .studio-left {{ display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }}
+    .studio-left {{ display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-width: 0; max-width: 100%; }}
     .studio-badge {{ background: #1d4ed8; color: #ffffff; font-size: 10.5px; font-weight: 700; padding: 4px 8px; border-radius: 5px; white-space: nowrap; letter-spacing: 0.03em; }}
-    .studio-select {{ background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 6px; padding: 5px 9px; font-size: 12px; font-weight: 600; min-width: 260px; }}
+    .studio-select {{ background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 6px; padding: 5px 9px; font-size: 12px; font-weight: 600; min-width: 220px; max-width: 100%; }}
     .studio-right {{ display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }}
     .studio-status {{ font-size: 11px; color: #1d4ed8; margin-right: 4px; font-weight: 600; }}
     .studio-btn {{ background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 6px; padding: 4px 9px; font-size: 11px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }}
@@ -2888,8 +2888,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     .mx-handle.tr {{ top: -5px; right: -5px; }}
     .mx-handle.bl {{ bottom: -5px; left: -5px; }}
     .mx-handle.br {{ bottom: -5px; right: -5px; }}
-    .inspector-sidebar {{ width: {inspector_w}; background: #ffffff; border-left: 1px solid #e2e8f0; color: #0f172a; display: flex; flex-direction: column; overflow-y: auto; padding: 12px; gap: 10px; flex-shrink: 0; }}
-    .insp-card {{ background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; }}
+    .inspector-sidebar {{ width: {inspector_w}; background: #ffffff; border-left: 1px solid #e2e8f0; color: #0f172a; display: flex; flex-direction: column; overflow-y: auto; overscroll-behavior: contain; padding: 12px; gap: 10px; flex-shrink: 0; }}
+    .insp-card {{ background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; flex-shrink: 0; }}
     .insp-title {{ font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; margin-bottom: 8px; }}
     .insp-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }}
     .insp-field label {{ display: block; font-size: 10.5px; color: #475569; margin-bottom: 2px; }}
@@ -2897,6 +2897,13 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     .edge-pill {{ background: #ffffff; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px; font-size: 11px; margin-bottom: 5px; line-height: 1.35; color: #0f172a; }}
     .edge-pill code {{ color: #1d4ed8; font-weight: 700; }}
     #drawio-studio-iframe {{ flex: 1; width: 100%; height: 100%; border: 0; background: #ffffff; display: {'block' if engine_mode == 'cloud' else 'none'}; }}
+    @media (max-width: 820px) {{
+      body {{ height: auto; min-height: 100vh; overflow-x: clip; overflow-y: visible; }}
+      .studio-select {{ min-width: 0; width: 100%; }}
+      .studio-workspace {{ flex-direction: column; overflow: visible; }}
+      .canvas-scroll {{ min-height: 55vh; }}
+      .inspector-sidebar {{ width: 100%; border-left: none; border-top: 1px solid #e2e8f0; overflow-y: visible; }}
+    }}
   </style>
 </head>
 <body>

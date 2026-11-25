@@ -24,8 +24,9 @@
       background: var(--bg-root);
       color: var(--text-main);
       height: 100vh;
-      width: 100vw;
-      overflow: hidden;
+      width: 100%;
+      overflow-x: clip;
+      overflow-y: clip;
       display: flex;
       flex-direction: column;
     }
@@ -226,6 +227,18 @@
       display: block;
     }
     iframe#drawioFrame.hidden { display: none; }
+    @media (max-width: 768px) {
+      body { height: auto; min-height: 100vh; overflow-x: clip; overflow-y: visible; }
+      .topbar { height: auto; min-height: 0; flex-wrap: wrap; padding: 6px 10px; }
+      .left-group, .right-group { flex-wrap: wrap; width: 100%; overflow: visible; }
+      .mode-switch { flex-wrap: wrap; max-width: 100%; width: 100%; }
+      .mode-btn { flex: 1 1 auto; text-align: center; }
+      .diag-select { min-width: 0; width: 100%; max-width: 100%; flex: 1 1 100%; }
+      .hybrid-bar { height: auto; flex-wrap: wrap; padding: 6px 10px; }
+      .state-tabs { flex-wrap: wrap; }
+      .workspace { flex: 0 0 68vh; height: 68vh; min-height: 480px; }
+      iframe#drawioFrame { min-height: 480px; }
+    }
   </style>
 </head>
 <body>
@@ -343,8 +356,14 @@
         } else if (m === "anim") {
           if (currentAnimGifUrl) animStageImg.src = currentAnimGifUrl;
         }
+        if (m === "edit") {
+          const embedSrc = iframe.getAttribute("data-embed-src");
+          if (embedSrc && (!iframe.getAttribute("src") || iframe.getAttribute("src") === "about:blank")) {
+            iframe.setAttribute("src", embedSrc);
+          }
+        }
         if (m === "edit" && iframeReady && currentXml) {
-          iframe.contentWindow.postMessage(JSON.stringify({ action: "load", xml: currentXml, autosave: 1 }), "*");
+          iframe.contentWindow.postMessage(JSON.stringify({ action: "load", xml: currentXml, autosave: 1 }), "https://embed.diagrams.net");
         }
       }
 
@@ -506,7 +525,7 @@
             action: "load",
             xml: currentXml,
             autosave: 1
-          }), "*");
+          }), "https://embed.diagrams.net");
         }
         setStatus("🟢 2-Way Sync Ready", false);
       }
@@ -546,6 +565,7 @@
       }
 
       window.addEventListener("message", function (evt) {
+        if (evt.origin && evt.origin !== "https://embed.diagrams.net" && evt.origin !== window.location.origin) return;
         if (!evt.data || typeof evt.data !== "string") return;
         let msg;
         try { msg = JSON.parse(evt.data); } catch (e) { return; }

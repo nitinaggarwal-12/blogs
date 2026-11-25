@@ -28,12 +28,14 @@
     .series-toc-rail {
       position: sticky;
       top: 96px;
+      top: calc(var(--portal-header-h, 78px) + var(--subbar-h, 58px));
       background: var(--panel-alt);
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 14px;
-      max-height: calc(100vh - 110px);
+      max-height: calc(100vh - var(--portal-header-h, 78px) - var(--subbar-h, 58px) - 18px);
       overflow-y: auto;
+      overscroll-behavior: contain;
     }
     .series-toc-link {
       display: block;
@@ -1586,7 +1588,7 @@
       padding: 10px 14px;
       margin-bottom: 16px;
       position: sticky;
-      top: 48px;
+      top: var(--portal-header-h, 78px);
       z-index: 25;
       box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
     }

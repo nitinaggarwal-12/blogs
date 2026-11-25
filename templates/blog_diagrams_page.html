@@ -40,6 +40,7 @@
       color: var(--text);
       line-height: 1.5;
       min-height: 100vh;
+      overflow-x: clip;
     }
     .topbar {
       position: sticky;
@@ -52,6 +53,9 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+    }
+    @media (max-width: 768px) {
+      .topbar { position: static; padding: 10px 12px; gap: 8px; }
     }
     .topbar-row {
       display: flex;
@@ -255,8 +259,8 @@
       display: flex;
       flex-direction: column;
       gap: 4px;
-      min-width: 0;
-      flex: 1;
+      min-width: min(260px, 100%);
+      flex: 1 1 260px;
     }
     .card-title {
       font-size: 16px;

@@ -164,6 +164,9 @@
       if (name === 'changelog' && typeof renderChangeLogTable === 'function') {
         renderChangeLogTable();
       }
+      if (typeof syncPortalHeaderMetrics === 'function') {
+        requestAnimationFrame(syncPortalHeaderMetrics);
+      }
 
       // Smooth scroll to top on tab transitions ([FA-06])
       try {
@@ -264,13 +267,6 @@
         history.replaceState(null, '', `/?tab=screenshots&wb=${encodeURIComponent(cleanTab)}`);
       } catch (_) {}
       setTimeout(() => {
-        if (subTarget === 'terraform') {
-          const tfHub = document.getElementById('terraform-1click-deployment-hub');
-          if (tfHub) {
-            tfHub.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            return;
-          }
-        }
         const wbEl = document.getElementById('blog-e2e-pattern-execution-and-codebase-workbench');
         if (wbEl) wbEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 40);
@@ -1052,6 +1048,29 @@
       if (!e.target.closest('details.export-dropdown')) {
         document.querySelectorAll('details.export-dropdown[open]').forEach((el) => {
           el.removeAttribute('open');
+        });
+      }
+    });
+
+    // Dynamic sticky header + subbar clearance sync (eliminates sticky overlap across desktop & mobile)
+    function syncPortalHeaderMetrics() {
+      const hdr = document.querySelector('header.portal-top-header');
+      const hdrH = hdr ? Math.ceil(hdr.getBoundingClientRect().height) : 78;
+      document.documentElement.style.setProperty('--portal-header-h', hdrH + 'px');
+      const activeSub = document.querySelector('.tab-pane.active #patterns-consolidated-filter-bar, .tab-pane.active #diagrams-atlas-hero-card');
+      const subH = activeSub ? Math.ceil(activeSub.getBoundingClientRect().height + 8) : 58;
+      document.documentElement.style.setProperty('--subbar-h', subH + 'px');
+    }
+    window.syncPortalHeaderMetrics = syncPortalHeaderMetrics;
+    document.addEventListener('DOMContentLoaded', () => {
+      syncPortalHeaderMetrics();
+      window.addEventListener('resize', syncPortalHeaderMetrics);
+      if (typeof ResizeObserver !== 'undefined') {
+        const hdr = document.querySelector('header.portal-top-header');
+        if (hdr) new ResizeObserver(syncPortalHeaderMetrics).observe(hdr);
+        ['patterns-consolidated-filter-bar', 'diagrams-atlas-hero-card'].forEach((sid) => {
+          const el = document.getElementById(sid);
+          if (el) new ResizeObserver(syncPortalHeaderMetrics).observe(el);
         });
       }
     });

@@ -38,6 +38,7 @@
       color: var(--text);
       line-height: 1.5;
       min-height: 100vh;
+      overflow-x: clip;
     }
     .topbar {
       position: sticky;
@@ -50,6 +51,9 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+    }
+    @media (max-width: 768px) {
+      .topbar { position: static; padding: 10px 12px; gap: 8px; }
     }
     .topbar-row {
       display: flex;

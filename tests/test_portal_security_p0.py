@@ -538,6 +538,29 @@ class TestPortalSecurityP0(unittest.TestCase):
             self.assertNotIn("?authuser=", md_content, f"authuser parameter leaked in WS{ws_idx} ({fname})")
             self.assertNotIn("nitinagga@google.com", md_content, f"Personal email leaked in WS{ws_idx} ({fname})")
 
+        # 5. Full-app sticky/scroll/overflow UX & legacy purge anti-regression guards
+        self.assertNotIn("jumpToTab3BeforeAfterHub", index_html)
+        self.assertNotIn("applyCustomActorInputs", index_html)
+        self.assertNotIn("updateFinopsCost", index_html)
+        self.assertNotIn("ba-3p-hub-grid", index_html)
+        self.assertNotIn(".faq-container", layout_css)
+        self.assertNotIn(".series-toc-link", layout_css)
+        self.assertNotIn("#payg-tester-card", layout_css)
+        tab_pat = (ROOT_DIR / "templates/tab_patterns.html").read_text(encoding="utf-8")
+        tab_diag = (ROOT_DIR / "templates/tab_diagrams.html").read_text(encoding="utf-8")
+        self.assertNotIn("top:44px;", tab_pat)
+        self.assertNotIn("top:42px;", tab_diag)
+        self.assertIn("var(--portal-header-h", tab_pat)
+        self.assertIn("var(--portal-header-h", tab_diag)
+        cb2_html = (ROOT_DIR / "templates/create_blog_2_page.html").read_text(encoding="utf-8")
+        self.assertIn("overflow-x: clip;", cb2_html)
+        self.assertIn("flex-shrink: 0;", cb2_html)
+        self.assertIn("var(--topbar-h", cb2_html)
+        drawio_live = (ROOT_DIR / "templates/drawio_live_editor.html").read_text(encoding="utf-8")
+        self.assertIn('iframe.getAttribute("data-embed-src")', drawio_live)
+        self.assertFalse((ROOT_DIR / "scripts/deep_e2e_ui_scanner.mjs").exists())
+        self.assertFalse((ROOT_DIR / "scripts/generate_new_topic_blog.mjs").exists())
+
 
 if __name__ == "__main__":
     unittest.main()
