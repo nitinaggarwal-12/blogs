@@ -443,10 +443,12 @@ def build_architecture_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
 
 def compile_architecture_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
     spec = build_architecture_spec_v3(bp, slug)
+    public_id = _cc.make_diagram_public_id(slug, "architecture")
+    spec["id"] = public_id
     xml = _cc.compile_spec_to_drawio_xml(spec)
     svg = _cc.compile_spec_to_svg(spec)
     val = _cc.validate_spec_geometry(spec)
-    url = _cc.build_viewer_url(xml, f"{slug}-architecture", f"{bp.get('title', 'Architecture')} — Platform")
+    url = _cc.build_viewer_url(xml, public_id, f"{public_id}.drawio")
     return xml, svg, url, val["iconCount"]
 
 
@@ -659,10 +661,12 @@ def build_cloudarch_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
 
 def compile_cloudarch_v3(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
     spec = build_cloudarch_spec_v3(bp, slug)
+    public_id = _cc.make_diagram_public_id(slug, "cloudarch")
+    spec["id"] = public_id
     xml = _cc.compile_spec_to_drawio_xml(spec)
     svg = _cc.compile_spec_to_svg(spec)
     val = _cc.validate_spec_geometry(spec)
-    url = _cc.build_viewer_url(xml, f"{slug}-cloudarch", f"{bp.get('title', 'Architecture')} — Cloud Arch Center")
+    url = _cc.build_viewer_url(xml, public_id, f"{public_id}.drawio")
     return xml, svg, url, val["iconCount"]
 
 
@@ -913,10 +917,12 @@ def build_sequence_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
 
 def compile_sequence_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
     spec = build_sequence_spec_v3(bp, slug)
+    public_id = _cc.make_diagram_public_id(slug, "sequence")
+    spec["id"] = public_id
     xml = _cc.compile_spec_to_drawio_xml(spec)
     svg = _cc.compile_spec_to_svg(spec)
     val = _cc.validate_spec_geometry(spec)
-    return xml, svg, _cc.build_viewer_url(xml, f"{slug}-sequence", f"{bp.get('title', '')} — Sequence"), val["iconCount"]
+    return xml, svg, _cc.build_viewer_url(xml, public_id, f"{public_id}.drawio"), val["iconCount"]
 
 
 # ===========================================================================
@@ -1172,10 +1178,12 @@ def build_security_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
 
 def compile_security_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
     spec = build_security_spec_v3(bp, slug)
+    public_id = _cc.make_diagram_public_id(slug, "security")
+    spec["id"] = public_id
     xml = _cc.compile_spec_to_drawio_xml(spec)
     svg = _cc.compile_spec_to_svg(spec)
     val = _cc.validate_spec_geometry(spec)
-    return xml, svg, _cc.build_viewer_url(xml, f"{slug}-security", f"{bp.get('title', '')} — Security Boundary"), val["iconCount"]
+    return xml, svg, _cc.build_viewer_url(xml, public_id, f"{public_id}.drawio"), val["iconCount"]
 
 
 # ===========================================================================
@@ -1435,10 +1443,12 @@ def build_wire_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
 
 def compile_wire_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
     spec = build_wire_spec_v3(bp, slug)
+    public_id = _cc.make_diagram_public_id(slug, "wire")
+    spec["id"] = public_id
     xml = _cc.compile_spec_to_drawio_xml(spec)
     svg = _cc.compile_spec_to_svg(spec)
     val = _cc.validate_spec_geometry(spec)
-    return xml, svg, _cc.build_viewer_url(xml, f"{slug}-wire", f"{bp.get('title', '')} — Wire Transform"), val["iconCount"]
+    return xml, svg, _cc.build_viewer_url(xml, public_id, f"{public_id}.drawio"), val["iconCount"]
 
 
 # ===========================================================================
@@ -1604,10 +1614,12 @@ def build_async_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
 
 def compile_async_v2(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str, int]:
     spec = build_async_spec_v3(bp, slug)
+    public_id = _cc.make_diagram_public_id(slug, "async")
+    spec["id"] = public_id
     xml = _cc.compile_spec_to_drawio_xml(spec)
     svg = _cc.compile_spec_to_svg(spec)
     val = _cc.validate_spec_geometry(spec)
-    return xml, svg, _cc.build_viewer_url(xml, f"{slug}-async", f"{bp.get('title', '')} — Async Lifecycle"), val["iconCount"]
+    return xml, svg, _cc.build_viewer_url(xml, public_id, f"{public_id}.drawio"), val["iconCount"]
 
 
 # ===========================================================================
@@ -1626,10 +1638,12 @@ def compile_all_v2_diagrams(bp: Dict[str, Any], slug: str) -> Dict[str, Dict[str
     out: Dict[str, Dict[str, Any]] = {}
     for kind, builder, title_str, layer, slide_num in builders:
         spec = builder(bp, slug)
+        public_id = _cc.make_diagram_public_id(slug, kind)
+        spec["id"] = public_id
         xml = _cc.compile_spec_to_drawio_xml(spec)
         svg = _cc.compile_spec_to_svg(spec)
         geom = _cc.validate_spec_geometry(spec)
-        url = _cc.build_viewer_url(xml, f"{slug}-{kind}", title_str)
+        url = _cc.build_viewer_url(xml, public_id, f"{public_id}.drawio")
         icons = geom["iconCount"]
         slide_xml = _cc.compile_spec_to_ooxml_slide(
             spec,
@@ -1639,6 +1653,7 @@ def compile_all_v2_diagrams(bp: Dict[str, Any], slug: str) -> Dict[str, Dict[str
         ooxml_icon_shapes = slide_xml.count('name="ico_')
         out[kind] = {
             "id": f"{slug}-{kind}",
+            "publicId": public_id,
             "kind": kind,
             "layer": layer,
             "slide": slide_num,

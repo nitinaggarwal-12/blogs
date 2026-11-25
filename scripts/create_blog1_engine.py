@@ -2860,22 +2860,25 @@ def compile_blog_markdown(
             lines.append(f"- {tk}")
         lines.append("")
 
+    def _sid(k: str) -> str:
+        return _diag_v2._cc.make_diagram_public_id(slug, k)
+
     lines.extend([
         "## Figures & Editable C4 Diagrams",
         "",
         "| Figure | C4 Layer | Draw.io File | Local Studio |",
         "| --- | --- | --- | --- |",
-        f"| Figure 1 — Master Platform Architecture | `C4 L2` | `diagrams/{slug}-architecture.drawio` | [Edit in Studio](/drawio-editor?id={slug}-architecture) |",
+        f"| Figure 1 — Master Platform Architecture | `C4 L2` | `diagrams/{slug}-architecture.drawio` | [Edit in Studio](/drawio-editor?id={_sid('architecture')}) |",
     ])
     if ex_u.get("cloudarch"):
-        lines.append(f"| Figure 2 — Cloud Architecture Center Blueprint | `HUB-SPOKE` | `diagrams/{slug}-cloudarch.drawio` | [Edit in Studio](/drawio-editor?id={slug}-cloudarch) |")
-    lines.append(f"| Figure {'3' if ex_u.get('cloudarch') else '2'} — Request Lifecycle Sequence | `C4 L3` | `diagrams/{slug}-sequence.drawio` | [Edit in Studio](/drawio-editor?id={slug}-sequence) |")
+        lines.append(f"| Figure 2 — Cloud Architecture Center Blueprint | `HUB-SPOKE` | `diagrams/{slug}-cloudarch.drawio` | [Edit in Studio](/drawio-editor?id={_sid('cloudarch')}) |")
+    lines.append(f"| Figure {'3' if ex_u.get('cloudarch') else '2'} — Request Lifecycle Sequence | `C4 L3` | `diagrams/{slug}-sequence.drawio` | [Edit in Studio](/drawio-editor?id={_sid('sequence')}) |")
     if ex_u.get("security"):
-        lines.append(f"| Figure {'4' if ex_u.get('cloudarch') else '3'} — Trust Perimeter & Security Boundary | `C4 L1` | `diagrams/{slug}-security.drawio` | [Edit in Studio](/drawio-editor?id={slug}-security) |")
+        lines.append(f"| Figure {'4' if ex_u.get('cloudarch') else '3'} — Trust Perimeter & Security Boundary | `C4 L1` | `diagrams/{slug}-security.drawio` | [Edit in Studio](/drawio-editor?id={_sid('security')}) |")
     if ex_u.get("wire"):
-        lines.append(f"| Figure {'5' if ex_u.get('cloudarch') else '4'} — Wire Payload & Schema Transformation | `C4 L4` | `diagrams/{slug}-wire.drawio` | [Edit in Studio](/drawio-editor?id={slug}-wire) |")
+        lines.append(f"| Figure {'5' if ex_u.get('cloudarch') else '4'} — Wire Payload & Schema Transformation | `C4 L4` | `diagrams/{slug}-wire.drawio` | [Edit in Studio](/drawio-editor?id={_sid('wire')}) |")
     if ex_u.get("async"):
-        lines.append(f"| Figure {'6' if ex_u.get('cloudarch') else '5'} — Async Lifecycle, Export & Recovery Loop | `ASYNC` | `diagrams/{slug}-async.drawio` | [Edit in Studio](/drawio-editor?id={slug}-async) |")
+        lines.append(f"| Figure {'6' if ex_u.get('cloudarch') else '5'} — Async Lifecycle, Export & Recovery Loop | `ASYNC` | `diagrams/{slug}-async.drawio` | [Edit in Studio](/drawio-editor?id={_sid('async')}) |")
     lines.append("")
 
     for sec in bp["sections"]:
@@ -3750,6 +3753,18 @@ def _update_index_entry(manifest: Dict[str, Any]) -> bytes:
     blogs = [b for b in idx.get("blogs", []) if isinstance(b, dict) and b.get("slug") != manifest["slug"]]
     blogs.insert(0, summary)
     idx["blogs"] = blogs
+    d_idx = idx.get("diagramIndex") if isinstance(idx.get("diagramIndex"), dict) else {}
+    # Prune stale entries for this slug and register fresh opaque alphanumeric diagram IDs
+    d_idx = {pid: rec for pid, rec in d_idx.items() if isinstance(rec, dict) and rec.get("slug") != manifest["slug"]}
+    for dk, dv in (manifest.get("diagrams") or {}).items():
+        if isinstance(dv, dict):
+            pid = str(dv.get("publicId") or _diag_v2._cc.make_diagram_public_id(manifest["slug"], dk))
+            d_idx[pid] = {
+                "slug": manifest["slug"],
+                "kind": dk,
+                "title": str(dv.get("title") or f"{manifest.get('title') or manifest['slug']} ({dk})"),
+            }
+    idx["diagramIndex"] = d_idx
     return _save_index(idx)
 
 
@@ -4077,6 +4092,7 @@ def compile_and_save_blog(
         geom = dv.get("geometry") or {}
         diagrams_manifest[k] = {
             "id": dv["id"],
+            "publicId": dv.get("publicId") or _diag_v2._cc.make_diagram_public_id(slug, k),
             "kind": k,
             "layer": dv["layer"],
             "slideNumber": dv["slide"],
@@ -4093,7 +4109,7 @@ def compile_and_save_blog(
             "audit": dv.get("audit") or None,
             "pipelineStages": dv.get("pipelineStages") or None,
             "viewerUrl": dv["viewerUrl"],
-            "studioUrl": f"/drawio-editor?id={urllib.parse.quote(slug + '-' + k)}",
+            "studioUrl": f"/drawio-editor?id={urllib.parse.quote(dv.get('publicId') or _diag_v2._cc.make_diagram_public_id(slug, k))}",
         }
 
     created_at = _now_iso()
@@ -4782,6 +4798,9 @@ def delete_blog(slug: str) -> Dict[str, Any]:
                     rel_files.append(p.relative_to(blog_dir).as_posix())
             shutil.rmtree(blog_dir, ignore_errors=True)
         idx["blogs"] = [b for b in idx.get("blogs", []) if b.get("slug") != clean]
+        d_idx = idx.get("diagramIndex")
+        if isinstance(d_idx, dict):
+            idx["diagramIndex"] = {k: v for k, v in d_idx.items() if not (isinstance(v, dict) and v.get("slug") == clean)}
         index_bytes = _save_index(idx)
         if _is_gcs_sync_enabled():
             _gcs_upload_bytes("index.json", index_bytes, "application/json")
@@ -4795,38 +4814,98 @@ def delete_blog(slug: str) -> Dict[str, Any]:
         return {"ok": True, "deletedSlug": clean}
 
 
-def get_diagram_record_for_studio(diag_id: str) -> Optional[Dict[str, Any]]:
-    """Allows /drawio-editor?id=<slug>-architecture|sequence to load created diagrams directly."""
+def _resolve_studio_slug_and_kind(diag_id: str) -> Tuple[str, str, str]:
+    """Resolves either an opaque 12-char alphanumeric ID ('d...') or legacy '<slug>-<kind>' to (slug, kind, title)."""
     did = str(diag_id or "").strip()
-    kind, slug = "", ""
-    slide_map = {"architecture": 3, "cloudarch": 4, "sequence": 5, "security": 6, "wire": 7, "async": 8}
-    for sfx in ("architecture", "cloudarch", "sequence", "security", "wire", "async"):
+    valid_kinds = ("architecture", "cloudarch", "sequence", "security", "wire", "async")
+    # 1. Opaque alphanumeric ID lookup (preferred URL format: /drawio-editor?id=d9a4c7e2b108)
+    if re.fullmatch(r"d[0-9a-f]{11}", did):
+        idx = _load_index()
+        d_idx = idx.get("diagramIndex") if isinstance(idx.get("diagramIndex"), dict) else {}
+        hit = d_idx.get(did)
+        if isinstance(hit, dict) and hit.get("slug") and hit.get("kind") in valid_kinds:
+            return str(hit["slug"]), str(hit["kind"]), str(hit.get("title") or "")
+        # Fallback deterministic scan across known blogs in index + local storage root
+        candidate_slugs = [str(b.get("slug")) for b in (idx.get("blogs") or []) if isinstance(b, dict) and b.get("slug")]
+        root = get_storage_root()
+        if root.is_dir():
+            for child in root.iterdir():
+                if child.is_dir() and child.name not in candidate_slugs:
+                    candidate_slugs.append(child.name)
+        for cand_slug in candidate_slugs:
+            for sfx in valid_kinds:
+                if _diag_v2._cc.make_diagram_public_id(cand_slug, sfx) == did:
+                    return cand_slug, sfx, ""
+        return "", "", ""
+    # 2. Backward-compatible legacy '<slug>-<kind>' lookup
+    for sfx in valid_kinds:
         if did.endswith(f"-{sfx}"):
-            kind, slug = sfx, did[: -(len(sfx) + 1)]
-            break
-    if not kind:
+            slug = did[: -(len(sfx) + 1)]
+            if re.fullmatch(r"[a-z0-9][a-z0-9-]{1,62}", slug):
+                return slug, sfx, ""
+    return "", "", ""
+
+
+def get_diagram_record_for_studio(diag_id: str) -> Optional[Dict[str, Any]]:
+    """Allows /drawio-editor?id=<opaque_alphanum_id> (or legacy <slug>-<kind>) to load created diagrams directly."""
+    did = str(diag_id or "").strip()
+    slug, kind, title_hint = _resolve_studio_slug_and_kind(did)
+    if not slug or not kind:
         return None
-    if not re.fullmatch(r"[a-z0-9][a-z0-9-]{1,62}", slug):
-        return None
+    slide_map = {"architecture": 3, "cloudarch": 4, "sequence": 5, "security": 6, "wire": 7, "async": 8}
+    kind_labels = {
+        "architecture": "Figure 1 — Master Platform Architecture (C4 L2)",
+        "cloudarch": "Figure 2 — Cloud Architecture Center Blueprint",
+        "sequence": "Figure 3 — Request Lifecycle Sequence (C4 L3)",
+        "security": "Figure 4 — Trust Perimeter & Security Boundary (C4 L1)",
+        "wire": "Figure 5 — Wire-Protocol & Schema Transformation (C4 L4)",
+        "async": "Figure 6 — Async State, Export & Lifecycle Loop",
+    }
     drawio_p = _ensure_rel_hydrated(slug, f"diagrams/{slug}-{kind}.drawio")
     if drawio_p is None or not drawio_p.is_file():
         return None
     svg_p = _ensure_rel_hydrated(slug, f"diagrams/{slug}-{kind}.svg")
     xml_str = drawio_p.read_text(encoding="utf-8")
     svg_str = svg_p.read_text(encoding="utf-8") if svg_p and svg_p.is_file() else ""
+    public_id = _diag_v2._cc.make_diagram_public_id(slug, kind)
+    display_title = title_hint or kind_labels.get(kind, kind.title())
     return {
         "item": {
-            "diagramId": did,
-            "id": did,
-            "title": f"{slug} ({kind.title()})",
+            "diagramId": public_id,
+            "id": public_id,
+            "publicId": public_id,
+            "kind": kind,
+            "title": display_title,
             "slideNumber": slide_map.get(kind, 3),
             "origin": "create-blog1",
-            "standaloneAppDiagramsNetUrl": encode_drawio_viewer_url(re.sub(r">\s+<", "><", xml_str.strip())),
+            "drawioDownloadUrl": f"/api/drawio/download/{public_id}?fmt=drawio",
+            "svgDownloadUrl": f"/api/drawio/download/{public_id}?fmt=svg",
+            "standaloneAppDiagramsNetUrl": _diag_v2._cc.build_viewer_url(xml_str, public_id, f"{public_id}.drawio"),
         },
         "xml": xml_str,
         "svg": svg_str,
         "selfContainedHash": encode_drawio_studio_hash(xml_str),
     }
+
+
+def save_studio_diagram_xml(diag_id: str, xml_content: str) -> Optional[Dict[str, Any]]:
+    """Persists edited Draw.io XML from /drawio-editor back to Create Blog1 storage & GCS."""
+    slug, kind, _ = _resolve_studio_slug_and_kind(diag_id)
+    if not slug or not kind:
+        return None
+    drawio_p = _ensure_rel_hydrated(slug, f"diagrams/{slug}-{kind}.drawio")
+    if drawio_p is None:
+        return None
+    raw_bytes = xml_content.encode("utf-8")
+    drawio_p.parent.mkdir(parents=True, exist_ok=True)
+    drawio_p.write_bytes(raw_bytes)
+    if _is_gcs_sync_enabled():
+        try:
+            _gcs_upload_bytes(f"{slug}/diagrams/{slug}-{kind}.drawio", raw_bytes, "application/xml")
+        except Exception:
+            pass
+    public_id = _diag_v2._cc.make_diagram_public_id(slug, kind)
+    return {"ok": True, "publicId": public_id, "path": f"{public_id}.drawio", "bytes": len(raw_bytes)}
 
 
 def _drive_url_with_resourcekey(base_url: str, resource_key: str = "", webview_link: str = "") -> str:

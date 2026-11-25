@@ -948,11 +948,13 @@
     const body = document.getElementById('diag-lightbox-body');
     if (t) t.textContent = label;
     if (acts) {
+      const dlDrawio = diag.publicId ? ('/api/drawio/download/' + encodeURIComponent(diag.publicId) + '?fmt=drawio') : assetUrl(slug, diag.drawioPath, true);
+      const dlSvg = diag.publicId ? ('/api/drawio/download/' + encodeURIComponent(diag.publicId) + '?fmt=svg') : assetUrl(slug, diag.svgPath, true);
       acts.replaceChildren(
         el('a', { className: 'btn btn-primary btn-sm', href: diag.viewerUrl, target: '_blank', rel: 'noopener noreferrer' }, 'viewer.diagrams.net ->'),
         el('a', { className: 'btn btn-sm', href: diag.studioUrl, target: '_blank', rel: 'noopener noreferrer' }, 'Edit in Studio'),
-        el('a', { className: 'btn btn-sm', href: assetUrl(slug, diag.drawioPath, true) }, 'Download .drawio'),
-        el('a', { className: 'btn btn-sm', href: assetUrl(slug, diag.svgPath, true) }, 'Download .svg'),
+        el('a', { className: 'btn btn-sm', href: dlDrawio }, 'Download .drawio'),
+        el('a', { className: 'btn btn-sm', href: dlSvg }, 'Download .svg'),
         el('button', { type: 'button', className: 'btn btn-sm', onClick: closeDiagramLightbox }, 'Close (Esc)')
       );
     }
@@ -1009,9 +1011,11 @@
       if (pcOrigin) {
         btns.push(el('a', { className: 'btn btn-sm', href: pcOrigin + '/prompt-to-diagram', target: '_blank', rel: 'noopener noreferrer' }, 'PromptCanvas ->'));
       }
+      const dlDrawio = diag.publicId ? ('/api/drawio/download/' + encodeURIComponent(diag.publicId) + '?fmt=drawio') : assetUrl(slug, diag.drawioPath, true);
+      const dlSvg = diag.publicId ? ('/api/drawio/download/' + encodeURIComponent(diag.publicId) + '?fmt=svg') : assetUrl(slug, diag.svgPath, true);
       btns.push(
-        el('a', { className: 'btn btn-sm', href: assetUrl(slug, diag.drawioPath, true) }, 'Download .drawio'),
-        el('a', { className: 'btn btn-sm', href: assetUrl(slug, diag.svgPath, true) }, 'Download .svg')
+        el('a', { className: 'btn btn-sm', href: dlDrawio }, 'Download .drawio'),
+        el('a', { className: 'btn btn-sm', href: dlSvg }, 'Download .svg')
       );
       if (diag.refImagePath) {
         btns.push(el('a', { className: 'btn btn-sm', href: assetUrl(slug, diag.refImagePath, true) }, 'Ref PNG'));

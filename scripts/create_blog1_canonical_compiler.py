@@ -20,6 +20,7 @@ Emits from a SINGLE declarative `spec` dict:
 from __future__ import annotations
 
 import base64
+import hashlib
 import json
 import math
 import re
@@ -370,12 +371,18 @@ def render_inline_svg_icon(icon_key: str, x: float, y: float, size: float) -> st
     )
 
 
-def build_viewer_url(drawio_xml: str, slug_tag: str, title: str = "Architecture Diagram") -> str:
-    """Compact raw-DEFLATE viewer.diagrams.net `#R` URL matching diagrams.net encoder."""
+def make_diagram_public_id(slug: str, kind: str) -> str:
+    """Stable 12-char opaque alphanumeric diagram ID (e.g. 'd9a4c7e2b108') for URLs without exposing clear names."""
+    digest = hashlib.sha256(f"cb1:diag:v1:{slug}:{kind}".encode("utf-8")).hexdigest()
+    return "d" + digest[:11]
+
+
+def build_viewer_url(drawio_xml: str, slug_tag: str, title: str = "diagram.drawio") -> str:
+    """Compact raw-DEFLATE viewer.diagrams.net `#R` URL with `&edit=_blank` so the Edit (pencil) button is always enabled."""
     comp = zlib.compressobj(level=9, wbits=-15)
     raw_z = comp.compress(urllib.parse.quote(drawio_xml, safe="").encode("utf-8")) + comp.flush()
     b64 = base64.b64encode(raw_z).decode("ascii")
-    return f"https://viewer.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff&layers=1&nav=1&title={urllib.parse.quote(title)}#R{urllib.parse.quote(b64, safe='')}"
+    return f"https://viewer.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff&edit=_blank&layers=1&nav=1&title={urllib.parse.quote(title)}#R{urllib.parse.quote(b64, safe='')}"
 
 
 def _measure_lines(lines: List[Dict[str, Any]]) -> float:

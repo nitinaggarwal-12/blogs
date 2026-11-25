@@ -1247,6 +1247,123 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
                             vseg = _ast.get_source_segment(src_py, val.value) or ""
                             self.assertNotIn("\\", vseg, f"Python 3.11-incompatible backslash inside f-string at {rel_py}:{val.lineno}: {vseg}")
 
+    def test_16_opaque_alphanum_diagram_ids_edit_blank_and_studio_endpoints(self) -> None:
+        raw_bp = _sample_blueprint()
+        raw_bp["slides"] = list(raw_bp["slides"]) + [
+            {"number": n, "kicker": f"SLIDE {n}", "title": f"Slide {n}", "subtitle": f"Sub {n}",
+             "bullets": [f"Bullet {n}.1", f"Bullet {n}.2"], "speakerNotes": f"Narration {n}."}
+            for n in range(10, 13)
+        ]
+        bp = cb1.normalize_blueprint(
+            raw_bp,
+            prompt="Zero-trust Cloud Spanner Graph bi-temporal architecture",
+            domain="Cloud Architecture & Security",
+            audience="Staff Cloud Architects",
+        )
+        slug = "opaque-id-regression-test"
+        manifest = cb1.compile_and_save_blog(
+            blueprint=bp,
+            slug=slug,
+            model_used="gemini-4-neon",
+            auth_mode="unit_test_fixture",
+            actor_email="test@google.com",
+            enable_tts=False,
+            enable_judge=False,
+        )
+        blog_dir = Path(self._tmpdir.name) / slug
+        md_txt = (blog_dir / "blog.md").read_text(encoding="utf-8")
+        self.assertNotIn(f"/drawio-editor?id={slug}-", md_txt)
+
+        # 1. All 6 diagrams use opaque 12-char alphanumeric IDs (d[0-9a-f]{11}) and viewer URLs contain &edit=_blank
+        public_ids = {}
+        for dk in ("architecture", "cloudarch", "sequence", "security", "wire", "async"):
+            d = manifest["diagrams"][dk]
+            pid = d["publicId"]
+            public_ids[dk] = pid
+            self.assertRegex(pid, r"^d[0-9a-f]{11}$")
+            self.assertEqual(d["studioUrl"], f"/drawio-editor?id={pid}")
+            self.assertNotIn(slug, d["studioUrl"])
+            self.assertIn("&edit=_blank", d["viewerUrl"])
+            self.assertIn(f"title={pid}.drawio", d["viewerUrl"])
+            self.assertNotIn(slug, d["viewerUrl"])
+            self.assertIn(f"/drawio-editor?id={pid}", md_txt)
+
+        # PPTX slide hyperlinks (slides 3..8) must also include &edit=_blank and opaque title
+        with zipfile.ZipFile(blog_dir / "slides" / f"{slug}-deck.pptx", "r") as zf:
+            for si in (3, 4, 5, 6, 7, 8):
+                rel = zf.read(f"ppt/slides/_rels/slide{si}.xml.rels").decode("utf-8")
+                self.assertIn("viewer.diagrams.net", rel)
+                self.assertIn("edit=_blank", rel)
+                self.assertNotIn(slug, rel)
+
+        # 2. index.json diagramIndex maps every opaque publicId -> slug/kind
+        idx = json.loads((Path(self._tmpdir.name) / "index.json").read_text(encoding="utf-8"))
+        d_idx = idx.get("diagramIndex") or {}
+        for dk, pid in public_ids.items():
+            self.assertIn(pid, d_idx)
+            self.assertEqual(d_idx[pid]["slug"], slug)
+            self.assertEqual(d_idx[pid]["kind"], dk)
+
+        # 3. Live HTTP endpoints resolve opaque ID + backward-compat legacy ID
+        ca_pid = public_ids["cloudarch"]
+        st_item, _, body_item = self._req(f"/api/drawio/item/{ca_pid}")
+        self.assertEqual(st_item, 200)
+        j_item = json.loads(body_item.decode("utf-8"))
+        self.assertIn("<mxGraphModel", j_item["xml"])
+        self.assertEqual(j_item["item"]["origin"], "create-blog1")
+        self.assertEqual(j_item["item"]["publicId"], ca_pid)
+        self.assertIn("&edit=_blank", j_item["item"]["standaloneAppDiagramsNetUrl"])
+        self.assertEqual(j_item["item"]["drawioDownloadUrl"], f"/api/drawio/download/{ca_pid}?fmt=drawio")
+
+        # Backward-compat legacy <slug>-<kind> lookup
+        st_leg, _, body_leg = self._req(f"/api/drawio/item/{slug}-cloudarch")
+        self.assertEqual(st_leg, 200)
+        self.assertEqual(json.loads(body_leg.decode("utf-8"))["item"]["publicId"], ca_pid)
+
+        # Download .drawio and .svg by opaque ID
+        st_dl, hdr_dl, body_dl = self._req(f"/api/drawio/download/{ca_pid}?fmt=drawio")
+        self.assertEqual(st_dl, 200)
+        self.assertIn("<mxfile", body_dl.decode("utf-8"))
+        cd_dl = {k.lower(): v for k, v in hdr_dl.items()}.get("content-disposition", "")
+        self.assertIn(f"{ca_pid}.drawio", cd_dl)
+        st_svg, hdr_svg, body_svg = self._req(f"/api/drawio/download/{ca_pid}?fmt=svg")
+        self.assertEqual(st_svg, 200)
+        self.assertIn("<svg", body_svg.decode("utf-8"))
+        cd_svg = {k.lower(): v for k, v in hdr_svg.items()}.get("content-disposition", "")
+        self.assertIn(f"{ca_pid}.svg", cd_svg)
+
+        # /drawio-editor HTML uses /api/drawio/item/ and omits stale hardcoded #78/card_rc_alb defaults
+        st_ed, _, body_ed = self._req(f"/drawio-editor?id={ca_pid}")
+        self.assertEqual(st_ed, 200)
+        ed_html = body_ed.decode("utf-8")
+        self.assertIn("/api/drawio/item/", ed_html)
+        self.assertIn("studio-diagramsnet-link", ed_html)
+        self.assertNotIn("#78 • 56 SHAPES", ed_html)
+        self.assertNotIn("ID: card_rc_alb", ed_html)
+
+        # POST /api/save-drawio fails closed (403) without verified Admin IAP [FA-09], and studio save helper persists edits cleanly
+        updated_xml = j_item["xml"].replace("Figure 2 - Cloud Arch Center", "Figure 2 - Edited Studio")
+        st_unauth, _, _ = self._req(
+            "/api/save-drawio",
+            method="POST",
+            body={"id": ca_pid, "xml": updated_xml},
+            headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN},
+        )
+        self.assertEqual(st_unauth, 403)
+        saved_meta = cb1.save_studio_diagram_xml(ca_pid, updated_xml)
+        self.assertIsNotNone(saved_meta)
+        self.assertTrue(saved_meta["ok"])
+        self.assertEqual(saved_meta["publicId"], ca_pid)
+        st_re, _, body_re = self._req(f"/api/drawio/item/{ca_pid}")
+        self.assertEqual(st_re, 200)
+        self.assertIn("Figure 2 - Edited Studio", json.loads(body_re.decode("utf-8"))["xml"])
+
+        # Deleting blog prunes diagramIndex entries
+        cb1.delete_blog(slug)
+        idx_after = json.loads((Path(self._tmpdir.name) / "index.json").read_text(encoding="utf-8"))
+        for pid in public_ids.values():
+            self.assertNotIn(pid, idx_after.get("diagramIndex") or {})
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -175,7 +175,7 @@ def sync_slug(bucket: str, slug: str, force: bool = False) -> Dict[str, Any]:
         prev_ws = manifest.get("workspaceSync") if isinstance(manifest.get("workspaceSync"), dict) else {}
         if not force and prev_ws.get("status") == "SYNCED" and prev_ws.get("slidesId") and prev_ws.get("docId"):
             print(f"[SKIP] {slug} already synced -> slides={prev_ws['slidesId']} doc={prev_ws['docId']}")
-            return prev_ws
+            return {"workspaceSync": prev_ws, "diagrams": manifest.get("diagrams") if isinstance(manifest.get("diagrams"), dict) else {}}
 
         pptx_p = td_p / f"{slug}-deck.pptx"
         docx_p = td_p / f"{slug}-whitepaper.docx"
@@ -267,7 +267,7 @@ def sync_slug(bucket: str, slug: str, force: bool = False) -> Dict[str, Any]:
             _patch_bundle_zip(bundle_p, slug, bundle_updates)
             subprocess.run(["gcloud", "storage", "cp", str(bundle_p), f"{base}/{slug}/{slug}-bundle.zip"], check=True)
         print(f"[SYNCED] {slug}\n  Slides: {ws_meta['slidesUrl']}\n  Docs:   {ws_meta['docUrl']}")
-        return ws_meta
+        return {"workspaceSync": ws_meta, "diagrams": manifest.get("diagrams") if isinstance(manifest.get("diagrams"), dict) else {}}
 
 
 def main() -> int:
@@ -293,8 +293,22 @@ def main() -> int:
 
         now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         changed = False
+        d_idx = idx.get("diagramIndex") if isinstance(idx.get("diagramIndex"), dict) else {}
         for sl in targets:
-            ws_meta = sync_slug(args.bucket, sl, force=args.force)
+            sync_res = sync_slug(args.bucket, sl, force=args.force)
+            ws_meta = sync_res.get("workspaceSync") if isinstance(sync_res, dict) and "workspaceSync" in sync_res else sync_res
+            diag_map = sync_res.get("diagrams") if isinstance(sync_res, dict) and isinstance(sync_res.get("diagrams"), dict) else {}
+            if diag_map:
+                d_idx = {k: v for k, v in d_idx.items() if not (isinstance(v, dict) and v.get("slug") == sl)}
+                for dk, dv in diag_map.items():
+                    if isinstance(dv, dict) and dv.get("publicId"):
+                        d_idx[str(dv["publicId"])] = {
+                            "slug": sl,
+                            "kind": str(dk),
+                            "title": str(dv.get("title") or dk),
+                        }
+                idx["diagramIndex"] = d_idx
+                changed = True
             for b in idx.get("blogs", []):
                 if b.get("slug") == sl:
                     b["workspaceSync"] = ws_meta

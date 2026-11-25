@@ -2300,6 +2300,46 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 self._send_json(404, {"status": "error", "error": "Slide diagrams atlas not found"})
             return
 
+        if path.startswith("/api/drawio/download/"):
+            from urllib.parse import unquote
+            diag_id = unquote(path.split("/api/drawio/download/", 1)[1]).strip("/")
+            fmt = (qs.get("fmt") or ["drawio"])[0].strip().lower()
+            if fmt not in ("drawio", "svg"):
+                self._send_json(400, {"status": "error", "error": "fmt must be drawio or svg"})
+                return
+            rec = create_blog1_mod.get_diagram_record_for_studio(diag_id)
+            if rec is None:
+                rec = blog_assets_mod.get_custom_diagram_record_for_studio(diag_id)
+            if rec is None:
+                rec = create_blog2_mod.get_diagram_record_for_studio(diag_id)
+            payload_str = ""
+            if rec is not None:
+                payload_str = rec.get("svg" if fmt == "svg" else "xml") or ""
+            else:
+                safe_dl = "".join(ch for ch in diag_id if ch.isalnum() or ch in ("-", "_"))
+                for cand in (
+                    ROOT_DIR / "diagrams" / f"{safe_dl}.{fmt}",
+                    ROOT_DIR / "diagrams" / "compendium" / "drawio" / f"{safe_dl}.{fmt}",
+                ):
+                    if cand.is_file():
+                        payload_str = cand.read_text(encoding="utf-8")
+                        break
+            if not payload_str:
+                self._send_json(404, {"status": "error", "error": f"Diagram not found: {diag_id}"})
+                return
+            raw_dl = payload_str.encode("utf-8")
+            ctype = "image/svg+xml; charset=utf-8" if fmt == "svg" else "application/xml; charset=utf-8"
+            safe_fname = "".join(ch for ch in diag_id if ch.isalnum() or ch in ("-", "_")) or "diagram"
+            self.send_response(200)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Content-Disposition", f'attachment; filename="{safe_fname}.{fmt}"')
+            self.send_header("Content-Length", str(len(raw_dl)))
+            self.send_header("Cache-Control", "no-store")
+            self._send_security_headers()
+            self.end_headers()
+            self.wfile.write(raw_dl)
+            return
+
         if path.startswith("/api/drawio/item/"):
             import zlib
             from urllib.parse import quote, unquote
@@ -2815,7 +2855,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         <option value="ws5-decision-tree-and-agentic-triad">14. WS 5.1/5.2: Executive Decision Tree &amp; Agentic Triad</option>
         </optgroup>
       </select>"""
-            back_btn_html = '<button type="button" id="btn-exit-inline" class="studio-btn" style="background:#dc2626;border-color:#b91c1c;color:#ffffff;" onclick="exitInlineStudio()">&#10005; Exit Inline</button>' if is_inline else '<a class="studio-btn" href="/">&#8592; Back to Portal</a>'
+            back_btn_html = '<button type="button" id="btn-exit-inline" class="studio-btn" style="background:#dc2626;border-color:#b91c1c;color:#ffffff;" onclick="exitInlineStudio()">&#10005; Exit Inline</button>' if is_inline else '<a id="studio-back-link" class="studio-btn" href="/">&#8592; Back to Portal</a>'
             html_doc = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2862,7 +2902,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 <body>
   <div class="studio-bar">
     <div class="studio-left">
-      <span id="tb-topology-badge" class="studio-badge">#78 • 56 SHAPES • 23 EDGES</span>{select_html}
+      <span id="tb-topology-badge" class="studio-badge">STUDIO • LOADING</span>{select_html}
       <button type="button" id="btn-mode-cloud" class="studio-btn {'active' if engine_mode == 'cloud' else ''}" onclick="setStudioEngine('cloud')">&#128208; Cloud Architecture Studio</button>
       <button type="button" id="btn-mode-native" class="studio-btn {'active' if engine_mode == 'native' else ''}" onclick="setStudioEngine('native')">&#9889; Interactive mxGraph Canvas</button>
       <button type="button" id="btn-zoom-out" class="studio-btn" onclick="adjustCanvasZoom(-0.1)" title="Zoom Out">&#8722;</button>
@@ -2870,10 +2910,11 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       <button type="button" id="btn-zoom-in" class="studio-btn" onclick="adjustCanvasZoom(0.1)" title="Zoom In">&#43;</button>
     </div>
     <div class="studio-right">
-      <span id="studio-status" class="studio-status">&#128994; 56 Shapes &amp; 23 Connectors Ready</span>
+      <span id="studio-status" class="studio-status">Loading diagram...</span>
       <button type="button" class="studio-btn primary" onclick="saveCurrentStudioXml()">&#128190; Save .drawio</button>
-      <a id="studio-download-link" class="studio-btn" href="/diagrams/{safe_id}.drawio" download>&#11015; .drawio</a>
-      <a id="studio-svg-link" class="studio-btn" href="/diagrams/{safe_id}.svg" download>&#11015; .svg</a>
+      <a id="studio-diagramsnet-link" class="studio-btn" href="#" target="_blank" rel="noopener noreferrer" style="display:none;">Edit in diagrams.net &#8599;</a>
+      <a id="studio-download-link" class="studio-btn" href="/api/drawio/download/{safe_id}?fmt=drawio" download>&#11015; .drawio</a>
+      <a id="studio-svg-link" class="studio-btn" href="/api/drawio/download/{safe_id}?fmt=svg" download>&#11015; .svg</a>
       {back_btn_html}
     </div>
   </div>
@@ -2900,14 +2941,14 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       <div class="insp-card">
         <div class="insp-title">Draw.io mxGraphModel Summary</div>
         <div style="font-size:12px;line-height:1.5;color:#334155;">
-          <div>&#8226; Vertices: <strong id="insp-total-vertices" style="color:#1d4ed8;">56</strong> editable <code>&lt;mxCell vertex="1"&gt;</code></div>
-          <div>&#8226; Connectors: <strong id="insp-total-edges" style="color:#15803d;">23</strong> vertex-bound <code>&lt;mxCell edge="1"&gt;</code></div>
+          <div>&#8226; Vertices: <strong id="insp-total-vertices" style="color:#1d4ed8;">0</strong> editable <code>&lt;mxCell vertex="1"&gt;</code></div>
+          <div>&#8226; Connectors: <strong id="insp-total-edges" style="color:#15803d;">0</strong> vertex-bound <code>&lt;mxCell edge="1"&gt;</code></div>
           <div style="font-size:11px;color:#475569;margin-top:4px;">Click or drag any shape on the canvas to reposition it and rubber-band its attached Draw.io connectors in real time.</div>
         </div>
       </div>
       <div class="insp-card" id="insp-selected-card">
         <div class="insp-title">Selected &lt;mxCell&gt; Vertex Inspector</div>
-        <div style="margin-bottom:8px;font-size:11.5px;">ID: <code id="insp-cell-id" style="color:#b45309;font-weight:700;">card_rc_alb</code></div>
+        <div style="margin-bottom:8px;font-size:11.5px;">ID: <code id="insp-cell-id" style="color:#b45309;font-weight:700;">—</code></div>
         <div class="insp-grid" style="margin-bottom:8px;">
           <div class="insp-field"><label>X (px)</label><input type="number" id="insp-x" onchange="applyInspectorGeometry()" /></div>
           <div class="insp-field"><label>Y (px)</label><input type="number" id="insp-y" onchange="applyInspectorGeometry()" /></div>
@@ -2937,7 +2978,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     let latestXml = '';
     let verticesMap = new Map();
     let edgesList = [];
-    let selectedCellId = 'card_rc_alb';
+    let selectedCellId = '';
     let dragState = null;
     let iframeReady = false;
     let activeEngine = {json.dumps(engine_mode)};
@@ -3152,21 +3193,77 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     async function fetchAndLoadDiagram(diagId) {{
       const statusEl = document.getElementById('studio-status');
       const dlEl = document.getElementById('studio-download-link');
-      if (dlEl) dlEl.href = '/diagrams/' + diagId + '.drawio';
       const svgEl = document.getElementById('studio-svg-link');
-      if (svgEl) svgEl.href = '/diagrams/' + diagId + '.svg';
-      if (statusEl) statusEl.textContent = '⏳ Loading ' + diagId + '.drawio...';
+      const dnEl = document.getElementById('studio-diagramsnet-link');
+      const backEl = document.getElementById('studio-back-link');
+      if (dlEl) dlEl.href = '/api/drawio/download/' + encodeURIComponent(diagId) + '?fmt=drawio';
+      if (svgEl) svgEl.href = '/api/drawio/download/' + encodeURIComponent(diagId) + '?fmt=svg';
+      if (statusEl) statusEl.textContent = '⏳ Loading ' + diagId + '...';
       try {{
-        const res = await fetch('/api/artifact?path=diagrams/' + encodeURIComponent(diagId) + '.drawio');
-        const data = await res.json();
-        if (data && data.content) {{
-          latestXml = data.content;
+        let xmlStr = '';
+        let itemMeta = null;
+        // 1. Primary unified lookup (/api/drawio/item/ supports Create Blog1 opaque alphanumeric IDs, GCS hydration & static atlas)
+        try {{
+          const rItem = await fetch('/api/drawio/item/' + encodeURIComponent(diagId));
+          if (rItem.ok) {{
+            const dItem = await rItem.json();
+            if (dItem && dItem.xml) {{
+              xmlStr = dItem.xml;
+              itemMeta = dItem.item || null;
+            }}
+          }}
+        }} catch (_e) {{}}
+        // 2. Fallback to static repo diagrams/ artifact
+        if (!xmlStr) {{
+          const res = await fetch('/api/artifact?path=diagrams/' + encodeURIComponent(diagId) + '.drawio');
+          if (res.ok) {{
+            const data = await res.json();
+            if (data && data.content) xmlStr = data.content;
+          }}
+        }}
+        if (xmlStr) {{
+          latestXml = xmlStr;
+          const displayLabel = (itemMeta && itemMeta.title) ? itemMeta.title : diagId;
+          // Populate dropdown cleanly if this diagram uses a dynamic/opaque ID not in the static list
+          const selEl = document.getElementById('studio-diag-select');
+          if (selEl) {{
+            let hasOpt = Array.from(selEl.options).some(o => o.value === diagId);
+            if (!hasOpt) {{
+              let grp = document.getElementById('optgrp-active-diag');
+              if (!grp) {{
+                grp = document.createElement('optgroup');
+                grp.id = 'optgrp-active-diag';
+                grp.label = 'Active Create Blog1 Diagram';
+                selEl.insertBefore(grp, selEl.firstChild);
+              }}
+              grp.innerHTML = '';
+              const opt = document.createElement('option');
+              opt.value = diagId;
+              opt.textContent = displayLabel + ' (' + diagId + ')';
+              grp.appendChild(opt);
+            }}
+            selEl.value = diagId;
+          }}
+          if (itemMeta) {{
+            if (dlEl && itemMeta.drawioDownloadUrl) dlEl.href = itemMeta.drawioDownloadUrl;
+            if (svgEl && itemMeta.svgDownloadUrl) svgEl.href = itemMeta.svgDownloadUrl;
+            if (dnEl && itemMeta.standaloneAppDiagramsNetUrl) {{
+              dnEl.href = itemMeta.standaloneAppDiagramsNetUrl;
+              dnEl.style.display = 'inline-flex';
+            }}
+            if (backEl && itemMeta.origin === 'create-blog1') {{
+              backEl.href = '/create-blog1';
+              backEl.textContent = '← Back to Create Blog1';
+            }}
+          }}
           renderInteractiveMxGraph(latestXml);
-          if (statusEl) statusEl.textContent = '🟢 Ready — ' + verticesMap.size + ' Shapes & ' + edgesList.length + ' Vertex-Bound Connectors (' + diagId + '.drawio)';
+          if (statusEl) statusEl.textContent = '🟢 Ready — ' + verticesMap.size + ' Shapes & ' + edgesList.length + ' Connectors (' + diagId + ')';
           const frame = document.getElementById('drawio-studio-iframe');
           if (frame && frame.contentWindow && iframeReady) {{
             frame.contentWindow.postMessage(JSON.stringify({{ action: 'load', xml: latestXml, autosave: 1 }}), '*');
           }}
+        }} else {{
+          if (statusEl) statusEl.textContent = '⚠️ Diagram not found: ' + diagId;
         }}
       }} catch (err) {{
         if (statusEl) statusEl.textContent = '⚠️ Failed to load XML: ' + err.message;
@@ -3260,7 +3357,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
           el.style.height = h + 'px';
           el.style.pointerEvents = isImageCell ? 'none' : 'auto';
           el.style.boxSizing = 'border-box';
-          const isCompactBadge = h <= 28;
+          const isCompactBadge = h <= 30 || styleMap.ellipse === '1';
+          const isZeroPad = isImageCell || styleMap.ellipse === '1';
           if (isCompactBadge || isImageCell) {{
             el.style.overflowX = 'visible';
             el.style.overflowY = 'visible';
@@ -3293,19 +3391,33 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
           if (styleMap.fontSize) el.style.fontSize = styleMap.fontSize + 'px';
           if (styleMap.fontColor) el.style.color = styleMap.fontColor;
           if (String(styleMap.fontStyle || '') === '1') el.style.fontWeight = '700';
-          el.style.paddingLeft = (isImageCell ? 0 : (styleMap.spacingLeft || (isCompactBadge ? 2 : 10))) + 'px';
-          el.style.paddingTop = (isImageCell ? 0 : (styleMap.spacingTop || (isCompactBadge ? 0 : 6))) + 'px';
-          el.style.paddingRight = (isImageCell ? 0 : (styleMap.spacingRight || (isCompactBadge ? 2 : 10))) + 'px';
-          el.style.paddingBottom = (isImageCell ? 0 : (styleMap.spacingBottom || (isCompactBadge ? 0 : 6))) + 'px';
+          el.style.paddingLeft = (isZeroPad ? 0 : (styleMap.spacingLeft || (isCompactBadge ? 2 : 10))) + 'px';
+          el.style.paddingTop = (isZeroPad ? 0 : (styleMap.spacingTop || (isCompactBadge ? 0 : 6))) + 'px';
+          el.style.paddingRight = (isZeroPad ? 0 : (styleMap.spacingRight || (isCompactBadge ? 2 : 10))) + 'px';
+          el.style.paddingBottom = (isZeroPad ? 0 : (styleMap.spacingBottom || (isCompactBadge ? 0 : 6))) + 'px';
 
           if (isImageCell) {{
             const imgSpec = String(styleMap.image || '').trim();
-            const safeSvgMatch = /^data:image\\/svg\\+xml,(?:base64,)?([A-Za-z0-9+/=]+)$/.exec(imgSpec);
-            if (safeSvgMatch) {{
-              const safeSrc = 'data:image/svg+xml;base64,' + safeSvgMatch[1];
-              el.innerHTML = '<img src="' + safeSrc + '" alt="" style="width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;"/>';
+            const safeB64Match = /^data:image\\/svg\\+xml,(?:base64,)?([A-Za-z0-9+/=]+)$/.exec(imgSpec);
+            const safeUtf8Match = /^data:image\\/svg\\+xml,(%3Csvg[A-Za-z0-9%._~:\\/\\-]+%3C%2Fsvg%3E)$/i.exec(imgSpec);
+            let safeSrc = '';
+            if (safeB64Match) {{
+              safeSrc = 'data:image/svg+xml;base64,' + safeB64Match[1];
+            }} else if (safeUtf8Match) {{
+              let dec = '';
+              try {{ dec = decodeURIComponent(safeUtf8Match[1]); }} catch (_e) {{ dec = ''; }}
+              if (dec && !/<script|on[a-z]+\\s*=|javascript:|foreignObject/i.test(dec)) {{
+                safeSrc = 'data:image/svg+xml;utf8,' + safeUtf8Match[1];
+              }}
+            }}
+            if (safeSrc) {{
+              const imgNode = document.createElement('img');
+              imgNode.src = safeSrc;
+              imgNode.alt = '';
+              imgNode.style.cssText = 'width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;';
+              el.replaceChildren(imgNode);
             }} else {{
-              el.innerHTML = '';
+              el.replaceChildren();
             }}
           }} else {{
             el.innerHTML = '<div style="width:100%;">' + sanitizeCellHtml(val) + '</div><span class="mx-handle tl"></span><span class="mx-handle tr"></span><span class="mx-handle bl"></span><span class="mx-handle br"></span>';
@@ -3344,9 +3456,9 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
       document.getElementById('insp-total-vertices').textContent = String(verticesMap.size);
       document.getElementById('insp-total-edges').textContent = String(edgesList.length);
       const tbBadge = document.getElementById('tb-topology-badge');
-      if (tbBadge) tbBadge.textContent = '#78 • ' + verticesMap.size + ' SHAPES • ' + edgesList.length + ' EDGES';
+      if (tbBadge) tbBadge.textContent = verticesMap.size + ' SHAPES • ' + edgesList.length + ' EDGES';
       if (!verticesMap.has(selectedCellId)) {{
-        selectedCellId = verticesMap.has('card_rc_alb') ? 'card_rc_alb' : Array.from(verticesMap.keys())[0];
+        selectedCellId = verticesMap.has('card_rc_alb') ? 'card_rc_alb' : (Array.from(verticesMap.keys())[0] || '');
       }}
       redrawEdgesAndInspector();
     }}
@@ -4301,6 +4413,11 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                     or "<!entity" in xml_lower
                 ):
                     self._send_json(400, {"ok": False, "error": "Invalid or disallowed Draw.io XML payload (DOCTYPE/ENTITY blocked)."})
+                    return
+                # First check if diag_id belongs to a Create Blog1 diagram (opaque alphanumeric ID or legacy <slug>-<kind>)
+                cb1_saved = create_blog1_mod.save_studio_diagram_xml(safe_id, xml_content)
+                if cb1_saved is not None:
+                    self._send_json(200, cb1_saved)
                     return
                 diagrams_root = (ROOT_DIR / "diagrams").resolve()
                 raw_drawio = ROOT_DIR / "diagrams" / f"{safe_id}.drawio"
