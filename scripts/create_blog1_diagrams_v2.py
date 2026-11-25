@@ -1046,9 +1046,9 @@ def build_security_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
     p2_items = [
         (
             "sec_p2_0", 174, "#1A73E8", "#E8F0FE", "#8AB4F8",
-            _cc.resolve_icon_key(l1.get("iconKey", ""), l1.get("name", ""), "cloud_run"),
+            _cc.resolve_icon_key("cloud_run", "Verified Tenant Context", "cloud_run"),
             "CLAIM EXTRACTION & BINDING",
-            _cc.strip_md(l1.get("name") or "Verified Tenant Context"),
+            "Verified Tenant Context Bind",
             "Cryptographically binds verified @tenant_id from ES256 assertion; drops raw caller headers.",
         ),
         (

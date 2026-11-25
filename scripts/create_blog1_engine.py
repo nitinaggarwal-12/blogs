@@ -2538,15 +2538,27 @@ def _docx_link_p(prefix: str, link_label: str, rid: str, *, keep_next: bool = Fa
 
 def _docx_table(headers: List[str], rows: List[List[str]]) -> str:
     ncols = max(1, len(headers))
-    col_w = int(9360 / ncols)
-    grid = "".join(f'<w:gridCol w:w="{col_w}"/>' for _ in range(ncols))
+    # Smart proportional widths so narrow ID columns free space for ALL_CAPS enum tags & basis prose
+    hl = [str(h or "").strip().lower() for h in headers]
+    if ncols == 5 and hl[0] == "id" and "provenance" in hl[3]:
+        col_ws = [960, 1980, 1620, 2100, 2700]  # sum = 9360
+    elif ncols == 3 and "status" in hl[2]:
+        col_ws = [1800, 4460, 3100]  # sum = 9360 (fits GENERATED_TEMPLATE_UNDEPLOYED cleanly on 1 line!)
+    else:
+        base = int(9360 / ncols)
+        col_ws = [base] * ncols
+        col_ws[-1] += 9360 - sum(col_ws)
+    grid = "".join(f'<w:gridCol w:w="{w}"/>' for w in col_ws)
 
-    def _tc(text: str, fill: str, fg: str, bold: bool) -> str:
-        runs = _docx_rich_runs(str(text), bold=bold, size_hp=18, color=fg, font="Arial")
+    def _tc(text: str, fill: str, fg: str, bold: bool, cw_dxa: int) -> str:
+        raw_t = str(text or "")
+        is_enum_tag = bool(re.fullmatch(r"[A-Z][A-Z0-9_]{8,}", raw_t.strip()))
+        sz = 15 if is_enum_tag else 17
+        runs = _docx_rich_runs(raw_t, bold=bold, size_hp=sz, color=fg, font="Arial")
         return (
-            f'<w:tc><w:tcPr><w:tcW w:w="{col_w}" w:type="dxa"/>'
+            f'<w:tc><w:tcPr><w:tcW w:w="{cw_dxa}" w:type="dxa"/>'
             f'<w:shd w:val="clear" w:color="auto" w:fill="{fill}"/>'
-            '<w:tcMar><w:top w:w="70" w:type="dxa"/><w:bottom w:w="70" w:type="dxa"/><w:left w:w="100" w:type="dxa"/><w:right w:w="100" w:type="dxa"/></w:tcMar>'
+            '<w:tcMar><w:top w:w="70" w:type="dxa"/><w:bottom w:w="70" w:type="dxa"/><w:left w:w="90" w:type="dxa"/><w:right w:w="90" w:type="dxa"/></w:tcMar>'
             "</w:tcPr>"
             f'<w:p>{runs}</w:p></w:tc>'
         )
@@ -2558,10 +2570,10 @@ def _docx_table(headers: List[str], rows: List[List[str]]) -> str:
         '<w:insideH w:val="single" w:sz="4" w:color="E2E8F0"/><w:insideV w:val="single" w:sz="4" w:color="E2E8F0"/></w:tblBorders>'
         f'</w:tblPr><w:tblGrid>{grid}</w:tblGrid>'
     ]
-    out.append("<w:tr>" + "".join(_tc(h, "1A73E8", "FFFFFF", True) for h in headers) + "</w:tr>")
+    out.append("<w:tr>" + "".join(_tc(h, "1A73E8", "FFFFFF", True, col_ws[ci]) for ci, h in enumerate(headers)) + "</w:tr>")
     for ri, rr in enumerate(rows):
         bg = "F8FAFC" if ri % 2 == 1 else "FFFFFF"
-        cells = [_tc(rr[ci] if ci < len(rr) else "", bg, "0F172A", ci == 0) for ci in range(ncols)]
+        cells = [_tc(rr[ci] if ci < len(rr) else "", bg, "0F172A", ci == 0, col_ws[ci]) for ci in range(ncols)]
         out.append("<w:tr>" + "".join(cells) + "</w:tr>")
     out.append("</w:tbl>")
     return "".join(out)

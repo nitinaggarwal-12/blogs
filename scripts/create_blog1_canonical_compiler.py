@@ -1938,10 +1938,11 @@ def compile_spec_to_ooxml_slide(spec: Dict[str, Any], footer_prefix: str, hlink_
             if tile.get("icon"):
                 shapes.extend(_ico(tile["icon"], tix, tiy, tisz))
             if tile.get("label"):
+                tl_txt, tl_fs = fit_single_line_px(str(tile["label"]), max(28.0, float(tile["w"]) - 6.0), 8.6, bold=True)
                 shapes.append(_r(
                     _nid(), f"{tile['id']}_lbl", tile["x"], float(tile["y"]) + float(tile["h"]) - 18.0, tile["w"], 16.0,
-                    prst="rect", fill="none", stroke="none", l_ins=0, r_ins=0, t_ins=0, b_ins=0,
-                    paragraphs=[_ox_p([{"text": str(tile["label"]), "pt": _s_pt(6.5), "bold": True, "color": tile.get("labelColor", "#1F2937")}], "ctr", 0, 100000)],
+                    prst="rect", fill="none", stroke="none", wrap="none", l_ins=0, r_ins=0, t_ins=0, b_ins=0,
+                    paragraphs=[_ox_p([{"text": tl_txt, "pt": _s_pt(tl_fs * 0.68), "bold": True, "color": tile.get("labelColor", "#1F2937")}], "ctr", 0, 100000)],
                 ))
 
     for b in spec.get("bars") or []:
