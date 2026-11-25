@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="csrf-token" content="__CSRF_TOKEN__" />
-  <title>Create Blog1 — Live Architecture Center Blog &amp; Asset Studio</title>
-  <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'&gt;&lt;rect width='32' height='32' rx='6' fill='%231a73e8'/&gt;&lt;text x='16' y='22' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold' font-size='17'&gt;B1&lt;/text&gt;&lt;/svg&gt;" />
+  <title>Create Blog — Live Architecture Center Blog &amp; Full Asset Studio</title>
+  <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'&gt;&lt;rect width='32' height='32' rx='6' fill='%231a73e8'/&gt;&lt;text x='16' y='22' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold' font-size='15'&gt;CB&lt;/text&gt;&lt;/svg&gt;" />
   <style>
     :root {
       --bg: #f8fafc;
@@ -81,13 +81,14 @@
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
     }
     .brand-group {
       display: flex;
       align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
+      gap: 10px;
+      flex-wrap: nowrap;
+      flex: 1 1 560px;
       min-width: 0;
     }
     .brand-mark {
@@ -121,18 +122,18 @@
     .cap-strip {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       flex-wrap: wrap;
-      font-size: 11px;
+      font-size: 10.5px;
     }
 
     .pill {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 3px 9px;
+      gap: 4px;
+      padding: 2px 8px;
       border-radius: 999px;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       border: 1px solid var(--border-strong);
       background: var(--surface-alt);
@@ -213,6 +214,7 @@
     }
     @media (max-width: 768px) {
       .topbar { position: static; padding: 10px 12px; }
+      .brand-group { flex-wrap: wrap; flex-basis: 100%; }
       .cap-strip { flex-wrap: wrap; gap: 5px; }
       .quad-bar { position: static; }
     }
@@ -436,8 +438,8 @@
       border-bottom: none;
       background: transparent;
       color: var(--muted);
-      padding: 9px 13px;
-      font-size: 12.5px;
+      padding: 8px 9.5px;
+      font-size: 11.5px;
       font-weight: 700;
       border-radius: 8px 8px 0 0;
       cursor: pointer;
@@ -719,10 +721,10 @@
     <div class="topbar-inner">
       <div class="topbar-row">
         <div class="brand-group">
-          <div class="brand-mark" aria-hidden="true">B1</div>
+          <div class="brand-mark" aria-hidden="true">CB</div>
           <div>
             <div class="brand-title">
-              <span>Create Blog1</span>
+              <span>Create Blog</span>
               <span class="pill pill-blue">Live Gemini Studio</span>
               <span class="pill pill-green">Zero Fake Prose / Zero Mock UI</span>
             </div>
@@ -932,7 +934,7 @@
             </div>
             <div class="welcome-tile">
               <h3>8. Dual Quality Gate</h3>
-              <p>12 deterministic checks (incl. Terraform D-11 &amp; markdown leak D-12) plus an independent orthogonal Gemini judge.</p>
+              <p>13 deterministic checks (incl. Terraform/destructive-cmd D-11, markdown leak D-12 &amp; numeric claim coverage D-13) + EXIF/OCR proof scan + orthogonal Gemini judge.</p>
             </div>
           </div>
           <div class="banner banner-warn" style="margin-top:8px; margin-bottom:0;">
@@ -980,6 +982,6 @@
     </div>
     <div class="diag-modal-body" id="diag-lightbox-body"></div>
   </div>
-  <script src="/js/create_blog1.js" defer></script>
+  <script src="/js/create_blog1.js?v=20261125-v108" defer></script>
 </body>
 </html>

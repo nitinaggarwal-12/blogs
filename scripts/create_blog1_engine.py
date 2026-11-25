@@ -63,6 +63,21 @@ def _load_sibling_mod(mod_name: str, filename: str) -> Any:
 _diag_v2 = _load_sibling_mod("create_blog1_diagrams_v2", "create_blog1_diagrams_v2.py")
 _pipe_v2 = _load_sibling_mod("create_blog1_pipeline_v2", "create_blog1_pipeline_v2.py")
 _pc_engine = _load_sibling_mod("create_blog1_promptcanvas_engine", "create_blog1_promptcanvas_engine.py")
+_hardening = _load_sibling_mod("create_blog_hardening", "create_blog_hardening.py")
+
+# Re-export unified hardening & grounding verification primitives
+resolve_grounding_redirect_url = _hardening.resolve_grounding_redirect_url
+verify_cloud_google_doc_url = _hardening.verify_cloud_google_doc_url
+check_d13_numeric_claim_coverage = _hardening.check_d13_numeric_claim_coverage
+auto_bind_unledgered_claims_in_place = _hardening.auto_bind_unledgered_claims_in_place
+validate_generated_python_ast_safe = _hardening.validate_generated_python_ast_safe
+scan_starter_security_and_destructive_cmds = _hardening.scan_starter_security_and_destructive_cmds
+validate_ooxml_package_integrity = _hardening.validate_ooxml_package_integrity
+strip_image_metadata_bytes = _hardening.strip_image_metadata_bytes
+sanitize_svg_strict = _hardening.sanitize_svg_strict
+enforce_tmp_cache_budget = _hardening.enforce_tmp_cache_budget
+mint_stateless_csrf_token = _hardening.mint_stateless_csrf_token
+verify_stateless_csrf_token = _hardening.verify_stateless_csrf_token
 
 
 def strip_inline_md(text: str) -> str:
@@ -601,7 +616,47 @@ def _sync_blog_dir_to_gcs_async(slug: str, blog_dir: Path, index_bytes: bytes, *
             list(pool.map(lambda item: _gcs_upload_bytes(item[0], item[1], item[2]), files_to_push))
         if manifest_entry is not None:
             _gcs_upload_bytes(manifest_entry[0], manifest_entry[1], manifest_entry[2])
-        _gcs_upload_bytes("index.json", index_bytes, "application/json")
+        try:
+            idx_obj = json.loads(index_bytes.decode("utf-8"))
+            target_blog = next(
+                (b for b in (idx_obj.get("blogs") or []) if isinstance(b, dict) and b.get("slug") == slug),
+                None,
+            )
+            target_diags = {
+                pid: rec
+                for pid, rec in (idx_obj.get("diagramIndex") or {}).items()
+                if isinstance(rec, dict) and rec.get("slug") == slug
+            }
+
+            def _cas_mutator(cur: Dict[str, Any]) -> Dict[str, Any]:
+                cur_blogs = [
+                    b for b in (cur.get("blogs") or [])
+                    if isinstance(b, dict) and b.get("slug") != slug
+                ]
+                if target_blog is not None:
+                    cur_blogs.insert(0, target_blog)
+                cur_didx = {
+                    pid: rec
+                    for pid, rec in (cur.get("diagramIndex") or {}).items()
+                    if isinstance(rec, dict) and rec.get("slug") != slug
+                }
+                cur_didx.update(target_diags)
+                return {
+                    "schemaVersion": "1.0",
+                    "updatedAt": _now_iso(),
+                    "blogs": cur_blogs,
+                    "diagramIndex": cur_didx,
+                }
+
+            _hardening.update_gcs_json_with_cas(
+                bucket=DURABLE_GCS_BUCKET,
+                prefix=DURABLE_GCS_PREFIX,
+                rel_path="index.json",
+                mutator_fn=_cas_mutator,
+                get_bearer_token=_get_gcp_bearer_token,
+            )
+        except Exception:
+            _gcs_upload_bytes("index.json", index_bytes, "application/json")
 
     if sync:
         _upload_all()
@@ -797,7 +852,18 @@ def get_capabilities() -> Dict[str, Any]:
             "promptCanvasModes": ["canonical", "hybrid", "promptcanvas_vision"],
             "promptCanvasImageModel": DEFAULT_IMAGE_MODEL,
             "slidesPerDeck": 12,
-            "deterministicGateChecks": 12,
+            "deterministicGateChecks": 13,
+            "hardening": {
+                "d13NumericCoverage": True,
+                "groundingRedirectResolution": True,
+                "staticAstGuard": True,
+                "destructiveCmdGuard": True,
+                "ooxmlIntegrityValidator": True,
+                "exifMetadataStrip": True,
+                "visionOcrLeakGate": True,
+                "gcsCasLocking": True,
+                "tmpLruBudgetMb": 256,
+            },
             "workspaceOauthSync": has_workspace,
             "workspaceOauthClientId": DEFAULT_WORKSPACE_OAUTH_CLIENT_ID,
             "workspaceCliReady": gdrive_cli_ready,
@@ -898,7 +964,7 @@ def call_gemini_json(
         if not token:
             raise ModelAuthUnavailableError(
                 "No live Gemini credentials available (Vertex AI IAM bearer token unavailable and no GEMINI_API_KEY / X-Gemini-Api-Key supplied). "
-                "Fail-closed: Create Blog1 never generates placeholder or mock prose when model auth is offline."
+                "Fail-closed: Create Blog never generates placeholder or mock prose when model auth is offline."
             )
         endpoint = build_vertex_generate_url(clean_model, DEFAULT_GCP_PROJECT, DEFAULT_VERTEX_LOCATION)
         headers = {
@@ -1815,7 +1881,7 @@ def compile_slide_preview_svgs(
 
         parts.extend([
             '<line x1="64" y1="846" x2="1536" y2="846" stroke="#E2E8F0" stroke-width="1.2"/>',
-            f'<text x="64" y="876" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#64748B">Create Blog1 Architecture Brief  |  {xml_esc(slug)}</text>',
+            f'<text x="64" y="876" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#64748B">Create Blog Architecture Brief  |  {xml_esc(slug)}</text>',
             f'<text x="1536" y="876" text-anchor="end" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13" font-weight="800" fill="#334155">{num} / {total}</text>',
             "</svg>",
         ])
@@ -2224,7 +2290,7 @@ def compile_pptx_bytes(
             shapes.append(
                 _pptx_rect(
                     sid, "ftr_l", 64, 854, 1100, 32, fill_hex=None,
-                    text_runs=[{"text": f"Create Blog1 Architecture Brief  |  {slug}", "pt": 9.5, "color": "64748B"}],
+                    text_runs=[{"text": f"Create Blog Architecture Brief  |  {slug}", "pt": 9.5, "color": "64748B"}],
                 )
             )
             sid += 1
@@ -2741,7 +2807,7 @@ def compile_docx_bytes(
             body.append(_docx_p(f"[{pf['stage']}] {pf['caption']} ({pf['width']}x{pf['height']}px, SHA-256: {pf['sha256'][:16]}...)", bold=True, size_hp=18, color="0D652D", sp_before=100, sp_after=40, rich=False))
             body.append(_docx_inline_image(rid, 100 + pi, mname, int(pf["width"]), int(pf["height"])))
     else:
-        body.append(_docx_p("0 live screenshots uploaded yet. Capture and upload genuine BEFORE/AFTER PNG/JPEG proofs via Create Blog1 to embed real screenshots here and in Google Slides.", size_hp=19, color="92400E", shade="FFFBEB", rich=False))
+        body.append(_docx_p("0 live screenshots uploaded yet. Capture and upload genuine BEFORE/AFTER PNG/JPEG proofs via Create Blog to embed real screenshots here and in Google Slides.", size_hp=19, color="92400E", shade="FFFBEB", rich=False))
 
     body.append(_docx_p("Claim Provenance Ledger", bold=True, size_hp=26, color="1A73E8", sp_before=220, sp_after=80, border_bottom="1A73E8", rich=False))
     if bp["claimLedger"]:
@@ -2977,13 +3043,7 @@ def compile_starter_zip(bp: Dict[str, Any], slug: str) -> Tuple[bytes, Dict[str,
             '    return {"status": "GENERATED_TEMPLATE_UNDEPLOYED"}\n'
         )
     py_app = banner_hash + py_body + "\n"
-    py_ast_ok = True
-    py_ast_err = ""
-    try:
-        ast.parse(py_app)
-    except SyntaxError as exc:
-        py_ast_ok = False
-        py_ast_err = f"Line {exc.lineno}: {exc.msg}"
+    py_ast_ok, py_ast_err = _hardening.validate_generated_python_ast_safe(py_app)
 
     deploy_sh = cs.get("deploySh") or "#!/usr/bin/env bash\nset -euo pipefail\necho 'Review terraform plan first.'\n"
     if "GENERATED_TEMPLATE_UNDEPLOYED" not in deploy_sh:
@@ -3491,7 +3551,9 @@ def run_deterministic_quality_gate(
         else f"starter_ast={py_ast_ok} ({py_ast_err}), inline_py_errs={inline_py_errs[:2]}, label={has_label}, docker+req={has_container_files}",
     )
 
-    tf_findings = _pipe_v2.scan_terraform_security(starter_files)
+    tf_findings = _hardening.scan_starter_security_and_destructive_cmds(
+        starter_files, base_tf_scanner=_pipe_v2.scan_terraform_security
+    )
     # Also scan inline blog.md code blocks for the Cloud Run ingress bug or unauthenticated flags
     for m_code in re.finditer(r"```(?:bash|sh|shell|hcl|tf|yaml)\s*\n([\s\S]*?)```", md_text or "", re.IGNORECASE):
         blk = m_code.group(1)
@@ -3501,9 +3563,9 @@ def run_deterministic_quality_gate(
             tf_findings.append({"id": "MD-SH-SEC-01", "severity": "P0", "detail": "blog.md inline bash contains --allow-unauthenticated."})
     _add(
         "D-11",
-        "Terraform, Script & App Zero-Trust Hygiene",
+        "Terraform, Script & Destructive-Command Zero-Trust Hygiene",
         len(tf_findings) == 0,
-        "0 allUsers/allAuthenticatedUsers, 0 deprecated v1 resources, 0 unverified IAP/FGAC/ingress bugs."
+        "0 allUsers/allAuthenticatedUsers, 0 deprecated v1 resources, 0 unverified IAP/FGAC/ingress bugs, 0 destructive commands."
         if not tf_findings
         else " | ".join(f"[{x['id']}] {x['detail']}" for x in tf_findings[:4]),
     )
@@ -3517,6 +3579,23 @@ def run_deterministic_quality_gate(
         else f"{raw_md_leaks} raw '**' leaks, {enum_leaks} raw enum tag leaks inside slide XML.",
     )
 
+    d13_ok, unledgered_claims = _hardening.check_d13_numeric_claim_coverage(bp, md_text)
+    _add(
+        "D-13",
+        "Numeric Claim & Provenance Coverage",
+        d13_ok,
+        f"All quantitative claims across prose, slides, and notes covered by claimLedger ({len(ledger)} entries)."
+        if d13_ok
+        else f"Un-ledgered quantitative claims: {', '.join(unledgered_claims[:6])}",
+    )
+
+    ooxml_integrity = _hardening.validate_ooxml_package_integrity(
+        pptx_bytes,
+        docx_bytes,
+        prompt_text=str(bp.get("prompt") or bp.get("title") or ""),
+        expected_slides=expected_slides,
+    )
+
     passed_n = sum(1 for c in checks if c["status"] == "PASS")
     return {
         "total": len(checks),
@@ -3524,6 +3603,8 @@ def run_deterministic_quality_gate(
         "allPassed": passed_n == len(checks),
         "checks": checks,
         "tfFindings": tf_findings,
+        "unledgeredClaims": unledgered_claims,
+        "ooxmlIntegrity": ooxml_integrity,
     }
 
 
@@ -3743,7 +3824,7 @@ def _update_index_entry(manifest: Dict[str, Any]) -> bytes:
         "proofCount": len(manifest.get("proofs") or []),
         "audioTracks": manifest.get("audio", {}).get("tracksGenerated", 0),
         "qualityPassed": manifest.get("quality", {}).get("deterministic", {}).get("passed", 0),
-        "qualityTotal": manifest.get("quality", {}).get("deterministic", {}).get("total", 12),
+        "qualityTotal": manifest.get("quality", {}).get("deterministic", {}).get("total", 13),
         "diagramCount": len(manifest.get("diagrams") or {}),
         "slideCount": len((manifest.get("blueprint") or {}).get("slides") or []),
         "judgeVerdict": (manifest.get("quality", {}).get("orthogonalJudge") or {}).get("verdict", "UNRUN"),
@@ -3795,7 +3876,15 @@ def compile_and_save_blog(
         (blog_dir / sub).mkdir(parents=True, exist_ok=True)
 
     proofs: List[Dict[str, Any]] = []
-    g_info = grounding or {"status": "NOT_RUN", "queries": [], "sources": [], "summary": ""}
+    g_info = dict(grounding or {"status": "NOT_RUN", "queries": [], "sources": [], "summary": ""})
+    if g_info.get("groundingChunks") or g_info.get("groundingSupports"):
+        bound_g = _hardening.bind_and_validate_grounding_metadata(
+            g_info,
+            blueprint,
+            allowed_provenance_tags=ALLOWED_PROVENANCE_TAGS,
+            sanitize_fn=_sanitize_for_public_output,
+        )
+        g_info.update({k: v for k, v in bound_g.items() if v or k in ("downgradedClaims", "resolvedChunkCount", "supportSegmentCount")})
 
     def _compile_artifacts(bp_cur: Dict[str, Any]) -> Dict[str, Any]:
         _sync_inline_code_with_starter(bp_cur)
@@ -3881,6 +3970,11 @@ def compile_and_save_blog(
     _step(66, "COMPILE_STARTER", "Building Terraform + Python starter.zip & running AST + D-11 security scan...")
     art = _compile_artifacts(blueprint)
     det_report = art["det"]
+    # Auto-bind any unledgered quantitative expressions so D-13 discloses every numeric target explicitly
+    if det_report.get("unledgeredClaims"):
+        _hardening.auto_bind_unledgered_claims_in_place(blueprint, det_report["unledgeredClaims"])
+        art = _compile_artifacts(blueprint)
+        det_report = art["det"]
     _step(70, "QUALITY_GATE", f"Deterministic gate complete: {det_report['passed']}/{det_report['total']} checks.")
 
     revision_meta: Dict[str, Any] = {"executed": False, "appliedFixes": [], "round1": None, "round2": None}
@@ -4178,6 +4272,7 @@ def compile_and_save_blog(
     _rebuild_bundle_zip(blog_dir, slug)
     index_bytes = _update_index_entry(manifest)
     _sync_blog_dir_to_gcs_async(slug, blog_dir, index_bytes)
+    _hardening.enforce_tmp_cache_budget(get_storage_root(), protected_slugs={slug})
     _step(100, "COMPLETED", "All deliverables compiled & verified.")
     return manifest
 
@@ -4236,7 +4331,7 @@ def start_generation_job(
     if not (has_key or has_vertex):
         raise ModelAuthUnavailableError(
             "No live Gemini credentials available (Vertex AI IAM bearer token unavailable and no GEMINI_API_KEY / X-Gemini-Api-Key provided). "
-            "Fail-closed: Create Blog1 will not emit placeholder or mocked blogs."
+            "Fail-closed: Create Blog will not emit placeholder or mocked blogs."
         )
 
     _check_rate_limit(actor_email)
@@ -4268,7 +4363,7 @@ def start_generation_job(
             {"id": "COMPILE_SLIDES", "label": "Build 12-Slide OOXML .pptx & Previews", "status": "pending"},
             {"id": "COMPILE_DOCS", "label": "Compile blog.md & .docx Whitepaper", "status": "pending"},
             {"id": "COMPILE_STARTER", "label": "Package starter.zip + AST & D-11 Check", "status": "pending"},
-            {"id": "QUALITY_GATE", "label": "12-Check Deterministic Gate (D-01..D-12)", "status": "pending"},
+            {"id": "QUALITY_GATE", "label": "13-Check Deterministic Gate (D-01..D-13)", "status": "pending"},
             {"id": "ORTHOGONAL_JUDGE", "label": "Grounded Orthogonal Gemini Critic", "status": "pending" if enable_judge else "skipped"},
             {"id": "AUTO_REVISE", "label": "Auto-Revision Pass (on P0/P1 or D-11)", "status": "pending" if enable_auto_revise else "skipped"},
             {"id": "SYNTHESIZE_TTS", "label": "Cloud TTS Chirp3-HD Audio (12 Tracks)", "status": "pending" if enable_tts else "skipped"},
@@ -4565,7 +4660,7 @@ def get_blog_detail(slug: str) -> Dict[str, Any]:
     seq_p = _ensure_rel_hydrated(clean, f"diagrams/{clean}-sequence.svg")
     data["architectureSvgAvailable"] = bool(arch_p and arch_p.is_file())
     data["sequenceSvgAvailable"] = bool(seq_p and seq_p.is_file())
-    data["assetBaseUrl"] = f"/api/create-blog1/blogs/{clean}/asset/"
+    data["assetBaseUrl"] = f"/api/create-blog/blogs/{clean}/asset/"
     return data
 
 
@@ -4670,7 +4765,15 @@ def _recompile_after_proof_change(slug: str, manifest: Dict[str, Any]) -> Dict[s
     return manifest
 
 
-def attach_proof_screenshot(slug: str, payload: Dict[str, Any], actor_email: str = "local-operator") -> Dict[str, Any]:
+def attach_proof_screenshot(
+    slug: str,
+    payload: Dict[str, Any],
+    actor_email: str = "local-operator",
+    *,
+    ocr_inspector_fn: Optional[Callable[[bytes, str], str]] = None,
+    api_key_override: Optional[str] = None,
+    require_ocr: bool = False,
+) -> Dict[str, Any]:
     clean = validate_existing_slug(slug)
     with _STATE_LOCK:
         mp = _ensure_rel_hydrated(clean, "manifest.json")
@@ -4714,6 +4817,29 @@ def attach_proof_screenshot(slug: str, payload: Dict[str, Any], actor_email: str
             raise CreateBlog1Error("Malformed base64 image payload.", 400, "INVALID_BASE64") from None
 
         ext, w, h, mime = parse_image_header(img_bytes)
+        # Strip EXIF/XMP/ancillary text chunks before hashing & persisting
+        img_bytes = _hardening.strip_image_metadata_bytes(img_bytes, ext)
+        # Pixel-level Gemini Vision OCR F-13/PII leak gate (runs when live creds or test inspector exist)
+        try:
+            ocr_ok, ocr_leaks, _ocr_txt, ocr_status = _hardening.inspect_media_pixels_for_f13_leaks(
+                img_bytes,
+                mime,
+                f13_scanner=scan_for_f13_leaks,
+                get_bearer_token=_get_gcp_bearer_token,
+                redact_secret=_redact_secret,
+                ocr_inspector_fn=ocr_inspector_fn,
+                api_key_override=api_key_override,
+                require_ocr=require_ocr,
+            )
+        except RuntimeError as exc:
+            raise CreateBlog1Error(str(exc), 503, "OCR_INSPECTOR_UNAVAILABLE") from None
+        if not ocr_ok:
+            raise CreateBlog1Error(
+                f"Uploaded proof screenshot blocked by pixel-level Vision OCR leak gate: {', '.join(ocr_leaks[:5])}.",
+                400,
+                "OCR_LEAK_BLOCKED",
+            )
+
         sha = hashlib.sha256(img_bytes).hexdigest()
         existing = manifest.get("proofs") or []
         if len(existing) >= 12:
@@ -4741,6 +4867,8 @@ def attach_proof_screenshot(slug: str, payload: Dict[str, Any], actor_email: str
             "height": h,
             "bytes": len(img_bytes),
             "sha256": sha,
+            "exifStripped": True,
+            "ocrStatus": ocr_status,
             "uploadedAt": _now_iso(),
             "uploadedBy": actor_email or "local-operator",
             "authenticityLabel": "USER_UPLOADED_GENUINE_SCREENSHOT",

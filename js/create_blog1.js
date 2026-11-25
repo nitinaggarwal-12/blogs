@@ -1,4 +1,4 @@
-/* Create Blog1 Studio Client — Pure Safe DOM (zero unsafe HTML sinks, zero browser secret storage). */
+/* Create Blog Studio Client — Pure Safe DOM (zero unsafe HTML sinks, zero browser secret storage). */
 (function () {
   'use strict';
 
@@ -230,7 +230,7 @@
     const q = [];
     if (download) q.push('download=1');
     q.push('v=' + state.slideCacheBust);
-    return '/api/create-blog1/blogs/' + encodeURIComponent(slug) + '/asset/' + parts + (q.length ? '?' + q.join('&') : '');
+    return '/api/create-blog/blogs/' + encodeURIComponent(slug) + '/asset/' + parts + (q.length ? '?' + q.join('&') : '');
   }
 
   async function apiGet(url) {
@@ -343,7 +343,7 @@
   async function refreshCapabilities(attempt) {
     const n = Number(attempt || 0);
     try {
-      const cap = await apiGet('/api/create-blog1/capabilities');
+      const cap = await apiGet('/api/create-blog/capabilities');
       state.capabilities = cap;
       renderCapabilities(cap);
     } catch (err) {
@@ -562,7 +562,7 @@
       box.replaceChildren(el('div', { className: 'hint' }, 'Loading saved blogs from durable GCS storage...'));
     }
     try {
-      const res = await apiGet('/api/create-blog1/blogs' + (forceGcs ? '?refresh=1' : ''));
+      const res = await apiGet('/api/create-blog/blogs' + (forceGcs ? '?refresh=1' : ''));
       state.blogs = Array.isArray(res.blogs) ? res.blogs : [];
       renderLibrary();
       if (selectFirst && !state.activeSlug && state.blogs.length) {
@@ -582,7 +582,7 @@
 
   async function deleteBlogConfirmed(slug) {
     try {
-      await apiPost('/api/create-blog1/blogs/' + encodeURIComponent(slug) + '/delete', {});
+      await apiPost('/api/create-blog/blogs/' + encodeURIComponent(slug) + '/delete', {});
       state.confirmDeleteSlug = null;
       if (state.activeSlug === slug) {
         stopAudioPlayer();
@@ -600,7 +600,7 @@
   async function selectBlog(slug) {
     stopAudioPlayer();
     try {
-      const data = await apiGet('/api/create-blog1/blogs/' + encodeURIComponent(slug));
+      const data = await apiGet('/api/create-blog/blogs/' + encodeURIComponent(slug));
       state.activeSlug = slug;
       state.activeBlog = data;
       state.activeSlide = 1;
@@ -776,7 +776,7 @@
         : {};
       let res;
       try {
-        res = await apiPost('/api/create-blog1/blogs/' + encodeURIComponent(slug) + '/sync-workspace', {}, extraHdrs);
+        res = await apiPost('/api/create-blog/blogs/' + encodeURIComponent(slug) + '/sync-workspace', {}, extraHdrs);
       } catch (firstErr) {
         const p = firstErr.payload || {};
         if (firstErr.status === 412 && p.code === 'WORKSPACE_OAUTH_REQUIRED') {
@@ -791,7 +791,7 @@
           const accessTok = await requestBrowserDriveToken(clientId);
           setBusy(true, 'Converting in Drive...');
           res = await apiPost(
-            '/api/create-blog1/blogs/' + encodeURIComponent(slug) + '/sync-workspace',
+            '/api/create-blog/blogs/' + encodeURIComponent(slug) + '/sync-workspace',
             {},
             { 'X-Google-Workspace-Token': accessTok }
           );
@@ -1331,7 +1331,7 @@
             rd.onerror = rej;
             rd.readAsDataURL(f);
           });
-          await apiPost('/api/create-blog1/blogs/' + encodeURIComponent(slug) + '/proofs', {
+          await apiPost('/api/create-blog/blogs/' + encodeURIComponent(slug) + '/proofs', {
             stage: stageSel.value,
             caption: captionInp.value.trim(),
             sourceUrl: urlInp.value.trim(),
@@ -1381,7 +1381,7 @@
                   el('button', {
                     type: 'button', className: 'btn btn-sm btn-danger',
                     onClick: async () => {
-                      await apiPost('/api/create-blog1/blogs/' + encodeURIComponent(slug) + '/proofs/delete', { proofId: pf.id });
+                      await apiPost('/api/create-blog/blogs/' + encodeURIComponent(slug) + '/proofs/delete', { proofId: pf.id });
                       state.confirmDeleteProofId = null;
                       await selectBlog(slug);
                       await refreshLibrary(false);
@@ -1640,7 +1640,7 @@
     if (state.pollInFlight) return;
     state.pollInFlight = true;
     try {
-      const res = await apiGet('/api/create-blog1/jobs/' + encodeURIComponent(jobId));
+      const res = await apiGet('/api/create-blog/jobs/' + encodeURIComponent(jobId));
       state.pollErrorCount = 0;
       const job = res.job || res;
       renderJobProgress(job);
@@ -1715,7 +1715,7 @@
       genBtn.disabled = true;
       genBtn.textContent = 'Running Live Pipeline...';
       try {
-        const res = await apiPost('/api/create-blog1/generate', {
+        const res = await apiPost('/api/create-blog/generate', {
           titleHint: document.getElementById('inp-title').value.trim(),
           prompt,
           domain: document.getElementById('inp-domain').value,

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Hermetic, fail-closed unit & HTTP API test suite for the Create Blog1 studio page
-(`GET /create-blog1`, `scripts/create_blog1_engine.py`, `templates/create_blog1_page.html`,
-and `js/create_blog1.js`).
+Hermetic, fail-closed unit & HTTP API test suite for the unified Create Blog studio page
+(`GET /create-blog`, `scripts/create_blog1_engine.py`, `scripts/create_blog_hardening.py`,
+`templates/create_blog1_page.html`, and `js/create_blog1.js`).
 """
 
 from __future__ import annotations
@@ -277,15 +277,43 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
 
     def test_01_header_nav_and_page_serves_cleanly_zero_banned_dom_sinks(self) -> None:
         hdr_html = (ROOT_DIR / "templates" / "header.html").read_text(encoding="utf-8")
-        self.assertIn('href="/create-blog1"', hdr_html)
-        self.assertIn("Create Blog1", hdr_html)
+        self.assertIn('id="nav-link-create-blog"', hdr_html)
+        self.assertIn('href="/create-blog"', hdr_html)
+        self.assertIn("Create Blog", hdr_html)
+        self.assertNotIn("Create Blog1", hdr_html)
+        self.assertNotIn("Create Blog 2", hdr_html)
+        self.assertNotIn("/create-blog-2", hdr_html)
 
-        status, _, body = self._req("/create-blog1")
+        status, _, body = self._req("/create-blog")
         self.assertEqual(status, 200)
         html_text = body.decode("utf-8")
-        self.assertIn("Create Blog1", html_text)
+        self.assertIn("Create Blog", html_text)
+        self.assertNotIn("Create Blog1", html_text)
         self.assertIn(srv._PORTAL_CSRF_TOKEN, html_text)
         self.assertNotIn("__CSRF_TOKEN__", html_text)
+
+        # Legacy /create-blog1 and /create-blog-2 routes cleanly 302-redirect to /create-blog preserving query strings
+        class _NoRedirect(urllib.request.HTTPRedirectHandler):
+            def redirect_request(self, req, fp, code, msg, headers, newurl):
+                return None
+
+        opener = urllib.request.build_opener(_NoRedirect())
+        for old_path in ("/create-blog1?slug=demo-x", "/create-blog-2?slug=demo-x"):
+            try:
+                opener.open(urllib.request.Request(self.base + old_path), timeout=10)
+                self.fail(f"Expected 302 redirect on {old_path}")
+            except urllib.error.HTTPError as exc:
+                self.assertEqual(exc.code, 302)
+                self.assertEqual(exc.headers.get("Location"), "/create-blog?slug=demo-x")
+
+        # Canonical /api/create-blog/capabilities works identically and advertises 13 hardened gates
+        st_cap, _, body_cap = self._req("/api/create-blog/capabilities")
+        self.assertEqual(st_cap, 200)
+        cap_json = json.loads(body_cap.decode("utf-8"))
+        self.assertEqual(cap_json["capabilities"]["deterministicGateChecks"], 13)
+        self.assertTrue(cap_json["capabilities"]["hardening"]["d13NumericCoverage"])
+        self.assertTrue(cap_json["capabilities"]["hardening"]["exifMetadataStrip"])
+        self.assertTrue(cap_json["capabilities"]["hardening"]["gcsCasLocking"])
 
         js_status, js_hdrs, js_body = self._req("/js/create_blog1.js")
         self.assertEqual(js_status, 200)
@@ -325,7 +353,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         )
         self.assertEqual(manifest["slug"], slug)
         self.assertTrue(manifest["quality"]["deterministic"]["allPassed"], manifest["quality"]["deterministic"])
-        self.assertEqual(manifest["quality"]["deterministic"]["passed"], 12)
+        self.assertEqual(manifest["quality"]["deterministic"]["passed"], 13)
 
         blog_dir = Path(self._tmpdir.name) / slug
         # Draw.io checks: zero flowAnimation=1, valid XML, sequence has dashed lifelines
@@ -700,8 +728,8 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertEqual(manifest["schemaVersion"], "3.0")
         self.assertEqual(len(manifest["diagrams"]), 6)
         self.assertGreaterEqual(manifest["diagrams"]["architecture"]["iconCount"], 4)
-        self.assertEqual(manifest["quality"]["deterministic"]["total"], 12)
-        self.assertEqual(manifest["quality"]["deterministic"]["passed"], 12, manifest["quality"]["deterministic"])
+        self.assertEqual(manifest["quality"]["deterministic"]["total"], 13)
+        self.assertEqual(manifest["quality"]["deterministic"]["passed"], 13, manifest["quality"]["deterministic"])
 
         # All 5 diagrams available through /api/drawio/item/<slug>-<kind>
         for k in ("architecture", "cloudarch", "sequence", "security", "wire", "async"):
@@ -1367,6 +1395,184 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         idx_after = json.loads((Path(self._tmpdir.name) / "index.json").read_text(encoding="utf-8"))
         for pid in public_ids.values():
             self.assertNotIn(pid, idx_after.get("diagramIndex") or {})
+
+    def test_17_unified_hardening_d13_ast_exif_ocr_ooxml_cas_and_csrf(self) -> None:
+        """Verifies all ported Create Blog 2 hardening safeguards inside unified Create Blog."""
+        hardening = cb1._hardening
+
+        # 1. D-13 Numeric Claim Coverage + auto-bind
+        bp_d13 = {"claimLedger": [{"id": "CLM-01", "value": "99.99%", "provenance": "GCP_DOCUMENTED"}], "slides": []}
+        ok_d13, unled = cb1.check_d13_numeric_claim_coverage(
+            bp_d13, "Latency stays under 42 ms with 99.99% SLA and $1,250 monthly budget."
+        )
+        self.assertFalse(ok_d13)
+        self.assertTrue(any("42 ms" in u for u in unled), unled)
+        self.assertTrue(any("1,250" in u for u in unled), unled)
+        cb1.auto_bind_unledgered_claims_in_place(bp_d13, unled)
+        ok_after, unled_after = cb1.check_d13_numeric_claim_coverage(
+            bp_d13, "Latency stays under 42 ms with 99.99% SLA and $1,250 monthly budget."
+        )
+        self.assertTrue(ok_after, unled_after)
+
+        # 2. Grounding redirect resolution + two-condition GCP_DOCUMENTED downgrade
+        bp_g = {
+            "claimLedger": [
+                {
+                    "id": "CLM-01",
+                    "claim": "Verified SLA",
+                    "value": "99.99%",
+                    "provenance": "GCP_DOCUMENTED",
+                    "sourceUrl": "https://cloud.google.com/spanner/docs/overview",
+                    "basis": "Official docs",
+                },
+                {
+                    "id": "CLM-02",
+                    "claim": "Unverified claim",
+                    "value": "777 ms",
+                    "provenance": "GCP_DOCUMENTED",
+                    "sourceUrl": "https://cloud.google.com/spanner/docs/overview",
+                    "basis": "Model claim",
+                },
+            ],
+            "references": [],
+        }
+        g_meta = {
+            "groundingChunks": [
+                {"web": {"uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/abc", "title": "Spanner"}}
+            ],
+            "groundingSupports": [
+                {
+                    "segment": {"text": "Cloud Spanner provides 99.99% availability SLA for regional instances."},
+                    "groundingChunkIndices": [0],
+                    "confidenceScores": [0.92],
+                }
+            ],
+        }
+        res_g = hardening.bind_and_validate_grounding_metadata(
+            g_meta,
+            bp_g,
+            allowed_provenance_tags=cb1.ALLOWED_PROVENANCE_TAGS,
+            sanitize_fn=cb1._sanitize_for_public_output,
+            redirect_resolver=lambda u: "https://cloud.google.com/spanner/docs/overview",
+            head_checker=lambda u: u.startswith("https://cloud.google.com/"),
+        )
+        self.assertEqual(res_g["status"], "GROUNDED")
+        self.assertEqual(bp_g["claimLedger"][0]["provenance"], "GCP_DOCUMENTED")
+        self.assertEqual(bp_g["claimLedger"][1]["provenance"], "DERIVED_MODEL")
+        self.assertIn("CLM-02", res_g["downgradedClaims"])
+
+        # 3. Static Python AST safety + destructive command scanning
+        self.assertTrue(cb1.validate_generated_python_ast_safe("def ok(x: int) -> int:\n    return x + 1\n")[0])
+        self.assertFalse(cb1.validate_generated_python_ast_safe("import subprocess\nsubprocess.run(['ls'])\n")[0])
+        self.assertFalse(cb1.validate_generated_python_ast_safe("x = eval('1+1')\n")[0])
+        self.assertFalse(cb1.validate_generated_python_ast_safe("URL = 'http://169.254.169.254/computeMetadata/v1/'\n")[0])
+        dfind = cb1.scan_starter_security_and_destructive_cmds(
+            {"deploy.sh": "gcloud projects delete my-prod\nterraform destroy -auto-approve\n"}
+        )
+        dids = {f["id"] for f in dfind}
+        self.assertIn("SH-DESTRUCT-01", dids)
+        self.assertIn("TF-DESTRUCT-01", dids)
+
+        # 4. Strict SVG XSS blocking
+        with self.assertRaises(ValueError):
+            cb1.sanitize_svg_strict("<svg><script>alert(1)</script></svg>")
+        with self.assertRaises(ValueError):
+            cb1.sanitize_svg_strict('<svg><foreignObject><div>x</div></foreignObject></svg>')
+        with self.assertRaises(ValueError):
+            cb1.sanitize_svg_strict('<svg><a href="https://evil.example/x">x</a></svg>')
+
+        # 5. PNG ancillary metadata stripping + Vision OCR leak gate on proof upload
+        png_raw = _make_valid_png(640, 360)
+        # Inject a fake PNG tEXt metadata chunk right before IEND
+        text_data = b"Author\x00secret-operator@private-corp.internal"
+        text_chunk = (
+            struct.pack(">I", len(text_data))
+            + b"tEXt"
+            + text_data
+            + struct.pack(">I", zlib.crc32(b"tEXt" + text_data) & 0xFFFFFFFF)
+        )
+        iend_idx = png_raw.rfind(b"IEND") - 4
+        png_with_meta = png_raw[:iend_idx] + text_chunk + png_raw[iend_idx:]
+        stripped = cb1.strip_image_metadata_bytes(png_with_meta, "png")
+        self.assertNotIn(b"tEXt", stripped)
+        self.assertNotIn(b"secret-operator", stripped)
+        self.assertEqual(cb1.parse_image_header(stripped)[0], "png")
+
+        bp_p = _sample_blueprint()
+        slug_p = "hardening-proof-ocr-test"
+        cb1.compile_and_save_blog(
+            blueprint=bp_p,
+            slug=slug_p,
+            model_used="gemini-2.5-flash",
+            auth_mode="unit_test_fixture",
+            actor_email="unit-test",
+            enable_tts=False,
+            enable_judge=False,
+        )
+        # Blocked when OCR detects personal email or Google Sign-In wall
+        with self.assertRaises(cb1.CreateBlog1Error) as ctx_leak:
+            cb1.attach_proof_screenshot(
+                slug_p,
+                {
+                    "stage": "AFTER",
+                    "caption": "Live Cloud Run console proof",
+                    "sourceUrl": "https://console.cloud.google.com/run",
+                    "dataBase64": base64.b64encode(png_with_meta).decode("ascii"),
+                },
+                ocr_inspector_fn=lambda b, m: "Cloud Console logged in as alice@private-bank.com",
+            )
+        self.assertEqual(ctx_leak.exception.code, "OCR_LEAK_BLOCKED")
+
+        # Accepted when OCR is clean; stored file has metadata stripped
+        ok_res = cb1.attach_proof_screenshot(
+            slug_p,
+            {
+                "stage": "AFTER",
+                "caption": "Clean Cloud Run revision verification",
+                "sourceUrl": "https://console.cloud.google.com/run",
+                "dataBase64": base64.b64encode(png_with_meta).decode("ascii"),
+            },
+            ocr_inspector_fn=lambda b, m: "Google Cloud Run Revision Ready 100% traffic svc@proj.iam.gserviceaccount.com",
+        )
+        self.assertTrue(ok_res["ok"])
+        self.assertTrue(ok_res["proof"]["exifStripped"])
+        self.assertEqual(ok_res["proof"]["ocrStatus"], "VERIFIED_OCR")
+        saved_png = (Path(self._tmpdir.name) / slug_p / ok_res["proof"]["relPath"]).read_bytes()
+        self.assertNotIn(b"secret-operator", saved_png)
+
+        # 6. GCS CAS locking + /tmp LRU cache eviction
+        mem_store = {}
+        out1 = hardening.update_gcs_json_with_cas(
+            bucket="b", prefix="p/", rel_path="index.json",
+            mutator_fn=lambda d: {"blogs": [{"slug": "a"}]},
+            get_bearer_token=lambda: "tok", mem_store=mem_store,
+        )
+        self.assertEqual(len(out1["blogs"]), 1)
+        self.assertEqual(mem_store["index.json"][1], 1)
+        out2 = hardening.update_gcs_json_with_cas(
+            bucket="b", prefix="p/", rel_path="index.json",
+            mutator_fn=lambda d: {"blogs": d.get("blogs", []) + [{"slug": "b"}]},
+            get_bearer_token=lambda: "tok", mem_store=mem_store,
+        )
+        self.assertEqual(len(out2["blogs"]), 2)
+        self.assertEqual(mem_store["index.json"][1], 2)
+
+        lru_dir = Path(self._tmpdir.name) / "_lru_test"
+        (lru_dir / "old-slug").mkdir(parents=True, exist_ok=True)
+        (lru_dir / "old-slug" / "big.bin").write_bytes(b"x" * 4096)
+        (lru_dir / "old-slug" / "manifest.json").write_text("{}", encoding="utf-8")
+        evicted = cb1.enforce_tmp_cache_budget(lru_dir, max_bytes=1024)
+        self.assertGreaterEqual(evicted, 4096)
+        self.assertTrue((lru_dir / "old-slug" / "manifest.json").is_file())
+        self.assertFalse((lru_dir / "old-slug" / "big.bin").exists())
+
+        # 7. Stateless HMAC-SHA256 CSRF minting & verification
+        sec = b"unit-test-hmac-secret-key-32bytes"
+        tok = cb1.mint_stateless_csrf_token("dev@example.com", secret_bytes=sec, now_ts=1700000000)
+        self.assertTrue(cb1.verify_stateless_csrf_token(tok, "dev@example.com", secret_bytes=sec, now_ts=1700000100))
+        self.assertFalse(cb1.verify_stateless_csrf_token(tok, "other@example.com", secret_bytes=sec, now_ts=1700000100))
+        self.assertFalse(cb1.verify_stateless_csrf_token(tok, "dev@example.com", secret_bytes=sec, now_ts=1700090000))
+        self.assertFalse(cb1.verify_stateless_csrf_token(tok[:-1] + ("0" if tok[-1] != "0" else "1"), "dev@example.com", secret_bytes=sec, now_ts=1700000100))
 
 
 if __name__ == "__main__":
